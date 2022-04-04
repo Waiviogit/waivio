@@ -1802,5 +1802,13 @@
   "market_order_to_sell": "Market Order zu verkaufen",
   "market_order_to_buy": "Marktauftrag zum Kauf",
   "market_expired_to_buy": "Markt abgelaufen, um zu kaufen",
-  "market_expired_to_sell": "Der Markt ist abgelaufen, um zu verkaufen"
+  "market_expired_to_sell": "Der Markt ist abgelaufen, um zu verkaufen",
+  "delegation_from": "Delegation ab",
+  "delegated_to": "Delegiert",
+  "undelegated_started": "Undelegiert gestartet",
+  "lowercase_to": "zu",
+  "lowercase_from": "von",
+  "undelegated_completed": "Undelegiert abgeschlossen",
+  "bought": "Gekauft",
+  "sold": "Verkauft"
 }

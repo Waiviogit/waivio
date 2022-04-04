@@ -1802,5 +1802,13 @@
   "market_order_to_sell": "बेचने के लिए बाजार आदेश",
   "market_order_to_buy": "बाजार में खरीदने का आदेश",
   "market_expired_to_buy": "बाजार खरीदने के लिए समाप्त हो गया",
-  "market_expired_to_sell": "बाजार बेचने के लिए समाप्त हो गया"
+  "market_expired_to_sell": "बाजार बेचने के लिए समाप्त हो गया",
+  "delegation_from": "से प्रतिनिधिमंडल",
+  "delegated_to": "को प्रत्यायोजित",
+  "undelegated_started": "गैर प्रत्यायोजित प्रारंभ",
+  "lowercase_to": "प्रति",
+  "lowercase_from": "से",
+  "undelegated_completed": "गैर प्रत्यायोजित पूर्ण",
+  "bought": "खरीदा",
+  "sold": "बेचा"
 }

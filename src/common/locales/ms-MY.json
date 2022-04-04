@@ -1801,5 +1801,13 @@
   "market_order_to_sell": "Pesanan pasaran untuk dijual",
   "market_order_to_buy": "Pesanan pasaran untuk membeli",
   "market_expired_to_buy": "Pasaran tamat tempoh untuk membeli",
-  "market_expired_to_sell": "Pasaran tamat tempoh untuk dijual"
+  "market_expired_to_sell": "Pasaran tamat tempoh untuk dijual",
+  "delegation_from": "Delegasi daripada",
+  "delegated_to": "Diwakilkan kepada",
+  "undelegated_started": "Tidak diwakilkan bermula",
+  "lowercase_to": "kepada",
+  "lowercase_from": "daripada",
+  "undelegated_completed": "Tidak diwakilkan selesai",
+  "bought": "Dibeli",
+  "sold": "Terjual"
 }

@@ -1803,5 +1803,13 @@
   "market_order_to_sell": "أمر السوق بالبيع",
   "market_order_to_buy": "أمر السوق للشراء",
   "market_expired_to_buy": "انتهت صلاحية السوق للشراء",
-  "market_expired_to_sell": "انتهت صلاحية السوق للبيع"
+  "market_expired_to_sell": "انتهت صلاحية السوق للبيع",
+  "delegation_from": "وفد من",
+  "delegated_to": "المفوضة لل",
+  "undelegated_started": "بدأ غير التفويض",
+  "lowercase_to": "ل",
+  "lowercase_from": "من",
+  "undelegated_completed": "اكتمل غير التفويض",
+  "bought": "مشترى",
+  "sold": "مباع"
 }

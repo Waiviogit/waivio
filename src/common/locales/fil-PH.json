@@ -1803,5 +1803,13 @@
   "market_order_to_sell": "Market order para ibenta",
   "market_order_to_buy": "Market order na bilhin",
   "market_expired_to_buy": "Nag-expire ang market para bumili",
-  "market_expired_to_sell": "Nag-expire ang merkado upang ibenta"
+  "market_expired_to_sell": "Nag-expire ang merkado upang ibenta",
+  "delegation_from": "Delegasyon mula sa",
+  "delegated_to": "Ibinigay sa",
+  "undelegated_started": "Undelegated na nagsimula",
+  "lowercase_to": "sa",
+  "lowercase_from": "mula sa",
+  "undelegated_completed": "Nakumpleto ang undelegated",
+  "bought": "Binili",
+  "sold": "Nabenta"
 }

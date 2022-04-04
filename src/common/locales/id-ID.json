@@ -1802,5 +1802,13 @@
   "market_order_to_sell": "Pesanan pasar untuk dijual",
   "market_order_to_buy": "Pesanan pasar untuk membeli",
   "market_expired_to_buy": "Pasar kedaluwarsa untuk membeli",
-  "market_expired_to_sell": "Pasar kedaluwarsa untuk dijual"
+  "market_expired_to_sell": "Pasar kedaluwarsa untuk dijual",
+  "delegation_from": "Delegasi dari",
+  "delegated_to": "Didelegasikan ke",
+  "undelegated_started": "Tidak terdelegasi dimulai",
+  "lowercase_to": "ke",
+  "lowercase_from": "dari",
+  "undelegated_completed": "Tidak terdelegasi selesai",
+  "bought": "Dibeli",
+  "sold": "Terjual"
 }

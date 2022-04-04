@@ -1803,5 +1803,13 @@
   "market_order_to_sell": "매도할 시장가 주문",
   "market_order_to_buy": "매수할 시장가 주문",
   "market_expired_to_buy": "시장이 구매 만료됨",
-  "market_expired_to_sell": "판매가 만료된 시장"
+  "market_expired_to_sell": "판매가 만료된 시장",
+  "delegation_from": "위임자",
+  "delegated_to": "위임자",
+  "undelegated_started": "위임되지 않은 시작됨",
+  "lowercase_to": "에게",
+  "lowercase_from": "~에서",
+  "undelegated_completed": "위임되지 않은 완료",
+  "bought": "구입했다",
+  "sold": "판매 된"
 }
