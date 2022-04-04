@@ -9,6 +9,7 @@ import { getAuthenticatedUserName, getIsAuthenticated } from '../authStore/authS
 import { getFollowingList } from '../userStore/userSelectors';
 import { getLocale } from '../settingsStore/settingsSelectors';
 import {
+  getSearchController,
   getSearchFiltersTagCategory,
   getSearchInBox,
   getSearchSort,
@@ -41,14 +42,26 @@ export const REMOVE_BENEFICIARIES_USERS = createAsyncActionType(
 );
 export const CLEAR_BENEFICIARIES_USERS = createAsyncActionType('@search/CLEAR_BENEFICIARIES_USERS');
 
-export const searchAutoComplete = (search, userLimit, wobjectsLimi, objectTypesLimit) => (
-  dispatch,
-  getState,
-) => {
+export const searchAutoComplete = (
+  search,
+  userLimit,
+  wobjectsLimi,
+  objectTypesLimit,
+  withController,
+) => (dispatch, getState) => {
   const state = getState();
   const searchString = replacer(search);
   const user = getAuthenticatedUserName(state);
   const locale = getLocale(state);
+
+  let abortController = null;
+
+  if (withController) {
+    const controller = getSearchController(state);
+
+    if (controller) controller.abort();
+    abortController = new AbortController();
+  }
 
   if (searchString) {
     dispatch({
@@ -61,6 +74,7 @@ export const searchAutoComplete = (search, userLimit, wobjectsLimi, objectTypesL
           objectTypesLimit,
           user,
           locale,
+          abortController,
         ).then(result => ({
           result,
           search: searchString,
@@ -68,6 +82,7 @@ export const searchAutoComplete = (search, userLimit, wobjectsLimi, objectTypesL
       },
       meta: {
         followingUsersList: getFollowingList(state),
+        controller: abortController,
       },
     });
   }
