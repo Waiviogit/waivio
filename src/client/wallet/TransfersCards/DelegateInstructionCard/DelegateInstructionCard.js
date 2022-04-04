@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { FormattedMessage } from 'react-intl';
 import { Icon } from 'antd';
 import CardsTimeStamp from '../CardsTimeStamp';
 
@@ -12,7 +13,9 @@ const DelegateInstructionCard = props => (
     </div>
     <div className="UserWalletTransactions__content">
       <div>
-        <span>Deposit instruction</span>
+        <span>
+          <FormattedMessage id="deposit_instruction" defaultMessage="Deposit instruction" />
+        </span>
         {props.pair && (
           <div>
             <b>Pair:</b> {props.pair}

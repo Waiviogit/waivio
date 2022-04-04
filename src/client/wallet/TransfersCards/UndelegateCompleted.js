@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { FormattedMessage } from 'react-intl';
 import TransactionCardContainer from './TransactionCardContainer';
 
 const UndelegateCompleted = ({ timestamp, symbol, quantity }) => (
@@ -10,7 +11,9 @@ const UndelegateCompleted = ({ timestamp, symbol, quantity }) => (
     quantity={quantity}
     color={'green'}
   >
-    <span>Undelegated completed</span>{' '}
+    <span>
+      <FormattedMessage id="undelegated_completed" defaultMessage="Undelegated completed" />
+    </span>{' '}
   </TransactionCardContainer>
 );
 
