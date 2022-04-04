@@ -2,7 +2,7 @@ const OFF = 0;
 const ERROR = 2;
 
 module.exports = {
-  parser: 'babel-eslint',
+  parser: '@babel/eslint-parser',
   parserOptions: {
     ecmaVersion: 7,
     sourceType: 'module',

@@ -6,8 +6,8 @@ const StartServerPlugin = require('start-server-webpack-plugin');
 const paths = require('../scripts/paths');
 const { MATCH_JS, MATCH_CSS_LESS, DEFINE_PLUGIN } = require('./configUtils');
 const SpeedMeasurePlugin = require('speed-measure-webpack-plugin');
-const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
 const Uglifyjs = require('uglifyjs-webpack-plugin');
+const NodePolyfillPlugin = require('node-polyfill-webpack-plugin');
 
 module.exports = function createConfig(env = 'dev') {
   const IS_DEV = env === 'dev';
@@ -39,9 +39,17 @@ module.exports = function createConfig(env = 'dev') {
           use: {
             loader: 'babel-loader',
             options: {
-              presets: ['env', 'react', 'stage-2'],
-              plugins: ['transform-decorators-legacy', 'transform-runtime', 'dynamic-import-node'],
-              cacheDirectory: true,
+              presets: ['@babel/preset-env', '@babel/preset-react'],
+              plugins: [
+                [
+                  '@babel/plugin-proposal-decorators',
+                  {
+                    legacy: true,
+                  },
+                ],
+                '@babel/plugin-proposal-class-properties',
+                '@babel/plugin-transform-runtime',
+              ],
             },
           },
         },
@@ -73,11 +81,11 @@ module.exports = function createConfig(env = 'dev') {
     config.plugins = [
       ...config.plugins,
       new webpack.HotModuleReplacementPlugin(),
-      new webpack.WatchIgnorePlugin([paths.assets]),
-      new HardSourceWebpackPlugin(),
+      new webpack.WatchIgnorePlugin({ paths: [paths.assets] }),
       new StartServerPlugin({
         name: 'server.js',
       }),
+      new NodePolyfillPlugin(),
       new Uglifyjs({
         cache: true,
         parallel: 4,
@@ -86,6 +94,13 @@ module.exports = function createConfig(env = 'dev') {
     config.resolve = {
       alias: {
         'react-dom': '@hot-loader/react-dom',
+      },
+      fallback: {
+        crypto: false,
+        stream: false,
+        url: false,
+        timers: false,
+        assert: false,
       },
     };
   }

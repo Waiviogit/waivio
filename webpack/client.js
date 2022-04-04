@@ -6,7 +6,6 @@ const WebpackBar = require('webpackbar');
 const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
 const paths = require('../scripts/paths');
 const SpeedMeasurePlugin = require('speed-measure-webpack-plugin');
-const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
 
 const {
   CONTENT_PORT,
@@ -16,6 +15,7 @@ const {
   DEFINE_PLUGIN,
   POSTCSS_LOADER,
 } = require('./configUtils');
+const NodePolyfillPlugin = require('node-polyfill-webpack-plugin');
 
 module.exports = function createConfig(env = 'dev') {
   const IS_DEV = env === 'dev';
@@ -56,9 +56,12 @@ module.exports = function createConfig(env = 'dev') {
           loader: 'url-loader',
         },
         {
-          test: /\.(png|jpg|gif)$/,
-          loader: 'file-loader',
-          options: {},
+          test: /\.(png|jpe?g|gif)$/i,
+          use: [
+            {
+              loader: 'file-loader',
+            },
+          ],
         },
         {
           test: MATCH_CSS_LESS,
@@ -68,14 +71,16 @@ module.exports = function createConfig(env = 'dev') {
               loader: 'css-loader',
               options: {
                 importLoaders: 1,
-                minimize: !IS_DEV,
+                // minimize: !IS_DEV,
               },
             },
-            POSTCSS_LOADER,
+            // POSTCSS_LOADER,
             {
               loader: 'less-loader',
               options: {
-                javascriptEnabled: true,
+                lessOptions: {
+                  javascriptEnabled: true,
+                },
               },
             },
           ],
@@ -88,8 +93,8 @@ module.exports = function createConfig(env = 'dev') {
     config.entry = ['webpack-dev-server/client', 'webpack/hot/dev-server', ...config.entry];
     config.plugins = [
       ...config.plugins,
+      new NodePolyfillPlugin(),
       new webpack.HotModuleReplacementPlugin(),
-      new HardSourceWebpackPlugin(),
     ];
     config.optimization = {
       minimize: false,
@@ -97,6 +102,13 @@ module.exports = function createConfig(env = 'dev') {
     config.resolve = {
       alias: {
         'react-dom': '@hot-loader/react-dom',
+      },
+      fallback: {
+        crypto: false,
+        stream: false,
+        url: false,
+        timers: false,
+        assert: false,
       },
     };
   }
@@ -106,6 +118,7 @@ module.exports = function createConfig(env = 'dev') {
       ...config.plugins,
       new webpack.optimize.AggressiveMergingPlugin(),
       new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
+      new NodePolyfillPlugin(),
       new LodashModuleReplacementPlugin({
         collections: true,
         paths: true,

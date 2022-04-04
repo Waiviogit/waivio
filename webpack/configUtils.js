@@ -1,7 +1,7 @@
 const webpack = require('webpack');
-const autoprefixer = require('autoprefixer');
 const paths = require('../scripts/paths');
 const dotenv = require('dotenv');
+
 dotenv.config({ path: `./env/${process.env.NODE_ENV}.env` });
 
 const IS_DEV = process.env.NODE_ENV === 'development';
@@ -29,12 +29,10 @@ const MATCH_FONTS = /\.(eot|ttf|woff|woff2|svg)(\?.+)?$/;
 const POSTCSS_LOADER = {
   loader: 'postcss-loader',
   options: {
-    ident: 'postcss',
-    plugins: () => [
-      autoprefixer({
-        browsers: ['>1%', 'last 4 versions', 'Firefox ESR', 'not ie < 9'],
-      }),
-    ],
+    postcssOptions: {
+      parser: "postcss-js",
+      plugins: ['postcss-preset-env', 'autoprefixer']
+    },
   },
 };
 
