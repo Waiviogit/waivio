@@ -164,7 +164,7 @@ class Notifications extends React.Component {
                     values={{
                       username: <span className="username">{notification.author}</span>,
                     }}
-                    url={`/@${currentAuthUsername}/${notification.parent_permlink}/#@${notification.author}/${notification.permlink}`}
+                    url={`/@${notification.author}/${notification.permlink}`}
                     key={key}
                     notification={notification}
                     currentAuthUsername={currentAuthUsername}
