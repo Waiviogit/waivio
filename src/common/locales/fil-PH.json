@@ -1811,5 +1811,14 @@
   "lowercase_from": "mula sa",
   "undelegated_completed": "Nakumpleto ang undelegated",
   "bought": "Binili",
-  "sold": "Nabenta"
+  "sold": "Nabenta",
+  "cancel_order_to_sell": "Kanselahin ang order para ibenta",
+  "cancel_order_to_buy": "Kanselahin ang order para bumili",
+  "canceled_power_down": "Kinansela ang power down",
+  "curator_rewards": "Mga gantimpala ng tagapangasiwa",
+  "post": "post",
+  "comment_lowercase": "komento",
+  "mining_rewards": "Mga gantimpala sa pagmimina",
+  "deposit_instruction": "Pagtuturo sa deposito",
+  "swap": "Magpalit"
 }

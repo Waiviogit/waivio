@@ -1810,5 +1810,14 @@
   "lowercase_from": "von",
   "undelegated_completed": "Undelegiert abgeschlossen",
   "bought": "Gekauft",
-  "sold": "Verkauft"
+  "sold": "Verkauft",
+  "cancel_order_to_sell": "Verkaufsauftrag stornieren",
+  "cancel_order_to_buy": "Kaufauftrag stornieren",
+  "canceled_power_down": "Ausschalten abgebrochen",
+  "curator_rewards": "Belohnungen für Kuratoren",
+  "post": "post",
+  "comment_lowercase": "kommentar",
+  "mining_rewards": "Mining-Belohnungen",
+  "deposit_instruction": "Einzahlungsanweisung",
+  "swap": "Tausch"
 }

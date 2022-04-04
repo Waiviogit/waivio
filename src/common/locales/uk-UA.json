@@ -1702,7 +1702,7 @@
   "Withdrawals": "Зняття коштів",
   "account_creation": "Створення облікового запису",
   "totals_calculated": "Підсумки можна обчислити лише для певного періоду від-до",
-  "power_down_started": "Розпочати power down",
+  "power_down_started": "Розпочати зменшення сили",
   "power_down_stopped": "Зупинено power down",
   "power_down_withdraw": "Поступове зняття",
   "power_down_withdraw_to": "Поступове зняття для {to}",
@@ -1812,5 +1812,14 @@
   "lowercase_from": "від",
   "undelegated_completed": "Повернення делегації завершено",
   "bought": "Придбано",
-  "sold": "Продано"
+  "sold": "Продано",
+  "cancel_order_to_sell": "Скасувати ордер на продаж",
+  "cancel_order_to_buy": "Скасувати ордер на покупку",
+  "canceled_power_down": "Скасовано збільшення сили",
+  "curator_rewards": "Нагороди куратора",
+  "post": "пост",
+  "comment_lowercase": "коментар",
+  "mining_rewards": "Нагороди за майнинг",
+  "deposit_instruction": "Інструкція по внесенню депозиту",
+  "swap": "Обмін"
 }

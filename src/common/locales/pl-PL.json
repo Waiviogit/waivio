@@ -1810,5 +1810,14 @@
   "lowercase_from": "od",
   "undelegated_completed": "Niedelegowane ukończone",
   "bought": "Kupił",
-  "sold": "Sprzedany"
+  "sold": "Sprzedany",
+  "cancel_order_to_sell": "Anuluj zamówienie na sprzedaż",
+  "cancel_order_to_buy": "Anuluj zamówienie, aby kupić",
+  "canceled_power_down": "Anulowano wyłączenie zasilania",
+  "curator_rewards": "Nagrody kuratorskie",
+  "post": "poczta",
+  "comment_lowercase": "komentarz",
+  "mining_rewards": "Nagrody górnicze",
+  "deposit_instruction": "Instrukcja wpłaty",
+  "swap": "Zamiana"
 }

@@ -1810,5 +1810,13 @@
   "lowercase_from": "从",
   "undelegated_completed": "未授权完成",
   "bought": "买",
-  "sold": "卖"
+  "sold": "卖",
+  "cancel_order_to_sell": "取消订单出售",
+  "cancel_order_to_buy": "取消订单购买",
+  "canceled_power_down": "取消掉电",
+  "curator_rewards": "策展人奖励",
+  "post": "邮政",
+  "comment_lowercase": "评论",
+  "mining_rewards": "挖矿奖励",
+  "deposit_instruction": "存款指示"
 }

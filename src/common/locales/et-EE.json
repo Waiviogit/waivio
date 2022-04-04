@@ -1811,5 +1811,14 @@
   "lowercase_from": "desde",
   "undelegated_completed": "No delegado completado",
   "bought": "Compró",
-  "sold": "Vendido"
+  "sold": "Vendido",
+  "cancel_order_to_sell": "Tühista müügitellimus",
+  "cancel_order_to_buy": "Tühista ostutellimus",
+  "canceled_power_down": "Toite väljalülitamine tühistati",
+  "curator_rewards": "Kuraatori preemiad",
+  "post": "postitus",
+  "comment_lowercase": "kommenteerida",
+  "mining_rewards": "Kaevandamise preemiad",
+  "deposit_instruction": "Hoiustamisjuhend",
+  "swap": "Vahetada"
 }
