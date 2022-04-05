@@ -5,8 +5,15 @@ import Avatar from '../../components/Avatar';
 import CardsTimeStamp from './CardsTimeStamp';
 import '../UserWalletTransactions/UserWalletTransactions.less';
 
-const SetWithdrawVestingRoute = ({ percent, from, to, timestamp, isGuestPage }) => {
-  const isReceive = from;
+const SetWithdrawVestingRoute = ({
+  percent,
+  currentUsername,
+  from,
+  to,
+  timestamp,
+  isGuestPage,
+}) => {
+  const isReceive = currentUsername === from;
   const countedPercent = percent / 100;
   const link = isReceive ? to : from;
 
@@ -22,9 +29,9 @@ const SetWithdrawVestingRoute = ({ percent, from, to, timestamp, isGuestPage }) 
             defaultMessage="Withdraw vesting route is set"
           />{' '}
           {isReceive ? (
-            <FormattedMessage id="lowercase_from" defaultMessage="from" />
-          ) : (
             <FormattedMessage id="lowercase_to" defaultMessage="to" />
+          ) : (
+            <FormattedMessage id="lowercase_from" defaultMessage="from" />
           )}
           <span className="UserWalletTransactions__delegated">
             <a className="UserWalletTransactions__delegated-color" href={`/@${link}`}>
@@ -50,9 +57,11 @@ SetWithdrawVestingRoute.propTypes = {
   timestamp: PropTypes.string,
   isGuestPage: PropTypes.bool,
   percent: PropTypes.string,
+  currentUsername: PropTypes.string,
 };
 
 SetWithdrawVestingRoute.defaultProps = {
+  currentUsername: '',
   from: '',
   to: '',
   timestamp: '',
