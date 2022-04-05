@@ -183,7 +183,11 @@ const ObjectOfTypePage = props => {
                       <React.Fragment>
                         <BodyContainer full body={content} />
                         <div className="object-page-preview__options">
-                          <LikeSection form={form} onVotePercentChange={handleVotePercentChange} />
+                          <LikeSection
+                            form={form}
+                            onVotePercentChange={handleVotePercentChange}
+                            selectedType={wobject}
+                          />
                           {followingList.includes(wobject.author_permlink) ? null : (
                             <FollowObjectForm form={form} />
                           )}
