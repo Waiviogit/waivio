@@ -382,6 +382,7 @@ class CreateObject extends React.Component {
               form={form}
               onVotePercentChange={this.handleVotePercentChange}
               disabled={loading}
+              selectedType={this.props.objectTypes[form.getFieldValue('type')]}
             />
             <FollowObjectForm form={form} loading={loading} />
             <Form.Item className="Editor__bottom__submit">

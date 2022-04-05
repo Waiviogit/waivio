@@ -1812,5 +1812,14 @@
   "lowercase_from": "tól től",
   "undelegated_completed": "A visszavonás befejeződött",
   "bought": "Vásárolt",
-  "sold": "Eladott"
+  "sold": "Eladott",
+  "cancel_order_to_sell": "Törölje az eladási rendelést",
+  "cancel_order_to_buy": "Törölje a vásárlási rendelést",
+  "canceled_power_down": "Kikapcsolás megszakítva",
+  "curator_rewards": "Kurátori jutalmak",
+  "post": "hozzászólás",
+  "comment_lowercase": "megjegyzés",
+  "mining_rewards": "Bányászati jutalmak",
+  "deposit_instruction": "Befizetési utasítás",
+  "swap": "Csere"
 }

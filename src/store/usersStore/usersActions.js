@@ -1,5 +1,4 @@
 import { message } from 'antd';
-import { get } from 'lodash';
 
 import { createAsyncActionType } from '../../common/helpers/stateHelpers';
 import * as ApiClient from '../../waivioApi/ApiClient';
@@ -11,7 +10,7 @@ import {
   getIsAuthenticated,
   isGuestUser,
 } from '../authStore/authSelectors';
-import { dHive, getLastBlockNum } from '../../client/vendor/steemitHelpers';
+import { calculateMana, dHive, getLastBlockNum } from '../../client/vendor/steemitHelpers';
 import { guestUserRegex } from '../../common/helpers/regexHelpers';
 
 export const GET_ACCOUNT = createAsyncActionType('@users/GET_ACCOUNT');
@@ -31,13 +30,12 @@ export const getUserAccount = name => (dispatch, getState) => {
         const voting_mana = await dHive.rc.calculateVPMana(res);
         const waivVotingMana = await ApiClient.getWaivVoteMana(name);
         const userVoteValue = await ApiClient.getUserVoteValueInfo(name);
+        const waivPowerMana = calculateMana(waivVotingMana);
 
         data.rc_percentage = rc.percentage * 0.01;
         data.voting_mana = voting_mana.percentage * 0.01;
-        data.waivVotingPower = waivVotingMana ? get(waivVotingMana, 'votingPower', 0) * 0.01 : 100;
-        data.waivDownvotingPower = waivVotingMana
-          ? get(waivVotingMana, 'downvotingPower', 0) * 0.01
-          : 100;
+        data.waivVotingPower = waivVotingMana ? waivPowerMana.votingPower : 100;
+        data.waivDownvotingPower = waivVotingMana ? waivPowerMana.downvotingPower : 100;
         data.waivVotingPowerPrice = userVoteValue.estimatedWAIV;
         data.hiveVotingPowerPrice = userVoteValue.estimatedHIVE;
         data.totalVotingPowerPrice = userVoteValue.estimatedHIVE + userVoteValue.estimatedWAIV;

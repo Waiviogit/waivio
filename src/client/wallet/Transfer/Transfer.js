@@ -203,7 +203,7 @@ export default class Transfer extends React.Component {
     this.props.form.setFieldsValue({
       memo: sendTo ? `${title} - https://www.waivio.com/@${sendTo}/${permlink}` : null,
     });
-    this.props.getUserTokensBalanceList(this.props.match.params.name);
+    this.props.getUserTokensBalanceList(this.props.user.name);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -594,9 +594,15 @@ export default class Transfer extends React.Component {
         });
 
     if (!isEmpty(this.props.tokensList)) {
-      const waivBalance = this.props.tokensList.find(item => item.symbol === 'WAIV');
+      userBalances = uniqWith([...userBalances, ...this.props.tokensList], 'symbol').sort(
+        (a, b) => {
+          if (a.symbol === 'WAIV') return -1;
+          if (b.symbol === 'WAIV') return 1;
+          if (!b.balance || !a.balance) return a.symbol > b.symbol ? 1 : -1;
 
-      userBalances = uniqWith([waivBalance, ...userBalances, ...this.props.tokensList], 'symbol');
+          return b.balance - a.balance;
+        },
+      );
     }
 
     return (isGuest && (this.props.to || hiveBeneficiaryAccount)) || !isGuest ? (

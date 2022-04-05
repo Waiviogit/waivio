@@ -42,7 +42,6 @@ const Wallets = props => {
     props.getCryptoPriceHistory();
     props.getGlobalProperties();
     props.getUserTokensBalanceList(props.match.params.name);
-    props.getCurrUserTokensBalanceList(props.match.params.name);
     props.getCurrUserTokensBalanceSwap(props.match.params.name);
 
     return () => props.resetHiveEngineTokenBalance();
@@ -101,7 +100,6 @@ Wallets.propTypes = {
   visibleSwap: PropTypes.bool.isRequired,
   visibleWithdraw: PropTypes.bool.isRequired,
   visibleDelegate: PropTypes.bool.isRequired,
-  getCurrUserTokensBalanceList: PropTypes.func.isRequired,
   getUserTokensBalanceList: PropTypes.func.isRequired,
   resetHiveEngineTokenBalance: PropTypes.func.isRequired,
   getCurrUserTokensBalanceSwap: PropTypes.func.isRequired,

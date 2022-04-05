@@ -216,6 +216,7 @@ class AddItemModal extends Component {
                 form={form}
                 onVotePercentChange={this.handleVotePercentChange}
                 disabled={isLoading}
+                selectedType={selectedItem}
               />
 
               {followingList.includes(wobject.author_permlink) ? null : (

@@ -1811,5 +1811,14 @@
   "lowercase_from": "من",
   "undelegated_completed": "اكتمل غير التفويض",
   "bought": "مشترى",
-  "sold": "مباع"
+  "sold": "مباع",
+  "cancel_order_to_sell": "إلغاء أمر البيع",
+  "cancel_order_to_buy": "إلغاء الطلب للشراء",
+  "canceled_power_down": "إلغاء الطاقة",
+  "curator_rewards": "مكافآت أمين المعرض",
+  "post": "بريد",
+  "comment_lowercase": "تعليق",
+  "mining_rewards": "مكافآت التعدين",
+  "deposit_instruction": "تعليمات الإيداع",
+  "swap": "مبادلة، مقايضة"
 }

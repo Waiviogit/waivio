@@ -1811,5 +1811,14 @@
   "lowercase_from": "~에서",
   "undelegated_completed": "위임되지 않은 완료",
   "bought": "구입했다",
-  "sold": "판매 된"
+  "sold": "판매 된",
+  "cancel_order_to_sell": "판매 주문 취소",
+  "cancel_order_to_buy": "구매 주문 취소",
+  "canceled_power_down": "취소된 전원 끄기",
+  "curator_rewards": "큐레이터 보상",
+  "post": "게시하다",
+  "comment_lowercase": "논평",
+  "mining_rewards": "채굴 보상",
+  "deposit_instruction": "입금 안내",
+  "swap": "교환"
 }

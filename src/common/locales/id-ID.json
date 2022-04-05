@@ -1810,5 +1810,14 @@
   "lowercase_from": "dari",
   "undelegated_completed": "Tidak terdelegasi selesai",
   "bought": "Dibeli",
-  "sold": "Terjual"
+  "sold": "Terjual",
+  "cancel_order_to_sell": "Batalkan pesanan untuk menjual",
+  "cancel_order_to_buy": "Batalkan pesanan untuk membeli",
+  "canceled_power_down": "Pembatalan daya mati",
+  "curator_rewards": "Penghargaan kurator",
+  "post": "pos",
+  "comment_lowercase": "komentar",
+  "mining_rewards": "Hadiah penambangan",
+  "deposit_instruction": "Instruksi setoran",
+  "swap": "Menukar"
 }
