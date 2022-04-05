@@ -1810,5 +1810,14 @@
   "lowercase_from": "z",
   "undelegated_completed": "Nedelegováno dokončeno",
   "bought": "Koupeno",
-  "sold": "Prodáno"
+  "sold": "Prodáno",
+  "cancel_order_to_sell": "Zrušit objednávku pro prodej",
+  "cancel_order_to_buy": "Pro nákup zrušte objednávku",
+  "canceled_power_down": "Zrušeno vypnutí",
+  "curator_rewards": "Odměny kurátorů",
+  "post": "pošta",
+  "comment_lowercase": "komentář",
+  "mining_rewards": "Odměny za těžbu",
+  "deposit_instruction": "Pokyn k vkladu",
+  "swap": "Vyměňte"
 }

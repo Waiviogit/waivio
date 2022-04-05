@@ -1811,5 +1811,14 @@
     "lowercase_from": "fra",
     "undelegated_completed": "Ikke-delegeret gennemført",
     "bought": "Købt",
-    "sold": "Solgt"
+    "sold": "Solgt",
+    "cancel_order_to_sell": "Annuller ordre for at sælge",
+    "cancel_order_to_buy": "Annuller ordre for at købe",
+    "canceled_power_down": "Afbrudt strømafbrydelse",
+    "curator_rewards": "Kurator belønninger",
+    "post": "stolpe",
+    "comment_lowercase": "kommentar",
+    "mining_rewards": "Minebelønninger",
+    "deposit_instruction": "Indbetalingsinstruktion",
+    "swap": "Bytte rundt"
   }

@@ -1812,5 +1812,14 @@
   "lowercase_from": "van",
   "undelegated_completed": "Ongedelegeer voltooi",
   "bought": "Gekoop",
-  "sold": "Verkoop"
+  "sold": "Verkoop",
+  "cancel_order_to_sell": "Kanselleer bestelling om te verkoop",
+  "cancel_order_to_buy": "Kanselleer bestelling om te koop",
+  "canceled_power_down": "Krag af gekanselleer",
+  "curator_rewards": "Kuratorbelonings",
+  "post": "post",
+  "comment_lowercase": "kommentaar lewer",
+  "mining_rewards": "Mynbou belonings",
+  "deposit_instruction": "Deposito-instruksie",
+  "swap": "Ruil"
 }

@@ -1810,5 +1810,14 @@
   "lowercase_from": "से",
   "undelegated_completed": "गैर प्रत्यायोजित पूर्ण",
   "bought": "खरीदा",
-  "sold": "बेचा"
+  "sold": "बेचा",
+  "cancel_order_to_sell": "बेचने का आदेश रद्द करें",
+  "cancel_order_to_buy": "खरीदने के लिए ऑर्डर रद्द करें",
+  "canceled_power_down": "रद्द की गई बिजली",
+  "curator_rewards": "क्यूरेटर पुरस्कार",
+  "post": "पद",
+  "comment_lowercase": "टिप्पणी",
+  "mining_rewards": "खनन पुरस्कार",
+  "deposit_instruction": "जमा निर्देश",
+  "swap": "विनिमय"
 }

@@ -1809,5 +1809,14 @@
   "lowercase_from": "daripada",
   "undelegated_completed": "Tidak diwakilkan selesai",
   "bought": "Dibeli",
-  "sold": "Terjual"
+  "sold": "Terjual",
+  "cancel_order_to_sell": "Batalkan pesanan untuk dijual",
+  "cancel_order_to_buy": "Batalkan pesanan untuk membeli",
+  "canceled_power_down": "Dibatalkan kuasa mati",
+  "curator_rewards": "Ganjaran kurator",
+  "post": "jawatan",
+  "comment_lowercase": "komen",
+  "mining_rewards": "Ganjaran perlombongan",
+  "deposit_instruction": "Arahan deposit",
+  "swap": "Tukar"
 }
