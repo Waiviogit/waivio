@@ -7,7 +7,6 @@ import Wallet from '../user/UserWallet';
 import Transfer from './Transfer/Transfer';
 import WAIVwallet from './WAIVwallet/WAIVwallet';
 import {
-  getCurrUserTokensBalanceList,
   getCurrUserTokensBalanceSwap,
   getGlobalProperties,
   getTokenBalance,
@@ -134,7 +133,6 @@ export default connect(
     getCryptoPriceHistory,
     getTokenBalance,
     getGlobalProperties,
-    getCurrUserTokensBalanceList,
     resetHiveEngineTokenBalance,
     getCurrUserTokensBalanceSwap,
     getUserTokensBalanceList,

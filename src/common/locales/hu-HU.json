@@ -1798,5 +1798,19 @@
   "available_voting_power": "A küldöttségek rendelkezésére álló szavazati jog",
   "liquid_hive_tokens": "Folyékony HIVE tokenek",
   "staked_hive_tokens": "Tétezett HIVE tokenek",
-  "a_stable_coin_pegged_to_usd": "Egy stabil érme USD-hez kötött"
+  "a_stable_coin_pegged_to_usd": "Egy stabil érme USD-hez kötött",
+  "limit_order_to_buy": "Limit order vásárlás",
+  "limit_order_to_sell": "Limit eladási megbízás",
+  "market_order_to_sell": "Piaci eladási megbízás",
+  "market_order_to_buy": "Piaci vásárlási rendelés",
+  "market_expired_to_buy": "A piac lejárt a vásárlásra",
+  "market_expired_to_sell": "A piac lejárt az eladásra",
+  "delegation_from": "Delegáció innen",
+  "delegated_to": "Delegált",
+  "undelegated_started": "Megkezdődött az Undelegated",
+  "lowercase_to": "nak nek",
+  "lowercase_from": "tól től",
+  "undelegated_completed": "A visszavonás befejeződött",
+  "bought": "Vásárolt",
+  "sold": "Eladott"
 }

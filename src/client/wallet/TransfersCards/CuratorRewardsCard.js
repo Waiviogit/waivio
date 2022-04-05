@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { FormattedMessage } from 'react-intl';
 import TransactionCardContainer from './TransactionCardContainer';
 
 const CuratorRewardsCard = props => (
@@ -18,7 +19,7 @@ const CuratorRewardsCard = props => (
         {props.description}{' '}
         {props.authorperm && (
           <a href={`/${props.authorperm}`}>
-            (<b>{props.type || 'post'}</b>)
+            (<b>{props.type || <FormattedMessage id="post" defaultMessage="post" />}</b>)
           </a>
         )}
       </span>

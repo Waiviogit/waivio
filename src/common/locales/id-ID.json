@@ -1796,5 +1796,19 @@
   "available_voting_power": "Kekuatan suara yang tersedia untuk delegasi",
   "liquid_hive_tokens": "Token HIVE cair",
   "staked_hive_tokens": "Token HIVE yang dipertaruhkan",
-  "a_stable_coin_pegged_to_usd": "Koin stabil dipatok ke USD"
+  "a_stable_coin_pegged_to_usd": "Koin stabil dipatok ke USD",
+  "limit_order_to_buy": "Batasi pesanan untuk membeli",
+  "limit_order_to_sell": "Batasi pesanan untuk dijual",
+  "market_order_to_sell": "Pesanan pasar untuk dijual",
+  "market_order_to_buy": "Pesanan pasar untuk membeli",
+  "market_expired_to_buy": "Pasar kedaluwarsa untuk membeli",
+  "market_expired_to_sell": "Pasar kedaluwarsa untuk dijual",
+  "delegation_from": "Delegasi dari",
+  "delegated_to": "Didelegasikan ke",
+  "undelegated_started": "Tidak terdelegasi dimulai",
+  "lowercase_to": "ke",
+  "lowercase_from": "dari",
+  "undelegated_completed": "Tidak terdelegasi selesai",
+  "bought": "Dibeli",
+  "sold": "Terjual"
 }

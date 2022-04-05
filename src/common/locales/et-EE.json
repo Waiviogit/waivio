@@ -1797,5 +1797,19 @@
   "available_voting_power": "Delegatsioonidele saadaolev hääleõigus",
   "liquid_hive_tokens": "Vedelad HIVE märgid",
   "staked_hive_tokens": "Panustatud HIVE märgid",
-  "a_stable_coin_pegged_to_usd": "USA dollariga seotud stabiilne münt"
+  "a_stable_coin_pegged_to_usd": "USA dollariga seotud stabiilne münt",
+  "limit_order_to_buy": "Piiratud ostutellimus",
+  "limit_order_to_sell": "Piiratud müügitellimus",
+  "market_order_to_sell": "Turutellimus müüa",
+  "market_order_to_buy": "Turutellimus osta",
+  "market_expired_to_buy": "Turg on ostmiseks aegunud",
+  "market_expired_to_sell": "Turg müümiseks aegunud",
+  "delegation_from": "Delegación de",
+  "delegated_to": "Delegado a",
+  "undelegated_started": "Comenzó sin delegar",
+  "lowercase_to": "para",
+  "lowercase_from": "desde",
+  "undelegated_completed": "No delegado completado",
+  "bought": "Compró",
+  "sold": "Vendido"
 }

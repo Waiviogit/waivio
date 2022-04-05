@@ -1798,5 +1798,19 @@
   "available_voting_power": "Доступні права голосу для делегацій",
   "liquid_hive_tokens": "Ликвидні токени HIVE",
   "staked_hive_tokens": "Стейкнуті токени HIVE",
-  "a_stable_coin_pegged_to_usd": "Стабільна монета, прив’язана до долара США"
+  "a_stable_coin_pegged_to_usd": "Стабільна монета, прив’язана до долара США",
+  "limit_order_to_buy": "Лімітний ордер на покупку",
+  "limit_order_to_sell": "Лімітний ордер на продаж",
+  "market_order_to_sell": "Ринковий ордер на продаж",
+  "market_order_to_buy": "Ринковий ордер на покупку",
+  "market_expired_to_buy": "Термін дії ринкового ордеру закінчився для покупки",
+  "market_expired_to_sell": "Термін дії ринкового ордеру закінчився для продажу",
+  "delegation_from": "Делегація від",
+  "delegated_to": "Делеговано до",
+  "undelegated_started": "Повернення делегації розпочато",
+  "lowercase_to": "до",
+  "lowercase_from": "від",
+  "undelegated_completed": "Повернення делегації завершено",
+  "bought": "Придбано",
+  "sold": "Продано"
 }

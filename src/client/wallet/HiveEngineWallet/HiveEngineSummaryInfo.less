@@ -1,0 +1,18 @@
+@import (reference) '../../styles/custom.less';
+@import (reference) '../../styles/modules/variables.less';
+
+.HiveEngineSummaryInfo {
+  &__hive-engine-blockchain-status {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 7px;
+
+    &--green {
+      color: @green;
+    }
+
+    &--red {
+      color: @red;
+    }
+  }
+}

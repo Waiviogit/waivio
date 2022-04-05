@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { FormattedNumber } from 'react-intl';
+import { FormattedMessage, FormattedNumber } from 'react-intl';
 import classNames from 'classnames';
 import { Icon } from 'antd';
 import './TokenBoughtCard.less';
@@ -19,7 +19,6 @@ const TokenActionInMarketCard = ({
   fractionDigits,
 }) => {
   const recipient = from || to;
-  const sent = from ? ' from ' : ' to ';
   const color = action === 'Bought' ? 'green' : 'red';
   const hiveColor = action === 'Bought' ? 'red' : 'green';
   const point = color === 'green' ? '+' : '-';
@@ -47,10 +46,19 @@ const TokenActionInMarketCard = ({
       <div className="UserWalletTransactions__content">
         <div className="UserWalletTransactions__content-recipient">
           <p>
-            {action}
+            {action === 'Bought' ? (
+              <FormattedMessage id="bought" defaultMessage="Bought" />
+            ) : (
+              <FormattedMessage id="sold" defaultMessage="Sold" />
+            )}
             {recipient && (
               <span>
-                {sent}
+                {' '}
+                {from ? (
+                  <FormattedMessage id="lowercase_from" defaultMessage="from " />
+                ) : (
+                  <FormattedMessage id="lowercase_to" defaultMessage="to" />
+                )}{' '}
                 <a href={`/@${recipient}`} className="TokenBoughtCard__userName">
                   {recipient}
                 </a>

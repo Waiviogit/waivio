@@ -1797,5 +1797,19 @@
   "available_voting_power": "Dostupna moć glasa za delegacije",
   "liquid_hive_tokens": "Tekući HIVE tokeni",
   "staked_hive_tokens": "Uloženi tokeni HIVE",
-  "a_stable_coin_pegged_to_usd": "Stabilan novčić vezan za USD"
+  "a_stable_coin_pegged_to_usd": "Stabilan novčić vezan za USD",
+  "limit_order_to_buy": "Ograničite narudžbu za kupnju",
+  "limit_order_to_sell": "Ograničite narudžbu za prodaju",
+  "market_order_to_sell": "Tržišni nalog za prodaju",
+  "market_order_to_buy": "Tržišni nalog za kupnju",
+  "market_expired_to_buy": "Market je istekao za kupnju",
+  "market_expired_to_sell": "Market je istekao za prodaju",
+  "delegation_from": "Delegacija iz",
+  "delegated_to": "Delegiran na",
+  "undelegated_started": "Pokrenuto bez delegiranja",
+  "lowercase_to": "do",
+  "lowercase_from": "iz",
+  "undelegated_completed": "Poništeno delegiranje dovršeno",
+  "bought": "Kupljen",
+  "sold": "Prodano"
 }

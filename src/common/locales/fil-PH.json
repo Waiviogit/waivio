@@ -1797,5 +1797,19 @@
   "available_voting_power": "Magagamit na kapangyarihan sa pagboto para sa mga delegasyon",
   "liquid_hive_tokens": "Mga token ng HIVE na likido",
   "staked_hive_tokens": "Mga staked HIVE token",
-  "a_stable_coin_pegged_to_usd": "Isang stable na coin na naka-peg sa USD"
+  "a_stable_coin_pegged_to_usd": "Isang stable na coin na naka-peg sa USD",
+  "limit_order_to_buy": "Limitahan ang order na bilhin",
+  "limit_order_to_sell": "Limitahan ang order na ibenta",
+  "market_order_to_sell": "Market order para ibenta",
+  "market_order_to_buy": "Market order na bilhin",
+  "market_expired_to_buy": "Nag-expire ang market para bumili",
+  "market_expired_to_sell": "Nag-expire ang merkado upang ibenta",
+  "delegation_from": "Delegasyon mula sa",
+  "delegated_to": "Ibinigay sa",
+  "undelegated_started": "Undelegated na nagsimula",
+  "lowercase_to": "sa",
+  "lowercase_from": "mula sa",
+  "undelegated_completed": "Nakumpleto ang undelegated",
+  "bought": "Binili",
+  "sold": "Nabenta"
 }

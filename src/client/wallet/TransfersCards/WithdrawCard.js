@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { FormattedMessage } from 'react-intl';
 import TransactionCardContainer from './TransactionCardContainer';
 
 const WithdawCard = props => (
@@ -11,7 +12,10 @@ const WithdawCard = props => (
     color={'red'}
     fractionDigits={5}
   >
-    <div>Withdraw</div>
+    <div>
+      {' '}
+      <FormattedMessage id="withdraw" defaultMessage="Withdraw" />
+    </div>
   </TransactionCardContainer>
 );
 
