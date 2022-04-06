@@ -97,6 +97,7 @@ const WalletTransaction = ({
     case accountHistoryConstants.SET_WITHDRAW_VESTING_ROUTE: {
       return (
         <SetWithdrawVestingRoute
+          currentUsername={currentUsername}
           isGuestPage={isGuestPage}
           from={transactionDetails.from}
           to={transactionDetails.to}
