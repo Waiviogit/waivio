@@ -207,7 +207,7 @@ export const getUserProfileBlog = (
         ...headers,
         app: config.appName,
         locale,
-        follower,
+        ...(follower && { follower }),
       },
       method: 'POST',
       body: JSON.stringify({
