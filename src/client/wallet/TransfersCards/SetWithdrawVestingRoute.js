@@ -49,7 +49,7 @@ const SetWithdrawVestingRoute = ({
         </div>
         <CardsTimeStamp timestamp={isGuestPage ? `${timestamp}Z` : timestamp} />
         <div>
-          <span className="UserWalletTransactions__delegated">
+          <span className="UserWalletTransactions__withdraw">
             <FormattedMessage id="percent" defaultMessage="Percent" />:{' '}
           </span>{' '}
           {countedPercent}%
