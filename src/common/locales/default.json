@@ -1788,7 +1788,7 @@
   "match_bots_add_curator": "Add new curator",
   "matchBot_title_edit_rule_curator": "Edit match bot rules for curator",
   "matchBot_curator_btn_add": "Add curator",
-  "matchBot_curator_vote_ratio": "Vote ratio (1%-1000%):",
+  "matchBot_curator_vote_ratio": "Vote ratio (1%-10000%):",
   "matchBot_curator_vote_ratio_msg": "The Curators match bot only publishes votes with estimated value of 0.01 HBD or more.",
   "matchBot_curator_downvotes": "Match downvotes",
   "matchBot_curator_comments": "Match votes on comments",
