@@ -458,15 +458,22 @@ class Notifications extends React.Component {
                   />
                 );
               case notificationConstants.WITHDRAW_ROUTE:
+                const isReceive = currentAuthUsername === notification.from_account;
                 const urlToWithdrawRoute = `/@${notification.to_account}`;
-                const urlFromWithdrawRoute = `/@${notification.from_account}/transfers`;
+                const urlFromWithdrawRoute = isReceive
+                  ? `/@${notification.to_account}/transfers?type=HIVE`
+                  : `/@${notification.from_account}/transfers?type=HIVE`;
 
                 return (
                   <NotificationTemplate
                     username={notification.from_account}
                     url={urlFromWithdrawRoute}
-                    id="withdraw_route"
-                    defaultMessage="{from_account} set withdraw route to {to_account}"
+                    id={!isReceive ? 'withdraw_route_from' : 'withdraw_route_to'}
+                    defaultMessage={
+                      !isReceive
+                        ? `{from_account} set withdraw route to you`
+                        : `You set withdraw route to {to_account}`
+                    }
                     values={{
                       to_account: (
                         <Link to={urlToWithdrawRoute}>
