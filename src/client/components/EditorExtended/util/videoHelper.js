@@ -8,7 +8,9 @@ const THREESPEAK_TV_PREFIX = 'https://3speak.tv/embed?v=';
 const RUMBLE_PREFIX = 'https://rumble.com/embed/';
 const BITCHUTE_PREFIX = 'https://www.bitchute.com/embed/';
 
-export const isYoutube = url => VIDEO_MATCH_URL.YOUTUBE.test(url);
+export const isYoutube = url => url.includes('shorts')
+  ? VIDEO_MATCH_URL.YOUTUBE_SHORTS.test(url)
+  : VIDEO_MATCH_URL.YOUTUBE.test(url);
 
 export const isVimeo = url => VIDEO_MATCH_URL.VIMEO.test(url);
 
@@ -22,7 +24,9 @@ export const isRumble = url => VIDEO_MATCH_URL.RUMBLE.test(url);
 export const isBitchute = url => VIDEO_MATCH_URL.BITCHUTE.test(url);
 
 export const getYoutubeSrc = url => {
-  const id = url && url.match(VIDEO_MATCH_URL.YOUTUBE)[1];
+  const id = url && url.includes('shorts')
+    ? url.match(VIDEO_MATCH_URL.YOUTUBE_SHORTS)[1]
+    : url.match(VIDEO_MATCH_URL.YOUTUBE)[1];
 
   return {
     srcID: id,
