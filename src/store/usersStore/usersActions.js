@@ -30,7 +30,7 @@ export const getUserAccount = name => (dispatch, getState) => {
         const voting_mana = await dHive.rc.calculateVPMana(res);
         const waivVotingMana = await ApiClient.getWaivVoteMana(name);
         const userVoteValue = await ApiClient.getUserVoteValueInfo(name);
-        const waivPowerMana = calculateMana(waivVotingMana);
+        const waivPowerMana = waivVotingMana ? calculateMana(waivVotingMana) : null;
 
         data.rc_percentage = rc.percentage * 0.01;
         data.voting_mana = voting_mana.percentage * 0.01;
