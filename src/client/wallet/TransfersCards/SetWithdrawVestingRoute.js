@@ -16,6 +16,7 @@ const SetWithdrawVestingRoute = ({
   const isReceive = currentUsername === from;
   const countedPercent = percent / 100;
   const link = isReceive ? to : from;
+  const isCountedPercent = percent === 0;
 
   return (
     <div className="UserWalletTransactions__transaction">
@@ -24,10 +25,17 @@ const SetWithdrawVestingRoute = ({
       </div>
       <div className="UserWalletTransactions__content">
         <div>
-          <FormattedMessage
-            id="withdraw_vesting_route_is_set"
-            defaultMessage="Withdraw vesting route is set"
-          />{' '}
+          {!isCountedPercent ? (
+            <FormattedMessage
+              id="withdraw_vesting_route_is_set"
+              defaultMessage="Withdraw vesting route is set"
+            />
+          ) : (
+            <FormattedMessage
+              id="withdraw_vesting_route_is_canceled"
+              defaultMessage="Withdraw vesting route is canceled"
+            />
+          )}{' '}
           {isReceive ? (
             <FormattedMessage id="lowercase_to" defaultMessage="to" />
           ) : (

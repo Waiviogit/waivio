@@ -463,17 +463,18 @@ class Notifications extends React.Component {
                 const urlFromWithdrawRoute = isReceive
                   ? `/@${notification.to_account}/transfers?type=HIVE`
                   : `/@${notification.from_account}/transfers?type=HIVE`;
+                const isCountedPercent = notification.percent === 0;
+                const isSetId = !isReceive ? 'withdraw_route_from' : 'withdraw_route_to';
+                const isCanceledId =
+                  isCountedPercent && currentAuthUsername === notification.from_account
+                    ? 'withdraw_vesting_route_is_canceled_to'
+                    : 'withdraw_vesting_route_is_canceled_from';
 
                 return (
                   <NotificationTemplate
                     username={notification.from_account}
                     url={urlFromWithdrawRoute}
-                    id={!isReceive ? 'withdraw_route_from' : 'withdraw_route_to'}
-                    defaultMessage={
-                      !isReceive
-                        ? `{from_account} set withdraw route to you`
-                        : `You set withdraw route to {to_account}`
-                    }
+                    id={isCountedPercent ? isCanceledId : isSetId}
                     values={{
                       to_account: (
                         <Link to={urlToWithdrawRoute}>
