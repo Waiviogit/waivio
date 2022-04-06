@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { FormattedNumber } from 'react-intl';
+import { FormattedMessage, FormattedNumber } from 'react-intl';
 
 import './SwapTokenCard.less';
 
@@ -9,7 +9,9 @@ import TransactionCardContainer from '../TransactionCardContainer';
 const SwapTokenCard = props => (
   <TransactionCardContainer timestamp={props.timestamp} iconType={'swap'} symbol={props.symbolTo}>
     <div className={'SwapTokenCard'}>
-      <div>Swap</div>
+      <div>
+        <FormattedMessage id="swap" defaultMessage="Swap" />
+      </div>
       <div>
         <span className={'SwapTokenCard__from'}>
           -{' '}

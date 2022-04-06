@@ -65,7 +65,7 @@ export default class Slider extends React.Component {
   getCurrentValue = () => this.props.voteWorth || 0;
 
   sendTip = () => {
-    this.props.openTransfer(this.props.post.author);
+    this.props.openTransfer(this.props.post.author, 0, 'WAIV');
   };
 
   handleChange = debounce(value => {

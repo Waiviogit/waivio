@@ -9,7 +9,11 @@ import { Form, Input, Modal, Select } from 'antd';
 import { v4 as uuidv4 } from 'uuid';
 import { HBD, HIVE } from '../../../common/constants/cryptos';
 import { getCryptoPriceHistory } from '../../../store/appStore/appActions';
-import { closeTransfer, sendPendingTransfer } from '../../../store/walletStore/walletActions';
+import {
+  closeTransfer,
+  getUserTokensBalanceList,
+  sendPendingTransfer,
+} from '../../../store/walletStore/walletActions';
 import { notify } from '../../app/Notification/notificationActions';
 import { sendGuestTransfer } from '../../../waivioApi/ApiClient';
 import SearchUsersAutocomplete from '../../components/EditorUser/SearchUsersAutocomplete';
@@ -86,6 +90,7 @@ const InputGroup = Input.Group;
     saveSettings,
     openLinkHiveAccountModal,
     sendPendingTransfer,
+    getUserTokensBalanceList,
   },
 )
 @Form.create()
@@ -100,6 +105,7 @@ export default class Transfer extends React.Component {
     tokensList: PropTypes.arrayOf(PropTypes.shape()).isRequired,
     cryptosPriceHistory: PropTypes.shape().isRequired,
     getCryptoPriceHistory: PropTypes.func.isRequired,
+    getUserTokensBalanceList: PropTypes.func.isRequired,
     closeTransfer: PropTypes.func,
     amount: PropTypes.number,
     currency: PropTypes.string,
@@ -144,7 +150,6 @@ export default class Transfer extends React.Component {
   };
 
   static amountRegex = /^[0-9]*\.?[0-9]{0,3}$/;
-
   static minAccountLength = 3;
   static maxAccountLength = 16;
   static maxGuestAccountLength = 23;
@@ -198,6 +203,7 @@ export default class Transfer extends React.Component {
     this.props.form.setFieldsValue({
       memo: sendTo ? `${title} - https://www.waivio.com/@${sendTo}/${permlink}` : null,
     });
+    this.props.getUserTokensBalanceList(this.props.user.name);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -218,12 +224,13 @@ export default class Transfer extends React.Component {
       form.setFieldsValue({
         to: nextProps.to,
         amount: nextProps.amount,
-        currency: nextProps.currency === 'HIVE' ? HIVE.symbol : HBD.symbol,
       });
 
       this.setState({ currency: nextProps.currency });
     }
   }
+
+  getFraction = balance => (balance < 0.001 ? 5 : 3);
 
   getTokensBalanceList = () => {
     const hiveEngineList = this.props.tokensList.reduce((acc, curr) => {
@@ -303,7 +310,9 @@ export default class Transfer extends React.Component {
     form.validateFields({ force: true }, (errors, values) => {
       if (!errors) {
         const transferQuery = {
-          amount: `${round(parseFloat(values.amount), 3)} ${values.currency}`,
+          amount: `${round(parseFloat(values.amount), this.getFraction(values.amount))} ${
+            values.currency
+          }`,
           memo,
         };
 
@@ -589,9 +598,15 @@ export default class Transfer extends React.Component {
         });
 
     if (!isEmpty(this.props.tokensList)) {
-      const waivBalance = this.props.tokensList.find(item => item.symbol === 'WAIV');
+      userBalances = uniqWith([...userBalances, ...this.props.tokensList], 'symbol').sort(
+        (a, b) => {
+          if (a.symbol === 'WAIV') return -1;
+          if (b.symbol === 'WAIV') return 1;
+          if (!b.balance || !a.balance) return a.symbol > b.symbol ? 1 : -1;
 
-      userBalances = uniqWith([waivBalance, ...userBalances, ...this.props.tokensList], 'symbol');
+          return b.balance - a.balance;
+        },
+      );
     }
 
     return (isGuest && (this.props.to || hiveBeneficiaryAccount)) || !isGuest ? (
@@ -680,7 +695,7 @@ export default class Transfer extends React.Component {
               {getFieldDecorator('currency', {
                 initialValue: isGuest
                   ? this.state.currency
-                  : this.props.currency || this.props.walletType,
+                  : this.state.currency || this.props.walletType,
               })(
                 <Select
                   className="Transfer__currency"
@@ -699,7 +714,9 @@ export default class Transfer extends React.Component {
                       className="Transfer__currency-item"
                     >
                       <span>{token.symbol}</span>
-                      <span className="Transfer__currency-balance">{round(token.balance, 3)}</span>
+                      <span className="Transfer__currency-balance">
+                        {round(token.balance, this.getFraction(token.balance))}
+                      </span>
                     </Select.Option>
                   ))}
                 </Select>,
@@ -718,7 +735,8 @@ export default class Transfer extends React.Component {
                   className={amountClassList}
                 >
                   {' '}
-                  {round(currentBalance, 3) || 0} {this.state.currency}
+                  {round(currentBalance, this.getFraction(currentBalance)) || 0}{' '}
+                  {this.state.currency}
                 </span>
               </React.Fragment>
             )}

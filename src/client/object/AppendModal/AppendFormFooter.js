@@ -10,7 +10,15 @@ import { getFollowingObjectsList } from '../../../store/userStore/userSelectors'
 import { getObject } from '../../../store/wObjectStore/wObjectSelectors';
 import { getVotingPower } from '../../../store/settingsStore/settingsSelectors';
 
-const AppendFormFooter = ({ loading, form, handleSubmit, calcVote, votePercent, voteWorth }) => {
+const AppendFormFooter = ({
+  loading,
+  form,
+  handleSubmit,
+  calcVote,
+  votePercent,
+  voteWorth,
+  selectWobj,
+}) => {
   const [isSliderVisible, setSliderVisibility] = useState(false);
   const followingList = useSelector(getFollowingObjectsList);
   const wObject = useSelector(getObject);
@@ -41,6 +49,7 @@ const AppendFormFooter = ({ loading, form, handleSubmit, calcVote, votePercent, 
         sliderVisible={isSliderVisible}
         onLikeClick={handleLikeClick}
         disabled={loading}
+        selectedType={selectWobj}
       />
       {followingList.includes(wObject.author_permlink) ? null : (
         <FollowObjectForm loading={loading} form={form} />
@@ -63,6 +72,7 @@ const AppendFormFooter = ({ loading, form, handleSubmit, calcVote, votePercent, 
 AppendFormFooter.propTypes = {
   loading: PropTypes.bool.isRequired,
   form: PropTypes.shape().isRequired,
+  selectWobj: PropTypes.shape().isRequired,
   handleSubmit: PropTypes.func.isRequired,
   calcVote: PropTypes.func.isRequired,
   votePercent: PropTypes.number.isRequired,

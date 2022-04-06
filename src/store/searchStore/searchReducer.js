@@ -34,6 +34,7 @@ const initialState = {
     result: [],
     loading: false,
   },
+  controller: null,
 };
 
 export default (state = initialState, action) => {
@@ -42,6 +43,7 @@ export default (state = initialState, action) => {
       return {
         ...state,
         isStartSearchAutoComplete: true,
+        controller: action.meta.controller,
       };
 
     case searchActions.AUTO_COMPLETE_SEARCH.SUCCESS: {

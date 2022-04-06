@@ -14,6 +14,8 @@ export const getAutoCompleteSearchResults = createSelector(
   state => state.autoCompleteSearchResults,
 );
 
+export const getSearchController = createSelector([searchState], state => state.controller);
+
 export const getSearchObjectsResults = createSelector(
   [searchState],
   state => state.searchObjectsResults,
