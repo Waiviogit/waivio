@@ -152,6 +152,7 @@ function editorStateToMarkdown(raw, extraMarkdownDict) {
         block.text &&
         block.type !== 'ordered-list-item' &&
         block.type !== 'unordered-list-item' &&
+        block.type !== 'code-block' &&
         isListType
       ) {
         returnString += '\n';
@@ -165,7 +166,7 @@ function editorStateToMarkdown(raw, extraMarkdownDict) {
 
     const appliedStyles = [];
 
-    returnString += block.text.split('').reduce((text, currentChar, index) => {
+    const newString = block.text.split('').reduce((text, currentChar, index) => {
       let newText = text;
       const sortedInlineStyleRanges = getInlineStyleRangesByLength(block.inlineStyleRanges);
 
@@ -222,7 +223,7 @@ function editorStateToMarkdown(raw, extraMarkdownDict) {
       return newText;
     }, '');
 
-    returnString = applyWrappingBlockStyle(block.type, returnString);
+    returnString += applyWrappingBlockStyle(block.type, newString);
     returnString = applyAtomicStyle(block, raw.entityMap, returnString);
   });
 
