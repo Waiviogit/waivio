@@ -379,6 +379,11 @@ export const BLOCK_BUTTONS = [
     style: 'blockquote',
     description: 'Blockquote',
   },
+  {
+    label: '< >',
+    style: 'code-block',
+    description: 'code',
+  },
 ];
 
 export const INLINE_BUTTONS = [
