@@ -2,15 +2,16 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
 import { connect } from 'react-redux';
+import { injectIntl } from "react-intl";
 import { getSelectedBlockNode } from '../util';
 import { getIsClearSearchObjects } from '../../../../store/searchStore/searchSelectors';
-
 import './addbutton.less';
 
 /**
  * Implementation of the medium-link side `+` button to insert various rich blocks
  * like Images/Embeds/Videos.
  */
+@injectIntl
 @connect(state => ({
   isClearSearchObjects: getIsClearSearchObjects(state),
 }))
@@ -143,6 +144,10 @@ export default class AddButton extends React.Component {
             this.sideControl
           ) : (
             <TransitionGroup className="act-buttons-group">
+              <div className="act-buttons-heading">
+                {this.props.intl.formatMessage({ id: 'insert_btn', defaultMessage: 'Insert' })}
+              </div>
+              <div className="act-buttons-grid">
               {this.props.sideButtons.map(button => {
                 const Button = button.component;
                 const extraProps = button.props ? button.props : {};
@@ -170,6 +175,7 @@ export default class AddButton extends React.Component {
                   </CSSTransition>
                 );
               })}
+              </div>
             </TransitionGroup>
           ))}
       </div>
@@ -186,6 +192,7 @@ AddButton.propTypes = {
   sideButtons: PropTypes.arrayOf(PropTypes.shape()),
   handleHashtag: PropTypes.func.isRequired,
   isClearSearchObjects: PropTypes.bool,
+  intl: PropTypes.shape().isRequired,
 };
 
 AddButton.defaultProps = {
