@@ -1,7 +1,7 @@
 @import (reference) '../../../styles/modules/variables.less';
 @import (reference) '../../../styles/custom.less';
 
-@add-btn-width: 36px;
+@add-btn-width: 50px;
 @input-max-width: @container-width - @right-width - @margin * 3;
 
 .md-side-toolbar {
@@ -11,14 +11,22 @@
   top: -1;
   transition: all 0.1s ease;
   left: 0;
-
-  .act-buttons-group {
-    display: flex;
-    border: 1px solid @blue-botticelli;
-    border-radius: 4px;
-    margin-top: 10px;
+  .act-buttons-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 20px;
   }
 
+  .act-buttons-group {
+    border: 1px solid @normal-grey;
+    border-radius: 4px;
+    margin-top: 10px;
+    padding: 15px;
+    background-color: @white;
+  }
+  .act-buttons-heading {
+    margin-bottom: 10px;
+  }
   .video-link-input,
   .object-search-input {
     background-color: @white;
@@ -105,9 +113,13 @@
     align-items: center;
     line-height: 1;
     padding: 4px 7px;
-    border: none;
-    border-radius: 0;
-    border-right: 1px solid @blue-botticelli;
+    border: 1px solid @white-smoke;
+    border-radius: 4px;
+    background-color: @white-smoke;
+    min-width: 120px;
+    @media @medium {
+      min-width: 200px;
+    }
     &:first-child {
       border-radius: 4px 0 0 4px;
     }
@@ -130,7 +142,10 @@
 
     & > .btn-icon {
       padding-left: 2px;
-      font-size: 12px;
+      svg {
+        width: 25px;
+        height: 25px;
+      }
       svg path {
         fill: @grey-empress;
       }
@@ -155,16 +170,12 @@
 
     .action-btn__icon {
       margin-top: 0;
-      width: 22px;
-      height: 17px;
+      width: 25px;
+      height: 25px;
+      fill: @grey-empress;
 
       &--cube {
         height: 22px;
-      }
-
-      &--text {
-        width: auto;
-        height: auto;
       }
     }
   }
