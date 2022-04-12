@@ -1,6 +1,6 @@
 export const VIDEO_MATCH_URL = {
   YOUTUBE: /^(?:https?:\/\/)?(?:www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})(?:\S+)?$/,
-  YOUTUBE_SHORTS: /^(?:https?:\/\/)?(?:www\.)?(?:youtu\.be\/|youtube\.com\/shorts\/)(.*)$/,
+  YOUTUBE_SHORTS: /^(?:https?:\/\/)?(?:www\.)?(?:youtu\.be\/|youtube\.com\/shorts\/)([\w|-]{11})(.*)$/,
   VIMEO: /https?:\/\/(?:www\.|player\.)?vimeo.com\/(?:channels\/(?:\w+\/)?|groups\/([^\/]*)\/videos\/|album\/(\d+)\/video\/|video\/|)(\d+)(?:$|\/|\?)/, // eslint-disable-line no-useless-escape
   DTUBE: /^https:\/\/(emb\.)?d\.tube(\/#!)?(\/v)?\/([^/"]+\/[^/"]+)$/,
   THREE_SPEAK: /^https:\/\/3speak\.online\/(watch|embed)\?v=([\w\d-/._]*)(&|$)/,
