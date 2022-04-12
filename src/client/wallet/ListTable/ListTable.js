@@ -63,29 +63,15 @@ const ListTable = ({ getOrderList, title, columnTitles }) => {
         ))}
       </div>
       <div className="ListTable__rows">
-        {!isSell
-          ? orderList.map(order => (
-              <div className="ListTable__row" key={order.textId}>
-                <div className="ListTable__row-cell left_cell">
-                  {round(order.quantity * order.price, 3)}
-                </div>
-                <div className="ListTable__row-cell center_cell">{round(order.quantity, 3)}</div>
-                <div className="ListTable__row-cell right_cell bid_cell">
-                  {round(order.price, 3)}
-                </div>
-              </div>
-            ))
-          : orderList.map(order => (
-              <div className="ListTable__row" key={order.textId}>
-                <div className="ListTable__row-cell left_cell bid_cell">
-                  {round(order.price, 3)}
-                </div>
-                <div className="ListTable__row-cell center_cell">{round(order.quantity, 3)}</div>
-                <div className="ListTable__row-cell right_cell ">
-                  {round(order.quantity * order.price, 3)}
-                </div>
-              </div>
-            ))}
+        {orderList.map(order => (
+          <div className={!isSell ? 'ListTable__row' : 'ListTable__row-reverse'} key={order.textId}>
+            <div className="ListTable__row-cell left_cell">
+              {round(order.quantity * order.price, 3)}
+            </div>
+            <div className="ListTable__row-cell center_cell">{round(order.quantity, 3)}</div>
+            <div className="ListTable__row-cell right_cell bid_cell">{round(order.price, 3)}</div>
+          </div>
+        ))}
       </div>
       {hasMore && (
         <div className="ListTable__title ListTable__show-more">
