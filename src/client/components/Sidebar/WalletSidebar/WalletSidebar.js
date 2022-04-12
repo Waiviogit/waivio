@@ -24,6 +24,9 @@ import { HBD, HIVE, WAIV } from '../../../../common/constants/cryptos';
 
 import './WalletSidebar.less';
 import { toggleWithdrawModal } from '../../../../store/depositeWithdrawStore/depositeWithdrawAction';
+import SellOrdersTable from '../../../wallet/SellOrdersTable';
+import BuyOrdersTable from '../../../wallet/BuyOrdersTable';
+import { guestUserRegex } from '../../../../common/helpers/regexHelpers';
 
 const cryptos = [WAIV.symbol, HIVE.symbol, HBD.symbol];
 
@@ -103,6 +106,7 @@ class WalletSidebar extends React.Component {
     const { match, user, isCurrentUser, isGuest, walletType } = this.props;
     const ownProfile = match.params.name === user.name || isCurrentUser;
     const isNotWaivWallet = walletType !== 'WAIV';
+    const isGuestUserProfile = guestUserRegex.test(this.props.match.params.name);
 
     return (
       <div className="WalletSidebar">
@@ -155,6 +159,12 @@ class WalletSidebar extends React.Component {
               <FormattedMessage id="Withdraw" defaultMessage="Withdraw" />
             </Action>
           </div>
+        )}
+        {!isGuestUserProfile && (
+          <React.Fragment>
+            <BuyOrdersTable />
+            <SellOrdersTable />
+          </React.Fragment>
         )}
       </div>
     );

@@ -5,10 +5,10 @@
   border: 1px solid @white-gainsboro;
   border-radius: 4px;
   margin-bottom: 20px;
+  background: white;
 
   &__title {
     color: @blue-baliHai;
-    padding-left: 5px;
   }
 
   &__show-more {
@@ -19,12 +19,16 @@
     align-items: center;
   }
 
-  a {
+  button {
+    background: white;
+    border: none;
     color: @blue-baliHai;
-  }
+    box-shadow: none;
+    cursor: pointer;
 
-  a:hover {
-    color: @orange-hot;
+    &:hover {
+      color: @orange-hot;
+    }
   }
 
   &__icon {
@@ -35,12 +39,16 @@
   &__icon-refresh {
     font-size: 22px !important;
     margin-left: auto;
+    background: white;
+    border: none;
+    color: @blue-baliHai;
+    box-shadow: none;
+    cursor: pointer;
   }
 
   &__whole-title {
     display: flex;
     align-items: center;
-    //justify-content: flex-start;
   }
 
   &__headers-row {
@@ -49,7 +57,7 @@
     min-height: 42px;
     font-size: 16px;
     font-weight: 500;
-    justify-content: space-around;
+    justify-content: space-between;
     align-items: center;
     padding: 4px 16px;
     margin-bottom: 5px;
@@ -58,8 +66,8 @@
   }
 
   &__table {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
+    display: flex;
+    justify-content: space-between;
     color: @blue-baliHai;
     padding: 4px 16px;
   }
@@ -68,6 +76,10 @@
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     padding: 4px 16px;
+  }
+
+  &__row:nth-child(odd) {
+    background: rgba(156, 173, 186, 0.21);
   }
 
   .left_cell {
@@ -85,15 +97,9 @@
     justify-content: end;
   }
 
-  .light-row {
-    background: white;
-  }
-
-  .dark-row {
-    background: rgba(156, 173, 186, 0.21);
-  }
-
   .bid_cell {
-    color: @orange-hot;
+    color: @orange-hot !important;
   }
 }
+
+@import 'ListTable-nightmode';
