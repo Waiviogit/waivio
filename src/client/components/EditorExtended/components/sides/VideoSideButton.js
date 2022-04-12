@@ -77,7 +77,13 @@ class VideoSideButton extends Component {
         })}
         onClick={this.onClick}
       >
-        <img src={'/images/icons/play_video.svg'} width={40} height={40} className="action-btn__icon" alt="play" />
+        <img
+          src={'/images/icons/play_video.svg'}
+          width={40}
+          height={40}
+          className="action-btn__icon"
+          alt="play"
+        />
         <span className="action-btn__caption">
           {this.props.intl.formatMessage({ id: 'post_btn_video', defaultMessage: 'Video' })}
         </span>
