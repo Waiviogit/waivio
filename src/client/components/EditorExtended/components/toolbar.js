@@ -430,9 +430,4 @@ export const INLINE_BUTTONS = [
     icon: 'link',
     description: 'Add a link',
   },
-  {
-    label: '< >',
-    style: 'code-block',
-    description: 'code',
-  },
 ];
