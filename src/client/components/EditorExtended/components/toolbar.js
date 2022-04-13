@@ -7,6 +7,7 @@ import { FormattedMessage } from 'react-intl';
 
 import BlockToolbar from './blocktoolbar';
 import InlineToolbar from './inlinetoolbar';
+import CodeButtonbar from "./codebuttonbar";
 
 import { getSelection, getSelectionRect } from '../util/index';
 import { getCurrentBlock } from '../model/index';
@@ -21,6 +22,7 @@ export default class Toolbar extends React.Component {
     toggleInlineStyle: PropTypes.func,
     inlineButtons: PropTypes.arrayOf(PropTypes.shape()),
     blockButtons: PropTypes.arrayOf(PropTypes.shape()),
+    codeButtons: PropTypes.arrayOf(PropTypes.shape()),
     editorNode: PropTypes.shape(),
     setLink: PropTypes.func,
     focus: PropTypes.func,
@@ -35,6 +37,7 @@ export default class Toolbar extends React.Component {
     toggleInlineStyle: () => {},
     blockButtons: BLOCK_BUTTONS,
     inlineButtons: INLINE_BUTTONS,
+    codeButtons: CODE_BUTTONS,
     editorNode: {},
     setLink: () => {},
     focus: () => {},
@@ -334,6 +337,13 @@ export default class Toolbar extends React.Component {
             buttons={this.props.inlineButtons}
           />
         ) : null}
+        <CodeButtonbar
+          editorState={editorState}
+          onToggle={this.props.toggleBlockType}
+          onToggleInline={this.props.toggleInlineStyle}
+          buttons={this.props.codeButtons}
+          setEditorState={this.props.setEditorState}
+         />
         {hasHyperLink && (
           <div className="md-RichEditor-controls">
             <span
@@ -383,11 +393,6 @@ export const BLOCK_BUTTONS = [
     style: 'blockquote',
     description: 'Blockquote',
   },
-  {
-    label: '< >',
-    style: 'code-block',
-    description: 'code',
-  },
 ];
 
 export const INLINE_BUTTONS = [
@@ -431,3 +436,11 @@ export const INLINE_BUTTONS = [
     description: 'Add a link',
   },
 ];
+
+export const CODE_BUTTONS = [
+  {
+    label: '< >',
+    style: 'code-block',
+    description: 'code',
+  },
+]
