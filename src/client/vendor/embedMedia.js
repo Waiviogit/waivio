@@ -134,8 +134,8 @@ SteemEmbed.get = function(url, options) {
 
 SteemEmbed.isYoutube = function(url) {
   const match = url.includes('shorts')
-      ? url.match(VIDEO_MATCH_URL.YOUTUBE_SHORTS)
-      : url.match(VIDEO_MATCH_URL.YOUTUBE);
+    ? url.match(VIDEO_MATCH_URL.YOUTUBE_SHORTS)
+    : url.match(VIDEO_MATCH_URL.YOUTUBE);
   return match ? match[1] : false;
 };
 
