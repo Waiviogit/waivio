@@ -14,6 +14,10 @@ const defaultInlineStyles = {
     type: 'ITALIC',
     symbol: '*',
   },
+  Code: {
+    type: 'CODE',
+    symbol: '```',
+  }
 };
 
 const defaultBlockStyles = {
@@ -80,7 +84,7 @@ const joinCodeBlocks = splitMd => {
 };
 
 const splitMdBlocks = md => {
-  const splitMd = md.split('\n').map(str => str.trimStart());
+  const splitMd = md.split('\n');
 
   // Process the split markdown include the
   // one syntax where there's an block level opening
