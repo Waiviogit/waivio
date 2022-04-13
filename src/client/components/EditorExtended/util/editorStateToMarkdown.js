@@ -47,7 +47,7 @@ const applyWrappingBlockStyle = (currentStyle, content, nextBlock, prevBlock) =>
     const isPrevStyleSame = prevBlock && prevBlock.type === currentStyle;
     const isNextStyleSame = nextBlock && nextBlock.type === currentStyle;
 
-    if(isPrevStyleSame && isNextStyleSame) {
+    if (isPrevStyleSame && isNextStyleSame) {
       return content;
     } else if (isPrevStyleSame) {
       return `${content}\n${wrappingSymbol}`;
@@ -234,7 +234,12 @@ function editorStateToMarkdown(raw, extraMarkdownDict) {
       return newText;
     }, '');
 
-    returnString += applyWrappingBlockStyle(block.type, newString, raw.blocks[blockIndex+1], raw.blocks[blockIndex-1]);
+    returnString += applyWrappingBlockStyle(
+      block.type,
+      newString,
+      raw.blocks[blockIndex + 1],
+      raw.blocks[blockIndex - 1],
+    );
     returnString = applyAtomicStyle(block, raw.entityMap, returnString);
   });
 
