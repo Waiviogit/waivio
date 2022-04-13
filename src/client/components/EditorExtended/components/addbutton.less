@@ -18,7 +18,7 @@
   }
 
   .act-buttons-group {
-    border: 1px solid @normal-grey;
+    border: 1px solid @grey-empress;
     border-radius: 4px;
     margin-top: 10px;
     padding: 15px;
@@ -26,6 +26,7 @@
   }
   .act-buttons-heading {
     margin-bottom: 10px;
+    color: @grey-empress;
   }
   .video-link-input,
   .object-search-input {
@@ -113,21 +114,13 @@
     align-items: center;
     line-height: 1;
     padding: 4px 7px;
-    border: 1px solid @white-smoke;
+    border: 1px solid @menu-item-border;
     border-radius: 4px;
     background-color: @white-smoke;
     min-width: 120px;
     @media @medium {
       min-width: 200px;
     }
-    &:first-child {
-      border-radius: 4px 0 0 4px;
-    }
-    &:last-child {
-      border: none;
-      border-radius: 0 4px 4px 0;
-    }
-
     @media @small {
       padding: 4px;
     }
@@ -141,9 +134,9 @@
     }
 
     & > .btn-icon {
-      padding-left: 2px;
+      padding-left: 5px;
+      padding-right: 5px;
       svg {
-        width: 25px;
         height: 25px;
       }
       svg path {
@@ -169,7 +162,7 @@
     }
 
     .action-btn__icon {
-      margin-top: 0;
+      margin: 0 5px;
       width: 25px;
       height: 25px;
       fill: @grey-empress;
@@ -183,7 +176,8 @@
 
 .md-add-button {
   margin: 10px 2px 0 -26px;
-
+  height: 36px;
+  min-width: 36px;
   &.md-open-button {
     transform: rotate(45deg);
   }
