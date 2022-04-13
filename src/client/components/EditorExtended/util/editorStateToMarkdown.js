@@ -5,6 +5,7 @@ import { ATOMIC_TYPES, Block, Entity } from './constants';
 const defaultMarkdownDict = {
   BOLD: '**',
   ITALIC: '*',
+  CODE: '```',
   // UNDERLINE: '++',
 };
 
@@ -40,9 +41,19 @@ const getBlockStyle = (currentStyle, appliedBlockStyles) => {
   return blockStyleDict[currentStyle] || '';
 };
 
-const applyWrappingBlockStyle = (currentStyle, content) => {
+const applyWrappingBlockStyle = (currentStyle, content, nextBlock, prevBlock) => {
   if (currentStyle in wrappingBlockStyleDict) {
     const wrappingSymbol = wrappingBlockStyleDict[currentStyle];
+    const isPrevStyleSame = prevBlock && prevBlock.type === currentStyle;
+    const isNextStyleSame = nextBlock && nextBlock.type === currentStyle;
+
+    if(isPrevStyleSame && isNextStyleSame) {
+      return content;
+    } else if (isPrevStyleSame) {
+      return `${content}\n${wrappingSymbol}`;
+    } else if (isNextStyleSame) {
+      return `${wrappingSymbol}\n${content}`;
+    }
 
     return `${wrappingSymbol}\n${content}\n${wrappingSymbol}`;
   }
@@ -152,6 +163,7 @@ function editorStateToMarkdown(raw, extraMarkdownDict) {
         block.text &&
         block.type !== 'ordered-list-item' &&
         block.type !== 'unordered-list-item' &&
+        block.type !== 'code-block' &&
         isListType
       ) {
         returnString += '\n';
@@ -165,7 +177,7 @@ function editorStateToMarkdown(raw, extraMarkdownDict) {
 
     const appliedStyles = [];
 
-    returnString += block.text.split('').reduce((text, currentChar, index) => {
+    const newString = block.text.split('').reduce((text, currentChar, index) => {
       let newText = text;
       const sortedInlineStyleRanges = getInlineStyleRangesByLength(block.inlineStyleRanges);
 
@@ -222,7 +234,7 @@ function editorStateToMarkdown(raw, extraMarkdownDict) {
       return newText;
     }, '');
 
-    returnString = applyWrappingBlockStyle(block.type, returnString);
+    returnString += applyWrappingBlockStyle(block.type, newString, raw.blocks[blockIndex+1], raw.blocks[blockIndex-1]);
     returnString = applyAtomicStyle(block, raw.entityMap, returnString);
   });
 

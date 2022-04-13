@@ -25,6 +25,7 @@ export default class Toolbar extends React.Component {
     setLink: PropTypes.func,
     focus: PropTypes.func,
     intl: PropTypes.shape(),
+    setEditorState: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -37,6 +38,7 @@ export default class Toolbar extends React.Component {
     editorNode: {},
     setLink: () => {},
     focus: () => {},
+    setEditorState: () => {},
     intl: {},
   };
 
@@ -320,7 +322,9 @@ export default class Toolbar extends React.Component {
           <BlockToolbar
             editorState={editorState}
             onToggle={this.props.toggleBlockType}
+            onToggleInline={this.props.toggleInlineStyle}
             buttons={this.props.blockButtons}
+            setEditorState={this.props.setEditorState}
           />
         ) : null}
         {this.props.inlineButtons.length > 0 ? (
@@ -379,6 +383,11 @@ export const BLOCK_BUTTONS = [
     style: 'blockquote',
     description: 'Blockquote',
   },
+  {
+    label: '< >',
+    style: 'code-block',
+    description: 'code',
+  },
 ];
 
 export const INLINE_BUTTONS = [
@@ -395,6 +404,7 @@ export const INLINE_BUTTONS = [
     description: 'Italic',
   },
   {
+
     label: (
       <svg width="20" height="15" viewBox="0 0 14 14">
         <g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">

@@ -44,24 +44,26 @@ const HiveEngineSummaryInfo = props => {
 
   return (
     <div>
-      <div className="HiveEngineSummaryInfo__hive-engine-blockchain-status">
-        <FormattedMessage
-          id="hive_engine_blockchain_status"
-          defaultMessage="HIVE Engine blockchain status:"
-        />
-        <div className={hiveEngineStatusClassList}>
-          {' '}
-          {status === 'OK' ? (
-            <FormattedMessage id="up_to_date" defaultMessage="Up-to-date" />
-          ) : (
-            <FormattedMessage
-              id="delay_by_blocks"
-              values={{
-                delay: get(props.hiveEngineDelayInfo, 'delay', 0),
-              }}
-              defaultMessage="Delay by {delay} blocks"
-            />
-          )}{' '}
+      <div className="HiveEngineSummaryInfo__margin">
+        <div className="HiveEngineSummaryInfo__hive-engine-blockchain-status">
+          <FormattedMessage
+            id="hive_engine_blockchain_status"
+            defaultMessage="Hive Engine blockchain status:"
+          />
+          <div className={hiveEngineStatusClassList}>
+            {' '}
+            {status === 'OK' ? (
+              <FormattedMessage id="up_to_date" defaultMessage="Up-to-date" />
+            ) : (
+              <FormattedMessage
+                id="delay_by_blocks"
+                values={{
+                  delay: get(props.hiveEngineDelayInfo, 'delay', 0),
+                }}
+                defaultMessage="Delay by {delay} blocks"
+              />
+            )}{' '}
+          </div>
         </div>
       </div>
       <WalletSummaryInfo estAccValue={estAccValue}>

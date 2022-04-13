@@ -2416,6 +2416,36 @@ export const getTokensRate = symbols =>
     table: 'metrics',
   });
 
+export const getSellBookList = (account, offset) =>
+  hiveEngineContract({
+    contract: 'market',
+    query: { account, symbol: 'WAIV' },
+    indexes: [
+      {
+        index: 'priceDec',
+        descending: false,
+      },
+    ],
+    limit: 5,
+    offset,
+    table: 'sellBook',
+  });
+
+export const getBuyBookList = (account, offset) =>
+  hiveEngineContract({
+    contract: 'market',
+    query: { account, symbol: 'WAIV' },
+    indexes: [
+      {
+        index: 'priceDec',
+        descending: true,
+      },
+    ],
+    limit: 5,
+    offset,
+    table: 'buyBook',
+  });
+
 export const getFeeInfo = () => {
   return fetch('https://api2.hive-engine.com/rpc/contracts', {
     headers,
