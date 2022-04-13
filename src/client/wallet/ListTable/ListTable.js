@@ -9,14 +9,14 @@ const ListTable = ({ getOrderList, title, columnTitles }) => {
   const isSell = title === 'Sell orders';
   const { name } = useParams();
   const [orderList, setOrderList] = useState([]);
-  const [hasMore, setHasMore] = useState(true);
+  const [hasMore, setHasMore] = useState(false);
 
   const checkLengthAndSetHasMore = list => {
     if (list.length < 5) {
       setHasMore(false);
     }
 
-    if (!hasMore || list.length === 5) {
+    if (hasMore || list.length >= 5) {
       setHasMore(true);
     }
   };
