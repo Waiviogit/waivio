@@ -71,7 +71,7 @@ const Wallets = props => {
           <Tabs.TabPane
             tab={props.intl.formatMessage({
               id: 'hive_engine_wallet',
-              defaultMessage: 'HIVE Engine wallet',
+              defaultMessage: 'Hive Engine wallet',
             })}
             key="ENGINE"
           >
