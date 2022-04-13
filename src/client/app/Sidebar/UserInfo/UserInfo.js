@@ -16,11 +16,9 @@ import SocialLinks from '../../../components/SocialLinks';
 import USDDisplay from '../../../components/Utils/USDDisplay';
 import { getMetadata } from '../../../../common/helpers/postingMetadata';
 import BTooltip from '../../../components/BTooltip';
-import { getTimeFromLastAction } from '../../../../common/helpers/accountHistoryHelper';
 import { guestUserRegex } from '../../../../common/helpers/regexHelpers';
 import { getRate, getRewardFund, getWeightValue } from '../../../../store/appStore/appSelectors';
 import { getUser } from '../../../../store/usersStore/usersSelectors';
-import { getUsersAccountHistory } from '../../../../store/walletStore/walletSelectors';
 import WeightDisplay from '../../../components/Utils/WeightDisplay';
 import WAIVtokenInfo from './WAIVtokenInfo';
 import HIVEtokenInfo from './HIVEtokenInfo';
@@ -33,7 +31,6 @@ import HIVEtokenInfo from './HIVEtokenInfo';
     user,
     rewardFund: getRewardFund(state),
     rate: getRate(state),
-    usersAccountHistory: getUsersAccountHistory(state),
     weightValue: getWeightValue(state, user.wobjects_weight),
   };
 })
@@ -42,7 +39,6 @@ class UserInfo extends React.Component {
     intl: PropTypes.shape().isRequired,
     user: PropTypes.shape(),
     weightValue: PropTypes.number,
-    usersAccountHistory: PropTypes.shape(),
   };
 
   static defaultProps = {
@@ -54,7 +50,7 @@ class UserInfo extends React.Component {
   };
 
   render() {
-    const { intl, user, usersAccountHistory } = this.props;
+    const { intl, user } = this.props;
     const isGuestPage = guestUserRegex.test(user && user.name);
     let metadata = {};
     let location = null;
@@ -62,7 +58,7 @@ class UserInfo extends React.Component {
     let website = null;
     let about = null;
     let email;
-    const lastActive = !isGuestPage ? getTimeFromLastAction(user.name, usersAccountHistory) : null;
+    const lastActive = !isGuestPage ? new Date(user.last_activity) : null;
 
     if (user && user.posting_json_metadata && user.posting_json_metadata !== '') {
       metadata = getMetadata(user);
