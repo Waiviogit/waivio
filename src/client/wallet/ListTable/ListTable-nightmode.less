@@ -1,0 +1,31 @@
+@import (reference) '../../styles/custom.less';
+@import (reference) '../../styles/modules/variables.less';
+
+.nightmode {
+  .ListTable {
+    background-color: @grey-nero;
+    border: 1px solid @normal-grey;
+
+    &__show-more {
+      border-top: 1px solid @normal-grey;
+    }
+
+    &__headers-row {
+      border-bottom: 1px solid @normal-grey;
+    }
+
+    button,
+    &__icon-refresh {
+      background: @grey-nero;
+    }
+
+    &__title,
+    &__row {
+      color: @white-smoke;
+    }
+
+    &__title {
+      color: @blue-baliHai;
+    }
+  }
+}
