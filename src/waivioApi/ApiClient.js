@@ -2419,7 +2419,7 @@ export const getTokensRate = symbols =>
 export const getSellBookList = (account, offset) =>
   hiveEngineContract({
     contract: 'market',
-    query: { account },
+    query: { account, symbol: 'WAIV' },
     indexes: [
       {
         index: 'priceDec',
@@ -2434,11 +2434,11 @@ export const getSellBookList = (account, offset) =>
 export const getBuyBookList = (account, offset) =>
   hiveEngineContract({
     contract: 'market',
-    query: { account },
+    query: { account, symbol: 'WAIV' },
     indexes: [
       {
         index: 'priceDec',
-        descending: false,
+        descending: true,
       },
     ],
     limit: 5,

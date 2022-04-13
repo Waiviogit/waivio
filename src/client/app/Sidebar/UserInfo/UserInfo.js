@@ -58,7 +58,7 @@ class UserInfo extends React.Component {
     let website = null;
     let about = null;
     let email;
-    const lastActive = !isGuestPage ? new Date(user.last_activity) : null;
+    const lastActive = !isGuestPage ? user.last_activity : null;
 
     if (user && user.posting_json_metadata && user.posting_json_metadata !== '') {
       metadata = getMetadata(user);
@@ -145,7 +145,7 @@ class UserInfo extends React.Component {
                         }
                       >
                         <span>
-                          <FormattedRelative value={lastActive} />
+                          <FormattedRelative value={`${lastActive}Z`} />
                         </span>
                       </BTooltip>
                     </div>

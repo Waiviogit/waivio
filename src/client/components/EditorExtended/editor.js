@@ -810,6 +810,7 @@ export default class MediumDraftEditor extends React.Component {
               ref={c => {
                 this.toolbar = c;
               }}
+              setEditorState={this.onChange}
               editorNode={this._editorNode} // eslint-disable-line
               editorState={editorState}
               toggleBlockType={this.toggleBlockType}
