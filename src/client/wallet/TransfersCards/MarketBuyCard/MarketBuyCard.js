@@ -28,35 +28,62 @@ const MarketBuyCard = ({
           <div>
             <FormattedMessage
               id={isLimitOrder ? `limit_order_to_${orderType}` : `market_order_to_${isMarketOrder}`}
-              defaultMessage={
-                isLimitOrder ? `Limit order to ${orderType}` : `Market order to ${isMarketOrder}`
-              }
+              defaultMessage={isLimitOrder ? 'Limit order' : `Market order to ${isMarketOrder}`}
             />
           </div>
-          <span className="UserWalletTransactions__marginLeft">
-            {' '}
-            <FormattedNumber
-              value={isLimitOrder ? price : quantityLocked}
-              locale={'en-IN'}
-              minimumFractionDigits={3}
-              maximumFractionDigits={fractionDigits || 3}
-            />{' '}
-            {isLimitOrder ? `per ${symbol}` : symbol}
-          </span>{' '}
+          {!isLimitOrder ? (
+            <React.Fragment>
+              <span className="UserWalletTransactions__marginLeft">
+                {' '}
+                <FormattedNumber
+                  value={quantityLocked}
+                  locale={'en-IN'}
+                  minimumFractionDigits={3}
+                  maximumFractionDigits={fractionDigits || 3}
+                />{' '}
+                {symbol}
+              </span>
+            </React.Fragment>
+          ) : (
+            <React.Fragment>
+              <span className="UserWalletTransactions__marginLeft">
+                {'  '}
+                <FormattedNumber
+                  value={quantityLocked}
+                  locale={'en-IN'}
+                  minimumFractionDigits={3}
+                  maximumFractionDigits={fractionDigits || 3}
+                />{' '}
+                {isSell ? symbol : 'SWAP.HIVE'}
+              </span>
+              <div className="MarketBuyCard__space">{'>'}</div>
+              <span className="MarketBuyCard__quantity ">
+                <FormattedNumber
+                  value={quantity}
+                  locale={'en-IN'}
+                  minimumFractionDigits={3}
+                  maximumFractionDigits={fractionDigits || 3}
+                />{' '}
+                {isSell ? 'SWAP.HIVE' : symbol}
+              </span>
+            </React.Fragment>
+          )}
+        </div>
+        <div className="MarketBuyCard__lower-text">
+          <CardsTimeStamp timestamp={timestamp} />
           {isLimitOrder && (
-            <span className="UserWalletTransactions__marginLeft MarketBuyCard__quantity">
-              {'  '}
+            <div className="UserWalletTransactions__timestamp">
+              {' '}
               <FormattedNumber
-                value={isSell ? quantityLocked : quantity}
+                value={price}
                 locale={'en-IN'}
                 minimumFractionDigits={3}
                 maximumFractionDigits={fractionDigits || 3}
               />{' '}
-              {symbol}
-            </span>
+              {`per ${symbol}`}
+            </div>
           )}
         </div>
-        <CardsTimeStamp timestamp={timestamp} />
       </div>
     </div>
   );

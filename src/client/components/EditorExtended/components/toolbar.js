@@ -404,7 +404,6 @@ export const INLINE_BUTTONS = [
     description: 'Italic',
   },
   {
-
     label: (
       <svg width="20" height="15" viewBox="0 0 14 14">
         <g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
