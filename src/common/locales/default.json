@@ -1863,6 +1863,7 @@
   "withdraw_vesting_route_is_canceled": "Withdraw vesting route is canceled",
   "withdraw_vesting_route_is_canceled_to": "You canceled withdraw vesting to {to_account}",
   "withdraw_vesting_route_is_canceled_from": "{from_account} canceled withdraw vesting to you",
+  "there_is_a": "There is a",
   "undelegated_from": "Undelegated from",
   "undelegated_to": "Undelegated to"
 }
