@@ -1,9 +1,9 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import {  RichUtils } from 'draft-js';
+import { RichUtils } from 'draft-js';
 import StyleButton from './stylebutton';
 
-const isSelectedFullBlocks = (editorState) => {
+const isSelectedFullBlocks = editorState => {
   const currentContent = editorState.getCurrentContent();
 
   const selectionState = editorState.getSelection();
@@ -14,20 +14,20 @@ const isSelectedFullBlocks = (editorState) => {
   const endBlock = currentContent.getBlockForKey(endKey);
   const textEndBlock = endBlock.getText().trim();
 
-  return start === 0 && end === textEndBlock.length
-}
+  return start === 0 && end === textEndBlock.length;
+};
 
 const BlockToolbar = props => {
   if (props.buttons.length < 1) {
     return null;
   }
   const { editorState } = props;
-  const onToggleBlock = (style) => {
+  const onToggleBlock = style => {
     if (style === 'code-block') {
       // setEditorState(removeAllInlineStyles(editorState));
     }
     props.onToggle(style);
-  }
+  };
   const blockType = RichUtils.getCurrentBlockType(editorState);
 
   const isInline = !isSelectedFullBlocks(editorState);
@@ -39,7 +39,7 @@ const BlockToolbar = props => {
 
         iconLabel.label = type.label;
         const isInlineCode = isInline && type.style === 'code-block' && type.style !== blockType;
-        const onToggle =  isInlineCode ? props.onToggleInline : onToggleBlock;
+        const onToggle = isInlineCode ? props.onToggleInline : onToggleBlock;
         const style = isInlineCode ? 'CODE' : type.style;
 
         return (

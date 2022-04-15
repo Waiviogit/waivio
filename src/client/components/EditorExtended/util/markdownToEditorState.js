@@ -17,7 +17,7 @@ const defaultInlineStyles = {
   Code: {
     type: 'CODE',
     symbol: '```',
-  }
+  },
 };
 
 const defaultBlockStyles = {
