@@ -3,10 +3,15 @@
 
 .MarketBuyCard {
   &__quantity {
-    margin-left: 10px;
-
-    @media @small {
-      margin-left: 25px;
-    }
+    color: @black;
+  }
+  &__lower-text {
+    display: flex;
+    justify-content: space-between;
+  }
+  &__space {
+    margin: 0 4px;
   }
 }
+
+@import 'MarketBuyCard-nightmode';

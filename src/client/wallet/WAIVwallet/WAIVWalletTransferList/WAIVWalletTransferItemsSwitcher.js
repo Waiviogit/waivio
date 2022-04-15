@@ -338,7 +338,6 @@ WAIVWalletTransferItemsSwitcher.propTypes = {
     operation: PropTypes.string,
     quantityTokens: PropTypes.string,
     orderType: PropTypes.string,
-    quantityBuy: PropTypes.string,
     quantityHive: PropTypes.string,
     quantityLocked: PropTypes.string,
     quantityUnlocked: PropTypes.string,
