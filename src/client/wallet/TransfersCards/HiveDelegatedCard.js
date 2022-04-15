@@ -1,4 +1,5 @@
 import React from 'react';
+import { FormattedMessage } from 'react-intl';
 import PropTypes from 'prop-types';
 import TransactionCardContainer from './TransactionCardContainer';
 import '../UserWalletTransactions/UserWalletTransactions.less';
@@ -6,10 +7,18 @@ import '../UserWalletTransactions/UserWalletTransactions.less';
 const HiveDelegatedCard = ({ timestamp, quantity, symbol, to, from, account }) => {
   const isReceive = account === from;
   const link = isReceive ? to : from;
-  let delegation = isReceive ? 'Delegated from' : 'Delegated to';
+  let delegation = isReceive ? (
+    <FormattedMessage id="delegation_from" defaultMessage="Delegation from" />
+  ) : (
+    <FormattedMessage id="delegated_to" defaultMessage="Delegated to" />
+  );
 
   if (!quantity) {
-    delegation = isReceive ? 'Undelegated from' : 'Undelegated to';
+    delegation = isReceive ? (
+      <FormattedMessage id="undelegated_from" defaultMessage="Undelegated from" />
+    ) : (
+      <FormattedMessage id="undelegated_to" defaultMessage="Undelegated to" />
+    );
   }
 
   return (
