@@ -52,11 +52,11 @@ const SetWithdrawVestingRoute = ({
         </div>
         <CardsTimeStamp timestamp={isGuestPage ? `${timestamp}Z` : timestamp} />
         {!isCountedPercent && (
-          <div className="SetWithdrawVestingRoute__percent">
-            <span className="UserWalletTransactions__withdraw">
+          <div className="SetWithdrawVestingRoute__percentage">
+            <span className="UserWalletTransactions__withdraw SetWithdrawVestingRoute__percent">
               <FormattedMessage id="percent" defaultMessage="Percent" />:{' '}
             </span>{' '}
-            {countedPercent} %
+            {countedPercent}%
           </div>
         )}
       </div>
