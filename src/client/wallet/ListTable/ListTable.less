@@ -1,0 +1,116 @@
+@import (reference) '../../styles/custom.less';
+@import (reference) '../../styles/modules/variables.less';
+
+.ListTable {
+  border: 1px solid @white-gainsboro;
+  border-radius: 4px;
+  margin-bottom: 20px;
+  background: white;
+
+  &__title {
+    color: @blue-baliHai;
+    margin-left: 2px;
+  }
+
+  &__show-more {
+    padding: 4px 16px;
+    min-height: 42px;
+    border-top: 1px solid @white-gainsboro;
+    display: flex;
+    align-items: center;
+  }
+
+  button {
+    background: white;
+    border: none;
+    color: @blue-baliHai;
+    box-shadow: none;
+    cursor: pointer;
+    font-weight: 500;
+
+    &:hover {
+      color: @orange-hot;
+    }
+  }
+
+  &__icon {
+    font-size: 16px;
+    color: @white-gainsboro;
+  }
+
+  &__icon-refresh {
+    font-size: 22px !important;
+    margin-left: auto;
+    background: white;
+    border: none;
+    color: @blue-baliHai;
+    box-shadow: none;
+    cursor: pointer;
+  }
+
+  &__whole-title {
+    display: flex;
+    align-items: center;
+  }
+
+  &__headers-row {
+    cursor: pointer;
+    display: flex;
+    min-height: 42px;
+    font-size: 16px;
+    font-weight: 500;
+    justify-content: space-between;
+    align-items: center;
+    padding: 4px 16px;
+    margin-bottom: 5px;
+    border-bottom: 1px solid @white-gainsboro;
+    color: @blue-baliHai;
+  }
+
+  &__table {
+    display: flex;
+    justify-content: space-between;
+    color: @blue-baliHai;
+    padding: 4px 16px;
+    font-weight: 500;
+  }
+
+  &__row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    padding: 4px 16px;
+  }
+
+  &__row-reverse {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    direction: rtl;
+    padding: 4px 16px;
+  }
+
+  &__row-reverse:nth-child(odd),
+  &__row:nth-child(odd) {
+    background: rgba(156, 173, 186, 0.21);
+  }
+
+  .left_cell {
+    display: flex;
+    justify-content: start;
+  }
+
+  .center_cell {
+    display: flex;
+    justify-content: center;
+  }
+
+  .right_cell {
+    display: flex;
+    justify-content: end;
+  }
+
+  .bid_cell {
+    color: @orange-hot !important;
+  }
+}
+
+@import 'ListTable-nightmode';

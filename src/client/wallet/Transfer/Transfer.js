@@ -230,6 +230,8 @@ export default class Transfer extends React.Component {
     }
   }
 
+  getFraction = balance => (balance < 0.001 ? 5 : 3);
+
   getTokensBalanceList = () => {
     const hiveEngineList = this.props.tokensList.reduce((acc, curr) => {
       acc[curr.symbol] = curr.balance;
@@ -308,7 +310,9 @@ export default class Transfer extends React.Component {
     form.validateFields({ force: true }, (errors, values) => {
       if (!errors) {
         const transferQuery = {
-          amount: `${round(parseFloat(values.amount), 3)} ${values.currency}`,
+          amount: `${round(parseFloat(values.amount), this.getFraction(values.amount))} ${
+            values.currency
+          }`,
           memo,
         };
 
@@ -710,7 +714,9 @@ export default class Transfer extends React.Component {
                       className="Transfer__currency-item"
                     >
                       <span>{token.symbol}</span>
-                      <span className="Transfer__currency-balance">{round(token.balance, 3)}</span>
+                      <span className="Transfer__currency-balance">
+                        {round(token.balance, this.getFraction(token.balance))}
+                      </span>
                     </Select.Option>
                   ))}
                 </Select>,
@@ -729,7 +735,8 @@ export default class Transfer extends React.Component {
                   className={amountClassList}
                 >
                   {' '}
-                  {round(currentBalance, 3) || 0} {this.state.currency}
+                  {round(currentBalance, this.getFraction(currentBalance)) || 0}{' '}
+                  {this.state.currency}
                 </span>
               </React.Fragment>
             )}

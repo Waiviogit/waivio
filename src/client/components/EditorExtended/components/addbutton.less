@@ -1,7 +1,7 @@
 @import (reference) '../../../styles/modules/variables.less';
 @import (reference) '../../../styles/custom.less';
 
-@add-btn-width: 36px;
+@add-btn-width: 50px;
 @input-max-width: @container-width - @right-width - @margin * 3;
 
 .md-side-toolbar {
@@ -11,14 +11,23 @@
   top: -1;
   transition: all 0.1s ease;
   left: 0;
-
-  .act-buttons-group {
-    display: flex;
-    border: 1px solid @blue-botticelli;
-    border-radius: 4px;
-    margin-top: 10px;
+  .act-buttons-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 20px;
   }
 
+  .act-buttons-group {
+    border: 1px solid @grey-empress;
+    border-radius: 4px;
+    margin-top: 10px;
+    padding: 15px;
+    background-color: @white;
+  }
+  .act-buttons-heading {
+    margin-bottom: 10px;
+    color: @grey-empress;
+  }
   .video-link-input,
   .object-search-input {
     background-color: @white;
@@ -105,17 +114,13 @@
     align-items: center;
     line-height: 1;
     padding: 4px 7px;
-    border: none;
-    border-radius: 0;
-    border-right: 1px solid @blue-botticelli;
-    &:first-child {
-      border-radius: 4px 0 0 4px;
+    border: 1px solid @menu-item-border;
+    border-radius: 4px;
+    background-color: @white-smoke;
+    min-width: 120px;
+    @media @medium {
+      min-width: 200px;
     }
-    &:last-child {
-      border: none;
-      border-radius: 0 4px 4px 0;
-    }
-
     @media @small {
       padding: 4px;
     }
@@ -129,8 +134,11 @@
     }
 
     & > .btn-icon {
-      padding-left: 2px;
-      font-size: 12px;
+      padding-left: 5px;
+      padding-right: 5px;
+      svg {
+        height: 25px;
+      }
       svg path {
         fill: @grey-empress;
       }
@@ -154,17 +162,13 @@
     }
 
     .action-btn__icon {
-      margin-top: 0;
-      width: 22px;
-      height: 17px;
+      margin: 0 5px;
+      width: 25px;
+      height: 25px;
+      fill: @grey-empress;
 
       &--cube {
         height: 22px;
-      }
-
-      &--text {
-        width: auto;
-        height: auto;
       }
     }
   }
@@ -172,7 +176,8 @@
 
 .md-add-button {
   margin: 10px 2px 0 -26px;
-
+  height: 36px;
+  min-width: 36px;
   &.md-open-button {
     transform: rotate(45deg);
   }

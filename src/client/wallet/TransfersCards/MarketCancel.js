@@ -11,11 +11,7 @@ const MarketCancel = ({ timestamp, quantity, orderType, symbol }) => (
     iconType={'close'}
   >
     <span>
-      {' '}
-      <FormattedMessage
-        id={`cancel_order_to_${orderType}`}
-        defaultMessage={`Cancel order to ${orderType}`}
-      />{' '}
+      <FormattedMessage id={`cancel_order_to_${orderType}`} defaultMessage="Cancel order" />{' '}
     </span>
   </TransactionCardContainer>
 );
