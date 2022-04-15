@@ -159,7 +159,7 @@ class WalletSidebar extends React.Component {
             </Action>
           </div>
         )}
-        {!isGuestUserProfile && (
+        {!isGuestUserProfile && !isNotWaivWallet && (
           <React.Fragment>
             <BuyOrdersTable />
             <SellOrdersTable />

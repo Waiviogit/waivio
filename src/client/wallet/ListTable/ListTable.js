@@ -13,12 +13,10 @@ const ListTable = ({ getOrderList, title, columnTitles }) => {
 
   const checkLengthAndSetHasMore = list => {
     if (list.length < 5) {
-      setHasMore(false);
+      return setHasMore(false);
     }
 
-    if (hasMore || list.length >= 5) {
-      setHasMore(true);
-    }
+    return setHasMore(true);
   };
 
   const getOrderListFromApi = async () => {
