@@ -1,9 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import getSource from '../../util/videoHelper';
+import getSource, { isOdysee } from '../../util/videoHelper';
 import './video.less';
+import AsyncVideo from '../../../../vendor/asyncVideo';
 
 const Video = ({ entityData }) => {
+
+  if (isOdysee(entityData.src)) {
+    return <AsyncVideo url={entityData.src} />
+  }
   const src = getSource(entityData);
 
   if (src) {

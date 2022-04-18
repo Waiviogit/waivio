@@ -15,6 +15,7 @@ import { extractLinks } from '../../../common/helpers/parser';
 import { getBodyLink } from '../EditorExtended/util/videoHelper';
 import PostFeedEmbed from './PostFeedEmbed';
 import './Body.less';
+import AsyncVideo from "../../vendor/asyncVideo";
 
 export const remarkable = new Remarkable({
   html: true,
@@ -91,7 +92,7 @@ export function getHtml(body, jsonMetadata = {}, returnType = 'Object', options 
   for (let i = 0; i < splittedBody.length; i += 1) {
     let section = splittedBody[i];
     const extractedLinks = extractLinks(section);
-    const match = section.match(/^([A-Za-z0-9./_-]+) ([A-Za-z0-9]+) (\S+) ~~~/);
+    const match = section.match(/^([A-Za-z0-9./_@:-]+) ([A-Za-z0-9@:/]+) (\S+) ~~~/);
 
     if (match && match.length >= 4) {
       const id = match[1];
@@ -99,9 +100,17 @@ export function getHtml(body, jsonMetadata = {}, returnType = 'Object', options 
       const link = match[3];
       const embed = getEmbed(link);
 
-      sections.push(
-        ReactDOMServer.renderToString(<PostFeedEmbed key={`embed-a-${i}`} inPost embed={embed} />),
-      );
+      if (link.includes('odysee.com')) {
+        sections.push(
+          {
+            component: <AsyncVideo url={link} />
+          },
+      )
+      } else {
+        sections.push(
+          ReactDOMServer.renderToString(<PostFeedEmbed key={`embed-a-${i}`} inPost embed={embed} />),
+        );
+      }
       section = section.substring(`${id} ${type} ${link} ~~~`.length);
     }
     if (!isEmpty(extractedLinks)) {
@@ -134,8 +143,11 @@ export function getHtml(body, jsonMetadata = {}, returnType = 'Object', options 
     }
   }
 
-  // eslint-disable-next-line react/no-danger
-  return <div dangerouslySetInnerHTML={{ __html: sections.join('') }} />;
+  return sections.map((content) => {
+      if (content.component) return content.component;
+
+     return <div key={content} dangerouslySetInnerHTML={{ __html: content }} />
+    })
 }
 
 const Body = props => {
