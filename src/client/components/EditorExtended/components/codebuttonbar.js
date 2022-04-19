@@ -3,31 +3,19 @@ import React from 'react';
 import { EditorState, Modifier, RichUtils } from 'draft-js';
 import StyleButton from './stylebutton';
 
-export const handleClearInlineFormatting = (editorState) => {
-  const styles = [
-    'BOLD',
-    'ITALIC',
-    'UNDERLINE',
-    'STRIKETHROUGH',
-    'CODE'
-  ];
+export const handleClearInlineFormatting = editorState => {
+  const styles = ['BOLD', 'ITALIC', 'UNDERLINE', 'STRIKETHROUGH', 'CODE'];
 
-  const contentWithoutStyles = styles.reduce( (newContentState, style) => (
-    Modifier.removeInlineStyle(
-      newContentState,
-      editorState.getSelection(),
-      style
-    )
-  ), editorState.getCurrentContent());
-
-  return EditorState.push(
-    editorState,
-    contentWithoutStyles,
-    'change-inline-style'
+  const contentWithoutStyles = styles.reduce(
+    (newContentState, style) =>
+      Modifier.removeInlineStyle(newContentState, editorState.getSelection(), style),
+    editorState.getCurrentContent(),
   );
+
+  return EditorState.push(editorState, contentWithoutStyles, 'change-inline-style');
 };
 
-const isSelectedFullBlocks = (editorState) => {
+const isSelectedFullBlocks = editorState => {
   const currentContent = editorState.getCurrentContent();
 
   const selectionState = editorState.getSelection();
@@ -38,20 +26,20 @@ const isSelectedFullBlocks = (editorState) => {
   const endBlock = currentContent.getBlockForKey(endKey);
   const textEndBlock = endBlock.getText().trim();
 
-  return start === 0 && end === textEndBlock.length
-}
+  return start === 0 && end === textEndBlock.length;
+};
 
 const CodeButton = props => {
   if (props.buttons.length < 1) {
     return null;
   }
   const { editorState, setEditorState } = props;
-  const onToggleBlock = (style) => {
-    queueMicrotask(() => props.onToggle(style) );
+  const onToggleBlock = style => {
+    queueMicrotask(() => props.onToggle(style));
     if (style === 'code-block') {
       setEditorState(handleClearInlineFormatting(editorState));
     }
-  }
+  };
   const blockType = RichUtils.getCurrentBlockType(editorState);
 
   const isInline = !isSelectedFullBlocks(editorState);
@@ -63,7 +51,7 @@ const CodeButton = props => {
 
         iconLabel.label = type.label;
         const isInlineCode = isInline && type.style === 'code-block' && type.style !== blockType;
-        const onToggle =  isInlineCode ? props.onToggleInline : onToggleBlock;
+        const onToggle = isInlineCode ? props.onToggleInline : onToggleBlock;
         const style = isInlineCode ? 'CODE' : type.style;
 
         return (

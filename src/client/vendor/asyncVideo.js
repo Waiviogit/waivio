@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { getOdyseeLinkMemo } from "../components/EditorExtended/util/videoHelper";
-import PropTypes from "prop-types";
+import { getOdyseeLinkMemo } from '../components/EditorExtended/util/videoHelper';
+import PropTypes from 'prop-types';
 
 const AsyncVideo = ({ url }) => {
   const [src, setSrc] = useState(null);
@@ -16,12 +16,13 @@ const AsyncVideo = ({ url }) => {
       } finally {
         setIsLoading(false);
       }
-    }
+    };
     getVideo();
-  }, [url])
-  if (isLoading) return <div>Loading...</div>
+  }, [url]);
+  if (isLoading) return <div>Loading...</div>;
 
-  if (src) return (
+  if (src)
+    return (
       <div className="PostFeedEmbed__container">
         <iframe
           title={src}
@@ -33,17 +34,17 @@ const AsyncVideo = ({ url }) => {
           allowFullScreen
         />
       </div>
-  );
+    );
 
-  return (<div>Invalid Link</div>);
+  return <div>Invalid Link</div>;
 };
 
 export default AsyncVideo;
 
 AsyncVideo.propTypes = {
   url: PropTypes.string.isRequired,
-}
+};
 
 AsyncVideo.defaultProps = {
   url: '',
-}
+};

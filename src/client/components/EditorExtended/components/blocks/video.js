@@ -1,13 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import getSource, { isOdysee } from '../../util/videoHelper';
-import './video.less';
 import AsyncVideo from '../../../../vendor/asyncVideo';
 
-const Video = ({ entityData }) => {
+import './video.less';
 
+const Video = ({ entityData }) => {
   if (isOdysee(entityData.src)) {
-    return <AsyncVideo url={entityData.src} />
+    return <AsyncVideo url={entityData.src} />;
   }
   const src = getSource(entityData);
 
@@ -31,7 +31,7 @@ const Video = ({ entityData }) => {
 };
 
 Video.propTypes = {
-  entityData: PropTypes.shape().isRequired,
+  entityData: PropTypes.shape(undefined).isRequired,
 };
 
 export default Video;

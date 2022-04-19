@@ -7,7 +7,7 @@ import { FormattedMessage } from 'react-intl';
 
 import BlockToolbar from './blocktoolbar';
 import InlineToolbar from './inlinetoolbar';
-import CodeButtonbar from "./codebuttonbar";
+import CodeButtonbar from './codebuttonbar';
 
 import { getSelection, getSelectionRect } from '../util/index';
 import { getCurrentBlock } from '../model/index';
@@ -343,7 +343,7 @@ export default class Toolbar extends React.Component {
           onToggleInline={this.props.toggleInlineStyle}
           buttons={this.props.codeButtons}
           setEditorState={this.props.setEditorState}
-         />
+        />
         {hasHyperLink && (
           <div className="md-RichEditor-controls">
             <span
@@ -442,4 +442,4 @@ export const CODE_BUTTONS = [
     style: 'code-block',
     description: 'code',
   },
-]
+];

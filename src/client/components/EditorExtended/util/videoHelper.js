@@ -39,17 +39,20 @@ export const getYoutubeSrc = url => {
   };
 };
 
-export const getOdyseeLink = async (url) => {
+export const getOdyseeLink = async url => {
   const name = url.replace(/https:\/\/odysee.com\//g, '');
 
   try {
     const body = {
-      "method": "resolve",
-      "params": {
-        "urls": [name],
+      method: 'resolve',
+      params: {
+        urls: [name],
       },
-    }
-    const res = await fetch('https://api.na-backend.odysee.com/api/v1/proxy?m=get', { method: "POST", body: JSON.stringify(body) } );
+    };
+    const res = await fetch('https://api.na-backend.odysee.com/api/v1/proxy?m=get', {
+      method: 'POST',
+      body: JSON.stringify(body),
+    });
     const _res = await res.json();
     const claimId = _res.result[name].claim_id;
     const claimName = _res.result[name].name;
@@ -58,15 +61,15 @@ export const getOdyseeLink = async (url) => {
   } catch (e) {
     return false;
   }
-}
+};
 
-export const getOdyseeLinkMemo = (getOdyseeLink);
+export const getOdyseeLinkMemo = getOdyseeLink;
 
-export const getOdyseeSrc = async (url) => ({
-    srcID: url,
-    srcType: 'odysee',
-    url,
-  });
+export const getOdyseeSrc = async url => ({
+  srcID: url,
+  srcType: 'odysee',
+  url,
+});
 
 export const getVimeoSrc = url => {
   const id = url.match(VIDEO_MATCH_URL.VIMEO)[3];

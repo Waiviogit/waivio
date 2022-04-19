@@ -7,8 +7,8 @@ import React from 'react';
 import getUrls from 'get-urls';
 
 import { VIDEO_MATCH_URL } from '../../common/helpers/regexHelpers';
-import {  getOdyseeSrc } from "../components/EditorExtended/util/videoHelper";
-import AsyncVideo from "./asyncVideo";
+import { getOdyseeSrc } from '../components/EditorExtended/util/videoHelper';
+import AsyncVideo from './asyncVideo';
 
 const SteemEmbed = {};
 
@@ -132,8 +132,8 @@ SteemEmbed.get = function(url, options) {
       embed: this.rumble(url, rumbleId, options),
     };
   } else if (odyseeId) {
-    const link = getOdyseeSrc(url)
-    const embed = this.odysee(link, null, options)
+    const link = getOdyseeSrc(url);
+    const embed = this.odysee(link, null, options);
     return {
       type: 'video',
       url: url,
@@ -178,7 +178,7 @@ SteemEmbed.isOdysee = function(url) {
 };
 
 SteemEmbed.odysee = function(url, id, options) {
-  return <AsyncVideo url={url} />
+  return <AsyncVideo url={url} />;
 };
 
 SteemEmbed.isDTube = function(url) {

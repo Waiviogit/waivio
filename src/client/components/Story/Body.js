@@ -14,8 +14,9 @@ import improve from '../../../common/helpers/improve';
 import { extractLinks } from '../../../common/helpers/parser';
 import { getBodyLink } from '../EditorExtended/util/videoHelper';
 import PostFeedEmbed from './PostFeedEmbed';
+import AsyncVideo from '../../vendor/asyncVideo';
+
 import './Body.less';
-import AsyncVideo from "../../vendor/asyncVideo";
 
 export const remarkable = new Remarkable({
   html: true,
@@ -101,14 +102,14 @@ export function getHtml(body, jsonMetadata = {}, returnType = 'Object', options 
       const embed = getEmbed(link);
 
       if (link.includes('odysee.com')) {
-        sections.push(
-          {
-            component: <AsyncVideo url={link} />
-          },
-      )
+        sections.push({
+          component: <AsyncVideo url={link} />,
+        });
       } else {
         sections.push(
-          ReactDOMServer.renderToString(<PostFeedEmbed key={`embed-a-${i}`} inPost embed={embed} />),
+          ReactDOMServer.renderToString(
+            <PostFeedEmbed key={`embed-a-${i}`} inPost embed={embed} />,
+          ),
         );
       }
       section = section.substring(`${id} ${type} ${link} ~~~`.length);
@@ -143,11 +144,12 @@ export function getHtml(body, jsonMetadata = {}, returnType = 'Object', options 
     }
   }
 
-  return sections.map((content) => {
-      if (content.component) return content.component;
+  return sections.map(content => {
+    if (content.component) return content.component;
 
-     return <div key={content} dangerouslySetInnerHTML={{ __html: content }} />
-    })
+    // eslint-disable-next-line react/no-danger
+    return <div key={content} dangerouslySetInnerHTML={{ __html: content }} />;
+  });
 }
 
 const Body = props => {
