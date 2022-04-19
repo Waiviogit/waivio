@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { EditorState, AtomicBlockUtils } from 'draft-js';
 import { Input, message } from 'antd';
-import Play from '../../../../../../public/images/icons/play.png';
+import Play from '@icons/play.png';
 import { ATOMIC_TYPES } from '../../util/constants';
 
 const videoLinkInput = props => {

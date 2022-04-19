@@ -5,6 +5,7 @@ import classNames from 'classnames';
 import { Link } from 'react-router-dom';
 import { get, isEmpty, includes } from 'lodash';
 import urlParse from 'url-parse';
+import DollarIcon from '@icons/dollar.svg';
 
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { getUserRankKey, getUserRank } from '../../../common/helpers/user';
@@ -136,7 +137,7 @@ const UserHeader = ({
               {!isGuest && (
                 <div className="UserHeader__voteValue">
                   <img
-                    src={'/images/icons/dollar.svg'}
+                    src={DollarIcon}
                     alt={'dollar'}
                     className="UserHeader__dollarIcon"
                   />

@@ -29,6 +29,7 @@ import {
   getWebsiteParentHost,
 } from '../../../../store/appStore/appSelectors';
 import WebsiteSignIn from '../../../websites/WebsiteSignIn/WebsiteSignIn';
+import HiveLogoIcon from '@icons/logo-hive.svg'
 
 import './ModalSignIn.less';
 
@@ -165,7 +166,7 @@ const ModalSignIn = ({
               </p>
               <a role="button" href={hiveSinger.getLoginURL()} className="ModalSignIn__signin">
                 <img
-                  src="/images/icons/logo-hive.svg"
+                  src={HiveLogoIcon}
                   alt="hive"
                   className="ModalSignIn__icon-steemit"
                 />

@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import FocusIcon from '@images/focus.svg'
 
 import './MapControllers.less';
 
@@ -32,7 +33,7 @@ const MapControllers = React.memo(props => {
           onClick={setCurrentLocation}
         >
           <img
-            src="/images/focus.svg"
+            src={FocusIcon}
             alt="aim"
             className="MapConfigurationControl__locateGPS-button"
           />

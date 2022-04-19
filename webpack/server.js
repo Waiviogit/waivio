@@ -2,11 +2,10 @@ const fs = require('fs');
 const path = require('path');
 const webpack = require('webpack');
 const WebpackBar = require('webpackbar');
-const StartServerPlugin = require('start-server-webpack-plugin');
+const StartServerPlugin = require('start-server-nestjs-webpack-plugin');
 const paths = require('../scripts/paths');
 const { MATCH_JS, MATCH_CSS_LESS, DEFINE_PLUGIN } = require('./configUtils');
 const SpeedMeasurePlugin = require('speed-measure-webpack-plugin');
-const Uglifyjs = require('uglifyjs-webpack-plugin');
 const NodePolyfillPlugin = require('node-polyfill-webpack-plugin');
 
 module.exports = function createConfig(env = 'dev') {
@@ -49,10 +48,41 @@ module.exports = function createConfig(env = 'dev') {
                 ],
                 '@babel/plugin-proposal-class-properties',
                 '@babel/plugin-transform-runtime',
+                ['import', { libraryName: 'antd', style: true }],
               ],
             },
           },
         },
+        {
+          test: /\.svg$/,
+          type: "asset/inline",
+        },
+        {
+          test: /\.(jpg|png)$/,
+          type: "asset/resource",
+        },
+        {
+          test: MATCH_CSS_LESS,
+          use: [
+            'isomorphic-style-loader',
+            {
+              loader: 'css-loader',
+              options: {
+                importLoaders: 1,
+              },
+            },
+            // POSTCSS_LOADER,
+            {
+              loader: 'less-loader',
+              options: {
+                lessOptions: {
+                  javascriptEnabled: true,
+                },
+              },
+            },
+          ],
+        },
+
         {
           test: /\.(png|jpg|gif)$/,
           loader: 'file-loader',
@@ -62,17 +92,14 @@ module.exports = function createConfig(env = 'dev') {
     },
     plugins: [
       DEFINE_PLUGIN,
-      new webpack.NormalModuleReplacementPlugin(MATCH_CSS_LESS, 'identity-obj-proxy'),
-      new webpack.optimize.LimitChunkCountPlugin({
-        maxChunks: 1,
-      }),
+      new webpack.AutomaticPrefetchPlugin(),
+      // new webpack.optimize.LimitChunkCountPlugin({
+      //   maxChunks: 1,
+      // }),
       new WebpackBar({
         name: 'server',
         color: '#c065f4',
       }),
-      // new UglifyJsPlugin({
-      //   cache: true,
-      // }),
     ],
   });
 
@@ -86,21 +113,13 @@ module.exports = function createConfig(env = 'dev') {
         name: 'server.js',
       }),
       new NodePolyfillPlugin(),
-      new Uglifyjs({
-        cache: true,
-        parallel: 4,
-      }),
     ];
+
     config.resolve = {
       alias: {
         'react-dom': '@hot-loader/react-dom',
-      },
-      fallback: {
-        crypto: false,
-        stream: false,
-        url: false,
-        timers: false,
-        assert: false,
+        '@icons': `${paths.public}/images/icons`,
+        '@images': `${paths.public}/images`
       },
     };
   }

@@ -1,5 +1,4 @@
 const webpack = require('webpack');
-const AssetsPlugin = require('assets-webpack-plugin');
 const CSSExtract = require('mini-css-extract-plugin');
 const LodashModuleReplacementPlugin = require('lodash-webpack-plugin');
 const WebpackBar = require('webpackbar');
@@ -35,10 +34,6 @@ module.exports = function createConfig(env = 'dev') {
     context: process.cwd(),
     plugins: [
       DEFINE_PLUGIN,
-      new AssetsPlugin({
-        path: paths.build,
-        filename: 'assets.json',
-      }),
       new WebpackBar({
         name: 'client',
         color: '#f56be2',
@@ -53,15 +48,11 @@ module.exports = function createConfig(env = 'dev') {
         },
         {
           test: MATCH_FONTS,
-          loader: 'url-loader',
+          type: 'asset/resource',
         },
         {
-          test: /\.(png|jpe?g|gif)$/i,
-          use: [
-            {
-              loader: 'file-loader',
-            },
-          ],
+          test: /\.(jpg|png|svg)$/,
+          type: "asset/inline",
         },
         {
           test: MATCH_CSS_LESS,
@@ -71,10 +62,8 @@ module.exports = function createConfig(env = 'dev') {
               loader: 'css-loader',
               options: {
                 importLoaders: 1,
-                // minimize: !IS_DEV,
               },
             },
-            // POSTCSS_LOADER,
             {
               loader: 'less-loader',
               options: {
@@ -83,6 +72,15 @@ module.exports = function createConfig(env = 'dev') {
                 },
               },
             },
+            {
+              loader: 'postcss-loader',
+              options: {
+                postcssOptions: {
+                  parser: 'postcss-js',
+                  plugins: ['postcss-preset-env', 'autoprefixer'],
+                },
+              },
+            }
           ],
         },
       ],
@@ -102,13 +100,8 @@ module.exports = function createConfig(env = 'dev') {
     config.resolve = {
       alias: {
         'react-dom': '@hot-loader/react-dom',
-      },
-      fallback: {
-        crypto: false,
-        stream: false,
-        url: false,
-        timers: false,
-        assert: false,
+        '@icons': `${paths.public}/images/icons`,
+        '@images': `${paths.public}/images`
       },
     };
   }
@@ -128,10 +121,10 @@ module.exports = function createConfig(env = 'dev') {
       new CSSExtract({
         filename: '[name].[contenthash].css',
       }),
-      new SWPrecacheWebpackPlugin({
-        filepath: paths.sw,
-        stripPrefix: appPath,
-      }),
+      // new SWPrecacheWebpackPlugin({
+      //   filepath: paths.sw,
+      //   stripPrefix: appPath,
+      // }),
     ];
     config.optimization = {
       splitChunks: {

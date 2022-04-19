@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import hoistNonReactStatics from 'hoist-non-react-statics';
 import { FormattedMessage } from 'react-intl';
+import ErrorBoundaryIcon from '@icons/errorBoundary.svg'
 
 import './widgetsStyle.less';
 
@@ -33,7 +34,7 @@ const ErrorBoundary = ComposedComponent => {
       ) : (
         <div className="errorBoundary">
           <img
-            src={'/images/icons/errorBoundary.svg'}
+            src={ErrorBoundaryIcon}
             alt="errorBoundary"
             className="errorBoundary__image"
           />

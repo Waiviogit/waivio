@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import CardsTimeStamp from './CardsTimeStamp';
+import ConvertIcon from '@icons/convert.svg'
 
 const ConvertHiveRequest = ({ amount, timestamp, isGuestPage }) => {
   const actualAmount = `-${parseFloat(amount)} HIVE`;
@@ -9,7 +10,7 @@ const ConvertHiveRequest = ({ amount, timestamp, isGuestPage }) => {
     <div className="UserWalletTransactions__transaction">
       <div className="UserWalletTransactions__icon-wrapper">
         <img
-          src="../images/icons/convert.svg"
+          src={ConvertIcon}
           className="UserWalletTransactions__convert-icon"
           alt="convert"
         />

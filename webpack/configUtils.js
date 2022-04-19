@@ -30,8 +30,8 @@ const POSTCSS_LOADER = {
   loader: 'postcss-loader',
   options: {
     postcssOptions: {
-      parser: "postcss-js",
-      plugins: ['postcss-preset-env', 'autoprefixer']
+      parser: 'postcss-js',
+      plugins: ['postcss-preset-env', 'autoprefixer'],
     },
   },
 };

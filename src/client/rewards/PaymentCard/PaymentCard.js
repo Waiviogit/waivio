@@ -7,6 +7,7 @@ import classNames from 'classnames';
 import { Tooltip } from 'antd';
 import Avatar from '../../components/Avatar';
 import TransferButton from './TransferButton';
+import ArrowSmallIcon from '@icons/arrowSmall.svg'
 import './PaymentCard.less';
 
 const PaymentCard = props => {
@@ -54,7 +55,7 @@ const PaymentCard = props => {
             >
               {/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions */}
               <img
-                src="/images/icons/arrowSmall.svg"
+                src={ArrowSmallIcon}
                 alt="Payments history"
                 onClick={handleSetUser}
               />

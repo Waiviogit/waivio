@@ -8,6 +8,7 @@ import { Map } from 'pigeon-maps';
 import { Icon, Modal } from 'antd';
 import Overlay from 'pigeon-overlay';
 import classNames from 'classnames';
+import AimIcon from '@icons/aim.png'
 import { DEFAULT_RADIUS, DEFAULT_ZOOM } from '../../../common/constants/map';
 import { IS_RESERVED } from '../../../common/constants/rewards';
 import Loading from '../Icon/Loading';
@@ -425,7 +426,7 @@ class MapOS extends React.Component {
         </Map>
         {this.zoomButtonsLayout()}
         <div role="presentation" className="MapOS__locateGPS" onClick={this.setPosition}>
-          <img src="/images/icons/aim.png" alt="aim" className="MapOS__locateGPS-button" />
+          <img src={AimIcon} alt="aim" className="MapOS__locateGPS-button" />
         </div>
         <div role="presentation" className="MapOS__fullScreen" onClick={this.getMapArea}>
           <Icon type="fullscreen" style={{ fontSize: '25px', color: '#000000' }} />
@@ -465,7 +466,7 @@ class MapOS extends React.Component {
               </Map>
               {this.zoomButtonsLayout()}
               <div role="presentation" className="MapOS__locateGPS" onClick={this.setPosition}>
-                <img src="/images/icons/aim.png" alt="aim" className="MapOS__locateGPS-button" />
+                <img src={AimIcon} alt="aim" className="MapOS__locateGPS-button" />
               </div>
               <div role="presentation" className="MapOS__fullScreen" onClick={this.getMapArea}>
                 <Icon
