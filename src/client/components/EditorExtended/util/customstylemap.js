@@ -9,7 +9,7 @@ const customStyleMap = {
   },
   [Inline.CODE]: {
     padding: '2px 4px',
-    'background-color': '#f2f2f2',
+    backgroundColor: '#f2f2f2',
     color: '#303030',
   },
 };
