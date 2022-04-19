@@ -17,7 +17,7 @@ const followAndLikeAfterCreateAppend = (data, isLike, follow) => dispatch => {
   dispatch({ type: APPEND_WAIVIO_OBJECT.SUCCESS });
 };
 
-export const appendObject = (postData, { follow, isLike } = {}) => (
+export const appendObject = (postData, { follow, isLike, votePercent } = {}) => (
   dispatch,
   getState,
   { busyAPI },
@@ -31,7 +31,13 @@ export const appendObject = (postData, { follow, isLike } = {}) => (
       const blockNumber = await getLastBlockNum();
       const voter = getAuthenticatedUserName(getState());
       const websocketCallback = () =>
-        dispatch(followAndLikeAfterCreateAppend({ ...postData, ...res }, isLike, follow));
+        dispatch(
+          followAndLikeAfterCreateAppend(
+            { ...postData, votePower: votePercent, ...res },
+            isLike,
+            follow,
+          ),
+        );
 
       busyAPI.instance.sendAsync(subscribeMethod, [voter, blockNumber, subscribeTypes.posts]);
       busyAPI.instance.subscribeBlock(subscribeTypes.posts, blockNumber, websocketCallback);
