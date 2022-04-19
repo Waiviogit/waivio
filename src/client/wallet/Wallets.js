@@ -11,6 +11,7 @@ import {
   getCurrUserTokensBalanceSwap,
   getGlobalProperties,
   getTokenBalance,
+  getUserTokensBalanceList,
   resetHiveEngineTokenBalance,
   setWalletType,
 } from '../../store/walletStore/walletActions';
@@ -30,6 +31,7 @@ import Deposit from './Deposit/Deposit';
 import WithdrawModal from './WithdrawModal/WithdrawModal';
 import { getIsOpenWithdraw } from '../../store/depositeWithdrawStore/depositWithdrawSelector';
 import ManageDelegate from './DelegateModals/ManageDelegate/ManageDelegate';
+import { getAuthenticatedUserName } from '../../store/authStore/authSelectors';
 
 const Wallets = props => {
   const query = new URLSearchParams(props.location.search);
@@ -42,6 +44,7 @@ const Wallets = props => {
     props.getCryptoPriceHistory();
     props.getGlobalProperties();
     props.getCurrUserTokensBalanceList(props.match.params.name);
+    props.getUserTokensBalanceList(props.authUserName);
     props.getCurrUserTokensBalanceSwap(props.match.params.name);
 
     return () => props.resetHiveEngineTokenBalance();
@@ -103,7 +106,9 @@ Wallets.propTypes = {
   getCurrUserTokensBalanceList: PropTypes.func.isRequired,
   resetHiveEngineTokenBalance: PropTypes.func.isRequired,
   getCurrUserTokensBalanceSwap: PropTypes.func.isRequired,
+  getUserTokensBalanceList: PropTypes.func.isRequired,
   visibleDeposit: PropTypes.bool.isRequired,
+  authUserName: PropTypes.string.isRequired,
   history: PropTypes.shape({
     push: PropTypes.func,
   }).isRequired,
@@ -125,6 +130,7 @@ export default connect(
     visibleDeposit: getDepositVisible(state),
     visibleWithdraw: getIsOpenWithdraw(state),
     visibleDelegate: getDelegationModalVisible(state),
+    authUserName: getAuthenticatedUserName(state),
   }),
   {
     setWalletType,
@@ -134,5 +140,6 @@ export default connect(
     getCurrUserTokensBalanceList,
     resetHiveEngineTokenBalance,
     getCurrUserTokensBalanceSwap,
+    getUserTokensBalanceList,
   },
 )(injectIntl(Wallets));
