@@ -63,6 +63,12 @@ class LikeSection extends React.Component {
     this.calculateVoteWorth(this.state.votePercent);
   };
 
+  componentDidUpdate(prevProps) {
+    if (prevProps.selectedType !== this.props.selectedType) {
+      this.calculateVoteWorth(this.state.votePercent);
+    }
+  }
+
   calculateVoteWorth = async value => {
     const { user, onVotePercentChange, selectedType } = this.props;
 
