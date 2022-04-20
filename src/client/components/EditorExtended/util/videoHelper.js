@@ -40,7 +40,8 @@ export const getYoutubeSrc = url => {
 };
 
 export const getOdyseeLink = async url => {
-  const name = url.replace(/https:\/\/odysee.com\//g, '');
+  const match = url.replace(/(\?.*=.*)/, '').match(VIDEO_MATCH_URL.ODYSEE);
+  const name = match && match[1];
 
   try {
     const body = {
@@ -62,8 +63,6 @@ export const getOdyseeLink = async url => {
     return false;
   }
 };
-
-export const getOdyseeLinkMemo = getOdyseeLink;
 
 export const getOdyseeSrc = async url => ({
   srcID: url,

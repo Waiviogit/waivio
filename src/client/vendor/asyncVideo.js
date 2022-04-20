@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { getOdyseeLinkMemo } from '../components/EditorExtended/util/videoHelper';
+import { getOdyseeLink } from '../components/EditorExtended/util/videoHelper';
 import PropTypes from 'prop-types';
 
 const AsyncVideo = ({ url }) => {
@@ -9,7 +9,7 @@ const AsyncVideo = ({ url }) => {
     const getVideo = async () => {
       try {
         setIsLoading(true);
-        const _url = await getOdyseeLinkMemo(url);
+        const _url = await getOdyseeLink(url);
         setSrc(_url);
       } catch (e) {
         console.log(e);
