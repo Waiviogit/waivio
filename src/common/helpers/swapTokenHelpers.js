@@ -109,7 +109,7 @@ export const getSwapOutput = ({ symbol, amountIn, pool, slippage, from, params, 
 
   let amountOutToFixed;
 
-  if (from) {
+  if (!from) {
     amountOutToFixed = amountOut.minus(fee).toFixed(precision, BigNumber.ROUND_DOWN);
   } else {
     const feeAmount = calcFee({
@@ -128,7 +128,7 @@ export const getSwapOutput = ({ symbol, amountIn, pool, slippage, from, params, 
       .plus(tradeFee)
       .plus(feeAmount)
       .plus(priceImpactFee)
-      .toFixed();
+      .toFixed(precision);
   }
 
   const minAmountOutToFixed = minAmountOut.minus(fee).toFixed(precision, BigNumber.ROUND_UP);
