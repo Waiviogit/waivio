@@ -63,6 +63,7 @@ export const ATOMIC_TYPES = {
   SEPARATOR: 'separator',
   IMAGE: 'image',
   VIDEO: 'video',
+  CODE: 'code-block',
 };
 
 export default {
