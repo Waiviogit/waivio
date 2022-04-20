@@ -1,33 +1,42 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { EditorState, Modifier, RichUtils } from 'draft-js';
+import { EditorState, Modifier, RichUtils, ContentState, ContentBlock, genKey } from 'draft-js';
+import { List } from 'immutable';
+import { compose } from 'lodash';
 import StyleButton from './stylebutton';
 
-export const handleClearInlineFormatting = (editorState) => {
-  const styles = [
-    'BOLD',
-    'ITALIC',
-    'UNDERLINE',
-    'STRIKETHROUGH',
-    'CODE'
-  ];
+export const addEmptyBlock = editorState => {
+  const newBlock = new ContentBlock({
+    key: genKey(),
+    type: 'unstyled',
+    text: '',
+    characterList: List(),
+  });
 
-  const contentWithoutStyles = styles.reduce( (newContentState, style) => (
-    Modifier.removeInlineStyle(
-      newContentState,
-      editorState.getSelection(),
-      style
-    )
-  ), editorState.getCurrentContent());
+  const contentState = editorState.getCurrentContent();
+  const newBlockMap = contentState.getBlockMap().set(newBlock.key, newBlock);
 
   return EditorState.push(
     editorState,
-    contentWithoutStyles,
-    'change-inline-style'
+    ContentState.createFromBlockArray(newBlockMap.toArray())
+      .set('selectionBefore', contentState.getSelectionBefore())
+      .set('selectionAfter', contentState.getSelectionAfter()),
   );
 };
 
-const isSelectedFullBlocks = (editorState) => {
+export const handleClearInlineFormatting = editorState => {
+  const styles = ['BOLD', 'ITALIC', 'UNDERLINE', 'STRIKETHROUGH', 'CODE'];
+
+  const contentWithoutStyles = styles.reduce(
+    (newContentState, style) =>
+      Modifier.removeInlineStyle(newContentState, editorState.getSelection(), style),
+    editorState.getCurrentContent(),
+  );
+
+  return EditorState.push(editorState, contentWithoutStyles, 'change-inline-style');
+};
+
+const isSelectedFullBlocks = editorState => {
   const currentContent = editorState.getCurrentContent();
 
   const selectionState = editorState.getSelection();
@@ -38,20 +47,32 @@ const isSelectedFullBlocks = (editorState) => {
   const endBlock = currentContent.getBlockForKey(endKey);
   const textEndBlock = endBlock.getText().trim();
 
-  return start === 0 && end === textEndBlock.length
-}
+  return start === 0 && end === textEndBlock.length;
+};
+
+const isBlockAfterSelectionExist = editorState => {
+  const currentContent = editorState.getCurrentContent();
+  const selectionState = editorState.getSelection();
+  const endKey = selectionState.getEndKey();
+
+  return !!currentContent.getKeyAfter(endKey);
+};
 
 const CodeButton = props => {
   if (props.buttons.length < 1) {
     return null;
   }
   const { editorState, setEditorState } = props;
-  const onToggleBlock = (style) => {
-    queueMicrotask(() => props.onToggle(style) );
+  const onToggleBlock = style => {
+    queueMicrotask(() => props.onToggle(style));
     if (style === 'code-block') {
-      setEditorState(handleClearInlineFormatting(editorState));
+      if (!isBlockAfterSelectionExist(editorState)) {
+        compose(setEditorState, addEmptyBlock, handleClearInlineFormatting)(editorState);
+      } else {
+        setEditorState(handleClearInlineFormatting(editorState));
+      }
     }
-  }
+  };
   const blockType = RichUtils.getCurrentBlockType(editorState);
 
   const isInline = !isSelectedFullBlocks(editorState);
@@ -63,7 +84,7 @@ const CodeButton = props => {
 
         iconLabel.label = type.label;
         const isInlineCode = isInline && type.style === 'code-block' && type.style !== blockType;
-        const onToggle =  isInlineCode ? props.onToggleInline : onToggleBlock;
+        const onToggle = isInlineCode ? props.onToggleInline : onToggleBlock;
         const style = isInlineCode ? 'CODE' : type.style;
 
         return (
