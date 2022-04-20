@@ -23,10 +23,12 @@
     margin-top: 10px;
     padding: 15px;
     background-color: @white;
+    font-family: @font-family-sans-serif;
+    font-weight: 500;
   }
   .act-buttons-heading {
     margin-bottom: 10px;
-    color: @grey-empress;
+    color: @blue-baliHai;
   }
   .video-link-input,
   .object-search-input {
@@ -91,7 +93,7 @@
   background: @white none;
   outline: none;
   border: 1px solid @grey-empress;
-  color: @grey-empress;
+  color: @blue-baliHai;
   cursor: pointer;
   height: @add-btn-width;
   min-width: @add-btn-width;
@@ -99,14 +101,14 @@
   font-size: 22px;
   text-align: center;
   transition: all 0.2s ease;
-
+  font-weight: 500;
   &:focus {
     outline: none;
   }
 
   svg path {
     stroke-width: 0;
-    fill: #545454;
+    fill: @blue-baliHai;
   }
 
   &.action-btn {
@@ -140,7 +142,16 @@
         height: 25px;
       }
       svg path {
-        fill: @grey-empress;
+        fill: @blue-baliHai;
+      }
+    }
+
+    & > .btn-icon_photo {
+      height: 30px;
+      width: 30px;
+      margin-top: 0;
+      svg {
+        fill: gray;
       }
     }
 
@@ -161,12 +172,16 @@
       }
     }
 
+    .action-btn__caption_object {
+      padding-left: 0;
+    }
+
     .action-btn__icon {
       margin: 0 5px;
       width: 25px;
       height: 25px;
-      fill: @grey-empress;
-
+      fill: @blue-baliHai;
+      color: @blue-baliHai;
       &--cube {
         height: 22px;
       }

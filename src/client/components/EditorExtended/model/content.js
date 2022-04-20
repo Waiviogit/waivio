@@ -5,6 +5,7 @@ import ImageSideButton from '../components/sides/ImageSideButton';
 import VideoSideButton from '../components/sides/VideoSideButton';
 import ObjectSideButton from '../components/sides/ObjectSideButton';
 import SeparatorButton from '../components/sides/SeparatorSideButton';
+import CodeSideButton from '../components/sides/CodeSideButton';
 
 export const defaultDecorators = new CompositeDecorator([
   {
@@ -33,6 +34,10 @@ export const SIDE_BUTTONS = [
   {
     title: 'Separator',
     component: SeparatorButton,
+  },
+  {
+    title: 'Code',
+    component: CodeSideButton,
   },
 ];
 
