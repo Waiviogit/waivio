@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Checkbox, Form } from 'antd';
 import { connect } from 'react-redux';
-import { ceil } from 'lodash';
+import { ceil, isEmpty } from 'lodash';
 import { FormattedMessage, FormattedNumber, injectIntl } from 'react-intl';
 import RawSlider from '../components/Slider/RawSlider';
 import USDDisplay from '../components/Utils/USDDisplay';
@@ -65,6 +65,8 @@ class LikeSection extends React.Component {
 
   calculateVoteWorth = async value => {
     const { user, onVotePercentChange, selectedType } = this.props;
+
+    if (isEmpty(selectedType)) return;
 
     const voteWorth = await calculateVotePowerForSlider(
       user.name,

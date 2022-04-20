@@ -56,11 +56,7 @@ export default class ImageSideButton extends React.Component {
           onClick={this.onClick}
           title={this.props.intl.formatMessage({ id: 'image', defaultMessage: 'Add an image' })}
         >
-          <img
-            src="../images/icons/picture.svg"
-            alt="show photos"
-            className="btn-icon_photo"
-          />
+          <img src="../images/icons/picture.svg" alt="show photos" className="btn-icon_photo" />
           <span className="action-btn__caption">
             {this.props.intl.formatMessage({ id: 'post_btn_photo', defaultMessage: 'Photo' })}
           </span>
