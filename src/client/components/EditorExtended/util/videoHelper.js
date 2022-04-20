@@ -8,6 +8,8 @@ const THREESPEAK_TV_PREFIX = 'https://3speak.tv/embed?v=';
 const RUMBLE_PREFIX = 'https://rumble.com/embed/';
 const BITCHUTE_PREFIX = 'https://www.bitchute.com/embed/';
 
+export const isOdysee = url => VIDEO_MATCH_URL.ODYSEE.test(url);
+
 export const isYoutube = url =>
   url.includes('shorts')
     ? VIDEO_MATCH_URL.YOUTUBE_SHORTS.test(url)
@@ -36,6 +38,38 @@ export const getYoutubeSrc = url => {
     url,
   };
 };
+
+export const getOdyseeLink = async url => {
+  const name = url.replace(/https:\/\/odysee.com\//g, '');
+
+  try {
+    const body = {
+      method: 'resolve',
+      params: {
+        urls: [name],
+      },
+    };
+    const res = await fetch('https://api.na-backend.odysee.com/api/v1/proxy?m=get', {
+      method: 'POST',
+      body: JSON.stringify(body),
+    });
+    const _res = await res.json();
+    const claimId = _res.result[name].claim_id;
+    const claimName = _res.result[name].name;
+
+    return `https://odysee.com/$/embed/${claimName}/${claimId}`;
+  } catch (e) {
+    return false;
+  }
+};
+
+export const getOdyseeLinkMemo = getOdyseeLink;
+
+export const getOdyseeSrc = async url => ({
+  srcID: url,
+  srcType: 'odysee',
+  url,
+});
 
 export const getVimeoSrc = url => {
   const id = url.match(VIDEO_MATCH_URL.VIMEO)[3];
@@ -102,6 +136,9 @@ export const getSrc = ({ src }) => {
     const { srcID } = getYoutubeSrc(src);
 
     return `${YOUTUBE_PREFIX}${srcID}`;
+  }
+  if (isOdysee(src)) {
+    return src;
   }
   if (isVimeo(src)) {
     const { srcID } = getVimeoSrc(src);

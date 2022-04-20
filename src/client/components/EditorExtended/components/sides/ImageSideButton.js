@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { injectIntl } from 'react-intl';
-import { Icon, Modal } from 'antd';
+import { Modal } from 'antd';
 import { addNewBlockAt } from '../../model';
 import { Block } from '../..';
 import ImageSetter from '../../../ImageSetter/ImageSetter';
@@ -56,7 +56,7 @@ export default class ImageSideButton extends React.Component {
           onClick={this.onClick}
           title={this.props.intl.formatMessage({ id: 'image', defaultMessage: 'Add an image' })}
         >
-          <Icon type="picture" className="btn-icon" />
+          <img src="../images/icons/picture.svg" alt="show photos" className="btn-icon_photo" />
           <span className="action-btn__caption">
             {this.props.intl.formatMessage({ id: 'post_btn_photo', defaultMessage: 'Photo' })}
           </span>

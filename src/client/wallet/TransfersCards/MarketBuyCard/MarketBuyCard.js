@@ -17,6 +17,7 @@ const MarketBuyCard = ({
   const isLimitOrder = orderType === 'sell' || orderType === 'buy';
   const isMarketOrder = orderType === 'marketSell' ? 'sell' : 'buy';
   const isSell = orderType === 'sell';
+  const minFractionDigits = 0;
 
   return (
     <div className="UserWalletTransactions__transaction">
@@ -38,7 +39,7 @@ const MarketBuyCard = ({
                 <FormattedNumber
                   value={quantityLocked}
                   locale={'en-IN'}
-                  minimumFractionDigits={3}
+                  minimumFractionDigits={minFractionDigits}
                   maximumFractionDigits={fractionDigits || 3}
                 />{' '}
                 {symbol}
@@ -51,7 +52,7 @@ const MarketBuyCard = ({
                 <FormattedNumber
                   value={quantityLocked}
                   locale={'en-IN'}
-                  minimumFractionDigits={3}
+                  minimumFractionDigits={minFractionDigits}
                   maximumFractionDigits={fractionDigits || 3}
                 />{' '}
                 {isSell ? symbol : 'SWAP.HIVE'}
@@ -61,7 +62,7 @@ const MarketBuyCard = ({
                 <FormattedNumber
                   value={quantity}
                   locale={'en-IN'}
-                  minimumFractionDigits={3}
+                  minimumFractionDigits={minFractionDigits}
                   maximumFractionDigits={fractionDigits || 3}
                 />{' '}
                 {isSell ? 'SWAP.HIVE' : symbol}
@@ -72,12 +73,12 @@ const MarketBuyCard = ({
         <div className="MarketBuyCard__lower-text">
           <CardsTimeStamp timestamp={timestamp} />
           {isLimitOrder && (
-            <div className="UserWalletTransactions__timestamp">
+            <div className="MarketBuyCard__per-waiv">
               {' '}
               <FormattedNumber
                 value={price}
                 locale={'en-IN'}
-                minimumFractionDigits={3}
+                minimumFractionDigits={minFractionDigits}
                 maximumFractionDigits={fractionDigits || 3}
               />{' '}
               {`per ${symbol}`}

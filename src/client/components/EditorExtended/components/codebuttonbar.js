@@ -1,28 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { EditorState, Modifier, RichUtils, ContentState, ContentBlock, genKey } from 'draft-js';
-import { List } from 'immutable';
-import { compose } from 'lodash';
+import { EditorState, Modifier, RichUtils } from 'draft-js';
 import StyleButton from './stylebutton';
-
-export const addEmptyBlock = editorState => {
-  const newBlock = new ContentBlock({
-    key: genKey(),
-    type: 'unstyled',
-    text: '',
-    characterList: List(),
-  });
-
-  const contentState = editorState.getCurrentContent();
-  const newBlockMap = contentState.getBlockMap().set(newBlock.key, newBlock);
-
-  return EditorState.push(
-    editorState,
-    ContentState.createFromBlockArray(newBlockMap.toArray())
-      .set('selectionBefore', contentState.getSelectionBefore())
-      .set('selectionAfter', contentState.getSelectionAfter()),
-  );
-};
 
 export const handleClearInlineFormatting = editorState => {
   const styles = ['BOLD', 'ITALIC', 'UNDERLINE', 'STRIKETHROUGH', 'CODE'];
@@ -50,14 +29,6 @@ const isSelectedFullBlocks = editorState => {
   return start === 0 && end === textEndBlock.length;
 };
 
-const isBlockAfterSelectionExist = editorState => {
-  const currentContent = editorState.getCurrentContent();
-  const selectionState = editorState.getSelection();
-  const endKey = selectionState.getEndKey();
-
-  return !!currentContent.getKeyAfter(endKey);
-};
-
 const CodeButton = props => {
   if (props.buttons.length < 1) {
     return null;
@@ -66,11 +37,7 @@ const CodeButton = props => {
   const onToggleBlock = style => {
     queueMicrotask(() => props.onToggle(style));
     if (style === 'code-block') {
-      if (!isBlockAfterSelectionExist(editorState)) {
-        compose(setEditorState, addEmptyBlock, handleClearInlineFormatting)(editorState);
-      } else {
-        setEditorState(handleClearInlineFormatting(editorState));
-      }
+      setEditorState(handleClearInlineFormatting(editorState));
     }
   };
   const blockType = RichUtils.getCurrentBlockType(editorState);
