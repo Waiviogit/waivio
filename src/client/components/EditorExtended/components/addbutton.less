@@ -23,6 +23,8 @@
     margin-top: 10px;
     padding: 15px;
     background-color: @white;
+    font-family: @font-family-sans-serif;
+    font-weight: 500;
   }
   .act-buttons-heading {
     margin-bottom: 10px;
@@ -99,14 +101,14 @@
   font-size: 22px;
   text-align: center;
   transition: all 0.2s ease;
-
+  font-weight: 500;
   &:focus {
     outline: none;
   }
 
   svg path {
     stroke-width: 0;
-    fill: #545454;
+    fill: @blue-baliHai;
   }
 
   &.action-btn {
@@ -145,8 +147,8 @@
     }
 
     & > .btn-icon_photo {
-      height: 40px;
-      width: 40px;
+      height: 30px;
+      width: 30px;
       margin-top: 0;
       svg {
         fill: gray;
@@ -168,6 +170,10 @@
       @media @small {
         font-size: 19px;
       }
+    }
+
+    .action-btn__caption_object {
+      padding-left: 0;
     }
 
     .action-btn__icon {

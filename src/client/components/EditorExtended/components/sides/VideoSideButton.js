@@ -79,8 +79,8 @@ class VideoSideButton extends Component {
       >
         <img
           src={'/images/icons/play_video.svg'}
-          width={40}
-          height={40}
+          width={30}
+          height={30}
           className="action-btn__icon"
           alt="play"
         />
