@@ -121,6 +121,7 @@ export const getSwapOutput = ({ symbol, amountIn, pool, slippage, from, params, 
     const priceImpactFee = BigNumber(priceImpact)
       .div(100)
       .times(feeAmount);
+
     amountOutToFixed = BigNumber(amountOut)
       .minus(feeAmount)
       .plus(priceImpactFee)
