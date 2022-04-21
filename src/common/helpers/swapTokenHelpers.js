@@ -4,21 +4,19 @@ const getAmountOut = (tradeFeeMul, amountIn, liquidityIn, liquidityOut) => {
   const amountInWithFee = BigNumber(amountIn).times(tradeFeeMul);
   const num = BigNumber(amountInWithFee).times(liquidityOut);
   const den = BigNumber(liquidityIn).plus(amountInWithFee);
-  const amountOut = num.dividedBy(den);
 
-  return amountOut;
+  return num.dividedBy(den);
 };
 
 const calcFee = ({ tradeFeeMul, tokenAmount, liquidityIn, liquidityOut, precision }) => {
   const tokenAmountAdjusted = BigNumber(
     getAmountOut(tradeFeeMul, tokenAmount, liquidityIn, liquidityOut),
   );
-  const fee = BigNumber(tokenAmountAdjusted)
+
+  return BigNumber(tokenAmountAdjusted)
     .dividedBy(tradeFeeMul)
     .minus(tokenAmountAdjusted)
     .toFixed(precision, BigNumber.ROUND_HALF_UP);
-
-  return fee;
 };
 
 const createJSON = ({ tokenPair, minAmountOut, tokenSymbol, tokenAmount }) =>
@@ -109,7 +107,7 @@ export const getSwapOutput = ({ symbol, amountIn, pool, slippage, from, params, 
 
   let amountOutToFixed;
 
-  if (!from) {
+  if (from) {
     amountOutToFixed = amountOut.minus(fee).toFixed(precision, BigNumber.ROUND_DOWN);
   } else {
     const feeAmount = calcFee({
