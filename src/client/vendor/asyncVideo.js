@@ -4,17 +4,13 @@ import PropTypes from 'prop-types';
 
 const AsyncVideo = ({ url }) => {
   const [src, setSrc] = useState('');
-  const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
     const getVideo = async () => {
       try {
-        setIsLoading(true);
         const _url = await getOdyseeLink(url);
         setSrc(_url);
       } catch (e) {
         console.log(e);
-      } finally {
-        setIsLoading(false);
       }
     };
     getVideo();
