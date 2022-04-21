@@ -117,16 +117,16 @@ export const getSwapOutput = ({ symbol, amountIn, pool, slippage, from, params, 
       precision,
       tradeFeeMul: params.tradeFeeMul,
     });
-    const tradeFee = BigNumber(feeAmount).times(0.025);
+    const tradeFee = BigNumber(feeAmount).times(0.02);
     const priceImpactFee = BigNumber(priceImpact)
       .div(100)
       .times(feeAmount);
 
     amountOutToFixed = BigNumber(amountOut)
-      .plus(tradeFee)
-      .plus(feeAmount)
+      .minus(feeAmount)
       .plus(priceImpactFee)
-      .toFixed(precision);
+      .minus(tradeFee)
+      .toFixed(precision, BigNumber.ROUND_DOWN);
   }
 
   const minAmountOutToFixed = minAmountOut.minus(fee).toFixed(precision, BigNumber.ROUND_UP);
