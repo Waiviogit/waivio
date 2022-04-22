@@ -136,7 +136,7 @@ export default class AddButton extends React.Component {
           type="button"
         >
           <svg viewBox="0 0 8 8" height="14" width="14">
-            <path d="M3 0v3h-3v2h3v3h2v-3h3v-2h-3v-3h-2z" />
+            <path d="M3 0v3h-3v2h3v3h2v-3h3v-2h-3v-3h-2z" className="add-button-plus" />
           </svg>
         </button>
         {this.state.isOpen &&

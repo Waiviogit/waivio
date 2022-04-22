@@ -267,14 +267,25 @@ export default class Transfer extends React.Component {
   };
 
   handleBalanceClick = event => {
-    const { oldAmount } = this.state;
     const value = parseFloat(event.currentTarget.innerText);
 
     this.props.form.setFieldsValue({ amount: value });
     this.setState({
       searchBarValue: value,
       currentEstimate: this.estimatedValue(value),
-      oldAmount: Transfer.amountRegex.test(value) ? value : oldAmount,
+    });
+  };
+
+  handleClickMax = () => {
+    const { isGuest, user } = this.props;
+    const currAmount = this.getTokensBalanceList()[this.state.currency];
+    const currentBalance = isGuest ? user.balance : currAmount;
+    const value = round(currentBalance, 3);
+
+    this.props.form.setFieldsValue({ amount: value });
+    this.setState({
+      searchBarValue: value,
+      currentEstimate: this.estimatedValue(value),
     });
   };
 
@@ -495,7 +506,7 @@ export default class Transfer extends React.Component {
           <Avatar username={account} size={40} />
           <div className="Transfer__search-content">{account}</div>
         </div>
-        {!guestWithBeneficiary && !amount && isCurrentUser && (
+        {!guestWithBeneficiary && !amount && isCurrentUser && !to && (
           <span
             role="presentation"
             onClick={() =>
@@ -543,16 +554,14 @@ export default class Transfer extends React.Component {
 
   handleAmountChange = event => {
     const { value } = event.target;
-    const { oldAmount } = this.state;
 
     this.setState({
       inputValue: value,
-      oldAmount: Transfer.amountRegex.test(value) ? value : oldAmount,
       currentEstimate: this.estimatedValue(value),
     });
 
     this.props.form.setFieldsValue({
-      amount: Transfer.amountRegex.test(value) ? value : oldAmount,
+      amount: value,
     });
     this.props.form.validateFields(['amount']);
   };
@@ -690,6 +699,11 @@ export default class Transfer extends React.Component {
                     id: 'amount_placeholder',
                     defaultMessage: 'How much do you want to send',
                   })}
+                  suffix={
+                    <span className="TokenSelect__max-button" onClick={this.handleClickMax}>
+                      <FormattedMessage id="max" defaultMessage="max" />
+                    </span>
+                  }
                 />,
               )}
               {getFieldDecorator('currency', {
