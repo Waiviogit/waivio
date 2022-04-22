@@ -7,7 +7,8 @@ import CardsTimeStamp from '../CardsTimeStamp';
 import './DelegateInstructionCard.less';
 
 const DelegateInstructionCard = props => {
-  const feeRate = props.rate - 0.0075;
+  const fee = 0.0075;
+  const feeRate = props.rate - fee;
 
   return (
     <div className="UserWalletTransactions__transaction DelegateInstructionCard">
