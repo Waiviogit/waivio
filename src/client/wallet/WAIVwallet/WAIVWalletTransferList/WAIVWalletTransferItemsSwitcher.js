@@ -281,10 +281,12 @@ const WAIVWalletTransferItemsSwitcher = ({ transaction, currentName, intl }) => 
       return (
         <DelegateInstructionCard
           timestamp={transaction.timestamp}
-          pair={transaction.pair}
           depositAccount={transaction.depositAccount}
           memo={transaction.memo}
           address={transaction.address}
+          symbolIn={transaction.symbolIn}
+          symbolOut={transaction.symbolOut}
+          rate={transaction.ex_rate}
         />
       );
 
@@ -350,6 +352,7 @@ WAIVWalletTransferItemsSwitcher.propTypes = {
     symbolInQuantity: PropTypes.string,
     poolId: PropTypes.string,
     symbolIn: PropTypes.string,
+    ex_rate: PropTypes.string,
   }).isRequired,
 };
 
