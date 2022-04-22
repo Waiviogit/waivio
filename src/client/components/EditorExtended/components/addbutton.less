@@ -11,6 +11,7 @@
   top: -1;
   transition: all 0.1s ease;
   left: 0;
+
   .act-buttons-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -26,10 +27,12 @@
     font-family: @font-family-sans-serif;
     font-weight: 500;
   }
+
   .act-buttons-heading {
     margin-bottom: 10px;
     color: @blue-baliHai;
   }
+
   .video-link-input,
   .object-search-input {
     background-color: @white;
@@ -58,6 +61,7 @@
         outline: none;
       }
     }
+
     .ant-btn {
       height: 32px;
       padding: 0 8px;
@@ -69,16 +73,21 @@
 
     .ant-select-selection {
       width: 100%;
+
       &__rendered {
         width: 100%;
+
         .ant-select-selection__placeholder,
         .ant-select-search__field__placeholder {
           margin-top: -8px;
         }
+
         ul {
           width: 100%;
+
           li {
             margin: 0;
+
             .ant-input {
               height: 32px;
             }
@@ -102,6 +111,7 @@
   text-align: center;
   transition: all 0.2s ease;
   font-weight: 500;
+
   &:focus {
     outline: none;
   }
@@ -138,9 +148,11 @@
     & > .btn-icon {
       padding-left: 5px;
       padding-right: 5px;
+
       svg {
         height: 25px;
       }
+
       svg path {
         fill: @blue-baliHai;
       }
@@ -150,6 +162,7 @@
       height: 30px;
       width: 30px;
       margin-top: 0;
+
       svg {
         fill: gray;
       }
@@ -157,6 +170,7 @@
 
     & > .object-btn {
       font-size: 24px;
+
       svg path {
         fill: @grey-empress;
       }
@@ -182,6 +196,7 @@
       height: 25px;
       fill: @blue-baliHai;
       color: @blue-baliHai;
+
       &--cube {
         height: 22px;
       }
@@ -193,9 +208,14 @@
   margin: 10px 2px 0 -26px;
   height: 36px;
   min-width: 36px;
+
   &.md-open-button {
     transform: rotate(45deg);
   }
+}
+
+.add-button-plus {
+  fill: @grey-mortar !important;
 }
 
 .md-add-btn-anim-appear {
