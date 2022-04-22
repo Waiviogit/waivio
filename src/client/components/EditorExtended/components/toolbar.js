@@ -363,6 +363,12 @@ export default class Toolbar extends React.Component {
 
 export const BLOCK_BUTTONS = [
   {
+    label: 'H1',
+    style: 'header-one',
+    icon: 'header',
+    description: 'Heading 1',
+  },
+  {
     label: 'H2',
     style: 'header-two',
     icon: 'header',
