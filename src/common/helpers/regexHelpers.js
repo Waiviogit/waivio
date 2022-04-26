@@ -6,7 +6,7 @@ export const VIDEO_MATCH_URL = {
   THREE_SPEAK: /^https:\/\/3speak\.online\/(watch|embed)\?v=([\w\d-/._]*)(&|$)/,
   THREE_SPEAK_TV: /^https:\/\/3speak\.tv\/(watch|embed)\?.*v=([\w\d\-/._]*)(&|$|\))/,
   RUMBLE: /^https:\/\/rumble\.com\/embed\/([a-zA-Z0-9-_]*)/,
-  BITCHUTE: /^https:\/\/www\.bitchute\.com\/(video|embed)\/([a-zA-Z0-9-_]*)/,
+  BITCHUTE: /^https:\/\/(?:www\.)?bitchute\.com\/(video|embed)\/([a-zA-Z0-9-_]*)/,
   ODYSEE: /^https:\/\/odysee\.com\/(.*)/,
 };
 
