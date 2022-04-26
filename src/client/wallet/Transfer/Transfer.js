@@ -149,7 +149,7 @@ export default class Transfer extends React.Component {
     permlink: '',
   };
 
-  static amountRegex = /^[0-9]*\.?[0-9]{0,3}$/;
+  static amountRegex = /^[0-9]*\.?[0-9]{0,5}$/;
   static minAccountLength = 3;
   static maxAccountLength = 16;
   static maxGuestAccountLength = 23;
@@ -280,7 +280,7 @@ export default class Transfer extends React.Component {
     const { isGuest, user } = this.props;
     const currAmount = this.getTokensBalanceList()[this.state.currency];
     const currentBalance = isGuest ? user.balance : currAmount;
-    const value = round(currentBalance, 3);
+    const value = round(currentBalance, 3) || currentBalance;
 
     this.props.form.setFieldsValue({ amount: value });
     this.setState({
