@@ -381,6 +381,12 @@ export const BLOCK_BUTTONS = [
     description: 'Heading 3',
   },
   {
+    label: 'H4',
+    style: 'header-four',
+    icon: 'header',
+    description: 'Heading 4',
+  },
+  {
     label: (
       <svg width="10.83" height="10" viewBox="0 0 13 12">
         <g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
