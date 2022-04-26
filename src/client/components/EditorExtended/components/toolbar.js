@@ -130,7 +130,7 @@ export default class Toolbar extends React.Component {
     if (screenLeft < 0) {
       // If the toolbar would be off-screen
       // move it as far left as it can without going off-screen
-      left = -parentBoundary.left;
+      left = -parentBoundary.left + (document.body.clientWidth < 1024 ? 20 : 0);
     }
     toolbarNode.style.left = `${left}px`;
   }
