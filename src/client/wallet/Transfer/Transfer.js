@@ -4,7 +4,7 @@ import classNames from 'classnames';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import { get, isNull, isEmpty, includes, isString, round, uniqWith } from 'lodash';
+import { get, isNull, isEmpty, includes, isString, round, floor, uniqWith } from 'lodash';
 import { Form, Input, Modal, Select } from 'antd';
 import { v4 as uuidv4 } from 'uuid';
 import { HBD, HIVE } from '../../../common/constants/cryptos';
@@ -280,7 +280,7 @@ export default class Transfer extends React.Component {
     const { isGuest, user } = this.props;
     const currAmount = this.getTokensBalanceList()[this.state.currency];
     const currentBalance = isGuest ? user.balance : currAmount;
-    const value = round(currentBalance, 3) || currentBalance;
+    const value = floor(currentBalance, this.getFraction(currentBalance));
 
     this.props.form.setFieldsValue({ amount: value });
     this.setState({
@@ -683,9 +683,9 @@ export default class Transfer extends React.Component {
                   {
                     pattern: Transfer.amountRegex,
                     message: intl.formatMessage({
-                      id: 'amount_error_format',
+                      id: 'amount_error_format_5_places',
                       defaultMessage:
-                        'Incorrect format. Use comma or dot as decimal separator. Use at most 3 decimal places.',
+                        'Incorrect format. Use comma or dot as decimal separator. Use at most 5 decimal places.',
                     }),
                   },
                   { validator: this.validateBalance },
@@ -728,7 +728,7 @@ export default class Transfer extends React.Component {
                     >
                       <span>{token.symbol}</span>
                       <span className="Transfer__currency-balance">
-                        {round(token.balance, this.getFraction(token.balance))}
+                        {floor(token.balance, this.getFraction(token.balance))}
                       </span>
                     </Select.Option>
                   ))}
@@ -748,7 +748,7 @@ export default class Transfer extends React.Component {
                   className={amountClassList}
                 >
                   {' '}
-                  {round(currentBalance, this.getFraction(currentBalance)) || 0}{' '}
+                  {floor(currentBalance, this.getFraction(currentBalance)) || 0}{' '}
                   {this.state.currency}
                 </span>
               </React.Fragment>
