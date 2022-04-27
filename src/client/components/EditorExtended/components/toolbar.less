@@ -157,9 +157,14 @@
   }
 
   .md-RichEditor-linkButton {
+    vertical-align: middle;
     padding: 0 5px;
     color: @white;
     text-decoration: none;
+    svg {
+      position: relative;
+      top: 1px;
+    }
   }
 }
 
@@ -216,6 +221,28 @@
 
   &:last-child {
     border: 1px solid @orange-hot;
+  }
+}
+
+.md-RichEditor-controls-code {
+  .md-RichEditor-styleButton {
+    padding-top: 2px;
+    padding-bottom: 2px;
+    height: 32px;
+  }
+  .md-RichEditor-styleButton:first-child {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+  &:hover,
+  .md-RichEditor-activeButton {
+    svg {
+      fill: @orange;
+    }
+  }
+  svg {
+    position: relative;
+    top: 1.5px;
   }
 }
 

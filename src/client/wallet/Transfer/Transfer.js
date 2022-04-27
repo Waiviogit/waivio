@@ -4,7 +4,7 @@ import classNames from 'classnames';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import { get, isNull, isEmpty, includes, isString, round, uniqWith } from 'lodash';
+import { get, isNull, isEmpty, includes, isString, round, floor, uniqWith } from 'lodash';
 import { Form, Input, Modal, Select } from 'antd';
 import { v4 as uuidv4 } from 'uuid';
 import { HBD, HIVE } from '../../../common/constants/cryptos';
@@ -149,7 +149,7 @@ export default class Transfer extends React.Component {
     permlink: '',
   };
 
-  static amountRegex = /^[0-9]*\.?[0-9]{0,3}$/;
+  static amountRegex = /^[0-9]*\.?[0-9]{0,5}$/;
   static minAccountLength = 3;
   static maxAccountLength = 16;
   static maxGuestAccountLength = 23;
@@ -267,14 +267,25 @@ export default class Transfer extends React.Component {
   };
 
   handleBalanceClick = event => {
-    const { oldAmount } = this.state;
     const value = parseFloat(event.currentTarget.innerText);
 
     this.props.form.setFieldsValue({ amount: value });
     this.setState({
       searchBarValue: value,
       currentEstimate: this.estimatedValue(value),
-      oldAmount: Transfer.amountRegex.test(value) ? value : oldAmount,
+    });
+  };
+
+  handleClickMax = () => {
+    const { isGuest, user } = this.props;
+    const currAmount = this.getTokensBalanceList()[this.state.currency];
+    const currentBalance = isGuest ? user.balance : currAmount;
+    const value = floor(currentBalance, this.getFraction(currentBalance));
+
+    this.props.form.setFieldsValue({ amount: value });
+    this.setState({
+      searchBarValue: value,
+      currentEstimate: this.estimatedValue(value),
     });
   };
 
@@ -495,7 +506,7 @@ export default class Transfer extends React.Component {
           <Avatar username={account} size={40} />
           <div className="Transfer__search-content">{account}</div>
         </div>
-        {!guestWithBeneficiary && !amount && isCurrentUser && (
+        {!guestWithBeneficiary && !amount && isCurrentUser && !to && (
           <span
             role="presentation"
             onClick={() =>
@@ -543,16 +554,14 @@ export default class Transfer extends React.Component {
 
   handleAmountChange = event => {
     const { value } = event.target;
-    const { oldAmount } = this.state;
 
     this.setState({
       inputValue: value,
-      oldAmount: Transfer.amountRegex.test(value) ? value : oldAmount,
       currentEstimate: this.estimatedValue(value),
     });
 
     this.props.form.setFieldsValue({
-      amount: Transfer.amountRegex.test(value) ? value : oldAmount,
+      amount: value,
     });
     this.props.form.validateFields(['amount']);
   };
@@ -674,22 +683,27 @@ export default class Transfer extends React.Component {
                   {
                     pattern: Transfer.amountRegex,
                     message: intl.formatMessage({
-                      id: 'amount_error_format',
+                      id: 'amount_error_format_5_places',
                       defaultMessage:
-                        'Incorrect format. Use comma or dot as decimal separator. Use at most 3 decimal places.',
+                        'Incorrect format. Use comma or dot as decimal separator. Use at most 5 decimal places.',
                     }),
                   },
                   { validator: this.validateBalance },
                 ],
               })(
                 <Input
+                  className="Transfer__border"
                   disabled={isChangesDisabled && amount}
-                  className="Transfer__amount__input"
                   onChange={this.handleAmountChange}
                   placeholder={intl.formatMessage({
                     id: 'amount_placeholder',
                     defaultMessage: 'How much do you want to send',
                   })}
+                  suffix={
+                    <span className="TokenSelect__max-button" onClick={this.handleClickMax}>
+                      <FormattedMessage id="max" defaultMessage="max" />
+                    </span>
+                  }
                 />,
               )}
               {getFieldDecorator('currency', {
@@ -701,6 +715,7 @@ export default class Transfer extends React.Component {
                   className="Transfer__currency"
                   onChange={this.handleCurrencyChange}
                   disabled={isChangesDisabled || isGuest}
+                  dropdownClassName={'Transfer__currency-list'}
                 >
                   {userBalances.map(token => (
                     <Select.Option
@@ -715,7 +730,7 @@ export default class Transfer extends React.Component {
                     >
                       <span>{token.symbol}</span>
                       <span className="Transfer__currency-balance">
-                        {round(token.balance, this.getFraction(token.balance))}
+                        {floor(token.balance, this.getFraction(token.balance))}
                       </span>
                     </Select.Option>
                   ))}
@@ -735,7 +750,7 @@ export default class Transfer extends React.Component {
                   className={amountClassList}
                 >
                   {' '}
-                  {round(currentBalance, this.getFraction(currentBalance)) || 0}{' '}
+                  {floor(currentBalance, this.getFraction(currentBalance)) || 0}{' '}
                   {this.state.currency}
                 </span>
               </React.Fragment>
