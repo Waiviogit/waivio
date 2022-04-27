@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { EditorState, genKey, ContentBlock, SelectionState } from 'draft-js';
 import { ReactSVG } from 'react-svg';
+import { addEmptyBlock } from '../codebuttonbar';
 
 const insertNewBlockToContentState = (contentState, editorState) => {
   const blockMap = contentState.getBlockMap();
@@ -46,8 +47,9 @@ const CodeSideButton = props => {
     const editorState = props.getEditorState();
 
     const content = editorState.getCurrentContent();
+    const newContent = insertNewBlockToContentState(content, editorState);
 
-    props.setEditorState(insertNewBlockToContentState(content, editorState));
+    props.setEditorState(addEmptyBlock(newContent));
     props.close();
   };
 
