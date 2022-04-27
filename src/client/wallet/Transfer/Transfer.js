@@ -715,6 +715,7 @@ export default class Transfer extends React.Component {
                   className="Transfer__currency"
                   onChange={this.handleCurrencyChange}
                   disabled={isChangesDisabled || isGuest}
+                  dropdownClassName={'Transfer__currency-list'}
                 >
                   {userBalances.map(token => (
                     <Select.Option

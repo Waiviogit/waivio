@@ -21,6 +21,12 @@
     }
   }
 
+  &__currency-list.ant-select-dropdown {
+    @media @small {
+      width: 200px !important;
+    }
+  }
+
   &__amount-wrap {
     margin-top: 20px;
   }
@@ -219,8 +225,12 @@
   }
 
   form .ant-input-group &__currency.ant-select {
-    width: 50%;
+    width: 100%;
     margin-top: 10px;
+
+    @media @small {
+      width: 50%;
+    }
 
     .Transfer__currency-balance {
       display: none;
