@@ -692,6 +692,7 @@ export default class Transfer extends React.Component {
                 ],
               })(
                 <Input
+                  className="Transfer__border"
                   disabled={isChangesDisabled && amount}
                   onChange={this.handleAmountChange}
                   placeholder={intl.formatMessage({
