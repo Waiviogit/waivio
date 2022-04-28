@@ -12,6 +12,7 @@ const TokenActionInMarketCard = ({
   to,
   symbol,
   quantity,
+  price,
   timestamp,
   action,
   quantityHive,
@@ -86,13 +87,26 @@ const TokenActionInMarketCard = ({
             SWAP.HIVE
           </span>
         </div>
-        <CardsTimeStamp timestamp={timestamp} />
+        <div className="MarketBuyCard__lower-text">
+          <CardsTimeStamp timestamp={timestamp} />
+          <div className="MarketBuyCard__per-waiv">
+            {' '}
+            <FormattedNumber
+              value={price}
+              locale={'en-IN'}
+              minimumFractionDigits={0}
+              maximumFractionDigits={3}
+            />{' '}
+            {`per ${symbol}`}
+          </div>
+        </div>
       </div>
     </div>
   );
 };
 
 TokenActionInMarketCard.propTypes = {
+  price: PropTypes.number.isRequired,
   quantity: PropTypes.string.isRequired,
   iconType: PropTypes.string.isRequired,
   timestamp: PropTypes.number.isRequired,
