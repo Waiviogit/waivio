@@ -16,7 +16,9 @@ const WalletLimitOrder = ({ timestamp, openPays, currentPays, transactionType })
       <div className="UserWalletTransactions__content">
         <div className="UserWalletTransactions__content-recipient">
           <div>{description.limitOrder}</div>
-          <div className="UserWalletTransactions__limit-order">{currentPays}</div>
+          <div className="UserWalletTransactions__limit-order">
+            {openPays} {'>'} {currentPays}
+          </div>
         </div>
         <CardsTimeStamp timestamp={timestamp} />
       </div>
