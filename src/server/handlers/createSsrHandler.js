@@ -45,10 +45,7 @@ export default function createSsrHandler(template) {
       const store = getStore(sc2Api, waivioAPI, req.url);
       const routes = switchRoutes(hostname);
       const branch = matchRoutes(routes, req.url.split('?')[0]);
-      const css = new Set();
-      const context = {
-        insertCss: (...styles) => styles.forEach(style => css.add(style._getCss())),
-      };
+
       const promises = branch.map(({ route, match }) => {
         const fetchData = route.component.fetchData;
 
@@ -62,6 +59,8 @@ export default function createSsrHandler(template) {
       await createTimeout(ssrTimeout, Promise.all(promises));
 
       if (res.headersSent) return null;
+
+      const context = {};
 
       const content = renderToString(
         <Provider store={store}>

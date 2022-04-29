@@ -8,7 +8,6 @@ import uuidv4 from 'uuid/v4';
 import { isEmpty, isEqual, map } from 'lodash';
 import { Map } from 'pigeon-maps';
 import Overlay from 'pigeon-overlay';
-import AimIcon from '@icons/aim.png';
 import mapProvider from '../../../../common/helpers/mapProvider';
 import { getCoordinates } from '../../../../store/userStore/userActions';
 import {
@@ -407,7 +406,7 @@ const WebsiteObjects = props => {
     <div className="WebsiteObjectsControl">
       <div className="WebsiteObjectsControl__gps">
         <div role="presentation" className="WebsiteObjectsControl__locateGPS" onClick={setPosition}>
-          <img src={AimIcon} alt="aim" className="MapOS__locateGPS-button" />
+          <img src="/images/icons/aim.png" alt="aim" className="MapOS__locateGPS-button" />
         </div>
       </div>
       <div className="WebsiteObjectsControl__zoom">

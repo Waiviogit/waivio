@@ -5,7 +5,6 @@ import classNames from 'classnames';
 import { useSelector } from 'react-redux';
 import { Modal } from 'antd';
 import { get } from 'lodash';
-import WaivEligibleIcon from '@images/logo.png';
 
 import { calculatePayout, isPostCashout } from '../../vendor/steemitHelpers';
 import BTooltip from '../BTooltip';
@@ -66,7 +65,7 @@ const Payout = React.memo(({ intl, post }) => {
             })}
           >
             <img
-              src={WaivEligibleIcon}
+              src={'/images/logo.png'}
               className="Payout__waiv-eligible"
               alt="Eligible for WAIV rewards"
             />

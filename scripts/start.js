@@ -2,13 +2,13 @@
 
 process.env.NODE_ENV = 'development';
 
+const webpack = require('webpack');
 const DevServer = require('webpack-dev-server');
 
 const createClientConfig = require('../webpack/client');
 const createServerConfig = require('../webpack/server');
 
 const { CONTENT_PORT } = require('../webpack/configUtils');
-const webpack = require('webpack');
 
 async function main() {
   const clientConfig = createClientConfig('dev');
@@ -16,25 +16,24 @@ async function main() {
   const clientCompiler = webpack(clientConfig);
   const serverCompiler = webpack(createServerConfig('dev'));
 
-  clientCompiler.hooks.done.tap('done', () => {
+  clientCompiler.plugin('done', () => {
     serverCompiler.watch(null, () => {});
   });
 
-  const clientDevServer = new DevServer(
-    {
-      port: CONTENT_PORT,
-      compress: true,
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-      },
-      historyApiFallback: {
-        disableDotRule: true,
-      },
+  const clientDevServer = new DevServer(clientCompiler, {
+    port: CONTENT_PORT,
+    hot: true,
+    compress: true,
+    noInfo: true,
+    headers: {
+      'Access-Control-Allow-Origin': '*',
     },
-    clientCompiler,
-  );
+    historyApiFallback: {
+      disableDotRule: true,
+    },
+  });
 
-  clientDevServer.start(() => console.log('server started'));
+  clientDevServer.listen(CONTENT_PORT, () => console.log('server started'));
 }
 
 main();

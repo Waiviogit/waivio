@@ -5,8 +5,6 @@ import { Icon, Modal } from 'antd';
 import { FormattedMessage } from 'react-intl';
 import { get, isEmpty } from 'lodash';
 import { ReactSVG } from 'react-svg';
-import EyeHideIcon from '@icons/eye-hide.svg';
-import MuteUserIcon from '@icons/mute-user.svg';
 import Popover from '../Popover';
 import PopoverMenu, { PopoverMenuItem } from '../PopoverMenu/PopoverMenu';
 import { dropCategory, replaceBotWithGuestName } from '../../../common/helpers/postHelpers';
@@ -238,7 +236,7 @@ const PostPopoverMenu = ({
           <ReactSVG
             className={`hide-button ${post.isHide ? 'hide-button--fill' : ''}`}
             wrapper="span"
-            src={EyeHideIcon}
+            src="/images/icons/eye-hide.svg"
           />
         )}
         <FormattedMessage
@@ -253,7 +251,7 @@ const PostPopoverMenu = ({
           <ReactSVG
             className={`hide-button ${post.muted ? 'hide-button--fill' : ''}`}
             wrapper="span"
-            src={MuteUserIcon}
+            src="/images/icons/mute-user.svg"
           />
         )}
         <FormattedMessage
