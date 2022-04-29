@@ -5,7 +5,6 @@ import hivesigner from 'hivesigner';
 import { batch, connect, useDispatch } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { isEmpty } from 'lodash';
-import HiveLogoIcon from '@icons/logo-hive.svg';
 import { login, busyLogin, getAuthGuestBalance } from '../../../../store/authStore/authActions';
 import { isUserRegistered } from '../../../../waivioApi/ApiClient';
 import {
@@ -165,7 +164,11 @@ const ModalSignIn = ({
                 </span>
               </p>
               <a role="button" href={hiveSinger.getLoginURL()} className="ModalSignIn__signin">
-                <img src={HiveLogoIcon} alt="hive" className="ModalSignIn__icon-steemit" />
+                <img
+                  src="/images/icons/logo-hive.svg"
+                  alt="hive"
+                  className="ModalSignIn__icon-steemit"
+                />
                 {intl.formatMessage({
                   id: 'signin_with_steemIt',
                   defaultMessage: 'HiveSinger',

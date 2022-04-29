@@ -5,7 +5,6 @@ import { withRouter } from 'react-router';
 import { FormattedMessage, FormattedNumber, FormattedDate, FormattedTime } from 'react-intl';
 import { isEmpty } from 'lodash';
 import classNames from 'classnames';
-import HiveWalletLogoIcon from '@icons/logo-hive-wallet.svg';
 
 import { getUser } from '../../../store/usersStore/usersSelectors';
 import formatter from '../../../common/helpers/steemitFormatter';
@@ -154,7 +153,11 @@ const UserWalletSummary = ({
     <WalletSummaryInfo estAccValue={estAccValue}>
       <div className="UserWalletSummary__itemWrap">
         <div className="UserWalletSummary__item">
-          <img className="UserWalletSummary__icon hive" src={HiveWalletLogoIcon} alt="hive" />
+          <img
+            className="UserWalletSummary__icon hive"
+            src="/images/icons/logo-hive-wallet.svg"
+            alt="hive"
+          />
           <div className="UserWalletSummary__label">
             <FormattedMessage id="hive" defaultMessage="Hive" />
           </div>

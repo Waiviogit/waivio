@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import ArrowSmallIcon from '@icons/arrowSmall.svg';
 import Avatar from '../../../../components/Avatar';
 import './ReferralUserCard.less';
 
@@ -22,7 +21,7 @@ const ReferralUserCard = ({ username, alias, daysLeft, history }) => (
     <div className="ReferralUserCard__right">
       <div className="ReferralUserCard__right__days">{`${daysLeft} days`}</div>
       <div className="ReferralUserCard__right__arrow">
-        <img src={ArrowSmallIcon} alt="User status card" />
+        <img src="/images/icons/arrowSmall.svg" alt="User status card" />
       </div>
     </div>
   </div>

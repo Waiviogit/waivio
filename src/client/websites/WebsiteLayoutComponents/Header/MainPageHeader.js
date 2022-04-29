@@ -1,7 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import DiningGiftsLogoIcon from '@images/dining.gifts.png';
 
 import WebsiteSearch from '../../../search/WebsitesSearch/WebsiteSearch';
 import FilterTypesList from '../../../search/SearchAllResult/components/FilterTypesList';
@@ -13,7 +12,7 @@ const MainPageHeader = props => (
     <div className="MainPageHeader__navWrapper">
       <div className="MainPageHeader__logo">
         <Link to="/" className="MainPageHeader__logoLink">
-          <img src={DiningGiftsLogoIcon} className="MainPageHeader__logoImg" alt="logo" />
+          <img src={'/images/dining.gifts.png'} className="MainPageHeader__logoImg" alt="logo" />
           <b>Dining.Gifts</b>
         </Link>
         {!props.withMap && (
