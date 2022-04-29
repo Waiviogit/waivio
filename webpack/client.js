@@ -2,7 +2,6 @@ const webpack = require('webpack');
 const CSSExtract = require('mini-css-extract-plugin');
 const LodashModuleReplacementPlugin = require('lodash-webpack-plugin');
 const WebpackBar = require('webpackbar');
-const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
 const paths = require('../scripts/paths');
 const SpeedMeasurePlugin = require('speed-measure-webpack-plugin');
 
@@ -13,7 +12,9 @@ const {
   MATCH_FONTS,
   DEFINE_PLUGIN,
   POSTCSS_LOADER,
+  ALIAS,
 } = require('./configUtils');
+const AssetsPlugin = require('assets-webpack-plugin');
 const NodePolyfillPlugin = require('node-polyfill-webpack-plugin');
 
 module.exports = function createConfig(env = 'dev') {
@@ -38,6 +39,10 @@ module.exports = function createConfig(env = 'dev') {
         name: 'client',
         color: '#f56be2',
       }),
+      new AssetsPlugin({
+        path: paths.build,
+        filename: 'assets.json',
+      }),
     ],
     module: {
       rules: [
@@ -52,7 +57,7 @@ module.exports = function createConfig(env = 'dev') {
         },
         {
           test: /\.(jpg|png|svg)$/,
-          type: "asset/inline",
+          type: 'asset/inline',
         },
         {
           test: MATCH_CSS_LESS,
@@ -64,6 +69,7 @@ module.exports = function createConfig(env = 'dev') {
                 importLoaders: 1,
               },
             },
+            POSTCSS_LOADER,
             {
               loader: 'less-loader',
               options: {
@@ -72,15 +78,6 @@ module.exports = function createConfig(env = 'dev') {
                 },
               },
             },
-            {
-              loader: 'postcss-loader',
-              options: {
-                postcssOptions: {
-                  parser: 'postcss-js',
-                  plugins: ['postcss-preset-env', 'autoprefixer'],
-                },
-              },
-            }
           ],
         },
       ],
@@ -99,9 +96,7 @@ module.exports = function createConfig(env = 'dev') {
     };
     config.resolve = {
       alias: {
-        'react-dom': '@hot-loader/react-dom',
-        '@icons': `${paths.public}/images/icons`,
-        '@images': `${paths.public}/images`
+        ...ALIAS,
       },
     };
   }

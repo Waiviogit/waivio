@@ -6,7 +6,7 @@ import classNames from 'classnames';
 import { connect } from 'react-redux';
 import Overlay from 'pigeon-overlay';
 import { isEmpty } from 'lodash';
-import AimIcon from '@icons/aim.png'
+import AimIcon from '@icons/aim.png';
 
 import { getRadius, getParsedMap } from './mapHelper';
 import Loading from '../Icon/Loading';

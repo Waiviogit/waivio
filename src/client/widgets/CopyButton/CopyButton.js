@@ -4,7 +4,7 @@ import { message } from 'antd';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import CopyIcon from '@icons/copy.svg'
+import CopyIcon from '@icons/copy.svg';
 
 import './CopyButton.less';
 

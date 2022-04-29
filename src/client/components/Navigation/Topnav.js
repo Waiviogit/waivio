@@ -6,6 +6,7 @@ import { Link, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { AutoComplete, Icon, Input } from 'antd';
 import classNames from 'classnames';
+import MainImage from '@icons/waivio.svg';
 import {
   resetSearchAutoCompete,
   searchAutoComplete,
@@ -28,7 +29,6 @@ import {
   getSearchUsersResults,
   searchObjectTypesResults,
 } from '../../../store/searchStore/searchSelectors';
-import MainImage from '@icons/waivio.svg';
 
 import './Topnav.less';
 

@@ -1,9 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Lightbox from 'react-image-lightbox';
+import OnlineIcon from '@icons/online.png';
+
 import Avatar from './Avatar';
 import { guestUserRegex } from '../../common/helpers/regexHelpers';
-import OnlineIcon from '@icons/online.png'
 
 export default class AvatarLightbox extends React.Component {
   static propTypes = {

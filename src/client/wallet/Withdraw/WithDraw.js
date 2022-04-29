@@ -6,7 +6,7 @@ import classNames from 'classnames';
 import { ceil, get, upperFirst, debounce } from 'lodash';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import store from 'store';
-import QRIcon from '@icons/qr.png'
+import QRIcon from '@icons/qr.png';
 
 import { closeWithdraw } from '../../../store/walletStore/walletActions';
 import QrModal from '../../widgets/QrModal';

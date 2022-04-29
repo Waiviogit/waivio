@@ -1,7 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import ArrowSmallIcon from '@icons/arrowSmall.svg';
+
 import Avatar from '../../../../components/Avatar';
-import ArrowSmallIcon from '@icons/arrowSmall.svg'
 
 import './ReferralUserCard.less';
 

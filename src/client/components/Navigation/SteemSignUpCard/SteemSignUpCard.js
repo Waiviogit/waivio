@@ -1,6 +1,6 @@
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
-import HiveLogoBigIcon from '@icons/logo-hive-big.svg'
+import HiveLogoBigIcon from '@icons/logo-hive-big.svg';
 
 const SteemSignUpCard = () => (
   <div className="SignUpCard">

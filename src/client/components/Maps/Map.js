@@ -8,7 +8,7 @@ import { Map } from 'pigeon-maps';
 import { Icon, Modal } from 'antd';
 import Overlay from 'pigeon-overlay';
 import classNames from 'classnames';
-import AimIcon from '@icons/aim.png'
+import AimIcon from '@icons/aim.png';
 import { DEFAULT_RADIUS, DEFAULT_ZOOM } from '../../../common/constants/map';
 import { IS_RESERVED } from '../../../common/constants/rewards';
 import Loading from '../Icon/Loading';

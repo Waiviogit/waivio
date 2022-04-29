@@ -3,8 +3,9 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Input, Icon, Modal } from 'antd';
 import { get, isEmpty } from 'lodash';
+import SendIcon from '@icons/send.svg';
+
 import withEditor from '../Editor/withEditor';
-import SendIcon from '@icons/send.svg'
 import Avatar from '../Avatar';
 import ImageSetter from '../ImageSetter/ImageSetter';
 import { getIsAuthenticated } from '../../../store/authStore/authSelectors';

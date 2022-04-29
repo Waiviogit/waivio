@@ -3,7 +3,7 @@ import { Icon } from 'antd';
 import { Helmet } from 'react-helmet';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import DiningGiftsLogoIcon from '@images/dining.gifts.png'
+import DiningGiftsLogoIcon from '@images/dining.gifts.png';
 import FirstStepImg from '@images/step_1.png';
 import SecondStepImg from '@images/step_2.png';
 import ThirdStepImg from '@images/step_3.png';

@@ -10,11 +10,7 @@ const ConvertHiveCompleted = ({ amount, timestamp, isGuestPage }) => {
   return (
     <div className="UserWalletTransactions__transaction">
       <div className="UserWalletTransactions__icon-wrapper">
-        <img
-          src={ConvertIcon}
-          className="UserWalletTransactions__convert-icon"
-          alt="convert"
-        />
+        <img src={ConvertIcon} className="UserWalletTransactions__convert-icon" alt="convert" />
       </div>
 
       <div className="UserWalletTransactions__content">

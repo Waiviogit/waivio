@@ -136,11 +136,7 @@ const UserHeader = ({
               </div>
               {!isGuest && (
                 <div className="UserHeader__voteValue">
-                  <img
-                    src={DollarIcon}
-                    alt={'dollar'}
-                    className="UserHeader__dollarIcon"
-                  />
+                  <img src={DollarIcon} alt={'dollar'} className="UserHeader__dollarIcon" />
                   <span>
                     <FormattedMessage id="vote_price" defaultMessage="Vote Value" />:{' '}
                     <USDDisplay value={user.totalVotingPowerPrice} />

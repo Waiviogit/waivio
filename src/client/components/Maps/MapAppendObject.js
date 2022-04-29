@@ -3,7 +3,7 @@ import { isNil, isEmpty, isEqual } from 'lodash';
 import React from 'react';
 import { Map, Marker } from 'pigeon-maps';
 import { connect } from 'react-redux';
-import AimIcon from '@icons/aim.png'
+import AimIcon from '@icons/aim.png';
 import { getCoordinates } from '../../../store/userStore/userActions';
 import mapProvider from '../../../common/helpers/mapProvider';
 import { getUserLocation } from '../../../store/userStore/userSelectors';

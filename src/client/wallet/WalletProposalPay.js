@@ -21,11 +21,7 @@ const WalletProposalPay = ({
   return (
     <div className="UserWalletTransactions__transaction">
       <div className="UserWalletTransactions__icon-container">
-        <img
-          className="UserWalletTransactions__icon"
-          src={LogoHiveWalletIcon}
-          alt="hive"
-        />
+        <img className="UserWalletTransactions__icon" src={LogoHiveWalletIcon} alt="hive" />
       </div>
       <div className="UserWalletTransactions__content">
         <div className="UserWalletTransactions__content-recipient">

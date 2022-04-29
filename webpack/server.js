@@ -4,7 +4,7 @@ const webpack = require('webpack');
 const WebpackBar = require('webpackbar');
 const StartServerPlugin = require('start-server-nestjs-webpack-plugin');
 const paths = require('../scripts/paths');
-const { MATCH_JS, MATCH_CSS_LESS, DEFINE_PLUGIN } = require('./configUtils');
+const { MATCH_JS, MATCH_CSS_LESS, DEFINE_PLUGIN, ALIAS } = require('./configUtils');
 const SpeedMeasurePlugin = require('speed-measure-webpack-plugin');
 const NodePolyfillPlugin = require('node-polyfill-webpack-plugin');
 
@@ -54,12 +54,12 @@ module.exports = function createConfig(env = 'dev') {
           },
         },
         {
-          test: /\.svg$/,
-          type: "asset/inline",
+          test: /\.(jpg|png|svg)$/,
+          type: 'asset/inline',
         },
         {
           test: /\.(jpg|png)$/,
-          type: "asset/resource",
+          type: 'asset/resource',
         },
         {
           test: MATCH_CSS_LESS,
@@ -82,20 +82,11 @@ module.exports = function createConfig(env = 'dev') {
             },
           ],
         },
-
-        {
-          test: /\.(png|jpg|gif)$/,
-          loader: 'file-loader',
-          options: {},
-        },
       ],
     },
     plugins: [
       DEFINE_PLUGIN,
       new webpack.AutomaticPrefetchPlugin(),
-      // new webpack.optimize.LimitChunkCountPlugin({
-      //   maxChunks: 1,
-      // }),
       new WebpackBar({
         name: 'server',
         color: '#c065f4',
@@ -117,9 +108,7 @@ module.exports = function createConfig(env = 'dev') {
 
     config.resolve = {
       alias: {
-        'react-dom': '@hot-loader/react-dom',
-        '@icons': `${paths.public}/images/icons`,
-        '@images': `${paths.public}/images`
+        ...ALIAS,
       },
     };
   }
