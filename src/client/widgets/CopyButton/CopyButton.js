@@ -4,7 +4,6 @@ import { message } from 'antd';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import CopyIcon from '@icons/copy.svg';
 
 import './CopyButton.less';
 
@@ -31,7 +30,7 @@ const CopyButton = props => {
       <ReactSVG
         className="CopyButton__icon"
         wrapper="span"
-        src={CopyIcon}
+        src="/images/icons/copy.svg"
         onClick={handleClipboard}
       />
     </div>

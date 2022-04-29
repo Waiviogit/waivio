@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { FormattedMessage, FormattedRelative } from 'react-intl';
-import LogoHiveWalletIcon from '@icons/logo-hive-wallet.svg';
 import BTooltip from '../components/BTooltip';
 import { epochToUTC } from '../../common/helpers/formatter';
 import { getTransactionDescription } from './WalletHelper';
@@ -21,7 +20,11 @@ const WalletProposalPay = ({
   return (
     <div className="UserWalletTransactions__transaction">
       <div className="UserWalletTransactions__icon-container">
-        <img className="UserWalletTransactions__icon" src={LogoHiveWalletIcon} alt="hive" />
+        <img
+          className="UserWalletTransactions__icon"
+          src="/images/icons/logo-hive-wallet.svg"
+          alt="hive"
+        />
       </div>
       <div className="UserWalletTransactions__content">
         <div className="UserWalletTransactions__content-recipient">

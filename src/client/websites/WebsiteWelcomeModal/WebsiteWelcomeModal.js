@@ -4,9 +4,7 @@ import { injectIntl } from 'react-intl';
 import Cookie from 'js-cookie';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-import FirstStepImg from '@images/step_1.png';
-import SecondStepImg from '@images/step_2.png';
-import ThirdStepImg from '@images/step_3.png';
+
 import './WebsiteWelcomeModal.less';
 
 const WebsiteWelcomeModal = props => {
@@ -92,7 +90,7 @@ const WebsiteWelcomeModal = props => {
               defaultMessage: 'Find the restaurant and select the dish',
             })}
           </p>
-          <img src={FirstStepImg} alt="" className="WebsiteWelcomeModal__img" />
+          <img src={'/images/step_1.png'} alt="" className="WebsiteWelcomeModal__img" />
         </Tabs.TabPane>
         <Tabs.TabPane key="2" tab="2">
           <p className="WebsiteWelcomeModal__paragph">
@@ -101,7 +99,7 @@ const WebsiteWelcomeModal = props => {
               defaultMessage: 'Reserve the reward for a few days',
             })}
           </p>
-          <img src={SecondStepImg} alt="" className="WebsiteWelcomeModal__img" />
+          <img src={'/images/step_2.png'} alt="" className="WebsiteWelcomeModal__img" />
         </Tabs.TabPane>
         <Tabs.TabPane key="3" tab="3">
           <p className="WebsiteWelcomeModal__paragph">
@@ -110,7 +108,7 @@ const WebsiteWelcomeModal = props => {
               defaultMessage: 'Share photos of the dish and get the reward!',
             })}
           </p>
-          <img src={ThirdStepImg} alt="" className="WebsiteWelcomeModal__img" />
+          <img src={'/images/step_3.png'} alt="" className="WebsiteWelcomeModal__img" />
         </Tabs.TabPane>
       </Tabs>
       <h3 className="WebsiteWelcomeModal__police-title">

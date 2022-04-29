@@ -7,8 +7,8 @@ import createSsrHandler from './handlers/createSsrHandler';
 // import createAmpHandler from './handlers/createAmpHandler';
 import steemAPI from './steemAPI';
 
-const indexPath = `.${paths.templates}/index.hbs`;
-const indexHtml = fs.readFileSync(indexPath, { encoding: 'utf8' });
+const indexPath = `${paths.templates}/index.hbs`;
+const indexHtml = fs.readFileSync(indexPath, 'utf-8');
 const template = Handlebars.compile(indexHtml);
 
 // const ampIndexPath = `${paths.templates}/amp_index.hbs`;

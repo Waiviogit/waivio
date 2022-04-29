@@ -1,8 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Icon } from 'antd';
-import EyeHideIcon from '@icons/eye-hide.svg';
-import MuteUserIcon from '@icons/mute-user.svg';
 
 import { FormattedMessage } from 'react-intl';
 import { ReactSVG } from 'react-svg';
@@ -24,7 +22,7 @@ const CommentPopover = ({ comment, children, handlePopoverClick, own }) => {
           <ReactSVG
             className={`hide-button ${comment.isHide ? 'hide-button--fill' : ''}`}
             wrapper="span"
-            src={EyeHideIcon}
+            src="/images/icons/eye-hide.svg"
           />
         )}
         <FormattedMessage
@@ -39,7 +37,7 @@ const CommentPopover = ({ comment, children, handlePopoverClick, own }) => {
           <ReactSVG
             className={`hide-button ${comment.muted ? 'hide-button--fill' : ''}`}
             wrapper="span"
-            src={MuteUserIcon}
+            src="/images/icons/mute-user.svg"
           />
         )}
         <FormattedMessage

@@ -3,12 +3,6 @@ import { Icon } from 'antd';
 import { Helmet } from 'react-helmet';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import DiningGiftsLogoIcon from '@images/dining.gifts.png';
-import FirstStepImg from '@images/step_1.png';
-import SecondStepImg from '@images/step_2.png';
-import ThirdStepImg from '@images/step_3.png';
-import MoneyTreeImg from '@images/money-tree.png';
-import MoneyTreeDarkImg from '@images/money-tree-nightmode.png';
 
 import WebsiteFooter from '../WebsiteFooter/Footer';
 import CarouselSection from './components/CarouselSection/CarouselSection';
@@ -20,7 +14,7 @@ import SubmitDishPhotosButton from '../../../widgets/SubmitDishPhotosButton/Subm
 import './WebsiteMainPage.less';
 
 const WebsiteMainPage = props => {
-  const helmetImg = DiningGiftsLogoIcon;
+  const helmetImg = '/images/dining.gifts.png';
 
   useLayoutEffect(() => {
     if (window) {
@@ -93,7 +87,7 @@ const WebsiteMainPage = props => {
                 <h5>
                   Find the <i>restaurant</i>, choose your <i>dish</i>
                 </h5>
-                <img src={FirstStepImg} alt="Find the restaurant, choose your dish" />
+                <img src={'/images/step_1.png'} alt="Find the restaurant, choose your dish" />
               </div>
             </div>
           </li>
@@ -110,7 +104,7 @@ const WebsiteMainPage = props => {
                 <h5>
                   <i>Reserve</i> your reward
                 </h5>
-                <img src={SecondStepImg} alt="Find the restaurant, choose your dish" />
+                <img src={'/images/step_2.png'} alt="Find the restaurant, choose your dish" />
               </div>
             </div>
           </li>
@@ -127,7 +121,7 @@ const WebsiteMainPage = props => {
                 <h5>
                   <i>Share</i> two photos of your dish & earn!
                 </h5>
-                <img src={ThirdStepImg} alt="Find the restaurant, choose your dish" />
+                <img src={'/images/step_3.png'} alt="Find the restaurant, choose your dish" />
               </div>
             </div>
           </li>
@@ -143,10 +137,10 @@ const WebsiteMainPage = props => {
         <h2 className="WebsiteMainPage__withdrawTitle">
           <i>Withdrawing</i> your rewards is easy too.
         </h2>
-        <img className="money-tree-picture" src={MoneyTreeImg} alt="money-tree" />
+        <img className="money-tree-picture" src={'/images/money-tree.png'} alt="money-tree" />
         <img
           className="money-tree-picture-nightmode"
-          src={MoneyTreeDarkImg}
+          src={'/images/money-tree-nightmode.png'}
           alt="money-tree-nightmode"
         />
         <div className="WebsiteMainPage__infoWrapper">
