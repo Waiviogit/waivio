@@ -105,12 +105,12 @@ export const setDepositeInfo = (destination, pair) => (
 ) => ({
   type: SET_DEPOSITE_INFO_FOR_CHAIN.ACTION,
   payload: steemConnectAPI.hiveEngineDepositWithdraw(destination, {
+    ...pair,
     userName: destination,
     type: 'deposit',
     from_coin: pair.from_coin_symbol,
     to_coin: pair.to_coin_symbol,
     destination,
-    ...pair,
   }),
 });
 

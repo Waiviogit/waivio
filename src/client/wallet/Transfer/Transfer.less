@@ -10,6 +10,23 @@
 }
 
 .Transfer {
+  &__border .ant-input {
+    border-bottom-right-radius: 4px !important;
+    border-top-right-radius: 4px !important;
+
+    @media @small {
+      border-right: 0 !important;
+      border-bottom-right-radius: 0 !important;
+      border-top-right-radius: 0 !important;
+    }
+  }
+
+  &__currency-list.ant-select-dropdown {
+    @media @small {
+      width: 200px !important;
+    }
+  }
+
   &__amount-wrap {
     margin-top: 20px;
   }
@@ -210,6 +227,10 @@
   form .ant-input-group &__currency.ant-select {
     width: 100%;
     margin-top: 10px;
+
+    @media @small {
+      width: 50%;
+    }
 
     .Transfer__currency-balance {
       display: none;

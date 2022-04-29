@@ -40,7 +40,7 @@ class SeparatorSideButton extends Component {
           defaultMessage: 'Add a separator',
         })}
       >
-        <Icon type="minus" className="btn-icon" />
+        <Icon type="minus" className="btn-icon" color="#8798a4" />
         <span className="action-btn__caption">
           {this.props.intl.formatMessage({ id: 'post_btn_separator', defaultMessage: 'Line' })}
         </span>

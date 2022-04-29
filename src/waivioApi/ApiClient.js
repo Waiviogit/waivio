@@ -207,7 +207,7 @@ export const getUserProfileBlog = (
         ...headers,
         app: config.appName,
         locale,
-        follower,
+        ...(follower && { follower }),
       },
       method: 'POST',
       body: JSON.stringify({
@@ -649,6 +649,7 @@ export const getSearchResult = (
   objectTypesLimit = 5,
   user,
   locale,
+  abortController,
 ) =>
   new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.generalSearch}`, {
@@ -661,6 +662,7 @@ export const getSearchResult = (
       },
       method: 'POST',
       body: JSON.stringify({ string, userLimit, wobjectsLimit, objectTypesLimit }),
+      ...(abortController && { signal: abortController.signal }),
     })
       .then(handleErrors)
       .then(res => res.json())
@@ -1111,7 +1113,7 @@ export const getAuthenticatedUserMetadata = userName => {
 };
 
 export const updateUserMetadata = async (userName, data) => {
-  let isGuest = null;
+  let isGuest;
   let token = getGuestAccessToken();
   isGuest = token === 'null' ? false : Boolean(token);
 
@@ -2414,7 +2416,37 @@ export const getTokensRate = symbols =>
     table: 'metrics',
   });
 
-export const getFeeInfo = symbols => {
+export const getSellBookList = (account, offset) =>
+  hiveEngineContract({
+    contract: 'market',
+    query: { account, symbol: 'WAIV' },
+    indexes: [
+      {
+        index: 'priceDec',
+        descending: false,
+      },
+    ],
+    limit: 5,
+    offset,
+    table: 'sellBook',
+  });
+
+export const getBuyBookList = (account, offset) =>
+  hiveEngineContract({
+    contract: 'market',
+    query: { account, symbol: 'WAIV' },
+    indexes: [
+      {
+        index: 'priceDec',
+        descending: true,
+      },
+    ],
+    limit: 5,
+    offset,
+    table: 'buyBook',
+  });
+
+export const getFeeInfo = () => {
   return fetch('https://api2.hive-engine.com/rpc/contracts', {
     headers,
     body: JSON.stringify({

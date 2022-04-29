@@ -21,6 +21,9 @@
       font-size: 30px;
       font-weight: bolder;
       cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
 
       &:hover {
         background-color: @white-gainsboro;
@@ -34,6 +37,7 @@
   }
 
   &__locateGPS {
+    padding-top: 3px;
     text-align: center;
     line-height: 15px;
   }
@@ -74,3 +78,5 @@
     }
   }
 }
+
+@import 'MapControllers-nightmode';

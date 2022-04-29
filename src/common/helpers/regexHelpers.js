@@ -1,11 +1,13 @@
 export const VIDEO_MATCH_URL = {
   YOUTUBE: /^(?:https?:\/\/)?(?:www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})(?:\S+)?$/,
+  YOUTUBE_SHORTS: /^(?:https?:\/\/)?(?:www\.)?(?:youtu\.be\/|youtube\.com\/shorts\/)([\w|-]{11})(.*)$/,
   VIMEO: /https?:\/\/(?:www\.|player\.)?vimeo.com\/(?:channels\/(?:\w+\/)?|groups\/([^\/]*)\/videos\/|album\/(\d+)\/video\/|video\/|)(\d+)(?:$|\/|\?)/, // eslint-disable-line no-useless-escape
   DTUBE: /^https:\/\/(emb\.)?d\.tube(\/#!)?(\/v)?\/([^/"]+\/[^/"]+)$/,
   THREE_SPEAK: /^https:\/\/3speak\.online\/(watch|embed)\?v=([\w\d-/._]*)(&|$)/,
-  THREE_SPEAK_TV: /^https:\/\/3speak\.tv\/(watch|embed)\?v=([\w\d-/._]*)(&|$)/,
+  THREE_SPEAK_TV: /^https:\/\/3speak\.tv\/(watch|embed)\?.*v=([\w\d\-/._]*)(&|$|\))/,
   RUMBLE: /^https:\/\/rumble\.com\/embed\/([a-zA-Z0-9-_]*)/,
-  BITCHUTE: /^https:\/\/www\.bitchute\.com\/(video|embed)\/([a-zA-Z0-9-_]*)/,
+  BITCHUTE: /^https:\/\/(?:www\.)?bitchute\.com\/(video|embed)\/([a-zA-Z0-9-_]*)/,
+  ODYSEE: /^https:\/\/odysee\.com\/(.*)/,
 };
 
 export const imageRegex = /https?:\/\/(?:[-a-zA-Z0-9._]*[-a-zA-Z0-9])(?::\d{2,5})?(?:[/?#](?:[^\s"'<>\][()]*[^\s"'<>\][().,])?(?:(?:\.(?:tiff?|jpe?g|gif|png|svg|ico)|ipfs\/[a-z\d]{40,})))/gi;

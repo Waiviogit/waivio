@@ -115,7 +115,7 @@ class Notifications extends React.Component {
                     values={{
                       username: <span className="username">{notification.author}</span>,
                     }}
-                    url={`/@${currentAuthUsername}/${notification.parentPermlink}/#@${notification.author}/${notification.permlink}`}
+                    url={`/@${notification.author}/${notification.permlink}`}
                     key={key}
                     notification={notification}
                     currentAuthUsername={currentAuthUsername}
@@ -458,15 +458,23 @@ class Notifications extends React.Component {
                   />
                 );
               case notificationConstants.WITHDRAW_ROUTE:
+                const isReceive = currentAuthUsername === notification.from_account;
                 const urlToWithdrawRoute = `/@${notification.to_account}`;
-                const urlFromWithdrawRoute = `/@${notification.from_account}/transfers`;
+                const urlFromWithdrawRoute = isReceive
+                  ? `/@${notification.to_account}/transfers?type=HIVE`
+                  : `/@${notification.from_account}/transfers?type=HIVE`;
+                const isCountedPercent = notification.percent === 0;
+                const isSetId = !isReceive ? 'withdraw_route_from' : 'withdraw_route_to';
+                const isCanceledId =
+                  isCountedPercent && currentAuthUsername === notification.from_account
+                    ? 'withdraw_vesting_route_is_canceled_to'
+                    : 'withdraw_vesting_route_is_canceled_from';
 
                 return (
                   <NotificationTemplate
                     username={notification.from_account}
                     url={urlFromWithdrawRoute}
-                    id="withdraw_route"
-                    defaultMessage="{from_account} set withdraw route to {to_account}"
+                    id={isCountedPercent ? isCanceledId : isSetId}
                     values={{
                       to_account: (
                         <Link to={urlToWithdrawRoute}>

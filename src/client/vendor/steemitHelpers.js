@@ -17,6 +17,10 @@ import {
 import { useSelector } from 'react-redux';
 import { getTokenRatesInUSD } from '../../store/walletStore/walletSelectors';
 
+const MAX_VOTING_POWER = 10000;
+const VOTE_REGENERATION_DAYS = 5;
+const DOWNVOTE_REGENERATION_DAYS = 5;
+
 const dmp = new diff_match_patch();
 /**
  * This function is extracted from steemit.com source code and does the same tasks with some slight-
@@ -352,3 +356,25 @@ export const getLastBlockNum = async () => {
 };
 
 export const calcReputation = rep => steem.formatter.reputation(rep);
+
+export const calculateMana = votingPower => {
+  const timestamp = new Date().getTime();
+  const result = {
+    votingPower: votingPower.votingPower,
+    downvotingPower: votingPower.downvotingPower,
+    lastVoteTimestamp: votingPower.lastVoteTimestamp,
+  };
+
+  result.votingPower +=
+    ((timestamp - result.lastVoteTimestamp) * MAX_VOTING_POWER) /
+    (VOTE_REGENERATION_DAYS * 24 * 3600 * 1000);
+  result.votingPower = Math.floor(result.votingPower);
+  result.votingPower = Math.min(result.votingPower, MAX_VOTING_POWER) * 0.01;
+
+  result.downvotingPower +=
+    ((timestamp - result.lastVoteTimestamp) * MAX_VOTING_POWER) /
+    (DOWNVOTE_REGENERATION_DAYS * 24 * 3600 * 1000);
+  result.downvotingPower = Math.floor(result.downvotingPower);
+  result.downvotingPower = Math.min(result.downvotingPower, MAX_VOTING_POWER) * 0.01;
+  return result;
+};

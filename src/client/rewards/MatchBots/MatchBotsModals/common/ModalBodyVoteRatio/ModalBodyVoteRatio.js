@@ -15,7 +15,7 @@ const ModalBodyVoteRatio = ({ intl, value, handleChangeVote, isSubmitted }) => {
   const handleChange = event => {
     const valueInput = get(event, 'target.value', '');
 
-    if (+valueInput <= 1000) {
+    if (+valueInput <= 10000) {
       setVoteValue(valueInput);
       handleChangeVote(valueInput);
     }

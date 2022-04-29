@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { isPostVideo } from './StoryHelper';
 import './PostFeedEmbed.less';
+import AsyncVideo from '../../vendor/asyncVideo';
 
 export default class PostFeedEmbed extends React.Component {
   static propTypes = {
@@ -10,6 +11,7 @@ export default class PostFeedEmbed extends React.Component {
       provider_name: PropTypes.string,
       thumbnail: PropTypes.string,
       embed: PropTypes.string,
+      url: PropTypes.string,
     }).isRequired,
     inPost: PropTypes.bool,
   };
@@ -56,6 +58,9 @@ export default class PostFeedEmbed extends React.Component {
     const { embed, inPost } = this.props;
     const shouldRenderThumb = inPost ? false : !this.state.showIframe;
 
+    if (embed.url.includes('odysee.com/')) {
+      return <AsyncVideo url={embed.url} />;
+    }
     if (isPostVideo(embed.provider_name, shouldRenderThumb)) {
       return this.renderThumbFirst(embed.thumbnail);
     } else if (embed.embed) {

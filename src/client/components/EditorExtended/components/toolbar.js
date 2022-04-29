@@ -7,6 +7,7 @@ import { FormattedMessage } from 'react-intl';
 
 import BlockToolbar from './blocktoolbar';
 import InlineToolbar from './inlinetoolbar';
+import CodeButtonbar from './codebuttonbar';
 
 import { getSelection, getSelectionRect } from '../util/index';
 import { getCurrentBlock } from '../model/index';
@@ -21,10 +22,12 @@ export default class Toolbar extends React.Component {
     toggleInlineStyle: PropTypes.func,
     inlineButtons: PropTypes.arrayOf(PropTypes.shape()),
     blockButtons: PropTypes.arrayOf(PropTypes.shape()),
+    codeButtons: PropTypes.arrayOf(PropTypes.shape()),
     editorNode: PropTypes.shape(),
     setLink: PropTypes.func,
     focus: PropTypes.func,
     intl: PropTypes.shape(),
+    setEditorState: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -34,9 +37,11 @@ export default class Toolbar extends React.Component {
     toggleInlineStyle: () => {},
     blockButtons: BLOCK_BUTTONS,
     inlineButtons: INLINE_BUTTONS,
+    codeButtons: CODE_BUTTONS,
     editorNode: {},
     setLink: () => {},
     focus: () => {},
+    setEditorState: () => {},
     intl: {},
   };
 
@@ -125,7 +130,7 @@ export default class Toolbar extends React.Component {
     if (screenLeft < 0) {
       // If the toolbar would be off-screen
       // move it as far left as it can without going off-screen
-      left = -parentBoundary.left;
+      left = -parentBoundary.left + (document.body.clientWidth < 1024 ? 20 : 0);
     }
     toolbarNode.style.left = `${left}px`;
   }
@@ -320,7 +325,9 @@ export default class Toolbar extends React.Component {
           <BlockToolbar
             editorState={editorState}
             onToggle={this.props.toggleBlockType}
+            onToggleInline={this.props.toggleInlineStyle}
             buttons={this.props.blockButtons}
+            setEditorState={this.props.setEditorState}
           />
         ) : null}
         {this.props.inlineButtons.length > 0 ? (
@@ -330,6 +337,13 @@ export default class Toolbar extends React.Component {
             buttons={this.props.inlineButtons}
           />
         ) : null}
+        <CodeButtonbar
+          editorState={editorState}
+          onToggle={this.props.toggleBlockType}
+          onToggleInline={this.props.toggleInlineStyle}
+          buttons={this.props.codeButtons}
+          setEditorState={this.props.setEditorState}
+        />
         {hasHyperLink && (
           <div className="md-RichEditor-controls">
             <span
@@ -349,6 +363,12 @@ export default class Toolbar extends React.Component {
 
 export const BLOCK_BUTTONS = [
   {
+    label: 'H1',
+    style: 'header-one',
+    icon: 'header',
+    description: 'Heading 1',
+  },
+  {
     label: 'H2',
     style: 'header-two',
     icon: 'header',
@@ -359,6 +379,12 @@ export const BLOCK_BUTTONS = [
     style: 'header-three',
     icon: 'header',
     description: 'Heading 3',
+  },
+  {
+    label: 'H4',
+    style: 'header-four',
+    icon: 'header',
+    description: 'Heading 4',
   },
   {
     label: (
@@ -419,5 +445,17 @@ export const INLINE_BUTTONS = [
     style: HYPERLINK,
     icon: 'link',
     description: 'Add a link',
+  },
+];
+
+export const CODE_BUTTONS = [
+  {
+    label: (
+      <svg width="19px" fill="#FFFFFF" viewBox="0 0 20 19" xmlns="http://www.w3.org/2000/svg">
+        <path d="M9.6 6a.59.59 0 00.6-.6c0-.346-.316-.6-.602-.6-.45 0-.91.085-1.338.219-.686.215-1.587.69-1.922 1.734-.208.651-.208 1.285-.113 1.95.043.302.085.597.085 1.028 0 .336-.267.721-.783 1.088-.494.35-1.036.553-1.228.59a.6.6 0 000 1.183c.192.036.734.239 1.228.59.516.366.783.75.783 1.087 0 .431-.042.726-.085 1.027-.095.667-.095 1.3.113 1.951.335 1.044 1.236 1.52 1.922 1.734.428.135.888.219 1.338.219.286 0 .602-.254.602-.6a.59.59 0 00-.6-.6 3.429 3.429 0 01-.98-.164c-.537-.168-.98-.46-1.14-.955-.146-.457-.141-.893-.074-1.359.045-.317.104-.729.104-1.253 0-.948-.697-1.646-1.289-2.066A5.143 5.143 0 005.912 12c.105-.063.208-.131.31-.203.591-.42 1.288-1.118 1.288-2.066 0-.524-.06-.936-.104-1.253-.067-.466-.072-.902.075-1.359.158-.494.602-.787 1.138-.955.314-.099.652-.161.982-.164zM13.8 18.6a.59.59 0 01.599-.6c.33-.003.668-.065.982-.164.536-.168.98-.46 1.138-.955.146-.457.142-.893.075-1.359-.045-.317-.104-.729-.104-1.253 0-.948.696-1.646 1.288-2.066.101-.072.205-.14.31-.203a5.176 5.176 0 01-.31-.203c-.592-.42-1.288-1.118-1.288-2.066 0-.524.06-.936.104-1.253.067-.466.071-.902-.075-1.359-.159-.494-.602-.787-1.138-.955A3.425 3.425 0 0014.399 6a.59.59 0 01-.6-.6c0-.346.317-.6.602-.6.45 0 .91.085 1.339.219.685.215 1.587.69 1.922 1.734.208.651.208 1.285.113 1.95a6.58 6.58 0 00-.085 1.028c0 .336.266.721.783 1.088.494.35 1.036.553 1.228.59a.597.597 0 01.5.591.6.6 0 01-.5.592c-.192.036-.734.239-1.228.59-.517.366-.783.75-.783 1.087 0 .431.042.726.085 1.027.095.667.095 1.3-.113 1.951-.335 1.044-1.237 1.52-1.922 1.734a4.527 4.527 0 01-1.339.219c-.285 0-.601-.254-.601-.6z" />
+      </svg>
+    ),
+    style: 'code-block',
+    description: 'code',
   },
 ];

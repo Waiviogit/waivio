@@ -2,11 +2,24 @@
 @import (reference) '../../../styles/modules/variables.less';
 
 .MarketBuyCard {
-  &__quantity {
-    margin-left: 10px;
+  &__per-waiv {
+    color: @blue-botticelli;
+    font-size: 12px;
+    margin-top: 3px;
+  }
 
-    @media @small {
-      margin-left: 25px;
-    }
+  &__quantity {
+    color: @black;
+  }
+
+  &__lower-text {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  &__space {
+    margin: 0 4px;
   }
 }
+
+@import 'MarketBuyCard-nightmode';

@@ -45,7 +45,7 @@ const TokenManage = props => {
         disabled={!props.stakeAmount}
         onClick={() => props.onOpenDelegate(props.symbol)}
       >
-        {props.intl.formatMessage({ id: 'delegate' })}
+        {props.intl.formatMessage({ id: 'delegate', defaultMessage: 'Delegate' })}
       </Button>
     </div>
   );
