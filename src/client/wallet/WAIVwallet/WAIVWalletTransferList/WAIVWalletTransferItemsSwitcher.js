@@ -99,6 +99,7 @@ const WAIVWalletTransferItemsSwitcher = ({ transaction, currentName, intl }) => 
           symbol={transaction.symbol}
           action={'Bought'}
           from={transaction.from}
+          price={transaction.price}
         />
       );
 
@@ -112,6 +113,7 @@ const WAIVWalletTransferItemsSwitcher = ({ transaction, currentName, intl }) => 
           symbol={transaction.symbol}
           action={'Sold'}
           to={transaction.to}
+          price={transaction.price}
         />
       );
 
@@ -345,7 +347,7 @@ WAIVWalletTransferItemsSwitcher.propTypes = {
     quantityUnlocked: PropTypes.string,
     quantityReturned: PropTypes.string,
     symbol: PropTypes.string,
-    price: PropTypes.string,
+    price: PropTypes.number,
     symbolOut: PropTypes.string,
     symbolOutQuantity: PropTypes.string,
     authorperm: PropTypes.string,

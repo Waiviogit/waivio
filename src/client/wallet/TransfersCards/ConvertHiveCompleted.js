@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import ConvertIcon from '@icons/convert.svg';
 
 import CardsTimeStamp from './CardsTimeStamp';
 
@@ -9,11 +10,7 @@ const ConvertHiveCompleted = ({ amount, timestamp, isGuestPage }) => {
   return (
     <div className="UserWalletTransactions__transaction">
       <div className="UserWalletTransactions__icon-wrapper">
-        <img
-          src="../images/icons/convert.svg"
-          className="UserWalletTransactions__convert-icon"
-          alt="convert"
-        />
+        <img src={ConvertIcon} className="UserWalletTransactions__convert-icon" alt="convert" />
       </div>
 
       <div className="UserWalletTransactions__content">

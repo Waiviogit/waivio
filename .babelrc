@@ -1,23 +1,21 @@
 {
   "presets": [
-    [
-      "env",
-      {
-        "modules": false
-      }
-    ],
-    "react",
-    "stage-2"
+    "@babel/preset-env",
+    "@babel/preset-react"
   ],
   "env": {
     "test": {
-      "plugins": ["transform-es2015-modules-commonjs"]
+      "plugins": ["transform-modules-commonjs"]
     }
   },
   "plugins": [
     "react-hot-loader/babel",
-    "transform-decorators-legacy",
-    "transform-runtime",
+    ["@babel/plugin-proposal-decorators",
+      {
+        "legacy": true
+      }],
+    "@babel/plugin-proposal-class-properties",
+    "@babel/plugin-transform-runtime",
     "lodash",
     ["import", { "libraryName": "antd", "style": true }]
   ]

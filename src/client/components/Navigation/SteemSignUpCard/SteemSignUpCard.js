@@ -1,11 +1,12 @@
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
+import HiveLogoBigIcon from '@icons/logo-hive-big.svg';
 
 const SteemSignUpCard = () => (
   <div className="SignUpCard">
     <div className="SignUpCard__line">
       <a target="_blank" rel="noopener noreferrer" href={process.env.SIGNUP_URL}>
-        <img alt="linkLogo" src="/images/icons/logo-hive-big.svg" />
+        <img alt="linkLogo" src={HiveLogoBigIcon} />
       </a>
     </div>
     <div className="ModalSignUp__link mb3">
