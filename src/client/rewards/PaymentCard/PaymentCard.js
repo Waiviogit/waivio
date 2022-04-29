@@ -5,6 +5,8 @@ import { injectIntl } from 'react-intl';
 import { isNumber } from 'lodash';
 import classNames from 'classnames';
 import { Tooltip } from 'antd';
+import ArrowSmallIcon from '@icons/arrowSmall.svg';
+
 import Avatar from '../../components/Avatar';
 import TransferButton from './TransferButton';
 import './PaymentCard.less';
@@ -53,11 +55,7 @@ const PaymentCard = props => {
               )}
             >
               {/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions */}
-              <img
-                src="/images/icons/arrowSmall.svg"
-                alt="Payments history"
-                onClick={handleSetUser}
-              />
+              <img src={ArrowSmallIcon} alt="Payments history" onClick={handleSetUser} />
             </Tooltip>
           </div>
         </div>

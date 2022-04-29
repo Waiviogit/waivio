@@ -5,6 +5,7 @@ import { isEmpty, get, round, debounce, isNil } from 'lodash';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
+import QRIcon from '@icons/qr.png';
 
 import TokensSelect from '../SwapTokens/components/TokensSelect';
 import {
@@ -263,7 +264,7 @@ const WithdrawModal = props => {
                 })}
               />
               <Button className="WithdrawModal__qr-button" onClick={() => setShowScanner(true)}>
-                <img src={'/images/icons/qr.png'} className="qr-img" alt="qr" />
+                <img src={QRIcon} className="qr-img" alt="qr" />
                 <span>
                   {' '}
                   <FormattedMessage id="qr_scanner" defaultMessage="QR scanner" />

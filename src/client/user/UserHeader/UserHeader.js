@@ -5,6 +5,7 @@ import classNames from 'classnames';
 import { Link } from 'react-router-dom';
 import { get, isEmpty, includes } from 'lodash';
 import urlParse from 'url-parse';
+import DollarIcon from '@icons/dollar.svg';
 
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { getUserRankKey, getUserRank } from '../../../common/helpers/user';
@@ -135,11 +136,7 @@ const UserHeader = ({
               </div>
               {!isGuest && (
                 <div className="UserHeader__voteValue">
-                  <img
-                    src={'/images/icons/dollar.svg'}
-                    alt={'dollar'}
-                    className="UserHeader__dollarIcon"
-                  />
+                  <img src={DollarIcon} alt={'dollar'} className="UserHeader__dollarIcon" />
                   <span>
                     <FormattedMessage id="vote_price" defaultMessage="Vote Value" />:{' '}
                     <USDDisplay value={user.totalVotingPowerPrice} />
