@@ -17,7 +17,7 @@ import { message } from 'antd';
 import classNames from 'classnames';
 
 import AddButton from './components/addbutton';
-import Toolbar, { BLOCK_BUTTONS, INLINE_BUTTONS } from './components/toolbar';
+import Toolbar, { BLOCK_BUTTONS, INLINE_BUTTONS, CODE_BUTTONS } from './components/toolbar';
 import LinkEditComponent from './components/LinkEditComponent';
 
 import rendererFn from './components/customrenderer';
@@ -68,6 +68,14 @@ export default class MediumDraftEditor extends React.Component {
         description: PropTypes.string,
       }),
     ),
+    codeButtons: PropTypes.arrayOf(
+      PropTypes.shape({
+        label: PropTypes.oneOfType([PropTypes.string, PropTypes.element, PropTypes.object]),
+        style: PropTypes.string.isRequired,
+        icon: PropTypes.string,
+        description: PropTypes.string,
+      }),
+    ),
     placeholder: PropTypes.string,
     continuousBlocks: PropTypes.arrayOf(PropTypes.string),
     sideButtons: PropTypes.arrayOf(
@@ -106,6 +114,7 @@ export default class MediumDraftEditor extends React.Component {
     blockRenderMap: RenderMap,
     blockButtons: BLOCK_BUTTONS,
     inlineButtons: INLINE_BUTTONS,
+    codeButtons: CODE_BUTTONS,
     placeholder: 'Write your story...',
     continuousBlocks: [Block.UNSTYLED, Block.BLOCKQUOTE, Block.OL, Block.UL, Block.CODE],
     sideButtons: [
@@ -810,6 +819,7 @@ export default class MediumDraftEditor extends React.Component {
               ref={c => {
                 this.toolbar = c;
               }}
+              setEditorState={this.onChange}
               editorNode={this._editorNode} // eslint-disable-line
               editorState={editorState}
               toggleBlockType={this.toggleBlockType}
@@ -819,6 +829,7 @@ export default class MediumDraftEditor extends React.Component {
               focus={this.focus}
               blockButtons={blockButtons}
               inlineButtons={inlineButtons}
+              codeButtons={this.props.codeButtons}
               intl={this.props.intl}
             />
           )}

@@ -2,21 +2,18 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Checkbox, Form } from 'antd';
 import { connect } from 'react-redux';
-import { ceil } from 'lodash';
+import { ceil, isEmpty } from 'lodash';
 import { FormattedMessage, FormattedNumber, injectIntl } from 'react-intl';
 import RawSlider from '../components/Slider/RawSlider';
-import { calculateVotePower } from '../../common/helpers/user';
 import USDDisplay from '../components/Utils/USDDisplay';
-import { getRate, getRewardFund } from '../../store/appStore/appSelectors';
 import { getAuthenticatedUser } from '../../store/authStore/authSelectors';
 import { getVotePercent, getVotingPower } from '../../store/settingsStore/settingsSelectors';
+import { calculateVotePowerForSlider } from '../vendor/steemitHelpers';
 
 import './LikeSection.less';
 
 @injectIntl
 @connect(state => ({
-  rewardFund: getRewardFund(state),
-  rate: getRate(state),
   defaultVotePercent: getVotePercent(state),
   user: getAuthenticatedUser(state),
   sliderMode: getVotingPower(state),
@@ -30,8 +27,11 @@ class LikeSection extends React.Component {
     sliderMode: PropTypes.bool,
     defaultVotePercent: PropTypes.number,
     user: PropTypes.shape(),
-    rewardFund: PropTypes.shape(),
-    rate: PropTypes.number,
+    selectedType: PropTypes.shape({
+      author: PropTypes.string,
+      author_permlink: PropTypes.string,
+      permlink: PropTypes.string,
+    }),
   };
 
   static defaultProps = {
@@ -39,6 +39,7 @@ class LikeSection extends React.Component {
     defaultVotePercent: 100,
     user: {},
     rewardFund: {},
+    selectedType: {},
     rate: 1,
     disabled: false,
   };
@@ -62,11 +63,25 @@ class LikeSection extends React.Component {
     this.calculateVoteWorth(this.state.votePercent);
   };
 
-  calculateVoteWorth = value => {
-    const { user, rewardFund, rate, onVotePercentChange } = this.props;
-    const voteWorth = ceil((calculateVotePower(user, rewardFund, rate) * value) / 100, 3);
+  componentDidUpdate(prevProps) {
+    if (prevProps.selectedType !== this.props.selectedType) {
+      this.calculateVoteWorth(this.state.votePercent);
+    }
+  }
 
-    this.setState({ votePercent: value, voteWorth });
+  calculateVoteWorth = async value => {
+    const { user, onVotePercentChange, selectedType } = this.props;
+
+    if (isEmpty(selectedType)) return;
+
+    const voteWorth = await calculateVotePowerForSlider(
+      user.name,
+      value,
+      selectedType.author,
+      selectedType.author_permlink || selectedType.permlink,
+    );
+
+    this.setState({ votePercent: value, voteWorth: ceil(voteWorth, 3) });
 
     onVotePercentChange(value);
   };

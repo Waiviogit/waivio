@@ -1,0 +1,57 @@
+@import (reference) '../../../styles/custom.less';
+@import (reference) '../../../styles/modules/variables.less';
+
+.nightmode {
+  .MainPageHeader {
+    background: @grey-nero;
+    box-shadow: 1px 8px 15px -11px rgb(81 86 91);
+
+    &__logo b,
+    &__link,
+    &__logo-border,
+    &__listLink a {
+      color: @white-smoke;
+    }
+
+    .WebsiteSearch {
+      border: none;
+
+      .ant-input {
+        border-radius: 8px;
+        border: 1px solid @normal-grey !important;
+      }
+
+      .ant-input-search-icon {
+        color: @white-smoke;
+      }
+
+      .ant-input::placeholder {
+        color: @white-smoke;
+      }
+    }
+
+    span {
+      color: @white-smoke;
+    }
+
+    .DiningFiltersClass {
+      background: @grey-nero;
+    }
+
+    .SearchAllResult {
+      &__type-wrap {
+        border: 1px solid @normal-grey;
+      }
+
+      &__type--active {
+        border: 1px solid @dusty-gray;
+      }
+    }
+
+    &__buttonWrap {
+      .Topnav__menu-container__menu > li.ant-menu-item > a {
+        color: @white-smoke !important;
+      }
+    }
+  }
+}

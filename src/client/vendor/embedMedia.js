@@ -3,10 +3,11 @@
  * that was extended to support dtube and 3speak links
  * https://github.com/busyorg/embedjs/blob/dev/lib/embedjs.js
  */
-
+import React from 'react';
 import getUrls from 'get-urls';
 
 import { VIDEO_MATCH_URL } from '../../common/helpers/regexHelpers';
+import AsyncVideo from './asyncVideo';
 
 const SteemEmbed = {};
 
@@ -50,7 +51,7 @@ SteemEmbed.get = function(url, options) {
   const vimeoId = this.isVimeo(url);
   const bitchuteId = this.isBitchute(url);
   const rumbleId = this.isRumble(url);
-
+  const odyseeId = this.isOdysee(url);
   if (youtubeId) {
     return {
       type: 'video',
@@ -129,11 +130,20 @@ SteemEmbed.get = function(url, options) {
       id: rumbleId,
       embed: this.rumble(url, rumbleId, options),
     };
+  } else if (odyseeId) {
+    return {
+      type: 'video',
+      url: url,
+      provider_name: 'Odysee',
+      id: odyseeId,
+    };
   }
 };
 
 SteemEmbed.isYoutube = function(url) {
-  const match = url.match(VIDEO_MATCH_URL.YOUTUBE);
+  const match = url.includes('shorts')
+    ? url.match(VIDEO_MATCH_URL.YOUTUBE_SHORTS)
+    : url.match(VIDEO_MATCH_URL.YOUTUBE);
   return match ? match[1] : false;
 };
 
@@ -157,6 +167,15 @@ SteemEmbed.youtube = function(url, id, options) {
     srcUrl +
     '" frameborder="0" scrolling="no" allowfullscreen></iframe>'
   );
+};
+
+SteemEmbed.isOdysee = function(url) {
+  const match = url.match(VIDEO_MATCH_URL.ODYSEE);
+  return match ? match[1].replace(/(\?.*=.*)/, '') : false;
+};
+
+SteemEmbed.odysee = function(url, id, options) {
+  return <AsyncVideo url={url} />;
 };
 
 SteemEmbed.isDTube = function(url) {

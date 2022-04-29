@@ -1,7 +1,7 @@
 @import (reference) '../../../styles/modules/variables.less';
 @import (reference) '../../../styles/custom.less';
 
-@add-btn-width: 36px;
+@add-btn-width: 50px;
 @input-max-width: @container-width - @right-width - @margin * 3;
 
 .md-side-toolbar {
@@ -12,11 +12,25 @@
   transition: all 0.1s ease;
   left: 0;
 
+  .act-buttons-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 20px;
+  }
+
   .act-buttons-group {
-    display: flex;
-    border: 1px solid @blue-botticelli;
+    border: 1px solid @blue-baliHai;
     border-radius: 4px;
     margin-top: 10px;
+    padding: 15px;
+    background-color: @white;
+    font-family: @font-family-sans-serif;
+    font-weight: 500;
+  }
+
+  .act-buttons-heading {
+    margin-bottom: 10px;
+    color: @blue-baliHai;
   }
 
   .video-link-input,
@@ -47,6 +61,7 @@
         outline: none;
       }
     }
+
     .ant-btn {
       height: 32px;
       padding: 0 8px;
@@ -58,16 +73,21 @@
 
     .ant-select-selection {
       width: 100%;
+
       &__rendered {
         width: 100%;
+
         .ant-select-selection__placeholder,
         .ant-select-search__field__placeholder {
           margin-top: -8px;
         }
+
         ul {
           width: 100%;
+
           li {
             margin: 0;
+
             .ant-input {
               height: 32px;
             }
@@ -82,7 +102,7 @@
   background: @white none;
   outline: none;
   border: 1px solid @grey-empress;
-  color: @grey-empress;
+  color: @blue-baliHai;
   cursor: pointer;
   height: @add-btn-width;
   min-width: @add-btn-width;
@@ -90,6 +110,7 @@
   font-size: 22px;
   text-align: center;
   transition: all 0.2s ease;
+  font-weight: 500;
 
   &:focus {
     outline: none;
@@ -97,7 +118,7 @@
 
   svg path {
     stroke-width: 0;
-    fill: #545454;
+    fill: @blue-baliHai;
   }
 
   &.action-btn {
@@ -105,19 +126,22 @@
     align-items: center;
     line-height: 1;
     padding: 4px 7px;
-    border: none;
-    border-radius: 0;
-    border-right: 1px solid @blue-botticelli;
-    &:first-child {
-      border-radius: 4px 0 0 4px;
+    border: 1px solid @menu-item-border;
+    border-radius: 4px;
+    background-color: @white-smoke;
+    min-width: 120px;
+    @media @medium {
+      min-width: 190px;
     }
-    &:last-child {
-      border: none;
-      border-radius: 0 4px 4px 0;
-    }
-
     @media @small {
       padding: 4px;
+    }
+
+    span {
+      padding-left: 2px;
+      @media @small {
+        padding-left: 4px;
+      }
     }
 
     &:hover {
@@ -129,15 +153,41 @@
     }
 
     & > .btn-icon {
-      padding-left: 2px;
-      font-size: 12px;
+      padding-left: 5px;
+      padding-right: 5px;
+
+      svg {
+        height: 25px;
+        margin-left: -1px;
+        margin-right: 2px;
+
+        @media @small {
+          margin-left: 3px;
+        }
+      }
+
       svg path {
-        fill: @grey-empress;
+        fill: @blue-baliHai;
+      }
+    }
+
+    & > .btn-icon_photo {
+      height: 30px;
+      width: 30px;
+      margin-top: 0;
+      margin-left: 0px;
+
+      svg {
+        fill: gray;
+      }
+      @media @small {
+        margin-left: 5px;
       }
     }
 
     & > .object-btn {
       font-size: 24px;
+
       svg path {
         fill: @grey-empress;
       }
@@ -149,22 +199,27 @@
       padding-left: 4px;
 
       @media @small {
-        font-size: 19px;
+        font-size: 16px;
       }
     }
 
+    .action-btn__caption_object {
+      padding-left: 0;
+    }
+
     .action-btn__icon {
-      margin-top: 0;
+      margin: 0 5px 0 3px;
       width: 22px;
-      height: 17px;
+      height: 25px;
+      font-weight: 400;
+      fill: @blue-baliHai;
+      color: @blue-baliHai;
 
       &--cube {
         height: 22px;
       }
-
-      &--text {
-        width: auto;
-        height: auto;
+      @media @small {
+        margin: 0 6px;
       }
     }
   }
@@ -172,10 +227,16 @@
 
 .md-add-button {
   margin: 10px 2px 0 -26px;
+  height: 36px;
+  min-width: 36px;
 
   &.md-open-button {
     transform: rotate(45deg);
   }
+}
+
+.add-button-plus {
+  fill: @grey-mortar !important;
 }
 
 .md-add-btn-anim-appear {
@@ -207,6 +268,9 @@
 .md-add-btn-anim-exit.md-add-btn-anim-exit-active {
   opacity: 0.01;
   transition: opacity 200ms ease-in;
+}
+.injected-svg {
+  margin-top: 2px;
 }
 
 @import './addbutton-nightmode';

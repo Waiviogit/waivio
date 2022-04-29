@@ -78,7 +78,7 @@ class VideoSideButton extends Component {
         })}
         onClick={this.onClick}
       >
-        <img src={Play} className="action-btn__icon" alt="play" />
+        <img src={Play} width={30} height={30} className="action-btn__icon" alt="play" />
         <span className="action-btn__caption">
           {this.props.intl.formatMessage({ id: 'post_btn_video', defaultMessage: 'Video' })}
         </span>

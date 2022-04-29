@@ -48,6 +48,10 @@ const initialState = {
   delegateVisible: false,
   showRewards: false,
   delegationModalType: delegationModalTypes.MANAGE,
+  hiveEngineDelayInfo: {
+    status: 'OK',
+    delay: 0,
+  },
 };
 
 export default function walletReducer(state = initialState, action) {
@@ -468,7 +472,7 @@ export default function walletReducer(state = initialState, action) {
     case walletActions.GET_AUTH_USER_TOKENS_BALANCE_LIST.SUCCESS:
       return {
         ...state,
-        tokensBalanceListForTransfer: action.payload,
+        tokensBalanceListForTransfer: action.payload.filter(token => +token.balance),
       };
 
     case walletActions.GET_CURRENT_USER_TOKENS_BALANCE_LIST.SUCCESS:
@@ -493,6 +497,11 @@ export default function walletReducer(state = initialState, action) {
       return {
         ...state,
         showRewards: action.payload,
+      };
+    case walletActions.GET_HIVE_ENGINE_STATUS:
+      return {
+        ...state,
+        hiveEngineDelayInfo: action.payload,
       };
     case walletActions.TOGGLE_DELEGATE_MODAL:
       return {

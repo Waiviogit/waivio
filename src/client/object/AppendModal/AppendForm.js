@@ -2276,6 +2276,7 @@ export default class AppendForm extends Component {
           handleSubmit={this.handleSubmit}
           votePercent={this.state.votePercent}
           voteWorth={this.state.voteWorth}
+          selectWobj={this.props.wObject}
         />
       </Form>
     );

@@ -106,7 +106,7 @@ class ObjectSideButton extends Component {
         onClick={this.onClick}
       >
         <span className="action-btn__icon action-btn__icon--text">#</span>
-        <span className="action-btn__caption">
+        <span className="action-btn__caption action-btn__caption_object">
           {this.props.intl.formatMessage({ id: 'post_btn_object', defaultMessage: 'Object' })}
         </span>
       </button>

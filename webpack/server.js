@@ -71,7 +71,6 @@ module.exports = function createConfig(env = 'dev') {
                 importLoaders: 1,
               },
             },
-            // POSTCSS_LOADER,
             {
               loader: 'less-loader',
               options: {
@@ -105,13 +104,13 @@ module.exports = function createConfig(env = 'dev') {
       }),
       new NodePolyfillPlugin(),
     ];
-
-    config.resolve = {
-      alias: {
-        ...ALIAS,
-      },
-    };
   }
+
+  config.resolve = {
+    alias: {
+      ...ALIAS,
+    },
+  };
 
   return config;
 };

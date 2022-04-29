@@ -1,0 +1,33 @@
+@import (reference) '../../styles/custom.less';
+@import (reference) '../../styles/modules/variables.less';
+
+.nightmode {
+  .SearchAllResult {
+    &__filters-button.ant-btn {
+      background: @scorpion;
+      color: @white-smoke;
+      border: 1px solid @dusty-gray;
+    }
+    &__filters-button {
+      &--active {
+        background: @light-gray !important;
+      }
+    }
+
+    &__main-wrap {
+      background: @grey-nero;
+    }
+
+    &__active-tag {
+      background: @scorpion;
+    }
+
+    &__filter-list .ant-dropdown-menu-item {
+      color: @white-pale;
+
+      &:hover {
+        background: @blue-darkGrayish;
+      }
+    }
+  }
+}

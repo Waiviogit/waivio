@@ -31,6 +31,7 @@ import Deposit from './Deposit/Deposit';
 import WithdrawModal from './WithdrawModal/WithdrawModal';
 import { getIsOpenWithdraw } from '../../store/depositeWithdrawStore/depositWithdrawSelector';
 import ManageDelegate from './DelegateModals/ManageDelegate/ManageDelegate';
+import { getAuthenticatedUserName } from '../../store/authStore/authSelectors';
 
 const Wallets = props => {
   const query = new URLSearchParams(props.location.search);
@@ -42,8 +43,8 @@ const Wallets = props => {
     props.getTokenBalance('WAIV', props.match.params.name);
     props.getCryptoPriceHistory();
     props.getGlobalProperties();
-    props.getUserTokensBalanceList(props.match.params.name);
     props.getCurrUserTokensBalanceList(props.match.params.name);
+    props.getUserTokensBalanceList(props.authUserName);
     props.getCurrUserTokensBalanceSwap(props.match.params.name);
 
     return () => props.resetHiveEngineTokenBalance();
@@ -73,7 +74,7 @@ const Wallets = props => {
           <Tabs.TabPane
             tab={props.intl.formatMessage({
               id: 'hive_engine_wallet',
-              defaultMessage: 'HIVE Engine wallet',
+              defaultMessage: 'Hive Engine wallet',
             })}
             key="ENGINE"
           >
@@ -103,10 +104,11 @@ Wallets.propTypes = {
   visibleWithdraw: PropTypes.bool.isRequired,
   visibleDelegate: PropTypes.bool.isRequired,
   getCurrUserTokensBalanceList: PropTypes.func.isRequired,
-  getUserTokensBalanceList: PropTypes.func.isRequired,
   resetHiveEngineTokenBalance: PropTypes.func.isRequired,
   getCurrUserTokensBalanceSwap: PropTypes.func.isRequired,
+  getUserTokensBalanceList: PropTypes.func.isRequired,
   visibleDeposit: PropTypes.bool.isRequired,
+  authUserName: PropTypes.string.isRequired,
   history: PropTypes.shape({
     push: PropTypes.func,
   }).isRequired,
@@ -128,6 +130,7 @@ export default connect(
     visibleDeposit: getDepositVisible(state),
     visibleWithdraw: getIsOpenWithdraw(state),
     visibleDelegate: getDelegationModalVisible(state),
+    authUserName: getAuthenticatedUserName(state),
   }),
   {
     setWalletType,

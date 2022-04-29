@@ -8,16 +8,9 @@ const customStyleMap = {
     backgroundColor: 'yellow',
   },
   [Inline.CODE]: {
-    fontFamily: 'Consolas, "Liberation Mono", Menlo, Courier, monospace',
-    margin: '4px 0',
-    fontSize: '0.9em',
-    padding: '1px 3px',
-    color: '#555',
-    backgroundColor: '#fcfcfc',
-    border: '1px solid #ccc',
-    borderBottomColor: '#bbb',
-    borderRadius: 3,
-    boxShadow: 'inset 0 -1px 0 #bbb',
+    padding: '2px 4px',
+    backgroundColor: '#f2f2f2',
+    color: '#303030',
   },
 };
 

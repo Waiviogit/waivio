@@ -94,12 +94,13 @@ module.exports = function createConfig(env = 'dev') {
     config.optimization = {
       minimize: false,
     };
-    config.resolve = {
-      alias: {
-        ...ALIAS,
-      },
-    };
   }
+
+  config.resolve = {
+    alias: {
+      ...ALIAS,
+    },
+  };
 
   if (IS_PROD) {
     config.plugins = [

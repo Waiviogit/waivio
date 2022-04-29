@@ -11,7 +11,7 @@ import WalletFillOrderTransferred from './TransfersCards/WalletFillOrderTransfer
 import WalletLimitOrder from './TransfersCards/WalletLimitOrder';
 import WalletCancelOrder from './TransfersCards/WalletCancelOrder';
 import PowerUpTransactionTo from './TransfersCards/PowerUpTransactionTo';
-import SetWithdrawVestingRoute from './TransfersCards/SetWithdrawVestingRoute';
+import SetWithdrawVestingRoute from './TransfersCards/SetWithdrawVestingRoute/SetWithdrawVestingRoute';
 import ConvertHbdRequest from './TransfersCards/ConvertHbdRequest';
 import ConvertHbdCompleted from './TransfersCards/ConvertHbdCompleted';
 import ConvertHiveRequest from './TransfersCards/ConvertHiveRequest';
@@ -97,6 +97,7 @@ const WalletTransaction = ({
     case accountHistoryConstants.SET_WITHDRAW_VESTING_ROUTE: {
       return (
         <SetWithdrawVestingRoute
+          currentUsername={currentUsername}
           isGuestPage={isGuestPage}
           from={transactionDetails.from}
           to={transactionDetails.to}
