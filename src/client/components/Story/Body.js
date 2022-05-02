@@ -93,7 +93,7 @@ export function getHtml(body, jsonMetadata = {}, returnType = 'Object', options 
   for (let i = 0; i < splittedBody.length; i += 1) {
     let section = splittedBody[i];
     const extractedLinks = extractLinks(section);
-    const match = section.match(/^([A-Za-z0-9./_@:,-]+) ([A-Za-z0-9@:/]+) (\S+) ~~~/);
+    const match = section.match(/^([A-Za-z0-9./_@:,?=&;-]+) ([A-Za-z0-9@:/]+) (\S+) ~~~/);
 
     if (match && match.length >= 4) {
       const id = match[1];

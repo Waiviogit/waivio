@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import getSource, { isOdysee } from '../../util/videoHelper';
+import getSource, { getIframeContainerClass, isOdysee } from '../../util/videoHelper';
 import AsyncVideo from '../../../../vendor/asyncVideo';
 
 import './video.less';
@@ -13,7 +13,7 @@ const Video = ({ entityData }) => {
 
   if (src) {
     return (
-      <div className="PostFeedEmbed__container">
+      <div className={getIframeContainerClass({ url: entityData.src })}>
         <iframe
           title={src}
           width="100%"
