@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import { isEmpty } from 'lodash';
-import { Input, Button } from 'antd';
+import { Input, Button, Icon } from 'antd';
 import { FormattedMessage } from 'react-intl';
 
 import BlockToolbar from './blocktoolbar';
@@ -303,15 +303,11 @@ export default class Toolbar extends React.Component {
       );
     }
     let hasHyperLink = false;
-    let hyperlinkLabel = '#';
     let hyperlinkDescription = 'Add a link';
 
     for (let cnt = 0; cnt < inlineButtons.length; cnt += 1) {
       if (inlineButtons[cnt].style === HYPERLINK) {
         hasHyperLink = true;
-        if (inlineButtons[cnt].label) {
-          hyperlinkLabel = inlineButtons[cnt].label;
-        }
         if (inlineButtons[cnt].description) {
           hyperlinkDescription = inlineButtons[cnt].description;
         }
@@ -345,14 +341,14 @@ export default class Toolbar extends React.Component {
           setEditorState={this.props.setEditorState}
         />
         {hasHyperLink && (
-          <div className="md-RichEditor-controls">
+          <div className="md-RichEditor-controls ">
             <span
               className="md-RichEditor-styleButton md-RichEditor-linkButton hint--top"
               role="presentation"
               onClick={this.handleLinkInput}
               aria-label={hyperlinkDescription}
             >
-              {hyperlinkLabel}
+              <Icon type="link" />
             </span>
           </div>
         )}

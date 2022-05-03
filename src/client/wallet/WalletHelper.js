@@ -191,7 +191,7 @@ export const getTransactionDescription = (type, options) => {
         limitOrder: (
           <FormattedMessage
             id="limit_order"
-            defaultMessage="Limit order to buy {open_pays} for {current_pays}"
+            defaultMessage="Limit order"
             values={{
               open_pays: <span>{openPays}</span>,
               current_pays: <span>{currentPays}</span>,

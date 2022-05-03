@@ -169,8 +169,8 @@ const WalletTransaction = ({
     case accountHistoryConstants.LIMIT_ORDER:
       return (
         <WalletLimitOrder
-          openPays={getTransactionCurrency(transactionDetails.open_pays)}
-          currentPays={getTransactionCurrency(transactionDetails.current_pays)}
+          openPays={transactionDetails.open_pays}
+          currentPays={transactionDetails.current_pays}
           timestamp={transaction.timestamp}
           transactionType={transactionType}
         />
