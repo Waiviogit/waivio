@@ -6,6 +6,8 @@ import classNames from 'classnames';
 import { connect } from 'react-redux';
 import Overlay from 'pigeon-overlay';
 import { isEmpty } from 'lodash';
+import AimIcon from '@icons/aim.png';
+
 import { getRadius, getParsedMap } from './mapHelper';
 import Loading from '../Icon/Loading';
 import { getCoordinates } from '../../../store/userStore/userActions';
@@ -186,7 +188,7 @@ class MapObjectInfo extends React.Component {
         </Map>
         {this.zoomButtonsLayout()}
         <div role="presentation" className="MapOS__locateGPS" onClick={this.setCoordinates}>
-          <img src="/images/icons/aim.png" alt="aim" className="MapOS__locateGPS-button" />
+          <img src={AimIcon} alt="aim" className="MapOS__locateGPS-button" />
         </div>
         <div role="presentation" className="MapOS__fullScreen" onClick={this.openModal}>
           <Icon type="fullscreen" style={{ fontSize: '25px', color: '#000000' }} />
@@ -214,7 +216,7 @@ class MapObjectInfo extends React.Component {
                 onClick={this.setCoordinates}
                 title="find me"
               >
-                <img src="/images/icons/aim.png" alt="aim" className="MapOS__locateGPS-button" />
+                <img src={AimIcon} alt="aim" className="MapOS__locateGPS-button" />
               </div>
               <div role="presentation" className="MapOS__fullScreen" onClick={this.openModal}>
                 <Icon type="fullscreen-exit" style={{ fontSize: '25px', color: '#000000' }} />

@@ -175,7 +175,9 @@ export function splitPostContent(markdownContent, { bodyKey } = { bodyKey: 'post
 export function getObjectUrl(objPermlink) {
   if (!objPermlink) return '';
 
-  return `${apiConfig.production.protocol}${apiConfig.production.host}/object/${objPermlink}`;
+  return `${apiConfig[process.env.NODE_ENV].protocol}${
+    apiConfig[process.env.NODE_ENV].host
+  }/object/${objPermlink}`;
 }
 
 const setTitle = (initObjects, props) => {

@@ -2,7 +2,7 @@ const OFF = 0;
 const ERROR = 2;
 
 module.exports = {
-  parser: 'babel-eslint',
+  parser: '@babel/eslint-parser',
   parserOptions: {
     ecmaVersion: 7,
     sourceType: 'module',
@@ -65,5 +65,18 @@ module.exports = {
     "no-unused-expressions": OFF,
     "jsx-a11y/no-noninteractive-element-interactions": OFF,
     "jsx-a11y/no-static-element-interactions": OFF,
+    "jsx-a11y/anchor-has-content": [OFF, {
+      "components": [ "Anchor" ],
+    }],
+    "jsx-a11y/heading-has-content": [ OFF, {
+      "components": [ "MyHeading" ],
+    }],
   },
+  "settings": {
+    "import/resolver": {
+      webpack: {
+        config: './webpack/client.js'
+      }
+    }
+  }
 };
