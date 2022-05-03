@@ -9,10 +9,9 @@ import USDDisplay from '../../Utils/USDDisplay';
 import { calculatePayout, isPostCashout } from '../../../vendor/steemitHelpers';
 import PayoutCurrencyBlock from '../PayoutCurrencyBlock/PayoutCurrencyBlock';
 import { getTokenRatesInUSD } from '../../../../store/walletStore/walletSelectors';
-
-import './PayoutDetail.less';
 import { GUEST_BENEFISIARY } from '../../../../common/constants/waivio';
 import { guestUserRegex } from '../../../../common/helpers/regexHelpers';
+import './PayoutDetail.less';
 
 const AmountWithLabel = ({ id, defaultMessage, nonzero, amount }) => {
   if (nonzero && amount === 0) return null;

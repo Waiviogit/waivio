@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Lightbox from 'react-image-lightbox';
+import OnlineIcon from '@icons/online.png';
+
 import Avatar from './Avatar';
 import { guestUserRegex } from '../../common/helpers/regexHelpers';
 
@@ -41,7 +43,7 @@ export default class AvatarLightbox extends React.Component {
         <Avatar username={username} size={size} />
         {isActive && (
           <img
-            src="/images/icons/online.png"
+            src={OnlineIcon}
             alt="hive"
             className="UserHeader__container--active"
             title="Active now"

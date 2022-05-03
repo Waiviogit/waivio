@@ -6,6 +6,7 @@ import { Link, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { AutoComplete, Icon, Input } from 'antd';
 import classNames from 'classnames';
+import MainImage from '@icons/waivio.svg';
 import {
   resetSearchAutoCompete,
   searchAutoComplete,
@@ -504,7 +505,7 @@ class Topnav extends React.Component {
         <div className="topnav-layout">
           <div className={classNames('left', { 'Topnav__mobile-hidden': searchBarActive })}>
             <Link className="Topnav__brand" to="/">
-              <img src="/images/icons/waivio.svg" alt="Waivio" />
+              <img src={MainImage} alt="Waivio" />
             </Link>
           </div>
           <div className={classNames('center', { mobileVisible: searchBarActive })}>

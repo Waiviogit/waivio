@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Input, Icon, Modal } from 'antd';
 import { get, isEmpty } from 'lodash';
+import SendIcon from '@icons/send.svg';
+
 import withEditor from '../Editor/withEditor';
 import Avatar from '../Avatar';
 import ImageSetter from '../ImageSetter/ImageSetter';
@@ -138,7 +140,7 @@ class QuickCommentEditor extends React.Component {
                 onClick={this.handleSubmit}
                 className="QuickComment__send-comment"
               >
-                <img src={'/images/icons/send.svg'} alt="send" />
+                <img src={SendIcon} alt="send" />
               </span>
             )}
           </div>
