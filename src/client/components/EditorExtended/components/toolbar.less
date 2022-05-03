@@ -63,6 +63,7 @@
 
   &.md-editor-toolbar--isopen {
     visibility: visible;
+    width: 310px;
   }
 
   &.md-editor-toolbar--linkinput {
@@ -92,6 +93,7 @@
       border: none;
       box-shadow: none;
     }
+
     &:hover {
       border: none;
     }
@@ -161,9 +163,14 @@
     padding: 0 5px;
     color: @white;
     text-decoration: none;
+
     svg {
       position: relative;
-      top: 1px;
+    }
+
+    .anticon-link {
+      padding-left: 5px;
+      font-size: 15px;
     }
   }
 }
@@ -176,6 +183,10 @@
 
   &:hover {
     color: @orange;
+
+    svg path {
+      fill: @orange;
+    }
   }
 
   &:last-child {
@@ -185,12 +196,15 @@
   &.md-RichEditor-styleButton-bold {
     font-weight: bold;
   }
+
   &.md-RichEditor-styleButton-italic {
     font-style: italic;
   }
+
   &.md-RichEditor-styleButton-underline {
     text-decoration: underline;
   }
+
   &.md-RichEditor-styleButton-strikethrough {
     text-decoration: line-through;
   }
@@ -211,6 +225,7 @@
     border-bottom-left-radius: 5px;
   }
 }
+
 .md-RichEditor-show-link-input {
   border: 1px solid @orange-hot;
   border-radius: 4px;
@@ -230,19 +245,23 @@
     padding-bottom: 2px;
     height: 32px;
   }
+
   .md-RichEditor-styleButton:first-child {
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
   }
+
   &:hover,
   .md-RichEditor-activeButton {
     svg {
       fill: @orange;
     }
   }
+
   svg {
     position: relative;
     top: 1.5px;
+    margin-right: 2px;
   }
 }
 
