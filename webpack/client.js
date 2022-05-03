@@ -4,6 +4,7 @@ const LodashModuleReplacementPlugin = require('lodash-webpack-plugin');
 const WebpackBar = require('webpackbar');
 const paths = require('../scripts/paths');
 const SpeedMeasurePlugin = require('speed-measure-webpack-plugin');
+const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
 
 const {
   CONTENT_PORT,
@@ -26,7 +27,7 @@ module.exports = function createConfig(env = 'dev') {
   const config = smp.wrap({
     mode: IS_DEV ? 'development' : 'production',
     entry: [paths.client],
-    devtool: IS_DEV ? 'inline-source-map' : '',
+    devtool: IS_DEV ? 'inline-source-map' : false,
     output: {
       path: appPath,
       filename: IS_DEV ? 'bundle.js' : 'bundle-[name].[chunkhash].js',
@@ -106,7 +107,7 @@ module.exports = function createConfig(env = 'dev') {
     config.plugins = [
       ...config.plugins,
       new webpack.optimize.AggressiveMergingPlugin(),
-      new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
+      new webpack.IgnorePlugin({ resourceRegExp: /^\.\/locale$/, contextRegExp: /moment$/ }),
       new NodePolyfillPlugin(),
       new LodashModuleReplacementPlugin({
         collections: true,
@@ -117,10 +118,10 @@ module.exports = function createConfig(env = 'dev') {
       new CSSExtract({
         filename: '[name].[contenthash].css',
       }),
-      // new SWPrecacheWebpackPlugin({
-      //   filepath: paths.sw,
-      //   stripPrefix: appPath,
-      // }),
+      new SWPrecacheWebpackPlugin({
+        filepath: paths.sw,
+        stripPrefix: appPath,
+      }),
     ];
     config.optimization = {
       splitChunks: {
