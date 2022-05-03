@@ -6,6 +6,7 @@ import classNames from 'classnames';
 import { ceil, get, upperFirst, debounce } from 'lodash';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import store from 'store';
+import QRIcon from '@icons/qr.png';
 
 import { closeWithdraw } from '../../../store/walletStore/walletActions';
 import QrModal from '../../widgets/QrModal';
@@ -321,7 +322,7 @@ const Withdraw = ({
               })}
             />
             <button className="Withdraw__qr-button" onClick={() => setShowScanner(true)}>
-              <img src={'/images/icons/qr.png'} className="qr-img" alt="qr" />
+              <img src={QRIcon} className="qr-img" alt="qr" />
               <span>QR scanner</span>
             </button>
           </div>
