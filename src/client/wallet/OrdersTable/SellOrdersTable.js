@@ -1,6 +1,6 @@
 import React from 'react';
-import ListTable from './ListTable/ListTable';
-import { getSellBookList } from '../../waivioApi/ApiClient';
+import ListTable from '../ListTable/ListTable';
+import { getSellBookList } from '../../../waivioApi/ApiClient';
 
 const SellOrdersTable = () => {
   const columnTitles = ['ASK', 'WAIV', 'HIVE'];
