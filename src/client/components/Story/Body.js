@@ -15,6 +15,7 @@ import { extractLinks } from '../../../common/helpers/parser';
 import { getBodyLink } from '../EditorExtended/util/videoHelper';
 import PostFeedEmbed from './PostFeedEmbed';
 import AsyncVideo from '../../vendor/asyncVideo';
+import { addBreakLines, addSpaces } from '../../../common/helpers/editorHelper';
 
 import './Body.less';
 
@@ -24,6 +25,7 @@ export const remarkable = new Remarkable({
   linkify: false,
   typographer: false,
   quotes: '“”‘’',
+  emptyLines: true,
 });
 
 const getEmbed = link => {
@@ -54,7 +56,6 @@ export function getHtml(body, jsonMetadata = {}, returnType = 'Object', options 
       parsedJsonMetadata.image.push(img);
     }
   });
-
   const videoPreviewResult = parsedBody.match(videoPreviewRegex);
 
   if (videoPreviewResult) {
@@ -64,8 +65,9 @@ export function getHtml(body, jsonMetadata = {}, returnType = 'Object', options 
   }
 
   parsedBody = improve(parsedBody);
+  parsedBody = addSpaces(parsedBody);
+  parsedBody = addBreakLines(parsedBody);
   parsedBody = remarkable.render(parsedBody);
-
   const htmlReadyOptions = { mutate: true, resolveIframe: returnType === 'text' };
 
   parsedBody = htmlReady(parsedBody, htmlReadyOptions).html;

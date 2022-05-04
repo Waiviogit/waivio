@@ -7,7 +7,6 @@ import {
   isEmpty,
   isNaN,
   map,
-  trimStart,
   isEqual,
   omitBy,
   isNil,
@@ -927,8 +926,6 @@ export default class AppendForm extends Component {
     return false;
   };
 
-  trimText = text => trimStart(text).replace(/\s{2,}/g, ' ');
-
   isDuplicate = (currentLocale, currentField) => {
     const { form, wObject, user } = this.props;
     const currentValue = form.getFieldValue(currentField);
@@ -1016,7 +1013,7 @@ export default class AppendForm extends Component {
         const trimNestedFieldsInFormData = name => {
           if (fields[name]) {
             form.setFieldsValue({
-              [name]: this.trimText(fields[name]),
+              [name]: fields[name],
             });
           }
         };
