@@ -317,8 +317,6 @@ SteemEmbed.isTikTok = function(url) {
 };
 
 SteemEmbed.tikTok = function(url, id, options) {
-  console.log(url, 'url');
-  console.log(id, 'id');
   return (
     '<iframe width="' +
     options.width +
