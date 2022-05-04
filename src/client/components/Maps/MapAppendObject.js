@@ -3,7 +3,6 @@ import { isNil, isEmpty, isEqual } from 'lodash';
 import React from 'react';
 import { Map, Marker } from 'pigeon-maps';
 import { connect } from 'react-redux';
-import AimIcon from '@icons/aim.png';
 import { getCoordinates } from '../../../store/userStore/userActions';
 import mapProvider from '../../../common/helpers/mapProvider';
 import { getUserLocation } from '../../../store/userStore/userSelectors';
@@ -103,7 +102,7 @@ class MapAppendObject extends React.Component {
           onClick={this.setPosition}
           title="find me"
         >
-          <img src={AimIcon} alt="aim" className="MapOS__locateGPS-button" />
+          <img src="/images/icons/aim.png" alt="aim" className="MapOS__locateGPS-button" />
         </div>
         <Map
           provider={mapProvider}

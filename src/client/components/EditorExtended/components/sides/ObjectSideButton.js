@@ -7,7 +7,7 @@ import { EditorState, Modifier } from 'draft-js';
 
 import { Entity } from '../../util/constants';
 import SearchObjectsAutocomplete from '../../../../../client/components/EditorObject/SearchObjectsAutocomplete';
-import config from '../../../../../waivioApi/routes';
+import * as apiConfig from '../../../../../waivioApi/config.json';
 import { createNewHash, getObjectName, hasType } from '../../../../../common/helpers/wObjectHelper';
 import OBJECT_TYPES from '../../../../../client/object/const/objectTypes';
 
@@ -18,7 +18,7 @@ const objectSearchInput = props => {
     const editorState = props.getEditorState();
     let contentState = editorState.getCurrentContent();
     const selectionState = editorState.getSelection();
-    let currUrl = `${config.production.protocol}${config.production.host}${selectedObject.defaultShowLink}`;
+    let currUrl = `${apiConfig.production.protocol}${apiConfig.production.host}${selectedObject.defaultShowLink}`;
 
     if (
       (hasType(selectedObject, OBJECT_TYPES.LIST) || hasType(selectedObject, OBJECT_TYPES.PAGE)) &&

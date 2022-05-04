@@ -72,11 +72,4 @@ module.exports = {
       "components": [ "MyHeading" ],
     }],
   },
-  "settings": {
-    "import/resolver": {
-      webpack: {
-        config: './webpack/client.js'
-      }
-    }
-  }
 };

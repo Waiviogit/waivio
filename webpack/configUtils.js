@@ -1,4 +1,5 @@
 const webpack = require('webpack');
+const autoprefixer = require('autoprefixer');
 const paths = require('../scripts/paths');
 const dotenv = require('dotenv');
 
@@ -29,9 +30,12 @@ const MATCH_FONTS = /\.(eot|ttf|woff|woff2|svg)(\?.+)?$/;
 const POSTCSS_LOADER = {
   loader: 'postcss-loader',
   options: {
-    postcssOptions: {
-      plugins: ['postcss-preset-env'],
-    },
+    ident: 'postcss',
+    plugins: () => [
+      autoprefixer({
+        browsers: ['>1%', 'last 4 versions', 'Firefox ESR', 'not ie < 9'],
+      }),
+    ],
   },
 };
 
@@ -51,12 +55,6 @@ const DEFINE_PLUGIN = new webpack.DefinePlugin({
   'process.env.MANIFEST_PATH': JSON.stringify(paths.assets),
 });
 
-const ALIAS = {
-  'react-dom': '@hot-loader/react-dom',
-  '@icons': `${paths.public}/images/icons`,
-  '@images': `${paths.public}/images`,
-};
-
 module.exports = {
   SERVER_PORT,
   CONTENT_PORT,
@@ -65,5 +63,4 @@ module.exports = {
   MATCH_FONTS,
   POSTCSS_LOADER,
   DEFINE_PLUGIN,
-  ALIAS,
 };

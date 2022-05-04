@@ -3,8 +3,6 @@ import { Icon } from 'antd';
 import { ReactSVG } from 'react-svg';
 import { FormattedMessage } from 'react-intl';
 import PropTypes from 'prop-types';
-import MuteUserIcon from '@icons/mute-user.svg';
-
 import PopoverMenu, { PopoverMenuItem } from './PopoverMenu/PopoverMenu';
 import withAuthAction from '../auth/withAuthActions';
 
@@ -41,7 +39,7 @@ const UserPopoverMenu = ({ handleMuteCurrUser, user, handleUnMuteUserBlog, onAct
                   <ReactSVG
                     className={`hide-button ${currentUserMuted ? 'hide-button--fill' : ''}`}
                     wrapper="span"
-                    src={MuteUserIcon}
+                    src="/images/icons/mute-user.svg"
                   />
                 )}
                 <FormattedMessage
