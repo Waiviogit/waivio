@@ -63,7 +63,7 @@ module.exports = function createConfig(env = 'dev') {
         {
           test: MATCH_CSS_LESS,
           use: [
-            IS_PROD ? CSSExtract.loader : 'style-loader',
+            'style-loader',
             {
               loader: 'css-loader',
               options: {
