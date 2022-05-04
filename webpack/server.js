@@ -2,11 +2,12 @@ const fs = require('fs');
 const path = require('path');
 const webpack = require('webpack');
 const WebpackBar = require('webpackbar');
-const StartServerPlugin = require('start-server-nestjs-webpack-plugin');
+const StartServerPlugin = require('start-server-webpack-plugin');
 const paths = require('../scripts/paths');
-const { MATCH_JS, MATCH_CSS_LESS, DEFINE_PLUGIN, ALIAS } = require('./configUtils');
+const { MATCH_JS, MATCH_CSS_LESS, DEFINE_PLUGIN } = require('./configUtils');
 const SpeedMeasurePlugin = require('speed-measure-webpack-plugin');
-const NodePolyfillPlugin = require('node-polyfill-webpack-plugin');
+const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
+const Uglifyjs = require('uglifyjs-webpack-plugin');
 
 module.exports = function createConfig(env = 'dev') {
   const IS_DEV = env === 'dev';
@@ -38,58 +39,32 @@ module.exports = function createConfig(env = 'dev') {
           use: {
             loader: 'babel-loader',
             options: {
-              presets: ['@babel/preset-env', '@babel/preset-react'],
-              plugins: [
-                [
-                  '@babel/plugin-proposal-decorators',
-                  {
-                    legacy: true,
-                  },
-                ],
-                '@babel/plugin-proposal-class-properties',
-                '@babel/plugin-transform-runtime',
-                ['import', { libraryName: 'antd', style: true }],
-              ],
+              presets: ['env', 'react', 'stage-2'],
+              plugins: ['transform-decorators-legacy', 'transform-runtime', 'dynamic-import-node'],
+              cacheDirectory: true,
             },
           },
         },
         {
-          test: /\.(jpg|png|svg)$/,
-          type: 'asset/inline',
-        },
-        {
-          test: /\.(jpg|png)$/,
-          type: 'asset/resource',
-        },
-        {
-          test: MATCH_CSS_LESS,
-          use: [
-            'isomorphic-style-loader',
-            {
-              loader: 'css-loader',
-              options: {
-                importLoaders: 1,
-              },
-            },
-            {
-              loader: 'less-loader',
-              options: {
-                lessOptions: {
-                  javascriptEnabled: true,
-                },
-              },
-            },
-          ],
+          test: /\.(png|jpg|gif)$/,
+          loader: 'file-loader',
+          options: {},
         },
       ],
     },
     plugins: [
       DEFINE_PLUGIN,
-      new webpack.AutomaticPrefetchPlugin(),
+      new webpack.NormalModuleReplacementPlugin(MATCH_CSS_LESS, 'identity-obj-proxy'),
+      new webpack.optimize.LimitChunkCountPlugin({
+        maxChunks: 1,
+      }),
       new WebpackBar({
         name: 'server',
         color: '#c065f4',
       }),
+      // new UglifyJsPlugin({
+      //   cache: true,
+      // }),
     ],
   });
 
@@ -98,19 +73,22 @@ module.exports = function createConfig(env = 'dev') {
     config.plugins = [
       ...config.plugins,
       new webpack.HotModuleReplacementPlugin(),
-      new webpack.WatchIgnorePlugin({ paths: [paths.assets] }),
+      new webpack.WatchIgnorePlugin([paths.assets]),
+      new HardSourceWebpackPlugin(),
       new StartServerPlugin({
         name: 'server.js',
       }),
-      new NodePolyfillPlugin(),
+      new Uglifyjs({
+        cache: true,
+        parallel: 4,
+      }),
     ];
+    config.resolve = {
+      alias: {
+        'react-dom': '@hot-loader/react-dom',
+      },
+    };
   }
-
-  config.resolve = {
-    alias: {
-      ...ALIAS,
-    },
-  };
 
   return config;
 };
