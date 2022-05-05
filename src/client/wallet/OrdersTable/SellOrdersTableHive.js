@@ -26,7 +26,7 @@ const SellOrdersTableHive = () => {
     getMappedArray();
   }, [name]);
 
-  const columnTitles = ['Price', 'Hive', 'HBD ($)'];
+  const columnTitles = ['Price', 'Hive', 'HBD'];
 
   const getOrderList = async (account, offset) => {
     const newList = [...list];
