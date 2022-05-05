@@ -87,7 +87,7 @@ const WithdrawModal = props => {
     else {
       const defaultPair = withdraList.find(pool => pool.symbol === defaultToken);
 
-      dispatch(setWithdrawPair(defaultPair));
+      dispatch(setWithdrawPair(defaultPair ?? withdraList[0]));
     }
 
     return () => {
