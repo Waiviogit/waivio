@@ -411,7 +411,7 @@ export const replaceTextOnChange = (editorState, text, selectionState) => {
 };
 
 /** Swap white-spaces with &nbsp; for editor */
-export const addSpaces = string => string.replace(/[^\S\r\n]/g, ' &nbsp;');
+export const addSpaces = string => string.replace(/(^|\n)[^\S\r\n]{4}/g, ' &emsp;');
 
 /** Add empty lines */
-export const addBreakLines = string => string.replace(/\n{2}/g, '<br />'.repeat(2));
+export const addBreakLines = string => string.replace(/\n{2}/g, ' <br/> \n');
