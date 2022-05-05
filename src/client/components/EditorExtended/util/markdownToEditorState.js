@@ -4,6 +4,7 @@ import { last } from 'lodash';
 import { getSrc } from './videoHelper';
 import { ATOMIC_TYPES, Block, Entity } from './constants';
 import { VIDEO_MATCH_URL } from '../../../../common/helpers/regexHelpers';
+import { addSpaces } from '../../../../common/helpers/editorHelper';
 
 const defaultInlineStyles = {
   Strong: {
@@ -97,8 +98,7 @@ const splitMdBlocks = md => {
 const parseMdLine = (line, existingEntities, extraStyles = {}) => {
   const inlineStyles = { ...defaultInlineStyles, ...extraStyles.inlineStyles };
   const blockStyles = { ...defaultBlockStyles, ...extraStyles.blockStyles };
-
-  const astString = parse(line);
+  const astString = parse(addSpaces(line));
   let text = '';
   const inlineStyleRanges = [];
   const entityRanges = [];
