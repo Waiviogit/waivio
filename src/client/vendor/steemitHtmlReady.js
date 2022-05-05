@@ -9,6 +9,7 @@ import xmldom from 'xmldom';
 import linksRe from './steemitLinks';
 import { validateAccountName } from './ChainValidation';
 import { getImagePathPost } from '../../common/helpers/image';
+import { isEmpty } from 'lodash';
 
 const noop = () => {};
 const DOMParser = new xmldom.DOMParser({
@@ -99,8 +100,9 @@ export default function(html, { mutate = true, resolveIframe } = {}) {
 }
 
 function traverse(node, state, depth = 0) {
-  if (!node || !node.childNodes) return;
-  Array(...node.childNodes).forEach(child => {
+  if (!node || !node.childNodes || isEmpty(node.childNodes)) return;
+
+  Array.from(node.childNodes).forEach(child => {
     const tag = child.tagName ? child.tagName.toLowerCase() : null;
     if (tag) state.htmltags.add(tag);
 
@@ -170,7 +172,7 @@ function img(state, child) {
 // For all img elements with non-local URLs, prepend the proxy URL (e.g. `https://img0.steemit.com/0x0/`)
 function proxifyImages(doc) {
   if (!doc) return;
-  [...doc.getElementsByTagName('img')].forEach(node => {
+  Array.from(doc.getElementsByTagName('img')).forEach(node => {
     const url = node.getAttribute('src');
     if (!linksRe.local.test(url)) {
       node.setAttribute('src', getImagePathPost(url));

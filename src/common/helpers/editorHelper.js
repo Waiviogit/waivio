@@ -409,3 +409,9 @@ export const replaceTextOnChange = (editorState, text, selectionState) => {
 
   return EditorState.push(editorState, contentWithoutDash, 'replace-text');
 };
+
+/** Swap white-spaces with &nbsp; for editor */
+export const addSpaces = string => string.replace(/[^\S\r\n]/g, ' &nbsp;');
+
+/** Add empty lines */
+export const addBreakLines = string => string.replace(/\n{2}/g, '<br />'.repeat(2));

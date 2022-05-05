@@ -2,6 +2,7 @@ const webpack = require('webpack');
 const autoprefixer = require('autoprefixer');
 const paths = require('../scripts/paths');
 const dotenv = require('dotenv');
+
 dotenv.config({ path: `./env/${process.env.NODE_ENV}.env` });
 
 const IS_DEV = process.env.NODE_ENV === 'development';

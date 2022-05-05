@@ -1,9 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import classNames from 'classnames';
 import { isPostVideo } from './StoryHelper';
 import './PostFeedEmbed.less';
 import AsyncVideo from '../../vendor/asyncVideo';
+import { getIframeContainerClass } from '../EditorExtended/util/videoHelper';
 
 export default class PostFeedEmbed extends React.Component {
   static propTypes = {
@@ -32,10 +32,8 @@ export default class PostFeedEmbed extends React.Component {
     this.setState({ showIframe: true });
   };
 
-  renderWithIframe = (embed, isVimeo) => {
-    const postFeedEmbedClassList = classNames('PostFeedEmbed__container', {
-      'PostFeedEmbed__container-vimeo': isVimeo,
-    });
+  renderWithIframe = embed => {
+    const postFeedEmbedClassList = getIframeContainerClass(this.props.embed);
 
     return (
       // eslint-disable-next-line react/no-danger
@@ -64,9 +62,7 @@ export default class PostFeedEmbed extends React.Component {
     if (isPostVideo(embed.provider_name, shouldRenderThumb)) {
       return this.renderThumbFirst(embed.thumbnail);
     } else if (embed.embed) {
-      const isVimeo = embed.provider_name === 'Vimeo';
-
-      return this.renderWithIframe(embed.embed, isVimeo);
+      return this.renderWithIframe(embed.embed);
     }
 
     return <div />;
