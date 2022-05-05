@@ -12,7 +12,7 @@ const ListTable = ({ getOrderList, title, columnTitles }) => {
   const [hasMore, setHasMore] = useState(false);
 
   const checkLengthAndSetHasMore = list => {
-    if (list.length < 5) {
+    if (list.length <= 5) {
       return setHasMore(false);
     }
 

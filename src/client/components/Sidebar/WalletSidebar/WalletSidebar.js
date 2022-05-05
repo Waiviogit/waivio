@@ -27,6 +27,7 @@ import BuyOrdersTable from '../../../wallet/OrdersTable/BuyOrdersTable';
 import BuyOrdersTableHive from '../../../wallet/OrdersTable/BuyOrdersTableHive';
 import { guestUserRegex } from '../../../../common/helpers/regexHelpers';
 import './WalletSidebar.less';
+import SellOrdersTableHive from '../../../wallet/OrdersTable/SellOrdersTableHive';
 
 const cryptos = [WAIV.symbol, HIVE.symbol, HBD.symbol];
 
@@ -106,7 +107,7 @@ class WalletSidebar extends React.Component {
     const { match, user, isCurrentUser, isGuest, walletType } = this.props;
     const ownProfile = match.params.name === user.name || isCurrentUser;
     const isNotWaivWallet = walletType !== 'WAIV';
-    // const isHiveWallet = walletType === 'HIVE';
+    const isHiveWallet = walletType === 'HIVE';
     const isGuestUserProfile = guestUserRegex.test(this.props.match.params.name);
 
     return (
@@ -167,7 +168,12 @@ class WalletSidebar extends React.Component {
             <SellOrdersTable />
           </React.Fragment>
         )}
-        <BuyOrdersTableHive />
+        {!isGuestUserProfile && isHiveWallet && (
+          <React.Fragment>
+            <BuyOrdersTableHive />
+            <SellOrdersTableHive />
+          </React.Fragment>
+        )}
       </div>
     );
   }
