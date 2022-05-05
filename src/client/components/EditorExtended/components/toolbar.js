@@ -118,7 +118,6 @@ export default class Toolbar extends React.Component {
      * Main logic for setting the toolbar position.
      */
     toolbarNode.style.top = `${selectionBoundary.bottom - parentBoundary.top + 4}px`;
-    toolbarNode.style.width = `${toolbarBoundary.width}px`;
 
     // The left side of the tooltip should be:
     // center of selection relative to parent - half width of toolbar
@@ -270,7 +269,7 @@ export default class Toolbar extends React.Component {
       className += ' md-editor-toolbar--linkinput';
 
       return (
-        <div className={className} style={{ left: 0, width: '97%' }}>
+        <div className={className}>
           <div
             className="md-RichEditor-controls md-RichEditor-show-link-input"
             style={{ display: 'flex' }}
