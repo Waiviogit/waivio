@@ -596,6 +596,9 @@ export default class Transfer extends React.Component {
     const amountClassList = classNames('balance', {
       'balance--disabled': isChangesDisabled,
     });
+    const maxClassList = classNames('TokenSelect__max-button', {
+      'balance--disabled': isChangesDisabled,
+    });
     const to = !searchBarValue && isClosedFind ? resetFields('to') : getFieldValue('to');
     const guestName = to && guestUserRegex.test(to);
     const currentBalance = isGuest ? user.balance : currAmount;
@@ -700,7 +703,10 @@ export default class Transfer extends React.Component {
                     defaultMessage: 'How much do you want to send',
                   })}
                   suffix={
-                    <span className="TokenSelect__max-button" onClick={this.handleClickMax}>
+                    <span
+                      className={maxClassList}
+                      onClick={!isChangesDisabled && this.handleClickMax}
+                    >
                       <FormattedMessage id="max" defaultMessage="max" />
                     </span>
                   }
