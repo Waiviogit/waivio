@@ -22,12 +22,12 @@ import { getCurrentWalletType } from '../../../../store/walletStore/walletSelect
 import { toggleModal } from '../../../../store/swapStore/swapActions';
 import { HBD, HIVE, WAIV } from '../../../../common/constants/cryptos';
 import { toggleWithdrawModal } from '../../../../store/depositeWithdrawStore/depositeWithdrawAction';
+import { guestUserRegex } from '../../../../common/helpers/regexHelpers';
 import SellOrdersTable from '../../../wallet/OrdersTable/SellOrdersTable';
 import BuyOrdersTable from '../../../wallet/OrdersTable/BuyOrdersTable';
 import BuyOrdersTableHive from '../../../wallet/OrdersTable/BuyOrdersTableHive';
-import { guestUserRegex } from '../../../../common/helpers/regexHelpers';
-import './WalletSidebar.less';
 import SellOrdersTableHive from '../../../wallet/OrdersTable/SellOrdersTableHive';
+import './WalletSidebar.less';
 
 const cryptos = [WAIV.symbol, HIVE.symbol, HBD.symbol];
 
