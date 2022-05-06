@@ -29,26 +29,28 @@ const SwapTokenCard = props => {
               <FormattedMessage id="swap" defaultMessage="Swap" />
             </div>
             <div>
-              <span className={'SwapTokenCard__from'}>
-                -{' '}
-                <FormattedNumber
-                  value={props.quantityFrom}
-                  locale={'en-IN'}
-                  minimumFractionDigits={3}
-                  maximumFractionDigits={3}
-                />{' '}
-                {props.symbolFrom}
-              </span>
-              <span className={'SwapTokenCard__to'}>
-                +{' '}
-                <FormattedNumber
-                  value={props.quantityTo}
-                  locale={'en-IN'}
-                  minimumFractionDigits={3}
-                  maximumFractionDigits={3}
-                />{' '}
-                {props.symbolTo}
-              </span>
+              <div className="SwapTokenCard__amount-pair">
+                <span className={'SwapTokenCard__from'}>
+                  -{' '}
+                  <FormattedNumber
+                    value={props.quantityFrom}
+                    locale={'en-IN'}
+                    minimumFractionDigits={3}
+                    maximumFractionDigits={3}
+                  />{' '}
+                  {props.symbolFrom}
+                </span>
+                <span className={'SwapTokenCard__to'}>
+                  +{' '}
+                  <FormattedNumber
+                    value={props.quantityTo}
+                    locale={'en-IN'}
+                    minimumFractionDigits={3}
+                    maximumFractionDigits={3}
+                  />{' '}
+                  {props.symbolTo}
+                </span>
+              </div>
             </div>
           </div>
           <div className="MarketBuyCard__lower-text">
