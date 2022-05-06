@@ -24,7 +24,7 @@ const SwapTokenCard = props => {
           />
         </div>
         <div className="UserWalletTransactions__content">
-          <div className="UserWalletTransactions__content-recipient">
+          <div className="UserWalletTransactions__content-recipient SwapTokenCard__amount_column">
             <div>
               <FormattedMessage id="swap" defaultMessage="Swap" />
             </div>
