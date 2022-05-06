@@ -24,33 +24,31 @@ const SwapTokenCard = props => {
           />
         </div>
         <div className="UserWalletTransactions__content">
-          <div className="UserWalletTransactions__content-recipient">
+          <div className="UserWalletTransactions__content-recipient SwapTokenCard__amount_column">
             <div>
               <FormattedMessage id="swap" defaultMessage="Swap" />
             </div>
             <div>
-              <div className="SwapTokenCard__amount-pair">
-                <span className={'SwapTokenCard__from'}>
-                  -{' '}
-                  <FormattedNumber
-                    value={props.quantityFrom}
-                    locale={'en-IN'}
-                    minimumFractionDigits={3}
-                    maximumFractionDigits={3}
-                  />{' '}
-                  {props.symbolFrom}
-                </span>
-                <span className={'SwapTokenCard__to'}>
-                  +{' '}
-                  <FormattedNumber
-                    value={props.quantityTo}
-                    locale={'en-IN'}
-                    minimumFractionDigits={3}
-                    maximumFractionDigits={3}
-                  />{' '}
-                  {props.symbolTo}
-                </span>
-              </div>
+              <span className={'SwapTokenCard__from'}>
+                -{' '}
+                <FormattedNumber
+                  value={props.quantityFrom}
+                  locale={'en-IN'}
+                  minimumFractionDigits={3}
+                  maximumFractionDigits={3}
+                />{' '}
+                {props.symbolFrom}
+              </span>
+              <span className={'SwapTokenCard__to'}>
+                +{' '}
+                <FormattedNumber
+                  value={props.quantityTo}
+                  locale={'en-IN'}
+                  minimumFractionDigits={3}
+                  maximumFractionDigits={3}
+                />{' '}
+                {props.symbolTo}
+              </span>
             </div>
           </div>
           <div className="MarketBuyCard__lower-text">
