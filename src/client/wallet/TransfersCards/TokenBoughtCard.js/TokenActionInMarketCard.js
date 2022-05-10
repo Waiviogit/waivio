@@ -45,47 +45,51 @@ const TokenActionInMarketCard = ({
         </div>
       )}
       <div className="UserWalletTransactions__content">
-        <div className="UserWalletTransactions__content-recipient">
-          <p>
-            {action === 'Bought' ? (
-              <FormattedMessage id="bought" defaultMessage="Bought" />
-            ) : (
-              <FormattedMessage id="sold" defaultMessage="Sold" />
-            )}
-            {recipient && (
-              <span>
-                {' '}
-                {from ? (
-                  <FormattedMessage id="lowercase_from" defaultMessage="from " />
-                ) : (
-                  <FormattedMessage id="lowercase_to" defaultMessage="to" />
-                )}{' '}
-                <a href={`/@${recipient}`} className="TokenBoughtCard__userName">
-                  {recipient}
-                </a>
-              </span>
-            )}
-          </p>
-          <span className={amountClassList}>
-            {point}{' '}
-            <FormattedNumber
-              value={quantity}
-              locale={'en-IN'}
-              minimumFractionDigits={3}
-              maximumFractionDigits={fractionDigits || 3}
-            />{' '}
-            {symbol}
-          </span>
-          <span className={amountClassListHive}>
-            {hivePoint}{' '}
-            <FormattedNumber
-              value={quantityHive}
-              locale={'en-IN'}
-              minimumFractionDigits={3}
-              maximumFractionDigits={fractionDigits || 3}
-            />{' '}
-            SWAP.HIVE
-          </span>
+        <div className="UserWalletTransactions__content-recipient TokenBoughtCard__amount_column">
+          <div>
+            <p>
+              {action === 'Bought' ? (
+                <FormattedMessage id="bought" defaultMessage="Bought" />
+              ) : (
+                <FormattedMessage id="sold" defaultMessage="Sold" />
+              )}
+              {recipient && (
+                <span>
+                  {' '}
+                  {from ? (
+                    <FormattedMessage id="lowercase_from" defaultMessage="from " />
+                  ) : (
+                    <FormattedMessage id="lowercase_to" defaultMessage="to" />
+                  )}{' '}
+                  <a href={`/@${recipient}`} className="TokenBoughtCard__userName">
+                    {recipient}
+                  </a>
+                </span>
+              )}
+            </p>
+          </div>
+          <div>
+            <span className={amountClassList}>
+              {point}{' '}
+              <FormattedNumber
+                value={quantity}
+                locale={'en-IN'}
+                minimumFractionDigits={3}
+                maximumFractionDigits={fractionDigits || 3}
+              />{' '}
+              {symbol}
+            </span>
+            <span className={amountClassListHive}>
+              {hivePoint}{' '}
+              <FormattedNumber
+                value={quantityHive}
+                locale={'en-IN'}
+                minimumFractionDigits={3}
+                maximumFractionDigits={fractionDigits || 3}
+              />{' '}
+              SWAP.HIVE
+            </span>
+          </div>
         </div>
         <div className="MarketBuyCard__lower-text">
           <CardsTimeStamp timestamp={timestamp} />

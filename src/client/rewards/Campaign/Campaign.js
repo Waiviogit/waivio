@@ -7,12 +7,11 @@ import { injectIntl } from 'react-intl';
 import { Button, Icon } from 'antd';
 import ObjectCardView from '../../objectCard/ObjectCardView';
 import { getCurrentCurrency, getIsWaivio } from '../../../store/appStore/appSelectors';
-import { roundUpToThisIndex } from '../../../common/constants/waivio';
-
-import './Campaign.less';
 import USDDisplay from '../../components/Utils/USDDisplay';
 import useQuickRewards from '../../../hooks/useQuickRewards';
 import withAuthActions from '../../auth/withAuthActions';
+
+import './Campaign.less';
 
 const Campaign = ({
   proposition,
@@ -89,11 +88,7 @@ const Campaign = ({
               </span>
               <span>
                 <span className="fw6 ml1">
-                  <USDDisplay
-                    value={rewardMax || rewardMaxPassed}
-                    currencyDisplay={'none'}
-                    roundTo={roundUpToThisIndex}
-                  />{' '}
+                  <USDDisplay value={rewardMax || rewardMaxPassed} currencyDisplay={'none'} />{' '}
                   {currencyInfo.type}
                 </span>
                 <Icon type="right" />

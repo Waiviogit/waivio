@@ -36,7 +36,7 @@ const USDDisplay = React.memo(({ value, currencyDisplay, style }) => {
           </React.Fragment>
         );
       default:
-        return num;
+        return formatted(num);
     }
   };
 

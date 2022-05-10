@@ -11,6 +11,14 @@
     flex-direction: row;
   }
 
+  &__amount_column {
+    display: flex;
+    flex-direction: column;
+    @media @small {
+      flex-direction: row;
+    }
+  }
+
   &__from {
     color: @red;
   }
@@ -24,6 +32,7 @@
     }
   }
 }
+
 .UserWalletTransactions {
   &__content-recipient {
     display: flex;

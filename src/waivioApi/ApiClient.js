@@ -221,6 +221,17 @@ export const getUserProfileBlog = (
       .catch(error => reject(error));
   });
 
+export const getUserLastActivity = userName =>
+  new Promise((resolve, reject) => {
+    fetch(`${config.apiPrefix}${config.user}/${userName}${config.lastActivity}`, {
+      headers,
+      method: 'GET',
+    })
+      .then(res => res.json())
+      .then(res => resolve(res.lastActivity))
+      .catch(error => reject(error));
+  });
+
 export const getUserFeedContent = (feedUserName, limit = 10, user_languages, locale) =>
   new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.user}/${feedUserName}${config.feed}`, {
@@ -2415,6 +2426,22 @@ export const getTokensRate = symbols =>
     query: { symbol: { $in: symbols } },
     table: 'metrics',
   });
+
+export const getHiveBookList = account => {
+  return fetch('https://api.hive.blog/', {
+    method: 'POST',
+    body: JSON.stringify({
+      id: 6,
+      jsonrpc: '2.0',
+      method: 'condenser_api.get_open_orders',
+      params: [account],
+    }),
+  })
+    .then(handleErrors)
+    .then(res => res.json())
+    .then(response => response.result)
+    .catch(e => e);
+};
 
 export const getSellBookList = (account, offset) =>
   hiveEngineContract({
