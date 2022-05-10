@@ -163,6 +163,8 @@
     color: @white;
     text-decoration: none;
     height: 33px;
+    position: relative;
+    top: 1px;
     svg {
       position: relative;
     }
@@ -270,7 +272,7 @@
   vertical-align: bottom;
   border-right: 1px solid @normal-grey;
   position: relative;
-  //bottom: 2px;
+  top: 0.9px;
   height: 33px;
   &:hover {
     svg path {
@@ -285,6 +287,7 @@
     }
   }
   &--next {
+    border-right: none;
     svg {
       transform: rotate(180deg);
     }
