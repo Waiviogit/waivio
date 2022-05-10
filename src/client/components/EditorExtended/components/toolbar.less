@@ -63,7 +63,7 @@
 
   &.md-editor-toolbar--isopen {
     visibility: visible;
-    width: 310px;
+    width: auto;
   }
 
   &.md-editor-toolbar--linkinput {
@@ -160,10 +160,9 @@
 
   .md-RichEditor-linkButton {
     vertical-align: middle;
-    padding: 0 5px;
     color: @white;
     text-decoration: none;
-
+    height: 33px;
     svg {
       position: relative;
     }
@@ -262,6 +261,33 @@
     position: relative;
     top: 1.5px;
     margin-right: 2px;
+  }
+}
+
+.md-RichEditor-pagination-icon {
+  cursor: pointer;
+  display: inline-block;
+  vertical-align: bottom;
+  border-right: 1px solid @normal-grey;
+  position: relative;
+  //bottom: 2px;
+  height: 33px;
+  &:hover {
+    svg path {
+      fill: @orange;
+    }
+  }
+  svg {
+    width: 35px;
+    height: 13px;
+    path {
+      fill: @white;
+    }
+  }
+  &--next {
+    svg {
+      transform: rotate(180deg);
+    }
   }
 }
 

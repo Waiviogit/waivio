@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { isEmpty } from 'lodash';
 import { Input, Button, Icon } from 'antd';
 import { FormattedMessage } from 'react-intl';
+import { ReactSVG } from 'react-svg';
 
 import BlockToolbar from './blocktoolbar';
 import InlineToolbar from './inlinetoolbar';
@@ -50,12 +51,15 @@ export default class Toolbar extends React.Component {
     this.state = {
       showURLInput: false,
       urlInputValue: '',
+      currentPage: 1,
     };
 
     this.onKeyDown = this.onKeyDown.bind(this);
     this.onChange = this.onChange.bind(this);
     this.handleLinkInput = this.handleLinkInput.bind(this);
     this.hideLinkInput = this.hideLinkInput.bind(this);
+
+    this.totalPage = 2;
   }
 
   componentWillReceiveProps(newProps) {
@@ -89,12 +93,13 @@ export default class Toolbar extends React.Component {
   //   return false;
   // }
 
-  componentDidUpdate() {
+  componentDidUpdate(prevProps, prevState) {
     if (!this.props.editorEnabled || this.state.showURLInput) {
       return;
     }
     const selectionState = this.props.editorState.getSelection();
 
+    if (prevState.currentPage !== this.state.currentPage) return;
     if (selectionState.isCollapsed()) {
       return;
     }
@@ -254,9 +259,20 @@ export default class Toolbar extends React.Component {
     return selectionStartBlock === firstBlock || selectionEndBlock === firstBlock;
   };
 
+  handleClickNextPage = e => {
+    e.stopPropagation();
+    e.preventDefault();
+    this.setState(state => ({ currentPage: state.currentPage + 1 }));
+  };
+  handleClickPrevPage = e => {
+    e.stopPropagation();
+    e.preventDefault();
+    this.setState(state => ({ currentPage: state.currentPage - 1 }));
+  };
+
   render() {
     const { editorState, editorEnabled, inlineButtons, intl } = this.props;
-    const { showURLInput, urlInputValue } = this.state;
+    const { showURLInput, urlInputValue, currentPage } = this.state;
     const isEmptyUrlInput = isEmpty(urlInputValue);
     let isOpen = true;
 
@@ -316,12 +332,20 @@ export default class Toolbar extends React.Component {
 
     return (
       <div className={`md-editor-toolbar${isOpen ? ' md-editor-toolbar--isopen' : ''}`}>
+        {currentPage > 1 && (
+          <ReactSVG
+            onMouseDown={this.handleClickPrevPage}
+            src="/images/icons/arrow-toolbar.svg"
+            wrapper={'span'}
+            className="md-RichEditor-pagination-icon"
+          />
+        )}
         {this.props.blockButtons.length > 0 ? (
           <BlockToolbar
             editorState={editorState}
             onToggle={this.props.toggleBlockType}
             onToggleInline={this.props.toggleInlineStyle}
-            buttons={this.props.blockButtons}
+            buttons={this.props.blockButtons.filter(i => i.page === currentPage)}
             setEditorState={this.props.setEditorState}
           />
         ) : null}
@@ -329,17 +353,19 @@ export default class Toolbar extends React.Component {
           <InlineToolbar
             editorState={editorState}
             onToggle={this.props.toggleInlineStyle}
-            buttons={this.props.inlineButtons}
+            buttons={this.props.inlineButtons.filter(i => i.page === currentPage)}
           />
         ) : null}
-        <CodeButtonbar
-          editorState={editorState}
-          onToggle={this.props.toggleBlockType}
-          onToggleInline={this.props.toggleInlineStyle}
-          buttons={this.props.codeButtons}
-          setEditorState={this.props.setEditorState}
-        />
-        {hasHyperLink && (
+        {currentPage === 2 && (
+          <CodeButtonbar
+            editorState={editorState}
+            onToggle={this.props.toggleBlockType}
+            onToggleInline={this.props.toggleInlineStyle}
+            buttons={this.props.codeButtons}
+            setEditorState={this.props.setEditorState}
+          />
+        )}
+        {currentPage === 1 && hasHyperLink && (
           <div className="md-RichEditor-controls ">
             <span
               className="md-RichEditor-styleButton md-RichEditor-linkButton hint--top"
@@ -350,6 +376,14 @@ export default class Toolbar extends React.Component {
               <Icon type="link" />
             </span>
           </div>
+        )}
+        {currentPage < this.totalPage && (
+          <ReactSVG
+            onMouseDown={this.handleClickNextPage}
+            src="/images/icons/arrow-toolbar.svg"
+            wrapper={'span'}
+            className="md-RichEditor-pagination-icon md-RichEditor-pagination-icon--next"
+          />
         )}
       </div>
     );
@@ -362,24 +396,28 @@ export const BLOCK_BUTTONS = [
     style: 'header-one',
     icon: 'header',
     description: 'Heading 1',
+    page: 1,
   },
   {
     label: 'H2',
     style: 'header-two',
     icon: 'header',
     description: 'Heading 2',
+    page: 1,
   },
   {
     label: 'H3',
     style: 'header-three',
     icon: 'header',
     description: 'Heading 3',
+    page: 2,
   },
   {
     label: 'H4',
     style: 'header-four',
     icon: 'header',
     description: 'Heading 4',
+    page: 2,
   },
   {
     label: (
@@ -408,12 +446,14 @@ export const INLINE_BUTTONS = [
     style: 'BOLD',
     icon: 'bold',
     description: 'Bold',
+    page: 1,
   },
   {
     label: 'I',
     style: 'ITALIC',
     icon: 'italic',
     description: 'Italic',
+    page: 1,
   },
   {
     label: (
@@ -440,6 +480,7 @@ export const INLINE_BUTTONS = [
     style: HYPERLINK,
     icon: 'link',
     description: 'Add a link',
+    page: 1,
   },
 ];
 
