@@ -221,6 +221,17 @@ export const getUserProfileBlog = (
       .catch(error => reject(error));
   });
 
+export const getUserLastActivity = userName =>
+  new Promise((resolve, reject) => {
+    fetch(`${config.apiPrefix}${config.user}/${userName}${config.lastActivity}`, {
+      headers,
+      method: 'GET',
+    })
+      .then(res => res.json())
+      .then(res => resolve(res.lastActivity))
+      .catch(error => reject(error));
+  });
+
 export const getUserFeedContent = (feedUserName, limit = 10, user_languages, locale) =>
   new Promise((resolve, reject) => {
     fetch(`${config.apiPrefix}${config.user}/${feedUserName}${config.feed}`, {

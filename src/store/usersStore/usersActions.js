@@ -30,6 +30,7 @@ export const getUserAccount = name => (dispatch, getState) => {
         const voting_mana = await dHive.rc.calculateVPMana(res);
         const waivVotingMana = await ApiClient.getWaivVoteMana(name);
         const userVoteValue = await ApiClient.getUserVoteValueInfo(name);
+        const lastActivity = await ApiClient.getUserLastActivity(name);
         const waivPowerMana = waivVotingMana ? calculateMana(waivVotingMana) : null;
 
         data.rc_percentage = rc.percentage * 0.01;
@@ -38,6 +39,7 @@ export const getUserAccount = name => (dispatch, getState) => {
         data.waivDownvotingPower = waivVotingMana ? waivPowerMana.downvotingPower : 100;
         data.waivVotingPowerPrice = userVoteValue.estimatedWAIV;
         data.hiveVotingPowerPrice = userVoteValue.estimatedHIVE;
+        data.last_activity = `${lastActivity}Z`;
         data.totalVotingPowerPrice = userVoteValue.estimatedHIVE + userVoteValue.estimatedWAIV;
       }
 
