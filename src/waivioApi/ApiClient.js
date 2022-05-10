@@ -2427,6 +2427,22 @@ export const getTokensRate = symbols =>
     table: 'metrics',
   });
 
+export const getHiveBookList = account => {
+  return fetch('https://api.hive.blog/', {
+    method: 'POST',
+    body: JSON.stringify({
+      id: 6,
+      jsonrpc: '2.0',
+      method: 'condenser_api.get_open_orders',
+      params: [account],
+    }),
+  })
+    .then(handleErrors)
+    .then(res => res.json())
+    .then(response => response.result)
+    .catch(e => e);
+};
+
 export const getSellBookList = (account, offset) =>
   hiveEngineContract({
     contract: 'market',
