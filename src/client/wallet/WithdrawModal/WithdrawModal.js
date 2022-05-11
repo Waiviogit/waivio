@@ -73,7 +73,7 @@ const WithdrawModal = props => {
     'WithdrawModal__addressValidate--invalid': invalidAddress,
   });
 
-  const persentCalculate = value => value * withdrawFee;
+  const persentCalculate = value => round(value * withdrawFee, 8);
 
   const handleChange = e => {
     const address = e.currentTarget.value;
