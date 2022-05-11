@@ -48,7 +48,7 @@ const MarketBuyCard = ({
           ) : (
             <React.Fragment>
               <div className="MarketBuyCard__amount-pair">
-                <span className="MarketBuyCard____quantity">
+                <span className="MarketBuyCard__quantity">
                   <FormattedNumber
                     value={quantityLocked}
                     locale={'en-IN'}
