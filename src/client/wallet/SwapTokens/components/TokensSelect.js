@@ -2,15 +2,17 @@ import { Input, Select } from 'antd';
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
 import PropTypes from 'prop-types';
-import { get, isEmpty } from 'lodash';
+import { get, isEmpty, round } from 'lodash';
 import classNames from 'classnames';
 import './TokenSelect.less';
 
 const TokensSelect = props => {
+  const balance = props.token?.balance || 0;
+  const presicion = balance > 0.001 ? 3 : 6;
   const inputWrapClassList = classNames('TokenSelect__inputWrap', {
     'TokenSelect__inputWrap--error': props.isError,
   });
-  const setUserBalance = () => props.handleClickBalance(get(props.token, 'balance', 0));
+  const setUserBalance = () => props.handleClickBalance(balance);
 
   return (
     <React.Fragment>
@@ -30,7 +32,7 @@ const TokensSelect = props => {
         <Select
           className="TokenSelect__selector"
           showSearch
-          value={get(props.token, 'symbol', '')}
+          value={props.token?.symbol}
           disabled={isEmpty(props.list)}
           filterOption={(input, option) => option.key.toLowerCase().includes(input.toLowerCase())}
         >
@@ -41,7 +43,9 @@ const TokensSelect = props => {
               key={swap.symbol}
             >
               <span>{swap.symbol}</span>
-              <span className="TokenSelect__selector-balance">{swap.balance}</span>
+              <span className="TokenSelect__selector-balance">
+                {round(swap.balance, presicion)}
+              </span>
             </Select.Option>
           ))}
         </Select>
@@ -51,7 +55,7 @@ const TokensSelect = props => {
         <FormattedMessage id="your_balance" defaultMessage="Your balance" />:{' '}
         {!isEmpty(props.token) && (
           <span className="TokenSelect__balance" onClick={setUserBalance}>
-            {get(props.token, 'balance', 0)} {get(props.token, 'symbol')}
+            {balance} {get(props.token, 'symbol')}
           </span>
         )}
       </p>
@@ -67,6 +71,7 @@ TokensSelect.propTypes = {
   amount: PropTypes.number.isRequired,
   token: PropTypes.shape({
     symbol: PropTypes.string,
+    balance: PropTypes.string,
   }).isRequired,
   isError: PropTypes.bool,
 };
