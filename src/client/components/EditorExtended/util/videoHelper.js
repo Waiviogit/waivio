@@ -16,7 +16,8 @@ export const TIKTOK_PREFIX = 'https://www.tiktok.com/embed/v2/';
 export const FACEBOOK_PREFIX = 'https://www.facebook.com/plugins/video.php?height=280&href=';
 export const PEERTUBE_PREFIX = 'https://media.zat.im/videos/embed/';
 
-export const isFacebook = url => VIDEO_MATCH_URL.FACEBOOK.test(url);
+export const isFacebook = url =>
+  VIDEO_MATCH_URL.FACEBOOK.test(url) || VIDEO_MATCH_URL.FACEBOOK_SHORT.test(url);
 
 export const isOdysee = url => VIDEO_MATCH_URL.ODYSEE.test(url);
 
@@ -284,7 +285,7 @@ export const getSrc = ({ src }) => {
     return `${TIKTOK_PREFIX}${srcID}`;
   }
 
-  if (isFacebook(src)) return `${FACEBOOK_PREFIX}${src}`;
+  if (isFacebook(src)) return `${FACEBOOK_PREFIX}${src.replace(/(\/$)/, '')}`;
 
   if (isInstagram(src) || isInstagramReel(src)) {
     const { srcID } = getInstagramSrc(src);
