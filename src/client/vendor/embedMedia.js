@@ -417,8 +417,8 @@ SteemEmbed.rumble = function(url, id, options) {
 };
 
 SteemEmbed.isFaceBook = function(url) {
-  let match = url.match(VIDEO_MATCH_URL.FACEBOOK);
-  return match ? url : false;
+  let match = url.match(VIDEO_MATCH_URL.FACEBOOK) || url.match(VIDEO_MATCH_URL.FACEBOOK_SHORT);
+  return match ? url.replace(/(\/$)/, '') : false;
 };
 
 SteemEmbed.facebook = function(url, id, options) {

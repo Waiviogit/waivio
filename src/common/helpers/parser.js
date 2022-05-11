@@ -1,4 +1,4 @@
-import { isError, get, attempt, size, unescape } from 'lodash';
+import { isError, get, attempt, size, unescape, round } from 'lodash';
 
 export function getFromMetadata(jsonMetadata, key) {
   const metadata = attempt(JSON.parse, jsonMetadata);
@@ -53,5 +53,16 @@ export function extractLinks(body) {
 }
 
 export const replacer = value => value.replace(/^@/g, '');
+
+export const fixedNumber = (num, precision) => {
+  if (!num) return 0;
+
+  if (precision)
+    return typeof num === 'number' ? num.toFixed(precision) : Number(num).toFixed(precision);
+
+  const currPrecision = num > 0.001 ? 3 : 5;
+
+  return round(num, currPrecision);
+};
 
 export default null;
