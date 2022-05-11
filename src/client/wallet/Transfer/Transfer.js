@@ -4,7 +4,7 @@ import classNames from 'classnames';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import { get, isNull, isEmpty, includes, isString, round, floor, uniqWith } from 'lodash';
+import { get, isNull, isEmpty, includes, isString, uniqWith } from 'lodash';
 import { Form, Input, Modal, Select } from 'antd';
 import { v4 as uuidv4 } from 'uuid';
 import { HBD, HIVE } from '../../../common/constants/cryptos';
@@ -55,6 +55,7 @@ import {
 import { getSearchUsersResults } from '../../../store/searchStore/searchSelectors';
 
 import './Transfer.less';
+import { fixedNumber } from '../../../common/helpers/parser';
 
 const InputGroup = Input.Group;
 
@@ -230,7 +231,13 @@ export default class Transfer extends React.Component {
     }
   }
 
-  getFraction = balance => (balance < 0.001 ? 5 : 3);
+  getFraction = currency => {
+    const currToken = this.props.tokensList.find(token => token.symbol === currency);
+
+    if (currToken?.balance < 0.001) return 3;
+
+    return currToken?.precision ?? 3;
+  };
 
   getTokensBalanceList = () => {
     const hiveEngineList = this.props.tokensList.reduce((acc, curr) => {
@@ -280,12 +287,11 @@ export default class Transfer extends React.Component {
     const { isGuest, user } = this.props;
     const currAmount = this.getTokensBalanceList()[this.state.currency];
     const currentBalance = isGuest ? user.balance : currAmount;
-    const value = floor(currentBalance, this.getFraction(currentBalance));
 
-    this.props.form.setFieldsValue({ amount: value });
+    this.props.form.setFieldsValue({ amount: currentBalance });
     this.setState({
-      searchBarValue: value,
-      currentEstimate: this.estimatedValue(value),
+      searchBarValue: currentBalance,
+      currentEstimate: this.estimatedValue(currentBalance),
     });
   };
 
@@ -321,9 +327,7 @@ export default class Transfer extends React.Component {
     form.validateFields({ force: true }, (errors, values) => {
       if (!errors) {
         const transferQuery = {
-          amount: `${round(parseFloat(values.amount), this.getFraction(values.amount))} ${
-            values.currency
-          }`,
+          amount: `${fixedNumber(parseFloat(values.amount))} ${values.currency}`,
           memo,
         };
 
@@ -381,7 +385,10 @@ export default class Transfer extends React.Component {
                       symbol: this.state.currency,
                       to: transferQuery.to,
                       memo: transferQuery.memo,
-                      quantity: round(parseFloat(values.amount), 3).toString(),
+                      quantity: fixedNumber(
+                        parseFloat(values.amount),
+                        this.getFraction(this.state.currency),
+                      ).toString(),
                     },
                   }),
                 })}`,
@@ -736,7 +743,7 @@ export default class Transfer extends React.Component {
                     >
                       <span>{token.symbol}</span>
                       <span className="Transfer__currency-balance">
-                        {floor(token.balance, this.getFraction(token.balance))}
+                        {fixedNumber(token.balance)}
                       </span>
                     </Select.Option>
                   ))}
@@ -756,8 +763,7 @@ export default class Transfer extends React.Component {
                   className={amountClassList}
                 >
                   {' '}
-                  {floor(currentBalance, this.getFraction(currentBalance)) || 0}{' '}
-                  {this.state.currency}
+                  {currentBalance} {this.state.currency}
                 </span>
               </React.Fragment>
             )}

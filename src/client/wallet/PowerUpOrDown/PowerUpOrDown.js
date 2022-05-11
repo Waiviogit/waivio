@@ -82,7 +82,7 @@ export default class PowerUpOrDown extends React.Component {
       if (curr.stakingEnabled && +curr[key] && curr.symbol !== 'WAIV') {
         return {
           ...acc,
-          [curr.symbol]: round(curr[key], 5),
+          [curr.symbol]: curr[key],
         };
       }
 
