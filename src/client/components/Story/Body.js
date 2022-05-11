@@ -126,7 +126,7 @@ export function getHtml(body, jsonMetadata = {}, returnType = 'Object', options 
       uniqueLinks.forEach(item => {
         let link = item;
 
-        if (link.includes('3speak.tv')) {
+        if (link.includes('3speak.tv/watch/')) {
           const type = 'video';
           const embed = getEmbed(link);
 
