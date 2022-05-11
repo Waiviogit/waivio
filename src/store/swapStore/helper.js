@@ -12,12 +12,11 @@ export const compareTokensList = async (name, tokens) => {
     const rate = rates.find(r => r.symbol === tokenName);
     const info = tokensInfo.find(r => r.symbol === tokenName);
     const balance = +get(userBalanceInfo, 'balance', 0);
-    const balancePrecision = balance > 0.001 ? 3 : 7;
 
     return {
       ...(isString(token) ? {} : token),
       symbol: tokenName,
-      balance: floor(balance, balancePrecision),
+      balance,
       rate: floor(+get(rate, 'lastPrice', 1), 3),
       precision: info.precision,
     };
