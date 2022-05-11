@@ -62,12 +62,12 @@ export default class UserList extends React.Component {
     />
   );
 
-  upVotesModalPreview = (usersList, noOfItemsToShow) => {
+  upVotesModalPreview = usersList => {
     const sponsors = [];
     const currentUpvotes = [];
 
     // eslint-disable-next-line array-callback-return
-    take(usersList, noOfItemsToShow)
+    take(usersList)
       .sort((a, b) => b.payout - a.payout)
       // eslint-disable-next-line array-callback-return
       .map(vote => {
