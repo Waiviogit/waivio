@@ -29,6 +29,7 @@ const SellOrdersTableHive = () => {
   const columnTitles = ['Price', 'Hive', 'HBD'];
 
   const getOrderList = async (account, offset) => {
+    getMappedArray();
     const newList = [...list];
     const splicedList = newList.splice(offset, 5);
 
