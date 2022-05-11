@@ -22,9 +22,11 @@ import { getCurrentWalletType } from '../../../../store/walletStore/walletSelect
 import { toggleModal } from '../../../../store/swapStore/swapActions';
 import { HBD, HIVE, WAIV } from '../../../../common/constants/cryptos';
 import { toggleWithdrawModal } from '../../../../store/depositeWithdrawStore/depositeWithdrawAction';
-import SellOrdersTable from '../../../wallet/SellOrdersTable';
-import BuyOrdersTable from '../../../wallet/BuyOrdersTable';
 import { guestUserRegex } from '../../../../common/helpers/regexHelpers';
+import SellOrdersTable from '../../../wallet/OrdersTable/SellOrdersTable';
+import BuyOrdersTable from '../../../wallet/OrdersTable/BuyOrdersTable';
+import BuyOrdersTableHive from '../../../wallet/OrdersTable/BuyOrdersTableHive';
+import SellOrdersTableHive from '../../../wallet/OrdersTable/SellOrdersTableHive';
 import './WalletSidebar.less';
 
 const cryptos = [WAIV.symbol, HIVE.symbol, HBD.symbol];
@@ -105,6 +107,7 @@ class WalletSidebar extends React.Component {
     const { match, user, isCurrentUser, isGuest, walletType } = this.props;
     const ownProfile = match.params.name === user.name || isCurrentUser;
     const isNotWaivWallet = walletType !== 'WAIV';
+    const isHiveWallet = walletType === 'HIVE';
     const isGuestUserProfile = guestUserRegex.test(this.props.match.params.name);
 
     return (
@@ -163,6 +166,12 @@ class WalletSidebar extends React.Component {
           <React.Fragment>
             <BuyOrdersTable />
             <SellOrdersTable />
+          </React.Fragment>
+        )}
+        {!isGuestUserProfile && isHiveWallet && (
+          <React.Fragment>
+            <BuyOrdersTableHive />
+            <SellOrdersTableHive />
           </React.Fragment>
         )}
       </div>

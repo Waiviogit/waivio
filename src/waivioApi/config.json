@@ -151,5 +151,6 @@
   "delegation": "/delegation",
   "depositWithdraw": "/deposit-withdraw",
   "exist": "/exist",
+  "lastActivity": "/last-activity",
   "getMatchBots": "/match-bots"
 }

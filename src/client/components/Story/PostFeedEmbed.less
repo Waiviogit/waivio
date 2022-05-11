@@ -34,7 +34,9 @@
     width: 100%;
     position: relative;
     padding-bottom: 56%;
-
+    &_high {
+      min-height: 600px;
+    }
     iframe {
       top: 0;
       left: 0;
@@ -50,5 +52,29 @@
 
   &__container_loading {
     min-height: 295px;
+  }
+}
+
+.profile {
+  .PostFeedEmbed__container_high {
+    height: 750px;
+  }
+}
+.ant-modal-body {
+  .PostFeedEmbed__container_high {
+    height: 600px;
+  }
+}
+.PostFeedEmbed__container_instagram-reel {
+  padding-bottom: 112%;
+}
+
+.PostFeedEmbed__container_instagram {
+  padding-bottom: 87%;
+}
+
+@media screen and (max-width: @medium-bp) {
+  .PostFeedEmbed__container_high {
+    height: 740px;
   }
 }

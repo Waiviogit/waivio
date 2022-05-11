@@ -67,13 +67,16 @@ export default class UserList extends React.Component {
     const currentUpvotes = [];
 
     // eslint-disable-next-line array-callback-return
-    take(usersList, noOfItemsToShow).map(vote => {
-      if (vote.sponsor) {
-        sponsors.push(vote);
-      } else {
-        currentUpvotes.push(vote);
-      }
-    });
+    take(usersList, noOfItemsToShow)
+      .sort((a, b) => b.payout - a.payout)
+      // eslint-disable-next-line array-callback-return
+      .map(vote => {
+        if (vote.sponsor) {
+          sponsors.push(vote);
+        } else {
+          currentUpvotes.push(vote);
+        }
+      });
 
     return (
       <React.Fragment>

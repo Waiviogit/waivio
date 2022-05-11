@@ -8,6 +8,13 @@ import getUrls from 'get-urls';
 
 import { VIDEO_MATCH_URL } from '../../common/helpers/regexHelpers';
 import AsyncVideo from './asyncVideo';
+import {
+  FACEBOOK_PREFIX,
+  getTwitchSrc,
+  PEERTUBE_PREFIX,
+  TIKTOK_PREFIX,
+  TWITCH_PREFIX,
+} from '../components/EditorExtended/util/videoHelper';
 
 const SteemEmbed = {};
 
@@ -45,13 +52,19 @@ SteemEmbed.get = function(url, options) {
   const youtubeId = this.isYoutube(url);
   const dTubeId = this.isDTube(url);
   const threeSpeakId = this.is3Speak(url);
-  const twitchChannel = this.isTwitch(url);
+  const twitch = this.isTwitch(url);
+  const twitchPlayer = this.isTwitchPlayer(url);
   const periscopeId = this.isPeriscope(url);
   const soundcloudId = this.isSoundcloud(url);
   const vimeoId = this.isVimeo(url);
   const bitchuteId = this.isBitchute(url);
   const rumbleId = this.isRumble(url);
   const odyseeId = this.isOdysee(url);
+  const tikTokId = this.isTikTok(url);
+  const facebookId = this.isFaceBook(url);
+  const instagramId = this.isInstagram(url);
+  const peerTubeId = this.isPeerTube(url);
+
   if (youtubeId) {
     return {
       type: 'video',
@@ -82,13 +95,21 @@ SteemEmbed.get = function(url, options) {
       id: threeSpeakId,
       embed: this.threeSpeak(url, threeSpeakId, options),
     };
-  } else if (twitchChannel) {
+  } else if (twitch) {
     return {
       type: 'video',
       url: url,
       provider_name: 'Twitch',
-      id: twitchChannel,
-      embed: this.twitch(url, twitchChannel, options),
+      id: twitch,
+      embed: this.twitch(url, options),
+    };
+  } else if (twitchPlayer) {
+    return {
+      type: 'video',
+      url: url,
+      provider_name: 'TwitchPlayer',
+      id: twitchPlayer,
+      embed: this.twitchPlayer(url, options),
     };
   } else if (periscopeId) {
     return {
@@ -137,6 +158,38 @@ SteemEmbed.get = function(url, options) {
       provider_name: 'Odysee',
       id: odyseeId,
     };
+  } else if (tikTokId) {
+    return {
+      type: 'video',
+      url: url,
+      provider_name: 'TikTok',
+      id: tikTokId,
+      embed: this.tikTok(url, tikTokId, options),
+    };
+  } else if (facebookId) {
+    return {
+      type: 'video',
+      url: url,
+      provider_name: 'Facebook',
+      id: facebookId,
+      embed: this.facebook(url, facebookId, options),
+    };
+  } else if (instagramId) {
+    return {
+      type: 'video',
+      url: url,
+      provider_name: 'Instagram',
+      id: instagramId,
+      embed: this.instagram(url, instagramId, options),
+    };
+  } else if (peerTubeId) {
+    return {
+      type: 'video',
+      url: url,
+      provider_name: 'PeerTube',
+      id: peerTubeId,
+      embed: this.peerTube(url, peerTubeId, options),
+    };
   }
 };
 
@@ -174,7 +227,7 @@ SteemEmbed.isOdysee = function(url) {
   return match ? match[1].replace(/(\?.*=.*)/, '') : false;
 };
 
-SteemEmbed.odysee = function(url, id, options) {
+SteemEmbed.odysee = function(url) {
   return <AsyncVideo url={url} />;
 };
 
@@ -215,18 +268,63 @@ SteemEmbed.threeSpeak = function(url, authorPermlink, options) {
 };
 
 SteemEmbed.isTwitch = function(url) {
-  let p = /^(?:https?:\/\/)?(?:www\.)?(?:twitch.tv\/)(.*)?$/;
-  return url.match(p) ? RegExp.$1 : false;
+  let id;
+  const match = url.match(VIDEO_MATCH_URL.TWITCH);
+
+  if (match) {
+    id = match[1] ? `/video${match[1]}` : match[2];
+  }
+  return id || false;
 };
 
-SteemEmbed.twitch = function(url, channel, options) {
+SteemEmbed.isTwitchPlayer = function(url) {
+  const match = url.match(VIDEO_MATCH_URL.TWITCH_PLAYER);
+
+  return match && match[1];
+};
+
+SteemEmbed.twitch = function(url, options) {
+  const { srcID } = getTwitchSrc(url);
+
   return (
     '<iframe width="' +
     options.width +
     '" height="' +
     options.height +
-    '" src="//player.twitch.tv/?channel=' +
-    channel +
+    '" src="' +
+    TWITCH_PREFIX +
+    srcID +
+    '&autoplay=false" frameborder="0" scrolling="no" allowfullscreen></iframe>'
+  );
+};
+
+SteemEmbed.twitchPlayer = function(url, options) {
+  return (
+    '<iframe width="' +
+    options.width +
+    '" height="' +
+    options.height +
+    '" src="' +
+    url +
+    '&autoplay=false" frameborder="0" scrolling="no" allowfullscreen></iframe>'
+  );
+};
+
+SteemEmbed.isTikTok = function(url) {
+  const match = url.match(VIDEO_MATCH_URL.TIKTOK);
+
+  return match && match[2];
+};
+
+SteemEmbed.tikTok = function(url, id, options) {
+  return (
+    '<iframe width="' +
+    options.width +
+    '" height="' +
+    options.height +
+    '" src="' +
+    TIKTOK_PREFIX +
+    id +
     '&autoplay=false" frameborder="0" scrolling="no" allowfullscreen></iframe>'
   );
 };
@@ -313,6 +411,61 @@ SteemEmbed.rumble = function(url, id, options) {
     '" height="' +
     options.height +
     '" src="https://rumble.com/embed/' +
+    id +
+    '" frameborder="0" scrolling="no" allowfullscreen></iframe>'
+  );
+};
+
+SteemEmbed.isFaceBook = function(url) {
+  let match = url.match(VIDEO_MATCH_URL.FACEBOOK) || url.match(VIDEO_MATCH_URL.FACEBOOK_SHORT);
+  return match ? url.replace(/(\/$)/, '') : false;
+};
+
+SteemEmbed.facebook = function(url, id, options) {
+  return (
+    '<iframe width="' +
+    options.width +
+    '" height="' +
+    options.height +
+    '" src="' +
+    FACEBOOK_PREFIX +
+    id +
+    '" frameborder="0" scrolling="no" allowfullscreen></iframe>'
+  );
+};
+
+SteemEmbed.isInstagram = function(url) {
+  let match = url.match(VIDEO_MATCH_URL.INSTAGRAM) || url.match(VIDEO_MATCH_URL.INSTAGRAM_REEL);
+  return match ? match[0] : false;
+};
+
+SteemEmbed.instagram = function(url, id, options) {
+  const _url = id[id.length - 1] === '/' ? id : `${id}/`;
+  return (
+    '<iframe width="' +
+    options.width +
+    '" height="' +
+    options.height +
+    '" src="' +
+    _url +
+    'embed' +
+    '" frameborder="0" scrolling="no" allowfullscreen></iframe>'
+  );
+};
+
+SteemEmbed.isPeerTube = function(url) {
+  let match = url.match(VIDEO_MATCH_URL.PEERTUBE);
+  return match ? match[1] : false;
+};
+
+SteemEmbed.peerTube = function(url, id, options) {
+  return (
+    '<iframe width="' +
+    options.width +
+    '" height="' +
+    options.height +
+    '" src="' +
+    PEERTUBE_PREFIX +
     id +
     '" frameborder="0" scrolling="no" allowfullscreen></iframe>'
   );

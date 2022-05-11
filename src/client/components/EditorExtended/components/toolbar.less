@@ -63,6 +63,7 @@
 
   &.md-editor-toolbar--isopen {
     visibility: visible;
+    width: auto;
   }
 
   &.md-editor-toolbar--linkinput {
@@ -92,6 +93,7 @@
       border: none;
       box-shadow: none;
     }
+
     &:hover {
       border: none;
     }
@@ -158,12 +160,18 @@
 
   .md-RichEditor-linkButton {
     vertical-align: middle;
-    padding: 0 5px;
     color: @white;
     text-decoration: none;
+    height: 33px;
+    position: relative;
+    top: 1px;
     svg {
       position: relative;
-      top: 1px;
+    }
+
+    .anticon-link {
+      padding-left: 5px;
+      font-size: 15px;
     }
   }
 }
@@ -176,6 +184,10 @@
 
   &:hover {
     color: @orange;
+
+    svg path {
+      fill: @orange;
+    }
   }
 
   &:last-child {
@@ -185,12 +197,15 @@
   &.md-RichEditor-styleButton-bold {
     font-weight: bold;
   }
+
   &.md-RichEditor-styleButton-italic {
     font-style: italic;
   }
+
   &.md-RichEditor-styleButton-underline {
     text-decoration: underline;
   }
+
   &.md-RichEditor-styleButton-strikethrough {
     text-decoration: line-through;
   }
@@ -211,6 +226,7 @@
     border-bottom-left-radius: 5px;
   }
 }
+
 .md-RichEditor-show-link-input {
   border: 1px solid @orange-hot;
   border-radius: 4px;
@@ -230,19 +246,51 @@
     padding-bottom: 2px;
     height: 32px;
   }
+
   .md-RichEditor-styleButton:first-child {
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
   }
+
   &:hover,
   .md-RichEditor-activeButton {
     svg {
       fill: @orange;
     }
   }
+
   svg {
     position: relative;
     top: 1.5px;
+    margin-right: 2px;
+  }
+}
+
+.md-RichEditor-pagination-icon {
+  cursor: pointer;
+  display: inline-block;
+  vertical-align: bottom;
+  border-right: 1px solid @normal-grey;
+  position: relative;
+  top: 0.9px;
+  height: 33px;
+  &:hover {
+    svg path {
+      fill: @orange;
+    }
+  }
+  svg {
+    width: 35px;
+    height: 13px;
+    path {
+      fill: @white;
+    }
+  }
+  &--next {
+    border-right: none;
+    svg {
+      transform: rotate(180deg);
+    }
   }
 }
 

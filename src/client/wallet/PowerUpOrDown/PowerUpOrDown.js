@@ -82,7 +82,7 @@ export default class PowerUpOrDown extends React.Component {
       if (curr.stakingEnabled && +curr[key] && curr.symbol !== 'WAIV') {
         return {
           ...acc,
-          [curr.symbol]: round(curr[key], 5),
+          [curr.symbol]: curr[key],
         };
       }
 
@@ -157,7 +157,7 @@ export default class PowerUpOrDown extends React.Component {
   currencyList = () => {
     if (this.props.down) {
       return {
-        WP: round(this.props.waivCurrencyInfo.stake, 3),
+        WP: this.props.waivCurrencyInfo.stake,
         HP: round(
           formatter.vestToSteem(
             parseFloat(this.props.user.vesting_shares) -
@@ -172,7 +172,7 @@ export default class PowerUpOrDown extends React.Component {
     }
 
     return {
-      WAIV: round(this.props.waivCurrencyInfo.balance, 3),
+      WAIV: this.props.waivCurrencyInfo.balance,
       HIVE: round(parseFloat(this.props.user.balance), 3),
       ...this.stakinTokensList('balance'),
     };

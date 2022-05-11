@@ -39,8 +39,18 @@ module.exports = function createConfig(env = 'dev') {
           use: {
             loader: 'babel-loader',
             options: {
-              presets: ['env', 'react', 'stage-2'],
-              plugins: ['transform-decorators-legacy', 'transform-runtime', 'dynamic-import-node'],
+              presets: ['@babel/preset-env', '@babel/preset-react'],
+              plugins: [
+                [
+                  '@babel/plugin-proposal-decorators',
+                  {
+                    legacy: true,
+                  },
+                ],
+                '@babel/plugin-proposal-class-properties',
+                '@babel/plugin-transform-runtime',
+                ['import', { libraryName: 'antd', style: true }],
+              ],
               cacheDirectory: true,
             },
           },
@@ -55,16 +65,10 @@ module.exports = function createConfig(env = 'dev') {
     plugins: [
       DEFINE_PLUGIN,
       new webpack.NormalModuleReplacementPlugin(MATCH_CSS_LESS, 'identity-obj-proxy'),
-      new webpack.optimize.LimitChunkCountPlugin({
-        maxChunks: 1,
-      }),
       new WebpackBar({
         name: 'server',
         color: '#c065f4',
       }),
-      // new UglifyJsPlugin({
-      //   cache: true,
-      // }),
     ],
   });
 

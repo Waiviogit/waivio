@@ -583,6 +583,7 @@ export const getUserTokensBalanceList = (
             ...token,
             stakingEnabled: get(info, 'stakingEnabled', true),
             name: info.name,
+            precision: info.precision,
             avatar: get(parseJSON(info.metadata), 'icon', ''),
             rate: +get(rate, 'lastDayPrice', 1),
           };

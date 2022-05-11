@@ -8,6 +8,14 @@ export const VIDEO_MATCH_URL = {
   RUMBLE: /^https:\/\/rumble\.com\/embed\/([a-zA-Z0-9-_]*)/,
   BITCHUTE: /^https:\/\/(?:www\.)?bitchute\.com\/(video|embed)\/([a-zA-Z0-9-_]*)/,
   ODYSEE: /^https:\/\/odysee\.com\/(.*)/,
+  TWITCH: /^(?:https?:\/\/)?(?:www\.)?(?:twitch.tv\/)(videos\/)?(.*)?$/,
+  TWITCH_PLAYER: /^(?:https?:\/\/)?(player.twitch.tv\/)(.*)?$/,
+  TIKTOK: /^(?:https?:\/\/)?(?:www.)?tiktok\.com\/(.*\/)?(?:video|(?:embed\/v2))\/(.*)/,
+  FACEBOOK: /^(?:https?:\/\/)?(?:www.)?facebook.com\/(?:.*\/)?(?:watch|(?:videos\/.*))\/(?:\?v=)?(.*)(:?\/|$)/,
+  FACEBOOK_SHORT: /^(?:https?:\/\/)?(?:www.)?fb.watch\/(.*)/,
+  INSTAGRAM: /^(?:https?:\/\/)?(?:www.)?instagram.com\/(?:.){1,5}\/(.{11}(\/)?)/,
+  INSTAGRAM_REEL: /^(?:https?:\/\/)?(?:www.)?instagram.com\/reel\/(.{11}(\/)?)/,
+  PEERTUBE: /^(?:https?:\/\/)?(?:www.)?media.zat.im\/(?:w|videos\/embed)\/(.*)/,
 };
 
 export const imageRegex = /https?:\/\/(?:[-a-zA-Z0-9._]*[-a-zA-Z0-9])(?::\d{2,5})?(?:[/?#](?:[^\s"'<>\][()]*[^\s"'<>\][().,])?(?:(?:\.(?:tiff?|jpe?g|gif|png|svg|ico)|ipfs\/[a-z\d]{40,})))/gi;

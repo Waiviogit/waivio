@@ -6,6 +6,14 @@
   padding: 10px 15px;
   border-bottom: @base-border;
 
+  &__amount_column {
+    display: flex;
+    flex-direction: column;
+    @media @small {
+      flex-direction: row;
+    }
+  }
+
   &__info-container {
     display: flex;
     justify-content: space-between;

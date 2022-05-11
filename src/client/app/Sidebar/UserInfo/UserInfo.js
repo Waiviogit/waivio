@@ -139,13 +139,13 @@ class UserInfo extends React.Component {
                       <BTooltip
                         title={
                           <span>
-                            <FormattedDate value={`${lastActive}Z`} />{' '}
-                            <FormattedTime value={`${lastActive}Z`} />
+                            <FormattedDate value={lastActive} />{' '}
+                            <FormattedTime value={lastActive} />
                           </span>
                         }
                       >
                         <span>
-                          <FormattedRelative value={`${lastActive}Z`} />
+                          <FormattedRelative value={lastActive} />
                         </span>
                       </BTooltip>
                     </div>
