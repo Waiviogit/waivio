@@ -56,7 +56,7 @@ export default class PostFeedEmbed extends React.Component {
     const { embed, inPost } = this.props;
     const shouldRenderThumb = inPost ? false : !this.state.showIframe;
 
-    if (embed.url.includes('odysee.com/')) {
+    if (embed?.url?.includes('odysee.com/')) {
       return <AsyncVideo url={embed.url} />;
     }
     if (isPostVideo(embed.provider_name, shouldRenderThumb)) {
