@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import { Icon } from 'antd';
 import './ListTable.less';
 
-const ListTable = ({ getOrderList, title, columnTitles }) => {
+const ListTable = ({ getOrderList, title, columnTitles, refreshOrderList }) => {
   const isSell = title === 'Sell orders';
   const { name } = useParams();
   const [orderList, setOrderList] = useState([]);
@@ -21,6 +21,13 @@ const ListTable = ({ getOrderList, title, columnTitles }) => {
 
   const getOrderListFromApi = async () => {
     const list = await getOrderList(name);
+
+    setOrderList(list);
+    checkLengthAndSetHasMore(list);
+  };
+
+  const refreshList = async () => {
+    const list = await refreshOrderList(name);
 
     setOrderList(list);
     checkLengthAndSetHasMore(list);
@@ -48,7 +55,7 @@ const ListTable = ({ getOrderList, title, columnTitles }) => {
           <Icon type="bar-chart" className="ListTable__icon iconfont " />
           <h4 className="ListTable__title"> {title}</h4>
         </div>
-        <button onClick={getOrderListFromApi}>
+        <button onClick={refreshList}>
           {' '}
           <i className="ListTable__icon-refresh iconfont icon-refresh"> </i>
         </button>
@@ -82,6 +89,7 @@ const ListTable = ({ getOrderList, title, columnTitles }) => {
 };
 
 ListTable.propTypes = {
+  refreshOrderList: PropTypes.shape().isRequired,
   getOrderList: PropTypes.shape().isRequired,
   title: PropTypes.string.isRequired,
   columnTitles: PropTypes.shape().isRequired,

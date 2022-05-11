@@ -30,18 +30,29 @@ const BuyOrdersTableHive = () => {
   const columnTitles = ['HBD', 'Hive', 'Price'];
 
   const getOrderList = (account, offset) => {
-    getMappedArray();
     const newList = [...list];
     const splicedList = newList.splice(offset, 5);
 
     return splicedList;
+  };
+  const refreshOrderList = () => {
+    getMappedArray();
+
+    return getOrderList(name);
   };
 
   if (isEmpty(list)) {
     return null;
   }
 
-  return <ListTable columnTitles={columnTitles} title="Buy orders" getOrderList={getOrderList} />;
+  return (
+    <ListTable
+      columnTitles={columnTitles}
+      title="Buy orders"
+      getOrderList={getOrderList}
+      refreshOrderList={refreshOrderList}
+    />
+  );
 };
 
 export default BuyOrdersTableHive;
