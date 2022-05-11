@@ -7,7 +7,14 @@ const SellOrdersTable = () => {
 
   const getOrderList = (account, offset) => getSellBookList(account, offset);
 
-  return <ListTable title="Sell orders" columnTitles={columnTitles} getOrderList={getOrderList} />;
+  return (
+    <ListTable
+      title="Sell orders"
+      columnTitles={columnTitles}
+      getOrderList={getOrderList}
+      refreshOrderList={getOrderList}
+    />
+  );
 };
 
 export default SellOrdersTable;
