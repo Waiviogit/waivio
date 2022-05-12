@@ -13,6 +13,7 @@ export const VIDEO_MATCH_URL = {
   TIKTOK: /^(?:https?:\/\/)?(?:www.)?tiktok\.com\/(.*\/)?(?:video|(?:embed\/v2))\/(.*)/,
   FACEBOOK: /^(?:https?:\/\/)?(?:www.)?facebook.com\/(?:.*\/)?(?:watch|(?:videos\/.*))\/(?:\?v=)?(.*)(:?\/|$)/,
   FACEBOOK_SHORT: /^(?:https?:\/\/)?(?:www.)?fb.watch\/(.*)/,
+  FACEBOOK_EMBEDED: /^https:\/\/(?:www.)?facebook.com\/plugins\/video.php\?height=280&href=(.*)/,
   INSTAGRAM: /^(?:https?:\/\/)?(?:www.)?instagram.com\/(?:.){1,5}\/(.{11}(\/)?)/,
   INSTAGRAM_REEL: /^(?:https?:\/\/)?(?:www.)?instagram.com\/reel\/(.{11}(\/)?)/,
   PEERTUBE: /^(?:https?:\/\/)?(?:www.)?media.zat.im\/(?:w|videos\/embed)\/(.*)/,
