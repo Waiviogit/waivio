@@ -205,36 +205,35 @@ export default class Buttons extends React.Component {
     const upVotesPreview = votes => {
       const sponsors = [];
       const currentUpvotes = [];
+      const sortedVotes = votes.sort((a, b) => b.payout - a.payout);
 
-      take(votes, 10)
-        .sort((a, b) => b.payout - a.payout)
-        .map(vote => {
-          if (vote.sponsor) {
-            sponsors.push(
-              <p key={vote.voter}>
-                <Link to={`/@${vote.voter}`}>{vote.voter}&nbsp;</Link>
+      take(sortedVotes, 10).map(vote => {
+        if (vote.sponsor) {
+          sponsors.push(
+            <p key={vote.voter}>
+              <Link to={`/@${vote.voter}`}>{vote.voter}&nbsp;</Link>
+              <span style={{ opacity: '0.5' }}>
+                {' '}
+                <USDDisplay value={vote.payout} currencyDisplay="symbol" />
+              </span>
+            </p>,
+          );
+        } else {
+          currentUpvotes.push(
+            <p key={vote.voter}>
+              <Link to={`/@${vote.voter}`}>{vote.voter}&nbsp;</Link>
+              {vote.payout > 0.01 && (
                 <span style={{ opacity: '0.5' }}>
                   {' '}
                   <USDDisplay value={vote.payout} currencyDisplay="symbol" />
                 </span>
-              </p>,
-            );
-          } else {
-            currentUpvotes.push(
-              <p key={vote.voter}>
-                <Link to={`/@${vote.voter}`}>{vote.voter}&nbsp;</Link>
-                {vote.payout > 0.01 && (
-                  <span style={{ opacity: '0.5' }}>
-                    {' '}
-                    <USDDisplay value={vote.payout} currencyDisplay="symbol" />
-                  </span>
-                )}
-              </p>,
-            );
-          }
+              )}
+            </p>,
+          );
+        }
 
-          return null;
-        });
+        return null;
+      });
 
       return (
         <React.Fragment>
