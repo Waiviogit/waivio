@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
-import { isEmpty } from 'lodash';
+import { isEmpty, take } from 'lodash';
 import ListTable from '../ListTable/ListTable';
 import { getHiveBookList } from '../../../waivioApi/ApiClient';
 
@@ -20,6 +20,8 @@ const SellOrdersTableHive = () => {
       }));
 
     setList(mappedArray);
+
+    return mappedArray;
   };
 
   useEffect(() => {
@@ -28,17 +30,17 @@ const SellOrdersTableHive = () => {
 
   const columnTitles = ['Price', 'Hive', 'HBD'];
 
-  const getOrderList = (account, offset) => {
+  const getOrderList = async (account, offset) => {
     const newList = [...list];
     const splicedList = newList.splice(offset, 5);
 
     return splicedList;
   };
 
-  const refreshOrderList = () => {
-    getMappedArray();
+  const refreshOrderList = async () => {
+    const refreshedArray = await getMappedArray();
 
-    return getOrderList(name);
+    return take(refreshedArray, 5);
   };
 
   if (isEmpty(list)) {

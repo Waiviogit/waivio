@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
-import { isEmpty } from 'lodash';
+import { isEmpty, take } from 'lodash';
 import ListTable from '../ListTable/ListTable';
 import { getHiveBookList } from '../../../waivioApi/ApiClient';
 
@@ -10,7 +10,6 @@ const BuyOrdersTableHive = () => {
 
   const getMappedArray = async () => {
     const response = await getHiveBookList(name);
-
     const mappedArray = response
       .filter(el => el.sell_price.quote.includes('HIVE'))
       .sort((a, b) => b.real_price - a.real_price)
@@ -21,6 +20,8 @@ const BuyOrdersTableHive = () => {
       }));
 
     setList(mappedArray);
+
+    return mappedArray;
   };
 
   useEffect(() => {
@@ -29,16 +30,17 @@ const BuyOrdersTableHive = () => {
 
   const columnTitles = ['HBD', 'Hive', 'Price'];
 
-  const getOrderList = (account, offset) => {
+  const getOrderList = async (account, offset) => {
     const newList = [...list];
     const splicedList = newList.splice(offset, 5);
 
     return splicedList;
   };
-  const refreshOrderList = () => {
-    getMappedArray();
 
-    return getOrderList(name);
+  const refreshOrderList = async () => {
+    const refreshedArray = await getMappedArray();
+
+    return take(refreshedArray, 5);
   };
 
   if (isEmpty(list)) {
