@@ -29,7 +29,7 @@ export default function usersReducer(state = initialState, action) {
         users: {
           ...state.users,
           [action.meta.username]: {
-            ...state[action.meta.username],
+            ...state.users[action.meta.username],
             fetching: true,
             loaded: false,
             failed: false,
@@ -42,11 +42,48 @@ export default function usersReducer(state = initialState, action) {
         users: {
           ...state.users,
           [action.meta.username]: {
-            ...state[action.meta.username],
+            ...state.users[action.meta.username],
             ...action.payload,
             fetching: false,
             loaded: true,
             failed: false,
+          },
+        },
+      };
+    }
+    case actions.GET_INFO_FOR_SIDEBAR.SUCCESS: {
+      return {
+        ...state,
+        users: {
+          ...state.users,
+          [action.meta.username]: {
+            ...state.users[action.meta.username],
+            ...action.payload,
+            sideBarLoading: false,
+          },
+        },
+      };
+    }
+    case actions.GET_INFO_FOR_SIDEBAR.START: {
+      return {
+        ...state,
+        users: {
+          ...state.users,
+          [action.meta.username]: {
+            ...state.users[action.meta.username],
+            sideBarLoading: true,
+          },
+        },
+      };
+    }
+    case actions.GET_INFO_FOR_SIDEBAR.ERROR: {
+      return {
+        ...state,
+        users: {
+          ...state.users,
+          [action.meta.username]: {
+            ...state.users[action.meta.username],
+            sideBarLoading: false,
           },
         },
       };
@@ -57,7 +94,7 @@ export default function usersReducer(state = initialState, action) {
         users: {
           ...state.users,
           [action.meta.username]: {
-            ...state[action.meta.username],
+            ...state.users[action.meta.username],
             fetching: false,
             loaded: false,
             failed: true,

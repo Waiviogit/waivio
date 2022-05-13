@@ -13,40 +13,60 @@ import {
 import { calculateMana, dHive, getLastBlockNum } from '../../client/vendor/steemitHelpers';
 import { guestUserRegex } from '../../common/helpers/regexHelpers';
 
+export const GET_INFO_FOR_SIDEBAR = createAsyncActionType('@users/GET_INFO_FOR_SIDEBAR');
+
+export const getInfoForSideBar = username => async dispatch => {
+  dispatch({
+    type: GET_INFO_FOR_SIDEBAR.START,
+    meta: { username },
+  });
+  try {
+    const accList = await dHive.database.getAccounts([username]);
+    const acc = accList[0];
+    const rc = await dHive.rc.getRCMana(username, acc);
+    const voting_mana = await dHive.rc.calculateVPMana(acc);
+    const waivVotingMana = await ApiClient.getWaivVoteMana(username, acc);
+    const userVoteValue = await ApiClient.getUserVoteValueInfo(username, acc);
+    const lastActivity = await ApiClient.getUserLastActivity(username, acc);
+    const waivPowerMana = waivVotingMana ? calculateMana(waivVotingMana) : null;
+    const data = {};
+
+    data.rc_percentage = rc.percentage * 0.01;
+    data.voting_mana = voting_mana.percentage * 0.01;
+    data.waivVotingPower = waivVotingMana ? waivPowerMana.votingPower : 100;
+    data.waivDownvotingPower = waivVotingMana ? waivPowerMana.downvotingPower : 100;
+    data.waivVotingPowerPrice = userVoteValue.estimatedWAIV;
+    data.hiveVotingPowerPrice = userVoteValue.estimatedHIVE;
+    data.last_activity = `${lastActivity}Z`;
+    data.totalVotingPowerPrice = userVoteValue.estimatedHIVE + userVoteValue.estimatedWAIV;
+
+    return dispatch({
+      type: GET_INFO_FOR_SIDEBAR.SUCCESS,
+      payload: data,
+      meta: { username },
+    });
+  } catch (e) {
+    return dispatch({
+      type: GET_INFO_FOR_SIDEBAR.ERROR,
+      payload: {},
+      meta: { username },
+    });
+  }
+};
 export const GET_ACCOUNT = createAsyncActionType('@users/GET_ACCOUNT');
 
-export const getUserAccount = name => (dispatch, getState) => {
+export const getUserAccount = name => async (dispatch, getState) => {
   const state = getState();
   const authUser = getAuthenticatedUserName(state);
+  const isGuest = guestUserRegex.test(name);
 
-  return dispatch({
+  dispatch({
     type: GET_ACCOUNT.ACTION,
-    payload: ApiClient.getUserAccount(name, false, authUser).then(async res => {
-      const isGuest = guestUserRegex.test(name);
-      const data = { ...res };
-
-      if (!isGuest) {
-        const rc = await dHive.rc.getRCMana(name);
-        const voting_mana = await dHive.rc.calculateVPMana(res);
-        const waivVotingMana = await ApiClient.getWaivVoteMana(name);
-        const userVoteValue = await ApiClient.getUserVoteValueInfo(name);
-        const lastActivity = await ApiClient.getUserLastActivity(name);
-        const waivPowerMana = waivVotingMana ? calculateMana(waivVotingMana) : null;
-
-        data.rc_percentage = rc.percentage * 0.01;
-        data.voting_mana = voting_mana.percentage * 0.01;
-        data.waivVotingPower = waivVotingMana ? waivPowerMana.votingPower : 100;
-        data.waivDownvotingPower = waivVotingMana ? waivPowerMana.downvotingPower : 100;
-        data.waivVotingPowerPrice = userVoteValue.estimatedWAIV;
-        data.hiveVotingPowerPrice = userVoteValue.estimatedHIVE;
-        data.last_activity = `${lastActivity}Z`;
-        data.totalVotingPowerPrice = userVoteValue.estimatedHIVE + userVoteValue.estimatedWAIV;
-      }
-
-      return data;
-    }),
+    payload: ApiClient.getUserAccount(name, false, authUser).then(res => res),
     meta: { username: name },
   });
+
+  if (!isGuest) dispatch(getInfoForSideBar(name));
 };
 
 export const GET_RANDOM_EXPERTS = '@users/GET_RANDOM_EXPERTS';
