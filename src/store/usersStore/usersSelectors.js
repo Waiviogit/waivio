@@ -19,6 +19,10 @@ export const getIsUserLoaded = createSelector(getUser, user => get(user, 'loaded
 
 export const getIsUserFailed = createSelector(getUser, user => get(user, 'failed', false));
 
+export const getSideBarLoading = createSelector(getUser, user =>
+  get(user, 'sideBarLoading', false),
+);
+
 export const getTopExpertsObject = createSelector([usersState], state => state.topExperts);
 
 export const getTopExperts = createSelector([getTopExpertsObject], topExperts => topExperts.list);

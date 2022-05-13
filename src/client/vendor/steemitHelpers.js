@@ -14,8 +14,6 @@ import {
   checkExistPermlink,
   getContent,
 } from '../../waivioApi/ApiClient';
-import { useSelector } from 'react-redux';
-import { getTokenRatesInUSD } from '../../store/walletStore/walletSelectors';
 
 const MAX_VOTING_POWER = 10000;
 const VOTE_REGENERATION_DAYS = 5;

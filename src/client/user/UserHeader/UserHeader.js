@@ -19,6 +19,7 @@ import UserPopoverMenu from '../../components/UserPopoverMenu';
 import { isMobile } from '../../../common/helpers/apiHelpers';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 import { getImagePathPost } from '../../../common/helpers/image';
+import SkeletonCustom from '../../components/Skeleton/SkeletonCustom';
 
 import './UserHeader.less';
 
@@ -133,7 +134,7 @@ const UserHeader = ({
                   defaultMessage={getUserRank(vestingShares)}
                 />
               </div>
-              {!isGuest && (
+              {!isGuest && !user.sideBarLoading && (
                 <div className="UserHeader__voteValue">
                   <img
                     src={'/images/icons/dollar.svg'}
@@ -152,38 +153,46 @@ const UserHeader = ({
         </div>
       </div>
       <div className="UserHeader__info-mobile">
-        <p className="UserHeader__about">{about}</p>
-        <div className="UserHeader__list">
-          <div className="UserHeader__info-fields">
-            {location && (
-              <div>
-                <i className="iconfont icon-coordinates text-icon" />
-                {location}
+        {user.sideBarLoading ? (
+          <SkeletonCustom isLoading={user.sideBarLoading} rows={4} />
+        ) : (
+          <>
+            <p className="UserHeader__about">{about}</p>
+            <div className="UserHeader__list">
+              <div className="UserHeader__info-fields">
+                {location && (
+                  <div>
+                    <i className="iconfont icon-coordinates text-icon" />
+                    {location}
+                  </div>
+                )}
+                {!isGuest && (
+                  <div>
+                    <i className="iconfont icon-dollar text-icon" />
+                    <FormattedMessage id="vote_price" defaultMessage="Vote Value" />:{' '}
+                    <USDDisplay value={user.totalVotingPowerPrice} />
+                  </div>
+                )}
               </div>
-            )}
-            {!isGuest && (
-              <div>
-                <i className="iconfont icon-dollar text-icon" />
-                <FormattedMessage id="vote_price" defaultMessage="Vote Value" />:{' '}
-                <USDDisplay value={user.totalVotingPowerPrice} />
-              </div>
-            )}
-          </div>
-          <div className="UserHeader__info-fields">
-            {website && (
-              <div>
-                <i className="iconfont icon-link text-icon" />
-                <a target="_blank" rel="noopener noreferrer" href={website}>
-                  {`${hostWithoutWWW}${url.pathname.replace(/\/$/, '')}`}
-                </a>
-              </div>
-            )}
-            <div>
-              <i className="iconfont icon-time text-icon" />
-              <FormattedMessage id="active_info" defaultMessage="Active" />: {lastActive}
+              {!user.sideBarLoading && (
+                <div className="UserHeader__info-fields">
+                  {website && (
+                    <div>
+                      <i className="iconfont icon-link text-icon" />
+                      <a target="_blank" rel="noopener noreferrer" href={website}>
+                        {`${hostWithoutWWW}${url.pathname.replace(/\/$/, '')}`}
+                      </a>
+                    </div>
+                  )}
+                  <div>
+                    <i className="iconfont icon-time text-icon" />
+                    <FormattedMessage id="active_info" defaultMessage="Active" />: {lastActive}
+                  </div>
+                </div>
+              )}{' '}
             </div>
-          </div>
-        </div>
+          </>
+        )}
       </div>
       <MuteModal
         item={user}

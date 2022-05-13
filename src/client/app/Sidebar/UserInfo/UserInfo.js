@@ -18,10 +18,11 @@ import { getMetadata } from '../../../../common/helpers/postingMetadata';
 import BTooltip from '../../../components/BTooltip';
 import { guestUserRegex } from '../../../../common/helpers/regexHelpers';
 import { getRate, getRewardFund, getWeightValue } from '../../../../store/appStore/appSelectors';
-import { getUser } from '../../../../store/usersStore/usersSelectors';
+import { getSideBarLoading, getUser } from '../../../../store/usersStore/usersSelectors';
 import WeightDisplay from '../../../components/Utils/WeightDisplay';
 import WAIVtokenInfo from './WAIVtokenInfo';
 import HIVEtokenInfo from './HIVEtokenInfo';
+import SkeletonCustom from '../../../components/Skeleton/SkeletonCustom';
 
 @injectIntl
 @connect((state, ownProps) => {
@@ -32,6 +33,7 @@ import HIVEtokenInfo from './HIVEtokenInfo';
     rewardFund: getRewardFund(state),
     rate: getRate(state),
     weightValue: getWeightValue(state, user.wobjects_weight),
+    sideBarLoading: getSideBarLoading(state, ownProps.match.params.name),
   };
 })
 class UserInfo extends React.Component {
@@ -39,6 +41,7 @@ class UserInfo extends React.Component {
     intl: PropTypes.shape().isRequired,
     user: PropTypes.shape(),
     weightValue: PropTypes.number,
+    sideBarLoading: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -47,10 +50,14 @@ class UserInfo extends React.Component {
     rate: 0,
     weightValue: 0,
     usersAccountHistory: {},
+    sideBarLoading: false,
   };
 
   render() {
-    const { intl, user } = this.props;
+    const { intl, user, sideBarLoading } = this.props;
+
+    if (sideBarLoading) return <SkeletonCustom isLoading={sideBarLoading} />;
+
     const isGuestPage = guestUserRegex.test(user && user.name);
     let metadata = {};
     let location = null;

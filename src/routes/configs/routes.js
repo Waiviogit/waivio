@@ -114,6 +114,13 @@ const routes = {
       ],
     },
     {
+      component: Views.RewardsMainPage,
+      path: '/rewards-new',
+      pathScope: '/rewards-new',
+      exact: true,
+      routes: [],
+    },
+    {
       path: [`/:site/(${URL.WEBSITES.tabs})`, `/(${URL.SETTINGS.tabs})`],
       exact: true,
       component: Views.SettingsMain,
