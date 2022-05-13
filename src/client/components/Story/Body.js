@@ -25,7 +25,6 @@ export const remarkable = new Remarkable({
   linkify: false,
   typographer: false,
   quotes: '“”‘’',
-  emptyLines: true,
 });
 
 const getEmbed = link => {
@@ -100,7 +99,7 @@ export function getHtml(body, jsonMetadata = {}, returnType = 'Object', options 
     if (match && match.length >= 4) {
       const id = match[1];
       const type = match[2];
-      const link = match[3];
+      const link = match[3] && match[3].replace('&amp;', '&');
       const embed = getEmbed(link);
 
       if (link.includes('odysee.com')) {
@@ -126,7 +125,7 @@ export function getHtml(body, jsonMetadata = {}, returnType = 'Object', options 
       uniqueLinks.forEach(item => {
         let link = item;
 
-        if (link.includes('3speak.tv')) {
+        if (link.includes('3speak.tv/watch/')) {
           const type = 'video';
           const embed = getEmbed(link);
 
