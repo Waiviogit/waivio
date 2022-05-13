@@ -34,7 +34,7 @@ const MarketBuyCard = ({
           </div>
           {!isLimitOrder ? (
             <React.Fragment>
-              <span>
+              <span className="MarketBuyCard__quantity">
                 {' '}
                 <FormattedNumber
                   value={quantityLocked}
