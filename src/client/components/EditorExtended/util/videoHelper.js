@@ -17,7 +17,9 @@ export const FACEBOOK_PREFIX = 'https://www.facebook.com/plugins/video.php?heigh
 export const PEERTUBE_PREFIX = 'https://media.zat.im/videos/embed/';
 
 export const isFacebook = url =>
-  VIDEO_MATCH_URL.FACEBOOK.test(url) || VIDEO_MATCH_URL.FACEBOOK_SHORT.test(url);
+  VIDEO_MATCH_URL.FACEBOOK.test(url) ||
+  VIDEO_MATCH_URL.FACEBOOK_SHORT.test(url) ||
+  VIDEO_MATCH_URL.FACEBOOK_EMBEDED.test(url);
 
 export const isOdysee = url => VIDEO_MATCH_URL.ODYSEE.test(url);
 
@@ -190,20 +192,6 @@ export const getTikTokSrc = url => {
   };
 };
 
-export const getFacebookSrc = url => {
-  let srcID = '';
-
-  const match = url.match(VIDEO_MATCH_URL.FACEBOOK);
-
-  if (match && match[1]) srcID = match[1];
-
-  return {
-    srcType: 'tiktok',
-    url,
-    srcID,
-  };
-};
-
 export const getInstagramSrc = url => {
   let srcID = '';
 
@@ -229,6 +217,16 @@ export const getPeerTubeSrc = url => {
     srcType: 'PeerTube',
     url,
     srcID,
+  };
+};
+
+export const getFacebookSrc = url => {
+  const matchFacebookEmbed = url.match(VIDEO_MATCH_URL.FACEBOOK_EMBEDED);
+
+  return {
+    srcType: 'PeerTube',
+    url,
+    srcID: matchFacebookEmbed ? matchFacebookEmbed[1] : url,
   };
 };
 
@@ -285,7 +283,11 @@ export const getSrc = ({ src }) => {
     return `${TIKTOK_PREFIX}${srcID}`;
   }
 
-  if (isFacebook(src)) return `${FACEBOOK_PREFIX}${src.replace(/(\/$)/, '')}`;
+  if (isFacebook(src)) {
+    const { srcID } = getFacebookSrc(src);
+
+    return `${FACEBOOK_PREFIX}${srcID.replace(/(\/$)/, '')}`;
+  }
 
   if (isInstagram(src) || isInstagramReel(src)) {
     const { srcID } = getInstagramSrc(src);

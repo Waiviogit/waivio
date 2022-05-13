@@ -418,6 +418,8 @@ SteemEmbed.rumble = function(url, id, options) {
 
 SteemEmbed.isFaceBook = function(url) {
   let match = url.match(VIDEO_MATCH_URL.FACEBOOK) || url.match(VIDEO_MATCH_URL.FACEBOOK_SHORT);
+  const matchFacebookEmbed = url.match(VIDEO_MATCH_URL.FACEBOOK_EMBEDED);
+  if (matchFacebookEmbed) match = matchFacebookEmbed[1];
   return match ? url.replace(/(\/$)/, '') : false;
 };
 
