@@ -98,7 +98,7 @@ const SwapTokens = props => {
 
     if (!isEmpty(props.from)) {
       const from = props.swapList[token.symbol].find(pair => pair.symbol === props.from.symbol);
-      const amount = calculateOutputInfo(fromAmount, from, token);
+      const amount = calculateOutputInfo(fromAmount, from, token, true);
 
       setImpact(amount.priceImpact);
       setToAmount(amount.amountOut || 0);
