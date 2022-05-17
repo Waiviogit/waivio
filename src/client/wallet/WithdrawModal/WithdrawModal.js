@@ -39,7 +39,6 @@ const WithdrawModal = props => {
   const visible = useSelector(getIsOpenWithdraw);
   const userName = useSelector(getAuthenticatedUserName);
   const defaultToken = useSelector(getDefaultToken);
-
   const cryptosPriceHistory = useSelector(getCryptosPriceHistory);
   const hiveRateInUsd = get(cryptosPriceHistory, 'hive.usdPriceHistory.usd', 1);
   const dispatch = useDispatch();

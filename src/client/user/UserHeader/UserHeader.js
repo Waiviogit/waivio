@@ -19,7 +19,7 @@ import UserPopoverMenu from '../../components/UserPopoverMenu';
 import { isMobile } from '../../../common/helpers/apiHelpers';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 import { getImagePathPost } from '../../../common/helpers/image';
-import SkeletonCustom from '../../components/Skeleton/SkeletonCustom';
+import SkeletonRow from '../../components/Skeleton/SkeletonRow';
 
 import './UserHeader.less';
 
@@ -154,7 +154,7 @@ const UserHeader = ({
       </div>
       <div className="UserHeader__info-mobile">
         {user.sideBarLoading ? (
-          <SkeletonCustom isLoading={user.sideBarLoading} rows={4} />
+          <SkeletonRow rows={4} />
         ) : (
           <>
             <p className="UserHeader__about">{about}</p>

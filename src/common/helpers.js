@@ -6,13 +6,13 @@ export const getWaivVotePrice = (payout, rshares, rate) =>
 
 const postRatioCalculate = (post, waivRates) => {
   if (!post) return {};
-
+  const hiveRshares = post.active_votes.reduce((acc, curr) => acc + curr.rshares, 0);
   const totalPayout =
     parseFloat(get(post, 'pending_payout_value', '')) +
     parseFloat(get(post, 'total_payout_value', '')) +
     parseFloat(get(post, 'curator_payout_value', ''));
 
-  const ratio = post.net_rshares > 0 ? totalPayout / post.net_rshares : 0;
+  const ratio = hiveRshares > 0 ? totalPayout / hiveRshares : 0;
   const waivRatio = getWaivVotePrice(
     get(post, 'total_payout_WAIV', 0),
     get(post, 'net_rshares_WAIV', 0),

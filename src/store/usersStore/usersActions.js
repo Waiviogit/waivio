@@ -21,19 +21,24 @@ export const getInfoForSideBar = username => async dispatch => {
     meta: { username },
   });
   try {
-    const accList = await dHive.database.getAccounts([username]);
-    const acc = accList[0];
+    const [acc] = await dHive.database.getAccounts([username]);
     const rc = await dHive.rc.getRCMana(username, acc);
     const voting_mana = await dHive.rc.calculateVPMana(acc);
     const waivVotingMana = await ApiClient.getWaivVoteMana(username, acc);
     const userVoteValue = await ApiClient.getUserVoteValueInfo(username, acc);
     const lastActivity = await ApiClient.getUserLastActivity(username, acc);
     const waivPowerMana = waivVotingMana ? calculateMana(waivVotingMana) : null;
-    const data = {};
+    const data = {
+      balance: acc?.balance,
+      hbd_balance: acc?.hbd_balance,
+      savings_balance: acc?.savings_balance,
+      vesting_shares: acc?.vesting_shares,
+      savings_hbd_balance: acc?.savings_hbd_balance,
+    };
 
-    data.rc_percentage = rc.percentage * 0.01;
-    data.voting_mana = voting_mana.percentage * 0.01;
-    data.waivVotingPower = waivVotingMana ? waivPowerMana.votingPower : 100;
+    data.rc_percentage = rc.percentage * 0.01 || 0;
+    data.voting_mana = voting_mana.percentage * 0.01 || 0;
+    data.waivVotingPower = waivPowerMana?.votingPower ? waivPowerMana.votingPower : 100;
     data.waivDownvotingPower = waivVotingMana ? waivPowerMana.downvotingPower : 100;
     data.waivVotingPowerPrice = userVoteValue.estimatedWAIV;
     data.hiveVotingPowerPrice = userVoteValue.estimatedHIVE;
