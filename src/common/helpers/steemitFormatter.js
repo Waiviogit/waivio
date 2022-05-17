@@ -163,13 +163,14 @@ const createFormatter = api => {
     vestToSteem(vestingShares, totalVestingShares, totalVestingFundSteem) {
       return (
         parseFloat(totalVestingFundSteem) *
-        (parseFloat(vestingShares) / parseFloat(totalVestingShares))
+          (parseFloat(vestingShares) / parseFloat(totalVestingShares)) || 0
       );
     },
 
     fromVestsToHP(vests, totalVestingShares, totalVestingFundSteem) {
       return (
-        (parseFloat(totalVestingFundSteem) * parseFloat(vests)) / parseFloat(totalVestingShares)
+        (parseFloat(totalVestingFundSteem) * parseFloat(vests)) / parseFloat(totalVestingShares) ||
+        0
       );
     },
 

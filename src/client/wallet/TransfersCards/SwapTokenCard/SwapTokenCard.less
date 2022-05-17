@@ -19,17 +19,31 @@
     }
   }
 
+  &__large-amount-column {
+    display: flex;
+    flex-direction: column;
+    @media @small {
+      flex-direction: row;
+    }
+  }
+
+  &__margin-left {
+    margin-left: 10px;
+  }
+
   &__from {
     color: @red;
   }
 
   &__to {
     color: @green;
-    margin-left: 10px;
-
     @media @small {
-      margin-left: 25px;
+      margin-left: 10px;
     }
+  }
+
+  @media @small {
+    margin-left: 25px;
   }
 }
 

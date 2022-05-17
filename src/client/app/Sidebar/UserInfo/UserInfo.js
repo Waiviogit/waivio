@@ -22,7 +22,7 @@ import { getSideBarLoading, getUser } from '../../../../store/usersStore/usersSe
 import WeightDisplay from '../../../components/Utils/WeightDisplay';
 import WAIVtokenInfo from './WAIVtokenInfo';
 import HIVEtokenInfo from './HIVEtokenInfo';
-import SkeletonCustom from '../../../components/Skeleton/SkeletonCustom';
+import SkeletonRow from '../../../components/Skeleton/SkeletonRow';
 
 @injectIntl
 @connect((state, ownProps) => {
@@ -56,9 +56,9 @@ class UserInfo extends React.Component {
   render() {
     const { intl, user, sideBarLoading } = this.props;
 
-    if (sideBarLoading) return <SkeletonCustom isLoading={sideBarLoading} />;
+    if (sideBarLoading) return <SkeletonRow rows={8} />;
 
-    const isGuestPage = guestUserRegex.test(user && user.name);
+    const isGuestPage = guestUserRegex.test(user?.name);
     let metadata = {};
     let location = null;
     let profile = {};
