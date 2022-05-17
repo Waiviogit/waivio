@@ -605,7 +605,7 @@ export default class Transfer extends React.Component {
       'balance--disabled': isChangesDisabled,
     });
     const maxClassList = classNames('TokenSelect__max-button', {
-      'balance--disabled': isChangesDisabledMaxBtn,
+      'max-btn--disabled': isChangesDisabledMaxBtn,
     });
     const to = !searchBarValue && isClosedFind ? resetFields('to') : getFieldValue('to');
     const guestName = to && guestUserRegex.test(to);
