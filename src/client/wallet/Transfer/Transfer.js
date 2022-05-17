@@ -599,13 +599,12 @@ export default class Transfer extends React.Component {
       { symbol: 'HIVE', balance: parseFloat(user.balance) },
       { symbol: 'HBD', balance: parseFloat(user.hbd_balance) },
     ];
-    const isChangesDisabled = !!memo || this.props.isVipTickets || this.props.amount;
-    const isChangesDisabledMaxBtn = this.props.isVipTickets || this.props.amount;
+    const isChangesDisabled = (!!memo && this.props.amount) || this.props.isVipTickets;
     const amountClassList = classNames('balance', {
       'balance--disabled': isChangesDisabled,
     });
     const maxClassList = classNames('TokenSelect__max-button', {
-      'max-btn--disabled': isChangesDisabledMaxBtn,
+      'max-btn--disabled': isChangesDisabled,
     });
     const to = !searchBarValue && isClosedFind ? resetFields('to') : getFieldValue('to');
     const guestName = to && guestUserRegex.test(to);
@@ -713,7 +712,7 @@ export default class Transfer extends React.Component {
                   suffix={
                     <span
                       className={maxClassList}
-                      onClick={!isChangesDisabledMaxBtn && this.handleClickMax}
+                      onClick={!isChangesDisabled && this.handleClickMax}
                     >
                       <FormattedMessage id="max" defaultMessage="max" />
                     </span>
