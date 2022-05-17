@@ -1,17 +1,21 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { FormattedMessage, FormattedNumber } from 'react-intl';
-import BigNumber from 'bignumber.js';
 import { Icon } from 'antd';
-
-import './SwapTokenCard.less';
-
+import classNames from 'classnames';
+import BigNumber from 'bignumber.js';
 import CardsTimeStamp from '../CardsTimeStamp';
+import './SwapTokenCard.less';
 
 const SwapTokenCard = props => {
   const price = BigNumber(props.quantityTo)
     .dividedBy(props.quantityFrom)
     .toFixed(3);
+
+  const largeAmount = props.quantityTo > 99 || props.quantityFrom > 99;
+  const amountToClass = classNames('SwapTokenCard__to', {
+    'SwapTokenCard__margin-left': !largeAmount,
+  });
 
   return (
     <React.Fragment>
@@ -28,7 +32,7 @@ const SwapTokenCard = props => {
             <div>
               <FormattedMessage id="swap" defaultMessage="Swap" />
             </div>
-            <div>
+            <div className={largeAmount && 'SwapTokenCard__large-amount-column'}>
               <span className={'SwapTokenCard__from'}>
                 -{' '}
                 <FormattedNumber
@@ -39,7 +43,7 @@ const SwapTokenCard = props => {
                 />{' '}
                 {props.symbolFrom}
               </span>
-              <span className={'SwapTokenCard__to'}>
+              <span className={amountToClass}>
                 +{' '}
                 <FormattedNumber
                   value={props.quantityTo}

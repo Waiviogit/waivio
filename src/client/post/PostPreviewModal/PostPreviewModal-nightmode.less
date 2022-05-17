@@ -5,4 +5,24 @@
   .ant-modal-mask[style*='z-index: 1500'] {
     background-color: @grey-nero !important;
   }
+
+  .edit-post-controls {
+    &__publish-ready-btn {
+      background: @blue-darkGrayish;
+      color: @white-smoke;
+      border: 1px solid @normal-grey;
+
+      &:hover {
+        border-color: @orange-hot;
+        color: @orange-hot;
+      }
+    }
+    &__publish-ready-btn[disabled] {
+      color: @normal-grey;
+      &:hover {
+        background: @blue-darkGrayish;
+        border: 1px solid @normal-grey;
+      }
+    }
+  }
 }
