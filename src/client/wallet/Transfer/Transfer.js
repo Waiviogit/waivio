@@ -599,12 +599,13 @@ export default class Transfer extends React.Component {
       { symbol: 'HIVE', balance: parseFloat(user.balance) },
       { symbol: 'HBD', balance: parseFloat(user.hbd_balance) },
     ];
-    const isChangesDisabled = !!memo || this.props.isVipTickets || this.props.amount;
+    const isChangesDisabled = (!!memo && this.props.amount) || this.props.isVipTickets;
+    const isChangesDisabledToken = !!memo || this.props.amount || this.props.isVipTickets;
     const amountClassList = classNames('balance', {
       'balance--disabled': isChangesDisabled,
     });
     const maxClassList = classNames('TokenSelect__max-button', {
-      'balance--disabled': isChangesDisabled,
+      'max-btn--disabled': isChangesDisabled,
     });
     const to = !searchBarValue && isClosedFind ? resetFields('to') : getFieldValue('to');
     const guestName = to && guestUserRegex.test(to);
@@ -727,7 +728,7 @@ export default class Transfer extends React.Component {
                 <Select
                   className="Transfer__currency"
                   onChange={this.handleCurrencyChange}
-                  disabled={isChangesDisabled || isGuest}
+                  disabled={isChangesDisabledToken || isGuest}
                   dropdownClassName={'Transfer__currency-list'}
                 >
                   {userBalances.map(token => (

@@ -47,6 +47,11 @@ export default function usersReducer(state = initialState, action) {
             fetching: false,
             loaded: true,
             failed: false,
+            balance: 0,
+            hbd_balance: 0,
+            savings_balance: 0,
+            savings_hbd_balance: 0,
+            vesting_shares: 0,
           },
         },
       };

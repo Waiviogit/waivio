@@ -48,9 +48,9 @@ const ManageDelegate = ({ intl }) => {
     const hiveEngineDelegateList = delegated.reduce(
       (acc, curr) => {
         if (curr.symbol === 'WAIV') {
-          acc.mainTokens[curr.symbol] = [...(acc.mainTokens[curr.symbol] || {}), curr];
+          acc.mainTokens[curr.symbol] = [...(acc.mainTokens[curr.symbol] || []), curr];
         } else {
-          acc.secondaryTokens[curr.symbol] = [...(acc.secondaryTokens[curr.symbol] || {}), curr];
+          acc.secondaryTokens[curr.symbol] = [...(acc.secondaryTokens[curr.symbol] || []), curr];
         }
 
         return acc;
