@@ -600,6 +600,7 @@ export default class Transfer extends React.Component {
       { symbol: 'HBD', balance: parseFloat(user.hbd_balance) },
     ];
     const isChangesDisabled = (!!memo && this.props.amount) || this.props.isVipTickets;
+    const isChangesDisabledToken = !!memo || this.props.amount || this.props.isVipTickets;
     const amountClassList = classNames('balance', {
       'balance--disabled': isChangesDisabled,
     });
@@ -727,7 +728,7 @@ export default class Transfer extends React.Component {
                 <Select
                   className="Transfer__currency"
                   onChange={this.handleCurrencyChange}
-                  disabled={isChangesDisabled || isGuest}
+                  disabled={isChangesDisabledToken || isGuest}
                   dropdownClassName={'Transfer__currency-list'}
                 >
                   {userBalances.map(token => (
