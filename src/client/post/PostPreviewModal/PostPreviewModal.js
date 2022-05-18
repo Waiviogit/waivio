@@ -243,7 +243,7 @@ class PostPreviewModal extends Component {
             )}
             <div className="edit-post-controls">
               <Button
-                className="edit-post__submit-btn"
+                className="edit-post__submit-btn edit-post-controls__publish-ready-btn"
                 disabled={!isConfirmed}
                 htmlType="submit"
                 loading={isPublishing}
