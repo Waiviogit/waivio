@@ -13,7 +13,7 @@ const PowerSwitcher = props => {
   const { hiveRateInUsd, rates } = useRate();
   const convertCurrency = curr => (curr === 'WAIV' && props.powerVote ? 'WP' : curr);
 
-  const amountRegex = /^[0-9]*\.?[0-9]{0,5}$/;
+  const amountRegex = /^[0-9]*\.?[0-9]{0,8}$/;
 
   useEffect(() => {
     if (props.onAmoundValidate) props.onAmoundValidate();
@@ -57,7 +57,7 @@ const PowerSwitcher = props => {
             {
               pattern: amountRegex,
               message: props.intl.formatMessage({
-                id: 'amount_error_format_5_places',
+                id: 'amount_error_format_8_places',
               }),
             },
             { validator: validateBalance },

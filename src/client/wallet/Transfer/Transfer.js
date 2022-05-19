@@ -150,7 +150,7 @@ export default class Transfer extends React.Component {
     permlink: '',
   };
 
-  static amountRegex = /^[0-9]*\.?[0-9]{0,5}$/;
+  static amountRegex = /^[0-9]*\.?[0-9]{0,8}$/;
   static minAccountLength = 3;
   static maxAccountLength = 16;
   static maxGuestAccountLength = 23;
@@ -694,9 +694,9 @@ export default class Transfer extends React.Component {
                   {
                     pattern: Transfer.amountRegex,
                     message: intl.formatMessage({
-                      id: 'amount_error_format_5_places',
+                      id: 'amount_error_format_8_places',
                       defaultMessage:
-                        'Incorrect format. Use comma or dot as decimal separator. Use at most 5 decimal places.',
+                        'Incorrect format. Use comma or dot as decimal separator. Use at most 8 decimal places.',
                     }),
                   },
                   { validator: this.validateBalance },
