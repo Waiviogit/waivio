@@ -1,7 +1,8 @@
 import React from 'react';
 import { withRouter } from 'react-router';
 import PropTypes from 'prop-types';
-
+import { Link } from 'react-router-dom';
+import { FormattedMessage } from 'react-intl';
 import WAIVWalletSummaryInfo from './WAIVWalletSummaryInfo';
 import WAIVWalletTransferList from './WAIVWalletTransferList/WAIVWalletTransferList';
 import ShowRewardsButton from './ShowRewardsButton';
@@ -15,6 +16,11 @@ const WAIVwallet = props => {
   return (
     <div className="WAIVwallet">
       <WAIVWalletSummaryInfo name={props.match.params.name} />
+      {!isGuest && (
+        <Link className="UserWallet__view-btn" to={`/@${props.match.params.name}/transfers/table`}>
+          <FormattedMessage id="table_view" defaultMessage="Advanced reports" />
+        </Link>
+      )}
       {!isGuest && <ShowRewardsButton />}
       <WAIVWalletTransferList name={props.match.params.name} withoutMargin={!isGuest} />
     </div>
