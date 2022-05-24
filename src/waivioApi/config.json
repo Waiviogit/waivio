@@ -24,6 +24,7 @@
   "apiPrefix": "/api",
   "hive": "/hive",
   "campaignApiPrefix": "/campaigns-api",
+  "campaignApiPrefixV2": "/campaigns-v2",
   "objectsBotApiPrefix": "/objects-bot",
   "currenciesApiPrefix": "/currencies-api",
   "telegramApiPrefix": "/telegram-api",

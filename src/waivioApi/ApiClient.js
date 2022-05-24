@@ -2588,4 +2588,22 @@ export const checkExistPermlink = permlink => {
     .catch(e => e);
 };
 
+//new campaings
+
+export const createNewCampaing = (data, account) => {
+  return fetch(`${config.campaignV2ApiPrefix}${config.campaign}`, {
+    headers: {
+      ...headers,
+      account,
+      'access-token': Cookie.get('access_token'),
+    },
+    method: 'POST',
+    body: JSON.stringify(data),
+  })
+    .then(handleErrors)
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+};
+
 export default null;
