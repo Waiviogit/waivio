@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Modal, Button } from 'antd';
+import { Modal, Button, message } from 'antd';
 import { connect } from 'react-redux';
 import { isEmpty, get } from 'lodash';
 import classNames from 'classnames';
@@ -80,13 +80,20 @@ const QuickRewardsModal = props => {
       if (window.gtag) window.gtag('event', 'reserve_proposition_in_quick_rewards_modal');
       const permlink = `reserve-${generatePermlink()}`;
 
-      props.reserveProposition(permlink);
-      setReservationPermlink(permlink);
-      setPageNumber(3);
+      props
+        .reserveProposition(permlink)
+        .then(() => {
+          setReservationPermlink(permlink);
+          setPageNumber(3);
+          setLoading(false);
+        })
+        .catch(() => {
+          message.error('Error');
+          setLoading(false);
+        });
     } else {
       handleCreatePost();
     }
-    setLoading(false);
   };
 
   const handleCreatePost = () => {

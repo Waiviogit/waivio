@@ -17,6 +17,7 @@ import config from '../../waivioApi/config.json';
 import { getObjectName, getObjectType } from '../../common/helpers/wObjectHelper';
 import { getDetailsBody } from '../../client/rewards/rewardsHelper';
 import { getCurrentHost } from '../appStore/appSelectors';
+import { subscribeTypes } from '../../common/constants/blockTypes';
 
 export const GET_ELIGIBLE_REWARDS = createAsyncActionType('@quickRewards/GET_ELIGIBLE_REWARDS');
 
@@ -178,11 +179,16 @@ export const createQuickPost = (userBody, topics, images, reservationPermlink) =
 
 export const RESERVE_REWARD = createAsyncActionType('@quickRewards/RESERVE_REWARD');
 
-export const reserveProposition = permlink => async (dispatch, getState, { steemConnectAPI }) => {
+export const reserveProposition = permlink => async (
+  dispatch,
+  getState,
+  { steemConnectAPI, busyAPI },
+) => {
   const state = getState();
   const username = getAuthenticatedUserName(state);
   const dish = getSelectedDish(state);
-  const proposition = dish.propositions[0];
+  const proposition =
+    dish.propositions.find(prop => prop.activation_permlink) || dish.propositions[0];
   const proposedWobjName = getObjectName(dish);
   const proposedWobjAuthorPermlink = dish.author_permlink;
   const primaryObject = get(proposition, 'required_object');
@@ -223,12 +229,14 @@ export const reserveProposition = permlink => async (dispatch, getState, { steem
   return new Promise((resolve, reject) => {
     steemConnectAPI
       .broadcast([commentOp])
-      .then(() => resolve('SUCCESS'))
-      .then(() =>
-        dispatch({
-          type: RESERVE_REWARD.START,
-        }),
-      )
+      .then(async () => {
+        busyAPI.instance.sendAsync(subscribeTypes.subscribeCampaignAssign, [username, permlink]);
+        busyAPI.instance.subscribe((datad, j) => {
+          if (j?.result?.subscribeAssign && j?.result?.username === username) {
+            resolve();
+          }
+        });
+      })
       .catch(error => reject(error));
   });
 };
