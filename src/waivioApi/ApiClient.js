@@ -2588,4 +2588,15 @@ export const checkExistPermlink = permlink => {
     .catch(e => e);
 };
 
+export const getUpdatesList = permlink => {
+  return fetch(`${config.apiPrefix}${config.getObjects}/${permlink}${config.fields}`, {
+    headers,
+    method: 'GET',
+  })
+    .then(handleErrors)
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+};
+
 export default null;

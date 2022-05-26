@@ -7,6 +7,7 @@ import { createAsyncActionType } from '../../common/helpers/stateHelpers';
 import {
   getAuthorsChildWobjects,
   getChangedField,
+  getUpdatesList,
   getWobjectsExpertiseWithNewsFilter,
 } from '../../waivioApi/ApiClient';
 import { subscribeMethod, subscribeTypes } from '../../common/constants/blockTypes';
@@ -36,6 +37,16 @@ export const FOLLOW_UNFOLLOW_USER_WOBJECT_EXPERTISE = createAsyncActionType(
 
 export const APPENDS_VOTE = '@wobj/APPENDS_VOTE';
 export const clearRelateObjects = () => ({ type: CLEAR_RELATED_OBJECTS });
+
+export const GET_OBJECT_UPDATES = createAsyncActionType('@objects/GET_OBJECT_UPDATES');
+
+export const getUpdates = authorPermlink => dispatch =>
+  dispatch({
+    type: GET_OBJECT_UPDATES.ACTION,
+    payload: {
+      promise: getUpdatesList(authorPermlink),
+    },
+  });
 
 export const followObject = authorPermlink => (dispatch, getState, { steemConnectAPI }) => {
   const state = getState();
