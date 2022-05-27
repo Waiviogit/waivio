@@ -109,13 +109,14 @@ const CatalogWrap = props => {
   };
 
   const isSortCustomExist = !isEmpty(get(obj, 'sortCustom', []));
+  const itemsIdsToOmit = listItems?.map(item => item.author_permlink);
 
   return (
     <div>
       <React.Fragment>
         {isEditMode && (
           <div className="CatalogWrap__add-item">
-            <AddItemModal wobject={obj} onAddItem={handleAddItem} />
+            <AddItemModal wobject={obj} itemsIdsToOmit={itemsIdsToOmit} onAddItem={handleAddItem} />
           </div>
         )}
         <PropositionListContainer
@@ -143,7 +144,7 @@ CatalogWrap.propTypes = {
   userName: PropTypes.string.isRequired,
   wobjectNested: PropTypes.shape().isRequired,
   locale: PropTypes.string.isRequired,
-  listItems: PropTypes.shape({}).isRequired,
+  listItems: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   setLists: PropTypes.func.isRequired,
   setNestedWobj: PropTypes.func.isRequired,
   setLoadingNestedWobject: PropTypes.func.isRequired,

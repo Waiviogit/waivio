@@ -42,16 +42,16 @@ export default function usersReducer(state = initialState, action) {
         users: {
           ...state.users,
           [action.meta.username]: {
-            ...state.users[action.meta.username],
-            ...action.payload,
-            fetching: false,
-            loaded: true,
-            failed: false,
             balance: 0,
             hbd_balance: 0,
             savings_balance: 0,
             savings_hbd_balance: 0,
             vesting_shares: 0,
+            ...state.users[action.meta.username],
+            ...action.payload,
+            fetching: false,
+            loaded: true,
+            failed: false,
           },
         },
       };
@@ -379,7 +379,7 @@ export default function usersReducer(state = initialState, action) {
           ...state.users,
           [username]: {
             ...state.users[username],
-            balance: get(state, ['users', username, 'balance'], balance),
+            balance: get(state, ['users', username, 'balance']) || balance,
           },
         },
       };
