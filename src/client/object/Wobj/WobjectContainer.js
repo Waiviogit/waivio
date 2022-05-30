@@ -27,6 +27,7 @@ import {
   setCatalogBreadCrumbs,
   getWobjectExpertise as getWobjectExpertiseAction,
   getRelatedWobjects,
+  getUpdates,
 } from '../../../store/wObjectStore/wobjActions';
 import { appendObject } from '../../../store/appendStore/appendActions';
 import Wobj from './Wobj';
@@ -80,6 +81,7 @@ import { getRate, getRewardFund } from '../../../store/appStore/appActions';
     getObject,
     resetGallery,
     getAlbums,
+    getUpdates,
     appendObject,
     addAlbumToStore,
     clearRelatedPhoto,
@@ -106,6 +108,7 @@ export default class WobjectContainer extends React.Component {
     supportedObjectTypes: PropTypes.arrayOf(PropTypes.string),
     isWaivio: PropTypes.bool.isRequired,
     resetGallery: PropTypes.func.isRequired,
+    getUpdates: PropTypes.func.isRequired,
     wobject: PropTypes.shape(),
     clearObjectFromStore: PropTypes.func,
     setNestedWobject: PropTypes.func,
@@ -174,6 +177,7 @@ export default class WobjectContainer extends React.Component {
 
     if (isEmpty(wobject) || wobject.id !== match.params.name) {
       this.props.getObject(match.params.name, authenticatedUserName);
+      this.props.getUpdates(match.params.name, authenticatedUserName);
       this.props.getAlbums(match.params.name);
       this.props.getNearbyObjects(match.params.name);
       this.props.getWobjectExpertise(newsFilter, match.params.name);

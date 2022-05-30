@@ -152,5 +152,6 @@
   "depositWithdraw": "/deposit-withdraw",
   "exist": "/exist",
   "lastActivity": "/last-activity",
+  "fields": "/fields",
   "getMatchBots": "/match-bots"
 }
