@@ -241,7 +241,9 @@ export default class AppendForm extends Component {
     }
     this.calculateVoteWorth(this.state.votePercent);
   };
+
   getVote = () => (this.state.votePercent !== null ? this.state.votePercent * 100 : null);
+
   onSubmit = formValues => {
     const { form, wObject } = this.props;
     const postData = this.getNewPostData(formValues);
@@ -2195,15 +2197,11 @@ export default class AppendForm extends Component {
       hasType(wObject, OBJECT_TYPE.LIST) &&
       form.getFieldValue('currentField') === objectFields.sorting;
 
-    const languageOptions = [];
-
-    LANGUAGES.forEach(lang => {
-      languageOptions.push(
-        <Select.Option key={lang.id} value={lang.id}>
-          {getLanguageText(lang)}
-        </Select.Option>,
-      );
-    });
+    const languageOptions = LANGUAGES.map(lang => (
+      <Select.Option key={lang.id} value={lang.id}>
+        {getLanguageText(lang)}
+      </Select.Option>
+    ));
 
     const fieldOptions = [];
     const disabledSelect = currentField !== 'auto';

@@ -1,11 +1,33 @@
 import { createAsyncActionType } from '../../common/helpers/stateHelpers';
-import { postAppendWaivioObject } from '../../waivioApi/ApiClient';
+import { getUpdatesList, postAppendWaivioObject } from '../../waivioApi/ApiClient';
 import { followObject, voteAppends } from '../wObjectStore/wobjActions';
 import { getLastBlockNum } from '../../client/vendor/steemitHelpers';
 import { subscribeMethod, subscribeTypes } from '../../common/constants/blockTypes';
 import { getAuthenticatedUserName } from '../authStore/authSelectors';
 
 export const APPEND_WAIVIO_OBJECT = createAsyncActionType('@append/APPEND_WAIVIO_OBJECT');
+
+export const GET_OBJECT_UPDATES = createAsyncActionType('@objects/GET_OBJECT_UPDATES');
+
+export const getUpdates = (authorPermlink, type, sort, locale) => dispatch => {
+  dispatch({
+    type: GET_OBJECT_UPDATES.ACTION,
+    payload: {
+      promise: getUpdatesList(authorPermlink, 0, { type, sort, locale }),
+    },
+  });
+};
+
+export const GET_MORE_OBJECT_UPDATES = createAsyncActionType('@objects/GET_MORE_OBJECT_UPDATES');
+
+export const getMoreUpdates = (authorPermlink, skip, type, sort, locale) => dispatch => {
+  dispatch({
+    type: GET_MORE_OBJECT_UPDATES.ACTION,
+    payload: {
+      promise: getUpdatesList(authorPermlink, skip, { type, sort, locale }),
+    },
+  });
+};
 
 const followAndLikeAfterCreateAppend = (data, isLike, follow) => dispatch => {
   if (isLike)

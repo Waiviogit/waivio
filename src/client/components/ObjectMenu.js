@@ -11,7 +11,6 @@ class ObjectMenu extends React.Component {
     onChange: PropTypes.func,
     defaultKey: PropTypes.string,
     followers: PropTypes.number,
-    fieldsCount: PropTypes.number,
     accessExtend: PropTypes.bool,
     wobject: PropTypes.shape(),
     isWaivio: PropTypes.bool,
@@ -21,7 +20,6 @@ class ObjectMenu extends React.Component {
     onChange: () => {},
     defaultKey: 'about',
     followers: 0,
-    fieldsCount: 0,
     accessExtend: true,
     isWaivio: true,
     wobject: {},
@@ -126,7 +124,7 @@ class ObjectMenu extends React.Component {
               >
                 <FormattedMessage id="updates" defaultMessage="Updates" />
                 <span className="ObjectMenu__badge">
-                  <FormattedNumber value={this.props.fieldsCount} />
+                  <FormattedNumber value={this.props.wobject.updatesCount} />
                 </span>
               </li>
             )}

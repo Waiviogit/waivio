@@ -18,7 +18,6 @@ import {
   GET_RELATED_WOBJECT,
   CLEAR_RELATED_OBJECTS,
   FOLLOW_UNFOLLOW_USER_WOBJECT_EXPERTISE,
-  GET_OBJECT_UPDATES,
 } from './wobjActions';
 import { objectFields } from '../../common/constants/listOfFields';
 import { FOLLOW_USER, UNFOLLOW_USER } from '../usersStore/usersActions';
@@ -219,16 +218,6 @@ export default function wobjectReducer(state = initialState, action) {
       }
 
       return state;
-    }
-
-    case GET_OBJECT_UPDATES.SUCCESS: {
-      return {
-        ...state,
-        wobject: {
-          ...state.wobject,
-          fields: action.payload,
-        },
-      };
     }
 
     case UNFOLLOW_OBJECT.START: {
