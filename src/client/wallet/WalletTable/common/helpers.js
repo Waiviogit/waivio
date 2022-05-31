@@ -13,13 +13,14 @@ import * as accountHistoryConstants from '../../../../common/constants/accountHi
 import { guestUserRegex } from '../../../../common/helpers/regexHelpers';
 
 const compareTransferBody = (transaction, totalVestingShares, totalVestingFundSteem, currency) => {
-  const transactionType = transaction.type;
+  const transactionType = transaction.type || transaction.operation;
   const user = transaction.userName;
   const isGuestPage = guestUserRegex.test(user);
   let description = '';
   const data = {
     time: dateTableField(transaction.timestamp, isGuestPage),
     hiveCurrentCurrency: round(get(transaction, `hive${currency}`), 3),
+    waivCurrentCurrency: round(get(transaction, currency ? `WAIV.${currency}` : 'WAIV.USD'), 3),
     hbdCurrentCurrency: round(get(transaction, `hbd${currency}`), 3),
     withdrawDeposit: get(transaction, 'withdrawDeposit'),
     [currency]: get(transaction, currency),
@@ -119,7 +120,7 @@ const compareTransferBody = (transaction, totalVestingShares, totalVestingFundSt
       return {
         ...data,
         fieldHIVE: get(cancelLimitOrderAmounts, 'HIVE'),
-        // fieldHP: get(cancelLimitOrderAmounts, 'HP'),
+        fieldHP: get(cancelLimitOrderAmounts, 'HP'),
         fieldHBD: get(cancelLimitOrderAmounts, 'HBD'),
         fieldDescription: getTransactionDescription(transactionType).cancelLimitOrder,
       };
@@ -256,6 +257,143 @@ const compareTransferBody = (transaction, totalVestingShares, totalVestingFundSt
         fieldDescription: currentUserIsReceiver
           ? proposalDescription.proposalPaymentFrom
           : proposalDescription.proposalPaymentTo,
+      };
+    }
+
+    case accountHistoryConstants.TOKENS_TRANSFER: {
+      data.fieldMemo = transaction.memo;
+      data.userName = transaction.account;
+      const fieldWAIVamount =
+        transaction.withdrawDeposit === 'w' ? `- ${transaction.quantity}` : transaction.quantity;
+
+      return {
+        ...data,
+        fieldWAIV: fieldWAIVamount,
+        fieldDescription: getTransactionDescription(transactionType, { to: transaction.to })
+          .tokensTransferTo,
+      };
+    }
+
+    case accountHistoryConstants.CURATION_REWARDS: {
+      data.userName = transaction.account;
+      const fieldWAIVamount =
+        transaction.withdrawDeposit === 'w' ? `- ${transaction.quantity}` : transaction.quantity;
+
+      return {
+        ...data,
+        fieldWAIV: fieldWAIVamount,
+        fieldDescription: getTransactionDescription(transactionType, {
+          authorperm: transaction.authorperm,
+        }).curationRewards,
+      };
+    }
+    case accountHistoryConstants.BENEFICIARY_REWARD: {
+      data.userName = transaction.account;
+      const fieldWAIVamount =
+        transaction.withdrawDeposit === 'w' ? `- ${transaction.quantity}` : transaction.quantity;
+
+      return {
+        ...data,
+        fieldWAIV: fieldWAIVamount,
+        fieldDescription: getTransactionDescription(transactionType, {
+          authorperm: transaction.authorperm,
+        }).beneficiaryRewards,
+      };
+    }
+    case accountHistoryConstants.MARKET_BUY: {
+      data.userName = transaction.account;
+      const fieldWAIVamount =
+        transaction.withdrawDeposit === 'w' ? `- ${transaction.quantity}` : transaction.quantity;
+
+      return {
+        ...data,
+        fieldWAIV: fieldWAIVamount,
+        fieldDescription: getTransactionDescription(transactionType).marketBuy,
+      };
+    }
+    case accountHistoryConstants.MARKET_SELL: {
+      data.userName = transaction.account;
+      const fieldWAIVamount =
+        transaction.withdrawDeposit === 'w' ? `- ${transaction.quantity}` : transaction.quantity;
+
+      return {
+        ...data,
+        fieldWAIV: fieldWAIVamount,
+        fieldDescription: getTransactionDescription(transactionType).marketSell,
+      };
+    }
+    case accountHistoryConstants.TOKENS_STAKE: {
+      data.userName = transaction.account;
+
+      if (transaction.account === transaction.from && transaction.account !== transaction.to) {
+        data.withdrawDeposit = 'w';
+
+        return {
+          ...data,
+          fieldWAIV: `- ${transaction.quantity}`,
+          fieldDescription: getTransactionDescription(transactionType, { to: transaction.to })
+            .tokensStakeTo,
+        };
+      }
+
+      if (transaction.account === transaction.to && transaction.account !== transaction.from) {
+        data.withdrawDeposit = 'd';
+
+        return {
+          ...data,
+          fieldWP: transaction.quantity,
+          fieldDescription: getTransactionDescription(transactionType, { from: transaction.from })
+            .tokensStakeFrom,
+        };
+      }
+
+      return {
+        ...data,
+        fieldWAIV: `- ${transaction.quantity}`,
+        fieldWP: transaction.quantity,
+        fieldDescription: getTransactionDescription(transactionType).tokensStake,
+      };
+    }
+
+    case accountHistoryConstants.MINING_LOTTERY: {
+      data.userName = transaction.account;
+
+      return {
+        ...data,
+        fieldWAIV: transaction.quantity,
+        fieldDescription: getTransactionDescription(transactionType).miningLottery,
+      };
+    }
+    case accountHistoryConstants.SWAP_TOKENS: {
+      data.userName = transaction.account;
+      const fieldWAIVamount =
+        transaction.withdrawDeposit === 'w' ? `- ${transaction.quantity}` : transaction.quantity;
+
+      return {
+        ...data,
+        fieldWAIV: fieldWAIVamount,
+        fieldDescription: getTransactionDescription(transactionType).swapTokens,
+      };
+    }
+    case accountHistoryConstants.AIRDROP: {
+      data.userName = transaction.account;
+
+      return {
+        ...data,
+        fieldWP: transaction.quantity,
+        fieldDescription: getTransactionDescription(transactionType).airdrop,
+      };
+    }
+
+    case accountHistoryConstants.AUTHOR_REWARDS: {
+      data.userName = transaction.account;
+
+      return {
+        ...data,
+        fieldWAIV: transaction.quantity,
+        fieldDescription: getTransactionDescription(transactionType, {
+          authorperm: transaction.authorperm,
+        }).authorRewards,
       };
     }
 

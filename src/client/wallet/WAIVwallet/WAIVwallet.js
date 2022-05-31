@@ -12,12 +12,16 @@ import './WAIVwallet.less';
 
 const WAIVwallet = props => {
   const isGuest = guestUserRegex.test(props.match.params.name);
+  const userName = props.match.params.name;
 
   return (
     <div className="WAIVwallet">
-      <WAIVWalletSummaryInfo name={props.match.params.name} />
+      <WAIVWalletSummaryInfo name={userName} />
       {!isGuest && (
-        <Link className="UserWallet__view-btn" to={`/@${props.match.params.name}/transfers/table`}>
+        <Link
+          className="UserWallet__view-btn"
+          to={`/@${props.match.params.name}/transfers/waiv-table`}
+        >
           <FormattedMessage id="table_view" defaultMessage="Advanced reports" />
         </Link>
       )}

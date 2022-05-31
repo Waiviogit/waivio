@@ -1865,5 +1865,7 @@
   "withdraw_vesting_route_is_canceled_from": "{from_account} canceled withdraw vesting to you",
   "there_is_a": "There is a",
   "undelegated_from": "Undelegated from",
-  "undelegated_to": "Undelegated to"
+  "undelegated_to": "Undelegated to",
+  "power_up_to": "Power up to",
+  "power_up_from": "Power up from"
 }
