@@ -1,9 +1,5 @@
-import { get, filter, isEmpty, uniqBy, size, orderBy, has } from 'lodash';
-import {
-  TYPES_OF_MENU_ITEM,
-  objectFields,
-  sortingMenuName,
-} from '../../common/constants/listOfFields';
+import { get, filter, isEmpty, uniqBy, orderBy, has } from 'lodash';
+import { TYPES_OF_MENU_ITEM, objectFields } from '../../common/constants/listOfFields';
 import { getObjectName, isList } from '../../common/helpers/wObjectHelper';
 
 export const getListItems = (wobj, { uniq } = { uniq: false, isMappedToClientWobject: false }) => {
@@ -23,19 +19,24 @@ export const getListItems = (wobj, { uniq } = { uniq: false, isMappedToClientWob
   return items;
 };
 
-export const getFieldsCount = (wObject, fieldName) => {
-  const fields = get(wObject, 'fields', []);
-
-  if (fieldName === objectFields.form) {
-    return size(fields.filter(field => field.name === TYPES_OF_MENU_ITEM.FORM));
+const getFieldType = fieldName => {
+  switch (fieldName) {
+    case 'menuList':
+      return 'listItem';
+    case 'menuPage':
+      return 'pageContent';
+    case 'formField':
+      return 'form';
+    default:
+      return fieldName;
   }
+};
 
-  if (sortingMenuName[fieldName])
-    return size(
-      fields.filter(field => field.name === objectFields.listItem && field.type === fieldName),
-    );
+export const getFieldsCount = (wObject, fieldName) => {
+  const type = getFieldType(fieldName);
+  const field = get(wObject, 'exposedFields', []).find(f => f.name === type);
 
-  return size(fields.filter(field => field.name === fieldName));
+  return field?.value || 0;
 };
 
 export const truncate = str => (str && str.length > 255 ? str.substring(0, 255) : str);
@@ -103,7 +104,7 @@ export const getLink = link => {
 };
 
 export const getExposedFieldsByObjType = wobj => {
-  const exposedFields = get(wobj, 'exposedFields', []);
+  const exposedFields = get(wobj, 'exposedFields', []).map(field => field.name);
   let renderedFields = exposedFields.includes('listItem')
     ? [
         ...exposedFields.filter(f => f !== objectFields.listItem),
