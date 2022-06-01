@@ -7,7 +7,6 @@ import {
   SEND_COMMENT_APPEND,
   VOTE_APPEND_START,
   UNFOLLOW_OBJECT,
-  GET_CHANGED_WOBJECT_FIELD,
   VOTE_APPEND_ERROR,
   SET_CATALOG_BREADCRUMBS,
   SET_WOBJECT_NESTED,
@@ -18,6 +17,7 @@ import {
   GET_RELATED_WOBJECT,
   CLEAR_RELATED_OBJECTS,
   FOLLOW_UNFOLLOW_USER_WOBJECT_EXPERTISE,
+  GET_CHANGED_WOBJECT_UPDATE,
 } from './wobjActions';
 import { objectFields } from '../../common/constants/listOfFields';
 import { FOLLOW_USER, UNFOLLOW_USER } from '../usersStore/usersActions';
@@ -261,9 +261,8 @@ export default function wobjectReducer(state = initialState, action) {
       return state;
     }
 
-    case GET_CHANGED_WOBJECT_FIELD.SUCCESS: {
+    case GET_CHANGED_WOBJECT_UPDATE.SUCCESS: {
       const { toDisplay, field } = action.payload;
-      const fields = [...state.wobject.fields];
       const isArraysFields = [objectFields.categoryItem, objectFields.listItem].includes(
         field.name,
       );
@@ -278,20 +277,14 @@ export default function wobjectReducer(state = initialState, action) {
           wobject: {
             [key]: toDisplay || '',
             ...state.wobject,
-            fields: [...fields, field],
           },
         };
       }
-
-      const findIndex = fields.findIndex(fld => fld.permlink === field.permlink);
-
-      fields.splice(findIndex, 1, { ...fields[findIndex], ...field, loading: false });
 
       return {
         ...state,
         wobject: {
           ...state.wobject,
-          fields,
           [key]: toDisplay || '',
           pending: false,
         },

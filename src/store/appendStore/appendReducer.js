@@ -43,6 +43,68 @@ export default (state = defaultState, action) => {
       };
     }
 
+    case appendActions.GET_CHANGED_WOBJECT_FIELD.SUCCESS: {
+      const { field } = action.payload;
+      const fields = [...state.fields];
+
+      if (action.meta.isNew) {
+        return {
+          ...state,
+          fields: [...fields, field],
+        };
+      }
+
+      const findIndex = fields.findIndex(fld => fld.permlink === field.permlink);
+
+      fields.splice(findIndex, 1, { ...fields[findIndex], ...field, loading: false });
+
+      return {
+        ...state,
+        fields,
+      };
+    }
+
+    case appendActions.VOTE_APPEND.START: {
+      const matchPostIndex = state.fields.findIndex(
+        field => field.permlink === action.payload.permlink,
+      );
+
+      if (action.payload.post) {
+        state.fields.splice(matchPostIndex, 1, {
+          ...action.payload.post,
+          loading: true,
+        });
+
+        return {
+          ...state,
+          fields: [...state.fields],
+        };
+      }
+
+      return state;
+    }
+
+    case appendActions.VOTE_APPEND.ERROR:
+    case appendActions.VOTE_APPEND.SUCCESS: {
+      const matchPostIndex = state.fields.findIndex(
+        field => field.permlink === action.payload.permlink,
+      );
+
+      if (action.payload.post) {
+        state.fields.splice(matchPostIndex, 1, {
+          ...action.payload.post,
+          loading: false,
+        });
+
+        return {
+          ...state,
+          fields: [...state.wobject.fields],
+        };
+      }
+
+      return state;
+    }
+
     default:
       return state;
   }
