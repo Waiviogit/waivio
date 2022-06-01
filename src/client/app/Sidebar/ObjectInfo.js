@@ -127,9 +127,8 @@ class ObjectInfo extends React.Component {
   handleToggleModal = () => this.setState(prevState => ({ showModal: !prevState.showModal }));
 
   listItem = (name, content) => {
-    const { wobject, userName, isEditMode, albums, appendAlbum, relatedAlbum } = this.props;
-    const fieldsCount =
-      name === 'galleryItem' ? relatedAlbum?.count : getFieldsCount(wobject, name);
+    const { wobject, userName, isEditMode, albums, appendAlbum } = this.props;
+    const fieldsCount = getFieldsCount(wobject, name);
     const exposedFields = getExposedFieldsByObjType(wobject);
     const shouldDisplay = exposedFields.includes(name);
     const accessExtend = haveAccess(wobject, userName, accessTypesArr[0]) && isEditMode;

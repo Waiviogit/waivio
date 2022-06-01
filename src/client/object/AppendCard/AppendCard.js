@@ -12,7 +12,6 @@ import Comments from '../../comments/Comments';
 import Slider from '../../components/Slider/Slider';
 import AppendObjButtons from '../../components/StoryFooter/AppendObjButtons';
 import { getAppendDownvotes, getAppendUpvotes } from '../../../common/helpers/voteHelpers';
-import { voteAppends } from '../../../store/wObjectStore/wobjActions';
 import Payout from '../../components/StoryFooter/Payout';
 import Confirmation from '../../components/StoryFooter/Confirmation';
 import ApprovingCard from './ApprovingCard';
@@ -27,6 +26,7 @@ import {
 import '../../components/Story/Story.less';
 import '../../components/StoryFooter/StoryFooter.less';
 import '../../components/StoryFooter/Buttons.less';
+import { voteAppends } from '../../../store/appendStore/appendActions';
 
 const AppendCard = props => {
   const [visibleSlider, showSlider] = useState(false);

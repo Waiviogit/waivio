@@ -23,8 +23,6 @@ const getFieldType = fieldName => {
   switch (fieldName) {
     case 'menuList':
       return 'listItem';
-    case 'menuPage':
-      return 'pageContent';
     case 'formField':
       return 'form';
     default:

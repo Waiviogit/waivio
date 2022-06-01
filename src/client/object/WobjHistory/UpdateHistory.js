@@ -21,7 +21,7 @@ const UpdateHistory = () => {
   const appendHasMore = useSelector(getAppendHasMore);
   const { name, 0: field } = useParams();
   const [sort, setSort] = useState('createdAt');
-  const [locale, setLocale] = useState('en-US');
+  const [locale, setLocale] = useState();
 
   useEffect(() => {
     dispatch(getUpdates(name, field, sort, locale));
