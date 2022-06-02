@@ -27,7 +27,7 @@ export const objectFields = {
   pageLink: 'pageLink',
   tag: 'tag',
   blog: 'blog',
-  form: 'formField',
+  form: 'form',
   description: 'description',
   title: 'title',
 };
