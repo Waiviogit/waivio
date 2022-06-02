@@ -275,8 +275,8 @@ export default function wobjectReducer(state = initialState, action) {
         return {
           ...state,
           wobject: {
-            [key]: toDisplay || '',
             ...state.wobject,
+            [key]: toDisplay ?? state.wobject[key],
           },
         };
       }
