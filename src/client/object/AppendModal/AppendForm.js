@@ -96,10 +96,12 @@ import { getObjectAlbums } from '../../../store/galleryStore/gallerySelectors';
 import NewsFilterForm from './FormComponents/NewsFilterForm';
 
 import './AppendForm.less';
+import { getAppendList } from '../../../store/appendStore/appendSelectors';
 
 @connect(
   state => ({
     wObject: getObject(state),
+    updates: getAppendList(state),
     rewardFund: getRewardFund(state),
     rate: getRate(state),
     sliderMode: getVotingPower(state),
@@ -128,6 +130,7 @@ export default class AppendForm extends Component {
     user: PropTypes.shape(),
     /* from connect */
     wObject: PropTypes.shape(),
+    updates: PropTypes.arrayOf(PropTypes.shape()).isRequired,
     rewardFund: PropTypes.shape(),
     rate: PropTypes.number,
     sliderMode: PropTypes.bool,
@@ -241,7 +244,9 @@ export default class AppendForm extends Component {
     }
     this.calculateVoteWorth(this.state.votePercent);
   };
+
   getVote = () => (this.state.votePercent !== null ? this.state.votePercent * 100 : null);
+
   onSubmit = formValues => {
     const { form, wObject } = this.props;
     const postData = this.getNewPostData(formValues);
@@ -532,28 +537,6 @@ export default class AppendForm extends Component {
     });
 
     return postData;
-  };
-
-  getInitialValue = (wobject, fieldName) => {
-    const { getFieldValue } = this.props.form;
-    const currentField = getFieldValue('currentField');
-    const currentLocale = getFieldValue('currentLocale');
-
-    const filtered =
-      wobject.fields &&
-      wobject.fields
-        .filter(field => field.name === currentField && field.locale === currentLocale)
-        .sort((a, b) => b.weight - a.weight);
-
-    if (!filtered || !filtered.length) return '';
-
-    try {
-      const parsed = JSON.parse(filtered[0].body);
-
-      return parsed[fieldName];
-    } catch (e) {
-      return filtered[0].body;
-    }
   };
 
   setCoordinates = ({ latLng }) => {
@@ -927,12 +910,10 @@ export default class AppendForm extends Component {
   };
 
   isDuplicate = (currentLocale, currentField) => {
-    const { form, wObject, user } = this.props;
+    const { form, updates, user } = this.props;
     const currentValue = form.getFieldValue(currentField);
     const currentCategory = form.getFieldValue('tagCategory');
-    const filtered = wObject.fields.filter(
-      f => f.locale === currentLocale && f.name === currentField,
-    );
+    const filtered = updates.filter(f => f.locale === currentLocale && f.name === currentField);
 
     if (
       currentField === objectFields.website ||
@@ -2195,15 +2176,11 @@ export default class AppendForm extends Component {
       hasType(wObject, OBJECT_TYPE.LIST) &&
       form.getFieldValue('currentField') === objectFields.sorting;
 
-    const languageOptions = [];
-
-    LANGUAGES.forEach(lang => {
-      languageOptions.push(
-        <Select.Option key={lang.id} value={lang.id}>
-          {getLanguageText(lang)}
-        </Select.Option>,
-      );
-    });
+    const languageOptions = LANGUAGES.map(lang => (
+      <Select.Option key={lang.id} value={lang.id}>
+        {getLanguageText(lang)}
+      </Select.Option>
+    ));
 
     const fieldOptions = [];
     const disabledSelect = currentField !== 'auto';

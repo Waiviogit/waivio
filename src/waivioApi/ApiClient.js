@@ -2588,4 +2588,20 @@ export const checkExistPermlink = permlink => {
     .catch(e => e);
 };
 
+export const getUpdatesList = (permlink, skip = 0, query) => {
+  const compareQuery = createQuery(query);
+
+  return fetch(
+    `${config.apiPrefix}${config.getObjects}/${permlink}${config.fields}?skip=${skip}&${compareQuery}`,
+    {
+      headers,
+      method: 'GET',
+    },
+  )
+    .then(handleErrors)
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+};
+
 export default null;

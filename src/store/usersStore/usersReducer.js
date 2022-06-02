@@ -379,7 +379,7 @@ export default function usersReducer(state = initialState, action) {
           ...state.users,
           [username]: {
             ...state.users[username],
-            balance: get(state, ['users', username, 'balance'], 0) || balance || 0,
+            balance: get(state, ['users', username, 'balance']) || balance,
           },
         },
       };

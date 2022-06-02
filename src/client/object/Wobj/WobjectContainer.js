@@ -173,17 +173,18 @@ export default class WobjectContainer extends React.Component {
     const newsFilter = match.params[1] === 'newsFilter' ? { newsFilter: match.params.itemId } : {};
 
     if (isEmpty(wobject) || wobject.id !== match.params.name) {
-      this.props.getObject(match.params.name, authenticatedUserName);
-      this.props.getAlbums(match.params.name);
-      this.props.getNearbyObjects(match.params.name);
-      this.props.getWobjectExpertise(newsFilter, match.params.name);
-      this.props.getObjectFollowers({
-        object: match.params.name,
-        skip: 0,
-        limit: 5,
-        userName: authenticatedUserName,
+      this.props.getObject(match.params.name, authenticatedUserName).then(() => {
+        this.props.getAlbums(match.params.name);
+        this.props.getNearbyObjects(match.params.name);
+        this.props.getWobjectExpertise(newsFilter, match.params.name);
+        this.props.getObjectFollowers({
+          object: match.params.name,
+          skip: 0,
+          limit: 5,
+          userName: authenticatedUserName,
+        });
+        this.props.getRelatedWobjects(match.params.name);
       });
-      this.props.getRelatedWobjects(match.params.name);
     }
   }
 
@@ -192,11 +193,11 @@ export default class WobjectContainer extends React.Component {
     const newsFilter = match.params[1] === 'newsFilter' ? { newsFilter: match.params.itemId } : {};
 
     if (prevProps.match.params.name !== match.params.name || prevProps.locale !== locale) {
+      this.props.getObject(match.params.name, authenticatedUserName);
       this.props.resetGallery();
       this.props.clearObjectFromStore();
       this.props.setCatalogBreadCrumbs([]);
       this.props.setNestedWobject({});
-      this.props.getObject(match.params.name, authenticatedUserName);
       this.props.getRelatedWobjects(match.params.name);
       this.props.getWobjectExpertise(newsFilter, match.params.name);
       this.props.getObjectFollowers({

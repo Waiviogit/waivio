@@ -50,7 +50,7 @@ const ApprovingCard = ({ post, intl, rewardFund, rate, modal }) => {
         :{' '}
         <Tag>
           <span>
-            <span className={classListApproveTag}>{post.approvePercent.toFixed(2)}%</span>
+            <span className={classListApproveTag}>{post?.approvePercent?.toFixed(2)}%</span>
           </span>
         </Tag>
         {!post.adminVote && !modal && (

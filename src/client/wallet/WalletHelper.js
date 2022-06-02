@@ -21,6 +21,7 @@ export const TRANSACTION_TYPES = [
   'demo_post',
   'demo_debt',
   'demo_user_transfer',
+  'limit_order_cancel',
 ];
 
 export const selectFormatDate = locale => {
@@ -182,6 +183,12 @@ export const getTransactionDescription = (type, options) => {
     case accountHistoryConstants.CLAIM_REWARD_BALANCE:
       return {
         claimRewards: <FormattedMessage id="claim_rewards" defaultMessage="Claim rewards" />,
+      };
+    case accountHistoryConstants.CANCEL_LIMIT_ORDER:
+      return {
+        cancelLimitOrder: (
+          <FormattedMessage id="limit_order_cancel" defaultMessage="Cancel limit order" />
+        ),
       };
     case accountHistoryConstants.LIMIT_ORDER: {
       const openPays = get(options, 'openPays', null);
