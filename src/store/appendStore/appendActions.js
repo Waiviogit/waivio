@@ -56,6 +56,7 @@ export const getChangedWobjectField = (
             payload: res,
             meta: { isNew },
           });
+          if (isNew) dispatch(getUpdates(authorPermlink, fieldName, 'createdAt', locale));
 
           return res;
         }),
@@ -95,7 +96,7 @@ export const voteAppends = (author, permlink, weight = 10000, name = '', isNew =
   });
 
   return steemConnectAPI
-    .vote(voter, post.author, post.permlink, weight)
+    .vote(voter, author, permlink, weight)
     .then(() => {
       dispatch(getChangedWobjectField(wobj.author_permlink, fieldName, author, permlink, isNew));
     })
@@ -135,14 +136,15 @@ export const appendObject = (postData, { follow, isLike, votePercent } = {}) => 
     .then(async res => {
       const blockNumber = await getLastBlockNum();
       const voter = getAuthenticatedUserName(getState());
-      const websocketCallback = () =>
-        dispatch(
+      const websocketCallback = async () => {
+        await dispatch(
           followAndLikeAfterCreateAppend(
             { ...postData, votePower: votePercent, ...res },
             isLike,
             follow,
           ),
         );
+      };
 
       busyAPI.instance.sendAsync(subscribeMethod, [voter, blockNumber, subscribeTypes.posts]);
       busyAPI.instance.subscribeBlock(subscribeTypes.posts, blockNumber, websocketCallback);

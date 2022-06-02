@@ -17,10 +17,19 @@ export default (state = defaultState, action) => {
       };
     case appendActions.GET_OBJECT_UPDATES.ERROR:
     case appendActions.GET_MORE_OBJECT_UPDATES.ERROR:
+    case appendActions.APPEND_WAIVIO_OBJECT.ERROR:
       return {
         ...state,
         error: action.payload.message,
         loading: false,
+      };
+
+    case appendActions.APPEND_WAIVIO_OBJECT.START:
+      return {
+        ...state,
+        loading: true,
+        error: null,
+        fields: [],
       };
 
     case appendActions.GET_OBJECT_UPDATES.SUCCESS: {
@@ -48,10 +57,7 @@ export default (state = defaultState, action) => {
       const fields = [...state.fields];
 
       if (action.meta.isNew) {
-        return {
-          ...state,
-          fields: [...fields, field],
-        };
+        return state;
       }
 
       const findIndex = fields.findIndex(fld => fld.permlink === field.permlink);

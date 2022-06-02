@@ -1654,7 +1654,6 @@
   "append_object_blog_validation_msg": "This user has already been added to another blog",
   "active_website_pricing": "Active website pricing:",
   "prices_per_day": "{price} HBD per day;",
-  "object_field_formField": "Form",
   "form": "Form title",
   "columns": "Columns",
   "Link": "Link",
