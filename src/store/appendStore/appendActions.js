@@ -23,6 +23,14 @@ export const getUpdates = (authorPermlink, type, sort, locale) => dispatch => {
   });
 };
 
+export const RESET_UPDATES_LIST = '@append/RESET_UPDATES_LIST';
+
+export const resetUpdateList = () => dispatch => {
+  dispatch({
+    type: RESET_UPDATES_LIST,
+  });
+};
+
 export const GET_MORE_OBJECT_UPDATES = createAsyncActionType('@append/GET_MORE_OBJECT_UPDATES');
 
 export const getMoreUpdates = (authorPermlink, skip, type, sort, locale) => dispatch => {
@@ -118,7 +126,7 @@ export const voteAppends = (author, permlink, weight = 10000, name = '', isNew =
 };
 
 const followAndLikeAfterCreateAppend = (data, isLike, follow) => dispatch => {
-  const type = data.field.name === 'listItem' && data.field.type === 'menuPage' ? 'menuPage' : null;
+  const type = data.field.name === 'listItem' ? data.field.type : null;
 
   if (isLike)
     dispatch(

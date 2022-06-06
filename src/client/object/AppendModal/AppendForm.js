@@ -504,7 +504,7 @@ export default class AppendForm extends Component {
         };
       }
 
-      if (currentField === objectFields.form && formValues.formTitle) {
+      if (currentField === objectFields.form) {
         fieldsObject = {
           ...fieldsObject,
           name: 'form',

@@ -3,7 +3,11 @@ import { useParams } from 'react-router';
 import { useDispatch, useSelector } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
 
-import { getMoreUpdates, getUpdates } from '../../../store/appendStore/appendActions';
+import {
+  getMoreUpdates,
+  getUpdates,
+  resetUpdateList,
+} from '../../../store/appendStore/appendActions';
 import {
   getAppendHasMore,
   getAppendList,
@@ -22,6 +26,10 @@ const UpdateHistory = () => {
   const { name, 0: field } = useParams();
   const [sort, setSort] = useState('createdAt');
   const [locale, setLocale] = useState();
+
+  useEffect(() => {
+    dispatch(resetUpdateList());
+  }, [name]);
 
   useEffect(() => {
     dispatch(getUpdates(name, field, sort, locale));
