@@ -27,6 +27,7 @@ const compareTransferBody = (transaction, totalVestingShares, totalVestingFundSt
     checked: get(transaction, 'checked'),
     userName: user,
     _id: isGuestPage ? get(transaction, '_id') : get(transaction, 'operationNum'),
+    USD: round(get(transaction, 'USD'), 3),
   };
 
   switch (transactionType) {
@@ -264,7 +265,7 @@ const compareTransferBody = (transaction, totalVestingShares, totalVestingFundSt
       data.fieldMemo = transaction.memo;
       data.userName = transaction.account;
       const fieldWAIVamount =
-        transaction.withdrawDeposit === 'w' ? `- ${transaction.quantity}` : transaction.quantity;
+        data.withdrawDeposit === 'w' ? `-${transaction.quantity}` : transaction.quantity;
 
       return {
         ...data,
@@ -277,7 +278,7 @@ const compareTransferBody = (transaction, totalVestingShares, totalVestingFundSt
     case accountHistoryConstants.CURATION_REWARDS: {
       data.userName = transaction.account;
       const fieldWAIVamount =
-        transaction.withdrawDeposit === 'w' ? `- ${transaction.quantity}` : transaction.quantity;
+        transaction.withdrawDeposit === 'w' ? `-${transaction.quantity}` : transaction.quantity;
 
       return {
         ...data,
@@ -290,7 +291,7 @@ const compareTransferBody = (transaction, totalVestingShares, totalVestingFundSt
     case accountHistoryConstants.BENEFICIARY_REWARD: {
       data.userName = transaction.account;
       const fieldWAIVamount =
-        transaction.withdrawDeposit === 'w' ? `- ${transaction.quantity}` : transaction.quantity;
+        transaction.withdrawDeposit === 'w' ? `-${transaction.quantity}` : transaction.quantity;
 
       return {
         ...data,
@@ -302,56 +303,42 @@ const compareTransferBody = (transaction, totalVestingShares, totalVestingFundSt
     }
     case accountHistoryConstants.MARKET_BUY: {
       data.userName = transaction.account;
-      const fieldWAIVamount =
-        transaction.withdrawDeposit === 'w' ? `- ${transaction.quantity}` : transaction.quantity;
+      data.withdrawDeposit = transaction.withdrawDeposit;
 
       return {
         ...data,
-        fieldWAIV: fieldWAIVamount,
+        fieldWAIV: transaction.quantity,
         fieldDescription: getTransactionDescription(transactionType).marketBuy,
       };
     }
     case accountHistoryConstants.MARKET_SELL: {
       data.userName = transaction.account;
-      const fieldWAIVamount =
-        transaction.withdrawDeposit === 'w' ? `- ${transaction.quantity}` : transaction.quantity;
+      data.withdrawDeposit = transaction.withdrawDeposit;
 
       return {
         ...data,
-        fieldWAIV: fieldWAIVamount,
+        fieldWAIV: transaction.quantity,
         fieldDescription: getTransactionDescription(transactionType).marketSell,
       };
     }
     case accountHistoryConstants.TOKENS_STAKE: {
       data.userName = transaction.account;
+      data.withdrawDeposit = transaction.withdrawDeposit;
 
-      if (transaction.account === transaction.from && transaction.account !== transaction.to) {
-        data.withdrawDeposit = 'w';
-
+      if (data.withdrawDeposit === 'w') {
         return {
           ...data,
-          fieldWAIV: `- ${transaction.quantity}`,
-          fieldDescription: getTransactionDescription(transactionType, { to: transaction.to })
-            .tokensStakeTo,
-        };
-      }
-
-      if (transaction.account === transaction.to && transaction.account !== transaction.from) {
-        data.withdrawDeposit = 'd';
-
-        return {
-          ...data,
+          fieldWAIV: `-${transaction.quantity}`,
           fieldWP: transaction.quantity,
-          fieldDescription: getTransactionDescription(transactionType, { from: transaction.from })
-            .tokensStakeFrom,
+          fieldDescription: getTransactionDescription(transactionType).tokensStake,
         };
       }
 
       return {
         ...data,
-        fieldWAIV: `- ${transaction.quantity}`,
         fieldWP: transaction.quantity,
-        fieldDescription: getTransactionDescription(transactionType).tokensStake,
+        fieldDescription: getTransactionDescription(transactionType, { from: transaction.from })
+          .tokensStakeFrom,
       };
     }
 
@@ -367,7 +354,7 @@ const compareTransferBody = (transaction, totalVestingShares, totalVestingFundSt
     case accountHistoryConstants.SWAP_TOKENS: {
       data.userName = transaction.account;
       const fieldWAIVamount =
-        transaction.withdrawDeposit === 'w' ? `- ${transaction.quantity}` : transaction.quantity;
+        transaction.withdrawDeposit === 'w' ? `-${transaction.quantity}` : transaction.quantity;
 
       return {
         ...data,

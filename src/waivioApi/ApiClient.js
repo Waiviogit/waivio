@@ -2125,13 +2125,15 @@ export const getAdvancedReports = (body, user = '') => {
     .catch(e => e);
 };
 
-export const getWaivAdvancedReports = (filterAccounts, accounts) => {
+export const getWaivAdvancedReports = (filterAccounts, accounts, startDate, endDate) => {
   const actualHeaders = filterAccounts ? { ...headers, filterAccounts } : { ...headers };
   return fetch(`${config.apiPrefix}${config.user}${config.advancedReport}`, {
     headers: actualHeaders,
     body: JSON.stringify({
       accounts,
       filterAccounts,
+      startDate,
+      endDate,
     }),
     method: 'POST',
   })

@@ -1,84 +1,109 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { injectIntl } from 'react-intl';
-import { isEmpty, map } from 'lodash';
+import { FormattedNumber, injectIntl } from 'react-intl';
+import { isEmpty, map, round } from 'lodash';
 import { Form } from 'antd';
 import PropTypes from 'prop-types';
 import moment from 'moment';
+import BigNumber from 'bignumber.js';
 import { useDispatch, useSelector } from 'react-redux';
+import Loading from '../../components/Icon/Loading';
 import { getWaivAdvancedReports } from '../../../waivioApi/ApiClient';
 import DynamicTbl from '../../components/Tools/DynamicTable/DynamicTable';
 import { configWaivReportsWebsitesTableHeader } from './common/waivTableConfig';
 import compareTransferBody from './common/helpers';
 import { getCurrentCurrency } from '../../../store/appStore/appSelectors';
 import TableFilter from './TableFilter';
-import { getTransfersLoading } from '../../../store/advancedReports/advancedSelectors';
-import {
-  calculateTotalChanges,
-  deleteUsersTransactionDate,
-  getUsersTransactionDate,
-  getUserTableTransactions,
-} from '../../../store/advancedReports/advancedActions';
+import { openWalletTable } from '../../../store/walletStore/walletActions';
 
 import './WalletTable.less';
 
 const WAIVwalletTable = props => {
   const userName = props.match.params.name;
-  const dispatch = useDispatch();
   const currencyInfo = useSelector(getCurrentCurrency);
-  const loading = useSelector(getTransfersLoading);
   const currencyType = currencyInfo.type;
-
+  const loadingBar = props.isLoadingAllData ? 'Loading...' : 'Completed';
+  const dispatch = useDispatch();
   const [transactionsList, setTransactionsList] = useState([]);
   const [hasMore, setHasMore] = useState(false);
   const [dateEstablished, setDateEstablished] = useState(false);
   const [currentCurrency, setCurrentCurrency] = useState(currencyType);
   const [filterAccounts, setFilterAccounts] = useState([props.match.params.name]);
-  const [accounts, setAccounts] = useState({ name: props.match.params.name });
+  const [accounts, setAccounts] = useState([{ name: userName }]);
+  const [deposits, setDeposits] = useState(0);
+  const [withdrawals, setWithdrawals] = useState(0);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    dispatch(openWalletTable());
     getTransactionsList();
   }, [userName]);
+
+  useEffect(() => {
+    if (!isEmpty(accounts) && hasMore && dateEstablished) {
+      getMoreTransactionsList();
+    }
+  }, [hasMore, accounts]);
 
   const getTransactionsList = async () => {
     const list = await getWaivAdvancedReports(filterAccounts, accounts);
 
-    setAccounts(list.accounts);
-    setHasMore(list.hasMore);
     setTransactionsList(list.wallet);
-  };
-  const getMoreTransactionsList = async () => {
-    const list = await getWaivAdvancedReports(filterAccounts, accounts);
-
     setAccounts(list.accounts);
     setHasMore(list.hasMore);
-    setTransactionsList([...transactionsList, ...list.wallet]);
   };
+
   const handleOnClick = e => {
     e.preventDefault();
     props.form.validateFieldsAndScroll(err => !err && handleSubmit());
   };
 
-  const handleSubmit = () => {
+  const handleSelectUserFilterAccounts = userAcc => {
+    const extendedUsersArray = [...filterAccounts, userAcc.account];
+
+    setFilterAccounts(extendedUsersArray);
+    setAccounts(extendedUsersArray.map(name => ({ name })));
+  };
+  const handleSubmit = async () => {
     const { from, end, currency } = props.form.getFieldsValue();
+
+    setLoading(true);
 
     if (!isEmpty(filterAccounts)) {
       setDateEstablished(true);
       setCurrentCurrency(currency);
 
-      dispatch(
-        getUserTableTransactions({
-          filterAccounts,
-          startDate: handleChangeStartDate(from),
-          endDate: handleChangeEndDate(end),
-          currency,
-        }),
+      const mappedAccounts = filterAccounts.map(acc => ({ name: acc }));
+      const filteredList = await getWaivAdvancedReports(
+        filterAccounts,
+        mappedAccounts,
+        handleChangeStartDate(from),
+        handleChangeEndDate(end),
       );
+
+      await setLoading(false);
+      setDeposits(filteredList.deposits);
+      setWithdrawals(filteredList.withdrawals);
+      setTransactionsList(filteredList.wallet);
+      setAccounts(filteredList.accounts);
+      setHasMore(filteredList.hasMore);
     }
   };
-  const handleSelectUserFilterAccounts = user => {
-    setFilterAccounts([...filterAccounts, user.account]);
-    getUsersTransactionDate(user.account);
+  const getMoreTransactionsList = async () => {
+    const { from, end } = props.form.getFieldsValue();
+
+    const list = await getWaivAdvancedReports(
+      filterAccounts,
+      accounts,
+      handleChangeStartDate(from),
+      handleChangeEndDate(end),
+    );
+
+    setTransactionsList([...transactionsList, ...list.wallet]);
+    setAccounts(list.accounts);
+    setHasMore(list.hasMore);
+    setDeposits(deposits + list.deposits);
+    setWithdrawals(withdrawals + list.withdrawals);
   };
 
   const handleChangeStartDate = value =>
@@ -98,11 +123,19 @@ const WAIVwalletTable = props => {
     return endDate.unix();
   };
 
-  const deleteUserFromFilterAccounts = user => {
-    setFilterAccounts(filterAccounts.filter(acc => acc !== user));
+  const handleChangeTotalValue = value =>
+    dateEstablished ? (
+      <b>
+        {/* eslint-disable-next-line react/style-prop-object */}
+        <FormattedNumber style="currency" currency={currencyType} value={round(value, 3)} />
+      </b>
+    ) : (
+      '-'
+    );
 
+  const deleteUserFromFilterAccounts = userAccount => {
+    setFilterAccounts(filterAccounts.filter(acc => acc !== userAccount));
     props.form.setFieldsValue(filterAccounts);
-    deleteUsersTransactionDate(user);
   };
 
   const mappedList = map(transactionsList, transaction =>
@@ -110,7 +143,24 @@ const WAIVwalletTable = props => {
   );
 
   const handleOnChange = (e, item) => {
-    props.user && calculateTotalChanges(item, e.target.checked, currentCurrency);
+    const w = new BigNumber(round(withdrawals, 3));
+    const d = new BigNumber(round(deposits, 3));
+
+    if (e.target.checked) {
+      if (item.withdrawDeposit === 'd') {
+        setDeposits(Number(d.minus(item.USD).toFixed(3)));
+      }
+      if (item.withdrawDeposit === 'w') {
+        setWithdrawals(Number(w.minus(item.USD).toFixed(3)));
+      }
+    } else {
+      if (item.withdrawDeposit === 'd') {
+        setDeposits(Number(d.plus(item.USD).toFixed(3)));
+      }
+      if (item.withdrawDeposit === 'w') {
+        setWithdrawals(Number(w.plus(item.USD).toFixed(3)));
+      }
+    }
   };
 
   return (
@@ -137,7 +187,7 @@ const WAIVwalletTable = props => {
         handleSelectUser={handleSelectUserFilterAccounts}
         isLoadingTableTransactions={loading}
         deleteUser={deleteUserFromFilterAccounts}
-        currency={currencyInfo.type}
+        currency={currentCurrency}
         form={props.form}
       />
       <p className="WalletTable__total">
@@ -150,6 +200,19 @@ const WAIVwalletTable = props => {
           id: 'Deposits',
           defaultMessage: 'Deposits',
         })}
+        : {handleChangeTotalValue(deposits)}.{' '}
+        {props.intl.formatMessage({
+          id: 'Withdrawals',
+          defaultMessage: 'Withdrawals',
+        })}
+        : {handleChangeTotalValue(withdrawals)}. (
+        {dateEstablished
+          ? loadingBar
+          : props.intl.formatMessage({
+              id: 'totals_calculated',
+              defaultMessage: 'Totals can be calculated only for a defined from-till period.',
+            })}
+        )
       </p>
       <p className="WalletTable__exclude">
         X) -{' '}
@@ -174,18 +237,22 @@ const WAIVwalletTable = props => {
           })}
         </span>
       </p>
-      <DynamicTbl
-        infinity
-        header={configWaivReportsWebsitesTableHeader('USD')}
-        bodyConfig={mappedList}
-        emptyTitle={props.intl.formatMessage({
-          id: 'empty_table_transaction_list',
-          defaultMessage: `You did not have any transactions during this period`,
-        })}
-        showMore={hasMore && !dateEstablished}
-        handleShowMore={getMoreTransactionsList}
-        onChange={handleOnChange}
-      />
+      {loading && isEmpty(mappedList) ? (
+        <Loading />
+      ) : (
+        <DynamicTbl
+          infinity
+          header={configWaivReportsWebsitesTableHeader('USD')}
+          bodyConfig={mappedList}
+          emptyTitle={props.intl.formatMessage({
+            id: 'empty_table_transaction_list',
+            defaultMessage: `You did not have any transactions during this period`,
+          })}
+          showMore={hasMore && !dateEstablished}
+          handleShowMore={getMoreTransactionsList}
+          onChange={handleOnChange}
+        />
+      )}
     </div>
   );
 };
@@ -209,7 +276,7 @@ WAIVwalletTable.propTypes = {
     getFieldDecorator: PropTypes.func,
     getFieldsValue: PropTypes.func,
   }).isRequired,
-  user: PropTypes.string.isRequired,
+  isLoadingAllData: PropTypes.bool.isRequired,
 };
 
 export default injectIntl(Form.create()(WAIVwalletTable));

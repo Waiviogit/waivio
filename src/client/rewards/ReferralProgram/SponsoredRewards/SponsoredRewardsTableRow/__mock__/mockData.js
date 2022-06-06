@@ -1,4 +1,4 @@
-export const data = {
+export const listdata = {
   username: 'waivio_dsad-asas',
   sponsorName: 'asd09',
   prymaryObjectName: 'myTest',
