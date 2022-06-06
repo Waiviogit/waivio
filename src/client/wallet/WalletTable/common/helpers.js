@@ -110,20 +110,7 @@ const compareTransferBody = (transaction, totalVestingShares, totalVestingFundSt
         fieldDescription: getTransactionDescription(transactionType).claimRewards,
       };
     }
-    case accountHistoryConstants.CANCEL_LIMIT_ORDER: {
-      const cancelLimitOrderAmounts = getFormattedClaimRewardPayout(
-        transaction.hiveUSD,
-        transaction.hbdUSD,
-      );
 
-      return {
-        ...data,
-        fieldHIVE: get(cancelLimitOrderAmounts, 'HIVE'),
-        // fieldHP: get(cancelLimitOrderAmounts, 'HP'),
-        fieldHBD: get(cancelLimitOrderAmounts, 'HBD'),
-        fieldDescription: getTransactionDescription(transactionType).cancelLimitOrder,
-      };
-    }
     case accountHistoryConstants.TRANSFER_TO_SAVINGS:
     case accountHistoryConstants.TRANSFER_FROM_SAVINGS:
     case accountHistoryConstants.CANCEL_TRANSFER_FROM_SAVINGS: {

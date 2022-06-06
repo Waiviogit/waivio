@@ -39,7 +39,6 @@ export const CONVERT_HBD_REQUEST = 'convert';
 export const CONVERT_HBD_COMPLETED = 'fill_convert_request';
 export const CONVERT_HIVE_REQUEST = 'collateralized_convert';
 export const CONVERT_HIVE_COMPLETED = 'fill_collateralized_convert_request';
-export const CANCEL_LIMIT_ORDER = 'limit_order_cancel';
 
 // Filter Types - General
 export const DOWNVOTED = 'downvoted';
