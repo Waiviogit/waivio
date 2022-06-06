@@ -42,10 +42,12 @@ export const getChangedWobjectField = (
   author,
   permlink,
   isNew = false,
+  type = '',
 ) => async (dispatch, getState, { busyAPI }) => {
   const state = getState();
   const locale = getLocale(state);
   const voter = getAuthenticatedUserName(state);
+
   const subscribeCallback = () =>
     dispatch({
       type: GET_CHANGED_WOBJECT_FIELD.ACTION,
@@ -56,7 +58,7 @@ export const getChangedWobjectField = (
             payload: res,
             meta: { isNew },
           });
-          if (isNew) dispatch(getUpdates(authorPermlink, fieldName, 'createdAt', locale));
+          if (isNew) dispatch(getUpdates(authorPermlink, type || fieldName, 'createdAt', locale));
 
           return res;
         }),
@@ -73,7 +75,7 @@ export const getChangedWobjectField = (
 
 export const VOTE_APPEND = createAsyncActionType('@append/VOTE_APPEND');
 
-export const voteAppends = (author, permlink, weight = 10000, name = '', isNew = false) => (
+export const voteAppends = (author, permlink, weight = 10000, name = '', isNew = false, type) => (
   dispatch,
   getState,
   { steemConnectAPI },
@@ -98,7 +100,9 @@ export const voteAppends = (author, permlink, weight = 10000, name = '', isNew =
   return steemConnectAPI
     .vote(voter, author, permlink, weight)
     .then(() => {
-      dispatch(getChangedWobjectField(wobj.author_permlink, fieldName, author, permlink, isNew));
+      dispatch(
+        getChangedWobjectField(wobj.author_permlink, fieldName, author, permlink, isNew, type),
+      );
     })
     .catch(e => {
       message.error(e.error_description);
@@ -114,9 +118,11 @@ export const voteAppends = (author, permlink, weight = 10000, name = '', isNew =
 };
 
 const followAndLikeAfterCreateAppend = (data, isLike, follow) => dispatch => {
+  const type = data.field.name === 'listItem' && data.field.type === 'menuPage' ? 'menuPage' : null;
+
   if (isLike)
     dispatch(
-      voteAppends(data.author, data.permlink, data.votePower || 10000, data.field.name, true),
+      voteAppends(data.author, data.permlink, data.votePower || 10000, data.field.name, true, type),
     );
   if (follow) dispatch(followObject(data.parentPermlink));
 

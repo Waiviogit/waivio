@@ -40,6 +40,18 @@ export const CONVERT_HBD_COMPLETED = 'fill_convert_request';
 export const CONVERT_HIVE_REQUEST = 'collateralized_convert';
 export const CONVERT_HIVE_COMPLETED = 'fill_collateralized_convert_request';
 
+// WAIV Operation Types
+export const TOKENS_TRANSFER = 'tokens_transfer';
+export const MARKET_BUY = 'market_buy';
+export const MARKET_SELL = 'market_sell';
+export const TOKENS_STAKE = 'tokens_stake';
+export const CURATION_REWARDS = 'comments_curationReward';
+export const AUTHOR_REWARDS = 'comments_authorReward';
+export const BENEFICIARY_REWARD = 'comments_beneficiaryReward';
+export const MINING_LOTTERY = 'mining_lottery';
+export const AIRDROP = 'airdrops_newAirdrop';
+export const SWAP_TOKENS = 'marketpools_swapTokens';
+
 // Filter Types - General
 export const DOWNVOTED = 'downvoted';
 export const UPVOTED = 'upvoted';
