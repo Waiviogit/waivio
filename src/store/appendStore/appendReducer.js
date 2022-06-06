@@ -90,6 +90,10 @@ export default (state = defaultState, action) => {
       return state;
     }
 
+    case appendActions.RESET_UPDATES_LIST: {
+      return defaultState;
+    }
+
     case appendActions.VOTE_APPEND.ERROR:
     case appendActions.VOTE_APPEND.SUCCESS: {
       const matchPostIndex = state.fields.findIndex(
