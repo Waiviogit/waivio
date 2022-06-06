@@ -504,15 +504,7 @@ export default class AppendForm extends Component {
         };
       }
 
-      if (includes(TYPES_OF_MENU_ITEM, currentField)) {
-        fieldsObject = {
-          ...fieldsObject,
-          type: currentField,
-          alias: getFieldValue('menuItemName') || this.state.selectedObject.name,
-        };
-      }
-
-      if (currentField === objectFields.form) {
+      if (currentField === objectFields.form && formValues.formTitle) {
         fieldsObject = {
           ...fieldsObject,
           name: 'form',
@@ -520,6 +512,14 @@ export default class AppendForm extends Component {
           column: formValues.formColumn,
           form: formValues.formForm,
           link: formValues.formLink || formValues.formWidget,
+        };
+      }
+
+      if (includes(TYPES_OF_MENU_ITEM, currentField)) {
+        fieldsObject = {
+          ...fieldsObject,
+          type: currentField,
+          alias: getFieldValue('menuItemName') || this.state.selectedObject.name,
         };
       }
 
