@@ -41,7 +41,7 @@ export default {
   WobjFollowers: loableComponent(import('../client/object/WobjFollowers')),
   ObjectGallery: loableComponent(import('../client/object/ObjectGallery/ObjectGallery')),
   ObjectGalleryAlbum: loableComponent(import('../client/object/ObjectGallery/ObjectGalleryAlbum')),
-  WobjHistory: loableComponent(import('../client/object/WobjHistory/WobjHistory')),
+  WobjHistory: loableComponent(import('../client/object/WobjHistory/UpdateHistory')),
   ObjectAbout: loableComponent(import('../client/object/ObjectAbout')),
   CatalogWrap: loableComponent(import('../client/object/Catalog/CatalogWrap')),
   WobjExpertise: loableComponent(import('../client/object/WobjExpertise')),

@@ -1633,7 +1633,7 @@
   "append_object_blog_validation_msg": "تمت إضافة هذا المستخدم بالفعل إلى مدونة أخرى",
   "active_website_pricing": "تسعير موقع الويب النشط:",
   "prices_per_day": "{price} HBD في اليوم ؛",
-  "object_field_formField": "استمارة",
+  "object_field_form": "استمارة",
   "form": "عنوان النموذج",
   "columns": "الأعمدة",
   "Link": "نهاية لهذه الغاية",
