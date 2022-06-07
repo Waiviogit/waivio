@@ -120,7 +120,7 @@ const DelegateModal = props => {
             id="delegate_modal_info_part2"
             defaultMessage="Please note that delegations are instant, but it will take"
           />{' '}
-          {props.token === 'HP' ? 5 : 7}{' '}
+          {props.token === 'HP' ? 3 : 7}{' '}
           <FormattedMessage
             id="delegate_modal_info_part3"
             defaultMessage="days for the amount to be returned to your account after undelegation."
