@@ -14,7 +14,7 @@ import { configWaivReportsWebsitesTableHeader } from './common/waivTableConfig';
 import compareTransferBody from './common/helpers';
 import { getCurrentCurrency } from '../../../store/appStore/appSelectors';
 import TableFilter from './TableFilter';
-import { openWalletTable } from '../../../store/walletStore/walletActions';
+import { closeWalletTable, openWalletTable } from '../../../store/walletStore/walletActions';
 
 import './WalletTable.less';
 
@@ -33,6 +33,8 @@ const WAIVwalletTable = props => {
   const [deposits, setDeposits] = useState(0);
   const [withdrawals, setWithdrawals] = useState(0);
   const [loading, setLoading] = useState(false);
+
+  const closeTable = () => dispatch(closeWalletTable());
 
   useEffect(() => {
     dispatch(openWalletTable());
@@ -90,20 +92,30 @@ const WAIVwalletTable = props => {
     }
   };
   const getMoreTransactionsList = async () => {
-    const { from, end } = props.form.getFieldsValue();
+    if (dateEstablished) {
+      const { from, end } = props.form.getFieldsValue();
 
-    const list = await getWaivAdvancedReports(
-      filterAccounts,
-      accounts,
-      handleChangeStartDate(from),
-      handleChangeEndDate(end),
-    );
+      const list = await getWaivAdvancedReports(
+        filterAccounts,
+        accounts,
+        handleChangeStartDate(from),
+        handleChangeEndDate(end),
+      );
 
-    setTransactionsList([...transactionsList, ...list.wallet]);
-    setAccounts(list.accounts);
-    setHasMore(list.hasMore);
-    setDeposits(deposits + list.deposits);
-    setWithdrawals(withdrawals + list.withdrawals);
+      setTransactionsList([...transactionsList, ...list.wallet]);
+      setAccounts(list.accounts);
+      setHasMore(list.hasMore);
+      setDeposits(deposits + list.deposits);
+      setWithdrawals(withdrawals + list.withdrawals);
+    } else {
+      const list = await getWaivAdvancedReports(filterAccounts, accounts);
+
+      setTransactionsList([...transactionsList, ...list.wallet]);
+      setAccounts(list.accounts);
+      setHasMore(list.hasMore);
+      setDeposits(deposits + list.deposits);
+      setWithdrawals(withdrawals + list.withdrawals);
+    }
   };
 
   const handleChangeStartDate = value =>
@@ -166,7 +178,11 @@ const WAIVwalletTable = props => {
   return (
     <div>
       <div className="WalletTable">
-        <Link to={`/@${userName}/transfers?type=WAIV`} className="WalletTable__back-btn">
+        <Link
+          onClick={closeTable}
+          to={`/@${userName}/transfers?type=WAIV`}
+          className="WalletTable__back-btn"
+        >
           {props.intl.formatMessage({
             id: 'table_back',
             defaultMessage: 'Back',
