@@ -12,8 +12,12 @@ const PowerSwitcher = props => {
   const [currency, setCurrency] = useState(props.defaultType);
   const { hiveRateInUsd, rates } = useRate();
   const convertCurrency = curr => (curr === 'WAIV' && props.powerVote ? 'WP' : curr);
+  const hbdHiveCurrency = currency === 'HBD' || currency === 'HIVE';
 
-  const amountRegex = /^[0-9]*\.?[0-9]{0,5}$/;
+  const amountRegex = /^[0-9]*\.?[0-9]{0,8}$/;
+  const amountRegexHiveHbd = /^[0-9]*\.?[0-9]{0,3}$/;
+  const validationPattern = hbdHiveCurrency ? amountRegexHiveHbd : amountRegex;
+  const numberOfCharacters = hbdHiveCurrency ? 3 : 8;
 
   useEffect(() => {
     if (props.onAmoundValidate) props.onAmoundValidate();
@@ -55,10 +59,13 @@ const PowerSwitcher = props => {
               }),
             },
             {
-              pattern: amountRegex,
-              message: props.intl.formatMessage({
-                id: 'amount_error_format_5_places',
-              }),
+              pattern: validationPattern,
+              message: props.intl.formatMessage(
+                {
+                  id: 'amount_error_format_places',
+                },
+                { numberOfCharacters },
+              ),
             },
             { validator: validateBalance },
           ],
@@ -76,7 +83,7 @@ const PowerSwitcher = props => {
                   props.handleBalanceClick(props.currencyList[convertCurrency(currency)])
                 }
               >
-                <FormattedMessage id="max" defaultMessage="maxs" />
+                <FormattedMessage id="max" defaultMessage="max" />
               </span>
             }
           />,

@@ -2125,6 +2125,23 @@ export const getAdvancedReports = (body, user = '') => {
     .catch(e => e);
 };
 
+export const getWaivAdvancedReports = (filterAccounts, accounts, startDate, endDate) => {
+  const actualHeaders = filterAccounts ? { ...headers, filterAccounts } : { ...headers };
+  return fetch(`${config.apiPrefix}${config.user}${config.advancedReport}`, {
+    headers: actualHeaders,
+    body: JSON.stringify({
+      accounts,
+      filterAccounts,
+      startDate,
+      endDate,
+    }),
+    method: 'POST',
+  })
+    .then(res => res.json())
+    .then(res => res)
+    .catch(e => e);
+};
+
 export const accountsCreationDate = userName => {
   return fetch(`${config.apiPrefix}${config.user}/${userName}${config.creationDate}`, {
     headers,
@@ -2582,6 +2599,22 @@ export const checkExistPermlink = permlink => {
     headers,
     method: 'GET',
   })
+    .then(handleErrors)
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+};
+
+export const getUpdatesList = (permlink, skip = 0, query) => {
+  const compareQuery = createQuery(query);
+
+  return fetch(
+    `${config.apiPrefix}${config.getObjects}/${permlink}${config.fields}?skip=${skip}&${compareQuery}`,
+    {
+      headers,
+      method: 'GET',
+    },
+  )
     .then(handleErrors)
     .then(res => res.json())
     .then(response => response)

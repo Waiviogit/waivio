@@ -6,14 +6,10 @@ import { getAllFollowing } from '../../common/helpers/apiHelpers';
 import { createAsyncActionType } from '../../common/helpers/stateHelpers';
 import {
   getAuthorsChildWobjects,
-  getChangedField,
   getWobjectsExpertiseWithNewsFilter,
 } from '../../waivioApi/ApiClient';
-import { subscribeMethod, subscribeTypes } from '../../common/constants/blockTypes';
-import { APPEND_WAIVIO_OBJECT } from '../appendStore/appendActions';
 import { BELL_USER_NOTIFICATION, followExpert, unfollowExpert } from '../userStore/userActions';
 import { getAuthenticatedUserName, getIsAuthenticated } from '../authStore/authSelectors';
-import { getLocale } from '../settingsStore/settingsSelectors';
 import {
   getRelatedObjectsSkip,
   getRelatedObjectsArray,
@@ -21,7 +17,6 @@ import {
   getObject as getObjectState,
 } from './wObjectSelectors';
 import { getUsedLocale } from '../appStore/appSelectors';
-import { getLastBlockNum } from '../../client/vendor/steemitHelpers';
 
 export const FOLLOW_WOBJECT = '@wobj/FOLLOW_WOBJECT';
 export const FOLLOW_WOBJECT_START = '@wobj/FOLLOW_WOBJECT_START';
@@ -151,6 +146,7 @@ export const RATE_WOBJECT = '@wobj/RATE_WOBJECT';
 export const RATE_WOBJECT_START = '@wobj/RATE_WOBJECT_START';
 export const RATE_WOBJECT_ERROR = '@wobj/RATE_WOBJECT_ERROR';
 export const RATE_WOBJECT_SUCCESS = '@wobj/RATE_WOBJECT_SUCCESS';
+export const GET_CHANGED_WOBJECT_UPDATE = createAsyncActionType('@wobj/GET_CHANGED_WOBJECT_UPDATE');
 
 export const rateObject = (author, permlink, authorPermlink, rate) => (
   dispatch,
@@ -191,79 +187,6 @@ export const sendCommentAppend = (permlink, comment) => dispatch =>
       comment,
     },
   });
-
-export const GET_CHANGED_WOBJECT_FIELD = createAsyncActionType('@wobj/GET_CHANGED_WOBJECT_FIELD');
-
-export const getChangedWobjectField = (
-  authorPermlink,
-  fieldName,
-  author,
-  permlink,
-  isNew = false,
-) => async (dispatch, getState, { busyAPI }) => {
-  const state = getState();
-  const locale = getLocale(state);
-  const voter = getAuthenticatedUserName(state);
-  const subscribeCallback = () =>
-    dispatch({
-      type: GET_CHANGED_WOBJECT_FIELD.ACTION,
-      payload: {
-        promise: getChangedField(authorPermlink, fieldName, author, permlink, locale).then(res => {
-          dispatch({
-            type: APPEND_WAIVIO_OBJECT.SUCCESS,
-          });
-
-          return res;
-        }),
-      },
-      meta: { isNew },
-    });
-
-  const blockNumber = await getLastBlockNum();
-
-  if (!blockNumber) throw new Error('Something went wrong');
-  busyAPI.instance.sendAsync(subscribeMethod, [voter, blockNumber, subscribeTypes.votes]);
-  busyAPI.instance.subscribeBlock(subscribeTypes.votes, blockNumber, subscribeCallback);
-};
-
-export const voteAppends = (author, permlink, weight = 10000, name = '', isNew = false) => (
-  dispatch,
-  getState,
-  { steemConnectAPI },
-) => {
-  const state = getState();
-  const wobj = get(state, ['object', 'wobject'], {});
-  const post = wobj.fields.find(field => field.permlink === permlink) || null;
-  const voter = getAuthenticatedUserName(state);
-  const fieldName = name || post.name;
-
-  if (!getIsAuthenticated(state)) return null;
-
-  dispatch({
-    type: VOTE_APPEND_START,
-    payload: {
-      post,
-      permlink,
-    },
-  });
-
-  return steemConnectAPI
-    .vote(voter, author, permlink, weight)
-    .then(() =>
-      dispatch(getChangedWobjectField(wobj.author_permlink, fieldName, author, permlink, isNew)),
-    )
-    .catch(e => {
-      message.error(e.error_description);
-
-      return dispatch({
-        type: VOTE_APPEND_ERROR,
-        payload: {
-          post,
-          permlink,
-        },
-      });
-    });
-};
 
 export const FOLLOW_OBJECT = createAsyncActionType('FOLLOW_OBJECT');
 export const UNFOLLOW_OBJECT = createAsyncActionType('UNFOLLOW_OBJECT');
