@@ -183,6 +183,7 @@ export const getTransactionDescription = (type, options) => {
 
     case accountHistoryConstants.TOKENS_TRANSFER: {
       const to = get(options, 'to', '');
+      const from = get(options, 'from', '');
 
       return {
         tokensTransferTo: (
@@ -193,6 +194,19 @@ export const getTransactionDescription = (type, options) => {
               username: (
                 <Link to={`/@${to}`}>
                   <span className="username">{to}</span>
+                </Link>
+              ),
+            }}
+          />
+        ),
+        tokensTransferFrom: (
+          <FormattedMessage
+            id="received_from"
+            defaultMessage="Received from {username}"
+            values={{
+              username: (
+                <Link to={`/@${from}`}>
+                  <span className="username">{from}</span>
                 </Link>
               ),
             }}
@@ -247,18 +261,37 @@ export const getTransactionDescription = (type, options) => {
       return {
         airdrop: <span>Airdrop</span>,
       };
+
     case accountHistoryConstants.MARKET_BUY:
+      const accFrom = get(options, 'accFrom', '');
+
       return {
         marketBuy: (
-          <FormattedMessage id="market_order_to_buy" defaultMessage="Market order to buy" />
+          <div>
+            <FormattedMessage id="bought_from" defaultMessage="Bought from" />
+            <Link to={`/@${accFrom}`}>
+              {' '}
+              <span className="username">{accFrom}</span>
+            </Link>
+          </div>
         ),
       };
+
     case accountHistoryConstants.MARKET_SELL:
+      const accTo = get(options, 'accTo', '');
+
       return {
         marketSell: (
-          <FormattedMessage id="market_order_to_sell" defaultMessage="Market order to sell" />
+          <div>
+            <FormattedMessage id="sold_to" defaultMessage="Sold to" />
+            <Link to={`/@${accTo}`}>
+              {' '}
+              <span className="username">{accTo}</span>
+            </Link>
+          </div>
         ),
       };
+
     case accountHistoryConstants.TOKENS_STAKE:
       const to = get(options, 'to', '');
       const from = get(options, 'from', '');

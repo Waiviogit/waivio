@@ -12,7 +12,7 @@ import {
 import * as accountHistoryConstants from '../../../../common/constants/accountHistory';
 import { guestUserRegex } from '../../../../common/helpers/regexHelpers';
 
-const compareTransferBody = (transaction, totalVestingShares, totalVestingFundSteem, currency) => {
+const compareTransferBody = (transaction, currency, totalVestingShares, totalVestingFundSteem) => {
   const transactionType = transaction.type || transaction.operation;
   const user = transaction.userName;
   const isGuestPage = guestUserRegex.test(user);
@@ -20,7 +20,9 @@ const compareTransferBody = (transaction, totalVestingShares, totalVestingFundSt
   const data = {
     time: dateTableField(transaction.timestamp, isGuestPage),
     hiveCurrentCurrency: round(get(transaction, `hive${currency}`), 3),
-    waivCurrentCurrency: round(get(transaction, currency ? `WAIV.${currency}` : 'WAIV.USD'), 3),
+    waivCurrentCurrency: currency
+      ? round(get(transaction, `WAIV.${currency}`), 3)
+      : round(get(transaction, 'WAIV.USD'), 3),
     hbdCurrentCurrency: round(get(transaction, `hbd${currency}`), 3),
     withdrawDeposit: get(transaction, 'withdrawDeposit'),
     [currency]: get(transaction, currency),
@@ -251,12 +253,19 @@ const compareTransferBody = (transaction, totalVestingShares, totalVestingFundSt
     case accountHistoryConstants.TOKENS_TRANSFER: {
       data.fieldMemo = transaction.memo;
       data.userName = transaction.account;
-      const fieldWAIVamount =
-        data.withdrawDeposit === 'w' ? `-${transaction.quantity}` : transaction.quantity;
+
+      if (transaction.account === transaction.to) {
+        return {
+          ...data,
+          fieldWAIV: transaction.quantity,
+          fieldDescription: getTransactionDescription(transactionType, { from: transaction.from })
+            .tokensTransferFrom,
+        };
+      }
 
       return {
         ...data,
-        fieldWAIV: fieldWAIVamount,
+        fieldWAIV: `-${transaction.quantity}`,
         fieldDescription: getTransactionDescription(transactionType, { to: transaction.to })
           .tokensTransferTo,
       };
@@ -295,7 +304,8 @@ const compareTransferBody = (transaction, totalVestingShares, totalVestingFundSt
       return {
         ...data,
         fieldWAIV: transaction.quantity,
-        fieldDescription: getTransactionDescription(transactionType).marketBuy,
+        fieldDescription: getTransactionDescription(transactionType, { accFrom: transaction.from })
+          .marketBuy,
       };
     }
     case accountHistoryConstants.MARKET_SELL: {
@@ -305,27 +315,36 @@ const compareTransferBody = (transaction, totalVestingShares, totalVestingFundSt
       return {
         ...data,
         fieldWAIV: transaction.quantity,
-        fieldDescription: getTransactionDescription(transactionType).marketSell,
+        fieldDescription: getTransactionDescription(transactionType, { accTo: transaction.to })
+          .marketSell,
       };
     }
     case accountHistoryConstants.TOKENS_STAKE: {
       data.userName = transaction.account;
-      data.withdrawDeposit = transaction.withdrawDeposit;
 
-      if (data.withdrawDeposit === 'w') {
+      if (transaction.account === transaction.from && transaction.account !== transaction.to) {
         return {
           ...data,
           fieldWAIV: `-${transaction.quantity}`,
+
+          fieldDescription: getTransactionDescription(transactionType, { to: transaction.to })
+            .tokensStakeTo,
+        };
+      }
+      if (transaction.account !== transaction.from && transaction.account === transaction.to) {
+        return {
+          ...data,
           fieldWP: transaction.quantity,
-          fieldDescription: getTransactionDescription(transactionType).tokensStake,
+          fieldDescription: getTransactionDescription(transactionType, { from: transaction.from })
+            .tokensStakeFrom,
         };
       }
 
       return {
         ...data,
+
         fieldWP: transaction.quantity,
-        fieldDescription: getTransactionDescription(transactionType, { from: transaction.from })
-          .tokensStakeFrom,
+        fieldDescription: getTransactionDescription(transactionType).tokensStake,
       };
     }
 
