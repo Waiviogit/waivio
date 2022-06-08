@@ -17,14 +17,11 @@ import TableFilter from './TableFilter';
 import { closeWalletTable, openWalletTable } from '../../../store/walletStore/walletActions';
 
 import './WalletTable.less';
-import { getIsLoadingAllData } from '../../../store/advancedReports/advancedSelectors';
 
 const WAIVwalletTable = props => {
   const userName = props.match.params.name;
   const currencyInfo = useSelector(getCurrentCurrency);
   const currencyType = currencyInfo.type;
-  const isLoadingAllData = useSelector(getIsLoadingAllData);
-  // console.log(isLoadingAllData)
   const dispatch = useDispatch();
   const [transactionsList, setTransactionsList] = useState([]);
   const [hasMore, setHasMore] = useState(false);
@@ -35,7 +32,8 @@ const WAIVwalletTable = props => {
   const [deposits, setDeposits] = useState(0);
   const [withdrawals, setWithdrawals] = useState(0);
   const [loading, setLoading] = useState(false);
-  const loadingBar = loading ? 'Loading...' : 'Completed';
+  const [isLoadingData, setIsLoadingData] = useState(false);
+  const loadingBar = isLoadingData ? 'Loading...' : 'Completed';
 
   const closeTable = () => dispatch(closeWalletTable());
 
@@ -47,6 +45,11 @@ const WAIVwalletTable = props => {
   useEffect(() => {
     if (!isEmpty(accounts) && hasMore && dateEstablished) {
       getMoreTransactionsList();
+    }
+
+    if (!hasMore) {
+      setIsLoadingData(false);
+      setLoading(false);
     }
   }, [hasMore, accounts]);
 
@@ -60,7 +63,11 @@ const WAIVwalletTable = props => {
 
   const handleOnClick = e => {
     e.preventDefault();
-    props.form.validateFieldsAndScroll(err => !err && handleSubmit());
+    props.form.validateFieldsAndScroll(err => {
+      if (!err && !isEmpty(filterAccounts)) {
+        handleSubmit();
+      }
+    });
   };
 
   const handleSelectUserFilterAccounts = userAcc => {
@@ -73,6 +80,7 @@ const WAIVwalletTable = props => {
     const { from, end, currency } = props.form.getFieldsValue();
 
     setLoading(true);
+    setIsLoadingData(true);
 
     if (!isEmpty(filterAccounts)) {
       setDateEstablished(true);
@@ -96,6 +104,9 @@ const WAIVwalletTable = props => {
     }
   };
   const getMoreTransactionsList = async () => {
+    // setIsLoadingData(true)
+    // setLoading(true);
+
     if (dateEstablished) {
       const { from, end, currency } = props.form.getFieldsValue();
 
@@ -141,7 +152,7 @@ const WAIVwalletTable = props => {
   };
 
   const handleChangeTotalValue = value => {
-    if (dateEstablished && !hasMore && !isLoadingAllData) {
+    if (dateEstablished && !isLoadingData) {
       return (
         <b>
           {/* eslint-disable-next-line react/style-prop-object */}
@@ -149,8 +160,13 @@ const WAIVwalletTable = props => {
         </b>
       );
     }
-    if (dateEstablished && hasMore) {
-      return 0;
+    if (dateEstablished && isLoadingData) {
+      return (
+        <b>
+          {/* eslint-disable-next-line react/style-prop-object */}
+          <FormattedNumber style="currency" currency={currencyType} value={0} />
+        </b>
+      );
     }
 
     return '-';
@@ -283,7 +299,6 @@ const WAIVwalletTable = props => {
     </div>
   );
 };
-
 WAIVwalletTable.propTypes = {
   intl: PropTypes.shape({
     formatMessage: PropTypes.func.isRequired,
