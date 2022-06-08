@@ -104,9 +104,6 @@ const WAIVwalletTable = props => {
     }
   };
   const getMoreTransactionsList = async () => {
-    // setIsLoadingData(true)
-    // setLoading(true);
-
     if (dateEstablished) {
       const { from, end, currency } = props.form.getFieldsValue();
 
@@ -152,19 +149,12 @@ const WAIVwalletTable = props => {
   };
 
   const handleChangeTotalValue = value => {
-    if (dateEstablished && !isLoadingData) {
+    if (dateEstablished) {
+      const num = isLoadingData ? round(value, 3) : 0;
       return (
         <b>
           {/* eslint-disable-next-line react/style-prop-object */}
-          <FormattedNumber style="currency" currency={currencyType} value={round(value, 3)} />
-        </b>
-      );
-    }
-    if (dateEstablished && isLoadingData) {
-      return (
-        <b>
-          {/* eslint-disable-next-line react/style-prop-object */}
-          <FormattedNumber style="currency" currency={currencyType} value={0} />
+          <FormattedNumber style="currency" currency={currencyType} value={num} />
         </b>
       );
     }
@@ -299,6 +289,7 @@ const WAIVwalletTable = props => {
     </div>
   );
 };
+
 WAIVwalletTable.propTypes = {
   intl: PropTypes.shape({
     formatMessage: PropTypes.func.isRequired,
