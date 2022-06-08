@@ -2125,7 +2125,7 @@ export const getAdvancedReports = (body, user = '') => {
     .catch(e => e);
 };
 
-export const getWaivAdvancedReports = (filterAccounts, accounts, startDate, endDate) => {
+export const getWaivAdvancedReports = (filterAccounts, accounts, startDate, endDate, currency) => {
   const actualHeaders = filterAccounts ? { ...headers, filterAccounts } : { ...headers };
   return fetch(`${config.apiPrefix}${config.user}${config.advancedReport}`, {
     headers: actualHeaders,
@@ -2134,6 +2134,7 @@ export const getWaivAdvancedReports = (filterAccounts, accounts, startDate, endD
       filterAccounts,
       startDate,
       endDate,
+      currency,
     }),
     method: 'POST',
   })

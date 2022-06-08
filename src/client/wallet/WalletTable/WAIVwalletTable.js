@@ -17,12 +17,14 @@ import TableFilter from './TableFilter';
 import { closeWalletTable, openWalletTable } from '../../../store/walletStore/walletActions';
 
 import './WalletTable.less';
+import { getIsLoadingAllData } from '../../../store/advancedReports/advancedSelectors';
 
 const WAIVwalletTable = props => {
   const userName = props.match.params.name;
   const currencyInfo = useSelector(getCurrentCurrency);
   const currencyType = currencyInfo.type;
-  const loadingBar = props.isLoadingAllData ? 'Loading...' : 'Completed';
+  const isLoadingAllData = useSelector(getIsLoadingAllData);
+  // console.log(isLoadingAllData)
   const dispatch = useDispatch();
   const [transactionsList, setTransactionsList] = useState([]);
   const [hasMore, setHasMore] = useState(false);
@@ -33,6 +35,7 @@ const WAIVwalletTable = props => {
   const [deposits, setDeposits] = useState(0);
   const [withdrawals, setWithdrawals] = useState(0);
   const [loading, setLoading] = useState(false);
+  const loadingBar = loading ? 'Loading...' : 'Completed';
 
   const closeTable = () => dispatch(closeWalletTable());
 
@@ -81,6 +84,7 @@ const WAIVwalletTable = props => {
         mappedAccounts,
         handleChangeStartDate(from),
         handleChangeEndDate(end),
+        currency,
       );
 
       await setLoading(false);
@@ -93,13 +97,14 @@ const WAIVwalletTable = props => {
   };
   const getMoreTransactionsList = async () => {
     if (dateEstablished) {
-      const { from, end } = props.form.getFieldsValue();
+      const { from, end, currency } = props.form.getFieldsValue();
 
       const list = await getWaivAdvancedReports(
         filterAccounts,
         accounts,
         handleChangeStartDate(from),
         handleChangeEndDate(end),
+        currency,
       );
 
       setTransactionsList([...transactionsList, ...list.wallet]);
@@ -135,15 +140,21 @@ const WAIVwalletTable = props => {
     return endDate.unix();
   };
 
-  const handleChangeTotalValue = value =>
-    dateEstablished ? (
-      <b>
-        {/* eslint-disable-next-line react/style-prop-object */}
-        <FormattedNumber style="currency" currency={currencyType} value={round(value, 3)} />
-      </b>
-    ) : (
-      '-'
-    );
+  const handleChangeTotalValue = value => {
+    if (dateEstablished && !hasMore && !isLoadingAllData) {
+      return (
+        <b>
+          {/* eslint-disable-next-line react/style-prop-object */}
+          <FormattedNumber style="currency" currency={currencyType} value={round(value, 3)} />
+        </b>
+      );
+    }
+    if (dateEstablished && hasMore) {
+      return 0;
+    }
+
+    return '-';
+  };
 
   const deleteUserFromFilterAccounts = userAccount => {
     setFilterAccounts(filterAccounts.filter(acc => acc !== userAccount));
@@ -151,7 +162,7 @@ const WAIVwalletTable = props => {
   };
 
   const mappedList = map(transactionsList, transaction =>
-    compareTransferBody(transaction, currencyType),
+    compareTransferBody(transaction, currentCurrency),
   );
 
   const handleOnChange = (e, item) => {
@@ -188,87 +199,87 @@ const WAIVwalletTable = props => {
             defaultMessage: 'Back',
           })}
         </Link>
-      </div>
-      <h3>
-        {props.intl.formatMessage({
-          id: 'table_view',
-          defaultMessage: 'Advanced reports',
-        })}
-      </h3>
-      <TableFilter
-        intl={props.intl}
-        filterUsersList={filterAccounts}
-        getFieldDecorator={props.form.getFieldDecorator}
-        handleOnClick={handleOnClick}
-        handleSelectUser={handleSelectUserFilterAccounts}
-        isLoadingTableTransactions={loading}
-        deleteUser={deleteUserFromFilterAccounts}
-        currency={currentCurrency}
-        form={props.form}
-      />
-      <p className="WalletTable__total">
-        {props.intl.formatMessage({
-          id: 'total',
-          defaultMessage: 'TOTAL',
-        })}
-        :{' '}
-        {props.intl.formatMessage({
-          id: 'Deposits',
-          defaultMessage: 'Deposits',
-        })}
-        : {handleChangeTotalValue(deposits)}.{' '}
-        {props.intl.formatMessage({
-          id: 'Withdrawals',
-          defaultMessage: 'Withdrawals',
-        })}
-        : {handleChangeTotalValue(withdrawals)}. (
-        {dateEstablished
-          ? loadingBar
-          : props.intl.formatMessage({
-              id: 'totals_calculated',
-              defaultMessage: 'Totals can be calculated only for a defined from-till period.',
-            })}
-        )
-      </p>
-      <p className="WalletTable__exclude">
-        X) -{' '}
-        {props.intl.formatMessage({
-          id: 'x_field_description',
-          defaultMessage: 'Use this field to exclude an entry from the totals calculation.',
-        })}
-      </p>
-      <p className="WalletTable__disclaimer">
-        <b>
+        <h3>
           {props.intl.formatMessage({
-            id: 'disclaimer',
-            defaultMessage: 'Disclaimer',
+            id: 'table_view',
+            defaultMessage: 'Advanced reports',
+          })}
+        </h3>
+        <TableFilter
+          intl={props.intl}
+          filterUsersList={filterAccounts}
+          getFieldDecorator={props.form.getFieldDecorator}
+          handleOnClick={handleOnClick}
+          handleSelectUser={handleSelectUserFilterAccounts}
+          isLoadingTableTransactions={loading}
+          deleteUser={deleteUserFromFilterAccounts}
+          currency={currentCurrency}
+          form={props.form}
+        />
+        <p className="WalletTable__total">
+          {props.intl.formatMessage({
+            id: 'total',
+            defaultMessage: 'TOTAL',
           })}
           :{' '}
-        </b>
-        <span className="WalletTable__exclude">
           {props.intl.formatMessage({
-            id: 'disclaimer_info',
-            defaultMessage:
-              'The information provided by this site, including financial reports, is provided on an ""as is"" basis with no guarantees of completeness, accuracy, usefulness or timeliness. Waivio Technologies Inc. assumes no responsibility or liability for any errors or omissions in the content of this site."',
+            id: 'Deposits',
+            defaultMessage: 'Deposits',
           })}
-        </span>
-      </p>
-      {loading && isEmpty(mappedList) ? (
-        <Loading />
-      ) : (
-        <DynamicTbl
-          infinity
-          header={configWaivReportsWebsitesTableHeader('USD')}
-          bodyConfig={mappedList}
-          emptyTitle={props.intl.formatMessage({
-            id: 'empty_table_transaction_list',
-            defaultMessage: `You did not have any transactions during this period`,
+          : {handleChangeTotalValue(deposits)}.{' '}
+          {props.intl.formatMessage({
+            id: 'Withdrawals',
+            defaultMessage: 'Withdrawals',
           })}
-          showMore={hasMore && !dateEstablished}
-          handleShowMore={getMoreTransactionsList}
-          onChange={handleOnChange}
-        />
-      )}
+          : {handleChangeTotalValue(withdrawals)}. (
+          {dateEstablished
+            ? loadingBar
+            : props.intl.formatMessage({
+                id: 'totals_calculated',
+                defaultMessage: 'Totals can be calculated only for a defined from-till period.',
+              })}
+          )
+        </p>
+        <p className="WalletTable__exclude">
+          X) -{' '}
+          {props.intl.formatMessage({
+            id: 'x_field_description',
+            defaultMessage: 'Use this field to exclude an entry from the totals calculation.',
+          })}
+        </p>
+        <p className="WalletTable__disclaimer">
+          <b>
+            {props.intl.formatMessage({
+              id: 'disclaimer',
+              defaultMessage: 'Disclaimer',
+            })}
+            :{' '}
+          </b>
+          <span className="WalletTable__exclude">
+            {props.intl.formatMessage({
+              id: 'disclaimer_info',
+              defaultMessage:
+                'The information provided by this site, including financial reports, is provided on an ""as is"" basis with no guarantees of completeness, accuracy, usefulness or timeliness. Waivio Technologies Inc. assumes no responsibility or liability for any errors or omissions in the content of this site."',
+            })}
+          </span>
+        </p>
+        {loading && isEmpty(mappedList) ? (
+          <Loading />
+        ) : (
+          <DynamicTbl
+            infinity
+            header={configWaivReportsWebsitesTableHeader(currentCurrency)}
+            bodyConfig={mappedList}
+            emptyTitle={props.intl.formatMessage({
+              id: 'empty_table_transaction_list',
+              defaultMessage: `You did not have any transactions during this period`,
+            })}
+            showMore={hasMore && !dateEstablished}
+            handleShowMore={getMoreTransactionsList}
+            onChange={handleOnChange}
+          />
+        )}
+      </div>
     </div>
   );
 };
@@ -292,7 +303,6 @@ WAIVwalletTable.propTypes = {
     getFieldDecorator: PropTypes.func,
     getFieldsValue: PropTypes.func,
   }).isRequired,
-  isLoadingAllData: PropTypes.bool.isRequired,
 };
 
 export default injectIntl(Form.create()(WAIVwalletTable));
