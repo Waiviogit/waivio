@@ -149,8 +149,11 @@ const WAIVwalletTable = props => {
   };
 
   const handleChangeTotalValue = value => {
-    if (dateEstablished) {
-      const num = isLoadingData ? round(value, 3) : 0;
+    let num = 0;
+
+    if (dateEstablished && !isLoadingData) {
+      num = round(value, 3);
+
       return (
         <b>
           {/* eslint-disable-next-line react/style-prop-object */}
