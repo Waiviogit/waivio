@@ -12,20 +12,24 @@ import {
 import * as accountHistoryConstants from '../../../../common/constants/accountHistory';
 import { guestUserRegex } from '../../../../common/helpers/regexHelpers';
 
-const compareTransferBody = (transaction, totalVestingShares, totalVestingFundSteem, currency) => {
-  const transactionType = transaction.type;
+const compareTransferBody = (transaction, currency, totalVestingShares, totalVestingFundSteem) => {
+  const transactionType = transaction.type || transaction.operation;
   const user = transaction.userName;
   const isGuestPage = guestUserRegex.test(user);
   let description = '';
   const data = {
     time: dateTableField(transaction.timestamp, isGuestPage),
     hiveCurrentCurrency: round(get(transaction, `hive${currency}`), 3),
+    waivCurrentCurrency: currency
+      ? round(get(transaction, `WAIV.${currency}`), 3)
+      : round(get(transaction, 'WAIV.USD'), 3),
     hbdCurrentCurrency: round(get(transaction, `hbd${currency}`), 3),
     withdrawDeposit: get(transaction, 'withdrawDeposit'),
     [currency]: get(transaction, currency),
     checked: get(transaction, 'checked'),
     userName: user,
     _id: isGuestPage ? get(transaction, '_id') : get(transaction, 'operationNum'),
+    USD: round(get(transaction, 'USD'), 3),
   };
 
   switch (transactionType) {
@@ -110,20 +114,7 @@ const compareTransferBody = (transaction, totalVestingShares, totalVestingFundSt
         fieldDescription: getTransactionDescription(transactionType).claimRewards,
       };
     }
-    case accountHistoryConstants.CANCEL_LIMIT_ORDER: {
-      const cancelLimitOrderAmounts = getFormattedClaimRewardPayout(
-        transaction.hiveUSD,
-        transaction.hbdUSD,
-      );
 
-      return {
-        ...data,
-        fieldHIVE: get(cancelLimitOrderAmounts, 'HIVE'),
-        // fieldHP: get(cancelLimitOrderAmounts, 'HP'),
-        fieldHBD: get(cancelLimitOrderAmounts, 'HBD'),
-        fieldDescription: getTransactionDescription(transactionType).cancelLimitOrder,
-      };
-    }
     case accountHistoryConstants.TRANSFER_TO_SAVINGS:
     case accountHistoryConstants.TRANSFER_FROM_SAVINGS:
     case accountHistoryConstants.CANCEL_TRANSFER_FROM_SAVINGS: {
@@ -256,6 +247,146 @@ const compareTransferBody = (transaction, totalVestingShares, totalVestingFundSt
         fieldDescription: currentUserIsReceiver
           ? proposalDescription.proposalPaymentFrom
           : proposalDescription.proposalPaymentTo,
+      };
+    }
+
+    case accountHistoryConstants.TOKENS_TRANSFER: {
+      data.fieldMemo = transaction.memo;
+      data.userName = transaction.account;
+
+      if (transaction.account === transaction.to) {
+        return {
+          ...data,
+          fieldWAIV: transaction.quantity,
+          fieldDescription: getTransactionDescription(transactionType, { from: transaction.from })
+            .tokensTransferFrom,
+        };
+      }
+
+      return {
+        ...data,
+        fieldWAIV: `-${transaction.quantity}`,
+        fieldDescription: getTransactionDescription(transactionType, { to: transaction.to })
+          .tokensTransferTo,
+      };
+    }
+
+    case accountHistoryConstants.CURATION_REWARDS: {
+      data.userName = transaction.account;
+      const fieldWAIVamount =
+        transaction.withdrawDeposit === 'w' ? `-${transaction.quantity}` : transaction.quantity;
+
+      return {
+        ...data,
+        fieldWAIV: fieldWAIVamount,
+        fieldDescription: getTransactionDescription(transactionType, {
+          authorperm: transaction.authorperm,
+        }).curationRewards,
+      };
+    }
+    case accountHistoryConstants.BENEFICIARY_REWARD: {
+      data.userName = transaction.account;
+      const fieldWAIVamount =
+        transaction.withdrawDeposit === 'w' ? `-${transaction.quantity}` : transaction.quantity;
+
+      return {
+        ...data,
+        fieldWAIV: fieldWAIVamount,
+        fieldDescription: getTransactionDescription(transactionType, {
+          authorperm: transaction.authorperm,
+        }).beneficiaryRewards,
+      };
+    }
+    case accountHistoryConstants.MARKET_BUY: {
+      data.userName = transaction.account;
+      data.withdrawDeposit = transaction.withdrawDeposit;
+
+      return {
+        ...data,
+        fieldWAIV: transaction.quantity,
+        fieldDescription: getTransactionDescription(transactionType, { accFrom: transaction.from })
+          .marketBuy,
+      };
+    }
+    case accountHistoryConstants.MARKET_SELL: {
+      data.userName = transaction.account;
+      data.withdrawDeposit = transaction.withdrawDeposit;
+
+      return {
+        ...data,
+        fieldWAIV: transaction.quantity,
+        fieldDescription: getTransactionDescription(transactionType, { accTo: transaction.to })
+          .marketSell,
+      };
+    }
+    case accountHistoryConstants.TOKENS_STAKE: {
+      data.userName = transaction.account;
+
+      if (transaction.account === transaction.from && transaction.account !== transaction.to) {
+        return {
+          ...data,
+          fieldWAIV: `-${transaction.quantity}`,
+
+          fieldDescription: getTransactionDescription(transactionType, { to: transaction.to })
+            .tokensStakeTo,
+        };
+      }
+      if (transaction.account !== transaction.from && transaction.account === transaction.to) {
+        return {
+          ...data,
+          fieldWP: transaction.quantity,
+          fieldDescription: getTransactionDescription(transactionType, { from: transaction.from })
+            .tokensStakeFrom,
+        };
+      }
+
+      return {
+        ...data,
+
+        fieldWP: transaction.quantity,
+        fieldDescription: getTransactionDescription(transactionType).tokensStake,
+      };
+    }
+
+    case accountHistoryConstants.MINING_LOTTERY: {
+      data.userName = transaction.account;
+
+      return {
+        ...data,
+        fieldWAIV: transaction.quantity,
+        fieldDescription: getTransactionDescription(transactionType).miningLottery,
+      };
+    }
+    case accountHistoryConstants.SWAP_TOKENS: {
+      data.userName = transaction.account;
+      const fieldWAIVamount =
+        transaction.withdrawDeposit === 'w' ? `-${transaction.quantity}` : transaction.quantity;
+
+      return {
+        ...data,
+        fieldWAIV: fieldWAIVamount,
+        fieldDescription: getTransactionDescription(transactionType).swapTokens,
+      };
+    }
+    case accountHistoryConstants.AIRDROP: {
+      data.userName = transaction.account;
+
+      return {
+        ...data,
+        fieldWP: transaction.quantity,
+        fieldDescription: getTransactionDescription(transactionType).airdrop,
+      };
+    }
+
+    case accountHistoryConstants.AUTHOR_REWARDS: {
+      data.userName = transaction.account;
+
+      return {
+        ...data,
+        fieldWAIV: transaction.quantity,
+        fieldDescription: getTransactionDescription(transactionType, {
+          authorperm: transaction.authorperm,
+        }).authorRewards,
       };
     }
 

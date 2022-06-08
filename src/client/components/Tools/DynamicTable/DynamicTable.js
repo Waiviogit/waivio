@@ -75,17 +75,23 @@ export const DynamicTable = ({
             </td>
           </tr>
         ) : (
-          bodyConfig.map(item => (
-            <tr key={get(item, '_id')}>
-              {header.map(head => (
-                <td key={head.id} style={head.style || {}}>
-                  {head.checkShowItem
-                    ? head.checkShowItem(item, getTdBodyType)
-                    : getTdBodyType(item, head)}
-                </td>
-              ))}
-            </tr>
-          ))
+          bodyConfig.map(item => {
+            if (!item) {
+              return null;
+            }
+
+            return (
+              <tr key={get(item, '_id')}>
+                {header.map(head => (
+                  <td key={head.id} style={head.style || {}}>
+                    {head.checkShowItem
+                      ? head.checkShowItem(item, getTdBodyType)
+                      : getTdBodyType(item, head)}
+                  </td>
+                ))}
+              </tr>
+            );
+          })
         )}
         {showMore && (
           <tr

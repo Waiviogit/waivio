@@ -180,16 +180,169 @@ export const getTransactionDescription = (type, options) => {
         ),
       };
     }
+
+    case accountHistoryConstants.TOKENS_TRANSFER: {
+      const to = get(options, 'to', '');
+      const from = get(options, 'from', '');
+
+      return {
+        tokensTransferTo: (
+          <FormattedMessage
+            id="transferred_to"
+            defaultMessage="Transferred to {username}"
+            values={{
+              username: (
+                <Link to={`/@${to}`}>
+                  <span className="username">{to}</span>
+                </Link>
+              ),
+            }}
+          />
+        ),
+        tokensTransferFrom: (
+          <FormattedMessage
+            id="received_from"
+            defaultMessage="Received from {username}"
+            values={{
+              username: (
+                <Link to={`/@${from}`}>
+                  <span className="username">{from}</span>
+                </Link>
+              ),
+            }}
+          />
+        ),
+      };
+    }
+
+    case accountHistoryConstants.CURATION_REWARDS: {
+      const authorperm = get(options, 'authorperm', '');
+
+      return {
+        curationRewards: (
+          <div>
+            <FormattedMessage id="curator_rewards" defaultMessage="Curator rewards" />{' '}
+            <Link to={`/${authorperm}`}>
+              (<FormattedMessage id="post" defaultMessage="post" className="username" />)
+            </Link>
+          </div>
+        ),
+      };
+    }
+    case accountHistoryConstants.BENEFICIARY_REWARD: {
+      const authorperm = get(options, 'authorperm', '');
+
+      return {
+        beneficiaryRewards: (
+          <div>
+            <FormattedMessage id="curator_rewards" defaultMessage="Curator rewards" />{' '}
+            <Link to={`/${authorperm}`}>
+              (
+              <FormattedMessage
+                id="comment_lowercase"
+                defaultMessage="comment"
+                className="username"
+              />
+              )
+            </Link>
+          </div>
+        ),
+      };
+    }
     case accountHistoryConstants.CLAIM_REWARD_BALANCE:
       return {
         claimRewards: <FormattedMessage id="claim_rewards" defaultMessage="Claim rewards" />,
       };
+    case accountHistoryConstants.MINING_LOTTERY:
+      return {
+        miningLottery: <FormattedMessage id="mining_rewards" defaultMessage="Mining rewards" />,
+      };
+    case accountHistoryConstants.AIRDROP:
+      return {
+        airdrop: <span>Airdrop</span>,
+      };
+
+    case accountHistoryConstants.MARKET_BUY:
+      const accFrom = get(options, 'accFrom', '');
+
+      return {
+        marketBuy: (
+          <div>
+            <FormattedMessage id="bought_from" defaultMessage="Bought from" />
+            <Link to={`/@${accFrom}`}>
+              {' '}
+              <span className="username">{accFrom}</span>
+            </Link>
+          </div>
+        ),
+      };
+
+    case accountHistoryConstants.MARKET_SELL:
+      const accTo = get(options, 'accTo', '');
+
+      return {
+        marketSell: (
+          <div>
+            <FormattedMessage id="sold_to" defaultMessage="Sold to" />
+            <Link to={`/@${accTo}`}>
+              {' '}
+              <span className="username">{accTo}</span>
+            </Link>
+          </div>
+        ),
+      };
+
+    case accountHistoryConstants.TOKENS_STAKE:
+      const to = get(options, 'to', '');
+      const from = get(options, 'from', '');
+
+      return {
+        tokensStake: <FormattedMessage id="power_up" defaultMessage="Power up" />,
+        tokensStakeTo: (
+          <div>
+            <FormattedMessage id="power_up_to" defaultMessage="Power up to" />
+            <Link to={`/@${to}`}>
+              {' '}
+              <span className="username">{to}</span>
+            </Link>
+          </div>
+        ),
+        tokensStakeFrom: (
+          <div>
+            <FormattedMessage id="power_up_from" defaultMessage="Power up from" />
+            <Link to={`/@${from}`}>
+              {' '}
+              <span className="username">{from}</span>
+            </Link>
+          </div>
+        ),
+      };
+
     case accountHistoryConstants.CANCEL_LIMIT_ORDER:
       return {
         cancelLimitOrder: (
           <FormattedMessage id="limit_order_cancel" defaultMessage="Cancel limit order" />
         ),
       };
+
+    case accountHistoryConstants.SWAP_TOKENS:
+      return {
+        swapTokens: <FormattedMessage id="swap" defaultMessage="Swap" />,
+      };
+    case accountHistoryConstants.AUTHOR_REWARDS: {
+      const authorperm = get(options, 'authorperm', '');
+
+      return {
+        authorRewards: (
+          <div>
+            <FormattedMessage id="author_rewards" defaultMessage="Author rewards" />{' '}
+            <Link to={`/${authorperm}`}>
+              (<FormattedMessage id="post" defaultMessage="post" className="username" />)
+            </Link>
+          </div>
+        ),
+      };
+    }
     case accountHistoryConstants.LIMIT_ORDER: {
       const openPays = get(options, 'openPays', null);
       const currentPays = get(options, 'currentPays', null);

@@ -252,7 +252,7 @@ const routes = {
       ],
     },
     {
-      path: `/@:name/(${URL.USER.tabs})?/(table)?`,
+      path: `/@:name/(${URL.USER.tabs})?/(waiv-table|table)?`,
       component: User,
       exact: true,
       pathScope: '/@:name',
@@ -291,6 +291,11 @@ const routes = {
           path: '/transfers/table',
           exact: true,
           component: Views.WalletTable,
+        },
+        {
+          path: '/transfers/waiv-table',
+          exact: true,
+          component: Views.WAIVwalletTable,
         },
         {
           path: '/activity',
