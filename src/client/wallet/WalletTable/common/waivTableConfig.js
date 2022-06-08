@@ -43,7 +43,7 @@ export const configWaivReportsWebsitesTableHeader = type => [
       width: '120px',
     },
     intl: {
-      id: 'table_WAIV_USD',
+      id: `table_WAIV_${type}`,
       defaultMessage: `WAIV/${type}`,
     },
   },

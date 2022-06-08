@@ -254,9 +254,9 @@ class WalletTable extends React.Component {
     const mappedList = map(transactionsList, transaction =>
       compareTransferBody(
         transaction,
+        currencyType,
         this.props.totalVestingShares,
         this.props.totalVestingFundSteem,
-        currencyType,
       ),
     );
 

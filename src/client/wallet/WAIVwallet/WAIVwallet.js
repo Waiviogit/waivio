@@ -7,7 +7,6 @@ import WAIVWalletSummaryInfo from './WAIVWalletSummaryInfo';
 import WAIVWalletTransferList from './WAIVWalletTransferList/WAIVWalletTransferList';
 import ShowRewardsButton from './ShowRewardsButton';
 import { guestUserRegex } from '../../../common/helpers/regexHelpers';
-
 import './WAIVwallet.less';
 
 const WAIVwallet = props => {

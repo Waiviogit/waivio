@@ -94,6 +94,7 @@ const TableFilter = ({
                 validator: validateDate,
               },
             ],
+            initialValue: moment(),
           })(
             <DatePicker
               format={'MM/DD/YYYY'}
@@ -150,6 +151,7 @@ const TableFilter = ({
                 validator: validateDate,
               },
             ],
+            initialValue: moment(),
           })(
             <DatePicker
               format={'MM/DD/YYYY'}
