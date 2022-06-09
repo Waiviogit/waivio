@@ -278,7 +278,7 @@ const WAIVwalletTable = props => {
             })}
           </span>
         </p>
-        {loading && isEmpty(mappedList) ? (
+        {loading ? (
           <Loading />
         ) : (
           <DynamicTbl
