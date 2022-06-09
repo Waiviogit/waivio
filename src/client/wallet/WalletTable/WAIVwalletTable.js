@@ -157,7 +157,7 @@ const WAIVwalletTable = props => {
       return (
         <b>
           {/* eslint-disable-next-line react/style-prop-object */}
-          <FormattedNumber style="currency" currency={currencyType} value={num} />
+          <FormattedNumber style="currency" currency={currentCurrency} value={num} />
         </b>
       );
     }
