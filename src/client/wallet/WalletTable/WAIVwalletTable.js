@@ -43,6 +43,12 @@ const WAIVwalletTable = props => {
   }, [userName]);
 
   useEffect(() => {
+    dispatch(openWalletTable());
+
+    return () => closeTable();
+  }, []);
+
+  useEffect(() => {
     if (!isEmpty(accounts) && hasMore && dateEstablished) {
       getMoreTransactionsList();
     }
