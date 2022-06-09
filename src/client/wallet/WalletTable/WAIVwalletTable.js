@@ -50,6 +50,7 @@ const WAIVwalletTable = props => {
 
   useEffect(() => {
     if (!isEmpty(accounts) && hasMore && dateEstablished) {
+      setIsLoadingData(true);
       getMoreTransactionsList();
     }
 
@@ -155,10 +156,8 @@ const WAIVwalletTable = props => {
   };
 
   const handleChangeTotalValue = value => {
-    let num = 0;
-
-    if (dateEstablished && !isLoadingData) {
-      num = round(value, 3);
+    if (dateEstablished) {
+      const num = loading ? 0 : round(value, 3);
 
       return (
         <b>
