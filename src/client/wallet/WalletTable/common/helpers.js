@@ -314,7 +314,7 @@ const compareTransferBody = (transaction, currency, totalVestingShares, totalVes
 
       return {
         ...data,
-        fieldWAIV: transaction.quantity,
+        fieldWAIV: `-${transaction.quantity}`,
         fieldDescription: getTransactionDescription(transactionType, { accTo: transaction.to })
           .marketSell,
       };
