@@ -43,7 +43,7 @@ export const getTransactionDescription = (type, options) => {
         powerUpTransactionFrom: (
           <FormattedMessage
             id="power_up_from"
-            defaultMessage="Power up from {from}"
+            defaultMessage="Power up from"
             values={{
               from: (
                 <Link to={`/@${from}`}>
@@ -56,7 +56,7 @@ export const getTransactionDescription = (type, options) => {
         powerUpTransactionTo: (
           <FormattedMessage
             id="power_up_to"
-            defaultMessage="Power up to {to}"
+            defaultMessage="Power up to"
             values={{
               to: (
                 <Link to={`/@${to}`}>
@@ -299,22 +299,30 @@ export const getTransactionDescription = (type, options) => {
       return {
         tokensStake: <FormattedMessage id="power_up" defaultMessage="Power up" />,
         tokensStakeTo: (
-          <div>
-            <FormattedMessage id="power_up_to" defaultMessage="Power up to" />
-            <Link to={`/@${to}`}>
-              {' '}
-              <span className="username">{to}</span>
-            </Link>
-          </div>
+          <FormattedMessage
+            id="power_up_to"
+            defaultMessage="Power up to {to}"
+            values={{
+              to: (
+                <Link to={`/@${to}`}>
+                  <span className="username">{to}</span>
+                </Link>
+              ),
+            }}
+          />
         ),
         tokensStakeFrom: (
-          <div>
-            <FormattedMessage id="power_up_from" defaultMessage="Power up from" />
-            <Link to={`/@${from}`}>
-              {' '}
-              <span className="username">{from}</span>
-            </Link>
-          </div>
+          <FormattedMessage
+            id="power_up_from"
+            defaultMessage="Power up from {from}"
+            values={{
+              from: (
+                <Link to={`/@${from}`}>
+                  <span className="username">{from}</span>
+                </Link>
+              ),
+            }}
+          />
         ),
       };
 

@@ -43,7 +43,14 @@ const WAIVwalletTable = props => {
   }, [userName]);
 
   useEffect(() => {
+    dispatch(openWalletTable());
+
+    return () => closeTable();
+  }, []);
+
+  useEffect(() => {
     if (!isEmpty(accounts) && hasMore && dateEstablished) {
+      setIsLoadingData(true);
       getMoreTransactionsList();
     }
 
@@ -149,15 +156,13 @@ const WAIVwalletTable = props => {
   };
 
   const handleChangeTotalValue = value => {
-    let num = 0;
-
-    if (dateEstablished && !isLoadingData) {
-      num = round(value, 3);
+    if (dateEstablished) {
+      const num = loading ? 0 : round(value, 3);
 
       return (
         <b>
           {/* eslint-disable-next-line react/style-prop-object */}
-          <FormattedNumber style="currency" currency={currencyType} value={num} />
+          <FormattedNumber style="currency" currency={currentCurrency} value={num} />
         </b>
       );
     }
@@ -272,7 +277,7 @@ const WAIVwalletTable = props => {
             })}
           </span>
         </p>
-        {loading && isEmpty(mappedList) ? (
+        {loading ? (
           <Loading />
         ) : (
           <DynamicTbl
