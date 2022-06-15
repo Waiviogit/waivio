@@ -85,6 +85,34 @@ const WAIVwalletTable = props => {
     setFilterAccounts(extendedUsersArray);
     setAccounts(extendedUsersArray.map(name => ({ name })));
   };
+  const getMoreTransactionsList = async () => {
+    if (dateEstablished) {
+      const { from, end, currency } = props.form.getFieldsValue();
+
+      const list = await getWaivAdvancedReports(
+        filterAccounts,
+        accounts,
+        handleChangeStartDate(from),
+        handleChangeEndDate(end),
+        userName,
+        currency,
+      );
+
+      setTransactionsList([...transactionsList, ...list.wallet]);
+      setAccounts(list.accounts);
+      setHasMore(list.hasMore);
+      setDeposits(deposits + list.deposits);
+      setWithdrawals(withdrawals + list.withdrawals);
+    } else {
+      const list = await getWaivAdvancedReports(filterAccounts, accounts);
+
+      setTransactionsList([...transactionsList, ...list.wallet]);
+      setAccounts(list.accounts);
+      setHasMore(list.hasMore);
+      setDeposits(0);
+      setWithdrawals(0);
+    }
+  };
   const handleSubmit = async () => {
     const { from, end, currency } = props.form.getFieldsValue();
 
@@ -113,35 +141,6 @@ const WAIVwalletTable = props => {
       setHasMore(filteredList.hasMore);
     }
   };
-  const getMoreTransactionsList = async () => {
-    if (dateEstablished) {
-      const { from, end, currency } = props.form.getFieldsValue();
-
-      const list = await getWaivAdvancedReports(
-        filterAccounts,
-        accounts,
-        handleChangeStartDate(from),
-        handleChangeEndDate(end),
-        userName,
-        currency,
-      );
-
-      setTransactionsList([...transactionsList, ...list.wallet]);
-      setAccounts(list.accounts);
-      setHasMore(list.hasMore);
-      setDeposits(deposits + list.deposits);
-      setWithdrawals(withdrawals + list.withdrawals);
-    } else {
-      const list = await getWaivAdvancedReports(filterAccounts, accounts);
-
-      setTransactionsList([...transactionsList, ...list.wallet]);
-      setAccounts(list.accounts);
-      setHasMore(list.hasMore);
-      setDeposits(deposits + list.deposits);
-      setWithdrawals(withdrawals + list.withdrawals);
-    }
-  };
-
   const handleChangeStartDate = value =>
     moment(value)
       .startOf('day')
