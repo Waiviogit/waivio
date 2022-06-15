@@ -2137,9 +2137,9 @@ export const getWaivAdvancedReports = (
   return fetch(`${config.apiPrefix}${config.user}${config.advancedReport}`, {
     headers: actualHeaders,
     body: JSON.stringify({
-      user,
       accounts,
       filterAccounts,
+      user,
       startDate,
       endDate,
       currency,
