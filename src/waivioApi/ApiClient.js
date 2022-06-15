@@ -2128,9 +2128,9 @@ export const getAdvancedReports = (body, user = '') => {
 export const getWaivAdvancedReports = (
   filterAccounts,
   accounts,
-  user,
   startDate,
   endDate,
+  user,
   currency,
 ) => {
   const actualHeaders = filterAccounts ? { ...headers, filterAccounts } : { ...headers };

@@ -99,9 +99,9 @@ const WAIVwalletTable = props => {
       const filteredList = await getWaivAdvancedReports(
         filterAccounts,
         mappedAccounts,
-        userName,
         handleChangeStartDate(from),
         handleChangeEndDate(end),
+        userName,
         currency,
       );
 
@@ -122,6 +122,7 @@ const WAIVwalletTable = props => {
         accounts,
         handleChangeStartDate(from),
         handleChangeEndDate(end),
+        userName,
         currency,
       );
 
