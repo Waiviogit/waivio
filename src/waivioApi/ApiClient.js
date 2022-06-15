@@ -2126,9 +2126,9 @@ export const getAdvancedReports = (body, user = '') => {
 };
 
 export const getWaivAdvancedReports = (
-  user,
   filterAccounts,
   accounts,
+  user,
   startDate,
   endDate,
   currency,
