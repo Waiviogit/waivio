@@ -2125,25 +2125,11 @@ export const getAdvancedReports = (body, user = '') => {
     .catch(e => e);
 };
 
-export const getWaivAdvancedReports = (
-  filterAccounts,
-  accounts,
-  startDate,
-  endDate,
-  user,
-  currency,
-) => {
-  const actualHeaders = filterAccounts ? { ...headers, filterAccounts } : { ...headers };
+export const getWaivAdvancedReports = (body, user = '') => {
+  const actualHeaders = user ? { ...headers, user } : { ...headers };
   return fetch(`${config.apiPrefix}${config.user}${config.advancedReport}`, {
     headers: actualHeaders,
-    body: JSON.stringify({
-      accounts,
-      filterAccounts,
-      user,
-      startDate,
-      endDate,
-      currency,
-    }),
+    body: JSON.stringify(body),
     method: 'POST',
   })
     .then(res => res.json())
