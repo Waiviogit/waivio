@@ -2125,13 +2125,21 @@ export const getAdvancedReports = (body, user = '') => {
     .catch(e => e);
 };
 
-export const getWaivAdvancedReports = (filterAccounts, accounts, startDate, endDate, currency) => {
+export const getWaivAdvancedReports = (
+  filterAccounts,
+  accounts,
+  startDate,
+  endDate,
+  user,
+  currency,
+) => {
   const actualHeaders = filterAccounts ? { ...headers, filterAccounts } : { ...headers };
   return fetch(`${config.apiPrefix}${config.user}${config.advancedReport}`, {
     headers: actualHeaders,
     body: JSON.stringify({
       accounts,
       filterAccounts,
+      user,
       startDate,
       endDate,
       currency,
@@ -2173,6 +2181,22 @@ export const excludeAdvancedReports = (body, isGuest) =>
       ...(isGuest ? { 'waivio-auth': true } : {}),
     },
     body: JSON.stringify(body),
+    method: 'POST',
+  })
+    .then(res => res.json())
+    .then(res => res)
+    .catch(e => e);
+
+export const excludeWaivAdvancedReports = (userName, recordId, userWithExemptions, checked) =>
+  fetch(`${config.campaignApiPrefix}${config.payments}${config.exemptions}`, {
+    headers: { ...headers, 'access-token': Cookie.get('access_token') },
+    body: JSON.stringify({
+      userName,
+      recordId,
+      userWithExemptions,
+      symbol: 'WAIV',
+      checked,
+    }),
     method: 'POST',
   })
     .then(res => res.json())
