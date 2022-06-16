@@ -12,7 +12,13 @@ import {
 import * as accountHistoryConstants from '../../../../common/constants/accountHistory';
 import { guestUserRegex } from '../../../../common/helpers/regexHelpers';
 
-const compareTransferBody = (transaction, currency, totalVestingShares, totalVestingFundSteem) => {
+const compareTransferBody = (
+  transaction,
+  currency,
+  walletType,
+  totalVestingShares,
+  totalVestingFundSteem,
+) => {
   const transactionType = transaction.type || transaction.operation;
   const user = transaction.userName;
   const isGuestPage = guestUserRegex.test(user);
@@ -28,8 +34,13 @@ const compareTransferBody = (transaction, currency, totalVestingShares, totalVes
     [currency]: get(transaction, currency),
     checked: get(transaction, 'checked'),
     userName: user,
-    _id: isGuestPage ? get(transaction, '_id') : get(transaction, 'operationNum'),
-    USD: round(get(transaction, 'USD'), 3),
+    _id:
+      isGuestPage || walletType === 'WAIV'
+        ? get(transaction, '_id')
+        : get(transaction, 'operationNum'),
+    operationNum: transaction?.operationNum,
+    USD: get(transaction, 'USD'),
+    account: get(transaction, 'account'),
   };
 
   switch (transactionType) {
@@ -314,7 +325,7 @@ const compareTransferBody = (transaction, currency, totalVestingShares, totalVes
 
       return {
         ...data,
-        fieldWAIV: transaction.quantity,
+        fieldWAIV: `-${transaction.quantity}`,
         fieldDescription: getTransactionDescription(transactionType, { accTo: transaction.to })
           .marketSell,
       };

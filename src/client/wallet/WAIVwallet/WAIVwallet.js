@@ -16,6 +16,7 @@ const WAIVwallet = props => {
   return (
     <div className="WAIVwallet">
       <WAIVWalletSummaryInfo name={userName} />
+
       {!isGuest && (
         <Link
           className="UserWallet__view-btn"
