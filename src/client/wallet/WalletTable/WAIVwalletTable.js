@@ -5,20 +5,21 @@ import { isEmpty, map, round } from 'lodash';
 import { Form } from 'antd';
 import PropTypes from 'prop-types';
 import moment from 'moment';
-import BigNumber from 'bignumber.js';
 import { useDispatch, useSelector } from 'react-redux';
 import Loading from '../../components/Icon/Loading';
-import { getWaivAdvancedReports } from '../../../waivioApi/ApiClient';
+import { excludeWaivAdvancedReports, getWaivAdvancedReports } from '../../../waivioApi/ApiClient';
 import DynamicTbl from '../../components/Tools/DynamicTable/DynamicTable';
 import { configWaivReportsWebsitesTableHeader } from './common/waivTableConfig';
 import compareTransferBody from './common/helpers';
 import { getCurrentCurrency } from '../../../store/appStore/appSelectors';
 import TableFilter from './TableFilter';
 import { closeWalletTable, openWalletTable } from '../../../store/walletStore/walletActions';
+import { getUsersTransactionDate } from '../../../store/advancedReports/advancedActions';
 
 import './WalletTable.less';
 
 const WAIVwalletTable = props => {
+  const walletType = 'WAIV';
   const userName = props.match.params.name;
   const currencyInfo = useSelector(getCurrentCurrency);
   const currencyType = currencyInfo.type;
@@ -40,6 +41,7 @@ const WAIVwalletTable = props => {
   useEffect(() => {
     dispatch(openWalletTable());
     getTransactionsList();
+    dispatch(getUsersTransactionDate(userName));
   }, [userName]);
 
   useEffect(() => {
@@ -83,6 +85,7 @@ const WAIVwalletTable = props => {
     setFilterAccounts(extendedUsersArray);
     setAccounts(extendedUsersArray.map(name => ({ name })));
   };
+
   const handleSubmit = async () => {
     const { from, end, currency } = props.form.getFieldsValue();
 
@@ -99,12 +102,13 @@ const WAIVwalletTable = props => {
         mappedAccounts,
         handleChangeStartDate(from),
         handleChangeEndDate(end),
+        userName,
         currency,
       );
 
       await setLoading(false);
-      setDeposits(filteredList.deposits);
       setWithdrawals(filteredList.withdrawals);
+      setDeposits(filteredList.deposits);
       setTransactionsList(filteredList.wallet);
       setAccounts(filteredList.accounts);
       setHasMore(filteredList.hasMore);
@@ -119,25 +123,23 @@ const WAIVwalletTable = props => {
         accounts,
         handleChangeStartDate(from),
         handleChangeEndDate(end),
+        userName,
         currency,
       );
 
+      setWithdrawals(withdrawals + list.withdrawals);
+      setDeposits(deposits + list.deposits);
       setTransactionsList([...transactionsList, ...list.wallet]);
       setAccounts(list.accounts);
       setHasMore(list.hasMore);
-      setDeposits(deposits + list.deposits);
-      setWithdrawals(withdrawals + list.withdrawals);
     } else {
       const list = await getWaivAdvancedReports(filterAccounts, accounts);
 
       setTransactionsList([...transactionsList, ...list.wallet]);
       setAccounts(list.accounts);
       setHasMore(list.hasMore);
-      setDeposits(deposits + list.deposits);
-      setWithdrawals(withdrawals + list.withdrawals);
     }
   };
-
   const handleChangeStartDate = value =>
     moment(value)
       .startOf('day')
@@ -176,28 +178,36 @@ const WAIVwalletTable = props => {
   };
 
   const mappedList = map(transactionsList, transaction =>
-    compareTransferBody(transaction, currentCurrency),
+    compareTransferBody(transaction, currentCurrency, walletType),
   );
 
-  const handleOnChange = (e, item) => {
-    const w = new BigNumber(round(withdrawals, 3));
-    const d = new BigNumber(round(deposits, 3));
+  const calculateTotalChanges = (item, checked) => {
+    const amount = checked ? item.USD * -1 : item.USD;
 
-    if (e.target.checked) {
-      if (item.withdrawDeposit === 'd') {
-        setDeposits(Number(d.minus(item.USD).toFixed(3)));
-      }
-      if (item.withdrawDeposit === 'w') {
-        setWithdrawals(Number(w.minus(item.USD).toFixed(3)));
-      }
-    } else {
-      if (item.withdrawDeposit === 'd') {
-        setDeposits(Number(d.plus(item.USD).toFixed(3)));
-      }
-      if (item.withdrawDeposit === 'w') {
-        setWithdrawals(Number(w.plus(item.USD).toFixed(3)));
-      }
+    if (item.withdrawDeposit === 'd') {
+      setDeposits(deposits + amount);
     }
+    if (item.withdrawDeposit === 'w') {
+      setWithdrawals(withdrawals + amount);
+    }
+  };
+
+  const excludeTransfer = item => {
+    const transferList = [...transactionsList];
+    const transferIndex = transferList.findIndex(transaction => transaction._id === item._id);
+    const transfer = transferList[transferIndex];
+
+    transferList.splice(transferIndex, 1, {
+      ...transfer,
+      checked: !transfer.checked,
+    });
+
+    setTransactionsList(transferList);
+  };
+  const handleOnChange = (e, item) => {
+    calculateTotalChanges(item, e.target.checked);
+    excludeWaivAdvancedReports(userName, item._id, item.account, e.target.checked);
+    excludeTransfer(item);
   };
 
   return (

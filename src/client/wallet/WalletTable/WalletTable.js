@@ -240,6 +240,7 @@ class WalletTable extends React.Component {
   render() {
     const { match, intl, form, transactionsList, currencyInfo } = this.props;
     const currencyType = this.state.currentCurrency || currencyInfo.type;
+    const walletType = 'HIVE';
 
     const loadingBar = this.props.isLoadingAllData ? 'Loading...' : 'Completed';
     /* eslint-disable react/style-prop-object */
@@ -255,6 +256,7 @@ class WalletTable extends React.Component {
       compareTransferBody(
         transaction,
         currencyType,
+        walletType,
         this.props.totalVestingShares,
         this.props.totalVestingFundSteem,
       ),
