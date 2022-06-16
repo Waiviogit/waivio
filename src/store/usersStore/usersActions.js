@@ -34,6 +34,8 @@ export const getInfoForSideBar = username => async dispatch => {
       savings_balance: acc?.savings_balance,
       vesting_shares: acc?.vesting_shares,
       savings_hbd_balance: acc?.savings_hbd_balance,
+      received_vesting_shares: acc?.received_vesting_shares,
+      delegated_vesting_shares: acc?.delegated_vesting_shares,
     };
 
     data.rc_percentage = rc.percentage * 0.01 || 0;
