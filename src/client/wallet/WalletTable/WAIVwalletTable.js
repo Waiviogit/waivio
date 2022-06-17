@@ -18,12 +18,14 @@ import {
   deleteUsersTransactionDate,
   getUsersTransactionDate,
 } from '../../../store/advancedReports/advancedActions';
+import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 
 import './WalletTable.less';
 
 const WAIVwalletTable = props => {
   const walletType = 'WAIV';
   const userName = props.match.params.name;
+  const authUserName = useSelector(getAuthenticatedUserName);
   const currencyInfo = useSelector(getCurrentCurrency);
   const currencyType = currencyInfo.type;
   const dispatch = useDispatch();
@@ -107,10 +109,10 @@ const WAIVwalletTable = props => {
       const mappedAccounts = filterAccounts.map(acc => ({ name: acc }));
       const filteredList = await getWaivAdvancedReports({
         filterAccounts,
-        mappedAccounts,
+        accounts: mappedAccounts,
         startDate,
         endDate,
-        userName,
+        user: userName,
         currency,
       });
 
@@ -133,7 +135,7 @@ const WAIVwalletTable = props => {
         accounts,
         startDate,
         endDate,
-        userName,
+        user: userName,
         currency,
       });
 
@@ -217,7 +219,7 @@ const WAIVwalletTable = props => {
   };
   const handleOnChange = (e, item) => {
     calculateTotalChanges(item, e.target.checked);
-    excludeWaivAdvancedReports(item.account, item._id, item.account, e.target.checked);
+    excludeWaivAdvancedReports(authUserName, item._id, item.account, e.target.checked);
     excludeTransfer(item);
   };
 
