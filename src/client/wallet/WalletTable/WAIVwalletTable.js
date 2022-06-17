@@ -72,7 +72,12 @@ const WAIVwalletTable = props => {
 
   const getTransactionsList = async () => {
     const currency = currentCurrency;
-    const list = await getWaivAdvancedReports({ filterAccounts, accounts, currency });
+    const list = await getWaivAdvancedReports({
+      filterAccounts,
+      accounts,
+      currency,
+      user: authUserName,
+    });
 
     setTransactionsList(list.wallet);
     setAccounts(list.accounts);
