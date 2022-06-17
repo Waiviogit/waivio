@@ -52,10 +52,11 @@ const CreateFormRenderer = props => {
     isDisabled,
     intl,
     handleCreateDuplicate,
+    payoutToken,
   } = props;
   const currentItemId = get(match, ['params', 'campaignId']);
   const isCreateDublicate = get(match, ['params', '0']) === 'createDuplicate';
-  const messages = validatorMessagesCreator(handlers.messageFactory);
+  const messages = validatorMessagesCreator(handlers.messageFactory, payoutToken);
   const validators = validatorsCreator(
     user,
     currentSteemPrice,

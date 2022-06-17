@@ -18,6 +18,7 @@ const LINKS = {
   MY_FEED_NOTIFICATIONS: '/notifications-list',
   FEED_PROMOTED: '/promoted',
   REWARDS: '/rewards',
+  REWARDS_NEW: '/rewards-new',
   DISCOVER: '/discover-objects',
   TOOLS_DRAFTS: '/drafts',
   TOOLS_BOOKMARKS: '/bookmarks',
@@ -104,10 +105,24 @@ const TopNavigation = ({ location: { pathname } }) => {
               className={classNames('TopNavigation__link', {
                 'TopNavigation__link--active':
                   pathname.includes(LINKS.REWARDS) &&
+                  !pathname.includes(LINKS.REWARDS_NEW) &&
                   (!pathname.includes('list') || pathname.includes(LINKS.BLACKLIST)),
               })}
             >
               <FormattedMessage id="rewards" defaultMessage="Rewards" />
+            </Link>
+          </li>
+          <li className="TopNavigation__item">
+            <Link
+              to={`${LINKS.REWARDS_NEW}/manage`}
+              className={classNames('TopNavigation__link', {
+                'TopNavigation__link--active':
+                  pathname.includes(LINKS.REWARDS_NEW) &&
+                  (!pathname.includes('list') || pathname.includes(LINKS.BLACKLIST)),
+              })}
+            >
+              <FormattedMessage id="rewards" defaultMessage="Rewards" />{' '}
+              <span style={{ color: '#f87007' }}>[new]</span>
             </Link>
           </li>
           <li className="TopNavigation__item">

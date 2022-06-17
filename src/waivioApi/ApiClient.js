@@ -866,7 +866,7 @@ export const getHistory = ({
     if (reservationPermlink) reqData.reservationPermlink = reservationPermlink;
     if (notifyAuthor) reqData.guideName = notifyAuthor;
 
-    fetch(`${config.campaignApiPrefix}${config.campaigns}${config.history}`, {
+    fetch(`${config.campaignApiPrefix}${config.campaigns}${config.balance}`, {
       headers: { ...headers, app: config.appName, locale },
       method: 'POST',
       body: JSON.stringify(reqData),
@@ -2630,6 +2630,80 @@ export const createNewCampaing = (data, account) => {
       account,
       'access-token': Cookie.get('access_token'),
     },
+    method: 'POST',
+    body: JSON.stringify(data),
+  })
+    .then(handleErrors)
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+};
+
+export const getCampaingManageList = giudeName => {
+  return fetch(`${config.campaignV2ApiPrefix}${config.campaigns}${config.manager}/${giudeName}`, {
+    headers,
+    method: 'GET',
+  })
+    .then(handleErrors)
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+};
+
+export const getCampaingBalanceList = giudeName => {
+  return fetch(`${config.campaignV2ApiPrefix}${config.campaigns}${config.balance}/${giudeName}`, {
+    headers,
+    method: 'GET',
+  })
+    .then(handleErrors)
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+};
+
+export const getCampaingHistoryList = (giudeName, skip = 0) => {
+  return fetch(
+    `${config.campaignV2ApiPrefix}${config.campaigns}${config.history}/${giudeName}?limit=10&skip=${skip}`,
+    {
+      headers,
+      method: 'GET',
+    },
+  )
+    .then(handleErrors)
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+};
+
+export const getAllRewardList = (skip = 0) => {
+  return fetch(
+    `${config.campaignV2ApiPrefix}${config.rewards}${config.all}?limit=10&skip=${skip}`,
+    {
+      headers,
+      method: 'GET',
+    },
+  )
+    .then(handleErrors)
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+};
+
+export const validateActivateCampaing = data => {
+  return fetch(`${config.campaignV2ApiPrefix}${config.campaign}${config.activate}`, {
+    headers,
+    method: 'POST',
+    body: JSON.stringify(data),
+  })
+    .then(handleErrors)
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+};
+
+export const validateDeactivateCampaing = data => {
+  return fetch(`${config.campaignV2ApiPrefix}${config.campaign}${config.deactivate}`, {
+    headers,
     method: 'POST',
     body: JSON.stringify(data),
   })

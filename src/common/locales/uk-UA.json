@@ -684,7 +684,7 @@
   "date": "дата",
   "budget_more_than_thousandth": "Бюджет повинен бути більшим або рівним 0,001 HIVE",
   "budget_more_than_zero": "Бюджет повинен бути більше нуля",
-  "budget_overprices_wallet_balance": "Бюджет не повинен перевищувати баланс вашого гаманця HIVE",
+  "budget_overprices_wallet_balance": "Бюджет не повинен перевищувати баланс вашого гаманця {currency}",
   "reward_more_than_thousandth": "Винагорода повинна бути більшою або рівною 0,001 HIVE",
   "reward_more_than_zero": "Винагорода повинна бути більше нуля",
   "reward_not_exceed_budget": "Винагорода не повинна перевищувати бюджет",

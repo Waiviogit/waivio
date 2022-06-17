@@ -285,13 +285,6 @@ export const getTransactionDescription = (type, options) => {
         ),
       };
 
-    case accountHistoryConstants.CANCEL_LIMIT_ORDER:
-      return {
-        cancelLimitOrder: (
-          <FormattedMessage id="limit_order_cancel" defaultMessage="Cancel limit order" />
-        ),
-      };
-
     case accountHistoryConstants.SWAP_TOKENS:
       return {
         swapTokens: <FormattedMessage id="swap" defaultMessage="Swap" />,

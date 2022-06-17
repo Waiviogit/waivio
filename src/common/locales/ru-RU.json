@@ -722,7 +722,7 @@
   "date": "дата",
   "budget_more_than_thousandth": "Бюджет должен быть больше либо равен 0,001 HIVE",
   "budget_more_than_zero": "Бюджет должен быть больше нуля",
-  "budget_overprices_wallet_balance": "Бюджет превышает баланс вашего кошелька",
+  "budget_overprices_wallet_balance": "Бюджет превышает баланс вашего {currency} кошелька",
   "reward_more_than_thousandth": "Награда должна быть больше либо равна 0,001 HIVE",
   "reward_more_than_zero": "Награда должна быть больше нуля",
   "reward_not_exceed_budget": "Награда не должна превышать бюджет",
