@@ -7,7 +7,7 @@ import PropTypes from 'prop-types';
 import moment from 'moment';
 import { useDispatch, useSelector } from 'react-redux';
 import Loading from '../../components/Icon/Loading';
-import { excludeWaivAdvancedReports, getWaivAdvancedReports } from '../../../waivioApi/ApiClient';
+import { excludeAdvancedReports, getWaivAdvancedReports } from '../../../waivioApi/ApiClient';
 import DynamicTbl from '../../components/Tools/DynamicTable/DynamicTable';
 import { configWaivReportsWebsitesTableHeader } from './common/waivTableConfig';
 import compareTransferBody from './common/helpers';
@@ -53,7 +53,9 @@ const WAIVwalletTable = props => {
     dispatch(openWalletTable());
     getTransactionsList();
 
-    return () => closeTable();
+    return () => {
+      closeTable();
+    };
   }, []);
 
   useEffect(() => {
@@ -219,7 +221,13 @@ const WAIVwalletTable = props => {
   };
   const handleOnChange = (e, item) => {
     calculateTotalChanges(item, e.target.checked);
-    excludeWaivAdvancedReports(authUserName, item._id, item.account, e.target.checked);
+    excludeAdvancedReports({
+      userName: authUserName,
+      recordId: item._id,
+      userWithExemptions: item.account,
+      checked: e.target.checked,
+      symbol: 'WAIV',
+    });
     excludeTransfer(item);
   };
 

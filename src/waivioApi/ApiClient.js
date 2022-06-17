@@ -2173,22 +2173,6 @@ export const excludeAdvancedReports = (body, isGuest) =>
     .then(res => res)
     .catch(e => e);
 
-export const excludeWaivAdvancedReports = (userName, recordId, userWithExemptions, checked) =>
-  fetch(`${config.campaignApiPrefix}${config.payments}${config.exemptions}`, {
-    headers: { ...headers, 'access-token': Cookie.get('access_token') },
-    body: JSON.stringify({
-      userName,
-      recordId,
-      userWithExemptions,
-      symbol: 'WAIV',
-      checked,
-    }),
-    method: 'POST',
-  })
-    .then(res => res.json())
-    .then(res => res)
-    .catch(e => e);
-
 export const getCurrentCurrencyRate = currency =>
   fetch(
     `${config.currenciesApiPrefix}${config.rate}${config.latest}?base=USD&symbols=${currency}`,
