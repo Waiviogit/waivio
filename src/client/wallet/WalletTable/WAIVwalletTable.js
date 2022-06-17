@@ -84,6 +84,7 @@ const WAIVwalletTable = props => {
   const handleSelectUserFilterAccounts = userAcc => {
     const extendedUsersArray = [...filterAccounts, userAcc.account];
 
+    dispatch(getUsersTransactionDate(userAcc.account));
     setFilterAccounts(extendedUsersArray);
     setAccounts(extendedUsersArray.map(name => ({ name })));
   };
