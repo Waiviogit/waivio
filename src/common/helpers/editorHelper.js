@@ -17,12 +17,37 @@ import {
   isString,
 } from 'lodash';
 import { convertToRaw, EditorState, genKey, Modifier, SelectionState } from 'draft-js';
+import { Editor, Range } from 'slate';
 
 import { Block, createEditorState, Entity } from '../../client/components/EditorExtended';
 
 const mockPhoto = '📷';
 
 export const getNewLinkedObjectsCards = (
+  prohibitObjects,
+  objectIds,
+  rowContent,
+  prevRowContent = [],
+) => {
+  const lastContentAdd = head(differenceWith(rowContent, prevRowContent, isEqual));
+
+  if (
+    lastContentAdd &&
+    (lastContentAdd.type === Entity.OBJECT || lastContentAdd.type === Entity.LINK)
+  ) {
+    const addedObjectId = last(objectIds);
+
+    if (find(prohibitObjects, object => object.author_permlink === addedObjectId)) {
+      return prohibitObjects.filter(object => object.author_permlink !== addedObjectId);
+    }
+
+    return prohibitObjects;
+  }
+
+  return prohibitObjects;
+};
+
+export const getNewLinkedObjectsCardsSlate = (
   prohibitObjects,
   objectIds,
   rowContent,
@@ -384,6 +409,43 @@ export const checkCursorInSearch = editorState => {
   };
 };
 
+export const checkCursorInSearchSlate = editor => {
+  const { selection } = editor;
+
+  if (!selection || !Range.isCollapsed(selection)) {
+    return {
+      isNeedOpenSearch: false,
+    };
+  }
+  const [start] = Range.edges(selection);
+  const wordBefore = Editor.before(editor, start, { unit: 'word' });
+  const before = wordBefore && Editor.before(editor, wordBefore);
+  const beforeRange = before && Editor.range(editor, before, start);
+  const beforeText = beforeRange && Editor.string(editor, beforeRange);
+  const beforeMatch = beforeText && beforeText.match(/^#(\w+)$/);
+  const after = Editor.after(editor, start);
+  const afterRange = Editor.range(editor, start, after);
+  const afterText = Editor.string(editor, afterRange);
+  const afterMatch = afterText.match(/^(\s|$)/);
+  const blockText = editor.children[selection.anchor.path[0]]?.children[0]?.text;
+  const startPositionOfWord = blockText?.lastIndexOf('#', start.offset);
+
+  if (beforeMatch && afterMatch) {
+    return {
+      searchString: beforeMatch[1],
+      selection: { anchor: before, focus: { ...before, offset: beforeMatch[1].length + 1 } },
+      startPositionOfWord,
+      isNeedOpenSearch: true,
+      beforeRange,
+      afterRange,
+    };
+  }
+
+  return {
+    isNeedOpenSearch: false,
+  };
+};
+
 export const replaceTextOnChange = (editorState, text, selectionState) => {
   const anchorKey = selectionState.getAnchorKey();
   const currentContent = editorState.getCurrentContent();
@@ -420,4 +482,4 @@ export const addSpaces = string =>
     );
 
 /** Add empty lines */
-export const addBreakLines = string => string.replace(/\n{2}/g, ' <br/> \n');
+export const addBreakLines = string => string.replace(/\n{3}/g, ' <br/> \n');

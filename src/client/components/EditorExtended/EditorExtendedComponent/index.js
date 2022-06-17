@@ -8,7 +8,7 @@ import {
   setShowEditorSearch,
   setCursorCoordinates,
   setUpdatedEditorExtendedData,
-} from '../../../../store/editorStore/editorActions';
+} from '../../../../store/slateEditorStore/editorActions';
 import EditorExtended from './EditorExtended';
 import {
   getEditorExtended,

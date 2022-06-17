@@ -1,5 +1,8 @@
 import { get } from 'lodash';
-
+import unified from 'unified';
+import { slateToRemark } from 'remark-slate-transformer';
+import stringify from 'remark-stringify';
+import remarkGfm from 'remark-gfm';
 import { ATOMIC_TYPES, Block, Entity } from './constants';
 
 const defaultMarkdownDict = {
@@ -244,6 +247,83 @@ function editorStateToMarkdown(raw, extraMarkdownDict) {
   });
 
   return returnString;
+}
+
+export function editorStateToMarkdownSlate(value) {
+  const processor = unified()
+    .use(slateToRemark, {
+      overrides: {
+        headingOne: (node, next) => ({
+          type: 'heading',
+          depth: 1,
+          children: next(node.children),
+        }),
+        headingTwo: (node, next) => ({
+          type: 'heading',
+          depth: 2,
+          children: next(node.children),
+        }),
+        headingThree: (node, next) => ({
+          type: 'heading',
+          depth: 3,
+          children: next(node.children),
+        }),
+        headingFour: (node, next) => ({
+          type: 'heading',
+          depth: 4,
+          children: next(node.children),
+        }),
+        orderedList: (node, next) => ({
+          type: 'list',
+          children: next(node.children),
+          ordered: true,
+        }),
+        unorderedList: (node, next) => ({
+          type: 'list',
+          children: next(node.children),
+          ordered: false,
+        }),
+        paragraph: (node, next) => {
+          const children = node.children.map(child => {
+            if (child.text && child.underline) {
+              const { text, ...modifiedChild } = child;
+
+              return {
+                ...modifiedChild,
+                type: 'html',
+                children: [{ text: `<u>${child.text}</u>` }],
+              };
+            }
+
+            return child;
+          });
+
+          return {
+            type: 'paragraph',
+            children: next(children),
+          };
+        },
+        video: node => ({
+          type: 'text',
+          value: node.url,
+        }),
+        object: (node, next) => ({
+          type: 'link',
+          url: node.url,
+          children: next([{ text: node.hashtag }]),
+        }),
+      },
+    })
+    .use(remarkGfm)
+    .use(stringify);
+
+  const ast = processor.runSync({
+    type: 'root',
+    children: value,
+  });
+  const text = processor.stringify(ast);
+
+  return text;
 }
 
 export default editorStateToMarkdown;
