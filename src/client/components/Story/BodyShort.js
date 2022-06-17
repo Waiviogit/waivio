@@ -11,7 +11,12 @@ function decodeEntities(body) {
 }
 
 const BodyShort = props => {
-  const body = striptags(remarkable.render(striptags(decodeEntities(props.body))));
+  const body = striptags(remarkable.render(striptags(decodeEntities(props.body))), [
+    'table',
+    'td',
+    'tr',
+    'th',
+  ]);
 
   // If body consists of whitespace characters only skip it.
   if (!body.replace(/\s/g, '').length) {
