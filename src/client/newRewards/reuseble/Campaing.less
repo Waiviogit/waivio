@@ -1,0 +1,28 @@
+@import (reference) '../../styles/custom.less';
+
+.Campaing {
+  position: relative;
+  margin-bottom: 30px;
+
+  .ObjectCardView {
+    padding: 0 0 30px;
+  }
+
+  &__button {
+    display: inline-block;
+    position: absolute;
+    padding: 0 15px;
+    bottom: -15px;
+    right: 20px;
+    height: 45px;
+    line-height: 45px;
+    border-radius: 8px;
+    font-size: 16px;
+    color: @white;
+    background: @orange-hot;
+
+    &:hover {
+      color: @white;
+    }
+  }
+}

@@ -1,7 +1,7 @@
 import { isEmpty } from 'lodash';
 import { getCurrentCurrencyRate } from '../../../waivioApi/ApiClient';
 
-export const validatorMessagesCreator = messageFactory => ({
+export const validatorMessagesCreator = (messageFactory, currency) => ({
   budgetLess: messageFactory(
     'budget_more_than_thousandth',
     'Budget should be more or equal 0,001 HIVE',
@@ -9,7 +9,8 @@ export const validatorMessagesCreator = messageFactory => ({
   budgetToZero: messageFactory('budget_more_than_zero', 'Budget should be more than zero'),
   budgetToSteemBalance: messageFactory(
     'budget_overprices_wallet_balance',
-    'Budget should not exceed your HIVE wallet balance',
+    'Budget should not exceed your {currency} wallet balance',
+    { currency },
   ),
   rewardsLess: messageFactory(
     'reward_more_than_thousandth',

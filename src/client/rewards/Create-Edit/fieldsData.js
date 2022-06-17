@@ -58,6 +58,20 @@ export default (messageFactory, validators, userName, currency) => ({
       'Disclaimer: Exchange rates are provided by third parties and may not be accurate.',
     ),
   },
+  baseCryptocurrency: {
+    name: 'baseCryptocurrency',
+    label: messageFactory('base_cryptocurrency', 'Base cryptocurrency'),
+    rules: [
+      {
+        required: true,
+        message: messageFactory('select_base_currency', 'Please, select your campaign currency!'),
+      },
+    ],
+    options: {
+      reviews: messageFactory('reviews', 'Reviews'),
+    },
+    caption: messageFactory('reward_will_be_paid', 'Reward will be paid in the selected currency'),
+  },
   budget: {
     name: 'budget',
     label: messageFactory('campaign_budget', 'Campaign budget (monthly, {currency})', { currency }),

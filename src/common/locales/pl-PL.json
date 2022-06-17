@@ -684,7 +684,7 @@
   "date": "data",
   "budget_more_than_thousandth": "Budżet powinien być większy lub równy 0,001 HIVE",
   "budget_more_than_zero": "Budżet powinien być większy niż zero",
-  "budget_overprices_wallet_balance": "Budżet nie powinien przekraczać salda w portfelu HIVE",
+  "budget_overprices_wallet_balance": "Budżet nie powinien przekraczać salda w portfelu {currency}",
   "reward_more_than_thousandth": "Nagroda powinna być większa lub równa 0,001 HIVE",
   "reward_more_than_zero": "Nagroda powinna być większa niż zero",
   "reward_not_exceed_budget": "Nagroda nie powinna przekraczać budżetu",
