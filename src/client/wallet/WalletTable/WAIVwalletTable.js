@@ -14,7 +14,10 @@ import compareTransferBody from './common/helpers';
 import { getCurrentCurrency } from '../../../store/appStore/appSelectors';
 import TableFilter from './TableFilter';
 import { closeWalletTable, openWalletTable } from '../../../store/walletStore/walletActions';
-import { getUsersTransactionDate } from '../../../store/advancedReports/advancedActions';
+import {
+  deleteUsersTransactionDate,
+  getUsersTransactionDate,
+} from '../../../store/advancedReports/advancedActions';
 
 import './WalletTable.less';
 
@@ -181,6 +184,7 @@ const WAIVwalletTable = props => {
 
   const deleteUserFromFilterAccounts = userAccount => {
     setFilterAccounts(filterAccounts.filter(acc => acc !== userAccount));
+    dispatch(deleteUsersTransactionDate(userAccount));
     props.form.setFieldsValue(filterAccounts);
   };
 
@@ -213,7 +217,7 @@ const WAIVwalletTable = props => {
   };
   const handleOnChange = (e, item) => {
     calculateTotalChanges(item, e.target.checked);
-    excludeWaivAdvancedReports(userName, item._id, item.account, e.target.checked);
+    excludeWaivAdvancedReports(item.account, item._id, item.account, e.target.checked);
     excludeTransfer(item);
   };
 
