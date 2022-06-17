@@ -5,11 +5,11 @@ import {
   getSearchCoordinates,
   getSearchString,
   getWordForCountWidth,
-} from '../../../../../store/editorStore/editorSelectors';
+} from '../../../../../store/slateEditorStore/editorSelectors';
 import {
   clearEditorSearchObjects,
   selectObjectFromSearch,
-} from '../../../../../store/editorStore/editorActions';
+} from '../../../../../store/slateEditorStore/editorActions';
 import { getSearchObjectsResults } from '../../../../../store/searchStore/searchSelectors';
 
 const mapStateToProps = state => ({
@@ -20,8 +20,8 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  selectObjectFromSearch: object => dispatch(selectObjectFromSearch(object)),
-  clearEditorSearchObjects: object => dispatch(clearEditorSearchObjects(object)),
+  selectObjectFromSearch: (object, editor) => dispatch(selectObjectFromSearch(object, editor)),
+  clearEditorSearchObjects: () => dispatch(clearEditorSearchObjects()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(EditorSearchObjects);

@@ -6,7 +6,6 @@ import { getInitialState } from '../../../common/helpers/postHelpers';
 import Editor from '../../components/EditorExtended/EditorExtendedComponent';
 import PostPreviewModal from '../PostPreviewModal/PostPreviewModal';
 import PostObjectCard from '../PostObjectCard/PostObjectCard';
-import { toMarkdown } from '../../components/EditorExtended';
 import LastDraftsContainer from '../Write/LastDraftsContainer';
 import ObjectCreation from '../../components/Sidebar/ObjectCreation/ObjectCreation';
 import { setObjPercents } from '../../../common/helpers/wObjInfluenceHelper';
@@ -14,6 +13,7 @@ import SearchObjectsAutocomplete from '../../components/EditorObject/SearchObjec
 import CreateObject from '../CreateObjectModal/CreateObject';
 import { getCurrentDraftId } from '../../../common/helpers/editorHelper';
 import './EditPost.less';
+import { editorStateToMarkdownSlate } from '../../components/EditorExtended/util/editorStateToMarkdown';
 
 const propTypes = {
   intl: PropTypes.shape().isRequired,
@@ -135,8 +135,11 @@ const EditPost = props => {
   };
 
   const handleChangeContent = useCallback(
-    debounce((rawContent, title) => {
-      const updatedStore = { content: toMarkdown(rawContent), titleValue: title };
+    debounce((editor, title) => {
+      const updatedStore = {
+        content: editorStateToMarkdownSlate(editor.children),
+        titleValue: title,
+      };
 
       if (content !== updatedStore.content || titleValue !== updatedStore.titleValue) {
         props.saveDraft(updatedStore);
@@ -204,7 +207,7 @@ const EditPost = props => {
             handleHashtag={handleHashtag}
             displayTitle
             draftId={props.draftId}
-            handlePasteTest={handlePasteText}
+            handlePasteText={handlePasteText}
           />
           {props.draftPosts.some(d => d.draftId === props.draftId) && (
             <div className="edit-post__saving-badge">

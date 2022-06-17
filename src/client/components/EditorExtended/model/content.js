@@ -6,6 +6,10 @@ import VideoSideButton from '../components/sides/VideoSideButton';
 import ObjectSideButton from '../components/sides/ObjectSideButton';
 import SeparatorButton from '../components/sides/SeparatorSideButton';
 import CodeSideButton from '../components/sides/CodeSideButton';
+import ImageButtonSlate from '../components/sides/ImageButtonSlate';
+import VideoButtonSlate from '../components/sides/VideoButtonSlate';
+import TableSideButton from '../components/sides/TableSideButton';
+import EmojiSideButton from '../components/sides/EmojiButton';
 
 export const defaultDecorators = new CompositeDecorator([
   {
@@ -38,6 +42,37 @@ export const SIDE_BUTTONS = [
   {
     title: 'Code',
     component: CodeSideButton,
+  },
+];
+
+export const SIDE_BUTTONS_SLATE = [
+  {
+    title: 'Image',
+    component: ImageButtonSlate,
+  },
+  {
+    title: 'Video',
+    component: VideoButtonSlate,
+  },
+  {
+    title: 'Object',
+    component: ObjectSideButton,
+  },
+  {
+    title: 'Separator',
+    component: SeparatorButton,
+  },
+  {
+    title: 'Code',
+    component: CodeSideButton,
+  },
+  {
+    title: 'Table',
+    component: TableSideButton,
+  },
+  {
+    title: 'Emoji',
+    component: EmojiSideButton,
   },
 ];
 

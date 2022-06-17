@@ -12,7 +12,7 @@ import usersReducer from './usersStore/usersReducer';
 import notificationReducer from '../client/app/Notification/notificationReducers';
 import bookmarksReducer from './bookmarksStore/bookmarksReducer';
 import favoritesReducer from './favoritesStore/favoritesReducer';
-import editorReducer from './editorStore/editorReducer';
+import editorReducer from './slateEditorStore/editorReducer';
 import walletReducer from './walletStore/walletReducer';
 import reblogReducers from './reblogStore/reblogReducers';
 import settingsReducer from './settingsStore/settingsReducer';
