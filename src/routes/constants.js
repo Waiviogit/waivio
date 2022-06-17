@@ -46,6 +46,7 @@ export default {
       'reports',
       'fraud-detection',
       'receivables',
+      'all',
     ].join('|'),
     sideBar: [
       'all',

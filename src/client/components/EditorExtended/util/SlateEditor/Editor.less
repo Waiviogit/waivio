@@ -1,0 +1,56 @@
+@import (reference) '../../../../styles/custom.less';
+
+.waiv-editor {
+  table.editor-table {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+  }
+
+  table,
+  th,
+  td {
+    border: 1px solid @black;
+  }
+
+  tr {
+    width: 100%;
+    max-width: 550px;
+  }
+
+  td {
+    height: 50px;
+    padding: 0 5px;
+    width: 100%;
+  }
+
+  .block-heading {
+    margin-top: 0;
+    padding-top: 0;
+  }
+}
+@toolbar-color: #323845;
+
+.table-toolbar {
+  margin-top: 15px;
+  background: @toolbar-color;
+  color: @white;
+  border-radius: 4px;
+  z-index: 2;
+  position: absolute;
+  transition: all 0.1s ease;
+  box-shadow: 0 1px 3px 0 #747171;
+  -webkit-box-shadow: none;
+  display: flex;
+  flex-direction: row;
+  padding: 4px;
+}
+
+.table-toolbar_item {
+  margin-right: 5px;
+  cursor: pointer;
+
+  &:hover {
+    color: @orange;
+  }
+}

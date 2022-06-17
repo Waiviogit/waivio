@@ -10,6 +10,7 @@ const routes = {
   appName: config[process.env.NODE_ENV].appName,
   baseUrl,
   apiPrefix: baseUrl + config.apiPrefix,
+  campaignV2ApiPrefix: baseUrl + config.campaignApiPrefixV2,
   objectsBotApiPrefix: baseUrl + config.objectsBotApiPrefix,
   campaignApiPrefix: baseUrl + config.campaignApiPrefix,
   currenciesApiPrefix: baseUrl + config.currenciesApiPrefix,

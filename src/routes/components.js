@@ -9,6 +9,10 @@ const loableComponent = component =>
 
 export default {
   Bookmarks: loableComponent(import('../client/bookmarks/Bookmarks')),
+  RewardsManage: loableComponent(
+    import('../client/newRewards/ManageCampaingsTab/ManageCampaingsTab'),
+  ),
+  RewardsAll: loableComponent(import('../client/newRewards/RewardsAll/RewardsAll')),
   RewardsMainPage: loableComponent(import('../client/newRewards/RewardsMainPage')),
   Drafts: loableComponent(import('../client/post/Write/Drafts')),
   Replies: loableComponent(import('../client/replies/Replies')),

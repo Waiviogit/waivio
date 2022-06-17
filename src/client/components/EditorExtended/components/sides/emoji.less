@@ -1,0 +1,23 @@
+@import (reference) '../../../../styles/custom.less';
+
+.emoji__wrapper {
+  display: flex;
+  max-height: 400px;
+  flex-wrap: wrap;
+  overflow: auto;
+  cursor: pointer;
+  padding-top: 15px;
+}
+
+.emoji__item {
+  cursor: pointer;
+  font-size: 25px;
+  width: 35px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+
+  &:hover {
+    background-color: @twitter-background-color;
+  }
+}

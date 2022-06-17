@@ -52,10 +52,11 @@ const CreateFormRenderer = props => {
     isDisabled,
     intl,
     handleCreateDuplicate,
+    payoutToken,
   } = props;
   const currentItemId = get(match, ['params', 'campaignId']);
   const isCreateDublicate = get(match, ['params', '0']) === 'createDuplicate';
-  const messages = validatorMessagesCreator(handlers.messageFactory);
+  const messages = validatorMessagesCreator(handlers.messageFactory, payoutToken);
   const validators = validatorsCreator(
     user,
     currentSteemPrice,
@@ -225,6 +226,21 @@ const CreateFormRenderer = props => {
             </Select>,
           )}
           <div className="CreateReward__field-caption">{fields.baseCurrency.caption}</div>
+        </Form.Item>
+        <Form.Item label={fields.baseCryptocurrency.label}>
+          {getFieldDecorator(fields.baseCryptocurrency.name, {
+            rules: fields.baseCryptocurrency.rules,
+            initialValue: props.payoutToken,
+          })(
+            <Select onChange={handlers.handleCryptocurrencyChanges} disabled={disabled}>
+              {['HIVE', 'WAIV'].map(currency => (
+                <Option key={currency} value={currency}>
+                  {currency}
+                </Option>
+              ))}
+            </Select>,
+          )}
+          <div className="CreateReward__field-caption">{fields.baseCryptocurrency.caption}</div>
         </Form.Item>
 
         <Form.Item label={fields.budget.label}>
@@ -600,6 +616,7 @@ CreateFormRenderer.propTypes = {
     handleSetCompensationAccount: PropTypes.func.isRequired,
     removeCompensationAccount: PropTypes.func.isRequired,
     handleAddPageObject: PropTypes.func.isRequired,
+    handleCryptocurrencyChanges: PropTypes.func.isRequired,
     removePageObject: PropTypes.func.isRequired,
     setTargetDays: PropTypes.func.isRequired,
     getObjectsToOmit: PropTypes.func.isRequired,
@@ -620,6 +637,7 @@ CreateFormRenderer.propTypes = {
   loading: PropTypes.bool.isRequired,
   parentPermlink: PropTypes.string,
   currency: PropTypes.string.isRequired,
+  payoutToken: PropTypes.string.isRequired,
   getFieldValue: PropTypes.func.isRequired,
   getFieldDecorator: PropTypes.func.isRequired,
   campaignId: PropTypes.string,

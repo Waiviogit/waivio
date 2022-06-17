@@ -1,20 +1,20 @@
 import { get } from 'lodash';
 import * as React from 'react';
-import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
+import { ReactEditor } from 'slate-react';
 
 import SearchItemObject from './SearchItemObject';
 
 import './EditorSearchObjects.less';
 
 const EditorSearchObjects = ({
-  editorNode,
   searchCoordinates,
   wordForCountWidth,
   searchObjectsResults,
   selectObjectFromSearch,
   clearEditorSearchObjects,
+  editor,
 }) => {
   const inputWrapper = React.useRef(null);
   const searchBlockItem = React.useRef(null);
@@ -38,9 +38,9 @@ const EditorSearchObjects = ({
     setPositionWhenBlockExist();
 
     return () => {
-      clearEditorSearchObjects();
+      clearEditorSearchObjects(null, editor);
     };
-  }, [editorNode]);
+  }, []);
 
   React.useEffect(() => {
     if (selectedObj) {
@@ -100,7 +100,7 @@ const EditorSearchObjects = ({
 
     fakeLeftPositionBlock.current.innerHTML = wordForCountWidth;
     // eslint-disable-next-line react/no-find-dom-node
-    const parent = ReactDOM.findDOMNode(editorNode);
+    const parent = ReactEditor.toDOMNode(editor, editor);
     const parentBoundary = parent.getBoundingClientRect(); // DraftEditor-root
     const top = searchCoordinates.bottom - parentBoundary.top + 11;
     const selectionCenter =
@@ -118,7 +118,7 @@ const EditorSearchObjects = ({
 
   const setPositionWhenBlockExist = () => countCoordinates();
 
-  const handleSelectObject = object => selectObjectFromSearch(object);
+  const handleSelectObject = object => selectObjectFromSearch(object, editor);
 
   return (
     <React.Fragment>
@@ -150,10 +150,10 @@ const EditorSearchObjects = ({
 EditorSearchObjects.propTypes = {
   wordForCountWidth: PropTypes.string,
   searchObjectsResults: PropTypes.shape(),
-  editorNode: PropTypes.shape().isRequired,
   searchCoordinates: PropTypes.shape().isRequired,
   selectObjectFromSearch: PropTypes.func.isRequired,
   clearEditorSearchObjects: PropTypes.func.isRequired,
+  editor: PropTypes.shape().isRequired,
 };
 
 EditorSearchObjects.defaultProps = {

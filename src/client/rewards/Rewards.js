@@ -1117,7 +1117,7 @@ class Rewards extends React.Component {
               {renderedRoutes}
             </div>
             {(match.url === PATH_NAME_PAYABLES || match.url === PATH_NAME_RECEIVABLES) && (
-              <Affix className="rightContainer leftContainer__user" stickPosition={77}>
+              <Affix className="rightContainer leftContainer__user" stickPosition={120}>
                 <div className="right">
                   <RewardsFiltersPanel
                     campaignsTypes={campaignsTypes}
