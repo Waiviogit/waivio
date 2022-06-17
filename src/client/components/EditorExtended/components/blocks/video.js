@@ -5,15 +5,15 @@ import AsyncVideo from '../../../../vendor/asyncVideo';
 
 import './video.less';
 
-const Video = ({ entityData }) => {
-  if (isOdysee(entityData.src)) {
-    return <AsyncVideo url={entityData.src} />;
+const Video = ({ url }) => {
+  if (isOdysee(url)) {
+    return <AsyncVideo url={url} />;
   }
-  const src = getSource(entityData);
+  const src = getSource({ src: url });
 
   if (src) {
     return (
-      <div className={getIframeContainerClass({ url: entityData.src })}>
+      <div className={getIframeContainerClass({ url })}>
         <iframe
           title={src}
           width="100%"
@@ -31,7 +31,7 @@ const Video = ({ entityData }) => {
 };
 
 Video.propTypes = {
-  entityData: PropTypes.shape(undefined).isRequired,
+  url: PropTypes.string.isRequired,
 };
 
 export default Video;

@@ -4,7 +4,7 @@ import { message } from 'antd';
 import assert from 'assert';
 import Cookie from 'js-cookie';
 import { push } from 'connected-react-router';
-import { convertToRaw, EditorState, Modifier, SelectionState } from 'draft-js';
+import { convertToRaw, EditorState, SelectionState } from 'draft-js';
 import {
   forEach,
   get,
@@ -20,6 +20,7 @@ import {
   size,
   differenceBy,
 } from 'lodash';
+import { Transforms } from 'slate';
 import { createAction } from 'redux-actions';
 import { createAsyncActionType } from '../../common/helpers/stateHelpers';
 import { REFERRAL_PERCENT } from '../../common/helpers/constants';
@@ -53,7 +54,7 @@ import {
   getFilteredLinkedObjects,
   updatedHideObjectsPaste,
   getLinkedObjects as getLinkedObjectsHelper,
-  checkCursorInSearch,
+  checkCursorInSearchSlate,
 } from '../../common/helpers/editorHelper';
 import {
   getCurrentDraft,
@@ -61,7 +62,6 @@ import {
   getEditorDraftBody,
   getEditorDraftId,
   getEditorExtended,
-  getEditorExtendedState,
   getEditorLinkedObjects,
   getEditorLinkedObjectsCards,
   getIsEditorSaving,
@@ -71,15 +71,12 @@ import {
 import { getCurrentLocation, getQueryString, getSuitableLanguage } from '../reducers';
 import { getObjectName, getObjectType } from '../../common/helpers/wObjectHelper';
 import { createPostMetadata, getObjectUrl } from '../../common/helpers/postHelpers';
-import {
-  createEditorState,
-  Entity,
-  fromMarkdown,
-  toMarkdown,
-} from '../../client/components/EditorExtended';
+import { createEditorState, Entity, fromMarkdown } from '../../client/components/EditorExtended';
 import { setObjPercents } from '../../common/helpers/wObjInfluenceHelper';
 import { extractLinks } from '../../common/helpers/parser';
 import objectTypes from '../../client/object/const/objectTypes';
+import { editorStateToMarkdownSlate } from '../../client/components/EditorExtended/util/editorStateToMarkdown';
+import { insertObject } from '../../client/components/EditorExtended/util/SlateEditor/utils/common';
 
 export const CREATE_POST = '@editor/CREATE_POST';
 export const CREATE_POST_START = '@editor/CREATE_POST_START';
@@ -561,7 +558,7 @@ export const buildPost = (draftId, data = {}, isEditPost) => (dispatch, getState
   const campaignId = get(campaign, '_id', null) || get(jsonMetadata, 'campaignId', null);
   const reservationPermlink = get(jsonMetadata, 'reservation_permlink', null);
   const postData = {
-    body: content || body || originalBody || data.body,
+    body: body || content || originalBody,
     lastUpdated: Date.now(),
     isUpdating,
     draftId,
@@ -684,6 +681,7 @@ export const handleObjectSelect = (object, isCursorToEnd, intl) => async (dispat
       topics: size(updateTopics) ? updateTopics : topics,
     }),
   );
+
   dispatch(
     saveDraft(draftId, intl, { content: draftContent.body, titleValue: draftContent.title }),
   );
@@ -748,6 +746,41 @@ export const getRawContentEntityMap = (rawContent, response) => (dispatch, getSt
 };
 
 export const getRestoreObjects = (rawContent, newObject, draftId) => async (dispatch, getState) => {
+  const state = getState();
+  const locale = getLocale(state);
+  const { prevEditorState } = getEditorExtended(state);
+  const linkedCards = getEditorLinkedObjectsCards(state);
+
+  const objectIds = dispatch(getObjectIds(rawContent, newObject, draftId));
+
+  const newLinkedObjectsCards = getNewLinkedObjectsCards(
+    linkedCards,
+    objectIds,
+    Object.values(rawContent.entityMap),
+    get(prevEditorState, 'getCurrentContent', false) &&
+      Object.values(convertToRaw(prevEditorState.getCurrentContent()).entityMap),
+  );
+
+  let rawContentUpdated = rawContent;
+
+  if (objectIds.length) {
+    const response = await getObjectsByIds({
+      locale,
+      requiredFields: ['rating'],
+      authorPermlinks: objectIds,
+    });
+    const entityMap = dispatch(getRawContentEntityMap(rawContent, response));
+
+    rawContentUpdated = { ...rawContentUpdated, entityMap };
+  }
+
+  return { rawContentUpdated, newLinkedObjectsCards };
+};
+
+export const getRestoreObjectsSlate = (rawContent, newObject, draftId) => async (
+  dispatch,
+  getState,
+) => {
   const state = getState();
   const locale = getLocale(state);
   const { prevEditorState } = getEditorExtended(state);
@@ -872,71 +905,27 @@ export const handlePasteText = html => async (dispatch, getState) => {
   }
 };
 
-const addEntityRange = (block, startPosition, objName, entityKey) => {
-  return {
-    ...block,
-    entityRanges: [
-      ...block.entityRanges,
-      { offset: startPosition, length: objName.length, key: entityKey },
-    ],
-  };
-};
-
-export const selectObjectFromSearch = selectedObject => (dispatch, getState) => {
+export const selectObjectFromSearch = (selectedObject, editor) => (dispatch, getState) => {
   if (selectedObject) {
     const state = getState();
     const titleValue = getTitleValue(state);
-    const editorState = getEditorExtendedState(state);
     const draftId = getEditorDraftId(state);
-    const { startPositionOfWord, searchString } = checkCursorInSearch(editorState);
-    const selectionState = editorState.getSelection();
-    const anchorKey = selectionState.getAnchorKey();
-    const currentContent = editorState.getCurrentContent();
-    const endPositionOfWord = startPositionOfWord + searchString.length + 1;
+    const { beforeRange } = checkCursorInSearchSlate(editor);
     const objectType = getObjectType(selectedObject);
     const objectName = getObjectName(selectedObject);
     const textReplace = objectType === objectTypes.HASHTAG ? `#${objectName}` : objectName;
+    const url = getObjectUrl(selectedObject.id || selectedObject.author_permlink);
 
-    const contentState = Modifier.replaceText(
-      currentContent,
-      new SelectionState({
-        anchorKey,
-        anchorOffset: startPositionOfWord,
-        focusKey: anchorKey,
-        focusOffset: endPositionOfWord,
-      }),
-      textReplace,
-    );
+    Transforms.select(editor, beforeRange);
+    insertObject(editor, url, textReplace);
 
-    const editorStateWithObjectName = EditorState.push(editorState, contentState, 'replace-text');
-
-    const { blocks, entityMap } = convertToRaw(editorStateWithObjectName.getCurrentContent());
-
-    const newEntityMap = {
-      ...entityMap,
-      [Object.values(entityMap).length]: {
-        type: 'OBJECT',
-        mutability: 'IMMUTABLE',
-        data: {
-          object: { id: selectedObject.author_permlink },
-          url: getObjectUrl(selectedObject.id || selectedObject.author_permlink),
-        },
-      },
+    const updatedStateBody = {
+      body: editorStateToMarkdownSlate(editor.children),
+      title: titleValue,
     };
-
-    const newEditorBody = {
-      blocks: blocks.map(block =>
-        block.key === anchorKey
-          ? addEntityRange(block, startPositionOfWord, textReplace, Object.values(entityMap).length)
-          : block,
-      ),
-      entityMap: newEntityMap,
-    };
-
-    const updatedStateBody = { body: toMarkdown(newEditorBody), title: titleValue };
 
     dispatch(setShowEditorSearch(false));
     dispatch(saveDraft(draftId, null, updatedStateBody));
-    dispatch(firstParseLinkedObjects(updatedStateBody, textReplace, endPositionOfWord));
+    dispatch(firstParseLinkedObjects(updatedStateBody, textReplace));
   }
 };

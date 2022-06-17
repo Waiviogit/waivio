@@ -14,7 +14,7 @@
   margin: 4px 0;
 
   a[target='_blank'] {
-    &:after {
+    &::after {
       content: '\e673';
       font-family: 'iconfont' !important;
       font-size: 80%;
@@ -74,6 +74,7 @@
     font-size: 18px;
     line-height: 150%;
   }
+
   p:not(:last-child) {
     margin: 0 0 0.8rem 0;
   }
@@ -128,6 +129,7 @@
     padding: 0 20px;
     line-height: 1em;
     background-color: rgba(0, 0, 0, 0.05);
+
     code {
       font-size: 16px;
     }
@@ -145,8 +147,26 @@
 
   table {
     width: 100%;
-    display: block;
+    display: table;
     overflow: auto;
+    table-layout: fixed;
+    border: 1px solid @black;
+
+    th,
+    td {
+      border: 1px solid @black;
+    }
+
+    tr {
+      width: 100%;
+      max-width: 550px;
+    }
+
+    td {
+      height: 50px;
+      padding: 0 5px;
+      width: 100%;
+    }
 
     tr > th {
       text-align: left;
@@ -159,6 +179,7 @@
       word-wrap: break-word;
       vertical-align: middle;
       word-break: normal;
+      width: 100%;
     }
 
     tr:nth-child(even) {
@@ -208,7 +229,7 @@
     display: inline-block;
     vertical-align: middle;
     margin-top: 20px;
-    padding-right: 0px;
+    padding-right: 0;
   }
 
   p > img:first-child {
@@ -232,7 +253,7 @@
     border-bottom: @base-border;
   }
 
-  &:after {
+  &::after {
     content: '';
     display: table;
     clear: both;
@@ -243,6 +264,7 @@
     font-size: 20px;
     line-height: 1.5;
     padding: 0 0 18px;
+
     @media @small {
       padding: 0 12px 18px 12px;
     }

@@ -13,7 +13,7 @@ import {
   getIsEditorLoading,
   getIsImageUploading,
   getFilteredObjectCards,
-} from '../../../store/editorStore/editorSelectors';
+} from '../../../store/slateEditorStore/editorSelectors';
 import { getBeneficiariesUsers } from '../../../store/searchStore/searchSelectors';
 import { getIsWaivio } from '../../../store/appStore/appSelectors';
 import {
@@ -28,7 +28,7 @@ import {
   handleObjectSelect,
   setUpdatedEditorData,
   firstParseLinkedObjects,
-} from '../../../store/editorStore/editorActions';
+} from '../../../store/slateEditorStore/editorActions';
 
 const mapStateToProps = (state, props) => {
   const draftId = new URLSearchParams(props.location.search).get('draft');
