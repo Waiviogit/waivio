@@ -50,6 +50,7 @@ const WalletTransaction = ({
             to={transactionDetails.to}
             from={transactionDetails.from}
             transactionType={transactionType}
+            currentUser={currentUsername}
           />
         );
       }

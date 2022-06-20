@@ -7,20 +7,25 @@ import PropTypes from 'prop-types';
 import moment from 'moment';
 import { useDispatch, useSelector } from 'react-redux';
 import Loading from '../../components/Icon/Loading';
-import { excludeWaivAdvancedReports, getWaivAdvancedReports } from '../../../waivioApi/ApiClient';
+import { excludeAdvancedReports, getWaivAdvancedReports } from '../../../waivioApi/ApiClient';
 import DynamicTbl from '../../components/Tools/DynamicTable/DynamicTable';
 import { configWaivReportsWebsitesTableHeader } from './common/waivTableConfig';
 import compareTransferBody from './common/helpers';
 import { getCurrentCurrency } from '../../../store/appStore/appSelectors';
 import TableFilter from './TableFilter';
 import { closeWalletTable, openWalletTable } from '../../../store/walletStore/walletActions';
-import { getUsersTransactionDate } from '../../../store/advancedReports/advancedActions';
+import {
+  deleteUsersTransactionDate,
+  getUsersTransactionDate,
+} from '../../../store/advancedReports/advancedActions';
+import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 
 import './WalletTable.less';
 
 const WAIVwalletTable = props => {
   const walletType = 'WAIV';
   const userName = props.match.params.name;
+  const authUserName = useSelector(getAuthenticatedUserName);
   const currencyInfo = useSelector(getCurrentCurrency);
   const currencyType = currencyInfo.type;
   const dispatch = useDispatch();
@@ -46,8 +51,11 @@ const WAIVwalletTable = props => {
 
   useEffect(() => {
     dispatch(openWalletTable());
+    getTransactionsList();
 
-    return () => closeTable();
+    return () => {
+      closeTable();
+    };
   }, []);
 
   useEffect(() => {
@@ -63,7 +71,13 @@ const WAIVwalletTable = props => {
   }, [hasMore, accounts]);
 
   const getTransactionsList = async () => {
-    const list = await getWaivAdvancedReports(filterAccounts, accounts);
+    const currency = currentCurrency;
+    const list = await getWaivAdvancedReports({
+      filterAccounts,
+      accounts,
+      currency,
+      user: authUserName,
+    });
 
     setTransactionsList(list.wallet);
     setAccounts(list.accounts);
@@ -82,12 +96,15 @@ const WAIVwalletTable = props => {
   const handleSelectUserFilterAccounts = userAcc => {
     const extendedUsersArray = [...filterAccounts, userAcc.account];
 
+    dispatch(getUsersTransactionDate(userAcc.account));
     setFilterAccounts(extendedUsersArray);
     setAccounts(extendedUsersArray.map(name => ({ name })));
   };
 
   const handleSubmit = async () => {
     const { from, end, currency } = props.form.getFieldsValue();
+    const startDate = handleChangeStartDate(from);
+    const endDate = handleChangeEndDate(end);
 
     setLoading(true);
     setIsLoadingData(true);
@@ -97,14 +114,14 @@ const WAIVwalletTable = props => {
       setCurrentCurrency(currency);
 
       const mappedAccounts = filterAccounts.map(acc => ({ name: acc }));
-      const filteredList = await getWaivAdvancedReports(
+      const filteredList = await getWaivAdvancedReports({
         filterAccounts,
-        mappedAccounts,
-        handleChangeStartDate(from),
-        handleChangeEndDate(end),
-        userName,
+        accounts: mappedAccounts,
+        startDate,
+        endDate,
+        user: userName,
         currency,
-      );
+      });
 
       await setLoading(false);
       setWithdrawals(filteredList.withdrawals);
@@ -117,15 +134,17 @@ const WAIVwalletTable = props => {
   const getMoreTransactionsList = async () => {
     if (dateEstablished) {
       const { from, end, currency } = props.form.getFieldsValue();
+      const startDate = handleChangeStartDate(from);
+      const endDate = handleChangeEndDate(end);
 
-      const list = await getWaivAdvancedReports(
+      const list = await getWaivAdvancedReports({
         filterAccounts,
         accounts,
-        handleChangeStartDate(from),
-        handleChangeEndDate(end),
-        userName,
+        startDate,
+        endDate,
+        user: userName,
         currency,
-      );
+      });
 
       setWithdrawals(withdrawals + list.withdrawals);
       setDeposits(deposits + list.deposits);
@@ -133,7 +152,7 @@ const WAIVwalletTable = props => {
       setAccounts(list.accounts);
       setHasMore(list.hasMore);
     } else {
-      const list = await getWaivAdvancedReports(filterAccounts, accounts);
+      const list = await getWaivAdvancedReports({ filterAccounts, accounts });
 
       setTransactionsList([...transactionsList, ...list.wallet]);
       setAccounts(list.accounts);
@@ -174,6 +193,7 @@ const WAIVwalletTable = props => {
 
   const deleteUserFromFilterAccounts = userAccount => {
     setFilterAccounts(filterAccounts.filter(acc => acc !== userAccount));
+    dispatch(deleteUsersTransactionDate(userAccount));
     props.form.setFieldsValue(filterAccounts);
   };
 
@@ -206,7 +226,13 @@ const WAIVwalletTable = props => {
   };
   const handleOnChange = (e, item) => {
     calculateTotalChanges(item, e.target.checked);
-    excludeWaivAdvancedReports(userName, item._id, item.account, e.target.checked);
+    excludeAdvancedReports({
+      userName: authUserName,
+      recordId: item._id,
+      userWithExemptions: item.account,
+      checked: e.target.checked,
+      symbol: 'WAIV',
+    });
     excludeTransfer(item);
   };
 

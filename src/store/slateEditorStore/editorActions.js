@@ -496,14 +496,6 @@ export const reviewCheckInfo = (
         };
 
         dispatch(setUpdatedEditorData(updatedEditorData));
-        dispatch(
-          setUpdatedEditorExtendedData({
-            titleValue: get(currDraft, 'title', '') || updatedEditorData.draftContent.title,
-            editorState: EditorState.moveFocusToEnd(
-              createEditorState(fromMarkdown(updatedEditorData.draftContent)),
-            ),
-          }),
-        );
         dispatch(firstParseLinkedObjects(updatedEditorData.draftContent));
         dispatch(
           saveDraft(draftId, intl, {
