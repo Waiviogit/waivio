@@ -141,7 +141,7 @@ export default class Transfer extends React.Component {
     screenSize: 'large',
     isGuest: false,
     notify: () => {},
-    searchByUser: [],
+    // searchByUser: [],
     hiveBeneficiaryAccount: '',
     getPayables: () => {},
     isTip: false,
@@ -703,6 +703,7 @@ export default class Transfer extends React.Component {
                 ],
               })(
                 <Input
+                  autocomplete="off"
                   className="Transfer__border"
                   disabled={isChangesDisabled && amount}
                   onChange={this.handleAmountChange}
