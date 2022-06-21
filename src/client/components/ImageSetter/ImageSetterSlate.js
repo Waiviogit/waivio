@@ -6,7 +6,8 @@ import { map, isEmpty, get, isEqual, isNil, size } from 'lodash';
 import { EditorState } from 'draft-js';
 import uuidv4 from 'uuid/v4';
 import classNames from 'classnames';
-import { useSlate } from 'slate-react';
+import { ReactEditor, useSlate } from 'slate-react';
+import { Transforms } from 'slate';
 
 import withEditor from '../Editor/withEditor';
 import { isValidImage } from '../../../common/helpers/image';
@@ -54,13 +55,13 @@ const ImageSetter = ({
 
   const addImage = () => {
     if (isModal && isOkayBtn) {
-      currentImages.reverse().forEach(newImage => {
+      currentImages.forEach(newImage => {
         if (isEditor && newImage) {
-          setTimeout(() => {
-            const url = newImage.src.startsWith('http') ? newImage.src : `https://${newImage.src}`;
+          const url = newImage.src.startsWith('http') ? newImage.src : `https://${newImage.src}`;
 
-            editor.insertNode(createImageNode(newImage.name, { url }));
-          }, 1000);
+          Transforms.insertNodes(editor, createImageNode(newImage.name, { url }));
+          Transforms.move(editor, { distance: 1 });
+          ReactEditor.focus(editor);
         }
       });
     }

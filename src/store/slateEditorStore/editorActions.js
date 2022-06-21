@@ -657,15 +657,12 @@ export const handleObjectSelect = (object, isCursorToEnd, intl) => async (dispat
     ...updatedStore,
     ...getCurrentDraftContent(updatedStore, rawContentUpdated, currentRawContent),
   };
-  const editorState = isCursorToEnd
-    ? EditorState.moveFocusToEnd(createEditorState(fromMarkdown(draftContent)))
-    : createEditorState(fromMarkdown(draftContent));
+
   const updateTopics = uniqWith(
     object.type === 'hashtag' || (object.object_type === 'hashtag' && [...topics, objPermlink]),
     isEqual,
   );
 
-  dispatch(setUpdatedEditorExtendedData({ editorState }));
   dispatch(
     setUpdatedEditorData({
       ...newData,
