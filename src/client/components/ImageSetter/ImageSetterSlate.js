@@ -19,7 +19,7 @@ import {
 import { objectFields } from '../../../common/constants/listOfFields';
 
 import './ImageSetter.less';
-import { createImageNode } from '../EditorExtended/util/SlateEditor/utils/embed';
+import { createEmptyNode, createImageNode } from '../EditorExtended/util/SlateEditor/utils/embed';
 
 const ImageSetter = ({
   intl,
@@ -60,7 +60,7 @@ const ImageSetter = ({
           const url = newImage.src.startsWith('http') ? newImage.src : `https://${newImage.src}`;
 
           Transforms.insertNodes(editor, createImageNode(newImage.name, { url }));
-          Transforms.move(editor, { distance: 1 });
+          Transforms.insertNodes(editor, createEmptyNode());
           ReactEditor.focus(editor);
         }
       });
