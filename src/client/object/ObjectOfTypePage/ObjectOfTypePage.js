@@ -7,7 +7,7 @@ import { injectIntl } from 'react-intl';
 import { Button, Form, Icon, message } from 'antd';
 import Editor from '../../components/EditorExtended/EditorExtendedComponent';
 import BodyContainer from '../../containers/Story/BodyContainer';
-import toMarkdown from '../../components/EditorExtended/util/editorStateToMarkdown';
+import { editorStateToMarkdownSlate } from '../../components/EditorExtended/util/editorStateToMarkdown';
 import LikeSection from '../LikeSection';
 import FollowObjectForm from '../FollowObjectForm';
 import {
@@ -72,8 +72,8 @@ const ObjectOfTypePage = props => {
 
   const { intl, form, isEditMode, isAppending, locale, wobject, followingList } = props;
 
-  const handleChangeContent = contentRaw => {
-    const newContent = toMarkdown(contentRaw);
+  const handleChangeContent = editor => {
+    const newContent = editorStateToMarkdownSlate(editor.children);
 
     if (content !== newContent) setContent(newContent);
   };
