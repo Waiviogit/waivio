@@ -181,7 +181,7 @@ const CreateFormRenderer = props => {
                 {
                   <Link
                     to={
-                      pageObjects === 'HIVE'
+                      payoutToken === 'HIVE'
                         ? `/rewards/createDuplicate/${currentItemId}`
                         : `/rewards-new/duplicate/${currentItemId}`
                     }
