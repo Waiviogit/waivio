@@ -71,11 +71,10 @@ const WAIVwalletTable = props => {
   }, [hasMore, accounts]);
 
   const getTransactionsList = async () => {
-    const currency = currentCurrency;
     const list = await getWaivAdvancedReports({
       filterAccounts,
       accounts,
-      currency,
+      currency: currentCurrency,
       user: authUserName,
     });
 
@@ -133,7 +132,7 @@ const WAIVwalletTable = props => {
   };
   const getMoreTransactionsList = async () => {
     if (dateEstablished) {
-      const { from, end, currency } = props.form.getFieldsValue();
+      const { from, end } = props.form.getFieldsValue();
       const startDate = handleChangeStartDate(from);
       const endDate = handleChangeEndDate(end);
 
@@ -143,7 +142,7 @@ const WAIVwalletTable = props => {
         startDate,
         endDate,
         user: userName,
-        currency,
+        currency: currentCurrency,
       });
 
       setWithdrawals(withdrawals + list.withdrawals);
@@ -152,7 +151,11 @@ const WAIVwalletTable = props => {
       setAccounts(list.accounts);
       setHasMore(list.hasMore);
     } else {
-      const list = await getWaivAdvancedReports({ filterAccounts, accounts });
+      const list = await getWaivAdvancedReports({
+        filterAccounts,
+        accounts,
+        currency: currentCurrency,
+      });
 
       setTransactionsList([...transactionsList, ...list.wallet]);
       setAccounts(list.accounts);
@@ -202,7 +205,7 @@ const WAIVwalletTable = props => {
   );
 
   const calculateTotalChanges = (item, checked) => {
-    const amount = checked ? item.USD * -1 : item.USD;
+    const amount = checked ? item[currentCurrency] * -1 : item[currentCurrency];
 
     if (item.withdrawDeposit === 'd') {
       setDeposits(deposits + amount);
@@ -226,13 +229,14 @@ const WAIVwalletTable = props => {
   };
   const handleOnChange = (e, item) => {
     calculateTotalChanges(item, e.target.checked);
-    excludeAdvancedReports({
-      userName: authUserName,
-      recordId: item._id,
-      userWithExemptions: item.account,
-      checked: e.target.checked,
-      symbol: 'WAIV',
-    });
+    authUserName &&
+      excludeAdvancedReports({
+        userName: authUserName,
+        recordId: item._id,
+        userWithExemptions: item.account,
+        checked: e.target.checked,
+        symbol: 'WAIV',
+      });
     excludeTransfer(item);
   };
 
