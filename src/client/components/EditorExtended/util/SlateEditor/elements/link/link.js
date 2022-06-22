@@ -11,7 +11,7 @@ const Link = ({ attributes, element, children }) => {
 
   return (
     <div className="element-link">
-      <a {...attributes} href={element.href} target="_blank noreferrer">
+      <a {...attributes} href={element.url} target="_blank noreferrer">
         {children}
       </a>
       {selected && focused && (
@@ -19,8 +19,8 @@ const Link = ({ attributes, element, children }) => {
           className="md-editor-toolbar md-editor-toolbar--isopen md-editor-toolbar-edit-link"
           contentEditable={false}
         >
-          <a href={element.href} rel="noopener noreferrer" target="_blank">
-            {truncate(element.href)}
+          <a href={element.url} rel="noopener noreferrer" target="_blank">
+            {truncate(element.url, { length: 27 })}
           </a>
         </div>
       )}

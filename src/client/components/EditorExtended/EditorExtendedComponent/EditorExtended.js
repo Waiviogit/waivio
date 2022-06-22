@@ -3,7 +3,6 @@ import { debounce, get, size } from 'lodash';
 import PropTypes from 'prop-types';
 import { Input, message } from 'antd';
 import { injectIntl } from 'react-intl';
-import { convertToRaw } from 'draft-js';
 import { fromMarkdown, createEditorState } from '../index';
 import MediumDraftEditor from '../editorSlate';
 import { SIDE_BUTTONS } from '../model/content';
@@ -75,7 +74,7 @@ const Editor = props => {
     const updatedTitleValue = event.target.value;
 
     props.setUpdatedEditorExtendedData({ titleValue: updatedTitleValue });
-    props.onChange(convertToRaw(editorState.getCurrentContent()), updatedTitleValue);
+    props.onChange(window.slateEditor, updatedTitleValue);
     if (size(updatedTitleValue) === MAX_LENGTH) {
       message.error(
         props.intl.formatMessage({

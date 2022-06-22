@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { Icon } from 'antd';
-import { useSlate } from 'slate-react';
+import { ReactEditor, useSlate } from 'slate-react';
 import { Transforms } from 'slate';
 import { createEmptyNode, createLine } from '../../util/SlateEditor/utils/embed';
 
@@ -11,6 +11,8 @@ const SeparatorSideButton = ({ close, intl }) => {
 
   const onClick = () => {
     Transforms.insertNodes(editor, [createLine(), createEmptyNode(editor)]);
+    Transforms.move(editor, { distance: 1 });
+    ReactEditor.focus(editor);
     close();
   };
 

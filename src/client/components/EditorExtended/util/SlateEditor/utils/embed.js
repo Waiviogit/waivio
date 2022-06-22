@@ -36,8 +36,9 @@ export const createLine = () => ({
 });
 
 export const createCodeBlock = () => ({
-  type: 'code_block',
+  type: 'code',
   children: [{ text: '' }],
+  lang: 'javascript',
 });
 
 export const insertEmbed = (editor, embedData, format) => {

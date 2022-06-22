@@ -1,5 +1,9 @@
 import { Editor, Transforms, Element as SlateElement } from 'slate';
 import { ReactEditor } from 'slate-react';
+import { REMOVE_FORMAT } from './constants';
+import defaultToolbarGroups from '../toolbar/toolbarGroups';
+
+const inlineButtons = defaultToolbarGroups.filter(i => i.type === 'inline');
 
 const alignment = ['alignLeft', 'alignRight', 'alignCenter'];
 const list_types = ['orderedList', 'unorderedList'];
@@ -60,6 +64,13 @@ export const addMarkData = (editor, data) => {
   Editor.addMark(editor, data.format, data.value);
 };
 export const toggleMark = (editor, format) => {
+  if (format === REMOVE_FORMAT) {
+    inlineButtons.forEach(i => {
+      Editor.removeMark(editor, i.format);
+    });
+
+    return;
+  }
   const isActive = isMarkActive(editor, format);
 
   if (isActive) {
