@@ -1,19 +1,17 @@
-import { Icon } from 'antd';
 import React from 'react';
 import PropTypes from 'prop-types';
-import classNames from 'classnames';
 import ObjectCardView from '../../objectCard/ObjectCardView';
-import './ReviewObjectItem.less';
-import UserCardView from '../../userCardView/UserCardView';
+import SelectUserForAutocomplete from '../../widgets/SelectUserForAutocomplete';
 
-const ReviewItem = ({ isUser, object, removeReviewObject, loading }) => (
-  <React.Fragment>
-    <div className={classNames('Review-object-item__close-circle', { 'disable-element': loading })}>
-      <Icon type="close-circle" onClick={!loading ? () => removeReviewObject(object) : null} />
-    </div>
-    {!isUser ? <ObjectCardView wObject={object} /> : <UserCardView user={object} />}
-  </React.Fragment>
-);
+const ReviewItem = ({ isUser, object, removeReviewObject, loading }) => {
+  const removeItem = !loading ? () => removeReviewObject(object) : null;
+
+  return isUser ? (
+    <SelectUserForAutocomplete account={object.name || object.account} resetUser={removeItem} />
+  ) : (
+    <ObjectCardView wObject={object} closeButton onDelete={removeItem} />
+  );
+};
 
 ReviewItem.propTypes = {
   object: PropTypes.shape().isRequired,

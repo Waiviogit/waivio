@@ -48,7 +48,7 @@ SteemEmbed.getAll = function(text, options) {
   return embeds;
 };
 
-SteemEmbed.get = function(url, options) {
+SteemEmbed.get = function(url, options = {}) {
   const youtubeId = this.isYoutube(url);
   const dTubeId = this.isDTube(url);
   const threeSpeakId = this.is3Speak(url);

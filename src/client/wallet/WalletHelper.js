@@ -262,42 +262,11 @@ export const getTransactionDescription = (type, options) => {
         airdrop: <span>Airdrop</span>,
       };
 
-    case accountHistoryConstants.MARKET_BUY:
-      const accFrom = get(options, 'accFrom', '');
-
-      return {
-        marketBuy: (
-          <div>
-            <FormattedMessage id="bought_from" defaultMessage="Bought from" />
-            <Link to={`/@${accFrom}`}>
-              {' '}
-              <span className="username">{accFrom}</span>
-            </Link>
-          </div>
-        ),
-      };
-
-    case accountHistoryConstants.MARKET_SELL:
-      const accTo = get(options, 'accTo', '');
-
-      return {
-        marketSell: (
-          <div>
-            <FormattedMessage id="sold_to" defaultMessage="Sold to" />
-            <Link to={`/@${accTo}`}>
-              {' '}
-              <span className="username">{accTo}</span>
-            </Link>
-          </div>
-        ),
-      };
-
     case accountHistoryConstants.TOKENS_STAKE:
       const to = get(options, 'to', '');
       const from = get(options, 'from', '');
 
       return {
-        tokensStake: <FormattedMessage id="power_up" defaultMessage="Power up" />,
         tokensStakeTo: (
           <FormattedMessage
             id="power_up_to"
@@ -326,17 +295,6 @@ export const getTransactionDescription = (type, options) => {
         ),
       };
 
-    case accountHistoryConstants.CANCEL_LIMIT_ORDER:
-      return {
-        cancelLimitOrder: (
-          <FormattedMessage id="limit_order_cancel" defaultMessage="Cancel limit order" />
-        ),
-      };
-
-    case accountHistoryConstants.SWAP_TOKENS:
-      return {
-        swapTokens: <FormattedMessage id="swap" defaultMessage="Swap" />,
-      };
     case accountHistoryConstants.AUTHOR_REWARDS: {
       const authorperm = get(options, 'authorperm', '');
 

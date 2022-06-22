@@ -561,7 +561,7 @@ export const buildPost = (draftId, data = {}, isEditPost) => (dispatch, getState
   const campaignId = get(campaign, '_id', null) || get(jsonMetadata, 'campaignId', null);
   const reservationPermlink = get(jsonMetadata, 'reservation_permlink', null);
   const postData = {
-    body: content || body || originalBody,
+    body: content || body || originalBody || data.body,
     lastUpdated: Date.now(),
     isUpdating,
     draftId,

@@ -58,6 +58,7 @@ export const PATH_NAME_DISCOVER = '/discover';
 export const PATH_NAME_CREATE = '/rewards/create';
 export const PATH_NAME_MATCH_BOT = '/rewards/match-bot';
 export const PATH_NAME_MANAGE = '/rewards/manage';
+export const NEW_PATH_NAME_MANAGE = '/rewards-new/manage';
 export const PATH_NAME_PAYABLES = '/rewards/payables';
 export const PATH_NAME_BLACKLIST = '/rewards/blacklist';
 

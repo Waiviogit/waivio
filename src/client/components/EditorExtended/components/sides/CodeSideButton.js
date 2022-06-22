@@ -1,55 +1,21 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
-import { EditorState, genKey, ContentBlock, SelectionState } from 'draft-js';
 import { ReactSVG } from 'react-svg';
-import { addEmptyBlock } from '../codebuttonbar';
-
-const insertNewBlockToContentState = (contentState, editorState) => {
-  const blockMap = contentState.getBlockMap();
-  const key = genKey();
-  const newBlock = new ContentBlock({
-    text: '',
-    type: 'code-block',
-    hasFocus: true,
-    key,
-  });
-  const newBlockMap = blockMap
-    .toSeq()
-    .concat([[newBlock.getKey(), newBlock]])
-    .toOrderedMap();
-
-  const newEditorState = EditorState.push(
-    editorState,
-    contentState.merge({
-      blockMap: newBlockMap,
-    }),
-  );
-
-  return moveCursorToKey(newEditorState, key);
-};
-
-const moveCursorToKey = (editorState, key) => {
-  const newSelection = new SelectionState({
-    anchorKey: key,
-    anchorOffset: 0,
-    focusKey: key,
-    isBackward: false,
-  });
-
-  const newEditorState = EditorState.acceptSelection(editorState, newSelection);
-
-  return EditorState.forceSelection(newEditorState, newEditorState.getSelection());
-};
+import { ReactEditor, useSlate } from 'slate-react';
+import { Transforms } from 'slate';
+import { createCodeBlock, createEmptyNode } from '../../util/SlateEditor/utils/embed';
 
 const CodeSideButton = props => {
+  const editor = useSlate();
   const onClick = () => {
-    const editorState = props.getEditorState();
+    Transforms.insertNodes(editor, createCodeBlock());
+    const prevSelection = editor.selection;
 
-    const content = editorState.getCurrentContent();
-    const newContent = insertNewBlockToContentState(content, editorState);
+    Transforms.insertNodes(editor, createEmptyNode());
+    Transforms.select(editor, prevSelection);
+    ReactEditor.focus(editor);
 
-    props.setEditorState(addEmptyBlock(newContent));
     props.close();
   };
 
@@ -74,8 +40,6 @@ export default injectIntl(CodeSideButton);
 
 CodeSideButton.propTypes = {
   intl: PropTypes.shape().isRequired,
-  setEditorState: PropTypes.func,
-  getEditorState: PropTypes.func,
   close: PropTypes.func,
 };
 

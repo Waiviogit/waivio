@@ -866,7 +866,7 @@ export const getHistory = ({
     if (reservationPermlink) reqData.reservationPermlink = reservationPermlink;
     if (notifyAuthor) reqData.guideName = notifyAuthor;
 
-    fetch(`${config.campaignApiPrefix}${config.campaigns}${config.history}`, {
+    fetch(`${config.campaignApiPrefix}${config.campaigns}${config.balance}`, {
       headers: { ...headers, app: config.appName, locale },
       method: 'POST',
       body: JSON.stringify(reqData),
@@ -2125,25 +2125,11 @@ export const getAdvancedReports = (body, user = '') => {
     .catch(e => e);
 };
 
-export const getWaivAdvancedReports = (
-  filterAccounts,
-  accounts,
-  startDate,
-  endDate,
-  user,
-  currency,
-) => {
-  const actualHeaders = filterAccounts ? { ...headers, filterAccounts } : { ...headers };
+export const getWaivAdvancedReports = (body, user = '') => {
+  const actualHeaders = user ? { ...headers, user } : { ...headers };
   return fetch(`${config.apiPrefix}${config.user}${config.advancedReport}`, {
     headers: actualHeaders,
-    body: JSON.stringify({
-      accounts,
-      filterAccounts,
-      user,
-      startDate,
-      endDate,
-      currency,
-    }),
+    body: JSON.stringify(body),
     method: 'POST',
   })
     .then(res => res.json())
@@ -2181,22 +2167,6 @@ export const excludeAdvancedReports = (body, isGuest) =>
       ...(isGuest ? { 'waivio-auth': true } : {}),
     },
     body: JSON.stringify(body),
-    method: 'POST',
-  })
-    .then(res => res.json())
-    .then(res => res)
-    .catch(e => e);
-
-export const excludeWaivAdvancedReports = (userName, recordId, userWithExemptions, checked) =>
-  fetch(`${config.campaignApiPrefix}${config.payments}${config.exemptions}`, {
-    headers: { ...headers, 'access-token': Cookie.get('access_token') },
-    body: JSON.stringify({
-      userName,
-      recordId,
-      userWithExemptions,
-      symbol: 'WAIV',
-      checked,
-    }),
     method: 'POST',
   })
     .then(res => res.json())
@@ -2640,6 +2610,109 @@ export const getUpdatesList = (permlink, skip = 0, query) => {
       method: 'GET',
     },
   )
+    .then(handleErrors)
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+};
+
+//new campaings
+
+export const createNewCampaing = (data, account) => {
+  return fetch(`${config.campaignV2ApiPrefix}${config.campaign}`, {
+    headers: {
+      ...headers,
+      account,
+      'access-token': Cookie.get('access_token'),
+    },
+    method: 'POST',
+    body: JSON.stringify(data),
+  })
+    .then(handleErrors)
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+};
+
+export const getCampaingManageList = giudeName => {
+  return fetch(`${config.campaignV2ApiPrefix}${config.campaigns}${config.manager}/${giudeName}`, {
+    headers,
+    method: 'GET',
+  })
+    .then(handleErrors)
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+};
+
+export const getCampaingBalanceList = giudeName => {
+  return fetch(`${config.campaignV2ApiPrefix}${config.campaigns}${config.balance}/${giudeName}`, {
+    headers,
+    method: 'GET',
+  })
+    .then(handleErrors)
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+};
+
+export const getCampaingHistoryList = (giudeName, skip = 0) => {
+  return fetch(
+    `${config.campaignV2ApiPrefix}${config.campaigns}${config.history}/${giudeName}?limit=10&skip=${skip}`,
+    {
+      headers,
+      method: 'GET',
+    },
+  )
+    .then(handleErrors)
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+};
+
+export const getAllRewardList = (skip = 0) => {
+  return fetch(
+    `${config.campaignV2ApiPrefix}${config.rewards}${config.all}?limit=10&skip=${skip}`,
+    {
+      headers,
+      method: 'GET',
+    },
+  )
+    .then(handleErrors)
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+};
+
+export const validateActivateCampaing = data => {
+  return fetch(`${config.campaignV2ApiPrefix}${config.campaign}${config.activate}`, {
+    headers,
+    method: 'POST',
+    body: JSON.stringify(data),
+  })
+    .then(handleErrors)
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+};
+
+export const validateDeactivateCampaing = data => {
+  return fetch(`${config.campaignV2ApiPrefix}${config.campaign}${config.deactivate}`, {
+    headers,
+    method: 'POST',
+    body: JSON.stringify(data),
+  })
+    .then(handleErrors)
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+};
+
+export const getNewCampaingById = id => {
+  return fetch(`${config.campaignV2ApiPrefix}${config.campaign}/${id}`, {
+    headers,
+    method: 'GET',
+  })
     .then(handleErrors)
     .then(res => res.json())
     .then(response => response)

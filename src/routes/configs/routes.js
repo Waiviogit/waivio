@@ -10,6 +10,7 @@ import Rewards from '../../client/rewards/Rewards';
 import Discover from '../../client/discover/Discover';
 import DiscoverObjects from '../../client/discoverObjects/DiscoverObjects';
 import RewardsComponent from '../../client/rewards/RewardsComponent/RewardsComponent';
+import RewardsMainPage from '../../client/newRewards/RewardsMainPage';
 
 const routes = {
   component: Wrapper,
@@ -114,11 +115,27 @@ const routes = {
       ],
     },
     {
-      component: Views.RewardsMainPage,
-      path: '/rewards-new',
+      component: RewardsMainPage,
+      path: [`/rewards-new/(${URL.NEW_REWARDS.tabs})/:campaignId?`],
       pathScope: '/rewards-new',
       exact: true,
-      routes: [],
+      routes: [
+        {
+          path: '/manage',
+          exact: true,
+          component: Views.RewardsManage,
+        },
+        {
+          path: '/all',
+          exact: true,
+          component: Views.RewardsAll,
+        },
+        {
+          path: '/(details|duplicate|create)/:campaignId?',
+          exact: true,
+          component: Views.CreateRewards,
+        },
+      ],
     },
     {
       path: [`/:site/(${URL.WEBSITES.tabs})`, `/(${URL.SETTINGS.tabs})`],

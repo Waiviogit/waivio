@@ -308,28 +308,7 @@ const compareTransferBody = (
         }).beneficiaryRewards,
       };
     }
-    case accountHistoryConstants.MARKET_BUY: {
-      data.userName = transaction.account;
-      data.withdrawDeposit = transaction.withdrawDeposit;
 
-      return {
-        ...data,
-        fieldWAIV: transaction.quantity,
-        fieldDescription: getTransactionDescription(transactionType, { accFrom: transaction.from })
-          .marketBuy,
-      };
-    }
-    case accountHistoryConstants.MARKET_SELL: {
-      data.userName = transaction.account;
-      data.withdrawDeposit = transaction.withdrawDeposit;
-
-      return {
-        ...data,
-        fieldWAIV: `-${transaction.quantity}`,
-        fieldDescription: getTransactionDescription(transactionType, { accTo: transaction.to })
-          .marketSell,
-      };
-    }
     case accountHistoryConstants.TOKENS_STAKE: {
       data.userName = transaction.account;
 
@@ -351,12 +330,7 @@ const compareTransferBody = (
         };
       }
 
-      return {
-        ...data,
-
-        fieldWP: transaction.quantity,
-        fieldDescription: getTransactionDescription(transactionType).tokensStake,
-      };
+      return null;
     }
 
     case accountHistoryConstants.MINING_LOTTERY: {
@@ -368,17 +342,7 @@ const compareTransferBody = (
         fieldDescription: getTransactionDescription(transactionType).miningLottery,
       };
     }
-    case accountHistoryConstants.SWAP_TOKENS: {
-      data.userName = transaction.account;
-      const fieldWAIVamount =
-        transaction.withdrawDeposit === 'w' ? `-${transaction.quantity}` : transaction.quantity;
 
-      return {
-        ...data,
-        fieldWAIV: fieldWAIVamount,
-        fieldDescription: getTransactionDescription(transactionType).swapTokens,
-      };
-    }
     case accountHistoryConstants.AIRDROP: {
       data.userName = transaction.account;
 

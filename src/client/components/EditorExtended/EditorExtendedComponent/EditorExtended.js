@@ -3,13 +3,10 @@ import { debounce, get, size } from 'lodash';
 import PropTypes from 'prop-types';
 import { Input, message } from 'antd';
 import { injectIntl } from 'react-intl';
-import { convertToRaw, SelectionState } from 'draft-js';
-import { fromMarkdown, Editor as MediumDraftEditor, createEditorState } from '../index';
+import { fromMarkdown, createEditorState } from '../index';
+import MediumDraftEditor from '../editorSlate';
 import { SIDE_BUTTONS } from '../model/content';
-import {
-  checkCursorInSearch,
-  parseImagesFromBlocks,
-} from '../../../../common/helpers/editorHelper';
+import { checkCursorInSearchSlate } from '../../../../common/helpers/editorHelper';
 import { getSelection, getSelectionRect } from '../util';
 
 const MAX_LENGTH = 255;
@@ -19,7 +16,6 @@ const Editor = props => {
     editorExtended: { editorState, isMounted, editorEnabled, titleValue },
   } = props;
   const [prevSearchValue, setPrevSearch] = React.useState('');
-  const refsEditor = React.useRef();
 
   React.useEffect(() => {
     props.setUpdatedEditorExtendedData({
@@ -31,12 +27,6 @@ const Editor = props => {
   }, []);
 
   React.useEffect(() => setFocusAfterMount(), [isMounted, props.draftId]);
-
-  const onChange = updatedEditorState => {
-    const { editorState: prevEditorState } = props.editorExtended;
-
-    props.setUpdatedEditorExtendedData({ editorState: updatedEditorState, prevEditorState });
-  };
 
   const setFocusAfterMount = () => {
     props.setUpdatedEditorExtendedData({ editorEnabled: true });
@@ -53,25 +43,17 @@ const Editor = props => {
     [],
   );
 
-  const handleContentChange = updatedEditorState => {
-    const updatedEditorStateParsed = parseImagesFromBlocks(updatedEditorState);
-    const searchInfo = checkCursorInSearch(updatedEditorStateParsed);
+  const handleContentChangeSlate = editor => {
+    const searchInfo = checkCursorInSearchSlate(editor);
 
     if (searchInfo.isNeedOpenSearch) {
       if (!props.isShowEditorSearch) {
-        const selectionState = updatedEditorStateParsed.getSelection();
-        const newSelection = new SelectionState({
-          anchorKey: selectionState.getAnchorKey(),
-          focusKey: selectionState.getFocusKey(),
-          anchorOffset: searchInfo.startPositionOfWord,
-          focusOffset: searchInfo.startPositionOfWord,
-        });
         const nativeSelection = getSelection(window);
         const selectionBoundary = getSelectionRect(nativeSelection);
 
         props.setCursorCoordinates({
           selectionBoundary,
-          selectionState: newSelection,
+          selectionState: editor.selection,
           searchString: searchInfo.searchString,
           wordForCountWidth: searchInfo.wordForCountWidth,
           isShowEditorSearch: true,
@@ -84,18 +66,15 @@ const Editor = props => {
     } else if (props.isShowEditorSearch) {
       props.setShowEditorSearch(false);
     }
-    onChange(updatedEditorStateParsed);
-    props.onChange(
-      convertToRaw(updatedEditorStateParsed.getCurrentContent()),
-      props.editorExtended.titleValue,
-    );
+
+    props.onChange(editor, props.editorExtended.titleValue);
   };
 
   const validateLength = event => {
     const updatedTitleValue = event.target.value;
 
     props.setUpdatedEditorExtendedData({ titleValue: updatedTitleValue });
-    props.onChange(convertToRaw(editorState.getCurrentContent()), updatedTitleValue);
+    props.onChange(window.slateEditor, updatedTitleValue);
     if (size(updatedTitleValue) === MAX_LENGTH) {
       message.error(
         props.intl.formatMessage({
@@ -123,23 +102,23 @@ const Editor = props => {
       <div className="waiv-editor">
         {isMounted && (
           <MediumDraftEditor
-            ref={refsEditor}
             intl={props.intl}
             isVimeo={isVimeo}
             editorState={editorState}
             sideButtons={SIDE_BUTTONS}
-            onChange={handleContentChange}
+            onChange={handleContentChangeSlate}
             handleHashtag={props.handleHashtag}
             isShowEditorSearch={props.isShowEditorSearch}
             handleObjectSelect={props.handleObjectSelect}
             editorEnabled={editorEnabled && props.enabled}
             setShowEditorSearch={props.setShowEditorSearch}
             setSearchCoordinates={props.setCursorCoordinates}
+            initialBody={get(props, 'initialContent.body', '')}
             placeholder={props.intl.formatMessage({
               id: 'story_placeholder',
               defaultMessage: 'Write your story...',
             })}
-            handlePastedText={props.handlePasteTest}
+            handlePasteText={props.handlePasteText}
           />
         )}
       </div>
@@ -157,7 +136,7 @@ const propTypes = {
   draftId: PropTypes.string,
   displayTitle: PropTypes.bool,
   handleHashtag: PropTypes.func,
-  handlePasteTest: PropTypes.func,
+  handlePasteText: PropTypes.func,
   getRestoreObjects: PropTypes.func,
   enabled: PropTypes.bool.isRequired,
   searchObjects: PropTypes.func.isRequired,
@@ -175,7 +154,7 @@ const defaultProps = {
   isWaivio: false,
   onChange: () => {},
   handleHashtag: () => {},
-  handlePasteTest: () => {},
+  handlePasteText: () => {},
   displayTitle: true,
   draftId: '',
   linkedObjects: [],

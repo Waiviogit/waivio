@@ -1,7 +1,4 @@
-/*
-Some of the constants which are used throughout this project instead of
-directly using string.
-*/
+import { jsx } from 'slate-hyperscript';
 
 export const Block = {
   UNSTYLED: 'unstyled',
@@ -70,4 +67,73 @@ export default {
   Block,
   Inline,
   Entity,
+};
+
+export const ELEMENT_TAGS = {
+  A: el => ({ type: 'link', url: el.getAttribute('href') }),
+  BLOCKQUOTE: () => ({ type: 'quote' }),
+  H1: () => ({ type: 'headingOne' }),
+  H2: () => ({ type: 'headingTwo' }),
+  H3: () => ({ type: 'headingThree' }),
+  H4: () => ({ type: 'headingFour' }),
+  H5: () => ({ type: 'headingFive' }),
+  H6: () => ({ type: 'headingSix' }),
+  IMG: el => ({ type: 'image', url: el.getAttribute('src'), alt: el.getAttribute('alt') }),
+  LI: () => ({ type: 'listItem' }),
+  OL: () => ({ type: 'numberedList' }),
+  P: () => ({ type: 'paragraph' }),
+  PRE: () => ({ type: 'code' }),
+  UL: () => ({ type: 'bulletedList' }),
+};
+
+export const TEXT_TAGS = {
+  CODE: () => ({ code: true }),
+  DEL: () => ({ strikethrough: true }),
+  EM: () => ({ italic: true }),
+  I: () => ({ italic: true }),
+  S: () => ({ strikethrough: true }),
+  STRONG: () => ({ bold: true }),
+  U: () => ({ underline: true }),
+};
+
+export const deserializeHtmlToSlate = el => {
+  if (el.nodeType === 3) {
+    return el.textContent;
+  } else if (el.nodeType !== 1) {
+    return null;
+  } else if (el.nodeName === 'BR') {
+    return '\n';
+  }
+
+  const { nodeName } = el;
+  let parent = el;
+
+  if (nodeName === 'PRE' && el.childNodes[0] && el.childNodes[0].nodeName === 'CODE') {
+    parent = el.childNodes[0];
+  }
+  let children = Array.from(parent.childNodes)
+    .map(deserializeHtmlToSlate)
+    .flat();
+
+  if (children.length === 0) {
+    children = [{ text: '' }];
+  }
+
+  if (el.nodeName === 'BODY') {
+    return jsx('fragment', {}, children);
+  }
+
+  if (ELEMENT_TAGS[nodeName]) {
+    const attrs = ELEMENT_TAGS[nodeName](el);
+
+    return jsx('element', attrs, children);
+  }
+
+  if (TEXT_TAGS[nodeName]) {
+    const attrs = TEXT_TAGS[nodeName](el);
+
+    return children.map(child => jsx('text', attrs, child));
+  }
+
+  return children;
 };

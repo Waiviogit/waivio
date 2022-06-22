@@ -150,7 +150,6 @@ export default class Transfer extends React.Component {
     permlink: '',
   };
 
-  static amountRegex = /^[0-9]*\.?[0-9]{0,8}$/;
   static minAccountLength = 3;
   static maxAccountLength = 16;
   static maxGuestAccountLength = 23;
@@ -629,6 +628,14 @@ export default class Transfer extends React.Component {
       );
     }
 
+    const amountRegex = /^[0-9]*\.?[0-9]{0,8}$/;
+    const amountRegexHiveHbdHp = /^[0-9]*\.?[0-9]{0,3}$/;
+    const hbdHiveCurrency =
+      Transfer.CURRENCIES.HBD === this.state.currency ||
+      Transfer.CURRENCIES.HIVE === this.state.currency;
+    const validationPattern = hbdHiveCurrency ? amountRegexHiveHbdHp : amountRegex;
+    const numberOfCharacters = hbdHiveCurrency ? 3 : 8;
+
     return (isGuest && (this.props.to || hiveBeneficiaryAccount)) || !isGuest ? (
       <Modal
         visible={visible}
@@ -692,17 +699,21 @@ export default class Transfer extends React.Component {
                     }),
                   },
                   {
-                    pattern: Transfer.amountRegex,
-                    message: intl.formatMessage({
-                      id: 'amount_error_format_8_places',
-                      defaultMessage:
-                        'Incorrect format. Use comma or dot as decimal separator. Use at most 8 decimal places.',
-                    }),
+                    pattern: validationPattern,
+                    message: intl.formatMessage(
+                      {
+                        id: 'amount_error_format_places',
+                        defaultMessage:
+                          'Incorrect format. Use comma or dot as decimal separator. Use at most {numberOfCharacters} decimal places.',
+                      },
+                      { numberOfCharacters },
+                    ),
                   },
                   { validator: this.validateBalance },
                 ],
               })(
                 <Input
+                  autocomplete="off"
                   className="Transfer__border"
                   disabled={isChangesDisabled && amount}
                   onChange={this.handleAmountChange}
