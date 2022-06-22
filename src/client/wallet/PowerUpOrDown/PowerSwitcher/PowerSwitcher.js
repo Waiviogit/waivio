@@ -12,12 +12,12 @@ const PowerSwitcher = props => {
   const [currency, setCurrency] = useState(props.defaultType);
   const { hiveRateInUsd, rates } = useRate();
   const convertCurrency = curr => (curr === 'WAIV' && props.powerVote ? 'WP' : curr);
-  const hbdHiveCurrency = currency === 'HBD' || currency === 'HIVE';
+  const hbdHiveHpCurrency = currency === 'HBD' || currency === 'HIVE' || currency === 'HP';
 
   const amountRegex = /^[0-9]*\.?[0-9]{0,8}$/;
-  const amountRegexHiveHbd = /^[0-9]*\.?[0-9]{0,3}$/;
-  const validationPattern = hbdHiveCurrency ? amountRegexHiveHbd : amountRegex;
-  const numberOfCharacters = hbdHiveCurrency ? 3 : 8;
+  const amountRegexHiveHbdHp = /^[0-9]*\.?[0-9]{0,3}$/;
+  const validationPattern = hbdHiveHpCurrency ? amountRegexHiveHbdHp : amountRegex;
+  const numberOfCharacters = hbdHiveHpCurrency ? 3 : 8;
 
   useEffect(() => {
     if (props.onAmoundValidate) props.onAmoundValidate();
