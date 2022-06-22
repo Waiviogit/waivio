@@ -155,6 +155,7 @@ const WAIVwalletTable = props => {
         filterAccounts,
         accounts,
         currency: currentCurrency,
+        user: userName,
       });
 
       setTransactionsList([...transactionsList, ...list.wallet]);
