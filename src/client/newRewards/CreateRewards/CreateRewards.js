@@ -182,12 +182,12 @@ class CreateRewards extends React.Component {
           secondaryObjectsList: values[1].map(obj => obj),
           pageObjects: !isEmpty(values[2]) ? [values[2]] : [],
           sponsorsList: !isEmpty(sponsors) ? values[2] : [],
-          reservationPeriod: campaign.count_reservation_days,
+          reservationPeriod: campaign.countReservationDays,
           receiptPhoto: campaign.requirements.receiptPhoto,
           minExpertise,
           minFollowers: campaign.userRequirements.minFollowers,
           minPosts: campaign.userRequirements.minPosts,
-          targetDays: campaign.reservation_timetable,
+          targetDays: campaign.reservationTimetable,
           minPhotos: campaign.requirements.minPhotos,
           description: campaign.description,
           commissionAgreement: parseInt(campaign.commissionAgreement * 100, 10),
@@ -195,7 +195,7 @@ class CreateRewards extends React.Component {
           compensationAccount: {
             account: campaign.compensationAccount,
           },
-          eligibleDays: campaign.frequency_assign,
+          eligibleDays: campaign.frequencyAssign,
           usersLegalNotice: campaign.usersLegalNotice,
           expiredAt: isExpired
             ? moment(new Date().toISOString())
@@ -203,12 +203,6 @@ class CreateRewards extends React.Component {
           isDuplicate,
           isDisabled,
         });
-
-        if (campaign.matchBots.length) {
-          this.setState({
-            sponsorsList: campaign.matchBots,
-          });
-        }
       });
     }
   };
@@ -253,7 +247,7 @@ class CreateRewards extends React.Component {
       matchBots,
       expiredAt: data.expiredAt._d,
       reservationTimetable: data.targetDays,
-      frequencyAssign: data.eligibleDays,
+      frequencyAssign: +data.eligibleDays,
       countReservationDays: data.reservationPeriod,
     };
 
@@ -263,9 +257,7 @@ class CreateRewards extends React.Component {
     return preparedObject;
   };
 
-  manageRedirect = () => {
-    this.props.history.push(NEW_PATH_NAME_MANAGE);
-  };
+  manageRedirect = () => this.props.history.push(NEW_PATH_NAME_MANAGE);
 
   handleSetState = (stateData, callbackData) => {
     const { setFieldsValue } = this.props.form;
@@ -422,7 +414,7 @@ class CreateRewards extends React.Component {
                   isDuplicate ? 'has been created' : 'has been updated'
                 }`,
               );
-              // this.manageRedirect();
+              this.manageRedirect();
             })
             .catch(() => {
               message.error(`Campaign ${values.campaignName} has been rejected`);

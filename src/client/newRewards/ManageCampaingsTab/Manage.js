@@ -15,14 +15,19 @@ import { generatePermlink } from '../../../common/helpers/wObjectHelper';
 import { createBody, rewardsPost } from '../../rewards/Manage/constants';
 import steemConnectAPI from '../../steemConnectAPI';
 import { getCurrentCurrency } from '../../../store/appStore/appSelectors';
+import Loading from '../../components/Icon/Loading';
 
 export const Manage = ({ intl, guideName }) => {
   const currency = useSelector(getCurrentCurrency);
   const [manageList, setManageList] = useState([]);
+  const [loading, setLoading] = useState(true);
   const campaingIsActive = status => status === 'active';
 
   useEffect(() => {
-    getCampaingManageList(guideName).then(res => setManageList(res));
+    getCampaingManageList(guideName).then(res => {
+      setManageList(res);
+      setLoading(false);
+    });
   }, []);
 
   const activateCampaing = item => {
@@ -148,7 +153,7 @@ export const Manage = ({ intl, guideName }) => {
           ))
         ) : (
           <tr>
-            <td colSpan={9}>Empty</td>
+            <td colSpan={9}>{loading ? <Loading /> : 'Empty'}</td>
           </tr>
         )}
       </table>
