@@ -16,7 +16,7 @@ import InlineToolbar from './inlinetoolbar';
 import TableToolbar from './tabletoolbar';
 import { getSelection, getSelectionRect } from '../../index';
 
-const TOTAL_PAGE = 2;
+const TOTAL_PAGE = 3;
 
 const Toolbar = props => {
   const { intl, editorNode } = props;
