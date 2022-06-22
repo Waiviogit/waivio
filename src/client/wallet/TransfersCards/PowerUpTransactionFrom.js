@@ -27,9 +27,9 @@ const PowerUpTransactionFrom = ({ timestamp, amount, from, to, transactionType, 
             </React.Fragment>
           ) : (
             <React.Fragment>
-              {isSent ? description.powerUpTransactionFrom : description.powerUpTransactionTo}
+              {isSent ? description.powerUpTransactionTo : description.powerUpTransactionFrom}
               <span className={amountClassList}>
-                {isSent ? '+ ' : '- '}
+                {isSent ? '- ' : '+ '}
                 {amount}
               </span>
             </React.Fragment>

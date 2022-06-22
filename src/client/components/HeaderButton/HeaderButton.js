@@ -8,6 +8,7 @@ import { Icon, Menu } from 'antd';
 import { Link } from 'react-router-dom';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { withRouter } from 'react-router';
+import { ReactEditor } from 'slate-react';
 
 import BTooltip from '../BTooltip';
 import Popover from '../Popover';
@@ -109,6 +110,8 @@ const HeaderButtons = props => {
   const handleNotificationsPopoverVisibleChange = visible =>
     setNotificationsPopoverVisible(visible);
 
+  const handleEditor = () => window.slateEditor && ReactEditor.focus(window.slateEditor);
+
   const handleMenuItemClick = key => {
     switch (key) {
       case 'logout':
@@ -199,7 +202,7 @@ const HeaderButtons = props => {
             mouseEnterDelay={1}
             overlayClassName="Topnav__notifications-tooltip"
           >
-            <Link to="/editor" className="Topnav__link Topnav__link--action">
+            <Link to="/editor" className="Topnav__link Topnav__link--action" onClick={handleEditor}>
               <i className="iconfont icon-write" />
             </Link>
           </BTooltip>

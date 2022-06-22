@@ -122,6 +122,7 @@
     padding: 2px 4px;
     color: @grey-nightRider;
     background-color: @white-smoke;
+    font-size: 16px;
   }
 
   pre {
@@ -129,10 +130,7 @@
     padding: 0 20px;
     line-height: 1em;
     background-color: rgba(0, 0, 0, 0.05);
-
-    code {
-      font-size: 16px;
-    }
+    font-size: 16px;
   }
 
   .public-DraftStyleDefault-pre pre {
@@ -141,52 +139,6 @@
     margin-bottom: 0;
     background-color: transparent;
     line-height: normal;
-  }
-
-  // Table
-
-  table {
-    width: 100%;
-    display: table;
-    overflow: auto;
-    table-layout: fixed;
-    border: 1px solid @black;
-
-    th,
-    td {
-      border: 1px solid @black;
-    }
-
-    tr {
-      width: 100%;
-      max-width: 550px;
-    }
-
-    td {
-      height: 50px;
-      padding: 0 5px;
-      width: 100%;
-    }
-
-    tr > th {
-      text-align: left;
-      background-color: @post-table-background-color;
-    }
-
-    tr > th,
-    td {
-      padding: 4px 12px;
-      word-wrap: break-word;
-      vertical-align: middle;
-      word-break: normal;
-      width: 100%;
-    }
-
-    tr:nth-child(even) {
-      td {
-        background-color: @post-table-background-color;
-      }
-    }
   }
 
   // Position
@@ -282,10 +234,64 @@
   }
 }
 
+/* styles for body-preview */
+.post-preview-modal .Body {
+  pre {
+    line-height: 3rem;
+  }
+}
+
 // This one is required to let rtl readers
 // to read both ltr and rtl (using .text-rtl) posts
 div[data-dir='rtl'] .Body {
   direction: ltr;
+}
+
+.Body,
+.Story {
+  table {
+    width: 100%;
+    display: table;
+    overflow: auto;
+    table-layout: fixed;
+    border: 1px solid @black;
+
+    th,
+    td {
+      border: 1px solid @black;
+    }
+
+    tr {
+      width: 100%;
+      max-width: 550px;
+    }
+
+    td {
+      height: 50px;
+      padding: 0 5px;
+      width: 100%;
+    }
+
+    tr > th {
+      text-align: left;
+      background-color: @post-table-background-color;
+    }
+
+    tr > th,
+    td {
+      padding: 4px 12px;
+      word-wrap: break-word;
+      vertical-align: middle;
+      word-break: normal;
+      width: 100%;
+    }
+
+    tr:nth-child(even) {
+      td {
+        background-color: @post-table-background-color;
+      }
+    }
+  }
 }
 
 @import 'Body-nightmode';

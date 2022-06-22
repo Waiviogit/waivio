@@ -10,7 +10,6 @@ import { withHistory } from 'slate-history';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
-import { HANDLED } from './util/constants';
 import { encodeImageFileAsURL, SIDE_BUTTONS_SLATE } from './model/content';
 import EditorSearchObjects from './components/EditorSearchObjects';
 import withEmbeds from './util/SlateEditor/plugins/withEmbeds';
@@ -24,6 +23,8 @@ import { deserializeToSlate } from './util/SlateEditor/utils/parse';
 import { getEditorDraftBody } from '../../../store/slateEditorStore/editorSelectors';
 import { createEmptyNode, createImageNode } from './util/SlateEditor/utils/embed';
 
+import { wrapWithParagraph } from './util/SlateEditor/utils/paragraph';
+import withLists from './util/SlateEditor/plugins/withLists';
 import './index.less';
 
 const EditorSlate = props => {
@@ -42,12 +43,6 @@ const EditorSlate = props => {
   const editorRef = useRef(null);
 
   const handlePastedFiles = async event => {
-    message.info(
-      intl.formatMessage({
-        id: 'notify_uploading_image',
-        defaultMessage: 'Uploading image',
-      }),
-    );
     const html = event.clipboardData.getData('text/html');
 
     if (html) return;
@@ -73,6 +68,13 @@ const EditorSlate = props => {
 
     if (!image || !image.type.includes('image/')) return;
 
+    message.info(
+      intl.formatMessage({
+        id: 'notify_uploading_image',
+        defaultMessage: 'Uploading image',
+      }),
+    );
+
     const insertImage = (file, fileName = 'image') => {
       const newImage = {
         src: file,
@@ -95,7 +97,7 @@ const EditorSlate = props => {
       }`,
     });
 
-    Transforms.insertNodes(editor, [createEmptyNode(), imageBlock]);
+    Transforms.insertNodes(editor, [wrapWithParagraph([imageBlock])]);
   };
 
   // Drug and drop method
@@ -138,10 +140,10 @@ const EditorSlate = props => {
         url: `${item.src.startsWith('http') ? item.src : `https://${item.src}`}`,
       });
 
-      Transforms.insertNodes(editor, [createEmptyNode(), imageBlock]);
+      Transforms.insertNodes(editor, [imageBlock]);
     });
 
-    return HANDLED;
+    return true;
   };
 
   const handleKeyCommand = event => {
@@ -178,7 +180,10 @@ const EditorSlate = props => {
   });
 
   const editor = useMemo(
-    () => withHistory(withEmbeds(withTables(withLinks(withReact(withObjects(createEditor())))))),
+    () =>
+      withHistory(
+        withEmbeds(withTables(withLinks(withReact(withLists(withObjects(createEditor())))))),
+      ),
     [],
   );
   const [value, setValue] = useState([
@@ -201,6 +206,9 @@ const EditorSlate = props => {
     const editorEl = document.querySelector('[data-slate-editor="true"]');
 
     editorEl.style.minHeight = `100px`;
+    setTimeout(() => {
+      ReactEditor.focus(editor);
+    }, 100);
   }, []);
 
   useEffect(() => {
@@ -216,7 +224,6 @@ const EditorSlate = props => {
       Transforms.insertFragment(editor, postParsed, { at: [0, 0] });
       Transforms.insertNodes(editor, createEmptyNode());
     }
-    ReactEditor.focus(editor);
   }, [body]);
 
   return (
