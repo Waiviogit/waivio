@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Checkbox, message } from 'antd';
 import { Link } from 'react-router-dom';
-import { isEmpty } from 'lodash';
+import { isEmpty, round } from 'lodash';
 import PropTypes from 'prop-types';
 
 import { manageTableHeaderConfig } from '../constants/manageTableConfig';
@@ -138,8 +138,8 @@ export const Manage = ({ intl, guideName }) => {
               </td>
               <td>{row.status}</td>
               <td>{row.type}</td>
-              <td>{row.budgetUSD * currency.rate}</td>
-              <td>{row.rewardInUSD * currency.rate}</td>
+              <td>{round(row.budgetUSD * currency.rate, 3)}</td>
+              <td>{round(row.rewardInUSD * currency.rate, 3)}</td>
               {/* це має буть лінка яка веде на резервейшин хісторі еслі 0 то не показувать */}
               <td>{row.reserved}</td>
               <td>{row.completed}</td>
