@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { Checkbox, message } from 'antd';
+import { Checkbox, message, Modal } from 'antd';
 import { Link } from 'react-router-dom';
 import { isEmpty, round } from 'lodash';
 import PropTypes from 'prop-types';
@@ -98,7 +98,7 @@ export const Manage = ({ intl, guideName }) => {
           },
         ];
 
-        setManageList(manageList.filter(manageItem => manageItem._id === item._id));
+        setManageList(manageList.filter(manageItem => manageItem._id !== item._id));
         steemConnectAPI.broadcast([commentOp]);
       } else {
         message.error(res.message);
@@ -112,6 +112,22 @@ export const Manage = ({ intl, guideName }) => {
     } else {
       activateCampaing(item);
     }
+  };
+
+  const showConfirm = item => {
+    const isActive = campaingIsActive(item.status);
+    const title = isActive ? 'Deactivate rewards campaign' : 'Activate rewards campaign';
+    const content = isActive
+      ? `The terms and conditions of the rewards campaign ${item.name} will be stopped on Hive blockchain`
+      : `The terms and conditions of the rewards campaign ${item.name} Inactive main will be published on Hive blockchain`;
+
+    Modal.confirm({
+      title,
+      content,
+      onOk() {
+        handleChangeCampaingStatus(item);
+      },
+    });
   };
 
   return (
@@ -135,7 +151,7 @@ export const Manage = ({ intl, guideName }) => {
               <td>
                 <Checkbox
                   checked={campaingIsActive(row.status)}
-                  onChange={() => handleChangeCampaingStatus(row)}
+                  onChange={() => showConfirm(row)}
                 />
               </td>
               <td>
