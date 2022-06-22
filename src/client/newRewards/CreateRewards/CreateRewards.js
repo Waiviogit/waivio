@@ -1,45 +1,82 @@
-import { isEmpty, map, includes, get, size, uniqBy } from 'lodash';
+import { get, includes, isEmpty, map, size, uniqBy } from 'lodash';
 import React from 'react';
+import moment from 'moment';
+
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 import { injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
-import moment from 'moment';
 import { Form, message } from 'antd';
 import {
-  createCampaign,
+  createNewCampaing,
   getAuthorsChildWobjects,
-  getCampaignById,
+  getNewCampaingById,
   getObjectsByIds,
 } from '../../../waivioApi/ApiClient';
-import CreateFormRenderer from './CreateFormRenderer';
-import { AppSharedContext } from '../../Wrapper';
 import * as apiConfig from '../../../waivioApi/config.json';
-import { getMinExpertise, getMinExpertisePrepared } from '../rewardsHelper';
-import {
-  PATH_NAME_MANAGE,
-  CAMPAIGN_STATUS,
-  isDisabledStatus,
-} from '../../../common/constants/rewards';
-import { getRate, getRewardFund } from '../../../store/appStore/appSelectors';
+import { NEW_PATH_NAME_MANAGE } from '../../../common/constants/rewards';
 import { getLocale } from '../../../store/settingsStore/settingsSelectors';
+import {
+  getAuthenticatedUser,
+  getAuthenticatedUserName,
+} from '../../../store/authStore/authSelectors';
+import CreateFormRenderer from '../../rewards/Create-Edit/CreateFormRenderer';
+import { getMinExpertise, getMinExpertisePrepared } from '../../rewards/rewardsHelper';
+import { getRate, getRewardFund } from '../../../store/appStore/appSelectors';
+import '../../rewards/Create-Edit/CreateReward.less';
 
-import './CreateReward.less';
+const initialState = {
+  campaignName: '',
+  campaignType: '',
+  budget: null,
+  reward: null,
+  primaryObject: {},
+  secondaryObjectsList: [],
+  pageObjects: [],
+  sponsorsList: [],
+  reservationPeriod: 7,
+  compensationAccount: {},
+  loading: false,
+  parentPermlink: '',
+  targetDays: {
+    monday: true,
+    tuesday: true,
+    wednesday: true,
+    thursday: true,
+    friday: true,
+    saturday: true,
+    sunday: true,
+  },
+  receiptPhoto: false,
+  minPhotos: 2,
+  minExpertise: 0,
+  minFollowers: 0,
+  minPosts: 0,
+  eligibleDays: 15,
+  description: '',
+  expiredAt: null,
+  usersLegalNotice: '',
+  agreement: {},
+  commissionAgreement: 5,
+  iAgree: false,
+  campaignId: '',
+  isDuplicate: false,
+  isOpenAddChild: false,
+  currency: 'USD',
+  payoutToken: 'WAIV',
+};
 
 @withRouter
 @Form.create()
 @injectIntl
-@connect(
-  state => ({
-    rate: getRate(state),
-    rewardFund: getRewardFund(state),
-    createDuplicate: false,
-    campaign: {},
-    locale: getLocale(state),
-  }),
-  {},
-)
-class CreateRewardForm extends React.Component {
+@connect(state => ({
+  locale: getLocale(state),
+  userName: getAuthenticatedUserName(state),
+  user: getAuthenticatedUser(state),
+  rate: getRate(state),
+  rewardFund: getRewardFund(state),
+}))
+class CreateRewards extends React.Component {
   static propTypes = {
     userName: PropTypes.string,
     locale: PropTypes.string,
@@ -48,8 +85,6 @@ class CreateRewardForm extends React.Component {
     intl: PropTypes.shape().isRequired,
     history: PropTypes.shape().isRequired,
     match: PropTypes.shape().isRequired,
-    currentSteemDollarPrice: PropTypes.number,
-    /* from context */
     rate: PropTypes.number.isRequired,
     rewardFund: PropTypes.shape().isRequired,
   };
@@ -59,125 +94,78 @@ class CreateRewardForm extends React.Component {
     user: {},
     usedLocale: 'en-US',
     form: {},
-    currentSteemDollarPrice: 0,
   };
-  state = {
-    campaignName: '',
-    campaignType: '',
-    budget: null,
-    reward: null,
-    primaryObject: {},
-    secondaryObjectsList: [],
-    pageObjects: [],
-    sponsorsList: [],
-    reservationPeriod: 7,
-    compensationAccount: {},
-    loading: false,
-    parentPermlink: '',
-    targetDays: {
-      monday: true,
-      tuesday: true,
-      wednesday: true,
-      thursday: true,
-      friday: true,
-      saturday: true,
-      sunday: true,
-    },
-    receiptPhoto: false,
-    minPhotos: 2,
-    minExpertise: 0,
-    minFollowers: 0,
-    minPosts: 0,
-    eligibleDays: 15,
-    description: '',
-    expiredAt: null,
-    usersLegalNotice: '',
-    agreement: {},
-    commissionAgreement: 5,
-    iAgree: false,
-    campaignId: '',
-    isDuplicate: false,
-    isOpenAddChild: false,
-    currency: 'USD',
-    payoutToken: 'HIVE',
-  };
+  state = initialState;
 
   componentDidMount = async () => {
-    const { rate, rewardFund } = this.props;
+    this.getCampaingDetailAndSetInState();
+  };
 
+  componentDidUpdate(prevProps) {
+    const { campaign } = this.state;
+    const matchPath = get(this.props.match, ['params', '0']);
+
+    if (campaign)
+      if (prevProps.match.params[0] !== matchPath) {
+        const isDuplicate = includes(matchPath, 'duplicate');
+        const isDetails = includes(matchPath, 'details');
+        const isCreate = includes(matchPath, 'create');
+
+        // eslint-disable-next-line react/no-did-update-set-state
+        this.setState({ loading: true });
+
+        if (isCreate)
+          // eslint-disable-next-line react/no-did-update-set-state
+          this.setState(initialState);
+        if (isDetails) this.getCampaingDetailAndSetInState();
+        if (isDuplicate)
+          // eslint-disable-next-line react/no-did-update-set-state
+          this.setState({
+            isDuplicate,
+            isDisabled: false,
+            loading: false,
+            campaignName: `Copy ${campaign.name}`,
+          });
+      }
+  }
+
+  getCampaingDetailAndSetInState = async () => {
     if (this.props.match.params.campaignId) {
       // eslint-disable-next-line react/no-did-mount-set-state
       this.setState({ loading: true });
 
-      const campaign = await getCampaignById(this.props.match.params.campaignId);
+      const campaign = await getNewCampaingById(this.props.match.params.campaignId);
       const isExpired = campaign.status === 'expired';
-      const expiredAt = isExpired
-        ? moment(new Date().toISOString())
-        : moment(new Date(campaign.expired_at));
-      const matchPath = get(this.props.match, ['params', '0']);
-      const isDuplicate = includes(matchPath, 'createDuplicate');
-      const isDisabled =
-        includes(isDisabledStatus, campaign.status) || campaign.status !== CAMPAIGN_STATUS.pending;
-      let combinedObjects;
-      let sponsors;
-
-      const secondaryObjectsPermlinks = !isEmpty(campaign.objects)
-        ? map(campaign.objects, obj => obj.author_permlink)
-        : [];
-
-      let authorPermlinks = [];
-
-      const agreementObject = get(campaign, 'agreementObjects[0]', '');
-
-      if (!isEmpty(campaign.match_bots)) {
-        authorPermlinks = [
-          ...campaign.match_bots,
-          campaign.requiredObject.author_permlink,
-          ...secondaryObjectsPermlinks,
-        ];
-
-        // eslint-disable-next-line no-unused-expressions
-        agreementObject && authorPermlinks.push(agreementObject);
-
-        combinedObjects = await getObjectsByIds({
-          authorPermlinks,
-          limit: size(authorPermlinks),
-        });
-
-        sponsors = combinedObjects.wobjects.filter(wobj =>
-          includes(campaign.match_bots, wobj.author_permlink),
-        );
-      } else {
-        authorPermlinks = [campaign.requiredObject.author_permlink, ...secondaryObjectsPermlinks];
-        // eslint-disable-next-line no-unused-expressions
-        agreementObject && authorPermlinks.push(agreementObject);
-        combinedObjects = await getObjectsByIds({
-          authorPermlinks,
-          limit: size(authorPermlinks),
-        });
-      }
-
+      const isDuplicate = this.props.match.params?.[0] === 'duplicate';
+      const isDisabled = campaign.status !== 'pending' && !isDuplicate;
+      const authorPermlinks = [
+        campaign.requiredObject,
+        ...campaign.agreementObjects,
+        ...campaign.matchBots,
+        ...campaign.objects,
+      ];
+      const combinedObjects = await getObjectsByIds({
+        authorPermlinks,
+        limit: size(authorPermlinks),
+      });
+      const sponsors = combinedObjects.wobjects.filter(wobj =>
+        includes(campaign.matchBots, wobj.author_permlink),
+      );
       const primaryObject = combinedObjects.wobjects.find(
-        wobj => wobj.author_permlink === campaign.requiredObject.author_permlink,
+        wobj => wobj.author_permlink === campaign.requiredObject,
       );
-
       const secondaryObjects = combinedObjects.wobjects.filter(wobj =>
-        includes(secondaryObjectsPermlinks, wobj.author_permlink),
+        includes(campaign.objects, wobj.author_permlink),
       );
-
       const agreementObjects = combinedObjects.wobjects.find(
         wobj => wobj.author_permlink === campaign.agreementObjects[0],
       );
 
-      const rewardFundRecentClaims = rewardFund.recent_claims;
-      const rewardFundRewardBalance = rewardFund.reward_balance;
-      const campaignMinExpertise = campaign.userRequirements.minExpertise;
-
       const minExpertise = getMinExpertise({
-        campaignMinExpertise,
-        rewardFundRecentClaims,
-        rewardFundRewardBalance,
-        rate,
+        campaignMinExpertise: campaign.userRequirements.minExpertise,
+        rewardFundRecentClaims: this.props.rewardFund.recent_claims,
+        rewardFundRewardBalance: this.props.rewardFund.reward_balance,
+        rate: this.props.rate,
       });
 
       Promise.all([primaryObject, secondaryObjects, agreementObjects, sponsors]).then(values => {
@@ -186,10 +174,10 @@ class CreateRewardForm extends React.Component {
           currency: campaign.currency,
           iAgree: true,
           loading: false,
-          campaignName: `${this.state.createDuplicate ? `Copy ${campaign.name}` : campaign.name}`,
+          campaignName: `${isDuplicate ? `Copy ${campaign.name}` : campaign.name}`,
           campaignType: campaign.type,
           budget: campaign.budget.toString(),
-          reward: campaign.rewardInCurrency.toString(),
+          reward: campaign.reward.toString(),
           primaryObject: values[0],
           secondaryObjectsList: values[1].map(obj => obj),
           pageObjects: !isEmpty(values[2]) ? [values[2]] : [],
@@ -203,64 +191,41 @@ class CreateRewardForm extends React.Component {
           minPhotos: campaign.requirements.minPhotos,
           description: campaign.description,
           commissionAgreement: parseInt(campaign.commissionAgreement * 100, 10),
-          // eslint-disable-next-line no-underscore-dangle
           campaignId: campaign._id,
           compensationAccount: {
             account: campaign.compensationAccount,
           },
           eligibleDays: campaign.frequency_assign,
           usersLegalNotice: campaign.usersLegalNotice,
-          expiredAt,
+          expiredAt: isExpired
+            ? moment(new Date().toISOString())
+            : moment(new Date(campaign.expiredAt)),
           isDuplicate,
           isDisabled,
         });
-        if (campaign.match_bots.length) {
+
+        if (campaign.matchBots.length) {
           this.setState({
-            sponsorsList: campaign.match_bots.map(matchBotAccount => ({
-              account: matchBotAccount,
-            })),
+            sponsorsList: campaign.matchBots,
           });
         }
       });
     }
   };
 
-  componentDidUpdate(prevProps) {
-    const { campaign, createDuplicate } = this.state;
-    const matchPath = get(this.props.match, ['params', '0']);
-
-    if (createDuplicate && campaign)
-      // eslint-disable-next-line react/no-did-update-set-state
-      this.setState({ campaignName: `Copy ${campaign.name}`, createDuplicate: false });
-    if (prevProps.match.params[0] !== matchPath) {
-      const isDuplicate = includes(matchPath, 'createDuplicate');
-
-      // eslint-disable-next-line react/no-did-update-set-state
-      this.setState({ isDuplicate });
-    }
-  }
-
-  checkOptionFields = () => {
-    const { setFieldsValue, getFieldValue } = this.props.form;
-
-    if (getFieldValue('minPhotos') === '') setFieldsValue({ minPhotos: 0 });
-
-    if (getFieldValue('minFollowers') === '') setFieldsValue({ minFollowers: 0 });
-
-    if (getFieldValue('minPosts') === '') setFieldsValue({ minPosts: 0 });
-
-    if (getFieldValue('eligibleDays') === '') setFieldsValue({ eligibleDays: 0 });
-  };
-
   prepareSubmitData = (data, userName) => {
     const { campaignId, pageObjects, isDuplicate } = this.state;
-    const { rate, rewardFund } = this.props;
+    const { rewardFund, rate } = this.props;
     const objects = map(data.secondaryObject, o => o.author_permlink);
     const agreementObjects = size(pageObjects) ? map(pageObjects, o => o.author_permlink) : [];
-    const sponsorAccounts = map(data.sponsorsList, o => o.account);
+    const matchBots = map(data.sponsorsList, o => o.account);
     const appName = apiConfig[process.env.NODE_ENV].appName || 'waivio';
-    const minExpertise = Number(data.minExpertise);
-    const minExpertisePrepared = getMinExpertisePrepared({ minExpertise, rewardFund, rate });
+    const minExpertise = getMinExpertisePrepared({
+      minExpertise: data.minExpertise,
+      rewardFund,
+      rate,
+    });
+
     const preparedObject = {
       requiredObject: data.primaryObject.author_permlink,
       guideName: userName,
@@ -276,24 +241,20 @@ class CreateRewardForm extends React.Component {
       userRequirements: {
         minFollowers: +data.minFollowers,
         minPosts: +data.minPosts,
-        minExpertise: +minExpertisePrepared,
+        minExpertise: +minExpertise,
       },
       commissionAgreement: data.commissionAgreement / 100,
       objects,
       agreementObjects,
-      compensationAccount:
-        data.compensationAccount && data.compensationAccount.account
-          ? data.compensationAccount.account
-          : '',
+      compensationAccount: data?.compensationAccount?.account ?? '',
       usersLegalNotice: data.usersLegalNotice || '',
       currency: data.baseCurrency,
-      match_bots: sponsorAccounts,
-      expired_at: data.expiredAt._d,
-      reservation_timetable: data.targetDays,
-      blacklist_users: [],
-      whitelist_users: [],
-      frequency_assign: data.eligibleDays,
-      count_reservation_days: data.reservationPeriod,
+      payoutToken: this.state.payoutToken,
+      matchBots,
+      expiredAt: data.expiredAt._d,
+      reservationTimetable: data.targetDays,
+      frequencyAssign: data.eligibleDays,
+      countReservationDays: data.reservationPeriod,
     };
 
     if (data.description) preparedObject.description = data.description;
@@ -303,7 +264,7 @@ class CreateRewardForm extends React.Component {
   };
 
   manageRedirect = () => {
-    this.props.history.push(PATH_NAME_MANAGE);
+    this.props.history.push(NEW_PATH_NAME_MANAGE);
   };
 
   handleSetState = (stateData, callbackData) => {
@@ -447,28 +408,27 @@ class CreateRewardForm extends React.Component {
       const { isDuplicate } = this.state;
 
       e.preventDefault();
-      this.checkOptionFields();
+      // this.checkOptionFields();
       this.setState({ loading: true });
       this.props.form.validateFieldsAndScroll((err, values) => {
         if (!err && !isEmpty(values.primaryObject) && !isEmpty(values.secondaryObject)) {
-          createCampaign(this.prepareSubmitData(values, this.props.userName), this.props.userName)
+          createNewCampaing(
+            this.prepareSubmitData(values, this.props.userName),
+            this.props.userName,
+          )
             .then(() => {
               message.success(
                 `Rewards campaign ${values.campaignName} ${
                   isDuplicate ? 'has been created' : 'has been updated'
                 }`,
               );
-              this.setState({ loading: false });
-              this.manageRedirect();
+              // this.manageRedirect();
             })
             .catch(() => {
               message.error(`Campaign ${values.campaignName} has been rejected`);
-              this.setState({ loading: false });
             });
         }
-        if (err) {
-          this.setState({ loading: false });
-        }
+
         this.setState({ loading: false });
       });
     },
@@ -485,17 +445,13 @@ class CreateRewardForm extends React.Component {
       );
     },
 
-    handleSelectChange: () => {},
     handleCurrencyChanges: currency => this.setState(() => ({ currency })),
+
     handleCryptocurrencyChanges: payoutToken => this.setState(() => ({ payoutToken })),
   };
 
-  handleCreateDuplicate = () => {
-    this.setState({ createDuplicate: true });
-  };
-
   render() {
-    const { user, currentSteemDollarPrice, form, match } = this.props;
+    const { user, form, match } = this.props;
     const {
       campaignName,
       campaignType,
@@ -546,7 +502,6 @@ class CreateRewardForm extends React.Component {
         expiredAt={expiredAt}
         usersLegalNotice={usersLegalNotice}
         agreement={agreement}
-        currentSteemDollarPrice={currentSteemDollarPrice}
         user={user}
         sponsorsList={sponsorsList}
         compensationAccount={compensationAccount}
@@ -563,7 +518,6 @@ class CreateRewardForm extends React.Component {
         eligibleDays={eligibleDays}
         isDisabled={isDisabled}
         isDuplicate={isDuplicate}
-        handleCreateDuplicate={this.handleCreateDuplicate}
         isOpenAddChild={this.state.isOpenAddChild}
         currency={this.state.currency}
         payoutToken={this.state.payoutToken}
@@ -572,8 +526,4 @@ class CreateRewardForm extends React.Component {
   }
 }
 
-export default props => (
-  <AppSharedContext.Consumer>
-    {context => <CreateRewardForm {...props} {...context} />}
-  </AppSharedContext.Consumer>
-);
+export default CreateRewards;

@@ -134,7 +134,7 @@ export const Manage = ({ intl, guideName }) => {
                 />
               </td>
               <td>
-                <Link to={`/rewards/details/${row._id}`}>{row.name}</Link>
+                <Link to={`/rewards-new/details/${row._id}`}>{row.name}</Link>
               </td>
               <td>{row.status}</td>
               <td>{row.type}</td>

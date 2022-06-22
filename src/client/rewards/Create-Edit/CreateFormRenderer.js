@@ -55,7 +55,9 @@ const CreateFormRenderer = props => {
     payoutToken,
   } = props;
   const currentItemId = get(match, ['params', 'campaignId']);
-  const isCreateDublicate = get(match, ['params', '0']) === 'createDuplicate';
+  const isCreateDublicate =
+    get(match, ['params', '0']) === 'createDuplicate' ||
+    get(match, ['params', '0']) === 'duplicate';
   const messages = validatorMessagesCreator(handlers.messageFactory, payoutToken);
   const validators = validatorsCreator(
     user,
@@ -177,7 +179,14 @@ const CreateFormRenderer = props => {
               <div className="CreateReward__second">
                 {fields.campaignName.label}{' '}
                 {
-                  <Link to={`/rewards/createDuplicate/${currentItemId}`} title="Create a duplicate">
+                  <Link
+                    to={
+                      pageObjects === 'HIVE'
+                        ? `/rewards/createDuplicate/${currentItemId}`
+                        : `/rewards-new/duplicate/${currentItemId}`
+                    }
+                    title="Create a duplicate"
+                  >
                     ({fields.createDuplicate.text})
                   </Link>
                 }
@@ -232,7 +241,7 @@ const CreateFormRenderer = props => {
             rules: fields.baseCryptocurrency.rules,
             initialValue: props.payoutToken,
           })(
-            <Select onChange={handlers.handleCryptocurrencyChanges} disabled={disabled}>
+            <Select onChange={handlers.handleCryptocurrencyChanges} disabled>
               {['HIVE', 'WAIV'].map(currency => (
                 <Option key={currency} value={currency}>
                   {currency}

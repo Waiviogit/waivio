@@ -2708,4 +2708,15 @@ export const validateDeactivateCampaing = data => {
     .catch(e => e);
 };
 
+export const getNewCampaingById = id => {
+  return fetch(`${config.campaignV2ApiPrefix}${config.campaign}/${id}`, {
+    headers,
+    method: 'GET',
+  })
+    .then(handleErrors)
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+};
+
 export default null;
