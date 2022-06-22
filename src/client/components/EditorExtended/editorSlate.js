@@ -23,8 +23,9 @@ import { deserializeToSlate } from './util/SlateEditor/utils/parse';
 import { getEditorDraftBody } from '../../../store/slateEditorStore/editorSelectors';
 import { createEmptyNode, createImageNode } from './util/SlateEditor/utils/embed';
 
-import './index.less';
 import { wrapWithParagraph } from './util/SlateEditor/utils/paragraph';
+import withLists from './util/SlateEditor/plugins/withLists';
+import './index.less';
 
 const EditorSlate = props => {
   const {
@@ -179,7 +180,10 @@ const EditorSlate = props => {
   });
 
   const editor = useMemo(
-    () => withHistory(withEmbeds(withTables(withLinks(withReact(withObjects(createEditor())))))),
+    () =>
+      withHistory(
+        withEmbeds(withTables(withLinks(withReact(withLists(withObjects(createEditor())))))),
+      ),
     [],
   );
   const [value, setValue] = useState([

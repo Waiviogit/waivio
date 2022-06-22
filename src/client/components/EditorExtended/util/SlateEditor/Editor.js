@@ -85,7 +85,7 @@ export const Element = props => {
 
       return <Video url={url} />;
     case 'code':
-    case 'code_block':
+    case 'codeBlock':
       return <pre className="public-DraftStyleDefault-pre">{children}</pre>;
     case 'object':
       return <ObjectLink {...props} />;
