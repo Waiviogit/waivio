@@ -47,7 +47,7 @@ const WAIVwalletTable = props => {
     dispatch(openWalletTable());
     getTransactionsList();
     dispatch(getUsersTransactionDate(userName));
-  }, [userName]);
+  }, [userName, authUserName]);
 
   useEffect(() => {
     dispatch(openWalletTable());
