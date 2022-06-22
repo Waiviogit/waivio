@@ -24,7 +24,10 @@ export const getEditorSlate = createSelector([editorState], state => state.edito
 
 export const getLinkedObjects = createSelector([getEditor], state => state.linkedObjects);
 
-export const getEditorDraftBody = createSelector([getEditor], state => state.draftContent.body);
+export const getEditorDraftBody = createSelector(
+  [getEditor],
+  state => state.draftContent?.body || '',
+);
 
 export const getCurrentDraft = (state, { draftId }) => {
   const draftPosts = getDraftPosts(state);

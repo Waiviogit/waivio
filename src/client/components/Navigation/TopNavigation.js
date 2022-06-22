@@ -114,7 +114,7 @@ const TopNavigation = ({ location: { pathname } }) => {
           </li>
           <li className="TopNavigation__item">
             <Link
-              to={`${LINKS.REWARDS_NEW}/manage`}
+              to={`${LINKS.REWARDS_NEW}/all`}
               className={classNames('TopNavigation__link', {
                 'TopNavigation__link--active':
                   pathname.includes(LINKS.REWARDS_NEW) &&

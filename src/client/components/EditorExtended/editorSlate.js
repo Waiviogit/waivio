@@ -38,6 +38,7 @@ const EditorSlate = props => {
     placeholder,
     handleHashtag,
     handleObjectSelect,
+    initialBody,
   } = props;
 
   const editorRef = useRef(null);
@@ -213,7 +214,7 @@ const EditorSlate = props => {
 
   useEffect(() => {
     if (body) {
-      const postParsed = deserializeToSlate(body);
+      const postParsed = deserializeToSlate(body || initialBody);
 
       Transforms.delete(editor, {
         at: {
@@ -267,6 +268,7 @@ EditorSlate.propTypes = {
   placeholder: PropTypes.string,
   handleObjectSelect: PropTypes.func.isRequired,
   handleHashtag: PropTypes.func.isRequired,
+  initialBody: PropTypes.string,
 };
 
 EditorSlate.defaultProps = {
@@ -274,6 +276,7 @@ EditorSlate.defaultProps = {
   isShowEditorSearch: false,
   isVimeo: false,
   placeholder: '',
+  initialBody: '',
 };
 
 const mapStateToProps = store => ({

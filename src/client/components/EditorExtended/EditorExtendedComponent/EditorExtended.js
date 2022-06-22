@@ -113,6 +113,7 @@ const Editor = props => {
             editorEnabled={editorEnabled && props.enabled}
             setShowEditorSearch={props.setShowEditorSearch}
             setSearchCoordinates={props.setCursorCoordinates}
+            initialBody={get(props, 'initialContent.body', '')}
             placeholder={props.intl.formatMessage({
               id: 'story_placeholder',
               defaultMessage: 'Write your story...',

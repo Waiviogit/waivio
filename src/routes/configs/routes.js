@@ -115,7 +115,7 @@ const routes = {
     },
     {
       component: Views.RewardsMainPage,
-      path: [`/rewards-new/(${URL.REWARDS.tabs})/:campaignId?/:permlink?/:username?`],
+      path: [`/rewards-new/(${URL.NEW_REWARDS.tabs})/:campaignId?/:permlink?/:username?`],
       pathScope: '/rewards-new',
       exact: true,
       routes: [
@@ -130,9 +130,9 @@ const routes = {
           component: Views.RewardsAll,
         },
         {
-          path: '/(details|createDuplicate|create)/:campaignId?',
+          path: '/(details|duplicate|create)/:campaignId?',
           exact: true,
-          component: Views.CreateRewardForm,
+          component: Views.CreateRewards,
         },
       ],
     },
