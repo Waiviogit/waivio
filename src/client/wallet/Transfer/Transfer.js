@@ -141,7 +141,7 @@ export default class Transfer extends React.Component {
     screenSize: 'large',
     isGuest: false,
     notify: () => {},
-    // searchByUser: [],
+    searchByUser: [],
     hiveBeneficiaryAccount: '',
     getPayables: () => {},
     isTip: false,
