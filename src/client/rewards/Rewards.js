@@ -249,7 +249,7 @@ class Rewards extends React.Component {
 
     const actualArea = !area[0] ? [] : area;
 
-    if (match.params.filterKey === 'all')
+    if (match.params[0] === 'all')
       this.getPropositions({ username, match, activeFilters, sort, actualArea, authenticated });
   }
 
@@ -559,7 +559,7 @@ class Rewards extends React.Component {
       });
       if (isMap) {
         this.props.getPropositionsForMap(data.campaigns);
-      } else if (match.params.filterKey === 'reserved') {
+      } else if (match.params[0] === 'reserved') {
         this.setState({
           propositionsReserved: data.campaigns,
           loadingCampaigns: false,
