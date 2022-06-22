@@ -26,7 +26,7 @@ const toolbarGroups = [
   {
     label: 'H4',
     description: 'Heading 4',
-    page: 2,
+    page: 4,
     type: 'block',
     format: 'headingFour',
   },
@@ -49,6 +49,7 @@ const toolbarGroups = [
     description: 'Blockquote',
     type: 'block',
     format: 'blockquote',
+    page: 3,
   },
   {
     label: 'B',
@@ -101,7 +102,7 @@ const toolbarGroups = [
     ),
     format: 'orderedList',
     type: 'block',
-    page: 1,
+    page: 3,
   },
   {
     label: (
@@ -140,7 +141,7 @@ const toolbarGroups = [
     ),
     format: 'unorderedList',
     type: 'block',
-    page: 1,
+    page: 3,
   },
   {
     label: (
