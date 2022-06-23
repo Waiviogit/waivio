@@ -99,15 +99,8 @@ export const isBlockActive = (editor, format) => {
   return !!match;
 };
 
-export const activeMark = (editor, format) => {
-  const defaultMarkData = {
-    color: 'black',
-    bgColor: 'black',
-    fontSize: 'normal',
-    fontFamily: 'sans',
-  };
-  const marks = Editor.marks(editor);
-  const defaultValue = defaultMarkData[format];
-
-  return marks?.[format] ?? defaultValue;
+export const focusEditorToEnd = editor => {
+  Transforms.select(editor, Editor.end(editor, []));
+  Transforms.move(editor, { distance: 1, unit: 'line' });
+  ReactEditor.focus(editor);
 };

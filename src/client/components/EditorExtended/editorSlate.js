@@ -4,11 +4,12 @@ import uuidv4 from 'uuid/v4';
 import isSoftNewlineEvent from 'draft-js/lib/isSoftNewlineEvent';
 import { message } from 'antd';
 import classNames from 'classnames';
-import { Slate, Editable, withReact, ReactEditor } from 'slate-react';
+import { Slate, Editable, withReact } from 'slate-react';
 import { createEditor, Editor, Transforms, Node } from 'slate';
 import { withHistory } from 'slate-history';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import { useParams } from 'react-router';
 
 import { encodeImageFileAsURL, SIDE_BUTTONS_SLATE } from './model/content';
 import EditorSearchObjects from './components/EditorSearchObjects';
@@ -22,11 +23,14 @@ import withObjects from './util/SlateEditor/plugins/withObjects';
 import { deserializeToSlate } from './util/SlateEditor/utils/parse';
 import { getEditorDraftBody } from '../../../store/slateEditorStore/editorSelectors';
 import { createEmptyNode, createImageNode } from './util/SlateEditor/utils/embed';
-
 import { wrapWithParagraph } from './util/SlateEditor/utils/paragraph';
 import withLists from './util/SlateEditor/plugins/withLists';
+import {
+  focusEditorToEnd,
+  removeAllInlineFormats,
+} from './util/SlateEditor/utils/SlateUtilityFunctions';
+
 import './index.less';
-import { removeAllInlineFormats } from './util/SlateEditor/utils/SlateUtilityFunctions';
 
 const EditorSlate = props => {
   const {
@@ -41,6 +45,8 @@ const EditorSlate = props => {
     handleObjectSelect,
     initialBody,
   } = props;
+
+  const params = useParams();
 
   const editorRef = useRef(null);
 
@@ -213,10 +219,8 @@ const EditorSlate = props => {
     const editorEl = document.querySelector('[data-slate-editor="true"]');
 
     editorEl.style.minHeight = `100px`;
-    setTimeout(() => {
-      ReactEditor.focus(editor);
-    }, 100);
-  }, []);
+    setTimeout(() => focusEditorToEnd(editor), 200);
+  }, [body, params]);
 
   useEffect(() => {
     if (body) {
@@ -230,6 +234,7 @@ const EditorSlate = props => {
       });
       Transforms.insertFragment(editor, postParsed, { at: [0, 0] });
       Transforms.insertNodes(editor, createEmptyNode());
+      focusEditorToEnd(editor);
     }
   }, [body]);
 
