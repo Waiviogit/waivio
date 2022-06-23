@@ -52,14 +52,14 @@ const toolbarGroups = [
     page: 3,
   },
   {
-    label: 'B',
+    label: <strong className="toolbar_button-strong">B</strong>,
     description: 'Bold',
     page: 1,
     type: 'inline',
     format: 'strong',
   },
   {
-    label: 'I',
+    label: <i>I</i>,
     description: 'Italic',
     page: 1,
     type: 'inline',
