@@ -32,7 +32,7 @@ import DelegateInstructionCard from '../../TransfersCards/DelegateInstructionCar
 const WAIVWalletTransferItemsSwitcher = ({ transaction, currentName, intl }) => {
   const walletType = useSelector(getCurrentWalletType);
   const isMobileDevice = isMobile();
-  const powerSymbol = transaction.symbol === 'WAIV' ? 'WP' : transaction.symbol;
+  const powerSymbol = transaction.to === transaction.from ? 'WP' : transaction.symbol;
 
   switch (transaction.operation) {
     case 'tokens_stake':
