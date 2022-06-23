@@ -4,8 +4,9 @@ import { TransitionGroup, CSSTransition } from 'react-transition-group';
 import { injectIntl } from 'react-intl';
 import { ReactEditor, useSlate } from 'slate-react';
 import { getSelection } from '../util';
-import './addbutton.less';
 import { SIDE_BUTTONS_SLATE } from '../model/content';
+
+import './addbutton.less';
 
 const HEIGHT_BTN = 14;
 
