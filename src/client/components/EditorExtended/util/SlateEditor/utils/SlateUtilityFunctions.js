@@ -1,6 +1,6 @@
 import { Editor, Transforms, Element as SlateElement } from 'slate';
 import { ReactEditor } from 'slate-react';
-import { REMOVE_FORMAT } from './constants';
+import { INLINE_CODE, REMOVE_FORMAT } from './constants';
 import defaultToolbarGroups from '../toolbar/toolbarGroups';
 
 const inlineButtons = defaultToolbarGroups.filter(i => i.type === 'inline');
@@ -63,11 +63,16 @@ export const toggleBlock = (editor, format) => {
 export const addMarkData = (editor, data) => {
   Editor.addMark(editor, data.format, data.value);
 };
+
+export const removeAllInlineFormats = editor => {
+  [...inlineButtons, { format: INLINE_CODE }].forEach(i => {
+    Editor.removeMark(editor, i.format);
+  });
+};
+
 export const toggleMark = (editor, format) => {
   if (format === REMOVE_FORMAT) {
-    inlineButtons.forEach(i => {
-      Editor.removeMark(editor, i.format);
-    });
+    removeAllInlineFormats(editor);
 
     return;
   }

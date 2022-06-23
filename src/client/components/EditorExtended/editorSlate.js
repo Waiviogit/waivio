@@ -26,6 +26,7 @@ import { createEmptyNode, createImageNode } from './util/SlateEditor/utils/embed
 import { wrapWithParagraph } from './util/SlateEditor/utils/paragraph';
 import withLists from './util/SlateEditor/plugins/withLists';
 import './index.less';
+import { removeAllInlineFormats } from './util/SlateEditor/utils/SlateUtilityFunctions';
 
 const EditorSlate = props => {
   const {
@@ -168,6 +169,11 @@ const EditorSlate = props => {
 
         return true;
       }
+    }
+    if (event.keyCode === 32) {
+      removeAllInlineFormats(editor);
+
+      return false;
     }
 
     return false;
