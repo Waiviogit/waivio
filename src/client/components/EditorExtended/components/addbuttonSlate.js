@@ -28,7 +28,7 @@ const AddButtonSlate = props => {
       const parentBoundary = editorNode.getBoundingClientRect();
       const nodeStyle = nodeRef.current?.style;
 
-      nodeStyle.top = `${bound.top - parentBoundary.top - HEIGHT_BTN}px`;
+      if (bound.top > 0) nodeStyle.top = `${bound.top - parentBoundary.top - HEIGHT_BTN}px`;
     }, 50);
   }, [selection, editor]);
 
