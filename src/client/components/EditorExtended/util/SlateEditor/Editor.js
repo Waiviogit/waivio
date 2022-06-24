@@ -83,7 +83,12 @@ export const Element = props => {
     case 'video':
       const url = props?.element?.url || '';
 
-      return <Video url={url} />;
+      return (
+        <>
+          <Video url={url} />
+          <span style={{ display: 'hidden' }}>{children}</span>
+        </>
+      );
     case 'code':
     case 'codeBlock':
       return <pre className="public-DraftStyleDefault-pre">{children}</pre>;

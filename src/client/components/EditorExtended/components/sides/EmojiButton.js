@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
-import { useSlate } from 'slate-react';
+import { ReactEditor, useSlate } from 'slate-react';
 import { Modal } from 'antd';
 import './emoji.less';
 
@@ -1198,6 +1198,7 @@ const EmojiSideButton = props => {
 
   const handleSelect = i => {
     editor.insertText(i);
+    ReactEditor.focus(editor);
     setIsModal(false);
     close();
   };

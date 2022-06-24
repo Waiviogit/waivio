@@ -4,8 +4,9 @@ import { TransitionGroup, CSSTransition } from 'react-transition-group';
 import { injectIntl } from 'react-intl';
 import { ReactEditor, useSlate } from 'slate-react';
 import { getSelection } from '../util';
+import { SIDE_BUTTONS_SLATE } from '../model/content';
+
 import './addbutton.less';
-import { SIDE_BUTTONS_SLATE } from '../../EditorExtended/model/content';
 
 const HEIGHT_BTN = 14;
 
@@ -25,8 +26,9 @@ const AddButtonSlate = props => {
       const nativeSelection = getSelection(window);
       const bound = nativeSelection.getRangeAt(0).getBoundingClientRect();
       const parentBoundary = editorNode.getBoundingClientRect();
+      const nodeStyle = nodeRef.current?.style;
 
-      nodeRef.current.style.top = `${bound.top - parentBoundary.top - HEIGHT_BTN}px`;
+      if (bound.top > 0) nodeStyle.top = `${bound.top - parentBoundary.top - HEIGHT_BTN}px`;
     }, 50);
   }, [selection, editor]);
 
@@ -51,7 +53,7 @@ const AddButtonSlate = props => {
 
   useEffect(() => {
     if (!isOpen && editor) {
-      setTimeout(() => ReactEditor.focus(editor));
+      setTimeout(() => !ReactEditor.isFocused(editor) && ReactEditor.focus(editor), 100);
     }
   }, [isOpen]);
 
