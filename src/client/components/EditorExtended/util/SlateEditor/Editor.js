@@ -103,7 +103,7 @@ export const Element = props => {
       );
     default:
       return (
-        <p style={{ margin: 0 }} className="md-block md-block-paragraph" {...attributes}>
+        <p style={{ margin: '10px 0 0 0' }} className="md-block md-block-paragraph" {...attributes}>
           {children}
         </p>
       );
