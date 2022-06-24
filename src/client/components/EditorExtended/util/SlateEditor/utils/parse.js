@@ -109,7 +109,7 @@ export const deserializeToSlate = body => {
   _body.split('\n\n\n').forEach(i => {
     const blocks = processor.processSync(i).result;
 
-    postParsed = [...postParsed, ...blocks];
+    postParsed = [...postParsed, ...blocks, { type: 'paragraph', children: [{ text: '' }] }];
     const isItemList = blocks[blocks.length - 1]?.type !== 'itemList';
 
     if (!isItemList) {
