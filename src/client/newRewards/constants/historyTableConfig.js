@@ -62,7 +62,7 @@ export const configHistoryTableHeader = [
   {
     id: 'completed',
     intl: {
-      id: 'paid',
+      id: 'paid_waiv',
       defaultMessage: 'Paid (WAIV)',
     },
   },

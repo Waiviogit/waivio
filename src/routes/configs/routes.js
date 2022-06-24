@@ -120,6 +120,7 @@ const routes = {
       path: [
         `/rewards-new/(details|duplicate|create})/:campaignId?`,
         `/rewards-new/(all|eligible)/:requiredObject?`,
+        `/rewards-new/(${URL.REWARDS.tabs})`,
       ],
       pathScope: '/rewards-new',
       exact: true,

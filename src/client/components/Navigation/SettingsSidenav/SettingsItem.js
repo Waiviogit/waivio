@@ -34,6 +34,12 @@ const SettingsItem = ({ toggleMenuCondition, condition, configItem }) => {
                   to={setting.to}
                   className="sidenav-discover-objects__item"
                   activeClassName="Sidenav__item--active"
+                  isActive={(match, location) => {
+                    if (setting?.paths)
+                      return setting?.paths?.some(url => location?.pathname?.includes(url));
+
+                    return setting?.to === match?.url;
+                  }}
                 >
                   <FormattedMessage id={setting.id} defaultMessage={setting.defaultMessage} />
                 </NavLink>
