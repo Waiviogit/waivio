@@ -12,6 +12,7 @@ import {
   getAuthorsChildWobjects,
   getNewCampaingById,
   getObjectsByIds,
+  updateCampaing,
 } from '../../../waivioApi/ApiClient';
 import * as apiConfig from '../../../waivioApi/config.json';
 import { NEW_PATH_NAME_MANAGE } from '../../../common/constants/rewards';
@@ -208,7 +209,7 @@ class CreateRewards extends React.Component {
   };
 
   prepareSubmitData = (data, userName) => {
-    const { campaignId, pageObjects, isDuplicate } = this.state;
+    const { campaignId, pageObjects } = this.state;
     const { rewardFund, rate } = this.props;
     const objects = map(data.secondaryObject, o => o.author_permlink);
     const agreementObjects = size(pageObjects) ? map(pageObjects, o => o.author_permlink) : [];
@@ -252,7 +253,7 @@ class CreateRewards extends React.Component {
     };
 
     if (data.description) preparedObject.description = data.description;
-    if (campaignId && !isDuplicate) preparedObject.id = campaignId;
+    if (this.props.match?.params?.[0] === 'details') preparedObject._id = campaignId;
 
     return preparedObject;
   };
@@ -404,10 +405,10 @@ class CreateRewards extends React.Component {
       this.setState({ loading: true });
       this.props.form.validateFieldsAndScroll((err, values) => {
         if (!err && !isEmpty(values.primaryObject) && !isEmpty(values.secondaryObject)) {
-          createNewCampaing(
-            this.prepareSubmitData(values, this.props.userName),
-            this.props.userName,
-          )
+          const isDetails = this.props.match?.params?.[0] === 'details';
+          const submitMethod = isDetails ? updateCampaing : createNewCampaing;
+
+          submitMethod(this.prepareSubmitData(values, this.props.userName), this.props.userName)
             .then(() => {
               message.success(
                 `Rewards campaign ${values.campaignName} ${

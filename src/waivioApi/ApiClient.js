@@ -2634,6 +2634,22 @@ export const createNewCampaing = (data, account) => {
     .catch(e => e);
 };
 
+export const updateCampaing = (data, account) => {
+  return fetch(`${config.campaignV2ApiPrefix}${config.campaign}`, {
+    headers: {
+      ...headers,
+      account,
+      'access-token': Cookie.get('access_token'),
+    },
+    method: 'PATCH',
+    body: JSON.stringify(data),
+  })
+    .then(handleErrors)
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+};
+
 export const getCampaingManageList = giudeName => {
   return fetch(`${config.campaignV2ApiPrefix}${config.campaigns}${config.manager}/${giudeName}`, {
     headers,
@@ -2673,6 +2689,20 @@ export const getCampaingHistoryList = (giudeName, skip = 0) => {
 export const getAllRewardList = (skip = 0) => {
   return fetch(
     `${config.campaignV2ApiPrefix}${config.rewards}${config.all}?limit=10&skip=${skip}`,
+    {
+      headers,
+      method: 'GET',
+    },
+  )
+    .then(handleErrors)
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+};
+
+export const getPropositionByCampaingObjectPermlink = (parentPermlink, skip = 0) => {
+  return fetch(
+    `${config.campaignV2ApiPrefix}${config.rewards}${config.all}/object/${parentPermlink}?limit=10&skip=${skip}`,
     {
       headers,
       method: 'GET',

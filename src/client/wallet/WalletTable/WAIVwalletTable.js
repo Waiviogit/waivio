@@ -132,15 +132,14 @@ const WAIVwalletTable = props => {
   };
   const getMoreTransactionsList = async () => {
     if (dateEstablished) {
-      const { from, end } = props.form.getFieldsValue();
+      const { from } = props.form.getFieldsValue();
       const startDate = handleChangeStartDate(from);
-      const endDate = handleChangeEndDate(end);
 
       const list = await getWaivAdvancedReports({
         filterAccounts,
         accounts,
         startDate,
-        endDate,
+        endDate: transactionsList[transactionsList.length - 1].timestamp,
         user: userName,
         currency: currentCurrency,
       });
@@ -156,6 +155,7 @@ const WAIVwalletTable = props => {
         accounts,
         currency: currentCurrency,
         user: userName,
+        endDate: transactionsList[transactionsList.length - 1].timestamp,
       });
 
       setTransactionsList([...transactionsList, ...list.wallet]);
