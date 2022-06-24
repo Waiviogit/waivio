@@ -101,9 +101,8 @@ const WAIVwalletTable = props => {
   };
 
   const handleSubmit = async () => {
-    const { from, end, currency } = props.form.getFieldsValue();
+    const { from, currency } = props.form.getFieldsValue();
     const startDate = handleChangeStartDate(from);
-    const endDate = handleChangeEndDate(end);
 
     setLoading(true);
     setIsLoadingData(true);
@@ -117,7 +116,7 @@ const WAIVwalletTable = props => {
         filterAccounts,
         accounts: mappedAccounts,
         startDate,
-        endDate,
+        endDate: transactionsList[transactionsList.length - 1].timestamp,
         user: userName,
         currency,
       });
@@ -167,18 +166,6 @@ const WAIVwalletTable = props => {
     moment(value)
       .startOf('day')
       .unix();
-
-  const handleChangeEndDate = value => {
-    const date = moment(value);
-    const isToday =
-      date.startOf('day').unix() ===
-      moment()
-        .startOf('day')
-        .unix();
-    const endDate = isToday ? moment() : date.endOf('day');
-
-    return endDate.unix();
-  };
 
   const handleChangeTotalValue = value => {
     if (dateEstablished) {
