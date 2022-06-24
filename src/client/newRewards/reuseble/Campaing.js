@@ -14,7 +14,10 @@ const Campaing = ({ campain }) => {
   return (
     <div className="Campaing">
       <ObjectCardView wObject={campain.object} withRewards rewardPrice={campain.maxReward} />
-      <Link to={`/rewards-new/all/${campain._id}`} className="Campaing__button">
+      <Link
+        to={`/rewards-new/all/${campain?.object?.author_permlink}`}
+        className="Campaing__button"
+      >
         {buttonLabel}{' '}
         <b>
           <USDDisplay value={campain.maxReward} />
@@ -29,7 +32,9 @@ Campaing.propTypes = {
   campain: PropTypes.shape({
     maxReward: PropTypes.number,
     minReward: PropTypes.number,
-    object: PropTypes.shape({}),
+    object: PropTypes.shape({
+      author_permlink: PropTypes.string,
+    }),
     _id: PropTypes.string,
   }).isRequired,
 };

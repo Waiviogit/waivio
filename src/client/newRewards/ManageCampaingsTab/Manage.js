@@ -119,7 +119,7 @@ export const Manage = ({ intl, guideName }) => {
     const title = isActive ? 'Deactivate rewards campaign' : 'Activate rewards campaign';
     const content = isActive
       ? `The terms and conditions of the rewards campaign ${item.name} will be stopped on Hive blockchain`
-      : `The terms and conditions of the rewards campaign ${item.name} Inactive main will be published on Hive blockchain`;
+      : `The terms and conditions of the rewards campaign ${item.name} will be published on Hive blockchain`;
 
     Modal.confirm({
       title,
@@ -162,8 +162,8 @@ export const Manage = ({ intl, guideName }) => {
               <td>{round(row.budgetUSD * currency.rate, 3)}</td>
               <td>{round(row.rewardInUSD * currency.rate, 3)}</td>
               {/* це має буть лінка яка веде на резервейшин хісторі еслі 0 то не показувать */}
-              <td>{row.reserved}</td>
-              <td>{row.completed}</td>
+              <td>{row.reserved || null}</td>
+              <td>{row.completed || null}</td>
               <td>{row.remaining}</td>
             </tr>
           ))

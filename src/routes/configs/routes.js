@@ -11,6 +11,7 @@ import Discover from '../../client/discover/Discover';
 import DiscoverObjects from '../../client/discoverObjects/DiscoverObjects';
 import RewardsComponent from '../../client/rewards/RewardsComponent/RewardsComponent';
 import RewardsMainPage from '../../client/newRewards/RewardsMainPage';
+import PropositionList from '../../client/newRewards/PropositionList/PropositionList';
 
 const routes = {
   component: Wrapper,
@@ -116,7 +117,10 @@ const routes = {
     },
     {
       component: RewardsMainPage,
-      path: [`/rewards-new/(${URL.NEW_REWARDS.tabs})/:campaignId?`],
+      path: [
+        `/rewards-new/(details|duplicate|create})/:campaignId?`,
+        `/rewards-new/(all|eligible)/:requiredObject?`,
+      ],
       pathScope: '/rewards-new',
       exact: true,
       routes: [
@@ -134,6 +138,11 @@ const routes = {
           path: '/(details|duplicate|create)/:campaignId?',
           exact: true,
           component: Views.CreateRewards,
+        },
+        {
+          path: '/(all|eligible)/:requiredObject?',
+          exact: true,
+          component: PropositionList,
         },
       ],
     },
