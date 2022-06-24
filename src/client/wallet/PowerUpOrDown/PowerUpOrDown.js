@@ -75,7 +75,10 @@ export default class PowerUpOrDown extends React.Component {
     }
   }
 
-  handleBalanceClick = balance => this.props.form.setFieldsValue({ amount: balance });
+  handleBalanceClick = balance => {
+    this.props.form.setFieldsValue({ amount: balance });
+    this.setState({ disabled: false });
+  };
 
   stakinTokensList = key =>
     this.props.tokensList.reduce((acc, curr) => {
@@ -215,6 +218,7 @@ export default class PowerUpOrDown extends React.Component {
           <Form className="PowerUpOrDown" hideRequiredMark>
             <Form.Item label={<FormattedMessage id="amount" defaultMessage="Amount" />}>
               <PowerSwitcher
+                onChange={this.validateAmount}
                 handleAmountChange={this.handleAmountChange}
                 handleBalanceClick={this.handleBalanceClick}
                 getFieldDecorator={getFieldDecorator}
