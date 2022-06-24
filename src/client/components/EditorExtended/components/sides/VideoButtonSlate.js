@@ -3,7 +3,7 @@ import { startsWith } from 'lodash';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { Input, message } from 'antd';
-import { useSlate } from 'slate-react';
+import { ReactEditor, useSlate } from 'slate-react';
 import { Transforms } from 'slate';
 import { createEmptyNode, createVideoNode } from '../../util/SlateEditor/utils/embed';
 
@@ -12,8 +12,11 @@ const VideoLinkInput = props => {
 
   const handleAddVideoLink = link => {
     if (startsWith(link, 'http')) {
-      Transforms.insertNodes(editor, [createVideoNode({ url: link }), createEmptyNode(editor)], {
-        select: true,
+      Transforms.insertNodes(editor, createVideoNode({ url: link }));
+
+      setTimeout(() => {
+        Transforms.insertNodes(editor, createEmptyNode(editor));
+        ReactEditor.focus(editor);
       });
       props.close();
     } else {

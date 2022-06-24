@@ -1,6 +1,4 @@
 import { CompositeDecorator, ContentState, convertFromRaw, EditorState } from 'draft-js';
-import ObjectLink, { findObjEntities } from '../components/entities/objectlink';
-import Link, { findLinkEntities } from '../components/entities/link';
 import ImageSideButton from '../components/sides/ImageSideButton';
 import VideoSideButton from '../components/sides/VideoSideButton';
 import ObjectSideButton from '../components/sides/ObjectSideButton';
@@ -11,16 +9,7 @@ import VideoButtonSlate from '../components/sides/VideoButtonSlate';
 import TableSideButton from '../components/sides/TableSideButton';
 import EmojiSideButton from '../components/sides/EmojiButton';
 
-export const defaultDecorators = new CompositeDecorator([
-  {
-    strategy: findObjEntities,
-    component: ObjectLink,
-  },
-  {
-    strategy: findLinkEntities,
-    component: Link,
-  },
-]);
+export const defaultDecorators = new CompositeDecorator([]);
 
 export const SIDE_BUTTONS = [
   {

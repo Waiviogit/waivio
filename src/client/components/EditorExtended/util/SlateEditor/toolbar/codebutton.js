@@ -9,6 +9,7 @@ import {
   toggleBlock,
   toggleMark,
 } from '../utils/SlateUtilityFunctions';
+import { INLINE_CODE } from '../utils/constants';
 
 const CodeButton = props => {
   const { editor } = props;
@@ -19,7 +20,7 @@ const CodeButton = props => {
   };
 
   const onToggleInline = () => {
-    toggleMark(editor, 'inlineCode');
+    toggleMark(editor, INLINE_CODE);
   };
 
   return (
