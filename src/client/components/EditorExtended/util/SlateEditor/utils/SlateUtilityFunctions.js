@@ -3,7 +3,7 @@ import { ReactEditor } from 'slate-react';
 import { INLINE_CODE, REMOVE_FORMAT } from './constants';
 import defaultToolbarGroups from '../toolbar/toolbarGroups';
 
-const inlineButtons = defaultToolbarGroups.filter(i => i.type === 'inline');
+const inlineButtons = defaultToolbarGroups.filter(i => ['inline', 'link'].includes(i.type));
 
 const alignment = ['alignLeft', 'alignRight', 'alignCenter'];
 const list_types = ['orderedList', 'unorderedList'];
