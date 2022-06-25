@@ -5,6 +5,12 @@ import PropTypes from 'prop-types';
 
 import './styles.less';
 
+const InlineChromiumBugfix = () => (
+  <span contentEditable={false} style={{ fontSize: 0 }}>
+    ${String.fromCodePoint(160) /* Non-breaking space */}
+  </span>
+);
+
 const Link = ({ attributes, element, children }) => {
   const selected = useSelected();
   const focused = useFocused();
@@ -12,7 +18,9 @@ const Link = ({ attributes, element, children }) => {
   return (
     <div className="element-link">
       <a {...attributes} href={element.url} target="_blank noreferrer">
+        <InlineChromiumBugfix />
         {children}
+        <InlineChromiumBugfix />
       </a>
       {selected && focused && (
         <div
