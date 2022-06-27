@@ -2,6 +2,8 @@ import React from 'react';
 import { Button, Checkbox, DatePicker, Form, Input, InputNumber, Modal, Select } from 'antd';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
+import moment from 'moment';
+import { useSelector } from 'react-redux';
 import { isEmpty, map, get, includes } from 'lodash';
 import { Link } from 'react-router-dom';
 import OBJECT_TYPE from '../../object/const/objectTypes';
@@ -13,6 +15,10 @@ import { validatorMessagesCreator, validatorsCreator } from './validators';
 import fieldsData from './fieldsData';
 import { getObjectName, getObjectType } from '../../../common/helpers/wObjectHelper';
 import { currencyTypes } from '../../websites/constants/currencyTypes';
+import {
+  getTokenRatesInUSD,
+  getUserCurrencyBalance,
+} from '../../../store/walletStore/walletSelectors';
 
 const { Option } = Select;
 
@@ -36,7 +42,6 @@ const CreateFormRenderer = props => {
     expiredAt,
     usersLegalNotice,
     agreement,
-    currentSteemPrice,
     user,
     sponsorsList,
     compensationAccount,
@@ -55,18 +60,23 @@ const CreateFormRenderer = props => {
     payoutToken,
   } = props;
   const currentItemId = get(match, ['params', 'campaignId']);
+  const currencyInfo = useSelector(state => getUserCurrencyBalance(state, 'WAIV'));
+  const rates = useSelector(state => getTokenRatesInUSD(state, 'WAIV'));
+
   const isCreateDublicate =
     get(match, ['params', '0']) === 'createDuplicate' ||
     get(match, ['params', '0']) === 'duplicate';
   const messages = validatorMessagesCreator(handlers.messageFactory, payoutToken);
   const validators = validatorsCreator(
+    payoutToken,
     user,
-    currentSteemPrice,
     messages,
     getFieldValue,
     primaryObject,
     secondaryObjectsList,
     props.currency,
+    currencyInfo,
+    rates,
   );
   const fields = fieldsData(handlers.messageFactory, validators, user.name, props.currency);
   const isDuplicate = includes(get(match, ['params', '0']), 'createDuplicate');
@@ -508,10 +518,15 @@ const CreateFormRenderer = props => {
         <Form.Item label={fields.expiredAt.label}>
           {getFieldDecorator(fields.expiredAt.name, {
             rules: fields.expiredAt.rules,
-            initialValue: expiredAt,
+            initialValue: expiredAt || moment().add(2, 'days'),
           })(
             <DatePicker
               allowClear={false}
+              disabledDate={currDate =>
+                moment()
+                  .add(1, 'days')
+                  .unix() > currDate.unix()
+              }
               disabled={disabled}
               placeholder={intl.formatMessage({
                 id: 'date_picker_placeholder',
@@ -636,7 +651,6 @@ CreateFormRenderer.propTypes = {
     closeModalAddChildren: PropTypes.func.isRequired,
     addAllObjectChildren: PropTypes.func.isRequired,
   }).isRequired,
-  currentSteemPrice: PropTypes.number,
   user: PropTypes.shape(),
   sponsorsList: PropTypes.arrayOf(PropTypes.shape()),
   secondaryObjectsList: PropTypes.arrayOf(PropTypes.shape()),

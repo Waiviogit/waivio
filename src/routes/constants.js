@@ -70,6 +70,10 @@ export default {
       'created',
       'receivables',
       'match-bot',
+      'fraud-detection',
+      'match-bots-authors',
+      'match-bots-curators',
+      'match-bots-sponsors',
     ].join('|'),
   },
   NEW_REWARDS: {
