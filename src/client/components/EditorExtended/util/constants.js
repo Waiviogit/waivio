@@ -1,4 +1,5 @@
 import { jsx } from 'slate-hyperscript';
+import { Element } from 'slate';
 
 export const Block = {
   UNSTYLED: 'unstyled',
@@ -132,7 +133,13 @@ export const deserializeHtmlToSlate = el => {
   if (TEXT_TAGS[nodeName]) {
     const attrs = TEXT_TAGS[nodeName](el);
 
-    return children.map(child => jsx('text', attrs, child));
+    return children.map(child => {
+      if (Element.isElement(child)) {
+        return jsx('element', child);
+      }
+
+      return jsx('text', attrs, child);
+    });
   }
 
   return children;
