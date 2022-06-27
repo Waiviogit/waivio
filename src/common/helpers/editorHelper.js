@@ -417,33 +417,45 @@ export const checkCursorInSearchSlate = editor => {
       isNeedOpenSearch: false,
     };
   }
-  const [start] = Range.edges(selection);
-  const wordBefore = Editor.before(editor, start, { unit: 'word' });
-  const before = wordBefore && Editor.before(editor, wordBefore);
-  const beforeRange = before && Editor.range(editor, before, start);
-  const beforeText = beforeRange && Editor.string(editor, beforeRange);
-  const beforeMatch = beforeText && beforeText.match(/^#(\w+)$/);
-  const after = Editor.after(editor, start);
-  const afterRange = Editor.range(editor, start, after);
-  const afterText = Editor.string(editor, afterRange);
-  const afterMatch = afterText.match(/^(\s|$)/);
-  const blockText = editor.children[selection.anchor.path[0]]?.children[0]?.text;
-  const startPositionOfWord = blockText?.lastIndexOf('#', start.offset);
+  try {
+    const [start] = Range.edges(selection);
+    const wordBefore = Editor.before(editor, start, { unit: 'word' });
+    const beforeFirstWord = wordBefore && Editor.before(editor, wordBefore, { unit: 'word' });
+    const beforeSecondWord =
+      wordBefore && Editor.before(editor, beforeFirstWord, { unit: 'character' });
+    const before = beforeSecondWord || beforeFirstWord;
+    const beforeRange = before && Editor.range(editor, before, start);
+    const beforeText = beforeRange && Editor.string(editor, beforeRange);
+    const beforeMatch = beforeText && beforeText.match(/#(\w+(\s)?(\w+)?)$/);
+    const after = Editor.after(editor, start);
+    const afterRange = Editor.range(editor, start, after);
+    const afterText = Editor.string(editor, afterRange);
+    const afterMatch = afterText.match(/^(\s|$)/);
+    const blockText = editor.children[selection.anchor.path[0]]?.children[0]?.text;
+    const startPositionOfWord = blockText?.lastIndexOf('#', start.offset);
 
-  if (beforeMatch && afterMatch) {
+    if (beforeMatch && afterMatch) {
+      const wordForCountWidth = beforeMatch[1];
+
+      return {
+        searchString: beforeMatch[1],
+        selection: { anchor: before, focus: { ...before, offset: beforeMatch[1].length + 1 } },
+        startPositionOfWord,
+        isNeedOpenSearch: true,
+        beforeRange,
+        afterRange,
+        wordForCountWidth,
+      };
+    }
+
     return {
-      searchString: beforeMatch[1],
-      selection: { anchor: before, focus: { ...before, offset: beforeMatch[1].length + 1 } },
-      startPositionOfWord,
-      isNeedOpenSearch: true,
-      beforeRange,
-      afterRange,
+      isNeedOpenSearch: false,
+    };
+  } catch {
+    return {
+      isNeedOpenSearch: false,
     };
   }
-
-  return {
-    isNeedOpenSearch: false,
-  };
 };
 
 export const replaceTextOnChange = (editorState, text, selectionState) => {

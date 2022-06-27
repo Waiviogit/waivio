@@ -101,8 +101,8 @@ const EditorSearchObjects = ({
     fakeLeftPositionBlock.current.innerHTML = wordForCountWidth;
     // eslint-disable-next-line react/no-find-dom-node
     const parent = ReactEditor.toDOMNode(editor, editor);
-    const parentBoundary = parent.getBoundingClientRect(); // DraftEditor-root
-    const top = searchCoordinates.bottom - parentBoundary.top + 11;
+    const parentBoundary = parent.getBoundingClientRect();
+    const top = searchCoordinates.bottom - parentBoundary.top + searchCoordinates.heading;
     const selectionCenter =
       searchCoordinates.left + searchCoordinates.width / 2 - parentBoundary.left;
     let left = selectionCenter;
