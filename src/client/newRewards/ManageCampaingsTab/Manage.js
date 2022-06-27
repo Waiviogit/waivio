@@ -169,7 +169,7 @@ export const Manage = ({ intl, guideName }) => {
           ))
         ) : (
           <tr>
-            <td colSpan={9}>{loading ? <Loading /> : 'Empty'}</td>
+            <td colSpan={9}>{loading ? <Loading /> : "You don't have any campaigns yet"}</td>
           </tr>
         )}
       </table>

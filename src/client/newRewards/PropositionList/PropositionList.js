@@ -5,7 +5,8 @@ import { isEmpty } from 'lodash';
 import { getPropositionByCampaingObjectPermlink } from '../../../waivioApi/ApiClient';
 import ReduxInfiniteScroll from '../../vendor/ReduxInfiniteScroll';
 import Loading from '../../components/Icon/Loading';
-import Campaing from '../reuseble/Campaing';
+import EmptyCampaing from '../../statics/EmptyCampaing';
+import Proposition from '../reuseble/Proposition';
 
 const PropositionList = () => {
   const { requiredObject } = useParams();
@@ -41,7 +42,7 @@ const PropositionList = () => {
     <div>
       <h2>All rewards</h2>
       {isEmpty(propositions) ? (
-        <div>We havent any rewads</div>
+        <EmptyCampaing />
       ) : (
         <ReduxInfiniteScroll
           loadMore={handleLoadingMoreRewardsList}
@@ -51,8 +52,8 @@ const PropositionList = () => {
           elementIsScrollable={false}
           threshold={500}
         >
-          {propositions?.map(cap => (
-            <Campaing key={cap?._id} campain={cap} />
+          {propositions?.map(proposition => (
+            <Proposition key={proposition?._id} proposition={proposition} />
           ))}
         </ReduxInfiniteScroll>
       )}

@@ -25,6 +25,7 @@ import CreateFormRenderer from '../../rewards/Create-Edit/CreateFormRenderer';
 import { getMinExpertise, getMinExpertisePrepared } from '../../rewards/rewardsHelper';
 import { getRate, getRewardFund } from '../../../store/appStore/appSelectors';
 import '../../rewards/Create-Edit/CreateReward.less';
+import { getTokenBalance, getTokenRates } from '../../../store/walletStore/walletActions';
 
 const initialState = {
   campaignName: '',
@@ -70,13 +71,16 @@ const initialState = {
 @withRouter
 @Form.create()
 @injectIntl
-@connect(state => ({
-  locale: getLocale(state),
-  userName: getAuthenticatedUserName(state),
-  user: getAuthenticatedUser(state),
-  rate: getRate(state),
-  rewardFund: getRewardFund(state),
-}))
+@connect(
+  state => ({
+    locale: getLocale(state),
+    userName: getAuthenticatedUserName(state),
+    user: getAuthenticatedUser(state),
+    rate: getRate(state),
+    rewardFund: getRewardFund(state),
+  }),
+  { getTokenBalance, getTokenRates },
+)
 class CreateRewards extends React.Component {
   static propTypes = {
     userName: PropTypes.string,
@@ -88,6 +92,8 @@ class CreateRewards extends React.Component {
     match: PropTypes.shape().isRequired,
     rate: PropTypes.number.isRequired,
     rewardFund: PropTypes.shape().isRequired,
+    getTokenBalance: PropTypes.func.isRequired,
+    getTokenRates: PropTypes.func.isRequired,
   };
   static defaultProps = {
     userName: '',
@@ -100,6 +106,8 @@ class CreateRewards extends React.Component {
 
   componentDidMount = async () => {
     this.getCampaingDetailAndSetInState();
+    this.props.getTokenBalance('WAIV', this.props.userName);
+    this.props.getTokenRates('WAIV', this.props.userName);
   };
 
   componentDidUpdate(prevProps) {
@@ -199,7 +207,9 @@ class CreateRewards extends React.Component {
           eligibleDays: campaign.frequencyAssign,
           usersLegalNotice: campaign.usersLegalNotice,
           expiredAt: isExpired
-            ? moment(new Date().toISOString())
+            ? moment()
+                .add(1, 'days')
+                .toISOString()
             : moment(new Date(campaign.expiredAt)),
           isDuplicate,
           isDisabled,

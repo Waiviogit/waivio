@@ -69,13 +69,15 @@ export const validatorMessagesCreator = (messageFactory, currency) => ({
 });
 
 export const validatorsCreator = (
+  payoutToken,
   user,
-  currentSteemPrice,
   messages,
   getFieldValue,
   requiredObject,
   objectsToAction,
   currency,
+  currencyInfo,
+  rates,
 ) => ({
   checkPrimaryObject: (rule, value, callback) => {
     // eslint-disable-next-line no-unused-expressions
@@ -153,7 +155,10 @@ export const validatorsCreator = (
 
   compareBudgetValues: async (rule, value, callback) => {
     const rate = await getCurrentCurrencyRate(currency);
-    const userUSDBalance = parseFloat(user.balance) * rate[currency];
+    const userUSDBalance =
+      payoutToken === 'HIVE'
+        ? parseFloat(user.balance) * rate[currency]
+        : currencyInfo.balance * rates * rate[currency];
 
     if (value > 0 && value < 0.001) callback(messages.budgetLess);
     if (value <= 0 && value !== '') callback(messages.budgetToZero);
