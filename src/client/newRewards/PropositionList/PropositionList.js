@@ -14,12 +14,16 @@ const PropositionList = () => {
   const [hasMore, setHasMore] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  useEffect(async () => {
+  const getPropositionList = async () => {
     const res = await getPropositionByCampaingObjectPermlink(requiredObject);
 
     setPropositions(res.rewards);
     setHasMore(res.hasMore);
     setLoading(false);
+  };
+
+  useEffect(() => {
+    getPropositionList();
   }, [requiredObject]);
 
   const handleLoadingMoreRewardsList = async () => {
