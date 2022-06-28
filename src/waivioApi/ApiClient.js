@@ -866,7 +866,7 @@ export const getHistory = ({
     if (reservationPermlink) reqData.reservationPermlink = reservationPermlink;
     if (notifyAuthor) reqData.guideName = notifyAuthor;
 
-    fetch(`${config.campaignApiPrefix}${config.campaigns}${config.balance}`, {
+    fetch(`${config.campaignApiPrefix}${config.campaigns}${config.history}`, {
       headers: { ...headers, app: config.appName, locale },
       method: 'POST',
       body: JSON.stringify(reqData),
