@@ -57,7 +57,6 @@ const History = ({
   const isHistory = location.pathname === PATH_NAME_HISTORY;
   const isHistoryNotify = location.pathname === pathNameHistoryNotify(match);
   const isGuideHistory = location.pathname === PATH_NAME_GUIDE_HISTORY;
-
   const [loading, setLoading] = useState(false);
   const [blacklistUsers, setBlacklistUsers] = useState([]);
   const [loadingCampaigns, setLoadingCampaigns] = useState(false);

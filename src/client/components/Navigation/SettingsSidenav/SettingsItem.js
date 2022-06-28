@@ -4,10 +4,11 @@ import { FormattedMessage } from 'react-intl';
 import { NavLink } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
-import { isGuestUser } from '../../../../store/authStore/authSelectors';
+import { getIsAuthenticated, isGuestUser } from '../../../../store/authStore/authSelectors';
 
 const SettingsItem = ({ toggleMenuCondition, condition, configItem }) => {
   const isGuest = useSelector(isGuestUser);
+  const isAuth = useSelector(getIsAuthenticated);
 
   return (
     <React.Fragment>
@@ -26,7 +27,7 @@ const SettingsItem = ({ toggleMenuCondition, condition, configItem }) => {
       {condition && (
         <React.Fragment>
           {configItem.settings.map(setting => {
-            if (setting.forGuest && !isGuest) return null;
+            if ((setting.forGuest && !isGuest) || (setting.forGuest && !isAuth)) return null;
 
             return (
               <li key={setting.id}>

@@ -157,7 +157,7 @@ const TopNavigation = ({ location: { pathname } }) => {
                   (!pathname.includes('list') || pathname.includes(LINKS.BLACKLIST)),
               })}
             >
-              <span style={{ color: '#f87007' }}>[Beta]</span>
+              Beta
             </Link>
           </li>
         </ul>
