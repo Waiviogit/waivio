@@ -55,7 +55,6 @@ const Editor = props => {
           selectionBoundary,
           selectionState: editor.selection,
           searchString: searchInfo.searchString,
-          wordForCountWidth: searchInfo.wordForCountWidth,
           isShowEditorSearch: true,
         });
       }
