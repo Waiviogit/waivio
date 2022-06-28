@@ -810,12 +810,12 @@ export const getPropositions = ({
     if (currentUserName) reqData.currentUserName = currentUserName;
     if (!requiredObject && simplified) reqData.simplified = simplified;
     if (!requiredObject && firstMapLoad) reqData.firstMapLoad = firstMapLoad;
-    if (!isMap && match.params.filterKey === IS_RESERVED) reqData.update = true;
+    if (!isMap && match.params[0] === IS_RESERVED) reqData.update = true;
     if (requiredObject && !isMap) reqData.requiredObject = requiredObject;
-    if (match.params.filterKey === IS_RESERVED) reqData.status = [...status, 'onHold'];
+    if (match.params[0] === IS_RESERVED) reqData.status = [...status, 'onHold'];
     const url = getUrl(match);
 
-    if (isMap && match.params.filterKey === IS_RESERVED) return;
+    if (isMap && match.params[0] === IS_RESERVED) return;
     fetch(url, {
       headers: { ...headers, app: config.appName, locale },
       method: 'POST',
@@ -1000,7 +1000,7 @@ export const getRewardsGeneralCounts = ({
       skip,
       area,
     };
-    if (match.params.filterKey === IS_RESERVED) reqData.status = [...status, 'onHold'];
+    if (match.params[0] === IS_RESERVED) reqData.status = [...status, 'onHold'];
     fetch(`${config.campaignApiPrefix}${config.statistics}`, {
       headers: { ...headers, app: config.appName, locale },
       method: 'POST',

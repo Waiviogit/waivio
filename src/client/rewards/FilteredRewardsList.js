@@ -84,7 +84,7 @@ const FilteredRewardsList = props => {
     messageHistoryLocation,
   ];
   const IsRequiredObjectWrap =
-    !match.params.campaignParent && every(arrLocations, arrLocation => location !== arrLocation);
+    !match.params.campaignId && every(arrLocations, arrLocation => location !== arrLocation);
 
   const showMap = () => dispatch(setMapFullscreenMode(true));
 
@@ -145,7 +145,7 @@ const FilteredRewardsList = props => {
       ];
     }
 
-    if (match.params.filterKey === 'reserved') {
+    if (match.params[0] === 'reserved') {
       return [
         {
           key: 'payout',
@@ -199,7 +199,7 @@ const FilteredRewardsList = props => {
     ];
   }, [location, intl]);
   const parentObj = propositions.find(
-    proposition => proposition.required_object.author_permlink === match.params.campaignParent,
+    proposition => proposition.required_object.author_permlink === match.params.campaignId,
   );
 
   return !loadingCampaigns && !pendingUpdate ? (

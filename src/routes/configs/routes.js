@@ -23,7 +23,7 @@ const routes = {
         `/rewards/(${URL.REWARDS.tabs})/:campaignId?/:permlink?/:username?`,
         `/rewards/(${URL.REFERRAL.tabs})/:userName?/:table?`,
         '/rewards/blacklist/:listType?',
-        '/rewards/:filterKey/:campaignParent?',
+        '/rewards/:filterKey/:campaignId?',
       ],
       pathScope: '/rewards',
       exact: true,
@@ -109,7 +109,7 @@ const routes = {
           component: Views.SponsoredRewards,
         },
         {
-          path: '/:filterKey/:campaignParent?',
+          path: '/:filterKey/:campaignId?',
           exact: true,
           component: RewardsComponent,
         },
