@@ -72,7 +72,7 @@ export default {
 
 export const ELEMENT_TAGS = {
   A: el => ({ type: 'link', url: el.getAttribute('href') }),
-  BLOCKQUOTE: () => ({ type: 'quote' }),
+  BLOCKQUOTE: () => ({ type: 'blockquote' }),
   H1: () => ({ type: 'headingOne' }),
   H2: () => ({ type: 'headingTwo' }),
   H3: () => ({ type: 'headingThree' }),
@@ -85,6 +85,8 @@ export const ELEMENT_TAGS = {
   P: () => ({ type: 'paragraph' }),
   PRE: () => ({ type: 'code' }),
   UL: () => ({ type: 'bulletedList' }),
+  IFRAME: el => ({ type: 'video', url: el.getAttribute('src'), children: [] }),
+  HR: () => ({ type: 'thematicBreak', children: [{ text: '' }] }),
 };
 
 export const TEXT_TAGS = {

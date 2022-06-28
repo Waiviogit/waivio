@@ -13,8 +13,15 @@ const withEmbeds = editor => {
     if (html) {
       const parsed = new DOMParser().parseFromString(html, 'text/html');
       const nodes = deserializeHtmlToSlate(parsed.body);
+      const nodesNormalized = nodes.map(i => {
+        if (i.text && !i.type) {
+          return { type: 'paragraph', children: [i] };
+        }
 
-      Transforms.insertNodes(editor, nodes);
+        return i;
+      });
+
+      Transforms.insertFragment(editor, nodesNormalized);
 
       return;
     }
