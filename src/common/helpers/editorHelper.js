@@ -422,8 +422,9 @@ export const checkCursorInSearchSlate = editor => {
     const wordBefore = Editor.before(editor, start, { unit: 'word' });
     const beforeFirstWord = wordBefore && Editor.before(editor, wordBefore, { unit: 'word' });
     const beforeSecondWord =
-      wordBefore && Editor.before(editor, beforeFirstWord, { unit: 'character' });
-    const before = beforeSecondWord || beforeFirstWord;
+      beforeFirstWord && Editor.before(editor, beforeFirstWord, { unit: 'character' });
+    const before =
+      beforeSecondWord || (wordBefore && Editor.before(editor, wordBefore, { unit: 'character' }));
     const beforeRange = before && Editor.range(editor, before, start);
     const beforeText = beforeRange && Editor.string(editor, beforeRange);
     const beforeMatch = beforeText && beforeText.match(/#(\w+(\s)?(\w+)?)$/);
@@ -435,8 +436,6 @@ export const checkCursorInSearchSlate = editor => {
     const startPositionOfWord = blockText?.lastIndexOf('#', start.offset);
 
     if (beforeMatch && afterMatch) {
-      const wordForCountWidth = beforeMatch[1];
-
       return {
         searchString: beforeMatch[1],
         selection: { anchor: before, focus: { ...before, offset: beforeMatch[1].length + 1 } },
@@ -444,7 +443,6 @@ export const checkCursorInSearchSlate = editor => {
         isNeedOpenSearch: true,
         beforeRange,
         afterRange,
-        wordForCountWidth,
       };
     }
 
