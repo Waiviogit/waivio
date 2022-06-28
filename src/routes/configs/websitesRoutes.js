@@ -36,7 +36,7 @@ const routes = host => ({
       path: [
         '/rewards/(payables|receivables)/@:userName/:reservationPermlink?',
         `/rewards/(${URL.REWARDS.tabs})/:campaignId?/:permlink?/:username?`,
-        '/rewards/:filterKey/:campaignParent?',
+        '/rewards/:filterKey/:campaignId?',
       ],
       pathScope: '/rewards',
       exact: true,
@@ -58,7 +58,7 @@ const routes = host => ({
           component: Views.HistoryCampaign,
         },
         {
-          path: '/:filterKey/:campaignParent?',
+          path: '/:filterKey/:campaignId?',
           exact: true,
           component: RewardsComponent,
         },

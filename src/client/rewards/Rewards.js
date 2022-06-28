@@ -481,16 +481,16 @@ class Rewards extends React.Component {
         });
 
         if (!isWidget && !isReserved) {
-          const filterKey = match.params.filterKey;
+          const filterKey = match.params[0];
           const arrFilterKey = [PAYABLES, RECEIVABLES];
 
           if (
             !pendingUpdate &&
             filterKey &&
             every(arrFilterKey, key => filterKey !== key) &&
-            !match.params.campaignParent
+            !match.params.campaignId
           ) {
-            if (match.params.filterKey !== rewardsTab[tabType]) {
+            if (match.params[0] !== rewardsTab[tabType]) {
               this.props.history.push(`/rewards/${rewardsTab[tabType]}/`);
             }
             if (tabType === 'reserved') {
@@ -743,13 +743,13 @@ class Rewards extends React.Component {
       fetched,
       propositionsReserved,
     } = this.state;
-    const isReserved = match.params.filterKey === IS_RESERVED;
+    const isReserved = match.params[0] === IS_RESERVED;
 
     let propositionsUniq;
 
     if (isReserved) {
       propositionsUniq = propositionsReserved;
-    } else if (match.params.campaignParent) {
+    } else if (match.params.campaignId) {
       propositionsUniq = uniqBy(propositions, '_id');
     } else {
       propositionsUniq = uniqBy(propositions, 'required_object._id');
@@ -839,11 +839,11 @@ class Rewards extends React.Component {
 
   goToCampaign = wobjPermlink => {
     const { match, isWaivio } = this.props;
-    const campaignParent = get(match, ['params', 'campaignParent']);
-    const filterKey = get(match, ['params', 'filterKey']);
+    const campaignId = get(match, ['params', 'campaignId']);
+    const filterKey = get(match, ['params', '0']);
     const objUrl = `/object/${wobjPermlink}`;
 
-    if (isWaivio || !campaignParent) {
+    if (isWaivio || !campaignId) {
       this.props.history.push(`/rewards/${filterKey}/${wobjPermlink}`);
     } else {
       this.props.setMapFullscreenMode(false);
@@ -864,7 +864,7 @@ class Rewards extends React.Component {
       sortReserved,
     } = this.state;
     const { username, match, usedLocale } = this.props;
-    const path = match.params.filterKey;
+    const path = match.params[0];
     const sortChanged = getSortChanged({ path, sortAll, sortEligible, sortReserved });
 
     if (hasMore) {
@@ -911,7 +911,7 @@ class Rewards extends React.Component {
     );
     const secondaryObjectsForMap = uniqBy(secondaryObjects, 'author_permlink');
     const primaryObjectForMap =
-      !isEmpty(secondaryObjectsForMap) && match.params.filterKey !== 'reserved'
+      !isEmpty(secondaryObjectsForMap) && match.params[0] !== 'reserved'
         ? {
             ...get(newPropositions, ['0', 'required_object'], {}),
             reward: newPropositions[0].reward,
@@ -925,7 +925,7 @@ class Rewards extends React.Component {
       return !isEqual(objMap, primaryObjectMap) ? object : '';
     });
 
-    return match.params.filterKey === 'reserved'
+    return match.params[0] === 'reserved'
       ? map(newPropositions, proposition => {
           const propositionObject = {
             ...get(proposition, ['objects', '0', 'object'], {}),
@@ -1000,8 +1000,8 @@ class Rewards extends React.Component {
       ...wobj.required_object,
       reward: wobj.max_reward,
     }));
-    const IsRequiredObjectWrap = !match.params.campaignParent;
-    const filterKey = match.params.filterKey;
+    const IsRequiredObjectWrap = !match.params.campaignId;
+    const filterKey = match.params[0];
     const robots = location.pathname === 'index,follow';
     const isCreate =
       includes(location.pathname, 'create') ||
@@ -1067,10 +1067,9 @@ class Rewards extends React.Component {
       setHistoryFilters: filters => this.setFilters(GUIDE_HISTORY, filters),
     });
 
-    const campaignParent = get(match, ['params', 'campaignParent']);
-    const isReserved = match.params.filterKey === IS_RESERVED;
-    const campaignsObjectsForMap =
-      campaignParent || isReserved ? this.getCampaignsObjectsForMap() : [];
+    const campaignId = get(match, ['params', 'campaignId']);
+    const isReserved = match.params[0] === IS_RESERVED;
+    const campaignsObjectsForMap = campaignId || isReserved ? this.getCampaignsObjectsForMap() : [];
     const primaryObjectCoordinates = this.moveToCoordinates(campaignsObjectsForMap);
     const isWidget =
       typeof sessionStorage !== 'undefined' ? sessionStorage.getItem('isWidget') : false;
@@ -1138,7 +1137,7 @@ class Rewards extends React.Component {
                     <MapWrap
                       setMapArea={this.setMapArea}
                       userLocation={userLocation}
-                      wobjects={campaignParent || isReserved ? campaignsObjectsForMap : mapWobjects}
+                      wobjects={campaignId || isReserved ? campaignsObjectsForMap : mapWobjects}
                       onMarkerClick={this.goToCampaign}
                       getAreaSearchData={this.getAreaSearchData}
                       match={match}

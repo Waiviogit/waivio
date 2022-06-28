@@ -45,7 +45,7 @@ export const preparePropositionReqData = ({
   };
 
   if (!isRequestWithoutRequiredObject)
-    reqData.requiredObject = match.params.campaignParent || match.params.name;
+    reqData.requiredObject = match.params.campaignId || match.params.name;
 
   Object.keys(args).forEach(argName => {
     reqData[argName] = args[argName];
@@ -57,7 +57,7 @@ export const preparePropositionReqData = ({
 export const getUrl = match => {
   let url;
 
-  switch (match.params.filterKey) {
+  switch (match.params[0]) {
     case 'active':
       url = `${config.campaignApiPrefix}${config.campaigns}${config.eligible}`;
       break;

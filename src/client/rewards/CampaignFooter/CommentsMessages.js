@@ -87,7 +87,7 @@ const CommentsMessages = memo(
       }
 
       return get(commentObj, ['author']);
-    }, [commentObj, match.params.filterKey, currentUser, proposition]);
+    }, [commentObj, match.params[0], currentUser, proposition]);
 
     const time = moment.parseZone(commentCreated).valueOf();
 
