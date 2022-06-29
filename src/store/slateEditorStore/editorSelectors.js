@@ -47,10 +47,7 @@ export const getEditorDraftId = createSelector(getEditor, state => get(state, 'd
 
 export const getFilteredObjectCards = createSelector(getEditor, editor =>
   uniqBy(
-    filter(
-      editor.linkedObjects,
-      object => object && !find(editor.hideLinkedObjects, { _id: object && object._id }),
-    ),
+    filter(editor.linkedObjects, object => object),
     '_id',
   ),
 );
