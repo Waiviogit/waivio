@@ -326,7 +326,8 @@ export const getTransactionDescription = (type, options) => {
         ),
       };
     }
-    case accountHistoryConstants.FILL_ORDER: {
+    case accountHistoryConstants.FILL_ORDER:
+    case accountHistoryConstants.FILL_ORDER_TRANSACTION: {
       const url = get(options, 'url', '');
       const exchanger = get(options, 'exchanger', '');
 
