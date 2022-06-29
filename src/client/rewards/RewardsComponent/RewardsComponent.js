@@ -45,8 +45,8 @@ const RewardsComponent = ({
   const helmetIcon = useSelector(getHelmetIcon);
 
   const getTypeRewards = () => {
-    if (match.params[0] === 'active') return 'active';
-    if (match.params[0] === 'reserved') return 'reserved';
+    if (match.params.filterKey === 'active') return 'active';
+    if (match.params.filterKey === 'reserved') return 'reserved';
 
     return 'all';
   };

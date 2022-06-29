@@ -98,7 +98,7 @@ const Proposition = props => {
     const reservationPermlink = get(permlinks, ['0', 'permlink']);
 
     const currentUser =
-      isMessages || props.match.params[0] === HISTORY
+      isMessages || props.match.params.filterKey === HISTORY
         ? users
         : filter(
             users,
