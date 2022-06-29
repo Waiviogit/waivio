@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { FormattedNumber, injectIntl } from 'react-intl';
 import { isEmpty, map, round } from 'lodash';
@@ -39,6 +39,7 @@ const WAIVwalletTable = props => {
   const [withdrawals, setWithdrawals] = useState(0);
   const [loading, setLoading] = useState(false);
   const [isLoadingData, setIsLoadingData] = useState(false);
+  const abortController = useRef(null);
   const loadingBar = isLoadingData ? 'Loading...' : 'Completed';
 
   const closeTable = () => dispatch(closeWalletTable());
@@ -58,6 +59,14 @@ const WAIVwalletTable = props => {
     };
   }, []);
 
+  const getWaivAdvancedReportsWithAbort = async body => {
+    if (abortController.current) abortController.current.abort();
+    abortController.current = new AbortController();
+    const reports = await getWaivAdvancedReports(body, '', abortController.current);
+
+    return reports;
+  };
+
   useEffect(() => {
     if (!isEmpty(accounts) && hasMore && dateEstablished) {
       setIsLoadingData(true);
@@ -71,7 +80,7 @@ const WAIVwalletTable = props => {
   }, [hasMore, accounts]);
 
   const getTransactionsList = async () => {
-    const list = await getWaivAdvancedReports({
+    const list = await getWaivAdvancedReportsWithAbort({
       filterAccounts,
       accounts,
       currency: currentCurrency,
@@ -113,7 +122,8 @@ const WAIVwalletTable = props => {
       setCurrentCurrency(currency);
 
       const mappedAccounts = filterAccounts.map(acc => ({ name: acc }));
-      const filteredList = await getWaivAdvancedReports({
+
+      const filteredList = await getWaivAdvancedReportsWithAbort({
         filterAccounts,
         accounts: mappedAccounts,
         startDate,
@@ -135,7 +145,7 @@ const WAIVwalletTable = props => {
       const { from } = props.form.getFieldsValue();
       const startDate = handleChangeStartDate(from);
 
-      const list = await getWaivAdvancedReports({
+      const list = await getWaivAdvancedReportsWithAbort({
         filterAccounts,
         accounts,
         startDate,
@@ -150,7 +160,7 @@ const WAIVwalletTable = props => {
       setAccounts(list.accounts);
       setHasMore(list.hasMore);
     } else {
-      const list = await getWaivAdvancedReports({
+      const list = await getWaivAdvancedReportsWithAbort({
         filterAccounts,
         accounts,
         currency: currentCurrency,
