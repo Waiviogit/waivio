@@ -145,7 +145,7 @@ const FilteredRewardsList = props => {
       ];
     }
 
-    if (match.params[0] === 'reserved') {
+    if (match.params.filterKey === 'reserved') {
       return [
         {
           key: 'payout',

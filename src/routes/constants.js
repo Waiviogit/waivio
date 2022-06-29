@@ -46,7 +46,6 @@ export default {
       'reports',
       'fraud-detection',
       'receivables',
-      'all',
       'details',
       'createDublicate',
     ].join('|'),
