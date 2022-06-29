@@ -236,7 +236,7 @@ const EditorSlate = props => {
 
     editorEl.style.minHeight = `100px`;
     setTimeout(() => focusEditorToEnd(editor), 200);
-  }, [body, params]);
+  }, [params]);
 
   useEffect(() => {
     if (body) {
@@ -249,10 +249,15 @@ const EditorSlate = props => {
         },
       });
       Transforms.insertFragment(editor, postParsed, { at: [0, 0] });
-      Transforms.insertNodes(editor, createEmptyNode());
+      const lastBlock = editor.children?.[editor.children.length - 1];
+
+      /* add an empty space if it doesn't exist in the end  */
+      if (!(lastBlock?.type === 'paragraph' && lastBlock?.children?.[0].text === '')) {
+        Transforms.insertNodes(editor, createEmptyNode());
+      }
       focusEditorToEnd(editor);
     }
-  }, [params]);
+  }, [body]);
 
   return (
     <Slate editor={editor} value={value} onChange={handleChange}>
