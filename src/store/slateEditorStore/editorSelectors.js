@@ -1,5 +1,5 @@
 import { createSelector } from 'reselect';
-import { find, filter, uniqBy, get } from 'lodash';
+import { filter, uniqBy, get } from 'lodash';
 
 // selector
 export const editorState = state => state.editor;

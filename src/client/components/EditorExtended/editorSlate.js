@@ -5,11 +5,12 @@ import isSoftNewlineEvent from 'draft-js/lib/isSoftNewlineEvent';
 import { message } from 'antd';
 import classNames from 'classnames';
 import { Slate, Editable, withReact } from 'slate-react';
-import { createEditor, Editor, Transforms, Node } from 'slate';
+import { createEditor, Editor, Transforms, Node, Range } from 'slate';
 import { withHistory } from 'slate-history';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { useParams } from 'react-router';
+import { isKeyHotkey } from 'is-hotkey';
 
 import { encodeImageFileAsURL, SIDE_BUTTONS_SLATE } from './model/content';
 import EditorSearchObjects from './components/EditorSearchObjects';
@@ -156,6 +157,8 @@ const EditorSlate = props => {
 
   const handleKeyCommand = event => {
     if (event.altKey || event.metaKey || event.ctrlKey) return false;
+    const { selection } = editor;
+
     if (event.key === 'Enter') {
       const selectedElement = Node.descendant(editor, editor.selection.anchor.path.slice(0, -1));
 
@@ -180,6 +183,19 @@ const EditorSlate = props => {
       removeAllInlineFormats(editor);
 
       return false;
+    }
+    if (selection && Range.isCollapsed(selection)) {
+      const { nativeEvent } = event;
+
+      if (isKeyHotkey('left', nativeEvent)) {
+        event.preventDefault();
+        Transforms.move(editor, { unit: 'offset', reverse: true });
+      }
+
+      if (isKeyHotkey('right', nativeEvent)) {
+        event.preventDefault();
+        Transforms.move(editor, { unit: 'offset' });
+      }
     }
 
     return false;
