@@ -1,4 +1,5 @@
 import { isEmpty } from 'lodash';
+import moment from 'moment';
 import { getCurrentCurrencyRate } from '../../../waivioApi/ApiClient';
 
 export const validatorMessagesCreator = (messageFactory, currency) => ({
@@ -131,7 +132,11 @@ export const validatorsCreator = (
   },
 
   checkExpireDate: (rule, value, callback) => {
-    if (value && value.unix() * 1000 < Date.now()) {
+    if (
+      moment()
+        .add(1, 'days')
+        .unix() > value?.unix()
+    ) {
       callback(messages.expiredDate);
     } else {
       callback();
