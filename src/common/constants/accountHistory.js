@@ -33,6 +33,7 @@ export const DELEGATE_VESTING_SHARES = 'delegate_vesting_shares';
 export const CLAIM_REWARD_BALANCE = 'claim_reward_balance';
 export const LIMIT_ORDER = 'limitOrder';
 export const FILL_ORDER = 'fillOrder';
+export const FILL_ORDER_TRANSACTION = 'fill_order';
 export const CANCEL_ORDER = 'cancelOrder';
 export const PROPOSAL_PAY = 'proposal_pay';
 export const CONVERT_HBD_REQUEST = 'convert';

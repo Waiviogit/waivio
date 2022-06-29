@@ -154,7 +154,7 @@ const WAIVwalletTable = props => {
         filterAccounts,
         accounts,
         currency: currentCurrency,
-        user: userName,
+        user: authUserName,
         endDate: transactionsList[transactionsList.length - 1].timestamp,
       });
 

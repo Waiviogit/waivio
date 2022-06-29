@@ -236,7 +236,7 @@ const EditorSlate = props => {
       Transforms.insertNodes(editor, createEmptyNode());
       focusEditorToEnd(editor);
     }
-  }, [body]);
+  }, [params]);
 
   return (
     <Slate editor={editor} value={value} onChange={handleChange}>
