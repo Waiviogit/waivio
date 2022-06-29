@@ -2,6 +2,7 @@ import { useSelected, useFocused } from 'slate-react';
 import React from 'react';
 import { truncate } from 'lodash';
 import PropTypes from 'prop-types';
+import classnames from 'classnames';
 
 import './styles.less';
 
@@ -15,8 +16,13 @@ const Link = ({ attributes, element, children }) => {
   const selected = useSelected();
   const focused = useFocused();
 
+  const classNames = classnames({
+    'element-link': true,
+    'element-link_focused': selected && focused,
+  });
+
   return (
-    <div className="element-link">
+    <div className={classNames}>
       <a {...attributes} href={element.url} target="_blank noreferrer">
         <InlineChromiumBugfix />
         {children}
