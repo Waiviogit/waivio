@@ -144,7 +144,8 @@ class CreateRewards extends React.Component {
       this.setState({ loading: true });
 
       const campaign = await getNewCampaingById(this.props.match.params.campaignId);
-      const isExpired = campaign.status === 'expired';
+      const isExpired =
+        campaign.status === 'expired' || moment(campaign.expiredAt).unix() < moment().unix();
       const isDuplicate = this.props.match.params?.[0] === 'duplicate';
       const isDisabled = campaign.status !== 'pending' && !isDuplicate;
       const authorPermlinks = [
@@ -206,11 +207,7 @@ class CreateRewards extends React.Component {
           },
           eligibleDays: campaign.frequencyAssign,
           usersLegalNotice: campaign.usersLegalNotice,
-          expiredAt: isExpired
-            ? moment()
-                .add(1, 'days')
-                .toISOString()
-            : moment(new Date(campaign.expiredAt)),
+          expiredAt: isExpired ? moment().add(1, 'days') : moment(campaign.expiredAt),
           isDuplicate,
           isDisabled,
         });
