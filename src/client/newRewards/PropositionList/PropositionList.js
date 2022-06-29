@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
 import { isEmpty } from 'lodash';
 
-import { getPropositionByCampaingObjectPermlink } from '../../../waivioApi/ApiClient';
+import { getObject, getPropositionByCampaingObjectPermlink } from '../../../waivioApi/ApiClient';
 import ReduxInfiniteScroll from '../../vendor/ReduxInfiniteScroll';
 import Loading from '../../components/Icon/Loading';
 import EmptyCampaing from '../../statics/EmptyCampaing';
@@ -13,13 +13,16 @@ const PropositionList = () => {
   const [propositions, setPropositions] = useState();
   const [hasMore, setHasMore] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [parent, setParent] = useState(null);
 
   const getPropositionList = async () => {
     const res = await getPropositionByCampaingObjectPermlink(requiredObject);
+    const campParent = await getObject(requiredObject);
 
     setPropositions(res.rewards);
     setHasMore(res.hasMore);
     setLoading(false);
+    setParent(campParent);
   };
 
   useEffect(() => {
@@ -57,7 +60,10 @@ const PropositionList = () => {
           threshold={500}
         >
           {propositions?.map(proposition => (
-            <Proposition key={proposition?._id} proposition={proposition} />
+            <Proposition
+              key={proposition?._id}
+              proposition={{ ...proposition, object: { ...proposition.object, parent } }}
+            />
           ))}
         </ReduxInfiniteScroll>
       )}
