@@ -190,7 +190,8 @@ const compareTransferBody = (
             : description.powerDownWithdrawTo,
       };
     }
-    case accountHistoryConstants.FILL_ORDER: {
+    case accountHistoryConstants.FILL_ORDER:
+    case accountHistoryConstants.FILL_ORDER_TRANSACTION: {
       const fillOrderAmount = selectCurrectFillOrderValue(
         transaction,
         transaction.current_pays,
