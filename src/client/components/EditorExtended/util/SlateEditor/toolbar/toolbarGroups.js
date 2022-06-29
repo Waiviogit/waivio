@@ -26,7 +26,7 @@ const toolbarGroups = [
   {
     label: 'H4',
     description: 'Heading 4',
-    page: 4,
+    page: 2,
     type: 'block',
     format: 'headingFour',
   },
@@ -52,14 +52,14 @@ const toolbarGroups = [
     page: 3,
   },
   {
-    label: 'B',
+    label: <strong className="toolbar_button-strong">B</strong>,
     description: 'Bold',
     page: 1,
     type: 'inline',
     format: 'strong',
   },
   {
-    label: 'I',
+    label: <i>I</i>,
     description: 'Italic',
     page: 1,
     type: 'inline',
@@ -180,7 +180,7 @@ const toolbarGroups = [
     description: 'code',
     format: 'code',
     type: 'code',
-    page: 2,
+    page: 3,
   },
   {
     label: (

@@ -810,12 +810,12 @@ export const getPropositions = ({
     if (currentUserName) reqData.currentUserName = currentUserName;
     if (!requiredObject && simplified) reqData.simplified = simplified;
     if (!requiredObject && firstMapLoad) reqData.firstMapLoad = firstMapLoad;
-    if (!isMap && match.params.filterKey === IS_RESERVED) reqData.update = true;
+    if (!isMap && match.params[0] === IS_RESERVED) reqData.update = true;
     if (requiredObject && !isMap) reqData.requiredObject = requiredObject;
-    if (match.params.filterKey === IS_RESERVED) reqData.status = [...status, 'onHold'];
+    if (match.params[0] === IS_RESERVED) reqData.status = [...status, 'onHold'];
     const url = getUrl(match);
 
-    if (isMap && match.params.filterKey === IS_RESERVED) return;
+    if (isMap && match.params[0] === IS_RESERVED) return;
     fetch(url, {
       headers: { ...headers, app: config.appName, locale },
       method: 'POST',
@@ -866,7 +866,7 @@ export const getHistory = ({
     if (reservationPermlink) reqData.reservationPermlink = reservationPermlink;
     if (notifyAuthor) reqData.guideName = notifyAuthor;
 
-    fetch(`${config.campaignApiPrefix}${config.campaigns}${config.balance}`, {
+    fetch(`${config.campaignApiPrefix}${config.campaigns}${config.history}`, {
       headers: { ...headers, app: config.appName, locale },
       method: 'POST',
       body: JSON.stringify(reqData),
@@ -1000,7 +1000,7 @@ export const getRewardsGeneralCounts = ({
       skip,
       area,
     };
-    if (match.params.filterKey === IS_RESERVED) reqData.status = [...status, 'onHold'];
+    if (match.params[0] === IS_RESERVED) reqData.status = [...status, 'onHold'];
     fetch(`${config.campaignApiPrefix}${config.statistics}`, {
       headers: { ...headers, app: config.appName, locale },
       method: 'POST',
@@ -2634,6 +2634,22 @@ export const createNewCampaing = (data, account) => {
     .catch(e => e);
 };
 
+export const updateCampaing = (data, account) => {
+  return fetch(`${config.campaignV2ApiPrefix}${config.campaign}`, {
+    headers: {
+      ...headers,
+      account,
+      'access-token': Cookie.get('access_token'),
+    },
+    method: 'PATCH',
+    body: JSON.stringify(data),
+  })
+    .then(handleErrors)
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+};
+
 export const getCampaingManageList = giudeName => {
   return fetch(`${config.campaignV2ApiPrefix}${config.campaigns}${config.manager}/${giudeName}`, {
     headers,
@@ -2673,6 +2689,20 @@ export const getCampaingHistoryList = (giudeName, skip = 0) => {
 export const getAllRewardList = (skip = 0) => {
   return fetch(
     `${config.campaignV2ApiPrefix}${config.rewards}${config.all}?limit=10&skip=${skip}`,
+    {
+      headers,
+      method: 'GET',
+    },
+  )
+    .then(handleErrors)
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+};
+
+export const getPropositionByCampaingObjectPermlink = (parentPermlink, skip = 0) => {
+  return fetch(
+    `${config.campaignV2ApiPrefix}${config.rewards}${config.all}/object/${parentPermlink}?limit=10&skip=${skip}`,
     {
       headers,
       method: 'GET',

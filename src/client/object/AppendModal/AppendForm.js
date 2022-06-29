@@ -258,7 +258,11 @@ export default class AppendForm extends Component {
 
       this.setState({ loading: true });
       this.props
-        .appendObject(data, { votePower: data.votePower, follow: formValues.follow, isLike: true })
+        .appendObject(data, {
+          votePercent: data.votePower,
+          follow: formValues.follow,
+          isLike: true,
+        })
         .then(res => {
           const mssg = get(res, ['value', 'message']);
 
@@ -614,7 +618,7 @@ export default class AppendForm extends Component {
     this.setState({ loading: true });
 
     try {
-      const { author } = await this.props.appendObject(data);
+      const { author } = await this.props.appendObject(data, { votePercent });
 
       await addAlbum({ ...album, author });
       hideModal();

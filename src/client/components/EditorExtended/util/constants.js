@@ -1,4 +1,5 @@
 import { jsx } from 'slate-hyperscript';
+import { Element } from 'slate';
 
 export const Block = {
   UNSTYLED: 'unstyled',
@@ -71,7 +72,7 @@ export default {
 
 export const ELEMENT_TAGS = {
   A: el => ({ type: 'link', url: el.getAttribute('href') }),
-  BLOCKQUOTE: () => ({ type: 'quote' }),
+  BLOCKQUOTE: () => ({ type: 'blockquote' }),
   H1: () => ({ type: 'headingOne' }),
   H2: () => ({ type: 'headingTwo' }),
   H3: () => ({ type: 'headingThree' }),
@@ -84,6 +85,8 @@ export const ELEMENT_TAGS = {
   P: () => ({ type: 'paragraph' }),
   PRE: () => ({ type: 'code' }),
   UL: () => ({ type: 'bulletedList' }),
+  IFRAME: el => ({ type: 'video', url: el.getAttribute('src'), children: [] }),
+  HR: () => ({ type: 'thematicBreak', children: [{ text: '' }] }),
 };
 
 export const TEXT_TAGS = {
@@ -132,7 +135,13 @@ export const deserializeHtmlToSlate = el => {
   if (TEXT_TAGS[nodeName]) {
     const attrs = TEXT_TAGS[nodeName](el);
 
-    return children.map(child => jsx('text', attrs, child));
+    return children.map(child => {
+      if (Element.isElement(child)) {
+        return jsx('element', child);
+      }
+
+      return jsx('text', attrs, child);
+    });
   }
 
   return children;

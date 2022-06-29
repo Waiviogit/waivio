@@ -4,11 +4,13 @@ import uuidv4 from 'uuid/v4';
 import isSoftNewlineEvent from 'draft-js/lib/isSoftNewlineEvent';
 import { message } from 'antd';
 import classNames from 'classnames';
-import { Slate, Editable, withReact, ReactEditor } from 'slate-react';
-import { createEditor, Editor, Transforms, Node } from 'slate';
+import { Slate, Editable, withReact } from 'slate-react';
+import { createEditor, Editor, Transforms, Node, Range } from 'slate';
 import { withHistory } from 'slate-history';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import { useParams } from 'react-router';
+import { isKeyHotkey } from 'is-hotkey';
 
 import { encodeImageFileAsURL, SIDE_BUTTONS_SLATE } from './model/content';
 import EditorSearchObjects from './components/EditorSearchObjects';
@@ -22,9 +24,13 @@ import withObjects from './util/SlateEditor/plugins/withObjects';
 import { deserializeToSlate } from './util/SlateEditor/utils/parse';
 import { getEditorDraftBody } from '../../../store/slateEditorStore/editorSelectors';
 import { createEmptyNode, createImageNode } from './util/SlateEditor/utils/embed';
-
 import { wrapWithParagraph } from './util/SlateEditor/utils/paragraph';
 import withLists from './util/SlateEditor/plugins/withLists';
+import {
+  focusEditorToEnd,
+  removeAllInlineFormats,
+} from './util/SlateEditor/utils/SlateUtilityFunctions';
+
 import './index.less';
 
 const EditorSlate = props => {
@@ -40,6 +46,8 @@ const EditorSlate = props => {
     handleObjectSelect,
     initialBody,
   } = props;
+
+  const params = useParams();
 
   const editorRef = useRef(null);
 
@@ -149,6 +157,8 @@ const EditorSlate = props => {
 
   const handleKeyCommand = event => {
     if (event.altKey || event.metaKey || event.ctrlKey) return false;
+    const { selection } = editor;
+
     if (event.key === 'Enter') {
       const selectedElement = Node.descendant(editor, editor.selection.anchor.path.slice(0, -1));
 
@@ -167,6 +177,24 @@ const EditorSlate = props => {
         editor.insertText('\n');
 
         return true;
+      }
+    }
+    if (event.keyCode === 32) {
+      removeAllInlineFormats(editor);
+
+      return false;
+    }
+    if (selection && Range.isCollapsed(selection)) {
+      const { nativeEvent } = event;
+
+      if (isKeyHotkey('left', nativeEvent)) {
+        event.preventDefault();
+        Transforms.move(editor, { unit: 'offset', reverse: true });
+      }
+
+      if (isKeyHotkey('right', nativeEvent)) {
+        event.preventDefault();
+        Transforms.move(editor, { unit: 'offset' });
       }
     }
 
@@ -207,10 +235,8 @@ const EditorSlate = props => {
     const editorEl = document.querySelector('[data-slate-editor="true"]');
 
     editorEl.style.minHeight = `100px`;
-    setTimeout(() => {
-      ReactEditor.focus(editor);
-    }, 100);
-  }, []);
+    setTimeout(() => focusEditorToEnd(editor), 200);
+  }, [params]);
 
   useEffect(() => {
     if (body) {
@@ -223,7 +249,13 @@ const EditorSlate = props => {
         },
       });
       Transforms.insertFragment(editor, postParsed, { at: [0, 0] });
-      Transforms.insertNodes(editor, createEmptyNode());
+      const lastBlock = editor.children?.[editor.children.length - 1];
+
+      /* add an empty space if it doesn't exist in the end  */
+      if (!(lastBlock?.type === 'paragraph' && lastBlock?.children?.[0].text === '')) {
+        Transforms.insertNodes(editor, createEmptyNode());
+      }
+      focusEditorToEnd(editor);
     }
   }, [body]);
 

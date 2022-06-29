@@ -24,6 +24,7 @@ export const campaingSettings = {
       to: '/rewards-new/create',
       id: 'create',
       defaultMessage: 'Create',
+      paths: ['/rewards-new/duplicate', '/rewards-new/details', '/rewards-new/create'],
     },
     {
       to: '/rewards-new/manage',

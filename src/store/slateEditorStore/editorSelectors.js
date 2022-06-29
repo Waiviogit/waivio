@@ -1,5 +1,5 @@
 import { createSelector } from 'reselect';
-import { find, filter, uniqBy, get } from 'lodash';
+import { filter, uniqBy, get } from 'lodash';
 
 // selector
 export const editorState = state => state.editor;
@@ -47,10 +47,7 @@ export const getEditorDraftId = createSelector(getEditor, state => get(state, 'd
 
 export const getFilteredObjectCards = createSelector(getEditor, editor =>
   uniqBy(
-    filter(
-      editor.linkedObjects,
-      object => object && !find(editor.hideLinkedObjects, { _id: object && object._id }),
-    ),
+    filter(editor.linkedObjects, object => object),
     '_id',
   ),
 );

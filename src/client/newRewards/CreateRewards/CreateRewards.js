@@ -12,6 +12,7 @@ import {
   getAuthorsChildWobjects,
   getNewCampaingById,
   getObjectsByIds,
+  updateCampaing,
 } from '../../../waivioApi/ApiClient';
 import * as apiConfig from '../../../waivioApi/config.json';
 import { NEW_PATH_NAME_MANAGE } from '../../../common/constants/rewards';
@@ -24,6 +25,7 @@ import CreateFormRenderer from '../../rewards/Create-Edit/CreateFormRenderer';
 import { getMinExpertise, getMinExpertisePrepared } from '../../rewards/rewardsHelper';
 import { getRate, getRewardFund } from '../../../store/appStore/appSelectors';
 import '../../rewards/Create-Edit/CreateReward.less';
+import { getTokenBalance, getTokenRates } from '../../../store/walletStore/walletActions';
 
 const initialState = {
   campaignName: '',
@@ -69,13 +71,16 @@ const initialState = {
 @withRouter
 @Form.create()
 @injectIntl
-@connect(state => ({
-  locale: getLocale(state),
-  userName: getAuthenticatedUserName(state),
-  user: getAuthenticatedUser(state),
-  rate: getRate(state),
-  rewardFund: getRewardFund(state),
-}))
+@connect(
+  state => ({
+    locale: getLocale(state),
+    userName: getAuthenticatedUserName(state),
+    user: getAuthenticatedUser(state),
+    rate: getRate(state),
+    rewardFund: getRewardFund(state),
+  }),
+  { getTokenBalance, getTokenRates },
+)
 class CreateRewards extends React.Component {
   static propTypes = {
     userName: PropTypes.string,
@@ -87,6 +92,8 @@ class CreateRewards extends React.Component {
     match: PropTypes.shape().isRequired,
     rate: PropTypes.number.isRequired,
     rewardFund: PropTypes.shape().isRequired,
+    getTokenBalance: PropTypes.func.isRequired,
+    getTokenRates: PropTypes.func.isRequired,
   };
   static defaultProps = {
     userName: '',
@@ -99,6 +106,8 @@ class CreateRewards extends React.Component {
 
   componentDidMount = async () => {
     this.getCampaingDetailAndSetInState();
+    this.props.getTokenBalance('WAIV', this.props.userName);
+    this.props.getTokenRates('WAIV', this.props.userName);
   };
 
   componentDidUpdate(prevProps) {
@@ -135,7 +144,8 @@ class CreateRewards extends React.Component {
       this.setState({ loading: true });
 
       const campaign = await getNewCampaingById(this.props.match.params.campaignId);
-      const isExpired = campaign.status === 'expired';
+      const isExpired =
+        campaign.status === 'expired' || moment(campaign.expiredAt).unix() < moment().unix();
       const isDuplicate = this.props.match.params?.[0] === 'duplicate';
       const isDisabled = campaign.status !== 'pending' && !isDuplicate;
       const authorPermlinks = [
@@ -197,9 +207,7 @@ class CreateRewards extends React.Component {
           },
           eligibleDays: campaign.frequencyAssign,
           usersLegalNotice: campaign.usersLegalNotice,
-          expiredAt: isExpired
-            ? moment(new Date().toISOString())
-            : moment(new Date(campaign.expiredAt)),
+          expiredAt: isExpired ? moment().add(1, 'days') : moment(campaign.expiredAt),
           isDuplicate,
           isDisabled,
         });
@@ -208,7 +216,7 @@ class CreateRewards extends React.Component {
   };
 
   prepareSubmitData = (data, userName) => {
-    const { campaignId, pageObjects, isDuplicate } = this.state;
+    const { campaignId, pageObjects } = this.state;
     const { rewardFund, rate } = this.props;
     const objects = map(data.secondaryObject, o => o.author_permlink);
     const agreementObjects = size(pageObjects) ? map(pageObjects, o => o.author_permlink) : [];
@@ -252,7 +260,7 @@ class CreateRewards extends React.Component {
     };
 
     if (data.description) preparedObject.description = data.description;
-    if (campaignId && !isDuplicate) preparedObject.id = campaignId;
+    if (this.props.match?.params?.[0] === 'details') preparedObject._id = campaignId;
 
     return preparedObject;
   };
@@ -404,10 +412,10 @@ class CreateRewards extends React.Component {
       this.setState({ loading: true });
       this.props.form.validateFieldsAndScroll((err, values) => {
         if (!err && !isEmpty(values.primaryObject) && !isEmpty(values.secondaryObject)) {
-          createNewCampaing(
-            this.prepareSubmitData(values, this.props.userName),
-            this.props.userName,
-          )
+          const isDetails = this.props.match?.params?.[0] === 'details';
+          const submitMethod = isDetails ? updateCampaing : createNewCampaing;
+
+          submitMethod(this.prepareSubmitData(values, this.props.userName), this.props.userName)
             .then(() => {
               message.success(
                 `Rewards campaign ${values.campaignName} ${

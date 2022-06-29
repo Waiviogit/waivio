@@ -4,4 +4,4 @@ export const rewardsPost = {
 };
 
 export const createBody = campaign =>
-  `${campaign.guideName} has activated rewards campaign for <a href="/object/${campaign.requiredObject}">${campaign.name}</a> with the target reward of $ ${campaign.reward} ${campaign.currency}. Campaign expiry date: ${campaign.expiryDate}.`;
+  `${campaign.guideName} has activated rewards campaign for <a href="/object/${campaign.requiredObject}">${campaign.name}</a> with the target reward of $ ${campaign.reward} ${campaign.currency}. Campaign expiry date: ${campaign.expiredAt}.`;

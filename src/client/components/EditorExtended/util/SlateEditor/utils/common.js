@@ -1,6 +1,6 @@
 import { Editor, createEditor, Transforms } from 'slate';
 import { withHistory } from 'slate-history';
-import { withReact } from 'slate-react';
+import { ReactEditor, withReact } from 'slate-react';
 import withEmbeds from '../plugins/withEmbeds';
 import withTables from '../plugins/withTable';
 import withLinks from '../plugins/withLinks';
@@ -26,4 +26,5 @@ export const createSlateEditor = () =>
 
 export const insertObject = (editor, url, text) => {
   Transforms.insertNodes(editor, [createObjectNode(url, text), { text: ' ' }]);
+  ReactEditor.focus(editor);
 };

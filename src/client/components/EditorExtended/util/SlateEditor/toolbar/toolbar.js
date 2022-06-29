@@ -10,7 +10,7 @@ import PropTypes from 'prop-types';
 import useTable from '../utils/useTable';
 import defaultToolbarGroups from './toolbarGroups';
 import CodeButton from './codebutton';
-import insertLink from '../utils/link';
+import { wrapLink } from '../utils/link';
 import BlockToolbar from './blocktoolbar';
 import InlineToolbar from './inlinetoolbar';
 import TableToolbar from './tabletoolbar';
@@ -77,8 +77,9 @@ const Toolbar = props => {
     setUrlInputValue(e.target.value);
   };
 
-  const setLink = () => {
-    insertLink(editor, urlInputValue);
+  const setLink = e => {
+    e.preventDefault();
+    wrapLink(editor, urlInputValue);
     setShowLinkInput(false);
   };
 
@@ -106,6 +107,7 @@ const Toolbar = props => {
               defaultMessage: 'Paste link and press Enter',
             })}
             value={urlInputValue}
+            onPressEnter={setLink}
           />
           <Button
             type="primary"

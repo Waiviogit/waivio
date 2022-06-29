@@ -142,8 +142,8 @@ class CampaignFooter extends React.Component {
     this.handlePostPopoverMenuClick = this.handlePostPopoverMenuClick.bind(this);
 
     this.isReserved = !isEmpty(this.props.match)
-      ? this.props.match.params.filterKey === IS_RESERVED ||
-        this.props.match.params.filterKey === IS_ALL ||
+      ? this.props.match.params[0] === IS_RESERVED ||
+        this.props.match.params[0] === IS_ALL ||
         includes(this.props.match.path, 'object')
       : '';
   }

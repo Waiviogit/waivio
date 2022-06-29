@@ -5,18 +5,22 @@
     transform: matrix(0.97, 0, 0, 1, 0, 12);
     opacity: 0;
   }
+
   20% {
     transform: matrix(0.99, 0, 0, 1, 0, 2);
     opacity: 0.7;
   }
+
   40% {
     transform: matrix(1, 0, 0, 1, 0, -1);
     opacity: 1;
   }
+
   70% {
     transform: matrix(1, 0, 0, 1, 0, 0);
     opacity: 1;
   }
+
   100% {
     transform: matrix(1, 0, 0, 1, 0, 0);
     opacity: 1;
@@ -28,18 +32,22 @@
     transform: matrix(0.97, 0, 0, 1, 0, -12);
     opacity: 0;
   }
+
   20% {
     transform: matrix(0.99, 0, 0, 1, 0, -2);
     opacity: 0.7;
   }
+
   40% {
     transform: matrix(1, 0, 0, 1, 0, 1);
     opacity: 1;
   }
+
   70% {
     transform: matrix(1, 0, 0, 1, 0, 0);
     opacity: 1;
   }
+
   100% {
     transform: matrix(1, 0, 0, 1, 0, 0);
     opacity: 1;
@@ -166,6 +174,7 @@
     height: 33px;
     position: relative;
     top: 1px;
+
     svg {
       position: relative;
     }
@@ -209,11 +218,23 @@
   &.md-RichEditor-styleButton-strikethrough {
     text-decoration: line-through;
   }
+
+  .toolbar_button-strong {
+    color: @white;
+  }
 }
 
 .md-RichEditor-activeButton {
   color: @orange-hot;
   background: #242933;
+
+  .toolbar_button-strong {
+    color: @orange-hot;
+
+    &:hover {
+      color: @orange;
+    }
+  }
 
   &:hover {
     color: @orange;
@@ -275,20 +296,25 @@
   position: relative;
   padding-top: 0.9px;
   height: 33px;
+
   &:hover {
     svg path {
       fill: @orange;
     }
   }
+
   svg {
     width: 35px;
     height: 13px;
+
     path {
       fill: @white;
     }
   }
+
   &--next {
     border-right: none;
+
     svg {
       transform: rotate(180deg);
     }

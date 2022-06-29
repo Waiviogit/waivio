@@ -5,6 +5,7 @@ import { getAllRewardList } from '../../../waivioApi/ApiClient';
 import Campaing from '../reuseble/Campaing';
 import Loading from '../../components/Icon/Loading';
 import ReduxInfiniteScroll from '../../vendor/ReduxInfiniteScroll';
+import EmptyCampaing from '../../statics/EmptyCampaing';
 
 const RewardsAll = () => {
   const [rewards, setRewards] = useState([]);
@@ -39,7 +40,7 @@ const RewardsAll = () => {
     <div>
       <h2>All rewards</h2>
       {isEmpty(rewards) ? (
-        <div>We havent any rewads</div>
+        <EmptyCampaing />
       ) : (
         <ReduxInfiniteScroll
           loadMore={handleLoadingMoreRewardsList}

@@ -11,6 +11,7 @@ import Discover from '../../client/discover/Discover';
 import DiscoverObjects from '../../client/discoverObjects/DiscoverObjects';
 import RewardsComponent from '../../client/rewards/RewardsComponent/RewardsComponent';
 import RewardsMainPage from '../../client/newRewards/RewardsMainPage';
+import PropositionList from '../../client/newRewards/PropositionList/PropositionList';
 
 const routes = {
   component: Wrapper,
@@ -22,7 +23,7 @@ const routes = {
         `/rewards/(${URL.REWARDS.tabs})/:campaignId?/:permlink?/:username?`,
         `/rewards/(${URL.REFERRAL.tabs})/:userName?/:table?`,
         '/rewards/blacklist/:listType?',
-        '/rewards/:filterKey/:campaignParent?',
+        '/rewards/:filterKey/:campaignId?',
       ],
       pathScope: '/rewards',
       exact: true,
@@ -108,7 +109,7 @@ const routes = {
           component: Views.SponsoredRewards,
         },
         {
-          path: '/:filterKey/:campaignParent?',
+          path: '/:filterKey/:campaignId?',
           exact: true,
           component: RewardsComponent,
         },
@@ -116,7 +117,11 @@ const routes = {
     },
     {
       component: RewardsMainPage,
-      path: [`/rewards-new/(${URL.NEW_REWARDS.tabs})/:campaignId?`],
+      path: [
+        `/rewards-new/(details|duplicate|create})/:campaignId?`,
+        `/rewards-new/(all|eligible)/:requiredObject?`,
+        `/rewards-new/(${URL.REWARDS.tabs})`,
+      ],
       pathScope: '/rewards-new',
       exact: true,
       routes: [
@@ -134,6 +139,11 @@ const routes = {
           path: '/(details|duplicate|create)/:campaignId?',
           exact: true,
           component: Views.CreateRewards,
+        },
+        {
+          path: '/(all|eligible)/:requiredObject?',
+          exact: true,
+          component: PropositionList,
         },
       ],
     },

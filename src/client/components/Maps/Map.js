@@ -83,7 +83,7 @@ class MapOS extends React.Component {
     const { zoom, center } = this.state;
 
     if (
-      (!isEmpty(get(nextProps.match, ['params', 'campaignParent'])) &&
+      (!isEmpty(get(nextProps.match, ['params', 'campaignId'])) &&
         !isEmpty(nextProps.wobjects) &&
         !isEqual(nextProps.wobjects, wobjects)) ||
       (match.params.filterKey === IS_RESERVED && +nextProps.userLocation.lat === center[0])
@@ -97,7 +97,7 @@ class MapOS extends React.Component {
       }
       const distance = this.getDistance(coordinates, center);
 
-      const newZoom = has(match, ['params', 'campaignParent']) ? getZoom(distance) - 2 : zoom;
+      const newZoom = has(match, ['params', 'campaignId']) ? getZoom(distance) - 2 : zoom;
 
       this.setState({ zoom: newZoom });
     }
@@ -114,7 +114,7 @@ class MapOS extends React.Component {
       (zoomMap === 0 && nextProps.zoomMap) ||
       (zoom === 0 && nextProps.zoomMap) ||
       match.params.filterKey !== nextProps.match.params.filterKey ||
-      match.params.campaignParent !== nextProps.match.params.campaignParent
+      match.params.campaignId !== nextProps.match.params.campaignId
     ) {
       this.setState({ zoom: nextProps.zoomMap });
     }
@@ -147,7 +147,7 @@ class MapOS extends React.Component {
       (propsMatch !== prevPropsMatch &&
         !isEqual(prevProps.match, this.props.match) &&
         propsMatch !== IS_RESERVED) ||
-      prevProps.match.params.campaignParent !== this.props.match.params.campaignParent
+      prevProps.match.params.campaignId !== this.props.match.params.campaignId
     ) {
       const firstMapLoad = true;
 
@@ -168,7 +168,7 @@ class MapOS extends React.Component {
   updateMap = firstMapLoad => {
     const { match } = this.props;
     const isSecondaryObjectsCards =
-      !isEmpty(match.params.campaignParent) || match.params.filterKey === IS_RESERVED;
+      !isEmpty(match.params.campaignId) || match.params.filterKey === IS_RESERVED;
     const { center, zoom } = this.state;
     const { setMapArea } = this.props;
     const newRadius = this.calculateRadius(zoom);
@@ -359,7 +359,7 @@ class MapOS extends React.Component {
         setMapArea({ radius, coordinates: center, isMap: true });
       });
     } else {
-      this.setQueryInUrl(this.state.center, this.props.match.params.campaignParent);
+      this.setQueryInUrl(this.state.center, this.props.match.params.campaignId);
     }
   };
 

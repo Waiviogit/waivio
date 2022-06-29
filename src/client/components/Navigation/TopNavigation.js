@@ -114,19 +114,6 @@ const TopNavigation = ({ location: { pathname } }) => {
           </li>
           <li className="TopNavigation__item">
             <Link
-              to={`${LINKS.REWARDS_NEW}/all`}
-              className={classNames('TopNavigation__link', {
-                'TopNavigation__link--active':
-                  pathname.includes(LINKS.REWARDS_NEW) &&
-                  (!pathname.includes('list') || pathname.includes(LINKS.BLACKLIST)),
-              })}
-            >
-              <FormattedMessage id="rewards" defaultMessage="Rewards" />{' '}
-              <span style={{ color: '#f87007' }}>[new]</span>
-            </Link>
-          </li>
-          <li className="TopNavigation__item">
-            <Link
               to={`${LINKS.DISCOVER}/hashtag`}
               className={classNames('TopNavigation__link', {
                 'TopNavigation__link--active':
@@ -159,6 +146,18 @@ const TopNavigation = ({ location: { pathname } }) => {
               })}
             >
               <FormattedMessage id="about" defaultMessage="About" />
+            </Link>
+          </li>
+          <li className="TopNavigation__item">
+            <Link
+              to={`${LINKS.REWARDS_NEW}/all`}
+              className={classNames('TopNavigation__link', {
+                'TopNavigation__link--active':
+                  pathname.includes(LINKS.REWARDS_NEW) &&
+                  (!pathname.includes('list') || pathname.includes(LINKS.BLACKLIST)),
+              })}
+            >
+              Beta
             </Link>
           </li>
         </ul>
