@@ -14,7 +14,7 @@ const withEmbeds = editor => {
       const parsed = new DOMParser().parseFromString(html, 'text/html');
       const nodes = deserializeHtmlToSlate(parsed.body);
       const nodesNormalized = nodes.map(i => {
-        if (i.text && !i.type) {
+        if (i.text && i.text !== '\n' && !i.type) {
           return { type: 'paragraph', children: [i] };
         }
 
