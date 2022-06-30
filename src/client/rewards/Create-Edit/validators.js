@@ -53,7 +53,7 @@ export const validatorMessagesCreator = (messageFactory, currency) => ({
   ),
   expiredDate: messageFactory(
     'expiry_date_after_current',
-    'The expiry date must be after the current date',
+    'The expiration date must be later than the next day from the current date',
   ),
   postsQuantity: messageFactory('not_less_zero_posts', 'Number of posts cannot be negative'),
   eligibleQuantity: messageFactory(

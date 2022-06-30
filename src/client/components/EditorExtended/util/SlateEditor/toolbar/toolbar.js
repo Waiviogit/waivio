@@ -81,6 +81,7 @@ const Toolbar = props => {
     e.preventDefault();
     wrapLink(editor, urlInputValue);
     setShowLinkInput(false);
+    setUrlInputValue('');
   };
 
   const handleClickPrevPage = () => setCurrentPage(prev => prev - 1);

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { FormattedNumber, injectIntl } from 'react-intl';
 import { isEmpty, map, round } from 'lodash';
@@ -40,6 +40,8 @@ const WAIVwalletTable = props => {
   const [loading, setLoading] = useState(false);
   const [isLoadingData, setIsLoadingData] = useState(false);
   const loadingBar = isLoadingData ? 'Loading...' : 'Completed';
+  const abortController = useRef(null);
+  const { from, end } = props.form.getFieldsValue();
 
   const closeTable = () => dispatch(closeWalletTable());
 
@@ -58,6 +60,14 @@ const WAIVwalletTable = props => {
     };
   }, []);
 
+  const getWaivAdvancedReportsWithAbort = async body => {
+    if (abortController.current) abortController.current.abort();
+    abortController.current = new AbortController();
+    const userReports = await getWaivAdvancedReports(body, '', abortController.current);
+
+    return userReports;
+  };
+
   useEffect(() => {
     if (!isEmpty(accounts) && hasMore && dateEstablished) {
       setIsLoadingData(true);
@@ -71,7 +81,7 @@ const WAIVwalletTable = props => {
   }, [hasMore, accounts]);
 
   const getTransactionsList = async () => {
-    const list = await getWaivAdvancedReports({
+    const list = await getWaivAdvancedReportsWithAbort({
       filterAccounts,
       accounts,
       currency: currentCurrency,
@@ -101,7 +111,7 @@ const WAIVwalletTable = props => {
   };
 
   const handleSubmit = async () => {
-    const { from, end, currency } = props.form.getFieldsValue();
+    const { currency } = props.form.getFieldsValue();
     const startDate = handleChangeStartDate(from);
     const endDate = handleChangeEndDate(end);
 
@@ -113,12 +123,12 @@ const WAIVwalletTable = props => {
       setCurrentCurrency(currency);
 
       const mappedAccounts = filterAccounts.map(acc => ({ name: acc }));
-      const filteredList = await getWaivAdvancedReports({
+      const filteredList = await getWaivAdvancedReportsWithAbort({
         filterAccounts,
         accounts: mappedAccounts,
         startDate,
         endDate,
-        user: userName,
+        user: authUserName,
         currency,
       });
 
@@ -132,15 +142,14 @@ const WAIVwalletTable = props => {
   };
   const getMoreTransactionsList = async () => {
     if (dateEstablished) {
-      const { from } = props.form.getFieldsValue();
       const startDate = handleChangeStartDate(from);
 
-      const list = await getWaivAdvancedReports({
+      const list = await getWaivAdvancedReportsWithAbort({
         filterAccounts,
         accounts,
         startDate,
         endDate: transactionsList[transactionsList.length - 1].timestamp,
-        user: userName,
+        user: authUserName,
         currency: currentCurrency,
       });
 
@@ -150,7 +159,7 @@ const WAIVwalletTable = props => {
       setAccounts(list.accounts);
       setHasMore(list.hasMore);
     } else {
-      const list = await getWaivAdvancedReports({
+      const list = await getWaivAdvancedReportsWithAbort({
         filterAccounts,
         accounts,
         currency: currentCurrency,
@@ -181,7 +190,11 @@ const WAIVwalletTable = props => {
   };
   const handleChangeTotalValue = value => {
     if (dateEstablished) {
-      const num = loading ? 0 : round(value, 3);
+      let num = loading ? 0 : round(value, 3);
+
+      if (isNaN(value)) {
+        num = 0;
+      }
 
       return (
         <b>
@@ -269,6 +282,8 @@ const WAIVwalletTable = props => {
           deleteUser={deleteUserFromFilterAccounts}
           currency={currentCurrency}
           form={props.form}
+          startDate={handleChangeStartDate(from)}
+          endDate={handleChangeEndDate(end)}
         />
         <p className="WalletTable__total">
           {props.intl.formatMessage({

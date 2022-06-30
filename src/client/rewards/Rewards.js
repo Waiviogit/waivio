@@ -379,7 +379,7 @@ class Rewards extends React.Component {
 
   setActiveMessagesFilters = (filterValue, key) => {
     const { match } = this.props;
-    const paramsKey = match.params[0];
+    const paramsKey = match.params.filterKey;
     let activeFilters;
 
     switch (paramsKey) {
@@ -481,7 +481,7 @@ class Rewards extends React.Component {
         });
 
         if (!isWidget && !isReserved) {
-          const filterKey = match.params[0];
+          const filterKey = match.params.filterKey;
           const arrFilterKey = [PAYABLES, RECEIVABLES];
 
           if (
@@ -490,7 +490,7 @@ class Rewards extends React.Component {
             every(arrFilterKey, key => filterKey !== key) &&
             !match.params.campaignId
           ) {
-            if (match.params[0] !== rewardsTab[tabType]) {
+            if (match.params.filterKey !== rewardsTab[tabType]) {
               this.props.history.push(`/rewards/${rewardsTab[tabType]}/`);
             }
             if (tabType === 'reserved') {
@@ -559,7 +559,7 @@ class Rewards extends React.Component {
       });
       if (isMap) {
         this.props.getPropositionsForMap(data.campaigns);
-      } else if (match.params[0] === 'reserved') {
+      } else if (match.params.filterKey === 'reserved') {
         this.setState({
           propositionsReserved: data.campaigns,
           loadingCampaigns: false,
@@ -743,7 +743,7 @@ class Rewards extends React.Component {
       fetched,
       propositionsReserved,
     } = this.state;
-    const isReserved = match.params[0] === IS_RESERVED;
+    const isReserved = match.params.filterKey === IS_RESERVED;
 
     let propositionsUniq;
 
@@ -756,7 +756,7 @@ class Rewards extends React.Component {
     }
     const actualPropositions = isEmpty(messages) ? propositionsUniq : messages;
     const getMessageHistory = async () => {
-      const path = match.params[0];
+      const path = match.params.filterKey;
       const {
         activeHistoryFilters,
         activeMessagesFilters,
@@ -864,7 +864,7 @@ class Rewards extends React.Component {
       sortReserved,
     } = this.state;
     const { username, match, usedLocale } = this.props;
-    const path = match.params[0];
+    const path = match.params.filterKey;
     const sortChanged = getSortChanged({ path, sortAll, sortEligible, sortReserved });
 
     if (hasMore) {
@@ -911,7 +911,7 @@ class Rewards extends React.Component {
     );
     const secondaryObjectsForMap = uniqBy(secondaryObjects, 'author_permlink');
     const primaryObjectForMap =
-      !isEmpty(secondaryObjectsForMap) && match.params[0] !== 'reserved'
+      !isEmpty(secondaryObjectsForMap) && match.params.filterKey !== 'reserved'
         ? {
             ...get(newPropositions, ['0', 'required_object'], {}),
             reward: newPropositions[0].reward,
@@ -925,7 +925,7 @@ class Rewards extends React.Component {
       return !isEqual(objMap, primaryObjectMap) ? object : '';
     });
 
-    return match.params[0] === 'reserved'
+    return match.params.filterKey === 'reserved'
       ? map(newPropositions, proposition => {
           const propositionObject = {
             ...get(proposition, ['objects', '0', 'object'], {}),
@@ -1001,7 +1001,7 @@ class Rewards extends React.Component {
       reward: wobj.max_reward,
     }));
     const IsRequiredObjectWrap = !match.params.campaignId;
-    const filterKey = match.params[0];
+    const filterKey = match.params.filterKey;
     const robots = location.pathname === 'index,follow';
     const isCreate =
       includes(location.pathname, 'create') ||
@@ -1068,7 +1068,7 @@ class Rewards extends React.Component {
     });
 
     const campaignId = get(match, ['params', 'campaignId']);
-    const isReserved = match.params[0] === IS_RESERVED;
+    const isReserved = match.params.filterKey === IS_RESERVED;
     const campaignsObjectsForMap = campaignId || isReserved ? this.getCampaignsObjectsForMap() : [];
     const primaryObjectCoordinates = this.moveToCoordinates(campaignsObjectsForMap);
     const isWidget =

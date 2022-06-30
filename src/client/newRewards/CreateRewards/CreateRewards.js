@@ -207,7 +207,7 @@ class CreateRewards extends React.Component {
           },
           eligibleDays: campaign.frequencyAssign,
           usersLegalNotice: campaign.usersLegalNotice,
-          expiredAt: isExpired ? moment().add(1, 'days') : moment(campaign.expiredAt),
+          expiredAt: isExpired ? moment().add(2, 'days') : moment(campaign.expiredAt),
           isDuplicate,
           isDisabled,
         });

@@ -706,7 +706,7 @@
   "reserve_period_one_day": "The reservation period must be at least one day",
   "not_less_zero_photos": "Should not be less than zero photos",
   "not_less_zero_followers": "Number of followers cannot be negative",
-  "expiry_date_after_current": "The expiry date must be after the current date",
+  "expiry_date_after_current": "The expiration date must be later than the next day from the current date",
   "campaign_name": "Campaign name",
   "input_campaign_name": "Please input your campaign name!",
   "campaign_name_error_long": "The name of the campaign should not exceed 100 symbols",

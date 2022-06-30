@@ -40,6 +40,8 @@ export const configHistoryTableHeader = [
   },
   {
     id: 'rewardInUSD',
+    type: 'round',
+    precision: 3,
     intl: {
       id: 'reward',
       defaultMessage: 'Reward',

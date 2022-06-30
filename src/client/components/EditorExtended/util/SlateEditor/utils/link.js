@@ -9,6 +9,21 @@ const createLinkNode = (url, text) => ({
   children: [{ text }],
 });
 
+const normalizeLink = url => {
+  const lowerUrl = url.toLowerCase();
+  let newUrl = url;
+
+  if (lowerUrl.indexOf('http') !== 0 && lowerUrl.indexOf('mailto:') !== 0) {
+    if (url.indexOf('@') >= 0) {
+      newUrl = `mailto:${newUrl}`;
+    } else {
+      newUrl = `https://${newUrl}`;
+    }
+  }
+
+  return newUrl;
+};
+
 export const removeLink = (editor, opts = {}) => {
   Transforms.unwrapNodes(editor, {
     ...opts,
@@ -31,6 +46,8 @@ const unwrapLink = editor => {
 };
 
 export const wrapLink = (editor, url) => {
+  const normalizedUrl = normalizeLink(url);
+
   if (isLinkActive(editor)) {
     unwrapLink(editor);
   }
@@ -39,7 +56,7 @@ export const wrapLink = (editor, url) => {
   const isCollapsed = selection && Range.isCollapsed(selection);
   const link = {
     type: 'link',
-    url,
+    url: normalizedUrl,
     children: isCollapsed ? [{ text: url }] : [],
   };
 
