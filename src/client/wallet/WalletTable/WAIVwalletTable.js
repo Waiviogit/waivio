@@ -41,6 +41,7 @@ const WAIVwalletTable = props => {
   const [isLoadingData, setIsLoadingData] = useState(false);
   const loadingBar = isLoadingData ? 'Loading...' : 'Completed';
   const abortController = useRef(null);
+  const { from, end } = props.form.getFieldsValue();
 
   const closeTable = () => dispatch(closeWalletTable());
 
@@ -110,7 +111,7 @@ const WAIVwalletTable = props => {
   };
 
   const handleSubmit = async () => {
-    const { from, end, currency } = props.form.getFieldsValue();
+    const { currency } = props.form.getFieldsValue();
     const startDate = handleChangeStartDate(from);
     const endDate = handleChangeEndDate(end);
 
@@ -141,7 +142,6 @@ const WAIVwalletTable = props => {
   };
   const getMoreTransactionsList = async () => {
     if (dateEstablished) {
-      const { from } = props.form.getFieldsValue();
       const startDate = handleChangeStartDate(from);
 
       const list = await getWaivAdvancedReportsWithAbort({
@@ -190,7 +190,11 @@ const WAIVwalletTable = props => {
   };
   const handleChangeTotalValue = value => {
     if (dateEstablished) {
-      const num = loading ? 0 : round(value, 3);
+      let num = loading ? 0 : round(value, 3);
+
+      if (isNaN(value)) {
+        num = 0;
+      }
 
       return (
         <b>
@@ -278,6 +282,8 @@ const WAIVwalletTable = props => {
           deleteUser={deleteUserFromFilterAccounts}
           currency={currentCurrency}
           form={props.form}
+          startDate={handleChangeStartDate(from)}
+          endDate={handleChangeEndDate(end)}
         />
         <p className="WalletTable__total">
           {props.intl.formatMessage({
