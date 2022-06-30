@@ -2125,11 +2125,12 @@ export const getAdvancedReports = (body, user = '') => {
     .catch(e => e);
 };
 
-export const getWaivAdvancedReports = (body, user = '') => {
+export const getWaivAdvancedReports = (body, user = '', abortController) => {
   const actualHeaders = user ? { ...headers, user } : { ...headers };
   return fetch(`${config.apiPrefix}${config.user}${config.advancedReport}`, {
     headers: actualHeaders,
     body: JSON.stringify(body),
+    ...(abortController && { signal: abortController.signal }),
     method: 'POST',
   })
     .then(res => res.json())
