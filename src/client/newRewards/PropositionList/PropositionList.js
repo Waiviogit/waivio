@@ -6,7 +6,7 @@ import { getObject, getPropositionByCampaingObjectPermlink } from '../../../waiv
 import ReduxInfiniteScroll from '../../vendor/ReduxInfiniteScroll';
 import Loading from '../../components/Icon/Loading';
 import EmptyCampaing from '../../statics/EmptyCampaing';
-import Proposition from '../reuseble/Proposition';
+import Proposition from '../reuseble/Proposition/Proposition';
 
 const PropositionList = () => {
   const { requiredObject } = useParams();

@@ -813,6 +813,7 @@ export const getPropositions = ({
     if (!isMap && match.params.filterKey === IS_RESERVED) reqData.update = true;
     if (requiredObject && !isMap) reqData.requiredObject = requiredObject;
     if (match.params.filterKey === IS_RESERVED) reqData.status = [...status, 'onHold'];
+    console.log(match);
     const url = getUrl(match);
 
     if (isMap && match.params.filterKey === IS_RESERVED) return;

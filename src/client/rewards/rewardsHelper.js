@@ -57,7 +57,7 @@ export const preparePropositionReqData = ({
 export const getUrl = match => {
   let url;
 
-  switch (match.params[0]) {
+  switch (match.params.filterKey) {
     case 'active':
       url = `${config.campaignApiPrefix}${config.campaigns}${config.eligible}`;
       break;
