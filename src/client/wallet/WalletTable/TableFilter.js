@@ -165,7 +165,9 @@ const TableFilter = ({
           )}
         </Form.Item>
       </div>
-      {invalidFields && <span style={{ color: 'red' }}>From must be less than till</span>}
+      {invalidFields && (
+        <span style={{ color: 'red' }}>The From date must be earlier than the Till date</span>
+      )}
       <Form.Item
         label={intl.formatMessage({
           id: 'base_currency',
