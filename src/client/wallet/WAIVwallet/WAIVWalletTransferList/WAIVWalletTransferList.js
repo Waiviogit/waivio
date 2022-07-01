@@ -2,7 +2,7 @@ import React, { useCallback, useEffect } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
-import { isEmpty, get } from 'lodash';
+import { get } from 'lodash';
 import classNames from 'classnames';
 
 import {
@@ -37,7 +37,11 @@ const WAIVWalletTransferList = props => {
     );
   }, [props.name, props.transaction.list]);
 
-  if (isEmpty(props.transaction.list))
+  if (props.transaction.loading) {
+    return <Loading />;
+  }
+
+  if (!props.transaction.list.length)
     return (
       <div className="UserWallet__empty-transactions-list">
         <FormattedMessage
@@ -78,6 +82,7 @@ WAIVWalletTransferList.propTypes = {
   transaction: PropTypes.shape({
     list: PropTypes.arrayOf(PropTypes.shape({})),
     hasMore: PropTypes.bool,
+    loading: PropTypes.bool,
   }).isRequired,
 };
 

@@ -24,7 +24,8 @@ const AddButtonSlate = props => {
     if (!editorNode) return;
     setTimeout(() => {
       const nativeSelection = getSelection(window);
-      const bound = nativeSelection.getRangeAt(0).getBoundingClientRect();
+      const range = nativeSelection?.getRangeAt(0);
+      const bound = range?.getBoundingClientRect();
       const parentBoundary = editorNode.getBoundingClientRect();
       const nodeStyle = nodeRef.current?.style;
 
