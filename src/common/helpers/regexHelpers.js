@@ -44,4 +44,6 @@ export const photosInPostRegex = /(?:!\[(.*?)\((.*?)\))/gi;
 
 export const domainWithoutParams = /^https?:\/\/([^/]+)/;
 
+export const isCodeRegex = /^```/g;
+
 export default null;
