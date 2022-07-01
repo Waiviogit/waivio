@@ -191,11 +191,15 @@ const EditorSlate = props => {
       if (isKeyHotkey('left', nativeEvent)) {
         event.preventDefault();
         Transforms.move(editor, { unit: 'offset', reverse: true });
+
+        return true;
       }
 
       if (isKeyHotkey('right', nativeEvent)) {
         event.preventDefault();
         Transforms.move(editor, { unit: 'offset' });
+
+        return true;
       }
     }
 
