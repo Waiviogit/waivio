@@ -30,6 +30,7 @@ import {
   focusEditorToEnd,
   removeAllInlineFormats,
 } from './util/SlateEditor/utils/SlateUtilityFunctions';
+import { pipe } from '../../../common/helpers';
 
 import './index.less';
 
@@ -190,11 +191,15 @@ const EditorSlate = props => {
       if (isKeyHotkey('left', nativeEvent)) {
         event.preventDefault();
         Transforms.move(editor, { unit: 'offset', reverse: true });
+
+        return true;
       }
 
       if (isKeyHotkey('right', nativeEvent)) {
         event.preventDefault();
         Transforms.move(editor, { unit: 'offset' });
+
+        return true;
       }
     }
 
@@ -210,9 +215,16 @@ const EditorSlate = props => {
 
   const editor = useMemo(
     () =>
-      withHistory(
-        withEmbeds(withTables(withLinks(withReact(withLists(withObjects(createEditor())))))),
-      ),
+      pipe(
+        createEditor,
+        withObjects,
+        withLists,
+        withReact,
+        withLinks,
+        withTables,
+        withEmbeds,
+        withHistory,
+      )(),
     [],
   );
   const [value, setValue] = useState([

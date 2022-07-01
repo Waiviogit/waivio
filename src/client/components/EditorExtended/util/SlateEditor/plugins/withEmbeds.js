@@ -1,11 +1,28 @@
-import { Transforms } from 'slate';
+import { Transforms, Node, Element } from 'slate';
 import { deserializeHtmlToSlate } from '../../constants';
 
 const withEmbeds = editor => {
-  const { isVoid, insertData } = editor;
+  const { isVoid, insertData, normalizeNode } = editor;
 
   /* eslint-disable no-param-reassign */
   editor.isVoid = element => (['video', 'image'].includes(element.type) ? true : isVoid(element));
+
+  editor.normalizeNode = entry => {
+    const [node, path] = entry;
+
+    if (Element.isElement(node) && node.type === 'paragraph') {
+      // eslint-disable-next-line no-restricted-syntax
+      for (const [child, childPath] of Node.children(editor, path)) {
+        if (Element.isElement(child) && !editor.isInline(child)) {
+          Transforms.unwrapNodes(editor, { at: childPath });
+
+          return;
+        }
+      }
+    }
+
+    normalizeNode(entry);
+  };
 
   editor.insertData = data => {
     const html = data.getData('text/html');
@@ -14,8 +31,11 @@ const withEmbeds = editor => {
       const parsed = new DOMParser().parseFromString(html, 'text/html');
       const nodes = deserializeHtmlToSlate(parsed.body);
       const nodesNormalized = nodes.map(i => {
-        if (i.text && !i.type) {
+        if (i.text && i.text !== '\n' && !i.type) {
           return { type: 'paragraph', children: [i] };
+        }
+        if (i.type === 'link' && i.children[0]?.type === 'image') {
+          return i.children[0];
         }
 
         return i;
