@@ -41,7 +41,7 @@ const WAIVWalletTransferList = props => {
     return <Loading />;
   }
 
-  if (props.transaction.list.length === 0)
+  if (!props.transaction.list.length)
     return (
       <div className="UserWallet__empty-transactions-list">
         <FormattedMessage
