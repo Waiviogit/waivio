@@ -241,7 +241,7 @@ class WalletTable extends React.Component {
     const { match, intl, form, transactionsList, currencyInfo } = this.props;
     const currencyType = this.state.currentCurrency || currencyInfo.type;
     const walletType = 'HIVE';
-    const { start, end } = this.props.form.getFieldsValue();
+    const { from, end } = this.props.form.getFieldsValue();
 
     const loadingBar = this.props.isLoadingAllData ? 'Loading...' : 'Completed';
     /* eslint-disable react/style-prop-object */
@@ -287,7 +287,7 @@ class WalletTable extends React.Component {
           deleteUser={this.deleteUserFromFilterAccounts}
           currency={currencyInfo.type}
           form={form}
-          startDate={this.handleChangeStartDate(start)}
+          startDate={this.handleChangeStartDate(from)}
           endDate={this.handleChangeEndDate(end)}
         />
         <p className="WalletTable__total">
