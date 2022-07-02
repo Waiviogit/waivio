@@ -283,26 +283,26 @@ export function editorStateToMarkdownSlate(value) {
           children: next(node.children),
           ordered: false,
         }),
-        // paragraph: (node, next) => {
-        //   const children = node.children.map(child => {
-        //     if (child.text && child.underline) {
-        //       const { text, ...modifiedChild } = child;
-        //
-        //       return {
-        //         ...modifiedChild,
-        //         type: 'html',
-        //         children: [{ text: `<u>${child.text}</u>` }],
-        //       };
-        //     }
-        //
-        //     return child;
-        //   });
-        //
-        //   return {
-        //     type: 'paragraph',
-        //     children: next(children),
-        //   };
-        // },
+        paragraph: (node, next) => {
+          const children = node.children.map(child => {
+            if (child.text && child.underline) {
+              const { text, ...modifiedChild } = child;
+
+              return {
+                ...modifiedChild,
+                type: 'html',
+                children: [{ text: `<u>${child.text}</u>` }],
+              };
+            }
+
+            return child;
+          });
+
+          return {
+            type: 'paragraph',
+            children: next(children),
+          };
+        },
         video: node => ({
           type: 'text',
           value: node.url,
@@ -312,11 +312,6 @@ export function editorStateToMarkdownSlate(value) {
           url: node.url,
           children: next([{ text: node.hashtag }]),
         }),
-        // code: (node, next) => ({
-        //   type: 'code',
-        //   children: [{text: 'wow'}],
-        //   lang:
-        // }),
       },
     })
     .use(remarkGfm)
