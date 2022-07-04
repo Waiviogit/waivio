@@ -83,9 +83,9 @@ export const getEligibleRewardsListWithRestaurant = (selectRest, searchString) =
     const objChild = await getAuthorsChildWobjects(
       selectRest.author_permlink,
       0,
-      50,
+      100,
       locale,
-      '',
+      'list',
       name,
       searchString,
     );

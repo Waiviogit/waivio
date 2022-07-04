@@ -4,7 +4,7 @@ import uuidv4 from 'uuid/v4';
 import isSoftNewlineEvent from 'draft-js/lib/isSoftNewlineEvent';
 import { message } from 'antd';
 import classNames from 'classnames';
-import { Slate, Editable, withReact } from 'slate-react';
+import { Slate, Editable, withReact, ReactEditor } from 'slate-react';
 import { createEditor, Editor, Transforms, Node, Range } from 'slate';
 import { withHistory } from 'slate-history';
 import { connect } from 'react-redux';
@@ -49,6 +49,7 @@ const EditorSlate = props => {
   } = props;
 
   const params = useParams();
+  const [prevParams, setParams] = useState();
 
   const editorRef = useRef(null);
 
@@ -254,6 +255,8 @@ const EditorSlate = props => {
     if (body) {
       const postParsed = deserializeToSlate(body || initialBody);
 
+      setParams(params);
+
       Transforms.delete(editor, {
         at: {
           anchor: Editor.start(editor, []),
@@ -267,7 +270,21 @@ const EditorSlate = props => {
       if (!(lastBlock?.type === 'paragraph' && lastBlock?.children?.[0].text === '')) {
         Transforms.insertNodes(editor, createEmptyNode());
       }
-      focusEditorToEnd(editor);
+      Transforms.deselect(editor);
+      const { lastSelection } = editor;
+
+      if (lastSelection && (params === prevParams || !prevParams)) {
+        setTimeout(() => {
+          const lastAnchor = { ...lastSelection.anchor, offset: 0 };
+          const lastFocus = { ...lastSelection.focus, offset: 0 };
+
+          Transforms.select(editor, { anchor: lastAnchor, focus: lastFocus });
+          Transforms.move(editor, { distance: 1, unit: 'word' });
+          Transforms.move(editor, { distance: 1, unit: 'offset' });
+
+          ReactEditor.focus(editor);
+        });
+      } else focusEditorToEnd(editor);
     }
   }, [body]);
 

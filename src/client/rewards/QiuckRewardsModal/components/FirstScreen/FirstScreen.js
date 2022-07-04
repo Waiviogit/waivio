@@ -138,7 +138,7 @@ const ModalFirstScreen = props => {
         )}
       </div>
       <div className="FirstScreen__selectBlock">
-        <h4 className="FirstScreen__title">Select dish</h4>
+        <h4 className="FirstScreen__title">Select dish or drink</h4>
         {props.selectedDish ? (
           <ObjectCardView
             wObject={props.selectedDish}

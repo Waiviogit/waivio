@@ -1,6 +1,6 @@
 import { Editor, Transforms, Element as SlateElement } from 'slate';
 import { ReactEditor } from 'slate-react';
-import { INLINE_CODE, REMOVE_FORMAT } from './constants';
+import { CODE_BLOCK, INLINE_CODE, REMOVE_FORMAT } from './constants';
 import defaultToolbarGroups from '../toolbar/toolbarGroups';
 
 const inlineButtons = defaultToolbarGroups.filter(i => ['inline', 'link'].includes(i.type));
@@ -24,12 +24,40 @@ export const toggleBlock = (editor, format) => {
   const isList = list_types.includes(format);
   const isIndent = alignment.includes(format);
   const isAligned = alignment.some(alignmentType => isBlockActive(editor, alignmentType));
+  const isCode = format === CODE_BLOCK;
+
+  if (isCode && !isActive) {
+    // Transforms.unwrapNodes(editor, {
+    //   match: n => !Editor.isEditor(n) && SlateElement.isElement(n) && n.type,
+    //   split: true,
+    // });
+    //
+    // Transforms.wrapNodes(editor, {
+    //   type: format,
+    //   lang: 'javascript',
+    // });
+    Transforms.setNodes(editor, {
+      type: format,
+      lang: 'javascript',
+    });
+
+    return;
+  }
 
   if (isAligned && isIndent) {
     Transforms.unwrapNodes(editor, {
       match: n => alignment.includes(!Editor.isEditor(n) && SlateElement.isElement(n) && n.type),
       split: true,
     });
+  }
+
+  if (isIndent) {
+    Transforms.wrapNodes(editor, {
+      type: format,
+      children: [],
+    });
+
+    return;
   }
 
   if (isIndent) {
