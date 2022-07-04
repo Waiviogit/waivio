@@ -166,7 +166,10 @@ const EditorSlate = props => {
       const selectedElement = Node.descendant(editor, editor.selection.anchor.path.slice(0, -1));
 
       if (
-        ['headingOne', 'headingTwo', 'headingThree', 'headingFour'].includes(selectedElement.type)
+        ['headingOne', 'headingTwo', 'headingThree', 'headingFour'].includes(
+          selectedElement.type,
+        ) ||
+        (['blockquote'].includes(selectedElement.type) && !isKeyHotkey('shift+enter', event))
       ) {
         const selectedLeaf = Node.descendant(editor, editor.selection.anchor.path);
 
