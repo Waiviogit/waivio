@@ -1,7 +1,7 @@
 import { Transforms, Node, Element } from 'slate';
 import { deserializeHtmlToSlate } from '../../constants';
 
-const withEmbeds = editor => {
+const withEmbeds = cb => editor => {
   const { isVoid, insertData, normalizeNode } = editor;
 
   /* eslint-disable no-param-reassign */
@@ -37,11 +37,25 @@ const withEmbeds = editor => {
         if (i.type === 'link' && i.children[0]?.type === 'image') {
           return i.children[0];
         }
+        if (i.type === 'link' && i.url.includes('/object/')) {
+          return {
+            type: 'object',
+            url: i.url,
+            children: [{ text: '' }],
+            hashtag: i.children[0]?.text,
+          };
+        }
 
         return i;
       });
 
-      Transforms.insertFragment(editor, nodesNormalized);
+      Transforms.insertFragment(editor, [
+        {
+          type: 'paragraph',
+          children: nodesNormalized,
+        },
+      ]);
+      cb(html);
 
       return;
     }
