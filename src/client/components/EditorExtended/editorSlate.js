@@ -33,6 +33,7 @@ import {
 import { pipe } from '../../../common/helpers';
 
 import './index.less';
+import { handlePasteText } from '../../../store/slateEditorStore/editorActions';
 
 const EditorSlate = props => {
   const {
@@ -165,7 +166,10 @@ const EditorSlate = props => {
       const selectedElement = Node.descendant(editor, editor.selection.anchor.path.slice(0, -1));
 
       if (
-        ['headingOne', 'headingTwo', 'headingThree', 'headingFour'].includes(selectedElement.type)
+        ['headingOne', 'headingTwo', 'headingThree', 'headingFour'].includes(
+          selectedElement.type,
+        ) ||
+        (['blockquote'].includes(selectedElement.type) && !isKeyHotkey('shift+enter', event))
       ) {
         const selectedLeaf = Node.descendant(editor, editor.selection.anchor.path);
 
@@ -223,7 +227,7 @@ const EditorSlate = props => {
         withReact,
         withLinks,
         withTables,
-        withEmbeds,
+        withEmbeds(props.handlePasteText),
         withHistory,
       )(),
     [],
@@ -330,6 +334,7 @@ EditorSlate.propTypes = {
   handleObjectSelect: PropTypes.func.isRequired,
   handleHashtag: PropTypes.func.isRequired,
   initialBody: PropTypes.string,
+  handlePasteText: PropTypes.func,
 };
 
 EditorSlate.defaultProps = {
@@ -338,10 +343,15 @@ EditorSlate.defaultProps = {
   isVimeo: false,
   placeholder: '',
   initialBody: '',
+  handlePasteText: () => {},
 };
 
 const mapStateToProps = store => ({
   body: getEditorDraftBody(store),
 });
 
-export default connect(mapStateToProps)(EditorSlate);
+const mapDispatchToProps = dispatch => ({
+  handlePasteText: html => dispatch(handlePasteText(html)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(EditorSlate);
