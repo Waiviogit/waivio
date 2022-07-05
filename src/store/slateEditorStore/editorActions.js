@@ -598,7 +598,7 @@ export const buildPost = (draftId, data = {}, isEditPost) => (dispatch, getState
   return postData;
 };
 
-export const handleObjectSelect = (object, isCursorToEnd, intl) => async (dispatch, getState) => {
+export const handleObjectSelect = (object, withFocus, intl) => async (dispatch, getState) => {
   const state = getState();
   const {
     content,
@@ -680,7 +680,7 @@ export const handleObjectSelect = (object, isCursorToEnd, intl) => async (dispat
   const textReplace = objType === objectTypes.HASHTAG ? `#${objName}` : objName;
 
   Transforms.select(editor, beforeRange);
-  insertObject(editor, url, textReplace);
+  insertObject(editor, url, textReplace, withFocus);
 
   dispatch(
     saveDraft(draftId, intl, { content: draftContent.body, titleValue: draftContent.title }),
@@ -917,7 +917,7 @@ export const selectObjectFromSearch = (selectedObject, editor) => (dispatch, get
     const url = getObjectUrl(selectedObject.id || selectedObject.author_permlink);
 
     Transforms.select(editor, beforeRange);
-    insertObject(editor, url, textReplace);
+    insertObject(editor, url, textReplace, true);
 
     const updatedStateBody = {
       body: editorStateToMarkdownSlate(editor.children),
