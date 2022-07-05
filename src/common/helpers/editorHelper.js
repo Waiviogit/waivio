@@ -447,7 +447,7 @@ export const checkCursorInSearchSlate = editor => {
 
     if (searchString) {
       const beforeRange =
-        wordBeforeWithCharacter && Editor.range(editor, wordBeforeWithCharacter, start);
+        range && Editor.range(editor, range, start);
 
       return {
         searchString: searchString.slice(1),
