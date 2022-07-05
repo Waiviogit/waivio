@@ -433,7 +433,7 @@ export const checkCursorInSearchSlate = editor => {
   const { selection } = editor;
   const blockText = editor.children[selection.anchor.path[0]]?.children[0]?.text;
 
-  if (!selection || !Range.isCollapsed(selection) || !blockText?.includes('#')) {
+  if (!selection || !Range.isCollapsed(selection)) {
     return {
       isNeedOpenSearch: false,
     };
@@ -446,8 +446,7 @@ export const checkCursorInSearchSlate = editor => {
     const { searchString, range } = findHashtag(editor, start, '') ?? {};
 
     if (searchString) {
-      const beforeRange =
-        range && Editor.range(editor, range, start);
+      const beforeRange = range && Editor.range(editor, range, start);
 
       return {
         searchString: searchString.slice(1),
