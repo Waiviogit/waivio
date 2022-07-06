@@ -250,7 +250,7 @@ class CreateObject extends React.Component {
     const { loading } = this.state;
     const Option = Select.Option;
     const menu = (
-      <Menu onClick={e => handleCaseSelect(e.key)} style={{ color: 'green' }}>
+      <Menu onClick={e => handleCaseSelect(e.key)}>
         <Menu.Item key="sentenceCase">
           <span>Sentence case.</span>
         </Menu.Item>
