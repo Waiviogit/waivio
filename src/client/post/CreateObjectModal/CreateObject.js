@@ -190,12 +190,15 @@ class CreateObject extends React.Component {
                 }),
                 'success',
               );
+              const hashtagName =
+                objData.type === 'hashtag' ? objData.name.split(' ').join('') : objData.name;
+
               this.props.onCreateObject(
                 {
                   _id: parentPermlink,
                   author: parentAuthor,
                   avatar: DEFAULTS.AVATAR,
-                  name: objData.name,
+                  name: hashtagName,
                   title: '',
                   parent: this.props.parentObject,
                   weight: '',
@@ -247,21 +250,21 @@ class CreateObject extends React.Component {
     const { loading } = this.state;
     const Option = Select.Option;
     const menu = (
-      <Menu onClick={e => handleCaseSelect(e.key)}>
+      <Menu onClick={e => handleCaseSelect(e.key)} style={{ color: 'green' }}>
         <Menu.Item key="sentenceCase">
-          <span>Sentence case.</span>
+          <span className="CreateObject__menu-item">Sentence case.</span>
         </Menu.Item>
         <Menu.Item key="lowerCase">
-          <span>lowercase</span>
+          <span className="CreateObject__menu-item">lowercase</span>
         </Menu.Item>
         <Menu.Item key="upperCase">
-          <span>UPPERCASE</span>
+          <span className="CreateObject__menu-item">UPPERCASE</span>
         </Menu.Item>
         <Menu.Item key="capitalize">
-          <span>Capitalize Each Word</span>
+          <span className="CreateObject__menu-item">Capitalize Each Word</span>
         </Menu.Item>
         <Menu.Item key="toggleCase">
-          <span>tOGGLE cASE</span>
+          <span className="CreateObject__menu-item">tOGGLE cASE</span>
         </Menu.Item>
       </Menu>
     );
@@ -311,6 +314,7 @@ class CreateObject extends React.Component {
         </Option>,
       );
     });
+    const hashtagObjType = this.props.objectTypes[form.getFieldValue('type')]?.name === 'hashtag';
 
     return (
       <React.Fragment>
@@ -381,8 +385,10 @@ class CreateObject extends React.Component {
                     defaultMessage: 'Add value',
                   })}
                   suffix={
+                    !hashtagObjType &&
                     defaultObjectType !== 'hashtag' && (
                       <Dropdown
+                        disabled={loading}
                         overlayClassName="EditorToolbar__dropdown"
                         overlay={menu}
                         trigger={['click']}
