@@ -252,19 +252,19 @@ class CreateObject extends React.Component {
     const menu = (
       <Menu onClick={e => handleCaseSelect(e.key)} style={{ color: 'green' }}>
         <Menu.Item key="sentenceCase">
-          <span className="CreateObject__menu-item">Sentence case.</span>
+          <span>Sentence case.</span>
         </Menu.Item>
         <Menu.Item key="lowerCase">
-          <span className="CreateObject__menu-item">lowercase</span>
+          <span>lowercase</span>
         </Menu.Item>
         <Menu.Item key="upperCase">
-          <span className="CreateObject__menu-item">UPPERCASE</span>
+          <span>UPPERCASE</span>
         </Menu.Item>
         <Menu.Item key="capitalize">
-          <span className="CreateObject__menu-item">Capitalize Each Word</span>
+          <span>Capitalize Each Word</span>
         </Menu.Item>
         <Menu.Item key="toggleCase">
-          <span className="CreateObject__menu-item">tOGGLE cASE</span>
+          <span>tOGGLE cASE</span>
         </Menu.Item>
       </Menu>
     );
