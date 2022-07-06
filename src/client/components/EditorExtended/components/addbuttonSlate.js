@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
 import { injectIntl } from 'react-intl';
-import { ReactEditor, useSlate } from 'slate-react';
+import { useSlate } from 'slate-react';
 import { getSelection } from '../util';
 import { SIDE_BUTTONS_SLATE } from '../model/content';
 
@@ -24,8 +24,11 @@ const AddButtonSlate = props => {
     if (!editorNode) return;
     setTimeout(() => {
       const nativeSelection = getSelection(window);
-      const range = nativeSelection?.getRangeAt(0);
-      const bound = range?.getBoundingClientRect();
+
+      if (nativeSelection?.rangeCount < 1) return;
+
+      const range = nativeSelection.getRangeAt(0);
+      const bound = range.getBoundingClientRect();
       const parentBoundary = editorNode.getBoundingClientRect();
       const nodeStyle = nodeRef.current?.style;
 
@@ -51,12 +54,6 @@ const AddButtonSlate = props => {
   useEffect(() => {
     if (props.isClearSearchObjects) setOpen(false);
   }, [props.isClearSearchObjects]);
-
-  useEffect(() => {
-    if (!isOpen && editor) {
-      setTimeout(() => !ReactEditor.isFocused(editor) && ReactEditor.focus(editor), 100);
-    }
-  }, [isOpen]);
 
   return (
     <div className="md-side-toolbar" style={{ top: 0 }} ref={nodeRef}>

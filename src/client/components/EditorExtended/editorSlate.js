@@ -31,6 +31,7 @@ import {
   removeAllInlineFormats,
 } from './util/SlateEditor/utils/SlateUtilityFunctions';
 import { pipe } from '../../../common/helpers';
+import { handlePasteText, setEditor } from '../../../store/slateEditorStore/editorActions';
 
 import './index.less';
 
@@ -49,7 +50,6 @@ const EditorSlate = props => {
   } = props;
 
   const params = useParams();
-
   const editorRef = useRef(null);
 
   const handlePastedFiles = async event => {
@@ -164,7 +164,10 @@ const EditorSlate = props => {
       const selectedElement = Node.descendant(editor, editor.selection.anchor.path.slice(0, -1));
 
       if (
-        ['headingOne', 'headingTwo', 'headingThree', 'headingFour'].includes(selectedElement.type)
+        ['headingOne', 'headingTwo', 'headingThree', 'headingFour'].includes(
+          selectedElement.type,
+        ) ||
+        (['blockquote'].includes(selectedElement.type) && !isKeyHotkey('shift+enter', event))
       ) {
         const selectedLeaf = Node.descendant(editor, editor.selection.anchor.path);
 
@@ -222,7 +225,7 @@ const EditorSlate = props => {
         withReact,
         withLinks,
         withTables,
-        withEmbeds,
+        withEmbeds(props.handlePasteText),
         withHistory,
       )(),
     [],
@@ -244,6 +247,7 @@ const EditorSlate = props => {
 
   useEffect(() => {
     window.slateEditor = editor;
+    props.setEditor(editor);
     const editorEl = document.querySelector('[data-slate-editor="true"]');
 
     editorEl.style.minHeight = `100px`;
@@ -267,9 +271,10 @@ const EditorSlate = props => {
       if (!(lastBlock?.type === 'paragraph' && lastBlock?.children?.[0].text === '')) {
         Transforms.insertNodes(editor, createEmptyNode());
       }
+      Transforms.deselect(editor);
       focusEditorToEnd(editor);
     }
-  }, [body]);
+  }, [params]);
 
   return (
     <Slate editor={editor} value={value} onChange={handleChange}>
@@ -313,6 +318,8 @@ EditorSlate.propTypes = {
   handleObjectSelect: PropTypes.func.isRequired,
   handleHashtag: PropTypes.func.isRequired,
   initialBody: PropTypes.string,
+  handlePasteText: PropTypes.func,
+  setEditor: PropTypes.func,
 };
 
 EditorSlate.defaultProps = {
@@ -321,10 +328,17 @@ EditorSlate.defaultProps = {
   isVimeo: false,
   placeholder: '',
   initialBody: '',
+  handlePasteText: () => {},
+  setEditor: () => {},
 };
 
 const mapStateToProps = store => ({
   body: getEditorDraftBody(store),
 });
 
-export default connect(mapStateToProps)(EditorSlate);
+const mapDispatchToProps = dispatch => ({
+  handlePasteText: html => dispatch(handlePasteText(html)),
+  setEditor: editor => dispatch(setEditor({ editor })),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(EditorSlate);

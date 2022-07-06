@@ -12,7 +12,7 @@ const ObjectLink = props => (
       {...props.attributes}
     >
       {props.element.hashtag}
-      {props.children}{' '}
+      {props.children}
     </a>
   </>
 );

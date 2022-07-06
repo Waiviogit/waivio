@@ -81,7 +81,10 @@ export const createWaivioObject = postData => (dispatch, getState) => {
   const { votePower, follow, ...wobj } = postData;
 
   if (wobj.type === 'hashtag') {
-    const hashtagName = wobj.name.toLowerCase();
+    const hashtagName = wobj.name
+      .toLowerCase()
+      .split(' ')
+      .join('');
 
     return dispatch({
       type: CREATE_WOBJECT,

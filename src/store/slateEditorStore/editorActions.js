@@ -64,6 +64,7 @@ import {
   getEditorExtended,
   getEditorLinkedObjects,
   getEditorLinkedObjectsCards,
+  getEditorSlate,
   getIsEditorSaving,
   getLinkedObjects,
   getTitleValue,
@@ -117,6 +118,7 @@ export const SET_SEARCH_COORDINATES = '@editor/SET_CURSOR_COORDINATES';
 export const SET_EDITOR_EXTENDED_STATE = '@editor/SET_EDITOR_EXTENDED_STATE';
 export const SET_EDITOR_SEARCH_VALUE = '@editor/SET_EDITOR_SEARCH_VALUE';
 export const CLEAR_EDITOR_SEARCH_OBJECTS = '@editor/CLEAR_EDITOR_SEARCH_OBJECTS';
+export const SET_EDITOR = '@editor/SET_EDITOR';
 
 export const imageUploading = () => dispatch => dispatch({ type: UPLOAD_IMG_START });
 export const imageUploaded = () => dispatch => dispatch({ type: UPLOAD_IMG_FINISH });
@@ -128,6 +130,7 @@ export const setCursorCoordinates = payload => ({ type: SET_SEARCH_COORDINATES, 
 export const setEditorExtendedState = payload => ({ type: SET_EDITOR_EXTENDED_STATE, payload });
 export const setEditorSearchValue = payload => ({ type: SET_EDITOR_SEARCH_VALUE, payload });
 export const clearEditorSearchObjects = () => ({ type: CLEAR_EDITOR_SEARCH_OBJECTS });
+export const setEditor = payload => ({ type: SET_EDITOR, payload });
 
 const saveDraftRequest = (draft, intl) => dispatch =>
   dispatch({
@@ -595,7 +598,7 @@ export const buildPost = (draftId, data = {}, isEditPost) => (dispatch, getState
   return postData;
 };
 
-export const handleObjectSelect = (object, isCursorToEnd, intl) => async (dispatch, getState) => {
+export const handleObjectSelect = (object, withFocus, intl) => async (dispatch, getState) => {
   const state = getState();
   const {
     content,
@@ -607,6 +610,7 @@ export const handleObjectSelect = (object, isCursorToEnd, intl) => async (dispat
     currentRawContent,
     draftId,
   } = getEditor(state);
+  const editor = getEditorSlate(state);
   const objName = getObjectName(object);
   const objType = getObjectType(object);
   const objNameDisplay = objType === objectTypes.HASHTAG ? `#${objName}` : objName;
@@ -670,6 +674,13 @@ export const handleObjectSelect = (object, isCursorToEnd, intl) => async (dispat
       topics: size(updateTopics) ? updateTopics : topics,
     }),
   );
+
+  const { beforeRange } = checkCursorInSearchSlate(editor);
+  const url = getObjectUrl(object.id || object.author_permlink);
+  const textReplace = objType === objectTypes.HASHTAG ? `#${objName}` : objName;
+
+  Transforms.select(editor, beforeRange);
+  insertObject(editor, url, textReplace, withFocus);
 
   dispatch(
     saveDraft(draftId, intl, { content: draftContent.body, titleValue: draftContent.title }),
@@ -906,7 +917,7 @@ export const selectObjectFromSearch = (selectedObject, editor) => (dispatch, get
     const url = getObjectUrl(selectedObject.id || selectedObject.author_permlink);
 
     Transforms.select(editor, beforeRange);
-    insertObject(editor, url, textReplace);
+    insertObject(editor, url, textReplace, true);
 
     const updatedStateBody = {
       body: editorStateToMarkdownSlate(editor.children),
