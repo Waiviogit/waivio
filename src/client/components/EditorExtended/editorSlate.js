@@ -4,7 +4,7 @@ import uuidv4 from 'uuid/v4';
 import isSoftNewlineEvent from 'draft-js/lib/isSoftNewlineEvent';
 import { message } from 'antd';
 import classNames from 'classnames';
-import { Slate, Editable, withReact, ReactEditor } from 'slate-react';
+import { Slate, Editable, withReact } from 'slate-react';
 import { createEditor, Editor, Transforms, Node, Range } from 'slate';
 import { withHistory } from 'slate-history';
 import { connect } from 'react-redux';
@@ -31,9 +31,9 @@ import {
   removeAllInlineFormats,
 } from './util/SlateEditor/utils/SlateUtilityFunctions';
 import { pipe } from '../../../common/helpers';
+import { handlePasteText, setEditor } from '../../../store/slateEditorStore/editorActions';
 
 import './index.less';
-import { handlePasteText } from '../../../store/slateEditorStore/editorActions';
 
 const EditorSlate = props => {
   const {
@@ -50,8 +50,6 @@ const EditorSlate = props => {
   } = props;
 
   const params = useParams();
-  const [prevParams, setParams] = useState();
-
   const editorRef = useRef(null);
 
   const handlePastedFiles = async event => {
@@ -249,6 +247,7 @@ const EditorSlate = props => {
 
   useEffect(() => {
     window.slateEditor = editor;
+    props.setEditor(editor);
     const editorEl = document.querySelector('[data-slate-editor="true"]');
 
     editorEl.style.minHeight = `100px`;
@@ -258,8 +257,6 @@ const EditorSlate = props => {
   useEffect(() => {
     if (body) {
       const postParsed = deserializeToSlate(body || initialBody);
-
-      setParams(params);
 
       Transforms.delete(editor, {
         at: {
@@ -275,22 +272,9 @@ const EditorSlate = props => {
         Transforms.insertNodes(editor, createEmptyNode());
       }
       Transforms.deselect(editor);
-      const { lastSelection } = editor;
-
-      if (lastSelection && (params === prevParams || !prevParams)) {
-        setTimeout(() => {
-          const lastAnchor = { ...lastSelection.anchor, offset: 0 };
-          const lastFocus = { ...lastSelection.focus, offset: 0 };
-
-          Transforms.select(editor, { anchor: lastAnchor, focus: lastFocus });
-          Transforms.move(editor, { distance: 1, unit: 'word' });
-          Transforms.move(editor, { distance: 1, unit: 'offset' });
-
-          ReactEditor.focus(editor);
-        });
-      } else focusEditorToEnd(editor);
+      focusEditorToEnd(editor);
     }
-  }, [body]);
+  }, [params]);
 
   return (
     <Slate editor={editor} value={value} onChange={handleChange}>
@@ -335,6 +319,7 @@ EditorSlate.propTypes = {
   handleHashtag: PropTypes.func.isRequired,
   initialBody: PropTypes.string,
   handlePasteText: PropTypes.func,
+  setEditor: PropTypes.func,
 };
 
 EditorSlate.defaultProps = {
@@ -344,6 +329,7 @@ EditorSlate.defaultProps = {
   placeholder: '',
   initialBody: '',
   handlePasteText: () => {},
+  setEditor: () => {},
 };
 
 const mapStateToProps = store => ({
@@ -352,6 +338,7 @@ const mapStateToProps = store => ({
 
 const mapDispatchToProps = dispatch => ({
   handlePasteText: html => dispatch(handlePasteText(html)),
+  setEditor: editor => dispatch(setEditor({ editor })),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(EditorSlate);

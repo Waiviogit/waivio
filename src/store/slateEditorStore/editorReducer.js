@@ -3,7 +3,6 @@ import * as editorActions from './editorActions';
 import * as postActions from '../postsStore/postActions';
 import * as authActions from '../authStore/authActions';
 import { GET_USER_METADATA } from '../usersStore/usersActions';
-import { createSlateEditor } from '../../client/components/EditorExtended/util/SlateEditor/utils/common';
 
 const defaultState = {
   loading: false,
@@ -15,7 +14,7 @@ const defaultState = {
   editedPosts: [],
   loadingImg: false,
   editor: [],
-  editorSlate: createSlateEditor(),
+  editorSlate: {},
   editorExtended: {
     wordForCountWidth: '',
     searchSelectionState: {},
@@ -230,6 +229,11 @@ const editor = (state = defaultState, action) => {
           searchCoordinates: {},
           isShowEditorSearch: false,
         },
+      };
+    case editorActions.SET_EDITOR:
+      return {
+        ...state,
+        editorSlate: action.payload.editor,
       };
     case editorActions.LEAVE_EDITOR:
       return {

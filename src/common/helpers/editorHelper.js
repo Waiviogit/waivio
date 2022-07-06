@@ -409,55 +409,29 @@ export const checkCursorInSearch = editorState => {
   };
 };
 
-export const _checkCursorInSearchSlate = editor => {
-  const { selection } = editor;
+const findHashtag = (editor, start, word) => {
+  const wordBefore = Editor.before(editor, start, { unit: 'word' });
+  const wordBeforeWithCharacter = Editor.before(editor, wordBefore, { unit: 'character' });
+  const range = wordBefore && Editor.range(editor, wordBeforeWithCharacter, start);
+  const searchString = range && Editor.string(editor, range);
 
-  if (!selection || !Range.isCollapsed(selection)) {
+  if (!searchString) return false;
+
+  if (searchString && searchString[0] === '#') {
     return {
-      isNeedOpenSearch: false,
+      searchString,
+      range,
     };
+  } else if (searchString && /^s{2}/.test(searchString)) {
+    return false;
   }
-  try {
-    const [start] = Range.edges(selection);
-    const wordBefore = Editor.before(editor, start, { unit: 'word' });
-    const beforeFirstWord = wordBefore && Editor.before(editor, wordBefore, { unit: 'word' });
-    const beforeSecondWord =
-      beforeFirstWord && Editor.before(editor, beforeFirstWord, { unit: 'character' });
-    const before =
-      beforeSecondWord || (wordBefore && Editor.before(editor, wordBefore, { unit: 'character' }));
-    const beforeRange = before && Editor.range(editor, before, start);
-    const beforeText = beforeRange && Editor.string(editor, beforeRange);
-    const beforeMatch = beforeText && beforeText.match(/#(\w+(\s)?(\w+)?)$/);
-    const after = Editor.after(editor, start);
-    const afterRange = Editor.range(editor, start, after);
-    const afterText = Editor.string(editor, afterRange);
-    const afterMatch = afterText.match(/^(\s|$)/);
-    const blockText = editor.children[selection.anchor.path[0]]?.children[0]?.text;
-    const startPositionOfWord = blockText?.lastIndexOf('#', start.offset);
 
-    if (beforeMatch && afterMatch) {
-      return {
-        searchString: beforeMatch[1],
-        selection: { anchor: before, focus: { ...before, offset: beforeMatch[1].length + 1 } },
-        startPositionOfWord,
-        isNeedOpenSearch: true,
-        beforeRange,
-        afterRange,
-      };
-    }
-
-    return {
-      isNeedOpenSearch: false,
-    };
-  } catch {
-    return {
-      isNeedOpenSearch: false,
-    };
-  }
+  return findHashtag(editor, range, searchString + word);
 };
 
 export const checkCursorInSearchSlate = editor => {
   const { selection } = editor;
+  const blockText = editor.children[selection.anchor.path[0]]?.children[0]?.text;
 
   if (!selection || !Range.isCollapsed(selection)) {
     return {
@@ -468,22 +442,14 @@ export const checkCursorInSearchSlate = editor => {
     const [start] = Range.edges(selection);
     const wordBefore = Editor.before(editor, start, { unit: 'word' });
     const wordBeforeWithCharacter = Editor.before(editor, wordBefore, { unit: 'character' });
-    const firstRange = wordBefore && Editor.range(editor, wordBeforeWithCharacter, start);
-    const firstWord = firstRange && Editor.string(editor, firstRange);
-    const after = Editor.after(editor, start);
-    const afterRange = Editor.range(editor, start, after);
-    const afterText = Editor.string(editor, afterRange);
-    const afterMatch = afterText.match(/^(\s|$)/);
-    const blockText = editor.children[selection.anchor.path[0]]?.children[0]?.text;
     const startPositionOfWord = blockText?.lastIndexOf('#', start.offset);
+    const { searchString, range } = findHashtag(editor, start, '') ?? {};
 
-    if (firstWord && firstWord.match(/#(\w+(\s)?(\w+)?)$/)) {
-      const searchString = firstWord.slice(1);
-      const beforeRange =
-        wordBeforeWithCharacter && Editor.range(editor, wordBeforeWithCharacter, start);
+    if (searchString) {
+      const beforeRange = range && Editor.range(editor, range, start);
 
       return {
-        searchString,
+        searchString: searchString.slice(1),
         selection: {
           anchor: wordBeforeWithCharacter,
           focus: { ...wordBeforeWithCharacter, offset: searchString.length + 1 },
@@ -491,27 +457,7 @@ export const checkCursorInSearchSlate = editor => {
         startPositionOfWord,
         isNeedOpenSearch: true,
         beforeRange,
-        afterRange,
-      };
-    }
-
-    const beforeFirstWord = wordBefore && Editor.before(editor, wordBefore, { unit: 'word' });
-    const beforeSecondWord =
-      beforeFirstWord && Editor.before(editor, beforeFirstWord, { unit: 'character' });
-    const before =
-      beforeSecondWord || (wordBefore && Editor.before(editor, wordBefore, { unit: 'character' }));
-    const beforeRange = before && Editor.range(editor, before, start);
-    const beforeText = beforeRange && Editor.string(editor, beforeRange);
-    const beforeMatch = beforeText && beforeText.match(/#(\w+(\s)?(\w+)?)$/);
-
-    if (beforeMatch && afterMatch) {
-      return {
-        searchString: beforeMatch[1],
-        selection: { anchor: before, focus: { ...before, offset: beforeMatch[1].length + 1 } },
-        startPositionOfWord,
-        isNeedOpenSearch: true,
-        beforeRange,
-        afterRange,
+        afterRange: range,
       };
     }
 
