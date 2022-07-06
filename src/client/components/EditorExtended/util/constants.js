@@ -95,7 +95,7 @@ export const TEXT_TAGS = {
   EM: () => ({ italic: true }),
   I: () => ({ italic: true }),
   S: () => ({ strikethrough: true }),
-  STRONG: () => ({ bold: true }),
+  STRONG: () => ({ strong: true }),
   U: () => ({ underline: true }),
 };
 
