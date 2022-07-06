@@ -190,12 +190,15 @@ class CreateObject extends React.Component {
                 }),
                 'success',
               );
+              const hashtagName =
+                objData.type === 'hashtag' ? objData.name.split(' ').join('') : objData.name;
+
               this.props.onCreateObject(
                 {
                   _id: parentPermlink,
                   author: parentAuthor,
                   avatar: DEFAULTS.AVATAR,
-                  name: objData.name,
+                  name: hashtagName,
                   title: '',
                   parent: this.props.parentObject,
                   weight: '',
@@ -311,6 +314,7 @@ class CreateObject extends React.Component {
         </Option>,
       );
     });
+    const hashtagObjType = this.props.objectTypes[form.getFieldValue('type')]?.name === 'hashtag';
 
     return (
       <React.Fragment>
@@ -381,8 +385,10 @@ class CreateObject extends React.Component {
                     defaultMessage: 'Add value',
                   })}
                   suffix={
+                    !hashtagObjType &&
                     defaultObjectType !== 'hashtag' && (
                       <Dropdown
+                        disabled={loading}
                         overlayClassName="EditorToolbar__dropdown"
                         overlay={menu}
                         trigger={['click']}
