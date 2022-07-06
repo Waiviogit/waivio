@@ -2702,9 +2702,11 @@ export const getAllRewardList = (skip = 0) => {
     .catch(e => e);
 };
 
-export const getPropositionByCampaingObjectPermlink = (parentPermlink, skip = 0) => {
+export const getPropositionByCampaingObjectPermlink = (parentPermlink, userName, skip = 0) => {
   return fetch(
-    `${config.campaignV2ApiPrefix}${config.rewards}${config.all}/object/${parentPermlink}?limit=10&skip=${skip}`,
+    `${config.campaignV2ApiPrefix}${config.rewards}${
+      config.all
+    }/object/${parentPermlink}?limit=10&skip=${skip}${userName ? `&userName=${userName}` : ''}`,
     {
       headers,
       method: 'GET',
@@ -2722,6 +2724,20 @@ export const validateActivateCampaing = data => {
     method: 'POST',
     body: JSON.stringify(data),
   })
+    .then(handleErrors)
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+};
+
+export const validateEgibilitiesForUser = data => {
+  return fetch(
+    `${config.campaignV2ApiPrefix}${config.rewards}${config.availability}?${createQuery(data)}`,
+    {
+      headers,
+      method: 'GET',
+    },
+  )
     .then(handleErrors)
     .then(res => res.json())
     .then(response => response)
