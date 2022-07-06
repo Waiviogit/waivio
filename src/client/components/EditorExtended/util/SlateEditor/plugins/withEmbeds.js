@@ -62,7 +62,7 @@ const withEmbeds = cb => editor => {
       const isWrapped = selectedElement.type.includes(CODE_BLOCK);
 
       const nodesNormalized = nodes.map(i => {
-        if (i.text && i.text !== '\n' && !i.type && !isWrapped) {
+        if (i.text && !/^\n/.test(i.text) && !i.type && !isWrapped) {
           return { type: 'paragraph', children: [i] };
         }
         if (i.type === 'link' && i.children[0]?.type === 'image') {
