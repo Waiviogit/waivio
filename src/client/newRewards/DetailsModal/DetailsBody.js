@@ -4,12 +4,24 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { isEmpty } from 'lodash';
 import { Checkbox } from 'antd';
+import { useSelector } from 'react-redux';
+
 import { getObjectName } from '../../../common/helpers/wObjectHelper';
+import { getMinExpertise } from '../../rewards/rewardsHelper';
+import { getRate, getRewardFund } from '../../../store/appStore/appSelectors';
 
 import './Details.less';
 
 const DetailsModalBody = ({ proposition, requirements }) => {
   const getClassForCurrCreteria = creteria => classNames({ 'criteria-row__required': !creteria });
+  const rate = useSelector(getRate);
+  const rewardFund = useSelector(getRewardFund);
+  const minExpertise = getMinExpertise({
+    campaignMinExpertise: proposition?.userRequirements?.minExpertise,
+    rewardFundRecentClaims: rewardFund.recent_claims,
+    rewardFundRewardBalance: rewardFund.reward_balance,
+    rate,
+  });
 
   return (
     <div className="Details__text-wrap">
@@ -21,7 +33,7 @@ const DetailsModalBody = ({ proposition, requirements }) => {
         <div className="Details__criteria-row">
           <Checkbox checked={requirements?.expertise} disabled />
           <div className={getClassForCurrCreteria(requirements?.expertise)}>
-            Minimum Waivio expertise: {proposition?.userRequirements?.minExpertise}
+            Minimum Waivio expertise: {minExpertise}
           </div>
         </div>
         <div className="Details__criteria-row">
@@ -70,7 +82,7 @@ const DetailsModalBody = ({ proposition, requirements }) => {
         </div>
         <ol className="DetailsModal__requirementsList">
           <li>
-            <span className="nowrap">Minimum 2 original photos of 0</span>
+            <span className="nowrap">Minimum 2 original photos of</span>
             <Link
               className="ml1"
               to={`/object/${proposition?.object.id || proposition?.object.author_permlink}`}
@@ -83,7 +95,7 @@ const DetailsModalBody = ({ proposition, requirements }) => {
             <li>Photo of the receipt (without personal details);</li>
           )}
           <li>
-            <span className="nowrap">Link to </span>
+            <span className="nowrap">Link to</span>
             <Link
               className="ml1 Details__container"
               to={`/object/${proposition?.object?.author_permlink}`}
@@ -117,8 +129,8 @@ const DetailsModalBody = ({ proposition, requirements }) => {
       <span>
         The amount of the reward is determined in {proposition?.payoutToken} at the time of
         reservation. The reward will be paid in the form of a combination of upvotes (
-        {proposition?.payoutToken} Power) and direct payments (liquid
-        {proposition?.payoutToken}). Only upvotes from registered accounts (
+        {proposition?.payoutToken} Power) and direct payments (liquid {proposition?.payoutToken}).
+        Only upvotes from registered accounts (
         <Link to={`/@${proposition?.guideName}`}>{`@${proposition?.guideName}`}</Link>
         {!isEmpty(proposition?.matchBots) &&
           proposition?.matchBots?.map(bot => (

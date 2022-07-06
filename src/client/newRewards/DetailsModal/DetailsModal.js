@@ -153,7 +153,7 @@ const DetailsModal = ({
           {reserveButton}
           {proposition?.countReservationDays &&
             isWaivio &&
-            `for days ${proposition?.countReservationDays} days`}
+            `for ${proposition?.countReservationDays} days`}
         </div>
       </div>
     </Modal>
