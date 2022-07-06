@@ -116,6 +116,7 @@
   "getParents": "/getParents",
   "create": "/create",
   "checkAvailable": "/checkAvailable",
+  "availability": "/availability",
   "managePage": "/manage",
   "configuration": "/configuration",
   "administrators": "/administrators",
