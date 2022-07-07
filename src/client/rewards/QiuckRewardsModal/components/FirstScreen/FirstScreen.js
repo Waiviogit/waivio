@@ -17,6 +17,7 @@ import {
 import {
   getEligibleRewardsList,
   getEligibleRewardsListWithRestaurant,
+  getMoreEligibleRewardsListWithRestaurant,
   resetDish,
   resetRestaurant,
   setSelectedDish,
@@ -27,12 +28,18 @@ import USDDisplay from '../../../../components/Utils/USDDisplay';
 import './FirstScreen.less';
 
 const ModalFirstScreen = props => {
+  // const [hasMore, setHasMore]= useState(false)
+  const limit = 100;
+
   useEffect(() => {
     if (props.isShow) {
       if (!props.selectedRestaurant) {
         props.getEligibleRewardsList();
       } else {
-        props.getEligibleRewardsListWithRestaurant(props.selectedRestaurant);
+        props.getEligibleRewardsListWithRestaurant(props.selectedRestaurant, limit);
+        if (props.dishes.length >= limit) {
+          props.getMoreEligibleRewardsListWithRestaurant(props.selectedRestaurant);
+        }
       }
     }
   }, [props.isShow]);
@@ -50,7 +57,7 @@ const ModalFirstScreen = props => {
     const restaurant = props.eligible.find(camp => camp.author_permlink === item);
 
     props.setSelectedRestaurant(restaurant);
-    props.getEligibleRewardsListWithRestaurant(restaurant);
+    props.getEligibleRewardsListWithRestaurant(restaurant, limit);
   };
 
   const handleSelectDish = item => {
@@ -64,7 +71,7 @@ const ModalFirstScreen = props => {
 
   const handleResetDish = () => {
     props.resetDish();
-    props.getEligibleRewardsListWithRestaurant(props.selectedRestaurant);
+    props.getEligibleRewardsListWithRestaurant(props.selectedRestaurant, limit);
   };
 
   const handleResetRestaurant = () => {
@@ -207,6 +214,7 @@ ModalFirstScreen.propTypes = {
   setSelectedRestaurant: PropTypes.func.isRequired,
   resetRestaurant: PropTypes.func.isRequired,
   getEligibleRewardsListWithRestaurant: PropTypes.func.isRequired,
+  getMoreEligibleRewardsListWithRestaurant: PropTypes.func.isRequired,
   setSelectedDish: PropTypes.func.isRequired,
   isShow: PropTypes.func.isRequired,
 };
@@ -222,6 +230,7 @@ export default connect(
     getEligibleRewardsList,
     setSelectedRestaurant,
     getEligibleRewardsListWithRestaurant,
+    getMoreEligibleRewardsListWithRestaurant,
     setSelectedDish,
     resetRestaurant,
     resetDish,
