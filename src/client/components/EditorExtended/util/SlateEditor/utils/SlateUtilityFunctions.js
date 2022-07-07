@@ -27,15 +27,6 @@ export const toggleBlock = (editor, format) => {
   const isCode = format === CODE_BLOCK;
 
   if (isCode && !isActive) {
-    // Transforms.unwrapNodes(editor, {
-    //   match: n => !Editor.isEditor(n) && SlateElement.isElement(n) && n.type,
-    //   split: true,
-    // });
-    //
-    // Transforms.wrapNodes(editor, {
-    //   type: format,
-    //   lang: 'javascript',
-    // });
     Transforms.setNodes(editor, {
       type: format,
       lang: 'javascript',
