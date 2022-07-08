@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { AutoComplete } from 'antd';
 import { isEmpty, get, debounce } from 'lodash';
@@ -28,8 +28,13 @@ import USDDisplay from '../../../../components/Utils/USDDisplay';
 import './FirstScreen.less';
 
 const ModalFirstScreen = props => {
-  // const [hasMore, setHasMore]= useState(false)
+  const [hasMore, setHasMore] = useState(false);
   const limit = 100;
+  const skipLimit = props.dishes.length;
+
+  useEffect(() => {
+    hasMore && props.getMoreEligibleRewardsListWithRestaurant(props.selectedRestaurant, skipLimit);
+  }, [props.dishes.length, hasMore]);
 
   useEffect(() => {
     if (props.isShow) {
@@ -37,9 +42,7 @@ const ModalFirstScreen = props => {
         props.getEligibleRewardsList();
       } else {
         props.getEligibleRewardsListWithRestaurant(props.selectedRestaurant, limit);
-        if (props.dishes.length >= limit) {
-          props.getMoreEligibleRewardsListWithRestaurant(props.selectedRestaurant);
-        }
+        setHasMore(true);
       }
     }
   }, [props.isShow]);
@@ -57,7 +60,11 @@ const ModalFirstScreen = props => {
     const restaurant = props.eligible.find(camp => camp.author_permlink === item);
 
     props.setSelectedRestaurant(restaurant);
-    props.getEligibleRewardsListWithRestaurant(restaurant, limit);
+    props.getEligibleRewardsListWithRestaurant(restaurant, limit).then(r => {
+      if (r.payload.length === limit) {
+        setHasMore(true);
+      }
+    });
   };
 
   const handleSelectDish = item => {
@@ -71,7 +78,12 @@ const ModalFirstScreen = props => {
 
   const handleResetDish = () => {
     props.resetDish();
-    props.getEligibleRewardsListWithRestaurant(props.selectedRestaurant, limit);
+    props.getEligibleRewardsListWithRestaurant(props.selectedRestaurant, limit).then(r => {
+      if (r.payload.length === limit) {
+        setHasMore(true);
+        props.getMoreEligibleRewardsListWithRestaurant(props.selectedRestaurant, skipLimit);
+      }
+    });
   };
 
   const handleResetRestaurant = () => {

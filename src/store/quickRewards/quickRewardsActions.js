@@ -110,7 +110,7 @@ export const GET_MORE_ELIGIBLE_REWARDS_WITH_RESTAURANT = createAsyncActionType(
   '@quickRewards/GET_MORE_ELIGIBLE_REWARDS_WITH_RESTAURANT',
 );
 
-export const getMoreEligibleRewardsListWithRestaurant = (selectRest, searchString) => async (
+export const getMoreEligibleRewardsListWithRestaurant = (selectRest, skip) => async (
   dispatch,
   getState,
 ) => {
@@ -124,12 +124,11 @@ export const getMoreEligibleRewardsListWithRestaurant = (selectRest, searchStrin
   try {
     const objChild = await getAuthorsChildWobjects(
       selectRest.author_permlink,
-      100,
+      skip,
       100,
       locale,
       'list',
       name,
-      searchString,
     );
     const objCampaings =
       isReview &&
