@@ -1,6 +1,25 @@
 import { Transforms, Node, Element } from 'slate';
 import { deserializeHtmlToSlate } from '../../constants';
-import { CODE_BLOCK, PARAGRAPH_BLOCK } from '../utils/constants';
+import {
+  CODE_BLOCK,
+  HEADING_FOUR,
+  HEADING_ONE,
+  HEADING_THREE,
+  HEADING_TWO,
+  ORDERED_LIST,
+  PARAGRAPH_BLOCK,
+  UNORDERED_LIST,
+} from '../utils/constants';
+
+const BLOCK_TYPES = [
+  ORDERED_LIST,
+  UNORDERED_LIST,
+  CODE_BLOCK,
+  HEADING_ONE,
+  HEADING_TWO,
+  HEADING_THREE,
+  HEADING_FOUR,
+];
 
 const withEmbeds = cb => editor => {
   const { isVoid, insertData, normalizeNode, selection } = editor;
@@ -21,13 +40,20 @@ const withEmbeds = cb => editor => {
 
         return;
       }
+
       // eslint-disable-next-line no-restricted-syntax
       for (const [child, childPath] of Node.children(editor, path)) {
-        if (Element.isElement(child) && !editor.isInline(child) && child.type !== CODE_BLOCK) {
+        if (
+          Element.isElement(child) &&
+          !editor.isInline(child) &&
+          !BLOCK_TYPES.includes(child.type)
+        ) {
           Transforms.unwrapNodes(editor, { at: childPath });
 
           return;
         }
+
+        return;
       }
     }
 
@@ -56,13 +82,27 @@ const withEmbeds = cb => editor => {
     const html = data.getData('text/html');
 
     if (html) {
-      const parsed = new DOMParser().parseFromString(html, 'text/html');
+      let _html = html;
+
+      const match = html.match(/<!--StartFragment-->([\s\S]*?)<!--EndFragment-->/g);
+
+      if (match) {
+        /* on Windows browser insert extra breaklines  */
+        _html = _html.replace(
+          /<!--StartFragment-->([\s\S]*?)<!--EndFragment-->/g,
+          '<meta charset="utf-8">$1',
+        );
+        _html = _html.replace(/<html>([\s\S]*?)<\/html>/g, '$1');
+        _html = _html.replace(/<body>([\s\S]*?)<\/body>/g, '$1').trim();
+      }
+
+      const parsed = new DOMParser().parseFromString(_html, 'text/html');
       const nodes = deserializeHtmlToSlate(parsed.body);
       const selectedElement = Node.descendant(editor, editor.selection.anchor.path.slice(0, -1));
       const isWrapped = selectedElement.type.includes(CODE_BLOCK);
 
       const nodesNormalized = nodes.map(i => {
-        if (i.text && i.text !== '\n' && !i.type && !isWrapped) {
+        if (i.text && !/^\n/.test(i.text) && !i.type && !isWrapped) {
           return { type: 'paragraph', children: [i] };
         }
         if (i.type === 'link' && i.children[0]?.type === 'image') {
