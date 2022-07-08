@@ -68,7 +68,7 @@ export const GET_ELIGIBLE_REWARDS_WITH_RESTAURANT = createAsyncActionType(
   '@quickRewards/GET_ELIGIBLE_REWARDS_WITH_RESTAURANT',
 );
 
-export const getEligibleRewardsListWithRestaurant = (selectRest, searchString) => async (
+export const getEligibleRewardsListWithRestaurant = (selectRest, limit) => async (
   dispatch,
   getState,
 ) => {
@@ -83,11 +83,10 @@ export const getEligibleRewardsListWithRestaurant = (selectRest, searchString) =
     const objChild = await getAuthorsChildWobjects(
       selectRest.author_permlink,
       0,
-      100,
+      limit,
       locale,
       'list',
       name,
-      searchString,
     );
     const objCampaings =
       isReview &&
@@ -104,6 +103,48 @@ export const getEligibleRewardsListWithRestaurant = (selectRest, searchString) =
     });
   } catch (e) {
     return dispatch({ type: GET_ELIGIBLE_REWARDS_WITH_RESTAURANT.ERROR });
+  }
+};
+
+export const GET_MORE_ELIGIBLE_REWARDS_WITH_RESTAURANT = createAsyncActionType(
+  '@quickRewards/GET_MORE_ELIGIBLE_REWARDS_WITH_RESTAURANT',
+);
+
+export const getMoreEligibleRewardsListWithRestaurant = (selectRest, skip) => async (
+  dispatch,
+  getState,
+) => {
+  const state = getState();
+  const name = getAuthenticatedUserName(state);
+  const locale = getLocale(state);
+  const isReview = Boolean(selectRest.campaigns || selectRest.activeCampaignsCount);
+
+  dispatch({ type: GET_MORE_ELIGIBLE_REWARDS_WITH_RESTAURANT.START });
+
+  try {
+    const objChild = await getAuthorsChildWobjects(
+      selectRest.author_permlink,
+      skip,
+      100,
+      locale,
+      'list',
+      name,
+    );
+    const objCampaings =
+      isReview &&
+      (await getAllCampaingForRequiredObject({
+        requiredObject: selectRest.author_permlink,
+        limit: 50,
+      }));
+
+    return dispatch({
+      type: GET_MORE_ELIGIBLE_REWARDS_WITH_RESTAURANT.SUCCESS,
+      payload: isReview
+        ? uniqBy([...objCampaings.wobjects, ...objChild], 'author_permlink')
+        : objChild,
+    });
+  } catch (e) {
+    return dispatch({ type: GET_MORE_ELIGIBLE_REWARDS_WITH_RESTAURANT.ERROR });
   }
 };
 
