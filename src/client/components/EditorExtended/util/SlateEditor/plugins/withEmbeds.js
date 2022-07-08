@@ -72,7 +72,21 @@ const withEmbeds = cb => editor => {
     const html = data.getData('text/html');
 
     if (html) {
-      const parsed = new DOMParser().parseFromString(html, 'text/html');
+      let _html = html;
+
+      const match = html.match(/<!--StartFragment-->([\s\S]*?)<!--EndFragment-->/g);
+
+      if (match) {
+        /* on Windows browser insert extra breaklines  */
+        _html = _html.replace(
+          /<!--StartFragment-->([\s\S]*?)<!--EndFragment-->/g,
+          '<meta charset="utf-8">$1',
+        );
+        _html = _html.replace(/<html>([\s\S]*?)<\/html>/g, '$1');
+        _html = _html.replace(/<body>([\s\S]*?)<\/body>/g, '$1').trim();
+      }
+
+      const parsed = new DOMParser().parseFromString(_html, 'text/html');
       const nodes = deserializeHtmlToSlate(parsed.body);
       const selectedElement = Node.descendant(editor, editor.selection.anchor.path.slice(0, -1));
       const isWrapped = selectedElement.type.includes(CODE_BLOCK);
