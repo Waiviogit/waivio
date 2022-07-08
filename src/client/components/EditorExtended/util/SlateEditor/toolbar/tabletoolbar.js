@@ -66,14 +66,14 @@ const TableToolbar = props => {
   return (
     <div className="table-toolbar" ref={tableToolbarRef}>
       <div className="table-toolbar_item" onClick={handleInsertRow}>
-        +row
+        +Row
       </div>
       <div className="table-toolbar_item" onClick={handleInsertColumn}>
-        +col
+        +Column
       </div>
       <div className="table-toolbar_item" onClick={handleRemoveTable}>
         {' '}
-        remove table
+        Remove table
       </div>
     </div>
   );
