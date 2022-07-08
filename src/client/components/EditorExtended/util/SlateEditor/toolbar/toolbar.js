@@ -178,7 +178,7 @@ const Toolbar = props => {
 
   return (
     <>
-      {isTable && <TableToolbar editorNode={editorNode} editor={editor} />}
+      {isTable && <TableToolbar editorNode={editorNode} intl={intl} editor={editor} />}
       <div
         ref={refToolbar}
         className={`md-editor-toolbar${isOpen ? ' md-editor-toolbar--isopen' : ''}`}

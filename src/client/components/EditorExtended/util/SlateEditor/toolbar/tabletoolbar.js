@@ -5,7 +5,7 @@ import { insertCells } from '../utils/table';
 import { getSelection } from '../../index';
 
 const TableToolbar = props => {
-  const { editor, editorNode } = props;
+  const { editor, editorNode, intl } = props;
   const tableToolbarRef = useRef(null);
   const { selection } = editor;
 
@@ -66,14 +66,23 @@ const TableToolbar = props => {
   return (
     <div className="table-toolbar" ref={tableToolbarRef}>
       <div className="table-toolbar_item" onClick={handleInsertRow}>
-        +Row
+        {intl.formatMessage({
+          id: 'add_row',
+          defaultMessage: '+Row',
+        })}
       </div>
       <div className="table-toolbar_item" onClick={handleInsertColumn}>
-        +Column
+        {intl.formatMessage({
+          id: 'add_column',
+          defaultMessage: '+Column',
+        })}
       </div>
       <div className="table-toolbar_item" onClick={handleRemoveTable}>
         {' '}
-        Remove table
+        {intl.formatMessage({
+          id: 'remove_table',
+          defaultMessage: 'Remove table',
+        })}
       </div>
     </div>
   );
@@ -82,6 +91,7 @@ const TableToolbar = props => {
 TableToolbar.propTypes = {
   editor: PropTypes.shape().isRequired,
   editorNode: PropTypes.node.isRequired,
+  intl: PropTypes.shape().isRequired,
 };
 
 TableToolbar.defaultProps = {
