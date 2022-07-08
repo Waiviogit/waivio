@@ -50,6 +50,7 @@ const EditorSlate = props => {
   } = props;
 
   const params = useParams();
+  const [prevParmans, setParams] = useState(null);
   const editorRef = useRef(null);
 
   const handlePastedFiles = async event => {
@@ -255,7 +256,8 @@ const EditorSlate = props => {
   }, [params]);
 
   useEffect(() => {
-    if (body) {
+    if (body && prevParmans !== params) {
+      setParams(params);
       const postParsed = deserializeToSlate(body || initialBody);
 
       Transforms.delete(editor, {
@@ -274,7 +276,7 @@ const EditorSlate = props => {
       Transforms.deselect(editor);
       focusEditorToEnd(editor);
     }
-  }, [params]);
+  }, [body]);
 
   return (
     <Slate editor={editor} value={value} onChange={handleChange}>

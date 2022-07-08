@@ -321,9 +321,8 @@ export function editorStateToMarkdownSlate(value) {
     type: 'root',
     children: value,
   });
-  const text = processor.stringify(ast);
 
-  return text;
+  return processor.stringify(ast);
 }
 
 export default editorStateToMarkdown;
