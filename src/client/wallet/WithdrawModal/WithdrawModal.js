@@ -118,7 +118,7 @@ const WithdrawModal = props => {
               contractName: 'hivepegged',
               contractAction: 'withdraw',
               contractPayload: {
-                quantity: round(fromAmount, 3).toString(),
+                quantity: fromAmount.toString(),
               },
             }),
           },
@@ -143,7 +143,7 @@ const WithdrawModal = props => {
                 contractPayload: {
                   symbol: pair.from_coin_symbol,
                   to: data.account,
-                  quantity: round(fromAmount, 3).toString(),
+                  quantity: fromAmount.toString(),
                   memo: data.memo,
                 },
               }),
