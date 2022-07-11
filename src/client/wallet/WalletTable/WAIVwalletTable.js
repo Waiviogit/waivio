@@ -254,10 +254,35 @@ const WAIVwalletTable = props => {
   };
 
   const exportCsv = () => {
+    const template = {
+      checked: 0,
+      dateForTable: 1,
+      fieldWAIV: 2,
+      fieldWP: 3,
+      waivCurrentCurrency: 4,
+      withdrawDeposit: 5,
+      account: 6,
+      fieldDescriptionForTable: 7,
+      fieldMemo: 8,
+    };
+    const csvArray = mappedList.map(transaction => {
+      const newArr = [];
+
+      Object.entries(template).forEach(item => {
+        if (item[0] === 'checked') {
+          newArr[item[1]] = transaction?.[item[0]] ? 1 : 0;
+        } else {
+          newArr[item[1]] = transaction?.[item[0]] || '';
+        }
+      });
+
+      return newArr;
+    });
+
     const rows = [
       ['X', 'Date', 'WAIV', 'WP', `WAIV/${currentCurrency}`, '±', 'Account', 'Description', 'Memo'],
+      ...csvArray,
     ];
-
     const csvContent = `data:text/csv;charset=utf-8,${rows.map(e => e.join(',')).join('\n')}`;
     const encodedUri = encodeURI(csvContent);
 
