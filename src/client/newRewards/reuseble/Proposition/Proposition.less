@@ -1,0 +1,69 @@
+.Proposition-new {
+  margin: 20px 0;
+
+  &__header {
+    border: 2px solid #f87007;
+    border-bottom: none;
+    border-radius: 8px 8px 0 0;
+    margin: 0 25px;
+    padding: 15px;
+  }
+
+  &__title {
+    padding: 0 0 10px;
+    border-bottom: 1px solid #e7e9f5;
+    margin-bottom: 10px;
+    color: black;
+    font-size: 16px;
+  }
+
+  &__footer {
+    border: 2px solid #f87007;
+    border-top: none;
+    border-radius: 0 0 8px 8px;
+    margin: 0 25px;
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .ant-btn-primary {
+      margin-right: 10px;
+    }
+  }
+
+  &__button-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  &__sponsorInfo {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  &__infoItem {
+    color: #99aab5;
+    display: flex;
+    flex-direction: column;
+    font-weight: 500;
+
+    a {
+      color: #99aab5;
+      font-weight: 500;
+    }
+
+    &--right {
+      align-items: flex-start;
+    }
+
+    &--left {
+      align-items: flex-end;
+    }
+  }
+
+  .ObjectCardView {
+    margin: 0;
+  }
+}

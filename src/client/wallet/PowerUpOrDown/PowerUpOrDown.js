@@ -75,7 +75,10 @@ export default class PowerUpOrDown extends React.Component {
     }
   }
 
-  handleBalanceClick = balance => this.props.form.setFieldsValue({ amount: balance });
+  handleBalanceClick = balance => {
+    this.props.form.setFieldsValue({ amount: balance });
+    this.setState({ disabled: false });
+  };
 
   stakinTokensList = key =>
     this.props.tokensList.reduce((acc, curr) => {
@@ -104,7 +107,7 @@ export default class PowerUpOrDown extends React.Component {
               vesting_shares: `${vests} VESTS`,
             }
           : {
-              amount: `${round(parseFloat(values.amount), 5)} HIVE`,
+              amount: `${parseFloat(values.amount)} HIVE`,
               to: user.name,
             };
 
@@ -126,7 +129,7 @@ export default class PowerUpOrDown extends React.Component {
                   contractPayload: {
                     symbol: values.currency === 'WP' ? 'WAIV' : values.currency,
                     to: user.name,
-                    quantity: round(parseFloat(values.amount), 5).toString(),
+                    quantity: parseFloat(values.amount).toString(),
                   },
                 }),
               })}`,
@@ -215,6 +218,7 @@ export default class PowerUpOrDown extends React.Component {
           <Form className="PowerUpOrDown" hideRequiredMark>
             <Form.Item label={<FormattedMessage id="amount" defaultMessage="Amount" />}>
               <PowerSwitcher
+                onChange={this.validateAmount}
                 handleAmountChange={this.handleAmountChange}
                 handleBalanceClick={this.handleBalanceClick}
                 getFieldDecorator={getFieldDecorator}

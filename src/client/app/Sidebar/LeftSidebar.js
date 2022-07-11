@@ -6,6 +6,7 @@ import SidebarMenu from '../../components/Sidebar/SidebarMenu';
 import SidenavRewards from '../../components/Navigation/SidenavRewards';
 import SidenavDiscoverObjects from '../../discoverObjects/SidenavDiscoverObjects';
 import URL from '../../../routes/constants';
+import SideBar from '../../newRewards/SideBar';
 
 const LeftSidebar = () => {
   const isWidget =
@@ -22,22 +23,8 @@ const LeftSidebar = () => {
           component={SidenavRewards}
         />
         <Route path="/(discover-objects|discover)/:typeName?" component={SidenavDiscoverObjects} />
-        <Route
-          path="/rewards/(active|reserved|history|promoted|created|receivables)"
-          component={SidenavRewards}
-        />
-        <Route path="/rewards/all" component={SidenavRewards} />
-        <Route path="/rewards/create" component={SidenavRewards} />
-        <Route path="/rewards/manage" component={SidenavRewards} />
-        <Route path="/rewards/payables" component={SidenavRewards} />
-        <Route path="/rewards/reports" component={SidenavRewards} />
-        <Route path="/rewards/guideHistory" component={SidenavRewards} />
-        <Route path="/rewards/messages" component={SidenavRewards} />
-        <Route path="/rewards/match-bots-sponsors" component={SidenavRewards} />
-        <Route path="/rewards/match-bots-curators" component={SidenavRewards} />
-        <Route path="/rewards/match-bots-authors" component={SidenavRewards} />
-        <Route path="/rewards/fraud-detection" component={SidenavRewards} />
-        <Route path="/rewards/blacklist" component={SidenavRewards} />
+        <Route path={`/rewards/(${URL.REWARDS.sideBar})`} component={SidenavRewards} />
+        <Route path={`/rewards-new/(${URL.REWARDS.sideBar})`} component={SideBar} />
         <Route path="/rewards/details/:campaignName" component={SidenavRewards} />
         <Route path="/rewards/referral-details/:userName" component={SidenavRewards} />
         <Route path="/rewards/referral-instructions/:userName" component={SidenavRewards} />

@@ -9,6 +9,7 @@ import { setToken } from '../../common/helpers/getToken';
 import {
   getGuestPaymentsHistory,
   getPrivateEmail,
+  getRewardTab,
   updateGuestProfile,
 } from '../../waivioApi/ApiClient';
 import { notify } from '../../client/app/Notification/notificationActions';
@@ -44,6 +45,8 @@ export const CHANGE_SORTING_FOLLOW = '@auth/CHANGE_SORTING';
 export const BUSY_LOGIN = createAsyncActionType('@auth/BUSY_LOGIN');
 
 export const UPDATE_GUEST_BALANCE = createAsyncActionType('@auth/UPDATE_GUEST_BALANCE');
+
+export const SET_TAB_REWARDS = createAsyncActionType('@auth/SET_TAB_REWARDS');
 
 const loginError = createAction(LOGIN_ERROR);
 
@@ -139,11 +142,13 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
         const scUserData = await steemConnectAPI.me();
         const userMetaData = await waivioAPI.getAuthenticatedUserMetadata(scUserData.name);
         const privateEmail = await getPrivateEmail(scUserData.name);
+        const rewardsTab = await getRewardTab(scUserData.name);
 
         if (isWaivio) dispatch(getCurrentCurrencyRate(userMetaData.settings.currency));
 
         resolve({
           ...scUserData,
+          ...rewardsTab,
           userMetaData,
           privateEmail,
           isGuestUser: isGuest,
@@ -227,6 +232,11 @@ export const changeSorting = sorting => dispatch => {
 
   return Promise.resolve();
 };
+
+export const changeRewardsTab = username => ({
+  type: SET_TAB_REWARDS,
+  promise: getRewardTab(username),
+});
 
 export const updateProfile = (username, values) => (dispatch, getState) => {
   const state = getState();

@@ -99,6 +99,7 @@ class CreateRewardForm extends React.Component {
     isDuplicate: false,
     isOpenAddChild: false,
     currency: 'USD',
+    payoutToken: 'HIVE',
   };
 
   componentDidMount = async () => {
@@ -260,28 +261,23 @@ class CreateRewardForm extends React.Component {
     const appName = apiConfig[process.env.NODE_ENV].appName || 'waivio';
     const minExpertise = Number(data.minExpertise);
     const minExpertisePrepared = getMinExpertisePrepared({ minExpertise, rewardFund, rate });
-
     const preparedObject = {
       requiredObject: data.primaryObject.author_permlink,
       guideName: userName,
       name: data.campaignName,
       app: appName,
       type: data.type,
-      budget: data.budget,
-      reward: data.reward,
+      budget: Number(data.budget),
+      reward: Number(data.reward),
       requirements: {
-        minPhotos: data.minPhotos,
+        minPhotos: +data.minPhotos,
         receiptPhoto: data.receiptPhoto,
       },
-      blacklist_users: [],
-      whitelist_users: [],
-      count_reservation_days: data.reservationPeriod,
       userRequirements: {
-        minFollowers: data.minFollowers,
-        minPosts: data.minPosts,
-        minExpertise: minExpertisePrepared,
+        minFollowers: +data.minFollowers,
+        minPosts: +data.minPosts,
+        minExpertise: +minExpertisePrepared,
       },
-      frequency_assign: data.eligibleDays,
       commissionAgreement: data.commissionAgreement / 100,
       objects,
       agreementObjects,
@@ -290,10 +286,14 @@ class CreateRewardForm extends React.Component {
           ? data.compensationAccount.account
           : '',
       usersLegalNotice: data.usersLegalNotice || '',
+      currency: data.baseCurrency,
       match_bots: sponsorAccounts,
       expired_at: data.expiredAt._d,
       reservation_timetable: data.targetDays,
-      currency: data.baseCurrency,
+      blacklist_users: [],
+      whitelist_users: [],
+      frequency_assign: data.eligibleDays,
+      count_reservation_days: data.reservationPeriod,
     };
 
     if (data.description) preparedObject.description = data.description;
@@ -451,7 +451,7 @@ class CreateRewardForm extends React.Component {
       this.setState({ loading: true });
       this.props.form.validateFieldsAndScroll((err, values) => {
         if (!err && !isEmpty(values.primaryObject) && !isEmpty(values.secondaryObject)) {
-          createCampaign(this.prepareSubmitData(values, this.props.userName))
+          createCampaign(this.prepareSubmitData(values, this.props.userName), this.props.userName)
             .then(() => {
               message.success(
                 `Rewards campaign ${values.campaignName} ${
@@ -487,6 +487,7 @@ class CreateRewardForm extends React.Component {
 
     handleSelectChange: () => {},
     handleCurrencyChanges: currency => this.setState(() => ({ currency })),
+    handleCryptocurrencyChanges: payoutToken => this.setState(() => ({ payoutToken })),
   };
 
   handleCreateDuplicate = () => {
@@ -565,6 +566,7 @@ class CreateRewardForm extends React.Component {
         handleCreateDuplicate={this.handleCreateDuplicate}
         isOpenAddChild={this.state.isOpenAddChild}
         currency={this.state.currency}
+        payoutToken={this.state.payoutToken}
       />
     );
   }

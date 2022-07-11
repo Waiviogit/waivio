@@ -249,7 +249,7 @@ class Rewards extends React.Component {
 
     const actualArea = !area[0] ? [] : area;
 
-    if (match.params.filterKey === 'all')
+    if (match.params[0] === 'all')
       this.getPropositions({ username, match, activeFilters, sort, actualArea, authenticated });
   }
 
@@ -379,7 +379,7 @@ class Rewards extends React.Component {
 
   setActiveMessagesFilters = (filterValue, key) => {
     const { match } = this.props;
-    const paramsKey = match.params[0];
+    const paramsKey = match.params.filterKey;
     let activeFilters;
 
     switch (paramsKey) {
@@ -488,7 +488,7 @@ class Rewards extends React.Component {
             !pendingUpdate &&
             filterKey &&
             every(arrFilterKey, key => filterKey !== key) &&
-            !match.params.campaignParent
+            !match.params.campaignId
           ) {
             if (match.params.filterKey !== rewardsTab[tabType]) {
               this.props.history.push(`/rewards/${rewardsTab[tabType]}/`);
@@ -749,14 +749,14 @@ class Rewards extends React.Component {
 
     if (isReserved) {
       propositionsUniq = propositionsReserved;
-    } else if (match.params.campaignParent) {
+    } else if (match.params.campaignId) {
       propositionsUniq = uniqBy(propositions, '_id');
     } else {
       propositionsUniq = uniqBy(propositions, 'required_object._id');
     }
     const actualPropositions = isEmpty(messages) ? propositionsUniq : messages;
     const getMessageHistory = async () => {
-      const path = match.params[0];
+      const path = match.params.filterKey;
       const {
         activeHistoryFilters,
         activeMessagesFilters,
@@ -839,11 +839,11 @@ class Rewards extends React.Component {
 
   goToCampaign = wobjPermlink => {
     const { match, isWaivio } = this.props;
-    const campaignParent = get(match, ['params', 'campaignParent']);
-    const filterKey = get(match, ['params', 'filterKey']);
+    const campaignId = get(match, ['params', 'campaignId']);
+    const filterKey = get(match, ['params', '0']);
     const objUrl = `/object/${wobjPermlink}`;
 
-    if (isWaivio || !campaignParent) {
+    if (isWaivio || !campaignId) {
       this.props.history.push(`/rewards/${filterKey}/${wobjPermlink}`);
     } else {
       this.props.setMapFullscreenMode(false);
@@ -1000,7 +1000,7 @@ class Rewards extends React.Component {
       ...wobj.required_object,
       reward: wobj.max_reward,
     }));
-    const IsRequiredObjectWrap = !match.params.campaignParent;
+    const IsRequiredObjectWrap = !match.params.campaignId;
     const filterKey = match.params.filterKey;
     const robots = location.pathname === 'index,follow';
     const isCreate =
@@ -1067,10 +1067,9 @@ class Rewards extends React.Component {
       setHistoryFilters: filters => this.setFilters(GUIDE_HISTORY, filters),
     });
 
-    const campaignParent = get(match, ['params', 'campaignParent']);
+    const campaignId = get(match, ['params', 'campaignId']);
     const isReserved = match.params.filterKey === IS_RESERVED;
-    const campaignsObjectsForMap =
-      campaignParent || isReserved ? this.getCampaignsObjectsForMap() : [];
+    const campaignsObjectsForMap = campaignId || isReserved ? this.getCampaignsObjectsForMap() : [];
     const primaryObjectCoordinates = this.moveToCoordinates(campaignsObjectsForMap);
     const isWidget =
       typeof sessionStorage !== 'undefined' ? sessionStorage.getItem('isWidget') : false;
@@ -1117,7 +1116,7 @@ class Rewards extends React.Component {
               {renderedRoutes}
             </div>
             {(match.url === PATH_NAME_PAYABLES || match.url === PATH_NAME_RECEIVABLES) && (
-              <Affix className="rightContainer leftContainer__user" stickPosition={77}>
+              <Affix className="rightContainer leftContainer__user" stickPosition={120}>
                 <div className="right">
                   <RewardsFiltersPanel
                     campaignsTypes={campaignsTypes}
@@ -1138,7 +1137,7 @@ class Rewards extends React.Component {
                     <MapWrap
                       setMapArea={this.setMapArea}
                       userLocation={userLocation}
-                      wobjects={campaignParent || isReserved ? campaignsObjectsForMap : mapWobjects}
+                      wobjects={campaignId || isReserved ? campaignsObjectsForMap : mapWobjects}
                       onMarkerClick={this.goToCampaign}
                       getAreaSearchData={this.getAreaSearchData}
                       match={match}

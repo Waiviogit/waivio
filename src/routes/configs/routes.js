@@ -10,6 +10,7 @@ import Rewards from '../../client/rewards/Rewards';
 import Discover from '../../client/discover/Discover';
 import DiscoverObjects from '../../client/discoverObjects/DiscoverObjects';
 import RewardsComponent from '../../client/rewards/RewardsComponent/RewardsComponent';
+import RewardsMainPage from '../../client/newRewards/RewardsMainPage';
 
 const routes = {
   component: Wrapper,
@@ -21,7 +22,7 @@ const routes = {
         `/rewards/(${URL.REWARDS.tabs})/:campaignId?/:permlink?/:username?`,
         `/rewards/(${URL.REFERRAL.tabs})/:userName?/:table?`,
         '/rewards/blacklist/:listType?',
-        '/rewards/:filterKey/:campaignParent?',
+        '/rewards/:filterKey/:campaignId?',
       ],
       pathScope: '/rewards',
       exact: true,
@@ -107,18 +108,58 @@ const routes = {
           component: Views.SponsoredRewards,
         },
         {
-          path: '/:filterKey/:campaignParent?',
+          path: '/:filterKey/:campaignId?',
           exact: true,
           component: RewardsComponent,
         },
       ],
     },
     {
-      component: Views.RewardsMainPage,
-      path: '/rewards-new',
+      component: RewardsMainPage,
+      path: [
+        `/rewards-new/(details|duplicate|create})/:campaignId?`,
+        `/rewards-new/(all|eligible)/:requiredObject?`,
+        `/rewards-new/(${URL.NEW_REWARDS.tabs})`,
+      ],
       pathScope: '/rewards-new',
       exact: true,
-      routes: [],
+      routes: [
+        {
+          path: '/manage',
+          exact: true,
+          component: Views.RewardsManage,
+        },
+        {
+          path: '/all',
+          exact: true,
+          component: Views.RewardsAll,
+        },
+        {
+          path: '/eligible',
+          exact: true,
+          component: Views.EligibleRewards,
+        },
+        {
+          path: '/(details|duplicate|create)/:campaignId?',
+          exact: true,
+          component: Views.CreateRewards,
+        },
+        {
+          path: '/all/:requiredObject?',
+          exact: true,
+          component: Views.AllProposition,
+        },
+        {
+          path: '/eligible/:requiredObject?',
+          exact: true,
+          component: Views.EligibleProposition,
+        },
+        {
+          path: '/reserved',
+          exact: true,
+          component: Views.ReservedProposition,
+        },
+      ],
     },
     {
       path: [`/:site/(${URL.WEBSITES.tabs})`, `/(${URL.SETTINGS.tabs})`],

@@ -42,6 +42,8 @@ export const getAuthenticatedUserPrivateEmail = createSelector(
 
 export const getAuthorizationUserFollowSort = createSelector([authState], state => state.sort);
 
+export const getRewardsTab = createSelector([authState], state => state.tabType);
+
 export const getUserPosting = createSelector(getAuthenticatedUser, state => state.posting);
 
 export const getUserAccountsAuth = createSelector(getUserPosting, state =>

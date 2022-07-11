@@ -6,7 +6,7 @@ import classNames from 'classnames';
 import { FormattedMessage } from 'react-intl';
 import { Link } from 'react-router-dom';
 import { PATH_NAME_DISCOVER } from '../../../common/constants/rewards';
-import { getAuthenticatedUser } from '../../../store/authStore/authSelectors';
+import { getAuthenticatedUser, getRewardsTab } from '../../../store/authStore/authSelectors';
 
 import './TopNavigation.less';
 
@@ -18,6 +18,7 @@ const LINKS = {
   MY_FEED_NOTIFICATIONS: '/notifications-list',
   FEED_PROMOTED: '/promoted',
   REWARDS: '/rewards',
+  REWARDS_NEW: '/rewards-new',
   DISCOVER: '/discover-objects',
   TOOLS_DRAFTS: '/drafts',
   TOOLS_BOOKMARKS: '/bookmarks',
@@ -80,6 +81,7 @@ const WEBSITE_URLS = [
 
 const TopNavigation = ({ location: { pathname } }) => {
   const authenticatedUser = useSelector(getAuthenticatedUser);
+  const rewardsTab = useSelector(getRewardsTab);
   const isRouteMathed =
     pathname === '/' || Object.values(LINKS).some(url => pathname.includes(url));
 
@@ -104,6 +106,7 @@ const TopNavigation = ({ location: { pathname } }) => {
               className={classNames('TopNavigation__link', {
                 'TopNavigation__link--active':
                   pathname.includes(LINKS.REWARDS) &&
+                  !pathname.includes(LINKS.REWARDS_NEW) &&
                   (!pathname.includes('list') || pathname.includes(LINKS.BLACKLIST)),
               })}
             >
@@ -144,6 +147,18 @@ const TopNavigation = ({ location: { pathname } }) => {
               })}
             >
               <FormattedMessage id="about" defaultMessage="About" />
+            </Link>
+          </li>
+          <li className="TopNavigation__item">
+            <Link
+              to={`${LINKS.REWARDS_NEW}/${rewardsTab}`}
+              className={classNames('TopNavigation__link', {
+                'TopNavigation__link--active':
+                  pathname.includes(LINKS.REWARDS_NEW) &&
+                  (!pathname.includes('list') || pathname.includes(LINKS.BLACKLIST)),
+              })}
+            >
+              Beta
             </Link>
           </li>
         </ul>

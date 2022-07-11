@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
+import moment from 'moment';
 import { injectIntl } from 'react-intl';
-import { get, isEmpty, size, isNil } from 'lodash';
+import { get, isEmpty, size, isNil, round } from 'lodash';
 import { Checkbox } from 'antd';
 import Loading from '../../Icon/Loading';
 
@@ -38,6 +40,15 @@ export const DynamicTable = ({
             {intl.formatMessage({ id: 'delete', defaultMessage: 'Delete' })}
           </a>
         );
+
+      case 'link':
+        return <Link to={head.to(item)}>{item[head.id]}</Link>;
+
+      case 'date':
+        return moment(item[head.id]).format('DD-MMM-YYYY');
+
+      case 'round':
+        return round(item[head.id], head.precision);
 
       default: {
         let button = get(buttons, head.id);

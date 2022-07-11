@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
-import { Form, Input, Select, Button, Modal } from 'antd';
+import { Form, Input, Select, Button, Modal, Dropdown, Icon, Menu } from 'antd';
 import { isEmpty, map, get } from 'lodash';
 import { withRouter } from 'react-router';
 
@@ -190,12 +190,15 @@ class CreateObject extends React.Component {
                 }),
                 'success',
               );
+              const hashtagName =
+                objData.type === 'hashtag' ? objData.name.split(' ').join('') : objData.name;
+
               this.props.onCreateObject(
                 {
                   _id: parentPermlink,
                   author: parentAuthor,
                   avatar: DEFAULTS.AVATAR,
-                  name: objData.name,
+                  name: hashtagName,
                   title: '',
                   parent: this.props.parentObject,
                   weight: '',
@@ -246,6 +249,63 @@ class CreateObject extends React.Component {
     } = this.props;
     const { loading } = this.state;
     const Option = Select.Option;
+    const menu = (
+      <Menu onClick={e => handleCaseSelect(e.key)}>
+        <Menu.Item key="sentenceCase">
+          <span>Sentence case.</span>
+        </Menu.Item>
+        <Menu.Item key="lowerCase">
+          <span>lowercase</span>
+        </Menu.Item>
+        <Menu.Item key="upperCase">
+          <span>UPPERCASE</span>
+        </Menu.Item>
+        <Menu.Item key="capitalize">
+          <span>Capitalize Each Word</span>
+        </Menu.Item>
+        <Menu.Item key="toggleCase">
+          <span>tOGGLE cASE</span>
+        </Menu.Item>
+      </Menu>
+    );
+    const handleCaseSelect = key => {
+      const prevVal = this.props.form.getFieldValue(objectFields.name);
+      let newVal = '';
+
+      switch (key) {
+        case 'lowerCase':
+          newVal = prevVal.toLowerCase();
+          break;
+        case 'upperCase':
+          newVal = prevVal.toUpperCase();
+          break;
+        case 'capitalize':
+          const capitalizedArr = prevVal.toLowerCase().split(' ');
+
+          newVal = capitalizedArr.reduce(
+            (acc, word) => acc + (acc === '' ? '' : ' ') + word[0].toUpperCase() + word.slice(1),
+            '',
+          );
+          break;
+        case 'toggleCase':
+          const toggleCaseArr = prevVal.toUpperCase().split(' ');
+
+          newVal = toggleCaseArr.reduce(
+            (acc, word) => acc + (acc === '' ? '' : ' ') + word[0].toLowerCase() + word.slice(1),
+            '',
+          );
+          break;
+        case 'sentenceCase':
+          const arr = prevVal.toLowerCase().split(' ');
+
+          newVal = `${arr[0][0].toUpperCase() + arr[0].slice(1)} ${arr.slice(1).join(' ')}`;
+          break;
+        default:
+          null;
+      }
+
+      return this.props.form.setFieldsValue({ [objectFields.name]: newVal });
+    };
 
     LANGUAGES.forEach(lang => {
       languageOptions.push(
@@ -254,6 +314,7 @@ class CreateObject extends React.Component {
         </Option>,
       );
     });
+    const hashtagObjType = this.props.objectTypes[form.getFieldValue('type')]?.name === 'hashtag';
 
     return (
       <React.Fragment>
@@ -323,6 +384,21 @@ class CreateObject extends React.Component {
                     id: 'value_placeholder',
                     defaultMessage: 'Add value',
                   })}
+                  suffix={
+                    !hashtagObjType &&
+                    defaultObjectType !== 'hashtag' && (
+                      <Dropdown
+                        disabled={loading}
+                        overlayClassName="EditorToolbar__dropdown"
+                        overlay={menu}
+                        trigger={['click']}
+                      >
+                        <Button className="EditorToolbar__button">
+                          Aa <Icon type="down" />
+                        </Button>
+                      </Dropdown>
+                    )
+                  }
                 />,
               )}
             </Form.Item>

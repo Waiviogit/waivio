@@ -21,11 +21,14 @@ const TableFilter = ({
   deleteUser,
   form,
   currency,
+  startDate,
+  endDate,
 }) => {
   const disabledDate = current => current > moment().endOf('day');
   const creationAccDate = useSelector(getCreationAccDate);
   const [isOpen, setIsOpen] = useState(false);
   const onOpenChange = () => setIsOpen(!isOpen);
+  const invalidFields = endDate < startDate;
 
   return (
     <Form layout="inline" className="WalletTable__tableFilter">
@@ -162,6 +165,9 @@ const TableFilter = ({
           )}
         </Form.Item>
       </div>
+      {invalidFields && (
+        <span style={{ color: 'red' }}>The From date must be earlier than the Till date</span>
+      )}
       <Form.Item
         label={intl.formatMessage({
           id: 'base_currency',
@@ -185,6 +191,7 @@ const TableFilter = ({
           </Select>,
         )}
       </Form.Item>
+
       <Button
         className="WalletTable__submit"
         onClick={handleOnClick}
@@ -215,6 +222,8 @@ TableFilter.propTypes = {
   handleSelectUser: PropTypes.func.isRequired,
   deleteUser: PropTypes.func.isRequired,
   currency: PropTypes.string.isRequired,
+  startDate: PropTypes.number.isRequired,
+  endDate: PropTypes.number.isRequired,
 };
 
 export default TableFilter;

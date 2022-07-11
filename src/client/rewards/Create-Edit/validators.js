@@ -1,7 +1,8 @@
 import { isEmpty } from 'lodash';
+import moment from 'moment';
 import { getCurrentCurrencyRate } from '../../../waivioApi/ApiClient';
 
-export const validatorMessagesCreator = messageFactory => ({
+export const validatorMessagesCreator = (messageFactory, currency) => ({
   budgetLess: messageFactory(
     'budget_more_than_thousandth',
     'Budget should be more or equal 0,001 HIVE',
@@ -9,7 +10,8 @@ export const validatorMessagesCreator = messageFactory => ({
   budgetToZero: messageFactory('budget_more_than_zero', 'Budget should be more than zero'),
   budgetToSteemBalance: messageFactory(
     'budget_overprices_wallet_balance',
-    'Budget should not exceed your HIVE wallet balance',
+    'Budget should not exceed your {currency} wallet balance',
+    { currency },
   ),
   rewardsLess: messageFactory(
     'reward_more_than_thousandth',
@@ -51,7 +53,7 @@ export const validatorMessagesCreator = messageFactory => ({
   ),
   expiredDate: messageFactory(
     'expiry_date_after_current',
-    'The expiry date must be after the current date',
+    'The expiration date must be later than the next day from the current date',
   ),
   postsQuantity: messageFactory('not_less_zero_posts', 'Number of posts cannot be negative'),
   eligibleQuantity: messageFactory(
@@ -68,13 +70,15 @@ export const validatorMessagesCreator = messageFactory => ({
 });
 
 export const validatorsCreator = (
+  payoutToken,
   user,
-  currentSteemPrice,
   messages,
   getFieldValue,
   requiredObject,
   objectsToAction,
   currency,
+  currencyInfo,
+  rates,
 ) => ({
   checkPrimaryObject: (rule, value, callback) => {
     // eslint-disable-next-line no-unused-expressions
@@ -128,7 +132,11 @@ export const validatorsCreator = (
   },
 
   checkExpireDate: (rule, value, callback) => {
-    if (value && value.unix() * 1000 < Date.now()) {
+    if (
+      moment()
+        .add(1, 'days')
+        .unix() > value?.unix()
+    ) {
       callback(messages.expiredDate);
     } else {
       callback();
@@ -152,7 +160,10 @@ export const validatorsCreator = (
 
   compareBudgetValues: async (rule, value, callback) => {
     const rate = await getCurrentCurrencyRate(currency);
-    const userUSDBalance = parseFloat(user.balance) * rate[currency];
+    const userUSDBalance =
+      payoutToken === 'HIVE'
+        ? parseFloat(user.balance) * rate[currency]
+        : currencyInfo.balance * rates * rate[currency];
 
     if (value > 0 && value < 0.001) callback(messages.budgetLess);
     if (value <= 0 && value !== '') callback(messages.budgetToZero);

@@ -1,4 +1,5 @@
 import { get, round } from 'lodash';
+import moment from 'moment';
 import {
   dateTableField,
   fillOrderExchanger,
@@ -11,6 +12,7 @@ import {
 } from '../../WalletHelper';
 import * as accountHistoryConstants from '../../../../common/constants/accountHistory';
 import { guestUserRegex } from '../../../../common/helpers/regexHelpers';
+import { getTableDescription } from '../../WalletHelperCsv';
 
 const compareTransferBody = (
   transaction,
@@ -24,6 +26,7 @@ const compareTransferBody = (
   const isGuestPage = guestUserRegex.test(user);
   let description = '';
   const data = {
+    dateForTable: moment.unix(transaction.timestamp).format('MM/DD/YYYY'),
     time: dateTableField(transaction.timestamp, isGuestPage),
     hiveCurrentCurrency: round(get(transaction, `hive${currency}`), 3),
     waivCurrentCurrency: currency
@@ -50,6 +53,10 @@ const compareTransferBody = (
         transactionType,
         'HP',
       );
+      const descriptionForTable = getTableDescription(transactionType, {
+        from: transaction.from,
+        to: transaction.to,
+      });
 
       description = getTransactionDescription(transactionType, {
         from: transaction.from,
@@ -57,6 +64,10 @@ const compareTransferBody = (
       });
 
       if (transaction.to === user) {
+        data.descriptionForTable =
+          transaction.from === transaction.to
+            ? descriptionForTable.powerUpTransaction
+            : descriptionForTable.powerUpTransactionFrom;
         data.fieldDescription =
           transaction.from === transaction.to
             ? description.powerUpTransaction
@@ -64,6 +75,7 @@ const compareTransferBody = (
         data.fieldHP = toVestingAmount.amount;
       } else {
         data.fieldDescription = description.powerUpTransactionTo;
+        data.fieldDescriptionForTable = descriptionForTable.powerUpTransactionTo;
         data.fieldHIVE = `- ${toVestingAmount.amount}`;
       }
 
@@ -77,6 +89,10 @@ const compareTransferBody = (
     case accountHistoryConstants.TRANSFER: {
       const transferAmount = getTransactionTableCurrency(transaction.amount, transactionType);
       const receiveDescription = getTransactionDescription(transactionType, {
+        from: transaction.from,
+        to: transaction.to,
+      });
+      const receiveCsvDescription = getTableDescription(transactionType, {
         from: transaction.from,
         to: transaction.to,
       });
@@ -98,6 +114,16 @@ const compareTransferBody = (
                   true,
                 )
               : receiveDescription.receivedFrom,
+          fieldDescriptionForTable:
+            transaction.typeTransfer === 'demo_post'
+              ? validateGuestTransferTitle(
+                  transaction.details,
+                  transaction.userName,
+                  false,
+                  transactionType,
+                  true,
+                )
+              : receiveCsvDescription.receivedFrom,
         };
       }
 
@@ -106,6 +132,7 @@ const compareTransferBody = (
         fieldHIVE: transferAmount.currency === 'HIVE' && `- ${transferAmount.amount}`,
         fieldHBD: transferAmount.currency === 'HBD' && `- ${transferAmount.amount}`,
         fieldDescription: receiveDescription.transferredTo,
+        fieldDescriptionForTable: receiveCsvDescription.transferredTo,
       };
     }
     case accountHistoryConstants.CLAIM_REWARD_BALANCE: {
@@ -123,6 +150,7 @@ const compareTransferBody = (
         fieldHP: get(claimRewardAmounts, 'HP'),
         fieldHBD: get(claimRewardAmounts, 'HBD'),
         fieldDescription: getTransactionDescription(transactionType).claimRewards,
+        fieldDescriptionForTable: getTableDescription(transactionType).claimRewards,
       };
     }
 
@@ -145,6 +173,11 @@ const compareTransferBody = (
           transaction,
           transaction.amount,
         ),
+        fieldDescriptionForTable: getTableDescription(
+          transaction.type,
+          transaction,
+          transaction.amount,
+        ),
         fieldMemo: transaction.memo,
       };
     }
@@ -157,12 +190,17 @@ const compareTransferBody = (
         openPays: transaction.open_pays,
         currentPays: transaction.current_pays,
       });
+      const limitOrderTableDescription = getTableDescription(transactionType, {
+        openPays: transaction.open_pays,
+        currentPays: transaction.current_pays,
+      });
 
       return {
         ...data,
         fieldHIVE: currentPaysAmount.currency === 'HIVE' && `${currentPaysAmount.amount}`,
         fieldHBD: currentPaysAmount.currency === 'HBD' && `${currentPaysAmount.amount}`,
         fieldDescription: limitOrderDescription.limitOrder,
+        fieldDescriptionForTable: limitOrderTableDescription,
       };
     }
     case accountHistoryConstants.POWER_DOWN_WITHDRAW: {
@@ -172,12 +210,17 @@ const compareTransferBody = (
         from: transaction.from,
         to: transaction.to,
       });
+      const tableDescription = getTableDescription(transactionType, {
+        from: transaction.from,
+        to: transaction.to,
+      });
 
       if (transaction.userName !== transaction.from && transaction.from !== transaction.to) {
         return {
           ...data,
           fieldHIVE: transaction.amount.split(' ')[0],
           fieldDescription: description.powerDownWithdrawFrom,
+          fieldDescriptionForTable: tableDescription.powerDownWithdrawFrom,
         };
       }
 
@@ -188,9 +231,14 @@ const compareTransferBody = (
           transaction.from === transaction.to
             ? description.powerDownWithdraw
             : description.powerDownWithdrawTo,
+        fieldDescriptionForTable:
+          transaction.from === transaction.to
+            ? description.powerDownWithdraw
+            : description.powerDownWithdrawTo,
       };
     }
-    case accountHistoryConstants.FILL_ORDER: {
+    case accountHistoryConstants.FILL_ORDER:
+    case accountHistoryConstants.FILL_ORDER_TRANSACTION: {
       const fillOrderAmount = selectCurrectFillOrderValue(
         transaction,
         transaction.current_pays,
@@ -208,6 +256,7 @@ const compareTransferBody = (
       const exchanger = fillOrderExchanger(user, transaction);
       const url = `/@${exchanger}`;
       const fillOrderDescription = getTransactionDescription(transactionType, { url, exchanger });
+      const fillOrderTableDescription = getTableDescription(transactionType, { url, exchanger });
 
       if (paysAmountReceived.currency === 'HIVE') {
         data.fieldHIVE = `${paysAmountReceived.amount}`;
@@ -220,6 +269,7 @@ const compareTransferBody = (
       return {
         ...data,
         fieldDescription: fillOrderDescription.fillOrder,
+        fieldDescriptionForTable: fillOrderTableDescription.fillOrder,
       };
     }
     case accountHistoryConstants.CANCEL_ORDER: {
@@ -231,12 +281,18 @@ const compareTransferBody = (
       const cancelOrderDescription = getTransactionDescription(transactionType, {
         openPays: transaction.open_pays,
       });
+      const cancelOrderTableDescription = getTableDescription(transactionType, {
+        openPays: transaction.open_pays,
+      });
 
       return {
         ...data,
         fieldDescription: openPaysAmount
           ? cancelOrderDescription.cancelOrder
           : cancelOrderDescription.cancelLimitOrder,
+        fieldDescriptionForTable: openPaysAmount
+          ? cancelOrderTableDescription.cancelOrder
+          : cancelOrderTableDescription.cancelLimitOrder,
         fieldHIVE: get(currentPaysAmount, 'currency') === 'HIVE' && `${currentPaysAmount.amount}`,
         fieldHBD: get(currentPaysAmount, 'currency') === 'HBD' && `${currentPaysAmount.amount}`,
       };
@@ -249,6 +305,9 @@ const compareTransferBody = (
       const proposalDescription = getTransactionDescription(transactionType, {
         receiver: transaction.receiver,
       });
+      const proposalTableDescription = getTableDescription(transactionType, {
+        receiver: transaction.receiver,
+      });
 
       return {
         ...data,
@@ -258,6 +317,9 @@ const compareTransferBody = (
         fieldDescription: currentUserIsReceiver
           ? proposalDescription.proposalPaymentFrom
           : proposalDescription.proposalPaymentTo,
+        fieldDescriptionForTable: currentUserIsReceiver
+          ? proposalTableDescription.proposalPaymentFrom
+          : proposalTableDescription.proposalPaymentTo,
       };
     }
 
@@ -271,6 +333,8 @@ const compareTransferBody = (
           fieldWAIV: transaction.quantity,
           fieldDescription: getTransactionDescription(transactionType, { from: transaction.from })
             .tokensTransferFrom,
+          fieldDescriptionForTable: getTableDescription(transactionType, { from: transaction.from })
+            .tokensTransferFrom,
         };
       }
 
@@ -278,6 +342,8 @@ const compareTransferBody = (
         ...data,
         fieldWAIV: `-${transaction.quantity}`,
         fieldDescription: getTransactionDescription(transactionType, { to: transaction.to })
+          .tokensTransferTo,
+        fieldDescriptionForTable: getTableDescription(transactionType, { from: transaction.from })
           .tokensTransferTo,
       };
     }
@@ -293,6 +359,9 @@ const compareTransferBody = (
         fieldDescription: getTransactionDescription(transactionType, {
           authorperm: transaction.authorperm,
         }).curationRewards,
+        fieldDescriptionForTable: getTableDescription(transactionType, {
+          authorperm: transaction.authorperm,
+        }).curationRewards,
       };
     }
     case accountHistoryConstants.BENEFICIARY_REWARD: {
@@ -306,30 +375,12 @@ const compareTransferBody = (
         fieldDescription: getTransactionDescription(transactionType, {
           authorperm: transaction.authorperm,
         }).beneficiaryRewards,
+        fieldDescriptionForTable: getTableDescription(transactionType, {
+          authorperm: transaction.authorperm,
+        }).beneficiaryRewards,
       };
     }
-    case accountHistoryConstants.MARKET_BUY: {
-      data.userName = transaction.account;
-      data.withdrawDeposit = transaction.withdrawDeposit;
 
-      return {
-        ...data,
-        fieldWAIV: transaction.quantity,
-        fieldDescription: getTransactionDescription(transactionType, { accFrom: transaction.from })
-          .marketBuy,
-      };
-    }
-    case accountHistoryConstants.MARKET_SELL: {
-      data.userName = transaction.account;
-      data.withdrawDeposit = transaction.withdrawDeposit;
-
-      return {
-        ...data,
-        fieldWAIV: `-${transaction.quantity}`,
-        fieldDescription: getTransactionDescription(transactionType, { accTo: transaction.to })
-          .marketSell,
-      };
-    }
     case accountHistoryConstants.TOKENS_STAKE: {
       data.userName = transaction.account;
 
@@ -340,6 +391,8 @@ const compareTransferBody = (
 
           fieldDescription: getTransactionDescription(transactionType, { to: transaction.to })
             .tokensStakeTo,
+          fieldDescriptionForTable: getTableDescription(transactionType, { to: transaction.to })
+            .tokensStakeTo,
         };
       }
       if (transaction.account !== transaction.from && transaction.account === transaction.to) {
@@ -348,15 +401,12 @@ const compareTransferBody = (
           fieldWP: transaction.quantity,
           fieldDescription: getTransactionDescription(transactionType, { from: transaction.from })
             .tokensStakeFrom,
+          fieldDescriptionForTable: getTableDescription(transactionType, { from: transaction.from })
+            .tokensStakeFrom,
         };
       }
 
-      return {
-        ...data,
-
-        fieldWP: transaction.quantity,
-        fieldDescription: getTransactionDescription(transactionType).tokensStake,
-      };
+      return null;
     }
 
     case accountHistoryConstants.MINING_LOTTERY: {
@@ -366,19 +416,10 @@ const compareTransferBody = (
         ...data,
         fieldWAIV: transaction.quantity,
         fieldDescription: getTransactionDescription(transactionType).miningLottery,
+        fieldDescriptionForTable: getTableDescription(transactionType).miningLottery,
       };
     }
-    case accountHistoryConstants.SWAP_TOKENS: {
-      data.userName = transaction.account;
-      const fieldWAIVamount =
-        transaction.withdrawDeposit === 'w' ? `-${transaction.quantity}` : transaction.quantity;
 
-      return {
-        ...data,
-        fieldWAIV: fieldWAIVamount,
-        fieldDescription: getTransactionDescription(transactionType).swapTokens,
-      };
-    }
     case accountHistoryConstants.AIRDROP: {
       data.userName = transaction.account;
 
@@ -386,6 +427,7 @@ const compareTransferBody = (
         ...data,
         fieldWP: transaction.quantity,
         fieldDescription: getTransactionDescription(transactionType).airdrop,
+        fieldDescriptionForTable: getTableDescription(transactionType).airdrop,
       };
     }
 
@@ -396,6 +438,9 @@ const compareTransferBody = (
         ...data,
         fieldWAIV: transaction.quantity,
         fieldDescription: getTransactionDescription(transactionType, {
+          authorperm: transaction.authorperm,
+        }).authorRewards,
+        fieldDescriptionForTable: getTableDescription(transactionType, {
           authorperm: transaction.authorperm,
         }).authorRewards,
       };
