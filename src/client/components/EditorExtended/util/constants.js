@@ -81,7 +81,7 @@ export const ELEMENT_TAGS = {
   H6: () => ({ type: 'headingSix' }),
   IMG: el => ({ type: 'image', url: el.getAttribute('src'), alt: el.getAttribute('alt') }),
   LI: () => ({ type: 'listItem' }),
-  OL: () => ({ type: 'numberedList' }),
+  OL: () => ({ type: 'orderedList' }),
   P: () => ({ type: 'paragraph' }),
   PRE: () => ({ type: 'code' }),
   UL: () => ({ type: 'bulletedList' }),
@@ -95,7 +95,7 @@ export const TEXT_TAGS = {
   EM: () => ({ italic: true }),
   I: () => ({ italic: true }),
   S: () => ({ strikethrough: true }),
-  STRONG: () => ({ bold: true }),
+  STRONG: () => ({ strong: true }),
   U: () => ({ underline: true }),
 };
 
