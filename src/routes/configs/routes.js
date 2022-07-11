@@ -11,7 +11,6 @@ import Discover from '../../client/discover/Discover';
 import DiscoverObjects from '../../client/discoverObjects/DiscoverObjects';
 import RewardsComponent from '../../client/rewards/RewardsComponent/RewardsComponent';
 import RewardsMainPage from '../../client/newRewards/RewardsMainPage';
-import PropositionList from '../../client/newRewards/PropositionList/PropositionList';
 
 const routes = {
   component: Wrapper,
@@ -120,7 +119,7 @@ const routes = {
       path: [
         `/rewards-new/(details|duplicate|create})/:campaignId?`,
         `/rewards-new/(all|eligible)/:requiredObject?`,
-        `/rewards-new/(${URL.REWARDS.tabs})`,
+        `/rewards-new/(${URL.NEW_REWARDS.tabs})`,
       ],
       pathScope: '/rewards-new',
       exact: true,
@@ -136,14 +135,29 @@ const routes = {
           component: Views.RewardsAll,
         },
         {
+          path: '/eligible',
+          exact: true,
+          component: Views.EligibleRewards,
+        },
+        {
           path: '/(details|duplicate|create)/:campaignId?',
           exact: true,
           component: Views.CreateRewards,
         },
         {
-          path: '/(all|eligible)/:requiredObject?',
+          path: '/all/:requiredObject?',
           exact: true,
-          component: PropositionList,
+          component: Views.AllProposition,
+        },
+        {
+          path: '/eligible/:requiredObject?',
+          exact: true,
+          component: Views.EligibleProposition,
+        },
+        {
+          path: '/reserved',
+          exact: true,
+          component: Views.ReservedProposition,
         },
       ],
     },

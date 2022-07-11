@@ -9,11 +9,19 @@ const loableComponent = component =>
 
 export default {
   Bookmarks: loableComponent(import('../client/bookmarks/Bookmarks')),
+  ReservedProposition: loableComponent(
+    import('../client/newRewards/PropositionLists/ReservedProposition'),
+  ),
+  EligibleRewards: loableComponent(import('../client/newRewards/RewardLists/EligibleRewards')),
+  AllProposition: loableComponent(import('../client/newRewards/PropositionLists/AllPropositions')),
+  EligibleProposition: loableComponent(
+    import('../client/newRewards/PropositionLists/EligibleProposition'),
+  ),
   CreateRewards: loableComponent(import('../client/newRewards/CreateRewards/CreateRewards')),
   RewardsManage: loableComponent(
     import('../client/newRewards/ManageCampaingsTab/ManageCampaingsTab'),
   ),
-  RewardsAll: loableComponent(import('../client/newRewards/RewardsAll/RewardsAll')),
+  RewardsAll: loableComponent(import('../client/newRewards/RewardLists/RewardsAll')),
   Drafts: loableComponent(import('../client/post/Write/Drafts')),
   Replies: loableComponent(import('../client/replies/Replies')),
   Activity: loableComponent(import('../client/activity/Activity')),

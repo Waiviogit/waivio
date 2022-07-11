@@ -16,6 +16,7 @@ const initialState = {
   userMetaData: {},
   privateEmail: '',
   isGuestUser: false,
+  tabType: 'all',
   sort: 'recency',
 };
 
@@ -44,6 +45,13 @@ export default (state = initialState, action) => {
         userMetaData: action.payload.userMetaData,
         privateEmail: action.payload.privateEmail,
         isGuestUser: action.payload.isGuestUser,
+        tabType: action.payload.tabType,
+      };
+
+    case types.SET_TAB_REWARDS.SUCCESS:
+      return {
+        ...state,
+        tabType: action.payload.tabType,
       };
 
     case types.LOGIN_ERROR:

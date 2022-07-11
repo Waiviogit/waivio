@@ -4,65 +4,81 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { isEmpty } from 'lodash';
 import { Checkbox } from 'antd';
+import { useSelector } from 'react-redux';
+
 import { getObjectName } from '../../../common/helpers/wObjectHelper';
+import { getMinExpertise } from '../../rewards/rewardsHelper';
+import { getRate, getRewardFund } from '../../../store/appStore/appSelectors';
 
 import './Details.less';
 
 const DetailsModalBody = ({ proposition, requirements }) => {
   const getClassForCurrCreteria = creteria => classNames({ 'criteria-row__required': !creteria });
+  const rate = useSelector(getRate);
+  const rewardFund = useSelector(getRewardFund);
+  const minExpertise = getMinExpertise({
+    campaignMinExpertise: proposition?.userRequirements?.minExpertise,
+    rewardFundRecentClaims: rewardFund.recent_claims,
+    rewardFundRewardBalance: rewardFund.reward_balance,
+    rate,
+  });
 
   return (
     <div className="Details__text-wrap">
-      <div className="Details__text fw6 mv3">User eligibility requirements::</div>
-      <div className="Details__text mv3">
-        Only users who meet all eligibility criteria can participate in this rewards campaign.
-      </div>
-      <div className="Details__criteria-wrap">
-        <div className="Details__criteria-row">
-          <Checkbox checked={requirements?.expertise} disabled />
-          <div className={getClassForCurrCreteria(requirements?.expertise)}>
-            Minimum Waivio expertise: {proposition?.userRequirements?.minExpertise}
+      {!proposition?.reserved && (
+        <React.Fragment>
+          <div className="Details__text fw6 mv3">User eligibility requirements::</div>
+          <div className="Details__text mv3">
+            Only users who meet all eligibility criteria can participate in this rewards campaign.
           </div>
-        </div>
-        <div className="Details__criteria-row">
-          <Checkbox checked={requirements?.followers} disabled />
-          <div className={getClassForCurrCreteria(requirements?.followers)}>
-            Minimum number of followers: {proposition?.userRequirements?.minFollowers}
-          </div>
-        </div>
-        <div className="Details__criteria-row">
-          <Checkbox checked={requirements?.posts} disabled />
-          <div className={getClassForCurrCreteria(requirements?.posts)}>
-            Minimum number of posts: {proposition?.userRequirements?.minPosts}
-          </div>
-        </div>
-        {!!proposition?.frequencyAssign && (
-          <div className="Details__criteria-row">
-            <Checkbox checked={requirements?.frequency} disabled />
-            <div className={getClassForCurrCreteria(requirements?.frequency)}>
-              Have not received a reward from
-              <Link to={`/@${proposition?.guideName}`}>{` @${proposition?.guideName} `}</Link>
-              for reviewing
-              <Link
-                className="nowrap"
-                to={`/object/${proposition?.object?.parent?.author_permlink}`}
-              >
-                {` ${getObjectName(proposition?.object?.parent)} `}
-              </Link>
-              in the last {proposition?.frequencyAssign} days and does not have an active
-              reservation for such a reward at the moment.
+          <div className="Details__criteria-wrap">
+            <div className="Details__criteria-row">
+              <Checkbox checked={requirements?.expertise} disabled />
+              <div className={getClassForCurrCreteria(requirements?.expertise)}>
+                Minimum Waivio expertise: {minExpertise}
+              </div>
+            </div>
+            <div className="Details__criteria-row">
+              <Checkbox checked={requirements?.followers} disabled />
+              <div className={getClassForCurrCreteria(requirements?.followers)}>
+                Minimum number of followers: {proposition?.userRequirements?.minFollowers}
+              </div>
+            </div>
+            <div className="Details__criteria-row">
+              <Checkbox checked={requirements?.posts} disabled />
+              <div className={getClassForCurrCreteria(requirements?.posts)}>
+                Minimum number of posts: {proposition?.userRequirements?.minPosts}
+              </div>
+            </div>
+            {!!proposition?.frequencyAssign && (
+              <div className="Details__criteria-row">
+                <Checkbox checked={requirements?.frequency} disabled />
+                <div className={getClassForCurrCreteria(requirements?.frequency)}>
+                  Have not received a reward from
+                  <Link to={`/@${proposition?.guideName}`}>{` @${proposition?.guideName} `}</Link>
+                  for reviewing
+                  <Link
+                    className="nowrap"
+                    to={`/object/${proposition?.object?.parent?.author_permlink}`}
+                  >
+                    {` ${getObjectName(proposition?.object?.parent)} `}
+                  </Link>
+                  in the last {proposition?.frequencyAssign} days and does not have an active
+                  reservation for such a reward at the moment.
+                </div>
+              </div>
+            )}
+            <div className="Details__criteria-row">
+              <Checkbox checked={requirements?.notBlacklisted} disabled />
+              <div className={getClassForCurrCreteria(requirements?.notBlacklisted)}>
+                User account is not blacklisted by{' '}
+                <Link to={`/@${proposition?.guideName}`}>@{proposition?.guideName}</Link> or
+                referenced accounts.
+              </div>
             </div>
           </div>
-        )}
-        <div className="Details__criteria-row">
-          <Checkbox checked={requirements?.notBlacklisted} disabled />
-          <div className={getClassForCurrCreteria(requirements?.notBlacklisted)}>
-            User account is not blacklisted by{' '}
-            <Link to={`/@${proposition?.guideName}`}>@{proposition?.guideName}</Link> or referenced
-            accounts.
-          </div>
-        </div>
-      </div>
+        </React.Fragment>
+      )}
       <div>
         <div className="Details__text fw6 mv3">Post requirements:</div>
         <div className="Details__text mv3">
@@ -70,7 +86,7 @@ const DetailsModalBody = ({ proposition, requirements }) => {
         </div>
         <ol className="DetailsModal__requirementsList">
           <li>
-            <span className="nowrap">Minimum 2 original photos of 0</span>
+            <span className="nowrap">Minimum 2 original photos of</span>
             <Link
               className="ml1"
               to={`/object/${proposition?.object.id || proposition?.object.author_permlink}`}
@@ -83,7 +99,7 @@ const DetailsModalBody = ({ proposition, requirements }) => {
             <li>Photo of the receipt (without personal details);</li>
           )}
           <li>
-            <span className="nowrap">Link to </span>
+            <span className="nowrap">Link to</span>
             <Link
               className="ml1 Details__container"
               to={`/object/${proposition?.object?.author_permlink}`}
@@ -113,47 +129,51 @@ const DetailsModalBody = ({ proposition, requirements }) => {
           spam, poorly written or for other reasons as stated in the agreement.
         </div>
       </div>
-      <div className="Details__text fw6 mv3">Reward:</div>
-      <span>
-        The amount of the reward is determined in {proposition?.payoutToken} at the time of
-        reservation. The reward will be paid in the form of a combination of upvotes (
-        {proposition?.payoutToken} Power) and direct payments (liquid
-        {proposition?.payoutToken}). Only upvotes from registered accounts (
-        <Link to={`/@${proposition?.guideName}`}>{`@${proposition?.guideName}`}</Link>
-        {!isEmpty(proposition?.matchBots) &&
-          proposition?.matchBots?.map(bot => (
-            <React.Fragment key={bot}>
-              ,
-              <Link className="ml1" to={`/@${bot}`}>
-                {`@${bot}`}
-              </Link>
-            </React.Fragment>
-          ))}
-        ) count towards the payment of rewards. The value of all other upvotes is not subtracted
-        from the specified amount of the reward.
-      </span>
-      <div className="Details__text fw6 mv3">Legal:</div>
-      <span>
-        By making the reservation, you confirm that you have read and agree to the
-        <Link className="ml1" to="/object/xrj-terms-and-conditions/page">
-          Terms and Conditions of the Service Agreement
-        </Link>
-        {!isEmpty(proposition?.agreementObjects) && (
-          <React.Fragment>
-            <span>including the following: Legal highlights:</span>
-            {proposition?.agreementObjects?.map(obj => (
-              <Link key={obj} className="ml1" to={`/object/${obj}/page`}>
-                {obj}
-              </Link>
-            ))}
-          </React.Fragment>
-        )}
-      </span>
-      {proposition?.usersLegalNotice && (
-        <div>
-          <div className="Details__text fw6 mv3">Legal notice:</div>
-          <span>{proposition?.usersLegalNotice}</span>
-        </div>
+      {!proposition?.reserved && (
+        <React.Fragment>
+          <div className="Details__text fw6 mv3">Reward:</div>
+          <span>
+            The amount of the reward is determined in {proposition?.payoutToken} at the time of
+            reservation. The reward will be paid in the form of a combination of upvotes (
+            {proposition?.payoutToken} Power) and direct payments (liquid {proposition?.payoutToken}
+            ). Only upvotes from registered accounts (
+            <Link to={`/@${proposition?.guideName}`}>{`@${proposition?.guideName}`}</Link>
+            {!isEmpty(proposition?.matchBots) &&
+              proposition?.matchBots?.map(bot => (
+                <React.Fragment key={bot}>
+                  ,
+                  <Link className="ml1" to={`/@${bot}`}>
+                    {`@${bot}`}
+                  </Link>
+                </React.Fragment>
+              ))}
+            ) count towards the payment of rewards. The value of all other upvotes is not subtracted
+            from the specified amount of the reward.
+          </span>
+          <div className="Details__text fw6 mv3">Legal:</div>
+          <span>
+            By making the reservation, you confirm that you have read and agree to the
+            <Link className="ml1" to="/object/xrj-terms-and-conditions/page">
+              Terms and Conditions of the Service Agreement
+            </Link>
+            {!isEmpty(proposition?.agreementObjects) && (
+              <React.Fragment>
+                <span>including the following: Legal highlights:</span>
+                {proposition?.agreementObjects?.map(obj => (
+                  <Link key={obj} className="ml1" to={`/object/${obj}/page`}>
+                    {obj}
+                  </Link>
+                ))}
+              </React.Fragment>
+            )}
+          </span>
+          {proposition?.usersLegalNotice && (
+            <div>
+              <div className="Details__text fw6 mv3">Legal notice:</div>
+              <span>{proposition?.usersLegalNotice}</span>
+            </div>
+          )}
+        </React.Fragment>
       )}
     </div>
   );
@@ -172,6 +192,7 @@ DetailsModalBody.propTypes = {
     guideName: PropTypes.string,
     activationPermlink: PropTypes.string,
     description: PropTypes.string,
+    reserved: PropTypes.bool,
     frequencyAssign: PropTypes.number,
     payoutToken: PropTypes.string,
     agreementObjects: PropTypes.arrayOf(PropTypes.string),

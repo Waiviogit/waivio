@@ -73,6 +73,7 @@ export default {
       'match-bots-authors',
       'match-bots-curators',
       'match-bots-sponsors',
+      'eligible',
     ].join('|'),
   },
   NEW_REWARDS: {
@@ -92,6 +93,7 @@ export default {
       'all',
       'details',
       'duplicate',
+      'reserved',
     ].join('|'),
     sideBar: [
       'all',

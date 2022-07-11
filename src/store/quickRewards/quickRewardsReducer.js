@@ -2,6 +2,7 @@ import {
   CREATE_QUICK_POST,
   GET_ELIGIBLE_REWARDS,
   GET_ELIGIBLE_REWARDS_WITH_RESTAURANT,
+  GET_MORE_ELIGIBLE_REWARDS_WITH_RESTAURANT,
   RESET_DISH,
   RESET_RESTAURANT,
   SELECT_DISH,
@@ -40,6 +41,13 @@ export default (state = defaultState, action) => {
         ...state,
         eligibleDishFromRest: action.payload,
       };
+
+    case GET_MORE_ELIGIBLE_REWARDS_WITH_RESTAURANT.SUCCESS:
+      return {
+        ...state,
+        eligibleDishFromRest: [...state.eligibleDishFromRest, ...action.payload],
+      };
+
     case SELECT_RESTAURANT:
       return {
         ...state,

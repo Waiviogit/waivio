@@ -13,6 +13,10 @@ export const getEligibleRewardsListFromState = createSelector(
   [quickRewardsState],
   state => state.eligibleRestList,
 );
+export const getMoreEligibleRewardsListFromState = createSelector(
+  [quickRewardsState],
+  state => state.eligibleRestList,
+);
 
 export const getIsOpenModal = createSelector([quickRewardsState], state => state.isOpen);
 

@@ -107,7 +107,7 @@ export default class PowerUpOrDown extends React.Component {
               vesting_shares: `${vests} VESTS`,
             }
           : {
-              amount: `${round(parseFloat(values.amount), 5)} HIVE`,
+              amount: `${parseFloat(values.amount)} HIVE`,
               to: user.name,
             };
 
@@ -129,7 +129,7 @@ export default class PowerUpOrDown extends React.Component {
                   contractPayload: {
                     symbol: values.currency === 'WP' ? 'WAIV' : values.currency,
                     to: user.name,
-                    quantity: round(parseFloat(values.amount), 5).toString(),
+                    quantity: parseFloat(values.amount).toString(),
                   },
                 }),
               })}`,

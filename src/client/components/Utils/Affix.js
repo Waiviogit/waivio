@@ -62,10 +62,11 @@ class Affix extends React.Component {
 
     const { stickPosition } = this.props;
 
-    const windowHeight = document.body.clientHeight;
+    const windowHeight = window.innerHeight;
     const sidebarHeight = this.affixContainer.clientHeight;
     const scrollTop =
       window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop;
+
     const scrollBottom = scrollTop + windowHeight;
     const scrollDiff = scrollTop - this.lastScroll;
     const scrollingDown = scrollDiff > 0;
