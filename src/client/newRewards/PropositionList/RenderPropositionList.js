@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
-import { isEmpty } from 'lodash';
+import { capitalize, isEmpty } from 'lodash';
 import { useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
+import PropTypes from 'prop-types';
+
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
-import { getObject, getPropositionByCampaingObjectPermlink } from '../../../waivioApi/ApiClient';
+import { getObject } from '../../../waivioApi/ApiClient';
 import ReduxInfiniteScroll from '../../vendor/ReduxInfiniteScroll';
 import Loading from '../../components/Icon/Loading';
 import EmptyCampaing from '../../statics/EmptyCampaing';
@@ -12,7 +15,7 @@ import { getObjectName } from '../../../common/helpers/wObjectHelper';
 
 import './PropositionList.less';
 
-const PropositionList = () => {
+const RenderPropositionList = ({ getProposition, tab }) => {
   const { requiredObject } = useParams();
   const authUserName = useSelector(getAuthenticatedUserName);
   const [propositions, setPropositions] = useState();
@@ -27,7 +30,7 @@ const PropositionList = () => {
       setParent(campParent);
     }
 
-    const res = await getPropositionByCampaingObjectPermlink(requiredObject, authUserName);
+    const res = await getProposition(requiredObject, authUserName);
 
     setPropositions(res.rewards);
     setHasMore(res.hasMore);
@@ -41,11 +44,7 @@ const PropositionList = () => {
   const handleLoadingMoreRewardsList = async () => {
     setLoading(true);
     try {
-      const res = await getPropositionByCampaingObjectPermlink(
-        requiredObject,
-        authUserName,
-        propositions?.length,
-      );
+      const res = await getProposition(requiredObject, authUserName, propositions?.length);
 
       setPropositions([...propositions, ...res.rewards]);
       setHasMore(res.hasMore);
@@ -60,7 +59,9 @@ const PropositionList = () => {
   return (
     <div>
       <div className="PropositionList__breadcrumbs">
-        <h2>All rewards</h2>
+        <Link className="PropositionList__parent" to={`/rewards-new/${tab}`}>
+          {capitalize(tab)} rewards
+        </Link>
         {requiredObject && (
           <div className="PropositionList__parent">
             <span className="PropositionList__icon">&#62;</span>{' '}
@@ -83,6 +84,7 @@ const PropositionList = () => {
             <Proposition
               key={proposition?._id}
               proposition={{ ...proposition, object: { ...proposition.object, parent } }}
+              type={tab.toLowerCase()}
             />
           ))}
         </ReduxInfiniteScroll>
@@ -91,4 +93,9 @@ const PropositionList = () => {
   );
 };
 
-export default PropositionList;
+RenderPropositionList.propTypes = {
+  getProposition: PropTypes.func.isRequired,
+  tab: PropTypes.string.isRequired,
+};
+
+export default RenderPropositionList;

@@ -813,7 +813,6 @@ export const getPropositions = ({
     if (!isMap && match.params.filterKey === IS_RESERVED) reqData.update = true;
     if (requiredObject && !isMap) reqData.requiredObject = requiredObject;
     if (match.params.filterKey === IS_RESERVED) reqData.status = [...status, 'onHold'];
-    console.log(match);
     const url = getUrl(match);
 
     if (isMap && match.params.filterKey === IS_RESERVED) return;
@@ -2702,10 +2701,83 @@ export const getAllRewardList = (skip = 0) => {
     .catch(e => e);
 };
 
+export const getReservedRewardList = (userName, skip = 0) => {
+  return fetch(
+    `${config.campaignV2ApiPrefix}${config.rewards}${config.reserved}/${userName}?limit=10&skip=${skip}`,
+    {
+      headers,
+      method: 'GET',
+    },
+  )
+    .then(handleErrors)
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+};
+
+export const getEligibleRewardList = (userName, skip = 0) => {
+  return fetch(
+    `${config.campaignV2ApiPrefix}${config.rewards}${config.eligible}?userName=${userName}&limit=10&skip=${skip}`,
+    {
+      headers,
+      method: 'GET',
+    },
+  )
+    .then(handleErrors)
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+};
+
 export const getPropositionByCampaingObjectPermlink = (parentPermlink, userName, skip = 0) => {
   return fetch(
     `${config.campaignV2ApiPrefix}${config.rewards}${
       config.all
+    }/object/${parentPermlink}?limit=10&skip=${skip}${userName ? `&userName=${userName}` : ''}`,
+    {
+      headers,
+      method: 'GET',
+    },
+  )
+    .then(handleErrors)
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+};
+
+export const getReservedProposition = (userName, skip = 0) => {
+  return fetch(
+    `${config.campaignV2ApiPrefix}${config.rewards}${config.reserved}/${userName}?limit=10&skip=${skip}`,
+    {
+      headers,
+      method: 'GET',
+    },
+  )
+    .then(handleErrors)
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+};
+
+export const getRewardTab = userName => {
+  return fetch(`${config.campaignV2ApiPrefix}${config.rewards}${config.tabType}/${userName}`, {
+    headers,
+    method: 'GET',
+  })
+    .then(handleErrors)
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+};
+
+export const getEligiblePropositionByCampaingObjectPermlink = (
+  parentPermlink,
+  userName,
+  skip = 0,
+) => {
+  return fetch(
+    `${config.campaignV2ApiPrefix}${config.rewards}${
+      config.eligible
     }/object/${parentPermlink}?limit=10&skip=${skip}${userName ? `&userName=${userName}` : ''}`,
     {
       headers,
