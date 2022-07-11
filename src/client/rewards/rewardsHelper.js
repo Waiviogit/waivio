@@ -301,7 +301,8 @@ export const getDetailsBody = ({
     <li>Minimum number of posts: ${proposition.userRequirements.minPosts}</li>
 </ul>`;
   const frequencyAssign = getFrequencyAssign(proposition);
-  const blacklist = `<ul><li>User account is not blacklisted by <a href='/@${proposition.guide.name}'>${proposition.guide.name}</a> or referenced accounts.</li></ul>`;
+  const guideName = proposition?.guide?.name || proposition?.guideName;
+  const blacklist = `<ul><li>User account is not blacklisted by <a href='/@${guideName}'>${guideName}</a> or referenced accounts.</li></ul>`;
   const receiptPhoto = getReceiptPhoto(proposition);
   const linkToFollowingObjects = proposedWobjName
     ? `<li>Link to <a href='/object/${proposedAuthorPermlink}'>${proposedWobjName}</a></li>`
@@ -314,14 +315,15 @@ export const getDetailsBody = ({
 <ul><li>Minimum ${
     proposition.requirements.minPhotos
   } original photos ${proposedWobj}</li> ${receiptPhoto} ${linkToFollowingObjects}
-<li>Link to <a href="/object/${proposition.requiredObject.author_permlink ||
-    proposition.requiredObject}">${primaryObjectName}</a></li></ul> `;
+<li>Link to <a href="/object/${proposition?.requiredObject?.author_permlink ||
+    proposition?.requiredObject ||
+    proposition?.parent?.author_permlink}">${primaryObjectName}</a></li></ul> `;
   const description = getDescription(proposition);
   const sponsor = `<p>Sponsor reserves the right to refuse the payment if review is suspected to be fraudulent, spam, poorly written or for other reasons as stated in the agreement.</p>`;
   const agreementObjects = getAgreementObjects(proposition);
   const matchBots = getMatchBots(proposition);
   const rewards = `<p><b>Reward:</b></p>
-<p>The amount of the reward is determined in HIVE at the time of reservation. The reward will be paid in the form of a combination of upvotes (Hive Power) and direct payments (liquid HIVE). Only upvotes from registered accounts (<a href='/@${proposition.guide.name}'>${proposition.guide.name}</a> ${matchBots} ) count towards the payment of rewards. The value of all other upvotes is not subtracted from the specified amount of the reward.</p>`;
+<p>The amount of the reward is determined in HIVE at the time of reservation. The reward will be paid in the form of a combination of upvotes (Hive Power) and direct payments (liquid HIVE). Only upvotes from registered accounts (<a href='/@${guideName}'>${guideName}</a> ${matchBots} ) count towards the payment of rewards. The value of all other upvotes is not subtracted from the specified amount of the reward.</p>`;
   const legal = `<p><b>Legal:</b></p>
 <p>By making the reservation, you confirm that you have read and agree to the <a href="/object/xrj-terms-and-conditions/page">Terms and Conditions of the Service Agreement</a> ${agreementObjects}</p>`;
   const usersLegalNotice = getUsersLegalNotice(proposition);

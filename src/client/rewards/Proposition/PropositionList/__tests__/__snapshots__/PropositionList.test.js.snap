@@ -1,12 +1,12 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`PropositionList should create snapshot 1`] = `
+exports[`RenderPropositionList should create snapshot 1`] = `
 ShallowWrapper {
   Symbol(enzyme.__root__): [Circular],
   Symbol(enzyme.__unrendered__): <IntlProvider
     locale="en"
   >
-    <InjectIntl(PropositionList)
+    <InjectIntl(RenderPropositionList)
       props={
         Object {
           "allPropositions": Object {},

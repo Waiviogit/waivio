@@ -68,9 +68,9 @@ const ModalFirstScreen = props => {
   };
 
   const handleSelectDish = item => {
-    const restaurant = props.dishes.find(camp => camp.author_permlink === item);
+    const dish = props.dishes.find(camp => camp.author_permlink === item);
 
-    props.setSelectedDish(restaurant);
+    props.setSelectedDish(dish);
   };
 
   const handleDishFilter = (input, dish) =>

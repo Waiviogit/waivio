@@ -10,6 +10,16 @@ export const rewardsSettings = {
       id: 'all',
       defaultMessage: 'All',
     },
+    {
+      to: '/rewards-new/eligible',
+      id: 'eligible',
+      defaultMessage: 'Eligible',
+    },
+    {
+      to: '/rewards-new/reserved',
+      id: 'reserved',
+      defaultMessage: 'Reserved',
+    },
   ],
 };
 

@@ -1,46 +1,33 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
-import { Button } from 'antd';
+import RewardsHeader from '../RewardsHeader';
 
 import ObjectCardView from '../../../objectCard/ObjectCardView';
 import DetailsModal from '../../DetailsModal/DetailsModal';
+import PropositionFooter from './PropositionFooter';
 
 import './Proposition.less';
 
-const Proposition = ({ proposition }) => {
+const Proposition = ({ proposition, type }) => {
   const [openDetails, setOpenDitails] = useState(false);
+  const onOpenDetailsModal = () => setOpenDitails(true);
 
   return (
     <div className="Proposition-new">
       <div className="Proposition-new__header">
-        <p className="Proposition-new__title">
-          Share {proposition?.requirements?.minPhotos} photos of the dish and earn crypto
-        </p>
-        <div className="Proposition-new__sponsorInfo">
-          <div className="Proposition-new__infoItem Proposition-new__infoItem--right">
-            <Link to={`/@${proposition?.guideName}`}>Waivio Service (Sponsor)</Link>
-            <Link to={`/@${proposition?.guideName}`}>@{proposition?.guideName}</Link>
-          </div>
-          <div className="Proposition-new__infoItem Proposition-new__infoItem--left">
-            <span>Total paid (liquid):</span>
-            <span>
-              {proposition?.totalPayed || 0} {proposition?.payoutToken}
-            </span>
-          </div>
-        </div>
+        <RewardsHeader proposition={proposition} />
       </div>
       <ObjectCardView
         wObject={proposition.object}
         withRewards
         rewardPrice={proposition.rewardInUSD}
       />
-      <div className="Proposition-new__footer">
-        <Button type="primary" onClick={() => setOpenDitails(true)}>
-          <b>Reserve</b> Yor Reward
-        </Button>{' '}
-        for {proposition.countReservationDays} days
-      </div>
+      <PropositionFooter
+        type={proposition.reserved ? 'reserved' : type}
+        countReservationDays={proposition?.countReservationDays}
+        commentsCount={proposition?.commentsCount}
+        openDetailsModal={onOpenDetailsModal}
+      />
       {openDetails && (
         <DetailsModal
           proposition={proposition}
@@ -58,6 +45,8 @@ Proposition.propTypes = {
   proposition: PropTypes.shape({
     rewardInUSD: PropTypes.number,
     guideName: PropTypes.string,
+    reserved: PropTypes.bool,
+    commentsCount: PropTypes.number,
     countReservationDays: PropTypes.number,
     totalPayed: PropTypes.number,
     payoutToken: PropTypes.string,
@@ -69,6 +58,7 @@ Proposition.propTypes = {
     }),
     _id: PropTypes.string,
   }).isRequired,
+  type: PropTypes.string.isRequired,
 };
 
 export default Proposition;

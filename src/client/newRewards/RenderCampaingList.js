@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { isEmpty } from 'lodash';
+import PropTypes from 'prop-types';
 
-import { getAllRewardList } from '../../../waivioApi/ApiClient';
-import Campaing from '../reuseble/Campaing';
-import Loading from '../../components/Icon/Loading';
-import ReduxInfiniteScroll from '../../vendor/ReduxInfiniteScroll';
-import EmptyCampaing from '../../statics/EmptyCampaing';
+import Campaing from './reuseble/Campaing';
+import Loading from '../components/Icon/Loading';
+import ReduxInfiniteScroll from '../vendor/ReduxInfiniteScroll';
+import EmptyCampaing from '../statics/EmptyCampaing';
 
-const RewardsAll = () => {
+const RenderCampaingList = ({ getAllRewardList }) => {
   const [rewards, setRewards] = useState([]);
   const [hasMore, setHasMore] = useState(true);
   const [loading, setLoading] = useState(true);
@@ -38,7 +38,6 @@ const RewardsAll = () => {
 
   return (
     <div>
-      <h2>All rewards</h2>
       {isEmpty(rewards) ? (
         <EmptyCampaing />
       ) : (
@@ -59,4 +58,8 @@ const RewardsAll = () => {
   );
 };
 
-export default RewardsAll;
+RenderCampaingList.propTypes = {
+  getAllRewardList: PropTypes.func.isRequired,
+};
+
+export default RenderCampaingList;
