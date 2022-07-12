@@ -109,7 +109,7 @@ const withEmbeds = cb => editor => {
           : nodesNormalized,
       );
       cb(html);
-      console.log(editor.children);
+
       return;
     }
 
