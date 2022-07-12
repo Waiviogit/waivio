@@ -32,6 +32,7 @@ import {
 } from './util/SlateEditor/utils/SlateUtilityFunctions';
 import { pipe } from '../../../common/helpers';
 import { handlePasteText, setEditor } from '../../../store/slateEditorStore/editorActions';
+import { HEADING_BLOCKS } from "./util/SlateEditor/utils/constants";
 
 import './index.less';
 
@@ -50,7 +51,7 @@ const EditorSlate = props => {
   } = props;
 
   const params = useParams();
-  const [prevParmans, setParams] = useState(null);
+  const [prevParams, setParams] = useState(null);
   const editorRef = useRef(null);
 
   const handlePastedFiles = async event => {
@@ -165,7 +166,7 @@ const EditorSlate = props => {
       const selectedElement = Node.descendant(editor, editor.selection.anchor.path.slice(0, -1));
 
       if (
-        ['headingOne', 'headingTwo', 'headingThree', 'headingFour'].includes(
+        HEADING_BLOCKS.includes(
           selectedElement.type,
         ) ||
         (['blockquote'].includes(selectedElement.type) && !isKeyHotkey('shift+enter', event))
@@ -256,8 +257,10 @@ const EditorSlate = props => {
   }, [params]);
 
   useEffect(() => {
-    if (body && prevParmans !== params) {
+    if (!body) setParams(params);
+    if ((body && prevParams !== params)) {
       setParams(params);
+      // setBody(body);
       const postParsed = deserializeToSlate(body || initialBody);
 
       Transforms.delete(editor, {
