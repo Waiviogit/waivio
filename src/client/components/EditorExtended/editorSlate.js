@@ -32,7 +32,7 @@ import {
 } from './util/SlateEditor/utils/SlateUtilityFunctions';
 import { pipe } from '../../../common/helpers';
 import { handlePasteText, setEditor } from '../../../store/slateEditorStore/editorActions';
-import { HEADING_BLOCKS } from "./util/SlateEditor/utils/constants";
+import { HEADING_BLOCKS } from './util/SlateEditor/utils/constants';
 
 import './index.less';
 
@@ -166,9 +166,7 @@ const EditorSlate = props => {
       const selectedElement = Node.descendant(editor, editor.selection.anchor.path.slice(0, -1));
 
       if (
-        HEADING_BLOCKS.includes(
-          selectedElement.type,
-        ) ||
+        HEADING_BLOCKS.includes(selectedElement.type) ||
         (['blockquote'].includes(selectedElement.type) && !isKeyHotkey('shift+enter', event))
       ) {
         const selectedLeaf = Node.descendant(editor, editor.selection.anchor.path);
@@ -258,7 +256,7 @@ const EditorSlate = props => {
 
   useEffect(() => {
     if (!body) setParams(params);
-    if ((body && prevParams !== params)) {
+    if (body && prevParams !== params) {
       setParams(params);
       // setBody(body);
       const postParsed = deserializeToSlate(body || initialBody);
