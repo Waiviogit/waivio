@@ -84,7 +84,7 @@ const RenderPropositionList = ({ getProposition, tab }) => {
             <Proposition
               key={proposition?._id}
               proposition={{ ...proposition, object: { ...proposition.object, parent } }}
-              type={tab.toLowerCase()}
+              type={tab}
             />
           ))}
         </ReduxInfiniteScroll>

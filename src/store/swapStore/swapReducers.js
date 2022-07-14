@@ -1,11 +1,12 @@
 import * as swapActions from './swapActions';
 
 const initialState = {
-  swapList: [],
+  swapList: {},
   swapListTo: [],
   swapListFrom: [],
   impact: 0.5,
   visible: false,
+  bdPair: '',
   from: { symbol: 'WAIV' },
   to: {},
 };
@@ -21,6 +22,7 @@ export default function swapReducer(state = initialState, action) {
           token => (token.balance > 0 && token.symbol !== 'WAIV') || token.symbol === 'WAIV',
         ),
         from: action.payload.from,
+        to: action.payload.to,
       };
     }
 
@@ -45,11 +47,27 @@ export default function swapReducer(state = initialState, action) {
       };
     }
 
+    case swapActions.SET_BOTH_TOKENS: {
+      return {
+        ...state,
+        to: action.payload.tokenTo,
+        from: action.payload.tokenFrom,
+      };
+    }
+
     case swapActions.SHOW_MODAL: {
       return {
         ...state,
         visible: action.payload.isOpen,
         from: action.payload.symbol ? { symbol: action.payload.symbol } : state.from,
+      };
+    }
+
+    case swapActions.SHOW_MODAL_IN_REBALANCE: {
+      return {
+        ...state,
+        visible: action.payload.isOpen,
+        bdPair: action.payload.bdPair,
       };
     }
 
