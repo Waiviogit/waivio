@@ -9,3 +9,5 @@ export const HEADING_ONE = 'headingOne';
 export const HEADING_TWO = 'headingTwo';
 export const HEADING_THREE = 'headingThree';
 export const HEADING_FOUR = 'headingFour';
+
+export const HEADING_BLOCKS = [HEADING_ONE, HEADING_TWO, HEADING_THREE, HEADING_FOUR];

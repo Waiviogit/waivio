@@ -1,25 +1,6 @@
 import { Transforms, Node, Element } from 'slate';
 import { deserializeHtmlToSlate } from '../../constants';
-import {
-  CODE_BLOCK,
-  HEADING_FOUR,
-  HEADING_ONE,
-  HEADING_THREE,
-  HEADING_TWO,
-  ORDERED_LIST,
-  PARAGRAPH_BLOCK,
-  UNORDERED_LIST,
-} from '../utils/constants';
-
-const BLOCK_TYPES = [
-  ORDERED_LIST,
-  UNORDERED_LIST,
-  CODE_BLOCK,
-  HEADING_ONE,
-  HEADING_TWO,
-  HEADING_THREE,
-  HEADING_FOUR,
-];
+import { CODE_BLOCK, PARAGRAPH_BLOCK } from '../utils/constants';
 
 const withEmbeds = cb => editor => {
   const { isVoid, insertData, normalizeNode, selection } = editor;
@@ -43,12 +24,8 @@ const withEmbeds = cb => editor => {
 
       // eslint-disable-next-line no-restricted-syntax
       for (const [child, childPath] of Node.children(editor, path)) {
-        if (
-          Element.isElement(child) &&
-          !editor.isInline(child) &&
-          !BLOCK_TYPES.includes(child.type)
-        ) {
-          Transforms.unwrapNodes(editor, { at: childPath });
+        if (Element.isElement(child) && !editor.isInline(child)) {
+          Transforms.liftNodes(editor, { at: childPath });
 
           return;
         }
