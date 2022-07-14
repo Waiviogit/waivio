@@ -51,7 +51,7 @@ const Rebalancing = ({ intl }) => {
   };
 
   useEffect(() => {
-    if (search.get('username') !== authUserName) showConfirm();
+    if (search.get('username') && search.get('username') !== authUserName) showConfirm();
     getTableInfo();
   }, []);
 
