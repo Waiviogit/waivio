@@ -1,21 +1,23 @@
 import React, { useLayoutEffect, useState } from 'react';
-import { connect } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { Form, Icon, Modal, Radio } from 'antd';
 import { isEmpty, get } from 'lodash';
 import PropTypes from 'prop-types';
+import classNames from 'classnames';
 
 import {
   changetTokens,
   getSwapList,
   resetModalData,
+  setBothTokens,
   setFromToken,
   setToToken,
   toggleModal,
 } from '../../../store/swapStore/swapActions';
 import {
+  getBdPair,
   getIsChanging,
-  getSwapListFrom,
   getSwapListFromStore,
   getSwapListTo,
   getTokenFrom,
@@ -30,15 +32,21 @@ import { getSwapOutput } from '../../../common/helpers/swapTokenHelpers';
 import { createQuery } from '../../../common/helpers/apiHelpers';
 import TokensSelect from './components/TokensSelect';
 import { getImpact } from '../../../common/helpers/swapWalletHelpers';
-import { getFeeInfo } from '../../../waivioApi/ApiClient';
+import { getFeeInfo, getSwapInfoForRebalance } from '../../../waivioApi/ApiClient';
 
 import './SwapTokens.less';
 
 const SwapTokens = props => {
+  const authUserName = useSelector(getAuthenticatedUserName);
   const [impact, setImpact] = useState(0);
   const [fromAmount, setFromAmount] = useState(0);
   const [toAmount, setToAmount] = useState(0);
   const [param, setParams] = useState(0);
+  const [json, setJson] = useState('');
+  const disable = Boolean(props.bdPair);
+  const arrowButtonClassList = classNames('SwapTokens__arrow', {
+    'SwapTokens__arrow--disabled': disable,
+  });
 
   const setFeeInfo = async () => {
     const data = await getFeeInfo();
@@ -46,9 +54,19 @@ const SwapTokens = props => {
     setParams(data);
   };
 
+  const setSwapData = async imp => {
+    const data = await getSwapInfoForRebalance(authUserName, props.bdPair, imp);
+
+    setFromAmount(data.from.quantity);
+    setToAmount(data.to.quantity);
+    setJson(data.json);
+  };
+
   useLayoutEffect(() => {
     setFeeInfo();
-    props.getSwapList();
+    props.getSwapList().then(() => {
+      if (props.bdPair) setSwapData();
+    });
 
     return () => props.resetModalData();
   }, []);
@@ -131,7 +149,7 @@ const SwapTokens = props => {
         props.authUser
       }"]&required_posting_auths=[]&${createQuery({
         id: 'ssc-mainnet-hive',
-        json: get(swapInfo, 'json'),
+        json: json || get(swapInfo, 'json'),
       })}`,
       '_blank',
     );
@@ -164,9 +182,13 @@ const SwapTokens = props => {
           token={props.from}
           handleClickBalance={handleClickBalanceFrom}
           isError={insufficientFunds(fromAmount)}
+          disabled={disable}
         />
-        <div className="SwapTokens__arrow">
-          <Icon type="arrow-down" onClick={props.isChanging ? null : handelChangeOrderToken} />
+        <div className={arrowButtonClassList}>
+          <Icon
+            type="arrow-down"
+            onClick={props.isChanging || disable ? null : handelChangeOrderToken}
+          />
         </div>
         <h3 className="SwapTokens__title">
           <FormattedMessage id="to" defaultMessage="To" />:
@@ -178,6 +200,7 @@ const SwapTokens = props => {
           handleChangeValue={handleChangeToValue}
           token={props.to}
           handleClickBalance={handleClickBalanceTo}
+          disabled={disable}
         />
         <div className="SwapTokens__estimatedWrap">
           <p>
@@ -202,7 +225,10 @@ const SwapTokens = props => {
                 disabled={calculationImpact > imp}
                 key={imp}
                 value={imp}
-                onClick={() => setImpact(imp)}
+                onClick={() => {
+                  setImpact(imp);
+                  if (props.bdPair) setSwapData(imp);
+                }}
               >
                 {imp}%
               </Radio.Button>
@@ -243,6 +269,7 @@ SwapTokens.propTypes = {
   authUser: PropTypes.string.isRequired,
   hiveRateInUsd: PropTypes.number.isRequired,
   visible: PropTypes.bool.isRequired,
+  bdPair: PropTypes.string.isRequired,
   isChanging: PropTypes.bool.isRequired,
 };
 
@@ -254,7 +281,7 @@ export default connect(
       swapList: getSwapListFromStore(state),
       authName: getAuthenticatedUserName(state),
       swapListTo: getSwapListTo(state),
-      swapListFrom: getSwapListFrom(state),
+      bdPair: getBdPair(state),
       to: getTokenTo(state),
       from: getTokenFrom(state),
       hiveRateInUsd: get(cryptosPriceHistory, 'hive.usdPriceHistory.usd', null),
@@ -263,5 +290,13 @@ export default connect(
       isChanging: getIsChanging(state),
     };
   },
-  { getSwapList, setFromToken, setToToken, toggleModal, resetModalData, changetTokens },
+  {
+    getSwapList,
+    setFromToken,
+    setToToken,
+    toggleModal,
+    resetModalData,
+    changetTokens,
+    setBothTokens,
+  },
 )(injectIntl(SwapTokens));

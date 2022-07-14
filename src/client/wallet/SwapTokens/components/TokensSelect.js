@@ -11,8 +11,12 @@ const TokensSelect = props => {
   const presicion = balance > 0.001 ? 3 : 6;
   const inputWrapClassList = classNames('TokenSelect__inputWrap', {
     'TokenSelect__inputWrap--error': props.isError,
+    'TokenSelect__inputWrap--disabled': props.disabled,
   });
-  const setUserBalance = () => props.handleClickBalance(balance);
+
+  const setUserBalance = () => {
+    if (!props.disabled) props.handleClickBalance(balance);
+  };
 
   return (
     <React.Fragment>
@@ -28,12 +32,13 @@ const TokensSelect = props => {
               <FormattedMessage id="max" defaultMessage="max" />
             </span>
           }
+          disabled={props.disabled}
         />
         <Select
           className="TokenSelect__selector"
           showSearch
           value={props.token?.symbol}
-          disabled={isEmpty(props.list)}
+          disabled={isEmpty(props.list) || props.disabled}
           filterOption={(input, option) => option.key.toLowerCase().includes(input.toLowerCase())}
         >
           {props.list.map(swap => (
@@ -66,6 +71,7 @@ const TokensSelect = props => {
 TokensSelect.propTypes = {
   handleChangeValue: PropTypes.func.isRequired,
   setToken: PropTypes.func.isRequired,
+  disabled: PropTypes.bool.isRequired,
   handleClickBalance: PropTypes.func.isRequired,
   list: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   amount: PropTypes.number.isRequired,

@@ -25,6 +25,7 @@ const LeftSidebar = () => {
         <Route path="/(discover-objects|discover)/:typeName?" component={SidenavDiscoverObjects} />
         <Route path={`/rewards/(${URL.REWARDS.sideBar})`} component={SidenavRewards} />
         <Route path={`/rewards-new/(${URL.REWARDS.sideBar})`} component={SideBar} />
+        <Route path={`/rewards-new/rebalancing`} component={SidenavRewards} />
         <Route path="/rewards/details/:campaignName" component={SidenavRewards} />
         <Route path="/rewards/referral-details/:userName" component={SidenavRewards} />
         <Route path="/rewards/referral-instructions/:userName" component={SidenavRewards} />

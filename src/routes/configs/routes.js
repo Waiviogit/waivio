@@ -159,6 +159,11 @@ const routes = {
           exact: true,
           component: Views.ReservedProposition,
         },
+        {
+          path: '/rebalancing',
+          exact: true,
+          component: Views.Rebalancing,
+        },
       ],
     },
     {
