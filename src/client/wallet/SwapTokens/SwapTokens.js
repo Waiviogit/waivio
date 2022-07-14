@@ -18,6 +18,7 @@ import {
 import {
   getBdPair,
   getIsChanging,
+  getSwapListFrom,
   getSwapListFromStore,
   getSwapListTo,
   getTokenFrom,
@@ -282,6 +283,7 @@ export default connect(
       authName: getAuthenticatedUserName(state),
       swapListTo: getSwapListTo(state),
       bdPair: getBdPair(state),
+      swapListFrom: getSwapListFrom(state),
       to: getTokenTo(state),
       from: getTokenFrom(state),
       hiveRateInUsd: get(cryptosPriceHistory, 'hive.usdPriceHistory.usd', null),
