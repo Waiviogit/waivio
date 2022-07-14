@@ -15,8 +15,9 @@ import {
   getAuthenticatedUserName,
 } from '../../store/authStore/authSelectors';
 import * as userSelectors from '../../store/userStore/userSelectors';
-import './Notifications.less';
 import { getWalletType, isEmptyAmount } from '../../common/helpers/notificationsHelper';
+
+import './Notifications.less';
 
 class Notifications extends React.Component {
   static propTypes = {
@@ -132,6 +133,21 @@ class Notifications extends React.Component {
                     defaultMessage="{username} started following you"
                     values={{
                       username: <span className="username">{notification.follower}</span>,
+                    }}
+                    key={key}
+                    notification={notification}
+                    read={read}
+                  />
+                );
+              case notificationConstants.ARBITRAGE:
+                return (
+                  <NotificationTemplate
+                    url={`/rewards-new/rebalancing`}
+                    id="rebalance_alert"
+                    defaultMessage="Rebalancing alert for {pair}: {defferencePercent} defference"
+                    values={{
+                      pair: notification.tokenPair,
+                      defferencePercent: notification.differencePercent,
                     }}
                     key={key}
                     notification={notification}

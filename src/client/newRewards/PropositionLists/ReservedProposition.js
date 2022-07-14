@@ -6,7 +6,7 @@ const ReservedProposition = () => {
   const getPropositionReservedPropos = (obj, userName, skip) =>
     getReservedProposition(userName, skip);
 
-  return <RenderPropositionList getProposition={getPropositionReservedPropos} tab={'Reserved'} />;
+  return <RenderPropositionList getProposition={getPropositionReservedPropos} tab={'reserved'} />;
 };
 
 export default ReservedProposition;

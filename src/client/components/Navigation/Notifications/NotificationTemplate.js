@@ -24,7 +24,7 @@ const NotificationTemplate = ({
       'Notification--unread': !read,
     })}
   >
-    <Avatar username={username} size={40} />
+    {username && <Avatar username={username} size={40} />}
     <div className="Notification__text">
       <div className="Notification__text__message">
         <FormattedMessage id={id} defaultMessage={defaultMessage} values={values} />
@@ -39,7 +39,7 @@ const NotificationTemplate = ({
 NotificationTemplate.propTypes = {
   read: PropTypes.bool,
   url: PropTypes.string.isRequired,
-  username: PropTypes.string.isRequired,
+  username: PropTypes.string,
   defaultMessage: PropTypes.string.isRequired,
   id: PropTypes.string.isRequired,
   values: PropTypes.shape(),
@@ -55,6 +55,7 @@ NotificationTemplate.propTypes = {
 NotificationTemplate.defaultProps = {
   read: false,
   notification: {},
+  username: '',
   values: {},
   onClick: () => {},
 };

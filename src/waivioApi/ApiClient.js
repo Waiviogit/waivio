@@ -2839,4 +2839,50 @@ export const getNewCampaingById = id => {
     .catch(e => e);
 };
 
+//avarage
+
+export const getRebalancingTable = account => {
+  return fetch(`${config.arbitrageApiPrefix}${config.rebalancing}/${account}`, {
+    headers,
+    method: 'GET',
+  })
+    .then(handleErrors)
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+};
+
+export const setRebalancingTableItem = (account, body) => {
+  return fetch(`${config.arbitrageApiPrefix}${config.rebalancing}/${account}`, {
+    headers: {
+      ...headers,
+      'access-token': Cookie.get('access_token'),
+    },
+    method: 'PATCH',
+    body: JSON.stringify(body),
+  })
+    .then(handleErrors)
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+};
+
+export const getSwapInfoForRebalance = (account, pair, slippage = 0.5) => {
+  return fetch(`${config.arbitrageApiPrefix}${config.rebalancing}/${account}`, {
+    headers: {
+      ...headers,
+      'access-token': Cookie.get('access_token'),
+    },
+    method: 'POST',
+    body: JSON.stringify({
+      slippage,
+      pair,
+    }),
+  })
+    .then(handleErrors)
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+};
+
 export default null;
