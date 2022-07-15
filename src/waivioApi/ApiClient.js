@@ -2867,7 +2867,7 @@ export const setRebalancingTableItem = (account, body) => {
     .catch(e => e);
 };
 
-export const getSwapInfoForRebalance = (account, pair, slippage = 0.5) => {
+export const getSwapInfoForRebalance = (account, pair) => {
   return fetch(`${config.arbitrageApiPrefix}${config.rebalancing}/${account}`, {
     headers: {
       ...headers,
@@ -2875,7 +2875,6 @@ export const getSwapInfoForRebalance = (account, pair, slippage = 0.5) => {
     },
     method: 'POST',
     body: JSON.stringify({
-      slippage,
       pair,
     }),
   })

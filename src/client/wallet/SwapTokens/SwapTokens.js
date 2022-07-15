@@ -55,10 +55,11 @@ const SwapTokens = props => {
     setParams(data);
   };
 
-  const setSwapData = async imp => {
-    const data = await getSwapInfoForRebalance(authUserName, props.bdPair, imp);
+  const setSwapData = async () => {
+    const data = await getSwapInfoForRebalance(authUserName, props.bdPair);
 
     setFromAmount(data.from.quantity);
+    setImpact(data.priceImpact);
     setToAmount(data.to.quantity);
     setJson(data.json);
   };
@@ -223,12 +224,11 @@ const SwapTokens = props => {
           <Radio.Group value={getImpact(impact)}>
             {swapImpactPercent.map(imp => (
               <Radio.Button
-                disabled={calculationImpact > imp}
+                disabled={calculationImpact > imp || disable}
                 key={imp}
                 value={imp}
                 onClick={() => {
                   setImpact(imp);
-                  if (props.bdPair) setSwapData(imp);
                 }}
               >
                 {imp}%
