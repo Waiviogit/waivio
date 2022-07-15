@@ -132,12 +132,12 @@ const Rebalancing = ({ intl }) => {
                 <div>{row.quote}</div>
               </td>
               <td>
-                <div>{round(row.baseQuantity, 3)}</div>
-                <div>{round(row.quoteQuantity, 3)}</div>
+                <div>{row.baseQuantity}</div>
+                <div>{row.quoteQuantity}</div>
               </td>
-              <td>{round(row.holdingsRatio, 5) || '-'}</td>
-              <td>{round(row.marketRatio, 5) || '-'}</td>
-              <td>{+row.difference ? `${round(row.difference, 2)}%` : '-'}</td>
+              <td>{row.holdingsRatio || '-'}</td>
+              <td>{row.marketRatio || '-'}</td>
+              <td>{round(row.difference, 2)}%</td>
               <td>
                 {+row.rebalanceBase.split(' ')[1] ? (
                   <a
@@ -153,7 +153,7 @@ const Rebalancing = ({ intl }) => {
                   '-'
                 )}
               </td>
-              <td>{+row.earn ? `${round(row.earn, 2)}%` : '-'}</td>
+              <td>{round(row.earn, 2)}%</td>
             </tr>
           ))
         ) : (

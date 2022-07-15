@@ -206,6 +206,22 @@ class Notifications extends React.Component {
                     read={read}
                   />
                 );
+              case notificationConstants.ARBITRAGE:
+                return (
+                  <NotificationTemplate
+                    url={`/rewards-new/rebalancing`}
+                    id="rebalance_alert"
+                    iconType={'swap'}
+                    defaultMessage="Rebalancing alert for {pair}: {defferencePercent}% defference"
+                    values={{
+                      pair: notification.tokenPair,
+                      defferencePercent: notification.differencePercent,
+                    }}
+                    key={key}
+                    notification={notification}
+                    read={read}
+                  />
+                );
               case notificationConstants.REBLOG:
                 return (
                   <NotificationTemplate
