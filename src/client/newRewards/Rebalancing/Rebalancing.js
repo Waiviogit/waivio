@@ -139,7 +139,7 @@ const Rebalancing = ({ intl }) => {
                   <div>{row.quoteQuantity}</div>
                 </td>
                 <td>{getValueForTd(row.holdingsRatio)}</td>
-                <td>{getValueForTd(row.marketRatio)}</td>
+                <td>{row.marketRatio}</td>
                 <td>{getValueForTd(`${round(row.difference, 2)}%`)}</td>
                 <td>
                   {getValueForTd(
