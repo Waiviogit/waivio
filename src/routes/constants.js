@@ -48,6 +48,7 @@ export default {
       'receivables',
       'details',
       'createDublicate',
+      'rebalancing',
     ].join('|'),
     sideBar: [
       'all',
@@ -79,6 +80,7 @@ export default {
   NEW_REWARDS: {
     tabs: [
       'create',
+      'rebalancing',
       'manage',
       'match-bots-sponsors',
       'match-bots-curators',

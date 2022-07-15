@@ -1,10 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
+import { Icon } from 'antd';
 import { FormattedMessage, FormattedRelative } from 'react-intl';
 import { Link } from 'react-router-dom';
 import { epochToUTC } from '../../../../common/helpers/formatter';
 import Avatar from '../../Avatar';
+
 import './Notification.less';
 
 const NotificationTemplate = ({
@@ -16,6 +18,7 @@ const NotificationTemplate = ({
   values,
   defaultMessage,
   id,
+  iconType,
 }) => (
   <Link
     to={url}
@@ -24,7 +27,17 @@ const NotificationTemplate = ({
       'Notification--unread': !read,
     })}
   >
-    <Avatar username={username} size={40} />
+    {username ? (
+      <Avatar username={username} size={40} />
+    ) : (
+      <div className="UserWalletTransactions__icon-container">
+        <Icon
+          type={iconType}
+          style={{ fontSize: '16px' }}
+          className="UserWalletTransactions__icon"
+        />
+      </div>
+    )}
     <div className="Notification__text">
       <div className="Notification__text__message">
         <FormattedMessage id={id} defaultMessage={defaultMessage} values={values} />
@@ -39,7 +52,8 @@ const NotificationTemplate = ({
 NotificationTemplate.propTypes = {
   read: PropTypes.bool,
   url: PropTypes.string.isRequired,
-  username: PropTypes.string.isRequired,
+  username: PropTypes.string,
+  iconType: PropTypes.string,
   defaultMessage: PropTypes.string.isRequired,
   id: PropTypes.string.isRequired,
   values: PropTypes.shape(),
@@ -55,6 +69,8 @@ NotificationTemplate.propTypes = {
 NotificationTemplate.defaultProps = {
   read: false,
   notification: {},
+  username: '',
+  iconType: 'question',
   values: {},
   onClick: () => {},
 };

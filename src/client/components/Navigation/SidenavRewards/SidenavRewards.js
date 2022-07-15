@@ -10,6 +10,7 @@ import {
   getSectionItemsMatchBots,
   getSectionItemsReferrals,
   getSectionItemsRewards,
+  sectionItemsArbitrage,
 } from '../../../../common/helpers/sidenavRewardsHelpers';
 
 import '../Sidenav.less';
@@ -30,6 +31,7 @@ const SidenavRewards = ({
     campaigns: true,
     referrals: true,
     matchBots: true,
+    arbitrage: true,
   });
 
   const toggleMenuCondition = menuItem => {
@@ -120,6 +122,18 @@ const SidenavRewards = ({
                     {menuCondition.matchBots && (
                       <SectionItems sections={getSectionItemsMatchBots(authUserName)} />
                     )}
+                  </React.Fragment>
+                )}
+                {!isGuest && (
+                  <React.Fragment>
+                    <SectionTitle
+                      sectionId="arbitrage"
+                      defaultName="Arbitrage"
+                      nameKey="arbitrage"
+                      isOpen={menuCondition.arbitrage}
+                      toggleSection={toggleMenuCondition}
+                    />
+                    {menuCondition.arbitrage && <SectionItems sections={sectionItemsArbitrage} />}
                   </React.Fragment>
                 )}
               </React.Fragment>
