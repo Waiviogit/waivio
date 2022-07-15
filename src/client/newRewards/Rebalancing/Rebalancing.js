@@ -74,7 +74,7 @@ const Rebalancing = ({ intl }) => {
     setDifferencePercent(sliderValue);
     setOpenSliderModal(false);
 
-    await handlePoolChange();
+    await handlePoolChange({ percent: sliderValue });
   };
 
   return (
@@ -117,45 +117,47 @@ const Rebalancing = ({ intl }) => {
           ))}
         </thead>
         {!isEmpty(table) ? (
-          table.map(row => (
-            <tr key={row._id}>
-              <td>
-                <Checkbox
-                  checked={row.active}
-                  onChange={() => {
-                    handlePoolChange({ field: row.dbField });
-                  }}
-                />
-              </td>
-              <td>
-                <div>{row.base}</div>
-                <div>{row.quote}</div>
-              </td>
-              <td>
-                <div>{row.baseQuantity}</div>
-                <div>{row.quoteQuantity}</div>
-              </td>
-              <td>{row.holdingsRatio || '-'}</td>
-              <td>{row.marketRatio || '-'}</td>
-              <td>{round(row.difference, 2)}%</td>
-              <td>
-                {+row.rebalanceBase.split(' ')[1] ? (
-                  <a
-                    onClick={async () => {
-                      dispatch(setBothTokens(row.base, row.quote));
-                      dispatch(toggleModalInRebalance(true, row.dbField));
+          table.map(row => {
+            const getValueForTd = value => (+row.baseQuantity && +row.quoteQuantity ? value : '-');
+
+            return (
+              <tr key={row._id}>
+                <td>
+                  <Checkbox
+                    checked={row.active}
+                    onChange={() => {
+                      handlePoolChange({ field: row.dbField });
                     }}
-                  >
-                    <div>{row.rebalanceBase}</div>
-                    <div>{row.rebalanceQuote}</div>
-                  </a>
-                ) : (
-                  '-'
-                )}
-              </td>
-              <td>{round(row.earn, 2)}%</td>
-            </tr>
-          ))
+                  />
+                </td>
+                <td>
+                  <div>{row.base}</div>
+                  <div>{row.quote}</div>
+                </td>
+                <td>
+                  <div>{row.baseQuantity}</div>
+                  <div>{row.quoteQuantity}</div>
+                </td>
+                <td>{getValueForTd(row.holdingsRatio)}</td>
+                <td>{getValueForTd(row.marketRatio)}</td>
+                <td>{getValueForTd(`${round(row.difference, 2)}%`)}</td>
+                <td>
+                  {getValueForTd(
+                    <a
+                      onClick={async () => {
+                        dispatch(setBothTokens(row.base, row.quote));
+                        dispatch(toggleModalInRebalance(true, row.dbField));
+                      }}
+                    >
+                      <div>{row.rebalanceBase}</div>
+                      <div>{row.rebalanceQuote}</div>
+                    </a>,
+                  )}
+                </td>
+                <td>{getValueForTd(`${round(row.earn, 2)}%`)}</td>
+              </tr>
+            );
+          })
         ) : (
           <tr>
             <td colSpan={9}>{loading ? <Loading /> : "You don't have any records yet"}</td>
