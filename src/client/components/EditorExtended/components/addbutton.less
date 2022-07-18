@@ -40,16 +40,32 @@
     width: calc(100vw - @margin * 2.8);
     margin-top: 10px;
 
+    &_comment {
+      max-width: 500px;
+    }
+
     @media @small {
       width: calc(100vw - @margin * 16.6);
+
+      &_comment {
+        max-width: 300px;
+      }
     }
 
     @media @medium {
       max-width: 675px;
+
+      &_comment {
+        max-width: 500px;
+      }
     }
 
     @media @large {
       max-width: 705px;
+
+      &_comment {
+        max-width: 600px;
+      }
     }
 
     input.ant-input {
@@ -130,15 +146,18 @@
     border-radius: 4px;
     background-color: @white-smoke;
     min-width: 120px;
+
     @media @medium {
       min-width: 190px;
     }
+
     @media @small {
       padding: 4px;
     }
 
     span {
       padding-left: 2px;
+
       @media @small {
         padding-left: 4px;
       }
@@ -175,11 +194,12 @@
       height: 30px;
       width: 30px;
       margin-top: 0;
-      margin-left: 0px;
+      margin-left: 0;
 
       svg {
         fill: gray;
       }
+
       @media @small {
         margin-left: 5px;
       }
@@ -218,6 +238,7 @@
       &--cube {
         height: 22px;
       }
+
       @media @small {
         margin: 0 6px;
       }
@@ -240,24 +261,24 @@
 }
 
 .md-add-btn-anim-appear {
-  transform: translate3d(-38px, 0px, 0px);
+  transform: translate3d(-38px, 0, 0);
   opacity: 0;
 }
 
 .md-add-btn-anim-appear.md-add-btn-anim-appear-active {
-  transform: translate3d(0px, 0px, 0px);
+  transform: translate3d(0, 0, 0);
   opacity: 1;
   transition: all 0.2s ease-in;
 }
 
 .md-add-btn-anim-enter {
-  transform: translate3d(-38px, 0px, 0px);
+  transform: translate3d(-38px, 0, 0);
   opacity: 0;
 }
 
 .md-add-btn-anim-enter.md-add-btn-anim-enter-active {
   opacity: 1;
-  transform: translate3d(0px, 0px, 0px);
+  transform: translate3d(0, 0, 0);
   transition: all 200ms ease-in;
 }
 
@@ -269,6 +290,7 @@
   opacity: 0.01;
   transition: opacity 200ms ease-in;
 }
+
 .injected-svg {
   margin-top: 2px;
 }
