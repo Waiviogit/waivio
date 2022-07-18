@@ -343,7 +343,7 @@ const compareTransferBody = (
         fieldWAIV: `-${transaction.quantity}`,
         fieldDescription: getTransactionDescription(transactionType, { to: transaction.to })
           .tokensTransferTo,
-        fieldDescriptionForTable: getTableDescription(transactionType, { from: transaction.from })
+        fieldDescriptionForTable: getTableDescription(transactionType, { to: transaction.to })
           .tokensTransferTo,
       };
     }

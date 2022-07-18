@@ -344,7 +344,12 @@ const WAIVwalletTable = props => {
                 defaultMessage: 'Totals can be calculated only for a defined from-till period.',
               })}
           ){'  '}
-          {<Link onClick={exportCsv}> Export to .CSV </Link>}
+          {
+            <Link disabled={isLoadingData} onClick={exportCsv}>
+              {' '}
+              Export to .CSV{' '}
+            </Link>
+          }
         </p>
         <p className="WalletTable__exclude">
           X) -{' '}
