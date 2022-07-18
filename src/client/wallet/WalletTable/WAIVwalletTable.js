@@ -345,7 +345,7 @@ const WAIVwalletTable = props => {
               })}
           ){'  '}
           {
-            <Link disabled={isLoadingData} onClick={exportCsv}>
+            <Link disabled={isLoadingData || loading} onClick={exportCsv}>
               {' '}
               Export to .CSV{' '}
             </Link>
