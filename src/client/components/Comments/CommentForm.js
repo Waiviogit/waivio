@@ -2,14 +2,25 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 import { FormattedMessage } from 'react-intl';
+import { Transforms } from 'slate';
 import { Icon } from 'antd';
+import { connect } from 'react-redux';
 import Scroll from 'react-scroll';
 import withEditor from '../Editor/withEditor';
-import EditorInput from '../Editor/EditorInput';
 import { remarkable } from '../Story/Body';
 import BodyContainer from '../../containers/Story/BodyContainer';
 import Avatar from '../Avatar';
 import './CommentForm.less';
+import EditorSlate from '../EditorExtended/editorSlate';
+import { editorStateToMarkdownSlate } from '../EditorExtended/util/editorStateToMarkdown';
+import { resetEditorState } from '../EditorExtended/util/SlateEditor/utils/SlateUtilityFunctions';
+import { getEditorSlate } from '../../../store/slateEditorStore/editorSelectors';
+import { setUpdatedEditorData } from '../../../store/slateEditorStore/editorActions';
+import { checkCursorInSearchSlate } from '../../../common/helpers/editorHelper';
+import { getObjectName, getObjectType } from '../../../common/helpers/wObjectHelper';
+import objectTypes from '../../object/const/objectTypes';
+import { getObjectUrl } from '../../../common/helpers/postHelpers';
+import { insertObject } from '../EditorExtended/util/SlateEditor/utils/common';
 
 const Element = Scroll.Element;
 
@@ -23,9 +34,8 @@ class CommentForm extends React.Component {
     isLoading: PropTypes.bool,
     submitted: PropTypes.bool,
     inputValue: PropTypes.string.isRequired,
-    onImageUpload: PropTypes.func,
-    onImageInvalid: PropTypes.func,
     onSubmit: PropTypes.func,
+    editor: PropTypes.shape(),
   };
 
   static defaultProps = {
@@ -37,6 +47,7 @@ class CommentForm extends React.Component {
     onImageUpload: () => {},
     onImageInvalid: () => {},
     onSubmit: () => {},
+    editor: {},
   };
 
   constructor(props) {
@@ -66,19 +77,25 @@ class CommentForm extends React.Component {
     }
   }
 
+  setEditor = editor => {
+    this.setState({ editor });
+  };
+
   setInput(input) {
     this.input = input;
   }
 
   setBodyAndRender(body) {
+    const markdownBody = body.children ? editorStateToMarkdownSlate(body.children) : body;
+
     this.setState(
       {
-        body,
-        bodyHTML: remarkable.render(body),
+        body: markdownBody,
+        bodyHTML: remarkable.render(markdownBody),
       },
       () => {
         if (this.input) {
-          this.input.value = body;
+          this.input.value = body.children;
         }
       },
     );
@@ -97,14 +114,29 @@ class CommentForm extends React.Component {
       this.props.onSubmit(this.props.parentPost, formattedBody).then(response => {
         if (!_.get(response, 'error', false)) {
           this.setBodyAndRender('');
+          const { editor } = this.props;
+
+          resetEditorState(editor);
         }
       });
     }
   }
 
+  handleObjectSelect = selectedObject => {
+    const { editor } = this.props;
+    const { beforeRange } = checkCursorInSearchSlate(editor);
+    const objectType = getObjectType(selectedObject);
+    const objectName = getObjectName(selectedObject);
+    const textReplace = objectType === objectTypes.HASHTAG ? `#${objectName}` : objectName;
+    const url = getObjectUrl(selectedObject.id || selectedObject.author_permlink);
+
+    Transforms.select(editor, beforeRange);
+    insertObject(editor, url, textReplace, true);
+  };
+
   render() {
     const { username, isSmall, isLoading } = this.props;
-    const { body, bodyHTML } = this.state;
+    const { bodyHTML } = this.state;
 
     const buttonClass = isLoading ? 'CommentForm__button_disabled' : 'CommentForm__button_primary';
 
@@ -113,15 +145,13 @@ class CommentForm extends React.Component {
         <Avatar username={username} size={!isSmall ? 40 : 32} />
         <div className="CommentForm__text">
           <Element name="commentFormInputScrollerElement">
-            <EditorInput
-              rows={3}
-              inputRef={this.setInput}
-              value={body}
-              onChange={this.handleBodyUpdate}
-              onImageUpload={this.props.onImageUpload}
-              onImageInvalid={this.props.onImageInvalid}
-              inputId={`${this.props.parentPost.id}-comment-inputfile`}
-            />
+            <div className="CommentForm__editor">
+              <EditorSlate
+                onChange={this.handleBodyUpdate}
+                handleObjectSelect={this.handleObjectSelect}
+                isComment
+              />
+            </div>
           </Element>
           <button
             onClick={this.handleSubmit}
@@ -149,4 +179,12 @@ class CommentForm extends React.Component {
   }
 }
 
-export default CommentForm;
+const mapStateToProps = store => ({
+  editor: getEditorSlate(store),
+});
+
+const mapDispatchToProps = dispatch => ({
+  setUpdatedEditorData: data => dispatch(setUpdatedEditorData(data)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(CommentForm);
