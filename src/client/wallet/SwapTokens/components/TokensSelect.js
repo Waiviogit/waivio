@@ -35,6 +35,7 @@ const TokensSelect = props => {
           disabled={props.disabled}
         />
         <Select
+          loading={props.isLoading}
           className="TokenSelect__selector"
           showSearch
           value={props.token?.symbol}
@@ -80,11 +81,13 @@ TokensSelect.propTypes = {
     balance: PropTypes.string,
   }).isRequired,
   isError: PropTypes.bool,
+  isLoading: PropTypes.bool,
 };
 
 TokensSelect.defaultProps = {
   isError: false,
   list: [],
+  isLoading: false,
 };
 
 export default TokensSelect;

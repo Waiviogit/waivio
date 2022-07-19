@@ -155,7 +155,7 @@ const Rebalancing = ({ intl }) => {
                   {getValueForTd(
                     <a
                       onClick={async () => {
-                        dispatch(setBothTokens(row.base, row.quote));
+                        dispatch(setBothTokens({ symbol: row.base }, { symbol: row.quote }));
                         dispatch(toggleModalInRebalance(true, row.dbField));
                       }}
                     >
