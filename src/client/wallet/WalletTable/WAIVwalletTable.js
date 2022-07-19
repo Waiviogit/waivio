@@ -283,7 +283,7 @@ const WAIVwalletTable = props => {
       ['X', 'Date', 'WAIV', 'WP', `WAIV/${currentCurrency}`, '±', 'Account', 'Description', 'Memo'],
       ...csvArray,
     ];
-    const csvContent = `data:text/csv;charset=utf-8,${rows.map(e => e.join(',')).join('\n')}`;
+    const csvContent = `data:text/csv;charset=utf-8,${rows.map(e => e.join(';')).join('\n')}`;
     const encodedUri = encodeURI(csvContent);
 
     window.open(encodedUri);
@@ -344,7 +344,12 @@ const WAIVwalletTable = props => {
                 defaultMessage: 'Totals can be calculated only for a defined from-till period.',
               })}
           ){'  '}
-          {<Link onClick={exportCsv}> Export to .CSV </Link>}
+          {
+            <Link disabled={isLoadingData || loading} onClick={exportCsv}>
+              {' '}
+              Export to .CSV{' '}
+            </Link>
+          }
         </p>
         <p className="WalletTable__exclude">
           X) -{' '}
