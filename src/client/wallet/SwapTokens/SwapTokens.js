@@ -56,7 +56,7 @@ const SwapTokens = props => {
     setParams(data);
   };
 
-  const setSwapData = async () => {
+  const setSwapData = async res => {
     const data = await getSwapInfoForRebalance(authUserName, props.bdPair);
 
     setIsLoading(false);
@@ -64,16 +64,16 @@ const SwapTokens = props => {
     setImpact(data.priceImpact);
     setToAmount(data.to.quantity);
     setJson(data.json);
-    if (props.from.symbol !== data.from.symbol) {
-      props.setBothTokens(props.to, props.from);
+    if (res.value.from.symbol !== data.from.symbol) {
+      props.setBothTokens(res.value.to, res.value.from);
     }
   };
 
   useLayoutEffect(() => {
     setFeeInfo();
     setIsLoading(true);
-    props.getSwapList().then(() => {
-      if (props.bdPair) setSwapData();
+    props.getSwapList().then(res => {
+      if (props.bdPair) setSwapData(res);
       else setIsLoading(false);
     });
 
