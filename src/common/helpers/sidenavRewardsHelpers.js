@@ -91,7 +91,7 @@ export const getSectionItemsMatchBots = () => [
 
 export const sectionItemsArbitrage = [
   {
-    path: '/rewards-new/rebalancing',
+    path: '/rewards/rebalancing',
     sectionItemNameId: 'rebalancing',
     sectionItemName: 'Rebalancing',
   },
