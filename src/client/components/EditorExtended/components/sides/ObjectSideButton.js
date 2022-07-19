@@ -10,9 +10,6 @@ const objectSearchInput = props => {
   const handleSelectObject = selectedObject => {
     const objectName = selectedObject.author_permlink;
 
-    if (props.isComment) {
-    }
-
     if (
       selectedObject.type === 'hashtag' ||
       (selectedObject.object_type === 'hashtag' && props.handleHashtag)
@@ -80,7 +77,6 @@ const ObjectSideButton = props => {
 ObjectSideButton.propTypes = {
   intl: PropTypes.shape().isRequired,
   renderControl: PropTypes.func.isRequired,
-  isComment: PropTypes.bool,
 };
 
 ObjectSideButton.defaultProps = {

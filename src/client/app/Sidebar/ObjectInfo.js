@@ -39,6 +39,7 @@ import { getIsWaivio } from '../../../store/appStore/appSelectors';
 import { getIsAuthenticated } from '../../../store/authStore/authSelectors';
 import { getObjectAlbums, getRelatedPhotos } from '../../../store/galleryStore/gallerySelectors';
 import { getRelatedAlbum } from '../../../store/galleryStore/galleryActions';
+import CompanyId from './CompanyId/CompanyId';
 
 import './ObjectInfo.less';
 
@@ -570,6 +571,7 @@ class ObjectInfo extends React.Component {
           ),
         )}
         {this.listItem(objectFields.link, <SocialLinks profile={pickBy(profile, identity)} />)}
+        <CompanyId />
       </React.Fragment>
     );
 
