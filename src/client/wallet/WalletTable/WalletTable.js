@@ -271,7 +271,7 @@ class WalletTable extends React.Component {
         fieldHBD: 4,
         hiveCurrentCurrency: 5,
         withdrawDeposit: 6,
-        account: 7,
+        userName: 7,
         fieldDescriptionForTable: 8,
         fieldMemo: 9,
       };

@@ -64,14 +64,14 @@ const compareTransferBody = (
       });
 
       if (transaction.to === user) {
-        data.descriptionForTable =
-          transaction.from === transaction.to
-            ? descriptionForTable.powerUpTransaction
-            : descriptionForTable.powerUpTransactionFrom;
         data.fieldDescription =
           transaction.from === transaction.to
             ? description.powerUpTransaction
             : description.powerUpTransactionFrom;
+        data.descriptionForTable =
+          transaction.from === transaction.to
+            ? descriptionForTable.powerUpTransaction
+            : descriptionForTable.powerUpTransactionFrom;
         data.fieldHP = toVestingAmount.amount;
       } else {
         data.fieldDescription = description.powerUpTransactionTo;
