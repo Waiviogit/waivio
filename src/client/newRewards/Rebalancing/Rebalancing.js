@@ -77,6 +77,16 @@ const Rebalancing = ({ intl }) => {
     await handlePoolChange({ percent: sliderValue });
   };
 
+  const socket = new WebSocket('wss://waiviodev.com/notifications-api');
+
+  socket.onmessage = e => {
+    const data = JSON.parse(e.data);
+
+    if (data.type === 'updateInfo') {
+      getTableInfo();
+    }
+  };
+
   return (
     <div className="Rebalancing table-wrap">
       <h1>Rebalancing:</h1>
