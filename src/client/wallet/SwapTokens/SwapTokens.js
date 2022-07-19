@@ -44,6 +44,7 @@ const SwapTokens = props => {
   const [toAmount, setToAmount] = useState(0);
   const [param, setParams] = useState(0);
   const [json, setJson] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const disable = Boolean(props.bdPair);
   const arrowButtonClassList = classNames('SwapTokens__arrow', {
     'SwapTokens__arrow--disabled': disable,
@@ -58,16 +59,22 @@ const SwapTokens = props => {
   const setSwapData = async () => {
     const data = await getSwapInfoForRebalance(authUserName, props.bdPair);
 
+    setIsLoading(false);
     setFromAmount(data.from.quantity);
     setImpact(data.priceImpact);
     setToAmount(data.to.quantity);
     setJson(data.json);
+    if (props.from.symbol !== data.from.symbol) {
+      props.setBothTokens(props.to, props.from);
+    }
   };
 
   useLayoutEffect(() => {
     setFeeInfo();
+    setIsLoading(true);
     props.getSwapList().then(() => {
       if (props.bdPair) setSwapData();
+      else setIsLoading(false);
     });
 
     return () => props.resetModalData();
@@ -181,10 +188,11 @@ const SwapTokens = props => {
           }}
           amount={fromAmount}
           handleChangeValue={handleChangeFromValue}
-          token={props.from}
+          token={isLoading ? null : props.from}
           handleClickBalance={handleClickBalanceFrom}
           isError={insufficientFunds(fromAmount)}
           disabled={disable}
+          isLoading={isLoading}
         />
         <div className={arrowButtonClassList}>
           <Icon
@@ -200,9 +208,10 @@ const SwapTokens = props => {
           setToken={handleSetToToken}
           amount={toAmount}
           handleChangeValue={handleChangeToValue}
-          token={props.to}
+          token={isLoading ? null : props.to}
           handleClickBalance={handleClickBalanceTo}
           disabled={disable}
+          isLoading={isLoading}
         />
         <div className="SwapTokens__estimatedWrap">
           <p>
@@ -272,6 +281,7 @@ SwapTokens.propTypes = {
   visible: PropTypes.bool.isRequired,
   bdPair: PropTypes.string.isRequired,
   isChanging: PropTypes.bool.isRequired,
+  setBothTokens: PropTypes.func.isRequired,
 };
 
 export default connect(
