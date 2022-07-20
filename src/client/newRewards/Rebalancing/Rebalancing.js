@@ -16,7 +16,7 @@ import useQuery from '../../../hooks/useQuery';
 import { logout } from '../../../store/authStore/authActions';
 
 import './Rebalancing.less';
-import { subscribeSocket } from '../../../store/rewardsStore/rewardsActions';
+import apiConfig from '../../../waivioApi/routes';
 
 const Rebalancing = ({ intl }) => {
   const authUserName = useSelector(getAuthenticatedUserName);
@@ -79,8 +79,17 @@ const Rebalancing = ({ intl }) => {
   };
 
   useEffect(() => {
-    subscribeSocket();
-    dispatch(subscribeSocket(getTableInfo, 'updateInfo'));
+    const socket = new WebSocket(`wss://${apiConfig[process.env.NODE_ENV].host}/notifications-api`);
+
+    socket.onmessage = e => {
+      const data = JSON.parse(e.data);
+
+      if (data.type === 'updateInfo') {
+        getTableInfo();
+      }
+    };
+
+    return () => socket.close();
   }, []);
 
   return (
