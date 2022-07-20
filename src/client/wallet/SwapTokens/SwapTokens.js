@@ -193,6 +193,8 @@ const SwapTokens = props => {
           isError={insufficientFunds(fromAmount)}
           disabled={disable}
           isLoading={isLoading}
+          disableBalance={props.isRebalance}
+          disableBtnMax={props.isRebalance}
         />
         <div className={arrowButtonClassList}>
           <Icon
@@ -212,6 +214,8 @@ const SwapTokens = props => {
           handleClickBalance={handleClickBalanceTo}
           disabled={disable}
           isLoading={isLoading}
+          disableBalance={props.isRebalance}
+          disableBtnMax={props.isRebalance}
         />
         <div className="SwapTokens__estimatedWrap">
           <p>
@@ -282,6 +286,11 @@ SwapTokens.propTypes = {
   bdPair: PropTypes.string.isRequired,
   isChanging: PropTypes.bool.isRequired,
   setBothTokens: PropTypes.func.isRequired,
+  isRebalance: PropTypes.bool,
+};
+
+SwapTokens.defaultProps = {
+  isRebalance: false,
 };
 
 export default connect(
