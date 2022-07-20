@@ -28,16 +28,16 @@ export const selectFormatDate = locale => {
 
 export const getTableDescription = (type, options) => {
   switch (type) {
-    // case accountHistoryConstants.TRANSFER_TO_VESTING: {
-    //   const from = get(options, 'from', '');
-    //   const to = get(options, 'to', '');
-    //
-    //   return {
-    //     powerUpTransaction: 'Power up',
-    //     powerUpTransactionFrom: `Power up from ${from}`,
-    //     powerUpTransactionTo: `Power up to ${to}`,
-    //   };
-    // }
+    case accountHistoryConstants.TRANSFER_TO_VESTING: {
+      const from = get(options, 'from', '');
+      const to = get(options, 'to', '');
+
+      return {
+        powerUpTransaction: 'Power up',
+        powerUpTransactionFrom: `Power up from ${from}`,
+        powerUpTransactionTo: `Power up to ${to}`,
+      };
+    }
     case accountHistoryConstants.POWER_DOWN_INITIATED_OR_STOP: {
       return {
         powerDownStarted: 'Started power down',
@@ -101,7 +101,6 @@ export const getTableDescription = (type, options) => {
       };
 
     case accountHistoryConstants.TOKENS_STAKE:
-    case accountHistoryConstants.TRANSFER_TO_VESTING:
       const to = get(options, 'to', '');
       const from = get(options, 'from', '');
 
