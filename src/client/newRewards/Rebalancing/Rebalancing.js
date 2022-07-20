@@ -16,6 +16,7 @@ import useQuery from '../../../hooks/useQuery';
 import { logout } from '../../../store/authStore/authActions';
 
 import './Rebalancing.less';
+import { subscribeSocket } from '../../../store/rewardsStore/rewardsActions';
 
 const Rebalancing = ({ intl }) => {
   const authUserName = useSelector(getAuthenticatedUserName);
@@ -77,15 +78,10 @@ const Rebalancing = ({ intl }) => {
     await handlePoolChange({ percent: sliderValue });
   };
 
-  const socket = new WebSocket('wss://waiviodev.com/notifications-api');
-
-  socket.onmessage = e => {
-    const data = JSON.parse(e.data);
-
-    if (data.type === 'updateInfo') {
-      getTableInfo();
-    }
-  };
+  useEffect(() => {
+    subscribeSocket();
+    dispatch(subscribeSocket(getTableInfo, 'updateInfo'));
+  }, []);
 
   return (
     <div className="Rebalancing table-wrap">
@@ -155,7 +151,7 @@ const Rebalancing = ({ intl }) => {
                   {getValueForTd(
                     <a
                       onClick={async () => {
-                        dispatch(setBothTokens(row.base, row.quote));
+                        dispatch(setBothTokens({ symbol: row.base }, { symbol: row.quote }));
                         dispatch(toggleModalInRebalance(true, row.dbField));
                       }}
                     >

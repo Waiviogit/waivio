@@ -242,3 +242,11 @@ export const unsetMatchBot = (name, type) => (dispatch, getState, { steemConnect
     },
   });
 };
+
+export const subscribeSocket = (callback, type) => (dispatch, getState, { busyAPI }) => {
+  busyAPI.instance.subscribe((response, mess) => {
+    if (type === mess.type) {
+      callback();
+    }
+  });
+};
