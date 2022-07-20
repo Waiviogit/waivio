@@ -362,7 +362,7 @@ class WalletTable extends React.Component {
               })}
           )
           {
-            <Link disabled={this.props.loading || this.props.isLoadingAllData} onClick={exportCsv}>
+            <Link disabled={this.props.isLoadingAllData || this.props.loading} onClick={exportCsv}>
               {' '}
               Export to .CSV{' '}
             </Link>
