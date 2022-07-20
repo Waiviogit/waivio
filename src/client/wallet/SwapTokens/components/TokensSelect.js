@@ -14,6 +14,14 @@ const TokensSelect = props => {
     'TokenSelect__inputWrap--disabled': props.disabled,
   });
 
+  const balanceClassList = classNames('TokenSelect__balance', {
+    'TokenSelect__balance--disabled': props.disableBalance,
+  });
+
+  const maxButtonClassList = classNames('"TokenSelect__max-button"', {
+    'TokenSelect__max-button--disabled': props.disableBtnMax,
+  });
+
   const setUserBalance = () => {
     if (!props.disabled) props.handleClickBalance(balance);
   };
@@ -28,13 +36,14 @@ const TokensSelect = props => {
           type="number"
           className="TokenSelect__input"
           suffix={
-            <span className="TokenSelect__max-button" onClick={setUserBalance}>
+            <span className={maxButtonClassList} onClick={setUserBalance}>
               <FormattedMessage id="max" defaultMessage="max" />
             </span>
           }
           disabled={props.disabled}
         />
         <Select
+          loading={props.isLoading}
           className="TokenSelect__selector"
           showSearch
           value={props.token?.symbol}
@@ -59,7 +68,7 @@ const TokensSelect = props => {
       <p>
         <FormattedMessage id="your_balance" defaultMessage="Your balance" />:{' '}
         {!isEmpty(props.token) && (
-          <span className="TokenSelect__balance" onClick={setUserBalance}>
+          <span className={balanceClassList} onClick={setUserBalance}>
             {balance} {get(props.token, 'symbol')}
           </span>
         )}
@@ -80,11 +89,17 @@ TokensSelect.propTypes = {
     balance: PropTypes.string,
   }).isRequired,
   isError: PropTypes.bool,
+  isLoading: PropTypes.bool,
+  disableBalance: PropTypes.bool,
+  disableBtnMax: PropTypes.bool,
 };
 
 TokensSelect.defaultProps = {
   isError: false,
   list: [],
+  isLoading: false,
+  disableBalance: false,
+  disableBtnMax: false,
 };
 
 export default TokensSelect;

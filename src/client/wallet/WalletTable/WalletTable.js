@@ -262,6 +262,54 @@ class WalletTable extends React.Component {
         this.props.totalVestingFundSteem,
       ),
     );
+    const exportCsv = () => {
+      const template = {
+        checked: 0,
+        dateForTable: 1,
+        fieldHIVE: 2,
+        fieldHP: 3,
+        fieldHBD: 4,
+        hiveCurrentCurrency: 5,
+        withdrawDeposit: 6,
+        account: 7,
+        fieldDescriptionForTable: 8,
+        fieldMemo: 9,
+      };
+
+      const csvHiveArray = mappedList.map(transaction => {
+        const newArr = [];
+
+        Object.entries(template).forEach(item => {
+          if (item[0] === 'checked') {
+            newArr[item[1]] = transaction?.[item[0]] ? 1 : 0;
+          } else {
+            newArr[item[1]] = transaction?.[item[0]] || '';
+          }
+        });
+
+        return newArr;
+      });
+
+      const rows = [
+        [
+          'X',
+          'Date',
+          'HIVE',
+          'HP',
+          'HBD',
+          `HIVE/${this.state.currentCurrency}`,
+          '±',
+          'Account',
+          'Description',
+          'Memo',
+        ],
+        ...csvHiveArray,
+      ];
+      const csvContent = `data:text/csv;charset=utf-8,${rows.map(e => e.join(';')).join('\n')}`;
+      const encodedUri = encodeURI(csvContent);
+
+      window.open(encodedUri);
+    };
 
     return (
       <div className="WalletTable">
@@ -313,6 +361,12 @@ class WalletTable extends React.Component {
                 defaultMessage: 'Totals can be calculated only for a defined from-till period.',
               })}
           )
+          {
+            <Link disabled={this.props.loading} onClick={exportCsv}>
+              {' '}
+              Export to .CSV{' '}
+            </Link>
+          }
         </p>
         <p className="WalletTable__exclude">
           X) -{' '}

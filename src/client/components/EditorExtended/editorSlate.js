@@ -5,12 +5,13 @@ import isSoftNewlineEvent from 'draft-js/lib/isSoftNewlineEvent';
 import { message } from 'antd';
 import classNames from 'classnames';
 import { Slate, Editable, withReact } from 'slate-react';
-import { createEditor, Editor, Transforms, Node, Range } from 'slate';
+import { createEditor, Transforms, Node, Range } from 'slate';
 import { withHistory } from 'slate-history';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { useParams } from 'react-router';
 import { isKeyHotkey } from 'is-hotkey';
+import { injectIntl } from 'react-intl';
 
 import { encodeImageFileAsURL, SIDE_BUTTONS_SLATE } from './model/content';
 import EditorSearchObjects from './components/EditorSearchObjects';
@@ -29,6 +30,7 @@ import withLists from './util/SlateEditor/plugins/withLists';
 import {
   focusEditorToEnd,
   removeAllInlineFormats,
+  resetEditorState,
 } from './util/SlateEditor/utils/SlateUtilityFunctions';
 import { pipe } from '../../../common/helpers';
 import { handlePasteText, setEditor } from '../../../store/slateEditorStore/editorActions';
@@ -48,6 +50,7 @@ const EditorSlate = props => {
     handleHashtag,
     handleObjectSelect,
     initialBody,
+    isComment,
   } = props;
 
   const params = useParams();
@@ -258,15 +261,9 @@ const EditorSlate = props => {
     if (!body) setParams(params);
     if (body && prevParams !== params) {
       setParams(params);
-      // setBody(body);
       const postParsed = deserializeToSlate(body || initialBody);
 
-      Transforms.delete(editor, {
-        at: {
-          anchor: Editor.start(editor, []),
-          focus: Editor.end(editor, []),
-        },
-      });
+      resetEditorState(editor);
       Transforms.insertFragment(editor, postParsed, { at: [0, 0] });
       const lastBlock = editor.children?.[editor.children.length - 1];
 
@@ -284,7 +281,7 @@ const EditorSlate = props => {
       <div className={RichEditorRootClassNamesList} ref={editorRef}>
         <div className={editorClass}>
           {isShowEditorSearch && <EditorSearchObjects editor={editor} />}
-          <Toolbar editorNode={editorRef.current} intl={intl} />
+          <Toolbar editorNode={editorRef.current} intl={intl} isComment={isComment} />
           <Editable
             placeholder={placeholder}
             renderElement={renderElement}
@@ -303,6 +300,7 @@ const EditorSlate = props => {
             handleHashtag={handleHashtag}
             handleObjectSelect={handleObjectSelect}
             editorNode={editorRef.current}
+            isComment={isComment}
           />
         </div>
       </div>
@@ -323,6 +321,7 @@ EditorSlate.propTypes = {
   initialBody: PropTypes.string,
   handlePasteText: PropTypes.func,
   setEditor: PropTypes.func,
+  isComment: PropTypes.bool,
 };
 
 EditorSlate.defaultProps = {
@@ -333,6 +332,7 @@ EditorSlate.defaultProps = {
   initialBody: '',
   handlePasteText: () => {},
   setEditor: () => {},
+  isComment: false,
 };
 
 const mapStateToProps = store => ({
@@ -344,4 +344,4 @@ const mapDispatchToProps = dispatch => ({
   setEditor: editor => dispatch(setEditor({ editor })),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(EditorSlate);
+export default connect(mapStateToProps, mapDispatchToProps)(injectIntl(EditorSlate));

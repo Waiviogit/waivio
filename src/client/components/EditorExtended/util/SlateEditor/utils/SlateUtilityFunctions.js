@@ -132,3 +132,12 @@ export const focusEditorToEnd = editor => {
   Transforms.move(editor, { distance: 1, unit: 'line' });
   ReactEditor.focus(editor);
 };
+
+export const resetEditorState = editor => {
+  Transforms.delete(editor, {
+    at: {
+      anchor: Editor.start(editor, []),
+      focus: Editor.end(editor, []),
+    },
+  });
+};

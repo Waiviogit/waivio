@@ -11,7 +11,7 @@ import './addbutton.less';
 const HEIGHT_BTN = 14;
 
 const AddButtonSlate = props => {
-  const { editorNode } = props;
+  const { editorNode, isComment } = props;
 
   const [isOpen, setOpen] = useState(false);
   const [, setControl] = useState(false);
@@ -99,6 +99,7 @@ const AddButtonSlate = props => {
                       selection={selection}
                       handleClose={handleClose}
                       editorNode={editorNode}
+                      isComment={isComment}
                     />
                   </CSSTransition>
                 );
@@ -121,6 +122,7 @@ AddButtonSlate.propTypes = {
   isClearSearchObjects: PropTypes.bool,
   intl: PropTypes.shape().isRequired,
   editorNode: PropTypes.node.isRequired,
+  isComment: PropTypes.bool,
 };
 
 AddButtonSlate.defaultProps = {
@@ -128,6 +130,7 @@ AddButtonSlate.defaultProps = {
   sideButtons: [],
   withTitleLine: false,
   isClearSearchObjects: false,
+  isComment: false,
 };
 
 export default injectIntl(AddButtonSlate);
