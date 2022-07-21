@@ -150,6 +150,7 @@ class CommentForm extends React.Component {
                 onChange={this.handleBodyUpdate}
                 handleObjectSelect={this.handleObjectSelect}
                 isComment
+                editorEnabled
               />
             </div>
           </Element>
