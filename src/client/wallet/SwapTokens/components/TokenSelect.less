@@ -49,7 +49,7 @@
     width: 100%;
     margin-bottom: 10px;
 
-    input[type='number'] {
+    input[ type = 'number' ] {
       -moz-appearance: textfield;
     }
 
@@ -79,6 +79,11 @@
   &__balance {
     border-bottom: 1px dotted @blue-botticelli;
     cursor: pointer;
+
+    &--disabled {
+      cursor: not-allowed;
+      color: @grey-iron;
+    }
   }
 
   &__hiveEngineInfo {
@@ -100,14 +105,12 @@
     border-radius: 4px;
     padding: 0 5px;
     cursor: pointer;
-    &--disabled {
-      color: @blue-baliHai;
-      background-color: @grey-iron;
-      cursor: no-drop;
 
-      &:hover {
-        background-color: @grey-iron;
-      }
+    &--disabled {
+      padding: 0 5px;
+      border: 1px solid @white-gainsboro;
+      color: @silver;
+      cursor: no-drop;
     }
   }
 }
