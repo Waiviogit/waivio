@@ -305,10 +305,10 @@ class WalletTable extends React.Component {
         ],
         ...csvHiveArray,
       ];
-      const csvContent = `data:text/csv;charset=utf-8,${rows.map(e => e.join(';')).join('\n')}`;
-      const encodedUri = encodeURI(csvContent);
 
-      window.open(encodedUri);
+      const csvContent = rows.map(e => e.join(';')).join('\n');
+
+      window.open(`data:text/csv;charset=utf-8,${encodeURIComponent(csvContent)}`);
     };
 
     return (
