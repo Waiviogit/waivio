@@ -172,7 +172,7 @@ const Rebalancing = ({ intl }) => {
                       </a>,
                     )}
                   </td>
-                  <td>{getValueForTd(`${round(row.earn, 2)}%`)}</td>
+                  <td>{getValueForTd(`${row.earn}%`)}</td>
                 </tr>
               );
             })
