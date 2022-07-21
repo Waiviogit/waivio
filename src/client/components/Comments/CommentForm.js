@@ -109,7 +109,7 @@ class CommentForm extends React.Component {
     e.stopPropagation();
     this.setState({ isDisabledSubmit: true });
     if (this.state.body) {
-      const formattedBody = this.state.body.replace(/#([^\s#]+)/g, ' #$1');
+      const formattedBody = this.state.body.replace(/\\(#.)+/g, '$1');
 
       this.props.onSubmit(this.props.parentPost, formattedBody).then(response => {
         if (!_.get(response, 'error', false)) {
@@ -150,6 +150,7 @@ class CommentForm extends React.Component {
                 onChange={this.handleBodyUpdate}
                 handleObjectSelect={this.handleObjectSelect}
                 isComment
+                editorEnabled
               />
             </div>
           </Element>
