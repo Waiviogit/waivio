@@ -271,7 +271,7 @@ class WalletTable extends React.Component {
         fieldHBD: 4,
         hiveCurrentCurrency: 5,
         withdrawDeposit: 6,
-        account: 7,
+        userName: 7,
         fieldDescriptionForTable: 8,
         fieldMemo: 9,
       };
@@ -305,10 +305,10 @@ class WalletTable extends React.Component {
         ],
         ...csvHiveArray,
       ];
-      const csvContent = `data:text/csv;charset=utf-8,${rows.map(e => e.join(';')).join('\n')}`;
-      const encodedUri = encodeURI(csvContent);
 
-      window.open(encodedUri);
+      const csvContent = rows.map(e => e.join(';')).join('\n');
+
+      window.open(`data:text/csv;charset=utf-8,${encodeURIComponent(csvContent)}`);
     };
 
     return (
@@ -362,7 +362,12 @@ class WalletTable extends React.Component {
               })}
           )
           {
-            <Link disabled={this.props.loading} onClick={exportCsv}>
+            <Link
+              disabled={
+                (this.props.isLoadingAllData && this.state.dateEstablished) || this.props.loading
+              }
+              onClick={exportCsv}
+            >
               {' '}
               Export to .CSV{' '}
             </Link>
