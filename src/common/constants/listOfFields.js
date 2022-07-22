@@ -5,6 +5,7 @@ export const objectFields = {
   link: 'link',
   avatar: 'avatar',
   background: 'background',
+  companyId: 'companyId',
   website: 'website',
   phone: 'phone',
   email: 'email',
@@ -133,6 +134,10 @@ export const formColumnsField = {
 export const formFormFields = {
   link: 'Link',
   widget: 'Widget',
+};
+export const companyIdFields = {
+  companyId: 'companyId',
+  companyIdType: 'companyIdType',
 };
 
 export const ratePercent = [2, 4, 6, 8, 10];
