@@ -233,8 +233,8 @@ const compareTransferBody = (
             : description.powerDownWithdrawTo,
         fieldDescriptionForTable:
           transaction.from === transaction.to
-            ? description.powerDownWithdraw
-            : description.powerDownWithdrawTo,
+            ? tableDescription.powerDownWithdraw
+            : tableDescription.powerDownWithdrawTo,
       };
     }
     case accountHistoryConstants.FILL_ORDER:
