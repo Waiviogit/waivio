@@ -1868,5 +1868,7 @@
   "undelegated_from": "Undelegated from",
   "undelegated_to": "Undelegated to",
   "power_up_to": "Power up to {to}",
-  "power_up_from": "Power up from {from}"
+  "power_up_from": "Power up from {from}",
+  "company_id_type": "Company ID type",
+  "company_id": "Company ID"
 }
