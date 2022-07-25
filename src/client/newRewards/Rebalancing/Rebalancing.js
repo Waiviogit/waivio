@@ -172,7 +172,11 @@ const Rebalancing = ({ intl }) => {
                       </a>,
                     )}
                   </td>
-                  <td>{getValueForTd(`${row.earn}%`)}</td>
+                  <td>
+                    {getValueForTd(
+                      parseFloat(row.earn) > 30 ? `initial rebalancing` : `${row.earn}%`,
+                    )}
+                  </td>
                 </tr>
               );
             })

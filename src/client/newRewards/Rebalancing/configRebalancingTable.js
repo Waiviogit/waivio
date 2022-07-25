@@ -1,8 +1,8 @@
 export default [
   {
     intl: {
-      id: 'active',
-      defaultMessage: 'Active',
+      id: 'send_alerts',
+      defaultMessage: 'Send alerts',
     },
   },
   {
