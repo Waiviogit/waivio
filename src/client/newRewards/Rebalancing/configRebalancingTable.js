@@ -1,8 +1,8 @@
 export default [
   {
     intl: {
-      id: 'active',
-      defaultMessage: 'Active',
+      id: 'send_alerts',
+      defaultMessage: 'Send alerts',
     },
   },
   {
@@ -16,18 +16,21 @@ export default [
       id: 'holdings',
       defaultMessage: 'Holdings',
     },
+    hideOnMobile: true,
   },
   {
     intl: {
       id: 'holdings_ratio',
       defaultMessage: 'Holdings ratio',
     },
+    hideOnMobile: true,
   },
   {
     intl: {
       id: 'open_market_ratio',
       defaultMessage: 'Open market ratio',
     },
+    hideOnMobile: true,
   },
   {
     intl: {

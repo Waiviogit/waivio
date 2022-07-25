@@ -160,12 +160,11 @@ export const createQuery = params =>
     return acc ? `${acc}&${value}=${params[value]}` : `${value}=${params[value]}`;
   }, '');
 
+export const isMobile = () =>
+  typeof navigator !== 'undefined' && mobileUserAgents.test(navigator.userAgent);
+
 export const isMobileDevice = () => {
-  if (typeof navigator !== 'undefined' && mobileUserAgents.test(navigator.userAgent))
-    return { device: 'mobile' };
+  if (isMobile()) return { device: 'mobile' };
 
   return {};
 };
-
-export const isMobile = () =>
-  typeof navigator !== 'undefined' && mobileUserAgents.test(navigator.userAgent);
