@@ -471,6 +471,7 @@ export default class AppendForm extends Component {
 
     fieldBody.forEach(bodyField => {
       const data = {};
+
       data.author = this.props.user.name;
       data.parentAuthor = wObject.author;
       data.parentPermlink = wObject.author_permlink;

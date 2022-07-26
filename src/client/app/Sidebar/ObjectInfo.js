@@ -39,7 +39,7 @@ import { getIsWaivio } from '../../../store/appStore/appSelectors';
 import { getIsAuthenticated } from '../../../store/authStore/authSelectors';
 import { getObjectAlbums, getRelatedPhotos } from '../../../store/galleryStore/gallerySelectors';
 import { getRelatedAlbum } from '../../../store/galleryStore/galleryActions';
-import CompanyId from './CompanyId/CompanyId';
+import CompanyId from './CompanyId';
 
 import './ObjectInfo.less';
 
@@ -576,13 +576,12 @@ class ObjectInfo extends React.Component {
           ? companyIdBody && <CompanyId companyIdBody={companyIdBody} />
           : this.listItem(
               objectFields.companyId,
-              companyIdBody &&
-                companyIdBody.map(obj => (
-                  <div key={wobject.id} className="CompanyId__block-item">
-                    <p className="CompanyId__p">{obj.companyIdType}</p>
-                    <p className="CompanyId__p">{obj.companyId}</p>
-                  </div>
-                )),
+              companyIdBody?.map(obj => (
+                <div key={wobject.id} className="CompanyId__block-item">
+                  <p className="CompanyId__p">{obj.companyIdType}</p>
+                  <p className="CompanyId__p">{obj.companyId}</p>
+                </div>
+              )),
             )}
       </React.Fragment>
     );
