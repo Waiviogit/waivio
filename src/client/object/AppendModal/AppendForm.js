@@ -409,6 +409,9 @@ export default class AppendForm extends Component {
             /[{}"]/g,
             '',
           )} ${formValues[phoneFields.number].replace(/[{}"]/g, '')}  `;
+        case objectFields.companyId:
+          return `@${author} added ${currentField}(${langReadable}):\n ${appendValue},
+          ${companyIdFields.companyIdType}: ${formValues[companyIdFields.companyIdType]}  `;
         case TYPES_OF_MENU_ITEM.PAGE:
         case TYPES_OF_MENU_ITEM.LIST: {
           const alias = getFieldValue('menuItemName');
@@ -1045,9 +1048,6 @@ export default class AppendForm extends Component {
           case objectFields.status:
             trimNestedFields(statusFields);
             break;
-          // case objectFields.companyId:
-          // trimNestedFields(companyIdFields);
-          // break;
           default:
             break;
         }

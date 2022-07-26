@@ -577,7 +577,8 @@ class ObjectInfo extends React.Component {
           : this.listItem(
               objectFields.companyId,
               companyIdBody?.map(obj => (
-                <div key={wobject.id} className="CompanyId__block-item">
+                // eslint-disable-next-line react/jsx-key
+                <div className="CompanyId__block-item">
                   <p className="CompanyId__p">{obj.companyIdType}</p>
                   <p className="CompanyId__p">{obj.companyId}</p>
                 </div>
