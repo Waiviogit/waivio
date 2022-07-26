@@ -471,7 +471,6 @@ export default class AppendForm extends Component {
 
     fieldBody.forEach(bodyField => {
       const data = {};
-
       data.author = this.props.user.name;
       data.parentAuthor = wObject.author;
       data.parentPermlink = wObject.author_permlink;
@@ -507,8 +506,10 @@ export default class AppendForm extends Component {
       if (currentField === objectFields.companyId) {
         fieldsObject = {
           ...fieldsObject,
-          [companyIdFields.companyIdType]: formValues[companyIdFields.companyIdType],
-          [companyIdFields.companyId]: formValues[companyIdFields.companyId],
+          body: JSON.stringify({
+            [companyIdFields.companyIdType]: formValues[companyIdFields.companyIdType],
+            [companyIdFields.companyId]: formValues[companyIdFields.companyId],
+          }),
         };
       }
 
@@ -1642,13 +1643,13 @@ export default class AppendForm extends Component {
                     defaultMessage: 'Company ID type',
                   })}
                 />,
-                <p>
-                  There are many global and national databases of companies and they use different
-                  types of identification numbers, for example DUNS, UBI, Easynumber, EBR, LEI and
-                  many more.
-                </p>,
               )}
             </Form.Item>
+            <p>
+              There are many global and national databases of companies and they use different types
+              of identification numbers, for example DUNS, UBI, Easynumber, EBR, LEI and many more.
+            </p>
+            <br />
             <Form.Item>
               {getFieldDecorator(companyIdFields.companyId, {
                 rules: this.getFieldRules('websiteFields.link'),
@@ -1663,12 +1664,12 @@ export default class AppendForm extends Component {
                     defaultMessage: 'Company ID',
                   })}
                 />,
-                <p>
-                  Company identifiers are often alphanumeric, but there are no limitations on this
-                  text field.
-                </p>,
               )}
             </Form.Item>
+            <p>
+              Company identifiers are often alphanumeric, but there are no limitations on this text
+              field.
+            </p>
           </React.Fragment>
         );
       }

@@ -326,7 +326,7 @@ class ObjectInfo extends React.Component {
     const workTime = get(wobject, 'workTime');
     const linkField = parseWobjectField(wobject, 'link');
     const customSort = get(wobject, 'sortCustom', []);
-    const companyIdBody = wobject?.companyId.map(obj => JSON.parse(obj.body));
+    const companyIdBody = wobject.companyId?.map(el => parseWobjectField(el, 'body', []));
     const profile = linkField
       ? {
           facebook: linkField[linkFields.linkFacebook] || '',
@@ -578,9 +578,9 @@ class ObjectInfo extends React.Component {
               objectFields.companyId,
               companyIdBody &&
                 companyIdBody.map(obj => (
-                  <div key={wobject.id} className="CompanyId__block">
-                    <p>{obj.companyIdType}</p>
-                    <p>{obj.companyId}</p>
+                  <div key={wobject.id} className="CompanyId__block-item">
+                    <p className="CompanyId__p">{obj.companyIdType}</p>
+                    <p className="CompanyId__p">{obj.companyId}</p>
                   </div>
                 )),
             )}

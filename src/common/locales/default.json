@@ -1870,5 +1870,6 @@
   "power_up_to": "Power up to {to}",
   "power_up_from": "Power up from {from}",
   "company_id_type": "Company ID type",
-  "company_id": "Company ID"
+  "company_id": "Company ID",
+  "object_field_companyId": "Company ID"
 }

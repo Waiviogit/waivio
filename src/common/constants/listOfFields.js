@@ -6,6 +6,7 @@ export const objectFields = {
   avatar: 'avatar',
   background: 'background',
   companyId: 'companyId',
+  companyIdType: 'companyIdType',
   website: 'website',
   phone: 'phone',
   email: 'email',

@@ -12,21 +12,21 @@ function CompanyId({ companyIdBody }) {
   };
 
   return (
-    <React.Fragment>
+    <div className="CompanyId__container">
       <button className="CompanyId__button" onClick={toggleShowMoreState}>
         Company ID {!showMore ? <Icon type="down" /> : <Icon type="up" />}
       </button>
-      <div>
+      <div className="CompanyId__block">
         {showMore &&
           companyIdBody.map(obj => (
             // eslint-disable-next-line react/jsx-key
-            <div className="CompanyId__block">
-              <p>{obj.companyIdType}</p>
-              <p>{obj.companyId}</p>
+            <div className="CompanyId__block-item">
+              <p className="CompanyId__p">{obj.companyIdType}</p>
+              <p className="CompanyId__p">{obj.companyId}</p>
             </div>
           ))}
       </div>
-    </React.Fragment>
+    </div>
   );
 }
 CompanyId.propTypes = {
