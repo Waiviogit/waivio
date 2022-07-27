@@ -490,6 +490,11 @@ class Rewards extends React.Component {
             every(arrFilterKey, key => filterKey !== key) &&
             !match.params.campaignId
           ) {
+            if (window.location.href.includes('rewards/rebalancing')) {
+              this.setState({ url: this.props.match.url });
+
+              return;
+            }
             if (match.params.filterKey !== rewardsTab[tabType]) {
               this.props.history.push(`/rewards/${rewardsTab[tabType]}/`);
             }
