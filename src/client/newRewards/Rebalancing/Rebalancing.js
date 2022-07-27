@@ -18,6 +18,7 @@ import { isMobile as _isMobile } from '../../../common/helpers/apiHelpers';
 
 import './Rebalancing.less';
 import apiConfig from '../../../waivioApi/routes';
+import requiresLogin from '../../auth/requiresLogin';
 
 const Rebalancing = ({ intl }) => {
   const authUserName = useSelector(getAuthenticatedUserName);
@@ -222,4 +223,4 @@ Rebalancing.propTypes = {
   intl: PropTypes.shape().isRequired,
 };
 
-export default injectIntl(Rebalancing);
+export default requiresLogin(injectIntl(Rebalancing));
