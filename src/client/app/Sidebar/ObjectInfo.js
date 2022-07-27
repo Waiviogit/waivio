@@ -326,7 +326,9 @@ class ObjectInfo extends React.Component {
     const workTime = get(wobject, 'workTime');
     const linkField = parseWobjectField(wobject, 'link');
     const customSort = get(wobject, 'sortCustom', []);
-    const companyIdBody = wobject.companyId?.map(el => parseWobjectField(el, 'body', []));
+    const companyIdBody = wobject.companyId
+      ? wobject.companyId.map(el => parseWobjectField(el, 'body', []))
+      : [];
     const profile = linkField
       ? {
           facebook: linkField[linkFields.linkFacebook] || '',
@@ -573,7 +575,7 @@ class ObjectInfo extends React.Component {
         )}
         {this.listItem(objectFields.link, <SocialLinks profile={pickBy(profile, identity)} />)}
         {!isEditMode
-          ? companyIdBody && <CompanyId companyIdBody={companyIdBody} />
+          ? companyIdBody.length > 0 && <CompanyId companyIdBody={companyIdBody} />
           : this.listItem(
               objectFields.companyId,
               companyIdBody?.map(obj => (
