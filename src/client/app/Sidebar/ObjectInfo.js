@@ -1,5 +1,5 @@
 import React from 'react';
-import { isEmpty, get, pickBy, identity, has, setWith, uniq } from 'lodash';
+import { get, has, identity, isEmpty, pickBy, setWith, uniq } from 'lodash';
 import { Button, Icon, Tag } from 'antd';
 import PropTypes from 'prop-types';
 import { Link, withRouter } from 'react-router-dom';
@@ -7,23 +7,23 @@ import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
 import classNames from 'classnames';
 import {
-  haveAccess,
-  hasType,
   accessTypesArr,
-  parseWobjectField,
-  parseAddress,
-  getObjectName,
-  parseButtonsField,
-  getMenuItems,
   getBlogItems,
   getFormItems,
+  getMenuItems,
+  getObjectName,
+  hasType,
+  haveAccess,
+  parseAddress,
+  parseButtonsField,
+  parseWobjectField,
 } from '../../../common/helpers/wObjectHelper';
 import SocialLinks from '../../components/SocialLinks';
-import { getFieldsCount, getLink, getExposedFieldsByObjType } from '../../object/wObjectHelper';
+import { getExposedFieldsByObjType, getFieldsCount, getLink } from '../../object/wObjectHelper';
 import {
+  linkFields,
   objectFields,
   TYPES_OF_MENU_ITEM,
-  linkFields,
 } from '../../../common/constants/listOfFields';
 import OBJECT_TYPE from '../../object/const/objectTypes';
 import Proposition from '../../components/Proposition/Proposition';
@@ -39,6 +39,7 @@ import { getIsWaivio } from '../../../store/appStore/appSelectors';
 import { getIsAuthenticated } from '../../../store/authStore/authSelectors';
 import { getObjectAlbums, getRelatedPhotos } from '../../../store/galleryStore/gallerySelectors';
 import { getRelatedAlbum } from '../../../store/galleryStore/galleryActions';
+import CompanyId from './CompanyId';
 
 import './ObjectInfo.less';
 
@@ -325,6 +326,9 @@ class ObjectInfo extends React.Component {
     const workTime = get(wobject, 'workTime');
     const linkField = parseWobjectField(wobject, 'link');
     const customSort = get(wobject, 'sortCustom', []);
+    const companyIdBody = wobject.companyId
+      ? wobject.companyId.map(el => parseWobjectField(el, 'body', []))
+      : [];
     const profile = linkField
       ? {
           facebook: linkField[linkFields.linkFacebook] || '',
@@ -570,6 +574,18 @@ class ObjectInfo extends React.Component {
           ),
         )}
         {this.listItem(objectFields.link, <SocialLinks profile={pickBy(profile, identity)} />)}
+        {!isEditMode
+          ? companyIdBody.length > 0 && <CompanyId companyIdBody={companyIdBody} />
+          : this.listItem(
+              objectFields.companyId,
+              companyIdBody?.map(obj => (
+                // eslint-disable-next-line react/jsx-key
+                <div className="CompanyId__block-item">
+                  <p className="CompanyId__p">{obj.companyIdType}</p>
+                  <p className="CompanyId__p">{obj.companyId}</p>
+                </div>
+              )),
+            )}
       </React.Fragment>
     );
 

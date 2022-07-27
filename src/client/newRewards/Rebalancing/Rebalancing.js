@@ -14,9 +14,11 @@ import SwapTokens from '../../wallet/SwapTokens/SwapTokens';
 import { getVisibleModal } from '../../../store/swapStore/swapSelectors';
 import useQuery from '../../../hooks/useQuery';
 import { logout } from '../../../store/authStore/authActions';
+import { isMobile as _isMobile } from '../../../common/helpers/apiHelpers';
 
 import './Rebalancing.less';
 import apiConfig from '../../../waivioApi/routes';
+import requiresLogin from '../../auth/requiresLogin';
 
 const Rebalancing = ({ intl }) => {
   const authUserName = useSelector(getAuthenticatedUserName);
@@ -28,6 +30,7 @@ const Rebalancing = ({ intl }) => {
   const [sliderValue, setSliderValue] = useState(0);
   const [table, setTable] = useState([]);
   const search = useQuery();
+  const isMobile = _isMobile();
 
   const showConfirm = () => {
     Modal.confirm({
@@ -127,9 +130,11 @@ const Rebalancing = ({ intl }) => {
       </p>
       <table className="DynamicTable">
         <thead>
-          {configRebalancingTable.map(th => (
-            <th key={th.id}>{th.intl && intl.formatMessage(th.intl)}</th>
-          ))}
+          {configRebalancingTable
+            .filter(i => !isMobile || !i.hideOnMobile)
+            .map(th => (
+              <th key={th.id}>{th.intl && intl.formatMessage(th.intl)}</th>
+            ))}
         </thead>
         {!isEmpty(table) ? (
           table
@@ -156,9 +161,13 @@ const Rebalancing = ({ intl }) => {
                     <div>{row.baseQuantity}</div>
                     <div>{row.quoteQuantity}</div>
                   </td>
-                  <td>{getValueForTd(row.holdingsRatio)}</td>
-                  <td>{row.marketRatio}</td>
-                  <td>{getValueForTd(`${round(row.difference, 2)}%`)}</td>
+                  {!isMobile && (
+                    <>
+                      <td>{getValueForTd(row.holdingsRatio)}</td>
+                      <td>{row.marketRatio}</td>
+                      <td>{getValueForTd(`${round(row.difference, 2)}%`)}</td>
+                    </>
+                  )}
                   <td>
                     {getValueForTd(
                       <a
@@ -172,7 +181,11 @@ const Rebalancing = ({ intl }) => {
                       </a>,
                     )}
                   </td>
-                  <td>{getValueForTd(`${row.earn}%`)}</td>
+                  <td>
+                    {getValueForTd(
+                      parseFloat(row.earn) > 30 ? `initial rebalancing` : `${row.earn}%`,
+                    )}
+                  </td>
                 </tr>
               );
             })
@@ -210,4 +223,4 @@ Rebalancing.propTypes = {
   intl: PropTypes.shape().isRequired,
 };
 
-export default injectIntl(Rebalancing);
+export default requiresLogin(injectIntl(Rebalancing));
