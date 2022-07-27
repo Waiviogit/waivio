@@ -29,8 +29,8 @@ export const selectFormatDate = locale => {
 export const getTableDescription = (type, options) => {
   switch (type) {
     case accountHistoryConstants.TRANSFER_TO_VESTING: {
-      const from = get(options, 'from', 'user');
-      const to = get(options, 'to', 'user');
+      const from = get(options, 'from', '');
+      const to = get(options, 'to', '');
 
       return {
         powerUpTransaction: 'Power up',
