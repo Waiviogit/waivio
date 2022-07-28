@@ -92,7 +92,7 @@ const TopNavigation = ({ location: { pathname }, match, history }) => {
     const sort = getSort(match, 'default', 'default', 'payout');
 
     dispath(
-      getRewardsGeneralCounts({ userName: authenticatedUser.name, sort, match, area: [] }),
+      getRewardsGeneralCounts({ userName: authenticatedUser.name, sort, match, area: [0, 0] }),
     ).then(data => {
       const { tabType } = data.value;
       const searchParams = new URLSearchParams(location.search);
