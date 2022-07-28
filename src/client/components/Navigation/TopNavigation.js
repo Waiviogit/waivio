@@ -115,11 +115,7 @@ const TopNavigation = ({ location: { pathname }, match, history }) => {
 
             return;
           }
-          if (match.params.filterKey !== rewardsTab[tabType]) {
-            history.push(`/rewards/${tabs[tabType]}/`);
-          } else {
-            history.push(`/rewards/${tabs[tabType]}/`);
-          }
+          history.push(`/rewards/${tabs[tabType]}/`);
         } else {
           history.push(`/rewards/${tabs[tabType]}/`);
         }
