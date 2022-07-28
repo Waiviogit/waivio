@@ -199,7 +199,7 @@ const FilteredRewardsList = props => {
     ];
   }, [location, intl]);
   const parentObj = propositions.find(
-    proposition => proposition.required_object.author_permlink === match.params.campaignId,
+    proposition => proposition?.required_object.author_permlink === match.params.campaignId,
   );
 
   return !loadingCampaigns && !pendingUpdate ? (
