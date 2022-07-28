@@ -513,7 +513,8 @@ class Rewards extends React.Component {
         } else {
           this.setState({ url: this.props.match.url });
         }
-      });
+      })
+      .catch(() => false);
   };
 
   getPropositions = (
