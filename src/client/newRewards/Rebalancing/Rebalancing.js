@@ -157,17 +157,17 @@ const Rebalancing = ({ intl }) => {
                     <div>{row.base}</div>
                     <div>{row.quote}</div>
                   </td>
-                  <td>
-                    <div>{row.baseQuantity}</div>
-                    <div>{row.quoteQuantity}</div>
-                  </td>
                   {!isMobile && (
                     <>
+                      <td>
+                        <div>{row.baseQuantity}</div>
+                        <div>{row.quoteQuantity}</div>
+                      </td>
                       <td>{getValueForTd(row.holdingsRatio)}</td>
                       <td>{row.marketRatio}</td>
-                      <td>{getValueForTd(`${round(row.difference, 2)}%`)}</td>
                     </>
                   )}
+                  <td>{getValueForTd(`${round(row.difference, 2)}%`)}</td>
                   <td>
                     {getValueForTd(
                       <a
