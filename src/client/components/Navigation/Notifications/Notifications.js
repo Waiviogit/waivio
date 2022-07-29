@@ -214,7 +214,7 @@ class Notifications extends React.Component {
                     iconType={'swap'}
                     defaultMessage="Rebalancing alert for {pair}: {differencePercent}% difference"
                     values={{
-                      pair: notification.tokenPair.replace('_', ' / '),
+                      pair: notification.tokenPair.replace('_', ' / ').replace('/', ' / '),
                       differencePercent: notification.differencePercent,
                     }}
                     key={key}
