@@ -255,6 +255,56 @@ export const fieldsRules = {
       validator: true,
     },
   ],
+  [objectFields.companyIdType]: [
+    {
+      max: 100,
+      message: {
+        intlId: {
+          id: 'value_error_long',
+          defaultMessage: "Value can't be longer than 100 characters.",
+        },
+        intlMeta: { value: 100 },
+      },
+    },
+    {
+      required: true,
+      message: {
+        intlId: {
+          id: 'field_error',
+          defaultMessage: 'Field is required',
+        },
+        intlMeta: { field: 'Full description' },
+      },
+    },
+    {
+      validator: true,
+    },
+  ],
+  [objectFields.companyId]: [
+    {
+      max: 100,
+      message: {
+        intlId: {
+          id: 'value_error_long',
+          defaultMessage: "Value can't be longer than 100 characters.",
+        },
+        intlMeta: { value: 100 },
+      },
+    },
+    {
+      required: true,
+      message: {
+        intlId: {
+          id: 'field_error',
+          defaultMessage: 'Field is required',
+        },
+        intlMeta: { field: 'Full description' },
+      },
+    },
+    {
+      validator: true,
+    },
+  ],
   [addressFields.address]: [
     {
       max: 100,
