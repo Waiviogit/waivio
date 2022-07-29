@@ -149,7 +149,7 @@ const TopNavigation = ({ location: { pathname }, match, history }) => {
                   (!pathname.includes('list') || pathname.includes(LINKS.BLACKLIST)),
               })}
             >
-              <FormattedMessage id="rewards" defaultMessage="Rewards" />
+              <FormattedMessage id="earn" defaultMessage="Earn" />
             </Link>
           </li>
           <li className="TopNavigation__item">
