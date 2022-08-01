@@ -58,6 +58,7 @@
   "feed": "/feed",
   "enginePoolsRate": "/engine-pools-rate",
   "rebalancing": "/rebalancing",
+  "profit": "/profit",
   "followingObjects": "/following_objects",
   "followingUpdates": "/following_updates",
   "followingObjectsUpdates": "/following_wobjects_updates",

@@ -11,7 +11,7 @@ import './addbutton.less';
 const HEIGHT_BTN = 14;
 
 const AddButtonSlate = props => {
-  const { editorNode } = props;
+  const { editorNode, isComment } = props;
 
   const [isOpen, setOpen] = useState(false);
   const [, setControl] = useState(false);
@@ -19,6 +19,7 @@ const AddButtonSlate = props => {
   const { selection } = editor;
   const nodeRef = useRef(null);
   const sideControl = useRef(null);
+  const initialPosOfBtn = useRef(null);
 
   useEffect(() => {
     if (!editorNode) return;
@@ -32,7 +33,10 @@ const AddButtonSlate = props => {
       const parentBoundary = editorNode.getBoundingClientRect();
       const nodeStyle = nodeRef.current?.style;
 
-      if (bound.top > 0) nodeStyle.top = `${bound.top - parentBoundary.top - HEIGHT_BTN}px`;
+      if (bound.top > 0) {
+        nodeStyle.top = `${bound.top - parentBoundary.top - HEIGHT_BTN}px`;
+      } else if (bound.top <= 0) nodeStyle.top = initialPosOfBtn.current.top || 'auto';
+      if (!initialPosOfBtn.current.top) initialPosOfBtn.current.top = nodeStyle.top;
     }, 50);
   }, [selection, editor]);
 
@@ -99,6 +103,7 @@ const AddButtonSlate = props => {
                       selection={selection}
                       handleClose={handleClose}
                       editorNode={editorNode}
+                      isComment={isComment}
                     />
                   </CSSTransition>
                 );
@@ -121,6 +126,7 @@ AddButtonSlate.propTypes = {
   isClearSearchObjects: PropTypes.bool,
   intl: PropTypes.shape().isRequired,
   editorNode: PropTypes.node.isRequired,
+  isComment: PropTypes.bool,
 };
 
 AddButtonSlate.defaultProps = {
@@ -128,6 +134,7 @@ AddButtonSlate.defaultProps = {
   sideButtons: [],
   withTitleLine: false,
   isClearSearchObjects: false,
+  isComment: false,
 };
 
 export default injectIntl(AddButtonSlate);

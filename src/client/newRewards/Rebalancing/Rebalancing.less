@@ -1,12 +1,43 @@
+@import (reference) '../../styles/custom.less';
+
 .Rebalancing {
   padding: 0 0 20px 0;
+  position: absolute;
 
   p {
     margin: 15px 0;
   }
 
+  th {
+    font-size: 16px;
+  }
+
+  td {
+    font-size: 14px;
+  }
+
   hr {
     margin: 20px 0;
+  }
+
+  &__button-add-token {
+    background: @orange-hot;
+    color: @white;
+    display: block;
+    margin-top: 10px;
+  }
+
+  &__checkbox-block {
+    margin-left: auto;
+    cursor: pointer;
+    display: flex;
+    justify-content: right;
+    gap: 8px;
+    margin-bottom: 5px;
+
+    label {
+      cursor: pointer;
+    }
   }
 
   &__rebalanceButton--disable {

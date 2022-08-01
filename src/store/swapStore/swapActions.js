@@ -52,11 +52,11 @@ export const setToToken = token => (dispatch, getState) => {
 
 export const SET_BOTH_TOKENS = '@swap/SET_BOTH_TOKENS';
 
-export const setBothTokens = (symbolFrom, symbolTo) => ({
+export const setBothTokens = (tokenFrom, tokenTo) => ({
   type: SET_BOTH_TOKENS,
   payload: {
-    tokenTo: { symbol: symbolTo },
-    tokenFrom: { symbol: symbolFrom },
+    tokenTo,
+    tokenFrom,
   },
 });
 
