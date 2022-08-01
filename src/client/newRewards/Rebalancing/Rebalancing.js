@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Checkbox, Modal, Slider } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import { injectIntl } from 'react-intl';
@@ -18,6 +18,7 @@ import { isMobile as _isMobile } from '../../../common/helpers/apiHelpers';
 
 import './Rebalancing.less';
 import apiConfig from '../../../waivioApi/routes';
+import TableProfit from './TableProfit';
 
 const Rebalancing = ({ intl }) => {
   const authUserName = useSelector(getAuthenticatedUserName);
@@ -28,6 +29,8 @@ const Rebalancing = ({ intl }) => {
   const [differencePercent, setDifferencePercent] = useState(0);
   const [sliderValue, setSliderValue] = useState(0);
   const [table, setTable] = useState([]);
+  const [tokenList, setTokenList] = useState([]);
+  const showAll = useRef(false);
   const search = useQuery();
   const isMobile = _isMobile();
 
@@ -45,12 +48,16 @@ const Rebalancing = ({ intl }) => {
   const getTableInfo = async () => {
     setLoading(true);
 
-    const res = await getRebalancingTable(authUserName);
+    const res = await getRebalancingTable(authUserName, { showAll: showAll.current });
 
     setDifferencePercent(res.differencePercent);
     setSliderValue(res.differencePercent);
     setTable(res.table);
     setLoading(false);
+  };
+  const handleChangeShowAll = () => {
+    showAll.current = !showAll.current;
+    getTableInfo();
   };
 
   useEffect(() => {
@@ -94,6 +101,24 @@ const Rebalancing = ({ intl }) => {
     return () => socket.close();
   }, []);
 
+  useEffect(() => {
+    if (table) {
+      const _tokensList = {};
+
+      table.forEach(i => {
+        if (i.baseQuantity !== '0') {
+          _tokensList[i.base] = i.baseQuantity;
+        }
+        if (i.baseQuantity !== '0') {
+          _tokensList[i.quote] = i.quoteQuantity;
+        }
+      });
+      setTokenList(
+        Object.entries(_tokensList).map(([key, value]) => ({ symbol: key, balance: value })),
+      );
+    }
+  }, [table]);
+
   return (
     <div className="Rebalancing table-wrap">
       <h1>Rebalancing:</h1>
@@ -127,6 +152,10 @@ const Rebalancing = ({ intl }) => {
         Alert me when the difference exceeds: {differencePercent}% (
         <a onClick={() => setOpenSliderModal(true)}>change</a>)
       </p>
+      <div className="Rebalancing__checkbox-block">
+        <Checkbox value={showAll.current} onChange={handleChangeShowAll} id="show-all" />
+        <label htmlFor="show-all">Show all available pairs</label>
+      </div>
       <table className="DynamicTable">
         <thead>
           {configRebalancingTable
@@ -214,6 +243,7 @@ const Rebalancing = ({ intl }) => {
         />{' '}
       </Modal>
       {visibleSwap && <SwapTokens isRebalance />}
+      <TableProfit tokenList={tokenList} />
     </div>
   );
 };

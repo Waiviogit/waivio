@@ -57,6 +57,7 @@
   "matchBots": "/match_bots",
   "feed": "/feed",
   "rebalancing": "/rebalancing",
+  "profit": "/profit",
   "followingObjects": "/following_objects",
   "followingUpdates": "/following_updates",
   "followingObjectsUpdates": "/following_wobjects_updates",

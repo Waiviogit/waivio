@@ -47,7 +47,7 @@ const TokensSelect = props => {
           className="TokenSelect__selector"
           showSearch
           value={props.token?.symbol}
-          disabled={isEmpty(props.list) || props.disabled}
+          disabled={isEmpty(props.list) || props.disabled || props.disabledSelect}
           filterOption={(input, option) => option.key.toLowerCase().includes(input.toLowerCase())}
         >
           {props.list.map(swap => (
@@ -92,6 +92,7 @@ TokensSelect.propTypes = {
   isLoading: PropTypes.bool,
   disableBalance: PropTypes.bool,
   disableBtnMax: PropTypes.bool,
+  disabledSelect: PropTypes.bool,
 };
 
 TokensSelect.defaultProps = {
@@ -100,6 +101,7 @@ TokensSelect.defaultProps = {
   isLoading: false,
   disableBalance: false,
   disableBtnMax: false,
+  disabledSelect: false,
 };
 
 export default TokensSelect;
