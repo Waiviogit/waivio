@@ -946,7 +946,9 @@ export default class AppendForm extends Component {
       currentField === objectFields.map ||
       currentField === objectFields.status ||
       currentField === objectFields.button ||
-      currentField === objectFields.link
+      currentField === objectFields.link ||
+      currentField === objectFields.companyIdType ||
+      currentField === objectFields.companyId
     ) {
       return filtered.some(f =>
         isEqual(this.getCurrentObjectBody(currentField), JSON.parse(f.body)),
@@ -962,11 +964,6 @@ export default class AppendForm extends Component {
       const selectedTagCategory = filtered.filter(item => item.tagCategory === currentCategory);
 
       return selectedTagCategory.some(item => item.body === currentValue);
-    }
-    if (currentField === objectFields.companyId) {
-      const selectedCompanyId = filtered.filter(item => item.companyId === currentCategory);
-
-      return selectedCompanyId.some(item => item.body === currentValue);
     }
     if (currentField === objectFields.blog) {
       return filtered.some(f => this.getCurrentObjectBody(currentField).blogAccount === f.body);
@@ -1633,7 +1630,7 @@ export default class AppendForm extends Component {
           <React.Fragment>
             <Form.Item>
               {getFieldDecorator(companyIdFields.companyIdType, {
-                rules: this.getFieldRules('websiteFields.title'),
+                rules: this.getFieldRules(objectFields.companyIdType),
               })(
                 <Input
                   className={classNames('AppendForm__input', {
@@ -1654,7 +1651,7 @@ export default class AppendForm extends Component {
             <br />
             <Form.Item>
               {getFieldDecorator(companyIdFields.companyId, {
-                rules: this.getFieldRules('websiteFields.link'),
+                rules: this.getFieldRules(objectFields.companyId),
               })(
                 <Input
                   className={classNames('AppendForm__input', {
