@@ -3,6 +3,7 @@ import { startsWith } from 'lodash';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { Input, message } from 'antd';
+import classNames from 'classnames';
 import { ReactEditor, useSlate } from 'slate-react';
 import { Transforms } from 'slate';
 import { createEmptyNode, createVideoNode } from '../../util/SlateEditor/utils/embed';
@@ -29,9 +30,14 @@ const VideoLinkInput = props => {
     }
   };
 
+  const className = classNames({
+    'video-link-input': true,
+    'video-link-input_comment': props.isComment,
+  });
+
   return (
     <Input.Search
-      className="video-link-input"
+      className={className}
       enterButton="Enter"
       placeholder={props.intl.formatMessage({
         id: 'post_btn_video_placeholder',
@@ -45,6 +51,11 @@ const VideoLinkInput = props => {
 VideoLinkInput.propTypes = {
   intl: PropTypes.shape().isRequired,
   close: PropTypes.func.isRequired,
+  isComment: PropTypes.bool,
+};
+
+VideoLinkInput.defaultProps = {
+  isComment: false,
 };
 
 @injectIntl

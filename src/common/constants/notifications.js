@@ -73,6 +73,7 @@ export const PARSED_NOTIFICATIONS = [
   UNDELEGATE,
   POWER_DOWN,
   CANCEL_UNSTAKE,
+  ARBITRAGE,
 ];
 
 export const BUSY_API_TYPES = {

@@ -39,6 +39,7 @@ import {
   websiteFields,
   formColumnsField,
   formFormFields,
+  companyIdFields,
 } from '../../../common/constants/listOfFields';
 import OBJECT_TYPE from '../const/objectTypes';
 import { getSuitableLanguage } from '../../../store/reducers';
@@ -387,6 +388,10 @@ export default class AppendForm extends Component {
         fieldBody.push(rest[objectFields.tagCategory]);
         break;
       }
+      case objectFields.companyId: {
+        fieldBody.push(rest[objectFields.companyId]);
+        break;
+      }
       default:
         fieldBody.push(JSON.stringify(rest));
         break;
@@ -404,6 +409,10 @@ export default class AppendForm extends Component {
             /[{}"]/g,
             '',
           )} ${formValues[phoneFields.number].replace(/[{}"]/g, '')}  `;
+        case objectFields.companyId:
+          return `@${author} added ${currentField}(${langReadable}): ${appendValue}, ${
+            companyIdFields.companyIdType
+          }: ${formValues[companyIdFields.companyIdType]}  `;
         case TYPES_OF_MENU_ITEM.PAGE:
         case TYPES_OF_MENU_ITEM.LIST: {
           const alias = getFieldValue('menuItemName');
@@ -497,6 +506,15 @@ export default class AppendForm extends Component {
         fieldsObject = {
           ...fieldsObject,
           id: uuidv4(),
+        };
+      }
+      if (currentField === objectFields.companyId) {
+        fieldsObject = {
+          ...fieldsObject,
+          body: JSON.stringify({
+            [companyIdFields.companyIdType]: formValues[companyIdFields.companyIdType],
+            [companyIdFields.companyId]: formValues[companyIdFields.companyId],
+          }),
         };
       }
 
@@ -886,6 +904,9 @@ export default class AppendForm extends Component {
       case objectFields.address:
         formFields = form.getFieldsValue(Object.values(addressFields));
         break;
+      case objectFields.companyId:
+        formFields = form.getFieldsValue(Object.values(companyIdFields));
+        break;
       case objectFields.map:
         formFields = form.getFieldsValue(Object.values(mapFields));
         break;
@@ -941,6 +962,11 @@ export default class AppendForm extends Component {
       const selectedTagCategory = filtered.filter(item => item.tagCategory === currentCategory);
 
       return selectedTagCategory.some(item => item.body === currentValue);
+    }
+    if (currentField === objectFields.companyId) {
+      const selectedCompanyId = filtered.filter(item => item.companyId === currentCategory);
+
+      return selectedCompanyId.some(item => item.body === currentValue);
     }
     if (currentField === objectFields.blog) {
       return filtered.some(f => this.getCurrentObjectBody(currentField).blogAccount === f.body);
@@ -1599,6 +1625,53 @@ export default class AppendForm extends Component {
                 />,
               )}
             </Form.Item>
+          </React.Fragment>
+        );
+      }
+      case objectFields.companyId: {
+        return (
+          <React.Fragment>
+            <Form.Item>
+              {getFieldDecorator(companyIdFields.companyIdType, {
+                rules: this.getFieldRules('websiteFields.title'),
+              })(
+                <Input
+                  className={classNames('AppendForm__input', {
+                    'validation-error': !this.state.isSomeValue,
+                  })}
+                  disabled={loading}
+                  placeholder={intl.formatMessage({
+                    id: 'company_id_type',
+                    defaultMessage: 'Company ID type',
+                  })}
+                />,
+              )}
+            </Form.Item>
+            <p>
+              There are many global and national databases of companies and they use different types
+              of identification numbers, for example DUNS, UBI, Easynumber, EBR, LEI and many more.
+            </p>
+            <br />
+            <Form.Item>
+              {getFieldDecorator(companyIdFields.companyId, {
+                rules: this.getFieldRules('websiteFields.link'),
+              })(
+                <Input
+                  className={classNames('AppendForm__input', {
+                    'validation-error': !this.state.isSomeValue,
+                  })}
+                  disabled={loading}
+                  placeholder={intl.formatMessage({
+                    id: 'company_id',
+                    defaultMessage: 'Company ID',
+                  })}
+                />,
+              )}
+            </Form.Item>
+            <p>
+              Company identifiers are often alphanumeric, but there are no limitations on this text
+              field.
+            </p>
           </React.Fragment>
         );
       }

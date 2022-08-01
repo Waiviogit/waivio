@@ -14,8 +14,11 @@ import SwapTokens from '../../wallet/SwapTokens/SwapTokens';
 import { getVisibleModal } from '../../../store/swapStore/swapSelectors';
 import useQuery from '../../../hooks/useQuery';
 import { logout } from '../../../store/authStore/authActions';
+import { isMobile as _isMobile } from '../../../common/helpers/apiHelpers';
 
 import './Rebalancing.less';
+import apiConfig from '../../../waivioApi/routes';
+import requiresLogin from '../../auth/requiresLogin';
 
 const Rebalancing = ({ intl }) => {
   const authUserName = useSelector(getAuthenticatedUserName);
@@ -27,6 +30,7 @@ const Rebalancing = ({ intl }) => {
   const [sliderValue, setSliderValue] = useState(0);
   const [table, setTable] = useState([]);
   const search = useQuery();
+  const isMobile = _isMobile();
 
   const showConfirm = () => {
     Modal.confirm({
@@ -77,6 +81,20 @@ const Rebalancing = ({ intl }) => {
     await handlePoolChange({ percent: sliderValue });
   };
 
+  useEffect(() => {
+    const socket = new WebSocket(`wss://${apiConfig[process.env.NODE_ENV].host}/notifications-api`);
+
+    socket.onmessage = e => {
+      const data = JSON.parse(e.data);
+
+      if (data.type === 'updateInfo') {
+        getTableInfo();
+      }
+    };
+
+    return () => socket.close();
+  }, []);
+
   return (
     <div className="Rebalancing table-wrap">
       <h1>Rebalancing:</h1>
@@ -112,52 +130,65 @@ const Rebalancing = ({ intl }) => {
       </p>
       <table className="DynamicTable">
         <thead>
-          {configRebalancingTable.map(th => (
-            <th key={th.id}>{th.intl && intl.formatMessage(th.intl)}</th>
-          ))}
+          {configRebalancingTable
+            .filter(i => !isMobile || !i.hideOnMobile)
+            .map(th => (
+              <th key={th.id}>{th.intl && intl.formatMessage(th.intl)}</th>
+            ))}
         </thead>
         {!isEmpty(table) ? (
-          table.map(row => {
-            const getValueForTd = value => (+row.baseQuantity && +row.quoteQuantity ? value : '-');
+          table
+            .filter(row => row.baseQuantity !== '0' || row.quoteQuantity !== '0')
+            .map(row => {
+              const getValueForTd = value =>
+                +row.baseQuantity && +row.quoteQuantity ? value : '-';
 
-            return (
-              <tr key={row._id}>
-                <td>
-                  <Checkbox
-                    checked={row.active}
-                    onChange={() => {
-                      handlePoolChange({ field: row.dbField });
-                    }}
-                  />
-                </td>
-                <td>
-                  <div>{row.base}</div>
-                  <div>{row.quote}</div>
-                </td>
-                <td>
-                  <div>{row.baseQuantity}</div>
-                  <div>{row.quoteQuantity}</div>
-                </td>
-                <td>{getValueForTd(row.holdingsRatio)}</td>
-                <td>{row.marketRatio}</td>
-                <td>{getValueForTd(`${round(row.difference, 2)}%`)}</td>
-                <td>
-                  {getValueForTd(
-                    <a
-                      onClick={async () => {
-                        dispatch(setBothTokens(row.base, row.quote));
-                        dispatch(toggleModalInRebalance(true, row.dbField));
+              return (
+                <tr key={row._id}>
+                  <td>
+                    <Checkbox
+                      checked={row.active}
+                      onChange={() => {
+                        handlePoolChange({ field: row.dbField });
                       }}
-                    >
-                      <div>{row.rebalanceBase}</div>
-                      <div>{row.rebalanceQuote}</div>
-                    </a>,
+                    />
+                  </td>
+                  <td>
+                    <div>{row.base}</div>
+                    <div>{row.quote}</div>
+                  </td>
+                  {!isMobile && (
+                    <>
+                      <td>
+                        <div>{row.baseQuantity}</div>
+                        <div>{row.quoteQuantity}</div>
+                      </td>
+                      <td>{getValueForTd(row.holdingsRatio)}</td>
+                      <td>{row.marketRatio}</td>
+                    </>
                   )}
-                </td>
-                <td>{getValueForTd(`${round(row.earn, 2)}%`)}</td>
-              </tr>
-            );
-          })
+                  <td>{getValueForTd(`${round(row.difference, 2)}%`)}</td>
+                  <td>
+                    {getValueForTd(
+                      <a
+                        onClick={async () => {
+                          dispatch(setBothTokens({ symbol: row.base }, { symbol: row.quote }));
+                          dispatch(toggleModalInRebalance(true, row.dbField));
+                        }}
+                      >
+                        <div>{row.rebalanceBase}</div>
+                        <div>{row.rebalanceQuote}</div>
+                      </a>,
+                    )}
+                  </td>
+                  <td>
+                    {getValueForTd(
+                      parseFloat(row.earn) > 30 ? `initial rebalancing` : `${row.earn}%`,
+                    )}
+                  </td>
+                </tr>
+              );
+            })
         ) : (
           <tr>
             <td colSpan={9}>{loading ? <Loading /> : "You don't have any records yet"}</td>
@@ -183,7 +214,7 @@ const Rebalancing = ({ intl }) => {
           onChange={value => setSliderValue(value)}
         />{' '}
       </Modal>
-      {visibleSwap && <SwapTokens />}
+      {visibleSwap && <SwapTokens isRebalance />}
     </div>
   );
 };
@@ -192,4 +223,4 @@ Rebalancing.propTypes = {
   intl: PropTypes.shape().isRequired,
 };
 
-export default injectIntl(Rebalancing);
+export default requiresLogin(injectIntl(Rebalancing));

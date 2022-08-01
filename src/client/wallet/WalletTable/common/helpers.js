@@ -25,6 +25,7 @@ const compareTransferBody = (
   const user = transaction.userName;
   const isGuestPage = guestUserRegex.test(user);
   let description = '';
+  let descriptionForTable = '';
   const data = {
     dateForTable: moment.unix(transaction.timestamp).format('MM/DD/YYYY'),
     time: dateTableField(transaction.timestamp, isGuestPage),
@@ -53,25 +54,24 @@ const compareTransferBody = (
         transactionType,
         'HP',
       );
-      const descriptionForTable = getTableDescription(transactionType, {
-        from: transaction.from,
-        to: transaction.to,
-      });
 
       description = getTransactionDescription(transactionType, {
         from: transaction.from,
         to: transaction.to,
       });
-
+      descriptionForTable = getTableDescription(transactionType, {
+        from: transaction.from,
+        to: transaction.to,
+      });
       if (transaction.to === user) {
-        data.descriptionForTable =
-          transaction.from === transaction.to
-            ? descriptionForTable.powerUpTransaction
-            : descriptionForTable.powerUpTransactionFrom;
         data.fieldDescription =
           transaction.from === transaction.to
             ? description.powerUpTransaction
             : description.powerUpTransactionFrom;
+        data.fieldDescriptionForTable =
+          transaction.from === transaction.to
+            ? descriptionForTable.powerUpTransaction
+            : descriptionForTable.powerUpTransactionFrom;
         data.fieldHP = toVestingAmount.amount;
       } else {
         data.fieldDescription = description.powerUpTransactionTo;
@@ -233,8 +233,8 @@ const compareTransferBody = (
             : description.powerDownWithdrawTo,
         fieldDescriptionForTable:
           transaction.from === transaction.to
-            ? description.powerDownWithdraw
-            : description.powerDownWithdrawTo,
+            ? tableDescription.powerDownWithdraw
+            : tableDescription.powerDownWithdrawTo,
       };
     }
     case accountHistoryConstants.FILL_ORDER:
@@ -343,7 +343,7 @@ const compareTransferBody = (
         fieldWAIV: `-${transaction.quantity}`,
         fieldDescription: getTransactionDescription(transactionType, { to: transaction.to })
           .tokensTransferTo,
-        fieldDescriptionForTable: getTableDescription(transactionType, { from: transaction.from })
+        fieldDescriptionForTable: getTableDescription(transactionType, { to: transaction.to })
           .tokensTransferTo,
       };
     }

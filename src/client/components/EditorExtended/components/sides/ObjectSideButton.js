@@ -3,21 +3,30 @@ import PropTypes from 'prop-types';
 import { withRouter } from 'react-router';
 import { injectIntl } from 'react-intl';
 import { useSlate } from 'slate-react';
+import classnames from 'classnames';
 import SearchObjectsAutocomplete from '../../../../../client/components/EditorObject/SearchObjectsAutocomplete';
 
 const objectSearchInput = props => {
   const handleSelectObject = selectedObject => {
     const objectName = selectedObject.author_permlink;
 
-    if (selectedObject.type === 'hashtag' || selectedObject.object_type === 'hashtag')
+    if (
+      selectedObject.type === 'hashtag' ||
+      (selectedObject.object_type === 'hashtag' && props.handleHashtag)
+    )
       props.handleHashtag(objectName);
     props.handleObjectSelect(selectedObject, true);
     props.handleClose();
   };
 
+  const className = classnames({
+    'object-search-input': true,
+    'object-search-input_comment': props.isComment,
+  });
+
   return (
     <SearchObjectsAutocomplete
-      className="object-search-input"
+      className={className}
       style={{ height: '36px' }}
       handleSelect={handleSelectObject}
       canCreateNewObject={false}
@@ -68,6 +77,10 @@ const ObjectSideButton = props => {
 ObjectSideButton.propTypes = {
   intl: PropTypes.shape().isRequired,
   renderControl: PropTypes.func.isRequired,
+};
+
+ObjectSideButton.defaultProps = {
+  isComment: false,
 };
 
 export default withRouter(injectIntl(ObjectSideButton));

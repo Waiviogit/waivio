@@ -51,7 +51,7 @@ const DelegateModal = props => {
                     contractPayload: {
                       symbol: values.currency === 'WP' ? 'WAIV' : values.currency,
                       to: selectUser,
-                      quantity: round(parseFloat(values.amount), 5).toString(),
+                      quantity: parseFloat(values.amount).toString(),
                     },
                   }),
                 },
@@ -71,7 +71,6 @@ const DelegateModal = props => {
       visible={props.visible}
       title={props.intl.formatMessage({ id: 'delegate', defaultMessage: 'Delegate' })}
       onCancel={props.onCancel}
-      s
       onOk={handleDelegate}
       okText={props.intl.formatMessage({ id: 'delegate', defaultMessage: 'Delegate' })}
       okButtonProps={{
