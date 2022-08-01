@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Checkbox, Modal, Slider } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import { injectIntl } from 'react-intl';
-import { isEmpty, round } from 'lodash';
+import { isEmpty, round, uniqBy } from 'lodash';
 import PropTypes from 'prop-types';
 
 import configRebalancingTable from './configRebalancingTable';
@@ -104,19 +104,20 @@ const Rebalancing = ({ intl }) => {
 
   useEffect(() => {
     if (table) {
-      const _tokensList = {};
+      const _tokensList = table.reduce((acc, curr) => {
+        const accTmp = [...acc];
 
-      table.forEach(i => {
-        if (i.baseQuantity !== '0') {
-          _tokensList[i.base] = i.baseQuantity;
+        if (curr.baseQuantity !== '0') {
+          accTmp.push({ balance: curr.baseQuantity, symbol: curr.base })
         }
-        if (i.baseQuantity !== '0') {
-          _tokensList[i.quote] = i.quoteQuantity;
+        if (curr.quoteQuantity !== '0') {
+          accTmp.push({ balance: curr.quoteQuantity, symbol: curr.quote })
         }
-      });
-      setTokenList(
-        Object.entries(_tokensList).map(([key, value]) => ({ symbol: key, balance: value })),
-      );
+
+        return accTmp;
+      }, []);
+
+      setTokenList(uniqBy(_tokensList, 'symbol'));
     }
   }, [table]);
 
