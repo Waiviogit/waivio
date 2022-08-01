@@ -33,6 +33,8 @@ import { getIsOpenWithdraw } from '../../store/depositeWithdrawStore/depositWith
 import ManageDelegate from './DelegateModals/ManageDelegate/ManageDelegate';
 import { getAuthenticatedUserName } from '../../store/authStore/authSelectors';
 
+import './Wallets.less';
+
 const Wallets = props => {
   const query = new URLSearchParams(props.location.search);
   const walletsType = query.get('type');

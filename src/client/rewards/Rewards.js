@@ -237,7 +237,7 @@ class Rewards extends React.Component {
         const { latitude, longitude } = coords.value;
 
         // eslint-disable-next-line react/no-did-mount-set-state
-        await this.setState({ area: [latitude, longitude] });
+        await this.setState({ area: [latitude || 0, longitude || 0] });
       } catch (e) {
         message.error(e.error_description);
       }
@@ -490,6 +490,11 @@ class Rewards extends React.Component {
             every(arrFilterKey, key => filterKey !== key) &&
             !match.params.campaignId
           ) {
+            if (window.location.href.includes('rewards/rebalancing')) {
+              this.setState({ url: this.props.match.url });
+
+              return;
+            }
             if (match.params.filterKey !== rewardsTab[tabType]) {
               this.props.history.push(`/rewards/${rewardsTab[tabType]}/`);
             }
@@ -592,7 +597,9 @@ class Rewards extends React.Component {
     this.getPropositions({
       username,
       match,
-      area: isEmpty(area) ? [+this.props.userLocation.lat, +this.props.userLocation.lon] : area,
+      area: isEmpty(area)
+        ? [+this.props.userLocation.lat || 0, +this.props.userLocation.lon || 0]
+        : area,
       sort,
       activeFilters,
     });

@@ -18,7 +18,7 @@ const TokensSelect = props => {
     'TokenSelect__balance--disabled': props.disableBalance,
   });
 
-  const maxButtonClassList = classNames('"TokenSelect__max-button"', {
+  const maxButtonClassList = classNames('TokenSelect__max-button', {
     'TokenSelect__max-button--disabled': props.disableBtnMax,
   });
 

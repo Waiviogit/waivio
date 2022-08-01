@@ -8,7 +8,9 @@ const SectionOneItem = ({ intl, path, sectionItemNameId, sectionItemName, isShow
     <li>
       <NavLink
         to={path}
-        className="sidenav-discover-objects__item"
+        className={`sidenav-discover-objects__item ${
+          path === '/rewards/rebalancing' ? 'sidenav-discover-objects__item--last ' : ''
+        }`}
         activeClassName="Sidenav__item--active"
       >
         {intl.formatMessage({

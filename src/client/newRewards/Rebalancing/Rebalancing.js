@@ -15,10 +15,11 @@ import { getVisibleModal } from '../../../store/swapStore/swapSelectors';
 import useQuery from '../../../hooks/useQuery';
 import { logout } from '../../../store/authStore/authActions';
 import { isMobile as _isMobile } from '../../../common/helpers/apiHelpers';
-
-import './Rebalancing.less';
 import apiConfig from '../../../waivioApi/routes';
 import TableProfit from './TableProfit';
+import requiresLogin from '../../auth/requiresLogin';
+
+import './Rebalancing.less';
 
 const Rebalancing = ({ intl }) => {
   const authUserName = useSelector(getAuthenticatedUserName);
@@ -185,17 +186,17 @@ const Rebalancing = ({ intl }) => {
                     <div>{row.base}</div>
                     <div>{row.quote}</div>
                   </td>
-                  <td>
-                    <div>{row.baseQuantity}</div>
-                    <div>{row.quoteQuantity}</div>
-                  </td>
                   {!isMobile && (
                     <>
+                      <td>
+                        <div>{row.baseQuantity}</div>
+                        <div>{row.quoteQuantity}</div>
+                      </td>
                       <td>{getValueForTd(row.holdingsRatio)}</td>
                       <td>{row.marketRatio}</td>
-                      <td>{getValueForTd(`${round(row.difference, 2)}%`)}</td>
                     </>
                   )}
+                  <td>{getValueForTd(`${round(row.difference, 2)}%`)}</td>
                   <td>
                     {getValueForTd(
                       <a
@@ -252,4 +253,4 @@ Rebalancing.propTypes = {
   intl: PropTypes.shape().isRequired,
 };
 
-export default injectIntl(Rebalancing);
+export default requiresLogin(injectIntl(Rebalancing));

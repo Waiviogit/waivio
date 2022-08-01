@@ -14,7 +14,12 @@ function CompanyId({ companyIdBody }) {
   return (
     <div className="CompanyId__container">
       <button className="CompanyId__button" onClick={toggleShowMoreState}>
-        Company ID {!showMore ? <Icon type="down" /> : <Icon type="up" />}
+        Company ID{' '}
+        {!showMore ? (
+          <Icon type="down" className="CompanyId__icon" />
+        ) : (
+          <Icon type="up" className="CompanyId__icon" />
+        )}
       </button>
       <div className="CompanyId__block">
         {showMore &&
