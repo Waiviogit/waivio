@@ -2884,4 +2884,18 @@ export const getSwapInfoForRebalance = (account, pair) => {
     .catch(e => e);
 };
 
+export const getEnginePoolRate = tokens => {
+  return fetch(
+    `${config.currenciesApiPrefix}${config.enginePoolsRate}?symbols=${tokens.join(',')}`,
+    {
+      headers,
+      method: 'GET',
+    },
+  )
+    .then(handleErrors)
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+};
+
 export default null;

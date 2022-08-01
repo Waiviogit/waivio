@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { isEmpty, round } from 'lodash';
 import PropTypes from 'prop-types';
+import classNames from 'classnames';
 
 import configRebalancingTable from './configRebalancingTable';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
@@ -27,6 +28,10 @@ const Rebalancing = ({ intl }) => {
   const [sliderValue, setSliderValue] = useState(0);
   const [table, setTable] = useState([]);
   const search = useQuery();
+  const rebalanceClassList = earn =>
+    classNames({
+      'Rebalancing__rebalanceButton--disable': earn < 0,
+    });
 
   const showConfirm = () => {
     Modal.confirm({
@@ -144,9 +149,12 @@ const Rebalancing = ({ intl }) => {
                 <td>
                   {getValueForTd(
                     <a
+                      className={rebalanceClassList(row.earn)}
                       onClick={async () => {
-                        dispatch(setBothTokens(row.base, row.quote));
-                        dispatch(toggleModalInRebalance(true, row.dbField));
+                        if (row.earn > 0) {
+                          dispatch(setBothTokens(row.base, row.quote));
+                          dispatch(toggleModalInRebalance(true, row.dbField));
+                        }
                       }}
                     >
                       <div>{row.rebalanceBase}</div>

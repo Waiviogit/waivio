@@ -6,10 +6,14 @@ import { getProxyImageURL } from '../../../../common/helpers/image';
 import WalletAction from '../../WalletSummaryInfo/components/WalletAction/WalletActions';
 
 import './HiveEngineCurrencyItem.less';
+import { HIVE_ENGINE_DEFAULT_SWAP_LIST } from '../../../../common/constants/swapList';
 
 const HiveEngineCurrencyItem = ({ token, hiveRate }) => {
   const stake = token.stake || 0;
-  const balance = (Number(token.balance) + Number(stake)) * token.rate * hiveRate;
+  const balance = HIVE_ENGINE_DEFAULT_SWAP_LIST.includes(token.symbol)
+    ? (Number(token.balance) + Number(stake)) * token.rate
+    : (Number(token.balance) + Number(stake)) * token.rate * hiveRate;
+
   const avatar = token.avatar ? getProxyImageURL(token.avatar) : token.avatar;
 
   return (

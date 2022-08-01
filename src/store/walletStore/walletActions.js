@@ -618,7 +618,7 @@ export const GET_CURRENT_USER_SWAP_TOKENS_BALANCE_LIST = createAsyncActionType(
 export const getCurrUserTokensBalanceSwap = name => ({
   type: GET_CURRENT_USER_SWAP_TOKENS_BALANCE_LIST.ACTION,
   payload: ApiClient.getTokensInformation(HIVE_ENGINE_DEFAULT_SWAP_LIST).then(async res => {
-    const rates = await ApiClient.getTokensRate(HIVE_ENGINE_DEFAULT_SWAP_LIST);
+    const rates = await ApiClient.getEnginePoolRate(HIVE_ENGINE_DEFAULT_SWAP_LIST);
     const userBalances = await ApiClient.getTokenBalance(name, {
       $in: HIVE_ENGINE_DEFAULT_SWAP_LIST,
     });
@@ -628,7 +628,7 @@ export const getCurrUserTokensBalanceSwap = name => ({
 
       return {
         ...swap,
-        rate: +get(rate, 'lastDayPrice', 1),
+        rate: +get(rate, 'USD', 1),
         avatar: get(parseJSON(swap.metadata), 'icon', ''),
         balance: get(userBalance, 'balance', 0),
         orderKey: HIVE_ENGINE_DEFAULT_SWAP_LIST_ORDER_KEY[swap.symbol],
