@@ -252,7 +252,7 @@ const SwapTokens = props => {
             <FormattedMessage
               id="swaptokens_info"
               defaultMessage="Large transactions may have an impact on the exchange rate. If this impact is greater
-            than the set value, the transaction will be cancelled."
+              than the set value, the transaction will be cancelled."
             />
           </p>
         </div>
