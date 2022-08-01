@@ -113,10 +113,10 @@ const Rebalancing = ({ intl }) => {
         const accTmp = [...acc];
 
         if (curr.baseQuantity !== '0') {
-          accTmp.push({ balance: curr.baseQuantity, symbol: curr.base })
+          accTmp.push({ balance: curr.baseQuantity, symbol: curr.base });
         }
         if (curr.quoteQuantity !== '0') {
-          accTmp.push({ balance: curr.quoteQuantity, symbol: curr.quote })
+          accTmp.push({ balance: curr.quoteQuantity, symbol: curr.quote });
         }
 
         return accTmp;
