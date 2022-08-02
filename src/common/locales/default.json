@@ -1873,5 +1873,9 @@
   "company_id_type": "Company ID type",
   "company_id": "Company ID",
   "object_field_companyId": "Company ID",
-  "display_currency": "Display currency"
+  "display_currency": "Display currency",
+  "product_id_type": "Product ID type",
+  "product_id": "Product ID",
+  "product_id_image": "Product ID image (optional)",
+  "object_field_productId": "Product ID"
 }

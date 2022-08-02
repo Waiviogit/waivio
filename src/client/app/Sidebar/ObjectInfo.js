@@ -40,6 +40,7 @@ import { getIsAuthenticated } from '../../../store/authStore/authSelectors';
 import { getObjectAlbums, getRelatedPhotos } from '../../../store/galleryStore/gallerySelectors';
 import { getRelatedAlbum } from '../../../store/galleryStore/galleryActions';
 import CompanyId from './CompanyId';
+import ProductId from './ProductId';
 
 import './ObjectInfo.less';
 
@@ -329,6 +330,9 @@ class ObjectInfo extends React.Component {
     const companyIdBody = wobject.companyId
       ? wobject.companyId.map(el => parseWobjectField(el, 'body', []))
       : [];
+    const productIdBody = wobject.productId
+      ? wobject.productId.map(el => parseWobjectField(el, 'body', []))
+      : [];
     const profile = linkField
       ? {
           facebook: linkField[linkFields.linkFacebook] || '',
@@ -583,6 +587,20 @@ class ObjectInfo extends React.Component {
                 <div className="CompanyId__block-item">
                   <p className="CompanyId__p">{obj.companyIdType}</p>
                   <p className="CompanyId__p">{obj.companyId}</p>
+                </div>
+              )),
+            )}
+        {!isEditMode
+          ? productIdBody.length > 0 && <ProductId productIdBody={productIdBody} />
+          : this.listItem(
+              objectFields.productId,
+              productIdBody?.map(obj => (
+                <div key={obj.id} className="CompanyId__block-item">
+                  <p className="CompanyId__p">{obj.productIdType}</p>
+                  <p className="CompanyId__p">{obj.productId}</p>
+                  <div className="field-avatar">
+                    <img src={obj.productIdImage} alt="pic" />
+                  </div>
                 </div>
               )),
             )}
