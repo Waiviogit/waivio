@@ -411,7 +411,7 @@ const routes = {
           component: Views.CatalogWrap,
         },
         {
-          path: '/(page)',
+          path: '/page',
           exact: true,
           component: Views.ObjectOfTypePage,
         },
