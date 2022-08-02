@@ -7,6 +7,9 @@ export const objectFields = {
   background: 'background',
   companyId: 'companyId',
   companyIdType: 'companyIdType',
+  productId: 'productId',
+  productIdType: 'productIdType',
+  productIdImage: 'productIdImage',
   website: 'website',
   phone: 'phone',
   email: 'email',
@@ -139,6 +142,11 @@ export const formFormFields = {
 export const companyIdFields = {
   companyId: 'companyId',
   companyIdType: 'companyIdType',
+};
+export const productIdFields = {
+  productId: 'productId',
+  productIdType: 'productIdType',
+  productIdImage: 'productIdImage',
 };
 
 export const ratePercent = [2, 4, 6, 8, 10];

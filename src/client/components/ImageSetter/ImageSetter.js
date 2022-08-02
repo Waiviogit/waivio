@@ -25,6 +25,7 @@ const ImageSetter = ({
   onLoadingImage,
   onImageLoaded,
   defaultImage,
+  labeledImage,
   isRequired,
   isTitle,
   setEditorState,
@@ -256,6 +257,10 @@ const ImageSetter = ({
         id: 'imageSetter_add_images',
         defaultMessage: 'Add images',
       });
+    } else if (labeledImage) {
+      return intl.formatMessage({
+        id: `${labeledImage}`,
+      });
     }
 
     return intl.formatMessage({
@@ -368,6 +373,7 @@ ImageSetter.propTypes = {
   getEditorState: PropTypes.func,
   addNewBlockAt: PropTypes.func,
   selection: PropTypes.func,
+  labeledImage: PropTypes.string,
   Block: PropTypes.shape(),
   isOkayBtn: PropTypes.bool,
   imagesList: PropTypes.arrayOf(),
@@ -388,6 +394,7 @@ ImageSetter.defaultProps = {
   isOkayBtn: false,
   imagesList: [],
   isModal: false,
+  labeledImage: '',
 };
 
 export default withEditor(injectIntl(ImageSetter));
