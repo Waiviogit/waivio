@@ -59,7 +59,7 @@ const Wallets = props => {
 
   return (
     <React.Fragment>
-      <Tabs defaultActiveKey={walletsType} onChange={handleOnChange}>
+      <Tabs className="Wallets" defaultActiveKey={walletsType} onChange={handleOnChange}>
         <Tabs.TabPane
           tab={props.intl.formatMessage({ id: 'waiv_wallet', defaultMessage: 'WAIV wallet' })}
           key="WAIV"
