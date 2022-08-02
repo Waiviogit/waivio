@@ -209,7 +209,7 @@ const Rebalancing = ({ intl }) => {
                         className={rebalanceClassList(row.earn)}
                         onClick={async () => {
                           if (row.earn > 0) {
-                            dispatch(setBothTokens(row.base, row.quote));
+                            dispatch(setBothTokens({ symbol: row.base }, { symbol: row.quote }));
                             dispatch(toggleModalInRebalance(true, row.dbField));
                           }
                         }}
