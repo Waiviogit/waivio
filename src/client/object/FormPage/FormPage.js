@@ -8,6 +8,18 @@ import './FormPage.less';
 
 const FormPage = props => {
   const { wobject, currentForm } = props;
+  const widgetView = currentForm.link.includes('<iframe') ? (
+    <div className="FormPage__block" dangerouslySetInnerHTML={{ __html: currentForm.link }} />
+  ) : (
+    <iframe
+      srcDoc={currentForm.link}
+      title={currentForm.formTitle}
+      width="100%"
+      style={{
+        height: '100vh',
+      }}
+    />
+  );
 
   return (
     <div className="FormPage">
@@ -17,8 +29,7 @@ const FormPage = props => {
         </Link>
       )}
       {currentForm.form === 'Widget' ? (
-        // eslint-disable-next-line react/no-danger
-        <div className="FormPage__block" dangerouslySetInnerHTML={{ __html: currentForm.link }} />
+        widgetView
       ) : (
         <div className="FormPage__block">
           <iframe
