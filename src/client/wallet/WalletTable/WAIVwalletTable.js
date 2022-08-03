@@ -271,6 +271,8 @@ const WAIVwalletTable = props => {
       Object.entries(template).forEach(item => {
         if (item[0] === 'checked') {
           newArr[item[1]] = transaction?.[item[0]] ? 1 : 0;
+        } else if (item[0] === 'fieldMemo') {
+          newArr[item[1]] = transaction?.[item[0]].replace(',', ' ');
         } else {
           newArr[item[1]] = transaction?.[item[0]] || '';
         }
@@ -283,7 +285,7 @@ const WAIVwalletTable = props => {
       ['X', 'Date', 'WAIV', 'WP', `WAIV/${currentCurrency}`, '±', 'Account', 'Description', 'Memo'],
       ...csvArray,
     ];
-    const csvContent = `data:text/csv;charset=utf-8,${rows.map(e => e.join(';')).join('\n')}`;
+    const csvContent = `data:text/csv;charset=utf-8,${rows.map(e => e.join(',')).join('\n')}`;
     const encodedUri = encodeURI(csvContent);
 
     window.open(encodedUri);

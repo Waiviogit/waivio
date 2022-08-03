@@ -282,6 +282,8 @@ class WalletTable extends React.Component {
         Object.entries(template).forEach(item => {
           if (item[0] === 'checked') {
             newArr[item[1]] = transaction?.[item[0]] ? 1 : 0;
+          } else if (item[0] === 'fieldMemo') {
+            newArr[item[1]] = transaction?.[item[0]].replace(',', ' ');
           } else {
             newArr[item[1]] = transaction?.[item[0]] || '';
           }
@@ -306,7 +308,7 @@ class WalletTable extends React.Component {
         ...csvHiveArray,
       ];
 
-      const csvContent = rows.map(e => e.join(';')).join('\n');
+      const csvContent = rows.map(e => e.join(',')).join('\n');
 
       window.open(`data:text/csv;charset=utf-8,${encodeURIComponent(csvContent)}`);
     };
