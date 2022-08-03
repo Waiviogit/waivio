@@ -8,6 +8,8 @@ import TokensSelect from '../SwapTokens/components/TokensSelect';
 import { addTokenReport } from '../../../waivioApi/ApiClient';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 
+import './AddToken.less';
+
 const AddToken = props => {
   const { handleCloseModal, intl, handleSuccess } = props;
   const authUserName = useSelector(getAuthenticatedUserName);
@@ -38,28 +40,22 @@ const AddToken = props => {
       okText={intl.formatMessage({ id: 'add_token', defaultMessage: 'Add token' })}
     >
       <Form>
-        <h3>
+        <h4>
           {intl.formatMessage({
             id: 'initial_number_of_tokens',
             defaultMessage: 'Initial number of tokens',
           })}
-        </h3>
+        </h4>
         <TokensSelect
           list={props.tokensList}
           setToken={token => {
             setCurrentToken(token);
           }}
           amount={currentAmount}
-          handleChangeValue={amount => {
-            setCurrentAmount(amount);
-          }}
+          handleChangeValue={amount => setCurrentAmount(amount)}
           token={currentToken}
-          handleClickBalance={() => {}}
-          isError={false}
-          disabled={false}
-          isLoading={false}
-          disableBalance={false}
-          disableBtnMax={false}
+          handleClickBalance={() => setCurrentAmount(currentToken.balance)}
+          customClassSelect="Add-token__select"
         />
       </Form>
     </Modal>

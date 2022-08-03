@@ -7,11 +7,16 @@ import classNames from 'classnames';
 import './TokenSelect.less';
 
 const TokensSelect = props => {
+  const { customClassSelect } = props;
   const balance = props.token?.balance || 0;
   const presicion = balance > 0.001 ? 3 : 6;
   const inputWrapClassList = classNames('TokenSelect__inputWrap', {
     'TokenSelect__inputWrap--error': props.isError,
     'TokenSelect__inputWrap--disabled': props.disabled,
+  });
+
+  const selectClassList = classNames('TokenSelect__selector', {
+    ...(customClassSelect && { [customClassSelect]: true }),
   });
 
   const balanceClassList = classNames('TokenSelect__balance', {
@@ -27,7 +32,7 @@ const TokensSelect = props => {
   };
 
   return (
-    <React.Fragment>
+    <>
       <div className={inputWrapClassList}>
         <Input
           value={props.amount}
@@ -44,7 +49,7 @@ const TokensSelect = props => {
         />
         <Select
           loading={props.isLoading}
-          className="TokenSelect__selector"
+          className={selectClassList}
           showSearch
           value={props.token?.symbol}
           disabled={isEmpty(props.list) || props.disabled || props.disabledSelect}
@@ -55,6 +60,7 @@ const TokensSelect = props => {
               className="TokenSelect__selector-option"
               onClick={() => props.setToken(swap)}
               key={swap.symbol}
+              selectionClassList
             >
               <span>{swap.symbol}</span>
               <span className="TokenSelect__selector-balance">
@@ -73,7 +79,7 @@ const TokensSelect = props => {
           </span>
         )}
       </p>
-    </React.Fragment>
+    </>
   );
 };
 
@@ -93,6 +99,7 @@ TokensSelect.propTypes = {
   disableBalance: PropTypes.bool,
   disableBtnMax: PropTypes.bool,
   disabledSelect: PropTypes.bool,
+  customClassSelect: PropTypes.string,
 };
 
 TokensSelect.defaultProps = {
@@ -102,6 +109,7 @@ TokensSelect.defaultProps = {
   disableBalance: false,
   disableBtnMax: false,
   disabledSelect: false,
+  customClassSelect: '',
 };
 
 export default TokensSelect;
