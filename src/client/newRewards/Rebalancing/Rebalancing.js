@@ -213,9 +213,12 @@ const Rebalancing = ({ intl }) => {
                 <td>
                   {getValueForTd(
                     <a
-                      className={rebalanceClassList(row.earn)}onClick={async () => {
-                        if (row.earn > 0) {dispatch(setBothTokens({ symbol: row.base }, { symbol: row.quote }));
-                        dispatch(toggleModalInRebalance(true, row.dbField));}
+                      className={rebalanceClassList(row.earn)}
+                      onClick={async () => {
+                        if (row.earn > 0) {
+                          dispatch(setBothTokens({ symbol: row.base }, { symbol: row.quote }));
+                          dispatch(toggleModalInRebalance(true, row.dbField));
+                        }
                       }}
                     >
                       <div>{row.rebalanceBase}</div>
