@@ -47,7 +47,7 @@ const EditToken = props => {
         <div className="edit-token__delete-block">
           To delete the token, click the delete button:
           <Button className="edit-token__delete-button" onClick={handleDeleteToken}>
-            Delete Token
+            Delete token
           </Button>
         </div>
       }
@@ -73,9 +73,14 @@ const EditToken = props => {
           handleClickBalance={() => setCurrentAmount(currentToken.balance)}
         />
         <div className="edit-token__buttons-submit">
-          <Button onClick={handleCloseModal}>Cancel</Button>
-          <Button onClick={handleEditToken} className="edit-token__save-button">
-            Save Changes
+          <Button onClick={handleCloseModal} className="ant-btn">
+            Cancel
+          </Button>
+          <Button
+            onClick={handleEditToken}
+            className="edit-token__save-button ant-btn ant-btn-primary"
+          >
+            Save changes
           </Button>
         </div>
       </Form>
