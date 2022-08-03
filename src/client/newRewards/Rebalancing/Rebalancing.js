@@ -74,7 +74,7 @@ const Rebalancing = ({ intl }) => {
       setLoading(false);
     }
   };
-  console.log(tokenList, 'tokenList');
+
   const getTableInfo = async () => {
     setLoading(true);
 
