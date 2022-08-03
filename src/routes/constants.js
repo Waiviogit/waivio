@@ -12,6 +12,8 @@ export default {
       'menu',
       'page',
       'list',
+      'blog',
+      'form',
     ].join('|'),
     filters: [...supportedObjectFields, ...objMenuTypes, 'album'].join('|'),
   },

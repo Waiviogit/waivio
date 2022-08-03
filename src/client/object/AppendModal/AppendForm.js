@@ -40,6 +40,7 @@ import {
   formColumnsField,
   formFormFields,
   companyIdFields,
+  productIdFields,
 } from '../../../common/constants/listOfFields';
 import OBJECT_TYPE from '../const/objectTypes';
 import { getSuitableLanguage } from '../../../store/reducers';
@@ -392,6 +393,10 @@ export default class AppendForm extends Component {
         fieldBody.push(rest[objectFields.companyId]);
         break;
       }
+      case objectFields.productId: {
+        fieldBody.push(rest[objectFields.productId]);
+        break;
+      }
       default:
         fieldBody.push(JSON.stringify(rest));
         break;
@@ -413,6 +418,12 @@ export default class AppendForm extends Component {
           return `@${author} added ${currentField}(${langReadable}): ${appendValue}, ${
             companyIdFields.companyIdType
           }: ${formValues[companyIdFields.companyIdType]}  `;
+        case objectFields.productId:
+          return `@${author} added ${currentField}(${langReadable}): ${appendValue}, ${
+            productIdFields.productIdType
+          }: ${formValues[productIdFields.productIdType]}, ${productIdFields.productIdImage}: ${
+            formValues[productIdFields.productIdImage]
+          }  `;
         case TYPES_OF_MENU_ITEM.PAGE:
         case TYPES_OF_MENU_ITEM.LIST: {
           const alias = getFieldValue('menuItemName');
@@ -514,6 +525,16 @@ export default class AppendForm extends Component {
           body: JSON.stringify({
             [companyIdFields.companyIdType]: formValues[companyIdFields.companyIdType],
             [companyIdFields.companyId]: formValues[companyIdFields.companyId],
+          }),
+        };
+      }
+      if (currentField === objectFields.productId) {
+        fieldsObject = {
+          ...fieldsObject,
+          body: JSON.stringify({
+            [productIdFields.productIdType]: formValues[productIdFields.productIdType],
+            [productIdFields.productId]: formValues[productIdFields.productId],
+            [productIdFields.productIdImage]: formValues[productIdFields.productIdImage],
           }),
         };
       }
@@ -907,6 +928,9 @@ export default class AppendForm extends Component {
       case objectFields.companyId:
         formFields = form.getFieldsValue(Object.values(companyIdFields));
         break;
+      case objectFields.productId:
+        formFields = form.getFieldsValue(Object.values(productIdFields));
+        break;
       case objectFields.map:
         formFields = form.getFieldsValue(Object.values(mapFields));
         break;
@@ -956,6 +980,14 @@ export default class AppendForm extends Component {
     }
     if (currentField === objectFields.authority) {
       return filtered.some(f => f.body === currentValue && f.creator === user.name);
+    }
+    if (currentField === objectFields.productId) {
+      return filtered.some(
+        f =>
+          this.getCurrentObjectBody(currentField).productId === JSON.parse(f.body).productId &&
+          this.getCurrentObjectBody(currentField).productIdType ===
+            JSON.parse(f.body).productIdType,
+      );
     }
     if (currentField === objectFields.phone)
       return filtered.some(f => this.getCurrentObjectBody(currentField).number === f.number);
@@ -1065,7 +1097,9 @@ export default class AppendForm extends Component {
     const currentField = getFieldValue('currentField');
 
     if (image.length) {
-      this.props.form.setFieldsValue({ [currentField]: image[0].src });
+      currentField === objectFields.productId
+        ? this.props.form.setFieldsValue({ [objectFields.productIdImage]: image[0].src })
+        : this.props.form.setFieldsValue({ [currentField]: image[0].src });
     } else {
       this.props.form.setFieldsValue({ [currentField]: '' });
     }
@@ -1669,6 +1703,67 @@ export default class AppendForm extends Component {
               Company identifiers are often alphanumeric, but there are no limitations on this text
               field.
             </p>
+          </React.Fragment>
+        );
+      }
+      case objectFields.productId: {
+        return (
+          <React.Fragment>
+            <Form.Item>
+              {getFieldDecorator(productIdFields.productIdType, {
+                rules: this.getFieldRules(objectFields.productIdType),
+              })(
+                <Input
+                  className={classNames('AppendForm__input', {
+                    'validation-error': !this.state.isSomeValue,
+                  })}
+                  disabled={loading}
+                  placeholder={intl.formatMessage({
+                    id: 'product_id_type',
+                    defaultMessage: 'Product ID type',
+                  })}
+                />,
+              )}
+            </Form.Item>
+            <p>
+              Some product ID types are recognized globally, such as UPC, EAN, ISBN, GTIN-8. But
+              manufactures can use their own systems for naming products.
+            </p>
+            <br />
+            <Form.Item>
+              {getFieldDecorator(productIdFields.productId, {
+                rules: this.getFieldRules(objectFields.productId),
+              })(
+                <Input
+                  className={classNames('AppendForm__input', {
+                    'validation-error': !this.state.isSomeValue,
+                  })}
+                  disabled={loading}
+                  placeholder={intl.formatMessage({
+                    id: 'product_id',
+                    defaultMessage: 'Product ID',
+                  })}
+                />,
+              )}
+            </Form.Item>
+            <p>
+              Product identifiers are often alphanumeric, but there are no limitations on this text
+              field.
+            </p>
+            <br />
+            <div className="image-wrapper">
+              <Form.Item>
+                {getFieldDecorator(objectFields.productIdImage, { rules: null })(
+                  <ImageSetter
+                    onImageLoaded={this.getImages}
+                    onLoadingImage={this.onLoadingImage}
+                    labeledImage={'product_id_image'}
+                    isMultiple={false}
+                  />,
+                )}
+              </Form.Item>
+            </div>
+            <p>Visual representation of the product ID, such as a bar code, label, QR code, etc.</p>
           </React.Fragment>
         );
       }

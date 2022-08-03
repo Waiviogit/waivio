@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { isEmpty, round, uniqBy } from 'lodash';
 import PropTypes from 'prop-types';
+import classNames from 'classnames';
 
 import configRebalancingTable from './configRebalancingTable';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
@@ -35,6 +36,10 @@ const Rebalancing = ({ intl }) => {
   const showAll = useRef(false);
   const search = useQuery();
   const isMobile = _isMobile();
+  const rebalanceClassList = earn =>
+    classNames({
+      'Rebalancing__rebalanceButton--disable': earn < 0,
+    });
 
   const showConfirm = () => {
     Modal.confirm({
@@ -208,9 +213,9 @@ const Rebalancing = ({ intl }) => {
                 <td>
                   {getValueForTd(
                     <a
-                      onClick={async () => {
-                        dispatch(setBothTokens({ symbol: row.base }, { symbol: row.quote }));
-                        dispatch(toggleModalInRebalance(true, row.dbField));
+                      className={rebalanceClassList(row.earn)}onClick={async () => {
+                        if (row.earn > 0) {dispatch(setBothTokens({ symbol: row.base }, { symbol: row.quote }));
+                        dispatch(toggleModalInRebalance(true, row.dbField));}
                       }}
                     >
                       <div>{row.rebalanceBase}</div>

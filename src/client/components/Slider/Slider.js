@@ -9,14 +9,22 @@ import RawSlider from './RawSlider';
 import { openTransfer } from '../../../store/walletStore/walletActions';
 import { isPostCashout } from '../../vendor/steemitHelpers';
 import Transfer from '../../wallet/Transfer/Transfer';
+import { getIsTransferVisible } from '../../../store/walletStore/walletSelectors';
+
 import './Slider.less';
 
 @injectIntl
-@connect(null, { openTransfer })
+@connect(
+  state => ({
+    visibleTransfer: getIsTransferVisible(state),
+  }),
+  { openTransfer },
+)
 export default class Slider extends React.Component {
   static propTypes = {
     value: PropTypes.number,
     voteWorth: PropTypes.number,
+    visibleTransfer: PropTypes.bool,
     onChange: PropTypes.func,
     post: PropTypes.shape({
       title: PropTypes.string,
@@ -32,6 +40,7 @@ export default class Slider extends React.Component {
   static defaultProps = {
     value: 100,
     voteWorth: 0,
+    visibleTransfer: true,
     onChange: () => {},
     post: {},
     type: 'confirm',
@@ -100,9 +109,10 @@ export default class Slider extends React.Component {
           tipFormatter={this.formatTip}
           oprtr={oprtr}
         />
-
         <div className="Slider__info">
-          <Transfer sendTo={post.author} title={post.title} permLink={post.permlink} />
+          {this.props.visibleTransfer && (
+            <Transfer sendTo={post.author} title={post.title} permLink={post.permlink} />
+          )}{' '}
           {isPostCashout(post) ? (
             <h3>
               <span>

@@ -1377,7 +1377,7 @@
   "customer_support": "{author} asked about {campaignName}",
   "notify_campaign": "campaign",
   "cancel_limit_order": "Cancel limit order",
-  "menu_rewards": "Rewards",
+  "menu_rewards": "Earn",
   "menu_discover": "Discover",
   "menu_tools": "Tools",
   "menu_drafts": "Drafts",
@@ -1872,5 +1872,10 @@
   "power_up_from": "Power up from {from}",
   "company_id_type": "Company ID type",
   "company_id": "Company ID",
-  "object_field_companyId": "Company ID"
+  "object_field_companyId": "Company ID",
+  "display_currency": "Display currency",
+  "product_id_type": "Product ID type",
+  "product_id": "Product ID",
+  "product_id_image": "Product ID image (optional)",
+  "object_field_productId": "Product ID"
 }
