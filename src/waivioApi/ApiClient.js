@@ -2335,6 +2335,7 @@ export const getTokenBalance = (userName, symbol) =>
     query: {
       account: userName,
       symbol,
+      balance: { $gt: '0.00000000' },
     },
     limit: 1000,
     offset: 0,
@@ -2841,10 +2842,67 @@ export const getNewCampaingById = id => {
 
 //avarage
 
-export const getRebalancingTable = account => {
-  return fetch(`${config.arbitrageApiPrefix}${config.rebalancing}/${account}`, {
+export const getRebalancingTable = (account, params) => {
+  const query = createQuery(params);
+  return fetch(`${config.arbitrageApiPrefix}${config.rebalancing}/${account}?${query}`, {
     headers,
     method: 'GET',
+  })
+    .then(handleErrors)
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+};
+
+export const getProfitTable = account => {
+  return fetch(`${config.arbitrageApiPrefix}${config.profit}${config.report}/${account}`, {
+    headers,
+    method: 'GET',
+  })
+    .then(handleErrors)
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+};
+
+export const addTokenReport = (account, data) => {
+  return fetch(`${config.arbitrageApiPrefix}${config.profit}${config.report}/${account}`, {
+    headers: {
+      ...headers,
+      'access-token': Cookie.get('access_token'),
+    },
+    method: 'POST',
+    body: JSON.stringify(data),
+  })
+    .then(handleErrors)
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+};
+
+export const editTokenProfit = (account, data) => {
+  return fetch(`${config.arbitrageApiPrefix}${config.profit}${config.report}/${account}`, {
+    headers: {
+      ...headers,
+      'access-token': Cookie.get('access_token'),
+    },
+    method: 'PATCH',
+    body: JSON.stringify(data),
+  })
+    .then(handleErrors)
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+};
+
+export const deleteTokenProfit = (account, data) => {
+  return fetch(`${config.arbitrageApiPrefix}${config.profit}${config.report}/${account}`, {
+    headers: {
+      ...headers,
+      'access-token': Cookie.get('access_token'),
+    },
+    method: 'DELETE',
+    body: JSON.stringify(data),
   })
     .then(handleErrors)
     .then(res => res.json())
@@ -2878,6 +2936,20 @@ export const getSwapInfoForRebalance = (account, pair) => {
       pair,
     }),
   })
+    .then(handleErrors)
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+};
+
+export const getEnginePoolRate = tokens => {
+  return fetch(
+    `${config.currenciesApiPrefix}${config.enginePoolsRate}?symbols=${tokens.join(',')}`,
+    {
+      headers,
+      method: 'GET',
+    },
+  )
     .then(handleErrors)
     .then(res => res.json())
     .then(response => response)

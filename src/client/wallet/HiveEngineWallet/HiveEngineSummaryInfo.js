@@ -16,6 +16,7 @@ import {
 import { getCryptosPriceHistory } from '../../../store/appStore/appSelectors';
 import HiveEngineCurrencyItem from './HiveEngineCurrencyItem/HiveEngineCurrencyItem';
 import './HiveEngineSummaryInfo.less';
+import { HIVE_ENGINE_DEFAULT_SWAP_LIST } from '../../../common/constants/swapList';
 
 const HiveEngineSummaryInfo = props => {
   useEffect(() => {
@@ -37,7 +38,9 @@ const HiveEngineSummaryInfo = props => {
 
   const estAccValue = combinedList.reduce((acc, curr) => {
     const stake = curr.stake || 0;
-    const balanceInUsd = (Number(curr.balance) + Number(stake)) * curr.rate * props.hiveRate;
+    const balanceInUsd = HIVE_ENGINE_DEFAULT_SWAP_LIST.includes(curr.symbol)
+      ? (Number(curr.balance) + Number(stake)) * curr.rate
+      : (Number(curr.balance) + Number(stake)) * curr.rate * props.hiveRate;
 
     return acc + balanceInUsd;
   }, 0);

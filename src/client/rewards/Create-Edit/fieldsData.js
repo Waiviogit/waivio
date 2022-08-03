@@ -43,7 +43,7 @@ export default (messageFactory, validators, userName, currency) => ({
   },
   baseCurrency: {
     name: 'baseCurrency',
-    label: messageFactory('base_currency', 'Base currency'),
+    label: messageFactory('display_currency', 'Display currency'),
     rules: [
       {
         required: true,
@@ -60,7 +60,7 @@ export default (messageFactory, validators, userName, currency) => ({
   },
   baseCryptocurrency: {
     name: 'baseCryptocurrency',
-    label: messageFactory('base_cryptocurrency', 'Base cryptocurrency'),
+    label: messageFactory('payment_currency', 'Payment currency'),
     rules: [
       {
         required: true,
@@ -70,7 +70,10 @@ export default (messageFactory, validators, userName, currency) => ({
     options: {
       reviews: messageFactory('reviews', 'Reviews'),
     },
-    caption: messageFactory('reward_will_be_paid', 'Reward will be paid in the selected currency'),
+    caption: messageFactory(
+      ' All_payment_obligations_calculated',
+      ' All payment obligations will be calculated in that currency based on the exchange rates at the time of the transactions.',
+    ),
   },
   budget: {
     name: 'budget',

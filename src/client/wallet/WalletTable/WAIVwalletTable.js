@@ -271,6 +271,11 @@ const WAIVwalletTable = props => {
       Object.entries(template).forEach(item => {
         if (item[0] === 'checked') {
           newArr[item[1]] = transaction?.[item[0]] ? 1 : 0;
+
+          return;
+        }
+        if (item[0] === 'fieldMemo') {
+          newArr[item[1]] = transaction?.[item[0]]?.replace(',', ' ');
         } else {
           newArr[item[1]] = transaction?.[item[0]] || '';
         }
@@ -283,7 +288,7 @@ const WAIVwalletTable = props => {
       ['X', 'Date', 'WAIV', 'WP', `WAIV/${currentCurrency}`, '±', 'Account', 'Description', 'Memo'],
       ...csvArray,
     ];
-    const csvContent = `data:text/csv;charset=utf-8,${rows.map(e => e.join(';')).join('\n')}`;
+    const csvContent = `data:text/csv;charset=utf-8,${rows.map(e => e.join(',')).join('\n')}`;
     const encodedUri = encodeURI(csvContent);
 
     window.open(encodedUri);
@@ -345,10 +350,14 @@ const WAIVwalletTable = props => {
               })}
           ){'  '}
           {
-            <Link disabled={isLoadingData || loading} onClick={exportCsv}>
+            <button
+              disabled={isLoadingData || loading}
+              className="WalletTable__csv-button"
+              onClick={exportCsv}
+            >
               {' '}
               Export to .CSV{' '}
-            </Link>
+            </button>
           }
         </p>
         <p className="WalletTable__exclude">

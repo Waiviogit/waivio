@@ -33,6 +33,8 @@ import { getIsOpenWithdraw } from '../../store/depositeWithdrawStore/depositWith
 import ManageDelegate from './DelegateModals/ManageDelegate/ManageDelegate';
 import { getAuthenticatedUserName } from '../../store/authStore/authSelectors';
 
+import './Wallets.less';
+
 const Wallets = props => {
   const query = new URLSearchParams(props.location.search);
   const walletsType = query.get('type');
@@ -57,7 +59,7 @@ const Wallets = props => {
 
   return (
     <React.Fragment>
-      <Tabs defaultActiveKey={walletsType} onChange={handleOnChange}>
+      <Tabs className="Wallets" defaultActiveKey={walletsType} onChange={handleOnChange}>
         <Tabs.TabPane
           tab={props.intl.formatMessage({ id: 'waiv_wallet', defaultMessage: 'WAIV wallet' })}
           key="WAIV"

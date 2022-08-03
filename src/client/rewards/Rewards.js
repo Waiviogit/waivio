@@ -513,7 +513,7 @@ class Rewards extends React.Component {
         } else {
           this.setState({ url: this.props.match.url });
         }
-      })
+      });
   };
 
   getPropositions = (
@@ -597,7 +597,9 @@ class Rewards extends React.Component {
     this.getPropositions({
       username,
       match,
-      area: isEmpty(area) ? [+this.props.userLocation.lat || 0, +this.props.userLocation.lon || 0] : area,
+      area: isEmpty(area)
+        ? [+this.props.userLocation.lat || 0, +this.props.userLocation.lon || 0]
+        : area,
       sort,
       activeFilters,
     });
