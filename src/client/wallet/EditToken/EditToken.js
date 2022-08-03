@@ -71,6 +71,7 @@ const EditToken = props => {
           }}
           token={currentToken}
           handleClickBalance={() => setCurrentAmount(currentToken.balance)}
+          customClassSelect="edit-token__select"
         />
         <div className="edit-token__buttons-submit">
           <Button onClick={handleCloseModal} className="ant-btn">
