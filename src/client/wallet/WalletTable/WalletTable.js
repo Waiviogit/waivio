@@ -282,8 +282,11 @@ class WalletTable extends React.Component {
         Object.entries(template).forEach(item => {
           if (item[0] === 'checked') {
             newArr[item[1]] = transaction?.[item[0]] ? 1 : 0;
-          } else if (item[0] === 'fieldMemo') {
-            newArr[item[1]] = transaction?.[item[0]].replace(',', ' ');
+
+            return;
+          }
+          if (item[0] === 'fieldMemo') {
+            newArr[item[1]] = transaction?.[item[0]]?.replace(',', ' ');
           } else {
             newArr[item[1]] = transaction?.[item[0]] || '';
           }
@@ -364,15 +367,16 @@ class WalletTable extends React.Component {
               })}
           )
           {
-            <Link
+            <button
               disabled={
                 (this.props.isLoadingAllData && this.state.dateEstablished) || this.props.loading
               }
+              className="WalletTable__csv-button"
               onClick={exportCsv}
             >
               {' '}
               Export to .CSV{' '}
-            </Link>
+            </button>
           }
         </p>
         <p className="WalletTable__exclude">
