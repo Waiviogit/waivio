@@ -39,20 +39,26 @@ const EditToken = props => {
 
   return (
     <Modal
-      title={intl.formatMessage({ id: 'swap_tokens', defaultMessage: 'Add token' })}
+      title={intl.formatMessage({ id: 'edit_token', defaultMessage: 'Edit token' })}
       visible
       onOk={handleEditToken}
       onCancel={handleCloseModal}
-      okButtonProps={{ disabled: false, title: 'Save changes' }}
-      okText={intl.formatMessage({ id: 'save_changes', defaultMessage: 'Save changes' })}
+      footer={
+        <div className="edit-token__delete-block">
+          To delete the token, click the delete button:
+          <Button className="edit-token__delete-button" onClick={handleDeleteToken}>
+            Delete Token
+          </Button>
+        </div>
+      }
     >
       <Form>
-        <h3>
+        <h4>
           {intl.formatMessage({
             id: 'initial_number_of_tokens',
             defaultMessage: 'Initial number of tokens',
           })}
-        </h3>
+        </h4>
         <TokensSelect
           disabledSelect
           list={props.tokensList}
@@ -64,17 +70,14 @@ const EditToken = props => {
             setCurrentAmount(amount);
           }}
           token={currentToken}
-          handleClickBalance={() => {}}
-          isError={false}
-          isLoading={false}
-          disableBalance={false}
-          disableBtnMax={false}
+          handleClickBalance={() => setCurrentAmount(currentToken.balance)}
         />
-        <hr style={{ margin: '10px 0' }} />
-        To delete the token, click the delete button:
-        <Button className="edit-token__delete-button" onClick={handleDeleteToken}>
-          Delete Token
-        </Button>
+        <div className="edit-token__buttons-submit">
+          <Button onClick={handleCloseModal}>Cancel</Button>
+          <Button onClick={handleEditToken} className="edit-token__save-button">
+            Save Changes
+          </Button>
+        </div>
       </Form>
     </Modal>
   );
