@@ -78,6 +78,7 @@
   "payments": "/payments",
   "report": "/report",
   "post": "/post",
+  "object": "/object",
   "posts": "/posts",
   "rejectReservation": "/validate_reject_reservation",
   "reservation": "/validate_reservation",

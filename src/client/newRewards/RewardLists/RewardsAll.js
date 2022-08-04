@@ -1,6 +1,6 @@
 import React from 'react';
 import { getAllRewardList, getFiltersForAllRewards } from '../../../waivioApi/ApiClient';
-import RenderCampaingList from '../RenderCampaingList';
+import RenderCampaingList from './RenderCampaingList';
 
 import './RewardLists.less';
 
