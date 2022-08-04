@@ -12,7 +12,7 @@ import {
 } from '../../WalletHelper';
 import * as accountHistoryConstants from '../../../../common/constants/accountHistory';
 import { guestUserRegex } from '../../../../common/helpers/regexHelpers';
-import { getTableDescription } from '../../WalletHelperCsv';
+import { getTableDescription, getTableSavingsTransactionMessage } from '../../WalletHelperCsv';
 
 const compareTransferBody = (
   transaction,
@@ -173,7 +173,7 @@ const compareTransferBody = (
           transaction,
           transaction.amount,
         ),
-        fieldDescriptionForTable: getTableDescription(
+        fieldDescriptionForTable: getTableSavingsTransactionMessage(
           transaction.type,
           transaction,
           transaction.amount,
