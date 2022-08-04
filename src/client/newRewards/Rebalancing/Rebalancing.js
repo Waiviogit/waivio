@@ -137,31 +137,11 @@ const Rebalancing = ({ intl }) => {
   return (
     <div className="Rebalancing table-wrap">
       <h1>Rebalancing:</h1>
-      <p>
-        Users can increase their crypto holdings by making arbitrages between their personal
-        holdings and the open market. One of the main differences between arbitrage and trading is
-        that each arbitrage transaction is profitable at the time of execution.
-        <p>
-          {' '}
-          Arbitrage in the open markets is a highly competitive business. But when you arbitrage
-          using your private holdings, there is no competition, since you have exclusive access to
-          your own funds.
-        </p>
-      </p>
-      <p>
-        Waivio offers a rebalancing tool to make this arbitrage process simple and straightforward.
-        Users review and approve each transaction manually using their active private keys. All
-        token swaps are processed via Hive-Engine.com decentralized exchange. Waivio does not have
-        access to users funds or keys.
-      </p>
+      Grow your crypto holding by doing arbitrage between your personal holdings and the open
+      market. Read more about the{' '}
+      <a href="/object/wxu-rebalancing-introduction/page">rebalancing strategy</a>.
       <p>
         <b>Disclaimer:</b> The Rebalancing service is provided on as-is / as-available basis.
-      </p>
-      <hr />
-      <h3>Notifications:</h3>
-      <p>
-        Notifications are sent when the difference between the balance of personal crypto holdings
-        and the open market exceeds the set value.
       </p>
       <p>
         Alert me when the difference exceeds: {differencePercent}% (

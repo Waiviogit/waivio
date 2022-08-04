@@ -13,23 +13,23 @@ import AddToken from '../../../wallet/AddToken';
 import './TableProfit.less';
 
 const TableProfit = props => {
-  const { intl, tokenList: _tokenList, setTableProfit } = props;
+  const { intl, tokenList, setTableProfit } = props;
   const authUserName = useSelector(getAuthenticatedUserName);
   const [table, setTable] = useState([]);
   const [profit, setProfit] = useState(null);
   const [isLoading, setLoading] = useState(false);
   const [editToken, setEditToken] = useState(null);
   const [openAddTokenModal, setAddTokenModal] = useState(false);
-  const [tokenList, setTokenList] = useState(_tokenList);
+  const [tokensListFiltered, setTokenList] = useState(tokenList);
 
   useEffect(() => {
-    if (_tokenList && table) {
+    if (tokenList && table) {
       const addedTokens = table.map(i => i.token);
 
-      setTokenList(_tokenList.filter(i => !addedTokens?.includes(i.symbol)));
+      setTokenList(tokenList.filter(i => !addedTokens?.includes(i.symbol)));
     }
     setTableProfit(table);
-  }, [table, _tokenList]);
+  }, [table, tokenList]);
 
   const handleEditToken = token => {
     setEditToken(token);
@@ -114,7 +114,7 @@ const TableProfit = props => {
             ))}
             {!table.length && (
               <tr>
-                <td colSpan={3}>You don&apos;t have any tokens yet</td>
+                <td colSpan={4}>You don&apos;t have any tokens yet</td>
               </tr>
             )}
           </thead>
@@ -138,7 +138,7 @@ const TableProfit = props => {
       {openAddTokenModal && (
         <AddToken
           handleSuccess={handleSuccess}
-          tokensList={tokenList}
+          tokensList={tokensListFiltered}
           handleCloseModal={handleOpenAddToken}
         />
       )}

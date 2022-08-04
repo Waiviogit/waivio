@@ -3,6 +3,10 @@
 .edit-token {
   border-top: none;
 
+  &__select {
+    max-width: 180px;
+  }
+
   &__buttons-submit {
     margin-top: 10px;
     display: flex;
@@ -20,16 +24,22 @@
     color: @white;
     margin: 15px auto;
     display: block;
+
+    &:hover {
+      color: @white;
+      background-color: @red-danger;
+      border-color: @red-danger;
+    }
   }
 
   &__delete-block {
     text-align: initial;
+    margin-top: 20px;
   }
 
   &__save-button {
     background-color: @orange-hot;
     border: 1px solid @orange-hot;
     color: @white;
-    display: inline-flex;
   }
 }
