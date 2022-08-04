@@ -1,9 +1,16 @@
 import React from 'react';
 import RenderPropositionList from '../PropositionList/RenderPropositionList';
-import { getPropositionByCampaingObjectPermlink } from '../../../waivioApi/ApiClient';
+import {
+  getFiltersForAllProposition,
+  getPropositionByCampaingObjectPermlink,
+} from '../../../waivioApi/ApiClient';
 
 const AllProposition = () => (
-  <RenderPropositionList getProposition={getPropositionByCampaingObjectPermlink} tab={'all'} />
+  <RenderPropositionList
+    getProposition={getPropositionByCampaingObjectPermlink}
+    tab={'all'}
+    getPropositionFilters={getFiltersForAllProposition}
+  />
 );
 
 export default AllProposition;

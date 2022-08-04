@@ -12,16 +12,25 @@ import Loading from '../../components/Icon/Loading';
 import EmptyCampaing from '../../statics/EmptyCampaing';
 import Proposition from '../reuseble/Proposition/Proposition';
 import { getObjectName } from '../../../common/helpers/wObjectHelper';
+import RewardsFilters from '../Filters/Filters';
 
 import './PropositionList.less';
 
-const RenderPropositionList = ({ getProposition, tab }) => {
+const filterConfig = [
+  { title: 'Rewards for', type: 'type' },
+  { title: 'Sponsors', type: 'sponsors' },
+];
+
+const RenderPropositionList = ({ getProposition, tab, getPropositionFilters }) => {
   const { requiredObject } = useParams();
   const authUserName = useSelector(getAuthenticatedUserName);
   const [propositions, setPropositions] = useState();
   const [hasMore, setHasMore] = useState(false);
   const [loading, setLoading] = useState(true);
   const [parent, setParent] = useState(null);
+  const query = new URLSearchParams(location.search);
+  const search = query.toString() ? `&${query.toString()}` : '';
+  const getFilters = () => getPropositionFilters(requiredObject, authUserName);
 
   const getPropositionList = async () => {
     if (requiredObject) {
@@ -30,7 +39,7 @@ const RenderPropositionList = ({ getProposition, tab }) => {
       setParent(campParent);
     }
 
-    const res = await getProposition(requiredObject, authUserName);
+    const res = await getProposition(requiredObject, authUserName, 0, search);
 
     setPropositions(res.rewards);
     setHasMore(res.hasMore);
@@ -39,12 +48,12 @@ const RenderPropositionList = ({ getProposition, tab }) => {
 
   useEffect(() => {
     getPropositionList();
-  }, [requiredObject]);
+  }, [requiredObject, search]);
 
   const handleLoadingMoreRewardsList = async () => {
     setLoading(true);
     try {
-      const res = await getProposition(requiredObject, authUserName, propositions?.length);
+      const res = await getProposition(requiredObject, authUserName, propositions?.length, search);
 
       setPropositions([...propositions, ...res.rewards]);
       setHasMore(res.hasMore);
@@ -57,44 +66,48 @@ const RenderPropositionList = ({ getProposition, tab }) => {
   if (loading && isEmpty(propositions)) return <Loading />;
 
   return (
-    <div>
-      <div className="PropositionList__breadcrumbs">
-        <Link className="PropositionList__parent" to={`/rewards-new/${tab}`}>
-          {capitalize(tab)} rewards
-        </Link>
-        {requiredObject && (
-          <div className="PropositionList__parent">
-            <span className="PropositionList__icon">&#62;</span>{' '}
-            <span>{getObjectName(parent)}</span>
-          </div>
+    <div className="PropositionList">
+      <div className="PropositionList__feed">
+        <div className="PropositionList__breadcrumbs">
+          <Link className="PropositionList__parent" to={`/rewards-new/${tab}`}>
+            {capitalize(tab)} rewards
+          </Link>
+          {requiredObject && (
+            <div className="PropositionList__parent">
+              <span className="PropositionList__icon">&#62;</span>{' '}
+              <span>{getObjectName(parent)}</span>
+            </div>
+          )}
+        </div>
+        {isEmpty(propositions) ? (
+          <EmptyCampaing />
+        ) : (
+          <ReduxInfiniteScroll
+            loadMore={handleLoadingMoreRewardsList}
+            loader={<Loading />}
+            loadingMore={loading}
+            hasMore={hasMore}
+            elementIsScrollable={false}
+            threshold={500}
+          >
+            {propositions?.map(proposition => (
+              <Proposition
+                key={proposition?._id}
+                proposition={{ ...proposition, object: { ...proposition.object, parent } }}
+                type={tab}
+              />
+            ))}
+          </ReduxInfiniteScroll>
         )}
       </div>
-      {isEmpty(propositions) ? (
-        <EmptyCampaing />
-      ) : (
-        <ReduxInfiniteScroll
-          loadMore={handleLoadingMoreRewardsList}
-          loader={<Loading />}
-          loadingMore={loading}
-          hasMore={hasMore}
-          elementIsScrollable={false}
-          threshold={500}
-        >
-          {propositions?.map(proposition => (
-            <Proposition
-              key={proposition?._id}
-              proposition={{ ...proposition, object: { ...proposition.object, parent } }}
-              type={tab}
-            />
-          ))}
-        </ReduxInfiniteScroll>
-      )}
+      <RewardsFilters title={'Filter rewards'} getFilters={getFilters} config={filterConfig} />
     </div>
   );
 };
 
 RenderPropositionList.propTypes = {
   getProposition: PropTypes.func.isRequired,
+  getPropositionFilters: PropTypes.func.isRequired,
   tab: PropTypes.string.isRequired,
 };
 

@@ -7,14 +7,18 @@ import PropTypes from 'prop-types';
 
 import './Filters.less';
 
-const RewardsFilters = ({ filters, config }) => {
+const RewardsFilters = ({ config, getFilters }) => {
   const [activeFilters, setActiveFilters] = useState({});
   const history = useHistory();
   const query = new URLSearchParams(history.location.search);
+  const [filters, setFilter] = useState();
 
   useEffect(() => {
     const types = config.map(conf => conf.type);
 
+    getFilters().then(res => {
+      setFilter(res);
+    });
     setActiveFilters(
       types.reduce((acc, curr) => {
         const filtrs = query.get(curr);
@@ -67,7 +71,7 @@ const RewardsFilters = ({ filters, config }) => {
       </div>
       {config.map(filter => (
         <div className="RewardsFilters__block" key={filter.title}>
-          <span className="RewardsFilters__subtitle">{filter.title}</span>
+          <span className="RewardsFilters__subtitle">{filter.title}:</span>
           {filters?.[filter?.type]?.map(check => (
             <div key={check}>
               <Checkbox
@@ -86,7 +90,7 @@ const RewardsFilters = ({ filters, config }) => {
 };
 
 RewardsFilters.propTypes = {
-  filters: PropTypes.shape({}).isRequired,
+  getFilters: PropTypes.func.isRequired,
   config: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
 };
 

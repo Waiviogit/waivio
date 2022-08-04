@@ -3,11 +3,11 @@ import { useSelector } from 'react-redux';
 
 import { getEligibleRewardList, getFiltersForEligibleRewards } from '../../../waivioApi/ApiClient';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
-import RenderCampaingList from '../RenderCampaingList';
+import RenderCampaingList from './RenderCampaingList';
 
 const EligibleRewards = () => {
   const userName = useSelector(getAuthenticatedUserName);
-  const getAllRewardList = skip => getEligibleRewardList(userName, skip);
+  const getAllRewardList = (skip, query) => getEligibleRewardList(userName, skip, query);
   const getFilters = () => getFiltersForEligibleRewards(userName);
 
   return (
