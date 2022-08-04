@@ -26,8 +26,8 @@ function ProductId({ productIdBody }) {
             <div className="CompanyId__block-item">
               <p className="CompanyId__p">{obj.productIdType}</p>
               <p className="CompanyId__p">{obj.productId}</p>
-              <div className="field-avatar">
-                <img src={obj.productIdImage} alt="pic" />
+              <div className="field-avatar CompanyId__p">
+                {obj.productIdImage && <img src={obj.productIdImage} alt="pic" />}
               </div>
             </div>
           ))}
