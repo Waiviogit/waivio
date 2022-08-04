@@ -421,9 +421,10 @@ export default class AppendForm extends Component {
         case objectFields.productId:
           return `@${author} added ${currentField}(${langReadable}): ${appendValue}, ${
             productIdFields.productIdType
-          }: ${formValues[productIdFields.productIdType]}, ${productIdFields.productIdImage}: ${
-            formValues[productIdFields.productIdImage]
-          }  `;
+          }: ${formValues[productIdFields.productIdType]},${
+            productIdFields.productIdImage
+          }: \n ![${currentField}](${formValues[productIdFields.productIdImage]})
+    `;
         case TYPES_OF_MENU_ITEM.PAGE:
         case TYPES_OF_MENU_ITEM.LIST: {
           const alias = getFieldValue('menuItemName');
@@ -1101,7 +1102,9 @@ export default class AppendForm extends Component {
         ? this.props.form.setFieldsValue({ [objectFields.productIdImage]: image[0].src })
         : this.props.form.setFieldsValue({ [currentField]: image[0].src });
     } else {
-      this.props.form.setFieldsValue({ [currentField]: '' });
+      currentField === objectFields.productId
+        ? this.props.form.setFieldsValue({ [objectFields.productIdImage]: '' })
+        : this.props.form.setFieldsValue({ [currentField]: '' });
     }
   };
 
@@ -1753,7 +1756,9 @@ export default class AppendForm extends Component {
             <br />
             <div className="image-wrapper">
               <Form.Item>
-                {getFieldDecorator(objectFields.productIdImage, { rules: null })(
+                {getFieldDecorator(objectFields.productIdImage, {
+                  rules: this.getFieldRules(objectFields.productId),
+                })(
                   <ImageSetter
                     onImageLoaded={this.getImages}
                     onLoadingImage={this.onLoadingImage}
