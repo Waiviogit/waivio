@@ -270,10 +270,11 @@ class WalletTable extends React.Component {
         fieldHP: 3,
         fieldHBD: 4,
         hiveCurrentCurrency: 5,
-        withdrawDeposit: 6,
-        userName: 7,
-        fieldDescriptionForTable: 8,
-        fieldMemo: 9,
+        hbdCurrentCurrency: 6,
+        withdrawDeposit: 7,
+        userName: 8,
+        fieldDescriptionForTable: 9,
+        fieldMemo: 10,
       };
 
       const csvHiveArray = mappedList.map(transaction => {
@@ -303,6 +304,7 @@ class WalletTable extends React.Component {
           'HP',
           'HBD',
           `HIVE/${this.state.currentCurrency}`,
+          `HBD/${this.state.currentCurrency}`,
           '±',
           'Account',
           'Description',
@@ -365,7 +367,7 @@ class WalletTable extends React.Component {
                 id: 'totals_calculated',
                 defaultMessage: 'Totals can be calculated only for a defined from-till period.',
               })}
-          )
+          ){' '}
           {
             <button
               disabled={
