@@ -259,7 +259,7 @@ const EditorSlate = props => {
 
   useEffect(() => {
     if (!body) setParams(params);
-    if (body && prevParams !== params) {
+    if ((body || initialBody) && prevParams !== params) {
       setParams(params);
       const postParsed = deserializeToSlate(body || initialBody);
 
