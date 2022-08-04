@@ -2688,9 +2688,9 @@ export const getCampaingHistoryList = (giudeName, skip = 0) => {
     .catch(e => e);
 };
 
-export const getAllRewardList = (skip = 0) => {
+export const getAllRewardList = (skip = 0, query) => {
   return fetch(
-    `${config.campaignV2ApiPrefix}${config.rewards}${config.all}?limit=10&skip=${skip}`,
+    `${config.campaignV2ApiPrefix}${config.rewards}${config.all}?limit=10&skip=${skip}${query}`,
     {
       headers,
       method: 'GET',
@@ -2834,6 +2834,31 @@ export const getNewCampaingById = id => {
     headers,
     method: 'GET',
   })
+    .then(handleErrors)
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+};
+
+export const getFiltersForAllRewards = () => {
+  return fetch(`${config.campaignV2ApiPrefix}${config.rewards}${config.all}${config.sponsors}`, {
+    headers,
+    method: 'GET',
+  })
+    .then(handleErrors)
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+};
+
+export const getFiltersForEligibleRewards = userName => {
+  return fetch(
+    `${config.campaignV2ApiPrefix}${config.rewards}${config.eligible}${config.sponsors}?userName=${userName}`,
+    {
+      headers,
+      method: 'GET',
+    },
+  )
     .then(handleErrors)
     .then(res => res.json())
     .then(response => response)

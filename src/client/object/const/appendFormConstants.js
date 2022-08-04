@@ -355,6 +355,27 @@ export const fieldsRules = {
       validator: true,
     },
   ],
+  [objectFields.productIdImage]: [
+    {
+      required: false,
+      message: {
+        intlId: {
+          id: 'field_error',
+          defaultMessage: 'Field is required',
+        },
+        intlMeta: { field: 'Image URL' },
+      },
+    },
+    {
+      pattern: objectURLValidationRegExp,
+      message: {
+        intlId: {
+          id: 'image_link_validation',
+          defaultMessage: 'Please enter valid link',
+        },
+      },
+    },
+  ],
   [addressFields.address]: [
     {
       max: 100,
