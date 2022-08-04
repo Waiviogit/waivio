@@ -21,8 +21,7 @@ function ProductId({ productIdBody }) {
       </button>
       <div className="CompanyId__block">
         {showMore &&
-          productIdBody.map(obj => (
-            // eslint-disable-next-line react/jsx-key
+          productIdBody.forEach(obj => (
             <div className="CompanyId__block-item">
               <p className="CompanyId__p">{obj.productIdType}</p>
               <p className="CompanyId__p">{obj.productId}</p>
