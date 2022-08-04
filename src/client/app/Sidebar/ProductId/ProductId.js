@@ -21,8 +21,8 @@ function ProductId({ productIdBody }) {
       </button>
       <div className="CompanyId__block">
         {showMore &&
-          productIdBody.forEach(obj => (
-            <div className="CompanyId__block-item">
+          productIdBody?.map(obj => (
+            <div key={obj.id} className="CompanyId__block-item">
               <p className="CompanyId__p">{obj.productIdType}</p>
               <p className="CompanyId__p">{obj.productId}</p>
               <div className="field-avatar CompanyId__p">
