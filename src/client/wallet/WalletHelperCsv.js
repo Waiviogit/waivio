@@ -147,14 +147,14 @@ export const getTableDescription = (type, options) => {
       return null;
   }
 };
-export const getSavingsTransactionMessage = (transactionType, transactionDetails, amount) => {
+export const getTableSavingsTransactionMessage = (transactionType, transactionDetails) => {
   switch (transactionType) {
     case 'cancel_transfer_from_savings':
       return `Cancel transfer from savings (request ${transactionDetails.request_id})`;
     case 'transfer_to_savings':
-      return `Transfer to savings ${amount} from ${transactionDetails.to}`;
+      return `Transfer to savings from ${transactionDetails.to}`;
     case 'transfer_from_savings':
-      return `Transfer from savings ${amount} to ${transactionDetails.from}`;
+      return `Transfer from savings to ${transactionDetails.from}`;
     default:
       return null;
   }
