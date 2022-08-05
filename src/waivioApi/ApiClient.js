@@ -2905,7 +2905,7 @@ export const getFiltersForAllProposition = reqObj => {
 
 export const getFiltersForReservedProposition = (reqObj, userName) => {
   return fetch(
-    `${config.campaignV2ApiPrefix}${config.rewards}${config.reserved}${config.sponsors}?userName=${userName}`,
+    `${config.campaignV2ApiPrefix}${config.rewards}${config.reserved}/${userName}${config.filters}`,
     {
       headers,
       method: 'GET',

@@ -33,7 +33,7 @@ const RenderPropositionList = ({ getProposition, tab, getPropositionFilters }) =
   const getFilters = () => getPropositionFilters(requiredObject, authUserName);
 
   const getPropositionList = async () => {
-    if (requiredObject) {
+    if (requiredObject || requiredObject !== parent?.author_permlink) {
       const campParent = await getObject(requiredObject);
 
       setParent(campParent);
