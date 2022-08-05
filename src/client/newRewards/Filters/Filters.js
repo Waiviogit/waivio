@@ -11,7 +11,7 @@ const RewardsFilters = ({ config, getFilters }) => {
   const [activeFilters, setActiveFilters] = useState({});
   const history = useHistory();
   const query = new URLSearchParams(history.location.search);
-  const [filters, setFilter] = useState();
+  const [filters, setFilter] = useState({});
 
   useEffect(() => {
     const types = config.map(conf => conf.type);
@@ -61,7 +61,7 @@ const RewardsFilters = ({ config, getFilters }) => {
     history.push(`?${query.toString()}`);
   };
 
-  if (isEmpty(filters)) return null;
+  if (Object.values(filters).every(fltrArray => isEmpty(fltrArray))) return null;
 
   return (
     <div className="RewardsFilters">
@@ -69,22 +69,26 @@ const RewardsFilters = ({ config, getFilters }) => {
         <i className="iconfont icon-trysearchlist RewardsFilters__icon" />
         <FormattedMessage id="filter_rewards" defaultMessage="Filter rewards" />
       </div>
-      {config.map(filter => (
-        <div className="RewardsFilters__block" key={filter.title}>
-          <span className="RewardsFilters__subtitle">{filter.title}:</span>
-          {filters?.[filter?.type]?.map(check => (
-            <div key={check}>
-              <Checkbox
-                checked={activeFilters[filter.type]?.includes(check)}
-                onChange={() => setFilters(filter.type, check)}
-              >
-                {' '}
-                {check}
-              </Checkbox>
-            </div>
-          ))}
-        </div>
-      ))}
+      {config.map(filter => {
+        if (isEmpty(filters?.[filter?.type])) return null;
+
+        return (
+          <div className="RewardsFilters__block" key={filter.title}>
+            <span className="RewardsFilters__subtitle">{filter.title}:</span>
+            {filters?.[filter?.type]?.map(check => (
+              <div key={check}>
+                <Checkbox
+                  checked={activeFilters[filter.type]?.includes(check)}
+                  onChange={() => setFilters(filter.type, check)}
+                >
+                  {' '}
+                  {check}
+                </Checkbox>
+              </div>
+            ))}
+          </div>
+        );
+      })}
     </div>
   );
 };

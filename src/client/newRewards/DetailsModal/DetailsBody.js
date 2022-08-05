@@ -59,7 +59,7 @@ const DetailsModalBody = ({ proposition, requirements }) => {
                   for reviewing
                   <Link
                     className="nowrap"
-                    to={`/object/${proposition?.object?.parent?.author_permlink}`}
+                    to={`/object/${proposition?.object?.parent?.defaultShowLink}`}
                   >
                     {` ${getObjectName(proposition?.object?.parent)} `}
                   </Link>
@@ -86,11 +86,10 @@ const DetailsModalBody = ({ proposition, requirements }) => {
         </div>
         <ol className="DetailsModal__requirementsList">
           <li>
-            <span className="nowrap">Minimum 2 original photos of</span>
-            <Link
-              className="ml1"
-              to={`/object/${proposition?.object.id || proposition?.object.author_permlink}`}
-            >
+            <span className="nowrap">
+              Minimum {proposition?.requirements?.minPhotos} original photos of
+            </span>
+            <Link className="ml1" to={`/object/${proposition?.object?.defaultShowLink}`}>
               {getObjectName(proposition?.object)}
             </Link>
             ;
@@ -102,7 +101,7 @@ const DetailsModalBody = ({ proposition, requirements }) => {
             <span className="nowrap">Link to</span>
             <Link
               className="ml1 Details__container"
-              to={`/object/${proposition?.object?.author_permlink}`}
+              to={`/object/${proposition?.object?.defaultShowLink}`}
             >
               {getObjectName(proposition?.object)}
             </Link>
@@ -112,7 +111,7 @@ const DetailsModalBody = ({ proposition, requirements }) => {
             <span className="nowrap">Link to</span>
             <Link
               className="ml1 Details__container"
-              to={`/object/${proposition?.object?.parent?.author_permlink}`}
+              to={`/object/${proposition?.object?.parent?.defaultShowLink}`}
             >
               {getObjectName(proposition?.object?.parent)}
             </Link>
@@ -199,6 +198,7 @@ DetailsModalBody.propTypes = {
     matchBots: PropTypes.arrayOf(PropTypes.shape()),
     requirements: PropTypes.shape({
       receiptPhoto: PropTypes.bool,
+      minPhotos: PropTypes.number,
     }),
     userRequirements: PropTypes.shape({
       minPhotos: PropTypes.number,
@@ -208,9 +208,9 @@ DetailsModalBody.propTypes = {
     }),
     object: PropTypes.shape({
       parent: PropTypes.shape({
-        author_permlink: PropTypes.string,
+        defaultShowLink: PropTypes.string,
       }),
-      author_permlink: PropTypes.string,
+      defaultShowLink: PropTypes.string,
       id: PropTypes.string,
     }),
   }).isRequired,
