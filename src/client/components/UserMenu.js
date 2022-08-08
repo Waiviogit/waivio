@@ -48,7 +48,7 @@ class UserMenu extends React.Component {
       <div className="UserMenu">
         <div className="container menu-layout">
           <div className="left" />
-          <ul className="UserMenu__menu UserMenu__menu-center ">
+          <ul className="UserMenu__menu center ">
             <li
               className={this.getItemClasses('discussions')}
               onClick={this.handleClick}
