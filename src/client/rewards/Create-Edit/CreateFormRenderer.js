@@ -105,7 +105,9 @@ const CreateFormRenderer = props => {
       </div>
     ) : null;
 
-  const sponsorsIdsToOmit = !isEmpty(sponsorsList) ? map(sponsorsList, obj => obj.account) : [];
+  const sponsorsIdsToOmit = !isEmpty(sponsorsList)
+    ? map(sponsorsList, obj => obj.account || obj)
+    : [];
 
   const renderSponsorsList = !isEmpty(sponsorsList)
     ? map(sponsorsList, sponsor => (

@@ -57,10 +57,7 @@ const DetailsModalBody = ({ proposition, requirements }) => {
                   Have not received a reward from
                   <Link to={`/@${proposition?.guideName}`}>{` @${proposition?.guideName} `}</Link>
                   for reviewing
-                  <Link
-                    className="nowrap"
-                    to={`/object/${proposition?.object?.parent?.defaultShowLink}`}
-                  >
+                  <Link className="nowrap" to={proposition?.object?.parent?.defaultShowLink}>
                     {` ${getObjectName(proposition?.object?.parent)} `}
                   </Link>
                   in the last {proposition?.frequencyAssign} days and does not have an active
@@ -89,7 +86,7 @@ const DetailsModalBody = ({ proposition, requirements }) => {
             <span className="nowrap">
               Minimum {proposition?.requirements?.minPhotos} original photos of
             </span>
-            <Link className="ml1" to={`/object/${proposition?.object?.defaultShowLink}`}>
+            <Link className="ml1" to={proposition?.object?.defaultShowLink}>
               {getObjectName(proposition?.object)}
             </Link>
             ;
@@ -99,10 +96,7 @@ const DetailsModalBody = ({ proposition, requirements }) => {
           )}
           <li>
             <span className="nowrap">Link to</span>
-            <Link
-              className="ml1 Details__container"
-              to={`/object/${proposition?.object?.defaultShowLink}`}
-            >
+            <Link className="ml1 Details__container" to={proposition?.object?.defaultShowLink}>
               {getObjectName(proposition?.object)}
             </Link>
             ;
@@ -111,7 +105,7 @@ const DetailsModalBody = ({ proposition, requirements }) => {
             <span className="nowrap">Link to</span>
             <Link
               className="ml1 Details__container"
-              to={`/object/${proposition?.object?.parent?.defaultShowLink}`}
+              to={proposition?.object?.parent?.defaultShowLink}
             >
               {getObjectName(proposition?.object?.parent)}
             </Link>

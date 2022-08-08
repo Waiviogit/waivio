@@ -151,16 +151,15 @@ class CreateRewards extends React.Component {
       const authorPermlinks = [
         campaign.requiredObject,
         ...campaign.agreementObjects,
-        ...campaign.matchBots,
+        // ...campaign.matchBots,
         ...campaign.objects,
       ];
       const combinedObjects = await getObjectsByIds({
         authorPermlinks,
         limit: size(authorPermlinks),
       });
-      const sponsors = combinedObjects.wobjects.filter(wobj =>
-        includes(campaign.matchBots, wobj.author_permlink),
-      );
+
+      const sponsors = campaign.matchBots;
       const primaryObject = combinedObjects.wobjects.find(
         wobj => wobj.author_permlink === campaign.requiredObject,
       );
@@ -191,7 +190,7 @@ class CreateRewards extends React.Component {
           primaryObject: values[0],
           secondaryObjectsList: values[1].map(obj => obj),
           pageObjects: !isEmpty(values[2]) ? [values[2]] : [],
-          sponsorsList: !isEmpty(sponsors) ? values[2] : [],
+          sponsorsList: !isEmpty(sponsors) ? values[3] : [],
           reservationPeriod: campaign.countReservationDays,
           receiptPhoto: campaign.requirements.receiptPhoto,
           minExpertise,
@@ -220,7 +219,7 @@ class CreateRewards extends React.Component {
     const { rewardFund, rate } = this.props;
     const objects = map(data.secondaryObject, o => o.author_permlink);
     const agreementObjects = size(pageObjects) ? map(pageObjects, o => o.author_permlink) : [];
-    const matchBots = map(data.sponsorsList, o => o.account);
+    const matchBots = data.sponsorsList;
     const appName = apiConfig[process.env.NODE_ENV].appName || 'waivio';
     const minExpertise = getMinExpertisePrepared({
       minExpertise: data.minExpertise,
@@ -285,7 +284,7 @@ class CreateRewards extends React.Component {
     removeSponsorObject: obj => {
       this.setState(
         prevState => {
-          const objectList = prevState.sponsorsList.filter(el => el.account !== obj.account);
+          const objectList = prevState.sponsorsList.filter(el => el !== obj);
 
           return {
             sponsorsList: objectList,

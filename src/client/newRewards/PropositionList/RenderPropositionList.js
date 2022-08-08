@@ -92,7 +92,7 @@ const RenderPropositionList = ({ getProposition, tab, getPropositionFilters }) =
           >
             {propositions?.map(proposition => (
               <Proposition
-                key={proposition?._id}
+                key={`${proposition?.objects}/${proposition?.guideName}`}
                 proposition={{ ...proposition, object: { ...proposition.object, parent } }}
                 type={tab}
               />

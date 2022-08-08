@@ -14,9 +14,9 @@ import WebsiteReservedButtons from '../../rewards/Proposition/WebsiteReservedBut
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 import DetailsModalBody from './DetailsBody';
 import { validateEgibilitiesForUser } from '../../../waivioApi/ApiClient';
-import useRewards from '../../../hooks/useRewards';
 import { changeRewardsTab } from '../../../store/authStore/authActions';
 import RewardsHeader from '../reuseble/RewardsHeader';
+import { reserveProposition } from '../../../store/newRewards/newRewardsActions';
 
 // import './DetailsModal.less';
 
@@ -29,7 +29,6 @@ const DetailsModal = ({
   onActionInitiated,
 }) => {
   const location = useLocation();
-  const { reserveProposition } = useRewards();
   const history = useHistory();
   const dispatch = useDispatch();
   const authorizedUserName = useSelector(getAuthenticatedUserName);
@@ -61,7 +60,7 @@ const DetailsModal = ({
   const handleClickReserve = () => {
     setLoading(true);
 
-    reserveProposition(proposition, userName).then(() => {
+    dispatch(reserveProposition(proposition, userName)).then(() => {
       history.push('/rewards-new/reserved');
       setLoading(false);
       dispatch(changeRewardsTab(userName));
