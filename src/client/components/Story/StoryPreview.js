@@ -52,7 +52,6 @@ const StoryPreview = ({ post, isUpdates, isVimeo }) => {
       imagePath = contentImages[0];
     }
   }
-
   if (
     isUpdates &&
     (post.name === objectFields.avatar ||
@@ -65,7 +64,11 @@ const StoryPreview = ({ post, isUpdates, isVimeo }) => {
       imagePath = post.body;
     }
   }
-
+  if (isUpdates && post.name === objectFields.productId) {
+    if (!isEmpty(post.body) && post.body.includes('waivio.nyc3.digitaloceanspaces')) {
+      imagePath = JSON.parse(post.body).productIdImage;
+    }
+  }
   const embeds = steemEmbed.getAll(post.body, { height: '100%' });
   const video = jsonMetadata && jsonMetadata.video;
 
