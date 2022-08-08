@@ -51,6 +51,8 @@ export const manageTableHeaderConfig = [
         defaultMessage: 'Remaining',
       },
       rowspan: 2,
+      type: 'round',
+      precision: 3,
     },
   ],
   [

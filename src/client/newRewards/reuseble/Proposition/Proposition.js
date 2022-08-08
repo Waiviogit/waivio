@@ -27,6 +27,7 @@ const Proposition = ({ proposition, type }) => {
         countReservationDays={proposition?.countReservationDays}
         commentsCount={proposition?.commentsCount}
         openDetailsModal={onOpenDetailsModal}
+        proposition={proposition}
       />
       {openDetails && (
         <DetailsModal

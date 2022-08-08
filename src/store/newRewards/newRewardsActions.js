@@ -5,6 +5,7 @@ import { getCurrentHivePrice } from '../../waivioApi/ApiClient';
 import { getNewDetailsBody } from '../../client/rewards/rewardsHelper';
 import config from '../../waivioApi/config.json';
 import { subscribeTypes } from '../../common/constants/blockTypes';
+import { getAuthenticatedUserName } from '../authStore/authSelectors';
 
 export const reserveProposition = (proposition, username) => async (
   dispatch,
@@ -53,7 +54,7 @@ export const reserveProposition = (proposition, username) => async (
       .then(async () => {
         busyAPI.instance.sendAsync(subscribeTypes.subscribeCampaignAssign, [username, permlink]);
         busyAPI.instance.subscribe((datad, j) => {
-          if (j?.result?.assigned && j?.result?.permlink === permlink) {
+          if (j?.assigned && j?.permlink === permlink) {
             resolve();
           }
         });
@@ -62,12 +63,9 @@ export const reserveProposition = (proposition, username) => async (
   });
 };
 
-export const realiseRewards = (proposition, username) => (
-  dispatch,
-  getState,
-  { steemConnectAPI },
-) => {
+export const realiseRewards = proposition => (dispatch, getState, { steemConnectAPI }) => {
   const unreservationPermlink = `reject-${proposition._id}${generatePermlink()}`;
+  const username = getAuthenticatedUserName(getState());
 
   const commentOp = [
     'comment',
