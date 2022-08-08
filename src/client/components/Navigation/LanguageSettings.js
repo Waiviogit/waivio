@@ -67,7 +67,7 @@ class LanguageSettings extends React.Component {
         visible={languageSettingsVisible}
         onVisibleChange={this.handleLanguageSettingsVisibleChange}
         overlayStyle={{ position: 'fixed' }}
-        overlayClassName="LanguageSettings"
+        overlayClassName="LanguageSettings "
         content={
           <PopoverMenu onSelect={this.handleLanguageSettingsSelect}>
             {LANGUAGES.map(lang => (
