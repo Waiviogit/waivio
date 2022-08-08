@@ -113,7 +113,7 @@ export const validatorsCreator = (
   checkMinExpertise: (rule, value, callback) => {
     const dec = String(value).indexOf('.');
 
-    if (value.length > dec + 3) {
+    if (dec >= 0 && value.length > dec + 3) {
       callback(messages.minExpertiseValue);
     } else if (value < 0 && value !== '') {
       callback(messages.minExpertise);

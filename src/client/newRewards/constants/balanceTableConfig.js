@@ -21,6 +21,8 @@ export const configGuideBalanceTableHeader = [
       id: 'reserved',
       defaultMessage: 'Reserved',
     },
+    type: 'round',
+    precision: 3,
   },
   {
     type: 'round',

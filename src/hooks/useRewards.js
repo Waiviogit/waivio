@@ -1,4 +1,5 @@
 import { round } from 'lodash';
+import { useMemo } from 'react';
 
 import { generatePermlink, getObjectName } from '../common/helpers/wObjectHelper';
 import { getCurrentHivePrice } from '../waivioApi/ApiClient';
@@ -9,7 +10,7 @@ import steemConnectAPI from '../client/steemConnectAPI';
 import createBusyAPI from '../common/services/createBusyAPI';
 
 const useRewards = () => {
-  const busyAPI = createBusyAPI();
+  const busyAPI = useMemo(() => createBusyAPI(), []);
 
   const reserveProposition = async (proposition, username) => {
     const permlink = `reserve-${generatePermlink()}`;

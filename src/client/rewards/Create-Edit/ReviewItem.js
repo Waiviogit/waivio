@@ -7,7 +7,10 @@ const ReviewItem = ({ isUser, object, removeReviewObject, loading }) => {
   const removeItem = !loading ? () => removeReviewObject(object) : null;
 
   return isUser ? (
-    <SelectUserForAutocomplete account={object.name || object.account} resetUser={removeItem} />
+    <SelectUserForAutocomplete
+      account={object.name || object.account || object}
+      resetUser={removeItem}
+    />
   ) : (
     <ObjectCardView wObject={object} closeButton onDelete={removeItem} />
   );

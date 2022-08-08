@@ -1,10 +1,17 @@
 import React from 'react';
-import { Button, Icon } from 'antd';
+import { Button } from 'antd';
 import PropTypes from 'prop-types';
+import RewardsPopover from '../../RewardsPopover/RewardsPopover';
 
 import './Proposition.less';
 
-const PropositionFooter = ({ type, openDetailsModal, countReservationDays, commentsCount }) => {
+const PropositionFooter = ({
+  type,
+  openDetailsModal,
+  countReservationDays,
+  commentsCount,
+  proposition,
+}) => {
   const getFooter = () => {
     switch (type) {
       case 'reserved':
@@ -14,7 +21,7 @@ const PropositionFooter = ({ type, openDetailsModal, countReservationDays, comme
               <b>Reserved</b>
               <i className="iconfont icon-message_fill" />
               {commentsCount}
-              <Icon type="ellipsis" />
+              <RewardsPopover proposition={proposition} />
             </div>
             <Button type="primary" onClick={openDetailsModal}>
               Write review
@@ -42,6 +49,7 @@ PropositionFooter.propTypes = {
   openDetailsModal: PropTypes.func.isRequired,
   countReservationDays: PropTypes.number.isRequired,
   commentsCount: PropTypes.number.isRequired,
+  proposition: PropTypes.shape({}).isRequired,
 };
 
 export default PropositionFooter;
