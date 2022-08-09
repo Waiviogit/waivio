@@ -420,14 +420,15 @@ export default class AppendForm extends Component {
           }: ${formValues[companyIdFields.companyIdType]}  `;
         case objectFields.productId:
           const imageDescription = formValues[productIdFields.productIdImage]
-            ? ` , ${productIdFields.productIdImage}:  \n ![${productIdFields.productIdImage}](${
+            ? `${productIdFields.productIdImage}:  \n ![${productIdFields.productIdImage}](${
                 formValues[productIdFields.productIdImage]
               })`
             : '';
 
-          return `@${author} added ${currentField}(${langReadable}): ${appendValue}, ${
-            productIdFields.productIdType
-          }: ${formValues[productIdFields.productIdType]} ${imageDescription}`;
+          return `@${author} added ${productIdFields.productIdType} (${langReadable}):
+           ${
+             formValues[productIdFields.productIdType]
+           }, ${currentField}: ${appendValue}, ${imageDescription}`;
         case TYPES_OF_MENU_ITEM.PAGE:
         case TYPES_OF_MENU_ITEM.LIST: {
           const alias = getFieldValue('menuItemName');
