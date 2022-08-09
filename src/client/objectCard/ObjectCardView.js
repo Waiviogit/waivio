@@ -35,6 +35,7 @@ const ObjectCardView = ({
   onDelete,
   isPost,
   postAuthor,
+  payoutToken,
 }) => {
   const username = useSelector(getAuthenticatedUserName);
   const rate = useSelector(getRate);
@@ -175,7 +176,8 @@ const ObjectCardView = ({
               </b>{' '}
               {isReserved ? (
                 <React.Fragment>
-                  <b className="ObjectCardView__priceColor">{round(rewardPrice / rate, 3)}</b> HIVE
+                  <b className="ObjectCardView__priceColor">{round(rewardPrice / rate, 3)}</b>{' '}
+                  {payoutToken || 'HIVE'}
                 </React.Fragment>
               ) : (
                 <USDDisplay
@@ -200,6 +202,7 @@ ObjectCardView.propTypes = {
   wObject: PropTypes.shape(),
   passedParent: PropTypes.oneOfType([PropTypes.string, PropTypes.shape()]),
   path: PropTypes.string,
+  payoutToken: PropTypes.string,
   hovered: PropTypes.bool,
   withRewards: PropTypes.bool,
   isReserved: PropTypes.bool,
@@ -218,6 +221,7 @@ ObjectCardView.defaultProps = {
   wObject: {},
   path: '',
   postAuthor: '',
+  payoutToken: '',
   passedParent: {},
   withRewards: false,
   isReserved: false,

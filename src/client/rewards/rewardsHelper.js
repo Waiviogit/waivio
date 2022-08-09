@@ -203,7 +203,7 @@ export const getFrequencyAssign = objectDetails => {
 
 export const getAgreementObjects = objectDetails =>
   !isEmpty(objectDetails.agreementObjects)
-    ? `including the following: Legal highlights: ${reduce(
+    ? ` including the following: Legal highlights: ${reduce(
         objectDetails.agreementObjects,
         (acc, obj) => ` ${acc} <a href='/object/${obj}/page'>${obj}</a> `,
         '',
@@ -212,12 +212,12 @@ export const getAgreementObjects = objectDetails =>
 
 export const getMatchBots = objectDetails =>
   !isEmpty(objectDetails.match_bots)
-    ? reduce(objectDetails.match_bots, (acc, bot) => `${acc}, <a href='/@${bot}'>${bot}</a>`, '')
+    ? reduce(objectDetails.match_bots, (acc, bot) => `${acc}, <a href='/@${bot}'>${bot}</a>`, ' ')
     : '';
 
 export const getUsersLegalNotice = objectDetails =>
   objectDetails.usersLegalNotice
-    ? `<p><b>Legal notice:</b></p><p>${objectDetails.usersLegalNotice}</p>.`
+    ? `<p><b>Legal notice:</b></p><p>${objectDetails.usersLegalNotice}.</p>`
     : '';
 
 export const getReceiptPhoto = objectDetails =>
@@ -325,51 +325,40 @@ export const getDetailsBody = ({
   const rewards = `<p><b>Reward:</b></p>
 <p>The amount of the reward is determined in HIVE at the time of reservation. The reward will be paid in the form of a combination of upvotes (Hive Power) and direct payments (liquid HIVE). Only upvotes from registered accounts (<a href='/@${guideName}'>${guideName}</a> ${matchBots}) count towards the payment of rewards. The value of all other upvotes is not subtracted from the specified amount of the reward.</p>`;
   const legal = `<p><b>Legal:</b></p>
-<p>By making the reservation, you confirm that you have read and agree to the <a href="/object/xrj-terms-and-conditions/page">Terms and Conditions of the Service Agreement</a> ${agreementObjects}</p>`;
+<p>By making the reservation, you confirm that you have read and agree to the <a href="/object/xrj-terms-and-conditions/page">Terms and Conditions of the Service Agreement</a>${agreementObjects}.</p>`;
   const usersLegalNotice = getUsersLegalNotice(proposition);
 
   return `${eligibilityRequirements} ${frequencyAssign} ${blacklist} ${postRequirements} ${description} ${sponsor} ${rewards} ${legal} ${usersLegalNotice}`;
 };
 
-export const getNewDetailsBody = ({ proposition, rate, recentClaims, rewardBalance }) => {
+export const getNewDetailsBody = proposition => {
   const parent = proposition.object.parent;
   const proposedWobjName = getObjectName(proposition.object);
-  const propositionMinExpertise = proposition.userRequirements.minExpertise;
-  const minExpertise = getMinExpertise({
-    campaignMinExpertise: propositionMinExpertise,
-    rewardFundRecentClaims: recentClaims,
-    rewardFundRewardBalance: rewardBalance,
-    rate,
-  });
+  const frequencyAssign = getFrequencyAssign(proposition);
+  const receiptPhoto = getReceiptPhoto(proposition);
 
   const eligibilityRequirements = `
     <p><b>User eligibility requirements:</b></p>
 <p>Only users who meet all eligibility criteria can participate in this rewards campaign.</p>
-<ul>
-    <li>Minimum Waivio expertise: ${minExpertise};</li>
-    <li>Minimum number of followers: ${proposition.userRequirements.minFollowers};</li>
-    <li>Minimum number of posts: ${proposition.userRequirements.minPosts};</li>
-</ul>`;
-  const frequencyAssign = getFrequencyAssign(proposition);
+<ul><li>Minimum Waivio expertise: ${proposition.userRequirements.minExpertise};</li><li>Minimum number of followers: ${proposition.userRequirements.minFollowers};</li><li>Minimum number of posts: ${proposition.userRequirements.minPosts};</li></ul>`;
   const blacklist = `<ul><li>User account is not blacklisted by <a href='/@${proposition?.guideName}'>${proposition?.guideName}</a> or referenced accounts.</li></ul>`;
-  const receiptPhoto = getReceiptPhoto(proposition);
-  const linkToFollowingObjects = `<li>Link to <a href={${proposition.object.defaultShowLink}}>${proposedWobjName}</a></li>`;
+  const linkToFollowingObjects = `<li>Link to <a href={${proposition.object.defaultShowLink}}>${proposedWobjName}</a></li>;`;
   const proposedWobj = proposedWobjName
     ? `of <a href={${proposition.object.defaultShowLink}}>${proposedWobjName}</a>`
     : '';
   const postRequirements = `<p><b>Post requirements:</b></p>
 <p>For the review to be eligible for the award, all the following requirements must be met:</p>
-<ul>
-<li>Minimum ${proposition.requirements.minPhotos} original photos ${proposedWobj};</li> 
-${receiptPhoto} ${linkToFollowingObjects}
-<li>Link to <a href={${parent?.defaultShowLink}}>${getObjectName(parent)}</a>;</li>
-</ul> `;
+<ul><li>Minimum ${
+    proposition.requirements.minPhotos
+  } original photos ${proposedWobj};</li>${receiptPhoto} ${linkToFollowingObjects}<li>Link to <a href={${
+    parent?.defaultShowLink
+  }}>${getObjectName(parent)}</a>;</li></ul> `;
   const description = getDescription(proposition);
   const sponsor = `<p>Sponsor reserves the right to refuse the payment if review is suspected to be fraudulent, spam, poorly written or for other reasons as stated in the agreement.</p>`;
   const agreementObjects = getAgreementObjects(proposition);
   const matchBots = getMatchBots(proposition);
   const rewards = `<p><b>Reward:</b></p>
-<p>The amount of the reward is determined in HIVE at the time of reservation. The reward will be paid in the form of a combination of upvotes (Hive Power) and direct payments (liquid HIVE). Only upvotes from registered accounts (<a href='/@${proposition.guideName}'>${proposition.guideName}</a> ${matchBots}) count towards the payment of rewards. The value of all other upvotes is not subtracted from the specified amount of the reward.</p>`;
+<p>The amount of the reward is determined in HIVE at the time of reservation. The reward will be paid in the form of a combination of upvotes (Hive Power) and direct payments (liquid HIVE). Only upvotes from registered accounts (<a href='/@${proposition.guideName}'>${proposition.guideName}</a>${matchBots}) count towards the payment of rewards. The value of all other upvotes is not subtracted from the specified amount of the reward.</p>`;
   const legal = `<p><b>Legal:</b></p>
 <p>By making the reservation, you confirm that you have read and agree to the <a href="/object/xrj-terms-and-conditions/page">Terms and Conditions of the Service Agreement</a> ${agreementObjects}</p>`;
   const usersLegalNotice = getUsersLegalNotice(proposition);
