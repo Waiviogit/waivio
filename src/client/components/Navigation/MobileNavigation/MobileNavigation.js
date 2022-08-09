@@ -17,6 +17,7 @@ import {
   PATH_NAME_PAYABLES,
   PATH_NAME_BLACKLIST,
   CAMPAIGNS,
+  PATH_NAME_ARBITRAGE,
 } from '../../../../common/constants/rewards';
 import { pages } from './helpers';
 import { getIsAuthenticated } from '../../../../store/authStore/authSelectors';
@@ -80,6 +81,10 @@ const MobileNavigation = ({ location, match }) => {
     case PATH_NAME_RECEIVABLES:
       pageName = 'rewards';
       filterName = 'receivables';
+      break;
+    case PATH_NAME_ARBITRAGE:
+      pageName = 'arbitrage';
+      filterName = 'rebalancing';
       break;
     case PATH_NAME_CREATE:
       pageName = CAMPAIGNS;

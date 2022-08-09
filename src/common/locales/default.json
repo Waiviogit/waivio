@@ -1877,5 +1877,7 @@
   "product_id_type": "Product ID type",
   "product_id": "Product ID",
   "product_id_image": "Product ID image (optional)",
-  "object_field_productId": "Product ID"
+  "object_field_productId": "Product ID",
+  "mobnav_arbitrage": "Arbitrage",
+  "mobnav_rebalancing": "Rebalancing"
 }
