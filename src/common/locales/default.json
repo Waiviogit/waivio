@@ -963,8 +963,6 @@
   "mobnav_rewards": "Rewards",
   "mobnav_all": "All",
   "mobnav_active": "Eligible",
-  "mobnav_arbitrage": "Arbitrage",
-  "mobnav_rebalancing": "Rebalancing",
   "mobnav_reserved": "Reserved",
   "mobnav_receivables": "Receivables",
   "mobnav_history": "History",
@@ -1879,5 +1877,7 @@
   "product_id_type": "Product ID type",
   "product_id": "Product ID",
   "product_id_image": "Product ID image (optional)",
-  "object_field_productId": "Product ID"
+  "object_field_productId": "Product ID",
+  "mobnav_arbitrage": "Arbitrage",
+  "mobnav_rebalancing": "Rebalancing"
 }
