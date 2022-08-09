@@ -467,22 +467,17 @@ class Notifications extends React.Component {
                 );
               case notificationConstants.TRANSFER_TO_VESTING:
                 const transferringId =
-                  notification.from === notification.to
-                    ? 'transfer_to_vesting_to_current'
-                    : 'transfer_to_vesting';
+                  notification.from === notification.to ? 'power_up_from' : 'power_up_to';
                 const transferringDefaultMessage =
                   notification.from === notification.to
-                    ? "{from} initiated 'Power Up' on {amount}"
-                    : "{from} initiated 'Power Up' on {amount} to {to}";
+                    ? 'Power up from {from}'
+                    : 'Power up to {to}';
                 const transferringValues =
                   notification.from === notification.to
                     ? {
                         from: <span className="username">{notification.from}</span>,
-                        amount: <span>{notification.amount}</span>,
                       }
                     : {
-                        from: <span className="username">{notification.from}</span>,
-                        amount: <span>{notification.amount}</span>,
                         to: <span>{notification.to}</span>,
                       };
 
