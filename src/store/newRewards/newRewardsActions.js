@@ -1,11 +1,12 @@
 import { round } from 'lodash';
 
 import { generatePermlink, getObjectName } from '../../common/helpers/wObjectHelper';
-import { getCurrentHivePrice } from '../../waivioApi/ApiClient';
 import { getNewDetailsBody } from '../../client/rewards/rewardsHelper';
 import config from '../../waivioApi/config.json';
 import { subscribeTypes } from '../../common/constants/blockTypes';
 import { getAuthenticatedUserName } from '../authStore/authSelectors';
+import { changeRewardsTab } from '../authStore/authActions';
+import { getTokenRatesInUSD } from '../walletStore/walletSelectors';
 
 export const reserveProposition = (proposition, username) => async (
   dispatch,
@@ -17,11 +18,9 @@ export const reserveProposition = (proposition, username) => async (
   const proposedWobjName = getObjectName(dish);
   const proposedAuthorPermlink = dish?.author_permlink;
   const primaryObject = proposition?.object?.parent;
-  const currencyInfo = await getCurrentHivePrice();
-  const amount = round(proposition.reward / currencyInfo.hiveCurrency, 3);
-  const detailsBody = getNewDetailsBody({
-    proposition,
-  });
+  const rates = getTokenRatesInUSD(getState(), 'WAIV');
+  const amount = round(proposition.rewardInUSD * rates, 3);
+  const detailsBody = getNewDetailsBody(proposition);
 
   const commentOp = [
     'comment',
@@ -33,9 +32,9 @@ export const reserveProposition = (proposition, username) => async (
       title: 'Rewards reservations',
       body: `<p>User ${username} (@${username}) has reserved the rewards of ${amount} ${
         proposition.payoutToken
-      } for a period of ${
-        proposition.countReservationDays
-      } days to write a review of <a href={dish.defaultShowLink}>${proposedWobjName}</a>, <a href={primaryObject.defaultShowLink}>${getObjectName(
+      } for a period of ${proposition.countReservationDays} days to write a review of <a href={${
+        dish.defaultShowLink
+      }}>${proposedWobjName}</a>, <a href={${primaryObject.defaultShowLink}}>${getObjectName(
         primaryObject,
       )}</a></p>${detailsBody}`,
       json_metadata: JSON.stringify({
@@ -55,6 +54,7 @@ export const reserveProposition = (proposition, username) => async (
         busyAPI.instance.sendAsync(subscribeTypes.subscribeCampaignAssign, [username, permlink]);
         busyAPI.instance.subscribe((datad, j) => {
           if (j?.assigned && j?.permlink === permlink) {
+            dispatch(changeRewardsTab(username));
             resolve();
           }
         });

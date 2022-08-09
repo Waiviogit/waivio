@@ -1,9 +1,12 @@
 @import (reference) '../../styles/custom.less';
+@import (reference) '../../styles/modules/variables.less';
 
 .Rebalancing {
-  padding: 0 0 20px 0;
-  position: absolute;
+  padding: 0 15px 20px 15px;
 
+  @media @small {
+    min-width: 800px;
+  }
   p {
     margin: 15px 0;
   }

@@ -151,7 +151,7 @@ const DetailsModalBody = ({ proposition, requirements }) => {
             </Link>
             {!isEmpty(proposition?.agreementObjects) && (
               <React.Fragment>
-                <span>including the following: Legal highlights:</span>
+                <span> including the following: Legal highlights:</span>
                 {proposition?.agreementObjects?.map(obj => (
                   <Link key={obj} className="ml1" to={`/object/${obj}/page`}>
                     {obj}
@@ -159,6 +159,7 @@ const DetailsModalBody = ({ proposition, requirements }) => {
                 ))}
               </React.Fragment>
             )}
+            .
           </span>
           {proposition?.usersLegalNotice && (
             <div>

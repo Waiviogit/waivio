@@ -32,7 +32,16 @@ const DetailsModal = ({
   const history = useHistory();
   const dispatch = useDispatch();
   const authorizedUserName = useSelector(getAuthenticatedUserName);
-  const [requirements, setRequirements] = useState({});
+  const [requirements, setRequirements] = useState({
+    canAssignByBudget: true,
+    canAssignByCurrentDay: true,
+    expertise: true,
+    followers: true,
+    frequency: true,
+    notAssigned: true,
+    notBlacklisted: true,
+    posts: true,
+  });
   const [loading, setLoading] = useState(true);
   const isAuth = !!authorizedUserName;
   const isWidget = new URLSearchParams(history.location.search).get('display');
