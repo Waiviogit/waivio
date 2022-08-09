@@ -61,6 +61,7 @@ export const PATH_NAME_MANAGE = '/rewards/manage';
 export const NEW_PATH_NAME_MANAGE = '/rewards-new/manage';
 export const PATH_NAME_PAYABLES = '/rewards/payables';
 export const PATH_NAME_BLACKLIST = '/rewards/blacklist';
+export const PATH_NAME_ARBITRAGE = '/rewards/rebalancing';
 
 export const CAMPAIGN_STATUS = {
   inactive: 'inactive',
