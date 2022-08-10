@@ -213,6 +213,7 @@ export default class PowerUpOrDown extends React.Component {
         okButtonProps={{
           disabled: this.state.disabled,
         }}
+        wrapClassName="PowerSwitcher__wrapper"
       >
         {visible && (
           <Form className="PowerUpOrDown" hideRequiredMark>

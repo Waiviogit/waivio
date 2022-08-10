@@ -3,41 +3,67 @@
 
 body.nightmode {
   .SwapTokens {
-    &__arrow {
-      display: flex;
-      justify-content: center;
-      width: 100%;
-      margin: 30px 0;
-      cursor: pointer;
+    &__wrapper {
+      .ant-btn {
+        background: @grey-nero;
+        color: @white-smoke;
+        &:hover {
+          color: @orange;
+        }
 
-      .anticon {
-        display: inline-block;
-        width: 40px;
-        height: 40px;
-        border-radius: 4px;
-        background: #f5f6f9;
-        color: #aebac3;
-        line-height: 45px;
+        &-primary {
+          color: @white-smoke;
+          background: @orange-hot;
+          &:hover {
+            color: @white-smoke;
+            background: @orange;
+          }
+        }
+
+        &:disabled {
+          color: @normal-grey;
+          border-color: @normal-grey;
+          background: @grey-nero;
+        }
       }
     }
+    .SwapTokens {
+      &__title {
+        font-size: 16px;
+      }
+      &__arrow {
+        display: flex;
+        justify-content: center;
+        width: 100%;
+        margin: 30px 0;
+        cursor: pointer;
 
-    .ant-input-affix-wrapper .ant-input:not(:last-child) {
-      padding-right: 45px;
-    }
+        .anticon {
+          display: inline-block;
+          width: 40px;
+          height: 40px;
+          border-radius: 4px;
+          background: @grey-nero;
+          color: @white-smoke;
+          line-height: 45px;
+          border: 1px solid @normal-grey;
+        }
+      }
 
-    &__input {
-      outline: none;
-      border-color: @normal-grey;
-      border-radius: 4px 0 0 4px;
-      border-right: none;
-      padding: 0 10px;
-      height: 32px;
+      .ant-input-affix-wrapper .ant-input:not(:last-child) {
+        padding-right: 45px;
+      }
 
-      .ant-input {
-        border: none !important;
-        padding: 0;
-        height: 30px;
+      &__input {
         outline: none;
+        border-color: @normal-grey;
+        border-radius: 4px 0 0 4px;
+        border-right: none;
+        padding: 0 10px;
+        height: 32px;
+        &:disabled {
+          background: @grey-mortar;
+        }
 
         &:focus {
           border: none;
