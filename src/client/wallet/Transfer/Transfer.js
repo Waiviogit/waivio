@@ -644,6 +644,7 @@ export default class Transfer extends React.Component {
         cancelText={intl.formatMessage({ id: 'cancel', defaultMessage: 'Cancel' })}
         onOk={this.handleContinueClick}
         onCancel={this.handleCancelClick}
+        wrapClassName="Transfer__wrapper"
       >
         <Form className="Transfer" hideRequiredMark>
           <Form.Item label={<FormattedMessage id="to" defaultMessage="To" />}>
