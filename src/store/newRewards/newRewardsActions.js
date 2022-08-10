@@ -8,7 +8,7 @@ import { getAuthenticatedUserName } from '../authStore/authSelectors';
 import { changeRewardsTab } from '../authStore/authActions';
 import { getTokenRatesInUSD } from '../walletStore/walletSelectors';
 
-export const reserveProposition = (proposition, username) => async (
+export const reserveProposition = (proposition, username, history) => async (
   dispatch,
   getState,
   { busyAPI, steemConnectAPI },
@@ -19,7 +19,7 @@ export const reserveProposition = (proposition, username) => async (
   const proposedAuthorPermlink = dish?.author_permlink;
   const primaryObject = proposition?.object?.parent;
   const rates = getTokenRatesInUSD(getState(), 'WAIV');
-  const amount = round(proposition.rewardInUSD * rates, 3);
+  const amount = round(proposition.rewardInUSD / rates, 3);
   const detailsBody = getNewDetailsBody(proposition);
 
   const commentOp = [
@@ -36,7 +36,7 @@ export const reserveProposition = (proposition, username) => async (
         dish.defaultShowLink
       }}>${proposedWobjName}</a>, <a href={${primaryObject.defaultShowLink}}>${getObjectName(
         primaryObject,
-      )}</a></p>${detailsBody}`,
+      )}</a>.</p>${detailsBody}`,
       json_metadata: JSON.stringify({
         app: config.appName,
         waivioRewards: {
@@ -55,6 +55,7 @@ export const reserveProposition = (proposition, username) => async (
         busyAPI.instance.subscribe((datad, j) => {
           if (j?.assigned && j?.permlink === permlink) {
             dispatch(changeRewardsTab(username));
+            history.push('/rewards-new/reserved');
             resolve();
           }
         });
@@ -64,7 +65,7 @@ export const reserveProposition = (proposition, username) => async (
 };
 
 export const realiseRewards = proposition => (dispatch, getState, { steemConnectAPI }) => {
-  const unreservationPermlink = `reject-${proposition._id}${generatePermlink()}`;
+  const unreservationPermlink = `reject-${proposition.object._id}${generatePermlink()}`;
   const username = getAuthenticatedUserName(getState());
 
   const commentOp = [
@@ -77,7 +78,7 @@ export const realiseRewards = proposition => (dispatch, getState, { steemConnect
       title: 'Cancelled reservation',
       body: `User <a href="https://www.waivio.com/@${username}">${username}</a> cancelled reservation for <a href="https://www.waivio.com/@${
         proposition?.guideName
-      }/${proposition?.guideName}">${getObjectName(proposition?.object)} rewards campaign</a>`,
+      }/${proposition?.guideName}">${getObjectName(proposition?.object)}</a> rewards campaign`,
       json_metadata: JSON.stringify({
         waivioRewards: {
           type: 'rejectReservation',
