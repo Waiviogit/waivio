@@ -3,6 +3,27 @@
 
 .nightmode {
   .Transfer {
+    &__wrapper {
+      .ant-btn {
+        background: @grey-nero;
+        color: @white-smoke;
+
+        &:hover {
+          color: @orange;
+        }
+
+        &-primary {
+          color: @white-smoke;
+          background: @orange-hot;
+
+          &:hover {
+            color: @white-smoke;
+            background: @orange;
+          }
+        }
+      }
+    }
+
     &__search-content-wrap {
       &-current {
         border: 1px solid @normal-grey;

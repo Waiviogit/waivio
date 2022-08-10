@@ -146,6 +146,7 @@ const ManageDelegate = ({ intl }) => {
             {intl.formatMessage({ id: 'close' })}
           </Button>,
         ]}
+        wrapClassName="PowerSwitcher__wrapper"
       >
         {isEmpty(delegationList.mainTokens) &&
         isEmpty(delegationList.secondaryTokens) &&

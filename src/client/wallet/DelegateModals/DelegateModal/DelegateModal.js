@@ -67,6 +67,7 @@ const DelegateModal = props => {
 
   return (
     <Modal
+      wrapClassName="Deposit__wrapper"
       className="DelegateModal"
       visible={props.visible}
       title={props.intl.formatMessage({ id: 'delegate', defaultMessage: 'Delegate' })}

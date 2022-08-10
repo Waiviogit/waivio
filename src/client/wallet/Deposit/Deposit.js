@@ -81,6 +81,7 @@ const Deposit = props => {
       onOk={handleDoneDeposit}
       className="Deposit"
       okButtonProps={{ disabled: !selectPair }}
+      wrapClassName="Deposit__wrapper"
     >
       <div className="Deposit__step">
         <p>
