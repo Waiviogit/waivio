@@ -7,14 +7,13 @@ import { useHistory, useLocation } from 'react-router';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { getIsWaivio } from '../../../store/appStore/appSelectors';
-// import { clearAllSessionProposition, getSessionData } from '../rewardsHelper';
+
 import withAuthActions from '../../auth/withAuthActions';
 import { clearAllSessionProposition } from '../../rewards/rewardsHelper';
 import WebsiteReservedButtons from '../../rewards/Proposition/WebsiteReservedButtons/WebsiteReservedButtons';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 import DetailsModalBody from './DetailsBody';
 import { validateEgibilitiesForUser } from '../../../waivioApi/ApiClient';
-import { changeRewardsTab } from '../../../store/authStore/authActions';
 import RewardsHeader from '../reuseble/RewardsHeader';
 import { reserveProposition } from '../../../store/newRewards/newRewardsActions';
 
@@ -69,10 +68,8 @@ const DetailsModal = ({
   const handleClickReserve = () => {
     setLoading(true);
 
-    dispatch(reserveProposition(proposition, userName)).then(() => {
-      history.push('/rewards-new/reserved');
+    dispatch(reserveProposition(proposition, userName, history)).then(() => {
       setLoading(false);
-      dispatch(changeRewardsTab(userName));
     });
   };
   const onClick = () => onActionInitiated(handleClickReserve);

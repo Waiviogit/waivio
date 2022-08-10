@@ -48,7 +48,7 @@ export const DynamicTable = ({
         return moment(item[head.id]).format('DD-MMM-YYYY');
 
       case 'round':
-        return round(item[head.id], head.precision);
+        return round(item[head.id], head.precision) || 0;
 
       default: {
         let button = get(buttons, head.id);
