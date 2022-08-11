@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import moment from 'moment';
 import { useSelector } from 'react-redux';
-import { isEmpty, map, get, includes } from 'lodash';
+import { isEmpty, map, get, includes, isNumber } from 'lodash';
 import { Link } from 'react-router-dom';
 import OBJECT_TYPE from '../../object/const/objectTypes';
 import SearchUsersAutocomplete from '../../components/EditorUser/SearchUsersAutocomplete';
@@ -81,11 +81,13 @@ const CreateFormRenderer = props => {
   const fields = fieldsData(handlers.messageFactory, validators, user.name, props.currency);
   const isDuplicate = includes(get(match, ['params', '0']), 'createDuplicate');
   const disabled = (isDisabled && !isDuplicate && !isEmpty(campaignId)) || loading;
-  const userBalance =
-    payoutToken === 'HIVE' ? parseFloat(user.balance) : currencyInfo.balance || null;
+  let userBalance = parseFloat(user.balance);
+  if (payoutToken !== 'HIVE') {
+    userBalance = currencyInfo ? currencyInfo?.balance : null;
+  }
 
   const notEnoughMoneyWarn =
-    userBalance <= 0 ? (
+    isNumber(userBalance) && userBalance <= 0 ? (
       <div className="notEnoughMoneyWarn">
         {handlers.messageFactory(
           'balance_more_than_zero',

@@ -107,7 +107,7 @@ class CreateRewards extends React.Component {
   componentDidMount = async () => {
     this.getCampaingDetailAndSetInState();
     this.props.getTokenBalance('WAIV', this.props.userName);
-    this.props.getTokenRates('WAIV', this.props.userName);
+    this.props.getTokenRates('WAIV');
   };
 
   componentDidUpdate(prevProps) {

@@ -247,5 +247,5 @@ export const getWeeklyTokenRatesPrice = (state, token) => {
 export const getUserCurrencyBalance = (state, token) => {
   const wallet = walletState(state);
 
-  return get(wallet.userBalances, token, {});
+  return get(wallet.userBalances, token, null);
 };
