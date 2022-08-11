@@ -63,6 +63,7 @@ const ObjectOfTypePage = props => {
   }, [draft]);
 
   useEffect(() => {
+    if (!wobject.author_permlink) return;
     if (userName) {
       getDraftPage(userName, wobject.author_permlink).then(res => {
         if (res.message) {
@@ -73,7 +74,7 @@ const ObjectOfTypePage = props => {
         setDraft(res.body);
       });
     } else setEditorInitialized(true);
-  }, []);
+  }, [wobject.author_permlink]);
 
   useEffect(() => {
     const {
@@ -279,6 +280,8 @@ const ObjectOfTypePage = props => {
           setNotification(false);
           setEditorInitialized(true);
         }}
+        okText={intl.formatMessage({ defaultMessage: 'Continue', id: 'continue' })}
+        cancelText={intl.formatMessage({ defaultMessage: 'Discard', id: 'discard' })}
       >
         You have one draft with unsaved changes. Do you want to continue editing?
       </Modal>
