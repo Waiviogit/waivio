@@ -159,12 +159,12 @@ export const Manage = ({ intl, guideName }) => {
               </td>
               <td>{row.status}</td>
               <td>{row.type}</td>
-              <td>{round(row.budgetUSD * currency.rate, 3)}</td>
-              <td>{round(row.rewardInUSD * currency.rate, 3)}</td>
+              <td>{round(row.budgetUSD * currency.rate, 2)}</td>
+              <td>{round(row.rewardInUSD * currency.rate, 2)}</td>
               {/* це має буть лінка яка веде на резервейшин хісторі еслі 0 то не показувать */}
               <td>{row.reserved || null}</td>
               <td>{row.completed || null}</td>
-              <td>{row.remaining}</td>
+              <td>{round(row.remaining, 0)}</td>
             </tr>
           ))
         ) : (

@@ -546,32 +546,33 @@ class Notifications extends React.Component {
                   />
                 );
               case notificationConstants.TRANSFER_TO_VESTING:
-                const transferringId =
-                  notification.from === notification.to
-                    ? 'transfer_to_vesting_to_current'
-                    : 'transfer_to_vesting';
-                const transferringDefaultMessage =
-                  notification.from === notification.to
-                    ? "{from} initiated 'Power Up' on {amount}"
-                    : "{from} initiated 'Power Up' on {amount} to {to}";
-                const transferringValues =
-                  notification.from === notification.to
-                    ? {
-                        from: <span className="username">{notification.from}</span>,
-                        amount: <span>{notification.amount}</span>,
-                      }
-                    : {
-                        from: <span className="username">{notification.from}</span>,
-                        amount: <span>{notification.amount}</span>,
-                        to: <span>{notification.to}</span>,
-                      };
+                let transferringId;
+                let transferringDefaultMessage;
+                const transferringValues = {
+                  from: <span className="username">{notification.from}</span>,
+                  to: <span className="username">{notification.to}</span>,
+                  amount: <span>{notification.amount}</span>,
+                };
+
+                if (notification.to === currentAuthUsername) {
+                  transferringId = 'power_up_initiated_from';
+                  transferringDefaultMessage = "{from} initiated 'Power up' on {amount} to you";
+                }
+                if (notification.from === currentAuthUsername) {
+                  transferringId = 'power_up_initiated_to';
+                  transferringDefaultMessage = "You initiated 'Power up' on {amount} to {to}";
+                }
+                if (notification.from === notification.to) {
+                  transferringId = 'power_up_initiated';
+                  transferringDefaultMessage = "You initiated 'Power up' on {amount}";
+                }
+                const userAccount =
+                  notification.to === currentAuthUsername ? notification.from : notification.to;
 
                 return (
                   <NotificationTemplate
-                    url={`/@${notification.from}/transfers?type=${getWalletType(
-                      notification.amount,
-                    )}`}
-                    username={notification.from}
+                    url={`/@${userAccount}/transfers?type=${getWalletType(notification.amount)}`}
+                    username={userAccount}
                     id={transferringId}
                     defaultMessage={transferringDefaultMessage}
                     values={transferringValues}

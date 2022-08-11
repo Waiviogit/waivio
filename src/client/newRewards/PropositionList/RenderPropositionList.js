@@ -33,7 +33,7 @@ const RenderPropositionList = ({ getProposition, tab, getPropositionFilters }) =
   const getFilters = () => getPropositionFilters(requiredObject, authUserName);
 
   const getPropositionList = async () => {
-    if (requiredObject) {
+    if (requiredObject || requiredObject !== parent?.author_permlink) {
       const campParent = await getObject(requiredObject);
 
       setParent(campParent);
@@ -92,7 +92,7 @@ const RenderPropositionList = ({ getProposition, tab, getPropositionFilters }) =
           >
             {propositions?.map(proposition => (
               <Proposition
-                key={proposition?._id}
+                key={`${proposition?.object.author_permlink}/${proposition?.guideName}/${proposition?.activationPermlink}`}
                 proposition={{ ...proposition, object: { ...proposition.object, parent } }}
                 type={tab}
               />

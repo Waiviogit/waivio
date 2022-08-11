@@ -1,22 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import { withRouter } from 'react-router-dom';
-import { get } from 'lodash';
-import { Button, Modal } from 'antd';
+import { get, isEmpty } from 'lodash';
+import { Button, message, Modal } from 'antd';
 import { injectIntl } from 'react-intl';
 import { useHistory, useLocation } from 'react-router';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { getIsWaivio } from '../../../store/appStore/appSelectors';
-// import { clearAllSessionProposition, getSessionData } from '../rewardsHelper';
+
 import withAuthActions from '../../auth/withAuthActions';
 import { clearAllSessionProposition } from '../../rewards/rewardsHelper';
 import WebsiteReservedButtons from '../../rewards/Proposition/WebsiteReservedButtons/WebsiteReservedButtons';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 import DetailsModalBody from './DetailsBody';
-import { validateEgibilitiesForUser } from '../../../waivioApi/ApiClient';
-import useRewards from '../../../hooks/useRewards';
-import { changeRewardsTab } from '../../../store/authStore/authActions';
+import { getObjectsByIds, validateEgibilitiesForUser } from '../../../waivioApi/ApiClient';
 import RewardsHeader from '../reuseble/RewardsHeader';
+import { reserveProposition } from '../../../store/newRewards/newRewardsActions';
 
 // import './DetailsModal.less';
 
@@ -29,12 +28,21 @@ const DetailsModal = ({
   onActionInitiated,
 }) => {
   const location = useLocation();
-  const { reserveProposition } = useRewards();
   const history = useHistory();
   const dispatch = useDispatch();
   const authorizedUserName = useSelector(getAuthenticatedUserName);
-  const [requirements, setRequirements] = useState({});
+  const [requirements, setRequirements] = useState({
+    canAssignByBudget: true,
+    canAssignByCurrentDay: true,
+    expertise: true,
+    followers: true,
+    frequency: true,
+    notAssigned: true,
+    notBlacklisted: true,
+    posts: true,
+  });
   const [loading, setLoading] = useState(true);
+  const [agreementObjects, setAgreementObjects] = useState([]);
   const isAuth = !!authorizedUserName;
   const isWidget = new URLSearchParams(history.location.search).get('display');
   const isReserved = new URLSearchParams(location.search).get('toReserved');
@@ -51,6 +59,11 @@ const DetailsModal = ({
       setRequirements(res);
       setLoading(false);
     });
+
+    if (!isEmpty(proposition?.agreementObjects))
+      getObjectsByIds({ authorPermlinks: proposition?.agreementObjects }).then(res =>
+        setAgreementObjects(res.wobjects),
+      );
   }, [proposition?.activationPermlink, userName]);
   // const requiredObjectName = getObjectName(proposition?.object?.parent)
   // const userName = getSessionData('userName');
@@ -61,11 +74,14 @@ const DetailsModal = ({
   const handleClickReserve = () => {
     setLoading(true);
 
-    reserveProposition(proposition, userName).then(() => {
-      history.push('/rewards-new/reserved');
-      setLoading(false);
-      dispatch(changeRewardsTab(userName));
-    });
+    dispatch(reserveProposition(proposition, userName, history))
+      .then(() => {
+        setLoading(false);
+      })
+      .catch(e => {
+        setLoading(false);
+        message.error(e.error_description);
+      });
   };
   const onClick = () => onActionInitiated(handleClickReserve);
 
@@ -139,7 +155,11 @@ const DetailsModal = ({
       <div>
         <RewardsHeader proposition={proposition} />
       </div>
-      <DetailsModalBody proposition={proposition} requirements={requirements} />
+      <DetailsModalBody
+        proposition={proposition}
+        requirements={requirements}
+        agreementObjects={agreementObjects}
+      />
       <div className="Details__footer">
         <div className="Details__footer-reserve-btn">
           <Button onClick={handleCancelModalBtn}>Cancel</Button>

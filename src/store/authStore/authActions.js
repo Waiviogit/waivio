@@ -234,7 +234,7 @@ export const changeSorting = sorting => dispatch => {
 };
 
 export const changeRewardsTab = username => ({
-  type: SET_TAB_REWARDS,
+  type: SET_TAB_REWARDS.ACTION,
   promise: getRewardTab(username),
 });
 

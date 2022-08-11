@@ -194,6 +194,40 @@ export const getFeedContent = (sortBy, locale, follower, queryData) => {
   });
 };
 
+export const saveDraftPage = (userName, authorPermlink, body) =>
+  new Promise((resolve, reject) => {
+    fetch(`${config.apiPrefix}${config.user}/${userName}${config.draft}`, {
+      headers: {
+        ...headers,
+        'access-token': Cookie.get('access_token'),
+      },
+      method: 'POST',
+      body: JSON.stringify({
+        authorPermlink,
+        body,
+      }),
+    })
+      .then(res => res.json())
+      .then(posts => resolve(posts))
+      .catch(error => reject(error));
+  });
+
+export const getDraftPage = (userName, authorPermlink) => {
+  const query = createQuery({ authorPermlink });
+  return new Promise((resolve, reject) => {
+    fetch(`${config.apiPrefix}${config.user}/${userName}${config.draft}/?${query}`, {
+      headers: {
+        ...headers,
+        'access-token': Cookie.get('access_token'),
+      },
+      method: 'GET',
+    })
+      .then(res => res.json())
+      .then(posts => resolve(posts))
+      .catch(error => reject(error));
+  });
+};
+
 export const getUserProfileBlog = (
   userName,
   follower,
@@ -2905,7 +2939,7 @@ export const getFiltersForAllProposition = reqObj => {
 
 export const getFiltersForReservedProposition = (reqObj, userName) => {
   return fetch(
-    `${config.campaignV2ApiPrefix}${config.rewards}${config.reserved}${config.sponsors}?userName=${userName}`,
+    `${config.campaignV2ApiPrefix}${config.rewards}${config.reserved}/${userName}${config.filters}`,
     {
       headers,
       method: 'GET',

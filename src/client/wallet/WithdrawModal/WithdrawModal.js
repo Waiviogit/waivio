@@ -175,6 +175,7 @@ const WithdrawModal = props => {
 
   return (
     <Modal
+      wrapClassName="WithdrawModal__wrapper"
       className="WithdrawModal"
       visible={visible}
       onCancel={handleCloseModal}

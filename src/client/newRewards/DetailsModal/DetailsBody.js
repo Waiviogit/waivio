@@ -12,7 +12,7 @@ import { getRate, getRewardFund } from '../../../store/appStore/appSelectors';
 
 import './Details.less';
 
-const DetailsModalBody = ({ proposition, requirements }) => {
+const DetailsModalBody = ({ proposition, requirements, agreementObjects }) => {
   const getClassForCurrCreteria = creteria => classNames({ 'criteria-row__required': !creteria });
   const rate = useSelector(getRate);
   const rewardFund = useSelector(getRewardFund);
@@ -57,14 +57,10 @@ const DetailsModalBody = ({ proposition, requirements }) => {
                   Have not received a reward from
                   <Link to={`/@${proposition?.guideName}`}>{` @${proposition?.guideName} `}</Link>
                   for reviewing
-                  <Link
-                    className="nowrap"
-                    to={`/object/${proposition?.object?.parent?.author_permlink}`}
-                  >
+                  <Link className="nowrap" to={proposition?.object?.parent?.defaultShowLink}>
                     {` ${getObjectName(proposition?.object?.parent)} `}
                   </Link>
-                  in the last {proposition?.frequencyAssign} days and does not have an active
-                  reservation for such a reward at the moment.
+                  in the last {proposition?.frequencyAssign} days.
                 </div>
               </div>
             )}
@@ -74,6 +70,12 @@ const DetailsModalBody = ({ proposition, requirements }) => {
                 User account is not blacklisted by{' '}
                 <Link to={`/@${proposition?.guideName}`}>@{proposition?.guideName}</Link> or
                 referenced accounts.
+              </div>
+            </div>
+            <div className="Details__criteria-row">
+              <Checkbox checked={requirements?.notAssigned} disabled />
+              <div className={getClassForCurrCreteria(requirements?.notAssigned)}>
+                User does not have an active reservation for such a reward at the moment.
               </div>
             </div>
           </div>
@@ -86,11 +88,10 @@ const DetailsModalBody = ({ proposition, requirements }) => {
         </div>
         <ol className="DetailsModal__requirementsList">
           <li>
-            <span className="nowrap">Minimum 2 original photos of</span>
-            <Link
-              className="ml1"
-              to={`/object/${proposition?.object.id || proposition?.object.author_permlink}`}
-            >
+            <span className="nowrap">
+              Minimum {proposition?.requirements?.minPhotos} original photos of
+            </span>
+            <Link className="ml1" to={proposition?.object?.defaultShowLink}>
               {getObjectName(proposition?.object)}
             </Link>
             ;
@@ -100,10 +101,7 @@ const DetailsModalBody = ({ proposition, requirements }) => {
           )}
           <li>
             <span className="nowrap">Link to</span>
-            <Link
-              className="ml1 Details__container"
-              to={`/object/${proposition?.object?.author_permlink}`}
-            >
+            <Link className="ml1 Details__container" to={proposition?.object?.defaultShowLink}>
               {getObjectName(proposition?.object)}
             </Link>
             ;
@@ -112,7 +110,7 @@ const DetailsModalBody = ({ proposition, requirements }) => {
             <span className="nowrap">Link to</span>
             <Link
               className="ml1 Details__container"
-              to={`/object/${proposition?.object?.parent?.author_permlink}`}
+              to={proposition?.object?.parent?.defaultShowLink}
             >
               {getObjectName(proposition?.object?.parent)}
             </Link>
@@ -156,13 +154,16 @@ const DetailsModalBody = ({ proposition, requirements }) => {
             <Link className="ml1" to="/object/xrj-terms-and-conditions/page">
               Terms and Conditions of the Service Agreement
             </Link>
-            {!isEmpty(proposition?.agreementObjects) && (
+            {!isEmpty(agreementObjects) && (
               <React.Fragment>
-                <span>including the following: Legal highlights:</span>
-                {proposition?.agreementObjects?.map(obj => (
-                  <Link key={obj} className="ml1" to={`/object/${obj}/page`}>
-                    {obj}
-                  </Link>
+                <span> including the following: Legal highlights:</span>
+                {agreementObjects?.map((obj, i, arr) => (
+                  <React.Fragment key={obj?.author_permlink}>
+                    <Link className="ml1" to={obj?.defaultShowLink}>
+                      {getObjectName(obj)}
+                    </Link>
+                    {arr.length > 1 && arr.length - 1 !== i ? ', ' : '.'}
+                  </React.Fragment>
                 ))}
               </React.Fragment>
             )}
@@ -180,12 +181,14 @@ const DetailsModalBody = ({ proposition, requirements }) => {
 };
 
 DetailsModalBody.propTypes = {
+  agreementObjects: PropTypes.arrayOf().isRequired,
   requirements: PropTypes.shape({
     expertise: PropTypes.bool,
     followers: PropTypes.bool,
     posts: PropTypes.bool,
     frequency: PropTypes.bool,
     notBlacklisted: PropTypes.bool,
+    notAssigned: PropTypes.bool,
   }).isRequired,
   proposition: PropTypes.shape({
     usersLegalNotice: PropTypes.string,
@@ -199,6 +202,7 @@ DetailsModalBody.propTypes = {
     matchBots: PropTypes.arrayOf(PropTypes.shape()),
     requirements: PropTypes.shape({
       receiptPhoto: PropTypes.bool,
+      minPhotos: PropTypes.number,
     }),
     userRequirements: PropTypes.shape({
       minPhotos: PropTypes.number,
@@ -208,9 +212,9 @@ DetailsModalBody.propTypes = {
     }),
     object: PropTypes.shape({
       parent: PropTypes.shape({
-        author_permlink: PropTypes.string,
+        defaultShowLink: PropTypes.string,
       }),
-      author_permlink: PropTypes.string,
+      defaultShowLink: PropTypes.string,
       id: PropTypes.string,
     }),
   }).isRequired,

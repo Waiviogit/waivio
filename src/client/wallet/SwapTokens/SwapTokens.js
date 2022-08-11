@@ -175,6 +175,7 @@ const SwapTokens = props => {
       onCancel={handleCloseModal}
       okButtonProps={{ disabled: !fromAmount || !toAmount || insufficientFunds(fromAmount) }}
       okText={props.intl.formatMessage({ id: 'submit', defaultMessage: 'Submit' })}
+      wrapClassName="SwapTokens__wrapper"
     >
       <Form className="SwapTokens">
         <h3 className="SwapTokens__title">

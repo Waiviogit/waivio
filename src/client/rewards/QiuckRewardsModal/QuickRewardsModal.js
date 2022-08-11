@@ -181,6 +181,13 @@ const QuickRewardsModal = props => {
     >
       <StepsItems config={stepsConfig} activeStep={pageNumber} />
       {getCurrentScreen.component}
+      {!isPropositionObj && pageNumber !== 1 && (
+        <div className="QuickRewardsModal__warning-container">
+          <b>
+            YOU EARN:<span className="QuickRewardsModal__warning"> NO SPONSORS FOUND</span>
+          </b>
+        </div>
+      )}
       <div className={buttonWrapClassList}>
         {pageNumber !== 1 && (
           <Button className={nextButtonClassList} onClick={getCurrentScreen.previousHandler}>

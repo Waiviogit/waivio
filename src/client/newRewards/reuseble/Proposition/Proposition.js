@@ -11,6 +11,7 @@ import './Proposition.less';
 const Proposition = ({ proposition, type }) => {
   const [openDetails, setOpenDitails] = useState(false);
   const onOpenDetailsModal = () => setOpenDitails(true);
+  const propositionType = proposition.reserved ? 'reserved' : type;
 
   return (
     <div className="Proposition-new">
@@ -21,12 +22,15 @@ const Proposition = ({ proposition, type }) => {
         wObject={proposition.object}
         withRewards
         rewardPrice={proposition.rewardInUSD}
+        payoutToken={proposition.payoutToken}
+        isReserved={propositionType === 'reserved'}
       />
       <PropositionFooter
-        type={proposition.reserved ? 'reserved' : type}
+        type={propositionType}
         countReservationDays={proposition?.countReservationDays}
         commentsCount={proposition?.commentsCount}
         openDetailsModal={onOpenDetailsModal}
+        proposition={proposition}
       />
       {openDetails && (
         <DetailsModal

@@ -15,10 +15,10 @@ import {
   hasType,
 } from '../../common/helpers/wObjectHelper';
 import { getProxyImageURL } from '../../common/helpers/image';
-import { getRate } from '../../store/appStore/appSelectors';
 import { getAuthenticatedUserName } from '../../store/authStore/authSelectors';
 import USDDisplay from '../components/Utils/USDDisplay';
 import { defaultCurrency } from '../websites/constants/currencyTypes';
+import { getTokenRatesInUSD } from '../../store/walletStore/walletSelectors';
 
 import './ObjectCardView.less';
 
@@ -35,9 +35,10 @@ const ObjectCardView = ({
   onDelete,
   isPost,
   postAuthor,
+  payoutToken,
 }) => {
   const username = useSelector(getAuthenticatedUserName);
-  const rate = useSelector(getRate);
+  const rate = useSelector(state => getTokenRatesInUSD(state, payoutToken || 'HIVE'));
   const [tags, setTags] = useState([]);
   const address = parseAddress(wObject, ['postalCode', 'country']);
   const parent = isEmpty(passedParent) ? get(wObject, 'parent', {}) : passedParent;
@@ -175,7 +176,8 @@ const ObjectCardView = ({
               </b>{' '}
               {isReserved ? (
                 <React.Fragment>
-                  <b className="ObjectCardView__priceColor">{round(rewardPrice / rate, 3)}</b> HIVE
+                  <b className="ObjectCardView__priceColor">{round(rewardPrice / rate, 3)}</b>{' '}
+                  {payoutToken || 'HIVE'}
                 </React.Fragment>
               ) : (
                 <USDDisplay
@@ -200,6 +202,7 @@ ObjectCardView.propTypes = {
   wObject: PropTypes.shape(),
   passedParent: PropTypes.oneOfType([PropTypes.string, PropTypes.shape()]),
   path: PropTypes.string,
+  payoutToken: PropTypes.string,
   hovered: PropTypes.bool,
   withRewards: PropTypes.bool,
   isReserved: PropTypes.bool,
@@ -218,6 +221,7 @@ ObjectCardView.defaultProps = {
   wObject: {},
   path: '',
   postAuthor: '',
+  payoutToken: '',
   passedParent: {},
   withRewards: false,
   isReserved: false,

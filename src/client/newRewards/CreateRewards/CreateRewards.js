@@ -107,7 +107,7 @@ class CreateRewards extends React.Component {
   componentDidMount = async () => {
     this.getCampaingDetailAndSetInState();
     this.props.getTokenBalance('WAIV', this.props.userName);
-    this.props.getTokenRates('WAIV', this.props.userName);
+    this.props.getTokenRates('WAIV');
   };
 
   componentDidUpdate(prevProps) {
@@ -151,16 +151,15 @@ class CreateRewards extends React.Component {
       const authorPermlinks = [
         campaign.requiredObject,
         ...campaign.agreementObjects,
-        ...campaign.matchBots,
+        // ...campaign.matchBots,
         ...campaign.objects,
       ];
       const combinedObjects = await getObjectsByIds({
         authorPermlinks,
         limit: size(authorPermlinks),
       });
-      const sponsors = combinedObjects.wobjects.filter(wobj =>
-        includes(campaign.matchBots, wobj.author_permlink),
-      );
+
+      const sponsors = campaign.matchBots;
       const primaryObject = combinedObjects.wobjects.find(
         wobj => wobj.author_permlink === campaign.requiredObject,
       );
@@ -191,7 +190,7 @@ class CreateRewards extends React.Component {
           primaryObject: values[0],
           secondaryObjectsList: values[1].map(obj => obj),
           pageObjects: !isEmpty(values[2]) ? [values[2]] : [],
-          sponsorsList: !isEmpty(sponsors) ? values[2] : [],
+          sponsorsList: !isEmpty(sponsors) ? values[3] : [],
           reservationPeriod: campaign.countReservationDays,
           receiptPhoto: campaign.requirements.receiptPhoto,
           minExpertise,
@@ -256,7 +255,7 @@ class CreateRewards extends React.Component {
       expiredAt: data.expiredAt._d,
       reservationTimetable: data.targetDays,
       frequencyAssign: +data.eligibleDays,
-      countReservationDays: data.reservationPeriod,
+      countReservationDays: +data.reservationPeriod,
     };
 
     if (data.description) preparedObject.description = data.description;
@@ -285,7 +284,7 @@ class CreateRewards extends React.Component {
     removeSponsorObject: obj => {
       this.setState(
         prevState => {
-          const objectList = prevState.sponsorsList.filter(el => el.account !== obj.account);
+          const objectList = prevState.sponsorsList.filter(el => el !== obj);
 
           return {
             sponsorsList: objectList,
