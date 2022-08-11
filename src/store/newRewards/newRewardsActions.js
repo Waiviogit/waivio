@@ -76,7 +76,7 @@ export const realiseRewards = proposition => (dispatch, getState, { steemConnect
       author: username,
       permlink: unreservationPermlink,
       title: 'Cancelled reservation',
-      body: `User <a href="https://www.waivio.com/@${username}">${username}</a> cancelled reservation for <a href="https://www.waivio.com/@${
+      body: `User <a href="https://www.waivio.com/@${username}">${username}</a> cancelled reservation for <a href="https://www.waivio.com/${
         proposition?.object?.defaultShowLink
       }">${getObjectName(proposition?.object)}</a> rewards campaign`,
       json_metadata: JSON.stringify({

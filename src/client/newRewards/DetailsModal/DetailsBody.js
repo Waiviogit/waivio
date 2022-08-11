@@ -12,7 +12,7 @@ import { getRate, getRewardFund } from '../../../store/appStore/appSelectors';
 
 import './Details.less';
 
-const DetailsModalBody = ({ proposition, requirements }) => {
+const DetailsModalBody = ({ proposition, requirements, agreementObjects }) => {
   const getClassForCurrCreteria = creteria => classNames({ 'criteria-row__required': !creteria });
   const rate = useSelector(getRate);
   const rewardFund = useSelector(getRewardFund);
@@ -154,17 +154,19 @@ const DetailsModalBody = ({ proposition, requirements }) => {
             <Link className="ml1" to="/object/xrj-terms-and-conditions/page">
               Terms and Conditions of the Service Agreement
             </Link>
-            {!isEmpty(proposition?.agreementObjects) && (
+            {!isEmpty(agreementObjects) && (
               <React.Fragment>
                 <span> including the following: Legal highlights:</span>
-                {proposition?.agreementObjects?.map(obj => (
-                  <Link key={obj} className="ml1" to={`/object/${obj}/page`}>
-                    {obj}
-                  </Link>
+                {agreementObjects?.map((obj, i, arr) => (
+                  <React.Fragment key={obj?.author_permlink}>
+                    <Link className="ml1" to={obj?.defaultShowLink}>
+                      {getObjectName(obj)}
+                    </Link>
+                    {arr.length > 1 && arr.length - 1 !== i ? ', ' : '.'}
+                  </React.Fragment>
                 ))}
               </React.Fragment>
             )}
-            .
           </span>
           {proposition?.usersLegalNotice && (
             <div>
@@ -179,6 +181,7 @@ const DetailsModalBody = ({ proposition, requirements }) => {
 };
 
 DetailsModalBody.propTypes = {
+  agreementObjects: PropTypes.arrayOf().isRequired,
   requirements: PropTypes.shape({
     expertise: PropTypes.bool,
     followers: PropTypes.bool,
