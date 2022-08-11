@@ -486,13 +486,13 @@ class Notifications extends React.Component {
                   transferringId = 'power_up_initiated';
                   transferringDefaultMessage = "You initiated 'Power up' on {amount}";
                 }
+                const userAccount =
+                  notification.to === currentAuthUsername ? notification.from : notification.to;
 
                 return (
                   <NotificationTemplate
-                    url={`/@${notification.from}/transfers?type=${getWalletType(
-                      notification.amount,
-                    )}`}
-                    username={notification.from}
+                    url={`/@${userAccount}/transfers?type=${getWalletType(notification.amount)}`}
+                    username={userAccount}
                     id={transferringId}
                     defaultMessage={transferringDefaultMessage}
                     values={transferringValues}
