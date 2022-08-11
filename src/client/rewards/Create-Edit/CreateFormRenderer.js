@@ -82,6 +82,7 @@ const CreateFormRenderer = props => {
   const isDuplicate = includes(get(match, ['params', '0']), 'createDuplicate');
   const disabled = (isDisabled && !isDuplicate && !isEmpty(campaignId)) || loading;
   let userBalance = parseFloat(user.balance);
+
   if (payoutToken !== 'HIVE') {
     userBalance = currencyInfo ? currencyInfo?.balance : null;
   }
