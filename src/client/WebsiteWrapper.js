@@ -36,7 +36,7 @@ import { getLocale, getNightmode } from '../store/settingsStore/settingsSelector
 import MainPageHeader from './websites/WebsiteLayoutComponents/Header/MainPageHeader';
 import QuickRewardsModal from './rewards/QiuckRewardsModal/QuickRewardsModal';
 import { getIsOpenModal } from '../store/quickRewards/quickRewardsSelectors';
-import { getTokenRates } from '../store/walletStore/walletActions';
+import { getTokenBalance, getTokenRates } from '../store/walletStore/walletActions';
 
 export const AppSharedContext = React.createContext({ usedLocale: 'en-US', isGuestUser: false });
 
@@ -63,6 +63,7 @@ export const AppSharedContext = React.createContext({ usedLocale: 'en-US', isGue
     dispatchGetAuthGuestBalance,
     getCurrentAppSettings,
     getTokenRates,
+    getTokenBalance,
   },
 )
 class WebsiteWrapper extends React.PureComponent {
@@ -84,6 +85,7 @@ class WebsiteWrapper extends React.PureComponent {
     isDiningGifts: PropTypes.bool,
     dispatchGetAuthGuestBalance: PropTypes.func,
     getTokenRates: PropTypes.func.isRequired,
+    getTokenBalance: PropTypes.func.isRequired,
     isOpenWalletTable: PropTypes.bool,
     loadingFetching: PropTypes.bool,
     location: PropTypes.shape({
@@ -152,6 +154,7 @@ class WebsiteWrapper extends React.PureComponent {
     this.props.getCurrentAppSettings().then(() => {
       this.props.getRate();
       this.props.getTokenRates('WAIV');
+      this.props.getTokenBalance('WAIV', this.props.username);
 
       this.props.login(token, provider).then(() => {
         batch(() => {

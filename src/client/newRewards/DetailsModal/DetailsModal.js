@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { withRouter } from 'react-router-dom';
 import { get } from 'lodash';
-import { Button, Modal } from 'antd';
+import { Button, message, Modal } from 'antd';
 import { injectIntl } from 'react-intl';
 import { useHistory, useLocation } from 'react-router';
 import PropTypes from 'prop-types';
@@ -68,9 +68,14 @@ const DetailsModal = ({
   const handleClickReserve = () => {
     setLoading(true);
 
-    dispatch(reserveProposition(proposition, userName, history)).then(() => {
-      setLoading(false);
-    });
+    dispatch(reserveProposition(proposition, userName, history))
+      .then(() => {
+        setLoading(false);
+      })
+      .catch(e => {
+        setLoading(false);
+        message.error(e.error_description);
+      });
   };
   const onClick = () => onActionInitiated(handleClickReserve);
 

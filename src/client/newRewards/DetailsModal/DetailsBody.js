@@ -60,8 +60,7 @@ const DetailsModalBody = ({ proposition, requirements }) => {
                   <Link className="nowrap" to={proposition?.object?.parent?.defaultShowLink}>
                     {` ${getObjectName(proposition?.object?.parent)} `}
                   </Link>
-                  in the last {proposition?.frequencyAssign} days and does not have an active
-                  reservation for such a reward at the moment.
+                  in the last {proposition?.frequencyAssign} days.
                 </div>
               </div>
             )}
@@ -71,6 +70,12 @@ const DetailsModalBody = ({ proposition, requirements }) => {
                 User account is not blacklisted by{' '}
                 <Link to={`/@${proposition?.guideName}`}>@{proposition?.guideName}</Link> or
                 referenced accounts.
+              </div>
+            </div>
+            <div className="Details__criteria-row">
+              <Checkbox checked={requirements?.notAssigned} disabled />
+              <div className={getClassForCurrCreteria(requirements?.notAssigned)}>
+                User does not have an active reservation for such a reward at the moment.
               </div>
             </div>
           </div>
@@ -180,6 +185,7 @@ DetailsModalBody.propTypes = {
     posts: PropTypes.bool,
     frequency: PropTypes.bool,
     notBlacklisted: PropTypes.bool,
+    notAssigned: PropTypes.bool,
   }).isRequired,
   proposition: PropTypes.shape({
     usersLegalNotice: PropTypes.string,
