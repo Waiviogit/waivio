@@ -66,7 +66,7 @@ const ObjectOfTypePage = props => {
     if (!wobject.author_permlink) return;
     if (userName) {
       getDraftPage(userName, wobject.author_permlink).then(res => {
-        if (res.message) {
+        if (res.message || !res.body) {
           setEditorInitialized(true);
 
           return;
@@ -105,7 +105,7 @@ const ObjectOfTypePage = props => {
 
     if (content !== newContent) {
       setContent(newContent);
-      saveDraftPage(props.userName, props.wobject.author_permlink, newContent);
+      if (newContent) saveDraftPage(props.userName, props.wobject.author_permlink, newContent);
     }
   };
 
@@ -128,6 +128,9 @@ const ObjectOfTypePage = props => {
         const postData = getAppendData(userName, wobj, '', pageContentField);
 
         appendPageContent(postData, { follow, votePercent: votePercent * 100, isLike: true })
+          .then(() => {
+            saveDraftPage(userName, wobject.author_permlink);
+          })
           .then(() => {
             message.success(
               intl.formatMessage(

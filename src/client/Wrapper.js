@@ -43,7 +43,7 @@ import {
 } from '../store/authStore/authSelectors';
 import { getIsOpenWalletTable } from '../store/walletStore/walletSelectors';
 import { getLocale, getNightmode } from '../store/settingsStore/settingsSelectors';
-import { getTokenBalance, getTokenRates } from '../store/walletStore/walletActions';
+import { getTokenRates } from '../store/walletStore/walletActions';
 
 export const AppSharedContext = React.createContext({ usedLocale: 'en-US', isGuestUser: false });
 
@@ -72,7 +72,6 @@ export const AppSharedContext = React.createContext({ usedLocale: 'en-US', isGue
     dispatchGetAuthGuestBalance,
     handleRefAuthUser,
     getTokenRates,
-    getTokenBalance,
   },
 )
 class Wrapper extends React.PureComponent {
@@ -89,7 +88,6 @@ class Wrapper extends React.PureComponent {
     getRewardFund: PropTypes.func,
     getRate: PropTypes.func,
     getTokenRates: PropTypes.func.isRequired,
-    getTokenBalance: PropTypes.func.isRequired,
     getNotifications: PropTypes.func,
     setUsedLocale: PropTypes.func,
     busyLogin: PropTypes.func,
@@ -160,7 +158,6 @@ class Wrapper extends React.PureComponent {
     const userName = querySelectorSearchParams.get('userName');
 
     this.props.getTokenRates('WAIV');
-    this.props.getTokenBalance('WAIV', this.props.username);
 
     if (ref) setSessionData('refUser', ref);
     if (userName) setSessionData('userName', userName);

@@ -465,7 +465,10 @@ export default function walletReducer(state = initialState, action) {
         ...state,
         userBalances: {
           ...state.userBalances,
-          [action.meta]: action.payload[0],
+          [action.meta]: {
+            balance: 0,
+            ...action.payload[0],
+          },
         },
       };
 
