@@ -425,7 +425,7 @@ export default class AppendForm extends Component {
               })`
             : '';
 
-          return `@${author} added ${productIdFields.productIdType} (${langReadable}):${
+          return `@${author} added ${productIdFields.productIdType} (${langReadable}): ${
             formValues[productIdFields.productIdType]
           }, ${currentField}: ${appendValue}, ${imageDescription}`;
         case TYPES_OF_MENU_ITEM.PAGE:
