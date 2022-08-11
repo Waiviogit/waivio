@@ -255,7 +255,7 @@ class CreateRewards extends React.Component {
       expiredAt: data.expiredAt._d,
       reservationTimetable: data.targetDays,
       frequencyAssign: +data.eligibleDays,
-      countReservationDays: data.reservationPeriod,
+      countReservationDays: +data.reservationPeriod,
     };
 
     if (data.description) preparedObject.description = data.description;

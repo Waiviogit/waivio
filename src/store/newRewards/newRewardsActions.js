@@ -32,9 +32,9 @@ export const reserveProposition = (proposition, username, history) => async (
       title: 'Rewards reservations',
       body: `<p>User ${username} (@${username}) has reserved the rewards of ${amount} ${
         proposition.payoutToken
-      } for a period of ${proposition.countReservationDays} days to write a review of <a href={${
+      } for a period of ${proposition.countReservationDays} days to write a review of <a href='${
         dish.defaultShowLink
-      }}>${proposedWobjName}</a>, <a href={${primaryObject.defaultShowLink}}>${getObjectName(
+      }'>${proposedWobjName}</a>, <a href='${primaryObject.defaultShowLink}'>${getObjectName(
         primaryObject,
       )}</a>.</p>${detailsBody}`,
       json_metadata: JSON.stringify({
@@ -77,8 +77,8 @@ export const realiseRewards = proposition => (dispatch, getState, { steemConnect
       permlink: unreservationPermlink,
       title: 'Cancelled reservation',
       body: `User <a href="https://www.waivio.com/@${username}">${username}</a> cancelled reservation for <a href="https://www.waivio.com/@${
-        proposition?.guideName
-      }/${proposition?.guideName}">${getObjectName(proposition?.object)}</a> rewards campaign`,
+        proposition?.object?.defaultShowLink
+      }">${getObjectName(proposition?.object)}</a> rewards campaign`,
       json_metadata: JSON.stringify({
         waivioRewards: {
           type: 'rejectReservation',

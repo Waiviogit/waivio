@@ -168,5 +168,6 @@
   "exist": "/exist",
   "lastActivity": "/last-activity",
   "fields": "/fields",
-  "getMatchBots": "/match-bots"
+  "getMatchBots": "/match-bots",
+  "draft": "/draft"
 }

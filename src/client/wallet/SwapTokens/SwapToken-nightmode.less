@@ -7,6 +7,7 @@ body.nightmode {
       .ant-btn {
         background: @grey-nero;
         color: @white-smoke;
+
         &:hover {
           color: @orange;
         }
@@ -14,6 +15,7 @@ body.nightmode {
         &-primary {
           color: @white-smoke;
           background: @orange-hot;
+
           &:hover {
             color: @white-smoke;
             background: @orange;
@@ -27,10 +29,12 @@ body.nightmode {
         }
       }
     }
+
     .SwapTokens {
       &__title {
         font-size: 16px;
       }
+
       &__arrow {
         display: flex;
         justify-content: center;
@@ -52,6 +56,7 @@ body.nightmode {
 
       .ant-input-affix-wrapper .ant-input:not(:last-child) {
         padding-right: 45px;
+        padding-left: 10px;
       }
 
       &__input {
@@ -59,17 +64,52 @@ body.nightmode {
         border-color: @normal-grey;
         border-radius: 4px 0 0 4px;
         border-right: none;
-        padding: 0 10px;
+        padding: 0;
         height: 32px;
-        &:disabled {
-          background: @grey-mortar;
-        }
 
         &:focus {
           border: none;
           outline: none;
           box-shadow: none;
         }
+      }
+    }
+
+    .ant-input-disabled {
+      color: @silver-gray;
+      background: rgba(94, 94, 96, 0.27);
+      border-color: @normal-grey;
+    }
+
+    .TokenSelect {
+      &__max-button--disabled {
+        color: @silver-gray;
+      }
+
+      &__input {
+        padding: 0;
+
+        .ant-input {
+          border-radius: 0;
+        }
+      }
+
+      &__selector.ant-select.ant-select-disabled {
+        color: @silver-gray;
+
+        .ant-select-selection {
+          background: rgba(94, 94, 96, 0.27);
+        }
+      }
+    }
+
+    .ant-radio-button-wrapper.ant-radio-button-wrapper-disabled {
+      color: @silver-gray;
+      background: rgba(94, 94, 96, 0.27);
+      border-color: @normal-grey;
+
+      &::before {
+        background-color: @normal-grey;
       }
     }
 

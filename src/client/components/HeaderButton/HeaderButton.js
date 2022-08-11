@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import store from 'store';
@@ -16,7 +16,7 @@ import Notifications from '../Navigation/Notifications/Notifications';
 import Avatar from '../Avatar';
 import PopoverMenu, { PopoverMenuItem } from '../PopoverMenu/PopoverMenu';
 import { PARSED_NOTIFICATIONS } from '../../../common/constants/notifications';
-import { getUserMetadata } from '../../../store/usersStore/usersActions';
+import { getUserAccount, getUserMetadata } from '../../../store/usersStore/usersActions';
 import { PATH_NAME_ACTIVE } from '../../../common/constants/rewards';
 import { logout } from '../../../store/authStore/authActions';
 import ModalSignIn from '../Navigation/ModlaSignIn/ModalSignIn';
@@ -31,6 +31,7 @@ import {
   getIsLoadingNotifications,
   getNotifications,
 } from '../../../store/userStore/userSelectors';
+import { getTokenBalance } from '../../../store/walletStore/walletActions';
 
 const HeaderButtons = props => {
   const [popoverVisible, setPopoverVisible] = useState(false);
@@ -45,6 +46,18 @@ const HeaderButtons = props => {
     location,
   } = props;
   const lastSeenTimestamp = get(userMetaData, 'notifications_last_timestamp');
+
+  useEffect(() => {
+    if (
+      notifications.some(
+        notific => notific.type === 'transfer' && notific.timestamp > lastSeenTimestamp,
+      )
+    ) {
+      props.getUserAccount(username);
+      props.getTokenBalance('WAIV', username);
+    }
+  }, [notifications]);
+
   let popoverItems = [
     <PopoverMenuItem key="rewards" topNav>
       <FormattedMessage id="menu_rewards" defaultMessage="Rewards" />
@@ -276,6 +289,8 @@ HeaderButtons.propTypes = {
   isWebsite: PropTypes.bool,
   getUserMetadata: PropTypes.func.isRequired,
   setCurrentPage: PropTypes.func.isRequired,
+  getUserAccount: PropTypes.func.isRequired,
+  getTokenBalance: PropTypes.func.isRequired,
   logout: PropTypes.func.isRequired,
   history: PropTypes.shape({
     push: PropTypes.func,
@@ -311,5 +326,7 @@ export default connect(
     getUserMetadata,
     logout,
     setCurrentPage,
+    getUserAccount,
+    getTokenBalance,
   },
 )(withRouter(injectIntl(HeaderButtons)));
