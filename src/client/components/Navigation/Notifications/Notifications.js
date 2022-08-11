@@ -466,20 +466,26 @@ class Notifications extends React.Component {
                   />
                 );
               case notificationConstants.TRANSFER_TO_VESTING:
-                const transferringId =
-                  notification.to === currentAuthUsername ? 'power_up_from' : 'power_up_to';
-                const transferringDefaultMessage =
-                  notification.to === currentAuthUsername
-                    ? 'Power up from {from}'
-                    : 'Power up to {to}';
-                const transferringValues =
-                  notification.to === currentAuthUsername
-                    ? {
-                        from: <span className="username">{notification.from}</span>,
-                      }
-                    : {
-                        to: <span className="username">{notification.to}</span>,
-                      };
+                let transferringId;
+                let transferringDefaultMessage;
+                const transferringValues = {
+                  from: <span className="username">{notification.from}</span>,
+                  to: <span className="username">{notification.to}</span>,
+                  amount: <span>{notification.amount}</span>,
+                };
+
+                if (notification.to === currentAuthUsername) {
+                  transferringId = 'power_up_initiated_from';
+                  transferringDefaultMessage = "{from} initiated 'Power up' on {amount} to you";
+                }
+                if (notification.from === currentAuthUsername) {
+                  transferringId = 'power_up_initiated_to';
+                  transferringDefaultMessage = "You initiated 'Power up' on {amount} to {to}";
+                }
+                if (notification.from === notification.to) {
+                  transferringId = 'power_up_initiated';
+                  transferringDefaultMessage = "You initiated 'Power up' on {amount}";
+                }
 
                 return (
                   <NotificationTemplate

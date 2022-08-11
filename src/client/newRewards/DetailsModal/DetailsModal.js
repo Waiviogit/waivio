@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { withRouter } from 'react-router-dom';
-import { get } from 'lodash';
+import { get, isEmpty } from 'lodash';
 import { Button, message, Modal } from 'antd';
 import { injectIntl } from 'react-intl';
 import { useHistory, useLocation } from 'react-router';
@@ -13,7 +13,7 @@ import { clearAllSessionProposition } from '../../rewards/rewardsHelper';
 import WebsiteReservedButtons from '../../rewards/Proposition/WebsiteReservedButtons/WebsiteReservedButtons';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 import DetailsModalBody from './DetailsBody';
-import { validateEgibilitiesForUser } from '../../../waivioApi/ApiClient';
+import { getObjectsByIds, validateEgibilitiesForUser } from '../../../waivioApi/ApiClient';
 import RewardsHeader from '../reuseble/RewardsHeader';
 import { reserveProposition } from '../../../store/newRewards/newRewardsActions';
 
@@ -42,6 +42,7 @@ const DetailsModal = ({
     posts: true,
   });
   const [loading, setLoading] = useState(true);
+  const [agreementObjects, setAgreementObjects] = useState([]);
   const isAuth = !!authorizedUserName;
   const isWidget = new URLSearchParams(history.location.search).get('display');
   const isReserved = new URLSearchParams(location.search).get('toReserved');
@@ -58,6 +59,11 @@ const DetailsModal = ({
       setRequirements(res);
       setLoading(false);
     });
+
+    if (!isEmpty(proposition?.agreementObjects))
+      getObjectsByIds({ authorPermlinks: proposition?.agreementObjects }).then(res =>
+        setAgreementObjects(res.wobjects),
+      );
   }, [proposition?.activationPermlink, userName]);
   // const requiredObjectName = getObjectName(proposition?.object?.parent)
   // const userName = getSessionData('userName');
@@ -149,7 +155,11 @@ const DetailsModal = ({
       <div>
         <RewardsHeader proposition={proposition} />
       </div>
-      <DetailsModalBody proposition={proposition} requirements={requirements} />
+      <DetailsModalBody
+        proposition={proposition}
+        requirements={requirements}
+        agreementObjects={agreementObjects}
+      />
       <div className="Details__footer">
         <div className="Details__footer-reserve-btn">
           <Button onClick={handleCancelModalBtn}>Cancel</Button>

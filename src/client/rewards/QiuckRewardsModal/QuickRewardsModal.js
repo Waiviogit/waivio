@@ -197,6 +197,11 @@ const QuickRewardsModal = props => {
             />
           </b>
         )}
+        {!isPropositionObj && pageNumber !== 1 && (
+          <b>
+            YOU EARN:<span className="QuickRewardsModal__warning"> NO SPONSORS FOUND</span>
+          </b>
+        )}
         <Button
           type="primary"
           className={nextButtonClassList}

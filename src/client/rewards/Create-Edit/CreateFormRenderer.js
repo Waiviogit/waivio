@@ -81,8 +81,8 @@ const CreateFormRenderer = props => {
   const fields = fieldsData(handlers.messageFactory, validators, user.name, props.currency);
   const isDuplicate = includes(get(match, ['params', '0']), 'createDuplicate');
   const disabled = (isDisabled && !isDuplicate && !isEmpty(campaignId)) || loading;
-
-  const userBalance = payoutToken === 'HIVE' ? parseFloat(user.balance) : currencyInfo.balance || 0;
+  const userBalance =
+    payoutToken === 'HIVE' ? parseFloat(user.balance) : currencyInfo.balance || null;
 
   const notEnoughMoneyWarn =
     userBalance <= 0 ? (
