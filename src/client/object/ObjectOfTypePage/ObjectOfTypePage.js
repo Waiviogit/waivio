@@ -4,7 +4,7 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
-import { Button, Form, Icon, message } from 'antd';
+import { Button, Form, Icon, message, Modal } from 'antd';
 import Editor from '../../components/EditorExtended/EditorExtendedComponent';
 import BodyContainer from '../../containers/Story/BodyContainer';
 import { editorStateToMarkdownSlate } from '../../components/EditorExtended/util/editorStateToMarkdown';
@@ -20,7 +20,7 @@ import { objectFields } from '../../../common/constants/listOfFields';
 import { appendObject } from '../../../store/appendStore/appendActions';
 import IconButton from '../../components/IconButton';
 import CatalogBreadcrumb from '../Catalog/CatalogBreadcrumb/CatalogBreadcrumb';
-import { getObject } from '../../../waivioApi/ApiClient';
+import { getDraftPage, getObject, saveDraftPage } from '../../../waivioApi/ApiClient';
 import { setNestedWobject } from '../../../store/wObjectStore/wobjActions';
 import Loading from '../../components/Icon/Loading';
 import CatalogWrap from '../Catalog/CatalogWrap';
@@ -36,20 +36,49 @@ import { getIsAppendLoading } from '../../../store/appendStore/appendSelectors';
 import './ObjectOfTypePage.less';
 
 const ObjectOfTypePage = props => {
-  const { isLoadingFlag } = props;
+  const {
+    intl,
+    form,
+    isEditMode,
+    isAppending,
+    locale,
+    wobject,
+    followingList,
+    isLoadingFlag,
+    userName,
+  } = props;
   const [content, setContent] = useState('');
   const [contentForPublish, setCurrentContent] = useState('');
   const [isReadyToPublish, setIsReadyToPublish] = useState(false);
   const [votePercent, setVotePercent] = useState('');
   const [isLoading, setIsLoading] = useState(true);
+  const [draft, setDraft] = useState(null);
+  const [isNotificaion, setNotification] = useState(null);
+  const [editorInitialized, setEditorInitialized] = useState(false);
+
+  useEffect(() => {
+    if (draft) {
+      setNotification(true);
+    }
+  }, [draft]);
+
+  useEffect(() => {
+    if (userName) {
+      getDraftPage(userName, wobject.author_permlink).then(res => {
+        if (res.message) {
+          setEditorInitialized(true);
+
+          return;
+        }
+        setDraft(res.body);
+      });
+    } else setEditorInitialized(true);
+  }, []);
 
   useEffect(() => {
     const {
       location: { hash },
-      userName,
-      locale,
       setNestedWobj,
-      wobject,
     } = props;
 
     if (!isEmpty(wobject)) {
@@ -70,12 +99,13 @@ const ObjectOfTypePage = props => {
     }
   }, [props.location.hash, props.wobject.author_permlink]);
 
-  const { intl, form, isEditMode, isAppending, locale, wobject, followingList } = props;
-
   const handleChangeContent = editor => {
     const newContent = editorStateToMarkdownSlate(editor.children);
 
-    if (content !== newContent) setContent(newContent);
+    if (content !== newContent) {
+      setContent(newContent);
+      saveDraftPage(props.userName, props.wobject.author_permlink, newContent);
+    }
   };
 
   const handleVotePercentChange = percent => setVotePercent(percent);
@@ -84,7 +114,7 @@ const ObjectOfTypePage = props => {
     e.preventDefault();
 
     props.form.validateFieldsAndScroll((err, values) => {
-      const { appendPageContent, userName, toggleViewEditMode, nestedWobject, breadcrumb } = props;
+      const { appendPageContent, toggleViewEditMode, nestedWobject, breadcrumb } = props;
       const { follow } = values;
 
       if (!err) {
@@ -166,7 +196,7 @@ const ObjectOfTypePage = props => {
         <React.Fragment>
           {!isLoadingFlag && <CatalogBreadcrumb wobject={wobject} intl={intl} />}
           <div className={classObjPage}>
-            {isEditMode ? (
+            {isEditMode && editorInitialized ? (
               <React.Fragment>
                 {isReadyToPublish ? (
                   <div className="object-page-preview">
@@ -237,6 +267,21 @@ const ObjectOfTypePage = props => {
           )}
         </React.Fragment>
       )}
+      <Modal
+        visible={isEditMode && isNotificaion}
+        title="Page draft"
+        onOk={() => {
+          setCurrentContent(draft);
+          setNotification(false);
+          setEditorInitialized(true);
+        }}
+        onCancel={() => {
+          setNotification(false);
+          setEditorInitialized(true);
+        }}
+      >
+        You have one draft with unsaved changes. Do you want to continue editing?
+      </Modal>
     </React.Fragment>
   );
 };
