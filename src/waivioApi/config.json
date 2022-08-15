@@ -38,6 +38,7 @@
   "auth": "/auth",
   "blacklist": "/blacklist",
   "blog": "/blog",
+  "details": "/details",
   "campaign": "/campaign",
   "sponsors": "/sponsors",
   "reviewCheck": "/review-check",

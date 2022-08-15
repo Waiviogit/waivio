@@ -53,7 +53,7 @@ export const reserveProposition = (proposition, username, history) => async (
       .then(async () => {
         busyAPI.instance.sendAsync(subscribeTypes.subscribeCampaignAssign, [username, permlink]);
         busyAPI.instance.subscribe((datad, j) => {
-          if (j?.assigned && j?.permlink === permlink) {
+          if (j?.success && j?.permlink === permlink) {
             dispatch(changeRewardsTab(username));
             history.push('/rewards-new/reserved');
             resolve();

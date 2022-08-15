@@ -43,7 +43,7 @@ import {
 } from '../appStore/appSelectors';
 import { getAuthenticatedUser, getAuthenticatedUserName } from '../authStore/authSelectors';
 import { getHiveBeneficiaryAccount, getLocale } from '../settingsStore/settingsSelectors';
-import { getObjectsByIds, getReviewCheckInfo } from '../../waivioApi/ApiClient';
+import { getCampaign, getObjectsByIds, getReviewCheckInfo } from '../../waivioApi/ApiClient';
 import {
   getCurrentLinkPermlink,
   getCurrentLoadObjects,
@@ -55,6 +55,7 @@ import {
   updatedHideObjectsPaste,
   getLinkedObjects as getLinkedObjectsHelper,
   checkCursorInSearchSlate,
+  getReviewTitleNew,
 } from '../../common/helpers/editorHelper';
 import {
   getCurrentDraft,
@@ -493,6 +494,49 @@ export const reviewCheckInfo = (
         const reviewedTitle = needReviewTitle
           ? getReviewTitle(campaignData, linkedObjects, draftBody, get(currDraft, 'title', ''))
           : {};
+        const updatedEditorData = {
+          ...reviewedTitle,
+          campaign: campaignData,
+        };
+
+        dispatch(setUpdatedEditorData(updatedEditorData));
+        dispatch(firstParseLinkedObjects(updatedEditorData.draftContent));
+        dispatch(
+          saveDraft(draftId, intl, {
+            content: updatedEditorData.draftContent.body,
+            titleValue: updatedEditorData.draftContent.title,
+          }),
+        );
+      })
+      .catch(error => {
+        message.error(
+          intl.formatMessage(
+            {
+              id: 'imageSetter_link_is_already_added',
+              defaultMessage: `Failed to get campaign data: {error}`,
+            },
+            { error },
+          ),
+        );
+      });
+  };
+};
+
+export const getCampaignInfo = ({ campaignId }, intl, needReviewTitle = false) => {
+  return (dispatch, getState) => {
+    const state = getState();
+    const authUserName = getAuthenticatedUserName(state);
+    const linkedObjects = getLinkedObjects(state);
+    const draftBody = getEditorDraftBody(state);
+
+    return getCampaign(authUserName, campaignId)
+      .then(campaignData => {
+        const draftId = new URLSearchParams(getQueryString(state)).get('draft');
+        const currDraft = getCurrentDraft(state, { draftId });
+        const reviewedTitle = needReviewTitle
+          ? getReviewTitleNew(campaignData, linkedObjects, draftBody, get(currDraft, 'title', ''))
+          : {};
+
         const updatedEditorData = {
           ...reviewedTitle,
           campaign: campaignData,

@@ -16,6 +16,7 @@ import DetailsModalBody from './DetailsBody';
 import { getObjectsByIds, validateEgibilitiesForUser } from '../../../waivioApi/ApiClient';
 import RewardsHeader from '../reuseble/RewardsHeader';
 import { reserveProposition } from '../../../store/newRewards/newRewardsActions';
+import { getObjectName } from '../../../common/helpers/wObjectHelper';
 
 // import './DetailsModal.less';
 
@@ -41,7 +42,7 @@ const DetailsModal = ({
     notBlacklisted: true,
     posts: true,
   });
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [agreementObjects, setAgreementObjects] = useState([]);
   const isAuth = !!authorizedUserName;
   const isWidget = new URLSearchParams(history.location.search).get('display');
@@ -52,18 +53,21 @@ const DetailsModal = ({
   const isEligible = Object.values(requirements).every(req => req);
 
   useEffect(() => {
-    validateEgibilitiesForUser({
-      userName,
-      activationPermlink: proposition?.activationPermlink,
-    }).then(res => {
-      setRequirements(res);
-      setLoading(false);
-    });
+    if (!proposition?.reserved) {
+      setLoading(true);
+      validateEgibilitiesForUser({
+        userName,
+        activationPermlink: proposition?.activationPermlink,
+      }).then(res => {
+        setRequirements(res);
+        setLoading(false);
+      });
 
-    if (!isEmpty(proposition?.agreementObjects))
-      getObjectsByIds({ authorPermlinks: proposition?.agreementObjects }).then(res =>
-        setAgreementObjects(res.wobjects),
-      );
+      if (!isEmpty(proposition?.agreementObjects))
+        getObjectsByIds({ authorPermlinks: proposition?.agreementObjects }).then(res =>
+          setAgreementObjects(res.wobjects),
+        );
+    }
   }, [proposition?.activationPermlink, userName]);
   // const requiredObjectName = getObjectName(proposition?.object?.parent)
   // const userName = getSessionData('userName');
@@ -72,34 +76,38 @@ const DetailsModal = ({
 
   const handleTypeReserveButton = () => (isAuth ? 'primary' : 'default');
   const handleClickReserve = () => {
-    setLoading(true);
+    if (!proposition?.reserved) {
+      setLoading(true);
 
-    dispatch(reserveProposition(proposition, userName, history))
-      .then(() => {
-        setLoading(false);
-      })
-      .catch(e => {
-        setLoading(false);
-        message.error(e.error_description);
-      });
+      dispatch(reserveProposition(proposition, userName, history))
+        .then(() => {
+          setLoading(false);
+        })
+        .catch(e => {
+          setLoading(false);
+          message.error(e.error_description);
+        });
+    } else {
+      const mainObjectPermLink = get(proposition, 'requiredObject.author_permlink');
+      const mainObject = `[${getObjectName(proposition.requiredObject)}](${mainObjectPermLink})`;
+      const secondaryObject = `[${getObjectName(proposition.object)}](${
+        proposition.object.author_permlink
+      })`;
+
+      const urlConfig = {
+        pathname: '/editor',
+        search: `?object=${mainObject}&object=${secondaryObject}&newCampaing=true&campaign=${proposition._id}`,
+        state: {
+          mainObject,
+          secondaryObject,
+          campaign: proposition._id,
+        },
+      };
+
+      history.push(urlConfig);
+    }
   };
   const onClick = () => onActionInitiated(handleClickReserve);
-
-  // const mainObjectPermLink = get(objectDetails, 'required_object.author_permlink');
-  // const mainObject = `[${requiredObjectName}](${'mainObjectPermLink'})`;
-  // const secondaryObject = `[${proposedWobjName}](${proposition.object.author_permlink})`;
-  //
-  // const urlConfig = {
-  //   pathname: '/editor',
-  //   search: `?object=${mainObject}&object=${secondaryObject}`,
-  //   state: {
-  //     mainObject,
-  //     secondaryObject,
-  //     // campaign: objectDetails._id,
-  //   },
-  // };
-  //
-  // const toCurrentWobjLink = `/object/${proposition.object.author_permlink}`;
 
   const reserveButton = isWaivio ? (
     <Button
@@ -108,7 +116,7 @@ const DetailsModal = ({
       disabled={!isEligible}
       onClick={onClick}
     >
-      Reserve
+      {proposition.reserved ? 'Write rewiew' : 'Reserve'}
     </Button>
   ) : (
     <WebsiteReservedButtons
