@@ -43,7 +43,7 @@ const Editor = props => {
     [],
   );
 
-  const handleContentChangeSlate = editor => {
+  const handleContentChangeSlate = debounce(editor => {
     const searchInfo = checkCursorInSearchSlate(editor);
 
     if (searchInfo.isNeedOpenSearch) {
@@ -67,7 +67,7 @@ const Editor = props => {
     }
 
     props.onChange(editor, props.editorExtended.titleValue);
-  };
+  }, 350);
 
   const validateLength = event => {
     const updatedTitleValue = event.target.value;

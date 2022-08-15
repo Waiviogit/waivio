@@ -34,7 +34,7 @@ const Proposition = ({ proposition, type }) => {
       />
       {openDetails && (
         <DetailsModal
-          proposition={proposition}
+          proposition={{ ...proposition, reserved: propositionType === 'reserved' }}
           isModalDetailsOpen={openDetails}
           toggleModal={() => setOpenDitails(!openDetails)}
           reserveOnClickHandler={() => {}}
