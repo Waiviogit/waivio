@@ -164,6 +164,11 @@ const routes = {
           exact: true,
           component: Views.ReservedProposition,
         },
+        {
+          path: '/payables',
+          exact: true,
+          component: Views.Payables,
+        },
       ],
     },
     {

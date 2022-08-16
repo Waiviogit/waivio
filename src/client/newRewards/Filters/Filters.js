@@ -7,7 +7,7 @@ import PropTypes from 'prop-types';
 
 import './Filters.less';
 
-const RewardsFilters = ({ config, getFilters }) => {
+const RewardsFilters = ({ config, getFilters, onlyOne }) => {
   const [activeFilters, setActiveFilters] = useState({});
   const history = useHistory();
   const query = new URLSearchParams(history.location.search);
@@ -49,7 +49,7 @@ const RewardsFilters = ({ config, getFilters }) => {
         [type]: filteredList,
       });
     } else {
-      const newListFilters = [...filreList, filter];
+      const newListFilters = onlyOne ? [filter] : [...filreList, filter];
 
       query.set(type, newListFilters.join(','));
       setActiveFilters({
@@ -74,18 +74,23 @@ const RewardsFilters = ({ config, getFilters }) => {
 
         return (
           <div className="RewardsFilters__block" key={filter.title}>
-            <span className="RewardsFilters__subtitle">{filter.title}:</span>
-            {filters?.[filter?.type]?.map(check => (
-              <div key={check}>
-                <Checkbox
-                  checked={activeFilters[filter.type]?.includes(check)}
-                  onChange={() => setFilters(filter.type, check)}
-                >
-                  {' '}
-                  {check}
-                </Checkbox>
-              </div>
-            ))}
+            {filter.title && <span className="RewardsFilters__subtitle">{filter.title}:</span>}
+            {filters?.[filter?.type]?.map(check => {
+              const value = typeof check === 'object' ? check.value : check;
+              const title = typeof check === 'object' ? check.title : check;
+
+              return (
+                <div key={value}>
+                  <Checkbox
+                    checked={activeFilters[filter.type]?.includes(value)}
+                    onChange={() => setFilters(filter.type, value)}
+                  >
+                    {' '}
+                    {title}
+                  </Checkbox>
+                </div>
+              );
+            })}
           </div>
         );
       })}
@@ -95,7 +100,12 @@ const RewardsFilters = ({ config, getFilters }) => {
 
 RewardsFilters.propTypes = {
   getFilters: PropTypes.func.isRequired,
+  onlyOne: PropTypes.bool,
   config: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
+};
+
+RewardsFilters.defaultProps = {
+  onlyOne: false,
 };
 
 export default RewardsFilters;

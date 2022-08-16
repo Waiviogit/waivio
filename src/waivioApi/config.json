@@ -85,6 +85,7 @@
   "reservation": "/validate_reservation",
   "reservation_v2": "/reservation",
   "reserved": "/reserved",
+  "guide": "/guide",
   "tabType": "/tab-type",
   "rewards": "/rewards",
   "search": "/search",

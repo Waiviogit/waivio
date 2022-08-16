@@ -2883,6 +2883,22 @@ export const getNewCampaingById = id => {
     .then(response => response)
     .catch(e => e);
 };
+// {guideName, payoutToken, days, payable}
+export const getPaybelsList = (guideName, data = {}) => {
+  return fetch(
+    `${config.campaignV2ApiPrefix}${config.payables}${config.guide}/${guideName}?${createQuery(
+      data,
+    )}`,
+    {
+      headers,
+      method: 'GET',
+    },
+  )
+    .then(handleErrors)
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+};
 
 export const getFiltersForAllRewards = () => {
   return fetch(`${config.campaignV2ApiPrefix}${config.rewards}${config.all}${config.sponsors}`, {
