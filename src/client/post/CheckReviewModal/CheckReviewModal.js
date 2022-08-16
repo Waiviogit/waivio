@@ -34,11 +34,11 @@ const CheckReviewModal = ({
       <React.Fragment>
         <SubmitReviewPublish reviewData={reviewData} primaryObject={primaryObject} />
         <div className="check-review-modal__buttons">
-          <Button htmlType="button" onClick={onSubmit} size="large">
-            {intl.formatMessage({ id: 'submit', defaultMessage: 'Submit' })}
-          </Button>
           <Button htmlType="button" onClick={onCancel} size="large">
             {intl.formatMessage({ id: 'cancel', defaultMessage: 'Cancel' })}
+          </Button>
+          <Button htmlType="button" onClick={onSubmit} size="large" type="primary">
+            {intl.formatMessage({ id: 'submit', defaultMessage: 'Submit' })}
           </Button>
         </div>
       </React.Fragment>
@@ -77,7 +77,7 @@ const CheckReviewModal = ({
               id: 'rewards_details_link_to',
               defaultMessage: 'Link to',
             })}{' '}
-            {<a href={`/object/${secondaryObject.author_permlink}`}>{secondaryObject.name}</a>}
+            {<a href={`/object/${secondaryObject.defaultShowLink}`}>{secondaryObject.name}</a>}
           </div>
           <div className="check-review-modal__list-item">
             {getIcon(hasObject(primaryObject))}
@@ -85,7 +85,7 @@ const CheckReviewModal = ({
               id: 'rewards_details_link_to',
               defaultMessage: 'Link to',
             })}{' '}
-            {<a href={`/object/${primaryObject.author_permlink}`}>{primaryObject.name}</a>}
+            {<a href={`/object/${primaryObject.defaultShowLink}`}>{primaryObject.name}</a>}
           </div>
         </div>
         <div className="check-review-modal__buttons">

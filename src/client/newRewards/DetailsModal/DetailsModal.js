@@ -88,12 +88,12 @@ const DetailsModal = ({
           message.error(e.error_description);
         });
     } else {
-      const mainObjectPermLink = get(proposition, 'requiredObject.author_permlink');
-      const mainObject = `[${getObjectName(proposition.requiredObject)}](${mainObjectPermLink})`;
-      const secondaryObject = `[${getObjectName(proposition.object)}](${
-        proposition.object.author_permlink
+      const mainObject = `[${getObjectName(proposition.requiredObject)}](${
+        proposition?.requiredObject?.author_permlink
       })`;
-
+      const secondaryObject = `[${getObjectName(proposition.object)}](${
+        proposition?.object?.author_permlink
+      })`;
       const urlConfig = {
         pathname: '/editor',
         search: `?object=${mainObject}&object=${secondaryObject}&newCampaing=true&campaign=${proposition._id}`,
@@ -125,19 +125,6 @@ const DetailsModal = ({
       handleReserve={reserveOnClickHandler}
     />
   );
-
-  // const handleWriteReviewBtn = () => {
-  //   if (!isAuth) return;
-  //   if (userName) {
-  //     const historyUrl = isEqual(userName, authorizedUserName) ? urlConfig : toCurrentWobjLink;
-  //
-  //     history.push(historyUrl);
-  //     clearAllSessionProposition();
-  //
-  //     return;
-  //   }
-  //   history.push(urlConfig);
-  // };
 
   const handleCancelModalBtn = value => {
     clearAllSessionProposition();
