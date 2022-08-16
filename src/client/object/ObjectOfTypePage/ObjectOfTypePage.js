@@ -138,7 +138,7 @@ const ObjectOfTypePage = props => {
 
         appendPageContent(postData, { follow, votePercent: votePercent * 100, isLike: true })
           .then(() => {
-            saveDraftPage(userName, wobject.author_permlink);
+            saveDraftPage(userName, props.nestedWobject.author_permlink || wobject.author_permlink);
           })
           .then(() => {
             message.success(
