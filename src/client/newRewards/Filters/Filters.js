@@ -74,7 +74,7 @@ const RewardsFilters = ({ config, getFilters, onlyOne }) => {
 
         return (
           <div className="RewardsFilters__block" key={filter.title}>
-            {filter.title && (<span className="RewardsFilters__subtitle">{filter.title}:</span>)}
+            {filter.title && <span className="RewardsFilters__subtitle">{filter.title}:</span>}
             {filters?.[filter?.type]?.map(check => {
               const value = typeof check === 'object' ? check.value : check;
               const title = typeof check === 'object' ? check.title : check;
@@ -89,7 +89,7 @@ const RewardsFilters = ({ config, getFilters, onlyOne }) => {
                     {title}
                   </Checkbox>
                 </div>
-              )
+              );
             })}
           </div>
         );
@@ -105,7 +105,7 @@ RewardsFilters.propTypes = {
 };
 
 RewardsFilters.defaultProps = {
-  onlyOne: false
-}
+  onlyOne: false,
+};
 
 export default RewardsFilters;

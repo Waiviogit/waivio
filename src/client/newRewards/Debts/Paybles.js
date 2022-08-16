@@ -1,23 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
-import {useSelector} from "react-redux";
-import {useLocation} from "react-router";
+import { useSelector } from 'react-redux';
+import { useLocation } from 'react-router';
 
 import { get } from 'lodash';
 import { getPaybelsList } from '../../../waivioApi/ApiClient';
 import Debts from '../../rewards/Debts/Debts';
-import {getAuthenticatedUserName} from "../../../store/authStore/authSelectors";
-import RewardsFilters from "../Filters/Filters";
+import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
+import RewardsFilters from '../Filters/Filters';
 
 const filterConfig = [
   { title: 'Receivables', type: 'days' },
   { title: '', type: 'payable' },
 ];
 
-const Payables = ({
-  currentSteemDollarPrice,
-}) => {
+const Payables = ({ currentSteemDollarPrice }) => {
   const [lenders, setLenders] = useState({});
   const [loading, setLoading] = useState(false);
   const location = useLocation();
@@ -26,15 +24,12 @@ const Payables = ({
 
   useEffect(() => {
     setLoading(true);
-    getPaybelsList(
-      authUserName,
-    {
+    getPaybelsList(authUserName, {
       skip: 0,
       limit: 30,
       days: query.get('days'),
       payable: query.get('payable'),
-    }
-    )
+    })
       .then(data => {
         setLenders({ ...data, hasMore: false });
         setLoading(false);
@@ -43,15 +38,12 @@ const Payables = ({
   }, [location.search]);
 
   const handleLoadingMore = () =>
-    getPaybelsList(
-      authUserName,
-      {
-        skip: 0,
-        limit: 30,
-        days: query.get('days'),
-        payable: query.get('payable'),
-      }
-    ).then(data => {
+    getPaybelsList(authUserName, {
+      skip: 0,
+      limit: 30,
+      days: query.get('days'),
+      payable: query.get('payable'),
+    }).then(data => {
       setLenders({
         ...lenders,
         histories: [...get(lenders, 'histories', []), ...data.histories],
@@ -60,9 +52,12 @@ const Payables = ({
     });
 
   const getFilters = async () => ({
-    days: [{title: 'Over 15 days', value: '15'}, {title: 'Over 30 days', value: '30'}],
-    payable: [{title: 'Over 20 WAIV', value: '20'}]
-  })
+    days: [
+      { title: 'Over 15 days', value: '15' },
+      { title: 'Over 30 days', value: '30' },
+    ],
+    payable: [{ title: 'Over 20 WAIV', value: '20' }],
+  });
 
   return (
     <React.Fragment>
