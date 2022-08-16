@@ -20,6 +20,11 @@ export const rewardsSettings = {
       id: 'reserved',
       defaultMessage: 'Reserved',
     },
+    {
+      to: '/rewards-new/receivables',
+      id: 'receivables',
+      defaultMessage: 'Receivables',
+    },
   ],
 };
 
@@ -40,6 +45,11 @@ export const campaingSettings = {
       to: '/rewards-new/manage',
       id: 'manage',
       defaultMessage: 'Manage',
+    },
+    {
+      to: '/rewards-new/payables',
+      id: 'payables',
+      defaultMessage: 'Payables',
     },
   ],
 };

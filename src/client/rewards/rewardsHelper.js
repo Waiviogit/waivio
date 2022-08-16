@@ -417,7 +417,7 @@ export const getProcessingFee = data => {
 };
 
 export const payablesFilterData = location => {
-  if (location.pathname === PATH_NAME_PAYABLES) {
+  if (location?.pathname === PATH_NAME_PAYABLES) {
     return [
       {
         filterName: 'days',

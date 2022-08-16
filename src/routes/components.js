@@ -12,6 +12,9 @@ export default {
   ReservedProposition: loableComponent(
     import('../client/newRewards/PropositionLists/ReservedProposition'),
   ),
+  Payables: loableComponent(
+    import('../client/newRewards/Debts/Paybles'),
+  ),
   Rebalancing: loableComponent(import('../client/newRewards/Rebalancing/Rebalancing')),
   EligibleRewards: loableComponent(import('../client/newRewards/RewardLists/EligibleRewards')),
   AllProposition: loableComponent(import('../client/newRewards/PropositionLists/AllPropositions')),
