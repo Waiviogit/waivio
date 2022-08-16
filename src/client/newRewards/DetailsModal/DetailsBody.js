@@ -28,7 +28,7 @@ const DetailsModalBody = ({ proposition, requirements, agreementObjects }) => {
     <div className="Details__text-wrap">
       {!proposition?.reserved && (
         <React.Fragment>
-          <div className="Details__text fw6 mv3">User eligibility requirements::</div>
+          <div className="Details__text fw6 mv3">User eligibility requirements:</div>
           <div className="Details__text mv3">
             Only users who meet all eligibility criteria can participate in this rewards campaign.
           </div>

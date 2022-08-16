@@ -2,7 +2,7 @@ import React from 'react';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 
-const SubmitReviewPublish = ({ intl, reviewData, primaryObject }) => (
+const SubmitReviewPublish = ({ intl, reviewData }) => (
   <React.Fragment>
     <div className="check-review-modal__paragraph">
       <span>
@@ -13,7 +13,7 @@ const SubmitReviewPublish = ({ intl, reviewData, primaryObject }) => (
       </span>
       &nbsp;
       <a
-        href={`/rewards/reserved/${primaryObject.author_permlink}`}
+        href={`/@${reviewData.guideName}/${reviewData.reservationPermlink}`}
         title={reviewData.name}
         target="_blank"
         rel="noopener noreferrer"
@@ -67,7 +67,6 @@ const SubmitReviewPublish = ({ intl, reviewData, primaryObject }) => (
 
 SubmitReviewPublish.propTypes = {
   intl: PropTypes.shape().isRequired,
-  primaryObject: PropTypes.shape().isRequired,
   reviewData: PropTypes.shape().isRequired,
 };
 

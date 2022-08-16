@@ -320,7 +320,7 @@ export function createPost(postData, beneficiaries, isReview, campaign) {
   return (dispatch, getState, { steemConnectAPI }) => {
     if (isReview && campaign) {
       // eslint-disable-next-line no-param-reassign
-      postData.body += `\n***\nThis review was sponsored in part by ${campaign.alias} ([@${campaign.guideName}](/@${campaign.guideName}))`;
+      postData.body += `\n***\nThis review was sponsored in part by [@${campaign.guideName}](/@${campaign.guideName})`;
     }
 
     const host = getCurrentHost(getState()).slice(7);
@@ -621,7 +621,7 @@ export const buildPost = (draftId, data = {}, isEditPost) => (dispatch, getState
       .map(obj => ({
         object_type: obj.object_type,
         objectName: getObjectName(obj),
-        author_permlink: obj.author_permlink,
+        author_permlink: obj.defaultShowLink,
         percent: get(objPercentage, [obj._id, 'percent']),
       })),
   };

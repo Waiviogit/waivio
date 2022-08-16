@@ -108,8 +108,8 @@ export const getReviewTitle = (campaignData, linkedObjects, body, altTitle) => {
 };
 
 export const getReviewTitleNew = (campaignData, linkedObjects, body, altTitle) => {
-  const firstTitle = getObjectName(campaignData);
-  const secondTitle = get(campaignData, 'secondaryObject.name', '');
+  const firstTitle = getObjectName(campaignData.requiredObject);
+  const secondTitle = getObjectName(campaignData.secondaryObject);
   const requiredObj = get(linkedObjects, '[0]', {});
   const secondObj = get(linkedObjects, '[1]', {});
   const reviewTitle = `Review: ${firstTitle}, ${secondTitle}`;
