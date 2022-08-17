@@ -38,6 +38,30 @@ import { HEADING_BLOCKS } from './util/SlateEditor/utils/constants';
 
 import './index.less';
 
+const inlineTypes = ['link'];
+
+const useEditor = props => {
+  const editor = useMemo(
+    () =>
+      pipe(
+        createEditor,
+        withObjects,
+        withLists,
+        withReact,
+        withLinks,
+        withTables,
+        withEmbeds(props.handlePasteText),
+        withHistory,
+      )(),
+    [],
+  );
+  const { isInline } = editor;
+
+  editor.isInline = el => inlineTypes.includes(el.type) || isInline(el);
+
+  return editor;
+};
+
 const EditorSlate = props => {
   const {
     editorEnabled,
@@ -219,20 +243,7 @@ const EditorSlate = props => {
     'md-RichEditor-root-vimeo': isVimeo,
   });
 
-  const editor = useMemo(
-    () =>
-      pipe(
-        createEditor,
-        withObjects,
-        withLists,
-        withReact,
-        withLinks,
-        withTables,
-        withEmbeds(props.handlePasteText),
-        withHistory,
-      )(),
-    [],
-  );
+  const editor = useEditor(props);
   const [value, setValue] = useState([
     {
       type: 'paragraph',

@@ -29,8 +29,6 @@ const withEmbeds = cb => editor => {
 
           return;
         }
-
-        return;
       }
     }
 
