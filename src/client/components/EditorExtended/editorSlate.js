@@ -38,8 +38,6 @@ import { HEADING_BLOCKS } from './util/SlateEditor/utils/constants';
 
 import './index.less';
 
-const inlineTypes = ['link'];
-
 const useEditor = props => {
   const editor = useMemo(
     () =>
@@ -55,9 +53,6 @@ const useEditor = props => {
       )(),
     [],
   );
-  const { isInline } = editor;
-
-  editor.isInline = el => inlineTypes.includes(el.type) || isInline(el);
 
   return editor;
 };
