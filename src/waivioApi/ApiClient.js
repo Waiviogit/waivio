@@ -2900,6 +2900,35 @@ export const getPaybelsList = (guideName, data = {}) => {
     .catch(e => e);
 };
 
+export const getPaybelsListByUser = (guideName, userName) => {
+  return fetch(
+    `${config.campaignV2ApiPrefix}${config.payables}${config.guide}/${guideName}/${userName}`,
+    {
+      headers,
+      method: 'GET',
+    },
+  )
+    .then(handleErrors)
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+};
+
+// userName*, guideName*, reviewPermlink*, payoutToken
+export const getReportByUser = data => {
+  return fetch(
+    `${config.campaignV2ApiPrefix}${config.payables}${config.report}?${createQuery(data)}`,
+    {
+      headers,
+      method: 'GET',
+    },
+  )
+    .then(handleErrors)
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+};
+
 export const getFiltersForAllRewards = () => {
   return fetch(`${config.campaignV2ApiPrefix}${config.rewards}${config.all}${config.sponsors}`, {
     headers,

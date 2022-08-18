@@ -1,12 +1,16 @@
 import { map, isEmpty } from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
+import { useLocation } from 'react-router';
+
 import ReduxInfiniteScroll from '../../vendor/ReduxInfiniteScroll';
 import Loading from '../../components/Icon/Loading';
 import PaymentCard from '../PaymentCard/PaymentCard';
 import EmptyPaybles from '../../statics/EmptyPayables';
 
 const PaymentList = props => {
+  const location = useLocation();
+
   if (isEmpty(props.renderData) && props.loading) return <Loading />;
 
   if (isEmpty(props.renderData)) return <EmptyPaybles />;
@@ -27,7 +31,7 @@ const PaymentList = props => {
             <PaymentCard
               key={name}
               paymentInfo={debtObjData}
-              path={`${props.componentLocation}/@${name}`}
+              path={`${location.pathname}/@${name}`}
             />
           );
         })}
@@ -39,7 +43,6 @@ const PaymentList = props => {
 PaymentList.propTypes = {
   debtObjsData: PropTypes.shape().isRequired,
   renderData: PropTypes.arrayOf().isRequired,
-  componentLocation: PropTypes.string.isRequired,
   handleLoadingMore: PropTypes.func.isRequired,
   loading: PropTypes.bool,
 };

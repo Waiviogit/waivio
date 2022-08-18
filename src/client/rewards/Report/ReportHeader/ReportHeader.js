@@ -3,20 +3,21 @@ import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { useSelector } from 'react-redux';
 import moment from 'moment';
-import { get, map, round } from 'lodash';
+import { get, isEmpty, map, round } from 'lodash';
 
 import Avatar from '../../../components/Avatar';
 import { getSingleReportData } from '../../../../store/rewardsStore/rewardsSelectors';
 
 import './ReportHeader.less';
 
-const ReportHeader = ({ intl, currencyInfo }) => {
-  const singleReportData = useSelector(getSingleReportData);
+const ReportHeader = ({ intl, currencyInfo, reportDetails, payoutToken }) => {
+  const singleReportData = reportDetails || useSelector(getSingleReportData);
   const createCampaignDate = moment(singleReportData.createCampaignDate).format('MMMM D, YYYY');
   const reservationDate = moment(singleReportData.reservationDate).format('MMMM D, YYYY');
   const reviewDate = moment(singleReportData.reviewDate).format('MMMM D, YYYY');
   const title = singleReportData.title;
-  const rewardHive = singleReportData.rewardHive ? round(singleReportData.rewardHive, 3) : 0;
+  const reward = singleReportData.rewardTokenAmount || singleReportData.rewardHive;
+  const rewardHive = reward ? round(reward, 3) : 0;
   const rewardUsd = singleReportData.rewardUsd
     ? round(singleReportData.rewardUsd * currencyInfo.rate, 2)
     : 'N/A';
@@ -24,16 +25,20 @@ const ReportHeader = ({ intl, currencyInfo }) => {
   const userName = singleReportData.user.name;
   const sponsorAlias = singleReportData.sponsor.alias;
   const sponsorName = singleReportData.sponsor.name;
-  const reservationPermlink = get(singleReportData, [
-    'histories',
-    '0',
-    'details',
-    'reservation_permlink',
-  ]);
-  const reviewPermlink = get(singleReportData, ['histories', '0', 'details', 'review_permlink']);
+  const reservationPermlink =
+    get(singleReportData, ['histories', '0', 'details', 'reservation_permlink']) ||
+    singleReportData?.reservationPermlink;
+
+  const reviewPermlink =
+    get(singleReportData, ['histories', '0', 'details', 'review_permlink']) ||
+    get(singleReportData, ['histories', '0', 'reviewPermlink']);
   const activationPermlink = get(singleReportData, ['activationPermlink']);
-  const primaryObjectPermlink = get(singleReportData, ['primaryObject', 'author_permlink']);
-  const primaryObjectName = get(singleReportData, ['primaryObject', 'object_name']);
+  const primaryObjectPermlink =
+    get(singleReportData, ['primaryObject', 'author_permlink']) ||
+    get(singleReportData, ['requiredObject', 'author_permlink']);
+  const primaryObjectName =
+    get(singleReportData, ['primaryObject', 'object_name']) ||
+    get(singleReportData, ['requiredObject', 'name']);
   const secondaryObjects = map(singleReportData.secondaryObjects, secondaryObject => ({
     name: secondaryObject.object_name,
     permlink: secondaryObject.author_permlink,
@@ -51,7 +56,7 @@ const ReportHeader = ({ intl, currencyInfo }) => {
         <div className="ReportHeader__data">
           <React.Fragment>
             <span className="ReportHeader__data-colored">
-              <span className="hive">{` ${rewardHive} HIVE `}</span>
+              <span className="hive">{` ${rewardHive} ${payoutToken} `}</span>
               <span className="usd">
                 ({rewardUsd} {currencyInfo.type}*)
               </span>
@@ -151,11 +156,19 @@ const ReportHeader = ({ intl, currencyInfo }) => {
           <a href={`/object/${primaryObjectPermlink}`}>
             <span className="ReportHeader__campaignInfo-links">{`${primaryObjectName}, `}</span>
           </a>
-          {map(secondaryObjects, object => (
-            <a key={object.permlink} href={`/object/${object.permlink}`}>
-              <span className="ReportHeader__campaignInfo-links">{object.name}</span>
+          {!isEmpty(secondaryObjects) ? (
+            map(secondaryObjects, object => (
+              <a key={object.permlink} href={`/object/${object.permlink}`}>
+                <span className="ReportHeader__campaignInfo-links">{object.name}</span>
+              </a>
+            ))
+          ) : (
+            <a href={`/object/${singleReportData?.secondaryObject?.author_permlink}`}>
+              <span className="ReportHeader__campaignInfo-links">
+                {singleReportData?.secondaryObject?.name}
+              </span>
             </a>
-          ))}
+          )}
         </div>
       </div>
     </React.Fragment>
@@ -168,6 +181,8 @@ ReportHeader.propTypes = {
     type: PropTypes.string,
     rate: PropTypes.number,
   }).isRequired,
+  reportDetails: PropTypes.shape().isRequired,
+  payoutToken: PropTypes.string.isRequired,
 };
 
 export default injectIntl(ReportHeader);
