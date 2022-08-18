@@ -11,9 +11,9 @@ import { getReport } from '../../../../waivioApi/ApiClient';
 import { setDataForSingleReport } from '../../../../store/rewardsStore/rewardsActions';
 import { TYPE } from '../../../../common/constants/rewards';
 import { getObjectName } from '../../../../common/helpers/wObjectHelper';
+import { getBeneficiariesUsers } from '../../../../store/searchStore/searchSelectors';
 
 import './PaymentTable.less';
-import { getBeneficiariesUsers } from '../../../../store/searchStore/searchSelectors';
 
 const PaymentTableRow = ({ intl, sponsor, isReports, reservationPermlink }) => {
   const [isModalReportOpen, setModalReportOpen] = useState(false);
@@ -53,10 +53,11 @@ const PaymentTableRow = ({ intl, sponsor, isReports, reservationPermlink }) => {
   const reviewObjectName = getObjectName(
     get(sponsor, 'details.review_object', null) || sponsor?.reviewObject,
   );
-  const beneficiaries = get(sponsor, ['details', 'beneficiaries']) || [
-    ...sponsor?.beneficiaries,
-    ...currBenefis,
-  ];
+
+  const beneficiaries = sponsor?.details
+    ? get(sponsor, ['details', 'beneficiaries'])
+    : [...(sponsor?.beneficiaries || []), ...currBenefis];
+
   const userWeight = `(${(10000 -
     reduce(beneficiaries, (amount, benef) => amount + benef.weight, 0)) /
     100}%)`;

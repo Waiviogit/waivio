@@ -401,14 +401,14 @@ export const getProcessingFee = data => {
         ...amounts,
       };
     case 'referral_server_fee':
-    case 'campaignServerFee':
+    case 'referralServerFee':
       return {
         name: 'Referral',
         account: data.userName,
         ...amounts,
       };
     case 'campaign_server_fee':
-    case 'referralServerFee':
+    case 'campaignServerFee':
       return {
         name: 'Campaign management',
         account: 'waivio.campaigns',
