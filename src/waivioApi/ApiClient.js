@@ -2883,6 +2883,51 @@ export const getNewCampaingById = id => {
     .then(response => response)
     .catch(e => e);
 };
+// {guideName, payoutToken, days, payable}
+export const getPaybelsList = (guideName, data = {}) => {
+  return fetch(
+    `${config.campaignV2ApiPrefix}${config.payables}${config.guide}/${guideName}?${createQuery(
+      data,
+    )}`,
+    {
+      headers,
+      method: 'GET',
+    },
+  )
+    .then(handleErrors)
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+};
+
+export const getPaybelsListByUser = (guideName, userName) => {
+  return fetch(
+    `${config.campaignV2ApiPrefix}${config.payables}${config.guide}/${guideName}/${userName}`,
+    {
+      headers,
+      method: 'GET',
+    },
+  )
+    .then(handleErrors)
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+};
+
+// userName*, guideName*, reviewPermlink*, payoutToken
+export const getReportByUser = data => {
+  return fetch(
+    `${config.campaignV2ApiPrefix}${config.payables}${config.report}?${createQuery(data)}`,
+    {
+      headers,
+      method: 'GET',
+    },
+  )
+    .then(handleErrors)
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+};
 
 export const getFiltersForAllRewards = () => {
   return fetch(`${config.campaignV2ApiPrefix}${config.rewards}${config.all}${config.sponsors}`, {
@@ -2940,6 +2985,20 @@ export const getFiltersForAllProposition = reqObj => {
 export const getFiltersForReservedProposition = (reqObj, userName) => {
   return fetch(
     `${config.campaignV2ApiPrefix}${config.rewards}${config.reserved}/${userName}${config.filters}`,
+    {
+      headers,
+      method: 'GET',
+    },
+  )
+    .then(handleErrors)
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+};
+
+export const getCampaign = (user, id) => {
+  return fetch(
+    `${config.campaignV2ApiPrefix}${config.reservation_v2}${config.details}/${user}/${id}`,
     {
       headers,
       method: 'GET',

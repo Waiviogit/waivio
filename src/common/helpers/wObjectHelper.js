@@ -2,7 +2,8 @@ import { get, some, filter, isEmpty, compact, isEqual } from 'lodash';
 import { addressFieldsForFormatting, TYPES_OF_MENU_ITEM } from '../constants/listOfFields';
 import LANGUAGES from '../translations/languages';
 
-export const getObjectName = (wobj = {}) => get(wobj, 'name') || get(wobj, 'default_name') || '';
+export const getObjectName = (wobj = {}) =>
+  get(wobj, 'name') || get(wobj, 'default_name') || get(wobj, 'objectName') || '';
 
 export const getObjectTitle = (wobj = {}) => wobj.title || '';
 

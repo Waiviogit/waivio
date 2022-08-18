@@ -65,16 +65,20 @@ const ObjectOfTypePage = props => {
   useEffect(() => {
     if (!wobject.author_permlink) return;
     if (userName) {
-      getDraftPage(userName, wobject.author_permlink).then(res => {
+      getDraftPage(
+        userName,
+        props.nestedWobject.author_permlink || props.wobject.author_permlink,
+      ).then(res => {
         if (res.message || !res.body) {
           setEditorInitialized(true);
 
           return;
         }
         setDraft(res.body);
+        setEditorInitialized(false);
       });
     } else setEditorInitialized(true);
-  }, [wobject.author_permlink]);
+  }, [wobject.author_permlink, props.nestedWobject.author_permlink]);
 
   useEffect(() => {
     const {
@@ -105,7 +109,12 @@ const ObjectOfTypePage = props => {
 
     if (content !== newContent) {
       setContent(newContent);
-      if (newContent) saveDraftPage(props.userName, props.wobject.author_permlink, newContent);
+      if (newContent)
+        saveDraftPage(
+          props.userName,
+          props.nestedWobject.author_permlink || props.wobject.author_permlink,
+          newContent,
+        );
     }
   };
 
@@ -129,7 +138,7 @@ const ObjectOfTypePage = props => {
 
         appendPageContent(postData, { follow, votePercent: votePercent * 100, isLike: true })
           .then(() => {
-            saveDraftPage(userName, wobject.author_permlink);
+            saveDraftPage(userName, props.nestedWobject.author_permlink || wobject.author_permlink);
           })
           .then(() => {
             message.success(

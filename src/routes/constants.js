@@ -98,6 +98,7 @@ export default {
       'details',
       'duplicate',
       'reserved',
+      'payables',
     ].join('|'),
     sideBar: [
       'all',

@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import { isEmpty, map, round, get } from 'lodash';
+import { isEmpty, map, round } from 'lodash';
+import { useSelector } from 'react-redux';
 import { Modal, Tag } from 'antd';
 import SortSelector from '../../components/SortSelector/SortSelector';
 import { sortDebtObjsData, getCurrentUSDPrice, payablesFilterData } from '../rewardsHelper';
 import FilterModal from '../FilterModal';
 import { PATH_NAME_PAYABLES } from '../../../common/constants/rewards';
 import PaymentList from '../Payment/PaymentList';
+import { getTokenRatesInUSD } from '../../../store/walletStore/walletSelectors';
 
 import './Debts.less';
 
@@ -19,11 +21,16 @@ const Debts = ({
   setPayablesFilterValue,
   handleLoadingMore,
   loading,
+  payoutToken,
 }) => {
   const [sort, setSort] = useState('amount');
   const [sortedDebtObjsData, setSortedDebtObjsData] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-
+  const currentUSDPrice =
+    payoutToken === 'HIVE'
+      ? getCurrentUSDPrice()
+      : useSelector(state => getTokenRatesInUSD(state, payoutToken));
+  const payable = debtObjsData?.payable || debtObjsData?.totalPayable;
   const handleSortChange = sortBy => {
     const sortedData = sortDebtObjsData(debtObjsData.histories, sortBy);
 
@@ -54,8 +61,6 @@ const Debts = ({
 
   const renderData = getRenderData();
 
-  const currentUSDPrice = getCurrentUSDPrice();
-
   const createFilterData = () =>
     componentLocation === PATH_NAME_PAYABLES
       ? { payables: payablesFilterData(componentLocation) }
@@ -70,11 +75,8 @@ const Debts = ({
               id: 'debts_total',
               defaultMessage: 'Total',
             })}
-            : {get(debtObjsData, 'payable') && round(get(debtObjsData, 'payable'), 2)}
-            {' HIVE '}
-            {currentUSDPrice && debtObjsData.payable
-              ? `($${round(currentUSDPrice * debtObjsData.payable, 2)})`
-              : ''}
+            : {round(payable, 2)} {payoutToken}{' '}
+            {currentUSDPrice && payable ? `($${round(currentUSDPrice * payable, 2)})` : ''}
           </div>
         </div>
         <div className="Debts__sort">{sortSelector}</div>
@@ -109,6 +111,7 @@ const Debts = ({
           componentLocation={componentLocation}
           handleLoadingMore={handleLoadingMore}
           loading={loading}
+          currency={payoutToken}
         />
       </div>
       <Modal
@@ -137,6 +140,7 @@ Debts.propTypes = {
   intl: PropTypes.shape().isRequired,
   debtObjsData: PropTypes.shape().isRequired,
   componentLocation: PropTypes.string.isRequired,
+  payoutToken: PropTypes.string,
   activeFilters: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   setPayablesFilterValue: PropTypes.func,
   handleLoadingMore: PropTypes.func,
@@ -147,6 +151,7 @@ Debts.defaultProps = {
   setPayablesFilterValue: () => {},
   handleLoadingMore: () => {},
   loading: false,
+  payoutToken: 'HIVE',
 };
 
 export default injectIntl(Debts);

@@ -20,6 +20,7 @@ import { convertToRaw, EditorState, genKey, Modifier, SelectionState } from 'dra
 import { Editor, Range } from 'slate';
 
 import { Block, createEditorState, Entity } from '../../client/components/EditorExtended';
+import { getObjectName } from './wObjectHelper';
 
 const mockPhoto = '📷';
 
@@ -87,6 +88,28 @@ export const getLinkedObjects = contentStateRaw => {
 export const getReviewTitle = (campaignData, linkedObjects, body, altTitle) => {
   const firstTitle = get(campaignData, 'requiredObject.name', '');
   const secondTitle = get(campaignData, 'secondaryObject.name', '');
+  const requiredObj = get(campaignData, 'requiredObject', {});
+  const secondObj = get(campaignData, 'secondaryObject', {});
+  const reviewTitle = `Review: ${firstTitle}, ${secondTitle}`;
+
+  const topics = [];
+
+  if (requiredObj.object_type === 'hashtag' || secondObj.object_type === 'hashtag') {
+    topics.push(requiredObj.author_permlink || secondObj.author_permlink);
+  }
+
+  return {
+    draftContent: {
+      body,
+      title: altTitle || reviewTitle,
+    },
+    topics,
+  };
+};
+
+export const getReviewTitleNew = (campaignData, linkedObjects, body, altTitle) => {
+  const firstTitle = getObjectName(campaignData.requiredObject);
+  const secondTitle = getObjectName(campaignData.secondaryObject);
   const requiredObj = get(linkedObjects, '[0]', {});
   const secondObj = get(linkedObjects, '[1]', {});
   const reviewTitle = `Review: ${firstTitle}, ${secondTitle}`;

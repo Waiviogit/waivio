@@ -335,7 +335,7 @@ class CreateRewards extends React.Component {
     },
 
     handleAddPageObject: obj => {
-      this.setState({ pageObjects: [obj] }, () =>
+      this.setState({ pageObjects: [...this.state.pageObjects, obj] }, () =>
         this.props.form.setFieldsValue({ agreement: this.state.pageObjects }),
       );
     },

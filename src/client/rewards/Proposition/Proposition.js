@@ -352,7 +352,6 @@ const Proposition = props => {
         isAuth={props.isAuth}
         authorizedUserName={authorizedUserName}
         removeToggleFlag={removeToggleFlag}
-        isOpenWriteReviewModal={props.isOpenWriteReviewModal}
       />
     </div>
   );

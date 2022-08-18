@@ -387,25 +387,28 @@ export const sortDebtObjsData = (items, sortBy) => {
 export const getProcessingFee = data => {
   if (!data || isEmpty(data)) return null;
   const amounts = {
-    share: get(data, ['details', 'commissionWeight']) || '',
+    share: get(data, ['details', 'commissionWeight']) || get(data, 'commission'),
     hive: get(data, ['amount']) || '',
-    usd: get(data, ['details', 'payableInDollars']) || '',
+    usd: get(data, ['details', 'payableInDollars']) || get(data, 'payableInUSD') || '',
   };
 
   switch (data.type) {
     case 'index_fee':
+    case 'indexFee':
       return {
         name: 'Rewards indexing',
         account: 'waivio.index',
         ...amounts,
       };
     case 'referral_server_fee':
+    case 'referralServerFee':
       return {
         name: 'Referral',
         account: data.userName,
         ...amounts,
       };
     case 'campaign_server_fee':
+    case 'campaignServerFee':
       return {
         name: 'Campaign management',
         account: 'waivio.campaigns',
@@ -417,7 +420,7 @@ export const getProcessingFee = data => {
 };
 
 export const payablesFilterData = location => {
-  if (location.pathname === PATH_NAME_PAYABLES) {
+  if (location?.pathname === PATH_NAME_PAYABLES) {
     return [
       {
         filterName: 'days',

@@ -273,7 +273,7 @@ export const reserveProposition = permlink => async (
       .then(async () => {
         busyAPI.instance.sendAsync(subscribeTypes.subscribeCampaignAssign, [username, permlink]);
         busyAPI.instance.subscribe((datad, j) => {
-          if (j?.result?.subscribeAssign && j?.result?.username === username) {
+          if (j?.result?.success && j?.result?.username === username) {
             resolve();
           }
         });

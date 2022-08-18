@@ -1152,7 +1152,7 @@
   "account": "Account",
   "share": "Share",
   "usd": "USD",
-  "exchange_rate": "The exchange rate is recorded at the time of reservation of the reward (1 HIVE = {reservationRate}).",
+  "exchange_rate": "The exchange rate is recorded at the time of reservation of the reward (1 {payoutToken} = {reservationRate}).",
   "only_upvotes_from_registered_accounts": "Only upvotes from registered accounts",
   "processing_fees_are_paid_by_campaign_sponsor": "Processing fees are paid by campaign sponsor in addition to the user rewards.",
   "posted_on": "posted on",

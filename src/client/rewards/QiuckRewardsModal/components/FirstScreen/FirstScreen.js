@@ -42,7 +42,6 @@ const ModalFirstScreen = props => {
         props.getEligibleRewardsList();
       } else {
         props.getEligibleRewardsListWithRestaurant(props.selectedRestaurant, limit);
-        setHasMore(true);
       }
     }
   }, [props.isShow]);

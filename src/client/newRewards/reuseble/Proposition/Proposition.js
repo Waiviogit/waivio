@@ -24,6 +24,7 @@ const Proposition = ({ proposition, type }) => {
         rewardPrice={proposition.rewardInUSD}
         payoutToken={proposition.payoutToken}
         isReserved={propositionType === 'reserved'}
+        passedParent={proposition.requiredObject}
       />
       <PropositionFooter
         type={propositionType}
@@ -34,7 +35,7 @@ const Proposition = ({ proposition, type }) => {
       />
       {openDetails && (
         <DetailsModal
-          proposition={proposition}
+          proposition={{ ...proposition, reserved: propositionType === 'reserved' }}
           isModalDetailsOpen={openDetails}
           toggleModal={() => setOpenDitails(!openDetails)}
           reserveOnClickHandler={() => {}}
@@ -57,6 +58,7 @@ Proposition.propTypes = {
     object: PropTypes.shape({
       author_permlink: PropTypes.string,
     }),
+    requiredObject: PropTypes.shape(),
     requirements: PropTypes.shape({
       minPhotos: PropTypes.string,
     }),

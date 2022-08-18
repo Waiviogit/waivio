@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { injectIntl } from 'react-intl';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { map, reduce, get } from 'lodash';
 import moment from 'moment';
 import { convertDigits, formatDate } from '../../rewardsHelper';
@@ -11,11 +11,13 @@ import { getReport } from '../../../../waivioApi/ApiClient';
 import { setDataForSingleReport } from '../../../../store/rewardsStore/rewardsActions';
 import { TYPE } from '../../../../common/constants/rewards';
 import { getObjectName } from '../../../../common/helpers/wObjectHelper';
+import { getBeneficiariesUsers } from '../../../../store/searchStore/searchSelectors';
 
 import './PaymentTable.less';
 
 const PaymentTableRow = ({ intl, sponsor, isReports, reservationPermlink }) => {
   const [isModalReportOpen, setModalReportOpen] = useState(false);
+  const currBenefis = useSelector(getBeneficiariesUsers);
   const getConvertDigits = obj =>
     obj.type === 'transfer' ? `-${convertDigits(obj.amount)}` : convertDigits(obj.amount);
   const dispatch = useDispatch();
@@ -23,7 +25,7 @@ const PaymentTableRow = ({ intl, sponsor, isReports, reservationPermlink }) => {
     const requestParams = {
       guideName: sponsor.sponsor,
       userName: sponsor.userName,
-      reservationPermlink: sponsor.details.reservation_permlink,
+      reservationPermlink: sponsor?.details?.reservation_permlink || sponsor?.reviewPermlink,
     };
 
     getReport(requestParams)
@@ -35,7 +37,9 @@ const PaymentTableRow = ({ intl, sponsor, isReports, reservationPermlink }) => {
   };
 
   useEffect(() => {
-    if (reservationPermlink === sponsor.details.reservation_permlink) {
+    if (
+      reservationPermlink === (sponsor?.details?.reservation_permlink || sponsor?.reviewPermlink)
+    ) {
       toggleModalReport();
     }
   }, []);
@@ -43,9 +47,17 @@ const PaymentTableRow = ({ intl, sponsor, isReports, reservationPermlink }) => {
     if (isModalReportOpen) setModalReportOpen(!isModalReportOpen);
   };
 
-  const prymaryObjectName = getObjectName(get(sponsor, 'details.main_object', {}));
-  const reviewObjectName = getObjectName(get(sponsor, 'details.review_object', {}));
-  const beneficiaries = get(sponsor, ['details', 'beneficiaries']);
+  const prymaryObjectName = getObjectName(
+    get(sponsor, 'details.main_object', null) || sponsor?.mainObject,
+  );
+  const reviewObjectName = getObjectName(
+    get(sponsor, 'details.review_object', null) || sponsor?.reviewObject,
+  );
+
+  const beneficiaries = sponsor?.details
+    ? get(sponsor, ['details', 'beneficiaries'])
+    : [...(sponsor?.beneficiaries || []), ...currBenefis];
+
   const userWeight = `(${(10000 -
     reduce(beneficiaries, (amount, benef) => amount + benef.weight, 0)) /
     100}%)`;
@@ -137,7 +149,8 @@ const PaymentTableRow = ({ intl, sponsor, isReports, reservationPermlink }) => {
     }
   }, [sponsor]);
 
-  const reviewPermlink = get(sponsor, ['details', 'review_permlink'], '');
+  const reviewPermlink =
+    get(sponsor, ['details', 'review_permlink'], '') || sponsor?.reviewPermlink;
   const review = intl.formatMessage({
     id: 'paymentTable_review',
     defaultMessage: `Review`,
@@ -151,23 +164,31 @@ const PaymentTableRow = ({ intl, sponsor, isReports, reservationPermlink }) => {
       <td>
         <div className="PaymentTable__action-wrap">
           <div className="PaymentTable__action-items">{getOperation()}</div>
-          {sponsor && sponsor.details && sponsor.details.main_object && (
+          {prymaryObjectName && (
             <div className="PaymentTable__action-items">
               <div>
                 {reviewPermlink ? (
-                  <Link to={`/@${sponsor.userName}/${sponsor.details.review_permlink}`}>
-                    {review}
-                  </Link>
+                  <Link to={`/@${sponsor.userName}/${reviewPermlink}`}>{review}</Link>
                 ) : (
                   review
                 )}
                 :{' '}
-                <Link to={`/object/${get(sponsor, ['details', 'main_object', 'author_permlink'])}`}>
+                <Link
+                  to={
+                    sponsor?.mainObject
+                      ? sponsor?.mainObject?.defaultShowLink
+                      : `/object/${get(sponsor, ['details', 'main_object', 'author_permlink'])}`
+                  }
+                >
                   {prymaryObjectName}
                 </Link>
                 ,{' '}
                 <Link
-                  to={`/object/${get(sponsor, ['details', 'review_object', 'author_permlink'])}`}
+                  to={
+                    sponsor?.reviewObject
+                      ? sponsor?.reviewObject?.defaultShowLink
+                      : `/object/${get(sponsor, ['details', 'review_object', 'author_permlink'])}`
+                  }
                 >
                   {reviewObjectName}
                 </Link>
@@ -206,7 +227,8 @@ const PaymentTableRow = ({ intl, sponsor, isReports, reservationPermlink }) => {
           <React.Fragment>
             <p>
               <Link
-                to={`/@${sponsor.userName}/${get(sponsor, ['details', 'reservation_permlink'])}`}
+                to={`/@${sponsor.userName}/${get(sponsor, ['details', 'reservation_permlink']) ||
+                  sponsor?.reservationPermlink}`}
               >
                 {intl.formatMessage({
                   id: 'paymentTable_reservation',
@@ -228,6 +250,7 @@ const PaymentTableRow = ({ intl, sponsor, isReports, reservationPermlink }) => {
           isModalReportOpen={isModalReportOpen}
           toggleModal={closeModalReport}
           sponsor={sponsor}
+          reservPermlink={reservationPermlink}
         />
       </td>
       <td>{sponsor.amount ? getConvertDigits(sponsor) : 0}</td>

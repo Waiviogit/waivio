@@ -5,6 +5,8 @@ import { remarkToSlate } from 'remark-slate-transformer';
 import SteemEmbed from '../../../../../vendor/embedMedia';
 import { addSpaces } from '../../../../../../common/helpers/editorHelper';
 
+const sanitizeRemark = body => body.replace(/<center>(.*)<\/center>/g, '$1');
+
 export const defaultNodeTypes = {
   paragraph: 'paragraph',
   block_quote: 'block_quote',
@@ -104,7 +106,7 @@ export const deserializeToSlate = body => {
     });
   let postParsed = [];
 
-  const _body = addSpaces(body);
+  const _body = addSpaces(sanitizeRemark(body));
 
   _body.split('\n\n\n').forEach(i => {
     const blocks = processor.processSync(i).result;

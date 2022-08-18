@@ -43,7 +43,7 @@ import {
 } from '../appStore/appSelectors';
 import { getAuthenticatedUser, getAuthenticatedUserName } from '../authStore/authSelectors';
 import { getHiveBeneficiaryAccount, getLocale } from '../settingsStore/settingsSelectors';
-import { getObjectsByIds, getReviewCheckInfo } from '../../waivioApi/ApiClient';
+import { getCampaign, getObjectsByIds, getReviewCheckInfo } from '../../waivioApi/ApiClient';
 import {
   getCurrentLinkPermlink,
   getCurrentLoadObjects,
@@ -55,6 +55,7 @@ import {
   updatedHideObjectsPaste,
   getLinkedObjects as getLinkedObjectsHelper,
   checkCursorInSearchSlate,
+  getReviewTitleNew,
 } from '../../common/helpers/editorHelper';
 import {
   getCurrentDraft,
@@ -319,7 +320,7 @@ export function createPost(postData, beneficiaries, isReview, campaign) {
   return (dispatch, getState, { steemConnectAPI }) => {
     if (isReview && campaign) {
       // eslint-disable-next-line no-param-reassign
-      postData.body += `\n***\nThis review was sponsored in part by ${campaign.alias} ([@${campaign.guideName}](/@${campaign.guideName}))`;
+      postData.body += `\n***\nThis review was sponsored in part by [@${campaign.guideName}](/@${campaign.guideName})`;
     }
 
     const host = getCurrentHost(getState()).slice(7);
@@ -521,6 +522,49 @@ export const reviewCheckInfo = (
   };
 };
 
+export const getCampaignInfo = ({ campaignId }, intl, needReviewTitle = false) => {
+  return (dispatch, getState) => {
+    const state = getState();
+    const authUserName = getAuthenticatedUserName(state);
+    const linkedObjects = getLinkedObjects(state);
+    const draftBody = getEditorDraftBody(state);
+
+    return getCampaign(authUserName, campaignId)
+      .then(campaignData => {
+        const draftId = new URLSearchParams(getQueryString(state)).get('draft');
+        const currDraft = getCurrentDraft(state, { draftId });
+        const reviewedTitle = needReviewTitle
+          ? getReviewTitleNew(campaignData, linkedObjects, draftBody, get(currDraft, 'title', ''))
+          : {};
+
+        const updatedEditorData = {
+          ...reviewedTitle,
+          campaign: campaignData,
+        };
+
+        dispatch(setUpdatedEditorData(updatedEditorData));
+        dispatch(firstParseLinkedObjects(updatedEditorData.draftContent));
+        dispatch(
+          saveDraft(draftId, intl, {
+            content: updatedEditorData.draftContent.body,
+            titleValue: updatedEditorData.draftContent.title,
+          }),
+        );
+      })
+      .catch(error => {
+        message.error(
+          intl.formatMessage(
+            {
+              id: 'imageSetter_link_is_already_added',
+              defaultMessage: `Failed to get campaign data: {error}`,
+            },
+            { error },
+          ),
+        );
+      });
+  };
+};
+
 export const buildPost = (draftId, data = {}, isEditPost) => (dispatch, getState) => {
   const state = getState();
   const host = getCurrentHost(state);
@@ -576,7 +620,7 @@ export const buildPost = (draftId, data = {}, isEditPost) => (dispatch, getState
       .filter(obj => get(objPercentage, `[${obj._id}].percent`, 0) > 0)
       .map(obj => ({
         object_type: obj.object_type,
-        objectName: getObjectName(obj),
+        name: getObjectName(obj),
         author_permlink: obj.author_permlink,
         percent: get(objPercentage, [obj._id, 'percent']),
       })),

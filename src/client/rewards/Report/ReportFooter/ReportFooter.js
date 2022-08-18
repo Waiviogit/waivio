@@ -5,11 +5,16 @@ import { Button } from 'antd';
 import { useSelector } from 'react-redux';
 import { get, isEmpty, map, round } from 'lodash';
 import { getSingleReportData } from '../../../../store/rewardsStore/rewardsSelectors';
+import { getCurrentUSDPrice } from '../../rewardsHelper';
+import { getTokenRatesInUSD } from '../../../../store/walletStore/walletSelectors';
 
-const ReportFooter = ({ intl, toggleModal, currencyInfo }) => {
-  const singleReportData = useSelector(getSingleReportData);
-  const reservationRate = get(singleReportData, ['histories', '0', 'details', 'hiveCurrency']);
+const ReportFooter = ({ intl, toggleModal, currencyInfo, reportDetails, payoutToken }) => {
+  const singleReportData = reportDetails || useSelector(getSingleReportData);
   const sponsor = get(singleReportData, ['sponsor', 'name']);
+  const currentUSDPrice =
+    payoutToken === 'HIVE'
+      ? getCurrentUSDPrice()
+      : useSelector(state => getTokenRatesInUSD(state, payoutToken));
 
   return (
     <div className="Report__modal-footer">
@@ -20,12 +25,13 @@ const ReportFooter = ({ intl, toggleModal, currencyInfo }) => {
             {
               id: 'exchange_rate',
               defaultMessage:
-                'The exchange rate is recorded at the time of reservation of the reward (1 HIVE = {reservationRate}).',
+                'The exchange rate is recorded at the time of reservation of the reward (1 {payoutToken} = {reservationRate}).',
             },
             {
               reservationRate:
-                `${round(reservationRate * currencyInfo.rate, 3)} ${currencyInfo.type}` ||
+                `${round(currentUSDPrice * currencyInfo.rate, 3)} ${currencyInfo.type}` ||
                 'N/A USD',
+              payoutToken,
             },
           )}
         </div>
@@ -78,6 +84,8 @@ ReportFooter.propTypes = {
     type: PropTypes.string,
     rate: PropTypes.number,
   }).isRequired,
+  reportDetails: PropTypes.shape().isRequired,
+  payoutToken: PropTypes.string.isRequired,
 };
 
 export default injectIntl(ReportFooter);

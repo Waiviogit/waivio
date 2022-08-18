@@ -1132,7 +1132,7 @@
   "account": "Счет",
   "share": "Доля",
   "usd": "USD",
-  "exchange_rate": "Обменный курс записывается в момент резервирования вознаграждения (1 HIVE = {currentUSDPrice}).",
+  "exchange_rate": "Обменный курс записывается в момент резервирования вознаграждения (1 {payoutToken} = {currentUSDPrice}).",
   "only_upvotes_from_registered_accounts": "Только выплаты с зарегистрированных аккаунтов",
   "processing_fees_are_paid_by_campaign_sponsor": "Сборы за обработку оплачиваются спонсором кампании в дополнение к вознаграждениям пользователей.",
   "posted_on": "опубликовано",

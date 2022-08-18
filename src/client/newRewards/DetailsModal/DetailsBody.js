@@ -16,6 +16,7 @@ const DetailsModalBody = ({ proposition, requirements, agreementObjects }) => {
   const getClassForCurrCreteria = creteria => classNames({ 'criteria-row__required': !creteria });
   const rate = useSelector(getRate);
   const rewardFund = useSelector(getRewardFund);
+  const requiredObject = proposition?.object?.parent || proposition.requiredObject;
   const minExpertise = getMinExpertise({
     campaignMinExpertise: proposition?.userRequirements?.minExpertise,
     rewardFundRecentClaims: rewardFund.recent_claims,
@@ -27,7 +28,7 @@ const DetailsModalBody = ({ proposition, requirements, agreementObjects }) => {
     <div className="Details__text-wrap">
       {!proposition?.reserved && (
         <React.Fragment>
-          <div className="Details__text fw6 mv3">User eligibility requirements::</div>
+          <div className="Details__text fw6 mv3">User eligibility requirements:</div>
           <div className="Details__text mv3">
             Only users who meet all eligibility criteria can participate in this rewards campaign.
           </div>
@@ -57,8 +58,8 @@ const DetailsModalBody = ({ proposition, requirements, agreementObjects }) => {
                   Have not received a reward from
                   <Link to={`/@${proposition?.guideName}`}>{` @${proposition?.guideName} `}</Link>
                   for reviewing
-                  <Link className="nowrap" to={proposition?.object?.parent?.defaultShowLink}>
-                    {` ${getObjectName(proposition?.object?.parent)} `}
+                  <Link className="nowrap" to={requiredObject?.defaultShowLink}>
+                    {` ${getObjectName(requiredObject)} `}
                   </Link>
                   in the last {proposition?.frequencyAssign} days.
                 </div>
@@ -108,11 +109,8 @@ const DetailsModalBody = ({ proposition, requirements, agreementObjects }) => {
           </li>
           <li>
             <span className="nowrap">Link to</span>
-            <Link
-              className="ml1 Details__container"
-              to={proposition?.object?.parent?.defaultShowLink}
-            >
-              {getObjectName(proposition?.object?.parent)}
+            <Link className="ml1 Details__container" to={requiredObject?.defaultShowLink}>
+              {getObjectName(requiredObject)}
             </Link>
             ;
           </li>
@@ -204,6 +202,7 @@ DetailsModalBody.propTypes = {
       receiptPhoto: PropTypes.bool,
       minPhotos: PropTypes.number,
     }),
+    requiredObject: PropTypes.shape({}),
     userRequirements: PropTypes.shape({
       minPhotos: PropTypes.number,
       minPosts: PropTypes.number,

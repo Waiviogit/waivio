@@ -11,7 +11,6 @@ import './PaymentCard.less';
 
 const PaymentCard = props => {
   const name = props.paymentInfo.userName || props.paymentInfo.guideName;
-
   const notPayedPeriodClassList = classNames('PaymentCard__notPayedPeriod', {
     'PaymentCard__notPayedPeriod--expired': props.paymentInfo.notPayedPeriod >= 21,
   });
@@ -41,7 +40,12 @@ const PaymentCard = props => {
           <span className={notPayedPeriodClassList}>{props.paymentInfo.notPayedPeriod}d</span>
         )}
         <div className="PaymentCard__content-name-wrap-row-pay">
-          <TransferButton payable={props.paymentInfo.payable} name={name} match={props.match} />
+          <TransferButton
+            payable={props.paymentInfo.payable}
+            name={name}
+            match={props.match}
+            currency={props.currency}
+          />
           <div className="PaymentCard__end-wrap-icon">
             <Tooltip
               title={props.intl.formatMessage(
@@ -77,6 +81,7 @@ PaymentCard.propTypes = {
   }),
   history: PropTypes.shape().isRequired,
   path: PropTypes.string.isRequired,
+  currency: PropTypes.string.isRequired,
   match: PropTypes.shape().isRequired,
 };
 

@@ -49,6 +49,7 @@ const PaymentTable = ({ intl, sponsors, isReports, currency, reservationPermlink
             sponsor,
             isReports,
             reservationPermlink,
+            currency,
           }}
         />
       ))}
@@ -60,14 +61,12 @@ PaymentTable.propTypes = {
   intl: PropTypes.shape().isRequired,
   sponsors: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   isReports: PropTypes.bool,
-  isHive: PropTypes.bool,
   reservationPermlink: PropTypes.string,
   currency: PropTypes.string,
 };
 
 PaymentTable.defaultProps = {
   isReports: false,
-  isHive: false,
   reservationPermlink: '',
   currency: 'HIVE',
 };
