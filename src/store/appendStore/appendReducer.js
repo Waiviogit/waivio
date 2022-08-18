@@ -32,6 +32,12 @@ export default (state = defaultState, action) => {
         fields: [],
       };
 
+    case appendActions.APPEND_WAIVIO_OBJECT.SUCCESS:
+      return {
+        ...state,
+        loading: false,
+      };
+
     case appendActions.GET_OBJECT_UPDATES.SUCCESS: {
       return {
         ...state,
