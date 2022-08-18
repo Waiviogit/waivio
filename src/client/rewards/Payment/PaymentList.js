@@ -32,6 +32,7 @@ const PaymentList = props => {
               key={name}
               paymentInfo={debtObjData}
               path={`${location.pathname}/@${name}`}
+              currency={props.currency}
             />
           );
         })}
@@ -44,6 +45,7 @@ PaymentList.propTypes = {
   debtObjsData: PropTypes.shape().isRequired,
   renderData: PropTypes.arrayOf().isRequired,
   handleLoadingMore: PropTypes.func.isRequired,
+  currency: PropTypes.string.isRequired,
   loading: PropTypes.bool,
 };
 

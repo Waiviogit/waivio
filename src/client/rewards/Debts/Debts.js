@@ -111,6 +111,7 @@ const Debts = ({
           componentLocation={componentLocation}
           handleLoadingMore={handleLoadingMore}
           loading={loading}
+          currency={payoutToken}
         />
       </div>
       <Modal

@@ -4,13 +4,17 @@ import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { round } from 'lodash';
 import { WAIVIO_PARENT_PERMLINK } from '../../../common/constants/waivio';
-import { HIVE } from '../../../common/constants/cryptos';
 import { getMemo } from '../rewardsHelper';
 import Action from '../../components/Button/Action';
 import { openTransfer } from '../../../store/walletStore/walletActions';
 import { openLinkHiveAccountModal } from '../../../store/settingsStore/settingsActions';
 import { guestUserRegex } from '../../../common/helpers/regexHelpers';
-import { PATH_NAME_RECEIVABLES, PATH_NAME_PAYABLES } from '../../../common/constants/rewards';
+import {
+  PATH_NAME_RECEIVABLES,
+  PATH_NAME_PAYABLES,
+  PATH_NAME_RECEIVABLES_NEW,
+  PATH_NAME_PAYABLES_NEW,
+} from '../../../common/constants/rewards';
 import { isGuestUser } from '../../../store/authStore/authSelectors';
 import { getHiveBeneficiaryAccount } from '../../../store/settingsStore/settingsSelectors';
 
@@ -23,12 +27,14 @@ const TransferButton = ({
   hiveBeneficiaryAccount,
   openLinkModal,
   openTransf,
+  currency,
 }) => {
   const isReceiverGuest = guestUserRegex.test(name);
   const app = WAIVIO_PARENT_PERMLINK;
-  const currency = HIVE.symbol;
   const payableForRender = Math.abs(payable);
-  const pathRecivables = match.path === PATH_NAME_RECEIVABLES;
+  const pathRecivables =
+    match.path === PATH_NAME_RECEIVABLES || match.path === PATH_NAME_RECEIVABLES_NEW;
+  const pathPaybles = match.path === PATH_NAME_PAYABLES || match.path === PATH_NAME_PAYABLES_NEW;
   const isOverpayment = payable < 0;
   const memo = getMemo(isReceiverGuest, pathRecivables, isOverpayment);
   const handleClick = () => {
@@ -51,11 +57,11 @@ const TransferButton = ({
             id: 'pay',
             defaultMessage: 'Pay',
           })}
-          {` ${round(payableForRender, 3)} HIVE`}
+          {` ${round(payableForRender, 3)} ${currency}`}
         </Action>
       )}
-      {pathRecivables && payable >= 0 && <span>{` ${round(payable, 3)} HIVE`}</span>}
-      {match.path === PATH_NAME_PAYABLES && (
+      {pathRecivables && payable >= 0 && <span>{` ${round(payable, 3)} ${currency}`}</span>}
+      {pathPaybles && (
         <Action
           className="WalletSidebar__transfer"
           primary={payable > 0}
@@ -66,7 +72,7 @@ const TransferButton = ({
             id: 'pay',
             defaultMessage: 'Pay',
           })}
-          {` ${round(payable, 3)} HIVE`}
+          {` ${round(payable, 3)} ${currency}`}
         </Action>
       )}
     </React.Fragment>
@@ -77,6 +83,7 @@ TransferButton.propTypes = {
   intl: PropTypes.shape().isRequired,
   payable: PropTypes.number.isRequired,
   name: PropTypes.string.isRequired,
+  currency: PropTypes.string.isRequired,
   match: PropTypes.shape().isRequired,
   isGuest: PropTypes.bool,
   hiveBeneficiaryAccount: PropTypes.string,

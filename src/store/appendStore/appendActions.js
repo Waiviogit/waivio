@@ -162,6 +162,7 @@ export const appendObject = (postData, { follow, isLike, votePercent } = {}) => 
 
       busyAPI.instance.sendAsync(subscribeMethod, [voter, blockNumber, subscribeTypes.posts]);
       busyAPI.instance.subscribeBlock(subscribeTypes.posts, blockNumber, websocketCallback);
+      dispatch({ type: APPEND_WAIVIO_OBJECT.SUCCESS });
 
       return res;
     })

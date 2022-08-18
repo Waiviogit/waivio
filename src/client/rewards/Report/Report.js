@@ -2,27 +2,37 @@ import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { Modal } from 'antd';
-import { connect } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
+import { useLocation } from 'react-router';
+
 import { getCurrentCurrency } from '../../../store/appStore/appSelectors';
 import ReportHeader from './ReportHeader/ReportHeader';
 import ReportFooter from './ReportFooter/ReportFooter';
 import ReportTableRewards from './ReportTable/ReportTableRewards/ReportTableRewards';
 import ReportTableFees from './ReportTable/ReportTableFees/ReportTableFees';
-import './Report.less';
 import { getReportByUser } from '../../../waivioApi/ApiClient';
+import { getBeneficiariesUsers } from '../../../store/searchStore/searchSelectors';
+
+import './Report.less';
 
 const Report = ({ intl, toggleModal, isModalReportOpen, currencyInfo, sponsor }) => {
   const [reportDetails, setReportDetails] = useState();
+  const location = useLocation();
   const payoutToken = reportDetails ? 'WAIV' : 'HIVE';
+  const isNewReward = location.pathname.includes('rewards-new');
+  const currBenefis = useSelector(getBeneficiariesUsers);
 
   useEffect(() => {
-    if (isModalReportOpen && sponsor) {
+    if (isModalReportOpen && isNewReward) {
       getReportByUser({
         userName: sponsor.userName,
         guideName: sponsor.guideName,
         reviewPermlink: sponsor.reviewPermlink,
       }).then(res => {
-        setReportDetails(res);
+        setReportDetails({
+          ...res,
+          histories: res.histories.map(hist => ({ ...hist, beneficiaries: currBenefis })),
+        });
       });
     }
   }, [isModalReportOpen]);
@@ -41,7 +51,7 @@ const Report = ({ intl, toggleModal, isModalReportOpen, currencyInfo, sponsor })
       closable
       onCancel={toggleModal}
       maskClosable={false}
-      visible={sponsor ? isModalReportOpen && reportDetails : isModalReportOpen}
+      visible={isNewReward ? isModalReportOpen && reportDetails : isModalReportOpen}
       wrapClassName="Report"
       footer={null}
       width={768}

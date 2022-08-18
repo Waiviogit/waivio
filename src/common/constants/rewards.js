@@ -54,12 +54,14 @@ export const PATH_NAME_MESSAGES = '/rewards/messages';
 export const PATH_NAME_HISTORY = '/rewards/history';
 export const PATH_NAME_ACTIVE = '/rewards/active';
 export const PATH_NAME_RECEIVABLES = '/rewards/receivables';
+export const PATH_NAME_RECEIVABLES_NEW = '/rewards-new/receivables';
 export const PATH_NAME_DISCOVER = '/discover';
 export const PATH_NAME_CREATE = '/rewards/create';
 export const PATH_NAME_MATCH_BOT = '/rewards/match-bot';
 export const PATH_NAME_MANAGE = '/rewards/manage';
 export const NEW_PATH_NAME_MANAGE = '/rewards-new/manage';
 export const PATH_NAME_PAYABLES = '/rewards/payables';
+export const PATH_NAME_PAYABLES_NEW = '/rewards-new/payables';
 export const PATH_NAME_BLACKLIST = '/rewards/blacklist';
 export const PATH_NAME_ARBITRAGE = '/rewards/rebalancing';
 

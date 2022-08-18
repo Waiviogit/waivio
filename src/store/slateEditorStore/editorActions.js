@@ -620,8 +620,8 @@ export const buildPost = (draftId, data = {}, isEditPost) => (dispatch, getState
       .filter(obj => get(objPercentage, `[${obj._id}].percent`, 0) > 0)
       .map(obj => ({
         object_type: obj.object_type,
-        objectName: getObjectName(obj),
-        author_permlink: obj.defaultShowLink,
+        name: getObjectName(obj),
+        author_permlink: obj.author_permlink,
         percent: get(objPercentage, [obj._id, 'percent']),
       })),
   };
