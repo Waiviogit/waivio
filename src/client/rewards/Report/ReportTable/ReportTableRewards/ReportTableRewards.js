@@ -9,10 +9,11 @@ import { getSingleReportData } from '../../../../../store/rewardsStore/rewardsSe
 
 import './ReportTableRewards.less';
 
-const ReportTableRewards = ({ intl, currencyInfo }) => {
-  const singleReportData = useSelector(getSingleReportData);
+const ReportTableRewards = ({ intl, currencyInfo, reportDetails, payoutToken }) => {
+  const singleReportData = reportDetails || useSelector(getSingleReportData);
   const reportUserName = get(singleReportData, ['user', 'name']);
-  const getPayableInDollars = item => get(item, ['details', 'payableInDollars']);
+  const getPayableInDollars = item =>
+    get(item, ['details', 'payableInDollars']) || item?.payableInUSD;
   const filteredHistory = filter(
     singleReportData.histories,
     obj => obj.type === 'review' || obj.type === 'beneficiary_fee',
@@ -62,22 +63,14 @@ const ReportTableRewards = ({ intl, currencyInfo }) => {
             <th className="ReportTableRewards basicWidth">
               {intl.formatMessage({ id: 'shares', defaultMessage: `Shares` })}
             </th>
-            <th className="ReportTableRewards basicWidth">
-              {intl.formatMessage({ id: 'hive_power', defaultMessage: `Hive** Power` })}
-            </th>
-            <th className="ReportTableRewards basicWidth">
-              {intl
-                .formatMessage({
-                  id: 'hive',
-                  defaultMessage: 'HIVE',
-                })
-                .toUpperCase()}
-            </th>
+            <th className="ReportTableRewards basicWidth">{payoutToken}** Power</th>
+            <th className="ReportTableRewards basicWidth">{payoutToken}</th>
             <th className="ReportTableRewards basicWidth">
               {intl.formatMessage({
-                id: 'total_hive)',
-                defaultMessage: 'Total (HIVE)',
-              })}
+                id: 'total',
+                defaultMessage: 'Total',
+              })}{' '}
+              ({payoutToken})
             </th>
             <th className="ReportTableRewards basicWidth">
               {intl.formatMessage({
@@ -105,6 +98,8 @@ ReportTableRewards.propTypes = {
     type: PropTypes.string,
     rate: PropTypes.number,
   }).isRequired,
+  reportDetails: PropTypes.shape().isRequired,
+  payoutToken: PropTypes.string.isRequired,
 };
 
 export default injectIntl(ReportTableRewards);

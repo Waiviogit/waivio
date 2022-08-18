@@ -124,6 +124,7 @@ const routes = {
       path: [
         `/rewards-new/(details|duplicate|create})/:campaignId?`,
         `/rewards-new/(all|eligible)/:requiredObject?`,
+        `/rewards-new/(payables|receivables)/@:userName`,
         `/rewards-new/(${URL.NEW_REWARDS.tabs})`,
       ],
       pathScope: '/rewards-new',
@@ -168,6 +169,11 @@ const routes = {
           path: '/payables',
           exact: true,
           component: Views.Payables,
+        },
+        {
+          path: '/payables/@:userName',
+          exact: true,
+          component: Views.PayblesListByUser,
         },
       ],
     },

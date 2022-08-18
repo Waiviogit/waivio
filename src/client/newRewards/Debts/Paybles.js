@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { useSelector } from 'react-redux';
 import { useLocation } from 'react-router';
@@ -10,12 +9,14 @@ import Debts from '../../rewards/Debts/Debts';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 import RewardsFilters from '../Filters/Filters';
 
+import './DebtsList.less';
+
 const filterConfig = [
   { title: 'Receivables', type: 'days' },
   { title: '', type: 'payable' },
 ];
 
-const Payables = ({ currentSteemDollarPrice }) => {
+const Payables = () => {
   const [lenders, setLenders] = useState({});
   const [loading, setLoading] = useState(false);
   const location = useLocation();
@@ -60,29 +61,19 @@ const Payables = ({ currentSteemDollarPrice }) => {
   });
 
   return (
-    <React.Fragment>
-      <div className="">
+    <div className="DebtsList">
+      <div className="DebtsList__list">
         <Debts
           userName={authUserName}
-          currentSteemDollarPrice={currentSteemDollarPrice}
           debtObjsData={lenders}
           handleLoadingMore={handleLoadingMore}
           loading={loading}
+          payoutToken={'WAIV'}
         />
       </div>
-      <div className="">
-        <RewardsFilters config={filterConfig} getFilters={getFilters} onlyOne />
-      </div>
-    </React.Fragment>
+      <RewardsFilters config={filterConfig} getFilters={getFilters} onlyOne />
+    </div>
   );
-};
-
-Payables.propTypes = {
-  currentSteemDollarPrice: PropTypes.number,
-};
-
-Payables.defaultProps = {
-  currentSteemDollarPrice: 0,
 };
 
 export default injectIntl(Payables);

@@ -60,14 +60,12 @@ PaymentTable.propTypes = {
   intl: PropTypes.shape().isRequired,
   sponsors: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   isReports: PropTypes.bool,
-  isHive: PropTypes.bool,
   reservationPermlink: PropTypes.string,
   currency: PropTypes.string,
 };
 
 PaymentTable.defaultProps = {
   isReports: false,
-  isHive: false,
   reservationPermlink: '',
   currency: 'HIVE',
 };

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { Modal } from 'antd';
@@ -9,36 +9,72 @@ import ReportFooter from './ReportFooter/ReportFooter';
 import ReportTableRewards from './ReportTable/ReportTableRewards/ReportTableRewards';
 import ReportTableFees from './ReportTable/ReportTableFees/ReportTableFees';
 import './Report.less';
+import { getReportByUser } from '../../../waivioApi/ApiClient';
 
-const Report = ({ intl, toggleModal, isModalReportOpen, currencyInfo }) => (
-  <Modal
-    title={
-      <div className="Report__modal-title">
-        {intl.formatMessage({
-          id: 'paymentTable_report',
-          defaultMessage: 'Report',
-        })}
-      </div>
+const Report = ({ intl, toggleModal, isModalReportOpen, currencyInfo, sponsor }) => {
+  const [reportDetails, setReportDetails] = useState();
+  const payoutToken = reportDetails ? 'WAIV' : 'HIVE';
+
+  useEffect(() => {
+    if (isModalReportOpen && sponsor) {
+      getReportByUser({
+        userName: sponsor.userName,
+        guideName: sponsor.guideName,
+        reviewPermlink: sponsor.reviewPermlink,
+      }).then(res => {
+        setReportDetails(res);
+      });
     }
-    zIndex={10000}
-    closable
-    onCancel={toggleModal}
-    maskClosable={false}
-    visible={isModalReportOpen}
-    wrapClassName="Report"
-    footer={null}
-    width={768}
-  >
-    <ReportHeader currencyInfo={currencyInfo} />
-    <ReportTableRewards currencyInfo={currencyInfo} />
-    <ReportTableFees currencyInfo={currencyInfo} />
-    <ReportFooter toggleModal={toggleModal} currencyInfo={currencyInfo} />
-  </Modal>
-);
+  }, [isModalReportOpen]);
+
+  return (
+    <Modal
+      title={
+        <div className="Report__modal-title">
+          {intl.formatMessage({
+            id: 'paymentTable_report',
+            defaultMessage: 'Report',
+          })}
+        </div>
+      }
+      zIndex={10000}
+      closable
+      onCancel={toggleModal}
+      maskClosable={false}
+      visible={sponsor ? isModalReportOpen && reportDetails : isModalReportOpen}
+      wrapClassName="Report"
+      footer={null}
+      width={768}
+    >
+      <ReportHeader
+        currencyInfo={currencyInfo}
+        reportDetails={reportDetails}
+        payoutToken={payoutToken}
+      />
+      <ReportTableRewards
+        currencyInfo={currencyInfo}
+        reportDetails={reportDetails}
+        payoutToken={payoutToken}
+      />
+      <ReportTableFees
+        currencyInfo={currencyInfo}
+        reportDetails={reportDetails}
+        payoutToken={payoutToken}
+      />
+      <ReportFooter
+        toggleModal={toggleModal}
+        currencyInfo={currencyInfo}
+        reportDetails={reportDetails}
+        payoutToken={payoutToken}
+      />
+    </Modal>
+  );
+};
 
 Report.propTypes = {
   intl: PropTypes.shape().isRequired,
   currencyInfo: PropTypes.shape().isRequired,
+  sponsor: PropTypes.shape().isRequired,
   toggleModal: PropTypes.func.isRequired,
   isModalReportOpen: PropTypes.bool.isRequired,
 };
