@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { injectIntl } from 'react-intl';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { map, reduce, get } from 'lodash';
 import moment from 'moment';
 import { convertDigits, formatDate } from '../../rewardsHelper';
@@ -13,9 +13,11 @@ import { TYPE } from '../../../../common/constants/rewards';
 import { getObjectName } from '../../../../common/helpers/wObjectHelper';
 
 import './PaymentTable.less';
+import { getBeneficiariesUsers } from '../../../../store/searchStore/searchSelectors';
 
 const PaymentTableRow = ({ intl, sponsor, isReports, reservationPermlink }) => {
   const [isModalReportOpen, setModalReportOpen] = useState(false);
+  const currBenefis = useSelector(getBeneficiariesUsers);
   const getConvertDigits = obj =>
     obj.type === 'transfer' ? `-${convertDigits(obj.amount)}` : convertDigits(obj.amount);
   const dispatch = useDispatch();
@@ -46,12 +48,15 @@ const PaymentTableRow = ({ intl, sponsor, isReports, reservationPermlink }) => {
   };
 
   const prymaryObjectName = getObjectName(
-    get(sponsor, 'details.main_object', {}) || sponsor?.mainObject,
+    get(sponsor, 'details.main_object', null) || sponsor?.mainObject,
   );
   const reviewObjectName = getObjectName(
-    get(sponsor, 'details.review_object', {}) || sponsor?.reviewObject,
+    get(sponsor, 'details.review_object', null) || sponsor?.reviewObject,
   );
-  const beneficiaries = get(sponsor, ['details', 'beneficiaries']) || sponsor?.beneficiaries;
+  const beneficiaries = get(sponsor, ['details', 'beneficiaries']) || [
+    ...sponsor?.beneficiaries,
+    ...currBenefis,
+  ];
   const userWeight = `(${(10000 -
     reduce(beneficiaries, (amount, benef) => amount + benef.weight, 0)) /
     100}%)`;
@@ -221,7 +226,7 @@ const PaymentTableRow = ({ intl, sponsor, isReports, reservationPermlink }) => {
           <React.Fragment>
             <p>
               <Link
-                to={`/@${sponsor.sponsor}/${get(sponsor, ['details', 'reservation_permlink']) ||
+                to={`/@${sponsor.userName}/${get(sponsor, ['details', 'reservation_permlink']) ||
                   sponsor?.reservationPermlink}`}
               >
                 {intl.formatMessage({

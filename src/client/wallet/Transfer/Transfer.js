@@ -555,7 +555,7 @@ export default class Transfer extends React.Component {
 
     const currToken = this.props.tokensList.find(token => token.symbol === this.state.currency);
 
-    return currToken.rate * amount * hiveRateInUsd;
+    return currToken?.rate * amount * hiveRateInUsd;
   };
 
   handleAmountChange = event => {

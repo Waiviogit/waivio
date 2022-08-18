@@ -49,6 +49,7 @@ const PaymentTable = ({ intl, sponsors, isReports, currency, reservationPermlink
             sponsor,
             isReports,
             reservationPermlink,
+            currency,
           }}
         />
       ))}

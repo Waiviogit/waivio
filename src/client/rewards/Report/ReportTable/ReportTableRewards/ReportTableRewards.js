@@ -16,14 +16,14 @@ const ReportTableRewards = ({ intl, currencyInfo, reportDetails, payoutToken }) 
     get(item, ['details', 'payableInDollars']) || item?.payableInUSD;
   const filteredHistory = filter(
     singleReportData.histories,
-    obj => obj.type === 'review' || obj.type === 'beneficiary_fee',
+    obj => obj.type === 'review' || obj.type === 'beneficiary_fee' || obj.type === 'beneficiaryFee',
   ).sort((a, b) => getPayableInDollars(b) - getPayableInDollars(a));
+
   const totalUSD = Number(
     filteredHistory.reduce((sum, benef) => sum + getPayableInDollars(benef), 0),
   );
   const totalAmount = filteredHistory.reduce((sum, benef) => sum + benef.amount, 0);
   const totalHive = Number(totalAmount);
-
   const beneficiaries = reduce(
     filteredHistory,
     (acc, obj) => {
