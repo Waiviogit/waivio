@@ -72,7 +72,7 @@ import {
 } from './editorSelectors';
 import { getCurrentLocation, getQueryString, getSuitableLanguage } from '../reducers';
 import { getObjectName, getObjectType } from '../../common/helpers/wObjectHelper';
-import { createPostMetadata, getObjectUrl } from '../../common/helpers/postHelpers';
+import { createPostMetadata, getObjectLink, getObjectUrl } from '../../common/helpers/postHelpers';
 import { createEditorState, Entity, fromMarkdown } from '../../client/components/EditorExtended';
 import { setObjPercents } from '../../common/helpers/wObjInfluenceHelper';
 import { extractLinks } from '../../common/helpers/parser';
@@ -622,6 +622,7 @@ export const buildPost = (draftId, data = {}, isEditPost) => (dispatch, getState
         object_type: obj.object_type,
         name: getObjectName(obj),
         author_permlink: obj.author_permlink,
+        defaultShowLink: obj.defaultShowLink,
         percent: get(objPercentage, [obj._id, 'percent']),
       })),
   };
@@ -662,9 +663,7 @@ export const handleObjectSelect = (object, withFocus, intl) => async (dispatch, 
   const separator = content.slice(-1) === '\n' ? '' : '\n';
   const draftContent = {
     title: titleValue,
-    body: `${content}${separator}[${objNameDisplay}](${getObjectUrl(
-      object.id || objPermlink,
-    )})&nbsp;\n`,
+    body: `${content}${separator}[${objNameDisplay}](${getObjectLink(object)})&nbsp;\n`,
   };
   const updatedStore = { content: draftContent.body, titleValue: draftContent.title };
 

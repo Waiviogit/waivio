@@ -11,8 +11,8 @@ export const getObjectName = (wobj = {}) =>
 
 export const getObjectTitle = (wobj = {}) => wobj.title || '';
 
-export const getObjectUrl = (wobj = {}) =>
-  get(wobj, 'defaultShowLink') || `/object/${wobj.author_permlink || wobj.permlink}`;
+export const getObjectUrlForLink = (wobj = {}) =>
+  get(wobj, 'defaultShowLink') || `/object/${wobj.author_permlink || wobj.permlink || wobj.id}`;
 
 export const getObjectAvatar = (wobj = {}) =>
   get(wobj, 'avatar', '') || get(wobj, ['parent', 'avatar'], '');

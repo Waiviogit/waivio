@@ -9,7 +9,7 @@ import Avatar from '../../../components/Avatar';
 import { getSingleReportData } from '../../../../store/rewardsStore/rewardsSelectors';
 
 import './ReportHeader.less';
-import { getObjectName, getObjectUrl } from '../../../../common/helpers/wObjectHelper';
+import { getObjectName, getObjectUrlForLink } from '../../../../common/helpers/wObjectHelper';
 
 const ReportHeader = ({ intl, currencyInfo, reportDetails, payoutToken }) => {
   const singleReportData = reportDetails || useSelector(getSingleReportData);
@@ -149,19 +149,19 @@ const ReportHeader = ({ intl, currencyInfo, reportDetails, payoutToken }) => {
           <span className="ReportHeader__campaignInfo-name">
             {intl.formatMessage({ id: 'links', defaultMessage: 'Links' })}:{' '}
           </span>
-          <a href={getObjectUrl(primaryObject)}>
+          <a href={getObjectUrlForLink(primaryObject)}>
             <span className="ReportHeader__campaignInfo-links">{`${getObjectName(
               primaryObject,
             )}, `}</span>
           </a>
           {!isEmpty(secondaryObjects) ? (
             map(secondaryObjects, object => (
-              <a key={object.permlink} href={getObjectUrl(object)}>
+              <a key={object.permlink} href={getObjectUrlForLink(object)}>
                 <span className="ReportHeader__campaignInfo-links">{object.name}</span>
               </a>
             ))
           ) : (
-            <a href={getObjectUrl(singleReportData?.secondaryObject)}>
+            <a href={getObjectUrlForLink(singleReportData?.secondaryObject)}>
               <span className="ReportHeader__campaignInfo-links">
                 {getObjectName(singleReportData?.secondaryObject)}
               </span>

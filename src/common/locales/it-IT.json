@@ -921,7 +921,7 @@
   "check_review_requirements_title": "Questa recensione non soddisfa alcuni dei requisiti formali.",
   "check_review_post_requirements": "Requisiti dei post",
   "check_review_author_requirements": "Requisiti per l'autore",
-  "check_review_minPhotos": "Minimo {minPhotos} foto originali di {secondaryObjectName}",
+  "check_review_minPhotos": "Minimo {minPhotos} foto originali di ",
   "check_review_secondaryObject": "Collegamento a {secondaryObjectName} : {secondaryObjectUrl}",
   "check_review_primaryObject": "Collegamento a {primaryObjectName} : {primaryObjectUrl}",
   "check_review_minExpertise": "Competenza complessiva minima: {minExpertise}",

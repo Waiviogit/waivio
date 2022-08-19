@@ -921,7 +921,7 @@
   "check_review_requirements_title": "이 검토는 일부 공식적인 요구 사항을 충족하지 않습니다.",
   "check_review_post_requirements": "포스트 요구 사항",
   "check_review_author_requirements": "저자 요구 사항",
-  "check_review_minPhotos": "최소 {minPhotos} 의 원본 사진 {secondaryObjectName}",
+  "check_review_minPhotos": "최소 {minPhotos} 의 원본 사진 ",
   "check_review_secondaryObject": "{secondaryObjectName} 링크 : {secondaryObjectUrl}",
   "check_review_primaryObject": "{primaryObjectName} 링크 : {primaryObjectUrl}",
   "check_review_minExpertise": "최소한의 전반적인 전문 지식 : {minExpertise}",

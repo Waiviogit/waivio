@@ -210,10 +210,13 @@ export const getAgreementObjects = objectDetails =>
       )}`
     : '';
 
-export const getMatchBots = objectDetails =>
-  !isEmpty(objectDetails.match_bots)
-    ? reduce(objectDetails.match_bots, (acc, bot) => `${acc}, <a href='/@${bot}'>${bot}</a>`, ' ')
+export const getMatchBots = objectDetails => {
+  const matchBots = objectDetails.match_bots || objectDetails.matchBots;
+
+  return !isEmpty(matchBots)
+    ? reduce(matchBots, (acc, bot) => `${acc}, <a href='/@${bot}'>${bot}</a>`, ' ')
     : '';
+};
 
 export const getUsersLegalNotice = objectDetails =>
   objectDetails.usersLegalNotice
@@ -322,6 +325,7 @@ export const getDetailsBody = ({
   const sponsor = `<p>Sponsor reserves the right to refuse the payment if review is suspected to be fraudulent, spam, poorly written or for other reasons as stated in the agreement.</p>`;
   const agreementObjects = getAgreementObjects(proposition);
   const matchBots = getMatchBots(proposition);
+
   const rewards = `<p><b>Reward:</b></p>
 <p>The amount of the reward is determined in HIVE at the time of reservation. The reward will be paid in the form of a combination of upvotes (Hive Power) and direct payments (liquid HIVE). Only upvotes from registered accounts (<a href='/@${guideName}'>${guideName}</a> ${matchBots}) count towards the payment of rewards. The value of all other upvotes is not subtracted from the specified amount of the reward.</p>`;
   const legal = `<p><b>Legal:</b></p>

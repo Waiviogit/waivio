@@ -148,10 +148,10 @@ class CreateRewards extends React.Component {
         campaign.status === 'expired' || moment(campaign.expiredAt).unix() < moment().unix();
       const isDuplicate = this.props.match.params?.[0] === 'duplicate';
       const isDisabled = campaign.status !== 'pending' && !isDuplicate;
+
       const authorPermlinks = [
         campaign.requiredObject,
         ...campaign.agreementObjects,
-        // ...campaign.matchBots,
         ...campaign.objects,
       ];
       const combinedObjects = await getObjectsByIds({
@@ -166,8 +166,8 @@ class CreateRewards extends React.Component {
       const secondaryObjects = combinedObjects.wobjects.filter(wobj =>
         includes(campaign.objects, wobj.author_permlink),
       );
-      const agreementObjects = combinedObjects.wobjects.find(
-        wobj => wobj.author_permlink === campaign.agreementObjects[0],
+      const agreementObjects = combinedObjects.wobjects.filter(wobj =>
+        campaign.agreementObjects.some(agreementObject => agreementObject === wobj.author_permlink),
       );
 
       const minExpertise = getMinExpertise({
@@ -189,7 +189,7 @@ class CreateRewards extends React.Component {
           reward: campaign.reward.toString(),
           primaryObject: values[0],
           secondaryObjectsList: values[1].map(obj => obj),
-          pageObjects: !isEmpty(values[2]) ? [values[2]] : [],
+          pageObjects: !isEmpty(values[2]) ? values[2] : [],
           sponsorsList: !isEmpty(sponsors) ? values[3] : [],
           reservationPeriod: campaign.countReservationDays,
           receiptPhoto: campaign.requirements.receiptPhoto,
@@ -219,7 +219,7 @@ class CreateRewards extends React.Component {
     const { rewardFund, rate } = this.props;
     const objects = map(data.secondaryObject, o => o.author_permlink);
     const agreementObjects = size(pageObjects) ? map(pageObjects, o => o.author_permlink) : [];
-    const matchBots = map(data.sponsorsList, o => o.account);
+    const matchBots = map(data.sponsorsList, o => o.account || o);
     const appName = apiConfig[process.env.NODE_ENV].appName || 'waivio';
     const minExpertise = getMinExpertisePrepared({
       minExpertise: data.minExpertise,
