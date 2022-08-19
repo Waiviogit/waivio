@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
-import { map, filter, get, reduce, round } from 'lodash';
+import { map, filter, get, reduce, round, capitalize } from 'lodash';
 import { useSelector } from 'react-redux';
 import ReportTableRewardsRow from '../ReportTableRewards/ReportTableRewardsRow';
 import ReportTableRewardsRowTotal from './ReportTableRewardsRowTotal';
@@ -66,10 +66,12 @@ const ReportTableRewards = ({ intl, currencyInfo, reportDetails, payoutToken }) 
             <th className="ReportTableRewards basicWidth">{payoutToken}** Power</th>
             <th className="ReportTableRewards basicWidth">{payoutToken}</th>
             <th className="ReportTableRewards basicWidth">
-              {intl.formatMessage({
-                id: 'total',
-                defaultMessage: 'Total',
-              })}{' '}
+              {capitalize(
+                intl.formatMessage({
+                  id: 'total',
+                  defaultMessage: 'Total',
+                }),
+              )}{' '}
               ({payoutToken})
             </th>
             <th className="ReportTableRewards basicWidth">
