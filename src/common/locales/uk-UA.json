@@ -921,7 +921,7 @@
   "check_review_requirements_title": "Цей огляд не відповідає деяким формальним вимогам.",
   "check_review_post_requirements": "Вимоги до посади",
   "check_review_author_requirements": "Вимоги до автора",
-  "check_review_minPhotos": "Мінімум {minPhotos} оригінальні фотографії {secondaryObjectName}",
+  "check_review_minPhotos": "Мінімум {minPhotos} оригінальні фотографії ",
   "check_review_secondaryObject": "Посилання на {secondaryObjectName} : {secondaryObjectUrl}",
   "check_review_primaryObject": "Посилання на {primaryObjectName} : {primaryObjectUrl}",
   "check_review_minExpertise": "Мінімальний загальний досвід: {minExpertise}",

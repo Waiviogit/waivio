@@ -21,7 +21,6 @@ export const reserveProposition = (proposition, username, history) => async (
   const rates = getTokenRatesInUSD(getState(), 'WAIV');
   const amount = round(proposition.rewardInUSD / rates, 3);
   const detailsBody = getNewDetailsBody(proposition);
-
   const commentOp = [
     'comment',
     {

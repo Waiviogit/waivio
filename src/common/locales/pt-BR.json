@@ -921,7 +921,7 @@
   "check_review_requirements_title": "Esta revisão não atende a alguns dos requisitos formais.",
   "check_review_post_requirements": "Requisitos de postagem",
   "check_review_author_requirements": "Requisitos do autor",
-  "check_review_minPhotos": "Mínimo de {minPhotos} fotos originais de {secondaryObjectName}",
+  "check_review_minPhotos": "Mínimo de {minPhotos} fotos originais de ",
   "check_review_secondaryObject": "Link para {secondaryObjectName} : {secondaryObjectUrl}",
   "check_review_primaryObject": "Link para {primaryObjectName} : {primaryObjectUrl}",
   "check_review_minExpertise": "Experiência geral mínima: {minExpertise}",
