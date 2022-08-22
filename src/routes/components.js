@@ -13,6 +13,10 @@ export default {
     import('../client/newRewards/PropositionLists/ReservedProposition'),
   ),
   Payables: loableComponent(import('../client/newRewards/Debts/Paybles')),
+  Receivables: loableComponent(import('../client/newRewards/Debts/Receivables')),
+  ReceivablesListByUser: loableComponent(
+    import('../client/newRewards/Debts/ReceivablesListByUser'),
+  ),
   PayblesListByUser: loableComponent(import('../client/newRewards/Debts/PayblesListByUser')),
   Rebalancing: loableComponent(import('../client/newRewards/Rebalancing/Rebalancing')),
   EligibleRewards: loableComponent(import('../client/newRewards/RewardLists/EligibleRewards')),
