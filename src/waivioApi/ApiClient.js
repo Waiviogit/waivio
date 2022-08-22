@@ -2899,6 +2899,19 @@ export const getPaybelsList = (guideName, data = {}) => {
     .then(response => response)
     .catch(e => e);
 };
+export const getReceivablesList = (user, data = {}) => {
+  return fetch(
+    `${config.campaignV2ApiPrefix}${config.payables}${config.user}/${user}?${createQuery(data)}`,
+    {
+      headers,
+      method: 'GET',
+    },
+  )
+    .then(handleErrors)
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+};
 
 export const getPaybelsListByUser = (guideName, userName) => {
   return fetch(

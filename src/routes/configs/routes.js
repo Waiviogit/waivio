@@ -171,9 +171,19 @@ const routes = {
           component: Views.Payables,
         },
         {
+          path: '/receivables',
+          exact: true,
+          component: Views.Receivables,
+        },
+        {
           path: '/payables/@:userName',
           exact: true,
           component: Views.PayblesListByUser,
+        },
+        {
+          path: '/receivables/@:userName',
+          exact: true,
+          component: Views.ReceivablesListByUser,
         },
       ],
     },
@@ -206,11 +216,6 @@ const routes = {
         {
           path: '/editor',
           component: Views.Editor,
-          exact: true,
-        },
-        {
-          path: '/edit',
-          component: Views.BusyEditor,
           exact: true,
         },
         {
