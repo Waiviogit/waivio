@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Modal, Button, message } from 'antd';
 import { connect } from 'react-redux';
 import { isEmpty, get } from 'lodash';
@@ -31,6 +31,7 @@ const QuickRewardsModal = props => {
   const [body, setBody] = useState('');
   const [images, setImages] = useState([]);
   const [reservationPermlink, setReservationPermlink] = useState('');
+  const [showThirdPage, setShowThirdPage] = useState(true);
   const stepsConfig = [
     {
       title: 'Find the dish',
@@ -46,6 +47,12 @@ const QuickRewardsModal = props => {
     },
   ];
   const isPropositionObj = !isEmpty(get(props.selectedDish, 'propositions'));
+
+  useEffect(() => {
+    if (pageNumber === 1) {
+      setShowThirdPage(true);
+    }
+  }, [pageNumber]);
   const nextButtonClassList = classNames('QuickRewardsModal__button', {
     'QuickRewardsModal__button--withRewards': isPropositionObj,
   });
@@ -126,12 +133,31 @@ const QuickRewardsModal = props => {
           buttonName: 'Next',
           buttonHandler: e => {
             e.currentTarget.blur();
-
+            if (isPropositionObj) {
+              setShowThirdPage(true);
+            } else {
+              setShowThirdPage(false);
+            }
             setPageNumber(2);
           },
           disabled: isEmpty(props.selectedDish) || isEmpty(props.selectedRestaurant),
         };
       case 2:
+        const secondScreenButtonName = isPropositionObj ? 'Next' : 'Publish';
+        const secondScreenButtonHandler = isPropositionObj
+          ? handleCreatePost
+          : handleOnClickPublishButton;
+        const secondScreenDisabled = isPropositionObj
+          ? false
+          : requirements && requirements > images.length;
+        const secondScreenPreviousHandler = reservationPermlink
+          ? e => {
+              e.currentTarget.blur();
+              handelRejectReservation();
+              setPageNumber(1);
+            }
+          : handleOnClickBack;
+
         return {
           component: (
             <ModalSecondScreen
@@ -143,10 +169,10 @@ const QuickRewardsModal = props => {
               body={body}
             />
           ),
-          buttonName: 'Next',
-          buttonHandler: handleOnClickPublishButton,
-          disabled: requirements && requirements > images.length,
-          previousHandler: handleOnClickBack,
+          buttonName: secondScreenButtonName,
+          buttonHandler: secondScreenButtonHandler,
+          disabled: secondScreenDisabled,
+          previousHandler: secondScreenPreviousHandler,
         };
       case 3:
         return {
@@ -179,7 +205,7 @@ const QuickRewardsModal = props => {
       onCancel={closeModal}
       className="QuickRewardsModal"
     >
-      <StepsItems config={stepsConfig} activeStep={pageNumber} />
+      <StepsItems config={stepsConfig} activeStep={pageNumber} isThirdPageVisible={showThirdPage} />
       {getCurrentScreen.component}
       {!isPropositionObj && pageNumber !== 1 && (
         <div className="QuickRewardsModal__warning-container">

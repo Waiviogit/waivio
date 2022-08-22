@@ -2,6 +2,9 @@
   display: flex;
   position: relative;
   justify-content: center;
+  &__two-circles {
+    margin-left: 75px;
+  }
 
   &__itemCircle {
     border-radius: 50%;
@@ -45,6 +48,17 @@
 
       &::before {
         content: none;
+      }
+    }
+
+    &--invisible {
+      &:last-child {
+        display: none;
+      }
+      &:nth-child(2) {
+        &::before {
+          content: none;
+        }
       }
     }
 

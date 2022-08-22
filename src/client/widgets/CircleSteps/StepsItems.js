@@ -8,10 +8,14 @@ const StepsItems = props => {
   const itemClassList = num =>
     classNames('CircleSteps__item', {
       'CircleSteps__item--active': num === props.activeStep,
+      'CircleSteps__item--invisible': !props.isThirdPageVisible,
     });
+  const circleStepsClass = classNames('CircleSteps', {
+    'CircleSteps__two-circles': !props.isThirdPageVisible,
+  });
 
   return (
-    <div className="CircleSteps">
+    <div className={circleStepsClass}>
       {props.config.map(item => (
         <div className={itemClassList(item.num)} key={item.num}>
           <span className="CircleSteps__itemCircle">{item.num}</span>
@@ -25,6 +29,7 @@ const StepsItems = props => {
 StepsItems.propTypes = {
   config: PropTypes.shape().isRequired,
   activeStep: PropTypes.bool.isRequired,
+  isThirdPageVisible: PropTypes.bool.isRequired,
 };
 
 export default StepsItems;
