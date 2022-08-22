@@ -146,31 +146,31 @@ const DetailsModalBody = ({ proposition, requirements, agreementObjects }) => {
             ) count towards the payment of rewards. The value of all other upvotes is not subtracted
             from the specified amount of the reward.
           </span>
-          <div className="Details__text fw6 mv3">Legal:</div>
-          <span>
-            By making the reservation, you confirm that you have read and agree to the
-            <Link className="ml1" to="/object/xrj-terms-and-conditions/page">
-              Terms and Conditions of the Service Agreement
-            </Link>
-            {!isEmpty(agreementObjects) && (
-              <React.Fragment>
-                <span> including the following: Legal highlights:</span>
-                {agreementObjects?.map((obj, i, arr) => (
-                  <React.Fragment key={obj?.author_permlink}>
-                    <Link className="ml1" to={obj?.defaultShowLink}>
-                      {getObjectName(obj)}
-                    </Link>
-                    {arr.length > 1 && arr.length - 1 !== i ? ', ' : '.'}
+          {(!isEmpty(agreementObjects) || proposition?.usersLegalNotice) && (
+            <React.Fragment>
+              <div className="Details__text fw6 mv3">Legal:</div>
+              <span>
+                By making the reservation, you confirm that you have read and agree to the{' '}
+                {!isEmpty(agreementObjects) && (
+                  <React.Fragment>
+                    {agreementObjects?.map((obj, i, arr) => (
+                      <React.Fragment key={obj?.author_permlink}>
+                        <Link className="ml1" to={obj?.defaultShowLink}>
+                          {getObjectName(obj)}
+                        </Link>
+                        {arr.length > 1 && arr.length - 1 !== i ? ', ' : ''}
+                      </React.Fragment>
+                    ))}
+                    {proposition?.usersLegalNotice ? ' including ' : '.'}
                   </React.Fragment>
-                ))}
-              </React.Fragment>
-            )}
-          </span>
-          {proposition?.usersLegalNotice && (
-            <div>
-              <div className="Details__text fw6 mv3">Legal notice:</div>
-              <span>{proposition?.usersLegalNotice}</span>
-            </div>
+                )}
+                {proposition?.usersLegalNotice && (
+                  <span>
+                    following: <b>{proposition?.usersLegalNotice}</b>.
+                  </span>
+                )}
+              </span>
+            </React.Fragment>
           )}
         </React.Fragment>
       )}
