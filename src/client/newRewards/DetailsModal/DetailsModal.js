@@ -69,10 +69,6 @@ const DetailsModal = ({
         );
     }
   }, [proposition?.activationPermlink, userName]);
-  // const requiredObjectName = getObjectName(proposition?.object?.parent)
-  // const userName = getSessionData('userName');
-
-  // const proposedWobjName = getObjectName(proposition.object);
 
   const handleTypeReserveButton = () => (isAuth ? 'primary' : 'default');
   const handleClickReserve = () => {

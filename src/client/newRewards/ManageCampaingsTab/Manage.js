@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Checkbox, message, Modal } from 'antd';
 import { Link } from 'react-router-dom';
 import { isEmpty, round } from 'lodash';
@@ -9,16 +9,18 @@ import { manageTableHeaderConfig } from '../constants/manageTableConfig';
 import {
   getCampaingManageList,
   validateActivateCampaing,
-  validateDeactivateCampaing,
+  // validateDeactivateCampaing,
 } from '../../../waivioApi/ApiClient';
 import { generatePermlink } from '../../../common/helpers/wObjectHelper';
 import { createBody, rewardsPost } from '../../rewards/Manage/constants';
 import steemConnectAPI from '../../steemConnectAPI';
 import { getCurrentCurrency } from '../../../store/appStore/appSelectors';
 import Loading from '../../components/Icon/Loading';
+import { deactivateCampaing } from '../../../store/newRewards/newRewardsActions';
 
 export const Manage = ({ intl, guideName }) => {
   const currency = useSelector(getCurrentCurrency);
+  const dispatch = useDispatch();
   const [manageList, setManageList] = useState([]);
   const [loading, setLoading] = useState(true);
   const campaingIsActive = status => status === 'active';
@@ -68,47 +70,17 @@ export const Manage = ({ intl, guideName }) => {
     });
   };
 
-  const deactivateCampaing = item => {
-    const deactivationPermlink = `deactivate-${rewardsPost.parent_author.replace(
-      '.',
-      '-',
-    )}-${generatePermlink()}`;
+  const handleDeactivateCampaing = item => {
+    const callback = () => {
+      setManageList(manageList.filter(manageItem => manageItem._id !== item._id));
+    };
 
-    validateDeactivateCampaing({
-      guideName,
-      activationPermlink: item.activationPermlink,
-      deactivationPermlink,
-    }).then(res => {
-      if (res.isValid) {
-        const commentOp = [
-          'comment',
-          {
-            parent_author: guideName,
-            parent_permlink: item.activationPermlink,
-            author: guideName,
-            permlink: deactivationPermlink,
-            title: 'Unactivate object for rewards',
-            body: `Campaign ${item.name} was inactivated by ${guideName} `,
-            json_metadata: JSON.stringify({
-              waivioRewards: {
-                type: 'stopCampaign',
-                campaignId: item._id,
-              },
-            }),
-          },
-        ];
-
-        setManageList(manageList.filter(manageItem => manageItem._id !== item._id));
-        steemConnectAPI.broadcast([commentOp]);
-      } else {
-        message.error(res.message);
-      }
-    });
+    dispatch(deactivateCampaing(item, guideName, callback));
   };
 
   const handleChangeCampaingStatus = item => {
     if (campaingIsActive(item.status)) {
-      deactivateCampaing(item);
+      handleDeactivateCampaing(item);
     } else {
       activateCampaing(item);
     }

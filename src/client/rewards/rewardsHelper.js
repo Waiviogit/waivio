@@ -17,6 +17,7 @@ import {
 import config from '../../waivioApi/routes';
 import { getObjectName } from '../../common/helpers/wObjectHelper';
 import { getCryptosPriceHistory } from '../../store/appStore/appSelectors';
+import { getObjectsByIds } from '../../waivioApi/ApiClient';
 
 const isLocation = typeof location !== 'undefined';
 const isSessionStorage = typeof sessionStorage !== 'undefined';
@@ -210,6 +211,15 @@ export const getAgreementObjects = objectDetails =>
       )}`
     : '';
 
+export const getAgreementObjectsLink = agreementObjects =>
+  !isEmpty(agreementObjects)
+    ? ` including the following: Legal highlights: ${reduce(
+        agreementObjects,
+        (acc, obj) => ` ${acc} <a href="${obj.defaultShowLink}">${getObjectName(obj)}</a> `,
+        '',
+      )}`
+    : '';
+
 export const getMatchBots = objectDetails => {
   const matchBots = objectDetails.match_bots || objectDetails.matchBots;
 
@@ -220,7 +230,7 @@ export const getMatchBots = objectDetails => {
 
 export const getUsersLegalNotice = objectDetails =>
   objectDetails.usersLegalNotice
-    ? `<p><b>Legal notice:</b></p><p>${objectDetails.usersLegalNotice}.</p>`
+    ? `<span>following: <b>${objectDetails.usersLegalNotice}</b>.</span>`
     : '';
 
 export const getReceiptPhoto = objectDetails =>
@@ -329,13 +339,13 @@ export const getDetailsBody = ({
   const rewards = `<p><b>Reward:</b></p>
 <p>The amount of the reward is determined in HIVE at the time of reservation. The reward will be paid in the form of a combination of upvotes (Hive Power) and direct payments (liquid HIVE). Only upvotes from registered accounts (<a href='/@${guideName}'>${guideName}</a> ${matchBots}) count towards the payment of rewards. The value of all other upvotes is not subtracted from the specified amount of the reward.</p>`;
   const legal = `<p><b>Legal:</b></p>
-<p>By making the reservation, you confirm that you have read and agree to the <a href="/object/xrj-terms-and-conditions/page">Terms and Conditions of the Service Agreement</a>${agreementObjects}.</p>`;
+<p>By making the reservation, you confirm that you have read and agree to the ${agreementObjects}.</p>`;
   const usersLegalNotice = getUsersLegalNotice(proposition);
 
   return `${eligibilityRequirements} ${frequencyAssign} ${blacklist} ${postRequirements} ${description} ${sponsor} ${rewards} ${legal} ${usersLegalNotice}`;
 };
 
-export const getNewDetailsBody = proposition => {
+export const getNewDetailsBody = async proposition => {
   const parent = proposition.object.parent;
   const proposedWobjName = getObjectName(proposition.object);
   const frequencyAssign = getFrequencyAssign(proposition);
@@ -359,12 +369,15 @@ export const getNewDetailsBody = proposition => {
   }'>${getObjectName(parent)}</a>;</li></ul> `;
   const description = getDescription(proposition);
   const sponsor = `<p>Sponsor reserves the right to refuse the payment if review is suspected to be fraudulent, spam, poorly written or for other reasons as stated in the agreement.</p>`;
-  const agreementObjects = getAgreementObjects(proposition);
+  const g = getObjectsByIds({ authorPermlinks: proposition?.agreementObjects });
+  const agreementObjects = getAgreementObjectsLink(g.wObjects);
   const matchBots = getMatchBots(proposition);
   const rewards = `<p><b>Reward:</b></p>
 <p>The amount of the reward is determined in ${proposition.payoutToken} at the time of reservation. The reward will be paid in the form of a combination of upvotes (${proposition.payoutToken} Power) and direct payments (liquid ${proposition.payoutToken}). Only upvotes from registered accounts (<a href='/@${proposition.guideName}'>${proposition.guideName}</a>${matchBots}) count towards the payment of rewards. The value of all other upvotes is not subtracted from the specified amount of the reward.</p>`;
   const legal = `<p><b>Legal:</b></p>
-<p>By making the reservation, you confirm that you have read and agree to the <a href="/object/xrj-terms-and-conditions/page">Terms and Conditions of the Service Agreement</a>${agreementObjects}.</p>`;
+<p>By making the reservation, you confirm that you have read and agree to the ${agreementObjects} ${
+    proposition?.usersLegalNotice ? ' including ' : '.'
+  }</p>`;
   const usersLegalNotice = getUsersLegalNotice(proposition);
 
   return `${eligibilityRequirements} ${frequencyAssign} ${blacklist} ${postRequirements} ${description} ${sponsor} ${rewards} ${legal} ${usersLegalNotice}`;

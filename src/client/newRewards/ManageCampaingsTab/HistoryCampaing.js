@@ -5,16 +5,20 @@ import { getCampaingHistoryList } from '../../../waivioApi/ApiClient';
 import DynamicTbl from '../../components/Tools/DynamicTable/DynamicTable';
 import { configHistoryTableHeader } from '../constants/historyTableConfig';
 
-const HistoryCampaing = ({ guideName }) => {
+const HistoryCampaing = ({ guideName, setLoading, loading }) => {
   const [historyList, setHistoryList] = useState();
   const [hasMore, setHasMore] = useState(true);
 
   useEffect(() => {
-    getCampaingHistoryList(guideName).then(res => {
-      setHistoryList(res.campaigns);
-      setHasMore(res.hasMore);
-    });
-  }, []);
+    if (loading) {
+      getCampaingHistoryList(guideName).then(res => {
+        setHistoryList(res.campaigns);
+        setHasMore(res.hasMore);
+        setHasMore(res.setLoading);
+        setLoading(false);
+      });
+    }
+  }, [loading]);
 
   const handleLoadMore = () =>
     getCampaingHistoryList(guideName, historyList?.length).then(res => {
@@ -36,6 +40,8 @@ const HistoryCampaing = ({ guideName }) => {
 };
 
 HistoryCampaing.propTypes = {
+  loading: PropTypes.bool.isRequired,
+  setLoading: PropTypes.func.isRequired,
   guideName: PropTypes.string.isRequired,
 };
 
