@@ -11,7 +11,7 @@ import './addbutton.less';
 const HEIGHT_BTN = 14;
 
 const AddButtonSlate = props => {
-  const { editorNode, isComment } = props;
+  const { editorNode, isComment, initialPosTop } = props;
 
   const [isOpen, setOpen] = useState(false);
   const [, setControl] = useState(false);
@@ -20,6 +20,7 @@ const AddButtonSlate = props => {
   const nodeRef = useRef(null);
   const sideControl = useRef(null);
   const initialPosOfBtn = useRef(null);
+  const firstRender = useRef(false);
 
   useEffect(() => {
     if (!editorNode) return;
@@ -33,6 +34,12 @@ const AddButtonSlate = props => {
       const parentBoundary = editorNode.getBoundingClientRect();
       const nodeStyle = nodeRef.current?.style;
 
+      if (!firstRender.current && initialPosTop) {
+        firstRender.current = true;
+        nodeStyle.top = initialPosTop;
+
+        return;
+      }
       if (bound.top > 0) {
         nodeStyle.top = `${bound.top - parentBoundary.top - HEIGHT_BTN}px`;
       } else if (bound.top <= 0) nodeStyle.top = initialPosOfBtn.current.top || 'auto';
@@ -128,6 +135,7 @@ AddButtonSlate.propTypes = {
   intl: PropTypes.shape().isRequired,
   editorNode: PropTypes.node.isRequired,
   isComment: PropTypes.bool,
+  initialPosTop: PropTypes.string,
 };
 
 AddButtonSlate.defaultProps = {
@@ -136,6 +144,7 @@ AddButtonSlate.defaultProps = {
   withTitleLine: false,
   isClearSearchObjects: false,
   isComment: false,
+  initialPosTop: null,
 };
 
 export default injectIntl(AddButtonSlate);

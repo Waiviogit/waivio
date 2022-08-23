@@ -3,10 +3,12 @@
 .Comments {
   max-width: 990px;
   margin: 0 auto;
-  overflow: hidden;
+  overflow-x: visible;
+  overflow-y: visible;
 
   &.quick-comments {
     border-top: @base-border;
+    position: relative;
   }
 
   &__header {
