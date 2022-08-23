@@ -44,7 +44,6 @@ import {
 import { getIsOpenWalletTable } from '../store/walletStore/walletSelectors';
 import { getLocale, getNightmode } from '../store/settingsStore/settingsSelectors';
 import { getTokenRates } from '../store/walletStore/walletActions';
-import QuickRewardsModal from './rewards/QiuckRewardsModal/QuickRewardsModal';
 
 export const AppSharedContext = React.createContext({ usedLocale: 'en-US', isGuestUser: false });
 
@@ -296,7 +295,6 @@ class Wrapper extends React.PureComponent {
                   </React.Fragment>
                 )}
               </div>
-              <QuickRewardsModal />
             </Layout>
           </AppSharedContext.Provider>
         </ConfigProvider>
