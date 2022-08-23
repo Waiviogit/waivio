@@ -132,7 +132,9 @@ const EditorSlate = props => {
       }`,
     });
 
+    // image of uploading from editor not removed in feeds without that hack
     editorRef.current.querySelector('[alt]')?.remove();
+
     Transforms.insertNodes(editor, [wrapWithParagraph([imageBlock])]);
   };
 
