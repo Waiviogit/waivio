@@ -155,9 +155,7 @@ const DetailsModalBody = ({ proposition, requirements, agreementObjects }) => {
                   <React.Fragment>
                     {agreementObjects?.map((obj, i, arr) => (
                       <React.Fragment key={obj?.author_permlink}>
-                        <Link className="ml1" to={obj?.defaultShowLink}>
-                          {getObjectName(obj)}
-                        </Link>
+                        <Link to={obj?.defaultShowLink}>{getObjectName(obj)}</Link>
                         {arr.length > 1 && arr.length - 1 !== i ? ', ' : ''}
                       </React.Fragment>
                     ))}

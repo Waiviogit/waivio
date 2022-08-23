@@ -7,6 +7,7 @@ import { subscribeTypes } from '../../common/constants/blockTypes';
 import { getAuthenticatedUserName } from '../authStore/authSelectors';
 import { changeRewardsTab } from '../authStore/authActions';
 import { getTokenRatesInUSD } from '../walletStore/walletSelectors';
+import { rewardsPost } from '../../client/rewards/Manage/constants';
 
 export const reserveProposition = (proposition, username, history) => async (
   dispatch,
@@ -20,7 +21,7 @@ export const reserveProposition = (proposition, username, history) => async (
   const primaryObject = proposition?.object?.parent;
   const rates = getTokenRatesInUSD(getState(), 'WAIV');
   const amount = round(proposition.rewardInUSD / rates, 3);
-  const detailsBody = getNewDetailsBody(proposition);
+  const detailsBody = await getNewDetailsBody(proposition);
   const commentOp = [
     'comment',
     {
@@ -63,7 +64,7 @@ export const reserveProposition = (proposition, username, history) => async (
   });
 };
 
-export const realiseRewards = proposition => (dispatch, getState, { steemConnectAPI }) => {
+export const realiseRewards = proposition => (dispatch, getState, { steemConnectAPI, busyAPI }) => {
   const unreservationPermlink = `reject-${proposition.object._id}${generatePermlink()}`;
   const username = getAuthenticatedUserName(getState());
 
@@ -90,8 +91,60 @@ export const realiseRewards = proposition => (dispatch, getState, { steemConnect
   return new Promise((resolve, reject) => {
     steemConnectAPI
       .broadcast([commentOp])
-      .then(() => resolve('SUCCESS'))
+      .then(async () => {
+        busyAPI.instance.sendAsync(subscribeTypes.subscribeCampaignRelease, [
+          username,
+          unreservationPermlink,
+        ]);
+        busyAPI.instance.subscribe((datad, j) => {
+          if (j?.success && j?.permlink === unreservationPermlink) {
+            dispatch(changeRewardsTab(username));
+            resolve();
+          }
+        });
+      })
       .catch(error => reject(error));
+  });
+};
+
+export const deactivateCampaing = (item, guideName, callback) => (
+  dispatch,
+  getState,
+  { steemConnectAPI, busyAPI },
+) => {
+  const authUserName = getAuthenticatedUserName(getState());
+  const deactivationPermlink = `deactivate-${rewardsPost.parent_author.replace(
+    '.',
+    '-',
+  )}-${generatePermlink()}`;
+  const commentOp = [
+    'comment',
+    {
+      parent_author: guideName,
+      parent_permlink: item.activationPermlink,
+      author: guideName,
+      permlink: deactivationPermlink,
+      title: 'Unactivate object for rewards',
+      body: `Campaign ${item.name} was inactivated by ${guideName} `,
+      json_metadata: JSON.stringify({
+        waivioRewards: {
+          type: 'stopCampaign',
+          campaignId: item._id,
+        },
+      }),
+    },
+  ];
+
+  steemConnectAPI.broadcast([commentOp]).then(() => {
+    busyAPI.instance.sendAsync(subscribeTypes.subscribeCampaignDeactivation, [
+      authUserName,
+      deactivationPermlink,
+    ]);
+    busyAPI.instance.subscribe((datad, j) => {
+      if (j?.success && j?.permlink === deactivationPermlink) {
+        callback();
+      }
+    });
   });
 };
 

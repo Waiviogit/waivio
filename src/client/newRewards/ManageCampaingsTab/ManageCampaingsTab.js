@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
@@ -13,15 +13,20 @@ import './ManageCampaingsTab.less';
 
 const ManageCampaingsTab = ({ intl }) => {
   const guideName = useSelector(getAuthenticatedUserName);
+  const [historyLoading, setHistoryLoading] = useState(true);
 
   return (
     <div className={'ManageCampaingsTab'}>
       <GuideBalance guideName={guideName} />
-      <Manage guideName={guideName} intl={intl} />
+      <Manage guideName={guideName} intl={intl} setHistoryLoading={setHistoryLoading} />
       <Link className={'ManageCampaingsTab__create'} to={'/rewards-new/create'}>
         Create new campaing
       </Link>
-      <HistoryCampaing guideName={guideName} />
+      <HistoryCampaing
+        guideName={guideName}
+        setLoading={setHistoryLoading}
+        loading={historyLoading}
+      />
     </div>
   );
 };

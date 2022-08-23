@@ -5,4 +5,6 @@ export const subscribeTypes = {
   posts: 'last_block_num',
   campaigns: 'campaign_last_block_num',
   subscribeCampaignAssign: 'subscribeCampaignAssign',
+  subscribeCampaignRelease: 'subscribeCampaignRelease',
+  subscribeCampaignDeactivation: 'subscribeCampaignDeactivation',
 };
