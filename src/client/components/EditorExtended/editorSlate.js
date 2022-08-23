@@ -70,6 +70,7 @@ const EditorSlate = props => {
     handleObjectSelect,
     initialBody,
     isComment,
+    initialPosTopBtn,
   } = props;
 
   const params = useParams();
@@ -130,6 +131,9 @@ const EditorSlate = props => {
         currentImage.src.startsWith('http') ? currentImage.src : `https://${currentImage.src}`
       }`,
     });
+
+    // image of uploading from editor not removed in feeds without that hack
+    editorRef.current.querySelector('[alt]')?.remove();
 
     Transforms.insertNodes(editor, [wrapWithParagraph([imageBlock])]);
   };
@@ -236,6 +240,7 @@ const EditorSlate = props => {
   }`;
   const RichEditorRootClassNamesList = classNames('md-RichEditor-root', {
     'md-RichEditor-root-vimeo': isVimeo,
+    'md-RichEditor-root-small': props.small,
   });
 
   const editor = useEditor(props);
@@ -257,9 +262,10 @@ const EditorSlate = props => {
   useEffect(() => {
     window.slateEditor = editor;
     props.setEditor(editor);
+    if (props.setEditorCb) props.setEditorCb(editor);
     const editorEl = document.querySelector('[data-slate-editor="true"]');
 
-    editorEl.style.minHeight = `100px`;
+    editorEl.style.minHeight = props.minHeight || `100px`;
     setTimeout(() => focusEditorToEnd(editor), 200);
   }, [params]);
 
@@ -299,14 +305,16 @@ const EditorSlate = props => {
             }}
             spellCheck={false}
             onPaste={handlePastedFiles}
-            style={{ minHeight: '150px' }}
+            style={{ minHeight: props.minHeight || '150px' }}
           />
           <AddButtonSlate
+            editor={editor}
             sideButtons={SIDE_BUTTONS_SLATE}
             handleHashtag={handleHashtag}
             handleObjectSelect={handleObjectSelect}
             editorNode={editorRef.current}
             isComment={isComment}
+            initialPosTop={initialPosTopBtn}
           />
         </div>
       </div>
@@ -327,7 +335,11 @@ EditorSlate.propTypes = {
   initialBody: PropTypes.string,
   handlePasteText: PropTypes.func,
   setEditor: PropTypes.func,
+  setEditorCb: PropTypes.func,
   isComment: PropTypes.bool,
+  small: PropTypes.bool,
+  minHeight: PropTypes.string,
+  initialPosTopBtn: PropTypes.string,
 };
 
 EditorSlate.defaultProps = {
@@ -339,6 +351,10 @@ EditorSlate.defaultProps = {
   handlePasteText: () => {},
   setEditor: () => {},
   isComment: false,
+  small: false,
+  minHeight: '',
+  initialPosTopBtn: '',
+  setEditorCb: null,
 };
 
 const mapStateToProps = store => ({
