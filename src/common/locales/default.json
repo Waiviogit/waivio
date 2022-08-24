@@ -1882,5 +1882,7 @@
   "mobnav_rebalancing": "Rebalancing",
   "power_up_initiated_from": "{from} initiated 'Power up' on {amount} to you",
   "power_up_initiated_to": "You initiated 'Power up' on {amount} to {to}",
-  "power_up_initiated": "You initiated 'Power up' on {amount}"
+  "power_up_initiated": "You initiated 'Power up' on {amount}",
+  "object_field_ageRange": "Reading age",
+  "age_range": "Reading age"
 }
