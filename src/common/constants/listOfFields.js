@@ -36,6 +36,7 @@ export const objectFields = {
   form: 'form',
   description: 'description',
   title: 'title',
+  language: 'language',
 };
 
 export const TYPES_OF_MENU_ITEM = {
