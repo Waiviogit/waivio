@@ -160,9 +160,6 @@ const editor = (state = defaultState, action) => {
         editorExtended: {
           ...state.editorExtended,
           isShowEditorSearch: false,
-          // editorState: EditorState.moveFocusToEnd(
-          //   createEditorState(fromMarkdown(action.payload.draftContent)),
-          // ),
           titleValue: action.payload.draftContent.title,
         },
       };

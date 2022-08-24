@@ -13,7 +13,7 @@ import EditorExtended from './EditorExtended';
 import {
   getEditorExtended,
   getEditorExtendedIsShowSearch,
-} from '../../../../store/editorStore/editorSelectors';
+} from '../../../../store/slateEditorStore/editorSelectors';
 import { searchObjectsAutoCompete } from '../../../../store/searchStore/searchActions';
 
 const mapStateToProps = state => ({
