@@ -33,7 +33,11 @@ import {
   resetEditorState,
 } from './util/SlateEditor/utils/SlateUtilityFunctions';
 import { pipe } from '../../../common/helpers';
-import { handlePasteText, setClearState, setEditor } from '../../../store/slateEditorStore/editorActions';
+import {
+  handlePasteText,
+  setClearState,
+  setEditor,
+} from '../../../store/slateEditorStore/editorActions';
 import { HEADING_BLOCKS } from './util/SlateEditor/utils/constants';
 
 import './index.less';
@@ -72,6 +76,7 @@ const EditorSlate = props => {
     isComment,
     initialPosTopBtn,
     clearEditor,
+    ADD_BTN_DIF,
   } = props;
 
   const params = useParams();
@@ -260,10 +265,13 @@ const EditorSlate = props => {
   const renderElement = useCallback(newProps => <Element {...newProps} />, []);
   const renderLeaf = useCallback(newProps => <Leaf {...newProps} />, []);
 
-  useEditor(() => () => {
-    resetEditorState(editor)
-    clearEditor();
-  }, []);
+  useEditor(
+    () => () => {
+      resetEditorState(editor);
+      clearEditor();
+    },
+    [],
+  );
 
   useEffect(() => {
     window.slateEditor = editor;
@@ -322,6 +330,7 @@ const EditorSlate = props => {
             editorNode={editorRef.current}
             isComment={isComment}
             initialPosTop={initialPosTopBtn}
+            ADD_BTN_DIF={ADD_BTN_DIF}
           />
         </div>
       </div>
@@ -348,6 +357,7 @@ EditorSlate.propTypes = {
   minHeight: PropTypes.string,
   initialPosTopBtn: PropTypes.string,
   clearEditor: PropTypes.func,
+  ADD_BTN_DIF: PropTypes.number,
 };
 
 EditorSlate.defaultProps = {
@@ -364,6 +374,7 @@ EditorSlate.defaultProps = {
   initialPosTopBtn: '',
   setEditorCb: null,
   clearEditor: () => {},
+  ADD_BTN_DIF: 14,
 };
 
 const mapStateToProps = store => ({

@@ -94,12 +94,18 @@
 }
 
 .md-RichEditor-root-small {
-  min-height: 40px;
+  min-height: 30px;
   max-height: unset;
-  padding: 0;
+  position: relative;
+  top: -2px;
+  padding: 5px 0 0;
+
+  .md-block-paragraph {
+    font-size: 16px !important;
+  }
 
   .md-RichEditor-editor {
-    padding: 0 0 0 14px;
+    padding: 0 30px 0 4px;
   }
 }
 
