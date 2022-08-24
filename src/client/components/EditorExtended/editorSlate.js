@@ -33,7 +33,11 @@ import {
   resetEditorState,
 } from './util/SlateEditor/utils/SlateUtilityFunctions';
 import { pipe } from '../../../common/helpers';
-import { handlePasteText, setClearState, setEditor } from '../../../store/slateEditorStore/editorActions';
+import {
+  handlePasteText,
+  setClearState,
+  setEditor,
+} from '../../../store/slateEditorStore/editorActions';
 import { HEADING_BLOCKS } from './util/SlateEditor/utils/constants';
 
 import './index.less';
@@ -261,10 +265,13 @@ const EditorSlate = props => {
   const renderElement = useCallback(newProps => <Element {...newProps} />, []);
   const renderLeaf = useCallback(newProps => <Leaf {...newProps} />, []);
 
-  useEditor(() => () => {
-    resetEditorState(editor)
-    clearEditor();
-  }, []);
+  useEditor(
+    () => () => {
+      resetEditorState(editor);
+      clearEditor();
+    },
+    [],
+  );
 
   useEffect(() => {
     window.slateEditor = editor;
