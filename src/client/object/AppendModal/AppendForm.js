@@ -358,7 +358,8 @@ export default class AppendForm extends Component {
       case objectFields.email:
       case TYPES_OF_MENU_ITEM.PAGE:
       case TYPES_OF_MENU_ITEM.LIST:
-      case objectFields.ageRange: {
+      case objectFields.ageRange:
+      case objectFields.language: {
         fieldBody.push(rest[currentField]);
         break;
       }
@@ -431,6 +432,7 @@ export default class AppendForm extends Component {
             formValues[productIdFields.productIdType]
           }, ${currentField}: ${appendValue}, ${imageDescription}`;
         case objectFields.ageRange:
+        case objectFields.language:
           return `@${author} added ${currentField} (${langReadable}): ${appendValue}`;
         case TYPES_OF_MENU_ITEM.PAGE:
         case TYPES_OF_MENU_ITEM.LIST: {
@@ -1001,6 +1003,7 @@ export default class AppendForm extends Component {
       return filtered.some(f => this.getCurrentObjectBody(currentField).number === f.number);
     if (currentField === objectFields.name) return filtered.some(f => f.body === currentValue);
     if (currentField === objectFields.ageRange) return filtered.some(f => f.body === currentValue);
+    if (currentField === objectFields.language) return filtered.some(f => f.body === currentValue);
     if (currentField === objectFields.categoryItem) {
       const selectedTagCategory = filtered.filter(item => item.tagCategory === currentCategory);
 
@@ -1435,6 +1438,27 @@ export default class AppendForm extends Component {
                 placeholder={intl.formatMessage({
                   id: 'age_range',
                   defaultMessage: 'Reading age',
+                })}
+              />,
+            )}
+          </Form.Item>
+        );
+      }
+      case objectFields.language: {
+        return (
+          <Form.Item>
+            {getFieldDecorator(objectFields.language, {
+              rules: this.getFieldRules(objectFields.language),
+            })(
+              <Input.TextArea
+                autoSize={{ minRows: 4, maxRows: 8 }}
+                className={classNames('AppendForm__input', {
+                  'validation-error': !this.state.isSomeValue,
+                })}
+                disabled={loading}
+                placeholder={intl.formatMessage({
+                  id: 'book_language',
+                  defaultMessage: 'Book language',
                 })}
               />,
             )}
