@@ -115,7 +115,7 @@ class QuickCommentEditor extends React.Component {
     const { isLoading, isAuth } = this.props;
 
     return (
-      <React.Fragment>
+      <div className="QuickComment">
         {isAuth && (
           <>
             <EditorSlate
@@ -124,10 +124,11 @@ class QuickCommentEditor extends React.Component {
               editorEnabled
               onChange={this.handleMsgChange}
               minHeight="auto"
-              initialPosTopBtn="-10.5px"
+              initialPosTopBtn="-14px"
               placeholder="Write your comment..."
               handleObjectSelect={this.handleObjectSelect}
               setEditorCb={this.setEditor}
+              ADD_BTN_DIF={24}
             />
             {isLoading ? (
               <Icon
@@ -145,7 +146,7 @@ class QuickCommentEditor extends React.Component {
             )}
           </>
         )}
-      </React.Fragment>
+      </div>
     );
   }
 }

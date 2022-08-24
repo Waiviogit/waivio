@@ -72,6 +72,7 @@ const EditorSlate = props => {
     isComment,
     initialPosTopBtn,
     clearEditor,
+    ADD_BTN_DIF,
   } = props;
 
   const params = useParams();
@@ -322,6 +323,7 @@ const EditorSlate = props => {
             editorNode={editorRef.current}
             isComment={isComment}
             initialPosTop={initialPosTopBtn}
+            ADD_BTN_DIF={ADD_BTN_DIF}
           />
         </div>
       </div>
@@ -348,6 +350,7 @@ EditorSlate.propTypes = {
   minHeight: PropTypes.string,
   initialPosTopBtn: PropTypes.string,
   clearEditor: PropTypes.func,
+  ADD_BTN_DIF: PropTypes.number,
 };
 
 EditorSlate.defaultProps = {
@@ -364,6 +367,7 @@ EditorSlate.defaultProps = {
   initialPosTopBtn: '',
   setEditorCb: null,
   clearEditor: () => {},
+  ADD_BTN_DIF: 14,
 };
 
 const mapStateToProps = store => ({
