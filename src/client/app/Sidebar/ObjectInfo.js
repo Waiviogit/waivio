@@ -333,6 +333,8 @@ class ObjectInfo extends React.Component {
     const productIdBody = wobject.productId
       ? wobject.productId.map(el => parseWobjectField(el, 'body', []))
       : [];
+    const ageRange = wobject.ageRange;
+    const language = wobject.language;
     const profile = linkField
       ? {
           facebook: linkField[linkFields.linkFacebook] || '',
@@ -603,6 +605,46 @@ class ObjectInfo extends React.Component {
                   </div>
                 </div>
               )),
+            )}
+        {!isEditMode
+          ? ageRange && (
+              <div className="field-website">
+                <span className="field-website__title">
+                  <Icon type="read" className="iconfont icon-link text-icon link" />
+                  <span>{ageRange}</span>
+                </span>
+              </div>
+            )
+          : this.listItem(
+              objectFields.ageRange,
+              ageRange && (
+                <div className="field-website">
+                  <span className="field-website__title">
+                    <Icon type="read" className="iconfont icon-link text-icon link" />
+                    <span>{ageRange}</span>
+                  </span>
+                </div>
+              ),
+            )}
+        {!isEditMode
+          ? language && (
+              <div className="field-website">
+                <span className="field-website__title">
+                  <Icon type="global" className="iconfont icon-link text-icon link" />
+                  <span>{language}</span>
+                </span>
+              </div>
+            )
+          : this.listItem(
+              objectFields.language,
+              language && (
+                <div className="field-website">
+                  <span className="field-website__title">
+                    <Icon type="global" className="iconfont icon-link text-icon link" />
+                    <span>{language}</span>
+                  </span>
+                </div>
+              ),
             )}
       </React.Fragment>
     );

@@ -10,6 +10,7 @@ export const objectFields = {
   productId: 'productId',
   productIdType: 'productIdType',
   productIdImage: 'productIdImage',
+  ageRange: 'ageRange',
   website: 'website',
   phone: 'phone',
   email: 'email',
@@ -35,6 +36,7 @@ export const objectFields = {
   form: 'form',
   description: 'description',
   title: 'title',
+  language: 'language',
 };
 
 export const TYPES_OF_MENU_ITEM = {
@@ -164,5 +166,7 @@ export const supportedObjectFields = Object.values(objectFields);
 export const objectImageFields = ['avatar', 'background'];
 
 export const statusNoVisibleItem = ['unavailable', 'relisted'];
+
+export const statusWithoutLinkList = ['unavailable', 'flagged', 'nsfw'];
 
 export default null;

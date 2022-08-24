@@ -18,6 +18,7 @@ const AppendFormFooter = ({
   votePercent,
   voteWorth,
   selectWobj,
+  disabled,
 }) => {
   const [isSliderVisible, setSliderVisibility] = useState(false);
   const followingList = useSelector(getFollowingObjectsList);
@@ -57,7 +58,13 @@ const AppendFormFooter = ({
 
       {getFieldValue('currentField') !== 'auto' && (
         <Form.Item className="AppendForm__bottom__submit">
-          <Button type="primary" loading={loading} disabled={loading} onClick={handleSubmit}>
+          <Button
+            className="AppendForm__submit"
+            type="primary"
+            loading={loading}
+            disabled={loading || disabled}
+            onClick={handleSubmit}
+          >
             <FormattedMessage
               id={loading ? 'post_send_progress' : 'append_send'}
               defaultMessage={loading ? 'Submitting' : 'Suggest'}
@@ -71,6 +78,7 @@ const AppendFormFooter = ({
 
 AppendFormFooter.propTypes = {
   loading: PropTypes.bool.isRequired,
+  disabled: PropTypes.bool.isRequired,
   form: PropTypes.shape().isRequired,
   selectWobj: PropTypes.shape().isRequired,
   handleSubmit: PropTypes.func.isRequired,
