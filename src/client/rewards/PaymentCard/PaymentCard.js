@@ -11,6 +11,7 @@ import './PaymentCard.less';
 
 const PaymentCard = props => {
   const name = props.paymentInfo.userName || props.paymentInfo.guideName;
+  const isReceivable = props.match.path.includes('receivables');
   const notPayedPeriodClassList = classNames('PaymentCard__notPayedPeriod', {
     'PaymentCard__notPayedPeriod--expired': props.paymentInfo.notPayedPeriod >= 21,
   });
@@ -36,7 +37,7 @@ const PaymentCard = props => {
         </div>
       </div>
       <div className="PaymentCard__end-wrap">
-        {isNumber(props.paymentInfo.notPayedPeriod) && (
+        {isNumber(props.paymentInfo.notPayedPeriod) && !isReceivable && (
           <span className={notPayedPeriodClassList}>{props.paymentInfo.notPayedPeriod}d</span>
         )}
         <div className="PaymentCard__content-name-wrap-row-pay">

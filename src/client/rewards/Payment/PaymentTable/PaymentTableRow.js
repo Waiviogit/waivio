@@ -22,11 +22,12 @@ const PaymentTableRow = ({ intl, sponsor, isReports, reservationPermlink }) => {
   const getConvertDigits = obj =>
     obj.type === 'transfer' ? `-${convertDigits(obj.amount)}` : convertDigits(obj.amount);
   const dispatch = useDispatch();
+  const guideName = sponsor.sponsor || sponsor.guideName;
   const toggleModalReport = () => {
     if (isNewReward) return setModalReportOpen(!isModalReportOpen);
 
     const requestParams = {
-      guideName: sponsor.sponsor,
+      guideName,
       userName: sponsor.userName,
       reservationPermlink: sponsor?.details?.reservation_permlink || sponsor?.reviewPermlink,
     };
@@ -80,19 +81,19 @@ const PaymentTableRow = ({ intl, sponsor, isReports, reservationPermlink }) => {
               id: 'paymentTable_from',
               defaultMessage: 'from',
             })}{' '}
-            <Link to={`/@${sponsor.sponsor}`}>@{sponsor.userName}</Link>{' '}
+            <Link to={`/@${sponsor.userName}`}>@{sponsor.userName}</Link>{' '}
             {intl.formatMessage({
               id: 'paymentTable_review_to',
               defaultMessage: 'to',
             })}{' '}
-            <Link to={`/@${sponsor.userName}`}>@{sponsor.sponsor}</Link>
+            <Link to={`/@${guideName}`}>@{guideName}</Link>
           </React.Fragment>
         );
       case TYPE.transfer:
       case TYPE.demoDebt:
         return (
           <React.Fragment>
-            {sponsor.sponsor === sponsor.userName ? (
+            {guideName === sponsor.userName ? (
               <div>
                 <span className="PaymentTable__action-item fw6">
                   {intl.formatMessage({
@@ -100,7 +101,7 @@ const PaymentTableRow = ({ intl, sponsor, isReports, reservationPermlink }) => {
                     defaultMessage: `Send to`,
                   })}{' '}
                 </span>
-                <Link to={`/@${sponsor.sponsor}`}>@{sponsor.sponsor}</Link>{' '}
+                <Link to={`/@${guideName}`}>@{guideName}</Link>{' '}
                 {intl.formatMessage({
                   id: 'received_from_self',
                   defaultMessage: 'received from self',
@@ -118,7 +119,7 @@ const PaymentTableRow = ({ intl, sponsor, isReports, reservationPermlink }) => {
                   id: 'paymentTable_from',
                   defaultMessage: 'from',
                 })}{' '}
-                <Link to={`/@${sponsor.sponsor}`}>@{sponsor.sponsor}</Link>{' '}
+                <Link to={`/@${guideName}`}>@{guideName}</Link>{' '}
                 {intl.formatMessage({
                   id: 'paymentTable_review_to',
                   defaultMessage: 'to',
@@ -146,7 +147,7 @@ const PaymentTableRow = ({ intl, sponsor, isReports, reservationPermlink }) => {
               id: 'paymentTable_requested_by',
               defaultMessage: `requested by`,
             })}{' '}
-            <Link to={`/@${sponsor.sponsor}`}>@{sponsor.sponsor}</Link>)
+            <Link to={`/@${guideName}`}>@{guideName}</Link>)
           </React.Fragment>
         );
     }

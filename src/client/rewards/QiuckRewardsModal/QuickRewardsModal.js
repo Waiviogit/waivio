@@ -134,8 +134,8 @@ const QuickRewardsModal = props => {
       case 2:
         const secondScreenButtonName = isPropositionObj ? 'Next' : 'Publish';
         const secondScreenButtonHandler = isPropositionObj
-          ? handleCreatePost
-          : handleOnClickPublishButton;
+          ? handleOnClickPublishButton
+          : handleCreatePost;
         const secondScreenDisabled = isPropositionObj && minPhotos && minPhotos > images.length;
         const secondScreenPreviousHandler = reservationPermlink
           ? e => {
