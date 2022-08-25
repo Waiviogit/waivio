@@ -9,6 +9,7 @@ import Avatar from '../../../components/Avatar';
 import { getSingleReportData } from '../../../../store/rewardsStore/rewardsSelectors';
 
 import './ReportHeader.less';
+import { getObjectName, getObjectUrlForLink } from '../../../../common/helpers/wObjectHelper';
 
 const ReportHeader = ({ intl, currencyInfo, reportDetails, payoutToken }) => {
   const singleReportData = reportDetails || useSelector(getSingleReportData);
@@ -33,12 +34,7 @@ const ReportHeader = ({ intl, currencyInfo, reportDetails, payoutToken }) => {
     get(singleReportData, ['histories', '0', 'details', 'review_permlink']) ||
     get(singleReportData, ['histories', '0', 'reviewPermlink']);
   const activationPermlink = get(singleReportData, ['activationPermlink']);
-  const primaryObjectPermlink =
-    get(singleReportData, ['primaryObject', 'author_permlink']) ||
-    get(singleReportData, ['requiredObject', 'author_permlink']);
-  const primaryObjectName =
-    get(singleReportData, ['primaryObject', 'object_name']) ||
-    get(singleReportData, ['requiredObject', 'name']);
+  const primaryObject = singleReportData?.primaryObject || singleReportData?.requiredObject;
   const secondaryObjects = map(singleReportData.secondaryObjects, secondaryObject => ({
     name: secondaryObject.object_name,
     permlink: secondaryObject.author_permlink,
@@ -153,19 +149,21 @@ const ReportHeader = ({ intl, currencyInfo, reportDetails, payoutToken }) => {
           <span className="ReportHeader__campaignInfo-name">
             {intl.formatMessage({ id: 'links', defaultMessage: 'Links' })}:{' '}
           </span>
-          <a href={`/object/${primaryObjectPermlink}`}>
-            <span className="ReportHeader__campaignInfo-links">{`${primaryObjectName}, `}</span>
+          <a href={getObjectUrlForLink(primaryObject)}>
+            <span className="ReportHeader__campaignInfo-links">{`${getObjectName(
+              primaryObject,
+            )}, `}</span>
           </a>
           {!isEmpty(secondaryObjects) ? (
             map(secondaryObjects, object => (
-              <a key={object.permlink} href={`/object/${object.permlink}`}>
+              <a key={object.permlink} href={getObjectUrlForLink(object)}>
                 <span className="ReportHeader__campaignInfo-links">{object.name}</span>
               </a>
             ))
           ) : (
-            <a href={`/object/${singleReportData?.secondaryObject?.author_permlink}`}>
+            <a href={getObjectUrlForLink(singleReportData?.secondaryObject)}>
               <span className="ReportHeader__campaignInfo-links">
-                {singleReportData?.secondaryObject?.name}
+                {getObjectName(singleReportData?.secondaryObject)}
               </span>
             </a>
           )}

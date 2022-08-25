@@ -25,7 +25,7 @@ import {
 } from '../constants/waivio';
 import { rewardsValues } from '../constants/rewards';
 import * as apiConfig from '../../waivioApi/config.json';
-import { getObjectName } from './wObjectHelper';
+import { getObjectName, getObjectUrlForLink } from './wObjectHelper';
 
 const appVersion = require('../../../package.json').version;
 
@@ -179,6 +179,14 @@ export function getObjectUrl(objPermlink) {
     apiConfig[process.env.NODE_ENV].host
   }/object/${objPermlink}`;
 }
+
+export const getObjectLink = obj => {
+  if (isEmpty(obj)) return '';
+
+  return `${apiConfig[process.env.NODE_ENV].protocol}${
+    apiConfig[process.env.NODE_ENV].host
+  }${getObjectUrlForLink(obj)}`;
+};
 
 const setTitle = (initObjects, props) => {
   if (size(initObjects)) {

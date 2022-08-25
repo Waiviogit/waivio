@@ -921,7 +921,7 @@
   "check_review_requirements_title": "Ulasan ini tidak memenuhi beberapa persyaratan formal.",
   "check_review_post_requirements": "Persyaratan posting",
   "check_review_author_requirements": "Persyaratan penulis",
-  "check_review_minPhotos": "Minimal {minPhotos} foto asli {secondaryObjectName}",
+  "check_review_minPhotos": "Minimal {minPhotos} foto asli ",
   "check_review_secondaryObject": "Tautkan ke {secondaryObjectName} : {secondaryObjectUrl}",
   "check_review_primaryObject": "Tautkan ke {primaryObjectName} : {primaryObjectUrl}",
   "check_review_minExpertise": "Keahlian keseluruhan minimum: {minExpertise}",

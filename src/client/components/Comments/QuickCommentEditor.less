@@ -1,10 +1,26 @@
 @import (reference) '../../styles/custom.less';
 
 .QuickComment {
-  display: flex;
   position: relative;
-  align-items: flex-start;
-  padding: 12px 0;
+  padding: 0;
+  border: 1px solid @white-gainsboro;
+  border-radius: 5px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  margin-left: 20px;
+
+  span[data-slate-placeholder='true'] {
+    color: #99aab5;
+    opacity: 1 !important;
+  }
+
+  .md-block-paragraph:first-child {
+    margin-top: 2px !important;
+  }
+
+  .md-side-toolbar {
+    left: -18px;
+  }
 
   &__avatar {
     margin-right: 8px;
@@ -32,14 +48,15 @@
 
   .ant-input {
     resize: none;
-    padding-left: 30px;
-    padding-right: 30px;
+    padding-left: 10px;
+    padding-right: 12px;
   }
 
   &__send-comment {
     position: absolute;
-    z-index: 1;
+    z-index: 0;
     right: 5px;
+    bottom: 4px;
     display: inline-block;
     cursor: pointer;
 

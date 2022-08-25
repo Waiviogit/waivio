@@ -17,6 +17,7 @@ import {
 import config from '../../waivioApi/routes';
 import { getObjectName } from '../../common/helpers/wObjectHelper';
 import { getCryptosPriceHistory } from '../../store/appStore/appSelectors';
+import { getObjectsByIds } from '../../waivioApi/ApiClient';
 
 const isLocation = typeof location !== 'undefined';
 const isSessionStorage = typeof sessionStorage !== 'undefined';
@@ -210,19 +211,32 @@ export const getAgreementObjects = objectDetails =>
       )}`
     : '';
 
-export const getMatchBots = objectDetails =>
-  !isEmpty(objectDetails.match_bots)
-    ? reduce(objectDetails.match_bots, (acc, bot) => `${acc}, <a href='/@${bot}'>${bot}</a>`, ' ')
+export const getAgreementObjectsLink = agreementObjects =>
+  !isEmpty(agreementObjects)
+    ? `${reduce(
+        agreementObjects,
+        (acc, obj, i, arr) =>
+          `${acc} <a href="${obj.defaultShowLink}">${getObjectName(obj)}</a>${
+            arr.length > 1 && arr.length - 1 !== i ? ', ' : ''
+          }`,
+        '',
+      )}`
     : '';
 
-export const getUsersLegalNotice = objectDetails =>
-  objectDetails.usersLegalNotice
-    ? `<p><b>Legal notice:</b></p><p>${objectDetails.usersLegalNotice}.</p>`
+export const getMatchBots = objectDetails => {
+  const matchBots = objectDetails.match_bots || objectDetails.matchBots;
+
+  return !isEmpty(matchBots)
+    ? reduce(matchBots, (acc, bot) => `${acc}, <a href='/@${bot}'>${bot}</a>`, ' ')
     : '';
+};
+
+export const getUsersLegalNotice = objectDetails =>
+  objectDetails.usersLegalNotice ? `following: <b>${objectDetails.usersLegalNotice}</b>` : '';
 
 export const getReceiptPhoto = objectDetails =>
   objectDetails.requirements.receiptPhoto
-    ? `<p>Photo of the receipt (without personal details);</p>`
+    ? `<li>Photo of the receipt (without personal details);</li>`
     : '';
 
 export const getDescription = objectDetails =>
@@ -322,17 +336,18 @@ export const getDetailsBody = ({
   const sponsor = `<p>Sponsor reserves the right to refuse the payment if review is suspected to be fraudulent, spam, poorly written or for other reasons as stated in the agreement.</p>`;
   const agreementObjects = getAgreementObjects(proposition);
   const matchBots = getMatchBots(proposition);
+
   const rewards = `<p><b>Reward:</b></p>
 <p>The amount of the reward is determined in HIVE at the time of reservation. The reward will be paid in the form of a combination of upvotes (Hive Power) and direct payments (liquid HIVE). Only upvotes from registered accounts (<a href='/@${guideName}'>${guideName}</a> ${matchBots}) count towards the payment of rewards. The value of all other upvotes is not subtracted from the specified amount of the reward.</p>`;
   const legal = `<p><b>Legal:</b></p>
-<p>By making the reservation, you confirm that you have read and agree to the <a href="/object/xrj-terms-and-conditions/page">Terms and Conditions of the Service Agreement</a>${agreementObjects}.</p>`;
+<p>By making the reservation, you confirm that you have read and agree to the ${agreementObjects}.</p>`;
   const usersLegalNotice = getUsersLegalNotice(proposition);
 
   return `${eligibilityRequirements} ${frequencyAssign} ${blacklist} ${postRequirements} ${description} ${sponsor} ${rewards} ${legal} ${usersLegalNotice}`;
 };
 
-export const getNewDetailsBody = proposition => {
-  const parent = proposition.object.parent;
+export const getNewDetailsBody = async proposition => {
+  const parent = proposition.requiredObject;
   const proposedWobjName = getObjectName(proposition.object);
   const frequencyAssign = getFrequencyAssign(proposition);
   const receiptPhoto = getReceiptPhoto(proposition);
@@ -355,15 +370,23 @@ export const getNewDetailsBody = proposition => {
   }'>${getObjectName(parent)}</a>;</li></ul> `;
   const description = getDescription(proposition);
   const sponsor = `<p>Sponsor reserves the right to refuse the payment if review is suspected to be fraudulent, spam, poorly written or for other reasons as stated in the agreement.</p>`;
-  const agreementObjects = getAgreementObjects(proposition);
+  const agreementObjects = isEmpty(proposition?.agreementObjects)
+    ? null
+    : await getObjectsByIds({ authorPermlinks: proposition?.agreementObjects });
+  const agreementObjectsLink = getAgreementObjectsLink(agreementObjects?.wobjects);
+
   const matchBots = getMatchBots(proposition);
   const rewards = `<p><b>Reward:</b></p>
 <p>The amount of the reward is determined in ${proposition.payoutToken} at the time of reservation. The reward will be paid in the form of a combination of upvotes (${proposition.payoutToken} Power) and direct payments (liquid ${proposition.payoutToken}). Only upvotes from registered accounts (<a href='/@${proposition.guideName}'>${proposition.guideName}</a>${matchBots}) count towards the payment of rewards. The value of all other upvotes is not subtracted from the specified amount of the reward.</p>`;
-  const legal = `<p><b>Legal:</b></p>
-<p>By making the reservation, you confirm that you have read and agree to the <a href="/object/xrj-terms-and-conditions/page">Terms and Conditions of the Service Agreement</a>${agreementObjects}.</p>`;
-  const usersLegalNotice = getUsersLegalNotice(proposition);
+  const legal =
+    agreementObjects || proposition?.usersLegalNotice
+      ? `<p><b>Legal:</b></p>
+<p>By making the reservation, you confirm that you have read and agree to the ${agreementObjectsLink}${
+          proposition?.usersLegalNotice ? ` including ${getUsersLegalNotice(proposition)}.` : '.'
+        }</p>`
+      : '';
 
-  return `${eligibilityRequirements} ${frequencyAssign} ${blacklist} ${postRequirements} ${description} ${sponsor} ${rewards} ${legal} ${usersLegalNotice}`;
+  return `${eligibilityRequirements} ${frequencyAssign} ${blacklist} ${postRequirements} ${description} ${sponsor} ${rewards} ${legal}`;
 };
 
 export const sortDebtObjsData = (items, sortBy) => {
@@ -909,7 +932,9 @@ export const getSortChanged = ({
 
 export const getReviewRequirements = memoize(campaign => ({
   postRequirements: {
-    minPhotos: get(campaign, ['requirements', 'minPhotos'], 0),
+    minPhotos: campaign?.requirements?.receiptPhoto
+      ? get(campaign, ['requirements', 'minPhotos'], 0) + 1
+      : get(campaign, ['requirements', 'minPhotos'], 0),
     secondaryObject: get(campaign, ['secondaryObject'], {}),
     requiredObject: get(campaign, ['requiredObject'], {}),
   },

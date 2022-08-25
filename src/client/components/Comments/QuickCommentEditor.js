@@ -1,14 +1,22 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Input, Icon, Modal } from 'antd';
-import { get, isEmpty } from 'lodash';
+import { Icon } from 'antd';
+import { get } from 'lodash';
+import { Transforms } from 'slate';
 import withEditor from '../Editor/withEditor';
-import Avatar from '../Avatar';
-import ImageSetter from '../ImageSetter/ImageSetter';
 import { getIsAuthenticated } from '../../../store/authStore/authSelectors';
 
 import './QuickCommentEditor.less';
+import EditorSlate from '../EditorExtended/editorSlate';
+import { editorStateToMarkdownSlate } from '../EditorExtended/util/editorStateToMarkdown';
+import { checkCursorInSearchSlate } from '../../../common/helpers/editorHelper';
+import { getObjectName, getObjectType } from '../../../common/helpers/wObjectHelper';
+import objectTypes from '../../object/const/objectTypes';
+import { getObjectUrl } from '../../../common/helpers/postHelpers';
+import { insertObject } from '../EditorExtended/util/SlateEditor/utils/common';
+import { getEditorSlate } from '../../../store/slateEditorStore/editorSelectors';
+import { resetEditorState } from '../EditorExtended/util/SlateEditor/utils/SlateUtilityFunctions';
 
 @withEditor
 @connect(state => ({
@@ -17,7 +25,6 @@ import './QuickCommentEditor.less';
 class QuickCommentEditor extends React.Component {
   static propTypes = {
     parentPost: PropTypes.shape().isRequired,
-    username: PropTypes.string.isRequired,
     isLoading: PropTypes.bool,
     inputValue: PropTypes.string.isRequired,
     onSubmit: PropTypes.func,
@@ -47,33 +54,34 @@ class QuickCommentEditor extends React.Component {
     };
   }
 
+  setEditor = editor => {
+    this.editor = editor;
+  };
+
   handleSubmit = e => {
     e.preventDefault();
     e.stopPropagation();
     if (e.shiftKey) {
       this.setState(prevState => ({ commentMsg: `${prevState.commentMsg}\n` }));
     } else {
-      const { currentImage, commentMsg } = this.state;
+      const { commentMsg } = this.state;
 
       this.setState({ isDisabledSubmit: true });
 
       if (commentMsg) {
-        let imageData = commentMsg.trim();
-
-        if (currentImage.length) {
-          imageData += `\n![${currentImage[0].name}](${currentImage[0].src})\n`;
-        }
-        this.props.onSubmit(this.props.parentPost, imageData).then(response => {
+        this.props.onSubmit(this.props.parentPost, commentMsg.trim()).then(response => {
           if (!get(response, 'error', false)) {
             this.setState({ commentMsg: '', currentImage: [] });
+
+            resetEditorState(this.editor);
           }
         });
       }
     }
   };
 
-  handleMsgChange = e => {
-    const commentMsg = e.currentTarget.value;
+  handleMsgChange = body => {
+    const commentMsg = body.children ? editorStateToMarkdownSlate(body.children) : body;
 
     this.setState({ commentMsg });
   };
@@ -92,41 +100,36 @@ class QuickCommentEditor extends React.Component {
     this.setState({ currentImage: image });
   };
 
+  handleObjectSelect = selectedObject => {
+    const { beforeRange } = checkCursorInSearchSlate(this.editor);
+    const objectType = getObjectType(selectedObject);
+    const objectName = getObjectName(selectedObject);
+    const textReplace = objectType === objectTypes.HASHTAG ? `#${objectName}` : objectName;
+    const url = getObjectUrl(selectedObject.id || selectedObject.author_permlink);
+
+    Transforms.select(this.editor, beforeRange);
+    insertObject(this.editor, url, textReplace, true);
+  };
+
   render() {
-    const { currentImage, imageUploading, commentMsg, isModal, isLoadingImage } = this.state;
-    const { username, isLoading, isAuth } = this.props;
-    const setImage = (
-      <label htmlFor={this.props.parentPost.id}>
-        {imageUploading ? (
-          <Icon className="QuickComment__loading-img-icon" type="loading" />
-        ) : (
-          <i
-            className="iconfont icon-picture QuickComment__add-img-icon"
-            role="presentation"
-            onClick={this.handleToggleModal}
-          />
-        )}
-      </label>
-    );
+    const { isLoading, isAuth } = this.props;
 
     return (
-      <React.Fragment>
+      <div className="QuickComment">
         {isAuth && (
-          <div className="QuickComment">
-            {Boolean(username) && (
-              <div className="QuickComment__avatar">
-                <Avatar username={username} size={34} />
-              </div>
-            )}
-            <Input.TextArea
-              className="CommentArea"
-              autoSize
-              value={commentMsg}
-              disabled={imageUploading || isLoading}
-              onPressEnter={this.handleSubmit}
+          <>
+            <EditorSlate
+              small
+              isComment
+              editorEnabled
               onChange={this.handleMsgChange}
+              minHeight="auto"
+              initialPosTopBtn="-14px"
+              placeholder="Write your comment..."
+              handleObjectSelect={this.handleObjectSelect}
+              setEditorCb={this.setEditor}
+              ADD_BTN_DIF={24}
             />
-            {isEmpty(currentImage) && setImage}
             {isLoading ? (
               <Icon
                 type="loading"
@@ -141,39 +144,15 @@ class QuickCommentEditor extends React.Component {
                 <img src={'/images/icons/send.svg'} alt="send" />
               </span>
             )}
-          </div>
+          </>
         )}
-        {!isEmpty(currentImage) && (
-          <div className="QuickComment__img-preview">
-            <div
-              className="QuickComment__img-preview__remove"
-              onClick={this.handleRemoveImage}
-              role="presentation"
-            >
-              <i className="iconfont icon-delete_fill QuickComment__img-preview__remove__icon" />
-            </div>
-            <img src={currentImage[0].src} alt={currentImage[0].name} />
-          </div>
-        )}
-        <Modal
-          wrapClassName="Settings__modal"
-          onCancel={this.handleCloseModal}
-          okButtonProps={{ disabled: isLoadingImage }}
-          cancelButtonProps={{ disabled: isLoadingImage }}
-          visible={isModal}
-          onOk={this.handleToggleModal}
-        >
-          {isModal && (
-            <ImageSetter
-              onImageLoaded={this.getImages}
-              onLoadingImage={this.onLoadingImage}
-              isRequired
-            />
-          )}
-        </Modal>
-      </React.Fragment>
+      </div>
     );
   }
 }
 
-export default QuickCommentEditor;
+const mapStateToProps = store => ({
+  editor: getEditorSlate(store),
+});
+
+export default connect(mapStateToProps)(QuickCommentEditor);

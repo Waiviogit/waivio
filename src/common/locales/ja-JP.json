@@ -921,7 +921,7 @@
   "check_review_requirements_title": "このレビューは、いくつかの正式な要件を満たしていません。",
   "check_review_post_requirements": "投稿要件",
   "check_review_author_requirements": "著者の要件",
-  "check_review_minPhotos": "最小{minPhotos}の元の写真{secondaryObjectName}",
+  "check_review_minPhotos": "最小{minPhotos}の元の写真 ",
   "check_review_secondaryObject": "{secondaryObjectName}へのリンク： {secondaryObjectUrl}",
   "check_review_primaryObject": "{primaryObjectName}へのリンク： {primaryObjectUrl}",
   "check_review_minExpertise": "最低限の全体的な専門知識： {minExpertise}",

@@ -4,9 +4,10 @@ import { size } from 'lodash';
 import { Button, Icon, Modal } from 'antd';
 import { photosInPostRegex } from '../../../common/helpers/regexHelpers';
 import { getReviewRequirements } from '../../rewards/rewardsHelper';
+import SubmitReviewPublish from './SubmitReviewPublish';
+import { getObjectUrlForLink } from '../../../common/helpers/wObjectHelper';
 
 import './CheckReviewModal.less';
-import SubmitReviewPublish from './SubmitReviewPublish';
 
 const getIcon = isValidOption => (
   <Icon type="check-square" style={{ color: isValidOption ? '#30b580' : '#d9534f' }} />
@@ -26,6 +27,7 @@ const CheckReviewModal = ({
   const primaryObject = postRequirements.requiredObject;
   const secondaryObject = postRequirements.secondaryObject;
   const hasMinPhotos = size(postBody.match(photosInPostRegex)) >= postRequirements.minPhotos;
+
   const hasObject = object =>
     linkedObjects.some(obj => obj.author_permlink === object.author_permlink);
 
@@ -63,13 +65,15 @@ const CheckReviewModal = ({
             {intl.formatMessage(
               {
                 id: `check_review_minPhotos`,
-                defaultMessage: 'Minimum {minPhotos} original photos of {secondaryObjectName}',
+                defaultMessage: 'Minimum {minPhotos} original photos of ',
               },
               {
-                minPhotos: postRequirements.minPhotos,
-                secondaryObjectName: secondaryObject.name,
+                minPhotos: reviewData?.requirements?.minPhotos,
               },
             )}
+            {<a href={getObjectUrlForLink(secondaryObject)}>{secondaryObject.name}</a>}
+            {reviewData?.requirements?.receiptPhoto &&
+              ' and photo of the receipt (without personal details).'}
           </div>
           <div className="check-review-modal__list-item">
             {getIcon(hasObject(secondaryObject))}
@@ -77,7 +81,7 @@ const CheckReviewModal = ({
               id: 'rewards_details_link_to',
               defaultMessage: 'Link to',
             })}{' '}
-            {<a href={`/object/${secondaryObject.defaultShowLink}`}>{secondaryObject.name}</a>}
+            {<a href={getObjectUrlForLink(secondaryObject)}>{secondaryObject.name}</a>}
           </div>
           <div className="check-review-modal__list-item">
             {getIcon(hasObject(primaryObject))}
@@ -85,7 +89,7 @@ const CheckReviewModal = ({
               id: 'rewards_details_link_to',
               defaultMessage: 'Link to',
             })}{' '}
-            {<a href={`/object/${primaryObject.defaultShowLink}`}>{primaryObject.name}</a>}
+            {<a href={getObjectUrlForLink(primaryObject)}>{primaryObject.name}</a>}
           </div>
         </div>
         <div className="check-review-modal__buttons">
@@ -123,6 +127,10 @@ CheckReviewModal.propTypes = {
     name: PropTypes.string,
     alias: PropTypes.string,
     guideName: PropTypes.string,
+    requirements: PropTypes.shape({
+      minPhotos: PropTypes.number,
+      receiptPhoto: PropTypes.bool,
+    }),
   }),
   linkedObjects: PropTypes.arrayOf(PropTypes.shape()),
   onCancel: PropTypes.func.isRequired,

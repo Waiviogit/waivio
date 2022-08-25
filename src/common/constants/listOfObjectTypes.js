@@ -27,4 +27,5 @@ export default [
   'person',
   'car',
   'test',
+  'book',
 ];

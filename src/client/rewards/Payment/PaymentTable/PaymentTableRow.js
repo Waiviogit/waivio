@@ -2,8 +2,9 @@ import React, { useState, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { injectIntl } from 'react-intl';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { map, reduce, get } from 'lodash';
+import { useLocation } from 'react-router';
 import moment from 'moment';
 import { convertDigits, formatDate } from '../../rewardsHelper';
 import Report from '../../Report/Report';
@@ -11,24 +12,27 @@ import { getReport } from '../../../../waivioApi/ApiClient';
 import { setDataForSingleReport } from '../../../../store/rewardsStore/rewardsActions';
 import { TYPE } from '../../../../common/constants/rewards';
 import { getObjectName } from '../../../../common/helpers/wObjectHelper';
-import { getBeneficiariesUsers } from '../../../../store/searchStore/searchSelectors';
 
 import './PaymentTable.less';
 
 const PaymentTableRow = ({ intl, sponsor, isReports, reservationPermlink }) => {
   const [isModalReportOpen, setModalReportOpen] = useState(false);
-  const currBenefis = useSelector(getBeneficiariesUsers);
+  const location = useLocation();
+  const isNewReward = location.pathname.includes('rewards-new');
   const getConvertDigits = obj =>
     obj.type === 'transfer' ? `-${convertDigits(obj.amount)}` : convertDigits(obj.amount);
   const dispatch = useDispatch();
+  const guideName = sponsor.sponsor || sponsor.guideName;
   const toggleModalReport = () => {
+    if (isNewReward) return setModalReportOpen(!isModalReportOpen);
+
     const requestParams = {
-      guideName: sponsor.sponsor,
+      guideName,
       userName: sponsor.userName,
       reservationPermlink: sponsor?.details?.reservation_permlink || sponsor?.reviewPermlink,
     };
 
-    getReport(requestParams)
+    return getReport(requestParams)
       .then(data => {
         dispatch(setDataForSingleReport(data));
       })
@@ -56,7 +60,7 @@ const PaymentTableRow = ({ intl, sponsor, isReports, reservationPermlink }) => {
 
   const beneficiaries = sponsor?.details
     ? get(sponsor, ['details', 'beneficiaries'])
-    : [...(sponsor?.beneficiaries || []), ...currBenefis];
+    : sponsor?.beneficiaries;
 
   const userWeight = `(${(10000 -
     reduce(beneficiaries, (amount, benef) => amount + benef.weight, 0)) /
@@ -77,19 +81,19 @@ const PaymentTableRow = ({ intl, sponsor, isReports, reservationPermlink }) => {
               id: 'paymentTable_from',
               defaultMessage: 'from',
             })}{' '}
-            <Link to={`/@${sponsor.sponsor}`}>@{sponsor.userName}</Link>{' '}
+            <Link to={`/@${sponsor.userName}`}>@{sponsor.userName}</Link>{' '}
             {intl.formatMessage({
               id: 'paymentTable_review_to',
               defaultMessage: 'to',
             })}{' '}
-            <Link to={`/@${sponsor.userName}`}>@{sponsor.sponsor}</Link>
+            <Link to={`/@${guideName}`}>@{guideName}</Link>
           </React.Fragment>
         );
       case TYPE.transfer:
       case TYPE.demoDebt:
         return (
           <React.Fragment>
-            {sponsor.sponsor === sponsor.userName ? (
+            {guideName === sponsor.userName ? (
               <div>
                 <span className="PaymentTable__action-item fw6">
                   {intl.formatMessage({
@@ -97,7 +101,7 @@ const PaymentTableRow = ({ intl, sponsor, isReports, reservationPermlink }) => {
                     defaultMessage: `Send to`,
                   })}{' '}
                 </span>
-                <Link to={`/@${sponsor.sponsor}`}>@{sponsor.sponsor}</Link>{' '}
+                <Link to={`/@${guideName}`}>@{guideName}</Link>{' '}
                 {intl.formatMessage({
                   id: 'received_from_self',
                   defaultMessage: 'received from self',
@@ -115,7 +119,7 @@ const PaymentTableRow = ({ intl, sponsor, isReports, reservationPermlink }) => {
                   id: 'paymentTable_from',
                   defaultMessage: 'from',
                 })}{' '}
-                <Link to={`/@${sponsor.sponsor}`}>@{sponsor.sponsor}</Link>{' '}
+                <Link to={`/@${guideName}`}>@{guideName}</Link>{' '}
                 {intl.formatMessage({
                   id: 'paymentTable_review_to',
                   defaultMessage: 'to',
@@ -143,7 +147,7 @@ const PaymentTableRow = ({ intl, sponsor, isReports, reservationPermlink }) => {
               id: 'paymentTable_requested_by',
               defaultMessage: `requested by`,
             })}{' '}
-            <Link to={`/@${sponsor.sponsor}`}>@{sponsor.sponsor}</Link>)
+            <Link to={`/@${guideName}`}>@{guideName}</Link>)
           </React.Fragment>
         );
     }

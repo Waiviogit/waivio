@@ -16,7 +16,7 @@ const DetailsModalBody = ({ proposition, requirements, agreementObjects }) => {
   const getClassForCurrCreteria = creteria => classNames({ 'criteria-row__required': !creteria });
   const rate = useSelector(getRate);
   const rewardFund = useSelector(getRewardFund);
-  const requiredObject = proposition?.object?.parent || proposition.requiredObject;
+  const requiredObject = proposition.requiredObject;
   const minExpertise = getMinExpertise({
     campaignMinExpertise: proposition?.userRequirements?.minExpertise,
     rewardFundRecentClaims: rewardFund.recent_claims,
@@ -146,31 +146,29 @@ const DetailsModalBody = ({ proposition, requirements, agreementObjects }) => {
             ) count towards the payment of rewards. The value of all other upvotes is not subtracted
             from the specified amount of the reward.
           </span>
-          <div className="Details__text fw6 mv3">Legal:</div>
-          <span>
-            By making the reservation, you confirm that you have read and agree to the
-            <Link className="ml1" to="/object/xrj-terms-and-conditions/page">
-              Terms and Conditions of the Service Agreement
-            </Link>
-            {!isEmpty(agreementObjects) && (
-              <React.Fragment>
-                <span> including the following: Legal highlights:</span>
-                {agreementObjects?.map((obj, i, arr) => (
-                  <React.Fragment key={obj?.author_permlink}>
-                    <Link className="ml1" to={obj?.defaultShowLink}>
-                      {getObjectName(obj)}
-                    </Link>
-                    {arr.length > 1 && arr.length - 1 !== i ? ', ' : '.'}
+          {(!isEmpty(agreementObjects) || proposition?.usersLegalNotice) && (
+            <React.Fragment>
+              <div className="Details__text fw6 mv3">Legal:</div>
+              <span>
+                By making the reservation, you confirm that you have read and agree to the{' '}
+                {!isEmpty(agreementObjects) && (
+                  <React.Fragment>
+                    {agreementObjects?.map((obj, i, arr) => (
+                      <React.Fragment key={obj?.author_permlink}>
+                        <Link to={obj?.defaultShowLink}>{getObjectName(obj)}</Link>
+                        {arr.length > 1 && arr.length - 1 !== i ? ', ' : ''}
+                      </React.Fragment>
+                    ))}
+                    {proposition?.usersLegalNotice ? ' including ' : '.'}
                   </React.Fragment>
-                ))}
-              </React.Fragment>
-            )}
-          </span>
-          {proposition?.usersLegalNotice && (
-            <div>
-              <div className="Details__text fw6 mv3">Legal notice:</div>
-              <span>{proposition?.usersLegalNotice}</span>
-            </div>
+                )}
+                {proposition?.usersLegalNotice && (
+                  <span>
+                    following: <b>{proposition?.usersLegalNotice}</b>.
+                  </span>
+                )}
+              </span>
+            </React.Fragment>
           )}
         </React.Fragment>
       )}
@@ -192,17 +190,20 @@ DetailsModalBody.propTypes = {
     usersLegalNotice: PropTypes.string,
     guideName: PropTypes.string,
     activationPermlink: PropTypes.string,
+    requiredObject: PropTypes.shape({
+      defaultShowLink: PropTypes.string,
+    }),
     description: PropTypes.string,
     reserved: PropTypes.bool,
     frequencyAssign: PropTypes.number,
     payoutToken: PropTypes.string,
+    defaultShowLink: PropTypes.string,
     agreementObjects: PropTypes.arrayOf(PropTypes.string),
     matchBots: PropTypes.arrayOf(PropTypes.shape()),
     requirements: PropTypes.shape({
       receiptPhoto: PropTypes.bool,
       minPhotos: PropTypes.number,
     }),
-    requiredObject: PropTypes.shape({}),
     userRequirements: PropTypes.shape({
       minPhotos: PropTypes.number,
       minPosts: PropTypes.number,

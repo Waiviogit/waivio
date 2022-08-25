@@ -41,6 +41,7 @@ import {
   formFormFields,
   companyIdFields,
   productIdFields,
+  statusWithoutLinkList,
 } from '../../../common/constants/listOfFields';
 import OBJECT_TYPE from '../const/objectTypes';
 import { getSuitableLanguage } from '../../../store/reducers';
@@ -356,7 +357,9 @@ export default class AppendForm extends Component {
       case objectFields.workTime:
       case objectFields.email:
       case TYPES_OF_MENU_ITEM.PAGE:
-      case TYPES_OF_MENU_ITEM.LIST: {
+      case TYPES_OF_MENU_ITEM.LIST:
+      case objectFields.ageRange:
+      case objectFields.language: {
         fieldBody.push(rest[currentField]);
         break;
       }
@@ -428,6 +431,9 @@ export default class AppendForm extends Component {
           return `@${author} added ${productIdFields.productIdType} (${langReadable}): ${
             formValues[productIdFields.productIdType]
           }, ${currentField}: ${appendValue}, ${imageDescription}`;
+        case objectFields.ageRange:
+        case objectFields.language:
+          return `@${author} added ${currentField} (${langReadable}): ${appendValue}`;
         case TYPES_OF_MENU_ITEM.PAGE:
         case TYPES_OF_MENU_ITEM.LIST: {
           const alias = getFieldValue('menuItemName');
@@ -996,6 +1002,8 @@ export default class AppendForm extends Component {
     if (currentField === objectFields.phone)
       return filtered.some(f => this.getCurrentObjectBody(currentField).number === f.number);
     if (currentField === objectFields.name) return filtered.some(f => f.body === currentValue);
+    if (currentField === objectFields.ageRange) return filtered.some(f => f.body === currentValue);
+    if (currentField === objectFields.language) return filtered.some(f => f.body === currentValue);
     if (currentField === objectFields.categoryItem) {
       const selectedTagCategory = filtered.filter(item => item.tagCategory === currentCategory);
 
@@ -1409,6 +1417,48 @@ export default class AppendForm extends Component {
                 placeholder={intl.formatMessage({
                   id: 'description_short',
                   defaultMessage: 'Short description',
+                })}
+              />,
+            )}
+          </Form.Item>
+        );
+      }
+      case objectFields.ageRange: {
+        return (
+          <Form.Item>
+            {getFieldDecorator(objectFields.ageRange, {
+              rules: this.getFieldRules(objectFields.ageRange),
+            })(
+              <Input.TextArea
+                autoSize={{ minRows: 4, maxRows: 8 }}
+                className={classNames('AppendForm__input', {
+                  'validation-error': !this.state.isSomeValue,
+                })}
+                disabled={loading}
+                placeholder={intl.formatMessage({
+                  id: 'age_range',
+                  defaultMessage: 'Reading age',
+                })}
+              />,
+            )}
+          </Form.Item>
+        );
+      }
+      case objectFields.language: {
+        return (
+          <Form.Item>
+            {getFieldDecorator(objectFields.language, {
+              rules: this.getFieldRules(objectFields.language),
+            })(
+              <Input.TextArea
+                autoSize={{ minRows: 4, maxRows: 8 }}
+                className={classNames('AppendForm__input', {
+                  'validation-error': !this.state.isSomeValue,
+                })}
+                disabled={loading}
+                placeholder={intl.formatMessage({
+                  id: 'book_language',
+                  defaultMessage: 'Book language',
                 })}
               />,
             )}
@@ -2344,6 +2394,87 @@ export default class AppendForm extends Component {
         return null;
     }
   };
+  isSubmitButtonDisabled = () => {
+    const { getFieldValue } = this.props.form;
+    const { currentField } = this.props;
+
+    switch (currentField) {
+      case objectFields.website:
+        return (
+          isEmpty(getFieldValue(websiteFields.link)) || isEmpty(getFieldValue(websiteFields.title))
+        );
+      case objectFields.map:
+        return (
+          getFieldValue(mapFields.latitude) === undefined ||
+          getFieldValue(mapFields.longitude) === undefined ||
+          getFieldValue(mapFields.latitude) === '' ||
+          getFieldValue(mapFields.longitude) === ''
+        );
+      case objectFields.phone:
+        return isEmpty(getFieldValue(phoneFields.number));
+      case objectFields.galleryItem:
+        return isEmpty(getFieldValue('upload')) || this.state.currentImages.length < 1;
+      case objectFields.blog:
+        return (
+          isEmpty(getFieldValue(blogFields.title)) || isEmpty(getFieldValue(blogFields.account))
+        );
+      case objectFields.companyId:
+        return (
+          isEmpty(getFieldValue(companyIdFields.companyIdType)) ||
+          isEmpty(getFieldValue(companyIdFields.companyId))
+        );
+      case objectFields.productId:
+        return (
+          isEmpty(getFieldValue(productIdFields.productIdType)) ||
+          isEmpty(getFieldValue(productIdFields.productId))
+        );
+      case objectFields.form:
+        return (
+          isEmpty(getFieldValue('formTitle')) ||
+          (isEmpty(getFieldValue('formLink')) && isEmpty(getFieldValue('formWidget')))
+        );
+      case objectFields.button:
+        return (
+          isEmpty(getFieldValue(buttonFields.link)) || isEmpty(getFieldValue(buttonFields.title))
+        );
+      case objectFields.status:
+        return (
+          isEmpty(getFieldValue(statusFields.title)) ||
+          (!statusWithoutLinkList.includes(getFieldValue(statusFields.title)) &&
+            isEmpty(getFieldValue(statusFields.link)))
+        );
+      case objectFields.link:
+        return (
+          isEmpty(getFieldValue('linkFacebook')) &&
+          isEmpty(getFieldValue('linkTwitter')) &&
+          isEmpty(getFieldValue('linkYouTube')) &&
+          isEmpty(getFieldValue('linkInstagram')) &&
+          isEmpty(getFieldValue('linkGitHub'))
+        );
+      case objectFields.address:
+        return (
+          isEmpty(getFieldValue(addressFields.city)) &&
+          isEmpty(getFieldValue(addressFields.address)) &&
+          isEmpty(getFieldValue(addressFields.state)) &&
+          isEmpty(getFieldValue(addressFields.country)) &&
+          isEmpty(getFieldValue(addressFields.postalCode)) &&
+          isEmpty(getFieldValue(addressFields.street)) &&
+          isEmpty(getFieldValue(addressFields.accommodation))
+        );
+      case objectFields.newsFilter:
+        return (
+          isEmpty(this.state.newsFilterTitle) ||
+          (this.state.allowList[0].length < 1 &&
+            this.state.ignoreList.length < 1 &&
+            this.state.typeList.length < 1)
+        );
+      case objectFields.sorting:
+        return false;
+
+      default:
+        return isEmpty(getFieldValue(currentField));
+    }
+  };
 
   render() {
     const { chosenLocale, usedLocale, currentField, form, wObject } = this.props;
@@ -2428,6 +2559,7 @@ export default class AppendForm extends Component {
           votePercent={this.state.votePercent}
           voteWorth={this.state.voteWorth}
           selectWobj={this.props.wObject}
+          disabled={this.isSubmitButtonDisabled()}
         />
       </Form>
     );

@@ -3,12 +3,16 @@ import { addressFieldsForFormatting, TYPES_OF_MENU_ITEM } from '../constants/lis
 import LANGUAGES from '../translations/languages';
 
 export const getObjectName = (wobj = {}) =>
-  get(wobj, 'name') || get(wobj, 'default_name') || get(wobj, 'objectName') || '';
+  get(wobj, 'name') ||
+  get(wobj, 'default_name') ||
+  get(wobj, 'objectName') ||
+  get(wobj, 'object_name') ||
+  '';
 
 export const getObjectTitle = (wobj = {}) => wobj.title || '';
 
-export const getObjectUrl = (wobj = {}) =>
-  get(wobj, 'defaultShowLink') || `/object/${wobj.author_permlink}`;
+export const getObjectUrlForLink = (wobj = {}) =>
+  get(wobj, 'defaultShowLink') || `/object/${wobj.author_permlink || wobj.permlink || wobj.id}`;
 
 export const getObjectAvatar = (wobj = {}) =>
   get(wobj, 'avatar', '') || get(wobj, ['parent', 'avatar'], '');

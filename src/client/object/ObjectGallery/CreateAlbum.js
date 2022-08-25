@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Button, Form, Input, message, Modal } from 'antd';
 import { connect } from 'react-redux';
 import { FormattedMessage, injectIntl } from 'react-intl';
-
+import { isEmpty } from 'lodash';
 import { objectNameValidationRegExp } from '../../../common/constants/validation';
 import { prepareAlbumData, prepareAlbumToStore } from '../../../common/helpers/wObjectHelper';
 import { appendObject } from '../../../store/appendStore/appendActions';
@@ -61,6 +61,7 @@ const CreateAlbum = ({
     e.preventDefault();
     form.validateFieldsAndScroll((err, values) => !err && handleSubmit(values));
   };
+  const emptyAlbumName = isEmpty(form.getFieldValue('galleryAlbum'));
 
   return (
     <Modal
@@ -115,7 +116,12 @@ const CreateAlbum = ({
           )}
         </Form.Item>
         <Form.Item className="CreateAlbum__submit">
-          <Button type="primary" loading={loading} disabled={loading} onClick={handleOnClick}>
+          <Button
+            type="primary"
+            loading={loading}
+            disabled={emptyAlbumName || loading}
+            onClick={handleOnClick}
+          >
             <FormattedMessage
               id={loading ? 'album_send_progress' : 'album_append_send'}
               defaultMessage={loading ? 'Submitting' : 'Create'}

@@ -29,6 +29,7 @@
   position: relative;
   line-height: 1.4em;
   min-height: 178px;
+  //max-height: 150px;
 }
 
 .md-RichEditor-root-vimeo {
@@ -89,6 +90,47 @@
 
   h1.StoryFull__title {
     margin-top: 0;
+  }
+}
+
+.md-RichEditor-root-small {
+  min-height: 30px;
+  max-height: unset;
+  position: relative;
+  top: -2px;
+  padding: 5px 0 0;
+
+  .md-RichEditor-editor {
+    padding: 0 30px 0 4px;
+  }
+}
+
+.QuickComment .md-RichEditor-root-small {
+  .md-block-paragraph,
+  ol,
+  ul,
+  blockquote {
+    font-size: 16px;
+  }
+
+  h1 {
+    margin-top: 10px;
+    font-size: 20px;
+  }
+
+  h2 {
+    margin-top: 10px;
+    font-size: 18px;
+  }
+
+  h3 {
+    margin-top: 10px;
+    font-size: 17px;
+  }
+
+  h4 {
+    margin-top: 10px;
+    font-size: 16px;
   }
 }
 

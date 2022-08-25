@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { useLocation } from 'react-router';
 
 import { get } from 'lodash';
-import { getPaybelsList } from '../../../waivioApi/ApiClient';
+import { getReceivablesList } from '../../../waivioApi/ApiClient';
 import Debts from '../../rewards/Debts/Debts';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 import RewardsFilters from '../Filters/Filters';
@@ -25,7 +25,7 @@ const Receivables = () => {
 
   useEffect(() => {
     setLoading(true);
-    getPaybelsList(authUserName, {
+    getReceivablesList(authUserName, {
       skip: 0,
       limit: 30,
       days: query.get('days'),
@@ -39,7 +39,7 @@ const Receivables = () => {
   }, [location.search]);
 
   const handleLoadingMore = () =>
-    getPaybelsList(authUserName, {
+    getReceivablesList(authUserName, {
       skip: 0,
       limit: 30,
       days: query.get('days'),
