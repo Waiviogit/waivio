@@ -1886,5 +1886,7 @@
   "object_field_ageRange": "Reading age",
   "age_range": "Reading age",
   "object_field_language": "Language",
-  "book_language": "Book language"
+  "book_language": "Book language",
+  "object_field_publicationDate": "Publication date",
+  "select_publication_date": "Select publication date"
 }
