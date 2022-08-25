@@ -23,7 +23,6 @@ export const Manage = ({ intl, guideName, setHistoryLoading }) => {
   const dispatch = useDispatch();
   const [manageList, setManageList] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [deactivateLoading, setDeactivateLoading] = useState(false);
   const campaingIsActive = status => status === 'active';
 
   useEffect(() => {
@@ -72,12 +71,18 @@ export const Manage = ({ intl, guideName, setHistoryLoading }) => {
   };
 
   const handleDeactivateCampaing = item => {
-    setDeactivateLoading(true);
+    const copyManageList = [...manageList];
+    const itemIndex = copyManageList.findIndex(manageItem => item._id === manageItem._id);
+
+    copyManageList.splice(itemIndex, 1, {
+      ...copyManageList[itemIndex],
+      loading: true,
+    });
+    setManageList(copyManageList);
 
     const callback = () => {
       setManageList(manageList.filter(manageItem => manageItem._id !== item._id));
       setHistoryLoading(true);
-      setDeactivateLoading(false);
     };
 
     dispatch(deactivateCampaing(item, guideName, callback));
@@ -126,7 +131,7 @@ export const Manage = ({ intl, guideName, setHistoryLoading }) => {
           manageList.map(row => (
             <tr key={row._id}>
               <td>
-                {deactivateLoading ? (
+                {row.loading ? (
                   <Loading />
                 ) : (
                   <Checkbox
