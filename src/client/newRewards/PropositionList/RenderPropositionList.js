@@ -93,7 +93,10 @@ const RenderPropositionList = ({ getProposition, tab, getPropositionFilters }) =
             {propositions?.map(proposition => (
               <Proposition
                 key={`${proposition?.object?.author_permlink}/${proposition?.guideName}/${proposition?.activationPermlink}`}
-                proposition={{ ...proposition, requiredObject: parent }}
+                proposition={{
+                  ...proposition,
+                  requiredObject: parent || proposition?.requiredObject,
+                }}
                 type={tab}
               />
             ))}

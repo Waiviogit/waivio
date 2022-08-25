@@ -232,9 +232,7 @@ export const getMatchBots = objectDetails => {
 };
 
 export const getUsersLegalNotice = objectDetails =>
-  objectDetails.usersLegalNotice
-    ? `<span>following: <b>${objectDetails.usersLegalNotice}.</b></span>`
-    : '';
+  objectDetails.usersLegalNotice ? `following: <b>${objectDetails.usersLegalNotice}</b>` : '';
 
 export const getReceiptPhoto = objectDetails =>
   objectDetails.requirements.receiptPhoto
@@ -349,7 +347,7 @@ export const getDetailsBody = ({
 };
 
 export const getNewDetailsBody = async proposition => {
-  const parent = proposition.object.parent;
+  const parent = proposition.requiredObject;
   const proposedWobjName = getObjectName(proposition.object);
   const frequencyAssign = getFrequencyAssign(proposition);
   const receiptPhoto = getReceiptPhoto(proposition);
@@ -380,13 +378,15 @@ export const getNewDetailsBody = async proposition => {
   const matchBots = getMatchBots(proposition);
   const rewards = `<p><b>Reward:</b></p>
 <p>The amount of the reward is determined in ${proposition.payoutToken} at the time of reservation. The reward will be paid in the form of a combination of upvotes (${proposition.payoutToken} Power) and direct payments (liquid ${proposition.payoutToken}). Only upvotes from registered accounts (<a href='/@${proposition.guideName}'>${proposition.guideName}</a>${matchBots}) count towards the payment of rewards. The value of all other upvotes is not subtracted from the specified amount of the reward.</p>`;
-  const legal = `<p><b>Legal:</b></p>
+  const legal =
+    agreementObjects || proposition?.usersLegalNotice
+      ? `<p><b>Legal:</b></p>
 <p>By making the reservation, you confirm that you have read and agree to the ${agreementObjectsLink}${
-    proposition?.usersLegalNotice ? 'including ' : '.'
-  }</p>`;
-  const usersLegalNotice = getUsersLegalNotice(proposition);
+          proposition?.usersLegalNotice ? ` including ${getUsersLegalNotice(proposition)}.` : '.'
+        }</p>`
+      : '';
 
-  return `${eligibilityRequirements} ${frequencyAssign} ${blacklist} ${postRequirements} ${description} ${sponsor} ${rewards} ${legal} ${usersLegalNotice}`;
+  return `${eligibilityRequirements} ${frequencyAssign} ${blacklist} ${postRequirements} ${description} ${sponsor} ${rewards} ${legal}`;
 };
 
 export const sortDebtObjsData = (items, sortBy) => {
@@ -932,7 +932,9 @@ export const getSortChanged = ({
 
 export const getReviewRequirements = memoize(campaign => ({
   postRequirements: {
-    minPhotos: get(campaign, ['requirements', 'minPhotos'], 0),
+    minPhotos: campaign?.requirements?.receiptPhoto
+      ? get(campaign, ['requirements', 'minPhotos'], 0) + 1
+      : get(campaign, ['requirements', 'minPhotos'], 0),
     secondaryObject: get(campaign, ['secondaryObject'], {}),
     requiredObject: get(campaign, ['requiredObject'], {}),
   },
