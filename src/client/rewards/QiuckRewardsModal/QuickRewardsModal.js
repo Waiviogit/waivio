@@ -46,13 +46,14 @@ const QuickRewardsModal = props => {
     },
   ];
   const isPropositionObj = !isEmpty(get(props.selectedDish, 'propositions'));
+
   const nextButtonClassList = classNames('QuickRewardsModal__button', {
     'QuickRewardsModal__button--withRewards': isPropositionObj,
   });
   const buttonWrapClassList = classNames('QuickRewardsModal__button-wrap', {
     'QuickRewardsModal__button-wrap--firstScreen': pageNumber === 1,
   });
-  const requirements = get(props, 'selectedDish.propositions[0].requirements.minPhotos', 0);
+  const minPhotos = get(props, 'selectedDish.propositions[0].requirements.minPhotos', 0);
 
   const closeModal = () => {
     props.toggleModal(false);
@@ -126,12 +127,24 @@ const QuickRewardsModal = props => {
           buttonName: 'Next',
           buttonHandler: e => {
             e.currentTarget.blur();
-
             setPageNumber(2);
           },
           disabled: isEmpty(props.selectedDish) || isEmpty(props.selectedRestaurant),
         };
       case 2:
+        const secondScreenButtonName = isPropositionObj ? 'Next' : 'Publish';
+        const secondScreenButtonHandler = isPropositionObj
+          ? handleOnClickPublishButton
+          : handleCreatePost;
+        const secondScreenDisabled = isPropositionObj && minPhotos && minPhotos > images.length;
+        const secondScreenPreviousHandler = reservationPermlink
+          ? e => {
+              e.currentTarget.blur();
+              handelRejectReservation();
+              setPageNumber(1);
+            }
+          : handleOnClickBack;
+
         return {
           component: (
             <ModalSecondScreen
@@ -143,10 +156,10 @@ const QuickRewardsModal = props => {
               body={body}
             />
           ),
-          buttonName: 'Next',
-          buttonHandler: handleOnClickPublishButton,
-          disabled: requirements && requirements > images.length,
-          previousHandler: handleOnClickBack,
+          buttonName: secondScreenButtonName,
+          buttonHandler: secondScreenButtonHandler,
+          disabled: secondScreenDisabled,
+          previousHandler: secondScreenPreviousHandler,
         };
       case 3:
         return {
@@ -179,7 +192,11 @@ const QuickRewardsModal = props => {
       onCancel={closeModal}
       className="QuickRewardsModal"
     >
-      <StepsItems config={stepsConfig} activeStep={pageNumber} />
+      <StepsItems
+        config={stepsConfig}
+        activeStep={pageNumber}
+        isThirdPageVisible={pageNumber === 1 || (isPropositionObj && pageNumber !== 1)}
+      />
       {getCurrentScreen.component}
       {!isPropositionObj && pageNumber !== 1 && (
         <div className="QuickRewardsModal__warning-container">

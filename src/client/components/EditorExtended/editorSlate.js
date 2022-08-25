@@ -33,7 +33,11 @@ import {
   resetEditorState,
 } from './util/SlateEditor/utils/SlateUtilityFunctions';
 import { pipe } from '../../../common/helpers';
-import { handlePasteText, setEditor } from '../../../store/slateEditorStore/editorActions';
+import {
+  handlePasteText,
+  setClearState,
+  setEditor,
+} from '../../../store/slateEditorStore/editorActions';
 import { HEADING_BLOCKS } from './util/SlateEditor/utils/constants';
 
 import './index.less';
@@ -71,10 +75,12 @@ const EditorSlate = props => {
     initialBody,
     isComment,
     initialPosTopBtn,
+    clearEditor,
+    ADD_BTN_DIF,
   } = props;
 
   const params = useParams();
-  const [prevParams, setParams] = useState(null);
+  const [initiallized, setInitiallized] = useState(false);
   const editorRef = useRef(null);
 
   const handlePastedFiles = async event => {
@@ -259,6 +265,14 @@ const EditorSlate = props => {
   const renderElement = useCallback(newProps => <Element {...newProps} />, []);
   const renderLeaf = useCallback(newProps => <Leaf {...newProps} />, []);
 
+  useEditor(
+    () => () => {
+      resetEditorState(editor);
+      clearEditor();
+    },
+    [],
+  );
+
   useEffect(() => {
     window.slateEditor = editor;
     props.setEditor(editor);
@@ -267,12 +281,13 @@ const EditorSlate = props => {
 
     editorEl.style.minHeight = props.minHeight || `100px`;
     setTimeout(() => focusEditorToEnd(editor), 200);
+    setInitiallized(true);
+    setTimeout(() => setInitiallized(false), 1500);
   }, [params]);
 
   useEffect(() => {
-    if (!body) setParams(params);
-    if ((body || initialBody) && prevParams !== params) {
-      setParams(params);
+    if ((body || initialBody) && initiallized && !isComment) {
+      setInitiallized(false);
       const postParsed = deserializeToSlate(body || initialBody);
 
       resetEditorState(editor);
@@ -286,7 +301,7 @@ const EditorSlate = props => {
       Transforms.deselect(editor);
       focusEditorToEnd(editor);
     }
-  }, [body]);
+  }, [body, initiallized]);
 
   return (
     <Slate editor={editor} value={value} onChange={handleChange}>
@@ -315,6 +330,7 @@ const EditorSlate = props => {
             editorNode={editorRef.current}
             isComment={isComment}
             initialPosTop={initialPosTopBtn}
+            ADD_BTN_DIF={ADD_BTN_DIF}
           />
         </div>
       </div>
@@ -340,6 +356,8 @@ EditorSlate.propTypes = {
   small: PropTypes.bool,
   minHeight: PropTypes.string,
   initialPosTopBtn: PropTypes.string,
+  clearEditor: PropTypes.func,
+  ADD_BTN_DIF: PropTypes.number,
 };
 
 EditorSlate.defaultProps = {
@@ -355,6 +373,8 @@ EditorSlate.defaultProps = {
   minHeight: '',
   initialPosTopBtn: '',
   setEditorCb: null,
+  clearEditor: () => {},
+  ADD_BTN_DIF: 14,
 };
 
 const mapStateToProps = store => ({
@@ -364,6 +384,7 @@ const mapStateToProps = store => ({
 const mapDispatchToProps = dispatch => ({
   handlePasteText: html => dispatch(handlePasteText(html)),
   setEditor: editor => dispatch(setEditor({ editor })),
+  clearEditor: () => dispatch(setClearState()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(injectIntl(EditorSlate));
