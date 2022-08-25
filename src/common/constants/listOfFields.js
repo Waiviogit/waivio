@@ -11,6 +11,7 @@ export const objectFields = {
   productIdType: 'productIdType',
   productIdImage: 'productIdImage',
   ageRange: 'ageRange',
+  publicationDate: 'publicationDate',
   website: 'website',
   phone: 'phone',
   email: 'email',

@@ -335,6 +335,7 @@ class ObjectInfo extends React.Component {
       : [];
     const ageRange = wobject.ageRange;
     const language = wobject.language;
+    const publicationDate = wobject.publicationDate;
     const profile = linkField
       ? {
           facebook: linkField[linkFields.linkFacebook] || '',
@@ -642,6 +643,26 @@ class ObjectInfo extends React.Component {
                   <span className="field-website__title">
                     <Icon type="global" className="iconfont icon-link text-icon link" />
                     <span>{language}</span>
+                  </span>
+                </div>
+              ),
+            )}
+        {!isEditMode
+          ? publicationDate && (
+              <div className="field-website">
+                <span className="field-website__title">
+                  <img src={'/images/icons/calendar-icon.svg'} alt="Calendar icon" />
+                  <span>{publicationDate}</span>
+                </span>
+              </div>
+            )
+          : this.listItem(
+              objectFields.publicationDate,
+              publicationDate && (
+                <div className="field-website">
+                  <span className="field-website__title">
+                    <img src={'/images/icons/calendar-icon.svg'} alt="Calendar icon" />
+                    <span>{publicationDate}</span>
                   </span>
                 </div>
               ),
