@@ -18,11 +18,12 @@ import { getCurrentCurrency } from '../../../store/appStore/appSelectors';
 import Loading from '../../components/Icon/Loading';
 import { deactivateCampaing } from '../../../store/newRewards/newRewardsActions';
 
-export const Manage = ({ intl, guideName }) => {
+export const Manage = ({ intl, guideName, setHistoryLoading }) => {
   const currency = useSelector(getCurrentCurrency);
   const dispatch = useDispatch();
   const [manageList, setManageList] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [deactivateLoading, setDeactivateLoading] = useState(false);
   const campaingIsActive = status => status === 'active';
 
   useEffect(() => {
@@ -71,8 +72,12 @@ export const Manage = ({ intl, guideName }) => {
   };
 
   const handleDeactivateCampaing = item => {
+    setDeactivateLoading(true);
+
     const callback = () => {
       setManageList(manageList.filter(manageItem => manageItem._id !== item._id));
+      setHistoryLoading(true);
+      setDeactivateLoading(false);
     };
 
     dispatch(deactivateCampaing(item, guideName, callback));
@@ -121,10 +126,14 @@ export const Manage = ({ intl, guideName }) => {
           manageList.map(row => (
             <tr key={row._id}>
               <td>
-                <Checkbox
-                  checked={campaingIsActive(row.status)}
-                  onChange={() => showConfirm(row)}
-                />
+                {deactivateLoading ? (
+                  <Loading />
+                ) : (
+                  <Checkbox
+                    checked={campaingIsActive(row.status)}
+                    onChange={() => showConfirm(row)}
+                  />
+                )}
               </td>
               <td>
                 <Link to={`/rewards-new/details/${row._id}`}>{row.name}</Link>
@@ -155,6 +164,7 @@ Manage.propTypes = {
     formatMessage: PropTypes.func,
   }).isRequired,
   guideName: PropTypes.string.isRequired,
+  setHistoryLoading: PropTypes.func.isRequired,
 };
 
 export default Manage;

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { withRouter } from 'react-router-dom';
-import { get, isEmpty } from 'lodash';
+import { isEmpty } from 'lodash';
 import { Button, message, Modal } from 'antd';
 import { injectIntl } from 'react-intl';
 import { useHistory, useLocation } from 'react-router';
@@ -48,7 +48,7 @@ const DetailsModal = ({
   const isWidget = new URLSearchParams(history.location.search).get('display');
   const isReserved = new URLSearchParams(location.search).get('toReserved');
   const isWaivio = useSelector(getIsWaivio);
-  const requiredObject = get(proposition.object, 'parent');
+  const requiredObject = proposition?.requiredObject;
   const userName = useSelector(getAuthenticatedUserName);
   const isEligible = Object.values(requirements).every(req => req);
 
@@ -84,12 +84,12 @@ const DetailsModal = ({
           message.error(e.error_description);
         });
     } else {
-      const mainObject = `[${getObjectName(proposition.requiredObject)}](${
-        proposition?.requiredObject?.author_permlink
-      })`;
+      const mainObject = `[${getObjectName(requiredObject)}](${requiredObject?.author_permlink})`;
+
       const secondaryObject = `[${getObjectName(proposition.object)}](${
         proposition?.object?.author_permlink
       })`;
+
       const urlConfig = {
         pathname: '/editor',
         search: `?object=${mainObject}&object=${secondaryObject}&newCampaing=true&campaign=${proposition._id}`,

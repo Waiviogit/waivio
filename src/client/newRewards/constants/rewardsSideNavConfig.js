@@ -22,8 +22,8 @@ export const rewardsSettings = {
     },
     {
       to: '/rewards-new/receivables',
-      id: 'receivables',
-      defaultMessage: 'Receivables',
+      id: 'receivable',
+      defaultMessage: 'Receivable',
     },
   ],
 };
@@ -48,8 +48,8 @@ export const campaingSettings = {
     },
     {
       to: '/rewards-new/payables',
-      id: 'payables',
-      defaultMessage: 'Payables',
+      id: 'payable',
+      defaultMessage: 'Payable',
     },
   ],
 };

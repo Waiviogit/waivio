@@ -16,7 +16,7 @@ const DetailsModalBody = ({ proposition, requirements, agreementObjects }) => {
   const getClassForCurrCreteria = creteria => classNames({ 'criteria-row__required': !creteria });
   const rate = useSelector(getRate);
   const rewardFund = useSelector(getRewardFund);
-  const requiredObject = proposition?.object?.parent || proposition.requiredObject;
+  const requiredObject = proposition.requiredObject;
   const minExpertise = getMinExpertise({
     campaignMinExpertise: proposition?.userRequirements?.minExpertise,
     rewardFundRecentClaims: rewardFund.recent_claims,
@@ -190,17 +190,20 @@ DetailsModalBody.propTypes = {
     usersLegalNotice: PropTypes.string,
     guideName: PropTypes.string,
     activationPermlink: PropTypes.string,
+    requiredObject: PropTypes.shape({
+      defaultShowLink: PropTypes.string,
+    }),
     description: PropTypes.string,
     reserved: PropTypes.bool,
     frequencyAssign: PropTypes.number,
     payoutToken: PropTypes.string,
+    defaultShowLink: PropTypes.string,
     agreementObjects: PropTypes.arrayOf(PropTypes.string),
     matchBots: PropTypes.arrayOf(PropTypes.shape()),
     requirements: PropTypes.shape({
       receiptPhoto: PropTypes.bool,
       minPhotos: PropTypes.number,
     }),
-    requiredObject: PropTypes.shape({}),
     userRequirements: PropTypes.shape({
       minPhotos: PropTypes.number,
       minPosts: PropTypes.number,
