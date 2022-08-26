@@ -42,6 +42,7 @@ import {
   companyIdFields,
   productIdFields,
   statusWithoutLinkList,
+  errorObjectFields,
 } from '../../../common/constants/listOfFields';
 import OBJECT_TYPE from '../const/objectTypes';
 import { getSuitableLanguage } from '../../../store/reducers';
@@ -2478,6 +2479,8 @@ export default class AppendForm extends Component {
 
   render() {
     const { chosenLocale, usedLocale, currentField, form, wObject } = this.props;
+    const r = form.getFieldsError(errorObjectFields[currentField]);
+    const isError = errorObjectFields[currentField]?.some(i => r[i]);
     const { getFieldDecorator, getFieldValue } = this.props.form;
     const { loading } = this.state;
     const isCustomSortingList =
@@ -2559,7 +2562,7 @@ export default class AppendForm extends Component {
           votePercent={this.state.votePercent}
           voteWorth={this.state.voteWorth}
           selectWobj={this.props.wObject}
-          disabled={this.isSubmitButtonDisabled()}
+          disabled={this.isSubmitButtonDisabled() || isError}
         />
       </Form>
     );
