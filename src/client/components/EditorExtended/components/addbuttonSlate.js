@@ -66,7 +66,7 @@ const AddButtonSlate = props => {
   }, [props.isClearSearchObjects]);
 
   return (
-    <div className="md-side-toolbar" style={{ top: 0 }} ref={nodeRef}>
+    <div className="md-side-toolbar" style={{ top: initialPosTop }} ref={nodeRef}>
       <button
         onClick={handleOpenToolbar}
         className={`md-sb-button md-add-button${isOpen ? ' md-open-button' : ''}`}
@@ -143,7 +143,7 @@ AddButtonSlate.defaultProps = {
   withTitleLine: false,
   isClearSearchObjects: false,
   isComment: false,
-  initialPosTop: null,
+  initialPosTop: 0,
   ADD_BTN_DIF: 14,
 };
 

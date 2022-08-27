@@ -280,7 +280,7 @@ const EditorSlate = props => {
     const editorEl = document.querySelector('[data-slate-editor="true"]');
 
     editorEl.style.minHeight = props.minHeight || `100px`;
-    setTimeout(() => focusEditorToEnd(editor), 200);
+    // setTimeout(() => focusEditorToEnd(editor), 200);
     setInitiallized(true);
     setTimeout(() => setInitiallized(false), 1500);
   }, [params]);
