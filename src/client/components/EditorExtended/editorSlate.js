@@ -77,7 +77,6 @@ const EditorSlate = props => {
     initialPosTopBtn,
     clearEditor,
     ADD_BTN_DIF,
-    isQuickComment,
   } = props;
 
   const params = useParams();
@@ -281,7 +280,7 @@ const EditorSlate = props => {
     const editorEl = document.querySelector('[data-slate-editor="true"]');
 
     editorEl.style.minHeight = props.minHeight || `100px`;
-    if (!isQuickComment) setTimeout(() => focusEditorToEnd(editor), 200);
+    if (!isComment) setTimeout(() => focusEditorToEnd(editor), 200);
     setInitiallized(true);
     setTimeout(() => setInitiallized(false), 1500);
   }, [params]);
@@ -300,7 +299,7 @@ const EditorSlate = props => {
         Transforms.insertNodes(editor, createEmptyNode());
       }
       Transforms.deselect(editor);
-      focusEditorToEnd(editor);
+      if (!isComment) focusEditorToEnd(editor);
     }
   }, [body, initiallized]);
 
@@ -359,7 +358,6 @@ EditorSlate.propTypes = {
   initialPosTopBtn: PropTypes.string,
   clearEditor: PropTypes.func,
   ADD_BTN_DIF: PropTypes.number,
-  isQuickComment: PropTypes.bool,
 };
 
 EditorSlate.defaultProps = {
@@ -377,7 +375,6 @@ EditorSlate.defaultProps = {
   setEditorCb: null,
   clearEditor: () => {},
   ADD_BTN_DIF: 14,
-  isQuickComment: false,
 };
 
 const mapStateToProps = store => ({
