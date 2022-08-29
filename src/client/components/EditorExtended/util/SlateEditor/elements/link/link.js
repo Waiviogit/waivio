@@ -1,5 +1,5 @@
 import { useSelected, useFocused } from 'slate-react';
-import React from 'react';
+import React, { useState } from 'react';
 import { truncate } from 'lodash';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
@@ -10,17 +10,20 @@ const Link = ({ attributes, element, children }) => {
   const selected = useSelected();
   const focused = useFocused();
 
+
+  const [hovered, setHovered] = useState(false);
+
   const classNames = classnames({
     'element-link': true,
     'element-link_focused': selected && focused,
   });
 
   return (
-    <div className={classNames}>
+    <div className={classNames} onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}>
       <a {...attributes} href={element.url} target="_blank noreferrer">
         {children}
       </a>
-      {selected && focused && (
+      {hovered && (
         <div
           className="md-editor-toolbar md-editor-toolbar--isopen md-editor-toolbar-edit-link"
           contentEditable={false}
