@@ -1,5 +1,5 @@
 import { useSelected, useFocused } from 'slate-react';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { truncate } from 'lodash';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
@@ -10,8 +10,20 @@ const Link = ({ attributes, element, children }) => {
   const selected = useSelected();
   const focused = useFocused();
 
+  useEffect(() => {
+    const handleClickOutside = () => setClicked(false);
+
+    window.addEventListener('mousedown', handleClickOutside);
+
+    return () => window.removeEventListener('mousedown', handleClickOutside);
+  });
 
   const [hovered, setHovered] = useState(false);
+  const [clicked, setClicked] = useState(false);
+  const handleClick = e => {
+    e.stopPropagation();
+    setClicked(true);
+  };
 
   const classNames = classnames({
     'element-link': true,
@@ -19,11 +31,16 @@ const Link = ({ attributes, element, children }) => {
   });
 
   return (
-    <div className={classNames} onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}>
+    <div
+      className={classNames}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      onMouseDown={handleClick}
+    >
       <a {...attributes} href={element.url} target="_blank noreferrer">
         {children}
       </a>
-      {hovered && (
+      {(hovered || clicked) && (
         <div
           className="md-editor-toolbar md-editor-toolbar--isopen md-editor-toolbar-edit-link"
           contentEditable={false}
