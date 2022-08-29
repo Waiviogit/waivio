@@ -45,6 +45,14 @@
     &-change-vote {
       color: @orange-hot;
       cursor: pointer;
+      background: transparent;
+      outline: none;
+      border: none;
+
+      &:disabled {
+        cursor: no-drop;
+        color: @blue-gullGray;
+      }
     }
   }
 

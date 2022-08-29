@@ -148,4 +148,25 @@ export const deactivateCampaing = (item, guideName, callback) => (
   });
 };
 
+export const setMatchBotVotingPower = votingPower => (dispatch, getState, { steemConnectAPI }) => {
+  const state = getState();
+  const username = getAuthenticatedUserName(state);
+
+  return steemConnectAPI.settingNewMatchBotVotingPower(username, votingPower);
+};
+
+export const removeMatchBotRule = sponsorName => (dispatch, getState, { steemConnectAPI }) => {
+  const state = getState();
+  const username = getAuthenticatedUserName(state);
+
+  return steemConnectAPI.removeMatchBotRule(username, sponsorName);
+};
+
+export const setNewMatchBotRules = ruleObj => (dispatch, getState, { steemConnectAPI }) => {
+  const state = getState();
+  const username = getAuthenticatedUserName(state);
+
+  return steemConnectAPI.setMatchBotNewRule(username, ruleObj);
+};
+
 export default null;

@@ -3009,6 +3009,17 @@ export const getFiltersForReservedProposition = (reqObj, userName) => {
     .catch(e => e);
 };
 
+export const getSponsorsMatchBots = botName => {
+  return fetch(`${config.campaignV2ApiPrefix}${config.bots}${config.sponsors}?botName=${botName}`, {
+    headers,
+    method: 'GET',
+  })
+    .then(handleErrors)
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+};
+
 export const getCampaign = (user, id) => {
   return fetch(
     `${config.campaignV2ApiPrefix}${config.reservation_v2}${config.details}/${user}/${id}`,
