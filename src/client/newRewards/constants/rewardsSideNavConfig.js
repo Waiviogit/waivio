@@ -53,3 +53,18 @@ export const campaingSettings = {
     },
   ],
 };
+
+export const matchBotsSettings = {
+  tab: {
+    name: 'matchbots',
+    id: 'match_bots',
+    defaultMessage: 'Match Bots',
+  },
+  settings: [
+    {
+      to: '/rewards-new/match-bots-sponsors',
+      id: 'sponsors',
+      defaultMessage: 'Sponsors',
+    },
+  ],
+};

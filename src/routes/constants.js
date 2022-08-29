@@ -99,6 +99,7 @@ export default {
       'duplicate',
       'reserved',
       'payables',
+      'match-bots-sponsors',
     ].join('|'),
     sideBar: [
       'all',

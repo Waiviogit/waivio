@@ -13,6 +13,9 @@ export default {
     import('../client/newRewards/PropositionLists/ReservedProposition'),
   ),
   Payables: loableComponent(import('../client/newRewards/Debts/Paybles')),
+  SponsorsMatchBots: loableComponent(
+    import('../client/newRewards/SponsorsMatchBots/SponsorsMatchBots'),
+  ),
   Receivables: loableComponent(import('../client/newRewards/Debts/Receivables')),
   ReceivablesListByUser: loableComponent(
     import('../client/newRewards/Debts/ReceivablesListByUser'),

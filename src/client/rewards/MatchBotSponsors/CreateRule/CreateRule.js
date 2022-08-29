@@ -16,6 +16,10 @@ import DeleteRuleModal from './DeleteRuleModal/DeleteRuleModal';
 import ConfirmModal from './ConfirmModal';
 
 import './CreateRule.less';
+import {
+  removeMatchBotRule,
+  setNewMatchBotRules,
+} from '../../../../store/newRewards/newRewardsActions';
 
 const CreateRule = ({
   editRule,
@@ -25,6 +29,7 @@ const CreateRule = ({
   modalVisible,
   setEditRule,
   isEnabledRule,
+  isNew,
 }) => {
   const [expiredAt, setExpired] = useState('');
   const [isConfirmModalLoading, setConfirmModalLoaded] = useState(false);
@@ -84,15 +89,24 @@ const CreateRule = ({
   };
 
   const setRule = (values, isEdit) => {
-    const prepareObjData = {
-      sponsor: !isEdit ? sponsor.account : editRule.sponsor,
-      voting_percent: sliderValue / 100,
-    };
+    const spnsr = !isEdit ? sponsor.account : editRule.sponsor;
+    const prepareObjData = isNew
+      ? {
+          sponsor: spnsr,
+          votingPercent: sliderValue / 100,
+        }
+      : {
+          sponsor: spnsr,
+          voting_percent: sliderValue / 100,
+        };
 
     if (!isEdit || isEnabledRule) prepareObjData.enabled = true;
     if (values.expiryDate) prepareObjData.expiredAt = values.expiryDate;
     if (values.noticeField) prepareObjData.note = values.noticeField;
-    dispatch(setMatchBotRules(prepareObjData))
+
+    const setRulesMethod = isNew ? setNewMatchBotRules : setMatchBotRules;
+
+    dispatch(setRulesMethod(prepareObjData))
       .then(() => {
         setConfirmModalLoaded(false);
         handleChangeModalVisible();
@@ -137,7 +151,9 @@ const CreateRule = ({
       sponsor: editRule.sponsor,
     };
 
-    dispatch(deleteMatchBotRule(prepareObjData))
+    const removeMatchBotMethod = isNew ? removeMatchBotRule : deleteMatchBotRule;
+
+    dispatch(removeMatchBotMethod(prepareObjData))
       .then(() => {
         handleChangeModalVisible();
         setDeleteModalLoaded(false);
@@ -382,6 +398,7 @@ CreateRule.propTypes = {
   intl: PropTypes.shape().isRequired,
   form: PropTypes.shape().isRequired,
   modalVisible: PropTypes.bool.isRequired,
+  isNew: PropTypes.bool,
   editRule: PropTypes.shape(),
   handleChangeModalVisible: PropTypes.func.isRequired,
   setEditRule: PropTypes.func.isRequired,
@@ -389,6 +406,7 @@ CreateRule.propTypes = {
 };
 CreateRule.defaultProps = {
   editRule: {},
+  isNew: false,
 };
 
 export default Form.create()(injectIntl(CreateRule));

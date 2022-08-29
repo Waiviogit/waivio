@@ -185,6 +185,11 @@ const routes = {
           exact: true,
           component: Views.ReceivablesListByUser,
         },
+        {
+          path: '/match-bots-sponsors',
+          exact: true,
+          component: Views.SponsorsMatchBots,
+        },
       ],
     },
     {

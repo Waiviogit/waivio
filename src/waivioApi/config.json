@@ -34,6 +34,7 @@
     "createObject": "/create-object"
   },
   "all": "/all",
+  "bots": "/bots",
   "activation": "/validate_activation",
   "auth": "/auth",
   "blacklist": "/blacklist",
