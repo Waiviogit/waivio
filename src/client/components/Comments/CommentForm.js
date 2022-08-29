@@ -151,6 +151,7 @@ class CommentForm extends React.Component {
                 handleObjectSelect={this.handleObjectSelect}
                 isComment
                 editorEnabled
+                initialPosTopBtn="11.5px"
               />
             </div>
           </Element>
