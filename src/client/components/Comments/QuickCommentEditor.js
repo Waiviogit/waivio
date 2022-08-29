@@ -121,6 +121,7 @@ class QuickCommentEditor extends React.Component {
             <EditorSlate
               small
               isComment
+              isQuickComment
               editorEnabled
               onChange={this.handleMsgChange}
               minHeight="auto"
