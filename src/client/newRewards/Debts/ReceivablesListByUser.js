@@ -50,6 +50,7 @@ const ReceivablesListByUser = ({ intl }) => {
       </div>
       {!isEmpty(sponsors) && (
         <PaymentTable
+          currency={'WAIV'}
           sponsors={sponsors}
           isHive
           reservationPermlink={match.params.reservationPermlink}

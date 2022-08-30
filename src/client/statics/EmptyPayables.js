@@ -6,7 +6,10 @@ import './EmptyFeed.less';
 const EmptyPaybles = () => (
   <div className="feed_empty">
     <h3>
-      <FormattedMessage id="payables_empty" defaultMessage="Payables is empty" />
+      <FormattedMessage
+        id="dont_have_any_payments_yet"
+        defaultMessage="You don't have any payments yet"
+      />
     </h3>
   </div>
 );
