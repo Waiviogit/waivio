@@ -19,6 +19,7 @@ export const objectFields = {
   listItem: 'listItem',
   price: 'price',
   parent: 'parent',
+  publisher: 'publisher',
   newsFilter: 'newsFilter',
   button: 'button',
   workTime: 'workTime',

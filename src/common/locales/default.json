@@ -1886,5 +1886,8 @@
   "object_field_ageRange": "Reading age",
   "age_range": "Reading age",
   "object_field_language": "Language",
-  "book_language": "Book language"
+  "book_language": "Book language",
+  "object_field_publisher": "Publisher",
+  "objects_auto_complete_publisher_placeholder": "Find publisher",
+  "create_new_publisher": " Create new publisher"
 }

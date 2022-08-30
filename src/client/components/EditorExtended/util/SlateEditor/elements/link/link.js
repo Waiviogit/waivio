@@ -10,7 +10,6 @@ const Link = ({ attributes, element, children }) => {
   const selected = useSelected();
   const focused = useFocused();
 
-
   const [hovered, setHovered] = useState(false);
 
   const classNames = classnames({
@@ -19,7 +18,11 @@ const Link = ({ attributes, element, children }) => {
   });
 
   return (
-    <div className={classNames} onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}>
+    <div
+      className={classNames}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+    >
       <a {...attributes} href={element.url} target="_blank noreferrer">
         {children}
       </a>

@@ -355,6 +355,7 @@ export default class AppendForm extends Component {
       case objectFields.price:
       case objectFields.categoryItem:
       case objectFields.parent:
+      case objectFields.publisher:
       case objectFields.workTime:
       case objectFields.email:
       case TYPES_OF_MENU_ITEM.PAGE:
@@ -412,6 +413,8 @@ export default class AppendForm extends Component {
       switch (currentField) {
         case objectFields.avatar:
         case objectFields.background:
+          return `@${author} added ${currentField} (${langReadable}):\n ![${currentField}](${appendValue})`;
+        case objectFields.publisher:
           return `@${author} added ${currentField} (${langReadable}):\n ![${currentField}](${appendValue})`;
         case objectFields.phone:
           return `@${author} added ${currentField}(${langReadable}):\n ${appendValue.replace(
@@ -1346,6 +1349,16 @@ export default class AppendForm extends Component {
             {getFieldDecorator(objectFields.parent, {
               rules: this.getFieldRules(objectFields.parent),
             })(<SearchObjectsAutocomplete handleSelect={this.handleSelectObject} />)}
+            {this.state.selectedObject && <ObjectCardView wObject={this.state.selectedObject} />}
+          </Form.Item>
+        );
+      }
+      case objectFields.publisher: {
+        return (
+          <Form.Item>
+            {getFieldDecorator(objectFields.publisher, {
+              rules: this.getFieldRules(objectFields.publisher),
+            })(<SearchObjectsAutocomplete isPublisher handleSelect={this.handleSelectObject} />)}
             {this.state.selectedObject && <ObjectCardView wObject={this.state.selectedObject} />}
           </Form.Item>
         );

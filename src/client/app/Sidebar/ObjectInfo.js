@@ -335,6 +335,7 @@ class ObjectInfo extends React.Component {
       : [];
     const ageRange = wobject.ageRange;
     const language = wobject.language;
+    const publisher = wobject.publisher;
     const profile = linkField
       ? {
           facebook: linkField[linkFields.linkFacebook] || '',
@@ -691,6 +692,16 @@ class ObjectInfo extends React.Component {
               objectFields.parent,
               parent && (
                 <ObjectCard key={parent.author_permlink} wobject={parent} showFollow={false} />
+              ),
+            )}
+            {this.listItem(
+              objectFields.publisher,
+              publisher && (
+                <ObjectCard
+                  key={publisher.author_permlink}
+                  wobject={publisher}
+                  showFollow={false}
+                />
               ),
             )}
             {!isHashtag && !hasType(wobject, OBJECT_TYPE.PAGE) && menuSection()}
