@@ -27,12 +27,13 @@ const CheckReviewModal = ({
   const primaryObject = postRequirements.requiredObject;
   const secondaryObject = postRequirements.secondaryObject;
   const hasMinPhotos = size(postBody.match(photosInPostRegex)) >= postRequirements.minPhotos;
+  const hasReceipt = size(postBody.match(photosInPostRegex)) >= postRequirements.receiptPhoto;
 
   const hasObject = object =>
     linkedObjects.some(obj => obj.author_permlink === object.author_permlink);
 
   const modalBody =
-    hasMinPhotos && hasObject(secondaryObject) && hasObject(primaryObject) ? (
+    hasMinPhotos && hasReceipt && hasObject(secondaryObject) && hasObject(primaryObject) ? (
       <React.Fragment>
         <SubmitReviewPublish reviewData={reviewData} primaryObject={primaryObject} />
         <div className="check-review-modal__buttons">
@@ -72,9 +73,13 @@ const CheckReviewModal = ({
               },
             )}
             {<a href={getObjectUrlForLink(secondaryObject)}>{secondaryObject.name}</a>}
-            {reviewData?.requirements?.receiptPhoto &&
-              ' and photo of the receipt (without personal details).'}
           </div>
+          {reviewData?.requirements?.receiptPhoto && (
+            <div className="check-review-modal__list-item">
+              {getIcon(hasReceipt)}
+              Photo of the receipt (without personal details).
+            </div>
+          )}
           <div className="check-review-modal__list-item">
             {getIcon(hasObject(secondaryObject))}
             {intl.formatMessage({

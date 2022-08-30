@@ -101,6 +101,7 @@ const Editor = props => {
       <div className="waiv-editor">
         {isMounted && (
           <MediumDraftEditor
+            initialPosTopBtn="11.5px"
             intl={props.intl}
             isVimeo={isVimeo}
             editorState={editorState}
