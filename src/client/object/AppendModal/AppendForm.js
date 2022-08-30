@@ -1484,8 +1484,8 @@ export default class AppendForm extends Component {
                 className={classNames('AppendForm__input', {
                   'validation-error': !this.state.isSomeValue,
                 })}
-                showToday
                 disabled={loading}
+                dropdownClassName="AppendForm__calendar-popup"
                 placeholder={intl.formatMessage({
                   id: 'select_publication_date',
                   defaultMessage: 'Select publication date',
