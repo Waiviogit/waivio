@@ -21,7 +21,12 @@ const filterConfig = [
   { title: 'Sponsors', type: 'sponsors' },
 ];
 
-const RenderPropositionList = ({ getProposition, tab, getPropositionFilters }) => {
+const RenderPropositionList = ({
+  getProposition,
+  tab,
+  getPropositionFilters,
+  customFilterConfig,
+}) => {
   const { requiredObject } = useParams();
   const authUserName = useSelector(getAuthenticatedUserName);
   const [propositions, setPropositions] = useState();
@@ -98,12 +103,17 @@ const RenderPropositionList = ({ getProposition, tab, getPropositionFilters }) =
                   requiredObject: parent || proposition?.requiredObject,
                 }}
                 type={tab}
+                getProposition={getPropositionList}
               />
             ))}
           </ReduxInfiniteScroll>
         )}
       </div>
-      <RewardsFilters title={'Filter rewards'} getFilters={getFilters} config={filterConfig} />
+      <RewardsFilters
+        title={'Filter rewards'}
+        getFilters={getFilters}
+        config={customFilterConfig}
+      />
     </div>
   );
 };
@@ -112,6 +122,11 @@ RenderPropositionList.propTypes = {
   getProposition: PropTypes.func.isRequired,
   getPropositionFilters: PropTypes.func.isRequired,
   tab: PropTypes.string.isRequired,
+  customFilterConfig: PropTypes.shape({}).isRequired,
+};
+
+RenderPropositionList.defaultProps = {
+  customFilterConfig: filterConfig,
 };
 
 export default RenderPropositionList;

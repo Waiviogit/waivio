@@ -24,6 +24,12 @@ export default {
   Rebalancing: loableComponent(import('../client/newRewards/Rebalancing/Rebalancing')),
   EligibleRewards: loableComponent(import('../client/newRewards/RewardLists/EligibleRewards')),
   AllProposition: loableComponent(import('../client/newRewards/PropositionLists/AllPropositions')),
+  ReservationsProposition: loableComponent(
+    import('../client/newRewards/PropositionLists/ReservationsProposition'),
+  ),
+  HistoryPropositions: loableComponent(
+    import('../client/newRewards/PropositionLists/HistoryPropositions'),
+  ),
   EligibleProposition: loableComponent(
     import('../client/newRewards/PropositionLists/EligibleProposition'),
   ),

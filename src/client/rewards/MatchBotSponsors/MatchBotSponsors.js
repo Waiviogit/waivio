@@ -44,7 +44,8 @@ const MatchBotSponsors = ({ intl, userName, isAuthority, isEngLocale }) => {
     }
   }, []);
 
-  const localizer = (id, defaultMessage) => intl.formatMessage({ id, defaultMessage });
+  const localizer = (id, defaultMessage, values) =>
+    intl.formatMessage({ id, defaultMessage }, values);
   const messageData = getMatchBotMessageData(localizer);
 
   const handleChangeModalVisible = () => {

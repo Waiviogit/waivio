@@ -2,15 +2,14 @@ import React, { useState } from 'react';
 import { Icon, Modal } from 'antd';
 import { useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
-import { useHistory } from 'react-router';
+import { noop } from 'lodash';
 
 import Popover from '../../components/Popover';
 import PopoverMenu, { PopoverMenuItem } from '../../components/PopoverMenu/PopoverMenu';
 import { realiseRewards } from '../../../store/newRewards/newRewardsActions';
 
-const RewardsPopover = ({ proposition }) => {
+const RewardsPopover = ({ proposition, getProposition }) => {
   const [isVisiblePopover, setIsVisiblePopover] = useState(false);
-  const history = useHistory();
   const dispatch = useDispatch();
 
   const realeaseReward = () => {
@@ -19,8 +18,13 @@ const RewardsPopover = ({ proposition }) => {
       title: 'Release reservation',
       content: 'Do you want to release this reservation?',
       onOk() {
-        dispatch(realiseRewards(proposition));
-        history.push('/rewards-new/eligible');
+        return new Promise(resolve => {
+          dispatch(realiseRewards(proposition)).then(() => {
+            getProposition().then(() => {
+              resolve();
+            });
+          });
+        });
       },
     });
   };
@@ -48,6 +52,11 @@ const RewardsPopover = ({ proposition }) => {
 
 RewardsPopover.propTypes = {
   proposition: PropTypes.shape({}).isRequired,
+  getProposition: PropTypes.func,
+};
+
+RewardsPopover.defaultProps = {
+  getProposition: noop,
 };
 
 export default RewardsPopover;

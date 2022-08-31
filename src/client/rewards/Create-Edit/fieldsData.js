@@ -79,13 +79,21 @@ export default (messageFactory, validators, userName, currency) => ({
     name: 'budget',
     label: messageFactory('campaign_budget', 'Campaign budget (monthly, {currency})', { currency }),
     rules: [
-      {
-        max: 10,
-        message: messageFactory(
-          'length_of_budget',
-          "Campaign budget can't be longer than 10 characters.",
-        ),
-      },
+      currency === 'HIVE'
+        ? {
+            max: 10,
+            message: messageFactory(
+              'length_of_budget',
+              "Campaign budget can't be longer than 10 characters.",
+            ),
+          }
+        : {
+            max: 18,
+            message: messageFactory(
+              'length_of_budget',
+              "Campaign budget can't be longer than 18 characters.",
+            ),
+          },
       {
         required: true,
         message: messageFactory('set_monthly_budget', 'Please, set your monthly budget!'),

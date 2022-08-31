@@ -25,6 +25,11 @@ export const rewardsSettings = {
       id: 'receivable',
       defaultMessage: 'Receivable',
     },
+    {
+      to: '/rewards-new/history',
+      id: 'history',
+      defaultMessage: 'History',
+    },
   ],
 };
 
@@ -50,6 +55,11 @@ export const campaingSettings = {
       to: '/rewards-new/payables',
       id: 'payable',
       defaultMessage: 'Payable',
+    },
+    {
+      to: '/rewards-new/reservations',
+      id: 'reservations',
+      defaultMessage: 'Reservations',
     },
   ],
 };

@@ -55,8 +55,9 @@ const withEmbeds = cb => editor => {
 
   editor.insertData = data => {
     const html = data.getData('text/html');
+    const isBlobImage = html && html.includes('<img src="blob:');
 
-    if (html) {
+    if (html && !isBlobImage) {
       let _html = html;
 
       const match = html.match(/<!--StartFragment-->([\s\S]*?)<!--EndFragment-->/g);

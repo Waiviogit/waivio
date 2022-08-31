@@ -12,7 +12,7 @@ import { getSessionData, getUrl } from '../client/rewards/rewardsHelper';
 import { getGuestAccessToken } from '../common/helpers/localStorageHelpers';
 import { IS_RESERVED } from '../common/constants/rewards';
 import { isMobileDevice } from '../common/helpers/apiHelpers';
-import { createQuery } from './helpers';
+import { createQuery, parseQuery } from './helpers';
 import { TRANSACTION_TYPES } from '../client/wallet/WalletHelper';
 
 export let headers = {
@@ -2801,6 +2801,42 @@ export const getReservedProposition = (userName, skip = 0, query) => {
     .catch(e => e);
 };
 
+export const getReservationsList = (guideName, skip = 0, query) => {
+  return fetch(
+    `${config.campaignV2ApiPrefix}${config.rewards}${config.reservations}/${guideName}`,
+    {
+      headers,
+      method: 'POST',
+      body: JSON.stringify({
+        limit: 10,
+        skip,
+        ...parseQuery(query),
+      }),
+    },
+  )
+    .then(handleErrors)
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+};
+
+export const getHistoryList = (guideName, skip = 0, query) => {
+  console.log(parseQuery(query));
+  return fetch(`${config.campaignV2ApiPrefix}${config.rewards}${config.history}/${guideName}`, {
+    headers,
+    method: 'POST',
+    body: JSON.stringify({
+      limit: 10,
+      skip,
+      ...parseQuery(query),
+    }),
+  })
+    .then(handleErrors)
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+};
+
 export const getRewardTab = userName => {
   return fetch(`${config.campaignV2ApiPrefix}${config.rewards}${config.tabType}/${userName}`, {
     headers,
@@ -2998,6 +3034,34 @@ export const getFiltersForAllProposition = reqObj => {
 export const getFiltersForReservedProposition = (reqObj, userName) => {
   return fetch(
     `${config.campaignV2ApiPrefix}${config.rewards}${config.reserved}/${userName}${config.filters}`,
+    {
+      headers,
+      method: 'GET',
+    },
+  )
+    .then(handleErrors)
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+};
+
+export const getFiltersForReservationsProposition = userName => {
+  return fetch(
+    `${config.campaignV2ApiPrefix}${config.rewards}${config.reservations}/${userName}${config.filters}`,
+    {
+      headers,
+      method: 'GET',
+    },
+  )
+    .then(handleErrors)
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+};
+
+export const getFiltersForHistoryProposition = userName => {
+  return fetch(
+    `${config.campaignV2ApiPrefix}${config.rewards}${config.history}/${userName}${config.filters}`,
     {
       headers,
       method: 'GET',

@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import { Link, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
+import moment from 'moment';
 import classNames from 'classnames';
 import {
   accessTypesArr,
@@ -335,6 +336,7 @@ class ObjectInfo extends React.Component {
       : [];
     const ageRange = wobject.ageRange;
     const language = wobject.language;
+    const publicationDate = moment(wobject.publicationDate).format('MMMM DD, YYYY');
     const publisher = wobject.publisher;
     const profile = linkField
       ? {
@@ -612,7 +614,7 @@ class ObjectInfo extends React.Component {
               <div className="field-website">
                 <span className="field-website__title">
                   <Icon type="read" className="iconfont icon-link text-icon link" />
-                  <span>{ageRange}</span>
+                  <span className="CompanyId__wordbreak">{ageRange}</span>
                 </span>
               </div>
             )
@@ -622,7 +624,7 @@ class ObjectInfo extends React.Component {
                 <div className="field-website">
                   <span className="field-website__title">
                     <Icon type="read" className="iconfont icon-link text-icon link" />
-                    <span>{ageRange}</span>
+                    <span className="CompanyId__wordbreak">{ageRange}</span>
                   </span>
                 </div>
               ),
@@ -632,7 +634,7 @@ class ObjectInfo extends React.Component {
               <div className="field-website">
                 <span className="field-website__title">
                   <Icon type="global" className="iconfont icon-link text-icon link" />
-                  <span>{language}</span>
+                  <span className="CompanyId__wordbreak">{language}</span>
                 </span>
               </div>
             )
@@ -642,7 +644,35 @@ class ObjectInfo extends React.Component {
                 <div className="field-website">
                   <span className="field-website__title">
                     <Icon type="global" className="iconfont icon-link text-icon link" />
-                    <span>{language}</span>
+                    <span className="CompanyId__wordbreak">{language}</span>
+                  </span>
+                </div>
+              ),
+            )}
+        {!isEditMode
+          ? wobject.publicationDate && (
+              <div className="field-website">
+                <span className="field-website__title">
+                  <img
+                    className="ObjectInfo__margin-top"
+                    src={'/images/icons/calendar-icon.svg'}
+                    alt="Calendar icon"
+                  />{' '}
+                  <span className="CompanyId__wordbreak">{publicationDate}</span>
+                </span>
+              </div>
+            )
+          : this.listItem(
+              objectFields.publicationDate,
+              wobject.publicationDate && (
+                <div className="field-website">
+                  <span className="field-website__title">
+                    <img
+                      className="ObjectInfo__margin-top"
+                      src={'/images/icons/calendar-icon.svg'}
+                      alt="Calendar icon"
+                    />{' '}
+                    <span className="CompanyId__wordbreak">{publicationDate}</span>
                   </span>
                 </div>
               ),

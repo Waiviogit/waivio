@@ -1890,4 +1890,7 @@
   "object_field_publisher": "Publisher",
   "objects_auto_complete_publisher_placeholder": "Find publisher",
   "create_new_publisher": " Create new publisher"
+  "object_field_publicationDate": "Publication date",
+  "dont_have_any_payments_yet": "You don't have any payments yet",
+  "select_publication_date": "Select publication date"
 }
