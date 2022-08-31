@@ -199,6 +199,9 @@ export const errorObjectFields = {
   [objectFields.tagCategory]: [objectFields.tagCategory],
   [objectFields.categoryItem]: [objectFields.categoryItem],
   [objectFields.blog]: [blogFields.title],
+  [objectFields.ageRange]: [objectFields.ageRange],
+  [objectFields.language]: [objectFields.language],
+  [objectFields.publicationDate]: [objectFields.publicationDate],
   [objectFields.form]: [formFormFields.link, formFormFields.widget, formFormFields.title],
 };
 

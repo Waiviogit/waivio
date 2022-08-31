@@ -19,6 +19,9 @@ import {
 } from '../../../store/searchStore/searchSelectors';
 
 import './SearchObjectsAutocomplete.less';
+import ObjectCreation from '../Sidebar/ObjectCreation/ObjectCreation';
+import { getObjectTypes } from '../../../waivioApi/ApiClient';
+import CreateObject from '../../post/CreateObjectModal/CreateObject';
 
 @injectIntl
 @connect(
@@ -204,6 +207,9 @@ class SearchObjectsAutocomplete extends Component {
         ))
     );
   };
+  onCreatePublisherClick = () => (
+    <ObjectCreation loadObjectTypes={getObjectTypes} onCreateObject={CreateObject} />
+  );
 
   render() {
     const { searchString } = this.state;
@@ -245,7 +251,7 @@ class SearchObjectsAutocomplete extends Component {
           disabled={disabled}
         />
         {this.props.isPublisher && (
-          <button className="WalletTable__csv-button">
+          <button onClick={this.onCreatePublisherClick} className="WalletTable__csv-button">
             {intl.formatMessage({
               id: 'create_new_publisher',
               defaultMessage: ' Create new publisher',
