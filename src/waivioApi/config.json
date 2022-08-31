@@ -51,6 +51,7 @@
   "childWobjects": "/child_wobjects",
   "createCampaign": "/create_campaign",
   "createObject": "/create/object",
+  "reservations": "/reservations",
   "history": "/history",
   "guestOperations": "/guest_operations",
   "dashboard": "/dashboard",
