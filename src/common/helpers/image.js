@@ -37,6 +37,6 @@ export const getImagePath = (album, image, type) =>
     : image;
 
 export const getImagePathPost = url =>
-  url.includes('waivio.nyc3.digitaloceanspaces') ? url : getProxyImageURL(url);
+  url.includes('nyc3.digitaloceanspaces') ? url : getProxyImageURL(url);
 
 export default null;
