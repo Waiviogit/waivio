@@ -6,11 +6,32 @@ import { noop } from 'lodash';
 
 import Popover from '../../components/Popover';
 import PopoverMenu, { PopoverMenuItem } from '../../components/PopoverMenu/PopoverMenu';
-import { realiseRewards } from '../../../store/newRewards/newRewardsActions';
+import { realiseRewards, rejectAuthorReview } from '../../../store/newRewards/newRewardsActions';
 
-const RewardsPopover = ({ proposition, getProposition }) => {
+const RewardsPopover = ({ proposition, getProposition, type }) => {
   const [isVisiblePopover, setIsVisiblePopover] = useState(false);
   const dispatch = useDispatch();
+
+  const getPopoverItems = () => {
+    switch (type) {
+      case 'reservations':
+        return (
+          <PopoverMenuItem>
+            <div role="presentation" onClick={rejectReward}>
+              <Icon type="flag" /> Reject reservation
+            </div>
+          </PopoverMenuItem>
+        );
+      default:
+        return (
+          <PopoverMenuItem>
+            <div role="presentation" onClick={realeaseReward}>
+              <Icon type="flag" /> Release reservation
+            </div>
+          </PopoverMenuItem>
+        );
+    }
+  };
 
   const realeaseReward = () => {
     setIsVisiblePopover(false);
@@ -29,21 +50,30 @@ const RewardsPopover = ({ proposition, getProposition }) => {
     });
   };
 
+  const rejectReward = () => {
+    setIsVisiblePopover(false);
+    Modal.confirm({
+      title: 'Reject reservation',
+      content: 'Do you want to reject this reservation?',
+      onOk() {
+        return new Promise(resolve => {
+          dispatch(rejectAuthorReview(proposition)).then(() => {
+            getProposition().then(() => {
+              resolve();
+            });
+          });
+        });
+      },
+    });
+  };
+
   return (
     <Popover
       placement="bottomRight"
       trigger="click"
       visible={isVisiblePopover}
       onVisibleChange={() => setIsVisiblePopover(!isVisiblePopover)}
-      content={
-        <PopoverMenu>
-          <PopoverMenuItem>
-            <div role="presentation" onClick={realeaseReward}>
-              <Icon type="flag" /> Release reservation
-            </div>
-          </PopoverMenuItem>
-        </PopoverMenu>
-      }
+      content={<PopoverMenu>{getPopoverItems()}</PopoverMenu>}
     >
       <i className="Buttons__post-menu iconfont icon-more" />
     </Popover>
@@ -52,6 +82,7 @@ const RewardsPopover = ({ proposition, getProposition }) => {
 
 RewardsPopover.propTypes = {
   proposition: PropTypes.shape({}).isRequired,
+  type: PropTypes.string.isRequired,
   getProposition: PropTypes.func,
 };
 

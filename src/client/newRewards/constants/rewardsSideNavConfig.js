@@ -68,7 +68,7 @@ export const matchBotsSettings = {
   tab: {
     name: 'matchbots',
     id: 'match_bots',
-    defaultMessage: 'Match Bots',
+    defaultMessage: 'Match bots',
   },
   settings: [
     {
