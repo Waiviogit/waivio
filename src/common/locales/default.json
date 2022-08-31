@@ -1889,5 +1889,8 @@
   "book_language": "Book language",
   "object_field_publicationDate": "Publication date",
   "dont_have_any_payments_yet": "You don't have any payments yet",
-  "select_publication_date": "Select publication date"
+  "select_publication_date": "Select publication date",
+  "print_length": "Print length",
+  "object_field_printLength":"Print length",
+  "pages": "Pages"
 }
