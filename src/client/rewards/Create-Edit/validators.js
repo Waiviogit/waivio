@@ -23,6 +23,11 @@ export const validatorMessagesCreator = (messageFactory, currency) => ({
     'reward_more_than_thousandth',
     'Reward should be more or equal 0,001 HIVE',
   ),
+  rewardsWaivLess: messageFactory(
+    'waiv_reward_more_than',
+    'Reward should be more or equal 0,001 {currency}',
+    { currency },
+  ),
   rewardToZero: messageFactory('reward_more_than_zero', 'Reward should be more than zero'),
   rewardToBudget: messageFactory(
     'reward_not_exceed_budget',
@@ -180,7 +185,9 @@ export const validatorsCreator = (
   },
 
   compareRewardAndBudget: (rule, value, callback) => {
-    if (value > 0 && value < 0.001) callback(messages.rewardsLess);
+    if (payoutToken === 'HIVE' && value > 0 && value < 0.001) callback(messages.rewardsLess);
+    if (payoutToken !== 'HIVE' && value > 0 && value < 0.00000001)
+      callback(messages.rewardsWaivLess);
     if (value <= 0 && value !== '') callback(messages.rewardToZero);
     else callback();
   },

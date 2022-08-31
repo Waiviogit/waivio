@@ -7,4 +7,5 @@ export const subscribeTypes = {
   subscribeCampaignAssign: 'subscribeCampaignAssign',
   subscribeCampaignRelease: 'subscribeCampaignRelease',
   subscribeCampaignDeactivation: 'subscribeCampaignDeactivation',
+  subscribeTransactionId: 'subscribeTransactionId',
 };

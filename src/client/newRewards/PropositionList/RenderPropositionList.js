@@ -15,6 +15,7 @@ import { getObjectName } from '../../../common/helpers/wObjectHelper';
 import RewardsFilters from '../Filters/Filters';
 
 import './PropositionList.less';
+import { getPropositionsKey } from '../../../common/helpers/newRewardsHelper';
 
 const filterConfig = [
   { title: 'Rewards for', type: 'type' },
@@ -95,9 +96,9 @@ const RenderPropositionList = ({
             elementIsScrollable={false}
             threshold={500}
           >
-            {propositions?.map(proposition => (
+            {propositions?.map((proposition, i) => (
               <Proposition
-                key={`${proposition?.object?.author_permlink}/${proposition?.guideName}/${proposition?.activationPermlink}`}
+                key={getPropositionsKey(proposition, i)}
                 proposition={{
                   ...proposition,
                   requiredObject: parent || proposition?.requiredObject,
