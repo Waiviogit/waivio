@@ -190,6 +190,16 @@ const routes = {
           exact: true,
           component: Views.SponsorsMatchBots,
         },
+        {
+          path: '/reservations',
+          exact: true,
+          component: Views.ReservationsProposition,
+        },
+        {
+          path: '/history',
+          exact: true,
+          component: Views.HistoryPropositions,
+        },
       ],
     },
     {
