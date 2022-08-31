@@ -1,4 +1,4 @@
-export default localizer => ({
+export default (localizer, values = { currency: 'HIVE' }) => ({
   cannotCreateRulesMore: localizer(
     'matchBot_cannot_create_rules_more',
     'You cannot create more then 25 rules',
@@ -16,7 +16,8 @@ export default localizer => ({
   ),
   contentUserPostedReview: localizer(
     'matchBot_content_user_has_posted_review_eligible_receive_direct_reward',
-    "For example, the user has posted a review that is eligible to receive a direct reward of 5.00 HIVE. Match bot can upvote that post for a specified value of, say, 10% of the reward (assuming Match bot has enough voting value). This way, the user will receive 0.50 HIVE in author's rewards and the direct payment can be reduced to 4.50 HIVE.",
+    "For example, the user has posted a review that is eligible to receive a direct reward of 5.00 {currency}. Match bot can upvote that post for a specified value of, say, 10% of the reward (assuming Match bot has enough voting value). This way, the user will receive 0.50 {currency} in author's rewards and the direct payment can be reduced to 4.50 {currency}.",
+    values,
   ),
   thirdPartyCampaignSponsors: localizer(
     'matchBot_third_party_campaign_sponsors_must_pre_register_match_bot_sponsor_in_campaign',

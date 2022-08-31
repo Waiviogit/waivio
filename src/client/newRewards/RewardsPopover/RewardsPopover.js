@@ -2,16 +2,36 @@ import React, { useState } from 'react';
 import { Icon, Modal } from 'antd';
 import { useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
-import { useHistory } from 'react-router';
+import { noop } from 'lodash';
 
 import Popover from '../../components/Popover';
 import PopoverMenu, { PopoverMenuItem } from '../../components/PopoverMenu/PopoverMenu';
-import { realiseRewards } from '../../../store/newRewards/newRewardsActions';
+import { realiseRewards, rejectAuthorReview } from '../../../store/newRewards/newRewardsActions';
 
-const RewardsPopover = ({ proposition }) => {
+const RewardsPopover = ({ proposition, getProposition, type }) => {
   const [isVisiblePopover, setIsVisiblePopover] = useState(false);
-  const history = useHistory();
   const dispatch = useDispatch();
+
+  const getPopoverItems = () => {
+    switch (type) {
+      case 'reservations':
+        return (
+          <PopoverMenuItem>
+            <div role="presentation" onClick={rejectReward}>
+              <Icon type="flag" /> Reject reservation
+            </div>
+          </PopoverMenuItem>
+        );
+      default:
+        return (
+          <PopoverMenuItem>
+            <div role="presentation" onClick={realeaseReward}>
+              <Icon type="flag" /> Release reservation
+            </div>
+          </PopoverMenuItem>
+        );
+    }
+  };
 
   const realeaseReward = () => {
     setIsVisiblePopover(false);
@@ -19,8 +39,30 @@ const RewardsPopover = ({ proposition }) => {
       title: 'Release reservation',
       content: 'Do you want to release this reservation?',
       onOk() {
-        dispatch(realiseRewards(proposition));
-        history.push('/rewards-new/eligible');
+        return new Promise(resolve => {
+          dispatch(realiseRewards(proposition)).then(() => {
+            getProposition().then(() => {
+              resolve();
+            });
+          });
+        });
+      },
+    });
+  };
+
+  const rejectReward = () => {
+    setIsVisiblePopover(false);
+    Modal.confirm({
+      title: 'Reject reservation',
+      content: 'Do you want to reject this reservation?',
+      onOk() {
+        return new Promise(resolve => {
+          dispatch(rejectAuthorReview(proposition)).then(() => {
+            getProposition().then(() => {
+              resolve();
+            });
+          });
+        });
       },
     });
   };
@@ -31,15 +73,7 @@ const RewardsPopover = ({ proposition }) => {
       trigger="click"
       visible={isVisiblePopover}
       onVisibleChange={() => setIsVisiblePopover(!isVisiblePopover)}
-      content={
-        <PopoverMenu>
-          <PopoverMenuItem>
-            <div role="presentation" onClick={realeaseReward}>
-              <Icon type="flag" /> Release reservation
-            </div>
-          </PopoverMenuItem>
-        </PopoverMenu>
-      }
+      content={<PopoverMenu>{getPopoverItems()}</PopoverMenu>}
     >
       <i className="Buttons__post-menu iconfont icon-more" />
     </Popover>
@@ -48,6 +82,12 @@ const RewardsPopover = ({ proposition }) => {
 
 RewardsPopover.propTypes = {
   proposition: PropTypes.shape({}).isRequired,
+  type: PropTypes.string.isRequired,
+  getProposition: PropTypes.func,
+};
+
+RewardsPopover.defaultProps = {
+  getProposition: noop,
 };
 
 export default RewardsPopover;

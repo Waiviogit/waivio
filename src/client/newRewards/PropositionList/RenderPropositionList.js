@@ -15,13 +15,19 @@ import { getObjectName } from '../../../common/helpers/wObjectHelper';
 import RewardsFilters from '../Filters/Filters';
 
 import './PropositionList.less';
+import { getPropositionsKey } from '../../../common/helpers/newRewardsHelper';
 
 const filterConfig = [
   { title: 'Rewards for', type: 'type' },
   { title: 'Sponsors', type: 'sponsors' },
 ];
 
-const RenderPropositionList = ({ getProposition, tab, getPropositionFilters }) => {
+const RenderPropositionList = ({
+  getProposition,
+  tab,
+  getPropositionFilters,
+  customFilterConfig,
+}) => {
   const { requiredObject } = useParams();
   const authUserName = useSelector(getAuthenticatedUserName);
   const [propositions, setPropositions] = useState();
@@ -90,20 +96,25 @@ const RenderPropositionList = ({ getProposition, tab, getPropositionFilters }) =
             elementIsScrollable={false}
             threshold={500}
           >
-            {propositions?.map(proposition => (
+            {propositions?.map((proposition, i) => (
               <Proposition
-                key={`${proposition?.object?.author_permlink}/${proposition?.guideName}/${proposition?.activationPermlink}`}
+                key={getPropositionsKey(proposition, i)}
                 proposition={{
                   ...proposition,
                   requiredObject: parent || proposition?.requiredObject,
                 }}
                 type={tab}
+                getProposition={getPropositionList}
               />
             ))}
           </ReduxInfiniteScroll>
         )}
       </div>
-      <RewardsFilters title={'Filter rewards'} getFilters={getFilters} config={filterConfig} />
+      <RewardsFilters
+        title={'Filter rewards'}
+        getFilters={getFilters}
+        config={customFilterConfig}
+      />
     </div>
   );
 };
@@ -112,6 +123,11 @@ RenderPropositionList.propTypes = {
   getProposition: PropTypes.func.isRequired,
   getPropositionFilters: PropTypes.func.isRequired,
   tab: PropTypes.string.isRequired,
+  customFilterConfig: PropTypes.shape({}).isRequired,
+};
+
+RenderPropositionList.defaultProps = {
+  customFilterConfig: filterConfig,
 };
 
 export default RenderPropositionList;

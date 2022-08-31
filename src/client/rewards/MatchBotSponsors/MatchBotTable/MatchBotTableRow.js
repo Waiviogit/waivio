@@ -7,6 +7,7 @@ import { Checkbox, message, Modal } from 'antd';
 import { setMatchBotRules } from '../../../../store/rewardsStore/rewardsActions';
 import { formatDate } from '../../rewardsHelper';
 import getMatchBotMessageData from '../matchBotMessageData';
+import { setNewMatchBotRules } from '../../../../store/newRewards/newRewardsActions';
 
 const MatchBotTableRow = ({
   handleEditRule,
@@ -15,6 +16,7 @@ const MatchBotTableRow = ({
   intl,
   rule,
   setIsEnabledRule,
+  isNew,
 }) => {
   const [activationStatus, setActivationStatus] = useState('');
   const [isLoading, setLoading] = useState(false);
@@ -72,7 +74,9 @@ const MatchBotTableRow = ({
   };
   const changeRuleStatus = () => {
     setLoading(true);
-    dispatch(setMatchBotRules({ sponsor: rule.sponsor, enabled: !isEnabled })).then(() => {
+    const setRulesMethod = isNew ? setNewMatchBotRules : setMatchBotRules;
+
+    dispatch(setRulesMethod({ ...rule, sponsor: rule.sponsor, enabled: !isEnabled })).then(() => {
       handleChangeModalVisible();
       if (!isEnabled) {
         setActivationStatus('activated');
@@ -95,7 +99,7 @@ const MatchBotTableRow = ({
           />
         </td>
         <td>{rule.sponsor}</td>
-        <td>{Math.round(rule.voting_percent * 100)}%</td>
+        <td>{Math.round((rule.voting_percent || rule.votingPercent) * 100)}%</td>
         <td>
           <div className="MatchBotTable__edit" onClick={editRule} role="presentation">
             {messageData.edit}
@@ -123,6 +127,7 @@ MatchBotTableRow.propTypes = {
   handleEditRule: PropTypes.func.isRequired,
   handleSwitcher: PropTypes.func.isRequired,
   isAuthority: PropTypes.bool.isRequired,
+  isNew: PropTypes.bool.isRequired,
   intl: PropTypes.shape().isRequired,
   rule: PropTypes.shape().isRequired,
   setIsEnabledRule: PropTypes.func.isRequired,

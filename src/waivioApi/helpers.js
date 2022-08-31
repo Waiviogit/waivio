@@ -7,4 +7,16 @@ export const createQuery = queryObject =>
     return acc;
   }, '');
 
+export const parseQuery = queryString => {
+  const c = queryString.split('&').filter(value => value);
+
+  return c.reduce((acc, curr) => {
+    const h = curr.split('=');
+
+    acc[h[0]] = h[1].split('%2C');
+
+    return acc;
+  }, {});
+};
+
 export default null;

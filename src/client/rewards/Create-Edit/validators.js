@@ -5,7 +5,13 @@ import { getCurrentCurrencyRate } from '../../../waivioApi/ApiClient';
 export const validatorMessagesCreator = (messageFactory, currency) => ({
   budgetLess: messageFactory(
     'budget_more_than_thousandth',
-    'Budget should be more or equal 0,001 HIVE',
+    'Budget should be more or equal 0,001 {currency}',
+    { currency },
+  ),
+  budgetWaivLess: messageFactory(
+    'waiv_budget_more_than',
+    'Budget should be more or equal 0,00000001 {currency}',
+    { currency },
   ),
   budgetToZero: messageFactory('budget_more_than_zero', 'Budget should be more than zero'),
   budgetToSteemBalance: messageFactory(
@@ -16,6 +22,11 @@ export const validatorMessagesCreator = (messageFactory, currency) => ({
   rewardsLess: messageFactory(
     'reward_more_than_thousandth',
     'Reward should be more or equal 0,001 HIVE',
+  ),
+  rewardsWaivLess: messageFactory(
+    'waiv_reward_more_than',
+    'Reward should be more or equal 0,001 {currency}',
+    { currency },
   ),
   rewardToZero: messageFactory('reward_more_than_zero', 'Reward should be more than zero'),
   rewardToBudget: messageFactory(
@@ -165,14 +176,18 @@ export const validatorsCreator = (
         ? parseFloat(user.balance) * rate[currency]
         : currencyInfo.balance * rates * rate[currency];
 
-    if (value > 0 && value < 0.001) callback(messages.budgetLess);
+    if (payoutToken === 'HIVE' && value > 0 && value < 0.001) callback(messages.budgetLess);
+    if (payoutToken !== 'HIVE' && value > 0 && value < 0.00000001)
+      callback(messages.budgetWaivLess);
     if (value <= 0 && value !== '') callback(messages.budgetToZero);
     else if (userUSDBalance < value) callback(messages.budgetToSteemBalance);
     else callback();
   },
 
   compareRewardAndBudget: (rule, value, callback) => {
-    if (value > 0 && value < 0.001) callback(messages.rewardsLess);
+    if (payoutToken === 'HIVE' && value > 0 && value < 0.001) callback(messages.rewardsLess);
+    if (payoutToken !== 'HIVE' && value > 0 && value < 0.00000001)
+      callback(messages.rewardsWaivLess);
     if (value <= 0 && value !== '') callback(messages.rewardToZero);
     else callback();
   },

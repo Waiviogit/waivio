@@ -8,6 +8,8 @@ import { getAuthenticatedUserName } from '../authStore/authSelectors';
 import { changeRewardsTab } from '../authStore/authActions';
 import { getTokenRatesInUSD } from '../walletStore/walletSelectors';
 import { rewardsPost } from '../../client/rewards/Manage/constants';
+import { createCommentPermlink } from '../../client/vendor/steemitHelpers';
+import { SET_PENDING_UPDATE } from '../userStore/userActions';
 
 export const reserveProposition = (proposition, username, history) => async (
   dispatch,
@@ -107,6 +109,51 @@ export const realiseRewards = proposition => (dispatch, getState, { steemConnect
   });
 };
 
+export const rejectAuthorReview = proposition => (
+  dispatch,
+  getState,
+  { steemConnectAPI, busyAPI },
+) => {
+  const commentOp = [
+    'comment',
+    {
+      parent_author: proposition.userName,
+      parent_permlink: proposition.reservationPermlink,
+      author: proposition.guideName,
+      permlink: createCommentPermlink(proposition.userName, proposition.reservationPermlink),
+      title: 'Reject review',
+      body: `Sponsor ${proposition.guideName} (@${proposition.guideName}) has rejected the review `,
+      json_metadata: JSON.stringify({
+        waivioRewards: {
+          type: 'rejectReservationByGuide',
+        },
+      }),
+    },
+  ];
+
+  return new Promise((resolve, reject) => {
+    steemConnectAPI
+      .broadcast([commentOp])
+      .then(res => {
+        busyAPI.instance.sendAsync(subscribeTypes.subscribeTransactionId, [
+          proposition.guideName,
+          res.result.id,
+        ]);
+        busyAPI.instance.subscribe((datad, j) => {
+          if (j?.success && j?.permlink === res.result.id) {
+            resolve();
+          }
+        });
+      })
+      .then(() =>
+        dispatch({
+          type: SET_PENDING_UPDATE.START,
+        }),
+      )
+      .catch(error => reject(error));
+  });
+};
+
 export const deactivateCampaing = (item, guideName, callback) => (
   dispatch,
   getState,
@@ -146,6 +193,27 @@ export const deactivateCampaing = (item, guideName, callback) => (
       }
     });
   });
+};
+
+export const setMatchBotVotingPower = votingPower => (dispatch, getState, { steemConnectAPI }) => {
+  const state = getState();
+  const username = getAuthenticatedUserName(state);
+
+  return steemConnectAPI.settingNewMatchBotVotingPower(username, votingPower);
+};
+
+export const removeMatchBotRule = sponsorName => (dispatch, getState, { steemConnectAPI }) => {
+  const state = getState();
+  const username = getAuthenticatedUserName(state);
+
+  return steemConnectAPI.removeMatchBotRule(username, sponsorName);
+};
+
+export const setNewMatchBotRules = ruleObj => (dispatch, getState, { steemConnectAPI }) => {
+  const state = getState();
+  const username = getAuthenticatedUserName(state);
+
+  return steemConnectAPI.setMatchBotNewRule(username, ruleObj);
 };
 
 export default null;

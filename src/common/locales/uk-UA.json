@@ -783,7 +783,7 @@
   "matchBot_manage_match_bot": "Керуйте match-ботом",
   "matchBot": "Матч-бот",
   "matchBot_designed_offset_portion_of_direct_rewards": "Match-бот призначений для компенсації частини прямих нагород нагорами.",
-  "matchBot_content_user_has_posted_review_eligible_receive_direct_reward": "Наприклад, користувач опублікував відгук, який може отримати пряму винагороду 5,00 HIVE. Бот Match може проголосувати за цей пост за вказану вартість, скажімо, 10% від винагороди (за умови, що Match bot має достатню кількість голосів). Таким чином, користувач отримає 0,50 HIVE в якості авторських винагород, а прямий платіж може бути зменшений до 4,50 HIVE.",
+  "matchBot_content_user_has_posted_review_eligible_receive_direct_reward": "Наприклад, користувач опублікував відгук, який може отримати пряму винагороду 5,00 {currency}. Бот Match може проголосувати за цей пост за вказану вартість, скажімо, 10% від винагороди (за умови, що Match bot має достатню кількість голосів). Таким чином, користувач отримає 0,50 {currency} в якості авторських винагород, а прямий платіж може бути зменшений до 4,50 {currency}.",
   "matchBot_third_party_campaign_sponsors_must_pre_register_match_bot_sponsor_in_campaign": "Важливо: Сторонні спонсори кампаній повинні зареєструвати матч-бота у своїх кампаніях, щоб вартість голосів ботів віднімалася від прямих зобов'язань.",
   "matchBot_match_bot_requires_authorization_distribute_votes_behalf": "Бот матчу вимагає дозволу на розподіл голосів від вашого імені",
   "matchBot_minimum_voting_power": "Мінімальна сила голосу",

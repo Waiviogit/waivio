@@ -326,6 +326,42 @@ function sc2Extended() {
       },
     },
     {
+      settingNewMatchBotVotingPower(username, votingPower, cb) {
+        const params = {
+          required_auths: [],
+          required_posting_auths: [username],
+          id: 'waivio_sb_change_power',
+          json: JSON.stringify({ votingPower }),
+        };
+
+        return this.broadcast([['custom_json', params]], cb);
+      },
+    },
+    {
+      removeMatchBotRule(username, sponsor, cb) {
+        const params = {
+          required_auths: [],
+          required_posting_auths: [username],
+          id: 'waivio_sb_remove_rule',
+          json: JSON.stringify(sponsor),
+        };
+
+        return this.broadcast([['custom_json', params]], cb);
+      },
+    },
+    {
+      setMatchBotNewRule(username, rule, cb) {
+        const params = {
+          required_auths: [],
+          required_posting_auths: [username],
+          id: 'waivio_sb_set_rule',
+          json: JSON.stringify(rule),
+        };
+
+        return this.broadcast([['custom_json', params]], cb);
+      },
+    },
+    {
       deleteMatchBotRule(username, sponsorName, cb) {
         const params = {
           required_auths: [],

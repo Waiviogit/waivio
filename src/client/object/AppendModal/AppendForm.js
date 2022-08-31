@@ -18,9 +18,10 @@ import uuidv4 from 'uuid/v4';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { connect } from 'react-redux';
+import moment from 'moment';
 import React, { Component } from 'react';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import { Form, Icon, Input, message, Rate, Select } from 'antd';
+import { DatePicker, Form, Icon, Input, message, Rate, Select } from 'antd';
 import { fieldsRules } from '../const/appendFormConstants';
 import apiConfig from '../../../waivioApi/config.json';
 import {
@@ -360,7 +361,8 @@ export default class AppendForm extends Component {
       case TYPES_OF_MENU_ITEM.PAGE:
       case TYPES_OF_MENU_ITEM.LIST:
       case objectFields.ageRange:
-      case objectFields.language: {
+      case objectFields.language:
+      case objectFields.publicationDate: {
         fieldBody.push(rest[currentField]);
         break;
       }
@@ -434,7 +436,10 @@ export default class AppendForm extends Component {
           }, ${currentField}: ${appendValue}, ${imageDescription}`;
         case objectFields.ageRange:
         case objectFields.language:
-          return `@${author} added ${currentField} (${langReadable}): ${appendValue}`;
+        case objectFields.publicationDate:
+          return `@${author} added ${currentField} (${langReadable}): ${moment(
+            getFieldValue(objectFields.publicationDate),
+          ).format('MMMM DD, YYYY')}`;
         case TYPES_OF_MENU_ITEM.PAGE:
         case TYPES_OF_MENU_ITEM.LIST: {
           const alias = getFieldValue('menuItemName');
@@ -1004,6 +1009,8 @@ export default class AppendForm extends Component {
       return filtered.some(f => this.getCurrentObjectBody(currentField).number === f.number);
     if (currentField === objectFields.name) return filtered.some(f => f.body === currentValue);
     if (currentField === objectFields.ageRange) return filtered.some(f => f.body === currentValue);
+    if (currentField === objectFields.publicationDate)
+      return filtered.some(f => f.body === currentValue);
     if (currentField === objectFields.language) return filtered.some(f => f.body === currentValue);
     if (currentField === objectFields.categoryItem) {
       const selectedTagCategory = filtered.filter(item => item.tagCategory === currentCategory);
@@ -1460,6 +1467,28 @@ export default class AppendForm extends Component {
                 placeholder={intl.formatMessage({
                   id: 'book_language',
                   defaultMessage: 'Book language',
+                })}
+              />,
+            )}
+          </Form.Item>
+        );
+      }
+      case objectFields.publicationDate: {
+        return (
+          <Form.Item>
+            {getFieldDecorator(objectFields.publicationDate, {
+              rules: this.getFieldRules(objectFields.publicationDate),
+            })(
+              <DatePicker
+                format={'LL'}
+                className={classNames('AppendForm__input', {
+                  'validation-error': !this.state.isSomeValue,
+                })}
+                disabled={loading}
+                dropdownClassName="AppendForm__calendar-popup"
+                placeholder={intl.formatMessage({
+                  id: 'select_publication_date',
+                  defaultMessage: 'Select publication date',
                 })}
               />,
             )}
