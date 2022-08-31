@@ -1,4 +1,4 @@
-import { useSelected, useFocused } from 'slate-react';
+import { useSelected, useFocused, useSlate } from 'slate-react';
 import React, { useEffect, useState } from 'react';
 import { truncate } from 'lodash';
 import PropTypes from 'prop-types';
@@ -9,6 +9,8 @@ import './styles.less';
 const Link = ({ attributes, element, children }) => {
   const selected = useSelected();
   const focused = useFocused();
+  const editor = useSlate();
+  const { selection } = editor;
 
   useEffect(() => {
     const handleClickOutside = () => setClicked(false);
@@ -31,26 +33,28 @@ const Link = ({ attributes, element, children }) => {
   });
 
   return (
-    <div
+    <a
       className={classNames}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       onMouseDown={handleClick}
+      href={element.url}
+      target="_blank noreferrer"
+      {...attributes}
     >
-      <a {...attributes} href={element.url} target="_blank noreferrer">
-        {children}
-      </a>
-      {(hovered || clicked) && (
+      {children}
+      {((hovered || clicked) && (selection.anchor.path[0] === selection.focus.path[0])) && (
         <div
           className="md-editor-toolbar md-editor-toolbar--isopen md-editor-toolbar-edit-link"
           contentEditable={false}
+          style={{ userSelect: 'none', pointerEvents: 'none'}}
         >
-          <a href={element.url} rel="noopener noreferrer" target="_blank">
+          <a href={element.url} rel="noopener noreferrer" target="_blank" style={{ userSelect: 'none', pointerEvents: 'none'}}>
             {truncate(element.url, { length: 27 })}
           </a>
         </div>
       )}
-    </div>
+    </a>
   );
 };
 

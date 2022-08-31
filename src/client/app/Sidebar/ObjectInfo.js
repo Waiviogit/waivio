@@ -649,20 +649,28 @@ class ObjectInfo extends React.Component {
               ),
             )}
         {!isEditMode
-          ? publicationDate && (
+          ? wobject.publicationDate && (
               <div className="field-website">
                 <span className="field-website__title">
-                  <img src={'/images/icons/calendar-icon.svg'} alt="Calendar icon" />{' '}
+                  <img
+                    className="ObjectInfo__margin-top"
+                    src={'/images/icons/calendar-icon.svg'}
+                    alt="Calendar icon"
+                  />{' '}
                   <span className="CompanyId__wordbreak">{publicationDate}</span>
                 </span>
               </div>
             )
           : this.listItem(
               objectFields.publicationDate,
-              publicationDate && (
+              wobject.publicationDate && (
                 <div className="field-website">
                   <span className="field-website__title">
-                    <img src={'/images/icons/calendar-icon.svg'} alt="Calendar icon" />{' '}
+                    <img
+                      className="ObjectInfo__margin-top"
+                      src={'/images/icons/calendar-icon.svg'}
+                      alt="Calendar icon"
+                    />{' '}
                     <span className="CompanyId__wordbreak">{publicationDate}</span>
                   </span>
                 </div>
