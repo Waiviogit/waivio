@@ -22,6 +22,7 @@ import {
   isGuestUser,
 } from './authSelectors';
 import { getIsWaivio } from '../appStore/appSelectors';
+import { parseJSON } from '../../common/helpers/parseJSON';
 
 export const LOGIN = '@auth/LOGIN';
 export const LOGIN_START = '@auth/LOGIN_START';
@@ -233,15 +234,16 @@ export const changeSorting = sorting => dispatch => {
   return Promise.resolve();
 };
 
-export const changeRewardsTab = username => ({
-  type: SET_TAB_REWARDS.ACTION,
-  promise: getRewardTab(username),
-});
+export const changeRewardsTab = username => dispatch =>
+  dispatch({
+    type: SET_TAB_REWARDS.ACTION,
+    payload: getRewardTab(username).then(res => res),
+  });
 
 export const updateProfile = (username, values) => (dispatch, getState) => {
   const state = getState();
   // eslint-disable-next-line camelcase
-  const json_metadata = JSON.parse(get(state, ['auth', 'user', 'posting_json_metadata']));
+  const json_metadata = parseJSON(get(state, ['auth', 'user', 'posting_json_metadata']));
 
   json_metadata.profile = { ...json_metadata.profile, ...values };
 

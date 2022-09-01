@@ -48,11 +48,13 @@ export default (state = initialState, action) => {
         tabType: action.payload.tabType,
       };
 
-    case types.SET_TAB_REWARDS.SUCCESS:
+    // eslint-disable-next-line no-lone-blocks
+    case types.SET_TAB_REWARDS.SUCCESS: {
       return {
         ...state,
         tabType: action.payload.tabType,
       };
+    }
 
     case types.LOGIN_ERROR:
       return {

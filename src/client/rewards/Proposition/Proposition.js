@@ -42,6 +42,7 @@ import { getLocale } from '../../../store/settingsStore/settingsSelectors';
 import WebsitePropositionFooter from './WebsiteReservedButtons/WebsiteReservedButtons';
 import { getIsWaivio } from '../../../store/appStore/appSelectors';
 import WebsiteReservedButtons from './WebsiteReservedButtons/WebsiteReservedButtons';
+import { parseJSON } from '../../../common/helpers/parseJSON';
 
 const Proposition = props => {
   const currentProposId = get(props.proposition, ['_id'], '');
@@ -136,7 +137,7 @@ const Proposition = props => {
           get(props.user, 'posting_json_metadata') || get(props.user, 'json_metadata');
 
         try {
-          if (userMetaData) return JSON.parse(userMetaData);
+          if (userMetaData) return parseJSON(userMetaData);
 
           return '';
         } catch (err) {

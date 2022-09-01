@@ -1,6 +1,7 @@
 import { get, some, filter, isEmpty, compact, isEqual } from 'lodash';
 import { addressFieldsForFormatting, TYPES_OF_MENU_ITEM } from '../constants/listOfFields';
 import LANGUAGES from '../translations/languages';
+import { parseJSON } from './parseJSON';
 
 export const getObjectName = (wobj = {}) =>
   get(wobj, 'name') ||
@@ -25,7 +26,7 @@ export const getObjectReward = (wobj = {}) =>
 export const getObjectMap = (wobj = {}) => {
   const map = get(wobj, 'map');
 
-  if (map) return JSON.parse(map);
+  if (map) return parseJSON(map);
 
   return null;
 };
@@ -183,7 +184,7 @@ export const parseWobjectField = (wobject, fieldName) => {
   if (typeof wobjFields !== 'string') return null;
 
   try {
-    return JSON.parse(wobjFields);
+    return parseJSON(wobjFields);
   } catch (err) {
     return null;
   }
@@ -199,7 +200,7 @@ export const parseButtonsField = wobject => {
       return {
         ...btn,
         id: TYPES_OF_MENU_ITEM.BUTTON,
-        body: JSON.parse(btn.body),
+        body: parseJSON(btn.body),
       };
     } catch (err) {
       return null;

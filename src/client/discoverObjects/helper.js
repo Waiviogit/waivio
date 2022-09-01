@@ -1,5 +1,6 @@
 import { isEmpty, uniq, isArray } from 'lodash';
 import OBJ_TYPES from '../object/const/objectTypes';
+import { parseJSON } from '../../common/helpers/parseJSON';
 
 export function updateActiveFilters(activeFilters, filter, value, isActive) {
   if (!activeFilters[filter]) return { ...activeFilters, [filter]: [value] };
@@ -24,7 +25,7 @@ export const parseUrl = url => {
     .map(search => search.replace('=', '": "').replace('?', ''))
     .join('", "');
 
-  return JSON.parse(`{"${parseSearchParams}"}`);
+  return parseJSON(`{"${parseSearchParams}"}`);
 };
 
 export const createFilterBody = parseObject => {

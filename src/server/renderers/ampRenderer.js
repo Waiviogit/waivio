@@ -4,6 +4,7 @@ import Handlebars from 'handlebars';
 import HandlebarsIntl from 'handlebars-intl';
 import { getHtml } from '../../client/components/Story/Body';
 import { dropCategory } from '../../common/helpers/postHelpers';
+import { parseJSON } from '../../common/helpers/parseJSON';
 
 HandlebarsIntl.registerWith(Handlebars);
 
@@ -49,7 +50,7 @@ function cleanHTML(html) {
 }
 
 function getContext(post, body, appUrl) {
-  const metadata = attempt(JSON.parse, post.json_metadata);
+  const metadata = attempt(parseJSON, post.json_metadata);
   let images = [];
 
   if (!isError(metadata) && metadata.image) images = metadata.image;
