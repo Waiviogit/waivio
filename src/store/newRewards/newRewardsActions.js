@@ -20,7 +20,7 @@ export const reserveProposition = (proposition, username, history) => async (
   const dish = proposition?.object;
   const proposedWobjName = getObjectName(dish);
   const proposedAuthorPermlink = dish?.author_permlink;
-  const primaryObject = proposition?.object?.parent;
+  const primaryObject = proposition?.requiredObject;
   const rates = getTokenRatesInUSD(getState(), 'WAIV');
   const amount = round(proposition.rewardInUSD / rates, 3);
   const detailsBody = await getNewDetailsBody(proposition);
@@ -154,7 +154,7 @@ export const rejectAuthorReview = proposition => (
   });
 };
 
-export const deactivateCampaing = (item, guideName, callback) => (
+export const deactivateCampaing = (item, guideName) => (
   dispatch,
   getState,
   { steemConnectAPI, busyAPI },
@@ -182,17 +182,19 @@ export const deactivateCampaing = (item, guideName, callback) => (
     },
   ];
 
-  steemConnectAPI.broadcast([commentOp]).then(() => {
-    busyAPI.instance.sendAsync(subscribeTypes.subscribeCampaignDeactivation, [
-      authUserName,
-      deactivationPermlink,
-    ]);
-    busyAPI.instance.subscribe((datad, j) => {
-      if (j?.success && j?.permlink === deactivationPermlink) {
-        callback();
-      }
-    });
-  });
+  return new Promise(resolve =>
+    steemConnectAPI.broadcast([commentOp]).then(() => {
+      busyAPI.instance.sendAsync(subscribeTypes.subscribeCampaignDeactivation, [
+        authUserName,
+        deactivationPermlink,
+      ]);
+      busyAPI.instance.subscribe((datad, j) => {
+        if (j?.success && j?.permlink === deactivationPermlink) {
+          resolve();
+        }
+      });
+    }),
+  );
 };
 
 export const setMatchBotVotingPower = votingPower => (dispatch, getState, { steemConnectAPI }) => {
@@ -202,18 +204,44 @@ export const setMatchBotVotingPower = votingPower => (dispatch, getState, { stee
   return steemConnectAPI.settingNewMatchBotVotingPower(username, votingPower);
 };
 
-export const removeMatchBotRule = sponsorName => (dispatch, getState, { steemConnectAPI }) => {
+export const removeMatchBotRule = sponsorName => (
+  dispatch,
+  getState,
+  { steemConnectAPI, busyAPI },
+) => {
   const state = getState();
   const username = getAuthenticatedUserName(state);
 
-  return steemConnectAPI.removeMatchBotRule(username, sponsorName);
+  return new Promise(resolve => {
+    steemConnectAPI.removeMatchBotRule(username, sponsorName).then(({ result }) => {
+      busyAPI.instance.sendAsync(subscribeTypes.subscribeTransactionId, [username, result.id]);
+      busyAPI.instance.subscribe((datad, j) => {
+        if (j?.success && j?.permlink === result.id) {
+          resolve();
+        }
+      });
+    });
+  });
 };
 
-export const setNewMatchBotRules = ruleObj => (dispatch, getState, { steemConnectAPI }) => {
+export const setNewMatchBotRules = ruleObj => (
+  dispatch,
+  getState,
+  { steemConnectAPI, busyAPI },
+) => {
   const state = getState();
   const username = getAuthenticatedUserName(state);
 
-  return steemConnectAPI.setMatchBotNewRule(username, ruleObj);
+  return new Promise(resolve =>
+    steemConnectAPI.setMatchBotNewRule(username, ruleObj).then(({ result }) => {
+      busyAPI.instance.sendAsync(subscribeTypes.subscribeTransactionId, [username, result.id]);
+      busyAPI.instance.subscribe((datad, j) => {
+        if (j?.success && j?.permlink === result.id) {
+          resolve();
+        }
+      });
+    }),
+  );
 };
 
 export default null;

@@ -79,13 +79,10 @@ export const Manage = ({ intl, guideName, setHistoryLoading }) => {
       loading: true,
     });
     setManageList(copyManageList);
-
-    const callback = () => {
+    dispatch(deactivateCampaing(item, guideName)).then(() => {
       setManageList(manageList.filter(manageItem => manageItem._id !== item._id));
       setHistoryLoading(true);
-    };
-
-    dispatch(deactivateCampaing(item, guideName, callback));
+    });
   };
 
   const handleChangeCampaingStatus = item => {

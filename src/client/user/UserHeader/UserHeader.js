@@ -22,6 +22,7 @@ import { getImagePathPost } from '../../../common/helpers/image';
 import SkeletonRow from '../../components/Skeleton/SkeletonRow';
 
 import './UserHeader.less';
+import { parseJSON } from '../../../common/helpers/parseJSON';
 
 const UserHeader = ({
   username,
@@ -61,7 +62,7 @@ const UserHeader = ({
       about = user.posting_json_metadata.profile.about;
     } else {
       try {
-        metadata = JSON.parse(user.posting_json_metadata);
+        metadata = parseJSON(user.posting_json_metadata);
         location = metadata && get(metadata, 'profile.location');
         website = metadata && get(metadata, 'profile.website');
         about = metadata && get(metadata, 'profile.about');

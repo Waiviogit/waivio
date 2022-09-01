@@ -26,6 +26,7 @@ import {
 import { rewardsValues } from '../constants/rewards';
 import * as apiConfig from '../../waivioApi/config.json';
 import { getObjectName, getObjectUrlForLink } from './wObjectHelper';
+import { parseJSON } from './parseJSON';
 
 const appVersion = require('../../../package.json').version;
 
@@ -34,7 +35,7 @@ export const isPostDeleted = post => post.title === 'deleted' && post.body === '
 export const isPostTaggedNSFW = post => {
   if (post.parent_permlink === 'nsfw') return true;
 
-  const postJSONMetaData = attempt(JSON.parse, post.json_metadata);
+  const postJSONMetaData = attempt(parseJSON, post.json_metadata);
 
   if (isError(postJSONMetaData)) return false;
 

@@ -102,6 +102,7 @@ import NewsFilterForm from './FormComponents/NewsFilterForm';
 
 import './AppendForm.less';
 import { getAppendList } from '../../../store/appendStore/appendSelectors';
+import { parseJSON } from '../../../common/helpers/parseJSON';
 
 @connect(
   state => ({
@@ -991,7 +992,7 @@ export default class AppendForm extends Component {
       currentField === objectFields.companyId
     ) {
       return filtered.some(f =>
-        isEqual(this.getCurrentObjectBody(currentField), JSON.parse(f.body)),
+        isEqual(this.getCurrentObjectBody(currentField), parseJSON(f.body)),
       );
     }
     if (currentField === objectFields.authority) {
@@ -1000,9 +1001,8 @@ export default class AppendForm extends Component {
     if (currentField === objectFields.productId) {
       return filtered.some(
         f =>
-          this.getCurrentObjectBody(currentField).productId === JSON.parse(f.body).productId &&
-          this.getCurrentObjectBody(currentField).productIdType ===
-            JSON.parse(f.body).productIdType,
+          this.getCurrentObjectBody(currentField).productId === parseJSON(f.body).productId &&
+          this.getCurrentObjectBody(currentField).productIdType === parseJSON(f.body).productIdType,
       );
     }
     if (currentField === objectFields.phone)

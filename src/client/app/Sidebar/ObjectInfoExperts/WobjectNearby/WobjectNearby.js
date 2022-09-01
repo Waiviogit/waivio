@@ -10,6 +10,7 @@ import ObjectCard from '../../../../components/Sidebar/ObjectCard';
 import RightSidebarLoading from '../../RightSidebarLoading';
 
 import './WobjectNearby.less';
+import { parseJSON } from '../../../../../common/helpers/parseJSON';
 
 const WobjectNearby = ({
   isWaivio,
@@ -24,7 +25,7 @@ const WobjectNearby = ({
   nearbyObjectsIsLoading,
 }) => {
   const handleRedirect = () => {
-    const map = JSON.parse(wobject.map);
+    const map = parseJSON(wobject.map);
 
     const filters = {
       ...activeFilters,

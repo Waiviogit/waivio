@@ -25,6 +25,7 @@ import {
 import { getUsersAccountHistory } from '../../store/walletStore/walletSelectors';
 
 import './LetsGetStarted.less';
+import { parseJSON } from '../../common/helpers/parseJSON';
 
 @connect(
   state => ({
@@ -82,7 +83,7 @@ class LetsGetStarted extends React.Component {
       authenticatedUser.last_root_post &&
       authenticatedUser.last_root_post !== '1970-01-01T00:00:00';
     const hasVoted = !!(isGuest || hasLikes.length);
-    const jsonMetadata = attempt(JSON.parse, authenticatedUser.posting_json_metadata);
+    const jsonMetadata = attempt(parseJSON, authenticatedUser.posting_json_metadata);
     const hasProfile =
       has(jsonMetadata, 'profile.name') &&
       has(jsonMetadata, 'profile.about') &&

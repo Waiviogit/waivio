@@ -1,5 +1,6 @@
 import { forEach, get } from 'lodash';
 import { zoomAndRadiusArray, ZOOM } from '../../../common/constants/map';
+import { parseJSON } from '../../../common/helpers/parseJSON';
 
 export const regexCoordsLatitude = /^([+-])?(?:84(?:(?:\.0{1,6})?)|(?:[0-9]|[1-7][0-9]|8[0-4])(?:(?:\.[0-9]{1,100})?))$$/;
 export const regexCoordsLongitude = /^([+-])?((?:[0-9]|[1-9][0-9]|1[0-7][0-9])(?:(?:\.[0-9]{1,100})?))$/;
@@ -42,11 +43,7 @@ export const getParsedMap = wobject => {
 
   const json = wobject.map || get(wobject, ['parent', 'map']);
 
-  try {
-    return JSON.parse(json);
-  } catch (e) {
-    return null;
-  }
+  return parseJSON(json);
 };
 
 export const getDistanceBetweenTwoPoints = ({ lat1, long1, lat2, long2 }) => {

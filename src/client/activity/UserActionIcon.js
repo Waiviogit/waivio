@@ -4,6 +4,7 @@ import { Icon } from 'antd';
 import { includes, get } from 'lodash';
 import * as accountHistoryConstants from '../../common/constants/accountHistory';
 import Avatar from '../components/Avatar';
+import { parseJSON } from '../../common/helpers/parseJSON';
 
 class UserActionIcon extends React.Component {
   static propTypes = {
@@ -35,7 +36,7 @@ class UserActionIcon extends React.Component {
         return null;
       case accountHistoryConstants.CUSTOM_JSON: {
         try {
-          const actionJSON = JSON.parse(actionDetails.json);
+          const actionJSON = parseJSON(actionDetails.json);
           const customActionType = actionJSON[0];
           const customActionDetails = actionJSON[1];
 
@@ -95,7 +96,7 @@ class UserActionIcon extends React.Component {
         return actionDetails.author;
       case accountHistoryConstants.CUSTOM_JSON: {
         try {
-          const actionJSON = JSON.parse(actionDetails.json);
+          const actionJSON = parseJSON(actionDetails.json);
           const customActionType = actionJSON[0];
           const customActionDetails = actionJSON[1];
 
@@ -122,7 +123,7 @@ class UserActionIcon extends React.Component {
 
   getTypeOperation = () => {
     const { actionDetails } = this.props;
-    const customActionDetails = JSON.parse(actionDetails.json)[1];
+    const customActionDetails = parseJSON(actionDetails.json)[1];
 
     return customActionDetails.type_operation;
   };

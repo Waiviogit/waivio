@@ -1,4 +1,5 @@
 import { has, forOwn, isEmpty, attempt, isError, isString, get } from 'lodash';
+import { parseJSON } from './parseJSON';
 
 export const postingMetadataHelper = (jsonMetadata, postingJsonMetadata) => {
   const isJsonMetadata = !isEmpty(jsonMetadata);
@@ -34,14 +35,14 @@ export const getMetadata = user => {
   let jsonMetadata = get(user, 'json_metadata', {});
 
   if (isString(jsonMetadata)) {
-    jsonMetadata = attempt(JSON.parse, jsonMetadata);
+    jsonMetadata = attempt(parseJSON, jsonMetadata);
     if (isError(jsonMetadata)) jsonMetadata = {};
   }
 
   let postingJsonMetadata = get(user, 'posting_json_metadata', {});
 
   if (isString(postingJsonMetadata)) {
-    postingJsonMetadata = attempt(JSON.parse, postingJsonMetadata);
+    postingJsonMetadata = attempt(parseJSON, postingJsonMetadata);
     if (isError(postingJsonMetadata)) postingJsonMetadata = {};
   }
 
