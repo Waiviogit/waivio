@@ -56,8 +56,8 @@ const PayblesListByUser = ({
   }, []);
 
   const titleName = intl.formatMessage({
-    id: 'payment_page_payables',
-    defaultMessage: 'Payables',
+    id: 'payment_page_payable',
+    defaultMessage: 'Payable',
   });
 
   const name = match.params.userName;

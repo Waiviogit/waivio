@@ -76,7 +76,7 @@ const MatchBotTableRow = ({
     setLoading(true);
     const setRulesMethod = isNew ? setNewMatchBotRules : setMatchBotRules;
 
-    dispatch(setRulesMethod({ sponsor: rule.sponsor, enabled: !isEnabled })).then(() => {
+    dispatch(setRulesMethod({ ...rule, sponsor: rule.sponsor, enabled: !isEnabled })).then(() => {
       handleChangeModalVisible();
       if (!isEnabled) {
         setActivationStatus('activated');

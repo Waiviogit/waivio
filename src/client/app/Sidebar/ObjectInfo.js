@@ -337,6 +337,7 @@ class ObjectInfo extends React.Component {
     const ageRange = wobject.ageRange;
     const language = wobject.language;
     const publicationDate = moment(wobject.publicationDate).format('MMMM DD, YYYY');
+    const printLength = wobject.printLength;
     const publisher = wobject.publisher;
     const profile = linkField
       ? {
@@ -673,6 +674,26 @@ class ObjectInfo extends React.Component {
                       alt="Calendar icon"
                     />{' '}
                     <span className="CompanyId__wordbreak">{publicationDate}</span>
+                  </span>
+                </div>
+              ),
+            )}
+        {!isEditMode
+          ? printLength && (
+              <div className="field-website">
+                <span className="field-website__title">
+                  <Icon type="book" className="iconfont icon-link text-icon link" />
+                  <span className="CompanyId__wordbreak">{printLength}</span>
+                </span>
+              </div>
+            )
+          : this.listItem(
+              objectFields.printLength,
+              printLength && (
+                <div className="field-website">
+                  <span className="field-website__title">
+                    <Icon type="book" className="iconfont icon-link text-icon link" />
+                    <span className="CompanyId__wordbreak"> {printLength}</span>
                   </span>
                 </div>
               ),

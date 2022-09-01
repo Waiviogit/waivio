@@ -24,6 +24,7 @@ import { getAuthenticatedUserName } from '../../../../store/authStore/authSelect
 import { getManage, getWebsiteLoading } from '../../../../store/websiteStore/websiteSelectors';
 
 import './ManageWebsite.less';
+import { parseJSON } from '../../../../common/helpers/parseJSON';
 
 export const ManageWebsite = props => {
   const { prices, accountBalance, websites, dataForPayments } = props.manageInfo;
@@ -43,7 +44,7 @@ export const ManageWebsite = props => {
   const handleClickPayNow = () => {
     let memo = get(dataForPayments, 'memo');
 
-    memo = JSON.parse(memo);
+    memo = parseJSON(memo);
 
     props.openTransfer(get(dataForPayments, ['user', 'name']), 0, 'HBD', memo);
   };

@@ -69,7 +69,9 @@ export const getRecommendedObjects = (locale = 'en-US') =>
       ],
       sample: true,
     }),
-  }).then(res => res.json());
+  })
+    .then(res => res.json())
+    .catch(error => error);
 
 export const getObjects = ({
   limit = 30,
@@ -91,7 +93,9 @@ export const getObjects = ({
     },
     method: 'POST',
     body: JSON.stringify(reqData),
-  }).then(res => res.json());
+  })
+    .then(res => res.json())
+    .catch(error => error);
 };
 
 export const getObjectsByIds = ({ authorPermlinks = [], locale = 'en-US', limit = 30 }) =>
@@ -107,7 +111,9 @@ export const getObjectsByIds = ({ authorPermlinks = [], locale = 'en-US', limit 
       limit,
       locale,
     }),
-  }).then(res => res.json());
+  })
+    .then(res => res.json())
+    .catch(error => error);
 
 export const getObject = (authorPermlink, user, locale) => {
   const queryString = user ? `?user=${user}` : '';
@@ -121,7 +127,8 @@ export const getObject = (authorPermlink, user, locale) => {
     },
   })
     .then(handleErrors)
-    .then(res => res.json());
+    .then(res => res.json())
+    .catch(error => error);
 };
 
 export const getUsersByObject = object =>
@@ -136,21 +143,19 @@ export const getFeedContentByObject = (
   follower,
   newsPermlink,
 ) =>
-  new Promise((resolve, reject) => {
-    fetch(`${config.apiPrefix}${config.getObjects}/${name}${config.posts}`, {
-      headers: {
-        ...headers,
-        app: config.appName,
-        locale,
-        follower,
-      },
-      method: 'POST',
-      body: JSON.stringify({ limit, user_languages, newsPermlink }),
-    })
-      .then(res => res.json())
-      .then(posts => resolve(posts))
-      .catch(error => reject(error));
-  });
+  fetch(`${config.apiPrefix}${config.getObjects}/${name}${config.posts}`, {
+    headers: {
+      ...headers,
+      app: config.appName,
+      locale,
+      follower,
+    },
+    method: 'POST',
+    body: JSON.stringify({ limit, user_languages, newsPermlink }),
+  })
+    .then(res => res.json())
+    .then(posts => posts)
+    .catch(error => error);
 
 // eslint-disable-next-line camelcase
 export const getMoreFeedContentByObject = ({
@@ -235,36 +240,32 @@ export const getUserProfileBlog = (
   locale = 'en-US',
   tagsArray,
 ) =>
-  new Promise((resolve, reject) => {
-    fetch(`${config.apiPrefix}${config.user}/${userName}${config.blog}`, {
-      headers: {
-        ...headers,
-        app: config.appName,
-        locale,
-        ...(follower && { follower }),
-      },
-      method: 'POST',
-      body: JSON.stringify({
-        limit,
-        skip,
-        ...(isEmpty(tagsArray) ? {} : { tagsArray }),
-      }),
-    })
-      .then(res => res.json())
-      .then(posts => resolve(posts))
-      .catch(error => reject(error));
-  });
+  fetch(`${config.apiPrefix}${config.user}/${userName}${config.blog}`, {
+    headers: {
+      ...headers,
+      app: config.appName,
+      locale,
+      ...(follower && { follower }),
+    },
+    method: 'POST',
+    body: JSON.stringify({
+      limit,
+      skip,
+      ...(isEmpty(tagsArray) ? {} : { tagsArray }),
+    }),
+  })
+    .then(res => res.json())
+    .then(posts => posts)
+    .catch(error => error);
 
 export const getUserLastActivity = userName =>
-  new Promise((resolve, reject) => {
-    fetch(`${config.apiPrefix}${config.user}/${userName}${config.lastActivity}`, {
-      headers,
-      method: 'GET',
-    })
-      .then(res => res.json())
-      .then(res => resolve(res.lastActivity))
-      .catch(error => reject(error));
-  });
+  fetch(`${config.apiPrefix}${config.user}/${userName}${config.lastActivity}`, {
+    headers,
+    method: 'GET',
+  })
+    .then(res => res.json())
+    .then(res => res.lastActivity)
+    .catch(error => error);
 
 export const getUserFeedContent = (feedUserName, limit = 10, user_languages, locale) =>
   new Promise((resolve, reject) => {
@@ -455,19 +456,17 @@ export const getWobjectFollowing = (userName, skip = 0, limit = 50, authUser, lo
 };
 
 export const getUserAccount = (username, withFollowings = false, authUser) =>
-  new Promise((resolve, reject) => {
-    fetch(`${config.apiPrefix}${config.user}/${username}?with_followings=${withFollowings}`, {
-      headers: {
-        ...headers,
-        follower: authUser,
-        following: authUser,
-      },
-      method: 'GET',
-    })
-      .then(res => res.json())
-      .then(result => resolve(result))
-      .catch(error => reject(error));
-  });
+  fetch(`${config.apiPrefix}${config.user}/${username}?with_followings=${withFollowings}`, {
+    headers: {
+      ...headers,
+      follower: authUser,
+      following: authUser,
+    },
+    method: 'GET',
+  })
+    .then(res => res.json())
+    .then(result => result)
+    .catch(error => error);
 
 export const getFollowingUpdates = (locale, userName, count = 5) =>
   new Promise((resolve, reject) => {
@@ -2842,7 +2841,6 @@ export const getRewardTab = userName => {
     headers,
     method: 'GET',
   })
-    .then(handleErrors)
     .then(res => res.json())
     .then(response => response)
     .catch(e => e);

@@ -2,6 +2,7 @@
 import hivesigner from 'hivesigner';
 import { waivioAPI } from '../waivioApi/ApiClient';
 import { getValidTokenData } from '../common/helpers/getToken';
+import { parseJSON } from '../common/helpers/parseJSON';
 
 function broadcast(operations, isReview, actionAuthor) {
   let operation;
@@ -24,7 +25,7 @@ function broadcast(operations, isReview, actionAuthor) {
       operation = `waivio_guest_${operations[0][1].id}`;
     }
   } else if (operations[0][0] === 'comment') {
-    const jsonMetadata = JSON.parse(operations[0][1].json_metadata);
+    const jsonMetadata = parseJSON(operations[0][1].json_metadata);
 
     if (actionAuthor) operations[0][1].post_root_author = actionAuthor;
     if (jsonMetadata.comment) {

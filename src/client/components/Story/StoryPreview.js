@@ -22,6 +22,7 @@ import { getImagePathPost, getProxyImageURL } from '../../../common/helpers/imag
 import { objectFields } from '../../../common/constants/listOfFields';
 import { getBodyLink } from '../EditorExtended/util/videoHelper';
 import { videoPreviewRegex } from '../../../common/helpers/regexHelpers';
+import { parseJSON } from '../../../common/helpers/parseJSON';
 
 const StoryPreview = ({ post, isUpdates, isVimeo }) => {
   const storyContentBodyClassList = classNames('Story__content__body', {
@@ -66,7 +67,7 @@ const StoryPreview = ({ post, isUpdates, isVimeo }) => {
   }
   if (isUpdates && post.name === objectFields.productId) {
     if (!isEmpty(post.body) && post.body.includes('waivio.nyc3.digitaloceanspaces')) {
-      imagePath = JSON.parse(post.body).productIdImage;
+      imagePath = parseJSON(post.body).productIdImage;
     }
   }
   const embeds = steemEmbed.getAll(post.body, { height: '100%' });

@@ -39,7 +39,11 @@ const PropositionFooter = ({
               <b>{capitalize(proposition?.reviewStatus)}</b>
               <i className="iconfont icon-message_fill" />
               {commentsCount}
-              <RewardsPopover proposition={proposition} getProposition={getProposition} />
+              <RewardsPopover
+                proposition={proposition}
+                getProposition={getProposition}
+                type={type}
+              />
             </div>
           </React.Fragment>
         );
