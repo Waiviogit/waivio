@@ -19,9 +19,6 @@ import {
 } from '../../../store/searchStore/searchSelectors';
 
 import './SearchObjectsAutocomplete.less';
-import ObjectCreation from '../Sidebar/ObjectCreation/ObjectCreation';
-import { getObjectTypes } from '../../../waivioApi/ApiClient';
-import CreateObject from '../../post/CreateObjectModal/CreateObject';
 
 @injectIntl
 @connect(
@@ -59,7 +56,6 @@ class SearchObjectsAutocomplete extends Component {
     addItem: false,
     addHashtag: false,
     parentObject: {},
-    isPublisher: false,
   };
 
   static propTypes = {
@@ -75,7 +71,6 @@ class SearchObjectsAutocomplete extends Component {
     rowIndex: PropTypes.number,
     ruleIndex: PropTypes.number,
     disabled: PropTypes.bool,
-    isPublisher: PropTypes.bool,
     placeholder: PropTypes.string,
     parentPermlink: PropTypes.string,
     dropdownClassName: PropTypes.string,
@@ -207,58 +202,31 @@ class SearchObjectsAutocomplete extends Component {
         ))
     );
   };
-  onCreatePublisherClick = () => (
-    <ObjectCreation loadObjectTypes={getObjectTypes} onCreateObject={CreateObject} />
-  );
 
   render() {
     const { searchString } = this.state;
     const { intl, style, allowClear, disabled, autoFocus, isSearchObject } = this.props;
-    let placeholder = this.props.placeholder;
-
-    if (!this.props.placeholder) {
-      placeholder = intl.formatMessage({
-        id: 'objects_auto_complete_placeholder',
-        defaultMessage: 'Find objects',
-      });
-    }
-    if (this.props.isPublisher) {
-      placeholder = intl.formatMessage({
-        id: 'objects_auto_complete_publisher_placeholder',
-        defaultMessage: 'Find publisher',
-      });
-    }
 
     return (
-      <>
-        <AutoComplete
-          style={style}
-          className={this.props.className}
-          dropdownClassName={this.props.dropdownClassName}
-          onChange={this.handleChange}
-          onSelect={this.handleSelect}
-          onSearch={this.handleSearch}
-          optionLabelProp={'label'}
-          dataSource={
-            isSearchObject
-              ? pendingSearch(searchString, intl)
-              : this.renderSearchObjectsOptions(searchString, intl)
-          }
-          placeholder={placeholder}
-          value={searchString}
-          allowClear={allowClear}
-          autoFocus={autoFocus}
-          disabled={disabled}
-        />
-        {this.props.isPublisher && (
-          <button onClick={this.onCreatePublisherClick} className="WalletTable__csv-button">
-            {intl.formatMessage({
-              id: 'create_new_publisher',
-              defaultMessage: ' Create new publisher',
-            })}
-          </button>
-        )}
-      </>
+      <AutoComplete
+        style={style}
+        className={this.props.className}
+        dropdownClassName={this.props.dropdownClassName}
+        onChange={this.handleChange}
+        onSelect={this.handleSelect}
+        onSearch={this.handleSearch}
+        optionLabelProp={'label'}
+        dataSource={
+          isSearchObject
+            ? pendingSearch(searchString, intl)
+            : this.renderSearchObjectsOptions(searchString, intl)
+        }
+        placeholder={this.props.placeholder}
+        value={searchString}
+        allowClear={allowClear}
+        autoFocus={autoFocus}
+        disabled={disabled}
+      />
     );
   }
 }
