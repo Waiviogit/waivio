@@ -21,7 +21,7 @@ const TOTAL_PAGE = 3;
 
 const Toolbar = props => {
   const { intl, editorNode } = props;
-  const verticalPos = isIOS ? 75 : 0;
+  const verticalPos = isIOS() ? 75 : 0;
   const editor = useSlate();
   const isTable = useTable(editor);
   const [toolbarGroups] = useState(defaultToolbarGroups);
