@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
-import { Checkbox } from 'antd';
+import { Checkbox, Modal } from 'antd';
 import { useHistory } from 'react-router';
-import { isEmpty } from 'lodash';
+import { isEmpty, noop } from 'lodash';
 import PropTypes from 'prop-types';
 
 import './Filters.less';
 
-const RewardsFilters = ({ config, getFilters, onlyOne }) => {
+const RewardsFilters = ({ config, getFilters, onlyOne, visible, onClose }) => {
   const [activeFilters, setActiveFilters] = useState({});
   const history = useHistory();
   const query = new URLSearchParams(history.location.search);
@@ -63,7 +63,7 @@ const RewardsFilters = ({ config, getFilters, onlyOne }) => {
 
   if (Object.values(filters).every(fltrArray => isEmpty(fltrArray))) return null;
 
-  return (
+  const body = (
     <div className="RewardsFilters">
       <div className="RewardsFilters__title">
         <i className="iconfont icon-trysearchlist RewardsFilters__icon" />
@@ -96,16 +96,28 @@ const RewardsFilters = ({ config, getFilters, onlyOne }) => {
       })}
     </div>
   );
+
+  return visible ? (
+    <Modal visible={visible} onCancel={onClose} onOk={onClose}>
+      {body}
+    </Modal>
+  ) : (
+    body
+  );
 };
 
 RewardsFilters.propTypes = {
   getFilters: PropTypes.func.isRequired,
+  onClose: PropTypes.func,
   onlyOne: PropTypes.bool,
+  visible: PropTypes.bool,
   config: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
 };
 
 RewardsFilters.defaultProps = {
   onlyOne: false,
+  visible: false,
+  onClose: noop,
 };
 
 export default RewardsFilters;
