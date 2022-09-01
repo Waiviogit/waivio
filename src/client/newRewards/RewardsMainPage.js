@@ -10,6 +10,7 @@ import ScrollToTop from '../components/Utils/ScrollToTop';
 import ScrollToTopOnMount from '../components/Utils/ScrollToTopOnMount';
 import DEFAULTS from '../object/const/defaultValues';
 import { getAppUrl, getHelmetIcon, getWebsiteName } from '../../store/appStore/appSelectors';
+import MobileNavigation from '../components/Navigation/MobileNavigation/MobileNavigation';
 
 const RewardsMainPage = props => {
   const helmetIcon = useSelector(getHelmetIcon);
@@ -21,7 +22,7 @@ const RewardsMainPage = props => {
   const title = `Rewards - ${siteName} [NEW]`;
 
   return (
-    <div className="container settings-layout container">
+    <div className="Rewards-new container settings-layout container">
       <Helmet>
         <title>{title}</title>
         <meta property="og:title" content={title} />
@@ -51,6 +52,7 @@ const RewardsMainPage = props => {
         </div>
       </Affix>
       <div className={'center'} style={{ padding: '20px 0 0' }}>
+        <MobileNavigation />
         {renderRoutes(props.route.routes)}
       </div>
     </div>

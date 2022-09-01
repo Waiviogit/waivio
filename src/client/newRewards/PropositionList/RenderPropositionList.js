@@ -34,6 +34,7 @@ const RenderPropositionList = ({
   const [hasMore, setHasMore] = useState(false);
   const [loading, setLoading] = useState(true);
   const [parent, setParent] = useState(null);
+  const [visible, setVisible] = useState(false);
   const query = new URLSearchParams(location.search);
   const search = query.toString() ? `&${query.toString()}` : '';
   const getFilters = () => getPropositionFilters(requiredObject, authUserName);
@@ -69,11 +70,16 @@ const RenderPropositionList = ({
     }
   };
 
+  const onClose = () => setVisible(false);
+
   if (loading && isEmpty(propositions)) return <Loading />;
 
   return (
     <div className="PropositionList">
       <div className="PropositionList__feed">
+        <p className={'PropositionList__filterButton'}>
+          Filters: <span onClick={() => setVisible(true)}>add</span>
+        </p>
         <div className="PropositionList__breadcrumbs">
           <Link className="PropositionList__parent" to={`/rewards-new/${tab}`}>
             {capitalize(tab)} rewards
@@ -110,11 +116,15 @@ const RenderPropositionList = ({
           </ReduxInfiniteScroll>
         )}
       </div>
-      <RewardsFilters
-        title={'Filter rewards'}
-        getFilters={getFilters}
-        config={customFilterConfig}
-      />
+      <div className={'PropositionList__left'}>
+        <RewardsFilters
+          title={'Filter rewards'}
+          getFilters={getFilters}
+          config={customFilterConfig}
+          visible={visible}
+          onClose={onClose}
+        />
+      </div>
     </div>
   );
 };
