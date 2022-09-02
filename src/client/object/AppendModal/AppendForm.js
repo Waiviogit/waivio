@@ -67,6 +67,8 @@ import {
   getBlogItems,
   getFormItems,
   getNewsFilterItems,
+  getObjectUrlForLink,
+  getObjectAvatar,
 } from '../../../common/helpers/wObjectHelper';
 import { appendObject } from '../../../store/appendStore/appendActions';
 import withEditor from '../../components/Editor/withEditor';
@@ -357,6 +359,7 @@ export default class AppendForm extends Component {
       case objectFields.price:
       case objectFields.categoryItem:
       case objectFields.parent:
+      case objectFields.publisher:
       case objectFields.workTime:
       case objectFields.email:
       case TYPES_OF_MENU_ITEM.PAGE:
@@ -417,6 +420,10 @@ export default class AppendForm extends Component {
         case objectFields.avatar:
         case objectFields.background:
           return `@${author} added ${currentField} (${langReadable}):\n ![${currentField}](${appendValue})`;
+        case objectFields.publisher:
+          return `@${author} added ${currentField} (${langReadable}):${
+            formValues[objectFields.publisher]
+          }`;
         case objectFields.phone:
           return `@${author} added ${currentField}(${langReadable}):\n ${appendValue.replace(
             /[{}"]/g,
@@ -547,6 +554,17 @@ export default class AppendForm extends Component {
           body: JSON.stringify({
             [companyIdFields.companyIdType]: formValues[companyIdFields.companyIdType],
             [companyIdFields.companyId]: formValues[companyIdFields.companyId],
+          }),
+        };
+      }
+      if (currentField === objectFields.publisher) {
+        fieldsObject = {
+          ...fieldsObject,
+          body: JSON.stringify({
+            name: getObjectName(this.state.selectedObject),
+            authorPermlink: this.state.selectedObject?.author_permlink,
+            defaultShowLink: getObjectUrlForLink(this.state.selectedObject),
+            avatar: getObjectAvatar(this.state.selectedObject),
           }),
         };
       }
@@ -994,7 +1012,8 @@ export default class AppendForm extends Component {
       currentField === objectFields.button ||
       currentField === objectFields.link ||
       currentField === objectFields.companyIdType ||
-      currentField === objectFields.companyId
+      currentField === objectFields.companyId ||
+      currentField === objectFields.publisher
     ) {
       return filtered.some(f =>
         isEqual(this.getCurrentObjectBody(currentField), parseJSON(f.body)),
@@ -1271,6 +1290,10 @@ export default class AppendForm extends Component {
     });
   };
 
+  onObjectCardDelete = () => {
+    this.setState({ selectedObject: null });
+  };
+
   renderContentValue = currentField => {
     const { loading, selectedObject, selectedCategory, fileList } = this.state;
     const { intl, wObject, categories, selectedAlbum, albums } = this.props;
@@ -1361,6 +1384,37 @@ export default class AppendForm extends Component {
               rules: this.getFieldRules(objectFields.parent),
             })(<SearchObjectsAutocomplete handleSelect={this.handleSelectObject} />)}
             {this.state.selectedObject && <ObjectCardView wObject={this.state.selectedObject} />}
+          </Form.Item>
+        );
+      }
+      case objectFields.publisher: {
+        return (
+          <Form.Item>
+            {getFieldDecorator(objectFields.publisher, {
+              rules: this.getFieldRules(objectFields.publisher),
+            })(
+              <SearchObjectsAutocomplete
+                placeholder={this.props.intl.formatMessage({
+                  id: 'objects_auto_complete_publisher_placeholder',
+                  defaultMessage: 'Find publisher',
+                })}
+                handleSelect={this.handleSelectObject}
+              />,
+            )}
+            <CreateObject
+              isSingleType
+              defaultObjectType="business"
+              disabled
+              onCreateObject={this.handleCreateObject}
+              parentObject={wObject.publisher || wObject || {}}
+            />{' '}
+            {this.state.selectedObject && (
+              <ObjectCardView
+                closeButton
+                onDelete={this.onObjectCardDelete}
+                wObject={this.state.selectedObject}
+              />
+            )}
           </Form.Item>
         );
       }
