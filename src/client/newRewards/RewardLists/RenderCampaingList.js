@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { isEmpty } from 'lodash';
 import PropTypes from 'prop-types';
-import { useLocation } from 'react-router';
-
+import { useHistory } from 'react-router';
 import Campaing from '../reuseble/Campaing';
 import Loading from '../../components/Icon/Loading';
 import ReduxInfiniteScroll from '../../vendor/ReduxInfiniteScroll';
 import EmptyCampaing from '../../statics/EmptyCampaing';
 import RewardsFilters from '../Filters/Filters';
+import FiltersForMobile from '../Filters/FiltersForMobile';
 
 import './RewardLists.less';
 
@@ -20,9 +20,11 @@ const RenderCampaingList = ({ getAllRewardList, title, getFilters }) => {
   const [rewards, setRewards] = useState([]);
   const [hasMore, setHasMore] = useState(true);
   const [loading, setLoading] = useState(true);
-  const location = useLocation();
-  const query = new URLSearchParams(location.search);
-  const search = query.toString() ? `&${query.toString()}` : '';
+  const history = useHistory();
+  const [visible, setVisible] = useState(false);
+  const search = history.location.search.replace('?', '&');
+
+  const onClose = () => setVisible(false);
 
   useEffect(() => {
     getAllRewardList(0, search)
@@ -32,7 +34,7 @@ const RenderCampaingList = ({ getAllRewardList, title, getFilters }) => {
         setLoading(false);
       })
       .catch(() => setLoading(false));
-  }, [search]);
+  }, [history.location.search]);
 
   const handleLoadingMoreRewardsList = () => {
     setLoading(true);
@@ -51,6 +53,7 @@ const RenderCampaingList = ({ getAllRewardList, title, getFilters }) => {
   return (
     <div className="RewardLists">
       <div className="RewardLists__feed">
+        <FiltersForMobile setVisible={setVisible} />
         <h2>{title}</h2>
         {isEmpty(rewards) ? (
           <EmptyCampaing />
@@ -69,7 +72,15 @@ const RenderCampaingList = ({ getAllRewardList, title, getFilters }) => {
           </ReduxInfiniteScroll>
         )}
       </div>
-      <RewardsFilters title={'Filter rewards'} getFilters={getFilters} config={filterConfig} />
+      <div className={'RewardLists__left'}>
+        <RewardsFilters
+          title={'Filter rewards'}
+          getFilters={getFilters}
+          config={filterConfig}
+          visible={visible}
+          onClose={onClose}
+        />
+      </div>
     </div>
   );
 };

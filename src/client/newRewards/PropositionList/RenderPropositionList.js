@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router';
+import { useLocation, useParams } from 'react-router';
 import { capitalize, isEmpty } from 'lodash';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
@@ -16,6 +16,7 @@ import RewardsFilters from '../Filters/Filters';
 
 import './PropositionList.less';
 import { getPropositionsKey } from '../../../common/helpers/newRewardsHelper';
+import FiltersForMobile from '../Filters/FiltersForMobile';
 
 const filterConfig = [
   { title: 'Rewards for', type: 'type' },
@@ -30,12 +31,14 @@ const RenderPropositionList = ({
 }) => {
   const { requiredObject } = useParams();
   const authUserName = useSelector(getAuthenticatedUserName);
+  const location = useLocation();
   const [propositions, setPropositions] = useState();
   const [hasMore, setHasMore] = useState(false);
   const [loading, setLoading] = useState(true);
   const [parent, setParent] = useState(null);
-  const query = new URLSearchParams(location.search);
-  const search = query.toString() ? `&${query.toString()}` : '';
+  const [visible, setVisible] = useState(false);
+  const search = location.search.replace('?', '&');
+
   const getFilters = () => getPropositionFilters(requiredObject, authUserName);
 
   const getPropositionList = async () => {
@@ -54,7 +57,7 @@ const RenderPropositionList = ({
 
   useEffect(() => {
     getPropositionList();
-  }, [requiredObject, search]);
+  }, [requiredObject, location.search]);
 
   const handleLoadingMoreRewardsList = async () => {
     setLoading(true);
@@ -69,11 +72,14 @@ const RenderPropositionList = ({
     }
   };
 
+  const onClose = () => setVisible(false);
+
   if (loading && isEmpty(propositions)) return <Loading />;
 
   return (
     <div className="PropositionList">
       <div className="PropositionList__feed">
+        <FiltersForMobile setVisible={setVisible} />
         <div className="PropositionList__breadcrumbs">
           <Link className="PropositionList__parent" to={`/rewards-new/${tab}`}>
             {capitalize(tab)} rewards
@@ -110,11 +116,15 @@ const RenderPropositionList = ({
           </ReduxInfiniteScroll>
         )}
       </div>
-      <RewardsFilters
-        title={'Filter rewards'}
-        getFilters={getFilters}
-        config={customFilterConfig}
-      />
+      <div className={'PropositionList__left'}>
+        <RewardsFilters
+          title={'Filter rewards'}
+          getFilters={getFilters}
+          config={customFilterConfig}
+          visible={visible}
+          onClose={onClose}
+        />
+      </div>
     </div>
   );
 };

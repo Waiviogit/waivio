@@ -51,4 +51,8 @@ export const addPayoutForActiveVotes = (post, waivRates) => {
 
 export const pipe = (...fns) => x => fns.reduce((v, f) => f(v), x);
 
+const ua = typeof window !== 'undefined' && window.navigator.userAgent;
+
+export const isIOS = () => !!ua?.match(/iPad/i) || !!ua?.match(/iPhone/i);
+
 export default null;

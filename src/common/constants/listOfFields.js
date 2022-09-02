@@ -20,6 +20,7 @@ export const objectFields = {
   listItem: 'listItem',
   price: 'price',
   parent: 'parent',
+  publisher: 'publisher',
   newsFilter: 'newsFilter',
   button: 'button',
   workTime: 'workTime',
@@ -38,6 +39,7 @@ export const objectFields = {
   description: 'description',
   title: 'title',
   language: 'language',
+  printLength: 'printLength',
 };
 
 export const TYPES_OF_MENU_ITEM = {
@@ -199,6 +201,10 @@ export const errorObjectFields = {
   [objectFields.tagCategory]: [objectFields.tagCategory],
   [objectFields.categoryItem]: [objectFields.categoryItem],
   [objectFields.blog]: [blogFields.title],
+  [objectFields.printLength]: [objectFields.printLength],
+  [objectFields.ageRange]: [objectFields.ageRange],
+  [objectFields.language]: [objectFields.language],
+  [objectFields.publicationDate]: [objectFields.publicationDate],
   [objectFields.form]: [formFormFields.link, formFormFields.widget, formFormFields.title],
 };
 

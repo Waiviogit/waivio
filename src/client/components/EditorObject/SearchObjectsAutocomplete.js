@@ -202,6 +202,7 @@ class SearchObjectsAutocomplete extends Component {
         ))
     );
   };
+
   render() {
     const { searchString } = this.state;
     const { intl, style, allowClear, disabled, autoFocus, isSearchObject } = this.props;

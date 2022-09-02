@@ -66,9 +66,21 @@ const MobileNavigation = ({ location, match }) => {
       pageName = pages.rewards.id;
       filterName = url.match(pages.rewards.regExp)[2];
       break;
+    case (url.match(pages.rewardsNew.regExp) || {}).input:
+      pageName = pages.rewardsNew.id;
+      filterName = url.match(pages.rewardsNew.regExp)[2];
+      break;
     case (url.match(pages.rewardsCampaigns.regExp) || {}).input:
       pageName = pages.rewardsCampaigns.id;
       filterName = url.match(pages.rewardsCampaigns.regExp)[2];
+      break;
+    case (url.match(pages.rewardsNewMatchBots.regExp) || {}).input:
+      pageName = pages.rewardsNewMatchBots.id;
+      filterName = 'Sponsor match bots';
+      break;
+    case (url.match(pages.rewardsNewCampaigns.regExp) || {}).input:
+      pageName = pages.rewardsNewCampaigns.id;
+      filterName = url.match(pages.rewardsNewCampaigns.regExp)[2];
       break;
     case PATH_NAME_DISCOVER:
       pageName = 'users';
