@@ -446,7 +446,9 @@ export default class AppendForm extends Component {
         case objectFields.ageRange:
         case objectFields.language:
         case objectFields.printLength:
-          return `@${author} added ${currentField} (${langReadable}): ${appendValue}`;
+          return `@${author} added ${currentField} (${langReadable}): ${appendValue} ${this.props.intl.formatMessage(
+            { id: 'lowercase_pages', defaultMessage: 'pages' },
+          )}`;
         case objectFields.publicationDate:
           return `@${author} added ${currentField} (${langReadable}): ${moment(
             getFieldValue(objectFields.publicationDate),
@@ -1519,6 +1521,7 @@ export default class AppendForm extends Component {
                 rules: this.getFieldRules(objectFields.printLength),
               })(
                 <Input
+                  type="number"
                   className={classNames('AppendForm__input', {
                     'validation-error': !this.state.isSomeValue,
                   })}

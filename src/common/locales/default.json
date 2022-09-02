@@ -1895,5 +1895,7 @@
   "select_publication_date": "Select publication date",
   "print_length": "Print length",
   "object_field_printLength":"Print length",
-  "pages": "Pages"
+  "pages": "Pages",
+  "lowercase_pages": "pages",
+  "printLength_symbols_validation": "Please use numbers, dot and comma"
 }
