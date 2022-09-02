@@ -16,6 +16,7 @@ import RewardsFilters from '../Filters/Filters';
 
 import './PropositionList.less';
 import { getPropositionsKey } from '../../../common/helpers/newRewardsHelper';
+import FiltersForMobile from '../Filters/FiltersForMobile';
 
 const filterConfig = [
   { title: 'Rewards for', type: 'type' },
@@ -36,6 +37,7 @@ const RenderPropositionList = ({
   const [loading, setLoading] = useState(true);
   const [parent, setParent] = useState(null);
   const [visible, setVisible] = useState(false);
+  const search = location.search.replace('?', '&');
 
   const getFilters = () => getPropositionFilters(requiredObject, authUserName);
 
@@ -46,7 +48,7 @@ const RenderPropositionList = ({
       setParent(campParent);
     }
 
-    const res = await getProposition(requiredObject, authUserName, 0, location.search);
+    const res = await getProposition(requiredObject, authUserName, 0, search);
 
     setPropositions(res.rewards);
     setHasMore(res.hasMore);
@@ -60,12 +62,7 @@ const RenderPropositionList = ({
   const handleLoadingMoreRewardsList = async () => {
     setLoading(true);
     try {
-      const res = await getProposition(
-        requiredObject,
-        authUserName,
-        propositions?.length,
-        location.search,
-      );
+      const res = await getProposition(requiredObject, authUserName, propositions?.length, search);
 
       setPropositions([...propositions, ...res.rewards]);
       setHasMore(res.hasMore);
@@ -82,9 +79,7 @@ const RenderPropositionList = ({
   return (
     <div className="PropositionList">
       <div className="PropositionList__feed">
-        <p className={'PropositionList__filterButton'}>
-          Filters: <span onClick={() => setVisible(true)}>add</span>
-        </p>
+        <FiltersForMobile setVisible={setVisible} />
         <div className="PropositionList__breadcrumbs">
           <Link className="PropositionList__parent" to={`/rewards-new/${tab}`}>
             {capitalize(tab)} rewards

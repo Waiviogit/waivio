@@ -12,13 +12,9 @@ const RewardsFilters = ({ config, getFilters, onlyOne, visible, onClose }) => {
   const history = useHistory();
   const query = new URLSearchParams(history.location.search);
   const [filters, setFilter] = useState({});
-
-  useEffect(() => {
+  const setFiltersFromQuery = () => {
     const types = config.map(conf => conf.type);
 
-    getFilters().then(res => {
-      setFilter(res);
-    });
     setActiveFilters(
       types.reduce((acc, curr) => {
         const filtrs = query.get(curr);
@@ -30,7 +26,18 @@ const RewardsFilters = ({ config, getFilters, onlyOne, visible, onClose }) => {
         return acc;
       }, {}),
     );
+  };
+
+  useEffect(() => {
+    getFilters().then(res => {
+      setFilter(res);
+    });
+    setFiltersFromQuery();
   }, []);
+
+  useEffect(() => {
+    setFiltersFromQuery();
+  }, [history.location.search]);
 
   const setFilters = (type, filter) => {
     const filreList = activeFilters[type] || [];

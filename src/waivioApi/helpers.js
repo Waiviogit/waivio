@@ -1,6 +1,8 @@
+import { isEmpty } from 'lodash';
+
 export const createQuery = queryObject =>
   Object.keys(queryObject).reduce((acc, value) => {
-    if (queryObject[value]) {
+    if (!isEmpty(queryObject[value])) {
       return acc ? `${acc}&${value}=${queryObject[value]}` : `${value}=${queryObject[value]}`;
     }
 

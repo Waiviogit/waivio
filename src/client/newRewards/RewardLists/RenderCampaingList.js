@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { isEmpty } from 'lodash';
 import PropTypes from 'prop-types';
-import { useLocation } from 'react-router';
-import { Tag } from 'antd';
+import { useHistory } from 'react-router';
 import Campaing from '../reuseble/Campaing';
 import Loading from '../../components/Icon/Loading';
 import ReduxInfiniteScroll from '../../vendor/ReduxInfiniteScroll';
 import EmptyCampaing from '../../statics/EmptyCampaing';
 import RewardsFilters from '../Filters/Filters';
-import { parseQuery } from '../../../waivioApi/helpers';
+import FiltersForMobile from '../Filters/FiltersForMobile';
 
 import './RewardLists.less';
 
@@ -21,10 +20,10 @@ const RenderCampaingList = ({ getAllRewardList, title, getFilters }) => {
   const [rewards, setRewards] = useState([]);
   const [hasMore, setHasMore] = useState(true);
   const [loading, setLoading] = useState(true);
-  const location = useLocation();
-  const query = new URLSearchParams(location.search);
-  const search = query.toString() ? `&${query.toString()}` : '';
+  const history = useHistory();
   const [visible, setVisible] = useState(false);
+  const search = history.location.search.replace('?', '&');
+
   const onClose = () => setVisible(false);
 
   useEffect(() => {
@@ -35,7 +34,7 @@ const RenderCampaingList = ({ getAllRewardList, title, getFilters }) => {
         setLoading(false);
       })
       .catch(() => setLoading(false));
-  }, [search]);
+  }, [history.location.search]);
 
   const handleLoadingMoreRewardsList = () => {
     setLoading(true);
@@ -50,25 +49,11 @@ const RenderCampaingList = ({ getAllRewardList, title, getFilters }) => {
   };
 
   if (loading && isEmpty(rewards)) return <Loading />;
-  const filterList = Object.values(parseQuery(search)).reduce((acc, curr) => [...acc, ...curr], []);
 
   return (
     <div className="RewardLists">
       <div className="RewardLists__feed">
-        <p className={'RewardLists__filterButton'}>
-          Filters:{' '}
-          {filterList.map(f => (
-            <Tag key={f} closable onClose={() => {}}>
-              {f}
-            </Tag>
-          ))}{' '}
-          <span
-            className={'RewardLists__filterButton--withUnderline'}
-            onClick={() => setVisible(true)}
-          >
-            add
-          </span>
-        </p>
+        <FiltersForMobile setVisible={setVisible} />
         <h2>{title}</h2>
         {isEmpty(rewards) ? (
           <EmptyCampaing />
