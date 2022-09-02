@@ -15,12 +15,13 @@ import BlockToolbar from './blocktoolbar';
 import InlineToolbar from './inlinetoolbar';
 import TableToolbar from './tabletoolbar';
 import { getSelection, getSelectionRect } from '../../index';
+import { isIOS } from '../../../../../../common/helpers';
 
 const TOTAL_PAGE = 3;
 
 const Toolbar = props => {
   const { intl, editorNode } = props;
-
+  const verticalPos = isIOS() ? 75 : 0;
   const editor = useSlate();
   const isTable = useTable(editor);
   const [toolbarGroups] = useState(defaultToolbarGroups);
@@ -60,7 +61,7 @@ const Toolbar = props => {
     const parentBoundary = editorNode.getBoundingClientRect();
     const toolbarBoundary = toolbarNode.getBoundingClientRect();
 
-    toolbarNode.style.top = `${selectionBoundary.bottom - parentBoundary.top - 5}px`;
+    toolbarNode.style.top = `${selectionBoundary.bottom - verticalPos - parentBoundary.top - 5}px`;
 
     const selectionCenter =
       selectionBoundary.left - parentBoundary.left + selectionBoundary.width / 2; //

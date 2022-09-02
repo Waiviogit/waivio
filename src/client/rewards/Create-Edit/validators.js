@@ -25,7 +25,27 @@ export const validatorMessagesCreator = (messageFactory, currency) => ({
   ),
   rewardsWaivLess: messageFactory(
     'waiv_reward_more_than',
-    'Reward should be more or equal 0,001 {currency}',
+    'Reward should be more or equal 0,00000001 {currency}',
+    { currency },
+  ),
+  rewardsNumberAfterDots: messageFactory(
+    'reward_cant_be_longer_than_3_characters_after_dot',
+    "Reward can't be longer than 3 characters after dot",
+    { currency },
+  ),
+  rewardsNumberAfterDotsWaiv: messageFactory(
+    'reward_cant_be_longer_than_8_characters_after_dot',
+    "Reward can't be longer than 8 characters after dot",
+    { currency },
+  ),
+  campaingNumberAfterDots: messageFactory(
+    'campaing_cant_be_longer_than_3_characters_after_dot',
+    "Сampaign budget can't be longer than 3 characters after dot",
+    { currency },
+  ),
+  campaingNumberAfterDotsWaiv: messageFactory(
+    'campaing_cant_be_longer_than_8_characters_after_dot',
+    "Сampaign budget can't be longer than 8 characters after dot",
     { currency },
   ),
   rewardToZero: messageFactory('reward_more_than_zero', 'Reward should be more than zero'),
@@ -171,23 +191,41 @@ export const validatorsCreator = (
 
   compareBudgetValues: async (rule, value, callback) => {
     const rate = await getCurrentCurrencyRate(currency);
-    const userUSDBalance =
-      payoutToken === 'HIVE'
-        ? parseFloat(user.balance) * rate[currency]
-        : currencyInfo.balance * rates * rate[currency];
+    const isHive = payoutToken === 'HIVE';
+    const dotIndex = value.indexOf('.');
+    const userUSDBalance = isHive
+      ? parseFloat(user.balance) * rate[currency]
+      : currencyInfo.balance * rates * rate[currency];
 
-    if (payoutToken === 'HIVE' && value > 0 && value < 0.001) callback(messages.budgetLess);
-    if (payoutToken !== 'HIVE' && value > 0 && value < 0.00000001)
-      callback(messages.budgetWaivLess);
+    if (isHive) {
+      if (value > 0 && value < 0.001) callback(messages.budgetLess);
+      if (dotIndex > 0 && value.length - dotIndex + 1 > 3)
+        callback(messages.campaingNumberAfterDots);
+    } else {
+      if (value > 0 && value < 0.00000001) callback(messages.budgetWaivLess);
+      if (dotIndex > 0 && value.length - (dotIndex + 1) > 8)
+        callback(messages.campaingNumberAfterDotsWaiv);
+    }
+
     if (value <= 0 && value !== '') callback(messages.budgetToZero);
     else if (userUSDBalance < value) callback(messages.budgetToSteemBalance);
     else callback();
   },
 
   compareRewardAndBudget: (rule, value, callback) => {
-    if (payoutToken === 'HIVE' && value > 0 && value < 0.001) callback(messages.rewardsLess);
-    if (payoutToken !== 'HIVE' && value > 0 && value < 0.00000001)
-      callback(messages.rewardsWaivLess);
+    const isHive = payoutToken === 'HIVE';
+    const dotIndex = value.indexOf('.');
+
+    if (isHive) {
+      if (value > 0 && value < 0.001) callback(messages.rewardsLess);
+      if (dotIndex > 0 && value.length - dotIndex + 1 > 3)
+        callback(messages.rewardsNumberAfterDots);
+    } else {
+      if (value > 0 && value < 0.00000001) callback(messages.rewardsWaivLess);
+      if (dotIndex > 0 && value.length - (dotIndex + 1) > 8)
+        callback(messages.rewardsNumberAfterDotsWaiv);
+    }
+
     if (value <= 0 && value !== '') callback(messages.rewardToZero);
     else callback();
   },

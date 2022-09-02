@@ -23,6 +23,8 @@ const RenderCampaingList = ({ getAllRewardList, title, getFilters }) => {
   const location = useLocation();
   const query = new URLSearchParams(location.search);
   const search = query.toString() ? `&${query.toString()}` : '';
+  const [visible, setVisible] = useState(false);
+  const onClose = () => setVisible(false);
 
   useEffect(() => {
     getAllRewardList(0, search)
@@ -51,6 +53,9 @@ const RenderCampaingList = ({ getAllRewardList, title, getFilters }) => {
   return (
     <div className="RewardLists">
       <div className="RewardLists__feed">
+        <p className={'PropositionList__filterButton'}>
+          Filters: <span onClick={() => setVisible(true)}>add</span>
+        </p>
         <h2>{title}</h2>
         {isEmpty(rewards) ? (
           <EmptyCampaing />
@@ -69,7 +74,15 @@ const RenderCampaingList = ({ getAllRewardList, title, getFilters }) => {
           </ReduxInfiniteScroll>
         )}
       </div>
-      <RewardsFilters title={'Filter rewards'} getFilters={getFilters} config={filterConfig} />
+      <div className={'RewardLists__left'}>
+        <RewardsFilters
+          title={'Filter rewards'}
+          getFilters={getFilters}
+          config={filterConfig}
+          visible={visible}
+          onClose={onClose}
+        />
+      </div>
     </div>
   );
 };
