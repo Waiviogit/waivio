@@ -8,12 +8,10 @@ export const createQuery = queryObject =>
   }, '');
 
 export const parseQuery = queryString => {
-  const c = queryString.split('&').filter(value => value);
+  const u = new URLSearchParams(queryString);
 
-  return c.reduce((acc, curr) => {
-    const h = curr.split('=');
-
-    acc[h[0]] = h[1].split('%2C');
+  return Array.from(u.keys()).reduce((acc, curr) => {
+    acc[curr] = u.get(curr).split(',');
 
     return acc;
   }, {});
