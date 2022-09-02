@@ -221,7 +221,14 @@ class SearchObjectsAutocomplete extends Component {
             ? pendingSearch(searchString, intl)
             : this.renderSearchObjectsOptions(searchString, intl)
         }
-        placeholder={this.props.placeholder}
+        placeholder={
+          !this.props.placeholder
+            ? intl.formatMessage({
+                id: 'objects_auto_complete_placeholder',
+                defaultMessage: 'Find objects',
+              })
+            : this.props.placeholder
+        }
         value={searchString}
         allowClear={allowClear}
         autoFocus={autoFocus}
