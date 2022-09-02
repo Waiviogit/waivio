@@ -1887,10 +1887,15 @@
   "age_range": "Reading age",
   "object_field_language": "Language",
   "book_language": "Book language",
+  "object_field_publisher": "Publisher",
+  "objects_auto_complete_publisher_placeholder": "Find publisher",
+  "create_new_publisher": " Create new publisher",
   "object_field_publicationDate": "Publication date",
   "dont_have_any_payments_yet": "You don't have any payments yet",
   "select_publication_date": "Select publication date",
   "print_length": "Print length",
   "object_field_printLength":"Print length",
-  "pages": "Pages"
+  "pages": "Pages",
+  "lowercase_pages": "pages",
+  "printLength_symbols_validation": "Please use numbers, dot and comma"
 }

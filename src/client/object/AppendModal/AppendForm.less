@@ -2,6 +2,26 @@
 @import (reference) '../../styles/modules/variables.less';
 
 .AppendForm {
+  &__create-publisher {
+    display: flex;
+    justify-content: flex-end;
+    outline: none;
+    background: transparent;
+    border: none;
+    color: @orange-hot;
+    width: 100%;
+
+    &:hover {
+      cursor: pointer;
+      color: @orange;
+    }
+
+    &:disabled {
+      color: @silver;
+      cursor: initial;
+    }
+  }
+
   padding-bottom: 24px;
 
   .ant-select {
@@ -98,10 +118,12 @@
       .ant-calendar-input-wrap {
         height: 42px !important;
       }
+
       .ant-calendar {
         margin-top: 5px !important;
         margin-left: 2px;
       }
+
       .ant-calendar-input {
         font-size: 20px !important;
         font-weight: bold;

@@ -2820,7 +2820,6 @@ export const getReservationsList = (guideName, skip = 0, query) => {
 };
 
 export const getHistoryList = (guideName, skip = 0, query) => {
-  console.log(parseQuery(query));
   return fetch(`${config.campaignV2ApiPrefix}${config.rewards}${config.history}/${guideName}`, {
     headers,
     method: 'POST',
@@ -3043,7 +3042,7 @@ export const getFiltersForReservedProposition = (reqObj, userName) => {
     .catch(e => e);
 };
 
-export const getFiltersForReservationsProposition = userName => {
+export const getFiltersForReservationsProposition = (reqObj, userName) => {
   return fetch(
     `${config.campaignV2ApiPrefix}${config.rewards}${config.reservations}/${userName}${config.filters}`,
     {

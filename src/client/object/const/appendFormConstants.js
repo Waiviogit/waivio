@@ -161,6 +161,24 @@ export const fieldsRules = {
       validator: true,
     },
   ],
+  [objectFields.publisher]: [
+    {
+      transform: value => value && value.toLowerCase(),
+    },
+    {
+      required: true,
+      message: {
+        intlId: {
+          id: 'field_error',
+          defaultMessage: 'Field is required',
+        },
+        intlMeta: { field: 'Publisher' },
+      },
+    },
+    {
+      validator: true,
+    },
+  ],
   [TYPES_OF_MENU_ITEM.LIST]: [
     {
       transform: value => value && value.toLowerCase(),

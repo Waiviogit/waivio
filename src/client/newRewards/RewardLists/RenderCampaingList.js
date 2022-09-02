@@ -2,12 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { isEmpty } from 'lodash';
 import PropTypes from 'prop-types';
 import { useLocation } from 'react-router';
-
+import { Tag } from 'antd';
 import Campaing from '../reuseble/Campaing';
 import Loading from '../../components/Icon/Loading';
 import ReduxInfiniteScroll from '../../vendor/ReduxInfiniteScroll';
 import EmptyCampaing from '../../statics/EmptyCampaing';
 import RewardsFilters from '../Filters/Filters';
+import { parseQuery } from '../../../waivioApi/helpers';
 
 import './RewardLists.less';
 
@@ -49,12 +50,24 @@ const RenderCampaingList = ({ getAllRewardList, title, getFilters }) => {
   };
 
   if (loading && isEmpty(rewards)) return <Loading />;
+  const filterList = Object.values(parseQuery(search)).reduce((acc, curr) => [...acc, ...curr], []);
 
   return (
     <div className="RewardLists">
       <div className="RewardLists__feed">
-        <p className={'PropositionList__filterButton'}>
-          Filters: <span onClick={() => setVisible(true)}>add</span>
+        <p className={'RewardLists__filterButton'}>
+          Filters:{' '}
+          {filterList.map(f => (
+            <Tag key={f} closable onClose={() => {}}>
+              {f}
+            </Tag>
+          ))}{' '}
+          <span
+            className={'RewardLists__filterButton--withUnderline'}
+            onClick={() => setVisible(true)}
+          >
+            add
+          </span>
         </p>
         <h2>{title}</h2>
         {isEmpty(rewards) ? (

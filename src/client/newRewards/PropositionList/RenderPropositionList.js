@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router';
+import { useLocation, useParams } from 'react-router';
 import { capitalize, isEmpty } from 'lodash';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
@@ -30,13 +30,13 @@ const RenderPropositionList = ({
 }) => {
   const { requiredObject } = useParams();
   const authUserName = useSelector(getAuthenticatedUserName);
+  const location = useLocation();
   const [propositions, setPropositions] = useState();
   const [hasMore, setHasMore] = useState(false);
   const [loading, setLoading] = useState(true);
   const [parent, setParent] = useState(null);
   const [visible, setVisible] = useState(false);
-  const query = new URLSearchParams(location.search);
-  const search = query.toString() ? `&${query.toString()}` : '';
+
   const getFilters = () => getPropositionFilters(requiredObject, authUserName);
 
   const getPropositionList = async () => {
@@ -46,7 +46,7 @@ const RenderPropositionList = ({
       setParent(campParent);
     }
 
-    const res = await getProposition(requiredObject, authUserName, 0, search);
+    const res = await getProposition(requiredObject, authUserName, 0, location.search);
 
     setPropositions(res.rewards);
     setHasMore(res.hasMore);
@@ -55,12 +55,17 @@ const RenderPropositionList = ({
 
   useEffect(() => {
     getPropositionList();
-  }, [requiredObject, search]);
+  }, [requiredObject, location.search]);
 
   const handleLoadingMoreRewardsList = async () => {
     setLoading(true);
     try {
-      const res = await getProposition(requiredObject, authUserName, propositions?.length, search);
+      const res = await getProposition(
+        requiredObject,
+        authUserName,
+        propositions?.length,
+        location.search,
+      );
 
       setPropositions([...propositions, ...res.rewards]);
       setHasMore(res.hasMore);
