@@ -682,7 +682,9 @@ class ObjectInfo extends React.Component {
               <div className="field-website">
                 <span className="field-website__title">
                   <Icon type="book" className="iconfont icon-link text-icon link" />
-                  <span className="CompanyId__wordbreak">{printLength}</span>
+                  <span className="CompanyId__wordbreak">
+                    {printLength} <FormattedMessage id="lowercase_pages" />{' '}
+                  </span>
                 </span>
               </div>
             )
@@ -692,7 +694,10 @@ class ObjectInfo extends React.Component {
                 <div className="field-website">
                   <span className="field-website__title">
                     <Icon type="book" className="iconfont icon-link text-icon link" />
-                    <span className="CompanyId__wordbreak"> {printLength}</span>
+                    <span className="CompanyId__wordbreak">
+                      {' '}
+                      {printLength} <FormattedMessage id="lowercase_pages" />{' '}
+                    </span>
                   </span>
                 </div>
               ),
