@@ -200,7 +200,7 @@ export const errorObjectFields = {
   [objectFields.tagCategory]: [objectFields.tagCategory],
   [objectFields.categoryItem]: [objectFields.categoryItem],
   [objectFields.blog]: [blogFields.title],
-  [objectFields.printLength]: [blogFields.printLength],
+  [objectFields.printLength]: [objectFields.printLength],
   [objectFields.form]: [formFormFields.link, formFormFields.widget, formFormFields.title],
 };
 
