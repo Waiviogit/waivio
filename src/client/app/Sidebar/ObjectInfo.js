@@ -5,8 +5,8 @@ import PropTypes from 'prop-types';
 import { Link, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
-import classNames from 'classnames';
 import moment from 'moment';
+import classNames from 'classnames';
 import {
   accessTypesArr,
   getBlogItems,
@@ -338,6 +338,7 @@ class ObjectInfo extends React.Component {
     const language = wobject.language;
     const publicationDate = moment(wobject.publicationDate).format('MMMM DD, YYYY');
     const printLength = wobject.printLength;
+    const publisher = parseWobjectField(wobject, 'publisher');
     const profile = linkField
       ? {
           facebook: linkField[linkFields.linkFacebook] || '',
@@ -682,7 +683,9 @@ class ObjectInfo extends React.Component {
               <div className="field-website">
                 <span className="field-website__title">
                   <Icon type="book" className="iconfont icon-link text-icon link" />
-                  <span className="CompanyId__wordbreak">{printLength}</span>
+                  <span className="CompanyId__wordbreak">
+                    {printLength} <FormattedMessage id="lowercase_pages" />{' '}
+                  </span>
                 </span>
               </div>
             )
@@ -692,7 +695,10 @@ class ObjectInfo extends React.Component {
                 <div className="field-website">
                   <span className="field-website__title">
                     <Icon type="book" className="iconfont icon-link text-icon link" />
-                    <span className="CompanyId__wordbreak"> {printLength}</span>
+                    <span className="CompanyId__wordbreak">
+                      {' '}
+                      {printLength} <FormattedMessage id="lowercase_pages" />{' '}
+                    </span>
                   </span>
                 </div>
               ),
@@ -742,6 +748,16 @@ class ObjectInfo extends React.Component {
               objectFields.parent,
               parent && (
                 <ObjectCard key={parent.author_permlink} wobject={parent} showFollow={false} />
+              ),
+            )}
+            {this.listItem(
+              objectFields.publisher,
+              publisher && (
+                <ObjectCard
+                  key={publisher.author_permlink}
+                  wobject={publisher}
+                  showFollow={false}
+                />
               ),
             )}
             {!isHashtag && !hasType(wobject, OBJECT_TYPE.PAGE) && menuSection()}
