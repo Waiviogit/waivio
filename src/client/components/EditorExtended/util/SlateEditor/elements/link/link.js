@@ -50,7 +50,7 @@ const Link = ({ attributes, element, children }) => {
           style={{ userSelect: 'none', pointerEvents: 'none'}}
         >
           <a href={element.url} rel="noopener noreferrer" target="_blank" style={{ userSelect: 'none', pointerEvents: 'none'}}>
-            {truncate(element.url, { length: 27 })}
+            {truncate(element.url, { length: 80 })}
           </a>
         </div>
       )}
