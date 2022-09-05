@@ -84,19 +84,29 @@ export const addMarkData = (editor, data) => {
 };
 
 export const removeAllInlineFormats = editor => {
-  [...inlineButtons, { format: INLINE_CODE }, { format: BLOCKQUOTE }].forEach(i => {
+  [...inlineButtons, { format: INLINE_CODE }].forEach(i => {
     Editor.removeMark(editor, i.format);
-    if ( i.format === BLOCKQUOTE ) {
-      toggleBlock(editor, BLOCKQUOTE);
-    }
   });
 };
+
+export const removeBlockStyles = editor => {
+    [BLOCKQUOTE].forEach(i => {
+      Transforms.setNodes(editor, {
+        type: 'paragraph',
+      });
+      Transforms.unwrapNodes(editor, {
+        match: n => i.includes(!Editor.isEditor(n) && SlateElement.isElement(n) && n.type),
+        split: true,
+      });
+    })
+}
 
 export const toggleMark = (editor, format) => {
   const { selection } = editor;
 
   if (format === REMOVE_FORMAT) {
     removeAllInlineFormats(editor);
+    removeBlockStyles(editor);
     const selected = editor.children[selection.anchor.path[0]];
 
     if (HEADING_BLOCKS.includes(selected.type)) {
@@ -116,6 +126,7 @@ export const toggleMark = (editor, format) => {
   }
   ReactEditor.focus(editor);
 };
+
 export const isMarkActive = (editor, format) => {
   const marks = Editor.marks(editor);
 
