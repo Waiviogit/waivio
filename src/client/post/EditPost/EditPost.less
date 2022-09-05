@@ -1,10 +1,49 @@
 @import (reference) '../../styles/custom.less';
+@import (reference) '../../styles/modules/variables.less';
 
 .edit-post {
   &__saving-badge {
     text-align: right;
+
     .ant-badge-status-text {
       color: @grey-darkGrey;
+    }
+  }
+}
+
+.container-edit-post {
+  .edit-post__right-container {
+    display: block;
+    margin-top: 10px;
+
+    @media (max-width: 768px) {
+      width: auto;
+      display: block;
+    }
+  }
+
+  .edit-post__objects-container {
+    display: block;
+
+    @media (max-width: 768px) {
+      display: none;
+    }
+  }
+
+  @media (max-width: 768px) {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .right-edit-post {
+    @media (max-width: 768px) {
+      margin: 0;
+      width: auto;
+    }
+
+    .SidebarContentBlock {
+      border: 1px solid @white-gainsboro;
+      border-radius: 5px;
     }
   }
 }
