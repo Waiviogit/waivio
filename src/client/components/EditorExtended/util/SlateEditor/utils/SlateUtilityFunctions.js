@@ -90,16 +90,16 @@ export const removeAllInlineFormats = editor => {
 };
 
 export const removeBlockStyles = editor => {
-    [BLOCKQUOTE].forEach(i => {
-      Transforms.setNodes(editor, {
-        type: 'paragraph',
-      });
-      Transforms.unwrapNodes(editor, {
-        match: n => i.includes(!Editor.isEditor(n) && SlateElement.isElement(n) && n.type),
-        split: true,
-      });
-    })
-}
+  [BLOCKQUOTE].forEach(i => {
+    Transforms.setNodes(editor, {
+      type: 'paragraph',
+    });
+    Transforms.unwrapNodes(editor, {
+      match: n => i.includes(!Editor.isEditor(n) && SlateElement.isElement(n) && n.type),
+      split: true,
+    });
+  });
+};
 
 export const toggleMark = (editor, format) => {
   const { selection } = editor;

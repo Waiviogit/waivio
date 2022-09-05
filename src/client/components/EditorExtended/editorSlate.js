@@ -25,7 +25,7 @@ import withObjects from './util/SlateEditor/plugins/withObjects';
 import { deserializeToSlate } from './util/SlateEditor/utils/parse';
 import { getEditorDraftBody } from '../../../store/slateEditorStore/editorSelectors';
 import { createEmptyNode, createImageNode } from './util/SlateEditor/utils/embed';
-import { wrapWithParagraph } from './util/SlateEditor/utils/paragraph';
+import createParagraph, { wrapWithParagraph } from './util/SlateEditor/utils/paragraph';
 import withLists from './util/SlateEditor/plugins/withLists';
 import {
   focusEditorToEnd,
@@ -137,11 +137,8 @@ const EditorSlate = props => {
         currentImage.src.startsWith('http') ? currentImage.src : `https://${currentImage.src}`
       }`,
     });
-
     // image of uploading from editor not removed in feeds without that hack
-    editorRef.current.querySelector('[alt]')?.remove();
-
-    Transforms.insertNodes(editor, [wrapWithParagraph([imageBlock])]);
+    Transforms.insertNodes(editor, [wrapWithParagraph([imageBlock]), createParagraph('')]);
   };
 
   // Drug and drop method

@@ -43,13 +43,18 @@ const Link = ({ attributes, element, children }) => {
       {...attributes}
     >
       {children}
-      {((hovered || clicked) && (selection.anchor.path[0] === selection.focus.path[0])) && (
+      {(hovered || clicked) && selection.anchor.path[0] === selection.focus.path[0] && (
         <div
           className="md-editor-toolbar md-editor-toolbar--isopen md-editor-toolbar-edit-link"
           contentEditable={false}
-          style={{ userSelect: 'none', pointerEvents: 'none'}}
+          style={{ userSelect: 'none', pointerEvents: 'none' }}
         >
-          <a href={element.url} rel="noopener noreferrer" target="_blank" style={{ userSelect: 'none', pointerEvents: 'none'}}>
+          <a
+            href={element.url}
+            rel="noopener noreferrer"
+            target="_blank"
+            style={{ userSelect: 'none', pointerEvents: 'none' }}
+          >
             {truncate(element.url, { length: 80 })}
           </a>
         </div>
