@@ -12,6 +12,7 @@ const MatchBotTable = ({
   isAuthority,
   rules,
   setIsEnabledRule,
+  isNew,
 }) => (
   <table className="MatchBotTable">
     <thead>
@@ -45,6 +46,7 @@ const MatchBotTable = ({
           isAuthority={isAuthority}
           rule={rule}
           setIsEnabledRule={setIsEnabledRule}
+          isNew={isNew}
         />
       ))}
     </tbody>
@@ -58,10 +60,12 @@ MatchBotTable.propTypes = {
   intl: PropTypes.shape().isRequired,
   rules: PropTypes.arrayOf(PropTypes.shape()),
   setIsEnabledRule: PropTypes.func.isRequired,
+  isNew: PropTypes.bool,
 };
 
 MatchBotTable.defaultProps = {
   rules: [],
+  isNew: false,
 };
 
 export default injectIntl(MatchBotTable);

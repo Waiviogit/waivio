@@ -11,6 +11,7 @@ export const objectFields = {
   productIdType: 'productIdType',
   productIdImage: 'productIdImage',
   ageRange: 'ageRange',
+  publicationDate: 'publicationDate',
   website: 'website',
   phone: 'phone',
   email: 'email',
@@ -19,6 +20,7 @@ export const objectFields = {
   listItem: 'listItem',
   price: 'price',
   parent: 'parent',
+  publisher: 'publisher',
   newsFilter: 'newsFilter',
   button: 'button',
   workTime: 'workTime',
@@ -37,6 +39,7 @@ export const objectFields = {
   description: 'description',
   title: 'title',
   language: 'language',
+  printLength: 'printLength',
 };
 
 export const TYPES_OF_MENU_ITEM = {
@@ -140,6 +143,7 @@ export const formColumnsField = {
 export const formFormFields = {
   link: 'Link',
   widget: 'Widget',
+  title: 'formTitle',
 };
 export const companyIdFields = {
   companyId: 'companyId',
@@ -168,5 +172,40 @@ export const objectImageFields = ['avatar', 'background'];
 export const statusNoVisibleItem = ['unavailable', 'relisted'];
 
 export const statusWithoutLinkList = ['unavailable', 'flagged', 'nsfw'];
+
+export const errorObjectFields = {
+  [objectFields.name]: [objectFields.name],
+  [objectFields.description]: [objectFields.description],
+  [objectFields.workTime]: [objectFields.workTime],
+  [objectFields.ageRange]: [objectFields.ageRange],
+  [objectFields.language]: [objectFields.language],
+  [objectFields.price]: [objectFields.price],
+  [objectFields.companyId]: [companyIdFields.companyIdType, companyIdFields.companyId],
+  [objectFields.productId]: [productIdFields.productIdType, productIdFields.productId],
+  [objectFields.address]: [
+    addressFields.address,
+    addressFields.street,
+    addressFields.accommodation,
+    addressFields.city,
+    addressFields.country,
+    addressFields.state,
+    addressFields.postalCode,
+  ],
+  [objectFields.website]: [websiteFields.title, websiteFields.link],
+  [objectFields.title]: [objectFields.title],
+  [objectFields.map]: [mapFields.longitude, mapFields.latitude],
+  [objectFields.button]: [buttonFields.title, buttonFields.link],
+  [objectFields.phone]: [phoneFields.name, phoneFields.number],
+  [objectFields.email]: [objectFields.email],
+  [objectFields.rating]: [objectFields.rating],
+  [objectFields.tagCategory]: [objectFields.tagCategory],
+  [objectFields.categoryItem]: [objectFields.categoryItem],
+  [objectFields.blog]: [blogFields.title],
+  [objectFields.printLength]: [objectFields.printLength],
+  [objectFields.ageRange]: [objectFields.ageRange],
+  [objectFields.language]: [objectFields.language],
+  [objectFields.publicationDate]: [objectFields.publicationDate],
+  [objectFields.form]: [formFormFields.link, formFormFields.widget, formFormFields.title],
+};
 
 export default null;

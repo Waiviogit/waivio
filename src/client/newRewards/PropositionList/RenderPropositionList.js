@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router';
+import { useLocation, useParams } from 'react-router';
 import { capitalize, isEmpty } from 'lodash';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
@@ -15,21 +15,30 @@ import { getObjectName } from '../../../common/helpers/wObjectHelper';
 import RewardsFilters from '../Filters/Filters';
 
 import './PropositionList.less';
+import { getPropositionsKey } from '../../../common/helpers/newRewardsHelper';
+import FiltersForMobile from '../Filters/FiltersForMobile';
 
 const filterConfig = [
   { title: 'Rewards for', type: 'type' },
   { title: 'Sponsors', type: 'sponsors' },
 ];
 
-const RenderPropositionList = ({ getProposition, tab, getPropositionFilters }) => {
+const RenderPropositionList = ({
+  getProposition,
+  tab,
+  getPropositionFilters,
+  customFilterConfig,
+}) => {
   const { requiredObject } = useParams();
   const authUserName = useSelector(getAuthenticatedUserName);
+  const location = useLocation();
   const [propositions, setPropositions] = useState();
   const [hasMore, setHasMore] = useState(false);
   const [loading, setLoading] = useState(true);
   const [parent, setParent] = useState(null);
-  const query = new URLSearchParams(location.search);
-  const search = query.toString() ? `&${query.toString()}` : '';
+  const [visible, setVisible] = useState(false);
+  const search = location.search.replace('?', '&');
+
   const getFilters = () => getPropositionFilters(requiredObject, authUserName);
 
   const getPropositionList = async () => {
@@ -48,7 +57,7 @@ const RenderPropositionList = ({ getProposition, tab, getPropositionFilters }) =
 
   useEffect(() => {
     getPropositionList();
-  }, [requiredObject, search]);
+  }, [requiredObject, location.search]);
 
   const handleLoadingMoreRewardsList = async () => {
     setLoading(true);
@@ -63,11 +72,14 @@ const RenderPropositionList = ({ getProposition, tab, getPropositionFilters }) =
     }
   };
 
+  const onClose = () => setVisible(false);
+
   if (loading && isEmpty(propositions)) return <Loading />;
 
   return (
     <div className="PropositionList">
       <div className="PropositionList__feed">
+        <FiltersForMobile setVisible={setVisible} />
         <div className="PropositionList__breadcrumbs">
           <Link className="PropositionList__parent" to={`/rewards-new/${tab}`}>
             {capitalize(tab)} rewards
@@ -90,20 +102,29 @@ const RenderPropositionList = ({ getProposition, tab, getPropositionFilters }) =
             elementIsScrollable={false}
             threshold={500}
           >
-            {propositions?.map(proposition => (
+            {propositions?.map((proposition, i) => (
               <Proposition
-                key={`${proposition?.object?.author_permlink}/${proposition?.guideName}/${proposition?.activationPermlink}`}
+                key={getPropositionsKey(proposition, i)}
                 proposition={{
                   ...proposition,
                   requiredObject: parent || proposition?.requiredObject,
                 }}
                 type={tab}
+                getProposition={getPropositionList}
               />
             ))}
           </ReduxInfiniteScroll>
         )}
       </div>
-      <RewardsFilters title={'Filter rewards'} getFilters={getFilters} config={filterConfig} />
+      <div className={'PropositionList__left'}>
+        <RewardsFilters
+          title={'Filter rewards'}
+          getFilters={getFilters}
+          config={customFilterConfig}
+          visible={visible}
+          onClose={onClose}
+        />
+      </div>
     </div>
   );
 };
@@ -112,6 +133,11 @@ RenderPropositionList.propTypes = {
   getProposition: PropTypes.func.isRequired,
   getPropositionFilters: PropTypes.func.isRequired,
   tab: PropTypes.string.isRequired,
+  customFilterConfig: PropTypes.shape({}).isRequired,
+};
+
+RenderPropositionList.defaultProps = {
+  customFilterConfig: filterConfig,
 };
 
 export default RenderPropositionList;

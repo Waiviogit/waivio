@@ -23,6 +23,7 @@ import CommentFooter from '../CommentFooter/CommentFooter';
 import HiddenCommentMessage from './HiddenCommentMessage';
 import WeightTag from '../WeightTag';
 import './Comment.less';
+import { parseJSON } from '../../../common/helpers/parseJSON';
 
 @injectIntl
 class Comment extends React.Component {
@@ -237,7 +238,7 @@ class Comment extends React.Component {
     const formattedComment = comment.body.replace(/#([^\s#]+)/g, ' #$1');
 
     if (comment.json_metadata.includes('"social":')) {
-      const jsonMetadata = JSON.parse(comment.json_metadata);
+      const jsonMetadata = parseJSON(comment.json_metadata);
 
       comment.authorGuest = jsonMetadata.comment.userId;
       isGuest = true;

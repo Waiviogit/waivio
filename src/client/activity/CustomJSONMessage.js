@@ -4,11 +4,12 @@ import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
 import { Link } from 'react-router-dom';
 import * as accountHistoryConstants from '../../common/constants/accountHistory';
+import { parseJSON } from '../../common/helpers/parseJSON';
 
 const CustomJSONMessage = ({ actionDetails, actionType }) => {
   const customFollowType = actionDetails.id;
-  const customReblogType = JSON.parse(actionDetails.json)[0];
-  const customActionDetails = JSON.parse(actionDetails.json)[1];
+  const customReblogType = parseJSON(actionDetails.json)[0];
+  const customActionDetails = parseJSON(actionDetails.json)[1];
   const whatTypes = get(customActionDetails, 'what[0]', []);
 
   if (customReblogType === accountHistoryConstants.REBLOG) {

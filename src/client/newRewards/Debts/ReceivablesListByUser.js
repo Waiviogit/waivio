@@ -29,8 +29,8 @@ const ReceivablesListByUser = ({ intl }) => {
   }, []);
 
   const titleName = intl.formatMessage({
-    id: 'payment_page_receivables',
-    defaultMessage: 'Receivables',
+    id: 'payment_page_receivable',
+    defaultMessage: 'Receivable',
   });
 
   const name = match.params.userName;
@@ -50,6 +50,7 @@ const ReceivablesListByUser = ({ intl }) => {
       </div>
       {!isEmpty(sponsors) && (
         <PaymentTable
+          currency={'WAIV'}
           sponsors={sponsors}
           isHive
           reservationPermlink={match.params.reservationPermlink}

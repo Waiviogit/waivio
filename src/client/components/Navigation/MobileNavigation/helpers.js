@@ -27,9 +27,21 @@ export const pages = {
     regExp: /(^\/rewards\/)(all|active|reserved|receivables|history)/,
     id: 'rewards',
   },
+  rewardsNew: {
+    regExp: /(^\/rewards-new\/)(all|eligible|reserved|receivables|history)/,
+    id: 'rewards',
+  },
   rewardsCampaigns: {
     regExp: /(^\/rewards\/)(create|manage|payables|reservations|messages|match-bot|blacklist)$/,
     id: CAMPAIGNS,
+  },
+  rewardsNewCampaigns: {
+    regExp: /(^\/rewards-new\/)(create|manage|payables|reservations|messages|match-bot|blacklist)$/,
+    id: CAMPAIGNS,
+  },
+  rewardsNewMatchBots: {
+    regExp: /(^\/rewards-new\/)(match-bots-sponsors)$/,
+    id: 'Match Bots',
   },
 };
 

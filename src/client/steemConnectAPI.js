@@ -2,6 +2,7 @@
 import hivesigner from 'hivesigner';
 import { waivioAPI } from '../waivioApi/ApiClient';
 import { getValidTokenData } from '../common/helpers/getToken';
+import { parseJSON } from '../common/helpers/parseJSON';
 
 function broadcast(operations, isReview, actionAuthor) {
   let operation;
@@ -24,7 +25,7 @@ function broadcast(operations, isReview, actionAuthor) {
       operation = `waivio_guest_${operations[0][1].id}`;
     }
   } else if (operations[0][0] === 'comment') {
-    const jsonMetadata = JSON.parse(operations[0][1].json_metadata);
+    const jsonMetadata = parseJSON(operations[0][1].json_metadata);
 
     if (actionAuthor) operations[0][1].post_root_author = actionAuthor;
     if (jsonMetadata.comment) {
@@ -320,6 +321,42 @@ function sc2Extended() {
           required_posting_auths: [username],
           id: 'match_bot_change_power',
           json: JSON.stringify(voteObj),
+        };
+
+        return this.broadcast([['custom_json', params]], cb);
+      },
+    },
+    {
+      settingNewMatchBotVotingPower(username, votingPower, cb) {
+        const params = {
+          required_auths: [],
+          required_posting_auths: [username],
+          id: 'waivio_sb_change_power',
+          json: JSON.stringify({ votingPower }),
+        };
+
+        return this.broadcast([['custom_json', params]], cb);
+      },
+    },
+    {
+      removeMatchBotRule(username, sponsor, cb) {
+        const params = {
+          required_auths: [],
+          required_posting_auths: [username],
+          id: 'waivio_sb_remove_rule',
+          json: JSON.stringify(sponsor),
+        };
+
+        return this.broadcast([['custom_json', params]], cb);
+      },
+    },
+    {
+      setMatchBotNewRule(username, rule, cb) {
+        const params = {
+          required_auths: [],
+          required_posting_auths: [username],
+          id: 'waivio_sb_set_rule',
+          json: JSON.stringify(rule),
         };
 
         return this.broadcast([['custom_json', params]], cb);

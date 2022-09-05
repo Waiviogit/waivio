@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+import { noop } from 'lodash';
 import RewardsHeader from '../RewardsHeader';
-
 import ObjectCardView from '../../../objectCard/ObjectCardView';
 import DetailsModal from '../../DetailsModal/DetailsModal';
 import PropositionFooter from './PropositionFooter';
 
 import './Proposition.less';
 
-const Proposition = ({ proposition, type }) => {
+const Proposition = ({ proposition, type, getProposition }) => {
   const [openDetails, setOpenDitails] = useState(false);
   const onOpenDetailsModal = () => setOpenDitails(true);
   const propositionType = proposition.reserved ? 'reserved' : type;
@@ -32,6 +32,7 @@ const Proposition = ({ proposition, type }) => {
         commentsCount={proposition?.commentsCount}
         openDetailsModal={onOpenDetailsModal}
         proposition={proposition}
+        getProposition={getProposition}
       />
       {openDetails && (
         <DetailsModal
@@ -65,6 +66,11 @@ Proposition.propTypes = {
     _id: PropTypes.string,
   }).isRequired,
   type: PropTypes.string.isRequired,
+  getProposition: PropTypes.func,
+};
+
+Proposition.defaultProps = {
+  getProposition: noop,
 };
 
 export default Proposition;

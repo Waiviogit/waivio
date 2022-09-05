@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import { Link, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
+import moment from 'moment';
 import classNames from 'classnames';
 import {
   accessTypesArr,
@@ -335,6 +336,9 @@ class ObjectInfo extends React.Component {
       : [];
     const ageRange = wobject.ageRange;
     const language = wobject.language;
+    const publicationDate = moment(wobject.publicationDate).format('MMMM DD, YYYY');
+    const printLength = wobject.printLength;
+    const publisher = parseWobjectField(wobject, 'publisher');
     const profile = linkField
       ? {
           facebook: linkField[linkFields.linkFacebook] || '',
@@ -611,7 +615,7 @@ class ObjectInfo extends React.Component {
               <div className="field-website">
                 <span className="field-website__title">
                   <Icon type="read" className="iconfont icon-link text-icon link" />
-                  <span>{ageRange}</span>
+                  <span className="CompanyId__wordbreak">{ageRange}</span>
                 </span>
               </div>
             )
@@ -621,7 +625,7 @@ class ObjectInfo extends React.Component {
                 <div className="field-website">
                   <span className="field-website__title">
                     <Icon type="read" className="iconfont icon-link text-icon link" />
-                    <span>{ageRange}</span>
+                    <span className="CompanyId__wordbreak">{ageRange}</span>
                   </span>
                 </div>
               ),
@@ -631,7 +635,7 @@ class ObjectInfo extends React.Component {
               <div className="field-website">
                 <span className="field-website__title">
                   <Icon type="global" className="iconfont icon-link text-icon link" />
-                  <span>{language}</span>
+                  <span className="CompanyId__wordbreak">{language}</span>
                 </span>
               </div>
             )
@@ -641,7 +645,60 @@ class ObjectInfo extends React.Component {
                 <div className="field-website">
                   <span className="field-website__title">
                     <Icon type="global" className="iconfont icon-link text-icon link" />
-                    <span>{language}</span>
+                    <span className="CompanyId__wordbreak">{language}</span>
+                  </span>
+                </div>
+              ),
+            )}
+        {!isEditMode
+          ? wobject.publicationDate && (
+              <div className="field-website">
+                <span className="field-website__title">
+                  <img
+                    className="ObjectInfo__margin-top"
+                    src={'/images/icons/calendar-icon.svg'}
+                    alt="Calendar icon"
+                  />{' '}
+                  <span className="CompanyId__wordbreak">{publicationDate}</span>
+                </span>
+              </div>
+            )
+          : this.listItem(
+              objectFields.publicationDate,
+              wobject.publicationDate && (
+                <div className="field-website">
+                  <span className="field-website__title">
+                    <img
+                      className="ObjectInfo__margin-top"
+                      src={'/images/icons/calendar-icon.svg'}
+                      alt="Calendar icon"
+                    />{' '}
+                    <span className="CompanyId__wordbreak">{publicationDate}</span>
+                  </span>
+                </div>
+              ),
+            )}
+        {!isEditMode
+          ? printLength && (
+              <div className="field-website">
+                <span className="field-website__title">
+                  <Icon type="book" className="iconfont icon-link text-icon link" />
+                  <span className="CompanyId__wordbreak">
+                    {printLength} <FormattedMessage id="lowercase_pages" />{' '}
+                  </span>
+                </span>
+              </div>
+            )
+          : this.listItem(
+              objectFields.printLength,
+              printLength && (
+                <div className="field-website">
+                  <span className="field-website__title">
+                    <Icon type="book" className="iconfont icon-link text-icon link" />
+                    <span className="CompanyId__wordbreak">
+                      {' '}
+                      {printLength} <FormattedMessage id="lowercase_pages" />{' '}
+                    </span>
                   </span>
                 </div>
               ),
@@ -691,6 +748,16 @@ class ObjectInfo extends React.Component {
               objectFields.parent,
               parent && (
                 <ObjectCard key={parent.author_permlink} wobject={parent} showFollow={false} />
+              ),
+            )}
+            {this.listItem(
+              objectFields.publisher,
+              publisher && (
+                <ObjectCard
+                  key={publisher.author_permlink}
+                  wobject={publisher}
+                  showFollow={false}
+                />
               ),
             )}
             {!isHashtag && !hasType(wobject, OBJECT_TYPE.PAGE) && menuSection()}

@@ -80,13 +80,6 @@ export default (messageFactory, validators, userName, currency) => ({
     label: messageFactory('campaign_budget', 'Campaign budget (monthly, {currency})', { currency }),
     rules: [
       {
-        max: 10,
-        message: messageFactory(
-          'length_of_budget',
-          "Campaign budget can't be longer than 10 characters.",
-        ),
-      },
-      {
         required: true,
         message: messageFactory('set_monthly_budget', 'Please, set your monthly budget!'),
       },
@@ -105,10 +98,6 @@ export default (messageFactory, validators, userName, currency) => ({
       currency,
     }),
     rules: [
-      {
-        max: 10,
-        message: messageFactory('length_of_reward', "Reward can't be longer than 10 characters."),
-      },
       {
         required: true,
         message: messageFactory('set_reward', 'Please, set a reward!'),

@@ -733,10 +733,19 @@ class Notifications extends React.Component {
                   />
                 );
               case notificationConstants.CAMPAIGN_RESERVATION:
-                const currentFilter = notification.isReleased
+                let currentFilter = notification.isReleased
                   ? 'released=Released'
                   : 'reserved=Reserved';
-                const campaignUrl = `/rewards/guideHistory?campaign=${notification.campaignName}&${currentFilter}`;
+                let campaignUrl = `/rewards/guideHistory?campaign=${notification.campaignName}&${currentFilter}`;
+
+                if (notification?.newCampaigns) {
+                  currentFilter = notification.isReleased
+                    ? 'statuses=unassigned'
+                    : 'statuses=assigned';
+                  campaignUrl = `/rewards-new/reservations?campaignNames=${encodeURI(
+                    notification.campaignName,
+                  )}&${currentFilter}`;
+                }
 
                 return notification.isReleased ? (
                   <NotificationTemplate

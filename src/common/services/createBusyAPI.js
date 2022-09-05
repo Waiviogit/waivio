@@ -1,4 +1,5 @@
 import apiConfig from '../../waivioApi/routes';
+import { parseJSON } from '../helpers/parseJSON';
 
 const socketStore = {
   websocket: undefined,
@@ -27,7 +28,7 @@ const socketFactory = () => {
 
     socket.subscribeBlock = (type, blockNum, callback) => {
       const listener = e => {
-        const data = JSON.parse(e.data);
+        const data = parseJSON(e.data);
 
         if (type === data.type && data.notification.blockParsed === blockNum) {
           socket.removeEventListener('message', listener);
@@ -39,7 +40,7 @@ const socketFactory = () => {
     };
 
     socket.subscribe = callback => {
-      const handler = e => callback(null, JSON.parse(e.data));
+      const handler = e => callback(null, parseJSON(e.data));
 
       socket.addEventListener('message', handler);
     };

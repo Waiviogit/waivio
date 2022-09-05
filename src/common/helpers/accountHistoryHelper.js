@@ -1,5 +1,6 @@
 import { isEmpty, includes, get, first } from 'lodash';
 import * as accountHistoryConstants from '../constants/accountHistory';
+import { parseJSON } from './parseJSON';
 
 export const ACTIONS_DISPLAY_LIMIT = 100;
 
@@ -16,7 +17,7 @@ export const getVoteFilterType = actionDetails => {
 };
 
 export const getCustomJSONFilterType = actionDetails => {
-  const actionJSON = JSON.parse(actionDetails.json);
+  const actionJSON = parseJSON(actionDetails.json);
   const customActionType = actionJSON[0];
   const customActionDetails = actionJSON[1];
 

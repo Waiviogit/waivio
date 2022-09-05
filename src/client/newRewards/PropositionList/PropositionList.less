@@ -27,4 +27,25 @@
       width: 65%;
     }
   }
+
+  &__filterButton {
+    display: block;
+    font-weight: 700;
+
+    @media @small {
+      display: none;
+    }
+
+    span {
+      font-weight: 500;
+    }
+  }
+
+  &__left {
+    display: none;
+
+    @media @small {
+      display: block;
+    }
+  }
 }

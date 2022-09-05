@@ -1,7 +1,8 @@
 import { isError, get, attempt, size, unescape, round } from 'lodash';
+import { parseJSON } from './parseJSON';
 
 export function getFromMetadata(jsonMetadata, key) {
-  const metadata = attempt(JSON.parse, jsonMetadata);
+  const metadata = attempt(parseJSON, jsonMetadata);
 
   if (isError(metadata)) return null;
 

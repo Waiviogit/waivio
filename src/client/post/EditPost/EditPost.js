@@ -14,6 +14,7 @@ import CreateObject from '../CreateObjectModal/CreateObject';
 import { getCurrentDraftId } from '../../../common/helpers/editorHelper';
 import './EditPost.less';
 import { editorStateToMarkdownSlate } from '../../components/EditorExtended/util/editorStateToMarkdown';
+import { parseJSON } from '../../../common/helpers/parseJSON';
 
 const propTypes = {
   intl: PropTypes.shape().isRequired,
@@ -82,7 +83,7 @@ const EditPost = props => {
       pathname: props.location.pathname,
       search: `draft=${getCurrentDraftId(props.draftId, draftIdEditor)}`,
     });
-    const hideLinkedObjectsSession = JSON.parse(localStorage.getItem(props.draftId)) || [];
+    const hideLinkedObjectsSession = parseJSON(localStorage.getItem(props.draftId)) || [];
 
     props.setEditorState(getInitialState(props, hideLinkedObjectsSession));
 
@@ -105,7 +106,7 @@ const EditPost = props => {
   }, []);
 
   React.useEffect(() => {
-    const hideLinkedObjectsSession = JSON.parse(localStorage.getItem(props.draftId)) || [];
+    const hideLinkedObjectsSession = parseJSON(localStorage.getItem(props.draftId)) || [];
 
     setDraftId(hideLinkedObjectsSession);
     const editorData = {

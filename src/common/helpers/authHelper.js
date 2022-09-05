@@ -1,10 +1,11 @@
 import { get } from 'lodash';
+import { parseJSON } from './parseJSON';
 
 const getUserAvatar = user => {
   let jsonMetadata = get(user, 'posting_json_metadata');
 
   if (jsonMetadata) {
-    jsonMetadata = JSON.parse(user.posting_json_metadata);
+    jsonMetadata = parseJSON(user.posting_json_metadata);
 
     return get(jsonMetadata, 'profile.profile_image');
   }

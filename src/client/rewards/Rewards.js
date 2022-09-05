@@ -399,7 +399,7 @@ class Rewards extends React.Component {
         if (includes(activeFilters[key], filterValue)) {
           remove(activeFilters[key], f => f === filterValue);
         } else {
-          activeFilters[key].push(filterValue);
+          activeFilters[key]?.push(filterValue);
         }
         this.setFilters(paramsKey, activeFilters);
         break;

@@ -34,6 +34,7 @@
     "createObject": "/create-object"
   },
   "all": "/all",
+  "bots": "/bots",
   "activation": "/validate_activation",
   "auth": "/auth",
   "blacklist": "/blacklist",
@@ -50,6 +51,7 @@
   "childWobjects": "/child_wobjects",
   "createCampaign": "/create_campaign",
   "createObject": "/create/object",
+  "reservations": "/reservations",
   "history": "/history",
   "guestOperations": "/guest_operations",
   "dashboard": "/dashboard",

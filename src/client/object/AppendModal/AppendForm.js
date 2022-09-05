@@ -18,9 +18,10 @@ import uuidv4 from 'uuid/v4';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { connect } from 'react-redux';
+import moment from 'moment';
 import React, { Component } from 'react';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import { Form, Icon, Input, message, Rate, Select } from 'antd';
+import { DatePicker, Form, Icon, Input, message, Rate, Select } from 'antd';
 import { fieldsRules } from '../const/appendFormConstants';
 import apiConfig from '../../../waivioApi/config.json';
 import {
@@ -42,6 +43,7 @@ import {
   companyIdFields,
   productIdFields,
   statusWithoutLinkList,
+  errorObjectFields,
 } from '../../../common/constants/listOfFields';
 import OBJECT_TYPE from '../const/objectTypes';
 import { getSuitableLanguage } from '../../../store/reducers';
@@ -65,6 +67,8 @@ import {
   getBlogItems,
   getFormItems,
   getNewsFilterItems,
+  getObjectUrlForLink,
+  getObjectAvatar,
 } from '../../../common/helpers/wObjectHelper';
 import { appendObject } from '../../../store/appendStore/appendActions';
 import withEditor from '../../components/Editor/withEditor';
@@ -100,6 +104,7 @@ import NewsFilterForm from './FormComponents/NewsFilterForm';
 
 import './AppendForm.less';
 import { getAppendList } from '../../../store/appendStore/appendSelectors';
+import { parseJSON } from '../../../common/helpers/parseJSON';
 
 @connect(
   state => ({
@@ -354,12 +359,15 @@ export default class AppendForm extends Component {
       case objectFields.price:
       case objectFields.categoryItem:
       case objectFields.parent:
+      case objectFields.publisher:
       case objectFields.workTime:
       case objectFields.email:
       case TYPES_OF_MENU_ITEM.PAGE:
       case TYPES_OF_MENU_ITEM.LIST:
       case objectFields.ageRange:
-      case objectFields.language: {
+      case objectFields.printLength:
+      case objectFields.language:
+      case objectFields.publicationDate: {
         fieldBody.push(rest[currentField]);
         break;
       }
@@ -412,6 +420,10 @@ export default class AppendForm extends Component {
         case objectFields.avatar:
         case objectFields.background:
           return `@${author} added ${currentField} (${langReadable}):\n ![${currentField}](${appendValue})`;
+        case objectFields.publisher:
+          return `@${author} added ${currentField} (${langReadable}):${
+            formValues[objectFields.publisher]
+          }`;
         case objectFields.phone:
           return `@${author} added ${currentField}(${langReadable}):\n ${appendValue.replace(
             /[{}"]/g,
@@ -433,7 +445,14 @@ export default class AppendForm extends Component {
           }, ${currentField}: ${appendValue}, ${imageDescription}`;
         case objectFields.ageRange:
         case objectFields.language:
-          return `@${author} added ${currentField} (${langReadable}): ${appendValue}`;
+        case objectFields.printLength:
+          return `@${author} added ${currentField} (${langReadable}): ${appendValue} ${this.props.intl.formatMessage(
+            { id: 'lowercase_pages', defaultMessage: 'pages' },
+          )}`;
+        case objectFields.publicationDate:
+          return `@${author} added ${currentField} (${langReadable}): ${moment(
+            getFieldValue(objectFields.publicationDate),
+          ).format('MMMM DD, YYYY')}`;
         case TYPES_OF_MENU_ITEM.PAGE:
         case TYPES_OF_MENU_ITEM.LIST: {
           const alias = getFieldValue('menuItemName');
@@ -535,6 +554,17 @@ export default class AppendForm extends Component {
           body: JSON.stringify({
             [companyIdFields.companyIdType]: formValues[companyIdFields.companyIdType],
             [companyIdFields.companyId]: formValues[companyIdFields.companyId],
+          }),
+        };
+      }
+      if (currentField === objectFields.publisher) {
+        fieldsObject = {
+          ...fieldsObject,
+          body: JSON.stringify({
+            name: getObjectName(this.state.selectedObject),
+            authorPermlink: this.state.selectedObject?.author_permlink,
+            defaultShowLink: getObjectUrlForLink(this.state.selectedObject),
+            avatar: getObjectAvatar(this.state.selectedObject),
           }),
         };
       }
@@ -982,10 +1012,11 @@ export default class AppendForm extends Component {
       currentField === objectFields.button ||
       currentField === objectFields.link ||
       currentField === objectFields.companyIdType ||
-      currentField === objectFields.companyId
+      currentField === objectFields.companyId ||
+      currentField === objectFields.publisher
     ) {
       return filtered.some(f =>
-        isEqual(this.getCurrentObjectBody(currentField), JSON.parse(f.body)),
+        isEqual(this.getCurrentObjectBody(currentField), parseJSON(f.body)),
       );
     }
     if (currentField === objectFields.authority) {
@@ -994,15 +1025,18 @@ export default class AppendForm extends Component {
     if (currentField === objectFields.productId) {
       return filtered.some(
         f =>
-          this.getCurrentObjectBody(currentField).productId === JSON.parse(f.body).productId &&
-          this.getCurrentObjectBody(currentField).productIdType ===
-            JSON.parse(f.body).productIdType,
+          this.getCurrentObjectBody(currentField).productId === parseJSON(f.body).productId &&
+          this.getCurrentObjectBody(currentField).productIdType === parseJSON(f.body).productIdType,
       );
     }
     if (currentField === objectFields.phone)
       return filtered.some(f => this.getCurrentObjectBody(currentField).number === f.number);
     if (currentField === objectFields.name) return filtered.some(f => f.body === currentValue);
     if (currentField === objectFields.ageRange) return filtered.some(f => f.body === currentValue);
+    if (currentField === objectFields.printLength)
+      return filtered.some(f => f.body === currentValue);
+    if (currentField === objectFields.publicationDate)
+      return filtered.some(f => f.body === currentValue);
     if (currentField === objectFields.language) return filtered.some(f => f.body === currentValue);
     if (currentField === objectFields.categoryItem) {
       const selectedTagCategory = filtered.filter(item => item.tagCategory === currentCategory);
@@ -1256,6 +1290,10 @@ export default class AppendForm extends Component {
     });
   };
 
+  onObjectCardDelete = () => {
+    this.setState({ selectedObject: null });
+  };
+
   renderContentValue = currentField => {
     const { loading, selectedObject, selectedCategory, fileList } = this.state;
     const { intl, wObject, categories, selectedAlbum, albums } = this.props;
@@ -1346,6 +1384,37 @@ export default class AppendForm extends Component {
               rules: this.getFieldRules(objectFields.parent),
             })(<SearchObjectsAutocomplete handleSelect={this.handleSelectObject} />)}
             {this.state.selectedObject && <ObjectCardView wObject={this.state.selectedObject} />}
+          </Form.Item>
+        );
+      }
+      case objectFields.publisher: {
+        return (
+          <Form.Item>
+            {getFieldDecorator(objectFields.publisher, {
+              rules: this.getFieldRules(objectFields.publisher),
+            })(
+              <SearchObjectsAutocomplete
+                placeholder={this.props.intl.formatMessage({
+                  id: 'objects_auto_complete_publisher_placeholder',
+                  defaultMessage: 'Find publisher',
+                })}
+                handleSelect={this.handleSelectObject}
+              />,
+            )}
+            <CreateObject
+              isSingleType
+              defaultObjectType="business"
+              disabled
+              onCreateObject={this.handleCreateObject}
+              parentObject={wObject.publisher || wObject || {}}
+            />{' '}
+            {this.state.selectedObject && (
+              <ObjectCardView
+                closeButton
+                onDelete={this.onObjectCardDelete}
+                wObject={this.state.selectedObject}
+              />
+            )}
           </Form.Item>
         );
       }
@@ -1444,6 +1513,35 @@ export default class AppendForm extends Component {
           </Form.Item>
         );
       }
+      case objectFields.printLength: {
+        return (
+          <>
+            <Form.Item>
+              {getFieldDecorator(objectFields.printLength, {
+                rules: this.getFieldRules(objectFields.printLength),
+              })(
+                <Input
+                  type="number"
+                  className={classNames('AppendForm__input', {
+                    'validation-error': !this.state.isSomeValue,
+                  })}
+                  disabled={loading}
+                  placeholder={intl.formatMessage({
+                    id: 'print_length',
+                    defaultMessage: 'Print length',
+                  })}
+                />,
+              )}
+            </Form.Item>
+            <Form.Item>
+              <Input
+                disabled
+                placeholder={intl.formatMessage({ id: 'pages', defaultMessage: 'Pages' })}
+              />
+            </Form.Item>
+          </>
+        );
+      }
       case objectFields.language: {
         return (
           <Form.Item>
@@ -1459,6 +1557,28 @@ export default class AppendForm extends Component {
                 placeholder={intl.formatMessage({
                   id: 'book_language',
                   defaultMessage: 'Book language',
+                })}
+              />,
+            )}
+          </Form.Item>
+        );
+      }
+      case objectFields.publicationDate: {
+        return (
+          <Form.Item>
+            {getFieldDecorator(objectFields.publicationDate, {
+              rules: this.getFieldRules(objectFields.publicationDate),
+            })(
+              <DatePicker
+                format={'LL'}
+                className={classNames('AppendForm__input', {
+                  'validation-error': !this.state.isSomeValue,
+                })}
+                disabled={loading}
+                dropdownClassName="AppendForm__calendar-popup"
+                placeholder={intl.formatMessage({
+                  id: 'select_publication_date',
+                  defaultMessage: 'Select publication date',
                 })}
               />,
             )}
@@ -2478,6 +2598,8 @@ export default class AppendForm extends Component {
 
   render() {
     const { chosenLocale, usedLocale, currentField, form, wObject } = this.props;
+    const r = form.getFieldsError(errorObjectFields[currentField]);
+    const isError = errorObjectFields[currentField]?.some(i => r[i]);
     const { getFieldDecorator, getFieldValue } = this.props.form;
     const { loading } = this.state;
     const isCustomSortingList =
@@ -2559,7 +2681,7 @@ export default class AppendForm extends Component {
           votePercent={this.state.votePercent}
           voteWorth={this.state.voteWorth}
           selectWobj={this.props.wObject}
-          disabled={this.isSubmitButtonDisabled()}
+          disabled={this.isSubmitButtonDisabled() || isError}
         />
       </Form>
     );
