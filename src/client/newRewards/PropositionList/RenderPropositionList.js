@@ -28,6 +28,8 @@ const RenderPropositionList = ({
   tab,
   getPropositionFilters,
   customFilterConfig,
+  disclaimer,
+  withoutFilters,
 }) => {
   const { requiredObject } = useParams();
   const authUserName = useSelector(getAuthenticatedUserName);
@@ -39,7 +41,11 @@ const RenderPropositionList = ({
   const [visible, setVisible] = useState(false);
   const search = location.search.replace('?', '&');
 
-  const getFilters = () => getPropositionFilters(requiredObject, authUserName);
+  const getFilters = () => {
+    if (!withoutFilters) return getPropositionFilters(requiredObject, authUserName);
+
+    return null;
+  };
 
   const getPropositionList = async () => {
     if (requiredObject || requiredObject !== parent?.author_permlink) {
@@ -91,6 +97,12 @@ const RenderPropositionList = ({
             </div>
           )}
         </div>
+        {disclaimer && (
+          <p className="PropositionList__disclaimer">
+            <b>Disclaimer: </b>
+            {disclaimer}
+          </p>
+        )}
         {isEmpty(propositions) ? (
           <EmptyCampaing />
         ) : (
@@ -116,15 +128,17 @@ const RenderPropositionList = ({
           </ReduxInfiniteScroll>
         )}
       </div>
-      <div className={'PropositionList__left'}>
-        <RewardsFilters
-          title={'Filter rewards'}
-          getFilters={getFilters}
-          config={customFilterConfig}
-          visible={visible}
-          onClose={onClose}
-        />
-      </div>
+      {!withoutFilters && (
+        <div className={'PropositionList__left'}>
+          <RewardsFilters
+            title={'Filter rewards'}
+            getFilters={getFilters}
+            config={customFilterConfig}
+            visible={visible}
+            onClose={onClose}
+          />
+        </div>
+      )}
     </div>
   );
 };
@@ -133,11 +147,15 @@ RenderPropositionList.propTypes = {
   getProposition: PropTypes.func.isRequired,
   getPropositionFilters: PropTypes.func.isRequired,
   tab: PropTypes.string.isRequired,
+  disclaimer: PropTypes.string,
+  withoutFilters: PropTypes.bool,
   customFilterConfig: PropTypes.shape({}).isRequired,
 };
 
 RenderPropositionList.defaultProps = {
   customFilterConfig: filterConfig,
+  disclaimer: '',
+  withoutFilters: false,
 };
 
 export default RenderPropositionList;

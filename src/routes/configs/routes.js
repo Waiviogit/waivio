@@ -200,6 +200,16 @@ const routes = {
           exact: true,
           component: Views.HistoryPropositions,
         },
+        {
+          path: '/messages',
+          exact: true,
+          component: Views.MessageList,
+        },
+        {
+          path: '/fraud-detection',
+          exact: true,
+          component: Views.FraudDetectionNew,
+        },
       ],
     },
     {

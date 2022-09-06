@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button } from 'antd';
 import PropTypes from 'prop-types';
-import { capitalize, noop } from 'lodash';
+import { capitalize, isEmpty, noop } from 'lodash';
 
 import RewardsPopover from '../../RewardsPopover/RewardsPopover';
 
@@ -33,6 +33,8 @@ const PropositionFooter = ({
         );
       case 'history':
       case 'reservations':
+      case 'messages':
+      case 'fraud detection':
         return (
           <React.Fragment>
             <div className="Proposition-new__button-container">
@@ -45,6 +47,9 @@ const PropositionFooter = ({
                 type={type}
               />
             </div>
+            {!isEmpty(proposition?.fraudCodes) && (
+              <div>Codes: {proposition?.fraudCodes.join(', ')}</div>
+            )}
           </React.Fragment>
         );
 
@@ -71,6 +76,7 @@ PropositionFooter.propTypes = {
   getProposition: PropTypes.func,
   proposition: PropTypes.shape({
     reviewStatus: PropTypes.string,
+    fraudCodes: PropTypes.arrayOf(PropTypes.number),
   }).isRequired,
 };
 
