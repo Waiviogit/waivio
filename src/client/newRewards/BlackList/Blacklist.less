@@ -1,0 +1,45 @@
+@import (reference) '../../styles/modules/variables.less';
+@import (reference) '../../styles/custom.less';
+
+.Blacklist {
+  &__container {
+    border: 1px solid @white-gainsboro;
+    border-radius: 4px;
+    padding: 10px;
+    text-align: center;
+
+    .Blacklist__user {
+      &:last-child {
+        .Blacklist__user__content {
+          margin: 0;
+        }
+
+        .Blacklist__user__divider {
+          display: none;
+        }
+      }
+    }
+  }
+
+  &__title {
+    margin-bottom: 10px;
+  }
+
+  &__caption {
+    margin-bottom: 10px;
+  }
+
+  &__button-container {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 15px;
+  }
+
+  &__button {
+    width: 150px;
+  }
+
+  h3 {
+    margin-bottom: 10px;
+  }
+}

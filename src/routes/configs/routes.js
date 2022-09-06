@@ -28,11 +28,6 @@ const routes = {
       exact: true,
       routes: [
         {
-          path: '/rebalancing',
-          exact: true,
-          component: Views.Rebalancing,
-        },
-        {
           path: '/manage',
           exact: true,
           component: Views.ManageCampaign,
@@ -209,6 +204,11 @@ const routes = {
           path: '/fraud-detection',
           exact: true,
           component: Views.FraudDetectionNew,
+        },
+        {
+          path: '/black-list',
+          exact: true,
+          component: Views.BlackList,
         },
       ],
     },

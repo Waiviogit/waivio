@@ -32,6 +32,7 @@ import WithdrawModal from './WithdrawModal/WithdrawModal';
 import { getIsOpenWithdraw } from '../../store/depositeWithdrawStore/depositWithdrawSelector';
 import ManageDelegate from './DelegateModals/ManageDelegate/ManageDelegate';
 import { getAuthenticatedUserName } from '../../store/authStore/authSelectors';
+import Rebalancing from '../newRewards/Rebalancing/Rebalancing';
 
 import './Wallets.less';
 
@@ -83,6 +84,15 @@ const Wallets = props => {
             <HiveEngineWallet />
           </Tabs.TabPane>
         )}
+        <Tabs.TabPane
+          tab={props.intl.formatMessage({
+            id: 'rebalance_wallet',
+            defaultMessage: 'Rebalancing',
+          })}
+          key="rebalancing"
+        >
+          <Rebalancing />
+        </Tabs.TabPane>
       </Tabs>
       {props.visible && <Transfer history={props.history} />}
       {props.visiblePower && <PowerUpOrDown />}

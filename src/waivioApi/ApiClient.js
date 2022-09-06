@@ -3145,4 +3145,14 @@ export const getEnginePoolRate = tokens => {
     .catch(e => e);
 };
 
+export const getBlackListInfo = user => {
+  return fetch(`${config.campaignV2ApiPrefix}${config.blacklists}/${user}`, {
+    headers,
+    method: 'GET',
+  })
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+};
+
 export default null;

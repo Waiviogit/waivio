@@ -26,6 +26,13 @@ const TableToolbar = props => {
     toolbarNode.style.position = 'absolute';
   }, [editor, selection]);
 
+  const handleRemoveTable = () => {
+    Transforms.removeNodes(editor, {
+      match: n => !Editor.isEditor(n) && Element.isElement(n) && n.type === 'table',
+      mode: 'highest',
+    });
+  };
+
   const handleInsertRow = () => {
     if (!!selection && Range.isCollapsed(selection)) {
       const [tableNode] = Editor.nodes(editor, {
@@ -54,13 +61,6 @@ const TableToolbar = props => {
         insertCells(editor, oldTable, path, 'columns');
       }
     }
-  };
-
-  const handleRemoveTable = () => {
-    Transforms.removeNodes(editor, {
-      match: n => !Editor.isEditor(n) && Element.isElement(n) && n.type === 'table',
-      mode: 'highest',
-    });
   };
 
   return (
