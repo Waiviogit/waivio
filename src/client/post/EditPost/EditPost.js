@@ -197,7 +197,7 @@ const EditPost = props => {
 
   return (
     <div className="shifted">
-      <div className="post-layout container">
+      <div className="post-layout container container-edit-post">
         <div className="center">
           <Editor
             enabled={!props.imageLoading}
@@ -264,9 +264,11 @@ const EditPost = props => {
             />
           ))}
         </div>
-        <div className="rightContainer">
-          <div className="right">
-            <ObjectCreation onCreateObject={handleCreateObject} />
+        <div className="rightContainer edit-post__right-container">
+          <div className="right right-edit-post">
+            <div className="edit-post__objects-container">
+              <ObjectCreation onCreateObject={handleCreateObject} />
+            </div>
             <LastDraftsContainer />
           </div>
         </div>
