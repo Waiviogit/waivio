@@ -44,6 +44,7 @@ import {
   productIdFields,
   statusWithoutLinkList,
   errorObjectFields,
+  authorsFields,
 } from '../../../common/constants/listOfFields';
 import OBJECT_TYPE from '../const/objectTypes';
 import { getSuitableLanguage } from '../../../store/reducers';
@@ -360,6 +361,7 @@ export default class AppendForm extends Component {
       case objectFields.categoryItem:
       case objectFields.parent:
       case objectFields.publisher:
+      case objectFields.authors:
       case objectFields.workTime:
       case objectFields.email:
       case TYPES_OF_MENU_ITEM.PAGE:
@@ -423,6 +425,10 @@ export default class AppendForm extends Component {
         case objectFields.publisher:
           return `@${author} added ${currentField} (${langReadable}):${
             formValues[objectFields.publisher]
+          }`;
+        case objectFields.authors:
+          return `@${author} added ${currentField} (${langReadable}):${
+            formValues[objectFields.authors]
           }`;
         case objectFields.phone:
           return `@${author} added ${currentField}(${langReadable}):\n ${appendValue.replace(
@@ -565,6 +571,15 @@ export default class AppendForm extends Component {
             authorPermlink: this.state.selectedObject?.author_permlink,
             defaultShowLink: getObjectUrlForLink(this.state.selectedObject),
             avatar: getObjectAvatar(this.state.selectedObject),
+          }),
+        };
+      }
+      if (currentField === objectFields.publisher) {
+        fieldsObject = {
+          ...fieldsObject,
+          body: JSON.stringify({
+            [authorsFields.name]: formValues[authorsFields.name],
+            [authorsFields.author]: formValues[authorsFields.author],
           }),
         };
       }
@@ -1013,7 +1028,8 @@ export default class AppendForm extends Component {
       currentField === objectFields.link ||
       currentField === objectFields.companyIdType ||
       currentField === objectFields.companyId ||
-      currentField === objectFields.publisher
+      currentField === objectFields.publisher ||
+      currentField === objectFields.authors
     ) {
       return filtered.some(f =>
         isEqual(this.getCurrentObjectBody(currentField), parseJSON(f.body)),
@@ -1416,6 +1432,47 @@ export default class AppendForm extends Component {
               />
             )}
           </Form.Item>
+        );
+      }
+      case objectFields.authors: {
+        return (
+          <>
+            <Input
+              className="AppendForm__input-author"
+              disabled={loading}
+              placeholder={intl.formatMessage({
+                id: 'author_name',
+                defaultMessage: 'Author name',
+              })}
+            />
+            <Form.Item>
+              {getFieldDecorator(objectFields.authors, {
+                rules: this.getFieldRules(objectFields.authors),
+              })(
+                <SearchObjectsAutocomplete
+                  placeholder={this.props.intl.formatMessage({
+                    id: 'objects_auto_complete_author_placeholder',
+                    defaultMessage: 'Find author',
+                  })}
+                  handleSelect={this.handleSelectObject}
+                />,
+              )}
+              <CreateObject
+                isSingleType
+                defaultObjectType="person"
+                disabled
+                onCreateObject={this.handleCreateObject}
+                parentObject={{}}
+              />{' '}
+              {this.state.selectedObject && (
+                <ObjectCardView
+                  closeButton
+                  onDelete={this.onObjectCardDelete}
+                  wObject={this.state.selectedObject}
+                />
+              )}
+            </Form.Item>
+          </>
         );
       }
       case objectFields.categoryItem: {

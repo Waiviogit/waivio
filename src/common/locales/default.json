@@ -1898,5 +1898,7 @@
   "pages": "Pages",
   "lowercase_pages": "pages",
   "printLength_symbols_validation": "Please use numbers, dot and comma",
-  "object_field_author": "Author"
+  "object_field_authors": "Author",
+  "objects_auto_complete_author_placeholder": "Find author",
+  "author_name": "Author name"
 }

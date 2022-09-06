@@ -339,7 +339,7 @@ class ObjectInfo extends React.Component {
     const publicationDate = moment(wobject.publicationDate).format('MMMM DD, YYYY');
     const printLength = wobject.printLength;
     const publisher = parseWobjectField(wobject, 'publisher');
-    // const author = parseWobjectField(wobject, 'author');
+    const authors = parseWobjectField(wobject, 'authors');
     const profile = linkField
       ? {
           facebook: linkField[linkFields.linkFacebook] || '',
@@ -464,6 +464,12 @@ class ObjectInfo extends React.Component {
           </div>
         )}
         {this.listItem(objectFields.name, null)}
+        {this.listItem(
+          objectFields.authors,
+          authors && (
+            <ObjectCard key={publisher.author_permlink} wobject={authors} showFollow={false} />
+          ),
+        )}
         {this.listItem(
           objectFields.description,
           description && <DescriptionInfo description={description} />,
@@ -743,6 +749,7 @@ class ObjectInfo extends React.Component {
 
     return (
       <React.Fragment>
+        {!isEditMode && authors && <span>By {authors}yarn prettier</span>}
         {wobject && wobjName && (
           <div className="object-sidebar">
             {this.listItem(
