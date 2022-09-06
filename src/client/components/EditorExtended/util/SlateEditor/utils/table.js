@@ -26,7 +26,7 @@ const createRow = cellText => {
 
 const createTableCell = text => ({
   type: 'tableCell',
-  children: [{ type: 'paragraph', children: [{ text }] }],
+  children: [{ text }],
 });
 
 const createTableNode = cellText => {
