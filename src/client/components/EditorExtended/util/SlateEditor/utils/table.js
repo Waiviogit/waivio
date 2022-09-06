@@ -1,5 +1,4 @@
 import { Transforms } from 'slate';
-import paragraph from './paragraph';
 
 export const insertTable = editor => {
   const rows = 2;

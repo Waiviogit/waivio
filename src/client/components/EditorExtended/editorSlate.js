@@ -137,6 +137,7 @@ const EditorSlate = props => {
         currentImage.src.startsWith('http') ? currentImage.src : `https://${currentImage.src}`
       }`,
     });
+
     // image of uploading from editor not removed in feeds without that hack
     Transforms.insertNodes(editor, [wrapWithParagraph([imageBlock]), createParagraph('')]);
   };
