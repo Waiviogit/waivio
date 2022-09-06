@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Checkbox, Modal, Slider } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
-import { injectIntl } from 'react-intl';
+import { FormattedMessage, injectIntl } from 'react-intl';
 import { isEmpty, round, uniqBy } from 'lodash';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
@@ -216,7 +216,16 @@ const Rebalancing = ({ intl }) => {
           })
         ) : (
           <tr>
-            <td colSpan={9}>{loading ? <Loading /> : "You don't have any records yet"}</td>
+            <td colSpan={9}>
+              {loading ? (
+                <Loading />
+              ) : (
+                <FormattedMessage
+                  id="rebalancing_tokens_with_a_positive_balance_warning"
+                  defaultMessage="Only tokens with a positive balance can participate in rebalancing"
+                />
+              )}
+            </td>
           </tr>
         )}
       </table>

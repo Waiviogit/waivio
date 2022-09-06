@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { injectIntl } from 'react-intl';
+import { FormattedMessage, injectIntl } from 'react-intl';
 import { useSelector } from 'react-redux';
 import { Button } from 'antd';
 import PropTypes from 'prop-types';
@@ -114,19 +114,19 @@ const TableProfit = props => {
             ))}
             {!table.length && (
               <tr>
-                <td colSpan={4}>You don&apos;t have any tokens yet</td>
+                <td colSpan={4}>
+                  <FormattedMessage
+                    id="add_tokens_for_monitoring"
+                    defaultMessage="Please add tokens for monitoring"
+                  />
+                </td>
               </tr>
             )}
           </thead>
         </table>
         <div className="table-profit__info">
           <div className="table-profit__info-profit">
-            Accumulated profit:{' '}
-            {table.length ? (
-              <strong>{profit}%</strong>
-            ) : (
-              <span className="table-profit__info-grey">(choose a token)</span>
-            )}
+            Accumulated profit: {table.length ? <strong>{profit}%</strong> : <span>N/A</span>}
           </div>
           <div>
             Note: The accumulated profit report will give accurate profit growth estimates only if
