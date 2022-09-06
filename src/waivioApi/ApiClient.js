@@ -784,7 +784,7 @@ export const getPropositions = ({
   if (match.params.filterKey === IS_RESERVED) reqData.status = [...status, 'onHold'];
   const url = getUrl(match);
 
-  if (isMap && match.params.filterKey === IS_RESERVED) return;
+  if (isMap && match.params.filterKey === IS_RESERVED) return Promise.resolve();
   return fetch(url, {
     headers: { ...headers, app: config.appName, locale },
     method: 'POST',
@@ -950,7 +950,7 @@ export const getRewardsGeneralCounts = ({
     area,
   };
   if (match.params.filterKey === IS_RESERVED) reqData.status = [...status, 'onHold'];
-  fetch(`${config.campaignApiPrefix}${config.statistics}`, {
+  return fetch(`${config.campaignApiPrefix}${config.statistics}`, {
     headers: { ...headers, app: config.appName, locale },
     method: 'POST',
     body: JSON.stringify(reqData),
@@ -2598,7 +2598,6 @@ export const getCampaingHistoryList = (giudeName, skip = 0) => {
       method: 'GET',
     },
   )
-    .then(handleErrors)
     .then(res => res.json())
     .then(response => response)
     .catch(e => e);
