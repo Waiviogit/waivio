@@ -339,6 +339,7 @@ class ObjectInfo extends React.Component {
     const publicationDate = moment(wobject.publicationDate).format('MMMM DD, YYYY');
     const printLength = wobject.printLength;
     const publisher = parseWobjectField(wobject, 'publisher');
+    // const author = parseWobjectField(wobject, 'author');
     const profile = linkField
       ? {
           facebook: linkField[linkFields.linkFacebook] || '',

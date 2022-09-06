@@ -40,6 +40,7 @@ export const objectFields = {
   title: 'title',
   language: 'language',
   printLength: 'printLength',
+  author: 'author',
 };
 
 export const TYPES_OF_MENU_ITEM = {
@@ -206,6 +207,7 @@ export const errorObjectFields = {
   [objectFields.language]: [objectFields.language],
   [objectFields.publicationDate]: [objectFields.publicationDate],
   [objectFields.form]: [formFormFields.link, formFormFields.widget, formFormFields.title],
+  [objectFields.author]: [objectFields.author],
 };
 
 export default null;

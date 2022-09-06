@@ -1897,5 +1897,6 @@
   "object_field_printLength":"Print length",
   "pages": "Pages",
   "lowercase_pages": "pages",
-  "printLength_symbols_validation": "Please use numbers, dot and comma"
+  "printLength_symbols_validation": "Please use numbers, dot and comma",
+  "object_field_author": "Author"
 }
