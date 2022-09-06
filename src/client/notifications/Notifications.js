@@ -145,7 +145,7 @@ class Notifications extends React.Component {
                     url={`/rewards/rebalancing`}
                     id="rebalance_alert"
                     iconType={'swap'}
-                    defaultMessage="Rebalancing alert for {pair}: {differencePercent}% defference"
+                    defaultMessage="Rebalancing alert for {pair}: {differencePercent}% difference"
                     values={{
                       pair: notification.tokenPair.replace('_', ' / ').replace('/', ' / '),
                       differencePercent: notification.differencePercent,
