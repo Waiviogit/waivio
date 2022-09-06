@@ -1,6 +1,6 @@
 import { Editor, Transforms, Element as SlateElement } from 'slate';
 import { ReactEditor } from 'slate-react';
-import { CODE_BLOCK, HEADING_BLOCKS, INLINE_CODE, REMOVE_FORMAT } from './constants';
+import { BLOCKQUOTE, CODE_BLOCK, HEADING_BLOCKS, INLINE_CODE, REMOVE_FORMAT } from './constants';
 import defaultToolbarGroups from '../toolbar/toolbarGroups';
 
 const inlineButtons = defaultToolbarGroups.filter(i => ['inline', 'link'].includes(i.type));
@@ -89,11 +89,24 @@ export const removeAllInlineFormats = editor => {
   });
 };
 
+export const removeBlockStyles = editor => {
+  [BLOCKQUOTE].forEach(i => {
+    Transforms.setNodes(editor, {
+      type: 'paragraph',
+    });
+    Transforms.unwrapNodes(editor, {
+      match: n => i.includes(!Editor.isEditor(n) && SlateElement.isElement(n) && n.type),
+      split: true,
+    });
+  });
+};
+
 export const toggleMark = (editor, format) => {
   const { selection } = editor;
 
   if (format === REMOVE_FORMAT) {
     removeAllInlineFormats(editor);
+    removeBlockStyles(editor);
     const selected = editor.children[selection.anchor.path[0]];
 
     if (HEADING_BLOCKS.includes(selected.type)) {
@@ -113,6 +126,7 @@ export const toggleMark = (editor, format) => {
   }
   ReactEditor.focus(editor);
 };
+
 export const isMarkActive = (editor, format) => {
   const marks = Editor.marks(editor);
 
