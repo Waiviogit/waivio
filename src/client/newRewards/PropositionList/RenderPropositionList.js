@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation, useParams } from 'react-router';
-import { capitalize, isEmpty } from 'lodash';
+import { isEmpty } from 'lodash';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import { injectIntl } from 'react-intl';
 
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 import { getObject } from '../../../waivioApi/ApiClient';
@@ -13,10 +14,10 @@ import EmptyCampaing from '../../statics/EmptyCampaing';
 import Proposition from '../reuseble/Proposition/Proposition';
 import { getObjectName } from '../../../common/helpers/wObjectHelper';
 import RewardsFilters from '../Filters/Filters';
-
-import './PropositionList.less';
 import { getPropositionsKey } from '../../../common/helpers/newRewardsHelper';
 import FiltersForMobile from '../Filters/FiltersForMobile';
+
+import './PropositionList.less';
 
 const filterConfig = [
   { title: 'Rewards for', type: 'type' },
@@ -30,6 +31,7 @@ const RenderPropositionList = ({
   customFilterConfig,
   disclaimer,
   withoutFilters,
+  intl,
 }) => {
   const { requiredObject } = useParams();
   const authUserName = useSelector(getAuthenticatedUserName);
@@ -88,7 +90,7 @@ const RenderPropositionList = ({
         <FiltersForMobile setVisible={setVisible} />
         <div className="PropositionList__breadcrumbs">
           <Link className="PropositionList__parent" to={`/rewards-new/${tab}`}>
-            {capitalize(tab)} rewards
+            {intl.formatMessage({ id: `${tab}_rewards_new` })}
           </Link>
           {requiredObject && (
             <div className="PropositionList__parent">
@@ -150,6 +152,9 @@ RenderPropositionList.propTypes = {
   disclaimer: PropTypes.string,
   withoutFilters: PropTypes.bool,
   customFilterConfig: PropTypes.shape({}).isRequired,
+  intl: PropTypes.shape({
+    formatMessage: PropTypes.func,
+  }).isRequired,
 };
 
 RenderPropositionList.defaultProps = {
@@ -158,4 +163,4 @@ RenderPropositionList.defaultProps = {
   withoutFilters: false,
 };
 
-export default RenderPropositionList;
+export default injectIntl(RenderPropositionList);
