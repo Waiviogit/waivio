@@ -101,6 +101,7 @@ export default {
       'payables',
       'match-bots-sponsors',
       'reservations',
+      'black-list',
     ].join('|'),
     sideBar: [
       'all',
@@ -146,6 +147,7 @@ export default {
       'match-bots-curators',
       'match-bots-sponsors',
       'eligible',
+      'black-list',
     ].join('|'),
   },
   SETTINGS: {

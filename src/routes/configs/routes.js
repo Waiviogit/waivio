@@ -210,6 +210,11 @@ const routes = {
           exact: true,
           component: Views.FraudDetectionNew,
         },
+        {
+          path: '/black-list',
+          exact: true,
+          component: Views.BlackList,
+        },
       ],
     },
     {

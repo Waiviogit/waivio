@@ -71,6 +71,11 @@ export const campaingSettings = {
       id: 'fraud-detection',
       defaultMessage: 'Fraud detection',
     },
+    {
+      to: '/rewards-new/black-list',
+      id: 'blackList',
+      defaultMessage: 'Black list',
+    },
   ],
 };
 

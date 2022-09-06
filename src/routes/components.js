@@ -13,6 +13,7 @@ export default {
     import('../client/newRewards/PropositionLists/ReservedProposition'),
   ),
   Payables: loableComponent(import('../client/newRewards/Debts/Paybles')),
+  BlackList: loableComponent(import('../client/newRewards/BlackList/BlackList')),
   SponsorsMatchBots: loableComponent(
     import('../client/newRewards/SponsorsMatchBots/SponsorsMatchBots'),
   ),

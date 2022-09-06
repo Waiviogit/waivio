@@ -38,6 +38,7 @@
   "activation": "/validate_activation",
   "auth": "/auth",
   "blacklist": "/blacklist",
+  "blacklists": "/blacklists",
   "blog": "/blog",
   "details": "/details",
   "campaign": "/campaign",
