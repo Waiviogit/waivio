@@ -125,6 +125,7 @@ const CreateRule = ({
           ),
         );
         updateSponsorList();
+        setEditRule({});
       })
       .catch(() => {
         setConfirmModalLoaded(false);
