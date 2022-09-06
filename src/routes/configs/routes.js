@@ -28,11 +28,6 @@ const routes = {
       exact: true,
       routes: [
         {
-          path: '/rebalancing',
-          exact: true,
-          component: Views.Rebalancing,
-        },
-        {
           path: '/manage',
           exact: true,
           component: Views.ManageCampaign,
