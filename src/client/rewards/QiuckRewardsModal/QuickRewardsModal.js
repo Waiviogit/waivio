@@ -191,7 +191,8 @@ const QuickRewardsModal = props => {
       footer={null}
       visible={props.isOpenModal}
       onCancel={closeModal}
-      className={showModal ? 'QuickRewardsModal  QuickRewardsModal__top' : 'QuickRewardsModal'}
+      className={showModal ? 'QuickRewardsModal' : 'QuickRewardsModal'}
+      // className={showModal ? 'QuickRewardsModal  QuickRewardsModal__top' : 'QuickRewardsModal'}
     >
       <StepsItems
         config={stepsConfig}
