@@ -26,7 +26,7 @@ const Blacklist = ({ intl }) => {
 
   return (
     <div>
-      <Tabs>
+      <Tabs className={'Blacklist__tabs'}>
         <Tabs.TabPane
           tab={intl.formatMessage({
             id: 'blacklist',
