@@ -122,17 +122,6 @@ const SidenavRewards = ({
                     )}
                   </React.Fragment>
                 )}
-                {!isGuest && (
-                  <React.Fragment>
-                    <SectionTitle
-                      sectionId="arbitrage"
-                      defaultName="Arbitrage"
-                      nameKey="arbitrage"
-                      isOpen={menuCondition.arbitrage}
-                      toggleSection={toggleMenuCondition}
-                    />
-                  </React.Fragment>
-                )}
               </React.Fragment>
             )}
           </React.Fragment>

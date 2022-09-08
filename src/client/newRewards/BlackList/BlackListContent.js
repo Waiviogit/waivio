@@ -66,14 +66,17 @@ const BlacklistContentNew = ({
         itemsIdsToOmit={[...users, ...userList].map(user => user.account)}
       />
       <p className="Blacklist__caption">{caption}</p>
-      {!isEmpty(users) &&
-        users.map(user => (
-          <SelectUserForAutocomplete
-            key={user.account}
-            account={user.account}
-            resetUser={handledeleteUser}
-          />
-        ))}
+      {!isEmpty(users) && (
+        <div className="Blacklist__selectUserList">
+          {users.map(user => (
+            <SelectUserForAutocomplete
+              key={user.account}
+              account={user.account}
+              resetUser={handledeleteUser}
+            />
+          ))}
+        </div>
+      )}
       <div className="Blacklist__button-container">
         <Button
           disabled={isEmpty(users)}

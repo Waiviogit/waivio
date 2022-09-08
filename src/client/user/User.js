@@ -37,10 +37,7 @@ import {
   getIsUserLoaded,
   getUser,
 } from '../../store/usersStore/usersSelectors';
-import {
-  getCurrentWalletType,
-  getIsOpenWalletTable,
-} from '../../store/walletStore/walletSelectors';
+import { getIsOpenWalletTable } from '../../store/walletStore/walletSelectors';
 
 @connect(
   (state, ownProps) => ({
@@ -57,7 +54,6 @@ import {
     helmetIcon: getHelmetIcon(state),
     siteName: getWebsiteName(state),
     appUrl: getAppUrl(state),
-    isRebalancing: getCurrentWalletType(state) === 'rebalancing',
   }),
   {
     getUserAccount,
@@ -76,7 +72,6 @@ export default class User extends React.Component {
     user: PropTypes.shape().isRequired,
     loaded: PropTypes.bool,
     failed: PropTypes.bool,
-    isRebalancing: PropTypes.bool.isRequired,
     getUserAccount: PropTypes.func,
     getUserAccountHistory: PropTypes.func.isRequired,
     openTransfer: PropTypes.func,
@@ -137,7 +132,6 @@ export default class User extends React.Component {
       helmetIcon,
       siteName,
       appUrl,
-      isRebalancing,
     } = this.props;
 
     if (failed) return <Error404 />;
@@ -223,11 +217,7 @@ export default class User extends React.Component {
           />
         )}
         <div className="shifted">
-          <div
-            className={`${isRebalancing ? 'settings-layout' : 'feed-layout'} ${
-              isOpenWalletTable || isRebalancing ? 'table-wrap' : 'container'
-            }`}
-          >
+          <div className={'feed-layout container'}>
             {!isOpenWalletTable && (
               <React.Fragment>
                 <Affix className="leftContainer leftContainer__user" stickPosition={72}>
@@ -235,11 +225,9 @@ export default class User extends React.Component {
                     <LeftSidebar />
                   </div>
                 </Affix>
-                {!isRebalancing && (
-                  <Affix className="rightContainer" stickPosition={72}>
-                    <div className="right">{loaded && <RightSidebar key={user.name} />}</div>
-                  </Affix>
-                )}
+                <Affix className="rightContainer" stickPosition={72}>
+                  <div className="right">{loaded && <RightSidebar key={user.name} />}</div>
+                </Affix>
               </React.Fragment>
             )}
             {loaded && (
