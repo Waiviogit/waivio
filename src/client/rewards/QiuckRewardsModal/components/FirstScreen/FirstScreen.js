@@ -70,7 +70,6 @@ const ModalFirstScreen = props => {
     const dish = props.dishes.find(camp => camp.author_permlink === item);
 
     props.setSelectedDish(dish);
-    props.showModal(false);
   };
 
   const handleDishFilter = (input, dish) =>
@@ -168,10 +167,7 @@ const ModalFirstScreen = props => {
           />
         ) : (
           <AutoComplete
-            onFocus={() => props.showModal(true)}
-            onBlur={() => props.showModal(false)}
             className="QuickRewardsModal__select"
-            dropdownClassName={'QuickRewardsModal__dropdown'}
             placeholder="Search"
             onSelect={handleSelectDish}
             disabled={!props.selectedRestaurant}
@@ -225,7 +221,6 @@ ModalFirstScreen.propTypes = {
   dishes: PropTypes.arrayOf().isRequired,
   eligible: PropTypes.arrayOf().isRequired,
   resetDish: PropTypes.func.isRequired,
-  showModal: PropTypes.func.isRequired,
   getEligibleRewardsList: PropTypes.func.isRequired,
   setSelectedRestaurant: PropTypes.func.isRequired,
   resetRestaurant: PropTypes.func.isRequired,
