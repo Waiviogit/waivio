@@ -121,7 +121,7 @@ export const rejectAuthorReview = proposition => (
       parent_permlink: proposition.reservationPermlink,
       author: proposition.guideName,
       permlink: createCommentPermlink(proposition.userName, proposition.reservationPermlink),
-      title: 'Reject review',
+      title: 'Cancelled reservation',
       body: `User <a href="https://www.waivio.com/@${proposition.guideName}">${
         proposition.guideName
       }</a> cancelled reservation for <a href="https://www.waivio.com${

@@ -136,7 +136,6 @@ const Rebalancing = ({ intl }) => {
 
   return (
     <div className="Rebalancing table-wrap">
-      <h1>Rebalancing:</h1>
       Grow your crypto holding by doing arbitrage between your personal holdings and the open
       market. Read more about the{' '}
       <a href="/object/wxu-rebalancing-introduction/page">rebalancing strategy</a>.
