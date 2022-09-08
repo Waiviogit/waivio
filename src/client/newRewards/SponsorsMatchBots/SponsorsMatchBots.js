@@ -42,12 +42,15 @@ const SponsorsMatchBots = ({ intl, isEngLocale }) => {
     100: '100%',
   };
 
+  const getSponsors = () =>
+    getSponsorsMatchBots(userName).then(data => {
+      setRules(data);
+      setMinVotingPower(data.minVotingPower / 100);
+    });
+
   useEffect(() => {
     if (userName) {
-      getSponsorsMatchBots(userName).then(data => {
-        setRules(data);
-        setMinVotingPower(data.minVotingPower / 100);
-      });
+      getSponsors();
     }
   }, []);
 
@@ -63,9 +66,11 @@ const SponsorsMatchBots = ({ intl, isEngLocale }) => {
     }
     setModalVisible(!modalVisible);
   };
+
   const handleEditRule = rule => {
     setModalVisible(!modalVisible);
     setEditRule(rule);
+    getSponsors();
   };
   const handleOpenVoteModal = () => setVoteModalVisible(!voteModalVisible);
   const handleChangeSliderValue = value => setSliderValue(value);
@@ -165,6 +170,7 @@ const SponsorsMatchBots = ({ intl, isEngLocale }) => {
               modalVisible={modalVisible}
               setEditRule={setEditRule}
               isEnabledRule={isEnabledRule}
+              updateSponsorList={getSponsors}
               isNew
             />
           )}

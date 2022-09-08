@@ -1,0 +1,59 @@
+@import (reference) '../../styles/modules/variables.less';
+@import (reference) '../../styles/custom.less';
+
+@margin: 15px;
+
+.Blacklist {
+  &__container {
+    border: 1px solid @white-gainsboro;
+    background: @white;
+    border-radius: 4px;
+    padding: 10px;
+    text-align: center;
+
+    .Blacklist__user {
+      &:last-child {
+        .Blacklist__user__content {
+          margin: 0;
+        }
+
+        .Blacklist__user__divider {
+          display: none;
+        }
+      }
+    }
+  }
+
+  &__selectUserList {
+    margin-bottom: @margin;
+
+    .SelectUserForAutocomplete {
+      &:last-child {
+        margin-bottom: 0;
+      }
+      margin-bottom: 5px;
+    }
+  }
+
+  &__title {
+    margin-bottom: @margin;
+  }
+
+  &__caption {
+    margin-bottom: @margin;
+  }
+
+  &__button-container {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: @margin;
+  }
+
+  &__button {
+    width: 150px;
+  }
+
+  h3 {
+    margin-bottom: @margin;
+  }
+}

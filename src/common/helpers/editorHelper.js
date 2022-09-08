@@ -454,7 +454,7 @@ const findHashtag = (editor, start, word) => {
 
 export const checkCursorInSearchSlate = editor => {
   const { selection } = editor;
-  const blockText = editor.children[selection.anchor.path[0]]?.children[0]?.text;
+  const blockText = editor.children[selection?.anchor?.path[0]]?.children[0]?.text;
 
   if (!selection || !Range.isCollapsed(selection)) {
     return {

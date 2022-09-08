@@ -217,7 +217,7 @@ export default class User extends React.Component {
           />
         )}
         <div className="shifted">
-          <div className={`feed-layout ${isOpenWalletTable ? 'table-wrap' : 'container'}`}>
+          <div className={'feed-layout container'}>
             {!isOpenWalletTable && (
               <React.Fragment>
                 <Affix className="leftContainer leftContainer__user" stickPosition={72}>

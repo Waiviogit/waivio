@@ -18,7 +18,7 @@ const RewardsPopover = ({ proposition, getProposition, type }) => {
         return (
           <PopoverMenuItem>
             <div role="presentation" onClick={rejectReward}>
-              <Icon type="flag" /> Reject reservation
+              <Icon type="flag" /> Release reservation
             </div>
           </PopoverMenuItem>
         );
@@ -26,7 +26,7 @@ const RewardsPopover = ({ proposition, getProposition, type }) => {
         return (
           <PopoverMenuItem>
             <div role="presentation" onClick={realeaseReward}>
-              <Icon type="flag" /> Release reservation
+              <Icon type="flag" /> Reject reservation
             </div>
           </PopoverMenuItem>
         );
@@ -53,8 +53,8 @@ const RewardsPopover = ({ proposition, getProposition, type }) => {
   const rejectReward = () => {
     setIsVisiblePopover(false);
     Modal.confirm({
-      title: 'Reject reservation',
-      content: 'Do you want to reject this reservation?',
+      title: 'Release reservation',
+      content: 'Do you want to release this reservation?',
       onOk() {
         return new Promise(resolve => {
           dispatch(rejectAuthorReview(proposition)).then(() => {

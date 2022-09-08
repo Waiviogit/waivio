@@ -29,6 +29,7 @@ const CreateRule = ({
   modalVisible,
   setEditRule,
   isEnabledRule,
+  updateSponsorList,
   isNew,
 }) => {
   const [expiredAt, setExpired] = useState('');
@@ -123,6 +124,8 @@ const CreateRule = ({
                 },
           ),
         );
+        updateSponsorList();
+        setEditRule({});
       })
       .catch(() => {
         setConfirmModalLoaded(false);
@@ -145,6 +148,7 @@ const CreateRule = ({
       }
     });
   };
+
   const handleDeleteRule = () => {
     setDeleteModalLoaded(true);
     const prepareObjData = {
@@ -157,6 +161,7 @@ const CreateRule = ({
       .then(() => {
         handleChangeModalVisible();
         setDeleteModalLoaded(false);
+        updateSponsorList();
         message.success(
           intl.formatMessage({
             id: 'matchBot_success_deleted',
@@ -168,6 +173,7 @@ const CreateRule = ({
         setDeleteModalLoaded(false);
         handleChangeModalVisible();
       });
+    setEditRule({});
   };
 
   const checkSponsor = (rule, value, callback) => {
@@ -402,10 +408,12 @@ CreateRule.propTypes = {
   editRule: PropTypes.shape(),
   handleChangeModalVisible: PropTypes.func.isRequired,
   setEditRule: PropTypes.func.isRequired,
+  updateSponsorList: PropTypes.func,
   isEnabledRule: PropTypes.bool.isRequired,
 };
 CreateRule.defaultProps = {
   editRule: {},
+  updateSponsorList: () => {},
   isNew: false,
 };
 

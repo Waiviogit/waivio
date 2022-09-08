@@ -1901,4 +1901,14 @@
   "object_field_authors": "Author",
   "objects_auto_complete_author_placeholder": "Find author",
   "author_name": "Author name"
+  "messages_rewards_new": "Messages",
+  "fraud_rewards_new": "Fraud detection assistant",
+  "reserved_rewards_new": "Reserved rewards",
+  "all_rewards_new": "All rewards",
+  "reservations_rewards_new": "History of reservations",
+  "history_rewards_new": "History rewards",
+  "eligible_rewards_new": "Eligible rewards",
+  "rebalance_alert": "Rebalancing alert for {pair}: {differencePercent}% difference",
+  "rebalancing_tokens_with_a_positive_balance_warning": "Only tokens with a positive balance can participate in rebalancing",
+  "add_tokens_for_monitoring": "Please add tokens for monitoring"
 }

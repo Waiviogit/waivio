@@ -1,9 +1,10 @@
 import React from 'react';
 import { Button } from 'antd';
 import PropTypes from 'prop-types';
-import { capitalize, noop } from 'lodash';
+import { capitalize, isEmpty, noop } from 'lodash';
 
 import RewardsPopover from '../../RewardsPopover/RewardsPopover';
+import Avatar from '../../../components/Avatar';
 
 import './Proposition.less';
 
@@ -33,6 +34,8 @@ const PropositionFooter = ({
         );
       case 'history':
       case 'reservations':
+      case 'messages':
+      case 'fraud':
         return (
           <React.Fragment>
             <div className="Proposition-new__button-container">
@@ -45,6 +48,15 @@ const PropositionFooter = ({
                 type={type}
               />
             </div>
+            {!isEmpty(proposition?.fraudCodes) && (
+              <div>Codes: {proposition?.fraudCodes.join(', ')}</div>
+            )}
+            {type === 'reservations' && (
+              <div className={'Proposition-new__userCard'}>
+                <Avatar size={24} username={proposition?.userName} />
+                <a href={`/@${proposition?.userName}`}>{proposition?.userName}</a>
+              </div>
+            )}
           </React.Fragment>
         );
 
@@ -71,6 +83,8 @@ PropositionFooter.propTypes = {
   getProposition: PropTypes.func,
   proposition: PropTypes.shape({
     reviewStatus: PropTypes.string,
+    userName: PropTypes.string,
+    fraudCodes: PropTypes.arrayOf(PropTypes.number),
   }).isRequired,
 };
 
