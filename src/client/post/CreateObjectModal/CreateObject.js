@@ -55,6 +55,7 @@ class CreateObject extends React.Component {
     objectTypes: PropTypes.shape(),
     locale: PropTypes.string.isRequired,
     username: PropTypes.string,
+    currentField: PropTypes.string,
     appendObject: PropTypes.func.isRequired,
     createWaivioObject: PropTypes.func.isRequired,
     getObjectTypes: PropTypes.func.isRequired,
@@ -76,6 +77,7 @@ class CreateObject extends React.Component {
     objectTypes: {},
     locale: 'en-US',
     username: '',
+    currentField: '',
     parentObject: {},
     withOpenModalBtn: true,
     isSingleType: false,
@@ -321,21 +323,26 @@ class CreateObject extends React.Component {
         {withOpenModalBtn && (
           <div className="CreateObject__row align-right">
             <div role="presentation" className="CreateObject__button" onClick={this.toggleModal}>
-              {openModalBtnText ||
-                this.props.intl.formatMessage({
-                  id: 'create_new_object',
-                  defaultMessage: 'create new object',
-                })}
+              {openModalBtnText || this.props.currentField === 'publisher'
+                ? 'Create new publisher'
+                : this.props.intl.formatMessage({
+                    id: 'create_new_object',
+                    defaultMessage: 'create new object',
+                  })}
             </div>
           </div>
         )}
 
         {this.state.isModalOpen && (
           <Modal
-            title={this.props.intl.formatMessage({
-              id: 'create_new_object',
-              defaultMessage: 'Create new object',
-            })}
+            title={
+              this.props.currentField === 'publisher'
+                ? 'Create new publisher'
+                : this.props.intl.formatMessage({
+                    id: 'create_new_object',
+                    defaultMessage: 'create new object',
+                  })
+            }
             closable
             onCancel={this.handleCloseModal}
             maskClosable={false}

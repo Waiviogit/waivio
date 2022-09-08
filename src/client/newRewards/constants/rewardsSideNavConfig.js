@@ -61,6 +61,21 @@ export const campaingSettings = {
       id: 'reservations',
       defaultMessage: 'Reservations',
     },
+    {
+      to: '/rewards-new/messages',
+      id: 'messages',
+      defaultMessage: 'Messages',
+    },
+    {
+      to: '/rewards-new/fraud-detection',
+      id: 'fraud-detection',
+      defaultMessage: 'Fraud detection',
+    },
+    {
+      to: '/rewards-new/black-list',
+      id: 'blackList',
+      defaultMessage: 'Blacklist',
+    },
   ],
 };
 

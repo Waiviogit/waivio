@@ -14,7 +14,6 @@ const HistoryCampaing = ({ guideName, setLoading, loading }) => {
       getCampaingHistoryList(guideName).then(res => {
         setHistoryList(res.campaigns);
         setHasMore(res.hasMore);
-        setHasMore(res.setLoading);
         setLoading(false);
       });
     }

@@ -421,7 +421,7 @@ export default class AppendForm extends Component {
         case objectFields.background:
           return `@${author} added ${currentField} (${langReadable}):\n ![${currentField}](${appendValue})`;
         case objectFields.publisher:
-          return `@${author} added ${currentField} (${langReadable}):${
+          return `@${author} added ${currentField} (${langReadable}): ${
             formValues[objectFields.publisher]
           }`;
         case objectFields.phone:
@@ -1291,7 +1291,8 @@ export default class AppendForm extends Component {
   };
 
   onObjectCardDelete = () => {
-    this.setState({ selectedObject: null });
+    this.setState({ selectedObject: '' });
+    this.props.form.setFieldsValue({ [this.props.currentField]: '' });
   };
 
   renderContentValue = currentField => {
@@ -1394,19 +1395,21 @@ export default class AppendForm extends Component {
               rules: this.getFieldRules(objectFields.publisher),
             })(
               <SearchObjectsAutocomplete
+                objectType="business"
                 placeholder={this.props.intl.formatMessage({
                   id: 'objects_auto_complete_publisher_placeholder',
                   defaultMessage: 'Find publisher',
                 })}
+                clearSearchResults
                 handleSelect={this.handleSelectObject}
               />,
             )}
             <CreateObject
+              currentField={objectFields.publisher}
               isSingleType
               defaultObjectType="business"
               disabled
               onCreateObject={this.handleCreateObject}
-              parentObject={wObject.publisher || wObject || {}}
             />{' '}
             {this.state.selectedObject && (
               <ObjectCardView
@@ -2523,6 +2526,8 @@ export default class AppendForm extends Component {
         return (
           isEmpty(getFieldValue(websiteFields.link)) || isEmpty(getFieldValue(websiteFields.title))
         );
+      case objectFields.publisher:
+        return getFieldValue(objectFields.publisher) === '';
       case objectFields.map:
         return (
           getFieldValue(mapFields.latitude) === undefined ||

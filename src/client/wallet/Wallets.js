@@ -32,6 +32,7 @@ import WithdrawModal from './WithdrawModal/WithdrawModal';
 import { getIsOpenWithdraw } from '../../store/depositeWithdrawStore/depositWithdrawSelector';
 import ManageDelegate from './DelegateModals/ManageDelegate/ManageDelegate';
 import { getAuthenticatedUserName } from '../../store/authStore/authSelectors';
+import Rebalancing from '../newRewards/Rebalancing/Rebalancing';
 
 import './Wallets.less';
 
@@ -39,6 +40,7 @@ const Wallets = props => {
   const query = new URLSearchParams(props.location.search);
   const walletsType = query.get('type');
   const isGuestUser = guestUserRegex.test(props.match.params.name);
+  const isCurrUser = props.match.params.name === props.authUserName;
 
   useEffect(() => {
     props.setWalletType(walletsType);
@@ -81,6 +83,17 @@ const Wallets = props => {
             key="ENGINE"
           >
             <HiveEngineWallet />
+          </Tabs.TabPane>
+        )}
+        {isCurrUser && (
+          <Tabs.TabPane
+            tab={props.intl.formatMessage({
+              id: 'rebalance_wallet',
+              defaultMessage: 'Rebalancing',
+            })}
+            key="rebalancing"
+          >
+            <Rebalancing />
           </Tabs.TabPane>
         )}
       </Tabs>

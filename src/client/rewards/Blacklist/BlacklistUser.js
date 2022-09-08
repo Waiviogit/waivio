@@ -9,7 +9,7 @@ import WeightTag from '../../components/WeightTag';
 
 const BlacklistUser = ({ intl, user, handleDeleteUsers }) => {
   const [loading, setLoading] = useState(false);
-  const userName = user.name || get(user, ['user', 'name']);
+  const userName = user.name || get(user, ['user', 'name']) || user.account;
   const userWeight = user.wobjects_weight || get(user, ['user', 'wobjects_weight']);
 
   const handleDelUsers = async () => {

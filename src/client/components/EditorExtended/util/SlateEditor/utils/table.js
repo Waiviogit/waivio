@@ -15,8 +15,8 @@ export const insertTable = editor => {
   );
 };
 
-const createRow = cellText => {
-  const newRow = Array.from(cellText, value => createTableCell(value));
+const createRow = (cellText, action) => {
+  const newRow = Array.from(cellText, value => createTableCell(value, action));
 
   return {
     type: 'tableRow',
@@ -26,7 +26,7 @@ const createRow = cellText => {
 
 const createTableCell = text => ({
   type: 'tableCell',
-  children: [{ text }],
+  children: [{ type: 'paragraph', children: [{ text: text || '' }] }],
 });
 
 const createTableNode = cellText => {
@@ -50,7 +50,7 @@ export const insertCells = (editor, tableNode, path, action) => {
       return item;
     });
   }
-  const newTable = createTableNode(existingText);
+  const newTable = createTableNode(existingText, action);
 
   Transforms.insertNodes(editor, newTable, {
     at: path,

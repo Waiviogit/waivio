@@ -50,7 +50,6 @@ export default {
       'receivables',
       'details',
       'createDublicate',
-      'rebalancing',
     ].join('|'),
     sideBar: [
       'all',
@@ -82,7 +81,6 @@ export default {
   NEW_REWARDS: {
     tabs: [
       'create',
-      'rebalancing',
       'manage',
       'match-bots-sponsors',
       'match-bots-curators',
@@ -101,6 +99,7 @@ export default {
       'payables',
       'match-bots-sponsors',
       'reservations',
+      'black-list',
     ].join('|'),
     sideBar: [
       'all',
@@ -146,6 +145,7 @@ export default {
       'match-bots-curators',
       'match-bots-sponsors',
       'eligible',
+      'black-list',
     ].join('|'),
   },
   SETTINGS: {

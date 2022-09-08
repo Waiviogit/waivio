@@ -13,6 +13,7 @@ export default {
     import('../client/newRewards/PropositionLists/ReservedProposition'),
   ),
   Payables: loableComponent(import('../client/newRewards/Debts/Paybles')),
+  BlackList: loableComponent(import('../client/newRewards/BlackList/BlackList')),
   SponsorsMatchBots: loableComponent(
     import('../client/newRewards/SponsorsMatchBots/SponsorsMatchBots'),
   ),
@@ -21,9 +22,12 @@ export default {
     import('../client/newRewards/Debts/ReceivablesListByUser'),
   ),
   PayblesListByUser: loableComponent(import('../client/newRewards/Debts/PayblesListByUser')),
-  Rebalancing: loableComponent(import('../client/newRewards/Rebalancing/Rebalancing')),
   EligibleRewards: loableComponent(import('../client/newRewards/RewardLists/EligibleRewards')),
   AllProposition: loableComponent(import('../client/newRewards/PropositionLists/AllPropositions')),
+  MessageList: loableComponent(import('../client/newRewards/PropositionLists/MessageList')),
+  FraudDetectionNew: loableComponent(
+    import('../client/newRewards/PropositionLists/FraudDetection'),
+  ),
   ReservationsProposition: loableComponent(
     import('../client/newRewards/PropositionLists/ReservationsProposition'),
   ),

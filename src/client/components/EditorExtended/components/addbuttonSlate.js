@@ -40,8 +40,8 @@ const AddButtonSlate = props => {
       }
       if (bound.top > 0) {
         nodeStyle.top = `${bound.top - parentBoundary.top - ADD_BTN_DIF}px`;
-      } else if (bound.top <= 0) nodeStyle.top = initialPosOfBtn.current.top || 'auto';
-      if (initialPosOfBtn.current && !initialPosOfBtn.current.top)
+      } else if (bound.top <= 0) nodeStyle.top = initialPosOfBtn?.current?.top || 'auto';
+      if (initialPosOfBtn.current && !initialPosOfBtn?.current?.top)
         initialPosOfBtn.current.top = nodeStyle.top;
     }, 50);
   }, [selection, editor]);

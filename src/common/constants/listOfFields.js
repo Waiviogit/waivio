@@ -206,6 +206,7 @@ export const errorObjectFields = {
   [objectFields.language]: [objectFields.language],
   [objectFields.publicationDate]: [objectFields.publicationDate],
   [objectFields.form]: [formFormFields.link, formFormFields.widget, formFormFields.title],
+  [objectFields.publisher]: [objectFields.publisher],
 };
 
 export default null;
