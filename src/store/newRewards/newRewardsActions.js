@@ -122,7 +122,11 @@ export const rejectAuthorReview = proposition => (
       author: proposition.guideName,
       permlink: createCommentPermlink(proposition.userName, proposition.reservationPermlink),
       title: 'Reject review',
-      body: `Sponsor ${proposition.guideName} (@${proposition.guideName}) has rejected the review `,
+      body: `User <a href="https://www.waivio.com/@${proposition.guideName}">${
+        proposition.guideName
+      }</a> cancelled reservation for <a href="https://www.waivio.com${
+        proposition?.object?.defaultShowLink
+      }">${getObjectName(proposition?.object)}</a> rewards campaign`,
       json_metadata: JSON.stringify({
         waivioRewards: {
           type: 'rejectReservationByGuide',

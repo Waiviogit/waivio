@@ -20,20 +20,6 @@ export default [
   },
   {
     intl: {
-      id: 'holdings_ratio',
-      defaultMessage: 'Holdings ratio',
-    },
-    hideOnMobile: true,
-  },
-  {
-    intl: {
-      id: 'open_market_ratio',
-      defaultMessage: 'Open market ratio',
-    },
-    hideOnMobile: true,
-  },
-  {
-    intl: {
       id: 'difference',
       defaultMessage: 'Difference',
     },

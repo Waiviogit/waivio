@@ -74,7 +74,7 @@ export const campaingSettings = {
     {
       to: '/rewards-new/black-list',
       id: 'blackList',
-      defaultMessage: 'Black list',
+      defaultMessage: 'Blacklist',
     },
   ],
 };

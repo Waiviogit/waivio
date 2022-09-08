@@ -173,6 +173,7 @@ const CreateRule = ({
         setDeleteModalLoaded(false);
         handleChangeModalVisible();
       });
+    setEditRule({});
   };
 
   const checkSponsor = (rule, value, callback) => {
