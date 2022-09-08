@@ -26,7 +26,7 @@ const RewardsPopover = ({ proposition, getProposition, type }) => {
         return (
           <PopoverMenuItem>
             <div role="presentation" onClick={realeaseReward}>
-              <Icon type="flag" /> Reject reservation
+              <Icon type="flag" /> Release reservation
             </div>
           </PopoverMenuItem>
         );

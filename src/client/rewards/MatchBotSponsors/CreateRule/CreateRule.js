@@ -27,7 +27,6 @@ const CreateRule = ({
   handleChangeModalVisible,
   intl,
   modalVisible,
-  setEditRule,
   isEnabledRule,
   updateSponsorList,
   isNew,
@@ -70,7 +69,6 @@ const CreateRule = ({
     if (!isConfirmModalLoading) setConfirmModal(!isConfirmModal);
   };
   const handleCloseModal = () => {
-    setEditRule({});
     handleChangeModalVisible();
   };
   const handleDeleteModalVisibility = () => setDeleteModal(!isDeleteModal);
@@ -125,7 +123,6 @@ const CreateRule = ({
           ),
         );
         updateSponsorList();
-        setEditRule({});
       })
       .catch(() => {
         setConfirmModalLoaded(false);
@@ -173,7 +170,6 @@ const CreateRule = ({
         setDeleteModalLoaded(false);
         handleChangeModalVisible();
       });
-    setEditRule({});
   };
 
   const checkSponsor = (rule, value, callback) => {
@@ -407,7 +403,6 @@ CreateRule.propTypes = {
   isNew: PropTypes.bool,
   editRule: PropTypes.shape(),
   handleChangeModalVisible: PropTypes.func.isRequired,
-  setEditRule: PropTypes.func.isRequired,
   updateSponsorList: PropTypes.func,
   isEnabledRule: PropTypes.bool.isRequired,
 };
