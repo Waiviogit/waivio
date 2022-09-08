@@ -31,7 +31,6 @@ const QuickRewardsModal = props => {
   const [body, setBody] = useState('');
   const [images, setImages] = useState([]);
   const [reservationPermlink, setReservationPermlink] = useState('');
-  const [showModal, setShowModal] = useState(false);
   const stepsConfig = [
     {
       title: 'Find the dish',
@@ -124,7 +123,7 @@ const QuickRewardsModal = props => {
     switch (pageNumber) {
       case 1:
         return {
-          component: <ModalFirstScreen showModal={setShowModal} isShow={props.isOpenModal} />,
+          component: <ModalFirstScreen isShow={props.isOpenModal} />,
           buttonName: 'Next',
           buttonHandler: e => {
             e.currentTarget.blur();
@@ -191,7 +190,7 @@ const QuickRewardsModal = props => {
       footer={null}
       visible={props.isOpenModal}
       onCancel={closeModal}
-      className={showModal ? 'QuickRewardsModal QuickRewardsModal__top' : 'QuickRewardsModal'}
+      className="QuickRewardsModal"
     >
       <StepsItems
         config={stepsConfig}
