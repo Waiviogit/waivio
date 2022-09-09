@@ -210,6 +210,11 @@ const routes = {
           exact: true,
           component: Views.BlackList,
         },
+        {
+          path: '/reports',
+          exact: true,
+          component: Views.ReportsNew,
+        },
       ],
     },
     {

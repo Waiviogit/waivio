@@ -57,6 +57,11 @@ export const campaingSettings = {
       defaultMessage: 'Payable',
     },
     {
+      to: '/rewards-new/reports',
+      id: 'reports',
+      defaultMessage: 'Reports',
+    },
+    {
       to: '/rewards-new/reservations',
       id: 'reservations',
       defaultMessage: 'Reservations',

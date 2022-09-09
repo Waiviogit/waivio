@@ -55,6 +55,7 @@
   "createObject": "/create/object",
   "reservations": "/reservations",
   "history": "/history",
+  "global": "/global",
   "guestOperations": "/guest_operations",
   "dashboard": "/dashboard",
   "demoPayables": "/demo_payables",
