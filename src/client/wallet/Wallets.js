@@ -62,26 +62,14 @@ const Wallets = props => {
   return (
     <React.Fragment>
       <Tabs className="Wallets" defaultActiveKey={walletsType} onChange={handleOnChange}>
-        <Tabs.TabPane
-          tab={props.intl.formatMessage({ id: 'waiv_wallet', defaultMessage: 'WAIV wallet' })}
-          key="WAIV"
-        >
+        <Tabs.TabPane tab="WAIV" key="WAIV">
           <WAIVwallet />
         </Tabs.TabPane>
-        <Tabs.TabPane
-          tab={props.intl.formatMessage({ id: 'hive_wallet', defaultMessage: 'HIVE wallet' })}
-          key="HIVE"
-        >
+        <Tabs.TabPane tab="HIVE" key="HIVE">
           <Wallet />
         </Tabs.TabPane>
         {!isGuestUser && (
-          <Tabs.TabPane
-            tab={props.intl.formatMessage({
-              id: 'hive_engine_wallet',
-              defaultMessage: 'Hive Engine wallet',
-            })}
-            key="ENGINE"
-          >
+          <Tabs.TabPane tab="Hive Engine" key="ENGINE">
             <HiveEngineWallet />
           </Tabs.TabPane>
         )}
