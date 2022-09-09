@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import { isEmpty, uniq, get, filter } from 'lodash';
+import { isEmpty, uniq, get } from 'lodash';
 import PropositionContainer from '../../rewards/Proposition/PropositionList/PropositionListContainer';
 import Feed from '../../feed/Feed';
 import { getSuitableLanguage } from '../../../store/reducers';
@@ -14,10 +14,13 @@ import {
 import { getObjectPosts, getMoreObjectPosts } from '../../../store/feedStore/feedActions';
 import { showPostModal } from '../../../store/appStore/appActions';
 import PostModal from '../../post/PostModalContainer';
-import * as ApiClient from '../../../waivioApi/ApiClient';
 import Loading from '../../components/Icon/Loading';
 import { getFeed } from '../../../store/feedStore/feedSelectors';
 import { getReadLanguages } from '../../../store/settingsStore/settingsSelectors';
+import { getObjectsRewards } from '../../../waivioApi/ApiClient';
+import { getPropositionsKey } from '../../../common/helpers/newRewardsHelper';
+import Proposition from '../../newRewards/reuseble/Proposition/Proposition';
+import Campaing from '../../newRewards/reuseble/Campaing';
 
 import './ObjectFeed.less';
 
@@ -60,17 +63,14 @@ export default class ObjectFeed extends React.Component {
   };
 
   state = {
-    loadingAssignDiscard: false,
-    isAssign: false,
     loadingPropositions: false,
-    needUpdate: true,
-    propositions: [],
   };
 
   componentDidMount() {
     const { match, limit, readLocales } = this.props;
     const { name, itemId } = match.params;
 
+    this.getWobjPropos();
     this.props.getObjectPosts({
       object: name,
       username: name,
@@ -94,7 +94,7 @@ export default class ObjectFeed extends React.Component {
         limit,
         newsPermlink: nextItemID,
       });
-
+      this.getWobjPropos();
       window.scrollTo(0, 0);
     }
   }
@@ -111,31 +111,19 @@ export default class ObjectFeed extends React.Component {
         limit,
         newsPermlink: itemId,
       });
+      this.getWobjPropos();
     }
   }
 
-  getPropositions = reqData => {
-    const { match } = this.props;
-
-    this.setState({ loadingPropositions: true });
-    ApiClient.getPropositions(reqData).then(data => {
-      const currentProposition = filter(
-        data.campaigns,
-        obj => obj.required_object.author_permlink === match.params.name,
-      );
-
-      this.setState({
-        allPropositions: data.campaigns,
-        currentProposition,
-        loadingPropositions: false,
-      });
-    });
-  };
+  getWobjPropos = () =>
+    getObjectsRewards(this.props.match.params.name, this.props.userName).then(res =>
+      this.setState({ reward: res }),
+    );
 
   render() {
     const { feed, limit, handleCreatePost, userName, wobject } = this.props;
     const { name, itemId } = this.props.match.params;
-    const { loadingPropositions } = this.state;
+    const { loadingPropositions, reward } = this.state;
     const objectFeed = getFeedFromState('objectPosts', name, feed);
     const content = uniq(objectFeed);
     const isFetching = getFeedLoadingFromState('objectPosts', name, feed);
@@ -184,6 +172,17 @@ export default class ObjectFeed extends React.Component {
           <Loading />
         ) : (
           <React.Fragment>
+            {!isEmpty(reward?.main) && <Campaing campain={reward.main} />}
+            {!isEmpty(reward?.secondary) &&
+              reward?.secondary?.map((proposition, i) => (
+                <Proposition
+                  key={getPropositionsKey(proposition, i)}
+                  proposition={{
+                    ...proposition,
+                    requiredObject: wobject,
+                  }}
+                />
+              ))}
             <PropositionContainer userName={userName} wobject={wobject} />
             {getFeedContent()}
           </React.Fragment>
