@@ -27,6 +27,7 @@ import {
   getObjectLists,
   getWobjectNested,
 } from '../../../store/wObjectStore/wObjectSelectors';
+import Campaing from '../../newRewards/reuseble/Campaing';
 
 import './CatalogWrap.less';
 
@@ -45,11 +46,16 @@ const CatalogWrap = props => {
     isLoadingFlag,
   } = props;
   const [sortBy, setSortingBy] = useState();
+  const [reward, setReward] = useState();
   const [recencySortList, setRecencySortList] = useState([]);
 
   useEffect(() => {
     const defaultSortBy = obj => (isEmpty(obj.sortCustom) ? 'rank' : 'custom');
     const isDefaultCustom = obj => defaultSortBy(obj) === 'custom';
+
+    ApiClient.getObjectsRewards(wobject.author_permlink, userName).then(res => {
+      setReward(res);
+    });
 
     if (!isEmpty(wobject)) {
       if (hash) {
@@ -119,6 +125,7 @@ const CatalogWrap = props => {
             <AddItemModal wobject={obj} itemsIdsToOmit={itemsIdsToOmit} onAddItem={handleAddItem} />
           </div>
         )}
+        {!isEmpty(reward?.main) && <Campaing campain={reward?.main} />}
         <PropositionListContainer
           wobject={wobject}
           userName={userName}

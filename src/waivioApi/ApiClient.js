@@ -3155,4 +3155,19 @@ export const getBlackListInfo = user => {
     .catch(e => e);
 };
 
+export const getObjectsRewards = (requiredObj, userName) => {
+  return fetch(
+    `${config.campaignV2ApiPrefix}${config.rewards}${config.object}/${requiredObj}${
+      userName ? `?userName=${userName}` : ''
+    }`,
+    {
+      headers,
+      method: 'GET',
+    },
+  )
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+};
+
 export default null;

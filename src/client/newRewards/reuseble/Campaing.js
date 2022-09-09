@@ -12,14 +12,12 @@ import './Campaing.less';
 const Campaing = ({ campain }) => {
   const buttonLabel = campain.maxReward === campain.minReward ? 'Earn' : 'Earn to';
   const location = useLocation();
+  const pathname = location.pathname.includes('reward') ? location.pathname : '/rewards-new/all';
 
   return (
     <div className="Campaing">
       <ObjectCardView wObject={campain.object} withRewards rewardPrice={campain.maxReward} />
-      <Link
-        to={`${location.pathname}/${campain?.object?.author_permlink}`}
-        className="Campaing__button"
-      >
+      <Link to={`${pathname}/${campain?.object?.author_permlink}`} className="Campaing__button">
         {buttonLabel}{' '}
         <b>
           <USDDisplay value={campain.maxReward} />

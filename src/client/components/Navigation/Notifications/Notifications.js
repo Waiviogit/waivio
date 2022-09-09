@@ -209,7 +209,7 @@ class Notifications extends React.Component {
               case notificationConstants.ARBITRAGE:
                 return (
                   <NotificationTemplate
-                    url={`/@${notification.account}/transfers?type=rebalancing`}
+                    url={`/@${currentAuthUsername}/transfers?type=rebalancing`}
                     id="rebalance_alert"
                     iconType={'swap'}
                     defaultMessage="Rebalancing alert for {pair}: {differencePercent}% difference"
