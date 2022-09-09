@@ -75,7 +75,7 @@ const Debts = ({
               id: 'debts_total',
               defaultMessage: 'Total',
             })}
-            : {round(payable, 2)} {payoutToken}{' '}
+            : {payable ? round(payable, 2) : 0} {payoutToken}{' '}
             {currentUSDPrice && payable ? `($${round(currentUSDPrice * payable, 2)})` : ''}
           </div>
         </div>
