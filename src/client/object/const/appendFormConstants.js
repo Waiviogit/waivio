@@ -1,5 +1,6 @@
 import {
   addressFields,
+  authorsFields,
   mapFields,
   objectFields,
   phoneFields,
@@ -177,6 +178,32 @@ export const fieldsRules = {
     },
     {
       validator: true,
+    },
+  ],
+  [authorsFields.author]: [
+    {
+      transform: value => value && value.toLowerCase(),
+    },
+    {
+      validator: false,
+    },
+  ],
+  [authorsFields.name]: [
+    {
+      transform: value => value && value.toLowerCase(),
+    },
+    {
+      max: 100,
+      message: {
+        intlId: {
+          id: 'value_error_long',
+          defaultMessage: "Value can't be longer than 100 characters.",
+        },
+        intlMeta: { value: 100 },
+      },
+    },
+    {
+      validator: false,
     },
   ],
   [TYPES_OF_MENU_ITEM.LIST]: [

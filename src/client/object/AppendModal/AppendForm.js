@@ -428,8 +428,8 @@ export default class AppendForm extends Component {
           }`;
         case objectFields.authors:
           return `@${author} added ${currentField} (${langReadable}):${
-            formValues[objectFields.authors]
-          }`;
+            formValues[authorsFields.author]
+          }, ${formValues[authorsFields.name]}`;
         case objectFields.phone:
           return `@${author} added ${currentField}(${langReadable}):\n ${appendValue.replace(
             /[{}"]/g,
@@ -574,12 +574,13 @@ export default class AppendForm extends Component {
           }),
         };
       }
-      if (currentField === objectFields.publisher) {
+      if (currentField === objectFields.authors) {
         fieldsObject = {
           ...fieldsObject,
           body: JSON.stringify({
-            [authorsFields.name]: formValues[authorsFields.name],
-            [authorsFields.author]: formValues[authorsFields.author],
+            name: formValues[authorsFields.name],
+            authorPermlink: this.state.selectedObject?.author_permlink,
+            // defaultShowLink: getObjectUrlForLink(this.state.selectedObject),
           }),
         };
       }
@@ -1440,19 +1441,28 @@ export default class AppendForm extends Component {
       case objectFields.authors: {
         return (
           <>
-            <Input
-              className="AppendForm__input-author"
-              disabled={loading}
-              placeholder={intl.formatMessage({
-                id: 'author_name',
-                defaultMessage: 'Author name',
-              })}
-            />
             <Form.Item>
-              {getFieldDecorator(objectFields.authors, {
-                rules: this.getFieldRules(objectFields.authors),
+              {getFieldDecorator(authorsFields.name, {
+                rules: this.getFieldRules(authorsFields.name),
+              })(
+                <Input
+                  className={classNames('AppendForm__input-author', {
+                    'validation-error': !this.state.isSomeValue,
+                  })}
+                  disabled={loading}
+                  placeholder={intl.formatMessage({
+                    id: 'author_name',
+                    defaultMessage: 'Author name',
+                  })}
+                />,
+              )}
+            </Form.Item>
+            <Form.Item>
+              {getFieldDecorator(authorsFields.author, {
+                rules: this.getFieldRules(authorsFields.author),
               })(
                 <SearchObjectsAutocomplete
+                  objectType="person"
                   placeholder={this.props.intl.formatMessage({
                     id: 'objects_auto_complete_author_placeholder',
                     defaultMessage: 'Find author',
@@ -1461,6 +1471,7 @@ export default class AppendForm extends Component {
                 />,
               )}
               <CreateObject
+                currentField={objectFields.authors}
                 isSingleType
                 defaultObjectType="person"
                 disabled
@@ -2583,6 +2594,8 @@ export default class AppendForm extends Component {
         return (
           isEmpty(getFieldValue(websiteFields.link)) || isEmpty(getFieldValue(websiteFields.title))
         );
+      case objectFields.authors:
+        return this.state.selectedObject === null;
       case objectFields.publisher:
         return getFieldValue(objectFields.publisher) === '';
       case objectFields.map:

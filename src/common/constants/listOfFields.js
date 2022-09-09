@@ -213,7 +213,7 @@ export const errorObjectFields = {
   [objectFields.publicationDate]: [objectFields.publicationDate],
   [objectFields.form]: [formFormFields.link, formFormFields.widget, formFormFields.title],
   [objectFields.publisher]: [objectFields.publisher],
-  [objectFields.authors]: [objectFields.authors],
+  [objectFields.authors]: [authorsFields.author, authorsFields.name, objectFields.authors],
 };
 
 export default null;

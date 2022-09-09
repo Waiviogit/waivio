@@ -464,12 +464,7 @@ class ObjectInfo extends React.Component {
           </div>
         )}
         {this.listItem(objectFields.name, null)}
-        {this.listItem(
-          objectFields.authors,
-          authors && (
-            <ObjectCard key={publisher.author_permlink} wobject={authors} showFollow={false} />
-          ),
-        )}
+        {this.listItem(objectFields.authors, authors && <span>{authors}</span>)}
         {this.listItem(
           objectFields.description,
           description && <DescriptionInfo description={description} />,
@@ -749,7 +744,7 @@ class ObjectInfo extends React.Component {
 
     return (
       <React.Fragment>
-        {!isEditMode && authors && <span>By {authors}yarn prettier</span>}
+        {!isEditMode && authors && <span>By {authors}</span>}
         {wobject && wobjName && (
           <div className="object-sidebar">
             {this.listItem(
