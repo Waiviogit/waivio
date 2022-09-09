@@ -53,20 +53,15 @@ const CatalogWrap = props => {
     const defaultSortBy = obj => (isEmpty(obj.sortCustom) ? 'rank' : 'custom');
     const isDefaultCustom = obj => defaultSortBy(obj) === 'custom';
 
-    if (!hash) {
-      ApiClient.getObjectsRewards(wobject.author_permlink, userName).then(res => {
-        setReward(res);
-      });
-    }
+    ApiClient.getObjectsRewards(wobject.author_permlink, userName).then(res => {
+      setReward(res);
+    });
 
     if (!isEmpty(wobject)) {
       if (hash) {
         setLoadingNestedWobject(true);
         const pathUrl = getLastPermlinksFromHash(hash);
 
-        ApiClient.getObjectsRewards(pathUrl, userName).then(res => {
-          setReward(res);
-        });
         ApiClient.getObject(pathUrl, userName, locale).then(wObject => {
           setSortingBy(defaultSortBy(wObject));
           setLists(
