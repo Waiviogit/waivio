@@ -51,7 +51,7 @@ const PropositionFooter = ({
             {!isEmpty(proposition?.fraudCodes) && (
               <div>Codes: {proposition?.fraudCodes.join(', ')}</div>
             )}
-            {type === 'reservations' && (
+            {proposition?.userName && (
               <div className={'Proposition-new__userCard'}>
                 <Avatar size={24} username={proposition?.userName} />
                 <a href={`/@${proposition?.userName}`}>{proposition?.userName}</a>
@@ -64,7 +64,7 @@ const PropositionFooter = ({
         return (
           <div>
             <Button type="primary" onClick={openDetailsModal}>
-              <b>Reserve</b> Yor Reward
+              <b>Reserve</b> Your Reward
             </Button>{' '}
             for {countReservationDays} days
           </div>
