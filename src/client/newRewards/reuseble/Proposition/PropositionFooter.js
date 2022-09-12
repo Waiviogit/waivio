@@ -1,7 +1,8 @@
 import React from 'react';
 import { Button } from 'antd';
 import PropTypes from 'prop-types';
-import { capitalize, isEmpty, noop } from 'lodash';
+import { isEmpty, noop } from 'lodash';
+import { injectIntl } from 'react-intl';
 
 import RewardsPopover from '../../RewardsPopover/RewardsPopover';
 import Avatar from '../../../components/Avatar';
@@ -15,6 +16,7 @@ const PropositionFooter = ({
   commentsCount,
   proposition,
   getProposition,
+  intl,
 }) => {
   const getFooter = () => {
     switch (type) {
@@ -39,7 +41,12 @@ const PropositionFooter = ({
         return (
           <React.Fragment>
             <div className="Proposition-new__button-container">
-              <b>{capitalize(proposition?.reviewStatus)}</b>
+              <b>
+                {intl.formatMessage({
+                  id: `type_${proposition?.reviewStatus}`,
+                  defaultMessage: proposition?.reviewStatus,
+                })}
+              </b>
               <i className="iconfont icon-message_fill" />
               {commentsCount}
               <RewardsPopover
@@ -86,10 +93,13 @@ PropositionFooter.propTypes = {
     userName: PropTypes.string,
     fraudCodes: PropTypes.arrayOf(PropTypes.number),
   }).isRequired,
+  intl: PropTypes.shape({
+    formatMessage: PropTypes.func,
+  }).isRequired,
 };
 
 PropositionFooter.defaultProps = {
   getProposition: noop,
 };
 
-export default PropositionFooter;
+export default injectIntl(PropositionFooter);
