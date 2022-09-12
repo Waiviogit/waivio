@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
-import { map } from 'lodash';
+import { isEmpty, map } from 'lodash';
 import PaymentTableRow from './PaymentTableRow';
 import './PaymentTable.less';
 
@@ -42,17 +42,23 @@ const PaymentTable = ({ intl, sponsors, isReports, currency, reservationPermlink
       </tr>
     </thead>
     <tbody>
-      {map(sponsors, sponsor => (
-        <PaymentTableRow
-          {...{
-            key: sponsor._id,
-            sponsor,
-            isReports,
-            reservationPermlink,
-            currency,
-          }}
-        />
-      ))}
+      {!isEmpty(sponsors) ? (
+        <tr>
+          <td colSpan={5}>No records</td>
+        </tr>
+      ) : (
+        map(sponsors, sponsor => (
+          <PaymentTableRow
+            {...{
+              key: sponsor._id,
+              sponsor,
+              isReports,
+              reservationPermlink,
+              currency,
+            }}
+          />
+        ))
+      )}
     </tbody>
   </table>
 );

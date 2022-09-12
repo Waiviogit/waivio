@@ -21,12 +21,12 @@ const CampaignCardHeader = ({ intl, campaignData }) => (
     </div>
     <div className="user-info">
       <div className="user-info__content">
-        <Link to={`/@${campaignData.guide.name}`} title={campaignData.guide.name}>
+        <Link to={`/@${campaignData?.guide?.name}`} title={campaignData?.guide?.name}>
           <div className="username">
-            {campaignData.guide.alias} (
+            {campaignData?.guide?.alias} (
             {intl.formatMessage({ id: 'sponsor', defaultMessage: 'Sponsor' })})
           </div>
-          <div className="username">{`@${campaignData.guide.name}`}</div>
+          <div className="username">{`@${campaignData?.guide?.name}`}</div>
         </Link>
         <div className="total-paid">
           <div className="total-paid__liquid">
@@ -39,7 +39,9 @@ const CampaignCardHeader = ({ intl, campaignData }) => (
           <div className="total-paid__currency">
             {`${round(get(campaignData, 'guide.totalPayed'))} HIVE`}{' '}
             {`(${
-              campaignData.guide.liquidHivePercent ? campaignData.guide.liquidHivePercent : 'n/a'
+              campaignData?.guide?.liquidHivePercent
+                ? campaignData?.guide?.liquidHivePercent
+                : 'n/a'
             }%)`}
           </div>
         </div>
