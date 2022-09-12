@@ -97,6 +97,7 @@ const Reports = ({ form, intl }) => {
                 }),
               },
             ],
+            initialValue: currUser,
           })(
             sponsor ? (
               <SelectUserForAutocomplete

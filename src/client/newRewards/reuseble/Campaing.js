@@ -10,7 +10,7 @@ import USDDisplay from '../../components/Utils/USDDisplay';
 import './Campaing.less';
 
 const Campaing = ({ campain }) => {
-  const buttonLabel = campain.maxReward === campain.minReward ? 'Earn' : 'Earn to';
+  const buttonLabel = campain.maxReward === campain.minReward ? 'Earn' : 'Earn up to';
   const location = useLocation();
   const pathname = location.pathname.includes('reward') ? location.pathname : '/rewards-new/all';
 
