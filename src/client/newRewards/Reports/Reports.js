@@ -60,8 +60,8 @@ const Reports = ({ form, intl }) => {
             currency: values.currency,
             objects: objects.map(obj => obj.author_permlink),
             processingFees: values.fees,
-            payable: values.amount,
-            startDate: values.from.unix(),
+            payable: +values.amount,
+            startDate: values.from ? values.from.unix() : 0,
             endDate: values.till.unix(),
           });
 
@@ -79,11 +79,12 @@ const Reports = ({ form, intl }) => {
       <Form layout="vertical">
         <Form.Item
           label={
-            <span className="CreateReportForm__label">
+            <span className="ReportsGlobal__label">
               {intl.formatMessage({
                 id: 'sponsor',
                 defaultMessage: 'Sponsor',
               })}
+              :
             </span>
           }
         >
@@ -116,15 +117,16 @@ const Reports = ({ form, intl }) => {
             ),
           )}
         </Form.Item>
-        <Row gutter={24} className="CreateReportForm__row">
+        <Row gutter={24} className="ReportsGlobal__row">
           <Col span={12}>
             <Form.Item
               label={
-                <span className="CreateReportForm__label">
+                <span className="ReportsGlobal__label">
                   {intl.formatMessage({
                     id: 'from',
                     defaultMessage: 'From',
                   })}
+                  :
                 </span>
               }
             >
@@ -138,7 +140,6 @@ const Reports = ({ form, intl }) => {
                     })}`,
                   },
                 ],
-                initialValue: moment(),
               })(
                 <DatePicker
                   disabledDate={disabledStartDate}
@@ -156,11 +157,12 @@ const Reports = ({ form, intl }) => {
           <Col span={12}>
             <Form.Item
               label={
-                <span className="CreateReportForm__label">
+                <span className="ReportsGlobal__label">
                   {intl.formatMessage({
                     id: 'till',
                     defaultMessage: 'Till',
                   })}
+                  :
                 </span>
               }
             >
@@ -182,13 +184,13 @@ const Reports = ({ form, intl }) => {
             </Form.Item>
           </Col>
         </Row>
-        <span className="CreateReportForm__label">
+        <span className="ReportsGlobal__label">
           {intl.formatMessage({
             id: 'or_total_amount',
             defaultMessage: 'Or total amount:',
           })}
         </span>
-        <Row gutter={24} className="CreateReportForm__row">
+        <Row gutter={24} className="ReportsGlobal__row">
           <Col span={7}>
             <Form.Item>
               {form.getFieldDecorator('amount', {
@@ -211,7 +213,7 @@ const Reports = ({ form, intl }) => {
                 initialValue: 'WAIV',
               })(
                 <Select style={{ width: '120px', left: '15px' }}>
-                  {['HIVE', ...currencyTypes].map(curr => (
+                  {['WAIV', 'HIVE', ...currencyTypes].map(curr => (
                     <Select.Option key={curr} value={curr}>
                       {curr}
                     </Select.Option>
@@ -227,7 +229,7 @@ const Reports = ({ form, intl }) => {
                 initialValue: false,
                 valuePropName: 'checked',
               })(
-                <Checkbox className="CreateReportForm__checkbox">
+                <Checkbox className="ReportsGlobal__checkbox">
                   {intl.formatMessage({
                     id: 'include_processing_fees',
                     defaultMessage: 'Include processing fees',
@@ -239,11 +241,12 @@ const Reports = ({ form, intl }) => {
         </Row>
         <Form.Item
           label={
-            <span className="CreateReportForm__label">
+            <span className="ReportsGlobal__label">
               {intl.formatMessage({
                 id: 'with_links_to_object',
-                defaultMessage: 'With links to an object:',
+                defaultMessage: 'With links to an object',
               })}
+              :
             </span>
           }
         >
@@ -280,7 +283,7 @@ const Reports = ({ form, intl }) => {
       <Button type="primary" onClick={handleSubmit}>
         Submit
       </Button>
-      <PaymentTable sponsors={reports} currency={'WAIV'} isReports />
+      <PaymentTable sponsors={reports} currency={form.getFieldValue('currency')} isReports />
     </div>
   );
 };
