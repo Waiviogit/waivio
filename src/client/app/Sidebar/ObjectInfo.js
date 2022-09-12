@@ -464,7 +464,16 @@ class ObjectInfo extends React.Component {
           </div>
         )}
         {this.listItem(objectFields.name, null)}
-        {this.listItem(objectFields.authors, authors && <span>{authors}</span>)}
+        {isEditMode &&
+          this.listItem(
+            objectFields.authors,
+            authors &&
+              authors.map(a => (
+                <div className="CompanyId__wordbreak" key={a.authorPermlink}>
+                  <Link to={`/object/${a.authorPermlink}`}>{a.name}</Link>
+                </div>
+              )),
+          )}
         {this.listItem(
           objectFields.description,
           description && <DescriptionInfo description={description} />,
@@ -744,7 +753,16 @@ class ObjectInfo extends React.Component {
 
     return (
       <React.Fragment>
-        {!isEditMode && authors && <span>By {authors}</span>}
+        {!isEditMode && authors && (
+          <div className="CompanyId__wordbreak flex flex-row ">
+            By
+            {authors.map(a => (
+              <div className="ml1" key={a.authorPermlink}>
+                <Link to={`/object/${a.authorPermlink}`}>{a.name}</Link>
+              </div>
+            ))}
+          </div>
+        )}
         {wobject && wobjName && (
           <div className="object-sidebar">
             {this.listItem(
