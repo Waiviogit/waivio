@@ -42,7 +42,7 @@ const PaymentTable = ({ intl, sponsors, isReports, currency, reservationPermlink
       </tr>
     </thead>
     <tbody>
-      {!isEmpty(sponsors) ? (
+      {isEmpty(sponsors) ? (
         <tr>
           <td colSpan={5}>No records</td>
         </tr>
