@@ -68,7 +68,7 @@ const PaymentTable = ({
         ))
       )}
       {hasMore && (
-        <tr>
+        <tr className="PaymentTable__showMore">
           <td colSpan={5} onClick={handleShowMore}>
             Show more
           </td>
