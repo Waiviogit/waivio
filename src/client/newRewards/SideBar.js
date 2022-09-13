@@ -9,6 +9,7 @@ import {
   rewardsSettings,
 } from './constants/rewardsSideNavConfig';
 import { getIsAuthenticated } from '../../store/authStore/authSelectors';
+import ModalSignIn from '../components/Navigation/ModlaSignIn/ModalSignIn';
 
 const SideBar = () => {
   const isAuth = useSelector(getIsAuthenticated);
@@ -45,6 +46,11 @@ const SideBar = () => {
           configItem={matchBotsSettings}
           toggleMenuCondition={toggleMenuCondition}
         />
+      )}
+      {!isAuth && (
+        <span>
+          For more options please <ModalSignIn isButton={false} />
+        </span>
       )}
     </ul>
   );
