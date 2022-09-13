@@ -1,5 +1,6 @@
 @import (reference) '../../../styles/modules/variables.less';
 @import (reference) '../../../styles/custom.less';
+@import (reference) '../../../styles/mixins.less';
 
 .PaymentTable {
   border: 1px solid @black;
@@ -84,6 +85,10 @@
   &__report {
     cursor: pointer;
     color: @orange-hot;
+  }
+
+  &__showMore {
+    .show-more-style();
   }
 }
 

@@ -77,8 +77,8 @@ const Reports = ({ form, intl }) => {
             objects,
             processingFees: values.fees,
             totalAmound: +values.amount,
-            startDate: values.from ? values.from.unix() : 0,
-            endDate: values.till.unix(),
+            startDate: values.from,
+            endDate: values.till,
           });
           setReports(reportsInfo.histories);
           setSelectedCurrency(values.currency);
@@ -98,7 +98,7 @@ const Reports = ({ form, intl }) => {
         guideName: sponsor,
         payoutToken: 'WAIV',
         currency: selectedCurrency,
-        objects: objects.map(obj => obj.author_permlink),
+        objects: filters.objects.map(obj => obj.author_permlink),
         processingFees: form.getFieldValue('fees'),
         payable: +form.getFieldValue('amount'),
         startDate: form.getFieldValue('from') ? form.getFieldValue('from').unix() : 0,
@@ -111,6 +111,8 @@ const Reports = ({ form, intl }) => {
       message.error(e.message);
     }
   };
+
+  const dataFormat = 'MMMM d, yyyy HH:mm:ss';
 
   return (
     <div className={'ReportsGlobal'}>
@@ -252,7 +254,7 @@ const Reports = ({ form, intl }) => {
                 initialValue: 'WAIV',
               })(
                 <Select style={{ width: '120px', left: '15px' }}>
-                  {['WAIV', 'HIVE', ...currencyTypes].map(curr => (
+                  {['WAIV', ...currencyTypes].map(curr => (
                     <Select.Option key={curr} value={curr}>
                       {curr}
                     </Select.Option>
@@ -328,8 +330,8 @@ const Reports = ({ form, intl }) => {
             Reviews sponsored by <Link to={`/@${filters.sponsor}`}>{filters.sponsor}</Link>
           </span>
         )}
-        {!!filters.from && <span>From: {filters.from}</span>}
-        {!!filters.till && <span>Till: {filters.till}</span>}
+        {filters.startDate && <span>From: {filters.startDate.format(dataFormat)}</span>}
+        {filters.endDate && <span>Till: {filters.endDate.format(dataFormat)}</span>}
         {!isEmpty(filters.objects) && (
           <span>
             With links to an object:{' '}

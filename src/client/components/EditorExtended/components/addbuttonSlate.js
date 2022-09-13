@@ -4,6 +4,8 @@ import { Icon } from 'antd';
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
 import { injectIntl } from 'react-intl';
 import { useSlate } from 'slate-react';
+import classNames from 'classnames';
+
 import { getSelection } from '../util';
 import { SIDE_BUTTONS_SLATE } from '../model/content';
 
@@ -65,15 +67,18 @@ const AddButtonSlate = props => {
   useEffect(() => {
     if (props.isClearSearchObjects) setOpen(false);
   }, [props.isClearSearchObjects]);
+  const buttonClassList = classNames('md-sb-button md-add-button', {
+    'md-open-button': isOpen,
+    'md-add-button--comments': props.isComment,
+  });
 
   return (
     <div className="md-side-toolbar" style={{ top: initialPosTop }} ref={nodeRef}>
-      <button
-        onClick={handleOpenToolbar}
-        className={`md-sb-button md-add-button${isOpen ? ' md-open-button' : ''}`}
-        type="button"
-      >
-        <Icon type="plus-circle" style={{ fontSize: 25 }} />
+      <button onClick={handleOpenToolbar} className={buttonClassList} type="button">
+        <Icon
+          type="plus-circle"
+          style={{ fontSize: props.size, background: 'white', borderRadius: '50%' }}
+        />
       </button>
       {isOpen &&
         (sideControl.current ? (
@@ -133,6 +138,7 @@ AddButtonSlate.propTypes = {
   editorNode: PropTypes.node.isRequired,
   isComment: PropTypes.bool,
   initialPosTop: PropTypes.string,
+  size: PropTypes.number,
   ADD_BTN_DIF: PropTypes.number,
 };
 
@@ -144,6 +150,7 @@ AddButtonSlate.defaultProps = {
   isComment: false,
   initialPosTop: 0,
   ADD_BTN_DIF: 14,
+  size: 30,
 };
 
 export default injectIntl(AddButtonSlate);
