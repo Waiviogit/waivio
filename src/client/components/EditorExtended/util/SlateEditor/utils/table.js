@@ -24,13 +24,13 @@ const createRow = (cellText, action) => {
   };
 };
 
-const createTableCell = (text, action) => ({
+const createTableCell = text => ({
   type: 'tableCell',
-  children: action ? [{ text }] : [{ type: 'paragraph', children: [{ text }] }],
+  children: [{ type: 'paragraph', children: [{ text: text || '' }] }],
 });
 
-const createTableNode = (cellText, action) => {
-  const tableChildren = Array.from(cellText, value => createRow(value, action));
+const createTableNode = cellText => {
+  const tableChildren = Array.from(cellText, value => createRow(value));
 
   return { type: 'table', children: tableChildren };
 };

@@ -1,11 +1,19 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
-import { map } from 'lodash';
+import { isEmpty, map, noop } from 'lodash';
 import PaymentTableRow from './PaymentTableRow';
 import './PaymentTable.less';
 
-const PaymentTable = ({ intl, sponsors, isReports, currency, reservationPermlink }) => (
+const PaymentTable = ({
+  intl,
+  sponsors,
+  isReports,
+  currency,
+  reservationPermlink,
+  hasMore,
+  handleShowMore,
+}) => (
   <table className="PaymentTable">
     <thead>
       <tr>
@@ -42,17 +50,30 @@ const PaymentTable = ({ intl, sponsors, isReports, currency, reservationPermlink
       </tr>
     </thead>
     <tbody>
-      {map(sponsors, sponsor => (
-        <PaymentTableRow
-          {...{
-            key: sponsor._id,
-            sponsor,
-            isReports,
-            reservationPermlink,
-            currency,
-          }}
-        />
-      ))}
+      {isEmpty(sponsors) ? (
+        <tr>
+          <td colSpan={5}>No records</td>
+        </tr>
+      ) : (
+        map(sponsors, sponsor => (
+          <PaymentTableRow
+            {...{
+              key: sponsor._id,
+              sponsor,
+              isReports,
+              reservationPermlink,
+              currency,
+            }}
+          />
+        ))
+      )}
+      {hasMore && (
+        <tr className="PaymentTable__showMore">
+          <td colSpan={5} onClick={handleShowMore}>
+            Show more
+          </td>
+        </tr>
+      )}
     </tbody>
   </table>
 );
@@ -63,12 +84,16 @@ PaymentTable.propTypes = {
   isReports: PropTypes.bool,
   reservationPermlink: PropTypes.string,
   currency: PropTypes.string,
+  hasMore: PropTypes.shape({}),
+  handleShowMore: PropTypes.shape({}),
 };
 
 PaymentTable.defaultProps = {
   isReports: false,
   reservationPermlink: '',
   currency: 'HIVE',
+  hasMore: false,
+  handleShowMore: noop,
 };
 
 export default injectIntl(PaymentTable);

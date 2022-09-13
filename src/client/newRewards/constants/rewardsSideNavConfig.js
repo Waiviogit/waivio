@@ -14,21 +14,25 @@ export const rewardsSettings = {
       to: '/rewards-new/eligible',
       id: 'eligible',
       defaultMessage: 'Eligible',
+      forAuth: true,
     },
     {
       to: '/rewards-new/reserved',
       id: 'reserved',
       defaultMessage: 'Reserved',
+      forAuth: true,
     },
     {
       to: '/rewards-new/receivables',
       id: 'receivable',
       defaultMessage: 'Receivable',
+      forAuth: true,
     },
     {
       to: '/rewards-new/history',
       id: 'history',
       defaultMessage: 'History',
+      forAuth: true,
     },
   ],
 };
@@ -55,6 +59,11 @@ export const campaingSettings = {
       to: '/rewards-new/payables',
       id: 'payable',
       defaultMessage: 'Payable',
+    },
+    {
+      to: '/rewards-new/reports',
+      id: 'reports',
+      defaultMessage: 'Reports',
     },
     {
       to: '/rewards-new/reservations',

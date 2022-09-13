@@ -115,16 +115,16 @@
 }
 
 .md-sb-button {
-  background: @white none;
+  background: none;
   outline: none;
-  border: 1px solid @grey-empress;
+  border: none;
   color: @blue-baliHai;
   cursor: pointer;
-  height: @add-btn-width;
-  min-width: @add-btn-width;
-  border-radius: @add-btn-width / 2;
-  font-size: 22px;
-  text-align: center;
+  height: 30px;
+  min-width: 30px;
+  //border-radius: @add-btn-width / 2;
+  //font-size: 22px;
+  //text-align: center;
   transition: all 0.2s ease;
   font-weight: 500;
 
@@ -247,9 +247,11 @@
 }
 
 .md-add-button {
-  margin: 10px 2px 0 -26px;
-  height: 36px;
-  min-width: 36px;
+  margin: 10px 0 0 -20px;
+
+  &--comments {
+    margin: 13px 0 0 -20px;
+  }
 
   &.md-open-button {
     transform: rotate(45deg);

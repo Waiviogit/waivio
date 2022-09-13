@@ -327,6 +327,7 @@ const EditorSlate = props => {
             handleObjectSelect={handleObjectSelect}
             editorNode={editorRef.current}
             isComment={isComment}
+            size={isComment ? 25 : 30}
             initialPosTop={initialPosTopBtn}
             ADD_BTN_DIF={ADD_BTN_DIF}
           />

@@ -27,7 +27,12 @@ const SettingsItem = ({ toggleMenuCondition, condition, configItem }) => {
       {condition && (
         <React.Fragment>
           {configItem.settings.map(setting => {
-            if ((setting.forGuest && !isGuest) || (setting.forGuest && !isAuth)) return null;
+            if (
+              (setting.forGuest && !isGuest) ||
+              (setting.forGuest && !isAuth) ||
+              (setting.forAuth && !isAuth)
+            )
+              return null;
 
             return (
               <li key={setting.id}>

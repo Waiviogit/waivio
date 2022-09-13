@@ -1,7 +1,8 @@
 import React from 'react';
 import { Button } from 'antd';
 import PropTypes from 'prop-types';
-import { capitalize, isEmpty, noop } from 'lodash';
+import { isEmpty, noop } from 'lodash';
+import { injectIntl } from 'react-intl';
 
 import RewardsPopover from '../../RewardsPopover/RewardsPopover';
 import Avatar from '../../../components/Avatar';
@@ -15,12 +16,13 @@ const PropositionFooter = ({
   commentsCount,
   proposition,
   getProposition,
+  intl,
 }) => {
   const getFooter = () => {
     switch (type) {
       case 'reserved':
         return (
-          <React.Fragment>
+          <div className="Proposition-new__footer-container">
             <div className="Proposition-new__button-container">
               <b>Reserved</b>
               <i className="iconfont icon-message_fill" />
@@ -30,7 +32,7 @@ const PropositionFooter = ({
             <Button type="primary" onClick={openDetailsModal}>
               Write review
             </Button>
-          </React.Fragment>
+          </div>
         );
       case 'history':
       case 'reservations':
@@ -38,33 +40,40 @@ const PropositionFooter = ({
       case 'fraud':
         return (
           <React.Fragment>
-            <div className="Proposition-new__button-container">
-              <b>{capitalize(proposition?.reviewStatus)}</b>
-              <i className="iconfont icon-message_fill" />
-              {commentsCount}
-              <RewardsPopover
-                proposition={proposition}
-                getProposition={getProposition}
-                type={type}
-              />
+            <div className="Proposition-new__footer-container">
+              <div className="Proposition-new__button-container">
+                <b>
+                  {intl.formatMessage({
+                    id: `type_${proposition?.reviewStatus}`,
+                    defaultMessage: proposition?.reviewStatus,
+                  })}
+                </b>
+                <i className="iconfont icon-message_fill" />
+                {commentsCount}
+                <RewardsPopover
+                  proposition={proposition}
+                  getProposition={getProposition}
+                  type={type}
+                />
+              </div>
+              {proposition?.userName && (
+                <div className={'Proposition-new__userCard'}>
+                  <Avatar size={24} username={proposition?.userName} />
+                  <a href={`/@${proposition?.userName}`}>{proposition?.userName}</a>
+                </div>
+              )}
             </div>
             {!isEmpty(proposition?.fraudCodes) && (
               <div>Codes: {proposition?.fraudCodes.join(', ')}</div>
-            )}
-            {type === 'reservations' && (
-              <div className={'Proposition-new__userCard'}>
-                <Avatar size={24} username={proposition?.userName} />
-                <a href={`/@${proposition?.userName}`}>{proposition?.userName}</a>
-              </div>
             )}
           </React.Fragment>
         );
 
       default:
         return (
-          <div>
+          <div className="Proposition-new__footer-container">
             <Button type="primary" onClick={openDetailsModal}>
-              <b>Reserve</b> Yor Reward
+              <b>Reserve</b> Your Reward
             </Button>{' '}
             for {countReservationDays} days
           </div>
@@ -72,7 +81,11 @@ const PropositionFooter = ({
     }
   };
 
-  return <div className="Proposition-new__footer">{getFooter()}</div>;
+  return (
+    <div>
+      <div className="Proposition-new__footer">{getFooter()}</div>
+    </div>
+  );
 };
 
 PropositionFooter.propTypes = {
@@ -86,10 +99,13 @@ PropositionFooter.propTypes = {
     userName: PropTypes.string,
     fraudCodes: PropTypes.arrayOf(PropTypes.number),
   }).isRequired,
+  intl: PropTypes.shape({
+    formatMessage: PropTypes.func,
+  }).isRequired,
 };
 
 PropositionFooter.defaultProps = {
   getProposition: noop,
 };
 
-export default PropositionFooter;
+export default injectIntl(PropositionFooter);

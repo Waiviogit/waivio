@@ -36,7 +36,10 @@ const TransferButton = ({
     match.path === PATH_NAME_RECEIVABLES || match.path === PATH_NAME_RECEIVABLES_NEW;
   const pathPaybles = match.path === PATH_NAME_PAYABLES || match.path === PATH_NAME_PAYABLES_NEW;
   const isOverpayment = payable < 0;
-  const memo = getMemo(isReceiverGuest, pathRecivables, isOverpayment);
+  const memo =
+    currency === 'HIVE'
+      ? getMemo(isReceiverGuest, pathRecivables, isOverpayment)
+      : 'campaignReward';
   const handleClick = () => {
     if (!hiveBeneficiaryAccount && isGuest) {
       openLinkModal(true);

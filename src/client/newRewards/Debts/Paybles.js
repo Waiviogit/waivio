@@ -32,10 +32,14 @@ const Payables = () => {
       payable: query.get('payable'),
     })
       .then(data => {
-        setLenders({ ...data, hasMore: false });
+        setLenders({
+          ...data,
+          histories: data?.histories?.sort((a, b) => b.payable - a.payable),
+          hasMore: false,
+        });
         setLoading(false);
       })
-      .catch(e => console.error(e));
+      .catch(() => setLoading(false));
   }, [location.search]);
 
   const handleLoadingMore = () =>
@@ -47,7 +51,10 @@ const Payables = () => {
     }).then(data => {
       setLenders({
         ...lenders,
-        histories: [...get(lenders, 'histories', []), ...data.histories],
+        ...data,
+        histories: [...get(lenders, 'histories', []), ...data.histories].sort(
+          (a, b) => b.payable - a.payable,
+        ),
         hasMore: data.hasMore,
       });
     });

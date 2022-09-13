@@ -65,6 +65,7 @@ const SponsorsMatchBots = ({ intl, isEngLocale }) => {
       return;
     }
     setModalVisible(!modalVisible);
+    setEditRule({});
   };
 
   const handleEditRule = rule => {

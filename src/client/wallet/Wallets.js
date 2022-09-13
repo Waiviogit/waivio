@@ -40,6 +40,7 @@ const Wallets = props => {
   const query = new URLSearchParams(props.location.search);
   const walletsType = query.get('type');
   const isGuestUser = guestUserRegex.test(props.match.params.name);
+  const isCurrUser = props.match.params.name === props.authUserName;
 
   useEffect(() => {
     props.setWalletType(walletsType);
@@ -61,38 +62,28 @@ const Wallets = props => {
   return (
     <React.Fragment>
       <Tabs className="Wallets" defaultActiveKey={walletsType} onChange={handleOnChange}>
-        <Tabs.TabPane
-          tab={props.intl.formatMessage({ id: 'waiv_wallet', defaultMessage: 'WAIV wallet' })}
-          key="WAIV"
-        >
+        <Tabs.TabPane tab="WAIV" key="WAIV">
           <WAIVwallet />
         </Tabs.TabPane>
-        <Tabs.TabPane
-          tab={props.intl.formatMessage({ id: 'hive_wallet', defaultMessage: 'HIVE wallet' })}
-          key="HIVE"
-        >
+        <Tabs.TabPane tab="HIVE" key="HIVE">
           <Wallet />
         </Tabs.TabPane>
         {!isGuestUser && (
-          <Tabs.TabPane
-            tab={props.intl.formatMessage({
-              id: 'hive_engine_wallet',
-              defaultMessage: 'Hive Engine wallet',
-            })}
-            key="ENGINE"
-          >
+          <Tabs.TabPane tab="Hive Engine" key="ENGINE">
             <HiveEngineWallet />
           </Tabs.TabPane>
         )}
-        <Tabs.TabPane
-          tab={props.intl.formatMessage({
-            id: 'rebalance_wallet',
-            defaultMessage: 'Rebalancing',
-          })}
-          key="rebalancing"
-        >
-          <Rebalancing />
-        </Tabs.TabPane>
+        {isCurrUser && (
+          <Tabs.TabPane
+            tab={props.intl.formatMessage({
+              id: 'rebalance_wallet',
+              defaultMessage: 'Rebalancing',
+            })}
+            key="rebalancing"
+          >
+            <Rebalancing />
+          </Tabs.TabPane>
+        )}
       </Tabs>
       {props.visible && <Transfer history={props.history} />}
       {props.visiblePower && <PowerUpOrDown />}
