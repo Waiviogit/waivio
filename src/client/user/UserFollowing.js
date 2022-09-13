@@ -1,11 +1,8 @@
 import React from 'react';
-import { Tabs } from 'antd';
 import PropTypes from 'prop-types';
-import { FormattedMessage, FormattedNumber } from 'react-intl';
 import { connect } from 'react-redux';
 import UserDynamicList from './UserDynamicList';
 import { getFollowingsFromAPI, getWobjectFollowing } from '../../waivioApi/ApiClient';
-import ObjectDynamicList from '../object/ObjectDynamicList';
 import { notify } from '../app/Notification/notificationActions';
 import {
   getAuthenticatedUserName,
@@ -17,8 +14,6 @@ import { getLocale } from '../../store/settingsStore/settingsSelectors';
 import { changeSorting } from '../../store/authStore/authActions';
 
 import './UserFollowing.less';
-
-const TabPane = Tabs.TabPane;
 
 @connect(
   (state, ownProps) => ({
@@ -35,7 +30,6 @@ const TabPane = Tabs.TabPane;
 )
 export default class UserFollowing extends React.Component {
   static propTypes = {
-    user: PropTypes.shape().isRequired,
     match: PropTypes.shape().isRequired,
     authUser: PropTypes.string,
     sort: PropTypes.string,
@@ -80,51 +74,14 @@ export default class UserFollowing extends React.Component {
   };
 
   render() {
-    const { user } = this.props;
-
     return (
-      <div className="UserFollowing">
-        <Tabs defaultActiveKey="1">
-          <TabPane
-            tab={
-              <React.Fragment>
-                <span className="UserFollowing__item">
-                  <FormattedMessage id="users" defaultMessage="Users" />
-                </span>
-                <span className="UserFollowing__badge">
-                  <FormattedNumber
-                    value={user.users_following_count ? user.users_following_count : 0}
-                  />
-                </span>
-              </React.Fragment>
-            }
-            key="1"
-          >
-            <UserDynamicList
-              limit={UserFollowing.limit}
-              fetcher={this.fetcher}
-              sort={this.props.sort}
-              handleChange={this.props.handleChange}
-            />
-          </TabPane>
-          <TabPane
-            tab={
-              <React.Fragment>
-                <span className="UserFollowing__item">
-                  <FormattedMessage id="objects" defaultMessage="Objects" />
-                </span>
-                <span className="UserFollowing__badge">
-                  <FormattedNumber
-                    value={user.objects_following_count ? user.objects_following_count : 0}
-                  />
-                </span>
-              </React.Fragment>
-            }
-            key="2"
-          >
-            <ObjectDynamicList limit={UserFollowing.limit} fetcher={this.objectFetcher} />
-          </TabPane>
-        </Tabs>
+      <div className="UserFollowing ">
+        <UserDynamicList
+          limit={UserFollowing.limit}
+          fetcher={this.fetcher}
+          sort={this.props.sort}
+          handleChange={this.props.handleChange}
+        />
       </div>
     );
   }
