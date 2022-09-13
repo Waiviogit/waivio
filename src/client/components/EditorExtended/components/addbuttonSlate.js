@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
+import { Icon } from 'antd';
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
 import { injectIntl } from 'react-intl';
 import { useSlate } from 'slate-react';
@@ -72,9 +73,7 @@ const AddButtonSlate = props => {
         className={`md-sb-button md-add-button${isOpen ? ' md-open-button' : ''}`}
         type="button"
       >
-        <svg viewBox="0 0 8 8" height="14" width="14">
-          <path d="M3 0v3h-3v2h3v3h2v-3h3v-2h-3v-3h-2z" className="add-button-plus" />
-        </svg>
+        <Icon type="plus-circle" style={{ fontSize: 25 }} />
       </button>
       {isOpen &&
         (sideControl.current ? (

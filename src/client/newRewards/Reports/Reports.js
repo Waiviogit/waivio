@@ -4,7 +4,8 @@ import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import { useSelector } from 'react-redux';
-
+import { Link } from 'react-router-dom';
+import { isEmpty } from 'lodash';
 import { getGlobalReports } from '../../../waivioApi/ApiClient';
 import SearchUsersAutocomplete from '../../components/EditorUser/SearchUsersAutocomplete';
 import SelectUserForAutocomplete from '../../widgets/SelectUserForAutocomplete';
@@ -13,6 +14,7 @@ import SearchObjectsAutocomplete from '../../components/EditorObject/SearchObjec
 import ReviewItem from '../../rewards/Create-Edit/ReviewItem';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 import PaymentTable from '../../rewards/Payment/PaymentTable/PaymentTable';
+import { getObjectName, getObjectUrlForLink } from '../../../common/helpers/wObjectHelper';
 
 import './Reports.less';
 
@@ -22,6 +24,9 @@ const Reports = ({ form, intl }) => {
   const [objects, setObjects] = useState([]);
   const [sponsor, setSponsor] = useState(currUser);
   const [reports, setReports] = useState('');
+  const [hasMore, setHasMore] = useState(false);
+  const [selectedCurrency, setSelectedCurrency] = useState('WAIV');
+  const [filters, setSelectedFilters] = useState({});
 
   useEffect(() => {
     getGlobalReports({
@@ -31,6 +36,7 @@ const Reports = ({ form, intl }) => {
       payoutToken: 'WAIV',
     }).then(res => {
       setReports(res.histories);
+      setHasMore(res.hasMore);
     });
   }, []);
 
@@ -54,7 +60,7 @@ const Reports = ({ form, intl }) => {
         try {
           const reportsInfo = await getGlobalReports({
             skip: 0,
-            limit: 100,
+            limit: 10,
             guideName: sponsor,
             payoutToken: 'WAIV',
             currency: values.currency,
@@ -65,12 +71,45 @@ const Reports = ({ form, intl }) => {
             endDate: values.till.unix(),
           });
 
+          setSelectedFilters({
+            sponsor,
+            currency: values.currency,
+            objects,
+            processingFees: values.fees,
+            totalAmound: +values.amount,
+            startDate: values.from ? values.from.unix() : 0,
+            endDate: values.till.unix(),
+          });
           setReports(reportsInfo.histories);
+          setSelectedCurrency(values.currency);
+          setHasMore(reportsInfo.hasMore);
         } catch (e) {
           message.error(e.message);
         }
       }
     });
+  };
+
+  const getMoreReports = async () => {
+    try {
+      const reportsInfo = await getGlobalReports({
+        skip: reports?.length,
+        limit: 10,
+        guideName: sponsor,
+        payoutToken: 'WAIV',
+        currency: selectedCurrency,
+        objects: objects.map(obj => obj.author_permlink),
+        processingFees: form.getFieldValue('fees'),
+        payable: +form.getFieldValue('amount'),
+        startDate: form.getFieldValue('from') ? form.getFieldValue('from').unix() : 0,
+        endDate: form.getFieldValue('till').unix(),
+      });
+
+      setReports([...reports, ...reportsInfo.histories]);
+      setHasMore(reportsInfo.hasMore);
+    } catch (e) {
+      message.error(e.message);
+    }
   };
 
   return (
@@ -283,7 +322,34 @@ const Reports = ({ form, intl }) => {
       <Button type="primary" onClick={handleSubmit}>
         Submit
       </Button>
-      <PaymentTable sponsors={reports} currency={form.getFieldValue('currency')} isReports />
+      <div className={'ReportsGlobal__filters_block'}>
+        {filters.sponsor && (
+          <span>
+            Reviews sponsored by <Link to={`/@${filters.sponsor}`}>{filters.sponsor}</Link>
+          </span>
+        )}
+        {!!filters.from && <span>From: {filters.from}</span>}
+        {!!filters.till && <span>Till: {filters.till}</span>}
+        {!isEmpty(filters.objects) && (
+          <span>
+            With links to an object:{' '}
+            {filters.objects.map(obj => (
+              <Link key={obj.author_permlink} to={getObjectUrlForLink(obj)}>
+                {getObjectName(obj)}
+              </Link>
+            ))}
+          </span>
+        )}
+        {!!filters.totalAmound && <span>Total amount: {filters.totalAmound}</span>}
+        {filters.currency && <span>Currency: {filters.currency}</span>}
+      </div>
+      <PaymentTable
+        sponsors={reports}
+        currency={selectedCurrency}
+        isReports
+        hasMore={hasMore}
+        handleShowMore={getMoreReports}
+      />
     </div>
   );
 };
