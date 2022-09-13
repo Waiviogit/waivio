@@ -220,6 +220,7 @@ class Notifications extends React.Component {
                     key={key}
                     notification={notification}
                     read={read}
+                    onClick={this.handleNotificationsClick}
                   />
                 );
               case notificationConstants.REBLOG:
