@@ -40,6 +40,7 @@ export const objectFields = {
   title: 'title',
   language: 'language',
   printLength: 'printLength',
+  productWeight: 'productWeight',
 };
 
 export const TYPES_OF_MENU_ITEM = {
@@ -132,6 +133,10 @@ export const ratingFields = {
 export const blogFields = {
   title: 'blogTitle',
   account: 'blogAccount',
+};
+export const weightFields = {
+  weight: 'weight',
+  weightUnit: 'weightUnit',
 };
 
 export const formColumnsField = {

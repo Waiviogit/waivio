@@ -1917,5 +1917,8 @@
   "printLength_symbols_validation": "Please use numbers, dot and comma",
   "rebalance_alert": "Rebalancing alert for {pair}: {differencePercent}% difference",
   "rebalancing_tokens_with_a_positive_balance_warning": "Only tokens with a positive balance can participate in rebalancing",
-  "add_tokens_for_monitoring": "Please add tokens for monitoring"
+  "add_tokens_for_monitoring": "Please add tokens for monitoring",
+  "object_field_productWeight":"Weight",
+  "weight_placeholder": "Enter weight",
+  "select_unit_of_weight": "Select unit of weight"
 }

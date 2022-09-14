@@ -339,6 +339,8 @@ class ObjectInfo extends React.Component {
     const publicationDate = moment(wobject.publicationDate).format('MMMM DD, YYYY');
     const printLength = wobject.printLength;
     const publisher = parseWobjectField(wobject, 'publisher');
+    //const productWeight = parseWobjectField(wobject, 'productWeight');
+
     const profile = linkField
       ? {
           facebook: linkField[linkFields.linkFacebook] || '',
@@ -759,6 +761,35 @@ class ObjectInfo extends React.Component {
                   showFollow={false}
                 />
               ),
+            )}
+            {!isEditMode ? (
+              // productWeight &&
+              <div className="field-website">
+                <span className="field-website__title">
+                  <img
+                    className="ObjectInfo__margin-top"
+                    style={{ width: '14px', height: '14px' }}
+                    src={'/images/icons/scale-img.png'}
+                    alt="Scale icon"
+                  />{' '}
+                  <span className="CompanyId__wordbreak">{'productWeight'}</span>
+                </span>
+              </div>
+            ) : (
+              this.listItem(
+                objectFields.productWeight,
+                <div className="field-website">
+                  <span className="field-website__title">
+                    <img
+                      style={{ width: '14px', height: '14px' }}
+                      className="ObjectInfo__margin-top"
+                      src={'/images/icons/scale-img.png'}
+                      alt="Scale icon"
+                    />{' '}
+                    <span className="CompanyId__wordbreak">{'productWeight'}</span>
+                  </span>
+                </div>,
+              )
             )}
             {!isHashtag && !hasType(wobject, OBJECT_TYPE.PAGE) && menuSection()}
             {!isHashtag && aboutSection}
