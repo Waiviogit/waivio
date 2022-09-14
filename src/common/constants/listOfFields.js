@@ -136,7 +136,7 @@ export const blogFields = {
 };
 export const weightFields = {
   weight: 'weight',
-  weightUnit: 'weightUnit',
+  unitOfWeight: 'unitOfWeight',
 };
 
 export const formColumnsField = {
@@ -212,6 +212,7 @@ export const errorObjectFields = {
   [objectFields.publicationDate]: [objectFields.publicationDate],
   [objectFields.form]: [formFormFields.link, formFormFields.widget, formFormFields.title],
   [objectFields.publisher]: [objectFields.publisher],
+  [objectFields.productWeight]: [weightFields.weight, weightFields.unitOfWeight],
 };
 
 export default null;

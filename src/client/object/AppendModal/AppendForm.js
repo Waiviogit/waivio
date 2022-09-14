@@ -427,9 +427,9 @@ export default class AppendForm extends Component {
             formValues[objectFields.publisher]
           }`;
         case objectFields.productWeight:
-          return `@${author} added ${currentField} (${langReadable}): ${
-            formValues[objectFields.productWeight]
-          }`;
+          return `@${author} added ${currentField} (${langReadable}): ${weightFields.weight}: ${
+            formValues[weightFields.weight]
+          }, ${weightFields.unitOfWeight}: ${formValues[weightFields.unitOfWeight]}`;
         case objectFields.phone:
           return `@${author} added ${currentField}(${langReadable}):\n ${appendValue.replace(
             /[{}"]/g,
@@ -579,7 +579,7 @@ export default class AppendForm extends Component {
           ...fieldsObject,
           body: JSON.stringify({
             value: formValues[weightFields.weight],
-            unit: formValues[weightFields.weightUnit],
+            unit: formValues[weightFields.unitOfWeight],
           }),
         };
       }
@@ -950,7 +950,7 @@ export default class AppendForm extends Component {
             message.error(
               this.props.intl.formatMessage({
                 id: 'append_validate_common_message',
-                defaultMessage: 'The value is already exist',
+                defaultMessage: 'The value already exists',
               }),
             );
           } else {
@@ -2023,13 +2023,11 @@ export default class AppendForm extends Component {
         return (
           <React.Fragment>
             <Form.Item>
-              {getFieldDecorator(
-                weightFields.weight,
-                //   {
-                //   rules: this.getFieldRules(objectFields.productWeight),
-                // }
-              )(
+              {getFieldDecorator(weightFields.weight, {
+                rules: this.getFieldRules(weightFields.weight),
+              })(
                 <Input
+                  type="number"
                   className={classNames('AppendForm__input', {
                     'validation-error': !this.state.isSomeValue,
                   })}
@@ -2042,12 +2040,7 @@ export default class AppendForm extends Component {
               )}
             </Form.Item>
             <Form.Item>
-              {getFieldDecorator(
-                weightFields.weightUnit,
-                //   {
-                //   rules: this.getFieldRules('buttonFields.title'),
-                // }
-              )(
+              {getFieldDecorator(weightFields.unitOfWeight)(
                 <Select
                   placeholder={intl.formatMessage({
                     id: 'select_unit_of_weight',
@@ -2631,6 +2624,11 @@ export default class AppendForm extends Component {
         return (
           isEmpty(getFieldValue(websiteFields.link)) || isEmpty(getFieldValue(websiteFields.title))
         );
+      case objectFields.productWeight:
+        return (
+          isEmpty(getFieldValue(weightFields.weight)) ||
+          isEmpty(getFieldValue(weightFields.unitOfWeight))
+        );
       case objectFields.publisher:
         return getFieldValue(objectFields.publisher) === '';
       case objectFields.map:
@@ -2699,7 +2697,6 @@ export default class AppendForm extends Component {
             this.state.typeList.length < 1)
         );
       case objectFields.sorting:
-      case objectFields.productWeight:
         return false;
 
       default:
