@@ -780,24 +780,6 @@ class ObjectInfo extends React.Component {
                 </div>
               ),
             )}
-            {this.listItem(
-              objectFields.productWeight,
-              productWeight && (
-                <div className="field-website">
-                  <span className="field-website__title">
-                    <img
-                      style={{ width: '14px', height: '14px' }}
-                      className="ObjectInfo__margin-top"
-                      src={'/images/icons/scale-img.png'}
-                      alt="Scale icon"
-                    />{' '}
-                    <span className="CompanyId__wordbreak">
-                      {productWeight.value} {productWeight.unit}
-                    </span>
-                  </span>
-                </div>
-              ),
-            )}
             {!isHashtag && !hasType(wobject, OBJECT_TYPE.PAGE) && menuSection()}
             {!isHashtag && aboutSection}
             {accessExtend && hasType(wobject, OBJECT_TYPE.LIST) && listSection}
