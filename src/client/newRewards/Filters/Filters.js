@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, injectIntl } from 'react-intl';
 import { Checkbox, Modal } from 'antd';
 import { useHistory } from 'react-router';
 import { isEmpty, noop } from 'lodash';
@@ -7,7 +7,7 @@ import PropTypes from 'prop-types';
 
 import './Filters.less';
 
-const RewardsFilters = ({ config, getFilters, onlyOne, visible, onClose }) => {
+const RewardsFilters = ({ config, getFilters, onlyOne, visible, onClose, intl }) => {
   const [activeFilters, setActiveFilters] = useState({});
   const history = useHistory();
   const query = new URLSearchParams(history.location.search);
@@ -93,7 +93,7 @@ const RewardsFilters = ({ config, getFilters, onlyOne, visible, onClose }) => {
                     onChange={() => setFilters(filter.type, value)}
                   >
                     {' '}
-                    {title}
+                    {intl.formatMessage({ id: `filter_${title}`, defaultMessage: title })}
                   </Checkbox>
                 </div>
               );
@@ -119,6 +119,9 @@ RewardsFilters.propTypes = {
   onlyOne: PropTypes.bool,
   visible: PropTypes.bool,
   config: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
+  intl: PropTypes.shape({
+    formatMessage: PropTypes.func,
+  }).isRequired,
 };
 
 RewardsFilters.defaultProps = {
@@ -127,4 +130,4 @@ RewardsFilters.defaultProps = {
   onClose: noop,
 };
 
-export default RewardsFilters;
+export default injectIntl(RewardsFilters);

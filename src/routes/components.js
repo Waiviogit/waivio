@@ -14,6 +14,7 @@ export default {
   ),
   Payables: loableComponent(import('../client/newRewards/Debts/Paybles')),
   BlackList: loableComponent(import('../client/newRewards/BlackList/BlackList')),
+  ReportsNew: loableComponent(import('../client/newRewards/Reports/Reports')),
   SponsorsMatchBots: loableComponent(
     import('../client/newRewards/SponsorsMatchBots/SponsorsMatchBots'),
   ),
