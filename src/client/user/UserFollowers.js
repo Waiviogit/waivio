@@ -19,7 +19,6 @@ const UserFollowers = ({ match, sort, authUser, handleChange, user, locale }) =>
   let objSkip = 0;
   const objectsFollowingCount = user.objects_following_count || 0;
   const usersFollowingCount = user.users_following_count || 0;
-  const followingCount = usersFollowingCount + objectsFollowingCount;
   const followersCount = user.followers_count || 0;
 
   const getObjects = async () => {
@@ -50,7 +49,7 @@ const UserFollowers = ({ match, sort, authUser, handleChange, user, locale }) =>
         <UserDynamicList limit={limit} fetcher={fetcher} handleChange={handleChange} />
       </Tabs.TabPane>
       <Tabs.TabPane
-        tab={`Following ${followingCount}`}
+        tab={`Following ${usersFollowingCount}`}
         key="following"
         className="UserFollowing__item"
       >
