@@ -25,7 +25,7 @@ class UserDynamicList extends React.Component {
     authUser: PropTypes.string,
     isGuest: PropTypes.bool.isRequired,
     changeCounterFollow: PropTypes.func.isRequired,
-    sort: PropTypes.string.isRequired,
+    sort: PropTypes.string,
     handleChange: PropTypes.func.isRequired,
     match: PropTypes.shape({
       params: PropTypes.shape({
@@ -37,6 +37,7 @@ class UserDynamicList extends React.Component {
     authUser: '',
     showAuthorizedUser: false,
     userName: '',
+    sort: 'recency',
   };
   constructor(props) {
     super(props);
