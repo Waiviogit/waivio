@@ -67,7 +67,7 @@ const AddButtonSlate = props => {
   useEffect(() => {
     if (props.isClearSearchObjects) setOpen(false);
   }, [props.isClearSearchObjects]);
-  const buttonClassList = classNames('md-sb-button md-add-button', {
+  const buttonClassList = classNames('md-sb-button-plus md-add-button', {
     'md-open-button': isOpen,
     'md-add-button--comments': props.isComment,
   });
