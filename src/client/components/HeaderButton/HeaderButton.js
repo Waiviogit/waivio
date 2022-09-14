@@ -164,7 +164,7 @@ const HeaderButtons = props => {
         history.push(PATH_NAME_ACTIVE);
         break;
       case 'discover':
-        history.push(`/discover-objects/hashtag`);
+        history.push(`/discover-objects/restaurant`);
         break;
       case 'tools':
         history.push(`/notification-settings`);
