@@ -44,6 +44,7 @@ import {
   productIdFields,
   statusWithoutLinkList,
   errorObjectFields,
+  weightFields,
 } from '../../../common/constants/listOfFields';
 import OBJECT_TYPE from '../const/objectTypes';
 import { getSuitableLanguage } from '../../../store/reducers';
@@ -360,6 +361,7 @@ export default class AppendForm extends Component {
       case objectFields.categoryItem:
       case objectFields.parent:
       case objectFields.publisher:
+      case objectFields.productWeight:
       case objectFields.workTime:
       case objectFields.email:
       case TYPES_OF_MENU_ITEM.PAGE:
@@ -424,6 +426,10 @@ export default class AppendForm extends Component {
           return `@${author} added ${currentField} (${langReadable}): ${
             formValues[objectFields.publisher]
           }`;
+        case objectFields.productWeight:
+          return `@${author} added ${currentField} (${langReadable}): ${weightFields.weight}: ${
+            formValues[weightFields.weight]
+          }, ${weightFields.unitOfWeight}: ${formValues[weightFields.unitOfWeight]}`;
         case objectFields.phone:
           return `@${author} added ${currentField}(${langReadable}):\n ${appendValue.replace(
             /[{}"]/g,
@@ -565,6 +571,15 @@ export default class AppendForm extends Component {
             authorPermlink: this.state.selectedObject?.author_permlink,
             defaultShowLink: getObjectUrlForLink(this.state.selectedObject),
             avatar: getObjectAvatar(this.state.selectedObject),
+          }),
+        };
+      }
+      if (currentField === objectFields.productWeight) {
+        fieldsObject = {
+          ...fieldsObject,
+          body: JSON.stringify({
+            value: formValues[weightFields.weight],
+            unit: formValues[weightFields.unitOfWeight],
           }),
         };
       }
@@ -935,7 +950,7 @@ export default class AppendForm extends Component {
             message.error(
               this.props.intl.formatMessage({
                 id: 'append_validate_common_message',
-                defaultMessage: 'The value is already exist',
+                defaultMessage: 'The value already exists',
               }),
             );
           } else {
@@ -2004,6 +2019,89 @@ export default class AppendForm extends Component {
           </React.Fragment>
         );
       }
+      case objectFields.productWeight: {
+        return (
+          <React.Fragment>
+            <Form.Item>
+              {getFieldDecorator(weightFields.weight, {
+                rules: this.getFieldRules(weightFields.weight),
+              })(
+                <Input
+                  type="number"
+                  className={classNames('AppendForm__input', {
+                    'validation-error': !this.state.isSomeValue,
+                  })}
+                  disabled={loading}
+                  placeholder={intl.formatMessage({
+                    id: 'weight_placeholder',
+                    defaultMessage: 'Enter weight',
+                  })}
+                />,
+              )}
+            </Form.Item>
+            <Form.Item>
+              {getFieldDecorator(weightFields.unitOfWeight)(
+                <Select
+                  placeholder={intl.formatMessage({
+                    id: 'select_unit_of_weight',
+                    defaultMessage: 'Select unit of weight',
+                  })}
+                  onChange={this.handleSelectChange}
+                >
+                  <Select.Option value="t">
+                    {intl.formatMessage({
+                      id: 'tonne',
+                      defaultMessage: 'Tonne',
+                    })}
+                  </Select.Option>
+                  <Select.Option value="kg">
+                    {intl.formatMessage({
+                      id: 'kilogram',
+                      defaultMessage: 'Kilogram',
+                    })}
+                  </Select.Option>
+                  <Select.Option value="gm">
+                    {intl.formatMessage({
+                      id: 'gram',
+                      defaultMessage: 'Gram',
+                    })}
+                  </Select.Option>
+                  <Select.Option value="mg">
+                    {intl.formatMessage({
+                      id: 'milligram',
+                      defaultMessage: 'Milligram',
+                    })}
+                  </Select.Option>
+                  <Select.Option value="mcg">
+                    {intl.formatMessage({
+                      id: 'microgram',
+                      defaultMessage: 'Microgram',
+                    })}
+                  </Select.Option>
+                  <Select.Option value="st">
+                    {intl.formatMessage({
+                      id: 'stone',
+                      defaultMessage: 'Stone',
+                    })}
+                  </Select.Option>
+                  <Select.Option value="lb">
+                    {intl.formatMessage({
+                      id: 'pound',
+                      defaultMessage: 'Pound',
+                    })}
+                  </Select.Option>
+                  <Select.Option value="oz">
+                    {intl.formatMessage({
+                      id: 'ounce',
+                      defaultMessage: 'Ounce',
+                    })}
+                  </Select.Option>
+                </Select>,
+              )}
+            </Form.Item>
+          </React.Fragment>
+        );
+      }
       case objectFields.authority: {
         return (
           <React.Fragment>
@@ -2525,6 +2623,11 @@ export default class AppendForm extends Component {
       case objectFields.website:
         return (
           isEmpty(getFieldValue(websiteFields.link)) || isEmpty(getFieldValue(websiteFields.title))
+        );
+      case objectFields.productWeight:
+        return (
+          isEmpty(getFieldValue(weightFields.weight)) ||
+          isEmpty(getFieldValue(weightFields.unitOfWeight))
         );
       case objectFields.publisher:
         return getFieldValue(objectFields.publisher) === '';

@@ -1085,7 +1085,7 @@
   "transaction_message_for_user": "Your transaction is on the way!",
   "transaction_error_message_for_user": "Transaction failed",
   "append_validate_message": "The rating with such name already exist in this locale",
-  "append_validate_common_message": "Something went wrong ",
+  "append_validate_common_message": "The value already exists",
   "album_field_error": "Album name is required",
   "upvoting_mana": "Upvoting mana",
   "downvoting_mana": "Downvoting mana",
@@ -1917,5 +1917,8 @@
   "printLength_symbols_validation": "Please use numbers, dot and comma",
   "rebalance_alert": "Rebalancing alert for {pair}: {differencePercent}% difference",
   "rebalancing_tokens_with_a_positive_balance_warning": "Only tokens with a positive balance can participate in rebalancing",
-  "add_tokens_for_monitoring": "Please add tokens for monitoring"
+  "add_tokens_for_monitoring": "Please add tokens for monitoring",
+  "object_field_productWeight":"Weight",
+  "weight_placeholder": "Enter weight",
+  "select_unit_of_weight": "Select unit of weight"
 }
