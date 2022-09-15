@@ -40,6 +40,7 @@ export const objectFields = {
   title: 'title',
   language: 'language',
   printLength: 'printLength',
+  dimensions: 'dimensions',
 };
 
 export const TYPES_OF_MENU_ITEM = {
@@ -122,6 +123,12 @@ export const buttonFields = {
 export const phoneFields = {
   name: 'name',
   number: 'number',
+};
+export const dimensionsFields = {
+  length: 'length',
+  width: 'width',
+  depth: ' depth',
+  unitOfLength: 'unitOfLength',
 };
 
 export const ratingFields = {

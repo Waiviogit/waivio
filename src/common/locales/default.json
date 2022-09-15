@@ -1917,5 +1917,21 @@
   "printLength_symbols_validation": "Please use numbers, dot and comma",
   "rebalance_alert": "Rebalancing alert for {pair}: {differencePercent}% difference",
   "rebalancing_tokens_with_a_positive_balance_warning": "Only tokens with a positive balance can participate in rebalancing",
-  "add_tokens_for_monitoring": "Please add tokens for monitoring"
+  "add_tokens_for_monitoring": "Please add tokens for monitoring",
+  "object_field_dimensions":"Dimensions",
+  "length": "Length",
+  "width": "Width",
+  "depth": "Depth",
+  "select_unit_of_length": "Select unit of length",
+  "kilometer": "Kilometer",
+  "meter": "Meter",
+  "centimeter": "Centimeter",
+  "millimeter": "Millimeter",
+  "micrometer": "Micrometer",
+  "nanometer": "Nanometer",
+  "mile": "Mile",
+  "yard": "Yard",
+  "foot": "Foot",
+  "inch": "Inch",
+  "nautical_mile": "Nautical mile"
 }
