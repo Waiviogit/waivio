@@ -41,6 +41,7 @@ export const objectFields = {
   language: 'language',
   printLength: 'printLength',
   dimensions: 'dimensions',
+  productWeight: 'productWeight',
 };
 
 export const TYPES_OF_MENU_ITEM = {
@@ -140,6 +141,10 @@ export const blogFields = {
   title: 'blogTitle',
   account: 'blogAccount',
 };
+export const weightFields = {
+  weight: 'weight',
+  unitOfWeight: 'unitOfWeight',
+};
 
 export const formColumnsField = {
   middle: 'Middle',
@@ -214,6 +219,7 @@ export const errorObjectFields = {
   [objectFields.publicationDate]: [objectFields.publicationDate],
   [objectFields.form]: [formFormFields.link, formFormFields.widget, formFormFields.title],
   [objectFields.publisher]: [objectFields.publisher],
+  [objectFields.productWeight]: [weightFields.weight, weightFields.unitOfWeight],
 };
 
 export default null;
