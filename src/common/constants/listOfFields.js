@@ -220,6 +220,12 @@ export const errorObjectFields = {
   [objectFields.form]: [formFormFields.link, formFormFields.widget, formFormFields.title],
   [objectFields.publisher]: [objectFields.publisher],
   [objectFields.productWeight]: [weightFields.weight, weightFields.unitOfWeight],
+  [objectFields.dimensions]: [
+    dimensionsFields.length,
+    dimensionsFields.depth,
+    dimensionsFields.width,
+    dimensionsFields.unitOfLength,
+  ],
 };
 
 export default null;
