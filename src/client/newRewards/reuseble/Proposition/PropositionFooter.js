@@ -11,9 +11,9 @@ import QuickCommentEditor from '../../../components/Comments/QuickCommentEditor'
 import { sendCommentForReward } from '../../../../store/newRewards/newRewardsActions';
 import { getAuthenticatedUserName } from '../../../../store/authStore/authSelectors';
 import { getPostCommentsFromApi } from '../../../../waivioApi/ApiClient';
+import CommentsMessages from '../../../rewards/CampaignFooter/CommentsMessages';
 
 import './Proposition.less';
-import CommentsMessages from '../../../rewards/CampaignFooter/CommentsMessages';
 
 const PropositionFooter = ({
   type,
@@ -143,6 +143,7 @@ PropositionFooter.propTypes = {
   proposition: PropTypes.shape({
     reviewStatus: PropTypes.string,
     userName: PropTypes.string,
+    reservationPermlink: PropTypes.string,
     fraudCodes: PropTypes.arrayOf(PropTypes.number),
   }).isRequired,
   intl: PropTypes.shape({
