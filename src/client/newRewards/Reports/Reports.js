@@ -98,7 +98,7 @@ const Reports = ({ form, intl }) => {
         guideName: sponsor,
         payoutToken: 'WAIV',
         currency: selectedCurrency,
-        objects: filters.objects.map(obj => obj.author_permlink),
+        objects: filters?.objects?.map(obj => obj.author_permlink),
         processingFees: form.getFieldValue('fees'),
         payable: +form.getFieldValue('amount'),
         startDate: form.getFieldValue('from') ? form.getFieldValue('from').unix() : 0,

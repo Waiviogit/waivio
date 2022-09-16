@@ -8,8 +8,11 @@ import { getAuthenticatedUserName } from '../authStore/authSelectors';
 import { changeRewardsTab } from '../authStore/authActions';
 import { getTokenRatesInUSD } from '../walletStore/walletSelectors';
 import { rewardsPost } from '../../client/rewards/Manage/constants';
-import { createCommentPermlink } from '../../client/vendor/steemitHelpers';
+import { createCommentPermlink, getBodyPatchIfSmaller } from '../../client/vendor/steemitHelpers';
 import { SET_PENDING_UPDATE } from '../userStore/userActions';
+import { notify } from '../../client/app/Notification/notificationActions';
+import { createPostMetadata } from '../../common/helpers/postHelpers';
+import { jsonParse } from '../../common/helpers/formatter';
 
 export const reserveProposition = (proposition, username, history) => async (
   dispatch,
@@ -246,6 +249,54 @@ export const setNewMatchBotRules = ruleObj => (
       });
     }),
   );
+};
+
+export const sendCommentForReward = (proposition, body, isUpdating = false, originalComment) => (
+  dispatch,
+  getState,
+  { steemConnectAPI },
+) => {
+  const { auth } = getState();
+
+  if (!auth.isAuthenticated) {
+    return dispatch(notify('You have to be logged in to comment', 'error'));
+  }
+
+  if (!body || !body.length) {
+    return dispatch(notify("Message can't be empty", 'error'));
+  }
+
+  const author = isUpdating ? originalComment.author : auth.user.name;
+
+  const permlink = isUpdating
+    ? originalComment.permlink
+    : createCommentPermlink(proposition?.userName, proposition?.reservationPermlink);
+
+  const currCategory = [];
+
+  const jsonMetadata = createPostMetadata(
+    body,
+    currCategory,
+    isUpdating && jsonParse(originalComment.json_metadata),
+  );
+
+  const newBody =
+    isUpdating && !auth.isGuestUser ? getBodyPatchIfSmaller(originalComment.body, body) : body;
+
+  return steemConnectAPI
+    .comment(
+      auth.user.name,
+      proposition?.reservationPermlink,
+      author,
+      permlink,
+      '',
+      newBody,
+      jsonMetadata,
+      proposition.userName,
+    )
+    .catch(err => {
+      dispatch(notify(err.error.message || err.error_description, 'error'));
+    });
 };
 
 export default null;

@@ -1,11 +1,17 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Button } from 'antd';
 import PropTypes from 'prop-types';
 import { isEmpty, noop } from 'lodash';
 import { injectIntl } from 'react-intl';
+import { useDispatch, useSelector } from 'react-redux';
 
 import RewardsPopover from '../../RewardsPopover/RewardsPopover';
 import Avatar from '../../../components/Avatar';
+import QuickCommentEditor from '../../../components/Comments/QuickCommentEditor';
+import { sendCommentForReward } from '../../../../store/newRewards/newRewardsActions';
+import { getAuthenticatedUserName } from '../../../../store/authStore/authSelectors';
+import { getPostCommentsFromApi } from '../../../../waivioApi/ApiClient';
+import CommentsMessages from '../../../rewards/CampaignFooter/CommentsMessages';
 
 import './Proposition.less';
 
@@ -18,6 +24,32 @@ const PropositionFooter = ({
   getProposition,
   intl,
 }) => {
+  const dispatch = useDispatch();
+  const authUserName = useSelector(getAuthenticatedUserName);
+  const [loading, setLoading] = useState(false);
+  const [showComment, setShowComment] = useState(false);
+  const [comments, setComments] = useState({});
+
+  const getCommentsList = async () => {
+    const commentList = await getPostCommentsFromApi({
+      author: proposition?.userName,
+      permlink: proposition?.reservationPermlink,
+      userName: authUserName,
+    });
+
+    setComments(commentList.content);
+    setShowComment(commentList.content);
+  };
+
+  const sendComment = (parentP, commentValue) => {
+    setLoading(true);
+
+    return dispatch(sendCommentForReward(proposition, commentValue)).then(() => {
+      setLoading(false);
+      getProposition();
+    });
+  };
+
   const getFooter = () => {
     switch (type) {
       case 'reserved':
@@ -25,7 +57,7 @@ const PropositionFooter = ({
           <div className="Proposition-new__footer-container">
             <div className="Proposition-new__button-container">
               <b>Reserved</b>
-              <i className="iconfont icon-message_fill" />
+              <i className="iconfont icon-message_fill" onClick={getCommentsList} />
               {commentsCount}
               <RewardsPopover proposition={proposition} getProposition={getProposition} />
             </div>
@@ -48,7 +80,7 @@ const PropositionFooter = ({
                     defaultMessage: proposition?.reviewStatus,
                   })}
                 </b>
-                <i className="iconfont icon-message_fill" />
+                <i className="iconfont icon-message_fill" onClick={getCommentsList} />
                 {commentsCount}
                 <RewardsPopover
                   proposition={proposition}
@@ -66,6 +98,20 @@ const PropositionFooter = ({
             {!isEmpty(proposition?.fraudCodes) && (
               <div>Codes: {proposition?.fraudCodes.join(', ')}</div>
             )}
+            <CommentsMessages
+              show={showComment}
+              user={{}}
+              post={comments}
+              getMessageHistory={() => {}}
+              // currentComment={currentComment}
+              // getReservedComments={this.getReservedComments}
+              // parent={rootComment}
+              // matchPath={match.params[0]}
+              // match={match}
+              // isGuest={isGuest}
+              proposition={proposition}
+            />
+            <QuickCommentEditor onSubmit={sendComment} isLoading={loading} />
           </React.Fragment>
         );
 
@@ -97,6 +143,7 @@ PropositionFooter.propTypes = {
   proposition: PropTypes.shape({
     reviewStatus: PropTypes.string,
     userName: PropTypes.string,
+    reservationPermlink: PropTypes.string,
     fraudCodes: PropTypes.arrayOf(PropTypes.number),
   }).isRequired,
   intl: PropTypes.shape({
