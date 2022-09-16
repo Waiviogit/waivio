@@ -40,6 +40,7 @@ export const objectFields = {
   title: 'title',
   language: 'language',
   printLength: 'printLength',
+  dimensions: 'dimensions',
   productWeight: 'productWeight',
 };
 
@@ -123,6 +124,12 @@ export const buttonFields = {
 export const phoneFields = {
   name: 'name',
   number: 'number',
+};
+export const dimensionsFields = {
+  length: 'length',
+  width: 'width',
+  depth: ' depth',
+  unitOfLength: 'unitOfLength',
 };
 
 export const ratingFields = {
@@ -213,6 +220,12 @@ export const errorObjectFields = {
   [objectFields.form]: [formFormFields.link, formFormFields.widget, formFormFields.title],
   [objectFields.publisher]: [objectFields.publisher],
   [objectFields.productWeight]: [weightFields.weight, weightFields.unitOfWeight],
+  [objectFields.dimensions]: [
+    dimensionsFields.length,
+    dimensionsFields.depth,
+    dimensionsFields.width,
+    dimensionsFields.unitOfLength,
+  ],
 };
 
 export default null;

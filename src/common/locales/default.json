@@ -1920,5 +1920,21 @@
   "add_tokens_for_monitoring": "Please add tokens for monitoring",
   "object_field_productWeight":"Weight",
   "weight_placeholder": "Enter weight",
-  "select_unit_of_weight": "Select unit of weight"
+  "select_unit_of_weight": "Select unit of weight",
+  "object_field_dimensions":"Dimensions",
+  "length": "Length",
+  "width": "Width",
+  "depth": "Depth",
+  "select_unit_of_length": "Select unit of length",
+  "kilometer": "Kilometer",
+  "meter": "Meter",
+  "centimeter": "Centimeter",
+  "millimeter": "Millimeter",
+  "micrometer": "Micrometer",
+  "nanometer": "Nanometer",
+  "mile": "Mile",
+  "yard": "Yard",
+  "foot": "Foot",
+  "inch": "Inch",
+  "nautical_mile": "Nautical mile"
 }
