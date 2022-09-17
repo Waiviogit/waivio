@@ -38,7 +38,7 @@ const PropositionFooter = ({
     });
 
     setComments(commentList.content);
-    setShowComment(commentList.content);
+    setShowComment(true);
   };
 
   const sendComment = (parentP, commentValue) => {
