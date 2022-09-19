@@ -1289,7 +1289,7 @@ export default class AppendForm extends Component {
         [currentField]: obj.author_permlink,
       });
       if (currentField === 'authors') {
-        this.setState({ selectedObject: { ...this.state.selectedObject, obj } });
+        this.setState({ selectedObject: obj });
       } else {
         this.setState({ selectedObject: obj });
       }
@@ -1518,7 +1518,6 @@ export default class AppendForm extends Component {
                 />
               )}
               <br />
-              {this.state.authorInputsList}
               <div className="add-create-btns">
                 <CreateObject
                   currentField={objectFields.authors}

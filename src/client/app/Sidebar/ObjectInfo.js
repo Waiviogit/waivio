@@ -339,7 +339,10 @@ class ObjectInfo extends React.Component {
     const publicationDate = moment(wobject.publicationDate).format('MMMM DD, YYYY');
     const printLength = wobject.printLength;
     const publisher = parseWobjectField(wobject, 'publisher');
-    const authors = parseWobjectField(wobject, 'authors');
+    const authorsBody = wobject.authors
+      ? wobject.authors.map(el => parseWobjectField(el, 'body', []))
+      : [];
+
     const dimensions = parseWobjectField(wobject, 'dimensions');
     const productWeight = parseWobjectField(wobject, 'productWeight');
 
@@ -470,12 +473,13 @@ class ObjectInfo extends React.Component {
         {isEditMode &&
           this.listItem(
             objectFields.authors,
-            authors &&
-              authors.map(a => (
-                <div className="CompanyId__wordbreak" key={a.authorPermlink}>
+            authorsBody?.map(a => (
+              <div key={a.authorPermlink} className=" flex flex-column">
+                <div className="CompanyId__wordbreak ml1">
                   <Link to={`/object/${a.authorPermlink}`}>{a.name}</Link>
                 </div>
-              )),
+              </div>
+            )),
           )}
         {this.listItem(
           objectFields.description,
@@ -756,11 +760,11 @@ class ObjectInfo extends React.Component {
 
     return (
       <React.Fragment>
-        {!isEditMode && authors && (
-          <div className="CompanyId__wordbreak flex flex-row ">
+        {!isEditMode && wobject.authors && (
+          <div className="CompanyId__wordbreak flex flex-column mb1">
             By
-            {authors.map(a => (
-              <div className="ml1" key={a.authorPermlink}>
+            {authorsBody?.map(a => (
+              <div className="CompanyId__wordbreak ml1" key={a.authorPermlink}>
                 <Link to={`/object/${a.authorPermlink}`}>{a.name}</Link>
               </div>
             ))}
