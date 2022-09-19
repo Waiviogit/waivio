@@ -142,6 +142,7 @@ export default class AppendForm extends Component {
     wObject: PropTypes.shape(),
     updates: PropTypes.arrayOf(PropTypes.shape()).isRequired,
     rewardFund: PropTypes.shape(),
+    history: PropTypes.shape().isRequired,
     rate: PropTypes.number,
     sliderMode: PropTypes.bool,
     defaultVotePercent: PropTypes.number.isRequired,
@@ -191,6 +192,7 @@ export default class AppendForm extends Component {
   };
 
   state = {
+    isOptionChangeable: false,
     isSomeValue: true,
     imageUploading: false,
     votePercent: this.props.defaultVotePercent / 100,
@@ -2901,6 +2903,11 @@ export default class AppendForm extends Component {
       );
     });
 
+    const changeValue = v => {
+      this.props.history.push(`/object/${wObject.author_permlink}/updates/${v}`);
+      this.setState({ isOptionChangeable: true });
+    };
+
     return (
       <Form className="AppendForm" layout="vertical" onSubmit={this.handleSubmit}>
         <div className="ant-form-item-label label AppendForm__appendTitles">
@@ -2911,7 +2918,8 @@ export default class AppendForm extends Component {
             initialValue: currentField,
           })(
             <Select
-              disabled={disabledSelect}
+              onChange={changeValue}
+              disabled={disabledSelect && !this.state.isOptionChangeable}
               style={{ width: '100%' }}
               dropdownClassName="AppendForm__drop-down"
             >

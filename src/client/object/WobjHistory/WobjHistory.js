@@ -96,6 +96,7 @@ const WobjHistory = ({
                 chosenLocale={locale}
                 field={currField}
                 objName={objName}
+                history={history}
               />
             )}
           </React.Fragment>
