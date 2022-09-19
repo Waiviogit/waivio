@@ -1032,7 +1032,6 @@
   "already_exists": "User with such username already exists",
   "please_input_username": "Please input your username",
   "only_letters": "Only lowercase letters, digits, periods, dashes are allowed",
-  "imageSetter_add_image": "Add image",
   "imageSetter_add_images": "Add images",
   "imageSetter_upload": "Upload",
   "imageSetter_or": "or",
@@ -1936,5 +1935,12 @@
   "yard": "Yard",
   "foot": "Foot",
   "inch": "Inch",
-  "nautical_mile": "Nautical mile"
+  "nautical_mile": "Nautical mile",
+  "object_field_options":"Options",
+  "option_category": "Option category",
+  "option_value": "Option value",
+  "position": "Position",
+  "options_modal_info1": "Common option categories for products are Color, Size, Flavor, Count, Include, etc.",
+  "options_modal_info2": "Position number indicates the order of option values within the category, e.g. the \"Small\" option can be assigned position 2, so that it appears after \"1. X-Small\", but before \"3. Medium\".",
+  "options_modal_info3": "Image is optional, it will be resized to fit into a square."
 }

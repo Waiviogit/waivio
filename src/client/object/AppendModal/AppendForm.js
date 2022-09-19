@@ -46,6 +46,7 @@ import {
   errorObjectFields,
   dimensionsFields,
   weightFields,
+  optionsFields,
 } from '../../../common/constants/listOfFields';
 import OBJECT_TYPE from '../const/objectTypes';
 import { getSuitableLanguage } from '../../../store/reducers';
@@ -371,7 +372,8 @@ export default class AppendForm extends Component {
       case objectFields.printLength:
       case objectFields.language:
       case objectFields.publicationDate:
-      case objectFields.dimensions: {
+      case objectFields.dimensions:
+      case objectFields.options: {
         fieldBody.push(rest[currentField]);
         break;
       }
@@ -428,6 +430,18 @@ export default class AppendForm extends Component {
           return `@${author} added ${currentField} (${langReadable}): ${
             formValues[objectFields.publisher]
           }`;
+        case objectFields.options:
+          const image = formValues[optionsFields.image]
+            ? `, ${optionsFields.image}:  \n ![${optionsFields.image}](${
+                formValues[optionsFields.image]
+              })`
+            : '';
+
+          return `@${author} added ${currentField} (${langReadable}): ${optionsFields.category}: ${
+            formValues[optionsFields.category]
+          }, ${optionsFields.value}: ${formValues[optionsFields.value]}, ${
+            optionsFields.position
+          }: ${formValues[optionsFields.position]} ${image}`;
         case objectFields.productWeight:
           return `@${author} added ${currentField} (${langReadable}): ${weightFields.weight}: ${
             formValues[weightFields.weight]
@@ -600,6 +614,17 @@ export default class AppendForm extends Component {
             [productIdFields.productIdType]: formValues[productIdFields.productIdType],
             [productIdFields.productId]: formValues[productIdFields.productId],
             [productIdFields.productIdImage]: formValues[productIdFields.productIdImage],
+          }),
+        };
+      }
+      if (currentField === objectFields.options) {
+        fieldsObject = {
+          ...fieldsObject,
+          body: JSON.stringify({
+            [optionsFields.category]: formValues[optionsFields.category],
+            [optionsFields.value]: formValues[optionsFields.value],
+            [optionsFields.position]: formValues[optionsFields.position],
+            [optionsFields.image]: formValues[optionsFields.image],
           }),
         };
       }
@@ -1048,7 +1073,10 @@ export default class AppendForm extends Component {
       currentField === objectFields.link ||
       currentField === objectFields.companyIdType ||
       currentField === objectFields.companyId ||
-      currentField === objectFields.publisher
+      currentField === objectFields.publisher ||
+      currentField === objectFields.dimensions ||
+      currentField === objectFields.productWeight ||
+      currentField === objectFields.options
     ) {
       return filtered.some(f =>
         isEqual(this.getCurrentObjectBody(currentField), parseJSON(f.body)),
@@ -2118,6 +2146,93 @@ export default class AppendForm extends Component {
           </React.Fragment>
         );
       }
+      case objectFields.options: {
+        return (
+          <React.Fragment>
+            <Form.Item>
+              {getFieldDecorator(optionsFields.category, {
+                // rules: this.getFieldRules(objectFields.productIdType),
+              })(
+                <Input
+                  className={classNames('AppendForm__input', {
+                    'validation-error': !this.state.isSomeValue,
+                  })}
+                  disabled={loading}
+                  placeholder={intl.formatMessage({
+                    id: 'option_category',
+                    defaultMessage: 'Option category',
+                  })}
+                />,
+              )}
+            </Form.Item>
+            <p>
+              <FormattedMessage
+                id="options_modal_info1"
+                defaultMessage="Common option categories for products are Color, Size, Flavor, Count, Include, etc."
+              />
+            </p>
+            <Form.Item>
+              {getFieldDecorator(optionsFields.value, {
+                // rules: this.getFieldRules(objectFields.productIdType),
+              })(
+                <Input
+                  className={classNames('AppendForm__input', {
+                    'validation-error': !this.state.isSomeValue,
+                  })}
+                  disabled={loading}
+                  placeholder={intl.formatMessage({
+                    id: 'option_value',
+                    defaultMessage: 'Option value',
+                  })}
+                />,
+              )}
+            </Form.Item>
+            <p>Option value is a text field.</p>
+            <Form.Item>
+              {getFieldDecorator(optionsFields.position, {
+                // rules: this.getFieldRules(objectFields.productIdType),
+              })(
+                <Input
+                  className={classNames('AppendForm__input', {
+                    'validation-error': !this.state.isSomeValue,
+                  })}
+                  disabled={loading}
+                  placeholder={intl.formatMessage({
+                    id: 'position',
+                    defaultMessage: 'Position',
+                  })}
+                />,
+              )}
+            </Form.Item>
+            <p>
+              <FormattedMessage
+                id="options_modal_info2"
+                defaultMessage='Position number indicates the order of option values within the category, e.g. the "Small" option can be assigned position 2, so that it appears after "1. X-Small", but before "3. Medium".'
+              />
+            </p>
+            <div className="image-wrapper">
+              <Form.Item>
+                {getFieldDecorator(optionsFields.image, {
+                  // rules: this.getFieldRules(objectFields.productIdImage),
+                })(
+                  <ImageSetter
+                    onImageLoaded={this.getImages}
+                    onLoadingImage={this.onLoadingImage}
+                    labeledImage={'imageSetter_add_image'}
+                    isMultiple={false}
+                  />,
+                )}
+              </Form.Item>
+            </div>
+            <p>
+              <FormattedMessage
+                id="options_modal_info3"
+                defaultMessage="Image is optional, it will be resized to fit into a square."
+              />
+            </p>
+          </React.Fragment>
+        );
+      }
       case objectFields.status: {
         return (
           <React.Fragment>
@@ -2792,6 +2907,12 @@ export default class AppendForm extends Component {
           isEmpty(getFieldValue(dimensionsFields.width)) ||
           isEmpty(getFieldValue(dimensionsFields.depth)) ||
           isEmpty(getFieldValue(dimensionsFields.unitOfLength))
+        );
+      case objectFields.options:
+        return (
+          isEmpty(getFieldValue(optionsFields.value)) ||
+          isEmpty(getFieldValue(optionsFields.category)) ||
+          isEmpty(getFieldValue(optionsFields.position))
         );
       case objectFields.map:
         return (

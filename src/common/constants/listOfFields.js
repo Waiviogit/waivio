@@ -42,6 +42,7 @@ export const objectFields = {
   printLength: 'printLength',
   dimensions: 'dimensions',
   productWeight: 'productWeight',
+  options: 'options',
 };
 
 export const TYPES_OF_MENU_ITEM = {
@@ -109,6 +110,13 @@ export const linkFields = {
 export const websiteFields = {
   title: 'title',
   link: 'link',
+};
+
+export const optionsFields = {
+  category: 'category',
+  value: 'value',
+  position: 'position',
+  image: 'image',
 };
 
 export const statusFields = {
@@ -226,6 +234,7 @@ export const errorObjectFields = {
     dimensionsFields.width,
     dimensionsFields.unitOfLength,
   ],
+  [objectFields.options]: [optionsFields.category, optionsFields.value, optionsFields.value],
 };
 
 export default null;
