@@ -340,6 +340,9 @@ class ObjectInfo extends React.Component {
     const printLength = wobject.printLength;
     const publisher = parseWobjectField(wobject, 'publisher');
     const authors = parseWobjectField(wobject, 'authors');
+    const dimensions = parseWobjectField(wobject, 'dimensions');
+    const productWeight = parseWobjectField(wobject, 'productWeight');
+
     const profile = linkField
       ? {
           facebook: linkField[linkFields.linkFacebook] || '',
@@ -779,6 +782,43 @@ class ObjectInfo extends React.Component {
                   wobject={publisher}
                   showFollow={false}
                 />
+              ),
+            )}
+            {this.listItem(
+              objectFields.productWeight,
+              productWeight && (
+                <div className="field-website">
+                  <span className="field-website__title">
+                    <img
+                      style={{ width: '14px', height: '14px' }}
+                      className="ObjectInfo__margin-top"
+                      src={'/images/icons/scale-img.png'}
+                      alt="Scale icon"
+                    />{' '}
+                    <span className="CompanyId__wordbreak">
+                      {productWeight.value} {productWeight.unit}
+                    </span>
+                  </span>
+                </div>
+              ),
+            )}
+            {this.listItem(
+              objectFields.dimensions,
+              dimensions && (
+                <div className="field-website">
+                  <span className="field-website__title">
+                    <img
+                      style={{ width: '14px', height: '14px' }}
+                      className="ObjectInfo__margin-top"
+                      src={'/images/icons/dimensions-icon.svg'}
+                      alt="Scale icon"
+                    />{' '}
+                    <span className="CompanyId__wordbreak">
+                      {dimensions.length} x {dimensions.width} x {dimensions.depth}{' '}
+                      {dimensions.unit}
+                    </span>
+                  </span>
+                </div>
               ),
             )}
             {!isHashtag && !hasType(wobject, OBJECT_TYPE.PAGE) && menuSection()}

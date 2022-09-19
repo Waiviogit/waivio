@@ -43,7 +43,7 @@ const AddButtonSlate = props => {
       }
       if (bound.top > 0) {
         nodeStyle.top = `${bound.top - parentBoundary.top - ADD_BTN_DIF}px`;
-      } else if (bound.top <= 0) nodeStyle.top = initialPosOfBtn?.current?.top || 'auto';
+      } else if (bound.top <= 0) nodeStyle.top = initialPosOfBtn?.current?.top || '-14px';
       if (initialPosOfBtn.current && !initialPosOfBtn?.current?.top)
         initialPosOfBtn.current.top = nodeStyle.top;
     }, 50);
@@ -67,7 +67,7 @@ const AddButtonSlate = props => {
   useEffect(() => {
     if (props.isClearSearchObjects) setOpen(false);
   }, [props.isClearSearchObjects]);
-  const buttonClassList = classNames('md-sb-button md-add-button', {
+  const buttonClassList = classNames('md-sb-button-plus md-add-button', {
     'md-open-button': isOpen,
     'md-add-button--comments': props.isComment,
   });

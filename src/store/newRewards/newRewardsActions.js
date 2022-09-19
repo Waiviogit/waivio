@@ -8,8 +8,11 @@ import { getAuthenticatedUserName } from '../authStore/authSelectors';
 import { changeRewardsTab } from '../authStore/authActions';
 import { getTokenRatesInUSD } from '../walletStore/walletSelectors';
 import { rewardsPost } from '../../client/rewards/Manage/constants';
-import { createCommentPermlink } from '../../client/vendor/steemitHelpers';
+import { createCommentPermlink, getBodyPatchIfSmaller } from '../../client/vendor/steemitHelpers';
 import { SET_PENDING_UPDATE } from '../userStore/userActions';
+import { notify } from '../../client/app/Notification/notificationActions';
+import { createPostMetadata } from '../../common/helpers/postHelpers';
+import { jsonParse } from '../../common/helpers/formatter';
 
 export const reserveProposition = (proposition, username, history) => async (
   dispatch,
@@ -246,6 +249,48 @@ export const setNewMatchBotRules = ruleObj => (
       });
     }),
   );
+};
+
+export const sendCommentForReward = (proposition, body, isUpdating = false, originalComment) => (
+  dispatch,
+  getState,
+  { steemConnectAPI },
+) => {
+  const { auth } = getState();
+
+  if (!auth.isAuthenticated) {
+    return dispatch(notify('You have to be logged in to comment', 'error'));
+  }
+
+  if (!body || !body.length) {
+    return dispatch(notify("Message can't be empty", 'error'));
+  }
+
+  const permlink = isUpdating
+    ? originalComment.permlink
+    : createCommentPermlink(proposition?.userName, proposition?.reservationPermlink);
+
+  const newBody =
+    isUpdating && !auth.isGuestUser ? getBodyPatchIfSmaller(originalComment.body, body) : body;
+
+  const commentOp = [
+    'comment',
+    {
+      parent_author: proposition?.userName,
+      parent_permlink: proposition?.reservationPermlink,
+      author: auth.user.name,
+      permlink,
+      title: '',
+      body: newBody,
+      json_metadata: JSON.stringify(
+        createPostMetadata(body, [], isUpdating && jsonParse(originalComment.json_metadata)),
+      ),
+    },
+  ];
+
+  return steemConnectAPI.broadcast([commentOp]).catch(err => {
+    dispatch(notify(err.error.message || err.error_description, 'error'));
+  });
 };
 
 export default null;

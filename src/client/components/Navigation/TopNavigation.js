@@ -154,7 +154,7 @@ const TopNavigation = ({ location: { pathname }, match, history }) => {
           </li>
           <li className="TopNavigation__item">
             <Link
-              to={`${LINKS.DISCOVER}/hashtag`}
+              to={`${LINKS.DISCOVER}/restaurant`}
               className={classNames('TopNavigation__link', {
                 'TopNavigation__link--active':
                   pathname.includes(LINKS.DISCOVER) || pathname.includes(LINKS.USERS),

@@ -1,7 +1,41 @@
 @import (reference) '../styles/modules/variables.less';
-
-.UserFollowing {
+.UserFollowers {
   margin-top: -22px;
+  .ant-tabs-tab {
+    color: #99aab5 !important;
+    font-weight: 500 !important;
+  }
+  .ant-tabs-nav-scroll {
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
+
+  .ant-tabs-tab {
+    margin: 0 5px 0 0;
+  }
+
+  .ant-tabs-tab-prev {
+    display: none;
+  }
+
+  .ant-tabs-tab-next.ant-tabs-tab-arrow-show {
+    display: none;
+  }
+
+  .ant-tabs-nav.ant-tabs-nav-animated {
+    transition: none;
+  }
+
+  .ant-tabs-nav-container-scrolling {
+    padding-right: 0;
+    padding-left: 0;
+  }
+
+  .ant-tabs-nav.ant-tabs-nav-animated {
+    transform: translate3d(0px, 0px, 0px) !important;
+  }
+}
+.UserFollowing {
   .ObjectCard__name-short {
     max-width: calc(100vw - 210px);
     @media @medium, @large {

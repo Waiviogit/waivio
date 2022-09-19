@@ -43,7 +43,7 @@ const Reports = ({ form, intl }) => {
   const disabledStartDate = date => moment(date) > moment(form.getFieldValue('till'));
 
   const disabledEndDate = date =>
-    moment(date).isAfter(moment()) || moment(date).isBefore(form.getFieldValue('from'));
+    form.getFieldValue('from') ? moment(date).isBefore(form.getFieldValue('from')) : null;
 
   const handleSelectSponsor = spnsr => setSponsor(spnsr.account);
   const handleDeleteSponsor = () => setSponsor('');
@@ -98,7 +98,7 @@ const Reports = ({ form, intl }) => {
         guideName: sponsor,
         payoutToken: 'WAIV',
         currency: selectedCurrency,
-        objects: filters.objects.map(obj => obj.author_permlink),
+        objects: filters?.objects?.map(obj => obj.author_permlink),
         processingFees: form.getFieldValue('fees'),
         payable: +form.getFieldValue('amount'),
         startDate: form.getFieldValue('from') ? form.getFieldValue('from').unix() : 0,
