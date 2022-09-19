@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button } from 'antd';
+import { Button, Icon } from 'antd';
 import PropTypes from 'prop-types';
 import { isEmpty, noop } from 'lodash';
 import { injectIntl } from 'react-intl';
@@ -11,7 +11,7 @@ import QuickCommentEditor from '../../../components/Comments/QuickCommentEditor'
 import { sendCommentForReward } from '../../../../store/newRewards/newRewardsActions';
 import { getAuthenticatedUserName } from '../../../../store/authStore/authSelectors';
 import { getPostCommentsFromApi } from '../../../../waivioApi/ApiClient';
-import CommentsMessages from '../../../rewards/CampaignFooter/CommentsMessages';
+import CommentCard from '../../Comments/CommentCard';
 
 import './Proposition.less';
 
@@ -29,16 +29,19 @@ const PropositionFooter = ({
   const [loading, setLoading] = useState(false);
   const [showComment, setShowComment] = useState(false);
   const [comments, setComments] = useState({});
+  const [commentsLoading, setCommentsLoading] = useState(false);
 
   const getCommentsList = async () => {
+    setCommentsLoading(true);
     const commentList = await getPostCommentsFromApi({
       author: proposition?.userName,
       permlink: proposition?.reservationPermlink,
       userName: authUserName,
     });
 
-    setComments(commentList.content);
-    setShowComment(true);
+    await setComments(commentList.content);
+    await setShowComment(true);
+    await setCommentsLoading(false);
   };
 
   const sendComment = (parentP, commentValue) => {
@@ -80,7 +83,11 @@ const PropositionFooter = ({
                     defaultMessage: proposition?.reviewStatus,
                   })}
                 </b>
-                <i className="iconfont icon-message_fill" onClick={getCommentsList} />
+                {commentsLoading ? (
+                  <Icon type="loading" />
+                ) : (
+                  <i className="iconfont icon-message_fill" onClick={getCommentsList} />
+                )}
                 {commentsCount}
                 <RewardsPopover
                   proposition={proposition}
@@ -98,19 +105,15 @@ const PropositionFooter = ({
             {!isEmpty(proposition?.fraudCodes) && (
               <div>Codes: {proposition?.fraudCodes.join(', ')}</div>
             )}
-            <CommentsMessages
-              show={showComment}
-              user={{}}
-              post={comments}
-              getMessageHistory={() => {}}
-              // currentComment={currentComment}
-              // getReservedComments={this.getReservedComments}
-              // parent={rootComment}
-              // matchPath={match.params[0]}
-              // match={match}
-              // isGuest={isGuest}
-              proposition={proposition}
-            />
+            {showComment &&
+              Object.entries(comments).map(comment => (
+                <CommentCard
+                  key={comment[0]}
+                  comment={comment[1]}
+                  getMessageHistory={getCommentsList}
+                  proposition={proposition}
+                />
+              ))}
             <QuickCommentEditor onSubmit={sendComment} isLoading={loading} />
           </React.Fragment>
         );

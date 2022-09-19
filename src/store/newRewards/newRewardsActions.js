@@ -276,8 +276,10 @@ export const sendCommentForReward = (proposition, body, isUpdating = false, orig
   const commentOp = [
     'comment',
     {
-      parent_author: proposition?.userName,
-      parent_permlink: proposition?.reservationPermlink,
+      parent_author: isUpdating ? originalComment.parent_author : proposition?.userName,
+      parent_permlink: isUpdating
+        ? originalComment.parent_permlink
+        : proposition?.reservationPermlink,
       author: auth.user.name,
       permlink,
       title: '',
