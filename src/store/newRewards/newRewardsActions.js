@@ -266,37 +266,33 @@ export const sendCommentForReward = (proposition, body, isUpdating = false, orig
     return dispatch(notify("Message can't be empty", 'error'));
   }
 
-  const author = isUpdating ? originalComment.author : auth.user.name;
-
   const permlink = isUpdating
     ? originalComment.permlink
     : createCommentPermlink(proposition?.userName, proposition?.reservationPermlink);
 
-  const currCategory = [];
-
-  const jsonMetadata = createPostMetadata(
-    body,
-    currCategory,
-    isUpdating && jsonParse(originalComment.json_metadata),
-  );
-
   const newBody =
     isUpdating && !auth.isGuestUser ? getBodyPatchIfSmaller(originalComment.body, body) : body;
 
-  return steemConnectAPI
-    .comment(
-      auth.user.name,
-      proposition?.reservationPermlink,
-      author,
+  const commentOp = [
+    'comment',
+    {
+      parent_author: isUpdating ? originalComment.parent_author : proposition?.userName,
+      parent_permlink: isUpdating
+        ? originalComment.parent_permlink
+        : proposition?.reservationPermlink,
+      author: auth.user.name,
       permlink,
-      '',
-      newBody,
-      jsonMetadata,
-      proposition.userName,
-    )
-    .catch(err => {
-      dispatch(notify(err.error.message || err.error_description, 'error'));
-    });
+      title: '',
+      body: newBody,
+      json_metadata: JSON.stringify(
+        createPostMetadata(body, [], isUpdating && jsonParse(originalComment.json_metadata)),
+      ),
+    },
+  ];
+
+  return steemConnectAPI.broadcast([commentOp]).catch(err => {
+    dispatch(notify(err.error.message || err.error_description, 'error'));
+  });
 };
 
 export default null;
