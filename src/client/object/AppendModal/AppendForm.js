@@ -108,7 +108,6 @@ import NewsFilterForm from './FormComponents/NewsFilterForm';
 import './AppendForm.less';
 import { getAppendList } from '../../../store/appendStore/appendSelectors';
 import { parseJSON } from '../../../common/helpers/parseJSON';
-import IconButton from '../../components/IconButton';
 
 @connect(
   state => ({
@@ -595,13 +594,11 @@ export default class AppendForm extends Component {
       if (currentField === objectFields.authors) {
         fieldsObject = {
           ...fieldsObject,
-          body: JSON.stringify([
-            {
-              name: formValues[authorsFields.name] || this.state.selectedObject.name,
-              authorPermlink: this.state.selectedObject?.author_permlink,
-              defaultShowLink: getObjectUrlForLink(this.state.selectedObject),
-            },
-          ]),
+          body: JSON.stringify({
+            name: formValues[authorsFields.name] || this.state.selectedObject.name,
+            authorPermlink: this.state.selectedObject?.author_permlink,
+            defaultShowLink: getObjectUrlForLink(this.state.selectedObject),
+          }),
         };
       }
       if (currentField === objectFields.productWeight) {
@@ -1355,52 +1352,6 @@ export default class AppendForm extends Component {
     this.props.form.setFieldsValue({ [this.props.currentField]: '' });
   };
 
-  generateAuthorFieldsJsx = i => {
-    const { getFieldDecorator } = this.props.form;
-    const { intl } = this.props;
-    const { loading } = this.state;
-
-    return (
-      <div key={i}>
-        <Form.Item>
-          {getFieldDecorator('name1', {
-            rules: this.getFieldRules(authorsFields.name),
-          })(
-            <Input
-              className={classNames('AppendForm__input-author margin-top-bottom', {
-                'validation-error': !this.state.isSomeValue,
-              })}
-              disabled={loading}
-              placeholder={intl.formatMessage({
-                id: 'author_name',
-                defaultMessage: 'Author name',
-              })}
-            />,
-          )}
-        </Form.Item>
-        <Form.Item>
-          {getFieldDecorator('author1')(
-            <SearchObjectsAutocomplete
-              objectType="person"
-              placeholder={this.props.intl.formatMessage({
-                id: 'objects_auto_complete_author_placeholder',
-                defaultMessage: 'Find author',
-              })}
-              handleSelect={this.handleSelectObject}
-            />,
-          )}
-        </Form.Item>
-      </div>
-    );
-  };
-
-  onAddFieldsClick = () => {
-    const index = this.state.authorInputsList.length;
-    const jsxData = this.generateAuthorFieldsJsx(index);
-
-    this.setState({ authorInputsList: [...this.state.authorInputsList, jsxData] });
-  };
-
   renderContentValue = currentField => {
     const { loading, selectedObject, selectedCategory, fileList } = this.state;
     const { intl, wObject, categories, selectedAlbum, albums } = this.props;
@@ -1529,7 +1480,7 @@ export default class AppendForm extends Component {
       }
       case objectFields.authors: {
         return (
-          <div key="0">
+          <>
             <Form.Item>
               {getFieldDecorator(authorsFields.name, {
                 rules: this.getFieldRules(authorsFields.name),
@@ -1570,10 +1521,6 @@ export default class AppendForm extends Component {
               <br />
               {this.state.authorInputsList}
               <div className="add-create-btns">
-                <div className="flex flex-row">
-                  <IconButton icon={<Icon type="plus-circle" />} onClick={this.onAddFieldsClick} />
-                  Add author
-                </div>
                 <CreateObject
                   currentField={objectFields.authors}
                   isSingleType
@@ -1584,7 +1531,7 @@ export default class AppendForm extends Component {
                 />
               </div>{' '}
             </Form.Item>
-          </div>
+          </>
         );
       }
       case objectFields.categoryItem: {
