@@ -192,7 +192,6 @@ export default class AppendForm extends Component {
   };
 
   state = {
-    authorInputsList: [],
     isSomeValue: true,
     imageUploading: false,
     votePercent: this.props.defaultVotePercent / 100,
