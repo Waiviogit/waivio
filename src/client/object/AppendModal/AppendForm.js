@@ -5,11 +5,11 @@ import {
   has,
   includes,
   isEmpty,
-  isNaN,
-  map,
   isEqual,
-  omitBy,
+  isNaN,
   isNil,
+  map,
+  omitBy,
   size,
   uniqBy,
   debounce,
@@ -26,6 +26,7 @@ import { fieldsRules } from '../const/appendFormConstants';
 import apiConfig from '../../../waivioApi/config.json';
 import {
   addressFields,
+  authorsFields,
   blogFields,
   buttonFields,
   linkFields,
@@ -363,6 +364,7 @@ export default class AppendForm extends Component {
       case objectFields.parent:
       case objectFields.publisher:
       case objectFields.productWeight:
+      case objectFields.authors:
       case objectFields.workTime:
       case objectFields.email:
       case TYPES_OF_MENU_ITEM.PAGE:
@@ -432,6 +434,10 @@ export default class AppendForm extends Component {
           return `@${author} added ${currentField} (${langReadable}): ${weightFields.weight}: ${
             formValues[weightFields.weight]
           }, ${weightFields.unitOfWeight}: ${formValues[weightFields.unitOfWeight]}`;
+        case objectFields.authors:
+          return `@${author} added ${currentField} (${langReadable}): name: ${
+            formValues[authorsFields.name]
+          }, link: ${this.state.selectedObject.authorPermlink}`;
         case objectFields.phone:
           return `@${author} added ${currentField}(${langReadable}):\n ${appendValue.replace(
             /[{}"]/g,
@@ -581,6 +587,16 @@ export default class AppendForm extends Component {
             authorPermlink: this.state.selectedObject?.author_permlink,
             defaultShowLink: getObjectUrlForLink(this.state.selectedObject),
             avatar: getObjectAvatar(this.state.selectedObject),
+          }),
+        };
+      }
+      if (currentField === objectFields.authors) {
+        fieldsObject = {
+          ...fieldsObject,
+          body: JSON.stringify({
+            name: formValues[authorsFields.name] || this.state.selectedObject.name,
+            authorPermlink: this.state.selectedObject?.author_permlink,
+            defaultShowLink: getObjectUrlForLink(this.state.selectedObject),
           }),
         };
       }
@@ -1048,7 +1064,8 @@ export default class AppendForm extends Component {
       currentField === objectFields.link ||
       currentField === objectFields.companyIdType ||
       currentField === objectFields.companyId ||
-      currentField === objectFields.publisher
+      currentField === objectFields.publisher ||
+      currentField === objectFields.authors
     ) {
       return filtered.some(f =>
         isEqual(this.getCurrentObjectBody(currentField), parseJSON(f.body)),
@@ -1271,7 +1288,11 @@ export default class AppendForm extends Component {
       this.props.form.setFieldsValue({
         [currentField]: obj.author_permlink,
       });
-      this.setState({ selectedObject: obj });
+      if (currentField === 'authors') {
+        this.setState({ selectedObject: obj });
+      } else {
+        this.setState({ selectedObject: obj });
+      }
     }
   };
 
@@ -1454,6 +1475,61 @@ export default class AppendForm extends Component {
               />
             )}
           </Form.Item>
+        );
+      }
+      case objectFields.authors: {
+        return (
+          <>
+            <Form.Item>
+              {getFieldDecorator(authorsFields.name, {
+                rules: this.getFieldRules(authorsFields.name),
+                initialValue: '',
+              })(
+                <Input
+                  className={classNames('AppendForm__input-author', {
+                    'validation-error': !this.state.isSomeValue,
+                  })}
+                  disabled={loading}
+                  placeholder={intl.formatMessage({
+                    id: 'author_name',
+                    defaultMessage: 'Author name',
+                  })}
+                />,
+              )}
+            </Form.Item>
+            <Form.Item>
+              {getFieldDecorator(authorsFields.author, {
+                rules: this.getFieldRules(authorsFields.author),
+              })(
+                <SearchObjectsAutocomplete
+                  objectType="person"
+                  placeholder={this.props.intl.formatMessage({
+                    id: 'objects_auto_complete_author_placeholder',
+                    defaultMessage: 'Find author',
+                  })}
+                  handleSelect={this.handleSelectObject}
+                />,
+              )}
+              {this.state.selectedObject && (
+                <ObjectCardView
+                  closeButton
+                  onDelete={this.onObjectCardDelete}
+                  wObject={this.state.selectedObject}
+                />
+              )}
+              <br />
+              <div className="add-create-btns">
+                <CreateObject
+                  currentField={objectFields.authors}
+                  isSingleType
+                  defaultObjectType="person"
+                  disabled
+                  onCreateObject={this.handleCreateObject}
+                  parentObject={{}}
+                />
+              </div>{' '}
+            </Form.Item>
+          </>
         );
       }
       case objectFields.categoryItem: {
@@ -2779,6 +2855,8 @@ export default class AppendForm extends Component {
         return (
           isEmpty(getFieldValue(websiteFields.link)) || isEmpty(getFieldValue(websiteFields.title))
         );
+      case objectFields.authors:
+        return this.state.selectedObject === null;
       case objectFields.productWeight:
         return (
           isEmpty(getFieldValue(weightFields.weight)) ||

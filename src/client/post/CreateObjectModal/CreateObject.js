@@ -317,32 +317,38 @@ class CreateObject extends React.Component {
       );
     });
     const hashtagObjType = this.props.objectTypes[form.getFieldValue('type')]?.name === 'hashtag';
+    let linkTitle = '';
+
+    if (this.props.currentField === 'publisher') {
+      linkTitle = this.props.intl.formatMessage({
+        id: 'create_new_publisher',
+        defaultMessage: 'Create new publisher',
+      });
+    } else if (this.props.currentField === 'authors') {
+      linkTitle = this.props.intl.formatMessage({
+        id: 'create_new_author',
+        defaultMessage: 'Create new author',
+      });
+    } else {
+      linkTitle = this.props.intl.formatMessage({
+        id: 'create_new_object',
+        defaultMessage: 'create new object',
+      });
+    }
 
     return (
       <React.Fragment>
         {withOpenModalBtn && (
           <div className="CreateObject__row align-right">
             <div role="presentation" className="CreateObject__button" onClick={this.toggleModal}>
-              {openModalBtnText || this.props.currentField === 'publisher'
-                ? 'Create new publisher'
-                : this.props.intl.formatMessage({
-                    id: 'create_new_object',
-                    defaultMessage: 'create new object',
-                  })}
+              {openModalBtnText || linkTitle}
             </div>
           </div>
         )}
 
         {this.state.isModalOpen && (
           <Modal
-            title={
-              this.props.currentField === 'publisher'
-                ? 'Create new publisher'
-                : this.props.intl.formatMessage({
-                    id: 'create_new_object',
-                    defaultMessage: 'create new object',
-                  })
-            }
+            title={linkTitle}
             closable
             onCancel={this.handleCloseModal}
             maskClosable={false}
