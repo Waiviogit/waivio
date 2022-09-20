@@ -115,13 +115,13 @@ export const fieldsRules = {
       },
     },
     {
-      max: 100,
+      max: 16,
       message: {
         intlId: {
-          id: 'value_error_long',
-          defaultMessage: "Value can't be longer than 100 characters.",
+          id: 'value_error_weight',
+          defaultMessage: "Value can't be more than 9007199254740991.",
         },
-        intlMeta: { value: 100 },
+        intlMeta: { value: 9007199254740991 },
       },
     },
     {
