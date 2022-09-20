@@ -339,6 +339,10 @@ class ObjectInfo extends React.Component {
     const publicationDate = moment(wobject.publicationDate).format('MMMM DD, YYYY');
     const printLength = wobject.printLength;
     const publisher = parseWobjectField(wobject, 'publisher');
+    const authorsBody = wobject.authors
+      ? wobject.authors.map(el => parseWobjectField(el, 'body', []))
+      : [];
+
     const dimensions = parseWobjectField(wobject, 'dimensions');
     const productWeight = parseWobjectField(wobject, 'productWeight');
 
@@ -466,6 +470,17 @@ class ObjectInfo extends React.Component {
           </div>
         )}
         {this.listItem(objectFields.name, null)}
+        {isEditMode &&
+          this.listItem(
+            objectFields.authors,
+            authorsBody?.map(a => (
+              <div key={a.authorPermlink} className=" flex flex-column">
+                <div className="CompanyId__wordbreak ml1">
+                  <Link to={`/object/${a.authorPermlink}`}>{a.name}</Link>
+                </div>
+              </div>
+            )),
+          )}
         {this.listItem(
           objectFields.description,
           description && <DescriptionInfo description={description} />,
@@ -745,6 +760,16 @@ class ObjectInfo extends React.Component {
 
     return (
       <React.Fragment>
+        {!isEditMode && wobject.authors && (
+          <div className="CompanyId__wordbreak flex flex-column mb1">
+            By
+            {authorsBody?.map(a => (
+              <div className="CompanyId__wordbreak ml1" key={a.authorPermlink}>
+                <Link to={`/object/${a.authorPermlink}`}>{a.name}</Link>
+              </div>
+            ))}
+          </div>
+        )}
         {wobject && wobjName && (
           <div className="object-sidebar">
             {this.listItem(

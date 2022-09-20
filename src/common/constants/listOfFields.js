@@ -42,6 +42,7 @@ export const objectFields = {
   printLength: 'printLength',
   dimensions: 'dimensions',
   productWeight: 'productWeight',
+  authors: 'authors',
 };
 
 export const TYPES_OF_MENU_ITEM = {
@@ -81,6 +82,11 @@ export const addressFields = {
   postalCode: 'postalCode',
   state: 'state',
   country: 'country',
+};
+
+export const authorsFields = {
+  name: 'name',
+  author: 'author',
 };
 
 export const addressFieldsForFormatting = [
@@ -226,6 +232,7 @@ export const errorObjectFields = {
     dimensionsFields.width,
     dimensionsFields.unitOfLength,
   ],
+  [objectFields.authors]: [authorsFields.author, authorsFields.name, objectFields.authors],
 };
 
 export default null;
