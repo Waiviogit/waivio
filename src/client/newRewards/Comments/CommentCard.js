@@ -26,6 +26,7 @@ const CommentCard = ({ comment, intl, getMessageHistory, proposition }) => {
   const dispatch = useDispatch();
   const user = useSelector(getAuthenticatedUserName);
   const [pendingLike, setPendigLike] = useState(false);
+  const [pendingSend, setPendigSend] = useState(false);
   const [pendingDisLike, setPendingDisLike] = useState(false);
   const [editing, setEditing] = useState(false);
   const editable = comment.author === user;
@@ -65,9 +66,12 @@ const CommentCard = ({ comment, intl, getMessageHistory, proposition }) => {
   const handleEditClick = () => setEditing(!editing);
 
   const handleSendComment = async (parentP, commentValue) => {
+    setPendigSend(true);
     await dispatch(sendCommentForReward(proposition, commentValue, editing, comment));
-    await getMessageHistory();
+    await getMessageHistory(editing, comment.permlink, commentValue);
+    await setPendigSend(false);
     await setEditing(false);
+    await setPendigSend(false);
   };
 
   return (
@@ -166,7 +170,7 @@ const CommentCard = ({ comment, intl, getMessageHistory, proposition }) => {
           <QuickCommentEditor
             parentPost={comment}
             onSubmit={handleSendComment}
-            isLoading={false}
+            isLoading={pendingSend}
             inputValue={comment.body}
           />
         )}
@@ -176,7 +180,13 @@ const CommentCard = ({ comment, intl, getMessageHistory, proposition }) => {
 };
 
 CommentCard.propTypes = {
-  comment: PropTypes.shape().isRequired,
+  comment: PropTypes.shape({
+    body: PropTypes.string,
+    active_votes: PropTypes.arrayOf(),
+    author: PropTypes.string,
+    created: PropTypes.string,
+    permlink: PropTypes.string,
+  }).isRequired,
   proposition: PropTypes.shape().isRequired,
   intl: PropTypes.shape().isRequired,
   getMessageHistory: PropTypes.func.isRequired,
