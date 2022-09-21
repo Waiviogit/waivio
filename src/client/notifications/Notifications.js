@@ -137,6 +137,7 @@ class Notifications extends React.Component {
                     key={key}
                     notification={notification}
                     read={read}
+                    onClick={this.handleNotificationsClick}
                   />
                 );
               case notificationConstants.ARBITRAGE:
@@ -173,6 +174,7 @@ class Notifications extends React.Component {
                     key={key}
                     notification={notification}
                     read={read}
+                    onClick={this.handleNotificationsClick}
                   />
                 );
               case notificationConstants.REBLOG:
@@ -189,6 +191,7 @@ class Notifications extends React.Component {
                     notification={notification}
                     read={read}
                     currentAuthUsername={currentAuthUsername}
+                    onClick={this.handleNotificationsClick}
                   />
                 );
               case notificationConstants.TRANSFER:
@@ -229,6 +232,7 @@ class Notifications extends React.Component {
                       notification={notification}
                       read={read}
                       currentAuthUsername={currentAuthUsername}
+                      onClick={this.handleNotificationsClick}
                     />
                   );
                 }
@@ -249,6 +253,7 @@ class Notifications extends React.Component {
                     notification={notification}
                     read={read}
                     currentAuthUsername={currentAuthUsername}
+                    onClick={this.handleNotificationsClick}
                   />
                 );
               case notificationConstants.UNDELEGATE:
@@ -269,6 +274,7 @@ class Notifications extends React.Component {
                       notification={notification}
                       read={read}
                       currentAuthUsername={currentAuthUsername}
+                      onClick={this.handleNotificationsClick}
                     />
                   );
                 }
@@ -289,6 +295,7 @@ class Notifications extends React.Component {
                     notification={notification}
                     read={read}
                     currentAuthUsername={currentAuthUsername}
+                    onClick={this.handleNotificationsClick}
                   />
                 );
               case notificationConstants.DELEGATE_VESTING_SHARES:
@@ -313,6 +320,7 @@ class Notifications extends React.Component {
                       notification={notification}
                       read={read}
                       currentAuthUsername={currentAuthUsername}
+                      onClick={this.handleNotificationsClick}
                     />
                   );
                 }
@@ -337,6 +345,7 @@ class Notifications extends React.Component {
                     notification={notification}
                     read={read}
                     currentAuthUsername={currentAuthUsername}
+                    onClick={this.handleNotificationsClick}
                   />
                 );
               case notificationConstants.WITNESS_VOTE:
@@ -359,6 +368,7 @@ class Notifications extends React.Component {
                     key={key}
                     notification={notification}
                     read={read}
+                    onClick={this.handleNotificationsClick}
                   />
                 );
               case notificationConstants.STATUS_CHANGE:
