@@ -65,12 +65,13 @@ Proposition.propTypes = {
     }),
     _id: PropTypes.string,
   }).isRequired,
-  type: PropTypes.string.isRequired,
+  type: PropTypes.string,
   getProposition: PropTypes.func,
 };
 
 Proposition.defaultProps = {
   getProposition: noop,
+  type: '',
 };
 
 export default Proposition;

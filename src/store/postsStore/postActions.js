@@ -94,7 +94,7 @@ export const voteHistoryPost = (currentPost, author, permlink, weight) => (
   });
 };
 
-export const votComment = (comment, weight) => (dispatch, getState, { steemConnectAPI }) => {
+export const voteComment = (comment, weight) => (dispatch, getState, { steemConnectAPI }) => {
   const state = getState();
   const voter = getAuthenticatedUserName(state);
 
