@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { isEmpty, noop } from 'lodash';
 import { injectIntl } from 'react-intl';
 import { useDispatch, useSelector } from 'react-redux';
+import moment from 'moment';
 
 import RewardsPopover from '../../RewardsPopover/RewardsPopover';
 import Avatar from '../../../components/Avatar';
@@ -31,21 +32,32 @@ const PropositionFooter = ({
   const [showComment, setShowComment] = useState(false);
   const [comments, setComments] = useState({});
   const [commentsLoading, setCommentsLoading] = useState(false);
-  const getCommentsList = async () => {
+  const getCommentsList = async (editing, permlink, value) => {
     setCommentsLoading(true);
-    const commentList = await getPostCommentsFromApi({
-      author: proposition?.userName,
-      permlink: proposition?.reservationPermlink,
-      userName: authUserName,
-      category: config.appName,
-    });
+    if (editing) {
+      setComments(
+        comments.reduce((acc, curr) => {
+          if (curr.permlink === permlink) return [...acc, { ...curr, body: value }];
 
-    await setComments(
-      Object.values(commentList.content).filter(
-        comment => comment.permlink !== proposition?.reservationPermlink,
-      ),
-    );
-    await setShowComment(true);
+          return [...acc, curr];
+        }, []),
+      );
+    } else {
+      const commentList = await getPostCommentsFromApi({
+        author: proposition?.userName,
+        permlink: proposition?.reservationPermlink,
+        userName: authUserName,
+        category: config.appName,
+      });
+
+      await setComments(
+        Object.values(commentList.content).filter(
+          comment => comment.permlink !== proposition?.reservationPermlink,
+        ),
+      );
+      await setShowComment(true);
+    }
+
     await setCommentsLoading(false);
   };
 
@@ -60,10 +72,21 @@ const PropositionFooter = ({
   const sendComment = (parentP, commentValue) => {
     setLoading(true);
 
-    return dispatch(sendCommentForReward(proposition, commentValue)).then(() => {
-      setLoading(false);
+    return dispatch(sendCommentForReward(proposition, commentValue)).then(comment => {
       getProposition();
-      getCommentsList();
+      setComments([
+        ...comments,
+        {
+          body: commentValue,
+          created: moment()
+            .utc()
+            .format('YYYY-MM-DDTHH:mm:ss'),
+          author: authUserName,
+          active_votes: [],
+          ...comment,
+        },
+      ]);
+      setLoading(false);
     });
   };
 

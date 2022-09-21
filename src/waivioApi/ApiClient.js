@@ -126,7 +126,7 @@ export const getObject = (authorPermlink, user, locale) => {
       locale,
     },
   })
-    .then(Promise.resolve)
+    .then(res => Promise.resolve(res.json()))
     .catch(Promise.reject);
 };
 

@@ -333,23 +333,21 @@ export const sendCommentForReward = (proposition, body, isUpdating = false, orig
 
   const newBody =
     isUpdating && !auth.isGuestUser ? getBodyPatchIfSmaller(originalComment.body, body) : body;
+  const detail = {
+    parent_author: isUpdating ? originalComment.parent_author : proposition?.userName,
+    parent_permlink: isUpdating
+      ? originalComment.parent_permlink
+      : proposition?.reservationPermlink,
+    author: auth.user.name,
+    permlink,
+    title: '',
+    body: newBody,
+    json_metadata: JSON.stringify(
+      createPostMetadata(body, [], isUpdating && jsonParse(originalComment.json_metadata)),
+    ),
+  };
 
-  const commentOp = [
-    'comment',
-    {
-      parent_author: isUpdating ? originalComment.parent_author : proposition?.userName,
-      parent_permlink: isUpdating
-        ? originalComment.parent_permlink
-        : proposition?.reservationPermlink,
-      author: auth.user.name,
-      permlink,
-      title: '',
-      body: newBody,
-      json_metadata: JSON.stringify(
-        createPostMetadata(body, [], isUpdating && jsonParse(originalComment.json_metadata)),
-      ),
-    },
-  ];
+  const commentOp = ['comment', detail];
 
   return new Promise(resolve =>
     steemConnectAPI
@@ -361,7 +359,7 @@ export const sendCommentForReward = (proposition, body, isUpdating = false, orig
         ]);
         busyAPI.instance.subscribe((datad, j) => {
           if (j?.success && j?.permlink === result.id) {
-            resolve();
+            resolve(detail);
           }
         });
       })
