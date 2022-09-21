@@ -133,16 +133,6 @@ export const fieldsRules = {
       },
     },
     {
-      max: 16,
-      message: {
-        intlId: {
-          id: 'value_error_weight',
-          defaultMessage: "Value can't be more than 9007199254740991.",
-        },
-        intlMeta: { value: 9007199254740991 },
-      },
-    },
-    {
       validator: true,
     },
   ],
@@ -161,16 +151,6 @@ export const fieldsRules = {
       },
     },
     {
-      max: 16,
-      message: {
-        intlId: {
-          id: 'value_error_weight',
-          defaultMessage: "Value can't be more than 9007199254740991.",
-        },
-        intlMeta: { value: 9007199254740991 },
-      },
-    },
-    {
       validator: true,
     },
   ],
@@ -186,16 +166,6 @@ export const fieldsRules = {
           defaultMessage: 'Field is required',
         },
         intlMeta: { field: 'Depth' },
-      },
-    },
-    {
-      max: 16,
-      message: {
-        intlId: {
-          id: 'value_error_weight',
-          defaultMessage: "Value can't be more than 9007199254740991.",
-        },
-        intlMeta: { value: 9007199254740991 },
       },
     },
     {
