@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, FormattedNumber } from 'react-intl';
 import './UserMenu.less';
 
 class UserMenu extends React.Component {
@@ -9,6 +9,7 @@ class UserMenu extends React.Component {
     onChange: PropTypes.func,
     defaultKey: PropTypes.string,
     isGuest: PropTypes.bool,
+    followers: PropTypes.number,
   };
 
   static defaultProps = {
@@ -70,6 +71,9 @@ class UserMenu extends React.Component {
               data-key="followers"
             >
               <FormattedMessage id="followers" defaultMessage="Followers" />
+              <span className="UserMenu__badge">
+                <FormattedNumber value={this.props.followers} />
+              </span>
             </li>
             <li
               className={this.getItemClasses('expertise')}

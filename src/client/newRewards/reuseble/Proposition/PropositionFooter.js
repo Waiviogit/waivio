@@ -12,6 +12,7 @@ import { sendCommentForReward } from '../../../../store/newRewards/newRewardsAct
 import { getAuthenticatedUserName } from '../../../../store/authStore/authSelectors';
 import { getPostCommentsFromApi } from '../../../../waivioApi/ApiClient';
 import CommentCard from '../../Comments/CommentCard';
+import config from '../../../../waivioApi/routes';
 
 import './Proposition.less';
 
@@ -30,18 +31,30 @@ const PropositionFooter = ({
   const [showComment, setShowComment] = useState(false);
   const [comments, setComments] = useState({});
   const [commentsLoading, setCommentsLoading] = useState(false);
-
   const getCommentsList = async () => {
     setCommentsLoading(true);
     const commentList = await getPostCommentsFromApi({
       author: proposition?.userName,
       permlink: proposition?.reservationPermlink,
       userName: authUserName,
+      category: config.appName,
     });
 
-    await setComments(commentList.content);
+    await setComments(
+      Object.values(commentList.content).filter(
+        comment => comment.permlink !== proposition?.reservationPermlink,
+      ),
+    );
     await setShowComment(true);
     await setCommentsLoading(false);
+  };
+
+  const handleCommentsClick = async () => {
+    if (!showComment && proposition?.commentsCount) {
+      getCommentsList();
+    } else {
+      setShowComment(false);
+    }
   };
 
   const sendComment = (parentP, commentValue) => {
@@ -50,6 +63,7 @@ const PropositionFooter = ({
     return dispatch(sendCommentForReward(proposition, commentValue)).then(() => {
       setLoading(false);
       getProposition();
+      getCommentsList();
     });
   };
 
@@ -57,17 +71,29 @@ const PropositionFooter = ({
     switch (type) {
       case 'reserved':
         return (
-          <div className="Proposition-new__footer-container">
-            <div className="Proposition-new__button-container">
-              <b>Reserved</b>
-              <i className="iconfont icon-message_fill" onClick={getCommentsList} />
-              {commentsCount}
-              <RewardsPopover proposition={proposition} getProposition={getProposition} />
+          <React.Fragment>
+            <div className="Proposition-new__footer-container">
+              <div className="Proposition-new__button-container">
+                <b>Reserved</b>
+                <i className="iconfont icon-message_fill" onClick={handleCommentsClick} />
+                {commentsCount}
+                <RewardsPopover proposition={proposition} getProposition={getProposition} />
+              </div>
+              <Button type="primary" onClick={openDetailsModal}>
+                Write review
+              </Button>
             </div>
-            <Button type="primary" onClick={openDetailsModal}>
-              Write review
-            </Button>
-          </div>
+            {showComment &&
+              comments.map(comment => (
+                <CommentCard
+                  key={`${comment?.author}/${comment?.permlink}`}
+                  comment={comment}
+                  getMessageHistory={getCommentsList}
+                  proposition={proposition}
+                />
+              ))}
+            <QuickCommentEditor onSubmit={sendComment} isLoading={loading} />
+          </React.Fragment>
         );
       case 'history':
       case 'reservations':
@@ -86,7 +112,7 @@ const PropositionFooter = ({
                 {commentsLoading ? (
                   <Icon type="loading" />
                 ) : (
-                  <i className="iconfont icon-message_fill" onClick={getCommentsList} />
+                  <i className="iconfont icon-message_fill" onClick={handleCommentsClick} />
                 )}
                 {commentsCount}
                 <RewardsPopover
@@ -106,10 +132,10 @@ const PropositionFooter = ({
               <div>Codes: {proposition?.fraudCodes.join(', ')}</div>
             )}
             {showComment &&
-              Object.entries(comments).map(comment => (
+              comments.map(comment => (
                 <CommentCard
-                  key={comment[0]}
-                  comment={comment[1]}
+                  key={`${comment?.author}/${comment?.permlink}`}
+                  comment={comment}
                   getMessageHistory={getCommentsList}
                   proposition={proposition}
                 />
@@ -146,6 +172,7 @@ PropositionFooter.propTypes = {
   proposition: PropTypes.shape({
     reviewStatus: PropTypes.string,
     userName: PropTypes.string,
+    commentsCount: PropTypes.number,
     reservationPermlink: PropTypes.string,
     fraudCodes: PropTypes.arrayOf(PropTypes.number),
   }).isRequired,

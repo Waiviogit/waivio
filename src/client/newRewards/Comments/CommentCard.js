@@ -7,7 +7,8 @@ import {
   injectIntl,
 } from 'react-intl';
 import classNames from 'classnames';
-import { Icon } from 'antd';
+import { Icon, message } from 'antd';
+
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
@@ -17,7 +18,7 @@ import BTooltip from '../../components/BTooltip';
 import BodyContainer from '../../containers/Story/BodyContainer';
 import QuickCommentEditor from '../../components/Comments/QuickCommentEditor';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
-import { votComment } from '../../../store/postsStore/postActions';
+import { voteComment } from '../../../store/postsStore/postActions';
 import { getDownvotesQuontity, getUpvotesQuontity } from '../../../common/helpers/voteHelpers';
 import { sendCommentForReward } from '../../../store/newRewards/newRewardsActions';
 
@@ -35,9 +36,16 @@ const CommentCard = ({ comment, intl, getMessageHistory, proposition }) => {
 
   const handleVote = (weight, setPending) => {
     setPending(true);
-    dispatch(votComment(comment, weight))
+    dispatch(voteComment(comment, weight))
       .then(() => {
-        setTimeout(() => getMessageHistory().finally(() => setPending(false)), 10000);
+        setTimeout(
+          () =>
+            getMessageHistory().finally(() => {
+              setPending(false);
+              message.success('Comment submitted');
+            }),
+          10000,
+        );
       })
       .catch(() => setPending(false));
   };
@@ -80,7 +88,7 @@ const CommentCard = ({ comment, intl, getMessageHistory, proposition }) => {
               </span>
             }
           >
-            <FormattedRelative value={comment.created} />
+            <FormattedRelative value={`${comment.created}Z`} />
           </BTooltip>
         </span>
         <div className="Comment__content">

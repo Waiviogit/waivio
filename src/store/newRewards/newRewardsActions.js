@@ -161,6 +161,67 @@ export const rejectAuthorReview = proposition => (
   });
 };
 
+export const decreaseReward = (proposition, amount) => (
+  dispatch,
+  getState,
+  { steemConnectAPI, busyAPI },
+) => {
+  const autnUserName = getAuthenticatedUserName(getState());
+  const isSponsor = autnUserName === proposition?.guideName;
+
+  const details = isSponsor
+    ? {
+        body: `Sponsor ${autnUserName} (@${autnUserName}) has increased the reward by ${amount} WAIV`,
+        title: 'Increase reward',
+        json_metadata: JSON.stringify({
+          waivioRewards: {
+            type: 'raiseReviewReward',
+            riseAmount: amount,
+            activationPermlink: proposition?.activationPermlink,
+          },
+        }),
+      }
+    : {
+        body: `User ${autnUserName} (@${autnUserName}) has decreased the reward by ${amount} WAIV`,
+        title: 'Decrease reward',
+        json_metadata: JSON.stringify({
+          waivioRewards: {
+            type: 'reduceReviewReward',
+            reduceAmount: amount,
+            activationPermlink: proposition?.activationPermlink,
+          },
+        }),
+      };
+
+  const commentOp = [
+    'comment',
+    {
+      parent_author: proposition.userName,
+      parent_permlink: proposition.reservationPermlink,
+      author: proposition.guideName,
+      permlink: createCommentPermlink(proposition.userName, proposition.reservationPermlink),
+      ...details,
+    },
+  ];
+
+  return new Promise((resolve, reject) => {
+    steemConnectAPI
+      .broadcast([commentOp])
+      .then(res => {
+        busyAPI.instance.sendAsync(subscribeTypes.subscribeTransactionId, [
+          proposition.guideName,
+          res.result.id,
+        ]);
+        busyAPI.instance.subscribe((datad, j) => {
+          if (j?.success && j?.permlink === res.result.id) {
+            resolve();
+          }
+        });
+      })
+      .catch(reject);
+  });
+};
+
 export const deactivateCampaing = (item, guideName) => (
   dispatch,
   getState,
@@ -254,7 +315,7 @@ export const setNewMatchBotRules = ruleObj => (
 export const sendCommentForReward = (proposition, body, isUpdating = false, originalComment) => (
   dispatch,
   getState,
-  { steemConnectAPI },
+  { steemConnectAPI, busyAPI },
 ) => {
   const { auth } = getState();
 
@@ -290,9 +351,22 @@ export const sendCommentForReward = (proposition, body, isUpdating = false, orig
     },
   ];
 
-  return steemConnectAPI.broadcast([commentOp]).catch(err => {
-    dispatch(notify(err.error.message || err.error_description, 'error'));
-  });
+  return new Promise(resolve =>
+    steemConnectAPI
+      .broadcast([commentOp])
+      .then(({ result }) => {
+        busyAPI.instance.sendAsync(subscribeTypes.subscribeTransactionId, [
+          auth.user.name,
+          result.id,
+        ]);
+        busyAPI.instance.subscribe((datad, j) => {
+          if (j?.success && j?.permlink === result.id) {
+            resolve();
+          }
+        });
+      })
+      .catch(err => dispatch(notify(err.error.message || err.error_description, 'error'))),
+  );
 };
 
 export default null;
