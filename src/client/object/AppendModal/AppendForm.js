@@ -194,7 +194,6 @@ export default class AppendForm extends Component {
 
   state = {
     isOptionChangeable: false,
-    isNumberValid: true,
     isSomeValue: true,
     imageUploading: false,
     votePercent: this.props.defaultVotePercent / 100,
