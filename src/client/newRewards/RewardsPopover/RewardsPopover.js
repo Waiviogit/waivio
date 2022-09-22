@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import { Icon, Input, Modal } from 'antd';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { debounce, noop } from 'lodash';
 import { Link } from 'react-router-dom';
@@ -13,27 +13,39 @@ import {
   rejectAuthorReview,
 } from '../../../store/newRewards/newRewardsActions';
 import Report from '../../rewards/Report/Report';
+import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
+// import { followUser, unfollowUser } from '../../../store/userStore/userActions';
+// import { changeBlackAndWhiteLists } from '../../../store/rewardsStore/rewardsActions';
+// import ids from '../BlackList/constants';
 
 const RewardsPopover = ({ proposition, getProposition, type }) => {
   const [isVisiblePopover, setIsVisiblePopover] = useState(false);
   const [amount, setAmount] = useState(0);
   const [openDecrease, setOpenDecrease] = useState(false);
   const [isModalReportOpen, setIsModalReportOpen] = useState(false);
+  const authUserName = useSelector(getAuthenticatedUserName);
   const dispatch = useDispatch();
   const rewiewType = type === 'reserved' ? 'reserved' : proposition.reviewStatus;
 
   const getPopoverItems = () => {
-    const itemArray = [
+    const viewReservation = (
       <PopoverMenuItem key={'view_reservation'}>
         <Link to={`/@${proposition?.userName}/${proposition?.reservationPermlink}`}>
           View reservation
         </Link>
-      </PopoverMenuItem>,
-    ];
+      </PopoverMenuItem>
+    );
     const decrease = (
       <PopoverMenuItem key={'decrease'}>
         <div role="presentation" onClick={openDecreaseModal}>
           Decrease reward
+        </div>
+      </PopoverMenuItem>
+    );
+    const increase = (
+      <PopoverMenuItem key={'decrease'}>
+        <div role="presentation" onClick={openDecreaseModal}>
+          Increase reward
         </div>
       </PopoverMenuItem>
     );
@@ -42,11 +54,54 @@ const RewardsPopover = ({ proposition, getProposition, type }) => {
         <Link to={`/@${proposition?.userName}/${proposition?.reviewPermlink}`}>Open review</Link>
       </PopoverMenuItem>
     );
+    const rejectionNote = (
+      <PopoverMenuItem key={'rejection_note'}>
+        <Link to={`/@${proposition?.userName}/${proposition?.rejectionPermlink}`}>
+          Rejection note
+        </Link>
+      </PopoverMenuItem>
+    );
     const report = (
       <PopoverMenuItem key={'show_report'}>
         <div onClick={() => setIsModalReportOpen(true)}>Show report</div>
       </PopoverMenuItem>
     );
+    // const followUserItem = (
+    //   <PopoverMenuItem key={'follow_user'}>
+    //     <div onClick={() => dispatch(followUser(proposition?.guideName))}>
+    //       Follow @{proposition?.guideName}
+    //     </div>
+    //   </PopoverMenuItem>
+    // );
+    // const unfollowUserItem = (
+    //   <PopoverMenuItem key={'follow_user'}>
+    //     <div onClick={() => dispatch(unfollowUser(proposition?.guideName))}>
+    //       Unfollow @{proposition?.guideName}
+    //     </div>
+    //   </PopoverMenuItem>
+    // );
+    // const addToBlackList = (
+    //   <PopoverMenuItem key={'blacklist'}>
+    //     <div
+    //       onClick={() =>
+    //         dispatch(changeBlackAndWhiteLists(ids.blackList.add, proposition?.userName))
+    //       }
+    //     >
+    //       Add to blacklist @{proposition?.userName}
+    //     </div>
+    //   </PopoverMenuItem>
+    // );
+    // const removeFromBlackList = (
+    //   <PopoverMenuItem key={'blacklist'}>
+    //     <div
+    //       onClick={() =>
+    //         dispatch(changeBlackAndWhiteLists(ids.blackList.remove, proposition?.userName))
+    //       }
+    //     >
+    //       Remove from blacklist @{proposition?.userName}
+    //     </div>
+    //   </PopoverMenuItem>
+    // );
 
     switch (rewiewType) {
       case 'reserved':
@@ -56,14 +111,22 @@ const RewardsPopover = ({ proposition, getProposition, type }) => {
               <Icon type="flag" /> Release reservation
             </div>
           </PopoverMenuItem>,
-          ...itemArray,
-          decrease,
+          viewReservation,
+          increase,
+          // followUserItem,
         ];
       case 'completed':
-        return [...itemArray, openReview, decrease, report];
+        return [
+          viewReservation,
+          openReview,
+          report,
+          proposition?.userName === authUserName ? decrease : null,
+        ];
+      case 'reject':
+        return [viewReservation, rejectionNote];
       case 'unassigned':
       case 'expired':
-        return [...itemArray];
+        return [viewReservation];
       default:
         return [
           <PopoverMenuItem key={'release'}>
@@ -71,7 +134,7 @@ const RewardsPopover = ({ proposition, getProposition, type }) => {
               <Icon type="flag" /> Release reservation
             </div>
           </PopoverMenuItem>,
-          ...itemArray,
+          viewReservation,
         ];
     }
   };
@@ -169,6 +232,7 @@ RewardsPopover.propTypes = {
     userName: PropTypes.string,
     reviewStatus: PropTypes.string,
     reviewPermlink: PropTypes.string,
+    rejectionPermlink: PropTypes.string,
   }).isRequired,
   type: PropTypes.string.isRequired,
   getProposition: PropTypes.func,
