@@ -761,10 +761,10 @@ class ObjectInfo extends React.Component {
     return (
       <React.Fragment>
         {!isEditMode && wobject.authors && (
-          <div className="CompanyId__wordbreak flex flex-column mb1">
+          <div className="CompanyId__wordbreak flex flex-column field-info">
             By
             {authorsBody?.map(a => (
-              <div className="CompanyId__wordbreak ml1" key={a.authorPermlink}>
+              <div className="CompanyId__wordbreak " key={a.authorPermlink}>
                 <Link to={`/object/${a.authorPermlink}`}>{a.name}</Link>
               </div>
             ))}
