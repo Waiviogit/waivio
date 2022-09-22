@@ -94,6 +94,24 @@ export const voteHistoryPost = (currentPost, author, permlink, weight) => (
   });
 };
 
+export const voteComment = (comment, weight) => (dispatch, getState, { steemConnectAPI }) => {
+  const state = getState();
+  const voter = getAuthenticatedUserName(state);
+
+  if (!voter) {
+    return null;
+  }
+
+  return dispatch({
+    type: LIKE_POST_HISTORY,
+    payload: {
+      promise: steemConnectAPI
+        .vote(voter, comment.author, comment.permlink, weight)
+        .then(res => res),
+    },
+  });
+};
+
 export const reblogPost = (postId, userName) => dispatch =>
   dispatch({
     type: FAKE_REBLOG_POST,

@@ -126,9 +126,8 @@ export const getObject = (authorPermlink, user, locale) => {
       locale,
     },
   })
-    .then(handleErrors)
-    .then(res => res.json())
-    .catch(error => error);
+    .then(res => Promise.resolve(res.json()))
+    .catch(Promise.reject);
 };
 
 export const getUsersByObject = object =>

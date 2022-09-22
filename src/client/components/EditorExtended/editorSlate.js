@@ -284,7 +284,7 @@ const EditorSlate = props => {
   }, [params]);
 
   useEffect(() => {
-    if ((body || initialBody) && initiallized && !isComment) {
+    if ((body || initialBody) && initiallized) {
       setInitiallized(false);
       const postParsed = deserializeToSlate(body || initialBody);
 

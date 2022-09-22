@@ -40,6 +40,9 @@ export const objectFields = {
   title: 'title',
   language: 'language',
   printLength: 'printLength',
+  dimensions: 'dimensions',
+  productWeight: 'productWeight',
+  authors: 'authors',
 };
 
 export const TYPES_OF_MENU_ITEM = {
@@ -79,6 +82,11 @@ export const addressFields = {
   postalCode: 'postalCode',
   state: 'state',
   country: 'country',
+};
+
+export const authorsFields = {
+  name: 'name',
+  author: 'author',
 };
 
 export const addressFieldsForFormatting = [
@@ -123,6 +131,12 @@ export const phoneFields = {
   name: 'name',
   number: 'number',
 };
+export const dimensionsFields = {
+  length: 'length',
+  width: 'width',
+  depth: ' depth',
+  unitOfLength: 'unitOfLength',
+};
 
 export const ratingFields = {
   category: 'category',
@@ -132,6 +146,10 @@ export const ratingFields = {
 export const blogFields = {
   title: 'blogTitle',
   account: 'blogAccount',
+};
+export const weightFields = {
+  weight: 'weight',
+  unitOfWeight: 'unitOfWeight',
 };
 
 export const formColumnsField = {
@@ -207,6 +225,14 @@ export const errorObjectFields = {
   [objectFields.publicationDate]: [objectFields.publicationDate],
   [objectFields.form]: [formFormFields.link, formFormFields.widget, formFormFields.title],
   [objectFields.publisher]: [objectFields.publisher],
+  [objectFields.productWeight]: [weightFields.weight, weightFields.unitOfWeight],
+  [objectFields.dimensions]: [
+    dimensionsFields.length,
+    dimensionsFields.depth,
+    dimensionsFields.width,
+    dimensionsFields.unitOfLength,
+  ],
+  [objectFields.authors]: [authorsFields.author, authorsFields.name, objectFields.authors],
 };
 
 export default null;

@@ -40,8 +40,10 @@ import { assignProposition } from '../../../store/userStore/userActions';
 import { getImagePathPost } from '../../../common/helpers/image';
 import MuteModal from '../../widgets/MuteModal';
 import { muteAuthorPost } from '../../../store/postsStore/postActions';
+import PropositionNew from '../../newRewards/reuseble/Proposition/Proposition';
 
 import './StoryFull.less';
+import Campaing from '../../newRewards/reuseble/Campaing';
 
 @injectIntl
 @withRouter
@@ -488,8 +490,13 @@ class StoryFull extends React.Component {
               {map(linkedObjects, obj => {
                 if (obj.campaigns) {
                   const minReward = get(obj, ['campaigns', 'min_reward']);
-                  const rewardPricePassed = minReward ? round(minReward, 2) : '';
                   const maxReward = get(obj, ['campaigns', 'max_reward']);
+
+                  if (obj.campaigns.newCampaigns) {
+                    return <Campaing campain={{ minReward, maxReward, object: obj }} />;
+                  }
+
+                  const rewardPricePassed = minReward ? round(minReward, 2) : '';
                   const rewardMaxPassed = maxReward !== minReward ? round(maxReward, 2) : '';
 
                   return (
@@ -506,21 +513,25 @@ class StoryFull extends React.Component {
                 }
 
                 if (!isEmpty(obj.propositions)) {
-                  return obj.propositions.map(proposition => (
-                    <Proposition
-                      guide={proposition.guide}
-                      proposition={proposition}
-                      wobj={obj}
-                      assignCommentPermlink={obj.permlink}
-                      assignProposition={this.assignPropositionHandler}
-                      authorizedUserName={user.name}
-                      loading={loadingAssign}
-                      key={obj.author_permlink}
-                      match={match}
-                      user={user}
-                      history={history}
-                    />
-                  ));
+                  return obj.propositions.map(proposition =>
+                    proposition?.newCampaigns ? (
+                      <PropositionNew proposition={{ ...proposition, object: obj }} />
+                    ) : (
+                      <Proposition
+                        guide={proposition.guide}
+                        proposition={proposition}
+                        wobj={obj}
+                        assignCommentPermlink={obj.permlink}
+                        assignProposition={this.assignPropositionHandler}
+                        authorizedUserName={user.name}
+                        loading={loadingAssign}
+                        key={obj.author_permlink}
+                        match={match}
+                        user={user}
+                        history={history}
+                      />
+                    ),
+                  );
                 }
 
                 return (

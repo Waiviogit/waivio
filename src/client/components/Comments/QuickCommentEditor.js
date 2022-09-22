@@ -6,8 +6,6 @@ import { get } from 'lodash';
 import { Transforms } from 'slate';
 import withEditor from '../Editor/withEditor';
 import { getIsAuthenticated } from '../../../store/authStore/authSelectors';
-
-import './QuickCommentEditor.less';
 import EditorSlate from '../EditorExtended/editorSlate';
 import { editorStateToMarkdownSlate } from '../EditorExtended/util/editorStateToMarkdown';
 import { checkCursorInSearchSlate } from '../../../common/helpers/editorHelper';
@@ -17,6 +15,8 @@ import { getObjectUrl } from '../../../common/helpers/postHelpers';
 import { insertObject } from '../EditorExtended/util/SlateEditor/utils/common';
 import { getEditorSlate } from '../../../store/slateEditorStore/editorSelectors';
 import { resetEditorState } from '../EditorExtended/util/SlateEditor/utils/SlateUtilityFunctions';
+
+import './QuickCommentEditor.less';
 
 @withEditor
 @connect(state => ({
@@ -130,6 +130,7 @@ class QuickCommentEditor extends React.Component {
               handleObjectSelect={this.handleObjectSelect}
               setEditorCb={this.setEditor}
               ADD_BTN_DIF={24}
+              initialBody={this.props.inputValue}
             />
             {isLoading ? (
               <Icon

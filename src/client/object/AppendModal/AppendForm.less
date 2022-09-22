@@ -151,6 +151,22 @@
       box-shadow: 0 0 3px @orange, 0 0 5px @red;
     }
   }
+  &__input-author {
+    background-color: unset !important;
+    width: 100%;
+    margin: 0 0 10px !important;
+
+    .ant-calendar-picker-input.ant-input {
+      height: 45px !important;
+      font-size: 20px !important;
+      font-weight: bold;
+    }
+
+    &.validation-error {
+      border: 1px solid @red;
+      box-shadow: 0 0 3px @orange, 0 0 5px @red;
+    }
+  }
 
   &__hashtags {
     & > div {
@@ -266,6 +282,17 @@ div[data-dir='rtl'] .Editor {
     padding-left: 4px;
     margin-bottom: 16px;
   }
+}
+.add-create-btns {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  width: 100%;
+  margin-top: -5px !important;
+}
+.margin-top-bottom {
+  margin-bottom: 2px !important;
+  margin-top: 5px !important;
 }
 
 @import './AppendForm-nightmode';
