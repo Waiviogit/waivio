@@ -630,7 +630,7 @@ class ObjectInfo extends React.Component {
             )}
         {!isEditMode
           ? ageRange && (
-              <div className="field-website">
+              <div className="field-info">
                 <span className="field-website__title">
                   <Icon type="read" className="iconfont icon-link text-icon link" />
                   <span className="CompanyId__wordbreak">{ageRange}</span>
@@ -640,7 +640,7 @@ class ObjectInfo extends React.Component {
           : this.listItem(
               objectFields.ageRange,
               ageRange && (
-                <div className="field-website">
+                <div className="field-info">
                   <span className="field-website__title">
                     <Icon type="read" className="iconfont icon-link text-icon link" />
                     <span className="CompanyId__wordbreak">{ageRange}</span>
@@ -650,7 +650,7 @@ class ObjectInfo extends React.Component {
             )}
         {!isEditMode
           ? language && (
-              <div className="field-website">
+              <div className="field-info">
                 <span className="field-website__title">
                   <Icon type="global" className="iconfont icon-link text-icon link" />
                   <span className="CompanyId__wordbreak">{language}</span>
@@ -660,7 +660,7 @@ class ObjectInfo extends React.Component {
           : this.listItem(
               objectFields.language,
               language && (
-                <div className="field-website">
+                <div className="field-info">
                   <span className="field-website__title">
                     <Icon type="global" className="iconfont icon-link text-icon link" />
                     <span className="CompanyId__wordbreak">{language}</span>
@@ -670,7 +670,7 @@ class ObjectInfo extends React.Component {
             )}
         {!isEditMode
           ? wobject.publicationDate && (
-              <div className="field-website">
+              <div className="field-info">
                 <span className="field-website__title">
                   <img
                     className="ObjectInfo__margin-top"
@@ -684,7 +684,7 @@ class ObjectInfo extends React.Component {
           : this.listItem(
               objectFields.publicationDate,
               wobject.publicationDate && (
-                <div className="field-website">
+                <div className="field-info">
                   <span className="field-website__title">
                     <img
                       className="ObjectInfo__margin-top"
@@ -698,7 +698,7 @@ class ObjectInfo extends React.Component {
             )}
         {!isEditMode
           ? printLength && (
-              <div className="field-website">
+              <div className="field-info">
                 <span className="field-website__title">
                   <Icon type="book" className="iconfont icon-link text-icon link" />
                   <span className="CompanyId__wordbreak">
@@ -710,7 +710,7 @@ class ObjectInfo extends React.Component {
           : this.listItem(
               objectFields.printLength,
               printLength && (
-                <div className="field-website">
+                <div className="field-info">
                   <span className="field-website__title">
                     <Icon type="book" className="iconfont icon-link text-icon link" />
                     <span className="CompanyId__wordbreak">
@@ -721,6 +721,42 @@ class ObjectInfo extends React.Component {
                 </div>
               ),
             )}
+        {this.listItem(
+          objectFields.productWeight,
+          productWeight && (
+            <div className="field-info">
+              <span className="field-website__title">
+                <img
+                  style={{ width: '14px', height: '14px' }}
+                  className="ObjectInfo__margin-top"
+                  src={'/images/icons/scale.png'}
+                  alt="Scale icon"
+                />{' '}
+                <span>
+                  {productWeight.value} {productWeight.unit}
+                </span>
+              </span>
+            </div>
+          ),
+        )}
+        {this.listItem(
+          objectFields.dimensions,
+          dimensions && (
+            <div className="field-info">
+              <span className="field-website__title">
+                <img
+                  style={{ width: '14px', height: '14px' }}
+                  className="ObjectInfo__margin-top"
+                  src={'/images/icons/dimensions-icon.svg'}
+                  alt="Scale icon"
+                />{' '}
+                <span className="CompanyId__wordbreak">
+                  {dimensions.length} x {dimensions.width} x {dimensions.depth} {dimensions.unit}
+                </span>
+              </span>
+            </div>
+          ),
+        )}
       </React.Fragment>
     );
 
@@ -761,7 +797,7 @@ class ObjectInfo extends React.Component {
     return (
       <React.Fragment>
         {!isEditMode && wobject.authors && (
-          <div className="CompanyId__wordbreak flex flex-column mb1">
+          <div className="CompanyId__wordbreak field-info flex flex-column mb1">
             By
             {authorsBody?.map(a => (
               <div className="CompanyId__wordbreak ml1" key={a.authorPermlink}>
@@ -786,43 +822,6 @@ class ObjectInfo extends React.Component {
                   wobject={publisher}
                   showFollow={false}
                 />
-              ),
-            )}
-            {this.listItem(
-              objectFields.productWeight,
-              productWeight && (
-                <div className="field-website">
-                  <span className="field-website__title">
-                    <img
-                      style={{ width: '14px', height: '14px' }}
-                      className="ObjectInfo__margin-top"
-                      src={'/images/icons/scale-img.png'}
-                      alt="Scale icon"
-                    />{' '}
-                    <span className="CompanyId__wordbreak">
-                      {productWeight.value} {productWeight.unit}
-                    </span>
-                  </span>
-                </div>
-              ),
-            )}
-            {this.listItem(
-              objectFields.dimensions,
-              dimensions && (
-                <div className="field-website">
-                  <span className="field-website__title">
-                    <img
-                      style={{ width: '14px', height: '14px' }}
-                      className="ObjectInfo__margin-top"
-                      src={'/images/icons/dimensions-icon.svg'}
-                      alt="Scale icon"
-                    />{' '}
-                    <span className="CompanyId__wordbreak">
-                      {dimensions.length} x {dimensions.width} x {dimensions.depth}{' '}
-                      {dimensions.unit}
-                    </span>
-                  </span>
-                </div>
               ),
             )}
             {!isHashtag && !hasType(wobject, OBJECT_TYPE.PAGE) && menuSection()}

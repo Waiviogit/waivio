@@ -466,7 +466,7 @@ export default class AppendForm extends Component {
             dimensionsFields.width,
           )},${dimensionsFields.depth}: ${getFieldValue(dimensionsFields.depth)}, ${
             dimensionsFields.unitOfLength
-          }: ${getFieldValue(dimensionsFields.unitOfLength)},`;
+          }: ${getFieldValue(dimensionsFields.unitOfLength)}`;
         case objectFields.ageRange:
         case objectFields.language:
         case objectFields.printLength:
@@ -1121,6 +1121,16 @@ export default class AppendForm extends Component {
       ? this.isDuplicate(currentLocale, currentField)
       : false;
 
+    if (currentField === objectFields.productWeight || currentField === objectFields.dimensions) {
+      if (value > 9007199254740991) {
+        callback(
+          intl.formatMessage({
+            id: 'value_error_weight',
+            defaultMessage: "Value can't be more than 9007199254740991.",
+          }),
+        );
+      }
+    }
     if (isDuplicated) {
       const messages =
         currentField === objectFields.blog

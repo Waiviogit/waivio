@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, Icon } from 'antd';
 import PropTypes from 'prop-types';
 import { isEmpty, noop } from 'lodash';
 import { injectIntl } from 'react-intl';
 import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment';
+import { useLocation } from 'react-router';
 
 import RewardsPopover from '../../RewardsPopover/RewardsPopover';
 import Avatar from '../../../components/Avatar';
@@ -17,21 +18,20 @@ import config from '../../../../waivioApi/routes';
 
 import './Proposition.less';
 
-const PropositionFooter = ({
-  type,
-  openDetailsModal,
-  countReservationDays,
-  commentsCount,
-  proposition,
-  getProposition,
-  intl,
-}) => {
+const PropositionFooter = ({ type, openDetailsModal, proposition, getProposition, intl }) => {
   const dispatch = useDispatch();
   const authUserName = useSelector(getAuthenticatedUserName);
+  const location = useLocation();
   const [loading, setLoading] = useState(false);
   const [showComment, setShowComment] = useState(false);
-  const [comments, setComments] = useState({});
+  const [comments, setComments] = useState([]);
+  const [commentsCount, setCommentsCount] = useState(proposition?.commentsCount);
   const [commentsLoading, setCommentsLoading] = useState(false);
+
+  useEffect(() => {
+    if (showComment) setShowComment(false);
+  }, [location.search]);
+
   const getCommentsList = async (editing, permlink, value) => {
     setCommentsLoading(true);
     if (editing) {
@@ -43,26 +43,26 @@ const PropositionFooter = ({
         }, []),
       );
     } else {
-      const commentList = await getPostCommentsFromApi({
+      const postInfo = await getPostCommentsFromApi({
         author: proposition?.userName,
         permlink: proposition?.reservationPermlink,
         userName: authUserName,
         category: config.appName,
       });
-
-      await setComments(
-        Object.values(commentList.content).filter(
-          comment => comment.permlink !== proposition?.reservationPermlink,
-        ),
+      const commensList = Object.values(postInfo.content).filter(
+        comment => comment.permlink !== proposition?.reservationPermlink,
       );
+
+      await setComments(commensList);
       await setShowComment(true);
+      await setCommentsCount(commensList?.length);
     }
 
     await setCommentsLoading(false);
   };
 
   const handleCommentsClick = async () => {
-    if (!showComment && proposition?.commentsCount) {
+    if (!showComment && commentsCount) {
       getCommentsList();
     } else {
       setShowComment(false);
@@ -73,8 +73,7 @@ const PropositionFooter = ({
     setLoading(true);
 
     return dispatch(sendCommentForReward(proposition, commentValue)).then(comment => {
-      getProposition();
-      setComments([
+      const commentList = [
         ...comments,
         {
           body: commentValue,
@@ -85,7 +84,10 @@ const PropositionFooter = ({
           active_votes: [],
           ...comment,
         },
-      ]);
+      ];
+
+      setComments(commentList);
+      setCommentsCount(commentList?.length);
       setLoading(false);
     });
   };
@@ -173,7 +175,7 @@ const PropositionFooter = ({
             <Button type="primary" onClick={openDetailsModal}>
               <b>Reserve</b> Your Reward
             </Button>{' '}
-            for {countReservationDays} days
+            for {proposition?.countReservationDays} days
           </div>
         );
     }
@@ -189,13 +191,12 @@ const PropositionFooter = ({
 PropositionFooter.propTypes = {
   type: PropTypes.string.isRequired,
   openDetailsModal: PropTypes.func.isRequired,
-  countReservationDays: PropTypes.number.isRequired,
-  commentsCount: PropTypes.number.isRequired,
   getProposition: PropTypes.func,
   proposition: PropTypes.shape({
     reviewStatus: PropTypes.string,
     userName: PropTypes.string,
     commentsCount: PropTypes.number,
+    countReservationDays: PropTypes.number,
     reservationPermlink: PropTypes.string,
     fraudCodes: PropTypes.arrayOf(PropTypes.number),
   }).isRequired,
