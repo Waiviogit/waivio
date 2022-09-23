@@ -84,7 +84,6 @@ import SearchUsersAutocomplete from '../../components/EditorUser/SearchUsersAuto
 import SelectUserForAutocomplete from '../../widgets/SelectUserForAutocomplete';
 import ObjectCardView from '../../objectCard/ObjectCardView';
 import CreateObject from '../../post/CreateObjectModal/CreateObject';
-import { baseUrl } from '../../../waivioApi/routes';
 import AppendFormFooter from './AppendFormFooter';
 import ImageSetter from '../../components/ImageSetter/ImageSetter';
 import ObjectForm from '../Form/ObjectForm';
@@ -108,6 +107,7 @@ import NewsFilterForm from './FormComponents/NewsFilterForm';
 import './AppendForm.less';
 import { getAppendList } from '../../../store/appendStore/appendSelectors';
 import { parseJSON } from '../../../common/helpers/parseJSON';
+import { baseUrl } from '../../../waivioApi/routes';
 
 @connect(
   state => ({
@@ -437,9 +437,13 @@ export default class AppendForm extends Component {
             formValues[weightFields.weight]
           }, ${weightFields.unitOfWeight}: ${formValues[weightFields.unitOfWeight]}`;
         case objectFields.authors:
-          return `@${author} added ${currentField} (${langReadable}): name: ${
-            formValues[authorsFields.name]
-          }, link: ${this.state.selectedObject.authorPermlink}`;
+          const linkInfo = this.state.selectedObject
+            ? `, link: ${this.state.selectedObject.author_permlink}`
+            : '';
+
+          return `@${author} added author (${langReadable}): name: ${formValues[
+            authorsFields.name
+          ] || this.state.selectedObject.name} ${linkInfo} `;
         case objectFields.phone:
           return `@${author} added ${currentField}(${langReadable}):\n ${appendValue.replace(
             /[{}"]/g,
@@ -598,7 +602,8 @@ export default class AppendForm extends Component {
           body: JSON.stringify({
             name: formValues[authorsFields.name] || this.state.selectedObject.name,
             authorPermlink: this.state.selectedObject?.author_permlink,
-            defaultShowLink: getObjectUrlForLink(this.state.selectedObject),
+            defaultShowLink:
+              this.state.selectedObject && getObjectUrlForLink(this.state.selectedObject),
           }),
         };
       }
@@ -1498,7 +1503,7 @@ export default class AppendForm extends Component {
                 initialValue: '',
               })(
                 <Input
-                  className={classNames('AppendForm__input-author', {
+                  className={classNames('AppendForm__input', {
                     'validation-error': !this.state.isSomeValue,
                   })}
                   disabled={loading}
@@ -2868,7 +2873,7 @@ export default class AppendForm extends Component {
           isEmpty(getFieldValue(websiteFields.link)) || isEmpty(getFieldValue(websiteFields.title))
         );
       case objectFields.authors:
-        return this.state.selectedObject === null;
+        return isEmpty(getFieldValue(authorsFields.name));
       case objectFields.productWeight:
         return (
           isEmpty(getFieldValue(weightFields.weight)) ||

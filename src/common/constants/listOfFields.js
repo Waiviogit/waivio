@@ -232,7 +232,7 @@ export const errorObjectFields = {
     dimensionsFields.width,
     dimensionsFields.unitOfLength,
   ],
-  [objectFields.authors]: [authorsFields.author, authorsFields.name, objectFields.authors],
+  [objectFields.authors]: [authorsFields.name],
 };
 
 export default null;
