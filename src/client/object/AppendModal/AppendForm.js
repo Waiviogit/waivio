@@ -47,6 +47,7 @@ import {
   errorObjectFields,
   dimensionsFields,
   weightFields,
+  publisherFields,
 } from '../../../common/constants/listOfFields';
 import OBJECT_TYPE from '../const/objectTypes';
 import { getSuitableLanguage } from '../../../store/reducers';
@@ -429,9 +430,13 @@ export default class AppendForm extends Component {
         case objectFields.background:
           return `@${author} added ${currentField} (${langReadable}):\n ![${currentField}](${appendValue})`;
         case objectFields.publisher:
-          return `@${author} added ${currentField} (${langReadable}): ${
-            formValues[objectFields.publisher]
-          }`;
+          const linkInfo = this.state.selectedObject
+            ? `, link: ${this.state.selectedObject.author_permlink}`
+            : '';
+
+          return `@${author} added ${currentField} (${langReadable}): name: ${
+            formValues[publisherFields.publisherName]
+          } ${linkInfo}`;
         case objectFields.productWeight:
           return `@${author} added ${currentField} (${langReadable}): ${weightFields.weight}: ${
             formValues[weightFields.weight]
@@ -589,10 +594,12 @@ export default class AppendForm extends Component {
         fieldsObject = {
           ...fieldsObject,
           body: JSON.stringify({
-            name: getObjectName(this.state.selectedObject),
+            name:
+              formValues[publisherFields.publisherName] || getObjectName(this.state.selectedObject),
             authorPermlink: this.state.selectedObject?.author_permlink,
-            defaultShowLink: getObjectUrlForLink(this.state.selectedObject),
-            avatar: getObjectAvatar(this.state.selectedObject),
+            defaultShowLink:
+              this.state.selectedObject && getObjectUrlForLink(this.state.selectedObject),
+            avatar: this.state.selectedObject && getObjectAvatar(this.state.selectedObject),
           }),
         };
       }
@@ -1463,35 +1470,57 @@ export default class AppendForm extends Component {
       }
       case objectFields.publisher: {
         return (
-          <Form.Item>
-            {getFieldDecorator(objectFields.publisher, {
-              rules: this.getFieldRules(objectFields.publisher),
-            })(
-              <SearchObjectsAutocomplete
-                objectType="business"
-                placeholder={this.props.intl.formatMessage({
-                  id: 'objects_auto_complete_publisher_placeholder',
-                  defaultMessage: 'Find publisher',
-                })}
-                clearSearchResults
-                handleSelect={this.handleSelectObject}
-              />,
-            )}
-            <CreateObject
-              currentField={objectFields.publisher}
-              isSingleType
-              defaultObjectType="business"
-              disabled
-              onCreateObject={this.handleCreateObject}
-            />{' '}
-            {this.state.selectedObject && (
-              <ObjectCardView
-                closeButton
-                onDelete={this.onObjectCardDelete}
-                wObject={this.state.selectedObject}
-              />
-            )}
-          </Form.Item>
+          <>
+            <Form.Item>
+              {getFieldDecorator(publisherFields.publisherName, {
+                rules: this.getFieldRules(publisherFields.publisherName),
+                initialValue: '',
+              })(
+                <Input
+                  className={classNames('AppendForm__input', {
+                    'validation-error': !this.state.isSomeValue,
+                  })}
+                  disabled={loading}
+                  placeholder={intl.formatMessage({
+                    id: 'publisher_name',
+                    defaultMessage: 'Publisher name',
+                  })}
+                />,
+              )}
+            </Form.Item>
+            <Form.Item>
+              {getFieldDecorator(publisherFields.publisher, {
+                rules: this.getFieldRules(publisherFields.publisher),
+              })(
+                <SearchObjectsAutocomplete
+                  objectType="person"
+                  placeholder={this.props.intl.formatMessage({
+                    id: 'objects_auto_complete_publisher_placeholder',
+                    defaultMessage: 'Find publisher',
+                  })}
+                  handleSelect={this.handleSelectObject}
+                />,
+              )}
+              {this.state.selectedObject && (
+                <ObjectCardView
+                  closeButton
+                  onDelete={this.onObjectCardDelete}
+                  wObject={this.state.selectedObject}
+                />
+              )}
+              <br />
+              <div className="add-create-btns">
+                <CreateObject
+                  currentField={objectFields.publisher}
+                  isSingleType
+                  defaultObjectType="business"
+                  disabled
+                  onCreateObject={this.handleCreateObject}
+                  parentObject={{}}
+                />
+              </div>{' '}
+            </Form.Item>
+          </>
         );
       }
       case objectFields.authors: {
@@ -2880,7 +2909,7 @@ export default class AppendForm extends Component {
           isEmpty(getFieldValue(weightFields.unitOfWeight))
         );
       case objectFields.publisher:
-        return getFieldValue(objectFields.publisher) === '';
+        return isEmpty(getFieldValue(publisherFields.publisherName));
       case objectFields.dimensions:
         return (
           isEmpty(getFieldValue(dimensionsFields.length)) ||
