@@ -2217,14 +2217,16 @@ export const getPostsForMap = params => {
 };
 
 export const getAllCampaingForRequiredObject = params => {
-  return fetch(`${config.apiPrefix}${config.wobjects}${config.campaign}${config.requiredObject}`, {
-    headers,
-    body: JSON.stringify(params),
-    method: 'POST',
-  })
-    .then(handleErrors)
-    .then(res => res.json())
-    .catch(e => e);
+  return (
+    fetch(`${config.apiPrefix}${config.wobjects}${config.campaign}${config.requiredObject}`, {
+      headers,
+      body: JSON.stringify(params),
+      method: 'POST',
+    })
+      // .then(handleErrors)
+      .then(res => res.json())
+      .catch(e => Promise.reject(e))
+  );
 };
 
 const hiveEngineContract = params =>

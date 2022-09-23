@@ -14,7 +14,9 @@ import TagsSelector from '../../../../components/TagsSelector/TagsSelector';
 import './SecondScreen.less';
 
 const ModalSecondScreen = props => {
-  const requirements = get(props, 'selectedDish.propositions[0].requirements', null);
+  const requirements = props.isNewReward
+    ? props.selectedDish?.requirements
+    : get(props, 'selectedDish.propositions[0].requirements', null);
 
   useEffect(() => {
     const address = parseWobjectField(props.selectedRestaurant, 'address');
@@ -58,6 +60,7 @@ ModalSecondScreen.propTypes = {
   setImages: PropTypes.func.isRequired,
   setTopic: PropTypes.func.isRequired,
   body: PropTypes.string.isRequired,
+  isNewReward: PropTypes.bool.isRequired,
 };
 
 export default connect(state => ({
