@@ -473,13 +473,21 @@ class ObjectInfo extends React.Component {
         {isEditMode &&
           this.listItem(
             objectFields.authors,
-            authorsBody?.map(a => (
-              <div key={a.authorPermlink} className=" flex flex-column">
-                <div className="CompanyId__wordbreak ml1">
-                  <Link to={`/object/${a.authorPermlink}`}>{a.name}</Link>
-                </div>
-              </div>
-            )),
+            <div>
+              {authorsBody?.map((a, i) => (
+                <>
+                  {a.defaultShowLink ? (
+                    <Link to={`/object/${a.authorPermlink}`}>{a.name}</Link>
+                  ) : (
+                    <span>{a.name}</span>
+                  )}
+                  <>
+                    {i !== authorsBody.length - 1 && ','}
+                    {'  '}
+                  </>
+                </>
+              ))}
+            </div>,
           )}
         {this.listItem(
           objectFields.description,
@@ -761,12 +769,20 @@ class ObjectInfo extends React.Component {
     return (
       <React.Fragment>
         {!isEditMode && wobject.authors && (
-          <div className="CompanyId__wordbreak flex flex-column field-info">
-            By
-            {authorsBody?.map(a => (
-              <div className="CompanyId__wordbreak " key={a.authorPermlink}>
-                <Link to={`/object/${a.authorPermlink}`}>{a.name}</Link>
-              </div>
+          <div className="mb4">
+            By{' '}
+            {authorsBody?.map((a, i) => (
+              <>
+                {a.defaultShowLink ? (
+                  <Link to={`/object/${a.authorPermlink}`}>{a.name}</Link>
+                ) : (
+                  <span>{a.name}</span>
+                )}
+                <>
+                  {i !== authorsBody.length - 1 && ','}
+                  {'  '}
+                </>
+              </>
             ))}
           </div>
         )}

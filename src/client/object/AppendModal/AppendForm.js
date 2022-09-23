@@ -437,11 +437,13 @@ export default class AppendForm extends Component {
             formValues[weightFields.weight]
           }, ${weightFields.unitOfWeight}: ${formValues[weightFields.unitOfWeight]}`;
         case objectFields.authors:
+          const linkInfo = this.state.selectedObject
+            ? `, link: ${this.state.selectedObject.author_permlink}`
+            : '';
+
           return `@${author} added author (${langReadable}): name: ${formValues[
             authorsFields.name
-          ] || this.state.selectedObject.name}, link: ${baseUrl}/object/${
-            this.state.selectedObject.author_permlink
-          }`;
+          ] || this.state.selectedObject.name} ${linkInfo} `;
         case objectFields.phone:
           return `@${author} added ${currentField}(${langReadable}):\n ${appendValue.replace(
             /[{}"]/g,
@@ -600,7 +602,8 @@ export default class AppendForm extends Component {
           body: JSON.stringify({
             name: formValues[authorsFields.name] || this.state.selectedObject.name,
             authorPermlink: this.state.selectedObject?.author_permlink,
-            defaultShowLink: getObjectUrlForLink(this.state.selectedObject),
+            defaultShowLink:
+              this.state.selectedObject && getObjectUrlForLink(this.state.selectedObject),
           }),
         };
       }
@@ -2860,7 +2863,7 @@ export default class AppendForm extends Component {
           isEmpty(getFieldValue(websiteFields.link)) || isEmpty(getFieldValue(websiteFields.title))
         );
       case objectFields.authors:
-        return this.state.selectedObject === null;
+        return isEmpty(getFieldValue(authorsFields.name));
       case objectFields.productWeight:
         return (
           isEmpty(getFieldValue(weightFields.weight)) ||
