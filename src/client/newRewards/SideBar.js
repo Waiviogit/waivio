@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 
@@ -8,16 +8,25 @@ import {
   matchBotsSettings,
   rewardsSettings,
 } from './constants/rewardsSideNavConfig';
-import { getIsAuthenticated } from '../../store/authStore/authSelectors';
+import { getAuthenticatedUserName, getIsAuthenticated } from '../../store/authStore/authSelectors';
 import ModalSignIn from '../components/Navigation/ModlaSignIn/ModalSignIn';
+import { checkPayblesWarning } from '../../waivioApi/ApiClient';
 
 const SideBar = () => {
   const isAuth = useSelector(getIsAuthenticated);
+  const authUserName = useSelector(getAuthenticatedUserName);
   const [menuCondition, setMenuCondition] = useState({
     rewards: true,
     campaing: true,
     matchbots: true,
   });
+  const [withWarning, setWithWarning] = useState(false);
+
+  useEffect(() => {
+    checkPayblesWarning(authUserName).then(res => {
+      setWithWarning(res.warning);
+    });
+  }, []);
 
   const toggleMenuCondition = menuItem => {
     setMenuCondition({
@@ -36,7 +45,7 @@ const SideBar = () => {
       {isAuth && (
         <SettingsItem
           condition={menuCondition.campaing}
-          configItem={campaingSettings}
+          configItem={campaingSettings(withWarning)}
           toggleMenuCondition={toggleMenuCondition}
         />
       )}
