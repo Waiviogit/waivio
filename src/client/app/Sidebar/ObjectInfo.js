@@ -44,6 +44,7 @@ import CompanyId from './CompanyId';
 import ProductId from './ProductId';
 
 import './ObjectInfo.less';
+import ObjectAvatar from '../../components/ObjectAvatar';
 
 @withRouter
 @connect(
@@ -481,6 +482,23 @@ class ObjectInfo extends React.Component {
               </div>
             )),
           )}
+        {isEditMode &&
+          this.listItem(
+            objectFields.publisher,
+            publisher &&
+              (publisher.author_permlink ? (
+                <ObjectCard
+                  key={publisher.author_permlink}
+                  wobject={publisher}
+                  showFollow={false}
+                />
+              ) : (
+                <div className="flex ObjectCard__links">
+                  <ObjectAvatar item={publisher} size={34} />{' '}
+                  <span className="ObjectCard__name-grey">{publisher.name}</span>
+                </div>
+              )),
+          )}
         {this.listItem(
           objectFields.description,
           description && <DescriptionInfo description={description} />,
@@ -814,16 +832,23 @@ class ObjectInfo extends React.Component {
                 <ObjectCard key={parent.author_permlink} wobject={parent} showFollow={false} />
               ),
             )}
-            {this.listItem(
-              objectFields.publisher,
-              publisher && (
-                <ObjectCard
-                  key={publisher.author_permlink}
-                  wobject={publisher}
-                  showFollow={false}
-                />
-              ),
-            )}
+            {!isEditMode &&
+              this.listItem(
+                objectFields.publisher,
+                publisher &&
+                  (publisher.author_permlink ? (
+                    <ObjectCard
+                      key={publisher.author_permlink}
+                      wobject={publisher}
+                      showFollow={false}
+                    />
+                  ) : (
+                    <div className="flex ObjectCard__links">
+                      <ObjectAvatar item={publisher} size={34} />{' '}
+                      <span className="ObjectCard__name-grey">{publisher.name}</span>
+                    </div>
+                  )),
+              )}
             {!isHashtag && !hasType(wobject, OBJECT_TYPE.PAGE) && menuSection()}
             {!isHashtag && aboutSection}
             {accessExtend && hasType(wobject, OBJECT_TYPE.LIST) && listSection}
