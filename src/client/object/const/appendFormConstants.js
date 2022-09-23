@@ -115,16 +115,6 @@ export const fieldsRules = {
       },
     },
     {
-      max: 100,
-      message: {
-        intlId: {
-          id: 'value_error_long',
-          defaultMessage: "Value can't be longer than 100 characters.",
-        },
-        intlMeta: { value: 100 },
-      },
-    },
-    {
       validator: true,
     },
   ],
@@ -140,16 +130,6 @@ export const fieldsRules = {
           defaultMessage: 'Field is required',
         },
         intlMeta: { field: 'Length' },
-      },
-    },
-    {
-      max: 100,
-      message: {
-        intlId: {
-          id: 'value_error_long',
-          defaultMessage: "Value can't be longer than 100 characters.",
-        },
-        intlMeta: { value: 100 },
       },
     },
     {
@@ -171,16 +151,6 @@ export const fieldsRules = {
       },
     },
     {
-      max: 100,
-      message: {
-        intlId: {
-          id: 'value_error_long',
-          defaultMessage: "Value can't be longer than 100 characters.",
-        },
-        intlMeta: { value: 100 },
-      },
-    },
-    {
       validator: true,
     },
   ],
@@ -196,16 +166,6 @@ export const fieldsRules = {
           defaultMessage: 'Field is required',
         },
         intlMeta: { field: 'Depth' },
-      },
-    },
-    {
-      max: 100,
-      message: {
-        intlId: {
-          id: 'value_error_long',
-          defaultMessage: "Value can't be longer than 100 characters.",
-        },
-        intlMeta: { value: 100 },
       },
     },
     {

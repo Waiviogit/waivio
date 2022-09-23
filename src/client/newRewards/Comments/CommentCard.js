@@ -72,6 +72,7 @@ const CommentCard = ({ comment, intl, getMessageHistory, proposition }) => {
     await setPendigSend(false);
     await setEditing(false);
     await setPendigSend(false);
+    message.success('Comment submitted');
   };
 
   return (
