@@ -7,6 +7,7 @@ import {
   phoneFields,
   TYPES_OF_MENU_ITEM,
   weightFields,
+  publisherFields,
 } from '../../../common/constants/listOfFields';
 import {
   emailValidationRegExp,
@@ -265,6 +266,53 @@ export const fieldsRules = {
   [authorsFields.name]: [
     {
       transform: value => value && value.toLowerCase(),
+    },
+    {
+      required: true,
+      message: {
+        intlId: {
+          id: 'field_error',
+          defaultMessage: 'Field is required',
+        },
+        intlMeta: { field: 'Author' },
+      },
+    },
+    {
+      max: 100,
+      message: {
+        intlId: {
+          id: 'value_error_long',
+          defaultMessage: "Value can't be longer than 100 characters.",
+        },
+        intlMeta: { value: 100 },
+      },
+    },
+    {
+      validator: false,
+    },
+  ],
+
+  [publisherFields.publisher]: [
+    {
+      transform: value => value && value.toLowerCase(),
+    },
+    {
+      validator: false,
+    },
+  ],
+  [publisherFields.publisherName]: [
+    {
+      transform: value => value && value.toLowerCase(),
+    },
+    {
+      required: true,
+      message: {
+        intlId: {
+          id: 'field_error',
+          defaultMessage: 'Field is required',
+        },
+        intlMeta: { field: 'Publisher' },
+      },
     },
     {
       max: 100,

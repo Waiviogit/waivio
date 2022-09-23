@@ -1941,5 +1941,6 @@
   "foot": "Foot",
   "inch": "Inch",
   "nautical_mile": "Nautical mile",
-  "value_error_weight": "Value can't be more than 9007199254740991."
+  "value_error_weight": "Value can't be more than 9007199254740991.",
+  "publisher_name": "Publisher name"
 }

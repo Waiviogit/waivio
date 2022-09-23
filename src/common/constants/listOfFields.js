@@ -88,6 +88,10 @@ export const authorsFields = {
   name: 'name',
   author: 'author',
 };
+export const publisherFields = {
+  publisher: 'publisher',
+  publisherName: 'publisherName',
+};
 
 export const addressFieldsForFormatting = [
   'accommodation',
@@ -224,7 +228,7 @@ export const errorObjectFields = {
   [objectFields.language]: [objectFields.language],
   [objectFields.publicationDate]: [objectFields.publicationDate],
   [objectFields.form]: [formFormFields.link, formFormFields.widget, formFormFields.title],
-  [objectFields.publisher]: [objectFields.publisher],
+  [objectFields.publisher]: [publisherFields.name],
   [objectFields.productWeight]: [weightFields.weight, weightFields.unitOfWeight],
   [objectFields.dimensions]: [
     dimensionsFields.length,
@@ -232,7 +236,7 @@ export const errorObjectFields = {
     dimensionsFields.width,
     dimensionsFields.unitOfLength,
   ],
-  [objectFields.authors]: [authorsFields.author, authorsFields.name, objectFields.authors],
+  [objectFields.authors]: [authorsFields.name],
 };
 
 export default null;
