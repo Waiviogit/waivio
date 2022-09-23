@@ -1,29 +1,52 @@
 import React from 'react';
 import { Icon } from 'antd';
-import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { useLocation } from 'react-router';
-
+import { get } from 'lodash';
+import { useSelector } from 'react-redux';
 import ObjectCardView from '../../objectCard/ObjectCardView';
 import USDDisplay from '../../components/Utils/USDDisplay';
+import useQuickRewards from '../../../hooks/useQuickRewards';
+import withAuthActions from '../../auth/withAuthActions';
+import { getIsWaivio } from '../../../store/appStore/appSelectors';
 
 import './Campaing.less';
 
-const Campaing = ({ campain }) => {
+const Campaing = ({ campain, onActionInitiated }) => {
   const buttonLabel = campain.maxReward === campain.minReward ? 'Earn' : 'Earn up to';
   const location = useLocation();
   const pathname = location.pathname.includes('reward') ? location.pathname : '/rewards-new/all';
+  const { setRestaurant, openModal } = useQuickRewards();
+  const minReward = get(campain, ['min_reward'], 0);
+  const maxReward = get(campain, ['max_reward'], 0);
+  const isWaivio = useSelector(getIsWaivio);
+
+  const handleOpenQuickRewards = () =>
+    onActionInitiated(() => {
+      openModal(true);
+      setRestaurant({
+        ...campain.object,
+        campaigns: { min_reward: minReward, max_reward: maxReward },
+      });
+    });
+
+  const goToProducts = () => {
+    if (isWaivio) history.push(`${pathname}/${campain?.object?.author_permlink}`);
+    else {
+      handleOpenQuickRewards();
+    }
+  };
 
   return (
     <div className="Campaing">
       <ObjectCardView wObject={campain.object} withRewards rewardPrice={campain.maxReward} />
-      <Link to={`${pathname}/${campain?.object?.author_permlink}`} className="Campaing__button">
+      <span onClick={goToProducts} className="Campaing__button">
         {buttonLabel}{' '}
         <b>
           <USDDisplay value={campain.maxReward} />
         </b>{' '}
         <Icon type="right" />
-      </Link>
+      </span>
     </div>
   );
 };
@@ -37,6 +60,7 @@ Campaing.propTypes = {
     }),
     _id: PropTypes.string,
   }).isRequired,
+  onActionInitiated: PropTypes.func.isRequired,
 };
 
-export default Campaing;
+export default withAuthActions(Campaing);

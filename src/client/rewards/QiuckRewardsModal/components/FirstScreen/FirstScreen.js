@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { connect } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 import { AutoComplete } from 'antd';
 import { isEmpty, get, debounce } from 'lodash';
 import PropTypes from 'prop-types';
@@ -11,6 +11,7 @@ import { getObjectName, getObjectType } from '../../../../../common/helpers/wObj
 import {
   getDishRewardsListFromState,
   getEligibleRewardsListFromState,
+  getIsNewRewards,
   getSelectedDish,
   getSelectedRestaurant,
 } from '../../../../../store/quickRewards/quickRewardsSelectors';
@@ -31,6 +32,7 @@ const ModalFirstScreen = props => {
   const [hasMore, setHasMore] = useState(false);
   const limit = 100;
   const skipLimit = props.dishes.length;
+  const isNewReward = useSelector(getIsNewRewards);
 
   useEffect(() => {
     hasMore && props.getMoreEligibleRewardsListWithRestaurant(props.selectedRestaurant, skipLimit);
@@ -51,7 +53,9 @@ const ModalFirstScreen = props => {
       'QuickRewardsModal__select-item--withReward': withReward,
     });
 
-  const dishRewards = get(props, 'selectedDish.propositions[0].reward', null);
+  const dishRewards = isNewReward
+    ? props?.selectedDish?.reward
+    : get(props, 'selectedDish.propositions[0].reward', null);
   const earnMessage = camp =>
     camp.campaigns.max_reward !== camp.campaigns.min_reward ? 'Earn up to' : 'Earn';
 
@@ -176,7 +180,9 @@ const ModalFirstScreen = props => {
           >
             {props.dishes.map(camp => {
               if (!isEmpty(camp)) {
-                const reward = get(camp, 'propositions[0].reward', null);
+                const reward = isNewReward
+                  ? camp?.reward
+                  : get(camp, 'propositions[0].reward', null);
 
                 return (
                   <AutoComplete.Option
