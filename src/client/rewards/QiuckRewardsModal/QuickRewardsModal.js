@@ -5,6 +5,7 @@ import { isEmpty, get } from 'lodash';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import {
+  getIsNewRewards,
   getIsOpenModal,
   getSelectedDish,
   getSelectedRestaurant,
@@ -22,7 +23,24 @@ import StepsItems from '../../widgets/CircleSteps/StepsItems';
 import { declineProposition } from '../../../store/userStore/userActions';
 import { generatePermlink } from '../../../common/helpers/wObjectHelper';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
+import * as newRewards from '../../../store/newRewards/newRewardsActions';
+
 import './QuickRewardsModal.less';
+
+const stepsConfig = [
+  {
+    title: 'Find the dish',
+    num: 1,
+  },
+  {
+    title: 'Submit photos',
+    num: 2,
+  },
+  {
+    title: 'Confirm and earn',
+    num: 3,
+  },
+];
 
 const QuickRewardsModal = props => {
   const [pageNumber, setPageNumber] = useState(1);
@@ -31,22 +49,12 @@ const QuickRewardsModal = props => {
   const [body, setBody] = useState('');
   const [images, setImages] = useState([]);
   const [reservationPermlink, setReservationPermlink] = useState('');
-  const stepsConfig = [
-    {
-      title: 'Find the dish',
-      num: 1,
-    },
-    {
-      title: 'Submit photos',
-      num: 2,
-    },
-    {
-      title: 'Confirm and earn',
-      num: 3,
-    },
-  ];
-  const isPropositionObj = !isEmpty(get(props.selectedDish, 'propositions'));
-
+  const dishRewards = props.isNewReward
+    ? props?.selectedDish?.reward
+    : get(props, 'selectedDish.propositions[0].reward', null);
+  const isPropositionObj = props.isNewReward
+    ? dishRewards
+    : !isEmpty(get(props.selectedDish, 'propositions'));
   const nextButtonClassList = classNames('QuickRewardsModal__button', {
     'QuickRewardsModal__button--withRewards': isPropositionObj,
   });
@@ -81,17 +89,25 @@ const QuickRewardsModal = props => {
       if (window.gtag) window.gtag('event', 'reserve_proposition_in_quick_rewards_modal');
       const permlink = `reserve-${generatePermlink()}`;
 
-      props
-        .reserveProposition(permlink)
-        .then(() => {
+      if (props.isNewReward) {
+        props.reservePropositionForQuick(permlink).then(() => {
           setReservationPermlink(permlink);
           setPageNumber(3);
           setLoading(false);
-        })
-        .catch(() => {
-          message.error('Error');
-          setLoading(false);
         });
+      } else {
+        props
+          .reserveProposition(permlink)
+          .then(() => {
+            setReservationPermlink(permlink);
+            setPageNumber(3);
+            setLoading(false);
+          })
+          .catch(() => {
+            message.error('Error');
+            setLoading(false);
+          });
+      }
     } else {
       handleCreatePost();
     }
@@ -105,20 +121,29 @@ const QuickRewardsModal = props => {
   };
 
   const handelRejectReservation = () => {
-    const proposition = get(props.selectedDish, 'propositions[0]', {});
-    const unreservationPermlink = `reject-${proposition._id}${generatePermlink()}`;
+    const proposition = props.isNewReward
+      ? props.selectedDish
+      : get(props.selectedDish, 'propositions[0]', {});
 
-    props.declineProposition({
-      companyAuthor: proposition.guideName,
-      companyPermlink: proposition.activation_permlink,
-      objPermlink: props.selectedDish.author_permlink,
-      unreservationPermlink,
-      reservationPermlink,
-    });
+    if (props.isNewReward) {
+      props.realiseRewards(proposition);
+    } else {
+      const unreservationPermlink = `reject-${proposition._id}${generatePermlink()}`;
+
+      props.declineProposition({
+        companyAuthor: proposition.guideName,
+        companyPermlink: proposition.activation_permlink,
+        objPermlink: props.selectedDish.author_permlink,
+        unreservationPermlink,
+        reservationPermlink,
+      });
+    }
   };
 
   const getCurrentScreen = (() => {
-    const guideInfo = get(props.selectedDish, 'propositions[0].guide');
+    const guideInfo = props.isNewReward
+      ? props.selectedDish
+      : get(props.selectedDish, 'propositions[0].guide');
 
     switch (pageNumber) {
       case 1:
@@ -154,6 +179,7 @@ const QuickRewardsModal = props => {
               images={images}
               setImages={setImages}
               body={body}
+              isNewReward={props.isNewReward}
             />
           ),
           buttonName: secondScreenButtonName,
@@ -166,7 +192,10 @@ const QuickRewardsModal = props => {
           component: (
             <SubmitReviewPublish
               primaryObject={props.selectedRestaurant}
-              reviewData={{ ...guideInfo, guideName: guideInfo.name }}
+              reviewData={{
+                ...guideInfo,
+                guideName: props.isNewReward ? guideInfo.guideName : guideInfo.name,
+              }}
             />
           ),
           buttonName: 'Confirm',
@@ -214,11 +243,7 @@ const QuickRewardsModal = props => {
         {isPropositionObj && pageNumber !== 1 && (
           <b>
             YOU EARN:{' '}
-            <USDDisplay
-              value={props.selectedDish.propositions[0].reward}
-              currencyDisplay="symbol"
-              style={{ color: '#f97b38' }}
-            />
+            <USDDisplay value={dishRewards} currencyDisplay="symbol" style={{ color: '#f97b38' }} />
           </b>
         )}
         <Button
@@ -242,7 +267,10 @@ QuickRewardsModal.propTypes = {
   createQuickPost: PropTypes.func.isRequired,
   reserveProposition: PropTypes.func.isRequired,
   declineProposition: PropTypes.func.isRequired,
+  realiseRewards: PropTypes.func.isRequired,
   isOpenModal: PropTypes.bool.isRequired,
+  isNewReward: PropTypes.bool.isRequired,
+  reservePropositionForQuick: PropTypes.bool.isRequired,
 };
 
 export default connect(
@@ -251,11 +279,14 @@ export default connect(
     selectedDish: getSelectedDish(state),
     isOpenModal: getIsOpenModal(state),
     authUser: getAuthenticatedUserName(state),
+    isNewReward: getIsNewRewards(state),
   }),
   {
     createQuickPost,
     reserveProposition,
     toggleModal,
     declineProposition,
+    realiseRewards: newRewards.realiseRewards,
+    reservePropositionForQuick: newRewards.reservePropositionForQuick,
   },
 )(QuickRewardsModal);

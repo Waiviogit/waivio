@@ -11,6 +11,7 @@ import RewardsComponent from '../../client/rewards/RewardsComponent/RewardsCompo
 import RedirectedSignIn from '../../client/components/Navigation/redirectedSignIn/RedirectedSignIn';
 import WebsiteMainPage from '../../client/websites/WebsiteLayoutComponents/MainPage/WebsiteMainPage';
 import { listOfWebsiteWithMainPage } from '../../common/constants/listOfWebsite';
+import RewardsMainPage from '../../client/newRewards/RewardsMainPage';
 
 const routes = host => ({
   component: WebsiteWrapper,
@@ -263,6 +264,109 @@ const routes = host => ({
       component: Views.Drafts,
     },
     {
+      component: RewardsMainPage,
+      path: [
+        `/rewards-new/(details|duplicate|create})/:campaignId?`,
+        `/rewards-new/(all|eligible)/:requiredObject?`,
+        `/rewards-new/(payables|receivables)/@:userName`,
+        `/rewards-new/(${URL.NEW_REWARDS.tabs})`,
+      ],
+      pathScope: '/rewards-new',
+      exact: true,
+      routes: [
+        {
+          path: '/manage',
+          exact: true,
+          component: Views.RewardsManage,
+        },
+        {
+          path: '/all',
+          exact: true,
+          component: Views.RewardsAll,
+        },
+        {
+          path: '/eligible',
+          exact: true,
+          component: Views.EligibleRewards,
+        },
+        {
+          path: '/(details|duplicate|create)/:campaignId?',
+          exact: true,
+          component: Views.CreateRewards,
+        },
+        {
+          path: '/all/:requiredObject?',
+          exact: true,
+          component: Views.AllProposition,
+        },
+        {
+          path: '/eligible/:requiredObject?',
+          exact: true,
+          component: Views.EligibleProposition,
+        },
+        {
+          path: '/reserved',
+          exact: true,
+          component: Views.ReservedProposition,
+        },
+        {
+          path: '/payables',
+          exact: true,
+          component: Views.Payables,
+        },
+        {
+          path: '/receivables',
+          exact: true,
+          component: Views.Receivables,
+        },
+        {
+          path: '/payables/@:userName',
+          exact: true,
+          component: Views.PayblesListByUser,
+        },
+        {
+          path: '/receivables/@:userName',
+          exact: true,
+          component: Views.ReceivablesListByUser,
+        },
+        {
+          path: '/match-bots-sponsors',
+          exact: true,
+          component: Views.SponsorsMatchBots,
+        },
+        {
+          path: '/reservations',
+          exact: true,
+          component: Views.ReservationsProposition,
+        },
+        {
+          path: '/history',
+          exact: true,
+          component: Views.HistoryPropositions,
+        },
+        {
+          path: '/messages',
+          exact: true,
+          component: Views.MessageList,
+        },
+        {
+          path: '/fraud-detection',
+          exact: true,
+          component: Views.FraudDetectionNew,
+        },
+        {
+          path: '/black-list',
+          exact: true,
+          component: Views.BlackList,
+        },
+        {
+          path: '/reports',
+          exact: true,
+          component: Views.ReportsNew,
+        },
+      ],
+    },
+    {
       path: '/replies',
       exact: true,
       component: Views.Replies,
@@ -275,7 +379,7 @@ const routes = host => ({
     {
       path: '/wallet',
       exact: true,
-      component: Views.Wallet,
+      component: Views.UserWallet,
     },
     {
       path: '/editor',
