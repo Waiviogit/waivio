@@ -1,7 +1,7 @@
 import React from 'react';
 import { Icon } from 'antd';
 import PropTypes from 'prop-types';
-import { useLocation } from 'react-router';
+import { useHistory } from 'react-router';
 import { get } from 'lodash';
 import { useSelector } from 'react-redux';
 import ObjectCardView from '../../objectCard/ObjectCardView';
@@ -14,8 +14,10 @@ import './Campaing.less';
 
 const Campaing = ({ campain, onActionInitiated }) => {
   const buttonLabel = campain.maxReward === campain.minReward ? 'Earn' : 'Earn up to';
-  const location = useLocation();
-  const pathname = location.pathname.includes('reward') ? location.pathname : '/rewards-new/all';
+  const history = useHistory();
+  const pathname = history.location.pathname.includes('reward')
+    ? location.pathname
+    : '/rewards-new/all';
   const { setRestaurant, openModal } = useQuickRewards();
   const minReward = get(campain, ['min_reward'], 0);
   const maxReward = get(campain, ['max_reward'], 0);

@@ -48,6 +48,7 @@ const SettingsItem = ({ toggleMenuCondition, condition, configItem }) => {
                   }}
                 >
                   <FormattedMessage id={setting.id} defaultMessage={setting.defaultMessage} />
+                  {setting.withWarning && <span style={{ color: '#f87007' }}> (!)</span>}
                 </NavLink>
               </li>
             );

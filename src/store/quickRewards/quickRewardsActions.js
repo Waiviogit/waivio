@@ -5,7 +5,7 @@ import {
   getAllCampaingForRequiredObject,
   getAuthorsChildWobjects,
   getCurrentHivePrice,
-  getObjectsRewards,
+  getEligibleRewardList,
   getPropositionByCampaingObjectPermlink,
   searchObjects,
 } from '../../waivioApi/ApiClient';
@@ -102,7 +102,7 @@ export const getEligibleRewardsListWithRestaurant = (selectRest, limit) => async
           '',
         );
       } else {
-        objCampaings = await getObjectsRewards(selectRest.author_permlink, name);
+        objCampaings = await getEligibleRewardList(selectRest.author_permlink, name);
       }
     }
 

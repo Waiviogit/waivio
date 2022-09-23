@@ -14,7 +14,8 @@ const WobjCardSwitcher = React.memo(props => {
   if (!isEmpty(props.obj.propositions)) {
     const proposition = props.obj.propositions[0];
 
-    if (proposition?.newCampaigns) return <PropositionNew proposition={proposition} />;
+    if (proposition?.newCampaigns)
+      return <PropositionNew proposition={{ ...proposition, object: props.obj }} />;
 
     return (
       <Proposition

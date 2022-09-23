@@ -3182,4 +3182,14 @@ export const getGlobalReports = body => {
     .catch(e => e);
 };
 
+export const checkPayblesWarning = guideName => {
+  return fetch(`${config.campaignV2ApiPrefix}${config.payables}${config.warning}/${guideName}`, {
+    headers,
+    method: 'GET',
+  })
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+};
+
 export default null;

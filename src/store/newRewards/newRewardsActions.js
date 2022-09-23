@@ -20,7 +20,7 @@ import { createPostMetadata } from '../../common/helpers/postHelpers';
 import { jsonParse } from '../../common/helpers/formatter';
 import { getSelectedDish } from '../quickRewards/quickRewardsSelectors';
 
-export const reserveProposition = (proposition, username, history) => async (
+export const reserveProposition = (proposition, username) => async (
   dispatch,
   getState,
   { busyAPI, steemConnectAPI },
@@ -66,7 +66,6 @@ export const reserveProposition = (proposition, username, history) => async (
         busyAPI.instance.subscribe((datad, j) => {
           if (j?.success && j?.permlink === permlink) {
             dispatch(changeRewardsTab(username));
-            history.push('/rewards-new/reserved');
             resolve();
           }
         });
