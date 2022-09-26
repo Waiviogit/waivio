@@ -228,7 +228,7 @@ export const errorObjectFields = {
   [objectFields.language]: [objectFields.language],
   [objectFields.publicationDate]: [objectFields.publicationDate],
   [objectFields.form]: [formFormFields.link, formFormFields.widget, formFormFields.title],
-  [objectFields.publisher]: [publisherFields.name],
+  [objectFields.publisher]: [publisherFields.publisherName],
   [objectFields.productWeight]: [weightFields.weight, weightFields.unitOfWeight],
   [objectFields.dimensions]: [
     dimensionsFields.length,
@@ -236,7 +236,6 @@ export const errorObjectFields = {
     dimensionsFields.width,
     dimensionsFields.unitOfLength,
   ],
-  [objectFields.authors]: [authorsFields.name],
 };
 
 export default null;
