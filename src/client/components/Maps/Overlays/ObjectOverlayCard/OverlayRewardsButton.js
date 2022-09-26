@@ -17,7 +17,9 @@ const OverlayRewardsButton = props => {
 
   const { setDish, setRestaurant, openModal } = useQuickRewards();
   const currencyInfo = useSelector(getCurrentCurrency);
-  const proposition = get(props.wObject, 'propositions[0]', {});
+  const proposition =
+    props.wObject?.propositions?.find(propos => propos?.newCampaigns) ||
+    get(props.wObject, 'propositions[0]', {});
   const campaign = get(props.wObject, 'campaigns', {});
   const reward = props.isPropos ? proposition.reward : campaign.max_reward;
 
@@ -31,12 +33,12 @@ const OverlayRewardsButton = props => {
     }
 
     setDish(props.wObject);
-    openModal(proposition?.newCampaigns);
+    openModal();
   };
 
   const handleClickCampaignButton = () => {
     setRestaurant(props.wObject);
-    openModal(proposition?.newCampaigns);
+    openModal();
   };
 
   const handleButtonClick = () =>
