@@ -34,7 +34,7 @@ const RewardsPopover = ({ proposition, getProposition, type }) => {
   const dispatch = useDispatch();
   const isSponsor = authUserName === proposition?.guideName;
   const isUser = authUserName === proposition?.userName;
-  const bothStatus = proposition?.userName === proposition?.guideName;
+  const bothStatus = isUser && isSponsor;
   const rewiewType = type === 'reserved' ? 'reserved' : proposition.reviewStatus;
 
   useEffect(() => {
@@ -207,28 +207,36 @@ const RewardsPopover = ({ proposition, getProposition, type }) => {
       [],
     );
 
-    const getPopoverList = (mainList, extraList, condition) =>
-      condition ? mainList : [...mainList, ...extraList];
-
     switch (rewiewType) {
-      case 'reserved': {
-        return getPopoverList(
-          [rejectRewards, viewReservation],
-          [increase, followUserItem, followObjectItem],
-          isUser || bothStatus,
-        );
+      case 'reserved':
+      case 'assigned': {
+        const mainList = [rejectRewards, viewReservation];
+
+        if (bothStatus) return mainList;
+
+        return isSponsor
+          ? [...mainList, decrease, addToBlackList]
+          : [...mainList, increase, followUserItem, followObjectItem];
       }
-      case 'completed':
-        return getPopoverList(
-          [viewReservation, openReview, report],
-          [decrease, addToBlackList],
-          isSponsor && bothStatus,
-        );
+      case 'completed': {
+        const mainList = [viewReservation, openReview, report];
+
+        if (bothStatus) return mainList;
+
+        return isSponsor
+          ? [...mainList, rejectRewards, addToBlackList]
+          : [...mainList, decrease, followUserItem, followObjectItem];
+      }
       case 'reject':
         return [viewReservation, rejectionNote];
       case 'unassigned':
-      case 'expired':
-        return getPopoverList([viewReservation], [addToBlackList], isSponsor && bothStatus);
+      case 'expired': {
+        const mainList = [viewReservation];
+
+        if (bothStatus) return mainList;
+
+        return isSponsor ? [...mainList, addToBlackList] : mainList;
+      }
       default:
         return [realeaseRewards, viewReservation];
     }
