@@ -3192,4 +3192,31 @@ export const checkPayblesWarning = guideName => {
     .catch(e => e);
 };
 
+export const checkUserInBlackList = (guideName, userName) => {
+  return fetch(
+    `${config.campaignV2ApiPrefix}${config.rewards}${config.blacklist}/${guideName}/${userName}`,
+    {
+      headers,
+      method: 'GET',
+    },
+  )
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+};
+
+export const checkUserFollowing = (userName, users, objects) => {
+  return fetch(`${config.campaignV2ApiPrefix}${config.rewards}${config.following}/${userName}`, {
+    headers,
+    method: 'POST',
+    body: JSON.stringify({
+      users,
+      objects,
+    }),
+  })
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+};
+
 export default null;

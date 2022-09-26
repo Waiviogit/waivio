@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect, useMemo } from 'react';
 import { Icon, Input, Modal } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
@@ -14,128 +14,223 @@ import {
 } from '../../../store/newRewards/newRewardsActions';
 import Report from '../../rewards/Report/Report';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
-// import { followUser, unfollowUser } from '../../../store/userStore/userActions';
-// import { changeBlackAndWhiteLists } from '../../../store/rewardsStore/rewardsActions';
-// import ids from '../BlackList/constants';
+import { checkUserFollowing, checkUserInBlackList } from '../../../waivioApi/ApiClient';
+import { followUser, unfollowUser } from '../../../store/userStore/userActions';
+import { changeBlackAndWhiteLists } from '../../../store/rewardsStore/rewardsActions';
+import ids from '../BlackList/constants';
+import { followObject, unfollowObject } from '../../../store/wObjectStore/wobjActions';
+import { getObjectName } from '../../../common/helpers/wObjectHelper';
 
 const RewardsPopover = ({ proposition, getProposition, type }) => {
   const [isVisiblePopover, setIsVisiblePopover] = useState(false);
   const [amount, setAmount] = useState(0);
-  const [openDecrease, setOpenDecrease] = useState(false);
+  const [inBlackList, setInBlackList] = useState(false);
+  const [followingObj, setFollowingObj] = useState(false);
+  const [followingGuide, setFollowingGuide] = useState(false);
+  const [openDecrease, setOpenDecrease] = useState('');
   const [isModalReportOpen, setIsModalReportOpen] = useState(false);
+  const [loadingType, setLoadingType] = useState('');
   const authUserName = useSelector(getAuthenticatedUserName);
   const dispatch = useDispatch();
+  const isSponsor = authUserName === proposition?.guideName;
+  const isUser = authUserName === proposition?.userName;
+  const bothStatus = proposition?.userName === proposition?.guideName;
   const rewiewType = type === 'reserved' ? 'reserved' : proposition.reviewStatus;
 
+  useEffect(() => {
+    if (isVisiblePopover && !bothStatus) {
+      if (isSponsor)
+        checkUserInBlackList(proposition?.userName, proposition?.guideName).then(res =>
+          setInBlackList(res.inBlacklist),
+        );
+      if (isUser) {
+        checkUserFollowing(
+          proposition?.userName,
+          [proposition?.guideName],
+          [proposition?.requiredObject?.author_permlink],
+        ).then(res => {
+          setFollowingObj(res.objects[0]?.follow);
+          setFollowingGuide(res.users[0]?.follow);
+        });
+      }
+    }
+  }, [isVisiblePopover]);
+
   const getPopoverItems = () => {
-    const viewReservation = (
-      <PopoverMenuItem key={'view_reservation'}>
-        <Link to={`/@${proposition?.userName}/${proposition?.reservationPermlink}`}>
-          View reservation
-        </Link>
-      </PopoverMenuItem>
+    const viewReservation = useMemo(
+      () => (
+        <PopoverMenuItem key={'view_reservation'}>
+          <Link to={`/@${proposition?.userName}/${proposition?.reservationPermlink}`}>
+            View reservation
+          </Link>
+        </PopoverMenuItem>
+      ),
+      [proposition?.userName, proposition?.reservationPermlink],
     );
-    const decrease = (
-      <PopoverMenuItem key={'decrease'}>
-        <div role="presentation" onClick={openDecreaseModal}>
-          Decrease reward
-        </div>
-      </PopoverMenuItem>
+
+    const decrease = useMemo(
+      () => (
+        <PopoverMenuItem key={'decrease'}>
+          <div role="presentation" onClick={() => openDecreaseModal('decrease')}>
+            Decrease reward
+          </div>
+        </PopoverMenuItem>
+      ),
+      [],
     );
-    const increase = (
-      <PopoverMenuItem key={'decrease'}>
-        <div role="presentation" onClick={openDecreaseModal}>
-          Increase reward
-        </div>
-      </PopoverMenuItem>
+
+    const increase = useMemo(
+      () => (
+        <PopoverMenuItem key={'increase'}>
+          <div role="presentation" onClick={() => openDecreaseModal('increase')}>
+            Increase reward
+          </div>
+        </PopoverMenuItem>
+      ),
+      [],
     );
-    const openReview = (
-      <PopoverMenuItem key={'open_review'}>
-        <Link to={`/@${proposition?.userName}/${proposition?.reviewPermlink}`}>Open review</Link>
-      </PopoverMenuItem>
+
+    const openReview = useMemo(
+      () => (
+        <PopoverMenuItem key={'open_review'}>
+          <Link to={`/@${proposition?.userName}/${proposition?.reviewPermlink}`}>Open review</Link>
+        </PopoverMenuItem>
+      ),
+      [proposition?.userName, proposition?.reviewPermlink],
     );
-    const rejectionNote = (
-      <PopoverMenuItem key={'rejection_note'}>
-        <Link to={`/@${proposition?.userName}/${proposition?.rejectionPermlink}`}>
-          Rejection note
-        </Link>
-      </PopoverMenuItem>
+
+    const rejectionNote = useMemo(
+      () => (
+        <PopoverMenuItem key={'rejection_note'}>
+          <Link to={`/@${proposition?.userName}/${proposition?.rejectionPermlink}`}>
+            Rejection note
+          </Link>
+        </PopoverMenuItem>
+      ),
+      [proposition?.userName, proposition?.reviewPermlink],
     );
-    const report = (
-      <PopoverMenuItem key={'show_report'}>
-        <div onClick={() => setIsModalReportOpen(true)}>Show report</div>
-      </PopoverMenuItem>
+
+    const report = useMemo(
+      () => (
+        <PopoverMenuItem key={'show_report'}>
+          <div onClick={() => setIsModalReportOpen(true)}>Show report</div>
+        </PopoverMenuItem>
+      ),
+      [],
     );
-    // const followUserItem = (
-    //   <PopoverMenuItem key={'follow_user'}>
-    //     <div onClick={() => dispatch(followUser(proposition?.guideName))}>
-    //       Follow @{proposition?.guideName}
-    //     </div>
-    //   </PopoverMenuItem>
-    // );
-    // const unfollowUserItem = (
-    //   <PopoverMenuItem key={'follow_user'}>
-    //     <div onClick={() => dispatch(unfollowUser(proposition?.guideName))}>
-    //       Unfollow @{proposition?.guideName}
-    //     </div>
-    //   </PopoverMenuItem>
-    // );
-    // const addToBlackList = (
-    //   <PopoverMenuItem key={'blacklist'}>
-    //     <div
-    //       onClick={() =>
-    //         dispatch(changeBlackAndWhiteLists(ids.blackList.add, proposition?.userName))
-    //       }
-    //     >
-    //       Add to blacklist @{proposition?.userName}
-    //     </div>
-    //   </PopoverMenuItem>
-    // );
-    // const removeFromBlackList = (
-    //   <PopoverMenuItem key={'blacklist'}>
-    //     <div
-    //       onClick={() =>
-    //         dispatch(changeBlackAndWhiteLists(ids.blackList.remove, proposition?.userName))
-    //       }
-    //     >
-    //       Remove from blacklist @{proposition?.userName}
-    //     </div>
-    //   </PopoverMenuItem>
-    // );
+
+    const followUserItem = useMemo(
+      () => (
+        <PopoverMenuItem key={'follow_user'}>
+          <div
+            onClick={() => {
+              setLoadingType('user');
+              const followMethod = followingGuide ? unfollowUser : followUser;
+
+              dispatch(followMethod(proposition?.guideName)).then(() => {
+                setFollowingGuide(!followingGuide);
+                setLoadingType('');
+              });
+            }}
+          >
+            {loadingType === 'user' && <Icon type={'loading'} />}{' '}
+            {followingGuide ? 'Unfollow' : 'Follow'} @{proposition?.guideName}
+          </div>
+        </PopoverMenuItem>
+      ),
+      [followingGuide, loadingType],
+    );
+
+    const followObjectItem = useMemo(
+      () => (
+        <PopoverMenuItem key={'follow_object'}>
+          <div
+            onClick={() => {
+              setLoadingType('object');
+              const followMethod = followingObj ? unfollowObject : followObject;
+
+              dispatch(followMethod(proposition?.requiredObject?.author_permlink)).then(() => {
+                setFollowingObj(!followingObj);
+                setLoadingType('');
+              });
+            }}
+          >
+            {loadingType === 'object' && <Icon type={'loading'} />}{' '}
+            {followingObj ? 'Unfollow' : 'Follow'} {getObjectName(proposition?.requiredObject)}
+          </div>
+        </PopoverMenuItem>
+      ),
+      [followingGuide, loadingType],
+    );
+
+    const addToBlackList = useMemo(
+      () => (
+        <PopoverMenuItem key={'blacklist'}>
+          <div
+            onClick={() => {
+              setLoadingType('blackList');
+              const methodType = inBlackList ? ids.blackList.remove : ids.blackList.add;
+
+              dispatch(changeBlackAndWhiteLists(methodType, [proposition?.userName])).then(() => {
+                setInBlackList(!inBlackList);
+                setLoadingType('');
+              });
+            }}
+          >
+            {loadingType === 'blackList' && <Icon type={'loading'} />}{' '}
+            {inBlackList ? 'Remove from blacklist' : 'Add to blacklist'} @{proposition?.userName}
+          </div>
+        </PopoverMenuItem>
+      ),
+      [inBlackList, loadingType],
+    );
+
+    const rejectRewards = useMemo(
+      () => (
+        <PopoverMenuItem key={'release'}>
+          <div role="presentation" onClick={rejectReward}>
+            <Icon type="flag" /> Release reservation
+          </div>
+        </PopoverMenuItem>
+      ),
+      [],
+    );
+
+    const realeaseRewards = useMemo(
+      () => (
+        <PopoverMenuItem key={'release'}>
+          <div role="presentation" onClick={realeaseReward}>
+            <Icon type="flag" /> Release reservation
+          </div>
+        </PopoverMenuItem>
+      ),
+      [],
+    );
+
+    const getPopoverList = (mainList, extraList, condition) =>
+      condition ? mainList : [...mainList, ...extraList];
 
     switch (rewiewType) {
-      case 'reserved':
-        return [
-          <PopoverMenuItem key={'release'}>
-            <div role="presentation" onClick={rejectReward}>
-              <Icon type="flag" /> Release reservation
-            </div>
-          </PopoverMenuItem>,
-          viewReservation,
-          increase,
-          // followUserItem,
-        ];
+      case 'reserved': {
+        return getPopoverList(
+          [rejectRewards, viewReservation],
+          [increase, followUserItem, followObjectItem],
+          isUser || bothStatus,
+        );
+      }
       case 'completed':
-        return [
-          viewReservation,
-          openReview,
-          report,
-          proposition?.userName === authUserName ? decrease : null,
-        ];
+        return getPopoverList(
+          [viewReservation, openReview, report],
+          [decrease, addToBlackList],
+          isSponsor && bothStatus,
+        );
       case 'reject':
         return [viewReservation, rejectionNote];
       case 'unassigned':
       case 'expired':
-        return [viewReservation];
+        return getPopoverList([viewReservation], [addToBlackList], isSponsor && bothStatus);
       default:
-        return [
-          <PopoverMenuItem key={'release'}>
-            <div role="presentation" onClick={realeaseReward}>
-              <Icon type="flag" /> Release reservation
-            </div>
-          </PopoverMenuItem>,
-          viewReservation,
-        ];
+        return [realeaseRewards, viewReservation];
     }
   };
 
@@ -200,12 +295,12 @@ const RewardsPopover = ({ proposition, getProposition, type }) => {
         <Modal
           visible={openDecrease}
           onCancel={() => {
-            setOpenDecrease(false);
+            setOpenDecrease('');
             setAmount(0);
           }}
           onOk={() => {
             setOpenDecrease(false);
-            dispatch(decreaseReward(proposition, amount));
+            dispatch(decreaseReward(proposition, amount, openDecrease));
           }}
         >
           <b>Amount:</b>
@@ -233,6 +328,8 @@ RewardsPopover.propTypes = {
     reviewStatus: PropTypes.string,
     reviewPermlink: PropTypes.string,
     rejectionPermlink: PropTypes.string,
+    requiredObject: PropTypes.string,
+    guideName: PropTypes.string,
   }).isRequired,
   type: PropTypes.string.isRequired,
   getProposition: PropTypes.func,
