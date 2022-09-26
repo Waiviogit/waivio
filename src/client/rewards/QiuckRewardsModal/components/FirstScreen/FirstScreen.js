@@ -64,7 +64,7 @@ const ModalFirstScreen = props => {
 
     props.setSelectedRestaurant(restaurant);
     props.getEligibleRewardsListWithRestaurant(restaurant, limit).then(r => {
-      if (r.payload.length === limit) {
+      if (r?.payload?.length === limit) {
         setHasMore(true);
       }
     });

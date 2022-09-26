@@ -108,7 +108,7 @@ export const getEligibleRewardsListWithRestaurant = (selectRest, limit) => async
 
     const wobjects = isNewRewards
       ? objCampaings.rewards.map(rew => ({ ...rew, ...rew.object, parent: selectRest }))
-      : objCampaings.wobjects;
+      : objCampaings?.wobjects || [];
 
     return dispatch({
       type: GET_ELIGIBLE_REWARDS_WITH_RESTAURANT.SUCCESS,
