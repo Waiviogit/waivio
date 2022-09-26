@@ -223,37 +223,36 @@ export const rejectAuthorReview = proposition => (
   });
 };
 
-export const decreaseReward = (proposition, amount) => (
+export const decreaseReward = (proposition, amount, type) => (
   dispatch,
   getState,
   { steemConnectAPI, busyAPI },
 ) => {
   const autnUserName = getAuthenticatedUserName(getState());
-  const isSponsor = autnUserName === proposition?.guideName;
-
-  const details = isSponsor
-    ? {
-        body: `Sponsor ${autnUserName} (@${autnUserName}) has increased the reward by ${amount} WAIV`,
-        title: 'Increase reward',
-        json_metadata: JSON.stringify({
-          waivioRewards: {
-            type: 'raiseReviewReward',
-            riseAmount: amount,
-            activationPermlink: proposition?.activationPermlink,
-          },
-        }),
-      }
-    : {
-        body: `User ${autnUserName} (@${autnUserName}) has decreased the reward by ${amount} WAIV`,
-        title: 'Decrease reward',
-        json_metadata: JSON.stringify({
-          waivioRewards: {
-            type: 'reduceReviewReward',
-            reduceAmount: amount,
-            activationPermlink: proposition?.activationPermlink,
-          },
-        }),
-      };
+  const details =
+    type === 'increase'
+      ? {
+          body: `Sponsor ${autnUserName} (@${autnUserName}) has increased the reward by ${amount} WAIV`,
+          title: 'Increase reward',
+          json_metadata: JSON.stringify({
+            waivioRewards: {
+              type: 'raiseReviewReward',
+              riseAmount: amount,
+              activationPermlink: proposition?.activationPermlink,
+            },
+          }),
+        }
+      : {
+          body: `User ${autnUserName} (@${autnUserName}) has decreased the reward by ${amount} WAIV`,
+          title: 'Decrease reward',
+          json_metadata: JSON.stringify({
+            waivioRewards: {
+              type: 'reduceReviewReward',
+              reduceAmount: amount,
+              activationPermlink: proposition?.activationPermlink,
+            },
+          }),
+        };
 
   const commentOp = [
     'comment',
