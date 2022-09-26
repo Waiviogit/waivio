@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { connect } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import store from 'store';
 import classNames from 'classnames';
@@ -26,6 +26,7 @@ import { getIsWaivio } from '../../../store/appStore/appSelectors';
 import {
   getAuthenticatedUserMetaData,
   getAuthenticatedUserName,
+  getRewardsTab,
 } from '../../../store/authStore/authSelectors';
 import {
   getIsLoadingNotifications,
@@ -35,6 +36,7 @@ import { getTokenBalance } from '../../../store/walletStore/walletActions';
 
 const HeaderButtons = props => {
   const [popoverVisible, setPopoverVisible] = useState(false);
+  const rewardsTab = useSelector(getRewardsTab);
   const [notificationsPopoverVisible, setNotificationsPopoverVisible] = useState(false);
   const {
     intl,
@@ -79,6 +81,9 @@ const HeaderButtons = props => {
     </PopoverMenuItem>,
     <PopoverMenuItem key="logout" topNav>
       <FormattedMessage id="logout" defaultMessage="Logout" />
+    </PopoverMenuItem>,
+    <PopoverMenuItem key="beta" topNav>
+      <FormattedMessage id="beta" defaultMessage="Beta" />
     </PopoverMenuItem>,
   ];
 
@@ -162,6 +167,9 @@ const HeaderButtons = props => {
         break;
       case 'rewards':
         history.push(PATH_NAME_ACTIVE);
+        break;
+      case 'beta':
+        history.push(`/rewards-new/${rewardsTab}`);
         break;
       case 'discover':
         history.push(`/discover-objects/restaurant`);

@@ -7,10 +7,15 @@ import Proposition from '../../../rewards/Proposition/Proposition';
 import Campaign from '../../../rewards/Campaign/Campaign';
 import ObjectCardView from '../../../objectCard/ObjectCardView';
 import { assignProposition, declineProposition } from '../../../../store/userStore/userActions';
+import Campaing from '../../../newRewards/reuseble/Campaing';
+import PropositionNew from '../../../newRewards/reuseble/Proposition/Proposition';
 
 const WobjCardSwitcher = React.memo(props => {
   if (!isEmpty(props.obj.propositions)) {
     const proposition = props.obj.propositions[0];
+
+    if (proposition?.newCampaigns)
+      return <PropositionNew proposition={{ ...proposition, object: props.obj }} />;
 
     return (
       <Proposition
@@ -25,7 +30,20 @@ const WobjCardSwitcher = React.memo(props => {
     );
   }
 
-  if (props.obj.campaigns) return <Campaign proposition={props.obj} filterKey="all" hovered />;
+  if (props.obj.campaigns) {
+    if (props.obj.campaigns?.newCampaigns)
+      return (
+        <Campaing
+          campain={{
+            maxReward: props.obj.campaigns?.max_reward,
+            minReward: props.obj.campaigns?.min_reward,
+            object: props.obj,
+          }}
+        />
+      );
+
+    return <Campaign proposition={props.obj} filterKey="all" hovered />;
+  }
 
   return <ObjectCardView wObject={props.obj} hovered />;
 });

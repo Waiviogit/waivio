@@ -9,8 +9,10 @@ import {
 
 const useQuickRewards = () => {
   const dispatch = useDispatch();
-  const openModal = useCallback(() => dispatch(toggleModal(true)), [toggleModal]);
-  const closeModal = useCallback(() => dispatch(toggleModal(false)), [toggleModal]);
+  const openModal = useCallback((isNew = false) => dispatch(toggleModal(true, isNew)), [
+    toggleModal,
+  ]);
+  const closeModal = useCallback(() => dispatch(toggleModal(false, false)), [toggleModal]);
   const setRestaurant = useCallback(restaurant => dispatch(setSelectedRestaurant(restaurant)), [
     setSelectedRestaurant,
   ]);

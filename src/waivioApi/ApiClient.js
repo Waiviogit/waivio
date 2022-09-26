@@ -126,9 +126,8 @@ export const getObject = (authorPermlink, user, locale) => {
       locale,
     },
   })
-    .then(handleErrors)
-    .then(res => res.json())
-    .catch(error => error);
+    .then(res => Promise.resolve(res.json()))
+    .catch(Promise.reject);
 };
 
 export const getUsersByObject = object =>
@@ -2218,14 +2217,16 @@ export const getPostsForMap = params => {
 };
 
 export const getAllCampaingForRequiredObject = params => {
-  return fetch(`${config.apiPrefix}${config.wobjects}${config.campaign}${config.requiredObject}`, {
-    headers,
-    body: JSON.stringify(params),
-    method: 'POST',
-  })
-    .then(handleErrors)
-    .then(res => res.json())
-    .catch(e => e);
+  return (
+    fetch(`${config.apiPrefix}${config.wobjects}${config.campaign}${config.requiredObject}`, {
+      headers,
+      body: JSON.stringify(params),
+      method: 'POST',
+    })
+      // .then(handleErrors)
+      .then(res => res.json())
+      .catch(e => Promise.reject(e))
+  );
 };
 
 const hiveEngineContract = params =>
@@ -3175,6 +3176,16 @@ export const getGlobalReports = body => {
     headers,
     method: 'POST',
     body: JSON.stringify(body),
+  })
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+};
+
+export const checkPayblesWarning = guideName => {
+  return fetch(`${config.campaignV2ApiPrefix}${config.payables}${config.warning}/${guideName}`, {
+    headers,
+    method: 'GET',
   })
     .then(res => res.json())
     .then(response => response)

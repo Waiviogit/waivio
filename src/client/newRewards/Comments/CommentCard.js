@@ -1,16 +1,79 @@
-/* eslint-disable */
 import { Link } from 'react-router-dom';
+import {
+  FormattedDate,
+  FormattedMessage,
+  FormattedRelative,
+  FormattedTime,
+  injectIntl,
+} from 'react-intl';
+import classNames from 'classnames';
+import { Icon, message } from 'antd';
+
+import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import PropTypes from 'prop-types';
+
 import Avatar from '../../components/Avatar';
 import BTooltip from '../../components/BTooltip';
-import { FormattedDate, FormattedMessage, FormattedRelative, FormattedTime } from 'react-intl';
 import BodyContainer from '../../containers/Story/BodyContainer';
-import classNames from 'classnames';
-import { Icon } from 'antd';
 import QuickCommentEditor from '../../components/Comments/QuickCommentEditor';
-import { map } from 'lodash';
-import React from 'react';
+import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
+import { voteComment } from '../../../store/postsStore/postActions';
+import { getDownvotesQuontity, getUpvotesQuontity } from '../../../common/helpers/voteHelpers';
+import { sendCommentForReward } from '../../../store/newRewards/newRewardsActions';
 
-const CommentCard = ({ comment }) => {
+const CommentCard = ({ comment, intl, getMessageHistory, proposition }) => {
+  const dispatch = useDispatch();
+  const user = useSelector(getAuthenticatedUserName);
+  const [pendingLike, setPendigLike] = useState(false);
+  const [pendingSend, setPendigSend] = useState(false);
+  const [pendingDisLike, setPendingDisLike] = useState(false);
+  const [editing, setEditing] = useState(false);
+  const editable = comment.author === user;
+  const isLiked = comment.active_votes.some(vote => vote.voter === user && +vote.percent > 0);
+  const isDisliked = comment.active_votes.some(vote => vote.voter === user && +vote.percent < 0);
+  const upvotesQuontity = getUpvotesQuontity(comment?.active_votes);
+  const downvotesQuontity = getDownvotesQuontity(comment?.active_votes);
+
+  const handleVote = (weight, setPending) => {
+    setPending(true);
+    dispatch(voteComment(comment, weight))
+      .then(() => {
+        setTimeout(
+          () =>
+            getMessageHistory().finally(() => {
+              setPending(false);
+              message.success('Comment submitted');
+            }),
+          10000,
+        );
+      })
+      .catch(() => setPending(false));
+  };
+
+  const handleDislikeClick = () => {
+    const weight = isDisliked ? 0 : -10000;
+
+    handleVote(weight, setPendingDisLike);
+  };
+
+  const handleLikeClick = () => {
+    const weight = isLiked ? 0 : 10000;
+
+    handleVote(weight, setPendigLike);
+  };
+
+  const handleEditClick = () => setEditing(!editing);
+
+  const handleSendComment = async (parentP, commentValue) => {
+    setPendigSend(true);
+    await dispatch(sendCommentForReward(proposition, commentValue, editing, comment));
+    await getMessageHistory(editing, comment.permlink, commentValue);
+    await setPendigSend(false);
+    await setEditing(false);
+    await setPendigSend(false);
+  };
+
   return (
     <div className="Comment">
       <Link to={`/@${comment.author}`} style={{ height: 32 }}>
@@ -29,53 +92,55 @@ const CommentCard = ({ comment }) => {
               </span>
             }
           >
-            <FormattedRelative value={time} />
+            <FormattedRelative value={`${comment.created}Z`} />
           </BTooltip>
         </span>
         <div className="Comment__content">
-          <BodyContainer body={postBody} />
+          <BodyContainer body={comment.body} />
         </div>
         <div>
-          <BTooltip title={likeTooltip}>
+          <BTooltip title={intl.formatMessage({ id: isLiked ? 'unlike' : 'like' })}>
             <a
               role="presentation"
               className={classNames('CommentFooter__link', {
-                'CommentFooter__link--active': userUpVoted,
+                'CommentFooter__link--active': isLiked,
               })}
-              onClick={() => handleLikeClick(postId)}
+              onClick={handleLikeClick}
             >
               {pendingLike ? <Icon type="loading" /> : <i className="iconfont icon-praise_fill" />}
             </a>
+            {!!upvotesQuontity && upvotesQuontity}
           </BTooltip>
           <BTooltip title={intl.formatMessage({ id: 'dislike', defaultMessage: 'Dislike' })}>
             <a
               role="presentation"
               className={classNames('CommentFooter__link', {
-                'CommentFooter__link--active': userDownVoted,
+                'CommentFooter__link--active': isDisliked,
               })}
-              onClick={() => handleDislikeClick(postId)}
+              onClick={handleDislikeClick}
             >
               {pendingDisLike ? (
                 <Icon type="loading" />
               ) : (
                 <i className="iconfont icon-praise_fill Comment__icon_dislike" />
               )}
+              {!!downvotesQuontity && downvotesQuontity}
             </a>
           </BTooltip>
-          {user.name && (
-            <span>
-              <span className="CommentFooter__bullet" />
-              <a
-                role="presentation"
-                className={classNames('CommentFooter__link', {
-                  'CommentFooter__link--active': replying,
-                })}
-                onClick={handleReplyClick}
-              >
-                <FormattedMessage id="reply" defaultMessage="Reply" />
-              </a>
-            </span>
-          )}
+          {/* {user.name && ( */}
+          {/*  <span> */}
+          {/*    <span className="CommentFooter__bullet" /> */}
+          {/*    <a */}
+          {/*      role="presentation" */}
+          {/*      className={classNames('CommentFooter__link', { */}
+          {/*        // 'CommentFooter__link--active': replying, */}
+          {/*      })} */}
+          {/*      // onClick={handleReplyClick} */}
+          {/*    > */}
+          {/*      <FormattedMessage id="reply" defaultMessage="Reply" /> */}
+          {/*    </a> */}
+          {/*  </span> */}
+          {/* )} */}
           {editable && (
             <span>
               <span className="CommentFooter__bullet" />
@@ -91,60 +156,40 @@ const CommentCard = ({ comment }) => {
             </span>
           )}
         </div>
-        {replying && (
+        {/* {replying && ( */}
+        {/*  <QuickCommentEditor */}
+        {/*    parentPost={commentObj} */}
+        {/*    username={user.name} */}
+        {/*    onSubmit={handleSubmitComment} */}
+        {/*    isLoading={loading} */}
+        {/*    inputValue={commentFormText} */}
+        {/*    submitted={commentSubmitted} */}
+        {/*  /> */}
+        {/* )} */}
+        {editing && (
           <QuickCommentEditor
-            parentPost={commentObj}
-            username={user.name}
-            onSubmit={handleSubmitComment}
-            isLoading={loading}
-            inputValue={commentFormText}
-            submitted={commentSubmitted}
+            parentPost={comment}
+            onSubmit={handleSendComment}
+            isLoading={pendingSend}
+            inputValue={comment.body}
           />
         )}
-        {editable && editing && (
-          <QuickCommentEditor
-            parentPost={commentObj}
-            username={user.name}
-            onSubmit={handleEditComment}
-            isLoading={loading}
-            inputValue={postBody}
-            submitted={commentSubmitted}
-            onClose={handleEditClick}
-          />
-        )}
-        <div
-          className={classNames('Comment__replies', {
-            'Comment__replies--no-indent': depth >= 1,
-            'Comment__replies--never-indent': depth >= 5,
-          })}
-        >
-          {childrenArr &&
-            map(childrenArr, currentChild => (
-              <CommentsMessages
-                key={`comments-${currentChild.post_id}`}
-                {...{
-                  intl,
-                  show,
-                  user,
-                  post,
-                  defaultVotePercent,
-                  onActionInitiated,
-                  parent: parentPost,
-                  currentComment: currentChild,
-                  onLikeClick,
-                  getMessageHistory,
-                  getReservedComments,
-                  matchPath,
-                  isGuest,
-                  proposition,
-                  match,
-                }}
-              />
-            ))}
-        </div>
       </div>
     </div>
   );
 };
 
-export default CommentCard;
+CommentCard.propTypes = {
+  comment: PropTypes.shape({
+    body: PropTypes.string,
+    active_votes: PropTypes.arrayOf(),
+    author: PropTypes.string,
+    created: PropTypes.string,
+    permlink: PropTypes.string,
+  }).isRequired,
+  proposition: PropTypes.shape().isRequired,
+  intl: PropTypes.shape().isRequired,
+  getMessageHistory: PropTypes.func.isRequired,
+};
+
+export default injectIntl(CommentCard);

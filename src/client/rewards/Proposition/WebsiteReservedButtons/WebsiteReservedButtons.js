@@ -25,7 +25,7 @@ const WebsiteReservedButtons = props => {
     props.onActionInitiated(() => {
       setRestaurant(props.restaurant);
       setDish(props.dish);
-      openModal();
+      openModal(props.isNewReward);
     });
 
   return (
@@ -62,6 +62,7 @@ WebsiteReservedButtons.propTypes = {
   dish: PropTypes.shape().isRequired,
   onActionInitiated: PropTypes.func.isRequired,
   handleReserve: PropTypes.func.isRequired,
+  isNewReward: PropTypes.bool.isRequired,
 };
 
 export default withAuthActions(WebsiteReservedButtons);

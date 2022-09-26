@@ -44,6 +44,7 @@ import CompanyId from './CompanyId';
 import ProductId from './ProductId';
 
 import './ObjectInfo.less';
+import ObjectAvatar from '../../components/ObjectAvatar';
 
 @withRouter
 @connect(
@@ -339,6 +340,10 @@ class ObjectInfo extends React.Component {
     const publicationDate = moment(wobject.publicationDate).format('MMMM DD, YYYY');
     const printLength = wobject.printLength;
     const publisher = parseWobjectField(wobject, 'publisher');
+    const authorsBody = wobject.authors
+      ? wobject.authors.map(el => parseWobjectField(el, 'body', []))
+      : [];
+
     const dimensions = parseWobjectField(wobject, 'dimensions');
     const productWeight = parseWobjectField(wobject, 'productWeight');
     // const options = wobject.options
@@ -467,6 +472,42 @@ class ObjectInfo extends React.Component {
           </div>
         )}
         {this.listItem(objectFields.name, null)}
+        {isEditMode &&
+          this.listItem(
+            objectFields.authors,
+            <div>
+              {authorsBody?.map((a, i) => (
+                <>
+                  {a.defaultShowLink ? (
+                    <Link to={`/object/${a.authorPermlink}`}>{a.name}</Link>
+                  ) : (
+                    <span>{a.name}</span>
+                  )}
+                  <>
+                    {i !== authorsBody.length - 1 && ','}
+                    {'  '}
+                  </>
+                </>
+              ))}
+            </div>,
+          )}
+        {isEditMode &&
+          this.listItem(
+            objectFields.publisher,
+            publisher &&
+              (publisher.author_permlink ? (
+                <ObjectCard
+                  key={publisher.author_permlink}
+                  wobject={publisher}
+                  showFollow={false}
+                />
+              ) : (
+                <div className="flex ObjectCard__links">
+                  <ObjectAvatar item={publisher} size={34} />{' '}
+                  <span className="ObjectCard__name-grey">{publisher.name}</span>
+                </div>
+              )),
+          )}
         {this.listItem(
           objectFields.description,
           description && <DescriptionInfo description={description} />,
@@ -617,7 +658,7 @@ class ObjectInfo extends React.Component {
             )}
         {!isEditMode
           ? ageRange && (
-              <div className="field-website">
+              <div className="field-info">
                 <span className="field-website__title">
                   <Icon type="read" className="iconfont icon-link text-icon link" />
                   <span className="CompanyId__wordbreak">{ageRange}</span>
@@ -627,7 +668,7 @@ class ObjectInfo extends React.Component {
           : this.listItem(
               objectFields.ageRange,
               ageRange && (
-                <div className="field-website">
+                <div className="field-info">
                   <span className="field-website__title">
                     <Icon type="read" className="iconfont icon-link text-icon link" />
                     <span className="CompanyId__wordbreak">{ageRange}</span>
@@ -637,7 +678,7 @@ class ObjectInfo extends React.Component {
             )}
         {!isEditMode
           ? language && (
-              <div className="field-website">
+              <div className="field-info">
                 <span className="field-website__title">
                   <Icon type="global" className="iconfont icon-link text-icon link" />
                   <span className="CompanyId__wordbreak">{language}</span>
@@ -647,7 +688,7 @@ class ObjectInfo extends React.Component {
           : this.listItem(
               objectFields.language,
               language && (
-                <div className="field-website">
+                <div className="field-info">
                   <span className="field-website__title">
                     <Icon type="global" className="iconfont icon-link text-icon link" />
                     <span className="CompanyId__wordbreak">{language}</span>
@@ -657,7 +698,7 @@ class ObjectInfo extends React.Component {
             )}
         {!isEditMode
           ? wobject.publicationDate && (
-              <div className="field-website">
+              <div className="field-info">
                 <span className="field-website__title">
                   <img
                     className="ObjectInfo__margin-top"
@@ -671,7 +712,7 @@ class ObjectInfo extends React.Component {
           : this.listItem(
               objectFields.publicationDate,
               wobject.publicationDate && (
-                <div className="field-website">
+                <div className="field-info">
                   <span className="field-website__title">
                     <img
                       className="ObjectInfo__margin-top"
@@ -685,7 +726,7 @@ class ObjectInfo extends React.Component {
             )}
         {!isEditMode
           ? printLength && (
-              <div className="field-website">
+              <div className="field-info">
                 <span className="field-website__title">
                   <Icon type="book" className="iconfont icon-link text-icon link" />
                   <span className="CompanyId__wordbreak">
@@ -697,7 +738,7 @@ class ObjectInfo extends React.Component {
           : this.listItem(
               objectFields.printLength,
               printLength && (
-                <div className="field-website">
+                <div className="field-info">
                   <span className="field-website__title">
                     <Icon type="book" className="iconfont icon-link text-icon link" />
                     <span className="CompanyId__wordbreak">
@@ -708,6 +749,42 @@ class ObjectInfo extends React.Component {
                 </div>
               ),
             )}
+        {this.listItem(
+          objectFields.productWeight,
+          productWeight && (
+            <div className="field-info">
+              <span className="field-website__title">
+                <img
+                  style={{ width: '14px', height: '14px' }}
+                  className="ObjectInfo__margin-top"
+                  src={'/images/icons/scale.png'}
+                  alt="Scale icon"
+                />{' '}
+                <span>
+                  {productWeight.value} {productWeight.unit}
+                </span>
+              </span>
+            </div>
+          ),
+        )}
+        {this.listItem(
+          objectFields.dimensions,
+          dimensions && (
+            <div className="field-info">
+              <span className="field-website__title">
+                <img
+                  style={{ width: '14px', height: '14px' }}
+                  className="ObjectInfo__margin-top"
+                  src={'/images/icons/dimensions-icon.svg'}
+                  alt="Scale icon"
+                />{' '}
+                <span className="CompanyId__wordbreak">
+                  {dimensions.length} x {dimensions.width} x {dimensions.depth} {dimensions.unit}
+                </span>
+              </span>
+            </div>
+          ),
+        )}
       </React.Fragment>
     );
 
@@ -747,6 +824,24 @@ class ObjectInfo extends React.Component {
 
     return (
       <React.Fragment>
+        {!isEditMode && wobject.authors && (
+          <div className="mb4">
+            By{' '}
+            {authorsBody?.map((a, i) => (
+              <>
+                {a.defaultShowLink ? (
+                  <Link to={`/object/${a.authorPermlink}`}>{a.name}</Link>
+                ) : (
+                  <span>{a.name}</span>
+                )}
+                <>
+                  {i !== authorsBody.length - 1 && ','}
+                  {'  '}
+                </>
+              </>
+            ))}
+          </div>
+        )}
         {wobject && wobjName && (
           <div className="object-sidebar">
             {this.listItem(
@@ -755,53 +850,23 @@ class ObjectInfo extends React.Component {
                 <ObjectCard key={parent.author_permlink} wobject={parent} showFollow={false} />
               ),
             )}
-            {this.listItem(
-              objectFields.publisher,
-              publisher && (
-                <ObjectCard
-                  key={publisher.author_permlink}
-                  wobject={publisher}
-                  showFollow={false}
-                />
-              ),
-            )}
-            {this.listItem(
-              objectFields.productWeight,
-              productWeight && (
-                <div className="field-website">
-                  <span className="field-website__title">
-                    <img
-                      style={{ width: '14px', height: '14px' }}
-                      className="ObjectInfo__margin-top"
-                      src={'/images/icons/scale-img.png'}
-                      alt="Scale icon"
-                    />{' '}
-                    <span className="CompanyId__wordbreak">
-                      {productWeight.value} {productWeight.unit}
-                    </span>
-                  </span>
-                </div>
-              ),
-            )}
-            {this.listItem(
-              objectFields.dimensions,
-              dimensions && (
-                <div className="field-website">
-                  <span className="field-website__title">
-                    <img
-                      style={{ width: '14px', height: '14px' }}
-                      className="ObjectInfo__margin-top"
-                      src={'/images/icons/dimensions-icon.svg'}
-                      alt="Scale icon"
-                    />{' '}
-                    <span className="CompanyId__wordbreak">
-                      {dimensions.length} x {dimensions.width} x {dimensions.depth}{' '}
-                      {dimensions.unit}
-                    </span>
-                  </span>
-                </div>
-              ),
-            )}
+            {!isEditMode &&
+              this.listItem(
+                objectFields.publisher,
+                publisher &&
+                  (publisher.author_permlink ? (
+                    <ObjectCard
+                      key={publisher.author_permlink}
+                      wobject={publisher}
+                      showFollow={false}
+                    />
+                  ) : (
+                    <div className="flex ObjectCard__links">
+                      <ObjectAvatar item={publisher} size={34} />{' '}
+                      <span className="ObjectCard__name-grey">{publisher.name}</span>
+                    </div>
+                  )),
+              )}
             {!isHashtag && !hasType(wobject, OBJECT_TYPE.PAGE) && menuSection()}
             {!isHashtag && aboutSection}
             {accessExtend && hasType(wobject, OBJECT_TYPE.LIST) && listSection}

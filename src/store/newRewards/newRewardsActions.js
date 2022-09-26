@@ -1,6 +1,11 @@
 import { round } from 'lodash';
+import { message } from 'antd';
 
-import { generatePermlink, getObjectName } from '../../common/helpers/wObjectHelper';
+import {
+  generatePermlink,
+  getObjectName,
+  getObjectUrlForLink,
+} from '../../common/helpers/wObjectHelper';
 import { getNewDetailsBody } from '../../client/rewards/rewardsHelper';
 import config from '../../waivioApi/config.json';
 import { subscribeTypes } from '../../common/constants/blockTypes';
@@ -13,8 +18,9 @@ import { SET_PENDING_UPDATE } from '../userStore/userActions';
 import { notify } from '../../client/app/Notification/notificationActions';
 import { createPostMetadata } from '../../common/helpers/postHelpers';
 import { jsonParse } from '../../common/helpers/formatter';
+import { getSelectedDish } from '../quickRewards/quickRewardsSelectors';
 
-export const reserveProposition = (proposition, username, history) => async (
+export const reserveProposition = (proposition, username) => async (
   dispatch,
   getState,
   { busyAPI, steemConnectAPI },
@@ -60,7 +66,63 @@ export const reserveProposition = (proposition, username, history) => async (
         busyAPI.instance.subscribe((datad, j) => {
           if (j?.success && j?.permlink === permlink) {
             dispatch(changeRewardsTab(username));
-            history.push('/rewards-new/reserved');
+            resolve();
+          }
+        });
+      })
+      .catch(error => reject(error));
+  });
+};
+
+export const reservePropositionForQuick = permlink => async (
+  dispatch,
+  getState,
+  { busyAPI, steemConnectAPI },
+) => {
+  const state = getState();
+  const dish = getSelectedDish(state);
+  const username = getAuthenticatedUserName(state);
+  const proposedWobjName = getObjectName(dish);
+  const proposedAuthorPermlink = dish?.author_permlink;
+  const primaryObject = dish?.parent;
+  const rates = getTokenRatesInUSD(getState(), 'WAIV');
+  const amount = round(dish.rewardInUSD / rates, 3);
+  const detailsBody = await getNewDetailsBody(dish);
+  const commentOp = [
+    'comment',
+    {
+      parent_author: dish.guideName,
+      parent_permlink: dish.activationPermlink,
+      author: username,
+      permlink,
+      title: 'Rewards reservations',
+      body: `<p>User ${username} (@${username}) has reserved the rewards of ${amount} ${
+        dish.payoutToken
+      } for a period of ${
+        dish.countReservationDays
+      } days to write a review of <a href='${getObjectUrlForLink(
+        dish,
+      )}'>${proposedWobjName}</a>, <a href='${getObjectUrlForLink(primaryObject)}'>${getObjectName(
+        primaryObject,
+      )}</a>.</p>${detailsBody}`,
+      json_metadata: JSON.stringify({
+        app: config.appName,
+        waivioRewards: {
+          type: 'reserveCampaign',
+          requiredObject: proposedAuthorPermlink,
+        },
+      }),
+    },
+  ];
+
+  return new Promise((resolve, reject) => {
+    steemConnectAPI
+      .broadcast([commentOp])
+      .then(async () => {
+        busyAPI.instance.sendAsync(subscribeTypes.subscribeCampaignAssign, [username, permlink]);
+        busyAPI.instance.subscribe((datad, j) => {
+          if (j?.success && j?.permlink === permlink) {
+            dispatch(changeRewardsTab(username));
             resolve();
           }
         });
@@ -161,6 +223,67 @@ export const rejectAuthorReview = proposition => (
   });
 };
 
+export const decreaseReward = (proposition, amount) => (
+  dispatch,
+  getState,
+  { steemConnectAPI, busyAPI },
+) => {
+  const autnUserName = getAuthenticatedUserName(getState());
+  const isSponsor = autnUserName === proposition?.guideName;
+
+  const details = isSponsor
+    ? {
+        body: `Sponsor ${autnUserName} (@${autnUserName}) has increased the reward by ${amount} WAIV`,
+        title: 'Increase reward',
+        json_metadata: JSON.stringify({
+          waivioRewards: {
+            type: 'raiseReviewReward',
+            riseAmount: amount,
+            activationPermlink: proposition?.activationPermlink,
+          },
+        }),
+      }
+    : {
+        body: `User ${autnUserName} (@${autnUserName}) has decreased the reward by ${amount} WAIV`,
+        title: 'Decrease reward',
+        json_metadata: JSON.stringify({
+          waivioRewards: {
+            type: 'reduceReviewReward',
+            reduceAmount: amount,
+            activationPermlink: proposition?.activationPermlink,
+          },
+        }),
+      };
+
+  const commentOp = [
+    'comment',
+    {
+      parent_author: proposition.userName,
+      parent_permlink: proposition.reservationPermlink,
+      author: proposition.guideName,
+      permlink: createCommentPermlink(proposition.userName, proposition.reservationPermlink),
+      ...details,
+    },
+  ];
+
+  return new Promise((resolve, reject) => {
+    steemConnectAPI
+      .broadcast([commentOp])
+      .then(res => {
+        busyAPI.instance.sendAsync(subscribeTypes.subscribeTransactionId, [
+          proposition.guideName,
+          res.result.id,
+        ]);
+        busyAPI.instance.subscribe((datad, j) => {
+          if (j?.success && j?.permlink === res.result.id) {
+            resolve();
+          }
+        });
+      })
+      .catch(reject);
+  });
+};
+
 export const deactivateCampaing = (item, guideName) => (
   dispatch,
   getState,
@@ -254,7 +377,7 @@ export const setNewMatchBotRules = ruleObj => (
 export const sendCommentForReward = (proposition, body, isUpdating = false, originalComment) => (
   dispatch,
   getState,
-  { steemConnectAPI },
+  { steemConnectAPI, busyAPI },
 ) => {
   const { auth } = getState();
 
@@ -272,25 +395,39 @@ export const sendCommentForReward = (proposition, body, isUpdating = false, orig
 
   const newBody =
     isUpdating && !auth.isGuestUser ? getBodyPatchIfSmaller(originalComment.body, body) : body;
+  const detail = {
+    parent_author: isUpdating ? originalComment.parent_author : proposition?.userName,
+    parent_permlink: isUpdating
+      ? originalComment.parent_permlink
+      : proposition?.reservationPermlink,
+    author: auth.user.name,
+    permlink,
+    title: '',
+    body: newBody,
+    json_metadata: JSON.stringify(
+      createPostMetadata(body, [], isUpdating && jsonParse(originalComment.json_metadata)),
+    ),
+  };
 
-  const commentOp = [
-    'comment',
-    {
-      parent_author: proposition?.userName,
-      parent_permlink: proposition?.reservationPermlink,
-      author: auth.user.name,
-      permlink,
-      title: '',
-      body: newBody,
-      json_metadata: JSON.stringify(
-        createPostMetadata(body, [], isUpdating && jsonParse(originalComment.json_metadata)),
-      ),
-    },
-  ];
+  const commentOp = ['comment', detail];
 
-  return steemConnectAPI.broadcast([commentOp]).catch(err => {
-    dispatch(notify(err.error.message || err.error_description, 'error'));
-  });
+  return new Promise(resolve =>
+    steemConnectAPI
+      .broadcast([commentOp])
+      .then(({ result }) => {
+        busyAPI.instance.sendAsync(subscribeTypes.subscribeTransactionId, [
+          auth.user.name,
+          result.id,
+        ]);
+        busyAPI.instance.subscribe((datad, j) => {
+          if (j?.success && j?.permlink === result.id) {
+            message.success('Comment submitted');
+            resolve(detail);
+          }
+        });
+      })
+      .catch(err => dispatch(notify(err.error.message || err.error_description, 'error'))),
+  );
 };
 
 export default null;

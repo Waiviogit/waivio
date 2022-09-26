@@ -5,6 +5,8 @@ import {
   getAllCampaingForRequiredObject,
   getAuthorsChildWobjects,
   getCurrentHivePrice,
+  getEligibleRewardList,
+  getPropositionByCampaingObjectPermlink,
   searchObjects,
 } from '../../waivioApi/ApiClient';
 import { getAuthenticatedUserName } from '../authStore/authSelectors';
@@ -12,7 +14,7 @@ import { getLocale } from '../settingsStore/settingsSelectors';
 import { createPost } from '../editorStore/editorActions';
 import { createPostMetadata } from '../../common/helpers/postHelpers';
 import { getBeneficiariesUsers } from '../searchStore/searchSelectors';
-import { getSelectedDish, getSelectedRestaurant } from './quickRewardsSelectors';
+import { getIsNewRewards, getSelectedDish, getSelectedRestaurant } from './quickRewardsSelectors';
 import config from '../../waivioApi/config.json';
 import { getObjectName, getObjectType } from '../../common/helpers/wObjectHelper';
 import { getDetailsBody } from '../../client/rewards/rewardsHelper';
@@ -40,9 +42,9 @@ export const setSelectedDish = rest => ({
 
 export const TOGGLE_MODAL = '@quickRewards/TOGGLE_MODAL';
 
-export const toggleModal = open => ({
+export const toggleModal = (open, isNew) => ({
   type: TOGGLE_MODAL,
-  payload: open,
+  payload: { open, isNew },
 });
 
 export const RESET_RESTAURANT = '@quickRewards/RESET_RESTAURANT';
@@ -75,6 +77,7 @@ export const getEligibleRewardsListWithRestaurant = (selectRest, limit) => async
   const state = getState();
   const name = getAuthenticatedUserName(state);
   const locale = getLocale(state);
+  const isNewRewards = getIsNewRewards(state);
   const isReview = Boolean(selectRest.campaigns);
 
   dispatch({ type: GET_ELIGIBLE_REWARDS_WITH_RESTAURANT.START });
@@ -88,18 +91,28 @@ export const getEligibleRewardsListWithRestaurant = (selectRest, limit) => async
       'list',
       name,
     );
-    const objCampaings =
-      isReview &&
-      (await getAllCampaingForRequiredObject({
-        requiredObject: selectRest.author_permlink,
-        limit: 50,
-      }));
+    let objCampaings;
+
+    if (isReview) {
+      if (isNewRewards) {
+        objCampaings = await getPropositionByCampaingObjectPermlink(
+          selectRest.author_permlink,
+          name,
+          0,
+          '',
+        );
+      } else {
+        objCampaings = await getEligibleRewardList(selectRest.author_permlink, name);
+      }
+    }
+
+    const wobjects = isNewRewards
+      ? objCampaings.rewards.map(rew => ({ ...rew, ...rew.object, parent: selectRest }))
+      : objCampaings.wobjects;
 
     return dispatch({
       type: GET_ELIGIBLE_REWARDS_WITH_RESTAURANT.SUCCESS,
-      payload: isReview
-        ? uniqBy([...objCampaings.wobjects, ...objChild], 'author_permlink')
-        : objChild,
+      payload: isReview ? uniqBy([...wobjects, ...objChild], 'author_permlink') : objChild,
     });
   } catch (e) {
     return dispatch({ type: GET_ELIGIBLE_REWARDS_WITH_RESTAURANT.ERROR });

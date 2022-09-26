@@ -8,6 +8,7 @@ import { getCurrentCurrency } from '../../../../../store/appStore/appSelectors';
 import USDDisplay from '../../../Utils/USDDisplay';
 import useQuickRewards from '../../../../../hooks/useQuickRewards';
 import withAuthActions from '../../../../auth/withAuthActions';
+import { getObject } from '../../../../../waivioApi/ApiClient';
 
 const OverlayRewardsButton = props => {
   const ObjectOverlayCardEarnClassList = classNames('ObjectOverlayCard__earn', {
@@ -20,15 +21,22 @@ const OverlayRewardsButton = props => {
   const campaign = get(props.wObject, 'campaigns', {});
   const reward = props.isPropos ? proposition.reward : campaign.max_reward;
 
-  const handleClickProposButton = () => {
-    setRestaurant(proposition.required_object);
+  const handleClickProposButton = async () => {
+    if (proposition?.newCampaigns) {
+      const requiredObject = await getObject(proposition?.requiredObject);
+
+      setRestaurant(requiredObject);
+    } else {
+      setRestaurant(proposition.required_object);
+    }
+
     setDish(props.wObject);
-    openModal();
+    openModal(proposition?.newCampaigns);
   };
 
   const handleClickCampaignButton = () => {
     setRestaurant(props.wObject);
-    openModal();
+    openModal(proposition?.newCampaigns);
   };
 
   const handleButtonClick = () =>
