@@ -10,6 +10,7 @@ import PopoverMenu, { PopoverMenuItem } from '../../components/PopoverMenu/Popov
 import {
   decreaseReward,
   realiseRewards,
+  reinstateReward,
   rejectAuthorReview,
 } from '../../../store/newRewards/newRewardsActions';
 import Report from '../../rewards/Report/Report';
@@ -207,6 +208,17 @@ const RewardsPopover = ({ proposition, getProposition, type }) => {
       [],
     );
 
+    const reinstate = useMemo(
+      () => (
+        <PopoverMenuItem key={'release'}>
+          <div role="presentation" onClick={handleReinstateReward}>
+            Reinstate reward
+          </div>
+        </PopoverMenuItem>
+      ),
+      [],
+    );
+
     switch (rewiewType) {
       case 'reserved':
       case 'assigned': {
@@ -227,8 +239,8 @@ const RewardsPopover = ({ proposition, getProposition, type }) => {
           ? [...mainList, rejectRewards, addToBlackList]
           : [...mainList, decrease, followUserItem, followObjectItem];
       }
-      case 'reject':
-        return [viewReservation, rejectionNote];
+      case 'rejected':
+        return [viewReservation, rejectionNote, addToBlackList, reinstate];
       case 'unassigned':
       case 'expired': {
         const mainList = [viewReservation];
@@ -267,6 +279,23 @@ const RewardsPopover = ({ proposition, getProposition, type }) => {
       onOk() {
         return new Promise(resolve => {
           dispatch(rejectAuthorReview(proposition)).then(() => {
+            getProposition().then(() => {
+              resolve();
+            });
+          });
+        });
+      },
+    });
+  };
+
+  const handleReinstateReward = () => {
+    setIsVisiblePopover(false);
+    Modal.confirm({
+      title: 'Reinstate reward',
+      content: 'Do you want to reinstate this reservation?',
+      onOk() {
+        return new Promise(resolve => {
+          dispatch(reinstateReward(proposition)).then(() => {
             getProposition().then(() => {
               resolve();
             });
