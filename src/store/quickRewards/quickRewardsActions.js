@@ -14,7 +14,7 @@ import { getLocale } from '../settingsStore/settingsSelectors';
 import { createPost } from '../editorStore/editorActions';
 import { createPostMetadata } from '../../common/helpers/postHelpers';
 import { getBeneficiariesUsers } from '../searchStore/searchSelectors';
-import { getIsNewRewards, getSelectedDish, getSelectedRestaurant } from './quickRewardsSelectors';
+import { getSelectedDish, getSelectedRestaurant } from './quickRewardsSelectors';
 import config from '../../waivioApi/config.json';
 import { getObjectName, getObjectType } from '../../common/helpers/wObjectHelper';
 import { getDetailsBody } from '../../client/rewards/rewardsHelper';
@@ -77,7 +77,7 @@ export const getEligibleRewardsListWithRestaurant = (selectRest, limit) => async
   const state = getState();
   const name = getAuthenticatedUserName(state);
   const locale = getLocale(state);
-  const isNewRewards = getIsNewRewards(state);
+  const isNewRewards = Boolean(selectRest.campaigns?.newCampaigns);
   const isReview = Boolean(selectRest.campaigns);
 
   dispatch({ type: GET_ELIGIBLE_REWARDS_WITH_RESTAURANT.START });
@@ -102,7 +102,7 @@ export const getEligibleRewardsListWithRestaurant = (selectRest, limit) => async
           '',
         );
       } else {
-        objCampaings = await getEligibleRewardList(selectRest.author_permlink, name);
+        objCampaings = await getEligibleRewardList(name, 0, '');
       }
     }
 
@@ -245,7 +245,7 @@ export const reserveProposition = permlink => async (
     dish.propositions.find(prop => prop.activation_permlink) || dish.propositions[0];
   const proposedWobjName = getObjectName(dish);
   const proposedWobjAuthorPermlink = dish.author_permlink;
-  const primaryObject = get(proposition, 'required_object');
+  const primaryObject = get(proposition, 'required_object') || proposition?.parent;
   const currencyInfo = await getCurrentHivePrice();
   const amount = round(proposition.reward / currencyInfo.hiveCurrency, 3);
   const detailsBody = getDetailsBody({

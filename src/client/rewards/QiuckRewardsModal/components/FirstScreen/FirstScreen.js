@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { connect, useSelector } from 'react-redux';
+import { connect } from 'react-redux';
 import { AutoComplete } from 'antd';
 import { isEmpty, get, debounce } from 'lodash';
 import PropTypes from 'prop-types';
@@ -11,7 +11,6 @@ import { getObjectName, getObjectType } from '../../../../../common/helpers/wObj
 import {
   getDishRewardsListFromState,
   getEligibleRewardsListFromState,
-  getIsNewRewards,
   getSelectedDish,
   getSelectedRestaurant,
 } from '../../../../../store/quickRewards/quickRewardsSelectors';
@@ -32,7 +31,7 @@ const ModalFirstScreen = props => {
   const [hasMore, setHasMore] = useState(false);
   const limit = 100;
   const skipLimit = props.dishes.length;
-  const isNewReward = useSelector(getIsNewRewards);
+  const isNewReward = props.selectedRestaurant?.campaigns?.newCampaigns;
 
   useEffect(() => {
     hasMore && props.getMoreEligibleRewardsListWithRestaurant(props.selectedRestaurant, skipLimit);
