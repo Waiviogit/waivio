@@ -21,18 +21,20 @@ const OverlayRewardsButton = props => {
     props.wObject?.propositions?.find(propos => propos?.newCampaigns) ||
     get(props.wObject, 'propositions[0]', {});
   const campaign = get(props.wObject, 'campaigns', {});
-  const reward = props.isPropos ? proposition.reward : campaign.max_reward;
-
+  const reward = props.isPropos
+    ? proposition.rewardInUSD || proposition.reward
+    : campaign.max_reward;
   const handleClickProposButton = async () => {
     if (proposition?.newCampaigns) {
       const requiredObject = await getObject(proposition?.requiredObject);
 
-      setRestaurant(requiredObject);
+      setRestaurant({ ...requiredObject, campaigns: { newCampaigns: true } });
+      setDish({ ...proposition, object: props.wObject });
     } else {
       setRestaurant(proposition.required_object);
+      setDish(props.wObject);
     }
 
-    setDish(props.wObject);
     openModal();
   };
 
