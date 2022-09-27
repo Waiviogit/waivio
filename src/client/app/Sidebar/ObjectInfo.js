@@ -494,12 +494,8 @@ class ObjectInfo extends React.Component {
           this.listItem(
             objectFields.publisher,
             publisher &&
-              (publisher.author_permlink ? (
-                <ObjectCard
-                  key={publisher.author_permlink}
-                  wobject={publisher}
-                  showFollow={false}
-                />
+              (publisher.authorPermlink ? (
+                <ObjectCard key={publisher.authorPermlink} wobject={publisher} showFollow={false} />
               ) : (
                 <div className="flex ObjectCard__links">
                   <ObjectAvatar item={publisher} size={34} />{' '}
@@ -852,9 +848,9 @@ class ObjectInfo extends React.Component {
               this.listItem(
                 objectFields.publisher,
                 publisher &&
-                  (publisher.author_permlink ? (
+                  (publisher.authorPermlink ? (
                     <ObjectCard
-                      key={publisher.author_permlink}
+                      key={publisher.authorPermlink}
                       wobject={publisher}
                       showFollow={false}
                     />
