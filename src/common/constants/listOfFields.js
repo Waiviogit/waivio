@@ -235,7 +235,6 @@ export const errorObjectFields = {
     dimensionsFields.width,
     dimensionsFields.unitOfLength,
   ],
-  [objectFields.authors]: [authorsFields.name],
 };
 
 export default null;

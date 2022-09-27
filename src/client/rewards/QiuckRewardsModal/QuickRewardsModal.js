@@ -5,7 +5,6 @@ import { isEmpty, get } from 'lodash';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import {
-  getIsNewRewards,
   getIsOpenModal,
   getSelectedDish,
   getSelectedRestaurant,
@@ -49,10 +48,11 @@ const QuickRewardsModal = props => {
   const [body, setBody] = useState('');
   const [images, setImages] = useState([]);
   const [reservationPermlink, setReservationPermlink] = useState('');
-  const dishRewards = props.isNewReward
+  const isNewReward = props.selectedRestaurant?.campaigns?.newCampaigns;
+  const dishRewards = isNewReward
     ? props?.selectedDish?.reward
     : get(props, 'selectedDish.propositions[0].reward', null);
-  const isPropositionObj = props.isNewReward
+  const isPropositionObj = isNewReward
     ? dishRewards
     : !isEmpty(get(props.selectedDish, 'propositions'));
   const nextButtonClassList = classNames('QuickRewardsModal__button', {
@@ -61,7 +61,10 @@ const QuickRewardsModal = props => {
   const buttonWrapClassList = classNames('QuickRewardsModal__button-wrap', {
     'QuickRewardsModal__button-wrap--firstScreen': pageNumber === 1,
   });
-  const minPhotos = get(props, 'selectedDish.propositions[0].requirements.minPhotos', 0);
+
+  const minPhotos = isNewReward
+    ? props?.selectedDish?.requirements.minPhotos
+    : get(props, 'selectedDish.propositions[0].requirements.minPhotos', 0);
 
   const closeModal = () => {
     props.toggleModal(false);
@@ -89,7 +92,7 @@ const QuickRewardsModal = props => {
       if (window.gtag) window.gtag('event', 'reserve_proposition_in_quick_rewards_modal');
       const permlink = `reserve-${generatePermlink()}`;
 
-      if (props.isNewReward) {
+      if (isNewReward) {
         props.reservePropositionForQuick(permlink).then(() => {
           setReservationPermlink(permlink);
           setPageNumber(3);
@@ -103,7 +106,8 @@ const QuickRewardsModal = props => {
             setPageNumber(3);
             setLoading(false);
           })
-          .catch(() => {
+          .catch(error => {
+            console.error(error);
             message.error('Error');
             setLoading(false);
           });
@@ -121,11 +125,11 @@ const QuickRewardsModal = props => {
   };
 
   const handelRejectReservation = () => {
-    const proposition = props.isNewReward
+    const proposition = isNewReward
       ? props.selectedDish
       : get(props.selectedDish, 'propositions[0]', {});
 
-    if (props.isNewReward) {
+    if (isNewReward) {
       props.realiseRewards(proposition);
     } else {
       const unreservationPermlink = `reject-${proposition._id}${generatePermlink()}`;
@@ -141,7 +145,7 @@ const QuickRewardsModal = props => {
   };
 
   const getCurrentScreen = (() => {
-    const guideInfo = props.isNewReward
+    const guideInfo = isNewReward
       ? props.selectedDish
       : get(props.selectedDish, 'propositions[0].guide');
 
@@ -179,7 +183,7 @@ const QuickRewardsModal = props => {
               images={images}
               setImages={setImages}
               body={body}
-              isNewReward={props.isNewReward}
+              isNewReward={isNewReward}
             />
           ),
           buttonName: secondScreenButtonName,
@@ -194,7 +198,7 @@ const QuickRewardsModal = props => {
               primaryObject={props.selectedRestaurant}
               reviewData={{
                 ...guideInfo,
-                guideName: props.isNewReward ? guideInfo.guideName : guideInfo.name,
+                guideName: isNewReward ? guideInfo.guideName : guideInfo.name,
               }}
             />
           ),
@@ -269,7 +273,6 @@ QuickRewardsModal.propTypes = {
   declineProposition: PropTypes.func.isRequired,
   realiseRewards: PropTypes.func.isRequired,
   isOpenModal: PropTypes.bool.isRequired,
-  isNewReward: PropTypes.bool.isRequired,
   reservePropositionForQuick: PropTypes.bool.isRequired,
 };
 
@@ -279,7 +282,6 @@ export default connect(
     selectedDish: getSelectedDish(state),
     isOpenModal: getIsOpenModal(state),
     authUser: getAuthenticatedUserName(state),
-    isNewReward: getIsNewRewards(state),
   }),
   {
     createQuickPost,

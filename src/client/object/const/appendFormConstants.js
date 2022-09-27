@@ -250,7 +250,7 @@ export const fieldsRules = {
       transform: value => value && value.toLowerCase(),
     },
     {
-      required: true,
+      required: false,
       message: {
         intlId: {
           id: 'field_error',
