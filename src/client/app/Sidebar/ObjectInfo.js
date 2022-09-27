@@ -823,7 +823,7 @@ class ObjectInfo extends React.Component {
     return (
       <React.Fragment>
         {!isEditMode && wobject.authors && (
-          <div className="mb4">
+          <div className="mb3">
             By{' '}
             {authorsBody?.map((a, i) => (
               <>
