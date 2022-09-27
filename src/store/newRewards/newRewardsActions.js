@@ -223,37 +223,70 @@ export const rejectAuthorReview = proposition => (
   });
 };
 
-export const decreaseReward = (proposition, amount) => (
+export const reinstateReward = proposition => (dispatch, getState, { steemConnectAPI }) => {
+  const authUserName = getAuthenticatedUserName(getState());
+  const commentOp = [
+    'comment',
+    {
+      parent_author: proposition?.userName,
+      parent_permlink: proposition?.reservationPermlink,
+      author: authUserName,
+      permlink: createCommentPermlink(proposition?.userName, proposition?.reservationPermlink),
+      title: 'Reinstate reward',
+      body: `Sponsor ${authUserName} (@${authUserName}) has reinstated the reward `,
+      json_metadata: JSON.stringify({
+        app: config.appName,
+        waivioRewards: {
+          type: 'restoreReservationByGuide',
+        },
+      }),
+    },
+  ];
+
+  return new Promise((resolve, reject) => {
+    steemConnectAPI
+      .broadcast([commentOp])
+      .then(() => {
+        resolve('SUCCESS');
+
+        return dispatch({
+          type: SET_PENDING_UPDATE.START,
+        });
+      })
+      .catch(error => reject(error));
+  });
+};
+
+export const decreaseReward = (proposition, amount, type) => (
   dispatch,
   getState,
   { steemConnectAPI, busyAPI },
 ) => {
   const autnUserName = getAuthenticatedUserName(getState());
-  const isSponsor = autnUserName === proposition?.guideName;
-
-  const details = isSponsor
-    ? {
-        body: `Sponsor ${autnUserName} (@${autnUserName}) has increased the reward by ${amount} WAIV`,
-        title: 'Increase reward',
-        json_metadata: JSON.stringify({
-          waivioRewards: {
-            type: 'raiseReviewReward',
-            riseAmount: amount,
-            activationPermlink: proposition?.activationPermlink,
-          },
-        }),
-      }
-    : {
-        body: `User ${autnUserName} (@${autnUserName}) has decreased the reward by ${amount} WAIV`,
-        title: 'Decrease reward',
-        json_metadata: JSON.stringify({
-          waivioRewards: {
-            type: 'reduceReviewReward',
-            reduceAmount: amount,
-            activationPermlink: proposition?.activationPermlink,
-          },
-        }),
-      };
+  const details =
+    type === 'increase'
+      ? {
+          body: `Sponsor ${autnUserName} (@${autnUserName}) has increased the reward by ${amount} WAIV`,
+          title: 'Increase reward',
+          json_metadata: JSON.stringify({
+            waivioRewards: {
+              type: 'raiseReviewReward',
+              riseAmount: amount,
+              activationPermlink: proposition?.activationPermlink,
+            },
+          }),
+        }
+      : {
+          body: `User ${autnUserName} (@${autnUserName}) has decreased the reward by ${amount} WAIV`,
+          title: 'Decrease reward',
+          json_metadata: JSON.stringify({
+            waivioRewards: {
+              type: 'reduceReviewReward',
+              reduceAmount: amount,
+              activationPermlink: proposition?.activationPermlink,
+            },
+          }),
+        };
 
   const commentOp = [
     'comment',

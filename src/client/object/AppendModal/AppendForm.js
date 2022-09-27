@@ -1838,22 +1838,28 @@ export default class AppendForm extends Component {
                   })}
                   onChange={this.handleSelectChange}
                 >
-                  <Select.Option value="km">
+                  <Select.Option value="in">
                     {intl.formatMessage({
-                      id: 'kilometer',
-                      defaultMessage: 'Kilometer',
-                    })}
-                  </Select.Option>
-                  <Select.Option value="m">
-                    {intl.formatMessage({
-                      id: 'meter',
-                      defaultMessage: 'Meter',
+                      id: 'inch',
+                      defaultMessage: 'Inch',
                     })}
                   </Select.Option>
                   <Select.Option value="cm">
                     {intl.formatMessage({
                       id: 'centimeter',
                       defaultMessage: 'Centimeter',
+                    })}
+                  </Select.Option>
+                  <Select.Option value="ft">
+                    {intl.formatMessage({
+                      id: 'foot',
+                      defaultMessage: 'Foot',
+                    })}
+                  </Select.Option>
+                  <Select.Option value="m">
+                    {intl.formatMessage({
+                      id: 'meter',
+                      defaultMessage: 'Meter',
                     })}
                   </Select.Option>
                   <Select.Option value="mm">
@@ -1880,28 +1886,22 @@ export default class AppendForm extends Component {
                       defaultMessage: 'Mile',
                     })}
                   </Select.Option>
+                  <Select.Option value="nmi">
+                    {intl.formatMessage({
+                      id: 'nautical_mile',
+                      defaultMessage: 'Nautical mile',
+                    })}
+                  </Select.Option>
                   <Select.Option value="yd">
                     {intl.formatMessage({
                       id: 'yard',
                       defaultMessage: 'Yard',
                     })}
                   </Select.Option>
-                  <Select.Option value="ft">
+                  <Select.Option value="km">
                     {intl.formatMessage({
-                      id: 'foot',
-                      defaultMessage: 'Foot',
-                    })}
-                  </Select.Option>
-                  <Select.Option value="in">
-                    {intl.formatMessage({
-                      id: 'inch',
-                      defaultMessage: 'Inch',
-                    })}
-                  </Select.Option>
-                  <Select.Option value="nmi">
-                    {intl.formatMessage({
-                      id: 'nautical_mile',
-                      defaultMessage: 'Nautical mile',
+                      id: 'kilometer',
+                      defaultMessage: 'Kilometer',
                     })}
                   </Select.Option>
                 </Select>,
@@ -2442,10 +2442,22 @@ export default class AppendForm extends Component {
                   })}
                   onChange={this.handleSelectChange}
                 >
-                  <Select.Option value="t">
+                  <Select.Option value="lb">
                     {intl.formatMessage({
-                      id: 'tonne',
-                      defaultMessage: 'Tonne',
+                      id: 'pound',
+                      defaultMessage: 'Pound',
+                    })}
+                  </Select.Option>
+                  <Select.Option value="oz">
+                    {intl.formatMessage({
+                      id: 'ounce',
+                      defaultMessage: 'Ounce',
+                    })}
+                  </Select.Option>
+                  <Select.Option value="st">
+                    {intl.formatMessage({
+                      id: 'stone',
+                      defaultMessage: 'Stone',
                     })}
                   </Select.Option>
                   <Select.Option value="kg">
@@ -2472,22 +2484,10 @@ export default class AppendForm extends Component {
                       defaultMessage: 'Microgram',
                     })}
                   </Select.Option>
-                  <Select.Option value="st">
+                  <Select.Option value="t">
                     {intl.formatMessage({
-                      id: 'stone',
-                      defaultMessage: 'Stone',
-                    })}
-                  </Select.Option>
-                  <Select.Option value="lb">
-                    {intl.formatMessage({
-                      id: 'pound',
-                      defaultMessage: 'Pound',
-                    })}
-                  </Select.Option>
-                  <Select.Option value="oz">
-                    {intl.formatMessage({
-                      id: 'ounce',
-                      defaultMessage: 'Ounce',
+                      id: 'tonne',
+                      defaultMessage: 'Tonne',
                     })}
                   </Select.Option>
                 </Select>,
