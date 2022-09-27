@@ -346,8 +346,14 @@ class ObjectInfo extends React.Component {
 
     const dimensions = parseWobjectField(wobject, 'dimensions');
     const productWeight = parseWobjectField(wobject, 'productWeight');
-    // const options = wobject.options
 
+    const optionsDetails = Object.values(wobject.options).map(option => (
+      <div className="mb1" key={option[0].body.category}>
+        {' '}
+        <div>{option[0].body.category}:</div>
+        {option[0].body.position}.{option[0].body.value}
+      </div>
+    ));
     const profile = linkField
       ? {
           facebook: linkField[linkFields.linkFacebook] || '',
@@ -531,7 +537,7 @@ class ObjectInfo extends React.Component {
             </React.Fragment>
           ),
         )}
-        {this.listItem(objectFields.options, <div className="field-work-time">lllll</div>)}
+        {this.listItem(objectFields.options, optionsDetails)}
         {this.listItem(
           objectFields.workTime,
           workTime && (
