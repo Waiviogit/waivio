@@ -63,7 +63,7 @@ const QuickRewardsModal = props => {
   });
 
   const minPhotos = isNewReward
-    ? props?.selectedDish?.requirements.minPhotos
+    ? props?.selectedDish?.requirements?.minPhotos
     : get(props, 'selectedDish.propositions[0].requirements.minPhotos', 0);
 
   const closeModal = () => {
@@ -93,11 +93,17 @@ const QuickRewardsModal = props => {
       const permlink = `reserve-${generatePermlink()}`;
 
       if (isNewReward) {
-        props.reservePropositionForQuick(permlink).then(() => {
-          setReservationPermlink(permlink);
-          setPageNumber(3);
-          setLoading(false);
-        });
+        props
+          .reservePropositionForQuick(permlink)
+          .then(() => {
+            setReservationPermlink(permlink);
+            setPageNumber(3);
+            setLoading(false);
+          })
+          .catch(error => {
+            message.error(error?.error_description);
+            setLoading(false);
+          });
       } else {
         props
           .reserveProposition(permlink)
