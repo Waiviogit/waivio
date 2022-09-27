@@ -1487,14 +1487,14 @@ export default class AppendForm extends Component {
                     defaultMessage: 'Publisher name',
                   })}
                 />,
-              )}
+              ) || this.state.selectedObject}
             </Form.Item>
             <Form.Item>
               {getFieldDecorator(publisherFields.publisher, {
                 rules: this.getFieldRules(publisherFields.publisher),
               })(
                 <SearchObjectsAutocomplete
-                  objectType="person"
+                  objectType="business"
                   placeholder={this.props.intl.formatMessage({
                     id: 'objects_auto_complete_publisher_placeholder',
                     defaultMessage: 'Find publisher',
@@ -2910,7 +2910,7 @@ export default class AppendForm extends Component {
           isEmpty(getFieldValue(weightFields.unitOfWeight))
         );
       case objectFields.publisher:
-        return isEmpty(getFieldValue(publisherFields.publisherName));
+        return isEmpty(getFieldValue(publisherFields.publisherName)) && !this.state.selectedObject;
       case objectFields.dimensions:
         return (
           isEmpty(getFieldValue(dimensionsFields.length)) ||
