@@ -99,6 +99,27 @@ const RewardsPopover = ({ proposition, getProposition, type }) => {
     });
   };
 
+  const rejectReservation = () => {
+    setIsVisiblePopover(false);
+    Modal.confirm({
+      title: 'Reject reservation',
+      content: 'Do you want to reject this reservation?',
+      onOk() {
+        return new Promise(resolve => {
+          dispatch(rejectAuthorReview(proposition))
+            .then(() => {
+              getProposition().then(() => {
+                resolve();
+              });
+            })
+            .catch(() => {
+              resolve();
+            });
+        });
+      },
+    });
+  };
+
   const handleReinstateReward = () => {
     setIsVisiblePopover(false);
     Modal.confirm({
@@ -271,6 +292,17 @@ const RewardsPopover = ({ proposition, getProposition, type }) => {
     [],
   );
 
+  const rejectReservations = useMemo(
+    () => (
+      <PopoverMenuItem key={'rejectReservation'}>
+        <div role="presentation" onClick={rejectReservation}>
+          Reject reservation
+        </div>
+      </PopoverMenuItem>
+    ),
+    [],
+  );
+
   const realeaseRewards = useMemo(
     () => (
       <PopoverMenuItem key={'release'}>
@@ -307,7 +339,7 @@ const RewardsPopover = ({ proposition, getProposition, type }) => {
       case 'assigned': {
         return isUser
           ? [viewReservation, realeaseRewards, decrease, ...toolList]
-          : [viewReservation, realeaseRewards, increase, ...toolList];
+          : [viewReservation, rejectReservations, increase, ...toolList];
       }
 
       case 'completed': {
