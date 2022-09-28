@@ -10,17 +10,24 @@ import { useLocation } from 'react-router';
 import RewardsPopover from '../../RewardsPopover/RewardsPopover';
 import Avatar from '../../../components/Avatar';
 import QuickCommentEditor from '../../../components/Comments/QuickCommentEditor';
-import { sendCommentForReward } from '../../../../store/newRewards/newRewardsActions';
+import {
+  reserveProposition,
+  sendCommentForReward,
+} from '../../../../store/newRewards/newRewardsActions';
 import { getAuthenticatedUserName } from '../../../../store/authStore/authSelectors';
 import { getPostCommentsFromApi } from '../../../../waivioApi/ApiClient';
 import CommentCard from '../../Comments/CommentCard';
 import config from '../../../../waivioApi/routes';
+import { getIsWaivio } from '../../../../store/appStore/appSelectors';
+import WebsiteReservedButtons from '../../../rewards/Proposition/WebsiteReservedButtons/WebsiteReservedButtons';
 
 import './Proposition.less';
 
 const PropositionFooter = ({ type, openDetailsModal, proposition, getProposition, intl }) => {
   const dispatch = useDispatch();
   const authUserName = useSelector(getAuthenticatedUserName);
+  const isWaivio = useSelector(getIsWaivio);
+
   const location = useLocation();
   const [loading, setLoading] = useState(false);
   const [showComment, setShowComment] = useState(false);
@@ -170,13 +177,19 @@ const PropositionFooter = ({ type, openDetailsModal, proposition, getProposition
         );
 
       default:
-        return (
+        return isWaivio ? (
           <div className="Proposition-new__footer-container">
             <Button type="primary" onClick={openDetailsModal}>
               <b>Reserve</b> Your Reward
             </Button>{' '}
             for {proposition?.countReservationDays} days
           </div>
+        ) : (
+          <WebsiteReservedButtons
+            dish={{ ...proposition, ...proposition.object, parent: proposition?.object?.parent }}
+            handleReserve={() => dispatch(reserveProposition(proposition, authUserName))}
+            isNewReward
+          />
         );
     }
   };
@@ -199,6 +212,8 @@ PropositionFooter.propTypes = {
     countReservationDays: PropTypes.number,
     reservationPermlink: PropTypes.string,
     fraudCodes: PropTypes.arrayOf(PropTypes.number),
+    object: PropTypes.shape(),
+    requiredObject: PropTypes.shape(),
   }).isRequired,
   intl: PropTypes.shape({
     formatMessage: PropTypes.func,

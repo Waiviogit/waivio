@@ -26,10 +26,11 @@ export default (state = defaultState, action) => {
         eligibleRestList: action.payload.wobjects,
       };
     case TOGGLE_MODAL: {
-      if (action.payload) {
+      if (action.payload.open) {
         return {
           ...state,
-          isOpen: action.payload,
+          isOpen: action.payload.open,
+          isNew: action.payload.isNew,
         };
       }
 

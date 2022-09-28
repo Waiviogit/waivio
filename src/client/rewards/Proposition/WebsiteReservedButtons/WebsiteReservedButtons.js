@@ -9,6 +9,7 @@ import PopoverMenu from '../../../components/PopoverMenu/PopoverMenu';
 import PopoverMenuItem from '../../../components/PopoverMenu/PopoverMenuItem';
 
 import './WebsiteReservedButtons.less';
+import { getObject } from '../../../../waivioApi/ApiClient';
 
 const WebsiteReservedButtons = props => {
   const { setDish, setRestaurant, openModal } = useQuickRewards();
@@ -22,8 +23,15 @@ const WebsiteReservedButtons = props => {
     });
 
   const handleClickProposButton = () =>
-    props.onActionInitiated(() => {
-      setRestaurant(props.restaurant);
+    props.onActionInitiated(async () => {
+      if (props.isNewReward) {
+        const requiredObject = await getObject(props.dish?.requiredObject);
+
+        setRestaurant(requiredObject);
+      } else {
+        setRestaurant(props.restaurant);
+      }
+
       setDish(props.dish);
       openModal();
     });
@@ -62,6 +70,7 @@ WebsiteReservedButtons.propTypes = {
   dish: PropTypes.shape().isRequired,
   onActionInitiated: PropTypes.func.isRequired,
   handleReserve: PropTypes.func.isRequired,
+  isNewReward: PropTypes.bool.isRequired,
 };
 
 export default withAuthActions(WebsiteReservedButtons);

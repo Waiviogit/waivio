@@ -5,6 +5,8 @@ import {
   getAllCampaingForRequiredObject,
   getAuthorsChildWobjects,
   getCurrentHivePrice,
+  getEligibleRewardList,
+  getPropositionByCampaingObjectPermlink,
   searchObjects,
 } from '../../waivioApi/ApiClient';
 import { getAuthenticatedUserName } from '../authStore/authSelectors';
@@ -40,9 +42,9 @@ export const setSelectedDish = rest => ({
 
 export const TOGGLE_MODAL = '@quickRewards/TOGGLE_MODAL';
 
-export const toggleModal = open => ({
+export const toggleModal = (open, isNew) => ({
   type: TOGGLE_MODAL,
-  payload: open,
+  payload: { open, isNew },
 });
 
 export const RESET_RESTAURANT = '@quickRewards/RESET_RESTAURANT';
@@ -75,6 +77,7 @@ export const getEligibleRewardsListWithRestaurant = (selectRest, limit) => async
   const state = getState();
   const name = getAuthenticatedUserName(state);
   const locale = getLocale(state);
+  const isNewRewards = Boolean(selectRest.campaigns?.newCampaigns);
   const isReview = Boolean(selectRest.campaigns);
 
   dispatch({ type: GET_ELIGIBLE_REWARDS_WITH_RESTAURANT.START });
@@ -88,18 +91,28 @@ export const getEligibleRewardsListWithRestaurant = (selectRest, limit) => async
       'list',
       name,
     );
-    const objCampaings =
-      isReview &&
-      (await getAllCampaingForRequiredObject({
-        requiredObject: selectRest.author_permlink,
-        limit: 50,
-      }));
+    let objCampaings;
+
+    if (isReview) {
+      if (isNewRewards) {
+        objCampaings = await getPropositionByCampaingObjectPermlink(
+          selectRest.author_permlink,
+          name,
+          0,
+          '',
+        );
+      } else {
+        objCampaings = await getEligibleRewardList(name, 0, '');
+      }
+    }
+
+    const wobjects = isNewRewards
+      ? objCampaings.rewards.map(rew => ({ ...rew, ...rew.object, parent: selectRest }))
+      : objCampaings?.wobjects || [];
 
     return dispatch({
       type: GET_ELIGIBLE_REWARDS_WITH_RESTAURANT.SUCCESS,
-      payload: isReview
-        ? uniqBy([...objCampaings.wobjects, ...objChild], 'author_permlink')
-        : objChild,
+      payload: isReview ? uniqBy([...wobjects, ...objChild], 'author_permlink') : objChild,
     });
   } catch (e) {
     return dispatch({ type: GET_ELIGIBLE_REWARDS_WITH_RESTAURANT.ERROR });
@@ -173,7 +186,9 @@ export const createQuickPost = (userBody, topics, images, reservationPermlink) =
   }) ${imagesLink} ${userBody} ${topicsLink}`;
 
   if (isReview) {
-    body += `\n***\nThis review was sponsored in part by ${dish.propositions[0].guide.alias} ([@${dish.propositions[0].guideName}](/@${dish.propositions[0].guideName}))`;
+    const guideName = dish?.guideName || dish?.propositions?.[0]?.guideName;
+
+    body += `\n***\nThis review was sponsored in part by ${guideName} ([@${guideName}](/@${guideName}))`;
   }
 
   const postData = {
@@ -232,7 +247,7 @@ export const reserveProposition = permlink => async (
     dish.propositions.find(prop => prop.activation_permlink) || dish.propositions[0];
   const proposedWobjName = getObjectName(dish);
   const proposedWobjAuthorPermlink = dish.author_permlink;
-  const primaryObject = get(proposition, 'required_object');
+  const primaryObject = get(proposition, 'required_object') || proposition?.parent;
   const currencyInfo = await getCurrentHivePrice();
   const amount = round(proposition.reward / currencyInfo.hiveCurrency, 3);
   const detailsBody = getDetailsBody({
@@ -241,6 +256,7 @@ export const reserveProposition = permlink => async (
     proposedWobjAuthorPermlink,
     primaryObjectName: proposition.required_object,
   });
+
   const commentOp = [
     'comment',
     {

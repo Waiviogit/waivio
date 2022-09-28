@@ -39,6 +39,9 @@
   padding-bottom: @content-margin;
   word-wrap: break-word;
   word-break: break-word;
+  &__nopadding {
+    padding-bottom: 0;
+  }
 
   &__more {
     cursor: pointer;
@@ -135,6 +138,7 @@
       vertical-align: middle;
     }
   }
+
   .phone-number {
     display: block;
   }
@@ -284,6 +288,10 @@
   &__margin-top {
     margin-top: -7px;
   }
+}
+
+.publisher-paddingBottom {
+  padding-bottom: 12px;
 }
 
 @import './ObjectInfo-nightmode';

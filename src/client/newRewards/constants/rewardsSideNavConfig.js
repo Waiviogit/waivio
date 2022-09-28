@@ -37,7 +37,7 @@ export const rewardsSettings = {
   ],
 };
 
-export const campaingSettings = {
+export const campaingSettings = withWarning => ({
   tab: {
     name: 'campaing',
     id: 'campaings',
@@ -59,6 +59,7 @@ export const campaingSettings = {
       to: '/rewards-new/payables',
       id: 'payable',
       defaultMessage: 'Payable',
+      withWarning,
     },
     {
       to: '/rewards-new/reports',
@@ -86,7 +87,7 @@ export const campaingSettings = {
       defaultMessage: 'Blacklist',
     },
   ],
-};
+});
 
 export const matchBotsSettings = {
   tab: {

@@ -146,8 +146,8 @@ export default (state = initialState, action) => {
     case appTypes.GET_CURRENT_APP_SETTINGS.SUCCESS: {
       const { mainPage, host, configuration, beneficiary, parentHost } = action.payload;
       const deviceType = mobileUserAgents.test(navigator.userAgent) ? 'mobile' : 'desktop';
-      const currMap = configuration[`${deviceType}Map`];
-      const logo = configuration[`${deviceType}Logo`];
+      const currMap = configuration?.[`${deviceType}Map`];
+      const logo = configuration?.[`${deviceType}Logo`];
 
       return {
         ...state,

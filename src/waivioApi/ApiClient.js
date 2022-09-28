@@ -2217,14 +2217,16 @@ export const getPostsForMap = params => {
 };
 
 export const getAllCampaingForRequiredObject = params => {
-  return fetch(`${config.apiPrefix}${config.wobjects}${config.campaign}${config.requiredObject}`, {
-    headers,
-    body: JSON.stringify(params),
-    method: 'POST',
-  })
-    .then(handleErrors)
-    .then(res => res.json())
-    .catch(e => e);
+  return (
+    fetch(`${config.apiPrefix}${config.wobjects}${config.campaign}${config.requiredObject}`, {
+      headers,
+      body: JSON.stringify(params),
+      method: 'POST',
+    })
+      // .then(handleErrors)
+      .then(res => res.json())
+      .catch(e => Promise.reject(e))
+  );
 };
 
 const hiveEngineContract = params =>
@@ -3174,6 +3176,43 @@ export const getGlobalReports = body => {
     headers,
     method: 'POST',
     body: JSON.stringify(body),
+  })
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+};
+
+export const checkPayblesWarning = guideName => {
+  return fetch(`${config.campaignV2ApiPrefix}${config.payables}${config.warning}/${guideName}`, {
+    headers,
+    method: 'GET',
+  })
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+};
+
+export const checkUserInBlackList = (guideName, userName) => {
+  return fetch(
+    `${config.campaignV2ApiPrefix}${config.rewards}${config.blacklist}/${guideName}/${userName}`,
+    {
+      headers,
+      method: 'GET',
+    },
+  )
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+};
+
+export const checkUserFollowing = (userName, users, objects) => {
+  return fetch(`${config.campaignV2ApiPrefix}${config.rewards}${config.following}/${userName}`, {
+    headers,
+    method: 'POST',
+    body: JSON.stringify({
+      users,
+      objects,
+    }),
   })
     .then(res => res.json())
     .then(response => response)

@@ -14,7 +14,9 @@ import TagsSelector from '../../../../components/TagsSelector/TagsSelector';
 import './SecondScreen.less';
 
 const ModalSecondScreen = props => {
-  const requirements = get(props, 'selectedDish.propositions[0].requirements', null);
+  const requirements = props.selectedRestaurant?.campaigns?.newCampaigns
+    ? props.selectedDish?.requirements
+    : get(props, 'selectedDish.propositions[0].requirements', null);
 
   useEffect(() => {
     const address = parseWobjectField(props.selectedRestaurant, 'address');

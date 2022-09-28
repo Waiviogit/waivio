@@ -8,6 +8,7 @@ dotenv.config({ path: `./env/${process.env.NODE_ENV}.env` });
 const IS_DEV = process.env.NODE_ENV === 'development';
 
 const SERVER_PORT = process.env.PORT || 3000;
+
 const CONTENT_PORT = IS_DEV ? SERVER_PORT + 1 : SERVER_PORT;
 
 let CALLBACK_HOST_URL = 'www.waivio.com';
