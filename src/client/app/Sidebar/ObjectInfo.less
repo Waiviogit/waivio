@@ -281,9 +281,27 @@
     cursor: pointer;
   }
 }
+
 .ObjectInfo {
   &__margin-top {
     margin-top: -7px;
+  }
+
+  &__option-button {
+    background: none;
+    border: 1px solid @white-gainsboro;
+    min-width: 80px;
+    height: 25px;
+    border-radius: 4px;
+    &:hover {
+      cursor: pointer;
+      border-color: @orange;
+      color: @orange;
+    }
+    &:active {
+      border-color: @orange-hot;
+      color: @orange-hot;
+    }
   }
 }
 
