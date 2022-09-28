@@ -347,24 +347,27 @@ class ObjectInfo extends React.Component {
     const dimensions = parseWobjectField(wobject, 'dimensions');
     const productWeight = parseWobjectField(wobject, 'productWeight');
 
-    // const options = Object.entries(wobject.options).map(el=> el[1].map(e=> e.body.value))
-    // console.log(options)
+    // const options = Object.entries(wobject?.options).map(el => el[1].map(e => e.body.value));
+    //
+    // console.log(options);
 
-    const optionsDetails = isEditMode
-      ? Object.values(wobject.options).map(option => (
-          <div className="mb1" key={option[0].body.category}>
-            {' '}
-            <div>{option[0].body.category}:</div>
-            {option[0].body.position}.{option[0].body.value}
-          </div>
-        ))
-      : Object.values(wobject.options).map(option => (
-          <div className="mb1" key={option[0].body.category}>
-            {' '}
-            <div>{option[0].body.category}:</div>
-            <button className="ObjectInfo__option-button">{option[0].body.value}</button>
-          </div>
-        ));
+    const optionsDetails =
+      isEditMode && wobject.options
+        ? Object.values(wobject.options).map(option => (
+            <div className="mb1" key={option[0].body.category}>
+              {' '}
+              <div>{option[0].body.category}:</div>
+              {option[0].body.position}.{option[0].body.value}
+            </div>
+          ))
+        : wobject.options &&
+          Object.values(wobject.options).map(option => (
+            <div className="mb1" key={option[0].body.category}>
+              {' '}
+              <div>{option[0].body.category}:</div>
+              <button className="ObjectInfo__option-button">{option[0].body.value}</button>
+            </div>
+          ));
     const profile = linkField
       ? {
           facebook: linkField[linkFields.linkFacebook] || '',
@@ -512,12 +515,8 @@ class ObjectInfo extends React.Component {
           this.listItem(
             objectFields.publisher,
             publisher &&
-              (publisher.author_permlink ? (
-                <ObjectCard
-                  key={publisher.author_permlink}
-                  wobject={publisher}
-                  showFollow={false}
-                />
+              (publisher.authorPermlink ? (
+                <ObjectCard key={publisher.authorPermlink} wobject={publisher} showFollow={false} />
               ) : (
                 <div className="flex ObjectCard__links">
                   <ObjectAvatar item={publisher} size={34} />{' '}
@@ -842,7 +841,7 @@ class ObjectInfo extends React.Component {
     return (
       <React.Fragment>
         {!isEditMode && wobject.authors && (
-          <div className="mb4">
+          <div className="mb3">
             By{' '}
             {authorsBody?.map((a, i) => (
               <>
@@ -871,9 +870,9 @@ class ObjectInfo extends React.Component {
               this.listItem(
                 objectFields.publisher,
                 publisher &&
-                  (publisher.author_permlink ? (
+                  (publisher.authorPermlink ? (
                     <ObjectCard
-                      key={publisher.author_permlink}
+                      key={publisher.authorPermlink}
                       wobject={publisher}
                       showFollow={false}
                     />

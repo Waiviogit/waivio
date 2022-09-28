@@ -450,7 +450,7 @@ export default class AppendForm extends Component {
 
           return `@${author} added ${currentField} (${langReadable}): name: ${
             formValues[publisherFields.publisherName]
-          } ${linkInfo}`;
+          }${linkInfo}`;
         }
         case objectFields.productWeight:
           return `@${author} added ${currentField} (${langReadable}): ${weightFields.weight}: ${
@@ -463,7 +463,7 @@ export default class AppendForm extends Component {
 
           return `@${author} added author (${langReadable}): name: ${formValues[
             authorsFields.name
-          ] || this.state.selectedObject.name} ${linkInfo} `;
+          ] || this.state.selectedObject.name}${linkInfo} `;
         case objectFields.phone:
           return `@${author} added ${currentField}(${langReadable}):\n ${appendValue.replace(
             /[{}"]/g,
@@ -1516,14 +1516,14 @@ export default class AppendForm extends Component {
                     defaultMessage: 'Publisher name',
                   })}
                 />,
-              )}
+              ) || this.state.selectedObject}
             </Form.Item>
             <Form.Item>
               {getFieldDecorator(publisherFields.publisher, {
                 rules: this.getFieldRules(publisherFields.publisher),
               })(
                 <SearchObjectsAutocomplete
-                  objectType="person"
+                  objectType="business"
                   placeholder={this.props.intl.formatMessage({
                     id: 'objects_auto_complete_publisher_placeholder',
                     defaultMessage: 'Find publisher',
@@ -1571,7 +1571,7 @@ export default class AppendForm extends Component {
                     defaultMessage: 'Author name',
                   })}
                 />,
-              )}
+              ) || this.state.selectedObject.name}
             </Form.Item>
             <Form.Item>
               {getFieldDecorator(authorsFields.author, {
@@ -3019,14 +3019,14 @@ export default class AppendForm extends Component {
           isEmpty(getFieldValue(websiteFields.link)) || isEmpty(getFieldValue(websiteFields.title))
         );
       case objectFields.authors:
-        return isEmpty(getFieldValue(authorsFields.name));
+        return isEmpty(getFieldValue(authorsFields.name)) && !this.state.selectedObject;
       case objectFields.productWeight:
         return (
           isEmpty(getFieldValue(weightFields.weight)) ||
           isEmpty(getFieldValue(weightFields.unitOfWeight))
         );
       case objectFields.publisher:
-        return isEmpty(getFieldValue(publisherFields.publisherName));
+        return isEmpty(getFieldValue(publisherFields.publisherName)) && !this.state.selectedObject;
       case objectFields.dimensions:
         return (
           isEmpty(getFieldValue(dimensionsFields.length)) ||
