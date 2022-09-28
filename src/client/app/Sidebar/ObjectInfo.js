@@ -44,6 +44,7 @@ import CompanyId from './CompanyId';
 import ProductId from './ProductId';
 
 import './ObjectInfo.less';
+import ObjectAvatar from '../../components/ObjectAvatar';
 
 @withRouter
 @connect(
@@ -139,7 +140,7 @@ class ObjectInfo extends React.Component {
     return (
       shouldDisplay &&
       (content || accessExtend) && (
-        <div className="field-info">
+        <div className={name !== 'publisher' ? 'field-info' : 'field-info field-info__nopadding'}>
           <React.Fragment>
             {accessExtend && (
               <div className="field-info__title">
@@ -473,13 +474,34 @@ class ObjectInfo extends React.Component {
         {isEditMode &&
           this.listItem(
             objectFields.authors,
-            authorsBody?.map(a => (
-              <div key={a.authorPermlink} className=" flex flex-column">
-                <div className="CompanyId__wordbreak ml1">
-                  <Link to={`/object/${a.authorPermlink}`}>{a.name}</Link>
+            <div>
+              {authorsBody?.map((a, i) => (
+                <>
+                  {a.defaultShowLink ? (
+                    <Link to={`/object/${a.authorPermlink}`}>{a.name}</Link>
+                  ) : (
+                    <span>{a.name}</span>
+                  )}
+                  <>
+                    {i !== authorsBody.length - 1 && ','}
+                    {'  '}
+                  </>
+                </>
+              ))}
+            </div>,
+          )}
+        {isEditMode &&
+          this.listItem(
+            objectFields.publisher,
+            publisher &&
+              (publisher.authorPermlink ? (
+                <ObjectCard key={publisher.authorPermlink} wobject={publisher} showFollow={false} />
+              ) : (
+                <div className="flex ObjectCard__links publisher-paddingBottom">
+                  <ObjectAvatar item={publisher} size={34} />{' '}
+                  <span className="ObjectCard__name-grey">{publisher.name}</span>
                 </div>
-              </div>
-            )),
+              )),
           )}
         {this.listItem(
           objectFields.description,
@@ -797,12 +819,20 @@ class ObjectInfo extends React.Component {
     return (
       <React.Fragment>
         {!isEditMode && wobject.authors && (
-          <div className="CompanyId__wordbreak field-info flex flex-column mb1">
-            By
-            {authorsBody?.map(a => (
-              <div className="CompanyId__wordbreak ml1" key={a.authorPermlink}>
-                <Link to={`/object/${a.authorPermlink}`}>{a.name}</Link>
-              </div>
+          <div className="mb3">
+            By{' '}
+            {authorsBody?.map((a, i) => (
+              <>
+                {a.defaultShowLink ? (
+                  <Link to={`/object/${a.authorPermlink}`}>{a.name}</Link>
+                ) : (
+                  <span>{a.name}</span>
+                )}
+                <>
+                  {i !== authorsBody.length - 1 && ','}
+                  {'  '}
+                </>
+              </>
             ))}
           </div>
         )}
@@ -814,16 +844,23 @@ class ObjectInfo extends React.Component {
                 <ObjectCard key={parent.author_permlink} wobject={parent} showFollow={false} />
               ),
             )}
-            {this.listItem(
-              objectFields.publisher,
-              publisher && (
-                <ObjectCard
-                  key={publisher.author_permlink}
-                  wobject={publisher}
-                  showFollow={false}
-                />
-              ),
-            )}
+            {!isEditMode &&
+              this.listItem(
+                objectFields.publisher,
+                publisher &&
+                  (publisher.authorPermlink ? (
+                    <ObjectCard
+                      key={publisher.authorPermlink}
+                      wobject={publisher}
+                      showFollow={false}
+                    />
+                  ) : (
+                    <div className="flex ObjectCard__links publisher-paddingBottom">
+                      <ObjectAvatar item={publisher} size={34} />{' '}
+                      <span className="ObjectCard__name-grey">{publisher.name}</span>
+                    </div>
+                  )),
+              )}
             {!isHashtag && !hasType(wobject, OBJECT_TYPE.PAGE) && menuSection()}
             {!isHashtag && aboutSection}
             {accessExtend && hasType(wobject, OBJECT_TYPE.LIST) && listSection}

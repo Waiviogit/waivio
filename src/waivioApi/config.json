@@ -177,5 +177,7 @@
   "lastActivity": "/last-activity",
   "fields": "/fields",
   "getMatchBots": "/match-bots",
+  "warning": "/warning",
+  "following": "/following",
   "draft": "/draft"
 }

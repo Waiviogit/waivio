@@ -75,9 +75,10 @@ const DetailsModal = ({
     if (!proposition?.reserved) {
       setLoading(true);
 
-      dispatch(reserveProposition(proposition, userName, history))
+      dispatch(reserveProposition(proposition, userName))
         .then(() => {
           setLoading(false);
+          history.push('/rewards-new/reserved');
         })
         .catch(e => {
           setLoading(false);

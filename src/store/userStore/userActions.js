@@ -463,7 +463,8 @@ export const declineProposition = ({
   requiredObjectName,
   type,
 }) => (dispatch, getState, { steemConnectAPI }) => {
-  const username = getAuthenticatedUserName(getState());
+  const state = getState();
+  const username = getAuthenticatedUserName(state);
   const commentOp = [
     'comment',
     {
