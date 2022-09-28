@@ -250,7 +250,7 @@ export const reinstateReward = proposition => (
   return new Promise((resolve, reject) => {
     steemConnectAPI
       .broadcast([commentOp])
-      .then(() => res => {
+      .then(res => {
         busyAPI.instance.sendAsync(subscribeTypes.subscribeTransactionId, [
           proposition.guideName,
           res.result.id,
@@ -261,7 +261,9 @@ export const reinstateReward = proposition => (
           }
         });
       })
-      .catch(error => reject(error));
+      .catch(error => {
+        reject(error);
+      });
   });
 };
 
