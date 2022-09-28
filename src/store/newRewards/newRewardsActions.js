@@ -302,7 +302,7 @@ export const decreaseReward = (proposition, amount, type) => (
     {
       parent_author: proposition.userName,
       parent_permlink: proposition.reservationPermlink,
-      author: proposition.guideName,
+      author: autnUserName,
       permlink: createCommentPermlink(proposition.userName, proposition.reservationPermlink),
       ...details,
     },
