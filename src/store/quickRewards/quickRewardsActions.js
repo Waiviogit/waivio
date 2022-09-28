@@ -186,7 +186,9 @@ export const createQuickPost = (userBody, topics, images, reservationPermlink) =
   }) ${imagesLink} ${userBody} ${topicsLink}`;
 
   if (isReview) {
-    body += `\n***\nThis review was sponsored in part by ${dish.propositions[0].guide.alias} ([@${dish.propositions[0].guideName}](/@${dish.propositions[0].guideName}))`;
+    const guideName = dish?.guideName || dish?.propositions?.[0]?.guideName;
+
+    body += `\n***\nThis review was sponsored in part by ${guideName} ([@${guideName}](/@${guideName}))`;
   }
 
   const postData = {
@@ -254,6 +256,7 @@ export const reserveProposition = permlink => async (
     proposedWobjAuthorPermlink,
     primaryObjectName: proposition.required_object,
   });
+
   const commentOp = [
     'comment',
     {

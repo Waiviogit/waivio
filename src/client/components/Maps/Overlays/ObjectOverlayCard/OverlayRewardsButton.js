@@ -24,12 +24,13 @@ const OverlayRewardsButton = props => {
   const reward = props.isPropos
     ? proposition.rewardInUSD || proposition.reward
     : campaign.max_reward;
+
   const handleClickProposButton = async () => {
     if (proposition?.newCampaigns) {
       const requiredObject = await getObject(proposition?.requiredObject);
 
       setRestaurant({ ...requiredObject, campaigns: { newCampaigns: true } });
-      setDish({ ...proposition, object: props.wObject });
+      setDish({ ...proposition, ...props.wObject, object: props.wObject });
     } else {
       setRestaurant(proposition.required_object);
       setDish(props.wObject);
