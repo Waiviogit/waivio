@@ -64,11 +64,15 @@ const RewardsPopover = ({ proposition, getProposition, type }) => {
       content: 'Do you want to release this reservation?',
       onOk() {
         return new Promise(resolve => {
-          dispatch(realiseRewards(proposition)).then(() => {
-            getProposition().then(() => {
+          dispatch(realiseRewards(proposition))
+            .then(() => {
+              getProposition().then(() => {
+                resolve();
+              });
+            })
+            .catch(() => {
               resolve();
             });
-          });
         });
       },
     });
@@ -77,15 +81,19 @@ const RewardsPopover = ({ proposition, getProposition, type }) => {
   const rejectReward = () => {
     setIsVisiblePopover(false);
     Modal.confirm({
-      title: 'Release reservation',
-      content: 'Do you want to release this reservation?',
+      title: 'Reject review',
+      content: 'Do you want to reject this review?',
       onOk() {
         return new Promise(resolve => {
-          dispatch(rejectAuthorReview(proposition)).then(() => {
-            getProposition().then(() => {
+          dispatch(rejectAuthorReview(proposition))
+            .then(() => {
+              getProposition().then(() => {
+                resolve();
+              });
+            })
+            .catch(() => {
               resolve();
             });
-          });
         });
       },
     });
@@ -98,19 +106,23 @@ const RewardsPopover = ({ proposition, getProposition, type }) => {
       content: 'Do you want to reinstate this reservation?',
       onOk() {
         return new Promise(resolve => {
-          dispatch(reinstateReward(proposition)).then(() => {
-            getProposition().then(() => {
+          dispatch(reinstateReward(proposition))
+            .then(() => {
+              getProposition().then(() => {
+                resolve();
+              });
+            })
+            .catch(() => {
               resolve();
             });
-          });
         });
       },
     });
   };
 
-  const openDecreaseModal = () => {
+  const openDecreaseModal = typeAction => {
     setIsVisiblePopover(false);
-    setOpenDecrease(true);
+    setOpenDecrease(typeAction);
   };
 
   const setAmountDebounce = useCallback(
@@ -295,7 +307,7 @@ const RewardsPopover = ({ proposition, getProposition, type }) => {
       case 'assigned': {
         return isUser
           ? [viewReservation, realeaseRewards, decrease, ...toolList]
-          : [viewReservation, increase, ...toolList];
+          : [viewReservation, realeaseRewards, increase, ...toolList];
       }
 
       case 'completed': {
@@ -335,13 +347,13 @@ const RewardsPopover = ({ proposition, getProposition, type }) => {
       </Popover>
       {openDecrease && (
         <Modal
-          visible={openDecrease}
+          visible={!!openDecrease}
           onCancel={() => {
             setOpenDecrease('');
             setAmount(0);
           }}
           onOk={() => {
-            setOpenDecrease(false);
+            setOpenDecrease('');
             dispatch(decreaseReward(proposition, amount, openDecrease));
           }}
         >

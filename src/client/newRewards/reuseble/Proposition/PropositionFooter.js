@@ -186,8 +186,7 @@ const PropositionFooter = ({ type, openDetailsModal, proposition, getProposition
           </div>
         ) : (
           <WebsiteReservedButtons
-            dish={{ ...proposition, ...proposition.object, parent: proposition.requiredObject }}
-            restaurant={proposition.requiredObject}
+            dish={{ ...proposition, ...proposition.object, parent: proposition?.object?.parent }}
             handleReserve={() => dispatch(reserveProposition(proposition, authUserName))}
             isNewReward
           />

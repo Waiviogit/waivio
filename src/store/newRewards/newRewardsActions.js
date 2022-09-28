@@ -159,7 +159,7 @@ export const realiseRewards = proposition => (dispatch, getState, { steemConnect
     steemConnectAPI
       .broadcast([commentOp])
       .then(async () => {
-        busyAPI.instance.sendAsync(subscribeTypes.subscribeCampaignRelease, [
+        busyAPI.instance.sendAsync(subscribeTypes.subscribeTransactionId, [
           username,
           unreservationPermlink,
         ]);
@@ -189,7 +189,7 @@ export const rejectAuthorReview = proposition => (
       title: 'Cancelled reservation',
       body: `User <a href="https://www.waivio.com/@${proposition.guideName}">${
         proposition.guideName
-      }</a> cancelled reservation for <a href="https://www.waivio.com${
+      }</a> rejected review for <a href="https://www.waivio.com${
         proposition?.object?.defaultShowLink
       }">${getObjectName(proposition?.object)}</a> rewards campaign`,
       json_metadata: JSON.stringify({
@@ -223,7 +223,11 @@ export const rejectAuthorReview = proposition => (
   });
 };
 
-export const reinstateReward = proposition => (dispatch, getState, { steemConnectAPI }) => {
+export const reinstateReward = proposition => (
+  dispatch,
+  getState,
+  { steemConnectAPI, busyAPI },
+) => {
   const authUserName = getAuthenticatedUserName(getState());
   const commentOp = [
     'comment',
@@ -246,11 +250,15 @@ export const reinstateReward = proposition => (dispatch, getState, { steemConnec
   return new Promise((resolve, reject) => {
     steemConnectAPI
       .broadcast([commentOp])
-      .then(() => {
-        resolve('SUCCESS');
-
-        return dispatch({
-          type: SET_PENDING_UPDATE.START,
+      .then(() => res => {
+        busyAPI.instance.sendAsync(subscribeTypes.subscribeTransactionId, [
+          proposition.guideName,
+          res.result.id,
+        ]);
+        busyAPI.instance.subscribe((datad, j) => {
+          if (j?.success && j?.permlink === res.result.id) {
+            resolve();
+          }
         });
       })
       .catch(error => reject(error));
@@ -263,6 +271,7 @@ export const decreaseReward = (proposition, amount, type) => (
   { steemConnectAPI, busyAPI },
 ) => {
   const autnUserName = getAuthenticatedUserName(getState());
+
   const details =
     type === 'increase'
       ? {
