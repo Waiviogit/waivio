@@ -136,11 +136,12 @@ class ObjectInfo extends React.Component {
     const exposedFields = getExposedFieldsByObjType(wobject);
     const shouldDisplay = exposedFields.includes(name);
     const accessExtend = haveAccess(wobject, userName, accessTypesArr[0]) && isEditMode;
+    const publisherPaddingBottom = name !== 'publisher' || (isEditMode && !wobject.publisher);
 
     return (
       shouldDisplay &&
       (content || accessExtend) && (
-        <div className={name !== 'publisher' ? 'field-info' : 'field-info field-info__nopadding'}>
+        <div className={publisherPaddingBottom ? 'field-info' : 'field-info field-info__nopadding'}>
           <React.Fragment>
             {accessExtend && (
               <div className="field-info__title">
