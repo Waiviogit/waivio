@@ -448,9 +448,9 @@ export default class AppendForm extends Component {
             ? `, link: ${this.state.selectedObject.author_permlink}`
             : '';
 
-          return `@${author} added ${currentField} (${langReadable}): name: ${
-            formValues[publisherFields.publisherName]
-          }${linkInfo}`;
+          return `@${author} added ${currentField} (${langReadable}): name: ${formValues[
+            publisherFields.publisherName
+          ] || this.state.selectedObject.name}${linkInfo}`;
         }
         case objectFields.productWeight:
           return `@${author} added ${currentField} (${langReadable}): ${weightFields.weight}: ${

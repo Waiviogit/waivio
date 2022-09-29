@@ -39,6 +39,9 @@
   padding-bottom: @content-margin;
   word-wrap: break-word;
   word-break: break-word;
+  &__nopadding {
+    padding-bottom: 0;
+  }
 
   &__more {
     cursor: pointer;
@@ -304,6 +307,10 @@
       color: @orange-hot;
     }
   }
+}
+
+.publisher-paddingBottom {
+  padding-bottom: 12px;
 }
 
 @import './ObjectInfo-nightmode';

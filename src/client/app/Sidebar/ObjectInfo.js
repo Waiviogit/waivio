@@ -140,7 +140,7 @@ class ObjectInfo extends React.Component {
     return (
       shouldDisplay &&
       (content || accessExtend) && (
-        <div className="field-info">
+        <div className={name !== 'publisher' ? 'field-info' : 'field-info field-info__nopadding'}>
           <React.Fragment>
             {accessExtend && (
               <div className="field-info__title">
@@ -521,7 +521,7 @@ class ObjectInfo extends React.Component {
               (publisher.authorPermlink ? (
                 <ObjectCard key={publisher.authorPermlink} wobject={publisher} showFollow={false} />
               ) : (
-                <div className="flex ObjectCard__links">
+                <div className="flex ObjectCard__links publisher-paddingBottom">
                   <ObjectAvatar item={publisher} size={34} />{' '}
                   <span className="ObjectCard__name-grey">{publisher.name}</span>
                 </div>
@@ -880,7 +880,7 @@ class ObjectInfo extends React.Component {
                       showFollow={false}
                     />
                   ) : (
-                    <div className="flex ObjectCard__links">
+                    <div className="flex ObjectCard__links publisher-paddingBottom">
                       <ObjectAvatar item={publisher} size={34} />{' '}
                       <span className="ObjectCard__name-grey">{publisher.name}</span>
                     </div>
