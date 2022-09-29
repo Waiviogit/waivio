@@ -21,6 +21,7 @@ import { handleAddMapCoordinates } from '../../rewards/rewardsHelper';
 import { getCurrentAppSettings, putUserCoordinates } from '../../../store/appStore/appActions';
 import {
   getWebsiteObjWithCoordinates,
+  resetWebsiteObjectsCoordinates,
   setShowReload,
 } from '../../../store/websiteStore/websiteActions';
 import { distanceInMBetweenEarthCoordinates, getFirstOffsetNumber } from '../helper';
@@ -162,6 +163,7 @@ const MainMap = React.memo(props => {
 
   useEffect(() => {
     setInfoboxData(null);
+    props.resetWebsiteObjectsCoordinates();
   }, [props.searchType]);
 
   useEffect(() => {
@@ -198,7 +200,7 @@ const MainMap = React.memo(props => {
           }
         });
     }
-  }, [props.userLocation, boundsParams, query.toString()]);
+  }, [props.userLocation, boundsParams, props.searchType]);
 
   const handleOnBoundsChanged = useCallback(
     debounce(bounds => {
@@ -384,6 +386,7 @@ MainMap.propTypes = {
   setMapForSearch: PropTypes.func.isRequired,
   setShowReload: PropTypes.func.isRequired,
   setSearchInBox: PropTypes.func.isRequired,
+  resetWebsiteObjectsCoordinates: PropTypes.func.isRequired,
   getCurrentAppSettings: PropTypes.func.isRequired,
   setShowSearchResult: PropTypes.func.isRequired,
   wobjectsPoint: PropTypes.arrayOf(PropTypes.shape({})),
@@ -421,6 +424,7 @@ export default connect(
   {
     getCoordinates,
     getWebsiteObjWithCoordinates,
+    resetWebsiteObjectsCoordinates,
     putUserCoordinates,
     getCurrentAppSettings,
     setMapForSearch,
