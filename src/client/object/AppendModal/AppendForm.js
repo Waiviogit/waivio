@@ -2272,11 +2272,12 @@ export default class AppendForm extends Component {
       }
       case objectFields.options: {
         const bookType = wObject.object_type === 'book';
+
         return (
           <React.Fragment>
             <Form.Item>
               {getFieldDecorator(optionsFields.category, {
-                // rules: this.getFieldRules(objectFields.productIdType),
+                rules: this.getFieldRules(optionsFields.category),
               })(
                 <Input
                   className={classNames('AppendForm__input', {
@@ -2305,7 +2306,7 @@ export default class AppendForm extends Component {
             </p>
             <Form.Item>
               {getFieldDecorator(optionsFields.value, {
-                // rules: this.getFieldRules(objectFields.productIdType),
+                rules: this.getFieldRules(optionsFields.value),
               })(
                 <Input
                   className={classNames('AppendForm__input', {
@@ -2322,7 +2323,7 @@ export default class AppendForm extends Component {
             <p>Option value is a text field.</p>
             <Form.Item>
               {getFieldDecorator(optionsFields.position, {
-                // rules: this.getFieldRules(objectFields.productIdType),
+                rules: this.getFieldRules(optionsFields.position),
               })(
                 <Input
                   className={classNames('AppendForm__input', {
@@ -2352,7 +2353,7 @@ export default class AppendForm extends Component {
             <div className="image-wrapper">
               <Form.Item>
                 {getFieldDecorator(optionsFields.image, {
-                  // rules: this.getFieldRules(objectFields.productIdImage),
+                  rules: this.getFieldRules(optionsFields.image),
                 })(
                   <ImageSetter
                     onImageLoaded={this.getImages}

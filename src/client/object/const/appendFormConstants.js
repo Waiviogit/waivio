@@ -8,6 +8,7 @@ import {
   TYPES_OF_MENU_ITEM,
   weightFields,
   publisherFields,
+  optionsFields,
 } from '../../../common/constants/listOfFields';
 import {
   emailValidationRegExp,
@@ -168,6 +169,89 @@ export const fieldsRules = {
         },
         intlMeta: { field: 'Depth' },
       },
+    },
+    {
+      validator: true,
+    },
+  ],
+  [optionsFields.category]: [
+    {
+      transform: value => value && value.toLowerCase(),
+    },
+    {
+      required: true,
+      message: {
+        intlId: {
+          id: 'field_error',
+          defaultMessage: 'Field is required',
+        },
+        intlMeta: { field: 'Category' },
+      },
+    },
+    {
+      max: 100,
+      message: {
+        intlId: {
+          id: 'value_error_long',
+          defaultMessage: "Value can't be longer than 100 characters.",
+        },
+        intlMeta: { value: 100 },
+      },
+    },
+    {
+      validator: true,
+    },
+  ],
+  [optionsFields.value]: [
+    {
+      transform: value => value && value.toLowerCase(),
+    },
+    {
+      required: true,
+      message: {
+        intlId: {
+          id: 'field_error',
+          defaultMessage: 'Field is required',
+        },
+        intlMeta: { field: 'Value' },
+      },
+    },
+    {
+      max: 100,
+      message: {
+        intlId: {
+          id: 'value_error_long',
+          defaultMessage: "Value can't be longer than 100 characters.",
+        },
+        intlMeta: { value: 100 },
+      },
+    },
+    {
+      validator: true,
+    },
+  ],
+  [optionsFields.position]: [
+    {
+      transform: value => value && value.toLowerCase(),
+    },
+
+    {
+      max: 100,
+      message: {
+        intlId: {
+          id: 'value_error_long',
+          defaultMessage: "Value can't be longer than 100 characters.",
+        },
+        intlMeta: { value: 100 },
+      },
+    },
+    {
+      validator: true,
+    },
+  ],
+  [optionsFields.image]: [
+    {
+      transform: value => value && value.toLowerCase(),
     },
     {
       validator: true,
