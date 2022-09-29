@@ -346,26 +346,29 @@ class ObjectInfo extends React.Component {
 
     const dimensions = parseWobjectField(wobject, 'dimensions');
     const productWeight = parseWobjectField(wobject, 'productWeight');
-
-    // const options = Object.entries(wobject?.options).map(el => el[1].map(e => e.body.value));
-    //
-    // console.log(options);
-
-    const optionsDetails =
+    const optionsCards =
       isEditMode && wobject.options
-        ? Object.values(wobject.options).map(option => (
-            <div className="mb1" key={option[0].body.category}>
+        ? Object.entries(wobject.options).map(option => (
+            <div className="mb1" key={option[0]}>
               {' '}
-              <div>{option[0].body.category}:</div>
-              {option[0].body.position}.{option[0].body.value}
+              <div>{option[0]}:</div>
+              {option[1].map(el => (
+                <div key={option[0]}>
+                  {el.body.position}.{el.body.value}{' '}
+                </div>
+              ))}
             </div>
           ))
         : wobject.options &&
-          Object.values(wobject.options).map(option => (
-            <div className="mb1" key={option[0].body.category}>
+          Object.entries(wobject.options).map(option => (
+            <div className="mb1" key={option[0]}>
               {' '}
-              <div>{option[0].body.category}:</div>
-              <button className="ObjectInfo__option-button">{option[0].body.value}</button>
+              <div>{option[0]}:</div>
+              {option[1].map(el => (
+                <>
+                  <button className="ObjectInfo__option-button">{el.body.value}</button>{' '}
+                </>
+              ))}
             </div>
           ));
     const profile = linkField
@@ -547,7 +550,7 @@ class ObjectInfo extends React.Component {
             </React.Fragment>
           ),
         )}
-        {this.listItem(objectFields.options, optionsDetails)}
+        {this.listItem(objectFields.options, optionsCards)}
         {this.listItem(
           objectFields.workTime,
           workTime && (
