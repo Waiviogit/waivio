@@ -1949,5 +1949,7 @@
   "position": "Position",
   "options_modal_info1": "Common option categories for products are Color, Size, Flavor, Count, Include, etc.",
   "options_modal_info2": "Position number indicates the order of option values within the category, e.g. the \"Small\" option can be assigned position 2, so that it appears after \"1. X-Small\", but before \"3. Medium\".",
-  "options_modal_info3": "Image is optional, it will be resized to fit into a square."
+  "options_modal_info3": "Image is optional, it will be resized to fit into a square.",
+  "options_modal_info_book1": "Common option categories for books are Format etc.",
+  "options_modal_info_book2": "Position number indicates the order of option values within the category, e.g. the \"Audiobook\" option can be assigned position 2, so that it appears after \"1. Hardcover\", but before \"3. Kindle\"."
 }

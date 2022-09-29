@@ -346,31 +346,32 @@ class ObjectInfo extends React.Component {
 
     const dimensions = parseWobjectField(wobject, 'dimensions');
     const productWeight = parseWobjectField(wobject, 'productWeight');
-    const optionsCards =
-      isEditMode && wobject.options
-        ? Object.entries(wobject.options).map(option => (
-            <div className="mb1" key={option[0]}>
-              {' '}
-              <div>{option[0]}:</div>
-              {option[1].map(el => (
-                <div key={option[0]}>
-                  {el.body.position}.{el.body.value}{' '}
-                </div>
-              ))}
-            </div>
-          ))
-        : wobject.options &&
-          Object.entries(wobject.options).map(option => (
-            <div className="mb1" key={option[0]}>
-              {' '}
-              <div>{option[0]}:</div>
-              {option[1].map(el => (
-                <>
-                  <button className="ObjectInfo__option-button">{el.body.value}</button>{' '}
-                </>
-              ))}
-            </div>
-          ));
+    const optionsCards = isEditMode
+      ? wobject?.options &&
+        Object.entries(wobject?.options).map(option => (
+          <div className="mb1" key={option[0]}>
+            {' '}
+            <div>{option[0]}:</div>
+            {option[1].map(el => (
+              // eslint-disable-next-line react/jsx-key
+              <div>
+                {el.body.position}.{el.body.value}{' '}
+              </div>
+            ))}
+          </div>
+        ))
+      : wobject?.options &&
+        Object.entries(wobject?.options).map(option => (
+          <div className="mb1" key={option[0]}>
+            {' '}
+            <div>{option[0]}:</div>
+            {option[1].map(el => (
+              <>
+                <button className="ObjectInfo__option-button">{el.body.value}</button>{' '}
+              </>
+            ))}
+          </div>
+        ));
     const profile = linkField
       ? {
           facebook: linkField[linkFields.linkFacebook] || '',
@@ -550,7 +551,7 @@ class ObjectInfo extends React.Component {
             </React.Fragment>
           ),
         )}
-        {this.listItem(objectFields.options, optionsCards)}
+        {this.listItem(objectFields.options, wobject.options && optionsCards)}
         {this.listItem(
           objectFields.workTime,
           workTime && (

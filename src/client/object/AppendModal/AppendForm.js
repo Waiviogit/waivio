@@ -2271,6 +2271,7 @@ export default class AppendForm extends Component {
         );
       }
       case objectFields.options: {
+        const bookType = wObject.object_type === 'book';
         return (
           <React.Fragment>
             <Form.Item>
@@ -2290,10 +2291,17 @@ export default class AppendForm extends Component {
               )}
             </Form.Item>
             <p>
-              <FormattedMessage
-                id="options_modal_info1"
-                defaultMessage="Common option categories for products are Color, Size, Flavor, Count, Include, etc."
-              />
+              {bookType ? (
+                <FormattedMessage
+                  id="options_modal_info_book1"
+                  defaultMessage="Common option categories for books are Format etc."
+                />
+              ) : (
+                <FormattedMessage
+                  id="options_modal_info1"
+                  defaultMessage="Common option categories for products are Color, Size, Flavor, Count, Include, etc."
+                />
+              )}
             </p>
             <Form.Item>
               {getFieldDecorator(optionsFields.value, {
@@ -2329,10 +2337,17 @@ export default class AppendForm extends Component {
               )}
             </Form.Item>
             <p>
-              <FormattedMessage
-                id="options_modal_info2"
-                defaultMessage='Position number indicates the order of option values within the category, e.g. the "Small" option can be assigned position 2, so that it appears after "1. X-Small", but before "3. Medium".'
-              />
+              {bookType ? (
+                <FormattedMessage
+                  id="options_modal_info_book2"
+                  defaultMessage='Position number indicates the order of option values within the category, e.g. the "Audiobook" option can be assigned position 2, so that it appears after "1. Hardcover", but before "3. Kindle".'
+                />
+              ) : (
+                <FormattedMessage
+                  id="options_modal_info2"
+                  defaultMessage='Position number indicates the order of option values within the category, e.g. the "Small" option can be assigned position 2, so that it appears after "1. X-Small", but before "3. Medium".'
+                />
+              )}
             </p>
             <div className="image-wrapper">
               <Form.Item>
