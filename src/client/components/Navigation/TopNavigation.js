@@ -192,9 +192,7 @@ const TopNavigation = ({ location: { pathname }, match, history }) => {
             <Link
               to={`${LINKS.REWARDS_NEW}/${rewardsTab}`}
               className={classNames('TopNavigation__link', {
-                'TopNavigation__link--active':
-                  pathname.includes(LINKS.REWARDS_NEW) &&
-                  (!pathname.includes('list') || pathname.includes(LINKS.BLACKLIST)),
+                'TopNavigation__link--active': pathname.includes(LINKS.REWARDS_NEW),
               })}
             >
               Beta
