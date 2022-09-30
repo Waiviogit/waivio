@@ -234,7 +234,7 @@ const RewardsPopover = ({ proposition, getProposition, type }) => {
         </div>
       </PopoverMenuItem>
     ),
-    [followingGuide, loadingType],
+    [followingGuide, loadingType, proposition?.guideName],
   );
 
   const followObjectItem = useMemo(
@@ -256,7 +256,7 @@ const RewardsPopover = ({ proposition, getProposition, type }) => {
         </div>
       </PopoverMenuItem>
     ),
-    [followingGuide, loadingType],
+    [followingGuide, loadingType, proposition?.requiredObject],
   );
 
   const addToBlackList = useMemo(
@@ -278,7 +278,7 @@ const RewardsPopover = ({ proposition, getProposition, type }) => {
         </div>
       </PopoverMenuItem>
     ),
-    [inBlackList, loadingType],
+    [inBlackList, loadingType, proposition?.userName],
   );
 
   const rejectRewards = useMemo(
@@ -345,9 +345,7 @@ const RewardsPopover = ({ proposition, getProposition, type }) => {
       case 'completed': {
         const mainList = [viewReservation, openReview, report];
 
-        return isSponsor
-          ? [...mainList, rejectRewards, ...toolList]
-          : [...mainList, decrease, ...toolList];
+        return isSponsor ? [...mainList, rejectRewards, ...toolList] : [...mainList, decrease];
       }
       case 'rejected':
         return isSponsor

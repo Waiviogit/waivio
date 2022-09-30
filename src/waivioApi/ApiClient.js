@@ -594,7 +594,7 @@ export const getAuthorsChildWobjects = (
       config.childWobjects
     }?limit=${limit}&skip=${skip}${excludeTypes ? `&excludeTypes=${excludeTypes}` : ''}${
       searchString ? `&searchString=${searchString}` : ''
-    }`,
+    }${name ? `&userName=${name}` : ''}`,
     {
       headers: {
         ...headers,

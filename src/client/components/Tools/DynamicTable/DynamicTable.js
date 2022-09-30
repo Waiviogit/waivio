@@ -8,6 +8,7 @@ import { Checkbox } from 'antd';
 import Loading from '../../Icon/Loading';
 
 import './DynamicTable.less';
+import USDDisplay from '../../Utils/USDDisplay';
 
 export const DynamicTable = ({
   header,
@@ -49,6 +50,9 @@ export const DynamicTable = ({
 
       case 'round':
         return round(item[head.id], head.precision) || 0;
+
+      case 'currency':
+        return <USDDisplay value={item[head.id]} />;
 
       default: {
         let button = get(buttons, head.id);
