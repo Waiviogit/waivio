@@ -39,7 +39,7 @@ export const configHistoryTableHeader = [
     },
   },
   {
-    id: 'rewardInUSD',
+    id: 'budget',
     type: 'round',
     precision: 3,
     intl: {

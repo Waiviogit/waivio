@@ -11,8 +11,8 @@ export const configGuideBalanceTableHeader = [
   {
     id: 'payable',
     intl: {
-      id: 'payable**',
-      defaultMessage: 'Payable**',
+      id: 'payable*',
+      defaultMessage: 'Payable*',
     },
   },
   {
