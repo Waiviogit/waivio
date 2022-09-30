@@ -11,7 +11,8 @@ import './Proposition.less';
 const Proposition = ({ proposition, type, getProposition }) => {
   const [openDetails, setOpenDitails] = useState(false);
   const onOpenDetailsModal = () => setOpenDitails(true);
-  const propositionType = proposition.reserved ? 'reserved' : type;
+  const propositionType =
+    proposition.reserved || proposition?.reviewStatus === 'assigned' ? 'reserved' : type;
 
   return (
     <div className="Proposition-new">
@@ -51,6 +52,7 @@ Proposition.propTypes = {
   proposition: PropTypes.shape({
     rewardInUSD: PropTypes.number,
     guideName: PropTypes.string,
+    reviewStatus: PropTypes.string,
     reserved: PropTypes.bool,
     commentsCount: PropTypes.number,
     countReservationDays: PropTypes.number,
