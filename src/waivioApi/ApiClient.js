@@ -2604,9 +2604,9 @@ export const getCampaingHistoryList = (giudeName, skip = 0) => {
     .catch(e => e);
 };
 
-export const getAllRewardList = (skip = 0, query) => {
+export const getAllRewardList = (skip = 0, query, sort) => {
   return fetch(
-    `${config.campaignV2ApiPrefix}${config.rewards}${config.all}?limit=10&skip=${skip}${query}`,
+    `${config.campaignV2ApiPrefix}${config.rewards}${config.all}?limit=10&skip=${skip}&sort=${sort}${query}`,
     {
       headers,
       method: 'GET',
@@ -2672,9 +2672,9 @@ export const getReservedRewardList = (userName, skip = 0) => {
     .catch(e => e);
 };
 
-export const getEligibleRewardList = (userName, skip = 0, query) => {
+export const getEligibleRewardList = (userName, skip = 0, query, sort) => {
   return fetch(
-    `${config.campaignV2ApiPrefix}${config.rewards}${config.eligible}?userName=${userName}&limit=10&skip=${skip}${query}`,
+    `${config.campaignV2ApiPrefix}${config.rewards}${config.eligible}?userName=${userName}&limit=10&skip=${skip}&sort=${sort}${query}`,
     {
       headers,
       method: 'GET',

@@ -42,6 +42,7 @@ const RenderPropositionList = ({
   intl,
   customSortConfig,
   defaultSort,
+  withoutSort,
 }) => {
   const { requiredObject } = useParams();
   const authUserName = useSelector(getAuthenticatedUserName);
@@ -122,11 +123,13 @@ const RenderPropositionList = ({
             {disclaimer}
           </p>
         )}
-        <SortSelector sort={sort} onChange={setSort}>
-          {customSortConfig.map(item => (
-            <SortSelector.Item key={item.key}>{item.title}</SortSelector.Item>
-          ))}
-        </SortSelector>
+        {!withoutSort && (
+          <SortSelector sort={sort} onChange={setSort}>
+            {customSortConfig.map(item => (
+              <SortSelector.Item key={item.key}>{item.title}</SortSelector.Item>
+            ))}
+          </SortSelector>
+        )}
         {isEmpty(propositions) ? (
           <EmptyCampaing />
         ) : (
@@ -174,6 +177,7 @@ RenderPropositionList.propTypes = {
   disclaimer: PropTypes.string,
   defaultSort: PropTypes.string,
   withoutFilters: PropTypes.bool,
+  withoutSort: PropTypes.bool,
   customFilterConfig: PropTypes.shape({}).isRequired,
   customSortConfig: PropTypes.arrayOf({}).isRequired,
   intl: PropTypes.shape({
@@ -187,6 +191,7 @@ RenderPropositionList.defaultProps = {
   disclaimer: '',
   defaultSort: 'default',
   withoutFilters: false,
+  withoutSort: false,
 };
 
 export default injectIntl(RenderPropositionList);
