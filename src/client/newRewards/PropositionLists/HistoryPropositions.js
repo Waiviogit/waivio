@@ -7,9 +7,14 @@ const filterConfig = [
   { title: 'Sponsors', type: 'guideNames' },
 ];
 
+const sortConfig = [
+  { key: 'reservation', title: 'Reservation' },
+  { key: 'lastAction', title: 'Action (date)' },
+];
+
 const HistoryPropositions = () => {
-  const getPropositionReservedPropos = (obj, userName, skip, search) =>
-    getHistoryList(userName, skip, search);
+  const getPropositionReservedPropos = (obj, userName, skip, search, sort) =>
+    getHistoryList(userName, skip, search, sort);
 
   const getPropositionFilters = (requiredObject, authUserName) =>
     getFiltersForHistoryProposition(authUserName);
@@ -20,6 +25,8 @@ const HistoryPropositions = () => {
       getPropositionFilters={getPropositionFilters}
       customFilterConfig={filterConfig}
       tab={'history'}
+      customSortConfig={sortConfig}
+      defaultSort={'reservation'}
     />
   );
 };

@@ -11,8 +11,8 @@ const filterConfig = [
 ];
 
 const ReservationsProposition = () => {
-  const getPropositionReservedPropos = (obj, userName, skip, search) =>
-    getReservationsList(userName, skip, search);
+  const getPropositionReservedPropos = (obj, userName, skip, search, sort) =>
+    getReservationsList(userName, skip, search, sort);
 
   return (
     <RenderPropositionList

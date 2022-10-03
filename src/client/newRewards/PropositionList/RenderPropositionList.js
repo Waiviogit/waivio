@@ -18,10 +18,18 @@ import { getPropositionsKey } from '../../../common/helpers/newRewardsHelper';
 import FiltersForMobile from '../Filters/FiltersForMobile';
 
 import './PropositionList.less';
+import SortSelector from '../../components/SortSelector/SortSelector';
 
 const filterConfig = [
   { title: 'Rewards for', type: 'type' },
   { title: 'Sponsors', type: 'sponsors' },
+];
+const sortConfig = [
+  { key: 'default', title: 'default' },
+  { key: 'payout', title: 'payout' },
+  { key: 'reward', title: 'amount' },
+  { key: 'date', title: 'expiry' },
+  { key: 'proximity', title: 'proximity' },
 ];
 
 const RenderPropositionList = ({
@@ -32,6 +40,8 @@ const RenderPropositionList = ({
   disclaimer,
   withoutFilters,
   intl,
+  customSortConfig,
+  defaultSort,
 }) => {
   const { requiredObject } = useParams();
   const authUserName = useSelector(getAuthenticatedUserName);
@@ -40,6 +50,7 @@ const RenderPropositionList = ({
   const [hasMore, setHasMore] = useState(false);
   const [loading, setLoading] = useState(true);
   const [parent, setParent] = useState(null);
+  const [sort, setSort] = useState(defaultSort);
   const [visible, setVisible] = useState(false);
   const search = location.search.replace('?', '&');
 
@@ -50,13 +61,13 @@ const RenderPropositionList = ({
   };
 
   const getPropositionList = async () => {
-    if (requiredObject || requiredObject !== parent?.author_permlink) {
+    if (requiredObject && requiredObject !== parent?.author_permlink) {
       const campParent = await getObject(requiredObject);
 
       setParent(campParent);
     }
 
-    const res = await getProposition(requiredObject, authUserName, 0, search);
+    const res = await getProposition(requiredObject, authUserName, 0, search, sort);
 
     setPropositions(res.rewards);
     setHasMore(res.hasMore);
@@ -65,12 +76,18 @@ const RenderPropositionList = ({
 
   useEffect(() => {
     getPropositionList();
-  }, [requiredObject, location.search]);
+  }, [requiredObject, location.search, sort]);
 
   const handleLoadingMoreRewardsList = async () => {
     setLoading(true);
     try {
-      const res = await getProposition(requiredObject, authUserName, propositions?.length, search);
+      const res = await getProposition(
+        requiredObject,
+        authUserName,
+        propositions?.length,
+        search,
+        sort,
+      );
 
       setPropositions([...propositions, ...res.rewards]);
       setHasMore(res.hasMore);
@@ -105,6 +122,11 @@ const RenderPropositionList = ({
             {disclaimer}
           </p>
         )}
+        <SortSelector sort={sort} onChange={setSort}>
+          {customSortConfig.map(item => (
+            <SortSelector.Item key={item.key}>{item.title}</SortSelector.Item>
+          ))}
+        </SortSelector>
         {isEmpty(propositions) ? (
           <EmptyCampaing />
         ) : (
@@ -150,8 +172,10 @@ RenderPropositionList.propTypes = {
   getPropositionFilters: PropTypes.func.isRequired,
   tab: PropTypes.string.isRequired,
   disclaimer: PropTypes.string,
+  defaultSort: PropTypes.string,
   withoutFilters: PropTypes.bool,
   customFilterConfig: PropTypes.shape({}).isRequired,
+  customSortConfig: PropTypes.arrayOf({}).isRequired,
   intl: PropTypes.shape({
     formatMessage: PropTypes.func,
   }).isRequired,
@@ -159,7 +183,9 @@ RenderPropositionList.propTypes = {
 
 RenderPropositionList.defaultProps = {
   customFilterConfig: filterConfig,
+  customSortConfig: sortConfig,
   disclaimer: '',
+  defaultSort: 'default',
   withoutFilters: false,
 };
 
