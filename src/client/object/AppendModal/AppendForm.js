@@ -375,6 +375,7 @@ export default class AppendForm extends Component {
       case objectFields.ageRange:
       case objectFields.printLength:
       case objectFields.language:
+      case objectFields.groupId:
       case objectFields.publicationDate:
       case objectFields.dimensions: {
         fieldBody.push(rest[currentField]);
@@ -479,6 +480,7 @@ export default class AppendForm extends Component {
           }: ${getFieldValue(dimensionsFields.unitOfLength)}`;
         case objectFields.ageRange:
         case objectFields.language:
+        case objectFields.groupId:
           return `@${author} added ${currentField} (${langReadable}): ${appendValue}`;
         case objectFields.printLength:
           return `@${author} added ${currentField} (${langReadable}): ${appendValue} ${this.props.intl.formatMessage(
@@ -1106,6 +1108,7 @@ export default class AppendForm extends Component {
     if (currentField === objectFields.publicationDate)
       return filtered.some(f => f.body === currentValue);
     if (currentField === objectFields.language) return filtered.some(f => f.body === currentValue);
+    if (currentField === objectFields.groupId) return filtered.some(f => f.body === currentValue);
     if (currentField === objectFields.categoryItem) {
       const selectedTagCategory = filtered.filter(item => item.tagCategory === currentCategory);
 
@@ -1723,6 +1726,39 @@ export default class AppendForm extends Component {
               />,
             )}
           </Form.Item>
+        );
+      }
+      case objectFields.groupId: {
+        return (
+          <>
+            <Form.Item>
+              {getFieldDecorator(objectFields.groupId, {
+                rules: this.getFieldRules(objectFields.groupId),
+              })(
+                <Input
+                  className={classNames('AppendForm__input', {
+                    'validation-error': !this.state.isSomeValue,
+                  })}
+                  disabled={loading}
+                  placeholder={intl.formatMessage({
+                    id: 'object_field_groupId',
+                    defaultMessage: 'Group ID',
+                  })}
+                />,
+              )}
+            </Form.Item>
+            {wObject.type === 'book' ? (
+              <FormattedMessage
+                id="groupId_book_info"
+                defaultMessage="Products with multiple options (format etc.) can be saved as separate objects with their own descriptions, photo galleries, prices, etc. However, if all these objects refer to the same group ID, all these options will be combined into a single presentation for the convenience of the user."
+              />
+            ) : (
+              <FormattedMessage
+                id="groupId_info"
+                defaultMessage="Products with multiple options (colors, sizes, configurations, etc.) can be saved as separate objects with their own descriptions, photo galleries, prices, etc. However, if all these objects refer to the same group ID, all these options will be combined into a single presentation for the convenience of the user."
+              />
+            )}
+          </>
         );
       }
       case objectFields.publicationDate: {

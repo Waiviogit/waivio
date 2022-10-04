@@ -136,12 +136,13 @@ class ObjectInfo extends React.Component {
     const exposedFields = getExposedFieldsByObjType(wobject);
     const shouldDisplay = exposedFields.includes(name);
     const accessExtend = haveAccess(wobject, userName, accessTypesArr[0]) && isEditMode;
-    const publisherPaddingBottom = name !== 'publisher' || (isEditMode && !wobject.publisher);
+    const paddingBottom =
+      name !== 'publisher' || (isEditMode && !wobject.publisher) || wobject.groupId;
 
     return (
       shouldDisplay &&
       (content || accessExtend) && (
-        <div className={publisherPaddingBottom ? 'field-info' : 'field-info field-info__nopadding'}>
+        <div className={paddingBottom ? 'field-info' : 'field-info field-info__nopadding'}>
           <React.Fragment>
             {accessExtend && (
               <div className="field-info__title">
@@ -338,6 +339,7 @@ class ObjectInfo extends React.Component {
       : [];
     const ageRange = wobject.ageRange;
     const language = wobject.language;
+    const groupId = wobject.groupId;
     const publicationDate = moment(wobject.publicationDate).format('MMMM DD, YYYY');
     const printLength = wobject.printLength;
     const publisher = parseWobjectField(wobject, 'publisher');
@@ -638,7 +640,23 @@ class ObjectInfo extends React.Component {
               )),
             )}
         {!isEditMode
-          ? productIdBody.length > 0 && <ProductId productIdBody={productIdBody} />
+          ? productIdBody.length > 0 && (
+              <ProductId
+                groupIdContent={
+                  groupId && (
+                    <div className="field-info">
+                      <div className="CompanyId__title">
+                        <FormattedMessage id="object_field_groupId" formattedMessage="Group ID" />
+                      </div>
+                      <div className="field-website__title">
+                        <span className="CompanyId__wordbreak">{groupId}</span>
+                      </div>
+                    </div>
+                  )
+                }
+                productIdBody={productIdBody}
+              />
+            )
           : this.listItem(
               objectFields.productId,
               productIdBody?.map(obj => (
@@ -651,6 +669,17 @@ class ObjectInfo extends React.Component {
                 </div>
               )),
             )}
+        {isEditMode &&
+          groupId &&
+          this.listItem(
+            objectFields.groupId,
+            <div className="field-info">
+              <FormattedMessage id="object_field_groupId" formattedMessage="Group ID" />
+              <div className="field-website__title">
+                <span className="CompanyId__wordbreak ">{groupId}</span>
+              </div>
+            </div>,
+          )}
         {!isEditMode
           ? ageRange && (
               <div className="field-info">
