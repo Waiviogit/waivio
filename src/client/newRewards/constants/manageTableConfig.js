@@ -17,7 +17,7 @@ export const manageTableHeaderConfig = [
     },
     {
       intl: {
-        id: 'status',
+        id: 'status**',
         defaultMessage: 'Status**',
       },
       rowspan: 2,

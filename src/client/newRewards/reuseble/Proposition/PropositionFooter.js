@@ -20,6 +20,7 @@ import CommentCard from '../../Comments/CommentCard';
 import config from '../../../../waivioApi/routes';
 import { getIsWaivio } from '../../../../store/appStore/appSelectors';
 import WebsiteReservedButtons from '../../../rewards/Proposition/WebsiteReservedButtons/WebsiteReservedButtons';
+import { getDaysLeftForNew } from '../../../rewards/rewardsHelper';
 
 import './Proposition.less';
 
@@ -107,6 +108,12 @@ const PropositionFooter = ({ type, openDetailsModal, proposition, getProposition
             <div className="Proposition-new__footer-container">
               <div className="Proposition-new__button-container">
                 <b>Reserved</b>
+                <span className="Proposition-new__minus">{' - '}</span>
+                {getDaysLeftForNew(
+                  proposition?.reservationCreatedAt,
+                  proposition?.countReservationDays,
+                )}{' '}
+                days left
                 <i className="iconfont icon-message_fill" onClick={handleCommentsClick} />
                 {commentsCount}
                 <RewardsPopover proposition={proposition} getProposition={getProposition} />
@@ -211,6 +218,7 @@ PropositionFooter.propTypes = {
     commentsCount: PropTypes.number,
     countReservationDays: PropTypes.number,
     reservationPermlink: PropTypes.string,
+    reservationCreatedAt: PropTypes.string,
     fraudCodes: PropTypes.arrayOf(PropTypes.number),
     object: PropTypes.shape(),
     requiredObject: PropTypes.shape(),

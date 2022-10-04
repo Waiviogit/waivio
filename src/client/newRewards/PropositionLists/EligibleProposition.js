@@ -9,6 +9,7 @@ const EligibleProposition = () => (
   <RenderPropositionList
     getProposition={getEligiblePropositionByCampaingObjectPermlink}
     getPropositionFilters={getFiltersForEligibleProposition}
+    withoutSort
     tab={'eligible'}
   />
 );

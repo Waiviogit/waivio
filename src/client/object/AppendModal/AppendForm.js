@@ -493,6 +493,7 @@ export default class AppendForm extends Component {
           }: ${getFieldValue(dimensionsFields.unitOfLength)}`;
         case objectFields.ageRange:
         case objectFields.language:
+          return `@${author} added ${currentField} (${langReadable}): ${appendValue}`;
         case objectFields.printLength:
           return `@${author} added ${currentField} (${langReadable}): ${appendValue} ${this.props.intl.formatMessage(
             { id: 'lowercase_pages', defaultMessage: 'pages' },
@@ -3165,8 +3166,8 @@ export default class AppendForm extends Component {
     });
 
     const changeValue = v => {
-      this.props.history.push(`/object/${wObject.author_permlink}/updates/${v}`);
       this.setState({ isOptionChangeable: true });
+      this.props.history.push(`/object/${wObject.author_permlink}/updates/${v}`);
     };
 
     return (

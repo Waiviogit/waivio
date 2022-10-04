@@ -193,6 +193,15 @@ export const getDaysLeft = (reserveDate, daysCount) => {
   return parseInt((reservationTime - currentTime) / 86400, 10);
 };
 
+export const getDaysLeftForNew = (reserveDate, daysCount) => {
+  const currentTime = moment().unix();
+  const reservationTime = moment(reserveDate)
+    .add(daysCount, 'days')
+    .unix();
+
+  return parseInt((reservationTime - currentTime) / 86400, 10);
+};
+
 export const getFrequencyAssign = objectDetails => {
   const requiredObjectName = getObjectName(objectDetails.required_object);
   const requiredObjectAuthorPermlink = get(objectDetails, ['requiredObject', 'author_permlink']);

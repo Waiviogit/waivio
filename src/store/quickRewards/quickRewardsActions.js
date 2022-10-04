@@ -173,7 +173,8 @@ export const createQuickPost = (userBody, topics, images, reservationPermlink) =
   const restaurant = getSelectedRestaurant(state);
   const dish = getSelectedDish(state);
   const host = getCurrentHost(state);
-  const isReview = restaurant.campaigns && dish.propositions;
+
+  const isReview = Boolean(dish.propositions);
   const campaignId = isReview ? get(dish, 'propositions[0]._id') : null;
   const imagesLink = images.map(img => `\n<center>![image]( ${img.src})</center>`).join('');
   const topicsLink = topics
@@ -243,11 +244,11 @@ export const reserveProposition = permlink => async (
   const state = getState();
   const username = getAuthenticatedUserName(state);
   const dish = getSelectedDish(state);
+  const primaryObject = getSelectedRestaurant(state);
   const proposition =
     dish.propositions.find(prop => prop.activation_permlink) || dish.propositions[0];
   const proposedWobjName = getObjectName(dish);
   const proposedWobjAuthorPermlink = dish.author_permlink;
-  const primaryObject = get(proposition, 'required_object') || proposition?.parent;
   const currencyInfo = await getCurrentHivePrice();
   const amount = round(proposition.reward / currencyInfo.hiveCurrency, 3);
   const detailsBody = getDetailsBody({
