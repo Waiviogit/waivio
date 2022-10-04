@@ -525,7 +525,7 @@ class ObjectInfo extends React.Component {
           price && (
             <React.Fragment>
               {!isEditMode && <span className="field-icon">$</span>}
-              <span className="price-value">{price}</span>
+              <span className="price-value CompanyId__title">{price}</span>
             </React.Fragment>
           ),
         )}
@@ -639,47 +639,6 @@ class ObjectInfo extends React.Component {
                 </div>
               )),
             )}
-        {!isEditMode
-          ? productIdBody.length > 0 && (
-              <ProductId
-                groupIdContent={
-                  groupId && (
-                    <div className="field-info">
-                      <div className="CompanyId__title">
-                        <FormattedMessage id="object_field_groupId" formattedMessage="Group ID" />
-                      </div>
-                      <div className="field-website__title">
-                        <span className="CompanyId__wordbreak">{groupId}</span>
-                      </div>
-                    </div>
-                  )
-                }
-                productIdBody={productIdBody}
-              />
-            )
-          : this.listItem(
-              objectFields.productId,
-              productIdBody?.map(obj => (
-                <div key={obj.id} className="CompanyId__block-item">
-                  <p className="CompanyId__p">{obj.productIdType}</p>
-                  <p className="CompanyId__p">{obj.productId}</p>
-                  <div className="field-avatar CompanyId__p CompanyId__image">
-                    {obj.productIdImage && <img src={obj.productIdImage} alt="pic" />}
-                  </div>
-                </div>
-              )),
-            )}
-        {isEditMode &&
-          groupId &&
-          this.listItem(
-            objectFields.groupId,
-            <div className="field-info">
-              <FormattedMessage id="object_field_groupId" formattedMessage="Group ID" />
-              <div className="field-website__title">
-                <span className="CompanyId__wordbreak ">{groupId}</span>
-              </div>
-            </div>,
-          )}
         {!isEditMode
           ? ageRange && (
               <div className="field-info">
@@ -809,6 +768,47 @@ class ObjectInfo extends React.Component {
             </div>
           ),
         )}
+        {!isEditMode
+          ? productIdBody.length > 0 && (
+              <ProductId
+                groupIdContent={
+                  groupId && (
+                    <div className="field-info">
+                      <div className="CompanyId__title">
+                        <FormattedMessage id="object_field_groupId" formattedMessage="Group ID" />
+                      </div>
+                      <div className="field-website__title">
+                        <span className="CompanyId__wordbreak">{groupId}</span>
+                      </div>
+                    </div>
+                  )
+                }
+                productIdBody={productIdBody}
+              />
+            )
+          : this.listItem(
+              objectFields.productId,
+              productIdBody?.map(obj => (
+                <div key={obj.id} className="CompanyId__block-item">
+                  <p className="CompanyId__p">{obj.productIdType}</p>
+                  <p className="CompanyId__p">{obj.productId}</p>
+                  <div className="field-avatar CompanyId__p CompanyId__image">
+                    {obj.productIdImage && <img src={obj.productIdImage} alt="pic" />}
+                  </div>
+                </div>
+              )),
+            )}
+        {isEditMode &&
+          groupId &&
+          this.listItem(
+            objectFields.groupId,
+            <div className="field-info">
+              <FormattedMessage id="object_field_groupId" formattedMessage="Group ID" />
+              <div className="field-website__title">
+                <span className="CompanyId__wordbreak ">{groupId}</span>
+              </div>
+            </div>,
+          )}
       </React.Fragment>
     );
 
