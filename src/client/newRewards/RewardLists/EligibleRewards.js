@@ -7,7 +7,8 @@ import RenderCampaingList from './RenderCampaingList';
 
 const EligibleRewards = () => {
   const userName = useSelector(getAuthenticatedUserName);
-  const getAllRewardList = (skip, query) => getEligibleRewardList(userName, skip, query);
+  const getAllRewardList = (skip, query, sort) =>
+    getEligibleRewardList(userName, skip, query, sort);
   const getFilters = () => getFiltersForEligibleRewards(userName);
 
   return (

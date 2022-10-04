@@ -10,16 +10,26 @@ import RewardsFilters from '../Filters/Filters';
 import FiltersForMobile from '../Filters/FiltersForMobile';
 
 import './RewardLists.less';
+import SortSelector from '../../components/SortSelector/SortSelector';
 
 const filterConfig = [
   { title: 'Rewards for', type: 'type' },
   { title: 'Sponsors', type: 'sponsors' },
 ];
 
+const sortConfig = [
+  { key: 'default', title: 'default' },
+  { key: 'payout', title: 'payout' },
+  { key: 'reward', title: 'amount' },
+  { key: 'date', title: 'expiry' },
+  { key: 'proximity', title: 'proximity' },
+];
+
 const RenderCampaingList = ({ getAllRewardList, title, getFilters }) => {
   const [rewards, setRewards] = useState([]);
   const [hasMore, setHasMore] = useState(true);
   const [loading, setLoading] = useState(true);
+  const [sort, setSort] = useState('default');
   const history = useHistory();
   const [visible, setVisible] = useState(false);
   const search = history.location.search.replace('?', '&');
@@ -27,19 +37,19 @@ const RenderCampaingList = ({ getAllRewardList, title, getFilters }) => {
   const onClose = () => setVisible(false);
 
   useEffect(() => {
-    getAllRewardList(0, search)
+    getAllRewardList(0, search, sort)
       .then(res => {
         setRewards(res.rewards);
         setHasMore(res.hasMore);
         setLoading(false);
       })
       .catch(() => setLoading(false));
-  }, [history.location.search]);
+  }, [history.location.search, sort]);
 
   const handleLoadingMoreRewardsList = () => {
     setLoading(true);
 
-    getAllRewardList(rewards?.length, search)
+    getAllRewardList(rewards?.length, search, sort)
       .then(res => {
         setRewards([...rewards, ...res.rewards]);
         setHasMore(res.hasMore);
@@ -55,6 +65,11 @@ const RenderCampaingList = ({ getAllRewardList, title, getFilters }) => {
       <div className="RewardLists__feed">
         <FiltersForMobile setVisible={setVisible} />
         <h2>{title}</h2>
+        <SortSelector sort={sort} onChange={setSort}>
+          {sortConfig.map(item => (
+            <SortSelector.Item key={item.key}>{item.title}</SortSelector.Item>
+          ))}
+        </SortSelector>
         {isEmpty(rewards) ? (
           <EmptyCampaing />
         ) : (

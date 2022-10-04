@@ -10,6 +10,11 @@ const filterConfig = [
   { title: 'Campaign', type: 'campaignNames' },
 ];
 
+const sortConfig = [
+  { key: 'reservation', title: 'Reservation' },
+  { key: 'lastAction', title: 'Action (date)' },
+];
+
 const ReservationsProposition = () => {
   const getPropositionReservedPropos = (obj, userName, skip, search, sort) =>
     getReservationsList(userName, skip, search, sort);
@@ -19,6 +24,8 @@ const ReservationsProposition = () => {
       getProposition={getPropositionReservedPropos}
       getPropositionFilters={getFiltersForReservationsProposition}
       customFilterConfig={filterConfig}
+      customSortConfig={sortConfig}
+      defaultSort={'reservation'}
       tab={'reservations'}
     />
   );

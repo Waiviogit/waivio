@@ -5,6 +5,9 @@ export const listOfWebsiteWithMainPage = [
   'www.dining.pp.ua',
   'dinings.club',
   'www.dinings.club',
+  'https://dinings.pp.ua/',
+  'dinings.pp.ua',
+  'www.dinings.pp.ua',
 ];
 
 export default null;
