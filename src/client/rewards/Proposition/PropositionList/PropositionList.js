@@ -139,7 +139,30 @@ const PropositionList = ({
 
   const getListRow = listItem => {
     if (listItem?.propositions)
-      return <PropositionNew proposition={{ ...listItem?.propositions?.[0], object: listItem }} />;
+      return listItem?.propositions.map(propos => {
+        if (propos?.newCampaigns)
+          return <PropositionNew proposition={{ ...propos, object: listItem }} />;
+
+        return (
+          <Proposition
+            proposition={propos}
+            wobj={listItem}
+            wobjPrice={propos.reward}
+            assignCommentPermlink={listItem.permlink}
+            assignProposition={assignPropositionHandler}
+            discardProposition={discardProposition}
+            authorizedUserName={userName}
+            loading={loadingAssignDiscard}
+            key={`${listItem.author_permlink}`}
+            assigned={listItem.assigned}
+            history={history}
+            isAssign={isAssign}
+            match={match}
+            user={user}
+          />
+        );
+      });
+
     const isList = listItem.object_type === OBJ_TYPE.LIST || listItem.type === OBJ_TYPE.LIST;
     const status = get(parseWobjectField(listItem, 'status'), 'title');
 
