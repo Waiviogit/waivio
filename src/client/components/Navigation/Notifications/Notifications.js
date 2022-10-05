@@ -622,6 +622,10 @@ class Notifications extends React.Component {
 
                 if (currentRoute === 'history') url += `/${notification.author}`;
 
+                if (notification?.newCampaigns) {
+                  url = `/rewards-new/${currentRoute}?reservationPermlink=${notification.parent_permlink}&guideNames=${notification.author}`;
+                }
+
                 return notification.notSponsor ? (
                   <NotificationTemplate
                     username={notification.author}
