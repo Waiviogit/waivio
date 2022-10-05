@@ -33,7 +33,9 @@ const TransferButton = ({
   const app = WAIVIO_PARENT_PERMLINK;
   const payableForRender = Math.abs(payable);
   const pathRecivables =
-    match.path === PATH_NAME_RECEIVABLES || match.path === PATH_NAME_RECEIVABLES_NEW;
+    match.path === PATH_NAME_RECEIVABLES ||
+    match.path === PATH_NAME_RECEIVABLES_NEW ||
+    match.path.includes('receivables');
   const pathPaybles = match.path === PATH_NAME_PAYABLES || match.path === PATH_NAME_PAYABLES_NEW;
   const isOverpayment = payable < 0;
   const memo =

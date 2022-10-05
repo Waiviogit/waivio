@@ -12,7 +12,7 @@ import { getIsWaivio } from '../../../store/appStore/appSelectors';
 
 import './Campaing.less';
 
-const Campaing = ({ campain, onActionInitiated }) => {
+const Campaing = ({ campain, onActionInitiated, hovered }) => {
   const buttonLabel = campain.maxReward === campain.minReward ? 'Earn' : 'Earn up to';
   const history = useHistory();
   const pathname = history.location.pathname.includes('reward')
@@ -41,7 +41,12 @@ const Campaing = ({ campain, onActionInitiated }) => {
 
   return (
     <div className="Campaing">
-      <ObjectCardView wObject={campain.object} withRewards rewardPrice={campain.maxReward} />
+      <ObjectCardView
+        wObject={campain.object}
+        withRewards
+        rewardPrice={campain.maxReward}
+        hovered={hovered}
+      />
       <span onClick={goToProducts} className="Campaing__button">
         {buttonLabel}{' '}
         <b>
@@ -63,6 +68,11 @@ Campaing.propTypes = {
     _id: PropTypes.string,
   }).isRequired,
   onActionInitiated: PropTypes.func.isRequired,
+  hovered: PropTypes.bool,
+};
+
+Campaing.defaultProps = {
+  hovered: false,
 };
 
 export default withAuthActions(Campaing);

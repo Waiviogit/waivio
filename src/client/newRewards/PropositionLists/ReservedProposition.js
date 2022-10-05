@@ -6,10 +6,10 @@ import {
 } from '../../../waivioApi/ApiClient';
 
 const sortConfig = [
-  { key: 'proximity', title: 'proximity' },
-  { key: 'payout', title: 'payouts' },
-  { key: 'reward', title: 'amount' },
-  { key: 'date', title: 'expiry' },
+  { key: 'proximity', title: 'Proximity' },
+  { key: 'payout', title: 'Payouts' },
+  { key: 'reward', title: 'Amount' },
+  { key: 'date', title: 'Expiry' },
 ];
 const ReservedProposition = () => {
   const getPropositionReservedPropos = (obj, userName, skip, search, sort) =>

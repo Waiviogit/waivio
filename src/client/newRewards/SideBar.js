@@ -38,7 +38,7 @@ const SideBar = () => {
   };
 
   return (
-    <ul className="Sidenav">
+    <ul className="Sidenav" style={{ marginTop: '20px' }}>
       <SettingsItem
         condition={menuCondition.rewards}
         configItem={rewardsSettings}

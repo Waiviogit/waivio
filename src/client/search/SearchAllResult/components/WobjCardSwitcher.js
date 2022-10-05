@@ -15,7 +15,7 @@ const WobjCardSwitcher = React.memo(props => {
     const proposition = props.obj.propositions[0];
 
     if (proposition?.newCampaigns)
-      return <PropositionNew proposition={{ ...proposition, object: props.obj }} />;
+      return <PropositionNew hovered proposition={{ ...proposition, object: props.obj }} />;
 
     return (
       <Proposition
@@ -39,6 +39,7 @@ const WobjCardSwitcher = React.memo(props => {
             minReward: props.obj.campaigns?.min_reward,
             object: props.obj,
           }}
+          hovered
         />
       );
 
