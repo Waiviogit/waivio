@@ -799,15 +799,16 @@ class ObjectInfo extends React.Component {
               )),
             )}
         {isEditMode &&
-          groupId &&
           this.listItem(
             objectFields.groupId,
-            <div className="field-info">
-              <FormattedMessage id="object_field_groupId" formattedMessage="Group ID" />
-              <div className="field-website__title">
-                <span className="CompanyId__wordbreak ">{groupId}</span>
+            groupId && (
+              <div className="field-info">
+                <FormattedMessage id="object_field_groupId" formattedMessage="Group ID" />
+                <div className="field-website__title">
+                  <span className="CompanyId__wordbreak ">{groupId}</span>
+                </div>
               </div>
-            </div>,
+            ),
           )}
       </React.Fragment>
     );
