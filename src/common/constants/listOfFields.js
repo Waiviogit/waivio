@@ -43,6 +43,7 @@ export const objectFields = {
   dimensions: 'dimensions',
   productWeight: 'productWeight',
   authors: 'authors',
+  groupId: 'groupId',
 };
 
 export const TYPES_OF_MENU_ITEM = {

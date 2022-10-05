@@ -25,11 +25,11 @@ const filterConfig = [
   { title: 'Sponsors', type: 'sponsors' },
 ];
 const sortConfig = [
-  { key: 'default', title: 'default' },
-  { key: 'payout', title: 'payout' },
-  { key: 'reward', title: 'amount' },
-  { key: 'date', title: 'expiry' },
-  { key: 'proximity', title: 'proximity' },
+  { key: 'default', title: 'Default' },
+  { key: 'payout', title: 'Payout' },
+  { key: 'reward', title: 'Amount' },
+  { key: 'date', title: 'Expiry' },
+  { key: 'proximity', title: 'Proximity' },
 ];
 
 const RenderPropositionList = ({

@@ -12,6 +12,7 @@ import './PaymentCard.less';
 const PaymentCard = props => {
   const name = props.paymentInfo.userName || props.paymentInfo.guideName;
   const isReceivable = props.match.path.includes('receivables');
+
   const notPayedPeriodClassList = classNames('PaymentCard__notPayedPeriod', {
     'PaymentCard__notPayedPeriod--expired': props.paymentInfo.notPayedPeriod >= 21,
   });

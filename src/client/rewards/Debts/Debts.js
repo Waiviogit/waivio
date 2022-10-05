@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import { isEmpty, map, round } from 'lodash';
+import { capitalize, isEmpty, map, round } from 'lodash';
 import { useSelector } from 'react-redux';
 import { Modal, Tag } from 'antd';
 import SortSelector from '../../components/SortSelector/SortSelector';
@@ -42,12 +42,12 @@ const Debts = ({
     <SortSelector sort={sort} onChange={handleSortChange}>
       <SortSelector.Item key="amount">
         <FormattedMessage id="amount_sort" defaultMessage="amount">
-          {msg => msg}
+          {msg => capitalize(msg)}
         </FormattedMessage>
       </SortSelector.Item>
       <SortSelector.Item key="time">
         <FormattedMessage id="time_sort" defaultMessage="time">
-          {msg => msg}
+          {msg => capitalize(msg)}
         </FormattedMessage>
       </SortSelector.Item>
     </SortSelector>

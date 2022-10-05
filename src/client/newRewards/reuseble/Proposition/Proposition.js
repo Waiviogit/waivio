@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { noop } from 'lodash';
+import classNames from 'classnames';
 import RewardsHeader from '../RewardsHeader';
 import ObjectCardView from '../../../objectCard/ObjectCardView';
 import DetailsModal from '../../DetailsModal/DetailsModal';
@@ -8,14 +9,17 @@ import PropositionFooter from './PropositionFooter';
 
 import './Proposition.less';
 
-const Proposition = ({ proposition, type, getProposition }) => {
+const Proposition = ({ proposition, type, getProposition, hovered }) => {
   const [openDetails, setOpenDitails] = useState(false);
   const onOpenDetailsModal = () => setOpenDitails(true);
   const propositionType =
     proposition.reserved || proposition?.reviewStatus === 'assigned' ? 'reserved' : type;
+  const propositionClassList = classNames('Proposition-new', {
+    'Proposition-new--hovered': hovered,
+  });
 
   return (
-    <div className="Proposition-new">
+    <div className={propositionClassList}>
       <div className="Proposition-new__header">
         <RewardsHeader proposition={proposition} />
       </div>
@@ -67,6 +71,7 @@ Proposition.propTypes = {
     }),
     _id: PropTypes.string,
   }).isRequired,
+  hovered: PropTypes.bool,
   type: PropTypes.string,
   getProposition: PropTypes.func,
 };
@@ -74,6 +79,7 @@ Proposition.propTypes = {
 Proposition.defaultProps = {
   getProposition: noop,
   type: '',
+  hovered: false,
 };
 
 export default Proposition;
