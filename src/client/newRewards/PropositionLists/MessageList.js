@@ -5,8 +5,8 @@ import RenderPropositionList from '../PropositionList/RenderPropositionList';
 import '../RewardLists/RewardLists.less';
 
 const filterConfig = [
+  { title: 'Conversations', type: 'conversations' },
   { title: 'Rewards', type: 'statuses' },
-  { title: 'Campaign', type: 'campaignNames' },
 ];
 
 const sortConfig = [

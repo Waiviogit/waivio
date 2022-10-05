@@ -122,9 +122,16 @@ const PropositionFooter = ({ type, openDetailsModal, proposition, getProposition
                 )}
                 <RewardsPopover proposition={proposition} getProposition={getProposition} />
               </div>
-              <Button type="primary" onClick={openDetailsModal}>
-                Write review
-              </Button>
+              {proposition.guideName === authUserName ? (
+                <div className={'Proposition-new__userCard'}>
+                  <Avatar size={24} username={proposition?.userName} />
+                  <a href={`/@${proposition?.userName}`}>{proposition?.userName}</a>
+                </div>
+              ) : (
+                <Button type="primary" onClick={openDetailsModal}>
+                  Write review
+                </Button>
+              )}
             </div>
             {showComment &&
               comments.map(comment => (
@@ -221,6 +228,7 @@ PropositionFooter.propTypes = {
   proposition: PropTypes.shape({
     reviewStatus: PropTypes.string,
     userName: PropTypes.string,
+    guideName: PropTypes.string,
     commentsCount: PropTypes.number,
     countReservationDays: PropTypes.number,
     reservationPermlink: PropTypes.string,

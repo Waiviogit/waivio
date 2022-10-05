@@ -17,6 +17,7 @@ import { statusNoVisibleItem } from '../../../../common/constants/listOfFields';
 import CategoryItemView from '../../../object/Catalog/CategoryItemView/CategoryItemView';
 import { getObject } from '../../../../waivioApi/ApiClient';
 import Campaign from '../../Campaign/Campaign';
+import PropositionNew from '../../../newRewards/reuseble/Proposition/Proposition';
 
 const PropositionList = ({
   wobject,
@@ -137,6 +138,8 @@ const PropositionList = ({
   const isReviewPage = location.pathname === `/object/${get(wobject, 'author_permlink', '')}`;
 
   const getListRow = listItem => {
+    if (listItem?.propositions)
+      return <PropositionNew proposition={{ ...listItem?.propositions?.[0], object: listItem }} />;
     const isList = listItem.object_type === OBJ_TYPE.LIST || listItem.type === OBJ_TYPE.LIST;
     const status = get(parseWobjectField(listItem, 'status'), 'title');
 
