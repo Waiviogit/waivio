@@ -72,17 +72,14 @@ export default class UserProfile extends React.Component {
     tagsCondition: [],
   };
   state = {
-    activeKey: 'posts',
+    activeKey: this.props.match.params[0] || 'posts',
   };
 
   componentDidMount() {
     const { match, limit } = this.props;
     const { name } = match.params;
 
-    if (match.params[0]) {
-      // eslint-disable-next-line react/no-did-mount-set-state
-      this.setState({ activeKey: match.params[0] });
-    } else {
+    if (!match.params[0]) {
       this.props.getUserProfileBlogPosts(name, { limit, initialLoad: true });
     }
   }
@@ -102,6 +99,7 @@ export default class UserProfile extends React.Component {
           limit,
           initialLoad: true,
         });
+        this.setState({ activeKey: 'posts' });
       }
       window.scrollTo(0, 0);
     }
@@ -160,8 +158,12 @@ export default class UserProfile extends React.Component {
     };
 
     return (
-      <Tabs defaultActiveKey={this.state.active} className={'UserFollowers'} onChange={onTabChange}>
-        <Tabs.TabPane className="UserFollowing__item" tab={'Posts'} key={postTabKey}>
+      <Tabs
+        defaultActiveKey={this.state.activeKey}
+        className={'UserFollowers'}
+        onChange={onTabChange}
+      >
+        <Tabs.TabPane tab={'Posts'} key={postTabKey}>
           {this.state?.activeKey === 'posts' && (
             <div className="profile">
               <Feed
@@ -179,12 +181,12 @@ export default class UserProfile extends React.Component {
             </div>
           )}
         </Tabs.TabPane>
-        <Tabs.TabPane className="UserFollowing__item" tab={'Comments'} key="comments">
+        <Tabs.TabPane tab={'Comments'} key="comments">
           {this.state?.activeKey === 'comments' && (
             <UserProfilePosts showPostModal={this.props.showPostModal} feed={feed} match={match} />
           )}
         </Tabs.TabPane>
-        <Tabs.TabPane className="UserFollowing__item" tab={'Activity'} key="activity">
+        <Tabs.TabPane tab={'Activity'} key="activity">
           {this.state?.activeKey === 'activity' && !this.props.isGuest && (
             <UserActivity isCurrentUser />
           )}
