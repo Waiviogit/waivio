@@ -803,7 +803,6 @@ class ObjectInfo extends React.Component {
             objectFields.groupId,
             groupId && (
               <div className="field-info">
-                <FormattedMessage id="object_field_groupId" formattedMessage="Group ID" />
                 <div className="field-website__title">
                   <span className="CompanyId__wordbreak ">{groupId}</span>
                 </div>
