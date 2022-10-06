@@ -48,7 +48,11 @@ class UserMenu extends React.Component {
           <div className="left" />
           <ul className="UserMenu__menu ">
             <li
-              className={this.getItemClasses('discussions')}
+              className={classNames('UserMenu__item', {
+                'UserMenu__item--active': ['discussions', 'comments', 'activity'].includes(
+                  this.state.current,
+                ),
+              })}
               onClick={this.handleClick}
               role="presentation"
               data-key="discussions"
