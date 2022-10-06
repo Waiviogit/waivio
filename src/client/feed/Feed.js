@@ -38,7 +38,7 @@ const Feed = ({
       loadingMore={isFetching}
       hasMore={hasMore}
       elementIsScrollable={false}
-      threshold={1500}
+      // threshold={1000}
     >
       {content.map(id => (
         <StoryContainer

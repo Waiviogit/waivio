@@ -5,15 +5,22 @@ import {
   getReservedProposition,
 } from '../../../waivioApi/ApiClient';
 
+const sortConfig = [
+  { key: 'proximity', title: 'Proximity' },
+  { key: 'payout', title: 'Payouts' },
+  { key: 'reward', title: 'Amount' },
+  { key: 'date', title: 'Expiry' },
+];
 const ReservedProposition = () => {
-  const getPropositionReservedPropos = (obj, userName, skip, search) =>
-    getReservedProposition(userName, skip, search);
+  const getPropositionReservedPropos = (obj, userName, skip, search, sort) =>
+    getReservedProposition(userName, skip, search, sort);
 
   return (
     <RenderPropositionList
       getProposition={getPropositionReservedPropos}
       getPropositionFilters={getFiltersForReservedProposition}
       tab={'reserved'}
+      sortConfig={sortConfig}
     />
   );
 };

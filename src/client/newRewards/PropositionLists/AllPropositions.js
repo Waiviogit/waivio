@@ -9,6 +9,7 @@ const AllProposition = () => (
   <RenderPropositionList
     getProposition={getPropositionByCampaingObjectPermlink}
     tab={'all'}
+    withoutSort
     getPropositionFilters={getFiltersForAllProposition}
   />
 );

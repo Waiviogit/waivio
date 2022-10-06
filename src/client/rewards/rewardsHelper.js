@@ -194,12 +194,10 @@ export const getDaysLeft = (reserveDate, daysCount) => {
 };
 
 export const getDaysLeftForNew = (reserveDate, daysCount) => {
-  const currentTime = moment().unix();
-  const reservationTime = moment(reserveDate)
-    .add(daysCount, 'days')
-    .unix();
+  const currentTime = moment();
+  const reservationTime = moment(reserveDate).add(daysCount + 1, 'days');
 
-  return parseInt((reservationTime - currentTime) / 86400, 10);
+  return reservationTime.diff(currentTime, 'days');
 };
 
 export const getFrequencyAssign = objectDetails => {

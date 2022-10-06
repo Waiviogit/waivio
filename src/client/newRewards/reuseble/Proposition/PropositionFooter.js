@@ -108,19 +108,30 @@ const PropositionFooter = ({ type, openDetailsModal, proposition, getProposition
             <div className="Proposition-new__footer-container">
               <div className="Proposition-new__button-container">
                 <b>Reserved</b>
-                <span className="Proposition-new__minus">{' - '}</span>
-                {getDaysLeftForNew(
-                  proposition?.reservationCreatedAt,
-                  proposition?.countReservationDays,
-                )}{' '}
-                days left
+                <b>
+                  <span className="Proposition-new__minus">{'-'}</span>
+                  {getDaysLeftForNew(
+                    proposition?.reservationCreatedAt,
+                    proposition?.countReservationDays,
+                  )}{' '}
+                  days left
+                </b>
                 <i className="iconfont icon-message_fill" onClick={handleCommentsClick} />
-                {commentsCount}
+                {Boolean(commentsCount) && (
+                  <span className="Proposition-new__commentCounter">{commentsCount}</span>
+                )}
                 <RewardsPopover proposition={proposition} getProposition={getProposition} />
               </div>
-              <Button type="primary" onClick={openDetailsModal}>
-                Write review
-              </Button>
+              {proposition.guideName === authUserName ? (
+                <div className={'Proposition-new__userCard'}>
+                  <Avatar size={24} username={proposition?.userName} />
+                  <a href={`/@${proposition?.userName}`}>{proposition?.userName}</a>
+                </div>
+              ) : (
+                <Button type="primary" onClick={openDetailsModal}>
+                  Write review
+                </Button>
+              )}
             </div>
             {showComment &&
               comments.map(comment => (
@@ -153,7 +164,9 @@ const PropositionFooter = ({ type, openDetailsModal, proposition, getProposition
                 ) : (
                   <i className="iconfont icon-message_fill" onClick={handleCommentsClick} />
                 )}
-                {commentsCount}
+                {Boolean(commentsCount) && (
+                  <span className="Proposition-new__commentCounter">{commentsCount}</span>
+                )}
                 <RewardsPopover
                   proposition={proposition}
                   getProposition={getProposition}
@@ -215,6 +228,7 @@ PropositionFooter.propTypes = {
   proposition: PropTypes.shape({
     reviewStatus: PropTypes.string,
     userName: PropTypes.string,
+    guideName: PropTypes.string,
     commentsCount: PropTypes.number,
     countReservationDays: PropTypes.number,
     reservationPermlink: PropTypes.string,

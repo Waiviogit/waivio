@@ -8,6 +8,9 @@
   border-bottom: solid 1px #e9e7e7;
 
   &__menu {
+    display: flex;
+    justify-content: flex-start;
+    margin-left: 18px;
     height: 46px;
     line-height: 46px;
     white-space: nowrap;
@@ -15,9 +18,15 @@
     overflow-y: hidden;
 
     @media @small, @medium {
+      justify-content: center;
+      margin-left: 0;
       overflow-x: visible;
       overflow-y: hidden;
       min-width: 740px;
+    }
+    @media @large {
+      justify-content: center;
+      margin-left: 0;
     }
   }
 

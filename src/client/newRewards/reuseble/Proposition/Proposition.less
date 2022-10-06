@@ -1,4 +1,7 @@
+@import (reference) '../../../styles/custom.less';
+
 .Proposition-new {
+  font-size: 14px;
   margin: 20px 0;
 
   &__header {
@@ -84,5 +87,24 @@
 
   &__minus {
     padding: 0 5px;
+  }
+
+  &--hovered {
+    &:hover {
+      cursor: pointer;
+
+      .Proposition__header,
+      .Proposition__footer {
+        background: @solitaire;
+      }
+    }
+  }
+
+  .iconfont.icon-message_fill {
+    margin: 0 1px 0 5px;
+  }
+
+  &__commentCounter {
+    margin: 0 5px 0 3px;
   }
 }

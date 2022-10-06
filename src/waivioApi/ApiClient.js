@@ -2604,9 +2604,9 @@ export const getCampaingHistoryList = (giudeName, skip = 0) => {
     .catch(e => e);
 };
 
-export const getAllRewardList = (skip = 0, query) => {
+export const getAllRewardList = (skip = 0, query, sort) => {
   return fetch(
-    `${config.campaignV2ApiPrefix}${config.rewards}${config.all}?limit=10&skip=${skip}${query}`,
+    `${config.campaignV2ApiPrefix}${config.rewards}${config.all}?limit=10&skip=${skip}&sort=${sort}${query}`,
     {
       headers,
       method: 'GET',
@@ -2618,7 +2618,9 @@ export const getAllRewardList = (skip = 0, query) => {
     .catch(e => e);
 };
 
-export const getMessagesList = (userName, skip, query) => {
+export const getMessagesList = (userName, skip, query, sort) => {
+  const filters = parseQuery(query);
+
   return fetch(
     `${config.campaignV2ApiPrefix}${config.rewards}${config.messages}${config.guide}/${userName}?limit=10&skip=${skip}`,
     {
@@ -2627,7 +2629,10 @@ export const getMessagesList = (userName, skip, query) => {
       body: JSON.stringify({
         limit: 10,
         skip,
-        ...parseQuery(query),
+        sort,
+        caseStatus: filters?.conversations?.[0],
+        reservationPermlink: filters?.reservationPermlink?.[0],
+        statuses: filters?.statuses,
       }),
     },
   )
@@ -2637,7 +2642,7 @@ export const getMessagesList = (userName, skip, query) => {
     .catch(e => e);
 };
 
-export const getFraudDetectionList = (userName, skip, query) => {
+export const getFraudDetectionList = (userName, skip, query, sort) => {
   return fetch(
     `${config.campaignV2ApiPrefix}${config.rewards}${config.frauds}/${userName}?limit=10&skip=${skip}`,
     {
@@ -2646,6 +2651,7 @@ export const getFraudDetectionList = (userName, skip, query) => {
       body: JSON.stringify({
         limit: 10,
         skip,
+        sort,
         ...parseQuery(query),
       }),
     },
@@ -2670,9 +2676,9 @@ export const getReservedRewardList = (userName, skip = 0) => {
     .catch(e => e);
 };
 
-export const getEligibleRewardList = (userName, skip = 0, query) => {
+export const getEligibleRewardList = (userName, skip = 0, query, sort) => {
   return fetch(
-    `${config.campaignV2ApiPrefix}${config.rewards}${config.eligible}?userName=${userName}&limit=10&skip=${skip}${query}`,
+    `${config.campaignV2ApiPrefix}${config.rewards}${config.eligible}?userName=${userName}&limit=10&skip=${skip}&sort=${sort}${query}`,
     {
       headers,
       method: 'GET',
@@ -2689,11 +2695,12 @@ export const getPropositionByCampaingObjectPermlink = (
   userName,
   skip = 0,
   query,
+  sort,
 ) => {
   return fetch(
     `${config.campaignV2ApiPrefix}${config.rewards}${
       config.all
-    }/object/${parentPermlink}?limit=10&skip=${skip}${
+    }/object/${parentPermlink}?limit=10&skip=${skip}&sort=${sort}${
       userName ? `&userName=${userName}` : ''
     }${query}`,
     {
@@ -2707,9 +2714,9 @@ export const getPropositionByCampaingObjectPermlink = (
     .catch(e => e);
 };
 
-export const getReservedProposition = (userName, skip = 0, query) => {
+export const getReservedProposition = (userName, skip = 0, query, sort) => {
   return fetch(
-    `${config.campaignV2ApiPrefix}${config.rewards}${config.reserved}/${userName}?limit=10&skip=${skip}${query}`,
+    `${config.campaignV2ApiPrefix}${config.rewards}${config.reserved}/${userName}?limit=10&skip=${skip}${query}&sort=${sort}`,
     {
       headers,
       method: 'GET',
@@ -2721,7 +2728,7 @@ export const getReservedProposition = (userName, skip = 0, query) => {
     .catch(e => e);
 };
 
-export const getReservationsList = (guideName, skip = 0, query) => {
+export const getReservationsList = (guideName, skip = 0, query, sort) => {
   return fetch(
     `${config.campaignV2ApiPrefix}${config.rewards}${config.reservations}/${guideName}`,
     {
@@ -2730,6 +2737,7 @@ export const getReservationsList = (guideName, skip = 0, query) => {
       body: JSON.stringify({
         limit: 10,
         skip,
+        sort,
         ...parseQuery(query),
       }),
     },
@@ -2740,14 +2748,17 @@ export const getReservationsList = (guideName, skip = 0, query) => {
     .catch(e => e);
 };
 
-export const getHistoryList = (guideName, skip = 0, query) => {
+export const getHistoryList = (guideName, skip = 0, query, sort) => {
+  const filters = parseQuery(query);
   return fetch(`${config.campaignV2ApiPrefix}${config.rewards}${config.history}/${guideName}`, {
     headers,
     method: 'POST',
     body: JSON.stringify({
       limit: 10,
       skip,
-      ...parseQuery(query),
+      sort,
+      ...filters,
+      reservationPermlink: filters?.reservationPermlink?.[0],
     }),
   })
     .then(handleErrors)
@@ -2771,13 +2782,14 @@ export const getEligiblePropositionByCampaingObjectPermlink = (
   userName,
   skip = 0,
   query,
+  sort,
 ) => {
   return fetch(
     `${config.campaignV2ApiPrefix}${config.rewards}${
       config.eligible
     }/object/${parentPermlink}?limit=10&skip=${skip}${
       userName ? `&userName=${userName}` : ''
-    }${query}`,
+    }${query}&sort=${sort}`,
     {
       headers,
       method: 'GET',

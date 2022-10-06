@@ -11,10 +11,12 @@ import {
 import { getAuthenticatedUserName, getIsAuthenticated } from '../../store/authStore/authSelectors';
 import ModalSignIn from '../components/Navigation/ModlaSignIn/ModalSignIn';
 import { checkPayblesWarning } from '../../waivioApi/ApiClient';
+import { getIsWaivio } from '../../store/appStore/appSelectors';
 
 const SideBar = () => {
   const isAuth = useSelector(getIsAuthenticated);
   const authUserName = useSelector(getAuthenticatedUserName);
+  const isWaivio = useSelector(getIsWaivio);
   const [menuCondition, setMenuCondition] = useState({
     rewards: true,
     campaing: true,
@@ -36,20 +38,20 @@ const SideBar = () => {
   };
 
   return (
-    <ul className="Sidenav">
+    <ul className="Sidenav" style={{ marginTop: '20px' }}>
       <SettingsItem
         condition={menuCondition.rewards}
         configItem={rewardsSettings}
         toggleMenuCondition={toggleMenuCondition}
       />
-      {isAuth && (
+      {isAuth && isWaivio && (
         <SettingsItem
           condition={menuCondition.campaing}
           configItem={campaingSettings(withWarning)}
           toggleMenuCondition={toggleMenuCondition}
         />
       )}
-      {isAuth && (
+      {isAuth && isWaivio && (
         <SettingsItem
           condition={menuCondition.matchbots}
           configItem={matchBotsSettings}

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Icon } from 'antd';
 import PropTypes from 'prop-types';
 
-function ProductId({ productIdBody }) {
+function ProductId({ productIdBody, groupIdContent }) {
   const [showMore, setShowMore] = useState(false);
 
   const toggleShowMoreState = () => {
@@ -10,32 +10,47 @@ function ProductId({ productIdBody }) {
   };
 
   return (
-    <div className="CompanyId__container">
-      <button className="CompanyId__button" onClick={toggleShowMoreState}>
-        Product ID{' '}
-        {!showMore ? (
-          <Icon type="down" className="CompanyId__icon" />
-        ) : (
-          <Icon type="up" className="CompanyId__icon" />
-        )}
-      </button>
-      <div className="CompanyId__block">
-        {showMore &&
-          productIdBody?.map(obj => (
-            <div key={obj.id} className="CompanyId__block-item">
-              <p className="CompanyId__p">{obj.productIdType}</p>
-              <p className="CompanyId__p">{obj.productId}</p>
-              <div className="field-avatar CompanyId__p CompanyId__image">
-                {obj.productIdImage && <img src={obj.productIdImage} alt="pic" />}
+    (groupIdContent || productIdBody.length > 1) && (
+      <div className="CompanyId__container">
+        <button className="CompanyId__button CompanyId__title" onClick={toggleShowMoreState}>
+          Product ID{' '}
+          {!showMore ? (
+            <Icon type="down" className="CompanyId__icon" />
+          ) : (
+            <Icon type="up" className="CompanyId__icon" />
+          )}
+        </button>
+        <div className="CompanyId__block">
+          {productIdBody ? (
+            showMore && (
+              <div>
+                {productIdBody?.map(obj => (
+                  <div key={obj.id} className="CompanyId__block-item">
+                    <p className="CompanyId__p">{obj.productIdType}</p>
+                    <p className="CompanyId__p">{obj.productId}</p>
+                    <div className="field-avatar CompanyId__p CompanyId__image">
+                      {obj.productIdImage && <img src={obj.productIdImage} alt="pic" />}
+                    </div>
+                  </div>
+                ))}
+                <div>{groupIdContent}</div>
               </div>
-            </div>
-          ))}
+            )
+          ) : (
+            <div>{groupIdContent}</div>
+          )}
+        </div>
       </div>
-    </div>
+    )
   );
 }
 ProductId.propTypes = {
-  productIdBody: PropTypes.string.isRequired,
+  productIdBody: PropTypes.string,
+  groupIdContent: PropTypes.string,
 };
 
+ProductId.defaultProps = {
+  productIdBody: '',
+  groupIdContent: '',
+};
 export default ProductId;

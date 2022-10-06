@@ -692,7 +692,7 @@ export default class CampaignButtons extends React.Component {
   }
 
   getPropositionStatus = proposition => {
-    const { match, user } = this.props;
+    const { match } = this.props;
     const isReserved = !isEmpty(match)
       ? match.params.filterKey === IS_RESERVED ||
         match.params.filterKey === IS_ALL ||
@@ -700,9 +700,8 @@ export default class CampaignButtons extends React.Component {
       : '';
 
     if (isReserved) return ASSIGNED;
-    const currUser = proposition?.users?.find(usr => usr.name === user.name);
 
-    return currUser?.status;
+    return get(proposition, ['users', '0', 'status'], '');
   };
 
   render() {

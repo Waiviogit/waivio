@@ -136,12 +136,13 @@ class ObjectInfo extends React.Component {
     const exposedFields = getExposedFieldsByObjType(wobject);
     const shouldDisplay = exposedFields.includes(name);
     const accessExtend = haveAccess(wobject, userName, accessTypesArr[0]) && isEditMode;
-    const publisherPaddingBottom = name !== 'publisher' || (isEditMode && !wobject.publisher);
+    const paddingBottom =
+      name !== 'publisher' || (isEditMode && !wobject.publisher) || wobject.groupId;
 
     return (
       shouldDisplay &&
       (content || accessExtend) && (
-        <div className={publisherPaddingBottom ? 'field-info' : 'field-info field-info__nopadding'}>
+        <div className={paddingBottom ? 'field-info' : 'field-info field-info__nopadding'}>
           <React.Fragment>
             {accessExtend && (
               <div className="field-info__title">
@@ -338,6 +339,7 @@ class ObjectInfo extends React.Component {
       : [];
     const ageRange = wobject.ageRange;
     const language = wobject.language;
+    const groupId = wobject.groupId;
     const publicationDate = moment(wobject.publicationDate).format('MMMM DD, YYYY');
     const printLength = wobject.printLength;
     const publisher = parseWobjectField(wobject, 'publisher');
@@ -521,10 +523,10 @@ class ObjectInfo extends React.Component {
         {this.listItem(
           objectFields.price,
           price && (
-            <React.Fragment>
+            <div className="flex">
               {!isEditMode && <span className="field-icon">$</span>}
-              <span className="price-value">{price}</span>
-            </React.Fragment>
+              <span className="price-value fw8">{price}</span>
+            </div>
           ),
         )}
         {this.listItem(
@@ -634,20 +636,6 @@ class ObjectInfo extends React.Component {
                 <div className="CompanyId__block-item">
                   <p className="CompanyId__p">{obj.companyIdType}</p>
                   <p className="CompanyId__p">{obj.companyId}</p>
-                </div>
-              )),
-            )}
-        {!isEditMode
-          ? productIdBody.length > 0 && <ProductId productIdBody={productIdBody} />
-          : this.listItem(
-              objectFields.productId,
-              productIdBody?.map(obj => (
-                <div key={obj.id} className="CompanyId__block-item">
-                  <p className="CompanyId__p">{obj.productIdType}</p>
-                  <p className="CompanyId__p">{obj.productId}</p>
-                  <div className="field-avatar CompanyId__p CompanyId__image">
-                    {obj.productIdImage && <img src={obj.productIdImage} alt="pic" />}
-                  </div>
                 </div>
               )),
             )}
@@ -780,6 +768,47 @@ class ObjectInfo extends React.Component {
             </div>
           ),
         )}
+        {!isEditMode ? (
+          <ProductId
+            groupIdContent={
+              groupId && (
+                <div className="field-info">
+                  <div className="CompanyId__title">
+                    <FormattedMessage id="object_field_groupId" formattedMessage="Group ID" />
+                  </div>
+                  <div className="field-website__title">
+                    <span className="CompanyId__wordbreak">{groupId}</span>
+                  </div>
+                </div>
+              )
+            }
+            productIdBody={productIdBody}
+          />
+        ) : (
+          this.listItem(
+            objectFields.productId,
+            productIdBody?.map(obj => (
+              <div key={obj.id} className="CompanyId__block-item">
+                <p className="CompanyId__p">{obj.productIdType}</p>
+                <p className="CompanyId__p">{obj.productId}</p>
+                <div className="field-avatar CompanyId__p CompanyId__image">
+                  {obj.productIdImage && <img src={obj.productIdImage} alt="pic" />}
+                </div>
+              </div>
+            )),
+          )
+        )}
+        {isEditMode &&
+          this.listItem(
+            objectFields.groupId,
+            groupId && (
+              <div className="field-info">
+                <div className="field-website__title">
+                  <span className="CompanyId__wordbreak ">{groupId}</span>
+                </div>
+              </div>
+            ),
+          )}
       </React.Fragment>
     );
 
