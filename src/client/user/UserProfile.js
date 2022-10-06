@@ -71,7 +71,7 @@ export default class UserProfile extends React.Component {
     user: {},
     tagsCondition: [],
   };
-  static state = {
+  state = {
     activeKey: 'posts',
   };
 
