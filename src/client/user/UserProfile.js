@@ -71,12 +71,20 @@ export default class UserProfile extends React.Component {
     user: {},
     tagsCondition: [],
   };
+  static state = {
+    activeKey: 'posts',
+  };
 
   componentDidMount() {
     const { match, limit } = this.props;
     const { name } = match.params;
 
-    this.props.getUserProfileBlogPosts(name, { limit, initialLoad: true });
+    if (match.params[0]) {
+      // eslint-disable-next-line react/no-did-mount-set-state
+      this.setState({ activeKey: match.params[0] });
+    } else {
+      this.props.getUserProfileBlogPosts(name, { limit, initialLoad: true });
+    }
   }
 
   componentWillReceiveProps(nextProps) {
@@ -87,7 +95,8 @@ export default class UserProfile extends React.Component {
       if (
         nextProps.feed &&
         nextProps.feed.blog &&
-        !nextProps.feed.blog[nextProps.match.params.name]
+        !nextProps.feed.blog[nextProps.match.params.name] &&
+        !match.params[0]
       ) {
         this.props.getUserProfileBlogPosts(nextProps.match.params.name, {
           limit,
@@ -103,9 +112,10 @@ export default class UserProfile extends React.Component {
     const { name } = match.params;
 
     if (
-      prevProps.user.muted !== user.muted ||
-      prevProps.match.url !== match.url ||
-      !isEqual(tagsCondition, prevProps.tagsCondition)
+      (prevProps.user.muted !== user.muted ||
+        prevProps.match.url !== match.url ||
+        !isEqual(tagsCondition, prevProps.tagsCondition)) &&
+      !match.params[0]
     ) {
       this.props.getUserProfileBlogPosts(name, { limit, initialLoad: true });
     }
@@ -143,34 +153,41 @@ export default class UserProfile extends React.Component {
       return <EmptyMutedUserProfile user={user} authName={authenticatedUser.name} />;
 
     const onTabChange = key => {
+      this.setState({ activeKey: key });
       postTabKey !== key
         ? this.props.history.push(`/@${name}/${key}`)
         : this.props.history.push(`/@${name}`);
     };
 
     return (
-      <Tabs className={'UserFollowers'} onChange={onTabChange}>
+      <Tabs defaultActiveKey={this.state.active} className={'UserFollowers'} onChange={onTabChange}>
         <Tabs.TabPane className="UserFollowing__item" tab={'Posts'} key={postTabKey}>
-          <div className="profile">
-            <Feed
-              content={content}
-              isFetching={isFetching}
-              hasMore={hasMore}
-              loadMoreContent={loadMoreContentAction}
-              showPostModal={this.props.showPostModal}
-              isGuest={isGuest}
-              history={history}
-            />
-            {isEmpty(content) && fetched && isOwnProfile && <EmptyUserOwnProfile />}
-            {isEmpty(content) && fetched && !isOwnProfile && <EmptyUserProfile />}
-            {<PostModal userName={authenticatedUser.name} />}
-          </div>
+          {this.state?.activeKey === 'posts' && (
+            <div className="profile">
+              <Feed
+                content={content}
+                isFetching={isFetching}
+                hasMore={hasMore}
+                loadMoreContent={loadMoreContentAction}
+                showPostModal={this.props.showPostModal}
+                isGuest={isGuest}
+                history={history}
+              />
+              {isEmpty(content) && fetched && isOwnProfile && <EmptyUserOwnProfile />}
+              {isEmpty(content) && fetched && !isOwnProfile && <EmptyUserProfile />}
+              {<PostModal userName={authenticatedUser.name} />}
+            </div>
+          )}
         </Tabs.TabPane>
         <Tabs.TabPane className="UserFollowing__item" tab={'Comments'} key="comments">
-          <UserProfilePosts showPostModal={this.props.showPostModal} feed={feed} match={match} />
+          {this.state?.activeKey === 'comments' && (
+            <UserProfilePosts showPostModal={this.props.showPostModal} feed={feed} match={match} />
+          )}
         </Tabs.TabPane>
         <Tabs.TabPane className="UserFollowing__item" tab={'Activity'} key="activity">
-          {!this.props.isGuest && <UserActivity isCurrentUser />}
+          {this.state?.activeKey === 'activity' && !this.props.isGuest && (
+            <UserActivity isCurrentUser />
+          )}
         </Tabs.TabPane>
       </Tabs>
     );
