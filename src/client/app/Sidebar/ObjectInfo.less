@@ -290,13 +290,25 @@
     margin-top: -7px;
   }
 
-  &__option-button {
+  &__my-option-button {
     background: none;
     border: 1px solid @white-gainsboro;
     min-width: 85px;
     height: 25px;
     border-radius: 4px;
     margin-bottom: 4px;
+    &:hover {
+      border-color: @orange;
+    }
+  }
+  &__option-button {
+    background: none;
+    border: 1px dashed @white-gainsboro;
+    min-width: 85px;
+    height: 25px;
+    border-radius: 4px;
+    margin-bottom: 4px;
+    color: @white-gainsboro;
     &:hover {
       border-color: @orange;
     }

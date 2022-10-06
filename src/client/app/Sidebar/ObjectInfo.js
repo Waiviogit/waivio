@@ -346,7 +346,7 @@ class ObjectInfo extends React.Component {
     const authorsBody = wobject.authors
       ? wobject.authors.map(el => parseWobjectField(el, 'body', []))
       : [];
-
+    const wObjectPermlink = wobject.author_permlink;
     const dimensions = parseWobjectField(wobject, 'dimensions');
     const productWeight = parseWobjectField(wobject, 'productWeight');
     const optionsCards = isEditMode
@@ -370,7 +370,15 @@ class ObjectInfo extends React.Component {
             <div>{option[0]}:</div>
             {option[1].map(el => (
               <>
-                <button className="ObjectInfo__option-button">{el.body.value}</button>{' '}
+                <button
+                  className={
+                    el.author_permlink === wObjectPermlink
+                      ? 'ObjectInfo__my-option-button'
+                      : 'ObjectInfo__option-button'
+                  }
+                >
+                  {el.body.value}
+                </button>{' '}
               </>
             ))}
           </div>
