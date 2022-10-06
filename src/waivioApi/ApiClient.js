@@ -2619,6 +2619,8 @@ export const getAllRewardList = (skip = 0, query, sort) => {
 };
 
 export const getMessagesList = (userName, skip, query, sort) => {
+  const filters = parseQuery(query);
+
   return fetch(
     `${config.campaignV2ApiPrefix}${config.rewards}${config.messages}${config.guide}/${userName}?limit=10&skip=${skip}`,
     {
@@ -2628,7 +2630,9 @@ export const getMessagesList = (userName, skip, query, sort) => {
         limit: 10,
         skip,
         sort,
-        ...parseQuery(query),
+        caseStatus: filters?.conversations?.[0],
+        reservationPermlink: filters?.reservationPermlink?.[0],
+        statuses: filters?.statuses,
       }),
     },
   )
@@ -2745,6 +2749,7 @@ export const getReservationsList = (guideName, skip = 0, query, sort) => {
 };
 
 export const getHistoryList = (guideName, skip = 0, query, sort) => {
+  const filters = parseQuery(query);
   return fetch(`${config.campaignV2ApiPrefix}${config.rewards}${config.history}/${guideName}`, {
     headers,
     method: 'POST',
@@ -2752,7 +2757,8 @@ export const getHistoryList = (guideName, skip = 0, query, sort) => {
       limit: 10,
       skip,
       sort,
-      ...parseQuery(query),
+      ...filters,
+      reservationPermlink: filters?.reservationPermlink?.[0],
     }),
   })
     .then(handleErrors)

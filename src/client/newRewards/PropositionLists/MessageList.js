@@ -5,7 +5,7 @@ import RenderPropositionList from '../PropositionList/RenderPropositionList';
 import '../RewardLists/RewardLists.less';
 
 const filterConfig = [
-  { title: 'Conversations', type: 'conversations' },
+  { title: 'Conversations', type: 'conversations', onlyOne: true },
   { title: 'Rewards', type: 'statuses' },
 ];
 

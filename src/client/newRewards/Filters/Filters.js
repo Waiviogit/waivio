@@ -39,7 +39,7 @@ const RewardsFilters = ({ config, getFilters, onlyOne, visible, onClose, intl })
     setFiltersFromQuery();
   }, [history.location.search]);
 
-  const setFilters = (type, filter) => {
+  const setFilters = (type, filter, filterOnlyOne = false) => {
     const filreList = activeFilters[type] || [];
 
     if (filreList.includes(filter)) {
@@ -56,7 +56,7 @@ const RewardsFilters = ({ config, getFilters, onlyOne, visible, onClose, intl })
         [type]: filteredList,
       });
     } else {
-      const newListFilters = onlyOne ? [filter] : [...filreList, filter];
+      const newListFilters = onlyOne || filterOnlyOne ? [filter] : [...filreList, filter];
 
       query.set(type, newListFilters.join(','));
       setActiveFilters({
@@ -90,7 +90,7 @@ const RewardsFilters = ({ config, getFilters, onlyOne, visible, onClose, intl })
                 <div key={value}>
                   <Checkbox
                     checked={activeFilters[filter.type]?.includes(value)}
-                    onChange={() => setFilters(filter.type, value)}
+                    onChange={() => setFilters(filter.type, value, filter.onlyOne)}
                   >
                     {' '}
                     {intl.formatMessage({ id: `filter_${title}`, defaultMessage: title })}
