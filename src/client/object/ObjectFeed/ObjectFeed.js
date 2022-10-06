@@ -179,7 +179,7 @@ export default class ObjectFeed extends React.Component {
                   key={getPropositionsKey(proposition, i)}
                   proposition={{
                     ...proposition,
-                    requiredObject: wobject,
+                    requiredObject: wobject.parent,
                   }}
                 />
               ))}

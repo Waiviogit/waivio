@@ -143,9 +143,9 @@ export default class UserProfile extends React.Component {
       return <EmptyMutedUserProfile user={user} authName={authenticatedUser.name} />;
 
     const onTabChange = key => {
-      if (postTabKey !== key) {
-        this.props.history.push(`/@${name}/${key}`);
-      }
+      postTabKey !== key
+        ? this.props.history.push(`/@${name}/${key}`)
+        : this.props.history.push(`/@${name}`);
     };
 
     return (

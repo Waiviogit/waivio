@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
-import { get, map, isEmpty, isEqual, some, filter, size } from 'lodash';
+import { get, map, isEmpty, isEqual, filter, size } from 'lodash';
 import Proposition from '../Proposition';
 import ObjectCardView from '../../../objectCard/ObjectCardView';
 import Loading from '../../../components/Icon/Loading';
@@ -65,32 +65,6 @@ const PropositionList = ({
     }
   }, [wobject.author_permlink]);
 
-  const renderPropositions = () =>
-    map(filteredPropos, propos =>
-      map(
-        get(propos, 'objects', []),
-        wobj =>
-          listItems.some(item => item.author_permlink === wobj.object.author_permlink) && (
-            <Proposition
-              proposition={propos}
-              wobj={wobj.object}
-              wobjPrice={wobj.reward}
-              assignCommentPermlink={wobj.permlink}
-              assignProposition={assignPropositionHandler}
-              discardProposition={discardProposition}
-              authorizedUserName={userName}
-              loading={loadingAssignDiscard}
-              key={`${wobj.object.author_permlink}`}
-              assigned={wobj.assigned}
-              history={history}
-              isAssign={isAssign}
-              match={match}
-              user={user}
-            />
-          ),
-      ),
-    );
-
   const handleCurrentProposition = (currPropos, currWobject) => {
     if (!isEmpty(currWobject.parent)) {
       if (isEmpty(allCurrentPropositions)) return null;
@@ -141,7 +115,11 @@ const PropositionList = ({
     if (listItem?.propositions)
       return listItem?.propositions.map(propos => {
         if (propos?.newCampaigns)
-          return <PropositionNew proposition={{ ...propos, object: listItem }} />;
+          return (
+            <PropositionNew
+              proposition={{ ...propos, object: listItem, requiredObject: listItem.parent }}
+            />
+          );
 
         return (
           <Proposition
@@ -193,14 +171,6 @@ const PropositionList = ({
     return !isReviewPage && <div key={`category-${listItem.author_permlink}`}>{item}</div>;
   };
 
-  const getPropositionObjectsData = () =>
-    filteredPropos.reduce((acc, propos) => {
-      const currentProposObjs = get(propos, 'objects', []);
-      const ids = currentProposObjs.map(a => get(a, ['object', '_id'], ''));
-
-      return [...acc, ...ids];
-    }, []);
-
   const getMenuList = () => {
     if (isEmpty(listItems)) {
       return (
@@ -212,21 +182,8 @@ const PropositionList = ({
         </div>
       );
     }
-    const renderedItems = size(filteredPropos)
-      ? filter(listItems, listItem =>
-          some(filteredPropos, prop =>
-            get(prop, 'objects', []).some(
-              obj => listItem.author_permlink !== get(obj, ['object', 'author_permlink']),
-            ),
-          ),
-        )
-      : listItems;
 
-    return map(renderedItems, listItem => {
-      const proposObj = getPropositionObjectsData();
-
-      return !proposObj.includes(get(listItem, '_id')) && getListRow(listItem);
-    });
+    return map(listItems, listItem => getListRow(listItem));
   };
 
   const currObj = isEmpty(wobject) ? get(currentProposition, 'required_object', {}) : wobject;
@@ -251,7 +208,6 @@ const PropositionList = ({
                   isSortCustomExist={isCustomExist}
                 />
               </div>
-              {renderPropositions()}
               <div className={isEmpty(listItems) && 'CatalogWrap__empty'}>
                 <div>{getMenuList()}</div>
               </div>
