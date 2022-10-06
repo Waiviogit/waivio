@@ -68,7 +68,7 @@ class ObjectMenu extends React.Component {
       <div className="ObjectMenu">
         <div className="container menu-layout">
           <div className="left" />
-          <ul className="ObjectMenu__menu center">
+          <ul className="ObjectMenu__menu ">
             <li
               className={this.getItemClasses(ObjectMenu.TAB_NAME.ABOUT)}
               onClick={this.handleClick}
