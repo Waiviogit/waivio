@@ -523,10 +523,10 @@ class ObjectInfo extends React.Component {
         {this.listItem(
           objectFields.price,
           price && (
-            <React.Fragment>
+            <div className="flex">
               {!isEditMode && <span className="field-icon">$</span>}
-              <span className="price-value CompanyId__title">{price}</span>
-            </React.Fragment>
+              <span className="price-value fw8">{price}</span>
+            </div>
           ),
         )}
         {this.listItem(
