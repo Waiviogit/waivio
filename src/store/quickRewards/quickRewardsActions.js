@@ -102,7 +102,7 @@ export const getEligibleRewardsListWithRestaurant = (selectRest, limit) => async
           '',
         );
       } else {
-        objCampaings = await getEligibleRewardList(name, 0, '');
+        objCampaings = await getEligibleRewardList(name, 0, '', 'payout');
       }
     }
 
