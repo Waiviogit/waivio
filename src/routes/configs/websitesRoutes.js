@@ -140,7 +140,7 @@ const routes = host => ({
       pathScope: '/@:name',
       routes: [
         {
-          path: '',
+          path: ['', '/(comments|activity)'],
           exact: true,
           component: Views.UserProfile,
         },
