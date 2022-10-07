@@ -1,13 +1,22 @@
 @import (reference) '../styles/modules/variables.less';
+@import (reference) '../styles/custom.less';
 .UserFollowers {
   margin-top: -22px;
   .ant-tabs-tab {
     color: #99aab5 !important;
     font-weight: 500 !important;
+
+    &.ant-tabs-tab-active {
+      color: @orange-hot !important;
+    }
   }
   .ant-tabs-nav-scroll {
     overflow-x: auto;
     overflow-y: hidden;
+    margin-left: 3%;
+    @media @small {
+      margin-left: 0;
+    }
   }
 
   .ant-tabs-tab {

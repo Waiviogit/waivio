@@ -46,7 +46,7 @@ class UserMenu extends React.Component {
       <div className="UserMenu">
         <div className="container menu-layout">
           <div className="left" />
-          <ul className="UserMenu__menu ">
+          <ul className="UserMenu__menu center UserMenu__margin-left">
             <li
               className={classNames('UserMenu__item', {
                 'UserMenu__item--active': ['discussions', 'comments', 'activity'].includes(
@@ -65,8 +65,9 @@ class UserMenu extends React.Component {
               role="presentation"
               data-key="followers"
             >
-              <FormattedMessage id="followers" defaultMessage="Followers" />
-              <span className="UserMenu__badge">
+              {' '}
+              <span>
+                <FormattedMessage id="followers" defaultMessage="Followers" />{' '}
                 <FormattedNumber value={this.props.followers} />
               </span>
             </li>
