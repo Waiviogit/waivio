@@ -13,35 +13,13 @@
     white-space: nowrap;
     overflow-x: auto;
     overflow-y: hidden;
+    display: flex;
+    justify-content: center;
 
     @media @small, @medium {
       overflow-x: visible;
       overflow-y: hidden;
       min-width: 740px;
-    }
-  }
-
-  &__margin-left {
-    @media @usmall, @xsmall {
-      margin-left: 1% !important;
-    }
-    @media (min-width: 405px) {
-      margin-left: 8% !important;
-    }
-    @media (min-width: 420px) {
-      margin-left: 10% !important;
-    }
-    @media (min-width: 470px) {
-      margin-left: 18% !important;
-    }
-    @media @small {
-      margin-left: 200px !important;
-    }
-    @media @medium {
-      margin-left: 300px !important;
-    }
-    @media @large {
-      margin-left: 300px !important;
     }
   }
 

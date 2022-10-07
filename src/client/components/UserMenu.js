@@ -46,7 +46,7 @@ class UserMenu extends React.Component {
       <div className="UserMenu">
         <div className="container menu-layout">
           <div className="left" />
-          <ul className="UserMenu__menu center UserMenu__margin-left">
+          <ul className="UserMenu__menu ">
             <li
               className={classNames('UserMenu__item', {
                 'UserMenu__item--active': ['discussions', 'comments', 'activity'].includes(
