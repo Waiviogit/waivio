@@ -104,11 +104,10 @@ import {
 import { getVotePercent, getVotingPower } from '../../../store/settingsStore/settingsSelectors';
 import { getObjectAlbums } from '../../../store/galleryStore/gallerySelectors';
 import NewsFilterForm from './FormComponents/NewsFilterForm';
-
-import './AppendForm.less';
 import { getAppendList } from '../../../store/appendStore/appendSelectors';
 import { parseJSON } from '../../../common/helpers/parseJSON';
 import { baseUrl } from '../../../waivioApi/routes';
+import './AppendForm.less';
 
 @connect(
   state => ({
