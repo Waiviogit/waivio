@@ -59,18 +59,14 @@ export default class UserExpertise extends React.Component {
 
     return (
       <div className="UserExpertise">
-        <Tabs defaultActiveKey="1">
+        <Tabs defaultActiveKey="1" className="UserFollowers">
           <TabPane
             tab={
               <React.Fragment>
                 <span className="UserExpertise__item">
-                  <FormattedMessage id="hashtag_value_placeholder" defaultMessage="Hashtags" />
+                  <FormattedMessage id="hashtag_value_placeholder" defaultMessage="Hashtags" />{' '}
+                  {!!hashtagsExpCount && <FormattedNumber value={hashtagsExpCount} />}
                 </span>
-                {!!hashtagsExpCount && (
-                  <span className="UserExpertise__badge">
-                    <FormattedNumber value={hashtagsExpCount} />
-                  </span>
-                )}
               </React.Fragment>
             }
             key="1"
@@ -86,13 +82,9 @@ export default class UserExpertise extends React.Component {
             tab={
               <React.Fragment>
                 <span className="UserExpertise__item">
-                  <FormattedMessage id="objects" defaultMessage="Objects" />
+                  <FormattedMessage id="objects" defaultMessage="Objects" />{' '}
+                  {!!wobjectsExpCount && <FormattedNumber value={wobjectsExpCount} />}
                 </span>
-                {!!wobjectsExpCount && (
-                  <span className="UserExpertise__badge">
-                    <FormattedNumber value={wobjectsExpCount} />
-                  </span>
-                )}
               </React.Fragment>
             }
             key="2"

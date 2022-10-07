@@ -9,9 +9,7 @@ import { getSuitableLanguage } from '../../../store/reducers';
 import { MAXIMUM_UPLOAD_SIZE } from '../../../common/helpers/image';
 import * as api from '../../../waivioApi/ApiClient';
 import { voteObject, followObject } from '../../../store/wObjectStore/wobjActions';
-import { createPermlink } from '../../vendor/steemitHelpers';
-import { generateRandomString } from '../../../common/helpers/wObjectHelper';
-import { WAIVIO_PARENT_PERMLINK } from '../../../common/constants/waivio';
+import { getObjectPermlink } from '../../vendor/steemitHelpers';
 import { getAuthenticatedUser } from '../../../store/authStore/authSelectors';
 
 function getDisplayName(WrappedComponent) {
@@ -119,18 +117,13 @@ export default function withEditor(WrappedComponent) {
     handleCreateObject = async (obj, callback, errorCallback) => {
       const { formatMessage } = this.props.intl;
 
-      const permlink = await createPermlink(
-        obj.id,
-        this.props.user.name,
-        '',
-        WAIVIO_PARENT_PERMLINK,
-      );
+      const permlink = await getObjectPermlink(obj.id);
 
       const requestBody = {
         author: this.props.user.name,
         title: `${obj.name} - waivio object`,
         body: `Waivio object "${obj.name}" has been created`,
-        permlink: `${generateRandomString(3).toLowerCase()}-${permlink}`,
+        permlink,
         objectName: obj.name,
         locale: obj.locale || this.props.locale === 'auto' ? 'en-US' : this.props.locale,
         type: obj.type,
@@ -158,6 +151,7 @@ export default function withEditor(WrappedComponent) {
 
         callback(response);
       } catch (e) {
+        console.error(e);
         await message.error(
           formatMessage({
             id: 'create_object_error',

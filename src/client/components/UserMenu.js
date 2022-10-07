@@ -65,8 +65,9 @@ class UserMenu extends React.Component {
               role="presentation"
               data-key="followers"
             >
-              <FormattedMessage id="followers" defaultMessage="Followers" />
-              <span className="UserMenu__badge">
+              {' '}
+              <span>
+                <FormattedMessage id="followers" defaultMessage="Followers" />{' '}
                 <FormattedNumber value={this.props.followers} />
               </span>
             </li>

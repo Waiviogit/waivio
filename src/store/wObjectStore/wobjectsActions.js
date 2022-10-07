@@ -2,11 +2,11 @@ import * as ApiClient from '../../waivioApi/ApiClient';
 import { createAsyncActionType } from '../../common/helpers/stateHelpers';
 import { getAlbums } from '../galleryStore/galleryActions';
 import { getObjectPermlink } from '../../client/vendor/steemitHelpers';
-import { generateRandomString } from '../../common/helpers/wObjectHelper';
 import { followObject, voteObject } from './wobjActions';
 import { getCurrentHost, getUsedLocale } from '../appStore/appSelectors';
 import { getAuthenticatedUserName } from '../authStore/authSelectors';
 import { getLocale } from '../settingsStore/settingsSelectors';
+import { checkExistPermlink } from '../../waivioApi/ApiClient';
 
 export const GET_OBJECT = '@objects/GET_OBJECT';
 export const GET_OBJECT_START = '@objects/GET_OBJECT_START';
@@ -71,84 +71,63 @@ export const getObjectInfo = (authorPermlink, username, requiredField) => dispat
 export const CREATE_WOBJECT = '@wobj/CREATE_WOBJECT';
 
 // eslint-disable-next-line consistent-return
-export const createWaivioObject = postData => (dispatch, getState) => {
+export const createWaivioObject = postData => async (dispatch, getState) => {
   const { auth, settings } = getState();
 
-  if (!auth.isAuthenticated) {
-    return null;
-  }
+  if (!auth.isAuthenticated) return null;
 
   const { votePower, follow, ...wobj } = postData;
+  const isHashtag = wobj.type === 'hashtag';
 
-  if (wobj.type === 'hashtag') {
+  if (isHashtag) {
     const hashtagName = wobj.name
       .toLowerCase()
       .split(' ')
       .join('');
 
-    return dispatch({
-      type: CREATE_WOBJECT,
-      payload: {
-        promise: new Promise((resolve, reject) =>
-          ApiClient.getObject(hashtagName, auth.user.name)
-            .then(() => reject('object_exist'))
-            .catch(() => {
-              const requestBody = {
-                author: auth.user.name,
-                title: `${hashtagName} - waivio object`,
-                body: `Waivio object "${hashtagName}" has been created`,
-                permlink: hashtagName,
-                objectName: hashtagName,
-                locale: wobj.locale || (settings.locale === 'auto' ? 'en-US' : settings.locale),
-                type: wobj.type,
-                isExtendingOpen: Boolean(wobj.isExtendingOpen),
-                isPostingOpen: Boolean(wobj.isPostingOpen),
-                parentAuthor: wobj.parentAuthor,
-                parentPermlink: wobj.parentPermlink,
-              };
+    const { exist } = await checkExistPermlink(hashtagName);
 
-              return ApiClient.postCreateWaivioObject(requestBody).then(response => {
-                if (follow) dispatch(followObject(response.permlink));
-
-                dispatch(voteObject(response.author, response.permlink, votePower));
-
-                return resolve(response);
-              });
-            }),
-        ),
-      },
-    });
+    if (exist) return Promise.reject('object_exist');
   }
 
-  return dispatch({
-    type: CREATE_WOBJECT,
-    payload: {
-      promise: getObjectPermlink(wobj.id).then(permlink => {
-        const requestBody = {
-          author: auth.user.name,
-          title: `${wobj.name} - waivio object`,
-          body: `Waivio object "${wobj.name}" has been created`,
-          permlink: `${generateRandomString(3).toLowerCase()}-${permlink.toLowerCase()}`,
-          objectName: wobj.name,
-          locale: wobj.locale || (settings.locale === 'auto' ? 'en-US' : settings.locale),
-          type: wobj.type,
-          isExtendingOpen: Boolean(wobj.isExtendingOpen),
-          isPostingOpen: Boolean(wobj.isPostingOpen),
-          parentAuthor: wobj.parentAuthor,
-          parentPermlink: wobj.parentPermlink,
-        };
+  const getBodyDifferenceItem = async () => {
+    let permlink;
+    let objectName;
 
-        return ApiClient.postCreateWaivioObject(requestBody).then(response => {
-          if (follow) {
-            dispatch(followObject(response.permlink));
-          }
+    if (isHashtag) {
+      objectName = wobj.name.toLowerCase().replace(' ', '');
+      permlink = objectName;
+    } else {
+      permlink = await getObjectPermlink(wobj.id);
+      objectName = wobj.name;
+    }
 
-          dispatch(voteObject(response.author, response.permlink, votePower));
+    return {
+      permlink,
+      objectName,
+    };
+  };
 
-          return response;
-        });
-      }),
-    },
+  const requestBody = {
+    ...(await getBodyDifferenceItem()),
+    author: auth.user.name,
+    title: `${wobj.name} - waivio object`,
+    body: `Waivio object "${wobj.name}" has been created`,
+    locale: wobj.locale || (settings.locale === 'auto' ? 'en-US' : settings.locale),
+    type: wobj.type,
+    isExtendingOpen: Boolean(wobj.isExtendingOpen),
+    isPostingOpen: Boolean(wobj.isPostingOpen),
+    parentAuthor: wobj.parentAuthor,
+    parentPermlink: wobj.parentPermlink,
+  };
+
+  return ApiClient.postCreateWaivioObject(requestBody).then(response => {
+    if (follow) {
+      dispatch(followObject(response.permlink));
+    }
+    dispatch(voteObject(response.author, response.permlink, votePower));
+
+    return response;
   });
 };
 

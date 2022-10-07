@@ -145,8 +145,9 @@ class CreateObject extends React.Component {
 
         this.props
           .createWaivioObject(objData)
-          .then(({ value: { parentPermlink, parentAuthor } }) => {
-            // add parent to created object
+          .then(res => {
+            const { parentPermlink, parentAuthor } = res;
+
             if (!isEmpty(this.props.parentObject)) {
               this.props.appendObject(
                 getAppendData(

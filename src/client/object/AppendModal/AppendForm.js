@@ -104,11 +104,10 @@ import {
 import { getVotePercent, getVotingPower } from '../../../store/settingsStore/settingsSelectors';
 import { getObjectAlbums } from '../../../store/galleryStore/gallerySelectors';
 import NewsFilterForm from './FormComponents/NewsFilterForm';
-
-import './AppendForm.less';
 import { getAppendList } from '../../../store/appendStore/appendSelectors';
 import { parseJSON } from '../../../common/helpers/parseJSON';
 import { baseUrl } from '../../../waivioApi/routes';
+import './AppendForm.less';
 
 @connect(
   state => ({
@@ -1385,6 +1384,7 @@ export default class AppendForm extends Component {
     const { intl, wObject, categories, selectedAlbum, albums } = this.props;
     const { getFieldDecorator } = this.props.form;
     const statusTitle = this.props.form.getFieldValue(statusFields.title);
+    const isBookType = wObject.object_type === 'book' || wObject.type === 'book';
     const defaultAlbum = getDefaultAlbum(albums);
     const albumInitialValue = selectedAlbum
       ? selectedAlbum.id || selectedAlbum.body
@@ -1747,7 +1747,7 @@ export default class AppendForm extends Component {
                 />,
               )}
             </Form.Item>
-            {wObject.type === 'book' ? (
+            {isBookType ? (
               <FormattedMessage
                 id="groupId_book_info"
                 defaultMessage="Products with multiple options (format etc.) can be saved as separate objects with their own descriptions, photo galleries, prices, etc. However, if all these objects refer to the same group ID, all these options will be combined into a single presentation for the convenience of the user."
