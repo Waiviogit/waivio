@@ -47,31 +47,12 @@
   }
 }
 
-div[data-dir='rtl'] .UserMenu {
-  &__badge {
-    margin-left: 0;
-    margin-right: 6px;
-  }
-
-  &__item {
-    margin-right: 0;
-    margin-left: 16px;
-  }
+li[data-key='hiddenTab'] {
+  display: none;
 }
 
-[data-key='about'] {
-  display: inline-block;
-
-  @media @medium {
+@media @small, @medium, @large {
+  li[data-key='about'] {
     display: none;
-  }
-  li[data-key='hiddenTab'] {
-    display: none;
-  }
-
-  @media @small, @medium, @large {
-    li[data-key='about'] {
-      display: none;
-    }
   }
 }
