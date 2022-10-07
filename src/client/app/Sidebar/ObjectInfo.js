@@ -788,7 +788,7 @@ class ObjectInfo extends React.Component {
           this.listItem(
             objectFields.productId,
             productIdBody?.map(obj => (
-              <div key={obj.id} className="CompanyId__block-item">
+              <div key={obj.id}>
                 <p className="CompanyId__p">{obj.productIdType}</p>
                 <p className="CompanyId__p">{obj.productId}</p>
                 <div className="field-avatar CompanyId__p CompanyId__image">
