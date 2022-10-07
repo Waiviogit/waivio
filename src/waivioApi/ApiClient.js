@@ -2695,7 +2695,7 @@ export const getPropositionByCampaingObjectPermlink = (
   userName,
   skip = 0,
   query,
-  sort,
+  sort = 'payout',
 ) => {
   return fetch(
     `${config.campaignV2ApiPrefix}${config.rewards}${
