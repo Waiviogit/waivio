@@ -14,6 +14,7 @@ import {
   checkExistPermlink,
   getContent,
 } from '../../waivioApi/ApiClient';
+import { generateRandomString } from '../../common/helpers/wObjectHelper';
 
 const MAX_VOTING_POWER = 10000;
 const VOTE_REGENERATION_DAYS = 5;
@@ -194,7 +195,9 @@ export const getObjectPermlink = async title => {
   const checkWithoutPrefix = await checkExistPermlink(permlink);
 
   if (!checkWithoutPrefix.exist) {
-    return Promise.resolve(checkPermLinkLength(permlink));
+    return Promise.resolve(
+      `${generateRandomString(3).toLowerCase()}-${checkPermLinkLength(permlink).toLowerCase()}`,
+    );
   }
 
   return addPrefixForPermlink(permlink);
