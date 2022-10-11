@@ -515,7 +515,9 @@ class StoryFull extends React.Component {
                 if (!isEmpty(obj.propositions)) {
                   return obj.propositions.map(proposition =>
                     proposition?.newCampaigns ? (
-                      <PropositionNew proposition={{ ...proposition, object: obj }} />
+                      <PropositionNew
+                        proposition={{ ...proposition, object: obj, requiredObject: obj.parent }}
+                      />
                     ) : (
                       <Proposition
                         guide={proposition.guide}

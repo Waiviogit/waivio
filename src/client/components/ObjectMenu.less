@@ -3,15 +3,56 @@
 @import (reference) 'UserMenu';
 
 .ObjectMenu {
-  &:extend(.UserMenu all);
+  height: 46px;
+  background-color: @white;
+  border-top: solid 1px #e9e7e7;
+  border-bottom: solid 1px #e9e7e7;
 
-  li[data-key='hiddenTab'] {
-    display: none;
+  &__menu {
+    height: 46px;
+    line-height: 46px;
+    white-space: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
+    //display: flex;
+    //justify-content: center;
+
+    @media @small, @medium {
+      overflow-x: visible;
+      overflow-y: hidden;
+      min-width: 740px;
+    }
   }
 
-  @media @small, @medium, @large {
-    li[data-key='about'] {
-      display: none;
+  &__item {
+    display: inline-block;
+    height: 45px;
+    margin-right: 12px;
+    cursor: pointer;
+    color: #99aab5;
+    font-size: 16px;
+    font-weight: 500;
+    text-transform: capitalize;
+
+    &--active,
+    &:hover {
+      color: @primary-color;
+      border-bottom: 2px @border-style-base @primary-color;
     }
+  }
+
+  &__badge {
+    color: #c2ccd3;
+    margin-left: 6px;
+  }
+}
+
+li[data-key='hiddenTab'] {
+  display: none;
+}
+
+@media @small, @medium, @large {
+  li[data-key='about'] {
+    display: none;
   }
 }

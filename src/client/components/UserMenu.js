@@ -8,7 +8,6 @@ class UserMenu extends React.Component {
   static propTypes = {
     onChange: PropTypes.func,
     defaultKey: PropTypes.string,
-    isGuest: PropTypes.bool,
     followers: PropTypes.number,
   };
 
@@ -47,9 +46,13 @@ class UserMenu extends React.Component {
       <div className="UserMenu">
         <div className="container menu-layout">
           <div className="left" />
-          <ul className="UserMenu__menu center ">
+          <ul className="UserMenu__menu ">
             <li
-              className={this.getItemClasses('discussions')}
+              className={classNames('UserMenu__item', {
+                'UserMenu__item--active': ['discussions', 'comments', 'activity'].includes(
+                  this.state.current,
+                ),
+              })}
               onClick={this.handleClick}
               role="presentation"
               data-key="discussions"
@@ -57,21 +60,14 @@ class UserMenu extends React.Component {
               <FormattedMessage id="posts" defaultMessage="Posts" />
             </li>
             <li
-              className={this.getItemClasses('comments')}
-              onClick={this.handleClick}
-              role="presentation"
-              data-key="comments"
-            >
-              <FormattedMessage id="comments" defaultMessage="Comments" />
-            </li>
-            <li
               className={this.getItemClasses('followers')}
               onClick={this.handleClick}
               role="presentation"
               data-key="followers"
             >
-              <FormattedMessage id="followers" defaultMessage="Followers" />
-              <span className="UserMenu__badge">
+              {' '}
+              <span>
+                <FormattedMessage id="followers" defaultMessage="Followers" />{' '}
                 <FormattedNumber value={this.props.followers} />
               </span>
             </li>
@@ -91,16 +87,6 @@ class UserMenu extends React.Component {
             >
               <FormattedMessage id="wallet" defaultMessage="Wallet" />
             </li>
-            {!this.props.isGuest && (
-              <li
-                className={this.getItemClasses('activity')}
-                onClick={this.handleClick}
-                role="presentation"
-                data-key="activity"
-              >
-                <FormattedMessage id="activity" defaultMessage="Activity" />
-              </li>
-            )}
             <li
               className={this.getItemClasses('about')}
               onClick={this.handleClick}

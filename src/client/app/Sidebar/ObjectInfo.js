@@ -45,6 +45,7 @@ import ProductId from './ProductId';
 
 import './ObjectInfo.less';
 import ObjectAvatar from '../../components/ObjectAvatar';
+import Options from '../../object/Options';
 
 @withRouter
 @connect(
@@ -335,7 +336,7 @@ class ObjectInfo extends React.Component {
       ? wobject.companyId.map(el => parseWobjectField(el, 'body', []))
       : [];
     const productIdBody = wobject.productId
-      ? wobject.productId.map(el => parseWobjectField(el, 'body', []))
+      ? wobject?.productId.map(el => parseWobjectField(el, 'body', []))
       : [];
     const ageRange = wobject.ageRange;
     const language = wobject.language;
@@ -346,43 +347,9 @@ class ObjectInfo extends React.Component {
     const authorsBody = wobject.authors
       ? wobject.authors.map(el => parseWobjectField(el, 'body', []))
       : [];
-    const wObjectPermlink = wobject.author_permlink;
+    const defaultAvatarGalleryItem = [{ id: wobject.author_permlink, body: wobject?.avatar }];
     const dimensions = parseWobjectField(wobject, 'dimensions');
     const productWeight = parseWobjectField(wobject, 'productWeight');
-    const optionsCards = isEditMode
-      ? wobject?.options &&
-        Object.entries(wobject?.options).map(option => (
-          <div className="mb1" key={option[0]}>
-            {' '}
-            <div>{option[0]}:</div>
-            {option[1].map(el => (
-              // eslint-disable-next-line react/jsx-key
-              <div>
-                {el.body.position}.{el.body.value}{' '}
-              </div>
-            ))}
-          </div>
-        ))
-      : wobject?.options &&
-        Object.entries(wobject?.options).map(option => (
-          <div className="mb1" key={option[0]}>
-            {' '}
-            <div>{option[0]}:</div>
-            {option[1].map(el => (
-              <>
-                <button
-                  className={
-                    el.author_permlink === wObjectPermlink
-                      ? 'ObjectInfo__my-option-button'
-                      : 'ObjectInfo__option-button'
-                  }
-                >
-                  {el.body.value}
-                </button>{' '}
-              </>
-            ))}
-          </div>
-        ));
     const profile = linkField
       ? {
           facebook: linkField[linkFields.linkFacebook] || '',
@@ -549,20 +516,6 @@ class ObjectInfo extends React.Component {
         )}
         {this.listItem(objectFields.tagCategory, this.renderTagCategories(tagCategoriesList))}
         {this.listItem(objectFields.categoryItem, null)}
-        {this.listItem(
-          objectFields.galleryItem,
-          pictures && <PicturesCarousel pics={pictures} objectID={wobject.author_permlink} />,
-        )}
-        {this.listItem(
-          objectFields.price,
-          price && (
-            <React.Fragment>
-              {!isEditMode && <span className="field-icon">$</span>}
-              <span className="price-value CompanyId__title">{price}</span>
-            </React.Fragment>
-          ),
-        )}
-        {this.listItem(objectFields.options, wobject.options && optionsCards)}
         {this.listItem(
           objectFields.workTime,
           workTime && (
@@ -822,7 +775,7 @@ class ObjectInfo extends React.Component {
           this.listItem(
             objectFields.productId,
             productIdBody?.map(obj => (
-              <div key={obj.id} className="CompanyId__block-item">
+              <div key={obj.id}>
                 <p className="CompanyId__p">{obj.productIdType}</p>
                 <p className="CompanyId__p">{obj.productId}</p>
                 <div className="field-avatar CompanyId__p CompanyId__image">
@@ -887,7 +840,7 @@ class ObjectInfo extends React.Component {
           <div className="mb3">
             By{' '}
             {authorsBody?.map((a, i) => (
-              <>
+              <div key={a.id}>
                 {a.defaultShowLink ? (
                   <Link to={`/object/${a.authorPermlink}`}>{a.name}</Link>
                 ) : (
@@ -897,7 +850,7 @@ class ObjectInfo extends React.Component {
                   {i !== authorsBody.length - 1 && ','}
                   {'  '}
                 </>
-              </>
+              </div>
             ))}
           </div>
         )}
@@ -926,6 +879,32 @@ class ObjectInfo extends React.Component {
                     </div>
                   )),
               )}
+            {this.listItem(
+              objectFields.galleryItem,
+              pictures.length > 0 ? (
+                <PicturesCarousel pics={pictures} objectID={wobject.author_permlink} />
+              ) : (
+                avatar && (
+                  <PicturesCarousel
+                    pics={defaultAvatarGalleryItem}
+                    objectID={wobject.author_permlink}
+                  />
+                )
+              ),
+            )}
+            {this.listItem(
+              objectFields.price,
+              price && (
+                <div className="flex">
+                  {!isEditMode && <span className="field-icon">$</span>}
+                  <span className="price-value fw8">{price}</span>
+                </div>
+              ),
+            )}
+            {this.listItem(
+              objectFields.options,
+              wobject.options && <Options isEditMode={isEditMode} wobject={wobject} />,
+            )}
             {!isHashtag && !hasType(wobject, OBJECT_TYPE.PAGE) && menuSection()}
             {!isHashtag && aboutSection}
             {accessExtend && hasType(wobject, OBJECT_TYPE.LIST) && listSection}

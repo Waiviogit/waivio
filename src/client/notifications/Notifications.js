@@ -651,10 +651,19 @@ class Notifications extends React.Component {
                   />
                 );
               case notificationConstants.CAMPAIGN_MESSAGE:
-                const currentRoute = notification.notSponsor ? 'messages' : 'history';
-                let url = `/rewards/${currentRoute}/${notification.parent_permlink}/${notification.permlink}`;
+                let url = '';
 
-                if (currentRoute === 'history') url += `/${notification.author}`;
+                if (notification?.newCampaigns) {
+                  url = notification.notSponsor
+                    ? `/rewards-new/messages?reservationPermlink=${notification.parent_permlink}`
+                    : `/rewards-new/history?reservationPermlink=${notification.parent_permlink}&guideNames=${notification.author}`;
+                } else {
+                  const currentRoute = notification.notSponsor ? 'messages' : 'history';
+
+                  url = `/rewards/${currentRoute}/${notification.parent_permlink}/${notification.permlink}`;
+
+                  if (currentRoute === 'history') url += `/${notification.author}`;
+                }
 
                 return notification.notSponsor ? (
                   <NotificationTemplate

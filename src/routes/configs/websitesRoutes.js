@@ -140,24 +140,14 @@ const routes = host => ({
       pathScope: '/@:name',
       routes: [
         {
-          path: '',
+          path: ['', '/(comments|activity)'],
           exact: true,
           component: Views.UserProfile,
-        },
-        {
-          path: '/comments',
-          exact: true,
-          component: Views.UserComments,
         },
         {
           path: '/followers',
           exact: true,
           component: Views.UserFollowers,
-        },
-        {
-          path: '/following',
-          exact: true,
-          component: Views.UserFollowing,
         },
         {
           path: '/reblogs',
@@ -178,11 +168,6 @@ const routes = host => ({
           path: '/transfers/waiv-table',
           exact: true,
           component: Views.WAIVwalletTable,
-        },
-        {
-          path: '/activity',
-          exact: true,
-          component: Views.UserActivity,
         },
         {
           path: '/expertise',

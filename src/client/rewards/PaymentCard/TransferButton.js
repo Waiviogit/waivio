@@ -13,59 +13,27 @@ import {
   PATH_NAME_RECEIVABLES,
   PATH_NAME_PAYABLES,
   PATH_NAME_RECEIVABLES_NEW,
-  PATH_NAME_PAYABLES_NEW,
 } from '../../../common/constants/rewards';
 import { isGuestUser } from '../../../store/authStore/authSelectors';
 import { getHiveBeneficiaryAccount } from '../../../store/settingsStore/settingsSelectors';
 
-const TransferButton = ({
-  match,
-  intl,
-  payable,
-  name,
-  isGuest,
-  hiveBeneficiaryAccount,
-  openLinkModal,
-  openTransf,
-  currency,
-}) => {
+const TransferButton = ({ match, intl, payable, name, openTransf, currency }) => {
   const isReceiverGuest = guestUserRegex.test(name);
   const app = WAIVIO_PARENT_PERMLINK;
-  const payableForRender = Math.abs(payable);
   const pathRecivables =
     match.path === PATH_NAME_RECEIVABLES ||
     match.path === PATH_NAME_RECEIVABLES_NEW ||
     match.path.includes('receivables');
-  const pathPaybles = match.path === PATH_NAME_PAYABLES || match.path === PATH_NAME_PAYABLES_NEW;
+  const pathPaybles = match.path === PATH_NAME_PAYABLES || match.path.includes('payables');
   const isOverpayment = payable < 0;
   const memo =
     currency === 'HIVE'
       ? getMemo(isReceiverGuest, pathRecivables, isOverpayment)
       : 'campaignReward';
-  const handleClick = () => {
-    if (!hiveBeneficiaryAccount && isGuest) {
-      openLinkModal(true);
-    }
-    openTransf(name, payableForRender, currency, { id: memo }, app);
-  };
 
   return (
     <React.Fragment>
-      {pathRecivables && payable < 0 && (
-        <Action
-          className="WalletSidebar__transfer"
-          primary={payable < 0}
-          onClick={handleClick}
-          disabled={payable >= 0}
-        >
-          {intl.formatMessage({
-            id: 'pay',
-            defaultMessage: 'Pay',
-          })}
-          {` ${round(payableForRender, 3)} ${currency}`}
-        </Action>
-      )}
-      {pathRecivables && payable >= 0 && <span>{` ${round(payable, 3)} ${currency}`}</span>}
+      {pathRecivables && <span>{` ${round(payable, 3)} ${currency}`}</span>}
       {pathPaybles && (
         <Action
           className="WalletSidebar__transfer"
@@ -90,9 +58,6 @@ TransferButton.propTypes = {
   name: PropTypes.string.isRequired,
   currency: PropTypes.string.isRequired,
   match: PropTypes.shape().isRequired,
-  isGuest: PropTypes.bool,
-  hiveBeneficiaryAccount: PropTypes.string,
-  openLinkModal: PropTypes.func,
   openTransf: PropTypes.func,
 };
 

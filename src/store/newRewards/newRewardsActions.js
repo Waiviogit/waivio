@@ -210,7 +210,9 @@ export const rejectAuthorReview = proposition => (
         ]);
         busyAPI.instance.subscribe((datad, j) => {
           if (j?.success && j?.permlink === res.result.id) {
-            resolve();
+            setTimeout(() => {
+              resolve();
+            }, 4000);
           }
         });
       })
@@ -257,7 +259,9 @@ export const reinstateReward = proposition => (
         ]);
         busyAPI.instance.subscribe((datad, j) => {
           if (j?.success && j?.permlink === res.result.id) {
-            resolve();
+            setTimeout(() => {
+              resolve();
+            }, 4000);
           }
         });
       })
@@ -320,7 +324,9 @@ export const decreaseReward = (proposition, amount, type) => (
         ]);
         busyAPI.instance.subscribe((datad, j) => {
           if (j?.success && j?.permlink === res.result.id) {
-            resolve();
+            setTimeout(() => {
+              resolve();
+            }, 4000);
           }
         });
       })
