@@ -127,7 +127,7 @@ export const optionsFields = {
   category: 'category',
   value: 'value',
   position: 'position',
-  image: 'image',
+  optionsImage: 'optionsImage',
 };
 
 export const statusFields = {

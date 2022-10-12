@@ -432,9 +432,9 @@ export default class AppendForm extends Component {
         case objectFields.background:
           return `@${author} added ${currentField} (${langReadable}):\n ![${currentField}](${appendValue})`;
         case objectFields.options:
-          const image = formValues[optionsFields.image]
-            ? `, ${optionsFields.image}:  \n ![${optionsFields.image}](${
-                formValues[optionsFields.image]
+          const image = formValues[optionsFields.optionsImage]
+            ? `, ${optionsFields.optionsImage}:  \n ![${optionsFields.optionsImage}](${
+                formValues[optionsFields.optionsImage]
               })`
             : '';
 
@@ -657,7 +657,7 @@ export default class AppendForm extends Component {
             [optionsFields.category]: formValues[optionsFields.category],
             [optionsFields.value]: formValues[optionsFields.value],
             [optionsFields.position]: formValues[optionsFields.position],
-            [optionsFields.image]: formValues[optionsFields.image],
+            image: formValues[objectFields.options],
             parentObjectPermlink: wObject.author_permlink,
           }),
         };
@@ -2390,8 +2390,8 @@ export default class AppendForm extends Component {
             </p>
             <div className="image-wrapper">
               <Form.Item>
-                {getFieldDecorator(optionsFields.image, {
-                  rules: this.getFieldRules(objectFields.productIdImage),
+                {getFieldDecorator(objectFields.options, {
+                  // rules: this.getFieldRules(objectFields.productIdImage),
                 })(
                   <ImageSetter
                     onImageLoaded={this.getImages}
@@ -3091,8 +3091,7 @@ export default class AppendForm extends Component {
       case objectFields.options:
         return (
           isEmpty(getFieldValue(optionsFields.value)) ||
-          isEmpty(getFieldValue(optionsFields.category)) ||
-          isEmpty(getFieldValue(optionsFields.position))
+          isEmpty(getFieldValue(optionsFields.category))
         );
       case objectFields.map:
         return (
