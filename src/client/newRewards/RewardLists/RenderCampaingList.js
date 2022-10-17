@@ -8,9 +8,9 @@ import ReduxInfiniteScroll from '../../vendor/ReduxInfiniteScroll';
 import EmptyCampaing from '../../statics/EmptyCampaing';
 import RewardsFilters from '../Filters/Filters';
 import FiltersForMobile from '../Filters/FiltersForMobile';
-
-import './RewardLists.less';
 import SortSelector from '../../components/SortSelector/SortSelector';
+import RewardsMap from '../Map';
+import './RewardLists.less';
 
 const filterConfig = [
   { title: 'Rewards for', type: 'type' },
@@ -25,7 +25,7 @@ const sortConfig = [
   { key: 'proximity', title: 'Proximity' },
 ];
 
-const RenderCampaingList = ({ getAllRewardList, title, getFilters }) => {
+const RenderCampaingList = ({ getAllRewardList, title, getFilters, getMapItems }) => {
   const [rewards, setRewards] = useState([]);
   const [hasMore, setHasMore] = useState(true);
   const [loading, setLoading] = useState(true);
@@ -88,6 +88,7 @@ const RenderCampaingList = ({ getAllRewardList, title, getFilters }) => {
         )}
       </div>
       <div className={'RewardLists__left'}>
+        <RewardsMap getPoints={getMapItems} />
         <RewardsFilters
           title={'Filter rewards'}
           getFilters={getFilters}
@@ -102,6 +103,7 @@ const RenderCampaingList = ({ getAllRewardList, title, getFilters }) => {
 
 RenderCampaingList.propTypes = {
   getAllRewardList: PropTypes.func.isRequired,
+  getMapItems: PropTypes.func.isRequired,
   title: PropTypes.string.isRequired,
   getFilters: PropTypes.func.isRequired,
 };

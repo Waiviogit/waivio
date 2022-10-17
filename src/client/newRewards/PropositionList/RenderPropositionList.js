@@ -12,13 +12,14 @@ import ReduxInfiniteScroll from '../../vendor/ReduxInfiniteScroll';
 import Loading from '../../components/Icon/Loading';
 import EmptyCampaing from '../../statics/EmptyCampaing';
 import Proposition from '../reuseble/Proposition/Proposition';
-import { getObjectName } from '../../../common/helpers/wObjectHelper';
+import { getObjectMapInArray, getObjectName } from '../../../common/helpers/wObjectHelper';
 import RewardsFilters from '../Filters/Filters';
 import { getPropositionsKey } from '../../../common/helpers/newRewardsHelper';
 import FiltersForMobile from '../Filters/FiltersForMobile';
 
 import './PropositionList.less';
 import SortSelector from '../../components/SortSelector/SortSelector';
+import RewardsMap from '../Map';
 
 const filterConfig = [
   { title: 'Rewards for', type: 'type' },
@@ -157,6 +158,7 @@ const RenderPropositionList = ({
       </div>
       {!withoutFilters && (
         <div className={'PropositionList__left'}>
+          <RewardsMap parent={parent} defaultCenter={getObjectMapInArray(parent)} />
           <RewardsFilters
             title={'Filter rewards'}
             getFilters={getFilters}

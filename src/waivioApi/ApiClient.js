@@ -3231,4 +3231,36 @@ export const checkUserFollowing = (userName, users, objects) => {
     .catch(e => e);
 };
 
+export const getMarkersForAll = (userName, box, skip, limit = 20) => {
+  return fetch(`${config.campaignV2ApiPrefix}${config.rewards}${config.all}${config.map}`, {
+    headers,
+    method: 'POST',
+    body: JSON.stringify({
+      userName,
+      box,
+      skip,
+      limit,
+    }),
+  })
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+};
+
+export const getMarkersForEligible = (userName, box, skip, limit = 20) => {
+  return fetch(`${config.campaignV2ApiPrefix}${config.rewards}${config.eligible}${config.map}`, {
+    headers,
+    method: 'POST',
+    body: JSON.stringify({
+      userName,
+      box,
+      skip,
+      limit,
+    }),
+  })
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+};
+
 export default null;

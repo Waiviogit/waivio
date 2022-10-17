@@ -1,0 +1,54 @@
+@import (reference) '../../styles/custom.less';
+@import (reference) '../../styles/modules/variables.less';
+
+.RewardsMap {
+  border: 1px solid #e7e9f5;
+  border-radius: 4px;
+  margin-bottom: 15px;
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    background: white;
+    border-radius: 4px;
+    padding: 5px 10px;
+    color: #8798a4;
+    align-items: center;
+  }
+
+  &__button {
+    cursor: pointer;
+    background: transparent;
+    border: 1px solid #e7e9f5;
+    border-radius: 20px;
+    outline: none;
+    padding: 3px 10px;
+    transition: 0.3s;
+
+    &:hover {
+      color: @orange-hot;
+      border: 1px solid @orange-hot;
+    }
+
+    &--selected {
+      color: @orange-hot;
+      border: 1px solid @orange-hot;
+    }
+  }
+
+  &__locateGPS {
+    cursor: pointer;
+    position: absolute;
+    width: 28px;
+    height: 28px;
+    background: white;
+    display: flex;
+    justify-content: center;
+    left: 10px;
+    top: 75px;
+    border-radius: 2px;
+    -webkit-box-shadow: 0 1px 4px -1px rgba(0 0 0 / 30%);
+    -moz-box-shadow: 0 1px 4px -1px rgba(0 0 0 / 30%);
+    box-shadow: 0 1px 4px -1px rgba(0 0 0 / 30%);
+  }
+}
