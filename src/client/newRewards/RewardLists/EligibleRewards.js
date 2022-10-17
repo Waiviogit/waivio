@@ -1,7 +1,11 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 
-import { getEligibleRewardList, getFiltersForEligibleRewards } from '../../../waivioApi/ApiClient';
+import {
+  getEligibleRewardList,
+  getFiltersForEligibleRewards,
+  getMarkersForEligible,
+} from '../../../waivioApi/ApiClient';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 import RenderCampaingList from './RenderCampaingList';
 
@@ -16,6 +20,7 @@ const EligibleRewards = () => {
       getAllRewardList={getAllRewardList}
       title={'Eligible rewards'}
       getFilters={getFilters}
+      getMapItems={getMarkersForEligible}
     />
   );
 };
