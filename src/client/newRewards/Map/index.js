@@ -71,12 +71,12 @@ const RewardsMap = ({ getPoints, defaultCenter, parent }) => {
 
   useEffect(() => {
     if (!defaultCenter && !isEmpty(boundsParams.bottomPoint) && !isEmpty(boundsParams.topPoint)) {
-      return getPoints(userName, boundsParams).then(res => {
+      getPoints(userName, boundsParams).then(res => {
         setPoints(res.rewards);
       });
     }
 
-    return setPoints([{ ...parent, map: getObjectMap(parent) }]);
+    if (defaultCenter) setPoints([{ ...parent, map: getObjectMap(parent) }]);
   }, [boundsParams]);
 
   const setSearchArea = () => {
@@ -141,7 +141,7 @@ const RewardsMap = ({ getPoints, defaultCenter, parent }) => {
         {points?.map(i => (
           <CustomMarker
             key={i.name}
-            anchor={[+i.map.latitude, +i.map.longitude]}
+            anchor={[+i.map?.latitude, +i.map?.longitude]}
             payload={i}
             onClick={({ payload, anchor }) =>
               setInfoboxData({ wobject: payload, coordinates: anchor })
@@ -173,7 +173,7 @@ const RewardsMap = ({ getPoints, defaultCenter, parent }) => {
 
 RewardsMap.propTypes = {
   getPoints: PropTypes.func,
-  defaultCenter: PropTypes.arrayOf([PropTypes.number]),
+  defaultCenter: PropTypes.arrayOf(PropTypes.number),
   parent: PropTypes.shape({
     map: PropTypes.string,
   }),
