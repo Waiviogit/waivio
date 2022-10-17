@@ -2,7 +2,7 @@ import { Map, ZoomControl } from 'pigeon-maps';
 import React, { useEffect, useRef, useState, useCallback, useMemo } from 'react';
 import { Icon } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
-import { debounce, isEmpty } from 'lodash';
+import { debounce, isEmpty, noop } from 'lodash';
 import Overlay from 'pigeon-overlay';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
@@ -17,8 +17,9 @@ import CustomMarker from '../../components/Maps/CustomMarker';
 import ObjectOverlayCard from '../../components/Maps/Overlays/ObjectOverlayCard/ObjectOverlayCard';
 
 import './styles.less';
+import { getObjectMap } from '../../../common/helpers/wObjectHelper';
 
-const RewardsMap = ({ getPoints }) => {
+const RewardsMap = ({ getPoints, defaultCenter, parent }) => {
   const dispatch = useDispatch();
   const userName = useSelector(getAuthenticatedUserName);
   const query = useQuery();
@@ -34,7 +35,7 @@ const RewardsMap = ({ getPoints }) => {
   const area = query.get('area');
 
   useEffect(() => {
-    if (mapRef.current) {
+    if (mapRef.current && !defaultCenter) {
       const bounce = mapRef.current.getBounds();
 
       if (bounce.ne[0] && bounce.sw[0]) {
@@ -69,11 +70,13 @@ const RewardsMap = ({ getPoints }) => {
   }, []);
 
   useEffect(() => {
-    if (!isEmpty(boundsParams.bottomPoint) && !isEmpty(boundsParams.topPoint)) {
-      getPoints(userName, boundsParams).then(res => {
+    if (!defaultCenter && !isEmpty(boundsParams.bottomPoint) && !isEmpty(boundsParams.topPoint)) {
+      return getPoints(userName, boundsParams).then(res => {
         setPoints(res.rewards);
       });
     }
+
+    return setPoints([{ ...parent, map: getObjectMap(parent) }]);
   }, [boundsParams]);
 
   const setSearchArea = () => {
@@ -114,18 +117,20 @@ const RewardsMap = ({ getPoints }) => {
         <span>
           <Icon type="compass" /> Map
         </span>
-        <button
-          onClick={setSearchArea}
-          className={classNames('RewardsMap__button', {
-            'RewardsMap__button--selected': area,
-          })}
-        >
-          Search area
-        </button>
+        {!defaultCenter && (
+          <button
+            onClick={setSearchArea}
+            className={classNames('RewardsMap__button', {
+              'RewardsMap__button--selected': area,
+            })}
+          >
+            Search area
+          </button>
+        )}
       </div>
       <Map
         ref={mapRef}
-        defaultCenter={center}
+        defaultCenter={defaultCenter || center}
         height={270}
         width={270}
         zoom={defaultZoom}
@@ -167,7 +172,17 @@ const RewardsMap = ({ getPoints }) => {
 };
 
 RewardsMap.propTypes = {
-  getPoints: PropTypes.func.isRequired,
+  getPoints: PropTypes.func,
+  defaultCenter: PropTypes.arrayOf([PropTypes.number]),
+  parent: PropTypes.shape({
+    map: PropTypes.string,
+  }),
+};
+
+RewardsMap.defaultProps = {
+  getPoints: noop,
+  defaultCenter: null,
+  parent: null,
 };
 
 export default RewardsMap;
