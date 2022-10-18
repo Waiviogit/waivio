@@ -11,6 +11,7 @@ import FiltersForMobile from '../Filters/FiltersForMobile';
 import SortSelector from '../../components/SortSelector/SortSelector';
 import RewardsMap from '../Map';
 import './RewardLists.less';
+import ViewMapButton from '../../widgets/ViewMapButton';
 
 const filterConfig = [
   { title: 'Rewards for', type: 'type' },
@@ -29,6 +30,7 @@ const RenderCampaingList = ({ getAllRewardList, title, getFilters, getMapItems }
   const [rewards, setRewards] = useState([]);
   const [hasMore, setHasMore] = useState(true);
   const [loading, setLoading] = useState(true);
+  const [showMap, setShowMap] = useState(false);
   const [sort, setSort] = useState('default');
   const history = useHistory();
   const [visible, setVisible] = useState(false);
@@ -65,6 +67,7 @@ const RenderCampaingList = ({ getAllRewardList, title, getFilters, getMapItems }
       <div className="RewardLists__feed">
         <FiltersForMobile setVisible={setVisible} />
         <h2>{title}</h2>
+        <ViewMapButton handleClick={() => setShowMap(true)} />
         <SortSelector sort={sort} onChange={setSort}>
           {sortConfig.map(item => (
             <SortSelector.Item key={item.key}>{item.title}</SortSelector.Item>
@@ -88,7 +91,7 @@ const RenderCampaingList = ({ getAllRewardList, title, getFilters, getMapItems }
         )}
       </div>
       <div className={'RewardLists__left'}>
-        <RewardsMap getPoints={getMapItems} />
+        <RewardsMap getPoints={getMapItems} visible={showMap} onClose={() => setShowMap(false)} />
         <RewardsFilters
           title={'Filter rewards'}
           getFilters={getFilters}

@@ -7,7 +7,7 @@ import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
-import { getObject } from '../../../waivioApi/ApiClient';
+import { getObject, getObjectsRewards } from '../../../waivioApi/ApiClient';
 import ReduxInfiniteScroll from '../../vendor/ReduxInfiniteScroll';
 import Loading from '../../components/Icon/Loading';
 import EmptyCampaing from '../../statics/EmptyCampaing';
@@ -44,6 +44,7 @@ const RenderPropositionList = ({
   customSortConfig,
   defaultSort,
   withoutSort,
+  withMap,
 }) => {
   const { requiredObject } = useParams();
   const authUserName = useSelector(getAuthenticatedUserName);
@@ -65,8 +66,9 @@ const RenderPropositionList = ({
   const getPropositionList = async () => {
     if (requiredObject && requiredObject !== parent?.author_permlink) {
       const campParent = await getObject(requiredObject);
+      const campInfo = await getObjectsRewards(requiredObject, authUserName);
 
-      setParent(campParent);
+      setParent({ ...campParent, maxReward: campInfo?.main?.maxReward });
     }
 
     const res = await getProposition(requiredObject, authUserName, 0, search, sort);
@@ -158,7 +160,7 @@ const RenderPropositionList = ({
       </div>
       {!withoutFilters && (
         <div className={'PropositionList__left'}>
-          <RewardsMap parent={parent} defaultCenter={getObjectMapInArray(parent)} />
+          {withMap && <RewardsMap parent={parent} defaultCenter={getObjectMapInArray(parent)} />}
           <RewardsFilters
             title={'Filter rewards'}
             getFilters={getFilters}
@@ -180,6 +182,7 @@ RenderPropositionList.propTypes = {
   defaultSort: PropTypes.string,
   withoutFilters: PropTypes.bool,
   withoutSort: PropTypes.bool,
+  withMap: PropTypes.bool,
   customFilterConfig: PropTypes.shape({}).isRequired,
   customSortConfig: PropTypes.arrayOf({}).isRequired,
   intl: PropTypes.shape({
@@ -194,6 +197,7 @@ RenderPropositionList.defaultProps = {
   defaultSort: 'default',
   withoutFilters: false,
   withoutSort: false,
+  withMap: false,
 };
 
 export default injectIntl(RenderPropositionList);

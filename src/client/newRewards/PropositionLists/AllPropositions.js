@@ -11,6 +11,7 @@ const AllProposition = () => (
     tab={'all'}
     withoutSort
     getPropositionFilters={getFiltersForAllProposition}
+    withMap
   />
 );
 
