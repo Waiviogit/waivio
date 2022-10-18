@@ -85,6 +85,7 @@ class ObjectInfo extends React.Component {
 
   state = {
     activeOption: {},
+    hoveredOption: {},
     selectedField: null,
     showModal: false,
     showMore: {},
@@ -348,15 +349,16 @@ class ObjectInfo extends React.Component {
     const authorsBody = wobject.authors
       ? wobject.authors.map(el => parseWobjectField(el, 'body', []))
       : [];
-    const defaultAvatarGalleryItem = [
-      { id: wobject.author_permlink, body: wobject?.avatar },
-      ...pictures,
-    ];
+
     const activeOptionPicture = [
       {
-        body: this.state.activeOption?.body?.image || wobject.avatar,
+        body:
+          this.state.hoveredOption?.body?.image ||
+          this.state.selectedOption?.body?.image ||
+          wobject.avatar,
         id: this.state.activeOption.permlink,
       },
+      ...pictures,
     ];
     const dimensions = parseWobjectField(wobject, 'dimensions');
     const productWeight = parseWobjectField(wobject, 'productWeight');
@@ -892,9 +894,7 @@ class ObjectInfo extends React.Component {
             {this.listItem(
               objectFields.galleryItem,
               <PicturesCarousel
-                pics={
-                  isEmpty(this.state.activeOption) ? defaultAvatarGalleryItem : activeOptionPicture
-                }
+                pics={activeOptionPicture}
                 objectID={this.state.activeOption.author_permlink}
               />,
             )}
@@ -903,9 +903,7 @@ class ObjectInfo extends React.Component {
               price && (
                 <div className="flex">
                   {!isEditMode && <span className="field-icon">$</span>}
-                  <span className="price-value fw8">
-                    {isEmpty(this.state.activeOption) ? price : this.state.activeOption.price}
-                  </span>
+                  <span className="price-value fw8">{this.state.activeOption.price || price}</span>
                 </div>
               ),
             )}
@@ -913,7 +911,8 @@ class ObjectInfo extends React.Component {
               objectFields.options,
               wobject.options && (
                 <Options
-                  setHoveredOption={hoveredOption => this.setState({ activeOption: hoveredOption })}
+                  setHoveredOption={hoveredOption => this.setState({ hoveredOption })}
+                  setActiveOption={activeOption => this.setState({ selectedOption: activeOption })}
                   isEditMode={isEditMode}
                   wobject={wobject}
                   history={this.props.history}

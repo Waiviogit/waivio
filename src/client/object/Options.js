@@ -1,10 +1,24 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import './Options.less';
 
-const Options = ({ wobject, isEditMode, setHoveredOption, history }) => {
+const Options = ({ wobject, isEditMode, setHoveredOption, setActiveOption, history }) => {
   const [selectedOption, setSelectedOption] = useState({});
 
+  const firstEl = Object.entries(wobject?.options).reduce((a, v) => {
+    if (a[v[0]]) {
+      return a;
+    }
+    // eslint-disable-next-line no-param-reassign
+    a[v[0]] = v[1][0];
+
+    return a;
+  }, {});
+
+  useEffect(() => {
+    setSelectedOption(firstEl);
+    setActiveOption(firstEl);
+  }, []);
   const onMouseOver = (e, el) => {
     setHoveredOption(el);
   };
@@ -12,10 +26,13 @@ const Options = ({ wobject, isEditMode, setHoveredOption, history }) => {
     setHoveredOption(selectedOption);
   };
   const onOptionButtonClick = (e, el) => {
-    setSelectedOption(el);
+    setSelectedOption({ ...selectedOption, [el.body.category]: el });
+    setActiveOption(el);
     setHoveredOption(el);
     if (el.body.parentObjectPermlink !== wobject.author_permlink) {
       history.push(`/object/${el.author_permlink}`);
+      setSelectedOption(el);
+      setActiveOption(el);
     }
   };
 
@@ -27,7 +44,7 @@ const Options = ({ wobject, isEditMode, setHoveredOption, history }) => {
             <div className="mb1" key={option[0]}>
               {' '}
               <div>
-                {option[0]}: {selectedOption?.body?.value}
+                {option[0]}: {selectedOption?.[option[0]]?.body?.value}
               </div>
               {option[1]?.map(
                 el =>
@@ -55,7 +72,7 @@ const Options = ({ wobject, isEditMode, setHoveredOption, history }) => {
                 <div className="mb1" key={option[0]}>
                   {' '}
                   <div>
-                    {option[0]}: {selectedOption?.body?.value}
+                    {option[0]}: {selectedOption?.[option[0]]?.body?.value}
                   </div>
                   <>
                     {option[1]?.map(el => (
@@ -68,7 +85,9 @@ const Options = ({ wobject, isEditMode, setHoveredOption, history }) => {
                             className={
                               el.body.parentObjectPermlink === wobject.author_permlink
                                 ? `Options__my-pictures${
-                                    el.body?.image === selectedOption.body?.image ? '-selected' : ''
+                                    el.body?.image === selectedOption[el.body.category]?.body?.image
+                                      ? '-selected'
+                                      : ''
                                   }`
                                 : 'Options__pictures'
                             }
@@ -86,7 +105,9 @@ const Options = ({ wobject, isEditMode, setHoveredOption, history }) => {
                             className={
                               el.body.parentObjectPermlink === wobject.author_permlink
                                 ? `Options__my-option-button${
-                                    selectedOption.body?.value === el.body?.value ? '-selected' : ''
+                                    selectedOption[el.body.category]?.body?.value === el.body?.value
+                                      ? '-selected'
+                                      : ''
                                   }`
                                 : `Options__option-button`
                             }
@@ -109,6 +130,7 @@ Options.propTypes = {
   wobject: PropTypes.shape().isRequired,
   isEditMode: PropTypes.bool.isRequired,
   setHoveredOption: PropTypes.func.isRequired,
+  setActiveOption: PropTypes.func.isRequired,
   history: PropTypes.func.isRequired,
 };
 
