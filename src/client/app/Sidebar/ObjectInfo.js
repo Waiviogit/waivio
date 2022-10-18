@@ -354,7 +354,7 @@ class ObjectInfo extends React.Component {
       {
         body:
           this.state.hoveredOption?.body?.image ||
-          this.state.selectedOption?.body?.image ||
+          this.state.activeOption?.body?.image ||
           wobject.avatar,
         id: this.state.activeOption.permlink,
       },
@@ -912,7 +912,7 @@ class ObjectInfo extends React.Component {
               wobject.options && (
                 <Options
                   setHoveredOption={hoveredOption => this.setState({ hoveredOption })}
-                  setActiveOption={activeOption => this.setState({ selectedOption: activeOption })}
+                  setActiveOption={activeOption => this.setState({ activeOption })}
                   isEditMode={isEditMode}
                   wobject={wobject}
                   history={this.props.history}
