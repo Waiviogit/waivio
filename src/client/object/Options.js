@@ -2,21 +2,22 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import './Options.less';
 
-const Options = ({ wobject, isEditMode }) => {
-  const [selectedOption, setSelectedOption] = useState('');
+const Options = ({ wobject, isEditMode, setHoveredOption, history }) => {
+  const [selectedOption, setSelectedOption] = useState({});
 
+  const onMouseOver = (e, el) => {
+    setHoveredOption(el);
+  };
+  const onMouseOut = () => {
+    setHoveredOption(selectedOption);
+  };
   const onOptionButtonClick = (e, el) => {
-    if (e.target.value && el.body.parentObjectPermlink === wobject.author_permlink) {
-      setSelectedOption(e.target.value);
+    setSelectedOption(el);
+    setHoveredOption(el);
+    if (el.body.parentObjectPermlink !== wobject.author_permlink) {
+      history.push(`/object/${el.author_permlink}`);
     }
   };
-  // console.log(Object.values(wobject?.options).reduce((acc, value)=> {
-  //   if (acc.some(obj => obj.body === value.body)) {
-  //     return acc
-  //   }
-  //
-  //   return [...acc, value]
-  // }), [] )
 
   return (
     <>
@@ -25,12 +26,27 @@ const Options = ({ wobject, isEditMode }) => {
           Object.entries(wobject?.options).map(option => (
             <div className="mb1" key={option[0]}>
               {' '}
-              <div>{option[0]}:</div>
-              {option[1]?.map(el => (
-                <div key={el.author_permlink}>
-                  {el.body.position}.{el.body.value}{' '}
-                </div>
-              ))}
+              <div>
+                {option[0]}: {selectedOption?.body?.value}
+              </div>
+              {option[1]?.map(
+                el =>
+                  el.author_permlink === wobject.author_permlink && (
+                    <div key={el.author_permlink}>
+                      {el.body.position}.{el.body.value}{' '}
+                      {el.body.image && (
+                        <div>
+                          <img
+                            className="Options__my-pictures"
+                            src={el.body.image}
+                            alt="option"
+                            key={el.permlink}
+                          />
+                        </div>
+                      )}
+                    </div>
+                  ),
+              )}
             </div>
           ))
         : wobject?.options && (
@@ -38,40 +54,51 @@ const Options = ({ wobject, isEditMode }) => {
               {Object.entries(wobject?.options).map(option => (
                 <div className="mb1" key={option[0]}>
                   {' '}
-                  <div>{option[0]}:</div>
+                  <div>
+                    {option[0]}: {selectedOption?.body?.value}
+                  </div>
                   <>
                     {option[1]?.map(el => (
-                      <>
-                        <button
-                          value={el.body.value}
-                          onClick={e => onOptionButtonClick(e, el)}
-                          className={
-                            el.body.parentObjectPermlink === wobject.author_permlink
-                              ? `Options__my-option-button${
-                                  selectedOption === el.body.value ? '-selected' : ''
-                                }`
-                              : `Options__option-button`
-                          }
-                        >
-                          {el.body.value}
-                        </button>{' '}
-                      </>
+                      <span key={el.permlink}>
+                        {el.body.image ? (
+                          <img
+                            onMouseOver={e => onMouseOver(e, el)}
+                            onMouseOut={onMouseOut}
+                            onClick={e => onOptionButtonClick(e, el)}
+                            className={
+                              el.body.parentObjectPermlink === wobject.author_permlink
+                                ? `Options__my-pictures${
+                                    el.body?.image === selectedOption.body?.image ? '-selected' : ''
+                                  }`
+                                : 'Options__pictures'
+                            }
+                            src={el.body.image}
+                            alt="option"
+                            key={el.permlink}
+                          />
+                        ) : (
+                          <button
+                            key={el.permlink}
+                            onMouseOver={e => onMouseOver(e, el)}
+                            onMouseOut={onMouseOut}
+                            value={el.body.value}
+                            onClick={e => onOptionButtonClick(e, el)}
+                            className={
+                              el.body.parentObjectPermlink === wobject.author_permlink
+                                ? `Options__my-option-button${
+                                    selectedOption.body?.value === el.body?.value ? '-selected' : ''
+                                  }`
+                                : `Options__option-button`
+                            }
+                          >
+                            {el.body.value}
+                          </button>
+                        )}{' '}
+                      </span>
                     ))}
                   </>
                 </div>
               ))}
-              <div>
-                {Object.entries(wobject?.options).map(o => (
-                  <div className="mb1" key={o[0]}>
-                    {' '}
-                    {o[1]?.map(elem => (
-                      <>
-                        <img className="Options__pictures" src={elem.body.image} alt="option" />
-                      </>
-                    ))}
-                  </div>
-                ))}
-              </div>
             </div>
           )}
     </>
@@ -81,6 +108,8 @@ const Options = ({ wobject, isEditMode }) => {
 Options.propTypes = {
   wobject: PropTypes.shape().isRequired,
   isEditMode: PropTypes.bool.isRequired,
+  setHoveredOption: PropTypes.func.isRequired,
+  history: PropTypes.func.isRequired,
 };
 
 export default Options;

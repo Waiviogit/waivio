@@ -84,6 +84,7 @@ class ObjectInfo extends React.Component {
   };
 
   state = {
+    activeOption: {},
     selectedField: null,
     showModal: false,
     showMore: {},
@@ -347,7 +348,16 @@ class ObjectInfo extends React.Component {
     const authorsBody = wobject.authors
       ? wobject.authors.map(el => parseWobjectField(el, 'body', []))
       : [];
-    const defaultAvatarGalleryItem = [{ id: wobject.author_permlink, body: wobject?.avatar }];
+    const defaultAvatarGalleryItem = [
+      { id: wobject.author_permlink, body: wobject?.avatar },
+      ...pictures,
+    ];
+    const activeOptionPicture = [
+      {
+        body: this.state.activeOption?.body?.image || wobject.avatar,
+        id: this.state.activeOption.permlink,
+      },
+    ];
     const dimensions = parseWobjectField(wobject, 'dimensions');
     const productWeight = parseWobjectField(wobject, 'productWeight');
     const profile = linkField
@@ -881,29 +891,34 @@ class ObjectInfo extends React.Component {
               )}
             {this.listItem(
               objectFields.galleryItem,
-              pictures.length > 0 ? (
-                <PicturesCarousel pics={pictures} objectID={wobject.author_permlink} />
-              ) : (
-                avatar && (
-                  <PicturesCarousel
-                    pics={defaultAvatarGalleryItem}
-                    objectID={wobject.author_permlink}
-                  />
-                )
-              ),
+              <PicturesCarousel
+                pics={
+                  isEmpty(this.state.activeOption) ? defaultAvatarGalleryItem : activeOptionPicture
+                }
+                objectID={this.state.activeOption.author_permlink}
+              />,
             )}
             {this.listItem(
               objectFields.price,
               price && (
                 <div className="flex">
                   {!isEditMode && <span className="field-icon">$</span>}
-                  <span className="price-value fw8">{price}</span>
+                  <span className="price-value fw8">
+                    {isEmpty(this.state.activeOption) ? price : this.state.activeOption.price}
+                  </span>
                 </div>
               ),
             )}
             {this.listItem(
               objectFields.options,
-              wobject.options && <Options isEditMode={isEditMode} wobject={wobject} />,
+              wobject.options && (
+                <Options
+                  setHoveredOption={hoveredOption => this.setState({ activeOption: hoveredOption })}
+                  isEditMode={isEditMode}
+                  wobject={wobject}
+                  history={this.props.history}
+                />
+              ),
             )}
             {!isHashtag && !hasType(wobject, OBJECT_TYPE.PAGE) && menuSection()}
             {!isHashtag && aboutSection}
