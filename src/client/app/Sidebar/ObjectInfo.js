@@ -45,6 +45,7 @@ import ProductId from './ProductId';
 
 import './ObjectInfo.less';
 import ObjectAvatar from '../../components/ObjectAvatar';
+import Options from '../../object/Options';
 
 @withRouter
 @connect(
@@ -83,6 +84,8 @@ class ObjectInfo extends React.Component {
   };
 
   state = {
+    activeOption: {},
+    hoveredOption: {},
     selectedField: null,
     showModal: false,
     showMore: {},
@@ -335,7 +338,7 @@ class ObjectInfo extends React.Component {
       ? wobject.companyId.map(el => parseWobjectField(el, 'body', []))
       : [];
     const productIdBody = wobject.productId
-      ? wobject.productId.map(el => parseWobjectField(el, 'body', []))
+      ? wobject?.productId.map(el => parseWobjectField(el, 'body', []))
       : [];
     const ageRange = wobject.ageRange;
     const language = wobject.language;
@@ -347,9 +350,18 @@ class ObjectInfo extends React.Component {
       ? wobject.authors.map(el => parseWobjectField(el, 'body', []))
       : [];
 
+    const activeOptionPicture = [
+      {
+        body:
+          this.state.hoveredOption?.body?.image ||
+          this.state.activeOption?.body?.image ||
+          wobject.avatar,
+        id: this.state.activeOption.permlink,
+      },
+      ...pictures,
+    ];
     const dimensions = parseWobjectField(wobject, 'dimensions');
     const productWeight = parseWobjectField(wobject, 'productWeight');
-
     const profile = linkField
       ? {
           facebook: linkField[linkFields.linkFacebook] || '',
@@ -516,19 +528,6 @@ class ObjectInfo extends React.Component {
         )}
         {this.listItem(objectFields.tagCategory, this.renderTagCategories(tagCategoriesList))}
         {this.listItem(objectFields.categoryItem, null)}
-        {this.listItem(
-          objectFields.galleryItem,
-          pictures && <PicturesCarousel pics={pictures} objectID={wobject.author_permlink} />,
-        )}
-        {this.listItem(
-          objectFields.price,
-          price && (
-            <div className="flex">
-              {!isEditMode && <span className="field-icon">$</span>}
-              <span className="price-value fw8">{price}</span>
-            </div>
-          ),
-        )}
         {this.listItem(
           objectFields.workTime,
           workTime && (
@@ -803,6 +802,7 @@ class ObjectInfo extends React.Component {
             objectFields.groupId,
             groupId && (
               <div className="field-info">
+                <FormattedMessage id="object_field_groupId" formattedMessage="Group ID" />
                 <div className="field-website__title">
                   <span className="CompanyId__wordbreak ">{groupId}</span>
                 </div>
@@ -852,7 +852,7 @@ class ObjectInfo extends React.Component {
           <div className="mb3">
             By{' '}
             {authorsBody?.map((a, i) => (
-              <>
+              <div key={a.id}>
                 {a.defaultShowLink ? (
                   <Link to={`/object/${a.authorPermlink}`}>{a.name}</Link>
                 ) : (
@@ -862,7 +862,7 @@ class ObjectInfo extends React.Component {
                   {i !== authorsBody.length - 1 && ','}
                   {'  '}
                 </>
-              </>
+              </div>
             ))}
           </div>
         )}
@@ -891,6 +891,34 @@ class ObjectInfo extends React.Component {
                     </div>
                   )),
               )}
+            {this.listItem(
+              objectFields.galleryItem,
+              <PicturesCarousel
+                pics={activeOptionPicture}
+                objectID={this.state.activeOption.author_permlink}
+              />,
+            )}
+            {this.listItem(
+              objectFields.price,
+              price && (
+                <div className="flex">
+                  {!isEditMode && <span className="field-icon">$</span>}
+                  <span className="price-value fw8">{this.state.activeOption.price || price}</span>
+                </div>
+              ),
+            )}
+            {this.listItem(
+              objectFields.options,
+              wobject.options && (
+                <Options
+                  setHoveredOption={hoveredOption => this.setState({ hoveredOption })}
+                  setActiveOption={activeOption => this.setState({ activeOption })}
+                  isEditMode={isEditMode}
+                  wobject={wobject}
+                  history={this.props.history}
+                />
+              ),
+            )}
             {!isHashtag && !hasType(wobject, OBJECT_TYPE.PAGE) && menuSection()}
             {!isHashtag && aboutSection}
             {accessExtend && hasType(wobject, OBJECT_TYPE.LIST) && listSection}

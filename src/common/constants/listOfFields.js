@@ -44,6 +44,7 @@ export const objectFields = {
   productWeight: 'productWeight',
   authors: 'authors',
   groupId: 'groupId',
+  options: 'options',
 };
 
 export const TYPES_OF_MENU_ITEM = {
@@ -120,6 +121,13 @@ export const linkFields = {
 export const websiteFields = {
   title: 'title',
   link: 'link',
+};
+
+export const optionsFields = {
+  category: 'category',
+  value: 'value',
+  position: 'position',
+  optionsImage: 'optionsImage',
 };
 
 export const statusFields = {
@@ -236,6 +244,7 @@ export const errorObjectFields = {
     dimensionsFields.width,
     dimensionsFields.unitOfLength,
   ],
+  [objectFields.options]: [optionsFields.category, optionsFields.value, optionsFields.value],
 };
 
 export default null;
