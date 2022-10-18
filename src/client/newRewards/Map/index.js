@@ -1,6 +1,6 @@
 import { Map, ZoomControl } from 'pigeon-maps';
 import React, { useEffect, useRef, useState, useCallback, useMemo } from 'react';
-import { Icon } from 'antd';
+import { Icon, Modal } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import { debounce, isEmpty, noop } from 'lodash';
 import Overlay from 'pigeon-overlay';
@@ -14,17 +14,18 @@ import { getCoordinates } from '../../../store/userStore/userActions';
 import useQuery from '../../../hooks/useQuery';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 import CustomMarker from '../../components/Maps/CustomMarker';
-import ObjectOverlayCard from '../../components/Maps/Overlays/ObjectOverlayCard/ObjectOverlayCard';
+import { getObjectMap, getObjectName } from '../../../common/helpers/wObjectHelper';
 
 import './styles.less';
-import { getObjectMap } from '../../../common/helpers/wObjectHelper';
+import ObjectAvatar from '../../components/ObjectAvatar';
 
-const RewardsMap = ({ getPoints, defaultCenter, parent }) => {
+const RewardsMap = ({ getPoints, defaultCenter, parent, visible, onClose }) => {
   const dispatch = useDispatch();
   const userName = useSelector(getAuthenticatedUserName);
   const query = useQuery();
   const history = useHistory();
   const mapRef = useRef();
+  const [fullScreen, setFullScreen] = useState(false);
   const [center, setCenter] = useState();
   const [points, setPoints] = useState([]);
   const [infoboxData, setInfoboxData] = useState(null);
@@ -110,8 +111,12 @@ const RewardsMap = ({ getPoints, defaultCenter, parent }) => {
   };
 
   if (!center) return null;
+  const closeModal = () => {
+    if (fullScreen) setFullScreen(false);
+    if (visible) onClose(false);
+  };
 
-  return (
+  const body = (width = 270, height = 270) => (
     <div className="RewardsMap">
       <div className="RewardsMap__header">
         <span>
@@ -131,11 +136,17 @@ const RewardsMap = ({ getPoints, defaultCenter, parent }) => {
       <Map
         ref={mapRef}
         defaultCenter={defaultCenter || center}
-        height={270}
-        width={270}
+        height={height}
+        width={width}
         zoom={defaultZoom}
         provider={mapProvider}
-        onClick={() => {}}
+        onClick={({ event }) => {
+          if (event.target.classList.value === 'overlay' && !defaultCenter) {
+            history.push(`${history.location.pathname}/${infoboxData.wobject.author_permlink}`);
+          } else {
+            setInfoboxData(null);
+          }
+        }}
         onBoundsChanged={onBoundsChanged}
       >
         {points?.map(i => (
@@ -146,18 +157,36 @@ const RewardsMap = ({ getPoints, defaultCenter, parent }) => {
             onClick={({ payload, anchor }) =>
               setInfoboxData({ wobject: payload, coordinates: anchor })
             }
-            onDoubleClick={() => setInfoboxData(null)}
+            onDoubleClick={() => {
+              setInfoboxData(null);
+            }}
+            isMarked
           />
         ))}
         {infoboxData && (
-          <Overlay anchor={infoboxData.coordinates}>
-            <ObjectOverlayCard wObject={infoboxData.wobject} />
+          <Overlay
+            anchor={infoboxData.coordinates}
+            className={'overlay'}
+            style={{
+              border: '1px solid',
+              borderRadius: '4px',
+              left: '-75px',
+              top: '-75px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              background: 'white',
+              zIndex: 6,
+            }}
+          >
+            <ObjectAvatar className={'overlay'} item={infoboxData.wobject} size={35} />{' '}
+            <span className={'overlay'}>{getObjectName(infoboxData.wobject)}</span>
           </Overlay>
         )}
-        <ZoomControl />
+        <ZoomControl style={{ right: '10px', top: '10px', left: 'unset' }} />
         <div
           role="presentation"
-          className="RewardsMap__locateGPS"
+          className="RewardsMap__locateGPS RewardsMap__mapButton"
           onClick={() => mapRef.current.setCenterZoom(center)}
         >
           <img
@@ -166,13 +195,35 @@ const RewardsMap = ({ getPoints, defaultCenter, parent }) => {
             className="MapConfigurationControl__locateGPS-button"
           />
         </div>
+        <div
+          role="presentation"
+          className="RewardsMap__mapButton RewardsMap__full"
+          onClick={() => setFullScreen(!fullScreen)}
+        >
+          <Icon type={fullScreen ? 'fullscreen-exit' : 'fullscreen'} />
+        </div>
       </Map>
     </div>
+  );
+
+  return fullScreen || visible ? (
+    <Modal
+      className="RewardsMap__modal"
+      visible={fullScreen || visible}
+      onCancel={closeModal}
+      onOk={closeModal}
+    >
+      {body('100%', '500px')}
+    </Modal>
+  ) : (
+    body()
   );
 };
 
 RewardsMap.propTypes = {
   getPoints: PropTypes.func,
+  onClose: PropTypes.func,
+  visible: PropTypes.bool,
   defaultCenter: PropTypes.arrayOf(PropTypes.number),
   parent: PropTypes.shape({
     map: PropTypes.string,
@@ -181,8 +232,10 @@ RewardsMap.propTypes = {
 
 RewardsMap.defaultProps = {
   getPoints: noop,
+  onClose: noop,
   defaultCenter: null,
   parent: null,
+  visible: false,
 };
 
 export default RewardsMap;
