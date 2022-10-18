@@ -7,18 +7,19 @@ import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
-import { getObject } from '../../../waivioApi/ApiClient';
+import { getObject, getObjectsRewards } from '../../../waivioApi/ApiClient';
 import ReduxInfiniteScroll from '../../vendor/ReduxInfiniteScroll';
 import Loading from '../../components/Icon/Loading';
 import EmptyCampaing from '../../statics/EmptyCampaing';
 import Proposition from '../reuseble/Proposition/Proposition';
-import { getObjectName } from '../../../common/helpers/wObjectHelper';
+import { getObjectMapInArray, getObjectName } from '../../../common/helpers/wObjectHelper';
 import RewardsFilters from '../Filters/Filters';
 import { getPropositionsKey } from '../../../common/helpers/newRewardsHelper';
 import FiltersForMobile from '../Filters/FiltersForMobile';
 
 import './PropositionList.less';
 import SortSelector from '../../components/SortSelector/SortSelector';
+import RewardsMap from '../Map';
 
 const filterConfig = [
   { title: 'Rewards for', type: 'type' },
@@ -43,6 +44,7 @@ const RenderPropositionList = ({
   customSortConfig,
   defaultSort,
   withoutSort,
+  withMap,
 }) => {
   const { requiredObject } = useParams();
   const authUserName = useSelector(getAuthenticatedUserName);
@@ -64,8 +66,9 @@ const RenderPropositionList = ({
   const getPropositionList = async () => {
     if (requiredObject && requiredObject !== parent?.author_permlink) {
       const campParent = await getObject(requiredObject);
+      const campInfo = await getObjectsRewards(requiredObject, authUserName);
 
-      setParent(campParent);
+      setParent({ ...campParent, maxReward: campInfo?.main?.maxReward });
     }
 
     const res = await getProposition(requiredObject, authUserName, 0, search, sort);
@@ -157,6 +160,7 @@ const RenderPropositionList = ({
       </div>
       {!withoutFilters && (
         <div className={'PropositionList__left'}>
+          {withMap && <RewardsMap parent={parent} defaultCenter={getObjectMapInArray(parent)} />}
           <RewardsFilters
             title={'Filter rewards'}
             getFilters={getFilters}
@@ -178,6 +182,7 @@ RenderPropositionList.propTypes = {
   defaultSort: PropTypes.string,
   withoutFilters: PropTypes.bool,
   withoutSort: PropTypes.bool,
+  withMap: PropTypes.bool,
   customFilterConfig: PropTypes.shape({}).isRequired,
   customSortConfig: PropTypes.arrayOf({}).isRequired,
   intl: PropTypes.shape({
@@ -192,6 +197,7 @@ RenderPropositionList.defaultProps = {
   defaultSort: 'default',
   withoutFilters: false,
   withoutSort: false,
+  withMap: false,
 };
 
 export default injectIntl(RenderPropositionList);

@@ -7,7 +7,7 @@ import { getProxyImageURL } from '../../common/helpers/image';
 
 import './ObjectAvatar.less';
 
-const ObjectAvatar = ({ item, size }) => {
+const ObjectAvatar = ({ item, size, className }) => {
   let style = {
     minWidth: `${size}px`,
     width: `${size}px`,
@@ -26,7 +26,7 @@ const ObjectAvatar = ({ item, size }) => {
     backgroundImage: `url(${url})`,
   };
 
-  return <div className="ObjectAvatar" style={style} />;
+  return <div className={`ObjectAvatar ${className}`} style={style} />;
 };
 
 ObjectAvatar.propTypes = {
@@ -35,11 +35,13 @@ ObjectAvatar.propTypes = {
     avatar: PropTypes.string,
   }),
   size: PropTypes.number,
+  className: PropTypes.string,
 };
 
 ObjectAvatar.defaultProps = {
   size: 100,
   item: {},
+  className: '',
 };
 
 export default ObjectAvatar;

@@ -11,6 +11,7 @@ const EligibleProposition = () => (
     getPropositionFilters={getFiltersForEligibleProposition}
     withoutSort
     tab={'eligible'}
+    withMap
   />
 );
 

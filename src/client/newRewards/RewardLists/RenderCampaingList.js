@@ -8,9 +8,10 @@ import ReduxInfiniteScroll from '../../vendor/ReduxInfiniteScroll';
 import EmptyCampaing from '../../statics/EmptyCampaing';
 import RewardsFilters from '../Filters/Filters';
 import FiltersForMobile from '../Filters/FiltersForMobile';
-
-import './RewardLists.less';
 import SortSelector from '../../components/SortSelector/SortSelector';
+import RewardsMap from '../Map';
+import './RewardLists.less';
+import ViewMapButton from '../../widgets/ViewMapButton';
 
 const filterConfig = [
   { title: 'Rewards for', type: 'type' },
@@ -25,10 +26,11 @@ const sortConfig = [
   { key: 'proximity', title: 'Proximity' },
 ];
 
-const RenderCampaingList = ({ getAllRewardList, title, getFilters }) => {
+const RenderCampaingList = ({ getAllRewardList, title, getFilters, getMapItems }) => {
   const [rewards, setRewards] = useState([]);
   const [hasMore, setHasMore] = useState(true);
   const [loading, setLoading] = useState(true);
+  const [showMap, setShowMap] = useState(false);
   const [sort, setSort] = useState('default');
   const history = useHistory();
   const [visible, setVisible] = useState(false);
@@ -65,6 +67,7 @@ const RenderCampaingList = ({ getAllRewardList, title, getFilters }) => {
       <div className="RewardLists__feed">
         <FiltersForMobile setVisible={setVisible} />
         <h2>{title}</h2>
+        <ViewMapButton handleClick={() => setShowMap(true)} />
         <SortSelector sort={sort} onChange={setSort}>
           {sortConfig.map(item => (
             <SortSelector.Item key={item.key}>{item.title}</SortSelector.Item>
@@ -88,6 +91,7 @@ const RenderCampaingList = ({ getAllRewardList, title, getFilters }) => {
         )}
       </div>
       <div className={'RewardLists__left'}>
+        <RewardsMap getPoints={getMapItems} visible={showMap} onClose={() => setShowMap(false)} />
         <RewardsFilters
           title={'Filter rewards'}
           getFilters={getFilters}
@@ -102,6 +106,7 @@ const RenderCampaingList = ({ getAllRewardList, title, getFilters }) => {
 
 RenderCampaingList.propTypes = {
   getAllRewardList: PropTypes.func.isRequired,
+  getMapItems: PropTypes.func.isRequired,
   title: PropTypes.string.isRequired,
   getFilters: PropTypes.func.isRequired,
 };
