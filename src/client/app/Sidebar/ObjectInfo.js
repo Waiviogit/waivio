@@ -356,7 +356,7 @@ class ObjectInfo extends React.Component {
           this.state.hoveredOption?.body?.image ||
           this.state.activeOption?.body?.image ||
           wobject.avatar,
-        id: this.state.activeOption.permlink,
+        id: wobject.author_permlink,
       },
       ...pictures,
     ];
@@ -385,10 +385,7 @@ class ObjectInfo extends React.Component {
       ...item,
       id: objectFields.form,
     }));
-    const isOptionsObjectType =
-      wobject.object_type === 'book' ||
-      wobject.object_type === 'service' ||
-      wobject.object_type === 'product';
+    const isOptionsObjectType = ['book', 'service', 'product'].includes(wobject.object_type);
     const galleryOptionsPriceSection = (
       <>
         {this.listItem(
