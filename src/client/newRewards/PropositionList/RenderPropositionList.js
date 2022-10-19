@@ -86,7 +86,9 @@ const RenderPropositionList = ({
     rewards: propositions
       .map(propos => ({
         ...propos,
+        ...propos.object,
         map: getObjectMap(propos.object) || getObjectMap(propos.requiredObject),
+        avatar: propos.object?.avatar || propos.requiredObject?.avatar,
       }))
       .filter(propos => propos.map),
   });
