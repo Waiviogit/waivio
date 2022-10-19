@@ -2342,6 +2342,7 @@ export default class AppendForm extends Component {
                 />
               )}
             </p>
+            <br />
             <Form.Item>
               {getFieldDecorator(optionsFields.value, {
                 rules: this.getFieldRules(optionsFields.value),
@@ -2359,6 +2360,7 @@ export default class AppendForm extends Component {
               )}
             </Form.Item>
             <p>Option value is a text field.</p>
+            <br />
             <Form.Item>
               {getFieldDecorator(optionsFields.position, {
                 rules: this.getFieldRules(optionsFields.position),
