@@ -21,6 +21,7 @@ const ReservedProposition = () => {
       getPropositionFilters={getFiltersForReservedProposition}
       tab={'reserved'}
       sortConfig={sortConfig}
+      withMap
     />
   );
 };

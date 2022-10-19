@@ -1,0 +1,87 @@
+@import (reference) '../../styles/custom.less';
+@import (reference) '../../styles/modules/variables.less';
+
+.RewardsMap {
+  border: 1px solid #e7e9f5;
+  border-radius: 4px;
+  margin-bottom: 15px;
+  width: 100%;
+  height: 100%;
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    background: white;
+    border-radius: 4px 4px 0 0;
+    padding: 5px 10px;
+    color: #8798a4;
+    align-items: center;
+    border-bottom: 1px solid #e7e9f5;
+    font-size: 16px;
+    font-weight: 500;
+  }
+
+  &__button {
+    cursor: pointer;
+    background: transparent;
+    border: 1px solid #e7e9f5;
+    border-radius: 20px;
+    outline: none;
+    padding: 0 10px;
+    transition: 0.3s;
+
+    &:hover {
+      color: @orange-hot;
+      border: 1px solid @orange-hot;
+    }
+
+    &--selected {
+      color: @orange-hot;
+      border: 1px solid @orange-hot;
+    }
+  }
+
+  &__mapButton {
+    cursor: pointer;
+    position: absolute;
+    width: 28px;
+    height: 28px;
+    background: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 2px;
+    -webkit-box-shadow: 0 0 4px 0 #d1d1d1;
+    -moz-box-shadow: 0 0 4px 0 #d1d1d1;
+    box-shadow: 0 0 4px 0 #d1d1d1;
+  }
+
+  &__locateGPS {
+    left: 10px;
+    bottom: 10px;
+  }
+
+  &__full {
+    right: 10px;
+    bottom: 10px;
+  }
+
+  .pigeon-attribution {
+    display: none;
+  }
+
+  &__modal {
+    top: 0;
+    height: 100vh;
+    width: 100vw !important;
+
+    .ant-modal-body {
+      padding-top: 45px;
+    }
+  }
+
+  .ObjectAvatar {
+    border: none;
+    border-radius: 4px 0 0 4px;
+  }
+}

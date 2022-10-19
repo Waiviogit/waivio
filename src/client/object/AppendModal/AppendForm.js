@@ -48,6 +48,7 @@ import {
   dimensionsFields,
   weightFields,
   publisherFields,
+  optionsFields,
 } from '../../../common/constants/listOfFields';
 import OBJECT_TYPE from '../const/objectTypes';
 import { getSuitableLanguage } from '../../../store/reducers';
@@ -376,7 +377,8 @@ export default class AppendForm extends Component {
       case objectFields.language:
       case objectFields.groupId:
       case objectFields.publicationDate:
-      case objectFields.dimensions: {
+      case objectFields.dimensions:
+      case objectFields.options: {
         fieldBody.push(rest[currentField]);
         break;
       }
@@ -429,6 +431,18 @@ export default class AppendForm extends Component {
         case objectFields.avatar:
         case objectFields.background:
           return `@${author} added ${currentField} (${langReadable}):\n ![${currentField}](${appendValue})`;
+        case objectFields.options:
+          const image = formValues[optionsFields.optionsImage]
+            ? `, ${optionsFields.optionsImage}:  \n ![${optionsFields.optionsImage}](${
+                formValues[optionsFields.optionsImage]
+              })`
+            : '';
+
+          return `@${author} added ${currentField} (${langReadable}): ${optionsFields.category}: ${
+            formValues[optionsFields.category]
+          }, ${optionsFields.value}: ${formValues[optionsFields.value]}, ${
+            optionsFields.position
+          }: ${formValues[optionsFields.position]} ${image}`;
         case objectFields.publisher: {
           const linkInfo = this.state.selectedObject
             ? `, link: ${this.state.selectedObject.author_permlink}`
@@ -633,6 +647,18 @@ export default class AppendForm extends Component {
             [productIdFields.productIdType]: formValues[productIdFields.productIdType],
             [productIdFields.productId]: formValues[productIdFields.productId],
             [productIdFields.productIdImage]: formValues[productIdFields.productIdImage],
+          }),
+        };
+      }
+      if (currentField === objectFields.options) {
+        fieldsObject = {
+          ...fieldsObject,
+          body: JSON.stringify({
+            [optionsFields.category]: formValues[optionsFields.category],
+            [optionsFields.value]: formValues[optionsFields.value],
+            [optionsFields.position]: formValues[optionsFields.position],
+            image: formValues[objectFields.options],
+            parentObjectPermlink: wObject.author_permlink,
           }),
         };
       }
@@ -1082,7 +1108,11 @@ export default class AppendForm extends Component {
       currentField === objectFields.companyIdType ||
       currentField === objectFields.companyId ||
       currentField === objectFields.publisher ||
-      currentField === objectFields.authors
+      currentField === objectFields.authors ||
+      currentField === objectFields.publisher ||
+      currentField === objectFields.dimensions ||
+      currentField === objectFields.productWeight ||
+      currentField === objectFields.options
     ) {
       return filtered.some(f =>
         isEqual(this.getCurrentObjectBody(currentField), parseJSON(f.body)),
@@ -2278,6 +2308,111 @@ export default class AppendForm extends Component {
           </React.Fragment>
         );
       }
+      case objectFields.options: {
+        const bookType = wObject.object_type === 'book';
+
+        return (
+          <React.Fragment>
+            <Form.Item>
+              {getFieldDecorator(optionsFields.category, {
+                rules: this.getFieldRules(optionsFields.category),
+              })(
+                <Input
+                  className={classNames('AppendForm__input', {
+                    'validation-error': !this.state.isSomeValue,
+                  })}
+                  disabled={loading}
+                  placeholder={intl.formatMessage({
+                    id: 'option_category',
+                    defaultMessage: 'Option category',
+                  })}
+                />,
+              )}
+            </Form.Item>
+            <p>
+              {bookType ? (
+                <FormattedMessage
+                  id="options_modal_info_book1"
+                  defaultMessage="Common option categories for books are Format etc."
+                />
+              ) : (
+                <FormattedMessage
+                  id="options_modal_info1"
+                  defaultMessage="Common option categories for products are Color, Size, Flavor, Count, Include, etc."
+                />
+              )}
+            </p>
+            <br />
+            <Form.Item>
+              {getFieldDecorator(optionsFields.value, {
+                rules: this.getFieldRules(optionsFields.value),
+              })(
+                <Input
+                  className={classNames('AppendForm__input', {
+                    'validation-error': !this.state.isSomeValue,
+                  })}
+                  disabled={loading}
+                  placeholder={intl.formatMessage({
+                    id: 'option_value',
+                    defaultMessage: 'Option value',
+                  })}
+                />,
+              )}
+            </Form.Item>
+            <p>Option value is a text field.</p>
+            <br />
+            <Form.Item>
+              {getFieldDecorator(optionsFields.position, {
+                rules: this.getFieldRules(optionsFields.position),
+              })(
+                <Input
+                  className={classNames('AppendForm__input', {
+                    'validation-error': !this.state.isSomeValue,
+                  })}
+                  disabled={loading}
+                  placeholder={intl.formatMessage({
+                    id: 'position',
+                    defaultMessage: 'Position',
+                  })}
+                />,
+              )}
+            </Form.Item>
+            <p>
+              {bookType ? (
+                <FormattedMessage
+                  id="options_modal_info_book2"
+                  defaultMessage='Position number indicates the order of option values within the category, e.g. the "Audiobook" option can be assigned position 2, so that it appears after "1. Hardcover", but before "3. Kindle".'
+                />
+              ) : (
+                <FormattedMessage
+                  id="options_modal_info2"
+                  defaultMessage='Position number indicates the order of option values within the category, e.g. the "Small" option can be assigned position 2, so that it appears after "1. X-Small", but before "3. Medium".'
+                />
+              )}
+            </p>
+            <div className="image-wrapper">
+              <Form.Item>
+                {getFieldDecorator(objectFields.options, {
+                  // rules: this.getFieldRules(objectFields.productIdImage),
+                })(
+                  <ImageSetter
+                    onImageLoaded={this.getImages}
+                    onLoadingImage={this.onLoadingImage}
+                    labeledImage={'imageSetter_add_image'}
+                    isMultiple={false}
+                  />,
+                )}
+              </Form.Item>
+            </div>
+            <p>
+              <FormattedMessage
+                id="options_modal_info3"
+                defaultMessage="Image is optional, it will be resized to fit into a square."
+              />
+            </p>
+          </React.Fragment>
+        );
+      }
       case objectFields.status: {
         return (
           <React.Fragment>
@@ -2954,6 +3089,11 @@ export default class AppendForm extends Component {
           isEmpty(getFieldValue(dimensionsFields.width)) ||
           isEmpty(getFieldValue(dimensionsFields.depth)) ||
           isEmpty(getFieldValue(dimensionsFields.unitOfLength))
+        );
+      case objectFields.options:
+        return (
+          isEmpty(getFieldValue(optionsFields.value)) ||
+          isEmpty(getFieldValue(optionsFields.category))
         );
       case objectFields.map:
         return (

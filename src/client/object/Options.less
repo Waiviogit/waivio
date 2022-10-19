@@ -1,0 +1,91 @@
+@import (reference) '../styles/custom.less';
+@import (reference) '../styles/modules/variables';
+
+.Options {
+  &__my-pictures {
+    width: 50px;
+    height: 50px;
+    border: 1px solid @silver-gray;
+    border-radius: 4px;
+    margin-left: 4px;
+    margin-bottom: 4px;
+
+    &-selected {
+      width: 50px;
+      height: 50px;
+      border: 1px solid @orange-hot;
+      border-radius: 4px;
+      margin-left: 4px;
+      margin-bottom: 4px;
+    }
+    &:hover {
+      cursor: pointer;
+      border-color: @orange;
+    }
+  }
+  &__pictures {
+    width: 50px;
+    height: 50px;
+    border: 1px dashed @silver-gray;
+    border-radius: 4px;
+    margin-left: 4px;
+    margin-bottom: 4px;
+
+    &-selected {
+      width: 50px;
+      height: 50px;
+      border: 1px solid @orange-hot;
+      border-radius: 4px;
+      margin-left: 4px;
+      margin-bottom: 4px;
+    }
+    &:hover {
+      cursor: pointer;
+      border-color: @orange;
+    }
+  }
+  &__my-option-button {
+    background: none;
+    border: 1px solid @white-gainsboro;
+    min-width: 85px;
+    height: 25px;
+    border-radius: 4px;
+    margin-bottom: 4px;
+
+    &-selected {
+      background: none;
+      border: 1px solid @orange-hot;
+      min-width: 85px;
+      height: 25px;
+      border-radius: 4px;
+      margin-bottom: 4px;
+    }
+
+    &:hover {
+      cursor: pointer;
+      border-color: @orange;
+    }
+  }
+
+  &__option-button {
+    background: none;
+    border: 1px dashed @silver-gray;
+    min-width: 85px;
+    height: 25px;
+    border-radius: 4px;
+    margin-bottom: 4px;
+    color: @silver-gray;
+    &-selected {
+      background: none;
+      border: 1px solid @orange-hot;
+      min-width: 85px;
+      height: 25px;
+      border-radius: 4px;
+      margin-bottom: 4px;
+    }
+    &:hover {
+      cursor: pointer;
+      border-color: @orange;
+    }
+  }
+}
