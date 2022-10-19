@@ -385,6 +385,50 @@ class ObjectInfo extends React.Component {
       ...item,
       id: objectFields.form,
     }));
+    const isOptionsObjectType =
+      wobject.object_type === 'book' ||
+      wobject.object_type === 'service' ||
+      wobject.object_type === 'product';
+    const galleryOptionsPriceSection = (
+      <>
+        {this.listItem(
+          objectFields.galleryItem,
+          <PicturesCarousel
+            pics={pictures.length > 1 || avatar ? activeOptionPicture : null}
+            objectID={wobject.author_permlink}
+          />,
+        )}
+        {this.listItem(
+          objectFields.galleryItem,
+          pictures && !isOptionsObjectType && (
+            <PicturesCarousel pics={pictures} objectID={wobject.author_permlink} />
+          ),
+        )}
+
+        {this.listItem(
+          objectFields.price,
+          price && (
+            <div className="flex">
+              {!isEditMode && <span className="field-icon">$</span>}
+              <span className="price-value fw8">{this.state.activeOption.price || price}</span>
+            </div>
+          ),
+        )}
+
+        {this.listItem(
+          objectFields.options,
+          wobject.options && (
+            <Options
+              setHoveredOption={hoveredOption => this.setState({ hoveredOption })}
+              setActiveOption={activeOption => this.setState({ activeOption })}
+              isEditMode={isEditMode}
+              wobject={wobject}
+              history={this.props.history}
+            />
+          ),
+        )}
+      </>
+    );
 
     const menuSection = () => {
       if (!isEditMode && !isEmpty(customSort) && !hasType(wobject, OBJECT_TYPE.LIST)) {
@@ -528,6 +572,22 @@ class ObjectInfo extends React.Component {
         )}
         {this.listItem(objectFields.tagCategory, this.renderTagCategories(tagCategoriesList))}
         {this.listItem(objectFields.categoryItem, null)}
+        {this.listItem(
+          objectFields.galleryItem,
+          pictures && !isOptionsObjectType && (
+            <PicturesCarousel pics={pictures} objectID={wobject.author_permlink} />
+          ),
+        )}
+        {this.listItem(
+          objectFields.price,
+          price && !isOptionsObjectType && (
+            <div className="flex">
+              {!isEditMode && <span className="field-icon">$</span>}
+              <span className="price-value fw8">{price}</span>
+            </div>
+          ),
+        )}
+
         {this.listItem(
           objectFields.workTime,
           workTime && (
@@ -891,34 +951,7 @@ class ObjectInfo extends React.Component {
                     </div>
                   )),
               )}
-            {this.listItem(
-              objectFields.galleryItem,
-              <PicturesCarousel
-                pics={activeOptionPicture}
-                objectID={this.state.activeOption.author_permlink}
-              />,
-            )}
-            {this.listItem(
-              objectFields.price,
-              price && (
-                <div className="flex">
-                  {!isEditMode && <span className="field-icon">$</span>}
-                  <span className="price-value fw8">{this.state.activeOption.price || price}</span>
-                </div>
-              ),
-            )}
-            {this.listItem(
-              objectFields.options,
-              wobject.options && (
-                <Options
-                  setHoveredOption={hoveredOption => this.setState({ hoveredOption })}
-                  setActiveOption={activeOption => this.setState({ activeOption })}
-                  isEditMode={isEditMode}
-                  wobject={wobject}
-                  history={this.props.history}
-                />
-              ),
-            )}
+            {isOptionsObjectType && galleryOptionsPriceSection}
             {!isHashtag && !hasType(wobject, OBJECT_TYPE.PAGE) && menuSection()}
             {!isHashtag && aboutSection}
             {accessExtend && hasType(wobject, OBJECT_TYPE.LIST) && listSection}
