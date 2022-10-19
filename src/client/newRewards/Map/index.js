@@ -2,7 +2,7 @@ import { Map, ZoomControl } from 'pigeon-maps';
 import React, { useEffect, useRef, useState, useCallback, useMemo } from 'react';
 import { Icon, Modal } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
-import { debounce, isEmpty, noop } from 'lodash';
+import { debounce, isEmpty, isEqual, noop } from 'lodash';
 import Overlay from 'pigeon-overlay';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
@@ -51,7 +51,7 @@ const RewardsMap = ({ getPoints, defaultCenter, parent, visible, onClose }) => {
   const defaultZoom = useMemo(() => {
     const zoom = query.get('zoom');
 
-    return +zoom || 6;
+    return +zoom || 3;
   }, []);
 
   const getCurrentCoordinates = async () => {
@@ -78,7 +78,12 @@ const RewardsMap = ({ getPoints, defaultCenter, parent, visible, onClose }) => {
     }
 
     if (defaultCenter) setPoints([{ ...parent, map: getObjectMap(parent) }]);
-  }, [boundsParams]);
+  }, [
+    boundsParams.topPoint[0],
+    boundsParams.topPoint[1],
+    boundsParams.bottomPoint[0],
+    boundsParams.bottomPoint[1],
+  ]);
 
   const setSearchArea = () => {
     if (area) {
@@ -96,14 +101,19 @@ const RewardsMap = ({ getPoints, defaultCenter, parent, visible, onClose }) => {
 
   const handleOnBoundsChanged = useCallback(
     debounce(bounds => {
-      if (!isEmpty(bounds) && bounds.ne[0] && bounds.sw[0]) {
+      if (
+        bounds.ne[0] &&
+        bounds.sw[0] &&
+        !isEqual([bounds.ne[1], bounds.ne[0]], boundsParams.topPoint) &&
+        !isEqual([bounds.sw[1], bounds.sw[0]], boundsParams.bottomPoint)
+      ) {
         setBoundsParams({
           topPoint: [bounds.ne[1], bounds.ne[0]],
           bottomPoint: [bounds.sw[1], bounds.sw[0]],
         });
       }
     }, 500),
-    [setBoundsParams],
+    [setBoundsParams, boundsParams],
   );
 
   const onBoundsChanged = ({ bounds }) => {
@@ -212,8 +222,9 @@ const RewardsMap = ({ getPoints, defaultCenter, parent, visible, onClose }) => {
       visible={fullScreen || visible}
       onCancel={closeModal}
       onOk={closeModal}
+      footer={null}
     >
-      {body('100%', '500px')}
+      {body('100%', `calc(100vh - 150px)`)}
     </Modal>
   ) : (
     body()
