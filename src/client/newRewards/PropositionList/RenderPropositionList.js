@@ -84,7 +84,10 @@ const RenderPropositionList = ({
 
   const getPoints = async () => ({
     rewards: propositions
-      .map(propos => ({ ...propos, map: getObjectMap(propos.object) }))
+      .map(propos => ({
+        ...propos,
+        map: getObjectMap(propos.object) || getObjectMap(propos.requiredObject),
+      }))
       .filter(propos => propos.map),
   });
 
