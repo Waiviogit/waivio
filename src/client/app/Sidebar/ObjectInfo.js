@@ -398,12 +398,6 @@ class ObjectInfo extends React.Component {
             objectID={wobject.author_permlink}
           />,
         )}
-        {this.listItem(
-          objectFields.galleryItem,
-          pictures && !isOptionsObjectType && (
-            <PicturesCarousel pics={pictures} objectID={wobject.author_permlink} />
-          ),
-        )}
 
         {this.listItem(
           objectFields.price,
@@ -912,7 +906,7 @@ class ObjectInfo extends React.Component {
           <div className="mb3">
             By{' '}
             {authorsBody?.map((a, i) => (
-              <div key={a.id}>
+              <span key={a.id}>
                 {a.defaultShowLink ? (
                   <Link to={`/object/${a.authorPermlink}`}>{a.name}</Link>
                 ) : (
@@ -922,7 +916,7 @@ class ObjectInfo extends React.Component {
                   {i !== authorsBody.length - 1 && ','}
                   {'  '}
                 </>
-              </div>
+              </span>
             ))}
           </div>
         )}
