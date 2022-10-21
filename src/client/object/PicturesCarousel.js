@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 
 import './PicturesCarousel.less';
 
-const PicturesCarousel = ({ pics, objectID }) => {
+const PicturesCarousel = ({ onClick, pics, objectID }) => {
   const settings = {
     dots: false,
     arrows: true,
@@ -24,7 +24,7 @@ const PicturesCarousel = ({ pics, objectID }) => {
             to={{ pathname: `/object/${objectID}/gallery/album/${pic.id}` }}
             className="PicturesCarousel__imageWrap"
           >
-            <img src={pic.body} alt="pic" className="PicturesCarousel__image" />
+            <img onClick={onClick} src={pic.body} alt="pic" className="PicturesCarousel__image" />
           </Link>
         ))}
       </Carousel>
@@ -35,6 +35,10 @@ const PicturesCarousel = ({ pics, objectID }) => {
 PicturesCarousel.propTypes = {
   pics: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   objectID: PropTypes.string.isRequired,
+  onClick: PropTypes.func,
+};
+PicturesCarousel.defaultProps = {
+  onClick: () => {},
 };
 
 export default PicturesCarousel;
