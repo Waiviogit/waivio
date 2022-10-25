@@ -28,6 +28,7 @@ import PowerDownCanceledCard from '../../TransfersCards/PowerDownCanceledCard';
 import DepositeCard from '../../TransfersCards/DepositeCard';
 import WithdawCard from '../../TransfersCards/WithdrawCard';
 import DelegateInstructionCard from '../../TransfersCards/DelegateInstructionCard/DelegateInstructionCard';
+import { parseJSON } from '../../../../common/helpers/parseJSON';
 
 const WAIVWalletTransferItemsSwitcher = ({ transaction, currentName, intl }) => {
   const walletType = useSelector(getCurrentWalletType);
@@ -293,11 +294,13 @@ const WAIVWalletTransferItemsSwitcher = ({ transaction, currentName, intl }) => 
       );
 
     case 'tokens_transfer':
+      const parseMemo = parseJSON(transaction.memo);
+
       if (transaction.to === currentName) {
         return (
           <ReceiveTransaction
             from={transaction.from}
-            to={transaction.to}
+            to={parseMemo?.to || transaction.to}
             memo={transaction.memo}
             amount={getTransactionCurrency(transaction.quantity, transaction.symbol)}
             timestamp={transaction.timestamp}
@@ -312,7 +315,7 @@ const WAIVWalletTransferItemsSwitcher = ({ transaction, currentName, intl }) => 
 
       return (
         <TransferTransaction
-          to={transaction.to}
+          to={parseMemo?.to || transaction.to}
           memo={transaction.memo}
           amount={getTransactionCurrency(transaction.quantity, transaction.symbol)}
           timestamp={transaction.timestamp}
