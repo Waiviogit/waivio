@@ -1,9 +1,7 @@
 import fetch from 'isomorphic-fetch';
 import config from './routes';
 import { headers } from './ApiClient';
-import { getValidTokenData } from '../common/helpers/getToken';
 import { getGuestAccessToken } from '../common/helpers/localStorageHelpers';
-import Cookie from 'js-cookie';
 
 export const getGuestWaivTransferHistory = (guestName, symbol) =>
   fetch(`${config.apiPrefix}${config.user}/${guestName}${config.guestWallet}?symbol=${symbol}`, {
@@ -31,8 +29,8 @@ export const sendGuestTransferWAIV = async ({
   symbol = 'WAIV',
   account,
   id = 'transferFromGuest',
-}) => {
-  return fetch(`${config.objectsBotApiPrefix}${config.guestTranfer}`, {
+}) =>
+  fetch(`${config.objectsBotApiPrefix}${config.guestTranfer}`, {
     method: 'POST',
     headers: { ...headers, 'access-token': getGuestAccessToken(), 'waivio-auth': true },
     body: JSON.stringify({
@@ -49,6 +47,5 @@ export const sendGuestTransferWAIV = async ({
   })
     .then(res => res.json())
     .catch(err => err);
-};
 
 export default null;
