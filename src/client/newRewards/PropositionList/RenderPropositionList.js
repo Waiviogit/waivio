@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation, useParams } from 'react-router';
-import { isEmpty } from 'lodash';
+import { isEmpty, noop } from 'lodash';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
@@ -12,7 +12,11 @@ import ReduxInfiniteScroll from '../../vendor/ReduxInfiniteScroll';
 import Loading from '../../components/Icon/Loading';
 import EmptyCampaing from '../../statics/EmptyCampaing';
 import Proposition from '../reuseble/Proposition/Proposition';
-import { getObjectMapInArray, getObjectName } from '../../../common/helpers/wObjectHelper';
+import {
+  getObjectMap,
+  getObjectMapInArray,
+  getObjectName,
+} from '../../../common/helpers/wObjectHelper';
 import RewardsFilters from '../Filters/Filters';
 import { getPropositionsKey } from '../../../common/helpers/newRewardsHelper';
 import FiltersForMobile from '../Filters/FiltersForMobile';
@@ -77,6 +81,17 @@ const RenderPropositionList = ({
     setHasMore(res.hasMore);
     setLoading(false);
   };
+
+  const getPoints = async () => ({
+    rewards: propositions
+      .map(propos => ({
+        ...propos,
+        ...propos.object,
+        map: getObjectMap(propos.object) || getObjectMap(propos.requiredObject),
+        avatar: propos.object?.avatar || propos.requiredObject?.avatar,
+      }))
+      .filter(propos => propos.map),
+  });
 
   useEffect(() => {
     getPropositionList();
@@ -160,7 +175,13 @@ const RenderPropositionList = ({
       </div>
       {!withoutFilters && (
         <div className={'PropositionList__left'}>
-          {withMap && <RewardsMap parent={parent} defaultCenter={getObjectMapInArray(parent)} />}
+          {withMap && (
+            <RewardsMap
+              getPoints={getPoints}
+              parent={parent}
+              defaultCenter={getObjectMapInArray(parent)}
+            />
+          )}
           <RewardsFilters
             title={'Filter rewards'}
             getFilters={getFilters}
@@ -193,6 +214,7 @@ RenderPropositionList.propTypes = {
 RenderPropositionList.defaultProps = {
   customFilterConfig: filterConfig,
   customSortConfig: sortConfig,
+  getPoints: noop,
   disclaimer: '',
   defaultSort: 'default',
   withoutFilters: false,
