@@ -432,17 +432,16 @@ export default class AppendForm extends Component {
         case objectFields.background:
           return `@${author} added ${currentField} (${langReadable}):\n ![${currentField}](${appendValue})`;
         case objectFields.options:
-          const image = formValues[optionsFields.optionsImage]
-            ? `, ${optionsFields.optionsImage}:  \n ![${optionsFields.optionsImage}](${
-                formValues[optionsFields.optionsImage]
-              })`
+          const image = formValues[objectFields.options]
+            ? `, image: ${formValues[objectFields.options]}`
+            : '';
+          const position = formValues[optionsFields.position]
+            ? `, ${optionsFields.position}: ${formValues[optionsFields.position]}`
             : '';
 
           return `@${author} added ${currentField} (${langReadable}): ${optionsFields.category}: ${
             formValues[optionsFields.category]
-          }, ${optionsFields.value}: ${formValues[optionsFields.value]}, ${
-            optionsFields.position
-          }: ${formValues[optionsFields.position]} ${image}`;
+          }, ${optionsFields.value}: ${formValues[optionsFields.value]}${position}${image}`;
         case objectFields.publisher: {
           const linkInfo = this.state.selectedObject
             ? `, link: ${this.state.selectedObject.author_permlink}`
