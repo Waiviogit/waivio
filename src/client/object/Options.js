@@ -1,29 +1,18 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import './Options.less';
 
 const Options = ({ wobject, isEditMode, setHoveredOption, setActiveOption, history }) => {
   const [selectedOption, setSelectedOption] = useState({});
+  const [hovered, setHovered] = useState({});
 
-  const firstEl = Object.entries(wobject?.options).reduce((a, v) => {
-    if (a[v[0]]) {
-      return a;
-    }
-    // eslint-disable-next-line no-param-reassign
-    a[v[0]] = v[1][0];
-
-    return a;
-  }, {});
-
-  useEffect(() => {
-    setSelectedOption(firstEl);
-    setActiveOption(firstEl);
-  }, []);
   const onMouseOver = (e, el) => {
     setHoveredOption(el);
+    setHovered({ ...hovered, [el.body.category]: el });
   };
   const onMouseOut = () => {
     setHoveredOption(selectedOption);
+    setHovered(selectedOption);
   };
   const onOptionButtonClick = (e, el) => {
     setSelectedOption({ ...selectedOption, [el.body.category]: el });
@@ -44,13 +33,17 @@ const Options = ({ wobject, isEditMode, setHoveredOption, setActiveOption, histo
             <div className="mb1" key={option[0]}>
               {' '}
               <div>
-                {option[0]}: {selectedOption?.[option[0]]?.body?.value}
+                {option[0]}:{' '}
+                <span className="fw6">
+                  {hovered?.[option[0]]?.body?.value || selectedOption?.[option[0]]?.body?.value}{' '}
+                </span>
               </div>
               {option[1]?.map(
                 el =>
                   el.author_permlink === wobject.author_permlink && (
                     <div key={el.author_permlink}>
-                      {el.body.position}.{el.body.value}{' '}
+                      {el.body.position}
+                      {el.body.position ? '.' : ''} {el.body.value}{' '}
                       {el.body.image && (
                         <div>
                           <img
@@ -72,7 +65,11 @@ const Options = ({ wobject, isEditMode, setHoveredOption, setActiveOption, histo
                 <div className="mb1" key={option[0]}>
                   {' '}
                   <div>
-                    {option[0]}: {selectedOption?.[option[0]]?.body?.value}
+                    {option[0]}:{' '}
+                    <span className="fw8">
+                      {hovered?.[option[0]]?.body?.value ||
+                        selectedOption?.[option[0]]?.body?.value}
+                    </span>
                   </div>
                   <>
                     {option[1]?.map(el => (

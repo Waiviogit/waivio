@@ -315,7 +315,11 @@ class ObjectInfo extends React.Component {
 
       return album;
     });
-  handleOptionClick = () => this.setState({ openOption: true });
+  handleOptionClick = option => {
+    if (!option.name) {
+      this.setState({ openOption: true });
+    }
+  };
   handleOptionCloseClick = () => this.setState({ openOption: false, photoIndex: 0 });
 
   render() {
@@ -364,25 +368,30 @@ class ObjectInfo extends React.Component {
           .map(o => ({ body: o.body.image, id: o.permlink }))
       : [];
 
-    const sortedOptions = optionsPictures.filter(o => activeOption?.body?.image !== o?.body);
+    const sortedOptionsPictures = optionsPictures.filter(
+      o => activeOption?.body?.image !== o?.body,
+    );
 
     const activeOptionPicture = [
+      {
+        body:
+          hoveredOption?.body?.image ||
+          hoveredOption.image ||
+          activeOption?.body?.image ||
+          wobject.avatar,
+        id: wobject.author_permlink,
+      },
+      ...pictures,
+      ...sortedOptionsPictures,
+    ];
+    const lightboxOptionPicture = [
       {
         body: hoveredOption?.body?.image || activeOption?.body?.image || wobject.avatar,
         id: wobject.author_permlink,
       },
-      ...pictures,
-      ...sortedOptions,
+      ...sortedOptionsPictures,
     ];
-    const lightboxOptionPicture = [
-      {
-        body:
-          // hoveredOption?.body?.image ||
-          activeOption?.body?.image || wobject.avatar,
-        id: wobject.author_permlink,
-      },
-      ...sortedOptions,
-    ];
+
     const dimensions = parseWobjectField(wobject, 'dimensions');
     const productWeight = parseWobjectField(wobject, 'productWeight');
     const profile = linkField
@@ -414,6 +423,7 @@ class ObjectInfo extends React.Component {
         {this.listItem(
           objectFields.galleryItem,
           <PicturesCarousel
+            activePicture={activeOption}
             onClick={this.handleOptionClick}
             pics={pictures.length > 1 || avatar ? activeOptionPicture : []}
             objectID={wobject.author_permlink}
@@ -447,7 +457,7 @@ class ObjectInfo extends React.Component {
           price && (
             <div className="flex">
               {!isEditMode && <span className="field-icon">$</span>}
-              <span className="price-value fw8">{activeOption.price || price}</span>
+              <span className="price-value fw8">{hoveredOption.price || price}</span>
             </div>
           ),
         )}
@@ -988,7 +998,7 @@ class ObjectInfo extends React.Component {
                     </div>
                   )),
               )}
-            {isOptionsObjectType && galleryOptionsPriceSection}
+            {isOptionsObjectType && !isEditMode && galleryOptionsPriceSection}
             {!isHashtag && !hasType(wobject, OBJECT_TYPE.PAGE) && menuSection()}
             {!isHashtag && aboutSection}
             {accessExtend && hasType(wobject, OBJECT_TYPE.LIST) && listSection}
