@@ -19,6 +19,7 @@ import {
   HIVE_ENGINE_DEFAULT_SWAP_LIST_ORDER_KEY,
 } from '../../common/constants/swapList';
 import delegationModalTypes from '../../common/constants/delegationModalTypes';
+import { getGuestWaivBalance, getGuestWaivTransferHistory } from '../../waivioApi/walletApi';
 
 export const OPEN_TRANSFER = '@wallet/OPEN_TRANSFER';
 export const CLOSE_TRANSFER = '@wallet/CLOSE_TRANSFER';
@@ -493,19 +494,25 @@ export const getWAIVTransferList = (
   timestampEnd,
   lastId,
   type = GET_WAIV_TRANSFER_LIST,
-) => (dispatch, getState) =>
-  dispatch({
+) => (dispatch, getState) => {
+  const isGuest = guestUserRegex.test(account);
+
+  return dispatch({
     type: type.ACTION,
-    payload: ApiClient.getEngineTransactionHistory({
-      symbol: 'WAIV',
-      account,
-      timestampEnd,
-      lastId,
-      limit: 10,
-      showRewards: getShowRewards(getState()),
-    }),
+    payload: isGuest
+      ? getGuestWaivTransferHistory(account, 'WAIV')
+      : ApiClient.getEngineTransactionHistory({
+          symbol: 'WAIV',
+          account,
+          timestampEnd,
+          lastId,
+          limit: 10,
+          showRewards: getShowRewards(getState()),
+        }),
     meta: 10,
+    isGuest,
   });
+};
 
 export const getMoreWAIVTransferList = (account, offset, lastId) => dispatch =>
   dispatch(getWAIVTransferList(account, offset, lastId, GET_MORE_WAIV_TRANSFER_LIST));
@@ -551,12 +558,15 @@ export const setWalletType = wallet => ({
 
 export const GET_TOKENS_BALANCE = createAsyncActionType('@wallet/GET_TOKENS_BALANCE');
 
-export const getTokenBalance = (token, name) => dispatch =>
-  dispatch({
+export const getTokenBalance = (token, name) => dispatch => {
+  const isGuest = guestUserRegex.test(name);
+
+  return dispatch({
     type: GET_TOKENS_BALANCE.ACTION,
-    payload: ApiClient.getTokenBalance(name, token),
-    meta: token,
+    payload: isGuest ? getGuestWaivBalance(name, token) : ApiClient.getTokenBalance(name, token),
+    meta: { token, isGuest },
   });
+};
 
 export const GET_AUTH_USER_TOKENS_BALANCE_LIST = createAsyncActionType(
   '@wallet/GET_AUTH_USER_TOKENS_BALANCE_LIST',
