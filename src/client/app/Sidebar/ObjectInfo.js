@@ -636,7 +636,7 @@ class ObjectInfo extends React.Component {
         )}
         {this.listItem(
           objectFields.options,
-          wobject.options && !isOptionsObjectType && (
+          wobject.options && (
             <Options
               setHoveredOption={option => this.setState({ hoveredOption: option })}
               setActiveOption={option => this.setState({ activeOption: option })}
