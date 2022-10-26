@@ -299,8 +299,8 @@ const WAIVWalletTransferItemsSwitcher = ({ transaction, currentName, intl }) => 
       if (transaction.to === currentName) {
         return (
           <ReceiveTransaction
-            from={transaction.from}
-            to={parseMemo?.to || transaction.to}
+            from={parseMemo?.from || transaction.from}
+            to={transaction.to}
             memo={transaction.memo}
             amount={getTransactionCurrency(transaction.quantity, transaction.symbol)}
             timestamp={transaction.timestamp}

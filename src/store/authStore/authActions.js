@@ -23,6 +23,7 @@ import {
 } from './authSelectors';
 import { getIsWaivio } from '../appStore/appSelectors';
 import { parseJSON } from '../../common/helpers/parseJSON';
+import { getGuestWaivBalance } from '../../waivioApi/walletApi';
 
 export const LOGIN = '@auth/LOGIN';
 export const LOGIN_START = '@auth/LOGIN_START';
@@ -120,6 +121,8 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
         const userData = await setToken(accessToken, socialNetwork, regData);
         const userMetaData = await waivioAPI.getAuthenticatedUserMetadata(userData.name);
         const privateEmail = await getPrivateEmail(userData.name);
+        const rewardsTab = await getRewardTab(userData.name);
+        const { WAIV } = await getGuestWaivBalance(userData.name);
 
         if (isWaivio) dispatch(getCurrentCurrencyRate(userMetaData.settings.currency));
 
@@ -129,6 +132,8 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
           privateEmail,
           socialNetwork,
           isGuestUser: true,
+          waivBalance: WAIV,
+          rewardsTab,
         });
       } catch (e) {
         dispatch(notify(e.error.details[0].message));
@@ -144,6 +149,7 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
         const userMetaData = await waivioAPI.getAuthenticatedUserMetadata(scUserData.name);
         const privateEmail = await getPrivateEmail(scUserData.name);
         const rewardsTab = await getRewardTab(scUserData.name);
+        const { WAIV } = isGuest ? await getGuestWaivBalance(scUserData.name) : {};
 
         if (isWaivio) dispatch(getCurrentCurrencyRate(userMetaData.settings.currency));
 
@@ -152,6 +158,7 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
           ...rewardsTab,
           userMetaData,
           privateEmail,
+          waivBalance: WAIV,
           isGuestUser: isGuest,
         });
       } catch (e) {
