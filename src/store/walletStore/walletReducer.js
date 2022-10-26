@@ -394,7 +394,7 @@ export default function walletReducer(state = initialState, action) {
       return {
         ...state,
         waivTransactionHistory: {
-          list: [...action.payload.history],
+          list: [...action.payload.history.sort((a, b) => b.timestamp - a.timestamp)],
           hasMore: action.isGuest
             ? action.payload.hasMore
             : action.payload.history.length === action.meta,

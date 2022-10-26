@@ -90,6 +90,7 @@ const PaymentTableRow = ({ intl, sponsor, isReports, reservationPermlink }) => {
           </React.Fragment>
         );
       case TYPE.transfer:
+      case TYPE.transferToGuest:
       case TYPE.demoDebt:
         return (
           <React.Fragment>
