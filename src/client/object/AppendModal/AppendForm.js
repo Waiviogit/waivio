@@ -433,7 +433,7 @@ export default class AppendForm extends Component {
           return `@${author} added ${currentField} (${langReadable}):\n ![${currentField}](${appendValue})`;
         case objectFields.options:
           const image = formValues[objectFields.options]
-            ? `, image: ${formValues[objectFields.options]}`
+            ? `, image: \n ![${objectFields.options}](${formValues[objectFields.options]})`
             : '';
           const position = formValues[optionsFields.position]
             ? `, ${optionsFields.position}: ${formValues[optionsFields.position]}`
