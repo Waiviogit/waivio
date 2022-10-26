@@ -28,6 +28,7 @@ export const guestTransferId = {
 
 export const TYPE = {
   transfer: 'transfer',
+  transferToGuest: 'transferToGuest',
   demoDebt: 'demo_debt',
   overpaymentRefund: 'overpayment_refund',
 };

@@ -281,7 +281,7 @@ export default class Transfer extends React.Component {
   };
 
   handleBalanceClick = event => {
-    const value = parseFloat(event.currentTarget.innerText);
+    const value = event.currentTarget.innerText.split(' ')[1];
 
     this.props.form.setFieldsValue({ amount: value });
     this.setState({
@@ -291,9 +291,7 @@ export default class Transfer extends React.Component {
   };
 
   handleClickMax = () => {
-    const { isGuest, user } = this.props;
-    const currAmount = this.getTokensBalanceList()[this.state.currency];
-    const currentBalance = isGuest ? user.balance : currAmount;
+    const currentBalance = this.getTokensBalanceList()[this.state.currency];
 
     this.props.form.setFieldsValue({ amount: currentBalance });
     this.setState({
