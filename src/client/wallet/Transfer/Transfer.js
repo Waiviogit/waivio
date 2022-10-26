@@ -254,7 +254,7 @@ export default class Transfer extends React.Component {
     return {
       HIVE: parseFloat(this.props.user.balance),
       ...(this.props.isGuest
-        ? { WAIV: this.props.WAIVinfo?.balance || 0 }
+        ? { WAIV: this.props.user?.waivBalance || 0 }
         : { HBD: parseFloat(this.props.user.hbd_balance) }),
       ...hiveEngineList,
     };
@@ -413,7 +413,7 @@ export default class Transfer extends React.Component {
           sendPendingTransferAction({ sponsor, userName, amount, transactionId, memo });
           setTimeout(() => getPayables(), 1000);
         }
-        // this.props.closeTransfer();
+        this.props.closeTransfer();
       }
     });
   };
@@ -632,7 +632,7 @@ export default class Transfer extends React.Component {
         { symbol: 'HIVE', balance: parseFloat(user.balance) },
         {
           symbol: 'WAIV',
-          balance: +this.props.WAIVinfo?.balance || 0,
+          balance: +this.props.user?.waivBalance || 0,
         },
       ];
     }

@@ -2,14 +2,17 @@ import React from 'react';
 import { FormattedDate, FormattedRelative, FormattedTime } from 'react-intl';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router';
+import { useSelector } from 'react-redux';
 
 import BTooltip from '../../components/BTooltip';
 import { epochToUTC } from '../../../common/helpers/formatter';
 import { guestUserRegex } from '../../../common/helpers/regexHelpers';
+import { getCurrentWalletType } from '../../../store/walletStore/walletSelectors';
 
 const CardsTimeStamp = ({ timestamp, match }) => {
+  const walletType = useSelector(getCurrentWalletType);
   const isGuest = guestUserRegex.test(match.params.name);
-  const validTimeStamp = isGuest ? timestamp : epochToUTC(timestamp);
+  const validTimeStamp = isGuest && walletType !== 'WAIV' ? timestamp : epochToUTC(timestamp);
 
   return (
     <span className="UserWalletTransactions__timestamp">
