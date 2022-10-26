@@ -376,8 +376,8 @@ class ObjectInfo extends React.Component {
       {
         body:
           hoveredOption?.body?.image ||
-          hoveredOption.image ||
           activeOption?.body?.image ||
+          optionsPictures[0]?.body ||
           wobject.avatar,
         id: wobject.author_permlink,
       },
@@ -425,7 +425,7 @@ class ObjectInfo extends React.Component {
           <PicturesCarousel
             activePicture={activeOption}
             onClick={this.handleOptionClick}
-            pics={pictures.length > 1 || avatar ? activeOptionPicture : []}
+            pics={pictures.length > 1 || avatar || wobject?.options ? activeOptionPicture : []}
             objectID={wobject.author_permlink}
           />,
         )}
@@ -634,7 +634,18 @@ class ObjectInfo extends React.Component {
             </div>
           ),
         )}
-
+        {this.listItem(
+          objectFields.options,
+          wobject.options && !isOptionsObjectType && (
+            <Options
+              setHoveredOption={option => this.setState({ hoveredOption: option })}
+              setActiveOption={option => this.setState({ activeOption: option })}
+              isEditMode={isEditMode}
+              wobject={wobject}
+              history={this.props.history}
+            />
+          ),
+        )}
         {this.listItem(
           objectFields.workTime,
           workTime && (

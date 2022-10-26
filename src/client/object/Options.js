@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+import { isEmpty } from 'lodash';
 import './Options.less';
 
 const Options = ({ wobject, isEditMode, setHoveredOption, setActiveOption, history }) => {
@@ -24,6 +25,28 @@ const Options = ({ wobject, isEditMode, setHoveredOption, setActiveOption, histo
       setActiveOption(el);
     }
   };
+  const options = Object.entries(wobject?.options);
+  const filteredOptions = options.reduce((accumulator, currentValue) => {
+    // eslint-disable-next-line no-param-reassign
+    accumulator[currentValue[0]] = currentValue[1].reduce((a, v) => {
+      if (!isEmpty(a) && a.some(o => o.body.value === v.body.value)) {
+        return a;
+      }
+      const duplicatedOptionsArray = currentValue[1]?.filter(
+        i => i?.body?.value === v?.body?.value,
+      );
+      const r =
+        duplicatedOptionsArray.length > 1
+          ? duplicatedOptionsArray.filter(
+              d => d.body.parentObjectPermlink === wobject.author_permlink,
+            )
+          : duplicatedOptionsArray;
+
+      return [...a, r[0] || duplicatedOptionsArray[0]];
+    }, []);
+
+    return accumulator;
+  }, {});
 
   return (
     <>
@@ -61,7 +84,7 @@ const Options = ({ wobject, isEditMode, setHoveredOption, setActiveOption, histo
           ))
         : wobject?.options && (
             <div>
-              {Object.entries(wobject?.options).map(option => (
+              {Object.entries(filteredOptions).map(option => (
                 <div className="mb1" key={option[0]}>
                   {' '}
                   <div>
