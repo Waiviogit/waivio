@@ -1110,8 +1110,7 @@ export default class AppendForm extends Component {
       currentField === objectFields.authors ||
       currentField === objectFields.publisher ||
       currentField === objectFields.dimensions ||
-      currentField === objectFields.productWeight ||
-      currentField === objectFields.options
+      currentField === objectFields.productWeight
     ) {
       return filtered.some(f =>
         isEqual(this.getCurrentObjectBody(currentField), parseJSON(f.body)),
@@ -1125,6 +1124,13 @@ export default class AppendForm extends Component {
         f =>
           this.getCurrentObjectBody(currentField).productId === parseJSON(f.body).productId &&
           this.getCurrentObjectBody(currentField).productIdType === parseJSON(f.body).productIdType,
+      );
+    }
+    if (currentField === objectFields.options) {
+      return filtered.some(
+        f =>
+          this.getCurrentObjectBody(currentField).category === parseJSON(f.body).category &&
+          this.getCurrentObjectBody(currentField).value === parseJSON(f.body).value,
       );
     }
     if (currentField === objectFields.phone)
