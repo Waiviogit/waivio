@@ -612,6 +612,16 @@ class ObjectInfo extends React.Component {
                 </div>
               )),
           )}
+        {this.listItem(
+          objectFields.description,
+          description && <DescriptionInfo description={description} />,
+        )}
+        {this.listItem(
+          objectFields.rating,
+          <RateInfo username={userName} authorPermlink={wobject.author_permlink} />,
+        )}
+        {this.listItem(objectFields.tagCategory, this.renderTagCategories(tagCategoriesList))}
+        {this.listItem(objectFields.categoryItem, null)}
         {!isOptionsObjectType &&
           this.listItem(
             objectFields.galleryItem,
@@ -627,16 +637,6 @@ class ObjectInfo extends React.Component {
               </div>
             ),
           )}
-        {this.listItem(
-          objectFields.description,
-          description && <DescriptionInfo description={description} />,
-        )}
-        {this.listItem(
-          objectFields.rating,
-          <RateInfo username={userName} authorPermlink={wobject.author_permlink} />,
-        )}
-        {this.listItem(objectFields.tagCategory, this.renderTagCategories(tagCategoriesList))}
-        {this.listItem(objectFields.categoryItem, null)}
         {this.listItem(
           objectFields.workTime,
           workTime && (
