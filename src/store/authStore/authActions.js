@@ -241,10 +241,10 @@ export const changeSorting = sorting => dispatch => {
   return Promise.resolve();
 };
 
-export const changeRewardsTab = username => dispatch =>
+export const changeRewardsTab = () => (dispatch, getState) =>
   dispatch({
     type: SET_TAB_REWARDS.ACTION,
-    payload: getRewardTab(username).then(res => res),
+    payload: getRewardTab(getAuthenticatedUserName(getState())).then(res => res),
   });
 
 export const updateProfile = (username, values) => (dispatch, getState) => {

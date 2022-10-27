@@ -5,7 +5,12 @@ import hivesigner from 'hivesigner';
 import { batch, connect, useDispatch } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { isEmpty } from 'lodash';
-import { login, busyLogin, getAuthGuestBalance } from '../../../../store/authStore/authActions';
+import {
+  login,
+  busyLogin,
+  getAuthGuestBalance,
+  changeRewardsTab,
+} from '../../../../store/authStore/authActions';
 import { isUserRegistered } from '../../../../waivioApi/ApiClient';
 import {
   getFollowing,
@@ -77,7 +82,6 @@ const ModalSignIn = ({
     } else if (isModalOpen && response) {
       const id = socialNetwork === 'google' ? response.googleId : response.id;
       const res = await isUserRegistered(id, socialNetwork);
-
       if (res) {
         dispatch(login(response.accessToken, socialNetwork)).then(() => {
           setIsLoading(false);
@@ -90,6 +94,7 @@ const ModalSignIn = ({
             dispatch(getRebloggedList());
             dispatch(getRate());
             dispatch(getAuthGuestBalance());
+            dispatch(changeRewardsTab());
           });
         });
       } else {
