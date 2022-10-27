@@ -353,11 +353,14 @@ export default class Transfer extends React.Component {
         if (!isString(transferQuery.memo)) transferQuery.memo = JSON.stringify(transferQuery.memo);
 
         if (isGuest) {
-          const transferMethod = Object.keys(Transfer.CURRENCIES).includes(this.state.currency)
-            ? sendGuestTransfer
-            : sendGuestTransferWAIV;
+          const isHive = Object.keys(Transfer.CURRENCIES).includes(this.state.currency);
+          const transferMethod = isHive ? sendGuestTransfer : sendGuestTransferWAIV;
 
-          transferMethod({ ...transferQuery, account: sponsor }).then(res => {
+          transferMethod({
+            ...transferQuery,
+            amount: isHive ? transferQuery.amount : +values.amount,
+            account: sponsor,
+          }).then(res => {
             if (res.result || res.id) {
               this.props.notify(
                 this.props.intl.formatMessage({
