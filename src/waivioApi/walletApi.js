@@ -39,7 +39,7 @@ export const sendGuestTransferWAIV = async ({
       data: {
         to,
         app,
-        quantity: +amount.split(' ')[0],
+        quantity: amount,
         symbol,
         memo,
       },
