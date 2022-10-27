@@ -39,7 +39,9 @@ const PicturesCarousel = ({ activePicture, onClick, pics, objectID }) => {
         ))}
       </Carousel>
     </div>
-  ) : null;
+  ) : (
+    <div />
+  );
 };
 
 PicturesCarousel.propTypes = {

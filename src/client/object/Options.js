@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { isEmpty } from 'lodash';
 import './Options.less';
@@ -47,6 +47,21 @@ const Options = ({ wobject, isEditMode, setHoveredOption, setActiveOption, histo
 
     return accumulator;
   }, {});
+
+  const firstEl = Object.entries(wobject?.options).reduce((a, v) => {
+    if (a[v[0]]) {
+      return a;
+    }
+    // eslint-disable-next-line no-param-reassign
+    a[v[0]] = v[1][0];
+
+    return a;
+  }, {});
+
+  useEffect(() => {
+    setSelectedOption(firstEl);
+    setActiveOption(firstEl);
+  }, []);
 
   return (
     <>
