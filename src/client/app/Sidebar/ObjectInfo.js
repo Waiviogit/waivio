@@ -315,8 +315,8 @@ class ObjectInfo extends React.Component {
 
       return album;
     });
-  handleOptionClick = option => {
-    if (!option.name) {
+  handleOptionClick = pic => {
+    if (!pic.name) {
       this.setState({ openOption: true });
     }
   };
@@ -377,16 +377,17 @@ class ObjectInfo extends React.Component {
         body:
           hoveredOption?.body?.image ||
           activeOption?.body?.image ||
-          optionsPictures[0]?.body ||
-          wobject.avatar,
+          wobject.avatar ||
+          optionsPictures[0]?.body,
         id: wobject.author_permlink,
+        name: wobject.avatar && 'avatar',
       },
       ...pictures,
       ...sortedOptionsPictures,
     ];
     const lightboxOptionPicture = [
       {
-        body: hoveredOption?.body?.image || activeOption?.body?.image || wobject.avatar,
+        body: hoveredOption?.body?.image || activeOption?.body?.image || optionsPictures[0]?.body,
         id: wobject.author_permlink,
       },
       ...sortedOptionsPictures,
@@ -417,65 +418,6 @@ class ObjectInfo extends React.Component {
       ...item,
       id: objectFields.form,
     }));
-    const isOptionsObjectType = ['book', 'service', 'product'].includes(wobject.object_type);
-    const galleryOptionsPriceSection = (
-      <>
-        {this.listItem(
-          objectFields.galleryItem,
-          <PicturesCarousel
-            activePicture={activeOption}
-            onClick={this.handleOptionClick}
-            pics={pictures.length > 1 || avatar || wobject?.options ? activeOptionPicture : []}
-            objectID={wobject.author_permlink}
-          />,
-        )}
-        {this.state.openOption && (
-          <Lightbox
-            mainSrc={lightboxOptionPicture[photoIndex].body}
-            nextSrc={lightboxOptionPicture[(photoIndex + 1) % lightboxOptionPicture.length].body}
-            prevSrc={
-              lightboxOptionPicture[
-                (photoIndex + lightboxOptionPicture.length - 1) % lightboxOptionPicture.length
-              ].body
-            }
-            onMovePrevRequest={() =>
-              this.setState({
-                photoIndex:
-                  (photoIndex + lightboxOptionPicture.length - 1) % lightboxOptionPicture.length,
-              })
-            }
-            onMoveNextRequest={() =>
-              this.setState({
-                photoIndex: (photoIndex + 1) % lightboxOptionPicture.length,
-              })
-            }
-            onCloseRequest={this.handleOptionCloseClick}
-          />
-        )}
-        {this.listItem(
-          objectFields.price,
-          price && (
-            <div className="flex">
-              {!isEditMode && <span className="field-icon">$</span>}
-              <span className="price-value fw8">{hoveredOption.price || price}</span>
-            </div>
-          ),
-        )}
-
-        {this.listItem(
-          objectFields.options,
-          wobject.options && (
-            <Options
-              setHoveredOption={option => this.setState({ hoveredOption: option })}
-              setActiveOption={option => this.setState({ activeOption: option })}
-              isEditMode={isEditMode}
-              wobject={wobject}
-              history={this.props.history}
-            />
-          ),
-        )}
-      </>
-    );
 
     const menuSection = () => {
       if (!isEditMode && !isEmpty(customSort) && !hasType(wobject, OBJECT_TYPE.LIST)) {
@@ -619,33 +561,6 @@ class ObjectInfo extends React.Component {
         )}
         {this.listItem(objectFields.tagCategory, this.renderTagCategories(tagCategoriesList))}
         {this.listItem(objectFields.categoryItem, null)}
-        {this.listItem(
-          objectFields.galleryItem,
-          pictures && !isOptionsObjectType && (
-            <PicturesCarousel pics={pictures} objectID={wobject.author_permlink} />
-          ),
-        )}
-        {this.listItem(
-          objectFields.price,
-          price && !isOptionsObjectType && (
-            <div className="flex">
-              {!isEditMode && <span className="field-icon">$</span>}
-              <span className="price-value fw8">{price}</span>
-            </div>
-          ),
-        )}
-        {this.listItem(
-          objectFields.options,
-          wobject.options && (
-            <Options
-              setHoveredOption={option => this.setState({ hoveredOption: option })}
-              setActiveOption={option => this.setState({ activeOption: option })}
-              isEditMode={isEditMode}
-              wobject={wobject}
-              history={this.props.history}
-            />
-          ),
-        )}
         {this.listItem(
           objectFields.workTime,
           workTime && (
@@ -1008,7 +923,64 @@ class ObjectInfo extends React.Component {
                     </div>
                   )),
               )}
-            {isOptionsObjectType && !isEditMode && galleryOptionsPriceSection}
+            {(pictures.length > 1 || avatar || wobject?.options) &&
+              this.listItem(
+                objectFields.galleryItem,
+                <PicturesCarousel
+                  activePicture={activeOption}
+                  onClick={this.handleOptionClick}
+                  pics={activeOptionPicture}
+                  objectID={wobject.author_permlink}
+                />,
+              )}
+            {this.state.openOption && (
+              <Lightbox
+                mainSrc={lightboxOptionPicture[photoIndex].body}
+                nextSrc={
+                  lightboxOptionPicture[(photoIndex + 1) % lightboxOptionPicture.length].body
+                }
+                prevSrc={
+                  lightboxOptionPicture[
+                    (photoIndex + lightboxOptionPicture.length - 1) % lightboxOptionPicture.length
+                  ].body
+                }
+                onMovePrevRequest={() =>
+                  this.setState({
+                    photoIndex:
+                      (photoIndex + lightboxOptionPicture.length - 1) %
+                      lightboxOptionPicture.length,
+                  })
+                }
+                onMoveNextRequest={() =>
+                  this.setState({
+                    photoIndex: (photoIndex + 1) % lightboxOptionPicture.length,
+                  })
+                }
+                onCloseRequest={this.handleOptionCloseClick}
+              />
+            )}
+            {this.listItem(
+              objectFields.price,
+              price && (
+                <div className="flex">
+                  {!isEditMode && <span className="field-icon">$</span>}
+                  <span className="price-value fw8">{hoveredOption.price || price}</span>
+                </div>
+              ),
+            )}
+
+            {this.listItem(
+              objectFields.options,
+              wobject.options && (
+                <Options
+                  setHoveredOption={option => this.setState({ hoveredOption: option })}
+                  setActiveOption={option => this.setState({ activeOption: option })}
+                  isEditMode={isEditMode}
+                  wobject={wobject}
+                  history={this.props.history}
+                />
+              ),
+            )}
             {!isHashtag && !hasType(wobject, OBJECT_TYPE.PAGE) && menuSection()}
             {!isHashtag && aboutSection}
             {accessExtend && hasType(wobject, OBJECT_TYPE.LIST) && listSection}
