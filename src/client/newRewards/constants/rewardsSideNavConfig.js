@@ -49,17 +49,20 @@ export const campaingSettings = withWarning => ({
       id: 'create',
       defaultMessage: 'Create',
       paths: ['/rewards-new/duplicate', '/rewards-new/details', '/rewards-new/create'],
+      forUser: true,
     },
     {
       to: '/rewards-new/manage',
       id: 'manage',
       defaultMessage: 'Manage',
+      forUser: true,
     },
     {
       to: '/rewards-new/payables',
       id: 'payable',
       defaultMessage: 'Payable',
       withWarning,
+      forUser: true,
     },
     {
       to: '/rewards-new/reports',
@@ -70,21 +73,25 @@ export const campaingSettings = withWarning => ({
       to: '/rewards-new/reservations',
       id: 'reservations',
       defaultMessage: 'Reservations',
+      forUser: true,
     },
     {
       to: '/rewards-new/messages',
       id: 'messages',
       defaultMessage: 'Messages',
+      forUser: true,
     },
     {
       to: '/rewards-new/fraud-detection',
       id: 'fraud-detection',
       defaultMessage: 'Fraud detection',
+      forUser: true,
     },
     {
       to: '/rewards-new/black-list',
       id: 'blackList',
       defaultMessage: 'Blacklist',
+      forUser: true,
     },
   ],
 });
@@ -94,6 +101,7 @@ export const matchBotsSettings = {
     name: 'matchbots',
     id: 'match_bots',
     defaultMessage: 'Match bots',
+    forUser: true,
   },
   settings: [
     {

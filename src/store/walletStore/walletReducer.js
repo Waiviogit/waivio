@@ -394,8 +394,11 @@ export default function walletReducer(state = initialState, action) {
       return {
         ...state,
         waivTransactionHistory: {
-          list: [...action.payload.history],
-          hasMore: action.payload.history.length === action.meta,
+          list: [...action.payload.history.sort((a, b) => b.timestamp - a.timestamp)],
+          hasMore: action.isGuest
+            ? action.payload.hasMore
+            : action.payload.history.length === action.meta,
+          loading: false,
         },
       };
 
@@ -465,9 +468,9 @@ export default function walletReducer(state = initialState, action) {
         ...state,
         userBalances: {
           ...state.userBalances,
-          [action.meta]: {
-            balance: 0,
-            ...action.payload[0],
+          [action.meta.token]: {
+            balance: action.meta.isGuest ? action.payload[action.meta.token] : 0,
+            ...(action.meta.isGuest ? {} : action.payload[0]),
           },
         },
       };

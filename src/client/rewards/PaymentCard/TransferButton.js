@@ -26,10 +26,13 @@ const TransferButton = ({ match, intl, payable, name, openTransf, currency }) =>
     match.path.includes('receivables');
   const pathPaybles = match.path === PATH_NAME_PAYABLES || match.path.includes('payables');
   const isOverpayment = payable < 0;
-  const memo =
-    currency === 'HIVE'
-      ? getMemo(isReceiverGuest, pathRecivables, isOverpayment)
-      : 'campaignReward';
+  let memo;
+
+  if (currency === 'HIVE') {
+    memo = getMemo(isReceiverGuest, pathRecivables, isOverpayment);
+  } else {
+    memo = isReceiverGuest ? 'guestCampaignReward' : 'campaignReward';
+  }
 
   return (
     <React.Fragment>

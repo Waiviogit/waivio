@@ -11,8 +11,24 @@ export const REWARD = {
   overpayment_refund: 'overpayment_refund',
 };
 
+export const guestTransferId = {
+  HIVE: {
+    guestReward: 'guest_reward',
+    userReward: 'user_reward',
+    guestTransfer: 'user_to_guest_transfer',
+    overpayment_refund: 'overpayment_refund',
+  },
+  WAIV: {
+    guestReward: 'guest_reward',
+    userReward: 'user_reward',
+    guestTransfer: 'transferToGuest',
+    overpayment_refund: 'transferFromGuest',
+  },
+};
+
 export const TYPE = {
   transfer: 'transfer',
+  transferToGuest: 'transferToGuest',
   demoDebt: 'demo_debt',
   overpaymentRefund: 'overpayment_refund',
 };

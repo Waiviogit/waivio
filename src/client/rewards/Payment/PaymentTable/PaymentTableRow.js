@@ -20,7 +20,9 @@ const PaymentTableRow = ({ intl, sponsor, isReports, reservationPermlink }) => {
   const location = useLocation();
   const isNewReward = location.pathname.includes('rewards-new');
   const getConvertDigits = obj =>
-    obj.type === 'transfer' ? `-${convertDigits(obj.amount)}` : convertDigits(obj.amount);
+    [TYPE.transfer, TYPE.transferToGuest].includes(obj.type)
+      ? `-${convertDigits(obj.amount)}`
+      : convertDigits(obj.amount);
   const dispatch = useDispatch();
   const guideName = sponsor.sponsor || sponsor.guideName;
   const toggleModalReport = () => {
@@ -90,6 +92,7 @@ const PaymentTableRow = ({ intl, sponsor, isReports, reservationPermlink }) => {
           </React.Fragment>
         );
       case TYPE.transfer:
+      case TYPE.transferToGuest:
       case TYPE.demoDebt:
         return (
           <React.Fragment>
@@ -218,9 +221,9 @@ const PaymentTableRow = ({ intl, sponsor, isReports, reservationPermlink }) => {
         </div>
       </td>
       <td>
-        {sponsor.type === TYPE.transfer ||
-        sponsor.type === TYPE.demoDebt ||
-        sponsor.type === TYPE.overpaymentRefund ? (
+        {[TYPE.transfer, TYPE.transferToGuest, TYPE.demoDebt, TYPE.overpaymentRefund].includes(
+          sponsor.type,
+        ) ? (
           <p>
             {intl.formatMessage({
               id: 'paymentTable_payment',

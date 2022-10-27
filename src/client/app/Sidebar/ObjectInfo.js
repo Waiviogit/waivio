@@ -7,6 +7,7 @@ import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
 import moment from 'moment';
 import classNames from 'classnames';
+import Lightbox from 'react-image-lightbox';
 import {
   accessTypesArr,
   getBlogItems,
@@ -84,6 +85,8 @@ class ObjectInfo extends React.Component {
   };
 
   state = {
+    openOption: false,
+    photoIndex: 0,
     activeOption: {},
     hoveredOption: {},
     selectedField: null,
@@ -312,9 +315,16 @@ class ObjectInfo extends React.Component {
 
       return album;
     });
+  handleOptionClick = pic => {
+    if (!pic.name) {
+      this.setState({ openOption: true });
+    }
+  };
+  handleOptionCloseClick = () => this.setState({ openOption: false, photoIndex: 0 });
 
   render() {
     const { wobject, userName, isAuthenticated, relatedAlbum } = this.props;
+    const { photoIndex, activeOption, hoveredOption } = this.state;
     const isEditMode = isAuthenticated ? this.props.isEditMode : false;
     const newsFilters = get(wobject, 'newsFilter', []);
     const website = parseWobjectField(wobject, 'website');
@@ -350,16 +360,39 @@ class ObjectInfo extends React.Component {
       ? wobject.authors.map(el => parseWobjectField(el, 'body', []))
       : [];
 
+    const optionsPictures = wobject?.options
+      ? Object.entries(wobject?.options)
+          .map(option => Object.values(option))
+          .flatMap(el => el[1])
+          .filter(el => el.body.image)
+          .map(o => ({ body: o.body.image, id: o.permlink }))
+      : [];
+
+    const sortedOptionsPictures = optionsPictures.filter(
+      o => activeOption?.body?.image !== o?.body,
+    );
+
     const activeOptionPicture = [
       {
         body:
-          this.state.hoveredOption?.body?.image ||
-          this.state.activeOption?.body?.image ||
-          wobject.avatar,
+          hoveredOption?.avatar ||
+          activeOption?.avatar ||
+          wobject.avatar ||
+          optionsPictures[0]?.body,
         id: wobject.author_permlink,
+        name: wobject.avatar && 'avatar',
       },
       ...pictures,
+      ...sortedOptionsPictures,
     ];
+    const lightboxOptionPicture = [
+      {
+        body: hoveredOption?.avatar || activeOption?.avatar || optionsPictures[0]?.body,
+        id: wobject.author_permlink,
+      },
+      ...sortedOptionsPictures,
+    ];
+
     const dimensions = parseWobjectField(wobject, 'dimensions');
     const productWeight = parseWobjectField(wobject, 'productWeight');
     const profile = linkField
@@ -385,23 +418,49 @@ class ObjectInfo extends React.Component {
       ...item,
       id: objectFields.form,
     }));
-    const isOptionsObjectType = ['book', 'service', 'product'].includes(wobject.object_type);
-    const galleryOptionsPriceSection = (
-      <>
-        {this.listItem(
-          objectFields.galleryItem,
-          <PicturesCarousel
-            pics={pictures.length > 1 || avatar ? activeOptionPicture : null}
-            objectID={wobject.author_permlink}
-          />,
-        )}
 
+    const isOptionsObjectType = ['book', 'product', 'service'].includes(wobject.object_type);
+    const galleryPriceOptionsSection = (
+      <>
+        {(pictures.length > 1 || avatar || wobject?.options) &&
+          this.listItem(
+            objectFields.galleryItem,
+            <PicturesCarousel
+              activePicture={activeOption}
+              onClick={this.handleOptionClick}
+              pics={activeOptionPicture}
+              objectID={wobject.author_permlink}
+            />,
+          )}
+        {this.state.openOption && (
+          <Lightbox
+            mainSrc={lightboxOptionPicture[photoIndex].body}
+            nextSrc={lightboxOptionPicture[(photoIndex + 1) % lightboxOptionPicture.length].body}
+            prevSrc={
+              lightboxOptionPicture[
+                (photoIndex + lightboxOptionPicture.length - 1) % lightboxOptionPicture.length
+              ].body
+            }
+            onMovePrevRequest={() =>
+              this.setState({
+                photoIndex:
+                  (photoIndex + lightboxOptionPicture.length - 1) % lightboxOptionPicture.length,
+              })
+            }
+            onMoveNextRequest={() =>
+              this.setState({
+                photoIndex: (photoIndex + 1) % lightboxOptionPicture.length,
+              })
+            }
+            onCloseRequest={this.handleOptionCloseClick}
+          />
+        )}
         {this.listItem(
           objectFields.price,
           price && (
             <div className="flex">
               {!isEditMode && <span className="field-icon">$</span>}
-              <span className="price-value fw8">{this.state.activeOption.price || price}</span>
+              <span className="price-value fw8">{hoveredOption.price || price}</span>
             </div>
           ),
         )}
@@ -410,8 +469,8 @@ class ObjectInfo extends React.Component {
           objectFields.options,
           wobject.options && (
             <Options
-              setHoveredOption={hoveredOption => this.setState({ hoveredOption })}
-              setActiveOption={activeOption => this.setState({ activeOption })}
+              setHoveredOption={option => this.setState({ hoveredOption: option })}
+              setActiveOption={option => this.setState({ activeOption: option })}
               isEditMode={isEditMode}
               wobject={wobject}
               history={this.props.history}
@@ -563,22 +622,21 @@ class ObjectInfo extends React.Component {
         )}
         {this.listItem(objectFields.tagCategory, this.renderTagCategories(tagCategoriesList))}
         {this.listItem(objectFields.categoryItem, null)}
-        {this.listItem(
-          objectFields.galleryItem,
-          pictures && !isOptionsObjectType && (
-            <PicturesCarousel pics={pictures} objectID={wobject.author_permlink} />
-          ),
-        )}
-        {this.listItem(
-          objectFields.price,
-          price && !isOptionsObjectType && (
-            <div className="flex">
-              {!isEditMode && <span className="field-icon">$</span>}
-              <span className="price-value fw8">{price}</span>
-            </div>
-          ),
-        )}
-
+        {!isOptionsObjectType &&
+          this.listItem(
+            objectFields.galleryItem,
+            <PicturesCarousel pics={pictures} objectID={wobject.author_permlink} />,
+          )}
+        {!isOptionsObjectType &&
+          this.listItem(
+            objectFields.price,
+            price && (
+              <div className="flex">
+                {!isEditMode && <span className="field-icon">$</span>}
+                <span className="price-value fw8">{price}</span>
+              </div>
+            ),
+          )}
         {this.listItem(
           objectFields.workTime,
           workTime && (
@@ -853,7 +911,6 @@ class ObjectInfo extends React.Component {
             objectFields.groupId,
             groupId && (
               <div className="field-info">
-                <FormattedMessage id="object_field_groupId" formattedMessage="Group ID" />
                 <div className="field-website__title">
                   <span className="CompanyId__wordbreak ">{groupId}</span>
                 </div>
@@ -942,7 +999,7 @@ class ObjectInfo extends React.Component {
                     </div>
                   )),
               )}
-            {isOptionsObjectType && galleryOptionsPriceSection}
+            {isOptionsObjectType && galleryPriceOptionsSection}
             {!isHashtag && !hasType(wobject, OBJECT_TYPE.PAGE) && menuSection()}
             {!isHashtag && aboutSection}
             {accessExtend && hasType(wobject, OBJECT_TYPE.LIST) && listSection}

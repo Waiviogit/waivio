@@ -1,9 +1,52 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
+import { isEmpty } from 'lodash';
 import './Options.less';
 
 const Options = ({ wobject, isEditMode, setHoveredOption, setActiveOption, history }) => {
   const [selectedOption, setSelectedOption] = useState({});
+  const [hovered, setHovered] = useState({});
+
+  const onMouseOver = (e, el) => {
+    setHoveredOption(el);
+    setHovered({ ...hovered, [el.body.category]: el });
+  };
+  const onMouseOut = () => {
+    setHoveredOption(selectedOption);
+    setHovered(selectedOption);
+  };
+  const onOptionButtonClick = (e, el) => {
+    setSelectedOption({ ...selectedOption, [el.body.category]: el });
+    setActiveOption(el);
+    setHoveredOption(el);
+    if (el.body.parentObjectPermlink !== wobject.author_permlink) {
+      history.push(`/object/${el.author_permlink}`);
+      setSelectedOption(el);
+      setActiveOption(el);
+    }
+  };
+  const options = Object.entries(wobject?.options);
+  const filteredOptions = options.reduce((accumulator, currentValue) => {
+    // eslint-disable-next-line no-param-reassign
+    accumulator[currentValue[0]] = currentValue[1].reduce((a, v) => {
+      if (!isEmpty(a) && a.some(o => o.body.value === v.body.value)) {
+        return a;
+      }
+      const duplicatedOptionsArray = currentValue[1]?.filter(
+        i => i?.body?.value === v?.body?.value,
+      );
+      const r =
+        duplicatedOptionsArray.length > 1
+          ? duplicatedOptionsArray.filter(
+              d => d.body.parentObjectPermlink === wobject.author_permlink,
+            )
+          : duplicatedOptionsArray;
+
+      return [...a, r[0] || duplicatedOptionsArray[0]];
+    }, []);
+
+    return accumulator;
+  }, {});
 
   const firstEl = Object.entries(wobject?.options).reduce((a, v) => {
     if (a[v[0]]) {
@@ -19,22 +62,6 @@ const Options = ({ wobject, isEditMode, setHoveredOption, setActiveOption, histo
     setSelectedOption(firstEl);
     setActiveOption(firstEl);
   }, []);
-  const onMouseOver = (e, el) => {
-    setHoveredOption(el);
-  };
-  const onMouseOut = () => {
-    setHoveredOption(selectedOption);
-  };
-  const onOptionButtonClick = (e, el) => {
-    setSelectedOption({ ...selectedOption, [el.body.category]: el });
-    setActiveOption(el);
-    setHoveredOption(el);
-    if (el.body.parentObjectPermlink !== wobject.author_permlink) {
-      history.push(`/object/${el.author_permlink}`);
-      setSelectedOption(el);
-      setActiveOption(el);
-    }
-  };
 
   return (
     <>
@@ -43,14 +70,20 @@ const Options = ({ wobject, isEditMode, setHoveredOption, setActiveOption, histo
           Object.entries(wobject?.options).map(option => (
             <div className="mb1" key={option[0]}>
               {' '}
-              <div>
-                {option[0]}: {selectedOption?.[option[0]]?.body?.value}
-              </div>
+              {option[1].some(el => el.author_permlink === wobject.author_permlink) && (
+                <div>
+                  {option[0]}:{' '}
+                  <span className="fw6">
+                    {hovered?.[option[0]]?.body?.value || selectedOption?.[option[0]]?.body?.value}{' '}
+                  </span>
+                </div>
+              )}
               {option[1]?.map(
                 el =>
                   el.author_permlink === wobject.author_permlink && (
                     <div key={el.author_permlink}>
-                      {el.body.position}.{el.body.value}{' '}
+                      {el.body.position}
+                      {el.body.position ? '.' : ''} {el.body.value}{' '}
                       {el.body.image && (
                         <div>
                           <img
@@ -68,11 +101,15 @@ const Options = ({ wobject, isEditMode, setHoveredOption, setActiveOption, histo
           ))
         : wobject?.options && (
             <div>
-              {Object.entries(wobject?.options).map(option => (
+              {Object.entries(filteredOptions).map(option => (
                 <div className="mb1" key={option[0]}>
                   {' '}
                   <div>
-                    {option[0]}: {selectedOption?.[option[0]]?.body?.value}
+                    {option[0]}:{' '}
+                    <span className="fw8">
+                      {hovered?.[option[0]]?.body?.value ||
+                        selectedOption?.[option[0]]?.body?.value}
+                    </span>
                   </div>
                   <>
                     {option[1]?.map(el => (

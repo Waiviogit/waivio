@@ -21,7 +21,7 @@ import { BANK_ACCOUNT } from '../../../common/constants/waivio';
 import { guestUserRegex } from '../../../common/helpers/regexHelpers';
 import Avatar from '../../components/Avatar';
 import USDDisplay from '../../components/Utils/USDDisplay';
-import { REWARD } from '../../../common/constants/rewards';
+import { guestTransferId } from '../../../common/constants/rewards';
 import LinkHiveAccountModal from '../../settings/LinkHiveAccountModal';
 import {
   saveSettings,
@@ -47,6 +47,7 @@ import {
   getTransferIsTip,
   getTransferMemo,
   getTransferTo,
+  getUserCurrencyBalance,
 } from '../../../store/walletStore/walletSelectors';
 import {
   getHiveBeneficiaryAccount,
@@ -56,6 +57,7 @@ import { getSearchUsersResults } from '../../../store/searchStore/searchSelector
 
 import './Transfer.less';
 import { fixedNumber } from '../../../common/helpers/parser';
+import { sendGuestTransferWAIV } from '../../../waivioApi/walletApi';
 
 const InputGroup = Input.Group;
 
@@ -83,6 +85,7 @@ const InputGroup = Input.Group;
     showModal: isOpenLinkModal(state),
     tokensList: getTokensBalanceListForTransfer(state),
     walletType: getCurrentWalletType(state),
+    WAIVinfo: getUserCurrencyBalance(state, 'WAIV'),
   }),
   {
     closeTransfer,
@@ -105,6 +108,9 @@ export default class Transfer extends React.Component {
     form: PropTypes.shape().isRequired,
     tokensList: PropTypes.arrayOf(PropTypes.shape()).isRequired,
     cryptosPriceHistory: PropTypes.shape().isRequired,
+    WAIVinfo: PropTypes.shape({
+      balance: PropTypes.string,
+    }).isRequired,
     getCryptoPriceHistory: PropTypes.func.isRequired,
     getUserTokensBalanceList: PropTypes.func.isRequired,
     closeTransfer: PropTypes.func,
@@ -167,7 +173,7 @@ export default class Transfer extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      currency: this.props.isGuest ? 'HIVE' : this.props.currency,
+      currency: this.props.isGuest ? 'WAIV' : this.props.currency,
       balance: parseFloat(this.props.user.balance),
       oldAmount: undefined,
       searchBarValue: '',
@@ -246,8 +252,10 @@ export default class Transfer extends React.Component {
     }, {});
 
     return {
-      HBD: parseFloat(this.props.user.hbd_balance),
       HIVE: parseFloat(this.props.user.balance),
+      ...(this.props.isGuest
+        ? { WAIV: this.props.user?.waivBalance || 0 }
+        : { HBD: parseFloat(this.props.user.hbd_balance) }),
       ...hiveEngineList,
     };
   };
@@ -273,7 +281,7 @@ export default class Transfer extends React.Component {
   };
 
   handleBalanceClick = event => {
-    const value = parseFloat(event.currentTarget.innerText);
+    const value = event.currentTarget.innerText.split(' ')[1];
 
     this.props.form.setFieldsValue({ amount: value });
     this.setState({
@@ -283,9 +291,7 @@ export default class Transfer extends React.Component {
   };
 
   handleClickMax = () => {
-    const { isGuest, user } = this.props;
-    const currAmount = this.getTokensBalanceList()[this.state.currency];
-    const currentBalance = isGuest ? user.balance : currAmount;
+    const currentBalance = this.getTokensBalanceList()[this.state.currency];
 
     this.props.form.setFieldsValue({ amount: currentBalance });
     this.setState({
@@ -333,7 +339,7 @@ export default class Transfer extends React.Component {
         if (guestUserRegex.test(values.to)) {
           transferQuery.to = BANK_ACCOUNT;
           transferQuery.memo = {
-            ...(transferQuery.memo || { id: REWARD.guestTransfer }),
+            ...(transferQuery.memo || { id: guestTransferId[this.state.currency]?.guestTransfer }),
             to: values.to,
           };
         } else {
@@ -347,8 +353,15 @@ export default class Transfer extends React.Component {
         if (!isString(transferQuery.memo)) transferQuery.memo = JSON.stringify(transferQuery.memo);
 
         if (isGuest) {
-          sendGuestTransfer(transferQuery).then(res => {
-            if (res.result) {
+          const isHive = Object.keys(Transfer.CURRENCIES).includes(this.state.currency);
+          const transferMethod = isHive ? sendGuestTransfer : sendGuestTransferWAIV;
+
+          transferMethod({
+            ...transferQuery,
+            amount: isHive ? transferQuery.amount : +values.amount,
+            account: sponsor,
+          }).then(res => {
+            if (res.result || res.id) {
               this.props.notify(
                 this.props.intl.formatMessage({
                   id: 'transaction_message_for_user',
@@ -462,7 +475,7 @@ export default class Transfer extends React.Component {
   };
 
   validateBalance = (rule, value, callback) => {
-    const { intl, authenticated, user } = this.props;
+    const { intl, authenticated } = this.props;
     const currentValue = parseFloat(value);
 
     if (value <= 0) {
@@ -479,9 +492,8 @@ export default class Transfer extends React.Component {
     }
 
     const selectedBalance = this.getTokensBalanceList()[this.state.currency];
-    const currentSelectedBalance = this.props.isGuest ? user.balance : selectedBalance;
 
-    if (authenticated && currentValue !== 0 && currentValue > parseFloat(currentSelectedBalance)) {
+    if (authenticated && currentValue !== 0 && currentValue > parseFloat(selectedBalance)) {
       callback([
         new Error(
           intl.formatMessage({ id: 'amount_error_funds', defaultMessage: 'Insufficient funds.' }),
@@ -608,7 +620,7 @@ export default class Transfer extends React.Component {
     });
     const to = !searchBarValue && isClosedFind ? resetFields('to') : getFieldValue('to');
     const guestName = to && guestUserRegex.test(to);
-    const currentBalance = isGuest ? user.balance : currAmount;
+    const currentBalance = currAmount;
     const memoPlaceHolder = isTip
       ? get(memo, 'message', memo)
       : intl.formatMessage({
@@ -616,7 +628,17 @@ export default class Transfer extends React.Component {
           defaultMessage: 'Additional message to include in this payment (optional)',
         });
 
-    if (!isEmpty(this.props.tokensList)) {
+    if (isGuest || guestName) {
+      userBalances = [
+        { symbol: 'HIVE', balance: parseFloat(user.balance) },
+        {
+          symbol: 'WAIV',
+          balance: +this.props.user?.waivBalance || 0,
+        },
+      ];
+    }
+
+    if (!isEmpty(this.props.tokensList) && !isGuest && !guestName) {
       userBalances = uniqWith([...userBalances, ...this.props.tokensList], 'symbol').sort(
         (a, b) => {
           if (a.symbol === 'WAIV') return -1;
@@ -733,14 +755,12 @@ export default class Transfer extends React.Component {
                 />,
               )}
               {getFieldDecorator('currency', {
-                initialValue: isGuest
-                  ? this.state.currency
-                  : this.state.currency || this.props.walletType,
+                initialValue: this.state.currency || this.props.walletType,
               })(
                 <Select
                   className="Transfer__currency"
                   onChange={this.handleCurrencyChange}
-                  disabled={isChangesDisabledToken || isGuest}
+                  disabled={isChangesDisabledToken}
                   dropdownClassName={'Transfer__currency-list'}
                 >
                   {userBalances.map(token => (

@@ -10,6 +10,8 @@ const SettingsItem = ({ toggleMenuCondition, condition, configItem }) => {
   const isGuest = useSelector(isGuestUser);
   const isAuth = useSelector(getIsAuthenticated);
 
+  if (configItem.tab.forUser && isGuest) return null;
+
   return (
     <React.Fragment>
       <div
@@ -33,6 +35,8 @@ const SettingsItem = ({ toggleMenuCondition, condition, configItem }) => {
               (setting.forAuth && !isAuth)
             )
               return null;
+
+            if (setting.forUser && isGuest) return null;
 
             return (
               <li key={setting.id}>
@@ -67,6 +71,7 @@ SettingsItem.propTypes = {
       name: PropTypes.string,
       id: PropTypes.string,
       defaultMessage: PropTypes.string,
+      forUser: PropTypes.bool,
     }),
     settings: PropTypes.arrayOf(PropTypes.shape({})),
   }).isRequired,

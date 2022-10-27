@@ -73,7 +73,7 @@ const Wallets = props => {
             <HiveEngineWallet />
           </Tabs.TabPane>
         )}
-        {isCurrUser && (
+        {!isGuestUser && isCurrUser && (
           <Tabs.TabPane
             tab={props.intl.formatMessage({
               id: 'rebalance_wallet',

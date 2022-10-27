@@ -432,17 +432,16 @@ export default class AppendForm extends Component {
         case objectFields.background:
           return `@${author} added ${currentField} (${langReadable}):\n ![${currentField}](${appendValue})`;
         case objectFields.options:
-          const image = formValues[optionsFields.optionsImage]
-            ? `, ${optionsFields.optionsImage}:  \n ![${optionsFields.optionsImage}](${
-                formValues[optionsFields.optionsImage]
-              })`
+          const image = formValues[objectFields.options]
+            ? `, image: \n ![${objectFields.options}](${formValues[objectFields.options]})`
+            : '';
+          const position = formValues[optionsFields.position]
+            ? `, ${optionsFields.position}: ${formValues[optionsFields.position]}`
             : '';
 
           return `@${author} added ${currentField} (${langReadable}): ${optionsFields.category}: ${
             formValues[optionsFields.category]
-          }, ${optionsFields.value}: ${formValues[optionsFields.value]}, ${
-            optionsFields.position
-          }: ${formValues[optionsFields.position]} ${image}`;
+          }, ${optionsFields.value}: ${formValues[optionsFields.value]}${position}${image}`;
         case objectFields.publisher: {
           const linkInfo = this.state.selectedObject
             ? `, link: ${this.state.selectedObject.author_permlink}`
@@ -1111,8 +1110,7 @@ export default class AppendForm extends Component {
       currentField === objectFields.authors ||
       currentField === objectFields.publisher ||
       currentField === objectFields.dimensions ||
-      currentField === objectFields.productWeight ||
-      currentField === objectFields.options
+      currentField === objectFields.productWeight
     ) {
       return filtered.some(f =>
         isEqual(this.getCurrentObjectBody(currentField), parseJSON(f.body)),
@@ -1126,6 +1124,13 @@ export default class AppendForm extends Component {
         f =>
           this.getCurrentObjectBody(currentField).productId === parseJSON(f.body).productId &&
           this.getCurrentObjectBody(currentField).productIdType === parseJSON(f.body).productIdType,
+      );
+    }
+    if (currentField === objectFields.options) {
+      return filtered.some(
+        f =>
+          this.getCurrentObjectBody(currentField).category === parseJSON(f.body).category &&
+          this.getCurrentObjectBody(currentField).value === parseJSON(f.body).value,
       );
     }
     if (currentField === objectFields.phone)

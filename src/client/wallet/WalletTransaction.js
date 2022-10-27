@@ -26,6 +26,7 @@ import formatter from '../../common/helpers/steemitFormatter';
 import HiveDelegatedCard from './TransfersCards/HiveDelegatedCard';
 
 import './UserWalletTransactions/UserWalletTransactions.less';
+import { parseJSON } from '../../common/helpers/parseJSON';
 
 const WalletTransaction = ({
   transaction,
@@ -65,11 +66,13 @@ const WalletTransaction = ({
       );
 
     case accountHistoryConstants.TRANSFER:
+      const parseMemo = parseJSON(transactionDetails.memo);
+
       if (transactionDetails.to === currentUsername) {
         return (
           <ReceiveTransaction
             isGuestPage={isGuestPage}
-            from={transactionDetails.from}
+            from={parseMemo?.from || transactionDetails.from}
             to={transactionDetails.to}
             memo={transactionDetails.memo}
             amount={getTransactionCurrency(transactionDetails.amount)}
@@ -86,7 +89,7 @@ const WalletTransaction = ({
       return (
         <TransferTransaction
           isGuestPage={isGuestPage}
-          to={transactionDetails.to}
+          to={parseMemo?.memo || transactionDetails.to}
           memo={transactionDetails.memo}
           amount={getTransactionCurrency(transactionDetails.amount)}
           timestamp={transaction.timestamp}
