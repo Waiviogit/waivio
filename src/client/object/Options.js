@@ -70,12 +70,14 @@ const Options = ({ wobject, isEditMode, setHoveredOption, setActiveOption, histo
           Object.entries(wobject?.options).map(option => (
             <div className="mb1" key={option[0]}>
               {' '}
-              <div>
-                {option[0]}:{' '}
-                <span className="fw6">
-                  {hovered?.[option[0]]?.body?.value || selectedOption?.[option[0]]?.body?.value}{' '}
-                </span>
-              </div>
+              {option[1].some(el => el.author_permlink === wobject.author_permlink) && (
+                <div>
+                  {option[0]}:{' '}
+                  <span className="fw6">
+                    {hovered?.[option[0]]?.body?.value || selectedOption?.[option[0]]?.body?.value}{' '}
+                  </span>
+                </div>
+              )}
               {option[1]?.map(
                 el =>
                   el.author_permlink === wobject.author_permlink && (

@@ -315,8 +315,8 @@ class ObjectInfo extends React.Component {
 
       return album;
     });
-  handleOptionClick = option => {
-    if (!option.name) {
+  handleOptionClick = pic => {
+    if (!pic.name) {
       this.setState({ openOption: true });
     }
   };
@@ -380,17 +380,14 @@ class ObjectInfo extends React.Component {
           wobject.avatar ||
           optionsPictures[0]?.body,
         id: wobject.author_permlink,
+        name: wobject.avatar && 'avatar',
       },
       ...pictures,
       ...sortedOptionsPictures,
     ];
     const lightboxOptionPicture = [
       {
-        body:
-          hoveredOption?.body?.image ||
-          activeOption?.body?.image ||
-          wobject.avatar ||
-          optionsPictures[0]?.body,
+        body: hoveredOption?.body?.image || activeOption?.body?.image || optionsPictures[0]?.body,
         id: wobject.author_permlink,
       },
       ...sortedOptionsPictures,
