@@ -375,8 +375,8 @@ class ObjectInfo extends React.Component {
     const activeOptionPicture = [
       {
         body:
-          hoveredOption?.body?.image ||
-          activeOption?.body?.image ||
+          hoveredOption?.avatar ||
+          activeOption?.avatar ||
           wobject.avatar ||
           optionsPictures[0]?.body,
         id: wobject.author_permlink,
@@ -387,7 +387,7 @@ class ObjectInfo extends React.Component {
     ];
     const lightboxOptionPicture = [
       {
-        body: hoveredOption?.body?.image || activeOption?.body?.image || optionsPictures[0]?.body,
+        body: hoveredOption?.avatar || activeOption?.avatar || optionsPictures[0]?.body,
         id: wobject.author_permlink,
       },
       ...sortedOptionsPictures,
