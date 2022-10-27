@@ -382,8 +382,8 @@ class ObjectInfo extends React.Component {
         id: wobject.author_permlink,
         name: wobject.avatar && 'avatar',
       },
-      ...pictures,
       ...sortedOptionsPictures,
+      ...pictures,
     ];
     const lightboxOptionPicture = [
       {
@@ -426,7 +426,7 @@ class ObjectInfo extends React.Component {
           this.listItem(
             objectFields.galleryItem,
             <PicturesCarousel
-              activePicture={activeOption}
+              activePicture={hoveredOption || activeOption}
               onClick={this.handleOptionClick}
               pics={activeOptionPicture}
               objectID={wobject.author_permlink}
