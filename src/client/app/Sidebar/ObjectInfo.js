@@ -7,7 +7,6 @@ import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
 import moment from 'moment';
 import classNames from 'classnames';
-import Lightbox from 'react-image-lightbox';
 import {
   accessTypesArr,
   getBlogItems,
@@ -315,16 +314,10 @@ class ObjectInfo extends React.Component {
 
       return album;
     });
-  handleOptionClick = pic => {
-    if (!pic.name) {
-      this.setState({ openOption: true });
-    }
-  };
-  handleOptionCloseClick = () => this.setState({ openOption: false, photoIndex: 0 });
 
   render() {
     const { wobject, userName, isAuthenticated, relatedAlbum } = this.props;
-    const { photoIndex, activeOption, hoveredOption } = this.state;
+    const { activeOption, hoveredOption } = this.state;
     const isEditMode = isAuthenticated ? this.props.isEditMode : false;
     const newsFilters = get(wobject, 'newsFilter', []);
     const website = parseWobjectField(wobject, 'website');
@@ -365,12 +358,10 @@ class ObjectInfo extends React.Component {
           .map(option => Object.values(option))
           .flatMap(el => el[1])
           .filter(el => el.body.image)
-          .map(o => ({ body: o.body.image, id: o.permlink }))
+          .map(o => ({ body: o.avatar, id: o.permlink }))
       : [];
 
-    const sortedOptionsPictures = optionsPictures.filter(
-      o => activeOption?.body?.image !== o?.body,
-    );
+    const sortedOptionsPictures = optionsPictures.filter(o => activeOption?.avatar !== o?.body);
 
     const activeOptionPicture = [
       {
@@ -384,13 +375,6 @@ class ObjectInfo extends React.Component {
       },
       ...sortedOptionsPictures,
       ...pictures,
-    ];
-    const lightboxOptionPicture = [
-      {
-        body: hoveredOption?.avatar || activeOption?.avatar || optionsPictures[0]?.body,
-        id: wobject.author_permlink,
-      },
-      ...sortedOptionsPictures,
     ];
 
     const dimensions = parseWobjectField(wobject, 'dimensions');
@@ -427,34 +411,10 @@ class ObjectInfo extends React.Component {
             objectFields.galleryItem,
             <PicturesCarousel
               activePicture={hoveredOption || activeOption}
-              onClick={this.handleOptionClick}
               pics={activeOptionPicture}
               objectID={wobject.author_permlink}
             />,
           )}
-        {this.state.openOption && (
-          <Lightbox
-            mainSrc={lightboxOptionPicture[photoIndex].body}
-            nextSrc={lightboxOptionPicture[(photoIndex + 1) % lightboxOptionPicture.length].body}
-            prevSrc={
-              lightboxOptionPicture[
-                (photoIndex + lightboxOptionPicture.length - 1) % lightboxOptionPicture.length
-              ].body
-            }
-            onMovePrevRequest={() =>
-              this.setState({
-                photoIndex:
-                  (photoIndex + lightboxOptionPicture.length - 1) % lightboxOptionPicture.length,
-              })
-            }
-            onMoveNextRequest={() =>
-              this.setState({
-                photoIndex: (photoIndex + 1) % lightboxOptionPicture.length,
-              })
-            }
-            onCloseRequest={this.handleOptionCloseClick}
-          />
-        )}
         {this.listItem(
           objectFields.price,
           price && (
