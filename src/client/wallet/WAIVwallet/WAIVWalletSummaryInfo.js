@@ -21,6 +21,7 @@ const WAIVWalletSummaryInfo = props => {
   const [recivedList, setRecivedList] = useState([]);
   const [undeligatedList, setUndeligatedList] = useState([]);
   const [visible, setVisible] = useState(false);
+
   const balance = +get(props.currencyInfo, 'balance', 0);
   const stake = +get(props.currencyInfo, 'stake', 0);
   const unstake = +get(props.currencyInfo, 'pendingUnstake', 0);
@@ -69,44 +70,48 @@ const WAIVWalletSummaryInfo = props => {
           <div className="WalletSummaryInfo__label">WAIV</div>
           <div className="WalletSummaryInfo__value">{formattedNumber(balance)} WAIV</div>
         </div>
-        <div className="WalletSummaryInfo__actions">
-          <p className="WalletSummaryInfo__description">
-            <FormattedMessage id="liquid_waiv_tokens" defaultMessage="Liquid WAIV tokens" />
-          </p>
-          <WalletAction mainKey={'power_up'} options={['transfer']} mainCurrency={'WAIV'} />
-        </div>
+        {props.isGuest && (
+          <div className="WalletSummaryInfo__actions">
+            <p className="WalletSummaryInfo__description">
+              <FormattedMessage id="liquid_waiv_tokens" defaultMessage="Liquid WAIV tokens" />
+            </p>
+            <WalletAction mainKey={'power_up'} options={['transfer']} mainCurrency={'WAIV'} />
+          </div>
+        )}
       </div>
-      <div className="WalletSummaryInfo__itemWrap">
-        <div className="WalletSummaryInfo__item">
-          <i className="iconfont icon-flashlight_fill WalletSummaryInfo__icon" />
-          <div className="WalletSummaryInfo__label">WAIV Power</div>
-          <div
-            className={powerClassList}
-            onClick={() => {
-              if (hasDelegations) {
-                setVisible(true);
-              }
-            }}
-          >
-            {formattedNumber(stake)}
-            {!!unstake && <span> - {formattedNumber(unstake)}</span>}{' '}
-            {!!delegation && (
-              <span>
-                ({delegation > 0 && '+'}
-                {formattedNumber(delegation)})
-              </span>
-            )}{' '}
-            WP
+      {!props.isGuest && (
+        <div className="WalletSummaryInfo__itemWrap">
+          <div className="WalletSummaryInfo__item">
+            <i className="iconfont icon-flashlight_fill WalletSummaryInfo__icon" />
+            <div className="WalletSummaryInfo__label">WAIV Power</div>
+            <div
+              className={powerClassList}
+              onClick={() => {
+                if (hasDelegations) {
+                  setVisible(true);
+                }
+              }}
+            >
+              {formattedNumber(stake)}
+              {!!unstake && <span> - {formattedNumber(unstake)}</span>}{' '}
+              {!!delegation && (
+                <span>
+                  ({delegation > 0 && '+'}
+                  {formattedNumber(delegation)})
+                </span>
+              )}{' '}
+              WP
+            </div>
+          </div>
+          <div className="WalletSummaryInfo__actions">
+            <p className="WalletSummaryInfo__description">
+              {' '}
+              <FormattedMessage id="staked_waiv_tokens" defaultMessage="Staked WAIV tokens" />
+            </p>
+            <WalletAction mainCurrency={'WP'} mainKey={'power_down'} options={['delegate']} />
           </div>
         </div>
-        <div className="WalletSummaryInfo__actions">
-          <p className="WalletSummaryInfo__description">
-            {' '}
-            <FormattedMessage id="staked_waiv_tokens" defaultMessage="Staked WAIV tokens" />
-          </p>
-          <WalletAction mainCurrency={'WP'} mainKey={'power_down'} options={['delegate']} />
-        </div>
-      </div>
+      )}
       {hasDelegations && (
         <DelegateListModal
           visible={visible}
@@ -126,6 +131,11 @@ WAIVWalletSummaryInfo.propTypes = {
   resetTokenBalance: PropTypes.func.isRequired,
   rates: PropTypes.number.isRequired,
   name: PropTypes.string.isRequired,
+  isGuest: PropTypes.bool,
+};
+
+WAIVWalletSummaryInfo.defaultProps = {
+  isGuest: false,
 };
 
 export default connect(

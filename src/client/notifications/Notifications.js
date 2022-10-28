@@ -18,6 +18,7 @@ import * as userSelectors from '../../store/userStore/userSelectors';
 import { getWalletType, isEmptyAmount } from '../../common/helpers/notificationsHelper';
 
 import './Notifications.less';
+import { parseJSON } from '../../common/helpers/parseJSON';
 
 class Notifications extends React.Component {
   static propTypes = {
@@ -195,6 +196,8 @@ class Notifications extends React.Component {
                   />
                 );
               case notificationConstants.TRANSFER:
+                const parseMemo = parseJSON(notification.memo);
+
                 return (
                   <NotificationTemplate
                     url={`/@${currentAuthUsername}/transfers?type=${getWalletType(
@@ -203,10 +206,12 @@ class Notifications extends React.Component {
                     id="notification_transfer_username_amount"
                     defaultMessage="{username} transferred {amount} to you"
                     values={{
-                      username: <span className="username">{notification.from}</span>,
+                      username: (
+                        <span className="username">{parseMemo?.from || notification.from}</span>
+                      ),
                       amount: notification.amount,
                     }}
-                    username={notification.from}
+                    username={parseMemo?.from || notification.from}
                     key={key}
                     notification={notification}
                     currentAuthUsername={currentAuthUsername}

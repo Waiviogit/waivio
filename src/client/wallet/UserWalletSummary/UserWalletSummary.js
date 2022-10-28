@@ -146,7 +146,7 @@ const UserWalletSummary = ({
   };
 
   useEffect(() => {
-    if (totalVestingShares && totalVestingFundSteem) setDelegationLists();
+    if (totalVestingShares && totalVestingFundSteem && !isGuest) setDelegationLists();
   }, [totalVestingShares, totalVestingFundSteem]);
 
   return (

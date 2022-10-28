@@ -41,7 +41,10 @@ export default (state = initialState, action) => {
         isFetching: false,
         isAuthenticated: true,
         loaded: true,
-        user: action.payload.account || state.user,
+        user: {
+          ...(action.payload.account || state.user),
+          ...(action.payload.isGuestUser ? { waivBalance: action.payload.waivBalance } : {}),
+        },
         userMetaData: action.payload.userMetaData,
         privateEmail: action.payload.privateEmail,
         isGuestUser: action.payload.isGuestUser,

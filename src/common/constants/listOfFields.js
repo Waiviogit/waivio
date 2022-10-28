@@ -244,6 +244,7 @@ export const errorObjectFields = {
     dimensionsFields.width,
     dimensionsFields.unitOfLength,
   ],
+  [objectFields.groupId]: [objectFields.groupId],
   [objectFields.options]: [optionsFields.category, optionsFields.value, optionsFields.value],
 };
 
