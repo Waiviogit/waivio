@@ -406,15 +406,16 @@ class ObjectInfo extends React.Component {
     const isOptionsObjectType = ['book', 'product', 'service'].includes(wobject.object_type);
     const galleryPriceOptionsSection = (
       <>
-        {(pictures.length > 1 || avatar || wobject?.options) &&
-          this.listItem(
-            objectFields.galleryItem,
+        {this.listItem(
+          objectFields.galleryItem,
+          (pictures.length > 1 || avatar || wobject?.options) && (
             <PicturesCarousel
               activePicture={hoveredOption || activeOption}
               pics={activeOptionPicture}
               objectID={wobject.author_permlink}
-            />,
-          )}
+            />
+          ),
+        )}
         {this.listItem(
           objectFields.price,
           price && (
