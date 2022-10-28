@@ -358,7 +358,7 @@ class ObjectInfo extends React.Component {
           .map(option => Object.values(option))
           .flatMap(el => el[1])
           .filter(el => el.body.image)
-          .map(o => ({ body: o.avatar, id: o.permlink }))
+          .map(o => ({ body: o.avatar, id: o.author_permlink }))
       : [];
 
     const sortedOptionsPictures = optionsPictures.filter(o => activeOption?.avatar !== o?.body);
