@@ -48,7 +48,9 @@ const Options = ({ wobject, isEditMode, setHoveredOption, setActiveOption, histo
             )
           : duplicatedOptionsArray;
 
-      return [...a, r[0] || duplicatedOptionsArray[0]];
+      return [...a, r[0] || duplicatedOptionsArray[0]].sort(
+        (b, c) => b?.body?.position - c?.body?.position,
+      );
     }, []);
 
     return accumulator;
@@ -77,32 +79,29 @@ const Options = ({ wobject, isEditMode, setHoveredOption, setActiveOption, histo
             <div className="mb1" key={option[0]}>
               {' '}
               {option[1].some(el => el.author_permlink === wobject.author_permlink) && (
-                <div>
-                  {option[0]}:{' '}
-                  <span className="fw6">
-                    {hovered?.[option[0]]?.body?.value || selectedOption?.[option[0]]?.body?.value}{' '}
-                  </span>
-                </div>
+                <div>{option[0]}: </div>
               )}
-              {option[1]?.map(
-                el =>
-                  el.author_permlink === wobject.author_permlink && (
-                    <div key={el.author_permlink}>
-                      {el.body.position}
-                      {el.body.position ? '.' : ''} {el.body.value}{' '}
-                      {el.body.image && (
-                        <div>
-                          <img
-                            className="Options__my-pictures"
-                            src={el.body.image}
-                            alt="option"
-                            key={el.permlink}
-                          />
-                        </div>
-                      )}
-                    </div>
-                  ),
-              )}
+              {option[1]
+                ?.sort((a, b) => a?.body?.position - b?.body?.position)
+                .map(
+                  el =>
+                    el.author_permlink === wobject.author_permlink && (
+                      <div key={el.author_permlink}>
+                        {el.body.position}
+                        {el.body.position ? '.' : ''} {el.body.value}{' '}
+                        {el.body.image && (
+                          <div>
+                            <img
+                              className="Options__my-pictures"
+                              src={el.body.image}
+                              alt="option"
+                              key={el.permlink}
+                            />
+                          </div>
+                        )}
+                      </div>
+                    ),
+                )}
             </div>
           ))
         : wobject?.options && (
