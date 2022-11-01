@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { isEmpty } from 'lodash';
+import { isMobile } from '../../common/helpers/apiHelpers';
 import './Options.less';
 
 const Options = ({ wobject, isEditMode, setHoveredOption, setActiveOption, history }) => {
@@ -20,7 +21,12 @@ const Options = ({ wobject, isEditMode, setHoveredOption, setActiveOption, histo
     setActiveOption(el);
     setHoveredOption(el);
     if (el.body.parentObjectPermlink !== wobject.author_permlink) {
-      history.push(`/object/${el.author_permlink}`);
+      history.push(`/object/${el.author_permlink}${isMobile() ? '/about' : ''}`);
+      isMobile() &&
+        window.scrollTo({
+          top: 250,
+          behavior: 'smooth',
+        });
       setSelectedOption(el);
       setActiveOption(el);
     }
