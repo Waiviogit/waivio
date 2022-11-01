@@ -55,6 +55,7 @@ export default {
   SettingsMain: loableComponent(import('../client/settings/SettingsMain')),
   Invite: loableComponent(import('../client/invite/Invite')),
   UserProfile: loableComponent(import('../client/user/UserProfile')),
+  PostsCommentsActivity: loableComponent(import('../client/user/PostsCommentsActivity')),
   UserComments: loableComponent(import('../client/user/UserComments')),
   UserFollowers: loableComponent(import('../client/user/UserFollowers')),
   UserFollowing: loableComponent(import('../client/user/UserFollowing')),
