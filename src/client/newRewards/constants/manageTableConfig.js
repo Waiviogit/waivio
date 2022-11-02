@@ -36,6 +36,7 @@ export const manageTableHeaderConfig = [
       },
       colspan: 2,
       hidden: true,
+      hideForMobile: true,
     },
     {
       intl: {
@@ -44,6 +45,7 @@ export const manageTableHeaderConfig = [
       },
       colspan: 2,
       hidden: true,
+      hideForMobile: true,
     },
     {
       intl: {
@@ -53,6 +55,7 @@ export const manageTableHeaderConfig = [
       rowspan: 2,
       type: 'round',
       precision: 3,
+      hideForMobile: true,
     },
   ],
   [
@@ -61,24 +64,28 @@ export const manageTableHeaderConfig = [
         id: 'Monthly',
         defaultMessage: 'Monthly({currency})',
       },
+      hideForMobile: true,
     },
     {
       intl: {
         id: 'Reward',
         defaultMessage: 'Reward({currency})',
       },
+      hideForMobile: true,
     },
     {
       intl: {
         id: 'reserved',
         defaultMessage: 'Reserved',
       },
+      hideForMobile: true,
     },
     {
       intl: {
         id: 'Completed',
         defaultMessage: 'Completed',
       },
+      hideForMobile: true,
     },
   ],
 ];

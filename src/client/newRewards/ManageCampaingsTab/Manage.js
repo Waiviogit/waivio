@@ -17,6 +17,7 @@ import steemConnectAPI from '../../steemConnectAPI';
 import { getCurrentCurrency } from '../../../store/appStore/appSelectors';
 import Loading from '../../components/Icon/Loading';
 import { deactivateCampaing } from '../../../store/newRewards/newRewardsActions';
+import { isMobile } from '../../../common/helpers/apiHelpers';
 
 export const Manage = ({ intl, guideName, setHistoryLoading }) => {
   const currency = useSelector(getCurrentCurrency);
@@ -114,13 +115,17 @@ export const Manage = ({ intl, guideName, setHistoryLoading }) => {
       <h2>Active and pending campaigns</h2>
       <table className="DynamicTable">
         <thead>
-          {manageTableHeaderConfig.map(tr => (
+          {manageTableHeaderConfig?.map(tr => (
             <tr key={tr.length}>
-              {tr.map(th => (
-                <th rowSpan={th.rowspan} colSpan={th.colspan} key={th.intl.id}>
-                  {th.intl && intl.formatMessage(th.intl, { currency: currency.type })}
-                </th>
-              ))}
+              {tr.map(th => {
+                if (th.hideForMobile && isMobile()) return null;
+
+                return (
+                  <th rowSpan={th.rowspan} colSpan={th.colspan} key={th.intl.id}>
+                    {th.intl && intl.formatMessage(th.intl, { currency: currency.type })}
+                  </th>
+                );
+              })}
             </tr>
           ))}
         </thead>
@@ -142,19 +147,27 @@ export const Manage = ({ intl, guideName, setHistoryLoading }) => {
               </td>
               <td>{row.status}</td>
               <td>{row.type}</td>
-              <td>{round(row.budgetUSD * currency.rate, 2)}</td>
-              <td>{round(row.rewardInUSD * currency.rate, 2)}</td>
-              <td>
-                <Link to={`/rewards-new/reservations?statuses=assigned&campaignNames=${row.name}`}>
-                  {row.reserved || null}
-                </Link>
-              </td>
-              <td>
-                <Link to={`/rewards-new/reservations?statuses=completed&campaignNames=${row.name}`}>
-                  {row.completed || null}
-                </Link>
-              </td>
-              <td>{round(row.remaining, 0)}</td>
+              {!isMobile() && (
+                <React.Fragment>
+                  <td>{round(row.budgetUSD * currency.rate, 2)}</td>
+                  <td>{round(row.rewardInUSD * currency.rate, 2)}</td>
+                  <td>
+                    <Link
+                      to={`/rewards-new/reservations?statuses=assigned&campaignNames=${row.name}`}
+                    >
+                      {row.reserved || null}
+                    </Link>
+                  </td>
+                  <td>
+                    <Link
+                      to={`/rewards-new/reservations?statuses=completed&campaignNames=${row.name}`}
+                    >
+                      {row.completed || null}
+                    </Link>
+                  </td>
+                  <td>{round(row.remaining, 0)}</td>
+                </React.Fragment>
+              )}
             </tr>
           ))
         ) : (
