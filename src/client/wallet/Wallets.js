@@ -81,7 +81,7 @@ const Wallets = props => {
             })}
             key="rebalancing"
           >
-            <Rebalancing />
+            {walletsType === 'rebalancing' && <Rebalancing />}
           </Tabs.TabPane>
         )}
       </Tabs>

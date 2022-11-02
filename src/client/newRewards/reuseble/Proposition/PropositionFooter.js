@@ -199,10 +199,15 @@ const PropositionFooter = ({ type, openDetailsModal, proposition, getProposition
       default:
         return isWaivio ? (
           <div className="Proposition-new__footer-container">
-            <Button type="primary" onClick={openDetailsModal}>
-              <b>Reserve</b> Your Reward
-            </Button>{' '}
-            for {proposition?.countReservationDays} days
+            <div>
+              <Button type="primary" onClick={openDetailsModal}>
+                <b>Reserve</b> Your Reward
+              </Button>{' '}
+              <span className="Proposition-new__days">
+                for {proposition?.countReservationDays} days
+              </span>
+            </div>
+            <span onClick={openDetailsModal}>Detail &gt;</span>
           </div>
         ) : (
           <WebsiteReservedButtons

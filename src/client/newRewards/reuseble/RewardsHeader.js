@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import React from 'react';
 import PropTypes from 'prop-types';
+import { round } from 'lodash';
 
 const RewardsHeader = ({ proposition }) => (
   <div>
@@ -12,10 +13,10 @@ const RewardsHeader = ({ proposition }) => (
         <Link to={`/@${proposition?.guideName}`}>Waivio Service (Sponsor)</Link>
         <Link to={`/@${proposition?.guideName}`}>@{proposition?.guideName}</Link>
       </div>
-      <div className="Proposition-new__infoItem Proposition-new__infoItem--left">
+      <div className="Proposition-new__infoItem">
         <span>Total paid (liquid):</span>
         <span>
-          {proposition?.totalPayed || 0} {proposition?.payoutToken}
+          {round(proposition?.totalPayed || 0)} {proposition?.payoutToken} (100%)
         </span>
       </div>
     </div>
