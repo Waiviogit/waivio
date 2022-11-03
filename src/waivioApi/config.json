@@ -146,6 +146,7 @@
   "guestWallet": "/guest-wallet",
   "guestBalance": "/guest-balance",
   "guestTranfer": "/guest-transfer",
+  "guestWithdraw": "/guest-withdraw",
   "map": "/map",
   "restrictions": "/restrictions",
   "expertiseCounters": "/expertise-counters",

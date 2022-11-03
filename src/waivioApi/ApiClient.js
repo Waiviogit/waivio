@@ -2245,6 +2245,29 @@ const hiveEngineContract = params =>
     .then(response => response.result)
     .catch(e => e);
 
+const engineProxy = params =>
+  fetch('https://api.hive-engine.com/rpc/contracts', {
+    headers,
+    body: JSON.stringify({
+      jsonrpc: '2.0',
+      id: 10,
+      method: 'find',
+      params,
+    }),
+    method: 'POST',
+  })
+    .then(handleErrors)
+    .then(res => res.json())
+    .then(response => response.result)
+    .catch(e => e);
+
+export const getMarketPools = async ({ query }) =>
+  engineProxy({
+    contract: 'marketpools',
+    table: 'pools',
+    query,
+  });
+
 export const getTokenBalance = (userName, symbol) =>
   hiveEngineContract({
     contract: 'tokens',

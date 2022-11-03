@@ -24,11 +24,13 @@ import { getCryptosPriceHistory } from '../../../store/appStore/appSelectors';
 import SelectUserForAutocomplete from '../../widgets/SelectUserForAutocomplete';
 import { hiveWalletCurrency } from '../../../common/constants/hiveEngine';
 import QrModal from '../../widgets/QrModal';
-import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
+import { getAuthenticatedUserName, isGuestUser } from '../../../store/authStore/authSelectors';
 import { converHiveEngineCoins } from '../../../waivioApi/ApiClient';
 import { createQuery } from '../../../common/helpers/apiHelpers';
+import { getWithdrawInfo } from '../../../common/helpers/withdrawTokenHelpers';
 
 import './WithdrawModal.less';
+import { withdrawGuest } from '../../../waivioApi/walletApi';
 
 const withdrawFeePercent = 0.75;
 const withdrawFee = withdrawFeePercent / 100;
@@ -37,6 +39,7 @@ const WithdrawModal = props => {
   const withdraList = useSelector(getWithdrawList);
   const pair = useSelector(getWithdrawSelectPair);
   const visible = useSelector(getIsOpenWithdraw);
+  const isGuest = useSelector(isGuestUser);
   const userName = useSelector(getAuthenticatedUserName);
   const defaultToken = useSelector(getDefaultToken);
   const cryptosPriceHistory = useSelector(getCryptosPriceHistory);
@@ -103,69 +106,123 @@ const WithdrawModal = props => {
     setWalletAddress(address);
   };
 
-  const handleFromAmoundChange = value => {
+  const handleFromAmoundChange = async value => {
     setFromAmount(value);
-    setToAmount(+value - persentCalculate(value));
+    if (pair.symbol === 'WAIV') {
+      const amount = await getWithdrawInfo({
+        account: userName,
+        data: { quantity: value, inputSymbol: pair.symbol, outputSymbol: pair.to_coin_symbol },
+        onlyAmount: true,
+      });
+
+      setToAmount(amount);
+    } else {
+      setToAmount(+value - persentCalculate(value));
+    }
   };
 
   const handleWithdraw = async () => {
-    if (pair.to_coin_symbol === 'HIVE') {
-      window.open(
-        `https://hivesigner.com/sign/custom_json?authority=active&required_auths=["${userName}"]&required_posting_auths=[]&${createQuery(
-          {
-            id: 'ssc-mainnet-hive',
-            json: JSON.stringify({
-              contractName: 'hivepegged',
-              contractAction: 'withdraw',
-              contractPayload: {
-                quantity: fromAmount.toString(),
-              },
-            }),
-          },
-        )}`,
-        '_blank',
-      );
-    } else {
-      try {
-        const data = await converHiveEngineCoins({
-          destination: walletAddress || userName,
-          from_coin: pair.from_coin_symbol,
-          to_coin: pair.to_coin_symbol,
-        });
+    if (pair.symbol === 'WAIV') {
+      const data = {
+        quantity: fromAmount,
+        inputSymbol: pair.symbol,
+        outputSymbol: pair.to_coin_symbol,
+        address: walletAddress,
+      };
+
+      if (isGuest) {
+        withdrawGuest({ account: userName, data });
+      } else {
+        const { customJsonPayload } = await getWithdrawInfo({ account: userName, data });
 
         window.open(
           `https://hivesigner.com/sign/custom_json?authority=active&required_auths=["${userName}"]&required_posting_auths=[]&${createQuery(
             {
               id: 'ssc-mainnet-hive',
+              json: JSON.stringify(customJsonPayload),
+            },
+          )}`,
+          '_blank',
+        );
+      }
+    } else {
+      // eslint-disable-next-line no-lonely-if
+      if (pair.to_coin_symbol === 'HIVE') {
+        window.open(
+          `https://hivesigner.com/sign/custom_json?authority=active&required_auths=["${userName}"]&required_posting_auths=[]&${createQuery(
+            {
+              id: 'ssc-mainnet-hive',
               json: JSON.stringify({
-                contractName: 'tokens',
-                contractAction: 'transfer',
+                contractName: 'hivepegged',
+                contractAction: 'withdraw',
                 contractPayload: {
-                  symbol: pair.from_coin_symbol,
-                  to: data.account,
                   quantity: fromAmount.toString(),
-                  memo: data.memo,
                 },
               }),
             },
           )}`,
           '_blank',
         );
-      } catch (e) {
-        return message.error('Something went wrong!');
+      } else {
+        try {
+          const data = await converHiveEngineCoins({
+            destination: walletAddress || userName,
+            from_coin: pair.from_coin_symbol,
+            to_coin: pair.to_coin_symbol,
+          });
+
+          window.open(
+            `https://hivesigner.com/sign/custom_json?authority=active&required_auths=["${userName}"]&required_posting_auths=[]&${createQuery(
+              {
+                id: 'ssc-mainnet-hive',
+                json: JSON.stringify({
+                  contractName: 'tokens',
+                  contractAction: 'transfer',
+                  contractPayload: {
+                    symbol: pair.from_coin_symbol,
+                    to: data.account,
+                    quantity: fromAmount.toString(),
+                    memo: data.memo,
+                  },
+                }),
+              },
+            )}`,
+            '_blank',
+          );
+        } catch (e) {
+          return message.error('Something went wrong!');
+        }
       }
     }
 
     return handleCloseModal();
   };
 
-  const setTokenPair = async selectedPair => dispatch(setWithdrawPair(selectedPair));
-
   const handleToAmoundChange = e => {
     const value = e.currentTarget.value;
 
-    setToAmount(value);
-    setFromAmount(+value + persentCalculate(value));
+    if (pair.symbol !== 'WAIV') {
+      setToAmount(value);
+      setFromAmount(+value + persentCalculate(value));
+    }
+  };
+
+  const setTokenPair = async selectedPair => {
+    dispatch(setWithdrawPair(selectedPair));
+
+    if (pair.symbol === 'WAIV') {
+      const amount = await getWithdrawInfo({
+        account: userName,
+        data: {
+          quantity: fromAmount,
+          inputSymbol: selectedPair.symbol,
+          outputSymbol: selectedPair.to_coin_symbol,
+        },
+        onlyAmount: true,
+      });
+
+      setToAmount(amount);
+    }
   };
 
   const handleSetScanAmount = value => {
@@ -261,6 +318,7 @@ const WithdrawModal = props => {
                   id: 'enter_address',
                   defaultMessage: 'Enter address',
                 })}
+                disabled={pair?.symbol === 'WAIV'}
               />
               <Button className="WithdrawModal__qr-button" onClick={() => setShowScanner(true)}>
                 <img src={'/images/icons/qr.png'} className="qr-img" alt="qr" />
