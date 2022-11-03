@@ -53,6 +53,7 @@ export const withdrawGuest = async ({ account, data }) =>
     method: 'POST',
     headers: { ...headers, 'access-token': getGuestAccessToken(), 'waivio-auth': true },
     body: JSON.stringify({
+      id: 'guestWithdraw',
       account,
       data,
     }),

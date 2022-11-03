@@ -156,7 +156,7 @@ class WalletSidebar extends React.Component {
           <div className="WalletSidebar__power">
             {!isGuest && (
               <Action big className="WalletSidebar__transfer" onClick={this.handleOpenDepositModal}>
-                <FormattedMessage id="Deposit" defaultMessage="Deposit"/>
+                <FormattedMessage id="Deposit" defaultMessage="Deposit" />
               </Action>
             )}
             <Action big className="WalletSidebar__transfer" onClick={this.handleOpenWithdrawModal}>
