@@ -43,13 +43,17 @@ const Wallets = props => {
   const isCurrUser = props.match.params.name === props.authUserName;
 
   useEffect(() => {
-    props.setWalletType(walletsType);
-    props.getTokenBalance('WAIV', props.match.params.name);
-    props.getCryptoPriceHistory();
-    props.getGlobalProperties();
-    props.getCurrUserTokensBalanceList(props.match.params.name);
-    props.getUserTokensBalanceList(props.authUserName);
-    props.getCurrUserTokensBalanceSwap(props.match.params.name);
+    try {
+      props.setWalletType(walletsType);
+      props.getTokenBalance('WAIV', props.match.params.name);
+      props.getCryptoPriceHistory();
+      props.getGlobalProperties();
+      props.getCurrUserTokensBalanceList(props.match.params.name);
+      props.getUserTokensBalanceList(props.authUserName);
+      props.getCurrUserTokensBalanceSwap(props.match.params.name);
+    } catch (e) {
+      console.log(e);
+    }
 
     return () => props.resetHiveEngineTokenBalance();
   }, []);
@@ -89,7 +93,7 @@ const Wallets = props => {
       {props.visiblePower && <PowerUpOrDown />}
       {props.visibleSwap && <SwapTokens />}
       {props.visibleDeposit && <Deposit />}
-      {props.visibleWithdraw && <WithdrawModal />}
+      {/*{props.visibleWithdraw && <WithdrawModal />}*/}
       {props.visibleDelegate && <ManageDelegate />}
     </React.Fragment>
   );
