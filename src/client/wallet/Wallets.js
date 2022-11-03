@@ -28,7 +28,7 @@ import { guestUserRegex } from '../../common/helpers/regexHelpers';
 import SwapTokens from './SwapTokens/SwapTokens';
 import { getVisibleModal } from '../../store/swapStore/swapSelectors';
 import Deposit from './Deposit/Deposit';
-import WithdrawModal from './WithdrawModal/WithdrawModal';
+// import WithdrawModal from './WithdrawModal/WithdrawModal';
 import { getIsOpenWithdraw } from '../../store/depositeWithdrawStore/depositWithdrawSelector';
 import ManageDelegate from './DelegateModals/ManageDelegate/ManageDelegate';
 import { getAuthenticatedUserName } from '../../store/authStore/authSelectors';
@@ -93,7 +93,7 @@ const Wallets = props => {
       {props.visiblePower && <PowerUpOrDown />}
       {props.visibleSwap && <SwapTokens />}
       {props.visibleDeposit && <Deposit />}
-      {/*{props.visibleWithdraw && <WithdrawModal />}*/}
+      {/* {props.visibleWithdraw && <WithdrawModal />} */}
       {props.visibleDelegate && <ManageDelegate />}
     </React.Fragment>
   );
