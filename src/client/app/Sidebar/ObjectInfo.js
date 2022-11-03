@@ -406,6 +406,11 @@ class ObjectInfo extends React.Component {
     const isOptionsObjectType = ['book', 'product', 'service'].includes(wobject.object_type);
     const galleryPriceOptionsSection = (
       <>
+        {isEditMode && (
+          <div className="object-sidebar__section-title">
+            <FormattedMessage id="options" defaultMessage="Options" />
+          </div>
+        )}
         {this.listItem(
           objectFields.galleryItem,
           (pictures.length > 1 || avatar || wobject?.options) && (
