@@ -10,7 +10,7 @@ const RewardsHeader = ({ proposition }) => (
     </p>
     <div className="Proposition-new__sponsorInfo">
       <div className="Proposition-new__infoItem Proposition-new__infoItem--right">
-        <Link to={`/@${proposition?.guideName}`}>Waivio Service (Sponsor)</Link>
+        <Link to={`/@${proposition?.guideName}`}>Sponsor</Link>
         <Link to={`/@${proposition?.guideName}`}>@{proposition?.guideName}</Link>
       </div>
       <div className="Proposition-new__infoItem">

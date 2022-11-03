@@ -19,6 +19,7 @@ const filterConfig = [
 const Payables = () => {
   const [lenders, setLenders] = useState({});
   const [loading, setLoading] = useState(false);
+  const [visible, setVisible] = useState(false);
   const location = useLocation();
   const query = new URLSearchParams(location.search);
   const authUserName = useSelector(getAuthenticatedUserName);
@@ -76,9 +77,16 @@ const Payables = () => {
           handleLoadingMore={handleLoadingMore}
           loading={loading}
           payoutToken={'WAIV'}
+          setVisible={setVisible}
         />
       </div>
-      <RewardsFilters config={filterConfig} getFilters={getFilters} onlyOne />
+      <RewardsFilters
+        onClose={() => setVisible(false)}
+        visible={visible}
+        config={filterConfig}
+        getFilters={getFilters}
+        onlyOne
+      />
     </div>
   );
 };

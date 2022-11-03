@@ -4,7 +4,7 @@ import * as ApiClient from '../../waivioApi/ApiClient';
 export const compareTokensList = async (name, tokens) => {
   const tokensList = tokens.map(token => token.symbol || token);
   const userBalances = await ApiClient.getTokenBalance(name, { $in: tokensList });
-  const rates = await ApiClient.getTokensRate(tokensList);
+  const rates = await ApiClient.getTokensRate([...tokensList, 'SWAP.LTC', 'SWAP.BTC', 'SWAP.ETH']);
   const tokensInfo = await ApiClient.getTokensInformation(tokensList);
   const compareList = tokens.map(token => {
     const tokenName = token.symbol || token;

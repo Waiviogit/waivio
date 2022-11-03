@@ -5,25 +5,38 @@
   justify-content: space-between;
   align-items: flex-start;
 
-  &__breadcrumbs {
-    //display: flex;
-    //align-items: center;
+  &__page {
+    display: none;
+
+    @media @small {
+      display: inline;
+    }
   }
 
   &__disclaimer {
     text-align: justify;
   }
 
-  &__parent {
-    display: inline;
-    font-size: 24px;
-    font-weight: 500;
+  &__parent,
+  &__page {
+    font-size: 18px;
+    font-weight: 700;
     color: black;
     word-break: break-word;
+
+    @media @small {
+      font-size: 24px;
+      font-weight: 500;
+    }
   }
 
   &__icon {
     margin: 0 5px 0 10px;
+    display: none;
+
+    @media @small {
+      display: inline;
+    }
   }
 
   &__feed {
@@ -54,6 +67,14 @@
       display: block;
       margin-left: 20px;
     }
+  }
+
+  .SearchAllResult__buttonWrap {
+    padding: 0;
+  }
+
+  &__breadcrumbs {
+    display: flex;
   }
 }
 

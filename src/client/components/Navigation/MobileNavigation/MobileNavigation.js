@@ -17,6 +17,8 @@ import {
   PATH_NAME_PAYABLES,
   PATH_NAME_BLACKLIST,
   CAMPAIGNS,
+  PATH_NAME_RECEIVABLES_NEW,
+  PATH_NAME_PAYABLES_NEW,
 } from '../../../../common/constants/rewards';
 import { pages } from './helpers';
 import { getIsAuthenticated } from '../../../../store/authStore/authSelectors';
@@ -90,8 +92,9 @@ const MobileNavigation = ({ location, match }) => {
       filterName = 'eligible';
       break;
     case PATH_NAME_RECEIVABLES:
+    case PATH_NAME_RECEIVABLES_NEW:
       pageName = 'rewards';
-      filterName = 'receivables';
+      filterName = 'receivable';
       break;
     case PATH_NAME_CREATE:
       pageName = CAMPAIGNS;
@@ -102,8 +105,9 @@ const MobileNavigation = ({ location, match }) => {
       filterName = 'manage';
       break;
     case PATH_NAME_PAYABLES:
+    case PATH_NAME_PAYABLES_NEW:
       pageName = CAMPAIGNS;
-      filterName = 'payables';
+      filterName = 'payable';
       break;
     case PATH_NAME_GUIDE_HISTORY:
       pageName = CAMPAIGNS;
