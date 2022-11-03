@@ -96,7 +96,7 @@ const WithdrawModal = props => {
       dispatch(resetSelectPair());
     };
   }, []);
-
+  console.log(withdraList);
   const handleCloseModal = () => {
     dispatch(toggleWithdrawModal(false));
   };
