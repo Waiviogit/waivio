@@ -12,6 +12,7 @@ import PaymentList from '../Payment/PaymentList';
 import { getTokenRatesInUSD } from '../../../store/walletStore/walletSelectors';
 
 import './Debts.less';
+import FiltersForMobile from '../../newRewards/Filters/FiltersForMobile';
 
 const Debts = ({
   intl,
@@ -22,6 +23,7 @@ const Debts = ({
   handleLoadingMore,
   loading,
   payoutToken,
+  setVisible,
 }) => {
   const [sort, setSort] = useState('amount');
   const [sortedDebtObjsData, setSortedDebtObjsData] = useState([]);
@@ -81,29 +83,35 @@ const Debts = ({
         </div>
         <div className="Debts__sort">{sortSelector}</div>
         <div className="Debts__filters-tags-block">
-          <span className="Debts__filters-topic ttc">
-            {intl.formatMessage({ id: 'filters', defaultMessage: 'Filters' })}:&nbsp;
-          </span>
-          {map(activeFilters, filter => (
-            <Tag
-              className="ttc"
-              key={filter.filterName}
-              closable
-              onClose={() => setPayablesFilterValue(filter)}
-            >
-              {intl.formatMessage(
-                { id: `filter_${filter.filterName}`, defaultMessage: filter.defaultMessage },
-                { value: filter.value },
-              )}
-            </Tag>
-          ))}
-          <span
-            className="Debts__filters-selector underline ttl"
-            role="presentation"
-            onClick={() => setIsModalOpen(true)}
-          >
-            {intl.formatMessage({ id: 'add_new_proposition', defaultMessage: 'Add' })}
-          </span>
+          {payoutToken === 'HIVE' ? (
+            <>
+              <span className="Debts__filters-topic ttc">
+                {intl.formatMessage({ id: 'filters', defaultMessage: 'Filters' })}:&nbsp;
+              </span>
+              {map(activeFilters, filter => (
+                <Tag
+                  className="ttc"
+                  key={filter.filterName}
+                  closable
+                  onClose={() => setPayablesFilterValue(filter)}
+                >
+                  {intl.formatMessage(
+                    { id: `filter_${filter.filterName}`, defaultMessage: filter.defaultMessage },
+                    { value: filter.value },
+                  )}
+                </Tag>
+              ))}
+              <span
+                className="Debts__filters-selector underline ttl"
+                role="presentation"
+                onClick={() => setIsModalOpen(true)}
+              >
+                {intl.formatMessage({ id: 'add_new_proposition', defaultMessage: 'Add' })}
+              </span>
+            </>
+          ) : (
+            <FiltersForMobile setVisible={setVisible} />
+          )}
         </div>
         <PaymentList
           renderData={renderData}
@@ -144,12 +152,14 @@ Debts.propTypes = {
   activeFilters: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   setPayablesFilterValue: PropTypes.func,
   handleLoadingMore: PropTypes.func,
+  setVisible: PropTypes.func,
   loading: PropTypes.bool,
 };
 
 Debts.defaultProps = {
   setPayablesFilterValue: () => {},
   handleLoadingMore: () => {},
+  setVisible: () => {},
   loading: false,
   payoutToken: 'HIVE',
 };

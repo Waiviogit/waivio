@@ -45,6 +45,7 @@ export const getDepositWithdrawPairs = () => (dispatch, getState) => {
             !pair.from_coin_symbol.startsWith('SWAP') && pair.to_coin_symbol.startsWith('SWAP'),
         )
         .sort((a, b) => (b.display_name > a.display_name ? -1 : 1));
+
       const withdrawPairsFilteredList = [
         ...compliteList,
         {
@@ -58,7 +59,33 @@ export const getDepositWithdrawPairs = () => (dispatch, getState) => {
       ].filter(
         pair => pair.from_coin_symbol.startsWith('SWAP') && !pair.to_coin_symbol.startsWith('SWAP'),
       );
-      const withdrawPairs = await compareTokensList(name, withdrawPairsFilteredList);
+      const withdrawPairs = await compareTokensList(name, [
+        ...withdrawPairsFilteredList,
+        {
+          from_coin_symbol: 'WAIV',
+          to_coin_symbol: 'SWAP.LTC',
+          symbol: 'WAIV',
+          ex_rate: 1,
+          pair: 'WAIV -> SWAP.LTC',
+          title: 'WAIV - SWAP.LTC',
+        },
+        {
+          from_coin_symbol: 'WAIV',
+          to_coin_symbol: 'SWAP.BTC',
+          symbol: 'WAIV',
+          ex_rate: 1,
+          pair: 'WAIV -> SWAP.BTC',
+          title: 'WAIV - SWAP.BTC',
+        },
+        {
+          from_coin_symbol: 'WAIV',
+          to_coin_symbol: 'SWAP.ETH',
+          symbol: 'WAIV',
+          ex_rate: 1,
+          pair: 'WAIV -> SWAP.ETH',
+          title: 'WAIV - SWAP.ETH',
+        },
+      ]);
 
       return {
         withdrawPairs: withdrawPairs.filter(pair => pair.balance),

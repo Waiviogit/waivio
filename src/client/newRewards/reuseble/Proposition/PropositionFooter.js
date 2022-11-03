@@ -92,7 +92,7 @@ const PropositionFooter = ({ type, openDetailsModal, proposition, getProposition
           active_votes: [],
           ...comment,
         },
-      ];
+      ].sort((a, b) => b.created - a.created);
 
       setComments(commentList);
       setCommentsCount(commentList?.length);
@@ -207,7 +207,7 @@ const PropositionFooter = ({ type, openDetailsModal, proposition, getProposition
                 for {proposition?.countReservationDays} days
               </span>
             </div>
-            <span onClick={openDetailsModal}>Detail &gt;</span>
+            <span onClick={openDetailsModal}>Details &gt;</span>
           </div>
         ) : (
           <WebsiteReservedButtons

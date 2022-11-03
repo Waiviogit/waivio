@@ -24,6 +24,7 @@ import FiltersForMobile from '../Filters/FiltersForMobile';
 import './PropositionList.less';
 import SortSelector from '../../components/SortSelector/SortSelector';
 import RewardsMap from '../Map';
+import ViewMapButton from '../../widgets/ViewMapButton';
 
 const filterConfig = [
   { title: 'Rewards for', type: 'type' },
@@ -59,6 +60,7 @@ const RenderPropositionList = ({
   const [parent, setParent] = useState(null);
   const [sort, setSort] = useState(defaultSort);
   const [visible, setVisible] = useState(false);
+  const [showMap, setShowMap] = useState(false);
   const search = location.search.replace('?', '&');
 
   const getFilters = () => {
@@ -125,7 +127,7 @@ const RenderPropositionList = ({
       <div className="PropositionList__feed">
         <FiltersForMobile setVisible={setVisible} />
         <div className="PropositionList__breadcrumbs">
-          <Link className="PropositionList__parent" to={`/rewards-new/${tab}`}>
+          <Link className="PropositionList__page" to={`/rewards-new/${tab}`}>
             {intl.formatMessage({ id: `${tab}_rewards_new` })}
           </Link>
           {requiredObject && (
@@ -135,6 +137,7 @@ const RenderPropositionList = ({
             </div>
           )}
         </div>
+        <ViewMapButton handleClick={() => setShowMap(true)} />
         {disclaimer && (
           <p className="PropositionList__disclaimer">
             <b>Disclaimer: </b>
@@ -180,6 +183,8 @@ const RenderPropositionList = ({
               getPoints={getPoints}
               parent={parent}
               defaultCenter={getObjectMapInArray(parent)}
+              visible={showMap}
+              onClose={() => setShowMap(false)}
             />
           )}
           <RewardsFilters
