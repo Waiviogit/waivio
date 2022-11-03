@@ -27,10 +27,14 @@ import QrModal from '../../widgets/QrModal';
 import { getAuthenticatedUserName, isGuestUser } from '../../../store/authStore/authSelectors';
 import { converHiveEngineCoins } from '../../../waivioApi/ApiClient';
 import { createQuery } from '../../../common/helpers/apiHelpers';
-import { getWithdrawInfo } from '../../../common/helpers/withdrawTokenHelpers';
+import {
+  getAccountToTransfer,
+  getWithdrawInfo,
+} from '../../../common/helpers/withdrawTokenHelpers';
 
 import './WithdrawModal.less';
 import { withdrawGuest } from '../../../waivioApi/walletApi';
+import { getHiveBeneficiaryAccount } from '../../../store/settingsStore/settingsSelectors';
 
 const withdrawFeePercent = 0.75;
 const withdrawFee = withdrawFeePercent / 100;
@@ -43,6 +47,8 @@ const WithdrawModal = props => {
   const userName = useSelector(getAuthenticatedUserName);
   const defaultToken = useSelector(getDefaultToken);
   const cryptosPriceHistory = useSelector(getCryptosPriceHistory);
+  const hiveBeneficiaryAccount = useSelector(getHiveBeneficiaryAccount);
+
   const hiveRateInUsd = get(cryptosPriceHistory, 'hive.usdPriceHistory.usd', 1);
   const dispatch = useDispatch();
   const [fromAmount, setFromAmount] = useState(0);
@@ -55,11 +61,18 @@ const WithdrawModal = props => {
     debounce(async value => {
       if (!value) return setInvalidAddress();
 
-      const data = await converHiveEngineCoins({
-        destination: value,
-        from_coin: pair.from_coin_symbol,
-        to_coin: pair.to_coin_symbol,
-      });
+      const data =
+        pair.from_coin_symbol === 'HIVE'
+          ? await getAccountToTransfer({
+              destination: value,
+              from_coin: pair.from_coin_symbol,
+              to_coin: pair.to_coin_symbol,
+            })
+          : await converHiveEngineCoins({
+              destination: value,
+              from_coin: pair.from_coin_symbol,
+              to_coin: pair.to_coin_symbol,
+            });
 
       if (data.error) return setInvalidAddress(true);
 
@@ -96,7 +109,7 @@ const WithdrawModal = props => {
       dispatch(resetSelectPair());
     };
   }, []);
-  console.log(withdraList);
+
   const handleCloseModal = () => {
     dispatch(toggleWithdrawModal(false));
   };
@@ -127,7 +140,7 @@ const WithdrawModal = props => {
         quantity: fromAmount,
         inputSymbol: pair.symbol,
         outputSymbol: pair.to_coin_symbol,
-        address: walletAddress,
+        address: pair.to_coin_symbol === 'HIVE' ? hiveBeneficiaryAccount : walletAddress,
       };
 
       if (isGuest) {
@@ -287,7 +300,12 @@ const WithdrawModal = props => {
           <FormattedMessage id="receive" defaultMessage="Receive" />:
         </h3>
         <div className="WithdrawModal__inputWrap">
-          <Input type="number" value={toAmount} onChange={handleToAmoundChange} />
+          <Input
+            type="number"
+            value={toAmount}
+            disabled={pair?.symbol === 'WAIV'}
+            onChange={handleToAmoundChange}
+          />
           <span className="WithdrawModal__currency">{get(pair, 'to_coin_symbol')}</span>
         </div>
       </div>
@@ -306,7 +324,7 @@ const WithdrawModal = props => {
           <FormattedMessage id="destination_address" defaultMessage="Destination address" />:
         </h3>
         {hiveWalletCurrency.includes(get(pair, 'to_coin_symbol')) ? (
-          <SelectUserForAutocomplete account={userName} />
+          <SelectUserForAutocomplete account={isGuest ? hiveBeneficiaryAccount : userName} />
         ) : (
           <React.Fragment>
             <div className="WithdrawModal__address-wrapper">
@@ -318,7 +336,6 @@ const WithdrawModal = props => {
                   id: 'enter_address',
                   defaultMessage: 'Enter address',
                 })}
-                disabled={pair?.symbol === 'WAIV'}
               />
               <Button className="WithdrawModal__qr-button" onClick={() => setShowScanner(true)}>
                 <img src={'/images/icons/qr.png'} className="qr-img" alt="qr" />

@@ -31,7 +31,7 @@ const getETHAccountToTransfer = ({ destination }) => {
   };
 };
 
-const getAccountToTransfer = async ({ destination, from_coin, to_coin }) => {
+export const getAccountToTransfer = async ({ destination, from_coin, to_coin }) => {
   if (to_coin === 'ETH') {
     return getETHAccountToTransfer({ destination });
   }
