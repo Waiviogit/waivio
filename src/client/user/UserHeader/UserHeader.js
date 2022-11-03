@@ -185,10 +185,12 @@ const UserHeader = ({
                       </a>
                     </div>
                   )}
-                  <div>
-                    <i className="iconfont icon-time text-icon" />
-                    <FormattedMessage id="active_info" defaultMessage="Active" />: {lastActive}
-                  </div>
+                  {!isGuest && (
+                    <div>
+                      <i className="iconfont icon-time text-icon" />
+                      <FormattedMessage id="active_info" defaultMessage="Active" />: {lastActive}
+                    </div>
+                  )}
                 </div>
               )}{' '}
             </div>

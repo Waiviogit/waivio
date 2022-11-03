@@ -5,14 +5,16 @@ import {
   getHiveEngineCoins,
 } from '../../waivioApi/ApiClient';
 import { compareTokensList } from '../swapStore/helper';
-import { getAuthenticatedUserName } from '../authStore/authSelectors';
+import { getAuthenticatedUserName, isGuestUser } from '../authStore/authSelectors';
 
 export const GET_DEPOSIT_WITHDRAW_PAIR = createAsyncActionType(
   '@depositWithdraw/GET_DEPOSIT_WITHDRAW_PAIR',
 );
 
 export const getDepositWithdrawPairs = () => (dispatch, getState) => {
-  const name = getAuthenticatedUserName(getState());
+  const state = getState();
+  const name = getAuthenticatedUserName(state);
+  const isGuest = isGuestUser(state);
 
   return dispatch({
     type: GET_DEPOSIT_WITHDRAW_PAIR.ACTION,
@@ -60,30 +62,38 @@ export const getDepositWithdrawPairs = () => (dispatch, getState) => {
         pair => pair.from_coin_symbol.startsWith('SWAP') && !pair.to_coin_symbol.startsWith('SWAP'),
       );
       const withdrawPairs = await compareTokensList(name, [
-        ...withdrawPairsFilteredList,
+        ...(isGuest ? [] : withdrawPairsFilteredList),
         {
           from_coin_symbol: 'WAIV',
-          to_coin_symbol: 'SWAP.LTC',
+          to_coin_symbol: 'LTC',
           symbol: 'WAIV',
           ex_rate: 1,
           pair: 'WAIV -> SWAP.LTC',
-          title: 'WAIV - SWAP.LTC',
+          title: 'WAIV - LTC',
         },
         {
           from_coin_symbol: 'WAIV',
-          to_coin_symbol: 'SWAP.BTC',
+          to_coin_symbol: 'BTC',
           symbol: 'WAIV',
           ex_rate: 1,
           pair: 'WAIV -> SWAP.BTC',
-          title: 'WAIV - SWAP.BTC',
+          title: 'WAIV - BTC',
         },
         {
           from_coin_symbol: 'WAIV',
-          to_coin_symbol: 'SWAP.ETH',
+          to_coin_symbol: 'ETH',
           symbol: 'WAIV',
           ex_rate: 1,
           pair: 'WAIV -> SWAP.ETH',
-          title: 'WAIV - SWAP.ETH',
+          title: 'WAIV - ETH',
+        },
+        {
+          from_coin_symbol: 'WAIV',
+          to_coin_symbol: 'HIVE',
+          symbol: 'WAIV',
+          ex_rate: 1,
+          pair: 'WAIV -> SWAP.HIVE',
+          title: 'WAIV - HIVE',
         },
       ]);
 
