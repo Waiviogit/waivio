@@ -22,7 +22,11 @@ const Options = ({ wobject, isEditMode, setHoveredOption, setActiveOption, histo
     setHoveredOption(el);
     if (el.body.parentObjectPermlink !== wobject.author_permlink) {
       history.push(`/object/${el.author_permlink}${isMobile() ? '/about' : ''}`);
-      isMobile() && window.scrollTo(0, 250);
+      isMobile() &&
+        window.scrollTo({
+          top: 250,
+          behavior: 'smooth',
+        });
       setSelectedOption(el);
       setActiveOption(el);
     }
