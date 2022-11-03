@@ -358,24 +358,34 @@ class ObjectInfo extends React.Component {
           .map(option => Object.values(option))
           .flatMap(el => el[1])
           .filter(el => el.body.image)
-          .map(o => ({ body: o.avatar, id: o.author_permlink }))
+          .map((o, i) => ({
+            body: o.avatar,
+            id:
+              o.body.parentObjectPermlink === wobject.author_permlink && i === 0
+                ? wobject?.galleryAlbum[0].id
+                : o.author_permlink,
+            name: 'options',
+            parentPermlink: o.body.parentObjectPermlink,
+          }))
       : [];
 
     const sortedOptionsPictures = optionsPictures.filter(o => activeOption?.avatar !== o?.body);
 
-    const activeOptionPicture = [
-      {
-        body:
-          hoveredOption?.avatar ||
-          activeOption?.avatar ||
-          wobject.avatar ||
-          optionsPictures[0]?.body,
-        id: wobject.author_permlink,
-        name: wobject.avatar && 'avatar',
-      },
-      ...sortedOptionsPictures,
-      ...pictures,
-    ];
+    let activeOptionPicture = [...optionsPictures, ...pictures];
+
+    if (hoveredOption?.avatar || activeOption?.avatar) {
+      activeOptionPicture = [
+        {
+          name: 'galleryItem',
+          body: hoveredOption?.avatar || activeOption?.avatar,
+          // wobject.avatar ||
+          // optionsPictures[0]?.body,
+          id: wobject?.galleryAlbum[0]?.id,
+        },
+        ...sortedOptionsPictures,
+        ...pictures,
+      ];
+    }
 
     const dimensions = parseWobjectField(wobject, 'dimensions');
     const productWeight = parseWobjectField(wobject, 'productWeight');

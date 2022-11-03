@@ -28,7 +28,8 @@ const PicturesCarousel = ({ activePicture, pics, objectID }) => {
             key={pic.id}
             to={{
               pathname:
-                pic.name === 'galleryItem' || pic.name === 'avatar'
+                pic.name === 'galleryItem' ||
+                (objectID === pic.parentPermlink && pic.name === 'options')
                   ? `/object/${objectID}/gallery/album/${pic.id}`
                   : `/object/${pic.id}`,
             }}
