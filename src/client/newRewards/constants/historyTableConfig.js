@@ -37,6 +37,7 @@ export const configHistoryTableHeader = [
       id: 'type',
       defaultMessage: 'Type',
     },
+    hideForMobile: true,
   },
   {
     id: 'reward',
@@ -46,6 +47,7 @@ export const configHistoryTableHeader = [
       id: 'reward',
       defaultMessage: 'Reward',
     },
+    hideForMobile: true,
   },
   {
     id: 'currency',
@@ -53,6 +55,7 @@ export const configHistoryTableHeader = [
       id: 'currency',
       defaultMessage: 'Currency',
     },
+    hideForMobile: true,
   },
   {
     id: 'completedTotal',
@@ -60,6 +63,7 @@ export const configHistoryTableHeader = [
       id: 'reviews',
       defaultMessage: 'Reviews',
     },
+    hideForMobile: true,
   },
   {
     id: 'payed',
@@ -69,6 +73,7 @@ export const configHistoryTableHeader = [
       id: 'paid_waiv',
       defaultMessage: 'Paid (WAIV)',
     },
+    hideForMobile: true,
   },
 ];
 

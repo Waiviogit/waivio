@@ -19,7 +19,12 @@ import {
   getFollowingObjects,
   getNotifications,
 } from '../../../store/userStore/userActions';
-import { busyLogin, getAuthGuestBalance, login } from '../../../store/authStore/authActions';
+import {
+  busyLogin,
+  changeRewardsTab,
+  getAuthGuestBalance,
+  login,
+} from '../../../store/authStore/authActions';
 import { getRate, getRewardFund } from '../../../store/appStore/appActions';
 import { getRebloggedList } from '../../../store/reblogStore/reblogActions';
 import styles from './styles';
@@ -67,6 +72,7 @@ const WebsiteSignIn = props => {
               dispatch(getRebloggedList());
               dispatch(getRate());
               dispatch(getAuthGuestBalance());
+              dispatch(changeRewardsTab());
             });
           });
         }

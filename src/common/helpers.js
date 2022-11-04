@@ -36,7 +36,7 @@ export const addPayoutForActiveVotes = (post, waivRates) => {
       return {
         ...vote,
         payout:
-          post.active_votes.length > 1 || !vote.fake
+          post.active_votes.length > 1 || !vote.fake || vote.rsharesWAIV
             ? postPayoutCalculate(post, vote.rshares, vote.rsharesWAIV, waivRates)
             : vote.rshares,
       };

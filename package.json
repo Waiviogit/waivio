@@ -146,6 +146,7 @@
     "url-parse": "^1.1.9",
     "url-search-params-polyfill": "^2.0.0",
     "uuid": "^3.3.2",
+    "web3": "^1.8.0",
     "xmldom": "^0.1.27"
   },
   "devDependencies": {

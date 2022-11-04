@@ -92,7 +92,7 @@ const PropositionFooter = ({ type, openDetailsModal, proposition, getProposition
           active_votes: [],
           ...comment,
         },
-      ];
+      ].sort((a, b) => b.created - a.created);
 
       setComments(commentList);
       setCommentsCount(commentList?.length);
@@ -199,10 +199,15 @@ const PropositionFooter = ({ type, openDetailsModal, proposition, getProposition
       default:
         return isWaivio ? (
           <div className="Proposition-new__footer-container">
-            <Button type="primary" onClick={openDetailsModal}>
-              <b>Reserve</b> Your Reward
-            </Button>{' '}
-            for {proposition?.countReservationDays} days
+            <div>
+              <Button type="primary" onClick={openDetailsModal}>
+                <b>Reserve</b> Your Reward
+              </Button>{' '}
+              <span className="Proposition-new__days">
+                for {proposition?.countReservationDays} days
+              </span>
+            </div>
+            <span onClick={openDetailsModal}>Details &gt;</span>
           </div>
         ) : (
           <WebsiteReservedButtons

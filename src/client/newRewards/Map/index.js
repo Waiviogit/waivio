@@ -151,8 +151,8 @@ const RewardsMap = ({ getPoints, defaultCenter, parent, visible, onClose }) => {
         zoom={defaultZoom}
         provider={mapProvider}
         onClick={({ event }) => {
-          if (event.target.classList.value === 'overlay' && !defaultCenter) {
-            history.push(`${history.location.pathname}/${infoboxData.wobject.author_permlink}`);
+          if (event.target.classList.value === 'overlay') {
+            history.push(infoboxData.wobject.defaultShowLink);
           } else {
             setInfoboxData(null);
           }
@@ -187,6 +187,7 @@ const RewardsMap = ({ getPoints, defaultCenter, parent, visible, onClose }) => {
               justifyContent: 'center',
               background: 'white',
               zIndex: 6,
+              cursor: 'pointer',
             }}
           >
             <ObjectAvatar className={'overlay'} item={infoboxData.wobject} size={35} />{' '}

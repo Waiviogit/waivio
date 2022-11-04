@@ -5,8 +5,8 @@ import {
   getAllCampaingForRequiredObject,
   getAuthorsChildWobjects,
   getCurrentHivePrice,
+  getEligiblePropositionByCampaingObjectPermlink,
   getEligibleRewardList,
-  getPropositionByCampaingObjectPermlink,
   searchObjects,
 } from '../../waivioApi/ApiClient';
 import { getAuthenticatedUserName } from '../authStore/authSelectors';
@@ -26,10 +26,11 @@ export const GET_ELIGIBLE_REWARDS = createAsyncActionType('@quickRewards/GET_ELI
 export const getEligibleRewardsList = searchString => (dispatch, getState) => {
   const state = getState();
   const locale = getLocale(state);
+  const authUser = getAuthenticatedUserName(state);
 
   return dispatch({
     type: GET_ELIGIBLE_REWARDS.ACTION,
-    payload: searchObjects(searchString, 'restaurant', false, 20, locale),
+    payload: searchObjects(searchString, 'restaurant', false, 20, locale, { userName: authUser }),
   });
 };
 
@@ -95,7 +96,7 @@ export const getEligibleRewardsListWithRestaurant = (selectRest, limit) => async
 
     if (isReview) {
       if (isNewRewards) {
-        objCampaings = await getPropositionByCampaingObjectPermlink(
+        objCampaings = await getEligiblePropositionByCampaingObjectPermlink(
           selectRest.author_permlink,
           name,
           0,

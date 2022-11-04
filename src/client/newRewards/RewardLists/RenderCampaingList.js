@@ -10,8 +10,9 @@ import RewardsFilters from '../Filters/Filters';
 import FiltersForMobile from '../Filters/FiltersForMobile';
 import SortSelector from '../../components/SortSelector/SortSelector';
 import RewardsMap from '../Map';
-import './RewardLists.less';
 import ViewMapButton from '../../widgets/ViewMapButton';
+
+import './RewardLists.less';
 
 const filterConfig = [
   { title: 'Rewards for', type: 'type' },
@@ -66,7 +67,7 @@ const RenderCampaingList = ({ getAllRewardList, title, getFilters, getMapItems }
     <div className="RewardLists">
       <div className="RewardLists__feed">
         <FiltersForMobile setVisible={setVisible} />
-        <h2>{title}</h2>
+        <h2 className="RewardLists__title">{title}</h2>
         <ViewMapButton handleClick={() => setShowMap(true)} />
         <SortSelector sort={sort} onChange={setSort}>
           {sortConfig.map(item => (

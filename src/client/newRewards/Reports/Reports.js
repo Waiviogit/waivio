@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Checkbox, Col, DatePicker, Form, Input, Row, Select, message } from 'antd';
+import { Button, Checkbox, DatePicker, Form, Input, Select, message } from 'antd';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import moment from 'moment';
@@ -158,128 +158,120 @@ const Reports = ({ form, intl }) => {
             ),
           )}
         </Form.Item>
-        <Row gutter={24} className="ReportsGlobal__row">
-          <Col span={12}>
-            <Form.Item
-              label={
-                <span className="ReportsGlobal__label">
-                  {intl.formatMessage({
-                    id: 'from',
-                    defaultMessage: 'From',
-                  })}
-                  :
-                </span>
-              }
-            >
-              {form.getFieldDecorator('from', {
-                rules: [
-                  {
-                    required: false,
-                    message: `${intl.formatMessage({
-                      id: 'select_date',
-                      defaultMessage: 'Please select date',
-                    })}`,
-                  },
-                ],
-              })(
-                <DatePicker
-                  disabledDate={disabledStartDate}
-                  showTime
-                  allowClear={false}
-                  disabled={false}
-                  placeholder={intl.formatMessage({
-                    id: 'date_and_time_picker_placeholder',
-                    defaultMessage: 'Select date and time',
-                  })}
-                />,
-              )}
-            </Form.Item>
-          </Col>
-          <Col span={12}>
-            <Form.Item
-              label={
-                <span className="ReportsGlobal__label">
-                  {intl.formatMessage({
-                    id: 'till',
-                    defaultMessage: 'Till',
-                  })}
-                  :
-                </span>
-              }
-            >
-              {form.getFieldDecorator('till', {
-                rules: [{ required: false }],
-                initialValue: moment(),
-              })(
-                <DatePicker
-                  disabledDate={disabledEndDate}
-                  showTime
-                  allowClear={false}
-                  disabled={false}
-                  placeholder={intl.formatMessage({
-                    id: 'date_and_time_picker_placeholder',
-                    defaultMessage: 'Select date and time',
-                  })}
-                />,
-              )}
-            </Form.Item>
-          </Col>
-        </Row>
+        <div className="ReportsGlobal__row">
+          <Form.Item
+            label={
+              <span className="ReportsGlobal__label">
+                {intl.formatMessage({
+                  id: 'from',
+                  defaultMessage: 'From',
+                })}
+                :
+              </span>
+            }
+          >
+            {form.getFieldDecorator('from', {
+              rules: [
+                {
+                  required: false,
+                  message: `${intl.formatMessage({
+                    id: 'select_date',
+                    defaultMessage: 'Please select date',
+                  })}`,
+                },
+              ],
+            })(
+              <DatePicker
+                disabledDate={disabledStartDate}
+                showTime
+                allowClear={false}
+                className={'ReportsGlobal__picker'}
+                disabled={false}
+                placeholder={intl.formatMessage({
+                  id: 'date_and_time_picker_placeholder',
+                  defaultMessage: 'Select date and time',
+                })}
+              />,
+            )}
+          </Form.Item>
+          <Form.Item
+            label={
+              <span className="ReportsGlobal__label">
+                {intl.formatMessage({
+                  id: 'till',
+                  defaultMessage: 'Till',
+                })}
+                :
+              </span>
+            }
+          >
+            {form.getFieldDecorator('till', {
+              rules: [{ required: false }],
+              initialValue: moment(),
+            })(
+              <DatePicker
+                disabledDate={disabledEndDate}
+                showTime
+                className={'ReportsGlobal__picker'}
+                allowClear={false}
+                disabled={false}
+                placeholder={intl.formatMessage({
+                  id: 'date_and_time_picker_placeholder',
+                  defaultMessage: 'Select date and time',
+                })}
+              />,
+            )}
+          </Form.Item>
+        </div>
         <span className="ReportsGlobal__label">
           {intl.formatMessage({
             id: 'or_total_amount',
             defaultMessage: 'Or total amount:',
           })}
         </span>
-        <Row gutter={24} className="ReportsGlobal__row">
-          <Col span={7}>
-            <Form.Item>
-              {form.getFieldDecorator('amount', {
-                rules: [{ required: false }],
-                initialValue: null,
-              })(
-                <Input
-                  placeholder={intl.formatMessage({
-                    id: 'enter_amount',
-                    defaultMessage: 'Enter amount',
-                  })}
-                  autoComplete="off"
-                />,
-              )}
-            </Form.Item>
-          </Col>
-          <Col span={7}>
-            <Form.Item>
-              {form.getFieldDecorator('currency', {
-                initialValue: 'WAIV',
-              })(
-                <Select style={{ width: '120px', left: '15px' }}>
-                  {['WAIV', ...currencyTypes].map(curr => (
-                    <Select.Option key={curr} value={curr}>
-                      {curr}
-                    </Select.Option>
-                  ))}
-                </Select>,
-              )}
-            </Form.Item>
-          </Col>
-          <Col span={10}>
-            <Form.Item>
-              {form.getFieldDecorator('fees', {
-                rules: [{ required: false }],
-                initialValue: false,
-                valuePropName: 'checked',
-              })(
-                <Checkbox className="ReportsGlobal__checkbox">
-                  {intl.formatMessage({
-                    id: 'include_processing_fees',
-                    defaultMessage: 'Include processing fees',
-                  })}
-                </Checkbox>,
-              )}
-            </Form.Item>
-          </Col>
-        </Row>
+        <div className="ReportsGlobal__row">
+          <Form.Item>
+            {form.getFieldDecorator('amount', {
+              rules: [{ required: false }],
+              initialValue: null,
+            })(
+              <Input
+                placeholder={intl.formatMessage({
+                  id: 'enter_amount',
+                  defaultMessage: 'Enter amount',
+                })}
+                autoComplete="off"
+              />,
+            )}
+          </Form.Item>
+          <Form.Item>
+            {form.getFieldDecorator('currency', {
+              initialValue: 'WAIV',
+            })(
+              <Select className={'ReportsGlobal__currency'}>
+                {['WAIV', ...currencyTypes].map(curr => (
+                  <Select.Option key={curr} value={curr}>
+                    {curr}
+                  </Select.Option>
+                ))}
+              </Select>,
+            )}
+          </Form.Item>
+          <Form.Item>
+            {form.getFieldDecorator('fees', {
+              rules: [{ required: false }],
+              initialValue: false,
+              valuePropName: 'checked',
+            })(
+              <Checkbox className="ReportsGlobal__checkbox">
+                {intl.formatMessage({
+                  id: 'include_processing_fees',
+                  defaultMessage: 'Include processing fees',
+                })}
+              </Checkbox>,
+            )}
+          </Form.Item>
+        </div>
         <Form.Item
           label={
             <span className="ReportsGlobal__label">
