@@ -31,10 +31,10 @@ import {
   getAccountToTransfer,
   getWithdrawInfo,
 } from '../../../common/helpers/withdrawTokenHelpers';
-
-import './WithdrawModal.less';
 import { withdrawGuest } from '../../../waivioApi/walletApi';
 import { getHiveBeneficiaryAccount } from '../../../store/settingsStore/settingsSelectors';
+
+import './WithdrawModal.less';
 
 const withdrawFeePercent = 0.75;
 const withdrawFee = withdrawFeePercent / 100;

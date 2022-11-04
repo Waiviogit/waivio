@@ -28,7 +28,7 @@ import { guestUserRegex } from '../../common/helpers/regexHelpers';
 import SwapTokens from './SwapTokens/SwapTokens';
 import { getVisibleModal } from '../../store/swapStore/swapSelectors';
 import Deposit from './Deposit/Deposit';
-// import WithdrawModal from './WithdrawModal/WithdrawModal';
+import WithdrawModal from './WithdrawModal/WithdrawModal';
 import { getIsOpenWithdraw } from '../../store/depositeWithdrawStore/depositWithdrawSelector';
 import ManageDelegate from './DelegateModals/ManageDelegate/ManageDelegate';
 import { getAuthenticatedUserName } from '../../store/authStore/authSelectors';
@@ -43,17 +43,13 @@ const Wallets = props => {
   const isCurrUser = props.match.params.name === props.authUserName;
 
   useEffect(() => {
-    try {
-      props.setWalletType(walletsType);
-      props.getTokenBalance('WAIV', props.match.params.name);
-      props.getCryptoPriceHistory();
-      props.getGlobalProperties();
-      props.getCurrUserTokensBalanceList(props.match.params.name);
-      props.getUserTokensBalanceList(props.authUserName);
-      props.getCurrUserTokensBalanceSwap(props.match.params.name);
-    } catch (e) {
-      console.log(e);
-    }
+    props.setWalletType(walletsType);
+    props.getTokenBalance('WAIV', props.match.params.name);
+    props.getCryptoPriceHistory();
+    props.getGlobalProperties();
+    props.getCurrUserTokensBalanceList(props.match.params.name);
+    props.getUserTokensBalanceList(props.authUserName);
+    props.getCurrUserTokensBalanceSwap(props.match.params.name);
 
     return () => props.resetHiveEngineTokenBalance();
   }, []);
@@ -93,7 +89,7 @@ const Wallets = props => {
       {props.visiblePower && <PowerUpOrDown />}
       {props.visibleSwap && <SwapTokens />}
       {props.visibleDeposit && <Deposit />}
-      {/* {props.visibleWithdraw && <WithdrawModal />} */}
+      {props.visibleWithdraw && <WithdrawModal />}
       {props.visibleDelegate && <ManageDelegate />}
     </React.Fragment>
   );
