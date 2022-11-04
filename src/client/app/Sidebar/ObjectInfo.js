@@ -426,6 +426,7 @@ class ObjectInfo extends React.Component {
           objectFields.galleryItem,
           (pictures.length > 1 || avatar || wobject?.options) && (
             <PicturesCarousel
+              isOptionsType
               activePicture={hoveredOption || activeOption}
               pics={activeOptionPicture}
               objectID={wobject.author_permlink}
