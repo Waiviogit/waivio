@@ -27,7 +27,7 @@ import QrModal from '../../widgets/QrModal';
 import { getAuthenticatedUserName, isGuestUser } from '../../../store/authStore/authSelectors';
 import { converHiveEngineCoins, validaveCryptoWallet } from '../../../waivioApi/ApiClient';
 import { createQuery } from '../../../common/helpers/apiHelpers';
-import { getWithdrawInfo } from '../../../common/helpers/withdrawTokenHelpers';
+import getWithdrawInfo from '../../../common/helpers/withdrawTokenHelpers';
 import { withdrawGuest } from '../../../waivioApi/walletApi';
 import { getHiveBeneficiaryAccount } from '../../../store/settingsStore/settingsSelectors';
 

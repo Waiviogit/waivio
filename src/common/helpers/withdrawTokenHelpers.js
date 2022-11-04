@@ -29,7 +29,7 @@ const getETHAccountToTransfer = ({ destination }) => {
   };
 };
 
-export const getAccountToTransfer = async ({ destination, from_coin, to_coin }) => {
+const getAccountToTransfer = async ({ destination, from_coin, to_coin }) => {
   if (to_coin === 'ETH') {
     return getETHAccountToTransfer({ destination });
   }
@@ -47,6 +47,7 @@ export const getAccountToTransfer = async ({ destination, from_coin, to_coin }) 
 
     return result;
   } catch (error) {
+    console.log(error);
     return { error };
   }
 };
@@ -65,6 +66,7 @@ const validateEthAmount = async amount => {
       .times(DEFAULT_WITHDRAW_FEE_MUL)
       .gt(0);
   } catch (error) {
+    console.log(error);
     return false;
   }
 };
@@ -83,6 +85,7 @@ const validateBtcAmount = async amount => {
       .minus(fee)
       .gte(0);
   } catch (error) {
+    console.log(error);
     return false;
   }
 };
@@ -185,7 +188,7 @@ export const indirectSwapData = async ({ quantity, params }) => {
   return { swapJson, amount, predictionAmount: amount * DEFAULT_WITHDRAW_FEE_MUL };
 };
 
-export const withdrawParams = Object.freeze({
+const withdrawParams = Object.freeze({
   HIVE: {
     getSwapData: directPoolSwapData,
     withdrawContract: getWithdrawContract,
@@ -211,7 +214,7 @@ export const withdrawParams = Object.freeze({
   },
 });
 
-export const getWithdrawInfo = async ({ account, data, onlyAmount }) => {
+const getWithdrawInfo = async ({ account, data, onlyAmount }) => {
   const { quantity, inputSymbol, outputSymbol, address } = data;
 
   const params = withdrawParams[outputSymbol];
@@ -241,3 +244,5 @@ export const getWithdrawInfo = async ({ account, data, onlyAmount }) => {
 
   return { customJsonPayload };
 };
+
+export default getWithdrawInfo;
