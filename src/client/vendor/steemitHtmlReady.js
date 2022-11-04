@@ -143,13 +143,13 @@ function iframe(state, child) {
   const { mutate, resolveIframe } = state;
   if (!mutate) return;
 
-  const tag = child.parentNode.tagName
-    ? child.parentNode.tagName.toLowerCase()
-    : child.parentNode.tagName;
-  if (tag === 'div' && child.parentNode.getAttribute('class') === 'videoWrapper') return;
+  const tag = child?.parentNode.tagName
+    ? child?.parentNode.tagName.toLowerCase()
+    : child?.parentNode.tagName;
+  if (tag === 'div' && child?.parentNode.getAttribute('class') === 'videoWrapper') return;
   const html = XMLSerializer.serializeToString(child);
   if (resolveIframe) domString = `<div class="videoWrapper">${html}</div>`;
-  child.parentNode.replaceChild(DOMParser.parseFromString(domString), child);
+  child?.parentNode.replaceChild(DOMParser.parseFromString(domString), child);
 }
 
 function img(state, child) {
@@ -182,9 +182,9 @@ function proxifyImages(doc) {
 
 function linkifyNode(child, state) {
   try {
-    const tag = child.parentNode.tagName
-      ? child.parentNode.tagName.toLowerCase()
-      : child.parentNode.tagName;
+    const tag = child?.parentNode.tagName
+      ? child?.parentNode.tagName.toLowerCase()
+      : child?.parentNode.tagName;
     if (tag === 'code') return;
     if (tag === 'a') return;
 
@@ -204,7 +204,7 @@ function linkifyNode(child, state) {
     );
     if (mutate && content !== data) {
       const newChild = DOMParser.parseFromString(`<span>${content}</span>`);
-      child.parentNode.replaceChild(newChild, child);
+      child?.parentNode.replaceChild(newChild, child);
       return newChild;
     }
   } catch (error) {
@@ -270,7 +270,7 @@ function isEmbedable(child, links, images, resolveIframe) {
             embed.url
           } ~~~${data.slice(foundLinks.index + foundLinks[0].length, data.length)}`;
       const v = DOMParser.parseFromString(domString);
-      if (v) child.parentNode.replaceChild(v, child);
+      if (v) child?.parentNode.replaceChild(v, child);
       if (links) links.add(embed.url);
       if (images) images.add(`https://img.youtube.com/vi/${embed.id}/0.jpg`);
       return true;

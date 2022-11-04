@@ -52,7 +52,7 @@ export const getSelectedBlockNode = root => {
     if (node.getAttribute && node.getAttribute('data-block') === 'true') {
       return node;
     }
-    node = node.parentNode;
+    node = node?.parentNode;
     // console.log(node);
   } while (node !== null);
 
