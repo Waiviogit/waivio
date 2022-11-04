@@ -40,7 +40,7 @@ const FormPage = props => {
             title={currentForm.formTitle}
             frameBorder="0"
             allowTransparency
-            allowscriptaccess="always"
+            // allowScriptaccess="always"
           />
         </div>
       )}

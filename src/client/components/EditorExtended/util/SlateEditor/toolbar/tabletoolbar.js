@@ -14,7 +14,7 @@ const TableToolbar = props => {
     const toolbarNode = tableToolbarRef.current;
     const nativeSelection = getSelection(window);
     const nodeFocused = nativeSelection.focusNode;
-    const table = nodeFocused.parentNode.closest('table');
+    const table = nodeFocused?.parentNode.closest('table');
 
     if (!table) return;
     const tableBoundary = table.getBoundingClientRect();
