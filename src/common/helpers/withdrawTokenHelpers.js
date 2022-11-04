@@ -1,8 +1,7 @@
 import BigNumber from 'bignumber.js';
 import _ from 'lodash';
-import Web3 from 'web3';
 
-import { getMarketPools } from '../../waivioApi/ApiClient';
+import { getMarketPools, validaveCryptoWallet } from '../../waivioApi/ApiClient';
 import { getSwapOutputNew } from './swapForWithDraw';
 
 const AVAILABLE_TOKEN_WITHDRAW = {
@@ -18,10 +17,10 @@ const DEFAULT_SLIPPAGE_MAX = 0.01;
 const DEFAULT_TRADE_FEE_MUL = 0.9975;
 const DEFAULT_WITHDRAW_FEE_MUL = 0.9925;
 
-const getETHAccountToTransfer = ({ destination }) => {
-  const validAddress = Web3.utils.isAddress(destination);
+const getETHAccountToTransfer = async ({ destination }) => {
+  const validAddress = await validaveCryptoWallet(destination, 'ethereum');
 
-  if (!validAddress) return { error: new Error('invalid ETH address') };
+  if (!validAddress.isValid) return { error: new Error('invalid ETH address') };
 
   return {
     account: 'swap-eth',
@@ -33,6 +32,7 @@ const getAccountToTransfer = async ({ destination, from_coin, to_coin }) => {
   if (to_coin === 'ETH') {
     return getETHAccountToTransfer({ destination });
   }
+
   try {
     const result = await fetch('https://converter-api.hive-engine.com/api/convert/', {
       method: 'POST',
@@ -47,7 +47,6 @@ const getAccountToTransfer = async ({ destination, from_coin, to_coin }) => {
 
     return result;
   } catch (error) {
-    console.log(error);
     return { error };
   }
 };
@@ -66,7 +65,6 @@ const validateEthAmount = async amount => {
       .times(DEFAULT_WITHDRAW_FEE_MUL)
       .gt(0);
   } catch (error) {
-    console.log(error);
     return false;
   }
 };
@@ -85,7 +83,6 @@ const validateBtcAmount = async amount => {
       .minus(fee)
       .gte(0);
   } catch (error) {
-    console.log(error);
     return false;
   }
 };
