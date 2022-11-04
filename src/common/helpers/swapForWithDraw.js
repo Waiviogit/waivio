@@ -6,7 +6,7 @@ const operationForJson = ({ tokenPair, minAmountOut, tokenSymbol, tokenAmount })
   contractPayload: {
     tokenPair,
     tokenSymbol,
-    tokenAmount,
+    tokenAmount: String(tokenAmount),
     tradeType: 'exactInput',
     minAmountOut,
   },

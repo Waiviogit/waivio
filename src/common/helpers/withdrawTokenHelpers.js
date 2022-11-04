@@ -5,8 +5,6 @@ import Web3 from 'web3';
 import { getMarketPools } from '../../waivioApi/ApiClient';
 import { getSwapOutputNew } from './swapForWithDraw';
 
-// const { validateBalanceRequest, engineBroadcast } = require('./transferOperation');
-
 const AVAILABLE_TOKEN_WITHDRAW = {
   BTC: 'SWAP.BTC',
   HIVE: 'SWAP.HIVE',

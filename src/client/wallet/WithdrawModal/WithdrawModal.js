@@ -25,16 +25,13 @@ import SelectUserForAutocomplete from '../../widgets/SelectUserForAutocomplete';
 import { hiveWalletCurrency } from '../../../common/constants/hiveEngine';
 import QrModal from '../../widgets/QrModal';
 import { getAuthenticatedUserName, isGuestUser } from '../../../store/authStore/authSelectors';
-import { converHiveEngineCoins } from '../../../waivioApi/ApiClient';
+import { converHiveEngineCoins, validaveCryptoWallet } from '../../../waivioApi/ApiClient';
 import { createQuery } from '../../../common/helpers/apiHelpers';
-import {
-  getAccountToTransfer,
-  getWithdrawInfo,
-} from '../../../common/helpers/withdrawTokenHelpers';
-
-import './WithdrawModal.less';
+import { getWithdrawInfo } from '../../../common/helpers/withdrawTokenHelpers';
 import { withdrawGuest } from '../../../waivioApi/walletApi';
 import { getHiveBeneficiaryAccount } from '../../../store/settingsStore/settingsSelectors';
+
+import './WithdrawModal.less';
 
 const withdrawFeePercent = 0.75;
 const withdrawFee = withdrawFeePercent / 100;
@@ -61,18 +58,22 @@ const WithdrawModal = props => {
     debounce(async value => {
       if (!value) return setInvalidAddress();
 
-      const data =
-        pair.from_coin_symbol === 'HIVE'
-          ? await getAccountToTransfer({
-              destination: value,
-              from_coin: pair.from_coin_symbol,
-              to_coin: pair.to_coin_symbol,
-            })
-          : await converHiveEngineCoins({
-              destination: value,
-              from_coin: pair.from_coin_symbol,
-              to_coin: pair.to_coin_symbol,
-            });
+      if (pair.from_coin_symbol === 'WAIV') {
+        const cryptoName = {
+          BTC: 'bitcoin',
+          LTC: 'litecoin',
+          ETH: 'ethereum',
+        };
+        const { isValid } = await validaveCryptoWallet(value, cryptoName[pair.to_coin_symbol]);
+
+        return setInvalidAddress(isValid);
+      }
+
+      const data = await converHiveEngineCoins({
+        destination: value,
+        from_coin: pair.from_coin_symbol,
+        to_coin: pair.to_coin_symbol,
+      });
 
       if (data.error) return setInvalidAddress(true);
 
@@ -137,7 +138,7 @@ const WithdrawModal = props => {
   const handleWithdraw = async () => {
     if (pair.symbol === 'WAIV') {
       const data = {
-        quantity: fromAmount,
+        quantity: String(fromAmount),
         inputSymbol: pair.symbol,
         outputSymbol: pair.to_coin_symbol,
         address: pair.to_coin_symbol === 'HIVE' ? hiveBeneficiaryAccount : walletAddress,
