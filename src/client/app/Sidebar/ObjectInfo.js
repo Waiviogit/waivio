@@ -1,5 +1,5 @@
 import React from 'react';
-import { get, has, identity, isEmpty, pickBy, setWith, uniq } from 'lodash';
+import { get, has, identity, isEmpty, pickBy, setWith, uniq, uniqBy } from 'lodash';
 import { Button, Icon, Tag } from 'antd';
 import PropTypes from 'prop-types';
 import { Link, withRouter } from 'react-router-dom';
@@ -369,9 +369,10 @@ class ObjectInfo extends React.Component {
           }))
       : [];
 
-    const sortedOptionsPictures = optionsPictures.filter(o => activeOption?.avatar !== o?.body);
+    const sortedOptions = optionsPictures.filter(o => activeOption?.avatar !== o?.body);
+    const sortedOptionsPictures = uniqBy(sortedOptions, 'body');
 
-    let activeOptionPicture = [...optionsPictures, ...pictures];
+    let activeOptionPicture = [...sortedOptionsPictures, ...pictures];
 
     if (hoveredOption?.avatar || activeOption?.avatar) {
       activeOptionPicture = [
