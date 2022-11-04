@@ -358,11 +358,11 @@ class ObjectInfo extends React.Component {
           .map(option => Object.values(option))
           .flatMap(el => el[1])
           .filter(el => el.body.image)
-          .map((o, i) => ({
-            body: o.avatar,
+          .map(o => ({
+            body: o?.avatar,
             id:
-              o.body.parentObjectPermlink === wobject.author_permlink && i === 0
-                ? wobject?.galleryAlbum[0].id
+              o.body.parentObjectPermlink === wobject.author_permlink && wobject.galleryAlbum
+                ? wobject?.galleryAlbum[0]?.id || wobject.galleryItem[0]?.id
                 : o.author_permlink,
             name: 'options',
             parentPermlink: o.body.parentObjectPermlink,
@@ -380,7 +380,7 @@ class ObjectInfo extends React.Component {
           body: hoveredOption?.avatar || activeOption?.avatar,
           // wobject.avatar ||
           // optionsPictures[0]?.body,
-          id: wobject?.galleryAlbum[0]?.id,
+          id: wobject?.galleryAlbum ? wobject?.galleryAlbum[0]?.id : wobject.author_permlink,
         },
         ...sortedOptionsPictures,
         ...pictures,
