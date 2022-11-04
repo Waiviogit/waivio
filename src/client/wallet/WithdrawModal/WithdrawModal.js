@@ -5,6 +5,7 @@ import { isEmpty, get, round, debounce, isNil } from 'lodash';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
+import WAValidator from 'multicoin-address-validator';
 
 import TokensSelect from '../SwapTokens/components/TokensSelect';
 import {
@@ -25,7 +26,7 @@ import SelectUserForAutocomplete from '../../widgets/SelectUserForAutocomplete';
 import { hiveWalletCurrency } from '../../../common/constants/hiveEngine';
 import QrModal from '../../widgets/QrModal';
 import { getAuthenticatedUserName, isGuestUser } from '../../../store/authStore/authSelectors';
-import { converHiveEngineCoins, validaveCryptoWallet } from '../../../waivioApi/ApiClient';
+import { converHiveEngineCoins } from '../../../waivioApi/ApiClient';
 import { createQuery } from '../../../common/helpers/apiHelpers';
 import getWithdrawInfo from '../../../common/helpers/withdrawTokenHelpers';
 import { withdrawGuest } from '../../../waivioApi/walletApi';
@@ -59,14 +60,9 @@ const WithdrawModal = props => {
       if (!value) return setInvalidAddress();
 
       if (pair.from_coin_symbol === 'WAIV') {
-        const cryptoName = {
-          BTC: 'bitcoin',
-          LTC: 'litecoin',
-          ETH: 'ethereum',
-        };
-        const { isValid } = await validaveCryptoWallet(value, cryptoName[pair.to_coin_symbol]);
+        const isValid = WAValidator.validate(value, pair.to_coin_symbol.toLowerCase());
 
-        return setInvalidAddress(isValid);
+        return setInvalidAddress(!isValid);
       }
 
       const data = await converHiveEngineCoins({
@@ -223,7 +219,7 @@ const WithdrawModal = props => {
 
   const setTokenPair = async selectedPair => {
     dispatch(setWithdrawPair(selectedPair));
-
+    setWalletAddress('');
     if (pair.symbol === 'WAIV') {
       const amount = await getWithdrawInfo({
         account: userName,

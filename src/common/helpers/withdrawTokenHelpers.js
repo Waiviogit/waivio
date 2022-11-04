@@ -1,7 +1,8 @@
 import BigNumber from 'bignumber.js';
-import _ from 'lodash';
+import { round, isEmpty, get } from 'lodash';
+import WAValidator from 'multicoin-address-validator';
 
-import { getMarketPools, validaveCryptoWallet } from '../../waivioApi/ApiClient';
+import { getMarketPools } from '../../waivioApi/ApiClient';
 import { getSwapOutputNew } from './swapForWithDraw';
 
 const AVAILABLE_TOKEN_WITHDRAW = {
@@ -18,9 +19,9 @@ const DEFAULT_TRADE_FEE_MUL = 0.9975;
 const DEFAULT_WITHDRAW_FEE_MUL = 0.9925;
 
 const getETHAccountToTransfer = async ({ destination }) => {
-  const validAddress = await validaveCryptoWallet(destination, 'ethereum');
+  const validAddress = WAValidator.validate(destination, 'eth');
 
-  if (!validAddress.isValid) return { error: new Error('invalid ETH address') };
+  if (!validAddress) return { error: new Error('invalid ETH address') };
 
   return {
     account: 'swap-eth',
@@ -56,7 +57,7 @@ const validateEthAmount = async amount => {
     const resp = await fetch('https://ethgw.hive-engine.com/api/utils/withdrawalfee/SWAP.ETH', {
       method: 'GET',
     });
-    const fee = _.get(resp, 'data.data');
+    const fee = get(resp, 'data.data');
 
     if (!fee) return false;
 
@@ -72,10 +73,10 @@ const validateEthAmount = async amount => {
 const validateBtcAmount = async amount => {
   try {
     const resp = await fetch('https://api.tribaldex.com/settings', { method: 'GET' });
-    const minimum_withdrawals = _.get(resp, 'data.minimum_withdrawals');
+    const minimum_withdrawals = get(resp, 'data.minimum_withdrawals');
 
     if (!minimum_withdrawals) return false;
-    const fee = _.find(minimum_withdrawals, el => el[0] === 'SWAP.BTC')[1];
+    const fee = find(minimum_withdrawals, el => el[0] === 'SWAP.BTC')[1];
 
     if (!fee) return false;
 
@@ -162,7 +163,7 @@ export const indirectSwapData = async ({ quantity, params }) => {
   let amount = '0';
   const pools = await getMarketPools({ query: { tokenPair: { $in: tokenPair } } });
 
-  if (_.isEmpty(pools)) return { error: new Error('market pool is unavailable') };
+  if (isEmpty(pools)) return { error: new Error('market pool is unavailable') };
 
   // eslint-disable-next-line no-restricted-syntax
   for (const [index, pair] of tokenPair.entries()) {
@@ -190,24 +191,28 @@ const withdrawParams = Object.freeze({
     getSwapData: directPoolSwapData,
     withdrawContract: getWithdrawContract,
     tokenPair: 'SWAP.HIVE:WAIV',
+    prediction: 3,
   },
   BTC: {
     getSwapData: indirectSwapData,
     withdrawContract: getWithdrawToAddress,
     tokenPair: ['SWAP.HIVE:WAIV', 'SWAP.HIVE:SWAP.BTC'],
     exchangeSequence: ['WAIV', 'SWAP.HIVE'],
+    prediction: 8,
   },
   LTC: {
     getSwapData: indirectSwapData,
     withdrawContract: getWithdrawToAddress,
     tokenPair: ['SWAP.HIVE:WAIV', 'SWAP.HIVE:SWAP.LTC'],
     exchangeSequence: ['WAIV', 'SWAP.HIVE'],
+    prediction: 8,
   },
   ETH: {
     getSwapData: indirectSwapData,
     withdrawContract: getWithdrawToAddress,
     tokenPair: ['SWAP.HIVE:WAIV', 'SWAP.HIVE:SWAP.ETH'],
     exchangeSequence: ['WAIV', 'SWAP.HIVE'],
+    prediction: 8,
   },
 });
 
@@ -222,7 +227,7 @@ const getWithdrawInfo = async ({ account, data, onlyAmount }) => {
     inputSymbol,
   });
 
-  if (onlyAmount) return amount * DEFAULT_WITHDRAW_FEE_MUL;
+  if (onlyAmount) return round(amount * DEFAULT_WITHDRAW_FEE_MUL, params.prediction);
 
   if (error) return { error };
 

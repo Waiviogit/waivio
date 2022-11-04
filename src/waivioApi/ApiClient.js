@@ -1517,13 +1517,12 @@ export const sendEmailConfirmation = (userName, type, email, isGuest) => {
 };
 
 export const validaveCryptoWallet = (address, crypto) =>
-  fetch(
-    `${config.campaignApiPrefix}${config.withdraw}${config.validateAddress}?address=${address}&crypto=${crypto}`,
-    {
-      headers,
-      method: 'GET',
-    },
-  ).then(res => res.json());
+  fetch(`https://blocktrades.us/api/v2/wallets/${crypto}/address-validator?address=${address}`, {
+    headers,
+    method: 'GET',
+  })
+    .then(res => res.json())
+    .then(res => ({ result: res.data }));
 
 export const finalConfirmation = (token, isGuest) => {
   const accessToken = isGuest ? store.get('accessToken') : Cookie.get('accessToken');
