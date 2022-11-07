@@ -1,8 +1,9 @@
 import BigNumber from 'bignumber.js';
 import { round, isEmpty, get } from 'lodash';
 import WAValidator from 'multicoin-address-validator';
+import { message } from 'antd';
 
-import { getMarketPools } from '../../waivioApi/ApiClient';
+import { converHiveEngineCoins, getMarketPools } from '../../waivioApi/ApiClient';
 import { getSwapOutputNew } from './swapForWithDraw';
 
 const AVAILABLE_TOKEN_WITHDRAW = {
@@ -21,7 +22,7 @@ const DEFAULT_WITHDRAW_FEE_MUL = 0.9925;
 const getETHAccountToTransfer = async ({ destination }) => {
   const validAddress = WAValidator.validate(destination, 'eth');
 
-  if (!validAddress) return { error: new Error('invalid ETH address') };
+  if (!validAddress) return { error: 'invalid ETH address' };
 
   return {
     account: 'swap-eth',
@@ -35,13 +36,10 @@ const getAccountToTransfer = async ({ destination, from_coin, to_coin }) => {
   }
 
   try {
-    const result = await fetch('https://converter-api.hive-engine.com/api/convert/', {
-      method: 'POST',
-      body: JSON.stringify({
-        destination,
-        from_coin,
-        to_coin,
-      }),
+    const result = await converHiveEngineCoins({
+      destination,
+      from_coin,
+      to_coin,
     });
 
     if (result && result.data) return result.data;
@@ -112,7 +110,7 @@ const getWithdrawToAddress = async ({ address, outputSymbol, amount }) => {
 
   if (!validAmount)
     return {
-      error: new Error(`to low amount: ${amount} for ${outputSymbol} on output to withdraw`),
+      error: `to low amount: ${amount} for ${outputSymbol} on output to withdraw`,
     };
 
   return {
@@ -163,13 +161,13 @@ export const indirectSwapData = async ({ quantity, params }) => {
   let amount = '0';
   const pools = await getMarketPools({ query: { tokenPair: { $in: tokenPair } } });
 
-  if (isEmpty(pools)) return { error: new Error('market pool is unavailable') };
+  if (isEmpty(pools)) return { error: 'market pool is unavailable' };
 
   // eslint-disable-next-line no-restricted-syntax
   for (const [index, pair] of tokenPair.entries()) {
     const pool = pools.find(p => p.tokenPair === pair);
 
-    if (!pool) return { error: new Error('market pool is unavailable') };
+    if (!pool) return { error: 'market pool is unavailable' };
     const { json, minAmountOut } = getSwapOutputNew({
       symbol: exchangeSequence[index],
       amountIn: index ? amount : quantity,
@@ -229,7 +227,7 @@ const getWithdrawInfo = async ({ account, data, onlyAmount }) => {
 
   if (onlyAmount) return round(amount * DEFAULT_WITHDRAW_FEE_MUL, params.prediction);
 
-  if (error) return { error };
+  if (error) return message.error(error.message);
 
   const { withdraw, error: errWithdrawData } = await params.withdrawContract({
     address,
@@ -241,7 +239,12 @@ const getWithdrawInfo = async ({ account, data, onlyAmount }) => {
     inputQuantity: quantity,
   });
 
-  if (errWithdrawData) return { error: errWithdrawData };
+  if (errWithdrawData) {
+    message.error(errWithdrawData);
+
+    return errWithdrawData;
+  }
+
   const customJsonPayload = [...swapJson, withdraw];
 
   return { customJsonPayload };

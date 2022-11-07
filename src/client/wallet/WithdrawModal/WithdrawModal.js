@@ -145,6 +145,7 @@ const WithdrawModal = props => {
       } else {
         const { customJsonPayload } = await getWithdrawInfo({ account: userName, data });
 
+        if (!customJsonPayload) return null;
         window.open(
           `https://hivesigner.com/sign/custom_json?authority=active&required_auths=["${userName}"]&required_posting_auths=[]&${createQuery(
             {
