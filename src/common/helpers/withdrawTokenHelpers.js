@@ -1,11 +1,10 @@
 import BigNumber from 'bignumber.js';
-import _ from 'lodash';
-import Web3 from 'web3';
+import { round, isEmpty, get } from 'lodash';
+import WAValidator from 'multicoin-address-validator';
+import { message } from 'antd';
 
-import { getMarketPools } from '../../waivioApi/ApiClient';
+import { converHiveEngineCoins, getMarketPools } from '../../waivioApi/ApiClient';
 import { getSwapOutputNew } from './swapForWithDraw';
-
-// const { validateBalanceRequest, engineBroadcast } = require('./transferOperation');
 
 const AVAILABLE_TOKEN_WITHDRAW = {
   BTC: 'SWAP.BTC',
@@ -20,10 +19,10 @@ const DEFAULT_SLIPPAGE_MAX = 0.01;
 const DEFAULT_TRADE_FEE_MUL = 0.9975;
 const DEFAULT_WITHDRAW_FEE_MUL = 0.9925;
 
-const getETHAccountToTransfer = ({ destination }) => {
-  const validAddress = Web3.utils.isAddress(destination);
+const getETHAccountToTransfer = async ({ destination }) => {
+  const validAddress = WAValidator.validate(destination, 'eth');
 
-  if (!validAddress) return { error: new Error('invalid ETH address') };
+  if (!validAddress) return { error: 'invalid ETH address' };
 
   return {
     account: 'swap-eth',
@@ -31,18 +30,16 @@ const getETHAccountToTransfer = ({ destination }) => {
   };
 };
 
-export const getAccountToTransfer = async ({ destination, from_coin, to_coin }) => {
+const getAccountToTransfer = async ({ destination, from_coin, to_coin }) => {
   if (to_coin === 'ETH') {
     return getETHAccountToTransfer({ destination });
   }
+
   try {
-    const result = await fetch('https://converter-api.hive-engine.com/api/convert/', {
-      method: 'POST',
-      body: JSON.stringify({
-        destination,
-        from_coin,
-        to_coin,
-      }),
+    const result = await converHiveEngineCoins({
+      destination,
+      from_coin,
+      to_coin,
     });
 
     if (result && result.data) return result.data;
@@ -58,7 +55,7 @@ const validateEthAmount = async amount => {
     const resp = await fetch('https://ethgw.hive-engine.com/api/utils/withdrawalfee/SWAP.ETH', {
       method: 'GET',
     });
-    const fee = _.get(resp, 'data.data');
+    const fee = get(resp, 'data.data');
 
     if (!fee) return false;
 
@@ -74,10 +71,10 @@ const validateEthAmount = async amount => {
 const validateBtcAmount = async amount => {
   try {
     const resp = await fetch('https://api.tribaldex.com/settings', { method: 'GET' });
-    const minimum_withdrawals = _.get(resp, 'data.minimum_withdrawals');
+    const minimum_withdrawals = get(resp, 'data.minimum_withdrawals');
 
     if (!minimum_withdrawals) return false;
-    const fee = _.find(minimum_withdrawals, el => el[0] === 'SWAP.BTC')[1];
+    const fee = find(minimum_withdrawals, el => el[0] === 'SWAP.BTC')[1];
 
     if (!fee) return false;
 
@@ -113,7 +110,7 @@ const getWithdrawToAddress = async ({ address, outputSymbol, amount }) => {
 
   if (!validAmount)
     return {
-      error: new Error(`to low amount: ${amount} for ${outputSymbol} on output to withdraw`),
+      error: `to low amount: ${amount} for ${outputSymbol} on output to withdraw`,
     };
 
   return {
@@ -164,13 +161,13 @@ export const indirectSwapData = async ({ quantity, params }) => {
   let amount = '0';
   const pools = await getMarketPools({ query: { tokenPair: { $in: tokenPair } } });
 
-  if (_.isEmpty(pools)) return { error: new Error('market pool is unavailable') };
+  if (isEmpty(pools)) return { error: 'market pool is unavailable' };
 
   // eslint-disable-next-line no-restricted-syntax
   for (const [index, pair] of tokenPair.entries()) {
     const pool = pools.find(p => p.tokenPair === pair);
 
-    if (!pool) return { error: new Error('market pool is unavailable') };
+    if (!pool) return { error: 'market pool is unavailable' };
     const { json, minAmountOut } = getSwapOutputNew({
       symbol: exchangeSequence[index],
       amountIn: index ? amount : quantity,
@@ -187,33 +184,37 @@ export const indirectSwapData = async ({ quantity, params }) => {
   return { swapJson, amount, predictionAmount: amount * DEFAULT_WITHDRAW_FEE_MUL };
 };
 
-export const withdrawParams = Object.freeze({
+const withdrawParams = Object.freeze({
   HIVE: {
     getSwapData: directPoolSwapData,
     withdrawContract: getWithdrawContract,
     tokenPair: 'SWAP.HIVE:WAIV',
+    prediction: 3,
   },
   BTC: {
     getSwapData: indirectSwapData,
     withdrawContract: getWithdrawToAddress,
     tokenPair: ['SWAP.HIVE:WAIV', 'SWAP.HIVE:SWAP.BTC'],
     exchangeSequence: ['WAIV', 'SWAP.HIVE'],
+    prediction: 8,
   },
   LTC: {
     getSwapData: indirectSwapData,
     withdrawContract: getWithdrawToAddress,
     tokenPair: ['SWAP.HIVE:WAIV', 'SWAP.HIVE:SWAP.LTC'],
     exchangeSequence: ['WAIV', 'SWAP.HIVE'],
+    prediction: 8,
   },
   ETH: {
     getSwapData: indirectSwapData,
     withdrawContract: getWithdrawToAddress,
     tokenPair: ['SWAP.HIVE:WAIV', 'SWAP.HIVE:SWAP.ETH'],
     exchangeSequence: ['WAIV', 'SWAP.HIVE'],
+    prediction: 8,
   },
 });
 
-export const getWithdrawInfo = async ({ account, data, onlyAmount }) => {
+const getWithdrawInfo = async ({ account, data, onlyAmount }) => {
   const { quantity, inputSymbol, outputSymbol, address } = data;
 
   const params = withdrawParams[outputSymbol];
@@ -224,9 +225,9 @@ export const getWithdrawInfo = async ({ account, data, onlyAmount }) => {
     inputSymbol,
   });
 
-  if (onlyAmount) return amount * DEFAULT_WITHDRAW_FEE_MUL;
+  if (onlyAmount) return round(amount * DEFAULT_WITHDRAW_FEE_MUL, params.prediction);
 
-  if (error) return { error };
+  if (error) return message.error(error.message);
 
   const { withdraw, error: errWithdrawData } = await params.withdrawContract({
     address,
@@ -238,8 +239,15 @@ export const getWithdrawInfo = async ({ account, data, onlyAmount }) => {
     inputQuantity: quantity,
   });
 
-  if (errWithdrawData) return { error: errWithdrawData };
+  if (errWithdrawData) {
+    message.error(errWithdrawData);
+
+    return errWithdrawData;
+  }
+
   const customJsonPayload = [...swapJson, withdraw];
 
   return { customJsonPayload };
 };
+
+export default getWithdrawInfo;
