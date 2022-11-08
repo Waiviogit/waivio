@@ -23,7 +23,7 @@ export const compareTokensList = async (name, tokens) => {
       symbol: tokenName,
       balance,
       rate: get(rate, 'lastPrice', 1),
-      precision: info.precision,
+      precision: info?.precision,
     };
   });
 

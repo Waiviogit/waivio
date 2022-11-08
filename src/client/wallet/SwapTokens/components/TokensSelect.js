@@ -63,7 +63,7 @@ const TokensSelect = props => {
             >
               <span>{swap.title || swap.symbol}</span>
               <span className="TokenSelect__selector-balance">
-                {round(swap.balance, presicion)}
+                {!swap.title && round(swap.balance, presicion)}
               </span>
             </Select.Option>
           ))}

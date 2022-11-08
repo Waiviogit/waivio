@@ -16,7 +16,11 @@ const GuestWithdawCard = props => (
     <div>
       {' '}
       <FormattedMessage id="withdraw" defaultMessage="Withdraw" />{' '}
-      {props.symbolOut === 'HIVE' ? <a href={`/@${props.to}`}>{props.to}</a> : null}
+      {props.symbolOut === 'HIVE' ? (
+        <React.Fragment>
+          to <a href={`/@${props.to}`}>{props.to}</a>
+        </React.Fragment>
+      ) : null}
     </div>
   </TransactionCardContainer>
 );
