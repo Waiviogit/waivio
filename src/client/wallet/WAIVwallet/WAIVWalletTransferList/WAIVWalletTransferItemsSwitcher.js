@@ -29,6 +29,7 @@ import DepositeCard from '../../TransfersCards/DepositeCard';
 import WithdawCard from '../../TransfersCards/WithdrawCard';
 import DelegateInstructionCard from '../../TransfersCards/DelegateInstructionCard/DelegateInstructionCard';
 import { parseJSON } from '../../../../common/helpers/parseJSON';
+import GuestWithdawCard from '../../TransfersCards/GuestWithdrawCard';
 
 const WAIVWalletTransferItemsSwitcher = ({ transaction, currentName, intl }) => {
   const walletType = useSelector(getCurrentWalletType);
@@ -290,6 +291,20 @@ const WAIVWalletTransferItemsSwitcher = ({ transaction, currentName, intl }) => 
           symbolIn={transaction.symbolIn}
           symbolOut={transaction.symbolOut}
           rate={transaction.ex_rate}
+        />
+      );
+
+    case 'guest_withdraw':
+      return (
+        <GuestWithdawCard
+          timestamp={transaction.timestamp}
+          symbol={transaction.symbol}
+          symbolOut={transaction.symbolOut}
+          quantity={transaction.quantity}
+          to={transaction.to}
+          memo={
+            transaction.symbolOut !== 'HIVE' ? `${transaction.symbolOut} ${transaction.to}` : ''
+          }
         />
       );
 
