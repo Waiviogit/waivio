@@ -1,5 +1,5 @@
 import React from 'react';
-import { get, has, identity, isEmpty, isNil, pickBy, setWith, uniq, uniqBy } from 'lodash';
+import { get, has, identity, isEmpty, pickBy, setWith, uniq, uniqBy } from 'lodash';
 import { Button, Icon, Tag } from 'antd';
 import PropTypes from 'prop-types';
 import { Link, withRouter } from 'react-router-dom';
@@ -144,20 +144,13 @@ class ObjectInfo extends React.Component {
     const exposedFields = getExposedFieldsByObjType(wobject);
     const shouldDisplay = exposedFields.includes(name);
     const accessExtend = haveAccess(wobject, userName, accessTypesArr[0]) && isEditMode;
-    const noPaddingBottom =
-      name === objectFields.publisher ||
-      (isEditMode && wobject.publisher) ||
-      wobject.groupId ||
-      name === objectFields.rating;
-    const fieldInfoClassname = classNames({
-      'field-info__nopadding': noPaddingBottom,
-      'field-info': !isEmpty(content) && !isNil(content) && content,
-    });
+    const paddingBottom =
+      name !== objectFields.publisher || (isEditMode && !wobject.publisher) || wobject.groupId;
 
     return (
       shouldDisplay &&
-      (content || accessExtend) && (
-        <div className={fieldInfoClassname}>
+      (!isEmpty(content) || accessExtend) && (
+        <div className={paddingBottom ? 'field-info' : 'field-info nopadding'}>
           <React.Fragment>
             {accessExtend && (
               <div className="field-info__title">
@@ -389,8 +382,6 @@ class ObjectInfo extends React.Component {
         {
           name: 'galleryItem',
           body: hoveredOption?.avatar || activeOption?.avatar,
-          // wobject.avatar ||
-          // optionsPictures[0]?.body,
           id: wobject?.galleryAlbum ? wobject?.galleryAlbum[0]?.id : wobject.author_permlink,
         },
         ...sortedOptionsPictures,
