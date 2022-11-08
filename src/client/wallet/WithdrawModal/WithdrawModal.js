@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { Button, Input, message, Modal } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
-import { isEmpty, get, round, debounce, isNil } from 'lodash';
+import { get, round, debounce, isNil } from 'lodash';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
@@ -9,7 +9,6 @@ import WAValidator from 'multicoin-address-validator';
 
 import TokensSelect from '../SwapTokens/components/TokensSelect';
 import {
-  getDefaultToken,
   getIsOpenWithdraw,
   getWithdrawList,
   getWithdrawSelectPair,
@@ -44,7 +43,6 @@ const WithdrawModal = props => {
   const visible = useSelector(getIsOpenWithdraw);
   const isGuest = useSelector(isGuestUser);
   const userName = useSelector(getAuthenticatedUserName);
-  const defaultToken = useSelector(getDefaultToken);
   const cryptosPriceHistory = useSelector(getCryptosPriceHistory);
   const hiveBeneficiaryAccount = useSelector(getHiveBeneficiaryAccount);
 
@@ -55,7 +53,6 @@ const WithdrawModal = props => {
   const [isShowScanner, setShowScanner] = useState(false);
   const [walletAddress, setWalletAddress] = useState('');
   const [invalidAddress, setInvalidAddress] = useState();
-  const [showModal, setShowModal] = useState(!(hiveBeneficiaryAccount && isGuest));
   const isError = get(pair, 'balance') < fromAmount;
   const handleValidateWalletAddress = useCallback(
     debounce(async value => {
@@ -97,12 +94,7 @@ const WithdrawModal = props => {
   };
 
   useEffect(() => {
-    if (isEmpty(withdraList)) dispatch(getDepositWithdrawPairs());
-    else {
-      const defaultPair = withdraList.find(pool => pool.symbol === defaultToken);
-
-      dispatch(setWithdrawPair(defaultPair ?? withdraList[0]));
-    }
+    dispatch(getDepositWithdrawPairs());
 
     return () => {
       dispatch(resetSelectPair());
@@ -111,10 +103,6 @@ const WithdrawModal = props => {
 
   const handleCloseModal = () => {
     dispatch(toggleWithdrawModal(false));
-  };
-
-  const handleCloseLinkHiveAccountModal = () => {
-    setShowModal(false);
   };
 
   const setWalletAddressForScanner = address => {
@@ -259,7 +247,12 @@ const WithdrawModal = props => {
           key="Withdraw"
           type="primary"
           onClick={handleWithdraw}
-          disabled={!fromAmount || isError || invalidAddress || !walletAddress}
+          disabled={
+            !fromAmount ||
+            isError ||
+            invalidAddress ||
+            (pair.symbolOut !== 'HIVE' && !walletAddress)
+          }
         >
           <FormattedMessage id="Withdraw" defaultMessage="Withdraw" />
         </Button>,
@@ -379,8 +372,8 @@ const WithdrawModal = props => {
     </Modal>
   ) : (
     <LinkHiveAccountModal
-      handleClose={handleCloseLinkHiveAccountModal}
-      showModal={showModal}
+      handleClose={handleCloseModal}
+      showModal={visible}
       hiveBeneficiaryAccount={hiveBeneficiaryAccount}
     />
   );
