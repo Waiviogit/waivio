@@ -20,6 +20,18 @@ const PicturesCarousel = ({ isOptionsType, activePicture, pics, objectID }) => {
     slider.current.goTo(0);
   }, [activePicture]);
 
+  const getOptionUrl = pic => {
+    if (isOptionsType) {
+      if (pic.name === 'galleryItem' || (pic.name === 'options' && objectID === pic.parentPermlink))
+        return `/object/${objectID}/gallery/album/${pic.id}`;
+      if (pic.name === 'galleryItem' || (pic.name === 'options' && objectID !== pic.parentPermlink))
+        return `/object/${pic.id}`;
+      if (pic.name === 'avatar') return `/object/${objectID}/gallery`;
+    }
+
+    return `/object/${objectID}/gallery/album/${pic.id}`;
+  };
+
   return pics ? (
     <div className="PicturesCarousel">
       <Carousel {...settings} ref={slider}>
@@ -27,14 +39,7 @@ const PicturesCarousel = ({ isOptionsType, activePicture, pics, objectID }) => {
           <Link
             key={pic.id}
             to={{
-              pathname: isOptionsType
-                ? `/object/${
-                    pic.name === 'galleryItem' ||
-                    (pic.name === 'options' && objectID === pic.parentPermlink)
-                      ? `${objectID}/gallery/album/${pic.id}`
-                      : pic.id
-                  }`
-                : `/object/${objectID}/gallery/album/${pic.id}`,
+              pathname: getOptionUrl(pic),
             }}
             className="PicturesCarousel__imageWrap"
           >

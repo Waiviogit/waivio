@@ -3,7 +3,10 @@ import PropTypes from 'prop-types';
 import { isEmpty } from 'lodash';
 import { useDispatch, useSelector } from 'react-redux';
 import classNames from 'classnames';
-import { setStoreActiveOption } from '../../store/optionsStore/optionsActions';
+import {
+  setStoreActiveCategory,
+  setStoreActiveOption,
+} from '../../store/optionsStore/optionsActions';
 import { getActiveOption } from '../../store/optionsStore/optionsSelectors';
 import { isMobile } from '../../common/helpers/apiHelpers';
 import './Options.less';
@@ -38,6 +41,7 @@ const Options = ({ wobject, isEditMode, setHoveredOption, history }) => {
     setHovered(activeStoreOption);
   };
   const onOptionButtonClick = (e, el) => {
+    dispatch(setStoreActiveCategory(el.body.category));
     setHoveredOption(el);
     dispatch(setStoreActiveOption({ ...activeStoreOption, [el.body.category]: el }));
     if (el.body.parentObjectPermlink !== wobject.author_permlink) {
@@ -47,6 +51,7 @@ const Options = ({ wobject, isEditMode, setHoveredOption, history }) => {
           top: 250,
           behavior: 'smooth',
         });
+      dispatch(setStoreActiveCategory(el.body.category));
       dispatch(setStoreActiveOption({ ...activeStoreOption, [el.body.category]: el }));
     }
   };
