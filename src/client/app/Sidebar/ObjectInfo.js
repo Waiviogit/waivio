@@ -1,5 +1,5 @@
 import React from 'react';
-import { get, has, identity, isEmpty, pickBy, setWith, uniq } from 'lodash';
+import { get, has, identity, isEmpty, isNil, pickBy, setWith, uniq, uniqBy } from 'lodash';
 import { Button, Icon, Tag } from 'antd';
 import PropTypes from 'prop-types';
 import { Link, withRouter } from 'react-router-dom';
@@ -46,6 +46,7 @@ import ProductId from './ProductId';
 import './ObjectInfo.less';
 import ObjectAvatar from '../../components/ObjectAvatar';
 import Options from '../../object/Options';
+import { getActiveOption } from '../../../store/optionsStore/optionsSelectors';
 
 @withRouter
 @connect(
@@ -54,12 +55,14 @@ import Options from '../../object/Options';
     isAuthenticated: getIsAuthenticated(state),
     isWaivio: getIsWaivio(state),
     relatedAlbum: getRelatedPhotos(state),
+    activeOption: getActiveOption(state),
   }),
   { getRelatedAlbum },
 )
 class ObjectInfo extends React.Component {
   static propTypes = {
     location: PropTypes.shape(),
+    activeOption: PropTypes.shape(),
     wobject: PropTypes.shape().isRequired,
     match: PropTypes.shape().isRequired,
     userName: PropTypes.string.isRequired,
@@ -76,6 +79,7 @@ class ObjectInfo extends React.Component {
   static defaultProps = {
     getAreaSearchData: () => {},
     userLocation: {},
+    activeOption: {},
     location: {},
     center: [],
     albums: [],
@@ -86,7 +90,6 @@ class ObjectInfo extends React.Component {
   state = {
     openOption: false,
     photoIndex: 0,
-    activeOption: {},
     hoveredOption: {},
     selectedField: null,
     showModal: false,
@@ -141,13 +144,20 @@ class ObjectInfo extends React.Component {
     const exposedFields = getExposedFieldsByObjType(wobject);
     const shouldDisplay = exposedFields.includes(name);
     const accessExtend = haveAccess(wobject, userName, accessTypesArr[0]) && isEditMode;
-    const paddingBottom =
-      name !== 'publisher' || (isEditMode && !wobject.publisher) || wobject.groupId;
+    const noPaddingBottom =
+      name === objectFields.publisher ||
+      (isEditMode && wobject.publisher) ||
+      wobject.groupId ||
+      name === objectFields.rating;
+    const fieldInfoClassname = classNames({
+      'field-info__nopadding': noPaddingBottom,
+      'field-info': !isEmpty(content) && !isNil(content) && content,
+    });
 
     return (
       shouldDisplay &&
       (content || accessExtend) && (
-        <div className={paddingBottom ? 'field-info' : 'field-info field-info__nopadding'}>
+        <div className={fieldInfoClassname}>
           <React.Fragment>
             {accessExtend && (
               <div className="field-info__title">
@@ -316,8 +326,8 @@ class ObjectInfo extends React.Component {
     });
 
   render() {
-    const { wobject, userName, isAuthenticated, relatedAlbum } = this.props;
-    const { activeOption, hoveredOption } = this.state;
+    const { wobject, userName, isAuthenticated, relatedAlbum, activeOption } = this.props;
+    const { hoveredOption } = this.state;
     const isEditMode = isAuthenticated ? this.props.isEditMode : false;
     const newsFilters = get(wobject, 'newsFilter', []);
     const website = parseWobjectField(wobject, 'website');
@@ -358,24 +368,35 @@ class ObjectInfo extends React.Component {
           .map(option => Object.values(option))
           .flatMap(el => el[1])
           .filter(el => el.body.image)
-          .map(o => ({ body: o.avatar, id: o.author_permlink }))
+          .map(o => ({
+            body: o?.avatar,
+            id:
+              o.body.parentObjectPermlink === wobject.author_permlink && wobject.galleryAlbum
+                ? wobject?.galleryAlbum[0]?.id || wobject.galleryItem[0]?.id
+                : o.author_permlink,
+            name: 'options',
+            parentPermlink: o.body.parentObjectPermlink,
+          }))
       : [];
 
-    const sortedOptionsPictures = optionsPictures.filter(o => activeOption?.avatar !== o?.body);
+    const sortedOptions = optionsPictures.filter(o => activeOption?.avatar !== o?.body);
+    const sortedOptionsPictures = uniqBy(sortedOptions, 'body');
 
-    const activeOptionPicture = [
-      {
-        body:
-          hoveredOption?.avatar ||
-          activeOption?.avatar ||
-          wobject.avatar ||
-          optionsPictures[0]?.body,
-        id: wobject.author_permlink,
-        name: wobject.avatar && 'avatar',
-      },
-      ...sortedOptionsPictures,
-      ...pictures,
-    ];
+    let activeOptionPicture = [...sortedOptionsPictures, ...pictures];
+
+    if (hoveredOption?.avatar || activeOption?.avatar) {
+      activeOptionPicture = [
+        {
+          name: 'galleryItem',
+          body: hoveredOption?.avatar || activeOption?.avatar,
+          // wobject.avatar ||
+          // optionsPictures[0]?.body,
+          id: wobject?.galleryAlbum ? wobject?.galleryAlbum[0]?.id : wobject.author_permlink,
+        },
+        ...sortedOptionsPictures,
+        ...pictures,
+      ];
+    }
 
     const dimensions = parseWobjectField(wobject, 'dimensions');
     const productWeight = parseWobjectField(wobject, 'productWeight');
@@ -415,6 +436,7 @@ class ObjectInfo extends React.Component {
           objectFields.galleryItem,
           (pictures.length > 1 || avatar || wobject?.options) && (
             <PicturesCarousel
+              isOptionsType
               activePicture={hoveredOption || activeOption}
               pics={activeOptionPicture}
               objectID={wobject.author_permlink}
@@ -436,7 +458,6 @@ class ObjectInfo extends React.Component {
           wobject.options && (
             <Options
               setHoveredOption={option => this.setState({ hoveredOption: option })}
-              setActiveOption={option => this.setState({ activeOption: option })}
               isEditMode={isEditMode}
               wobject={wobject}
               history={this.props.history}
