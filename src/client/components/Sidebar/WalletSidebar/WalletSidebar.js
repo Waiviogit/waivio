@@ -159,9 +159,15 @@ class WalletSidebar extends React.Component {
                 <FormattedMessage id="Deposit" defaultMessage="Deposit" />
               </Action>
             )}
-            <Action big className="WalletSidebar__transfer" onClick={this.handleOpenWithdrawModal}>
-              <FormattedMessage id="Withdraw" defaultMessage="Withdraw" />
-            </Action>
+            {!isHiveWallet && (
+              <Action
+                big
+                className="WalletSidebar__transfer"
+                onClick={this.handleOpenWithdrawModal}
+              >
+                <FormattedMessage id="Withdraw" defaultMessage="Withdraw" />
+              </Action>
+            )}
           </div>
         )}
         {!isGuestUserProfile && !isNotWaivWallet && (

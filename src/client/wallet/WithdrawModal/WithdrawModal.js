@@ -31,6 +31,7 @@ import { createQuery } from '../../../common/helpers/apiHelpers';
 import getWithdrawInfo from '../../../common/helpers/withdrawTokenHelpers';
 import { withdrawGuest } from '../../../waivioApi/walletApi';
 import { getHiveBeneficiaryAccount } from '../../../store/settingsStore/settingsSelectors';
+import LinkHiveAccountModal from '../../settings/LinkHiveAccountModal';
 
 import './WithdrawModal.less';
 
@@ -54,6 +55,7 @@ const WithdrawModal = props => {
   const [isShowScanner, setShowScanner] = useState(false);
   const [walletAddress, setWalletAddress] = useState('');
   const [invalidAddress, setInvalidAddress] = useState();
+  const [showModal, setShowModal] = useState(!(hiveBeneficiaryAccount && isGuest));
   const isError = get(pair, 'balance') < fromAmount;
   const handleValidateWalletAddress = useCallback(
     debounce(async value => {
@@ -105,10 +107,14 @@ const WithdrawModal = props => {
     return () => {
       dispatch(resetSelectPair());
     };
-  }, []);
+  }, [userName]);
 
   const handleCloseModal = () => {
     dispatch(toggleWithdrawModal(false));
+  };
+
+  const handleCloseLinkHiveAccountModal = () => {
+    setShowModal(false);
   };
 
   const setWalletAddressForScanner = address => {
@@ -241,7 +247,7 @@ const WithdrawModal = props => {
     setFromAmount(+value + persentCalculate(value));
   };
 
-  return (
+  return (hiveBeneficiaryAccount && isGuest) || !isGuest ? (
     <Modal
       wrapClassName="WithdrawModal__wrapper"
       className="WithdrawModal"
@@ -253,7 +259,7 @@ const WithdrawModal = props => {
           key="Withdraw"
           type="primary"
           onClick={handleWithdraw}
-          disabled={!fromAmount || isError || invalidAddress}
+          disabled={!fromAmount || isError || invalidAddress || !walletAddress}
         >
           <FormattedMessage id="Withdraw" defaultMessage="Withdraw" />
         </Button>,
@@ -371,6 +377,12 @@ const WithdrawModal = props => {
         />
       )}
     </Modal>
+  ) : (
+    <LinkHiveAccountModal
+      handleClose={handleCloseLinkHiveAccountModal}
+      showModal={showModal}
+      hiveBeneficiaryAccount={hiveBeneficiaryAccount}
+    />
   );
 };
 

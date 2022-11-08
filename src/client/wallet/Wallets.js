@@ -52,7 +52,7 @@ const Wallets = props => {
     props.getCurrUserTokensBalanceSwap(props.match.params.name);
 
     return () => props.resetHiveEngineTokenBalance();
-  }, []);
+  }, [props.authUserName]);
 
   const handleOnChange = key => {
     props.setWalletType(key);

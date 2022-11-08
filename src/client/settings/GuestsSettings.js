@@ -240,7 +240,7 @@ export default class GuestsSettings extends React.Component {
           handleClose={() => this.setState({ showModal: false, hiveBeneficiaryAccount: '' })}
           showModal={showModal}
           hiveBeneficiaryAccount={hiveBeneficiaryAccount}
-          handleUnselectUser={this.handleUnselectUser}
+          // handleUnselectUser={this.handleUnselectUser}
         />
         <EmailConfirmation
           isSettings
