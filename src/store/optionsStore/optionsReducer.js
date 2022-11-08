@@ -11,6 +11,11 @@ export default (state = defaultState, action) => {
         ...state,
         activeOption: action.payload,
       };
+    case optionsActions.SET_ACTIVE_CATEGORY:
+      return {
+        ...state,
+        activeCategory: action.payload,
+      };
     default:
       return state;
   }

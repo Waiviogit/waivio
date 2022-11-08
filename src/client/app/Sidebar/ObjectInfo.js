@@ -1,5 +1,5 @@
 import React from 'react';
-import { get, has, identity, isEmpty, isNil, pickBy, setWith, uniq, uniqBy } from 'lodash';
+import { get, has, identity, isEmpty, pickBy, setWith, uniq, uniqBy } from 'lodash';
 import { Button, Icon, Tag } from 'antd';
 import PropTypes from 'prop-types';
 import { Link, withRouter } from 'react-router-dom';
@@ -46,7 +46,7 @@ import ProductId from './ProductId';
 import './ObjectInfo.less';
 import ObjectAvatar from '../../components/ObjectAvatar';
 import Options from '../../object/Options';
-import { getActiveOption } from '../../../store/optionsStore/optionsSelectors';
+import { getActiveCategory, getActiveOption } from '../../../store/optionsStore/optionsSelectors';
 
 @withRouter
 @connect(
@@ -56,6 +56,7 @@ import { getActiveOption } from '../../../store/optionsStore/optionsSelectors';
     isWaivio: getIsWaivio(state),
     relatedAlbum: getRelatedPhotos(state),
     activeOption: getActiveOption(state),
+    activeCategory: getActiveCategory(state),
   }),
   { getRelatedAlbum },
 )
@@ -63,6 +64,7 @@ class ObjectInfo extends React.Component {
   static propTypes = {
     location: PropTypes.shape(),
     activeOption: PropTypes.shape(),
+    activeCategory: PropTypes.string,
     wobject: PropTypes.shape().isRequired,
     match: PropTypes.shape().isRequired,
     userName: PropTypes.string.isRequired,
@@ -80,6 +82,7 @@ class ObjectInfo extends React.Component {
     getAreaSearchData: () => {},
     userLocation: {},
     activeOption: {},
+    activeCategory: '',
     location: {},
     center: [],
     albums: [],
@@ -144,20 +147,13 @@ class ObjectInfo extends React.Component {
     const exposedFields = getExposedFieldsByObjType(wobject);
     const shouldDisplay = exposedFields.includes(name);
     const accessExtend = haveAccess(wobject, userName, accessTypesArr[0]) && isEditMode;
-    const noPaddingBottom =
-      name === objectFields.publisher ||
-      (isEditMode && wobject.publisher) ||
-      wobject.groupId ||
-      name === objectFields.rating;
-    const fieldInfoClassname = classNames({
-      'field-info__nopadding': noPaddingBottom,
-      'field-info': !isEmpty(content) && !isNil(content) && content,
-    });
+    const paddingBottom =
+      name !== objectFields.publisher || (isEditMode && !wobject.publisher) || wobject.groupId;
 
     return (
       shouldDisplay &&
-      (content || accessExtend) && (
-        <div className={fieldInfoClassname}>
+      (!isEmpty(content) || accessExtend) && (
+        <div className={paddingBottom ? 'field-info' : 'field-info nopadding'}>
           <React.Fragment>
             {accessExtend && (
               <div className="field-info__title">
@@ -326,7 +322,14 @@ class ObjectInfo extends React.Component {
     });
 
   render() {
-    const { wobject, userName, isAuthenticated, relatedAlbum, activeOption } = this.props;
+    const {
+      wobject,
+      userName,
+      isAuthenticated,
+      relatedAlbum,
+      activeOption,
+      activeCategory,
+    } = this.props;
     const { hoveredOption } = this.state;
     const isEditMode = isAuthenticated ? this.props.isEditMode : false;
     const newsFilters = get(wobject, 'newsFilter', []);
@@ -379,23 +382,26 @@ class ObjectInfo extends React.Component {
           }))
       : [];
 
-    const sortedOptions = optionsPictures.filter(o => activeOption?.avatar !== o?.body);
+    const sortedOptions = optionsPictures.filter(
+      o => activeOption[activeCategory]?.avatar !== o?.body,
+    );
     const sortedOptionsPictures = uniqBy(sortedOptions, 'body');
 
     let activeOptionPicture = [...sortedOptionsPictures, ...pictures];
 
-    if (hoveredOption?.avatar || activeOption?.avatar) {
-      activeOptionPicture = [
-        {
-          name: 'galleryItem',
-          body: hoveredOption?.avatar || activeOption?.avatar,
-          // wobject.avatar ||
-          // optionsPictures[0]?.body,
-          id: wobject?.galleryAlbum ? wobject?.galleryAlbum[0]?.id : wobject.author_permlink,
-        },
-        ...sortedOptionsPictures,
-        ...pictures,
-      ];
+    if (hoveredOption?.avatar || activeOption[activeCategory]?.avatar) {
+      activeOptionPicture = uniqBy(
+        [
+          {
+            name: 'galleryItem',
+            body: hoveredOption?.avatar || activeOption[activeCategory]?.avatar,
+            id: wobject?.galleryAlbum ? wobject?.galleryAlbum[0]?.id : wobject.author_permlink,
+          },
+          ...sortedOptionsPictures,
+          ...pictures,
+        ],
+        'body',
+      );
     }
 
     const dimensions = parseWobjectField(wobject, 'dimensions');
