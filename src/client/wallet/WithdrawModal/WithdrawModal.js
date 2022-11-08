@@ -22,7 +22,7 @@ import {
 import USDDisplay from '../../components/Utils/USDDisplay';
 import { getCryptosPriceHistory } from '../../../store/appStore/appSelectors';
 import SelectUserForAutocomplete from '../../widgets/SelectUserForAutocomplete';
-import { hiveWalletCurrency } from '../../../common/constants/hiveEngine';
+import { hiveWalletCurrency, showMinWithdraw } from '../../../common/constants/hiveEngine';
 import QrModal from '../../widgets/QrModal';
 import { getAuthenticatedUserName, isGuestUser } from '../../../store/authStore/authSelectors';
 import { converHiveEngineCoins } from '../../../waivioApi/ApiClient';
@@ -58,7 +58,7 @@ const WithdrawModal = props => {
     debounce(async value => {
       if (!value) return setInvalidAddress();
 
-      if (pair.from_coin_symbol === 'WAIV') {
+      if (pair.from_coin_symbol === 'WAIV' || pair.from_coin_symbol === 'SWAP.ETH') {
         const isValid = WAValidator.validate(value, pair.to_coin_symbol.toLowerCase());
 
         return setInvalidAddress(!isValid);
@@ -119,7 +119,7 @@ const WithdrawModal = props => {
         onlyAmount: true,
       });
 
-      setToAmount(amount);
+      setToAmount(amount > 0 ? amount : 0);
     } else {
       setToAmount(+value - persentCalculate(value));
     }
@@ -185,9 +185,9 @@ const WithdrawModal = props => {
                   contractAction: 'transfer',
                   contractPayload: {
                     symbol: pair.from_coin_symbol,
-                    to: data.account,
+                    to: pair.from_coin_symbol === 'SWAP.ETH' ? 'swap-eth' : data.account,
                     quantity: fromAmount.toString(),
-                    memo: data.memo,
+                    memo: pair.from_coin_symbol === 'SWAP.ETH' ? walletAddress : data.memo,
                   },
                 }),
               },
@@ -226,7 +226,7 @@ const WithdrawModal = props => {
         onlyAmount: true,
       });
 
-      setToAmount(amount);
+      setToAmount(amount > 0 ? amount : 0);
     }
   };
 
@@ -249,9 +249,10 @@ const WithdrawModal = props => {
           onClick={handleWithdraw}
           disabled={
             !fromAmount ||
+            !toAmount ||
             isError ||
             invalidAddress ||
-            (pair.symbolOut !== 'HIVE' && !walletAddress)
+            (pair?.to_coin_symbol !== 'HIVE' && !walletAddress)
           }
         >
           <FormattedMessage id="Withdraw" defaultMessage="Withdraw" />
@@ -310,10 +311,17 @@ const WithdrawModal = props => {
         <FormattedMessage id="est_amount" defaultMessage="Est. amount" />:{' '}
         <USDDisplay value={fromAmount * get(pair, 'rate') * hiveRateInUsd} />
       </p>
-      {!hiveWalletCurrency.includes(get(pair, 'to_coin_symbol')) && (
+      {showMinWithdraw.includes(get(pair, 'to_coin_symbol')) && (
         <p>
           <FormattedMessage id="minimal_withdraw_amount" defaultMessage="Minimal withdraw amount" />
-          : {withdrawFee} {get(pair, 'from_coin_symbol')}
+          :{' '}
+          {pair?.to_coin_symbol === 'BTC' ? (
+            <span>0,01 {get(pair, 'to_coin_symbol')}</span>
+          ) : (
+            <span>
+              {withdrawFee} {get(pair, 'from_coin_symbol')}
+            </span>
+          )}
         </p>
       )}
       <div className="WithdrawModal__block">

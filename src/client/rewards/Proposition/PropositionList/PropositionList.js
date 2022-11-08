@@ -118,6 +118,7 @@ const PropositionList = ({
           return (
             <PropositionNew
               proposition={{ ...propos, object: listItem, requiredObject: listItem.parent }}
+              type={propos.reserved ? 'reserved' : ''}
             />
           );
 
