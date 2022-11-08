@@ -68,7 +68,20 @@ const Options = ({ wobject, isEditMode, setHoveredOption, history }) => {
           : duplicatedOptionsArray;
 
       return [...a, r[0] || duplicatedOptionsArray[0]].sort(
-        (b, c) => b?.body?.position - c?.body?.position,
+        // eslint-disable-next-line array-callback-return,consistent-return
+        (b, c) => {
+          if (b.body.position && c.body.position) {
+            return b.body.position - c.body.position;
+          }
+
+          if (!b.body.position) {
+            return 1;
+          }
+
+          if (!c.body.position) {
+            return -1;
+          }
+        },
       );
     }, []);
 
