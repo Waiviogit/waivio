@@ -207,7 +207,9 @@ const PropositionFooter = ({ type, openDetailsModal, proposition, getProposition
                 for {proposition?.countReservationDays} days
               </span>
             </div>
-            <span onClick={openDetailsModal}>Details &gt;</span>
+            <span className="Proposition-new__details" onClick={openDetailsModal}>
+              Details <Icon type="right" />
+            </span>
           </div>
         ) : (
           <WebsiteReservedButtons
