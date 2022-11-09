@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { isEmpty } from 'lodash';
 import { useDispatch, useSelector } from 'react-redux';
@@ -16,6 +16,14 @@ const Options = ({ wobject, isEditMode, setHoveredOption, history }) => {
   const dispatch = useDispatch();
   const activeStoreOption = useSelector(getActiveOption);
 
+  useEffect(() => {
+    activeStoreOption &&
+      isMobile() &&
+      window.scrollTo({
+        top: 270,
+        behavior: 'smooth',
+      });
+  }, [wobject]);
   const getOptionsPicturesClassName = el =>
     classNames({
       Options__pictures: el.body.parentObjectPermlink !== wobject.author_permlink,
@@ -46,11 +54,6 @@ const Options = ({ wobject, isEditMode, setHoveredOption, history }) => {
     dispatch(setStoreActiveOption({ ...activeStoreOption, [el.body.category]: el }));
     if (el.body.parentObjectPermlink !== wobject.author_permlink) {
       history.push(`/object/${el.author_permlink}${isMobile() ? '/about' : ''}`);
-      isMobile() &&
-        window.scrollTo({
-          top: 250,
-          behavior: 'smooth',
-        });
       dispatch(setStoreActiveCategory(el.body.category));
       dispatch(setStoreActiveOption({ ...activeStoreOption, [el.body.category]: el }));
     }
