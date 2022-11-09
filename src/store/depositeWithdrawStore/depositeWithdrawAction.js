@@ -62,7 +62,18 @@ export const getDepositWithdrawPairs = () => (dispatch, getState) => {
         pair => pair.from_coin_symbol.startsWith('SWAP') && !pair.to_coin_symbol.startsWith('SWAP'),
       );
       const withdrawPairs = await compareTokensList(name, [
-        ...(isGuest ? [] : withdrawPairsFilteredList),
+        ...(isGuest
+          ? []
+          : [
+              ...withdrawPairsFilteredList,
+              {
+                from_coin_symbol: 'SWAP.ETH',
+                to_coin_symbol: 'ETH',
+                symbol: 'SWAP.ETH',
+                display_name: 'SWAP.ETH',
+                pair: 'SWAP.ETH -> ETH',
+              },
+            ]),
         {
           from_coin_symbol: 'WAIV',
           to_coin_symbol: 'LTC',
@@ -94,13 +105,6 @@ export const getDepositWithdrawPairs = () => (dispatch, getState) => {
           ex_rate: 1,
           pair: 'WAIV -> SWAP.HIVE',
           title: 'WAIV - HIVE',
-        },
-        {
-          from_coin_symbol: 'SWAP.ETH',
-          to_coin_symbol: 'ETH',
-          symbol: 'SWAP.ETH',
-          display_name: 'SWAP.ETH',
-          pair: 'SWAP.ETH -> ETH',
         },
       ]);
 

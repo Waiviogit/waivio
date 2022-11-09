@@ -53,7 +53,8 @@ const WithdrawModal = props => {
   const [isShowScanner, setShowScanner] = useState(false);
   const [walletAddress, setWalletAddress] = useState('');
   const [invalidAddress, setInvalidAddress] = useState();
-  const isError = get(pair, 'balance') < fromAmount;
+  const isError = +pair?.balance < fromAmount;
+
   const handleValidateWalletAddress = useCallback(
     debounce(async value => {
       if (!value) return setInvalidAddress();
