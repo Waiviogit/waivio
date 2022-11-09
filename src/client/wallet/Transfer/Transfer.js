@@ -845,12 +845,9 @@ export default class Transfer extends React.Component {
       </Modal>
     ) : (
       <LinkHiveAccountModal
-        handleOk={this.handleOkModal}
-        handleSelect={this.handleUserSelect}
         handleClose={this.handleCloseLinkHiveAccountModal}
         showModal={showModal}
         hiveBeneficiaryAccount={this.state.hiveBeneficiaryAccount}
-        handleUnselectUser={this.handleUnselectUser}
       />
     );
   }

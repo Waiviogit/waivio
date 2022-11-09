@@ -1,9 +1,9 @@
 import BigNumber from 'bignumber.js';
-import { round, isEmpty, get } from 'lodash';
+import _, { isEmpty } from 'lodash';
 import WAValidator from 'multicoin-address-validator';
 import { message } from 'antd';
 
-import { converHiveEngineCoins, getMarketPools } from '../../waivioApi/ApiClient';
+import { converHiveEngineCoins, getMarketPools, headers } from '../../waivioApi/ApiClient';
 import { getSwapOutputNew } from './swapForWithDraw';
 
 const AVAILABLE_TOKEN_WITHDRAW = {
@@ -52,17 +52,31 @@ const getAccountToTransfer = async ({ destination, from_coin, to_coin }) => {
 
 const validateEthAmount = async amount => {
   try {
+    let error = null;
     const resp = await fetch('https://ethgw.hive-engine.com/api/utils/withdrawalfee/SWAP.ETH', {
       method: 'GET',
-    });
-    const fee = get(resp, 'data.data');
+      headers,
+    }).then(res => res.json());
+    const fee = resp?.data;
 
     if (!fee) return false;
+    if (
+      !BigNumber(amount)
+        .minus(fee)
+        .times(DEFAULT_WITHDRAW_FEE_MUL)
+        .gt(0)
+    ) {
+      error = new Error(`gas fee ${fee}`);
+    }
 
-    return BigNumber(amount)
-      .minus(fee)
-      .times(DEFAULT_WITHDRAW_FEE_MUL)
-      .gt(0);
+    return {
+      error,
+      predictiveAmount: BigNumber(amount)
+        .minus(fee)
+        .times(DEFAULT_WITHDRAW_FEE_MUL)
+        .dp(8, BigNumber.ROUND_HALF_DOWN)
+        .toNumber(),
+    };
   } catch (error) {
     return false;
   }
@@ -70,28 +84,68 @@ const validateEthAmount = async amount => {
 
 const validateBtcAmount = async amount => {
   try {
-    const resp = await fetch('https://api.tribaldex.com/settings', { method: 'GET' });
-    const minimum_withdrawals = get(resp, 'data.minimum_withdrawals');
+    let error = null;
+    const resp = await fetch('https://api.tribaldex.com/settings', {
+      method: 'GET',
+      headers,
+    }).then(res => res.json());
+
+    const minimum_withdrawals = resp?.minimum_withdrawals;
 
     if (!minimum_withdrawals) return false;
-    const fee = find(minimum_withdrawals, el => el[0] === 'SWAP.BTC')[1];
+    const fee = _.find(minimum_withdrawals, el => el[0] === 'SWAP.BTC')[1];
 
     if (!fee) return false;
 
-    return BigNumber(amount)
-      .minus(fee)
-      .gte(0);
+    if (
+      !BigNumber(amount)
+        .minus(fee)
+        .gte(0)
+    ) {
+      error = new Error(`minimum withdraw amount ${fee}`);
+    }
+
+    return {
+      error,
+      predictiveAmount: BigNumber(amount)
+        .times(DEFAULT_WITHDRAW_FEE_MUL)
+        .dp(8, BigNumber.ROUND_HALF_DOWN)
+        .toNumber(),
+    };
   } catch (error) {
     return false;
   }
 };
 
+const validateLtcAmount = amount => ({
+  predictiveAmount: BigNumber(amount)
+    .times(DEFAULT_WITHDRAW_FEE_MUL)
+    .dp(8, BigNumber.ROUND_HALF_DOWN)
+    .toNumber(),
+});
+
+const validateHiveAmount = amount => {
+  let error = null;
+
+  if (!BigNumber(amount).gte(0.002)) {
+    error = new Error('minimum withdraw amount 0.002');
+  }
+
+  return {
+    error,
+    predictiveAmount: BigNumber(amount)
+      .times(DEFAULT_WITHDRAW_FEE_MUL)
+      .dp(3, BigNumber.ROUND_DOWN)
+      .toNumber(),
+  };
+};
+
 const validateAmount = async ({ amount, outputSymbol }) => {
   const validation = {
-    HIVE: el => BigNumber(el).gte(0.002),
+    HIVE: validateHiveAmount,
     ETH: validateEthAmount,
     BTC: validateBtcAmount,
-    LTC: () => true,
+    LTC: validateLtcAmount,
   };
 
   return validation[outputSymbol](amount);
@@ -219,15 +273,21 @@ const getWithdrawInfo = async ({ account, data, onlyAmount }) => {
 
   const params = withdrawParams[outputSymbol];
 
-  const { swapJson, amount, error } = await params.getSwapData({
+  const { swapJson, amount } = await params.getSwapData({
     params,
     quantity,
     inputSymbol,
   });
 
-  if (onlyAmount) return round(amount * DEFAULT_WITHDRAW_FEE_MUL, params.prediction);
+  const { error: err, predictiveAmount } = await validateAmount({ amount, outputSymbol });
 
-  if (error) return message.error(error.message);
+  if (onlyAmount) return predictiveAmount;
+
+  if (err) {
+    message.error(err);
+
+    return null;
+  }
 
   const { withdraw, error: errWithdrawData } = await params.withdrawContract({
     address,

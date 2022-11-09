@@ -7,18 +7,18 @@
   text-align: center !important;
   border-collapse: collapse;
   table-layout: fixed;
-  font-size: medium;
+  font-size: 14px;
 
   @media @small {
-    width: 95%;
+    width: 95% !important;
   }
 
   @media @medium {
-    width: 75%;
+    width: 75% !important;
   }
 
   @media @large {
-    width: 80%;
+    width: 80% !important;
   }
 
   & td {
@@ -39,20 +39,33 @@
 
   & tbody td {
     font-weight: 500;
-    font-size: small;
-    padding: 3px 2px;
+    font-size: 12px;
+    padding: 1px;
+
+    @media @small {
+      font-size: small;
+      padding: 3px 2px;
+    }
   }
 
   &.basicWidth {
-    width: 11%;
+    width: 11% !important;
   }
 
   &.mediumWidth {
-    width: 27%;
+    width: 17% !important;
+
+    @media @small {
+      width: 27% !important;
+    }
   }
 
   &.maxWidth {
-    width: 56%;
+    width: 30% !important;
+
+    @media @small {
+      width: 56% !important;
+    }
   }
 
   &__action-wrap {
@@ -60,7 +73,7 @@
     justify-content: center;
     flex-direction: column;
     overflow-wrap: break-word;
-    max-width: 150px;
+    //max-width: 150px !important;
 
     @media @small {
       word-break: break-all;
@@ -74,7 +87,7 @@
     word-break: break-word;
 
     @media @small {
-      margin-left: 2rem;
+      margin-left: 5px;
     }
   }
 

@@ -448,7 +448,6 @@ class CreateRewardForm extends React.Component {
 
       e.preventDefault();
       this.checkOptionFields();
-      this.setState({ loading: true });
       this.props.form.validateFieldsAndScroll((err, values) => {
         if (!err && !isEmpty(values.primaryObject) && !isEmpty(values.secondaryObject)) {
           createCampaign(this.prepareSubmitData(values, this.props.userName), this.props.userName)
@@ -466,10 +465,6 @@ class CreateRewardForm extends React.Component {
               this.setState({ loading: false });
             });
         }
-        if (err) {
-          this.setState({ loading: false });
-        }
-        this.setState({ loading: false });
       });
     },
 

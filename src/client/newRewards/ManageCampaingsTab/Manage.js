@@ -139,6 +139,7 @@ export const Manage = ({ intl, guideName, setHistoryLoading }) => {
                   <Checkbox
                     checked={campaingIsActive(row.status)}
                     onChange={() => showConfirm(row)}
+                    disabled={['onhold'].includes(row.status)}
                   />
                 )}
               </td>

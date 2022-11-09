@@ -1,8 +1,17 @@
 @import (reference) '../../../styles/custom.less';
+@import (reference) '../../../styles/modules/variables.less';
 
 .Proposition-new {
   font-size: 14px;
   margin: 20px 0;
+
+  &__yourRewards {
+    display: none !important;
+
+    @media @small {
+      display: inline !important;
+    }
+  }
 
   &__header {
     border: 2px solid #f87007;
@@ -44,6 +53,10 @@
 
     .Comment {
       font-size: 16px;
+    }
+
+    &--noEligible {
+      justify-content: flex-end;
     }
   }
 
@@ -116,5 +129,13 @@
     color: rgba(0, 0, 0, 0.65);
     font-weight: 500;
     font-size: 16px;
+  }
+
+  &__details {
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
   }
 }
