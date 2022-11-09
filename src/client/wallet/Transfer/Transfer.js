@@ -541,6 +541,19 @@ export default class Transfer extends React.Component {
     );
   };
 
+  handleUserSelect = selected => {
+    this.setState({ isSelected: true, isClosedFind: false, searchName: selected.account });
+    if (selected && this.props.isGuest && !this.props.hiveBeneficiaryAccount)
+      this.setState({ hiveBeneficiaryAccount: selected.account });
+  };
+
+  handleUnselectUser = () => {
+    this.setState({
+      searchName: '',
+      hiveBeneficiaryAccount: '',
+    });
+  };
+
   estimatedValue = amount => {
     const { cryptosPriceHistory } = this.props;
     const hiveRateInUsd = get(cryptosPriceHistory, `${HIVE.coinGeckoId}.usdPriceHistory.usd`, 1);
