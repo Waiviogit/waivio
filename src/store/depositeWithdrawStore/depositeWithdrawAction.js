@@ -5,14 +5,16 @@ import {
   getHiveEngineCoins,
 } from '../../waivioApi/ApiClient';
 import { compareTokensList } from '../swapStore/helper';
-import { getAuthenticatedUserName } from '../authStore/authSelectors';
+import { getAuthenticatedUserName, isGuestUser } from '../authStore/authSelectors';
 
 export const GET_DEPOSIT_WITHDRAW_PAIR = createAsyncActionType(
   '@depositWithdraw/GET_DEPOSIT_WITHDRAW_PAIR',
 );
 
 export const getDepositWithdrawPairs = () => (dispatch, getState) => {
-  const name = getAuthenticatedUserName(getState());
+  const state = getState();
+  const name = getAuthenticatedUserName(state);
+  const isGuest = isGuestUser(state);
 
   return dispatch({
     type: GET_DEPOSIT_WITHDRAW_PAIR.ACTION,
@@ -45,6 +47,7 @@ export const getDepositWithdrawPairs = () => (dispatch, getState) => {
             !pair.from_coin_symbol.startsWith('SWAP') && pair.to_coin_symbol.startsWith('SWAP'),
         )
         .sort((a, b) => (b.display_name > a.display_name ? -1 : 1));
+
       const withdrawPairsFilteredList = [
         ...compliteList,
         {
@@ -58,7 +61,52 @@ export const getDepositWithdrawPairs = () => (dispatch, getState) => {
       ].filter(
         pair => pair.from_coin_symbol.startsWith('SWAP') && !pair.to_coin_symbol.startsWith('SWAP'),
       );
-      const withdrawPairs = await compareTokensList(name, withdrawPairsFilteredList);
+      const withdrawPairs = await compareTokensList(name, [
+        ...(isGuest
+          ? []
+          : [
+              ...withdrawPairsFilteredList,
+              {
+                from_coin_symbol: 'SWAP.ETH',
+                to_coin_symbol: 'ETH',
+                symbol: 'SWAP.ETH',
+                display_name: 'SWAP.ETH',
+                pair: 'SWAP.ETH -> ETH',
+              },
+            ]),
+        {
+          from_coin_symbol: 'WAIV',
+          to_coin_symbol: 'LTC',
+          symbol: 'WAIV',
+          ex_rate: 1,
+          pair: 'WAIV -> SWAP.LTC',
+          title: 'WAIV - LTC',
+        },
+        {
+          from_coin_symbol: 'WAIV',
+          to_coin_symbol: 'BTC',
+          symbol: 'WAIV',
+          ex_rate: 1,
+          pair: 'WAIV -> SWAP.BTC',
+          title: 'WAIV - BTC',
+        },
+        {
+          from_coin_symbol: 'WAIV',
+          to_coin_symbol: 'ETH',
+          symbol: 'WAIV',
+          ex_rate: 1,
+          pair: 'WAIV -> SWAP.ETH',
+          title: 'WAIV - ETH',
+        },
+        {
+          from_coin_symbol: 'WAIV',
+          to_coin_symbol: 'HIVE',
+          symbol: 'WAIV',
+          ex_rate: 1,
+          pair: 'WAIV -> SWAP.HIVE',
+          title: 'WAIV - HIVE',
+        },
+      ]);
 
       return {
         withdrawPairs: withdrawPairs.filter(pair => pair.balance),

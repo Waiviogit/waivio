@@ -1,48 +1,50 @@
 import React, { useState } from 'react';
-import { connect } from 'react-redux';
+import { connect, useDispatch } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
-import { Modal } from 'antd';
+import { message, Modal } from 'antd';
 
 import PolicyConfirmation from '../components/PolicyConfirmation/PolicyConfirmation';
 import SearchUsersAutocomplete from '../components/EditorUser/SearchUsersAutocomplete';
 import Avatar from '../components/Avatar';
-import { getAuthenticatedUserName, isGuestUser } from '../../store/authStore/authSelectors';
+import { getAuthenticatedUserName } from '../../store/authStore/authSelectors';
+import { saveSettings } from '../../store/settingsStore/settingsActions';
 
 import './Settings.less';
 
-const LinkHiveAccountModal = ({
-  intl,
-  showModal,
-  hiveBeneficiaryAccount,
-  isGuest,
-  user,
-  handleOk,
-  handleSelect,
-  handleUnselectUser,
-  handleClose,
-}) => {
+const LinkHiveAccountModal = ({ intl, showModal, hiveBeneficiaryAccount, user, handleClose }) => {
   const [isCheck, setCheck] = useState(false);
   const [showSelectAccount, setShowSelectAccount] = useState(Boolean(hiveBeneficiaryAccount));
+  const [selectedUser, setSelectedUser] = useState(hiveBeneficiaryAccount);
+  const dispatch = useDispatch();
 
+  const handleOkModal = () =>
+    dispatch(
+      saveSettings({
+        hiveBeneficiaryAccount: selectedUser,
+      }),
+    ).then(() => {
+      message.success('Saved');
+      setSelectedUser('');
+    });
   const addHiveAccount =
-    hiveBeneficiaryAccount && showSelectAccount ? (
+    selectedUser && showSelectAccount ? (
       <div className="Settings__search-account">
         <div className="Settings__account-info">
-          <Avatar username={hiveBeneficiaryAccount} size={40} />
+          <Avatar username={selectedUser} size={40} />
           <a
             rel="noopener noreferrer"
             target="_blank"
-            href={`/@${hiveBeneficiaryAccount}`}
+            href={`/@${selectedUser}`}
             className="Settings__account-name"
           >
-            {hiveBeneficiaryAccount}
+            {selectedUser}
           </a>
         </div>
         <span
           role="presentation"
           onClick={() => {
-            handleUnselectUser();
+            setSelectedUser('');
             setShowSelectAccount(false);
           }}
           className="iconfont icon-delete Settings__delete-icon"
@@ -51,7 +53,7 @@ const LinkHiveAccountModal = ({
     ) : (
       <SearchUsersAutocomplete
         handleSelect={value => {
-          handleSelect(value);
+          setSelectedUser(value.account);
           setShowSelectAccount(true);
         }}
         placeholder={intl.formatMessage({
@@ -67,9 +69,9 @@ const LinkHiveAccountModal = ({
     <Modal
       visible={showModal}
       title={intl.formatMessage({ id: 'link_hive_account', defaultMessage: 'Link Hive account' })}
-      onOk={handleOk}
+      onOk={handleOkModal}
       onCancel={handleClose}
-      okButtonProps={{ disabled: !(isCheck && hiveBeneficiaryAccount) }}
+      okButtonProps={{ disabled: !(isCheck && selectedUser) }}
     >
       <p className="Settings__margin-add">
         {intl.formatMessage({
@@ -79,7 +81,7 @@ const LinkHiveAccountModal = ({
         })}{' '}
         <b>@{user}</b>
       </p>
-      <div className="Settings__margin-add">{isGuest && addHiveAccount}</div>
+      <div className="Settings__margin-add">{addHiveAccount}</div>
       <PolicyConfirmation
         isChecked={isCheck}
         checkboxLabel={intl.formatMessage({
@@ -106,11 +108,7 @@ LinkHiveAccountModal.propTypes = {
   intl: PropTypes.shape().isRequired,
   showModal: PropTypes.bool.isRequired,
   hiveBeneficiaryAccount: PropTypes.string,
-  isGuest: PropTypes.bool.isRequired,
   user: PropTypes.string.isRequired,
-  handleOk: PropTypes.func.isRequired,
-  handleSelect: PropTypes.func.isRequired,
-  handleUnselectUser: PropTypes.func.isRequired,
   handleClose: PropTypes.func.isRequired,
 };
 
@@ -119,6 +117,5 @@ LinkHiveAccountModal.defaultProps = {
 };
 
 export default connect(state => ({
-  isGuest: isGuestUser(state),
   user: getAuthenticatedUserName(state),
 }))(injectIntl(LinkHiveAccountModal));

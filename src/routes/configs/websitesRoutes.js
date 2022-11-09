@@ -142,7 +142,7 @@ const routes = host => ({
         {
           path: ['', '/(comments|activity)'],
           exact: true,
-          component: Views.UserProfile,
+          component: Views.PostsCommentsActivity,
         },
         {
           path: '/followers',

@@ -48,4 +48,17 @@ export const sendGuestTransferWAIV = async ({
     .then(res => res.json())
     .catch(err => err);
 
+export const withdrawGuest = async ({ account, data }) =>
+  fetch(`${config.objectsBotApiPrefix}${config.guestWithdraw}`, {
+    method: 'POST',
+    headers: { ...headers, 'access-token': getGuestAccessToken(), 'waivio-auth': true },
+    body: JSON.stringify({
+      id: 'guestWithdraw',
+      account,
+      data,
+    }),
+  })
+    .then(res => res.json())
+    .catch(err => err);
+
 export default null;

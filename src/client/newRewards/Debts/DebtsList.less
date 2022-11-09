@@ -1,8 +1,21 @@
+@import (reference) '../../styles/modules/variables.less';
+
 .DebtsList {
   display: flex;
   align-items: flex-start;
 
   &__list {
-    width: 90%;
+    width: 100%;
+
+    @media @small {
+      width: 90%;
+    }
+  }
+
+  .RewardsFilters {
+    display: none;
+    @media @small {
+      display: block;
+    }
   }
 }

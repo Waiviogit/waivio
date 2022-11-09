@@ -36,13 +36,13 @@ import {
 import { getAuthenticatedUser, getIsAuthenticated } from '../../../store/authStore/authSelectors';
 import { getCommentContent } from '../../../store/commentsStore/commentsSelectors';
 import { getIsOpenWriteReviewModal } from '../../../store/rewardsStore/rewardsSelectors';
-
-import './Proposition.less';
 import { getLocale } from '../../../store/settingsStore/settingsSelectors';
 import WebsitePropositionFooter from './WebsiteReservedButtons/WebsiteReservedButtons';
 import { getIsWaivio } from '../../../store/appStore/appSelectors';
 import WebsiteReservedButtons from './WebsiteReservedButtons/WebsiteReservedButtons';
 import { parseJSON } from '../../../common/helpers/parseJSON';
+
+import './Proposition.less';
 
 const Proposition = props => {
   const currentProposId = get(props.proposition, ['_id'], '');

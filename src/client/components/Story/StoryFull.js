@@ -178,7 +178,7 @@ class StoryFull extends React.Component {
 
       for (let i = 0; i < tags.length; i += 1) {
         if (tags[i] === e.target && this.images.length > i) {
-          if (e.target.parentNode && e.target.parentNode.tagName === 'A') return;
+          if (e.target?.parentNode && e.target?.parentNode.tagName === 'A') return;
           this.setState({
             lightbox: {
               open: true,

@@ -9,6 +9,7 @@ import Loading from '../../Icon/Loading';
 
 import './DynamicTable.less';
 import USDDisplay from '../../Utils/USDDisplay';
+import { isMobile } from '../../../../common/helpers/apiHelpers';
 
 export const DynamicTable = ({
   header,
@@ -69,11 +70,13 @@ export const DynamicTable = ({
     }
   };
 
+  const filteredHeader = header.filter(head => !(head.hideForMobile && isMobile()));
+
   return (
     <table className="DynamicTable">
       <thead>
         <tr>
-          {header.map(th => (
+          {filteredHeader.map(th => (
             <th key={th.id}>{th.intl && intl.formatMessage(th.intl)}</th>
           ))}
         </tr>
@@ -97,7 +100,7 @@ export const DynamicTable = ({
 
             return (
               <tr key={get(item, '_id')}>
-                {header.map(head => (
+                {filteredHeader.map(head => (
                   <td key={head.id} style={head.style || {}}>
                     {head.checkShowItem
                       ? head.checkShowItem(item, getTdBodyType)

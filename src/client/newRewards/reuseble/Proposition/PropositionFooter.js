@@ -6,6 +6,7 @@ import { injectIntl } from 'react-intl';
 import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment';
 import { useLocation } from 'react-router';
+import classnames from 'classnames';
 
 import RewardsPopover from '../../RewardsPopover/RewardsPopover';
 import Avatar from '../../../components/Avatar';
@@ -28,6 +29,9 @@ const PropositionFooter = ({ type, openDetailsModal, proposition, getProposition
   const dispatch = useDispatch();
   const authUserName = useSelector(getAuthenticatedUserName);
   const isWaivio = useSelector(getIsWaivio);
+  const propositionFooterContainerClassList = classnames('Proposition-new__footer-container', {
+    'Proposition-new__footer-container--noEligible': proposition.notEligible,
+  });
 
   const location = useLocation();
   const [loading, setLoading] = useState(false);
@@ -92,7 +96,7 @@ const PropositionFooter = ({ type, openDetailsModal, proposition, getProposition
           active_votes: [],
           ...comment,
         },
-      ];
+      ].sort((a, b) => b.created - a.created);
 
       setComments(commentList);
       setCommentsCount(commentList?.length);
@@ -198,11 +202,20 @@ const PropositionFooter = ({ type, openDetailsModal, proposition, getProposition
 
       default:
         return isWaivio ? (
-          <div className="Proposition-new__footer-container">
-            <Button type="primary" onClick={openDetailsModal}>
-              <b>Reserve</b> Your Reward
-            </Button>{' '}
-            for {proposition?.countReservationDays} days
+          <div className={propositionFooterContainerClassList}>
+            {!proposition.notEligible && (
+              <div>
+                <Button type="primary" onClick={openDetailsModal}>
+                  <b>Reserve</b> <span className="Proposition-new__yourRewards">Your Reward</span>
+                </Button>{' '}
+                <span className="Proposition-new__days">
+                  for {proposition?.countReservationDays} days
+                </span>
+              </div>
+            )}
+            <span className="Proposition-new__details" onClick={openDetailsModal}>
+              Details <Icon type="right" />
+            </span>
           </div>
         ) : (
           <WebsiteReservedButtons
@@ -229,6 +242,7 @@ PropositionFooter.propTypes = {
     reviewStatus: PropTypes.string,
     userName: PropTypes.string,
     guideName: PropTypes.string,
+    notEligible: PropTypes.bool,
     commentsCount: PropTypes.number,
     countReservationDays: PropTypes.number,
     reservationPermlink: PropTypes.string,

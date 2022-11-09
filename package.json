@@ -82,6 +82,7 @@
     "lightrpc": "0.0.1",
     "lodash": "^4.0.0",
     "moment": "^2.24.0",
+    "multicoin-address-validator": "^0.5.11",
     "npm-run-all": "^4.0.2",
     "pigeon-maps": "0.19.5",
     "pigeon-overlay": "^0.2.3",
@@ -146,6 +147,7 @@
     "url-parse": "^1.1.9",
     "url-search-params-polyfill": "^2.0.0",
     "uuid": "^3.3.2",
+    "wallet-address-validator": "^0.2.4",
     "xmldom": "^0.1.27"
   },
   "devDependencies": {

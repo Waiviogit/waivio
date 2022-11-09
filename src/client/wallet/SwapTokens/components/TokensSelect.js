@@ -59,12 +59,11 @@ const TokensSelect = props => {
             <Select.Option
               className="TokenSelect__selector-option"
               onClick={() => props.setToken(swap)}
-              key={swap.symbol}
-              selectionClassList
+              key={swap.title || swap.symbol}
             >
-              <span>{swap.symbol}</span>
+              <span>{swap.title || swap.symbol}</span>
               <span className="TokenSelect__selector-balance">
-                {round(swap.balance, presicion)}
+                {!swap.title && round(swap.balance, presicion)}
               </span>
             </Select.Option>
           ))}

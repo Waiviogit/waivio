@@ -1,5 +1,5 @@
 import React from 'react';
-import { get, has, identity, isEmpty, pickBy, setWith, uniq } from 'lodash';
+import { get, has, identity, isEmpty, pickBy, setWith, uniq, uniqBy } from 'lodash';
 import { Button, Icon, Tag } from 'antd';
 import PropTypes from 'prop-types';
 import { Link, withRouter } from 'react-router-dom';
@@ -7,7 +7,6 @@ import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
 import moment from 'moment';
 import classNames from 'classnames';
-import Lightbox from 'react-image-lightbox';
 import {
   accessTypesArr,
   getBlogItems,
@@ -47,6 +46,7 @@ import ProductId from './ProductId';
 import './ObjectInfo.less';
 import ObjectAvatar from '../../components/ObjectAvatar';
 import Options from '../../object/Options';
+import { getActiveCategory, getActiveOption } from '../../../store/optionsStore/optionsSelectors';
 
 @withRouter
 @connect(
@@ -55,12 +55,16 @@ import Options from '../../object/Options';
     isAuthenticated: getIsAuthenticated(state),
     isWaivio: getIsWaivio(state),
     relatedAlbum: getRelatedPhotos(state),
+    activeOption: getActiveOption(state),
+    activeCategory: getActiveCategory(state),
   }),
   { getRelatedAlbum },
 )
 class ObjectInfo extends React.Component {
   static propTypes = {
     location: PropTypes.shape(),
+    activeOption: PropTypes.shape(),
+    activeCategory: PropTypes.string,
     wobject: PropTypes.shape().isRequired,
     match: PropTypes.shape().isRequired,
     userName: PropTypes.string.isRequired,
@@ -77,6 +81,8 @@ class ObjectInfo extends React.Component {
   static defaultProps = {
     getAreaSearchData: () => {},
     userLocation: {},
+    activeOption: {},
+    activeCategory: '',
     location: {},
     center: [],
     albums: [],
@@ -87,7 +93,6 @@ class ObjectInfo extends React.Component {
   state = {
     openOption: false,
     photoIndex: 0,
-    activeOption: {},
     hoveredOption: {},
     selectedField: null,
     showModal: false,
@@ -143,12 +148,12 @@ class ObjectInfo extends React.Component {
     const shouldDisplay = exposedFields.includes(name);
     const accessExtend = haveAccess(wobject, userName, accessTypesArr[0]) && isEditMode;
     const paddingBottom =
-      name !== 'publisher' || (isEditMode && !wobject.publisher) || wobject.groupId;
+      name !== objectFields.publisher || (isEditMode && !wobject.publisher) || wobject.groupId;
 
     return (
       shouldDisplay &&
-      (content || accessExtend) && (
-        <div className={paddingBottom ? 'field-info' : 'field-info field-info__nopadding'}>
+      (!isEmpty(content) || accessExtend) && (
+        <div className={paddingBottom ? 'field-info' : 'field-info nopadding'}>
           <React.Fragment>
             {accessExtend && (
               <div className="field-info__title">
@@ -315,16 +320,17 @@ class ObjectInfo extends React.Component {
 
       return album;
     });
-  handleOptionClick = pic => {
-    if (!pic.name) {
-      this.setState({ openOption: true });
-    }
-  };
-  handleOptionCloseClick = () => this.setState({ openOption: false, photoIndex: 0 });
 
   render() {
-    const { wobject, userName, isAuthenticated, relatedAlbum } = this.props;
-    const { photoIndex, activeOption, hoveredOption } = this.state;
+    const {
+      wobject,
+      userName,
+      isAuthenticated,
+      relatedAlbum,
+      activeOption,
+      activeCategory,
+    } = this.props;
+    const { hoveredOption } = this.state;
     const isEditMode = isAuthenticated ? this.props.isEditMode : false;
     const newsFilters = get(wobject, 'newsFilter', []);
     const website = parseWobjectField(wobject, 'website');
@@ -365,33 +371,38 @@ class ObjectInfo extends React.Component {
           .map(option => Object.values(option))
           .flatMap(el => el[1])
           .filter(el => el.body.image)
-          .map(o => ({ body: o.body.image, id: o.permlink }))
+          .map(o => ({
+            body: o?.avatar,
+            id:
+              o.body.parentObjectPermlink === wobject.author_permlink && wobject.galleryAlbum
+                ? wobject?.galleryAlbum[0]?.id || wobject.galleryItem[0]?.id
+                : o.author_permlink,
+            name: 'options',
+            parentPermlink: o.body.parentObjectPermlink,
+          }))
       : [];
 
-    const sortedOptionsPictures = optionsPictures.filter(
-      o => activeOption?.body?.image !== o?.body,
+    const sortedOptions = optionsPictures.filter(
+      o => activeOption[activeCategory]?.avatar !== o?.body,
     );
+    const sortedOptionsPictures = uniqBy(sortedOptions, 'body');
 
-    const activeOptionPicture = [
-      {
-        body:
-          hoveredOption?.avatar ||
-          activeOption?.avatar ||
-          wobject.avatar ||
-          optionsPictures[0]?.body,
-        id: wobject.author_permlink,
-        name: wobject.avatar && 'avatar',
-      },
-      ...pictures,
-      ...sortedOptionsPictures,
-    ];
-    const lightboxOptionPicture = [
-      {
-        body: hoveredOption?.avatar || activeOption?.avatar || optionsPictures[0]?.body,
-        id: wobject.author_permlink,
-      },
-      ...sortedOptionsPictures,
-    ];
+    let activeOptionPicture = [...sortedOptionsPictures, ...pictures];
+
+    if (hoveredOption?.avatar || activeOption[activeCategory]?.avatar) {
+      activeOptionPicture = uniqBy(
+        [
+          {
+            name: 'galleryItem',
+            body: hoveredOption?.avatar || activeOption[activeCategory]?.avatar,
+            id: wobject?.galleryAlbum ? wobject?.galleryAlbum[0]?.id : wobject.author_permlink,
+          },
+          ...sortedOptionsPictures,
+          ...pictures,
+        ],
+        'body',
+      );
+    }
 
     const dimensions = parseWobjectField(wobject, 'dimensions');
     const productWeight = parseWobjectField(wobject, 'productWeight');
@@ -422,38 +433,21 @@ class ObjectInfo extends React.Component {
     const isOptionsObjectType = ['book', 'product', 'service'].includes(wobject.object_type);
     const galleryPriceOptionsSection = (
       <>
-        {(pictures.length > 1 || avatar || wobject?.options) &&
-          this.listItem(
-            objectFields.galleryItem,
+        {isEditMode && (
+          <div className="object-sidebar__section-title">
+            <FormattedMessage id="options" defaultMessage="Options" />
+          </div>
+        )}
+        {this.listItem(
+          objectFields.galleryItem,
+          (pictures.length > 1 || avatar || wobject?.options) && (
             <PicturesCarousel
-              activePicture={activeOption}
-              onClick={this.handleOptionClick}
+              isOptionsType
+              activePicture={hoveredOption || activeOption}
               pics={activeOptionPicture}
               objectID={wobject.author_permlink}
-            />,
-          )}
-        {this.state.openOption && (
-          <Lightbox
-            mainSrc={lightboxOptionPicture[photoIndex].body}
-            nextSrc={lightboxOptionPicture[(photoIndex + 1) % lightboxOptionPicture.length].body}
-            prevSrc={
-              lightboxOptionPicture[
-                (photoIndex + lightboxOptionPicture.length - 1) % lightboxOptionPicture.length
-              ].body
-            }
-            onMovePrevRequest={() =>
-              this.setState({
-                photoIndex:
-                  (photoIndex + lightboxOptionPicture.length - 1) % lightboxOptionPicture.length,
-              })
-            }
-            onMoveNextRequest={() =>
-              this.setState({
-                photoIndex: (photoIndex + 1) % lightboxOptionPicture.length,
-              })
-            }
-            onCloseRequest={this.handleOptionCloseClick}
-          />
+            />
+          ),
         )}
         {this.listItem(
           objectFields.price,
@@ -470,7 +464,6 @@ class ObjectInfo extends React.Component {
           wobject.options && (
             <Options
               setHoveredOption={option => this.setState({ hoveredOption: option })}
-              setActiveOption={option => this.setState({ activeOption: option })}
               isEditMode={isEditMode}
               wobject={wobject}
               history={this.props.history}

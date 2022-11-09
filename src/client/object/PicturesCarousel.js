@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 
 import './PicturesCarousel.less';
 
-const PicturesCarousel = ({ activePicture, onClick, pics, objectID }) => {
+const PicturesCarousel = ({ isOptionsType, activePicture, pics, objectID }) => {
   const settings = {
     dots: false,
     arrows: true,
@@ -20,21 +20,30 @@ const PicturesCarousel = ({ activePicture, onClick, pics, objectID }) => {
     slider.current.goTo(0);
   }, [activePicture]);
 
+  const getOptionUrl = pic => {
+    if (isOptionsType) {
+      if (pic.name === 'galleryItem' || (pic.name === 'options' && objectID === pic.parentPermlink))
+        return `/object/${objectID}/gallery/album/${pic.id}`;
+      if (pic.name === 'galleryItem' || (pic.name === 'options' && objectID !== pic.parentPermlink))
+        return `/object/${pic.id}`;
+      if (pic.name === 'avatar') return `/object/${objectID}/gallery`;
+    }
+
+    return `/object/${objectID}/gallery/album/${pic.id}`;
+  };
+
   return pics ? (
     <div className="PicturesCarousel">
       <Carousel {...settings} ref={slider}>
         {map(pics, pic => (
           <Link
             key={pic.id}
-            to={{ pathname: `/object/${objectID}/gallery/album/${pic.id}` }}
+            to={{
+              pathname: getOptionUrl(pic),
+            }}
             className="PicturesCarousel__imageWrap"
           >
-            <img
-              onClick={() => onClick(pic)}
-              src={pic.body}
-              alt="pic"
-              className="PicturesCarousel__image"
-            />
+            <img src={pic.body} alt="pic" className="PicturesCarousel__image" />
           </Link>
         ))}
       </Carousel>
@@ -47,12 +56,12 @@ const PicturesCarousel = ({ activePicture, onClick, pics, objectID }) => {
 PicturesCarousel.propTypes = {
   pics: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   objectID: PropTypes.string.isRequired,
-  onClick: PropTypes.func,
   activePicture: PropTypes.shape(),
+  isOptionsType: PropTypes.bool,
 };
 PicturesCarousel.defaultProps = {
-  onClick: () => {},
   activePicture: {},
+  isOptionsType: false,
 };
 
 export default PicturesCarousel;

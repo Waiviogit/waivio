@@ -67,12 +67,12 @@ const StoryPreview = ({ post, isUpdates, isVimeo }) => {
   }
   if (isUpdates && post.name === objectFields.productId) {
     if (!isEmpty(post.body) && post.body.includes('waivio.nyc3.digitaloceanspaces')) {
-      imagePath = parseJSON(post.body).productIdImage;
+      imagePath = parseJSON(post.body)?.productIdImage;
     }
   }
   if (isUpdates && post.name === objectFields.options) {
     if (!isEmpty(post.body) && post.body.includes('waivio.nyc3.digitaloceanspaces')) {
-      imagePath = parseJSON(post.body).image;
+      imagePath = parseJSON(post.body)?.image;
     }
   }
   const embeds = steemEmbed.getAll(post.body, { height: '100%' });

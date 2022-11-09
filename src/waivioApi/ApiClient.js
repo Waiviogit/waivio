@@ -1517,13 +1517,12 @@ export const sendEmailConfirmation = (userName, type, email, isGuest) => {
 };
 
 export const validaveCryptoWallet = (address, crypto) =>
-  fetch(
-    `${config.campaignApiPrefix}${config.withdraw}${config.validateAddress}?address=${address}&crypto=${crypto}`,
-    {
-      headers,
-      method: 'GET',
-    },
-  ).then(res => res.json());
+  fetch(`https://blocktrades.us/api/v2/wallets/${crypto}/address-validator?address=${address}`, {
+    headers,
+    method: 'GET',
+  })
+    .then(res => res.json())
+    .then(res => ({ result: res.data }));
 
 export const finalConfirmation = (token, isGuest) => {
   const accessToken = isGuest ? store.get('accessToken') : Cookie.get('accessToken');
@@ -2244,6 +2243,29 @@ const hiveEngineContract = params =>
     .then(res => res.json())
     .then(response => response.result)
     .catch(e => e);
+
+const engineProxy = params =>
+  fetch('https://api.hive-engine.com/rpc/contracts', {
+    headers,
+    body: JSON.stringify({
+      jsonrpc: '2.0',
+      id: 10,
+      method: 'find',
+      params,
+    }),
+    method: 'POST',
+  })
+    .then(handleErrors)
+    .then(res => res.json())
+    .then(response => response.result)
+    .catch(e => e);
+
+export const getMarketPools = async ({ query }) =>
+  engineProxy({
+    contract: 'marketpools',
+    table: 'pools',
+    query,
+  });
 
 export const getTokenBalance = (userName, symbol) =>
   hiveEngineContract({

@@ -2371,6 +2371,7 @@ export default class AppendForm extends Component {
                 rules: this.getFieldRules(optionsFields.position),
               })(
                 <Input
+                  type="number"
                   className={classNames('AppendForm__input', {
                     'validation-error': !this.state.isSomeValue,
                   })}

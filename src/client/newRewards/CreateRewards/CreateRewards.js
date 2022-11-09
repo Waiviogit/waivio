@@ -407,8 +407,7 @@ class CreateRewards extends React.Component {
       const { isDuplicate } = this.state;
 
       e.preventDefault();
-      // this.checkOptionFields();
-      this.setState({ loading: true });
+
       this.props.form.validateFieldsAndScroll((err, values) => {
         if (!err && !isEmpty(values.primaryObject) && !isEmpty(values.secondaryObject)) {
           const isDetails = this.props.match?.params?.[0] === 'details';
@@ -427,8 +426,6 @@ class CreateRewards extends React.Component {
               message.error(`Campaign ${values.campaignName} has been rejected`);
             });
         }
-
-        this.setState({ loading: false });
       });
     },
 

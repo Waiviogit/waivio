@@ -1,14 +1,14 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { Button, Input, message, Modal } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
-import { isEmpty, get, round, debounce, isNil } from 'lodash';
+import { get, round, debounce, isNil } from 'lodash';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
+import WAValidator from 'multicoin-address-validator';
 
 import TokensSelect from '../SwapTokens/components/TokensSelect';
 import {
-  getDefaultToken,
   getIsOpenWithdraw,
   getWithdrawList,
   getWithdrawSelectPair,
@@ -22,11 +22,15 @@ import {
 import USDDisplay from '../../components/Utils/USDDisplay';
 import { getCryptosPriceHistory } from '../../../store/appStore/appSelectors';
 import SelectUserForAutocomplete from '../../widgets/SelectUserForAutocomplete';
-import { hiveWalletCurrency } from '../../../common/constants/hiveEngine';
+import { hiveWalletCurrency, showMinWithdraw } from '../../../common/constants/hiveEngine';
 import QrModal from '../../widgets/QrModal';
-import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
+import { getAuthenticatedUserName, isGuestUser } from '../../../store/authStore/authSelectors';
 import { converHiveEngineCoins } from '../../../waivioApi/ApiClient';
 import { createQuery } from '../../../common/helpers/apiHelpers';
+import getWithdrawInfo from '../../../common/helpers/withdrawTokenHelpers';
+import { withdrawGuest } from '../../../waivioApi/walletApi';
+import { getHiveBeneficiaryAccount } from '../../../store/settingsStore/settingsSelectors';
+import LinkHiveAccountModal from '../../settings/LinkHiveAccountModal';
 
 import './WithdrawModal.less';
 
@@ -37,9 +41,11 @@ const WithdrawModal = props => {
   const withdraList = useSelector(getWithdrawList);
   const pair = useSelector(getWithdrawSelectPair);
   const visible = useSelector(getIsOpenWithdraw);
+  const isGuest = useSelector(isGuestUser);
   const userName = useSelector(getAuthenticatedUserName);
-  const defaultToken = useSelector(getDefaultToken);
   const cryptosPriceHistory = useSelector(getCryptosPriceHistory);
+  const hiveBeneficiaryAccount = useSelector(getHiveBeneficiaryAccount);
+
   const hiveRateInUsd = get(cryptosPriceHistory, 'hive.usdPriceHistory.usd', 1);
   const dispatch = useDispatch();
   const [fromAmount, setFromAmount] = useState(0);
@@ -47,10 +53,17 @@ const WithdrawModal = props => {
   const [isShowScanner, setShowScanner] = useState(false);
   const [walletAddress, setWalletAddress] = useState('');
   const [invalidAddress, setInvalidAddress] = useState();
-  const isError = get(pair, 'balance') < fromAmount;
+  const isError = +pair?.balance < fromAmount;
+
   const handleValidateWalletAddress = useCallback(
     debounce(async value => {
       if (!value) return setInvalidAddress();
+
+      if (pair.from_coin_symbol === 'WAIV' || pair.from_coin_symbol === 'SWAP.ETH') {
+        const isValid = WAValidator.validate(value, pair.to_coin_symbol.toLowerCase());
+
+        return setInvalidAddress(!isValid);
+      }
 
       const data = await converHiveEngineCoins({
         destination: value,
@@ -82,17 +95,12 @@ const WithdrawModal = props => {
   };
 
   useEffect(() => {
-    if (isEmpty(withdraList)) dispatch(getDepositWithdrawPairs());
-    else {
-      const defaultPair = withdraList.find(pool => pool.symbol === defaultToken);
-
-      dispatch(setWithdrawPair(defaultPair ?? withdraList[0]));
-    }
+    dispatch(getDepositWithdrawPairs());
 
     return () => {
       dispatch(resetSelectPair());
     };
-  }, []);
+  }, [userName]);
 
   const handleCloseModal = () => {
     dispatch(toggleWithdrawModal(false));
@@ -103,69 +111,124 @@ const WithdrawModal = props => {
     setWalletAddress(address);
   };
 
-  const handleFromAmoundChange = value => {
+  const handleFromAmoundChange = async value => {
     setFromAmount(value);
-    setToAmount(+value - persentCalculate(value));
+    if (pair.symbol === 'WAIV') {
+      const amount = await getWithdrawInfo({
+        account: userName,
+        data: { quantity: value, inputSymbol: pair.symbol, outputSymbol: pair.to_coin_symbol },
+        onlyAmount: true,
+      });
+
+      setToAmount(amount > 0 ? amount : 0);
+    } else {
+      setToAmount(+value - persentCalculate(value));
+    }
   };
 
   const handleWithdraw = async () => {
-    if (pair.to_coin_symbol === 'HIVE') {
-      window.open(
-        `https://hivesigner.com/sign/custom_json?authority=active&required_auths=["${userName}"]&required_posting_auths=[]&${createQuery(
-          {
-            id: 'ssc-mainnet-hive',
-            json: JSON.stringify({
-              contractName: 'hivepegged',
-              contractAction: 'withdraw',
-              contractPayload: {
-                quantity: fromAmount.toString(),
-              },
-            }),
-          },
-        )}`,
-        '_blank',
-      );
-    } else {
-      try {
-        const data = await converHiveEngineCoins({
-          destination: walletAddress || userName,
-          from_coin: pair.from_coin_symbol,
-          to_coin: pair.to_coin_symbol,
-        });
+    if (pair.symbol === 'WAIV') {
+      const data = {
+        quantity: String(fromAmount),
+        inputSymbol: pair.symbol,
+        outputSymbol: pair.to_coin_symbol,
+        address: pair.to_coin_symbol === 'HIVE' ? hiveBeneficiaryAccount : walletAddress,
+      };
 
+      if (isGuest) {
+        withdrawGuest({ account: userName, data });
+      } else {
+        const { customJsonPayload } = await getWithdrawInfo({ account: userName, data });
+
+        if (!customJsonPayload) return null;
+        window.open(
+          `https://hivesigner.com/sign/custom_json?authority=active&required_auths=["${userName}"]&required_posting_auths=[]&${createQuery(
+            {
+              id: 'ssc-mainnet-hive',
+              json: JSON.stringify(customJsonPayload),
+            },
+          )}`,
+          '_blank',
+        );
+      }
+    } else {
+      // eslint-disable-next-line no-lonely-if
+      if (pair.to_coin_symbol === 'HIVE') {
         window.open(
           `https://hivesigner.com/sign/custom_json?authority=active&required_auths=["${userName}"]&required_posting_auths=[]&${createQuery(
             {
               id: 'ssc-mainnet-hive',
               json: JSON.stringify({
-                contractName: 'tokens',
-                contractAction: 'transfer',
+                contractName: 'hivepegged',
+                contractAction: 'withdraw',
                 contractPayload: {
-                  symbol: pair.from_coin_symbol,
-                  to: data.account,
                   quantity: fromAmount.toString(),
-                  memo: data.memo,
                 },
               }),
             },
           )}`,
           '_blank',
         );
-      } catch (e) {
-        return message.error('Something went wrong!');
+      } else {
+        try {
+          const data = await converHiveEngineCoins({
+            destination: walletAddress || userName,
+            from_coin: pair.from_coin_symbol,
+            to_coin: pair.to_coin_symbol,
+          });
+
+          window.open(
+            `https://hivesigner.com/sign/custom_json?authority=active&required_auths=["${userName}"]&required_posting_auths=[]&${createQuery(
+              {
+                id: 'ssc-mainnet-hive',
+                json: JSON.stringify({
+                  contractName: 'tokens',
+                  contractAction: 'transfer',
+                  contractPayload: {
+                    symbol: pair.from_coin_symbol,
+                    to: pair.from_coin_symbol === 'SWAP.ETH' ? 'swap-eth' : data.account,
+                    quantity: fromAmount.toString(),
+                    memo: pair.from_coin_symbol === 'SWAP.ETH' ? walletAddress : data.memo,
+                  },
+                }),
+              },
+            )}`,
+            '_blank',
+          );
+        } catch (e) {
+          return message.error('Something went wrong!');
+        }
       }
     }
 
     return handleCloseModal();
   };
 
-  const setTokenPair = async selectedPair => dispatch(setWithdrawPair(selectedPair));
-
   const handleToAmoundChange = e => {
     const value = e.currentTarget.value;
 
-    setToAmount(value);
-    setFromAmount(+value + persentCalculate(value));
+    if (pair.symbol !== 'WAIV') {
+      setToAmount(value);
+      setFromAmount(+value + persentCalculate(value));
+    }
+  };
+
+  const setTokenPair = async selectedPair => {
+    dispatch(setWithdrawPair(selectedPair));
+    setWalletAddress('');
+    if (pair.symbol === 'WAIV') {
+      const amount = await getWithdrawInfo({
+        account: userName,
+        data: {
+          quantity: fromAmount,
+          inputSymbol: selectedPair.symbol,
+          outputSymbol: selectedPair.to_coin_symbol,
+        },
+        onlyAmount: true,
+      });
+
+      setToAmount(amount > 0 ? amount : 0);
+    }
   };
 
   const handleSetScanAmount = value => {
@@ -173,7 +236,7 @@ const WithdrawModal = props => {
     setFromAmount(+value + persentCalculate(value));
   };
 
-  return (
+  return (hiveBeneficiaryAccount && isGuest) || !isGuest ? (
     <Modal
       wrapClassName="WithdrawModal__wrapper"
       className="WithdrawModal"
@@ -185,7 +248,13 @@ const WithdrawModal = props => {
           key="Withdraw"
           type="primary"
           onClick={handleWithdraw}
-          disabled={!fromAmount || isError || invalidAddress}
+          disabled={
+            !fromAmount ||
+            !toAmount ||
+            isError ||
+            invalidAddress ||
+            (pair?.to_coin_symbol !== 'HIVE' && !walletAddress)
+          }
         >
           <FormattedMessage id="Withdraw" defaultMessage="Withdraw" />
         </Button>,
@@ -230,7 +299,12 @@ const WithdrawModal = props => {
           <FormattedMessage id="receive" defaultMessage="Receive" />:
         </h3>
         <div className="WithdrawModal__inputWrap">
-          <Input type="number" value={toAmount} onChange={handleToAmoundChange} />
+          <Input
+            type="number"
+            value={toAmount}
+            disabled={pair?.symbol === 'WAIV'}
+            onChange={handleToAmoundChange}
+          />
           <span className="WithdrawModal__currency">{get(pair, 'to_coin_symbol')}</span>
         </div>
       </div>
@@ -238,10 +312,17 @@ const WithdrawModal = props => {
         <FormattedMessage id="est_amount" defaultMessage="Est. amount" />:{' '}
         <USDDisplay value={fromAmount * get(pair, 'rate') * hiveRateInUsd} />
       </p>
-      {!hiveWalletCurrency.includes(get(pair, 'to_coin_symbol')) && (
+      {showMinWithdraw.includes(get(pair, 'to_coin_symbol')) && (
         <p>
           <FormattedMessage id="minimal_withdraw_amount" defaultMessage="Minimal withdraw amount" />
-          : {withdrawFee} {get(pair, 'from_coin_symbol')}
+          :{' '}
+          {pair?.to_coin_symbol === 'BTC' ? (
+            <span>0,01 {get(pair, 'to_coin_symbol')}</span>
+          ) : (
+            <span>
+              {withdrawFee} {get(pair, 'from_coin_symbol')}
+            </span>
+          )}
         </p>
       )}
       <div className="WithdrawModal__block">
@@ -249,7 +330,7 @@ const WithdrawModal = props => {
           <FormattedMessage id="destination_address" defaultMessage="Destination address" />:
         </h3>
         {hiveWalletCurrency.includes(get(pair, 'to_coin_symbol')) ? (
-          <SelectUserForAutocomplete account={userName} />
+          <SelectUserForAutocomplete account={isGuest ? hiveBeneficiaryAccount : userName} />
         ) : (
           <React.Fragment>
             <div className="WithdrawModal__address-wrapper">
@@ -298,6 +379,12 @@ const WithdrawModal = props => {
         />
       )}
     </Modal>
+  ) : (
+    <LinkHiveAccountModal
+      handleClose={handleCloseModal}
+      showModal={visible}
+      hiveBeneficiaryAccount={hiveBeneficiaryAccount}
+    />
   );
 };
 

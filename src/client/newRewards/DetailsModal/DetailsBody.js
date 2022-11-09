@@ -26,7 +26,7 @@ const DetailsModalBody = ({ proposition, requirements, agreementObjects }) => {
   });
 
   return (
-    <div className="Details__text-wrap">
+    <div className="DetailsModal__text-wrap">
       {!proposition?.reserved && (
         <React.Fragment>
           <div className="Details__text fw6 mv3">User eligibility requirements:</div>

@@ -1,14 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import { filter, get, isEmpty } from 'lodash';
+import { get } from 'lodash';
 import { injectIntl } from 'react-intl';
 import { message } from 'antd';
 import PropositionList from './PropositionList';
 import * as apiConfig from '../../../../waivioApi/config.json';
 import { assignProposition, declineProposition } from '../../../../store/userStore/userActions';
-import * as ApiClient from '../../../../waivioApi/ApiClient';
 import { getAuthenticatedUser } from '../../../../store/authStore/authSelectors';
 import { getLocale } from '../../../../store/settingsStore/settingsSelectors';
 
@@ -32,38 +31,9 @@ const PropositionListContainer = ({
   wObj,
 }) => {
   const [loadingAssignDiscard, setLoadingAssignDiscard] = useState(false);
-  const [currentProposition, setCurrentProposition] = useState([]);
-  const [allCurrentPropositions, setAllCurrentPropositions] = useState([]);
   const [proposition, setProposition] = useState([]);
   const [isAssign, setIsAssign] = useState(false);
   const parentPermlink = get(wobject, 'parent.author_permlink', '');
-  const primaryObject = match.params.name;
-  const requiredObject = parentPermlink || get(wobject, ['parent']);
-
-  const getPropositions = reqData => {
-    ApiClient.getPropositions(reqData).then(data => {
-      const currentPropos = filter(
-        data.campaigns,
-        obj => obj.required_object.author_permlink === match.params.name,
-      );
-
-      setAllCurrentPropositions(data.campaigns);
-      setCurrentProposition(currentPropos[0]);
-    });
-  };
-
-  useEffect(() => {
-    if (wobject) {
-      const reqData = {
-        userName,
-        match,
-        locale,
-      };
-
-      reqData.requiredObject = isEmpty(wobject.parent) ? primaryObject : requiredObject;
-      getPropositions(reqData);
-    }
-  }, [wobject.author_permlink, listItems, match.params.name]);
 
   const updateProposition = (propsId, assigned, objPermlink, companyAuthor) =>
     proposition.map(propos => {
@@ -186,8 +156,6 @@ const PropositionListContainer = ({
       catalogHandleSortChange={catalogHandleSortChange}
       catalogSort={catalogSort}
       wobject={wobject}
-      allCurrentPropositions={allCurrentPropositions}
-      currentProposition={currentProposition}
       goToProducts={goToProducts}
       discardProposition={discardProposition}
       assignPropositionHandler={assignPropositionHandler}
