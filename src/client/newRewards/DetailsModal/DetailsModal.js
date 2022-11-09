@@ -18,7 +18,7 @@ import RewardsHeader from '../reuseble/RewardsHeader';
 import { reserveProposition } from '../../../store/newRewards/newRewardsActions';
 import { getObjectName } from '../../../common/helpers/wObjectHelper';
 
-// import './DetailsModal.less';
+import './Details.less';
 
 const DetailsModal = ({
   proposition,
@@ -41,6 +41,7 @@ const DetailsModal = ({
     notAssigned: true,
     notBlacklisted: true,
     posts: true,
+    notGuide: false,
   });
   const [loading, setLoading] = useState(false);
   const [agreementObjects, setAgreementObjects] = useState([]);
@@ -152,6 +153,9 @@ const DetailsModal = ({
         requirements={requirements}
         agreementObjects={agreementObjects}
       />
+      {!requirements.notGuide && (
+        <div className="DetailsModal__message">You can`t reserve your own campaing</div>
+      )}
       <div className="Details__footer">
         <div className="Details__footer-reserve-btn">
           <Button onClick={handleCancelModalBtn}>Cancel</Button>

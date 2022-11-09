@@ -1,8 +1,17 @@
 @import (reference) '../../../styles/custom.less';
+@import (reference) '../../../styles/modules/variables.less';
 
 .Proposition-new {
   font-size: 14px;
   margin: 20px 0;
+
+  &__yourRewards {
+    display: none !important;
+
+    @media @small {
+      display: inline !important;
+    }
+  }
 
   &__header {
     border: 2px solid #f87007;
