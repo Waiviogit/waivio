@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { isEmpty } from 'lodash';
 import { useDispatch, useSelector } from 'react-redux';
@@ -15,12 +15,13 @@ const Options = ({ wobject, isEditMode, setHoveredOption, history }) => {
   const [hovered, setHovered] = useState({});
   const dispatch = useDispatch();
   const activeStoreOption = useSelector(getActiveOption);
+  const optionsDiv = useRef();
 
   useEffect(() => {
     activeStoreOption &&
       isMobile() &&
       window.scrollTo({
-        top: 270,
+        top: optionsDiv.current.offsetTop,
         behavior: 'smooth',
       });
   }, [wobject]);
@@ -97,7 +98,7 @@ const Options = ({ wobject, isEditMode, setHoveredOption, history }) => {
   }, {});
 
   return (
-    <>
+    <div ref={optionsDiv}>
       {isEditMode
         ? wobject?.options &&
           Object.entries(wobject?.options).map(option => (
@@ -173,7 +174,7 @@ const Options = ({ wobject, isEditMode, setHoveredOption, history }) => {
               ))}
             </div>
           )}
-    </>
+    </div>
   );
 };
 
