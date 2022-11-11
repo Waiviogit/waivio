@@ -18,10 +18,12 @@ const Options = ({ wobject, isEditMode, setHoveredOption, history }) => {
   const optionsDiv = useRef();
 
   useEffect(() => {
+    const objectHeaderEl = document.getElementById('ObjectHeaderId');
+
     activeStoreOption &&
       isMobile() &&
       window.scrollTo({
-        top: optionsDiv.current.offsetTop,
+        top: objectHeaderEl?.offsetHeight,
         behavior: 'smooth',
       });
   }, [wobject]);

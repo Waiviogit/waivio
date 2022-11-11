@@ -578,7 +578,7 @@ class ObjectInfo extends React.Component {
             objectFields.authors,
             <div>
               {authorsBody?.map((a, i) => (
-                <>
+                <span key={a.authorPermlink}>
                   {a.defaultShowLink ? (
                     <Link to={`/object/${a.authorPermlink}`}>{a.name}</Link>
                   ) : (
@@ -588,7 +588,7 @@ class ObjectInfo extends React.Component {
                     {i !== authorsBody.length - 1 && ','}
                     {'  '}
                   </>
-                </>
+                </span>
               ))}
             </div>,
           )}
@@ -948,7 +948,7 @@ class ObjectInfo extends React.Component {
     );
 
     return (
-      <React.Fragment>
+      <div ref={this.carouselRef}>
         {!isEditMode && wobject.authors && (
           <div className="mb3">
             By{' '}
@@ -1000,7 +1000,7 @@ class ObjectInfo extends React.Component {
             <ObjectInfoExperts wobject={wobject} />
           </div>
         )}
-      </React.Fragment>
+      </div>
     );
   }
 }

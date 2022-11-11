@@ -59,7 +59,7 @@ const WobjHeader = ({
   const statusFields = status ? getStatusLayout(status) : descriptionShort;
 
   return (
-    <div className="ObjectHeader ObjectHeader--cover" style={style}>
+    <div id="ObjectHeaderId" className="ObjectHeader ObjectHeader--cover" style={style}>
       <div className="ObjectHeader__container">
         <ObjectLightbox wobject={wobject} size={100} accessExtend={canEdit} />
         <div className="ObjectHeader__user">
