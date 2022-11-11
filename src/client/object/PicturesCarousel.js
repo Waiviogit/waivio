@@ -5,6 +5,7 @@ import { Carousel, Icon } from 'antd';
 import { Link } from 'react-router-dom';
 
 import './PicturesCarousel.less';
+import { isMobile } from '../../common/helpers/apiHelpers';
 
 const PicturesCarousel = ({ isOptionsType, activePicture, pics, objectID }) => {
   const settings = {
@@ -25,9 +26,9 @@ const PicturesCarousel = ({ isOptionsType, activePicture, pics, objectID }) => {
       if (pic.name === 'galleryItem' || (pic.name === 'options' && objectID === pic.parentPermlink))
         return `/object/${objectID}/gallery/album/${pic.id}`;
       if (pic.name === 'galleryItem' || (pic.name === 'options' && objectID !== pic.parentPermlink))
-        return `/object/${pic.id}`;
-      if (pic.name === 'avatar') return `/object/${objectID}/gallery`;
+        return isMobile() ? `/object/${pic.id}/about` : `/object/${pic.id}`;
     }
+    if (pic.name === 'avatar') return `/object/${objectID}/gallery`;
 
     return `/object/${objectID}/gallery/album/${pic.id}`;
   };
