@@ -41,7 +41,7 @@ const DetailsModal = ({
     notAssigned: true,
     notBlacklisted: true,
     posts: true,
-    notGuide: false,
+    notGuide: true,
   });
   const [loading, setLoading] = useState(false);
   const [agreementObjects, setAgreementObjects] = useState([]);
@@ -154,7 +154,7 @@ const DetailsModal = ({
         agreementObjects={agreementObjects}
       />
       {!requirements.notGuide && (
-        <div className="DetailsModal__message">You can`t reserve your own campaing</div>
+        <div className="DetailsModal__message">You can&apos;t reserve your own campaing</div>
       )}
       <div className="Details__footer">
         <div className="Details__footer-reserve-btn">
