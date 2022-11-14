@@ -1,4 +1,5 @@
 import { message } from 'antd';
+import { uniq } from 'lodash';
 import { createAsyncActionType } from '../../common/helpers/stateHelpers';
 import { getHiveEngineSwap } from '../../waivioApi/ApiClient';
 import { compareTokensList } from './helper';
@@ -16,9 +17,16 @@ export const getSwapList = () => (dispatch, getState) => {
   return dispatch({
     type: GET_SWAP_LIST.ACTION,
     payload: getHiveEngineSwap().then(async res => {
-      const fromList = await compareTokensList(name, Object.keys(res));
-      const toList = await compareTokensList(name, res[from.symbol]);
-      const toChildList = await compareTokensList(name, res[toList[0].symbol]);
+      const fromSymbolList = Object.keys(res);
+      const toSymbolList = res[from.symbol].map(i => i.symbol);
+      const toSymbolChildList = res[toSymbolList[0]].map(i => i.symbol);
+      const allSymbolList = await compareTokensList(
+        name,
+        uniq([...fromSymbolList, ...toSymbolList, ...toSymbolChildList], 'symbol'),
+      );
+      const fromList = allSymbolList.filter(i => fromSymbolList.includes(i.symbol));
+      const toList = allSymbolList.filter(i => toSymbolList.includes(i.symbol));
+      const toChildList = allSymbolList.filter(i => toSymbolChildList.includes(i.symbol));
       const to = toFromState?.symbol
         ? fromList.find(item => item.symbol === toFromState.symbol)
         : {};

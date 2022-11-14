@@ -1,7 +1,7 @@
 import React, { useLayoutEffect, useState } from 'react';
 import { connect, useSelector } from 'react-redux';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import { Form, Icon, Modal, Radio } from 'antd';
+import { Form, Icon, Modal, Radio, message } from 'antd';
 import { isEmpty, get } from 'lodash';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
@@ -56,26 +56,30 @@ const SwapTokens = props => {
     setParams(data);
   };
 
-  const setSwapData = async res => {
-    const data = await getSwapInfoForRebalance(authUserName, props.bdPair);
+  const setSwapData = async () => {
+    try {
+      const data = await getSwapInfoForRebalance(authUserName, props.bdPair);
 
-    setIsLoading(false);
-    setFromAmount(data.from.quantity);
-    setImpact(data.priceImpact);
-    setToAmount(data.to.quantity);
-    setJson(data.json);
-    if (res.value.from.symbol !== data.from.symbol) {
-      props.setBothTokens(res.value.to, res.value.from);
+      setIsLoading(false);
+      setFromAmount(data.from.quantity);
+      setImpact(data.priceImpact);
+      setToAmount(data.to.quantity);
+      setJson(data.json);
+    } catch (e) {
+      message.error(e.message);
     }
   };
 
   useLayoutEffect(() => {
     setFeeInfo();
     setIsLoading(true);
-    props.getSwapList().then(res => {
-      if (props.bdPair) setSwapData(res);
-      else setIsLoading(false);
-    });
+    if (props.bdPair) {
+      setSwapData();
+    } else {
+      props.getSwapList().then(() => {
+        setIsLoading(false);
+      });
+    }
 
     return () => props.resetModalData();
   }, []);
@@ -286,7 +290,6 @@ SwapTokens.propTypes = {
   visible: PropTypes.bool.isRequired,
   bdPair: PropTypes.string.isRequired,
   isChanging: PropTypes.bool.isRequired,
-  setBothTokens: PropTypes.func.isRequired,
   isRebalance: PropTypes.bool,
 };
 
