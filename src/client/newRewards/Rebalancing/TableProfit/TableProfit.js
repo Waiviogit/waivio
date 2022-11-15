@@ -104,6 +104,7 @@ const TableProfit = props => {
                         symbol: row.token,
                         balance: tokenList?.find(i => i.symbol === row.token)?.balance || 0,
                         quantity: row.initial,
+                        external: row.external,
                       })
                     }
                   >

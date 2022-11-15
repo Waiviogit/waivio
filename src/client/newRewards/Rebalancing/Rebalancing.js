@@ -36,9 +36,10 @@ const Rebalancing = ({ intl }) => {
   const showAll = useRef(false);
   const search = useQuery();
   const isMobile = _isMobile();
-  const rebalanceClassList = earn =>
+  const rebalanceClassList = (earn, red) =>
     classNames({
       'Rebalancing__rebalanceButton--disable': earn < 0,
+      'Rebalancing__rebalanceButton--red': red,
     });
 
   const showConfirm = () => {
@@ -190,11 +191,19 @@ const Rebalancing = ({ intl }) => {
                 <td>
                   {getValueForTd(
                     <a
-                      className={rebalanceClassList(row.earn)}
+                      className={rebalanceClassList(row.earn, row.red)}
                       onClick={async () => {
-                        if (row.earn > 0) {
+                        if (row.earn > 0 && !row.red) {
                           dispatch(setBothTokens({ symbol: row.base }, { symbol: row.quote }));
                           dispatch(toggleModalInRebalance(true, row.dbField));
+                        }
+
+                        if (row.red) {
+                          Modal.confirm({
+                            title: 'Warning: Not enough funds',
+                            content:
+                              'To complete this rebalancing transaction, please add liquidity from external storage to your rebalancing account.',
+                          });
                         }
                       }}
                     >
