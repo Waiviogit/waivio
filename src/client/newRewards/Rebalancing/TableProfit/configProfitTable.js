@@ -8,13 +8,13 @@ export default [
   {
     intl: {
       id: 'initial_holdings',
-      defaultMessage: 'Initial holdings',
+      defaultMessage: 'Initial holdings (incl.external)',
     },
   },
   {
     intl: {
       id: 'current_holdings',
-      defaultMessage: 'Current holdings',
+      defaultMessage: 'Current holdings est. value, USD',
     },
   },
   {

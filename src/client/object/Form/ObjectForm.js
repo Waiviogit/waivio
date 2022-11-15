@@ -27,7 +27,7 @@ const ObjectForm = props => {
             className="AppendForm__input"
             disabled={loading}
             placeholder={intl.formatMessage({
-              id: 'form',
+              id: 'form_title',
               defaultMessage: 'Form title',
             })}
           />,
@@ -65,7 +65,7 @@ const ObjectForm = props => {
         )}
       </Form.Item>
       <div className="ant-form-item-label AppendForm__appendTitles">
-        <FormattedMessage id="form" defaultMessage="UserForm" />
+        <FormattedMessage id="form" defaultMessage="Form" />
       </div>
       <Form.Item>
         {form.getFieldDecorator('formForm', {
