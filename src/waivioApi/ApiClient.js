@@ -3079,13 +3079,15 @@ export const getRebalancingTable = (account, params) => {
         return [...acc, tab.base, tab.quote];
       }, []);
       const balances = await getTokenBalance(account, { $in: tokensList });
+      const rates = await getTokensRate(tokensList);
       const table = response.table.reduce((acc, curr) => {
         const { balance } = balances.find(bal => bal.symbol === curr.base) || { balance: 0 };
+        const { lastPrice: rate } = rates.find(bal => bal.symbol === curr.base) || { lastPrice: 1 };
         const { balance: quoteBalance } = balances.find(bal => bal.symbol === curr.quote) || {
           balance: 0,
         };
 
-        return [...acc, { ...curr, balance, quoteBalance, symbol: curr.base }];
+        return [...acc, { ...curr, balance, quoteBalance, symbol: curr.base, rate }];
       }, []);
 
       return {
@@ -3103,7 +3105,22 @@ export const getProfitTable = account => {
   })
     .then(handleErrors)
     .then(res => res.json())
-    .then(response => response)
+    .then(async response => {
+      const tokensList = response.table.reduce((acc, tab) => {
+        return [...acc, tab.base, tab.quote];
+      }, []);
+      const rates = await getTokensRate(tokensList);
+      const table = response.table.reduce((acc, curr) => {
+        const { lastPrice: rate } = rates.find(bal => bal.symbol === curr.base) || { lastPrice: 1 };
+
+        return [...acc, { ...curr, symbol: curr.base, rate }];
+      }, []);
+
+      return {
+        profit: response.profit,
+        table,
+      };
+    })
     .catch(e => e);
 };
 
