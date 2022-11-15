@@ -22,7 +22,7 @@ export const getSwapList = () => (dispatch, getState) => {
       const toSymbolChildList = res[toSymbolList[0]].map(i => i.symbol);
       const allSymbolList = await compareTokensList(
         name,
-        uniq([...fromSymbolList, ...toSymbolList, ...toSymbolChildList], 'symbol'),
+        uniq([...fromSymbolList, ...toSymbolList, ...toSymbolChildList]),
       );
       const fromList = allSymbolList.filter(i => fromSymbolList.includes(i.symbol));
       const toList = allSymbolList.filter(i => toSymbolList.includes(i.symbol));

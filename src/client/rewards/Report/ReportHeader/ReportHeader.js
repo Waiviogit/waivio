@@ -19,6 +19,7 @@ const ReportHeader = ({ intl, currencyInfo, reportDetails, payoutToken }) => {
   const title = singleReportData.title;
   const reward = singleReportData.rewardTokenAmount || singleReportData.rewardHive;
   const rewardHive = reward ? round(reward, 3) : 0;
+
   const rewardUsd = singleReportData.rewardUsd
     ? round(singleReportData.rewardUsd * currencyInfo.rate, 2)
     : 'N/A';

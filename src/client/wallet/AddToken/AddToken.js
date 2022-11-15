@@ -43,7 +43,7 @@ const AddToken = props => {
       okText={intl.formatMessage({ id: 'add_token', defaultMessage: 'Add token' })}
     >
       <Form>
-        <div>
+        <div className="Add-token__block">
           <h4>
             {intl.formatMessage({
               id: 'initial_number_of_tokens',
@@ -64,7 +64,11 @@ const AddToken = props => {
         </div>
         <div>
           <h4>Tokens stored externally (optional)</h4>
-          <Input type="number" onChange={e => setExternalQuantity(e.target.value)} />
+          <Input
+            type="number"
+            className="Add-token__input"
+            onChange={e => setExternalQuantity(e.target.value)}
+          />
         </div>
         <p>
           Tokens that are stored externally can now be included in rebalancing. This can lead to a

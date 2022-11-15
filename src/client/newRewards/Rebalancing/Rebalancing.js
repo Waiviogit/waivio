@@ -57,18 +57,7 @@ const Rebalancing = ({ intl }) => {
     try {
       setLoading(true);
       const res = await getRebalancingTable(authUserName, { showAll: true });
-      const _tokensList = res.table.reduce((acc, curr) => {
-        const accTmp = [...acc];
-
-        if (curr.baseQuantity !== '0') {
-          accTmp.push({ balance: curr.baseQuantity, symbol: curr.base });
-        }
-        if (curr.quoteQuantity !== '0') {
-          accTmp.push({ balance: curr.quoteQuantity, symbol: curr.quote });
-        }
-
-        return accTmp;
-      }, []);
+      const _tokensList = res.table;
 
       setTokenList(uniqBy(_tokensList, 'symbol'));
     } finally {
@@ -194,13 +183,19 @@ const Rebalancing = ({ intl }) => {
                       className={rebalanceClassList(row.earn, row.red)}
                       onClick={async () => {
                         if (row.earn > 0 && !row.red) {
-                          dispatch(setBothTokens({ symbol: row.base }, { symbol: row.quote }));
+                          dispatch(
+                            setBothTokens(row, { symbol: row.quote, balance: row.quoteBalance }),
+                          );
                           dispatch(toggleModalInRebalance(true, row.dbField));
                         }
 
                         if (row.red) {
                           Modal.confirm({
                             title: 'Warning: Not enough funds',
+                            className: 'Rebalancing__confirm',
+                            cancelButtonProps: {
+                              className: 'Rebalancing__cancel',
+                            },
                             content:
                               'To complete this rebalancing transaction, please add liquidity from external storage to your rebalancing account.',
                           });

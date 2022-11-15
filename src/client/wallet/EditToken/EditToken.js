@@ -80,6 +80,7 @@ const EditToken = props => {
           <h4>Tokens stored externally (optional)</h4>
           <Input
             value={externalQuantity}
+            className="edit-token__input"
             type="number"
             onChange={e => setExternalQuantity(e.target.value)}
           />
