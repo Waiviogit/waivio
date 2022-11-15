@@ -1657,7 +1657,7 @@
   "append_object_blog_validation_msg": "This user has already been added to another blog",
   "active_website_pricing": "Active website pricing:",
   "prices_per_day": "{price} HBD per day;",
-  "form": "Form title",
+  "form": "Form ",
   "columns": "Columns",
   "Link": "Link",
   "Widget": "Widget",
@@ -1954,5 +1954,6 @@
   "options_modal_info_book2": "Position number indicates the order of option values within the category, e.g. the \"Audiobook\" option can be assigned position 2, so that it appears after \"1. Hardcover\", but before \"3. Kindle\".",
   "object_field_groupId":"Group ID",
   "groupId_book_info": "Products with multiple options (format etc.) can be saved as separate objects with their own descriptions, photo galleries, prices, etc. However, if all these objects refer to the same group ID, all these options will be combined into a single presentation for the convenience of the user.",
-  "groupId_info": "Products with multiple options (colors, sizes, configurations, etc.) can be saved as separate objects with their own descriptions, photo galleries, prices, etc. However, if all these objects refer to the same group ID, all these options will be combined into a single presentation for the convenience of the user."
+  "groupId_info": "Products with multiple options (colors, sizes, configurations, etc.) can be saved as separate objects with their own descriptions, photo galleries, prices, etc. However, if all these objects refer to the same group ID, all these options will be combined into a single presentation for the convenience of the user.",
+  "form_title": "Form title"
 }
