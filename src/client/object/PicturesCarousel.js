@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom';
 import './PicturesCarousel.less';
 import { isMobile } from '../../common/helpers/apiHelpers';
 
-const PicturesCarousel = ({ isOptionsType, activePicture, pics, objectID }) => {
+const PicturesCarousel = ({ onOptionPicClick, isOptionsType, activePicture, pics, objectID }) => {
   const settings = {
     dots: false,
     arrows: true,
@@ -44,7 +44,12 @@ const PicturesCarousel = ({ isOptionsType, activePicture, pics, objectID }) => {
             }}
             className="PicturesCarousel__imageWrap"
           >
-            <img src={pic.body} alt="pic" className="PicturesCarousel__image" />
+            <img
+              onClick={() => onOptionPicClick(pic)}
+              src={pic.body}
+              alt="pic"
+              className="PicturesCarousel__image"
+            />
           </Link>
         ))}
       </Carousel>
@@ -59,10 +64,12 @@ PicturesCarousel.propTypes = {
   objectID: PropTypes.string.isRequired,
   activePicture: PropTypes.shape(),
   isOptionsType: PropTypes.bool,
+  onOptionPicClick: PropTypes.func,
 };
 PicturesCarousel.defaultProps = {
   activePicture: {},
   isOptionsType: false,
+  onOptionPicClick: () => {},
 };
 
 export default PicturesCarousel;
