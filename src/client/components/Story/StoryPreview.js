@@ -139,7 +139,7 @@ const StoryPreview = ({ post, isUpdates, isVimeo }) => {
     ),
   };
 
-  const htmlBody = getHtml(post.body, {}, 'text');
+  const htmlBody = getHtml(post.body, {}, 'Object');
   const tagPositions = getPositions(htmlBody);
   const bodyData = [];
 

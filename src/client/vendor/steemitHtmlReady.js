@@ -8,8 +8,9 @@ import steemEmbed from './embedMedia';
 import xmldom from 'xmldom';
 import linksRe from './steemitLinks';
 import { validateAccountName } from './ChainValidation';
-import { getImagePathPost } from '../../common/helpers/image';
+import { getImagePathPost, getProxyImageURL } from '../../common/helpers/image';
 import { isEmpty } from 'lodash';
+import { imageRegex } from '../../common/helpers/regexHelpers';
 
 const noop = () => {};
 const DOMParser = new xmldom.DOMParser({
@@ -94,14 +95,12 @@ export default function(html, { mutate = true, resolveIframe } = {}) {
     return { html: doc ? XMLSerializer.serializeToString(doc) : '', ...state };
   } catch (error) {
     // Not Used, parseFromString might throw an error in the future
-    console.error(error.toString());
     return { html };
   }
 }
 
 function traverse(node, state, depth = 0) {
   if (!node || !node.childNodes || isEmpty(node.childNodes)) return;
-
   Array.from(node.childNodes).forEach(child => {
     const tag = child.tagName ? child.tagName.toLowerCase() : null;
     if (tag) state.htmltags.add(tag);
@@ -187,6 +186,14 @@ function linkifyNode(child, state) {
       : child?.parentNode.tagName;
     if (tag === 'code') return;
     if (tag === 'a') return;
+
+    if (imageRegex.test(child?.nodeValue)) {
+      const value = child?.nodeValue.match(imageRegex)[0];
+      const src = value.includes('waivio.') ? value : getProxyImageURL(value);
+      const newChild = DOMParser.parseFromString(`<img alt="" src="${src}"/>`);
+      child?.parentNode.replaceChild(newChild, child);
+      return newChild;
+    }
 
     const { mutate } = state;
     if (!child.data) return;
