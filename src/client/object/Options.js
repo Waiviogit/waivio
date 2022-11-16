@@ -20,13 +20,14 @@ const Options = ({ wobject, isEditMode, setHoveredOption, history }) => {
   useEffect(() => {
     const objectHeaderEl = document.getElementById('ObjectHeaderId');
 
-    activeStoreOption &&
-      isMobile() &&
+    if (activeStoreOption && isMobile()) {
       window.scrollTo({
         top: objectHeaderEl?.offsetHeight,
         behavior: 'smooth',
       });
+    }
   }, [wobject]);
+
   const getOptionsPicturesClassName = el =>
     classNames({
       Options__pictures: el.body.parentObjectPermlink !== wobject.author_permlink,

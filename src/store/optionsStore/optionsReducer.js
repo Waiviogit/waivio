@@ -16,6 +16,11 @@ export default (state = defaultState, action) => {
         ...state,
         activeCategory: action.payload,
       };
+    case optionsActions.SET_GROUP_ID:
+      return {
+        ...state,
+        groupId: action.payload,
+      };
     default:
       return state;
   }
