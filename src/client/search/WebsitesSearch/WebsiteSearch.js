@@ -38,7 +38,6 @@ const WebsiteSearch = props => {
 
       props.setWebsiteSearchString(value);
       props.setSearchInBox(true);
-
       if (value) query.set('searchString', value);
       else query.delete('searchString');
       props.history.push(`?${query.toString()}`);
