@@ -20,13 +20,14 @@ const Options = ({ wobject, isEditMode, setHoveredOption, history }) => {
   useEffect(() => {
     const objectHeaderEl = document.getElementById('ObjectHeaderId');
 
-    activeStoreOption &&
-      isMobile() &&
+    if (activeStoreOption && isMobile()) {
       window.scrollTo({
         top: objectHeaderEl?.offsetHeight,
         behavior: 'smooth',
       });
+    }
   }, [wobject]);
+
   const getOptionsPicturesClassName = el =>
     classNames({
       Options__pictures: el.body.parentObjectPermlink !== wobject.author_permlink,
@@ -104,10 +105,10 @@ const Options = ({ wobject, isEditMode, setHoveredOption, history }) => {
       {isEditMode
         ? wobject?.options &&
           Object.entries(wobject?.options).map(option => (
-            <div className="mb1" key={option[0]}>
+            <div className="mb2" key={option[0]}>
               {' '}
               {option[1].some(el => el.author_permlink === wobject.author_permlink) && (
-                <div>{option[0]}: </div>
+                <div className="Options__option-category">{option[0]}: </div>
               )}
               {option[1]
                 ?.sort((a, b) => a?.body?.position - b?.body?.position)
@@ -135,9 +136,9 @@ const Options = ({ wobject, isEditMode, setHoveredOption, history }) => {
         : wobject?.options && (
             <div>
               {Object.entries(filteredOptions).map(option => (
-                <div className="mb1" key={option[0]}>
+                <div className="mb2" key={option[0]}>
                   {' '}
-                  <div>
+                  <div className="Options__option-category">
                     {option[0]}:{' '}
                     <span className="fw8">
                       {hovered?.[option[0]]?.body?.value ||
