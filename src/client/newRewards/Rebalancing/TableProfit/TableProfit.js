@@ -107,7 +107,7 @@ const TableProfit = props => {
                 </td>
                 <td>
                   <div>{row.initial}</div>
-                  <div>({row.external})</div>
+                  {Boolean(+row.external) && <div>{row.external}</div>}
                 </td>
                 <td>
                   <div>{row.current}</div>
