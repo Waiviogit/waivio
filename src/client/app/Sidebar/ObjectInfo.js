@@ -340,6 +340,11 @@ class ObjectInfo extends React.Component {
 
       return album;
     });
+  onOptionPicClick = pic => {
+    if (pic.name === 'options') {
+      this.props.setStoreActiveOption({});
+    }
+  };
 
   render() {
     const {
@@ -400,14 +405,22 @@ class ObjectInfo extends React.Component {
             name: 'options',
             parentPermlink: o.body.parentObjectPermlink,
           }))
+          // eslint-disable-next-line array-callback-return,consistent-return
+          .sort((a, b) => {
+            if (a.body === wobject?.avatar) {
+              return -1;
+            }
+            if (b.body === wobject?.avatar) {
+              return 1;
+            }
+          })
       : [];
 
     const sortedOptions = optionsPictures.filter(
       o => activeOption[activeCategory]?.avatar !== o?.body,
     );
-    const sortedOptionsPictures = uniqBy(sortedOptions, 'body');
 
-    let activeOptionPicture = [...sortedOptionsPictures, ...pictures];
+    let activeOptionPicture = uniqBy([...sortedOptions, ...pictures], 'body');
 
     if (hoveredOption?.avatar || activeOption[activeCategory]?.avatar) {
       activeOptionPicture = uniqBy(
@@ -417,7 +430,7 @@ class ObjectInfo extends React.Component {
             body: hoveredOption?.avatar || activeOption[activeCategory]?.avatar,
             id: wobject?.galleryAlbum ? wobject?.galleryAlbum[0]?.id : wobject.author_permlink,
           },
-          ...sortedOptionsPictures,
+          ...sortedOptions,
           ...pictures,
         ],
         'body',
@@ -465,6 +478,7 @@ class ObjectInfo extends React.Component {
               activePicture={hoveredOption || activeOption}
               pics={activeOptionPicture}
               objectID={wobject.author_permlink}
+              onOptionPicClick={this.onOptionPicClick}
             />
           ),
         )}
