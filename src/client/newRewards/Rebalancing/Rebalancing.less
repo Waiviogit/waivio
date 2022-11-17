@@ -33,13 +33,39 @@
     }
   }
 
-  &__rebalanceButton--disable {
-    color: #00000040;
-    cursor: no-drop;
-
-    &:hover {
+  &__rebalanceButton {
+    &--disable {
       color: #00000040;
+      cursor: no-drop;
+
+      &:hover {
+        color: #00000040;
+      }
     }
+
+    &--red {
+      color: @red-danger;
+
+      &:hover {
+        color: @red-danger;
+      }
+    }
+  }
+
+  &__confirm {
+    width: auto !important;
+
+    @media @small {
+      width: 520px !important;
+    }
+
+    .ant-modal-confirm-title {
+      margin-bottom: 24px;
+    }
+  }
+
+  &__cancel {
+    display: none;
   }
 }
 

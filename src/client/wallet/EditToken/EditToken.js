@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, Form, Modal } from 'antd';
+import { Button, Form, Input, Modal } from 'antd';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { useSelector } from 'react-redux';
@@ -15,11 +15,12 @@ const EditToken = props => {
   const authUserName = useSelector(getAuthenticatedUserName);
   const [currentToken, setCurrentToken] = useState(props.tokensList[0]);
   const [currentAmount, setCurrentAmount] = useState(props.tokensList[0].quantity || 0);
-
+  const [externalQuantity, setExternalQuantity] = useState(props.tokensList[0].external || 0);
   const handleEditToken = async () => {
     await editTokenProfit(authUserName, {
       symbol: currentToken.symbol,
       quantity: currentAmount,
+      externalQuantity,
     });
     handleSuccess();
     handleCloseModal();
@@ -45,34 +46,50 @@ const EditToken = props => {
       onCancel={handleCloseModal}
       footer={
         <div className="edit-token__delete-block">
-          To delete the token, click the delete button:
+          To remove this token from the report, click the Remove token button:
           <Button className="edit-token__delete-button" onClick={handleDeleteToken}>
-            Delete token
+            Remove token
           </Button>
         </div>
       }
     >
       <Form>
-        <h4>
-          {intl.formatMessage({
-            id: 'initial_number_of_tokens',
-            defaultMessage: 'Initial number of tokens',
-          })}
-        </h4>
-        <TokensSelect
-          disabledSelect
-          list={props.tokensList}
-          setToken={token => {
-            setCurrentToken(token);
-          }}
-          amount={currentAmount}
-          handleChangeValue={amount => {
-            setCurrentAmount(amount);
-          }}
-          token={currentToken}
-          handleClickBalance={() => setCurrentAmount(currentToken.balance)}
-          customClassSelect="edit-token__select"
-        />
+        <div className="edit-token__input-block">
+          <h4>
+            {intl.formatMessage({
+              id: 'initial_number_of_tokens',
+              defaultMessage: 'Initial number of tokens',
+            })}
+          </h4>
+          <TokensSelect
+            disabledSelect
+            list={props.tokensList}
+            setToken={token => {
+              setCurrentToken(token);
+            }}
+            amount={currentAmount}
+            handleChangeValue={amount => {
+              setCurrentAmount(amount);
+            }}
+            token={currentToken}
+            handleClickBalance={() => setCurrentAmount(currentToken.balance)}
+            customClassSelect="edit-token__select"
+          />
+        </div>
+        <div className="edit-token__input-block">
+          <h4>Tokens stored externally (optional)</h4>
+          <Input
+            value={externalQuantity}
+            className="edit-token__input"
+            type="number"
+            onChange={e => setExternalQuantity(e.target.value)}
+          />
+        </div>
+        <p>
+          Tokens that are stored externally can now be included in rebalancing. This can lead to a
+          situation when the amount of locally stored tokens may not be sufficient to complete the
+          next rebalancing operation.
+        </p>
         <div className="edit-token__buttons-submit">
           <Button onClick={handleCloseModal} className="ant-btn">
             Cancel

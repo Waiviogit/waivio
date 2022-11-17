@@ -139,7 +139,7 @@ const StoryPreview = ({ post, isUpdates, isVimeo }) => {
     ),
   };
 
-  const htmlBody = getHtml(post.body, {}, 'text');
+  const htmlBody = getHtml(post.body, {}, 'Object');
   const tagPositions = getPositions(htmlBody);
   const bodyData = [];
 
@@ -165,8 +165,8 @@ const StoryPreview = ({ post, isUpdates, isVimeo }) => {
     bodyData.push(preview.embed());
     bodyData.push(preview.text());
   } else if (imagePath !== '') {
-    bodyData.push(preview.text());
     bodyData.push(preview.image());
+    bodyData.push(preview.text());
   } else {
     bodyData.push(preview.text());
   }

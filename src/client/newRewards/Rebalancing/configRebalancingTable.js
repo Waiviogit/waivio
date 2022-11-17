@@ -14,7 +14,7 @@ export default [
   {
     intl: {
       id: 'holdings',
-      defaultMessage: 'Holdings',
+      defaultMessage: 'Holdings ',
     },
     hideOnMobile: true,
   },

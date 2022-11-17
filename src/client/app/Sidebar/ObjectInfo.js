@@ -46,7 +46,12 @@ import ProductId from './ProductId';
 import './ObjectInfo.less';
 import ObjectAvatar from '../../components/ObjectAvatar';
 import Options from '../../object/Options';
-import { getActiveCategory, getActiveOption } from '../../../store/optionsStore/optionsSelectors';
+import {
+  getActiveCategory,
+  getActiveOption,
+  getGroupId,
+} from '../../../store/optionsStore/optionsSelectors';
+import { setStoreActiveOption, setStoreGroupId } from '../../../store/optionsStore/optionsActions';
 
 @withRouter
 @connect(
@@ -57,14 +62,16 @@ import { getActiveCategory, getActiveOption } from '../../../store/optionsStore/
     relatedAlbum: getRelatedPhotos(state),
     activeOption: getActiveOption(state),
     activeCategory: getActiveCategory(state),
+    storeGroupId: getGroupId(state),
   }),
-  { getRelatedAlbum },
+  { getRelatedAlbum, setStoreGroupId, setStoreActiveOption },
 )
 class ObjectInfo extends React.Component {
   static propTypes = {
     location: PropTypes.shape(),
     activeOption: PropTypes.shape(),
     activeCategory: PropTypes.string,
+    storeGroupId: PropTypes.string,
     wobject: PropTypes.shape().isRequired,
     match: PropTypes.shape().isRequired,
     userName: PropTypes.string.isRequired,
@@ -76,6 +83,8 @@ class ObjectInfo extends React.Component {
     albums: PropTypes.shape(),
     relatedAlbum: PropTypes.shape().isRequired,
     getRelatedAlbum: PropTypes.func.isRequired,
+    setStoreGroupId: PropTypes.func.isRequired,
+    setStoreActiveOption: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -83,6 +92,7 @@ class ObjectInfo extends React.Component {
     userLocation: {},
     activeOption: {},
     activeCategory: '',
+    storeGroupId: '',
     location: {},
     center: [],
     albums: [],
@@ -101,7 +111,17 @@ class ObjectInfo extends React.Component {
   };
 
   componentDidMount() {
+    const { wobject, storeGroupId } = this.props;
+
     this.props.getRelatedAlbum(this.props.match.params.name, 10);
+    const hasGroupId = Object.prototype.hasOwnProperty.call(wobject, 'groupId');
+
+    if (wobject.groupId) {
+      this.props.setStoreGroupId(wobject.groupId);
+    }
+    if (storeGroupId !== wobject.groupId || !hasGroupId) {
+      this.props.setStoreActiveOption({});
+    }
   }
 
   incrementPhoneCount = 3;
@@ -320,6 +340,11 @@ class ObjectInfo extends React.Component {
 
       return album;
     });
+  onOptionPicClick = pic => {
+    if (pic.name === 'options') {
+      this.props.setStoreActiveOption({});
+    }
+  };
 
   render() {
     const {
@@ -380,14 +405,22 @@ class ObjectInfo extends React.Component {
             name: 'options',
             parentPermlink: o.body.parentObjectPermlink,
           }))
+          // eslint-disable-next-line array-callback-return,consistent-return
+          .sort((a, b) => {
+            if (a.body === wobject?.avatar) {
+              return -1;
+            }
+            if (b.body === wobject?.avatar) {
+              return 1;
+            }
+          })
       : [];
 
     const sortedOptions = optionsPictures.filter(
       o => activeOption[activeCategory]?.avatar !== o?.body,
     );
-    const sortedOptionsPictures = uniqBy(sortedOptions, 'body');
 
-    let activeOptionPicture = [...sortedOptionsPictures, ...pictures];
+    let activeOptionPicture = uniqBy([...sortedOptions, ...pictures], 'body');
 
     if (hoveredOption?.avatar || activeOption[activeCategory]?.avatar) {
       activeOptionPicture = uniqBy(
@@ -397,7 +430,7 @@ class ObjectInfo extends React.Component {
             body: hoveredOption?.avatar || activeOption[activeCategory]?.avatar,
             id: wobject?.galleryAlbum ? wobject?.galleryAlbum[0]?.id : wobject.author_permlink,
           },
-          ...sortedOptionsPictures,
+          ...sortedOptions,
           ...pictures,
         ],
         'body',
@@ -429,7 +462,6 @@ class ObjectInfo extends React.Component {
       ...item,
       id: objectFields.form,
     }));
-
     const isOptionsObjectType = ['book', 'product', 'service'].includes(wobject.object_type);
     const galleryPriceOptionsSection = (
       <>
@@ -446,6 +478,7 @@ class ObjectInfo extends React.Component {
               activePicture={hoveredOption || activeOption}
               pics={activeOptionPicture}
               objectID={wobject.author_permlink}
+              onOptionPicClick={this.onOptionPicClick}
             />
           ),
         )}
@@ -578,7 +611,7 @@ class ObjectInfo extends React.Component {
             objectFields.authors,
             <div>
               {authorsBody?.map((a, i) => (
-                <>
+                <span key={a.authorPermlink}>
                   {a.defaultShowLink ? (
                     <Link to={`/object/${a.authorPermlink}`}>{a.name}</Link>
                   ) : (
@@ -588,7 +621,7 @@ class ObjectInfo extends React.Component {
                     {i !== authorsBody.length - 1 && ','}
                     {'  '}
                   </>
-                </>
+                </span>
               ))}
             </div>,
           )}
@@ -948,7 +981,7 @@ class ObjectInfo extends React.Component {
     );
 
     return (
-      <React.Fragment>
+      <div ref={this.carouselRef}>
         {!isEditMode && wobject.authors && (
           <div className="mb3">
             By{' '}
@@ -1000,7 +1033,7 @@ class ObjectInfo extends React.Component {
             <ObjectInfoExperts wobject={wobject} />
           </div>
         )}
-      </React.Fragment>
+      </div>
     );
   }
 }
