@@ -52,6 +52,7 @@ import {
   getGroupId,
 } from '../../../store/optionsStore/optionsSelectors';
 import { setStoreActiveOption, setStoreGroupId } from '../../../store/optionsStore/optionsActions';
+import { getObject } from '../../../waivioApi/ApiClient';
 
 @withRouter
 @connect(
@@ -343,6 +344,9 @@ class ObjectInfo extends React.Component {
   onOptionPicClick = pic => {
     if (pic.name === 'options') {
       this.props.setStoreActiveOption({});
+      getObject(pic.parentPermlink, this.props.userName, 'En').then(obj =>
+        this.props.history.push(obj.defaultShowLink),
+      );
     }
   };
 
