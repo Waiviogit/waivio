@@ -46,9 +46,9 @@ const EditToken = props => {
       onCancel={handleCloseModal}
       footer={
         <div className="edit-token__delete-block">
-          To delete the token, click the delete button:
+          To remove this token from the report, click the Remove token button:
           <Button className="edit-token__delete-button" onClick={handleDeleteToken}>
-            Delete token
+            Remove token
           </Button>
         </div>
       }
