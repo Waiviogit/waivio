@@ -3,7 +3,7 @@ import { FormattedMessage, injectIntl } from 'react-intl';
 import { useSelector } from 'react-redux';
 import { Button } from 'antd';
 import PropTypes from 'prop-types';
-import { get } from 'lodash';
+import { get, round } from 'lodash';
 
 import { getProfitTable } from '../../../../waivioApi/ApiClient';
 import configProfitTable from './configProfitTable';
@@ -88,12 +88,19 @@ const TableProfit = props => {
         <table className="DynamicTable">
           <thead>
             {configProfitTable.map(th => (
-              <th key={th.id}>{th.intl && intl.formatMessage(th.intl)}</th>
+              <th key={th.id}>
+                {th.intls ? (
+                  <div>
+                    {th.intls.map(int => (
+                      <div key={int.id}>{intl.formatMessage(int)}</div>
+                    ))}
+                  </div>
+                ) : (
+                  intl.formatMessage(th.intl)
+                )}
+              </th>
             ))}
             {table.map(row => (
-              // console.log(+row.current * row.rate * hiveRateInUsd);
-              // console.log(+row.current);
-              // console.log(row);
               <tr key={row.token}>
                 <td>
                   <div>{row.token}</div>
@@ -104,7 +111,7 @@ const TableProfit = props => {
                 </td>
                 <td>
                   <div>{row.current}</div>
-                  <div>${+row.current * row.rate * hiveRateInUsd}</div>
+                  <div>${round(+row.current * row.rate * hiveRateInUsd, 2)}</div>
                 </td>
                 <td>
                   <a

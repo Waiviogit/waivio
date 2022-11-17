@@ -22,7 +22,11 @@ const AddToken = props => {
       await addTokenReport(authUserName, {
         symbol: currentToken.symbol,
         quantity: `${currentAmount}`,
-        externalQuantity: `${externalQuantity}`,
+        ...(externalQuantity
+          ? {
+              externalQuantity: `${externalQuantity}`,
+            }
+          : {}),
       });
       handleSuccess();
       handleCloseModal();

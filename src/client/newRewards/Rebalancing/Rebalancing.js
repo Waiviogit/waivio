@@ -124,6 +124,36 @@ const Rebalancing = ({ intl }) => {
     return () => socket.close();
   }, []);
 
+  const handleSwapTokens = async row => {
+    if (row.earn > 0 && !row.red) {
+      const tokens =
+        row.rebalanceBase[0] === '-'
+          ? [
+              { symbol: row.base, balance: row.balance },
+              { symbol: row.quote, balance: row.quoteBalance },
+            ]
+          : [
+              { symbol: row.quote, balance: row.quoteBalance },
+              { symbol: row.base, balance: row.balance },
+            ];
+
+      dispatch(setBothTokens(tokens[0], tokens[1]));
+      dispatch(toggleModalInRebalance(true, row.dbField));
+    }
+
+    if (row.red) {
+      Modal.confirm({
+        title: 'Warning: Not enough funds',
+        className: 'Rebalancing__confirm',
+        cancelButtonProps: {
+          className: 'Rebalancing__cancel',
+        },
+        content:
+          'To complete this rebalancing transaction, please add liquidity from external storage to your rebalancing account.',
+      });
+    }
+  };
+
   return (
     <div className="Rebalancing table-wrap">
       Grow your crypto holdings by doing arbitrage between your personal holdings and the open
@@ -181,26 +211,7 @@ const Rebalancing = ({ intl }) => {
                   {getValueForTd(
                     <a
                       className={rebalanceClassList(row.earn, row.red)}
-                      onClick={async () => {
-                        if (row.earn > 0 && !row.red) {
-                          dispatch(
-                            setBothTokens(row, { symbol: row.quote, balance: row.quoteBalance }),
-                          );
-                          dispatch(toggleModalInRebalance(true, row.dbField));
-                        }
-
-                        if (row.red) {
-                          Modal.confirm({
-                            title: 'Warning: Not enough funds',
-                            className: 'Rebalancing__confirm',
-                            cancelButtonProps: {
-                              className: 'Rebalancing__cancel',
-                            },
-                            content:
-                              'To complete this rebalancing transaction, please add liquidity from external storage to your rebalancing account.',
-                          });
-                        }
-                      }}
+                      onClick={() => handleSwapTokens(row)}
                     >
                       <div>{row.rebalanceBase}</div>
                       <div>{row.rebalanceQuote}</div>

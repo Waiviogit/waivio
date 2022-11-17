@@ -3107,13 +3107,13 @@ export const getProfitTable = account => {
     .then(res => res.json())
     .then(async response => {
       const tokensList = response.table.reduce((acc, tab) => {
-        return [...acc, tab.base, tab.quote];
+        return [...acc, tab.token];
       }, []);
+
       const rates = await getTokensRate(tokensList);
       const table = response.table.reduce((acc, curr) => {
-        const { lastPrice: rate } = rates.find(bal => bal.symbol === curr.base) || { lastPrice: 1 };
-
-        return [...acc, { ...curr, symbol: curr.base, rate }];
+        const { lastPrice: rate } = rates.find(r => r.symbol === curr.token) || { lastPrice: 1 };
+        return [...acc, { ...curr, symbol: curr.token, rate }];
       }, []);
 
       return {
