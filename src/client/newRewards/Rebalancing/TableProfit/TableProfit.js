@@ -10,13 +10,18 @@ import configProfitTable from './configProfitTable';
 import { getAuthenticatedUserName } from '../../../../store/authStore/authSelectors';
 import EditToken from '../../../wallet/EditToken/EditToken';
 import AddToken from '../../../wallet/AddToken';
-import { getCryptosPriceHistory } from '../../../../store/appStore/appSelectors';
+import {
+  getCryptosPriceHistory,
+  getCurrentCurrency,
+} from '../../../../store/appStore/appSelectors';
 
 import './TableProfit.less';
+import USDDisplay from '../../../components/Utils/USDDisplay';
 
 const TableProfit = props => {
   const { intl, tokenList, setTableProfit } = props;
   const authUserName = useSelector(getAuthenticatedUserName);
+  const currency = useSelector(getCurrentCurrency);
   const [table, setTable] = useState([]);
   const [profit, setProfit] = useState(null);
   const [isLoading, setLoading] = useState(false);
@@ -92,7 +97,11 @@ const TableProfit = props => {
                 {th.intls ? (
                   <div>
                     {th.intls.map(int => (
-                      <div key={int.id}>{intl.formatMessage(int)}</div>
+                      <div key={int.id}>
+                        {intl.formatMessage(int, {
+                          currency: currency.type,
+                        })}
+                      </div>
                     ))}
                   </div>
                 ) : (
@@ -111,7 +120,12 @@ const TableProfit = props => {
                 </td>
                 <td>
                   <div>{row.current}</div>
-                  <div>${round(+row.current * row.rate * hiveRateInUsd, 2)}</div>
+                  <div>
+                    <USDDisplay
+                      value={round(+row.current * row.rate * hiveRateInUsd, 2)}
+                      currencyDisplay={'symbol'}
+                    />
+                  </div>
                 </td>
                 <td>
                   <a
