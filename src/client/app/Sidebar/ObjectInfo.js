@@ -343,10 +343,10 @@ class ObjectInfo extends React.Component {
     });
   onOptionPicClick = pic => {
     if (pic.name === 'options') {
-      this.props.setStoreActiveOption({});
       getObject(pic.parentPermlink, this.props.userName, 'En').then(obj =>
         this.props.history.push(obj.defaultShowLink),
       );
+      this.props.setStoreActiveOption({});
     }
   };
 
