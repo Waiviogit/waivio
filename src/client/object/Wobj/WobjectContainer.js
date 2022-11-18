@@ -195,7 +195,11 @@ export default class WobjectContainer extends React.Component {
     const { authenticatedUserName, match, locale } = this.props;
     const newsFilter = match.params[1] === 'newsFilter' ? { newsFilter: match.params.itemId } : {};
 
-    if (prevProps.match.params.name !== match.params.name || prevProps.locale !== locale) {
+    if (
+      prevProps.match.params.name !== match.params.name ||
+      prevProps.locale !== locale ||
+      prevProps.authenticatedUserName !== authenticatedUserName
+    ) {
       this.props.getObject(match.params.name, authenticatedUserName);
       this.props.resetGallery();
       this.props.clearObjectFromStore();
