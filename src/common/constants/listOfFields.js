@@ -174,7 +174,6 @@ export const formColumnsField = {
 export const formFormFields = {
   link: 'Link',
   widget: 'Widget',
-  title: 'formTitle',
 };
 export const companyIdFields = {
   companyId: 'companyId',

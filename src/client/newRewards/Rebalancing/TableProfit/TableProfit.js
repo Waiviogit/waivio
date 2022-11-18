@@ -3,12 +3,14 @@ import { FormattedMessage, injectIntl } from 'react-intl';
 import { useSelector } from 'react-redux';
 import { Button } from 'antd';
 import PropTypes from 'prop-types';
+import { get, round } from 'lodash';
 
 import { getProfitTable } from '../../../../waivioApi/ApiClient';
 import configProfitTable from './configProfitTable';
 import { getAuthenticatedUserName } from '../../../../store/authStore/authSelectors';
 import EditToken from '../../../wallet/EditToken/EditToken';
 import AddToken from '../../../wallet/AddToken';
+import { getCryptosPriceHistory } from '../../../../store/appStore/appSelectors';
 
 import './TableProfit.less';
 
@@ -21,6 +23,8 @@ const TableProfit = props => {
   const [editToken, setEditToken] = useState(null);
   const [openAddTokenModal, setAddTokenModal] = useState(false);
   const [tokensListFiltered, setTokenList] = useState(tokenList);
+  const cryptosPriceHistory = useSelector(getCryptosPriceHistory);
+  const hiveRateInUsd = get(cryptosPriceHistory, 'hive.usdPriceHistory.usd', 1);
 
   useEffect(() => {
     if (tokenList && table) {
@@ -84,7 +88,17 @@ const TableProfit = props => {
         <table className="DynamicTable">
           <thead>
             {configProfitTable.map(th => (
-              <th key={th.id}>{th.intl && intl.formatMessage(th.intl)}</th>
+              <th key={th.id}>
+                {th.intls ? (
+                  <div>
+                    {th.intls.map(int => (
+                      <div key={int.id}>{intl.formatMessage(int)}</div>
+                    ))}
+                  </div>
+                ) : (
+                  intl.formatMessage(th.intl)
+                )}
+              </th>
             ))}
             {table.map(row => (
               <tr key={row.token}>
@@ -93,19 +107,25 @@ const TableProfit = props => {
                 </td>
                 <td>
                   <div>{row.initial}</div>
+                  {Boolean(+row.external) && <div>{row.external}</div>}
                 </td>
                 <td>
                   <div>{row.current}</div>
+                  <div>${round(+row.current * row.rate * hiveRateInUsd, 2)}</div>
                 </td>
                 <td>
                   <a
-                    onClick={() =>
+                    onClick={() => {
+                      const token = tokenList?.find(i => i.symbol === row.token);
+
                       handleEditToken({
                         symbol: row.token,
-                        balance: tokenList?.find(i => i.symbol === row.token)?.balance || 0,
+                        balance: token?.balance || 0,
+                        rate: token?.rate || 1,
                         quantity: row.initial,
-                      })
-                    }
+                        external: row.external,
+                      });
+                    }}
                   >
                     Edit
                   </a>
