@@ -127,7 +127,7 @@ const StoryPreview = ({ post, isUpdates, isVimeo }) => {
       <BodyShort
         key="text"
         className={storyContentBodyClassList}
-        body={post.fullBody || post.body}
+        body={post.fullBody || JSON.parse(post.body)}
       />
     ),
 
@@ -165,8 +165,8 @@ const StoryPreview = ({ post, isUpdates, isVimeo }) => {
     bodyData.push(preview.embed());
     bodyData.push(preview.text());
   } else if (imagePath !== '') {
-    bodyData.push(preview.image());
     bodyData.push(preview.text());
+    bodyData.push(preview.image());
   } else {
     bodyData.push(preview.text());
   }
