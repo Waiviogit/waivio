@@ -60,6 +60,7 @@ export default function swapReducer(state = initialState, action) {
         ...state,
         visible: action.payload.isOpen,
         from: action.payload.symbol ? { symbol: action.payload.symbol } : state.from,
+        bdPair: '',
       };
     }
 

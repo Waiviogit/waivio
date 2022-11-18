@@ -20,11 +20,11 @@ const TokensSelect = props => {
   });
 
   const balanceClassList = classNames('TokenSelect__balance', {
-    'TokenSelect__balance--disabled': props.disableBalance,
+    'TokenSelect__balance--disabled': props.disabled,
   });
 
   const maxButtonClassList = classNames('TokenSelect__max-button', {
-    'TokenSelect__max-button--disabled': props.disableBtnMax,
+    'TokenSelect__max-button--disabled': props.disabled,
   });
 
   const setUserBalance = () => {
@@ -95,8 +95,6 @@ TokensSelect.propTypes = {
   }).isRequired,
   isError: PropTypes.bool,
   isLoading: PropTypes.bool,
-  disableBalance: PropTypes.bool,
-  disableBtnMax: PropTypes.bool,
   disabledSelect: PropTypes.bool,
   customClassSelect: PropTypes.string,
 };
