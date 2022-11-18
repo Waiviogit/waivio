@@ -165,8 +165,8 @@ const StoryPreview = ({ post, isUpdates, isVimeo }) => {
     bodyData.push(preview.embed());
     bodyData.push(preview.text());
   } else if (imagePath !== '') {
-    bodyData.push(preview.image());
     bodyData.push(preview.text());
+    bodyData.push(preview.image());
   } else {
     bodyData.push(preview.text());
   }
