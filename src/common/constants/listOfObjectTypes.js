@@ -1,6 +1,7 @@
 export const listObjectTypeOfDining = ['restaurant', 'dish'];
 
 export default [
+  'widget',
   'restaurant',
   'dish',
   'drink',

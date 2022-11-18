@@ -45,6 +45,7 @@ export const objectFields = {
   authors: 'authors',
   groupId: 'groupId',
   options: 'options',
+  widget: 'widget',
 };
 
 export const TYPES_OF_MENU_ITEM = {
