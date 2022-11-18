@@ -12,6 +12,7 @@ import { getAuthenticatedUserName, getIsAuthenticated } from '../../store/authSt
 import ModalSignIn from '../components/Navigation/ModlaSignIn/ModalSignIn';
 import { checkPayblesWarning } from '../../waivioApi/ApiClient';
 import { getIsWaivio } from '../../store/appStore/appSelectors';
+import { guestUserRegex } from '../../common/helpers/regexHelpers';
 
 const SideBar = () => {
   const isAuth = useSelector(getIsAuthenticated);
@@ -25,10 +26,12 @@ const SideBar = () => {
   const [withWarning, setWithWarning] = useState(false);
 
   useEffect(() => {
-    checkPayblesWarning(authUserName).then(res => {
-      setWithWarning(res.warning);
-    });
-  }, []);
+    if (authUserName && !guestUserRegex.test(authUserName)) {
+      checkPayblesWarning(authUserName).then(res => {
+        setWithWarning(res.warning);
+      });
+    }
+  }, [authUserName]);
 
   const toggleMenuCondition = menuItem => {
     setMenuCondition({

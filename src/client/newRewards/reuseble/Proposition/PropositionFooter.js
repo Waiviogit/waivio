@@ -56,7 +56,7 @@ const PropositionFooter = ({ type, openDetailsModal, proposition, getProposition
       );
     } else {
       const postInfo = await getPostCommentsFromApi({
-        author: proposition?.userName,
+        author: proposition?.rootName,
         permlink: proposition?.reservationPermlink,
         userName: authUserName,
         category: config.appName,
@@ -241,6 +241,7 @@ PropositionFooter.propTypes = {
   proposition: PropTypes.shape({
     reviewStatus: PropTypes.string,
     userName: PropTypes.string,
+    rootName: PropTypes.string,
     guideName: PropTypes.string,
     notEligible: PropTypes.bool,
     commentsCount: PropTypes.number,
