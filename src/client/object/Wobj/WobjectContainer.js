@@ -53,6 +53,7 @@ import {
 import { getLocale } from '../../../store/settingsStore/settingsSelectors';
 import { getConfiguration } from '../../../store/websiteStore/websiteSelectors';
 import { getRate, getRewardFund } from '../../../store/appStore/appActions';
+import { setStoreActiveOption } from '../../../store/optionsStore/optionsActions';
 
 @withRouter
 @connect(
@@ -87,6 +88,7 @@ import { getRate, getRewardFund } from '../../../store/appStore/appActions';
     getWobjectExpertise: getWobjectExpertiseAction,
     getObjectFollowers: getObjectFollowersAction,
     getRelatedWobjects,
+    setStoreActiveOption,
   },
 )
 export default class WobjectContainer extends React.Component {
@@ -122,6 +124,7 @@ export default class WobjectContainer extends React.Component {
     getWobjectExpertise: PropTypes.func.isRequired,
     getObjectFollowers: PropTypes.func.isRequired,
     getRelatedWobjects: PropTypes.func.isRequired,
+    setStoreActiveOption: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -214,6 +217,7 @@ export default class WobjectContainer extends React.Component {
     this.props.setCatalogBreadCrumbs([]);
     this.props.setNestedWobject({});
     this.props.clearRelatedPhoto();
+    this.props.setStoreActiveOption({});
   }
 
   toggleViewEditMode = () => this.setState(prevState => ({ isEditMode: !prevState.isEditMode }));
