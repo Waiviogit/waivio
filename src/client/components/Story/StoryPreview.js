@@ -127,7 +127,7 @@ const StoryPreview = ({ post, isUpdates, isVimeo }) => {
       <BodyShort
         key="text"
         className={storyContentBodyClassList}
-        body={post.fullBody || JSON.parse(post.body)}
+        body={post.fullBody || post.body}
       />
     ),
 
