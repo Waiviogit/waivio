@@ -442,11 +442,10 @@ export const sendCommentForReward = (proposition, body, isUpdating = false, orig
   const permlink = isUpdating
     ? originalComment.permlink
     : createCommentPermlink(proposition?.userName, proposition?.reservationPermlink);
-
   const newBody =
     isUpdating && !auth.isGuestUser ? getBodyPatchIfSmaller(originalComment.body, body) : body;
   const detail = {
-    parent_author: isUpdating ? originalComment.parent_author : proposition?.userName,
+    parent_author: isUpdating ? originalComment.parent_author : proposition.rootName,
     parent_permlink: isUpdating
       ? originalComment.parent_permlink
       : proposition?.reservationPermlink,
@@ -464,19 +463,25 @@ export const sendCommentForReward = (proposition, body, isUpdating = false, orig
   return new Promise(resolve =>
     steemConnectAPI
       .broadcast([commentOp])
-      .then(({ result }) => {
-        busyAPI.instance.sendAsync(subscribeTypes.subscribeTransactionId, [
-          auth.user.name,
-          result.id,
-        ]);
-        busyAPI.instance.subscribe((datad, j) => {
-          if (j?.success && j?.permlink === result.id) {
-            message.success('Comment submitted');
-            resolve(detail);
-          }
-        });
+      .then(res => {
+        if (auth.isGuestUser) {
+          resolve(detail);
+        } else {
+          busyAPI.instance.sendAsync(subscribeTypes.subscribeTransactionId, [
+            auth.user.name,
+            res.result.id,
+          ]);
+          busyAPI.instance.subscribe((datad, j) => {
+            if (j?.success && j?.permlink === res.result.id) {
+              message.success('Comment submitted');
+              resolve(detail);
+            }
+          });
+        }
       })
-      .catch(err => dispatch(notify(err.error.message || err.error_description, 'error'))),
+      .catch(err => {
+        dispatch(notify(err.message || err.error_description, 'error'));
+      }),
   );
 };
 

@@ -25,7 +25,7 @@ export default [
       },
       {
         id: 'est_value_USD',
-        defaultMessage: 'est. value, USD',
+        defaultMessage: 'est. value, {currency}',
       },
     ],
   },

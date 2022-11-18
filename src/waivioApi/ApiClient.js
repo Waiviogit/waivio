@@ -3083,11 +3083,14 @@ export const getRebalancingTable = (account, params) => {
       const table = response.table.reduce((acc, curr) => {
         const { balance } = balances.find(bal => bal.symbol === curr.base) || { balance: 0 };
         const { lastPrice: rate } = rates.find(bal => bal.symbol === curr.base) || { lastPrice: 1 };
+        const { lastPrice: quoteRate } = rates.find(bal => bal.symbol === curr.quote) || {
+          lastPrice: 1,
+        };
         const { balance: quoteBalance } = balances.find(bal => bal.symbol === curr.quote) || {
           balance: 0,
         };
 
-        return [...acc, { ...curr, balance, quoteBalance, symbol: curr.base, rate }];
+        return [...acc, { ...curr, balance, quoteBalance, quoteRate, symbol: curr.base, rate }];
       }, []);
 
       return {
