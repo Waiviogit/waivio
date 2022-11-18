@@ -191,7 +191,9 @@ export default class PowerUpOrDown extends React.Component {
       return powerNames[this.props.walletType] || powerNames.WAIV;
     }
 
-    return this.props.walletType === 'ENGINE' ? 'WAIV' : this.props.walletType;
+    return this.props.walletType === 'ENGINE' || this.props.walletType === 'rebalancing'
+      ? 'WAIV'
+      : this.props.walletType;
   };
 
   render() {
