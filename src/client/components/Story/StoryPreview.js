@@ -143,7 +143,10 @@ const StoryPreview = ({ post, isUpdates, isVimeo }) => {
   const tagPositions = getPositions(htmlBody);
   const bodyData = [];
 
-  if (htmlBody.length <= 1500 && postWithPicture(tagPositions, 100)) {
+  if (isUpdates) {
+    bodyData.push(preview.text());
+    bodyData.push(preview.image());
+  } else if (htmlBody.length <= 1500 && postWithPicture(tagPositions, 100)) {
     bodyData.push(preview.image());
     bodyData.push(preview.text());
   } else if (htmlBody.length <= 1500 && postWithAnEmbed(tagPositions, 100)) {
@@ -165,8 +168,8 @@ const StoryPreview = ({ post, isUpdates, isVimeo }) => {
     bodyData.push(preview.embed());
     bodyData.push(preview.text());
   } else if (imagePath !== '') {
-    bodyData.push(preview.text());
     bodyData.push(preview.image());
+    bodyData.push(preview.text());
   } else {
     bodyData.push(preview.text());
   }

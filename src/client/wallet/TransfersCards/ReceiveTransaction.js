@@ -1,10 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { useSelector } from 'react-redux';
-import classNames from 'classnames';
 import Avatar from '../../components/Avatar';
 import { getTransactionDescription, validateGuestTransferTitle } from '../WalletHelper';
-import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 import CardsTimeStamp from './CardsTimeStamp';
 
 const ReceiveTransaction = ({
@@ -20,7 +17,6 @@ const ReceiveTransaction = ({
   isMobile,
   transactionType,
 }) => {
-  const userName = useSelector(getAuthenticatedUserName);
   const demoPost = type === 'demo_post';
   const options = { from };
   const description = getTransactionDescription(transactionType, options);
@@ -37,11 +33,7 @@ const ReceiveTransaction = ({
               ? validateGuestTransferTitle(details, username, isMobile, transactionType)
               : description.receivedFrom}
           </div>
-          <div
-            className={classNames('UserWalletTransactions__received', {
-              'UserWalletTransactions__received-self': userName === from,
-            })}
-          >
+          <div className="UserWalletTransactions__received">
             {from !== to && '+ '}
             {amount}
           </div>
