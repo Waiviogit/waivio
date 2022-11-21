@@ -109,6 +109,7 @@ import { getAppendList } from '../../../store/appendStore/appendSelectors';
 import { parseJSON } from '../../../common/helpers/parseJSON';
 import { baseUrl } from '../../../waivioApi/routes';
 import './AppendForm.less';
+import Widget from '../Widget/Widget';
 
 @connect(
   state => ({
@@ -3056,6 +3057,22 @@ export default class AppendForm extends Component {
 
         return (
           <ObjectForm
+            formColumn={formColumn}
+            formForm={formForm}
+            form={this.props.form}
+            intl={intl}
+            loading={loading}
+            handleSelectColumn={this.handleSelectColumn}
+            handleSelectForm={this.handleSelectForm}
+            getFieldRules={this.getFieldRules}
+          />
+        );
+      }
+      case objectFields.widget: {
+        const { formColumn, formForm } = this.state;
+
+        return (
+          <Widget
             formColumn={formColumn}
             formForm={formForm}
             form={this.props.form}

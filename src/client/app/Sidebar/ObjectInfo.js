@@ -585,6 +585,7 @@ class ObjectInfo extends React.Component {
                       this.getMenuSectionLink({ id: objectFields.form, ...form }),
                     ),
                 )}
+                {this.listItem(objectFields.widget, <div>widget content</div>)}
                 {this.listItem(objectFields.sorting, null)}
               </React.Fragment>
             </div>

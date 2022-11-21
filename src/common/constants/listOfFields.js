@@ -171,7 +171,11 @@ export const formColumnsField = {
   middleRight: 'Middle + Right',
   entire: 'Entire Width',
 };
-
+export const widgetFields = {
+  column: 'column',
+  type: 'type',
+  content: 'content',
+};
 export const formFormFields = {
   link: 'Link',
   widget: 'Widget',

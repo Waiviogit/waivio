@@ -1955,5 +1955,6 @@
   "object_field_groupId":"Group ID",
   "groupId_book_info": "Products with multiple options (format etc.) can be saved as separate objects with their own descriptions, photo galleries, prices, etc. However, if all these objects refer to the same group ID, all these options will be combined into a single presentation for the convenience of the user.",
   "groupId_info": "Products with multiple options (colors, sizes, configurations, etc.) can be saved as separate objects with their own descriptions, photo galleries, prices, etc. However, if all these objects refer to the same group ID, all these options will be combined into a single presentation for the convenience of the user.",
-  "form_title": "Form title"
+  "form_title": "Form title",
+  "object_field_widget":"Widget"
 }
