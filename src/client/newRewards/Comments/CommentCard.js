@@ -17,19 +17,22 @@ import Avatar from '../../components/Avatar';
 import BTooltip from '../../components/BTooltip';
 import BodyContainer from '../../containers/Story/BodyContainer';
 import QuickCommentEditor from '../../components/Comments/QuickCommentEditor';
-import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
+import { getAuthenticatedUserName, isGuestUser } from '../../../store/authStore/authSelectors';
 import { voteComment } from '../../../store/postsStore/postActions';
 import { getDownvotesQuontity, getUpvotesQuontity } from '../../../common/helpers/voteHelpers';
 import { sendCommentForReward } from '../../../store/newRewards/newRewardsActions';
+import { parseJSON } from '../../../common/helpers/parseJSON';
 
 const CommentCard = ({ comment, intl, getMessageHistory, proposition }) => {
   const dispatch = useDispatch();
   const user = useSelector(getAuthenticatedUserName);
+  const isGuest = useSelector(isGuestUser);
   const [pendingLike, setPendigLike] = useState(false);
   const [pendingSend, setPendigSend] = useState(false);
   const [pendingDisLike, setPendingDisLike] = useState(false);
   const [editing, setEditing] = useState(false);
-  const editable = comment.author === user;
+  const author = isGuest ? parseJSON(comment.json_metadata)?.comment?.userId : comment.author;
+  const editable = author === user;
   const isLiked = comment.active_votes.some(vote => vote.voter === user && +vote.percent > 0);
   const isDisliked = comment.active_votes.some(vote => vote.voter === user && +vote.percent < 0);
   const upvotesQuontity = getUpvotesQuontity(comment?.active_votes);
@@ -76,12 +79,12 @@ const CommentCard = ({ comment, intl, getMessageHistory, proposition }) => {
 
   return (
     <div className="Comment">
-      <Link to={`/@${comment.author}`} style={{ height: 32 }}>
-        <Avatar username={comment.author} size={32} />
+      <Link to={`/@${author}`} style={{ height: 32 }}>
+        <Avatar username={author} size={32} />
       </Link>
       <div className="Comment__text">
-        <Link to={`/@${comment.author}`}>
-          <span className="username">{comment.author}</span>
+        <Link to={`/@${author}`}>
+          <span className="username">{author}</span>
         </Link>
         <span className="Comment__date">
           <BTooltip
@@ -184,6 +187,7 @@ CommentCard.propTypes = {
     body: PropTypes.string,
     active_votes: PropTypes.arrayOf(),
     author: PropTypes.string,
+    json_metadata: PropTypes.string,
     created: PropTypes.string,
     permlink: PropTypes.string,
   }).isRequired,
