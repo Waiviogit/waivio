@@ -9,6 +9,9 @@ import {
 } from '../../store/optionsStore/optionsActions';
 import { getActiveOption } from '../../store/optionsStore/optionsSelectors';
 import { isMobile } from '../../common/helpers/apiHelpers';
+import { getObject } from '../../waivioApi/ApiClient';
+import { getAuthenticatedUserName } from '../../store/authStore/authSelectors';
+import { getLocale } from '../../common/helpers/localStorageHelpers';
 import './Options.less';
 
 const Options = ({ wobject, isEditMode, setHoveredOption, history }) => {
@@ -16,6 +19,8 @@ const Options = ({ wobject, isEditMode, setHoveredOption, history }) => {
   const dispatch = useDispatch();
   const activeStoreOption = useSelector(getActiveOption);
   const optionsDiv = useRef();
+  const userName = useSelector(getAuthenticatedUserName);
+  const locale = useSelector(getLocale);
 
   useEffect(() => {
     const objectHeaderEl = document.getElementById('ObjectHeaderId');
@@ -57,7 +62,9 @@ const Options = ({ wobject, isEditMode, setHoveredOption, history }) => {
     setHoveredOption(el);
     dispatch(setStoreActiveOption({ ...activeStoreOption, [el.body.category]: el }));
     if (el.body.parentObjectPermlink !== wobject.author_permlink) {
-      history.push(`/object/${el.author_permlink}${isMobile() ? '/about' : ''}`);
+      getObject(el.author_permlink, userName, locale).then(obj =>
+        history.push(obj.defaultShowLink),
+      );
       dispatch(setStoreActiveCategory(el.body.category));
       dispatch(setStoreActiveOption({ ...activeStoreOption, [el.body.category]: el }));
     }
