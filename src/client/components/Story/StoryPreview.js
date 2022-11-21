@@ -132,11 +132,12 @@ const StoryPreview = ({ post, isUpdates, isVimeo }) => {
     ),
 
     embed: () => embeds && embeds[0] && <PostFeedEmbed key="embed" embed={embeds[0]} />,
-    image: () => (
-      <div key={imagePath} className="Story__content__img-container">
-        <LazyLoadImage src={getImagePathPost(imagePath)} threshold={250} />
-      </div>
-    ),
+    image: () =>
+      imagePath && (
+        <div key={imagePath} className="Story__content__img-container">
+          <LazyLoadImage src={getImagePathPost(imagePath)} threshold={250} />
+        </div>
+      ),
   };
 
   const htmlBody = getHtml(post.body, {}, 'Object');
