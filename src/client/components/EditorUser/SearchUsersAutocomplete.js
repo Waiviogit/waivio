@@ -66,6 +66,7 @@ class SearchUsersAutocomplete extends React.Component {
   state = {
     searchString: '',
     isOptionSelected: false,
+    error: false,
   };
 
   debouncedSearchByUser = _.debounce(
@@ -89,8 +90,12 @@ class SearchUsersAutocomplete extends React.Component {
     const selectedUsers = this.props.searchUsersResults.find(obj => obj.account === value);
 
     this.props.handleSelect(selectedUsers);
-    this.setState({ searchString: '' });
+    this.setState({ searchString: '', error: false });
     this.props.setSearchString('');
+  };
+
+  handleBlur = () => {
+    if (this.state.searchString) this.setState({ error: true });
   };
 
   render() {
@@ -119,27 +124,33 @@ class SearchUsersAutocomplete extends React.Component {
       : [];
 
     return (
-      <AutoComplete
-        onChange={this.handleChange}
-        onSelect={this.handleSelect}
-        onSearch={this.handleSearch}
-        optionLabelProp={'label'}
-        placeholder={
-          !this.props.placeholder
-            ? intl.formatMessage({
-                id: 'users_auto_complete_placeholder',
-                defaultMessage: 'Find users',
-              })
-            : this.props.placeholder
-        }
-        value={searchString}
-        autoFocus={autoFocus}
-        disabled={disabled}
-        style={style}
-        className={className}
-      >
-        {isSearchUser ? pendingSearch(searchString, intl) : searchUsersOptions}
-      </AutoComplete>
+      <React.Fragment>
+        <AutoComplete
+          onChange={this.handleChange}
+          onSelect={this.handleSelect}
+          onSearch={this.handleSearch}
+          optionLabelProp={'label'}
+          placeholder={
+            !this.props.placeholder
+              ? intl.formatMessage({
+                  id: 'users_auto_complete_placeholder',
+                  defaultMessage: 'Find users',
+                })
+              : this.props.placeholder
+          }
+          value={searchString}
+          autoFocus={autoFocus}
+          disabled={disabled}
+          style={style}
+          className={className}
+          onBlur={this.handleBlur}
+        >
+          {isSearchUser ? pendingSearch(searchString, intl) : searchUsersOptions}
+        </AutoComplete>
+        {this.state.error && (
+          <span className="SearchUser__error">The user must be selected from the search</span>
+        )}
+      </React.Fragment>
     );
   }
 }

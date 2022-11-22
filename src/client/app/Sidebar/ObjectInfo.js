@@ -42,8 +42,6 @@ import { getObjectAlbums, getRelatedPhotos } from '../../../store/galleryStore/g
 import { getRelatedAlbum } from '../../../store/galleryStore/galleryActions';
 import CompanyId from './CompanyId';
 import ProductId from './ProductId';
-
-import './ObjectInfo.less';
 import ObjectAvatar from '../../components/ObjectAvatar';
 import Options from '../../object/Options';
 import {
@@ -53,12 +51,15 @@ import {
 } from '../../../store/optionsStore/optionsSelectors';
 import { setStoreActiveOption, setStoreGroupId } from '../../../store/optionsStore/optionsActions';
 import { getObject } from '../../../waivioApi/ApiClient';
+import { getLocale } from '../../../common/helpers/localStorageHelpers';
+import './ObjectInfo.less';
 
 @withRouter
 @connect(
   state => ({
     albums: getObjectAlbums(state),
     isAuthenticated: getIsAuthenticated(state),
+    locale: getLocale(),
     isWaivio: getIsWaivio(state),
     relatedAlbum: getRelatedPhotos(state),
     activeOption: getActiveOption(state),
@@ -86,6 +87,7 @@ class ObjectInfo extends React.Component {
     getRelatedAlbum: PropTypes.func.isRequired,
     setStoreGroupId: PropTypes.func.isRequired,
     setStoreActiveOption: PropTypes.func.isRequired,
+    locale: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -123,6 +125,10 @@ class ObjectInfo extends React.Component {
     if (storeGroupId !== wobject.groupId || !hasGroupId) {
       this.props.setStoreActiveOption({});
     }
+  }
+
+  componentWillUnmount() {
+    this.props.setStoreActiveOption({});
   }
 
   incrementPhoneCount = 3;
@@ -351,7 +357,7 @@ class ObjectInfo extends React.Component {
     });
   onOptionPicClick = pic => {
     if (pic.name === 'options') {
-      getObject(pic.parentPermlink, this.props.userName, 'En').then(obj =>
+      getObject(pic.parentPermlink, this.props.userName, this.props.locale).then(obj =>
         this.props.history.push(obj.defaultShowLink),
       );
       this.props.setStoreActiveOption({});

@@ -122,6 +122,11 @@ export default (messageFactory, validators, userName, currency) => ({
       'value_of_upvotes_can_be_accumulated_on_compensation_account',
       'The value of upvotes can be accumulated on a dedicated compensation account',
     ),
+    rules: [
+      {
+        validator: validators.checkSponsorsList,
+      },
+    ],
   },
   compensationAccount: {
     name: 'compensationAccount',
