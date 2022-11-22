@@ -465,7 +465,12 @@ export const sendCommentForReward = (proposition, body, isUpdating = false, orig
       .broadcast([commentOp])
       .then(res => {
         if (auth.isGuestUser) {
-          resolve(detail);
+          resolve({
+            ...detail,
+            guestInfo: {
+              userId: auth.user.name,
+            },
+          });
         } else {
           busyAPI.instance.sendAsync(subscribeTypes.subscribeTransactionId, [
             auth.user.name,

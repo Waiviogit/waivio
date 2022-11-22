@@ -17,21 +17,20 @@ import Avatar from '../../components/Avatar';
 import BTooltip from '../../components/BTooltip';
 import BodyContainer from '../../containers/Story/BodyContainer';
 import QuickCommentEditor from '../../components/Comments/QuickCommentEditor';
-import { getAuthenticatedUserName, isGuestUser } from '../../../store/authStore/authSelectors';
+import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 import { voteComment } from '../../../store/postsStore/postActions';
 import { getDownvotesQuontity, getUpvotesQuontity } from '../../../common/helpers/voteHelpers';
 import { sendCommentForReward } from '../../../store/newRewards/newRewardsActions';
-import { parseJSON } from '../../../common/helpers/parseJSON';
 
 const CommentCard = ({ comment, intl, getMessageHistory, proposition }) => {
   const dispatch = useDispatch();
   const user = useSelector(getAuthenticatedUserName);
-  const isGuest = useSelector(isGuestUser);
   const [pendingLike, setPendigLike] = useState(false);
   const [pendingSend, setPendigSend] = useState(false);
   const [pendingDisLike, setPendingDisLike] = useState(false);
   const [editing, setEditing] = useState(false);
-  const author = isGuest ? parseJSON(comment.json_metadata)?.comment?.userId : comment.author;
+
+  const author = comment.guestInfo ? comment.guestInfo.userId : comment.author;
   const editable = author === user;
   const isLiked = comment.active_votes.some(vote => vote.voter === user && +vote.percent > 0);
   const isDisliked = comment.active_votes.some(vote => vote.voter === user && +vote.percent < 0);
@@ -190,6 +189,7 @@ CommentCard.propTypes = {
     json_metadata: PropTypes.string,
     created: PropTypes.string,
     permlink: PropTypes.string,
+    guestInfo: PropTypes.shape(),
   }).isRequired,
   proposition: PropTypes.shape().isRequired,
   intl: PropTypes.shape().isRequired,
