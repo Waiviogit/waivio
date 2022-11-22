@@ -109,7 +109,6 @@ import { getAppendList } from '../../../store/appendStore/appendSelectors';
 import { parseJSON } from '../../../common/helpers/parseJSON';
 import { baseUrl } from '../../../waivioApi/routes';
 import './AppendForm.less';
-import Widget from '../Widget/Widget';
 
 @connect(
   state => ({
@@ -555,6 +554,10 @@ export default class AppendForm extends Component {
         case objectFields.form:
           return `@${author} added form: ${formValues.formTitle}, link: ${formValues.formLink ||
             formValues.formWidget}, column: ${formValues.formColumn}`;
+
+        case objectFields.widget:
+          return `@${author} added form: ${formValues.formTitle}, link: ${formValues.formLink ||
+            formValues.formWidget}, column: ${formValues.formColumn}`;
         default:
           return `@${author} added ${currentField} (${langReadable}):\n ${appendValue.replace(
             /[{}"]/g,
@@ -689,6 +692,18 @@ export default class AppendForm extends Component {
           column: formValues.formColumn,
           form: formValues.formForm,
           link: formValues.formLink || formValues.formWidget,
+        };
+      }
+      if (currentField === objectFields.widget) {
+        fieldsObject = {
+          ...fieldsObject,
+          body: JSON.stringify({
+            name: objectFields.widget,
+            title: formValues.formTitle,
+            column: formValues.formColumn,
+            type: formValues.formForm,
+            content: formValues.formLink || formValues.formWidget,
+          }),
         };
       }
 
@@ -3072,7 +3087,7 @@ export default class AppendForm extends Component {
         const { formColumn, formForm } = this.state;
 
         return (
-          <Widget
+          <ObjectForm
             formColumn={formColumn}
             formForm={formForm}
             form={this.props.form}
@@ -3144,6 +3159,7 @@ export default class AppendForm extends Component {
           isEmpty(getFieldValue(productIdFields.productId))
         );
       case objectFields.form:
+      case objectFields.widget:
         return (
           isEmpty(getFieldValue('formTitle')) ||
           (isEmpty(getFieldValue('formLink')) && isEmpty(getFieldValue('formWidget')))
