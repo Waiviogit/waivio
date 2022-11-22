@@ -298,8 +298,6 @@ const CreateFormRenderer = props => {
         <Form.Item label={fields.sponsorsList.label}>
           {getFieldDecorator(fields.sponsorsList.name, {
             initialValue: sponsorsList,
-            rules: fields.sponsorsList.rules,
-            validateTrigger: ['onSubmit', 'onChange'],
           })(
             <SearchUsersAutocomplete
               allowClear={false}
@@ -313,7 +311,6 @@ const CreateFormRenderer = props => {
           )}
           <div className="CreateReward__field-caption">{fields.sponsorsList.caption}</div>
           <div className="CreateReward__objects-wrap">{renderSponsorsList}</div>
-          {/* {<span style={{color: 'red'}}>The user must be selected from the search</span>} */}
         </Form.Item>
 
         <Form.Item label={fields.compensationAccount.label}>

@@ -147,10 +147,10 @@ export default class WobjectContainer extends React.Component {
   };
 
   static async fetchData({ store, match }) {
-    const { value } = await store.dispatch(login());
+    const res = await store.dispatch(login());
 
     return Promise.all([
-      store.dispatch(getObject(match.params.name, value.name)),
+      store.dispatch(getObject(match.params.name, res?.value?.name)),
       store.dispatch(getObjectFollowersAction({ object: match.params.name, skip: 0, limit: 5 })),
       store.dispatch(getRate()),
       store.dispatch(getRewardFund()),
