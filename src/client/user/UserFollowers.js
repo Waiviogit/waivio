@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { Tabs } from 'antd';
 import UserDynamicList from './UserDynamicList';
@@ -13,7 +14,7 @@ import UserFollowing from './UserFollowing';
 import { getUser } from '../../store/usersStore/usersSelectors';
 import ObjectDynamicList from '../object/ObjectDynamicList';
 
-const UserFollowers = ({ match, sort, authUser, handleChange, user, locale }) => {
+const UserFollowers = ({ match, sort, authUser, handleChange, user, locale, intl }) => {
   const limit = 50;
   let skip = 0;
   let objSkip = 0;
@@ -43,20 +44,29 @@ const UserFollowers = ({ match, sort, authUser, handleChange, user, locale }) =>
     <Tabs className={'UserFollowers'}>
       <Tabs.TabPane
         className="UserFollowing__item"
-        tab={`Followers ${followersCount}`}
+        tab={`${intl.formatMessage({
+          id: 'followers',
+          defaultMessage: 'Followers',
+        })} ${followersCount}`}
         key="followers"
       >
         <UserDynamicList limit={limit} fetcher={fetcher} handleChange={handleChange} />
       </Tabs.TabPane>
       <Tabs.TabPane
-        tab={`Following ${usersFollowingCount}`}
+        tab={`${intl.formatMessage({
+          id: 'following',
+          defaultMessage: 'Following',
+        })} ${usersFollowingCount}`}
         key="following"
         className="UserFollowing__item"
       >
         <UserFollowing locale={locale} match={match} user={authUser} handleChange={handleChange} />
       </Tabs.TabPane>
       <Tabs.TabPane
-        tab={`Objects ${objectsFollowingCount}`}
+        tab={`${intl.formatMessage({
+          id: 'objects',
+          defaultMessage: 'Objects',
+        })} ${objectsFollowingCount}`}
         key="objects"
         className="UserFollowing__item"
       >
@@ -73,6 +83,7 @@ UserFollowers.propTypes = {
   user: PropTypes.string.isRequired,
   authUser: PropTypes.string.isRequired,
   handleChange: PropTypes.func.isRequired,
+  intl: PropTypes.shape().isRequired,
 };
 
 export default connect(
@@ -84,4 +95,4 @@ export default connect(
   {
     handleChange: changeSorting,
   },
-)(UserFollowers);
+)(injectIntl(UserFollowers));
