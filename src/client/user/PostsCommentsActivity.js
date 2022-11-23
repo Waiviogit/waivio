@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { isEmpty, isEqual } from 'lodash';
+import { injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { Tabs } from 'antd';
@@ -29,6 +30,7 @@ import { getUsersAccountHistory } from '../../store/walletStore/walletSelectors'
 import UserProfilePosts from './UserComments';
 import UserActivity from '../activity/UserActivity';
 
+@injectIntl
 @withRouter
 @connect(
   (state, ownProps) => ({
@@ -53,6 +55,7 @@ export default class PostsCommentsActivity extends React.Component {
     authenticatedUser: PropTypes.shape().isRequired,
     feed: PropTypes.shape().isRequired,
     match: PropTypes.shape().isRequired,
+    intl: PropTypes.shape().isRequired,
     showPostModal: PropTypes.func.isRequired,
     resetProfileFilters: PropTypes.func.isRequired,
     tagsCondition: PropTypes.arrayOf(PropTypes.string),
@@ -132,6 +135,7 @@ export default class PostsCommentsActivity extends React.Component {
       isGuest,
       history,
       user,
+      intl,
       match,
     } = this.props;
     const { name } = match.params;
@@ -163,7 +167,10 @@ export default class PostsCommentsActivity extends React.Component {
         className={'UserFollowers'}
         onChange={onTabChange}
       >
-        <Tabs.TabPane tab={'Posts'} key={postTabKey}>
+        <Tabs.TabPane
+          tab={intl.formatMessage({ id: 'posts', defaultMessage: 'Posts' })}
+          key={postTabKey}
+        >
           {this.state?.activeKey === 'posts' && (
             <div className="profile">
               <Feed
@@ -181,12 +188,18 @@ export default class PostsCommentsActivity extends React.Component {
             </div>
           )}
         </Tabs.TabPane>
-        <Tabs.TabPane tab={'Comments'} key="comments">
+        <Tabs.TabPane
+          tab={intl.formatMessage({ id: 'comments', defaultMessage: 'Comments' })}
+          key="comments"
+        >
           {this.state?.activeKey === 'comments' && (
             <UserProfilePosts showPostModal={this.props.showPostModal} feed={feed} match={match} />
           )}
         </Tabs.TabPane>
-        <Tabs.TabPane tab={'Activity'} key="activity">
+        <Tabs.TabPane
+          tab={intl.formatMessage({ id: 'activity', defaultMessage: 'Activity' })}
+          key="activity"
+        >
           {this.state?.activeKey === 'activity' && !this.props.isGuest && (
             <UserActivity isCurrentUser />
           )}
