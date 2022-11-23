@@ -32,6 +32,7 @@ module.exports = {
         ],
       },
     ],
+    "react/require-default-props": "off",
     'no-unused-vars': ERROR,
     'no-use-before-define': OFF,
     'no-case-declarations': OFF,

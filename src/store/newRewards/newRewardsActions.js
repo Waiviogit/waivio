@@ -9,7 +9,7 @@ import {
 import { getNewDetailsBody } from '../../client/rewards/rewardsHelper';
 import config from '../../waivioApi/config.json';
 import { subscribeTypes } from '../../common/constants/blockTypes';
-import { getAuthenticatedUserName } from '../authStore/authSelectors';
+import { getAuthenticatedUserName, isGuestUser } from '../authStore/authSelectors';
 import { changeRewardsTab } from '../authStore/authActions';
 import { getTokenRatesInUSD } from '../walletStore/walletSelectors';
 import { rewardsPost } from '../../client/rewards/Manage/constants';
@@ -30,7 +30,9 @@ export const reserveProposition = (proposition, username) => async (
   const proposedWobjName = getObjectName(dish);
   const proposedAuthorPermlink = dish?.author_permlink;
   const primaryObject = proposition?.requiredObject;
-  const rates = getTokenRatesInUSD(getState(), 'WAIV');
+  const state = getState();
+  const isGuest = isGuestUser(state);
+  const rates = getTokenRatesInUSD(state, 'WAIV');
   const amount = round(proposition.rewardInUSD / rates, 3);
   const detailsBody = await getNewDetailsBody(proposition);
   const commentOp = [
@@ -62,13 +64,20 @@ export const reserveProposition = (proposition, username) => async (
     steemConnectAPI
       .broadcast([commentOp])
       .then(async () => {
-        busyAPI.instance.sendAsync(subscribeTypes.subscribeCampaignAssign, [username, permlink]);
-        busyAPI.instance.subscribe((datad, j) => {
-          if (j?.success && j?.permlink === permlink) {
+        if (isGuest) {
+          setTimeout(() => {
             dispatch(changeRewardsTab(username));
             resolve();
-          }
-        });
+          }, 7000);
+        } else {
+          busyAPI.instance.sendAsync(subscribeTypes.subscribeCampaignAssign, [username, permlink]);
+          busyAPI.instance.subscribe((datad, j) => {
+            if (j?.success && j?.permlink === permlink) {
+              dispatch(changeRewardsTab(username));
+              resolve();
+            }
+          });
+        }
       })
       .catch(error => reject(error));
   });

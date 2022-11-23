@@ -1,4 +1,4 @@
-export const currencyTypes = [
+export const currenTypes = [
   'USD',
   'CAD',
   'UAH',
@@ -9,7 +9,7 @@ export const currencyTypes = [
   'MXN',
   'AUD',
   'EUR',
-  'FR',
+  'CHF',
 ];
 
 export const currencyPrefix = {
