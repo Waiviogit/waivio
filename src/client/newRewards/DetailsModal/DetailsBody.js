@@ -59,7 +59,7 @@ const DetailsModalBody = ({ proposition, requirements, agreementObjects }) => {
                   Have not received a reward from
                   <Link to={`/@${proposition?.guideName}`}>{` @${proposition?.guideName} `}</Link>
                   for reviewing
-                  <Link className="nowrap" to={requiredObject?.defaultShowLink}>
+                  <Link to={requiredObject?.defaultShowLink}>
                     {` ${getObjectName(requiredObject)} `}
                   </Link>
                   in the last {proposition?.frequencyAssign} days.

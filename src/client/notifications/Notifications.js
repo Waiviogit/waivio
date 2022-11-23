@@ -465,7 +465,11 @@ class Notifications extends React.Component {
                       object_name: <span>{notification.object_name}</span>,
                     }}
                     username={notification.author}
-                    url={`/rewards/all/${notification.author_permlink}`}
+                    url={
+                      notification.newCampaigns
+                        ? `/rewards-new/all/${notification.author_permlink}`
+                        : `/rewards-new/all/${notification.author_permlink}`
+                    }
                     key={key}
                     notification={notification}
                     read={read}

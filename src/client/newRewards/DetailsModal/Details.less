@@ -1,3 +1,6 @@
+@import (reference) '../../styles/custom.less';
+@import (reference) '../../styles/modules/variables.less';
+
 .DetailsModal {
   &__requirementsList {
     margin-left: 2rem;
@@ -11,6 +14,10 @@
   }
 
   &__text-wrap {
-    margin: 10px 35px 25px;
+    margin: 10px 0 0;
+
+    @media @small {
+      margin: 10px 35px 25px;
+    }
   }
 }
