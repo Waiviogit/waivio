@@ -8,6 +8,8 @@ import FilterTypesList from '../../../search/SearchAllResult/components/FilterTy
 import HeaderButton from '../../../components/HeaderButton/HeaderButton';
 import SubmitDishPhotosButton from '../../../widgets/SubmitDishPhotosButton/SubmitDishPhotosButton';
 
+import './WebsiteHeader.less';
+
 const MainPageHeader = props => (
   <div className="MainPageHeader">
     <div className="MainPageHeader__navWrapper">
