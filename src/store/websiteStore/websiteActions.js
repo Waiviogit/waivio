@@ -517,10 +517,12 @@ export const GET_WEBSITE_OBJECTS_WITH_COORDINATES = createAsyncActionType(
   '@website/GET_WEBSITE_OBJECTS_WITH_COORDINATES',
 );
 
-export const getWebsiteObjWithCoordinates = (searchString, box = {}, limit = 70) => (
-  dispatch,
-  getState,
-) => {
+export const getWebsiteObjWithCoordinates = (
+  searchString,
+  box = {},
+  limit = 70,
+  abortController,
+) => (dispatch, getState) => {
   const state = getState();
   const locale = getLocale(state);
   const objType = getWebsiteSearchType(state);
@@ -548,7 +550,15 @@ export const getWebsiteObjWithCoordinates = (searchString, box = {}, limit = 70)
 
   return dispatch({
     type: GET_WEBSITE_OBJECTS_WITH_COORDINATES.ACTION,
-    payload: ApiClient.searchObjects(searchString, objType, false, limit, locale, body),
+    payload: ApiClient.searchObjects(
+      searchString,
+      objType,
+      false,
+      limit,
+      locale,
+      body,
+      abortController,
+    ),
     meta: Boolean(searchString || !isEmpty(tagsFilter)),
   });
 };

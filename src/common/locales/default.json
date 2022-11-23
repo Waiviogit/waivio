@@ -1989,5 +1989,6 @@
   "map_header": "map",
   "partners": "partners",
   "submit_dish_photos": "Submit dish photos",
-  "find_rewards": "Find Rewards"
+  "find_rewards": "Find Rewards",
+  "object_field_widget": "Widget"
 }

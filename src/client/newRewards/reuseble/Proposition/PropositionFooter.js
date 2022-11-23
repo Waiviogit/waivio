@@ -31,6 +31,7 @@ const PropositionFooter = ({ type, openDetailsModal, proposition, getProposition
   const isWaivio = useSelector(getIsWaivio);
   const propositionFooterContainerClassList = classnames('Proposition-new__footer-container', {
     'Proposition-new__footer-container--noEligible': proposition.notEligible,
+    'Proposition-new__footer-container--reserved': type === 'reserved',
   });
 
   const location = useLocation();
@@ -109,7 +110,7 @@ const PropositionFooter = ({ type, openDetailsModal, proposition, getProposition
       case 'reserved':
         return (
           <React.Fragment>
-            <div className="Proposition-new__footer-container">
+            <div className={propositionFooterContainerClassList}>
               <div className="Proposition-new__button-container">
                 <b>Reserved</b>
                 <b>
@@ -155,7 +156,7 @@ const PropositionFooter = ({ type, openDetailsModal, proposition, getProposition
       case 'fraud':
         return (
           <React.Fragment>
-            <div className="Proposition-new__footer-container">
+            <div className={propositionFooterContainerClassList}>
               <div className="Proposition-new__button-container">
                 <b>
                   {intl.formatMessage({
@@ -244,6 +245,7 @@ PropositionFooter.propTypes = {
     rootName: PropTypes.string,
     guideName: PropTypes.string,
     notEligible: PropTypes.bool,
+    reserved: PropTypes.bool,
     commentsCount: PropTypes.number,
     countReservationDays: PropTypes.number,
     reservationPermlink: PropTypes.string,

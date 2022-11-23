@@ -324,9 +324,9 @@ export const searchObjects = (
   limit = 15,
   locale,
   body = {},
-  skip,
+  abortController,
 ) => {
-  const requestBody = { search_string: searchString, limit, skip, ...body };
+  const requestBody = { search_string: searchString, limit, ...body };
 
   if (objType && typeof objType === 'string') requestBody.object_type = objType;
   if (forParent && typeof forParent === 'string') requestBody.forParent = forParent;
@@ -335,6 +335,7 @@ export const searchObjects = (
     headers: { ...headers, locale, app: config.appName },
     method: 'POST',
     body: JSON.stringify(requestBody),
+    ...(abortController && { signal: abortController.signal }),
   })
     .then(handleErrors)
     .then(res => res.json());
@@ -3317,6 +3318,16 @@ export const getMarkersForEligible = (userName, box, skip, limit = 20) => {
       skip,
       limit,
     }),
+  })
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+};
+
+export const getCurrencyType = () => {
+  return fetch(`${config.currenciesApiPrefix}${config.rate}${config.available}`, {
+    headers,
+    method: 'GET',
   })
     .then(res => res.json())
     .then(response => response)

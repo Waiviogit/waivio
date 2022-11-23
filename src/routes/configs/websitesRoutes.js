@@ -241,6 +241,11 @@ const routes = host => ({
           exact: true,
           component: Views.FormPage,
         },
+        {
+          path: '/widget',
+          exact: true,
+          component: Views.WidgetPage,
+        },
       ],
     },
     {

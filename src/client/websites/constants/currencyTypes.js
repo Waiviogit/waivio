@@ -1,4 +1,16 @@
-export const currencyTypes = ['USD', 'CAD', 'UAH', 'RUB', 'CNY', 'JPY', 'GBP', 'MXN', 'AUD', 'EUR'];
+export const currencyTypes = [
+  'USD',
+  'CAD',
+  'UAH',
+  'RUB',
+  'CNY',
+  'JPY',
+  'GBP',
+  'MXN',
+  'AUD',
+  'EUR',
+  'FR',
+];
 
 export const currencyPrefix = {
   AUD: 'A$',
@@ -14,6 +26,7 @@ export const currencyPrefix = {
   RUB: '₽',
   CNY: '¥',
   UAH: '₴',
+  CHF: '₣',
 };
 
 export const defaultCurrency = 'USD';
