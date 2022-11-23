@@ -521,7 +521,6 @@ const CreateFormRenderer = props => {
           {getFieldDecorator(fields.checkboxAgree.name, {
             rules: fields.checkboxAgree.rules,
             valuePropName: fields.checkboxAgree.valuePropName,
-            validateTrigger: ['onChange', 'onBlur', 'onSubmit'],
           })(
             <Checkbox disabled={disabled}>
               <span className="CreateReward__item-title ant-form-item-required">
@@ -536,7 +535,6 @@ const CreateFormRenderer = props => {
           {getFieldDecorator(fields.expiredAt.name, {
             rules: fields.expiredAt.rules,
             initialValue: expiredAt || moment().add(2, 'days'),
-            validateTrigger: ['onChange', 'onBlur', 'onSubmit'],
           })(
             <DatePicker
               allowClear={false}
