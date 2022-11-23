@@ -377,7 +377,6 @@ export const getNewDetailsBody = async proposition => {
   } original photos ${proposedWobj};</li>${receiptPhoto} ${linkToFollowingObjects}<li>Link to <a href='${
     parent?.defaultShowLink
   }'>${getObjectName(parent)}</a>;</li></ul> `;
-  const description = getDescription(proposition);
   const sponsor = `<p>Sponsor reserves the right to refuse the payment if review is suspected to be fraudulent, spam, poorly written or for other reasons as stated in the agreement.</p>`;
   const agreementObjects = isEmpty(proposition?.agreementObjects)
     ? null
@@ -394,7 +393,7 @@ export const getNewDetailsBody = async proposition => {
         )}</p>`
       : '';
 
-  return `${eligibilityRequirements} ${frequencyAssign} ${blacklist} ${postRequirements} ${description} ${sponsor} ${rewards} ${legal}`;
+  return `${eligibilityRequirements} ${frequencyAssign} ${blacklist} ${postRequirements} ${sponsor} ${rewards} ${legal}`;
 };
 
 export const sortDebtObjsData = (items, sortBy) => {

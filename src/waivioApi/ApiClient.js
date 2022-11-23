@@ -3324,6 +3324,16 @@ export const getMarkersForEligible = (userName, box, skip, limit = 20) => {
     .catch(e => e);
 };
 
+export const getCurrencyType = () => {
+  return fetch(`${config.currenciesApiPrefix}${config.rate}${config.available}`, {
+    headers,
+    method: 'GET',
+  })
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+};
+
 //
 
 export default null;

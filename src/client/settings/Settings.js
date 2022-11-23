@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import { Select, Radio, Checkbox } from 'antd';
-import { saveSettings } from '../../store/settingsStore/settingsActions';
+import { getCurrencyForSettings, saveSettings } from '../../store/settingsStore/settingsActions';
 import { reload } from '../../store/authStore/authActions';
 import { notify } from '../app/Notification/notificationActions';
 import Action from '../components/Button/Action';
@@ -19,6 +19,7 @@ import {
 } from '../../store/authStore/authSelectors';
 import {
   getCurrency,
+  getCurrencyList,
   getExitPageSetting,
   getIsSettingsLoading,
   getLocale,
@@ -30,7 +31,7 @@ import {
   getVotePercent,
   getVotingPower,
 } from '../../store/settingsStore/settingsSelectors';
-import { currencyTypes, defaultCurrency } from '../websites/constants/currencyTypes';
+import { defaultCurrency } from '../websites/constants/currencyTypes';
 import { getIsWaivio } from '../../store/appStore/appSelectors';
 
 import './Settings.less';
@@ -54,8 +55,9 @@ import './Settings.less';
     upvoteSetting: getUpvoteSetting(state),
     exitPageSetting: getExitPageSetting(state),
     isGuest: isGuestUser(state),
+    currencyList: getCurrencyList(state),
   }),
-  { reload, saveSettings, notify },
+  { reload, saveSettings, notify, getCurrencyForSettings },
 )
 export default class Settings extends React.Component {
   static propTypes = {
@@ -74,10 +76,12 @@ export default class Settings extends React.Component {
     reload: PropTypes.func,
     saveSettings: PropTypes.func,
     notify: PropTypes.func,
+    getCurrencyForSettings: PropTypes.func.isRequired,
     upvoteSetting: PropTypes.bool,
     exitPageSetting: PropTypes.bool,
     isGuest: PropTypes.bool,
     user: PropTypes.shape({ name: PropTypes.string }),
+    currencyList: PropTypes.arrayOf(PropTypes.string).isRequired,
     history: PropTypes.shape().isRequired,
   };
 
@@ -140,6 +144,7 @@ export default class Settings extends React.Component {
 
   componentDidMount() {
     this.props.reload();
+    this.props.getCurrencyForSettings();
   }
 
   componentWillReceiveProps(nextProps) {
@@ -363,7 +368,7 @@ export default class Settings extends React.Component {
                   style={{ width: '90px' }}
                   onChange={currency => this.setState(() => ({ currency }))}
                 >
-                  {currencyTypes.map(currency => (
+                  {this.props.currencyList?.map(currency => (
                     <Select.Option key={currency} value={currency}>
                       {currency}
                     </Select.Option>

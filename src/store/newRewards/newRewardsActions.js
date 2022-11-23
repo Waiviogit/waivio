@@ -182,7 +182,7 @@ export const rejectAuthorReview = proposition => (
   const commentOp = [
     'comment',
     {
-      parent_author: proposition.userName,
+      parent_author: proposition.rootName,
       parent_permlink: proposition.reservationPermlink,
       author: proposition.guideName,
       permlink: createCommentPermlink(proposition.userName, proposition.reservationPermlink),
@@ -234,7 +234,7 @@ export const reinstateReward = proposition => (
   const commentOp = [
     'comment',
     {
-      parent_author: proposition?.userName,
+      parent_author: proposition?.rootName,
       parent_permlink: proposition?.reservationPermlink,
       author: authUserName,
       permlink: createCommentPermlink(proposition?.userName, proposition?.reservationPermlink),
@@ -306,7 +306,7 @@ export const decreaseReward = (proposition, amount, type) => (
   const commentOp = [
     'comment',
     {
-      parent_author: proposition.userName,
+      parent_author: proposition.rootName,
       parent_permlink: proposition.reservationPermlink,
       author: autnUserName,
       permlink: createCommentPermlink(proposition.userName, proposition.reservationPermlink),

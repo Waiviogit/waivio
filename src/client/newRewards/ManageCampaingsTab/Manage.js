@@ -24,7 +24,7 @@ export const Manage = ({ intl, guideName, setHistoryLoading }) => {
   const dispatch = useDispatch();
   const [manageList, setManageList] = useState([]);
   const [loading, setLoading] = useState(true);
-  const campaingIsActive = status => status === 'active';
+  const campaingIsActive = status => ['active', 'reachedLimit'].includes(status);
 
   useEffect(() => {
     getCampaingManageList(guideName).then(res => {
@@ -139,7 +139,7 @@ export const Manage = ({ intl, guideName, setHistoryLoading }) => {
                   <Checkbox
                     checked={campaingIsActive(row.status)}
                     onChange={() => showConfirm(row)}
-                    disabled={['onhold'].includes(row.status)}
+                    disabled={['onHold'].includes(row.status)}
                   />
                 )}
               </td>
