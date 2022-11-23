@@ -11,6 +11,7 @@ import { getTokenRatesInUSD } from '../../../../store/walletStore/walletSelector
 const ReportFooter = ({ intl, toggleModal, currencyInfo, reportDetails, payoutToken }) => {
   const singleReportData = reportDetails || useSelector(getSingleReportData);
   const sponsor = get(singleReportData, ['sponsor', 'name']);
+  const matchBots = singleReportData.match_bots || singleReportData.matchBots;
   const currentUSDPrice =
     payoutToken === 'HIVE'
       ? getCurrentUSDPrice()
@@ -42,8 +43,8 @@ const ReportFooter = ({ intl, toggleModal, currencyInfo, reportDetails, payoutTo
             defaultMessage: 'Only upvotes from registered accounts',
           })}{' '}
           (<a href={`/@${sponsor}`}>{sponsor}</a>
-          {!isEmpty(singleReportData.match_bots)
-            ? map(singleReportData.match_bots, bot => (
+          {!isEmpty(matchBots)
+            ? map(matchBots, bot => (
                 <a key={bot} href={`/@${bot}`}>
                   , {bot}
                 </a>

@@ -53,6 +53,8 @@ import {
 import { getLocale } from '../../../store/settingsStore/settingsSelectors';
 import { getConfiguration } from '../../../store/websiteStore/websiteSelectors';
 import { getRate, getRewardFund } from '../../../store/appStore/appActions';
+import { setStoreActiveOption } from '../../../store/optionsStore/optionsActions';
+import { login } from '../../../store/authStore/authActions';
 
 @withRouter
 @connect(
@@ -87,6 +89,7 @@ import { getRate, getRewardFund } from '../../../store/appStore/appActions';
     getWobjectExpertise: getWobjectExpertiseAction,
     getObjectFollowers: getObjectFollowersAction,
     getRelatedWobjects,
+    setStoreActiveOption,
   },
 )
 export default class WobjectContainer extends React.Component {
@@ -122,6 +125,7 @@ export default class WobjectContainer extends React.Component {
     getWobjectExpertise: PropTypes.func.isRequired,
     getObjectFollowers: PropTypes.func.isRequired,
     getRelatedWobjects: PropTypes.func.isRequired,
+    setStoreActiveOption: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -142,9 +146,11 @@ export default class WobjectContainer extends React.Component {
     clearRelatedPhoto: () => {},
   };
 
-  static fetchData({ store, match }) {
+  static async fetchData({ store, match }) {
+    const res = await store.dispatch(login());
+
     return Promise.all([
-      store.dispatch(getObject(match.params.name)),
+      store.dispatch(getObject(match.params.name, res?.value?.name)),
       store.dispatch(getObjectFollowersAction({ object: match.params.name, skip: 0, limit: 5 })),
       store.dispatch(getRate()),
       store.dispatch(getRewardFund()),
@@ -169,10 +175,10 @@ export default class WobjectContainer extends React.Component {
   }
 
   componentDidMount() {
-    const { match, wobject, authenticatedUserName } = this.props;
+    const { match, authenticatedUserName, wobject } = this.props;
     const newsFilter = match.params[1] === 'newsFilter' ? { newsFilter: match.params.itemId } : {};
 
-    if (isEmpty(wobject) || wobject.id !== match.params.name) {
+    if (isEmpty(wobject) || wobject.author_permlink !== match.params.name) {
       this.props.getObject(match.params.name, authenticatedUserName).then(() => {
         this.props.getAlbums(match.params.name);
         this.props.getNearbyObjects(match.params.name);
@@ -192,7 +198,11 @@ export default class WobjectContainer extends React.Component {
     const { authenticatedUserName, match, locale } = this.props;
     const newsFilter = match.params[1] === 'newsFilter' ? { newsFilter: match.params.itemId } : {};
 
-    if (prevProps.match.params.name !== match.params.name || prevProps.locale !== locale) {
+    if (
+      prevProps.match.params.name !== match.params.name ||
+      prevProps.locale !== locale ||
+      prevProps.authenticatedUserName !== authenticatedUserName
+    ) {
       this.props.getObject(match.params.name, authenticatedUserName);
       this.props.resetGallery();
       this.props.clearObjectFromStore();
@@ -214,6 +224,7 @@ export default class WobjectContainer extends React.Component {
     this.props.setCatalogBreadCrumbs([]);
     this.props.setNestedWobject({});
     this.props.clearRelatedPhoto();
+    this.props.setStoreActiveOption({});
   }
 
   toggleViewEditMode = () => this.setState(prevState => ({ isEditMode: !prevState.isEditMode }));

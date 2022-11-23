@@ -129,12 +129,12 @@ const Rebalancing = ({ intl }) => {
       const tokens =
         row.rebalanceBase[0] === '-'
           ? [
-              { symbol: row.base, balance: row.balance },
-              { symbol: row.quote, balance: row.quoteBalance },
+              { symbol: row.base, balance: row.balance, rate: row.rate },
+              { symbol: row.quote, balance: row.quoteBalance, rate: row.quoteRate },
             ]
           : [
-              { symbol: row.quote, balance: row.quoteBalance },
-              { symbol: row.base, balance: row.balance },
+              { symbol: row.quote, balance: row.quoteBalance, rate: row.quoteRate },
+              { symbol: row.base, balance: row.balance, rate: row.rate },
             ];
 
       dispatch(setBothTokens(tokens[0], tokens[1]));

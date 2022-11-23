@@ -219,7 +219,9 @@ class CreateRewards extends React.Component {
     const { rewardFund, rate } = this.props;
     const objects = map(data.secondaryObject, o => o.author_permlink);
     const agreementObjects = size(pageObjects) ? map(pageObjects, o => o.author_permlink) : [];
-    const matchBots = map(data.sponsorsList, o => o.account || o);
+    const matchBots = Array.isArray(data.sponsorsList)
+      ? map(data.sponsorsList, o => o.account || o)
+      : [];
     const appName = apiConfig[process.env.NODE_ENV].appName || 'waivio';
     const minExpertise = getMinExpertisePrepared({
       minExpertise: data.minExpertise,

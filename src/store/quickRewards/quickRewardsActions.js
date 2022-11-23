@@ -101,6 +101,7 @@ export const getEligibleRewardsListWithRestaurant = (selectRest, limit) => async
           name,
           0,
           '',
+          'payout',
         );
       } else {
         objCampaings = await getEligibleRewardList(name, 0, '', 'payout');
@@ -175,7 +176,7 @@ export const createQuickPost = (userBody, topics, images, reservationPermlink) =
   const dish = getSelectedDish(state);
   const host = getCurrentHost(state);
 
-  const isReview = Boolean(dish.propositions);
+  const isReview = Boolean(dish.propositions || dish.reward);
   const campaignId = isReview ? get(dish, 'propositions[0]._id') : null;
   const imagesLink = images.map(img => `\n<center>![image]( ${img.src})</center>`).join('');
   const topicsLink = topics

@@ -216,6 +216,7 @@ const CreateFormRenderer = props => {
             </div>
           )}
           {getFieldDecorator(fields.campaignName.name, {
+            validateTrigger: ['onChange', 'onBlur', 'onSubmit'],
             rules: fields.campaignName.rules,
             initialValue: campaignName,
           })(<Input disabled={disabled} autoFocus />)}
@@ -225,6 +226,7 @@ const CreateFormRenderer = props => {
         <Form.Item label={fields.campaignType.label}>
           {getFieldDecorator(fields.campaignType.name, {
             rules: fields.campaignType.rules,
+            validateTrigger: ['onSubmit'],
             initialValue: campaignType,
           })(
             <Select
@@ -242,6 +244,7 @@ const CreateFormRenderer = props => {
           {getFieldDecorator(fields.baseCurrency.name, {
             rules: fields.baseCurrency.rules,
             initialValue: props.currency,
+            validateTrigger: ['onChange', 'onBlur', 'onSubmit'],
           })(
             <Select onChange={handlers.handleCurrencyChanges} disabled={disabled}>
               {currencyTypes.map(currency => (
@@ -257,6 +260,7 @@ const CreateFormRenderer = props => {
           {getFieldDecorator(fields.baseCryptocurrency.name, {
             rules: fields.baseCryptocurrency.rules,
             initialValue: props.payoutToken,
+            validateTrigger: ['onChange', 'onBlur', 'onSubmit'],
           })(
             <Select onChange={handlers.handleCryptocurrencyChanges} disabled>
               {['HIVE', 'WAIV'].map(currency => (
@@ -273,6 +277,7 @@ const CreateFormRenderer = props => {
           {getFieldDecorator(fields.budget.name, {
             rules: fields.budget.rules,
             initialValue: budget,
+            validateTrigger: ['onChange', 'onBlur', 'onSubmit'],
           })(<Input type="number" disabled={disabled} step={0.1} />)}
           <div className="CreateReward__field-caption">{fields.budget.caption}</div>
         </Form.Item>
@@ -281,6 +286,7 @@ const CreateFormRenderer = props => {
           {getFieldDecorator(fields.reward.name, {
             rules: fields.reward.rules,
             initialValue: reward,
+            validateTrigger: ['onChange', 'onBlur', 'onSubmit'],
           })(<Input type="number" disabled={disabled} step={0.1} />)}
           <div className="CreateReward__field-caption">{fields.reward.caption}</div>
           <span className="CreateReward__field-exceed ">
@@ -328,6 +334,7 @@ const CreateFormRenderer = props => {
           {getFieldDecorator(fields.reservationPeriod.name, {
             rules: fields.reservationPeriod.rules,
             initialValue: reservationPeriod,
+            validateTrigger: ['onChange', 'onBlur', 'onSubmit'],
           })(<Input type="number" disabled={disabled} />)}
           <div className="CreateReward__field-caption">{fields.reservationPeriod.caption}</div>
         </Form.Item>
@@ -374,6 +381,7 @@ const CreateFormRenderer = props => {
           {getFieldDecorator(fields.primaryObject.name, {
             rules: fields.primaryObject.rules,
             initialValue: primaryObject,
+            validateTrigger: ['onChange', 'onBlur', 'onSubmit'],
           })(
             <SearchObjectsAutocomplete
               allowClear={false}
@@ -412,6 +420,7 @@ const CreateFormRenderer = props => {
           {getFieldDecorator(fields.secondaryObject.name, {
             rules: fields.secondaryObject.rules,
             initialValue: secondaryObjectsList,
+            validateTrigger: ['onChange', 'onBlur', 'onSubmit'],
           })(
             <SearchObjectsAutocomplete
               allowClear={false}

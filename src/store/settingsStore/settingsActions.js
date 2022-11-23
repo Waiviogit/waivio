@@ -1,6 +1,11 @@
 import { createAction } from 'redux-actions';
 import { saveSettingsMetadata } from '../../common/helpers/metadata';
-import { setUserStatus, getVipTicketsInfo, addNoteInVipTicket } from '../../waivioApi/ApiClient';
+import {
+  setUserStatus,
+  getVipTicketsInfo,
+  addNoteInVipTicket,
+  getCurrencyType,
+} from '../../waivioApi/ApiClient';
 import { createAsyncActionType } from '../../common/helpers/stateHelpers';
 import { getAuthenticatedUserName, isGuestUser } from '../authStore/authSelectors';
 import { getVipTicketsQuery } from '../../client/settings/common/helpers';
@@ -111,3 +116,13 @@ export const getMoreVipTickets = (isActive, skip, limit = 10) => (dispatch, getS
     },
   });
 };
+
+export const GET_CURRENCY_FOR_SETTINGS = createAsyncActionType('@app/GET_CURRENCY_FOR_SETTINGS');
+
+export const getCurrencyForSettings = () => dispatch =>
+  dispatch({
+    type: GET_CURRENCY_FOR_SETTINGS.ACTION,
+    payload: {
+      promise: getCurrencyType(),
+    },
+  });

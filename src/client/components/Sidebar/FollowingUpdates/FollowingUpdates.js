@@ -19,7 +19,7 @@ function buildFollowingUpdatesMenuConfig(updates) {
   const config = {};
   const { usersUpdates, objectsUpdates } = updates;
 
-  if (usersUpdates.users && usersUpdates.users.length) {
+  if (usersUpdates?.users?.length) {
     config[usersSection] = {
       name: usersSection,
       intlId: 'people',

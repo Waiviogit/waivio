@@ -324,9 +324,9 @@ export const searchObjects = (
   limit = 15,
   locale,
   body = {},
-  skip,
+  abortController,
 ) => {
-  const requestBody = { search_string: searchString, limit, skip, ...body };
+  const requestBody = { search_string: searchString, limit, ...body };
 
   if (objType && typeof objType === 'string') requestBody.object_type = objType;
   if (forParent && typeof forParent === 'string') requestBody.forParent = forParent;
@@ -335,6 +335,7 @@ export const searchObjects = (
     headers: { ...headers, locale, app: config.appName },
     method: 'POST',
     body: JSON.stringify(requestBody),
+    ...(abortController && { signal: abortController.signal }),
   })
     .then(handleErrors)
     .then(res => res.json());
@@ -3083,11 +3084,14 @@ export const getRebalancingTable = (account, params) => {
       const table = response.table.reduce((acc, curr) => {
         const { balance } = balances.find(bal => bal.symbol === curr.base) || { balance: 0 };
         const { lastPrice: rate } = rates.find(bal => bal.symbol === curr.base) || { lastPrice: 1 };
+        const { lastPrice: quoteRate } = rates.find(bal => bal.symbol === curr.quote) || {
+          lastPrice: 1,
+        };
         const { balance: quoteBalance } = balances.find(bal => bal.symbol === curr.quote) || {
           balance: 0,
         };
 
-        return [...acc, { ...curr, balance, quoteBalance, symbol: curr.base, rate }];
+        return [...acc, { ...curr, balance, quoteBalance, quoteRate, symbol: curr.base, rate }];
       }, []);
 
       return {
@@ -3314,6 +3318,16 @@ export const getMarkersForEligible = (userName, box, skip, limit = 20) => {
       skip,
       limit,
     }),
+  })
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+};
+
+export const getCurrencyType = () => {
+  return fetch(`${config.currenciesApiPrefix}${config.rate}${config.available}`, {
+    headers,
+    method: 'GET',
   })
     .then(res => res.json())
     .then(response => response)

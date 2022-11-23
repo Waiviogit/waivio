@@ -42,8 +42,6 @@ import { getObjectAlbums, getRelatedPhotos } from '../../../store/galleryStore/g
 import { getRelatedAlbum } from '../../../store/galleryStore/galleryActions';
 import CompanyId from './CompanyId';
 import ProductId from './ProductId';
-
-import './ObjectInfo.less';
 import ObjectAvatar from '../../components/ObjectAvatar';
 import Options from '../../object/Options';
 import {
@@ -52,12 +50,16 @@ import {
   getGroupId,
 } from '../../../store/optionsStore/optionsSelectors';
 import { setStoreActiveOption, setStoreGroupId } from '../../../store/optionsStore/optionsActions';
+import { getObject } from '../../../waivioApi/ApiClient';
+import { getLocale } from '../../../common/helpers/localStorageHelpers';
+import './ObjectInfo.less';
 
 @withRouter
 @connect(
   state => ({
     albums: getObjectAlbums(state),
     isAuthenticated: getIsAuthenticated(state),
+    locale: getLocale(),
     isWaivio: getIsWaivio(state),
     relatedAlbum: getRelatedPhotos(state),
     activeOption: getActiveOption(state),
@@ -85,6 +87,7 @@ class ObjectInfo extends React.Component {
     getRelatedAlbum: PropTypes.func.isRequired,
     setStoreGroupId: PropTypes.func.isRequired,
     setStoreActiveOption: PropTypes.func.isRequired,
+    locale: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -122,6 +125,10 @@ class ObjectInfo extends React.Component {
     if (storeGroupId !== wobject.groupId || !hasGroupId) {
       this.props.setStoreActiveOption({});
     }
+  }
+
+  componentWillUnmount() {
+    this.props.setStoreActiveOption({});
   }
 
   incrementPhoneCount = 3;
@@ -253,6 +260,7 @@ class ObjectInfo extends React.Component {
     const { wobject, location } = this.props;
     const blogPath = `/object/${wobject.author_permlink}/blog/@${item.body}`;
     const formPath = `/object/${wobject.author_permlink}/form/${item.permlink}`;
+    const widgetPath = `/object/${wobject.author_permlink}/widget`;
     const newsFilterPath = `/object/${wobject.author_permlink}/newsFilter/${item.permlink}`;
     const blogClassesList = classNames('menu-btn', {
       active: location.pathname === blogPath,
@@ -320,6 +328,13 @@ class ObjectInfo extends React.Component {
           </LinkButton>
         );
         break;
+      case objectFields.widget:
+        menuItem = (
+          <LinkButton className={formClassesList} to={widgetPath}>
+            {item.title}
+          </LinkButton>
+        );
+        break;
       default:
         break;
     }
@@ -342,6 +357,9 @@ class ObjectInfo extends React.Component {
     });
   onOptionPicClick = pic => {
     if (pic.name === 'options') {
+      getObject(pic.parentPermlink, this.props.userName, this.props.locale).then(obj =>
+        this.props.history.push(obj.defaultShowLink),
+      );
       this.props.setStoreActiveOption({});
     }
   };
@@ -375,6 +393,7 @@ class ObjectInfo extends React.Component {
     const workTime = get(wobject, 'workTime');
     const linkField = parseWobjectField(wobject, 'link');
     const customSort = get(wobject, 'sortCustom', []);
+    const widgetBody = parseWobjectField(wobject, 'widget');
     const companyIdBody = wobject.companyId
       ? wobject.companyId.map(el => parseWobjectField(el, 'body', []))
       : [];
@@ -580,6 +599,11 @@ class ObjectInfo extends React.Component {
                     formsList.map(form =>
                       this.getMenuSectionLink({ id: objectFields.form, ...form }),
                     ),
+                )}
+                {this.listItem(
+                  objectFields.widget,
+                  !isEmpty(widgetBody) &&
+                    this.getMenuSectionLink({ id: objectFields.widget, ...widgetBody }),
                 )}
                 {this.listItem(objectFields.sorting, null)}
               </React.Fragment>

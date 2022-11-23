@@ -516,6 +516,7 @@ class StoryFull extends React.Component {
                   return obj.propositions.map(proposition =>
                     proposition?.newCampaigns ? (
                       <PropositionNew
+                        key={proposition._id}
                         proposition={{ ...proposition, object: obj, requiredObject: obj.parent }}
                       />
                     ) : (

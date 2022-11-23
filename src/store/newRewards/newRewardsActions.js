@@ -9,7 +9,7 @@ import {
 import { getNewDetailsBody } from '../../client/rewards/rewardsHelper';
 import config from '../../waivioApi/config.json';
 import { subscribeTypes } from '../../common/constants/blockTypes';
-import { getAuthenticatedUserName } from '../authStore/authSelectors';
+import { getAuthenticatedUserName, isGuestUser } from '../authStore/authSelectors';
 import { changeRewardsTab } from '../authStore/authActions';
 import { getTokenRatesInUSD } from '../walletStore/walletSelectors';
 import { rewardsPost } from '../../client/rewards/Manage/constants';
@@ -30,7 +30,9 @@ export const reserveProposition = (proposition, username) => async (
   const proposedWobjName = getObjectName(dish);
   const proposedAuthorPermlink = dish?.author_permlink;
   const primaryObject = proposition?.requiredObject;
-  const rates = getTokenRatesInUSD(getState(), 'WAIV');
+  const state = getState();
+  const isGuest = isGuestUser(state);
+  const rates = getTokenRatesInUSD(state, 'WAIV');
   const amount = round(proposition.rewardInUSD / rates, 3);
   const detailsBody = await getNewDetailsBody(proposition);
   const commentOp = [
@@ -62,13 +64,20 @@ export const reserveProposition = (proposition, username) => async (
     steemConnectAPI
       .broadcast([commentOp])
       .then(async () => {
-        busyAPI.instance.sendAsync(subscribeTypes.subscribeCampaignAssign, [username, permlink]);
-        busyAPI.instance.subscribe((datad, j) => {
-          if (j?.success && j?.permlink === permlink) {
+        if (isGuest) {
+          setTimeout(() => {
             dispatch(changeRewardsTab(username));
             resolve();
-          }
-        });
+          }, 7000);
+        } else {
+          busyAPI.instance.sendAsync(subscribeTypes.subscribeCampaignAssign, [username, permlink]);
+          busyAPI.instance.subscribe((datad, j) => {
+            if (j?.success && j?.permlink === permlink) {
+              dispatch(changeRewardsTab(username));
+              resolve();
+            }
+          });
+        }
       })
       .catch(error => reject(error));
   });
@@ -182,7 +191,7 @@ export const rejectAuthorReview = proposition => (
   const commentOp = [
     'comment',
     {
-      parent_author: proposition.userName,
+      parent_author: proposition.rootName,
       parent_permlink: proposition.reservationPermlink,
       author: proposition.guideName,
       permlink: createCommentPermlink(proposition.userName, proposition.reservationPermlink),
@@ -234,7 +243,7 @@ export const reinstateReward = proposition => (
   const commentOp = [
     'comment',
     {
-      parent_author: proposition?.userName,
+      parent_author: proposition?.rootName,
       parent_permlink: proposition?.reservationPermlink,
       author: authUserName,
       permlink: createCommentPermlink(proposition?.userName, proposition?.reservationPermlink),
@@ -306,7 +315,7 @@ export const decreaseReward = (proposition, amount, type) => (
   const commentOp = [
     'comment',
     {
-      parent_author: proposition.userName,
+      parent_author: proposition.rootName,
       parent_permlink: proposition.reservationPermlink,
       author: autnUserName,
       permlink: createCommentPermlink(proposition.userName, proposition.reservationPermlink),
@@ -442,11 +451,10 @@ export const sendCommentForReward = (proposition, body, isUpdating = false, orig
   const permlink = isUpdating
     ? originalComment.permlink
     : createCommentPermlink(proposition?.userName, proposition?.reservationPermlink);
-
   const newBody =
     isUpdating && !auth.isGuestUser ? getBodyPatchIfSmaller(originalComment.body, body) : body;
   const detail = {
-    parent_author: isUpdating ? originalComment.parent_author : proposition?.userName,
+    parent_author: isUpdating ? originalComment.parent_author : proposition.rootName,
     parent_permlink: isUpdating
       ? originalComment.parent_permlink
       : proposition?.reservationPermlink,
@@ -464,19 +472,30 @@ export const sendCommentForReward = (proposition, body, isUpdating = false, orig
   return new Promise(resolve =>
     steemConnectAPI
       .broadcast([commentOp])
-      .then(({ result }) => {
-        busyAPI.instance.sendAsync(subscribeTypes.subscribeTransactionId, [
-          auth.user.name,
-          result.id,
-        ]);
-        busyAPI.instance.subscribe((datad, j) => {
-          if (j?.success && j?.permlink === result.id) {
-            message.success('Comment submitted');
-            resolve(detail);
-          }
-        });
+      .then(res => {
+        if (auth.isGuestUser) {
+          resolve({
+            ...detail,
+            guestInfo: {
+              userId: auth.user.name,
+            },
+          });
+        } else {
+          busyAPI.instance.sendAsync(subscribeTypes.subscribeTransactionId, [
+            auth.user.name,
+            res.result.id,
+          ]);
+          busyAPI.instance.subscribe((datad, j) => {
+            if (j?.success && j?.permlink === res.result.id) {
+              message.success('Comment submitted');
+              resolve(detail);
+            }
+          });
+        }
       })
-      .catch(err => dispatch(notify(err.error.message || err.error_description, 'error'))),
+      .catch(err => {
+        dispatch(notify(err.message || err.error_description, 'error'));
+      }),
   );
 };
 

@@ -29,7 +29,9 @@ const CommentCard = ({ comment, intl, getMessageHistory, proposition }) => {
   const [pendingSend, setPendigSend] = useState(false);
   const [pendingDisLike, setPendingDisLike] = useState(false);
   const [editing, setEditing] = useState(false);
-  const editable = comment.author === user;
+
+  const author = comment.guestInfo ? comment.guestInfo.userId : comment.author;
+  const editable = author === user;
   const isLiked = comment.active_votes.some(vote => vote.voter === user && +vote.percent > 0);
   const isDisliked = comment.active_votes.some(vote => vote.voter === user && +vote.percent < 0);
   const upvotesQuontity = getUpvotesQuontity(comment?.active_votes);
@@ -76,12 +78,12 @@ const CommentCard = ({ comment, intl, getMessageHistory, proposition }) => {
 
   return (
     <div className="Comment">
-      <Link to={`/@${comment.author}`} style={{ height: 32 }}>
-        <Avatar username={comment.author} size={32} />
+      <Link to={`/@${author}`} style={{ height: 32 }}>
+        <Avatar username={author} size={32} />
       </Link>
       <div className="Comment__text">
-        <Link to={`/@${comment.author}`}>
-          <span className="username">{comment.author}</span>
+        <Link to={`/@${author}`}>
+          <span className="username">{author}</span>
         </Link>
         <span className="Comment__date">
           <BTooltip
@@ -184,8 +186,10 @@ CommentCard.propTypes = {
     body: PropTypes.string,
     active_votes: PropTypes.arrayOf(),
     author: PropTypes.string,
+    json_metadata: PropTypes.string,
     created: PropTypes.string,
     permlink: PropTypes.string,
+    guestInfo: PropTypes.shape(),
   }).isRequired,
   proposition: PropTypes.shape().isRequired,
   intl: PropTypes.shape().isRequired,
