@@ -1,4 +1,4 @@
-export const currenTypes = [
+export const currencyTypes = [
   'USD',
   'CAD',
   'UAH',

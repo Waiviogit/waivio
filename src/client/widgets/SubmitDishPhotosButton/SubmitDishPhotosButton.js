@@ -2,7 +2,7 @@ import { Icon } from 'antd';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import {injectIntl} from "react-intl";
+import { injectIntl } from 'react-intl';
 import { toggleModal } from '../../../store/quickRewards/quickRewardsActions';
 import withAuthActions from '../../auth/withAuthActions';
 
@@ -16,7 +16,8 @@ const SubmitDishPhotosButton = props => {
 
   return (
     <a className={props.className} onClick={onClick}>
-      <Icon type="camera" /> {props.intl.formatMessage({id: "submit_dish_photos", defaultMessage: "Submit dish photos"})}
+      <Icon type="camera" />{' '}
+      {props.intl.formatMessage({ id: 'submit_dish_photos', defaultMessage: 'Submit dish photos' })}
     </a>
   );
 };
