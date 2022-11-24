@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { Helmet } from 'react-helmet';
-import { get, isEmpty, round, reduce } from 'lodash';
+import { get, isEmpty, round, reduce, isNil } from 'lodash';
 import { renderRoutes } from 'react-router-config';
 import DEFAULTS from '../const/defaultValues';
 import ScrollToTopOnMount from '../../components/Utils/ScrollToTopOnMount';
@@ -67,7 +67,7 @@ const Wobj = ({
   const formsList = get(wobject, 'form', []);
   const currentForm = formsList?.find(item => item?.permlink === match.params.itemId) || {};
   const widgetForm = (wobject?.widget && JSON.parse(wobject?.widget)) || {};
-  const isWidgetPage = match.params[1] === 'widget';
+  const isWidgetPage = isNil(match.params[0]) && match.params[1] === 'widget';
   const currentColumn = get(currentForm, 'column', '');
   const currentWidgetColumn = get(widgetForm, 'column', '');
   const middleRightColumn =
