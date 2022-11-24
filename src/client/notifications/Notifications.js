@@ -468,7 +468,7 @@ class Notifications extends React.Component {
                     url={
                       notification.newCampaigns
                         ? `/rewards-new/all/${notification.author_permlink}`
-                        : `/rewards-new/all/${notification.author_permlink}`
+                        : `/rewards/all/${notification.author_permlink}`
                     }
                     key={key}
                     notification={notification}

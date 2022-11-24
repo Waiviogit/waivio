@@ -76,7 +76,8 @@ const WebsiteMainPage = props => {
           <div className="WebsiteMainPage__buttonWrap">
             <SubmitDishPhotosButton className="WebsiteMainPage__button WebsiteMainPage__button--fill" />
             <button onClick={onClickButtonFindRewards} className="WebsiteMainPage__button">
-              Find Rewards <Icon type="right" />
+              {props.intl.formatMessage({ id: 'find_rewards', defaultMessage: 'Find Rewards' })}{' '}
+              <Icon type="right" />
             </button>
           </div>
         </div>

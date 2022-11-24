@@ -7,9 +7,9 @@ import * as notificationConstants from '../../../../common/constants/notificatio
 import { saveNotificationsLastTimestamp } from '../../../../common/helpers/metadata';
 import NotificationTemplate from './NotificationTemplate';
 import Loading from '../../Icon/Loading';
-import './Notification.less';
-import './Notifications.less';
 import { getWalletType, isEmptyAmount } from '../../../../common/helpers/notificationsHelper';
+
+import './Notification.less';
 
 const displayLimit = 6;
 
@@ -374,7 +374,11 @@ class Notifications extends React.Component {
                       object_name: <span>{notification.object_name}</span>,
                     }}
                     username={notification.author}
-                    url={`/rewards/all/${notification.author_permlink}`}
+                    url={
+                      notification.newCampaigns
+                        ? `/rewards-new/all/${notification.author_permlink}`
+                        : `/rewards/all/${notification.author_permlink}`
+                    }
                     key={key}
                     notification={notification}
                     read={read}

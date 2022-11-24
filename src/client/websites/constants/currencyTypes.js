@@ -9,7 +9,7 @@ export const currencyTypes = [
   'MXN',
   'AUD',
   'EUR',
-  'FR',
+  'CHF',
 ];
 
 export const currencyPrefix = {
