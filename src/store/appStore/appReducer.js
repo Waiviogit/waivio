@@ -5,7 +5,6 @@ import { GET_USER_METADATA } from '../usersStore/usersActions';
 import { mobileUserAgents } from '../../common/helpers/regexHelpers';
 import { getObjectAvatar, getObjectName } from '../../common/helpers/wObjectHelper';
 import DEFAULTS from '../../client/object/const/defaultValues';
-import { listOfWebsiteWithMainPage } from '../../common/constants/listOfWebsite';
 
 const initialState = {
   isFetching: false,
@@ -178,7 +177,6 @@ export default (state = initialState, action) => {
         helmetIcon: getObjectAvatar(action.payload.aboutObject),
         websiteName: getObjectName(action.payload.aboutObject),
         hostAddress: action.meta,
-        isDiningGifts: listOfWebsiteWithMainPage.some(site => site === action.meta),
         logo,
         currMap,
       };
