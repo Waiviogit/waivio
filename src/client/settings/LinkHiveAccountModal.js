@@ -26,6 +26,7 @@ const LinkHiveAccountModal = ({ intl, showModal, hiveBeneficiaryAccount, user, h
     ).then(() => {
       message.success('Saved');
       setSelectedUser('');
+      handleClose();
     });
   const addHiveAccount =
     selectedUser && showSelectAccount ? (

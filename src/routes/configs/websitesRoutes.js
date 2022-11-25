@@ -12,7 +12,7 @@ import RedirectedSignIn from '../../client/components/Navigation/redirectedSignI
 import WebsiteMainPage from '../../client/websites/WebsiteLayoutComponents/MainPage/WebsiteMainPage';
 import RewardsMainPage from '../../client/newRewards/RewardsMainPage';
 
-const routes = () => ({
+const routes = {
   component: WebsiteWrapper,
   routes: [
     {
@@ -418,6 +418,6 @@ const routes = () => ({
       component: Views.Error404,
     },
   ],
-});
+};
 
 export default [createNestedRouts(routes)];

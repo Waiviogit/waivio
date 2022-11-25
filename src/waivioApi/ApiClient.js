@@ -2282,6 +2282,16 @@ export const getTokenBalance = (userName, symbol) =>
     indexes: '',
   });
 
+export const getWithdraws = () =>
+  hiveEngineContract({
+    contract: 'hivepegged',
+    table: 'withdrawals',
+    query: {},
+    // limit: 1000,
+    // offset: 0,
+    // indexes: '',
+  });
+
 export const getTokensEngineRates = currency => {
   return fetch(`${config.currenciesApiPrefix}${config.engineRates}?base=${currency}`, {
     headers,
