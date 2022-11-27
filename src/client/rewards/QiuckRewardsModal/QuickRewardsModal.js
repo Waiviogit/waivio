@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { isEmpty, get } from 'lodash';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
+import {injectIntl} from "react-intl";
 import {
   getIsOpenModal,
   getSelectedDish,
@@ -225,7 +226,7 @@ const QuickRewardsModal = props => {
 
   return (
     <Modal
-      title="Submit dish photos and earn crypto!"
+      title={props.intl.formatMessage({id: "submit_dish_photos_and_earn", defaultMessage: "Submit dish photos and earn crypto!"})}
       footer={null}
       visible={props.isOpenModal}
       onCancel={closeModal}
@@ -280,9 +281,10 @@ QuickRewardsModal.propTypes = {
   realiseRewards: PropTypes.func.isRequired,
   isOpenModal: PropTypes.bool.isRequired,
   reservePropositionForQuick: PropTypes.bool.isRequired,
+  intl: PropTypes.shape().isRequired,
 };
 
-export default connect(
+export default injectIntl(connect(
   state => ({
     selectedRestaurant: getSelectedRestaurant(state),
     selectedDish: getSelectedDish(state),
@@ -297,4 +299,4 @@ export default connect(
     realiseRewards: newRewards.realiseRewards,
     reservePropositionForQuick: newRewards.reservePropositionForQuick,
   },
-)(QuickRewardsModal);
+)(QuickRewardsModal));
