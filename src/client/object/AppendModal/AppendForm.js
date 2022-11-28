@@ -74,6 +74,7 @@ import {
   getNewsFilterItems,
   getObjectUrlForLink,
   getObjectAvatar,
+  getNewsFeedItems,
 } from '../../../common/helpers/wObjectHelper';
 import { appendObject } from '../../../store/appendStore/appendActions';
 import withEditor from '../../components/Editor/withEditor';
@@ -109,6 +110,7 @@ import { getAppendList } from '../../../store/appendStore/appendSelectors';
 import { parseJSON } from '../../../common/helpers/parseJSON';
 import { baseUrl } from '../../../waivioApi/routes';
 import './AppendForm.less';
+import ExtendedNewsFilterForm from './FormComponents/ExtendedNewsFilterForm';
 
 @connect(
   state => ({
@@ -212,6 +214,7 @@ export default class AppendForm extends Component {
     currentAlbum: '',
     currentImages: [],
     selectedUserBlog: [],
+    selectedUsers: [],
     typeList: [],
     formColumn: formColumnsField.middle,
     formForm: formFormFields.link,
@@ -389,6 +392,16 @@ export default class AppendForm extends Component {
         fieldBody.push(JSON.stringify({ allowList, ignoreList, typeList: this.state.typeList }));
         break;
       }
+      case objectFields.newsFeed: {
+        const allowList = this.state.allowList.map(o => o.map(item => item.author_permlink));
+        const ignoreList = map(this.state.ignoreList, o => o.author_permlink);
+        const authors = this.state.selectedUsers;
+
+        fieldBody.push(
+          JSON.stringify({ allowList, ignoreList, typeList: this.state.typeList, authors }),
+        );
+        break;
+      }
       case objectFields.sorting: {
         const sortingData = JSON.stringify(rest[objectFields.sorting].split(','));
 
@@ -517,7 +530,8 @@ export default class AppendForm extends Component {
         case objectFields.categoryItem: {
           return `@${author} added #tag ${this.state.selectedObject.name} (${langReadable}) into ${this.state.selectedCategory.body} category`;
         }
-        case objectFields.newsFilter: {
+        case objectFields.newsFilter:
+        case objectFields.newsFeed: {
           const getDotOrComma = (list, index) => (list.length - 1 === index ? '.' : ', ');
           let rulesAllow = `\n`;
           let rulesIgnore = '\n';
@@ -541,6 +555,14 @@ export default class AppendForm extends Component {
           this.state.ignoreList.forEach((rule, index) => {
             if (!isEmpty(rule)) {
               rulesIgnore = '\n Ignore list:';
+              rulesIgnore += ` <a href="${baseUrl}/object/${rule.author_permlink}">${
+                rule.author_permlink
+              }</a>${getDotOrComma(this.state.ignoreList, index)}`;
+            }
+          });
+          this.state.selectedUsers.forEach((rule, index) => {
+            if (!isEmpty(rule)) {
+              rulesIgnore = '\n Users:';
               rulesIgnore += ` <a href="${baseUrl}/object/${rule.author_permlink}">${
                 rule.author_permlink
               }</a>${getDotOrComma(this.state.ignoreList, index)}`;
@@ -582,6 +604,12 @@ export default class AppendForm extends Component {
       };
 
       if (currentField === objectFields.newsFilter) {
+        fieldsObject = {
+          ...fieldsObject,
+          title: this.getNewsFilterTitle(this.state.newsFilterTitle),
+        };
+      }
+      if (currentField === objectFields.newsFeed) {
         fieldsObject = {
           ...fieldsObject,
           title: this.getNewsFilterTitle(this.state.newsFilterTitle),
@@ -760,6 +788,11 @@ export default class AppendForm extends Component {
 
     allowList[rowNum] = filter(allowList[rowNum], o => o.author_permlink !== id);
     this.setState({ allowList });
+  };
+  deleteUser = user => {
+    const newUsersList = this.state.selectedUsers.filter(u => u !== user);
+
+    this.setState({ selectedUsers: newUsersList });
   };
 
   handleAddNewsFilterTitle = e => {
@@ -1007,7 +1040,7 @@ export default class AppendForm extends Component {
 
     if (objectFields.galleryItem === currentField) {
       this.handleAddPhotoToAlbum();
-    } else if (objectFields.newsFilter === currentField) {
+    } else if (objectFields.newsFilter === currentField || objectFields.newsFeed === currentField) {
       const { chosenLocale, usedLocale } = this.props;
       const allowList = map(this.state.allowList, rule =>
         map(rule, o => o.author_permlink),
@@ -1025,7 +1058,7 @@ export default class AppendForm extends Component {
           }),
         );
       }
-    } else if (currentField !== objectFields.newsFilter) {
+    } else if (currentField !== objectFields.newsFilter || currentField !== objectFields.newsFeed) {
       this.props.form.validateFieldsAndScroll((err, values) => {
         const identicalNameFields = this.props.ratingFields.reduce((acc, field) => {
           if (field.body === values.rating) {
@@ -1377,6 +1410,9 @@ export default class AppendForm extends Component {
 
   handleSelectUserBlog = userBlog => {
     this.setState({ selectedUserBlog: userBlog.account });
+  };
+  handleSelectUsersBlog = userBlog => {
+    this.setState({ selectedUsers: [...this.state.selectedUsers, userBlog.account] });
   };
 
   handleResetUserBlog = () => {
@@ -2749,6 +2785,7 @@ export default class AppendForm extends Component {
         const forms = getFormItems(wObject);
         const wobjType = getObjectType(wObject);
         const newsFilters = getNewsFilterItems(wObject);
+        const newsFeed = getNewsFeedItems(wObject);
         let listItems =
           [...menuLinks, ...menuPages].map(item => ({
             id: item.body || item.author_permlink,
@@ -2783,6 +2820,15 @@ export default class AppendForm extends Component {
               id: item.permlink,
               name: item.title || intl.formatMessage({ id: 'news', defaultMessage: 'News' }),
               type: objectFields.newsFilter,
+            });
+          });
+        }
+        if (!isEmpty(newsFeed)) {
+          newsFeed.forEach(item => {
+            listItems.push({
+              id: item.permlink,
+              name: item.title || intl.formatMessage({ id: 'news', defaultMessage: 'News' }),
+              type: objectFields.newsFeed,
             });
           });
         }
@@ -2885,6 +2931,29 @@ export default class AppendForm extends Component {
             handleRemoveObjectFromIgnoreList={this.handleRemoveObjectFromIgnoreList}
           />
         );
+      case objectFields.newsFeed:
+        return (
+          <ExtendedNewsFilterForm
+            handleAddNewsFilterTitle={this.handleAddNewsFilterTitle}
+            handleAddTypeToIgnoreTypeList={this.handleAddTypeToIgnoreTypeList}
+            screenSize={this.props.screenSize}
+            currObjId={get(this.props.wObject, 'author_permlink', '')}
+            allowList={this.state.allowList}
+            ignoreList={this.state.ignoreList}
+            typeList={this.state.typeList}
+            loading={this.state.loading}
+            deleteRuleItem={this.deleteRuleItem}
+            handleAddObjectToIgnoreList={this.handleAddObjectToIgnoreList}
+            handleRemoveObjectFromIgnoreTypeList={this.handleRemoveObjectFromIgnoreTypeList}
+            handleAddObjectToRule={this.handleAddObjectToRule}
+            addNewNewsFilterLine={this.addNewNewsFilterLine}
+            handleRemoveObjectFromIgnoreList={this.handleRemoveObjectFromIgnoreList}
+            selectedUsers={this.state.selectedUsers}
+            handleSelectUsersBlog={this.handleSelectUsersBlog}
+            deleteUser={this.deleteUser}
+          />
+        );
+
       case objectFields.tagCategory: {
         return (
           <Form.Item>
@@ -3197,6 +3266,14 @@ export default class AppendForm extends Component {
           isEmpty(this.state.newsFilterTitle) ||
           (this.state.allowList[0].length < 1 &&
             this.state.ignoreList.length < 1 &&
+            this.state.typeList.length < 1)
+        );
+      case objectFields.newsFeed:
+        return (
+          isEmpty(this.state.newsFilterTitle) ||
+          (this.state.allowList[0].length < 1 &&
+            this.state.ignoreList.length < 1 &&
+            this.state.selectedUsers.length < 1 &&
             this.state.typeList.length < 1)
         );
       case objectFields.sorting:

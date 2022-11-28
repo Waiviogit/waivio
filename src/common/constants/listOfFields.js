@@ -46,6 +46,7 @@ export const objectFields = {
   groupId: 'groupId',
   options: 'options',
   widget: 'widget',
+  newsFeed: 'newsFeed',
 };
 
 export const TYPES_OF_MENU_ITEM = {

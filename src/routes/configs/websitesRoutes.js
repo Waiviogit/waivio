@@ -234,6 +234,10 @@ const routes = () => ({
           component: Views.UserProfile,
         },
         {
+          path: '/newsFeed',
+          component: Views.UserProfile,
+        },
+        {
           path: '/form/:permlink',
           exact: true,
           component: Views.FormPage,

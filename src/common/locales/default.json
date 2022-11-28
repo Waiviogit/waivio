@@ -1990,5 +1990,6 @@
   "partners": "partners",
   "submit_dish_photos": "Submit dish photos",
   "find_rewards": "Find Rewards",
-  "object_field_widget": "Widget"
+  "object_field_widget": "Widget",
+  "object_field_newsFeed": "News filter"
 }
