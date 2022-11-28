@@ -123,7 +123,6 @@ export default class Transfer extends React.Component {
     hiveBeneficiaryAccount: PropTypes.string,
     saveSettings: PropTypes.func.isRequired,
     openLinkHiveAccountModal: PropTypes.func.isRequired,
-    showModal: PropTypes.bool.isRequired,
     sendPendingTransfer: PropTypes.func.isRequired,
     getPayables: PropTypes.func,
     match: PropTypes.shape().isRequired,
@@ -599,7 +598,6 @@ export default class Transfer extends React.Component {
       isGuest,
       amount,
       hiveBeneficiaryAccount,
-      showModal,
       isTip,
       sendTo,
     } = this.props;
@@ -846,7 +844,7 @@ export default class Transfer extends React.Component {
     ) : (
       <LinkHiveAccountModal
         handleClose={this.handleCloseLinkHiveAccountModal}
-        showModal={showModal}
+        showModal={visible}
         hiveBeneficiaryAccount={this.state.hiveBeneficiaryAccount}
       />
     );

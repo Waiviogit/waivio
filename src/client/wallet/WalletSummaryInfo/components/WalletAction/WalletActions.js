@@ -90,7 +90,7 @@ const WalletAction = props => {
                       dispatch(toggleWithdrawModal(true, props.mainCurrency, cyrrency));
                     }}
                   >
-                    {props.intl.formatMessage({ id: 'withdraw' })} {cyrrency}
+                    {props.intl.formatMessage({ id: 'withdraw' })} to {cyrrency}
                   </Menu.Item>
                 ))}
             </Menu>

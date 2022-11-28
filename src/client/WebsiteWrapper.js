@@ -28,7 +28,7 @@ import BBackTop from './components/BBackTop';
 import { guestUserRegex } from '../common/helpers/regexHelpers';
 import ErrorBoundary from './widgets/ErrorBoundary';
 import Loading from './components/Icon/Loading';
-import { getTranslations, getUsedLocale } from '../store/appStore/appSelectors';
+import { getIsDiningGifts, getTranslations, getUsedLocale } from '../store/appStore/appSelectors';
 import { getAuthenticatedUserName, getIsAuthFetching } from '../store/authStore/authSelectors';
 import { getIsOpenWalletTable } from '../store/walletStore/walletSelectors';
 import { getLocale, getNightmode } from '../store/settingsStore/settingsSelectors';
@@ -49,6 +49,7 @@ export const AppSharedContext = React.createContext({ usedLocale: 'en-US', isGue
     nightmode: getNightmode(state),
     isOpenWalletTable: getIsOpenWalletTable(state),
     loadingFetching: getIsAuthFetching(state),
+    isDiningGifts: getIsDiningGifts(state),
     isOpenModal: getIsOpenModal(state),
   }),
   {
@@ -79,6 +80,7 @@ class WebsiteWrapper extends React.PureComponent {
     getCurrentAppSettings: PropTypes.func,
     nightmode: PropTypes.bool,
     isOpenModal: PropTypes.bool,
+    isDiningGifts: PropTypes.bool,
     dispatchGetAuthGuestBalance: PropTypes.func,
     getTokenRates: PropTypes.func.isRequired,
     isOpenWalletTable: PropTypes.bool,
@@ -108,6 +110,7 @@ class WebsiteWrapper extends React.PureComponent {
     nightmode: false,
     dispatchGetAuthGuestBalance: () => {},
     isOpenWalletTable: false,
+    isDiningGifts: false,
     isOpenModal: false,
     loadingFetching: true,
     location: {},
@@ -204,6 +207,7 @@ class WebsiteWrapper extends React.PureComponent {
       isOpenWalletTable,
       loadingFetching,
       location,
+      isDiningGifts,
       isOpenModal,
     } = this.props;
     const language = findLanguage(usedLocale);
@@ -225,7 +229,14 @@ class WebsiteWrapper extends React.PureComponent {
             }}
           >
             <Layout data-dir={language && language.rtl ? 'rtl' : 'ltr'}>
-              {!signInPage && <MainPageHeader withMap={location.pathname === '/map'} />}
+              {!signInPage &&
+                (isDiningGifts ? (
+                  <MainPageHeader withMap={location.pathname === '/map'} />
+                ) : (
+                  <MainPageHeader
+                    withMap={location.pathname === '/map' || location.pathname === '/'}
+                  />
+                ))}
               <div>
                 {loadingFetching ? <Loading /> : renderRoutes(this.props.route.routes)}
                 <NotificationPopup />

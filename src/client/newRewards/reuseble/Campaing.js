@@ -11,6 +11,7 @@ import withAuthActions from '../../auth/withAuthActions';
 import { getIsWaivio } from '../../../store/appStore/appSelectors';
 
 import './Campaing.less';
+import useWebsiteColor from '../../../hooks/useWebsiteColor';
 
 const Campaing = ({ campain, onActionInitiated, hovered }) => {
   const buttonLabel = campain.maxReward === campain.minReward ? 'Earn' : 'Earn up to';
@@ -22,6 +23,7 @@ const Campaing = ({ campain, onActionInitiated, hovered }) => {
   const minReward = get(campain, ['min_reward'], 0);
   const maxReward = get(campain, ['max_reward'], 0);
   const isWaivio = useSelector(getIsWaivio);
+  const styles = useWebsiteColor();
 
   const handleOpenQuickRewards = () =>
     onActionInitiated(() => {
@@ -47,7 +49,7 @@ const Campaing = ({ campain, onActionInitiated, hovered }) => {
         rewardPrice={campain.maxReward}
         hovered={hovered}
       />
-      <span onClick={goToProducts} className="Campaing__button">
+      <span onClick={goToProducts} style={styles} className="Campaing__button">
         {buttonLabel}{' '}
         <b>
           <USDDisplay value={campain.maxReward} />
