@@ -10,15 +10,18 @@ import Rewards from '../../client/rewards/Rewards';
 import RewardsComponent from '../../client/rewards/RewardsComponent/RewardsComponent';
 import RedirectedSignIn from '../../client/components/Navigation/redirectedSignIn/RedirectedSignIn';
 import WebsiteMainPage from '../../client/websites/WebsiteLayoutComponents/MainPage/WebsiteMainPage';
+import { listOfWebsiteWithMainPage } from '../../common/constants/listOfWebsite';
 import RewardsMainPage from '../../client/newRewards/RewardsMainPage';
 
-const routes = {
+const routes = host => ({
   component: WebsiteWrapper,
   routes: [
     {
       path: '/',
       exact: true,
-      component: WebsiteMainPage,
+      component: listOfWebsiteWithMainPage.some(site => site === host)
+        ? WebsiteMainPage
+        : WebsiteBody,
     },
     {
       path: '/map',
@@ -418,6 +421,6 @@ const routes = {
       component: Views.Error404,
     },
   ],
-};
+});
 
-export default [createNestedRouts(routes)];
+export default host => [createNestedRouts(routes(host))];

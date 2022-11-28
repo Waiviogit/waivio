@@ -5,8 +5,11 @@ import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { toggleModal } from '../../../store/quickRewards/quickRewardsActions';
 import withAuthActions from '../../auth/withAuthActions';
+import useWebsiteColor from '../../../hooks/useWebsiteColor';
 
 const SubmitDishPhotosButton = props => {
+  const styles = useWebsiteColor();
+
   const openModal = () => {
     props.toggleModal(true);
     if (window.gtag) window.gtag('event', 'on_click_submit_dish_photos');
@@ -15,7 +18,7 @@ const SubmitDishPhotosButton = props => {
   const onClick = () => props.onActionInitiated(openModal);
 
   return (
-    <a className={props.className} onClick={onClick}>
+    <a className={props.className} style={styles} onClick={onClick}>
       <Icon type="camera" />{' '}
       {props.intl.formatMessage({ id: 'submit_dish_photos', defaultMessage: 'Submit dish photos' })}
     </a>

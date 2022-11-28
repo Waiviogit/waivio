@@ -104,9 +104,14 @@ const WithdrawModal = props => {
     };
   }, [userName]);
 
+  const openLinkedModal = () => {
+    if (pair && isGuest && !hiveBeneficiaryAccount && pair?.to_coin_symbol === 'HIVE')
+      setShowLinkToHive(true);
+  };
+
   useEffect(() => {
     getWithdraws().then(res => setDelay(res?.length));
-    if (pair && !hiveBeneficiaryAccount && pair?.to_coin_symbol === 'HIVE') setShowLinkToHive(true);
+    openLinkedModal();
   }, [pair]);
 
   const handleCloseModal = () => {
@@ -229,8 +234,7 @@ const WithdrawModal = props => {
     dispatch(setWithdrawPair(selectedPair));
     setWalletAddress('');
     if (pair.symbol === 'WAIV') {
-      if (!hiveBeneficiaryAccount && selectedPair.to_coin_symbol === 'HIVE')
-        return setShowLinkToHive(true);
+      openLinkedModal();
       const amount = await getWithdrawInfo({
         account: userName,
         data: {
