@@ -260,6 +260,7 @@ class ObjectInfo extends React.Component {
     const { wobject, location } = this.props;
     const blogPath = `/object/${wobject.author_permlink}/blog/@${item.body}`;
     const formPath = `/object/${wobject.author_permlink}/form/${item.permlink}`;
+    const widgetPath = `/object/${wobject.author_permlink}/widget`;
     const newsFilterPath = `/object/${wobject.author_permlink}/newsFilter/${item.permlink}`;
     const blogClassesList = classNames('menu-btn', {
       active: location.pathname === blogPath,
@@ -327,6 +328,13 @@ class ObjectInfo extends React.Component {
           </LinkButton>
         );
         break;
+      case objectFields.widget:
+        menuItem = (
+          <LinkButton className={formClassesList} to={widgetPath}>
+            {item.title}
+          </LinkButton>
+        );
+        break;
       default:
         break;
     }
@@ -385,6 +393,7 @@ class ObjectInfo extends React.Component {
     const workTime = get(wobject, 'workTime');
     const linkField = parseWobjectField(wobject, 'link');
     const customSort = get(wobject, 'sortCustom', []);
+    const widgetBody = parseWobjectField(wobject, 'widget');
     const companyIdBody = wobject.companyId
       ? wobject.companyId.map(el => parseWobjectField(el, 'body', []))
       : [];
@@ -590,6 +599,11 @@ class ObjectInfo extends React.Component {
                     formsList.map(form =>
                       this.getMenuSectionLink({ id: objectFields.form, ...form }),
                     ),
+                )}
+                {this.listItem(
+                  objectFields.widget,
+                  !isEmpty(widgetBody) &&
+                    this.getMenuSectionLink({ id: objectFields.widget, ...widgetBody }),
                 )}
                 {this.listItem(objectFields.sorting, null)}
               </React.Fragment>

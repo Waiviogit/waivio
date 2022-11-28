@@ -63,14 +63,14 @@ const Wallets = props => {
     <React.Fragment>
       <Tabs className="Wallets" defaultActiveKey={walletsType} onChange={handleOnChange}>
         <Tabs.TabPane tab="WAIV" key="WAIV">
-          <WAIVwallet />
+          {walletsType === 'WAIV' && <WAIVwallet />}
         </Tabs.TabPane>
         <Tabs.TabPane tab="HIVE" key="HIVE">
-          <Wallet />
+          {walletsType === 'HIVE' && <Wallet />}
         </Tabs.TabPane>
         {!isGuestUser && (
           <Tabs.TabPane tab="Hive Engine" key="ENGINE">
-            <HiveEngineWallet />
+            {walletsType === 'ENGINE' && <HiveEngineWallet />}
           </Tabs.TabPane>
         )}
         {!isGuestUser && isCurrUser && (

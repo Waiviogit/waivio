@@ -272,8 +272,8 @@ const QuickRewardsModal = props => {
 };
 
 QuickRewardsModal.propTypes = {
-  selectedDish: PropTypes.shape().isRequired,
-  selectedRestaurant: PropTypes.shape().isRequired,
+  selectedDish: PropTypes.shape(),
+  selectedRestaurant: PropTypes.shape(),
   toggleModal: PropTypes.func.isRequired,
   createQuickPost: PropTypes.func.isRequired,
   reserveProposition: PropTypes.func.isRequired,

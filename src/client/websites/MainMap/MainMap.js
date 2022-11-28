@@ -26,7 +26,7 @@ import {
 } from '../../../store/websiteStore/websiteActions';
 import { distanceInMBetweenEarthCoordinates, getFirstOffsetNumber } from '../helper';
 import ObjectOverlayCard from '../../components/Maps/Overlays/ObjectOverlayCard/ObjectOverlayCard';
-import { getIsDiningGifts, getScreenSize } from '../../../store/appStore/appSelectors';
+import { getScreenSize } from '../../../store/appStore/appSelectors';
 import { getUserLocation } from '../../../store/userStore/userSelectors';
 import {
   getShowSearchResult,
@@ -55,12 +55,13 @@ const MainMap = React.memo(props => {
   const [area, setArea] = useState([]);
   const [mapData, setMapData] = useState({ center: [], zoom: 6 });
   const query = new URLSearchParams(props.location.search);
-  const headerHeight = props.isDining ? 125 : 57;
+  const headerHeight = 125;
   let queryCenter = query.get('center');
   let mapHeight = `calc(100vh - ${headerHeight}px)`;
   const isMobile = props.screenSize === 'xsmall' || props.screenSize === 'small';
   const mapClassList = classNames('WebsiteBody__map', { WebsiteBody__hideMap: props.isShowResult });
   const mapRef = useRef();
+  const abortController = useRef(null);
 
   if (queryCenter) queryCenter = queryCenter.split(',').map(item => Number(item));
   if (isMobile) mapHeight = `${height - headerHeight}px`;
@@ -179,8 +180,16 @@ const MainMap = React.memo(props => {
     const { topPoint, bottomPoint } = boundsParams;
 
     if (!isEmpty(topPoint) && !isEmpty(bottomPoint)) {
+      if (abortController.current) abortController.current.abort();
+      abortController.current = new AbortController();
+
       props
-        .getWebsiteObjWithCoordinates(props.searchString, { topPoint, bottomPoint }, 80)
+        .getWebsiteObjWithCoordinates(
+          props.searchString,
+          { topPoint, bottomPoint },
+          80,
+          abortController.current,
+        )
         .then(res => {
           checkDistanceAndSetReload();
           if (!isEmpty(queryCenter)) {
@@ -378,7 +387,6 @@ MainMap.propTypes = {
     lon: PropTypes.number,
   }).isRequired,
   isShowResult: PropTypes.bool.isRequired,
-  isDining: PropTypes.bool.isRequired,
   screenSize: PropTypes.string.isRequired,
   getWebsiteObjWithCoordinates: PropTypes.func.isRequired,
   searchString: PropTypes.string.isRequired,
@@ -419,7 +427,6 @@ export default connect(
     searchMap: getWebsiteMap(state),
     showReloadButton: getShowReloadButton(state),
     searchType: getWebsiteSearchType(state),
-    isDining: getIsDiningGifts(state),
   }),
   {
     getCoordinates,

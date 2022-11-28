@@ -1,6 +1,6 @@
+import React, { useEffect, useRef, useState } from 'react';
 import { AutoComplete, Icon, Input } from 'antd';
 import { map, get } from 'lodash';
-import React, { useState } from 'react';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 
@@ -18,6 +18,11 @@ const NewsFilterForm = props => {
     props.handleAddTypeToIgnoreTypeList(value);
     setSearchString('');
   };
+  const titleInputEl = useRef(null);
+
+  useEffect(() => {
+    titleInputEl.current.focus();
+  }, [titleInputEl.current]);
 
   const andLayout = compareItems =>
     compareItems > 0 &&
@@ -154,6 +159,7 @@ const NewsFilterForm = props => {
   return (
     <React.Fragment>
       <Input
+        ref={titleInputEl}
         disabled={props.loading}
         placeholder={props.intl.formatMessage({
           id: 'object_field_news_title',

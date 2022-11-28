@@ -17,6 +17,7 @@ const initialState = {
   exitPageSetting: true,
   rewardSetting: rewardsValues.half,
   postLocales: [],
+  currencyList: [],
   newUser: false,
   openLinkModal: false,
   vipTicketsInfo: {},
@@ -120,6 +121,12 @@ const settings = (state = initialState, action) => {
           ],
           hasMoreConsumed: action.payload.hasMoreConsumed,
         },
+      };
+
+    case settingsTypes.GET_CURRENCY_FOR_SETTINGS.SUCCESS:
+      return {
+        ...state,
+        currencyList: action.payload,
       };
 
     case authTypes.LOGOUT:

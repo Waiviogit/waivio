@@ -171,9 +171,9 @@ export const setWithdrawPair = pair => ({
 
 export const TOGGLE_WITHDRAW_MODAL = '@depositWithdraw/TOGGLE_WITHDRAW_MODAL';
 
-export const toggleWithdrawModal = (isOpen, token = '') => ({
+export const toggleWithdrawModal = (isOpen, token = '', to = '') => ({
   type: TOGGLE_WITHDRAW_MODAL,
-  payload: { isOpen, token },
+  payload: { isOpen, token, to },
 });
 
 export const SET_DEPOSITE_SYMBOL = '@depositWithdraw/SET_DEPOSITE_SYMBOL';

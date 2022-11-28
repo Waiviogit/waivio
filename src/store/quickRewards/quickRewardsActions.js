@@ -101,6 +101,7 @@ export const getEligibleRewardsListWithRestaurant = (selectRest, limit) => async
           name,
           0,
           '',
+          'payout',
         );
       } else {
         objCampaings = await getEligibleRewardList(name, 0, '', 'payout');
@@ -175,7 +176,7 @@ export const createQuickPost = (userBody, topics, images, reservationPermlink) =
   const dish = getSelectedDish(state);
   const host = getCurrentHost(state);
 
-  const isReview = Boolean(dish.propositions);
+  const isReview = Boolean(dish.propositions || dish.reward);
   const campaignId = isReview ? get(dish, 'propositions[0]._id') : null;
   const imagesLink = images.map(img => `\n<center>![image]( ${img.src})</center>`).join('');
   const topicsLink = topics
@@ -247,7 +248,7 @@ export const reserveProposition = permlink => async (
   const dish = getSelectedDish(state);
   const primaryObject = getSelectedRestaurant(state);
   const proposition =
-    dish.propositions.find(prop => prop.activation_permlink) || dish.propositions[0];
+    dish.propositions.find(prop => prop.activation_permlink) || dish.propositions[0] || dish;
   const proposedWobjName = getObjectName(dish);
   const proposedWobjAuthorPermlink = dish.author_permlink;
   const currencyInfo = await getCurrentHivePrice();
@@ -263,7 +264,7 @@ export const reserveProposition = permlink => async (
     'comment',
     {
       parent_author: proposition.guideName,
-      parent_permlink: proposition.activation_permlink,
+      parent_permlink: proposition.activation_permlink || proposition.activationPermlink,
       author: username,
       permlink,
       title: 'Rewards reservations',

@@ -134,6 +134,7 @@
   "create": "/create",
   "checkAvailable": "/checkAvailable",
   "availability": "/availability",
+  "available": "/available",
   "managePage": "/manage",
   "configuration": "/configuration",
   "administrators": "/administrators",
