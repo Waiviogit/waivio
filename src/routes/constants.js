@@ -99,6 +99,9 @@ export default {
       'match-bots-sponsors',
       'reservations',
       'black-list',
+      'referral-details',
+      'referral-instructions',
+      'referral-status',
     ].join('|'),
     sideBar: [
       'all',
@@ -145,6 +148,9 @@ export default {
       'match-bots-sponsors',
       'eligible',
       'black-list',
+      'referral-details',
+      'referral-instructions',
+      'referral-status',
     ].join('|'),
   },
   SETTINGS: {

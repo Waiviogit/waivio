@@ -40,8 +40,12 @@ export const pages = {
     id: CAMPAIGNS,
   },
   rewardsNewMatchBots: {
-    regExp: /(^\/rewards-new\/)(match-bots-sponsors)$/,
+    regExp: /(^\/rewards-new\/)(match-bots-sponsors|match-bots-author|match-bots-curators)$/,
     id: 'Match Bots',
+  },
+  rewardsNewRefferal: {
+    regExp: /(^\/rewards-new\/)(referral-details|referral-instructions|referral-status)$/,
+    id: 'Refferal',
   },
 };
 
