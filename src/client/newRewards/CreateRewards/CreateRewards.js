@@ -23,7 +23,7 @@ import {
 } from '../../../store/authStore/authSelectors';
 import CreateFormRenderer from '../../rewards/Create-Edit/CreateFormRenderer';
 import { getMinExpertise, getMinExpertisePrepared } from '../../rewards/rewardsHelper';
-import { getRate, getRewardFund } from '../../../store/appStore/appSelectors';
+import { getCurrentCurrency, getRate, getRewardFund } from '../../../store/appStore/appSelectors';
 import '../../rewards/Create-Edit/CreateReward.less';
 import { getTokenBalance, getTokenRates } from '../../../store/walletStore/walletActions';
 
@@ -64,7 +64,6 @@ const initialState = {
   campaignId: '',
   isDuplicate: false,
   isOpenAddChild: false,
-  currency: 'USD',
   payoutToken: 'WAIV',
 };
 
@@ -78,6 +77,7 @@ const initialState = {
     user: getAuthenticatedUser(state),
     rate: getRate(state),
     rewardFund: getRewardFund(state),
+    currency: getCurrentCurrency(state),
   }),
   { getTokenBalance, getTokenRates },
 )
@@ -86,6 +86,7 @@ class CreateRewards extends React.Component {
     userName: PropTypes.string,
     locale: PropTypes.string,
     user: PropTypes.shape(),
+    currency: PropTypes.shape().isRequired,
     form: PropTypes.shape(),
     intl: PropTypes.shape().isRequired,
     history: PropTypes.shape().isRequired,
@@ -102,7 +103,12 @@ class CreateRewards extends React.Component {
     usedLocale: 'en-US',
     form: {},
   };
-  state = initialState;
+
+  constructor(props) {
+    super(props);
+
+    this.state = { ...initialState, currency: props.currency.type };
+  }
 
   componentDidMount = async () => {
     this.getCampaingDetailAndSetInState();

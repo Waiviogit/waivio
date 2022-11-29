@@ -4,7 +4,7 @@ import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { isEmpty } from 'lodash';
 import PropTypes from 'prop-types';
-import {injectIntl} from "react-intl";
+import { injectIntl } from 'react-intl';
 
 import { mobileUserAgents } from '../../../../../../common/helpers/regexHelpers';
 import { getListOfRestaurant } from '../../../../../../store/websiteStore/websiteSelectors';
@@ -52,7 +52,11 @@ const CarouselSection = props => {
         </Carousel>
       </div>
       <Link to={'/map?showPanel=true&type=restaurant'} className="WebsiteMainPage__button">
-        {props.intl.formatMessage({id: "see_all_restaurants", defaultMessage: "See All Restaurants"})} <Icon type="right" />
+        {props.intl.formatMessage({
+          id: 'see_all_restaurants',
+          defaultMessage: 'See All Restaurants',
+        })}{' '}
+        <Icon type="right" />
       </Link>
     </section>
   );
@@ -64,9 +68,11 @@ CarouselSection.propTypes = {
   intl: PropTypes.shape().isRequired,
 };
 
-export default injectIntl(connect(
-  state => ({
-    restaurants: getListOfRestaurant(state),
-  }),
-  { getRestaurants },
-)(CarouselSection));
+export default injectIntl(
+  connect(
+    state => ({
+      restaurants: getListOfRestaurant(state),
+    }),
+    { getRestaurants },
+  )(CarouselSection),
+);

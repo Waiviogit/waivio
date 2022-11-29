@@ -9,7 +9,7 @@ import FilterTypesList from '../../../search/SearchAllResult/components/FilterTy
 import HeaderButton from '../../../components/HeaderButton/HeaderButton';
 import SubmitDishPhotosButton from '../../../widgets/SubmitDishPhotosButton/SubmitDishPhotosButton';
 import { getConfigurationValues, getWebsiteLogo } from '../../../../store/appStore/appSelectors';
-import { getObjectAvatar } from '../../../../common/helpers/wObjectHelper';
+import { getObjectAvatar, getObjectUrlForLink } from '../../../../common/helpers/wObjectHelper';
 
 import './WebsiteHeader.less';
 
@@ -42,6 +42,11 @@ const MainPageHeader = props => {
         </div>
         <div className="MainPageHeader__buttonWrap">
           <div className="MainPageHeader__listLink">
+            {aboutObject && (
+              <Link to={getObjectUrlForLink(aboutObject)}>
+                {props.intl.formatMessage({ id: 'about', defaultMessage: 'About' })}
+              </Link>
+            )}
             <Link to="/object/mds-dining-gifts/newsFilter/dininggifts-dw09owbl6bh">
               {props.intl.formatMessage({ id: 'reviews', defaultMessage: 'Reviews' })}
             </Link>
