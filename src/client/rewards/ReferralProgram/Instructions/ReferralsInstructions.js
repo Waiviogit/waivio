@@ -30,7 +30,6 @@ const handleCopyTextButton = (setIsCopyButton, authUserName) =>
 
 const ReferralsInstructions = props => {
   const {
-    authUserName,
     getUserInBlackList,
     isBlackListUser,
     isAuthenticated,
@@ -38,6 +37,7 @@ const ReferralsInstructions = props => {
     confirmRules,
     rejectRules,
     userReferralInfo,
+    authUserName,
     referralStatus,
     isStartChangeRules,
     isStartGetReferralInfo,

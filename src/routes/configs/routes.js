@@ -186,6 +186,41 @@ const routes = {
           component: Views.SponsorsMatchBots,
         },
         {
+          path: '/match-bots-sponsors',
+          exact: true,
+          component: Views.MatchBotsSponsors,
+        },
+        {
+          path: '/match-bots-curators',
+          exact: true,
+          component: Views.MatchBotsCurators,
+        },
+        {
+          path: '/referral-details',
+          exact: true,
+          component: Views.ReferralDetails,
+        },
+        {
+          path: '/referral-instructions',
+          exact: true,
+          component: Views.ReferralInstructions,
+        },
+        {
+          path: '/referral-status',
+          exact: true,
+          component: Views.ReferralStatus,
+        },
+        {
+          path: '/match-bots-authors',
+          exact: true,
+          component: Views.MatchBotsAuthors,
+        },
+        // {
+        //   path: '/referral-status/:userName/:table?',
+        //   exact: true,
+        //   component: Views.SponsoredRewards,
+        // },
+        {
           path: '/reservations',
           exact: true,
           component: Views.ReservationsProposition,
