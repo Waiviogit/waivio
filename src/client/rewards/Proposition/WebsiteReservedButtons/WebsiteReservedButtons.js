@@ -25,7 +25,11 @@ const WebsiteReservedButtons = props => {
   const handleClickProposButton = () =>
     props.onActionInitiated(async () => {
       if (props.isNewReward) {
-        const requiredObject = await getObject(props.dish?.requiredObject);
+        const requiredObject = await getObject(
+          props.dish?.requiredObject?.author_permlink ||
+            props.dish?.requiredObject ||
+            props.dish?.parent,
+        );
 
         setRestaurant(requiredObject);
       } else {

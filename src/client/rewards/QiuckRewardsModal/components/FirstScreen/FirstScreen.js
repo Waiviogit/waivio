@@ -4,7 +4,7 @@ import { AutoComplete } from 'antd';
 import { isEmpty, get, debounce } from 'lodash';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import {injectIntl} from "react-intl";
+import { injectIntl } from 'react-intl';
 
 import ObjectCardView from '../../../../objectCard/ObjectCardView';
 import ObjectSearchCard from '../../../../components/ObjectSearchCard/ObjectSearchCard';
@@ -112,7 +112,12 @@ const ModalFirstScreen = props => {
   return (
     <div className="FirstScreen">
       <div className="FirstScreen__selectBlock">
-        <h4 className="FirstScreen__title">{props.intl.formatMessage({id: "select_restaurant", defaultMessage: "Select restaurant"})}</h4>
+        <h4 className="FirstScreen__title">
+          {props.intl.formatMessage({
+            id: 'select_restaurant',
+            defaultMessage: 'Select restaurant',
+          })}
+        </h4>
         {props.selectedRestaurant ? (
           <ObjectCardView
             wObject={props.selectedRestaurant}
@@ -122,7 +127,7 @@ const ModalFirstScreen = props => {
         ) : (
           <AutoComplete
             className="QuickRewardsModal__select"
-            placeholder={props.intl.formatMessage({id: "search", defaultMessage: "Search"})}
+            placeholder={props.intl.formatMessage({ id: 'search', defaultMessage: 'Search' })}
             onSelect={handleSelectRestaurant}
             onChange={handleSearchRestaurant}
             disabled={isEmpty(props.eligible)}
@@ -160,7 +165,9 @@ const ModalFirstScreen = props => {
         )}
       </div>
       <div className="FirstScreen__selectBlock">
-        <h4 className="FirstScreen__title">{props.intl.formatMessage({id: "select_dish", defaultMessage: "Select dish or drink"})}</h4>
+        <h4 className="FirstScreen__title">
+          {props.intl.formatMessage({ id: 'select_dish', defaultMessage: 'Select dish or drink' })}
+        </h4>
         {props.selectedDish ? (
           <ObjectCardView
             wObject={props.selectedDish}
@@ -172,7 +179,7 @@ const ModalFirstScreen = props => {
         ) : (
           <AutoComplete
             className="QuickRewardsModal__select"
-            placeholder={props.intl.formatMessage({id: "search", defaultMessage: "Search"})}
+            placeholder={props.intl.formatMessage({ id: 'search', defaultMessage: 'Search' })}
             onSelect={handleSelectDish}
             disabled={!props.selectedRestaurant}
             onChange={handleSearchDish}
@@ -200,7 +207,9 @@ const ModalFirstScreen = props => {
                     />
                     {reward && (
                       <span className="FirstScreen__priceWrap">
-                        <span className="FirstScreen__earn">{props.intl.formatMessage({id: "earn", defaultMessage: "Earn"})} </span>
+                        <span className="FirstScreen__earn">
+                          {props.intl.formatMessage({ id: 'earn', defaultMessage: 'Earn' })}{' '}
+                        </span>
                         <USDDisplay
                           value={reward}
                           currencyDisplay="symbol"
@@ -237,20 +246,22 @@ ModalFirstScreen.propTypes = {
   intl: PropTypes.shape().isRequired,
 };
 
-export default injectIntl(connect(
-  state => ({
-    eligible: getEligibleRewardsListFromState(state),
-    dishes: getDishRewardsListFromState(state),
-    selectedRestaurant: getSelectedRestaurant(state),
-    selectedDish: getSelectedDish(state),
-  }),
-  {
-    getEligibleRewardsList,
-    setSelectedRestaurant,
-    getEligibleRewardsListWithRestaurant,
-    getMoreEligibleRewardsListWithRestaurant,
-    setSelectedDish,
-    resetRestaurant,
-    resetDish,
-  },
-)(ModalFirstScreen));
+export default injectIntl(
+  connect(
+    state => ({
+      eligible: getEligibleRewardsListFromState(state),
+      dishes: getDishRewardsListFromState(state),
+      selectedRestaurant: getSelectedRestaurant(state),
+      selectedDish: getSelectedDish(state),
+    }),
+    {
+      getEligibleRewardsList,
+      setSelectedRestaurant,
+      getEligibleRewardsListWithRestaurant,
+      getMoreEligibleRewardsListWithRestaurant,
+      setSelectedDish,
+      resetRestaurant,
+      resetDish,
+    },
+  )(ModalFirstScreen),
+);
