@@ -76,18 +76,16 @@ const TableProfit = props => {
     getProfitTableInfo(authUserName);
   }, []);
 
-  if (isLoading) return <div>loading...</div>;
+  if (isLoading) return <div>Loading...</div>;
 
   return (
     <div className="table-profit">
-      <h2>Accumulated profit report</h2>
+      <h2>{props.intl.formatMessage({id: "accumulated_profit_title", defaultMessage: "Accumulated profit report"})}</h2>
       <div>
-        This report tracks the accumulated profit for the specified tokens. To add a token, specify
-        the initial number of tokens and this report will track the difference with the current
-        number of tokens in the account.
+        {props.intl.formatMessage({id: "accumulated_profit_text", defaultMessage: "This report tracks the accumulated profit for the specified tokens. To add a token, specify the initial number of tokens and this report will track the difference with the current number of tokens in the account."})}
       </div>
       <Button onClick={handleOpenAddToken} className="table-profit__button-add-token">
-        Add token
+        {props.intl.formatMessage({id: "add_token", defaultMessage: "Add token"})}
       </Button>
       <>
         <table className="DynamicTable">
@@ -160,12 +158,10 @@ const TableProfit = props => {
         </table>
         <div className="table-profit__info">
           <div className="table-profit__info-profit">
-            Accumulated profit: {table.length ? <strong>{profit}%</strong> : <span>N/A</span>}
+            {props.intl.formatMessage({id: "accumulated_profit", defaultMessage: "Accumulated profit"})}: {table.length ? <strong>{profit}%</strong> : <span>N/A</span>}
           </div>
           <div>
-            Note: The accumulated profit report will give accurate profit growth estimates only if
-            there were no additional deposits or withdrawals of the specified tokens. It is also
-            recommended to begin progress <br /> tracking after the initial rebalancing.
+            {props.intl.formatMessage({id: "accumulated_note", defaultMessage: "Note: The accumulated profit report will give accurate profit growth estimates only if there were no additional deposits or withdrawals of the specified tokens. It is also recommended to begin progress tracking after the initial rebalancing."})}
           </div>
         </div>
       </>
