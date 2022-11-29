@@ -25,7 +25,7 @@ export function getAvatarURL(username, size = 100, authenticatedUser) {
   return size > 64 ? `${url}/${username}/avatar` : `${url}/${username}/avatar/small`;
 }
 
-const Avatar = ({ username, size, authenticatedUser }) => {
+const Avatar = ({ username, size, authenticatedUser, isSquare }) => {
   let style = {
     minWidth: `${size}px`,
     width: `${size}px`,
@@ -40,19 +40,21 @@ const Avatar = ({ username, size, authenticatedUser }) => {
     };
   }
 
-  return <div className="Avatar" style={style} title={username} />;
+  return <div className={isSquare ? 'Avatar-square' : 'Avatar'} style={style} title={username} />;
 };
 
 Avatar.propTypes = {
   username: PropTypes.string,
   authenticatedUser: PropTypes.shape({}),
   size: PropTypes.number,
+  isSquare: PropTypes.bool,
 };
 
 Avatar.defaultProps = {
   size: 100,
   username: '',
   authenticatedUser: {},
+  isSquare: false,
 };
 
 export default connect(state => ({ authenticatedUser: getAuthenticatedUser(state) }))(Avatar);

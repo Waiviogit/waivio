@@ -105,9 +105,45 @@ export const matchBotsSettings = {
   },
   settings: [
     {
+      to: '/rewards-new/match-bots-authors',
+      id: 'authors',
+      defaultMessage: 'Authors',
+    },
+    {
+      to: '/rewards-new/match-bots-curators',
+      id: 'curators',
+      defaultMessage: 'Curators',
+    },
+    {
       to: '/rewards-new/match-bots-sponsors',
       id: 'sponsors',
       defaultMessage: 'Sponsors',
+    },
+  ],
+};
+
+export const refferalsSettings = {
+  tab: {
+    name: 'refferals',
+    id: 'refferals',
+    defaultMessage: 'Refferals',
+    forUser: true,
+  },
+  settings: [
+    {
+      to: '/rewards-new/referral-details',
+      id: 'details',
+      defaultMessage: 'Details',
+    },
+    {
+      to: '/rewards-new/referral-instructions',
+      id: 'instructions',
+      defaultMessage: 'Instructions',
+    },
+    {
+      to: '/rewards-new/referral-status',
+      id: 'status',
+      defaultMessage: 'Status',
     },
   ],
 };
