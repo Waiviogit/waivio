@@ -453,7 +453,7 @@ const routes = {
         },
         {
           path: '/newsFeed',
-          component: Views.UserProfile,
+          component: Views.ObjectFeed,
         },
         {
           path: '/form/:permlink',
