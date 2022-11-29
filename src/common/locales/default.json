@@ -2014,5 +2014,6 @@
   "no_sponsor": "NO SPONSORS FOUND",
   "select_restaurant": "Select restaurant",
   "select_dish": "Select dish or drink",
-  "object_field_widget": "Widget"
+  "object_field_widget": "Form",
+  "object_field_newsFeed": "News filter"
 }
