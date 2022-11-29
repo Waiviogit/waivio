@@ -355,8 +355,8 @@ export const getDetailsBody = ({
   return `${eligibilityRequirements} ${frequencyAssign} ${blacklist} ${postRequirements} ${description} ${sponsor} ${rewards} ${legal} ${usersLegalNotice}`;
 };
 
-export const getNewDetailsBody = async proposition => {
-  const parent = proposition.requiredObject;
+export const getNewDetailsBody = async (proposition, parentObj) => {
+  const parent = parentObj || proposition.requiredObject;
   const proposedWobjName = getObjectName(proposition.object);
   const frequencyAssign = getFrequencyAssign(proposition);
   const receiptPhoto = getReceiptPhoto(proposition);

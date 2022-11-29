@@ -9,6 +9,7 @@ import USDDisplay from '../../../Utils/USDDisplay';
 import useQuickRewards from '../../../../../hooks/useQuickRewards';
 import withAuthActions from '../../../../auth/withAuthActions';
 import { getObject } from '../../../../../waivioApi/ApiClient';
+import useWebsiteColor from '../../../../../hooks/useWebsiteColor';
 
 const OverlayRewardsButton = props => {
   const ObjectOverlayCardEarnClassList = classNames('ObjectOverlayCard__earn', {
@@ -24,6 +25,7 @@ const OverlayRewardsButton = props => {
   const reward = props.isPropos
     ? proposition.rewardInUSD || proposition.reward
     : campaign.max_reward;
+  const styles = useWebsiteColor();
 
   const handleClickProposButton = async () => {
     if (proposition?.newCampaigns) {
@@ -53,7 +55,7 @@ const OverlayRewardsButton = props => {
     !isEmpty(campaign.campaigns) && campaign.max_reward === campaign.min_reward;
 
   return (
-    <button className={ObjectOverlayCardEarnClassList} onClick={handleButtonClick}>
+    <button style={styles} className={ObjectOverlayCardEarnClassList} onClick={handleButtonClick}>
       {!hasSeveralMeanings
         ? props.intl.formatMessage({
             id: 'rewards_details_earn',

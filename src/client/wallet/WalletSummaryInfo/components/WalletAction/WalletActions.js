@@ -17,24 +17,20 @@ import {
   setDepositeSymbol,
   toggleWithdrawModal,
 } from '../../../../../store/depositeWithdrawStore/depositeWithdrawAction';
-import {
-  getAuthenticatedUserName,
-  isGuestUser,
-} from '../../../../../store/authStore/authSelectors';
+import { getAuthenticatedUserName } from '../../../../../store/authStore/authSelectors';
 import delegationModalTypes from '../../../../../common/constants/delegationModalTypes';
 import { toggleModal } from '../../../../../store/swapStore/swapActions';
 
 import './WalletActions.less';
 
 const WalletAction = props => {
-  const isGuest = useSelector(isGuestUser);
   const authUserName = useSelector(getAuthenticatedUserName);
   const math = useRouteMatch();
 
-  if (isGuest || authUserName !== math.params.name) return null;
+  if (authUserName !== math.params.name) return null;
 
   const dispatch = useDispatch();
-  const withoutOptions = isEmpty(props.options);
+  const withoutOptions = isEmpty(props.options) && isEmpty(props.withdrawCurrencyOption);
   const classListButton = classNames('WalletAction__button', {
     'WalletAction__button--withoutSelect': withoutOptions,
   });
@@ -47,7 +43,6 @@ const WalletAction = props => {
     power_down: () => dispatch(openPowerUpOrDown(true)),
     transfer: () => dispatch(openTransfer('', 0, props.mainCurrency)),
     swap: () => dispatch(toggleModal(true, props.mainCurrency)),
-    withdraw: () => dispatch(toggleWithdrawModal(true, props.mainCurrency)),
     delegate: () =>
       dispatch(toggleDelegateModal(delegationModalTypes.DELEGATION, props.mainCurrency)),
   };
@@ -87,6 +82,17 @@ const WalletAction = props => {
                     {props.intl.formatMessage({ id: 'convert' })} {cyrrency}
                   </Menu.Item>
                 ))}
+              {!isEmpty(props.withdrawCurrencyOption) &&
+                props.withdrawCurrencyOption.map(cyrrency => (
+                  <Menu.Item
+                    key={`withdraw:${cyrrency}`}
+                    onClick={() => {
+                      dispatch(toggleWithdrawModal(true, props.mainCurrency, cyrrency));
+                    }}
+                  >
+                    {props.intl.formatMessage({ id: 'withdraw' })} to {cyrrency}
+                  </Menu.Item>
+                ))}
             </Menu>
           }
         >
@@ -109,6 +115,7 @@ WalletAction.propTypes = {
   mainKey: PropTypes.string.isRequired,
   mainCurrency: PropTypes.string.isRequired,
   swapCurrencyOptions: PropTypes.arrayOf(PropTypes.string),
+  withdrawCurrencyOption: PropTypes.arrayOf(PropTypes.string),
   options: PropTypes.arrayOf(PropTypes.string),
 };
 

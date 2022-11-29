@@ -47,7 +47,7 @@ export default function createSsrHandler(template) {
       const branch = matchRoutes(routes, req.url.split('?')[0]);
 
       const promises = branch.map(({ route, match }) => {
-        const fetchData = route.component.fetchData;
+        const fetchData = route?.component?.fetchData;
 
         if (fetchData instanceof Function) {
           return fetchData({ store, match, req, res });

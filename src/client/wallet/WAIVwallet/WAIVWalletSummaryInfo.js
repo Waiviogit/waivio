@@ -70,14 +70,17 @@ const WAIVWalletSummaryInfo = props => {
           <div className="WalletSummaryInfo__label">WAIV</div>
           <div className="WalletSummaryInfo__value">{formattedNumber(balance)} WAIV</div>
         </div>
-        {props.isGuest && (
-          <div className="WalletSummaryInfo__actions">
-            <p className="WalletSummaryInfo__description">
-              <FormattedMessage id="liquid_waiv_tokens" defaultMessage="Liquid WAIV tokens" />
-            </p>
-            <WalletAction mainKey={'power_up'} options={['transfer']} mainCurrency={'WAIV'} />
-          </div>
-        )}
+        <div className="WalletSummaryInfo__actions">
+          <p className="WalletSummaryInfo__description">
+            <FormattedMessage id="liquid_waiv_tokens" defaultMessage="Liquid WAIV tokens" />
+          </p>
+          <WalletAction
+            mainKey={props.isGuest ? 'transfer' : 'power_up'}
+            withdrawCurrencyOption={['LTC', 'BTC', 'ETH', 'HIVE']}
+            options={props.isGuest ? [] : ['transfer']}
+            mainCurrency={'WAIV'}
+          />
+        </div>
       </div>
       {!props.isGuest && (
         <div className="WalletSummaryInfo__itemWrap">

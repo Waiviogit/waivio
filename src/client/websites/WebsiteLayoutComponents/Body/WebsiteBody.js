@@ -68,7 +68,6 @@ const WebsiteBody = props => {
   }, []);
   const aboutObject = get(props, ['configuration', 'aboutObject'], {});
   const currentLogo = props.logo || getObjectAvatar(aboutObject);
-  const logoLink = get(aboutObject, ['defaultShowLink'], '/');
   const description = get(aboutObject, 'description', '');
   const objName = getObjectName(aboutObject);
   const title = get(aboutObject, 'title', '') || objName;
@@ -127,11 +126,6 @@ const WebsiteBody = props => {
         deleteShowPanel={deleteShowPanel}
       />
       <div className={mapClassList}>
-        {currentLogo && (
-          <Link to={logoLink}>
-            <img className="WebsiteBody__logo" src={currentLogo} alt="your logo" />
-          </Link>
-        )}
         {!isEmpty(props.configuration) && (
           <React.Fragment>
             {Boolean(props.counter) && props.isAuth && (

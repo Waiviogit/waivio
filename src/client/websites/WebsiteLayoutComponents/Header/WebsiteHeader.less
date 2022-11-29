@@ -77,12 +77,12 @@
     }
 
     .Topnav__menu-container__menu > li.ant-menu-item > a {
-      color: @gray !important;
+      color: @gray;
       font-weight: 100 !important;
       font-size: 20px;
 
       &:hover {
-        color: @neon-carrot !important;
+        color: @neon-carrot;
       }
     }
 
@@ -92,7 +92,7 @@
       border-radius: 12px;
       border: 1px solid @orange-light;
       background-color: transparent;
-      color: @orange-light !important;
+      color: @orange-light;
       padding: 0 8px;
       cursor: pointer;
       font-weight: lighter !important;
@@ -240,7 +240,12 @@
   &__logoImg {
     border-radius: 50%;
     margin-right: 5px;
-    width: 35px;
+    width: 45px;
+    height: 45px;
+  }
+
+  &__name {
+    text-transform: capitalize;
   }
 
   .DiningFiltersClass {

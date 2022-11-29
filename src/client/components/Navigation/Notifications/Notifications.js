@@ -10,6 +10,7 @@ import Loading from '../../Icon/Loading';
 import { getWalletType, isEmptyAmount } from '../../../../common/helpers/notificationsHelper';
 
 import './Notification.less';
+import './Notifications.less';
 
 const displayLimit = 6;
 

@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { isEmpty, get } from 'lodash';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
+import { injectIntl } from 'react-intl';
 import {
   getIsOpenModal,
   getSelectedDish,
@@ -151,9 +152,10 @@ const QuickRewardsModal = props => {
   };
 
   const getCurrentScreen = (() => {
-    const guideInfo = isNewReward
-      ? props.selectedDish
-      : get(props.selectedDish, 'propositions[0].guide');
+    const guideInfo = get(props.selectedDish, 'propositions[0].guide') || {
+      ...props.selectedDish,
+      reservationPermlink,
+    };
 
     switch (pageNumber) {
       case 1:
@@ -204,7 +206,7 @@ const QuickRewardsModal = props => {
               primaryObject={props.selectedRestaurant}
               reviewData={{
                 ...guideInfo,
-                guideName: isNewReward ? guideInfo.guideName : guideInfo.name,
+                guideName: guideInfo.guideName || guideInfo.name,
               }}
             />
           ),
@@ -225,7 +227,10 @@ const QuickRewardsModal = props => {
 
   return (
     <Modal
-      title="Submit dish photos and earn crypto!"
+      title={props.intl.formatMessage({
+        id: 'submit_dish_photos_and_earn',
+        defaultMessage: 'Submit dish photos and earn crypto!',
+      })}
       footer={null}
       visible={props.isOpenModal}
       onCancel={closeModal}
@@ -280,21 +285,24 @@ QuickRewardsModal.propTypes = {
   realiseRewards: PropTypes.func.isRequired,
   isOpenModal: PropTypes.bool.isRequired,
   reservePropositionForQuick: PropTypes.bool.isRequired,
+  intl: PropTypes.shape().isRequired,
 };
 
-export default connect(
-  state => ({
-    selectedRestaurant: getSelectedRestaurant(state),
-    selectedDish: getSelectedDish(state),
-    isOpenModal: getIsOpenModal(state),
-    authUser: getAuthenticatedUserName(state),
-  }),
-  {
-    createQuickPost,
-    reserveProposition,
-    toggleModal,
-    declineProposition,
-    realiseRewards: newRewards.realiseRewards,
-    reservePropositionForQuick: newRewards.reservePropositionForQuick,
-  },
-)(QuickRewardsModal);
+export default injectIntl(
+  connect(
+    state => ({
+      selectedRestaurant: getSelectedRestaurant(state),
+      selectedDish: getSelectedDish(state),
+      isOpenModal: getIsOpenModal(state),
+      authUser: getAuthenticatedUserName(state),
+    }),
+    {
+      createQuickPost,
+      reserveProposition,
+      toggleModal,
+      declineProposition,
+      realiseRewards: newRewards.realiseRewards,
+      reservePropositionForQuick: newRewards.reservePropositionForQuick,
+    },
+  )(QuickRewardsModal),
+);
