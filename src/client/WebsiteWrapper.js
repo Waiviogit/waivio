@@ -42,6 +42,7 @@ import QuickRewardsModal from './rewards/QiuckRewardsModal/QuickRewardsModal';
 import { getIsOpenModal } from '../store/quickRewards/quickRewardsSelectors';
 import { getTokenRates } from '../store/walletStore/walletActions';
 import { hexToRgb } from '../common/helpers';
+import { initialColors } from './websites/constants/colors';
 
 export const AppSharedContext = React.createContext({ usedLocale: 'en-US', isGuestUser: false });
 
@@ -224,6 +225,7 @@ class WebsiteWrapper extends React.PureComponent {
     const language = findLanguage(usedLocale);
     const antdLocale = this.getAntdLocale(language);
     const signInPage = location.pathname.includes('sign-in');
+    const mainColor = colors?.mapMarkerBody || initialColors.marker;
 
     return (
       <IntlProvider
@@ -241,8 +243,8 @@ class WebsiteWrapper extends React.PureComponent {
           >
             <Layout
               style={{
-                '--website-color': `${colors?.mapMarkerBody}`,
-                '--website-hover-color': `${hexToRgb(colors?.mapMarkerBody, 1)}`,
+                '--website-color': `${mainColor}`,
+                '--website-hover-color': `${hexToRgb(mainColor, 1)}`,
               }}
               data-dir={language && language.rtl ? 'rtl' : 'ltr'}
             >

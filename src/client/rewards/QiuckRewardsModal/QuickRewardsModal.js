@@ -49,7 +49,7 @@ const QuickRewardsModal = props => {
   const [body, setBody] = useState('');
   const [images, setImages] = useState([]);
   const [reservationPermlink, setReservationPermlink] = useState('');
-  const isNewReward = props.selectedRestaurant?.campaigns?.newCampaigns;
+  const isNewReward = props?.selectedDish?.reward;
   const dishRewards = isNewReward
     ? props?.selectedDish?.reward
     : get(props, 'selectedDish.propositions[0].reward', null);
@@ -63,9 +63,9 @@ const QuickRewardsModal = props => {
     'QuickRewardsModal__button-wrap--firstScreen': pageNumber === 1,
   });
 
-  const minPhotos = isNewReward
-    ? props?.selectedDish?.requirements?.minPhotos
-    : get(props, 'selectedDish.propositions[0].requirements.minPhotos', 0);
+  const minPhotos =
+    get(props, 'selectedDish.propositions[0].requirements.minPhotos', 0) ||
+    props?.selectedDish?.requirements?.minPhotos;
 
   const closeModal = () => {
     props.toggleModal(false);

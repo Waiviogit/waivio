@@ -82,7 +82,8 @@ const AddToken = props => {
         <p>
           {intl.formatMessage({
             id: 'tokens_stored_note',
-            defaultMessage: 'Tokens that are stored externally can now be included in rebalancing. This can lead to a situation when the amount of locally stored tokens may not be sufficient to complete the next rebalancing operation.',
+            defaultMessage:
+              'Tokens that are stored externally can now be included in rebalancing. This can lead to a situation when the amount of locally stored tokens may not be sufficient to complete the next rebalancing operation.',
           })}
         </p>
       </Form>
