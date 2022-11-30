@@ -64,7 +64,7 @@ const ModalSignIn = ({
 
   const hiveSinger = new hivesigner.Client({
     app: process.env.STEEMCONNECT_CLIENT_ID,
-    callbackURL: host,
+    callbackURL: `${host}/callback`,
   });
   const isWidget = getSessionData('isWidget');
 
