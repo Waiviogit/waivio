@@ -8,11 +8,7 @@ import WebsiteSearch from '../../../search/WebsitesSearch/WebsiteSearch';
 import FilterTypesList from '../../../search/SearchAllResult/components/FilterTypesList';
 import HeaderButton from '../../../components/HeaderButton/HeaderButton';
 import SubmitDishPhotosButton from '../../../widgets/SubmitDishPhotosButton/SubmitDishPhotosButton';
-import {
-  getConfigurationValues,
-  getCurrentHost,
-  getWebsiteLogo,
-} from '../../../../store/appStore/appSelectors';
+import { getConfigurationValues, getWebsiteLogo } from '../../../../store/appStore/appSelectors';
 import { getObjectAvatar, getObjectUrlForLink } from '../../../../common/helpers/wObjectHelper';
 
 import './WebsiteHeader.less';
@@ -20,7 +16,7 @@ import './WebsiteHeader.less';
 const MainPageHeader = props => {
   const logo = useSelector(getWebsiteLogo);
   const config = useSelector(getConfigurationValues);
-  const currHost = useSelector(getCurrentHost);
+  const currHost = typeof location !== 'undefined' && location.hostname;
 
   const aboutObject = config?.aboutObject;
   const currentLogo = logo || getObjectAvatar(aboutObject);
@@ -31,7 +27,7 @@ const MainPageHeader = props => {
         <div className="MainPageHeader__logo">
           <Link to="/" className="MainPageHeader__logoLink">
             <img src={currentLogo} className="MainPageHeader__logoImg" alt="logo" />
-            <b className="MainPageHeader__name">{currHost.replace('https://')}</b>
+            <b className="MainPageHeader__name">{currHost}</b>
           </Link>
           {!props.withMap && (
             <Link to="/map?type=restaurant&showPanel=true" className="MainPageHeader__link">
