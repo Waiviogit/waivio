@@ -2015,5 +2015,7 @@
   "select_restaurant": "Select restaurant",
   "select_dish": "Select dish or drink",
  "object_field_widget": "Form",
-  "object_field_newsFeed": "News filter"
+  "object_field_newsFeed": "News filter",
+  "photos": "Photos",
+  "related": "Related"
 }
