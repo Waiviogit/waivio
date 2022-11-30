@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
-import { get, map, isEmpty, isEqual, filter, size } from 'lodash';
+import { get, map, isEmpty } from 'lodash';
 import Proposition from '../Proposition';
 import ObjectCardView from '../../../objectCard/ObjectCardView';
 import Loading from '../../../components/Icon/Loading';
@@ -15,13 +15,12 @@ import {
 } from '../../../../common/helpers/wObjectHelper';
 import { statusNoVisibleItem } from '../../../../common/constants/listOfFields';
 import CategoryItemView from '../../../object/Catalog/CategoryItemView/CategoryItemView';
-import { getObject } from '../../../../waivioApi/ApiClient';
 import Campaign from '../../Campaign/Campaign';
 import PropositionNew from '../../../newRewards/reuseble/Proposition/Proposition';
+import Campaing from '../../../newRewards/reuseble/Campaing';
 
 const PropositionList = ({
   wobject,
-  currentProposition,
   discardProposition,
   assignPropositionHandler,
   intl,
@@ -36,79 +35,10 @@ const PropositionList = ({
   listItems,
   isLoadingFlag,
   location,
-  allCurrentPropositions,
-  locale,
   isCatalogWrap,
   isCustomExist,
   wObj,
 }) => {
-  const [isGetWobject, setIsGetWobject] = useState(false);
-  let filteredPropos = allCurrentPropositions.filter(prop => {
-    const objects = get(prop, ['objects'], []);
-
-    return listItems.some(listItem => {
-      const listItemId = get(listItem, '_id', '');
-
-      return objects.some(wobj => get(wobj, ['object', '_id'], '') === listItemId);
-    });
-  });
-
-  if (!hasType(wobject, 'list') && size(filteredPropos)) {
-    filteredPropos = [filteredPropos.sort((a, b) => b.reward - a.reward)[0]];
-  }
-  useEffect(() => {
-    if (!isEmpty(wobject.parent)) {
-      setIsGetWobject(true);
-      getObject(get(wobject, ['parent', 'author_permlink']), userName, locale).then(() => {
-        setIsGetWobject(false);
-      });
-    }
-  }, [wobject.author_permlink]);
-
-  const handleCurrentProposition = (currPropos, currWobject) => {
-    if (!isEmpty(currWobject.parent)) {
-      if (isEmpty(allCurrentPropositions)) return null;
-      const filtPropos = filter(allCurrentPropositions, prop => {
-        const objs = get(prop, 'objects', []);
-
-        return objs.some(obj => obj.object.author_permlink === currWobject.author_permlink);
-      });
-
-      return isGetWobject ? (
-        <Loading />
-      ) : (
-        map(filtPropos, propos => {
-          if (!isEmpty(propos)) {
-            return (
-              <Proposition
-                proposition={propos}
-                wobj={wobject}
-                wobjPrice={wobject.reward}
-                assignCommentPermlink={wobject.permlink}
-                assignProposition={assignPropositionHandler}
-                discardProposition={discardProposition}
-                authorizedUserName={userName}
-                loading={loadingAssignDiscard}
-                key={`${currWobject.author_permlink}`}
-                assigned={currWobject.assigned}
-                history={history}
-                isAssign={isAssign}
-                match={match}
-                user={user}
-              />
-            );
-          }
-
-          return null;
-        })
-      );
-    }
-
-    if (isEmpty(currPropos)) return null;
-
-    return <Campaign proposition={currentProposition} filterKey="all" />;
-  };
-
   const isReviewPage = location.pathname === `/object/${get(wobject, 'author_permlink', '')}`;
 
   const getListRow = listItem => {
@@ -142,6 +72,14 @@ const PropositionList = ({
         );
       });
 
+    if (listItem?.campaigns) {
+      if (listItem?.campaigns?.newCampaigns) {
+        return <Campaing campain={{ object: listItem, ...listItem?.campaigns }} />;
+      }
+
+      return <Campaign proposition={listItem} filterKey="all" hovered />;
+    }
+
     const isList = listItem.object_type === OBJ_TYPE.LIST || listItem.type === OBJ_TYPE.LIST;
     const status = get(parseWobjectField(listItem, 'status'), 'title');
 
@@ -154,17 +92,6 @@ const PropositionList = ({
 
     if (isList) {
       item = <CategoryItemView wObject={listItem} location={location} />;
-    } else if (filteredPropos.length) {
-      map(filteredPropos, currPropos => {
-        const objPermlink = get(currPropos, 'required_object.author_permlink', {});
-        const currListItemPermlink = get(listItem, 'author_permlink', {});
-
-        if (isEqual(objPermlink, currListItemPermlink)) {
-          item = handleCurrentProposition(currPropos, listItem);
-        } else {
-          item = <ObjectCardView wObject={listItem} path={path} inList />;
-        }
-      });
     } else {
       item = <ObjectCardView wObject={listItem} path={path} inList />;
     }
@@ -187,11 +114,8 @@ const PropositionList = ({
     return map(listItems, listItem => getListRow(listItem));
   };
 
-  const currObj = isEmpty(wobject) ? get(currentProposition, 'required_object', {}) : wobject;
-
   return (
     <React.Fragment>
-      {handleCurrentProposition(currentProposition, currObj)}
       {isLoadingFlag ? (
         <Loading />
       ) : (
@@ -224,8 +148,6 @@ PropositionList.propTypes = {
   intl: PropTypes.shape().isRequired,
   wobject: PropTypes.shape().isRequired,
   isCatalogWrap: PropTypes.bool,
-  allCurrentPropositions: PropTypes.arrayOf(PropTypes.shape()),
-  currentProposition: PropTypes.arrayOf(PropTypes.shape()),
   discardProposition: PropTypes.func,
   assignPropositionHandler: PropTypes.func,
   match: PropTypes.shape(),
@@ -239,7 +161,6 @@ PropositionList.propTypes = {
   isLoadingFlag: PropTypes.bool,
   listItems: PropTypes.shape(),
   location: PropTypes.shape().isRequired,
-  locale: PropTypes.string.isRequired,
   isCustomExist: PropTypes.bool,
   wObj: PropTypes.shape().isRequired,
 };

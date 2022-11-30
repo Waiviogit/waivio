@@ -11,9 +11,12 @@ import {
   getSearchFilters,
   getSearchFiltersTagCategory,
 } from '../../../../store/searchStore/searchSelectors';
+import useWebsiteColor from '../../../../hooks/useWebsiteColor';
+import { hexToRgb } from '../../../../common/helpers';
 
 const SearchMapFilters = React.memo(props => {
   const query = new URLSearchParams(props.location.search);
+  const colors = useWebsiteColor();
   const handleSetFiltersInUrl = (category, value) => {
     if (value === 'all') query.delete(category);
     else query.set(category, value);
@@ -37,7 +40,14 @@ const SearchMapFilters = React.memo(props => {
       });
 
     return (
-      <Menu onClick={handleOnClickMenu} className="SearchAllResult__filter-list">
+      <Menu
+        onClick={handleOnClickMenu}
+        className="SearchAllResult__filter-list"
+        style={{
+          '--website-color': `${colors?.background}`,
+          '--website-hover-color': `${hexToRgb(colors?.background, 1)}`,
+        }}
+      >
         <Menu.Item key={'all'}>show all</Menu.Item>
         {map(filter.tags, tag => (
           <Menu.Item className={menuItemClassList(tag)} key={tag}>

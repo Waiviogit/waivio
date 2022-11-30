@@ -11,7 +11,6 @@ const USDDisplay = React.memo(({ value, currencyDisplay, style }) => {
   const absValue = Math.abs(value) || 0;
   const precision = absValue > 0.01 || absValue === 0 || absValue < 0.001 ? 2 : 3;
   const sum = absValue * currencyInfo.rate;
-
   const formatted = num => (
     <FormattedNumber
       value={num}

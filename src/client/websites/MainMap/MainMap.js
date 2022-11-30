@@ -61,7 +61,7 @@ const MainMap = React.memo(props => {
   const isMobile = props.screenSize === 'xsmall' || props.screenSize === 'small';
   const mapClassList = classNames('WebsiteBody__map', { WebsiteBody__hideMap: props.isShowResult });
   const mapRef = useRef();
-  const abortController = useRef(null);
+  // const abortController = useRef(null);
 
   if (queryCenter) queryCenter = queryCenter.split(',').map(item => Number(item));
   if (isMobile) mapHeight = `${height - headerHeight}px`;
@@ -180,15 +180,15 @@ const MainMap = React.memo(props => {
     const { topPoint, bottomPoint } = boundsParams;
 
     if (!isEmpty(topPoint) && !isEmpty(bottomPoint)) {
-      if (abortController.current) abortController.current.abort();
-      abortController.current = new AbortController();
+      // if (abortController.current) abortController.current.abort();
+      // abortController.current = new AbortController();
 
       props
         .getWebsiteObjWithCoordinates(
           props.searchString,
           { topPoint, bottomPoint },
           80,
-          abortController.current,
+          // abortController.current,
         )
         .then(res => {
           checkDistanceAndSetReload();

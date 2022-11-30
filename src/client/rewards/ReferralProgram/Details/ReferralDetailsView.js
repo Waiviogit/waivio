@@ -1,8 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { useLocation } from 'react-router';
+
 import { referralDetailContent } from '../ReferralTextHelper';
 
 const ReferralDetailsView = ({ isAuthenticated, data }) => {
+  const location = useLocation();
+  const isNewCamp = location.pathname.includes('new');
+
   const {
     detailTitle,
     detailDescription,
@@ -19,7 +24,7 @@ const ReferralDetailsView = ({ isAuthenticated, data }) => {
     detailsCommissionsReferrals,
     detailsCommissionsPayments,
     detailsReferralPartners,
-  } = referralDetailContent(data);
+  } = referralDetailContent(data, isNewCamp);
 
   return (
     <React.Fragment>
