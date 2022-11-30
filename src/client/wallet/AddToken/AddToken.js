@@ -67,7 +67,12 @@ const AddToken = props => {
           />
         </div>
         <div>
-          <h4>Tokens stored externally (optional)</h4>
+          <h4>
+            {intl.formatMessage({
+              id: 'tokens_stored_field_name',
+              defaultMessage: 'Tokens stored externally (optional)',
+            })}
+          </h4>
           <Input
             type="number"
             className="Add-token__input"
@@ -75,9 +80,10 @@ const AddToken = props => {
           />
         </div>
         <p>
-          Tokens that are stored externally can now be included in rebalancing. This can lead to a
-          situation when the amount of locally stored tokens may not be sufficient to complete the
-          next rebalancing operation.
+          {intl.formatMessage({
+            id: 'tokens_stored_note',
+            defaultMessage: 'Tokens that are stored externally can now be included in rebalancing. This can lead to a situation when the amount of locally stored tokens may not be sufficient to complete the next rebalancing operation.',
+          })}
         </p>
       </Form>
     </Modal>

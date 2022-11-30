@@ -90,7 +90,7 @@ export const prepareAlbumData = (form, currentUsername, wObject, votePercent) =>
   data.field = {
     name: 'galleryAlbum',
     body: form.galleryAlbum,
-    locale: 'en-US',
+    locale: wObject.locale || 'en-US',
     id: generatePermlink(),
   };
 
