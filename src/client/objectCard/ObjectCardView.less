@@ -1,5 +1,6 @@
 @import (reference) '../styles/custom.less';
 @import (reference) '../styles/modules/variables.less';
+@import (reference) '../styles/mixins.less';
 
 @wrapPadding: 15px;
 
@@ -100,7 +101,7 @@
 
   &--hovered {
     &:hover {
-      background: @solitaire;
+      .hoverCard();
       cursor: pointer;
     }
   }

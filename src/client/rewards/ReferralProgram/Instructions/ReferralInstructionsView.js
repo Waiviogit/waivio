@@ -10,7 +10,6 @@ const ReferralsInstructionsView = ({ mainProps, handleCopyTextButton, widget }) 
     isAuthenticated,
     rejectRules,
     isStartChangeRules,
-    isStartGetReferralInfo,
     handleAgreeRulesCheckbox,
     handleClickOnCheckbox,
     currentCopyText,
@@ -80,7 +79,7 @@ const ReferralsInstructionsView = ({ mainProps, handleCopyTextButton, widget }) 
             </label>
           </div>
         )}
-        {(isStartChangeRules || isStartGetReferralInfo) && (
+        {isStartChangeRules && (
           <div className="ReferralInstructions__wrap-conditions__loader">
             <Loading />
           </div>
