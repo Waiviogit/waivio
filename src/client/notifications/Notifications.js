@@ -16,9 +16,9 @@ import {
 } from '../../store/authStore/authSelectors';
 import * as userSelectors from '../../store/userStore/userSelectors';
 import { getWalletType, isEmptyAmount } from '../../common/helpers/notificationsHelper';
+import { parseJSON } from '../../common/helpers/parseJSON';
 
 import './Notifications.less';
-import { parseJSON } from '../../common/helpers/parseJSON';
 
 class Notifications extends React.Component {
   static propTypes = {

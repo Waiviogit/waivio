@@ -77,7 +77,11 @@ const MobileNavigation = ({ location, match }) => {
       break;
     case (url.match(pages.rewardsNewMatchBots.regExp) || {}).input:
       pageName = pages.rewardsNewMatchBots.id;
-      filterName = 'Sponsor match bots';
+      filterName = url.match(pages.rewardsNewMatchBots.regExp)[2].replaceAll('-', ' ');
+      break;
+    case (url.match(pages.rewardsNewRefferal.regExp) || {}).input:
+      pageName = pages.rewardsNewRefferal.id;
+      filterName = url.match(pages.rewardsNewRefferal.regExp)[2].replaceAll('-', ' ');
       break;
     case (url.match(pages.rewardsNewCampaigns.regExp) || {}).input:
       pageName = pages.rewardsNewCampaigns.id;

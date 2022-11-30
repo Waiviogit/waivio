@@ -11,7 +11,7 @@ import {
 import { openNewTab } from '../rewardsHelper';
 
 // eslint-disable-next-line import/prefer-default-export
-export const referralDetailContent = data => {
+export const referralDetailContent = (data, isNewCamp) => {
   const {
     username,
     firstPercent,
@@ -132,7 +132,7 @@ export const referralDetailContent = data => {
         defaultMessage="All payments are processed directly by the sponsors and the status of all payments can be checked on the {receivablesPage} page in the Rewards section. Please note that Waivio is not involved in the processing of payments and we only handle information relating to payment obligations between the parties. To ensure that sponsors pay rewards and processing fees on time, Waivio stops processing sponsor campaigns if they are overdue by {suspendedTimer} days or more."
         values={{
           receivablesPage: (
-            <Link to={`/rewards/receivables`}>
+            <Link to={isNewCamp ? `/rewards-new/receivables` : `/rewards/receivables`}>
               <span className="commissions-payments__receivables">
                 <FormattedMessage
                   id="referrals_details_commissions_payments_receivables"
@@ -151,7 +151,13 @@ export const referralDetailContent = data => {
         defaultMessage="Referral partners can check the list of users currently attributed to them on the {statusPage} page."
         values={{
           statusPage: (
-            <Link to={`/rewards/referral-status/${username}`}>
+            <Link
+              to={
+                isNewCamp
+                  ? `/rewards-new/referral-status/${username}`
+                  : `/rewards/referral-status/${username}`
+              }
+            >
               <span className="referral-partners__status">
                 <FormattedMessage id="referrals_status" defaultMessage="Status" />
               </span>

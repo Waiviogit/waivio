@@ -1,5 +1,6 @@
 @import (reference) '../../styles/custom.less';
 @import (reference) '../../styles/modules/variables.less';
+@import (reference) '../../styles/mixins.less';
 
 .SearchAllResult {
   position: absolute;
@@ -57,6 +58,11 @@
     align-items: center;
     border-radius: 8px;
 
+    &:hover {
+      border: 1px solid var(--website-color);
+      color: var(--website-color);
+    }
+
     span {
       margin: 0;
     }
@@ -64,6 +70,12 @@
     i {
       margin-top: 4px;
     }
+  }
+
+  .ant-btn.SearchAllResult__filters-button--active {
+    border: 1px solid var(--website-color);
+    color: var(--website-color);
+    background: transparent;
   }
 
   &__buttonWrap {
@@ -98,11 +110,11 @@
     }
 
     &:hover {
-      color: @orange-hot;
+      color: var(--website-color);
     }
 
     &--active {
-      color: @orange-hot;
+      color: var(--website-color);
     }
 
     &:last-child {
@@ -111,7 +123,7 @@
   }
 
   &__active-tag {
-    background: @maize;
+    background: var(--website-color);
     color: @black;
   }
 
@@ -151,7 +163,7 @@
 
     @media @small {
       display: flex;
-      color: @orange-hot;
+      color: var(--website-color);
       cursor: pointer;
 
       svg {
@@ -178,13 +190,19 @@
     }
 
     &:hover {
-      color: @orange-hot;
+      color: var(--website-color);
     }
   }
 
   &__filter-list {
     max-height: 360px;
     overflow: auto;
+
+    .ant-dropdown-menu-item {
+      &:hover {
+        .hoverCard();
+      }
+    }
   }
 
   &__dining {
@@ -204,6 +222,11 @@
 
       span {
         font-size: 13px;
+      }
+
+      &:focus {
+        border-color: var(--website-color);
+        color: var(--website-color);
       }
     }
 

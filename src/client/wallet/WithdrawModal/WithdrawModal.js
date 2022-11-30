@@ -104,14 +104,15 @@ const WithdrawModal = props => {
     };
   }, [userName]);
 
-  const openLinkedModal = () => {
-    if (pair && isGuest && !hiveBeneficiaryAccount && pair?.to_coin_symbol === 'HIVE')
+  const openLinkedModal = currPair => {
+    if (currPair && isGuest && !hiveBeneficiaryAccount && currPair?.to_coin_symbol === 'HIVE') {
       setShowLinkToHive(true);
+    }
   };
 
   useEffect(() => {
     getWithdraws().then(res => setDelay(res?.length));
-    openLinkedModal();
+    openLinkedModal(pair);
   }, [pair]);
 
   const handleCloseModal = () => {
@@ -233,8 +234,8 @@ const WithdrawModal = props => {
   const setTokenPair = async selectedPair => {
     dispatch(setWithdrawPair(selectedPair));
     setWalletAddress('');
-    if (pair.symbol === 'WAIV') {
-      openLinkedModal();
+    if (selectedPair.symbol === 'WAIV') {
+      openLinkedModal(selectedPair);
       const amount = await getWithdrawInfo({
         account: userName,
         data: {
@@ -280,7 +281,7 @@ const WithdrawModal = props => {
           </Button>,
         ]}
       >
-        {Boolean(delay) && (
+        {Boolean(delay >= 10) && (
           <div className="WithdrawModal__warning">
             The are {delay} pending withdrawals waiting to be processed. So, your withdrawals might
             be delayed.
@@ -364,9 +365,7 @@ const WithdrawModal = props => {
               <div>
                 Guests are only allowed to make transfers to their own Hive accounts. This account
                 should be first linked to the guest account.{' '}
-                <span style={{ color: 'orange' }} onClick={() => setShowLinkToHive(true)}>
-                  Link account
-                </span>
+                <a onClick={() => setShowLinkToHive(true)}>Link account</a>
               </div>
             ) : (
               <SelectUserForAutocomplete account={isGuest ? hiveBeneficiaryAccount : userName} />

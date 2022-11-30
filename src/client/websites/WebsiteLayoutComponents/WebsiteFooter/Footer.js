@@ -1,11 +1,11 @@
 import React from 'react';
-import PropTypes from "prop-types";
-import {injectIntl} from "react-intl";
+import PropTypes from 'prop-types';
+import { injectIntl } from 'react-intl';
 import { footerLinks } from '../../constants/links';
 
 import './Footer.less';
 
-const WebsiteFooter = ({intl}) => (
+const WebsiteFooter = ({ intl }) => (
   <div className="wrapper">
     <footer className="Footer">
       {Object.keys(footerLinks).map(section => (
@@ -14,7 +14,7 @@ const WebsiteFooter = ({intl}) => (
           <div>
             {footerLinks[section].map(linkInfo => (
               <a key={linkInfo.name} href={linkInfo.link}>
-                {intl.formatMessage({id: linkInfo.id, defaultMessage: linkInfo.name})}
+                {intl.formatMessage({ id: linkInfo.id, defaultMessage: linkInfo.name })}
               </a>
             ))}
           </div>

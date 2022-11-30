@@ -82,7 +82,7 @@
       font-size: 20px;
 
       &:hover {
-        color: @neon-carrot;
+        color: var(--website-color);
       }
     }
 
@@ -90,9 +90,9 @@
       display: flex;
       align-items: center;
       border-radius: 12px;
-      border: 1px solid @orange-light;
+      border: 1px solid var(--website-color);
       background-color: transparent;
-      color: @orange-light;
+      color: var(--website-color);
       padding: 0 8px;
       cursor: pointer;
       font-weight: lighter !important;
@@ -196,6 +196,10 @@
         top: 2px;
       }
 
+      &:hover {
+        color: var(--website-color);
+      }
+
       &.Topnav__user {
         margin-right: 0;
 
@@ -223,9 +227,9 @@
 
   button.MainPageHeader__signIn {
     border-radius: 8px;
-    border: 3px solid @orange-light;
+    border: 3px solid var(--website-color);
     background-color: transparent;
-    color: @orange-light;
+    color: var(--website-color);
     padding: 0 6px;
     cursor: pointer;
     font-weight: bold;
@@ -242,6 +246,7 @@
     margin-right: 5px;
     width: 45px;
     height: 45px;
+    object-fit: cover;
   }
 
   &__name {
@@ -265,7 +270,7 @@
       text-transform: uppercase;
       border-radius: 8px;
       height: 33px;
-      background: @orange-hot;
+      background: var(--website-color);
       color: @white;
       line-height: 33px;
       text-align: center;
@@ -345,6 +350,9 @@
 
         &:focus {
           border-radius: 8px;
+          -webkit-box-shadow: 0 0 5px 0 var(--website-color);
+          -moz-box-shadow: 0 0 5px 0 var(--website-color);
+          box-shadow: 0 0 5px 0 var(--website-color);
         }
       }
 

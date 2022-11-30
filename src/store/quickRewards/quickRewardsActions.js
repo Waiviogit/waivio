@@ -248,7 +248,7 @@ export const reserveProposition = permlink => async (
   const dish = getSelectedDish(state);
   const primaryObject = getSelectedRestaurant(state);
   const proposition =
-    dish.propositions.find(prop => prop.activation_permlink) || dish.propositions[0] || dish;
+    dish?.propositions?.find(prop => prop.activation_permlink) || dish.propositions?.[0] || dish;
   const proposedWobjName = getObjectName(dish);
   const proposedWobjAuthorPermlink = dish.author_permlink;
   const currencyInfo = await getCurrentHivePrice();
@@ -289,10 +289,13 @@ export const reserveProposition = permlink => async (
   return new Promise((resolve, reject) => {
     steemConnectAPI
       .broadcast([commentOp])
-      .then(async () => {
-        busyAPI.instance.sendAsync(subscribeTypes.subscribeCampaignAssign, [username, permlink]);
+      .then(async res => {
+        busyAPI.instance.sendAsync(subscribeTypes.subscribeTransactionId, [
+          username,
+          res.result.id,
+        ]);
         busyAPI.instance.subscribe((datad, j) => {
-          if (j?.success && j?.permlink === permlink) {
+          if (j?.success && j?.permlink === res.result.id) {
             resolve();
           }
         });

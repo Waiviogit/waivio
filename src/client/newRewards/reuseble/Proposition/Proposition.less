@@ -1,5 +1,6 @@
 @import (reference) '../../../styles/custom.less';
 @import (reference) '../../../styles/modules/variables.less';
+@import (reference) '../../../styles/mixins.less';
 
 .Proposition-new {
   font-size: 14px;
@@ -14,7 +15,7 @@
   }
 
   &__header {
-    border: 2px solid #f87007;
+    border: 2px solid var(--website-color);
     border-bottom: none;
     border-radius: 8px 8px 0 0;
     padding: 15px;
@@ -34,7 +35,7 @@
   }
 
   &__footer {
-    border: 2px solid #f87007;
+    border: 2px solid var(--website-color);
     color: #99aab5;
     border-top: none;
     border-radius: 0 0 8px 8px;
@@ -47,6 +48,8 @@
 
     .ant-btn-primary {
       margin-right: 10px;
+      background: var(--website-color);
+      border-color: var(--website-color);
     }
 
     .Comment {
@@ -131,9 +134,9 @@
     &:hover {
       cursor: pointer;
 
-      .Proposition__header,
-      .Proposition__footer {
-        background: @solitaire;
+      .Proposition-new__header,
+      .Proposition-new__footer {
+        .hoverCard();
       }
     }
   }

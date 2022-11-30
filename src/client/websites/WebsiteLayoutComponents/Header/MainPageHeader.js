@@ -8,14 +8,20 @@ import WebsiteSearch from '../../../search/WebsitesSearch/WebsiteSearch';
 import FilterTypesList from '../../../search/SearchAllResult/components/FilterTypesList';
 import HeaderButton from '../../../components/HeaderButton/HeaderButton';
 import SubmitDishPhotosButton from '../../../widgets/SubmitDishPhotosButton/SubmitDishPhotosButton';
-import { getConfigurationValues, getWebsiteLogo } from '../../../../store/appStore/appSelectors';
-import { getObjectAvatar } from '../../../../common/helpers/wObjectHelper';
+import {
+  getConfigurationValues,
+  getCurrentHost,
+  getWebsiteLogo,
+} from '../../../../store/appStore/appSelectors';
+import { getObjectAvatar, getObjectUrlForLink } from '../../../../common/helpers/wObjectHelper';
 
 import './WebsiteHeader.less';
 
 const MainPageHeader = props => {
   const logo = useSelector(getWebsiteLogo);
   const config = useSelector(getConfigurationValues);
+  const currHost = useSelector(getCurrentHost);
+
   const aboutObject = config?.aboutObject;
   const currentLogo = logo || getObjectAvatar(aboutObject);
 
@@ -25,7 +31,7 @@ const MainPageHeader = props => {
         <div className="MainPageHeader__logo">
           <Link to="/" className="MainPageHeader__logoLink">
             <img src={currentLogo} className="MainPageHeader__logoImg" alt="logo" />
-            <b className="MainPageHeader__name">{location?.hostname}</b>
+            <b className="MainPageHeader__name">{currHost.replace('https://')}</b>
           </Link>
           {!props.withMap && (
             <Link to="/map?type=restaurant&showPanel=true" className="MainPageHeader__link">
@@ -42,6 +48,11 @@ const MainPageHeader = props => {
         </div>
         <div className="MainPageHeader__buttonWrap">
           <div className="MainPageHeader__listLink">
+            {aboutObject && (
+              <Link to={getObjectUrlForLink(aboutObject)}>
+                {props.intl.formatMessage({ id: 'about', defaultMessage: 'About' })}
+              </Link>
+            )}
             <Link to="/object/mds-dining-gifts/newsFilter/dininggifts-dw09owbl6bh">
               {props.intl.formatMessage({ id: 'reviews', defaultMessage: 'Reviews' })}
             </Link>

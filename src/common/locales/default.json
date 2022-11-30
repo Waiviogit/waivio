@@ -2045,5 +2045,7 @@
   "rebalancing_strategy": "rebalancing strategy",
   "initial_number_of_tokens": "Initial number of tokens",
   "tokens_stored_note": "Tokens that are stored externally can now be included in rebalancing. This can lead to a situation when the amount of locally stored tokens may not be sufficient to complete the next rebalancing operation.",
-  "tokens_stored_field_name": "Tokens stored externally (optional)"
+  "tokens_stored_field_name": "Tokens stored externally (optional)",
+ "object_field_widget": "Form",
+  "object_field_newsFeed": "News filter"
 }
