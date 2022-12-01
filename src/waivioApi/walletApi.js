@@ -2,6 +2,7 @@ import fetch from 'isomorphic-fetch';
 import config from './routes';
 import { headers } from './ApiClient';
 import { getGuestAccessToken } from '../common/helpers/localStorageHelpers';
+import { compareTokensList } from '../store/swapStore/helper';
 
 export const getGuestWaivTransferHistory = (guestName, symbol) =>
   fetch(`${config.apiPrefix}${config.user}/${guestName}${config.guestWallet}?symbol=${symbol}`, {
@@ -61,4 +62,12 @@ export const withdrawGuest = async ({ account, data }) =>
     .then(res => res.json())
     .catch(err => err);
 
+export const getTokenListForRebalancing = name =>
+  fetch(`${config.arbitrageApiPrefix}${config.profit}${config.tokens}`, {
+    method: 'GET',
+    headers,
+  })
+    .then(res => res.json())
+    .then(res => compareTokensList(name, res))
+    .catch(err => err);
 export default null;
