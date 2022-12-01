@@ -193,9 +193,7 @@ const ModalFirstScreen = props => {
           >
             {props.dishes.map(camp => {
               if (!isEmpty(camp)) {
-                const reward = isNewReward
-                  ? camp?.reward
-                  : get(camp, 'propositions[0].reward', null);
+                const reward = camp?.reward || get(camp, 'propositions[0].reward', null);
 
                 return (
                   <AutoComplete.Option
