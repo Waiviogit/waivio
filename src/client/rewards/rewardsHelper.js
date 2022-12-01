@@ -244,7 +244,7 @@ export const getUsersLegalNotice = objectDetails =>
     : '.';
 
 export const getReceiptPhoto = objectDetails =>
-  objectDetails.requirements.receiptPhoto
+  objectDetails?.requirements?.receiptPhoto
     ? `<li>Photo of the receipt (without personal details);</li>`
     : '';
 
@@ -355,7 +355,10 @@ export const getDetailsBody = ({
   return `${eligibilityRequirements} ${frequencyAssign} ${blacklist} ${postRequirements} ${description} ${sponsor} ${rewards} ${legal} ${usersLegalNotice}`;
 };
 
-export const getNewDetailsBody = async (proposition, parentObj) => {
+export const getNewDetailsBody = async (propos, parentObj) => {
+  const proposition = propos?.propositions
+    ? { ...propos?.propositions[0], object: propos }
+    : propos;
   const parent = parentObj || proposition.requiredObject;
   const proposedWobjName = getObjectName(proposition.object);
   const frequencyAssign = getFrequencyAssign(proposition);
@@ -364,7 +367,7 @@ export const getNewDetailsBody = async (proposition, parentObj) => {
   const eligibilityRequirements = `
     <p><b>User eligibility requirements:</b></p>
 <p>Only users who meet all eligibility criteria can participate in this rewards campaign.</p>
-<ul><li>Minimum Waivio expertise: ${proposition.userRequirements.minExpertise};</li><li>Minimum number of followers: ${proposition.userRequirements.minFollowers};</li><li>Minimum number of posts: ${proposition.userRequirements.minPosts};</li></ul>`;
+<ul><li>Minimum Waivio expertise: ${proposition?.userRequirements?.minExpertise};</li><li>Minimum number of followers: ${proposition.userRequirements.minFollowers};</li><li>Minimum number of posts: ${proposition.userRequirements.minPosts};</li></ul>`;
   const blacklist = `<ul><li>User account is not blacklisted by <a href='/@${proposition?.guideName}'>${proposition?.guideName}</a> or referenced accounts.</li></ul>`;
   const linkToFollowingObjects = `<li>Link to <a href="${proposition.object.defaultShowLink}">${proposedWobjName}</a>;</li>`;
   const proposedWobj = proposedWobjName

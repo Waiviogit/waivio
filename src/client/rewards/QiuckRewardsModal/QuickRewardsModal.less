@@ -36,6 +36,24 @@
       flex-wrap: nowrap;
     }
 
+    .ant-btn-primary {
+      background: var(--website-color);
+      border-color: var(--website-color);
+
+      &:hover {
+        color: @white;
+        background: var(--website-hover-color);
+        border-color: var(--website-hover-color);
+      }
+    }
+
+    .ant-btn {
+      &:hover {
+        border-color: var(--website-color);
+        color: var(--website-color);
+      }
+    }
+
     &--firstScreen {
       justify-content: flex-end;
     }

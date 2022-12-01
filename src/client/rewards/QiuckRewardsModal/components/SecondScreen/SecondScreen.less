@@ -2,6 +2,17 @@
 @import (reference) '../../../../styles/modules/variables.less';
 
 .SecondScreen {
+  .ant-select-selection {
+    &:hover {
+      border-color: var(--website-color);
+    }
+
+    &:focus,
+    &:active {
+      border-color: var(--website-color);
+      box-shadow: 0 0 4px 0 var(--website-color);
+    }
+  }
   &__textarea {
     height: 90px;
     width: 100%;
@@ -22,6 +33,10 @@
     @media @small {
       padding: 20px 0 5px;
       font-size: 1em;
+    }
+
+    a {
+      color: var(--website-color);
     }
   }
 }
