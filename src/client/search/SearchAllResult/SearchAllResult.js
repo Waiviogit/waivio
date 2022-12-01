@@ -29,7 +29,6 @@ import {
 import SearchMapFilters from './components/SearchMapFilters';
 import UsersList from './components/UsersList';
 import WobjectsList from './components/WobjectsList';
-import FilterTypesList from './components/FilterTypesList';
 import ReloadButton from './components/ReloadButton';
 
 import './SearchAllResult.less';
@@ -38,9 +37,8 @@ const SearchAllResult = props => {
   const [isScrolled, setIsScrolled] = useState(false);
   const isUsersSearch = props.searchType === 'Users';
   const resultList = useRef();
-  const searchResultClassList = classNames('SearchAllResult', {
+  const searchResultClassList = classNames('SearchAllResult SearchAllResult__dining', {
     SearchAllResult__show: props.isShowResult,
-    SearchAllResult__dining: props.isDining,
   });
 
   const handleItemClick = wobj => {
@@ -153,7 +151,6 @@ const SearchAllResult = props => {
       >
         <Icon type={props.isShowResult ? 'left' : 'right'} />
       </div>
-      {!props.isDining && <FilterTypesList />}
       <div className="SearchAllResult__main-wrap" ref={resultList} onScroll={getEndScroll}>
         {!isUsersSearch && <SearchMapFilters />}
         {props.showReload && (
@@ -190,7 +187,6 @@ SearchAllResult.propTypes = {
   wobjectsCounter: PropTypes.number.isRequired,
   usersCounter: PropTypes.number.isRequired,
   hasMore: PropTypes.bool,
-  isDining: PropTypes.bool.isRequired,
   hasMoreUsers: PropTypes.bool,
   loadingMore: PropTypes.bool.isRequired,
   isShowResult: PropTypes.bool.isRequired,

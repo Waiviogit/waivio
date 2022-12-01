@@ -28,8 +28,12 @@ import BBackTop from './components/BBackTop';
 import { guestUserRegex } from '../common/helpers/regexHelpers';
 import ErrorBoundary from './widgets/ErrorBoundary';
 import Loading from './components/Icon/Loading';
-import WebsiteHeader from './websites/WebsiteLayoutComponents/Header/WebsiteHeader';
-import { getIsDiningGifts, getTranslations, getUsedLocale } from '../store/appStore/appSelectors';
+import {
+  getIsDiningGifts,
+  getTranslations,
+  getUsedLocale,
+  getWebsiteColors,
+} from '../store/appStore/appSelectors';
 import { getAuthenticatedUserName, getIsAuthFetching } from '../store/authStore/authSelectors';
 import { getIsOpenWalletTable } from '../store/walletStore/walletSelectors';
 import { getLocale, getNightmode } from '../store/settingsStore/settingsSelectors';
@@ -37,6 +41,8 @@ import MainPageHeader from './websites/WebsiteLayoutComponents/Header/MainPageHe
 import QuickRewardsModal from './rewards/QiuckRewardsModal/QuickRewardsModal';
 import { getIsOpenModal } from '../store/quickRewards/quickRewardsSelectors';
 import { getTokenRates } from '../store/walletStore/walletActions';
+import { hexToRgb } from '../common/helpers';
+import { initialColors } from './websites/constants/colors';
 
 export const AppSharedContext = React.createContext({ usedLocale: 'en-US', isGuestUser: false });
 
@@ -52,6 +58,7 @@ export const AppSharedContext = React.createContext({ usedLocale: 'en-US', isGue
     loadingFetching: getIsAuthFetching(state),
     isDiningGifts: getIsDiningGifts(state),
     isOpenModal: getIsOpenModal(state),
+    colors: getWebsiteColors(state),
   }),
   {
     login,
@@ -89,6 +96,9 @@ class WebsiteWrapper extends React.PureComponent {
     location: PropTypes.shape({
       search: PropTypes.string,
       pathname: PropTypes.string,
+    }).isRequired,
+    colors: PropTypes.shape({
+      mapMarkerBody: PropTypes.string,
     }).isRequired,
     history: PropTypes.shape({
       push: PropTypes.func,
@@ -210,10 +220,12 @@ class WebsiteWrapper extends React.PureComponent {
       location,
       isDiningGifts,
       isOpenModal,
+      colors,
     } = this.props;
     const language = findLanguage(usedLocale);
     const antdLocale = this.getAntdLocale(language);
     const signInPage = location.pathname.includes('sign-in');
+    const mainColor = colors?.mapMarkerBody || initialColors.marker;
 
     return (
       <IntlProvider
@@ -229,16 +241,22 @@ class WebsiteWrapper extends React.PureComponent {
               isGuestUser: username && guestUserRegex.test(username),
             }}
           >
-            <Layout data-dir={language && language.rtl ? 'rtl' : 'ltr'}>
+            <Layout
+              style={{
+                '--website-color': `${mainColor}`,
+                '--website-hover-color': `${hexToRgb(mainColor, 1)}`,
+              }}
+              data-dir={language && language.rtl ? 'rtl' : 'ltr'}
+            >
               {!signInPage &&
                 (isDiningGifts ? (
                   <MainPageHeader withMap={location.pathname === '/map'} />
                 ) : (
-                  <Layout.Header style={{ position: 'fixed', width: '100%', zIndex: 1050 }}>
-                    <WebsiteHeader />
-                  </Layout.Header>
+                  <MainPageHeader
+                    withMap={location.pathname === '/map' || location.pathname === '/'}
+                  />
                 ))}
-              <div className={!isDiningGifts && !signInPage && 'content'}>
+              <div>
                 {loadingFetching ? <Loading /> : renderRoutes(this.props.route.routes)}
                 <NotificationPopup />
                 <BBackTop className={isOpenWalletTable ? 'WalletTable__bright' : 'primary-modal'} />

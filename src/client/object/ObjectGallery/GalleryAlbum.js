@@ -2,11 +2,12 @@ import { max, get } from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Card } from 'antd';
+import { injectIntl } from 'react-intl';
 import { getImagePath } from '../../../common/helpers/image';
 import DEFAULTS from '../../object/const/defaultValues';
 import './GalleryAlbum.less';
 
-const GalleryAlbum = ({ album }) => {
+const GalleryAlbum = ({ album, intl }) => {
   const filterItems = album.items;
   const albumItem = max(filterItems, item => item.weight);
   const getRelatedAlbumCount = item => get(item, 'count');
@@ -19,7 +20,9 @@ const GalleryAlbum = ({ album }) => {
   return (
     <div className="GalleryAlbum">
       <Card hoverable cover={<img alt="example" src={imagePath} className="GalleryAlbum__image" />}>
-        <Card.Meta title={`${album.body} (${albumCount})`} />
+        <Card.Meta
+          title={`${intl.formatMessage({ id: album.body.toLowerCase() })} (${albumCount})`}
+        />
       </Card>
     </div>
   );
@@ -27,6 +30,7 @@ const GalleryAlbum = ({ album }) => {
 
 GalleryAlbum.propTypes = {
   album: PropTypes.shape().isRequired,
+  intl: PropTypes.shape().isRequired,
 };
 
-export default GalleryAlbum;
+export default injectIntl(GalleryAlbum);

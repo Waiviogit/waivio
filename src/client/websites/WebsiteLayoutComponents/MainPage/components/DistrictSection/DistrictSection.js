@@ -4,6 +4,7 @@ import { Icon } from 'antd';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { isEmpty } from 'lodash';
+import { injectIntl } from 'react-intl';
 
 import DistrictsCard from '../DistrictsCard/DistrictsCard';
 import { getListOfDistricts } from '../../../../../../store/websiteStore/websiteSelectors';
@@ -18,9 +19,18 @@ const DistrictSection = props => {
 
   return (
     <section className="WebsiteMainPage__districtsSection">
-      <h2 className="WebsiteMainPage__districtsTitle">Find rewards in your area now!</h2>
+      <h2 className="WebsiteMainPage__districtsTitle">
+        {props.intl.formatMessage({
+          id: 'find_rewards_in_your_area',
+          defaultMessage: 'Find rewards in your area now!',
+        })}
+      </h2>
       <p className="WebsiteMainPage__districtsSubtitle">
-        Dining.Gifts is available in Greater Vancouver ONLY during the initial launch.
+        {props.intl.formatMessage({
+          id: 'available_in_greater',
+          defaultMessage:
+            'Dining.Gifts is available in Greater Vancouver ONLY during the initial launch.',
+        })}
       </p>
       <div className="WebsiteMainPage__districtsList">
         {props.districts.map(card => (
@@ -28,7 +38,8 @@ const DistrictSection = props => {
         ))}
       </div>
       <Link to={'/map?type=restaurant'} className="WebsiteMainPage__button">
-        See All Rewards <Icon type="right" />
+        {props.intl.formatMessage({ id: 'see_all_rewards', defaultMessage: 'See All Rewards' })}{' '}
+        <Icon type="right" />
       </Link>
     </section>
   );
@@ -37,13 +48,16 @@ const DistrictSection = props => {
 DistrictSection.propTypes = {
   districts: PropTypes.arrayOf().isRequired,
   getDistricts: PropTypes.func.isRequired,
+  intl: PropTypes.shape().isRequired,
 };
 
-export default connect(
-  state => ({
-    districts: getListOfDistricts(state),
-  }),
-  {
-    getDistricts,
-  },
-)(DistrictSection);
+export default injectIntl(
+  connect(
+    state => ({
+      districts: getListOfDistricts(state),
+    }),
+    {
+      getDistricts,
+    },
+  )(DistrictSection),
+);

@@ -23,7 +23,6 @@ import { setShowReload } from '../../../../store/websiteStore/websiteActions';
 import {
   getConfigurationValues,
   getHostAddress,
-  getIsDiningGifts,
   getReserveCounter,
   getWebsiteLogo,
 } from '../../../../store/appStore/appSelectors';
@@ -45,11 +44,10 @@ const WebsiteBody = props => {
   const reservedButtonClassList = classNames('WebsiteBody__reserved', {
     'WebsiteBody__reserved--withMobileFilters': props.isActiveFilters,
   });
-  const mapClassList = classNames('WebsiteBody__map', {
+  const mapClassList = classNames('WebsiteBody__map WebsiteBody__diningMap', {
     WebsiteBody__hideMap: props.isShowResult,
-    WebsiteBody__diningMap: props.isDining,
   });
-  const bodyClassList = classNames('WebsiteBody', { WebsiteBody__isDining: props.isDining });
+  const bodyClassList = classNames('WebsiteBody WebsiteBody__isDining');
 
   useEffect(() => {
     const query = props.location.search;
@@ -70,7 +68,6 @@ const WebsiteBody = props => {
   }, []);
   const aboutObject = get(props, ['configuration', 'aboutObject'], {});
   const currentLogo = props.logo || getObjectAvatar(aboutObject);
-  const logoLink = get(aboutObject, ['defaultShowLink'], '/');
   const description = get(aboutObject, 'description', '');
   const objName = getObjectName(aboutObject);
   const title = get(aboutObject, 'title', '') || objName;
@@ -127,14 +124,8 @@ const WebsiteBody = props => {
         setQueryInLocalStorage={setQueryInLocalStorage}
         setQueryFromSearchList={setQueryFromSearchList}
         deleteShowPanel={deleteShowPanel}
-        isDining={props.isDining}
       />
       <div className={mapClassList}>
-        {currentLogo && !props.isDining && (
-          <Link to={logoLink}>
-            <img className="WebsiteBody__logo" src={currentLogo} alt="your logo" />
-          </Link>
-        )}
         {!isEmpty(props.configuration) && (
           <React.Fragment>
             {Boolean(props.counter) && props.isAuth && (
@@ -163,7 +154,6 @@ WebsiteBody.propTypes = {
     push: PropTypes.func,
   }).isRequired,
   isShowResult: PropTypes.bool.isRequired,
-  isDining: PropTypes.bool,
   configuration: PropTypes.shape().isRequired,
   searchString: PropTypes.string.isRequired,
   host: PropTypes.string.isRequired,
@@ -191,7 +181,6 @@ WebsiteBody.defaultProps = {
   logo: '',
   isAuth: false,
   showReloadButton: false,
-  isDining: false,
 };
 
 export default connect(
@@ -207,7 +196,6 @@ export default connect(
     host: getHostAddress(state),
     isActiveFilters: tagsCategoryIsEmpty(state),
     logo: getWebsiteLogo(state),
-    isDining: getIsDiningGifts(state),
   }),
   {
     setWebsiteSearchType,

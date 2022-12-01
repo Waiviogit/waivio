@@ -262,6 +262,7 @@ class ObjectInfo extends React.Component {
     const formPath = `/object/${wobject.author_permlink}/form/${item.permlink}`;
     const widgetPath = `/object/${wobject.author_permlink}/widget`;
     const newsFilterPath = `/object/${wobject.author_permlink}/newsFilter/${item.permlink}`;
+    const newsFeedPath = `/object/${wobject.author_permlink}/newsFeed`;
     const blogClassesList = classNames('menu-btn', {
       active: location.pathname === blogPath,
     });
@@ -310,6 +311,13 @@ class ObjectInfo extends React.Component {
       case objectFields.newsFilter:
         menuItem = (
           <LinkButton className={newsFilterClassesList} to={newsFilterPath}>
+            {item.title || <FormattedMessage id="news" defaultMessage="News" />}
+          </LinkButton>
+        );
+        break;
+      case objectFields.newsFeed:
+        menuItem = (
+          <LinkButton className={newsFilterClassesList} to={newsFeedPath}>
             {item.title || <FormattedMessage id="news" defaultMessage="News" />}
           </LinkButton>
         );
@@ -376,6 +384,7 @@ class ObjectInfo extends React.Component {
     const { hoveredOption } = this.state;
     const isEditMode = isAuthenticated ? this.props.isEditMode : false;
     const newsFilters = get(wobject, 'newsFilter', []);
+    const newsFeed = get(wobject, 'newsFeed', []);
     const website = parseWobjectField(wobject, 'website');
     const wobjName = getObjectName(wobject);
     const tagCategories = get(wobject, 'tagCategory', []);
@@ -534,6 +543,7 @@ class ObjectInfo extends React.Component {
           ...blogsList,
           ...formsList,
           ...newsFilters,
+          ...newsFeed,
         ];
 
         const sortButtons = customSort.reduce((acc, curr) => {
@@ -585,6 +595,11 @@ class ObjectInfo extends React.Component {
                     newsFilters.map(filter =>
                       this.getMenuSectionLink({ id: filter.id || filter.name, ...filter }),
                     ),
+                )}
+                {this.listItem(
+                  objectFields.newsFeed,
+                  !isEmpty(newsFeed) &&
+                    this.getMenuSectionLink({ id: newsFeed.id || newsFeed.name, ...newsFeed }),
                 )}
                 {this.listItem(
                   objectFields.blog,

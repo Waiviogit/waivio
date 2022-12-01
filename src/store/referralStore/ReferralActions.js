@@ -2,7 +2,7 @@ import { get, isEmpty } from 'lodash';
 import { message } from 'antd';
 import * as ApiClient from '../../waivioApi/ApiClient';
 import { createAsyncActionType } from '../../common/helpers/stateHelpers';
-import { subscribeMethod, subscribeTypes } from '../../common/constants/blockTypes';
+import { subscribeTypes } from '../../common/constants/blockTypes';
 
 export const GET_USER_REFERRAL_INFO = createAsyncActionType('@referral/GET_USER_REFERRAL_INFO');
 export const GET_USER_REFERRAL_DETAILS = createAsyncActionType(
@@ -49,9 +49,9 @@ export const getChangeOnConfirmReferral = (username, isGuestName, blockNum) => (
   getState,
   { busyAPI },
 ) => {
-  busyAPI.instance.sendAsync(subscribeMethod, [username, blockNum, subscribeTypes.posts]);
+  busyAPI.instance.sendAsync(subscribeTypes.subscribeTransactionId, [username, blockNum]);
   busyAPI.instance.subscribe((response, mess) => {
-    if (subscribeTypes.posts === mess.type && mess.notification.blockParsed === blockNum) {
+    if (mess.success && mess.permlink === blockNum) {
       dispatch({
         type: REFERRAL_GET_ADDITION_FIELDS.ACTION,
         payload: {
@@ -87,7 +87,7 @@ export const referralConfirmRules = (username, isGuest) => (
       if (!res.message) {
         const data = isGuest ? await res.json() : await res.result;
 
-        return dispatch(getChangeOnConfirmReferral(username, isGuest, get(data, 'block_num')));
+        return dispatch(getChangeOnConfirmReferral(username, isGuest, get(data, 'id')));
       }
 
       return dispatch({
@@ -108,9 +108,9 @@ export const getChangeOnRejectReferral = (username, isGuestName, blockNum) => (
   getState,
   { busyAPI },
 ) => {
-  busyAPI.instance.sendAsync(subscribeMethod, [username, blockNum, subscribeTypes.posts]);
+  busyAPI.instance.sendAsync(subscribeTypes.subscribeTransactionId, [username, blockNum]);
   busyAPI.instance.subscribe((response, mess) => {
-    if (subscribeTypes.posts === mess.type && mess.notification.blockParsed === blockNum) {
+    if (mess.success && mess.permlink === blockNum) {
       dispatch({
         type: REFERRAL_GET_ADDITION_FIELDS.ACTION,
         payload: {
@@ -146,7 +146,7 @@ export const referralRejectRules = (username, isGuest) => (
       if (!res.message) {
         const data = isGuest ? await res.json() : await res.result;
 
-        return dispatch(getChangeOnRejectReferral(username, isGuest, get(data, 'block_num')));
+        return dispatch(getChangeOnRejectReferral(username, isGuest, get(data, 'id')));
       }
 
       return dispatch({

@@ -18,7 +18,7 @@ import { SET_PENDING_UPDATE } from '../userStore/userActions';
 import { notify } from '../../client/app/Notification/notificationActions';
 import { createPostMetadata } from '../../common/helpers/postHelpers';
 import { jsonParse } from '../../common/helpers/formatter';
-import { getSelectedDish } from '../quickRewards/quickRewardsSelectors';
+import { getSelectedDish, getSelectedRestaurant } from '../quickRewards/quickRewardsSelectors';
 
 export const reserveProposition = (proposition, username) => async (
   dispatch,
@@ -34,7 +34,7 @@ export const reserveProposition = (proposition, username) => async (
   const isGuest = isGuestUser(state);
   const rates = getTokenRatesInUSD(state, 'WAIV');
   const amount = round(proposition.rewardInUSD / rates, 3);
-  const detailsBody = await getNewDetailsBody(proposition);
+  const detailsBody = await getNewDetailsBody(proposition, primaryObject);
   const commentOp = [
     'comment',
     {
@@ -90,18 +90,19 @@ export const reservePropositionForQuick = permlink => async (
 ) => {
   const state = getState();
   const dish = getSelectedDish(state);
+  const restaurant = getSelectedRestaurant(state);
   const username = getAuthenticatedUserName(state);
   const proposedWobjName = getObjectName(dish);
   const proposedAuthorPermlink = dish?.author_permlink;
   const primaryObject = dish?.parent;
   const rates = getTokenRatesInUSD(getState(), 'WAIV');
   const amount = round(dish.rewardInUSD / rates, 3);
-  const detailsBody = await getNewDetailsBody(dish);
+  const detailsBody = await getNewDetailsBody(dish, restaurant);
   const commentOp = [
     'comment',
     {
-      parent_author: dish.guideName,
-      parent_permlink: dish.activationPermlink,
+      parent_author: dish.guideName || dish?.propositions?.[0]?.guideName,
+      parent_permlink: dish.activationPermlink || dish?.propositions?.[0]?.activationPermlink,
       author: username,
       permlink,
       title: 'Rewards reservations',
@@ -439,6 +440,7 @@ export const sendCommentForReward = (proposition, body, isUpdating = false, orig
   { steemConnectAPI, busyAPI },
 ) => {
   const { auth } = getState();
+  const userName = proposition?.reserved ? auth.user.name : proposition.userName;
 
   if (!auth.isAuthenticated) {
     return dispatch(notify('You have to be logged in to comment', 'error'));
@@ -453,8 +455,9 @@ export const sendCommentForReward = (proposition, body, isUpdating = false, orig
     : createCommentPermlink(proposition?.userName, proposition?.reservationPermlink);
   const newBody =
     isUpdating && !auth.isGuestUser ? getBodyPatchIfSmaller(originalComment.body, body) : body;
+
   const detail = {
-    parent_author: isUpdating ? originalComment.parent_author : proposition.rootName,
+    parent_author: isUpdating ? originalComment.parent_author : proposition.rootName || userName,
     parent_permlink: isUpdating
       ? originalComment.parent_permlink
       : proposition?.reservationPermlink,

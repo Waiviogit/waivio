@@ -13,6 +13,7 @@ const initialState = {
   pair: null,
   withdrawPair: null,
   defaultWithdrawToken: '',
+  defaultToToken: '',
   isOpenWithdraw: false,
   symbol: '',
 };
@@ -24,7 +25,12 @@ const depositWithdraw = (state = initialState, action) => {
         ...state,
         withdrawPairs: action.payload.withdrawPairs,
         withdrawPair: state.defaultWithdrawToken
-          ? action.payload.withdrawPairs.find(pair => pair.symbol === state.defaultWithdrawToken)
+          ? action.payload.withdrawPairs.find(pair =>
+              state.defaultToToken
+                ? pair.symbol === state.defaultWithdrawToken &&
+                  pair.to_coin_symbol === state.defaultToToken
+                : pair.symbol === state.defaultWithdrawToken,
+            )
           : action.payload.withdrawPairs[0],
         depositPairs: action.payload.depositPairs,
       };
@@ -72,6 +78,7 @@ const depositWithdraw = (state = initialState, action) => {
         ...state,
         isOpenWithdraw: action.payload.isOpen,
         defaultWithdrawToken: action.payload.token,
+        defaultToToken: action.payload.to,
       };
     }
 

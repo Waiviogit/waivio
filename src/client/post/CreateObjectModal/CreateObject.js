@@ -178,6 +178,7 @@ class CreateObject extends React.Component {
               const data = prepareAlbumData(formData, this.props.username, {
                 author: parentAuthor,
                 author_permlink: parentPermlink,
+                locale: values.locale,
               });
               const album = prepareAlbumToStore(data);
 

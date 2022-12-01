@@ -5,6 +5,10 @@
   display: flex;
   flex-direction: column;
 
+  .Image-box__remove-icon {
+    color: var(--website-color);
+  }
+
   &__label {
     padding: 1rem 0;
     font-size: 1.2em;
@@ -96,8 +100,8 @@
     border-radius: 4px;
     justify-content: center;
     color: @white;
-    background-color: @orange-hot;
-    border-color: @orange-hot;
+    background-color: var(--website-color);
+    border-color: var(--website-color);
     height: 2rem;
 
     &__container {
@@ -117,7 +121,7 @@
       justify-content: center;
 
       &:hover {
-        border: 1px dashed @orange-hot;
+        border: 1px dashed var(--website-color);
         cursor: pointer;
       }
 
@@ -175,9 +179,9 @@
     width: 75%;
 
     input:focus {
-      border-color: @orange-hot;
+      border-color: var(--website-color);
       outline: 0;
-      box-shadow: 0 0 0 2px fade(@orange-hot, 20%);
+      box-shadow: 0 0 4px 0 var(--website-color);
     }
 
     &__item {
@@ -188,7 +192,7 @@
       padding-left: 0.5rem;
 
       &:hover {
-        border-color: @orange-hot;
+        border-color: var(--website-color);
       }
 
       &:placeholder-shown {
@@ -197,7 +201,7 @@
     }
 
     &__btn {
-      background-color: @orange-hot;
+      background-color: var(--website-color);
       color: @white;
       width: 2rem;
       border: none;

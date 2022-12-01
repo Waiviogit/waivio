@@ -9,20 +9,21 @@ import USDDisplay from '../../components/Utils/USDDisplay';
 import useQuickRewards from '../../../hooks/useQuickRewards';
 import withAuthActions from '../../auth/withAuthActions';
 import { getIsWaivio } from '../../../store/appStore/appSelectors';
+import useWebsiteColor from '../../../hooks/useWebsiteColor';
 
 import './Campaing.less';
 
 const Campaing = ({ campain, onActionInitiated, hovered }) => {
-  const buttonLabel = campain.maxReward === campain.minReward ? 'Earn' : 'Earn up to';
+  const minReward = campain.minReward || get(campain, ['min_reward'], 0);
+  const maxReward = campain.maxReward || get(campain, ['max_reward'], 0);
+  const buttonLabel = maxReward === minReward ? 'Earn' : 'Earn up to';
   const history = useHistory();
   const pathname = history.location.pathname.includes('reward')
     ? location.pathname
     : '/rewards-new/all';
   const { setRestaurant, openModal } = useQuickRewards();
-  const minReward = get(campain, ['min_reward'], 0);
-  const maxReward = get(campain, ['max_reward'], 0);
   const isWaivio = useSelector(getIsWaivio);
-
+  const styles = useWebsiteColor();
   const handleOpenQuickRewards = () =>
     onActionInitiated(() => {
       openModal(true);
@@ -44,13 +45,13 @@ const Campaing = ({ campain, onActionInitiated, hovered }) => {
       <ObjectCardView
         wObject={campain.object}
         withRewards
-        rewardPrice={campain.maxReward}
+        rewardPrice={maxReward}
         hovered={hovered}
       />
-      <span onClick={goToProducts} className="Campaing__button">
+      <span onClick={goToProducts} style={styles} className="Campaing__button">
         {buttonLabel}{' '}
         <b>
-          <USDDisplay value={campain.maxReward} />
+          <USDDisplay value={maxReward} />
         </b>{' '}
         <Icon type="right" />
       </span>

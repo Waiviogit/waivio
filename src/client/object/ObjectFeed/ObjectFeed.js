@@ -67,7 +67,7 @@ export default class ObjectFeed extends React.Component {
   };
 
   componentDidMount() {
-    const { match, limit, readLocales } = this.props;
+    const { match, limit, readLocales, wobject } = this.props;
     const { name, itemId } = match.params;
 
     this.getWobjPropos();
@@ -76,12 +76,12 @@ export default class ObjectFeed extends React.Component {
       username: name,
       readLanguages: readLocales,
       limit,
-      newsPermlink: itemId,
+      newsPermlink: itemId || wobject?.newsFeed?.permlink,
     });
   }
 
   componentWillReceiveProps(nextProps) {
-    const { match, limit } = this.props;
+    const { match, limit, wobject } = this.props;
     const nextName = get(nextProps, ['match', 'params', 'name']);
     const nextItemID = get(nextProps, ['match', 'params', 'itemId']);
     const objectPosts = get(nextProps, ['feed', 'objectPosts', nextName]);
@@ -92,7 +92,7 @@ export default class ObjectFeed extends React.Component {
         username: nextName,
         readLanguages: nextProps.readLocales,
         limit,
-        newsPermlink: nextItemID,
+        newsPermlink: nextItemID || wobject?.newsFeed?.permlink,
       });
       this.getWobjPropos();
       window.scrollTo(0, 0);
@@ -135,7 +135,7 @@ export default class ObjectFeed extends React.Component {
         authorPermlink: name,
         limit,
         skip,
-        newsPermlink: itemId,
+        newsPermlink: itemId || wobject?.newsFeed?.permlink,
       });
     };
 

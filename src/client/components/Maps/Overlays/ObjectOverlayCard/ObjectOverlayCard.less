@@ -5,7 +5,7 @@
 
 .ObjectOverlayCard {
   font-size: 14px;
-  border: 1px solid @silver;
+  //border: 1px solid @silver;
   border-radius: 4px;
   background: @white;
   padding: 10px;
@@ -20,24 +20,24 @@
     top: -15px;
     right: 5px;
     border-radius: 8px;
-    background: @orange-hot;
+    background: var(--website-color);
     color: @white;
     padding: 5px;
-    border: 1px solid @white;
+    border: 1px solid var(--website-color);
     cursor: pointer;
 
     &:hover {
       color: @white;
-      background: @orange-light;
+      background: var(--website-color);
     }
 
     &--proposition {
-      border: 1px solid @orange-hot;
+      border: 1px solid var(--website-color);
       background: @white;
       color: @black;
 
       b {
-        color: @orange-hot;
+        color: var(--website-color);
       }
 
       &:hover {

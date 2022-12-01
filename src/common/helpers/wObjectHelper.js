@@ -90,7 +90,7 @@ export const prepareAlbumData = (form, currentUsername, wObject, votePercent) =>
   data.field = {
     name: 'galleryAlbum',
     body: form.galleryAlbum,
-    locale: 'en-US',
+    locale: wObject.locale || 'en-US',
     id: generatePermlink(),
   };
 
@@ -214,6 +214,7 @@ export const parseButtonsField = wobject => {
 export const getBlogItems = wobject => get(wobject, 'blog', []);
 export const getFormItems = wobject => get(wobject, 'form', []);
 export const getNewsFilterItems = wobject => get(wobject, 'newsFilter', []);
+export const getNewsFeedItems = wobject => get(wobject, 'newsFeed', []);
 
 export const parseAddress = (wobject, hideField = []) => {
   if (isEmpty(wobject) || !wobject.address) return null;

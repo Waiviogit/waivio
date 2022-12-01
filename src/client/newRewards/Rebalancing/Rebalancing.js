@@ -156,20 +156,42 @@ const Rebalancing = ({ intl }) => {
 
   return (
     <div className="Rebalancing table-wrap">
-      Grow your crypto holdings by doing arbitrage between your personal holdings and the open
-      market. Read more about the{' '}
-      <a href="/object/wxu-rebalancing-introduction/page">rebalancing strategy</a>.
+      {intl.formatMessage({
+        id: 'rebalancing_text',
+        defaultMessage:
+          'Grow your crypto holdings by doing arbitrage between your personal holdings and the open market. Read more about the',
+      })}{' '}
+      <a href="/object/wxu-rebalancing-introduction/page">
+        {intl.formatMessage({ id: 'rebalancing_strategy', defaultMessage: 'rebalancing strategy' })}
+      </a>
+      .
       <p>
-        <b>Disclaimer:</b> The Rebalancing service is provided on as-is / as-available basis.
+        <b>{intl.formatMessage({ id: 'disclaimer', defaultMessage: 'Disclaimer' })}:</b>{' '}
+        {intl.formatMessage({
+          id: 'rebalancing_service_is_provided',
+          defaultMessage: 'The Rebalancing service is provided on as-is / as-available basis.',
+        })}
       </p>
       <p>
-        Alert me when the difference exceeds: {differencePercent}% (
-        <a onClick={() => setOpenSliderModal(true)}>change</a>)
+        {intl.formatMessage({
+          id: 'alert_me',
+          defaultMessage: 'Alert me when the difference exceeds',
+        })}
+        : {differencePercent}% (
+        <a onClick={() => setOpenSliderModal(true)}>
+          {intl.formatMessage({ id: 'change', defaultMessage: 'change' })}
+        </a>
+        )
       </p>
       {!!tableProfit.length && (
         <div className="Rebalancing__checkbox-block">
           <Checkbox value={showAll.current} onChange={handleChangeShowAll} id="show-all" />
-          <label htmlFor="show-all">Show all available pairs</label>
+          <label htmlFor="show-all">
+            {intl.formatMessage({
+              id: 'show_all_pairs',
+              defaultMessage: 'Show all available pairs',
+            })}
+          </label>
         </div>
       )}
       <table className="DynamicTable">
@@ -242,7 +264,10 @@ const Rebalancing = ({ intl }) => {
         )}
       </table>
       <Modal
-        title={'Change sensitivity for alerts'}
+        title={intl.formatMessage({
+          id: 'change_sensitivity',
+          defaultMessage: 'Change sensitivity for alerts',
+        })}
         visible={openSliderModal}
         onCancel={() => setOpenSliderModal(false)}
         onOk={handleChangeDiffPersent}

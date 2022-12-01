@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { AutoComplete, Icon, Input } from 'antd';
-import { map, get } from 'lodash';
+import { map, get, isEmpty } from 'lodash';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 
@@ -9,8 +9,10 @@ import ObjectCard from '../../../components/Sidebar/ObjectCard';
 import listOfObjectTypes from '../../../../common/constants/listOfObjectTypes';
 
 import './NewsFilterForm.less';
+import SearchUsersAutocomplete from '../../../components/EditorUser/SearchUsersAutocomplete';
+import SelectUserForAutocomplete from '../../../widgets/SelectUserForAutocomplete';
 
-const NewsFilterForm = props => {
+const ExtendedNewsFilterForm = props => {
   const [searchString, setSearchString] = useState('');
   const isMobile = screenSize => screenSize === 'xsmall' || screenSize === 'small';
   const typesList = listOfObjectTypes.filter(type => !props.typeList.includes(type));
@@ -226,21 +228,51 @@ const NewsFilterForm = props => {
           </React.Fragment>
         )}
       </div>
+      <div className="NewsFiltersRule__line">
+        <div className="AppendForm__appendTitles">
+          {props.intl.formatMessage({
+            id: 'users',
+            defaultMessage: 'Users',
+          })}
+        </div>
+        {!isEmpty(props.selectedUsers) && (
+          <div className="NewsFiltersRule__card-wrap">
+            {props.selectedUsers.map((userName, index) => (
+              <>
+                {andLayout(index)}
+                <div>
+                  <SelectUserForAutocomplete
+                    isNewsFeed
+                    account={userName}
+                    resetUser={() => props.deleteUser(userName)}
+                  />
+                </div>
+              </>
+            ))}
+          </div>
+        )}
+        <div className="NewsFiltersRule__line-search">
+          <SearchUsersAutocomplete handleSelect={props.handleSelectUsersBlog} />
+        </div>
+      </div>
     </React.Fragment>
   );
 };
 
-NewsFilterForm.propTypes = {
+ExtendedNewsFilterForm.propTypes = {
   intl: PropTypes.shape({
     formatMessage: PropTypes.func,
   }).isRequired,
   screenSize: PropTypes.string.isRequired,
   currObjId: PropTypes.string.isRequired,
   allowList: PropTypes.arrayOf().isRequired,
+  selectedUsers: PropTypes.arrayOf().isRequired,
   ignoreList: PropTypes.arrayOf().isRequired,
   typeList: PropTypes.arrayOf().isRequired,
   loading: PropTypes.bool.isRequired,
   deleteRuleItem: PropTypes.func.isRequired,
+  deleteUser: PropTypes.func.isRequired,
+  handleSelectUsersBlog: PropTypes.func.isRequired,
   handleAddObjectToIgnoreList: PropTypes.func.isRequired,
   handleAddTypeToIgnoreTypeList: PropTypes.func.isRequired,
   handleRemoveObjectFromIgnoreTypeList: PropTypes.func.isRequired,
@@ -249,4 +281,4 @@ NewsFilterForm.propTypes = {
   handleAddObjectToRule: PropTypes.func.isRequired,
   handleRemoveObjectFromIgnoreList: PropTypes.func.isRequired,
 };
-export default injectIntl(NewsFilterForm);
+export default injectIntl(ExtendedNewsFilterForm);

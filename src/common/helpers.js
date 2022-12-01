@@ -55,4 +55,18 @@ const ua = typeof window !== 'undefined' && window.navigator.userAgent;
 
 export const isIOS = () => !!ua?.match(/iPad/i) || !!ua?.match(/iPhone/i);
 
+export function hexToRgb(color, opacity) {
+  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(color);
+
+  if (result) {
+    const r = parseInt(result[1], 16);
+    const g = parseInt(result[2], 16);
+    const b = parseInt(result[3], 16);
+
+    return opacity ? `rgba(${r},${g},${b}, 0.${opacity})` : `rgb(${r},${g},${b})`;
+  }
+
+  return color;
+}
+
 export default null;

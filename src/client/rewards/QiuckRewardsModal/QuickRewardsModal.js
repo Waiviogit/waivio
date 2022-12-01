@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { isEmpty, get } from 'lodash';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
+import { injectIntl } from 'react-intl';
 import {
   getIsOpenModal,
   getSelectedDish,
@@ -23,6 +24,8 @@ import { declineProposition } from '../../../store/userStore/userActions';
 import { generatePermlink } from '../../../common/helpers/wObjectHelper';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 import * as newRewards from '../../../store/newRewards/newRewardsActions';
+import { hexToRgb } from '../../../common/helpers';
+import useWebsiteColor from '../../../hooks/useWebsiteColor';
 
 import './QuickRewardsModal.less';
 
@@ -48,9 +51,13 @@ const QuickRewardsModal = props => {
   const [body, setBody] = useState('');
   const [images, setImages] = useState([]);
   const [reservationPermlink, setReservationPermlink] = useState('');
-  const isNewReward = props.selectedRestaurant?.campaigns?.newCampaigns;
+  const colors = useWebsiteColor();
+  const isNewReward =
+    props?.selectedDish?.reward ||
+    props?.selectedDish?.propositions?.[0]?.newCampaigns ||
+    props.selectedDish?.campaigns?.newCampaigns;
   const dishRewards = isNewReward
-    ? props?.selectedDish?.reward
+    ? props?.selectedDish?.reward || props?.selectedDish?.propositions?.[0]?.reward
     : get(props, 'selectedDish.propositions[0].reward', null);
   const isPropositionObj = isNewReward
     ? dishRewards
@@ -62,9 +69,9 @@ const QuickRewardsModal = props => {
     'QuickRewardsModal__button-wrap--firstScreen': pageNumber === 1,
   });
 
-  const minPhotos = isNewReward
-    ? props?.selectedDish?.requirements?.minPhotos
-    : get(props, 'selectedDish.propositions[0].requirements.minPhotos', 0);
+  const minPhotos =
+    get(props, 'selectedDish.propositions[0].requirements.minPhotos', 0) ||
+    props?.selectedDish?.requirements?.minPhotos;
 
   const closeModal = () => {
     props.toggleModal(false);
@@ -151,9 +158,10 @@ const QuickRewardsModal = props => {
   };
 
   const getCurrentScreen = (() => {
-    const guideInfo = isNewReward
-      ? props.selectedDish
-      : get(props.selectedDish, 'propositions[0].guide');
+    const guideInfo = get(props.selectedDish, 'propositions[0].guide') || {
+      ...props.selectedDish,
+      reservationPermlink,
+    };
 
     switch (pageNumber) {
       case 1:
@@ -204,7 +212,8 @@ const QuickRewardsModal = props => {
               primaryObject={props.selectedRestaurant}
               reviewData={{
                 ...guideInfo,
-                guideName: isNewReward ? guideInfo.guideName : guideInfo.name,
+                guideName:
+                  guideInfo.guideName || guideInfo.propositions?.[0].guideName || guideInfo.name,
               }}
             />
           ),
@@ -225,11 +234,18 @@ const QuickRewardsModal = props => {
 
   return (
     <Modal
-      title="Submit dish photos and earn crypto!"
+      title={props.intl.formatMessage({
+        id: 'submit_dish_photos_and_earn',
+        defaultMessage: 'Submit dish photos and earn crypto!',
+      })}
       footer={null}
       visible={props.isOpenModal}
       onCancel={closeModal}
       className="QuickRewardsModal"
+      style={{
+        '--website-color': `${colors?.background}`,
+        '--website-hover-color': `${hexToRgb(colors?.background, 1)}`,
+      }}
     >
       <StepsItems
         config={stepsConfig}
@@ -253,7 +269,11 @@ const QuickRewardsModal = props => {
         {isPropositionObj && pageNumber !== 1 && (
           <b>
             YOU EARN:{' '}
-            <USDDisplay value={dishRewards} currencyDisplay="symbol" style={{ color: '#f97b38' }} />
+            <USDDisplay
+              value={dishRewards}
+              currencyDisplay="symbol"
+              style={{ color: colors?.background }}
+            />
           </b>
         )}
         <Button
@@ -280,21 +300,24 @@ QuickRewardsModal.propTypes = {
   realiseRewards: PropTypes.func.isRequired,
   isOpenModal: PropTypes.bool.isRequired,
   reservePropositionForQuick: PropTypes.bool.isRequired,
+  intl: PropTypes.shape().isRequired,
 };
 
-export default connect(
-  state => ({
-    selectedRestaurant: getSelectedRestaurant(state),
-    selectedDish: getSelectedDish(state),
-    isOpenModal: getIsOpenModal(state),
-    authUser: getAuthenticatedUserName(state),
-  }),
-  {
-    createQuickPost,
-    reserveProposition,
-    toggleModal,
-    declineProposition,
-    realiseRewards: newRewards.realiseRewards,
-    reservePropositionForQuick: newRewards.reservePropositionForQuick,
-  },
-)(QuickRewardsModal);
+export default injectIntl(
+  connect(
+    state => ({
+      selectedRestaurant: getSelectedRestaurant(state),
+      selectedDish: getSelectedDish(state),
+      isOpenModal: getIsOpenModal(state),
+      authUser: getAuthenticatedUserName(state),
+    }),
+    {
+      createQuickPost,
+      reserveProposition,
+      toggleModal,
+      declineProposition,
+      realiseRewards: newRewards.realiseRewards,
+      reservePropositionForQuick: newRewards.reservePropositionForQuick,
+    },
+  )(QuickRewardsModal),
+);

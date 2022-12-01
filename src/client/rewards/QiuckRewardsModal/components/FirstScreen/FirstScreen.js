@@ -4,6 +4,7 @@ import { AutoComplete } from 'antd';
 import { isEmpty, get, debounce } from 'lodash';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
+import { injectIntl } from 'react-intl';
 
 import ObjectCardView from '../../../../objectCard/ObjectCardView';
 import ObjectSearchCard from '../../../../components/ObjectSearchCard/ObjectSearchCard';
@@ -24,6 +25,7 @@ import {
   setSelectedRestaurant,
 } from '../../../../../store/quickRewards/quickRewardsActions';
 import USDDisplay from '../../../../components/Utils/USDDisplay';
+import useWebsiteColor from '../../../../../hooks/useWebsiteColor';
 
 import './FirstScreen.less';
 
@@ -31,7 +33,11 @@ const ModalFirstScreen = props => {
   const [hasMore, setHasMore] = useState(false);
   const limit = 100;
   const skipLimit = props.dishes.length;
-  const isNewReward = props.selectedRestaurant?.campaigns?.newCampaigns;
+  const isNewReward =
+    props?.selectedDish?.reward ||
+    props?.selectedDish?.propositions?.[0]?.newCampaigns ||
+    props.selectedDish?.campaigns?.newCampaigns;
+  const colors = useWebsiteColor();
 
   useEffect(() => {
     hasMore && props.getMoreEligibleRewardsListWithRestaurant(props.selectedRestaurant, skipLimit);
@@ -53,7 +59,7 @@ const ModalFirstScreen = props => {
     });
 
   const dishRewards = isNewReward
-    ? props?.selectedDish?.reward
+    ? props?.selectedDish?.reward || get(props, 'selectedDish.propositions[0].reward', null)
     : get(props, 'selectedDish.propositions[0].reward', null);
   const earnMessage = camp =>
     camp.campaigns.max_reward !== camp.campaigns.min_reward ? 'Earn up to' : 'Earn';
@@ -111,7 +117,12 @@ const ModalFirstScreen = props => {
   return (
     <div className="FirstScreen">
       <div className="FirstScreen__selectBlock">
-        <h4 className="FirstScreen__title">Select restaurant</h4>
+        <h4 className="FirstScreen__title">
+          {props.intl.formatMessage({
+            id: 'select_restaurant',
+            defaultMessage: 'Select restaurant',
+          })}
+        </h4>
         {props.selectedRestaurant ? (
           <ObjectCardView
             wObject={props.selectedRestaurant}
@@ -121,7 +132,7 @@ const ModalFirstScreen = props => {
         ) : (
           <AutoComplete
             className="QuickRewardsModal__select"
-            placeholder="Search"
+            placeholder={props.intl.formatMessage({ id: 'search', defaultMessage: 'Search' })}
             onSelect={handleSelectRestaurant}
             onChange={handleSearchRestaurant}
             disabled={isEmpty(props.eligible)}
@@ -145,7 +156,7 @@ const ModalFirstScreen = props => {
                         <USDDisplay
                           value={camp.campaigns.max_reward}
                           currencyDisplay="symbol"
-                          style={{ color: '#f98542', 'font-weight': 'bold' }}
+                          style={{ color: colors.background, 'font-weight': 'bold' }}
                         />
                       </span>
                     )}
@@ -159,7 +170,9 @@ const ModalFirstScreen = props => {
         )}
       </div>
       <div className="FirstScreen__selectBlock">
-        <h4 className="FirstScreen__title">Select dish or drink</h4>
+        <h4 className="FirstScreen__title">
+          {props.intl.formatMessage({ id: 'select_dish', defaultMessage: 'Select dish or drink' })}
+        </h4>
         {props.selectedDish ? (
           <ObjectCardView
             wObject={props.selectedDish}
@@ -167,11 +180,12 @@ const ModalFirstScreen = props => {
             onDelete={handleResetDish}
             withRewards={dishRewards}
             rewardPrice={dishRewards}
+            passedParent={props.selectedRestaurant}
           />
         ) : (
           <AutoComplete
             className="QuickRewardsModal__select"
-            placeholder="Search"
+            placeholder={props.intl.formatMessage({ id: 'search', defaultMessage: 'Search' })}
             onSelect={handleSelectDish}
             disabled={!props.selectedRestaurant}
             onChange={handleSearchDish}
@@ -179,9 +193,7 @@ const ModalFirstScreen = props => {
           >
             {props.dishes.map(camp => {
               if (!isEmpty(camp)) {
-                const reward = isNewReward
-                  ? camp?.reward
-                  : get(camp, 'propositions[0].reward', null);
+                const reward = camp?.reward || get(camp, 'propositions[0].reward', null);
 
                 return (
                   <AutoComplete.Option
@@ -199,11 +211,13 @@ const ModalFirstScreen = props => {
                     />
                     {reward && (
                       <span className="FirstScreen__priceWrap">
-                        <span className="FirstScreen__earn">Earn </span>
+                        <span className="FirstScreen__earn">
+                          {props.intl.formatMessage({ id: 'earn', defaultMessage: 'Earn' })}{' '}
+                        </span>
                         <USDDisplay
                           value={reward}
                           currencyDisplay="symbol"
-                          style={{ color: '#f98542', 'font-weight': 'bold' }}
+                          style={{ color: colors.background, 'font-weight': 'bold' }}
                         />
                       </span>
                     )}
@@ -233,22 +247,25 @@ ModalFirstScreen.propTypes = {
   getMoreEligibleRewardsListWithRestaurant: PropTypes.func.isRequired,
   setSelectedDish: PropTypes.func.isRequired,
   isShow: PropTypes.func.isRequired,
+  intl: PropTypes.shape().isRequired,
 };
 
-export default connect(
-  state => ({
-    eligible: getEligibleRewardsListFromState(state),
-    dishes: getDishRewardsListFromState(state),
-    selectedRestaurant: getSelectedRestaurant(state),
-    selectedDish: getSelectedDish(state),
-  }),
-  {
-    getEligibleRewardsList,
-    setSelectedRestaurant,
-    getEligibleRewardsListWithRestaurant,
-    getMoreEligibleRewardsListWithRestaurant,
-    setSelectedDish,
-    resetRestaurant,
-    resetDish,
-  },
-)(ModalFirstScreen);
+export default injectIntl(
+  connect(
+    state => ({
+      eligible: getEligibleRewardsListFromState(state),
+      dishes: getDishRewardsListFromState(state),
+      selectedRestaurant: getSelectedRestaurant(state),
+      selectedDish: getSelectedDish(state),
+    }),
+    {
+      getEligibleRewardsList,
+      setSelectedRestaurant,
+      getEligibleRewardsListWithRestaurant,
+      getMoreEligibleRewardsListWithRestaurant,
+      setSelectedDish,
+      resetRestaurant,
+      resetDish,
+    },
+  )(ModalFirstScreen),
+);

@@ -270,7 +270,10 @@ class Wrapper extends React.PureComponent {
               isGuestUser: username && guestUserRegex.test(username),
             }}
           >
-            <Layout data-dir={language && language.rtl ? 'rtl' : 'ltr'}>
+            <Layout
+              style={{ '--website-color': '#f87007' }}
+              data-dir={language && language.rtl ? 'rtl' : 'ltr'}
+            >
               {!isWidget && (
                 <Layout.Header style={{ position: 'fixed', width: '100%', zIndex: 1050 }}>
                   <Topnav username={user.name} />

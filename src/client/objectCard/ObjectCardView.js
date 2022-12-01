@@ -21,6 +21,7 @@ import { defaultCurrency } from '../websites/constants/currencyTypes';
 import { getTokenRatesInUSD } from '../../store/walletStore/walletSelectors';
 
 import './ObjectCardView.less';
+import useWebsiteColor from '../../hooks/useWebsiteColor';
 
 const ObjectCardView = ({
   intl,
@@ -49,6 +50,7 @@ const ObjectCardView = ({
   const objectCardClassList = classNames('ObjectCardView', {
     'ObjectCardView--hovered': hovered,
   });
+  const styles = useWebsiteColor();
   let pathName = wObject.defaultShowLink || `/object/${wObject.author_permlink}`;
 
   pathName = hasType(wObject, 'page') && path ? path : pathName;
@@ -176,14 +178,16 @@ const ObjectCardView = ({
               </b>{' '}
               {isReserved ? (
                 <React.Fragment>
-                  <b className="ObjectCardView__priceColor">{round(rewardPrice / rate, 3)}</b>{' '}
+                  <b className="ObjectCardView__priceColor" style={{ color: styles.background }}>
+                    {round(rewardPrice / rate, 3)}
+                  </b>{' '}
                   {payoutToken || 'HIVE'}
                 </React.Fragment>
               ) : (
                 <USDDisplay
                   value={rewardPrice}
                   currencyDisplay="symbol"
-                  style={{ color: '#f97b38', fontWeight: 'bolder' }}
+                  style={{ color: styles.background, fontWeight: 'bolder' }}
                 />
               )}
             </span>

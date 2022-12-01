@@ -14,6 +14,7 @@ const Proposition = ({ proposition, type, getProposition, hovered }) => {
   const onOpenDetailsModal = () => setOpenDitails(true);
   const propositionType =
     proposition.reserved || proposition?.reviewStatus === 'assigned' ? 'reserved' : type;
+
   const propositionClassList = classNames('Proposition-new', {
     'Proposition-new--hovered': hovered,
   });

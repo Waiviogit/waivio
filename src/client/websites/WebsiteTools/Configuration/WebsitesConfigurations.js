@@ -316,12 +316,6 @@ export const WebsitesConfigurations = ({
                   handleSelect={value => handleSubmit({ aboutObject: value.author_permlink })}
                 />
               )}
-              <p>
-                <FormattedMessage
-                  id="about_object_description"
-                  defaultMessage="About object will be opened when visitors click on the logo on the home page."
-                />
-              </p>
             </Form.Item>
             <Form.Item>
               <h3>

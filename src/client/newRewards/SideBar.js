@@ -7,6 +7,7 @@ import {
   campaingSettings,
   matchBotsSettings,
   rewardsSettings,
+  refferalsSettings,
 } from './constants/rewardsSideNavConfig';
 import { getAuthenticatedUserName, getIsAuthenticated } from '../../store/authStore/authSelectors';
 import ModalSignIn from '../components/Navigation/ModlaSignIn/ModalSignIn';
@@ -22,6 +23,7 @@ const SideBar = () => {
     rewards: true,
     campaing: true,
     matchbots: true,
+    refferals: true,
   });
   const [withWarning, setWithWarning] = useState(false);
 
@@ -51,6 +53,13 @@ const SideBar = () => {
         <SettingsItem
           condition={menuCondition.campaing}
           configItem={campaingSettings(withWarning)}
+          toggleMenuCondition={toggleMenuCondition}
+        />
+      )}
+      {isAuth && isWaivio && (
+        <SettingsItem
+          condition={menuCondition.refferals}
+          configItem={refferalsSettings}
           toggleMenuCondition={toggleMenuCondition}
         />
       )}
