@@ -1,10 +1,14 @@
 import React from 'react';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
+import { hexToRgb } from '../../../common/helpers';
+import useWebsiteColor from '../../../hooks/useWebsiteColor';
 
 import './CircleSteps.less';
 
 const StepsItems = props => {
+  const colors = useWebsiteColor();
+
   const itemClassList = num =>
     classNames('CircleSteps__item', {
       'CircleSteps__item--active': num === props.activeStep,
@@ -15,7 +19,13 @@ const StepsItems = props => {
   });
 
   return (
-    <div className={circleStepsClass}>
+    <div
+      className={circleStepsClass}
+      style={{
+        '--website-color': `${colors?.background}`,
+        '--website-hover-color': `${hexToRgb(colors?.background, 1)}`,
+      }}
+    >
       {props.config.map(item => (
         <div className={itemClassList(item.num)} key={item.num}>
           <span className="CircleSteps__itemCircle">{item.num}</span>

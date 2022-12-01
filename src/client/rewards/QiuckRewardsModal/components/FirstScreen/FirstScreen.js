@@ -25,6 +25,7 @@ import {
   setSelectedRestaurant,
 } from '../../../../../store/quickRewards/quickRewardsActions';
 import USDDisplay from '../../../../components/Utils/USDDisplay';
+import useWebsiteColor from '../../../../../hooks/useWebsiteColor';
 
 import './FirstScreen.less';
 
@@ -33,6 +34,7 @@ const ModalFirstScreen = props => {
   const limit = 100;
   const skipLimit = props.dishes.length;
   const isNewReward = props.selectedRestaurant?.campaigns?.newCampaigns;
+  const colors = useWebsiteColor();
 
   useEffect(() => {
     hasMore && props.getMoreEligibleRewardsListWithRestaurant(props.selectedRestaurant, skipLimit);
@@ -151,7 +153,7 @@ const ModalFirstScreen = props => {
                         <USDDisplay
                           value={camp.campaigns.max_reward}
                           currencyDisplay="symbol"
-                          style={{ color: '#f98542', 'font-weight': 'bold' }}
+                          style={{ color: colors.background, 'font-weight': 'bold' }}
                         />
                       </span>
                     )}
@@ -175,6 +177,7 @@ const ModalFirstScreen = props => {
             onDelete={handleResetDish}
             withRewards={dishRewards}
             rewardPrice={dishRewards}
+            passedParent={props.selectedRestaurant}
           />
         ) : (
           <AutoComplete
@@ -213,7 +216,7 @@ const ModalFirstScreen = props => {
                         <USDDisplay
                           value={reward}
                           currencyDisplay="symbol"
-                          style={{ color: '#f98542', 'font-weight': 'bold' }}
+                          style={{ color: colors.background, 'font-weight': 'bold' }}
                         />
                       </span>
                     )}
