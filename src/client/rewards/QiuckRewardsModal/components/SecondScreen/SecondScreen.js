@@ -14,8 +14,13 @@ import TagsSelector from '../../../../components/TagsSelector/TagsSelector';
 import './SecondScreen.less';
 
 const ModalSecondScreen = props => {
-  const requirements = props.selectedRestaurant?.campaigns?.newCampaigns
-    ? props.selectedDish?.requirements
+  const isNewReward =
+    props?.selectedDish?.reward ||
+    props?.selectedDish?.propositions?.[0]?.newCampaigns ||
+    props.selectedDish?.campaigns?.newCampaigns;
+  const requirements = isNewReward
+    ? props.selectedDish?.requirements ||
+      get(props, 'selectedDish.propositions[0].requirements', null)
     : get(props, 'selectedDish.propositions[0].requirements', null);
 
   useEffect(() => {
