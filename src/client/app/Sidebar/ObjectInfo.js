@@ -43,7 +43,7 @@ import { getRelatedAlbum } from '../../../store/galleryStore/galleryActions';
 import CompanyId from './CompanyId';
 import ProductId from './ProductId';
 import ObjectAvatar from '../../components/ObjectAvatar';
-import Options from '../../object/Options';
+import Options from '../../object/Options/Options';
 import {
   getActiveCategory,
   getActiveOption,
@@ -53,6 +53,7 @@ import { setStoreActiveOption, setStoreGroupId } from '../../../store/optionsSto
 import { getObject } from '../../../waivioApi/ApiClient';
 import { getLocale } from '../../../common/helpers/localStorageHelpers';
 import './ObjectInfo.less';
+import Department from '../../object/Department/Department';
 
 @withRouter
 @connect(
@@ -495,7 +496,7 @@ class ObjectInfo extends React.Component {
       <>
         {isEditMode && (
           <div className="object-sidebar__section-title">
-            <FormattedMessage id="options" defaultMessage="Options" />
+            <FormattedMessage id="navigate" defaultMessage="Navigate" />
           </div>
         )}
         {this.listItem(
@@ -531,6 +532,8 @@ class ObjectInfo extends React.Component {
             />
           ),
         )}
+
+        {this.listItem(objectFields.departments, <Department content={'Department field'} />)}
       </>
     );
 

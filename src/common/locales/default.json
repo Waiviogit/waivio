@@ -2048,5 +2048,9 @@
   "object_field_widget": "Form",
   "object_field_newsFeed": "News filter",
   "photos": "Photos",
-  "related": "Related"
+  "related": "Related",
+  "object_field_departments": "Department",
+  "department": "Department",
+  "department_info": "Each product can be listed in up to 7 departments.",
+  "navigate": "Navigate"
 }
