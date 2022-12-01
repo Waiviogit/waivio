@@ -553,7 +553,7 @@ export default class AppendForm extends Component {
               rule.forEach(item => {
                 rulesAllow += ` <a href="${baseUrl}/object/${item.author_permlink}">${
                   item.author_permlink
-                }</a>${getDotOrComma(this.state.allowList, index)}`;
+                }</a>${getDotOrComma(this.state.allowList[0], index)}`;
               });
 
               rulesCounter += 1;
