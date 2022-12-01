@@ -1898,7 +1898,6 @@
   "no_sponsor": "KEINE SPONSOREN GEFUNDEN",
   "select_restaurant": "Restaurant auswählen",
   "select_dish": "Gericht oder Getränk auswählen",
-  "object_field_widget": "Widget",
   "find_the_dish": "Finde das Gericht",
   "submit_photos": "Fotos einreichen",
   "confirm_and_earn": "Bestätigen und verdienen",
@@ -1929,5 +1928,9 @@
   "rebalancing_strategy": "Neugewichtungsstrategie",
   "initial_number_of_tokens": "Anfangsanzahl der Token",
   "tokens_stored_note": "Extern gespeicherte Token können jetzt in das Rebalancing einbezogen werden. Dies kann zu einer Situation führen, in der die Menge der lokal gespeicherten Token möglicherweise nicht ausreicht, um den nächsten Rebalancing-Vorgang abzuschließen.",
-  "tokens_stored_field_name": "Extern gespeicherte Token (optional)"
+  "tokens_stored_field_name": "Extern gespeicherte Token (optional)",
+  "object_field_widget": "Form",
+  "object_field_newsFeed": "News filter",
+  "photos": "Fotos",
+  "related": "Verwandt"
 }
