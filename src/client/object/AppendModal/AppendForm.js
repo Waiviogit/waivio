@@ -350,7 +350,6 @@ export default class AppendForm extends Component {
 
     return !isEmpty(stateNewsFilterTitle) ? stateNewsFilterTitle : newsFilterTitle;
   };
-  getNewsFeedTitle = stateNewsFeedTitle => stateNewsFeedTitle;
 
   getNewPostData = formValues => {
     const { wObject } = this.props;
@@ -584,7 +583,7 @@ export default class AppendForm extends Component {
             defaultMessage: 'News filter',
           })} ${
             currentField === objectFields.newsFeed
-              ? this.getNewsFeedTitle(this.state.newsFilterTitle)
+              ? this.state.newsFilterTitle
               : this.getNewsFilterTitle(this.state.newsFilterTitle)
           } (${langReadable}): ${rulesAllow} ${rulesIgnore} ${rulesTypes} ${rulesUser}`;
         }
@@ -627,7 +626,7 @@ export default class AppendForm extends Component {
       if (currentField === objectFields.newsFeed) {
         fieldsObject = {
           ...fieldsObject,
-          title: this.getNewsFeedTitle(this.state.newsFilterTitle),
+          title: this.state.newsFilterTitle,
         };
       }
 
