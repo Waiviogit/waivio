@@ -246,6 +246,7 @@ export const errorObjectFields = {
   ],
   [objectFields.groupId]: [objectFields.groupId],
   [objectFields.options]: [optionsFields.category, optionsFields.value, optionsFields.value],
+  [objectFields.newsFeed]: [optionsFields.category, optionsFields.value, optionsFields.value],
 };
 
 export default null;

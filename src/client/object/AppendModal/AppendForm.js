@@ -350,12 +350,6 @@ export default class AppendForm extends Component {
 
     return !isEmpty(stateNewsFilterTitle) ? stateNewsFilterTitle : newsFilterTitle;
   };
-  getNewsFeedTitle = stateNewsFeedTitle => {
-    const { wObject } = this.props;
-    const newsFilterTitle = get(wObject.newsFeed, 'title', '');
-
-    return newsFilterTitle || stateNewsFeedTitle;
-  };
 
   getNewPostData = formValues => {
     const { wObject } = this.props;
@@ -539,50 +533,59 @@ export default class AppendForm extends Component {
         case objectFields.newsFilter:
         case objectFields.newsFeed: {
           const getDotOrComma = (list, index) => (list.length - 1 === index ? '.' : ', ');
-          let rulesAllow = `\n`;
-          let rulesIgnore = '\n';
-          let rulesUser = `\n`;
-          const rulesTypes = this.state.typeList.reduce(
-            (acc, curr, i) => `${acc}${curr}${getDotOrComma(this.state.typeList, i)}`,
-            'Type list: ',
-          );
+          let rulesAllow = '';
+          let rulesIgnore = '';
+          let rulesUser = '';
+
+          const rulesTypes =
+            this.state.typeList.length > 0
+              ? this.state.typeList.reduce(
+                  (acc, curr, i) => `${acc}${curr}${getDotOrComma(this.state.typeList, i)}`,
+                  '\n Type list: ',
+                )
+              : '';
           let rulesCounter = 0;
 
-          this.state.allowList.forEach(rule => {
+          this.state.allowList.forEach((rule, index) => {
             if (!isEmpty(rule)) {
               rulesAllow += `\n Filter rule #${rulesCounter + 1}:`;
               rule.forEach(item => {
-                rulesAllow += ` <a href="${baseUrl}/object/${item.author_permlink}">${item.author_permlink}</a>,`;
+                rulesAllow += ` <a href="${baseUrl}/object/${item.author_permlink}">${
+                  item.author_permlink
+                }</a>${getDotOrComma(this.state.allowList[0], index)}`;
               });
 
               rulesCounter += 1;
             }
           });
 
-          this.state.ignoreList.forEach((rule, index) => {
-            if (!isEmpty(rule)) {
-              rulesIgnore = '\n Ignore list:';
+          if (!isEmpty(this.state.ignoreList)) {
+            rulesIgnore += `\n Ignore list:`;
+            this.state.ignoreList.forEach((rule, index) => {
               rulesIgnore += ` <a href="${baseUrl}/object/${rule.author_permlink}">${
                 rule.author_permlink
               }</a>${getDotOrComma(this.state.ignoreList, index)}`;
-            }
-          });
+            });
+          }
 
-          this.state.selectedUsers.forEach((user, index) => {
-            if (!isEmpty(user)) {
-              rulesUser = '\n Users:';
+          if (!isEmpty(this.state.selectedUsers)) {
+            rulesUser += `\n Users:`;
+            this.state.selectedUsers.forEach((user, index) => {
               rulesUser += ` <a href="${baseUrl}/@${user}">@${user}</a>${getDotOrComma(
                 this.state.selectedUsers,
                 index,
               )}`;
-            }
-          });
+            });
+          }
 
-          return `@${author} added ${currentField} ${
+          return `@${author} added ${this.props.intl.formatMessage({
+            id: 'object_field_newsFeed',
+            defaultMessage: 'News filter',
+          })} ${
             currentField === objectFields.newsFeed
-              ? this.getNewsFeedTitle(this.state.newsFilterTitle)
+              ? this.state.newsFilterTitle
               : this.getNewsFilterTitle(this.state.newsFilterTitle)
-          } (${langReadable}):\n ${rulesAllow} ${rulesIgnore} ${rulesTypes} ${rulesUser}`;
+          } (${langReadable}): ${rulesAllow} ${rulesIgnore} ${rulesTypes} ${rulesUser}`;
         }
         case objectFields.form:
           return `@${author} added form: ${formValues.formTitle}, link: ${formValues.formLink ||
@@ -623,7 +626,7 @@ export default class AppendForm extends Component {
       if (currentField === objectFields.newsFeed) {
         fieldsObject = {
           ...fieldsObject,
-          title: this.getNewsFeedTitle(this.state.newsFilterTitle),
+          title: this.state.newsFilterTitle,
         };
       }
 
@@ -1059,7 +1062,12 @@ export default class AppendForm extends Component {
       const ignoreList = map(this.state.ignoreList, o => o.author_permlink);
       const locale = !isEmpty(chosenLocale) ? chosenLocale : usedLocale;
 
-      if (!isEmpty(allowList) || !isEmpty(ignoreList) || !isEmpty(this.state.typeList)) {
+      if (
+        !isEmpty(allowList) ||
+        !isEmpty(ignoreList) ||
+        !isEmpty(this.state.typeList) ||
+        !isEmpty(this.state.selectedUsers)
+      ) {
         this.onSubmit({ currentField, currentLocale: locale });
       } else {
         message.error(
