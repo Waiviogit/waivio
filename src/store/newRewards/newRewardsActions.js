@@ -101,8 +101,8 @@ export const reservePropositionForQuick = permlink => async (
   const commentOp = [
     'comment',
     {
-      parent_author: dish.guideName,
-      parent_permlink: dish.activationPermlink,
+      parent_author: dish.guideName || dish?.propositions?.[0]?.guideName,
+      parent_permlink: dish.activationPermlink || dish?.propositions?.[0]?.activationPermlink,
       author: username,
       permlink,
       title: 'Rewards reservations',
