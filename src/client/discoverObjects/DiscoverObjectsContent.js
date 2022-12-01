@@ -32,6 +32,8 @@ import SortSelector from '../components/SortSelector/SortSelector';
 import MobileNavigation from '../components/Navigation/MobileNavigation/MobileNavigation';
 import Campaign from '../rewards/Campaign/Campaign';
 import Proposition from '../rewards/Proposition/Proposition';
+import PropositionNew from '../newRewards/reuseble/Proposition/Proposition';
+
 import {
   assignProposition,
   declineProposition,
@@ -55,6 +57,7 @@ import {
   getObjectTypeState,
 } from '../../store/objectTypeStore/objectTypeSelectors';
 import { getIsMapModalOpen } from '../../store/mapStore/mapSelectors';
+import Campaing from '../newRewards/reuseble/Campaing';
 
 const modalName = {
   FILTERS: 'filters',
@@ -477,6 +480,10 @@ class DiscoverObjectsContent extends Component {
                 const maxReward = get(wObj, ['campaigns', 'max_reward']);
                 const rewardMaxPassed = maxReward !== minReward ? `${round(maxReward, 2)} USD` : '';
 
+                if (wObj.newCampaigns) {
+                  return <Campaing key={wObj.author_permlink} proposition={wObj} />;
+                }
+
                 return (
                   <Campaign
                     proposition={wObj}
@@ -490,21 +497,32 @@ class DiscoverObjectsContent extends Component {
                 );
               }
               if (wObj.propositions && wObj.propositions.length) {
-                return wObj.propositions.map(proposition => (
-                  <Proposition
-                    guide={proposition.guide}
-                    proposition={proposition}
-                    wobj={wObj}
-                    assignCommentPermlink={wObj.permlink}
-                    assignProposition={this.assignPropositionHandler}
-                    discardProposition={this.discardProposition}
-                    authorizedUserName={userName}
-                    loading={loadingAssign}
-                    key={`${wObj.author_permlink}`}
-                    assigned={proposition.assigned}
-                    match={match}
-                  />
-                ));
+                return wObj.propositions.map(proposition => {
+                  if (proposition.newCampaigns) {
+                    return (
+                      <PropositionNew
+                        key={proposition._id}
+                        proposition={{ ...proposition, object: wObj }}
+                      />
+                    );
+                  }
+
+                  return (
+                    <Proposition
+                      guide={proposition.guide}
+                      proposition={proposition}
+                      wobj={wObj}
+                      assignCommentPermlink={wObj.permlink}
+                      assignProposition={this.assignPropositionHandler}
+                      discardProposition={this.discardProposition}
+                      authorizedUserName={userName}
+                      loading={loadingAssign}
+                      key={`${wObj.author_permlink}`}
+                      assigned={proposition.assigned}
+                      match={match}
+                    />
+                  );
+                });
               }
 
               return (

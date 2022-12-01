@@ -27,6 +27,7 @@ class PostModal extends React.Component {
     author: PropTypes.shape(),
     isGuest: PropTypes.bool.isRequired,
     username: PropTypes.string.isRequired,
+    mainColor: PropTypes.string.isRequired,
     getSocialInfoPost: PropTypes.func,
   };
 
@@ -119,6 +120,7 @@ class PostModal extends React.Component {
       shownPostContents,
       isGuest,
       username,
+      mainColor,
     } = this.props;
     const { permlink, title, url } = currentShownPost;
     const { tags, cities, userTwitter, wobjectsTwitter } = shownPostContents;
@@ -153,6 +155,7 @@ class PostModal extends React.Component {
         width={767}
         wrapClassName={classNames('PostModal', { PostModal__hidden: !showPostModal })}
         destroyOnClose
+        style={{ '--website-color': `${mainColor}` }}
       >
         <BBackTop isModal target={PostModal.findScrollElement} />
         <div className="PostModal__back">

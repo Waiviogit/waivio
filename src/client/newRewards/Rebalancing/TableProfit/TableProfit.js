@@ -14,9 +14,9 @@ import {
   getCryptosPriceHistory,
   getCurrentCurrency,
 } from '../../../../store/appStore/appSelectors';
+import USDDisplay from '../../../components/Utils/USDDisplay';
 
 import './TableProfit.less';
-import USDDisplay from '../../../components/Utils/USDDisplay';
 
 const TableProfit = props => {
   const { intl, tokenList, setTableProfit } = props;

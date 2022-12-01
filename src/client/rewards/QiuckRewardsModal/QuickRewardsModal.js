@@ -24,6 +24,8 @@ import { declineProposition } from '../../../store/userStore/userActions';
 import { generatePermlink } from '../../../common/helpers/wObjectHelper';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 import * as newRewards from '../../../store/newRewards/newRewardsActions';
+import { hexToRgb } from '../../../common/helpers';
+import useWebsiteColor from '../../../hooks/useWebsiteColor';
 
 import './QuickRewardsModal.less';
 
@@ -49,6 +51,8 @@ const QuickRewardsModal = props => {
   const [body, setBody] = useState('');
   const [images, setImages] = useState([]);
   const [reservationPermlink, setReservationPermlink] = useState('');
+  const colors = useWebsiteColor();
+
   const isNewReward = props?.selectedDish?.reward;
   const dishRewards = isNewReward
     ? props?.selectedDish?.reward
@@ -206,7 +210,8 @@ const QuickRewardsModal = props => {
               primaryObject={props.selectedRestaurant}
               reviewData={{
                 ...guideInfo,
-                guideName: guideInfo.guideName || guideInfo.name,
+                guideName:
+                  guideInfo.guideName || guideInfo.propositions?.[0].guideName || guideInfo.name,
               }}
             />
           ),
@@ -235,6 +240,10 @@ const QuickRewardsModal = props => {
       visible={props.isOpenModal}
       onCancel={closeModal}
       className="QuickRewardsModal"
+      style={{
+        '--website-color': `${colors?.background}`,
+        '--website-hover-color': `${hexToRgb(colors?.background, 1)}`,
+      }}
     >
       <StepsItems
         config={stepsConfig}
@@ -258,7 +267,11 @@ const QuickRewardsModal = props => {
         {isPropositionObj && pageNumber !== 1 && (
           <b>
             YOU EARN:{' '}
-            <USDDisplay value={dishRewards} currencyDisplay="symbol" style={{ color: '#f97b38' }} />
+            <USDDisplay
+              value={dishRewards}
+              currencyDisplay="symbol"
+              style={{ color: colors?.background }}
+            />
           </b>
         )}
         <Button
