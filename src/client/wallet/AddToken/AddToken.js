@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Form, Input, Modal } from 'antd';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
@@ -9,13 +9,22 @@ import { addTokenReport } from '../../../waivioApi/ApiClient';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 
 import './AddToken.less';
+import { getTokenListForRebalancing } from '../../../waivioApi/walletApi';
 
 const AddToken = props => {
   const { handleCloseModal, intl, handleSuccess } = props;
   const authUserName = useSelector(getAuthenticatedUserName);
-  const [currentToken, setCurrentToken] = useState(props.tokensList[0]);
+  const [currentToken, setCurrentToken] = useState(null);
+  const [tokensList, setTokensList] = useState([]);
   const [currentAmount, setCurrentAmount] = useState(0);
   const [externalQuantity, setExternalQuantity] = useState(0);
+
+  useEffect(() => {
+    getTokenListForRebalancing(authUserName).then(res => {
+      setTokensList(res);
+      setCurrentToken(res[0]);
+    });
+  }, []);
 
   const handleSetToken = async () => {
     try {
@@ -55,7 +64,7 @@ const AddToken = props => {
             })}
           </h4>
           <TokensSelect
-            list={props.tokensList}
+            list={tokensList}
             setToken={token => {
               setCurrentToken(token);
             }}
@@ -93,7 +102,6 @@ const AddToken = props => {
 
 AddToken.propTypes = {
   intl: PropTypes.shape().isRequired,
-  tokensList: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   handleCloseModal: PropTypes.func,
   handleSuccess: PropTypes.func,
 };

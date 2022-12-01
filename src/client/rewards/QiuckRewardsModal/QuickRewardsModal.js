@@ -52,10 +52,12 @@ const QuickRewardsModal = props => {
   const [images, setImages] = useState([]);
   const [reservationPermlink, setReservationPermlink] = useState('');
   const colors = useWebsiteColor();
-
-  const isNewReward = props?.selectedDish?.reward;
+  const isNewReward =
+    props?.selectedDish?.reward ||
+    props?.selectedDish?.propositions?.[0]?.newCampaigns ||
+    props.selectedDish?.campaigns?.newCampaigns;
   const dishRewards = isNewReward
-    ? props?.selectedDish?.reward
+    ? props?.selectedDish?.reward || props?.selectedDish?.propositions?.[0]?.reward
     : get(props, 'selectedDish.propositions[0].reward', null);
   const isPropositionObj = isNewReward
     ? dishRewards
