@@ -136,7 +136,7 @@ export const referralDetailContent = (data, isNewCamp) => {
               <span className="commissions-payments__receivables">
                 <FormattedMessage
                   id="referrals_details_commissions_payments_receivables"
-                  defaultMessage="Receivables"
+                  defaultMessage="Receivable"
                 />
               </span>
             </Link>
@@ -320,7 +320,7 @@ export const referralStatusContent = data => {
         values={{
           receivablesPage: (
             <Link to={`/rewards/receivables`}>
-              <FormattedMessage id="debts_receivables" defaultMessage="Receivables" />
+              <FormattedMessage id="debts_receivables" defaultMessage="Receivable" />
             </Link>
           ),
         }}
