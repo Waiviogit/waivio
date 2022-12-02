@@ -71,8 +71,14 @@ export const reserveProposition = (proposition, username) => async (
           }, 7000);
         } else {
           busyAPI.instance.sendAsync(subscribeTypes.subscribeCampaignAssign, [username, permlink]);
+          const timeoutId = setTimeout(() => {
+            dispatch(changeRewardsTab(username));
+            resolve();
+          }, 100);
+
           busyAPI.instance.subscribe((datad, j) => {
             if (j?.success && j?.permlink === permlink) {
+              clearTimeout(timeoutId);
               dispatch(changeRewardsTab(username));
               resolve();
             }
@@ -488,9 +494,19 @@ export const sendCommentForReward = (proposition, body, isUpdating = false, orig
             auth.user.name,
             res.result.id,
           ]);
+
+          const timeoutID = setTimeout(() => {
+            message.error(
+              "Timed out, we can't connect. Please reload the page to see the changes. ",
+            );
+            resolve(detail);
+          }, 10000);
+
           busyAPI.instance.subscribe((datad, j) => {
             if (j?.success && j?.permlink === res.result.id) {
+              clearTimeout(timeoutID);
               message.success('Comment submitted');
+
               resolve(detail);
             }
           });
