@@ -11,7 +11,6 @@ import {
   getUserCurrencyBalance,
 } from '../../../store/walletStore/walletSelectors';
 import Loading from '../../components/Icon/Loading';
-import { resetTokenBalance } from '../../../store/walletStore/walletActions';
 import DelegateListModal from '../DelegateModals/DelegateListModal/DelegateListModal';
 import { getDelegateList, getPendingUndelegationsToken } from '../../../waivioApi/ApiClient';
 import WalletAction from '../WalletSummaryInfo/components/WalletAction/WalletActions';
@@ -48,8 +47,6 @@ const WAIVWalletSummaryInfo = props => {
 
   useEffect(() => {
     setDelegationLists();
-
-    return () => props.resetTokenBalance();
   }, []);
 
   const formattedNumber = num => {
@@ -131,7 +128,6 @@ const WAIVWalletSummaryInfo = props => {
 
 WAIVWalletSummaryInfo.propTypes = {
   currencyInfo: PropTypes.shape({}).isRequired,
-  resetTokenBalance: PropTypes.func.isRequired,
   rates: PropTypes.number.isRequired,
   name: PropTypes.string.isRequired,
   isGuest: PropTypes.bool,
@@ -141,12 +137,7 @@ WAIVWalletSummaryInfo.defaultProps = {
   isGuest: false,
 };
 
-export default connect(
-  state => ({
-    currencyInfo: getUserCurrencyBalance(state, 'WAIV'),
-    rates: getTokenRatesInUSD(state, 'WAIV'),
-  }),
-  {
-    resetTokenBalance,
-  },
-)(WAIVWalletSummaryInfo);
+export default connect(state => ({
+  currencyInfo: getUserCurrencyBalance(state, 'WAIV'),
+  rates: getTokenRatesInUSD(state, 'WAIV'),
+}))(WAIVWalletSummaryInfo);

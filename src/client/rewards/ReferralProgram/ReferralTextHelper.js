@@ -153,9 +153,7 @@ export const referralDetailContent = (data, isNewCamp) => {
           statusPage: (
             <Link
               to={
-                isNewCamp
-                  ? `/rewards-new/referral-status/${username}`
-                  : `/rewards/referral-status/${username}`
+                isNewCamp ? `/rewards-new/referral-status/${username}` : `/rewards/referral-status`
               }
             >
               <span className="referral-partners__status">
