@@ -6,14 +6,11 @@ import classNames from 'classnames';
 import { ceil, get, upperFirst, debounce } from 'lodash';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import store from 'store';
+import WAValidator from 'multicoin-address-validator';
 
 import { closeWithdraw } from '../../../store/walletStore/walletActions';
 import QrModal from '../../widgets/QrModal';
-import {
-  confirmWithDraw,
-  estimateAmount,
-  validaveCryptoWallet,
-} from '../../../waivioApi/ApiClient';
+import { confirmWithDraw, estimateAmount } from '../../../waivioApi/ApiClient';
 import EmailConfirmation from '../../widgets/EmailConfirmation';
 import {
   CRYPTO_FOR_VALIDATE_WALLET,
@@ -67,14 +64,12 @@ const Withdraw = ({
     setIsValidate({ valid: false, loading: true });
 
     if (currentCurrency) {
-      setTimeout(
-        () =>
-          validaveCryptoWallet(address, crypto).then(res => {
-            setIsValidate({ valid: res.isValid, loading: false });
-          }),
-        1000,
-      );
+      const valid = WAValidator.validate(address, crypto);
+
+      return setIsValidate({ valid, loading: false });
     }
+
+    return setIsValidate({ valid: false, loading: false });
   };
 
   useEffect(() => {
