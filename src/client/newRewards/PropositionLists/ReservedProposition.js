@@ -21,6 +21,7 @@ const ReservedProposition = () => {
       getPropositionFilters={getFiltersForReservedProposition}
       tab={'reserved'}
       sortConfig={sortConfig}
+      emptyMessage={"You don't have any rewards reserved."}
       withMap
     />
   );
