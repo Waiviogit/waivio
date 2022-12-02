@@ -50,6 +50,7 @@ const RenderPropositionList = ({
   defaultSort,
   withoutSort,
   withMap,
+  emptyMessage,
 }) => {
   const { requiredObject } = useParams();
   const authUserName = useSelector(getAuthenticatedUserName);
@@ -152,7 +153,7 @@ const RenderPropositionList = ({
           </SortSelector>
         )}
         {isEmpty(propositions) ? (
-          <EmptyCampaing />
+          <EmptyCampaing emptyMessage={emptyMessage} />
         ) : (
           <ReduxInfiniteScroll
             loadMore={handleLoadingMoreRewardsList}
@@ -206,6 +207,7 @@ RenderPropositionList.propTypes = {
   tab: PropTypes.string.isRequired,
   disclaimer: PropTypes.string,
   defaultSort: PropTypes.string,
+  emptyMessage: PropTypes.string,
   withoutFilters: PropTypes.bool,
   withoutSort: PropTypes.bool,
   withMap: PropTypes.bool,
