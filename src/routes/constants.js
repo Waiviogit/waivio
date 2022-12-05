@@ -166,6 +166,7 @@ export default {
       'manage',
       'payments',
       'new-accounts',
+      'data-import',
     ].join('|'),
   },
   WEBSITES: {
