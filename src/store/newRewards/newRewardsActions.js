@@ -55,6 +55,7 @@ export const reserveProposition = (proposition, username) => async (
         waivioRewards: {
           type: 'reserveCampaign',
           requiredObject: proposedAuthorPermlink,
+          payoutTokenRateUSD: rates,
         },
       }),
     },
@@ -70,12 +71,12 @@ export const reserveProposition = (proposition, username) => async (
             resolve();
           }, 7000);
         } else {
-          busyAPI.instance.sendAsync(subscribeTypes.subscribeCampaignAssign, [username, permlink]);
           const timeoutId = setTimeout(() => {
             dispatch(changeRewardsTab(username));
             resolve();
-          }, 100);
+          }, 10000);
 
+          busyAPI.instance.sendAsync(subscribeTypes.subscribeCampaignAssign, [username, permlink]);
           busyAPI.instance.subscribe((datad, j) => {
             if (j?.success && j?.permlink === permlink) {
               clearTimeout(timeoutId);

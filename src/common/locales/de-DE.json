@@ -1908,7 +1908,7 @@
   "alert_me": "Mich benachrichtigen, wenn die Differenz überschritten wird",
   "show_all_pairs": "Zeige alle verfügbaren Paare",
   "initial_holdings": "Anfangsbestände",
-  "incl_external": "(inkl. extern)",
+  "incl_external": "extern, (%)",
   "current_holdings": "Aktuelle Bestände",
   "est_value_USD": "geschätzter Wert, {Währung}",
   "send_alerts": "Entbieten",

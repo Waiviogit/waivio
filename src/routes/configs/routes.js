@@ -329,6 +329,11 @@ const routes = {
           component: Views.ReportsWebsite,
         },
         {
+          path: '/data-import',
+          exact: true,
+          component: Views.DataImport,
+        },
+        {
           path: `/:site/(${URL.WEBSITES.tabs})`,
           pathScope: '/:site',
           exact: true,
