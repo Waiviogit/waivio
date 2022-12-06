@@ -3,7 +3,12 @@ import { useSelector } from 'react-redux';
 import { map } from 'lodash';
 import PropTypes from 'prop-types';
 
-import { currentWebsiteSettings, personalSettings, websiteSettings } from './constants';
+import {
+  currentWebsiteSettings,
+  dataManagementSettings,
+  personalSettings,
+  websiteSettings,
+} from './constants';
 import SettingsItem from './SettingsItem';
 import { getIsWaivio } from '../../../../store/appStore/appSelectors';
 import { isGuestUser } from '../../../../store/authStore/authSelectors';
@@ -18,6 +23,7 @@ const SettingsSidenav = ({ match }) => {
   const [menuCondition, setMenuCondition] = useState({
     personal: true,
     websites: true,
+    dataManagement: true,
   });
 
   const createWebsiteConditions = value => {
@@ -48,6 +54,13 @@ const SettingsSidenav = ({ match }) => {
         configItem={personalSettings}
         toggleMenuCondition={toggleMenuCondition}
       />
+      {!isGuest && isWaivio && (
+        <SettingsItem
+          condition={menuCondition.dataManagement}
+          configItem={dataManagementSettings}
+          toggleMenuCondition={toggleMenuCondition}
+        />
+      )}
       {!isGuest && isWaivio && (
         <React.Fragment>
           <SettingsItem

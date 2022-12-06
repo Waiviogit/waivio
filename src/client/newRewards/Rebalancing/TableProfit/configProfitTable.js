@@ -13,7 +13,7 @@ export default [
       },
       {
         id: 'incl_external',
-        defaultMessage: '(incl.external)',
+        defaultMessage: 'external, (%)',
       },
     ],
   },

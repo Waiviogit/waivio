@@ -2024,7 +2024,7 @@
   "alert_me": "Alert me when the difference exceeds",
   "show_all_pairs": "Show all available pairs",
   "initial_holdings": "Initial holdings",
-  "incl_external": "(incl.external)",
+  "incl_external": "external, (%)",
   "current_holdings": "Current holdings",
   "est_value_USD": "est. value, {currency}",
   "send_alerts": "Send alerts",
