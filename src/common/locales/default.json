@@ -2055,5 +2055,12 @@
   "object_field_widget": "Form",
   "object_field_newsFeed": "News filter",
   "photos": "Photos",
-  "related": "Related"
+  "related": "Related",
+  "empty_reserved_tab": "You don't have any rewards reserved.",
+  "default_rewards_sort": "Default",
+  "payout_rewards_sort": "Payouts",
+  "amount_rewards_sort": "Amount",
+  "expiry_rewards_sort": "Expiry",
+  "proximity_rewards_sort": "Proximity",
+  "price": "PRICE"
 }

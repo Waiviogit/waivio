@@ -1939,5 +1939,12 @@
   "object_field_widget": "Form",
   "object_field_newsFeed": "News filter",
   "photos": "Fotos",
-  "related": "Verwandt"
+  "related": "Verwandt",
+  "empty_reserved_tab": "Sie haben keine Prämien reserviert.",
+  "default_rewards_sort": "Standard",
+  "payout_rewards_sort": "Auszahlung",
+  "amount_rewards_sort": "Betrag",
+  "expiry_rewards_sort": "Ablauf",
+  "proximity_rewards_sort": "Nähe",
+  "price": "PREIS"
 }

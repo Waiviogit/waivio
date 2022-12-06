@@ -2011,5 +2011,12 @@
   "object_field_widget": "Форма",
   "object_field_newsFeed": "Новостной фильтр",
   "photos": "Фото",
-  "related": "Относящиеся"
+  "related": "Относящиеся",
+  "empty_reserved_tab": "У вас нет зарезервированных наград.",
+  "default_rewards_sort": "Умолчанию",
+  "payout_rewards_sort": "Выплатам",
+  "amount_rewards_sort": "Сумме",
+  "expiry_rewards_sort": "Сроку действия",
+  "proximity_rewards_sort": "Близости",
+  "price": "ЦЕНА"
 }

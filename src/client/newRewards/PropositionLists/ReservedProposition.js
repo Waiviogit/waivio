@@ -1,4 +1,6 @@
 import React from 'react';
+import {injectIntl} from "react-intl";
+import PropTypes from "prop-types";
 import RenderPropositionList from '../PropositionList/RenderPropositionList';
 import {
   getFiltersForReservedProposition,
@@ -11,7 +13,7 @@ const sortConfig = [
   { key: 'reward', title: 'Amount' },
   { key: 'date', title: 'Expiry' },
 ];
-const ReservedProposition = () => {
+const ReservedProposition = ({intl}) => {
   const getPropositionReservedPropos = (obj, userName, skip, search, sort) =>
     getReservedProposition(userName, skip, search, sort);
 
@@ -21,10 +23,14 @@ const ReservedProposition = () => {
       getPropositionFilters={getFiltersForReservedProposition}
       tab={'reserved'}
       sortConfig={sortConfig}
-      emptyMessage={"You don't have any rewards reserved."}
+      emptyMessage={intl.formatMessage({ id: "empty_reserved_tab", defaultMessage: "You don't have any rewards reserved." })}
       withMap
     />
   );
 };
 
-export default ReservedProposition;
+ReservedProposition.propTypes = {
+  intl: PropTypes.shape().isRequired,
+}
+
+export default injectIntl(ReservedProposition);
