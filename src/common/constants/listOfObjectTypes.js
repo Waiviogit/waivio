@@ -9,7 +9,7 @@ export default [
   'book',
   'product',
   'widget',
-  'newsfeed',
+  'news feed',
   'hashtag',
   'business',
   'person',
