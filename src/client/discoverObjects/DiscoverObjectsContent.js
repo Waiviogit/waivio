@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { isEmpty, omit, get, size, map, round } from 'lodash';
+import { isEmpty, omit, size, map } from 'lodash';
 import { connect } from 'react-redux';
-import { Button, message, Modal, Tag } from 'antd';
+import { Button, Modal, Tag } from 'antd';
 import {
   changeUrl,
   isNeedFilters,
@@ -30,16 +30,9 @@ import DiscoverObjectsFilters from './DiscoverFiltersSidebar/FiltersContainer';
 import SidenavDiscoverObjects from './SidenavDiscoverObjects';
 import SortSelector from '../components/SortSelector/SortSelector';
 import MobileNavigation from '../components/Navigation/MobileNavigation/MobileNavigation';
-import Campaign from '../rewards/Campaign/Campaign';
-import Proposition from '../rewards/Proposition/Proposition';
 import PropositionNew from '../newRewards/reuseble/Proposition/Proposition';
 
-import {
-  assignProposition,
-  declineProposition,
-  getCoordinates,
-} from '../../store/userStore/userActions';
-import * as apiConfig from '../../waivioApi/config.json';
+import { getCoordinates } from '../../store/userStore/userActions';
 import { RADIUS, ZOOM } from '../../common/constants/map';
 import { getCryptoPriceHistory } from '../../store/appStore/appActions';
 import { HBD, HIVE } from '../../common/constants/cryptos';
@@ -91,8 +84,6 @@ export const SORT_OPTIONS = {
     dispatchSetActiveFilters: setFiltersAndLoad,
     dispatchChangeSorting: changeSortingAndLoad,
     dispatchSetMapFullscreenMode: setMapFullscreenMode,
-    assignProposition,
-    declineProposition,
     getObjectTypeMap,
     getCoordinates,
     getCryptoPriceHistoryAction: getCryptoPriceHistory,
@@ -123,11 +114,7 @@ class DiscoverObjectsContent extends Component {
     intl: PropTypes.shape().isRequired,
     history: PropTypes.shape().isRequired,
     typeName: PropTypes.string,
-    userName: PropTypes.string,
-    assignProposition: PropTypes.func.isRequired,
-    declineProposition: PropTypes.func.isRequired,
     setObjectSortType: PropTypes.func.isRequired,
-    match: PropTypes.shape().isRequired,
     getCryptoPriceHistoryAction: PropTypes.func.isRequired,
     setActiveFilters: PropTypes.func.isRequired,
     setActiveTagsFilters: PropTypes.func.isRequired,
@@ -289,97 +276,8 @@ class DiscoverObjectsContent extends Component {
 
   showMap = () => this.props.dispatchSetMapFullscreenMode(true);
 
-  assignPropositionHandler = ({
-    companyAuthor,
-    companyPermlink,
-    resPermlink,
-    objPermlink,
-    primaryObjectName,
-    secondaryObjectName,
-    amount,
-    proposition,
-    proposedWobj,
-    userName,
-    currencyId,
-  }) => {
-    const appName = apiConfig[process.env.NODE_ENV].appName || 'waivio';
-
-    this.setState({ loadingAssign: true });
-    this.props
-      .assignProposition({
-        companyAuthor,
-        companyPermlink,
-        objPermlink,
-        resPermlink,
-        appName,
-        primaryObjectName,
-        secondaryObjectName,
-        amount,
-        proposition,
-        proposedWobj,
-        userName,
-        currencyId,
-      })
-      .then(() => {
-        message.success(
-          this.props.intl.formatMessage({
-            id: 'assigned_successfully',
-            defaultMessage: 'Assigned successfully',
-          }),
-        );
-        this.setState({ loadingAssign: false });
-      })
-      .catch(() => {
-        message.error(
-          this.props.intl.formatMessage({
-            id: 'cannot_reserve_company',
-            defaultMessage: 'You cannot reserve the campaign at the moment',
-          }),
-        );
-        this.setState({ loadingAssign: false });
-      });
-  };
-
-  discardProposition = ({
-    companyAuthor,
-    companyPermlink,
-    companyId,
-    objPermlink,
-    unreservationPermlink,
-    reservationPermlink,
-  }) => {
-    this.setState({ loadingAssign: true });
-    this.props
-      .declineProposition({
-        companyAuthor,
-        companyPermlink,
-        companyId,
-        objPermlink,
-        unreservationPermlink,
-        reservationPermlink,
-      })
-      .then(() => {
-        message.success(
-          this.props.intl.formatMessage({
-            id: 'discarded_successfully',
-            defaultMessage: 'Discarded successfully',
-          }),
-        );
-        this.setState({ loadingAssign: false });
-      })
-      .catch(() => {
-        message.error(
-          this.props.intl.formatMessage({
-            id: 'cannot_reject_campaign',
-            defaultMessage: 'You cannot reject the campaign at the moment',
-          }),
-        );
-        this.setState({ loadingAssign: false });
-      });
-  };
-
   render() {
-    const { isTypeHasFilters, isModalOpen, modalTitle, loadingAssign } = this.state;
+    const { isTypeHasFilters, isModalOpen, modalTitle } = this.state;
     const {
       intl,
       isFetching,
@@ -390,8 +288,6 @@ class DiscoverObjectsContent extends Component {
       sort,
       filteredObjects,
       hasMoreObjects,
-      userName,
-      match,
       activeTagsFilters,
     } = this.props;
     const sortSelector = hasMap ? (
@@ -475,27 +371,13 @@ class DiscoverObjectsContent extends Component {
           >
             {filteredObjects.map(wObj => {
               if (wObj.campaigns) {
-                const minReward = get(wObj, ['campaigns', 'min_reward']);
-                const rewardPricePassed = minReward ? `${round(minReward, 2)} USD` : '';
-                const maxReward = get(wObj, ['campaigns', 'max_reward']);
-                const rewardMaxPassed = maxReward !== minReward ? `${round(maxReward, 2)} USD` : '';
-
                 if (wObj.newCampaigns) {
                   return <Campaing key={wObj.author_permlink} proposition={wObj} />;
                 }
 
-                return (
-                  <Campaign
-                    proposition={wObj}
-                    filterKey={'all'}
-                    key={wObj._id}
-                    passedParent={wObj.parent}
-                    userName={userName}
-                    rewardPricePassed={!rewardMaxPassed ? rewardPricePassed : null}
-                    rewardMaxPassed={rewardMaxPassed || null}
-                  />
-                );
+                return null;
               }
+
               if (wObj.propositions && wObj.propositions.length) {
                 return wObj.propositions.map(proposition => {
                   if (proposition.newCampaigns) {
@@ -507,21 +389,7 @@ class DiscoverObjectsContent extends Component {
                     );
                   }
 
-                  return (
-                    <Proposition
-                      guide={proposition.guide}
-                      proposition={proposition}
-                      wobj={wObj}
-                      assignCommentPermlink={wObj.permlink}
-                      assignProposition={this.assignPropositionHandler}
-                      discardProposition={this.discardProposition}
-                      authorizedUserName={userName}
-                      loading={loadingAssign}
-                      key={`${wObj.author_permlink}`}
-                      assigned={proposition.assigned}
-                      match={match}
-                    />
-                  );
+                  return null;
                 });
               }
 

@@ -21,7 +21,6 @@ const LINKS = {
   MY_FEED_NOTIFICATIONS: '/notifications-list',
   FEED_PROMOTED: '/promoted',
   REWARDS: '/rewards',
-  REWARDS_NEW: '/rewards-new',
   DISCOVER: '/discover-objects',
   TOOLS_DRAFTS: '/drafts',
   TOOLS_BOOKMARKS: '/bookmarks',
@@ -43,6 +42,7 @@ const LINKS = {
   WEBSITES_MUTED_USER: '/muted-users',
   NOTIFICATIONS: '/notifications-list',
   NEW_ACCOUNT: '/new-accounts',
+  DATA_IMPORT: '/data-import',
   USERS: PATH_NAME_DISCOVER,
   BLOG: '/user-blog',
   FEED: '/feed',
@@ -100,7 +100,7 @@ const TopNavigation = ({ location: { pathname }, match, history }) => {
       const isReserved = searchParams.get('toReserved');
       const tabs = {
         reserved: 'reserved',
-        eligible: 'active',
+        eligible: 'eligible',
         all: 'all',
       };
 
@@ -141,12 +141,9 @@ const TopNavigation = ({ location: { pathname }, match, history }) => {
           <li className="TopNavigation__item">
             <Link
               onClick={handleRewardsRoute}
-              to={`${LINKS.REWARDS}/all`}
+              to={`${LINKS.REWARDS}/${rewardsTab}`}
               className={classNames('TopNavigation__link', {
-                'TopNavigation__link--active':
-                  pathname.includes(LINKS.REWARDS) &&
-                  !pathname.includes(LINKS.REWARDS_NEW) &&
-                  (!pathname.includes('list') || pathname.includes(LINKS.BLACKLIST)),
+                'TopNavigation__link--active': pathname.includes(LINKS.REWARDS),
               })}
             >
               <FormattedMessage id="earn" defaultMessage="Earn" />
@@ -186,16 +183,6 @@ const TopNavigation = ({ location: { pathname }, match, history }) => {
               })}
             >
               <FormattedMessage id="about" defaultMessage="About" />
-            </Link>
-          </li>
-          <li className="TopNavigation__item">
-            <Link
-              to={`${LINKS.REWARDS_NEW}/${rewardsTab}`}
-              className={classNames('TopNavigation__link', {
-                'TopNavigation__link--active': pathname.includes(LINKS.REWARDS_NEW),
-              })}
-            >
-              Beta
             </Link>
           </li>
         </ul>

@@ -196,14 +196,7 @@ const CreateFormRenderer = props => {
               <div className="CreateReward__second">
                 {fields.campaignName.label}{' '}
                 {
-                  <Link
-                    to={
-                      payoutToken === 'HIVE'
-                        ? `/rewards/createDuplicate/${currentItemId}`
-                        : `/rewards-new/duplicate/${currentItemId}`
-                    }
-                    title="Create a duplicate"
-                  >
+                  <Link to={`/rewards/duplicate/${currentItemId}`} title="Create a duplicate">
                     ({fields.createDuplicate.text})
                   </Link>
                 }

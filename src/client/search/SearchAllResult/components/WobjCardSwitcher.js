@@ -3,10 +3,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
-import Proposition from '../../../rewards/Proposition/Proposition';
-import Campaign from '../../../rewards/Campaign/Campaign';
 import ObjectCardView from '../../../objectCard/ObjectCardView';
-import { assignProposition, declineProposition } from '../../../../store/userStore/userActions';
 import Campaing from '../../../newRewards/reuseble/Campaing';
 import PropositionNew from '../../../newRewards/reuseble/Proposition/Proposition';
 
@@ -16,18 +13,6 @@ const WobjCardSwitcher = React.memo(props => {
 
     if (proposition?.newCampaigns)
       return <PropositionNew hovered proposition={{ ...proposition, object: props.obj }} />;
-
-    return (
-      <Proposition
-        proposition={proposition}
-        wobj={props.obj}
-        assigned={proposition.assigned}
-        wobjPrice={proposition.reward}
-        assignProposition={props.assignProposition}
-        discardProposition={props.declineProposition}
-        hovered
-      />
-    );
   }
 
   if (props.obj.campaigns) {
@@ -42,8 +27,6 @@ const WobjCardSwitcher = React.memo(props => {
           hovered
         />
       );
-
-    return <Campaign proposition={props.obj} filterKey="all" hovered />;
   }
 
   return <ObjectCardView wObject={props.obj} hovered />;
@@ -54,11 +37,6 @@ WobjCardSwitcher.propTypes = {
     propositions: PropTypes.arrayOf(PropTypes.shape()),
     campaigns: PropTypes.arrayOf(PropTypes.shape()),
   }).isRequired,
-  assignProposition: PropTypes.func.isRequired,
-  declineProposition: PropTypes.func.isRequired,
 };
 
-export default connect(null, {
-  declineProposition,
-  assignProposition,
-})(WobjCardSwitcher);
+export default connect(null)(WobjCardSwitcher);

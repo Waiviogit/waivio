@@ -12,12 +12,12 @@ import {
   // validateDeactivateCampaing,
 } from '../../../waivioApi/ApiClient';
 import { generatePermlink } from '../../../common/helpers/wObjectHelper';
-import { createBody, rewardsPost } from '../../rewards/Manage/constants';
 import steemConnectAPI from '../../steemConnectAPI';
 import { getCurrentCurrency } from '../../../store/appStore/appSelectors';
 import Loading from '../../components/Icon/Loading';
 import { deactivateCampaing } from '../../../store/newRewards/newRewardsActions';
 import { isMobile } from '../../../common/helpers/apiHelpers';
+import { createBody, rewardsPost } from './constants';
 
 export const Manage = ({ intl, guideName, setHistoryLoading }) => {
   const currency = useSelector(getCurrentCurrency);
