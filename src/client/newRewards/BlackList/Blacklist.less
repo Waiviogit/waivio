@@ -58,4 +58,38 @@
   h3 {
     margin-bottom: @margin;
   }
+
+  &__user-links,
+  &__user-profile {
+    display: flex;
+    align-items: center;
+  }
+
+  &__user-profile {
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  &__user-links {
+    border-bottom: @base-border;
+    padding: 10px 0;
+  }
+
+  .Avatar {
+    margin-right: 10px;
+  }
+
+  &:last-child {
+    &__user-links {
+      border-bottom: none;
+    }
+  }
+
+  &__user {
+    &:last-child {
+      .Blacklist__user-links {
+        border-bottom: none;
+      }
+    }
+  }
 }

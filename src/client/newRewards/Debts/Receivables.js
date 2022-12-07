@@ -10,6 +10,7 @@ import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors
 import RewardsFilters from '../Filters/Filters';
 
 import './DebtsList.less';
+import '../../rewards/Payment/Payment.less';
 
 const filterConfig = [
   { title: 'Receivables', type: 'days' },

@@ -25,18 +25,20 @@ const PaymentTableRow = ({ intl, sponsor, isReports, reservationPermlink }) => {
   const toggleModalReport = () => {
     setModalReportOpen(!isModalReportOpen);
 
-    const requestParams = {
-      guideName,
-      userName: sponsor.userName,
-      reservationPermlink: sponsor?.details?.reservation_permlink || sponsor?.reviewPermlink,
-    };
+    if (sponsor.payoutToken === 'HIVE') {
+      const requestParams = {
+        guideName,
+        userName: sponsor.userName,
+        reservationPermlink: sponsor?.details?.reservation_permlink || sponsor?.reviewPermlink,
+      };
 
-    return getReport(requestParams)
-      .then(data => {
-        dispatch(setDataForSingleReport(data));
-      })
-      .then(() => setModalReportOpen(!isModalReportOpen))
-      .catch(e => console.error(e));
+      getReport(requestParams)
+        .then(data => {
+          dispatch(setDataForSingleReport(data));
+        })
+        .then(() => setModalReportOpen(!isModalReportOpen))
+        .catch(e => console.error(e));
+    }
   };
 
   useEffect(() => {

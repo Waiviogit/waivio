@@ -313,9 +313,13 @@ const Reports = ({ form, intl }) => {
           </div>
         </Form.Item>
       </Form>
-      <Button type="primary" onClick={handleSubmit}>
-        Submit
-      </Button>
+      <div className="ReportsGlobal__wrapButton">
+        <Button type="primary" onClick={handleSubmit}>
+          Submit
+        </Button>
+        <a href="/rewards-old/reports">Reports (HIVE)</a>
+      </div>
+
       <div className={'ReportsGlobal__filters_block'}>
         {filters.sponsor && (
           <span>

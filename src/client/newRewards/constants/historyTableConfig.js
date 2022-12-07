@@ -22,7 +22,7 @@ export const configHistoryTableHeader = [
       defaultMessage: 'Campaign',
     },
     type: 'link',
-    to: item => `/rewards-new/details/${item._id}`,
+    to: item => `/rewards/details/${item._id}`,
   },
   {
     id: 'status',

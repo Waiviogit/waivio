@@ -20,7 +20,7 @@ const Campaing = ({ campain, onActionInitiated, hovered }) => {
   const history = useHistory();
   const pathname = history.location.pathname.includes('reward')
     ? location.pathname
-    : '/rewards-new/all';
+    : '/rewards/all';
   const { setRestaurant, openModal } = useQuickRewards();
   const isWaivio = useSelector(getIsWaivio);
   const styles = useWebsiteColor();

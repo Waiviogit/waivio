@@ -29,31 +29,31 @@ const DetailsModalBody = ({ proposition, requirements, agreementObjects }) => {
     <div className="DetailsModal__text-wrap">
       {!proposition?.reserved && (
         <React.Fragment>
-          <div className="Details__text fw6 mv3">User eligibility requirements:</div>
-          <div className="Details__text mv3">
+          <div className="DetailsModal__text fw6 mv3">User eligibility requirements:</div>
+          <div className="DetailsModal__text mv3">
             Only users who meet all eligibility criteria can participate in this rewards campaign.
           </div>
-          <div className="Details__criteria-wrap">
-            <div className="Details__criteria-row">
+          <div className="DetailsModal__criteria-wrap">
+            <div className="DetailsModal__criteria-row">
               <Checkbox checked={requirements?.expertise} disabled />
               <div className={getClassForCurrCreteria(requirements?.expertise)}>
                 Minimum Waivio expertise: {minExpertise}
               </div>
             </div>
-            <div className="Details__criteria-row">
+            <div className="DetailsModal__criteria-row">
               <Checkbox checked={requirements?.followers} disabled />
               <div className={getClassForCurrCreteria(requirements?.followers)}>
                 Minimum number of followers: {proposition?.userRequirements?.minFollowers}
               </div>
             </div>
-            <div className="Details__criteria-row">
+            <div className="DetailsModal__criteria-row">
               <Checkbox checked={requirements?.posts} disabled />
               <div className={getClassForCurrCreteria(requirements?.posts)}>
                 Minimum number of posts: {proposition?.userRequirements?.minPosts}
               </div>
             </div>
             {!!proposition?.frequencyAssign && (
-              <div className="Details__criteria-row">
+              <div className="DetailsModal__criteria-row">
                 <Checkbox checked={requirements?.frequency} disabled />
                 <div className={getClassForCurrCreteria(requirements?.frequency)}>
                   Have not received a reward from
@@ -66,7 +66,7 @@ const DetailsModalBody = ({ proposition, requirements, agreementObjects }) => {
                 </div>
               </div>
             )}
-            <div className="Details__criteria-row">
+            <div className="DetailsModal__criteria-row">
               <Checkbox checked={requirements?.notBlacklisted} disabled />
               <div className={getClassForCurrCreteria(requirements?.notBlacklisted)}>
                 User account is not blacklisted by{' '}
@@ -74,7 +74,7 @@ const DetailsModalBody = ({ proposition, requirements, agreementObjects }) => {
                 referenced accounts.
               </div>
             </div>
-            <div className="Details__criteria-row">
+            <div className="DetailsModal__criteria-row">
               <Checkbox checked={requirements?.notAssigned} disabled />
               <div className={getClassForCurrCreteria(requirements?.notAssigned)}>
                 User does not have an active reservation for such a reward at the moment.
@@ -84,8 +84,8 @@ const DetailsModalBody = ({ proposition, requirements, agreementObjects }) => {
         </React.Fragment>
       )}
       <div>
-        <div className="Details__text fw6 mv3">Post requirements:</div>
-        <div className="Details__text mv3">
+        <div className="DetailsModal__text fw6 mv3">Post requirements:</div>
+        <div className="DetailsModal__text mv3">
           For the review to be eligible for the award, all the following requirements must be met:
         </div>
         <ol className="DetailsModal__requirementsList">
@@ -103,14 +103,14 @@ const DetailsModalBody = ({ proposition, requirements, agreementObjects }) => {
           )}
           <li>
             <span className="nowrap">Link to</span>
-            <Link className="ml1 Details__container" to={proposition?.object?.defaultShowLink}>
+            <Link className="ml1 DetailsModal__container" to={proposition?.object?.defaultShowLink}>
               {getObjectName(proposition?.object)}
             </Link>
             ;
           </li>
           <li>
             <span className="nowrap">Link to</span>
-            <Link className="ml1 Details__container" to={requiredObject?.defaultShowLink}>
+            <Link className="ml1 DetailsModal__container" to={requiredObject?.defaultShowLink}>
               {getObjectName(requiredObject)}
             </Link>
             ;
@@ -121,14 +121,14 @@ const DetailsModalBody = ({ proposition, requirements, agreementObjects }) => {
             </li>
           )}
         </ol>
-        <div className="Details__text mv3">
+        <div className="DetailsModal__text mv3">
           Sponsor reserves the right to refuse the payment if review is suspected to be fraudulent,
           spam, poorly written or for other reasons as stated in the agreement.
         </div>
       </div>
       {!proposition?.reserved && (
         <React.Fragment>
-          <div className="Details__text fw6 mv3">Reward:</div>
+          <div className="DetailsModal__text fw6 mv3">Reward:</div>
           <span>
             The amount of the reward is determined in {proposition?.payoutToken} at the time of
             reservation. The reward will be paid in the form of a combination of upvotes (
@@ -149,7 +149,7 @@ const DetailsModalBody = ({ proposition, requirements, agreementObjects }) => {
           </span>
           {(!isEmpty(agreementObjects) || proposition?.usersLegalNotice) && (
             <React.Fragment>
-              <div className="Details__text fw6 mv3">Legal:</div>
+              <div className="DetailsModal__text fw6 mv3">Legal:</div>
               <span>
                 By making the reservation, you confirm that you have read and agree to the{' '}
                 {!isEmpty(agreementObjects) && (

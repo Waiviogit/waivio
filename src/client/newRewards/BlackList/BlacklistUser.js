@@ -20,12 +20,12 @@ const BlacklistUser = ({ intl, user, handleDeleteUsers }) => {
 
   return (
     <div key={userName} className="Blacklist__user">
-      <div className="Blacklist__user__content">
-        <div className="Blacklist__user__links">
+      <div className="Blacklist__user-content">
+        <div className="Blacklist__user-links">
           <Link to={`/@${userName}`}>
             <Avatar username={userName} size={40} />
           </Link>
-          <div className="Blacklist__user__profile">
+          <div className="Blacklist__user-profile">
             <div className="Blacklist__user__profile__header">
               <Link to={`/@${userName}`}>
                 <span className="Blacklist__user__name">

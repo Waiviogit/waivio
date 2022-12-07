@@ -62,8 +62,8 @@ export const IS_RESERVED = 'reserved';
 export const IS_ALL = 'all';
 export const IS_ACTIVE = 'active';
 export const CAMPAIGNS = 'campaigns';
-export const PAYABLES = 'payables';
-export const RECEIVABLES = 'receivables';
+export const PAYABLES = 'payable';
+export const RECEIVABLES = 'receivable';
 
 export const PATH_NAME_GUIDE_HISTORY = '/rewards/guideHistory';
 export const PATH_NAME_MESSAGES = '/rewards/messages';
@@ -73,9 +73,7 @@ export const PATH_NAME_DISCOVER = '/discover';
 export const PATH_NAME_CREATE = '/rewards/create';
 export const PATH_NAME_MATCH_BOT = '/rewards/match-bot';
 export const PATH_NAME_MANAGE = '/rewards/manage';
-export const NEW_PATH_NAME_MANAGE = '/rewards-new/manage';
 export const PATH_NAME_PAYABLES = '/rewards/payables';
-export const PATH_NAME_PAYABLES_NEW = '/rewards-new/payables';
 export const PATH_NAME_BLACKLIST = '/rewards/blacklist';
 
 export const CAMPAIGN_STATUS = {

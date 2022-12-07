@@ -23,7 +23,7 @@ export const rewardsSettings = {
       forAuth: true,
     },
     {
-      to: '/rewards/receivables',
+      to: '/rewards/receivable',
       id: 'receivable',
       defaultMessage: 'Receivable',
       forAuth: true,
@@ -58,7 +58,7 @@ export const campaingSettings = withWarning => ({
       forUser: true,
     },
     {
-      to: '/rewards/payables',
+      to: '/rewards/payable',
       id: 'payable',
       defaultMessage: 'Payable',
       withWarning,
