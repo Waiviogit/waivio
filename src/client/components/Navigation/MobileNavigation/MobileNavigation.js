@@ -8,7 +8,6 @@ import LeftSidebar from '../../../app/Sidebar/LeftSidebar';
 import {
   PATH_NAME_MESSAGES,
   PATH_NAME_ACTIVE,
-  PATH_NAME_RECEIVABLES,
   PATH_NAME_DISCOVER,
   PATH_NAME_CREATE,
   PATH_NAME_MATCH_BOT,
@@ -84,10 +83,7 @@ const MobileNavigation = ({ location, match }) => {
       pageName = 'rewards';
       filterName = 'eligible';
       break;
-    case PATH_NAME_RECEIVABLES:
-      pageName = 'rewards';
-      filterName = 'receivable';
-      break;
+
     case PATH_NAME_CREATE:
       pageName = CAMPAIGNS;
       filterName = 'create';

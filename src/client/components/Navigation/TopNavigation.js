@@ -1,17 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { useSelector, useDispatch } from 'react-redux';
-import { every, isEmpty } from 'lodash';
+import { useSelector } from 'react-redux';
+import { isEmpty } from 'lodash';
 import classNames from 'classnames';
 import { FormattedMessage } from 'react-intl';
 import { Link } from 'react-router-dom';
 import { withRouter } from 'react-router';
-import { PATH_NAME_DISCOVER, PAYABLES, RECEIVABLES } from '../../../common/constants/rewards';
+import { PATH_NAME_DISCOVER } from '../../../common/constants/rewards';
 import { getAuthenticatedUser, getRewardsTab } from '../../../store/authStore/authSelectors';
 
 import './TopNavigation.less';
-import { getRewardsGeneralCounts } from '../../../store/rewardsStore/rewardsActions';
-import { getSort } from '../../rewards/rewardsHelper';
 
 const LINKS = {
   FEED_TRENDING: '/trending',
@@ -82,46 +80,11 @@ const WEBSITE_URLS = [
   LINKS.WEBSITES_AREAS,
 ];
 
-const TopNavigation = ({ location: { pathname }, match, history }) => {
+const TopNavigation = ({ location: { pathname } }) => {
   const authenticatedUser = useSelector(getAuthenticatedUser);
   const rewardsTab = useSelector(getRewardsTab);
-  const dispath = useDispatch();
   const isRouteMathed =
     pathname === '/' || Object.values(LINKS).some(url => pathname.includes(url));
-  const handleRewardsRoute = e => {
-    const sort = getSort(match, 'default', 'default', 'payout');
-
-    dispath(
-      getRewardsGeneralCounts({ userName: authenticatedUser.name, sort, match, area: [0, 0] }),
-    ).then(data => {
-      const { tabType } = data.value;
-      const searchParams = new URLSearchParams(location.search);
-      const isWidget = searchParams.get('display');
-      const isReserved = searchParams.get('toReserved');
-      const tabs = {
-        reserved: 'reserved',
-        eligible: 'eligible',
-        all: 'all',
-      };
-
-      if (!isWidget && !isReserved) {
-        e.preventDefault();
-        const filterKey = 'all';
-        const arrFilterKey = [PAYABLES, RECEIVABLES];
-
-        if (every(arrFilterKey, key => filterKey !== key) && !match.params.campaignId) {
-          if (window.location.href.includes('rewards/rebalancing')) {
-            history.push('/rewards/rebalancing');
-
-            return;
-          }
-          history.push(`/rewards/${tabs[tabType]}/`);
-        } else {
-          history.push(`/rewards/${tabs[tabType]}/`);
-        }
-      }
-    });
-  };
 
   return isRouteMathed ? (
     <div className="TopNavigation">
@@ -140,7 +103,6 @@ const TopNavigation = ({ location: { pathname }, match, history }) => {
           </li>
           <li className="TopNavigation__item">
             <Link
-              onClick={handleRewardsRoute}
               to={`${LINKS.REWARDS}/${rewardsTab}`}
               className={classNames('TopNavigation__link', {
                 'TopNavigation__link--active': pathname.includes(LINKS.REWARDS),
@@ -193,8 +155,6 @@ const TopNavigation = ({ location: { pathname }, match, history }) => {
 
 TopNavigation.propTypes = {
   location: PropTypes.shape(),
-  match: PropTypes.shape().isRequired,
-  history: PropTypes.shape().isRequired,
 };
 
 TopNavigation.defaultProps = {

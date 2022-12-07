@@ -19,7 +19,7 @@ const ManageCampaingsTab = ({ intl }) => {
     <div className={'ManageCampaingsTab'}>
       <GuideBalance guideName={guideName} />
       <Manage guideName={guideName} intl={intl} setHistoryLoading={setHistoryLoading} />
-      <Link className={'ManageCampaingsTab__create'} to={'/rewards-new/create'}>
+      <Link className={'ManageCampaingsTab__create'} to={'/rewards/create'}>
         Create new campaing
       </Link>
       <HistoryCampaing

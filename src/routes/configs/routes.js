@@ -32,7 +32,7 @@ const routes = {
       path: [
         `/rewards/(details|duplicate|create})/:campaignId?`,
         `/rewards/(all|eligible)/:requiredObject?`,
-        `/rewards/(payables|receivables)/@:userName`,
+        `/rewards/(payable|receivable)/@:userName`,
         `/rewards/(${URL.NEW_REWARDS.tabs})`,
       ],
       pathScope: '/rewards',
@@ -74,22 +74,22 @@ const routes = {
           component: Views.ReservedProposition,
         },
         {
-          path: '/payables',
+          path: '/payable',
           exact: true,
           component: Views.Payables,
         },
         {
-          path: '/receivables',
+          path: '/receivable',
           exact: true,
           component: Views.Receivables,
         },
         {
-          path: '/payables/@:userName',
+          path: '/payable/@:userName',
           exact: true,
           component: Views.PayblesListByUser,
         },
         {
-          path: '/receivables/@:userName',
+          path: '/receivable/@:userName',
           exact: true,
           component: Views.ReceivablesListByUser,
         },
@@ -479,7 +479,7 @@ const routes = {
         },
         {
           path: '/rewards-list',
-          component: Views.RewardsList,
+          component: Views.EligibleRewards,
         },
         {
           path: '/feed/:name',

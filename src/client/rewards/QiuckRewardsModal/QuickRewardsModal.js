@@ -26,14 +26,17 @@ import './QuickRewardsModal.less';
 
 const stepsConfig = [
   {
+    id: 'find_the_dish',
     title: 'Find the dish',
     num: 1,
   },
   {
+    id: 'submit_photos',
     title: 'Submit photos',
     num: 2,
   },
   {
+    id: 'confirm_and_earn',
     title: 'Confirm and earn',
     num: 3,
   },
@@ -213,19 +216,22 @@ const QuickRewardsModal = props => {
       {!isPropositionObj && pageNumber !== 1 && (
         <div className="QuickRewardsModal__warning-container">
           <b>
-            YOU EARN:<span className="QuickRewardsModal__warning"> NO SPONSORS FOUND</span>
+            {props.intl.formatMessage({ id: "you_earn", defaultMessage: "YOU EARN" })}:
+            <span className="QuickRewardsModal__warning"> {props.intl.formatMessage({
+              id: "no_sponsor",
+              defaultMessage: "NO SPONSORS FOUND" })}</span>
           </b>
         </div>
       )}
       <div className={buttonWrapClassList}>
         {pageNumber !== 1 && (
           <Button className={nextButtonClassList} onClick={getCurrentScreen.previousHandler}>
-            Previous
+            {props.intl.formatMessage({ id: "previous", defaultMessage: "Previous" })}
           </Button>
         )}
         {isPropositionObj && pageNumber !== 1 && (
           <b>
-            YOU EARN:{' '}
+            {props.intl.formatMessage({ id: "you_earn", defaultMessage: "YOU EARN" })}:{' '}
             <USDDisplay
               value={dishRewards}
               currencyDisplay="symbol"

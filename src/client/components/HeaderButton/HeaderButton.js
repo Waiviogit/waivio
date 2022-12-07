@@ -78,9 +78,6 @@ const HeaderButtons = props => {
     <PopoverMenuItem key="settings" topNav>
       <FormattedMessage id="settings" defaultMessage="Settings" />
     </PopoverMenuItem>,
-    <PopoverMenuItem key="beta" topNav>
-      <FormattedMessage id="beta" defaultMessage="Beta" />
-    </PopoverMenuItem>,
     <PopoverMenuItem key="logout" topNav>
       <FormattedMessage id="logout" defaultMessage="Logout" />
     </PopoverMenuItem>,

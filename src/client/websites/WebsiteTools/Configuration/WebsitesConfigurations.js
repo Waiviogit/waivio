@@ -21,7 +21,6 @@ import Loading from '../../../components/Icon/Loading';
 import { getCoordinates } from '../../../../store/userStore/userActions';
 import { getParsedMap } from '../../../components/Maps/mapHelper';
 import CustomMarker from '../../../components/Maps/CustomMarker';
-import { getPropositions } from '../../../../waivioApi/ApiClient';
 import { getPropositionsForMap } from '../../../../store/mapStore/mapActions';
 import MapControllers from '../../../widgets/MapControllers/MapControllers';
 import { getAuthenticatedUserName } from '../../../../store/authStore/authSelectors';
@@ -47,8 +46,8 @@ export const WebsitesConfigurations = ({
   getCurrentUserCoordinates,
   userLocation,
   wobjects,
-  userName,
-  getMapPropositions,
+  // userName,
+  // getMapPropositions,
 }) => {
   const [modalsState, setModalState] = useState({});
   const [showMap, setShowMap] = useState('');
@@ -67,21 +66,7 @@ export const WebsitesConfigurations = ({
     'WebsitesConfigurations__modal--desktop': isDesktopModalShow,
   });
 
-  useEffect(() => {
-    if (lat && lon) {
-      const reqData = {
-        firstMapLoad: true,
-        simplified: true,
-        userName,
-        match,
-        area: [+lat, +lon],
-      };
-
-      getPropositions(reqData).then(data => {
-        getMapPropositions(data.campaigns);
-      });
-    }
-  }, [lat, lon]);
+  useEffect(() => {}, [lat, lon]);
 
   useEffect(() => {
     getCurrentUserCoordinates();
@@ -498,7 +483,7 @@ WebsitesConfigurations.propTypes = {
   getWebConfig: PropTypes.func.isRequired,
   saveWebConfig: PropTypes.func.isRequired,
   getCurrentUserCoordinates: PropTypes.func.isRequired,
-  getMapPropositions: PropTypes.func.isRequired,
+  // getMapPropositions: PropTypes.func.isRequired,
   match: PropTypes.shape({
     params: PropTypes.shape({
       site: PropTypes.string,
@@ -509,7 +494,7 @@ WebsitesConfigurations.propTypes = {
   userLocation: PropTypes.shape().isRequired,
   lat: PropTypes.number.isRequired,
   lon: PropTypes.number.isRequired,
-  userName: PropTypes.string.isRequired,
+  // userName: PropTypes.string.isRequired,
   wobjects: PropTypes.shape().isRequired,
 };
 

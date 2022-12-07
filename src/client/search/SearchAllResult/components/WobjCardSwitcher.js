@@ -11,22 +11,20 @@ const WobjCardSwitcher = React.memo(props => {
   if (!isEmpty(props.obj.propositions)) {
     const proposition = props.obj.propositions[0];
 
-    if (proposition?.newCampaigns)
-      return <PropositionNew hovered proposition={{ ...proposition, object: props.obj }} />;
+    return <PropositionNew hovered proposition={{ ...proposition, object: props.obj }} />;
   }
 
   if (props.obj.campaigns) {
-    if (props.obj.campaigns?.newCampaigns)
-      return (
-        <Campaing
-          campain={{
-            maxReward: props.obj.campaigns?.max_reward,
-            minReward: props.obj.campaigns?.min_reward,
-            object: props.obj,
-          }}
-          hovered
-        />
-      );
+    return (
+      <Campaing
+        campain={{
+          maxReward: props.obj.campaigns?.max_reward,
+          minReward: props.obj.campaigns?.min_reward,
+          object: props.obj,
+        }}
+        hovered
+      />
+    );
   }
 
   return <ObjectCardView wObject={props.obj} hovered />;
