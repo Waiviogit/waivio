@@ -12,13 +12,13 @@ import { subscribeTypes } from '../../common/constants/blockTypes';
 import { getAuthenticatedUserName, isGuestUser } from '../authStore/authSelectors';
 import { changeRewardsTab } from '../authStore/authActions';
 import { getTokenRatesInUSD } from '../walletStore/walletSelectors';
-import { rewardsPost } from '../../client/rewards/Manage/constants';
 import { createCommentPermlink, getBodyPatchIfSmaller } from '../../client/vendor/steemitHelpers';
 import { SET_PENDING_UPDATE } from '../userStore/userActions';
 import { notify } from '../../client/app/Notification/notificationActions';
 import { createPostMetadata } from '../../common/helpers/postHelpers';
 import { jsonParse } from '../../common/helpers/formatter';
 import { getSelectedDish, getSelectedRestaurant } from '../quickRewards/quickRewardsSelectors';
+import { rewardsPost } from '../../client/newRewards/ManageCampaingsTab/constants';
 
 export const reserveProposition = (proposition, username) => async (
   dispatch,

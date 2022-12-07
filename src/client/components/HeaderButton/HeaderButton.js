@@ -17,7 +17,6 @@ import Avatar from '../Avatar';
 import PopoverMenu, { PopoverMenuItem } from '../PopoverMenu/PopoverMenu';
 import { PARSED_NOTIFICATIONS } from '../../../common/constants/notifications';
 import { getUserAccount, getUserMetadata } from '../../../store/usersStore/usersActions';
-import { PATH_NAME_ACTIVE } from '../../../common/constants/rewards';
 import { logout } from '../../../store/authStore/authActions';
 import ModalSignIn from '../Navigation/ModlaSignIn/ModalSignIn';
 import LanguageSettings from '../Navigation/LanguageSettings';
@@ -166,10 +165,7 @@ const HeaderButtons = props => {
         history.push(`/@${username}`);
         break;
       case 'rewards':
-        history.push(PATH_NAME_ACTIVE);
-        break;
-      case 'beta':
-        history.push(`/rewards-new/${rewardsTab}`);
+        history.push(`/rewards/${rewardsTab}`);
         break;
       case 'discover':
         history.push(`/discover-objects/restaurant`);

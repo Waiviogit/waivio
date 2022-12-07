@@ -23,28 +23,21 @@ export const pages = {
     regExp: /(^\/discover-objects)\/?(.*)/,
     id: 'objects',
   },
+
   rewards: {
-    regExp: /(^\/rewards\/)(all|active|reserved|receivables|history)/,
-    id: 'rewards',
-  },
-  rewardsNew: {
-    regExp: /(^\/rewards-new\/)(all|eligible|reserved|history)/,
+    regExp: /(^\/rewards\/)(all|eligible|reserved|history)/,
     id: 'rewards',
   },
   rewardsCampaigns: {
-    regExp: /(^\/rewards\/)(create|manage|payables|reservations|messages|match-bot|blacklist)$/,
+    regExp: /(^\/rewards\/)(create|manage|reservations|messages|match-bot|black-list|fraud-detection|reports)$/,
     id: CAMPAIGNS,
   },
-  rewardsNewCampaigns: {
-    regExp: /(^\/rewards-new\/)(create|manage|reservations|messages|match-bot|black-list|fraud-detection|reports)$/,
-    id: CAMPAIGNS,
-  },
-  rewardsNewMatchBots: {
-    regExp: /(^\/rewards-new\/)(match-bots-sponsors|match-bots-author|match-bots-curators)$/,
+  rewardsMatchBots: {
+    regExp: /(^\/rewards-\/)(match-bots-sponsors|match-bots-author|match-bots-curators)$/,
     id: 'Match Bots',
   },
-  rewardsNewRefferal: {
-    regExp: /(^\/rewards-new\/)(referral-details|referral-instructions|referral-status)$/,
+  rewardsRefferal: {
+    regExp: /(^\/rewards\/)(referral-details|referral-instructions|referral-status)$/,
     id: 'Refferal',
   },
 };

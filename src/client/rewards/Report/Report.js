@@ -19,11 +19,11 @@ const Report = ({ intl, toggleModal, isModalReportOpen, currencyInfo, sponsor })
   const [reportDetails, setReportDetails] = useState();
   const location = useLocation();
   const payoutToken = reportDetails ? 'WAIV' : 'HIVE';
-  const isNewReward = location.pathname.includes('rewards-new');
+  const oldReward = location.pathname.includes('rewards-old');
   const currBenefis = useSelector(getBeneficiariesUsers);
 
   useEffect(() => {
-    if (isModalReportOpen && isNewReward) {
+    if (isModalReportOpen && !oldReward) {
       getReportByUser({
         userName: sponsor.userName,
         guideName: sponsor.guideName,
@@ -51,7 +51,7 @@ const Report = ({ intl, toggleModal, isModalReportOpen, currencyInfo, sponsor })
       closable
       onCancel={toggleModal}
       maskClosable={false}
-      visible={isNewReward ? isModalReportOpen && reportDetails : isModalReportOpen}
+      visible={!oldReward ? isModalReportOpen && reportDetails : isModalReportOpen}
       wrapClassName="Report"
       footer={null}
       width={768}
