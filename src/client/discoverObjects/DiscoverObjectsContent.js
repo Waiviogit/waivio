@@ -371,26 +371,17 @@ class DiscoverObjectsContent extends Component {
           >
             {filteredObjects.map(wObj => {
               if (wObj.campaigns) {
-                if (wObj.newCampaigns) {
-                  return <Campaing key={wObj.author_permlink} proposition={wObj} />;
-                }
-
-                return null;
+                return <Campaing key={wObj.author_permlink} proposition={wObj} />;
               }
 
               if (wObj.propositions && wObj.propositions.length) {
-                return wObj.propositions.map(proposition => {
-                  if (proposition.newCampaigns) {
-                    return (
-                      <PropositionNew
-                        key={proposition._id}
-                        proposition={{ ...proposition, object: wObj }}
-                      />
-                    );
-                  }
-
-                  return null;
-                });
+                // eslint-disable-next-line array-callback-return,consistent-return
+                return wObj.propositions.map(proposition => (
+                  <PropositionNew
+                    key={proposition._id}
+                    proposition={{ ...proposition, object: wObj }}
+                  />
+                ));
               }
 
               return (

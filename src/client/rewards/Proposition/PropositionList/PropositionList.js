@@ -33,24 +33,16 @@ const PropositionList = ({
 
   const getListRow = listItem => {
     if (listItem?.propositions)
-      return listItem?.propositions.map(propos => {
-        if (propos?.newCampaigns)
-          return (
-            <PropositionNew
-              proposition={{ ...propos, object: listItem, requiredObject: listItem.parent }}
-              type={propos.reserved ? 'reserved' : ''}
-            />
-          );
-
-        return null;
-      });
+      return listItem?.propositions.map(propos => (
+        <PropositionNew
+          key={listItem._id}
+          proposition={{ ...propos, object: listItem, requiredObject: listItem.parent }}
+          type={propos.reserved ? 'reserved' : ''}
+        />
+      ));
 
     if (listItem?.campaigns) {
-      if (listItem?.campaigns?.newCampaigns) {
-        return <Campaing campain={{ object: listItem, ...listItem?.campaigns }} />;
-      }
-
-      return null;
+      return <Campaing campain={{ object: listItem, ...listItem?.campaigns }} />;
     }
 
     const isList = listItem.object_type === OBJ_TYPE.LIST || listItem.type === OBJ_TYPE.LIST;

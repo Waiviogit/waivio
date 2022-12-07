@@ -479,7 +479,7 @@ const routes = {
         },
         {
           path: '/rewards-list',
-          component: Views.RewardsList,
+          component: Views.EligibleRewards,
         },
         {
           path: '/feed/:name',
