@@ -6,8 +6,6 @@ import WebsiteWrapper from '../../client/WebsiteWrapper';
 import User from '../../client/user/User';
 import WobjectContainer from '../../client/object/Wobj/WobjectContainer';
 import WebsiteBody from '../../client/websites/WebsiteLayoutComponents/Body/WebsiteBody';
-import Rewards from '../../client/rewards/Rewards';
-import RewardsComponent from '../../client/rewards/RewardsComponent/RewardsComponent';
 import RedirectedSignIn from '../../client/components/Navigation/redirectedSignIn/RedirectedSignIn';
 import WebsiteMainPage from '../../client/websites/WebsiteLayoutComponents/MainPage/WebsiteMainPage';
 import { listOfWebsiteWithMainPage } from '../../common/constants/listOfWebsite';
@@ -32,38 +30,6 @@ const routes = host => ({
       path: '/confirmation',
       exact: true,
       component: Views.ConfirmationModal,
-    },
-    {
-      path: [
-        '/rewards/(payables|receivables)/@:userName/:reservationPermlink?',
-        `/rewards/(${URL.REWARDS.tabs})/:campaignId?/:permlink?/:username?`,
-        '/rewards/:filterKey/:campaignId?',
-      ],
-      pathScope: '/rewards',
-      exact: true,
-      component: Rewards,
-      routes: [
-        {
-          path: '/receivables',
-          exact: true,
-          component: Views.ReceivablesCampaign,
-        },
-        {
-          path: '/(payables|receivables)/@:userName/:reservationPermlink?',
-          exact: true,
-          component: Views.PaymentCampaign,
-        },
-        {
-          path: '/(history|guideHistory|messages)/:campaignId?/:permlink?/:username?',
-          exact: true,
-          component: Views.HistoryCampaign,
-        },
-        {
-          path: '/:filterKey/:campaignId?',
-          exact: true,
-          component: RewardsComponent,
-        },
-      ],
     },
     {
       path: [`/(${URL.SETTINGS.tabs})`],
@@ -260,12 +226,12 @@ const routes = host => ({
     {
       component: RewardsMainPage,
       path: [
-        `/rewards-new/(details|duplicate|create})/:campaignId?`,
-        `/rewards-new/(all|eligible)/:requiredObject?`,
-        `/rewards-new/(payables|receivables)/@:userName`,
-        `/rewards-new/(${URL.NEW_REWARDS.tabs})`,
+        `/rewards/(details|duplicate|create})/:campaignId?`,
+        `/rewards/(all|eligible)/:requiredObject?`,
+        `/rewards/(payables|receivables)/@:userName`,
+        `/rewards/(${URL.NEW_REWARDS.tabs})`,
       ],
-      pathScope: '/rewards-new',
+      pathScope: '/rewards',
       exact: true,
       routes: [
         {

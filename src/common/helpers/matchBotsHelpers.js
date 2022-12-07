@@ -5,6 +5,7 @@ export const MATCH_BOTS_TYPES = {
   AUTHORS: 'waivioauthors',
   CURATORS: 'waiviocurators',
   SPONSORS: 'waiviocampaigns',
+  IMPORT: 'waivio.import',
 };
 
 export const MATCH_BOTS_NAMES = {

@@ -1,0 +1,37 @@
+@import (reference) '../../../styles/modules/variables.less';
+@import (reference) '../../../styles/custom.less';
+
+.ImportModal {
+  h4 {
+    margin: 10px 0;
+  }
+
+  &__button {
+    display: inline-block;
+    background: @orange-hot;
+    padding: 5px 10px;
+    border-radius: 4px;
+    color: @white;
+    cursor: pointer;
+  }
+
+  &__inputFile {
+    display: none;
+  }
+
+  .ant-select.ant-select-enabled {
+    min-width: 150px;
+  }
+
+  &__disclaimer {
+    color: @blue-baliHai;
+    margin: 10px 0;
+  }
+
+  &__fileCard {
+    display: inline-block;
+    border: 1px solid @blue-baliHai;
+    border-radius: 4px;
+    padding: 5px 10px;
+  }
+}

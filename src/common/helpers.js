@@ -1,5 +1,6 @@
 import { get } from 'lodash';
 import { isEmpty } from 'lodash/lang';
+import { isPostCashout } from '../client/vendor/steemitHelpers';
 
 export const getWaivVotePrice = (payout, rshares, rate) =>
   rshares > 0 ? (payout / rshares) * rate : 0;
@@ -14,7 +15,7 @@ const postRatioCalculate = (post, waivRates) => {
 
   const ratio = hiveRshares > 0 ? totalPayout / hiveRshares : 0;
   const waivRatio = getWaivVotePrice(
-    get(post, 'total_payout_WAIV', 0),
+    isPostCashout(post) ? get(post, 'total_rewards_WAIV', 0) : get(post, 'total_payout_WAIV', 0),
     get(post, 'net_rshares_WAIV', 0),
     waivRates,
   );

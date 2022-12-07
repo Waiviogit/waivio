@@ -6,7 +6,6 @@ import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import LeftSidebar from '../../../app/Sidebar/LeftSidebar';
 import {
-  PATH_NAME_GUIDE_HISTORY,
   PATH_NAME_MESSAGES,
   PATH_NAME_ACTIVE,
   PATH_NAME_RECEIVABLES,
@@ -17,8 +16,6 @@ import {
   PATH_NAME_PAYABLES,
   PATH_NAME_BLACKLIST,
   CAMPAIGNS,
-  PATH_NAME_RECEIVABLES_NEW,
-  PATH_NAME_PAYABLES_NEW,
 } from '../../../../common/constants/rewards';
 import { pages } from './helpers';
 import { getIsAuthenticated } from '../../../../store/authStore/authSelectors';
@@ -67,25 +64,17 @@ const MobileNavigation = ({ location, match }) => {
       pageName = pages.rewards.id;
       filterName = url.match(pages.rewards.regExp)[2];
       break;
-    case (url.match(pages.rewardsNew.regExp) || {}).input:
-      pageName = pages.rewardsNew.id;
-      filterName = url.match(pages.rewardsNew.regExp)[2];
-      break;
     case (url.match(pages.rewardsCampaigns.regExp) || {}).input:
       pageName = pages.rewardsCampaigns.id;
       filterName = url.match(pages.rewardsCampaigns.regExp)[2];
       break;
-    case (url.match(pages.rewardsNewMatchBots.regExp) || {}).input:
-      pageName = pages.rewardsNewMatchBots.id;
-      filterName = url.match(pages.rewardsNewMatchBots.regExp)[2].replaceAll('-', ' ');
+    case (url.match(pages.rewardsMatchBots.regExp) || {}).input:
+      pageName = pages.rewardsCampaigns.id;
+      filterName = url.match(pages.rewardsMatchBots.regExp)[2];
       break;
-    case (url.match(pages.rewardsNewRefferal.regExp) || {}).input:
-      pageName = pages.rewardsNewRefferal.id;
-      filterName = url.match(pages.rewardsNewRefferal.regExp)[2].replaceAll('-', ' ');
-      break;
-    case (url.match(pages.rewardsNewCampaigns.regExp) || {}).input:
-      pageName = pages.rewardsNewCampaigns.id;
-      filterName = url.match(pages.rewardsNewCampaigns.regExp)[2];
+    case (url.match(pages.rewardsRefferal.regExp) || {}).input:
+      pageName = pages.rewardsCampaigns.id;
+      filterName = url.match(pages.rewardsRefferal.regExp)[2];
       break;
     case PATH_NAME_DISCOVER:
       pageName = 'users';
@@ -96,7 +85,6 @@ const MobileNavigation = ({ location, match }) => {
       filterName = 'eligible';
       break;
     case PATH_NAME_RECEIVABLES:
-    case PATH_NAME_RECEIVABLES_NEW:
       pageName = 'rewards';
       filterName = 'receivable';
       break;
@@ -109,13 +97,8 @@ const MobileNavigation = ({ location, match }) => {
       filterName = 'manage';
       break;
     case PATH_NAME_PAYABLES:
-    case PATH_NAME_PAYABLES_NEW:
       pageName = CAMPAIGNS;
       filterName = 'payable';
-      break;
-    case PATH_NAME_GUIDE_HISTORY:
-      pageName = CAMPAIGNS;
-      filterName = 'reservations';
       break;
     case PATH_NAME_MESSAGES:
       pageName = CAMPAIGNS;

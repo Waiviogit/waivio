@@ -22,7 +22,6 @@ import {
 } from '../../../store/wObjectStore/wobjActions';
 import * as ApiClient from '../../../waivioApi/ApiClient';
 import {
-  getLoadingFlag,
   getObject,
   getObjectLists,
   getWobjectNested,
@@ -114,7 +113,6 @@ const CatalogWrap = props => {
     setLists(sortListItemsBy(currentList, sortType, sortOrder));
   };
 
-  const isSortCustomExist = !isEmpty(get(obj, 'sortCustom', []));
   const itemsIdsToOmit = listItems?.map(item => item.author_permlink);
 
   return (
@@ -128,15 +126,12 @@ const CatalogWrap = props => {
         {!isEmpty(reward?.main) && <Campaing campain={reward?.main} />}
         <PropositionListContainer
           wobject={wobject}
-          userName={userName}
           catalogHandleSortChange={handleSortChange}
           catalogSort={sortBy}
           isCatalogWrap
-          currentHash={hash}
           isLoadingFlag={isLoadingFlag}
           location={props.location}
           listItems={listItems}
-          isSortCustomExist={isSortCustomExist}
           wObj={obj}
         />
       </React.Fragment>
@@ -175,7 +170,6 @@ const mapStateToProps = state => ({
   wobjectNested: getWobjectNested(state),
   wobject: getObject(state),
   locale: getSuitableLanguage(state),
-  isLoadingFlag: getLoadingFlag(state),
 });
 
 const mapDispatchToProps = {

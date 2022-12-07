@@ -33,10 +33,6 @@ const ModalFirstScreen = props => {
   const [hasMore, setHasMore] = useState(false);
   const limit = 100;
   const skipLimit = props.dishes.length;
-  const isNewReward =
-    props?.selectedDish?.reward ||
-    props?.selectedDish?.propositions?.[0]?.newCampaigns ||
-    props.selectedDish?.campaigns?.newCampaigns;
   const colors = useWebsiteColor();
 
   useEffect(() => {
@@ -58,9 +54,8 @@ const ModalFirstScreen = props => {
       'QuickRewardsModal__select-item--withReward': withReward,
     });
 
-  const dishRewards = isNewReward
-    ? props?.selectedDish?.reward || get(props, 'selectedDish.propositions[0].reward', null)
-    : get(props, 'selectedDish.propositions[0].reward', null);
+  const dishRewards =
+    props?.selectedDish?.reward || get(props, 'selectedDish.propositions[0].reward', null);
   const earnMessage = camp =>
     camp.campaigns.max_reward !== camp.campaigns.min_reward ? 'Earn up to' : 'Earn';
 

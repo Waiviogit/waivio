@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { get } from 'lodash';
 import PropTypes from 'prop-types';
+import {injectIntl} from "react-intl";
 
 import {
   getSelectedDish,
@@ -14,14 +15,9 @@ import TagsSelector from '../../../../components/TagsSelector/TagsSelector';
 import './SecondScreen.less';
 
 const ModalSecondScreen = props => {
-  const isNewReward =
-    props?.selectedDish?.reward ||
-    props?.selectedDish?.propositions?.[0]?.newCampaigns ||
-    props.selectedDish?.campaigns?.newCampaigns;
-  const requirements = isNewReward
-    ? props.selectedDish?.requirements ||
-      get(props, 'selectedDish.propositions[0].requirements', null)
-    : get(props, 'selectedDish.propositions[0].requirements', null);
+  const requirements =
+    props.selectedDish?.requirements ||
+    get(props, 'selectedDish.propositions[0].requirements', null);
 
   useEffect(() => {
     const address = parseWobjectField(props.selectedRestaurant, 'address');
@@ -39,15 +35,15 @@ const ModalSecondScreen = props => {
     <div className="SecondScreen">
       {requirements && (
         <p className="SecondScreen__text">
-          Add minimum {requirements.minPhotos} original photos of{' '}
+          {props.intl.formatMessage({ id: 'add_minimum', defaultMessage: 'Add minimum' })} {requirements.minPhotos} {props.intl.formatMessage({ id: 'original_photos', defaultMessage: 'original photos of'})}{' '}
           <a href={props.selectedDish.defaultShowLink}>{getObjectName(props.selectedDish)}</a>
         </p>
       )}
       <ImageSetter onImageLoaded={handleImageLoaded} isMultiple imagesList={props.images} />
-      <h4 className="SecondScreen__text">Did you like the presentation? The taste?</h4>
+      <h4 className="SecondScreen__text">{props.intl.formatMessage({ id: 'did_you_like', defaultMessage: 'Did you like the presentation? The taste?'})}</h4>
       <textarea value={props.body} onChange={handleBodyChange} className="SecondScreen__textarea" />
       <TagsSelector
-        label={'Hashtags'}
+        label={props.intl.formatMessage({ id: 'hashtags', defaultMessage: 'Hashtags'})}
         placeholder={'Add hashtags (without #) here'}
         tags={props.topics}
         onChange={handleTopicsChange}
@@ -65,9 +61,10 @@ ModalSecondScreen.propTypes = {
   setImages: PropTypes.func.isRequired,
   setTopic: PropTypes.func.isRequired,
   body: PropTypes.string.isRequired,
+  intl: PropTypes.shape().isRequired,
 };
 
-export default connect(state => ({
+export default injectIntl(connect(state => ({
   selectedRestaurant: getSelectedRestaurant(state),
   selectedDish: getSelectedDish(state),
-}))(ModalSecondScreen);
+}))(ModalSecondScreen));
