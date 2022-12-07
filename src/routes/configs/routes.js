@@ -500,6 +500,11 @@ const routes = {
           exact: true,
           component: Views.WidgetPage,
         },
+        {
+          path: '/departments/:permlink',
+          exact: true,
+          component: Views.DepartmentsPage,
+        },
       ],
     },
     {

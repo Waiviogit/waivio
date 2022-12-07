@@ -3344,6 +3344,36 @@ export const getCurrencyType = () => {
     .catch(e => e);
 };
 
+export const getDepartmentFields = ({ name, names, excluded }) => {
+  return fetch(`${config.apiPrefix}${config.departments}`, {
+    headers,
+    method: 'POST',
+    body: JSON.stringify({
+      name,
+      names,
+      excluded,
+    }),
+  })
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+};
+
+export const getObjectByDepartment = ({ departments, skip, limit }) => {
+  return fetch(`${config.apiPrefix}${config.departments}/wobjects`, {
+    headers,
+    method: 'POST',
+    body: JSON.stringify({
+      departments,
+      skip,
+      limit,
+    }),
+  })
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+};
+
 //
 
 export default null;

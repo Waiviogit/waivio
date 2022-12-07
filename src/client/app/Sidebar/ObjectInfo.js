@@ -416,6 +416,7 @@ class ObjectInfo extends React.Component {
     const publicationDate = moment(wobject.publicationDate).format('MMMM DD, YYYY');
     const printLength = wobject.printLength;
     const publisher = parseWobjectField(wobject, 'publisher');
+    const departments = get(wobject, 'departments');
     const authorsBody = wobject.authors
       ? wobject.authors.map(el => parseWobjectField(el, 'body', []))
       : [];
@@ -533,7 +534,15 @@ class ObjectInfo extends React.Component {
           ),
         )}
 
-        {this.listItem(objectFields.departments, <Department content={'Department field'} />)}
+        {this.listItem(
+          objectFields.departments,
+          <Department
+            departments={departments}
+            isEditMode={isEditMode}
+            history={this.props.history}
+            wobject={this.props.wobject}
+          />,
+        )}
       </>
     );
 

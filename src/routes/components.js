@@ -138,6 +138,7 @@ export default {
   ),
   FormPage: loableComponent(import('../client/object/FormPage/FormPage')),
   WidgetPage: loableComponent(import('../client/object/WidgetPage/WidgetPage')),
+  DepartmentsPage: loableComponent(import('../client/object/DepartmentsPage/DepartmentsPage')),
   WebsiteSignIn: loableComponent(import(`../client/websites/WebsiteSignIn/WebsiteSignIn`)),
   VipTicketsSetting: loableComponent(import(`../client/settings/Viptickets/VipTicketsSetting`)),
   MatchBotsAuthors: loableComponent(import('../client/rewards/MatchBots/MatchBotsAuthors')),
