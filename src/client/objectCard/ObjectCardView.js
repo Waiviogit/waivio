@@ -164,7 +164,7 @@ const ObjectCardView = ({
           <div className="ObjectCardView__rewardsInfo">
             {Boolean(wObject.price) && (
               <span title={wObject.price} className="ObjectCardView__rewardsPrice">
-                {intl.formatMessage({ id: "price", defaultMessage: "PRICE" })}: {wObject.price} |{' '}
+                {intl.formatMessage({ id: 'price', defaultMessage: 'PRICE' })}: {wObject.price} |{' '}
               </span>
             )}
             <span className="ObjectCardView__earnWrap">
