@@ -983,7 +983,7 @@ export default class AppendForm extends Component {
           await addImageToAlbum({
             ...img,
             author: get(response, ['value', 'author']),
-            id: form.getFieldValue('id'),
+            id: this.state.currentAlbum,
           });
         });
       }
@@ -1009,16 +1009,12 @@ export default class AppendForm extends Component {
     return data;
   };
 
-  getWobjectField = image => {
-    const { form } = this.props;
-
-    return {
-      name: 'galleryItem',
-      body: image.src,
-      locale: 'en-US',
-      id: form.getFieldValue('id'),
-    };
-  };
+  getWobjectField = image => ({
+    name: 'galleryItem',
+    body: image.src,
+    locale: 'en-US',
+    id: this.state.currentAlbum,
+  });
 
   getImageAlbum = () => {
     const { currentAlbum } = this.state;
