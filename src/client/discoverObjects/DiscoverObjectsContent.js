@@ -371,7 +371,12 @@ class DiscoverObjectsContent extends Component {
           >
             {filteredObjects.map(wObj => {
               if (wObj.campaigns) {
-                return <Campaing key={wObj.author_permlink} proposition={wObj} />;
+                return (
+                  <Campaing
+                    key={wObj.author_permlink}
+                    campain={{ ...wObj.campaigns, object: wObj }}
+                  />
+                );
               }
 
               if (wObj.propositions && wObj.propositions.length) {

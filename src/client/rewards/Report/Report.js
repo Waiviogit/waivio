@@ -4,13 +4,14 @@ import { injectIntl } from 'react-intl';
 import { Modal } from 'antd';
 import { connect, useSelector } from 'react-redux';
 import { useLocation } from 'react-router';
+import { isEmpty } from 'lodash';
 
 import { getCurrentCurrency } from '../../../store/appStore/appSelectors';
 import ReportHeader from './ReportHeader/ReportHeader';
 import ReportFooter from './ReportFooter/ReportFooter';
 import ReportTableRewards from './ReportTable/ReportTableRewards/ReportTableRewards';
 import ReportTableFees from './ReportTable/ReportTableFees/ReportTableFees';
-import { getReportByUser } from '../../../waivioApi/ApiClient';
+import { getReport, getReportByUser } from '../../../waivioApi/ApiClient';
 import { getBeneficiariesUsers } from '../../../store/searchStore/searchSelectors';
 
 import './Report.less';
@@ -23,19 +24,33 @@ const Report = ({ intl, toggleModal, isModalReportOpen, currencyInfo, sponsor })
   const currBenefis = useSelector(getBeneficiariesUsers);
 
   useEffect(() => {
-    if (isModalReportOpen && !oldReward) {
-      getReportByUser({
-        userName: sponsor.userName,
-        guideName: sponsor.guideName,
-        reviewPermlink: sponsor.reviewPermlink,
-      }).then(res => {
-        setReportDetails({
-          ...res,
-          histories: res.histories.map(hist => ({ ...hist, beneficiaries: currBenefis })),
+    if (isModalReportOpen) {
+      if (oldReward) {
+        const requestParams = {
+          guideName: sponsor.sponsor,
+          userName: sponsor.userName,
+          reservationPermlink: sponsor?.details?.reservation_permlink || sponsor?.reviewPermlink,
+        };
+
+        getReport(requestParams).then(res => {
+          setReportDetails({
+            ...res,
+            histories: res.histories.map(hist => ({ ...hist, beneficiaries: currBenefis })),
+          });
         });
-      });
+      } else {
+        getReportByUser({
+          userName: sponsor.userName,
+          guideName: sponsor.guideName,
+          reviewPermlink: sponsor.reviewPermlink,
+        }).then(res => {
+          setReportDetails(res);
+        });
+      }
     }
   }, [isModalReportOpen]);
+
+  if (isEmpty(reportDetails)) return null;
 
   return (
     <Modal

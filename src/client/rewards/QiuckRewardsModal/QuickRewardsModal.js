@@ -216,22 +216,26 @@ const QuickRewardsModal = props => {
       {!isPropositionObj && pageNumber !== 1 && (
         <div className="QuickRewardsModal__warning-container">
           <b>
-            {props.intl.formatMessage({ id: "you_earn", defaultMessage: "YOU EARN" })}:
-            <span className="QuickRewardsModal__warning"> {props.intl.formatMessage({
-              id: "no_sponsor",
-              defaultMessage: "NO SPONSORS FOUND" })}</span>
+            {props.intl.formatMessage({ id: 'you_earn', defaultMessage: 'YOU EARN' })}:
+            <span className="QuickRewardsModal__warning">
+              {' '}
+              {props.intl.formatMessage({
+                id: 'no_sponsor',
+                defaultMessage: 'NO SPONSORS FOUND',
+              })}
+            </span>
           </b>
         </div>
       )}
       <div className={buttonWrapClassList}>
         {pageNumber !== 1 && (
           <Button className={nextButtonClassList} onClick={getCurrentScreen.previousHandler}>
-            {props.intl.formatMessage({ id: "previous", defaultMessage: "Previous" })}
+            {props.intl.formatMessage({ id: 'previous', defaultMessage: 'Previous' })}
           </Button>
         )}
         {isPropositionObj && pageNumber !== 1 && (
           <b>
-            {props.intl.formatMessage({ id: "you_earn", defaultMessage: "YOU EARN" })}:{' '}
+            {props.intl.formatMessage({ id: 'you_earn', defaultMessage: 'YOU EARN' })}:{' '}
             <USDDisplay
               value={dishRewards}
               currencyDisplay="symbol"

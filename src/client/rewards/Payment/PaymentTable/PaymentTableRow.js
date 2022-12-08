@@ -2,13 +2,11 @@ import React, { useState, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { injectIntl } from 'react-intl';
-import { useDispatch } from 'react-redux';
 import { map, reduce, get } from 'lodash';
 import moment from 'moment';
+
 import { convertDigits, formatDate } from '../../rewardsHelper';
 import Report from '../../Report/Report';
-import { getReport } from '../../../../waivioApi/ApiClient';
-import { setDataForSingleReport } from '../../../../store/rewardsStore/rewardsActions';
 import { TYPE } from '../../../../common/constants/rewards';
 import { getObjectName } from '../../../../common/helpers/wObjectHelper';
 
@@ -20,25 +18,9 @@ const PaymentTableRow = ({ intl, sponsor, isReports, reservationPermlink }) => {
     [TYPE.transfer, TYPE.transferToGuest].includes(obj.type)
       ? `-${convertDigits(obj.amount)}`
       : convertDigits(obj.amount);
-  const dispatch = useDispatch();
   const guideName = sponsor.sponsor || sponsor.guideName;
   const toggleModalReport = () => {
     setModalReportOpen(!isModalReportOpen);
-
-    if (sponsor.payoutToken === 'HIVE') {
-      const requestParams = {
-        guideName,
-        userName: sponsor.userName,
-        reservationPermlink: sponsor?.details?.reservation_permlink || sponsor?.reviewPermlink,
-      };
-
-      getReport(requestParams)
-        .then(data => {
-          dispatch(setDataForSingleReport(data));
-        })
-        .then(() => setModalReportOpen(!isModalReportOpen))
-        .catch(e => console.error(e));
-    }
   };
 
   useEffect(() => {

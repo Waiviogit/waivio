@@ -7,9 +7,9 @@ import { get, isEmpty, map, round } from 'lodash';
 
 import Avatar from '../../../components/Avatar';
 import { getSingleReportData } from '../../../../store/rewardsStore/rewardsSelectors';
+import { getObjectName, getObjectUrlForLink } from '../../../../common/helpers/wObjectHelper';
 
 import './ReportHeader.less';
-import { getObjectName, getObjectUrlForLink } from '../../../../common/helpers/wObjectHelper';
 
 const ReportHeader = ({ intl, currencyInfo, reportDetails, payoutToken }) => {
   const singleReportData = reportDetails || useSelector(getSingleReportData);
@@ -23,6 +23,7 @@ const ReportHeader = ({ intl, currencyInfo, reportDetails, payoutToken }) => {
   const rewardUsd = singleReportData.rewardUsd
     ? round(singleReportData.rewardUsd * currencyInfo.rate, 2)
     : 'N/A';
+
   const userAlias = singleReportData.user.alias;
   const userName = singleReportData.user.name;
   const sponsorAlias = singleReportData.sponsor.alias;
