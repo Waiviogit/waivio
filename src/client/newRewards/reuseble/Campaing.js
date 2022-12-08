@@ -14,11 +14,11 @@ import useWebsiteColor from '../../../hooks/useWebsiteColor';
 import './Campaing.less';
 
 const Campaing = ({ campain, onActionInitiated, hovered }) => {
-  const minReward = campain.minReward || get(campain, ['min_reward'], 0);
-  const maxReward = campain.maxReward || get(campain, ['max_reward'], 0);
+  const minReward = campain?.minReward || get(campain, ['min_reward'], 0);
+  const maxReward = campain?.maxReward || get(campain, ['max_reward'], 0);
   const buttonLabel = maxReward === minReward ? 'Earn' : 'Earn up to';
   const history = useHistory();
-  const pathname = history.location.pathname.includes('reward')
+  const pathname = history.location.pathname.includes('/reward/')
     ? location.pathname
     : '/rewards/all';
   const { setRestaurant, openModal } = useQuickRewards();

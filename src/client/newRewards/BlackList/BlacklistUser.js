@@ -28,7 +28,7 @@ const BlacklistUser = ({ intl, user, handleDeleteUsers }) => {
           <div className="Blacklist__user-profile">
             <div className="Blacklist__user__profile__header">
               <Link to={`/@${userName}`}>
-                <span className="Blacklist__user__name">
+                <span className="Blacklist__user-name">
                   <span className="username">{userName}</span>
                 </span>
               </Link>

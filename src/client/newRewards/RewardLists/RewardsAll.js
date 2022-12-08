@@ -1,6 +1,6 @@
 import React from 'react';
-import {injectIntl} from "react-intl";
-import PropTypes from "prop-types";
+import { injectIntl } from 'react-intl';
+import PropTypes from 'prop-types';
 import {
   getAllRewardList,
   getFiltersForAllRewards,
@@ -15,12 +15,12 @@ const RewardsAll = ({ intl }) => (
     getAllRewardList={getAllRewardList}
     getFilters={getFiltersForAllRewards}
     getMapItems={getMarkersForAll}
-    title={intl.formatMessage({ id: "all_rewards", defaultMessage: "All rewards" })}
+    title={intl.formatMessage({ id: 'all_rewards', defaultMessage: 'All rewards' })}
   />
 );
 
 RewardsAll.propTypes = {
   intl: PropTypes.shape().isRequired,
-}
+};
 
 export default injectIntl(RewardsAll);

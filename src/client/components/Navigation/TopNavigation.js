@@ -18,7 +18,7 @@ const LINKS = {
   MY_FEED_REWARDS: '/rewards-list',
   MY_FEED_NOTIFICATIONS: '/notifications-list',
   FEED_PROMOTED: '/promoted',
-  REWARDS: '/rewards',
+  REWARDS: '/rewards/',
   DISCOVER: '/discover-objects',
   TOOLS_DRAFTS: '/drafts',
   TOOLS_BOOKMARKS: '/bookmarks',
@@ -103,9 +103,9 @@ const TopNavigation = ({ location: { pathname } }) => {
           </li>
           <li className="TopNavigation__item">
             <Link
-              to={`${LINKS.REWARDS}/${rewardsTab}`}
+              to={`${LINKS.REWARDS}${rewardsTab}`}
               className={classNames('TopNavigation__link', {
-                'TopNavigation__link--active': pathname.includes(LINKS.REWARDS),
+                'TopNavigation__link--active': pathname.includes(`${LINKS.REWARDS}`),
               })}
             >
               <FormattedMessage id="earn" defaultMessage="Earn" />

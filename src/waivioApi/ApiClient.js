@@ -2322,6 +2322,20 @@ export const createNewCampaing = (data, account) => {
     .catch(e => e);
 };
 
+export const getRewardsFollowerUser = (skip = 0, query, sort, userName) => {
+  return fetch(
+    `${config.campaignV2ApiPrefix}${config.rewards}${config.user}?sort=${sort}&userName=${userName}`,
+    {
+      headers,
+      method: 'GET',
+    },
+  )
+    .then(handleErrors)
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+};
+
 export const updateCampaing = (data, account) => {
   return fetch(`${config.campaignV2ApiPrefix}${config.campaign}`, {
     headers: {

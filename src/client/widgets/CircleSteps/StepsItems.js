@@ -1,7 +1,7 @@
 import React from 'react';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import {injectIntl} from "react-intl";
+import { injectIntl } from 'react-intl';
 import { hexToRgb } from '../../../common/helpers';
 import useWebsiteColor from '../../../hooks/useWebsiteColor';
 
@@ -30,7 +30,9 @@ const StepsItems = props => {
       {props.config.map(item => (
         <div className={itemClassList(item.num)} key={item.num}>
           <span className="CircleSteps__itemCircle">{item.num}</span>
-          <span className="CircleSteps__itemTitle">{props.intl.formatMessage({ id: item.id, defaultMessage: item.title })}</span>
+          <span className="CircleSteps__itemTitle">
+            {props.intl.formatMessage({ id: item.id, defaultMessage: item.title })}
+          </span>
         </div>
       ))}
     </div>

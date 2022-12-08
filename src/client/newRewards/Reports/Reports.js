@@ -112,7 +112,7 @@ const Reports = ({ form, intl }) => {
     }
   };
 
-  const dataFormat = 'MMMM d, yyyy HH:mm:ss';
+  const dataFormat = 'MMMM D, yyyy HH:mm:ss';
 
   return (
     <div className={'ReportsGlobal'}>
