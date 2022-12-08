@@ -203,7 +203,7 @@ const routes = host => ({
           component: Views.UserProfile,
         },
         {
-          path: '/newsFeed',
+          path: '/newsfeed',
           component: Views.ObjectFeed,
         },
         {
