@@ -18,8 +18,7 @@ const ReportTableRewards = ({ intl, currencyInfo, reportDetails, payoutToken }) 
     singleReportData.histories,
     obj => obj.type === 'review' || obj.type === 'beneficiary_fee' || obj.type === 'beneficiaryFee',
   ).sort((a, b) => getPayableInDollars(b) - getPayableInDollars(a));
-
-  const totalHive = Number(singleReportData.rewardTokenAmount);
+  const totalHive = Number(singleReportData.rewardTokenAmount || singleReportData.rewardHive);
   const beneficiaries = reduce(
     filteredHistory,
     (acc, obj) => {

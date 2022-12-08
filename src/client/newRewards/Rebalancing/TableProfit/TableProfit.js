@@ -125,7 +125,7 @@ const TableProfit = props => {
                   <div>{row.initial}</div>
                   {Boolean(+row.external) && (
                     <div>
-                      {row.external} ({round(row.externalPercent)})%
+                      {row.external} ({round(row.externalPercent)}%)
                     </div>
                   )}
                 </td>

@@ -10,7 +10,7 @@ const ReportFooter = ({ intl, toggleModal, currencyInfo, reportDetails, payoutTo
   const sponsor = get(singleReportData, ['sponsor', 'name']);
   const matchBots = singleReportData.match_bots || singleReportData.matchBots;
   const currentUSDPrice =
-    payoutToken === 'HIVE' ? getCurrentUSDPrice() : reportDetails.payoutTokenRateUSD;
+    payoutToken === 'HIVE' ? getCurrentUSDPrice() : reportDetails.histories[0]?.payoutTokenRateUSD;
 
   return (
     <div className="Report__modal-footer">
