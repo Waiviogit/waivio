@@ -275,12 +275,12 @@ const routes = host => ({
           component: Views.Receivables,
         },
         {
-          path: '/payables/@:userName',
+          path: '/payable/@:userName',
           exact: true,
           component: Views.PayblesListByUser,
         },
         {
-          path: '/receivables/@:userName',
+          path: '/receivable/@:userName',
           exact: true,
           component: Views.ReceivablesListByUser,
         },
