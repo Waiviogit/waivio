@@ -405,7 +405,7 @@ const routes = {
           component: Views.UserProfile,
         },
         {
-          path: '/newsFeed',
+          path: '/newsfeed',
           component: Views.ObjectFeed,
         },
         {
