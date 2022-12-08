@@ -6,30 +6,30 @@ export const rewardsSettings = {
   },
   settings: [
     {
-      to: '/rewards-new/all',
+      to: '/rewards/all',
       id: 'all',
       defaultMessage: 'All',
     },
     {
-      to: '/rewards-new/eligible',
+      to: '/rewards/eligible',
       id: 'eligible',
       defaultMessage: 'Eligible',
       forAuth: true,
     },
     {
-      to: '/rewards-new/reserved',
+      to: '/rewards/reserved',
       id: 'reserved',
       defaultMessage: 'Reserved',
       forAuth: true,
     },
     {
-      to: '/rewards-new/receivables',
+      to: '/rewards/receivable',
       id: 'receivable',
       defaultMessage: 'Receivable',
       forAuth: true,
     },
     {
-      to: '/rewards-new/history',
+      to: '/rewards/history',
       id: 'history',
       defaultMessage: 'History',
       forAuth: true,
@@ -45,50 +45,50 @@ export const campaingSettings = withWarning => ({
   },
   settings: [
     {
-      to: '/rewards-new/create',
+      to: '/rewards/create',
       id: 'create',
       defaultMessage: 'Create',
-      paths: ['/rewards-new/duplicate', '/rewards-new/details', '/rewards-new/create'],
+      paths: ['/rewards/duplicate', '/rewards/details', '/rewards/create'],
       forUser: true,
     },
     {
-      to: '/rewards-new/manage',
+      to: '/rewards/manage',
       id: 'manage',
       defaultMessage: 'Manage',
       forUser: true,
     },
     {
-      to: '/rewards-new/payables',
+      to: '/rewards/payable',
       id: 'payable',
       defaultMessage: 'Payable',
       withWarning,
       forUser: true,
     },
     {
-      to: '/rewards-new/reports',
+      to: '/rewards/reports',
       id: 'reports',
       defaultMessage: 'Reports',
     },
     {
-      to: '/rewards-new/reservations',
+      to: '/rewards/reservations',
       id: 'reservations',
       defaultMessage: 'Reservations',
       forUser: true,
     },
     {
-      to: '/rewards-new/messages',
+      to: '/rewards/messages',
       id: 'messages',
       defaultMessage: 'Messages',
       forUser: true,
     },
     {
-      to: '/rewards-new/fraud-detection',
+      to: '/rewards/fraud-detection',
       id: 'fraud-detection',
       defaultMessage: 'Fraud detection',
       forUser: true,
     },
     {
-      to: '/rewards-new/black-list',
+      to: '/rewards/black-list',
       id: 'blackList',
       defaultMessage: 'Blacklist',
       forUser: true,
@@ -105,17 +105,17 @@ export const matchBotsSettings = {
   },
   settings: [
     {
-      to: '/rewards-new/match-bots-authors',
+      to: '/rewards/match-bots-authors',
       id: 'authors',
       defaultMessage: 'Authors',
     },
     {
-      to: '/rewards-new/match-bots-curators',
+      to: '/rewards/match-bots-curators',
       id: 'curators',
       defaultMessage: 'Curators',
     },
     {
-      to: '/rewards-new/match-bots-sponsors',
+      to: '/rewards/match-bots-sponsors',
       id: 'sponsors',
       defaultMessage: 'Sponsors',
     },
@@ -131,17 +131,17 @@ export const refferalsSettings = {
   },
   settings: [
     {
-      to: '/rewards-new/referral-details',
+      to: '/rewards/referral-details',
       id: 'details',
       defaultMessage: 'Details',
     },
     {
-      to: '/rewards-new/referral-instructions',
+      to: '/rewards/referral-instructions',
       id: 'instructions',
       defaultMessage: 'Instructions',
     },
     {
-      to: '/rewards-new/referral-status',
+      to: '/rewards/referral-status',
       id: 'status',
       defaultMessage: 'Status',
     },

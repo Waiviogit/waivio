@@ -15,6 +15,8 @@ import { checkPayblesWarning } from '../../waivioApi/ApiClient';
 import { getIsWaivio } from '../../store/appStore/appSelectors';
 import { guestUserRegex } from '../../common/helpers/regexHelpers';
 
+import './SideBar.less';
+
 const SideBar = () => {
   const isAuth = useSelector(getIsAuthenticated);
   const authUserName = useSelector(getAuthenticatedUserName);
@@ -43,7 +45,7 @@ const SideBar = () => {
   };
 
   return (
-    <ul className="Sidenav" style={{ marginTop: '20px' }}>
+    <ul className="Sidenav SideBar" style={{ marginTop: '20px' }}>
       <SettingsItem
         condition={menuCondition.rewards}
         configItem={rewardsSettings}

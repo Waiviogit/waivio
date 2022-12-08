@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router';
-import { forEach, get, isEmpty, map, size, round } from 'lodash';
+import { forEach, get, isEmpty, map, size } from 'lodash';
 import readingTime from 'reading-time';
 import {
   FormattedDate,
@@ -33,17 +33,15 @@ import ObjectCardView from '../../objectCard/ObjectCardView';
 import WeightTag from '../WeightTag';
 import { AppSharedContext } from '../../Wrapper';
 import PostPopoverMenu from '../PostPopoverMenu/PostPopoverMenu';
-import Campaign from '../../rewards/Campaign/Campaign';
-import Proposition from '../../rewards/Proposition/Proposition';
 import * as apiConfig from '../../../waivioApi/config.json';
 import { assignProposition } from '../../../store/userStore/userActions';
 import { getImagePathPost } from '../../../common/helpers/image';
 import MuteModal from '../../widgets/MuteModal';
 import { muteAuthorPost } from '../../../store/postsStore/postActions';
 import PropositionNew from '../../newRewards/reuseble/Proposition/Proposition';
+import Campaing from '../../newRewards/reuseble/Campaing';
 
 import './StoryFull.less';
-import Campaing from '../../newRewards/reuseble/Campaing';
 
 @injectIntl
 @withRouter
@@ -77,9 +75,7 @@ class StoryFull extends React.Component {
     onLikeClick: PropTypes.func,
     onShareClick: PropTypes.func,
     onEditClick: PropTypes.func,
-    match: PropTypes.shape(),
     assignProposition: PropTypes.func,
-    history: PropTypes.shape(),
     isOriginalPost: PropTypes.string,
     isModal: PropTypes.bool,
   };
@@ -264,12 +260,8 @@ class StoryFull extends React.Component {
       onShareClick,
       onEditClick,
       isOriginalPost,
-      match,
-      history,
       isModal,
     } = this.props;
-
-    const { loadingAssign } = this.state;
     const taggedObjects = [];
     const linkedObjects = [];
     const authorName = get(post, ['guestInfo', 'userId'], '') || post.author;
@@ -492,49 +484,16 @@ class StoryFull extends React.Component {
                   const minReward = get(obj, ['campaigns', 'min_reward']);
                   const maxReward = get(obj, ['campaigns', 'max_reward']);
 
-                  if (obj.campaigns.newCampaigns) {
-                    return <Campaing campain={{ minReward, maxReward, object: obj }} />;
-                  }
-
-                  const rewardPricePassed = minReward ? round(minReward, 2) : '';
-                  const rewardMaxPassed = maxReward !== minReward ? round(maxReward, 2) : '';
-
-                  return (
-                    <Campaign
-                      proposition={obj}
-                      filterKey={'all'}
-                      key={obj.id}
-                      passedParent={obj.parent}
-                      userName={user.name}
-                      rewardPricePassed={!rewardMaxPassed ? rewardPricePassed : null}
-                      rewardMaxPassed={rewardMaxPassed || null}
-                    />
-                  );
+                  return <Campaing campain={{ minReward, maxReward, object: obj }} />;
                 }
 
                 if (!isEmpty(obj.propositions)) {
-                  return obj.propositions.map(proposition =>
-                    proposition?.newCampaigns ? (
-                      <PropositionNew
-                        key={proposition._id}
-                        proposition={{ ...proposition, object: obj, requiredObject: obj.parent }}
-                      />
-                    ) : (
-                      <Proposition
-                        guide={proposition.guide}
-                        proposition={proposition}
-                        wobj={obj}
-                        assignCommentPermlink={obj.permlink}
-                        assignProposition={this.assignPropositionHandler}
-                        authorizedUserName={user.name}
-                        loading={loadingAssign}
-                        key={obj.author_permlink}
-                        match={match}
-                        user={user}
-                        history={history}
-                      />
-                    ),
-                  );
+                  return obj.propositions.map(proposition => (
+                    <PropositionNew
+                      key={proposition._id}
+                      proposition={{ ...proposition, object: obj, requiredObject: obj.parent }}
+                    />
+                  ));
                 }
 
                 return (

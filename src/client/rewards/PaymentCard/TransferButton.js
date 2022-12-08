@@ -4,35 +4,16 @@ import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { round } from 'lodash';
 import { WAIVIO_PARENT_PERMLINK } from '../../../common/constants/waivio';
-import { getMemo } from '../rewardsHelper';
 import Action from '../../components/Button/Action';
 import { openTransfer } from '../../../store/walletStore/walletActions';
-import { openLinkHiveAccountModal } from '../../../store/settingsStore/settingsActions';
 import { guestUserRegex } from '../../../common/helpers/regexHelpers';
-import {
-  PATH_NAME_RECEIVABLES,
-  PATH_NAME_PAYABLES,
-  PATH_NAME_RECEIVABLES_NEW,
-} from '../../../common/constants/rewards';
-import { isGuestUser } from '../../../store/authStore/authSelectors';
-import { getHiveBeneficiaryAccount } from '../../../store/settingsStore/settingsSelectors';
 
 const TransferButton = ({ match, intl, payable, name, openTransf, currency }) => {
   const isReceiverGuest = guestUserRegex.test(name);
   const app = WAIVIO_PARENT_PERMLINK;
-  const pathRecivables =
-    match.path === PATH_NAME_RECEIVABLES ||
-    match.path === PATH_NAME_RECEIVABLES_NEW ||
-    match.path.includes('receivables');
-  const pathPaybles = match.path === PATH_NAME_PAYABLES || match.path.includes('payables');
-  const isOverpayment = payable < 0;
-  let memo;
-
-  if (currency === 'HIVE') {
-    memo = getMemo(isReceiverGuest, pathRecivables, isOverpayment);
-  } else {
-    memo = isReceiverGuest ? 'guestCampaignReward' : 'campaignReward';
-  }
+  const pathRecivables = match.path.includes('receivable');
+  const pathPaybles = match.path.includes('payable');
+  const memo = isReceiverGuest ? 'guestCampaignReward' : 'campaignReward';
 
   return (
     <React.Fragment>
@@ -65,19 +46,9 @@ TransferButton.propTypes = {
 };
 
 TransferButton.defaultProps = {
-  isGuest: false,
-  hiveBeneficiaryAccount: '',
-  openLinkModal: () => {},
   openTransf: () => {},
 };
 
-export default connect(
-  state => ({
-    isGuest: isGuestUser(state),
-    hiveBeneficiaryAccount: getHiveBeneficiaryAccount(state),
-  }),
-  {
-    openLinkModal: openLinkHiveAccountModal,
-    openTransf: openTransfer,
-  },
-)(injectIntl(TransferButton));
+export default connect(null, {
+  openTransf: openTransfer,
+})(injectIntl(TransferButton));

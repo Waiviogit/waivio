@@ -5,7 +5,7 @@ import { useDispatch } from 'react-redux';
 import { Button } from 'antd';
 import { isEmpty, map } from 'lodash';
 import SearchUsersAutocomplete from '../../components/EditorUser/SearchUsersAutocomplete';
-import BlacklistUser from '../../rewards/Blacklist/BlacklistUser';
+import BlacklistUser from './BlacklistUser';
 import SelectUserForAutocomplete from '../../widgets/SelectUserForAutocomplete';
 import { changeBlackAndWhiteLists } from '../../../store/rewardsStore/rewardsActions';
 

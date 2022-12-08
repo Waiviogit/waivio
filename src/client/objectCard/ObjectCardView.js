@@ -18,7 +18,6 @@ import { getProxyImageURL } from '../../common/helpers/image';
 import { getAuthenticatedUserName } from '../../store/authStore/authSelectors';
 import USDDisplay from '../components/Utils/USDDisplay';
 import { defaultCurrency } from '../websites/constants/currencyTypes';
-import { getTokenRatesInUSD } from '../../store/walletStore/walletSelectors';
 
 import './ObjectCardView.less';
 import useWebsiteColor from '../../hooks/useWebsiteColor';
@@ -37,9 +36,9 @@ const ObjectCardView = ({
   isPost,
   postAuthor,
   payoutToken,
+  rate,
 }) => {
   const username = useSelector(getAuthenticatedUserName);
-  const rate = useSelector(state => getTokenRatesInUSD(state, payoutToken || 'HIVE'));
   const [tags, setTags] = useState([]);
   const address = parseAddress(wObject, ['postalCode', 'country']);
   const parent = isEmpty(passedParent) ? get(wObject, 'parent', {}) : passedParent;
@@ -165,7 +164,7 @@ const ObjectCardView = ({
           <div className="ObjectCardView__rewardsInfo">
             {Boolean(wObject.price) && (
               <span title={wObject.price} className="ObjectCardView__rewardsPrice">
-                PRICE: {wObject.price} |{' '}
+                {intl.formatMessage({ id: 'price', defaultMessage: 'PRICE' })}: {wObject.price} |{' '}
               </span>
             )}
             <span className="ObjectCardView__earnWrap">
@@ -211,6 +210,7 @@ ObjectCardView.propTypes = {
   withRewards: PropTypes.bool,
   isReserved: PropTypes.bool,
   rewardPrice: PropTypes.number,
+  rate: PropTypes.number,
   options: PropTypes.shape({
     pathNameAvatar: PropTypes.oneOfType([PropTypes.string, PropTypes.shape()]),
   }),

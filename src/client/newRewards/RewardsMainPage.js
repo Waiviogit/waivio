@@ -19,7 +19,7 @@ const RewardsMainPage = props => {
   const desc = 'Reserve the reward for a few days. Share photos of the dish and get the reward!';
   const img = DEFAULTS.FAVICON;
   const urlCurr = `${appUrl}/rewards`;
-  const title = `Rewards - ${siteName} [NEW]`;
+  const title = `Rewards - ${siteName}`;
 
   return (
     <div className="Rewards-new container settings-layout container">

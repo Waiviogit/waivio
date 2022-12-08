@@ -35,6 +35,8 @@ export const getSettingsTitle = match => {
       return { id: 'invite', defaultMessage: 'Invite' };
     case 'new-accounts':
       return { id: 'new_accounts', defaultMessage: 'New accounts' };
+    case 'data-import':
+      return { id: 'data-import', defaultMessage: 'Data import' };
 
     default:
       return { id: 'websites', defaultMessage: 'Websites' };

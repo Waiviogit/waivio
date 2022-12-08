@@ -18,12 +18,7 @@ const ReportTableRewards = ({ intl, currencyInfo, reportDetails, payoutToken }) 
     singleReportData.histories,
     obj => obj.type === 'review' || obj.type === 'beneficiary_fee' || obj.type === 'beneficiaryFee',
   ).sort((a, b) => getPayableInDollars(b) - getPayableInDollars(a));
-
-  const totalUSD = Number(
-    filteredHistory.reduce((sum, benef) => sum + getPayableInDollars(benef), 0),
-  );
-  const totalAmount = filteredHistory.reduce((sum, benef) => sum + benef.amount, 0);
-  const totalHive = Number(totalAmount);
+  const totalHive = Number(singleReportData.rewardTokenAmount || singleReportData.rewardHive);
   const beneficiaries = reduce(
     filteredHistory,
     (acc, obj) => {
@@ -88,7 +83,10 @@ const ReportTableRewards = ({ intl, currencyInfo, reportDetails, payoutToken }) 
           {map(beneficiaries, beneficiary => (
             <ReportTableRewardsRow key={beneficiary.id} {...beneficiary} />
           ))}
-          <ReportTableRewardsRowTotal totalUSD={totalUSD} totalHive={totalHive} />
+          <ReportTableRewardsRowTotal
+            totalUSD={singleReportData.rewardUsd}
+            totalHive={singleReportData.rewardTokenAmount}
+          />
         </tbody>
       </table>
     </React.Fragment>

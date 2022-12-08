@@ -15,7 +15,7 @@ import {
   updateCampaing,
 } from '../../../waivioApi/ApiClient';
 import * as apiConfig from '../../../waivioApi/config.json';
-import { NEW_PATH_NAME_MANAGE } from '../../../common/constants/rewards';
+import { PATH_NAME_MANAGE } from '../../../common/constants/rewards';
 import { getLocale } from '../../../store/settingsStore/settingsSelectors';
 import {
   getAuthenticatedUser,
@@ -272,7 +272,7 @@ class CreateRewards extends React.Component {
     return preparedObject;
   };
 
-  manageRedirect = () => this.props.history.push(NEW_PATH_NAME_MANAGE);
+  manageRedirect = () => this.props.history.push(PATH_NAME_MANAGE);
 
   handleSetState = (stateData, callbackData) => {
     const { setFieldsValue } = this.props.form;

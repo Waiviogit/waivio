@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { isEmpty } from 'lodash';
@@ -10,11 +10,6 @@ import './Reports.less';
 const Reports = ({ intl, userName }) => {
   const [sponsors, setSponsors] = useState({});
   const [currency, setCurrency] = useState('HIVE');
-  const requestParams = {
-    sponsor: userName,
-    globalReport: true,
-  };
-
   const getHistories = (params, curr) => {
     setCurrency(curr);
     getLenders(params)
@@ -23,10 +18,6 @@ const Reports = ({ intl, userName }) => {
       })
       .catch(e => console.error(e));
   };
-
-  useEffect(() => {
-    getHistories(requestParams);
-  }, []);
 
   return (
     <div className="Reports">

@@ -2,20 +2,15 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { Button } from 'antd';
-import { useSelector } from 'react-redux';
 import { get, isEmpty, map, round } from 'lodash';
-import { getSingleReportData } from '../../../../store/rewardsStore/rewardsSelectors';
 import { getCurrentUSDPrice } from '../../rewardsHelper';
-import { getTokenRatesInUSD } from '../../../../store/walletStore/walletSelectors';
 
 const ReportFooter = ({ intl, toggleModal, currencyInfo, reportDetails, payoutToken }) => {
-  const singleReportData = reportDetails || useSelector(getSingleReportData);
+  const singleReportData = reportDetails;
   const sponsor = get(singleReportData, ['sponsor', 'name']);
   const matchBots = singleReportData.match_bots || singleReportData.matchBots;
   const currentUSDPrice =
-    payoutToken === 'HIVE'
-      ? getCurrentUSDPrice()
-      : useSelector(state => getTokenRatesInUSD(state, payoutToken));
+    payoutToken === 'HIVE' ? getCurrentUSDPrice() : reportDetails.histories[0]?.payoutTokenRateUSD;
 
   return (
     <div className="Report__modal-footer">

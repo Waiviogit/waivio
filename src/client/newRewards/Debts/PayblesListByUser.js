@@ -20,6 +20,8 @@ import { getHiveBeneficiaryAccount } from '../../../store/settingsStore/settings
 import PaymentTable from '../../rewards/Payment/PaymentTable/PaymentTable';
 import { guestUserRegex } from '../../../common/helpers/regexHelpers';
 
+import '../../rewards/Payment/Payment.less';
+
 const PayblesListByUser = ({
   intl,
   isGuest,

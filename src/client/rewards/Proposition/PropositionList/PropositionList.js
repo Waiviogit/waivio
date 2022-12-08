@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { get, map, isEmpty } from 'lodash';
-import Proposition from '../Proposition';
 import ObjectCardView from '../../../objectCard/ObjectCardView';
 import Loading from '../../../components/Icon/Loading';
 import CatalogBreadcrumb from '../../../object/Catalog/CatalogBreadcrumb/CatalogBreadcrumb';
@@ -15,21 +14,12 @@ import {
 } from '../../../../common/helpers/wObjectHelper';
 import { statusNoVisibleItem } from '../../../../common/constants/listOfFields';
 import CategoryItemView from '../../../object/Catalog/CategoryItemView/CategoryItemView';
-import Campaign from '../../Campaign/Campaign';
 import PropositionNew from '../../../newRewards/reuseble/Proposition/Proposition';
 import Campaing from '../../../newRewards/reuseble/Campaing';
 
 const PropositionList = ({
   wobject,
-  discardProposition,
-  assignPropositionHandler,
   intl,
-  match,
-  history,
-  user,
-  userName,
-  loadingAssignDiscard,
-  isAssign,
   catalogHandleSortChange,
   catalogSort,
   listItems,
@@ -43,41 +33,16 @@ const PropositionList = ({
 
   const getListRow = listItem => {
     if (listItem?.propositions)
-      return listItem?.propositions.map(propos => {
-        if (propos?.newCampaigns)
-          return (
-            <PropositionNew
-              proposition={{ ...propos, object: listItem, requiredObject: listItem.parent }}
-              type={propos.reserved ? 'reserved' : ''}
-            />
-          );
-
-        return (
-          <Proposition
-            proposition={propos}
-            wobj={listItem}
-            wobjPrice={propos.reward}
-            assignCommentPermlink={listItem.permlink}
-            assignProposition={assignPropositionHandler}
-            discardProposition={discardProposition}
-            authorizedUserName={userName}
-            loading={loadingAssignDiscard}
-            key={`${listItem.author_permlink}`}
-            assigned={listItem.assigned}
-            history={history}
-            isAssign={isAssign}
-            match={match}
-            user={user}
-          />
-        );
-      });
+      return listItem?.propositions.map(propos => (
+        <PropositionNew
+          key={listItem._id}
+          proposition={{ ...propos, object: listItem, requiredObject: listItem.parent }}
+          type={propos.reserved ? 'reserved' : ''}
+        />
+      ));
 
     if (listItem?.campaigns) {
-      if (listItem?.campaigns?.newCampaigns) {
-        return <Campaing campain={{ object: listItem, ...listItem?.campaigns }} />;
-      }
-
-      return <Campaign proposition={listItem} filterKey="all" hovered />;
+      return <Campaing campain={{ object: listItem, ...listItem?.campaigns }} />;
     }
 
     const isList = listItem.object_type === OBJ_TYPE.LIST || listItem.type === OBJ_TYPE.LIST;
@@ -148,14 +113,6 @@ PropositionList.propTypes = {
   intl: PropTypes.shape().isRequired,
   wobject: PropTypes.shape().isRequired,
   isCatalogWrap: PropTypes.bool,
-  discardProposition: PropTypes.func,
-  assignPropositionHandler: PropTypes.func,
-  match: PropTypes.shape(),
-  history: PropTypes.shape().isRequired,
-  user: PropTypes.shape(),
-  userName: PropTypes.string.isRequired,
-  loadingAssignDiscard: PropTypes.bool,
-  isAssign: PropTypes.bool,
   catalogHandleSortChange: PropTypes.func,
   catalogSort: PropTypes.string.isRequired,
   isLoadingFlag: PropTypes.bool,
@@ -163,25 +120,6 @@ PropositionList.propTypes = {
   location: PropTypes.shape().isRequired,
   isCustomExist: PropTypes.bool,
   wObj: PropTypes.shape().isRequired,
-};
-
-PropositionList.defaultProps = {
-  allPropositions: [],
-  allCurrentPropositions: [],
-  currentProposition: [],
-  match: {},
-  user: {},
-  loadingAssignDiscard: false,
-  isAssign: false,
-  discardProposition: () => {},
-  assignPropositionHandler: () => {},
-  isCatalogWrap: false,
-  catalogHandleSortChange: () => {},
-  isLoadingFlag: false,
-  parentPermlink: '',
-  isGetNested: false,
-  listItems: [],
-  isCustomExist: false,
 };
 
 export default injectIntl(PropositionList);

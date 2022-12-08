@@ -8,7 +8,6 @@ import store from 'store';
 import config from './routes';
 import { getValidTokenData } from '../common/helpers/getToken';
 import { GUEST_ACCOUNT_UPDATE, CUSTOM_JSON } from '../common/constants/accountHistory';
-import { getSessionData, getUrl } from '../client/rewards/rewardsHelper';
 import { getGuestAccessToken } from '../common/helpers/localStorageHelpers';
 import { IS_RESERVED } from '../common/constants/rewards';
 import { isMobileDevice } from '../common/helpers/apiHelpers';
@@ -690,15 +689,6 @@ export const getTopUsers = (user, { limit = 30, skip = 0, isRandom = false } = {
 
 // region Campaigns Requests
 
-export const getCampaignById = campaignId =>
-  fetch(`${config.campaignApiPrefix}${config.campaign}/${campaignId}`, {
-    headers,
-    method: 'GET',
-  })
-    .then(res => res.json())
-    .then(response => response.campaign)
-    .catch(error => error);
-
 export const getReviewCheckInfo = ({ campaignId, locale = 'en-US', userName, postPermlink }) => {
   const queryString = `${
     postPermlink ? `?userName=${userName}&postPermlink=${postPermlink}` : `?userName=${userName}`
@@ -719,264 +709,10 @@ export const getReviewCheckInfo = ({ campaignId, locale = 'en-US', userName, pos
     .catch(error => error);
 };
 
-export const getPropositions = ({
-  limit = 30,
-  skip = 0,
-  userName = '',
-  status = ['active'],
-  approved,
-  guideNames,
-  types,
-  requiredObject,
-  currentUserName,
-  radius,
-  area,
-  sort,
-  match,
-  simplified,
-  firstMapLoad,
-  isMap,
-  primaryObject,
-  locale = 'en-US',
-  authenticated,
-}) => {
-  const reqData = {
-    limit,
-    skip,
-    status,
-    approved,
-    primaryObject,
-    sort,
-  };
-  const searchParams = new URLSearchParams(location.search);
-  const mapX = searchParams.get('mapX');
-  const mapY = searchParams.get('mapY');
-  const isWidget = getSessionData('isWidget');
-  const isWidgetUsername = getSessionData('userName');
-
-  if (
-    (authenticated && !isEmpty(userName)) ||
-    (!authenticated && !isEmpty(userName) && !isWidgetUsername)
-  ) {
-    reqData.userName = userName;
-  } else if (!authenticated && isWidget && isWidgetUsername) {
-    reqData.userName = isWidgetUsername;
-  }
-  if (!isEmpty(area)) {
-    reqData.area = area;
-    reqData.radius = radius;
-  }
-  if (!isEmpty(area) && isEmpty(requiredObject)) {
-    if (mapX && mapY) {
-      reqData.area = [+mapX, mapY];
-    } else {
-      reqData.area = area;
-      if (radius) reqData.radius = radius;
-    }
-  }
-  if (!isEmpty(guideNames)) reqData.guideNames = guideNames;
-  if (!isEmpty(types)) reqData.types = types;
-  if (currentUserName) reqData.currentUserName = currentUserName;
-  if (!requiredObject && simplified) reqData.simplified = simplified;
-  if (!requiredObject && firstMapLoad) reqData.firstMapLoad = firstMapLoad;
-  if (!isMap && match.params.filterKey === IS_RESERVED) reqData.update = true;
-  if (requiredObject && !isMap) reqData.requiredObject = requiredObject;
-  if (match.params.filterKey === IS_RESERVED) reqData.status = [...status, 'onHold'];
-  const url = getUrl(match);
-
-  if (isMap && match.params.filterKey === IS_RESERVED) return Promise.resolve();
-  return fetch(url, {
-    headers: { ...headers, app: config.appName, locale },
-    method: 'POST',
-    body: JSON.stringify(reqData),
-  })
-    .then(res => res.json())
-    .then(result => result)
-    .catch(error => error);
-};
-
-export const getHistory = ({
-  limit = 10,
-  skip = 0,
-  guideName,
-  userName,
-  onlyWithMessages,
-  sort,
-  caseStatus,
-  rewards,
-  status,
-  guideNames,
-  campaignNames,
-  fraudSuspicion,
-  locale = 'en-US',
-  reservationPermlink,
-  notifyAuthor,
-}) => {
-  const reqData = {
-    limit,
-    skip,
-    onlyWithMessages,
-    sort,
-  };
-  /* If we have userName, we sent request from history page. On history page we should display all propositions: with messages and without */
-  /* If we have guideName, we sent request from messages page. On this page we should display only propositions with messages */
-  if (userName) {
-    reqData.userName = userName;
-    reqData.onlyWithMessages = false;
-  }
-  if (guideName) reqData.guideName = guideName;
-  if (fraudSuspicion) reqData.fraudSuspicion = fraudSuspicion;
-  if (!isEmpty(rewards)) reqData.rewards = rewards;
-  if (!isEmpty(status)) reqData.status = status;
-  if (!isEmpty(guideNames)) reqData.guideNames = guideNames;
-  if (!isEmpty(caseStatus)) reqData.caseStatus = caseStatus;
-  if (!isEmpty(campaignNames)) reqData.campaignNames = campaignNames;
-  if (reservationPermlink) reqData.reservationPermlink = reservationPermlink;
-  if (notifyAuthor) reqData.guideName = notifyAuthor;
-
-  return fetch(`${config.campaignApiPrefix}${config.campaigns}${config.history}`, {
-    headers: { ...headers, app: config.appName, locale },
-    method: 'POST',
-    body: JSON.stringify(reqData),
-  })
-    .then(res => res.json())
-    .then(result => result)
-    .catch(error => error);
-};
-
-export const getSuitableUsers = (followsCount, postsCount) =>
-  fetch(
-    `${config.campaignApiPrefix}${config.suitableUsers}?count_follows=${followsCount}&count_posts=${postsCount}`,
-    {
-      headers,
-      method: 'GET',
-    },
-  )
-    .then(res => res.json())
-    .then(result => ({ users: result.users, hasMore: false }))
-    .catch(error => error);
-
-export const createCampaign = data =>
-  fetch(`${config.campaignApiPrefix}${config.createCampaign}`, {
-    headers,
-    method: 'POST',
-    body: JSON.stringify(data),
-  })
-    .then(handleErrors)
-    .then(res => res.json())
-    .then(result => result)
-    .catch(error => error);
-
-export const validateActivationCampaign = data =>
-  fetch(`${config.campaignApiPrefix}${config.activation}`, {
-    headers,
-    method: 'POST',
-    body: JSON.stringify(data),
-  })
-    .then(handleValidateCampaignErrors)
-    .then(res => res.json())
-    .then(result => result)
-    .catch(error => error);
-
-export const validateInactivationCampaign = data =>
-  fetch(`${config.campaignApiPrefix}${config.inactivation}`, {
-    headers,
-    method: 'POST',
-    body: JSON.stringify(data),
-  })
-    .then(res => res.json())
-    .then(result => result)
-    .catch(error => error);
-
-export const reserveActivatedCampaign = data =>
-  fetch(`${config.campaignApiPrefix}${config.reservation}`, {
-    headers,
-    method: 'POST',
-    body: JSON.stringify(data),
-  })
-    .then(res => res.json())
-    .then(result => result)
-    .catch(error => error);
-
-export const rejectReservationCampaign = data =>
-  fetch(`${config.campaignApiPrefix}${config.rejectReservation}`, {
-    headers,
-    method: 'POST',
-    body: JSON.stringify(data),
-  })
-    .then(handleErrors)
-    .then(res => res.json())
-    .then(result => result)
-    .catch(error => error);
-
-export const getFilteredCampaignsByGuideName = (guideName, status) =>
-  fetch(`${config.campaignApiPrefix}${config.campaigns}`, {
-    headers,
-    method: 'POST',
-    body: JSON.stringify({
-      guideNames: [guideName],
-      status,
-    }),
-  })
-    .then(res => res.json())
-    .then(result => result)
-    .catch(error => error);
-
-export const getCampaignsByGuideName = guideName =>
-  fetch(`${config.campaignApiPrefix}${config.campaigns}${config.dashboard}/${guideName}`, {
-    headers,
-    method: 'GET',
-  })
-    .then(res => res.json())
-    .then(result => result)
-    .catch(error => error);
-
-export const getRewardsGeneralCounts = ({
-  userName,
-  sort,
-  status = ['active'],
-  limit = 10,
-  skip = 0,
-  locale = 'en-US',
-  match,
-  area,
-} = {}) => {
-  const reqData = {
-    userName: userName,
-    sort,
-    status,
-    limit,
-    skip,
-    area,
-  };
-  if (match.params.filterKey === IS_RESERVED) reqData.status = [...status, 'onHold'];
-  return fetch(`${config.campaignApiPrefix}${config.statistics}`, {
-    headers: { ...headers, app: config.appName, locale },
-    method: 'POST',
-    body: JSON.stringify(reqData),
-  })
-    .then(res => res.json())
-    .then(result => result)
-    .catch(error => error);
-};
-
 export const getMatchBotRules = guideName =>
   fetch(`${config.campaignApiPrefix}${config.matchBots}/?bot_name=${guideName}`, {
     headers,
     method: 'GET',
-  })
-    .then(res => res.json())
-    .then(result => result)
-    .catch(error => error);
-
-export const getCampaignByGuideNameAndObject = (guideName, object) =>
-  fetch(`${config.campaignApiPrefix}${config.campaigns}`, {
-    headers,
-    method: 'POST',
-    body: JSON.stringify({
-      guideNames: [guideName],
-      requiredObject: object,
-    }),
   })
     .then(res => res.json())
     .then(result => result)
@@ -2580,6 +2316,20 @@ export const createNewCampaing = (data, account) => {
     method: 'POST',
     body: JSON.stringify(data),
   })
+    .then(handleErrors)
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+};
+
+export const getRewardsFollowerUser = (skip = 0, query, sort, userName) => {
+  return fetch(
+    `${config.campaignV2ApiPrefix}${config.rewards}${config.user}?sort=${sort}&userName=${userName}`,
+    {
+      headers,
+      method: 'GET',
+    },
+  )
     .then(handleErrors)
     .then(res => res.json())
     .then(response => response)
