@@ -228,7 +228,7 @@ const routes = host => ({
       path: [
         `/rewards/(details|duplicate|create})/:campaignId?`,
         `/rewards/(all|eligible)/:requiredObject?`,
-        `/rewards/(payables|receivables)/@:userName`,
+        `/rewards/(payable|receivable)/@:userName`,
         `/rewards/(${URL.NEW_REWARDS.tabs})`,
       ],
       pathScope: '/rewards',
@@ -270,12 +270,7 @@ const routes = host => ({
           component: Views.ReservedProposition,
         },
         {
-          path: '/payables',
-          exact: true,
-          component: Views.Payables,
-        },
-        {
-          path: '/receivables',
+          path: '/receivable',
           exact: true,
           component: Views.Receivables,
         },
