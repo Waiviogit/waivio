@@ -43,6 +43,7 @@ const PropositionFooter = ({ type, openDetailsModal, proposition, getProposition
 
   useEffect(() => {
     if (showComment) setShowComment(false);
+    if (location.search.includes(proposition.reservationPermlink)) handleCommentsClick();
   }, [location.search]);
 
   const getCommentsList = async (editing, permlink, value) => {
