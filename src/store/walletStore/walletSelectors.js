@@ -165,6 +165,7 @@ export const getCurrentFilteredActions = createSelector(
 );
 
 export const getCurrentDeposits = createSelector([walletState], state => state.deposits);
+export const getWithdrawCurrency = createSelector([walletState], state => state.withdrawCurrency);
 
 export const getCurrentWithdrawals = createSelector([walletState], state => state.withdrawals);
 
