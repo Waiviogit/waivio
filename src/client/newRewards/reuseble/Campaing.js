@@ -18,7 +18,7 @@ const Campaing = ({ campain, onActionInitiated, hovered }) => {
   const maxReward = campain?.maxReward || get(campain, ['max_reward'], 0);
   const buttonLabel = maxReward === minReward ? 'Earn' : 'Earn up to';
   const history = useHistory();
-  const pathname = history.location.pathname.includes('/reward/')
+  const pathname = history.location.pathname.includes('/rewards/')
     ? location.pathname
     : '/rewards/all';
   const { setRestaurant, openModal } = useQuickRewards();
