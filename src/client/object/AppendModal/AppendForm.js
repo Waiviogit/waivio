@@ -623,6 +623,12 @@ export default class AppendForm extends Component {
           title: this.getNewsFilterTitle(this.state.newsFilterTitle),
         };
       }
+      if (currentField === objectFields.avatar) {
+        fieldsObject = {
+          ...fieldsObject,
+          id: wObject?.galleryAlbum.find(album => album.body === 'Photos').id,
+        };
+      }
       if (currentField === objectFields.newsFeed) {
         fieldsObject = {
           ...fieldsObject,

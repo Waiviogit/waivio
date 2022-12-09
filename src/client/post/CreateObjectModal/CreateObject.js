@@ -17,13 +17,8 @@ import { notify } from '../../app/Notification/notificationActions';
 import { getObjectTypes } from '../../../store/objectTypesStore/objectTypesActions';
 import { appendObject } from '../../../store/appendStore/appendActions';
 import { createWaivioObject } from '../../../store/wObjectStore/wobjectsActions';
-import { addAlbumToStore } from '../../../store/galleryStore/galleryActions';
 import DEFAULTS from '../../object/const/defaultValues';
-import {
-  getAppendData,
-  prepareAlbumData,
-  prepareAlbumToStore,
-} from '../../../common/helpers/wObjectHelper';
+import { getAppendData, prepareAlbumData } from '../../../common/helpers/wObjectHelper';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 import { getObjectTypesList } from '../../../store/objectTypesStore/objectTypesSelectors';
 
@@ -43,7 +38,6 @@ import './CreateObject.less';
     createWaivioObject,
     getObjectTypes,
     notify,
-    addAlbumToStore,
   },
 )
 class CreateObject extends React.Component {
@@ -69,8 +63,6 @@ class CreateObject extends React.Component {
     openModalBtnText: PropTypes.oneOfType([PropTypes.node, PropTypes.string]),
     onCreateObject: PropTypes.func,
     onCloseModal: PropTypes.func,
-    history: PropTypes.shape({ push: PropTypes.func }).isRequired,
-    addAlbumToStore: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -171,33 +163,11 @@ class CreateObject extends React.Component {
             }
             const isObjType = type => listofObjTypesWithAlbum.some(item => item === type);
 
-            if (isObjType(objData.type)) {
-              const formData = {
-                galleryAlbum: 'Photos',
-              };
-              const data = prepareAlbumData(formData, this.props.username, {
-                author: parentAuthor,
-                author_permlink: parentPermlink,
-                locale: values.locale,
-              });
-              const album = prepareAlbumToStore(data);
+            const hashtagName =
+              objData.type === 'hashtag' ? objData.name.split(' ').join('') : objData.name;
 
-              const { author } = this.props.appendObject(data);
-
-              this.props.addAlbumToStore({ ...album, author });
-            }
-            setTimeout(() => {
-              this.props.notify(
-                this.props.intl.formatMessage({
-                  id: 'create_object_success',
-                  defaultMessage: 'Object has been created',
-                }),
-                'success',
-              );
-              const hashtagName =
-                objData.type === 'hashtag' ? objData.name.split(' ').join('') : objData.name;
-
-              this.props.onCreateObject(
+            this.props
+              .onCreateObject(
                 {
                   _id: parentPermlink,
                   author: parentAuthor,
@@ -219,10 +189,36 @@ class CreateObject extends React.Component {
                   author_permlink: parentPermlink,
                 },
                 { locale: values.locale },
-              );
-            }, 1000);
+              )
+              .then(() => {
+                if (isObjType(objData.type)) {
+                  const formData = {
+                    galleryAlbum: 'Photos',
+                  };
+                  const data = prepareAlbumData(formData, this.props.username, {
+                    author: parentAuthor,
+                    author_permlink: parentPermlink,
+                    locale: values.locale,
+                  });
 
-            this.forceCloseObject();
+                  this.props.appendObject(data).then(() => {
+                    setTimeout(() => this.forceCloseObject(), 5000);
+                  });
+                } else {
+                  this.forceCloseObject();
+                }
+                setTimeout(
+                  () =>
+                    this.props.notify(
+                      this.props.intl.formatMessage({
+                        id: 'create_object_success',
+                        defaultMessage: 'Object has been created',
+                      }),
+                      'success',
+                    ),
+                  7000,
+                );
+              });
           })
           .catch(error => {
             this.props.notify(
