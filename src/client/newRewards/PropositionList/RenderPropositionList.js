@@ -20,11 +20,11 @@ import {
 import RewardsFilters from '../Filters/Filters';
 import { getPropositionsKey } from '../../../common/helpers/newRewardsHelper';
 import FiltersForMobile from '../Filters/FiltersForMobile';
-
-import './PropositionList.less';
 import SortSelector from '../../components/SortSelector/SortSelector';
 import RewardsMap from '../Map';
 import ViewMapButton from '../../widgets/ViewMapButton';
+
+import './PropositionList.less';
 
 const filterConfig = [
   { title: 'Rewards for', type: 'type' },
@@ -128,7 +128,7 @@ const RenderPropositionList = ({
       <div className="PropositionList__feed">
         <FiltersForMobile setVisible={setVisible} />
         <div className="PropositionList__breadcrumbs">
-          <Link className="PropositionList__page" to={`/rewards-new/${tab}`}>
+          <Link className="PropositionList__page" to={`/rewards/${tab}`}>
             {intl.formatMessage({ id: `${tab}_rewards_new` })}
           </Link>
           {requiredObject && (
