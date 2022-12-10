@@ -48,6 +48,7 @@ const initialState = {
   delegateVisible: false,
   showRewards: false,
   delegationModalType: delegationModalTypes.MANAGE,
+  withdrawCurrency: 'eth',
   hiveEngineDelayInfo: {
     status: 'OK',
     delay: 0,
@@ -337,6 +338,7 @@ export default function walletReducer(state = initialState, action) {
       return {
         ...state,
         withdrawOpen: true,
+        withdrawCurrency: action.payload || state.withdrawCurrency,
       };
     case walletActions.CLOSE_WITHDRAW:
       return {
