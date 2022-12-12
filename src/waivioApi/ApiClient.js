@@ -3359,7 +3359,7 @@ export const getDepartmentFields = ({ name, names, excluded }) => {
     .catch(e => e);
 };
 
-export const getObjectByDepartment = ({ departments, skip, limit }) => {
+export const getObjectsByDepartment = ({ departments, skip, limit }) => {
   return fetch(`${config.apiPrefix}${config.departments}/wobjects`, {
     headers,
     method: 'POST',
