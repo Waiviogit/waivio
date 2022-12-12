@@ -260,9 +260,7 @@ class ObjectInfo extends React.Component {
     const { wobject, location } = this.props;
     const blogPath = `/object/${wobject.author_permlink}/blog/@${item.body}`;
     const formPath = `/object/${wobject.author_permlink}/form/${item.permlink}`;
-    const widgetPath = `/object/${wobject.author_permlink}/widget`;
     const newsFilterPath = `/object/${wobject.author_permlink}/newsFilter/${item.permlink}`;
-    const newsFeedPath = `/object/${wobject.author_permlink}/newsFeed`;
     const blogClassesList = classNames('menu-btn', {
       active: location.pathname === blogPath,
     });
@@ -315,13 +313,6 @@ class ObjectInfo extends React.Component {
           </LinkButton>
         );
         break;
-      case objectFields.newsFeed:
-        menuItem = (
-          <LinkButton className={newsFilterClassesList} to={newsFeedPath}>
-            {item.title || <FormattedMessage id="news" defaultMessage="News" />}
-          </LinkButton>
-        );
-        break;
       case TYPES_OF_MENU_ITEM.BLOG:
         menuItem = (
           <LinkButton className={blogClassesList} to={blogPath}>
@@ -332,13 +323,6 @@ class ObjectInfo extends React.Component {
       case objectFields.form:
         menuItem = (
           <LinkButton className={formClassesList} to={formPath}>
-            {item.title}
-          </LinkButton>
-        );
-        break;
-      case objectFields.widget:
-        menuItem = (
-          <LinkButton className={formClassesList} to={widgetPath}>
             {item.title}
           </LinkButton>
         );
@@ -384,7 +368,6 @@ class ObjectInfo extends React.Component {
     const { hoveredOption } = this.state;
     const isEditMode = isAuthenticated ? this.props.isEditMode : false;
     const newsFilters = get(wobject, 'newsFilter', []);
-    const newsFeed = get(wobject, 'newsFeed', []);
     const website = parseWobjectField(wobject, 'website');
     const wobjName = getObjectName(wobject);
     const tagCategories = get(wobject, 'tagCategory', []);
@@ -402,7 +385,6 @@ class ObjectInfo extends React.Component {
     const workTime = get(wobject, 'workTime');
     const linkField = parseWobjectField(wobject, 'link');
     const customSort = get(wobject, 'sortCustom', []);
-    const widgetBody = parseWobjectField(wobject, 'widget');
     const companyIdBody = wobject.companyId
       ? wobject.companyId.map(el => parseWobjectField(el, 'body', []))
       : [];
@@ -543,7 +525,6 @@ class ObjectInfo extends React.Component {
           ...blogsList,
           ...formsList,
           ...newsFilters,
-          ...newsFeed,
         ];
 
         const sortButtons = customSort.reduce((acc, curr) => {
@@ -562,12 +543,17 @@ class ObjectInfo extends React.Component {
           this.getMenuSectionLink({ id: item.id || item.name, ...item }),
         );
       }
+      const objectTypeMenuTitle = ['widget', 'newsfeed'].includes(wobject.object_type);
 
       return (
         <React.Fragment>
           {isEditMode && !isList && (
             <div className="object-sidebar__section-title">
-              <FormattedMessage id="menu" defaultMessage="Menu" />
+              {objectTypeMenuTitle ? (
+                <FormattedMessage id={wobject.object_type} />
+              ) : (
+                <FormattedMessage id="menu" defaultMessage="Menu" />
+              )}
             </div>
           )}
           {!isList && (
@@ -597,11 +583,6 @@ class ObjectInfo extends React.Component {
                     ),
                 )}
                 {this.listItem(
-                  objectFields.newsFeed,
-                  !isEmpty(newsFeed) &&
-                    this.getMenuSectionLink({ id: newsFeed.id || newsFeed.name, ...newsFeed }),
-                )}
-                {this.listItem(
                   objectFields.blog,
                   !isEmpty(blogsList) &&
                     blogsList.map(blog =>
@@ -614,11 +595,6 @@ class ObjectInfo extends React.Component {
                     formsList.map(form =>
                       this.getMenuSectionLink({ id: objectFields.form, ...form }),
                     ),
-                )}
-                {this.listItem(
-                  objectFields.widget,
-                  !isEmpty(widgetBody) &&
-                    this.getMenuSectionLink({ id: objectFields.widget, ...widgetBody }),
                 )}
                 {this.listItem(objectFields.sorting, null)}
               </React.Fragment>

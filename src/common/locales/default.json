@@ -2062,5 +2062,6 @@
   "amount_rewards_sort": "Amount",
   "expiry_rewards_sort": "Expiry",
   "proximity_rewards_sort": "Proximity",
-  "price": "PRICE"
+  "price": "PRICE",
+  "newsfeed": "Newsfeed"
 }
