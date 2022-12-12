@@ -43,6 +43,7 @@ const PropositionFooter = ({ type, openDetailsModal, proposition, getProposition
 
   useEffect(() => {
     if (showComment) setShowComment(false);
+    if (location.search.includes(proposition.reservationPermlink)) handleCommentsClick();
   }, [location.search]);
 
   const getCommentsList = async (editing, permlink, value) => {
@@ -57,12 +58,13 @@ const PropositionFooter = ({ type, openDetailsModal, proposition, getProposition
       );
     } else {
       const postInfo = await getPostCommentsFromApi({
-        author: proposition?.rootName,
+        author: proposition?.reserved ? authUserName : proposition?.rootName,
         permlink: proposition?.reservationPermlink,
         userName: authUserName,
         category: config.appName,
       });
-      const commensList = Object.values(postInfo.content).filter(
+
+      const commensList = Object.values(postInfo?.content)?.filter(
         comment => comment.permlink !== proposition?.reservationPermlink,
       );
 

@@ -9,7 +9,6 @@ import Page from '../../client/feed/Page';
 import Rewards from '../../client/rewards/Rewards';
 import Discover from '../../client/discover/Discover';
 import DiscoverObjects from '../../client/discoverObjects/DiscoverObjects';
-import RewardsComponent from '../../client/rewards/RewardsComponent/RewardsComponent';
 import RewardsMainPage from '../../client/newRewards/RewardsMainPage';
 
 const routes = {
@@ -17,112 +16,26 @@ const routes = {
   routes: [
     {
       component: Rewards,
-      path: [
-        '/rewards/(payables|receivables)/@:userName/:reservationPermlink?',
-        `/rewards/(${URL.REWARDS.tabs})/:campaignId?/:permlink?/:username?`,
-        `/rewards/(${URL.REFERRAL.tabs})/:userName?/:table?`,
-        '/rewards/blacklist/:listType?',
-        '/rewards/:filterKey/:campaignId?',
-      ],
-      pathScope: '/rewards',
+      path: [`/rewards-old/reports`],
+      pathScope: '/rewards-old',
       exact: true,
       routes: [
-        {
-          path: '/manage',
-          exact: true,
-          component: Views.ManageCampaign,
-        },
-        {
-          path: '/receivables',
-          exact: true,
-          component: Views.ReceivablesCampaign,
-        },
-        {
-          path: '/payables',
-          exact: true,
-          component: Views.PayablesCampaign,
-        },
         {
           path: '/reports',
           exact: true,
           component: Views.Reports,
-        },
-        {
-          path: '/(payables|receivables)/@:userName/:reservationPermlink?',
-          exact: true,
-          component: Views.PaymentCampaign,
-        },
-        {
-          path: '/match-bots-sponsors',
-          exact: true,
-          component: Views.MatchBotsSponsors,
-        },
-        {
-          path: '/match-bots-curators',
-          exact: true,
-          component: Views.MatchBotsCurators,
-        },
-        {
-          path: '/match-bots-authors',
-          exact: true,
-          component: Views.MatchBotsAuthors,
-        },
-        {
-          path: '/(history|guideHistory|messages)/:campaignId?/:permlink?/:username?',
-          exact: true,
-          component: Views.HistoryCampaign,
-        },
-        {
-          path: '/fraud-detection',
-          exact: true,
-          component: Views.FraudDetection,
-        },
-        {
-          path: '/blacklist/:listType?',
-          exact: true,
-          component: Views.BlacklistCampaign,
-        },
-        {
-          path: '/(details|createDuplicate|create)/:campaignId?',
-          exact: true,
-          component: Views.CreateRewardForm,
-        },
-        {
-          path: '/referral-details/:userName',
-          exact: true,
-          component: Views.ReferralDetails,
-        },
-        {
-          path: '/referral-instructions/:userName',
-          exact: true,
-          component: Views.ReferralInstructions,
-        },
-        {
-          path: '/referral-status/:userName',
-          exact: true,
-          component: Views.ReferralStatus,
-        },
-        {
-          path: '/referral-status/:userName/:table?',
-          exact: true,
-          component: Views.SponsoredRewards,
-        },
-        {
-          path: '/:filterKey/:campaignId?',
-          exact: true,
-          component: RewardsComponent,
         },
       ],
     },
     {
       component: RewardsMainPage,
       path: [
-        `/rewards-new/(details|duplicate|create})/:campaignId?`,
-        `/rewards-new/(all|eligible)/:requiredObject?`,
-        `/rewards-new/(payables|receivables)/@:userName`,
-        `/rewards-new/(${URL.NEW_REWARDS.tabs})`,
+        `/rewards/(details|duplicate|create})/:campaignId?`,
+        `/rewards/(all|eligible)/:requiredObject?`,
+        `/rewards/(payable|receivable)/@:userName`,
+        `/rewards/(${URL.NEW_REWARDS.tabs})`,
       ],
-      pathScope: '/rewards-new',
+      pathScope: '/rewards',
       exact: true,
       routes: [
         {
@@ -161,22 +74,22 @@ const routes = {
           component: Views.ReservedProposition,
         },
         {
-          path: '/payables',
+          path: '/payable',
           exact: true,
           component: Views.Payables,
         },
         {
-          path: '/receivables',
+          path: '/receivable',
           exact: true,
           component: Views.Receivables,
         },
         {
-          path: '/payables/@:userName',
+          path: '/payable/@:userName',
           exact: true,
           component: Views.PayblesListByUser,
         },
         {
-          path: '/receivables/@:userName',
+          path: '/receivable/@:userName',
           exact: true,
           component: Views.ReceivablesListByUser,
         },
@@ -327,6 +240,11 @@ const routes = {
           path: '/payments',
           exact: true,
           component: Views.ReportsWebsite,
+        },
+        {
+          path: '/data-import',
+          exact: true,
+          component: Views.DataImport,
         },
         {
           path: `/:site/(${URL.WEBSITES.tabs})`,
@@ -487,7 +405,7 @@ const routes = {
           component: Views.UserProfile,
         },
         {
-          path: '/newsFeed',
+          path: '/newsfeed',
           component: Views.ObjectFeed,
         },
         {
@@ -566,7 +484,7 @@ const routes = {
         },
         {
           path: '/rewards-list',
-          component: Views.RewardsList,
+          component: Views.FollowingUserRewards,
         },
         {
           path: '/feed/:name',

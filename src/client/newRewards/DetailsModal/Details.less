@@ -20,4 +20,100 @@
       margin: 10px 35px 25px;
     }
   }
+
+  .nowrap {
+    white-space: nowrap;
+  }
+
+  .ant-modal {
+    top: 24px;
+  }
+
+  .ant-modal-body {
+    padding-top: 0.75rem;
+    border: 1px solid @orange-hot;
+    margin-bottom: 40px;
+  }
+
+  &__modal-title {
+    text-align: center;
+    font-size: 20px;
+    font-weight: normal;
+  }
+
+  &__title-wrap {
+    display: flex;
+    font-size: 20px;
+    justify-content: space-between;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid @blue-hawkesBlue;
+
+    &-name {
+      font-weight: 600;
+    }
+
+    &-data {
+      &-colored {
+        color: @orange-hot;
+      }
+    }
+  }
+
+  &__criteria-wrap {
+    margin-left: 1rem;
+  }
+
+  &__criteria-link {
+    max-width: 50%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__criteria-row {
+    display: flex;
+
+    .criteria-row__required {
+      font-weight: 500;
+      color: @red-danger;
+    }
+
+    .ant-checkbox-inner::after {
+      border-color: @orange-hot !important;
+      -webkit-animation-name: none;
+      animation-name: none;
+    }
+
+    .ant-checkbox-wrapper {
+      font-size: 0.75rem;
+      margin-right: 0.5rem;
+    }
+
+    &--mobile {
+      display: block;
+
+      @media @small {
+        display: flex;
+      }
+    }
+  }
+
+  &__footer {
+    display: flex;
+    justify-content: center;
+    padding: 20px 0 0;
+
+    @media @small {
+      padding: 0;
+    }
+
+    &-reserve-btn {
+      display: flex;
+      align-items: center;
+
+      button {
+        margin-right: 1rem;
+      }
+    }
+  }
 }

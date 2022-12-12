@@ -375,11 +375,7 @@ class Notifications extends React.Component {
                       object_name: <span>{notification.object_name}</span>,
                     }}
                     username={notification.author}
-                    url={
-                      notification.newCampaigns
-                        ? `/rewards-new/all/${notification.author_permlink}`
-                        : `/rewards/all/${notification.author_permlink}`
-                    }
+                    url={`/rewards/all/${notification.author_permlink}`}
                     key={key}
                     notification={notification}
                     read={read}
@@ -622,19 +618,9 @@ class Notifications extends React.Component {
                   />
                 );
               case notificationConstants.CAMPAIGN_MESSAGE:
-                let url = '';
-
-                if (notification?.newCampaigns) {
-                  url = notification.notSponsor
-                    ? `/rewards-new/messages?reservationPermlink=${notification.parent_permlink}`
-                    : `/rewards-new/history?reservationPermlink=${notification.parent_permlink}&guideNames=${notification.author}`;
-                } else {
-                  const currentRoute = notification.notSponsor ? 'messages' : 'history';
-
-                  url = `/rewards/${currentRoute}/${notification.parent_permlink}/${notification.permlink}`;
-
-                  if (currentRoute === 'history') url += `/${notification.author}`;
-                }
+                const url = notification.notSponsor
+                  ? `/rewards/messages?reservationPermlink=${notification.parent_permlink}`
+                  : `/rewards/history?reservationPermlink=${notification.parent_permlink}&guideNames=${notification.author}`;
 
                 return notification.notSponsor ? (
                   <NotificationTemplate
@@ -752,19 +738,12 @@ class Notifications extends React.Component {
                   />
                 );
               case notificationConstants.CAMPAIGN_RESERVATION:
-                let currentFilter = notification.isReleased
-                  ? 'released=Released'
-                  : 'reserved=Reserved';
-                let campaignUrl = `/rewards/guideHistory?campaign=${notification.campaignName}&${currentFilter}`;
-
-                if (notification?.newCampaigns) {
-                  currentFilter = notification.isReleased
-                    ? 'statuses=unassigned'
-                    : 'statuses=assigned';
-                  campaignUrl = `/rewards-new/reservations?campaignNames=${encodeURI(
-                    notification.campaignName,
-                  )}&${currentFilter}`;
-                }
+                const currentFilter = notification.isReleased
+                  ? 'statuses=unassigned'
+                  : 'statuses=assigned';
+                const campaignUrl = `/rewards/reservations?campaignNames=${encodeURI(
+                  notification.campaignName,
+                )}&${currentFilter}`;
 
                 return notification.isReleased ? (
                   <NotificationTemplate

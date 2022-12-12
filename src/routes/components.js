@@ -9,6 +9,9 @@ const loableComponent = component =>
 
 export default {
   Bookmarks: loableComponent(import('../client/bookmarks/Bookmarks')),
+  FollowingUserRewards: loableComponent(
+    import('../client/newRewards/RewardLists/FollowingUserRewards'),
+  ),
   ReservedProposition: loableComponent(
     import('../client/newRewards/PropositionLists/ReservedProposition'),
   ),
@@ -67,7 +70,6 @@ export default {
   Discover: loableComponent(import('../client/discover/Discover')),
   Objects: loableComponent(import('../client/objects/Objects')),
   Notifications: loableComponent(import('../client/notifications/Notifications')),
-  RewardsList: loableComponent(import('../client/rewards/RewardsList/RewardsList')),
   Error404: loableComponent(import('../client/statics/Error404')),
   ExitPage: loableComponent(import('../client/statics/ExitPage')),
   ObjectPageFeed: loableComponent(import('../client/object/ObjectFeed')),
@@ -82,26 +84,17 @@ export default {
   UserExpertise: loableComponent(import('../client/user/UserExpertise')),
   DiscoverObjects: loableComponent(import('../client/discoverObjects/DiscoverObjects')),
   Rewards: loableComponent(import('../client/rewards/Rewards')),
-  CreateRewardForm: loableComponent(import('../client/rewards/Create-Edit/CreateRewardForm')),
-  ManageCampaign: loableComponent(import('../client/rewards/Manage/Manage')),
-  ReceivablesCampaign: loableComponent(import('../client/rewards/Receivables/Receivables')),
-  PayablesCampaign: loableComponent(import('../client/rewards/Payables/Payables')),
-  BlacklistCampaign: loableComponent(import('../client/rewards/Blacklist/Blacklist')),
   Reports: loableComponent(import('../client/rewards/Reports/Reports')),
-  PaymentCampaign: loableComponent(import('../client/rewards/Payment/Payment')),
   ObjectOfTypePage: loableComponent(import('../client/object/ObjectOfTypePage/ObjectOfTypePage')),
   SubFeed: loableComponent(import('../client/feed/SubFeed')),
   UserInfo: loableComponent(import('../client/app/Sidebar/UserInfo/UserInfo')),
   ConfirmationModal: loableComponent(import('../client/widgets/ConfirmationModal')),
-  RewardsComponent: loableComponent(import('../client/rewards/RewardsComponent/RewardsComponent')),
-  HistoryCampaign: loableComponent(import('../client/rewards/History/History')),
   CreateWebsite: loableComponent(import('../client/websites/WebsiteTools/Create/CreateWebsite')),
   ManageWebsite: loableComponent(import('../client/websites/WebsiteTools/Manage/ManageWebsite')),
   ReportsWebsite: loableComponent(import('../client/websites/WebsiteTools/Reports/ReportsWebsite')),
   WebsitesConfigurations: loableComponent(
     import('../client/websites/WebsiteTools/Configuration/WebsitesConfigurations'),
   ),
-  FraudDetection: loableComponent(import('../client/rewards/FraudDetection/FraudDetection')),
   ReferralDetails: loableComponent(
     import('../client/rewards/ReferralProgram/Details/ReferralDetails'),
   ),
@@ -110,9 +103,6 @@ export default {
   ),
   ReferralStatus: loableComponent(
     import('../client/rewards/ReferralProgram/Status/ReferralStatus'),
-  ),
-  SponsoredRewards: loableComponent(
-    import('../client/rewards/ReferralProgram/SponsoredRewards/SponsoredRewards'),
   ),
   WebsitesAdministrators: loableComponent(
     import('../client/websites/WebsiteTools/Administrators/Administrators'),
@@ -144,4 +134,5 @@ export default {
   MatchBotsAuthors: loableComponent(import('../client/rewards/MatchBots/MatchBotsAuthors')),
   MatchBotsCurators: loableComponent(import('../client/rewards/MatchBots/MatchBotsCurators')),
   MatchBotsSponsors: loableComponent(import('../client/rewards/MatchBotSponsors')),
+  DataImport: loableComponent(import('../client/components/DataImport/DataImport')),
 };

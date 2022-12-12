@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { size } from 'lodash';
 import { Button, Icon, Modal } from 'antd';
 import { photosInPostRegex } from '../../../common/helpers/regexHelpers';
-import { getReviewRequirements } from '../../rewards/rewardsHelper';
 import SubmitReviewPublish from './SubmitReviewPublish';
 import { getObjectUrlForLink } from '../../../common/helpers/wObjectHelper';
 
@@ -23,11 +22,11 @@ const CheckReviewModal = ({
   onEdit,
   onSubmit,
 }) => {
-  const { postRequirements } = getReviewRequirements(reviewData);
-  const primaryObject = postRequirements.requiredObject;
-  const secondaryObject = postRequirements.secondaryObject;
-  const hasMinPhotos = size(postBody.match(photosInPostRegex)) >= postRequirements.minPhotos;
-  const hasReceipt = size(postBody.match(photosInPostRegex)) >= postRequirements.receiptPhoto;
+  const primaryObject = reviewData.requiredObject;
+  const secondaryObject = reviewData.secondaryObject;
+  const hasMinPhotos = size(postBody.match(photosInPostRegex)) >= reviewData.requirements.minPhotos;
+  const hasReceipt =
+    size(postBody.match(photosInPostRegex)) >= reviewData.requirements.receiptPhoto;
 
   const hasObject = object =>
     linkedObjects.some(obj => obj.author_permlink === object.author_permlink);
@@ -136,6 +135,8 @@ CheckReviewModal.propTypes = {
       minPhotos: PropTypes.number,
       receiptPhoto: PropTypes.bool,
     }),
+    requiredObject: PropTypes.shape().isRequired,
+    secondaryObject: PropTypes.shape().isRequired,
   }),
   linkedObjects: PropTypes.arrayOf(PropTypes.shape()),
   onCancel: PropTypes.func.isRequired,

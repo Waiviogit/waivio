@@ -123,13 +123,17 @@ const TableProfit = props => {
                 </td>
                 <td>
                   <div>{row.initial}</div>
-                  {Boolean(+row.external) && <div>{row.external}</div>}
+                  {Boolean(+row.external) && (
+                    <div>
+                      {row.external} ({round(row.externalPercent)}%)
+                    </div>
+                  )}
                 </td>
                 <td>
                   <div>{row.current}</div>
                   <div>
                     <USDDisplay
-                      value={round(+row.current * row.rate * hiveRateInUsd, 2)}
+                      value={round(row.current * row.rate * hiveRateInUsd, 2)}
                       currencyDisplay={'symbol'}
                     />
                   </div>
@@ -143,7 +147,7 @@ const TableProfit = props => {
                         symbol: row.token,
                         balance: token?.balance || 0,
                         rate: token?.rate || 1,
-                        quantity: row.initial,
+                        quantity: row.initialEdit,
                         external: row.external,
                       });
                     }}

@@ -200,9 +200,7 @@ export default class PostsCommentsActivity extends React.Component {
           tab={intl.formatMessage({ id: 'activity', defaultMessage: 'Activity' })}
           key="activity"
         >
-          {this.state?.activeKey === 'activity' && !this.props.isGuest && (
-            <UserActivity isCurrentUser />
-          )}
+          {this.state?.activeKey === 'activity' && !this.props.isGuest && <UserActivity />}
         </Tabs.TabPane>
       </Tabs>
     );

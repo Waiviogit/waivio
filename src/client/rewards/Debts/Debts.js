@@ -1,25 +1,21 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import { capitalize, isEmpty, map, round } from 'lodash';
+import { capitalize, isEmpty, round } from 'lodash';
 import { useSelector } from 'react-redux';
-import { Modal, Tag } from 'antd';
+
 import SortSelector from '../../components/SortSelector/SortSelector';
-import { sortDebtObjsData, getCurrentUSDPrice, payablesFilterData } from '../rewardsHelper';
-import FilterModal from '../FilterModal';
-import { PATH_NAME_PAYABLES } from '../../../common/constants/rewards';
+import { sortDebtObjsData } from '../rewardsHelper';
 import PaymentList from '../Payment/PaymentList';
 import { getTokenRatesInUSD } from '../../../store/walletStore/walletSelectors';
+import FiltersForMobile from '../../newRewards/Filters/FiltersForMobile';
 
 import './Debts.less';
-import FiltersForMobile from '../../newRewards/Filters/FiltersForMobile';
 
 const Debts = ({
   intl,
   debtObjsData,
   componentLocation,
-  activeFilters,
-  setPayablesFilterValue,
   handleLoadingMore,
   loading,
   payoutToken,
@@ -27,11 +23,7 @@ const Debts = ({
 }) => {
   const [sort, setSort] = useState('amount');
   const [sortedDebtObjsData, setSortedDebtObjsData] = useState([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const currentUSDPrice =
-    payoutToken === 'HIVE'
-      ? getCurrentUSDPrice()
-      : useSelector(state => getTokenRatesInUSD(state, payoutToken));
+  const currentUSDPrice = useSelector(state => getTokenRatesInUSD(state, payoutToken));
   const payable = debtObjsData?.payable || debtObjsData?.totalPayable;
   const handleSortChange = sortBy => {
     const sortedData = sortDebtObjsData(debtObjsData.histories, sortBy);
@@ -63,11 +55,6 @@ const Debts = ({
 
   const renderData = getRenderData();
 
-  const createFilterData = () =>
-    componentLocation === PATH_NAME_PAYABLES
-      ? { payables: payablesFilterData(componentLocation) }
-      : { receivables: payablesFilterData(componentLocation) };
-
   return (
     <React.Fragment>
       <div className="Debts">
@@ -83,35 +70,7 @@ const Debts = ({
         </div>
         <div className="Debts__sort">{sortSelector}</div>
         <div className="Debts__filters-tags-block">
-          {payoutToken === 'HIVE' ? (
-            <>
-              <span className="Debts__filters-topic ttc">
-                {intl.formatMessage({ id: 'filters', defaultMessage: 'Filters' })}:&nbsp;
-              </span>
-              {map(activeFilters, filter => (
-                <Tag
-                  className="ttc"
-                  key={filter.filterName}
-                  closable
-                  onClose={() => setPayablesFilterValue(filter)}
-                >
-                  {intl.formatMessage(
-                    { id: `filter_${filter.filterName}`, defaultMessage: filter.defaultMessage },
-                    { value: filter.value },
-                  )}
-                </Tag>
-              ))}
-              <span
-                className="Debts__filters-selector underline ttl"
-                role="presentation"
-                onClick={() => setIsModalOpen(true)}
-              >
-                {intl.formatMessage({ id: 'add_new_proposition', defaultMessage: 'Add' })}
-              </span>
-            </>
-          ) : (
-            <FiltersForMobile setVisible={setVisible} />
-          )}
+          <FiltersForMobile setVisible={setVisible} />
         </div>
         <PaymentList
           renderData={renderData}
@@ -122,24 +81,6 @@ const Debts = ({
           currency={payoutToken}
         />
       </div>
-      <Modal
-        className="Debts__filters-modal"
-        footer={null}
-        title={intl.formatMessage({
-          id: 'filter_rewards',
-          defaultMessage: 'Filter rewards',
-        })}
-        closable
-        visible={isModalOpen}
-        onCancel={() => setIsModalOpen(false)}
-      >
-        <FilterModal
-          intl={intl}
-          activePayablesFilters={activeFilters}
-          filters={createFilterData()}
-          setFilterValue={setPayablesFilterValue}
-        />
-      </Modal>
     </React.Fragment>
   );
 };
@@ -149,8 +90,6 @@ Debts.propTypes = {
   debtObjsData: PropTypes.shape().isRequired,
   componentLocation: PropTypes.string.isRequired,
   payoutToken: PropTypes.string,
-  activeFilters: PropTypes.arrayOf(PropTypes.shape()).isRequired,
-  setPayablesFilterValue: PropTypes.func,
   handleLoadingMore: PropTypes.func,
   setVisible: PropTypes.func,
   loading: PropTypes.bool,

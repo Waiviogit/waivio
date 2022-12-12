@@ -14,8 +14,10 @@ import {
   objectURLValidationRegExp,
 } from '../../../common/constants/validation';
 import { objectFields } from '../../../common/constants/listOfFields';
+import { hexToRgb } from '../../../common/helpers';
 
 import './ImageSetter.less';
+import useWebsiteColor from '../../../hooks/useWebsiteColor';
 
 const ImageSetter = ({
   intl,
@@ -41,6 +43,7 @@ const ImageSetter = ({
   const [currentImages, setCurrentImages] = useState([]);
   const [isLoadingImage, setLoadingImage] = useState(false);
   const [fileImages, setFileImages] = useState([]);
+  const colors = useWebsiteColor();
 
   useEffect(() => {
     if (currentImages.length) {
@@ -270,7 +273,13 @@ const ImageSetter = ({
   };
 
   return (
-    <div className="ImageSetter">
+    <div
+      className="ImageSetter"
+      style={{
+        '--website-color': `${colors.background}`,
+        '--website-hover-color': `${hexToRgb(colors.background, 1)}`,
+      }}
+    >
       <div
         className={classNames('ImageSetter__label', {
           'ImageSetter__label--required': isRequired,

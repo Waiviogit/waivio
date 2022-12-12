@@ -20,6 +20,8 @@ import { objectFields } from '../../../common/constants/listOfFields';
 
 import './ImageSetter.less';
 import { createEmptyNode, createImageNode } from '../EditorExtended/util/SlateEditor/utils/embed';
+import useWebsiteColor from '../../../hooks/useWebsiteColor';
+import { hexToRgb } from '../../../common/helpers';
 
 const ImageSetter = ({
   intl,
@@ -42,6 +44,7 @@ const ImageSetter = ({
   const [currentImages, setCurrentImages] = useState([]);
   const [isLoadingImage, setLoadingImage] = useState(false);
   const [fileImages, setFileImages] = useState([]);
+  const colors = useWebsiteColor();
 
   const editor = useSlate();
 
@@ -249,7 +252,13 @@ const ImageSetter = ({
   };
 
   return (
-    <div className="ImageSetter">
+    <div
+      className="ImageSetter"
+      style={{
+        '--website-color': `${colors.background}`,
+        '--website-hover-color': `${hexToRgb(colors.background, 1)}`,
+      }}
+    >
       <div
         className={classNames('ImageSetter__label', {
           'ImageSetter__label--required': isRequired,

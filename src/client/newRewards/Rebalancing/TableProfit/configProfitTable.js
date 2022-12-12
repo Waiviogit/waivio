@@ -9,11 +9,11 @@ export default [
     intls: [
       {
         id: 'initial_holdings',
-        defaultMessage: 'Initial holdings',
+        defaultMessage: 'Initial holdings,',
       },
       {
         id: 'incl_external',
-        defaultMessage: '(incl.external)',
+        defaultMessage: 'external (%)',
       },
     ],
   },

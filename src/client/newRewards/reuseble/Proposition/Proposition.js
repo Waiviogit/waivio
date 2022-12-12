@@ -31,6 +31,7 @@ const Proposition = ({ proposition, type, getProposition, hovered }) => {
         payoutToken={proposition.payoutToken}
         isReserved={propositionType === 'reserved'}
         passedParent={proposition.requiredObject}
+        rate={proposition.payoutTokenRateUSD}
       />
       <PropositionFooter
         type={propositionType}
@@ -60,6 +61,7 @@ Proposition.propTypes = {
     reviewStatus: PropTypes.string,
     reserved: PropTypes.bool,
     commentsCount: PropTypes.number,
+    payoutTokenRateUSD: PropTypes.number,
     countReservationDays: PropTypes.number,
     totalPayed: PropTypes.number,
     payoutToken: PropTypes.string,

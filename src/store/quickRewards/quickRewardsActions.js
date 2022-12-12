@@ -1,12 +1,10 @@
-import { get, kebabCase, round, uniqBy } from 'lodash';
+import { get, kebabCase, uniqBy } from 'lodash';
 
 import { createAsyncActionType } from '../../common/helpers/stateHelpers';
 import {
   getAllCampaingForRequiredObject,
   getAuthorsChildWobjects,
-  getCurrentHivePrice,
   getEligiblePropositionByCampaingObjectPermlink,
-  getEligibleRewardList,
   searchObjects,
 } from '../../waivioApi/ApiClient';
 import { getAuthenticatedUserName } from '../authStore/authSelectors';
@@ -17,9 +15,7 @@ import { getBeneficiariesUsers } from '../searchStore/searchSelectors';
 import { getSelectedDish, getSelectedRestaurant } from './quickRewardsSelectors';
 import config from '../../waivioApi/config.json';
 import { getObjectName, getObjectType } from '../../common/helpers/wObjectHelper';
-import { getDetailsBody } from '../../client/rewards/rewardsHelper';
 import { getCurrentHost } from '../appStore/appSelectors';
-import { subscribeTypes } from '../../common/constants/blockTypes';
 
 export const GET_ELIGIBLE_REWARDS = createAsyncActionType('@quickRewards/GET_ELIGIBLE_REWARDS');
 
@@ -78,7 +74,6 @@ export const getEligibleRewardsListWithRestaurant = (selectRest, limit) => async
   const state = getState();
   const name = getAuthenticatedUserName(state);
   const locale = getLocale(state);
-  const isNewRewards = Boolean(selectRest.campaigns?.newCampaigns);
   const isReview = Boolean(selectRest.campaigns);
 
   dispatch({ type: GET_ELIGIBLE_REWARDS_WITH_RESTAURANT.START });
@@ -95,22 +90,20 @@ export const getEligibleRewardsListWithRestaurant = (selectRest, limit) => async
     let objCampaings;
 
     if (isReview) {
-      if (isNewRewards) {
-        objCampaings = await getEligiblePropositionByCampaingObjectPermlink(
-          selectRest.author_permlink,
-          name,
-          0,
-          '',
-          'payout',
-        );
-      } else {
-        objCampaings = await getEligibleRewardList(name, 0, '', 'payout');
-      }
+      objCampaings = await getEligiblePropositionByCampaingObjectPermlink(
+        selectRest.author_permlink,
+        name,
+        0,
+        '',
+        'payout',
+      );
     }
 
-    const wobjects = isNewRewards
-      ? objCampaings.rewards.map(rew => ({ ...rew, ...rew.object, parent: selectRest }))
-      : objCampaings?.wobjects || [];
+    const wobjects = objCampaings.rewards.map(rew => ({
+      ...rew,
+      ...rew.object,
+      parent: selectRest,
+    }));
 
     return dispatch({
       type: GET_ELIGIBLE_REWARDS_WITH_RESTAURANT.SUCCESS,
@@ -237,71 +230,5 @@ export const createQuickPost = (userBody, topics, images, reservationPermlink) =
 };
 
 export const RESERVE_REWARD = createAsyncActionType('@quickRewards/RESERVE_REWARD');
-
-export const reserveProposition = permlink => async (
-  dispatch,
-  getState,
-  { steemConnectAPI, busyAPI },
-) => {
-  const state = getState();
-  const username = getAuthenticatedUserName(state);
-  const dish = getSelectedDish(state);
-  const primaryObject = getSelectedRestaurant(state);
-  const proposition =
-    dish?.propositions?.find(prop => prop.activation_permlink) || dish.propositions?.[0] || dish;
-  const proposedWobjName = getObjectName(dish);
-  const proposedWobjAuthorPermlink = dish.author_permlink;
-  const currencyInfo = await getCurrentHivePrice();
-  const amount = round(proposition.reward / currencyInfo.hiveCurrency, 3);
-  const detailsBody = getDetailsBody({
-    proposition,
-    proposedWobjName,
-    proposedWobjAuthorPermlink,
-    primaryObjectName: proposition.required_object,
-  });
-
-  const commentOp = [
-    'comment',
-    {
-      parent_author: proposition.guideName,
-      parent_permlink: proposition.activation_permlink || proposition.activationPermlink,
-      author: username,
-      permlink,
-      title: 'Rewards reservations',
-      body: `<p>User ${username} (@${username}) has reserved the rewards of ${amount} HIVE for a period of ${
-        proposition.count_reservation_days
-      } days to write a review of <a href="/object/${
-        dish.author_permlink
-      }">${proposedWobjName}</a>, <a href="/object/${
-        primaryObject.author_permlink
-      }">${getObjectName(primaryObject)}</a></p>${detailsBody}`,
-      json_metadata: JSON.stringify({
-        app: config.appName,
-        waivioRewards: {
-          type: 'waivio_assign_campaign',
-          approved_object: proposedWobjAuthorPermlink,
-          currencyId: currencyInfo.id,
-        },
-      }),
-    },
-  ];
-
-  return new Promise((resolve, reject) => {
-    steemConnectAPI
-      .broadcast([commentOp])
-      .then(async res => {
-        busyAPI.instance.sendAsync(subscribeTypes.subscribeTransactionId, [
-          username,
-          res.result.id,
-        ]);
-        busyAPI.instance.subscribe((datad, j) => {
-          if (j?.success && j?.permlink === res.result.id) {
-            resolve();
-          }
-        });
-      })
-      .catch(error => reject(error));
-  });
-};
 
 export default null;

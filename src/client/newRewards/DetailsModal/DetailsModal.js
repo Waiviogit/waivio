@@ -79,7 +79,7 @@ const DetailsModal = ({
       dispatch(reserveProposition(proposition, userName))
         .then(() => {
           setLoading(false);
-          history.push('/rewards-new/reserved');
+          history.push('/rewards/reserved');
         })
         .catch(e => {
           setLoading(false);
@@ -136,12 +136,12 @@ const DetailsModal = ({
 
   return (
     <Modal
-      title={<div className="Details__modal-title">We seek honest reviews!</div>}
+      title={<div className="DetailsModal__modal-title">We seek honest reviews!</div>}
       closable
       onCancel={handleCancelModalBtn}
       maskClosable={false}
       visible={!isWidget && isModalDetailsOpen}
-      wrapClassName="Details"
+      wrapClassName="DetailsModal"
       footer={null}
       width={768}
     >
@@ -156,8 +156,8 @@ const DetailsModal = ({
       {!requirements.notGuide && (
         <div className="DetailsModal__message">You can&apos;t reserve your own campaing</div>
       )}
-      <div className="Details__footer">
-        <div className="Details__footer-reserve-btn">
+      <div className="DetailsModal__footer">
+        <div className="DetailsModal__footer-reserve-btn">
           <Button onClick={handleCancelModalBtn}>Cancel</Button>
           {reserveButton}
           {proposition?.countReservationDays &&

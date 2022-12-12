@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { isEmpty } from 'lodash';
 import PropTypes from 'prop-types';
 import { useHistory } from 'react-router';
+import { useSelector } from 'react-redux';
+import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 import Campaing from '../reuseble/Campaing';
 import Loading from '../../components/Icon/Loading';
 import ReduxInfiniteScroll from '../../vendor/ReduxInfiniteScroll';
@@ -27,7 +29,15 @@ const sortConfig = [
   { key: 'proximity', title: 'Proximity' },
 ];
 
-const RenderCampaingList = ({ getAllRewardList, title, getFilters, getMapItems }) => {
+const RenderCampaingList = ({
+  getAllRewardList,
+  title,
+  getFilters,
+  getMapItems,
+  withoutFilters,
+  emptyMessage,
+}) => {
+  const authUser = useSelector(getAuthenticatedUserName);
   const [rewards, setRewards] = useState([]);
   const [hasMore, setHasMore] = useState(true);
   const [loading, setLoading] = useState(true);
@@ -40,7 +50,7 @@ const RenderCampaingList = ({ getAllRewardList, title, getFilters, getMapItems }
   const onClose = () => setVisible(false);
 
   useEffect(() => {
-    getAllRewardList(0, search, sort)
+    getAllRewardList(0, search, sort, authUser)
       .then(res => {
         setRewards(res.rewards);
         setHasMore(res.hasMore);
@@ -75,7 +85,7 @@ const RenderCampaingList = ({ getAllRewardList, title, getFilters, getMapItems }
           ))}
         </SortSelector>
         {isEmpty(rewards) ? (
-          <EmptyCampaing />
+          <EmptyCampaing emptyMessage={emptyMessage} />
         ) : (
           <ReduxInfiniteScroll
             loadMore={handleLoadingMoreRewardsList}
@@ -91,16 +101,18 @@ const RenderCampaingList = ({ getAllRewardList, title, getFilters, getMapItems }
           </ReduxInfiniteScroll>
         )}
       </div>
-      <div className={'RewardLists__left'}>
-        <RewardsMap getPoints={getMapItems} visible={showMap} onClose={() => setShowMap(false)} />
-        <RewardsFilters
-          title={'Filter rewards'}
-          getFilters={getFilters}
-          config={filterConfig}
-          visible={visible}
-          onClose={onClose}
-        />
-      </div>
+      {!withoutFilters && (
+        <div className={'RewardLists__left'}>
+          <RewardsMap getPoints={getMapItems} visible={showMap} onClose={() => setShowMap(false)} />
+          <RewardsFilters
+            title={'Filter rewards'}
+            getFilters={getFilters}
+            config={filterConfig}
+            visible={visible}
+            onClose={onClose}
+          />
+        </div>
+      )}
     </div>
   );
 };
@@ -110,6 +122,8 @@ RenderCampaingList.propTypes = {
   getMapItems: PropTypes.func.isRequired,
   title: PropTypes.string.isRequired,
   getFilters: PropTypes.func.isRequired,
+  withoutFilters: PropTypes.bool,
+  emptyMessage: PropTypes.string,
 };
 
 export default RenderCampaingList;

@@ -1,5 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+import { injectIntl } from 'react-intl';
+import PropTypes from 'prop-types';
 
 import {
   getEligibleRewardList,
@@ -9,7 +11,7 @@ import {
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 import RenderCampaingList from './RenderCampaingList';
 
-const EligibleRewards = () => {
+const EligibleRewards = ({ intl }) => {
   const userName = useSelector(getAuthenticatedUserName);
   const getAllRewardList = (skip, query, sort) =>
     getEligibleRewardList(userName, skip, query, sort);
@@ -18,11 +20,15 @@ const EligibleRewards = () => {
   return (
     <RenderCampaingList
       getAllRewardList={getAllRewardList}
-      title={'Eligible rewards'}
+      title={intl.formatMessage({ id: 'eligible_rewards', defaultMessage: 'Eligible rewards' })}
       getFilters={getFilters}
       getMapItems={getMarkersForEligible}
     />
   );
 };
 
-export default EligibleRewards;
+EligibleRewards.propTypes = {
+  intl: PropTypes.shape().isRequired,
+};
+
+export default injectIntl(EligibleRewards);

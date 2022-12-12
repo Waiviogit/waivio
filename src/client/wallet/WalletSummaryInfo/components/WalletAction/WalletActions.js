@@ -10,6 +10,7 @@ import { useRouteMatch } from 'react-router';
 import {
   openPowerUpOrDown,
   openTransfer,
+  openWithdraw,
   toggleDelegateModal,
   toggleDepositModal,
 } from '../../../../../store/walletStore/walletActions';
@@ -87,7 +88,11 @@ const WalletAction = props => {
                   <Menu.Item
                     key={`withdraw:${cyrrency}`}
                     onClick={() => {
-                      dispatch(toggleWithdrawModal(true, props.mainCurrency, cyrrency));
+                      if (props.mainCurrency === 'HIVE') {
+                        dispatch(openWithdraw(cyrrency));
+                      } else {
+                        dispatch(toggleWithdrawModal(true, props.mainCurrency, cyrrency));
+                      }
                     }}
                   >
                     {props.intl.formatMessage({ id: 'withdraw' })} to {cyrrency}

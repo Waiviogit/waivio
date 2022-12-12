@@ -2,40 +2,58 @@ import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { Modal } from 'antd';
-import { connect, useSelector } from 'react-redux';
+import { connect, useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router';
+import { isEmpty } from 'lodash';
 
 import { getCurrentCurrency } from '../../../store/appStore/appSelectors';
 import ReportHeader from './ReportHeader/ReportHeader';
 import ReportFooter from './ReportFooter/ReportFooter';
 import ReportTableRewards from './ReportTable/ReportTableRewards/ReportTableRewards';
 import ReportTableFees from './ReportTable/ReportTableFees/ReportTableFees';
-import { getReportByUser } from '../../../waivioApi/ApiClient';
+import { getReport, getReportByUser } from '../../../waivioApi/ApiClient';
 import { getBeneficiariesUsers } from '../../../store/searchStore/searchSelectors';
 
 import './Report.less';
+import { getCryptoPriceHistory } from '../../../store/appStore/appActions';
 
 const Report = ({ intl, toggleModal, isModalReportOpen, currencyInfo, sponsor }) => {
   const [reportDetails, setReportDetails] = useState();
   const location = useLocation();
-  const payoutToken = reportDetails ? 'WAIV' : 'HIVE';
-  const isNewReward = location.pathname.includes('rewards-new');
+  const dispatch = useDispatch();
+  const oldReward = location.pathname.includes('rewards-old');
+  const payoutToken = oldReward ? 'HIVE' : 'WAIV';
   const currBenefis = useSelector(getBeneficiariesUsers);
 
   useEffect(() => {
-    if (isModalReportOpen && isNewReward) {
-      getReportByUser({
-        userName: sponsor.userName,
-        guideName: sponsor.guideName,
-        reviewPermlink: sponsor.reviewPermlink,
-      }).then(res => {
-        setReportDetails({
-          ...res,
-          histories: res.histories.map(hist => ({ ...hist, beneficiaries: currBenefis })),
+    if (isModalReportOpen) {
+      if (oldReward) {
+        const requestParams = {
+          guideName: sponsor.sponsor,
+          userName: sponsor.userName,
+          reservationPermlink: sponsor?.details?.reservation_permlink || sponsor?.reviewPermlink,
+        };
+
+        dispatch(getCryptoPriceHistory());
+        getReport(requestParams).then(res => {
+          setReportDetails({
+            ...res,
+            histories: res.histories.map(hist => ({ ...hist, beneficiaries: currBenefis })),
+          });
         });
-      });
+      } else {
+        getReportByUser({
+          userName: sponsor.userName,
+          guideName: sponsor.guideName,
+          reviewPermlink: sponsor.reviewPermlink,
+        }).then(res => {
+          setReportDetails(res);
+        });
+      }
     }
   }, [isModalReportOpen]);
+
+  if (isEmpty(reportDetails)) return null;
 
   return (
     <Modal
@@ -51,7 +69,7 @@ const Report = ({ intl, toggleModal, isModalReportOpen, currencyInfo, sponsor })
       closable
       onCancel={toggleModal}
       maskClosable={false}
-      visible={isNewReward ? isModalReportOpen && reportDetails : isModalReportOpen}
+      visible={!oldReward ? isModalReportOpen && reportDetails : isModalReportOpen}
       wrapClassName="Report"
       footer={null}
       width={768}

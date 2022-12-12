@@ -12,12 +12,12 @@ import {
   // validateDeactivateCampaing,
 } from '../../../waivioApi/ApiClient';
 import { generatePermlink } from '../../../common/helpers/wObjectHelper';
-import { createBody, rewardsPost } from '../../rewards/Manage/constants';
 import steemConnectAPI from '../../steemConnectAPI';
 import { getCurrentCurrency } from '../../../store/appStore/appSelectors';
 import Loading from '../../components/Icon/Loading';
 import { deactivateCampaing } from '../../../store/newRewards/newRewardsActions';
 import { isMobile } from '../../../common/helpers/apiHelpers';
+import { createBody, rewardsPost } from './constants';
 
 export const Manage = ({ intl, guideName, setHistoryLoading }) => {
   const currency = useSelector(getCurrentCurrency);
@@ -144,7 +144,7 @@ export const Manage = ({ intl, guideName, setHistoryLoading }) => {
                 )}
               </td>
               <td>
-                <Link to={`/rewards-new/details/${row._id}`}>{row.name}</Link>
+                <Link to={`/rewards/details/${row._id}`}>{row.name}</Link>
               </td>
               <td>{row.status}</td>
               <td>{row.type}</td>
@@ -153,16 +153,12 @@ export const Manage = ({ intl, guideName, setHistoryLoading }) => {
                   <td>{round(row.budgetUSD * currency.rate, 2)}</td>
                   <td>{round(row.rewardInUSD * currency.rate, 2)}</td>
                   <td>
-                    <Link
-                      to={`/rewards-new/reservations?statuses=assigned&campaignNames=${row.name}`}
-                    >
+                    <Link to={`/rewards/reservations?statuses=assigned&campaignNames=${row.name}`}>
                       {row.reserved || null}
                     </Link>
                   </td>
                   <td>
-                    <Link
-                      to={`/rewards-new/reservations?statuses=completed&campaignNames=${row.name}`}
-                    >
+                    <Link to={`/rewards/reservations?statuses=completed&campaignNames=${row.name}`}>
                       {row.completed || null}
                     </Link>
                   </td>

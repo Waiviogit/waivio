@@ -6,14 +6,11 @@ import classNames from 'classnames';
 import { ceil, get, upperFirst, debounce } from 'lodash';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import store from 'store';
+import WAValidator from 'multicoin-address-validator';
 
 import { closeWithdraw } from '../../../store/walletStore/walletActions';
 import QrModal from '../../widgets/QrModal';
-import {
-  confirmWithDraw,
-  estimateAmount,
-  validaveCryptoWallet,
-} from '../../../waivioApi/ApiClient';
+import { confirmWithDraw, estimateAmount } from '../../../waivioApi/ApiClient';
 import EmailConfirmation from '../../widgets/EmailConfirmation';
 import {
   CRYPTO_FOR_VALIDATE_WALLET,
@@ -23,7 +20,7 @@ import { HIVE } from '../../../common/constants/cryptos';
 import { getUserPrivateEmail } from '../../../store/usersStore/usersActions';
 import { getCryptosPriceHistory } from '../../../store/appStore/appSelectors';
 import { getAuthenticatedUser } from '../../../store/authStore/authSelectors';
-import { getStatusWithdraw } from '../../../store/walletStore/walletSelectors';
+import { getStatusWithdraw, getWithdrawCurrency } from '../../../store/walletStore/walletSelectors';
 
 import './Withdraw.less';
 
@@ -34,10 +31,11 @@ const Withdraw = ({
   closeWithdrawModal,
   cryptosPriceHistory,
   getPrivateEmail,
+  currCurrency,
 }) => {
   const [isShowScanner, setShowScanner] = useState(false);
   const [walletAddress, setWalletAddress] = useState('');
-  const [currentCurrency, setCurrentCurrency] = useState('eth');
+  const [currentCurrency, setCurrentCurrency] = useState(currCurrency);
   const [isShowConfirm, setShowConfirm] = useState();
   const [isLoading, setIsLoading] = useState(false);
   const [hiveCount, setHiveCount] = useState(false);
@@ -67,14 +65,12 @@ const Withdraw = ({
     setIsValidate({ valid: false, loading: true });
 
     if (currentCurrency) {
-      setTimeout(
-        () =>
-          validaveCryptoWallet(address, crypto).then(res => {
-            setIsValidate({ valid: res.isValid, loading: false });
-          }),
-        1000,
-      );
+      const valid = WAValidator.validate(address, crypto);
+
+      return setIsValidate({ valid, loading: false });
     }
+
+    return setIsValidate({ valid: false, loading: false });
   };
 
   useEffect(() => {
@@ -361,12 +357,14 @@ Withdraw.propTypes = {
   closeWithdrawModal: PropTypes.func.isRequired,
   cryptosPriceHistory: PropTypes.shape().isRequired,
   getPrivateEmail: PropTypes.func.isRequired,
+  currCurrency: PropTypes.string.isRequired,
 };
 export default connect(
   state => ({
     user: getAuthenticatedUser(state),
     visible: getStatusWithdraw(state),
     cryptosPriceHistory: getCryptosPriceHistory(state),
+    currCurrency: getWithdrawCurrency(state),
   }),
   {
     closeWithdrawModal: closeWithdraw,

@@ -625,6 +625,12 @@ export default class AppendForm extends Component {
           title: this.getNewsFilterTitle(this.state.newsFilterTitle),
         };
       }
+      if (currentField === objectFields.avatar) {
+        fieldsObject = {
+          ...fieldsObject,
+          id: wObject?.galleryAlbum.find(album => album.body === 'Photos').id,
+        };
+      }
       if (currentField === objectFields.newsFeed) {
         fieldsObject = {
           ...fieldsObject,
@@ -985,7 +991,7 @@ export default class AppendForm extends Component {
           await addImageToAlbum({
             ...img,
             author: get(response, ['value', 'author']),
-            id: form.getFieldValue('id'),
+            id: this.state.currentAlbum,
           });
         });
       }
@@ -1011,16 +1017,12 @@ export default class AppendForm extends Component {
     return data;
   };
 
-  getWobjectField = image => {
-    const { form } = this.props;
-
-    return {
-      name: 'galleryItem',
-      body: image.src,
-      locale: 'en-US',
-      id: form.getFieldValue('id'),
-    };
-  };
+  getWobjectField = image => ({
+    name: 'galleryItem',
+    body: image.src,
+    locale: 'en-US',
+    id: this.state.currentAlbum,
+  });
 
   getImageAlbum = () => {
     const { currentAlbum } = this.state;
