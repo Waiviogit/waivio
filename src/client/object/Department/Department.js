@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { isEmpty } from 'lodash';
 import { useDispatch, useSelector } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
 import classNames from 'classnames';
@@ -30,7 +31,7 @@ const Department = ({ wobject, departments, isEditMode, history }) => {
 
   return (
     <div className="flex-column">
-      {!isEditMode && (
+      {!isEditMode && !isEmpty(departments) && (
         <>
           <FormattedMessage id="departments" formattedMessage="Departments" />:{' '}
         </>
