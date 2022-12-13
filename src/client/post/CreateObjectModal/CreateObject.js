@@ -202,7 +202,7 @@ class CreateObject extends React.Component {
                   });
 
                   this.props.appendObject(data).then(() => {
-                    setTimeout(() => this.forceCloseObject(), 5000);
+                    setTimeout(() => this.forceCloseObject(), 7000);
                   });
                 } else {
                   this.forceCloseObject();

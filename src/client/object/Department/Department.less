@@ -1,0 +1,33 @@
+@import (reference) '../../styles/custom.less';
+@import (reference) '../../styles/modules/variables';
+
+.Department {
+  &__activeDepartment {
+    color: @orange-hot;
+  }
+  &__container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+
+    .ant-menu-inline .ant-menu-submenu .ant-menu-submenu-title {
+      height: 20px;
+      line-height: 20px;
+      color: @black-text-basic;
+    }
+    .ant-menu-sub.ant-menu-inline .ant-menu-item {
+      height: 20px;
+      line-height: 20px;
+      background: transparent;
+    }
+    .ant-menu-submenu-title {
+      padding-left: 5px !important;
+    }
+    .ant-menu-item {
+      padding-left: 10px !important;
+    }
+    .ant-menu-submenu .ant-menu {
+      background: transparent;
+    }
+  }
+}
