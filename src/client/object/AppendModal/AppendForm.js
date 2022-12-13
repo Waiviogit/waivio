@@ -378,6 +378,7 @@ export default class AppendForm extends Component {
       case objectFields.ageRange:
       case objectFields.printLength:
       case objectFields.language:
+      case objectFields.departments:
       case objectFields.groupId:
       case objectFields.publicationDate:
       case objectFields.dimensions:
@@ -505,6 +506,7 @@ export default class AppendForm extends Component {
           }: ${getFieldValue(dimensionsFields.unitOfLength)}`;
         case objectFields.ageRange:
         case objectFields.language:
+        case objectFields.departments:
         case objectFields.groupId:
           return `@${author} added ${currentField} (${langReadable}): ${appendValue}`;
         case objectFields.printLength:
@@ -1212,6 +1214,8 @@ export default class AppendForm extends Component {
     if (currentField === objectFields.publicationDate)
       return filtered.some(f => f.body === currentValue);
     if (currentField === objectFields.language) return filtered.some(f => f.body === currentValue);
+    if (currentField === objectFields.departments)
+      return filtered.some(f => f.body === currentValue);
     if (currentField === objectFields.groupId) return filtered.some(f => f.body === currentValue);
     if (currentField === objectFields.categoryItem) {
       const selectedTagCategory = filtered.filter(item => item.tagCategory === currentCategory);
@@ -1833,6 +1837,32 @@ export default class AppendForm extends Component {
                 })}
               />,
             )}
+          </Form.Item>
+        );
+      }
+      case objectFields.departments: {
+        return (
+          <Form.Item>
+            {getFieldDecorator(objectFields.departments, {
+              rules: this.getFieldRules(objectFields.departments),
+            })(
+              <Input
+                className={classNames('AppendForm__input', {
+                  'validation-error': !this.state.isSomeValue,
+                })}
+                disabled={loading}
+                placeholder={intl.formatMessage({
+                  id: 'department',
+                  defaultMessage: 'Department',
+                })}
+              />,
+            )}
+            <p>
+              <FormattedMessage
+                id="department_info"
+                defaultMessage="Each product can be listed in up to 7 departments."
+              />
+            </p>
           </Form.Item>
         );
       }

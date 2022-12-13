@@ -6,12 +6,12 @@ import classNames from 'classnames';
 import {
   setStoreActiveCategory,
   setStoreActiveOption,
-} from '../../store/optionsStore/optionsActions';
-import { getActiveOption } from '../../store/optionsStore/optionsSelectors';
-import { isMobile } from '../../common/helpers/apiHelpers';
-import { getObject } from '../../waivioApi/ApiClient';
-import { getAuthenticatedUserName } from '../../store/authStore/authSelectors';
-import { getLocale } from '../../common/helpers/localStorageHelpers';
+} from '../../../store/optionsStore/optionsActions';
+import { getActiveOption } from '../../../store/optionsStore/optionsSelectors';
+import { isMobile } from '../../../common/helpers/apiHelpers';
+import { getObject } from '../../../waivioApi/ApiClient';
+import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
+import { getLocale } from '../../../common/helpers/localStorageHelpers';
 import './Options.less';
 
 const Options = ({ wobject, isEditMode, setHoveredOption, history }) => {
