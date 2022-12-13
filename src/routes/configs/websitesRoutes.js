@@ -216,6 +216,11 @@ const routes = host => ({
           exact: true,
           component: Views.WidgetPage,
         },
+        {
+          path: '/departments/:permlink',
+          exact: true,
+          component: Views.DepartmentsPage,
+        },
       ],
     },
     {
