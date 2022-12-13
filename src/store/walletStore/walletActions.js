@@ -452,16 +452,14 @@ export const closeWalletTable = () => dispatch =>
 export const OPEN_WITHDRAW = '@wallet/OPEN_WITHDRAW';
 export const CLOSE_WITHDRAW = '@wallet/CLOSE_WITHDRAW';
 
-export const openWithdraw = currency => dispatch =>
-  dispatch({
-    type: OPEN_WITHDRAW,
-    payload: currency.toLowerCase(),
-  });
+export const openWithdraw = currency => ({
+  type: OPEN_WITHDRAW,
+  payload: typeof currency === 'string' ? currency?.toLowerCase() : 'eth',
+});
 
-export const closeWithdraw = () => dispatch =>
-  dispatch({
-    type: CLOSE_WITHDRAW,
-  });
+export const closeWithdraw = () => ({
+  type: CLOSE_WITHDRAW,
+});
 
 export const sendPendingTransfer = ({
   sponsor,
