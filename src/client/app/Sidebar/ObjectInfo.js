@@ -582,6 +582,8 @@ class ObjectInfo extends React.Component {
                       this.getMenuSectionLink({ id: TYPES_OF_MENU_ITEM.PAGE, ...page }),
                     ),
                 )}
+                {isEditMode && this.listItem(objectFields.newsFeed, null)}
+                {isEditMode && this.listItem(objectFields.widget, null)}
                 {this.listItem(
                   objectFields.button,
                   !isEmpty(button) &&

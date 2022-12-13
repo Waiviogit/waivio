@@ -1,11 +1,8 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import { FormattedMessage } from 'react-intl';
 import PropTypes from 'prop-types';
-import { formColumnsField } from '../../../common/constants/listOfFields';
 
 const WidgetPage = props => {
-  const { wobject, widgetForm } = props;
+  const { widgetForm } = props;
 
   const widgetView = widgetForm?.content?.includes('<iframe') ? (
     <div className="FormPage__block" dangerouslySetInnerHTML={{ __html: widgetForm.content }} />
@@ -24,11 +21,6 @@ const WidgetPage = props => {
 
   return (
     <div className="FormPage">
-      {widgetForm.column === formColumnsField.entire && (
-        <Link to={`/object/${wobject.author_permlink}`} className="FormPage__back-btn">
-          <FormattedMessage id="form_back" defaultMessage="Back to reviews" />
-        </Link>
-      )}
       {widgetForm.type === 'Widget' ? (
         widgetView
       ) : (
@@ -50,12 +42,10 @@ const WidgetPage = props => {
 };
 
 WidgetPage.propTypes = {
-  wobject: PropTypes.shape(),
   widgetForm: PropTypes.shape(),
 };
 
 WidgetPage.defaultProps = {
-  wobject: {},
   widgetForm: {},
 };
 
