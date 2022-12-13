@@ -27,7 +27,7 @@ const MainPageHeader = props => {
         <div className="MainPageHeader__logo">
           <Link to="/" className="MainPageHeader__logoLink">
             <img src={currentLogo} className="MainPageHeader__logoImg" alt="logo" />
-            <b className="MainPageHeader__name">{currHost}</b>
+            <b className="MainPageHeader__name">{currHost.toUpperCase()}</b>
           </Link>
           {!props.withMap && (
             <Link to="/map?type=restaurant&showPanel=true" className="MainPageHeader__link">
@@ -53,7 +53,7 @@ const MainPageHeader = props => {
               {props.intl.formatMessage({ id: 'reviews', defaultMessage: 'Reviews' })}
             </Link>
             <Link to="/object/mds-dining-gifts/page#voy-business-3-0">
-              {props.intl.formatMessage({ id: 'partners', defaultMessage: 'Partners' })}
+              {props.intl.formatMessage({ id: 'legal', defaultMessage: 'Legal' })}
             </Link>
           </div>
           <HeaderButton isWebsite />
