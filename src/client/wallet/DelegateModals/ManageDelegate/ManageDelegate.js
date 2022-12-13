@@ -10,7 +10,7 @@ import {
   getDelegationModalType,
   getDelegationModalVisible,
   getDelegationToken,
-  getTokensBalanceListForTransfer,
+  getTokensBalanceListForDelegation,
   getTotalVestingFundSteem,
   getTotalVestingShares,
 } from '../../../../store/walletStore/walletSelectors';
@@ -33,7 +33,7 @@ const ManageDelegate = ({ intl }) => {
   const modalType = useSelector(getDelegationModalType);
   const delegationToken = useSelector(getDelegationToken);
   const authUser = useSelector(getAuthenticatedUser);
-  const tokensList = useSelector(getTokensBalanceListForTransfer);
+  const tokensList = useSelector(getTokensBalanceListForDelegation);
   const visible = useSelector(getDelegationModalVisible);
   const match = useRouteMatch();
   const [delegationList, setDelegationList] = useState({});
@@ -99,7 +99,6 @@ const ManageDelegate = ({ intl }) => {
     setRequiredUser(user);
     setRequiredToken(token);
   };
-
   const stakinTokensList = () =>
     tokensList.reduce((acc, curr) => {
       if (curr.stakingEnabled) {

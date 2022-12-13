@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Modal, Button, message } from 'antd';
 import { connect } from 'react-redux';
 import { isEmpty, get } from 'lodash';
@@ -63,6 +63,10 @@ const QuickRewardsModal = props => {
     get(props, 'selectedDish.propositions[0].requirements.minPhotos', 0) ||
     props?.selectedDish?.requirements?.minPhotos;
 
+  useEffect(() => {
+    if (props?.selectedDish?.reserved) setPageNumber(2);
+  }, []);
+
   const closeModal = () => {
     props.toggleModal(false);
 
@@ -86,20 +90,25 @@ const QuickRewardsModal = props => {
     e.currentTarget.blur();
     setLoading(true);
     if (isPropositionObj) {
-      if (window.gtag) window.gtag('event', 'reserve_proposition_in_quick_rewards_modal');
-      const permlink = `reserve-${generatePermlink()}`;
+      if (!props?.selectedDish?.reserved) {
+        if (window.gtag) window.gtag('event', 'reserve_proposition_in_quick_rewards_modal');
+        const permlink = `reserve-${generatePermlink()}`;
 
-      props
-        .reservePropositionForQuick(permlink)
-        .then(() => {
-          setReservationPermlink(permlink);
-          setPageNumber(3);
-          setLoading(false);
-        })
-        .catch(error => {
-          message.error(error?.error_description);
-          setLoading(false);
-        });
+        props
+          .reservePropositionForQuick(permlink)
+          .then(() => {
+            setReservationPermlink(permlink);
+            setPageNumber(3);
+            setLoading(false);
+          })
+          .catch(error => {
+            message.error(error?.error_description);
+            setLoading(false);
+          });
+      } else {
+        setPageNumber(3);
+        setLoading(false);
+      }
     } else {
       handleCreatePost();
     }

@@ -481,6 +481,9 @@ export default function walletReducer(state = initialState, action) {
       return {
         ...state,
         tokensBalanceListForTransfer: action.payload.filter(token => +token.balance),
+        tokensBalanceListForDelegation: action.payload.filter(
+          token => +token.balance || +token.stake,
+        ),
       };
 
     case walletActions.GET_CURRENT_USER_TOKENS_BALANCE_LIST.SUCCESS:

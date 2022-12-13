@@ -118,8 +118,8 @@ const DetailsModal = ({
     </Button>
   ) : (
     <WebsiteReservedButtons
-      dish={proposition?.object}
-      restaurant={requiredObject}
+      reserved={proposition.reserved}
+      dish={{ ...proposition, ...proposition?.object }}
       handleReserve={reserveOnClickHandler}
     />
   );
