@@ -626,7 +626,7 @@ export default class AppendForm extends Component {
       if (currentField === objectFields.avatar) {
         fieldsObject = {
           ...fieldsObject,
-          id: wObject?.galleryAlbum.find(album => album.body === 'Photos').id,
+          id: wObject?.galleryAlbum?.find(album => album.body === 'Photos').id,
         };
       }
       if (currentField === objectFields.newsFeed) {
