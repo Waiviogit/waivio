@@ -27,7 +27,7 @@ const MainPageHeader = props => {
         <div className="MainPageHeader__logo">
           <Link to="/" className="MainPageHeader__logoLink">
             <img src={currentLogo} className="MainPageHeader__logoImg" alt="logo" />
-            <b className="MainPageHeader__name">{currHost.toUpperCase()}</b>
+            <b className="MainPageHeader__name">{currHost}</b>
           </Link>
           {!props.withMap && (
             <Link to="/map?type=restaurant&showPanel=true" className="MainPageHeader__link">
