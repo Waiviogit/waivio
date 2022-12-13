@@ -20,7 +20,6 @@ const WAIVWalletSummaryInfo = props => {
   const [recivedList, setRecivedList] = useState([]);
   const [undeligatedList, setUndeligatedList] = useState([]);
   const [visible, setVisible] = useState(false);
-
   const balance = +get(props.currencyInfo, 'balance', 0);
   const stake = +get(props.currencyInfo, 'stake', 0);
   const unstake = +get(props.currencyInfo, 'pendingUnstake', 0);
@@ -46,7 +45,7 @@ const WAIVWalletSummaryInfo = props => {
   };
 
   useEffect(() => {
-    setDelegationLists();
+    if (!props.isGuest) setDelegationLists();
   }, []);
 
   const formattedNumber = num => {

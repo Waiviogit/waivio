@@ -8,12 +8,16 @@ import useRate from '../../../../hooks/useRate';
 
 import './PowerSwitcher.less';
 
+const powerToCurrency = {
+  WP: 'WAIV',
+  HP: 'HIVE',
+};
+
 const PowerSwitcher = props => {
   const [currency, setCurrency] = useState(props.defaultType);
   const { hiveRateInUsd, rates } = useRate();
   const convertCurrency = curr => (curr === 'WAIV' && props.powerVote ? 'WP' : curr);
   const hbdHiveHpCurrency = currency === 'HBD' || currency === 'HIVE' || currency === 'HP';
-
   const amountRegex = /^[0-9]*\.?[0-9]{0,8}$/;
   const amountRegexHiveHbdHp = /^[0-9]*\.?[0-9]{0,3}$/;
   const validationPattern = hbdHiveHpCurrency ? amountRegexHiveHbdHp : amountRegex;
@@ -123,7 +127,11 @@ const PowerSwitcher = props => {
         <div>
           <FormattedMessage id="est_amount" defaultMessage="Est. amount" />:{' '}
           <USDDisplay
-            value={props.getFieldValue('amount') * hiveRateInUsd * (rates[currency] || 1)}
+            value={
+              props.getFieldValue('amount') *
+              hiveRateInUsd *
+              (rates[powerToCurrency[currency] || currency] || 1)
+            }
           />
         </div>
       )}

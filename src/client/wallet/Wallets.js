@@ -44,12 +44,16 @@ const Wallets = props => {
 
   useEffect(() => {
     props.setWalletType(walletsType);
-    props.getTokenBalance('WAIV', props.match.params.name);
     props.getCryptoPriceHistory();
     props.getGlobalProperties();
     props.getCurrUserTokensBalanceList(props.match.params.name);
-    props.getUserTokensBalanceList(props.authUserName);
-    props.getCurrUserTokensBalanceSwap(props.match.params.name);
+
+    if (!guestUserRegex.test(props.authUserName))
+      props.getUserTokensBalanceList(props.authUserName);
+    if (!isGuestUser) {
+      props.getTokenBalance('WAIV', props.match.params.name);
+      props.getCurrUserTokensBalanceSwap(props.match.params.name);
+    }
 
     return () => props.resetHiveEngineTokenBalance();
   }, [props.authUserName]);

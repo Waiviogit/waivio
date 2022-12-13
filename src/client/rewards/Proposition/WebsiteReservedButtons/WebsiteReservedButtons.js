@@ -3,7 +3,6 @@ import { Button, Icon } from 'antd';
 import PropTypes from 'prop-types';
 import { useHistory } from 'react-router';
 
-import Loading from '../../../components/Icon/Loading';
 import useQuickRewards from '../../../../hooks/useQuickRewards';
 import withAuthActions from '../../../auth/withAuthActions';
 import Popover from '../../../components/Popover';
@@ -62,8 +61,10 @@ const WebsiteReservedButtons = props => {
             <PopoverMenu onSelect={handlePopoverClick} bold={false}>
               <PopoverMenuItem key="reserve">
                 <Icon type="user" /> Reserve the reward for{' '}
-                <span style={{ color: 'black' }}>7 days</span>
-                {loading && <Loading />}
+                <span>
+                  <span style={{ color: 'black' }}>7 days </span>
+                  {loading && <Icon type="loading" />}
+                </span>
               </PopoverMenuItem>
             </PopoverMenu>
           </React.Fragment>
