@@ -4,4 +4,6 @@ export default {
   HASHTAG: 'hashtag',
   RESTAURANT: 'restaurant',
   DISH: 'dish',
+  WIDGET: 'widget',
+  NEWSFEED: 'newsfeed',
 };

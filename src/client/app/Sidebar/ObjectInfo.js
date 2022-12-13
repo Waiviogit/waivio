@@ -43,7 +43,7 @@ import { getRelatedAlbum } from '../../../store/galleryStore/galleryActions';
 import CompanyId from './CompanyId';
 import ProductId from './ProductId';
 import ObjectAvatar from '../../components/ObjectAvatar';
-import Options from '../../object/Options';
+import Options from '../../object/Options/Options';
 import {
   getActiveCategory,
   getActiveOption,
@@ -53,6 +53,7 @@ import { setStoreActiveOption, setStoreGroupId } from '../../../store/optionsSto
 import { getObject } from '../../../waivioApi/ApiClient';
 import { getLocale } from '../../../common/helpers/localStorageHelpers';
 import './ObjectInfo.less';
+import Department from '../../object/Department/Department';
 
 @withRouter
 @connect(
@@ -260,9 +261,7 @@ class ObjectInfo extends React.Component {
     const { wobject, location } = this.props;
     const blogPath = `/object/${wobject.author_permlink}/blog/@${item.body}`;
     const formPath = `/object/${wobject.author_permlink}/form/${item.permlink}`;
-    const widgetPath = `/object/${wobject.author_permlink}/widget`;
     const newsFilterPath = `/object/${wobject.author_permlink}/newsFilter/${item.permlink}`;
-    const newsFeedPath = `/object/${wobject.author_permlink}/newsFeed`;
     const blogClassesList = classNames('menu-btn', {
       active: location.pathname === blogPath,
     });
@@ -315,13 +314,6 @@ class ObjectInfo extends React.Component {
           </LinkButton>
         );
         break;
-      case objectFields.newsFeed:
-        menuItem = (
-          <LinkButton className={newsFilterClassesList} to={newsFeedPath}>
-            {item.title || <FormattedMessage id="news" defaultMessage="News" />}
-          </LinkButton>
-        );
-        break;
       case TYPES_OF_MENU_ITEM.BLOG:
         menuItem = (
           <LinkButton className={blogClassesList} to={blogPath}>
@@ -332,13 +324,6 @@ class ObjectInfo extends React.Component {
       case objectFields.form:
         menuItem = (
           <LinkButton className={formClassesList} to={formPath}>
-            {item.title}
-          </LinkButton>
-        );
-        break;
-      case objectFields.widget:
-        menuItem = (
-          <LinkButton className={formClassesList} to={widgetPath}>
             {item.title}
           </LinkButton>
         );
@@ -384,7 +369,6 @@ class ObjectInfo extends React.Component {
     const { hoveredOption } = this.state;
     const isEditMode = isAuthenticated ? this.props.isEditMode : false;
     const newsFilters = get(wobject, 'newsFilter', []);
-    const newsFeed = get(wobject, 'newsFeed', []);
     const website = parseWobjectField(wobject, 'website');
     const wobjName = getObjectName(wobject);
     const tagCategories = get(wobject, 'tagCategory', []);
@@ -402,7 +386,6 @@ class ObjectInfo extends React.Component {
     const workTime = get(wobject, 'workTime');
     const linkField = parseWobjectField(wobject, 'link');
     const customSort = get(wobject, 'sortCustom', []);
-    const widgetBody = parseWobjectField(wobject, 'widget');
     const companyIdBody = wobject.companyId
       ? wobject.companyId.map(el => parseWobjectField(el, 'body', []))
       : [];
@@ -415,6 +398,7 @@ class ObjectInfo extends React.Component {
     const publicationDate = moment(wobject.publicationDate).format('MMMM DD, YYYY');
     const printLength = wobject.printLength;
     const publisher = parseWobjectField(wobject, 'publisher');
+    const departments = get(wobject, 'departments');
     const authorsBody = wobject.authors
       ? wobject.authors.map(el => parseWobjectField(el, 'body', []))
       : [];
@@ -495,7 +479,7 @@ class ObjectInfo extends React.Component {
       <>
         {isEditMode && (
           <div className="object-sidebar__section-title">
-            <FormattedMessage id="options" defaultMessage="Options" />
+            <FormattedMessage id="navigate" defaultMessage="Navigate" />
           </div>
         )}
         {this.listItem(
@@ -531,6 +515,16 @@ class ObjectInfo extends React.Component {
             />
           ),
         )}
+
+        {this.listItem(
+          objectFields.departments,
+          <Department
+            departments={departments}
+            isEditMode={isEditMode}
+            history={this.props.history}
+            wobject={this.props.wobject}
+          />,
+        )}
       </>
     );
 
@@ -543,7 +537,6 @@ class ObjectInfo extends React.Component {
           ...blogsList,
           ...formsList,
           ...newsFilters,
-          ...newsFeed,
         ];
 
         const sortButtons = customSort.reduce((acc, curr) => {
@@ -562,12 +555,17 @@ class ObjectInfo extends React.Component {
           this.getMenuSectionLink({ id: item.id || item.name, ...item }),
         );
       }
+      const objectTypeMenuTitle = ['widget', 'newsfeed'].includes(wobject.object_type);
 
       return (
         <React.Fragment>
           {isEditMode && !isList && (
             <div className="object-sidebar__section-title">
-              <FormattedMessage id="menu" defaultMessage="Menu" />
+              {objectTypeMenuTitle ? (
+                <FormattedMessage id={wobject.object_type} />
+              ) : (
+                <FormattedMessage id="menu" defaultMessage="Menu" />
+              )}
             </div>
           )}
           {!isList && (
@@ -597,11 +595,6 @@ class ObjectInfo extends React.Component {
                     ),
                 )}
                 {this.listItem(
-                  objectFields.newsFeed,
-                  !isEmpty(newsFeed) &&
-                    this.getMenuSectionLink({ id: newsFeed.id || newsFeed.name, ...newsFeed }),
-                )}
-                {this.listItem(
                   objectFields.blog,
                   !isEmpty(blogsList) &&
                     blogsList.map(blog =>
@@ -614,11 +607,6 @@ class ObjectInfo extends React.Component {
                     formsList.map(form =>
                       this.getMenuSectionLink({ id: objectFields.form, ...form }),
                     ),
-                )}
-                {this.listItem(
-                  objectFields.widget,
-                  !isEmpty(widgetBody) &&
-                    this.getMenuSectionLink({ id: objectFields.widget, ...widgetBody }),
                 )}
                 {this.listItem(objectFields.sorting, null)}
               </React.Fragment>

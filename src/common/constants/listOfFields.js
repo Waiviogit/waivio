@@ -47,6 +47,7 @@ export const objectFields = {
   options: 'options',
   widget: 'widget',
   newsFeed: 'newsFeed',
+  departments: 'departments',
 };
 
 export const TYPES_OF_MENU_ITEM = {
@@ -246,7 +247,6 @@ export const errorObjectFields = {
   ],
   [objectFields.groupId]: [objectFields.groupId],
   [objectFields.options]: [optionsFields.category, optionsFields.value, optionsFields.value],
-  [objectFields.newsFeed]: [optionsFields.category, optionsFields.value, optionsFields.value],
 };
 
 export default null;
