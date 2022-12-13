@@ -2063,6 +2063,7 @@
   "expiry_rewards_sort": "Expiry",
   "proximity_rewards_sort": "Proximity",
   "price": "PRICE",
+  "newsfeed": "Newsfeed",
   "object_field_departments": "Department",
   "department": "Department",
   "department_info": "Each product can be listed in up to 7 departments.",
