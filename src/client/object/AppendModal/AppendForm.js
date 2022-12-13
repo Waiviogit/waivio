@@ -863,8 +863,7 @@ export default class AppendForm extends Component {
     try {
       const { author } = await this.props.appendObject(data, { votePercent });
 
-      await addAlbum({ ...album, author });
-      hideModal();
+      await addAlbum({ ...album, author }).then(() => hideModal());
       message.success(
         this.props.intl.formatMessage(
           {
