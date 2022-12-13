@@ -10,6 +10,7 @@ import HeaderButton from '../../../components/HeaderButton/HeaderButton';
 import SubmitDishPhotosButton from '../../../widgets/SubmitDishPhotosButton/SubmitDishPhotosButton';
 import { getConfigurationValues, getWebsiteLogo } from '../../../../store/appStore/appSelectors';
 import { getObjectAvatar, getObjectUrlForLink } from '../../../../common/helpers/wObjectHelper';
+import { isMobile } from '../../../../common/helpers/apiHelpers';
 
 import './WebsiteHeader.less';
 
@@ -26,7 +27,11 @@ const MainPageHeader = props => {
       <div className="MainPageHeader__navWrapper">
         <div className="MainPageHeader__logo">
           <Link to="/" className="MainPageHeader__logoLink">
-            <img src={currentLogo} className="MainPageHeader__logoImg" alt="logo" />
+            <img
+              src={currentLogo}
+              className={isMobile() ? 'MainPageHeader__mobileLogoImg' : 'MainPageHeader__logoImg'}
+              alt="logo"
+            />
             <b className="MainPageHeader__name">{currHost}</b>
           </Link>
           {!props.withMap && (
