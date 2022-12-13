@@ -2011,7 +2011,6 @@ export const getTokenBalance = (userName, symbol) =>
     query: {
       account: userName,
       symbol,
-      ...(symbol === 'WAIV' ? {} : { balance: { $gt: '0.00000000' } }),
     },
     limit: 1000,
     offset: 0,

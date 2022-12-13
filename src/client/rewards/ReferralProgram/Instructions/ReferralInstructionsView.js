@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { Checkbox, Icon, Modal, Tooltip } from 'antd';
 import { referralInstructionsContent } from '../ReferralTextHelper';
@@ -19,6 +19,12 @@ const ReferralsInstructionsView = ({ mainProps, handleCopyTextButton, widget }) 
     currentStatus,
     setIsCopyButton,
   } = mainProps;
+  const [checked, setChecked] = useState(currentStatus);
+
+  const handleChecked = e => {
+    if (!checked) setChecked(true);
+    handleAgreeRulesCheckbox(e);
+  };
 
   const {
     instructionsTitle,
@@ -40,6 +46,7 @@ const ReferralsInstructionsView = ({ mainProps, handleCopyTextButton, widget }) 
 
   const handleOnOk = () => {
     rejectRules(authUserName, isGuest);
+    setChecked(!checked);
 
     return handleClickOnCheckbox();
   };
@@ -67,9 +74,10 @@ const ReferralsInstructionsView = ({ mainProps, handleCopyTextButton, widget }) 
         {!isBlackListUser && (
           <div className="ReferralInstructions__wrap-conditions">
             <Checkbox
-              checked={currentStatus}
+              disabled={isStartChangeRules}
+              checked={checked}
               id="agreeButton"
-              onChange={handleAgreeRulesCheckbox}
+              onChange={handleChecked}
             />
             <label
               htmlFor="agreeButton"

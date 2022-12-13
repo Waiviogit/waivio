@@ -33,19 +33,15 @@ const WebsiteReservedButtons = props => {
 
   const handleClickProposButton = () =>
     props.onActionInitiated(async () => {
-      if (props.isNewReward) {
-        const requiredObject = await getObject(
-          props.dish?.requiredObject?.author_permlink ||
-            props.dish?.requiredObject ||
-            props.dish?.parent,
-        );
+      const requiredObject = await getObject(
+        props.dish?.requiredObject?.author_permlink ||
+          props.dish?.requiredObject ||
+          props.dish?.parent,
+      );
 
-        setRestaurant(requiredObject);
-      } else {
-        setRestaurant(props.restaurant);
-      }
+      setRestaurant(requiredObject);
 
-      setDish(props.dish);
+      setDish({ ...props.dish, reserved: props.reserved });
       openModal();
     });
 
@@ -80,11 +76,10 @@ const WebsiteReservedButtons = props => {
 };
 
 WebsiteReservedButtons.propTypes = {
-  restaurant: PropTypes.shape().isRequired,
   dish: PropTypes.shape().isRequired,
   onActionInitiated: PropTypes.func.isRequired,
   handleReserve: PropTypes.func.isRequired,
-  isNewReward: PropTypes.bool.isRequired,
+  reserved: PropTypes.bool,
 };
 
 export default withAuthActions(WebsiteReservedButtons);

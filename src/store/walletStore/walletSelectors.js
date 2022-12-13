@@ -176,6 +176,11 @@ export const getTokensBalanceListForTransfer = createSelector(
   state => state.tokensBalanceListForTransfer,
 );
 
+export const getTokensBalanceListForDelegation = createSelector(
+  [walletState],
+  state => state.tokensBalanceListForDelegation,
+);
+
 export const getHiveEngineTransactionHistory = createSelector(
   [walletState],
   state => state.hiveEngineTransactionHistory.list,
