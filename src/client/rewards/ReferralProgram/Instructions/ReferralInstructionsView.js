@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Checkbox, Icon, Modal, Tooltip } from 'antd';
 import { referralInstructionsContent } from '../ReferralTextHelper';
@@ -20,6 +20,10 @@ const ReferralsInstructionsView = ({ mainProps, handleCopyTextButton, widget }) 
     setIsCopyButton,
   } = mainProps;
   const [checked, setChecked] = useState(currentStatus);
+
+  useEffect(() => {
+    setChecked(currentStatus);
+  }, [currentStatus]);
 
   const handleChecked = e => {
     if (!checked) setChecked(true);

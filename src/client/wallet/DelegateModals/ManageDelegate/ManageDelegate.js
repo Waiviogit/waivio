@@ -102,7 +102,7 @@ const ManageDelegate = ({ intl }) => {
   const stakinTokensList = () =>
     tokensList.reduce((acc, curr) => {
       if (curr.stakingEnabled) {
-        const availableVotingPower = curr.stake - curr.delegationsIn;
+        const availableVotingPower = curr.stake;
 
         return {
           ...acc,

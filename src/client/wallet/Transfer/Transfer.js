@@ -38,6 +38,7 @@ import {
   getCurrentWalletType,
   getIsTransferVisible,
   getIsVipTickets,
+  getTokenRatesInUSD,
   getTokensBalanceListForTransfer,
   getTotalVestingFundSteem,
   getTotalVestingShares,
@@ -86,6 +87,7 @@ const InputGroup = Input.Group;
     tokensList: getTokensBalanceListForTransfer(state),
     walletType: getCurrentWalletType(state),
     WAIVinfo: getUserCurrencyBalance(state, 'WAIV'),
+    rates: getTokenRatesInUSD(state, 'WAIV'),
   }),
   {
     closeTransfer,
@@ -103,6 +105,7 @@ export default class Transfer extends React.Component {
     intl: PropTypes.shape().isRequired,
     visible: PropTypes.bool,
     to: PropTypes.string,
+    rates: PropTypes.number,
     authenticated: PropTypes.bool.isRequired,
     user: PropTypes.shape().isRequired,
     form: PropTypes.shape().isRequired,
@@ -172,7 +175,7 @@ export default class Transfer extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      currency: this.props.isGuest ? 'WAIV' : this.props.currency,
+      currency: this.props.currency,
       balance: parseFloat(this.props.user.balance),
       oldAmount: undefined,
       searchBarValue: '',
@@ -563,8 +566,10 @@ export default class Transfer extends React.Component {
 
       return currRate * amount;
     }
-
-    const currToken = this.props.tokensList.find(token => token.symbol === this.state.currency);
+    const currToken =
+      this.props.isGuest && this.state.currency === 'WAIV'
+        ? { rate: this.props.rates }
+        : this.props.tokensList.find(token => token.symbol === this.state.currency);
 
     return currToken?.rate * amount * hiveRateInUsd;
   };
