@@ -56,6 +56,7 @@ const ModalFirstScreen = props => {
 
   const dishRewards =
     props?.selectedDish?.reward || get(props, 'selectedDish.propositions[0].reward', null);
+  const withRewads = dishRewards && !get(props, 'selectedDish.propositions[0].notEligible', null);
   const earnMessage = camp =>
     camp.campaigns.max_reward !== camp.campaigns.min_reward ? 'Earn up to' : 'Earn';
 
@@ -173,7 +174,7 @@ const ModalFirstScreen = props => {
             wObject={props.selectedDish}
             closeButton
             onDelete={handleResetDish}
-            withRewards={dishRewards}
+            withRewards={withRewads}
             rewardPrice={dishRewards}
             passedParent={props.selectedRestaurant}
           />
@@ -189,6 +190,8 @@ const ModalFirstScreen = props => {
             {props.dishes.map(camp => {
               if (!isEmpty(camp)) {
                 const reward = camp?.reward || get(camp, 'propositions[0].reward', null);
+                const notEligible =
+                  camp?.notEligible || get(camp, 'propositions[0].notEligible', null);
 
                 return (
                   <AutoComplete.Option
@@ -204,7 +207,7 @@ const ModalFirstScreen = props => {
                       isNeedType
                       closeButton
                     />
-                    {reward && (
+                    {reward && !notEligible && (
                       <span className="FirstScreen__priceWrap">
                         <span className="FirstScreen__earn">
                           {props.intl.formatMessage({ id: 'earn', defaultMessage: 'Earn' })}{' '}

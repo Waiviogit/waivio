@@ -51,7 +51,9 @@ const QuickRewardsModal = props => {
   const [reservationPermlink, setReservationPermlink] = useState('');
   const colors = useWebsiteColor();
   const dishRewards = props?.selectedDish?.reward || props?.selectedDish?.propositions?.[0]?.reward;
-  const isPropositionObj = !isEmpty(get(props.selectedDish, 'propositions')) || dishRewards;
+  const isPropositionObj =
+    (!isEmpty(get(props.selectedDish, 'propositions')) || dishRewards) &&
+    !props?.selectedDish?.propositions?.[0]?.notEligible;
   const nextButtonClassList = classNames('QuickRewardsModal__button', {
     'QuickRewardsModal__button--withRewards': isPropositionObj,
   });

@@ -20,14 +20,7 @@ import { getObjectName } from '../../../common/helpers/wObjectHelper';
 
 import './Details.less';
 
-const DetailsModal = ({
-  proposition,
-  toggleModal,
-  isModalDetailsOpen,
-  reserveOnClickHandler,
-  removeToggleFlag,
-  onActionInitiated,
-}) => {
+const DetailsModal = ({ proposition, toggleModal, isModalDetailsOpen, onActionInitiated }) => {
   const location = useLocation();
   const history = useHistory();
   const dispatch = useDispatch();
@@ -120,14 +113,17 @@ const DetailsModal = ({
     <WebsiteReservedButtons
       reserved={proposition.reserved}
       dish={{ ...proposition, ...proposition?.object }}
-      handleReserve={reserveOnClickHandler}
+      handleReserve={() => {
+        toggleModal();
+
+        return dispatch(reserveProposition(proposition, userName));
+      }}
     />
   );
 
   const handleCancelModalBtn = value => {
     clearAllSessionProposition();
     if (!isWidget && isReserved) {
-      removeToggleFlag();
       history.push(`/object/${proposition.object.author_permlink}`);
     }
 
@@ -172,8 +168,6 @@ const DetailsModal = ({
 DetailsModal.propTypes = {
   toggleModal: PropTypes.func.isRequired,
   isModalDetailsOpen: PropTypes.bool.isRequired,
-  reserveOnClickHandler: PropTypes.func.isRequired,
-  removeToggleFlag: PropTypes.func,
   proposition: PropTypes.shape().isRequired,
   onActionInitiated: PropTypes.func.isRequired,
 };
