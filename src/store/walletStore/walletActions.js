@@ -582,6 +582,7 @@ export const getUserTokensBalanceList = (
       const tokensList = res.map(item => item.symbol);
       const rates = await ApiClient.getTokensRate(isEmpty(tokensList) ? [symbol] : tokensList);
       const infos = await ApiClient.getTokensInformation(tokensList);
+
       if (!isEmpty(rates)) {
         const listTokensWithRates = res.map(token => {
           const rate = rates.find(r => r.symbol === token.symbol);

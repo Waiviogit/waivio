@@ -142,6 +142,11 @@ export const reservePropositionForQuick = permlink => async (
             dispatch(changeRewardsTab(username));
             resolve();
           }
+
+          if (!j?.success && j?.permlink === permlink) {
+            reject();
+            message.error('We cant parse your reservation. Try later.');
+          }
         });
       })
       .catch(error => reject(error));
@@ -459,7 +464,7 @@ export const sendCommentForReward = (proposition, body, isUpdating = false, orig
 
   const permlink = isUpdating
     ? originalComment.permlink
-    : createCommentPermlink(proposition?.userName, proposition?.reservationPermlink);
+    : createCommentPermlink(userName, proposition?.reservationPermlink);
   const newBody =
     isUpdating && !auth.isGuestUser ? getBodyPatchIfSmaller(originalComment.body, body) : body;
 
