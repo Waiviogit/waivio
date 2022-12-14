@@ -22,7 +22,7 @@ const Department = ({ wobject, departments, isEditMode, history }) => {
   const departmentsList = departments
     .map(d => (
       <div key={d.body}>
-        <button className="CompanyId__button" onClick={() => onDepartmentClick(d)}>
+        <button className="Department__button" onClick={() => onDepartmentClick(d)}>
           <span className={getDepartmentsClassNames(d)}>{d.body}</span>
         </button>
       </div>

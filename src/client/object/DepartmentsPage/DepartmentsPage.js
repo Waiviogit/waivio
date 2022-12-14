@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { isEmpty } from 'lodash';
+import { FormattedMessage } from 'react-intl';
 import ReduxInfiniteScroll from '../../vendor/ReduxInfiniteScroll';
 import Loading from '../../components/Icon/Loading';
 import ObjectCardView from '../../objectCard/ObjectCardView';
@@ -48,19 +49,26 @@ const DepartmentsPage = () => {
   }, [filteredObjects]);
 
   return (
-    <ReduxInfiniteScroll
-      className="Feed"
-      loadMore={loadMoreRelatedObjects}
-      loader={<Loading />}
-      loadingMore={loadingStarted}
-      hasMore={hasMore}
-      // elementIsScrollable={false}
-      threshold={1000}
-    >
-      {filteredObjects?.map(wObj => (
-        <ObjectCardView key={wObj.id} wObject={wObj} passedParent={wObj.parent} />
-      ))}
-    </ReduxInfiniteScroll>
+    <>
+      <div className="Department__prefix">
+        <div className="Department__prefix-content">
+          <FormattedMessage id="department" defaultMessage="Department" />: {activeDepartment}
+        </div>
+      </div>
+      <ReduxInfiniteScroll
+        className="Feed"
+        loadMore={loadMoreRelatedObjects}
+        loader={<Loading />}
+        loadingMore={loadingStarted}
+        hasMore={hasMore}
+        // elementIsScrollable={false}
+        threshold={1000}
+      >
+        {filteredObjects?.map(wObj => (
+          <ObjectCardView key={wObj.id} wObject={wObj} passedParent={wObj.parent} />
+        ))}
+      </ReduxInfiniteScroll>
+    </>
   );
 };
 
