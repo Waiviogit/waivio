@@ -160,8 +160,12 @@ export const createQuery = params =>
     return acc ? `${acc}&${value}=${params[value]}` : `${value}=${params[value]}`;
   }, '');
 
-export const isMobile = () =>
-  typeof navigator !== 'undefined' && mobileUserAgents.test(navigator.userAgent);
+export const isMobile = () => {
+  // eslint-disable-next-line no-console
+  console.log(navigator.userAgent, 'navigator.userAgent');
+
+  return typeof navigator !== 'undefined' && mobileUserAgents.test(navigator.userAgent);
+};
 
 export const isMobileDevice = () => {
   if (isMobile()) return { device: 'mobile' };
