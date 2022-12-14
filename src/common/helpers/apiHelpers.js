@@ -162,7 +162,7 @@ export const createQuery = params =>
 
 export const isMobile = () => {
   // eslint-disable-next-line no-console
-  console.log(navigator.userAgent, 'navigator.userAgent');
+  console.log(typeof navigator !== 'undefined' && navigator.userAgent, 'navigator.userAgent');
 
   return typeof navigator !== 'undefined' && mobileUserAgents.test(navigator.userAgent);
 };
