@@ -11,7 +11,6 @@ import HeaderButton from '../../../components/HeaderButton/HeaderButton';
 import SubmitDishPhotosButton from '../../../widgets/SubmitDishPhotosButton/SubmitDishPhotosButton';
 import { getConfigurationValues, getWebsiteLogo } from '../../../../store/appStore/appSelectors';
 import { getObjectAvatar, getObjectUrlForLink } from '../../../../common/helpers/wObjectHelper';
-import { isMobile } from '../../../../common/helpers/apiHelpers';
 
 import './WebsiteHeader.less';
 
@@ -19,10 +18,9 @@ const MainPageHeader = props => {
   const logo = useSelector(getWebsiteLogo);
   const config = useSelector(getConfigurationValues);
   const currHost = typeof location !== 'undefined' && location.hostname;
-  const isMobileDevice = isMobile();
   const logoClasses = classNames({
-    MainPageHeader__mobileLogoImg: isMobileDevice,
-    MainPageHeader__logoImg: !isMobileDevice,
+    MainPageHeader__mobileLogoImg: props.isMobile,
+    MainPageHeader__logoImg: !props.isMobile,
   });
   const aboutObject = config?.aboutObject;
   const currentLogo = logo || getObjectAvatar(aboutObject);
@@ -81,6 +79,10 @@ const MainPageHeader = props => {
 MainPageHeader.propTypes = {
   withMap: PropTypes.bool.isRequired,
   intl: PropTypes.shape().isRequired,
+  isMobile: PropTypes.bool,
+};
+MainPageHeader.defaultPropTypes = {
+  isMobile: false,
 };
 
 export default injectIntl(MainPageHeader);
