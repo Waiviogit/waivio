@@ -66,6 +66,7 @@ const WebsiteBody = props => {
       props.setShowSearchResult(false);
     };
   }, []);
+
   const aboutObject = get(props, ['configuration', 'aboutObject'], {});
   const currentLogo = props.logo || getObjectAvatar(aboutObject);
   const description = get(aboutObject, 'description', '');

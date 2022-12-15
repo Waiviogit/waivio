@@ -146,7 +146,7 @@ const ModalFirstScreen = props => {
                       type={getObjectType(camp)}
                       isNeedType
                     />
-                    {camp.campaigns && (
+                    {camp.campaigns && !camp.campaigns.notEligible && (
                       <span className="FirstScreen__priceWrap">
                         <span className="FirstScreen__earn">{earnMessage(camp)} </span>
                         <USDDisplay
