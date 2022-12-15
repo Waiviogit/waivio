@@ -9,7 +9,7 @@ import ModalsAuthors from '../../MatchBotsModals/ModalsAuthors';
 
 const MatchBotsTableRow = ({ intl, bot, type, editRule, setModalBot }) => {
   const toggleEnableBot = () => setModalBot(bot);
-  const voteCurrencyArray = bot.minVotingPowerCurrencies || ['HIVE'];
+  const voteCurrencyArray = bot.minVotingPowerCurrencies || ['WAIV'];
 
   return (
     <tr>
