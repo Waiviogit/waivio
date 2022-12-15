@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { useSelector } from 'react-redux';
-import classnames from 'classnames';
+import classNames from 'classnames';
 
 import WebsiteSearch from '../../../search/WebsitesSearch/WebsiteSearch';
 import FilterTypesList from '../../../search/SearchAllResult/components/FilterTypesList';
@@ -20,7 +20,7 @@ const MainPageHeader = props => {
   const config = useSelector(getConfigurationValues);
   const currHost = typeof location !== 'undefined' && location.hostname;
   const isMobileDevice = isMobile();
-  const logoClasses = classnames({
+  const logoClasses = classNames({
     MainPageHeader__mobileLogoImg: isMobileDevice,
     MainPageHeader__logoImg: !isMobileDevice,
   });
