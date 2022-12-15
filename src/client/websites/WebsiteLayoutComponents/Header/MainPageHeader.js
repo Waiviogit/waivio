@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { useSelector } from 'react-redux';
+import classnames from 'classnames';
 
 import WebsiteSearch from '../../../search/WebsitesSearch/WebsiteSearch';
 import FilterTypesList from '../../../search/SearchAllResult/components/FilterTypesList';
@@ -18,7 +19,11 @@ const MainPageHeader = props => {
   const logo = useSelector(getWebsiteLogo);
   const config = useSelector(getConfigurationValues);
   const currHost = typeof location !== 'undefined' && location.hostname;
-
+  const isMobileDevice = isMobile();
+  const logoClasses = classnames({
+    MainPageHeader__mobileLogoImg: isMobileDevice,
+    MainPageHeader__logoImg: !isMobileDevice,
+  });
   const aboutObject = config?.aboutObject;
   const currentLogo = logo || getObjectAvatar(aboutObject);
 
@@ -27,11 +32,7 @@ const MainPageHeader = props => {
       <div className="MainPageHeader__navWrapper">
         <div className="MainPageHeader__logo">
           <Link to="/" className="MainPageHeader__logoLink">
-            <img
-              src={currentLogo}
-              className={isMobile() ? 'MainPageHeader__mobileLogoImg' : 'MainPageHeader__logoImg'}
-              alt="logo"
-            />
+            <img src={currentLogo} className={logoClasses} alt="logo" />
             <b className="MainPageHeader__name">{currHost}</b>
           </Link>
           {!props.withMap && (
