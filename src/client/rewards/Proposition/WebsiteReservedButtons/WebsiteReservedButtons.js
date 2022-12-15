@@ -42,6 +42,7 @@ const WebsiteReservedButtons = props => {
 
       setDish({ ...props.dish, reserved: props.reserved });
       openModal();
+      props.onCloseDetails();
     });
 
   return (
@@ -80,6 +81,7 @@ WebsiteReservedButtons.propTypes = {
   dish: PropTypes.shape().isRequired,
   onActionInitiated: PropTypes.func.isRequired,
   handleReserve: PropTypes.func.isRequired,
+  onCloseDetails: PropTypes.func,
   reserved: PropTypes.bool,
 };
 

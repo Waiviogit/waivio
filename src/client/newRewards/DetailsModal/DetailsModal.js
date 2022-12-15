@@ -118,6 +118,7 @@ const DetailsModal = ({ proposition, toggleModal, isModalDetailsOpen, onActionIn
 
         return dispatch(reserveProposition(proposition, userName));
       }}
+      onCloseDetails={toggleModal}
     />
   );
 

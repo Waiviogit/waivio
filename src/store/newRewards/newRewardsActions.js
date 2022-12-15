@@ -101,24 +101,25 @@ export const reservePropositionForQuick = permlink => async (
   const username = getAuthenticatedUserName(state);
   const proposedWobjName = getObjectName(dish);
   const proposedAuthorPermlink = dish?.author_permlink;
+  const secondaryObject = dish?.propositions?.[0] || dish;
   const primaryObject = dish?.parent;
   const rates = getTokenRatesInUSD(getState(), 'WAIV');
-  const amount = round(dish.rewardInUSD / rates, 3);
+  const amount = round(secondaryObject.rewardInUSD / rates, 3);
   const detailsBody = await getNewDetailsBody(dish, restaurant);
   const commentOp = [
     'comment',
     {
-      parent_author: dish.guideName || dish?.propositions?.[0]?.guideName,
-      parent_permlink: dish.activationPermlink || dish?.propositions?.[0]?.activationPermlink,
+      parent_author: secondaryObject.guideName,
+      parent_permlink: secondaryObject.activationPermlink,
       author: username,
       permlink,
       title: 'Rewards reservations',
       body: `<p>User ${username} (@${username}) has reserved the rewards of ${amount} ${
-        dish.payoutToken
+        secondaryObject.payoutToken
       } for a period of ${
-        dish.countReservationDays
+        secondaryObject.countReservationDays
       } days to write a review of <a href='${getObjectUrlForLink(
-        dish,
+        secondaryObject,
       )}'>${proposedWobjName}</a>, <a href='${getObjectUrlForLink(primaryObject)}'>${getObjectName(
         primaryObject,
       )}</a>.</p>${detailsBody}`,
@@ -154,7 +155,8 @@ export const reservePropositionForQuick = permlink => async (
 };
 
 export const realiseRewards = proposition => (dispatch, getState, { steemConnectAPI, busyAPI }) => {
-  const unreservationPermlink = `reject-${proposition.object._id}${generatePermlink()}`;
+  const unreservationPermlink = `reject-${proposition?.object?._id ||
+    proposition?._id}${generatePermlink()}`;
   const username = getAuthenticatedUserName(getState());
 
   const commentOp = [

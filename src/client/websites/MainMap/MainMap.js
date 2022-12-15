@@ -55,7 +55,7 @@ const MainMap = React.memo(props => {
   const [area, setArea] = useState([]);
   const [mapData, setMapData] = useState({ center: [], zoom: 6 });
   const query = new URLSearchParams(props.location.search);
-  const headerHeight = 125;
+  const headerHeight = 174;
   let queryCenter = query.get('center');
   let mapHeight = `calc(100vh - ${headerHeight}px)`;
   const isMobile = props.screenSize === 'xsmall' || props.screenSize === 'small';
@@ -64,7 +64,7 @@ const MainMap = React.memo(props => {
   // const abortController = useRef(null);
 
   if (queryCenter) queryCenter = queryCenter.split(',').map(item => Number(item));
-  if (isMobile) mapHeight = `${height - headerHeight}px`;
+  if (isMobile) mapHeight = `${height - 207}px`;
 
   const getCurrentConfig = config =>
     isMobile ? get(config, 'mobileMap', {}) : get(config, 'desktopMap', {});
