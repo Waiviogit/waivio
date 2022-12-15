@@ -20,7 +20,7 @@ import { HIVE } from '../../../common/constants/cryptos';
 import { getUserPrivateEmail } from '../../../store/usersStore/usersActions';
 import { getCryptosPriceHistory } from '../../../store/appStore/appSelectors';
 import { getAuthenticatedUser } from '../../../store/authStore/authSelectors';
-import { getStatusWithdraw } from '../../../store/walletStore/walletSelectors';
+import { getStatusWithdraw, getWithdrawCurrency } from '../../../store/walletStore/walletSelectors';
 
 import './Withdraw.less';
 
@@ -31,10 +31,11 @@ const Withdraw = ({
   closeWithdrawModal,
   cryptosPriceHistory,
   getPrivateEmail,
+  currCurrency,
 }) => {
   const [isShowScanner, setShowScanner] = useState(false);
   const [walletAddress, setWalletAddress] = useState('');
-  const [currentCurrency, setCurrentCurrency] = useState('eth');
+  const [currentCurrency, setCurrentCurrency] = useState(currCurrency);
   const [isShowConfirm, setShowConfirm] = useState();
   const [isLoading, setIsLoading] = useState(false);
   const [hiveCount, setHiveCount] = useState(false);
@@ -356,12 +357,14 @@ Withdraw.propTypes = {
   closeWithdrawModal: PropTypes.func.isRequired,
   cryptosPriceHistory: PropTypes.shape().isRequired,
   getPrivateEmail: PropTypes.func.isRequired,
+  currCurrency: PropTypes.string.isRequired,
 };
 export default connect(
   state => ({
     user: getAuthenticatedUser(state),
     visible: getStatusWithdraw(state),
     cryptosPriceHistory: getCryptosPriceHistory(state),
+    currCurrency: getWithdrawCurrency(state),
   }),
   {
     closeWithdrawModal: closeWithdraw,

@@ -46,6 +46,7 @@ const Report = ({ intl, toggleModal, isModalReportOpen, currencyInfo, sponsor })
           userName: sponsor.userName,
           guideName: sponsor.guideName,
           reviewPermlink: sponsor.reviewPermlink,
+          reservationPermlink: sponsor.reservationPermlink,
         }).then(res => {
           setReportDetails(res);
         });

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 import { withRouter } from 'react-router';
 import { FormattedMessage, FormattedNumber, FormattedDate, FormattedTime } from 'react-intl';
 import { isEmpty } from 'lodash';
@@ -20,6 +20,7 @@ import WalletSummaryInfo from '../WalletSummaryInfo/WalletSummaryInfo';
 import {
   getAuthenticatedUser,
   getAuthenticatedUserName,
+  isGuestUser,
 } from '../../../store/authStore/authSelectors';
 import { getHiveDelegate } from '../../../waivioApi/ApiClient';
 import DelegateListModal from '../DelegateModals/DelegateListModal/DelegateListModal';
@@ -107,6 +108,7 @@ const UserWalletSummary = ({
   const [recivedList, setRecivedList] = useState([]);
   const [undeligatedList, setUndeligatedList] = useState([]);
   const [visible, setVisible] = useState(false);
+  const isCurrentGuest = useSelector(isGuestUser);
   const hasDelegations =
     !isEmpty(delegateList) || !isEmpty(recivedList) || !isEmpty(undeligatedList);
   const powerClassList = classNames('UserWalletSummary__value', {
@@ -177,10 +179,11 @@ const UserWalletSummary = ({
             <FormattedMessage id="liquid_hive_tokens" defaultMessage="Liquid HIVE tokens" />
           </p>
           <WalletAction
-            mainKey={'power_up'}
-            options={['transfer', 'convert']}
+            mainKey={isCurrentGuest ? 'transfer' : 'power_up'}
+            options={isCurrentGuest ? [] : ['transfer', 'convert']}
             mainCurrency={'HIVE'}
-            swapCurrencyOptions={['SWAP.HIVE']}
+            withdrawCurrencyOption={isCurrentGuest ? ['LTC', 'BTC', 'ETH'] : []}
+            swapCurrencyOptions={isCurrentGuest ? [] : ['SWAP.HIVE']}
           />
         </div>
       </div>

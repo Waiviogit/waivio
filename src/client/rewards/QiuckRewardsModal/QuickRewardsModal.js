@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Modal, Button, message } from 'antd';
 import { connect } from 'react-redux';
 import { isEmpty, get } from 'lodash';
@@ -51,7 +51,9 @@ const QuickRewardsModal = props => {
   const [reservationPermlink, setReservationPermlink] = useState('');
   const colors = useWebsiteColor();
   const dishRewards = props?.selectedDish?.reward || props?.selectedDish?.propositions?.[0]?.reward;
-  const isPropositionObj = !isEmpty(get(props.selectedDish, 'propositions')) || dishRewards;
+  const isPropositionObj =
+    (!isEmpty(get(props.selectedDish, 'propositions')) || dishRewards) &&
+    !props?.selectedDish?.propositions?.[0]?.notEligible;
   const nextButtonClassList = classNames('QuickRewardsModal__button', {
     'QuickRewardsModal__button--withRewards': isPropositionObj,
   });
@@ -62,6 +64,10 @@ const QuickRewardsModal = props => {
   const minPhotos =
     get(props, 'selectedDish.propositions[0].requirements.minPhotos', 0) ||
     props?.selectedDish?.requirements?.minPhotos;
+
+  useEffect(() => {
+    if (props?.selectedDish?.reserved) setPageNumber(2);
+  }, []);
 
   const closeModal = () => {
     props.toggleModal(false);
@@ -86,20 +92,25 @@ const QuickRewardsModal = props => {
     e.currentTarget.blur();
     setLoading(true);
     if (isPropositionObj) {
-      if (window.gtag) window.gtag('event', 'reserve_proposition_in_quick_rewards_modal');
-      const permlink = `reserve-${generatePermlink()}`;
+      if (!props?.selectedDish?.reserved) {
+        if (window.gtag) window.gtag('event', 'reserve_proposition_in_quick_rewards_modal');
+        const permlink = `reserve-${generatePermlink()}`;
 
-      props
-        .reservePropositionForQuick(permlink)
-        .then(() => {
-          setReservationPermlink(permlink);
-          setPageNumber(3);
-          setLoading(false);
-        })
-        .catch(error => {
-          message.error(error?.error_description);
-          setLoading(false);
-        });
+        props
+          .reservePropositionForQuick(permlink)
+          .then(() => {
+            setReservationPermlink(permlink);
+            setPageNumber(3);
+            setLoading(false);
+          })
+          .catch(error => {
+            message.error(error?.error_description);
+            setLoading(false);
+          });
+      } else {
+        setPageNumber(3);
+        setLoading(false);
+      }
     } else {
       handleCreatePost();
     }
@@ -115,7 +126,7 @@ const QuickRewardsModal = props => {
   const handelRejectReservation = () => {
     const proposition = get(props.selectedDish, 'propositions[0]', null) || props.selectedDish;
 
-    props.realiseRewards(proposition);
+    props.realiseRewards({ ...proposition, reservationPermlink });
   };
 
   const getCurrentScreen = (() => {

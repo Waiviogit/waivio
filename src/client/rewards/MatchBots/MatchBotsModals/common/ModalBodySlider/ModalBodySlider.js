@@ -70,7 +70,7 @@ ModalBodySlider.defaultProps = {
   handleChangeSlider: () => {},
   selectOptions: null,
   handleChangeCurrency: null,
-  currency: ['HIVE'],
+  currency: ['WAIV'],
 };
 
 export default ModalBodySlider;

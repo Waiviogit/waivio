@@ -2011,7 +2011,6 @@ export const getTokenBalance = (userName, symbol) =>
     query: {
       account: userName,
       symbol,
-      ...(symbol === 'WAIV' ? {} : { balance: { $gt: '0.00000000' } }),
     },
     limit: 1000,
     offset: 0,
@@ -3088,6 +3087,36 @@ export const getCurrencyType = () => {
   return fetch(`${config.currenciesApiPrefix}${config.rate}${config.available}`, {
     headers,
     method: 'GET',
+  })
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+};
+
+export const getDepartmentFields = ({ name, names, excluded }) => {
+  return fetch(`${config.apiPrefix}${config.departments}`, {
+    headers,
+    method: 'POST',
+    body: JSON.stringify({
+      name,
+      names,
+      excluded,
+    }),
+  })
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+};
+
+export const getObjectsByDepartment = ({ departments, skip, limit }) => {
+  return fetch(`${config.apiPrefix}${config.departments}/wobjects`, {
+    headers,
+    method: 'POST',
+    body: JSON.stringify({
+      departments,
+      skip,
+      limit,
+    }),
   })
     .then(res => res.json())
     .then(response => response)

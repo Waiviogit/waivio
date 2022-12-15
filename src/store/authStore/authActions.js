@@ -133,7 +133,7 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
           socialNetwork,
           isGuestUser: true,
           waivBalance: WAIV,
-          rewardsTab,
+          ...rewardsTab,
         });
       } catch (e) {
         dispatch(notify(e.error.details[0].message));

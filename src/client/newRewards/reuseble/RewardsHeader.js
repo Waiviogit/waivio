@@ -6,7 +6,8 @@ import { round } from 'lodash';
 const RewardsHeader = ({ proposition }) => (
   <div>
     <p className="Proposition-new__title">
-      Share {proposition?.requirements?.minPhotos} photos of the dish and earn crypto
+      Share {proposition?.requirements?.minPhotos} photos of the {proposition?.object?.object_type}{' '}
+      and earn crypto
     </p>
     <div className="Proposition-new__sponsorInfo">
       <div className="Proposition-new__infoItem Proposition-new__infoItem--right">
@@ -30,6 +31,9 @@ RewardsHeader.propTypes = {
     payoutToken: PropTypes.string,
     requirements: PropTypes.shape({
       minPhotos: PropTypes.number,
+    }),
+    object: PropTypes.shape({
+      object_type: PropTypes.string,
     }),
   }).isRequired,
 };

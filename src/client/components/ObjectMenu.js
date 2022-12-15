@@ -30,6 +30,8 @@ class ObjectMenu extends React.Component {
     GALLERY: 'gallery',
     LIST: 'list',
     PAGE: 'page',
+    WIDGET: 'widget',
+    NEWSFEED: 'newsfeed',
     UPDATES: 'updates',
     REVIEWS: 'reviews',
     FOLLOWERS: 'followers',
@@ -62,6 +64,8 @@ class ObjectMenu extends React.Component {
   render() {
     const isList = hasType(this.props.wobject, OBJECT_TYPE.LIST);
     const isPage = hasType(this.props.wobject, OBJECT_TYPE.PAGE);
+    const isWidget = hasType(this.props.wobject, OBJECT_TYPE.WIDGET);
+    const isNewsfeed = hasType(this.props.wobject, OBJECT_TYPE.NEWSFEED);
     const isHashtag = hasType(this.props.wobject, OBJECT_TYPE.HASHTAG);
 
     return (
@@ -95,6 +99,26 @@ class ObjectMenu extends React.Component {
                 data-key={ObjectMenu.TAB_NAME.PAGE}
               >
                 <FormattedMessage id="page" defaultMessage="Page" />
+              </li>
+            )}
+            {isWidget && (
+              <li
+                className={this.getItemClasses(ObjectMenu.TAB_NAME.WIDGET)}
+                onClick={this.handleClick}
+                role="presentation"
+                data-key={ObjectMenu.TAB_NAME.WIDGET}
+              >
+                <FormattedMessage id="Widget" defaultMessage="Widget" />
+              </li>
+            )}{' '}
+            {isNewsfeed && (
+              <li
+                className={this.getItemClasses(ObjectMenu.TAB_NAME.NEWSFEED)}
+                onClick={this.handleClick}
+                role="presentation"
+                data-key={ObjectMenu.TAB_NAME.NEWSFEED}
+              >
+                <FormattedMessage id="newsfeed" defaultMessage="Newsfeed" />
               </li>
             )}
             <li

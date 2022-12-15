@@ -165,6 +165,7 @@ export const getCurrentFilteredActions = createSelector(
 );
 
 export const getCurrentDeposits = createSelector([walletState], state => state.deposits);
+export const getWithdrawCurrency = createSelector([walletState], state => state.withdrawCurrency);
 
 export const getCurrentWithdrawals = createSelector([walletState], state => state.withdrawals);
 
@@ -173,6 +174,11 @@ export const getCurrentWalletType = createSelector([walletState], state => state
 export const getTokensBalanceListForTransfer = createSelector(
   [walletState],
   state => state.tokensBalanceListForTransfer,
+);
+
+export const getTokensBalanceListForDelegation = createSelector(
+  [walletState],
+  state => state.tokensBalanceListForDelegation,
 );
 
 export const getHiveEngineTransactionHistory = createSelector(

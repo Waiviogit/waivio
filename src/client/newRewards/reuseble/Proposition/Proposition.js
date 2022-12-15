@@ -46,8 +46,7 @@ const Proposition = ({ proposition, type, getProposition, hovered }) => {
           proposition={{ ...proposition, reserved: propositionType === 'reserved' }}
           isModalDetailsOpen={openDetails}
           toggleModal={() => setOpenDitails(!openDetails)}
-          reserveOnClickHandler={() => {}}
-          removeToggleFlag={() => {}}
+          reserveOnClickHandler={() => setOpenDitails(false)}
         />
       )}
     </div>

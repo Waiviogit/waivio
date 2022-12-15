@@ -4,7 +4,6 @@ import { createAsyncActionType } from '../../common/helpers/stateHelpers';
 import {
   getAllCampaingForRequiredObject,
   getAuthorsChildWobjects,
-  getEligiblePropositionByCampaingObjectPermlink,
   searchObjects,
 } from '../../waivioApi/ApiClient';
 import { getAuthenticatedUserName } from '../authStore/authSelectors';
@@ -74,7 +73,6 @@ export const getEligibleRewardsListWithRestaurant = (selectRest, limit) => async
   const state = getState();
   const name = getAuthenticatedUserName(state);
   const locale = getLocale(state);
-  const isReview = Boolean(selectRest.campaigns);
 
   dispatch({ type: GET_ELIGIBLE_REWARDS_WITH_RESTAURANT.START });
 
@@ -87,27 +85,10 @@ export const getEligibleRewardsListWithRestaurant = (selectRest, limit) => async
       'list',
       name,
     );
-    let objCampaings;
-
-    if (isReview) {
-      objCampaings = await getEligiblePropositionByCampaingObjectPermlink(
-        selectRest.author_permlink,
-        name,
-        0,
-        '',
-        'payout',
-      );
-    }
-
-    const wobjects = objCampaings.rewards.map(rew => ({
-      ...rew,
-      ...rew.object,
-      parent: selectRest,
-    }));
 
     return dispatch({
       type: GET_ELIGIBLE_REWARDS_WITH_RESTAURANT.SUCCESS,
-      payload: isReview ? uniqBy([...wobjects, ...objChild], 'author_permlink') : objChild,
+      payload: objChild,
     });
   } catch (e) {
     return dispatch({ type: GET_ELIGIBLE_REWARDS_WITH_RESTAURANT.ERROR });

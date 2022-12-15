@@ -20,7 +20,7 @@ export const INITIAL_INPUTS_VALUE = {
   expiredAt: null,
   notesValue: '',
   isSubmitted: false,
-  minVotingPowerCurrencies: ['HIVE'],
+  minVotingPowerCurrencies: ['WAIV'],
 };
 
 export const INITIAL_INPUTS_VALUE_CURATOR = {
@@ -32,6 +32,7 @@ export const INITIAL_INPUTS_VALUE_CURATOR = {
   expiredAt: null,
   isSubmitted: false,
   selectedUser: null,
+  minVotingPowerCurrencies: ['WAIV'],
 };
 
 export const redirectAuthHiveSigner = (isAuthority, botType) => {
@@ -89,7 +90,7 @@ export const setInitialInputValues = value => {
     enabled: value.enabled,
     notesValue: value.note || '',
     isSubmitted: false,
-    minVotingPowerCurrencies: ['HIVE'],
+    minVotingPowerCurrencies: ['WAIV'],
   };
 
   if (value.voteWeight) initialState.voteValue = value.voteWeight / 100;

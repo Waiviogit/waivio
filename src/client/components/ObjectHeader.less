@@ -176,10 +176,8 @@
   }
 
   .ObjectHeader__text {
-    max-width: 76%;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    overflow: hidden;
+    max-width: 77%;
+    line-height: 38px;
   }
 
   .ObjectHeader__user {
@@ -226,10 +224,14 @@
     justify-content: flex-start;
   }
 }
-
 @media only screen and (min-width: 320px) {
   .ObjectHeader__text {
     text-align: center;
+  }
+}
+@media only screen and (min-width: 768px) {
+  .ObjectHeader__text {
+    text-align: left;
   }
 }
 

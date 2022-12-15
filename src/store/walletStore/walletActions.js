@@ -452,15 +452,14 @@ export const closeWalletTable = () => dispatch =>
 export const OPEN_WITHDRAW = '@wallet/OPEN_WITHDRAW';
 export const CLOSE_WITHDRAW = '@wallet/CLOSE_WITHDRAW';
 
-export const openWithdraw = () => dispatch =>
-  dispatch({
-    type: OPEN_WITHDRAW,
-  });
+export const openWithdraw = currency => ({
+  type: OPEN_WITHDRAW,
+  payload: typeof currency === 'string' ? currency?.toLowerCase() : 'eth',
+});
 
-export const closeWithdraw = () => dispatch =>
-  dispatch({
-    type: CLOSE_WITHDRAW,
-  });
+export const closeWithdraw = () => ({
+  type: CLOSE_WITHDRAW,
+});
 
 export const sendPendingTransfer = ({
   sponsor,
@@ -581,7 +580,7 @@ export const getUserTokensBalanceList = (
     type: type.ACTION,
     payload: ApiClient.getTokenBalance(name, symbol).then(async res => {
       const tokensList = res.map(item => item.symbol);
-      const rates = await ApiClient.getTokensRate(tokensList);
+      const rates = await ApiClient.getTokensRate(isEmpty(tokensList) ? [symbol] : tokensList);
       const infos = await ApiClient.getTokensInformation(tokensList);
 
       if (!isEmpty(rates)) {

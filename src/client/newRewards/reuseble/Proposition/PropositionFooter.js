@@ -43,6 +43,7 @@ const PropositionFooter = ({ type, openDetailsModal, proposition, getProposition
 
   useEffect(() => {
     if (showComment) setShowComment(false);
+    if (location.search.includes(proposition.reservationPermlink)) handleCommentsClick();
   }, [location.search]);
 
   const getCommentsList = async (editing, permlink, value) => {
@@ -221,7 +222,12 @@ const PropositionFooter = ({ type, openDetailsModal, proposition, getProposition
           </div>
         ) : (
           <WebsiteReservedButtons
-            dish={{ ...proposition, ...proposition.object, parent: proposition?.object?.parent }}
+            dish={{
+              ...proposition,
+              reserved: type === 'reserved',
+              ...proposition.object,
+              parent: proposition?.object?.parent,
+            }}
             handleReserve={() => dispatch(reserveProposition(proposition, authUserName))}
             isNewReward
           />
