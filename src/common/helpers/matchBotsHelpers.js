@@ -32,6 +32,7 @@ export const INITIAL_INPUTS_VALUE_CURATOR = {
   expiredAt: null,
   isSubmitted: false,
   selectedUser: null,
+  minVotingPowerCurrencies: ['WAIV'],
 };
 
 export const redirectAuthHiveSigner = (isAuthority, botType) => {
