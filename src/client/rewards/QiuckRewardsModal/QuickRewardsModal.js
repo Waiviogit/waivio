@@ -126,7 +126,7 @@ const QuickRewardsModal = props => {
   const handelRejectReservation = () => {
     const proposition = get(props.selectedDish, 'propositions[0]', null) || props.selectedDish;
 
-    props.realiseRewards(proposition);
+    props.realiseRewards({ ...proposition, reservationPermlink });
   };
 
   const getCurrentScreen = (() => {

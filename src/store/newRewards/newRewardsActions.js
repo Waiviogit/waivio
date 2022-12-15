@@ -156,7 +156,7 @@ export const reservePropositionForQuick = permlink => async (
 
 export const realiseRewards = proposition => (dispatch, getState, { steemConnectAPI, busyAPI }) => {
   const unreservationPermlink = `reject-${proposition?.object?._id ||
-    proposition?._id}${generatePermlink()}`;
+    proposition?._id}-${generatePermlink()}`;
   const username = getAuthenticatedUserName(getState());
 
   const commentOp = [
