@@ -55,7 +55,7 @@ const MainPageHeader = props => {
               {props.intl.formatMessage({ id: 'legal', defaultMessage: 'Legal' })}
             </Link>
           </div>
-          <HeaderButton isWebsite />
+          <HeaderButton isWebsite aboutObject={aboutObject} />
         </div>
       </div>
       {props.withMap && (
