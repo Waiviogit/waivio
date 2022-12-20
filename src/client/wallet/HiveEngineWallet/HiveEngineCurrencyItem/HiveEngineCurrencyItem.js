@@ -8,11 +8,11 @@ import WalletAction from '../../WalletSummaryInfo/components/WalletAction/Wallet
 import './HiveEngineCurrencyItem.less';
 import { HIVE_ENGINE_DEFAULT_SWAP_LIST } from '../../../../common/constants/swapList';
 
-const HiveEngineCurrencyItem = ({ token, hiveRate }) => {
+const HiveEngineCurrencyItem = ({ token, rates }) => {
   const stake = token.stake || 0;
   const balance = HIVE_ENGINE_DEFAULT_SWAP_LIST.includes(token.symbol)
-    ? (Number(token.balance) + Number(stake)) * token.rate
-    : (Number(token.balance) + Number(stake)) * token.rate * hiveRate;
+    ? (Number(token.balance) + Number(stake)) * rates[token.symbol]
+    : (Number(token.balance) + Number(stake)) * rates[token.symbol] * rates.HIVE;
 
   const avatar = token.avatar ? getProxyImageURL(token.avatar) : token.avatar;
 
@@ -65,7 +65,9 @@ HiveEngineCurrencyItem.propTypes = {
     stake: PropTypes.string,
     stakingEnabled: PropTypes.bool,
   }).isRequired,
-  hiveRate: PropTypes.number.isRequired,
+  rates: PropTypes.shape({
+    HIVE: PropTypes.number,
+  }).isRequired,
 };
 
 export default HiveEngineCurrencyItem;
