@@ -66,13 +66,6 @@ export default class ObjectFeed extends React.Component {
     loadingPropositions: false,
   };
 
-  // eslint-disable-next-line react/sort-comp
-  getNewsPermlink = () => {
-    if (isEmpty(this.props.match.params[1]) || isNil(this.props.match.params[1])) return undefined;
-
-    return this.props.wobject?.newsFeed?.permlink;
-  };
-
   componentDidMount() {
     const { match, limit, readLocales } = this.props;
     const { name, itemId } = match.params;
@@ -126,6 +119,12 @@ export default class ObjectFeed extends React.Component {
     getObjectsRewards(this.props.match.params.name, this.props.userName).then(res =>
       this.setState({ reward: res }),
     );
+
+  getNewsPermlink() {
+    if (isEmpty(this.props.match.params[1]) || isNil(this.props.match.params[1])) return undefined;
+
+    return this.props.wobject?.newsFeed?.permlink;
+  }
 
   render() {
     const { feed, limit, handleCreatePost, userName, wobject } = this.props;
