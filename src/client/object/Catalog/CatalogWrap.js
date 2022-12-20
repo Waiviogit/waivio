@@ -58,24 +58,27 @@ const CatalogWrap = props => {
 
     if (!isEmpty(wobject)) {
       if (hash) {
-        setLoadingNestedWobject(true);
         const pathUrl = getLastPermlinksFromHash(hash);
 
-        ApiClient.getObject(pathUrl, userName, locale).then(wObject => {
-          setSortingBy(defaultSortBy(wObject));
-          setLists(
-            sortListItemsBy(
-              itemsList(get(wObject, 'sortCustom', []), wObject),
-              defaultSortBy(wObject),
-              isDefaultCustom(wObject)
-                ? wObject.sortCustom
-                : recencySortOrder(getListItem(wObject)),
-            ),
-          );
-          setNestedWobj(wObject);
-          setLoadingNestedWobject(false);
-          setRecencySortList(recencySortOrder(getListItem(wObject)));
-        });
+        if (pathUrl !== wobjectNested.author_permlink) {
+          setLoadingNestedWobject(true);
+
+          ApiClient.getObject(pathUrl, userName, locale).then(wObject => {
+            setSortingBy(defaultSortBy(wObject));
+            setLists(
+              sortListItemsBy(
+                itemsList(get(wObject, 'sortCustom', []), wObject),
+                defaultSortBy(wObject),
+                isDefaultCustom(wObject)
+                  ? wObject.sortCustom
+                  : recencySortOrder(getListItem(wObject)),
+              ),
+            );
+            setNestedWobj(wObject);
+            setLoadingNestedWobject(false);
+            setRecencySortList(recencySortOrder(getListItem(wObject)));
+          });
+        }
       } else {
         setSortingBy(defaultSortBy(wobject));
         setLists(

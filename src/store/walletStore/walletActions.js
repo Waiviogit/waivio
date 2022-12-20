@@ -20,6 +20,7 @@ import {
 } from '../../common/constants/swapList';
 import delegationModalTypes from '../../common/constants/delegationModalTypes';
 import { getGuestWaivBalance, getGuestWaivTransferHistory } from '../../waivioApi/walletApi';
+import { getAllRates } from '../ratesStore/ratesAction';
 
 export const OPEN_TRANSFER = '@wallet/OPEN_TRANSFER';
 export const CLOSE_TRANSFER = '@wallet/CLOSE_TRANSFER';
@@ -583,6 +584,7 @@ export const getUserTokensBalanceList = (
       const rates = await ApiClient.getTokensRate(isEmpty(tokensList) ? [symbol] : tokensList);
       const infos = await ApiClient.getTokensInformation(tokensList);
 
+      dispatch(getAllRates(rates));
       if (!isEmpty(rates)) {
         const listTokensWithRates = res.map(token => {
           const rate = rates.find(r => r.symbol === token.symbol);
@@ -627,17 +629,14 @@ export const GET_CURRENT_USER_SWAP_TOKENS_BALANCE_LIST = createAsyncActionType(
 export const getCurrUserTokensBalanceSwap = name => ({
   type: GET_CURRENT_USER_SWAP_TOKENS_BALANCE_LIST.ACTION,
   payload: ApiClient.getTokensInformation(HIVE_ENGINE_DEFAULT_SWAP_LIST).then(async res => {
-    const rates = await ApiClient.getEnginePoolRate(HIVE_ENGINE_DEFAULT_SWAP_LIST);
     const userBalances = await ApiClient.getTokenBalance(name, {
       $in: HIVE_ENGINE_DEFAULT_SWAP_LIST,
     });
     const swapList = res.map(swap => {
-      const rate = rates.find(r => r.symbol === swap.symbol);
       const userBalance = userBalances.find(r => r.symbol === swap.symbol);
 
       return {
         ...swap,
-        rate: +get(rate, 'USD', 1),
         avatar: get(parseJSON(swap.metadata), 'icon', ''),
         balance: get(userBalance, 'balance', 0),
         orderKey: HIVE_ENGINE_DEFAULT_SWAP_LIST_ORDER_KEY[swap.symbol],

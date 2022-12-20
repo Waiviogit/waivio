@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { connect } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { Link } from 'react-router-dom';
-import { get, isEmpty, includes } from 'lodash';
+import { get, isEmpty, includes, round } from 'lodash';
 import urlParse from 'url-parse';
 
 import { FormattedMessage, injectIntl } from 'react-intl';
@@ -20,14 +20,20 @@ import { isMobile } from '../../../common/helpers/apiHelpers';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 import { getImagePathPost } from '../../../common/helpers/image';
 import SkeletonRow from '../../components/Skeleton/SkeletonRow';
+import { parseJSON } from '../../../common/helpers/parseJSON';
+import formatter from '../../../common/helpers/steemitFormatter';
+import {
+  getTokenRatesInSelectCurrency,
+  getTotalVestingFundSteem,
+  getTotalVestingShares,
+  getUserCurrencyBalance,
+} from '../../../store/walletStore/walletSelectors';
 
 import './UserHeader.less';
-import { parseJSON } from '../../../common/helpers/parseJSON';
 
 const UserHeader = ({
   username,
   user,
-  vestingShares,
   isSameUser,
   coverImage,
   hasCover,
@@ -44,6 +50,16 @@ const UserHeader = ({
   const mutedByModerator = !isEmpty(user.mutedBy) && !includes(user.mutedBy, authUserName);
   const mutedLabelText = mutedByModerator ? 'Blocked' : 'Muted';
   const isMobileDevice = isMobile();
+  const waivInfo = useSelector(state => getUserCurrencyBalance(state, 'WAIV'));
+  const waivInHive = useSelector(state => getTokenRatesInSelectCurrency(state, 'WAIV', 'HIVE'));
+  const totalVestingShares = useSelector(getTotalVestingShares);
+  const totalVestingFundSteem = useSelector(getTotalVestingFundSteem);
+  const votingWaivPower = round(
+    (waivInfo?.stake * waivInHive) /
+      formatter.vestToSteem(1, totalVestingShares, totalVestingFundSteem),
+    6,
+  );
+  const vestingShares = parseFloat(user.vesting_shares) + votingWaivPower;
 
   let metadata = {};
   let location = null;
@@ -210,7 +226,6 @@ const UserHeader = ({
 UserHeader.propTypes = {
   user: PropTypes.shape(),
   username: PropTypes.string,
-  vestingShares: PropTypes.number,
   isSameUser: PropTypes.bool,
   coverImage: PropTypes.string,
   hasCover: PropTypes.bool,

@@ -31,8 +31,8 @@ const ExtendedNewsFilterForm = props => {
     !isMobile(props.screenSize) && (
       <div className={`NewsFiltersRule__line-and`}>
         {props.intl.formatMessage({
-          id: 'and',
-          defaultMessage: 'and',
+          id: 'or',
+          defaultMessage: 'or',
         })}
       </div>
     );

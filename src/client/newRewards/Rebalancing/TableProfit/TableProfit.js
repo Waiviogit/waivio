@@ -17,6 +17,8 @@ import {
 import USDDisplay from '../../../components/Utils/USDDisplay';
 
 import './TableProfit.less';
+import { HIVE_ENGINE_DEFAULT_SWAP_LIST } from '../../../../common/constants/swapList';
+import { getRatesList } from '../../../../store/ratesStore/ratesSelector';
 
 const TableProfit = props => {
   const { intl, tokenList, setTableProfit } = props;
@@ -29,6 +31,7 @@ const TableProfit = props => {
   const [openAddTokenModal, setAddTokenModal] = useState(false);
   const [tokensListFiltered, setTokenList] = useState(tokenList);
   const cryptosPriceHistory = useSelector(getCryptosPriceHistory);
+  const rates = useSelector(getRatesList);
   const hiveRateInUsd = get(cryptosPriceHistory, 'hive.usdPriceHistory.usd', 1);
 
   useEffect(() => {
@@ -116,47 +119,50 @@ const TableProfit = props => {
                 )}
               </th>
             ))}
-            {table.map(row => (
-              <tr key={row.token}>
-                <td>
-                  <div>{row.token}</div>
-                </td>
-                <td>
-                  <div>{row.initial}</div>
-                  {Boolean(+row.external) && (
-                    <div>
-                      {row.external} ({round(row.externalPercent)}%)
-                    </div>
-                  )}
-                </td>
-                <td>
-                  <div>{row.current}</div>
-                  <div>
-                    <USDDisplay
-                      value={round(row.current * row.rate * hiveRateInUsd, 2)}
-                      currencyDisplay={'symbol'}
-                    />
-                  </div>
-                </td>
-                <td>
-                  <a
-                    onClick={() => {
-                      const token = tokenList?.find(i => i.symbol === row.token);
+            {table.map(row => {
+              const balance = HIVE_ENGINE_DEFAULT_SWAP_LIST.includes(row.token)
+                ? Number(row.current) * rates[row.token]
+                : Number(row.current) * rates[row.token] * hiveRateInUsd;
 
-                      handleEditToken({
-                        symbol: row.token,
-                        balance: token?.balance || 0,
-                        rate: token?.rate || 1,
-                        quantity: row.initialEdit,
-                        external: row.external,
-                      });
-                    }}
-                  >
-                    Edit
-                  </a>
-                </td>
-              </tr>
-            ))}
+              return (
+                <tr key={row.token}>
+                  <td>
+                    <div>{row.token}</div>
+                  </td>
+                  <td>
+                    <div>{row.initial}</div>
+                    {Boolean(+row.external) && (
+                      <div>
+                        {row.external} ({round(row.externalPercent)}%)
+                      </div>
+                    )}
+                  </td>
+                  <td>
+                    <div>{row.current}</div>
+                    <div>
+                      <USDDisplay value={balance} currencyDisplay={'symbol'} />
+                    </div>
+                  </td>
+                  <td>
+                    <a
+                      onClick={() => {
+                        const token = tokenList?.find(i => i.symbol === row.token);
+
+                        handleEditToken({
+                          symbol: row.token,
+                          balance: token?.current || 0,
+                          rate: token?.rate || 1,
+                          quantity: row.initialEdit,
+                          external: row.external,
+                        });
+                      }}
+                    >
+                      Edit
+                    </a>
+                  </td>
+                </tr>
+              );
+            })}
             {!table.length && (
               <tr>
                 <td colSpan={4}>
