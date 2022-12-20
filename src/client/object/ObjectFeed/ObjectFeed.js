@@ -67,9 +67,9 @@ export default class ObjectFeed extends React.Component {
   };
   // eslint-disable-next-line react/sort-comp,consistent-return
   getNewsPermlink = () => {
-    if (!isEmpty(this.props.match.params[1]) || !isNil(this.props.match.params[1])) {
-      return this.props.wobject?.newsFeed?.permlink;
-    }
+    if (isEmpty(this.props.match.params[1]) || isNil(this.props.match.params[1])) return undefined;
+
+    return this.props.wobject?.newsFeed?.permlink;
   };
 
   componentDidMount() {
