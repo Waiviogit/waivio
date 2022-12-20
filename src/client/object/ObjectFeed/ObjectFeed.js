@@ -65,7 +65,8 @@ export default class ObjectFeed extends React.Component {
   state = {
     loadingPropositions: false,
   };
-  // eslint-disable-next-line react/sort-comp,consistent-return
+
+  // eslint-disable-next-line react/sort-comp
   getNewsPermlink = () => {
     if (isEmpty(this.props.match.params[1]) || isNil(this.props.match.params[1])) return undefined;
 
