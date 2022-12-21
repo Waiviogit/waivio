@@ -282,6 +282,9 @@ class CreateObject extends React.Component {
         case 'capitalize':
           const capitalizedArr = prevVal.toLowerCase().split(' ');
 
+          if (capitalizedArr[capitalizedArr.length - 1] === '') {
+            capitalizedArr.pop();
+          }
           newVal = capitalizedArr.reduce(
             (acc, word) => acc + (acc === '' ? '' : ' ') + word[0].toUpperCase() + word.slice(1),
             '',
@@ -289,6 +292,10 @@ class CreateObject extends React.Component {
           break;
         case 'toggleCase':
           const toggleCaseArr = prevVal.toUpperCase().split(' ');
+
+          if (toggleCaseArr[toggleCaseArr.length - 1] === '') {
+            toggleCaseArr.pop();
+          }
 
           newVal = toggleCaseArr.reduce(
             (acc, word) => acc + (acc === '' ? '' : ' ') + word[0].toLowerCase() + word.slice(1),
