@@ -1,22 +1,45 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, Switch } from 'antd';
 import { useSelector } from 'react-redux';
 
+import ChangeVotingModal from '../../widgets/ChangeVotingModal/ChangeVotingModal';
 import ImportModal from './ImportModal/ImportModal';
 import DynamicTbl from '../Tools/DynamicTable/DynamicTable';
 import { configHistoryTable, configProductTable } from './tableConfig';
 import { MATCH_BOTS_TYPES, redirectAuthHiveSigner } from '../../../common/helpers/matchBotsHelpers';
-import { getIsConnectMatchBot } from '../../../store/authStore/authSelectors';
+import {
+  getAuthenticatedUserName,
+  getIsConnectMatchBot,
+} from '../../../store/authStore/authSelectors';
+
 import './DataImport.less';
+import { getImportVote, setImportVote } from '../../../waivioApi/importApi';
 
 const DataImport = () => {
   const isAuthBot = useSelector(state =>
     getIsConnectMatchBot(state, { botType: MATCH_BOTS_TYPES.IMPORT }),
   );
+  const authUserName = useSelector(getAuthenticatedUserName);
   const handleRedirect = () => redirectAuthHiveSigner(isAuthBot, 'waivio.import');
   const [visible, setVisible] = useState(false);
+  const [visibleVoting, setVisibleVoting] = useState(false);
+  const [votingValue, setVotingValue] = useState(100);
+
+  useEffect(() => {
+    getImportVote(authUserName).then(res => {
+      setVotingValue(res.minVotingPower / 100);
+    });
+  }, []);
 
   const toggleModal = () => setVisible(!visible);
+
+  const toggleVotingModal = () => setVisibleVoting(!visibleVoting);
+
+  const handleSetMinVotingPower = voting => {
+    setImportVote(authUserName, voting * 100);
+    setVotingValue(voting);
+    toggleVotingModal();
+  };
 
   return (
     <div className="DataImport">
@@ -50,7 +73,7 @@ const DataImport = () => {
         <b>The authorization is completed via HiveSigner and can be revoked at any time.</b>
       </p>
       <p>
-        WAIV voting power threshold: 70% (<a>change</a>).
+        WAIV voting power threshold: {votingValue}% (<a onClick={toggleVotingModal}>change</a>).
         <br />
         The data import bot will pause if WAIV voting power on the account drops below the set
         threshold.
@@ -66,6 +89,11 @@ const DataImport = () => {
       <h3>History</h3>
       <DynamicTbl header={configHistoryTable} bodyConfig={[]} />
       <ImportModal visible={visible} toggleModal={toggleModal} />
+      <ChangeVotingModal
+        handleSetMinVotingPower={handleSetMinVotingPower}
+        visible={visibleVoting}
+        handleOpenVoteModal={toggleVotingModal}
+      />
     </div>
   );
 };

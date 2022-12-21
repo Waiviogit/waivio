@@ -150,8 +150,7 @@ const TableProfit = props => {
 
                         handleEditToken({
                           symbol: row.token,
-                          balance: token?.current || 0,
-                          rate: token?.rate || 1,
+                          balance: token?.balance || 0,
                           quantity: row.initialEdit,
                           external: row.external,
                         });

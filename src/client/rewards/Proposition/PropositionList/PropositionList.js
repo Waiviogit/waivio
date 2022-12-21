@@ -27,7 +27,7 @@ const PropositionList = ({
   location,
   isCatalogWrap,
   isCustomExist,
-  wObj,
+  nestedObj,
 }) => {
   const isReviewPage = location.pathname === `/object/${get(wobject, 'author_permlink', '')}`;
 
@@ -93,7 +93,7 @@ const PropositionList = ({
               <div className="CatalogWrap__sort">
                 <CatalogSorting
                   sort={catalogSort}
-                  currWobject={wObj}
+                  currWobject={nestedObj}
                   handleSortChange={catalogHandleSortChange}
                   isSortCustomExist={isCustomExist}
                 />
@@ -119,7 +119,7 @@ PropositionList.propTypes = {
   listItems: PropTypes.shape(),
   location: PropTypes.shape().isRequired,
   isCustomExist: PropTypes.bool,
-  wObj: PropTypes.shape().isRequired,
+  nestedObj: PropTypes.shape().isRequired,
 };
 
 export default injectIntl(PropositionList);

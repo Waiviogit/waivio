@@ -29,6 +29,7 @@
   "objectsBotApiPrefix": "/objects-bot",
   "currenciesApiPrefix": "/currencies-api",
   "telegramApiPrefix": "/telegram-api",
+  "importApiPrefix": "/import-objects-service",
   "objectsBot": {
     "appendObject": "/append-object",
     "createObject": "/create-object"
@@ -50,6 +51,8 @@
   "messages": "/messages",
   "balance": "/balance",
   "activate": "/activate",
+  "importProduct":  "/import-products",
+  "power": "/power",
   "deactivate": "/deactivate",
   "childWobjects": "/child_wobjects",
   "createCampaign": "/create_campaign",
