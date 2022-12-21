@@ -16,6 +16,7 @@ const initialState = {
   bookmarks: {},
   replies: {},
   promoted: {},
+  tags: [],
 };
 
 const feedIdsList = (state = [], action) => {
@@ -298,6 +299,11 @@ const feed = (state = initialState, action) => {
           ...state.blog,
           tagConditions: [],
         },
+      };
+    case feedTypes.SET_PROFILE_TAGS:
+      return {
+        ...state,
+        tags: action.payload,
       };
     default:
       return state;
