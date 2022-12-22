@@ -108,8 +108,7 @@ export const configHistoryTable = [
     },
     type: 'openModal',
     modal: {
-      body: item =>
-        item.objectsLinks.map(link => (
+      body: item => item.objectsLinks.map(link => (
           <div key={link}>
             <a rel="noopener noreferrer" target="_blank" href={`/object/${link}`}>
               {link}

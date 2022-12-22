@@ -23,7 +23,7 @@ export const DynamicTable = ({
   handleShowMore,
 }) => {
   const [loading, setLoading] = useState(false);
-  const [modalVisible, setModalVisible] = useState(false);
+  const [modalVisible, setModalVisible] = useState(null);
   const getTdBodyType = (item, head) => {
     if (get(item, 'pending', []).includes(head.type)) return <Loading />;
 
@@ -65,18 +65,15 @@ export const DynamicTable = ({
           <React.Fragment>
             <span
               style={{ color: '#f87007', cursor: 'pointer' }}
-              onClick={() => setModalVisible(true)}
+              onClick={() =>
+                setModalVisible({
+                  ...head.modal,
+                  body: head.modal.body(item),
+                })
+              }
             >
               {item[head.id]}
             </span>
-            <Modal
-              title={head.modal.title}
-              visible={modalVisible}
-              onCancel={() => setModalVisible(false)}
-              onOk={() => setModalVisible(false)}
-            >
-              {head.modal.body(item)}
-            </Modal>
           </React.Fragment>
         );
 
@@ -154,6 +151,16 @@ export const DynamicTable = ({
           </tr>
         )}
       </tbody>
+      {modalVisible && (
+        <Modal
+          title={modalVisible.title}
+          visible={modalVisible}
+          onCancel={() => setModalVisible(null)}
+          onOk={() => setModalVisible(null)}
+        >
+          {modalVisible.body}
+        </Modal>
+      )}
     </table>
   );
 };
