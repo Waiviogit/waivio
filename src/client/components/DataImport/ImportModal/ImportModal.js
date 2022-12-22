@@ -8,10 +8,14 @@ import { getAuthenticatedUserName } from '../../../../store/authStore/authSelect
 import './ImportModal.less';
 
 // eslint-disable-next-line react/prop-types
-const ImportModal = ({ visible, toggleModal }) => {
+const ImportModal = ({ visible, toggleModal, getImportList }) => {
   const formData = new FormData();
   const authName = useSelector(getAuthenticatedUserName);
   const [uploadedFile, setUploadedFile] = useState(null);
+  const [locale, setLocale] = useState('en-US');
+  const [objectType, setObjectType] = useState('book');
+  const [authority, setAuthority] = useState('administrative');
+
   const handleUploadFile = e => {
     setUploadedFile(e.currentTarget.files[0]);
   };
@@ -21,11 +25,15 @@ const ImportModal = ({ visible, toggleModal }) => {
   const onSubmit = () => {
     formData.append('file', uploadedFile);
     formData.append('user', authName);
-    uploadObject(formData)
-      .then(() => {
-        toggleModal();
-      })
-      .catch(e => message.error(e.message));
+    formData.append('locale', locale);
+    formData.append('objectType', objectType);
+    formData.append('authority', authority);
+    uploadObject(formData).then(res => {
+      if (res.message) message.error(res.message);
+
+      toggleModal();
+      getImportList();
+    });
   };
 
   return (
@@ -38,7 +46,7 @@ const ImportModal = ({ visible, toggleModal }) => {
     >
       <div>
         <h4>Select object type:</h4>
-        <Select defaultValue={'book'} onSelect={key => formData.append('objectType', key)}>
+        <Select defaultValue={'book'} onSelect={setObjectType}>
           {['book', 'product', 'restaurant'].map(type => (
             <Select.Option key={type}>{type}</Select.Option>
           ))}
@@ -46,7 +54,7 @@ const ImportModal = ({ visible, toggleModal }) => {
       </div>
       <div>
         <h4>Select locale:</h4>
-        <Select defaultValue={'en-US'} onSelect={key => formData.append('locale', key)}>
+        <Select defaultValue={'en-US'} onSelect={setLocale}>
           {LANGUAGES.map(lang => (
             <Select.Option key={lang.id}>{lang.name}</Select.Option>
           ))}
@@ -79,7 +87,7 @@ const ImportModal = ({ visible, toggleModal }) => {
       </div>
       <div>
         <h4>Claim athority:</h4>
-        <Select defaultValue={'admin'} onSelect={key => formData.append('authority', key)}>
+        <Select defaultValue={'administrative'} onSelect={setAuthority}>
           {['administrative', 'ownership'].map(type => (
             <Select.Option key={type}>{type}</Select.Option>
           ))}

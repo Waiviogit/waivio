@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Switch } from 'antd';
+import { Button, Modal, Switch } from 'antd';
 import { useSelector } from 'react-redux';
 
 import ChangeVotingModal from '../../widgets/ChangeVotingModal/ChangeVotingModal';
@@ -13,7 +13,14 @@ import {
 } from '../../../store/authStore/authSelectors';
 
 import './DataImport.less';
-import { getImportVote, setImportVote } from '../../../waivioApi/importApi';
+import {
+  deleteObjectImport,
+  getHistoryImportedObjects,
+  getImportedObjects,
+  getImportVote,
+  setImportVote,
+  setObjectImport,
+} from '../../../waivioApi/importApi';
 
 const DataImport = () => {
   const isAuthBot = useSelector(state =>
@@ -24,10 +31,21 @@ const DataImport = () => {
   const [visible, setVisible] = useState(false);
   const [visibleVoting, setVisibleVoting] = useState(false);
   const [votingValue, setVotingValue] = useState(100);
+  const [importedObject, setImportedObject] = useState([]);
+  const [history, setHistoryImportedObject] = useState([]);
+
+  const getImportList = () =>
+    getImportedObjects(authUserName).then(res => {
+      setImportedObject(res);
+    });
 
   useEffect(() => {
     getImportVote(authUserName).then(res => {
       setVotingValue(res.minVotingPower / 100);
+    });
+    getImportList();
+    getHistoryImportedObjects(authUserName).then(res => {
+      setHistoryImportedObject(res);
     });
   }, []);
 
@@ -39,6 +57,30 @@ const DataImport = () => {
     setImportVote(authUserName, voting * 100);
     setVotingValue(voting);
     toggleVotingModal();
+  };
+
+  const handleChangeStatus = (e, item) => {
+    const status = item.status === 'active' ? 'onHold' : 'active';
+
+    setObjectImport(authUserName, status, item.importId).then(() => {
+      getImportList();
+    });
+  };
+
+  const handleDeleteObject = item => {
+    Modal.confirm({
+      title: 'Stop JSON data file import',
+      content:
+        'Once stopped, the import cannot be resumed. To temporarily suspend/resume the data import, please consider using the Active checkbox.',
+      onOk: () => {
+        deleteObjectImport(authUserName, item.importId).then(() => {
+          getImportedObjects(authUserName).then(res => {
+            setImportedObject(res);
+          });
+        });
+      },
+      okText: 'Stop import',
+    });
   };
 
   return (
@@ -85,15 +127,25 @@ const DataImport = () => {
       <Button type="primary" onClick={toggleModal}>
         Upload new file
       </Button>
-      <DynamicTbl header={configProductTable} bodyConfig={[]} />
-      <h3>History</h3>
-      <DynamicTbl header={configHistoryTable} bodyConfig={[]} />
-      <ImportModal visible={visible} toggleModal={toggleModal} />
-      <ChangeVotingModal
-        handleSetMinVotingPower={handleSetMinVotingPower}
-        visible={visibleVoting}
-        handleOpenVoteModal={toggleVotingModal}
+      <DynamicTbl
+        header={configProductTable}
+        bodyConfig={importedObject}
+        onChange={handleChangeStatus}
+        deleteItem={handleDeleteObject}
       />
+      <h3>History</h3>
+      <DynamicTbl header={configHistoryTable} bodyConfig={history} />
+      {visible && (
+        <ImportModal getImportList={getImportList} visible={visible} toggleModal={toggleModal} />
+      )}
+      {visibleVoting && (
+        <ChangeVotingModal
+          handleSetMinVotingPower={handleSetMinVotingPower}
+          visible={visibleVoting}
+          handleOpenVoteModal={toggleVotingModal}
+          minVotingPower={votingValue / 100}
+        />
+      )}
     </div>
   );
 };

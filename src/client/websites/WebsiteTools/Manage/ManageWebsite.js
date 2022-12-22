@@ -22,9 +22,9 @@ import { openTransfer } from '../../../../store/walletStore/walletActions';
 import Transfer from '../../../wallet/Transfer/Transfer';
 import { getAuthenticatedUserName } from '../../../../store/authStore/authSelectors';
 import { getManage, getWebsiteLoading } from '../../../../store/websiteStore/websiteSelectors';
+import { parseJSON } from '../../../../common/helpers/parseJSON';
 
 import './ManageWebsite.less';
-import { parseJSON } from '../../../../common/helpers/parseJSON';
 
 export const ManageWebsite = props => {
   const { prices, accountBalance, websites, dataForPayments } = props.manageInfo;

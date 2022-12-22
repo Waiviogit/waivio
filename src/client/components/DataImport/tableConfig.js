@@ -1,3 +1,5 @@
+import React from 'react';
+
 export const configProductTable = [
   {
     id: 'active',
@@ -5,10 +7,11 @@ export const configProductTable = [
       id: 'active',
       defaultMessage: 'Active',
     },
-    type: 'check',
+    type: 'checkbox',
+    getChecked: item => item.status === 'active',
   },
   {
-    id: 'start_date',
+    id: 'createdAt',
     intl: {
       id: 'start_date',
       defaultMessage: 'Start date',
@@ -16,53 +19,54 @@ export const configProductTable = [
     type: 'date',
   },
   {
-    id: 'object_type',
+    id: 'objectType',
     intl: {
       id: 'object_type',
       defaultMessage: 'Object type',
     },
   },
   {
-    id: 'object_type',
+    id: 'authority',
     intl: {
       id: 'claimed_athority',
       defaultMessage: 'Claimed athority',
     },
   },
   {
-    id: 'object_type',
+    id: 'objectsCount',
     intl: {
       id: 'number_object',
       defaultMessage: 'Number of object',
     },
   },
   {
-    id: 'object_type',
+    id: 'fieldsCount',
     intl: {
       id: 'number_updates',
       defaultMessage: 'Number of updates',
     },
   },
   {
-    id: 'object_type',
+    id: 'fieldsCreatedCount',
     intl: {
       id: 'posted_updates',
       defaultMessage: 'Posted updates',
     },
   },
   {
-    id: 'object_type',
+    id: 'objectsPosted',
     intl: {
       id: 'posted_updates',
       defaultMessage: 'Posted updates',
     },
   },
   {
-    id: 'object_type',
+    id: 'delete',
     intl: {
-      id: 'action',
-      defaultMessage: 'Action',
+      id: 'actions',
+      defaultMessage: 'Actions',
     },
+    type: 'delete',
   },
 ];
 export const configHistoryTable = [
@@ -83,35 +87,46 @@ export const configHistoryTable = [
     type: 'date',
   },
   {
-    id: 'object_type',
+    id: 'objectType',
     intl: {
       id: 'object_type',
       defaultMessage: 'Object type',
     },
   },
   {
-    id: 'object_type',
+    id: 'authority',
     intl: {
       id: 'claimed_athority',
       defaultMessage: 'Claimed athority',
     },
   },
   {
-    id: 'object_type',
+    id: 'objectsCount',
     intl: {
       id: 'submitted_object',
       defaultMessage: 'Submitted object',
     },
+    type: 'openModal',
+    modal: {
+      body: item =>
+        item.objectsLinks.map(link => (
+          <div key={link}>
+            <a rel="noopener noreferrer" target="_blank" href={`/object/${link}`}>
+              {link}
+            </a>
+          </div>
+        )),
+    },
   },
   {
-    id: 'object_type',
+    id: 'fieldsCount',
     intl: {
       id: 'submitted_updates',
       defaultMessage: 'Submitted updates',
     },
   },
   {
-    id: 'object_type',
+    id: 'fieldsCreatedCount',
     intl: {
       id: 'posted_updates',
       defaultMessage: 'Posted updates',
