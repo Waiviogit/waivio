@@ -368,6 +368,12 @@ export const setProfileFilters = payload => ({
   type: SET_PROFILE_FILTERS,
   payload,
 });
+export const SET_PROFILE_TAGS = '@feed/SET_PROFILE_TAGS';
+
+export const setProfileTags = payload => ({
+  type: SET_PROFILE_TAGS,
+  payload,
+});
 
 export const RESET_PROFILE_FILTERS = '@feed/RESET_PROFILE_FILTERS';
 

@@ -223,13 +223,7 @@ export const getDraftPage = (userName, authorPermlink) => {
     .catch(error => error);
 };
 
-export const getUserProfileBlog = (
-  userName,
-  follower,
-  { limit = 10, skip },
-  locale = 'en-US',
-  tagsArray,
-) =>
+export const getUserProfileBlog = (userName, follower, { limit = 10, skip }, locale = 'en-US') =>
   fetch(`${config.apiPrefix}${config.user}/${userName}${config.blog}`, {
     headers: {
       ...headers,
@@ -241,7 +235,6 @@ export const getUserProfileBlog = (
     body: JSON.stringify({
       limit,
       skip,
-      ...(isEmpty(tagsArray) ? {} : { tagsArray }),
     }),
   })
     .then(res => res.json())
@@ -3094,6 +3087,20 @@ export const getObjectsByDepartment = ({ departments, skip, limit }) => {
     method: 'POST',
     body: JSON.stringify({
       departments,
+      skip,
+      limit,
+    }),
+  })
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+};
+
+export const getUserProfileBlogTags = (userName, { limit = 10, skip }) => {
+  return fetch(`${config.apiPrefix}${config.user}/${userName}${config.blogTags}`, {
+    headers,
+    method: 'POST',
+    body: JSON.stringify({
       skip,
       limit,
     }),
