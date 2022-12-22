@@ -6,14 +6,12 @@ import { FormattedMessage, FormattedNumber } from 'react-intl';
 import classNames from 'classnames';
 
 import WalletSummaryInfo from '../WalletSummaryInfo/WalletSummaryInfo';
-import {
-  getTokenRatesInUSD,
-  getUserCurrencyBalance,
-} from '../../../store/walletStore/walletSelectors';
+import { getUserCurrencyBalance } from '../../../store/walletStore/walletSelectors';
 import Loading from '../../components/Icon/Loading';
 import DelegateListModal from '../DelegateModals/DelegateListModal/DelegateListModal';
 import { getDelegateList, getPendingUndelegationsToken } from '../../../waivioApi/ApiClient';
 import WalletAction from '../WalletSummaryInfo/components/WalletAction/WalletActions';
+import { getRatesList } from '../../../store/ratesStore/ratesSelector';
 
 const WAIVWalletSummaryInfo = props => {
   const [delegateList, setDeligateList] = useState([]);
@@ -25,7 +23,7 @@ const WAIVWalletSummaryInfo = props => {
   const unstake = +get(props.currencyInfo, 'pendingUnstake', 0);
   const delegationsIn = +get(props.currencyInfo, 'delegationsIn', 0);
   const delegationsOut = +get(props.currencyInfo, 'delegationsOut', 0);
-  const estAccValue = props.rates * (Number(balance) + Number(stake));
+  const estAccValue = props.rates.WAIV * props.rates.HIVE * (Number(balance) + Number(stake));
   const delegation = delegationsIn - delegationsOut;
   const hasDelegations =
     !isEmpty(delegateList) || !isEmpty(recivedList) || !isEmpty(undeligatedList);
@@ -138,5 +136,5 @@ WAIVWalletSummaryInfo.defaultProps = {
 
 export default connect(state => ({
   currencyInfo: getUserCurrencyBalance(state, 'WAIV'),
-  rates: getTokenRatesInUSD(state, 'WAIV'),
+  rates: getRatesList(state),
 }))(WAIVWalletSummaryInfo);

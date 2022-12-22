@@ -39,7 +39,6 @@ const CatalogBreadcrumb = ({
 
   const handleChangeBreadCrumbs = wObject => {
     if (isEmpty(wObject)) return;
-
     let currentBreadCrumbs = breadcrumb.filter(el => permlinks.includes(el.id));
 
     if (currentObjIsListOrPage) currentBreadCrumbs = addParentToBreadCrumbs(currentBreadCrumbs);
@@ -74,7 +73,7 @@ const CatalogBreadcrumb = ({
 
       handleChangeBreadCrumbs(usedObj);
     }
-  }, [location.hash, wobject]);
+  }, [wobject.author_permlink, nestedWobject.author_permlink]);
 
   return (
     <div className="CustomBreadCrumbs">
@@ -130,7 +129,9 @@ CatalogBreadcrumb.propTypes = {
   intl: PropTypes.shape().isRequired,
   wobject: PropTypes.shape(),
   locale: PropTypes.string.isRequired,
-  nestedWobject: PropTypes.shape({}).isRequired,
+  nestedWobject: PropTypes.shape({
+    author_permlink: PropTypes.string,
+  }).isRequired,
   breadcrumb: PropTypes.shape([]).isRequired,
   setBreadCrumbs: PropTypes.func.isRequired,
 };

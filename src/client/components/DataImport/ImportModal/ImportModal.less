@@ -30,8 +30,25 @@
 
   &__fileCard {
     display: inline-block;
-    border: 1px solid @blue-baliHai;
+    border: 1px solid @white-gainsboro;
     border-radius: 4px;
     padding: 5px 10px;
+    position: relative;
+  }
+
+  &__close {
+    position: absolute;
+    border: 1px solid @white-gainsboro;
+    border-radius: 50%;
+    display: inline-block;
+    padding: 2px;
+    right: -5px;
+    top: -5px;
+    background: white;
+    font-size: 11px;
+  }
+
+  &__checkbox-wrap {
+    padding: 10px 0 0;
   }
 }

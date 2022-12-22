@@ -22,11 +22,11 @@ import {
   getVotePercent,
   getVotingPower,
 } from '../../../store/settingsStore/settingsSelectors';
+import { voteAppends } from '../../../store/appendStore/appendActions';
 
 import '../../components/Story/Story.less';
 import '../../components/StoryFooter/StoryFooter.less';
 import '../../components/StoryFooter/Buttons.less';
-import { voteAppends } from '../../../store/appendStore/appendActions';
 
 const AppendCard = props => {
   const [visibleSlider, showSlider] = useState(false);

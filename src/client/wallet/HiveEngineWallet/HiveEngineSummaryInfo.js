@@ -13,10 +13,11 @@ import {
   getSwapTokensBalanceList,
   getTokensBalanceList,
 } from '../../../store/walletStore/walletSelectors';
-import { getCryptosPriceHistory } from '../../../store/appStore/appSelectors';
 import HiveEngineCurrencyItem from './HiveEngineCurrencyItem/HiveEngineCurrencyItem';
-import './HiveEngineSummaryInfo.less';
 import { HIVE_ENGINE_DEFAULT_SWAP_LIST } from '../../../common/constants/swapList';
+import { getRatesList } from '../../../store/ratesStore/ratesSelector';
+
+import './HiveEngineSummaryInfo.less';
 
 const HiveEngineSummaryInfo = props => {
   useEffect(() => {
@@ -35,12 +36,12 @@ const HiveEngineSummaryInfo = props => {
     : props.swapList;
 
   if (isEmpty(combinedList)) return <Loading />;
-
   const estAccValue = combinedList.reduce((acc, curr) => {
     const stake = curr.stake || 0;
+
     const balanceInUsd = HIVE_ENGINE_DEFAULT_SWAP_LIST.includes(curr.symbol)
-      ? (Number(curr.balance) + Number(stake)) * curr.rate
-      : (Number(curr.balance) + Number(stake)) * curr.rate * props.hiveRate;
+      ? (Number(curr.balance) + Number(stake)) * props.rates[curr.symbol]
+      : (Number(curr.balance) + Number(stake)) * props.rates[curr.symbol] * props.rates.HIVE;
 
     return acc + balanceInUsd;
   }, 0);
@@ -71,7 +72,7 @@ const HiveEngineSummaryInfo = props => {
       </div>
       <WalletSummaryInfo estAccValue={estAccValue}>
         {combinedList.map(token => (
-          <HiveEngineCurrencyItem key={token.symbol} token={token} hiveRate={props.hiveRate} />
+          <HiveEngineCurrencyItem key={token.symbol} token={token} rates={props.rates} />
         ))}
       </WalletSummaryInfo>
     </div>
@@ -80,26 +81,24 @@ const HiveEngineSummaryInfo = props => {
 
 HiveEngineSummaryInfo.propTypes = {
   currencyInfo: PropTypes.shape({}).isRequired,
+  rates: PropTypes.shape({
+    HIVE: PropTypes.number,
+  }).isRequired,
   hiveEngineDelayInfo: PropTypes.shape({
     status: PropTypes.string,
     delay: PropTypes.number,
   }).isRequired,
   tokensList: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   swapList: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
-  hiveRate: PropTypes.number.isRequired,
   getHiveEngineStatus: PropTypes.func.isRequired,
 };
 
 export default connect(
-  state => {
-    const cryptosPriceHistory = getCryptosPriceHistory(state);
-
-    return {
-      tokensList: getTokensBalanceList(state),
-      hiveRate: get(cryptosPriceHistory, 'hive.usdPriceHistory.usd', null),
-      swapList: getSwapTokensBalanceList(state),
-      hiveEngineDelayInfo: getHiveEngineDelayInfo(state),
-    };
-  },
+  state => ({
+    tokensList: getTokensBalanceList(state),
+    swapList: getSwapTokensBalanceList(state),
+    rates: getRatesList(state),
+    hiveEngineDelayInfo: getHiveEngineDelayInfo(state),
+  }),
   { getHiveEngineStatus },
 )(HiveEngineSummaryInfo);

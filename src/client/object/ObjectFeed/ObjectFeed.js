@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import { isEmpty, uniq, get } from 'lodash';
+import { isEmpty, uniq, get, isNil } from 'lodash';
 import PropositionContainer from '../../rewards/Proposition/PropositionList/PropositionListContainer';
 import Feed from '../../feed/Feed';
 import { getSuitableLanguage } from '../../../store/reducers';
@@ -67,7 +67,7 @@ export default class ObjectFeed extends React.Component {
   };
 
   componentDidMount() {
-    const { match, limit, readLocales, wobject } = this.props;
+    const { match, limit, readLocales } = this.props;
     const { name, itemId } = match.params;
 
     this.getWobjPropos();
@@ -76,12 +76,12 @@ export default class ObjectFeed extends React.Component {
       username: name,
       readLanguages: readLocales,
       limit,
-      newsPermlink: itemId || wobject?.newsFeed?.permlink,
+      newsPermlink: itemId || this.getNewsPermlink(),
     });
   }
 
   componentWillReceiveProps(nextProps) {
-    const { match, limit, wobject } = this.props;
+    const { match, limit } = this.props;
     const nextName = get(nextProps, ['match', 'params', 'name']);
     const nextItemID = get(nextProps, ['match', 'params', 'itemId']);
     const objectPosts = get(nextProps, ['feed', 'objectPosts', nextName]);
@@ -92,7 +92,7 @@ export default class ObjectFeed extends React.Component {
         username: nextName,
         readLanguages: nextProps.readLocales,
         limit,
-        newsPermlink: nextItemID || wobject?.newsFeed?.permlink,
+        newsPermlink: nextItemID || this.getNewsPermlink(),
       });
       this.getWobjPropos();
       window.scrollTo(0, 0);
@@ -120,6 +120,12 @@ export default class ObjectFeed extends React.Component {
       this.setState({ reward: res }),
     );
 
+  getNewsPermlink() {
+    if (isEmpty(this.props.match.params[1]) || isNil(this.props.match.params[1])) return undefined;
+
+    return this.props.wobject?.newsFeed?.permlink;
+  }
+
   render() {
     const { feed, limit, handleCreatePost, userName, wobject } = this.props;
     const { name, itemId } = this.props.match.params;
@@ -135,7 +141,7 @@ export default class ObjectFeed extends React.Component {
         authorPermlink: name,
         limit,
         skip,
-        newsPermlink: itemId || wobject?.newsFeed?.permlink,
+        newsPermlink: itemId || this.getNewsPermlink(),
       });
     };
 

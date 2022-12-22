@@ -36,6 +36,16 @@ const ExtendedNewsFilterForm = props => {
         })}
       </div>
     );
+  const orLayout = compareItems =>
+    compareItems > 0 &&
+    !isMobile(props.screenSize) && (
+      <div className={`NewsFiltersRule__line-and`}>
+        {props.intl.formatMessage({
+          id: 'or',
+          defaultMessage: 'or',
+        })}
+      </div>
+    );
 
   const getAllowListLayout = () => (
     <React.Fragment>
@@ -239,7 +249,7 @@ const ExtendedNewsFilterForm = props => {
           <div className="NewsFiltersRule__card-wrap">
             {props.selectedUsers.map((userName, index) => (
               <>
-                {andLayout(index)}
+                {orLayout(index)}
                 <div>
                   <SelectUserForAutocomplete
                     isNewsFeed

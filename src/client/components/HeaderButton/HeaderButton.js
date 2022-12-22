@@ -32,6 +32,8 @@ import {
   getNotifications,
 } from '../../../store/userStore/userSelectors';
 import { getTokenBalance } from '../../../store/walletStore/walletActions';
+import { getObjectUrlForLink } from '../../../common/helpers/wObjectHelper';
+import { isMobile } from '../../../common/helpers/apiHelpers';
 
 const HeaderButtons = props => {
   const [popoverVisible, setPopoverVisible] = useState(false);
@@ -93,6 +95,20 @@ const HeaderButtons = props => {
       rewardItem,
       <PopoverMenuItem key="discover" topNav>
         <FormattedMessage id="menu_discover" defaultMessage="Discover" />
+      </PopoverMenuItem>,
+      ...popoverItems,
+    ];
+  }
+  if (isMobile()) {
+    popoverItems = [
+      <PopoverMenuItem key="about" topNav>
+        <FormattedMessage id="about" defaultMessage="About" />
+      </PopoverMenuItem>,
+      <PopoverMenuItem key="reviews" topNav>
+        <FormattedMessage id="reviews" defaultMessage="Reviews" />
+      </PopoverMenuItem>,
+      <PopoverMenuItem key="legal" topNav>
+        <FormattedMessage id="legal" defaultMessage="Legal" />
       </PopoverMenuItem>,
       ...popoverItems,
     ];
@@ -170,6 +186,15 @@ const HeaderButtons = props => {
       case 'tools':
         history.push(`/notification-settings`);
         break;
+      case 'reviews':
+        history.push(`/object/mds-dining-gifts/newsFilter/dininggifts-dw09owbl6bh`);
+        break;
+      case 'legal':
+        history.push(`/object/ljc-legal/list`);
+        break;
+      case 'about':
+        history.push(`${getObjectUrlForLink(props.aboutObject)}`);
+        break;
       default:
         break;
     }
@@ -187,6 +212,17 @@ const HeaderButtons = props => {
 
   if (!username) {
     const next = location.pathname.length > 1 ? location.pathname : '';
+    const popoverNotAuthUserItems = [
+      <PopoverMenuItem key="about" topNav>
+        <FormattedMessage id="about" defaultMessage="About" />
+      </PopoverMenuItem>,
+      <PopoverMenuItem key="reviews" topNav>
+        <FormattedMessage id="reviews" defaultMessage="Reviews" />
+      </PopoverMenuItem>,
+      <PopoverMenuItem key="legal" topNav>
+        <FormattedMessage id="legal" defaultMessage="Legal" />
+      </PopoverMenuItem>,
+    ];
 
     return (
       <div className={'Topnav__menu-container Topnav__menu-logged-out'}>
@@ -197,6 +233,28 @@ const HeaderButtons = props => {
           <Menu.Item key="language">
             <LanguageSettings />
           </Menu.Item>
+          {isMobile() && (
+            <Menu.Item key="more" className="Topnav__menu--icon">
+              <Popover
+                placement="bottom"
+                trigger="click"
+                visible={popoverVisible}
+                onVisibleChange={handleMoreMenuVisibleChange}
+                overlayStyle={{ position: 'fixed' }}
+                content={
+                  <PopoverMenu onSelect={handleMoreMenuSelect}>
+                    {popoverNotAuthUserItems}
+                  </PopoverMenu>
+                }
+                overlayClassName="Topnav__popover"
+              >
+                <a className="Topnav__link-mt5">
+                  <Icon type="caret-down" />
+                  <Icon type="bars" />
+                </a>
+              </Popover>
+            </Menu.Item>
+          )}
         </Menu>
       </div>
     );
@@ -284,6 +342,7 @@ const HeaderButtons = props => {
 
 HeaderButtons.propTypes = {
   intl: PropTypes.shape().isRequired,
+  aboutObject: PropTypes.shape().isRequired,
   notifications: PropTypes.arrayOf(PropTypes.shape()),
   userMetaData: PropTypes.shape(),
   loadingNotifications: PropTypes.bool,

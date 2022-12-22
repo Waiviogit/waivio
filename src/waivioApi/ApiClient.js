@@ -223,13 +223,7 @@ export const getDraftPage = (userName, authorPermlink) => {
     .catch(error => error);
 };
 
-export const getUserProfileBlog = (
-  userName,
-  follower,
-  { limit = 10, skip },
-  locale = 'en-US',
-  tagsArray,
-) =>
+export const getUserProfileBlog = (userName, follower, { limit = 10, skip }, locale = 'en-US') =>
   fetch(`${config.apiPrefix}${config.user}/${userName}${config.blog}`, {
     headers: {
       ...headers,
@@ -241,7 +235,6 @@ export const getUserProfileBlog = (
     body: JSON.stringify({
       limit,
       skip,
-      ...(isEmpty(tagsArray) ? {} : { tagsArray }),
     }),
   })
     .then(res => res.json())
@@ -2839,18 +2832,13 @@ export const getRebalancingTable = (account, params) => {
         return [...acc, tab.base, tab.quote];
       }, []);
       const balances = await getTokenBalance(account, { $in: tokensList });
-      const rates = await getTokensRate(tokensList);
       const table = response.table.reduce((acc, curr) => {
         const { balance } = balances.find(bal => bal.symbol === curr.base) || { balance: 0 };
-        const { lastPrice: rate } = rates.find(bal => bal.symbol === curr.base) || { lastPrice: 1 };
-        const { lastPrice: quoteRate } = rates.find(bal => bal.symbol === curr.quote) || {
-          lastPrice: 1,
-        };
         const { balance: quoteBalance } = balances.find(bal => bal.symbol === curr.quote) || {
           balance: 0,
         };
 
-        return [...acc, { ...curr, balance, quoteBalance, quoteRate, symbol: curr.base, rate }];
+        return [...acc, { ...curr, balance, quoteBalance, symbol: curr.base }];
       }, []);
 
       return {
@@ -2868,22 +2856,7 @@ export const getProfitTable = account => {
   })
     .then(handleErrors)
     .then(res => res.json())
-    .then(async response => {
-      const tokensList = response.table.reduce((acc, tab) => {
-        return [...acc, tab.token];
-      }, []);
-
-      const rates = await getTokensRate(tokensList);
-      const table = response.table.reduce((acc, curr) => {
-        const { lastPrice: rate } = rates.find(r => r.symbol === curr.token) || { lastPrice: 1 };
-        return [...acc, { ...curr, symbol: curr.token, rate }];
-      }, []);
-
-      return {
-        profit: response.profit,
-        table,
-      };
-    })
+    .then(response => response)
     .catch(e => e);
 };
 
@@ -3123,6 +3096,18 @@ export const getObjectsByDepartment = ({ departments, skip, limit }) => {
     .catch(e => e);
 };
 
-//
+export const getUserProfileBlogTags = (userName, { limit = 10, skip }) => {
+  return fetch(`${config.apiPrefix}${config.user}/${userName}${config.blogTags}`, {
+    headers,
+    method: 'POST',
+    body: JSON.stringify({
+      skip,
+      limit,
+    }),
+  })
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+};
 
 export default null;

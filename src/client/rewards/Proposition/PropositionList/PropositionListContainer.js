@@ -1,13 +1,9 @@
-import React, { useState } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { get } from 'lodash';
-import { injectIntl } from 'react-intl';
-import { message } from 'antd';
 import PropositionList from './PropositionList';
-import * as apiConfig from '../../../../waivioApi/config.json';
-import { assignProposition, declineProposition } from '../../../../store/userStore/userActions';
 import { getAuthenticatedUser } from '../../../../store/authStore/authSelectors';
 import { getLocale } from '../../../../store/settingsStore/settingsSelectors';
 
@@ -16,11 +12,8 @@ const PropositionListContainer = ({
   userName,
   locale,
   match,
-  intl,
   history,
   user,
-  assignPropos,
-  declinePropos,
   catalogHandleSortChange,
   catalogSort,
   isCatalogWrap,
@@ -28,127 +21,9 @@ const PropositionListContainer = ({
   location,
   listItems,
   isSortCustomExist,
-  wObj,
+  nestedObj,
 }) => {
-  const [loadingAssignDiscard, setLoadingAssignDiscard] = useState(false);
-  const [proposition, setProposition] = useState([]);
-  const [isAssign, setIsAssign] = useState(false);
   const parentPermlink = get(wobject, 'parent.author_permlink', '');
-
-  const updateProposition = (propsId, assigned, objPermlink, companyAuthor) =>
-    proposition.map(propos => {
-      const updatedProposition = propos;
-      const updatedPropositionId = get(updatedProposition, ['_id'], '');
-
-      if (updatedPropositionId === propsId) {
-        updatedProposition.objects.forEach((object, index) => {
-          const objectAuthorPermlink = get(object, ['object', 'author_permlink']);
-
-          updatedProposition.objects[index].assigned =
-            objectAuthorPermlink === objPermlink || assigned;
-        });
-      }
-      if (updatedProposition.guide.name === companyAuthor && updatedPropositionId !== propsId) {
-        updatedProposition.isReservedSiblingObj = true;
-      }
-
-      return updatedProposition;
-    });
-
-  const assignPropositionHandler = ({
-    companyAuthor,
-    companyPermlink,
-    resPermlink,
-    objPermlink,
-    companyId,
-    primaryObjectName,
-    secondaryObjectName,
-    amount,
-    // eslint-disable-next-line no-shadow
-    proposition,
-    proposedWobj,
-    username,
-    currencyId,
-  }) => {
-    const appName = apiConfig[process.env.NODE_ENV].appName || 'waivio';
-
-    setLoadingAssignDiscard(true);
-
-    return assignPropos({
-      companyAuthor,
-      companyPermlink,
-      objPermlink,
-      resPermlink,
-      appName,
-      primaryObjectName,
-      secondaryObjectName,
-      amount,
-      proposition,
-      proposedWobj,
-      userName: username,
-      currencyId,
-    })
-      .then(() => {
-        message.success(
-          intl.formatMessage({
-            id: 'assigned_successfully_update',
-            defaultMessage: 'Assigned successfully. Your new reservation will be available soon.',
-          }),
-        );
-        const updatedPropositions = updateProposition(companyId, true, objPermlink, companyAuthor);
-
-        setLoadingAssignDiscard(false);
-        setProposition(updatedPropositions);
-        setIsAssign(true);
-
-        return { isAssign: true };
-      })
-      .catch(e => {
-        setLoadingAssignDiscard(false);
-        setIsAssign(false);
-        throw e;
-      });
-  };
-
-  const discardProposition = ({
-    companyAuthor,
-    companyPermlink,
-    companyId,
-    objPermlink,
-    unreservationPermlink,
-    reservationPermlink,
-  }) => {
-    setLoadingAssignDiscard(true);
-
-    return declinePropos({
-      companyAuthor,
-      companyPermlink,
-      companyId,
-      objPermlink,
-      unreservationPermlink,
-      reservationPermlink,
-    })
-      .then(() => {
-        const updatedPropositions = updateProposition(companyId, false, objPermlink);
-
-        setLoadingAssignDiscard(false);
-        setProposition(updatedPropositions);
-        setIsAssign(true);
-
-        return { isAssign: false };
-      })
-      .catch(e => {
-        message.error(e.error_description);
-        setLoadingAssignDiscard(false);
-        setIsAssign(true);
-      });
-  };
-
-  const goToProducts = currWobject => {
-    const permlink = get(currWobject, 'author_permlink');
-
-    history.push(`/rewards/all/${permlink}`);
-  };
 
   return (
     <PropositionList
@@ -156,12 +31,7 @@ const PropositionListContainer = ({
       catalogHandleSortChange={catalogHandleSortChange}
       catalogSort={catalogSort}
       wobject={wobject}
-      goToProducts={goToProducts}
-      discardProposition={discardProposition}
-      assignPropositionHandler={assignPropositionHandler}
       user={user}
-      loadingAssignDiscard={loadingAssignDiscard}
-      isAssign={isAssign}
       match={match}
       userName={userName}
       history={history}
@@ -171,7 +41,7 @@ const PropositionListContainer = ({
       locale={locale}
       listItems={listItems}
       isCustomExist={isSortCustomExist}
-      wObj={wObj}
+      nestedObj={nestedObj}
     />
   );
 };
@@ -181,11 +51,8 @@ PropositionListContainer.propTypes = {
   userName: PropTypes.string.isRequired,
   locale: PropTypes.string,
   match: PropTypes.shape(),
-  intl: PropTypes.shape().isRequired,
   history: PropTypes.shape().isRequired,
   user: PropTypes.shape(),
-  assignPropos: PropTypes.func,
-  declinePropos: PropTypes.func,
   catalogHandleSortChange: PropTypes.func,
   catalogSort: PropTypes.string.isRequired,
   isCatalogWrap: PropTypes.bool,
@@ -193,7 +60,7 @@ PropositionListContainer.propTypes = {
   location: PropTypes.shape().isRequired,
   listItems: PropTypes.shape(),
   isSortCustomExist: PropTypes.bool,
-  wObj: PropTypes.shape().isRequired,
+  nestedObj: PropTypes.shape().isRequired,
 };
 
 PropositionListContainer.defaultProps = {
@@ -213,13 +80,7 @@ PropositionListContainer.defaultProps = {
   isSortCustomExist: false,
 };
 
-export default connect(
-  state => ({
-    locale: getLocale(state),
-    user: getAuthenticatedUser(state),
-  }),
-  {
-    assignPropos: assignProposition,
-    declinePropos: declineProposition,
-  },
-)(withRouter(injectIntl(PropositionListContainer)));
+export default connect(state => ({
+  locale: getLocale(state),
+  user: getAuthenticatedUser(state),
+}))(withRouter(PropositionListContainer));

@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { useSelector } from 'react-redux';
-import classNames from 'classnames';
 
 import WebsiteSearch from '../../../search/WebsitesSearch/WebsiteSearch';
 import FilterTypesList from '../../../search/SearchAllResult/components/FilterTypesList';
@@ -18,19 +17,16 @@ const MainPageHeader = props => {
   const logo = useSelector(getWebsiteLogo);
   const config = useSelector(getConfigurationValues);
   const currHost = typeof location !== 'undefined' && location.hostname;
-  const logoClasses = classNames({
-    MainPageHeader__mobileLogoImg: props.isMobile,
-    MainPageHeader__logoImg: !props.isMobile,
-  });
   const aboutObject = config?.aboutObject;
   const currentLogo = logo || getObjectAvatar(aboutObject);
+  const legalLink = `/object/ljc-legal/list`;
 
   return (
     <div className="MainPageHeader">
       <div className="MainPageHeader__navWrapper">
         <div className="MainPageHeader__logo">
           <Link to="/" className="MainPageHeader__logoLink">
-            <img src={currentLogo} className={logoClasses} alt="logo" />
+            <img src={currentLogo} className="MainPageHeader__logoImg" alt="logo" />
             <b className="MainPageHeader__name">{currHost}</b>
           </Link>
           {!props.withMap && (
@@ -56,11 +52,11 @@ const MainPageHeader = props => {
             <Link to="/object/mds-dining-gifts/newsFilter/dininggifts-dw09owbl6bh">
               {props.intl.formatMessage({ id: 'reviews', defaultMessage: 'Reviews' })}
             </Link>
-            <Link to="/object/mds-dining-gifts/page#voy-business-3-0">
+            <Link to={legalLink}>
               {props.intl.formatMessage({ id: 'legal', defaultMessage: 'Legal' })}
             </Link>
           </div>
-          <HeaderButton isWebsite />
+          <HeaderButton isWebsite aboutObject={aboutObject} />
         </div>
       </div>
       {props.withMap && (
@@ -79,10 +75,6 @@ const MainPageHeader = props => {
 MainPageHeader.propTypes = {
   withMap: PropTypes.bool.isRequired,
   intl: PropTypes.shape().isRequired,
-  isMobile: PropTypes.bool,
-};
-MainPageHeader.defaultPropTypes = {
-  isMobile: false,
 };
 
 export default injectIntl(MainPageHeader);
