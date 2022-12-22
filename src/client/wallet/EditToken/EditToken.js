@@ -72,7 +72,7 @@ const EditToken = props => {
               setCurrentAmount(amount);
             }}
             token={currentToken}
-            handleClickBalance={() => setCurrentAmount(currentToken.balance)}
+            handleClickBalance={() => setCurrentAmount(currentToken.quantity)}
             customClassSelect="edit-token__select"
           />
         </div>
