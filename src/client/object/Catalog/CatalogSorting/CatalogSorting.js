@@ -5,8 +5,8 @@ import { isEmpty } from 'lodash';
 import { objectFields } from '../../../../common/constants/listOfFields';
 import SortSelector from '../../../components/SortSelector/SortSelector';
 
-const CatalogSorting = ({ currWobject, sort, handleSortChange, isSortCustomExist }) =>
-  !isEmpty(currWobject[objectFields.sorting]) && isSortCustomExist ? (
+const CatalogSorting = ({ currWobject, sort, handleSortChange }) =>
+  !isEmpty(currWobject[objectFields.sorting]) ? (
     <SortSelector sort={sort} onChange={handleSortChange}>
       <SortSelector.Item key="recency">
         <FormattedMessage id="recency" defaultMessage="Recency" />
@@ -53,7 +53,6 @@ CatalogSorting.propTypes = {
   sort: PropTypes.isRequired,
   currWobject: PropTypes.isRequired,
   handleSortChange: PropTypes.func.isRequired,
-  isSortCustomExist: PropTypes.bool.isRequired,
 };
 
 CatalogSorting.defaultProps = {

@@ -2839,18 +2839,13 @@ export const getRebalancingTable = (account, params) => {
         return [...acc, tab.base, tab.quote];
       }, []);
       const balances = await getTokenBalance(account, { $in: tokensList });
-      const rates = await getTokensRate(tokensList);
       const table = response.table.reduce((acc, curr) => {
         const { balance } = balances.find(bal => bal.symbol === curr.base) || { balance: 0 };
-        const { lastPrice: rate } = rates.find(bal => bal.symbol === curr.base) || { lastPrice: 1 };
-        const { lastPrice: quoteRate } = rates.find(bal => bal.symbol === curr.quote) || {
-          lastPrice: 1,
-        };
         const { balance: quoteBalance } = balances.find(bal => bal.symbol === curr.quote) || {
           balance: 0,
         };
 
-        return [...acc, { ...curr, balance, quoteBalance, quoteRate, symbol: curr.base, rate }];
+        return [...acc, { ...curr, balance, quoteBalance, symbol: curr.base }];
       }, []);
 
       return {
@@ -3107,7 +3102,5 @@ export const getObjectsByDepartment = ({ departments, skip, limit }) => {
     .then(response => response)
     .catch(e => e);
 };
-
-//
 
 export default null;

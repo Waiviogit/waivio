@@ -135,7 +135,7 @@ const CatalogWrap = props => {
           isLoadingFlag={isLoadingFlag}
           location={props.location}
           listItems={listItems}
-          wObj={obj}
+          nestedObj={obj}
         />
       </React.Fragment>
     </div>

@@ -4,12 +4,12 @@ import { Link } from 'react-router-dom';
 import moment from 'moment';
 import { injectIntl } from 'react-intl';
 import { get, isEmpty, size, isNil, round } from 'lodash';
-import { Checkbox } from 'antd';
+import { Checkbox, Modal } from 'antd';
 import Loading from '../../Icon/Loading';
-
-import './DynamicTable.less';
 import USDDisplay from '../../Utils/USDDisplay';
 import { isMobile } from '../../../../common/helpers/apiHelpers';
+
+import './DynamicTable.less';
 
 export const DynamicTable = ({
   header,
@@ -23,16 +23,21 @@ export const DynamicTable = ({
   handleShowMore,
 }) => {
   const [loading, setLoading] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
   const getTdBodyType = (item, head) => {
     if (get(item, 'pending', []).includes(head.type)) return <Loading />;
 
     switch (head.type) {
       case 'checkbox':
+        const getChecked = head.getChecked
+          ? { checked: head.getChecked(item) }
+          : { checked: item.checked };
+
         return (
           <Checkbox
             className="DynamicTable__checkbox"
             onChange={e => onChange(e, item)}
-            {...(!isNil(get(item, 'checked')) ? { checked: item.checked } : {})}
+            {...(!isNil(get(item, 'checked')) || head.getChecked ? getChecked : {})}
           />
         );
 
@@ -54,6 +59,26 @@ export const DynamicTable = ({
 
       case 'currency':
         return <USDDisplay value={item[head.id]} />;
+
+      case 'openModal':
+        return (
+          <React.Fragment>
+            <span
+              style={{ color: '#f87007', cursor: 'pointer' }}
+              onClick={() => setModalVisible(true)}
+            >
+              {item[head.id]}
+            </span>
+            <Modal
+              title={head.modal.title}
+              visible={modalVisible}
+              onCancel={() => setModalVisible(false)}
+              onOk={() => setModalVisible(false)}
+            >
+              {head.modal.body(item)}
+            </Modal>
+          </React.Fragment>
+        );
 
       default: {
         let button = get(buttons, head.id);

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
-import { Button, message, Modal, Slider, Switch, Tooltip } from 'antd';
+import { Button, message, Switch, Tooltip } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import { isEmpty } from 'lodash';
 
@@ -16,6 +16,7 @@ import {
   getIsConnectMatchBot,
 } from '../../../store/authStore/authSelectors';
 import { setMatchBotVotingPower } from '../../../store/newRewards/newRewardsActions';
+import ChangeVotingModal from '../../widgets/ChangeVotingModal/ChangeVotingModal';
 
 const SponsorsMatchBots = ({ intl, isEngLocale }) => {
   const userName = useSelector(getAuthenticatedUserName);
@@ -27,20 +28,12 @@ const SponsorsMatchBots = ({ intl, isEngLocale }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [minVotingPower, setMinVotingPower] = useState(0);
   const [rules, setRules] = useState({ results: [] });
-  const [sliderValue, setSliderValue] = useState(100);
   const [voteModalVisible, setVoteModalVisible] = useState(false);
   const [isEnabledRule, setIsEnabledRule] = useState(false);
 
   const handleSwitcher = () => redirectAuthHiveSigner(isAuthority, MATCH_BOTS_TYPES.SPONSORS);
   const maxRulesLimit = 25;
   const isOverRules = rules?.results?.length >= maxRulesLimit;
-  const marks = {
-    1: '1%',
-    25: '25%',
-    50: '50%',
-    75: '75%',
-    100: '100%',
-  };
 
   const getSponsors = () =>
     getSponsorsMatchBots(userName).then(data => {
@@ -74,10 +67,8 @@ const SponsorsMatchBots = ({ intl, isEngLocale }) => {
     getSponsors();
   };
   const handleOpenVoteModal = () => setVoteModalVisible(!voteModalVisible);
-  const handleChangeSliderValue = value => setSliderValue(value);
-  const formatTooltip = value => `${value}%`;
   const dispatch = useDispatch();
-  const handleSetMinVotingPower = () => {
+  const handleSetMinVotingPower = sliderValue => {
     setLoaded(true);
 
     dispatch(setMatchBotVotingPower(sliderValue * 100)).then(() => {
@@ -179,21 +170,14 @@ const SponsorsMatchBots = ({ intl, isEngLocale }) => {
       ) : (
         <Error401 />
       )}
-      <Modal
-        confirmLoading={isLoading}
-        onCancel={handleOpenVoteModal}
-        onOk={handleSetMinVotingPower}
+      <ChangeVotingModal
         title={messageData.changeMinVotingPower}
+        minVotingPower={minVotingPower}
         visible={voteModalVisible}
-      >
-        <Slider
-          defaultValue={minVotingPower}
-          onChange={handleChangeSliderValue}
-          min={1}
-          marks={marks}
-          tipFormatter={formatTooltip}
-        />
-      </Modal>
+        isLoading={isLoading}
+        handleOpenVoteModal={handleOpenVoteModal}
+        handleSetMinVotingPower={handleSetMinVotingPower}
+      />
     </div>
   );
 };
