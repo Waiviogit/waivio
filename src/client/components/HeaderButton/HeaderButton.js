@@ -233,7 +233,7 @@ const HeaderButtons = props => {
           <Menu.Item key="language">
             <LanguageSettings />
           </Menu.Item>
-          {isMobile() && (
+          {isMobile() && props.isWebsite && (
             <Menu.Item key="more" className="Topnav__menu--icon">
               <Popover
                 placement="bottom"
