@@ -19,6 +19,9 @@ const MainPageHeader = props => {
   const currHost = typeof location !== 'undefined' && location.hostname;
   const aboutObject = config?.aboutObject;
   const currentLogo = logo || getObjectAvatar(aboutObject);
+  const legalLink = aboutObject
+    ? `/object/${aboutObject.name}/page#voy-business-3-0`
+    : `/object/mds-dining-gifts/page#voy-business-3-0`;
 
   return (
     <div className="MainPageHeader">
@@ -51,7 +54,7 @@ const MainPageHeader = props => {
             <Link to="/object/mds-dining-gifts/newsFilter/dininggifts-dw09owbl6bh">
               {props.intl.formatMessage({ id: 'reviews', defaultMessage: 'Reviews' })}
             </Link>
-            <Link to="/object/mds-dining-gifts/page#voy-business-3-0">
+            <Link to={legalLink}>
               {props.intl.formatMessage({ id: 'legal', defaultMessage: 'Legal' })}
             </Link>
           </div>
