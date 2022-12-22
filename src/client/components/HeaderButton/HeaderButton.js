@@ -99,7 +99,7 @@ const HeaderButtons = props => {
       ...popoverItems,
     ];
   }
-  if (isMobile()) {
+  if (props.isWebsite && isMobile()) {
     popoverItems = [
       <PopoverMenuItem key="about" topNav>
         <FormattedMessage id="about" defaultMessage="About" />
