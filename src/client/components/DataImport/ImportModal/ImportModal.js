@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Icon, Modal, Select, message } from 'antd';
+import { Icon, Modal, Select, message, Checkbox } from 'antd';
 import { useSelector } from 'react-redux';
 import LANGUAGES from '../../../../common/translations/languages';
 import { uploadObject } from '../../../../waivioApi/importApi';
@@ -15,6 +15,7 @@ const ImportModal = ({ visible, toggleModal, getImportList }) => {
   const [locale, setLocale] = useState('en-US');
   const [objectType, setObjectType] = useState('book');
   const [authority, setAuthority] = useState('administrative');
+  const [translate, setTranslate] = useState(true);
 
   const handleUploadFile = e => {
     setUploadedFile(e.currentTarget.files[0]);
@@ -28,6 +29,7 @@ const ImportModal = ({ visible, toggleModal, getImportList }) => {
     formData.append('locale', locale);
     formData.append('objectType', objectType);
     formData.append('authority', authority);
+    formData.append('translate', translate);
     uploadObject(formData).then(res => {
       if (res.message) message.error(res.message);
 
@@ -60,6 +62,11 @@ const ImportModal = ({ visible, toggleModal, getImportList }) => {
           ))}
         </Select>
       </div>
+      <div className="ImportModal__checkbox-wrap">
+        <Checkbox checked={translate} onClick={() => setTranslate(!translate)}>
+          Translate tags to the selected locale
+        </Checkbox>
+      </div>
       <div>
         <h4>Upload JSON file:</h4>
         {uploadedFile ? (
@@ -73,7 +80,7 @@ const ImportModal = ({ visible, toggleModal, getImportList }) => {
               type="file"
               id="inputfile"
               className="ImportModal__inputFile"
-              // accept={'.(json|txt)'}
+              accept={'.json, .txt'}
               onChange={handleUploadFile}
             />
             <label htmlFor={'inputfile'} className="ImportModal__button">
