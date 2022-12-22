@@ -99,6 +99,20 @@ const HeaderButtons = props => {
       ...popoverItems,
     ];
   }
+  if (isMobile()) {
+    popoverItems = [
+      <PopoverMenuItem key="about" topNav>
+        <FormattedMessage id="about" defaultMessage="About" />
+      </PopoverMenuItem>,
+      <PopoverMenuItem key="reviews" topNav>
+        <FormattedMessage id="reviews" defaultMessage="Reviews" />
+      </PopoverMenuItem>,
+      <PopoverMenuItem key="legal" topNav>
+        <FormattedMessage id="legal" defaultMessage="Legal" />
+      </PopoverMenuItem>,
+      ...popoverItems,
+    ];
+  }
 
   const notificationsCount = isUndefined(lastSeenTimestamp)
     ? size(notifications)
