@@ -223,7 +223,13 @@ export const getDraftPage = (userName, authorPermlink) => {
     .catch(error => error);
 };
 
-export const getUserProfileBlog = (userName, follower, { limit = 10, skip }, locale = 'en-US') =>
+export const getUserProfileBlog = (
+  userName,
+  follower,
+  { limit = 10, skip },
+  locale = 'en-US',
+  tagsArray,
+) =>
   fetch(`${config.apiPrefix}${config.user}/${userName}${config.blog}`, {
     headers: {
       ...headers,
@@ -235,6 +241,7 @@ export const getUserProfileBlog = (userName, follower, { limit = 10, skip }, loc
     body: JSON.stringify({
       limit,
       skip,
+      ...(isEmpty(tagsArray) ? {} : { tagsArray }),
     }),
   })
     .then(res => res.json())
