@@ -33,6 +33,7 @@ import {
 } from '../../../store/userStore/userSelectors';
 import { getTokenBalance } from '../../../store/walletStore/walletActions';
 import { getObjectUrlForLink } from '../../../common/helpers/wObjectHelper';
+import { isMobile } from '../../../common/helpers/apiHelpers';
 
 const HeaderButtons = props => {
   const [popoverVisible, setPopoverVisible] = useState(false);
@@ -175,7 +176,11 @@ const HeaderButtons = props => {
         history.push(`/object/mds-dining-gifts/newsFilter/dininggifts-dw09owbl6bh`);
         break;
       case 'legal':
-        history.push(`/object/mds-dining-gifts/page#voy-business-3-0`);
+        if (props.aboutObject) {
+          history.push(`/object/${props.aboutObject.name}/page#voy-business-3-0`);
+        } else {
+          history.push(`/object/mds-dining-gifts/page#voy-business-3-0`);
+        }
         break;
       case 'about':
         // eslint-disable-next-line react/prop-types
@@ -219,24 +224,28 @@ const HeaderButtons = props => {
           <Menu.Item key="language">
             <LanguageSettings />
           </Menu.Item>
-          <Menu.Item key="more" className="Topnav__menu--icon">
-            <Popover
-              placement="bottom"
-              trigger="click"
-              visible={popoverVisible}
-              onVisibleChange={handleMoreMenuVisibleChange}
-              overlayStyle={{ position: 'fixed' }}
-              content={
-                <PopoverMenu onSelect={handleMoreMenuSelect}>{popoverNotAuthUserItems}</PopoverMenu>
-              }
-              overlayClassName="Topnav__popover"
-            >
-              <a className="Topnav__link-mt5">
-                <Icon type="caret-down" />
-                <Icon type="bars" />
-              </a>
-            </Popover>
-          </Menu.Item>
+          {isMobile() && (
+            <Menu.Item key="more" className="Topnav__menu--icon">
+              <Popover
+                placement="bottom"
+                trigger="click"
+                visible={popoverVisible}
+                onVisibleChange={handleMoreMenuVisibleChange}
+                overlayStyle={{ position: 'fixed' }}
+                content={
+                  <PopoverMenu onSelect={handleMoreMenuSelect}>
+                    {popoverNotAuthUserItems}
+                  </PopoverMenu>
+                }
+                overlayClassName="Topnav__popover"
+              >
+                <a className="Topnav__link-mt5">
+                  <Icon type="caret-down" />
+                  <Icon type="bars" />
+                </a>
+              </Popover>
+            </Menu.Item>
+          )}
         </Menu>
       </div>
     );
@@ -324,6 +333,7 @@ const HeaderButtons = props => {
 
 HeaderButtons.propTypes = {
   intl: PropTypes.shape().isRequired,
+  aboutObject: PropTypes.shape().isRequired,
   notifications: PropTypes.arrayOf(PropTypes.shape()),
   userMetaData: PropTypes.shape(),
   loadingNotifications: PropTypes.bool,
