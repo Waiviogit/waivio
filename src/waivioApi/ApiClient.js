@@ -241,7 +241,6 @@ export const getUserProfileBlog = (
     body: JSON.stringify({
       limit,
       skip,
-      ...(isEmpty(tagsArray) ? {} : { tagsArray }),
     }),
   })
     .then(res => res.json())
