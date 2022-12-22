@@ -190,14 +190,9 @@ const HeaderButtons = props => {
         history.push(`/object/mds-dining-gifts/newsFilter/dininggifts-dw09owbl6bh`);
         break;
       case 'legal':
-        if (props.aboutObject) {
-          history.push(`/object/${props.aboutObject.name}/page#voy-business-3-0`);
-        } else {
-          history.push(`/object/mds-dining-gifts/page#voy-business-3-0`);
-        }
+        history.push(`/object/ljc-legal/list`);
         break;
       case 'about':
-        // eslint-disable-next-line react/prop-types
         history.push(`${getObjectUrlForLink(props.aboutObject)}`);
         break;
       default:
