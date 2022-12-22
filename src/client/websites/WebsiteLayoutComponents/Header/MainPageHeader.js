@@ -19,9 +19,7 @@ const MainPageHeader = props => {
   const currHost = typeof location !== 'undefined' && location.hostname;
   const aboutObject = config?.aboutObject;
   const currentLogo = logo || getObjectAvatar(aboutObject);
-  const legalLink = aboutObject
-    ? `/object/${aboutObject.name}/page#voy-business-3-0`
-    : `/object/mds-dining-gifts/page#voy-business-3-0`;
+  const legalLink = `/object/ljc-legal/list`;
 
   return (
     <div className="MainPageHeader">
