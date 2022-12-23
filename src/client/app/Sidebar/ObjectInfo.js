@@ -54,6 +54,7 @@ import { getObject } from '../../../waivioApi/ApiClient';
 import { getLocale } from '../../../common/helpers/localStorageHelpers';
 import './ObjectInfo.less';
 import Department from '../../object/Department/Department';
+import AffiliatLink from '../../widgets/AffiliatLink';
 
 @withRouter
 @connect(
@@ -467,6 +468,7 @@ class ObjectInfo extends React.Component {
     const menuLinks = getMenuItems(wobject, TYPES_OF_MENU_ITEM.LIST, OBJECT_TYPE.LIST);
     const menuPages = getMenuItems(wobject, TYPES_OF_MENU_ITEM.PAGE, OBJECT_TYPE.PAGE);
     const button = parseButtonsField(wobject);
+    const affiliateLinks = wobject?.affiliateLinks || [];
     const isList = hasType(wobject, OBJECT_TYPE.LIST);
     const tagCategoriesList = tagCategories.filter(item => !isEmpty(item.items));
     const blogsList = getBlogItems(wobject);
@@ -692,6 +694,14 @@ class ObjectInfo extends React.Component {
               </div>
             ),
           )}
+        {!isEmpty(affiliateLinks) && (
+          <div>
+            <p>Buy it on:</p>
+            {affiliateLinks.map(link => (
+              <AffiliatLink key={link.link} link={link} />
+            ))}
+          </div>
+        )}
         {this.listItem(
           objectFields.workTime,
           workTime && (
