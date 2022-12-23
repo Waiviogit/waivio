@@ -9,6 +9,7 @@ import {
   weightFields,
   publisherFields,
   optionsFields,
+  featuresFields,
 } from '../../../common/constants/listOfFields';
 import {
   emailValidationRegExp,
@@ -269,6 +270,62 @@ export const fieldsRules = {
           defaultMessage: 'Field is required',
         },
         intlMeta: { field: 'Book language' },
+      },
+    },
+    {
+      max: 100,
+      message: {
+        intlId: {
+          id: 'value_error_long',
+          defaultMessage: "Value can't be longer than 100 characters.",
+        },
+        intlMeta: { value: 100 },
+      },
+    },
+    {
+      validator: true,
+    },
+  ],
+  [featuresFields.value]: [
+    {
+      transform: value => value && value.toLowerCase(),
+    },
+    {
+      required: true,
+      message: {
+        intlId: {
+          id: 'field_error',
+          defaultMessage: 'Field is required',
+        },
+        intlMeta: { field: 'Value' },
+      },
+    },
+    {
+      max: 100,
+      message: {
+        intlId: {
+          id: 'value_error_long',
+          defaultMessage: "Value can't be longer than 100 characters.",
+        },
+        intlMeta: { value: 100 },
+      },
+    },
+    {
+      validator: true,
+    },
+  ],
+  [featuresFields.name]: [
+    {
+      transform: value => value && value.toLowerCase(),
+    },
+    {
+      required: true,
+      message: {
+        intlId: {
+          id: 'field_error',
+          defaultMessage: 'Field is required',
+        },
+        intlMeta: { field: 'Name' },
       },
     },
     {

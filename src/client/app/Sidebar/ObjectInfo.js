@@ -54,6 +54,7 @@ import { getObject } from '../../../waivioApi/ApiClient';
 import { getLocale } from '../../../common/helpers/localStorageHelpers';
 import './ObjectInfo.less';
 import Department from '../../object/Department/Department';
+import ObjectFeatures from '../../object/ObjectFeatures/ObjectFeatures';
 
 @withRouter
 @connect(
@@ -399,6 +400,9 @@ class ObjectInfo extends React.Component {
     const printLength = wobject.printLength;
     const publisher = parseWobjectField(wobject, 'publisher');
     const departments = get(wobject, 'departments');
+    const features = wobject.features
+      ? wobject.features?.map(el => parseWobjectField(el, 'body', []))
+      : [];
     const authorsBody = wobject.authors
       ? wobject.authors.map(el => parseWobjectField(el, 'body', []))
       : [];
@@ -931,6 +935,7 @@ class ObjectInfo extends React.Component {
             </div>
           ),
         )}
+        {this.listItem(objectFields.features, <ObjectFeatures features={features} />)}
         {!isEditMode ? (
           <ProductId
             groupIdContent={
