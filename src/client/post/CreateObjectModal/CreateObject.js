@@ -166,59 +166,57 @@ class CreateObject extends React.Component {
             const hashtagName =
               objData.type === 'hashtag' ? objData.name.split(' ').join('') : objData.name;
 
-            this.props
-              .onCreateObject(
-                {
-                  _id: parentPermlink,
-                  author: parentAuthor,
-                  avatar: DEFAULTS.AVATAR,
-                  name: hashtagName,
-                  title: '',
-                  parent: this.props.parentObject,
-                  weight: '',
-                  createdAt: Date.now(),
-                  updatedAt: Date.now(),
-                  children: [],
-                  users: [],
-                  userCount: 0,
-                  version: 0,
-                  isNew: false,
-                  rank: 1,
-                  object_type: objData.type,
-                  background: '',
-                  author_permlink: parentPermlink,
-                },
-                { locale: values.locale },
-              )
-              .then(() => {
-                if (isObjType(objData.type)) {
-                  const formData = {
-                    galleryAlbum: 'Photos',
-                  };
-                  const data = prepareAlbumData(formData, this.props.username, {
-                    author: parentAuthor,
-                    author_permlink: parentPermlink,
-                    locale: values.locale,
-                  });
+            this.props.onCreateObject(
+              {
+                _id: parentPermlink,
+                author: parentAuthor,
+                avatar: DEFAULTS.AVATAR,
+                name: hashtagName,
+                title: '',
+                parent: this.props.parentObject,
+                weight: '',
+                createdAt: Date.now(),
+                updatedAt: Date.now(),
+                children: [],
+                users: [],
+                userCount: 0,
+                version: 0,
+                isNew: false,
+                rank: 1,
+                object_type: objData.type,
+                background: '',
+                author_permlink: parentPermlink,
+              },
+              { locale: values.locale },
+            );
 
-                  this.props.appendObject(data).then(() => {
-                    setTimeout(() => this.forceCloseObject(), 7000);
-                  });
-                } else {
-                  this.forceCloseObject();
-                }
-                setTimeout(
-                  () =>
-                    this.props.notify(
-                      this.props.intl.formatMessage({
-                        id: 'create_object_success',
-                        defaultMessage: 'Object has been created',
-                      }),
-                      'success',
-                    ),
-                  7000,
-                );
+            if (isObjType(objData.type)) {
+              const formData = {
+                galleryAlbum: 'Photos',
+              };
+              const data = prepareAlbumData(formData, this.props.username, {
+                author: parentAuthor,
+                author_permlink: parentPermlink,
+                locale: values.locale,
               });
+
+              this.props.appendObject(data).then(() => {
+                setTimeout(() => this.forceCloseObject(), 5000);
+              });
+            } else {
+              this.forceCloseObject();
+            }
+            setTimeout(
+              () =>
+                this.props.notify(
+                  this.props.intl.formatMessage({
+                    id: 'create_object_success',
+                    defaultMessage: 'Object has been created',
+                  }),
+                  'success',
+                ),
+              6000,
+            );
           })
           .catch(error => {
             this.props.notify(
