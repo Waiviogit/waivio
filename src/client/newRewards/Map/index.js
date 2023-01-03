@@ -1,4 +1,4 @@
-import { Map, ZoomControl } from 'pigeon-maps';
+import { Map } from 'pigeon-maps';
 import React, { useEffect, useRef, useState, useCallback, useMemo } from 'react';
 import { Icon, Modal } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
@@ -18,6 +18,7 @@ import { getObjectMap, getObjectName } from '../../../common/helpers/wObjectHelp
 
 import './styles.less';
 import ObjectAvatar from '../../components/ObjectAvatar';
+import MapControllers from '../../widgets/MapControllers/MapControllers';
 
 const RewardsMap = ({ getPoints, defaultCenter, parent, visible, onClose }) => {
   const dispatch = useDispatch();
@@ -25,8 +26,16 @@ const RewardsMap = ({ getPoints, defaultCenter, parent, visible, onClose }) => {
   const query = useQuery();
   const history = useHistory();
   const mapRef = useRef();
+
+  const defaultZoom = useMemo(() => {
+    const defZoom = query.get('zoom');
+
+    return +defZoom || 3;
+  }, []);
+
   const [fullScreen, setFullScreen] = useState(false);
-  const [center, setCenter] = useState();
+  const [center, setCenter] = useState(defaultCenter);
+  const [zoom, setZoom] = useState(defaultZoom);
   const [points, setPoints] = useState([]);
   const [infoboxData, setInfoboxData] = useState(null);
   const [boundsParams, setBoundsParams] = useState({
@@ -47,12 +56,6 @@ const RewardsMap = ({ getPoints, defaultCenter, parent, visible, onClose }) => {
       }
     }
   }, [mapRef.current]);
-
-  const defaultZoom = useMemo(() => {
-    const zoom = query.get('zoom');
-
-    return +zoom || 3;
-  }, []);
 
   const getCurrentCoordinates = async () => {
     if (area) {
@@ -126,6 +129,14 @@ const RewardsMap = ({ getPoints, defaultCenter, parent, visible, onClose }) => {
     if (visible) onClose(false);
   };
 
+  const incrementZoom = useCallback(() => {
+    if (zoom < 18) setZoom(zoom + 1);
+  }, [zoom]);
+
+  const decrementZoom = useCallback(() => {
+    if (zoom > 1) setZoom(zoom - 1);
+  }, [zoom]);
+
   const body = (width = 270, height = 270) => (
     <div className="RewardsMap">
       <div className="RewardsMap__header">
@@ -145,10 +156,10 @@ const RewardsMap = ({ getPoints, defaultCenter, parent, visible, onClose }) => {
       </div>
       <Map
         ref={mapRef}
-        defaultCenter={defaultCenter || center}
+        center={center}
         height={height}
         width={width}
-        zoom={defaultZoom}
+        zoom={zoom}
         provider={mapProvider}
         onClick={({ event }) => {
           if (event.target.classList.value === 'overlay') {
@@ -194,18 +205,15 @@ const RewardsMap = ({ getPoints, defaultCenter, parent, visible, onClose }) => {
             <span className={'overlay'}>{getObjectName(infoboxData.wobject)}</span>
           </Overlay>
         )}
-        <ZoomControl style={{ right: '10px', top: '10px', left: 'unset' }} />
-        <div
-          role="presentation"
-          className="RewardsMap__locateGPS RewardsMap__mapButton"
-          onClick={() => mapRef.current.setCenterZoom(center)}
-        >
-          <img
-            src="/images/focus.svg"
-            alt="aim"
-            className="MapConfigurationControl__locateGPS-button"
-          />
-        </div>
+        <MapControllers
+          className={'WebsiteBodyControl'}
+          decrementZoom={decrementZoom}
+          incrementZoom={incrementZoom}
+          successCallback={position =>
+            setCenter([position.coords.latitude, position.coords.longitude])
+          }
+          rejectCallback={() => {}}
+        />
         <div
           role="presentation"
           className="RewardsMap__mapButton RewardsMap__full"
