@@ -36,9 +36,12 @@ import { getImpact } from '../../../common/helpers/swapWalletHelpers';
 import { getFeeInfo, getSwapInfoForRebalance } from '../../../waivioApi/ApiClient';
 
 import './SwapTokens.less';
+import { getRatesList } from '../../../store/ratesStore/ratesSelector';
 
 const SwapTokens = props => {
   const authUserName = useSelector(getAuthenticatedUserName);
+  const rates = useSelector(getRatesList);
+
   const [impact, setImpact] = useState(0);
   const [fromAmount, setFromAmount] = useState(0);
   const [toAmount, setToAmount] = useState(0);
@@ -223,7 +226,7 @@ const SwapTokens = props => {
               id="estimated_transaction_value"
               defaultMessage="Estimated transaction value"
             />
-            : <USDDisplay value={fromAmount * props.from.rate * props.hiveRateInUsd} />
+            : <USDDisplay value={fromAmount * rates[props.from.symbol] * props.hiveRateInUsd} />
           </p>
           <p>
             <FormattedMessage id="estimated_price_impact" defaultMessage="Estimated price impact" />
