@@ -190,7 +190,11 @@ const HeaderButtons = props => {
         history.push(`/object/mds-dining-gifts/newsFilter/dininggifts-dw09owbl6bh`);
         break;
       case 'legal':
-        history.push(`/object/ljc-legal/list`);
+        if (props.aboutObject) {
+          history.push(`/object/${props.aboutObject.name}/menu#ljc-legal`);
+        } else {
+          history.push(`/object/ljc-legal/list`);
+        }
         break;
       case 'about':
         history.push(`${getObjectUrlForLink(props.aboutObject)}`);
