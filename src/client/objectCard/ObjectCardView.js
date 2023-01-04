@@ -159,14 +159,16 @@ const ObjectCardView = ({
             ) : (
               description
             )}
-            <div className="ObjectCardView__affiliatLinksWrap">
-              <span className="ObjectCardView__buyOn">Buy it on:</span>
-              <div className="ObjectCardView__affiliatLinks">
-                {wObject.affiliateLinks.map(link => (
-                  <AffiliatLink key={link.link} link={link} />
-                ))}
+            {!isEmpty(wObject.affiliateLinks) && (
+              <div className="ObjectCardView__affiliatLinksWrap">
+                <span className="ObjectCardView__buyOn">Buy it on:</span>
+                <div className="ObjectCardView__affiliatLinks">
+                  {wObject.affiliateLinks.map(link => (
+                    <AffiliatLink key={link.link} link={link} />
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
           </div>
         </div>
         {withRewards && (
