@@ -488,6 +488,7 @@ class ObjectInfo extends React.Component {
           objectFields.galleryItem,
           (pictures.length > 1 || avatar || wobject?.options) && (
             <PicturesCarousel
+              albums={wobject.galleryAlbum}
               isOptionsType
               activePicture={hoveredOption || activeOption}
               pics={activeOptionPicture}
