@@ -699,7 +699,7 @@ class ObjectInfo extends React.Component {
               </div>
             ),
           )}
-        {!isEmpty(affiliateLinks) && (
+        {!isEmpty(affiliateLinks) && !isEditMode && (
           <div className="object-sidebar__affLinks">
             <p>Buy it on:</p>
             {affiliateLinks.map(link => (
