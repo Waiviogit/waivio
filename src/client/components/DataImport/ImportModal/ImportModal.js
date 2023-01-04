@@ -15,7 +15,7 @@ const ImportModal = ({ visible, toggleModal, getImportList }) => {
   const [locale, setLocale] = useState('en-US');
   const [objectType, setObjectType] = useState('book');
   const [authority, setAuthority] = useState('administrative');
-  const [translate, setTranslate] = useState(true);
+  const [translate, setTranslate] = useState(false);
 
   const handleUploadFile = e => {
     setUploadedFile(e.currentTarget.files[0]);

@@ -62,7 +62,7 @@ const RenderCampaingList = ({
   const handleLoadingMoreRewardsList = () => {
     setLoading(true);
 
-    getAllRewardList(rewards?.length, search, sort)
+    getAllRewardList(rewards?.length, search, sort, authUser)
       .then(res => {
         setRewards([...rewards, ...res.rewards]);
         setHasMore(res.hasMore);
