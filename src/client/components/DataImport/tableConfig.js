@@ -36,7 +36,7 @@ export const configProductTable = [
     id: 'objectsCount',
     intl: {
       id: 'number_object',
-      defaultMessage: 'Number of objects',
+      defaultMessage: 'Number of object',
     },
   },
   {
@@ -57,7 +57,7 @@ export const configProductTable = [
     id: 'objectsPosted',
     intl: {
       id: 'posted_updates',
-      defaultMessage: 'Posted objects',
+      defaultMessage: 'Posted updates',
     },
   },
   {
@@ -71,7 +71,7 @@ export const configProductTable = [
 ];
 export const configHistoryTable = [
   {
-    id: 'createdAt',
+    id: 'start_date',
     intl: {
       id: 'start_date',
       defaultMessage: 'Start date',
@@ -79,7 +79,7 @@ export const configHistoryTable = [
     type: 'date',
   },
   {
-    id: 'finishedAt',
+    id: 'finish_date',
     intl: {
       id: 'finish_date',
       defaultMessage: 'Finish date',
@@ -104,7 +104,7 @@ export const configHistoryTable = [
     id: 'objectsCount',
     intl: {
       id: 'submitted_object',
-      defaultMessage: 'Submitted objects',
+      defaultMessage: 'Submitted object',
     },
     type: 'openModal',
     modal: {

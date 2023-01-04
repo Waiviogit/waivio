@@ -384,7 +384,7 @@ class DiscoverObjectsContent extends Component {
                 return wObj.propositions.map(proposition => (
                   <PropositionNew
                     key={proposition._id}
-                    proposition={{ ...proposition, requiredObject: wObj.parent, object: wObj }}
+                    proposition={{ ...proposition, object: wObj }}
                   />
                 ));
               }

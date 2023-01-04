@@ -52,7 +52,7 @@ export const dataManagementSettings = {
   tab: {
     name: 'dataManagement',
     id: 'sidenav_user_data_management',
-    defaultMessage: 'Data management:',
+    defaultMessage: 'Data Management:',
   },
   settings: [
     {
