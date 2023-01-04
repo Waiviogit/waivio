@@ -50,7 +50,8 @@ const QuickRewardsModal = props => {
   const [images, setImages] = useState([]);
   const [reservationPermlink, setReservationPermlink] = useState('');
   const colors = useWebsiteColor();
-  const dishRewards = props?.selectedDish?.reward || props?.selectedDish?.propositions?.[0]?.reward;
+  const dishRewards =
+    props?.selectedDish?.rewardInUSD || props?.selectedDish?.propositions?.[0]?.rewardInUSD;
   const isPropositionObj =
     (!isEmpty(get(props.selectedDish, 'propositions')) || dishRewards) &&
     !props?.selectedDish?.propositions?.[0]?.notEligible;

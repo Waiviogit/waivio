@@ -189,7 +189,7 @@ const ModalFirstScreen = props => {
           >
             {props.dishes.map(camp => {
               if (!isEmpty(camp)) {
-                const reward = camp?.reward || get(camp, 'propositions[0].reward', null);
+                const reward = camp?.rewardInUSD || get(camp, 'propositions[0].rewardInUSD', null);
                 const notEligible =
                   camp?.notEligible || get(camp, 'propositions[0].notEligible', null);
 
