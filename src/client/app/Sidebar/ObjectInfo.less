@@ -6,6 +6,17 @@
     padding-bottom: 50px;
   }
 
+  .AffiliatLink {
+    border: 1px solid #f1f0f0;
+    width: 150px;
+    padding: 5px 0;
+    margin-bottom: 5px;
+  }
+
+  &__affLinks {
+    margin-bottom: 15px;
+  }
+
   &__section-title {
     display: flex;
     justify-content: center;
@@ -158,6 +169,10 @@
       min-width: 12px;
       min-height: 12px;
     }
+
+    .price-value {
+      white-space: normal;
+    }
   }
 }
 
@@ -178,9 +193,10 @@
     min-width: 12px;
     min-height: 12px;
   }
-}
-.price-value {
-  white-space: break-spaces;
+
+  .price-value {
+    white-space: normal;
+  }
 }
 
 .field-info__title {
@@ -294,5 +310,7 @@
 .nopadding {
   padding-bottom: 0;
 }
-
+.features-value {
+  word-break: break-all;
+}
 @import './ObjectInfo-nightmode';

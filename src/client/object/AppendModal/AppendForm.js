@@ -49,6 +49,7 @@ import {
   weightFields,
   publisherFields,
   optionsFields,
+  featuresFields,
 } from '../../../common/constants/listOfFields';
 import OBJECT_TYPE from '../const/objectTypes';
 import { getSuitableLanguage } from '../../../store/reducers';
@@ -111,6 +112,7 @@ import { parseJSON } from '../../../common/helpers/parseJSON';
 import { baseUrl } from '../../../waivioApi/routes';
 import './AppendForm.less';
 import ExtendedNewsFilterForm from './FormComponents/ExtendedNewsFilterForm';
+import ObjectFeaturesForm from './FormComponents/ObjectFeaturesForm';
 
 @connect(
   state => ({
@@ -382,6 +384,7 @@ export default class AppendForm extends Component {
       case objectFields.groupId:
       case objectFields.publicationDate:
       case objectFields.dimensions:
+      case objectFields.features:
       case objectFields.options: {
         fieldBody.push(rest[currentField]);
         break;
@@ -504,6 +507,12 @@ export default class AppendForm extends Component {
           )},${dimensionsFields.depth}: ${getFieldValue(dimensionsFields.depth)}, ${
             dimensionsFields.unitOfLength
           }: ${getFieldValue(dimensionsFields.unitOfLength)}`;
+        case objectFields.features:
+          return `@${author} added ${currentField} (${langReadable}): ${
+            featuresFields.name
+          }: ${getFieldValue(featuresFields.name)}, ${featuresFields.value}: ${getFieldValue(
+            featuresFields.value,
+          )}`;
         case objectFields.ageRange:
         case objectFields.language:
         case objectFields.departments:
@@ -731,6 +740,15 @@ export default class AppendForm extends Component {
             width: formValues[dimensionsFields.width],
             depth: formValues[dimensionsFields.depth],
             unit: formValues[dimensionsFields.unitOfLength],
+          }),
+        };
+      }
+      if (currentField === objectFields.features) {
+        fieldsObject = {
+          ...fieldsObject,
+          body: JSON.stringify({
+            key: formValues[featuresFields.name],
+            value: formValues[featuresFields.value],
           }),
         };
       }
@@ -1181,6 +1199,7 @@ export default class AppendForm extends Component {
       currentField === objectFields.authors ||
       currentField === objectFields.publisher ||
       currentField === objectFields.dimensions ||
+      currentField === objectFields.features ||
       currentField === objectFields.productWeight
     ) {
       return filtered.some(f =>
@@ -1918,6 +1937,17 @@ export default class AppendForm extends Component {
               />,
             )}
           </Form.Item>
+        );
+      }
+      case objectFields.features: {
+        return (
+          <ObjectFeaturesForm
+            intl={intl}
+            getFieldDecorator={getFieldDecorator}
+            loading={loading}
+            getFieldRules={this.getFieldRules}
+            isSomeValue={this.state.isSomeValue}
+          />
         );
       }
       case objectFields.dimensions: {
@@ -3246,6 +3276,11 @@ export default class AppendForm extends Component {
           isEmpty(getFieldValue(dimensionsFields.width)) ||
           isEmpty(getFieldValue(dimensionsFields.depth)) ||
           isEmpty(getFieldValue(dimensionsFields.unitOfLength))
+        );
+      case objectFields.features:
+        return (
+          isEmpty(getFieldValue(featuresFields.name)) ||
+          isEmpty(getFieldValue(featuresFields.value))
         );
       case objectFields.options:
         return (

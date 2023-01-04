@@ -1,14 +1,13 @@
 import React, { useState } from 'react';
 import { Icon, Modal, Select, message, Checkbox } from 'antd';
 import { useSelector } from 'react-redux';
-import PropTypes from 'prop-types';
-
 import LANGUAGES from '../../../../common/translations/languages';
 import { uploadObject } from '../../../../waivioApi/importApi';
 import { getAuthenticatedUserName } from '../../../../store/authStore/authSelectors';
 
 import './ImportModal.less';
 
+// eslint-disable-next-line react/prop-types
 const ImportModal = ({ visible, toggleModal, getImportList }) => {
   const formData = new FormData();
   const authName = useSelector(getAuthenticatedUserName);
@@ -16,7 +15,7 @@ const ImportModal = ({ visible, toggleModal, getImportList }) => {
   const [locale, setLocale] = useState('en-US');
   const [objectType, setObjectType] = useState('book');
   const [authority, setAuthority] = useState('administrative');
-  const [translate, setTranslate] = useState(false);
+  const [translate, setTranslate] = useState(true);
 
   const handleUploadFile = e => {
     setUploadedFile(e.currentTarget.files[0]);
@@ -108,12 +107,6 @@ const ImportModal = ({ visible, toggleModal, getImportList }) => {
       </div>
     </Modal>
   );
-};
-
-ImportModal.propTypes = {
-  visible: PropTypes.string,
-  toggleModal: PropTypes.func,
-  getImportList: PropTypes.func,
 };
 
 export default ImportModal;

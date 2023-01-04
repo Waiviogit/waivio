@@ -254,7 +254,6 @@ const WithdrawModal = props => {
     setToAmount(value);
     setFromAmount(+value + persentCalculate(value));
   };
-  const isHiveCurrency = ['HIVE', 'HBD'].includes(pair?.to_coin_symbol);
 
   return (
     <React.Fragment>
@@ -274,8 +273,8 @@ const WithdrawModal = props => {
               !toAmount ||
               isError ||
               invalidAddress ||
-              (!isHiveCurrency && !walletAddress) ||
-              (isHiveCurrency && !(hiveBeneficiaryAccount || userName))
+              (pair?.to_coin_symbol !== 'HIVE' && !walletAddress) ||
+              (pair?.to_coin_symbol === 'HIVE' && !(hiveBeneficiaryAccount || userName))
             }
           >
             <FormattedMessage id="Withdraw" defaultMessage="Withdraw" />

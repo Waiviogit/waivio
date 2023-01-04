@@ -178,7 +178,7 @@ export default class WobjectContainer extends React.Component {
     const { match, authenticatedUserName, wobject } = this.props;
     const newsFilter = match.params[1] === 'newsFilter' ? { newsFilter: match.params.itemId } : {};
 
-    if (isEmpty(wobject) || wobject.author_permlink !== match.params.name) {
+    if (isEmpty(wobject)) {
       this.props.getObject(match.params.name, authenticatedUserName).then(() => {
         this.props.getAlbums(match.params.name);
         this.props.getNearbyObjects(match.params.name);
