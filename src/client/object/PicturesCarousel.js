@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { map } from 'lodash';
+import { isEmpty, map } from 'lodash';
 import PropTypes from 'prop-types';
 import { Carousel, Icon } from 'antd';
 import { Link } from 'react-router-dom';
@@ -30,7 +30,7 @@ const PicturesCarousel = ({
   const albumsLink = albums?.map(album => album.id);
 
   const getOptionUrl = pic => {
-    if (!albumsLink.includes(pic.id)) return `/object/${objectID}/gallery`;
+    if (!isEmpty(albumsLink) && !albumsLink.includes(pic.id)) return `/object/${objectID}/gallery`;
     if (isOptionsType) {
       if (pic.name === 'galleryItem' || (pic.name === 'options' && objectID === pic.parentPermlink))
         return `/object/${objectID}/gallery/album/${pic.id}`;
