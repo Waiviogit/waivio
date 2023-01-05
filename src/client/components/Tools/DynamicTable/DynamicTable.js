@@ -64,13 +64,14 @@ export const DynamicTable = ({
         return (
           <React.Fragment>
             <span
-              style={{ color: '#f87007', cursor: 'pointer' }}
-              onClick={() =>
-                setModalVisible({
-                  ...head.modal,
-                  body: head.modal.body(item),
-                })
-              }
+              style={item[head.id] ? { color: '#f87007', cursor: 'pointer' } : {}}
+              onClick={() => {
+                if (item[head.id])
+                  setModalVisible({
+                    ...head.modal,
+                    body: head.modal.body(item),
+                  });
+              }}
             >
               {item[head.id]}
             </span>
@@ -157,6 +158,7 @@ export const DynamicTable = ({
           visible={modalVisible}
           onCancel={() => setModalVisible(null)}
           onOk={() => setModalVisible(null)}
+          footer={null}
         >
           {modalVisible.body}
         </Modal>

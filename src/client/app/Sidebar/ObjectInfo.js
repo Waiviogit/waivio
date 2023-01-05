@@ -510,7 +510,14 @@ class ObjectInfo extends React.Component {
             </div>
           ),
         )}
-
+        {!isEmpty(affiliateLinks) && !isEditMode && (
+          <div className="object-sidebar__affLinks">
+            <p>Buy it on:</p>
+            {affiliateLinks.map(link => (
+              <AffiliatLink key={link.link} link={link} />
+            ))}
+          </div>
+        )}
         {this.listItem(
           objectFields.options,
           wobject.options && (
@@ -699,14 +706,6 @@ class ObjectInfo extends React.Component {
               </div>
             ),
           )}
-        {!isEmpty(affiliateLinks) && !isEditMode && (
-          <div className="object-sidebar__affLinks">
-            <p>Buy it on:</p>
-            {affiliateLinks.map(link => (
-              <AffiliatLink key={link.link} link={link} />
-            ))}
-          </div>
-        )}
         {this.listItem(
           objectFields.workTime,
           workTime && (

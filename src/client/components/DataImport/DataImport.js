@@ -12,7 +12,6 @@ import {
   getIsConnectMatchBot,
 } from '../../../store/authStore/authSelectors';
 
-import './DataImport.less';
 import {
   deleteObjectImport,
   getHistoryImportedObjects,
@@ -21,6 +20,8 @@ import {
   setImportVote,
   setObjectImport,
 } from '../../../waivioApi/importApi';
+
+import './DataImport.less';
 
 const DataImport = () => {
   const isAuthBot = useSelector(state =>
@@ -115,7 +116,7 @@ const DataImport = () => {
         <b>The authorization is completed via HiveSigner and can be revoked at any time.</b>
       </p>
       <p>
-        WAIV voting power threshold: {votingValue}% (<a onClick={toggleVotingModal}>change</a>).
+        WAIV voting power threshold: {votingValue}% (<a onClick={toggleVotingModal}>change</a>)
         <br />
         The data import bot will pause if WAIV voting power on the account drops below the set
         threshold.
@@ -143,7 +144,7 @@ const DataImport = () => {
           handleSetMinVotingPower={handleSetMinVotingPower}
           visible={visibleVoting}
           handleOpenVoteModal={toggleVotingModal}
-          minVotingPower={votingValue / 100}
+          minVotingPower={votingValue}
         />
       )}
     </div>
