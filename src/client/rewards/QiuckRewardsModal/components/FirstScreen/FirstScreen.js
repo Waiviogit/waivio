@@ -26,6 +26,7 @@ import {
 } from '../../../../../store/quickRewards/quickRewardsActions';
 import USDDisplay from '../../../../components/Utils/USDDisplay';
 import useWebsiteColor from '../../../../../hooks/useWebsiteColor';
+import { isMobile } from '../../../../../common/helpers/apiHelpers';
 
 import './FirstScreen.less';
 
@@ -186,13 +187,20 @@ const ModalFirstScreen = props => {
           />
         ) : (
           <AutoComplete
-            className="QuickRewardsModal__select"
+            className="QuickRewardsModal__select QuickRewardsModal__select-second"
             placeholder={props.intl.formatMessage({ id: 'search', defaultMessage: 'Search' })}
             onSelect={handleSelectDish}
             disabled={!props.selectedRestaurant}
             onChange={handleSearchDish}
             filterOption={handleDishFilter}
-            onFocus={() => setHideRest(true)}
+            onFocus={() => {
+              if (isMobile()) {
+                setHideRest(true);
+                const modalWrap = document.querySelector('.ant-modal-wrap');
+
+                modalWrap.scrollTo(0, 0);
+              }
+            }}
             onBlur={() => setHideRest(false)}
           >
             {props.dishes.map(camp => {
