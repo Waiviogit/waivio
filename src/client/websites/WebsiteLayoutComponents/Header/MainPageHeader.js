@@ -20,7 +20,7 @@ const MainPageHeader = props => {
   const aboutObject = config?.aboutObject;
   const currentLogo = logo || getObjectAvatar(aboutObject);
   const legalLink = aboutObject
-    ? `/object/${aboutObject.name}/menu#ljc-legal`
+    ? `/object/${aboutObject.author_permlink}/menu#ljc-legal`
     : `/object/ljc-legal/list`;
 
   return (
