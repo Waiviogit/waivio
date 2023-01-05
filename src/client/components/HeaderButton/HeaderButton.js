@@ -191,7 +191,7 @@ const HeaderButtons = props => {
         break;
       case 'legal':
         if (props.aboutObject) {
-          history.push(`/object/${props.aboutObject.name}/menu#ljc-legal`);
+          history.push(`/object/${props.aboutObject.author_permlink}/menu#ljc-legal`);
         } else {
           history.push(`/object/ljc-legal/list`);
         }
