@@ -26,14 +26,19 @@ import {
 } from '../../../../../store/quickRewards/quickRewardsActions';
 import USDDisplay from '../../../../components/Utils/USDDisplay';
 import useWebsiteColor from '../../../../../hooks/useWebsiteColor';
+import { isMobile } from '../../../../../common/helpers/apiHelpers';
 
 import './FirstScreen.less';
 
 const ModalFirstScreen = props => {
   const [hasMore, setHasMore] = useState(false);
+  const [hideRest, setHideRest] = useState(false);
   const limit = 100;
   const skipLimit = props.dishes.length;
   const colors = useWebsiteColor();
+  const restaurantSelectorClassList = classNames('FirstScreen__selectBlock', {
+    'FirstScreen__selectBlock--hide': hideRest,
+  });
 
   useEffect(() => {
     hasMore && props.getMoreEligibleRewardsListWithRestaurant(props.selectedRestaurant, skipLimit);
@@ -55,7 +60,8 @@ const ModalFirstScreen = props => {
     });
 
   const dishRewards =
-    props?.selectedDish?.reward || get(props, 'selectedDish.propositions[0].reward', null);
+    props?.selectedDish?.rewardInUSD ||
+    get(props, 'selectedDish.propositions[0].rewardInUSD', null);
   const withRewads = dishRewards && !get(props, 'selectedDish.propositions[0].notEligible', null);
   const earnMessage = camp =>
     camp.campaigns.max_reward !== camp.campaigns.min_reward ? 'Earn up to' : 'Earn';
@@ -75,6 +81,7 @@ const ModalFirstScreen = props => {
     const dish = props.dishes.find(camp => camp.author_permlink === item);
 
     props.setSelectedDish(dish);
+    setHideRest(false);
   };
 
   const handleDishFilter = (input, dish) =>
@@ -112,7 +119,7 @@ const ModalFirstScreen = props => {
 
   return (
     <div className="FirstScreen">
-      <div className="FirstScreen__selectBlock">
+      <div className={restaurantSelectorClassList}>
         <h4 className="FirstScreen__title">
           {props.intl.formatMessage({
             id: 'select_restaurant',
@@ -180,16 +187,26 @@ const ModalFirstScreen = props => {
           />
         ) : (
           <AutoComplete
-            className="QuickRewardsModal__select"
+            className="QuickRewardsModal__select QuickRewardsModal__select-second"
             placeholder={props.intl.formatMessage({ id: 'search', defaultMessage: 'Search' })}
             onSelect={handleSelectDish}
             disabled={!props.selectedRestaurant}
             onChange={handleSearchDish}
             filterOption={handleDishFilter}
+            onFocus={() => {
+              if (isMobile()) {
+                setHideRest(true);
+                const modalWrap = document.querySelector('.ant-modal-wrap');
+
+                modalWrap.scrollTo(0, 0);
+                window.scrollTo(0, 0);
+              }
+            }}
+            onBlur={() => setHideRest(false)}
           >
             {props.dishes.map(camp => {
               if (!isEmpty(camp)) {
-                const reward = camp?.reward || get(camp, 'propositions[0].reward', null);
+                const reward = camp?.rewardInUSD || get(camp, 'propositions[0].rewardInUSD', null);
                 const notEligible =
                   camp?.notEligible || get(camp, 'propositions[0].notEligible', null);
 

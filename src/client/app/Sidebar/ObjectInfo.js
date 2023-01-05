@@ -52,9 +52,10 @@ import {
 import { setStoreActiveOption, setStoreGroupId } from '../../../store/optionsStore/optionsActions';
 import { getObject } from '../../../waivioApi/ApiClient';
 import { getLocale } from '../../../common/helpers/localStorageHelpers';
-import './ObjectInfo.less';
 import Department from '../../object/Department/Department';
+import AffiliatLink from '../../widgets/AffiliatLink';
 import ObjectFeatures from '../../object/ObjectFeatures/ObjectFeatures';
+import './ObjectInfo.less';
 
 @withRouter
 @connect(
@@ -471,6 +472,7 @@ class ObjectInfo extends React.Component {
     const menuLinks = getMenuItems(wobject, TYPES_OF_MENU_ITEM.LIST, OBJECT_TYPE.LIST);
     const menuPages = getMenuItems(wobject, TYPES_OF_MENU_ITEM.PAGE, OBJECT_TYPE.PAGE);
     const button = parseButtonsField(wobject);
+    const affiliateLinks = wobject?.affiliateLinks || [];
     const isList = hasType(wobject, OBJECT_TYPE.LIST);
     const tagCategoriesList = tagCategories.filter(item => !isEmpty(item.items));
     const blogsList = getBlogItems(wobject);
@@ -490,6 +492,7 @@ class ObjectInfo extends React.Component {
           objectFields.galleryItem,
           (pictures.length > 1 || avatar || wobject?.options) && (
             <PicturesCarousel
+              albums={wobject.galleryAlbum}
               isOptionsType
               activePicture={hoveredOption || activeOption}
               pics={activeOptionPicture}
@@ -507,7 +510,14 @@ class ObjectInfo extends React.Component {
             </div>
           ),
         )}
-
+        {!isEmpty(affiliateLinks) && !isEditMode && (
+          <div className="object-sidebar__affLinks">
+            <p>Buy it on:</p>
+            {affiliateLinks.map(link => (
+              <AffiliatLink key={link.link} link={link} />
+            ))}
+          </div>
+        )}
         {this.listItem(
           objectFields.options,
           wobject.options && (

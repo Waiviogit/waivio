@@ -50,7 +50,8 @@ const QuickRewardsModal = props => {
   const [images, setImages] = useState([]);
   const [reservationPermlink, setReservationPermlink] = useState('');
   const colors = useWebsiteColor();
-  const dishRewards = props?.selectedDish?.reward || props?.selectedDish?.propositions?.[0]?.reward;
+  const dishRewards =
+    props?.selectedDish?.rewardInUSD || props?.selectedDish?.propositions?.[0]?.rewardInUSD;
   const isPropositionObj =
     (!isEmpty(get(props.selectedDish, 'propositions')) || dishRewards) &&
     !props?.selectedDish?.propositions?.[0]?.notEligible;
@@ -224,18 +225,29 @@ const QuickRewardsModal = props => {
         isThirdPageVisible={pageNumber === 1 || (isPropositionObj && pageNumber !== 1)}
       />
       {getCurrentScreen.component}
-      {!isPropositionObj && pageNumber !== 1 && (
-        <div className="QuickRewardsModal__warning-container">
-          <b>
-            {props.intl.formatMessage({ id: 'you_earn', defaultMessage: 'YOU EARN' })}:
-            <span className="QuickRewardsModal__warning">
-              {' '}
-              {props.intl.formatMessage({
-                id: 'no_sponsor',
-                defaultMessage: 'NO SPONSORS FOUND',
-              })}
-            </span>
-          </b>
+      {pageNumber !== 1 && (
+        <div className="QuickRewardsModal__earn-container">
+          {isPropositionObj ? (
+            <b>
+              {props.intl.formatMessage({ id: 'you_earn', defaultMessage: 'YOU EARN' })}:{' '}
+              <USDDisplay
+                value={dishRewards}
+                currencyDisplay="symbol"
+                style={{ color: colors?.background }}
+              />
+            </b>
+          ) : (
+            <b>
+              {props.intl.formatMessage({ id: 'you_earn', defaultMessage: 'YOU EARN' })}:
+              <span className="QuickRewardsModal__warning">
+                {' '}
+                {props.intl.formatMessage({
+                  id: 'no_sponsor',
+                  defaultMessage: 'NO SPONSORS FOUND',
+                })}
+              </span>
+            </b>
+          )}
         </div>
       )}
       <div className={buttonWrapClassList}>
@@ -243,16 +255,6 @@ const QuickRewardsModal = props => {
           <Button className={nextButtonClassList} onClick={getCurrentScreen.previousHandler}>
             {props.intl.formatMessage({ id: 'previous', defaultMessage: 'Previous' })}
           </Button>
-        )}
-        {isPropositionObj && pageNumber !== 1 && (
-          <b>
-            {props.intl.formatMessage({ id: 'you_earn', defaultMessage: 'YOU EARN' })}:{' '}
-            <USDDisplay
-              value={dishRewards}
-              currencyDisplay="symbol"
-              style={{ color: colors?.background }}
-            />
-          </b>
         )}
         <Button
           type="primary"

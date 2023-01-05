@@ -2323,7 +2323,7 @@ export const createNewCampaing = (data, account) => {
 
 export const getRewardsFollowerUser = (skip = 0, query, sort, userName) => {
   return fetch(
-    `${config.campaignV2ApiPrefix}${config.rewards}${config.user}?sort=${sort}&userName=${userName}`,
+    `${config.campaignV2ApiPrefix}${config.rewards}${config.user}?sort=${sort}&userName=${userName}&skip=${skip}`,
     {
       headers,
       method: 'GET',

@@ -16,8 +16,9 @@ import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors
 import CustomMarker from '../../components/Maps/CustomMarker';
 import { getObjectMap, getObjectName } from '../../../common/helpers/wObjectHelper';
 
-import './styles.less';
 import ObjectAvatar from '../../components/ObjectAvatar';
+
+import './styles.less';
 
 const RewardsMap = ({ getPoints, defaultCenter, parent, visible, onClose }) => {
   const dispatch = useDispatch();
@@ -145,7 +146,7 @@ const RewardsMap = ({ getPoints, defaultCenter, parent, visible, onClose }) => {
       </div>
       <Map
         ref={mapRef}
-        defaultCenter={defaultCenter || center}
+        center={center}
         height={height}
         width={width}
         zoom={defaultZoom}
@@ -198,7 +199,16 @@ const RewardsMap = ({ getPoints, defaultCenter, parent, visible, onClose }) => {
         <div
           role="presentation"
           className="RewardsMap__locateGPS RewardsMap__mapButton"
-          onClick={() => mapRef.current.setCenterZoom(center)}
+          onClick={() => {
+            navigator.geolocation.getCurrentPosition(
+              position => {
+                const { latitude, longitude } = position.coords;
+
+                mapRef.current.setCenterZoom([latitude, longitude]);
+              },
+              () => mapRef.current.setCenterZoom(center),
+            );
+          }}
         >
           <img
             src="/images/focus.svg"

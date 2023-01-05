@@ -48,6 +48,7 @@ const HeaderButtons = props => {
     history,
     location,
   } = props;
+  const lastSeenTimestamp = get(userMetaData, 'notifications_last_timestamp');
 
   useEffect(() => {
     if (
@@ -59,7 +60,6 @@ const HeaderButtons = props => {
       props.getTokenBalance('WAIV', username);
     }
   }, [notifications]);
-  const lastSeenTimestamp = get(userMetaData, 'notifications_last_timestamp');
 
   let popoverItems = [
     <PopoverMenuItem key="rewards" topNav>

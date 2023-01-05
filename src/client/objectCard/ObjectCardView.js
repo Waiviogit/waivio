@@ -21,6 +21,7 @@ import { defaultCurrency } from '../websites/constants/currencyTypes';
 
 import './ObjectCardView.less';
 import useWebsiteColor from '../../hooks/useWebsiteColor';
+import AffiliatLink from '../widgets/AffiliatLink';
 
 const ObjectCardView = ({
   intl,
@@ -157,6 +158,16 @@ const ObjectCardView = ({
               </div>
             ) : (
               description
+            )}
+            {!isEmpty(wObject.affiliateLinks) && (
+              <div className="ObjectCardView__affiliatLinksWrap">
+                <span className="ObjectCardView__buyOn">Buy it on:</span>
+                <div className="ObjectCardView__affiliatLinks">
+                  {wObject.affiliateLinks.map(link => (
+                    <AffiliatLink key={link.link} link={link} />
+                  ))}
+                </div>
+              </div>
             )}
           </div>
         </div>
