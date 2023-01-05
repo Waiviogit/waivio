@@ -199,6 +199,7 @@ const ModalFirstScreen = props => {
                 const modalWrap = document.querySelector('.ant-modal-wrap');
 
                 modalWrap.scrollTo(0, 0);
+                window.scrollTo(0, 0);
               }
             }}
             onBlur={() => setHideRest(false)}
