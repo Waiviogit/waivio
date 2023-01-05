@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import PopoverMenuItem from './PopoverMenuItem';
 import './PopoverMenu.less';
@@ -7,10 +7,10 @@ const PopoverMenu = ({ children, onSelect, bold, hide }) => (
   <ul className="PopoverMenu">
     {React.Children.map(children, child => {
       const { children: itemChildren, ...otherProps } = child.props;
-      const onItemClick = useCallback(() => {
+      const onItemClick = () => {
         onSelect(child.key);
         hide();
-      }, [child.key]);
+      };
 
       return (
         <PopoverMenuItem
