@@ -23,7 +23,7 @@ const MainPageHeader = props => {
   const isHelpingObjTypes = ['list', 'page', 'widget', 'newsfeed'].includes(objType);
   const legalLink =
     aboutObject && !isHelpingObjTypes
-      ? `/object/${aboutObject.name}/menu#ljc-legal`
+      ? `/object/${aboutObject.author_permlink}/menu#ljc-legal`
       : `/object/ljc-legal/list`;
 
   return (
