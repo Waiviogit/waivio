@@ -214,6 +214,7 @@ const QuickRewardsModal = props => {
       visible={props.isOpenModal}
       onCancel={closeModal}
       className="QuickRewardsModal"
+      wrapClassName={'QuickRewardsModal__container'}
       style={{
         '--website-color': `${colors?.background}`,
         '--website-hover-color': `${hexToRgb(colors?.background, 1)}`,
