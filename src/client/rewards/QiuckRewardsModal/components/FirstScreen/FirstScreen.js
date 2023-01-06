@@ -39,9 +39,6 @@ const ModalFirstScreen = props => {
   const restaurantSelectorClassList = classNames('FirstScreen__selectBlock', {
     'FirstScreen__selectBlock--hide': hideRest,
   });
-  const dishSelectorClassList = classNames('FirstScreen__selectBlock', {
-    'FirstScreen__selectBlock--margin': hideRest,
-  });
 
   useEffect(() => {
     hasMore && props.getMoreEligibleRewardsListWithRestaurant(props.selectedRestaurant, skipLimit);
@@ -175,7 +172,7 @@ const ModalFirstScreen = props => {
           </AutoComplete>
         )}
       </div>
-      <div className={dishSelectorClassList}>
+      <div className="FirstScreen__selectBlock">
         <h4 className="FirstScreen__title">
           {props.intl.formatMessage({ id: 'select_dish', defaultMessage: 'Select dish or drink' })}
         </h4>
@@ -196,12 +193,15 @@ const ModalFirstScreen = props => {
             disabled={!props.selectedRestaurant}
             onChange={handleSearchDish}
             filterOption={handleDishFilter}
+            autoFocus={false}
             onFocus={() => {
               if (isMobile()) {
-                setHideRest(true);
-                // const modalWrap = document.querySelector('.ant-modal-wrap');
-                //
-                // modalWrap.scrollTo(0, 0);
+                setTimeout(() => {
+                  const modalWrap = document.querySelector('.ant-modal-wrap');
+
+                  modalWrap.scroll(0, 800);
+                  setHideRest(true);
+                }, 100);
               }
             }}
             onBlur={() => setHideRest(false)}
