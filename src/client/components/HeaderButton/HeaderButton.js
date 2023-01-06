@@ -101,9 +101,6 @@ const HeaderButtons = props => {
   }
   if (props.isWebsite && isMobile()) {
     popoverItems = [
-      <PopoverMenuItem key="about" topNav>
-        <FormattedMessage id="about" defaultMessage="About" />
-      </PopoverMenuItem>,
       <PopoverMenuItem key="reviews" topNav>
         <FormattedMessage id="reviews" defaultMessage="Reviews" />
       </PopoverMenuItem>,
@@ -112,6 +109,14 @@ const HeaderButtons = props => {
       </PopoverMenuItem>,
       ...popoverItems,
     ];
+  }
+
+  if (props.aboutObject) {
+    popoverItems.unshift(
+      <PopoverMenuItem key="about" topNav>
+        <FormattedMessage id="about" defaultMessage="About" />
+      </PopoverMenuItem>,
+    );
   }
 
   const notificationsCount = isUndefined(lastSeenTimestamp)
@@ -190,7 +195,11 @@ const HeaderButtons = props => {
         history.push(`/object/mds-dining-gifts/newsFilter/dininggifts-dw09owbl6bh`);
         break;
       case 'legal':
-        history.push(`/object/ljc-legal/list`);
+        if (props.aboutObject && !props.isHelpingObjTypes) {
+          history.push(`/object/${props.aboutObject.author_permlink}/menu#ljc-legal`);
+        } else {
+          history.push(`/object/ljc-legal/list`);
+        }
         break;
       case 'about':
         history.push(`${getObjectUrlForLink(props.aboutObject)}`);
@@ -213,9 +222,6 @@ const HeaderButtons = props => {
   if (!username) {
     const next = location.pathname.length > 1 ? location.pathname : '';
     const popoverNotAuthUserItems = [
-      <PopoverMenuItem key="about" topNav>
-        <FormattedMessage id="about" defaultMessage="About" />
-      </PopoverMenuItem>,
       <PopoverMenuItem key="reviews" topNav>
         <FormattedMessage id="reviews" defaultMessage="Reviews" />
       </PopoverMenuItem>,
@@ -223,6 +229,14 @@ const HeaderButtons = props => {
         <FormattedMessage id="legal" defaultMessage="Legal" />
       </PopoverMenuItem>,
     ];
+
+    if (props.aboutObject) {
+      popoverNotAuthUserItems.unshift(
+        <PopoverMenuItem key="about" topNav>
+          <FormattedMessage id="about" defaultMessage="About" />
+        </PopoverMenuItem>,
+      );
+    }
 
     return (
       <div className={'Topnav__menu-container Topnav__menu-logged-out'}>
@@ -343,6 +357,7 @@ const HeaderButtons = props => {
 HeaderButtons.propTypes = {
   intl: PropTypes.shape().isRequired,
   aboutObject: PropTypes.shape().isRequired,
+  isHelpingObjTypes: PropTypes.shape().isRequired,
   notifications: PropTypes.arrayOf(PropTypes.shape()),
   userMetaData: PropTypes.shape(),
   loadingNotifications: PropTypes.bool,

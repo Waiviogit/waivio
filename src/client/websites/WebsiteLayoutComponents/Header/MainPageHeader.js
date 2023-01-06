@@ -19,7 +19,12 @@ const MainPageHeader = props => {
   const currHost = typeof location !== 'undefined' && location.hostname;
   const aboutObject = config?.aboutObject;
   const currentLogo = logo || getObjectAvatar(aboutObject);
-  const legalLink = `/object/ljc-legal/list`;
+  const objType = aboutObject?.object_type;
+  const isHelpingObjTypes = ['list', 'page', 'widget', 'newsfeed'].includes(objType);
+  const legalLink =
+    aboutObject && !isHelpingObjTypes
+      ? `/object/${aboutObject.author_permlink}/menu#ljc-legal`
+      : `/object/ljc-legal/list`;
 
   return (
     <div className="MainPageHeader">
@@ -56,7 +61,7 @@ const MainPageHeader = props => {
               {props.intl.formatMessage({ id: 'legal', defaultMessage: 'Legal' })}
             </Link>
           </div>
-          <HeaderButton isWebsite aboutObject={aboutObject} />
+          <HeaderButton isWebsite aboutObject={aboutObject} isHelpingObjTypes={isHelpingObjTypes} />
         </div>
       </div>
       {props.withMap && (

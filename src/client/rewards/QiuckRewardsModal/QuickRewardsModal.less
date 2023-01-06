@@ -26,10 +26,15 @@
     }
   }
 
+  &__earn-container {
+    text-align: center;
+    padding-top: 20px;
+  }
+
   &__button-wrap {
     display: flex;
     justify-content: space-between;
-    padding: 40px 0 0;
+    padding: 15px 0 0;
     flex-wrap: wrap;
 
     @media @small {
@@ -45,6 +50,11 @@
         background: var(--website-hover-color);
         border-color: var(--website-hover-color);
       }
+    }
+
+    &__container {
+      -webkit-overflow-scrolling: touch !important;
+      overflow: auto !important;
     }
 
     .ant-btn {
@@ -74,7 +84,11 @@
 
   .ant-modal-title {
     text-align: center;
-    font-size: 1.3em;
+    font-size: 16px;
+
+    @media @small {
+      font-size: 1.3em;
+    }
   }
 
   .ant-modal-body {

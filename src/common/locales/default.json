@@ -2068,5 +2068,9 @@
   "department": "Department",
   "department_info": "Each product can be listed in up to 7 departments.",
   "navigate": "Navigate",
-  "departments": "Departments"
+  "departments": "Departments",
+  "object_field_features": "Features",
+  "name": "Name",
+  "value": "Value",
+  "features": "Features"
 }

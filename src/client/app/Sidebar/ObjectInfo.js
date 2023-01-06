@@ -52,9 +52,10 @@ import {
 import { setStoreActiveOption, setStoreGroupId } from '../../../store/optionsStore/optionsActions';
 import { getObject } from '../../../waivioApi/ApiClient';
 import { getLocale } from '../../../common/helpers/localStorageHelpers';
-import './ObjectInfo.less';
 import Department from '../../object/Department/Department';
 import AffiliatLink from '../../widgets/AffiliatLink';
+import ObjectFeatures from '../../object/ObjectFeatures/ObjectFeatures';
+import './ObjectInfo.less';
 
 @withRouter
 @connect(
@@ -400,6 +401,9 @@ class ObjectInfo extends React.Component {
     const printLength = wobject.printLength;
     const publisher = parseWobjectField(wobject, 'publisher');
     const departments = get(wobject, 'departments');
+    const features = wobject.features
+      ? wobject.features?.map(el => parseWobjectField(el, 'body', []))
+      : [];
     const authorsBody = wobject.authors
       ? wobject.authors.map(el => parseWobjectField(el, 'body', []))
       : [];
@@ -488,6 +492,7 @@ class ObjectInfo extends React.Component {
           objectFields.galleryItem,
           (pictures.length > 1 || avatar || wobject?.options) && (
             <PicturesCarousel
+              albums={wobject.galleryAlbum}
               isOptionsType
               activePicture={hoveredOption || activeOption}
               pics={activeOptionPicture}
@@ -505,7 +510,14 @@ class ObjectInfo extends React.Component {
             </div>
           ),
         )}
-
+        {!isEmpty(affiliateLinks) && !isEditMode && (
+          <div className="object-sidebar__affLinks">
+            <p>Buy it on:</p>
+            {affiliateLinks.map(link => (
+              <AffiliatLink key={link.link} link={link} />
+            ))}
+          </div>
+        )}
         {this.listItem(
           objectFields.options,
           wobject.options && (
@@ -694,14 +706,6 @@ class ObjectInfo extends React.Component {
               </div>
             ),
           )}
-        {!isEmpty(affiliateLinks) && (
-          <div>
-            <p>Buy it on:</p>
-            {affiliateLinks.map(link => (
-              <AffiliatLink key={link.link} link={link} />
-            ))}
-          </div>
-        )}
         {this.listItem(
           objectFields.workTime,
           workTime && (
@@ -941,6 +945,7 @@ class ObjectInfo extends React.Component {
             </div>
           ),
         )}
+        {this.listItem(objectFields.features, <ObjectFeatures features={features} />)}
         {!isEditMode ? (
           <ProductId
             groupIdContent={
