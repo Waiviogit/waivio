@@ -26,7 +26,7 @@ import {
 } from '../../../../../store/quickRewards/quickRewardsActions';
 import USDDisplay from '../../../../components/Utils/USDDisplay';
 import useWebsiteColor from '../../../../../hooks/useWebsiteColor';
-import { isMobile } from '../../../../../common/helpers/apiHelpers';
+import { isAppleDevice, isMobile } from '../../../../../common/helpers/apiHelpers';
 
 import './FirstScreen.less';
 
@@ -37,7 +37,8 @@ const ModalFirstScreen = props => {
   const skipLimit = props.dishes.length;
   const colors = useWebsiteColor();
   const restaurantSelectorClassList = classNames('FirstScreen__selectBlock', {
-    'FirstScreen__selectBlock--hide': hideRest,
+    'FirstScreen__selectBlock--width': hideRest && isAppleDevice(),
+    'FirstScreen__selectBlock--hide': hideRest && !isAppleDevice(),
   });
 
   useEffect(() => {
@@ -117,6 +118,22 @@ const ModalFirstScreen = props => {
     [props.selectedRestaurant],
   );
 
+  const handleDishFocus = () => {
+    if (isMobile()) {
+      const modalWrap = document.querySelector('.ant-modal-wrap');
+
+      if (isAppleDevice()) {
+        setTimeout(() => {
+          modalWrap.scroll(0, 0);
+          setHideRest(true);
+        }, 100);
+      } else {
+        modalWrap.scroll(0, 0);
+        setHideRest(true);
+      }
+    }
+  };
+
   return (
     <div className="FirstScreen">
       <div className={restaurantSelectorClassList}>
@@ -194,16 +211,7 @@ const ModalFirstScreen = props => {
             onChange={handleSearchDish}
             filterOption={handleDishFilter}
             autoFocus={false}
-            onFocus={() => {
-              if (isMobile()) {
-                setTimeout(() => {
-                  const modalWrap = document.querySelector('.ant-modal-wrap');
-
-                  modalWrap.scroll(0, 800);
-                  setHideRest(true);
-                }, 100);
-              }
-            }}
+            onFocus={handleDishFocus}
             onBlur={() => setHideRest(false)}
           >
             {props.dishes.map(camp => {
