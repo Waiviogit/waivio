@@ -101,9 +101,6 @@ const HeaderButtons = props => {
   }
   if (props.isWebsite && isMobile()) {
     popoverItems = [
-      <PopoverMenuItem key="about" topNav>
-        <FormattedMessage id="about" defaultMessage="About" />
-      </PopoverMenuItem>,
       <PopoverMenuItem key="reviews" topNav>
         <FormattedMessage id="reviews" defaultMessage="Reviews" />
       </PopoverMenuItem>,
@@ -112,6 +109,14 @@ const HeaderButtons = props => {
       </PopoverMenuItem>,
       ...popoverItems,
     ];
+  }
+
+  if (props.aboutObject) {
+    popoverItems.unshift(
+      <PopoverMenuItem key="about" topNav>
+        <FormattedMessage id="about" defaultMessage="About" />
+      </PopoverMenuItem>,
+    );
   }
 
   const notificationsCount = isUndefined(lastSeenTimestamp)
@@ -191,7 +196,7 @@ const HeaderButtons = props => {
         break;
       case 'legal':
         if (props.aboutObject && !props.isHelpingObjTypes) {
-          history.push(`/object/${props.aboutObject.name}/menu#ljc-legal`);
+          history.push(`/object/${props.aboutObject.author_permlink}/menu#ljc-legal`);
         } else {
           history.push(`/object/ljc-legal/list`);
         }
