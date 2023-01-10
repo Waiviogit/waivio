@@ -111,7 +111,7 @@ const HeaderButtons = props => {
     ];
   }
 
-  if (props.aboutObject) {
+  if (props.aboutObject && isMobile()) {
     popoverItems.unshift(
       <PopoverMenuItem key="about" topNav>
         <FormattedMessage id="about" defaultMessage="About" />
