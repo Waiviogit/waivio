@@ -23,6 +23,7 @@ const EligibleRewards = ({ intl }) => {
       title={intl.formatMessage({ id: 'eligible_rewards', defaultMessage: 'Eligible rewards' })}
       getFilters={getFilters}
       getMapItems={getMarkersForEligible}
+      emptyMessage={'There are no rewards available for you to claim at this moment.'}
     />
   );
 };

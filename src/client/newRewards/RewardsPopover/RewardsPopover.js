@@ -21,11 +21,14 @@ import { changeBlackAndWhiteLists } from '../../../store/rewardsStore/rewardsAct
 import ids from '../BlackList/constants';
 import { followObject, unfollowObject } from '../../../store/wObjectStore/wobjActions';
 import { getObjectName } from '../../../common/helpers/wObjectHelper';
+import { handleHidePost, muteAuthorPost } from '../../../store/postsStore/postActions';
 
 const RewardsPopover = ({ proposition, getProposition, type }) => {
   const [isVisiblePopover, setIsVisiblePopover] = useState(false);
   const [amount, setAmount] = useState(0);
   const [inBlackList, setInBlackList] = useState(false);
+  const [mutedAuthor, setMutedAuthort] = useState(false);
+  const [hidedPost, setHidedPost] = useState(false);
   const [followingObj, setFollowingObj] = useState(false);
   const [followingGuide, setFollowingGuide] = useState(false);
   const [openDecrease, setOpenDecrease] = useState('');
@@ -55,6 +58,8 @@ const RewardsPopover = ({ proposition, getProposition, type }) => {
         });
       }
     }
+    setMutedAuthort(proposition.muted);
+    setHidedPost(proposition.isHide);
   }, [isVisiblePopover]);
 
   const realeaseReward = () => {
@@ -325,10 +330,52 @@ const RewardsPopover = ({ proposition, getProposition, type }) => {
     [],
   );
 
+  const hidePost = useMemo(
+    () => (
+      <PopoverMenuItem key={'hidepost'}>
+        <div
+          onClick={() => {
+            setLoadingType('hidepost');
+
+            dispatch(handleHidePost(proposition)).then(() => {
+              setHidedPost(!hidedPost);
+              setLoadingType('');
+            });
+          }}
+        >
+          {loadingType === 'hidepost' && <Icon type={'loading'} />}{' '}
+          {hidedPost ? 'Visible post' : 'Hide post'}
+        </div>
+      </PopoverMenuItem>
+    ),
+    [],
+  );
+
+  const muteUser = useMemo(
+    () => (
+      <PopoverMenuItem key={'muteuser'}>
+        <div
+          onClick={() => {
+            setLoadingType('muteuser');
+
+            dispatch(muteAuthorPost(proposition)).then(() => {
+              setMutedAuthort(!mutedAuthor);
+              setLoadingType('');
+            });
+          }}
+        >
+          {loadingType === 'muteuser' && <Icon type={'loading'} />}{' '}
+          {mutedAuthor ? 'Unmute user' : 'Mute user'} @{proposition?.userName}
+        </div>
+      </PopoverMenuItem>
+    ),
+    [],
+  );
+
   const dopFun = () => {
     if (bothStatus) return [];
 
-    return isSponsor ? [addToBlackList] : [followUserItem, followObjectItem];
+    return isSponsor ? [hidePost, muteUser, addToBlackList] : [followUserItem, followObjectItem];
   };
 
   const getPopoverItems = () => {
@@ -414,6 +461,8 @@ RewardsPopover.propTypes = {
     rejectionPermlink: PropTypes.string,
     requiredObject: PropTypes.string,
     guideName: PropTypes.string,
+    muted: PropTypes.bool,
+    isHide: PropTypes.bool,
   }).isRequired,
   type: PropTypes.string.isRequired,
   getProposition: PropTypes.func,
