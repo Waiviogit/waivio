@@ -337,7 +337,13 @@ const RewardsPopover = ({ proposition, getProposition, type }) => {
           onClick={() => {
             setLoadingType('hidepost');
 
-            dispatch(handleHidePost(proposition)).then(() => {
+            dispatch(
+              handleHidePost({
+                ...proposition,
+                permlink: proposition.reviewPermlink,
+                author: proposition.userName,
+              }),
+            ).then(() => {
               setHidedPost(!hidedPost);
               setLoadingType('');
             });
@@ -348,7 +354,7 @@ const RewardsPopover = ({ proposition, getProposition, type }) => {
         </div>
       </PopoverMenuItem>
     ),
-    [],
+    [loadingType, hidedPost],
   );
 
   const muteUser = useMemo(
@@ -358,7 +364,7 @@ const RewardsPopover = ({ proposition, getProposition, type }) => {
           onClick={() => {
             setLoadingType('muteuser');
 
-            dispatch(muteAuthorPost(proposition)).then(() => {
+            dispatch(muteAuthorPost({ ...proposition, author: proposition.userName })).then(() => {
               setMutedAuthort(!mutedAuthor);
               setLoadingType('');
             });
@@ -369,13 +375,13 @@ const RewardsPopover = ({ proposition, getProposition, type }) => {
         </div>
       </PopoverMenuItem>
     ),
-    [],
+    [loadingType, mutedAuthor],
   );
 
   const dopFun = () => {
     if (bothStatus) return [];
 
-    return isSponsor ? [hidePost, muteUser, addToBlackList] : [followUserItem, followObjectItem];
+    return isSponsor ? [addToBlackList] : [followUserItem, followObjectItem];
   };
 
   const getPopoverItems = () => {
@@ -392,7 +398,9 @@ const RewardsPopover = ({ proposition, getProposition, type }) => {
       case 'completed': {
         const mainList = [viewReservation, openReview, report];
 
-        return isSponsor ? [...mainList, rejectRewards, ...toolList] : [...mainList, decrease];
+        return isSponsor
+          ? [...mainList, rejectRewards, hidePost, muteUser, ...toolList]
+          : [...mainList, decrease];
       }
       case 'rejected':
         return isSponsor
