@@ -24,15 +24,17 @@ const ReportTableRewards = ({ intl, currencyInfo, reportDetails, payoutToken }) 
     (acc, obj) => {
       const userName = get(obj, ['userName']);
       const ownHive = userName === reportUserName;
+      const votesAmount = get(obj, ['details', 'votesAmount'], 0) || obj?.votesAmount || 0;
+      const amount = get(obj, ['amount'], 0);
 
       return [
         ...acc,
         {
           id: get(obj, '_id'),
           account: get(obj, ['userName'], ''),
-          weight: round((get(obj, ['amount']) * 100) / totalHive),
-          votesAmount: get(obj, ['details', 'votesAmount'], 0) || obj?.votesAmount,
-          amount: get(obj, ['amount'], 0),
+          weight: round(((amount + votesAmount) * 100) / totalHive),
+          votesAmount,
+          amount,
           payableInDollars: getPayableInDollars(obj),
           ownHive,
           payoutToken,

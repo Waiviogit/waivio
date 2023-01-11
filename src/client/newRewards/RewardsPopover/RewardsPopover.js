@@ -21,11 +21,14 @@ import { changeBlackAndWhiteLists } from '../../../store/rewardsStore/rewardsAct
 import ids from '../BlackList/constants';
 import { followObject, unfollowObject } from '../../../store/wObjectStore/wobjActions';
 import { getObjectName } from '../../../common/helpers/wObjectHelper';
+import { handleHidePost, muteAuthorPost } from '../../../store/postsStore/postActions';
 
 const RewardsPopover = ({ proposition, getProposition, type }) => {
   const [isVisiblePopover, setIsVisiblePopover] = useState(false);
   const [amount, setAmount] = useState(0);
   const [inBlackList, setInBlackList] = useState(false);
+  const [mutedAuthor, setMutedAuthort] = useState(false);
+  const [hidedPost, setHidedPost] = useState(false);
   const [followingObj, setFollowingObj] = useState(false);
   const [followingGuide, setFollowingGuide] = useState(false);
   const [openDecrease, setOpenDecrease] = useState('');
@@ -55,6 +58,8 @@ const RewardsPopover = ({ proposition, getProposition, type }) => {
         });
       }
     }
+    setMutedAuthort(proposition.muted);
+    setHidedPost(proposition.isHide);
   }, [isVisiblePopover]);
 
   const realeaseReward = () => {
@@ -325,6 +330,54 @@ const RewardsPopover = ({ proposition, getProposition, type }) => {
     [],
   );
 
+  const hidePost = useMemo(
+    () => (
+      <PopoverMenuItem key={'hidepost'}>
+        <div
+          onClick={() => {
+            setLoadingType('hidepost');
+
+            dispatch(
+              handleHidePost({
+                ...proposition,
+                permlink: proposition.reviewPermlink,
+                author: proposition.userName,
+              }),
+            ).then(() => {
+              setHidedPost(!hidedPost);
+              setLoadingType('');
+            });
+          }}
+        >
+          {loadingType === 'hidepost' && <Icon type={'loading'} />}{' '}
+          {hidedPost ? 'Visible post' : 'Hide post'}
+        </div>
+      </PopoverMenuItem>
+    ),
+    [loadingType, hidedPost],
+  );
+
+  const muteUser = useMemo(
+    () => (
+      <PopoverMenuItem key={'muteuser'}>
+        <div
+          onClick={() => {
+            setLoadingType('muteuser');
+
+            dispatch(muteAuthorPost({ ...proposition, author: proposition.userName })).then(() => {
+              setMutedAuthort(!mutedAuthor);
+              setLoadingType('');
+            });
+          }}
+        >
+          {loadingType === 'muteuser' && <Icon type={'loading'} />}{' '}
+          {mutedAuthor ? 'Unmute user' : 'Mute user'} @{proposition?.userName}
+        </div>
+      </PopoverMenuItem>
+    ),
+    [loadingType, mutedAuthor],
+  );
+
   const dopFun = () => {
     if (bothStatus) return [];
 
@@ -345,7 +398,9 @@ const RewardsPopover = ({ proposition, getProposition, type }) => {
       case 'completed': {
         const mainList = [viewReservation, openReview, report];
 
-        return isSponsor ? [...mainList, rejectRewards, ...toolList] : [...mainList, decrease];
+        return isSponsor
+          ? [...mainList, rejectRewards, hidePost, muteUser, ...toolList]
+          : [...mainList, decrease];
       }
       case 'rejected':
         return isSponsor
@@ -414,6 +469,8 @@ RewardsPopover.propTypes = {
     rejectionPermlink: PropTypes.string,
     requiredObject: PropTypes.string,
     guideName: PropTypes.string,
+    muted: PropTypes.bool,
+    isHide: PropTypes.bool,
   }).isRequired,
   type: PropTypes.string.isRequired,
   getProposition: PropTypes.func,
