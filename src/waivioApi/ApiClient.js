@@ -3073,7 +3073,7 @@ export const getCurrencyType = () => {
     .catch(e => e);
 };
 
-export const getDepartmentFields = ({ name, names, excluded }) => {
+export const getNestedDepartmentFields = ({ name, names, excluded }) => {
   return fetch(`${config.apiPrefix}${config.departments}`, {
     headers,
     method: 'POST',
@@ -3088,7 +3088,7 @@ export const getDepartmentFields = ({ name, names, excluded }) => {
     .catch(e => e);
 };
 
-export const getObjectsByDepartment = ({ departments, skip, limit }) => {
+export const getObjectsByDepartment = (departments, skip, limit) => {
   return fetch(`${config.apiPrefix}${config.departments}/wobjects`, {
     headers,
     method: 'POST',
