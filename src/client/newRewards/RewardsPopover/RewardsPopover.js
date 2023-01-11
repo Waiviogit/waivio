@@ -350,7 +350,7 @@ const RewardsPopover = ({ proposition, getProposition, type }) => {
           }}
         >
           {loadingType === 'hidepost' && <Icon type={'loading'} />}{' '}
-          {hidedPost ? 'Visible post' : 'Hide post'}
+          {hidedPost ? 'Unhide post' : 'Hide post'}
         </div>
       </PopoverMenuItem>
     ),
