@@ -52,7 +52,7 @@ const ImportModal = ({ visible, toggleModal, getImportList }) => {
     >
       <div>
         <h4>Select object type:</h4>
-        <Select placeholder={'Object type'} onSelect={setObjectType}>
+        <Select placeholder={'Select'} onSelect={setObjectType}>
           {['book', 'product', 'restaurant'].map(type => (
             <Select.Option key={type}>{type}</Select.Option>
           ))}

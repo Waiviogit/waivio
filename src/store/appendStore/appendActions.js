@@ -60,16 +60,23 @@ export const getChangedWobjectField = (
     dispatch({
       type: GET_CHANGED_WOBJECT_FIELD.ACTION,
       payload: {
-        promise: getChangedField(authorPermlink, fieldName, author, permlink, locale).then(res => {
-          dispatch({
-            type: GET_CHANGED_WOBJECT_UPDATE.SUCCESS,
-            payload: res,
-            meta: { isNew },
-          });
-          if (isNew) dispatch(getUpdates(authorPermlink, type || fieldName, 'createdAt', locale));
+        promise: getChangedField(authorPermlink, fieldName, author, permlink, locale)
+          .then(res => {
+            dispatch({
+              type: GET_CHANGED_WOBJECT_UPDATE.SUCCESS,
+              payload: res,
+              meta: { isNew },
+            });
+            if (isNew) dispatch(getUpdates(authorPermlink, type || fieldName, 'createdAt', locale));
 
-          return res;
-        }),
+            return res;
+          })
+          .catch(() => {
+            message.error('An error has occurred, please reload the page');
+            dispatch({
+              type: GET_CHANGED_WOBJECT_FIELD.ERROR,
+            });
+          }),
       },
       meta: { isNew },
     });
