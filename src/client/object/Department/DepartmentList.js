@@ -2,19 +2,25 @@ import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { isEmpty } from 'lodash';
+import { useHistory } from 'react-router';
 import { getNestedDepartmentFields } from '../../../waivioApi/ApiClient';
 import DepartmentItem from './DepartmentItem';
 import { getActiveDepartment } from '../../../store/objectDepartmentsStore/objectDepartmentsSelectors';
 
-const DepartmentList = ({ wobject, history, departments }) => {
+const DepartmentList = ({ wobject, departments }) => {
+  const history = useHistory();
   const [dList, setDList] = useState([]);
-  const [showMore, setShowMore] = useState(false);
-  const [isShowNoreVisible, setIsShowNoreVisible] = useState(true);
+  const [hasMore, setHasMore] = useState(false);
   const departmentsArray = departments?.map(d => d.body);
   const storeActiveDepartment = useSelector(getActiveDepartment);
 
   useEffect(() => {
-    getNestedDepartmentFields({ names: departmentsArray }).then(res => setDList(res));
+    getNestedDepartmentFields({ names: departmentsArray }).then(res => {
+      setDList(res);
+      if (res.length > 2) {
+        setHasMore(true);
+      }
+    });
   }, []);
 
   useEffect(() => {
@@ -24,11 +30,10 @@ const DepartmentList = ({ wobject, history, departments }) => {
   }, [storeActiveDepartment]);
 
   const onShowMoreClick = () => {
-    setShowMore(true);
-    setIsShowNoreVisible(false);
+    setHasMore(false);
   };
 
-  const departmentsList = showMore ? dList : dList.slice(0, 2);
+  const departmentsList = hasMore ? dList.slice(0, 2) : dList;
 
   return (
     <>
@@ -41,7 +46,7 @@ const DepartmentList = ({ wobject, history, departments }) => {
           department={dep}
         />
       ))}
-      {dList.length > 2 && isShowNoreVisible && (
+      {hasMore && (
         <button onClick={onShowMoreClick} className="WalletTable__csv-button">
           Show more
         </button>
@@ -53,7 +58,6 @@ const DepartmentList = ({ wobject, history, departments }) => {
 DepartmentList.propTypes = {
   wobject: PropTypes.shape().isRequired,
   departments: PropTypes.arrayOf().isRequired,
-  history: PropTypes.shape().isRequired,
 };
 
 export default DepartmentList;
