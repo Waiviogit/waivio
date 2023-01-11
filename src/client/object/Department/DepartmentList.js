@@ -8,6 +8,8 @@ import { getActiveDepartment } from '../../../store/objectDepartmentsStore/objec
 
 const DepartmentList = ({ wobject, history, departments }) => {
   const [dList, setDList] = useState([]);
+  const [showMore, setShowMore] = useState(false);
+  const [isShowNoreVisible, setIsShowNoreVisible] = useState(true);
   const departmentsArray = departments?.map(d => d.body);
   const storeActiveDepartment = useSelector(getActiveDepartment);
 
@@ -21,15 +23,31 @@ const DepartmentList = ({ wobject, history, departments }) => {
     }
   }, [storeActiveDepartment]);
 
-  return dList.map(dep => (
-    <DepartmentItem
-      id={dep.name}
-      key={dep.name}
-      history={history}
-      wobject={wobject}
-      department={dep}
-    />
-  ));
+  const onShowMoreClick = () => {
+    setShowMore(true);
+    setIsShowNoreVisible(false);
+  };
+
+  const departmentsList = showMore ? dList : dList.slice(0, 2);
+
+  return (
+    <>
+      {departmentsList.map(dep => (
+        <DepartmentItem
+          id={dep.name}
+          key={dep.name}
+          history={history}
+          wobject={wobject}
+          department={dep}
+        />
+      ))}
+      {dList.length > 2 && isShowNoreVisible && (
+        <button onClick={onShowMoreClick} className="WalletTable__csv-button">
+          Show more
+        </button>
+      )}
+    </>
+  );
 };
 
 DepartmentList.propTypes = {
