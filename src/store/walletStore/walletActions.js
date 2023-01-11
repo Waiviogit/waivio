@@ -20,7 +20,7 @@ import {
 } from '../../common/constants/swapList';
 import delegationModalTypes from '../../common/constants/delegationModalTypes';
 import { getGuestWaivBalance, getGuestWaivTransferHistory } from '../../waivioApi/walletApi';
-import { getAllRates } from '../ratesStore/ratesAction';
+import { getAllRates, setRate } from '../ratesStore/ratesAction';
 
 export const OPEN_TRANSFER = '@wallet/OPEN_TRANSFER';
 export const CLOSE_TRANSFER = '@wallet/CLOSE_TRANSFER';
@@ -480,7 +480,11 @@ export const ADAPT_MARKET_TO_ENGINE = '@wallet/ADAPT_MARKET_TO_ENGINE';
 export const getTokenRates = tokenName => dispatch =>
   dispatch({
     type: GET_TOKEN_RATES.ACTION,
-    payload: ApiClient.getTokensEngineRates(tokenName),
+    payload: ApiClient.getTokensEngineRates(tokenName).then(res => {
+      dispatch(setRate(tokenName, res.current.rates.USD));
+
+      return res;
+    }),
     meta: tokenName,
   });
 
@@ -587,7 +591,6 @@ export const getUserTokensBalanceList = (
       dispatch(getAllRates(rates));
       if (!isEmpty(rates)) {
         const listTokensWithRates = res.map(token => {
-          const rate = rates.find(r => r.symbol === token.symbol);
           const info = infos.find(r => r.symbol === token.symbol);
 
           return {
@@ -596,7 +599,6 @@ export const getUserTokensBalanceList = (
             name: info.name,
             precision: info.precision,
             avatar: get(parseJSON(info.metadata), 'icon', ''),
-            rate: +get(rate, 'lastDayPrice', 1),
           };
         });
 

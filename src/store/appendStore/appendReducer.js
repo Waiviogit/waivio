@@ -35,7 +35,7 @@ export default (state = defaultState, action) => {
     case appendActions.APPEND_WAIVIO_OBJECT.SUCCESS:
       return {
         ...state,
-        loading: false,
+        // loading: false,
       };
 
     case appendActions.GET_OBJECT_UPDATES.SUCCESS: {
@@ -73,6 +73,14 @@ export default (state = defaultState, action) => {
       return {
         ...state,
         fields,
+        loading: false,
+      };
+    }
+
+    case appendActions.GET_CHANGED_WOBJECT_FIELD.ERROR: {
+      return {
+        ...state,
+        loading: false,
       };
     }
 

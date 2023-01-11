@@ -60,16 +60,23 @@ export const getChangedWobjectField = (
     dispatch({
       type: GET_CHANGED_WOBJECT_FIELD.ACTION,
       payload: {
-        promise: getChangedField(authorPermlink, fieldName, author, permlink, locale).then(res => {
-          dispatch({
-            type: GET_CHANGED_WOBJECT_UPDATE.SUCCESS,
-            payload: res,
-            meta: { isNew },
-          });
-          if (isNew) dispatch(getUpdates(authorPermlink, type || fieldName, 'createdAt', locale));
+        promise: getChangedField(authorPermlink, fieldName, author, permlink, locale)
+          .then(res => {
+            dispatch({
+              type: GET_CHANGED_WOBJECT_UPDATE.SUCCESS,
+              payload: res,
+              meta: { isNew },
+            });
+            if (isNew) dispatch(getUpdates(authorPermlink, type || fieldName, 'createdAt', locale));
 
-          return res;
-        }),
+            return res;
+          })
+          .catch(() => {
+            message.error('An error has occurred, please reload the page');
+            dispatch({
+              type: GET_CHANGED_WOBJECT_FIELD.ERROR,
+            });
+          }),
       },
       meta: { isNew },
     });
@@ -108,6 +115,7 @@ export const voteAppends = (author, permlink, weight = 10000, name = '', isNew =
   return steemConnectAPI
     .vote(voter, author, permlink, weight)
     .then(() => {
+      message.success('Please wait, we are processing your update');
       dispatch(
         getChangedWobjectField(wobj.author_permlink, fieldName, author, permlink, isNew, type),
       );
