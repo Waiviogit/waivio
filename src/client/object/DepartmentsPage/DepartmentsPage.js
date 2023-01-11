@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { isEmpty } from 'lodash';
+// import PropTypes from "prop-types";
 import { FormattedMessage } from 'react-intl';
-import ReduxInfiniteScroll from '../../vendor/ReduxInfiniteScroll';
+import InfiniteScroll from 'react-infinite-scroller';
 import Loading from '../../components/Icon/Loading';
 import ObjectCardView from '../../objectCard/ObjectCardView';
 import { getObjectsByDepartment } from '../../../waivioApi/ApiClient';
@@ -10,7 +11,6 @@ import { getActiveDepartment } from '../../../store/objectDepartmentsStore/objec
 
 const DepartmentsPage = () => {
   const [hasMore, setHasMore] = useState(false);
-  const [loadingStarted, setLoadingStarted] = useState(false);
   const [filteredObjects, setFilteredObjects] = useState([]);
   let skip = 0;
   const limit = 10;
@@ -19,34 +19,24 @@ const DepartmentsPage = () => {
   useEffect(() => {
     setFilteredObjects([]);
     if (!isEmpty(activeDepartment))
-      getObjectsByDepartment({ departments: [activeDepartment], skip, limit }).then(r => {
-        setLoadingStarted(true);
+      getObjectsByDepartment([activeDepartment], skip, limit).then(r => {
         setHasMore(r.hasMore);
         setFilteredObjects(r.wobjects);
       });
-    setLoadingStarted(false);
   }, [activeDepartment]);
 
-  const loadMoreRelatedObjects = () => {
-    if (hasMore) {
-      if (filteredObjects.length >= limit) {
-        skip += filteredObjects.length;
-      }
-      getObjectsByDepartment({ departments: [activeDepartment], skip, limit }).then(r => {
-        setLoadingStarted(true);
-        setHasMore(r.hasMore);
-        setFilteredObjects([...filteredObjects, ...r.wobjects]);
-      });
-      setLoadingStarted(false);
-      if (filteredObjects.length >= limit) {
-        skip += filteredObjects.length;
-      }
-    }
-  };
-
   useEffect(() => {
-    if (hasMore) loadMoreRelatedObjects();
+    if (filteredObjects.length >= limit) {
+      skip += filteredObjects.length;
+    }
   }, [filteredObjects]);
+
+  const loadMoreRelatedObjects = () => {
+    getObjectsByDepartment([activeDepartment], skip, limit).then(r => {
+      setHasMore(r.hasMore);
+      setFilteredObjects([...filteredObjects, ...r.wobjects]);
+    });
+  };
 
   return (
     <>
@@ -55,21 +45,23 @@ const DepartmentsPage = () => {
           <FormattedMessage id="department" defaultMessage="Department" />: {activeDepartment}
         </div>
       </div>
-      <ReduxInfiniteScroll
+      <InfiniteScroll
         className="Feed"
         loadMore={loadMoreRelatedObjects}
         loader={<Loading />}
-        loadingMore={loadingStarted}
+        initialLoad={false}
         hasMore={hasMore}
-        // elementIsScrollable={false}
-        threshold={1000}
       >
         {filteredObjects?.map(wObj => (
           <ObjectCardView key={wObj.id} wObject={wObj} passedParent={wObj.parent} />
         ))}
-      </ReduxInfiniteScroll>
+      </InfiniteScroll>
     </>
   );
+};
+
+DepartmentsPage.propTypes = {
+  // wobject: PropTypes.shape().isRequired
 };
 
 export default DepartmentsPage;
