@@ -17,10 +17,6 @@ const DepartmentItem = ({ wobject, history, department, nestedExcludedDep }) => 
   const getDepartmentsClassNames = element =>
     classNames({ Department__activeDepartment: element.name === storeActiveDep });
 
-  useEffect(() => {
-    dispatch(setActiveDepartment(''));
-  }, [wobject.author_permlink]);
-
   const onNewActiveDep = dep => {
     history.push(`/object/${wobject.author_permlink}/departments/${dep.name}`);
     setActiveDep(dep.name);
@@ -43,6 +39,8 @@ const DepartmentItem = ({ wobject, history, department, nestedExcludedDep }) => 
       });
     }
   };
+
+  useEffect(() => () => dispatch(setActiveDepartment('')), [wobject.author_permlink]);
 
   return (
     <div className="Department__container ">
