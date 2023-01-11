@@ -13,7 +13,7 @@ import {
 } from 'react-intl';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { Collapse, message } from 'antd';
+import { Collapse } from 'antd';
 import Lightbox from 'react-image-lightbox';
 import { extractImageTags } from '../../../common/helpers/parser';
 import {
@@ -33,8 +33,6 @@ import ObjectCardView from '../../objectCard/ObjectCardView';
 import WeightTag from '../WeightTag';
 import { AppSharedContext } from '../../Wrapper';
 import PostPopoverMenu from '../PostPopoverMenu/PostPopoverMenu';
-import * as apiConfig from '../../../waivioApi/config.json';
-import { assignProposition } from '../../../store/userStore/userActions';
 import { getImagePathPost } from '../../../common/helpers/image';
 import MuteModal from '../../widgets/MuteModal';
 import { muteAuthorPost } from '../../../store/postsStore/postActions';
@@ -47,7 +45,6 @@ import './StoryFull.less';
 @withRouter
 @withAuthActions
 @connect(null, {
-  assignProposition,
   muteAuthorPost,
 })
 class StoryFull extends React.Component {
@@ -75,7 +72,6 @@ class StoryFull extends React.Component {
     onLikeClick: PropTypes.func,
     onShareClick: PropTypes.func,
     onEditClick: PropTypes.func,
-    assignProposition: PropTypes.func,
     isOriginalPost: PropTypes.string,
     isModal: PropTypes.bool,
   };
@@ -96,8 +92,6 @@ class StoryFull extends React.Component {
     onLikeClick: () => {},
     onShareClick: () => {},
     onEditClick: () => {},
-    assignProposition: () => {},
-    declineProposition: () => {},
     setVisibleMuteModal: () => {},
     postState: {},
     isOriginalPost: '',
@@ -185,57 +179,6 @@ class StoryFull extends React.Component {
       }
     }
   }
-
-  assignPropositionHandler = ({
-    companyAuthor,
-    companyPermlink,
-    resPermlink,
-    objPermlink,
-    primaryObjectName,
-    secondaryObjectName,
-    amount,
-    proposition,
-    proposedWobj,
-    userName,
-    currencyId,
-  }) => {
-    const appName = apiConfig[process.env.NODE_ENV].appName || 'waivio';
-
-    this.setState({ loadingAssign: true });
-    this.props
-      .assignProposition({
-        companyAuthor,
-        companyPermlink,
-        objPermlink,
-        resPermlink,
-        appName,
-        primaryObjectName,
-        secondaryObjectName,
-        amount,
-        proposition,
-        proposedWobj,
-        userName,
-        currencyId,
-      })
-      .then(() => {
-        message.success(
-          this.props.intl.formatMessage({
-            id: 'assigned_successfully',
-            defaultMessage: 'Assigned successfully',
-          }),
-        );
-        this.setState({ loadingAssign: false });
-      })
-      .catch(() => {
-        message.error(
-          this.props.intl.formatMessage({
-            id: 'cannot_reserve_company',
-            defaultMessage: 'You cannot reserve the campaign at the moment',
-          }),
-        );
-        this.setState({ loadingAssign: false });
-      });
-  };
 
   toggleBookmark = () => this.clickMenuItem('save');
 

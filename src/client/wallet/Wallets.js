@@ -11,6 +11,7 @@ import {
   getCurrUserTokensBalanceSwap,
   getGlobalProperties,
   getTokenBalance,
+  getTokenRates,
   getUserTokensBalanceList,
   resetHiveEngineTokenBalance,
   setWalletType,
@@ -48,6 +49,7 @@ const Wallets = props => {
     props.getCryptoPriceHistory();
     props.getGlobalProperties();
     props.getTokenBalance('WAIV', props.match.params.name);
+    props.getTokenRates('WAIV');
     props.getSwapEnginRates();
 
     if (!guestUserRegex.test(props.authUserName))
@@ -118,6 +120,7 @@ Wallets.propTypes = {
   getCurrUserTokensBalanceSwap: PropTypes.func.isRequired,
   getSwapEnginRates: PropTypes.func.isRequired,
   getUserTokensBalanceList: PropTypes.func.isRequired,
+  getTokenRates: PropTypes.func.isRequired,
   visibleDeposit: PropTypes.bool.isRequired,
   authUserName: PropTypes.string.isRequired,
   history: PropTypes.shape({
@@ -153,5 +156,6 @@ export default connect(
     getCurrUserTokensBalanceSwap,
     getUserTokensBalanceList,
     getSwapEnginRates,
+    getTokenRates,
   },
 )(injectIntl(Wallets));

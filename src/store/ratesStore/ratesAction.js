@@ -40,3 +40,10 @@ export const getAllRates = rates => dispatch => {
     ),
   });
 };
+
+export const setRate = (symbol, rate) => dispatch => {
+  dispatch({
+    type: GET_RATES.SUCCESS,
+    payload: { [symbol]: rate },
+  });
+};
