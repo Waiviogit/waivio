@@ -354,7 +354,7 @@ const RewardsPopover = ({ proposition, getProposition, type }) => {
         </div>
       </PopoverMenuItem>
     ),
-    [loadingType, hidedPost],
+    [loadingType, hidedPost, proposition?.userName],
   );
 
   const muteUser = useMemo(
@@ -375,7 +375,7 @@ const RewardsPopover = ({ proposition, getProposition, type }) => {
         </div>
       </PopoverMenuItem>
     ),
-    [loadingType, mutedAuthor],
+    [loadingType, mutedAuthor, proposition?.userName],
   );
 
   const dopFun = () => {
