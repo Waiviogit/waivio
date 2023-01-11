@@ -9,20 +9,26 @@ import { getActiveDepartment } from '../../../store/objectDepartmentsStore/objec
 const DepartmentList = ({ wobject, history, departments }) => {
   const [dList, setDList] = useState([]);
   const departmentsArray = departments?.map(d => d.body);
-  const stateActiveDepartment = useSelector(getActiveDepartment);
+  const storeActiveDepartment = useSelector(getActiveDepartment);
 
   useEffect(() => {
     getNestedDepartmentFields({ names: departmentsArray }).then(res => setDList(res));
   }, []);
 
   useEffect(() => {
-    if (isEmpty(stateActiveDepartment)) {
+    if (isEmpty(storeActiveDepartment)) {
       history.push(`/object/${wobject.author_permlink}`);
     }
-  }, [stateActiveDepartment]);
+  }, [storeActiveDepartment]);
 
   return dList.map(dep => (
-    <DepartmentItem key={dep.name} history={history} wobject={wobject} department={dep} />
+    <DepartmentItem
+      id={dep.name}
+      key={dep.name}
+      history={history}
+      wobject={wobject}
+      department={dep}
+    />
   ));
 };
 

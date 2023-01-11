@@ -7,7 +7,7 @@ import { getNestedDepartmentFields } from '../../../waivioApi/ApiClient';
 import { setActiveDepartment } from '../../../store/objectDepartmentsStore/objectDepartmentsActions';
 import { getActiveDepartment } from '../../../store/objectDepartmentsStore/objectDepartmentsSelectors';
 
-const DepartmentItem = ({ wobject, history, department, nestedExcludedDep }) => {
+const DepartmentItem = ({ wobject, history, department, nestedExcludedDep, id }) => {
   const [nestedList, setNestedList] = useState([]);
   const [activeDep, setActiveDep] = useState('');
   const dispatch = useDispatch();
@@ -15,18 +15,21 @@ const DepartmentItem = ({ wobject, history, department, nestedExcludedDep }) => 
   const [excludedDepartments, setExcludedDepartments] = useState(nestedExcludedDep);
 
   const getDepartmentsClassNames = element =>
-    classNames({ Department__activeDepartment: element.name === storeActiveDep });
+    classNames({
+      Department__activeDepartment:
+        element.name === storeActiveDep.name && storeActiveDep.id === id,
+    });
 
   const onNewActiveDep = dep => {
     history.push(`/object/${wobject.author_permlink}/departments/${dep.name}`);
     setActiveDep(dep.name);
     setExcludedDepartments([...excludedDepartments, dep.name]);
-    dispatch(setActiveDepartment(dep.name));
+    dispatch(setActiveDepartment({ name: dep.name, id }));
   };
   const onDepartmentClick = dep => {
     if (dep.name === activeDep) {
       setActiveDep('');
-      dispatch(setActiveDepartment(''));
+      dispatch(setActiveDepartment({}));
       setExcludedDepartments(excludedDepartments.filter(d => d === dep));
     } else {
       onNewActiveDep(dep);
@@ -40,7 +43,7 @@ const DepartmentItem = ({ wobject, history, department, nestedExcludedDep }) => 
     }
   };
 
-  useEffect(() => () => dispatch(setActiveDepartment('')), [wobject.author_permlink]);
+  useEffect(() => () => dispatch(setActiveDepartment({})), [wobject.author_permlink]);
 
   return (
     <div className="Department__container ">
@@ -62,6 +65,7 @@ const DepartmentItem = ({ wobject, history, department, nestedExcludedDep }) => 
             <div key={l.name} className="Department__nested-button">
               <DepartmentItem
                 nestedExcludedDep={excludedDepartments}
+                id={excludedDepartments[0]}
                 department={l}
                 wobject={wobject}
                 history={history}
@@ -78,6 +82,7 @@ DepartmentItem.propTypes = {
   department: PropTypes.arrayOf().isRequired,
   history: PropTypes.func.isRequired,
   nestedExcludedDep: PropTypes.arrayOf(),
+  id: PropTypes.string.isRequired,
 };
 DepartmentItem.defaultProps = {
   nestedExcludedDep: [],

@@ -19,7 +19,7 @@ const DepartmentsPage = () => {
   useEffect(() => {
     setFilteredObjects([]);
     if (!isEmpty(activeDepartment))
-      getObjectsByDepartment([activeDepartment], skip, limit).then(r => {
+      getObjectsByDepartment([activeDepartment.name], skip, limit).then(r => {
         setHasMore(r.hasMore);
         setFilteredObjects(r.wobjects);
       });
@@ -32,7 +32,7 @@ const DepartmentsPage = () => {
   }, [filteredObjects]);
 
   const loadMoreRelatedObjects = () => {
-    getObjectsByDepartment([activeDepartment], skip, limit).then(r => {
+    getObjectsByDepartment([activeDepartment.name], skip, limit).then(r => {
       setHasMore(r.hasMore);
       setFilteredObjects([...filteredObjects, ...r.wobjects]);
     });
@@ -42,7 +42,7 @@ const DepartmentsPage = () => {
     <>
       <div className="Department__prefix">
         <div className="Department__prefix-content">
-          <FormattedMessage id="department" defaultMessage="Department" />: {activeDepartment}
+          <FormattedMessage id="department" defaultMessage="Department" />: {activeDepartment.name}
         </div>
       </div>
       <InfiniteScroll
