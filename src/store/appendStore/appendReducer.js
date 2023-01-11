@@ -77,6 +77,13 @@ export default (state = defaultState, action) => {
       };
     }
 
+    case appendActions.GET_CHANGED_WOBJECT_FIELD.ERROR: {
+      return {
+        ...state,
+        loading: false,
+      };
+    }
+
     case appendActions.VOTE_APPEND.START: {
       const matchPostIndex = state.fields.findIndex(
         field => field.permlink === action.payload.permlink,
