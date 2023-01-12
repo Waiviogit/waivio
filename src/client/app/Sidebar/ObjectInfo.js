@@ -453,6 +453,9 @@ class ObjectInfo extends React.Component {
         'body',
       );
     }
+    if (!has(wobject, 'groupId')) {
+      activeOptionPicture = activeOptionPicture.filter(o => o.name !== 'avatar');
+    }
 
     const dimensions = parseWobjectField(wobject, 'dimensions');
     const productWeight = parseWobjectField(wobject, 'productWeight');
