@@ -95,7 +95,7 @@ class CommentForm extends React.Component {
       },
       () => {
         if (this.input) {
-          this.input.value = body.children;
+          this.input.value = null;
         }
       },
     );

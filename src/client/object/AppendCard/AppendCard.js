@@ -91,7 +91,6 @@ const AppendCard = props => {
   const handleCommentsClick = e => {
     e.preventDefault();
     e.stopPropagation();
-
     if (!commentsVisible && props.post.children) {
       setCommentsVisible(true);
     } else {

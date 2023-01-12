@@ -14,6 +14,8 @@ export const APPEND_WAIVIO_OBJECT = createAsyncActionType('@append/APPEND_WAIVIO
 
 export const GET_OBJECT_UPDATES = createAsyncActionType('@append/GET_OBJECT_UPDATES');
 
+export const UPDATE_COUNTER = '@append/UPDATE_COUNTER';
+
 export const getUpdates = (authorPermlink, type, sort, locale) => dispatch => {
   dispatch({
     type: GET_OBJECT_UPDATES.ACTION,
@@ -28,6 +30,15 @@ export const RESET_UPDATES_LIST = '@append/RESET_UPDATES_LIST';
 export const resetUpdateList = () => dispatch => {
   dispatch({
     type: RESET_UPDATES_LIST,
+  });
+};
+
+export const updateCounter = post => dispatch => {
+  dispatch({
+    type: UPDATE_COUNTER,
+    payload: {
+      post,
+    },
   });
 };
 
