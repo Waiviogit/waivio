@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import { startCase } from 'lodash';
 import { injectIntl, FormattedMessage, FormattedNumber } from 'react-intl';
 import { message } from 'antd';
-import SteemConnect from '../../steemConnectAPI';
 import { reload } from '../../../store/authStore/authActions';
 import Action from '../../components/Button/Action';
 import { getAuthenticatedUser } from '../../../store/authStore/authSelectors';
@@ -57,15 +56,14 @@ class ClaimRewardsBlock extends Component {
       loading: true,
     });
 
-    this.props.claimRewards();
-
-    SteemConnect.claimRewardBalance(name, hiveBalance, hbdBalance, vestingBalance)
-      .then(() =>
+    this.props
+      .claimRewards(name, hiveBalance, hbdBalance, vestingBalance)
+      .then(() => {
         this.setState({
           loading: false,
           rewardClaimed: true,
-        }),
-      )
+        });
+      })
       .catch(e => {
         this.setState({
           loading: false,

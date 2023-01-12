@@ -4,7 +4,7 @@ import { roundNumberToThousands } from '../../vendor/steemitHelpers';
 
 const WeightDisplay = ({ value }) => {
   const shortValue = value.toFixed(2);
-  const formattedValue = roundNumberToThousands(shortValue);
+  const formattedValue = value > 0 ? roundNumberToThousands(shortValue) : 0;
 
   return <span>{formattedValue}</span>;
 };

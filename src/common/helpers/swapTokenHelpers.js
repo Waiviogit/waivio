@@ -1,5 +1,31 @@
 const BigNumber = require('bignumber.js');
 
+const getUpdatedPoolStats = ({ pool, baseAdjusted, quoteAdjusted }) => {
+  const uPool = { ...pool };
+
+  uPool.baseQuantity = new BigNumber(pool.baseQuantity)
+    .plus(baseAdjusted)
+    .toFixed(pool.precision, BigNumber.ROUND_HALF_UP);
+  uPool.quoteQuantity = new BigNumber(pool.quoteQuantity)
+    .plus(quoteAdjusted)
+    .toFixed(pool.precision, BigNumber.ROUND_HALF_UP);
+
+  uPool.basePrice = new BigNumber(uPool.quoteQuantity).dividedBy(uPool.baseQuantity).toFixed();
+  uPool.quotePrice = new BigNumber(uPool.baseQuantity).dividedBy(uPool.quoteQuantity).toFixed();
+
+  return uPool;
+};
+
+const getDiffPercent = (before, after) => {
+  if (new BigNumber(before).eq(0)) return '0';
+
+  return new BigNumber(after)
+    .minus(before)
+    .div(before)
+    .times(100)
+    .toFixed();
+};
+
 const getAmountOut = (tradeFeeMul, amountIn, liquidityIn, liquidityOut) => {
   const amountInWithFee = BigNumber(amountIn).times(tradeFeeMul);
   const num = BigNumber(amountInWithFee).times(liquidityOut);
@@ -54,14 +80,20 @@ export const getSwapOutput = ({ symbol, amountIn, pool, slippage, from, params, 
   const amountOut = BigNumber(tokenExchangedOn)
     .minus(tokenExchangedOnNewBalance)
     .absoluteValue();
+  const tokenPairDelta =
+    symbol === baseSymbol
+      ? [new BigNumber(amountIn), new BigNumber(amountOut).negated()]
+      : [new BigNumber(amountOut).negated(), new BigNumber(amountIn)];
 
-  const priceImpact = from
-    ? BigNumber(amountIn)
-        .times(100)
-        .div(tokenToExchange)
-    : BigNumber(amountOut)
-        .times(100)
-        .div(tokenExchangedOn);
+  const updatedPool = getUpdatedPoolStats({
+    pool,
+    baseAdjusted: tokenPairDelta[0],
+    quoteAdjusted: tokenPairDelta[1],
+  });
+
+  const priceImpact = new BigNumber(getDiffPercent(pool.basePrice, updatedPool.basePrice))
+    .abs()
+    .toFixed(2);
 
   const newBalances = {
     tokenToExchange: tokenToExchangeNewBalance.toFixed(precision, BigNumber.ROUND_DOWN),
@@ -139,7 +171,7 @@ export const getSwapOutput = ({ symbol, amountIn, pool, slippage, from, params, 
 
   return {
     fee,
-    priceImpact: priceImpact.toFixed(2),
+    priceImpact,
     minAmountOut: minAmountOutToFixed,
     amountOut: amountOutToFixed,
     newBalances,
