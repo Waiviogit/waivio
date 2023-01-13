@@ -17,7 +17,7 @@ const DepartmentList = ({ wobject, departments }) => {
         setHasMore(true);
       }
     });
-  }, []);
+  }, [departments]);
 
   const onShowMoreClick = () => {
     setHasMore(false);
