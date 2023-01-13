@@ -3,8 +3,9 @@ import PropTypes from 'prop-types';
 import { roundNumberToThousands } from '../../vendor/steemitHelpers';
 
 const WeightDisplay = ({ value }) => {
-  const shortValue = value.toFixed(2);
-  const formattedValue = value > 0 ? roundNumberToThousands(shortValue) : 0;
+  const currValue = value > 0 ? value : 0;
+  const shortValue = currValue.toFixed(2);
+  const formattedValue = roundNumberToThousands(shortValue);
 
   return <span>{formattedValue}</span>;
 };

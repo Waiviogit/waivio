@@ -87,9 +87,9 @@ export const setFromToken = token => async (dispatch, getState) => {
 
 export const SHOW_MODAL = '@swap/SHOW_MODAL';
 
-export const toggleModal = (isOpen, symbol) => ({
+export const toggleModal = (isOpen, symbol, to) => ({
   type: SHOW_MODAL,
-  payload: { isOpen, symbol },
+  payload: { isOpen, symbol, to },
 });
 
 export const SHOW_MODAL_IN_REBALANCE = '@swap/SHOW_MODAL_IN_REBALANCE';

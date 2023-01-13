@@ -72,7 +72,25 @@ const DetailsModal = ({ proposition, toggleModal, isModalDetailsOpen, onActionIn
       dispatch(reserveProposition(proposition, userName))
         .then(() => {
           setLoading(false);
-          history.push('/rewards/reserved');
+          const mainObject = `[${getObjectName(requiredObject)}](${
+            requiredObject?.author_permlink
+          })`;
+
+          const secondaryObject = `[${getObjectName(proposition.object)}](${
+            proposition?.object?.author_permlink
+          })`;
+
+          const urlConfig = {
+            pathname: '/editor',
+            search: `?object=${mainObject}&object=${secondaryObject}&newCampaing=true&campaign=${proposition._id}`,
+            state: {
+              mainObject,
+              secondaryObject,
+              campaign: proposition._id,
+            },
+          };
+
+          history.push(urlConfig);
         })
         .catch(e => {
           setLoading(false);
@@ -107,7 +125,7 @@ const DetailsModal = ({ proposition, toggleModal, isModalDetailsOpen, onActionIn
       disabled={!isEligible}
       onClick={onClick}
     >
-      {proposition.reserved ? 'Write rewiew' : 'Reserve'}
+      Submit dish photo
     </Button>
   ) : (
     <WebsiteReservedButtons
