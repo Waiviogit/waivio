@@ -408,36 +408,7 @@ class ObjectInfo extends React.Component {
       ? wobject.authors.map(el => parseWobjectField(el, 'body', []))
       : [];
 
-    const optionsPictures = wobject?.options
-      ? Object.entries(wobject?.options)
-          .map(option => Object.values(option))
-          .flatMap(el => el[1])
-          .filter(el => el.body.image)
-          .map(o => ({
-            body: o?.avatar,
-            id:
-              o.body.parentObjectPermlink === wobject.author_permlink && wobject.galleryAlbum
-                ? wobject?.galleryAlbum[0]?.id || wobject.galleryItem[0]?.id
-                : o.author_permlink,
-            name: 'options',
-            parentPermlink: o.body.parentObjectPermlink,
-          }))
-          // eslint-disable-next-line array-callback-return,consistent-return
-          .sort((a, b) => {
-            if (a.body === wobject?.avatar) {
-              return -1;
-            }
-            if (b.body === wobject?.avatar) {
-              return 1;
-            }
-          })
-      : [];
-
-    const sortedOptions = optionsPictures.filter(
-      o => activeOption[activeCategory]?.avatar !== o?.body,
-    );
-
-    let activeOptionPicture = uniqBy([...sortedOptions, ...pictures], 'body');
+    let activeOptionPicture = uniqBy([...pictures], 'body');
 
     if (hoveredOption?.avatar || activeOption[activeCategory]?.avatar) {
       activeOptionPicture = uniqBy(
@@ -447,7 +418,6 @@ class ObjectInfo extends React.Component {
             body: hoveredOption?.avatar || activeOption[activeCategory]?.avatar,
             id: wobject?.galleryAlbum ? wobject?.galleryAlbum[0]?.id : wobject.author_permlink,
           },
-          ...sortedOptions,
           ...pictures,
         ],
         'body',
