@@ -7,7 +7,7 @@ import { getNestedDepartmentFields } from '../../../waivioApi/ApiClient';
 import { setActiveDepartment } from '../../../store/objectDepartmentsStore/objectDepartmentsActions';
 import { getActiveDepartment } from '../../../store/objectDepartmentsStore/objectDepartmentsSelectors';
 
-const DepartmentItem = ({ wobject, history, department, nestedExcludedDep, id }) => {
+const DepartmentItem = ({ wobject, history, department, nestedExcludedDep, id, depsList }) => {
   const [nestedList, setNestedList] = useState([]);
   const [activeDep, setActiveDep] = useState('');
   const dispatch = useDispatch();
@@ -34,10 +34,11 @@ const DepartmentItem = ({ wobject, history, department, nestedExcludedDep, id })
       setExcludedDepartments(excludedDepartments.filter(d => d === dep));
     } else {
       onNewActiveDep(dep);
+      const excluded = depsList.map(d => d.name);
 
       getNestedDepartmentFields({
         name: dep.name,
-        excluded: [...excludedDepartments, dep.name],
+        excluded: [...excludedDepartments, ...excluded],
       }).then(res => {
         setNestedList(res);
       });
@@ -66,6 +67,7 @@ const DepartmentItem = ({ wobject, history, department, nestedExcludedDep, id })
             <div key={l.name} className="Department__nested-button">
               <DepartmentItem
                 nestedExcludedDep={excludedDepartments}
+                depsList={nestedList}
                 id={excludedDepartments[0]}
                 department={l}
                 wobject={wobject}
@@ -83,10 +85,12 @@ DepartmentItem.propTypes = {
   department: PropTypes.arrayOf().isRequired,
   history: PropTypes.func.isRequired,
   nestedExcludedDep: PropTypes.arrayOf(),
+  depsList: PropTypes.arrayOf(),
   id: PropTypes.string.isRequired,
 };
 DepartmentItem.defaultProps = {
   nestedExcludedDep: [],
+  depsList: [],
 };
 
 export default DepartmentItem;
