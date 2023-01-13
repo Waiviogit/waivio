@@ -35,16 +35,16 @@ const Options = ({ wobject, isEditMode, setHoveredOption, history }) => {
 
   const getOptionsPicturesClassName = el =>
     classNames({
-      Options__pictures: el.body.parentObjectPermlink !== wobject.author_permlink,
-      'Options__my-pictures': el.body.parentObjectPermlink === wobject.author_permlink,
+      Options__pictures: el.author_permlink !== wobject.author_permlink,
+      'Options__my-pictures': el.author_permlink === wobject.author_permlink,
       'Options__my-pictures-selected':
         el.body?.image === activeStoreOption[el.body.category]?.body?.image,
     });
 
   const getOptionsClassName = el =>
     classNames({
-      'Options__option-button': el.body.parentObjectPermlink !== wobject.author_permlink,
-      'Options__my-option-button': el.body.parentObjectPermlink === wobject.author_permlink,
+      'Options__option-button': el.author_permlink !== wobject.author_permlink,
+      'Options__my-option-button': el.author_permlink === wobject.author_permlink,
       'Options__my-option-button-selected':
         activeStoreOption[el.body.category]?.body?.value === el.body?.value,
     });
@@ -61,7 +61,7 @@ const Options = ({ wobject, isEditMode, setHoveredOption, history }) => {
     dispatch(setStoreActiveCategory(el.body.category));
     setHoveredOption(el);
     dispatch(setStoreActiveOption({ ...activeStoreOption, [el.body.category]: el }));
-    if (el.body.parentObjectPermlink !== wobject.author_permlink) {
+    if (el.author_permlink !== wobject.author_permlink) {
       getObject(el.author_permlink, userName, locale).then(obj =>
         history.push(obj.defaultShowLink),
       );
@@ -81,9 +81,7 @@ const Options = ({ wobject, isEditMode, setHoveredOption, history }) => {
       );
       const r =
         duplicatedOptionsArray.length > 1
-          ? duplicatedOptionsArray.filter(
-              d => d.body.parentObjectPermlink === wobject.author_permlink,
-            )
+          ? duplicatedOptionsArray.filter(d => d.author_permlink === wobject.author_permlink)
           : duplicatedOptionsArray;
 
       return [...a, r[0] || duplicatedOptionsArray[0]].sort(

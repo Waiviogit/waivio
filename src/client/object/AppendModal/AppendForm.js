@@ -720,7 +720,6 @@ export default class AppendForm extends Component {
             [optionsFields.value]: formValues[optionsFields.value],
             [optionsFields.position]: formValues[optionsFields.position],
             image: formValues[objectFields.options],
-            parentObjectPermlink: wObject.author_permlink,
           }),
         };
       }
