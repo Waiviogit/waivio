@@ -1,8 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Icon } from 'antd';
-import { get } from 'lodash';
+import { Icon, message } from 'antd';
 import { Transforms } from 'slate';
 import withEditor from '../Editor/withEditor';
 import { getIsAuthenticated } from '../../../store/authStore/authSelectors';
@@ -69,12 +68,10 @@ class QuickCommentEditor extends React.Component {
       this.setState({ isDisabledSubmit: true });
 
       if (commentMsg) {
-        this.props.onSubmit(this.props.parentPost, commentMsg.trim()).then(response => {
-          if (!get(response, 'error', false)) {
-            this.setState({ commentMsg: '', currentImage: [] });
-
-            resetEditorState(this.editor);
-          }
+        this.props.onSubmit(this.props.parentPost, commentMsg.trim()).then(() => {
+          this.setState({ commentMsg: '', currentImage: [] });
+          message.success('Comment submitted');
+          resetEditorState(this.editor);
         });
       }
     }
