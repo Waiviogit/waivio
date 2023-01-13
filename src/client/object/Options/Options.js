@@ -109,7 +109,7 @@ const Options = ({ wobject, isEditMode, setHoveredOption, history }) => {
       {isEditMode
         ? wobject?.options &&
           Object.entries(wobject?.options).map(option => (
-            <div className="mb2" key={option[0]}>
+            <div className="Options__block" key={option[0]}>
               {' '}
               {option[1].some(el => el.author_permlink === wobject.author_permlink) && (
                 <div className="Options__option-category">{option[0]}: </div>
@@ -140,7 +140,7 @@ const Options = ({ wobject, isEditMode, setHoveredOption, history }) => {
         : wobject?.options && (
             <div>
               {Object.entries(filteredOptions).map(option => (
-                <div className="mb2" key={option[0]}>
+                <div className="Options__block" key={option[0]}>
                   {' '}
                   <div className="Options__option-category">
                     {option[0]}:{' '}
