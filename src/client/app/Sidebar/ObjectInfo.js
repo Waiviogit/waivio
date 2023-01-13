@@ -520,7 +520,7 @@ class ObjectInfo extends React.Component {
         )}
         {this.listItem(
           objectFields.options,
-          wobject.options && (
+          !isEmpty(wobject?.options) && (
             <Options
               setHoveredOption={option => this.setState({ hoveredOption: option })}
               isEditMode={isEditMode}
@@ -532,12 +532,14 @@ class ObjectInfo extends React.Component {
 
         {this.listItem(
           objectFields.departments,
-          <Department
-            departments={departments}
-            isEditMode={isEditMode}
-            history={this.props.history}
-            wobject={this.props.wobject}
-          />,
+          !isEmpty(wobject?.departments) && (
+            <Department
+              departments={departments}
+              isEditMode={isEditMode}
+              history={this.props.history}
+              wobject={this.props.wobject}
+            />
+          ),
         )}
       </>
     );
@@ -687,7 +689,9 @@ class ObjectInfo extends React.Component {
         )}
         {this.listItem(
           objectFields.rating,
-          <RateInfo username={userName} authorPermlink={wobject.author_permlink} />,
+          !isEmpty(wobject?.ratings) && (
+            <RateInfo username={userName} authorPermlink={wobject.author_permlink} />
+          ),
         )}
         {this.listItem(objectFields.tagCategory, this.renderTagCategories(tagCategoriesList))}
         {this.listItem(objectFields.categoryItem, null)}

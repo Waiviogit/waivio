@@ -28,6 +28,7 @@ const DepartmentItem = ({ wobject, history, department, nestedExcludedDep, id })
   };
   const onDepartmentClick = dep => {
     if (dep.name === activeDep) {
+      history.push(`/object/${wobject.author_permlink}`);
       setActiveDep('');
       dispatch(setActiveDepartment({}));
       setExcludedDepartments(excludedDepartments.filter(d => d === dep));
@@ -50,12 +51,12 @@ const DepartmentItem = ({ wobject, history, department, nestedExcludedDep, id })
       <div key={department.name}>
         <button className="Department__button" onClick={() => onDepartmentClick(department)}>
           <>
-            <span className={getDepartmentsClassNames(department)}>{department.name}</span>
+            <span className={getDepartmentsClassNames(department)}>{department.name}</span>{' '}
             {department.subdirectory &&
               (activeDep === department.name ? (
-                <Icon type="up" style={{ fontSize: '12px' }} />
+                <Icon type="up" style={{ fontSize: '11px' }} />
               ) : (
-                <Icon type="down" style={{ fontSize: '12px' }} />
+                <Icon type="down" style={{ fontSize: '11px' }} />
               ))}
           </>
         </button>

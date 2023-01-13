@@ -1,18 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { useSelector } from 'react-redux';
-import { isEmpty } from 'lodash';
 import { useHistory } from 'react-router';
 import { getNestedDepartmentFields } from '../../../waivioApi/ApiClient';
 import DepartmentItem from './DepartmentItem';
-import { getActiveDepartment } from '../../../store/objectDepartmentsStore/objectDepartmentsSelectors';
 
 const DepartmentList = ({ wobject, departments }) => {
   const history = useHistory();
   const [dList, setDList] = useState([]);
   const [hasMore, setHasMore] = useState(false);
   const departmentsArray = departments?.map(d => d.body);
-  const storeActiveDepartment = useSelector(getActiveDepartment);
 
   useEffect(() => {
     getNestedDepartmentFields({ names: departmentsArray }).then(res => {
@@ -22,12 +18,6 @@ const DepartmentList = ({ wobject, departments }) => {
       }
     });
   }, []);
-
-  useEffect(() => {
-    if (isEmpty(storeActiveDepartment)) {
-      history.push(`/object/${wobject.author_permlink}`);
-    }
-  }, [storeActiveDepartment]);
 
   const onShowMoreClick = () => {
     setHasMore(false);
