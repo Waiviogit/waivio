@@ -136,7 +136,7 @@ const PropositionFooter = ({ type, openDetailsModal, proposition, getProposition
                 </div>
               ) : (
                 <Button type="primary" onClick={openDetailsModal}>
-                  Write review
+                  <b>Submit</b> <span className="Proposition-new__yourRewards">Dish Photos</span>
                 </Button>
               )}
             </div>
@@ -209,7 +209,7 @@ const PropositionFooter = ({ type, openDetailsModal, proposition, getProposition
             {!proposition.notEligible && (
               <div>
                 <Button type="primary" onClick={openDetailsModal}>
-                  <b>Reserve</b> <span className="Proposition-new__yourRewards">Your Reward</span>
+                  <b>Submit</b> <span className="Proposition-new__yourRewards">Dish Photos</span>
                 </Button>{' '}
                 <span className="Proposition-new__days">
                   for {proposition?.countReservationDays} days
