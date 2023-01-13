@@ -35,16 +35,16 @@ const Options = ({ wobject, isEditMode, setHoveredOption, history }) => {
 
   const getOptionsPicturesClassName = el =>
     classNames({
-      Options__pictures: el.body.parentObjectPermlink !== wobject.author_permlink,
-      'Options__my-pictures': el.body.parentObjectPermlink === wobject.author_permlink,
+      Options__pictures: el.author_permlink !== wobject.author_permlink,
+      'Options__my-pictures': el.author_permlink === wobject.author_permlink,
       'Options__my-pictures-selected':
         el.body?.image === activeStoreOption[el.body.category]?.body?.image,
     });
 
   const getOptionsClassName = el =>
     classNames({
-      'Options__option-button': el.body.parentObjectPermlink !== wobject.author_permlink,
-      'Options__my-option-button': el.body.parentObjectPermlink === wobject.author_permlink,
+      'Options__option-button': el.author_permlink !== wobject.author_permlink,
+      'Options__my-option-button': el.author_permlink === wobject.author_permlink,
       'Options__my-option-button-selected':
         activeStoreOption[el.body.category]?.body?.value === el.body?.value,
     });
@@ -61,7 +61,7 @@ const Options = ({ wobject, isEditMode, setHoveredOption, history }) => {
     dispatch(setStoreActiveCategory(el.body.category));
     setHoveredOption(el);
     dispatch(setStoreActiveOption({ ...activeStoreOption, [el.body.category]: el }));
-    if (el.body.parentObjectPermlink !== wobject.author_permlink) {
+    if (el.author_permlink !== wobject.author_permlink) {
       getObject(el.author_permlink, userName, locale).then(obj =>
         history.push(obj.defaultShowLink),
       );
@@ -70,6 +70,20 @@ const Options = ({ wobject, isEditMode, setHoveredOption, history }) => {
     }
   };
   const options = Object.entries(wobject?.options);
+
+  const sortOptions = (c, b) => {
+    if (c.body.position && b.body.position) {
+      return c.body.position - b.body.position;
+    } else if (!c.body.position && !b.body.position) {
+      if (c.body.value < b.body.value) return -1;
+      if (c.body.value > b.body.value) return 1;
+
+      return 0;
+    }
+
+    return !c.body.position ? 1 : -1;
+  };
+
   const filteredOptions = options.reduce((accumulator, currentValue) => {
     // eslint-disable-next-line no-param-reassign
     accumulator[currentValue[0]] = currentValue[1].reduce((a, v) => {
@@ -81,27 +95,10 @@ const Options = ({ wobject, isEditMode, setHoveredOption, history }) => {
       );
       const r =
         duplicatedOptionsArray.length > 1
-          ? duplicatedOptionsArray.filter(
-              d => d.body.parentObjectPermlink === wobject.author_permlink,
-            )
+          ? duplicatedOptionsArray.filter(d => d.author_permlink === wobject.author_permlink)
           : duplicatedOptionsArray;
 
-      return [...a, r[0] || duplicatedOptionsArray[0]].sort(
-        // eslint-disable-next-line array-callback-return,consistent-return
-        (b, c) => {
-          if (b.body.position && c.body.position) {
-            return b.body.position - c.body.position;
-          }
-
-          if (!b.body.position) {
-            return 1;
-          }
-
-          if (!c.body.position) {
-            return -1;
-          }
-        },
-      );
+      return [...a, r[0] || duplicatedOptionsArray[0]].sort((o, b) => sortOptions(o, b));
     }, []);
 
     return accumulator;
@@ -112,13 +109,13 @@ const Options = ({ wobject, isEditMode, setHoveredOption, history }) => {
       {isEditMode
         ? wobject?.options &&
           Object.entries(wobject?.options).map(option => (
-            <div className="mb2" key={option[0]}>
+            <div className="Options__block" key={option[0]}>
               {' '}
               {option[1].some(el => el.author_permlink === wobject.author_permlink) && (
                 <div className="Options__option-category">{option[0]}: </div>
               )}
               {option[1]
-                ?.sort((a, b) => a?.body?.position - b?.body?.position)
+                ?.sort((a, b) => sortOptions(a, b))
                 .map(
                   el =>
                     el.author_permlink === wobject.author_permlink && (
@@ -143,7 +140,7 @@ const Options = ({ wobject, isEditMode, setHoveredOption, history }) => {
         : wobject?.options && (
             <div>
               {Object.entries(filteredOptions).map(option => (
-                <div className="mb2" key={option[0]}>
+                <div className="Options__block" key={option[0]}>
                   {' '}
                   <div className="Options__option-category">
                     {option[0]}:{' '}
