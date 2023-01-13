@@ -9,12 +9,10 @@ export const compareTokensList = async (name, tokens) => {
   const userBalances = isGuest
     ? await getGuestWaivBalance(name)
     : await ApiClient.getTokenBalance(name, { $in: tokensList });
-  const rates = await ApiClient.getTokensRate([...tokensList, 'SWAP.LTC', 'SWAP.BTC', 'SWAP.ETH']);
   const tokensInfo = await ApiClient.getTokensInformation(tokensList);
   const compareList = tokens.map(token => {
     const tokenName = token.symbol || token;
     const userBalanceInfo = isGuest ? userBalances : userBalances.find(r => r.symbol === tokenName);
-    const rate = rates.find(r => r.symbol === tokenName);
     const info = tokensInfo.find(r => r.symbol === tokenName);
     const balance = isGuest ? userBalanceInfo.WAIV : +get(userBalanceInfo, 'balance', 0);
 
@@ -22,7 +20,6 @@ export const compareTokensList = async (name, tokens) => {
       ...(isString(token) ? {} : token),
       symbol: tokenName,
       balance,
-      rate: get(rate, 'lastPrice', 1),
       precision: info?.precision,
     };
   });
