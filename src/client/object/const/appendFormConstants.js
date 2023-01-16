@@ -662,13 +662,13 @@ export const fieldsRules = {
   ],
   [objectFields.description]: [
     {
-      max: 512,
+      max: 5000,
       message: {
         intlId: {
           id: 'value_error_long',
-          defaultMessage: "Value can't be longer than 512 characters.",
+          defaultMessage: "Value can't be longer than 5000 characters.",
         },
-        intlMeta: { value: 512 },
+        intlMeta: { value: 5000 },
       },
     },
     {

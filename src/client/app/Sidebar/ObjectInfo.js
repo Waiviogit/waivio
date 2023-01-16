@@ -410,6 +410,35 @@ class ObjectInfo extends React.Component {
 
     let activeOptionPicture = uniqBy([...pictures], 'body');
 
+    const optionsPictures = wobject?.options
+      ? Object.entries(wobject?.options)
+          .map(option => Object.values(option))
+          .flatMap(el => el[1])
+          .filter(el => el.body.image)
+          .map(o => ({
+            body: o?.avatar,
+            id:
+              o.author_permlink === wobject.author_permlink && wobject.galleryAlbum
+                ? wobject?.galleryAlbum[0]?.id || wobject.galleryItem[0]?.id
+                : o.author_permlink,
+            name: 'options',
+            parentPermlink: o.author_permlink,
+          }))
+          // eslint-disable-next-line array-callback-return,consistent-return
+          .sort((a, b) => {
+            if (a.body === wobject?.avatar) {
+              return -1;
+            }
+            if (b.body === wobject?.avatar) {
+              return 1;
+            }
+          })
+      : [];
+
+    const sortedOptions = optionsPictures.filter(
+      o => activeOption[activeCategory]?.avatar !== o?.body,
+    );
+
     if (hoveredOption?.avatar || activeOption[activeCategory]?.avatar) {
       activeOptionPicture = uniqBy(
         [
@@ -425,6 +454,22 @@ class ObjectInfo extends React.Component {
     }
     if (!has(wobject, 'groupId')) {
       activeOptionPicture = activeOptionPicture.filter(o => o.name !== 'avatar');
+    }
+    if (has(wobject, 'groupId') && !has(wobject, 'avatar') && !has(wobject, 'galleryItem')) {
+      activeOptionPicture = uniqBy(
+        [
+          {
+            name: 'galleryItem',
+            body:
+              hoveredOption?.avatar ||
+              activeOption[activeCategory]?.avatar ||
+              sortedOptions[0].body,
+            id: wobject?.galleryAlbum ? wobject?.galleryAlbum[0]?.id : wobject.author_permlink,
+          },
+          ...sortedOptions,
+        ],
+        'body',
+      );
     }
 
     const dimensions = parseWobjectField(wobject, 'dimensions');
@@ -463,7 +508,7 @@ class ObjectInfo extends React.Component {
         )}
         {this.listItem(
           objectFields.galleryItem,
-          (pictures.length > 1 || avatar || wobject?.options) && (
+          (pictures.length > 0 || avatar || wobject?.options) && (
             <PicturesCarousel
               albums={wobject.galleryAlbum}
               isOptionsType

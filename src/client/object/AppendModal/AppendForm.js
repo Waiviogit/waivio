@@ -2133,11 +2133,11 @@ export default class AppendForm extends Component {
               rules: this.getFieldRules(objectFields.description),
             })(
               <Input.TextArea
-                className={classNames('AppendForm__input', {
+                className={classNames('AppendForm__description-input', {
                   'validation-error': !this.state.isSomeValue,
                 })}
                 disabled={loading}
-                autoSize={{ minRows: 4, maxRows: 8 }}
+                autoSize={{ minRows: 4, maxRows: 100 }}
                 placeholder={intl.formatMessage({
                   id: 'description_full',
                   defaultMessage: 'Full description',

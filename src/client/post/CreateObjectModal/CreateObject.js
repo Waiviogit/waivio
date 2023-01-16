@@ -367,13 +367,13 @@ class CreateObject extends React.Component {
                 initialValue: '',
                 rules: [
                   {
-                    max: 100,
+                    max: 200,
                     message: intl.formatMessage(
                       {
                         id: 'value_error_long',
-                        defaultMessage: "Name can't be longer than 100 characters.",
+                        defaultMessage: "Name can't be longer than 1200 characters.",
                       },
-                      { value: 100 },
+                      { value: 200 },
                     ),
                   },
                   {
