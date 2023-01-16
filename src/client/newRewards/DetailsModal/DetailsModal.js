@@ -17,6 +17,7 @@ import { getObjectsByIds, validateEgibilitiesForUser } from '../../../waivioApi/
 import RewardsHeader from '../reuseble/RewardsHeader';
 import { reserveProposition } from '../../../store/newRewards/newRewardsActions';
 import { getObjectName } from '../../../common/helpers/wObjectHelper';
+import ReservedButtons from '../../rewards/Proposition/WebsiteReservedButtons/ReservedButtons';
 
 import './Details.less';
 
@@ -24,7 +25,6 @@ const DetailsModal = ({ proposition, toggleModal, isModalDetailsOpen, onActionIn
   const location = useLocation();
   const history = useHistory();
   const dispatch = useDispatch();
-  const authorizedUserName = useSelector(getAuthenticatedUserName);
   const [requirements, setRequirements] = useState({
     canAssignByBudget: true,
     canAssignByCurrentDay: true,
@@ -36,25 +36,20 @@ const DetailsModal = ({ proposition, toggleModal, isModalDetailsOpen, onActionIn
     posts: true,
     notGuide: true,
   });
-  const [loading, setLoading] = useState(false);
   const [agreementObjects, setAgreementObjects] = useState([]);
-  const isAuth = !!authorizedUserName;
   const isWidget = new URLSearchParams(history.location.search).get('display');
   const isReserved = new URLSearchParams(location.search).get('toReserved');
   const isWaivio = useSelector(getIsWaivio);
   const requiredObject = proposition?.requiredObject;
   const userName = useSelector(getAuthenticatedUserName);
-  const isEligible = Object.values(requirements).every(req => req);
 
   useEffect(() => {
     if (!proposition?.reserved) {
-      setLoading(true);
       validateEgibilitiesForUser({
         userName,
         activationPermlink: proposition?.activationPermlink,
       }).then(res => {
         setRequirements(res);
-        setLoading(false);
       });
 
       if (!isEmpty(proposition?.agreementObjects))
@@ -64,14 +59,10 @@ const DetailsModal = ({ proposition, toggleModal, isModalDetailsOpen, onActionIn
     }
   }, [proposition?.activationPermlink, userName]);
 
-  const handleTypeReserveButton = () => (isAuth ? 'primary' : 'default');
   const handleClickReserve = () => {
     if (!proposition?.reserved) {
-      setLoading(true);
-
       dispatch(reserveProposition(proposition, userName))
         .then(() => {
-          setLoading(false);
           const mainObject = `[${getObjectName(requiredObject)}](${
             requiredObject?.author_permlink
           })`;
@@ -93,7 +84,6 @@ const DetailsModal = ({ proposition, toggleModal, isModalDetailsOpen, onActionIn
           history.push(urlConfig);
         })
         .catch(e => {
-          setLoading(false);
           message.error(e.error_description);
         });
     } else {
@@ -119,14 +109,16 @@ const DetailsModal = ({ proposition, toggleModal, isModalDetailsOpen, onActionIn
   const onClick = () => onActionInitiated(handleClickReserve);
 
   const reserveButton = isWaivio ? (
-    <Button
-      type={handleTypeReserveButton()}
-      loading={loading}
-      disabled={!isEligible}
-      onClick={onClick}
-    >
-      Submit dish photo
-    </Button>
+    <ReservedButtons
+      handleReserve={onClick}
+      handleReserveForPopover={() =>
+        dispatch(reserveProposition(proposition, userName)).then(() => {
+          toggleModal();
+
+          return Promise.resolve();
+        })
+      }
+    />
   ) : (
     <WebsiteReservedButtons
       reserved={proposition.reserved}
@@ -175,9 +167,6 @@ const DetailsModal = ({ proposition, toggleModal, isModalDetailsOpen, onActionIn
         <div className="DetailsModal__footer-reserve-btn">
           <Button onClick={handleCancelModalBtn}>Cancel</Button>
           {reserveButton}
-          {proposition?.countReservationDays &&
-            isWaivio &&
-            `for ${proposition?.countReservationDays} days`}
         </div>
       </div>
     </Modal>

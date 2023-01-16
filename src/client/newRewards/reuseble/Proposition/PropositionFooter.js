@@ -22,6 +22,7 @@ import config from '../../../../waivioApi/routes';
 import { getIsWaivio } from '../../../../store/appStore/appSelectors';
 import WebsiteReservedButtons from '../../../rewards/Proposition/WebsiteReservedButtons/WebsiteReservedButtons';
 import { getDaysLeftForNew } from '../../../rewards/rewardsHelper';
+import ReservedButtons from '../../../rewards/Proposition/WebsiteReservedButtons/ReservedButtons';
 
 import './Proposition.less';
 
@@ -106,6 +107,8 @@ const PropositionFooter = ({ type, openDetailsModal, proposition, getProposition
       setLoading(false);
     });
   };
+
+  const handleReserveForPopup = () => dispatch(reserveProposition(proposition, authUserName));
 
   const getFooter = () => {
     switch (type) {
@@ -205,21 +208,14 @@ const PropositionFooter = ({ type, openDetailsModal, proposition, getProposition
 
       default:
         return isWaivio ? (
-          <div className={propositionFooterContainerClassList}>
-            {!proposition.notEligible && (
-              <div>
-                <Button type="primary" onClick={openDetailsModal}>
-                  <b>Submit</b> <span className="Proposition-new__yourRewards">Dish Photos</span>
-                </Button>{' '}
-                <span className="Proposition-new__days">
-                  for {proposition?.countReservationDays} days
-                </span>
-              </div>
-            )}
-            <span className="Proposition-new__details" onClick={openDetailsModal}>
-              Details <Icon type="right" />
-            </span>
-          </div>
+          <ReservedButtons
+            handleReserveForPopover={handleReserveForPopup}
+            handleReserve={() => {
+              openDetailsModal();
+
+              return Promise.resolve();
+            }}
+          />
         ) : (
           <WebsiteReservedButtons
             dish={{
@@ -228,7 +224,7 @@ const PropositionFooter = ({ type, openDetailsModal, proposition, getProposition
               ...proposition.object,
               parent: proposition?.object?.parent,
             }}
-            handleReserve={() => dispatch(reserveProposition(proposition, authUserName))}
+            handleReserve={handleReserveForPopup}
             isNewReward
           />
         );

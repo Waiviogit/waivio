@@ -27,6 +27,19 @@
     font-size: @font-size-base;
     font-weight: 500;
   }
+
+  &__list {
+    .Proposition-new__footer-container {
+      &--reserved {
+        flex-direction: column;
+
+        @media @large {
+          flex-direction: row;
+          justify-content: space-between;
+        }
+      }
+    }
+  }
 }
 
 @import 'CatalogWrap-nightmode';

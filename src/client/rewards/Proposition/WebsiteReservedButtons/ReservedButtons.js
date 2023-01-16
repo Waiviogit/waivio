@@ -3,18 +3,16 @@ import { Button, Icon } from 'antd';
 import PropTypes from 'prop-types';
 import { useHistory } from 'react-router';
 
-import useQuickRewards from '../../../../hooks/useQuickRewards';
 import withAuthActions from '../../../auth/withAuthActions';
 import Popover from '../../../components/Popover';
 import PopoverMenu from '../../../components/PopoverMenu/PopoverMenu';
 import PopoverMenuItem from '../../../components/PopoverMenu/PopoverMenuItem';
-import { getObject } from '../../../../waivioApi/ApiClient';
 
 import './WebsiteReservedButtons.less';
 
-const WebsiteReservedButtons = props => {
-  const { setDish, setRestaurant, openModal } = useQuickRewards();
+const ReservedButtons = props => {
   const [loading, setLoading] = useState(false);
+  const [loadingButton, setLoadingButton] = useState(false);
   const [visiblePopover, setVisiblePopover] = useState(false);
   const history = useHistory();
 
@@ -24,7 +22,7 @@ const WebsiteReservedButtons = props => {
         default:
           setLoading(true);
 
-          return props.handleReserve().then(() => {
+          return props.handleReserveForPopover().then(() => {
             history.push('/rewards/reserved');
             setLoading(false);
           });
@@ -33,17 +31,8 @@ const WebsiteReservedButtons = props => {
 
   const handleClickProposButton = () =>
     props.onActionInitiated(async () => {
-      const requiredObject = await getObject(
-        props.dish?.requiredObject?.author_permlink ||
-          props.dish?.requiredObject ||
-          props.dish?.parent,
-      );
-
-      setRestaurant(requiredObject);
-
-      setDish({ ...props.dish, reserved: props.reserved });
-      openModal();
-      props.onCloseDetails();
+      setLoadingButton(true);
+      props.handleReserve();
     });
 
   return (
@@ -52,6 +41,8 @@ const WebsiteReservedButtons = props => {
         type="primary"
         onClick={handleClickProposButton}
         className="WebsiteReservedButtons__button"
+        disabled={loading || loadingButton}
+        loading={loadingButton}
       >
         <b>Submit</b> dish photos
       </Button>
@@ -80,12 +71,10 @@ const WebsiteReservedButtons = props => {
   );
 };
 
-WebsiteReservedButtons.propTypes = {
-  dish: PropTypes.shape().isRequired,
+ReservedButtons.propTypes = {
   onActionInitiated: PropTypes.func.isRequired,
   handleReserve: PropTypes.func.isRequired,
-  onCloseDetails: PropTypes.func,
-  reserved: PropTypes.bool,
+  handleReserveForPopover: PropTypes.func.isRequired,
 };
 
-export default withAuthActions(WebsiteReservedButtons);
+export default withAuthActions(ReservedButtons);

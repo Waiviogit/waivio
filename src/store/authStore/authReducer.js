@@ -5,7 +5,6 @@ import {
   GET_USER_PRIVATE_EMAIL,
   UPDATE_USER_METADATA,
 } from '../usersStore/usersActions';
-import { CLAIM_REWARDS } from '../walletStore/walletActions';
 
 const initialState = {
   isAuthenticated: false,
@@ -151,20 +150,20 @@ export default (state = initialState, action) => {
       };
     }
 
-    case CLAIM_REWARDS: {
-      return {
-        ...state,
-        user: {
-          ...state.user,
-          balance: `${parseFloat(state.user.balance) +
-            parseFloat(state.user.reward_hive_balance)} HIVE`,
-          hbd_balance: `${parseFloat(state.user.hbd_balance) +
-            parseFloat(state.user.reward_hbd_balance)} HBD`,
-          vesting_shares: `${parseFloat(state.user.vesting_shares) +
-            parseFloat(state.user.reward_vesting_balance)} VESTS`,
-        },
-      };
-    }
+    // case CLAIM_REWARDS: {
+    //   return {
+    //     ...state,
+    //     user: {
+    //       ...state.user,
+    //       balance: `${parseFloat(state.user.balance) +
+    //         parseFloat(state.user.reward_hive_balance)} HIVE`,
+    //       hbd_balance: `${parseFloat(state.user.hbd_balance) +
+    //         parseFloat(state.user.reward_hbd_balance)} HBD`,
+    //       vesting_shares: `${parseFloat(state.user.vesting_shares) +
+    //         parseFloat(state.user.reward_vesting_balance)} VESTS`,
+    //     },
+    //   };
+    // }
 
     case types.UPDATE_PROFILE_ERROR:
       return state;
