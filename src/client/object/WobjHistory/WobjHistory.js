@@ -2,9 +2,8 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { Select, Icon } from 'antd';
 import { connect } from 'react-redux';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, injectIntl } from 'react-intl';
 import { useHistory, useParams } from 'react-router';
-
 import { objectFields } from '../../../common/constants/listOfFields';
 import LANGUAGES from '../../../common/translations/languages';
 import { getLanguageText } from '../../../common/translations';
@@ -12,7 +11,7 @@ import AppendModal from '../AppendModal/AppendModal';
 import IconButton from '../../components/IconButton';
 import SortSelector from '../../components/SortSelector/SortSelector';
 import OBJECT_TYPE from '../const/objectTypes';
-import { getObjectName } from '../../../common/helpers/wObjectHelper';
+import { getObjectName, sortAlphabetically } from '../../../common/helpers/wObjectHelper';
 import { getExposedFieldsByObjType } from '../wObjectHelper';
 import { getIsAuthenticated } from '../../../store/authStore/authSelectors';
 import { getObject } from '../../../store/wObjectStore/wObjectSelectors';
@@ -28,6 +27,7 @@ const WobjHistory = ({
   setLocale,
   sort,
   locale,
+  intl,
 }) => {
   const history = useHistory();
   const { 0: currField } = useParams();
@@ -55,6 +55,10 @@ const WobjHistory = ({
 
   const objName = getObjectName(object);
 
+  const fieldsNames = getExposedFieldsByObjType(object).map(f =>
+    intl.formatMessage({ id: `object_field_${f}` }),
+  );
+
   return (
     <React.Fragment>
       <div className="wobj-history__filters">
@@ -65,11 +69,13 @@ const WobjHistory = ({
           value={currField}
           onChange={handleFieldChange}
         >
-          {getExposedFieldsByObjType(object).map(f => (
-            <Select.Option key={f}>
-              <FormattedMessage id={`object_field_${f}`} defaultMessage={f} />
-            </Select.Option>
-          ))}
+          {fieldsNames
+            .sort((a, b) => sortAlphabetically(a, b))
+            .map(f => (
+              <Select.Option key={f}>
+                <FormattedMessage id={`object_field_${f}`} defaultMessage={f} />
+              </Select.Option>
+            ))}
         </Select>
         <Select
           placeholder={<FormattedMessage id="language" defaultMessage="All languages" />}
@@ -129,6 +135,7 @@ WobjHistory.propTypes = {
   isAuthenticated: PropTypes.bool,
   readLanguages: PropTypes.arrayOf(PropTypes.string),
   object: PropTypes.shape(),
+  intl: PropTypes.shape().isRequired,
   setSort: PropTypes.func.isRequired,
   setLocale: PropTypes.func.isRequired,
   sort: PropTypes.string.isRequired,
@@ -145,4 +152,4 @@ export default connect(state => ({
   object: getObject(state),
   readLanguages: getReadLanguages(state),
   isAuthenticated: getIsAuthenticated(state),
-}))(WobjHistory);
+}))(injectIntl(WobjHistory));

@@ -3,16 +3,20 @@ import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
 import { isEmpty } from 'lodash';
 
-function ObjectFeatures({ features }) {
+function ObjectFeatures({ features, isEditMode }) {
   return (
     <>
       {!isEmpty(features) && (
         <div>
-          <FormattedMessage id="features" defaultMessage="Features" />:
+          {!isEditMode && (
+            <div className="CompanyId__title">
+              <FormattedMessage id="features" defaultMessage="Features" />:
+            </div>
+          )}
           <div>
             {features?.map(feature => (
               <div key={feature.name}>
-                <span className="fw6">{feature.key}: </span>
+                <span>{feature.key}: </span>
                 <span className="features-value">{feature.value}</span>
               </div>
             ))}
@@ -24,5 +28,6 @@ function ObjectFeatures({ features }) {
 }
 ObjectFeatures.propTypes = {
   features: PropTypes.arrayOf().isRequired,
+  isEditMode: PropTypes.bool.isRequired,
 };
 export default ObjectFeatures;
