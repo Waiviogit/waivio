@@ -456,7 +456,20 @@ class ObjectInfo extends React.Component {
       activeOptionPicture = activeOptionPicture.filter(o => o.name !== 'avatar');
     }
     if (has(wobject, 'groupId') && !has(wobject, 'avatar') && !has(wobject, 'galleryItem')) {
-      activeOptionPicture = uniqBy(sortedOptions, 'body');
+      activeOptionPicture = uniqBy(
+        [
+          {
+            name: 'galleryItem',
+            body:
+              hoveredOption?.avatar ||
+              activeOption[activeCategory]?.avatar ||
+              sortedOptions[0].body,
+            id: wobject?.galleryAlbum ? wobject?.galleryAlbum[0]?.id : wobject.author_permlink,
+          },
+          ...sortedOptions,
+        ],
+        'body',
+      );
     }
 
     const dimensions = parseWobjectField(wobject, 'dimensions');
