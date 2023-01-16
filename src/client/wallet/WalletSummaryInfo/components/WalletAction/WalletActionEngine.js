@@ -35,10 +35,12 @@ const WalletActionEngine = props => {
       <Button
         className={classListButton}
         onClick={() => {
-          dispatch(toggleModal(true, props.mainCurrency, 'WAIV'));
+          dispatch(
+            toggleModal(true, props.mainCurrency, props.mainCurrency === 'SWAP.HIVE' ? 'WAIV' : ''),
+          );
         }}
       >
-        Swap to WAIV
+        Swap{props.mainCurrency === 'SWAP.HIVE' ? ' to WAIV' : ''}
       </Button>
       {!withoutOptions && (
         <Dropdown
