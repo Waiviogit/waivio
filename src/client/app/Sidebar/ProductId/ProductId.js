@@ -10,7 +10,7 @@ function ProductId({ productIdBody, groupIdContent }) {
   };
 
   return (
-    (groupIdContent || productIdBody.length > 0) && (
+    (groupIdContent || productIdBody.length) && (
       <div className="CompanyId__container">
         <button className="CompanyId__button CompanyId__title" onClick={toggleShowMoreState}>
           Product ID{' '}
