@@ -8,9 +8,9 @@ import './Department.less';
 const Department = ({ wobject, departments, isEditMode }) => (
   <div className="flex-column">
     {!isEditMode && !isEmpty(departments) && (
-      <>
+      <div className="CompanyId__title">
         <FormattedMessage id="departments" formattedMessage="Departments" />:{' '}
-      </>
+      </div>
     )}
     <DepartmentList wobject={wobject} departments={wobject?.departments} />
   </div>

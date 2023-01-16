@@ -967,7 +967,10 @@ class ObjectInfo extends React.Component {
             </div>
           ),
         )}
-        {this.listItem(objectFields.features, <ObjectFeatures features={features} />)}
+        {this.listItem(
+          objectFields.features,
+          <ObjectFeatures features={features} isEditMode={isEditMode} />,
+        )}
         {!isEditMode ? (
           <ProductId
             groupIdContent={
