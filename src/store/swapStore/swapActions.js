@@ -19,7 +19,7 @@ export const getSwapList = () => (dispatch, getState) => {
     payload: getHiveEngineSwap().then(async res => {
       const fromSymbolList = Object.keys(res);
       const toSymbolList = res[from.symbol].map(i => i.symbol);
-      const toSymbolChildList = res[toSymbolList[0]].map(i => i.symbol);
+      const toSymbolChildList = res[toFromState.symbol || toSymbolList[0]].map(i => i.symbol);
       const allSymbolList = await compareTokensList(
         name,
         uniq([...fromSymbolList, ...toSymbolList, ...toSymbolChildList]),
@@ -28,12 +28,15 @@ export const getSwapList = () => (dispatch, getState) => {
       const toList = allSymbolList.filter(i => toSymbolList.includes(i.symbol));
       const toChildList = allSymbolList.filter(i => toSymbolChildList.includes(i.symbol));
       const to = toFromState?.symbol
-        ? fromList.find(item => item.symbol === toFromState.symbol)
+        ? {
+            ...res[from.symbol].find(item => item.symbol === toFromState.symbol),
+            ...fromList.find(item => item.symbol === toFromState.symbol),
+          }
         : {};
 
       return {
         list: res,
-        from: toChildList.find(item => item.symbol === from.symbol),
+        from: { ...to, ...toChildList.find(item => item.symbol === from.symbol) },
         to,
         toList,
         fromList,
