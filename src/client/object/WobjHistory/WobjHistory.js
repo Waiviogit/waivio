@@ -12,7 +12,7 @@ import AppendModal from '../AppendModal/AppendModal';
 import IconButton from '../../components/IconButton';
 import SortSelector from '../../components/SortSelector/SortSelector';
 import OBJECT_TYPE from '../const/objectTypes';
-import { getObjectName } from '../../../common/helpers/wObjectHelper';
+import { getObjectName, sortAlphabetically } from '../../../common/helpers/wObjectHelper';
 import { getExposedFieldsByObjType } from '../wObjectHelper';
 import { getIsAuthenticated } from '../../../store/authStore/authSelectors';
 import { getObject } from '../../../store/wObjectStore/wObjectSelectors';
@@ -76,11 +76,13 @@ const WobjHistory = ({
           onChange={setLocale}
           value={locale}
         >
-          {filteredLanguages.map(lang => (
-            <Select.Option key={lang.id} value={lang.id}>
-              {getLanguageText(lang)}
-            </Select.Option>
-          ))}
+          {filteredLanguages
+            .sort((a, b) => sortAlphabetically(a, b))
+            .map(lang => (
+              <Select.Option key={lang.id} value={lang.id}>
+                {getLanguageText(lang)}
+              </Select.Option>
+            ))}
         </Select>
         {isAuthenticated && (
           <React.Fragment>
