@@ -55,10 +55,6 @@ const WobjHistory = ({
 
   const objName = getObjectName(object);
 
-  const fieldsNames = getExposedFieldsByObjType(object).map(f =>
-    intl.formatMessage({ id: `object_field_${f}` }),
-  );
-
   return (
     <React.Fragment>
       <div className="wobj-history__filters">
@@ -69,13 +65,15 @@ const WobjHistory = ({
           value={currField}
           onChange={handleFieldChange}
         >
-          {fieldsNames
-            .sort((a, b) => sortAlphabetically(a, b))
+          {getExposedFieldsByObjType(object)
+            // remove next line after adding 'merchant', 'brand', 'manufacturer' fields
+            .filter(f => f !== 'merchant' && f !== 'brand' && f !== 'manufacturer')
             .map(f => (
               <Select.Option key={f}>
-                <FormattedMessage id={`object_field_${f}`} defaultMessage={f} />
+                {intl.formatMessage({ id: `object_field_${f}` })}
               </Select.Option>
-            ))}
+            ))
+            .sort((a, b) => sortAlphabetically(a, b))}
         </Select>
         <Select
           placeholder={<FormattedMessage id="language" defaultMessage="All languages" />}
