@@ -190,5 +190,6 @@
   "following": "/following",
   "draft": "/draft",
   "departments": "/departments",
-  "blogTags": "/blog-tags"
+  "blogTags": "/blog-tags",
+  "names": "/names"
 }
