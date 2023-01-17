@@ -67,7 +67,7 @@ const WobjHistory = ({
         >
           {getExposedFieldsByObjType(object)
             // remove next line after adding 'merchant', 'brand', 'manufacturer' fields
-            .filter(f => f !== 'merchant' && f !== 'brand' && f !== 'manufacturer')
+            .filter(f => !['merchant', 'brand', 'manufacturer'].includes(f))
             .map(f => (
               <Select.Option key={f}>
                 {intl.formatMessage({ id: `object_field_${f}` })}
