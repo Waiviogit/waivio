@@ -139,7 +139,7 @@ const PropositionFooter = ({ type, openDetailsModal, proposition, getProposition
                 </div>
               ) : (
                 <Button type="primary" onClick={openDetailsModal}>
-                  <b>Submit</b> <span className="Proposition-new__yourRewards">Dish Photos</span>
+                  <b>Submit</b> <span className="Proposition-new__yourRewards">dish photos</span>
                 </Button>
               )}
             </div>
