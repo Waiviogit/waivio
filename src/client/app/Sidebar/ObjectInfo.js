@@ -707,7 +707,7 @@ class ObjectInfo extends React.Component {
         )}
         {this.listItem(
           objectFields.rating,
-          !isEmpty(wobject?.ratings) && (
+          wobject?.ratings > 1 && (
             <RateInfo username={userName} authorPermlink={wobject.author_permlink} />
           ),
         )}

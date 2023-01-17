@@ -70,6 +70,9 @@ const Options = ({ wobject, isEditMode, setHoveredOption, history }) => {
     }
   };
   const options = Object.entries(wobject?.options);
+  const hasOwnOptions = options
+    .map(option => option[1].map(el => el.author_permlink === wobject.author_permlink))
+    .some(subArray => subArray.some(element => element === true));
 
   const sortOptions = (c, b) => {
     if (c.body.position && b.body.position) {
@@ -105,83 +108,85 @@ const Options = ({ wobject, isEditMode, setHoveredOption, history }) => {
   }, {});
 
   return (
-    <div ref={optionsDiv}>
-      {isEditMode
-        ? wobject?.options &&
-          Object.entries(wobject?.options).map(option => (
-            <div className="Options__block" key={option[0]}>
-              {' '}
-              {option[1].some(el => el.author_permlink === wobject.author_permlink) && (
-                <div className="Options__option-category">{option[0]}: </div>
-              )}
-              {option[1]
-                ?.sort((a, b) => sortOptions(a, b))
-                .map(
-                  el =>
-                    el.author_permlink === wobject.author_permlink && (
-                      <div key={el.author_permlink}>
-                        {el.body.position}
-                        {el.body.position ? '.' : ''} {el.body.value}{' '}
-                        {el.body.image && (
-                          <div>
+    hasOwnOptions && (
+      <div ref={optionsDiv}>
+        {isEditMode
+          ? wobject?.options &&
+            Object.entries(wobject?.options).map(option => (
+              <div className="Options__block" key={option[0]}>
+                {' '}
+                {option[1].some(el => el.author_permlink === wobject.author_permlink) && (
+                  <div className="Options__option-category">{option[0]}: </div>
+                )}
+                {option[1]
+                  ?.sort((a, b) => sortOptions(a, b))
+                  .map(
+                    el =>
+                      el.author_permlink === wobject.author_permlink && (
+                        <div key={el.author_permlink}>
+                          {el.body.position}
+                          {el.body.position ? '.' : ''} {el.body.value}{' '}
+                          {el.body.image && (
+                            <div>
+                              <img
+                                className="Options__my-pictures"
+                                src={el.body.image}
+                                alt="option"
+                                key={el.permlink}
+                              />
+                            </div>
+                          )}
+                        </div>
+                      ),
+                  )}
+              </div>
+            ))
+          : wobject?.options && (
+              <div>
+                {Object.entries(filteredOptions).map(option => (
+                  <div className="Options__block" key={option[0]}>
+                    {' '}
+                    <div className="Options__option-category">
+                      {option[0]}:{' '}
+                      <span className="fw8">
+                        {hovered?.[option[0]]?.body?.value ||
+                          activeStoreOption?.[option[0]]?.body?.value}
+                      </span>
+                    </div>
+                    <>
+                      {option[1]?.map(el => (
+                        <span key={el.permlink}>
+                          {el.body.image ? (
                             <img
-                              className="Options__my-pictures"
+                              onMouseOver={e => onMouseOver(e, el)}
+                              onMouseOut={onMouseOut}
+                              onClick={e => onOptionButtonClick(e, el)}
+                              className={getOptionsPicturesClassName(el)}
                               src={el.body.image}
                               alt="option"
                               key={el.permlink}
                             />
-                          </div>
-                        )}
-                      </div>
-                    ),
-                )}
-            </div>
-          ))
-        : wobject?.options && (
-            <div>
-              {Object.entries(filteredOptions).map(option => (
-                <div className="Options__block" key={option[0]}>
-                  {' '}
-                  <div className="Options__option-category">
-                    {option[0]}:{' '}
-                    <span className="fw8">
-                      {hovered?.[option[0]]?.body?.value ||
-                        activeStoreOption?.[option[0]]?.body?.value}
-                    </span>
+                          ) : (
+                            <button
+                              key={el.permlink}
+                              onMouseOver={e => onMouseOver(e, el)}
+                              onMouseOut={onMouseOut}
+                              value={el.body.value}
+                              onClick={e => onOptionButtonClick(e, el)}
+                              className={getOptionsClassName(el)}
+                            >
+                              {el.body.value}
+                            </button>
+                          )}{' '}
+                        </span>
+                      ))}
+                    </>
                   </div>
-                  <>
-                    {option[1]?.map(el => (
-                      <span key={el.permlink}>
-                        {el.body.image ? (
-                          <img
-                            onMouseOver={e => onMouseOver(e, el)}
-                            onMouseOut={onMouseOut}
-                            onClick={e => onOptionButtonClick(e, el)}
-                            className={getOptionsPicturesClassName(el)}
-                            src={el.body.image}
-                            alt="option"
-                            key={el.permlink}
-                          />
-                        ) : (
-                          <button
-                            key={el.permlink}
-                            onMouseOver={e => onMouseOver(e, el)}
-                            onMouseOut={onMouseOut}
-                            value={el.body.value}
-                            onClick={e => onOptionButtonClick(e, el)}
-                            className={getOptionsClassName(el)}
-                          >
-                            {el.body.value}
-                          </button>
-                        )}{' '}
-                      </span>
-                    ))}
-                  </>
-                </div>
-              ))}
-            </div>
-          )}
-    </div>
+                ))}
+              </div>
+            )}
+      </div>
+    )
   );
 };
 
