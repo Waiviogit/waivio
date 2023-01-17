@@ -42,6 +42,7 @@ const DetailsModal = ({ proposition, toggleModal, isModalDetailsOpen, onActionIn
   const isWaivio = useSelector(getIsWaivio);
   const requiredObject = proposition?.requiredObject;
   const userName = useSelector(getAuthenticatedUserName);
+  const disable = Object.values(requirements).some(requirement => !requirement);
 
   useEffect(() => {
     if (!proposition?.reserved) {
@@ -111,6 +112,7 @@ const DetailsModal = ({ proposition, toggleModal, isModalDetailsOpen, onActionIn
   const reserveButton = isWaivio ? (
     <ReservedButtons
       handleReserve={onClick}
+      disable={disable}
       handleReserveForPopover={() =>
         dispatch(reserveProposition(proposition, userName)).then(() => {
           toggleModal();
@@ -123,6 +125,7 @@ const DetailsModal = ({ proposition, toggleModal, isModalDetailsOpen, onActionIn
     <WebsiteReservedButtons
       reserved={proposition.reserved}
       dish={{ ...proposition, ...proposition?.object }}
+      disable={disable}
       handleReserve={() => {
         toggleModal();
 
