@@ -3320,6 +3320,8 @@ export default class AppendForm extends Component {
         return (
           isEmpty(getFieldValue(buttonFields.link)) || isEmpty(getFieldValue(buttonFields.title))
         );
+      case objectFields.name:
+        return isEmpty(getFieldValue(objectFields.objectName));
       case objectFields.status:
         return (
           isEmpty(getFieldValue(statusFields.title)) ||
