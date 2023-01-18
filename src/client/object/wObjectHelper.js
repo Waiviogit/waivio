@@ -107,5 +107,10 @@ export const getExposedFieldsByObjType = wobj => {
     ? [...exposedFields.filter(f => f !== objectFields.listItem), TYPES_OF_MENU_ITEM.LIST]
     : exposedFields;
 
-  return renderedFields.sort();
+  return (
+    renderedFields
+      .sort()
+      // remove filter after adding 'merchant', 'brand', 'manufacturer' fields
+      .filter(f => !['merchant', 'brand', 'manufacturer'].includes(f))
+  );
 };
