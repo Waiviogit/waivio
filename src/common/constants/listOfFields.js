@@ -238,6 +238,7 @@ export const errorObjectFields = {
   [objectFields.tagCategory]: [objectFields.tagCategory],
   [objectFields.categoryItem]: [objectFields.categoryItem],
   [objectFields.blog]: [blogFields.title],
+  [objectFields.name]: [objectFields.objectName],
   [objectFields.printLength]: [objectFields.printLength],
   [objectFields.ageRange]: [objectFields.ageRange],
   [objectFields.language]: [objectFields.language],
