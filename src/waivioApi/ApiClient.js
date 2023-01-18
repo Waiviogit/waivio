@@ -3116,5 +3116,17 @@ export const getUserProfileBlogTags = (userName, { limit = 10, skip }) => {
     .then(response => response)
     .catch(e => e);
 };
+export const getObjectInfo = links => {
+  return fetch(`${config.apiPrefix}${config.wobjects}${config.names}`, {
+    headers,
+    method: 'POST',
+    body: JSON.stringify({
+      links,
+    }),
+  })
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+};
 
 export default null;

@@ -50,7 +50,7 @@ import {
   getGroupId,
 } from '../../../store/optionsStore/optionsSelectors';
 import { setStoreActiveOption, setStoreGroupId } from '../../../store/optionsStore/optionsActions';
-import { getObject } from '../../../waivioApi/ApiClient';
+import { getObject, getObjectInfo } from '../../../waivioApi/ApiClient';
 import { getLocale } from '../../../common/helpers/localStorageHelpers';
 import Department from '../../object/Department/Department';
 import AffiliatLink from '../../widgets/AffiliatLink';
@@ -114,10 +114,18 @@ class ObjectInfo extends React.Component {
     showModal: false,
     showMore: {},
     countPhones: 3,
+    publisherObject: {},
   };
 
   componentDidMount() {
     const { wobject, storeGroupId } = this.props;
+    const publisher = parseWobjectField(wobject, 'publisher');
+
+    if (publisher?.authorPermlink) {
+      getObjectInfo([publisher?.authorPermlink]).then(res =>
+        this.setState({ publisherObject: res.wobjects[0] }),
+      );
+    }
 
     this.props.getRelatedAlbum(this.props.match.params.name, 10);
     const hasGroupId = Object.prototype.hasOwnProperty.call(wobject, 'groupId');
@@ -127,6 +135,18 @@ class ObjectInfo extends React.Component {
     }
     if (storeGroupId !== wobject.groupId || !hasGroupId) {
       this.props.setStoreActiveOption({});
+    }
+  }
+  componentDidUpdate(prevProps) {
+    if (this.props.wobject.author_permlink !== prevProps.wobject.author_permlink) {
+      const { wobject } = this.props;
+      const publisher = parseWobjectField(wobject, 'publisher');
+
+      if (publisher?.authorPermlink) {
+        getObjectInfo([publisher?.authorPermlink]).then(res =>
+          this.setState({ publisherObject: res.wobjects[0] }),
+        );
+      }
     }
   }
 
@@ -693,10 +713,15 @@ class ObjectInfo extends React.Component {
             objectFields.publisher,
             publisher &&
               (publisher.authorPermlink ? (
-                <ObjectCard key={publisher.authorPermlink} wobject={publisher} showFollow={false} />
+                <ObjectCard
+                  key={publisher.authorPermlink}
+                  wobject={this.state.publisherObject}
+                  parent={this.state.publisherObject}
+                  showFollow={false}
+                />
               ) : (
                 <div className="flex ObjectCard__links publisher-paddingBottom">
-                  <ObjectAvatar item={publisher} size={34} />{' '}
+                  <ObjectAvatar item={this.state.publisherObject} size={34} />{' '}
                   <span className="ObjectCard__name-grey">{publisher.name}</span>
                 </div>
               )),
@@ -1084,12 +1109,12 @@ class ObjectInfo extends React.Component {
                   (publisher.authorPermlink ? (
                     <ObjectCard
                       key={publisher.authorPermlink}
-                      wobject={publisher}
+                      wobject={this.state.publisherObject}
                       showFollow={false}
                     />
                   ) : (
                     <div className="flex ObjectCard__links publisher-paddingBottom">
-                      <ObjectAvatar item={publisher} size={34} />{' '}
+                      <ObjectAvatar item={this.state.publisherObject} size={34} />{' '}
                       <span className="ObjectCard__name-grey">{publisher.name}</span>
                     </div>
                   )),
