@@ -99,7 +99,7 @@ const PropositionList = ({
                 />
               </div>
               <div className={isEmpty(listItems) && 'CatalogWrap__empty'}>
-                <div>{getMenuList()}</div>
+                <div className="CatalogWrap__list">{getMenuList()}</div>
               </div>
             </React.Fragment>
           )}

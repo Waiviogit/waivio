@@ -19,6 +19,8 @@ import {
 } from '../authStore/authSelectors';
 import { getCommentsList } from './commentsSelectors';
 import { getLocale } from '../settingsStore/settingsSelectors';
+import { getAppendList } from '../appendStore/appendSelectors';
+import { updateCounter } from '../appendStore/appendActions';
 
 export const GET_SINGLE_COMMENT = createAsyncActionType('@comments/GET_SINGLE_COMMENT');
 
@@ -125,9 +127,9 @@ const getCommentsChildrenLists = apiRes => {
  */
 export const getComments = postId => (dispatch, getState) => {
   const state = getState();
-  const { posts, comments, object } = state;
+  const { posts, comments } = state;
   const userName = getAuthenticatedUserName(state);
-  const listFields = get(object, ['wobject', 'fields'], null);
+  const listFields = getAppendList(state);
   const matchPost = listFields && listFields.find(field => field.permlink === postId);
   const content = posts.list[postId] || comments.comments[postId] || matchPost;
   const locale = getLocale(state);
@@ -166,7 +168,7 @@ export const sendComment = (parentPost, newBody, isUpdating = false, originalCom
   getState,
   { steemConnectAPI },
 ) => {
-  const { category, id, permlink: parentPermlink } = parentPost;
+  const { category, permlink: parentPermlink } = parentPost;
   let parentAuthor = parentPost.author;
 
   if (
@@ -199,8 +201,6 @@ export const sendComment = (parentPost, newBody, isUpdating = false, originalCom
     isUpdating && jsonParse(originalComment.json_metadata),
   );
 
-  let rootPostId = null;
-
   if (parentPost.parent_author) {
     const { comments: commentsState } = comments;
     const commentsWithBotAuthor = {};
@@ -208,57 +208,46 @@ export const sendComment = (parentPost, newBody, isUpdating = false, originalCom
     Object.values(commentsState).forEach(val => {
       commentsWithBotAuthor[`${val.author}/${val.permlink}`] = val;
     });
-    rootPostId = getPostKey(findRoot(commentsWithBotAuthor, parentPost));
   }
 
-  return dispatch({
-    type: SEND_COMMENT,
-    payload: {
-      promise: steemConnectAPI
-        .comment(
-          parentAuthor,
+  return steemConnectAPI
+    .comment(
+      parentAuthor,
+      parentPermlink,
+      author,
+      permlink,
+      '',
+      newBody,
+      jsonMetadata,
+      parentPost.root_author,
+    )
+    .then(() => {
+      dispatch(updateCounter(parentPost));
+      dispatch(
+        getFakeSingleComment(
+          guestParentAuthor || parentAuthor,
           parentPermlink,
           author,
           permlink,
-          '',
           newBody,
           jsonMetadata,
-          parentPost.root_author,
-        )
-        .then(() => {
-          dispatch(
-            getFakeSingleComment(
-              guestParentAuthor || parentAuthor,
-              parentPermlink,
-              author,
-              permlink,
-              newBody,
-              jsonMetadata,
-              !isUpdating,
-            ),
-          );
-          if (parentPost.name) {
-            dispatch(sendCommentAppend(parentPost.permlink));
-          }
-          setTimeout(
-            () => dispatch(getSingleComment(parentPost.author, parentPost.permlink, !isUpdating)),
-            auth.isGuestUser ? 6000 : 2000,
-          );
+          !isUpdating,
+        ),
+      );
+      if (parentPost.name) {
+        dispatch(sendCommentAppend(parentPost.permlink));
+      }
+      setTimeout(
+        () => dispatch(getSingleComment(parentPost.author, parentPost.permlink, !isUpdating)),
+        auth.isGuestUser ? 6000 : 2000,
+      );
 
-          if (window.gtag) window.gtag('event', 'publish_comment');
-        })
-        .catch(err => {
-          dispatch(notify(err.error.message || err.error_description, 'error'));
-          dispatch(SEND_COMMENT_ERROR);
-        }),
-    },
-    meta: {
-      parentId: parentPost.id,
-      rootPostId,
-      isEditing: isUpdating,
-      isReplyToComment: parentPost.id !== id,
-    },
-  });
+      if (window.gtag) window.gtag('event', 'publish_comment');
+    })
+    .catch(err => {
+      dispatch(notify(err.error.message || err.error_description, 'error'));
+      dispatch(SEND_COMMENT_ERROR);
+    });
 };
 
 export const sendCommentMessages = (

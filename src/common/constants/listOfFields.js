@@ -49,6 +49,7 @@ export const objectFields = {
   newsFeed: 'newsFeed',
   departments: 'departments',
   features: 'features',
+  objectName: 'objectName',
 };
 
 export const TYPES_OF_MENU_ITEM = {
@@ -237,6 +238,7 @@ export const errorObjectFields = {
   [objectFields.tagCategory]: [objectFields.tagCategory],
   [objectFields.categoryItem]: [objectFields.categoryItem],
   [objectFields.blog]: [blogFields.title],
+  [objectFields.name]: [objectFields.objectName],
   [objectFields.printLength]: [objectFields.printLength],
   [objectFields.ageRange]: [objectFields.ageRange],
   [objectFields.language]: [objectFields.language],

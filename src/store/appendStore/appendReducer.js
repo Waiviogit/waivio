@@ -32,12 +32,6 @@ export default (state = defaultState, action) => {
         fields: [],
       };
 
-    case appendActions.APPEND_WAIVIO_OBJECT.SUCCESS:
-      return {
-        ...state,
-        // loading: false,
-      };
-
     case appendActions.GET_OBJECT_UPDATES.SUCCESS: {
       return {
         ...state,
@@ -93,6 +87,26 @@ export default (state = defaultState, action) => {
         state.fields.splice(matchPostIndex, 1, {
           ...action.payload.post,
           loading: true,
+        });
+
+        return {
+          ...state,
+          fields: [...state.fields],
+        };
+      }
+
+      return state;
+    }
+
+    case appendActions.UPDATE_COUNTER: {
+      const matchPostIndex = state.fields.findIndex(
+        field => field.permlink === action.payload.post.permlink,
+      );
+
+      if (action.payload.post) {
+        state.fields.splice(matchPostIndex, 1, {
+          ...action.payload.post,
+          children: action.payload.post.children + 1,
         });
 
         return {

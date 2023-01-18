@@ -3073,7 +3073,7 @@ export const getCurrencyType = () => {
     .catch(e => e);
 };
 
-export const getDepartmentFields = ({ name, names, excluded }) => {
+export const getNestedDepartmentFields = ({ name, names, excluded }) => {
   return fetch(`${config.apiPrefix}${config.departments}`, {
     headers,
     method: 'POST',
@@ -3088,7 +3088,7 @@ export const getDepartmentFields = ({ name, names, excluded }) => {
     .catch(e => e);
 };
 
-export const getObjectsByDepartment = ({ departments, skip, limit }) => {
+export const getObjectsByDepartment = (departments, skip, limit) => {
   return fetch(`${config.apiPrefix}${config.departments}/wobjects`, {
     headers,
     method: 'POST',
@@ -3110,6 +3110,18 @@ export const getUserProfileBlogTags = (userName, { limit = 10, skip }) => {
     body: JSON.stringify({
       skip,
       limit,
+    }),
+  })
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+};
+export const getObjectInfo = links => {
+  return fetch(`${config.apiPrefix}${config.wobjects}${config.names}`, {
+    headers,
+    method: 'POST',
+    body: JSON.stringify({
+      links,
     }),
   })
     .then(res => res.json())

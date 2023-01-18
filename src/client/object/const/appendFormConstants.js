@@ -19,7 +19,7 @@ import {
 import { regexCoordsLatitude, regexCoordsLongitude } from '../../components/Maps/mapHelper';
 
 export const fieldsRules = {
-  [objectFields.name]: [
+  [objectFields.objectName]: [
     {
       transform: value => value && value.toLowerCase(),
     },
@@ -34,13 +34,13 @@ export const fieldsRules = {
       },
     },
     {
-      max: 100,
+      max: 200,
       message: {
         intlId: {
           id: 'value_error_long',
-          defaultMessage: "Value can't be longer than 100 characters.",
+          defaultMessage: "Value can't be longer than 200 characters.",
         },
-        intlMeta: { value: 100 },
+        intlMeta: { value: 200 },
       },
     },
     {
@@ -662,13 +662,13 @@ export const fieldsRules = {
   ],
   [objectFields.description]: [
     {
-      max: 512,
+      max: 5000,
       message: {
         intlId: {
           id: 'value_error_long',
-          defaultMessage: "Value can't be longer than 512 characters.",
+          defaultMessage: "Value can't be longer than 5000 characters.",
         },
-        intlMeta: { value: 512 },
+        intlMeta: { value: 5000 },
       },
     },
     {

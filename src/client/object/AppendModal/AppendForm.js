@@ -74,8 +74,8 @@ import {
   getFormItems,
   getNewsFilterItems,
   getObjectUrlForLink,
-  getObjectAvatar,
   getNewsFeedItems,
+  sortAlphabetically,
 } from '../../../common/helpers/wObjectHelper';
 import { appendObject } from '../../../store/appendStore/appendActions';
 import withEditor from '../../components/Editor/withEditor';
@@ -445,6 +445,10 @@ export default class AppendForm extends Component {
       const langReadable = filter(LANGUAGES, { id: currentLocale })[0].name;
 
       switch (currentField) {
+        case objectFields.name:
+          return `@${author} added ${currentField} (${langReadable}):\n ${
+            formValues[objectFields.objectName]
+          }`;
         case objectFields.avatar:
         case objectFields.background:
           return `@${author} added ${currentField} (${langReadable}):\n ![${currentField}](${appendValue})`;
@@ -660,6 +664,12 @@ export default class AppendForm extends Component {
           id: uuidv4(),
         };
       }
+      if (currentField === objectFields.name) {
+        fieldsObject = {
+          ...fieldsObject,
+          body: formValues[objectFields.objectName],
+        };
+      }
       if (currentField === objectFields.companyId) {
         fieldsObject = {
           ...fieldsObject,
@@ -676,9 +686,6 @@ export default class AppendForm extends Component {
             name:
               formValues[publisherFields.publisherName] || getObjectName(this.state.selectedObject),
             authorPermlink: this.state.selectedObject?.author_permlink,
-            defaultShowLink:
-              this.state.selectedObject && getObjectUrlForLink(this.state.selectedObject),
-            avatar: this.state.selectedObject && getObjectAvatar(this.state.selectedObject),
           }),
         };
       }
@@ -720,7 +727,6 @@ export default class AppendForm extends Component {
             [optionsFields.value]: formValues[optionsFields.value],
             [optionsFields.position]: formValues[optionsFields.position],
             image: formValues[objectFields.options],
-            parentObjectPermlink: wObject.author_permlink,
           }),
         };
       }
@@ -1580,7 +1586,9 @@ export default class AppendForm extends Component {
       case objectFields.name: {
         return (
           <Form.Item>
-            {getFieldDecorator(objectFields.name, { rules: this.getFieldRules(objectFields.name) })(
+            {getFieldDecorator(objectFields.objectName, {
+              rules: this.getFieldRules(objectFields.objectName),
+            })(
               <Input
                 className="AppendForm__input"
                 disabled={loading}
@@ -2134,11 +2142,11 @@ export default class AppendForm extends Component {
               rules: this.getFieldRules(objectFields.description),
             })(
               <Input.TextArea
-                className={classNames('AppendForm__input', {
+                className={classNames('AppendForm__description-input', {
                   'validation-error': !this.state.isSomeValue,
                 })}
                 disabled={loading}
-                autoSize={{ minRows: 4, maxRows: 8 }}
+                autoSize={{ minRows: 4, maxRows: 100 }}
                 placeholder={intl.formatMessage({
                   id: 'description_full',
                   defaultMessage: 'Full description',
@@ -3322,6 +3330,8 @@ export default class AppendForm extends Component {
         return (
           isEmpty(getFieldValue(buttonFields.link)) || isEmpty(getFieldValue(buttonFields.title))
         );
+      case objectFields.name:
+        return isEmpty(getFieldValue(objectFields.objectName));
       case objectFields.status:
         return (
           isEmpty(getFieldValue(statusFields.title)) ||
@@ -3385,24 +3395,15 @@ export default class AppendForm extends Component {
       </Select.Option>
     ));
 
-    const fieldOptions = [];
-    const disabledSelect = currentField !== 'auto';
-
-    if (currentField === 'auto') {
-      fieldOptions.push(
-        <Select.Option disabled key="auto" value="auto">
-          <FormattedMessage id="select_field" defaultMessage="Select your field" />
-        </Select.Option>,
-      );
-    }
-
-    getExposedFieldsByObjType(wObject).forEach(option => {
-      fieldOptions.push(
+    const fieldOptions = getExposedFieldsByObjType(wObject)
+      .map(option => (
         <Select.Option key={option} value={option} className="Topnav__search-autocomplete">
-          <FormattedMessage id={`object_field_${option}`} defaultMessage={option} />
-        </Select.Option>,
-      );
-    });
+          {this.props.intl.formatMessage({ id: `object_field_${option}`, defaultMessage: option })}
+        </Select.Option>
+      ))
+      .sort((a, b) => sortAlphabetically(a.props.children, b.props.children));
+
+    const disabledSelect = currentField !== 'auto';
 
     const changeValue = v => {
       this.setState({ isOptionChangeable: true });
@@ -3424,6 +3425,12 @@ export default class AppendForm extends Component {
               style={{ width: '100%' }}
               dropdownClassName="AppendForm__drop-down"
             >
+              <Select.Option disabled key="auto" value="auto">
+                {this.props.intl.formatMessage({
+                  id: 'select_field',
+                  defaultMessage: 'Select your field',
+                })}
+              </Select.Option>
               {fieldOptions}
             </Select>,
           )}

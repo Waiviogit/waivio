@@ -3,10 +3,10 @@ import { FormattedNumber } from 'react-intl';
 import PropTypes from 'prop-types';
 import USDDisplay from '../../../components/Utils/USDDisplay';
 import { getProxyImageURL } from '../../../../common/helpers/image';
-import WalletAction from '../../WalletSummaryInfo/components/WalletAction/WalletActions';
+import { HIVE_ENGINE_DEFAULT_SWAP_LIST } from '../../../../common/constants/swapList';
+import WalletActionEngine from '../../WalletSummaryInfo/components/WalletAction/WalletActionEngine';
 
 import './HiveEngineCurrencyItem.less';
-import { HIVE_ENGINE_DEFAULT_SWAP_LIST } from '../../../../common/constants/swapList';
 
 const HiveEngineCurrencyItem = ({ token, rates }) => {
   const stake = token.stake || 0;
@@ -46,7 +46,11 @@ const HiveEngineCurrencyItem = ({ token, rates }) => {
             </span>
           )}
           {token.orderKey && Boolean(token.balance) && (
-            <WalletAction mainKey={'withdraw'} mainCurrency={token.symbol} options={['swap']} />
+            <WalletActionEngine
+              withdrawCurrencyOption={[token.symbol.replace('SWAP.', '')]}
+              mainCurrency={token.symbol}
+              options={['swap']}
+            />
           )}
         </div>
       </div>

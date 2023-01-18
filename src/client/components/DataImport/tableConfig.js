@@ -59,6 +59,17 @@ export const configProductTable = [
       id: 'posted_updates',
       defaultMessage: 'Posted objects',
     },
+    type: 'openModal',
+    modal: {
+      body: item =>
+        item.objectsLinks.map(link => (
+          <div key={link}>
+            <a rel="noopener noreferrer" target="_blank" href={`/object/${link}`}>
+              {link}
+            </a>
+          </div>
+        )),
+    },
   },
   {
     id: 'delete',

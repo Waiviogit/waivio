@@ -1,5 +1,7 @@
 import { each, get, last, findIndex, isEmpty, filter } from 'lodash';
 import { createAction } from 'redux-actions';
+import { message } from 'antd';
+
 import formatter from '../../common/helpers/steemitFormatter';
 import { createAsyncActionType } from '../../common/helpers/stateHelpers';
 import {
@@ -21,6 +23,7 @@ import {
 import delegationModalTypes from '../../common/constants/delegationModalTypes';
 import { getGuestWaivBalance, getGuestWaivTransferHistory } from '../../waivioApi/walletApi';
 import { getAllRates, setRate } from '../ratesStore/ratesAction';
+import { subscribeTypes } from '../../common/constants/blockTypes';
 
 export const OPEN_TRANSFER = '@wallet/OPEN_TRANSFER';
 export const CLOSE_TRANSFER = '@wallet/CLOSE_TRANSFER';
@@ -661,11 +664,23 @@ export const resetHiveEngineTokenBalance = () => ({
   type: RESET_HIVE_ENGINE_TOKENS_BALANCE,
 });
 
-export const CLAIM_REWARDS = '@wallet/CLAIM_REWARDS';
-
-export const claimRewards = () => ({
-  type: CLAIM_REWARDS,
-});
+export const claimRewards = (name, hiveBalance, hbdBalance, vestingBalance) => (
+  dispatch,
+  setState,
+  { busyAPI, steemConnectAPI },
+) =>
+  steemConnectAPI
+    .claimRewardBalance(name, hiveBalance, hbdBalance, vestingBalance)
+    .then(res => {
+      busyAPI.instance.sendAsync(subscribeTypes.subscribeTransactionId, [name, res.result.id]);
+      // eslint-disable-next-line consistent-return
+      busyAPI.instance.subscribe((response, mess) => {
+        if (mess.success && mess.permlink === res.result.id) {
+          return Promise.resolve();
+        }
+      });
+    })
+    .catch(() => message.error('Something went wrong'));
 
 export const TOGGLE_DEPOSIT_MODAL = '@wallet/TOGGLE_DEPOSIT_MODAL';
 

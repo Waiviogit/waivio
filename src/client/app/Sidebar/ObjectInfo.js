@@ -50,7 +50,7 @@ import {
   getGroupId,
 } from '../../../store/optionsStore/optionsSelectors';
 import { setStoreActiveOption, setStoreGroupId } from '../../../store/optionsStore/optionsActions';
-import { getObject } from '../../../waivioApi/ApiClient';
+import { getObject, getObjectInfo } from '../../../waivioApi/ApiClient';
 import { getLocale } from '../../../common/helpers/localStorageHelpers';
 import Department from '../../object/Department/Department';
 import AffiliatLink from '../../widgets/AffiliatLink';
@@ -114,10 +114,18 @@ class ObjectInfo extends React.Component {
     showModal: false,
     showMore: {},
     countPhones: 3,
+    publisherObject: {},
   };
 
   componentDidMount() {
     const { wobject, storeGroupId } = this.props;
+    const publisher = parseWobjectField(wobject, 'publisher');
+
+    if (publisher?.authorPermlink) {
+      getObjectInfo([publisher?.authorPermlink]).then(res =>
+        this.setState({ publisherObject: res.wobjects[0] }),
+      );
+    }
 
     this.props.getRelatedAlbum(this.props.match.params.name, 10);
     const hasGroupId = Object.prototype.hasOwnProperty.call(wobject, 'groupId');
@@ -127,6 +135,18 @@ class ObjectInfo extends React.Component {
     }
     if (storeGroupId !== wobject.groupId || !hasGroupId) {
       this.props.setStoreActiveOption({});
+    }
+  }
+  componentDidUpdate(prevProps) {
+    if (this.props.wobject.author_permlink !== prevProps.wobject.author_permlink) {
+      const { wobject } = this.props;
+      const publisher = parseWobjectField(wobject, 'publisher');
+
+      if (publisher?.authorPermlink) {
+        getObjectInfo([publisher?.authorPermlink]).then(res =>
+          this.setState({ publisherObject: res.wobjects[0] }),
+        );
+      }
     }
   }
 
@@ -408,6 +428,8 @@ class ObjectInfo extends React.Component {
       ? wobject.authors.map(el => parseWobjectField(el, 'body', []))
       : [];
 
+    let activeOptionPicture = uniqBy([...pictures], 'body');
+
     const optionsPictures = wobject?.options
       ? Object.entries(wobject?.options)
           .map(option => Object.values(option))
@@ -416,11 +438,11 @@ class ObjectInfo extends React.Component {
           .map(o => ({
             body: o?.avatar,
             id:
-              o.body.parentObjectPermlink === wobject.author_permlink && wobject.galleryAlbum
+              o.author_permlink === wobject.author_permlink && wobject.galleryAlbum
                 ? wobject?.galleryAlbum[0]?.id || wobject.galleryItem[0]?.id
                 : o.author_permlink,
             name: 'options',
-            parentPermlink: o.body.parentObjectPermlink,
+            parentPermlink: o.author_permlink,
           }))
           // eslint-disable-next-line array-callback-return,consistent-return
           .sort((a, b) => {
@@ -437,8 +459,6 @@ class ObjectInfo extends React.Component {
       o => activeOption[activeCategory]?.avatar !== o?.body,
     );
 
-    let activeOptionPicture = uniqBy([...sortedOptions, ...pictures], 'body');
-
     if (hoveredOption?.avatar || activeOption[activeCategory]?.avatar) {
       activeOptionPicture = uniqBy(
         [
@@ -447,8 +467,26 @@ class ObjectInfo extends React.Component {
             body: hoveredOption?.avatar || activeOption[activeCategory]?.avatar,
             id: wobject?.galleryAlbum ? wobject?.galleryAlbum[0]?.id : wobject.author_permlink,
           },
-          ...sortedOptions,
           ...pictures,
+        ],
+        'body',
+      );
+    }
+    if (!has(wobject, 'groupId')) {
+      activeOptionPicture = activeOptionPicture.filter(o => o.name !== 'avatar');
+    }
+    if (has(wobject, 'groupId') && !has(wobject, 'avatar') && !has(wobject, 'galleryItem')) {
+      activeOptionPicture = uniqBy(
+        [
+          {
+            name: 'galleryItem',
+            body:
+              hoveredOption?.avatar ||
+              activeOption[activeCategory]?.avatar ||
+              sortedOptions[0].body,
+            id: wobject?.galleryAlbum ? wobject?.galleryAlbum[0]?.id : wobject.author_permlink,
+          },
+          ...sortedOptions,
         ],
         'body',
       );
@@ -490,7 +528,7 @@ class ObjectInfo extends React.Component {
         )}
         {this.listItem(
           objectFields.galleryItem,
-          (pictures.length > 1 || avatar || wobject?.options) && (
+          (pictures.length > 0 || avatar || wobject?.options) && (
             <PicturesCarousel
               albums={wobject.galleryAlbum}
               isOptionsType
@@ -520,7 +558,7 @@ class ObjectInfo extends React.Component {
         )}
         {this.listItem(
           objectFields.options,
-          wobject.options && (
+          !isEmpty(wobject?.options) && (
             <Options
               setHoveredOption={option => this.setState({ hoveredOption: option })}
               isEditMode={isEditMode}
@@ -532,12 +570,14 @@ class ObjectInfo extends React.Component {
 
         {this.listItem(
           objectFields.departments,
-          <Department
-            departments={departments}
-            isEditMode={isEditMode}
-            history={this.props.history}
-            wobject={this.props.wobject}
-          />,
+          !isEmpty(wobject?.departments) && (
+            <Department
+              departments={departments}
+              isEditMode={isEditMode}
+              history={this.props.history}
+              wobject={this.props.wobject}
+            />
+          ),
         )}
       </>
     );
@@ -673,10 +713,15 @@ class ObjectInfo extends React.Component {
             objectFields.publisher,
             publisher &&
               (publisher.authorPermlink ? (
-                <ObjectCard key={publisher.authorPermlink} wobject={publisher} showFollow={false} />
+                <ObjectCard
+                  key={publisher.authorPermlink}
+                  wobject={this.state.publisherObject}
+                  parent={this.state.publisherObject}
+                  showFollow={false}
+                />
               ) : (
                 <div className="flex ObjectCard__links publisher-paddingBottom">
-                  <ObjectAvatar item={publisher} size={34} />{' '}
+                  <ObjectAvatar item={this.state.publisherObject} size={34} />{' '}
                   <span className="ObjectCard__name-grey">{publisher.name}</span>
                 </div>
               )),
@@ -687,7 +732,9 @@ class ObjectInfo extends React.Component {
         )}
         {this.listItem(
           objectFields.rating,
-          <RateInfo username={userName} authorPermlink={wobject.author_permlink} />,
+          has(wobject, 'rating') && (
+            <RateInfo username={userName} authorPermlink={wobject.author_permlink} />
+          ),
         )}
         {this.listItem(objectFields.tagCategory, this.renderTagCategories(tagCategoriesList))}
         {this.listItem(objectFields.categoryItem, null)}
@@ -945,7 +992,10 @@ class ObjectInfo extends React.Component {
             </div>
           ),
         )}
-        {this.listItem(objectFields.features, <ObjectFeatures features={features} />)}
+        {this.listItem(
+          objectFields.features,
+          <ObjectFeatures features={features} isEditMode={isEditMode} />,
+        )}
         {!isEditMode ? (
           <ProductId
             groupIdContent={
@@ -1059,12 +1109,12 @@ class ObjectInfo extends React.Component {
                   (publisher.authorPermlink ? (
                     <ObjectCard
                       key={publisher.authorPermlink}
-                      wobject={publisher}
+                      wobject={this.state.publisherObject}
                       showFollow={false}
                     />
                   ) : (
                     <div className="flex ObjectCard__links publisher-paddingBottom">
-                      <ObjectAvatar item={publisher} size={34} />{' '}
+                      <ObjectAvatar item={this.state.publisherObject} size={34} />{' '}
                       <span className="ObjectCard__name-grey">{publisher.name}</span>
                     </div>
                   )),

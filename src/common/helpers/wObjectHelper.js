@@ -309,3 +309,5 @@ export const createNewPath = (wobj, type) => {
 };
 
 export const isPhotosAlbumExist = albums => albums.some(album => album.body === 'Photos');
+
+export const sortAlphabetically = (a, b) => (a < b ? -1 : 1);
