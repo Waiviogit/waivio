@@ -215,6 +215,7 @@ const PropositionFooter = ({ type, openDetailsModal, proposition, getProposition
 
               return Promise.resolve();
             }}
+            inCard
           />
         ) : (
           <WebsiteReservedButtons

@@ -31,7 +31,7 @@ const ReservedButtons = props => {
 
   const handleClickProposButton = () =>
     props.onActionInitiated(async () => {
-      setLoadingButton(true);
+      if (!props.inCard) setLoadingButton(true);
       props.handleReserve();
     });
 
@@ -79,6 +79,7 @@ ReservedButtons.propTypes = {
   handleReserveForPopover: PropTypes.func.isRequired,
   disable: PropTypes.bool,
   reserved: PropTypes.bool,
+  inCard: PropTypes.bool,
 };
 
 export default withAuthActions(ReservedButtons);
