@@ -444,6 +444,10 @@ export default class AppendForm extends Component {
       const langReadable = filter(LANGUAGES, { id: currentLocale })[0].name;
 
       switch (currentField) {
+        case objectFields.name:
+          return `@${author} added ${currentField} (${langReadable}):\n ${
+            formValues[objectFields.objectName]
+          }`;
         case objectFields.avatar:
         case objectFields.background:
           return `@${author} added ${currentField} (${langReadable}):\n ![${currentField}](${appendValue})`;
@@ -657,6 +661,12 @@ export default class AppendForm extends Component {
         fieldsObject = {
           ...fieldsObject,
           id: uuidv4(),
+        };
+      }
+      if (currentField === objectFields.name) {
+        fieldsObject = {
+          ...fieldsObject,
+          body: formValues[objectFields.objectName],
         };
       }
       if (currentField === objectFields.companyId) {
