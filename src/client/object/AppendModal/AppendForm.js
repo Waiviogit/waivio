@@ -3396,10 +3396,12 @@ export default class AppendForm extends Component {
     ));
 
     const fieldOptions = getExposedFieldsByObjType(wObject)
-      .map(option =>
-        this.props.intl.formatMessage({ id: `object_field_${option}`, defaultMessage: option }),
-      )
-      .sort((a, b) => sortAlphabetically(a, b));
+      .map(option => (
+        <Select.Option key={option} value={option} className="Topnav__search-autocomplete">
+          {this.props.intl.formatMessage({ id: `object_field_${option}`, defaultMessage: option })}
+        </Select.Option>
+      ))
+      .sort((a, b) => sortAlphabetically(a.props.children, b.props.children));
 
     const disabledSelect = currentField !== 'auto';
 
@@ -3429,11 +3431,7 @@ export default class AppendForm extends Component {
                   defaultMessage: 'Select your field',
                 })}
               </Select.Option>
-              {fieldOptions.map(option => (
-                <Select.Option key={option} value={option} className="Topnav__search-autocomplete">
-                  {option}
-                </Select.Option>
-              ))}
+              {fieldOptions}
             </Select>,
           )}
         </Form.Item>
