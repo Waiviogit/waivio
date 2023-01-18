@@ -111,6 +111,7 @@ const DetailsModal = ({ proposition, toggleModal, isModalDetailsOpen, onActionIn
 
   const reserveButton = isWaivio ? (
     <ReservedButtons
+      reserved={proposition.reserved}
       handleReserve={onClick}
       disable={disable}
       handleReserveForPopover={() =>
