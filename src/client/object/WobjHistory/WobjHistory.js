@@ -73,7 +73,7 @@ const WobjHistory = ({
                 {intl.formatMessage({ id: `object_field_${f}` })}
               </Select.Option>
             ))
-            .sort((a, b) => sortAlphabetically(a, b))}
+            .sort((a, b) => sortAlphabetically(a.props.children, b.props.children))}
         </Select>
         <Select
           placeholder={<FormattedMessage id="language" defaultMessage="All languages" />}
