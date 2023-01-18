@@ -49,6 +49,7 @@ export const objectFields = {
   newsFeed: 'newsFeed',
   departments: 'departments',
   features: 'features',
+  objectName: 'objectName',
 };
 
 export const TYPES_OF_MENU_ITEM = {

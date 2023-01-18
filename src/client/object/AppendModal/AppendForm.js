@@ -1575,7 +1575,9 @@ export default class AppendForm extends Component {
       case objectFields.name: {
         return (
           <Form.Item>
-            {getFieldDecorator(objectFields.name, { rules: this.getFieldRules(objectFields.name) })(
+            {getFieldDecorator(objectFields.objectName, {
+              rules: this.getFieldRules(objectFields.objectName),
+            })(
               <Input
                 className="AppendForm__input"
                 disabled={loading}
