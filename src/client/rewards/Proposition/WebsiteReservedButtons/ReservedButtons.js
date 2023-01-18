@@ -46,27 +46,29 @@ const ReservedButtons = props => {
       >
         <b>Submit</b> dish photos
       </Button>
-      <Popover
-        placement="bottomRight"
-        trigger="click"
-        visible={visiblePopover}
-        onVisibleChange={visible => setVisiblePopover(visible)}
-        content={
-          <React.Fragment>
-            <PopoverMenu onSelect={handlePopoverClick} bold={false}>
-              <PopoverMenuItem key="reserve" disabled={props.disable}>
-                <Icon type="user" /> Reserve the reward for{' '}
-                <span>
-                  <span style={{ color: 'black' }}>7 days </span>
-                  {loading && <Icon type="loading" />}
-                </span>
-              </PopoverMenuItem>
-            </PopoverMenu>
-          </React.Fragment>
-        }
-      >
-        <i className="Buttons__post-menu iconfont icon-more" />
-      </Popover>
+      {!props.reserved && (
+        <Popover
+          placement="bottomRight"
+          trigger="click"
+          visible={visiblePopover}
+          onVisibleChange={visible => setVisiblePopover(visible)}
+          content={
+            <React.Fragment>
+              <PopoverMenu onSelect={handlePopoverClick} bold={false}>
+                <PopoverMenuItem key="reserve" disabled={props.disable}>
+                  <Icon type="user" /> Reserve the reward for{' '}
+                  <span>
+                    <span style={{ color: 'black' }}>7 days </span>
+                    {loading && <Icon type="loading" />}
+                  </span>
+                </PopoverMenuItem>
+              </PopoverMenu>
+            </React.Fragment>
+          }
+        >
+          <i className="Buttons__post-menu iconfont icon-more" />
+        </Popover>
+      )}
     </div>
   );
 };
@@ -76,6 +78,7 @@ ReservedButtons.propTypes = {
   handleReserve: PropTypes.func.isRequired,
   handleReserveForPopover: PropTypes.func.isRequired,
   disable: PropTypes.bool,
+  reserved: PropTypes.bool,
 };
 
 export default withAuthActions(ReservedButtons);
