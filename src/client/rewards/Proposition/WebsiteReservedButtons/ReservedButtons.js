@@ -41,7 +41,7 @@ const ReservedButtons = props => {
         type="primary"
         onClick={handleClickProposButton}
         className="WebsiteReservedButtons__button"
-        disabled={loading || loadingButton}
+        disabled={loading || loadingButton || props.disable}
         loading={loadingButton}
       >
         <b>Submit</b> dish photos
@@ -50,11 +50,11 @@ const ReservedButtons = props => {
         placement="bottomRight"
         trigger="click"
         visible={visiblePopover}
-        onVisibleChange={() => setVisiblePopover(true)}
+        onVisibleChange={visible => setVisiblePopover(visible)}
         content={
           <React.Fragment>
             <PopoverMenu onSelect={handlePopoverClick} bold={false}>
-              <PopoverMenuItem key="reserve">
+              <PopoverMenuItem key="reserve" disabled={props.disable}>
                 <Icon type="user" /> Reserve the reward for{' '}
                 <span>
                   <span style={{ color: 'black' }}>7 days </span>
@@ -75,6 +75,7 @@ ReservedButtons.propTypes = {
   onActionInitiated: PropTypes.func.isRequired,
   handleReserve: PropTypes.func.isRequired,
   handleReserveForPopover: PropTypes.func.isRequired,
+  disable: PropTypes.bool,
 };
 
 export default withAuthActions(ReservedButtons);

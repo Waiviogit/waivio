@@ -52,6 +52,7 @@ const WebsiteReservedButtons = props => {
         type="primary"
         onClick={handleClickProposButton}
         className="WebsiteReservedButtons__button"
+        disabled={props.disable}
       >
         <b>Submit</b> dish photos
       </Button>
@@ -63,7 +64,7 @@ const WebsiteReservedButtons = props => {
         content={
           <React.Fragment>
             <PopoverMenu onSelect={handlePopoverClick} bold={false}>
-              <PopoverMenuItem key="reserve">
+              <PopoverMenuItem key="reserve" disabled={props.disable}>
                 <Icon type="user" /> Reserve the reward for{' '}
                 <span>
                   <span style={{ color: 'black' }}>7 days </span>
@@ -86,6 +87,7 @@ WebsiteReservedButtons.propTypes = {
   handleReserve: PropTypes.func.isRequired,
   onCloseDetails: PropTypes.func,
   reserved: PropTypes.bool,
+  disable: PropTypes.bool,
 };
 
 export default withAuthActions(WebsiteReservedButtons);
