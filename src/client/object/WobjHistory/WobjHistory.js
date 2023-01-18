@@ -66,11 +66,9 @@ const WobjHistory = ({
           onChange={handleFieldChange}
         >
           {getExposedFieldsByObjType(object)
-            // remove next line after adding 'merchant', 'brand', 'manufacturer' fields
-            .filter(f => !['merchant', 'brand', 'manufacturer'].includes(f))
             .map(f => (
               <Select.Option key={f}>
-                {intl.formatMessage({ id: `object_field_${f}` })}
+                {intl.formatMessage({ id: `object_field_${f}`, defaultMessage: f })}
               </Select.Option>
             ))
             .sort((a, b) => sortAlphabetically(a.props.children, b.props.children))}
