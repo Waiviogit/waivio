@@ -75,6 +75,7 @@ import {
   getNewsFilterItems,
   getObjectUrlForLink,
   getNewsFeedItems,
+  sortAlphabetically,
 } from '../../../common/helpers/wObjectHelper';
 import { appendObject } from '../../../store/appendStore/appendActions';
 import withEditor from '../../components/Editor/withEditor';
@@ -444,6 +445,10 @@ export default class AppendForm extends Component {
       const langReadable = filter(LANGUAGES, { id: currentLocale })[0].name;
 
       switch (currentField) {
+        case objectFields.name:
+          return `@${author} added ${currentField} (${langReadable}):\n ${
+            formValues[objectFields.objectName]
+          }`;
         case objectFields.avatar:
         case objectFields.background:
           return `@${author} added ${currentField} (${langReadable}):\n ![${currentField}](${appendValue})`;
@@ -657,6 +662,12 @@ export default class AppendForm extends Component {
         fieldsObject = {
           ...fieldsObject,
           id: uuidv4(),
+        };
+      }
+      if (currentField === objectFields.name) {
+        fieldsObject = {
+          ...fieldsObject,
+          body: formValues[objectFields.objectName],
         };
       }
       if (currentField === objectFields.companyId) {
@@ -3384,24 +3395,13 @@ export default class AppendForm extends Component {
       </Select.Option>
     ));
 
-    const fieldOptions = [];
+    const fieldOptions = getExposedFieldsByObjType(wObject)
+      .map(option =>
+        this.props.intl.formatMessage({ id: `object_field_${option}`, defaultMessage: option }),
+      )
+      .sort((a, b) => sortAlphabetically(a, b));
+
     const disabledSelect = currentField !== 'auto';
-
-    if (currentField === 'auto') {
-      fieldOptions.push(
-        <Select.Option disabled key="auto" value="auto">
-          <FormattedMessage id="select_field" defaultMessage="Select your field" />
-        </Select.Option>,
-      );
-    }
-
-    getExposedFieldsByObjType(wObject).forEach(option => {
-      fieldOptions.push(
-        <Select.Option key={option} value={option} className="Topnav__search-autocomplete">
-          <FormattedMessage id={`object_field_${option}`} defaultMessage={option} />
-        </Select.Option>,
-      );
-    });
 
     const changeValue = v => {
       this.setState({ isOptionChangeable: true });
@@ -3423,7 +3423,17 @@ export default class AppendForm extends Component {
               style={{ width: '100%' }}
               dropdownClassName="AppendForm__drop-down"
             >
-              {fieldOptions}
+              <Select.Option disabled key="auto" value="auto">
+                {this.props.intl.formatMessage({
+                  id: 'select_field',
+                  defaultMessage: 'Select your field',
+                })}
+              </Select.Option>
+              {fieldOptions.map(option => (
+                <Select.Option key={option} value={option} className="Topnav__search-autocomplete">
+                  {option}
+                </Select.Option>
+              ))}
             </Select>,
           )}
         </Form.Item>
