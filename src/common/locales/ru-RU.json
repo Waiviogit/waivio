@@ -2018,5 +2018,7 @@
   "amount_rewards_sort": "Сумме",
   "expiry_rewards_sort": "Сроку действия",
   "proximity_rewards_sort": "Близости",
-  "price": "ЦЕНА"
+  "price": "ЦЕНА",
+  "object_field_ageRange": "Читательский возраст",
+  "age_range": "Читательский возраст"
 }
