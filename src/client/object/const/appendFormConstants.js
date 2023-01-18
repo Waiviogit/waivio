@@ -19,7 +19,7 @@ import {
 import { regexCoordsLatitude, regexCoordsLongitude } from '../../components/Maps/mapHelper';
 
 export const fieldsRules = {
-  [objectFields.name]: [
+  [objectFields.objectName]: [
     {
       transform: value => value && value.toLowerCase(),
     },

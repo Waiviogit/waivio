@@ -74,7 +74,6 @@ import {
   getFormItems,
   getNewsFilterItems,
   getObjectUrlForLink,
-  getObjectAvatar,
   getNewsFeedItems,
 } from '../../../common/helpers/wObjectHelper';
 import { appendObject } from '../../../store/appendStore/appendActions';
@@ -676,9 +675,6 @@ export default class AppendForm extends Component {
             name:
               formValues[publisherFields.publisherName] || getObjectName(this.state.selectedObject),
             authorPermlink: this.state.selectedObject?.author_permlink,
-            defaultShowLink:
-              this.state.selectedObject && getObjectUrlForLink(this.state.selectedObject),
-            avatar: this.state.selectedObject && getObjectAvatar(this.state.selectedObject),
           }),
         };
       }
@@ -1579,7 +1575,9 @@ export default class AppendForm extends Component {
       case objectFields.name: {
         return (
           <Form.Item>
-            {getFieldDecorator(objectFields.name, { rules: this.getFieldRules(objectFields.name) })(
+            {getFieldDecorator(objectFields.objectName, {
+              rules: this.getFieldRules(objectFields.objectName),
+            })(
               <Input
                 className="AppendForm__input"
                 disabled={loading}
