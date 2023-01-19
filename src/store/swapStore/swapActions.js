@@ -8,6 +8,8 @@ import { getAuthenticatedUserName } from '../authStore/authSelectors';
 
 export const GET_SWAP_LIST = createAsyncActionType('@swap/GET_SWAP_LIST');
 
+const swaps = ['SWAP.LTC', 'SWAP.BTC', 'SWAP.ETH'];
+
 export const getSwapList = () => (dispatch, getState) => {
   const state = getState();
   const name = getAuthenticatedUserName(state);
@@ -17,9 +19,15 @@ export const getSwapList = () => (dispatch, getState) => {
   return dispatch({
     type: GET_SWAP_LIST.ACTION,
     payload: getHiveEngineSwap().then(async res => {
-      const fromSymbolList = Object.keys(res);
-      const toSymbolList = res[from.symbol].map(i => i.symbol);
-      const toSymbolChildList = res[toFromState.symbol || toSymbolList[0]].map(i => i.symbol);
+      const swapList = {
+        ...res,
+        'SWAP.LTC': [...res['SWAP.LTC'], { symbol: 'WAIV', pair: 'SWAP.LTC:WAIV' }],
+        'SWAP.BTC': [...res['SWAP.BTC'], { symbol: 'WAIV', pair: 'SWAP.BTC:WAIV' }],
+        'SWAP.ETH': [...res['SWAP.ETH'], { symbol: 'WAIV', pair: 'SWAP.ETH:WAIV' }],
+      };
+      const fromSymbolList = Object.keys(swapList);
+      const toSymbolList = swapList[from.symbol].map(i => i.symbol);
+      const toSymbolChildList = swapList[toFromState.symbol || toSymbolList[0]].map(i => i.symbol);
       const allSymbolList = await compareTokensList(
         name,
         uniq([...fromSymbolList, ...toSymbolList, ...toSymbolChildList]),
@@ -35,8 +43,14 @@ export const getSwapList = () => (dispatch, getState) => {
         : {};
 
       return {
-        list: res,
-        from: { ...to, ...toChildList.find(item => item.symbol === from.symbol) },
+        list: swapList,
+        from:
+          to.symbol === 'WAIV' && swaps.includes(from.symbol)
+            ? {
+                ...allSymbolList.find(item => item.symbol === from.symbol),
+                pair: `WAIV:${from.symbol}`,
+              }
+            : { ...to, ...toChildList.find(item => item.symbol === from.symbol) },
         to,
         toList,
         fromList,
@@ -56,7 +70,10 @@ export const setToToken = token => (dispatch, getState) => {
     type: SET_TO_TOKEN,
     payload: {
       token,
-      tokenFrom: swapList[token.symbol].find(pair => pair.symbol === from.symbol),
+      tokenFrom:
+        token.symbol === 'WAIV' && swaps.includes(from.symbol)
+          ? { ...from, pair: `WAIV:${from.symbol}` }
+          : swapList[token.symbol].find(pair => pair.symbol === from.symbol),
     },
   });
 };

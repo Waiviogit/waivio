@@ -144,8 +144,11 @@ const validateAmount = async ({ amount, outputSymbol }) => {
   const validation = {
     HIVE: validateHiveAmount,
     ETH: validateEthAmount,
+    'SWAP.ETH': validateEthAmount,
     BTC: validateBtcAmount,
+    'SWAP.BTC': validateBtcAmount,
     LTC: validateLtcAmount,
+    'SWAP.LTC': validateLtcAmount,
   };
 
   return validation[outputSymbol](amount);
@@ -213,16 +216,16 @@ export const indirectSwapData = async ({ quantity, params }) => {
   const { tokenPair, exchangeSequence } = params;
   const swapJson = [];
   let amount = '0';
+  let predictionImpact = 0;
   const pools = await getMarketPools({ query: { tokenPair: { $in: tokenPair } } });
 
   if (isEmpty(pools)) return { error: 'market pool is unavailable' };
-
   // eslint-disable-next-line no-restricted-syntax
   for (const [index, pair] of tokenPair.entries()) {
     const pool = pools.find(p => p.tokenPair === pair);
 
     if (!pool) return { error: 'market pool is unavailable' };
-    const { json, minAmountOut } = getSwapOutputNew({
+    const { json, minAmountOut, priceImpact } = getSwapOutputNew({
       symbol: exchangeSequence[index],
       amountIn: index ? amount : quantity,
       pool,
@@ -233,9 +236,15 @@ export const indirectSwapData = async ({ quantity, params }) => {
 
     swapJson.push(json);
     amount = BigNumber(minAmountOut).toFixed();
+    predictionImpact = priceImpact;
   }
 
-  return { swapJson, amount, predictionAmount: amount * DEFAULT_WITHDRAW_FEE_MUL };
+  return {
+    swapJson,
+    amount,
+    predictionAmount: amount * DEFAULT_WITHDRAW_FEE_MUL,
+    predictionImpact,
+  };
 };
 
 const withdrawParams = Object.freeze({
@@ -265,6 +274,24 @@ const withdrawParams = Object.freeze({
     tokenPair: ['SWAP.HIVE:WAIV', 'SWAP.HIVE:SWAP.ETH'],
     exchangeSequence: ['WAIV', 'SWAP.HIVE'],
     prediction: 8,
+  },
+});
+
+const swapParams = Object.freeze({
+  'SWAP.BTC': {
+    getSwapData: indirectSwapData,
+    tokenPair: ['SWAP.HIVE:SWAP.BTC', 'SWAP.HIVE:WAIV'],
+    exchangeSequence: ['SWAP.BTC', 'SWAP.HIVE'],
+  },
+  'SWAP.LTC': {
+    getSwapData: indirectSwapData,
+    tokenPair: ['SWAP.HIVE:SWAP.LTC', 'SWAP.HIVE:WAIV'],
+    exchangeSequence: ['SWAP.LTC', 'SWAP.HIVE'],
+  },
+  'SWAP.ETH': {
+    getSwapData: indirectSwapData,
+    tokenPair: ['SWAP.HIVE:SWAP.ETH', 'SWAP.HIVE:WAIV'],
+    exchangeSequence: ['SWAP.ETH', 'SWAP.HIVE'],
   },
 });
 
@@ -308,6 +335,32 @@ const getWithdrawInfo = async ({ account, data, onlyAmount }) => {
   const customJsonPayload = [...swapJson, withdraw];
 
   return { customJsonPayload };
+};
+
+export const getSwapInfo = async ({ data, onlyAmount }) => {
+  const { quantity, outputSymbol } = data;
+
+  const params = swapParams[outputSymbol];
+
+  const { swapJson, amount, predictionImpact } = await params.getSwapData({
+    params,
+    quantity,
+    outputSymbol,
+  });
+
+  const { error: err, predictiveAmount } = await validateAmount({ amount, outputSymbol });
+
+  if (onlyAmount) return { priceImpact: predictionImpact, amountOut: predictiveAmount };
+
+  if (err) {
+    message.error(err);
+
+    return null;
+  }
+
+  const json = [...swapJson];
+
+  return { json: JSON.stringify(json) };
 };
 
 export default getWithdrawInfo;
