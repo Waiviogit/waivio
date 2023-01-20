@@ -7,7 +7,6 @@ import { FormattedMessage, injectIntl } from 'react-intl';
 import { get, isNull, isEmpty, includes, isString, uniqWith } from 'lodash';
 import { Form, Input, Modal, Select } from 'antd';
 import { v4 as uuidv4 } from 'uuid';
-import { HBD, HIVE } from '../../../common/constants/cryptos';
 import { getCryptoPriceHistory } from '../../../store/appStore/appActions';
 import {
   closeTransfer,
@@ -28,7 +27,7 @@ import {
   openLinkHiveAccountModal,
 } from '../../../store/settingsStore/settingsActions';
 import { createQuery } from '../../../common/helpers/apiHelpers';
-import { getCryptosPriceHistory, getScreenSize } from '../../../store/appStore/appSelectors';
+import { getScreenSize } from '../../../store/appStore/appSelectors';
 import {
   getAuthenticatedUser,
   getIsAuthenticated,
@@ -38,7 +37,6 @@ import {
   getCurrentWalletType,
   getIsTransferVisible,
   getIsVipTickets,
-  getTokenRatesInUSD,
   getTokensBalanceListForTransfer,
   getTotalVestingFundSteem,
   getTotalVestingShares,
@@ -59,6 +57,7 @@ import { getSearchUsersResults } from '../../../store/searchStore/searchSelector
 import './Transfer.less';
 import { fixedNumber } from '../../../common/helpers/parser';
 import { sendGuestTransferWAIV } from '../../../waivioApi/walletApi';
+import { getRatesList } from '../../../store/ratesStore/ratesSelector';
 
 const InputGroup = Input.Group;
 
@@ -75,7 +74,6 @@ const InputGroup = Input.Group;
     isTip: getTransferIsTip(state),
     authenticated: getIsAuthenticated(state),
     user: getAuthenticatedUser(state),
-    cryptosPriceHistory: getCryptosPriceHistory(state),
     screenSize: getScreenSize(state),
     isGuest: isGuestUser(state),
     searchByUser: getSearchUsersResults(state),
@@ -87,7 +85,7 @@ const InputGroup = Input.Group;
     tokensList: getTokensBalanceListForTransfer(state),
     walletType: getCurrentWalletType(state),
     WAIVinfo: getUserCurrencyBalance(state, 'WAIV'),
-    rates: getTokenRatesInUSD(state, 'WAIV'),
+    rates: getRatesList(state),
   }),
   {
     closeTransfer,
@@ -110,7 +108,6 @@ export default class Transfer extends React.Component {
     user: PropTypes.shape().isRequired,
     form: PropTypes.shape().isRequired,
     tokensList: PropTypes.arrayOf(PropTypes.shape()).isRequired,
-    cryptosPriceHistory: PropTypes.shape().isRequired,
     WAIVinfo: PropTypes.shape({
       balance: PropTypes.string,
     }).isRequired,
@@ -191,16 +188,16 @@ export default class Transfer extends React.Component {
 
   componentDidMount() {
     const {
-      cryptosPriceHistory,
       getCryptoPriceHistory: getCryptoPriceHistoryAction,
       to,
       amount,
       sendTo,
       permlink,
       title,
+      rates,
     } = this.props;
-    const currentHiveRate = get(cryptosPriceHistory, 'HIVE.priceDetails.currentUSDPrice', null);
-    const currentHBDRate = get(cryptosPriceHistory, 'HBD.priceDetails.currentUSDPrice', null);
+    const currentHiveRate = rates.HIVE;
+    const currentHBDRate = rates.HBD;
 
     if (isNull(currentHiveRate) || isNull(currentHBDRate)) getCryptoPriceHistoryAction();
     this.props.form.setFieldsValue({
@@ -557,21 +554,15 @@ export default class Transfer extends React.Component {
   };
 
   estimatedValue = amount => {
-    const { cryptosPriceHistory } = this.props;
-    const hiveRateInUsd = get(cryptosPriceHistory, `${HIVE.coinGeckoId}.usdPriceHistory.usd`, 1);
+    const hiveRateInUsd = this.props.rates.HIVE;
 
     if (Object.keys(Transfer.CURRENCIES).includes(this.state.currency)) {
-      const hbdRateInUsd = get(cryptosPriceHistory, `${HBD.coinGeckoId}.usdPriceHistory.usd`, 1);
-      const currRate = this.state.currency === 'HIVE' ? hiveRateInUsd : hbdRateInUsd;
+      const currRate = this.state.currency === 'HIVE' ? hiveRateInUsd : this.props.rates.HBD;
 
       return currRate * amount;
     }
-    const currToken =
-      this.props.isGuest && this.state.currency === 'WAIV'
-        ? { rate: this.props.rates }
-        : this.props.tokensList.find(token => token.symbol === this.state.currency);
 
-    return currToken?.rate * amount * hiveRateInUsd;
+    return this.props.rates[this.state.currency] * amount * hiveRateInUsd;
   };
 
   handleAmountChange = event => {

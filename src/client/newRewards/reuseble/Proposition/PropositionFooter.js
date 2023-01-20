@@ -208,15 +208,20 @@ const PropositionFooter = ({ type, openDetailsModal, proposition, getProposition
 
       default:
         return isWaivio ? (
-          <ReservedButtons
-            handleReserveForPopover={handleReserveForPopup}
-            handleReserve={() => {
-              openDetailsModal();
+          <div className="Proposition-new__button-container">
+            <ReservedButtons
+              handleReserveForPopover={handleReserveForPopup}
+              handleReserve={() => {
+                openDetailsModal();
 
-              return Promise.resolve();
-            }}
-            inCard
-          />
+                return Promise.resolve();
+              }}
+              inCard
+            />
+            <span className="Proposition-new__details" onClick={openDetailsModal}>
+              Details <Icon type="right" />
+            </span>
+          </div>
         ) : (
           <WebsiteReservedButtons
             dish={{

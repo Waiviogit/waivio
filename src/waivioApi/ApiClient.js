@@ -9,7 +9,6 @@ import config from './routes';
 import { getValidTokenData } from '../common/helpers/getToken';
 import { GUEST_ACCOUNT_UPDATE, CUSTOM_JSON } from '../common/constants/accountHistory';
 import { getGuestAccessToken } from '../common/helpers/localStorageHelpers';
-import { IS_RESERVED } from '../common/constants/rewards';
 import { isMobileDevice } from '../common/helpers/apiHelpers';
 import { createQuery, parseQuery } from './helpers';
 import { TRANSACTION_TYPES } from '../client/wallet/WalletHelper';

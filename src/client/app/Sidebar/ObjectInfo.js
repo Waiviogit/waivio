@@ -514,7 +514,7 @@ class ObjectInfo extends React.Component {
     const isList = hasType(wobject, OBJECT_TYPE.LIST);
     const tagCategoriesList = tagCategories.filter(item => !isEmpty(item.items));
     const blogsList = getBlogItems(wobject);
-    const formsList = getFormItems(wobject).map(item => ({
+    const formsList = getFormItems(wobject)?.map(item => ({
       ...item,
       id: objectFields.form,
     }));

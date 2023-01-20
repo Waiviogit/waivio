@@ -15,7 +15,7 @@ const AVAILABLE_TOKEN_WITHDRAW = {
 
 const DEFAULT_PRECISION = 8;
 const DEFAULT_SLIPPAGE = 0.0001;
-const DEFAULT_SLIPPAGE_MAX = 0.01;
+const DEFAULT_SLIPPAGE_MAX = 0.005;
 const DEFAULT_TRADE_FEE_MUL = 0.9975;
 const DEFAULT_WITHDRAW_FEE_MUL = 0.9925;
 
@@ -216,6 +216,7 @@ export const indirectSwapData = async ({ quantity, params }) => {
   const { tokenPair, exchangeSequence } = params;
   const swapJson = [];
   let amount = '0';
+  let amntOut = '0';
   let predictionImpact = 0;
   const pools = await getMarketPools({ query: { tokenPair: { $in: tokenPair } } });
 
@@ -225,7 +226,7 @@ export const indirectSwapData = async ({ quantity, params }) => {
     const pool = pools.find(p => p.tokenPair === pair);
 
     if (!pool) return { error: 'market pool is unavailable' };
-    const { json, minAmountOut, priceImpact } = getSwapOutputNew({
+    const { json, minAmountOut, priceImpact, amountOut } = getSwapOutputNew({
       symbol: exchangeSequence[index],
       amountIn: index ? amount : quantity,
       pool,
@@ -236,13 +237,14 @@ export const indirectSwapData = async ({ quantity, params }) => {
 
     swapJson.push(json);
     amount = BigNumber(minAmountOut).toFixed();
+    amntOut = BigNumber(amountOut).toFixed();
     predictionImpact = priceImpact;
   }
 
   return {
     swapJson,
     amount,
-    predictionAmount: amount * DEFAULT_WITHDRAW_FEE_MUL,
+    amntOut,
     predictionImpact,
   };
 };
@@ -342,13 +344,13 @@ export const getSwapInfo = async ({ data, onlyAmount }) => {
 
   const params = swapParams[outputSymbol];
 
-  const { swapJson, amount, predictionImpact } = await params.getSwapData({
+  const { swapJson, predictionImpact, amntOut } = await params.getSwapData({
     params,
     quantity,
     outputSymbol,
   });
 
-  const { error: err, predictiveAmount } = await validateAmount({ amount, outputSymbol });
+  const { error: err, predictiveAmount } = await validateAmount({ amount: amntOut, outputSymbol });
 
   if (onlyAmount) return { priceImpact: predictionImpact, amountOut: predictiveAmount };
 

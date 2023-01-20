@@ -3,7 +3,7 @@ import { injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { Input, InputNumber, Modal } from 'antd';
 import PropTypes from 'prop-types';
-import { isNumber, debounce, isEmpty, size } from 'lodash';
+import { isNumber, debounce, isEmpty, size, round } from 'lodash';
 import DynamicTbl from '../../components/Tools/DynamicTable/DynamicTable';
 import Transfer from '../../wallet/Transfer/Transfer';
 import CopyButton from '../../widgets/CopyButton/CopyButton';
@@ -26,6 +26,7 @@ import {
   getShowMoreConsumedTickets,
   getTicketsPrice,
 } from '../../../store/settingsStore/settingsSelectors';
+import { getRatesList } from '../../../store/ratesStore/ratesSelector';
 
 import './VipTicketsSetting.less';
 
@@ -35,6 +36,7 @@ const VipTicketsSetting = props => {
   const [loading, setLoading] = useState(true);
   const [note, setNote] = useState(null);
   const [showMoreLoading, setShowMoreLoading] = useState({});
+  const ticketPrice = round(props.price / props.rates.WAIV, 8);
 
   useEffect(() => {
     props.getVipTickets().then(() => setLoading(false));
@@ -72,8 +74,10 @@ const VipTicketsSetting = props => {
     if (isNumber(e)) setCountTickets(e);
   };
 
-  const handleClickPayNow = () =>
-    props.openTransfer('waivio.vip', countTickets * props.price, 'HIVE', '', '', false, true);
+  const handleClickPayNow = () => {
+    if (countTickets)
+      props.openTransfer('waivio.vip', countTickets * ticketPrice, 'WAIV', '', '', false, true);
+  };
 
   if (loading && isEmpty(props.activeTickets) && isEmpty(props.consumedTickets)) return <Loading />;
 
@@ -153,7 +157,7 @@ const VipTicketsSetting = props => {
             max={10}
             onChange={handleChangeAmount}
           />
-          X {props.price} HIVE = <b>{countTickets * props.price}</b> HIVE
+          X {ticketPrice} WAIV = <b>{countTickets * ticketPrice}</b> WAIV
           <button className="VipTicketsSetting__pay" onClick={handleClickPayNow}>
             {props.intl.formatMessage({
               id: 'payment_card_pay_now',
@@ -264,6 +268,9 @@ VipTicketsSetting.propTypes = {
   showMoreConsumedTickets: PropTypes.bool.isRequired,
   consumedTickets: PropTypes.arrayOf().isRequired,
   activeTickets: PropTypes.arrayOf().isRequired,
+  rates: PropTypes.shape({
+    WAIV: PropTypes.number,
+  }),
 };
 
 export default connect(
@@ -273,6 +280,7 @@ export default connect(
     price: getTicketsPrice(state),
     showMoreActiveTickets: getShowMoreActiveTickets(state),
     showMoreConsumedTickets: getShowMoreConsumedTickets(state),
+    rates: getRatesList(state),
   }),
   { getVipTickets, openTransfer, addNoteInTicket, getMoreVipTickets },
 )(injectIntl(VipTicketsSetting));

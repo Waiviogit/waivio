@@ -46,7 +46,7 @@ export const ManageWebsite = props => {
 
     memo = parseJSON(memo);
 
-    props.openTransfer(get(dataForPayments, ['user', 'name']), 0, 'HBD', memo);
+    props.openTransfer(get(dataForPayments, ['user', 'name']), 0, 'WAIV', memo);
   };
 
   return (
@@ -69,8 +69,8 @@ export const ManageWebsite = props => {
               <span className="ManageWebsites__dot">&bull;</span>
               {props.intl.formatMessage(
                 {
-                  id: 'prices_per_active_user',
-                  defaultMessage: '{price} HBD per day per active user;',
+                  id: 'prices_per_active_user_usd',
+                  defaultMessage: '{price} USD per day per active user;',
                 },
                 { price: get(prices, 'perUser', 0) },
               )}
@@ -79,8 +79,8 @@ export const ManageWebsite = props => {
               <span className="ManageWebsites__dot">&bull;</span>
               {props.intl.formatMessage(
                 {
-                  id: 'prices_min_value',
-                  defaultMessage: 'Minimum {price} HBD per day.',
+                  id: 'prices_min_value_usd',
+                  defaultMessage: 'Minimum {price} USD per day.',
                 },
                 {
                   price: get(prices, 'minimumValue', 0),
@@ -97,8 +97,8 @@ export const ManageWebsite = props => {
               <span className="ManageWebsites__dot">&bull;</span>
               {props.intl.formatMessage(
                 {
-                  id: 'prices_per_day',
-                  defaultMessage: '{price} HBD per day;',
+                  id: 'prices_per_day_usd',
+                  defaultMessage: '{price} USD per day;',
                 },
                 { price: get(prices, 'perSuspended', 0) },
               )}
@@ -114,8 +114,8 @@ export const ManageWebsite = props => {
           <div className="Settings__section">
             <h3 className="ManageWebsites__title">
               {props.intl.formatMessage({
-                id: 'manage_account_balance',
-                defaultMessage: 'Account balance (HBD)',
+                id: 'manage_account_balance_usd',
+                defaultMessage: 'Account balance (USD)',
               })}
               <Button
                 onClick={handleClickPayNow}

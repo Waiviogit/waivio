@@ -2,8 +2,8 @@ export const configBalanceTableHeader = [
   {
     id: 'paid',
     intl: {
-      id: 'paid_hbd',
-      defaultMessage: 'Paid (HBD)',
+      id: 'paid_usd',
+      defaultMessage: 'Paid (USD)',
     },
   },
   {
@@ -16,8 +16,8 @@ export const configBalanceTableHeader = [
   {
     id: 'dailyCost',
     intl: {
-      id: 'daily_cost',
-      defaultMessage: 'Daily cost(HBD)',
+      id: 'daily_usd',
+      defaultMessage: 'Daily cost(USD)',
     },
   },
   {
@@ -117,15 +117,15 @@ export const configReportsWebsitesTableHeader = [
   {
     id: 'amount',
     intl: {
-      id: 'payments_table_amount_hbd',
-      defaultMessage: 'Amount (HBD)',
+      id: 'payments_table_amount_usd',
+      defaultMessage: 'Amount (USD)',
     },
   },
   {
     id: 'balance',
     intl: {
-      id: 'payments_table_balance_hbd',
-      defaultMessage: 'Balance (HBD)',
+      id: 'payments_table_balance_usd',
+      defaultMessage: 'Balance (USD)',
     },
   },
 ];
