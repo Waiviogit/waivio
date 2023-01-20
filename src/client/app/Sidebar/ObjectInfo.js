@@ -429,12 +429,11 @@ class ObjectInfo extends React.Component {
       : [];
 
     let activeOptionPicture = uniqBy([...pictures], 'body');
-
     const optionsPictures = wobject?.options
       ? Object.entries(wobject?.options)
           .map(option => Object.values(option))
           .flatMap(el => el[1])
-          .filter(el => el.body.image)
+          // .filter(el => el.body.image)
           .map(o => ({
             body: o?.avatar,
             id:
@@ -483,7 +482,7 @@ class ObjectInfo extends React.Component {
             body:
               hoveredOption?.avatar ||
               activeOption[activeCategory]?.avatar ||
-              sortedOptions[0].body,
+              sortedOptions[0]?.body,
             id: wobject?.galleryAlbum ? wobject?.galleryAlbum[0]?.id : wobject.author_permlink,
           },
           ...sortedOptions,
