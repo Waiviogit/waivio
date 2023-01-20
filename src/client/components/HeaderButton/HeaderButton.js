@@ -56,8 +56,8 @@ const HeaderButtons = props => {
         notific => notific.type === 'transfer' && notific.timestamp > lastSeenTimestamp,
       )
     ) {
-      props.getUserAccount(username);
-      props.getTokenBalance('WAIV', username);
+      // props.getUserAccount(username);
+      // props.getTokenBalance('WAIV', username);
     }
   }, [notifications]);
 
@@ -364,8 +364,6 @@ HeaderButtons.propTypes = {
   isWebsite: PropTypes.bool,
   getUserMetadata: PropTypes.func.isRequired,
   setCurrentPage: PropTypes.func.isRequired,
-  getUserAccount: PropTypes.func.isRequired,
-  getTokenBalance: PropTypes.func.isRequired,
   logout: PropTypes.func.isRequired,
   history: PropTypes.shape({
     push: PropTypes.func,
