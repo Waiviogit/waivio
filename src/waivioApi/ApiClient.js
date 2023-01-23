@@ -3127,5 +3127,25 @@ export const getObjectInfo = links => {
     .then(response => response)
     .catch(e => e);
 };
+export const getNewsPermlinkByObjectName = ({
+  name,
+  limit = 10,
+  userLanguages,
+  locale,
+  follower,
+}) =>
+  fetch(`${config.apiPrefix}${config.getObjects}/${name}${config.newsfeed}`, {
+    headers: {
+      ...headers,
+      app: config.appName,
+      locale,
+      follower,
+    },
+    method: 'POST',
+    body: JSON.stringify({ limit, user_languages: userLanguages }),
+  })
+    .then(res => res.json())
+    .then(posts => posts)
+    .catch(error => error);
 
 export default null;

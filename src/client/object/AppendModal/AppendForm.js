@@ -2363,8 +2363,11 @@ export default class AppendForm extends Component {
               )}
             </Form.Item>
             <p>
-              There are many global and national databases of companies and they use different types
-              of identification numbers, for example DUNS, UBI, Easynumber, EBR, LEI and many more.
+              {intl.formatMessage({
+                id: 'company_id_type_description',
+                defaultMessage:
+                  'There are many global and national databases of companies and they use different types of identification numbers, for example DUNS, UBI, Easynumber, EBR, LEI and many more.',
+              })}
             </p>
             <br />
             <Form.Item>
@@ -2384,8 +2387,11 @@ export default class AppendForm extends Component {
               )}
             </Form.Item>
             <p>
-              Company identifiers are often alphanumeric, but there are no limitations on this text
-              field.
+              {intl.formatMessage({
+                id: 'company_id_description',
+                defaultMessage:
+                  'Company identifiers are often alphanumeric, but there are no limitations on this text field.',
+              })}
             </p>
           </React.Fragment>
         );
@@ -2504,7 +2510,12 @@ export default class AppendForm extends Component {
                 />,
               )}
             </Form.Item>
-            <p>Option value is a text field.</p>
+            <p>
+              {intl.formatMessage({
+                id: 'options_modal_info4',
+                defaultMessage: 'Option value is a text field.',
+              })}
+            </p>
             <br />
             <Form.Item>
               {getFieldDecorator(optionsFields.position, {

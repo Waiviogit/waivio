@@ -65,7 +65,9 @@ const ModalFirstScreen = props => {
     get(props, 'selectedDish.propositions[0].rewardInUSD', null);
   const withRewads = dishRewards && !get(props, 'selectedDish.propositions[0].notEligible', null);
   const earnMessage = camp =>
-    camp.campaigns.max_reward !== camp.campaigns.min_reward ? 'Earn up to' : 'Earn';
+    camp.campaigns.max_reward !== camp.campaigns.min_reward
+      ? props.intl.formatMessage({ id: 'rewards_details_earn_up_to', defaultMessage: 'Earn up to' })
+      : props.intl.formatMessage({ id: 'rewards_details_earn', defaultMessage: 'Earn' });
 
   const handleSelectRestaurant = item => {
     const restaurant = props.eligible.find(camp => camp.author_permlink === item);

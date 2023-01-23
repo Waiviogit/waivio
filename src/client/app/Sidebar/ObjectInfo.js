@@ -527,7 +527,7 @@ class ObjectInfo extends React.Component {
         )}
         {this.listItem(
           objectFields.galleryItem,
-          (pictures.length > 0 || avatar || wobject?.options) && (
+          (pictures.length > 0 || avatar || !isEmpty(wobject.options)) && (
             <PicturesCarousel
               albums={wobject.galleryAlbum}
               isOptionsType
