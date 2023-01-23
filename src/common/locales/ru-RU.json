@@ -2047,5 +2047,6 @@
   "object_field_publicationDate": "Дата публикации",
   "object_field_productWeight": "Вес",
   "weight_placeholder": "Введите вес",
-  "select_unit_of_weight": "Выберите единицу веса"
+  "select_unit_of_weight": "Выберите единицу веса",
+  "join_with": "Присоединяйтесь с"
 }

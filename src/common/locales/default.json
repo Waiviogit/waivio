@@ -2080,5 +2080,6 @@
   "object_field_features": "Features",
   "name": "Name",
   "value": "Value",
-  "features": "Features"
+  "features": "Features",
+  "join_with": "Join with"
 }

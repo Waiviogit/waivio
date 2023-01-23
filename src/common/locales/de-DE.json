@@ -1974,5 +1974,6 @@
   "object_field_publicationDate": "Veröffentlichungsdatum",
   "object_field_productWeight": "Gewicht",
   "weight_placeholder": "Gewicht eingeben",
-  "select_unit_of_weight": "Gewichtseinheit wählen"
+  "select_unit_of_weight": "Gewichtseinheit wählen",
+  "join_with": "Trete mit"
 }
