@@ -20,8 +20,8 @@ const DepartmentList = ({ wobject, departments }) => {
     <>
       {departmentsList?.map(dep => (
         <DepartmentItem
-          id={dep.name}
-          key={dep.name}
+          id={dep.body}
+          key={dep.body}
           history={history}
           wobject={wobject}
           department={dep}
