@@ -46,7 +46,7 @@ const DepartmentsPage = () => {
         hasMore={hasMore}
       >
         {filteredObjects?.map(wObj => (
-          <ObjectCardView key={wObj.id} wObject={wObj} passedParent={wObj.parent} />
+          <ObjectCardView key={wObj._id} wObject={wObj} passedParent={wObj.parent} />
         ))}
       </InfiniteScroll>
     </>
