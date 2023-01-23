@@ -140,7 +140,7 @@ const QuickRewardsModal = props => {
       case 1:
         return {
           component: <ModalFirstScreen isShow={props.isOpenModal} />,
-          buttonName: 'Next',
+          buttonName: props.intl.formatMessage({ id: 'next', defaultMessage: 'Next' }),
           buttonHandler: e => {
             e.currentTarget.blur();
             setPageNumber(2);
@@ -148,7 +148,9 @@ const QuickRewardsModal = props => {
           disabled: isEmpty(props.selectedDish) || isEmpty(props.selectedRestaurant),
         };
       case 2:
-        const secondScreenButtonName = isPropositionObj ? 'Next' : 'Publish';
+        const secondScreenButtonName = isPropositionObj
+          ? props.intl.formatMessage({ id: 'next', defaultMessage: 'Next' })
+          : props.intl.formatMessage({ id: 'publish', defaultMessage: 'Publish' });
         const secondScreenButtonHandler = isPropositionObj
           ? handleOnClickPublishButton
           : handleCreatePost;
@@ -189,7 +191,7 @@ const QuickRewardsModal = props => {
               }}
             />
           ),
-          buttonName: 'Confirm',
+          buttonName: props.intl.formatMessage({ id: 'confirm', defaultMessage: 'Confirm' }),
           buttonHandler: handleCreatePost,
           disabled: false,
           previousHandler: e => {
