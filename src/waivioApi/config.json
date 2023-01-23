@@ -191,5 +191,6 @@
   "draft": "/draft",
   "departments": "/departments",
   "blogTags": "/blog-tags",
-  "names": "/names"
+  "names": "/names",
+  "newsfeed": "/newsfeed"
 }
