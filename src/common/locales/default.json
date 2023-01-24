@@ -2094,5 +2094,8 @@
   "features": "Features",
   "join_with": "Join with",
   "select_field": "Select your field",
-  "widget": "Widget"
+  "widget": "Widget",
+  "show_more_features": "Show more features",
+  "show_less_features": "View less features",
+  "less": "less"
 }
