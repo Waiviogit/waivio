@@ -267,7 +267,7 @@ class CreateObject extends React.Component {
       </Menu>
     );
     const handleCaseSelect = key => {
-      const prevVal = this.props.form.getFieldValue(objectFields.name);
+      const prevVal = this.props.form.getFieldValue(objectFields.name).trim();
       let newVal = '';
 
       switch (key) {
