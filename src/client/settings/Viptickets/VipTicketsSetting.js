@@ -158,8 +158,9 @@ const VipTicketsSetting = props => {
             max={10}
             onChange={handleChangeAmount}
           />
-          X {ticketPrice} WAIV = <b>{countTickets * ticketPrice}</b> WAIV (est.{' '}
-          <USDDisplay value={props.price * props.rates.HIVE} currencyDisplay={'symbol'} />)
+          X {ticketPrice} WAIV (est.{' '}
+          <USDDisplay value={props.price * props.rates.HIVE} currencyDisplay={'symbol'} />) ={' '}
+          <b>{countTickets * ticketPrice}</b> WAIV
           <button className="VipTicketsSetting__pay" onClick={handleClickPayNow}>
             {props.intl.formatMessage({
               id: 'payment_card_pay_now',
