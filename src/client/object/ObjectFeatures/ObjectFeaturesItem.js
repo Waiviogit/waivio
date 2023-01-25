@@ -6,23 +6,21 @@ const ObjectFeaturesItem = ({ feature, wobjPermlink }) => {
   const [showMore, setShowMore] = useState(false);
   const toggleShowMore = () => setShowMore(!showMore);
   const stringLengthLimit = 60;
+  const isLongValue = feature.value.length > stringLengthLimit;
+  const value = showMore ? feature.value.substring(0, stringLengthLimit) : feature.value;
+  const buttonDescriprion = showMore ? 'more' : 'less';
 
   useEffect(() => {
-    if (feature.value.length > stringLengthLimit) setShowMore(true);
+    if (isLongValue) setShowMore(true);
   }, [wobjPermlink]);
 
   return (
     <div>
       <span>{feature.key}: </span>
-      <span className="features-value">
-        {showMore ? feature.value.substring(0, stringLengthLimit) : feature.value}
-      </span>{' '}
-      {feature.value.length > stringLengthLimit && (
+      <span className="features-value">{value}</span>{' '}
+      {isLongValue && (
         <a role="presentation" onClick={toggleShowMore}>
-          <FormattedMessage
-            id={showMore ? 'more' : 'less'}
-            defaultMessage={showMore ? 'more' : 'less'}
-          />
+          {<FormattedMessage id={buttonDescriprion} defaultMessage={buttonDescriprion} />}
         </a>
       )}
     </div>

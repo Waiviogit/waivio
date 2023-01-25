@@ -8,9 +8,10 @@ const ObjectFeatures = ({ features, isEditMode, wobjPermlink }) => {
   const [showMore, setShowMore] = useState(false);
   const featuresList = showMore ? features?.slice(0, 2) : features;
   const toggleShowMore = () => setShowMore(!showMore);
+  const isLongList = features.length > 2;
 
   useEffect(() => {
-    if (features.length > 2) setShowMore(true);
+    if (isLongList) setShowMore(true);
   }, [wobjPermlink]);
 
   return (
@@ -26,7 +27,7 @@ const ObjectFeatures = ({ features, isEditMode, wobjPermlink }) => {
             {featuresList?.map(feature => (
               <ObjectFeaturesItem key={feature.key} feature={feature} wobjPermlink={wobjPermlink} />
             ))}
-            {features.length > 2 && (
+            {isLongList && (
               <a role="presentation" onClick={toggleShowMore}>
                 <FormattedMessage
                   id={showMore ? 'show_more_features' : 'show_less_features'}
