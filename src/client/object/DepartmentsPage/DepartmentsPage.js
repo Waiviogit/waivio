@@ -17,6 +17,8 @@ const DepartmentsPage = () => {
 
   useEffect(() => {
     setFilteredObjects([]);
+    window.scrollTo(0, 0);
+
     if (!isEmpty(activeDepartment))
       getObjectsByDepartment([activeDepartment.name], 0, limit).then(r => {
         setHasMore(r.hasMore);
