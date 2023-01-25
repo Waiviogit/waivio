@@ -993,7 +993,11 @@ class ObjectInfo extends React.Component {
         )}
         {this.listItem(
           objectFields.features,
-          <ObjectFeatures features={features} isEditMode={isEditMode} />,
+          <ObjectFeatures
+            features={features}
+            isEditMode={isEditMode}
+            wobjPermlink={wobject.author_permlink}
+          />,
         )}
         {!isEditMode ? (
           <ProductId
