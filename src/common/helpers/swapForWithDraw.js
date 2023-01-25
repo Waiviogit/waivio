@@ -1,3 +1,5 @@
+import { getDiffPercent, getUpdatedPoolStats } from './swapTokenHelpers';
+
 const BigNumber = require('bignumber.js');
 
 const operationForJson = ({ tokenPair, minAmountOut, tokenSymbol, tokenAmount }) => ({
@@ -23,7 +25,6 @@ const getAmountOut = ({ tokenAmount, liquidityIn, liquidityOut, tradeFeeMul }) =
 // eslint-disable-next-line import/prefer-default-export
 export const getSwapOutputNew = ({ symbol, amountIn, pool, slippage, tradeFeeMul, precision }) => {
   if (!pool) return;
-
   const { baseQuantity, quoteQuantity, tokenPair } = pool;
   const [baseSymbol] = tokenPair.split(':');
 
@@ -50,6 +51,20 @@ export const getSwapOutputNew = ({ symbol, amountIn, pool, slippage, tradeFeeMul
   const minAmountOut = new BigNumber(amountOut)
     .minus(new BigNumber(amountOut).multipliedBy(slippage).toFixed(precision, BigNumber.ROUND_DOWN))
     .toFixed(precision, BigNumber.ROUND_DOWN);
+  const tokenPairDelta =
+    symbol === baseSymbol
+      ? [new BigNumber(amountIn), new BigNumber(amountOut).negated()]
+      : [new BigNumber(amountOut).negated(), new BigNumber(amountIn)];
+
+  const updatedPool = getUpdatedPoolStats({
+    pool,
+    baseAdjusted: tokenPairDelta[0],
+    quoteAdjusted: tokenPairDelta[1],
+  });
+
+  const priceImpact = new BigNumber(getDiffPercent(pool.basePrice, updatedPool.basePrice))
+    .abs()
+    .toFixed(2);
 
   const json = operationForJson({
     minAmountOut,
@@ -63,5 +78,6 @@ export const getSwapOutputNew = ({ symbol, amountIn, pool, slippage, tradeFeeMul
     minAmountOut,
     amountOut,
     json,
+    priceImpact,
   };
 };

@@ -49,6 +49,7 @@ const ImportModal = ({ visible, toggleModal, getImportList }) => {
       okButtonProps={{
         disabled: !objectType || !uploadedFile,
       }}
+      okText={'Submit'}
     >
       <div>
         <h4>Select object type:</h4>

@@ -22,6 +22,7 @@ import {
   setAppUrl,
   getCurrentAppSettings,
   getWebsiteConfigForSSR,
+  getCryptoPriceHistory,
 } from '../store/appStore/appActions';
 import NotificationPopup from './notifications/NotificationPopup';
 import BBackTop from './components/BBackTop';
@@ -43,6 +44,7 @@ import { getIsOpenModal } from '../store/quickRewards/quickRewardsSelectors';
 import { getTokenRates } from '../store/walletStore/walletActions';
 import { hexToRgb } from '../common/helpers';
 import { initialColors } from './websites/constants/colors';
+import { getSwapEnginRates } from '../store/ratesStore/ratesAction';
 
 export const AppSharedContext = React.createContext({ usedLocale: 'en-US', isGuestUser: false });
 
@@ -70,6 +72,8 @@ export const AppSharedContext = React.createContext({ usedLocale: 'en-US', isGue
     dispatchGetAuthGuestBalance,
     getCurrentAppSettings,
     getTokenRates,
+    getCryptoPriceHistory,
+    getSwapEnginRates,
   },
 )
 class WebsiteWrapper extends React.PureComponent {
@@ -103,6 +107,8 @@ class WebsiteWrapper extends React.PureComponent {
     history: PropTypes.shape({
       push: PropTypes.func,
     }).isRequired,
+    getCryptoPriceHistory: PropTypes.func.isRequired,
+    getSwapEnginRates: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -162,6 +168,8 @@ class WebsiteWrapper extends React.PureComponent {
     this.props.getCurrentAppSettings().then(() => {
       this.props.getRate();
       this.props.getTokenRates('WAIV');
+      this.props.getCryptoPriceHistory();
+      this.props.getSwapEnginRates();
 
       this.props.login(token, provider).then(() => {
         batch(() => {

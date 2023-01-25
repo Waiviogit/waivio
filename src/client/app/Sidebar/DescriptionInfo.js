@@ -19,7 +19,7 @@ class DescriptionInfo extends React.Component {
     const { showMore } = this.state;
 
     return (
-      <React.Fragment>
+      <div className="description-field">
         {showMore ? truncate(description) : description}{' '}
         {description.length > 255 && (
           <a role="presentation" onClick={this.toggle}>
@@ -29,7 +29,7 @@ class DescriptionInfo extends React.Component {
             })}
           </a>
         )}
-      </React.Fragment>
+      </div>
     );
   }
 }

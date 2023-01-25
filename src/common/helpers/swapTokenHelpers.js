@@ -1,6 +1,6 @@
 const BigNumber = require('bignumber.js');
 
-const getUpdatedPoolStats = ({ pool, baseAdjusted, quoteAdjusted }) => {
+export const getUpdatedPoolStats = ({ pool, baseAdjusted, quoteAdjusted }) => {
   const uPool = { ...pool };
 
   uPool.baseQuantity = new BigNumber(pool.baseQuantity)
@@ -16,7 +16,7 @@ const getUpdatedPoolStats = ({ pool, baseAdjusted, quoteAdjusted }) => {
   return uPool;
 };
 
-const getDiffPercent = (before, after) => {
+export const getDiffPercent = (before, after) => {
   if (new BigNumber(before).eq(0)) return '0';
 
   return new BigNumber(after)

@@ -7,7 +7,6 @@ import formatter from '../../common/helpers/steemitFormatter';
 import { isBannedPost } from '../../common/helpers/postHelpers';
 import { getSuitableLanguage } from '../../store/reducers';
 import { getContent } from '../../store/postsStore/postActions';
-import { getUserAccount } from '../../store/usersStore/usersActions';
 import Error404 from '../statics/Error404';
 import Comments from '../comments/Comments';
 import Loading from '../components/Icon/Loading';
@@ -54,7 +53,7 @@ import { addPayoutForActiveVotes } from '../../common/helpers';
       follower: getAuthenticatedUserName(state),
     };
   },
-  { getContent, getUserAccount },
+  { getContent },
 )
 export default class Post extends React.Component {
   static propTypes = {
@@ -67,7 +66,6 @@ export default class Post extends React.Component {
     loaded: PropTypes.bool,
     failed: PropTypes.bool,
     getContent: PropTypes.func,
-    getUserAccount: PropTypes.func,
     locale: PropTypes.string,
     follower: PropTypes.string,
   };
@@ -82,16 +80,12 @@ export default class Post extends React.Component {
     locale: 'en-US',
     follower: '',
     getContent: () => {},
-    getUserAccount: () => {},
   };
 
   static fetchData({ store, match }) {
     const { author, permlink } = match.params;
 
-    return Promise.all([
-      store.dispatch(getUserAccount(author)),
-      store.dispatch(getContent(author, permlink)),
-    ]);
+    return Promise.all([store.dispatch(getContent(author, permlink))]);
   }
 
   state = {
@@ -106,7 +100,6 @@ export default class Post extends React.Component {
 
     if (shouldUpdate && !fetching) {
       this.props.getContent(author, permlink, false);
-      this.props.getUserAccount(author);
     }
 
     if (!!content && match.params.category && typeof window !== 'undefined') {
@@ -127,7 +120,6 @@ export default class Post extends React.Component {
     if (shouldUpdate && !nextProps.fetching) {
       this.setState({ commentsVisible: false }, () => {
         this.props.getContent(author, permlink, false);
-        this.props.getUserAccount(author);
       });
     }
   }

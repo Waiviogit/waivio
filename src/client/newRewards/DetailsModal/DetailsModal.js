@@ -169,7 +169,9 @@ const DetailsModal = ({ proposition, toggleModal, isModalDetailsOpen, onActionIn
       )}
       <div className="DetailsModal__footer">
         <div className="DetailsModal__footer-reserve-btn">
-          <Button onClick={handleCancelModalBtn}>Cancel</Button>
+          <Button className="DetailsModal__cancel" onClick={handleCancelModalBtn}>
+            Cancel
+          </Button>
           {reserveButton}
         </div>
       </div>

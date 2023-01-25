@@ -429,12 +429,11 @@ class ObjectInfo extends React.Component {
       : [];
 
     let activeOptionPicture = uniqBy([...pictures], 'body');
-
     const optionsPictures = wobject?.options
       ? Object.entries(wobject?.options)
           .map(option => Object.values(option))
           .flatMap(el => el[1])
-          .filter(el => el.body.image)
+          // .filter(el => el.body.image)
           .map(o => ({
             body: o?.avatar,
             id:
@@ -454,6 +453,13 @@ class ObjectInfo extends React.Component {
             }
           })
       : [];
+
+    const hasOptionsPics =
+      wobject?.options &&
+      Object.entries(wobject?.options)
+        .map(option => Object.values(option))
+        .flatMap(el => el[1])
+        .some(o => has(o.body, 'image'));
 
     const sortedOptions = optionsPictures.filter(
       o => activeOption[activeCategory]?.avatar !== o?.body,
@@ -483,7 +489,7 @@ class ObjectInfo extends React.Component {
             body:
               hoveredOption?.avatar ||
               activeOption[activeCategory]?.avatar ||
-              sortedOptions[0].body,
+              sortedOptions[0]?.body,
             id: wobject?.galleryAlbum ? wobject?.galleryAlbum[0]?.id : wobject.author_permlink,
           },
           ...sortedOptions,
@@ -514,7 +520,7 @@ class ObjectInfo extends React.Component {
     const isList = hasType(wobject, OBJECT_TYPE.LIST);
     const tagCategoriesList = tagCategories.filter(item => !isEmpty(item.items));
     const blogsList = getBlogItems(wobject);
-    const formsList = getFormItems(wobject).map(item => ({
+    const formsList = getFormItems(wobject)?.map(item => ({
       ...item,
       id: objectFields.form,
     }));
@@ -528,7 +534,7 @@ class ObjectInfo extends React.Component {
         )}
         {this.listItem(
           objectFields.galleryItem,
-          (pictures.length > 0 || avatar || wobject?.options) && (
+          (pictures.length > 0 || avatar || (!isEmpty(wobject.options) && hasOptionsPics)) && (
             <PicturesCarousel
               albums={wobject.galleryAlbum}
               isOptionsType
@@ -994,7 +1000,11 @@ class ObjectInfo extends React.Component {
         )}
         {this.listItem(
           objectFields.features,
-          <ObjectFeatures features={features} isEditMode={isEditMode} />,
+          <ObjectFeatures
+            features={features}
+            isEditMode={isEditMode}
+            wobjPermlink={wobject.author_permlink}
+          />,
         )}
         {!isEditMode ? (
           <ProductId

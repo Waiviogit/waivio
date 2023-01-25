@@ -17,6 +17,8 @@ const DepartmentsPage = () => {
 
   useEffect(() => {
     setFilteredObjects([]);
+    window.scrollTo(0, 0);
+
     if (!isEmpty(activeDepartment))
       getObjectsByDepartment([activeDepartment.name], 0, limit).then(r => {
         setHasMore(r.hasMore);
@@ -46,7 +48,7 @@ const DepartmentsPage = () => {
         hasMore={hasMore}
       >
         {filteredObjects?.map(wObj => (
-          <ObjectCardView key={wObj.id} wObject={wObj} passedParent={wObj.parent} />
+          <ObjectCardView key={wObj._id} wObject={wObj} passedParent={wObj.parent} />
         ))}
       </InfiniteScroll>
     </>

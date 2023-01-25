@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { get, isEmpty } from 'lodash';
+import { get, isEmpty, round } from 'lodash';
 import { Button, Modal, message } from 'antd';
 import { Link } from 'react-router-dom';
 
@@ -23,6 +23,7 @@ import Transfer from '../../../wallet/Transfer/Transfer';
 import { getAuthenticatedUserName } from '../../../../store/authStore/authSelectors';
 import { getManage, getWebsiteLoading } from '../../../../store/websiteStore/websiteSelectors';
 import { parseJSON } from '../../../../common/helpers/parseJSON';
+import { getCurrentCurrency } from '../../../../store/appStore/appSelectors';
 
 import './ManageWebsite.less';
 
@@ -46,7 +47,7 @@ export const ManageWebsite = props => {
 
     memo = parseJSON(memo);
 
-    props.openTransfer(get(dataForPayments, ['user', 'name']), 0, 'HBD', memo);
+    props.openTransfer(get(dataForPayments, ['user', 'name']), 0, 'WAIV', memo);
   };
 
   return (
@@ -69,21 +70,25 @@ export const ManageWebsite = props => {
               <span className="ManageWebsites__dot">&bull;</span>
               {props.intl.formatMessage(
                 {
-                  id: 'prices_per_active_user',
-                  defaultMessage: '{price} HBD per day per active user;',
+                  id: 'prices_per_active_user_usd',
+                  defaultMessage: '{price} {currency} per day per active user;',
                 },
-                { price: get(prices, 'perUser', 0) },
+                {
+                  price: round(get(prices, 'perUser', 0) * props.currencyInfo.rate, 3),
+                  currency: props.currencyInfo.type,
+                },
               )}
             </div>
             <div>
               <span className="ManageWebsites__dot">&bull;</span>
               {props.intl.formatMessage(
                 {
-                  id: 'prices_min_value',
-                  defaultMessage: 'Minimum {price} HBD per day.',
+                  id: 'prices_min_value_usd',
+                  defaultMessage: 'Minimum {price} {currency} per day.',
                 },
                 {
-                  price: get(prices, 'minimumValue', 0),
+                  price: round(get(prices, 'minimumValue', 0) * props.currencyInfo.rate, 3),
+                  currency: props.currencyInfo.type,
                 },
               )}
             </div>
@@ -97,10 +102,13 @@ export const ManageWebsite = props => {
               <span className="ManageWebsites__dot">&bull;</span>
               {props.intl.formatMessage(
                 {
-                  id: 'prices_per_day',
-                  defaultMessage: '{price} HBD per day;',
+                  id: 'prices_per_day_usd',
+                  defaultMessage: '{price} {currency} per day;',
                 },
-                { price: get(prices, 'perSuspended', 0) },
+                {
+                  price: round(get(prices, 'perSuspended', 0) * props.currencyInfo.rate, 3),
+                  currency: props.currencyInfo.type,
+                },
               )}
             </div>
             <p>
@@ -113,10 +121,15 @@ export const ManageWebsite = props => {
           </div>
           <div className="Settings__section">
             <h3 className="ManageWebsites__title">
-              {props.intl.formatMessage({
-                id: 'manage_account_balance',
-                defaultMessage: 'Account balance (HBD)',
-              })}
+              {props.intl.formatMessage(
+                {
+                  id: 'manage_account_balance_usd',
+                  defaultMessage: 'Account balance ({currency})',
+                },
+                {
+                  currency: props.currencyInfo.type,
+                },
+              )}
               <Button
                 onClick={handleClickPayNow}
                 type="primary"
@@ -128,7 +141,16 @@ export const ManageWebsite = props => {
                 })}
               </Button>
             </h3>
-            <DynamicTbl header={configBalanceTableHeader} bodyConfig={[accountBalance]} />
+            <DynamicTbl
+              header={configBalanceTableHeader(props.currencyInfo.type)}
+              bodyConfig={[
+                {
+                  ...accountBalance,
+                  dailyCost: round(accountBalance.dailyCost * props.currencyInfo.rate, 3),
+                  paid: round(accountBalance.paid * props.currencyInfo.rate, 3),
+                },
+              ]}
+            />
             <p>
               {props.intl.formatMessage({
                 id: 'manage_website_info_dau_averaged',
@@ -211,6 +233,10 @@ export const ManageWebsite = props => {
 
 ManageWebsite.propTypes = {
   intl: PropTypes.shape().isRequired,
+  currencyInfo: PropTypes.shape({
+    type: PropTypes.string,
+    rate: PropTypes.number,
+  }).isRequired,
   getManageInfo: PropTypes.func.isRequired,
   userName: PropTypes.string.isRequired,
   manageInfo: PropTypes.shape({
@@ -240,6 +266,7 @@ export default connect(
     loading: getWebsiteLoading(state),
     userName: getAuthenticatedUserName(state),
     manageInfo: getManage(state),
+    currencyInfo: getCurrentCurrency(state),
   }),
   {
     getManageInfo,
