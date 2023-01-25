@@ -27,7 +27,8 @@ import {
   getTicketsPrice,
 } from '../../../store/settingsStore/settingsSelectors';
 import { getRatesList } from '../../../store/ratesStore/ratesSelector';
-
+import USDDisplay from '../../components/Utils/USDDisplay';
+import { getIsTransferVisible } from '../../../store/walletStore/walletSelectors';
 import './VipTicketsSetting.less';
 
 const VipTicketsSetting = props => {
@@ -157,7 +158,8 @@ const VipTicketsSetting = props => {
             max={10}
             onChange={handleChangeAmount}
           />
-          X {ticketPrice} WAIV = <b>{countTickets * ticketPrice}</b> WAIV
+          X {ticketPrice} WAIV = <b>{countTickets * ticketPrice}</b> WAIV (est.{' '}
+          <USDDisplay value={props.price * props.rates.HIVE} currencyDisplay={'symbol'} />)
           <button className="VipTicketsSetting__pay" onClick={handleClickPayNow}>
             {props.intl.formatMessage({
               id: 'payment_card_pay_now',
@@ -200,7 +202,7 @@ const VipTicketsSetting = props => {
           />
         </div>
       </div>
-      <Transfer />
+      {props.visibleTransfer && <Transfer />}
       {activeTicketInfo && (
         <Modal
           visible={activeTicketInfo.ticket}
@@ -265,11 +267,13 @@ VipTicketsSetting.propTypes = {
   getMoreVipTickets: PropTypes.func.isRequired,
   price: PropTypes.string.isRequired,
   showMoreActiveTickets: PropTypes.bool.isRequired,
+  visibleTransfer: PropTypes.bool.isRequired,
   showMoreConsumedTickets: PropTypes.bool.isRequired,
   consumedTickets: PropTypes.arrayOf().isRequired,
   activeTickets: PropTypes.arrayOf().isRequired,
   rates: PropTypes.shape({
     WAIV: PropTypes.number,
+    HIVE: PropTypes.number,
   }),
 };
 
@@ -281,6 +285,7 @@ export default connect(
     showMoreActiveTickets: getShowMoreActiveTickets(state),
     showMoreConsumedTickets: getShowMoreConsumedTickets(state),
     rates: getRatesList(state),
+    visibleTransfer: getIsTransferVisible(state),
   }),
   { getVipTickets, openTransfer, addNoteInTicket, getMoreVipTickets },
 )(injectIntl(VipTicketsSetting));

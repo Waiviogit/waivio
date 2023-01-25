@@ -100,7 +100,7 @@ export const DynamicTable = ({
       <thead>
         <tr>
           {filteredHeader.map(th => (
-            <th key={th.id}>{th.intl && intl.formatMessage(th.intl)}</th>
+            <th key={th.id}>{th.intl && intl.formatMessage(th.intl, th.value)}</th>
           ))}
         </tr>
       </thead>

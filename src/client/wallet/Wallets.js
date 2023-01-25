@@ -11,7 +11,6 @@ import {
   getCurrUserTokensBalanceSwap,
   getGlobalProperties,
   getTokenBalance,
-  getTokenRates,
   getUserTokensBalanceList,
   resetHiveEngineTokenBalance,
   setWalletType,
@@ -22,7 +21,6 @@ import {
   getIsPowerUpOrDownVisible,
   getIsTransferVisible,
 } from '../../store/walletStore/walletSelectors';
-import { getCryptoPriceHistory } from '../../store/appStore/appActions';
 import PowerUpOrDown from './PowerUpOrDown/PowerUpOrDown';
 import HiveEngineWallet from './HiveEngineWallet/HiveEngineWallet';
 import { guestUserRegex } from '../../common/helpers/regexHelpers';
@@ -34,7 +32,6 @@ import { getIsOpenWithdraw } from '../../store/depositeWithdrawStore/depositWith
 import ManageDelegate from './DelegateModals/ManageDelegate/ManageDelegate';
 import { getAuthenticatedUserName } from '../../store/authStore/authSelectors';
 import Rebalancing from '../newRewards/Rebalancing/Rebalancing';
-import { getSwapEnginRates } from '../../store/ratesStore/ratesAction';
 
 import './Wallets.less';
 
@@ -46,11 +43,8 @@ const Wallets = props => {
 
   useEffect(() => {
     props.setWalletType(walletsType);
-    props.getCryptoPriceHistory();
     props.getGlobalProperties();
     props.getTokenBalance('WAIV', props.match.params.name);
-    props.getTokenRates('WAIV');
-    props.getSwapEnginRates();
 
     if (!guestUserRegex.test(props.authUserName))
       props.getUserTokensBalanceList(props.authUserName);
@@ -107,7 +101,6 @@ const Wallets = props => {
 Wallets.propTypes = {
   intl: PropTypes.shape().isRequired,
   setWalletType: PropTypes.func.isRequired,
-  getCryptoPriceHistory: PropTypes.func.isRequired,
   getTokenBalance: PropTypes.func.isRequired,
   getGlobalProperties: PropTypes.func.isRequired,
   visible: PropTypes.bool.isRequired,
@@ -118,9 +111,7 @@ Wallets.propTypes = {
   getCurrUserTokensBalanceList: PropTypes.func.isRequired,
   resetHiveEngineTokenBalance: PropTypes.func.isRequired,
   getCurrUserTokensBalanceSwap: PropTypes.func.isRequired,
-  getSwapEnginRates: PropTypes.func.isRequired,
   getUserTokensBalanceList: PropTypes.func.isRequired,
-  getTokenRates: PropTypes.func.isRequired,
   visibleDeposit: PropTypes.bool.isRequired,
   authUserName: PropTypes.string.isRequired,
   history: PropTypes.shape({
@@ -148,14 +139,11 @@ export default connect(
   }),
   {
     setWalletType,
-    getCryptoPriceHistory,
     getTokenBalance,
     getGlobalProperties,
     getCurrUserTokensBalanceList,
     resetHiveEngineTokenBalance,
     getCurrUserTokensBalanceSwap,
     getUserTokensBalanceList,
-    getSwapEnginRates,
-    getTokenRates,
   },
 )(injectIntl(Wallets));

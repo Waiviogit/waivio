@@ -14,10 +14,11 @@ import { configReportsWebsitesTableHeader } from '../../constants/tableConfig';
 import { getReportsWebsiteInfo } from '../../../../store/websiteStore/websiteActions';
 import { getLocale } from '../../../../store/settingsStore/settingsSelectors';
 import { getReports } from '../../../../store/websiteStore/websiteSelectors';
+import { getCurrentCurrency } from '../../../../store/appStore/appSelectors';
 
 import './ReportsWebsite.less';
 
-const ReportsWebsite = ({ intl, form, getReportsInfo, reportsInfo, locale }) => {
+const ReportsWebsite = ({ intl, form, getReportsInfo, reportsInfo, locale, currencyInfo }) => {
   const [searchString, setSearchString] = useState('');
   const handleSearchHost = useCallback(
     debounce(value => setSearchString(value), 300),
@@ -38,7 +39,8 @@ const ReportsWebsite = ({ intl, form, getReportsInfo, reportsInfo, locale }) => 
 
     return {
       ...payment,
-      balance: ceil(payment.balance, 3),
+      balance: ceil(payment.balance * currencyInfo.rate, 3),
+      amount: ceil(payment.amount * currencyInfo.rate, 3),
       message,
     };
   });
@@ -161,7 +163,10 @@ const ReportsWebsite = ({ intl, form, getReportsInfo, reportsInfo, locale }) => 
               </Button>
             </Form.Item>
           </Form>
-          <DynamicTbl header={configReportsWebsitesTableHeader} bodyConfig={mappedPayments} />
+          <DynamicTbl
+            header={configReportsWebsitesTableHeader(currencyInfo.type)}
+            bodyConfig={mappedPayments}
+          />
         </React.Fragment>
       )}
     </React.Fragment>
@@ -170,6 +175,10 @@ const ReportsWebsite = ({ intl, form, getReportsInfo, reportsInfo, locale }) => 
 
 ReportsWebsite.propTypes = {
   intl: PropTypes.shape().isRequired,
+  currencyInfo: PropTypes.shape({
+    type: PropTypes.string,
+    rate: PropTypes.number,
+  }).isRequired,
   form: PropTypes.shape({
     getFieldDecorator: PropTypes.func,
     validateFields: PropTypes.func,
@@ -187,6 +196,7 @@ export default connect(
   state => ({
     reportsInfo: getReports(state),
     locale: getLocale(state),
+    currencyInfo: getCurrentCurrency(state),
   }),
   {
     getReportsInfo: getReportsWebsiteInfo,

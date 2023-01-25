@@ -34,17 +34,17 @@ import { createQuery } from '../../../common/helpers/apiHelpers';
 import TokensSelect from './components/TokensSelect';
 import { getImpact } from '../../../common/helpers/swapWalletHelpers';
 import { getFeeInfo, getSwapInfoForRebalance } from '../../../waivioApi/ApiClient';
-
-import './SwapTokens.less';
 import { getRatesList } from '../../../store/ratesStore/ratesSelector';
 import { getSwapInfo } from '../../../common/helpers/withdrawTokenHelpers';
+
+import './SwapTokens.less';
 
 const doubleSwapToWaiv = ['SWAP.LTC', 'SWAP.BTC', 'SWAP.ETH'];
 
 const SwapTokens = props => {
   const authUserName = useSelector(getAuthenticatedUserName);
   const rates = useSelector(getRatesList);
-  const swapToWaiv = doubleSwapToWaiv.includes(props.from.symbol) && props.to.symbol === 'WAIV';
+  const swapToWaiv = (from, to) => doubleSwapToWaiv.includes(from?.symbol) && to?.symbol === 'WAIV';
 
   const [impact, setImpact] = useState(0);
   const [fromAmount, setFromAmount] = useState(0);
@@ -93,18 +93,18 @@ const SwapTokens = props => {
   const insufficientFunds = amount => +props.from.balance < +amount;
 
   const calculateOutputInfo = (value = 0, from, to, isFrom, onlyAmount) => {
-    if (swapToWaiv) {
+    if (swapToWaiv(from, to) || swapToWaiv(to, from)) {
       return getSwapInfo({
         data: {
           quantity: value,
-          inputSymbol: props.to.symbol,
-          outputSymbol: props.from.symbol,
+          inputSymbol: to.symbol,
+          outputSymbol: from.symbol,
         },
         onlyAmount,
       });
     }
 
-    if (!from.tokenPair) return {};
+    if (!from?.tokenPair) return {};
 
     return getSwapOutput({
       symbol: from.symbol,
@@ -134,7 +134,7 @@ const SwapTokens = props => {
     setFromAmount(value);
 
     if (!isEmpty(props.to)) {
-      const amount = swapToWaiv
+      const amount = swapToWaiv(props.from, props.to)
         ? await calculateOutputInfo(value, props.from, props.to, true, true)
         : calculateOutputInfo(value, props.from, props.to, true, true);
 
@@ -143,12 +143,13 @@ const SwapTokens = props => {
     }
   };
 
-  const handleSetToToken = token => {
+  const handleSetToToken = async token => {
     props.setToToken(token);
-
     if (!isEmpty(props.from)) {
       const from = props.swapList[token.symbol].find(pair => pair.symbol === props.from.symbol);
-      const amount = calculateOutputInfo(fromAmount, from, token, true);
+      const amount = swapToWaiv(props.from, token)
+        ? await calculateOutputInfo(fromAmount, props.from, token, true, true)
+        : calculateOutputInfo(fromAmount, from, token, true, true);
 
       setImpact(amount.priceImpact);
       setToAmount(amount.amountOut || 0);
@@ -175,7 +176,7 @@ const SwapTokens = props => {
   const handleClickBalanceTo = value => handleChangeToValue(value);
 
   const handleSwap = async () => {
-    const swapInfo = swapToWaiv
+    const swapInfo = swapToWaiv(props.from, props.to)
       ? await calculateOutputInfo(fromAmount, props.from, props.to, true)
       : calculateOutputInfo(fromAmount, props.from, props.to, true);
 
@@ -224,7 +225,11 @@ const SwapTokens = props => {
         <div className={arrowButtonClassList}>
           <Icon
             type="arrow-down"
-            onClick={props.isChanging || disable || swapToWaiv ? null : handelChangeOrderToken}
+            onClick={
+              props.isChanging || disable || swapToWaiv(props.from, props.to)
+                ? null
+                : handelChangeOrderToken
+            }
           />
         </div>
         <h3 className="SwapTokens__title">
@@ -237,7 +242,7 @@ const SwapTokens = props => {
           handleChangeValue={handleChangeToValue}
           token={isLoading ? null : props.to}
           handleClickBalance={handleClickBalanceTo}
-          disabled={disable || swapToWaiv}
+          disabled={disable || swapToWaiv(props.from, props.to)}
           isLoading={isLoading}
         />
         <div className="SwapTokens__estimatedWrap">

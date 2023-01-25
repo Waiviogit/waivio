@@ -44,7 +44,7 @@ const ReservedButtons = props => {
         disabled={loading || loadingButton || props.disable}
         loading={loadingButton}
       >
-        <b>Submit</b> dish photos
+        <b>Submit</b> photos
       </Button>
       {!props.reserved && (
         <Popover

@@ -3,19 +3,20 @@ import React, { useEffect, useState } from 'react';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { round } from 'lodash';
+import { useSelector } from 'react-redux';
+import { getRatesList } from '../../../../store/ratesStore/ratesSelector';
 import USDDisplay from '../../../components/Utils/USDDisplay';
-import useRate from '../../../../hooks/useRate';
 
 import './PowerSwitcher.less';
 
 const powerToCurrency = {
   WP: 'WAIV',
-  HP: 'HIVE',
+  // HP: 'HIVE',
 };
 
 const PowerSwitcher = props => {
   const [currency, setCurrency] = useState(props.defaultType);
-  const { hiveRateInUsd, rates } = useRate();
+  const rates = useSelector(getRatesList);
   const convertCurrency = curr => (curr === 'WAIV' && props.powerVote ? 'WP' : curr);
   const hbdHiveHpCurrency = currency === 'HBD' || currency === 'HIVE' || currency === 'HP';
   const amountRegex = /^[0-9]*\.?[0-9]{0,8}$/;
@@ -129,8 +130,10 @@ const PowerSwitcher = props => {
           <USDDisplay
             value={
               props.getFieldValue('amount') *
-              hiveRateInUsd *
-              (rates[powerToCurrency[currency] || currency] || 1)
+              rates.HIVE *
+              (['HIVE', 'HP'].includes(currency)
+                ? 1
+                : rates[powerToCurrency[currency] || currency] || 1)
             }
           />
         </div>
