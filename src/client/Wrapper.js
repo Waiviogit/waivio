@@ -16,7 +16,13 @@ import {
   getAuthGuestBalance as dispatchGetAuthGuestBalance,
 } from '../store/authStore/authActions';
 import { getNotifications } from '../store/userStore/userActions';
-import { getRate, getRewardFund, setUsedLocale, setAppUrl } from '../store/appStore/appActions';
+import {
+  getRate,
+  getRewardFund,
+  setUsedLocale,
+  setAppUrl,
+  getCryptoPriceHistory,
+} from '../store/appStore/appActions';
 import NotificationPopup from './notifications/NotificationPopup';
 import BBackTop from './components/BBackTop';
 import TopNavigation from './components/Navigation/TopNavigation';
@@ -44,6 +50,7 @@ import {
 import { getIsOpenWalletTable } from '../store/walletStore/walletSelectors';
 import { getLocale, getNightmode } from '../store/settingsStore/settingsSelectors';
 import { getTokenRates } from '../store/walletStore/walletActions';
+import { getSwapEnginRates } from '../store/ratesStore/ratesAction';
 
 export const AppSharedContext = React.createContext({ usedLocale: 'en-US', isGuestUser: false });
 
@@ -72,6 +79,8 @@ export const AppSharedContext = React.createContext({ usedLocale: 'en-US', isGue
     dispatchGetAuthGuestBalance,
     handleRefAuthUser,
     getTokenRates,
+    getCryptoPriceHistory,
+    getSwapEnginRates,
   },
 )
 class Wrapper extends React.PureComponent {
@@ -88,6 +97,8 @@ class Wrapper extends React.PureComponent {
     getRewardFund: PropTypes.func,
     getRate: PropTypes.func,
     getTokenRates: PropTypes.func.isRequired,
+    getCryptoPriceHistory: PropTypes.func.isRequired,
+    getSwapEnginRates: PropTypes.func.isRequired,
     getNotifications: PropTypes.func,
     setUsedLocale: PropTypes.func,
     busyLogin: PropTypes.func,
@@ -158,7 +169,8 @@ class Wrapper extends React.PureComponent {
     const userName = querySelectorSearchParams.get('userName');
 
     this.props.getTokenRates('WAIV');
-
+    this.props.getCryptoPriceHistory();
+    this.props.getSwapEnginRates();
     if (ref) setSessionData('refUser', ref);
     if (userName) setSessionData('userName', userName);
     if (isWidget) {

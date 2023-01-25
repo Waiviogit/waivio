@@ -222,7 +222,6 @@ export const sendComment = (parentPost, newBody, isUpdating = false, originalCom
       parentPost.root_author,
     )
     .then(() => {
-      dispatch(updateCounter(parentPost));
       dispatch(
         getFakeSingleComment(
           guestParentAuthor || parentAuthor,
@@ -236,6 +235,7 @@ export const sendComment = (parentPost, newBody, isUpdating = false, originalCom
       );
       if (parentPost.name) {
         dispatch(sendCommentAppend(parentPost.permlink));
+        dispatch(updateCounter(parentPost));
       }
       setTimeout(
         () => dispatch(getSingleComment(parentPost.author, parentPost.permlink, !isUpdating)),

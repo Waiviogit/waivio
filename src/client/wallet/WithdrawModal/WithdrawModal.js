@@ -20,7 +20,6 @@ import {
   toggleWithdrawModal,
 } from '../../../store/depositeWithdrawStore/depositeWithdrawAction';
 import USDDisplay from '../../components/Utils/USDDisplay';
-import { getCryptosPriceHistory } from '../../../store/appStore/appSelectors';
 import SelectUserForAutocomplete from '../../widgets/SelectUserForAutocomplete';
 import { hiveWalletCurrency, showMinWithdraw } from '../../../common/constants/hiveEngine';
 import QrModal from '../../widgets/QrModal';
@@ -31,6 +30,7 @@ import getWithdrawInfo from '../../../common/helpers/withdrawTokenHelpers';
 import { withdrawGuest } from '../../../waivioApi/walletApi';
 import { getHiveBeneficiaryAccount } from '../../../store/settingsStore/settingsSelectors';
 import LinkHiveAccountModal from '../../settings/LinkHiveAccountModal';
+import { getRatesList } from '../../../store/ratesStore/ratesSelector';
 
 import './WithdrawModal.less';
 
@@ -42,11 +42,10 @@ const WithdrawModal = props => {
   const pair = useSelector(getWithdrawSelectPair);
   const visible = useSelector(getIsOpenWithdraw);
   const isGuest = useSelector(isGuestUser);
+  const rate = useSelector(getRatesList);
   const userName = useSelector(getAuthenticatedUserName);
-  const cryptosPriceHistory = useSelector(getCryptosPriceHistory);
   const hiveBeneficiaryAccount = useSelector(getHiveBeneficiaryAccount);
 
-  const hiveRateInUsd = get(cryptosPriceHistory, 'hive.usdPriceHistory.usd', 1);
   const dispatch = useDispatch();
   const [fromAmount, setFromAmount] = useState(0);
   const [toAmount, setToAmount] = useState(0);
@@ -338,7 +337,7 @@ const WithdrawModal = props => {
         </div>
         <p>
           <FormattedMessage id="est_amount" defaultMessage="Est. amount" />:{' '}
-          <USDDisplay value={fromAmount * get(pair, 'rate') * hiveRateInUsd} />
+          <USDDisplay value={fromAmount * rate[pair?.symbol] * rate.HIVE} />
         </p>
         {showMinWithdraw.includes(get(pair, 'to_coin_symbol')) && (
           <p>
