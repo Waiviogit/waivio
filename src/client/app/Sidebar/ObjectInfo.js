@@ -455,11 +455,10 @@ class ObjectInfo extends React.Component {
       : [];
 
     const hasOptionsPics =
-      wobject?.options &&
-      Object.entries(wobject?.options)
-        .map(option => Object.values(option))
-        .flatMap(el => el[1])
-        .some(o => has(o.body, 'image'));
+      !isEmpty(wobject.options) &&
+      Object.values(wobject?.options).some(optionList =>
+        optionList.some(option => has(option.body, 'image') && has(option, 'avatar')),
+      );
 
     const sortedOptions = optionsPictures.filter(
       o => activeOption[activeCategory]?.avatar !== o?.body,
@@ -534,7 +533,7 @@ class ObjectInfo extends React.Component {
         )}
         {this.listItem(
           objectFields.galleryItem,
-          (pictures.length > 0 || avatar || (!isEmpty(wobject.options) && hasOptionsPics)) && (
+          (pictures.length > 0 || avatar || hasOptionsPics) && (
             <PicturesCarousel
               albums={wobject.galleryAlbum}
               isOptionsType
