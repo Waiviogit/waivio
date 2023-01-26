@@ -305,8 +305,13 @@ const EditorSlate = props => {
     <Slate editor={editor} value={value} onChange={handleChange}>
       <div className={RichEditorRootClassNamesList} ref={editorRef}>
         <div className={editorClass}>
-          {isShowEditorSearch && <EditorSearchObjects editor={editor} />}
-          <Toolbar editorNode={editorRef.current} intl={intl} isComment={isComment} />
+          {isShowEditorSearch && (
+            <EditorSearchObjects
+              handleObjectSelect={isComment ? handleObjectSelect : null}
+              editor={editor}
+            />
+          )}
+          <Toolbar editorNode={editorRef.current} intl={intl} />
           <Editable
             placeholder={placeholder}
             renderElement={renderElement}
