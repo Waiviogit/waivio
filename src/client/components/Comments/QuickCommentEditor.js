@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Icon, message } from 'antd';
+import { Icon } from 'antd';
 import { debounce } from 'lodash';
 import { Transforms } from 'slate';
 
@@ -79,7 +79,6 @@ class QuickCommentEditor extends React.Component {
       if (commentMsg) {
         this.props.onSubmit(this.props.parentPost, commentMsg.trim()).then(() => {
           this.setState({ commentMsg: '', currentImage: [] });
-          message.success('Comment submitted');
           resetEditorState(this.editor);
         });
       }

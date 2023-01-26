@@ -90,7 +90,7 @@ const SwapTokens = props => {
     return () => props.resetModalData();
   }, []);
 
-  const insufficientFunds = amount => +props.from.balance < +amount;
+  const insufficientFunds = amount => +props.from?.balance < +amount;
 
   const calculateOutputInfo = (value = 0, from, to, isFrom, onlyAmount) => {
     if (swapToWaiv(from, to) || swapToWaiv(to, from)) {
