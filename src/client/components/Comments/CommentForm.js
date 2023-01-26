@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import _ from 'lodash';
+import _, { debounce } from 'lodash';
 import { FormattedMessage } from 'react-intl';
 import { Transforms } from 'slate';
 import { Icon } from 'antd';
@@ -15,12 +15,17 @@ import EditorSlate from '../EditorExtended/editorSlate';
 import { editorStateToMarkdownSlate } from '../EditorExtended/util/editorStateToMarkdown';
 import { resetEditorState } from '../EditorExtended/util/SlateEditor/utils/SlateUtilityFunctions';
 import { getEditorSlate } from '../../../store/slateEditorStore/editorSelectors';
-import { setUpdatedEditorData } from '../../../store/slateEditorStore/editorActions';
+import {
+  setCursorCoordinates,
+  setUpdatedEditorData,
+} from '../../../store/slateEditorStore/editorActions';
 import { checkCursorInSearchSlate } from '../../../common/helpers/editorHelper';
 import { getObjectName, getObjectType } from '../../../common/helpers/wObjectHelper';
 import objectTypes from '../../object/const/objectTypes';
 import { getObjectUrl } from '../../../common/helpers/postHelpers';
 import { insertObject } from '../EditorExtended/util/SlateEditor/utils/common';
+import { getSelection, getSelectionRect } from '../EditorExtended/util';
+import { searchObjectsAutoCompete } from '../../../store/searchStore/searchActions';
 
 const Element = Scroll.Element;
 
@@ -36,6 +41,8 @@ class CommentForm extends React.Component {
     inputValue: PropTypes.string.isRequired,
     onSubmit: PropTypes.func,
     editor: PropTypes.shape(),
+    setCursorCoordinates: PropTypes.func,
+    searchObjects: PropTypes.func,
   };
 
   static defaultProps = {
@@ -57,6 +64,7 @@ class CommentForm extends React.Component {
       body: '',
       bodyHTML: '',
       isDisabledSubmit: false,
+      isShowEditorSearch: false,
     };
 
     this.setInput = this.setInput.bind(this);
@@ -101,8 +109,36 @@ class CommentForm extends React.Component {
     );
   }
 
+  setShowEditorSearch = isShowEditorSearch => {
+    this.setState({ isShowEditorSearch });
+  };
+
+  debouncedSearch = debounce(searchStr => this.props.searchObjects(searchStr), 150);
+
+  handleContentChangeSlate = debounce(editor => {
+    const searchInfo = checkCursorInSearchSlate(editor);
+
+    if (searchInfo.isNeedOpenSearch) {
+      if (!this.state.isShowEditorSearch) {
+        const nativeSelection = getSelection(window);
+        const selectionBoundary = getSelectionRect(nativeSelection);
+
+        this.props.setCursorCoordinates({
+          selectionBoundary,
+          selectionState: editor.selection,
+          searchString: searchInfo.searchString,
+        });
+        this.setShowEditorSearch(true);
+      }
+      this.debouncedSearch(searchInfo.searchString);
+    } else if (this.state.isShowEditorSearch) {
+      this.setShowEditorSearch(false);
+    }
+  }, 350);
+
   handleBodyUpdate(body) {
     this.setBodyAndRender(body);
+    this.handleContentChangeSlate(body);
   }
 
   handleSubmit(e) {
@@ -152,6 +188,8 @@ class CommentForm extends React.Component {
                 isComment
                 editorEnabled
                 initialPosTopBtn="11.5px"
+                isShowEditorSearch={this.state.isShowEditorSearch}
+                setShowEditorSearch={this.setShowEditorSearch}
               />
             </div>
           </Element>
@@ -187,6 +225,8 @@ const mapStateToProps = store => ({
 
 const mapDispatchToProps = dispatch => ({
   setUpdatedEditorData: data => dispatch(setUpdatedEditorData(data)),
+  setCursorCoordinates: data => dispatch(setCursorCoordinates(data)),
+  searchObjects: value => dispatch(searchObjectsAutoCompete(value, '', null, true)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(CommentForm);
