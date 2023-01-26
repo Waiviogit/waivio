@@ -14,6 +14,7 @@ const styles = {
     borderBottom: '1px solid #bcbcbc',
     borderRadius: '4px 4px 0 0',
     padding: '20px 0',
+    textAlign: 'center',
   },
   resetTitleStyles: {
     margin: 0,
