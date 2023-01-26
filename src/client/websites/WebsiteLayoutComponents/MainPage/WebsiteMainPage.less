@@ -18,10 +18,13 @@
   }
 
   &__mainTitle {
-    font-size: 40px;
+    font-size: 28px;
     font-weight: 600;
     line-height: 40px;
     padding-bottom: 10px;
+    @media @small {
+      font-size: 40px;
+    }
   }
 
   &__secondTitle {
@@ -52,7 +55,7 @@
     font-weight: bold;
     font-size: 20px;
     height: 35px;
-    width: fit-content;
+    width: max-content;
     text-transform: capitalize;
 
     &--fill {
@@ -73,6 +76,7 @@
   }
 
   &__rewardsSectionTitle {
+    text-align: center;
     font-weight: 100;
     color: @fuscous-gray;
     margin-bottom: 10px;

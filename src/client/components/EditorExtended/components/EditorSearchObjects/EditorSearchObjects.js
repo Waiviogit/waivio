@@ -14,6 +14,7 @@ const EditorSearchObjects = ({
   searchObjectsResults,
   selectObjectFromSearch,
   clearEditorSearchObjects,
+  handleObjectSelect,
   editor,
 }) => {
   const inputWrapper = React.useRef(null);
@@ -118,7 +119,13 @@ const EditorSearchObjects = ({
 
   const setPositionWhenBlockExist = () => countCoordinates();
 
-  const handleSelectObject = object => selectObjectFromSearch(object, editor);
+  const handleSelectObject = object => {
+    if (handleObjectSelect) {
+      handleObjectSelect(object);
+    } else {
+      selectObjectFromSearch(object, editor);
+    }
+  };
 
   return (
     <React.Fragment>
@@ -152,6 +159,7 @@ EditorSearchObjects.propTypes = {
   searchObjectsResults: PropTypes.shape(),
   searchCoordinates: PropTypes.shape().isRequired,
   selectObjectFromSearch: PropTypes.func.isRequired,
+  handleObjectSelect: PropTypes.func,
   clearEditorSearchObjects: PropTypes.func.isRequired,
   editor: PropTypes.shape().isRequired,
 };
@@ -159,6 +167,7 @@ EditorSearchObjects.propTypes = {
 EditorSearchObjects.defaultProps = {
   wordForCountWidth: '',
   searchObjectsResults: [],
+  handleObjectSelect: null,
 };
 
 export default EditorSearchObjects;

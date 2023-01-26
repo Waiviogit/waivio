@@ -140,7 +140,14 @@ const PropositionFooter = ({ type, openDetailsModal, proposition, getProposition
               ) : (
                 <Button type="primary" onClick={openDetailsModal}>
                   <span className="Proposition-new__yourRewards">
-                    {isWaivio ? 'Submit' : `${(<b>Submit</b>)}dish`} photos
+                    {isWaivio ? (
+                      'Submit'
+                    ) : (
+                      <span>
+                        <b>Submit</b> dish
+                      </span>
+                    )}{' '}
+                    photos
                   </span>
                 </Button>
               )}

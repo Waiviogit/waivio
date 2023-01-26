@@ -1,8 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Icon, message } from 'antd';
+import { Icon } from 'antd';
+import { debounce } from 'lodash';
 import { Transforms } from 'slate';
+
 import withEditor from '../Editor/withEditor';
 import { getIsAuthenticated } from '../../../store/authStore/authSelectors';
 import EditorSlate from '../EditorExtended/editorSlate';
@@ -11,9 +13,11 @@ import { checkCursorInSearchSlate } from '../../../common/helpers/editorHelper';
 import { getObjectName, getObjectType } from '../../../common/helpers/wObjectHelper';
 import objectTypes from '../../object/const/objectTypes';
 import { getObjectUrl } from '../../../common/helpers/postHelpers';
-import { insertObject } from '../EditorExtended/util/SlateEditor/utils/common';
-import { getEditorSlate } from '../../../store/slateEditorStore/editorSelectors';
 import { resetEditorState } from '../EditorExtended/util/SlateEditor/utils/SlateUtilityFunctions';
+import { getSelection, getSelectionRect } from '../EditorExtended/util';
+import { setCursorCoordinates } from '../../../store/slateEditorStore/editorActions';
+import { searchObjectsAutoCompete } from '../../../store/searchStore/searchActions';
+import { insertObject } from '../EditorExtended/util/SlateEditor/utils/common';
 
 import './QuickCommentEditor.less';
 
@@ -50,11 +54,16 @@ class QuickCommentEditor extends React.Component {
       commentMsg: props.inputValue || '',
       isModal: false,
       isLoadingImage: false,
+      isShowEditorSearch: false,
     };
   }
 
   setEditor = editor => {
     this.editor = editor;
+  };
+
+  setShowEditorSearch = isShowEditorSearch => {
+    this.setState({ isShowEditorSearch });
   };
 
   handleSubmit = e => {
@@ -70,17 +79,40 @@ class QuickCommentEditor extends React.Component {
       if (commentMsg) {
         this.props.onSubmit(this.props.parentPost, commentMsg.trim()).then(() => {
           this.setState({ commentMsg: '', currentImage: [] });
-          message.success('Comment submitted');
           resetEditorState(this.editor);
         });
       }
     }
   };
 
+  debouncedSearch = debounce(searchStr => this.props.searchObjects(searchStr), 150);
+
+  handleContentChangeSlate = debounce(editor => {
+    const searchInfo = checkCursorInSearchSlate(editor);
+
+    if (searchInfo.isNeedOpenSearch) {
+      if (!this.state.isShowEditorSearch) {
+        const nativeSelection = getSelection(window);
+        const selectionBoundary = getSelectionRect(nativeSelection);
+
+        this.props.setCursorCoordinates({
+          selectionBoundary,
+          selectionState: editor.selection,
+          searchString: searchInfo.searchString,
+        });
+        this.setShowEditorSearch(true);
+      }
+      this.debouncedSearch(searchInfo.searchString);
+    } else if (this.state.isShowEditorSearch) {
+      this.setShowEditorSearch(false);
+    }
+  }, 350);
+
   handleMsgChange = body => {
     const commentMsg = body.children ? editorStateToMarkdownSlate(body.children) : body;
 
     this.setState({ commentMsg });
+    this.handleContentChangeSlate(body);
   };
 
   handleRemoveImage = () => {
@@ -106,6 +138,7 @@ class QuickCommentEditor extends React.Component {
 
     Transforms.select(this.editor, beforeRange);
     insertObject(this.editor, url, textReplace, true);
+    this.handleMsgChange(this.editor);
   };
 
   render() {
@@ -128,6 +161,8 @@ class QuickCommentEditor extends React.Component {
               setEditorCb={this.setEditor}
               ADD_BTN_DIF={24}
               initialBody={this.props.inputValue}
+              isShowEditorSearch={this.state.isShowEditorSearch}
+              setShowEditorSearch={this.setShowEditorSearch}
             />
             {isLoading ? (
               <Icon
@@ -150,8 +185,14 @@ class QuickCommentEditor extends React.Component {
   }
 }
 
-const mapStateToProps = store => ({
-  editor: getEditorSlate(store),
+QuickCommentEditor.propTypes = {
+  setCursorCoordinates: PropTypes.func,
+  searchObjects: PropTypes.func,
+};
+
+const mapDispatchToProps = dispatch => ({
+  setCursorCoordinates: data => dispatch(setCursorCoordinates(data)),
+  searchObjects: value => dispatch(searchObjectsAutoCompete(value, '', null, true)),
 });
 
-export default connect(mapStateToProps)(QuickCommentEditor);
+export default connect(null, mapDispatchToProps)(QuickCommentEditor);
