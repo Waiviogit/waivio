@@ -30,7 +30,7 @@ import OBJECT_TYPE from '../../object/const/objectTypes';
 import Proposition from '../../components/Proposition/Proposition';
 import { isCoordinatesValid } from '../../components/Maps/mapHelper';
 import PicturesCarousel from '../../object/PicturesCarousel';
-import DescriptionInfo from './DescriptionInfo';
+import DescriptionInfo from '../../object/Description/DescriptionInfo';
 import RateInfo from '../../components/Sidebar/Rate/RateInfo';
 import MapObjectInfo from '../../components/Maps/MapObjectInfo';
 import ObjectCard from '../../components/Sidebar/ObjectCard';
@@ -574,17 +574,18 @@ class ObjectInfo extends React.Component {
           ),
         )}
 
-        {this.listItem(
-          objectFields.departments,
-          !isEmpty(wobject?.departments) && (
-            <Department
-              departments={departments}
-              isEditMode={isEditMode}
-              history={this.props.history}
-              wobject={this.props.wobject}
-            />
-          ),
-        )}
+        {isEditMode &&
+          this.listItem(
+            objectFields.departments,
+            !isEmpty(wobject?.departments) && (
+              <Department
+                departments={departments}
+                isEditMode={isEditMode}
+                history={this.props.history}
+                wobject={this.props.wobject}
+              />
+            ),
+          )}
       </>
     );
 
@@ -628,9 +629,21 @@ class ObjectInfo extends React.Component {
               )}
             </div>
           )}
+
           {!isList && (
             <div className="object-sidebar__menu-items">
               <React.Fragment>
+                {!isEditMode &&
+                  isOptionsObjectType &&
+                  this.listItem(
+                    objectFields.description,
+                    description && (
+                      <DescriptionInfo
+                        description={description}
+                        wobjPermlink={wobject.author_permlink}
+                      />
+                    ),
+                  )}
                 {this.listItem(
                   TYPES_OF_MENU_ITEM.LIST,
                   !isEmpty(menuLinks) && menuLinks.map(item => this.getMenuSectionLink(item)),
@@ -670,6 +683,18 @@ class ObjectInfo extends React.Component {
                       this.getMenuSectionLink({ id: objectFields.form, ...form }),
                     ),
                 )}
+                {!isEditMode &&
+                  this.listItem(
+                    objectFields.departments,
+                    !isEmpty(wobject?.departments) && (
+                      <Department
+                        departments={departments}
+                        isEditMode={isEditMode}
+                        history={this.props.history}
+                        wobject={this.props.wobject}
+                      />
+                    ),
+                  )}
                 {this.listItem(objectFields.sorting, null)}
               </React.Fragment>
             </div>
@@ -732,10 +757,13 @@ class ObjectInfo extends React.Component {
                 </div>
               )),
           )}
-        {this.listItem(
-          objectFields.description,
-          description && <DescriptionInfo description={description} />,
-        )}
+        {isEditMode ||
+          (!isEditMode &&
+            !isOptionsObjectType &&
+            this.listItem(
+              objectFields.description,
+              description && <DescriptionInfo description={description} />,
+            ))}
         {this.listItem(
           objectFields.rating,
           has(wobject, 'rating') && (
