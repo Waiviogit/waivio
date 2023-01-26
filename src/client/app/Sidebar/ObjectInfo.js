@@ -757,13 +757,17 @@ class ObjectInfo extends React.Component {
                 </div>
               )),
           )}
-        {isEditMode ||
-          (!isEditMode &&
-            !isOptionsObjectType &&
-            this.listItem(
-              objectFields.description,
-              description && <DescriptionInfo description={description} />,
-            ))}
+        {isEditMode &&
+          this.listItem(
+            objectFields.description,
+            description && <DescriptionInfo description={description} />,
+          )}
+        {!isEditMode &&
+          !isOptionsObjectType &&
+          this.listItem(
+            objectFields.description,
+            description && <DescriptionInfo description={description} />,
+          )}
         {this.listItem(
           objectFields.rating,
           has(wobject, 'rating') && (
