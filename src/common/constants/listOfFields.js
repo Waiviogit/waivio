@@ -50,6 +50,9 @@ export const objectFields = {
   departments: 'departments',
   features: 'features',
   objectName: 'objectName',
+  manufacturer: 'manufacturer',
+  brand: 'brand',
+  merchant: 'merchant',
 };
 
 export const TYPES_OF_MENU_ITEM = {
@@ -94,6 +97,18 @@ export const addressFields = {
 export const authorsFields = {
   name: 'name',
   author: 'author',
+};
+export const manufacturerFields = {
+  manufacturer: 'manufacturer',
+  manufacturerName: 'manufacturerName',
+};
+export const brandFields = {
+  brand: 'brand',
+  brandName: 'brandName',
+};
+export const merchantFields = {
+  merchant: 'merchant',
+  merchantName: 'merchantName',
 };
 export const publisherFields = {
   publisher: 'publisher',

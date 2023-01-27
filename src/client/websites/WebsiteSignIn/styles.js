@@ -28,7 +28,7 @@ const styles = {
   button: {
     background: '#ececec',
     height: '35px',
-    width: '270px',
+    minWidth: '270px',
     boxShadow: '1px 1px 4px 1px rgba(34, 60, 80, 0.2)',
     color: ' #000000bd',
     textAlign: 'center',
@@ -38,6 +38,7 @@ const styles = {
     textDecoration: 'none',
     fontSize: '20px',
     margin: '10px 0',
+    padding: '0 8px',
   },
 };
 
