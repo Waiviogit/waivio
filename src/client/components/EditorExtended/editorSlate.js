@@ -275,9 +275,6 @@ const EditorSlate = props => {
     window.slateEditor = editor;
     props.setEditor(editor);
     if (props.setEditorCb) props.setEditorCb(editor);
-    const editorEl = document.querySelector('[data-slate-editor="true"]');
-
-    editorEl.style.minHeight = props.minHeight || `100px`;
     if (!isComment) setTimeout(() => focusEditorToEnd(editor), 200);
     setInitiallized(true);
     setTimeout(() => setInitiallized(false), 1500);
@@ -309,6 +306,7 @@ const EditorSlate = props => {
             <EditorSearchObjects
               handleObjectSelect={isComment ? handleObjectSelect : null}
               editor={editor}
+              isComment={isComment}
             />
           )}
           <Toolbar editorNode={editorRef.current} intl={intl} />
