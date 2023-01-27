@@ -50,6 +50,9 @@ import {
   publisherFields,
   optionsFields,
   featuresFields,
+  manufacturerFields,
+  brandFields,
+  merchantFields,
 } from '../../../common/constants/listOfFields';
 import OBJECT_TYPE from '../const/objectTypes';
 import { getSuitableLanguage } from '../../../store/reducers';
@@ -110,9 +113,14 @@ import NewsFilterForm from './FormComponents/NewsFilterForm';
 import { getAppendList } from '../../../store/appendStore/appendSelectors';
 import { parseJSON } from '../../../common/helpers/parseJSON';
 import { baseUrl } from '../../../waivioApi/routes';
-import './AppendForm.less';
 import ExtendedNewsFilterForm from './FormComponents/ExtendedNewsFilterForm';
 import ObjectFeaturesForm from './FormComponents/ObjectFeaturesForm';
+import PublisherForm from './FormComponents/PublisherForm';
+import ManufacturerForm from './FormComponents/ManufacturerForm';
+import BrandForm from './FormComponents/BrandForm';
+import MerchantForm from './FormComponents/MerchantForm';
+import AuthorForm from './FormComponents/AuthorForm';
+import './AppendForm.less';
 
 @connect(
   state => ({
@@ -371,6 +379,9 @@ export default class AppendForm extends Component {
       case objectFields.categoryItem:
       case objectFields.parent:
       case objectFields.publisher:
+      case objectFields.manufacturer:
+      case objectFields.brand:
+      case objectFields.merchant:
       case objectFields.productWeight:
       case objectFields.authors:
       case objectFields.workTime:
@@ -470,6 +481,33 @@ export default class AppendForm extends Component {
 
           return `@${author} added ${currentField} (${langReadable}): name: ${formValues[
             publisherFields.publisherName
+          ] || this.state.selectedObject.name}${linkInfo}`;
+        }
+        case objectFields.manufacturer: {
+          const linkInfo = this.state.selectedObject
+            ? `, link: ${this.state.selectedObject.author_permlink}`
+            : '';
+
+          return `@${author} added ${currentField} (${langReadable}): name: ${formValues[
+            manufacturerFields.manufacturerName
+          ] || this.state.selectedObject.name}${linkInfo}`;
+        }
+        case objectFields.brand: {
+          const linkInfo = this.state.selectedObject
+            ? `, link: ${this.state.selectedObject.author_permlink}`
+            : '';
+
+          return `@${author} added ${currentField} (${langReadable}): name: ${formValues[
+            brandFields.brandName
+          ] || this.state.selectedObject.name}${linkInfo}`;
+        }
+        case objectFields.merchant: {
+          const linkInfo = this.state.selectedObject
+            ? `, link: ${this.state.selectedObject.author_permlink}`
+            : '';
+
+          return `@${author} added ${currentField} (${langReadable}): name: ${formValues[
+            merchantFields.merchantName
           ] || this.state.selectedObject.name}${linkInfo}`;
         }
         case objectFields.productWeight:
@@ -685,6 +723,36 @@ export default class AppendForm extends Component {
           body: JSON.stringify({
             name:
               formValues[publisherFields.publisherName] || getObjectName(this.state.selectedObject),
+            authorPermlink: this.state.selectedObject?.author_permlink,
+          }),
+        };
+      }
+      if (currentField === objectFields.manufacturer) {
+        fieldsObject = {
+          ...fieldsObject,
+          body: JSON.stringify({
+            name:
+              formValues[manufacturerFields.manufacturerName] ||
+              getObjectName(this.state.selectedObject),
+            authorPermlink: this.state.selectedObject?.author_permlink,
+          }),
+        };
+      }
+      if (currentField === objectFields.brand) {
+        fieldsObject = {
+          ...fieldsObject,
+          body: JSON.stringify({
+            name: formValues[brandFields.brandName] || getObjectName(this.state.selectedObject),
+            authorPermlink: this.state.selectedObject?.author_permlink,
+          }),
+        };
+      }
+      if (currentField === objectFields.merchant) {
+        fieldsObject = {
+          ...fieldsObject,
+          body: JSON.stringify({
+            name:
+              formValues[merchantFields.merchantName] || getObjectName(this.state.selectedObject),
             authorPermlink: this.state.selectedObject?.author_permlink,
           }),
         };
@@ -1201,9 +1269,11 @@ export default class AppendForm extends Component {
       currentField === objectFields.link ||
       currentField === objectFields.companyIdType ||
       currentField === objectFields.companyId ||
-      currentField === objectFields.publisher ||
       currentField === objectFields.authors ||
       currentField === objectFields.publisher ||
+      currentField === objectFields.manufacturer ||
+      currentField === objectFields.brand ||
+      currentField === objectFields.merchant ||
       currentField === objectFields.dimensions ||
       currentField === objectFields.features ||
       currentField === objectFields.productWeight
@@ -1613,112 +1683,67 @@ export default class AppendForm extends Component {
       }
       case objectFields.publisher: {
         return (
-          <>
-            <Form.Item>
-              {getFieldDecorator(publisherFields.publisherName, {
-                rules: this.getFieldRules(publisherFields.publisherName),
-                initialValue: '',
-              })(
-                <Input
-                  className={classNames('AppendForm__input', {
-                    'validation-error': !this.state.isSomeValue,
-                  })}
-                  disabled={loading}
-                  placeholder={intl.formatMessage({
-                    id: 'publisher_name',
-                    defaultMessage: 'Publisher name',
-                  })}
-                />,
-              ) || this.state.selectedObject}
-            </Form.Item>
-            <Form.Item>
-              {getFieldDecorator(publisherFields.publisher, {
-                rules: this.getFieldRules(publisherFields.publisher),
-              })(
-                <SearchObjectsAutocomplete
-                  objectType="business"
-                  placeholder={this.props.intl.formatMessage({
-                    id: 'objects_auto_complete_publisher_placeholder',
-                    defaultMessage: 'Find publisher',
-                  })}
-                  handleSelect={this.handleSelectObject}
-                />,
-              )}
-              {this.state.selectedObject && (
-                <ObjectCardView
-                  closeButton
-                  onDelete={this.onObjectCardDelete}
-                  wObject={this.state.selectedObject}
-                />
-              )}
-              <br />
-              <div className="add-create-btns">
-                <CreateObject
-                  currentField={objectFields.publisher}
-                  isSingleType
-                  defaultObjectType="business"
-                  disabled
-                  onCreateObject={this.handleCreateObject}
-                  parentObject={{}}
-                />
-              </div>{' '}
-            </Form.Item>
-          </>
+          <PublisherForm
+            loading={loading}
+            selectedObject={this.state.selectedObject}
+            handleSelectObject={this.handleSelectObject}
+            getFieldRules={this.getFieldRules}
+            isSomeValue={this.state.isSomeValue}
+            onObjectCardDelete={this.onObjectCardDelete}
+            getFieldDecorator={getFieldDecorator}
+          />
+        );
+      }
+      case objectFields.manufacturer: {
+        return (
+          <ManufacturerForm
+            loading={loading}
+            selectedObject={this.state.selectedObject}
+            handleSelectObject={this.handleSelectObject}
+            getFieldRules={this.getFieldRules}
+            isSomeValue={this.state.isSomeValue}
+            onObjectCardDelete={this.onObjectCardDelete}
+            getFieldDecorator={getFieldDecorator}
+          />
+        );
+      }
+      case objectFields.brand: {
+        return (
+          <BrandForm
+            loading={loading}
+            selectedObject={this.state.selectedObject}
+            handleSelectObject={this.handleSelectObject}
+            getFieldRules={this.getFieldRules}
+            isSomeValue={this.state.isSomeValue}
+            onObjectCardDelete={this.onObjectCardDelete}
+            getFieldDecorator={getFieldDecorator}
+          />
+        );
+      }
+      case objectFields.merchant: {
+        return (
+          <MerchantForm
+            loading={loading}
+            selectedObject={this.state.selectedObject}
+            handleSelectObject={this.handleSelectObject}
+            getFieldRules={this.getFieldRules}
+            isSomeValue={this.state.isSomeValue}
+            onObjectCardDelete={this.onObjectCardDelete}
+            getFieldDecorator={getFieldDecorator}
+          />
         );
       }
       case objectFields.authors: {
         return (
-          <>
-            <Form.Item>
-              {getFieldDecorator(authorsFields.name, {
-                rules: this.getFieldRules(authorsFields.name),
-                initialValue: '',
-              })(
-                <Input
-                  className={classNames('AppendForm__input', {
-                    'validation-error': !this.state.isSomeValue,
-                  })}
-                  disabled={loading}
-                  placeholder={intl.formatMessage({
-                    id: 'author_name',
-                    defaultMessage: 'Author name',
-                  })}
-                />,
-              ) || this.state.selectedObject.name}
-            </Form.Item>
-            <Form.Item>
-              {getFieldDecorator(authorsFields.author, {
-                rules: this.getFieldRules(authorsFields.author),
-              })(
-                <SearchObjectsAutocomplete
-                  objectType="person"
-                  placeholder={this.props.intl.formatMessage({
-                    id: 'objects_auto_complete_author_placeholder',
-                    defaultMessage: 'Find author',
-                  })}
-                  handleSelect={this.handleSelectObject}
-                />,
-              )}
-              {this.state.selectedObject && (
-                <ObjectCardView
-                  closeButton
-                  onDelete={this.onObjectCardDelete}
-                  wObject={this.state.selectedObject}
-                />
-              )}
-              <br />
-              <div className="add-create-btns">
-                <CreateObject
-                  currentField={objectFields.authors}
-                  isSingleType
-                  defaultObjectType="person"
-                  disabled
-                  onCreateObject={this.handleCreateObject}
-                  parentObject={{}}
-                />
-              </div>{' '}
-            </Form.Item>
-          </>
+          <AuthorForm
+            loading={loading}
+            selectedObject={this.state.selectedObject}
+            handleSelectObject={this.handleSelectObject}
+            getFieldRules={this.getFieldRules}
+            isSomeValue={this.state.isSomeValue}
+            onObjectCardDelete={this.onObjectCardDelete}
+            getFieldDecorator={getFieldDecorator}
+          />
         );
       }
       case objectFields.categoryItem: {
@@ -3289,6 +3314,14 @@ export default class AppendForm extends Component {
         );
       case objectFields.publisher:
         return isEmpty(getFieldValue(publisherFields.publisherName)) && !this.state.selectedObject;
+      case objectFields.manufacturer:
+        return (
+          isEmpty(getFieldValue(manufacturerFields.manufacturerName)) && !this.state.selectedObject
+        );
+      case objectFields.brand:
+        return isEmpty(getFieldValue(brandFields.brandName)) && !this.state.selectedObject;
+      case objectFields.merchant:
+        return isEmpty(getFieldValue(merchantFields.merchantName)) && !this.state.selectedObject;
       case objectFields.dimensions:
         return (
           isEmpty(getFieldValue(dimensionsFields.length)) ||

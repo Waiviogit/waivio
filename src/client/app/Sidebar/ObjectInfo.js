@@ -115,17 +115,15 @@ class ObjectInfo extends React.Component {
     showMore: {},
     countPhones: 3,
     publisherObject: {},
+    manufacturerObject: {},
+    brandObject: {},
+    merchantObject: {},
   };
 
   componentDidMount() {
     const { wobject, storeGroupId } = this.props;
-    const publisher = parseWobjectField(wobject, 'publisher');
 
-    if (publisher?.authorPermlink) {
-      getObjectInfo([publisher?.authorPermlink]).then(res =>
-        this.setState({ publisherObject: res.wobjects[0] }),
-      );
-    }
+    this.getPublisherManufacturerBrandMerchantObjects();
 
     this.props.getRelatedAlbum(this.props.match.params.name, 10);
     const hasGroupId = Object.prototype.hasOwnProperty.call(wobject, 'groupId');
@@ -139,14 +137,7 @@ class ObjectInfo extends React.Component {
   }
   componentDidUpdate(prevProps) {
     if (this.props.wobject.author_permlink !== prevProps.wobject.author_permlink) {
-      const { wobject } = this.props;
-      const publisher = parseWobjectField(wobject, 'publisher');
-
-      if (publisher?.authorPermlink) {
-        getObjectInfo([publisher?.authorPermlink]).then(res =>
-          this.setState({ publisherObject: res.wobjects[0] }),
-        );
-      }
+      this.getPublisherManufacturerBrandMerchantObjects();
     }
   }
 
@@ -155,6 +146,36 @@ class ObjectInfo extends React.Component {
   }
 
   incrementPhoneCount = 3;
+
+  getPublisherManufacturerBrandMerchantObjects() {
+    const { wobject } = this.props;
+
+    const publisher = parseWobjectField(wobject, 'publisher');
+    const manufacturer = parseWobjectField(wobject, 'manufacturer');
+    const brand = parseWobjectField(wobject, 'brand');
+    const merchant = parseWobjectField(wobject, 'merchant');
+
+    if (publisher?.authorPermlink) {
+      getObjectInfo([publisher?.authorPermlink]).then(res =>
+        this.setState({ publisherObject: res.wobjects[0] }),
+      );
+    }
+    if (manufacturer?.authorPermlink) {
+      getObjectInfo([manufacturer?.authorPermlink]).then(res =>
+        this.setState({ manufacturerObject: res.wobjects[0] }),
+      );
+    }
+    if (brand?.authorPermlink) {
+      getObjectInfo([brand?.authorPermlink]).then(res =>
+        this.setState({ brandObject: res.wobjects[0] }),
+      );
+    }
+    if (merchant?.authorPermlink) {
+      getObjectInfo([merchant?.authorPermlink]).then(res =>
+        this.setState({ merchantObject: res.wobjects[0] }),
+      );
+    }
+  }
 
   getFieldLayout = (fieldName, params) => {
     const { body } = params;
@@ -197,8 +218,13 @@ class ObjectInfo extends React.Component {
     const exposedFields = getExposedFieldsByObjType(wobject);
     const shouldDisplay = exposedFields.includes(name);
     const accessExtend = haveAccess(wobject, userName, accessTypesArr[0]) && isEditMode;
-    const paddingBottom =
-      name !== objectFields.publisher || (isEditMode && !wobject.publisher) || wobject.groupId;
+    const paddingObjTypes = [
+      objectFields.publisher,
+      objectFields.manufacturer,
+      objectFields.brand,
+      objectFields.merchant,
+    ].includes(name);
+    const paddingBottom = paddingObjTypes || (isEditMode && !wobject.publisher) || wobject.groupId;
 
     return (
       shouldDisplay &&
@@ -420,6 +446,9 @@ class ObjectInfo extends React.Component {
     const publicationDate = moment(wobject.publicationDate).format('MMMM DD, YYYY');
     const printLength = wobject.printLength;
     const publisher = parseWobjectField(wobject, 'publisher');
+    const manufacturer = parseWobjectField(wobject, 'manufacturer');
+    const brand = parseWobjectField(wobject, 'brand');
+    const merchant = parseWobjectField(wobject, 'merchant');
     const departments = get(wobject, 'departments');
     const features = wobject.features
       ? wobject.features?.map(el => parseWobjectField(el, 'body', []))
@@ -725,7 +754,7 @@ class ObjectInfo extends React.Component {
                   showFollow={false}
                 />
               ) : (
-                <div className="flex ObjectCard__links publisher-paddingBottom">
+                <div className="flex ObjectCard__links paddingBottom">
                   <ObjectAvatar item={this.state.publisherObject} size={34} />{' '}
                   <span className="ObjectCard__name-grey">{publisher.name}</span>
                 </div>
@@ -998,6 +1027,54 @@ class ObjectInfo extends React.Component {
           ),
         )}
         {this.listItem(
+          objectFields.manufacturer,
+          manufacturer &&
+            (manufacturer.authorPermlink ? (
+              <ObjectCard
+                key={manufacturer.authorPermlink}
+                wobject={this.state.manufacturerObject}
+                showFollow={false}
+              />
+            ) : (
+              <div className="flex ObjectCard__links paddingBottom">
+                <ObjectAvatar item={this.state.manufacturerObject} size={34} />{' '}
+                <span className="ObjectCard__name-grey">{manufacturer.name}</span>
+              </div>
+            )),
+        )}
+        {this.listItem(
+          objectFields.brand,
+          brand &&
+            (brand.authorPermlink ? (
+              <ObjectCard
+                key={brand.authorPermlink}
+                wobject={this.state.brandObject}
+                showFollow={false}
+              />
+            ) : (
+              <div className="flex ObjectCard__links paddingBottom">
+                <ObjectAvatar item={this.state.brandObject} size={34} />{' '}
+                <span className="ObjectCard__name-grey">{brand.name}</span>
+              </div>
+            )),
+        )}
+        {this.listItem(
+          objectFields.merchant,
+          merchant &&
+            (merchant.authorPermlink ? (
+              <ObjectCard
+                key={merchant.authorPermlink}
+                wobject={this.state.merchantObject}
+                showFollow={false}
+              />
+            ) : (
+              <div className="flex ObjectCard__links paddingBottom">
+                <ObjectAvatar item={this.state.merchantObject} size={34} />{' '}
+                <span className="ObjectCard__name-grey">{merchant.name}</span>
+              </div>
+            )),
+        )}
+        {this.listItem(
           objectFields.features,
           <ObjectFeatures
             features={features}
@@ -1122,7 +1199,7 @@ class ObjectInfo extends React.Component {
                       showFollow={false}
                     />
                   ) : (
-                    <div className="flex ObjectCard__links publisher-paddingBottom">
+                    <div className="flex ObjectCard__links paddingBottom">
                       <ObjectAvatar item={this.state.publisherObject} size={34} />{' '}
                       <span className="ObjectCard__name-grey">{publisher.name}</span>
                     </div>
