@@ -56,7 +56,7 @@ export const configProductTable = [
   {
     id: 'objectsPosted',
     intl: {
-      id: 'posted_updates',
+      id: 'posted_objects',
       defaultMessage: 'Posted objects',
     },
     type: 'openModal',
@@ -108,7 +108,7 @@ export const configHistoryTable = [
     id: 'authority',
     intl: {
       id: 'claimed_athority',
-      defaultMessage: 'Claimed athority',
+      defaultMessage: 'Claimed authority',
     },
   },
   {
