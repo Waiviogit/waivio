@@ -419,6 +419,11 @@ const routes = {
           component: Views.WidgetPage,
         },
         {
+          path: '/description',
+          exact: true,
+          component: Views.DescriptionPage,
+        },
+        {
           path: '/departments/:permlink',
           exact: true,
           component: Views.DepartmentsPage,
