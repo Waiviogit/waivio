@@ -2097,5 +2097,18 @@
   "widget": "Widget",
   "show_more_features": "Show more features",
   "show_less_features": "View less features",
-  "less": "less"
+  "less": "less",
+  "objects_auto_complete_manufacturer_placeholder": "Find manufacturer",
+  "manufacturer_name": "Manufacturer name",
+  "brand_name": "Brand name",
+  "objects_auto_complete_brand_placeholder": "Find brand",
+  "objects_auto_complete_merchant_placeholder": "Find merchant",
+  "merchant_name": "Merchant name",
+  "object_field_manufacturer": "Manufacturer",
+  "object_field_brand": "Brand",
+  "object_field_merchant": "Merchant",
+  "create_new_manufacturer": " Create new manufacturer",
+  "create_new_brand": " Create new brand",
+  "create_new_merchant": " Create new merchant"
+
 }

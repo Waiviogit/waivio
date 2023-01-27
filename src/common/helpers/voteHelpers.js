@@ -8,7 +8,7 @@ export const getAppendUpvotes = (activeVotes = []) =>
   filter(
     activeVotes,
     vote =>
-      (vote.percent > 100 && vote.percent % 10 === 0) || (vote.percent > 0 && vote.percent <= 100),
+      (vote.percent > 100 && vote.percent % 2 === 0) || (vote.percent > 0 && vote.percent <= 100),
   ) || [];
 
 export const getDownvotes = activeVotes => filter(activeVotes, vote => vote.percent < 0) || [];
@@ -16,10 +16,8 @@ export const getDownvotes = activeVotes => filter(activeVotes, vote => vote.perc
 export const getDownvotesQuontity = activeVotes => getDownvotes(activeVotes)?.length;
 
 export const getAppendDownvotes = (activeVotes = []) =>
-  filter(
-    activeVotes,
-    vote => (vote.percent > 100 && vote.percent % 10 !== 0) || vote.percent < 0,
-  ) || [];
+  filter(activeVotes, vote => (vote.percent > 100 && vote.percent % 2 !== 0) || vote.percent < 0) ||
+  [];
 
 export const getFollowingUpvotes = (activeVotes, following) =>
   filter(getUpvotes(activeVotes), vote => includes(following, vote.voter)) || [];
