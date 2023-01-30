@@ -117,8 +117,9 @@ const SwapTokens = props => {
     });
   };
 
-  const calculationImpact = calculateOutputInfo(toAmount, props.to, props.from, true, true)
-    .priceImpact;
+  const calculationImpact = props.bdPair
+    ? 0
+    : calculateOutputInfo(toAmount, props.to, props.from, true, true).priceImpact;
 
   const handelChangeOrderToken = () => {
     if (!isEmpty(props.to) && !isEmpty(props.from)) {
@@ -176,22 +177,30 @@ const SwapTokens = props => {
   const handleClickBalanceTo = value => handleChangeToValue(value);
 
   const handleSwap = async () => {
-    const swapInfo = swapToWaiv(props.from, props.to)
-      ? await calculateOutputInfo(fromAmount, props.from, props.to, true)
-      : calculateOutputInfo(fromAmount, props.from, props.to, true);
+    try {
+      let swapInfo = { json };
 
-    const win = window.open(
-      `https://hivesigner.com/sign/custom_json?authority=active&required_auths=["${
-        props.authUser
-      }"]&required_posting_auths=[]&${createQuery({
-        id: 'ssc-mainnet-hive',
-        json: json || get(swapInfo, 'json'),
-      })}`,
-      '_blank',
-    );
+      if (!props.bdPair) {
+        swapInfo = swapToWaiv(props.from, props.to)
+          ? await calculateOutputInfo(fromAmount, props.from, props.to, true)
+          : calculateOutputInfo(fromAmount, props.from, props.to, true);
+      }
 
-    win.focus();
-    handleCloseModal();
+      const win = window.open(
+        `https://hivesigner.com/sign/custom_json?authority=active&required_auths=["${
+          props.authUser
+        }"]&required_posting_auths=[]&${createQuery({
+          id: 'ssc-mainnet-hive',
+          json: get(swapInfo, 'json'),
+        })}`,
+        '_blank',
+      );
+
+      win.focus();
+      handleCloseModal();
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   return (
