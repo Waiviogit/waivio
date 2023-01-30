@@ -2131,5 +2131,18 @@
   "claim_authority_data_import_note": "Administrative authority indicates that other non-competing object updates posted by other users are allowed. Ownership authority indicates that all updates by other users must be ignored.",
   "stop_json_title": "Stop JSON data file import",
   "stop_json_message": "Once stopped, the import cannot be resumed. To temporarily suspend/resume the data import, please consider using the Active checkbox.",
-  "stop_import_ok_button": "Stop import"
+  "stop_import_ok_button": "Stop import",
+  "objects_auto_complete_manufacturer_placeholder": "Find manufacturer",
+  "manufacturer_name": "Manufacturer name",
+  "brand_name": "Brand name",
+  "objects_auto_complete_brand_placeholder": "Find brand",
+  "objects_auto_complete_merchant_placeholder": "Find merchant",
+  "merchant_name": "Merchant name",
+  "object_field_manufacturer": "Manufacturer",
+  "object_field_brand": "Brand",
+  "object_field_merchant": "Merchant",
+  "create_new_manufacturer": " Create new manufacturer",
+  "create_new_brand": " Create new brand",
+  "create_new_merchant": " Create new merchant",
+  "earn_quick": "Earn"
 }

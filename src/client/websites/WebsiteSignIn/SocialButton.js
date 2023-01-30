@@ -4,13 +4,14 @@ import PropTypes from 'prop-types';
 
 import styles from './styles';
 import './WebsiteSignIn.less';
+import { isMobile } from '../../../common/helpers/apiHelpers';
 
 const SocialButton = props => (
   // eslint-disable-next-line jsx-a11y/interactive-supports-focus
   <a
     role="button"
     className="SocialButton"
-    style={styles.button}
+    style={isMobile() ? styles.mobileButton : styles.button}
     {...(props.href
       ? {
           href: props.href,
