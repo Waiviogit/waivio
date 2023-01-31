@@ -49,7 +49,6 @@ class CreateObject extends React.Component {
     objectTypes: PropTypes.shape(),
     locale: PropTypes.string.isRequired,
     username: PropTypes.string,
-    placeholder: PropTypes.string,
     appendObject: PropTypes.func.isRequired,
     createWaivioObject: PropTypes.func.isRequired,
     getObjectTypes: PropTypes.func.isRequired,
@@ -69,7 +68,6 @@ class CreateObject extends React.Component {
     objectTypes: {},
     locale: 'en-US',
     username: '',
-    placeholder: '',
     parentObject: {},
     withOpenModalBtn: true,
     isSingleType: false,
@@ -327,7 +325,7 @@ class CreateObject extends React.Component {
           <div className="CreateObject__row align-right">
             <div role="presentation" className="CreateObject__button" onClick={this.toggleModal}>
               {openModalBtnText ||
-                this.props.placeholder ||
+                this.props.withOpenModalBtn ||
                 this.props.intl.formatMessage({
                   id: 'create_new_object',
                   defaultMessage: 'create new object',
@@ -339,7 +337,7 @@ class CreateObject extends React.Component {
         {this.state.isModalOpen && (
           <Modal
             title={
-              this.props.placeholder ||
+              this.props.withOpenModalBtn ||
               this.props.intl.formatMessage({
                 id: 'create_new_object',
                 defaultMessage: 'create new object',

@@ -55,7 +55,8 @@ const AuthorForm = ({
       <br />
       <div className="add-create-btns">
         <CreateObject
-          placeholder={intl.formatMessage({
+          withOpenModalBtn={!selectedObject}
+          openModalBtnText={intl.formatMessage({
             id: 'create_new_author',
             defaultMessage: 'Create new author',
           })}
