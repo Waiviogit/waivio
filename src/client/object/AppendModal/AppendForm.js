@@ -1519,11 +1519,8 @@ export default class AppendForm extends Component {
       this.props.form.setFieldsValue({
         [currentField]: obj.author_permlink,
       });
-      if (currentField === 'authors') {
-        this.setState({ selectedObject: obj });
-      } else {
-        this.setState({ selectedObject: obj });
-      }
+      this.setState({ selectedObject: obj });
+      this.handleSubmit();
     }
   };
 
