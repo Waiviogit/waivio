@@ -1,6 +1,7 @@
 import React from 'react';
 import { Icon } from 'antd';
 import PropTypes from 'prop-types';
+import { injectIntl } from 'react-intl';
 import { useHistory } from 'react-router';
 import { get } from 'lodash';
 import { useSelector } from 'react-redux';
@@ -13,10 +14,13 @@ import useWebsiteColor from '../../../hooks/useWebsiteColor';
 
 import './Campaing.less';
 
-const Campaing = ({ campain, onActionInitiated, hovered }) => {
+const Campaing = ({ campain, onActionInitiated, hovered, intl }) => {
   const minReward = campain?.minReward || get(campain, ['min_reward'], 0);
   const maxReward = campain?.maxReward || get(campain, ['max_reward'], 0);
-  const buttonLabel = maxReward === minReward ? 'Earn' : 'Earn up to';
+  const buttonLabel =
+    maxReward === minReward
+      ? intl.formatMessage({ id: 'earn', defaultMessage: 'Earn' })
+      : intl.formatMessage({ id: 'rewards_details_earn_up_to', defaultMessage: 'Earn up to' });
   const history = useHistory();
   const pathname = history.location.pathname.includes('/rewards/')
     ? location.pathname
@@ -70,10 +74,11 @@ Campaing.propTypes = {
   }).isRequired,
   onActionInitiated: PropTypes.func.isRequired,
   hovered: PropTypes.bool,
+  intl: PropTypes.shape().isRequired,
 };
 
 Campaing.defaultProps = {
   hovered: false,
 };
 
-export default withAuthActions(Campaing);
+export default injectIntl(withAuthActions(Campaing));

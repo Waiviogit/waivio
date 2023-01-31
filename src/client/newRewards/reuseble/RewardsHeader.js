@@ -2,20 +2,28 @@ import { Link } from 'react-router-dom';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { round } from 'lodash';
+import { injectIntl } from 'react-intl';
 
-const RewardsHeader = ({ proposition }) => (
+const RewardsHeader = ({ proposition, intl }) => (
   <div>
     <p className="Proposition-new__title">
-      Share {proposition?.requirements?.minPhotos} photos of the {proposition?.object?.object_type}{' '}
-      and earn crypto
+      {intl.formatMessage({ id: 'share_verb', defaultMessage: 'Share' })}{' '}
+      {proposition?.requirements?.minPhotos}{' '}
+      {intl.formatMessage({ id: 'photos_of_the', defaultMessage: 'photos of the' })}{' '}
+      {proposition?.object?.object_type}{' '}
+      {intl.formatMessage({ id: 'and_earn_crypto', defaultMessage: 'and earn crypto' })}
     </p>
     <div className="Proposition-new__sponsorInfo">
       <div className="Proposition-new__infoItem Proposition-new__infoItem--right">
-        <Link to={`/@${proposition?.guideName}`}>Sponsor</Link>
+        <Link to={`/@${proposition?.guideName}`}>
+          {intl.formatMessage({ id: 'sponsor', defaultMessage: 'Sponsor' })}
+        </Link>
         <Link to={`/@${proposition?.guideName}`}>@{proposition?.guideName}</Link>
       </div>
       <div className="Proposition-new__infoItem">
-        <span>Total paid (liquid):</span>
+        <span>
+          {intl.formatMessage({ id: 'total_paid_liquid', defaultMessage: 'Total paid (liquid)' })}:
+        </span>
         <span>
           {round(proposition?.totalPayed || 0)} {proposition?.payoutToken} (100%)
         </span>
@@ -36,6 +44,7 @@ RewardsHeader.propTypes = {
       object_type: PropTypes.string,
     }),
   }).isRequired,
+  intl: PropTypes.shape().isRequired,
 };
 
-export default RewardsHeader;
+export default injectIntl(RewardsHeader);

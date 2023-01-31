@@ -7,6 +7,7 @@ import Overlay from 'pigeon-overlay';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { useHistory } from 'react-router';
+import { injectIntl } from 'react-intl';
 
 import { getRadius } from '../../components/Maps/mapHelper';
 import mapProvider from '../../../common/helpers/mapProvider';
@@ -20,7 +21,7 @@ import ObjectAvatar from '../../components/ObjectAvatar';
 
 import './styles.less';
 
-const RewardsMap = ({ getPoints, defaultCenter, parent, visible, onClose }) => {
+const RewardsMap = ({ getPoints, defaultCenter, parent, visible, onClose, intl }) => {
   const dispatch = useDispatch();
   const userName = useSelector(getAuthenticatedUserName);
   const query = useQuery();
@@ -131,7 +132,7 @@ const RewardsMap = ({ getPoints, defaultCenter, parent, visible, onClose }) => {
     <div className="RewardsMap">
       <div className="RewardsMap__header">
         <span>
-          <Icon type="compass" /> Map
+          <Icon type="compass" /> {intl.formatMessage({ id: 'map', defaultMessage: 'Map' })}
         </span>
         {!defaultCenter && (
           <button
@@ -140,7 +141,7 @@ const RewardsMap = ({ getPoints, defaultCenter, parent, visible, onClose }) => {
               'RewardsMap__button--selected': area,
             })}
           >
-            Search area
+            {intl.formatMessage({ id: 'search_area', defaultMessage: 'Search area' })}
           </button>
         )}
       </div>
@@ -250,6 +251,7 @@ RewardsMap.propTypes = {
   parent: PropTypes.shape({
     map: PropTypes.string,
   }),
+  intl: PropTypes.shape().isRequired,
 };
 
 RewardsMap.defaultProps = {
@@ -260,4 +262,4 @@ RewardsMap.defaultProps = {
   visible: false,
 };
 
-export default RewardsMap;
+export default injectIntl(RewardsMap);
