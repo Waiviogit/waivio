@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Button, Icon } from 'antd';
 import PropTypes from 'prop-types';
 import { useHistory } from 'react-router';
+import { injectIntl } from 'react-intl';
 
 import withAuthActions from '../../../auth/withAuthActions';
 import Popover from '../../../components/Popover';
@@ -44,7 +45,7 @@ const ReservedButtons = props => {
         disabled={loading || loadingButton || props.disable}
         loading={loadingButton}
       >
-        Submit photos
+        {props.intl.formatMessage({ id: 'submit_photos', defaultMessage: 'Submit photos' })}
       </Button>
       {!props.reserved && (
         <Popover
@@ -56,9 +57,15 @@ const ReservedButtons = props => {
             <React.Fragment>
               <PopoverMenu onSelect={handlePopoverClick} bold={false}>
                 <PopoverMenuItem key="reserve" disabled={props.disable}>
-                  <Icon type="user" /> Reserve the reward for{' '}
+                  <Icon type="user" />{' '}
+                  {props.intl.formatMessage({
+                    id: 'reserve_the_rewards_for',
+                    defaultMessage: 'Reserve the reward for',
+                  })}{' '}
                   <span>
-                    <span style={{ color: 'black' }}>7 days </span>
+                    <span style={{ color: 'black' }}>
+                      7 {props.intl.formatMessage({ id: 'days', defaultMessage: 'days' })}{' '}
+                    </span>
                     {loading && <Icon type="loading" />}
                   </span>
                 </PopoverMenuItem>
@@ -80,6 +87,7 @@ ReservedButtons.propTypes = {
   disable: PropTypes.bool,
   reserved: PropTypes.bool,
   inCard: PropTypes.bool,
+  intl: PropTypes.shape().isRequired,
 };
 
-export default withAuthActions(ReservedButtons);
+export default injectIntl(withAuthActions(ReservedButtons));
