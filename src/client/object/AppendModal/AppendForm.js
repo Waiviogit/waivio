@@ -1520,7 +1520,7 @@ export default class AppendForm extends Component {
         [currentField]: obj.author_permlink,
       });
       this.setState({ selectedObject: obj });
-      this.handleSubmit();
+      // this.handleSubmit();
     }
   };
 

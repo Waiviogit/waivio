@@ -218,18 +218,19 @@ class ObjectInfo extends React.Component {
     const exposedFields = getExposedFieldsByObjType(wobject);
     const shouldDisplay = exposedFields.includes(name);
     const accessExtend = haveAccess(wobject, userName, accessTypesArr[0]) && isEditMode;
-    const paddingObjTypes = [
-      objectFields.publisher,
-      objectFields.manufacturer,
-      objectFields.brand,
-      objectFields.merchant,
-    ].includes(name);
-    const paddingBottom = paddingObjTypes || (isEditMode && !wobject.publisher) || wobject.groupId;
+    // const paddingObjTypes = [
+    //   objectFields.publisher,
+    //   objectFields.manufacturer,
+    //   objectFields.brand,
+    //   objectFields.merchant,
+    // ].includes(name);
+
+    // const paddingBottom =  paddingObjTypes || (isEditMode && !wobject.publisher) || wobject.groupId;
 
     return (
       shouldDisplay &&
       (!isEmpty(content) || accessExtend) && (
-        <div className={paddingBottom ? 'field-info' : 'field-info nopadding'}>
+        <div className="field-info">
           <React.Fragment>
             {accessExtend && (
               <div className="field-info__title">
@@ -779,7 +780,7 @@ class ObjectInfo extends React.Component {
                   showFollow={false}
                 />
               ) : (
-                <div className="flex ObjectCard__links paddingBottom">
+                <div className="flex ObjectCard__links ">
                   <ObjectAvatar item={this.state.publisherObject} size={34} />{' '}
                   <span className="ObjectCard__name-grey">{publisher.name}</span>
                 </div>
@@ -1068,7 +1069,7 @@ class ObjectInfo extends React.Component {
                 showFollow={false}
               />
             ) : (
-              <div className="flex ObjectCard__links paddingBottom">
+              <div className="flex ObjectCard__links ">
                 <ObjectAvatar item={manufacturer} size={34} />{' '}
                 <span className="ObjectCard__name-grey">{manufacturer.name}</span>
               </div>
@@ -1084,7 +1085,7 @@ class ObjectInfo extends React.Component {
                 showFollow={false}
               />
             ) : (
-              <div className="flex ObjectCard__links paddingBottom">
+              <div className="flex ObjectCard__links ">
                 <ObjectAvatar item={brand} size={34} />{' '}
                 <span className="ObjectCard__name-grey">{brand.name}</span>
               </div>
@@ -1100,7 +1101,7 @@ class ObjectInfo extends React.Component {
                 showFollow={false}
               />
             ) : (
-              <div className="flex ObjectCard__links paddingBottom">
+              <div className="flex ObjectCard__links ">
                 <ObjectAvatar item={merchant} size={34} />{' '}
                 <span className="ObjectCard__name-grey">{merchant.name}</span>
               </div>
@@ -1108,11 +1109,13 @@ class ObjectInfo extends React.Component {
         )}
         {this.listItem(
           objectFields.features,
-          <ObjectFeatures
-            features={features}
-            isEditMode={isEditMode}
-            wobjPermlink={wobject.author_permlink}
-          />,
+          !isEmpty(features) && (
+            <ObjectFeatures
+              features={features}
+              isEditMode={isEditMode}
+              wobjPermlink={wobject.author_permlink}
+            />
+          ),
         )}
         {!isEditMode ? (
           <ProductId
@@ -1231,7 +1234,7 @@ class ObjectInfo extends React.Component {
                       showFollow={false}
                     />
                   ) : (
-                    <div className="flex ObjectCard__links paddingBottom">
+                    <div className="flex ObjectCard__links">
                       <ObjectAvatar item={publisher} size={34} />{' '}
                       <span className="ObjectCard__name-grey">{publisher.name}</span>
                     </div>
