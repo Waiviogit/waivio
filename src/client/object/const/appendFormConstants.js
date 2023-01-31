@@ -10,6 +10,9 @@ import {
   publisherFields,
   optionsFields,
   featuresFields,
+  manufacturerFields,
+  brandFields,
+  merchantFields,
 } from '../../../common/constants/listOfFields';
 import {
   emailValidationRegExp,
@@ -491,6 +494,98 @@ export const fieldsRules = {
           defaultMessage: 'Field is required',
         },
         intlMeta: { field: 'Publisher' },
+      },
+    },
+    {
+      max: 100,
+      message: {
+        intlId: {
+          id: 'value_error_long',
+          defaultMessage: "Value can't be longer than 100 characters.",
+        },
+        intlMeta: { value: 100 },
+      },
+    },
+    {
+      validator: false,
+    },
+  ],
+  [manufacturerFields.manufacturer]: [
+    {
+      transform: value => value && value.toLowerCase(),
+    },
+  ],
+  [manufacturerFields.manufacturerName]: [
+    {
+      transform: value => value && value.toLowerCase(),
+    },
+    {
+      max: 100,
+      message: {
+        intlId: {
+          id: 'value_error_long',
+          defaultMessage: "Value can't be longer than 100 characters.",
+        },
+        intlMeta: { value: 100 },
+      },
+    },
+  ],
+  [brandFields.brand]: [
+    {
+      transform: value => value && value.toLowerCase(),
+    },
+    {
+      validator: false,
+    },
+  ],
+  [brandFields.brandName]: [
+    {
+      transform: value => value && value.toLowerCase(),
+    },
+    {
+      required: false,
+      message: {
+        intlId: {
+          id: 'field_error',
+          defaultMessage: 'Field is required',
+        },
+        intlMeta: { field: 'Brand' },
+      },
+    },
+    {
+      max: 100,
+      message: {
+        intlId: {
+          id: 'value_error_long',
+          defaultMessage: "Value can't be longer than 100 characters.",
+        },
+        intlMeta: { value: 100 },
+      },
+    },
+    {
+      validator: false,
+    },
+  ],
+  [merchantFields.merchant]: [
+    {
+      transform: value => value && value.toLowerCase(),
+    },
+    {
+      validator: false,
+    },
+  ],
+  [merchantFields.merchantName]: [
+    {
+      transform: value => value && value.toLowerCase(),
+    },
+    {
+      required: false,
+      message: {
+        intlId: {
+          id: 'field_error',
+          defaultMessage: 'Field is required',
+        },
+        intlMeta: { field: 'Merchant' },
       },
     },
     {
