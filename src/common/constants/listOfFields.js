@@ -269,6 +269,13 @@ export const errorObjectFields = {
   [objectFields.groupId]: [objectFields.groupId],
   [objectFields.options]: [optionsFields.category, optionsFields.value, optionsFields.value],
   [objectFields.features]: [featuresFields.name, featuresFields.value],
+  [objectFields.publisher]: [publisherFields.publisher, publisherFields.publisherName],
+  [objectFields.manufacturer]: [
+    manufacturerFields.manufacturer,
+    manufacturerFields.manufacturerName,
+  ],
+  [objectFields.brand]: [brandFields.brand, brandFields.brandName],
+  [objectFields.merchant]: [merchantFields.merchant, merchantFields.merchantName],
 };
 
 export default null;

@@ -13,7 +13,6 @@ const BrandForm = ({
   loading,
   selectedObject,
   getFieldRules,
-  isSomeValue,
   intl,
   handleSelectObject,
   onObjectCardDelete,
@@ -25,9 +24,7 @@ const BrandForm = ({
         initialValue: '',
       })(
         <Input
-          className={classNames('AppendForm__input', {
-            'validation-error': isSomeValue,
-          })}
+          className={classNames('AppendForm__input', {})}
           disabled={loading}
           placeholder={intl.formatMessage({
             id: 'brand_name',
@@ -55,7 +52,8 @@ const BrandForm = ({
       <br />
       <div className="add-create-btns">
         <CreateObject
-          placeholder={intl.formatMessage({
+          withOpenModalBtn={!selectedObject}
+          openModalBtnText={intl.formatMessage({
             id: 'create_new_brand',
             defaultMessage: 'Create new brand',
           })}
@@ -77,7 +75,6 @@ BrandForm.propTypes = {
   onObjectCardDelete: PropTypes.func.isRequired,
   getFieldRules: PropTypes.func.isRequired,
   loading: PropTypes.bool.isRequired,
-  isSomeValue: PropTypes.bool.isRequired,
   selectedObject: PropTypes.shape().isRequired,
   intl: PropTypes.shape().isRequired,
 };

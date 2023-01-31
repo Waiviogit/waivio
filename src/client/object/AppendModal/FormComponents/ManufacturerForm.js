@@ -13,7 +13,6 @@ const ManufacturerForm = ({
   loading,
   selectedObject,
   getFieldRules,
-  isSomeValue,
   intl,
   handleSelectObject,
   onObjectCardDelete,
@@ -22,12 +21,9 @@ const ManufacturerForm = ({
     <Form.Item>
       {getFieldDecorator(manufacturerFields.manufacturerName, {
         rules: getFieldRules(manufacturerFields.manufacturerName),
-        initialValue: '',
       })(
         <Input
-          className={classNames('AppendForm__input', {
-            'validation-error': isSomeValue,
-          })}
+          className={classNames('AppendForm__input', {})}
           disabled={loading}
           placeholder={intl.formatMessage({
             id: 'manufacturer_name',
@@ -55,7 +51,8 @@ const ManufacturerForm = ({
       <br />
       <div className="add-create-btns">
         <CreateObject
-          placeholder={intl.formatMessage({
+          withOpenModalBtn={!selectedObject}
+          openModalBtnText={intl.formatMessage({
             id: 'create_new_manufacturer',
             defaultMessage: 'Create new manufacturer',
           })}
@@ -77,7 +74,7 @@ ManufacturerForm.propTypes = {
   onObjectCardDelete: PropTypes.func.isRequired,
   getFieldRules: PropTypes.func.isRequired,
   loading: PropTypes.bool.isRequired,
-  isSomeValue: PropTypes.bool.isRequired,
+
   selectedObject: PropTypes.shape().isRequired,
   intl: PropTypes.shape().isRequired,
 };
