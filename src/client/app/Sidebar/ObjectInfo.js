@@ -1064,7 +1064,7 @@ class ObjectInfo extends React.Component {
             (manufacturer.authorPermlink ? (
               <ObjectCard
                 key={manufacturer.authorPermlink}
-                wobject={manufacturer}
+                wobject={{ ...this.state.manufacturerObject, ...manufacturer }}
                 showFollow={false}
               />
             ) : (
@@ -1078,7 +1078,11 @@ class ObjectInfo extends React.Component {
           objectFields.brand,
           brand &&
             (brand.authorPermlink ? (
-              <ObjectCard key={brand.authorPermlink} wobject={brand} showFollow={false} />
+              <ObjectCard
+                key={brand.authorPermlink}
+                wobject={{ ...this.state.brandObject, ...brand }}
+                showFollow={false}
+              />
             ) : (
               <div className="flex ObjectCard__links paddingBottom">
                 <ObjectAvatar item={brand} size={34} />{' '}
@@ -1090,7 +1094,11 @@ class ObjectInfo extends React.Component {
           objectFields.merchant,
           merchant &&
             (merchant.authorPermlink ? (
-              <ObjectCard key={merchant.authorPermlink} wobject={merchant} showFollow={false} />
+              <ObjectCard
+                key={merchant.authorPermlink}
+                wobject={{ ...this.state.merchantObject, ...merchant }}
+                showFollow={false}
+              />
             ) : (
               <div className="flex ObjectCard__links paddingBottom">
                 <ObjectAvatar item={merchant} size={34} />{' '}
@@ -1219,7 +1227,7 @@ class ObjectInfo extends React.Component {
                   (publisher.authorPermlink ? (
                     <ObjectCard
                       key={publisher.authorPermlink}
-                      wobject={publisher}
+                      wobject={{ ...this.state.publisherObject, ...publisher }}
                       showFollow={false}
                     />
                   ) : (

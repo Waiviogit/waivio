@@ -37,7 +37,7 @@ const StoryPreview = ({ post, isUpdates, isVimeo }) => {
   if (
     !isEmpty(jsonMetadata) &&
     !isEmpty(jsonMetadata.image) &&
-    jsonMetadata.image[0].includes('waivio.nyc3.digitaloceanspaces')
+    jsonMetadata.image[0]?.includes('waivio.nyc3.digitaloceanspaces')
   ) {
     imagePath = jsonMetadata.image[0];
   } else if (jsonMetadata && jsonMetadata.image && jsonMetadata.image[0]) {
