@@ -91,7 +91,6 @@ class Comment extends React.Component {
       if (hash.endsWith('-edit')) {
         this.handleEditClick();
       }
-      this.focus();
     }
   }
 

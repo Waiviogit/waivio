@@ -34,7 +34,7 @@ class CommentForm extends React.Component {
   static propTypes = {
     parentPost: PropTypes.shape().isRequired,
     username: PropTypes.string.isRequired,
-    top: PropTypes.bool,
+    // top: PropTypes.bool,
     isSmall: PropTypes.bool,
     isLoading: PropTypes.bool,
     submitted: PropTypes.bool,
@@ -71,12 +71,6 @@ class CommentForm extends React.Component {
     this.setBodyAndRender = this.setBodyAndRender.bind(this);
     this.handleBodyUpdate = this.handleBodyUpdate.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
-  }
-
-  componentDidMount() {
-    if (this.input && !this.props.top) {
-      this.input.focus();
-    }
   }
 
   componentWillReceiveProps(nextProps) {

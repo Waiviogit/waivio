@@ -132,7 +132,12 @@ const DataImport = ({ intl }) => {
           })}
           :{' '}
           <a onClick={handleRedirect}>
-            {intl.formatMessage({ id: 'match_bots_auth_link', defaultMessage: 'Authorize now' })}
+            {isAuthBot
+              ? intl.formatMessage({
+                  id: 'match_bots_unauth_link',
+                  defaultMessage: 'Remove authorization',
+                })
+              : intl.formatMessage({ id: 'match_bots_auth_link', defaultMessage: 'Authorize now' })}
           </a>
         </b>
         <br />

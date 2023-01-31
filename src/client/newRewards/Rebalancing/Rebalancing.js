@@ -72,7 +72,7 @@ const Rebalancing = ({ intl }) => {
 
     setDifferencePercent(res.differencePercent);
     setSliderValue(res.differencePercent);
-    setTable(res.table.filter(row => row.baseQuantity !== '0' || row.quoteQuantity !== '0'));
+    setTable(res.table?.filter(row => row?.baseQuantity !== '0' || row?.quoteQuantity !== '0'));
     setLoading(false);
   };
 
