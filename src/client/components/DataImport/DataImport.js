@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Modal, Switch } from 'antd';
 import { useSelector } from 'react-redux';
+import { injectIntl } from 'react-intl';
+import PropTypes from 'prop-types';
 
 import ChangeVotingModal from '../../widgets/ChangeVotingModal/ChangeVotingModal';
 import ImportModal from './ImportModal/ImportModal';
@@ -23,7 +25,7 @@ import {
 
 import './DataImport.less';
 
-const DataImport = () => {
+const DataImport = ({ intl }) => {
   const isAuthBot = useSelector(state =>
     getIsConnectMatchBot(state, { botType: MATCH_BOTS_TYPES.IMPORT }),
   );
@@ -70,9 +72,15 @@ const DataImport = () => {
 
   const handleDeleteObject = item => {
     Modal.confirm({
-      title: 'Stop JSON data file import',
-      content:
-        'Once stopped, the import cannot be resumed. To temporarily suspend/resume the data import, please consider using the Active checkbox.',
+      title: intl.formatMessage({
+        id: 'stop_json_title',
+        defaultMessage: 'Stop JSON data file import',
+      }),
+      content: intl.formatMessage({
+        id: 'stop_json_message',
+        defaultMessage:
+          'Once stopped, the import cannot be resumed. To temporarily suspend/resume the data import, please consider using the Active checkbox.',
+      }),
       onOk: () => {
         deleteObjectImport(authUserName, item.importId).then(() => {
           getImportedObjects(authUserName).then(res => {
@@ -80,53 +88,89 @@ const DataImport = () => {
           });
         });
       },
-      okText: 'Stop import',
+      okText: intl.formatMessage({ id: 'stop_import_ok_button', defaultMessage: 'Stop import' }),
+      cancelText: intl.formatMessage({ id: 'cancel', defaultMessage: 'Cancel' }),
     });
   };
 
   return (
     <div className="DataImport">
       <div className="DataImport__title">
-        <h2>Data import bot</h2>
+        <h2>
+          {intl.formatMessage({ id: 'data_import_title', defaultMessage: 'Data import bot' })}
+        </h2>
         <Switch checked={isAuthBot} onChange={handleRedirect} />
       </div>
       <p>
-        The data import bot automatically creates or updates objects on the Hive blockchain using
-        the JSON data files generated in accordance with the following data schema.
-        (https://developer.datafiniti.co/docs/product-data-schema). Product, people and business
-        data files downloaded from the Datafiniti.io service are compliant.
+        {intl.formatMessage({
+          id: 'data_import_description1',
+          defaultMessage:
+            'The data import bot automatically creates or updates objects on the Hive blockchain using the JSON data files generated in accordance with the following data schema. (https://developer.datafiniti.co/docs/product-data-schema). Product, people and business data files downloaded from the Datafiniti.io service are compliant.',
+        })}
       </p>
       <p>
-        Each object consists of multiple updates (e.g., title, description, price, address, etc.),
-        which are posted on the Hive blockchain as individual records. Each update must be approved
-        by the user who initiated the data import with an upvote equivalent to $0.001 in WAIV power.
+        {intl.formatMessage({
+          id: 'data_import_description2',
+          defaultMessage:
+            'Each object consists of multiple updates (e.g., title, description, price, address, etc.), which are posted on the Hive blockchain as individual records. Each update must be approved by the user who initiated the data import with an upvote equivalent to $0.001 in WAIV power.',
+        })}
       </p>
       <p>
-        If the WAIV power on the account is insufficient to cast a $0.001 USD vote, or if the WAIV
-        power reaches the specified threshold, the data import process will continue at a slower
-        pace.
+        {intl.formatMessage({
+          id: 'data_import_description3',
+          defaultMessage:
+            'If the WAIV power on the account is insufficient to cast a $0.001 USD vote, or if the WAIV power reaches the specified threshold, the data import process will continue at a slower pace.',
+        })}
       </p>
       <hr />
       <p>
         <b>
-          The Data import bot requires authorization to upvote data updates on your behalf:{' '}
-          <a onClick={handleRedirect}>Authorize now</a>
+          {intl.formatMessage({
+            id: 'data_import_requires_auth',
+            defaultMessage:
+              'The Data import bot requires authorization to upvote data updates on your behalf',
+          })}
+          :{' '}
+          <a onClick={handleRedirect}>
+            {intl.formatMessage({ id: 'match_bots_auth_link', defaultMessage: 'Authorize now' })}
+          </a>
         </b>
         <br />
-        <b>The authorization is completed via HiveSigner and can be revoked at any time.</b>
+        <b>
+          {intl.formatMessage({
+            id: 'matchBot_authorization_completed_steemconnect_can_revoked_any_time',
+            defaultMessage:
+              'The authorization is completed via HiveSigner and can be revoked at any time.',
+          })}
+        </b>
       </p>
       <p>
-        WAIV voting power threshold: {votingValue}% (<a onClick={toggleVotingModal}>change</a>)
+        {intl.formatMessage({
+          id: 'waiv_voting_power_threshold',
+          defaultMessage: 'WAIV voting power threshold',
+        })}
+        : {votingValue}% (
+        <a onClick={toggleVotingModal}>
+          {intl.formatMessage({ id: 'change', defaultMessage: 'change' })}
+        </a>
+        )
         <br />
-        The data import bot will pause if WAIV voting power on the account drops below the set
-        threshold.
+        {intl.formatMessage({
+          id: 'data_import_pause',
+          defaultMessage:
+            'The data import bot will pause if WAIV voting power on the account drops below the set threshold.',
+        })}
       </p>
       <p>
-        <b>Disclaimer:</b> The Data import bot service is provided on as-is / as-available basis.
+        <b>{intl.formatMessage({ id: 'disclaimer', defaultMessage: 'Disclaimer' })}:</b>{' '}
+        {intl.formatMessage({
+          id: 'data_import_service',
+          defaultMessage: 'The Data import bot service is provided on as-is / as-available basis.',
+        })}
       </p>
       <hr />
       <Button type="primary" onClick={toggleModal}>
-        Upload new file
+        {intl.formatMessage({ id: 'upload_new_file', defaultMessage: 'Upload new file' })}
       </Button>
       <DynamicTbl
         header={configProductTable}
@@ -134,7 +178,7 @@ const DataImport = () => {
         onChange={handleChangeStatus}
         deleteItem={handleDeleteObject}
       />
-      <h3>History</h3>
+      <h3>{intl.formatMessage({ id: 'history', defaultMessage: 'History' })}</h3>
       <DynamicTbl header={configHistoryTable} bodyConfig={history} />
       {visible && (
         <ImportModal getImportList={getImportList} visible={visible} toggleModal={toggleModal} />
@@ -151,4 +195,8 @@ const DataImport = () => {
   );
 };
 
-export default DataImport;
+DataImport.propTypes = {
+  intl: PropTypes.shape().isRequired,
+};
+
+export default injectIntl(DataImport);

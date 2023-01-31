@@ -23,10 +23,10 @@ const DescriptionPage = ({ match }) => {
     }
 
     getObject(wobjName).then(res => setWobject(res));
-  }, [wobject]);
+  }, [wobject.author_permlink]);
 
   return (
-    <div className="DescriptionPage">
+    <div className="DescriptionPage Body">
       <div className="DescriptionPage__body">{description}</div>
       <div>
         {!isEmpty(pictures) &&
