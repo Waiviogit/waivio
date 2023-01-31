@@ -660,7 +660,7 @@ export const handleObjectSelect = (object, withFocus, intl) => async (dispatch, 
   const objType = getObjectType(object);
   const objNameDisplay = objType === objectTypes.HASHTAG ? `#${objName}` : objName;
   const objPermlink = object.author_permlink;
-  const separator = content.slice(-1) === '\n' ? '' : '\n';
+  const separator = content?.slice(-1) === '\n' ? '' : '\n';
   const draftContent = {
     title: titleValue,
     body: `${content}${separator}[${objNameDisplay}](${getObjectLink(object)})&nbsp;\n`,
@@ -678,13 +678,13 @@ export const handleObjectSelect = (object, withFocus, intl) => async (dispatch, 
   ).filter(item => has(item, '_id'));
 
   let updatedObjPercentage = setObjPercents(updatedLinkedObjects, objPercentage);
-  const isHideObject = hideLinkedObjects.find(
-    item => item.author_permlink === newLinkedObject.author_permlink,
+  const isHideObject = hideLinkedObjects?.find(
+    item => item?.author_permlink === newLinkedObject?.author_permlink,
   );
 
   if (isHideObject) {
-    const filteredObjectCards = hideLinkedObjects.filter(
-      item => item.author_permlink !== newLinkedObject.author_permlink,
+    const filteredObjectCards = hideLinkedObjects?.filter(
+      item => item.author_permlink !== newLinkedObject?.author_permlink,
     );
 
     updatedStore.hideLinkedObjects = filteredObjectCards;
