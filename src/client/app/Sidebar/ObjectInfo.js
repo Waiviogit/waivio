@@ -223,6 +223,7 @@ class ObjectInfo extends React.Component {
       objectFields.manufacturer,
       objectFields.brand,
       objectFields.merchant,
+      objectFields.description,
     ].includes(name);
     const paddingBottom = paddingObjTypes || (isEditMode && !wobject.publisher) || wobject.groupId;
 
