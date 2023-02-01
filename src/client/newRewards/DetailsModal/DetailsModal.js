@@ -120,6 +120,7 @@ const DetailsModal = ({
       reserved={proposition.reserved}
       handleReserve={onClick}
       disable={disable}
+      reservedDays={proposition?.countReservationDays}
       handleReserveForPopover={() =>
         dispatch(reserveProposition(proposition, userName)).then(() => {
           toggleModal();

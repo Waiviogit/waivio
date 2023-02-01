@@ -21,7 +21,6 @@ import {
   getIsLoaded,
   isGuestUser,
 } from './authSelectors';
-import { getIsWaivio } from '../appStore/appSelectors';
 import { parseJSON } from '../../common/helpers/parseJSON';
 import { getGuestWaivBalance } from '../../waivioApi/walletApi';
 
@@ -111,7 +110,6 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
   let promise = Promise.resolve(null);
   const guestAccessToken = getGuestAccessToken();
   const isGuest = Boolean(guestAccessToken);
-  const isWaivio = getIsWaivio(state);
 
   if (isUserLoaded(state)) {
     promise = Promise.resolve(null);
@@ -124,7 +122,7 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
         const rewardsTab = await getRewardTab(userData.name);
         const { WAIV } = await getGuestWaivBalance(userData.name);
 
-        if (isWaivio) dispatch(getCurrentCurrencyRate(userMetaData.settings.currency));
+        dispatch(getCurrentCurrencyRate(userMetaData.settings.currency));
 
         resolve({
           account: userData,
@@ -151,7 +149,7 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
         const rewardsTab = await getRewardTab(scUserData.name);
         const { WAIV } = isGuest ? await getGuestWaivBalance(scUserData.name) : {};
 
-        if (isWaivio) dispatch(getCurrentCurrencyRate(userMetaData.settings.currency));
+        dispatch(getCurrentCurrencyRate(userMetaData.settings.currency));
 
         resolve({
           ...scUserData,
