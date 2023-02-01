@@ -225,10 +225,12 @@ const PropositionFooter = ({ type, openDetailsModal, proposition, getProposition
 
                 return Promise.resolve();
               }}
+              reservedDays={proposition?.countReservationDays}
               inCard
             />
             <span className="Proposition-new__details" onClick={openDetailsModal}>
-              Details <Icon type="right" />
+              {intl.formatMessage({ id: 'details', defaultMessage: 'Details' })}{' '}
+              <Icon type="right" />
             </span>
           </div>
         ) : (

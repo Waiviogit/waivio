@@ -5,6 +5,7 @@ import ModalSignIn from '../components/Navigation/ModlaSignIn/ModalSignIn';
 import {
   getCurrentHost,
   getIsWaivio,
+  getUsedLocale,
   getWebsiteParentHost,
 } from '../../store/appStore/appSelectors';
 import { getIsAuthenticated } from '../../store/authStore/authSelectors';
@@ -19,6 +20,7 @@ export default function withAuthActions(WrappedComponent) {
     isWaivio: getIsWaivio(state),
     domain: getWebsiteParentHost(state),
     host: getCurrentHost(state),
+    usedLocale: getUsedLocale(state),
   }))
   class Wrapper extends React.Component {
     static propTypes = {
@@ -26,6 +28,7 @@ export default function withAuthActions(WrappedComponent) {
       isWaivio: PropTypes.bool,
       domain: PropTypes.string,
       host: PropTypes.string,
+      usedLocale: PropTypes.string,
     };
 
     static defaultProps = {
@@ -66,7 +69,7 @@ export default function withAuthActions(WrappedComponent) {
       } else {
         const path = window.location.pathname === '/' ? '' : window.location.pathname;
 
-        window.location.href = `https://${this.props.domain}/sign-in?host=${this.props.host}${path}`;
+        window.location.href = `https://${this.props.domain}/sign-in?host=${this.props.host}${path}&usedLocale=${this.props.usedLocale}`;
       }
     }
 

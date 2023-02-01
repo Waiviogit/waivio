@@ -75,10 +75,15 @@ export const sortListItemsBy = (
   let sorted = uniqBy(items, 'author_permlink').sort(comparator);
 
   if ((isCustomSorting || isRecencySorting) && !isEmpty(sortOrder)) {
+    const withoutSorting = sorted.filter(list => !sortOrder.includes(list.author_permlink));
+
     sorted = sortOrder
       .map(permlink => sorted.find(item => item.author_permlink === permlink))
       .filter(item => item);
+
+    sorted = [...sorted, ...withoutSorting];
   }
+
   const sortedByDate =
     sorted.every(item => has(item, 'addedAt')) && isSortByDateAdding
       ? orderBy(sorted, ['addedAt'], 'desc')
@@ -107,10 +112,5 @@ export const getExposedFieldsByObjType = wobj => {
     ? [...exposedFields.filter(f => f !== objectFields.listItem), TYPES_OF_MENU_ITEM.LIST]
     : exposedFields;
 
-  return (
-    renderedFields
-      .sort()
-      // remove filter after adding 'merchant', 'brand', 'manufacturer' fields
-      .filter(f => !['merchant', 'brand', 'manufacturer'].includes(f))
-  );
+  return renderedFields.sort();
 };

@@ -30,7 +30,7 @@ import OBJECT_TYPE from '../../object/const/objectTypes';
 import Proposition from '../../components/Proposition/Proposition';
 import { isCoordinatesValid } from '../../components/Maps/mapHelper';
 import PicturesCarousel from '../../object/PicturesCarousel';
-import DescriptionInfo from './DescriptionInfo';
+import DescriptionInfo from '../../object/Description/DescriptionInfo';
 import RateInfo from '../../components/Sidebar/Rate/RateInfo';
 import MapObjectInfo from '../../components/Maps/MapObjectInfo';
 import ObjectCard from '../../components/Sidebar/ObjectCard';
@@ -115,17 +115,15 @@ class ObjectInfo extends React.Component {
     showMore: {},
     countPhones: 3,
     publisherObject: {},
+    manufacturerObject: {},
+    brandObject: {},
+    merchantObject: {},
   };
 
   componentDidMount() {
     const { wobject, storeGroupId } = this.props;
-    const publisher = parseWobjectField(wobject, 'publisher');
 
-    if (publisher?.authorPermlink) {
-      getObjectInfo([publisher?.authorPermlink]).then(res =>
-        this.setState({ publisherObject: res.wobjects[0] }),
-      );
-    }
+    this.getPublisherManufacturerBrandMerchantObjects();
 
     this.props.getRelatedAlbum(this.props.match.params.name, 10);
     const hasGroupId = Object.prototype.hasOwnProperty.call(wobject, 'groupId');
@@ -139,14 +137,7 @@ class ObjectInfo extends React.Component {
   }
   componentDidUpdate(prevProps) {
     if (this.props.wobject.author_permlink !== prevProps.wobject.author_permlink) {
-      const { wobject } = this.props;
-      const publisher = parseWobjectField(wobject, 'publisher');
-
-      if (publisher?.authorPermlink) {
-        getObjectInfo([publisher?.authorPermlink]).then(res =>
-          this.setState({ publisherObject: res.wobjects[0] }),
-        );
-      }
+      this.getPublisherManufacturerBrandMerchantObjects();
     }
   }
 
@@ -155,6 +146,36 @@ class ObjectInfo extends React.Component {
   }
 
   incrementPhoneCount = 3;
+
+  getPublisherManufacturerBrandMerchantObjects() {
+    const { wobject } = this.props;
+
+    const publisher = parseWobjectField(wobject, 'publisher');
+    const manufacturer = parseWobjectField(wobject, 'manufacturer');
+    const brand = parseWobjectField(wobject, 'brand');
+    const merchant = parseWobjectField(wobject, 'merchant');
+
+    if (publisher?.authorPermlink) {
+      getObjectInfo([publisher?.authorPermlink]).then(res =>
+        this.setState({ publisherObject: res.wobjects[0] }),
+      );
+    }
+    if (manufacturer?.authorPermlink) {
+      getObjectInfo([manufacturer?.authorPermlink]).then(res =>
+        this.setState({ manufacturerObject: res.wobjects[0] }),
+      );
+    }
+    if (brand?.authorPermlink) {
+      getObjectInfo([brand?.authorPermlink]).then(res =>
+        this.setState({ brandObject: res.wobjects[0] }),
+      );
+    }
+    if (merchant?.authorPermlink) {
+      getObjectInfo([merchant?.authorPermlink]).then(res =>
+        this.setState({ merchantObject: res.wobjects[0] }),
+      );
+    }
+  }
 
   getFieldLayout = (fieldName, params) => {
     const { body } = params;
@@ -197,13 +218,19 @@ class ObjectInfo extends React.Component {
     const exposedFields = getExposedFieldsByObjType(wobject);
     const shouldDisplay = exposedFields.includes(name);
     const accessExtend = haveAccess(wobject, userName, accessTypesArr[0]) && isEditMode;
-    const paddingBottom =
-      name !== objectFields.publisher || (isEditMode && !wobject.publisher) || wobject.groupId;
+    // const paddingObjTypes = [
+    //   objectFields.publisher,
+    //   objectFields.manufacturer,
+    //   objectFields.brand,
+    //   objectFields.merchant,
+    //   objectFields.description,
+    // ].includes(name);
+    // const paddingBottom = paddingObjTypes || (isEditMode && !wobject.publisher) || wobject.groupId;
 
     return (
       shouldDisplay &&
       (!isEmpty(content) || accessExtend) && (
-        <div className={paddingBottom ? 'field-info' : 'field-info nopadding'}>
+        <div className="field-info">
           <React.Fragment>
             {accessExtend && (
               <div className="field-info__title">
@@ -420,6 +447,26 @@ class ObjectInfo extends React.Component {
     const publicationDate = moment(wobject.publicationDate).format('MMMM DD, YYYY');
     const printLength = wobject.printLength;
     const publisher = parseWobjectField(wobject, 'publisher');
+    const manufacturer = parseWobjectField(wobject, 'manufacturer');
+    const brand = parseWobjectField(wobject, 'brand');
+    const merchant = parseWobjectField(wobject, 'merchant');
+    const merchantObj = {
+      ...this.state.merchantObject,
+      name: merchant?.name || this.state.merchantObject?.name,
+    };
+    const publisherObj = {
+      ...this.state.publisherObject,
+      name: publisher?.name || this.state.publisherObject?.name,
+    };
+    const manufacturerObj = {
+      ...this.state.manufacturerObject,
+      name: manufacturer?.name || this.state.manufacturerObject?.name,
+    };
+    const brandObj = {
+      ...this.state.brandObject,
+      name: brand?.name || this.state.brandObject?.name,
+    };
+
     const departments = get(wobject, 'departments');
     const features = wobject.features
       ? wobject.features?.map(el => parseWobjectField(el, 'body', []))
@@ -573,17 +620,18 @@ class ObjectInfo extends React.Component {
           ),
         )}
 
-        {this.listItem(
-          objectFields.departments,
-          !isEmpty(wobject?.departments) && (
-            <Department
-              departments={departments}
-              isEditMode={isEditMode}
-              history={this.props.history}
-              wobject={this.props.wobject}
-            />
-          ),
-        )}
+        {isEditMode &&
+          this.listItem(
+            objectFields.departments,
+            !isEmpty(wobject?.departments) && (
+              <Department
+                departments={departments}
+                isEditMode={isEditMode}
+                history={this.props.history}
+                wobject={this.props.wobject}
+              />
+            ),
+          )}
       </>
     );
 
@@ -627,9 +675,22 @@ class ObjectInfo extends React.Component {
               )}
             </div>
           )}
+
           {!isList && (
             <div className="object-sidebar__menu-items">
               <React.Fragment>
+                {!isEditMode &&
+                  isOptionsObjectType &&
+                  this.listItem(
+                    objectFields.description,
+                    description && (
+                      <DescriptionInfo
+                        isEditMode={isEditMode}
+                        description={description}
+                        wobjPermlink={wobject.author_permlink}
+                      />
+                    ),
+                  )}
                 {this.listItem(
                   TYPES_OF_MENU_ITEM.LIST,
                   !isEmpty(menuLinks) && menuLinks.map(item => this.getMenuSectionLink(item)),
@@ -669,6 +730,18 @@ class ObjectInfo extends React.Component {
                       this.getMenuSectionLink({ id: objectFields.form, ...form }),
                     ),
                 )}
+                {!isEditMode &&
+                  this.listItem(
+                    objectFields.departments,
+                    !isEmpty(wobject?.departments) && (
+                      <Department
+                        departments={departments}
+                        isEditMode={isEditMode}
+                        history={this.props.history}
+                        wobject={this.props.wobject}
+                      />
+                    ),
+                  )}
                 {this.listItem(objectFields.sorting, null)}
               </React.Fragment>
             </div>
@@ -700,7 +773,7 @@ class ObjectInfo extends React.Component {
             <div>
               {authorsBody?.map((a, i) => (
                 <span key={a.authorPermlink}>
-                  {a.defaultShowLink ? (
+                  {a.authorPermlink ? (
                     <Link to={`/object/${a.authorPermlink}`}>{a.name}</Link>
                   ) : (
                     <span>{a.name}</span>
@@ -720,21 +793,39 @@ class ObjectInfo extends React.Component {
               (publisher.authorPermlink ? (
                 <ObjectCard
                   key={publisher.authorPermlink}
-                  wobject={this.state.publisherObject}
-                  parent={this.state.publisherObject}
+                  wobject={publisherObj}
                   showFollow={false}
                 />
               ) : (
-                <div className="flex ObjectCard__links publisher-paddingBottom">
-                  <ObjectAvatar item={this.state.publisherObject} size={34} />{' '}
+                <div className="flex ObjectCard__links ">
+                  <ObjectAvatar item={publisher} size={34} />{' '}
                   <span className="ObjectCard__name-grey">{publisher.name}</span>
                 </div>
               )),
           )}
-        {this.listItem(
-          objectFields.description,
-          description && <DescriptionInfo description={description} />,
-        )}
+        {isEditMode &&
+          this.listItem(
+            objectFields.description,
+            description && (
+              <DescriptionInfo
+                description={description}
+                isEditMode={isEditMode}
+                wobjPermlink={wobject.author_permlink}
+              />
+            ),
+          )}
+        {!isEditMode &&
+          !isOptionsObjectType &&
+          this.listItem(
+            objectFields.description,
+            description && (
+              <DescriptionInfo
+                description={description}
+                isEditMode={isEditMode}
+                wobjPermlink={wobject.author_permlink}
+              />
+            ),
+          )}
         {this.listItem(
           objectFields.rating,
           has(wobject, 'rating') && (
@@ -998,12 +1089,54 @@ class ObjectInfo extends React.Component {
           ),
         )}
         {this.listItem(
+          objectFields.manufacturer,
+          manufacturer &&
+            (manufacturer.authorPermlink ? (
+              <ObjectCard
+                key={manufacturer.authorPermlink}
+                wobject={manufacturerObj}
+                showFollow={false}
+              />
+            ) : (
+              <div className="flex ObjectCard__links ">
+                <ObjectAvatar item={manufacturer} size={34} />{' '}
+                <span className="ObjectCard__name-grey">{manufacturer.name}</span>
+              </div>
+            )),
+        )}
+        {this.listItem(
+          objectFields.brand,
+          brand &&
+            (brand.authorPermlink ? (
+              <ObjectCard key={brand.authorPermlink} wobject={brandObj} showFollow={false} />
+            ) : (
+              <div className="flex ObjectCard__links ">
+                <ObjectAvatar item={brand} size={34} />{' '}
+                <span className="ObjectCard__name-grey">{brand.name}</span>
+              </div>
+            )),
+        )}
+        {this.listItem(
+          objectFields.merchant,
+          merchant &&
+            (merchant.authorPermlink ? (
+              <ObjectCard key={merchant.authorPermlink} wobject={merchantObj} showFollow={false} />
+            ) : (
+              <div className="flex ObjectCard__links ">
+                <ObjectAvatar item={merchant} size={34} />{' '}
+                <span className="ObjectCard__name-grey">{merchant.name}</span>
+              </div>
+            )),
+        )}
+        {this.listItem(
           objectFields.features,
-          <ObjectFeatures
-            features={features}
-            isEditMode={isEditMode}
-            wobjPermlink={wobject.author_permlink}
-          />,
+          !isEmpty(features) && (
+            <ObjectFeatures
+              features={features}
+              isEditMode={isEditMode}
+              wobjPermlink={wobject.author_permlink}
+            />
+          ),
         )}
         {!isEditMode ? (
           <ProductId
@@ -1090,7 +1223,7 @@ class ObjectInfo extends React.Component {
             By{' '}
             {authorsBody?.map((a, i) => (
               <span key={a.id}>
-                {a.defaultShowLink ? (
+                {a.authorPermlink ? (
                   <Link to={`/object/${a.authorPermlink}`}>{a.name}</Link>
                 ) : (
                   <span>{a.name}</span>
@@ -1118,12 +1251,12 @@ class ObjectInfo extends React.Component {
                   (publisher.authorPermlink ? (
                     <ObjectCard
                       key={publisher.authorPermlink}
-                      wobject={this.state.publisherObject}
+                      wobject={publisherObj}
                       showFollow={false}
                     />
                   ) : (
-                    <div className="flex ObjectCard__links publisher-paddingBottom">
-                      <ObjectAvatar item={this.state.publisherObject} size={34} />{' '}
+                    <div className="flex ObjectCard__links">
+                      <ObjectAvatar item={publisher} size={34} />{' '}
                       <span className="ObjectCard__name-grey">{publisher.name}</span>
                     </div>
                   )),

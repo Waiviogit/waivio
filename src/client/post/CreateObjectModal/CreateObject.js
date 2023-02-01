@@ -49,7 +49,6 @@ class CreateObject extends React.Component {
     objectTypes: PropTypes.shape(),
     locale: PropTypes.string.isRequired,
     username: PropTypes.string,
-    currentField: PropTypes.string,
     appendObject: PropTypes.func.isRequired,
     createWaivioObject: PropTypes.func.isRequired,
     getObjectTypes: PropTypes.func.isRequired,
@@ -69,7 +68,6 @@ class CreateObject extends React.Component {
     objectTypes: {},
     locale: 'en-US',
     username: '',
-    currentField: '',
     parentObject: {},
     withOpenModalBtn: true,
     isSingleType: false,
@@ -320,38 +318,30 @@ class CreateObject extends React.Component {
       );
     });
     const hashtagObjType = this.props.objectTypes[form.getFieldValue('type')]?.name === 'hashtag';
-    let linkTitle = '';
-
-    if (this.props.currentField === 'publisher') {
-      linkTitle = this.props.intl.formatMessage({
-        id: 'create_new_publisher',
-        defaultMessage: 'Create new publisher',
-      });
-    } else if (this.props.currentField === 'authors') {
-      linkTitle = this.props.intl.formatMessage({
-        id: 'create_new_author',
-        defaultMessage: 'Create new author',
-      });
-    } else {
-      linkTitle = this.props.intl.formatMessage({
-        id: 'create_new_object',
-        defaultMessage: 'create new object',
-      });
-    }
 
     return (
       <React.Fragment>
         {withOpenModalBtn && (
           <div className="CreateObject__row align-right">
             <div role="presentation" className="CreateObject__button" onClick={this.toggleModal}>
-              {openModalBtnText || linkTitle}
+              {openModalBtnText ||
+                this.props.intl.formatMessage({
+                  id: 'create_new_object',
+                  defaultMessage: 'create new object',
+                })}
             </div>
           </div>
         )}
 
         {this.state.isModalOpen && (
           <Modal
-            title={linkTitle}
+            title={
+              openModalBtnText ||
+              this.props.intl.formatMessage({
+                id: 'create_new_object',
+                defaultMessage: 'create new object',
+              })
+            }
             closable
             onCancel={this.handleCloseModal}
             maskClosable={false}

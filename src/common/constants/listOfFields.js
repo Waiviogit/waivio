@@ -50,6 +50,9 @@ export const objectFields = {
   departments: 'departments',
   features: 'features',
   objectName: 'objectName',
+  manufacturer: 'manufacturer',
+  brand: 'brand',
+  merchant: 'merchant',
 };
 
 export const TYPES_OF_MENU_ITEM = {
@@ -94,6 +97,18 @@ export const addressFields = {
 export const authorsFields = {
   name: 'name',
   author: 'author',
+};
+export const manufacturerFields = {
+  manufacturer: 'manufacturer',
+  manufacturerName: 'manufacturerName',
+};
+export const brandFields = {
+  brand: 'brand',
+  brandName: 'brandName',
+};
+export const merchantFields = {
+  merchant: 'merchant',
+  merchantName: 'merchantName',
 };
 export const publisherFields = {
   publisher: 'publisher',
@@ -254,6 +269,13 @@ export const errorObjectFields = {
   [objectFields.groupId]: [objectFields.groupId],
   [objectFields.options]: [optionsFields.category, optionsFields.value, optionsFields.value],
   [objectFields.features]: [featuresFields.name, featuresFields.value],
+  [objectFields.publisher]: [publisherFields.publisher, publisherFields.publisherName],
+  [objectFields.manufacturer]: [
+    manufacturerFields.manufacturer,
+    manufacturerFields.manufacturerName,
+  ],
+  [objectFields.brand]: [brandFields.brand, brandFields.brandName],
+  [objectFields.merchant]: [merchantFields.merchant, merchantFields.merchantName],
 };
 
 export default null;

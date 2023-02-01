@@ -21,7 +21,13 @@ import ReservedButtons from '../../rewards/Proposition/WebsiteReservedButtons/Re
 
 import './Details.less';
 
-const DetailsModal = ({ proposition, toggleModal, isModalDetailsOpen, onActionInitiated }) => {
+const DetailsModal = ({
+  proposition,
+  toggleModal,
+  isModalDetailsOpen,
+  onActionInitiated,
+  intl,
+}) => {
   const location = useLocation();
   const history = useHistory();
   const dispatch = useDispatch();
@@ -114,6 +120,7 @@ const DetailsModal = ({ proposition, toggleModal, isModalDetailsOpen, onActionIn
       reserved={proposition.reserved}
       handleReserve={onClick}
       disable={disable}
+      reservedDays={proposition?.countReservationDays}
       handleReserveForPopover={() =>
         dispatch(reserveProposition(proposition, userName)).then(() => {
           toggleModal();
@@ -147,7 +154,14 @@ const DetailsModal = ({ proposition, toggleModal, isModalDetailsOpen, onActionIn
 
   return (
     <Modal
-      title={<div className="DetailsModal__modal-title">We seek honest reviews!</div>}
+      title={
+        <div className="DetailsModal__modal-title">
+          {intl.formatMessage({
+            id: 'we_seek_honest_reviews',
+            defaultMessage: 'We seek honest reviews!',
+          })}
+        </div>
+      }
       closable
       onCancel={handleCancelModalBtn}
       maskClosable={false}
@@ -165,12 +179,17 @@ const DetailsModal = ({ proposition, toggleModal, isModalDetailsOpen, onActionIn
         agreementObjects={agreementObjects}
       />
       {!requirements.notGuide && (
-        <div className="DetailsModal__message">You can&apos;t reserve your own campaing</div>
+        <div className="DetailsModal__message">
+          {intl.formatMessage({
+            id: 'do_not_reserve',
+            defaultMessage: "You can't reserve your own campaing",
+          })}
+        </div>
       )}
       <div className="DetailsModal__footer">
         <div className="DetailsModal__footer-reserve-btn">
           <Button className="DetailsModal__cancel" onClick={handleCancelModalBtn}>
-            Cancel
+            {intl.formatMessage({ id: 'cancel', defaultMessage: 'Cancel' })}
           </Button>
           {reserveButton}
         </div>
@@ -184,6 +203,9 @@ DetailsModal.propTypes = {
   isModalDetailsOpen: PropTypes.bool.isRequired,
   proposition: PropTypes.shape().isRequired,
   onActionInitiated: PropTypes.func.isRequired,
+  intl: PropTypes.shape({
+    formatMessage: PropTypes.func,
+  }).isRequired,
 };
 
 DetailsModal.defaultProps = {

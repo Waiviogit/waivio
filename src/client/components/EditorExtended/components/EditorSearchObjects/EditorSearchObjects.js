@@ -16,6 +16,7 @@ const EditorSearchObjects = ({
   clearEditorSearchObjects,
   handleObjectSelect,
   editor,
+  isComment,
 }) => {
   const inputWrapper = React.useRef(null);
   const searchBlockItem = React.useRef(null);
@@ -135,7 +136,7 @@ const EditorSearchObjects = ({
           'editor-search-objects__empty': !searchObjectsResults.length,
           'editor-search-objects__not-scroll': searchObjectsResults.length <= 4,
         })}
-        style={{ top: coordinates.top, left: coordinates.left }}
+        style={{ top: coordinates.top, left: isComment ? 0 : coordinates.left }}
       >
         {searchObjectsResults.map((obj, index) => (
           <SearchItemObject
@@ -156,6 +157,7 @@ const EditorSearchObjects = ({
 
 EditorSearchObjects.propTypes = {
   wordForCountWidth: PropTypes.string,
+  isComment: PropTypes.bool,
   searchObjectsResults: PropTypes.shape(),
   searchCoordinates: PropTypes.shape().isRequired,
   selectObjectFromSearch: PropTypes.func.isRequired,
@@ -168,6 +170,7 @@ EditorSearchObjects.defaultProps = {
   wordForCountWidth: '',
   searchObjectsResults: [],
   handleObjectSelect: null,
+  isComment: false,
 };
 
 export default EditorSearchObjects;

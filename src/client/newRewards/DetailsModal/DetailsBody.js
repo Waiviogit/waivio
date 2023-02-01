@@ -5,6 +5,7 @@ import classNames from 'classnames';
 import { isEmpty } from 'lodash';
 import { Checkbox } from 'antd';
 import { useSelector } from 'react-redux';
+import { injectIntl } from 'react-intl';
 
 import { getObjectName } from '../../../common/helpers/wObjectHelper';
 import { getMinExpertise } from '../../rewards/rewardsHelper';
@@ -12,7 +13,7 @@ import { getRate, getRewardFund } from '../../../store/appStore/appSelectors';
 
 import './Details.less';
 
-const DetailsModalBody = ({ proposition, requirements, agreementObjects }) => {
+const DetailsModalBody = ({ proposition, requirements, agreementObjects, intl }) => {
   const getClassForCurrCreteria = creteria => classNames({ 'criteria-row__required': !creteria });
   const rate = useSelector(getRate);
   const rewardFund = useSelector(getRewardFund);
@@ -29,69 +30,124 @@ const DetailsModalBody = ({ proposition, requirements, agreementObjects }) => {
     <div className="DetailsModal__text-wrap">
       {!proposition?.reserved && (
         <React.Fragment>
-          <div className="DetailsModal__text fw6 mv3">User eligibility requirements:</div>
+          <div className="DetailsModal__text fw6 mv3">
+            {intl.formatMessage({
+              id: 'rewards_details_eligibility_requirements',
+              defaultMessage: 'User eligibility requirements',
+            })}
+            :
+          </div>
           <div className="DetailsModal__text mv3">
-            Only users who meet all eligibility criteria can participate in this rewards campaign.
+            {intl.formatMessage({
+              id: 'rewards_details_eligibility_criteria_can_participate',
+              defaultMessage:
+                'Only users who meet all eligibility criteria can participate in this rewards campaign.',
+            })}
           </div>
           <div className="DetailsModal__criteria-wrap">
             <div className="DetailsModal__criteria-row">
               <Checkbox checked={requirements?.expertise} disabled />
               <div className={getClassForCurrCreteria(requirements?.expertise)}>
-                Minimum Waivio expertise: {minExpertise}
+                {intl.formatMessage({
+                  id: 'rewards_details_minimum_waivio_expertise',
+                  defaultMessage: 'Minimum Waivio expertise',
+                })}
+                : {minExpertise}
               </div>
             </div>
             <div className="DetailsModal__criteria-row">
               <Checkbox checked={requirements?.followers} disabled />
               <div className={getClassForCurrCreteria(requirements?.followers)}>
-                Minimum number of followers: {proposition?.userRequirements?.minFollowers}
+                {intl.formatMessage({
+                  id: 'rewards_details_minimum_number_followers',
+                  defaultMessage: 'Minimum number of followers',
+                })}
+                : {proposition?.userRequirements?.minFollowers}
               </div>
             </div>
             <div className="DetailsModal__criteria-row">
               <Checkbox checked={requirements?.posts} disabled />
               <div className={getClassForCurrCreteria(requirements?.posts)}>
-                Minimum number of posts: {proposition?.userRequirements?.minPosts}
+                {intl.formatMessage({
+                  id: 'rewards_details_minimum_number_posts',
+                  defaultMessage: 'Minimum number of posts',
+                })}
+                : {proposition?.userRequirements?.minPosts}
               </div>
             </div>
             {!!proposition?.frequencyAssign && (
               <div className="DetailsModal__criteria-row">
                 <Checkbox checked={requirements?.frequency} disabled />
                 <div className={getClassForCurrCreteria(requirements?.frequency)}>
-                  Have not received a reward from
+                  {intl.formatMessage({
+                    id: 'rewards_details_received_reward_from',
+                    defaultMessage: 'Have not received a reward from',
+                  })}
                   <Link to={`/@${proposition?.guideName}`}>{` @${proposition?.guideName} `}</Link>
-                  for reviewing
+                  {intl.formatMessage({
+                    id: 'rewards_details_for_reviewing',
+                    defaultMessage: 'for reviewing',
+                  })}
                   <Link to={requiredObject?.defaultShowLink}>
                     {` ${getObjectName(requiredObject)} `}
                   </Link>
-                  in the last {proposition?.frequencyAssign} days.
+                  {intl.formatMessage({ id: 'in_the_last', defaultMessage: 'in the last' })}{' '}
+                  {proposition?.frequencyAssign}{' '}
+                  {intl.formatMessage({ id: 'days', defaultMessage: 'days' })}.
                 </div>
               </div>
             )}
             <div className="DetailsModal__criteria-row">
               <Checkbox checked={requirements?.notBlacklisted} disabled />
               <div className={getClassForCurrCreteria(requirements?.notBlacklisted)}>
-                User account is not blacklisted by{' '}
-                <Link to={`/@${proposition?.guideName}`}>@{proposition?.guideName}</Link> or
-                referenced accounts.
+                {intl.formatMessage({
+                  id: 'rewards_details_account_not_blacklisted',
+                  defaultMessage: 'User account is not blacklisted by',
+                })}{' '}
+                <Link to={`/@${proposition?.guideName}`}>@{proposition?.guideName}</Link>{' '}
+                {intl.formatMessage({
+                  id: 'rewards_details_referenced_accounts',
+                  defaultMessage: 'or referenced accounts',
+                })}
               </div>
             </div>
             <div className="DetailsModal__criteria-row">
               <Checkbox checked={requirements?.notAssigned} disabled />
               <div className={getClassForCurrCreteria(requirements?.notAssigned)}>
-                User does not have an active reservation for such a reward at the moment.
+                {intl.formatMessage({
+                  id: 'rewards_details_account_without_active_reservation',
+                  defaultMessage:
+                    'User does not have an active reservation for such a reward at the moment.',
+                })}
               </div>
             </div>
           </div>
         </React.Fragment>
       )}
       <div>
-        <div className="DetailsModal__text fw6 mv3">Post requirements:</div>
+        <div className="DetailsModal__text fw6 mv3">
+          {intl.formatMessage({
+            id: 'rewards_details_post_requirements',
+            defaultMessage: 'Post requirements',
+          })}
+          :
+        </div>
         <div className="DetailsModal__text mv3">
-          For the review to be eligible for the award, all the following requirements must be met:
+          {intl.formatMessage({
+            id: 'rewards_details_review_eligible_award',
+            defaultMessage:
+              'For the review to be eligible for the award, all the following requirements must be met',
+          })}
         </div>
         <ol className="DetailsModal__requirementsList">
           <li>
             <span className="nowrap">
-              Minimum {proposition?.requirements?.minPhotos} original photos of
+              {intl.formatMessage({ id: 'minimum', defaultMessage: 'Minimum' })}{' '}
+              {proposition?.requirements?.minPhotos}{' '}
+              {intl.formatMessage({
+                id: 'original_photos_of',
+                defaultMessage: 'original photos of',
+              })}
             </span>
             <Link className="ml1" to={proposition?.object?.defaultShowLink}>
               {getObjectName(proposition?.object)}
@@ -99,17 +155,26 @@ const DetailsModalBody = ({ proposition, requirements, agreementObjects }) => {
             ;
           </li>
           {proposition?.requirements.receiptPhoto && (
-            <li>Photo of the receipt (without personal details);</li>
+            <li>
+              {intl.formatMessage({
+                id: 'rewards_details_photo_the_receipt',
+                defaultMessage: 'Photo of the receipt (without personal details);',
+              })}
+            </li>
           )}
           <li>
-            <span className="nowrap">Link to</span>
+            <span className="nowrap">
+              {intl.formatMessage({ id: 'rewards_details_link_to', defaultMessage: 'Link to' })}
+            </span>
             <Link className="ml1 DetailsModal__container" to={proposition?.object?.defaultShowLink}>
               {getObjectName(proposition?.object)}
             </Link>
             ;
           </li>
           <li>
-            <span className="nowrap">Link to</span>
+            <span className="nowrap">
+              {intl.formatMessage({ id: 'rewards_details_link_to', defaultMessage: 'Link to' })}
+            </span>
             <Link className="ml1 DetailsModal__container" to={requiredObject?.defaultShowLink}>
               {getObjectName(requiredObject)}
             </Link>
@@ -117,24 +182,52 @@ const DetailsModalBody = ({ proposition, requirements, agreementObjects }) => {
           </li>
           {proposition?.description && (
             <li>
-              <span>Additional requirements/notes: {proposition?.description}</span>
+              <span>
+                {intl.formatMessage({
+                  id: 'rewards_details_additional_requirements',
+                  defaultMessage: 'Additional requirements/notes',
+                })}
+                : {proposition?.description}
+              </span>
             </li>
           )}
         </ol>
         <div className="DetailsModal__text mv3">
-          Sponsor reserves the right to refuse the payment if review is suspected to be fraudulent,
-          spam, poorly written or for other reasons as stated in the agreement.
+          {intl.formatMessage({
+            id: 'rewards_details_sponsor_reserves_payment',
+            defaultMessage:
+              'Sponsor reserves the right to refuse the payment if review is suspected to be fraudulent, spam, poorly written or for other reasons as stated in the agreement.',
+          })}
         </div>
       </div>
       {!proposition?.reserved && (
         <React.Fragment>
-          <div className="DetailsModal__text fw6 mv3">Reward:</div>
+          <div className="DetailsModal__text fw6 mv3">
+            {intl.formatMessage({ id: 'rewards_details_reward', defaultMessage: 'Reward' })}:
+          </div>
           <span>
-            The amount of the reward is determined in {proposition?.payoutToken} at the time of
-            reservation. The reward will be paid in the form of a combination of upvotes (
-            {proposition?.payoutToken} Power) and direct payments (liquid {proposition?.payoutToken}
-            ). Only upvotes from registered accounts (
-            <Link to={`/@${proposition?.guideName}`}>{`@${proposition?.guideName}`}</Link>
+            {intl.formatMessage({
+              id: 'the_amount_of_the_rewards',
+              defaultMessage: 'The amount of the reward is determined in',
+            })}{' '}
+            {proposition?.payoutToken}{' '}
+            {intl.formatMessage({
+              id: 'at_the_time_of_reservation',
+              defaultMessage:
+                'at the time of reservation. The reward will be paid in the form of a combination of upvotes',
+            })}{' '}
+            ({proposition?.payoutToken}{' '}
+            {intl.formatMessage({
+              id: 'power_and_direct_payments',
+              defaultMessage: 'Power) and direct payments (liquid',
+            })}{' '}
+            {proposition?.payoutToken}
+            ).{' '}
+            {intl.formatMessage({
+              id: 'only_upvotes',
+              defaultMessage: 'Only upvotes from registered accounts',
+            })}{' '}
+            (<Link to={`/@${proposition?.guideName}`}>{`@${proposition?.guideName}`}</Link>
             {!isEmpty(proposition?.matchBots) &&
               proposition?.matchBots?.map(bot => (
                 <React.Fragment key={bot}>
@@ -144,14 +237,24 @@ const DetailsModalBody = ({ proposition, requirements, agreementObjects }) => {
                   </Link>
                 </React.Fragment>
               ))}
-            ) count towards the payment of rewards. The value of all other upvotes is not subtracted
-            from the specified amount of the reward.
+            ){' '}
+            {intl.formatMessage({
+              id: 'count_towards',
+              defaultMessage:
+                'count towards the payment of rewards. The value of all other upvotes is not subtracted from the specified amount of the reward.',
+            })}
           </span>
           {(!isEmpty(agreementObjects) || proposition?.usersLegalNotice) && (
             <React.Fragment>
-              <div className="DetailsModal__text fw6 mv3">Legal:</div>
+              <div className="DetailsModal__text fw6 mv3">
+                {intl.formatMessage({ id: 'rewards_details_legal', defaultMessage: 'Legal' })}:
+              </div>
               <span>
-                By making the reservation, you confirm that you have read and agree to the{' '}
+                {intl.formatMessage({
+                  id: 'rewards_details_making_reservation',
+                  defaultMessage:
+                    'By making the reservation, you confirm that you have read and agree to the',
+                })}{' '}
                 {!isEmpty(agreementObjects) && (
                   <React.Fragment>
                     {agreementObjects?.map((obj, i, arr) => (
@@ -219,6 +322,9 @@ DetailsModalBody.propTypes = {
       id: PropTypes.string,
     }),
   }).isRequired,
+  intl: PropTypes.shape({
+    formatMessage: PropTypes.func,
+  }).isRequired,
 };
 
-export default DetailsModalBody;
+export default injectIntl(DetailsModalBody);
