@@ -668,6 +668,7 @@ class ObjectInfo extends React.Component {
                     objectFields.description,
                     description && (
                       <DescriptionInfo
+                        isEditMode={isEditMode}
                         description={description}
                         wobjPermlink={wobject.author_permlink}
                       />
@@ -755,7 +756,7 @@ class ObjectInfo extends React.Component {
             <div>
               {authorsBody?.map((a, i) => (
                 <span key={a.authorPermlink}>
-                  {a.defaultShowLink ? (
+                  {a.authorPermlink ? (
                     <Link to={`/object/${a.authorPermlink}`}>{a.name}</Link>
                   ) : (
                     <span>{a.name}</span>
@@ -790,7 +791,11 @@ class ObjectInfo extends React.Component {
           this.listItem(
             objectFields.description,
             description && (
-              <DescriptionInfo description={description} wobjPermlink={wobject.author_permlink} />
+              <DescriptionInfo
+                description={description}
+                isEditMode={isEditMode}
+                wobjPermlink={wobject.author_permlink}
+              />
             ),
           )}
         {!isEditMode &&
@@ -798,7 +803,11 @@ class ObjectInfo extends React.Component {
           this.listItem(
             objectFields.description,
             description && (
-              <DescriptionInfo description={description} wobjPermlink={wobject.author_permlink} />
+              <DescriptionInfo
+                description={description}
+                isEditMode={isEditMode}
+                wobjPermlink={wobject.author_permlink}
+              />
             ),
           )}
         {this.listItem(
@@ -1206,7 +1215,7 @@ class ObjectInfo extends React.Component {
             By{' '}
             {authorsBody?.map((a, i) => (
               <span key={a.id}>
-                {a.defaultShowLink ? (
+                {a.authorPermlink ? (
                   <Link to={`/object/${a.authorPermlink}`}>{a.name}</Link>
                 ) : (
                   <span>{a.name}</span>

@@ -22,7 +22,7 @@ const DescriptionPage = ({ match }) => {
       });
     }
 
-    getObject(wobjName).then(res => setWobject(res));
+    if (isEmpty(wobject)) getObject(wobjName).then(res => setWobject(res));
   }, [wobject.author_permlink]);
 
   return (
