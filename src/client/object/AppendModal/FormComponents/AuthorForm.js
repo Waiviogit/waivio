@@ -13,7 +13,6 @@ const AuthorForm = ({
   loading,
   selectedObject,
   getFieldRules,
-  isSomeValue,
   intl,
   onCreateObject,
   handleSelectObject,
@@ -26,9 +25,7 @@ const AuthorForm = ({
         initialValue: '',
       })(
         <Input
-          className={classNames('AppendForm__input', {
-            'validation-error': isSomeValue,
-          })}
+          className={classNames('AppendForm__input', {})}
           disabled={loading}
           placeholder={intl.formatMessage({
             id: 'author_name',
@@ -80,7 +77,6 @@ AuthorForm.propTypes = {
   onObjectCardDelete: PropTypes.func.isRequired,
   getFieldRules: PropTypes.func.isRequired,
   loading: PropTypes.bool.isRequired,
-  isSomeValue: PropTypes.bool.isRequired,
   selectedObject: PropTypes.shape().isRequired,
   intl: PropTypes.shape().isRequired,
 };
