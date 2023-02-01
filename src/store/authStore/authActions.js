@@ -16,6 +16,7 @@ import { notify } from '../../client/app/Notification/notificationActions';
 import history from '../../client/history';
 import { clearGuestAuthData, getGuestAccessToken } from '../../common/helpers/localStorageHelpers';
 import {
+  getAuthenticatedUserMetaData,
   getAuthenticatedUserName,
   getIsAuthenticated,
   getIsLoaded,
@@ -112,6 +113,9 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
   const isGuest = Boolean(guestAccessToken);
 
   if (isUserLoaded(state)) {
+    const userMetaData = getAuthenticatedUserMetaData(state);
+
+    dispatch(getCurrentCurrencyRate(userMetaData.settings.currency));
     promise = Promise.resolve(null);
   } else if (accessToken && socialNetwork) {
     promise = new Promise(async (resolve, reject) => {
