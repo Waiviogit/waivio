@@ -789,13 +789,17 @@ class ObjectInfo extends React.Component {
         {isEditMode &&
           this.listItem(
             objectFields.description,
-            description && <DescriptionInfo description={description} />,
+            description && (
+              <DescriptionInfo description={description} wobjPermlink={wobject.author_permlink} />
+            ),
           )}
         {!isEditMode &&
           !isOptionsObjectType &&
           this.listItem(
             objectFields.description,
-            description && <DescriptionInfo description={description} />,
+            description && (
+              <DescriptionInfo description={description} wobjPermlink={wobject.author_permlink} />
+            ),
           )}
         {this.listItem(
           objectFields.rating,
