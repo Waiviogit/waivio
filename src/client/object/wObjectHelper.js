@@ -75,10 +75,15 @@ export const sortListItemsBy = (
   let sorted = uniqBy(items, 'author_permlink').sort(comparator);
 
   if ((isCustomSorting || isRecencySorting) && !isEmpty(sortOrder)) {
+    const withoutSorting = sorted.filter(list => !sortOrder.includes(list.author_permlink));
+
     sorted = sortOrder
       .map(permlink => sorted.find(item => item.author_permlink === permlink))
       .filter(item => item);
+
+    sorted = [...sorted, ...withoutSorting];
   }
+
   const sortedByDate =
     sorted.every(item => has(item, 'addedAt')) && isSortByDateAdding
       ? orderBy(sorted, ['addedAt'], 'desc')
