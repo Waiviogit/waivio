@@ -112,7 +112,9 @@ export const setIsMobile = createAction(SET_IS_MOBILE);
 
 export const GET_CURRENT_APP_SETTINGS = createAsyncActionType('@app/GET_CURRENT_APP_SETTINGS');
 
-export const getCurrentAppSettings = () => dispatch => {
+export const getCurrentAppSettings = () => (dispatch, getState) => {
+  const isAuth = getAuthenticatedUserName(getState());
+
   dispatch({ type: GET_CURRENT_APP_SETTINGS.START });
 
   return ApiClient.getCurrentAppSettings()
@@ -130,10 +132,10 @@ export const getCurrentAppSettings = () => dispatch => {
         payload: res,
       });
       const { account, percent: weight } = res.beneficiary;
-      // if (!isAuth) dispatch(setLocale(res.language));
+
+      if (!isAuth) dispatch(getCurrentCurrencyRate(res.currency));
 
       dispatch(setBeneficiaryOwner([{ account, weight }]));
-      dispatch(getCurrentCurrencyRate(res.currency));
 
       return res;
     })
