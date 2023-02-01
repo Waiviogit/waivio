@@ -3,9 +3,8 @@ import { createAction } from 'redux-actions';
 import { createAsyncActionType } from '../../common/helpers/stateHelpers';
 import * as ApiClient from '../../waivioApi/ApiClient';
 import { setBeneficiaryOwner } from '../searchStore/searchActions';
-import { getAuthenticatedUserName, getIsAuthenticated } from '../authStore/authSelectors';
+import { getAuthenticatedUserName } from '../authStore/authSelectors';
 import { getCurrentCurrency } from './appSelectors';
-import { setLocale } from '../settingsStore/settingsActions';
 import { adaptMarketDataToEngine } from '../../common/helpers/cryptosHelper';
 import { ADAPT_MARKET_TO_ENGINE } from '../walletStore/walletActions';
 import { HBD, HIVE } from '../../common/constants/cryptos';
@@ -113,9 +112,7 @@ export const setIsMobile = createAction(SET_IS_MOBILE);
 
 export const GET_CURRENT_APP_SETTINGS = createAsyncActionType('@app/GET_CURRENT_APP_SETTINGS');
 
-export const getCurrentAppSettings = () => (dispatch, getState) => {
-  const isAuth = getIsAuthenticated(getState());
-
+export const getCurrentAppSettings = () => dispatch => {
   dispatch({ type: GET_CURRENT_APP_SETTINGS.START });
 
   return ApiClient.getCurrentAppSettings()
@@ -133,8 +130,7 @@ export const getCurrentAppSettings = () => (dispatch, getState) => {
         payload: res,
       });
       const { account, percent: weight } = res.beneficiary;
-
-      if (!isAuth) dispatch(setLocale(res.language));
+      // if (!isAuth) dispatch(setLocale(res.language));
 
       dispatch(setBeneficiaryOwner([{ account, weight }]));
       dispatch(getCurrentCurrencyRate(res.currency));

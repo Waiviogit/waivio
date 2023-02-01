@@ -225,6 +225,7 @@ const PropositionFooter = ({ type, openDetailsModal, proposition, getProposition
 
                 return Promise.resolve();
               }}
+              reservedDays={proposition?.countReservationDays}
               inCard
             />
             <span className="Proposition-new__details" onClick={openDetailsModal}>

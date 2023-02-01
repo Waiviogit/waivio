@@ -64,7 +64,8 @@ const ReservedButtons = props => {
                   })}{' '}
                   <span>
                     <span style={{ color: 'black' }}>
-                      7 {props.intl.formatMessage({ id: 'days', defaultMessage: 'days' })}{' '}
+                      {props.reservedDays}{' '}
+                      {props.intl.formatMessage({ id: 'days', defaultMessage: 'days' })}{' '}
                     </span>
                     {loading && <Icon type="loading" />}
                   </span>
@@ -87,6 +88,7 @@ ReservedButtons.propTypes = {
   disable: PropTypes.bool,
   reserved: PropTypes.bool,
   inCard: PropTypes.bool,
+  reservedDays: PropTypes.bool,
   intl: PropTypes.shape().isRequired,
 };
 

@@ -8,28 +8,26 @@ import { getLanguageText } from '../../../common/translations';
 import { saveSettings, setLocale } from '../../../store/settingsStore/settingsActions';
 import Popover from '../Popover';
 import PopoverMenu, { PopoverMenuItem } from '../PopoverMenu/PopoverMenu';
-import { getIsWaivio, getUsedLocale } from '../../../store/appStore/appSelectors';
+import { getUsedLocale } from '../../../store/appStore/appSelectors';
+import { setUsedLocale } from '../../../store/appStore/appActions';
 
 import './LanguageSettings.less';
-import { getIsAuthenticated } from '../../../store/authStore/authSelectors';
 
 @connect(
   state => ({
     usedLocale: getUsedLocale(state),
-    isWaivio: getIsWaivio(state),
-    isAuth: getIsAuthenticated(state),
   }),
   {
     saveSettings,
     setLocale,
+    setUsedLocale,
   },
 )
 class LanguageSettings extends React.Component {
   static propTypes = {
     usedLocale: PropTypes.string,
     setLocale: PropTypes.func,
-    // isWaivio: PropTypes.bool.isRequired,
-    // isAuth: PropTypes.bool.isRequired,
+    setUsedLocale: PropTypes.func,
   };
 
   static defaultProps = {
@@ -58,7 +56,9 @@ class LanguageSettings extends React.Component {
     this.setState({
       languageSettingsVisible: false,
     });
+
     this.props.setLocale(selectedLanguage);
+    this.props.setUsedLocale(selectedLanguage);
   }
 
   render() {
