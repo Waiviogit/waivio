@@ -325,7 +325,6 @@ class CreateObject extends React.Component {
           <div className="CreateObject__row align-right">
             <div role="presentation" className="CreateObject__button" onClick={this.toggleModal}>
               {openModalBtnText ||
-                this.props.withOpenModalBtn ||
                 this.props.intl.formatMessage({
                   id: 'create_new_object',
                   defaultMessage: 'create new object',
@@ -337,7 +336,7 @@ class CreateObject extends React.Component {
         {this.state.isModalOpen && (
           <Modal
             title={
-              this.props.withOpenModalBtn ||
+              openModalBtnText ||
               this.props.intl.formatMessage({
                 id: 'create_new_object',
                 defaultMessage: 'create new object',
