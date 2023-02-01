@@ -720,8 +720,9 @@ export default class AppendForm extends Component {
         fieldsObject = {
           ...fieldsObject,
           body: JSON.stringify({
-            name:
-              formValues[publisherFields.publisherName] || getObjectName(this.state.selectedObject),
+            name: !isEmpty(formValues[publisherFields.publisherName])
+              ? formValues[publisherFields.publisherName]
+              : undefined,
             authorPermlink: this.state.selectedObject?.author_permlink,
           }),
         };
@@ -730,9 +731,9 @@ export default class AppendForm extends Component {
         fieldsObject = {
           ...fieldsObject,
           body: JSON.stringify({
-            name:
-              formValues[manufacturerFields.manufacturerName] ||
-              getObjectName(this.state.selectedObject),
+            name: !isEmpty(formValues[manufacturerFields.manufacturerName])
+              ? formValues[manufacturerFields.manufacturerName]
+              : undefined,
             authorPermlink: this.state.selectedObject?.author_permlink,
           }),
         };
@@ -741,7 +742,9 @@ export default class AppendForm extends Component {
         fieldsObject = {
           ...fieldsObject,
           body: JSON.stringify({
-            name: formValues[brandFields.brandName] || getObjectName(this.state.selectedObject),
+            name: !isEmpty(formValues[brandFields.brandName])
+              ? formValues[brandFields.brandName]
+              : undefined,
             authorPermlink: this.state.selectedObject?.author_permlink,
           }),
         };
@@ -750,8 +753,9 @@ export default class AppendForm extends Component {
         fieldsObject = {
           ...fieldsObject,
           body: JSON.stringify({
-            name:
-              formValues[merchantFields.merchantName] || getObjectName(this.state.selectedObject),
+            name: !isEmpty(formValues[merchantFields.merchantName])
+              ? formValues[merchantFields.merchantName]
+              : undefined,
             authorPermlink: this.state.selectedObject?.author_permlink,
           }),
         };
@@ -760,7 +764,9 @@ export default class AppendForm extends Component {
         fieldsObject = {
           ...fieldsObject,
           body: JSON.stringify({
-            name: formValues[authorsFields.name] || this.state.selectedObject.name,
+            name: !isEmpty(formValues[authorsFields.name])
+              ? formValues[authorsFields.name]
+              : undefined,
             authorPermlink: this.state.selectedObject?.author_permlink,
           }),
         };
