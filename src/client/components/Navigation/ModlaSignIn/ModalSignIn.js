@@ -254,7 +254,7 @@ const ModalSignIn = ({
 
   const onSignUpClick = isOpen => {
     if (!isWaivio && domain) {
-      window.location.href = `https://${domain}/sign-in?host=${host}&locale=${usedLocale}`;
+      window.location.href = `https://${domain}/sign-in?host=${host}&usedLocale=${usedLocale}`;
     } else {
       setIsModalOpen(isOpen);
     }

@@ -69,7 +69,7 @@ export default function withAuthActions(WrappedComponent) {
       } else {
         const path = window.location.pathname === '/' ? '' : window.location.pathname;
 
-        window.location.href = `https://${this.props.domain}/sign-in?host=${this.props.host}${path}&locale=${this.props.usedLocale}`;
+        window.location.href = `https://${this.props.domain}/sign-in?host=${this.props.host}${path}&usedLocale=${this.props.usedLocale}`;
       }
     }
 

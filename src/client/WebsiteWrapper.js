@@ -167,7 +167,7 @@ class WebsiteWrapper extends React.PureComponent {
     const query = new URLSearchParams(this.props.location.search);
     const token = query.get('access_token');
     const provider = query.get('socialProvider');
-    const locale = query.get('locale');
+    const locale = query.get('usedLocale');
 
     this.props.getCurrentAppSettings().then(res => {
       this.props.getRate();
