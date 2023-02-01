@@ -15,6 +15,7 @@ const AuthorForm = ({
   getFieldRules,
   isSomeValue,
   intl,
+  onCreateObject,
   handleSelectObject,
   onObjectCardDelete,
 }) => (
@@ -64,7 +65,7 @@ const AuthorForm = ({
           isSingleType
           defaultObjectType="person"
           disabled
-          onCreateObject={handleSelectObject}
+          onCreateObject={onCreateObject}
           parentObject={{}}
         />
       </div>{' '}
@@ -74,6 +75,7 @@ const AuthorForm = ({
 
 AuthorForm.propTypes = {
   getFieldDecorator: PropTypes.func.isRequired,
+  onCreateObject: PropTypes.func.isRequired,
   handleSelectObject: PropTypes.func.isRequired,
   onObjectCardDelete: PropTypes.func.isRequired,
   getFieldRules: PropTypes.func.isRequired,

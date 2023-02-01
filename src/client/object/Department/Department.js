@@ -6,7 +6,7 @@ import DepartmentList from './DepartmentList';
 import './Department.less';
 
 const Department = ({ wobject, departments, isEditMode }) => (
-  <div className="flex-column">
+  <div className={isEditMode ? 'flex-column' : 'flex-column paddingBottom'}>
     {!isEditMode && !isEmpty(departments) && (
       <div className="CompanyId__title">
         <FormattedMessage id="departments" formattedMessage="Departments" />:{' '}

@@ -15,6 +15,7 @@ const ManufacturerForm = ({
   getFieldRules,
   intl,
   handleSelectObject,
+  onCreateObject,
   onObjectCardDelete,
 }) => (
   <>
@@ -60,7 +61,7 @@ const ManufacturerForm = ({
           isSingleType
           defaultObjectType="business"
           disabled
-          onCreateObject={handleSelectObject}
+          onCreateObject={onCreateObject}
           parentObject={{}}
         />
       </div>{' '}
@@ -71,10 +72,10 @@ const ManufacturerForm = ({
 ManufacturerForm.propTypes = {
   getFieldDecorator: PropTypes.func.isRequired,
   handleSelectObject: PropTypes.func.isRequired,
+  onCreateObject: PropTypes.func.isRequired,
   onObjectCardDelete: PropTypes.func.isRequired,
   getFieldRules: PropTypes.func.isRequired,
   loading: PropTypes.bool.isRequired,
-
   selectedObject: PropTypes.shape().isRequired,
   intl: PropTypes.shape().isRequired,
 };

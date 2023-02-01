@@ -15,6 +15,7 @@ const PublisherForm = ({
   getFieldRules,
   intl,
   handleSelectObject,
+  onCreateObject,
   onObjectCardDelete,
 }) => (
   <>
@@ -61,7 +62,7 @@ const PublisherForm = ({
           isSingleType
           defaultObjectType="business"
           disabled
-          onCreateObject={handleSelectObject}
+          onCreateObject={onCreateObject}
           parentObject={{}}
         />
       </div>{' '}
@@ -71,6 +72,7 @@ const PublisherForm = ({
 
 PublisherForm.propTypes = {
   getFieldDecorator: PropTypes.func.isRequired,
+  onCreateObject: PropTypes.func.isRequired,
   handleSelectObject: PropTypes.func.isRequired,
   onObjectCardDelete: PropTypes.func.isRequired,
   getFieldRules: PropTypes.func.isRequired,
