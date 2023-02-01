@@ -76,7 +76,6 @@ import {
   getBlogItems,
   getFormItems,
   getNewsFilterItems,
-  getObjectUrlForLink,
   getNewsFeedItems,
   sortAlphabetically,
 } from '../../../common/helpers/wObjectHelper';
@@ -763,8 +762,6 @@ export default class AppendForm extends Component {
           body: JSON.stringify({
             name: formValues[authorsFields.name] || this.state.selectedObject.name,
             authorPermlink: this.state.selectedObject?.author_permlink,
-            defaultShowLink:
-              this.state.selectedObject && getObjectUrlForLink(this.state.selectedObject),
           }),
         };
       }
