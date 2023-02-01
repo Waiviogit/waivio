@@ -45,6 +45,7 @@ import { getTokenRates } from '../store/walletStore/walletActions';
 import { hexToRgb } from '../common/helpers';
 import { initialColors } from './websites/constants/colors';
 import { getSwapEnginRates } from '../store/ratesStore/ratesAction';
+import { setLocale } from '../store/settingsStore/settingsActions';
 
 export const AppSharedContext = React.createContext({ usedLocale: 'en-US', isGuestUser: false });
 
@@ -71,6 +72,7 @@ export const AppSharedContext = React.createContext({ usedLocale: 'en-US', isGue
     setUsedLocale,
     dispatchGetAuthGuestBalance,
     getCurrentAppSettings,
+    setLocale,
     getTokenRates,
     getCryptoPriceHistory,
     getSwapEnginRates,
@@ -108,6 +110,7 @@ class WebsiteWrapper extends React.PureComponent {
       push: PropTypes.func,
     }).isRequired,
     getCryptoPriceHistory: PropTypes.func.isRequired,
+    setLocale: PropTypes.func.isRequired,
     getSwapEnginRates: PropTypes.func.isRequired,
   };
 
@@ -164,12 +167,14 @@ class WebsiteWrapper extends React.PureComponent {
     const query = new URLSearchParams(this.props.location.search);
     const token = query.get('access_token');
     const provider = query.get('socialProvider');
+    const locale = query.get('locale');
 
-    this.props.getCurrentAppSettings().then(() => {
+    this.props.getCurrentAppSettings().then(res => {
       this.props.getRate();
       this.props.getTokenRates('WAIV');
       this.props.getCryptoPriceHistory();
       this.props.getSwapEnginRates();
+      if (!this.props.username) this.props.setLocale(locale || res.language);
 
       this.props.login(token, provider).then(() => {
         batch(() => {

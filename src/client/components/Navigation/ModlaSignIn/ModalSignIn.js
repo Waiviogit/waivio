@@ -31,6 +31,7 @@ import {
 import {
   getCurrentHost,
   getIsWaivio,
+  getUsedLocale,
   getWebsiteParentHost,
 } from '../../../../store/appStore/appSelectors';
 import WebsiteSignIn from '../../../websites/WebsiteSignIn/WebsiteSignIn';
@@ -51,6 +52,7 @@ const ModalSignIn = ({
   currHost,
   isWaivio,
   domain,
+  usedLocale,
 }) => {
   const dispatch = useDispatch();
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -252,7 +254,7 @@ const ModalSignIn = ({
 
   const onSignUpClick = isOpen => {
     if (!isWaivio && domain) {
-      window.location.href = `https://${domain}/sign-in?host=${host}`;
+      window.location.href = `https://${domain}/sign-in?host=${host}&locale=${usedLocale}`;
     } else {
       setIsModalOpen(isOpen);
     }
@@ -301,6 +303,7 @@ ModalSignIn.propTypes = {
   handleLoginModalCancel: PropTypes.func,
   hideLink: PropTypes.bool,
   isButton: PropTypes.bool,
+  usedLocale: PropTypes.bool,
   setIsShowSignInModal: PropTypes.func,
   toCurrentWobjLink: PropTypes.string,
   buttonClassName: PropTypes.string,
@@ -327,4 +330,5 @@ export default connect(state => ({
   currHost: getCurrentHost(state),
   domain: getWebsiteParentHost(state),
   isWaivio: getIsWaivio(state),
+  usedLocale: getUsedLocale(state),
 }))(injectIntl(ModalSignIn));
