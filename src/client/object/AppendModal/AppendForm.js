@@ -1681,6 +1681,7 @@ export default class AppendForm extends Component {
       case objectFields.publisher: {
         return (
           <PublisherForm
+            onCreateObject={this.handleCreateObject}
             loading={loading}
             selectedObject={this.state.selectedObject}
             handleSelectObject={this.handleSelectObject}
@@ -1695,6 +1696,7 @@ export default class AppendForm extends Component {
         return (
           <ManufacturerForm
             loading={loading}
+            onCreateObject={this.handleCreateObject}
             selectedObject={this.state.selectedObject}
             handleSelectObject={this.handleSelectObject}
             getFieldRules={this.getFieldRules}
@@ -1707,6 +1709,7 @@ export default class AppendForm extends Component {
       case objectFields.brand: {
         return (
           <BrandForm
+            onCreateObject={this.handleCreateObject}
             loading={loading}
             selectedObject={this.state.selectedObject}
             handleSelectObject={this.handleSelectObject}
@@ -1720,6 +1723,7 @@ export default class AppendForm extends Component {
       case objectFields.merchant: {
         return (
           <MerchantForm
+            onCreateObject={this.handleCreateObject}
             loading={loading}
             selectedObject={this.state.selectedObject}
             handleSelectObject={this.handleSelectObject}
@@ -1734,6 +1738,7 @@ export default class AppendForm extends Component {
         return (
           <AuthorForm
             loading={loading}
+            onCreateObject={this.handleCreateObject}
             selectedObject={this.state.selectedObject}
             handleSelectObject={this.handleSelectObject}
             getFieldRules={this.getFieldRules}

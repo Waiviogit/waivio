@@ -15,6 +15,7 @@ const BrandForm = ({
   getFieldRules,
   intl,
   handleSelectObject,
+  onCreateObject,
   onObjectCardDelete,
 }) => (
   <>
@@ -61,7 +62,7 @@ const BrandForm = ({
           isSingleType
           defaultObjectType="business"
           disabled
-          onCreateObject={handleSelectObject}
+          onCreateObject={onCreateObject}
           parentObject={{}}
         />
       </div>{' '}
@@ -71,6 +72,7 @@ const BrandForm = ({
 
 BrandForm.propTypes = {
   getFieldDecorator: PropTypes.func.isRequired,
+  onCreateObject: PropTypes.func.isRequired,
   handleSelectObject: PropTypes.func.isRequired,
   onObjectCardDelete: PropTypes.func.isRequired,
   getFieldRules: PropTypes.func.isRequired,
