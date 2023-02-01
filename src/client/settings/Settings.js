@@ -72,7 +72,6 @@ export default class Settings extends React.Component {
     showNSFWPosts: PropTypes.bool,
     nightmode: PropTypes.bool,
     rewriteLinks: PropTypes.bool,
-    isWaivio: PropTypes.bool,
     reload: PropTypes.func,
     saveSettings: PropTypes.func,
     notify: PropTypes.func,
@@ -358,30 +357,28 @@ export default class Settings extends React.Component {
                 ))}
               </Select>
             </div>
-            {this.props.isWaivio && (
-              <div className="Settings__section">
-                <h3>
-                  <FormattedMessage id="base_currency" defaultMessage="Base currency" />
-                </h3>
-                <Select
-                  defaultValue={this.props.currency}
-                  style={{ width: '90px' }}
-                  onChange={currency => this.setState(() => ({ currency }))}
-                >
-                  {this.props.currencyList?.map(currency => (
-                    <Select.Option key={currency} value={currency}>
-                      {currency}
-                    </Select.Option>
-                  ))}
-                </Select>
-                <p>
-                  <FormattedMessage
-                    id="post_currency_info"
-                    defaultMessage="Base currency is used for displaying rewards, vote value and post earnings."
-                  />
-                </p>
-              </div>
-            )}
+            <div className="Settings__section">
+              <h3>
+                <FormattedMessage id="base_currency" defaultMessage="Base currency" />
+              </h3>
+              <Select
+                defaultValue={this.props.currency}
+                style={{ width: '90px' }}
+                onChange={currency => this.setState(() => ({ currency }))}
+              >
+                {this.props.currencyList?.map(currency => (
+                  <Select.Option key={currency} value={currency}>
+                    {currency}
+                  </Select.Option>
+                ))}
+              </Select>
+              <p>
+                <FormattedMessage
+                  id="post_currency_info"
+                  defaultMessage="Base currency is used for displaying rewards, vote value and post earnings."
+                />
+              </p>
+            </div>
             <div className="Settings__section">
               <h3>
                 <FormattedMessage id="nsfw_posts" defaultMessage="NSFW Posts" />
