@@ -41,6 +41,25 @@ export default (messageFactory, validators, userName, currency) => ({
       'The campaign parameters are specific to the type of campaign',
     ),
   },
+  campaignReach: {
+    name: 'reach',
+    label: messageFactory('campaign_reach', 'Campaign reach'),
+    rules: [
+      {
+        required: true,
+        message: messageFactory('select_campaign_reach', 'Please, select your campaign reach!'),
+      },
+    ],
+    select: messageFactory('select_campaign_reach_option', 'Select campaign reach'),
+    options: [
+      { message: messageFactory('global', 'Global'), value: 'global' },
+      { message: messageFactory('local', 'Local'), value: 'local' },
+    ],
+    caption: messageFactory(
+      'specific_campaign_parameters_reach',
+      'If the campaign has a local reach, make sure that the primary object has both longitude and latitude specified.',
+    ),
+  },
   baseCurrency: {
     name: 'baseCurrency',
     label: messageFactory('display_currency', 'Display currency'),

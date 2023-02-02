@@ -58,6 +58,7 @@ const CreateFormRenderer = props => {
     intl,
     handleCreateDuplicate,
     payoutToken,
+    reachType,
   } = props;
   const currentItemId = get(match, ['params', 'campaignId']);
   const currencyInfo = useSelector(state => getUserCurrencyBalance(state, 'WAIV'));
@@ -232,7 +233,26 @@ const CreateFormRenderer = props => {
           )}
           <div className="CreateReward__field-caption">{fields.campaignType.caption}</div>
         </Form.Item>
-
+        <Form.Item label={fields.campaignReach.label}>
+          {getFieldDecorator(fields.campaignReach.name, {
+            rules: fields.campaignReach.rules,
+            validateTrigger: ['onSubmit'],
+            initialValue: reachType,
+          })(
+            <Select
+              placeholder={fields.campaignReach.select}
+              onChange={handlers.handleSelectReach}
+              disabled={disabled}
+            >
+              {fields.campaignReach.options.map(opt => (
+                <Option key={opt.value} value={opt.value}>
+                  {opt.message}
+                </Option>
+              ))}
+            </Select>,
+          )}
+          <div className="CreateReward__field-caption">{fields.campaignReach.caption}</div>
+        </Form.Item>
         <Form.Item label={fields.baseCurrency.label}>
           {getFieldDecorator(fields.baseCurrency.name, {
             rules: fields.baseCurrency.rules,
@@ -646,6 +666,7 @@ CreateFormRenderer.propTypes = {
     removePrimaryObject: PropTypes.func.isRequired,
     handleAddSecondaryObjectToList: PropTypes.func.isRequired,
     removeSecondaryObject: PropTypes.func.isRequired,
+    handleSelectReach: PropTypes.func.isRequired,
     handleSetCompensationAccount: PropTypes.func.isRequired,
     removeCompensationAccount: PropTypes.func.isRequired,
     handleAddPageObject: PropTypes.func.isRequired,
@@ -669,6 +690,7 @@ CreateFormRenderer.propTypes = {
   loading: PropTypes.bool.isRequired,
   parentPermlink: PropTypes.string,
   currency: PropTypes.string.isRequired,
+  reachType: PropTypes.string.isRequired,
   payoutToken: PropTypes.string.isRequired,
   getFieldValue: PropTypes.func.isRequired,
   getFieldDecorator: PropTypes.func.isRequired,
