@@ -80,7 +80,9 @@ const PowerSwitcher = props => {
               if (props.handleAmountChange) props.handleAmountChange(e);
             }}
             type="number"
-            className="PowerSwitcher__amount"
+            className={
+              props.powerUpOrDown ? 'PowerSwitcher__up-down-amount' : 'PowerSwitcher__amount'
+            }
             suffix={
               <span
                 className="PowerSwitcher__max-button"
@@ -151,6 +153,7 @@ PowerSwitcher.propTypes = {
   getFieldValue: PropTypes.func.isRequired,
   withEst: PropTypes.bool.isRequired,
   selestDisable: PropTypes.bool,
+  powerUpOrDown: PropTypes.bool,
   powerVote: PropTypes.bool,
   handleBalanceClick: PropTypes.func.isRequired,
   handleAmountChange: PropTypes.func.isRequired,
@@ -160,6 +163,7 @@ PowerSwitcher.propTypes = {
 PowerSwitcher.defaultProps = {
   powerVote: false,
   selestDisable: false,
+  powerUpOrDown: false,
 };
 
 export default injectIntl(PowerSwitcher);
