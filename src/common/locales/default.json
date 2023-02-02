@@ -2162,6 +2162,7 @@
   "only_upvotes": "Only upvotes from registered accounts",
   "count_towards": "count towards the payment of rewards. The value of all other upvotes is not subtracted from the specified amount of the reward.",
   "reserve_the_rewards_for": "Reserve the reward for",
-  "do_not_reserve": "You can't reserve your own campaing"
-
+  "do_not_reserve": "You can't reserve your own campaing",
+  "add_to_my_shop": "Add to my shop",
+  "remove_from_my_shop": "Remove from my shop"
 }

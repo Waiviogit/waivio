@@ -24,6 +24,7 @@ import { followWobject, unfollowWobject } from '../../store/wObjectStore/wobjAct
 import { getIsWaivio } from '../../store/appStore/appSelectors';
 
 import '../components/ObjectHeader.less';
+import HeartButton from '../widgets/HeartButton';
 
 const WobjHeader = ({
   isEditMode,
@@ -98,6 +99,7 @@ const WobjHeader = ({
                     {wobject.youFollows && <BellButton wobj={wobject} />}
                   </React.Fragment>
                 )}
+                <HeartButton />
               </div>
             </div>
           </div>
