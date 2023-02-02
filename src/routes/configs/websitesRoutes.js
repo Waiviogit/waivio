@@ -222,7 +222,7 @@ const routes = host => ({
           component: Views.DescriptionPage,
         },
         {
-          path: '/options',
+          path: '/options/:category',
           exact: true,
           component: Views.OptionsPage,
         },

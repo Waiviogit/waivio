@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import classNames from 'classnames';
 import { useHistory } from 'react-router';
@@ -18,7 +18,6 @@ const optionsLimit = 15;
 
 const OptionItemView = ({ option, wobject, setHoveredOption }) => {
   const [hovered, setHovered] = useState({});
-  const [hasMore, setHasMore] = useState(false);
   const locale = useSelector(getLocale);
   const userName = useSelector(getAuthenticatedUserName);
   const activeStoreOption = useSelector(getActiveOption);
@@ -62,14 +61,7 @@ const OptionItemView = ({ option, wobject, setHoveredOption }) => {
     }
   };
 
-  useEffect(() => {
-    if (option[1]?.length > optionsLimit) {
-      setHasMore(true);
-    }
-  }, [option[1]?.length]);
-
   const getOptions = optionsList => optionsList?.slice(0, optionsLimit);
-  const onShowMoreClick = () => setHasMore(false);
 
   return (
     <div className="Options__block" key={option[0]}>
@@ -108,11 +100,10 @@ const OptionItemView = ({ option, wobject, setHoveredOption }) => {
           </span>
         ))}
       </>
-      {hasMore && (
+      {option[1]?.length > optionsLimit && (
         <LinkButton
           className="menu-btn mt2"
-          to={`/object/${wobject.author_permlink}/options`}
-          onClick={onShowMoreClick}
+          to={`/object/${wobject.author_permlink}/options/${option[0]}`}
         >
           <FormattedMessage id="show_all" defaultMessage="Show all" />
           <span className="ml1">({option[1].length})</span>
