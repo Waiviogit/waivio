@@ -222,6 +222,11 @@ const routes = host => ({
           component: Views.DescriptionPage,
         },
         {
+          path: '/options',
+          exact: true,
+          component: Views.OptionsPage,
+        },
+        {
           path: '/departments/:permlink',
           exact: true,
           component: Views.DepartmentsPage,

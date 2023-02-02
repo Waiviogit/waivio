@@ -615,7 +615,6 @@ class ObjectInfo extends React.Component {
               setHoveredOption={option => this.setState({ hoveredOption: option })}
               isEditMode={isEditMode}
               wobject={wobject}
-              history={this.props.history}
             />
           ),
         )}
