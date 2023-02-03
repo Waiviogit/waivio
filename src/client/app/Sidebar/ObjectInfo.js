@@ -136,7 +136,23 @@ class ObjectInfo extends React.Component {
     }
   }
   componentDidUpdate(prevProps) {
-    if (this.props.wobject.author_permlink !== prevProps.wobject.author_permlink) {
+    const {
+      author_permlink,
+      authors,
+      publisher,
+      manufacturer,
+      brand,
+      merchant,
+    } = this.props.wobject;
+
+    if (
+      author_permlink !== prevProps.wobject.author_permlink ||
+      publisher !== prevProps.wobject.publisher ||
+      authors !== prevProps.wobject.authors ||
+      manufacturer !== prevProps.wobject.manufacturer ||
+      brand !== prevProps.wobject.brand ||
+      merchant !== prevProps.wobject.merchant
+    ) {
       this.getPublisherManufacturerBrandMerchantObjects();
     }
   }

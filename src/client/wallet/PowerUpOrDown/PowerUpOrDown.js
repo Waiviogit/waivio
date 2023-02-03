@@ -221,6 +221,7 @@ export default class PowerUpOrDown extends React.Component {
           <Form className="PowerUpOrDown" hideRequiredMark>
             <Form.Item label={<FormattedMessage id="amount" defaultMessage="Amount" />}>
               <PowerSwitcher
+                powerUpOrDown
                 onChange={this.validateAmount}
                 handleAmountChange={this.handleAmountChange}
                 handleBalanceClick={this.handleBalanceClick}
