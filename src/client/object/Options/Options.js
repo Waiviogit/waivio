@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
-import { isEmpty } from 'lodash';
+import { uniqBy } from 'lodash';
 import { useSelector } from 'react-redux';
 import { getActiveOption } from '../../../store/optionsStore/optionsSelectors';
 import { isMobile } from '../../../common/helpers/apiHelpers';
@@ -26,25 +26,10 @@ const Options = ({ wobject, isEditMode, setHoveredOption }) => {
 
   const options = Object.entries(wobject?.options);
 
-  const filteredOptions = options.reduce((accumulator, currentValue) => {
-    // eslint-disable-next-line no-param-reassign
-    accumulator[currentValue[0]] = currentValue[1].reduce((a, v) => {
-      if (!isEmpty(a) && a.some(o => o.body.value === v.body.value)) {
-        return a;
-      }
-      const duplicatedOptionsArray = currentValue[1]?.filter(
-        i => i?.body?.value === v?.body?.value,
-      );
-      const r =
-        duplicatedOptionsArray.length > 1
-          ? duplicatedOptionsArray.filter(d => d.author_permlink === wobject.author_permlink)
-          : duplicatedOptionsArray;
-
-      return [...a, r[0] || duplicatedOptionsArray[0]].sort((o, b) => sortOptions(o, b));
-    }, []);
-
-    return accumulator;
-  }, {});
+  const filteredOptions = options.map(opt => [
+    opt[0],
+    uniqBy(uniqBy(opt[1], 'author_permlink'), 'body.value').sort((a, b) => sortOptions(a, b)),
+  ]);
 
   return (
     <div ref={optionsDiv}>
@@ -55,7 +40,7 @@ const Options = ({ wobject, isEditMode, setHoveredOption }) => {
           ))
         : wobject?.options && (
             <div>
-              {Object.entries(filteredOptions).map(option => (
+              {filteredOptions.map(option => (
                 <div key={option[0]}>
                   <OptionItemView
                     option={option}
