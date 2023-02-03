@@ -60,7 +60,6 @@ export default class Post extends React.Component {
     isAuthFetching: PropTypes.bool.isRequired,
     match: PropTypes.shape().isRequired,
     user: PropTypes.shape(),
-    edited: PropTypes.bool,
     content: PropTypes.shape(),
     fetching: PropTypes.bool,
     loaded: PropTypes.bool,
@@ -94,13 +93,10 @@ export default class Post extends React.Component {
   };
 
   componentDidMount() {
-    const { match, edited, fetching, loaded, failed, content } = this.props;
+    const { match, content } = this.props;
     const { author, permlink } = match.params;
-    const shouldUpdate = (!loaded && !failed) || edited;
 
-    if (shouldUpdate && !fetching) {
-      this.props.getContent(author, permlink, false);
-    }
+    this.props.getContent(author, permlink, false);
 
     if (!!content && match.params.category && typeof window !== 'undefined') {
       window.history.replaceState(

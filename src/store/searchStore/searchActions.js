@@ -163,19 +163,26 @@ export const searchObjectsAutoCompeteLoadingMore = (
 
   return dispatch({
     type: SEARCH_OBJECTS_LOADING_MORE_FOR_WEBSITE.ACTION,
-    payload: ApiClient.searchObjects(searchString, objType, forParent, 15, locale, body, skip).then(
-      res => {
-        dispatch(getFilterForSearch(objType, res.wobjects, true));
+    payload: ApiClient.searchObjects(
+      searchString,
+      objType,
+      forParent,
+      15,
+      locale,
+      body,
+      null,
+      skip,
+    ).then(res => {
+      dispatch(getFilterForSearch(objType, res.wobjects, true));
 
-        if (!res.hasMore && inBox && searchString) {
-          dispatch(setSearchInBox(false));
+      if (!res.hasMore && inBox && searchString) {
+        dispatch(setSearchInBox(false));
 
-          return { ...res, hasMore: true };
-        }
+        return { ...res, hasMore: true };
+      }
 
-        return res;
-      },
-    ),
+      return res;
+    }),
   }).catch(() => dispatch(setSearchInBox(false)));
 };
 
