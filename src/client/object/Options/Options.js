@@ -1,26 +1,17 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
-import { isEmpty } from 'lodash';
-import { useDispatch, useSelector } from 'react-redux';
-import classNames from 'classnames';
-import {
-  setStoreActiveCategory,
-  setStoreActiveOption,
-} from '../../../store/optionsStore/optionsActions';
+import { uniqBy } from 'lodash';
+import { useSelector } from 'react-redux';
 import { getActiveOption } from '../../../store/optionsStore/optionsSelectors';
 import { isMobile } from '../../../common/helpers/apiHelpers';
-import { getObject } from '../../../waivioApi/ApiClient';
-import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
-import { getLocale } from '../../../common/helpers/localStorageHelpers';
+import OptionItemEdit from './OptionItem/OptionItemEdit';
+import { sortOptions } from '../../../common/helpers/wObjectHelper';
+import OptionItemView from './OptionItem/OptionItemView';
 import './Options.less';
 
-const Options = ({ wobject, isEditMode, setHoveredOption, history }) => {
-  const [hovered, setHovered] = useState({});
-  const dispatch = useDispatch();
+const Options = ({ wobject, isEditMode, setHoveredOption }) => {
   const activeStoreOption = useSelector(getActiveOption);
   const optionsDiv = useRef();
-  const userName = useSelector(getAuthenticatedUserName);
-  const locale = useSelector(getLocale);
 
   useEffect(() => {
     const objectHeaderEl = document.getElementById('ObjectHeaderId');
@@ -33,150 +24,29 @@ const Options = ({ wobject, isEditMode, setHoveredOption, history }) => {
     }
   }, [wobject]);
 
-  const getOptionsPicturesClassName = el =>
-    classNames({
-      Options__pictures: el.author_permlink !== wobject.author_permlink,
-      'Options__my-pictures': el.author_permlink === wobject.author_permlink,
-      'Options__my-pictures-selected':
-        el.body?.image === activeStoreOption[el.body.category]?.body?.image,
-    });
-
-  const getOptionsClassName = el =>
-    classNames({
-      'Options__option-button': el.author_permlink !== wobject.author_permlink,
-      'Options__my-option-button': el.author_permlink === wobject.author_permlink,
-      'Options__my-option-button-selected':
-        activeStoreOption[el.body.category]?.body?.value === el.body?.value,
-    });
-
-  const onMouseOver = (e, el) => {
-    setHoveredOption(el);
-    setHovered({ ...hovered, [el.body.category]: el });
-  };
-  const onMouseOut = () => {
-    setHoveredOption(activeStoreOption);
-    setHovered(activeStoreOption);
-  };
-  const onOptionButtonClick = (e, el) => {
-    dispatch(setStoreActiveCategory(el.body.category));
-    setHoveredOption(el);
-    dispatch(setStoreActiveOption({ ...activeStoreOption, [el.body.category]: el }));
-    if (el.author_permlink !== wobject.author_permlink) {
-      getObject(el.author_permlink, userName, locale).then(obj =>
-        history.push(obj.defaultShowLink),
-      );
-      dispatch(setStoreActiveCategory(el.body.category));
-      dispatch(setStoreActiveOption({ ...activeStoreOption, [el.body.category]: el }));
-    }
-  };
   const options = Object.entries(wobject?.options);
 
-  const sortOptions = (c, b) => {
-    if (c.body.position && b.body.position) {
-      return c.body.position - b.body.position;
-    } else if (!c.body.position && !b.body.position) {
-      if (c.body.value < b.body.value) return -1;
-      if (c.body.value > b.body.value) return 1;
-
-      return 0;
-    }
-
-    return !c.body.position ? 1 : -1;
-  };
-
-  const filteredOptions = options.reduce((accumulator, currentValue) => {
-    // eslint-disable-next-line no-param-reassign
-    accumulator[currentValue[0]] = currentValue[1].reduce((a, v) => {
-      if (!isEmpty(a) && a.some(o => o.body.value === v.body.value)) {
-        return a;
-      }
-      const duplicatedOptionsArray = currentValue[1]?.filter(
-        i => i?.body?.value === v?.body?.value,
-      );
-      const r =
-        duplicatedOptionsArray.length > 1
-          ? duplicatedOptionsArray.filter(d => d.author_permlink === wobject.author_permlink)
-          : duplicatedOptionsArray;
-
-      return [...a, r[0] || duplicatedOptionsArray[0]].sort((o, b) => sortOptions(o, b));
-    }, []);
-
-    return accumulator;
-  }, {});
+  const filteredOptions = options.map(opt => [
+    opt[0],
+    uniqBy(uniqBy(opt[1], 'author_permlink'), 'body.value').sort((a, b) => sortOptions(a, b)),
+  ]);
 
   return (
     <div ref={optionsDiv}>
       {isEditMode
         ? wobject?.options &&
           Object.entries(wobject?.options).map(option => (
-            <div className="Options__block" key={option[0]}>
-              {' '}
-              {option[1].some(el => el.author_permlink === wobject.author_permlink) && (
-                <div className="Options__option-category">{option[0]}: </div>
-              )}
-              {option[1]
-                ?.sort((a, b) => sortOptions(a, b))
-                .map(
-                  el =>
-                    el.author_permlink === wobject.author_permlink && (
-                      <div key={el.author_permlink}>
-                        {el.body.position}
-                        {el.body.position ? '.' : ''} {el.body.value}{' '}
-                        {el.body.image && (
-                          <div>
-                            <img
-                              className="Options__my-pictures"
-                              src={el.body.image}
-                              alt="option"
-                              key={el.permlink}
-                            />
-                          </div>
-                        )}
-                      </div>
-                    ),
-                )}
-            </div>
+            <OptionItemEdit key={option[0]} option={option} wobject={wobject} />
           ))
         : wobject?.options && (
             <div>
-              {Object.entries(filteredOptions).map(option => (
-                <div className="Options__block" key={option[0]}>
-                  {' '}
-                  <div className="Options__option-category">
-                    {option[0]}:{' '}
-                    <span className="fw8">
-                      {hovered?.[option[0]]?.body?.value ||
-                        activeStoreOption?.[option[0]]?.body?.value}
-                    </span>
-                  </div>
-                  <>
-                    {option[1]?.map(el => (
-                      <span key={el.permlink}>
-                        {el.body.image ? (
-                          <img
-                            onMouseOver={e => onMouseOver(e, el)}
-                            onMouseOut={onMouseOut}
-                            onClick={e => onOptionButtonClick(e, el)}
-                            className={getOptionsPicturesClassName(el)}
-                            src={el.body.image}
-                            alt="option"
-                            key={el.permlink}
-                          />
-                        ) : (
-                          <button
-                            key={el.permlink}
-                            onMouseOver={e => onMouseOver(e, el)}
-                            onMouseOut={onMouseOut}
-                            value={el.body.value}
-                            onClick={e => onOptionButtonClick(e, el)}
-                            className={getOptionsClassName(el)}
-                          >
-                            {el.body.value}
-                          </button>
-                        )}{' '}
-                      </span>
-                    ))}
-                  </>
+              {filteredOptions.map(option => (
+                <div key={option[0]}>
+                  <OptionItemView
+                    option={option}
+                    wobject={wobject}
+                    setHoveredOption={setHoveredOption}
+                  />
                 </div>
               ))}
             </div>
@@ -189,7 +59,6 @@ Options.propTypes = {
   wobject: PropTypes.shape().isRequired,
   isEditMode: PropTypes.bool.isRequired,
   setHoveredOption: PropTypes.func.isRequired,
-  history: PropTypes.func.isRequired,
 };
 
 export default Options;

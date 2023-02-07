@@ -3089,7 +3089,7 @@ export const getNestedDepartmentFields = ({ name, names, excluded }) => {
 };
 
 export const getObjectsByDepartment = (departments, skip, limit) => {
-  return fetch(`${config.apiPrefix}${config.departments}/wobjects`, {
+  return fetch(`${config.apiPrefix}${config.departments}/${config.wobjects}`, {
     headers,
     method: 'POST',
     body: JSON.stringify({
@@ -3148,5 +3148,21 @@ export const getNewsPermlinkByObjectName = ({
     .then(res => res.json())
     .then(posts => posts)
     .catch(error => error);
+
+export const getObjectOptions = (groupId, category, skip, limit) => {
+  return fetch(`${config.apiPrefix}${config.wobjects}${config.options}`, {
+    headers,
+    method: 'POST',
+    body: JSON.stringify({
+      groupId,
+      category,
+      skip,
+      limit,
+    }),
+  })
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+};
 
 export default null;
