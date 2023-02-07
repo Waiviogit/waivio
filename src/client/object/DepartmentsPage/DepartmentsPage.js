@@ -12,31 +12,31 @@ const limit = 10;
 
 const DepartmentsPage = () => {
   const [hasMore, setHasMore] = useState(false);
-  const [filteredObjects, setFilteredObjects] = useState([]);
+  const [optionsList, setOptionsList] = useState([]);
   const activeDepartment = useSelector(getActiveDepartment);
 
   useEffect(() => {
-    setFilteredObjects([]);
+    setOptionsList([]);
     window.scrollTo(0, 0);
 
     if (!isEmpty(activeDepartment))
       getObjectsByDepartment([activeDepartment.name], 0, limit).then(r => {
         setHasMore(r.hasMore);
-        setFilteredObjects(r.wobjects);
+        setOptionsList(r.wobjects);
       });
   }, [activeDepartment]);
 
   const loadMoreRelatedObjects = () => {
-    getObjectsByDepartment([activeDepartment.name], filteredObjects.length, limit).then(r => {
+    getObjectsByDepartment([activeDepartment.name], optionsList.length, limit).then(r => {
       setHasMore(r.hasMore);
-      setFilteredObjects([...filteredObjects, ...r.wobjects]);
+      setOptionsList([...optionsList, ...r.wobjects]);
     });
   };
 
   return (
     <>
-      <div className="Department__prefix">
-        <div className="Department__prefix-content">
+      <div className="ObjectCardView__prefix">
+        <div className="ObjectCardView__prefix-content">
           <FormattedMessage id="department" defaultMessage="Department" />: {activeDepartment.name}
         </div>
       </div>
@@ -47,7 +47,7 @@ const DepartmentsPage = () => {
         initialLoad={false}
         hasMore={hasMore}
       >
-        {filteredObjects?.map(wObj => (
+        {optionsList?.map(wObj => (
           <ObjectCardView key={wObj._id} wObject={wObj} passedParent={wObj.parent} />
         ))}
       </InfiniteScroll>
