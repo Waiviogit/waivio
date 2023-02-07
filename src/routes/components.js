@@ -12,6 +12,7 @@ export default {
   FollowingUserRewards: loableComponent(
     import('../client/newRewards/RewardLists/FollowingUserRewards'),
   ),
+  LocalRewardsList: loableComponent(import('../client/newRewards/RewardLists/LocalRewardsList')),
   ReservedProposition: loableComponent(
     import('../client/newRewards/PropositionLists/ReservedProposition'),
   ),
@@ -26,7 +27,6 @@ export default {
     import('../client/newRewards/Debts/ReceivablesListByUser'),
   ),
   PayblesListByUser: loableComponent(import('../client/newRewards/Debts/PayblesListByUser')),
-  EligibleRewards: loableComponent(import('../client/newRewards/RewardLists/EligibleRewards')),
   AllProposition: loableComponent(import('../client/newRewards/PropositionLists/AllPropositions')),
   MessageList: loableComponent(import('../client/newRewards/PropositionLists/MessageList')),
   FraudDetectionNew: loableComponent(
@@ -45,7 +45,6 @@ export default {
   RewardsManage: loableComponent(
     import('../client/newRewards/ManageCampaingsTab/ManageCampaingsTab'),
   ),
-  RewardsAll: loableComponent(import('../client/newRewards/RewardLists/RewardsAll')),
   Drafts: loableComponent(import('../client/post/Write/Drafts')),
   Replies: loableComponent(import('../client/replies/Replies')),
   Activity: loableComponent(import('../client/activity/Activity')),
