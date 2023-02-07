@@ -91,6 +91,7 @@ class ObjectInfo extends React.Component {
     setStoreGroupId: PropTypes.func.isRequired,
     setStoreActiveOption: PropTypes.func.isRequired,
     locale: PropTypes.func.isRequired,
+    children: PropTypes.node.isRequired,
   };
 
   static defaultProps = {
@@ -1281,6 +1282,7 @@ class ObjectInfo extends React.Component {
             {!isHashtag && aboutSection}
             {accessExtend && hasType(wobject, OBJECT_TYPE.LIST) && listSection}
             {accessExtend && settingsSection}
+            {this.props.children}
             <ObjectInfoExperts wobject={wobject} />
           </div>
         )}
