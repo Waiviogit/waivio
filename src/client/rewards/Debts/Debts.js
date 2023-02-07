@@ -9,8 +9,13 @@ import { sortDebtObjsData } from '../rewardsHelper';
 import PaymentList from '../Payment/PaymentList';
 import { getTokenRatesInUSD } from '../../../store/walletStore/walletSelectors';
 import FiltersForMobile from '../../newRewards/Filters/FiltersForMobile';
+import { guestUserRegex } from '../../../common/helpers/regexHelpers';
+import { fixedNumber } from '../../../common/helpers/parser';
+import { createQuery } from '../../../common/helpers/apiHelpers';
+import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 
 import './Debts.less';
+import Action from '../../components/Button/Action';
 
 const Debts = ({
   intl,
@@ -24,6 +29,7 @@ const Debts = ({
   const [sort, setSort] = useState('amount');
   const [sortedDebtObjsData, setSortedDebtObjsData] = useState([]);
   const currentUSDPrice = useSelector(state => getTokenRatesInUSD(state, payoutToken));
+  const authUserName = useSelector(getAuthenticatedUserName);
   const payable = debtObjsData?.payable || debtObjsData?.totalPayable;
   const handleSortChange = sortBy => {
     const sortedData = sortDebtObjsData(debtObjsData.histories, sortBy);
@@ -55,6 +61,36 @@ const Debts = ({
 
   const renderData = getRenderData();
 
+  const handlePayAll = () => {
+    const jsons = renderData?.reduce((acc, curr) => {
+      if (!curr.payable) return acc;
+
+      const memo = guestUserRegex.test(curr?.userName) ? 'guestCampaignReward' : 'campaignReward';
+      const json = JSON.stringify({
+        contractName: 'tokens',
+        contractAction: 'transfer',
+        contractPayload: {
+          symbol: 'WAIV',
+          to: curr?.userName,
+          memo,
+          quantity: fixedNumber(parseFloat(curr.payable), 8).toString(),
+        },
+      });
+
+      return [...acc, json];
+    }, []);
+
+    window.open(
+      `https://hivesigner.com/sign/custom_json?authority=active&required_auths=["${authUserName}"]&required_posting_auths=[]&${createQuery(
+        {
+          id: 'ssc-mainnet-hive',
+          json: jsons,
+        },
+      )}`,
+      '_blank',
+    );
+  };
+
   return (
     <React.Fragment>
       <div className="Debts">
@@ -67,6 +103,9 @@ const Debts = ({
             : {payable ? round(payable, 2) : 0} {payoutToken}{' '}
             {currentUSDPrice && payable ? `($${round(currentUSDPrice * payable, 2)})` : ''}
           </div>
+          <Action disabled={!payable} className="Debts__payAll" primary onClick={handlePayAll}>
+            Pay all
+          </Action>
         </div>
         <div className="Debts__sort">{sortSelector}</div>
         <div className="Debts__filters-tags-block">

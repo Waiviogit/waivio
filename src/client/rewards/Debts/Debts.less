@@ -1,5 +1,4 @@
-@import (reference) '../../styles/modules/variables.less';
-@import (reference) '../../styles/mixins.less';
+@import (reference) '../../styles/mixins';
 
 .Debts {
   display: flex;
@@ -21,6 +20,7 @@
     display: flex;
     align-items: center;
     padding-bottom: 15px;
+    justify-content: space-between;
 
     &-total-title {
       font-size: 1.7em;
@@ -56,5 +56,10 @@
     &-modal {
       .filters-ant-modal();
     }
+  }
+
+  &__payAll {
+    margin-left: 15px;
+    width: 25%;
   }
 }
