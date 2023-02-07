@@ -220,7 +220,7 @@ const CreateFormRenderer = props => {
         <Form.Item label={fields.campaignType.label}>
           {getFieldDecorator(fields.campaignType.name, {
             rules: fields.campaignType.rules,
-            validateTrigger: ['onSubmit'],
+            validateTrigger: ['onSubmit', 'onChange', 'onBlur'],
             initialValue: campaignType,
           })(
             <Select
@@ -236,7 +236,7 @@ const CreateFormRenderer = props => {
         <Form.Item label={fields.campaignReach.label}>
           {getFieldDecorator(fields.campaignReach.name, {
             rules: fields.campaignReach.rules,
-            validateTrigger: ['onSubmit'],
+            validateTrigger: ['onSubmit', 'onChange', 'onBlur'],
             initialValue: reachType,
           })(
             <Select

@@ -132,13 +132,19 @@ const RenderPropositionList = ({
   const onClose = () => setVisible(false);
 
   if (loading && isEmpty(propositions)) return <Loading />;
+  let parentLink = `/rewards/${tab}`;
+
+  if (['all', 'eligible'].includes(tab)) {
+    parentLink =
+      tab === 'all' ? `/rewards/${match.params[0]}?showAll=true` : `/rewards/${match.params[0]}`;
+  }
 
   return (
     <div className="PropositionList">
       <div className="PropositionList__feed">
         <FiltersForMobile setVisible={setVisible} />
         <div className="PropositionList__breadcrumbs">
-          <Link className="PropositionList__page" to={`/rewards/${tab}`}>
+          <Link className="PropositionList__page" to={parentLink}>
             {intl.formatMessage({ id: `${tab}_rewards_new` })}
           </Link>
           {requiredObject && (

@@ -237,7 +237,7 @@ const routes = host => ({
       component: RewardsMainPage,
       path: [
         `/rewards/(details|duplicate|create})/:campaignId?`,
-        `/rewards/(all|eligible)/:requiredObject?`,
+        `/rewards/(local|global)/(all|eligible)?/:requiredObject?`,
         `/rewards/(payable|receivable)/@:userName`,
         `/rewards/(${URL.NEW_REWARDS.tabs})`,
       ],
@@ -250,14 +250,9 @@ const routes = host => ({
           component: Views.RewardsManage,
         },
         {
-          path: '/all',
+          path: '/(global|local)',
           exact: true,
-          component: Views.RewardsAll,
-        },
-        {
-          path: '/eligible',
-          exact: true,
-          component: Views.EligibleRewards,
+          component: Views.LocalRewardsList,
         },
         {
           path: '/(details|duplicate|create)/:campaignId?',
@@ -265,12 +260,12 @@ const routes = host => ({
           component: Views.CreateRewards,
         },
         {
-          path: '/all/:requiredObject?',
+          path: '/(global|local)/all/:requiredObject?',
           exact: true,
           component: Views.AllProposition,
         },
         {
-          path: '/eligible/:requiredObject?',
+          path: '/(global|local)/eligible/:requiredObject?',
           exact: true,
           component: Views.EligibleProposition,
         },
