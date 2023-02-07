@@ -192,5 +192,6 @@
   "departments": "/departments",
   "blogTags": "/blog-tags",
   "names": "/names",
-  "newsfeed": "/newsfeed"
+  "newsfeed": "/newsfeed",
+  "authorityFields": "/authority-fields"
 }

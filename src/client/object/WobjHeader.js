@@ -99,7 +99,7 @@ const WobjHeader = ({
                     {wobject.youFollows && <BellButton wobj={wobject} />}
                   </React.Fragment>
                 )}
-                <HeartButton />
+                <HeartButton wobject={wobject} />
               </div>
             </div>
           </div>

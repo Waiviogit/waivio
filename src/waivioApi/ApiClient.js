@@ -3148,4 +3148,13 @@ export const getNewsPermlinkByObjectName = ({
     .then(posts => posts)
     .catch(error => error);
 
+export const getAuthorityFields = permlink =>
+  fetch(`${config.apiPrefix}${config.getObjects}/${permlink}${config.authorityFields}`, {
+    headers,
+    method: 'GET',
+  })
+    .then(res => res.json())
+    .then(posts => posts)
+    .catch(error => error);
+
 export default null;
