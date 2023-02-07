@@ -8,8 +8,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getObjectName } from '../../common/helpers/wObjectHelper';
 import { getAuthenticatedUser } from '../../store/authStore/authSelectors';
 import { getLocale } from '../../store/settingsStore/settingsSelectors';
-import { getAuthorityFields, postAppendWaivioObject } from '../../waivioApi/ApiClient';
-import { voteAppends } from '../../store/appendStore/appendActions';
+import { getAuthorityFields } from '../../waivioApi/ApiClient';
+import { appendObject, voteAppends } from '../../store/appendStore/appendActions';
 
 const HeartButton = ({ wobject }) => {
   const [activeHeart, setActiveHeart] = useState(false);
@@ -17,6 +17,8 @@ const HeartButton = ({ wobject }) => {
   const user = useSelector(getAuthenticatedUser);
   const language = useSelector(getLocale);
   const dispatch = useDispatch();
+  const upVotePower = 10000;
+  const downVotePower = 9999;
   const tooltipTitle = activeHeart ? (
     <FormattedMessage id="remove_from_my_shop" defaultMessage="Remove from my shop" />
   ) : (
@@ -31,37 +33,37 @@ const HeartButton = ({ wobject }) => {
     }
   }, [wobject.authority]);
 
-  const getWobjectData = () => {
-    const data = {};
-
-    data.author = user?.name;
-    data.parentAuthor = wobject.author;
-    data.parentPermlink = wobject.author_permlink;
-    data.body = `@${user.name} added authority: administrative`;
-    data.title = '';
-    data.lastUpdated = Date.now();
-    data.wobjectName = getObjectName(wobject);
-    data.votePower = 10000;
-    data.field = { body: 'administrative', locale: language, name: 'authority' };
-    data.permlink = `${data.author}-${Math.random()
+  const getWobjectData = () => ({
+    author: user.name,
+    parentAuthor: wobject.author,
+    parentPermlink: wobject.author_permlink,
+    body: `@${user.name} added authority: administrative`,
+    title: '',
+    lastUpdated: Date.now(),
+    wobjectName: getObjectName(wobject),
+    votePower: upVotePower,
+    field: { body: 'administrative', locale: language, name: 'authority' },
+    permlink: `${user?.name}-${Math.random()
       .toString(36)
-      .substring(2)}`;
-
-    return data;
-  };
+      .substring(2)}`,
+  });
 
   const onHeartClick = () => {
     if (isEmpty(postInfo)) {
       const data = getWobjectData();
 
-      postAppendWaivioObject(data);
+      dispatch(appendObject(data, { votePercent: upVotePower }));
     }
     if (!isEmpty(postInfo)) {
       const [authority] = postInfo;
 
-      authority.weight > 0
-        ? dispatch(voteAppends(authority.author, authority.permlink, 9999))
-        : dispatch(voteAppends(authority.author, authority.permlink, 10000));
+      dispatch(
+        voteAppends(
+          authority.author,
+          authority.permlink,
+          authority.weight > 0 ? downVotePower : upVotePower,
+        ),
+      );
     }
     setActiveHeart(!activeHeart);
   };
