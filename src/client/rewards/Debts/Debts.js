@@ -4,6 +4,7 @@ import { FormattedMessage, injectIntl } from 'react-intl';
 import { capitalize, isEmpty, round } from 'lodash';
 import { useDispatch, useSelector } from 'react-redux';
 import { Modal } from 'antd';
+import { useRouteMatch } from 'react-router';
 
 import SortSelector from '../../components/SortSelector/SortSelector';
 import { sortDebtObjsData } from '../rewardsHelper';
@@ -40,7 +41,9 @@ const Debts = ({
   const currentUSDPrice = useSelector(state => getTokenRatesInUSD(state, payoutToken));
   const balance = useSelector(state => getUserCurrencyBalance(state, 'WAIV')?.balance);
   const authUserName = useSelector(getAuthenticatedUserName);
+  const match = useRouteMatch();
   const payable = debtObjsData?.payable || debtObjsData?.totalPayable;
+  const pathPaybles = match.path.includes('payable');
 
   useEffect(() => {
     dispatch(getTokenBalance('WAIV', authUserName));
@@ -120,14 +123,16 @@ const Debts = ({
             : {payable ? round(payable, 2) : 0} {payoutToken}{' '}
             {currentUSDPrice && payable ? `($${round(currentUSDPrice * payable, 2)})` : ''}
           </div>
-          <Action
-            disabled={!payable}
-            className="Debts__payAll"
-            primary
-            onClick={() => setShowModal(true)}
-          >
-            Pay all
-          </Action>
+          {pathPaybles && (
+            <Action
+              disabled={!payable}
+              className="Debts__payAll"
+              primary
+              onClick={() => setShowModal(true)}
+            >
+              Pay all
+            </Action>
+          )}
         </div>
         <div className="Debts__sort">{sortSelector}</div>
         <div className="Debts__filters-tags-block">
