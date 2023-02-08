@@ -3129,12 +3129,12 @@ export const getNewsPermlinkByObjectName = ({
     .then(posts => posts)
     .catch(error => error);
 
-export const getObjectOptions = (groupId, category, skip, limit) => {
+export const getObjectOptions = (authorPermlink, category, skip, limit) => {
   return fetch(`${config.apiPrefix}${config.wobjects}${config.options}`, {
     headers,
     method: 'POST',
     body: JSON.stringify({
-      groupId,
+      authorPermlink,
       category,
       skip,
       limit,
@@ -3143,6 +3143,13 @@ export const getObjectOptions = (groupId, category, skip, limit) => {
     .then(res => res.json())
     .then(response => response)
     .catch(e => e);
+};
+export const searchDepartments = (searchString, limit, skip) => {
+  return fetch(`${config.apiPrefix}${config.departments}${config.search}`, {
+    headers,
+    method: 'POST',
+    body: JSON.stringify({ searchString: searchString, limit, skip }),
+  }).then(res => res.json());
 };
 
 export default null;

@@ -120,6 +120,7 @@ import BrandForm from './FormComponents/BrandForm';
 import MerchantForm from './FormComponents/MerchantForm';
 import AuthorForm from './FormComponents/AuthorForm';
 import './AppendForm.less';
+import SearchDepartmentAutocomplete from '../../components/SearchDepartmentAutocomplete/SearchDepartmentAutocomplete';
 
 @connect(
   state => ({
@@ -1899,15 +1900,9 @@ export default class AppendForm extends Component {
             {getFieldDecorator(objectFields.departments, {
               rules: this.getFieldRules(objectFields.departments),
             })(
-              <Input
-                className={classNames('AppendForm__input', {
-                  'validation-error': !this.state.isSomeValue,
-                })}
+              <SearchDepartmentAutocomplete
                 disabled={loading}
-                placeholder={intl.formatMessage({
-                  id: 'department',
-                  defaultMessage: 'Department',
-                })}
+                setFieldsValue={this.props.form.setFieldsValue}
               />,
             )}
             <p>
