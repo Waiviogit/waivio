@@ -85,6 +85,7 @@ const RewardsMap = ({ getPoints, defaultCenter, parent, visible, onClose, intl }
     boundsParams.topPoint[1],
     boundsParams.bottomPoint[0],
     boundsParams.bottomPoint[1],
+    history.location.pathname,
   ]);
 
   const setSearchArea = () => {

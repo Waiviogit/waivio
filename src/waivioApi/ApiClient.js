@@ -1908,24 +1908,6 @@ export const getTypesPrefetch = types => {
     .catch(e => e);
 };
 
-export const getEligibleList = (userName, requiredObject) => {
-  return fetch(`${config.campaignApiPrefix}${config.campaigns}${config.eligible}`, {
-    headers: headers,
-    body: JSON.stringify({
-      userName,
-      requiredObject,
-      skip: 0,
-      limit: 25,
-      sort: 'default',
-      status: ['active'],
-    }),
-    method: 'POST',
-  })
-    .then(handleErrors)
-    .then(res => res.json())
-    .catch(e => e);
-};
-
 export const getMapExperts = (userName, params) => {
   return fetch(`${config.apiPrefix}${config.wobjects}${config.map}${config.experts}`, {
     headers: {
@@ -1950,19 +1932,6 @@ export const getPostsForMap = params => {
     .then(handleErrors)
     .then(res => res.json())
     .catch(e => e);
-};
-
-export const getAllCampaingForRequiredObject = params => {
-  return (
-    fetch(`${config.apiPrefix}${config.wobjects}${config.campaign}${config.requiredObject}`, {
-      headers,
-      body: JSON.stringify(params),
-      method: 'POST',
-    })
-      // .then(handleErrors)
-      .then(res => res.json())
-      .catch(e => Promise.reject(e))
-  );
 };
 
 const hiveEngineContract = params =>
@@ -2386,9 +2355,9 @@ export const getCampaingHistoryList = (giudeName, skip = 0) => {
     .catch(e => e);
 };
 
-export const getAllRewardList = (skip = 0, query, sort) => {
+export const getAllRewardList = (skip = 0, query, sort, reach) => {
   return fetch(
-    `${config.campaignV2ApiPrefix}${config.rewards}${config.all}?limit=10&skip=${skip}&sort=${sort}${query}`,
+    `${config.campaignV2ApiPrefix}${config.rewards}${config.all}?limit=10&skip=${skip}&reach=${reach}&sort=${sort}${query}`,
     {
       headers,
       method: 'GET',
@@ -2458,9 +2427,9 @@ export const getReservedRewardList = (userName, skip = 0) => {
     .catch(e => e);
 };
 
-export const getEligibleRewardList = (userName, skip = 0, query, sort) => {
+export const getEligibleRewardList = (userName, skip = 0, query, sort, reach) => {
   return fetch(
-    `${config.campaignV2ApiPrefix}${config.rewards}${config.eligible}?userName=${userName}&limit=10&skip=${skip}&sort=${sort}${query}`,
+    `${config.campaignV2ApiPrefix}${config.rewards}${config.eligible}?userName=${userName}&limit=10&skip=${skip}&sort=${sort}&reach=${reach}${query}`,
     {
       headers,
       method: 'GET',
@@ -2478,11 +2447,12 @@ export const getPropositionByCampaingObjectPermlink = (
   skip = 0,
   query,
   sort = 'payout',
+  reach,
 ) => {
   return fetch(
     `${config.campaignV2ApiPrefix}${config.rewards}${
       config.all
-    }/object/${parentPermlink}?limit=10&skip=${skip}&sort=${sort}${
+    }/object/${parentPermlink}?limit=10&skip=${skip}&sort=${sort}&reach=${reach}${
       userName ? `&userName=${userName}` : ''
     }${query}`,
     {
@@ -2565,13 +2535,14 @@ export const getEligiblePropositionByCampaingObjectPermlink = (
   skip = 0,
   query,
   sort,
+  reach,
 ) => {
   return fetch(
     `${config.campaignV2ApiPrefix}${config.rewards}${
       config.eligible
     }/object/${parentPermlink}?limit=10&skip=${skip}${
       userName ? `&userName=${userName}` : ''
-    }${query}&sort=${sort}`,
+    }${query}&sort=${sort}&reach=${reach}`,
     {
       headers,
       method: 'GET',
@@ -2690,20 +2661,23 @@ export const getReportByUser = data => {
     .catch(e => e);
 };
 
-export const getFiltersForAllRewards = () => {
-  return fetch(`${config.campaignV2ApiPrefix}${config.rewards}${config.all}${config.sponsors}`, {
-    headers,
-    method: 'GET',
-  })
+export const getFiltersForAllRewards = reach => {
+  return fetch(
+    `${config.campaignV2ApiPrefix}${config.rewards}${config.all}${config.sponsors}?reach=${reach}`,
+    {
+      headers,
+      method: 'GET',
+    },
+  )
     .then(handleErrors)
     .then(res => res.json())
     .then(response => response)
     .catch(e => e);
 };
 
-export const getFiltersForEligibleRewards = userName => {
+export const getFiltersForEligibleRewards = (userName, reach) => {
   return fetch(
-    `${config.campaignV2ApiPrefix}${config.rewards}${config.eligible}${config.sponsors}?userName=${userName}`,
+    `${config.campaignV2ApiPrefix}${config.rewards}${config.eligible}${config.sponsors}?userName=${userName}&reach=${reach}`,
     {
       headers,
       method: 'GET',
@@ -2729,9 +2703,9 @@ export const getFiltersForMessages = () => {
     .catch(e => e);
 };
 
-export const getFiltersForEligibleProposition = (reqObj, userName) => {
+export const getFiltersForEligibleProposition = (reqObj, userName, reach) => {
   return fetch(
-    `${config.campaignV2ApiPrefix}${config.rewards}${config.eligible}${config.sponsors}${config.object}/${reqObj}?userName=${userName}`,
+    `${config.campaignV2ApiPrefix}${config.rewards}${config.eligible}${config.sponsors}${config.object}/${reqObj}?userName=${userName}&reach=${reach}`,
     {
       headers,
       method: 'GET',
@@ -2743,9 +2717,9 @@ export const getFiltersForEligibleProposition = (reqObj, userName) => {
     .catch(e => e);
 };
 
-export const getFiltersForAllProposition = reqObj => {
+export const getFiltersForAllProposition = (reqObj, name, reach) => {
   return fetch(
-    `${config.campaignV2ApiPrefix}${config.rewards}${config.all}${config.sponsors}${config.object}/${reqObj}`,
+    `${config.campaignV2ApiPrefix}${config.rewards}${config.all}${config.sponsors}${config.object}/${reqObj}?reach=${reach}`,
     {
       headers,
       method: 'GET',
@@ -3031,33 +3005,39 @@ export const checkUserFollowing = (userName, users, objects) => {
     .catch(e => e);
 };
 
-export const getMarkersForAll = (userName, box, skip, limit = 20) => {
-  return fetch(`${config.campaignV2ApiPrefix}${config.rewards}${config.all}${config.map}`, {
-    headers,
-    method: 'POST',
-    body: JSON.stringify({
-      userName,
-      box,
-      skip,
-      limit,
-    }),
-  })
+export const getMarkersForAll = (userName, box, skip, limit = 20, reach) => {
+  return fetch(
+    `${config.campaignV2ApiPrefix}${config.rewards}${config.all}${config.map}?reach=${reach}`,
+    {
+      headers,
+      method: 'POST',
+      body: JSON.stringify({
+        userName,
+        box,
+        skip,
+        limit,
+      }),
+    },
+  )
     .then(res => res.json())
     .then(response => response)
     .catch(e => e);
 };
 
-export const getMarkersForEligible = (userName, box, skip, limit = 20) => {
-  return fetch(`${config.campaignV2ApiPrefix}${config.rewards}${config.eligible}${config.map}`, {
-    headers,
-    method: 'POST',
-    body: JSON.stringify({
-      userName,
-      box,
-      skip,
-      limit,
-    }),
-  })
+export const getMarkersForEligible = (userName, box, skip, limit = 20, reach) => {
+  return fetch(
+    `${config.campaignV2ApiPrefix}${config.rewards}${config.eligible}${config.map}?reach=${reach}`,
+    {
+      headers,
+      method: 'POST',
+      body: JSON.stringify({
+        userName,
+        box,
+        skip,
+        limit,
+      }),
+    },
+  )
     .then(res => res.json())
     .then(response => response)
     .catch(e => e);
@@ -3089,7 +3069,7 @@ export const getNestedDepartmentFields = ({ name, names, excluded }) => {
 };
 
 export const getObjectsByDepartment = (departments, skip, limit) => {
-  return fetch(`${config.apiPrefix}${config.departments}/wobjects`, {
+  return fetch(`${config.apiPrefix}${config.departments}/${config.wobjects}`, {
     headers,
     method: 'POST',
     body: JSON.stringify({
@@ -3148,5 +3128,21 @@ export const getNewsPermlinkByObjectName = ({
     .then(res => res.json())
     .then(posts => posts)
     .catch(error => error);
+
+export const getObjectOptions = (groupId, category, skip, limit) => {
+  return fetch(`${config.apiPrefix}${config.wobjects}${config.options}`, {
+    headers,
+    method: 'POST',
+    body: JSON.stringify({
+      groupId,
+      category,
+      skip,
+      limit,
+    }),
+  })
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+};
 
 export default null;

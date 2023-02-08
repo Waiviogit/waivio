@@ -6,14 +6,14 @@ export const rewardsSettings = {
   },
   settings: [
     {
-      to: '/rewards/all',
-      id: 'all',
-      defaultMessage: 'All',
+      to: '/rewards/global',
+      id: 'global',
+      defaultMessage: 'Global',
     },
     {
-      to: '/rewards/eligible',
-      id: 'eligible',
-      defaultMessage: 'Eligible',
+      to: '/rewards/local',
+      id: 'local',
+      defaultMessage: 'Local',
       forAuth: true,
     },
     {

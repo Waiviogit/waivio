@@ -1,5 +1,5 @@
-@import (reference) '../../styles/modules/variables.less';
-@import (reference) '../../styles/mixins.less';
+@import (reference) '../../styles/mixins';
+@import (reference) '../../styles/custom';
 
 .Debts {
   display: flex;
@@ -21,6 +21,7 @@
     display: flex;
     align-items: center;
     padding-bottom: 15px;
+    justify-content: space-between;
 
     &-total-title {
       font-size: 1.7em;
@@ -55,6 +56,26 @@
 
     &-modal {
       .filters-ant-modal();
+    }
+  }
+
+  &__payAll {
+    margin-left: 15px;
+    width: 25%;
+  }
+
+  &__payableInfo {
+    margin: 15px 0;
+  }
+
+  &__transferUser {
+    padding: 10px 0;
+    border-bottom: 1px solid @white-gainsboro;
+    display: flex;
+    align-items: center;
+
+    b {
+      margin-left: 5px;
     }
   }
 }

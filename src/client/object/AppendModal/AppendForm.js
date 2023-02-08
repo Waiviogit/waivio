@@ -764,7 +764,9 @@ export default class AppendForm extends Component {
         fieldsObject = {
           ...fieldsObject,
           body: JSON.stringify({
-            name: formValues[authorsFields.name] || this.state.selectedObject.name,
+            name: !isEmpty(formValues[authorsFields.name])
+              ? formValues[authorsFields.name]
+              : undefined,
             authorPermlink: this.state.selectedObject?.author_permlink,
           }),
         };
