@@ -25,6 +25,7 @@ import Avatar from '../../components/Avatar';
 import routes from '../../../waivioApi/routes';
 
 import './Debts.less';
+import { BANK_ACCOUNT } from '../../../common/constants/waivio';
 
 const Debts = ({
   intl,
@@ -82,9 +83,10 @@ const Debts = ({
 
   const handlePayAll = () => {
     const jsons = renderData?.reduce((acc, curr) => {
-      if (!curr.payable) return acc;
+      if (!curr.payable || curr.payable < 0) return acc;
+      const isGuestUser = guestUserRegex.test(curr?.userName);
 
-      const memo = guestUserRegex.test(curr?.userName)
+      const memo = isGuestUser
         ? { id: 'guestCampaignReward', to: curr?.userName }
         : { id: 'campaignReward' };
       const json = {
@@ -92,7 +94,7 @@ const Debts = ({
         contractAction: 'transfer',
         contractPayload: {
           symbol: 'WAIV',
-          to: curr?.userName,
+          to: isGuestUser ? BANK_ACCOUNT : curr?.userName,
           memo: JSON.stringify({ ...memo, app: routes.appName }),
           quantity: fixedNumber(parseFloat(curr.payable), 8).toString(),
         },
@@ -163,7 +165,7 @@ const Debts = ({
         >
           <b>Payable list:</b>
           {renderData
-            ?.filter(item => item.payable)
+            ?.filter(item => item.payable && item.payable > 0)
             .map(item => (
               <div key={item.userName} className="Debts__transferUser">
                 <Avatar username={item.userName} size={40} />
