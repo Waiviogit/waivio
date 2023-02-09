@@ -14,7 +14,6 @@ export const rewardsSettings = {
       to: '/rewards/local',
       id: 'local',
       defaultMessage: 'Local',
-      forAuth: true,
     },
     {
       to: '/rewards/reserved',

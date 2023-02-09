@@ -26,12 +26,12 @@ const ObjectAbout = ({ isEditMode, wobject, userName }) => {
   const authName = useSelector(getAuthenticatedUserName);
   const feed = useSelector(getFeed);
   const dispatch = useDispatch();
-  const objectFeed = getFeedFromState('objectPosts', authName, feed);
+  const objectFeed = getFeedFromState('objectPosts', match.params.name, feed);
   const content = uniq(objectFeed);
 
   useEffect(() => {
     getObjectsRewards(match.params.name, authName).then(res => setReward(res));
-    dispatch(getObjectPosts({ object: match.params.name, username: authName, limit: 5 }));
+    dispatch(getObjectPosts({ object: match.params.name, username: match.params.name, limit: 5 }));
   }, []);
 
   return (
@@ -50,16 +50,13 @@ const ObjectAbout = ({ isEditMode, wobject, userName }) => {
               />
             ))}
           {content.map(id => (
-            <StoryContainer
-              key={id}
-              id={id}
-              showPostModal={false}
-              // singlePostVew={false}
-            />
+            <StoryContainer key={id} id={id} showPostModal={false} />
           ))}
-          <div className="object-about__showMore">
-            <Link to={`/object/${match.params.name}`}>Show more..</Link>
-          </div>
+          {content?.length >= 5 && (
+            <div className="object-about__showMore">
+              <Link to={`/object/${match.params.name}`}>Read more</Link>
+            </div>
+          )}
         </ObjectInfo>
       </div>
     </React.Fragment>
