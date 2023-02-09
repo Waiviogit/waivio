@@ -49,9 +49,11 @@ const ObjectAbout = ({ isEditMode, wobject, userName }) => {
                 }}
               />
             ))}
-          {content.map(id => (
-            <StoryContainer key={id} id={id} showPostModal={false} />
-          ))}
+          <div className="object-about__content">
+            {content.map(id => (
+              <StoryContainer key={id} id={id} showPostModal={false} />
+            ))}
+          </div>
           {content?.length >= 5 && (
             <div className="object-about__showMore">
               <Link to={`/object/${match.params.name}`}>Read more</Link>

@@ -84,14 +84,16 @@ const Debts = ({
     const jsons = renderData?.reduce((acc, curr) => {
       if (!curr.payable) return acc;
 
-      const id = guestUserRegex.test(curr?.userName) ? 'guestCampaignReward' : 'campaignReward';
+      const memo = guestUserRegex.test(curr?.userName)
+        ? { id: 'guestCampaignReward', to: curr?.userName }
+        : { id: 'campaignReward' };
       const json = {
         contractName: 'tokens',
         contractAction: 'transfer',
         contractPayload: {
           symbol: 'WAIV',
           to: curr?.userName,
-          memo: JSON.stringify({ id, app: routes.appName }),
+          memo: JSON.stringify({ ...memo, app: routes.appName }),
           quantity: fixedNumber(parseFloat(curr.payable), 8).toString(),
         },
       };

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { sortOptions } from '../../../../common/helpers/wObjectHelper';
 
 const OptionItemEdit = ({ option, wobject }) => (
-  <div className="Options__block">
+  <div>
     {' '}
     {option[1].some(el => el.author_permlink === wobject.author_permlink) && (
       <div className="Options__option-category">{option[0]}: </div>
@@ -13,7 +13,7 @@ const OptionItemEdit = ({ option, wobject }) => (
       .map(
         el =>
           el.author_permlink === wobject.author_permlink && (
-            <div key={el.author_permlink}>
+            <div key={el._id}>
               {el.body.position}
               {el.body.position ? '.' : ''} {el.body.value}{' '}
               {el.body.image && (
