@@ -3069,7 +3069,7 @@ export const getNestedDepartmentFields = ({ name, names, excluded }) => {
 };
 
 export const getObjectsByDepartment = (departments, skip, limit) => {
-  return fetch(`${config.apiPrefix}${config.departments}/${config.wobjects}`, {
+  return fetch(`${config.apiPrefix}${config.departments}${config.wobjects}`, {
     headers,
     method: 'POST',
     body: JSON.stringify({
