@@ -274,7 +274,8 @@ const WithdrawModal = props => {
               isError ||
               invalidAddress ||
               (!isHiveCurrency && !walletAddress) ||
-              (isHiveCurrency && !(hiveBeneficiaryAccount || userName))
+              (isHiveCurrency && !(hiveBeneficiaryAccount || userName)) ||
+              (pair?.to_coin_symbol === 'BTC' && +toAmount <= 0.01)
             }
           >
             <FormattedMessage id="Withdraw" defaultMessage="Withdraw" />
