@@ -1175,9 +1175,11 @@ class ObjectInfo extends React.Component {
                   <div className="CompanyId__title">
                     <FormattedMessage id="object_field_groupId" formattedMessage="Group ID" />
                   </div>
-                  <div className="field-website__title">
-                    <span className="CompanyId__wordbreak">{groupId}</span>
-                  </div>
+                  {groupId.map(id => (
+                    <div key={id} className="field-website__title">
+                      <span className="CompanyId__wordbreak">{id}</span>
+                    </div>
+                  ))}
                 </div>
               )
             }
@@ -1200,13 +1202,14 @@ class ObjectInfo extends React.Component {
         {isEditMode &&
           this.listItem(
             objectFields.groupId,
-            groupId && (
-              <div className="field-info">
-                <div className="field-website__title">
-                  <span className="CompanyId__wordbreak ">{groupId}</span>
+            groupId &&
+              groupId.map(id => (
+                <div key={id} className="field-info">
+                  <div className="field-website__title">
+                    <span className="CompanyId__wordbreak ">{id}</span>
+                  </div>
                 </div>
-              </div>
-            ),
+              )),
           )}
       </React.Fragment>
     );

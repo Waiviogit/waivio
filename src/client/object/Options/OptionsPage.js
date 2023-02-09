@@ -22,7 +22,7 @@ const OptionsPage = () => {
 
     getObject(match.params.name).then(res => {
       setWobject(res);
-      getObjectOptions(res?.groupId, category, 0, limit).then(r => {
+      getObjectOptions(res?.author_permlink, category, 0, limit).then(r => {
         setHasMore(r.hasMore);
         setFilteredOptions(r.wobjects);
       });
@@ -33,14 +33,14 @@ const OptionsPage = () => {
     window.scrollTo(0, 0);
 
     !isEmpty(wobject) &&
-      getObjectOptions(wobject?.groupId, category, 0, limit).then(r => {
+      getObjectOptions(wobject?.author_permlink, category, 0, limit).then(r => {
         setHasMore(r.hasMore);
         setFilteredOptions(r.wobjects);
       });
   }, [category]);
 
   const loadMoreOptions = () => {
-    getObjectOptions(wobject.groupId, category, filteredOptions.length, limit).then(r => {
+    getObjectOptions(wobject.author_permlink, category, filteredOptions.length, limit).then(r => {
       setHasMore(r.hasMore);
       setFilteredOptions([...filteredOptions, ...r.wobjects]);
     });
