@@ -16,7 +16,7 @@ import LinkButton from '../../../components/LinkButton/LinkButton';
 
 const optionsLimit = 15;
 
-const OptionItemView = ({ option, wobject, setHoveredOption }) => {
+const OptionItemView = ({ option, wobject, setHoveredOption, optionsNumber }) => {
   const [hovered, setHovered] = useState({});
   const locale = useSelector(getLocale);
   const userName = useSelector(getAuthenticatedUserName);
@@ -64,7 +64,7 @@ const OptionItemView = ({ option, wobject, setHoveredOption }) => {
   const getOptions = optionsList => optionsList?.slice(0, optionsLimit);
 
   return (
-    <div className="Options__block" key={option[0]}>
+    <div key={option[0]}>
       {' '}
       <div className="Options__option-category">
         {option[0]}:{' '}
@@ -106,7 +106,7 @@ const OptionItemView = ({ option, wobject, setHoveredOption }) => {
           to={`/object/${wobject.author_permlink}/options/${option[0]}`}
         >
           <FormattedMessage id="show_all" defaultMessage="Show all" />
-          <span className="ml1">({option[1].length})</span>
+          <span className="ml1">({optionsNumber})</span>
         </LinkButton>
       )}
     </div>
@@ -117,6 +117,7 @@ OptionItemView.propTypes = {
   wobject: PropTypes.shape().isRequired,
   option: PropTypes.arrayOf().isRequired,
   setHoveredOption: PropTypes.func.isRequired,
+  optionsNumber: PropTypes.number.isRequired,
 };
 
 export default OptionItemView;

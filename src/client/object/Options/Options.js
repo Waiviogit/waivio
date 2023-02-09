@@ -28,7 +28,9 @@ const Options = ({ wobject, isEditMode, setHoveredOption }) => {
 
   const filteredOptions = options.map(opt => [
     opt[0],
-    uniqBy(uniqBy(opt[1], 'author_permlink'), 'body.value').sort((a, b) => sortOptions(a, b)),
+    uniqBy(opt[1], 'body.value').sort((a, b) => sortOptions(a, b)),
+    uniqBy(uniqBy(opt[1], 'author_permlink'), 'body.value').sort((a, b) => sortOptions(a, b))
+      .length,
   ]);
 
   return (
@@ -41,8 +43,9 @@ const Options = ({ wobject, isEditMode, setHoveredOption }) => {
         : wobject?.options && (
             <div>
               {filteredOptions.map(option => (
-                <div key={option[0]}>
+                <div className="Options__block" key={option[0]}>
                   <OptionItemView
+                    optionsNumber={option[2]}
                     option={option}
                     wobject={wobject}
                     setHoveredOption={setHoveredOption}
