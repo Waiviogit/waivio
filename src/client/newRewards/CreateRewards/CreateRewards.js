@@ -191,6 +191,7 @@ class CreateRewards extends React.Component {
           loading: false,
           campaignName: `${isDuplicate ? `Copy ${campaign.name}` : campaign.name}`,
           campaignType: campaign.type,
+          reachType: campaign.reach,
           budget: campaign.budget.toString(),
           reward: campaign.reward.toString(),
           primaryObject: values[0],
@@ -241,6 +242,7 @@ class CreateRewards extends React.Component {
       name: data.campaignName,
       app: appName,
       type: data.type,
+      reach: data.reach,
       budget: Number(data.budget),
       reward: Number(data.reward),
       requirements: {
@@ -451,6 +453,8 @@ class CreateRewards extends React.Component {
 
     handleCurrencyChanges: currency => this.setState(() => ({ currency })),
 
+    handleSelectReach: reach => this.setState(() => ({ reach })),
+
     handleCryptocurrencyChanges: payoutToken => this.setState(() => ({ payoutToken })),
   };
 
@@ -485,6 +489,7 @@ class CreateRewards extends React.Component {
       eligibleDays,
       isDisabled,
       isDuplicate,
+      reachType,
     } = this.state;
 
     return (
@@ -493,6 +498,7 @@ class CreateRewards extends React.Component {
         handlers={this.handlers}
         campaignName={campaignName}
         campaignType={campaignType}
+        reachType={reachType}
         budget={budget}
         reward={reward}
         reservationPeriod={reservationPeriod}

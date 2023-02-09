@@ -1,4 +1,5 @@
 import React from 'react';
+
 import RenderPropositionList from '../PropositionList/RenderPropositionList';
 import {
   getFiltersForAllProposition,

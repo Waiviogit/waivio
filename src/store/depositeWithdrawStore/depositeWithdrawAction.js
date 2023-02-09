@@ -20,7 +20,7 @@ export const getDepositWithdrawPairs = () => (dispatch, getState) => {
     type: GET_DEPOSIT_WITHDRAW_PAIR.ACTION,
     payload: getDepositWithdrawPair().then(async res => {
       const coinList = await getHiveEngineCoins();
-      const compliteList = res.map(pair => {
+      const compliteList = res?.map(pair => {
         const curr = coinList.find(coin => coin.symbol === pair.from_coin_symbol);
 
         return {

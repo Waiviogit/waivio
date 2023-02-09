@@ -13,6 +13,7 @@ import { getIsWaivio } from '../../../store/appStore/appSelectors';
 import useWebsiteColor from '../../../hooks/useWebsiteColor';
 
 import './Campaing.less';
+import useQuery from '../../../hooks/useQuery';
 
 const Campaing = ({ campain, onActionInitiated, hovered, intl }) => {
   const minReward = campain?.minReward || get(campain, ['min_reward'], 0);
@@ -22,9 +23,15 @@ const Campaing = ({ campain, onActionInitiated, hovered, intl }) => {
       ? intl.formatMessage({ id: 'earn', defaultMessage: 'Earn' })
       : intl.formatMessage({ id: 'rewards_details_earn_up_to', defaultMessage: 'Earn up to' });
   const history = useHistory();
-  const pathname = history.location.pathname.includes('/rewards/')
-    ? location.pathname
-    : '/rewards/all';
+  const query = useQuery();
+  let pathname = history.location.pathname.includes('/rewards/')
+    ? `${location.pathname}/eligible`
+    : '/rewards/local/all';
+
+  if (query.get('showAll')) {
+    pathname = `${location.pathname}/all`;
+  }
+
   const { setRestaurant, openModal } = useQuickRewards();
   const isWaivio = useSelector(getIsWaivio);
   const styles = useWebsiteColor();

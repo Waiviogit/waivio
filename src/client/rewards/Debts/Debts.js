@@ -1,16 +1,31 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { capitalize, isEmpty, round } from 'lodash';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { Modal } from 'antd';
+import { useRouteMatch } from 'react-router';
 
 import SortSelector from '../../components/SortSelector/SortSelector';
 import { sortDebtObjsData } from '../rewardsHelper';
 import PaymentList from '../Payment/PaymentList';
-import { getTokenRatesInUSD } from '../../../store/walletStore/walletSelectors';
+import {
+  getTokenRatesInUSD,
+  getUserCurrencyBalance,
+} from '../../../store/walletStore/walletSelectors';
 import FiltersForMobile from '../../newRewards/Filters/FiltersForMobile';
+import { guestUserRegex } from '../../../common/helpers/regexHelpers';
+import { fixedNumber } from '../../../common/helpers/parser';
+import { createQuery } from '../../../common/helpers/apiHelpers';
+import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
+import Action from '../../components/Button/Action';
+import { getTokenBalance } from '../../../store/walletStore/walletActions';
+import USDDisplay from '../../components/Utils/USDDisplay';
+import Avatar from '../../components/Avatar';
+import routes from '../../../waivioApi/routes';
 
 import './Debts.less';
+import { BANK_ACCOUNT } from '../../../common/constants/waivio';
 
 const Debts = ({
   intl,
@@ -21,10 +36,21 @@ const Debts = ({
   payoutToken,
   setVisible,
 }) => {
+  const dispatch = useDispatch();
   const [sort, setSort] = useState('amount');
+  const [showModal, setShowModal] = useState(false);
   const [sortedDebtObjsData, setSortedDebtObjsData] = useState([]);
   const currentUSDPrice = useSelector(state => getTokenRatesInUSD(state, payoutToken));
+  const balance = useSelector(state => getUserCurrencyBalance(state, 'WAIV')?.balance);
+  const authUserName = useSelector(getAuthenticatedUserName);
+  const match = useRouteMatch();
   const payable = debtObjsData?.payable || debtObjsData?.totalPayable;
+  const pathPaybles = match.path.includes('payable');
+
+  useEffect(() => {
+    dispatch(getTokenBalance('WAIV', authUserName));
+  }, []);
+
   const handleSortChange = sortBy => {
     const sortedData = sortDebtObjsData(debtObjsData.histories, sortBy);
 
@@ -55,6 +81,41 @@ const Debts = ({
 
   const renderData = getRenderData();
 
+  const handlePayAll = () => {
+    const jsons = renderData?.reduce((acc, curr) => {
+      if (!curr.payable || curr.payable < 0) return acc;
+      const isGuestUser = guestUserRegex.test(curr?.userName);
+
+      const memo = isGuestUser
+        ? { id: 'guestCampaignReward', to: curr?.userName }
+        : { id: 'campaignReward' };
+      const json = {
+        contractName: 'tokens',
+        contractAction: 'transfer',
+        contractPayload: {
+          symbol: 'WAIV',
+          to: isGuestUser ? BANK_ACCOUNT : curr?.userName,
+          memo: JSON.stringify({ ...memo, app: routes.appName }),
+          quantity: fixedNumber(parseFloat(curr.payable), 8).toString(),
+        },
+      };
+
+      return [...acc, json];
+    }, []);
+
+    window.open(
+      `https://hivesigner.com/sign/custom_json?authority=active&required_auths=["${authUserName}"]&required_posting_auths=[]&${createQuery(
+        {
+          id: 'ssc-mainnet-hive',
+          json: JSON.stringify(jsons),
+        },
+      )}`,
+      '_blank',
+    );
+
+    setShowModal(false);
+  };
+
   return (
     <React.Fragment>
       <div className="Debts">
@@ -67,6 +128,16 @@ const Debts = ({
             : {payable ? round(payable, 2) : 0} {payoutToken}{' '}
             {currentUSDPrice && payable ? `($${round(currentUSDPrice * payable, 2)})` : ''}
           </div>
+          {pathPaybles && Boolean(payable) && (
+            <Action
+              disabled={!payable}
+              className="Debts__payAll"
+              primary
+              onClick={() => setShowModal(true)}
+            >
+              Pay all
+            </Action>
+          )}
         </div>
         <div className="Debts__sort">{sortSelector}</div>
         <div className="Debts__filters-tags-block">
@@ -81,6 +152,43 @@ const Debts = ({
           currency={payoutToken}
         />
       </div>
+      {showModal && (
+        <Modal
+          title={'Do you want to pay all payable?'}
+          visible={showModal}
+          onOk={handlePayAll}
+          okText={'Submit'}
+          onCancel={() => setShowModal(false)}
+          okButtonProps={{
+            disabled: balance < payable,
+          }}
+        >
+          <b>Payable list:</b>
+          {renderData
+            ?.filter(item => item.payable && item.payable > 0)
+            .map(item => (
+              <div key={item.userName} className="Debts__transferUser">
+                <Avatar username={item.userName} size={40} />
+                <b>{item.userName}</b>
+              </div>
+            ))}
+          <div className="Debts__payableInfo">
+            <p>
+              <b>Total amount:</b> {payable} WAIV.
+            </p>
+            <p>
+              <b>Your balanse:</b> {balance} WAIV.
+            </p>
+            <p>
+              <b>Est. transaction value:</b> <USDDisplay value={payable * currentUSDPrice} />.
+            </p>
+          </div>
+          <p>Click the button below to be redirected to HiveSigner to complete your transaction.</p>
+          {balance < payable && (
+            <p style={{ color: 'red', textAlign: 'center' }}>Insufficient funds</p>
+          )}
+        </Modal>
+      )}
     </React.Fragment>
   );
 };
