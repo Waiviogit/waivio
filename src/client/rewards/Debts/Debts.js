@@ -22,6 +22,7 @@ import Action from '../../components/Button/Action';
 import { getTokenBalance } from '../../../store/walletStore/walletActions';
 import USDDisplay from '../../components/Utils/USDDisplay';
 import Avatar from '../../components/Avatar';
+import routes from '../../../waivioApi/routes';
 
 import './Debts.less';
 
@@ -83,14 +84,14 @@ const Debts = ({
     const jsons = renderData?.reduce((acc, curr) => {
       if (!curr.payable) return acc;
 
-      const memo = guestUserRegex.test(curr?.userName) ? 'guestCampaignReward' : 'campaignReward';
+      const id = guestUserRegex.test(curr?.userName) ? 'guestCampaignReward' : 'campaignReward';
       const json = {
         contractName: 'tokens',
         contractAction: 'transfer',
         contractPayload: {
           symbol: 'WAIV',
           to: curr?.userName,
-          memo,
+          memo: JSON.stringify({ id, app: routes.appName }),
           quantity: fixedNumber(parseFloat(curr.payable), 8).toString(),
         },
       };
@@ -123,7 +124,7 @@ const Debts = ({
             : {payable ? round(payable, 2) : 0} {payoutToken}{' '}
             {currentUSDPrice && payable ? `($${round(currentUSDPrice * payable, 2)})` : ''}
           </div>
-          {pathPaybles && (
+          {pathPaybles && Boolean(payable) && (
             <Action
               disabled={!payable}
               className="Debts__payAll"
