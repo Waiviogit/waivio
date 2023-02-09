@@ -2,6 +2,19 @@
 @import (reference) '../../styles/modules/variables.less';
 
 .AppendForm {
+  .ant-select-auto-complete.ant-select .ant-input {
+    height: 45px;
+    font-size: 20px;
+    font-weight: bold;
+  }
+  .ant-select-auto-complete.ant-select .ant-select-selection--single {
+    height: 42px !important;
+  }
+  .ant-select-selection__placeholder {
+    font-size: 20px !important;
+    font-weight: bold;
+  }
+
   &__create-publisher {
     display: flex;
     justify-content: flex-end;
@@ -151,6 +164,7 @@
       box-shadow: 0 0 3px @orange, 0 0 5px @red;
     }
   }
+
   &__description-input {
     font-size: 20px !important;
     font-weight: bold;
@@ -296,6 +310,7 @@ div[data-dir='rtl'] .Editor {
     margin-bottom: 16px;
   }
 }
+
 .add-create-btns {
   display: flex;
   flex-direction: row;
@@ -303,6 +318,7 @@ div[data-dir='rtl'] .Editor {
   width: 100%;
   margin-top: -5px !important;
 }
+
 .margin-top-bottom {
   margin-bottom: 2px !important;
   margin-top: 5px !important;
