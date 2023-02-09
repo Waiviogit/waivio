@@ -4,6 +4,7 @@ import { FormattedMessage, injectIntl } from 'react-intl';
 import { capitalize, isEmpty, round } from 'lodash';
 import { useDispatch, useSelector } from 'react-redux';
 import { Modal } from 'antd';
+import { useRouteMatch } from 'react-router';
 
 import SortSelector from '../../components/SortSelector/SortSelector';
 import { sortDebtObjsData } from '../rewardsHelper';
@@ -40,7 +41,9 @@ const Debts = ({
   const currentUSDPrice = useSelector(state => getTokenRatesInUSD(state, payoutToken));
   const balance = useSelector(state => getUserCurrencyBalance(state, 'WAIV')?.balance);
   const authUserName = useSelector(getAuthenticatedUserName);
+  const match = useRouteMatch();
   const payable = debtObjsData?.payable || debtObjsData?.totalPayable;
+  const pathPaybles = match.path.includes('payable');
 
   useEffect(() => {
     dispatch(getTokenBalance('WAIV', authUserName));
@@ -81,7 +84,7 @@ const Debts = ({
       if (!curr.payable) return acc;
 
       const memo = guestUserRegex.test(curr?.userName) ? 'guestCampaignReward' : 'campaignReward';
-      const json = JSON.stringify({
+      const json = {
         contractName: 'tokens',
         contractAction: 'transfer',
         contractPayload: {
@@ -90,7 +93,7 @@ const Debts = ({
           memo,
           quantity: fixedNumber(parseFloat(curr.payable), 8).toString(),
         },
-      });
+      };
 
       return [...acc, json];
     }, []);
@@ -99,11 +102,13 @@ const Debts = ({
       `https://hivesigner.com/sign/custom_json?authority=active&required_auths=["${authUserName}"]&required_posting_auths=[]&${createQuery(
         {
           id: 'ssc-mainnet-hive',
-          json: jsons,
+          json: JSON.stringify(jsons),
         },
       )}`,
       '_blank',
     );
+
+    setShowModal(false);
   };
 
   return (
@@ -118,14 +123,16 @@ const Debts = ({
             : {payable ? round(payable, 2) : 0} {payoutToken}{' '}
             {currentUSDPrice && payable ? `($${round(currentUSDPrice * payable, 2)})` : ''}
           </div>
-          <Action
-            disabled={!payable || balance < payable}
-            className="Debts__payAll"
-            primary
-            onClick={() => setShowModal(true)}
-          >
-            Pay all
-          </Action>
+          {pathPaybles && (
+            <Action
+              disabled={!payable}
+              className="Debts__payAll"
+              primary
+              onClick={() => setShowModal(true)}
+            >
+              Pay all
+            </Action>
+          )}
         </div>
         <div className="Debts__sort">{sortSelector}</div>
         <div className="Debts__filters-tags-block">
@@ -140,30 +147,43 @@ const Debts = ({
           currency={payoutToken}
         />
       </div>
-      <Modal
-        title={'Dou you want pay all paybles?'}
-        visible={showModal}
-        onOk={handlePayAll}
-        onCancel={() => setShowModal(false)}
-      >
-        <b>Paybles list:</b>
-        {renderData?.map(item => (
-          <div key={item.userName} className="Debts__transferUser">
-            <Avatar username={item.userName} size={40} />
-            <b>{item.userName}</b>
+      {showModal && (
+        <Modal
+          title={'Do you want to pay all payable?'}
+          visible={showModal}
+          onOk={handlePayAll}
+          okText={'Submit'}
+          onCancel={() => setShowModal(false)}
+          okButtonProps={{
+            disabled: balance < payable,
+          }}
+        >
+          <b>Payable list:</b>
+          {renderData
+            ?.filter(item => !+item.quantity)
+            .map(item => (
+              <div key={item.userName} className="Debts__transferUser">
+                <Avatar username={item.userName} size={40} />
+                <b>{item.userName}</b>
+              </div>
+            ))}
+          <div className="Debts__payableInfo">
+            <p>
+              <b>Total amount:</b> {payable} WAIV.
+            </p>
+            <p>
+              <b>Your balanse:</b> {balance} WAIV.
+            </p>
+            <p>
+              <b>Est. transaction value:</b> <USDDisplay value={payable * currentUSDPrice} />.
+            </p>
           </div>
-        ))}
-        <div className="Debts__payableInfo">
-          <p>
-            <b>Amount payable:</b> {payable} WAIV.
-          </p>
-          <p>
-            <b>Est. transaction value:</b> <USDDisplay value={payable} currencyDisplay={'symbol'} />
-            .
-          </p>
-        </div>
-        <p>Click the button below to be redirected to HiveSigner to complete your transaction.</p>
-      </Modal>
+          <p>Click the button below to be redirected to HiveSigner to complete your transaction.</p>
+          {balance < payable && (
+            <p style={{ color: 'red', textAlign: 'center' }}>Insufficient funds</p>
+          )}
+        </Modal>
+      )}
     </React.Fragment>
   );
 };

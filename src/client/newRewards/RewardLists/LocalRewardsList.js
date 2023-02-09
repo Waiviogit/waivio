@@ -39,7 +39,7 @@ const sortConfig = [
   { key: 'proximity', title: 'Proximity' },
 ];
 
-const LocalRewardsList = ({ title, withoutFilters, emptyMessage }) => {
+const LocalRewardsList = ({ title, withoutFilters }) => {
   const authUser = useSelector(getAuthenticatedUserName);
   const [rewards, setRewards] = useState([]);
   const [hasMore, setHasMore] = useState(true);
@@ -47,12 +47,14 @@ const LocalRewardsList = ({ title, withoutFilters, emptyMessage }) => {
   const [showMap, setShowMap] = useState(false);
   const [showAll, setShowAll] = useState(false);
   const [sort, setSort] = useState('default');
+  const [visible, setVisible] = useState(false);
+
   const query = useQuery();
   const history = useHistory();
   const match = useRouteMatch();
-  const [visible, setVisible] = useState(false);
   const search = history.location.search.replace('?', '&');
   const onClose = () => setVisible(false);
+
   const getRewardsMethod = skip => {
     query.delete('showAll');
 
@@ -82,13 +84,15 @@ const LocalRewardsList = ({ title, withoutFilters, emptyMessage }) => {
   };
 
   useEffect(() => {
-    if (query.get('showAll')) {
+    if (query.get('showAll') || !authUser) {
       setShowAll(true);
+      query.set('showAll', true);
+      history.push(`?${query.toString()}`);
     }
   }, []);
 
   useEffect(() => {
-    setShowAll(false);
+    if (authUser) setShowAll(false);
   }, [history.location.pathname]);
 
   useEffect(() => {
@@ -127,7 +131,9 @@ const LocalRewardsList = ({ title, withoutFilters, emptyMessage }) => {
           ))}
         </SortSelector>
         {isEmpty(rewards) ? (
-          <EmptyCampaing emptyMessage={emptyMessage} />
+          <EmptyCampaing
+            emptyMessage={'There are no rewards available for you to claim at this moment.'}
+          />
         ) : (
           <ReduxInfiniteScroll
             loadMore={handleLoadingMoreRewardsList}
@@ -154,11 +160,11 @@ const LocalRewardsList = ({ title, withoutFilters, emptyMessage }) => {
             onClose={onClose}
           >
             <div className="RewardsFilters__block">
-              <span className="RewardsFilters__subtitle">Eligibility for:</span>
+              <span className="RewardsFilters__subtitle">Eligibility:</span>
               <div>
-                <Checkbox checked={showAll} onChange={handleCheckshowAll}>
+                <Checkbox disabled={!authUser} checked={showAll} onChange={handleCheckshowAll}>
                   {' '}
-                  Show all rewards
+                  show all rewards
                 </Checkbox>
               </div>
             </div>
@@ -172,7 +178,6 @@ const LocalRewardsList = ({ title, withoutFilters, emptyMessage }) => {
 LocalRewardsList.propTypes = {
   title: PropTypes.string.isRequired,
   withoutFilters: PropTypes.bool,
-  emptyMessage: PropTypes.string,
 };
 
 export default LocalRewardsList;
