@@ -38,7 +38,9 @@ const Options = ({ wobject, isEditMode, setHoveredOption }) => {
       {isEditMode
         ? wobject?.options &&
           Object.entries(wobject?.options).map(option => (
-            <OptionItemEdit key={option[0]} option={option} wobject={wobject} />
+            <div className="Options__block" key={option[0]}>
+              <OptionItemEdit option={option} wobject={wobject} />
+            </div>
           ))
         : wobject?.options && (
             <div>

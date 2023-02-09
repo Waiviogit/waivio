@@ -533,9 +533,9 @@ class ObjectInfo extends React.Component {
 
     const hasOptionsPics =
       !isEmpty(wobject.options) &&
-      Object.values(wobject?.options).some(optionList =>
-        optionList.some(option => has(option.body, 'image') && has(option, 'avatar')),
-      );
+      Object.values(wobject?.options)
+        .flatMap(o => o)
+        .some(option => has(option, 'avatar'));
 
     const sortedOptions = optionsPictures.filter(
       o => activeOption[activeCategory]?.avatar !== o?.body,
