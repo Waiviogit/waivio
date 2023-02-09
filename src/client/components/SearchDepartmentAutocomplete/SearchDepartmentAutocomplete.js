@@ -22,7 +22,8 @@ const SearchDepartmentAutocomplete = ({
   const [loading, setLoading] = useState(false);
 
   const handleChange = (value = '') => {
-    setSearchString(value.toLowerCase());
+    setSearchString(value);
+    setFieldsValue({ [objectFields.departments]: value });
   };
   const handleSelect = val => {
     setSearchString(val);

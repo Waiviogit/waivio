@@ -182,7 +182,7 @@ const DetailsModal = ({
         <div className="DetailsModal__message">
           {intl.formatMessage({
             id: 'do_not_reserve',
-            defaultMessage: "You can't reserve your own campaing",
+            defaultMessage: 'It is not possible to reserve your own campaign.',
           })}
         </div>
       )}

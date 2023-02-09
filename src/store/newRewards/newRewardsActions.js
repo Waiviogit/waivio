@@ -106,6 +106,8 @@ export const reservePropositionForQuick = permlink => async (
   const rates = getTokenRatesInUSD(getState(), 'WAIV');
   const amount = round(secondaryObject.rewardInUSD / rates, 3);
   const detailsBody = await getNewDetailsBody(dish, restaurant);
+  const isGuest = isGuestUser(state);
+
   const commentOp = [
     'comment',
     {
@@ -133,24 +135,32 @@ export const reservePropositionForQuick = permlink => async (
     },
   ];
 
-  return new Promise((resolve, reject) => {
+  return new Promise(resolve => {
     steemConnectAPI
       .broadcast([commentOp])
       .then(async () => {
-        busyAPI.instance.sendAsync(subscribeTypes.subscribeCampaignAssign, [username, permlink]);
-        busyAPI.instance.subscribe((datad, j) => {
-          if (j?.success && j?.permlink === permlink) {
-            dispatch(changeRewardsTab(username));
-            resolve();
-          }
+        const timeoutId = setTimeout(() => {
+          dispatch(changeRewardsTab(username));
+          resolve();
+        }, 10000);
 
-          if (!j?.success && j?.permlink === permlink) {
-            reject();
-            message.error('We cant parse your reservation. Try later.');
-          }
-        });
+        if (!isGuest) {
+          busyAPI.instance.sendAsync(subscribeTypes.subscribeCampaignAssign, [username, permlink]);
+          busyAPI.instance.subscribe((datad, j) => {
+            if (j?.success && j?.permlink === permlink) {
+              clearTimeout(timeoutId);
+              dispatch(changeRewardsTab(username));
+              resolve();
+            }
+          });
+        }
       })
-      .catch(error => reject(error));
+      .catch(() => {
+        setTimeout(() => {
+          dispatch(changeRewardsTab(username));
+          resolve();
+        }, 7000);
+      });
   });
 };
 

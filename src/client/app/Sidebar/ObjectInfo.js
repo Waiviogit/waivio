@@ -91,6 +91,7 @@ class ObjectInfo extends React.Component {
     setStoreGroupId: PropTypes.func.isRequired,
     setStoreActiveOption: PropTypes.func.isRequired,
     locale: PropTypes.func.isRequired,
+    children: PropTypes.node.isRequired,
   };
 
   static defaultProps = {
@@ -118,6 +119,7 @@ class ObjectInfo extends React.Component {
     manufacturerObject: {},
     brandObject: {},
     merchantObject: {},
+    authorsArray: [],
   };
 
   componentDidMount() {
@@ -163,13 +165,28 @@ class ObjectInfo extends React.Component {
 
   incrementPhoneCount = 3;
 
-  getPublisherManufacturerBrandMerchantObjects() {
+  async getPublisherManufacturerBrandMerchantObjects() {
     const { wobject } = this.props;
 
     const publisher = parseWobjectField(wobject, 'publisher');
     const manufacturer = parseWobjectField(wobject, 'manufacturer');
     const brand = parseWobjectField(wobject, 'brand');
     const merchant = parseWobjectField(wobject, 'merchant');
+    const authors = wobject.authors
+      ? wobject.authors.map(el => parseWobjectField(el, 'body', []))
+      : [];
+
+    const authorsArray = [];
+
+    authors.forEach(author => {
+      if (author.authorPermlink) {
+        getObjectInfo([author?.authorPermlink]).then(res => authorsArray.push(res.wobjects[0]));
+      } else {
+        authorsArray.push(author);
+      }
+    });
+
+    this.setState({ authorsArray });
 
     if (publisher?.authorPermlink) {
       getObjectInfo([publisher?.authorPermlink]).then(res =>
@@ -487,9 +504,6 @@ class ObjectInfo extends React.Component {
     const features = wobject.features
       ? wobject.features?.map(el => parseWobjectField(el, 'body', []))
       : [];
-    const authorsBody = wobject.authors
-      ? wobject.authors.map(el => parseWobjectField(el, 'body', []))
-      : [];
 
     let activeOptionPicture = uniqBy([...pictures], 'body');
     const optionsPictures = wobject?.options
@@ -519,9 +533,9 @@ class ObjectInfo extends React.Component {
 
     const hasOptionsPics =
       !isEmpty(wobject.options) &&
-      Object.values(wobject?.options).some(optionList =>
-        optionList.some(option => has(option.body, 'image') && has(option, 'avatar')),
-      );
+      Object.values(wobject?.options)
+        .flatMap(o => o)
+        .some(option => has(option, 'avatar'));
 
     const sortedOptions = optionsPictures.filter(
       o => activeOption[activeCategory]?.avatar !== o?.body,
@@ -786,15 +800,15 @@ class ObjectInfo extends React.Component {
           this.listItem(
             objectFields.authors,
             <div>
-              {authorsBody?.map((a, i) => (
-                <span key={a.authorPermlink}>
-                  {a.authorPermlink ? (
-                    <Link to={`/object/${a.authorPermlink}`}>{a.name}</Link>
+              {this.state.authorsArray?.map((a, i) => (
+                <span key={a.author_permlink}>
+                  {a.author_permlink ? (
+                    <Link to={`/object/${a.author_permlink}`}>{a.name}</Link>
                   ) : (
                     <span>{a.name}</span>
                   )}
                   <>
-                    {i !== authorsBody.length - 1 && ','}
+                    {i !== this.state.authorsArray.length - 1 && ','}
                     {'  '}
                   </>
                 </span>
@@ -1239,15 +1253,15 @@ class ObjectInfo extends React.Component {
         {!isEditMode && wobject.authors && (
           <div className="mb3">
             By{' '}
-            {authorsBody?.map((a, i) => (
-              <span key={a.id}>
-                {a.authorPermlink ? (
-                  <Link to={`/object/${a.authorPermlink}`}>{a.name}</Link>
+            {this.state.authorsArray?.map((a, i) => (
+              <span key={a.author_permlink}>
+                {a.author_permlink ? (
+                  <Link to={`/object/${a.author_permlink}`}>{a.name}</Link>
                 ) : (
                   <span>{a.name}</span>
                 )}
                 <>
-                  {i !== authorsBody.length - 1 && ','}
+                  {i !== this.state.authorsArray.length - 1 && ','}
                   {'  '}
                 </>
               </span>
@@ -1284,6 +1298,7 @@ class ObjectInfo extends React.Component {
             {!isHashtag && aboutSection}
             {accessExtend && hasType(wobject, OBJECT_TYPE.LIST) && listSection}
             {accessExtend && settingsSection}
+            {this.props.children}
             <ObjectInfoExperts wobject={wobject} />
           </div>
         )}
