@@ -161,7 +161,7 @@ const Debts = ({
         >
           <b>Payable list:</b>
           {renderData
-            ?.filter(item => !+item.quantity)
+            ?.filter(item => item.payable)
             .map(item => (
               <div key={item.userName} className="Debts__transferUser">
                 <Avatar username={item.userName} size={40} />
