@@ -177,7 +177,7 @@ const Debts = ({
               <b>Total amount:</b> {payable} WAIV.
             </p>
             <p>
-              <b>Your balanse:</b> {balance} WAIV.
+              <b>Your balance:</b> {balance} WAIV.
             </p>
             <p>
               <b>Est. transaction value:</b> <USDDisplay value={payable * currentUSDPrice} />.

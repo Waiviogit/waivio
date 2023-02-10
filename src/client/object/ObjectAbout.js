@@ -5,14 +5,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import { isEmpty, uniq } from 'lodash';
 import { Link } from 'react-router-dom';
 
+import { showPostModal } from '../../store/appStore/appActions';
 import ObjectInfo from '../app/Sidebar/ObjectInfo';
 import { getObjectsRewards } from '../../waivioApi/ApiClient';
-
+import PostModal from '../post/PostModalContainer';
 import { getAuthenticatedUserName } from '../../store/authStore/authSelectors';
 import Campaing from '../newRewards/reuseble/Campaing';
 import Proposition from '../newRewards/reuseble/Proposition/Proposition';
 import { getPropositionsKey } from '../../common/helpers/newRewardsHelper';
-
 import { getObjectPosts } from '../../store/feedStore/feedActions';
 import { getFeed } from '../../store/feedStore/feedSelectors';
 import { getFeedFromState } from '../../common/helpers/stateHelpers';
@@ -51,7 +51,12 @@ const ObjectAbout = ({ isEditMode, wobject, userName }) => {
             ))}
           <div className="object-about__content">
             {content.map(id => (
-              <StoryContainer key={id} id={id} showPostModal={false} />
+              <StoryContainer
+                key={id}
+                id={id}
+                showPostModal={post => dispatch(showPostModal(post))}
+                singlePostVew={false}
+              />
             ))}
           </div>
           {content?.length >= 5 && (
@@ -61,6 +66,7 @@ const ObjectAbout = ({ isEditMode, wobject, userName }) => {
           )}
         </ObjectInfo>
       </div>
+      <PostModal />
     </React.Fragment>
   );
 };

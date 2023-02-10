@@ -1,5 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+// import WalmartIcon from './WalmartIcon';
+// import AmazonIcon from './AmazonIcon';
+// import TargetIcon from './TargetIcon';
 
 const images = {
   walmart:

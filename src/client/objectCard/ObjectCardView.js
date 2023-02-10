@@ -21,7 +21,7 @@ import { defaultCurrency } from '../websites/constants/currencyTypes';
 
 import './ObjectCardView.less';
 import useWebsiteColor from '../../hooks/useWebsiteColor';
-import AffiliatLink from '../widgets/AffiliatLink';
+import AffiliatLink from '../widgets/AffiliatLinks/AffiliatLink';
 
 const ObjectCardView = ({
   intl,

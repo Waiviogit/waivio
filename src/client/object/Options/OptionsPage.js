@@ -52,7 +52,8 @@ const OptionsPage = () => {
         <div className="ObjectCardView__prefix-content">
           <FormattedMessage
             id="all_available_options"
-            defaultMessage={`All available ${category} options`}
+            defaultMessage={`All available {category} options`}
+            values={{ category }}
           />
         </div>
       </div>

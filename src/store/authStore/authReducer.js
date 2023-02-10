@@ -15,7 +15,7 @@ const initialState = {
   userMetaData: {},
   privateEmail: '',
   isGuestUser: false,
-  tabType: 'local',
+  tabType: 'global',
   sort: 'recency',
 };
 
