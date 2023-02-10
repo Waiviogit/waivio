@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
-import { isEmpty } from 'lodash';
+import { useDispatch, useSelector } from 'react-redux';
+import { isEmpty, isNil } from 'lodash';
+import { useRouteMatch } from 'react-router';
 import { FormattedMessage } from 'react-intl';
 import InfiniteScroll from 'react-infinite-scroller';
 import Loading from '../../components/Icon/Loading';
 import ObjectCardView from '../../objectCard/ObjectCardView';
 import { getObjectsByDepartment } from '../../../waivioApi/ApiClient';
 import { getActiveDepartment } from '../../../store/objectDepartmentsStore/objectDepartmentsSelectors';
+import { setActiveDepartment } from '../../../store/objectDepartmentsStore/objectDepartmentsActions';
 
 const limit = 10;
 
@@ -14,16 +16,26 @@ const DepartmentsPage = () => {
   const [hasMore, setHasMore] = useState(false);
   const [optionsList, setOptionsList] = useState([]);
   const activeDepartment = useSelector(getActiveDepartment);
+  const match = useRouteMatch();
+  const dispatch = useDispatch();
+  const departmentName = match.params.department;
 
   useEffect(() => {
     setOptionsList([]);
     window.scrollTo(0, 0);
 
-    if (!isEmpty(activeDepartment))
+    if (!isEmpty(activeDepartment)) {
       getObjectsByDepartment([activeDepartment.name], 0, limit).then(r => {
         setHasMore(r.hasMore);
         setOptionsList(r.wobjects);
       });
+    } else if (!isNil(departmentName)) {
+      dispatch(setActiveDepartment({ name: departmentName, id: departmentName }));
+      getObjectsByDepartment([departmentName], 0, limit).then(r => {
+        setHasMore(r.hasMore);
+        setOptionsList(r.wobjects);
+      });
+    }
   }, [activeDepartment]);
 
   const loadMoreRelatedObjects = () => {
