@@ -424,7 +424,7 @@ const routes = {
           component: Views.OptionsPage,
         },
         {
-          path: '/departments/:permlink',
+          path: '/departments/:department',
           exact: true,
           component: Views.DepartmentsPage,
         },
