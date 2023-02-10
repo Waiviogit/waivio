@@ -186,6 +186,12 @@ class ObjectInfo extends React.Component {
       }
     });
 
+    // const b = authors.reduce((acc, curr) => {
+    //   const g = authorsArray.map(author => author.name === curr.name);
+    //
+    //   return [...acc, g]
+    // }, [])
+
     this.setState({ authorsArray });
 
     if (publisher?.authorPermlink) {
