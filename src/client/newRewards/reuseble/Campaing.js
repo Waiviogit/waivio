@@ -26,7 +26,7 @@ const Campaing = ({ campain, onActionInitiated, hovered, intl }) => {
   const query = useQuery();
   let pathname = history.location.pathname.includes('/rewards/')
     ? `${location.pathname}/eligible`
-    : `/rewards/${campain.reach[0] || 'global'}/all`;
+    : `/rewards/${campain.reach?.[0] || 'global'}/all`;
 
   if (query.get('showAll')) {
     pathname = `${location.pathname}/all`;
