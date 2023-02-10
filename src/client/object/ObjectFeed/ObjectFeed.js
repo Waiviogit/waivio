@@ -194,13 +194,7 @@ export default class ObjectFeed extends React.Component {
             {!isEmpty(reward?.main) && <Campaing campain={reward.main} />}
             {!isEmpty(reward?.secondary) &&
               reward?.secondary?.map((proposition, i) => (
-                <Proposition
-                  key={getPropositionsKey(proposition, i)}
-                  proposition={{
-                    ...proposition,
-                    requiredObject: wobject.parent,
-                  }}
-                />
+                <Proposition key={getPropositionsKey(proposition, i)} proposition={proposition} />
               ))}
             <PropositionContainer userName={userName} wobject={wobject} />
             {getFeedContent()}
