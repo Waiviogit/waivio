@@ -17,7 +17,7 @@ const DetailsModalBody = ({ proposition, requirements, agreementObjects, intl })
   const getClassForCurrCreteria = creteria => classNames({ 'criteria-row__required': !creteria });
   const rate = useSelector(getRate);
   const rewardFund = useSelector(getRewardFund);
-  const requiredObject = proposition.requiredObject || proposition.object;
+  const requiredObject = proposition.requiredObject;
   const minExpertise = getMinExpertise({
     campaignMinExpertise: proposition?.userRequirements?.minExpertise,
     rewardFundRecentClaims: rewardFund.recent_claims,
