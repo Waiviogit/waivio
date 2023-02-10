@@ -53,7 +53,7 @@ import { setStoreActiveOption, setStoreGroupId } from '../../../store/optionsSto
 import { getObject, getObjectInfo } from '../../../waivioApi/ApiClient';
 import { getLocale } from '../../../common/helpers/localStorageHelpers';
 import Department from '../../object/Department/Department';
-import AffiliatLink from '../../widgets/AffiliatLink';
+import AffiliatLink from '../../widgets/AffiliatLinks/AffiliatLink';
 import ObjectFeatures from '../../object/ObjectFeatures/ObjectFeatures';
 import './ObjectInfo.less';
 

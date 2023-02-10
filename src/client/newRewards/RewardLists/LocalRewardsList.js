@@ -151,7 +151,13 @@ const LocalRewardsList = ({ title, withoutFilters }) => {
       </div>
       {!withoutFilters && (
         <div className={'RewardLists__left'}>
-          <RewardsMap getPoints={getMarkers} visible={showMap} onClose={() => setShowMap(false)} />
+          {match.params[0] === 'local' && (
+            <RewardsMap
+              getPoints={getMarkers}
+              visible={showMap}
+              onClose={() => setShowMap(false)}
+            />
+          )}
           <RewardsFilters
             title={'Filter rewards'}
             getFilters={getFilters}
