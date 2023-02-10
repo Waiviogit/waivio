@@ -26,7 +26,7 @@ const Campaing = ({ campain, onActionInitiated, hovered, intl }) => {
   const query = useQuery();
   let pathname = history.location.pathname.includes('/rewards/')
     ? `${location.pathname}/eligible`
-    : '/rewards/local/all';
+    : `/rewards/${campain.reach[0] || 'global'}/all`;
 
   if (query.get('showAll')) {
     pathname = `${location.pathname}/all`;
@@ -74,6 +74,7 @@ Campaing.propTypes = {
   campain: PropTypes.shape({
     maxReward: PropTypes.number,
     minReward: PropTypes.number,
+    reach: PropTypes.arrayOf(PropTypes.string),
     object: PropTypes.shape({
       author_permlink: PropTypes.string,
     }),
