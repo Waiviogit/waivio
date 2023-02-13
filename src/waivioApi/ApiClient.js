@@ -1688,13 +1688,10 @@ export const getExpertiseCounters = userName => {
 };
 
 export const getReservedCounter = userName => {
-  return fetch(
-    `${config.campaignApiPrefix}${config.campaigns}${config.reserved}${config.count}?userName=${userName}`,
-    {
-      headers,
-      method: 'GET',
-    },
-  )
+  return fetch(`${config.campaignV2ApiPrefix}${config.reservation_v2}${config.count}/${userName}`, {
+    headers,
+    method: 'GET',
+  })
     .then(res => res.json())
     .then(res => res)
     .catch(e => e);
@@ -3151,5 +3148,14 @@ export const searchDepartments = (searchString, limit, skip) => {
     body: JSON.stringify({ searchString: searchString, limit, skip }),
   }).then(res => res.json());
 };
+
+export const getAuthorityFields = permlink =>
+  fetch(`${config.apiPrefix}${config.getObjects}/${permlink}${config.authorityFields}`, {
+    headers,
+    method: 'GET',
+  })
+    .then(res => res.json())
+    .then(posts => posts)
+    .catch(error => error);
 
 export default null;

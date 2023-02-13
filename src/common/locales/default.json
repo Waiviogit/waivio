@@ -2164,5 +2164,7 @@
   "reserve_the_rewards_for": "Reserve the reward for",
   "do_not_reserve": "It is not possible to reserve your own campaign.",
   "show all": "Show all",
-  "all_available_options": "All available {category} options"
+  "all_available_options": "All available {category} options",
+  "add_to_my_shop": "Add to my shop",
+  "remove_from_my_shop": "Remove from my shop"
 }
