@@ -3149,4 +3149,13 @@ export const searchDepartments = (searchString, limit, skip) => {
   }).then(res => res.json());
 };
 
+export const getAuthorityFields = permlink =>
+  fetch(`${config.apiPrefix}${config.getObjects}/${permlink}${config.authorityFields}`, {
+    headers,
+    method: 'GET',
+  })
+    .then(res => res.json())
+    .then(posts => posts)
+    .catch(error => error);
+
 export default null;
