@@ -7,11 +7,12 @@ import PropTypes from 'prop-types';
 
 import './Filters.less';
 
-const RewardsFilters = ({ config, getFilters, onlyOne, visible, onClose, intl }) => {
+const RewardsFilters = ({ config, getFilters, onlyOne, visible, onClose, intl, children }) => {
   const [activeFilters, setActiveFilters] = useState({});
   const history = useHistory();
   const query = new URLSearchParams(history.location.search);
   const [filters, setFilter] = useState({});
+
   const setFiltersFromQuery = () => {
     const types = config.map(conf => conf.type);
 
@@ -33,7 +34,7 @@ const RewardsFilters = ({ config, getFilters, onlyOne, visible, onClose, intl })
       setFilter(res);
     });
     setFiltersFromQuery();
-  }, []);
+  }, [history.location.pathname]);
 
   useEffect(() => {
     setFiltersFromQuery();
@@ -76,6 +77,7 @@ const RewardsFilters = ({ config, getFilters, onlyOne, visible, onClose, intl })
         <i className="iconfont icon-trysearchlist RewardsFilters__icon" />
         <FormattedMessage id="filter_rewards" defaultMessage="Filter rewards" />
       </div>
+      {children}
       {config.map(filter => {
         if (isEmpty(filters?.[filter?.type])) return null;
 
@@ -118,6 +120,7 @@ RewardsFilters.propTypes = {
   onClose: PropTypes.func,
   onlyOne: PropTypes.bool,
   visible: PropTypes.bool,
+  children: PropTypes.node,
   config: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   intl: PropTypes.shape({
     formatMessage: PropTypes.func,

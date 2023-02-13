@@ -18,7 +18,6 @@ const DetailsModalBody = ({ proposition, requirements, agreementObjects, intl })
   const rate = useSelector(getRate);
   const rewardFund = useSelector(getRewardFund);
   const requiredObject = proposition.requiredObject;
-
   const minExpertise = getMinExpertise({
     campaignMinExpertise: proposition?.userRequirements?.minExpertise,
     rewardFundRecentClaims: rewardFund.recent_claims,

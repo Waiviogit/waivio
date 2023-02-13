@@ -84,7 +84,7 @@
     "moment": "^2.24.0",
     "multicoin-address-validator": "^0.5.11",
     "npm-run-all": "^4.0.2",
-    "pigeon-maps": "0.19.5",
+    "pigeon-maps": "^0.21.3",
     "pigeon-overlay": "^0.2.3",
     "prop-types": "^15.6.1",
     "qrcode.react": "^1.0.1",

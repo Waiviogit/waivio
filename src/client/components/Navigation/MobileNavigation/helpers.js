@@ -25,7 +25,7 @@ export const pages = {
   },
 
   rewards: {
-    regExp: /(^\/rewards\/)(all|eligible|reserved|history)/,
+    regExp: /(^\/rewards\/)(local|global|reserved|history)/,
     id: 'rewards',
   },
   rewardsCampaigns: {

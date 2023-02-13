@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useLocation, useParams } from 'react-router';
+import { useLocation, useParams, useRouteMatch } from 'react-router';
 import { isEmpty, noop } from 'lodash';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
@@ -55,6 +55,7 @@ const RenderPropositionList = ({
   const { requiredObject } = useParams();
   const authUserName = useSelector(getAuthenticatedUserName);
   const location = useLocation();
+  const match = useRouteMatch();
   const [propositions, setPropositions] = useState();
   const [hasMore, setHasMore] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -65,7 +66,8 @@ const RenderPropositionList = ({
   const search = location.search.replace('?', '&');
 
   const getFilters = () => {
-    if (!withoutFilters) return getPropositionFilters(requiredObject, authUserName);
+    if (!withoutFilters)
+      return getPropositionFilters(requiredObject, authUserName, match.params[0]);
 
     return null;
   };
@@ -78,7 +80,14 @@ const RenderPropositionList = ({
       setParent({ ...campParent, maxReward: campInfo?.main?.maxReward });
     }
 
-    const res = await getProposition(requiredObject, authUserName, 0, search, sort);
+    const res = await getProposition(
+      requiredObject,
+      authUserName,
+      0,
+      search,
+      sort,
+      match.params[0],
+    );
 
     setPropositions(res.rewards);
     setHasMore(res.hasMore);
@@ -109,6 +118,7 @@ const RenderPropositionList = ({
         propositions?.length,
         search,
         sort,
+        match.params[0],
       );
 
       setPropositions([...propositions, ...res.rewards]);
@@ -122,13 +132,19 @@ const RenderPropositionList = ({
   const onClose = () => setVisible(false);
 
   if (loading && isEmpty(propositions)) return <Loading />;
+  let parentLink = `/rewards/${tab}`;
+
+  if (['all', 'eligible'].includes(tab)) {
+    parentLink =
+      tab === 'all' ? `/rewards/${match.params[0]}?showAll=true` : `/rewards/${match.params[0]}`;
+  }
 
   return (
     <div className="PropositionList">
       <div className="PropositionList__feed">
         <FiltersForMobile setVisible={setVisible} />
         <div className="PropositionList__breadcrumbs">
-          <Link className="PropositionList__page" to={`/rewards/${tab}`}>
+          <Link className="PropositionList__page" to={parentLink}>
             {intl.formatMessage({ id: `${tab}_rewards_new` })}
           </Link>
           {requiredObject && (

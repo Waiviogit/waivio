@@ -1,11 +1,7 @@
-import { get, kebabCase, uniqBy } from 'lodash';
+import { get, kebabCase } from 'lodash';
 
 import { createAsyncActionType } from '../../common/helpers/stateHelpers';
-import {
-  getAllCampaingForRequiredObject,
-  getAuthorsChildWobjects,
-  searchObjects,
-} from '../../waivioApi/ApiClient';
+import { getAuthorsChildWobjects, searchObjects } from '../../waivioApi/ApiClient';
 import { getAuthenticatedUserName } from '../authStore/authSelectors';
 import { getLocale } from '../settingsStore/settingsSelectors';
 import { createPost } from '../editorStore/editorActions';
@@ -106,7 +102,6 @@ export const getMoreEligibleRewardsListWithRestaurant = (selectRest, skip) => as
   const state = getState();
   const name = getAuthenticatedUserName(state);
   const locale = getLocale(state);
-  const isReview = Boolean(selectRest.campaigns || selectRest.activeCampaignsCount);
 
   dispatch({ type: GET_MORE_ELIGIBLE_REWARDS_WITH_RESTAURANT.START });
 
@@ -119,18 +114,10 @@ export const getMoreEligibleRewardsListWithRestaurant = (selectRest, skip) => as
       'list',
       name,
     );
-    const objCampaings =
-      isReview &&
-      (await getAllCampaingForRequiredObject({
-        requiredObject: selectRest.author_permlink,
-        limit: 50,
-      }));
 
     return dispatch({
       type: GET_MORE_ELIGIBLE_REWARDS_WITH_RESTAURANT.SUCCESS,
-      payload: isReview
-        ? uniqBy([...objCampaings.wobjects, ...objChild], 'author_permlink')
-        : objChild,
+      payload: objChild,
     });
   } catch (e) {
     return dispatch({ type: GET_MORE_ELIGIBLE_REWARDS_WITH_RESTAURANT.ERROR });

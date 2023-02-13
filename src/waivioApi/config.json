@@ -193,5 +193,6 @@
   "blogTags": "/blog-tags",
   "names": "/names",
   "newsfeed": "/newsfeed",
+  "options": "/options",
   "authorityFields": "/authority-fields"
 }

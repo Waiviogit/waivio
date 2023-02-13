@@ -456,7 +456,7 @@ export const getNotificationsLink = (notification, currentAuthUsername) => {
     case notificationConstants.REJECT_UPDATE:
       return `/object/${notification.author_permlink}/updates/${notification.object_name}`;
     case notificationConstants.ACTIVATION_CAMPAIGN:
-      return `/rewards/all/${notification.author_permlink}`;
+      return `/rewards/local/all/${notification.author_permlink}`;
     case notificationConstants.SUSPENDED_STATUS:
       return `/@${notification.reviewAuthor}/${notification.reviewPermlink}`;
     case notificationConstants.WITHDRAW_ROUTE:
