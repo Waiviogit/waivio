@@ -32,7 +32,7 @@ const ObjectAbout = ({ isEditMode, wobject, userName }) => {
   useEffect(() => {
     getObjectsRewards(match.params.name, authName).then(res => setReward(res));
     dispatch(getObjectPosts({ object: match.params.name, username: match.params.name, limit: 5 }));
-  }, []);
+  }, [match.params.name]);
 
   return (
     <React.Fragment>
