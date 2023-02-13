@@ -181,16 +181,12 @@ class ObjectInfo extends React.Component {
     authors.forEach(author => {
       if (author.authorPermlink) {
         getObjectInfo([author?.authorPermlink]).then(res => authorsArray.push(res.wobjects[0]));
+      } else if (author.author_permlink) {
+        getObjectInfo([author?.author_permlink]).then(res => authorsArray.push(res.wobjects[0]));
       } else {
         authorsArray.push(author);
       }
     });
-
-    // const b = authors.reduce((acc, curr) => {
-    //   const g = authorsArray.map(author => author.name === curr.name);
-    //
-    //   return [...acc, g]
-    // }, [])
 
     this.setState({ authorsArray });
 
@@ -215,6 +211,7 @@ class ObjectInfo extends React.Component {
       );
     }
   }
+  authorFieldAuthorPermlink = author => author.authorPermlink || author.author_permlink;
 
   getFieldLayout = (fieldName, params) => {
     const { body } = params;
@@ -807,9 +804,9 @@ class ObjectInfo extends React.Component {
             objectFields.authors,
             <div>
               {this.state.authorsArray?.map((a, i) => (
-                <span key={a.author_permlink}>
-                  {a.author_permlink ? (
-                    <Link to={`/object/${a.author_permlink}`}>{a.name}</Link>
+                <span key={this.authorFieldAuthorPermlink(a)}>
+                  {this.authorFieldAuthorPermlink(a) ? (
+                    <Link to={`/object/${this.authorFieldAuthorPermlink(a)}`}>{a.name}</Link>
                   ) : (
                     <span>{a.name}</span>
                   )}
@@ -1260,9 +1257,9 @@ class ObjectInfo extends React.Component {
           <div className="mb3">
             By{' '}
             {this.state.authorsArray?.map((a, i) => (
-              <span key={a.author_permlink}>
-                {a.author_permlink ? (
-                  <Link to={`/object/${a.author_permlink}`}>{a.name}</Link>
+              <span key={this.authorFieldAuthorPermlink(a)}>
+                {this.authorFieldAuthorPermlink(a) ? (
+                  <Link to={`/object/${this.authorFieldAuthorPermlink(a)}`}>{a.name}</Link>
                 ) : (
                   <span>{a.name}</span>
                 )}
