@@ -71,7 +71,7 @@ export const getChangedWobjectField = (
     dispatch({
       type: GET_CHANGED_WOBJECT_FIELD.ACTION,
       payload: {
-        promise: getChangedField(authorPermlink, fieldName, author, permlink, locale)
+        promise: getChangedField(authorPermlink, fieldName, author, permlink, locale, voter)
           .then(res => {
             dispatch({
               type: GET_CHANGED_WOBJECT_UPDATE.SUCCESS,
@@ -112,6 +112,7 @@ export const voteAppends = (author, permlink, weight = 10000, name = '', isNew =
   const wobj = get(state, ['object', 'wobject'], {});
   const voter = getAuthenticatedUserName(state);
   const fieldName = name || post.name;
+  const authorityField = fieldName === 'authority';
 
   if (!getIsAuthenticated(state)) return null;
 
@@ -126,13 +127,17 @@ export const voteAppends = (author, permlink, weight = 10000, name = '', isNew =
   return steemConnectAPI
     .vote(voter, author, permlink, weight)
     .then(() => {
-      message.success('Please wait, we are processing your update');
+      if (!authorityField) {
+        message.success('Please wait, we are processing your update');
+      }
       dispatch(
         getChangedWobjectField(wobj.author_permlink, fieldName, author, permlink, isNew, type),
       );
     })
     .catch(e => {
-      message.error(e.error_description);
+      if (!authorityField) {
+        message.error(e.error_description);
+      }
 
       return dispatch({
         type: VOTE_APPEND.ERROR,
@@ -166,22 +171,9 @@ export const authorityVoteAppend = (
     },
   });
 
-  return steemConnectAPI
-    .appendVote(voter, author, permlink, weight)
-    .then(() => {
-      message.success('Please wait, we are processing your update');
-      dispatch(getChangedWobjectField(wobj.author_permlink, name, author, permlink, isNew, type));
-    })
-    .catch(e => {
-      message.error(e.error_description);
-
-      return dispatch({
-        type: VOTE_APPEND.ERROR,
-        payload: {
-          permlink,
-        },
-      });
-    });
+  return steemConnectAPI.appendVote(voter, author, permlink, weight).then(() => {
+    dispatch(getChangedWobjectField(wobj.author_permlink, name, author, permlink, isNew, type));
+  });
 };
 
 const followAndLikeAfterCreateAppend = (data, isLike, follow) => dispatch => {

@@ -1293,7 +1293,7 @@ export const getTransferDetails = withdrawId =>
     method: 'GET',
   }).then(res => res.json());
 
-export const getChangedField = (authorPermlink, fieldName, author, permlink, locale) =>
+export const getChangedField = (authorPermlink, fieldName, author, permlink, locale, authUser) =>
   fetch(
     `${config.apiPrefix}${config.getObjects}/${authorPermlink}${config.getField}?fieldName=${fieldName}&author=${author}&permlink=${permlink}`,
     {
@@ -1301,6 +1301,7 @@ export const getChangedField = (authorPermlink, fieldName, author, permlink, loc
         ...headers,
         app: config.appName,
         locale,
+        follower: authUser,
       },
       method: 'GET',
     },

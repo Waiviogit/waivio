@@ -15,7 +15,7 @@ import {
   hasType,
 } from '../../common/helpers/wObjectHelper';
 import { getProxyImageURL } from '../../common/helpers/image';
-import { getAuthenticatedUserName } from '../../store/authStore/authSelectors';
+import { getAuthenticatedUserName, getIsAuthenticated } from '../../store/authStore/authSelectors';
 import USDDisplay from '../components/Utils/USDDisplay';
 import { defaultCurrency } from '../websites/constants/currencyTypes';
 
@@ -41,6 +41,7 @@ const ObjectCardView = ({
   rate,
 }) => {
   const username = useSelector(getAuthenticatedUserName);
+  const isAuthUser = useSelector(getIsAuthenticated);
   const [tags, setTags] = useState([]);
   const address = parseAddress(wObject, ['postalCode', 'country']);
   const parent = isEmpty(passedParent) ? get(wObject, 'parent', {}) : passedParent;
@@ -172,7 +173,7 @@ const ObjectCardView = ({
               </div>
             )}
           </div>
-          {heartObjTypes && (
+          {heartObjTypes && isAuthUser && (
             <div className="avatar-heart">
               <HeartButton wobject={wObject} size={'22px'} />
             </div>
