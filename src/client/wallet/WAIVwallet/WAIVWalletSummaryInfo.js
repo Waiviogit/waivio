@@ -96,7 +96,7 @@ const WAIVWalletSummaryInfo = props => {
                 }
               }}
             >
-              {formattedNumber(stake)}
+              {formattedNumber(stake + delegationsOut)}
               {!!unstake && <span> - {formattedNumber(unstake)}</span>}{' '}
               {!!delegation && (
                 <span>
