@@ -111,7 +111,7 @@ const AppendObjButtons = ({
 
   return (
     <div className="Buttons">
-      {isAthority && post.creator === userName && (
+      {((isAthority && post.creator === userName) || !isAthority) && (
         <React.Fragment>
           {post.loading ? (
             <Icon type="loading" />

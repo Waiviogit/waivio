@@ -127,9 +127,11 @@ export const voteAppends = (author, permlink, weight = 10000, name = '', isNew =
     .vote(voter, author, permlink, weight)
     .then(() => {
       message.success('Please wait, we are processing your update');
-      dispatch(
-        getChangedWobjectField(wobj.author_permlink, fieldName, author, permlink, isNew, type),
-      );
+      setTimeout(() => {
+        dispatch(
+          getChangedWobjectField(wobj.author_permlink, fieldName, author, permlink, isNew, type),
+        );
+      }, 2000);
     })
     .catch(e => {
       message.error(e.error_description);

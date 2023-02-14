@@ -7,6 +7,7 @@ import { HIVE_ENGINE_DEFAULT_SWAP_LIST } from '../../../../common/constants/swap
 import WalletActionEngine from '../../WalletSummaryInfo/components/WalletAction/WalletActionEngine';
 
 import './HiveEngineCurrencyItem.less';
+import { toFixed } from '../../../../common/helpers/formatter';
 
 const HiveEngineCurrencyItem = ({ token, rates }) => {
   const stake = token.stake || 0;
@@ -29,7 +30,7 @@ const HiveEngineCurrencyItem = ({ token, rates }) => {
               <span className="HiveEngineCurrencyItem__shadow">liquid: </span>
             )}
             <span className="HiveEngineCurrencyItem__bold">
-              <FormattedNumber value={token.balance} maximumFractionDigits={3} />
+              <FormattedNumber value={toFixed(token.balance, 1000)} maximumFractionDigits={3} />
             </span>{' '}
             {token.symbol}
           </span>
@@ -40,7 +41,7 @@ const HiveEngineCurrencyItem = ({ token, rates }) => {
             <span>
               <span className="HiveEngineCurrencyItem__shadow">staked: </span>
               <span className="HiveEngineCurrencyItem__bold">
-                <FormattedNumber value={token.stake} maximumFractionDigits={3} />
+                <FormattedNumber value={toFixed(token.stake, 1000)} maximumFractionDigits={3} />
               </span>{' '}
               {token.symbol}
             </span>
