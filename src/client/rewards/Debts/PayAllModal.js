@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Checkbox, Modal } from 'antd';
 import { useSelector } from 'react-redux';
-import { take } from 'lodash';
+import { round, take } from 'lodash';
 import PropTypes from 'prop-types';
 
 import Avatar from '../../components/Avatar';
@@ -95,18 +95,16 @@ const PayAllModal = ({ showModal, renderData, setShowModal, currentUSDPrice, aut
       {filteredData.map(item => (
         <div key={item.userName} className="Debts__transferCard">
           <div className="Debts__transferUser">
+            <Checkbox defaultChecked onClick={e => handleCheck(e, item)} />
             <Avatar username={item.userName} size={40} />
             <b>{item.userName}</b>
           </div>
-          <div>
-            <span>{item.payable} WAIV</span>
-            <Checkbox defaultChecked onClick={e => handleCheck(e, item)} />
-          </div>
+          <span>{item.payable} WAIV</span>
         </div>
       ))}
       <div className="Debts__payableInfo">
         <p>
-          <b>Total amount:</b> {payable} WAIV.
+          <b>Total amount:</b> {round(payable, 8)} WAIV.
         </p>
         <p>
           <b>Your balance:</b> {balance} WAIV.

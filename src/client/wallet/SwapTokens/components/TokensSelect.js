@@ -14,7 +14,6 @@ const TokensSelect = props => {
     'TokenSelect__inputWrap--error': props.isError,
     'TokenSelect__inputWrap--disabled': props.disabled,
   });
-
   const selectClassList = classNames('TokenSelect__selector', {
     ...(customClassSelect && { [customClassSelect]: true }),
   });
