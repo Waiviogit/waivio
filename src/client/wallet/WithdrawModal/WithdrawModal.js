@@ -33,6 +33,7 @@ import LinkHiveAccountModal from '../../settings/LinkHiveAccountModal';
 import { getRatesList } from '../../../store/ratesStore/ratesSelector';
 
 import './WithdrawModal.less';
+import { toFixed } from '../../../common/helpers/formatter';
 
 const withdrawFeePercent = 0.75;
 const withdrawFee = withdrawFeePercent / 100;
@@ -316,7 +317,13 @@ const WithdrawModal = props => {
             setToken={setTokenPair}
             amount={fromAmount}
             handleChangeValue={handleFromAmoundChange}
-            token={pair}
+            token={{
+              ...pair,
+              balance:
+                pair?.from_coin_symbol === 'SWAP.HIVE' && pair?.to_coin_symbol === 'HIVE'
+                  ? toFixed(pair?.balance, 1000)
+                  : pair?.balance,
+            }}
             handleClickBalance={handleFromAmoundChange}
             isError={isError}
           />

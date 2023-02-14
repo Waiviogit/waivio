@@ -15,13 +15,14 @@ import {
   hasType,
 } from '../../common/helpers/wObjectHelper';
 import { getProxyImageURL } from '../../common/helpers/image';
-import { getAuthenticatedUserName } from '../../store/authStore/authSelectors';
+import { getAuthenticatedUserName, getIsAuthenticated } from '../../store/authStore/authSelectors';
 import USDDisplay from '../components/Utils/USDDisplay';
 import { defaultCurrency } from '../websites/constants/currencyTypes';
 
 import './ObjectCardView.less';
 import useWebsiteColor from '../../hooks/useWebsiteColor';
 import AffiliatLink from '../widgets/AffiliatLinks/AffiliatLink';
+import HeartButton from '../widgets/HeartButton';
 
 const ObjectCardView = ({
   intl,
@@ -40,6 +41,7 @@ const ObjectCardView = ({
   rate,
 }) => {
   const username = useSelector(getAuthenticatedUserName);
+  const isAuthUser = useSelector(getIsAuthenticated);
   const [tags, setTags] = useState([]);
   const address = parseAddress(wObject, ['postalCode', 'country']);
   const parent = isEmpty(passedParent) ? get(wObject, 'parent', {}) : passedParent;
@@ -47,6 +49,7 @@ const ObjectCardView = ({
   const objName = getObjectName(wObject);
   const parentName = getObjectName(parent);
   const prise = withRewards ? null : wObject.price;
+  const heartObjTypes = ['book', 'product', 'service'].includes(wObject.object_type);
   const objectCardClassList = classNames('ObjectCardView', {
     'ObjectCardView--hovered': hovered,
   });
@@ -170,6 +173,11 @@ const ObjectCardView = ({
               </div>
             )}
           </div>
+          {heartObjTypes && isAuthUser && (
+            <div className="avatar-heart">
+              <HeartButton wobject={wObject} size={'22px'} />
+            </div>
+          )}
         </div>
         {withRewards && (
           <div className="ObjectCardView__rewardsInfo">

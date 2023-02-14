@@ -193,12 +193,18 @@ export const realiseRewards = proposition => (dispatch, getState, { steemConnect
     steemConnectAPI
       .broadcast([commentOp])
       .then(async () => {
+        const timeoutId = setTimeout(() => {
+          dispatch(changeRewardsTab(username));
+          resolve();
+        }, 10000);
+
         busyAPI.instance.sendAsync(subscribeTypes.subscribeTransactionId, [
           username,
           unreservationPermlink,
         ]);
         busyAPI.instance.subscribe((datad, j) => {
           if (j?.success && j?.permlink === unreservationPermlink) {
+            clearTimeout(timeoutId);
             dispatch(changeRewardsTab(username));
             resolve();
           }
