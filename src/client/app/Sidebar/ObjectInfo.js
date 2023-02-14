@@ -664,6 +664,18 @@ class ObjectInfo extends React.Component {
               />
             ),
           )}
+        {!isEditMode &&
+          isOptionsObjectType &&
+          this.listItem(
+            objectFields.description,
+            description && (
+              <DescriptionInfo
+                isEditMode={isEditMode}
+                description={description}
+                wobjPermlink={wobject.author_permlink}
+              />
+            ),
+          )}
       </>
     );
 
@@ -707,22 +719,9 @@ class ObjectInfo extends React.Component {
               )}
             </div>
           )}
-
           {!isList && (
             <div className="object-sidebar__menu-items">
               <React.Fragment>
-                {!isEditMode &&
-                  isOptionsObjectType &&
-                  this.listItem(
-                    objectFields.description,
-                    description && (
-                      <DescriptionInfo
-                        isEditMode={isEditMode}
-                        description={description}
-                        wobjPermlink={wobject.author_permlink}
-                      />
-                    ),
-                  )}
                 {this.listItem(
                   TYPES_OF_MENU_ITEM.LIST,
                   !isEmpty(menuLinks) && menuLinks.map(item => this.getMenuSectionLink(item)),
