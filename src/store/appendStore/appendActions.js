@@ -143,6 +143,46 @@ export const voteAppends = (author, permlink, weight = 10000, name = '', isNew =
       });
     });
 };
+export const AUTHORITY_VOTE_APPEND = createAsyncActionType('@append/AUTHORITY_VOTE_APPEND');
+
+export const authorityVoteAppend = (
+  author,
+  permlink,
+  weight = 10000,
+  name = '',
+  isNew = false,
+  type,
+) => (dispatch, getState, { steemConnectAPI }) => {
+  const state = getState();
+  const voter = getAuthenticatedUserName(state);
+  const wobj = get(state, ['object', 'wobject'], {});
+
+  if (!getIsAuthenticated(state)) return null;
+
+  dispatch({
+    type: AUTHORITY_VOTE_APPEND.START,
+    payload: {
+      permlink,
+    },
+  });
+
+  return steemConnectAPI
+    .appendVote(voter, author, permlink, weight)
+    .then(() => {
+      message.success('Please wait, we are processing your update');
+      dispatch(getChangedWobjectField(wobj.author_permlink, name, author, permlink, isNew, type));
+    })
+    .catch(e => {
+      message.error(e.error_description);
+
+      return dispatch({
+        type: VOTE_APPEND.ERROR,
+        payload: {
+          permlink,
+        },
+      });
+    });
+};
 
 const followAndLikeAfterCreateAppend = (data, isLike, follow) => dispatch => {
   const type = data.field.name === 'listItem' ? data.field.type : null;

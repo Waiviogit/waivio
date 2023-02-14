@@ -22,6 +22,7 @@ import { defaultCurrency } from '../websites/constants/currencyTypes';
 import './ObjectCardView.less';
 import useWebsiteColor from '../../hooks/useWebsiteColor';
 import AffiliatLink from '../widgets/AffiliatLinks/AffiliatLink';
+import HeartButton from '../widgets/HeartButton';
 
 const ObjectCardView = ({
   intl,
@@ -47,6 +48,7 @@ const ObjectCardView = ({
   const objName = getObjectName(wObject);
   const parentName = getObjectName(parent);
   const prise = withRewards ? null : wObject.price;
+  const heartObjTypes = ['book', 'product', 'service'].includes(wObject.object_type);
   const objectCardClassList = classNames('ObjectCardView', {
     'ObjectCardView--hovered': hovered,
   });
@@ -170,6 +172,11 @@ const ObjectCardView = ({
               </div>
             )}
           </div>
+          {heartObjTypes && (
+            <div className="avatar-heart">
+              <HeartButton wobject={wObject} size={'22px'} />
+            </div>
+          )}
         </div>
         {withRewards && (
           <div className="ObjectCardView__rewardsInfo">

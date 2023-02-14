@@ -9,11 +9,10 @@ import { getObjectName } from '../../common/helpers/wObjectHelper';
 import { getAuthenticatedUser } from '../../store/authStore/authSelectors';
 import { getLocale } from '../../store/settingsStore/settingsSelectors';
 import { getAuthorityFields } from '../../waivioApi/ApiClient';
-import { appendObject, voteAppends } from '../../store/appendStore/appendActions';
+import { appendObject, authorityVoteAppend } from '../../store/appendStore/appendActions';
 
-const HeartButton = ({ wobject }) => {
+const HeartButton = ({ wobject, size }) => {
   const [activeHeart, setActiveHeart] = useState(false);
-  const [postInfo, setPostInfo] = useState([]);
   const user = useSelector(getAuthenticatedUser);
   const language = useSelector(getLocale);
   const dispatch = useDispatch();
@@ -26,8 +25,6 @@ const HeartButton = ({ wobject }) => {
   );
 
   useEffect(() => {
-    getAuthorityFields(wobject.author_permlink).then(r => setPostInfo(r));
-
     if (wobject?.authority?.weight > 0) {
       setActiveHeart(true);
     }
@@ -49,23 +46,26 @@ const HeartButton = ({ wobject }) => {
   });
 
   const onHeartClick = () => {
-    if (isEmpty(postInfo)) {
-      const data = getWobjectData();
+    getAuthorityFields(wobject.author_permlink).then(postInformation => {
+      if (isEmpty(postInformation)) {
+        const data = getWobjectData();
 
-      dispatch(appendObject(data, { votePercent: upVotePower }));
-    }
-    if (!isEmpty(postInfo)) {
-      const [authority] = postInfo;
+        dispatch(appendObject(data, { votePercent: upVotePower }));
+      }
+      if (!isEmpty(postInformation)) {
+        const [authority] = postInformation;
 
-      dispatch(
-        voteAppends(
-          authority.author,
-          authority.permlink,
-          authority.weight > 0 ? downVotePower : upVotePower,
-        ),
-      );
-    }
-    setActiveHeart(!activeHeart);
+        dispatch(
+          authorityVoteAppend(
+            authority.author,
+            authority.permlink,
+            authority.weight > 0 ? downVotePower : upVotePower,
+            'authority',
+          ),
+        );
+      }
+      setActiveHeart(!activeHeart);
+    });
   };
 
   const heartClasses = classnames({ HeartButton__active: activeHeart, HeartButton: !activeHeart });
@@ -78,7 +78,7 @@ const HeartButton = ({ wobject }) => {
       overlayStyle={{ top: '10px' }}
     >
       <button className={heartClasses} onClick={onHeartClick}>
-        <Icon type="heart" theme="filled" />
+        <Icon type="heart" theme="filled" style={{ fontSize: size }} />
       </button>
     </Tooltip>
   );
@@ -86,6 +86,7 @@ const HeartButton = ({ wobject }) => {
 
 HeartButton.propTypes = {
   wobject: PropTypes.shape().isRequired,
+  size: PropTypes.string.isRequired,
 };
 
 export default HeartButton;

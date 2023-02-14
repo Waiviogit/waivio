@@ -623,9 +623,9 @@ export const getObjectTypes = (limit = 10, skip = 0, wobjects_count = 3, locale)
     .catch(error => error);
 
 export const getObjectType = (typeName, requestData) => {
-  const { locale = 'en-US' } = requestData;
+  const { locale = 'en-US', userName } = requestData;
   return fetch(`${config.apiPrefix}${config.objectType}/${typeName}`, {
-    headers: { ...headers, app: config.appName, locale },
+    headers: { ...headers, follower: userName, app: config.appName, locale },
     method: 'POST',
     body: JSON.stringify(requestData),
   })
