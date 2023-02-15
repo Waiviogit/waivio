@@ -69,6 +69,9 @@ const TokensSelect = props => {
         </Select>
       </div>
       {props.isError && <p className="TokenSelect__invalid">Insufficient funds.</p>}{' '}
+      {props.addErrorHiveWithdraw && balance < 0.001 && (
+        <p className="TokenSelect__invalid"> Your balance is less than 0.001 HIVE.</p>
+      )}{' '}
       <p>
         <FormattedMessage id="your_balance" defaultMessage="Your balance" />:{' '}
         {!isEmpty(props.token) && (
@@ -95,11 +98,13 @@ TokensSelect.propTypes = {
   isError: PropTypes.bool,
   isLoading: PropTypes.bool,
   disabledSelect: PropTypes.bool,
+  addErrorHiveWithdraw: PropTypes.bool,
   customClassSelect: PropTypes.string,
 };
 
 TokensSelect.defaultProps = {
   isError: false,
+  addErrorHiveWithdraw: false,
   list: [],
   isLoading: false,
   disableBalance: false,

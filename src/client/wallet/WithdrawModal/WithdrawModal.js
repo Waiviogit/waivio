@@ -56,6 +56,8 @@ const WithdrawModal = props => {
   const [showLinkToHive, setShowLinkToHive] = useState(false);
   const [delay, setDelay] = useState(0);
   const isError = +pair?.balance < fromAmount;
+  const isSwapHiveToHive =
+    pair?.from_coin_symbol === 'SWAP.HIVE' && pair?.to_coin_symbol === 'HIVE';
 
   const handleValidateWalletAddress = useCallback(
     debounce(async value => {
@@ -276,7 +278,8 @@ const WithdrawModal = props => {
               invalidAddress ||
               (!isHiveCurrency && !walletAddress) ||
               (isHiveCurrency && !(hiveBeneficiaryAccount || userName)) ||
-              (pair?.to_coin_symbol === 'BTC' && +toAmount <= 0.01)
+              (pair?.to_coin_symbol === 'BTC' && +toAmount <= 0.01) ||
+              (isSwapHiveToHive && pair?.balance < 0.001)
             }
           >
             <FormattedMessage id="Withdraw" defaultMessage="Withdraw" />
@@ -317,12 +320,10 @@ const WithdrawModal = props => {
             setToken={setTokenPair}
             amount={fromAmount}
             handleChangeValue={handleFromAmoundChange}
+            addErrorHiveWithdraw={isSwapHiveToHive}
             token={{
               ...pair,
-              balance:
-                pair?.from_coin_symbol === 'SWAP.HIVE' && pair?.to_coin_symbol === 'HIVE'
-                  ? toFixed(pair?.balance, 1000)
-                  : pair?.balance,
+              balance: isSwapHiveToHive ? toFixed(pair?.balance, 1000) : pair?.balance,
             }}
             handleClickBalance={handleFromAmoundChange}
             isError={isError}
