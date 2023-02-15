@@ -178,7 +178,6 @@ export const authorityVoteAppend = (
 
 const followAndLikeAfterCreateAppend = (data, isLike, follow) => dispatch => {
   const type = data.field.name === 'listItem' ? data.field.type : null;
-  console.log(data);
 
   if (isLike) {
     if (data.field.name === 'authority') {
