@@ -150,14 +150,11 @@ export const voteAppends = (author, permlink, weight = 10000, name = '', isNew =
 };
 export const AUTHORITY_VOTE_APPEND = createAsyncActionType('@append/AUTHORITY_VOTE_APPEND');
 
-export const authorityVoteAppend = (
-  author,
-  permlink,
-  weight = 10000,
-  name = '',
-  isNew = false,
-  type,
-) => (dispatch, getState, { steemConnectAPI }) => {
+export const authorityVoteAppend = (author, permlink, weight, name = '', isNew = false, type) => (
+  dispatch,
+  getState,
+  { steemConnectAPI },
+) => {
   const state = getState();
   const voter = getAuthenticatedUserName(state);
   const wobj = get(state, ['object', 'wobject'], {});

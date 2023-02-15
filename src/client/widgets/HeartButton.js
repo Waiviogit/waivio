@@ -53,13 +53,16 @@ const HeartButton = ({ wobject, size }) => {
 
   const onHeartClick = () => {
     getAuthorityFields(wobject.author_permlink).then(postInformation => {
-      if (isEmpty(postInformation)) {
+      if (
+        isEmpty(postInformation) ||
+        isEmpty(postInformation.filter(p => p.creator === user.name))
+      ) {
         const data = getWobjectData();
 
         dispatch(appendObject(data, { votePercent: defaultUpVotePower, isLike: true }));
       }
       if (!isEmpty(postInformation)) {
-        const [authority] = postInformation;
+        const authority = postInformation.find(post => post.creator === user.name);
 
         dispatch(
           authorityVoteAppend(
