@@ -34,6 +34,7 @@ import SelectColorModal from './SelectColorModal/SelectColorModal';
 import { initialColors } from '../../constants/colors';
 
 import './WebsitesConfigurations.less';
+import ConfigHeader from './ConfigHeader/ConfigHeader';
 
 export const WebsitesConfigurations = ({
   intl,
@@ -52,6 +53,7 @@ export const WebsitesConfigurations = ({
   const [modalsState, setModalState] = useState({});
   const [showMap, setShowMap] = useState('');
   const [openColorsModal, setOpenColorsModal] = useState('');
+  const [openHeaderConfig, setOpenHeaderConfig] = useState('');
   const [image, setImage] = useState('');
   const [settingMap, setSettingMap] = useState({});
   const [paramsSaving, setParamsSaving] = useState(false);
@@ -59,6 +61,11 @@ export const WebsitesConfigurations = ({
   const mobileLogo = get(config, 'mobileLogo');
   const desktopLogo = get(config, 'desktopLogo');
   const aboutObj = get(config, 'aboutObject');
+  const header = get(config, 'header') || {
+    name: host,
+    message: 'Eat out, earn crypto',
+    startup: 'map',
+  };
   const colorsList = get(config, 'colors', {});
   const { lat, lon } = userLocation;
   const isDesktopModalShow = showMap === 'desktopMap';
@@ -88,6 +95,7 @@ export const WebsitesConfigurations = ({
       setShowMap('');
       setSettingMap({});
       setOpenColorsModal(false);
+      setOpenHeaderConfig(false);
 
       message.success(
         intl.formatMessage({
@@ -123,6 +131,11 @@ export const WebsitesConfigurations = ({
   const handleSubmitColors = colors =>
     handleSubmit({
       colors,
+    });
+
+  const handleSubmitHeader = headerConfig =>
+    handleSubmit({
+      header: headerConfig,
     });
 
   const handleModalState = key => {
@@ -305,6 +318,21 @@ export const WebsitesConfigurations = ({
             <Form.Item>
               <h3>
                 {intl.formatMessage({
+                  id: 'website_header',
+                  defaultMessage: 'Website header:',
+                })}
+              </h3>
+              <div className="WebsitesConfigurations__headers">
+                <b>{header.name}</b> | {header.message}.
+              </div>
+              <div>Startup page: {header.startup.toUpperCase()}</div>
+              <Button type="primary" onClick={() => setOpenHeaderConfig(true)}>
+                Edit
+              </Button>
+            </Form.Item>
+            <Form.Item>
+              <h3>
+                {intl.formatMessage({
                   id: 'desktop_map_default_view',
                   defaultMessage: 'Desktop map - default view:',
                 })}
@@ -465,6 +493,15 @@ export const WebsitesConfigurations = ({
               handleSubmitColors={handleSubmitColors}
               setOpenColorsModal={setOpenColorsModal}
               colors={colorsList}
+              loading={paramsSaving}
+            />
+          )}
+          {openHeaderConfig && (
+            <ConfigHeader
+              handleSubmitConfig={handleSubmitHeader}
+              config={header}
+              visible={openHeaderConfig}
+              onClose={() => setOpenHeaderConfig(false)}
               loading={paramsSaving}
             />
           )}

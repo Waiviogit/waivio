@@ -37,6 +37,7 @@ const ObjectCardView = ({
   onDelete,
   isPost,
   postAuthor,
+  showHeart,
   payoutToken,
   rate,
 }) => {
@@ -173,9 +174,9 @@ const ObjectCardView = ({
               </div>
             )}
           </div>
-          {heartObjTypes && isAuthUser && (
+          {heartObjTypes && isAuthUser && showHeart && (
             <div className="avatar-heart">
-              <HeartButton wobject={wObject} size={'22px'} />
+              <HeartButton wobject={wObject} size={'20px'} />
             </div>
           )}
         </div>
@@ -235,6 +236,7 @@ ObjectCardView.propTypes = {
   }),
   closeButton: PropTypes.bool,
   isPost: PropTypes.bool,
+  showHeart: PropTypes.bool,
   postAuthor: PropTypes.string,
   onDelete: PropTypes.func,
 };
@@ -247,6 +249,7 @@ ObjectCardView.defaultProps = {
   payoutToken: '',
   passedParent: {},
   withRewards: false,
+  showHeart: true,
   isReserved: false,
   isPost: false,
   rewardPrice: 0,

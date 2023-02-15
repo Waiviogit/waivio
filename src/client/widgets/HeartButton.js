@@ -31,8 +31,6 @@ const HeartButton = ({ wobject, size }) => {
     }
     if (isEmpty(wobject.authority)) {
       setActiveHeart(false);
-    } else {
-      setActiveHeart(true);
     }
   }, [wobject.authority]);
 
@@ -52,25 +50,29 @@ const HeartButton = ({ wobject, size }) => {
   });
 
   const onHeartClick = () => {
+    setActiveHeart(!activeHeart);
     getAuthorityFields(wobject.author_permlink).then(postInformation => {
-      if (isEmpty(postInformation)) {
+      if (
+        isEmpty(postInformation) ||
+        isEmpty(postInformation.filter(p => p.creator === user.name))
+      ) {
         const data = getWobjectData();
 
         dispatch(appendObject(data, { votePercent: defaultUpVotePower, isLike: true }));
       }
       if (!isEmpty(postInformation)) {
-        const [authority] = postInformation;
+        const authority = postInformation.find(post => post.creator === user.name);
 
         dispatch(
           authorityVoteAppend(
             authority.author,
+            wobject.author_permlink,
             authority.permlink,
             authority.weight > 0 ? downVotePower : userUpVotePower,
             'authority',
           ),
         );
       }
-      setActiveHeart(!activeHeart);
     });
   };
 
