@@ -46,7 +46,6 @@ const MainPageHeader = props => {
                 id: 'eat_out_earn_crypto',
                 defaultMessage: 'Eat out, earn crypto',
               })}
-            .
           </span>
         </div>
         <div className="MainPageHeader__buttonWrap">

@@ -61,10 +61,13 @@ export const WebsitesConfigurations = ({
   const mobileLogo = get(config, 'mobileLogo');
   const desktopLogo = get(config, 'desktopLogo');
   const aboutObj = get(config, 'aboutObject');
-  const header = get(config, 'header') || {
-    name: host,
-    message: 'Eat out, earn crypto',
-    startup: 'map',
+  const header = {
+    ...{
+      name: host,
+      message: 'Eat out, earn crypto',
+      startup: 'map',
+    },
+    ...get(config, 'header', {}),
   };
   const colorsList = get(config, 'colors', {});
   const { lat, lon } = userLocation;
