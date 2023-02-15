@@ -2,17 +2,21 @@
 @import (reference) '../../styles/modules/variables.less';
 
 .AppendForm {
-  .ant-select-auto-complete.ant-select .ant-input {
-    height: 45px;
-    font-size: 20px;
-    font-weight: bold;
-  }
-  .ant-select-auto-complete.ant-select .ant-select-selection--single {
-    height: 42px !important;
-  }
-  .ant-select-selection__placeholder {
-    font-size: 20px !important;
-    font-weight: bold;
+  .SearchDepartmentAutocomplete {
+    &.ant-select-auto-complete.ant-select .ant-input {
+      height: 45px;
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    &.ant-select-auto-complete.ant-select .ant-select-selection--single {
+      height: 42px !important;
+    }
+
+    .ant-select-selection__placeholder {
+      font-size: 20px !important;
+      font-weight: bold;
+    }
   }
 
   &__create-publisher {

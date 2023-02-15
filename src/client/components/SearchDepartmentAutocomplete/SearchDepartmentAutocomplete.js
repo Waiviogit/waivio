@@ -72,6 +72,7 @@ const SearchDepartmentAutocomplete = ({
 
   return (
     <AutoComplete
+      className="SearchDepartmentAutocomplete"
       onChange={handleChange}
       onSelect={handleSelect}
       onSearch={handleSearch}
