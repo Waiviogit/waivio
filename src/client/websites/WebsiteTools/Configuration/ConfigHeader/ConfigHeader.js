@@ -27,11 +27,11 @@ const ConfigHeader = ({ visible, config, onClose, handleSubmitConfig, loading })
     >
       <div>
         <h3>Website name:</h3>
-        <Input value={name} onChange={e => setName(e.target.value)} />
+        <Input maxLength={100} value={name} onChange={e => setName(e.target.value)} />
       </div>
       <div>
         <h3>Message:</h3>
-        <Input value={message} onChange={e => setMessage(e.target.value)} />
+        <Input maxLength={100} value={message} onChange={e => setMessage(e.target.value)} />
       </div>
       {/* <div> */}
       {/*  <h3>Starup page:</h3> */}
