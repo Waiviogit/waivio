@@ -18,6 +18,7 @@ const MainPageHeader = props => {
   const config = useSelector(getConfigurationValues);
   const currHost = typeof location !== 'undefined' && location.hostname;
   const aboutObject = config?.aboutObject;
+  const header = config?.header;
   const currentLogo = logo || getObjectAvatar(aboutObject);
   const objType = aboutObject?.object_type;
   const isHelpingObjTypes = ['list', 'page', 'widget', 'newsfeed'].includes(objType);
@@ -32,7 +33,7 @@ const MainPageHeader = props => {
         <div className="MainPageHeader__logo">
           <Link to="/" className="MainPageHeader__logoLink">
             <img src={currentLogo} className="MainPageHeader__logoImg" alt="logo" />
-            <b className="MainPageHeader__name">{currHost}</b>
+            <b className="MainPageHeader__name">{header.name || currHost}</b>
           </Link>
           {!props.withMap && (
             <Link to="/map?type=restaurant&showPanel=true" className="MainPageHeader__link">
@@ -40,10 +41,11 @@ const MainPageHeader = props => {
             </Link>
           )}
           <span className={!props.withMap && 'MainPageHeader__logo-border'}>
-            {props.intl.formatMessage({
-              id: 'eat_out_earn_crypto',
-              defaultMessage: 'Eat out, earn crypto',
-            })}
+            {header.message ||
+              props.intl.formatMessage({
+                id: 'eat_out_earn_crypto',
+                defaultMessage: 'Eat out, earn crypto',
+              })}
             .
           </span>
         </div>
