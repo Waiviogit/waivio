@@ -7,7 +7,7 @@ import './AffiliatLink.less';
 const images = {
   walmart: '/images/walmart-logo.svg',
   amazon: '/images/amazon-logo.svg',
-  target: '/images/tagret-logo.svg',
+  target: '/images/target-logo.svg',
 };
 
 const AffiliatLink = ({ link }) => (
