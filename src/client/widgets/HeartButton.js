@@ -17,7 +17,6 @@ const HeartButton = ({ wobject, size }) => {
   const userUpVotePower = useSelector(getVotePercent);
   const language = useSelector(getLocale);
   const dispatch = useDispatch();
-  const defaultUpVotePower = 10000;
   const downVotePower = 9999;
   const tooltipTitle = activeHeart ? (
     <FormattedMessage id="remove_from_my_shop" defaultMessage="Remove from my shop" />
@@ -42,7 +41,7 @@ const HeartButton = ({ wobject, size }) => {
     title: '',
     lastUpdated: Date.now(),
     wobjectName: getObjectName(wobject),
-    votePower: defaultUpVotePower,
+    votePower: userUpVotePower,
     field: { body: 'administrative', locale: language, name: 'authority' },
     permlink: `${user?.name}-${Math.random()
       .toString(36)
@@ -58,7 +57,7 @@ const HeartButton = ({ wobject, size }) => {
       ) {
         const data = getWobjectData();
 
-        dispatch(appendObject(data, { votePercent: defaultUpVotePower, isLike: true }));
+        dispatch(appendObject(data, { votePercent: userUpVotePower, isLike: true }));
       }
       if (!isEmpty(postInformation)) {
         const authority = postInformation.find(post => post.creator === user.name);
