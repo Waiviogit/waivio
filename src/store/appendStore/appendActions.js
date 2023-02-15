@@ -178,11 +178,34 @@ export const authorityVoteAppend = (
 
 const followAndLikeAfterCreateAppend = (data, isLike, follow) => dispatch => {
   const type = data.field.name === 'listItem' ? data.field.type : null;
+  console.log(data);
 
-  if (isLike)
-    dispatch(
-      voteAppends(data.author, data.permlink, data.votePower || 10000, data.field.name, true, type),
-    );
+  if (isLike) {
+    if (data.field.name === 'authority') {
+      dispatch(
+        authorityVoteAppend(
+          data.author,
+          data.parentPermlink,
+          data.permlink,
+          data.votePower || 10000,
+          data.field.name,
+          true,
+          type,
+        ),
+      );
+    } else {
+      dispatch(
+        voteAppends(
+          data.author,
+          data.permlink,
+          data.votePower || 10000,
+          data.field.name,
+          true,
+          type,
+        ),
+      );
+    }
+  }
   if (follow) dispatch(followObject(data.parentPermlink));
 
   dispatch({ type: APPEND_WAIVIO_OBJECT.SUCCESS });
