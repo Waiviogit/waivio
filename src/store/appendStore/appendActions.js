@@ -150,14 +150,17 @@ export const voteAppends = (author, permlink, weight = 10000, name = '', isNew =
 };
 export const AUTHORITY_VOTE_APPEND = createAsyncActionType('@append/AUTHORITY_VOTE_APPEND');
 
-export const authorityVoteAppend = (author, permlink, weight, name = '', isNew = false, type) => (
-  dispatch,
-  getState,
-  { steemConnectAPI },
-) => {
+export const authorityVoteAppend = (
+  author,
+  authorPermlink,
+  permlink,
+  weight,
+  name = '',
+  isNew = false,
+  type,
+) => (dispatch, getState, { steemConnectAPI }) => {
   const state = getState();
   const voter = getAuthenticatedUserName(state);
-  const wobj = get(state, ['object', 'wobject'], {});
 
   if (!getIsAuthenticated(state)) return null;
 
@@ -169,7 +172,7 @@ export const authorityVoteAppend = (author, permlink, weight, name = '', isNew =
   });
 
   return steemConnectAPI.appendVote(voter, author, permlink, weight).then(() => {
-    dispatch(getChangedWobjectField(wobj.author_permlink, name, author, permlink, isNew, type));
+    dispatch(getChangedWobjectField(authorPermlink, name, author, permlink, isNew, type));
   });
 };
 

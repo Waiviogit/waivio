@@ -31,8 +31,6 @@ const HeartButton = ({ wobject, size }) => {
     }
     if (isEmpty(wobject.authority)) {
       setActiveHeart(false);
-    } else {
-      setActiveHeart(true);
     }
   }, [wobject.authority]);
 
@@ -52,6 +50,7 @@ const HeartButton = ({ wobject, size }) => {
   });
 
   const onHeartClick = () => {
+    setActiveHeart(!activeHeart);
     getAuthorityFields(wobject.author_permlink).then(postInformation => {
       if (
         isEmpty(postInformation) ||
@@ -67,13 +66,13 @@ const HeartButton = ({ wobject, size }) => {
         dispatch(
           authorityVoteAppend(
             authority.author,
+            wobject.author_permlink,
             authority.permlink,
             authority.weight > 0 ? downVotePower : userUpVotePower,
             'authority',
           ),
         );
       }
-      setActiveHeart(!activeHeart);
     });
   };
 
