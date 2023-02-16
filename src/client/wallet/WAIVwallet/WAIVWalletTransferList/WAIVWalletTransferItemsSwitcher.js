@@ -40,7 +40,8 @@ const WAIVWalletTransferItemsSwitcher = ({ transaction, currentName, intl }) => 
     case 'tokens_stake':
       return (
         <PowerUpTransactionFrom
-          amount={getTransactionCurrency(transaction.quantity, powerSymbol)}
+          amount={transaction.quantity}
+          symbol={transaction.symbol}
           timestamp={transaction.timestamp}
           to={transaction.to}
           from={transaction.from}

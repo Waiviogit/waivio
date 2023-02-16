@@ -4,7 +4,15 @@ import classNames from 'classnames';
 import { getTransactionDescription } from '../WalletHelper';
 import CardsTimeStamp from './CardsTimeStamp';
 
-const PowerUpTransactionFrom = ({ timestamp, amount, from, to, transactionType, currentUser }) => {
+const PowerUpTransactionFrom = ({
+  timestamp,
+  amount,
+  from,
+  to,
+  transactionType,
+  symbol,
+  currentUser,
+}) => {
   const options = { from, to };
   const description = getTransactionDescription(transactionType, options);
   const isSent = currentUser === to;
@@ -23,14 +31,17 @@ const PowerUpTransactionFrom = ({ timestamp, amount, from, to, transactionType, 
           {to === from ? (
             <React.Fragment>
               <div>{description.powerUpTransaction}</div>
-              <span className="UserWalletTransactions__payout-black">{amount}</span>
+              <span className="UserWalletTransactions__payout-black">
+                {amount}
+                {amount} {symbol === 'WAIV' ? 'WP' : symbol}
+              </span>
             </React.Fragment>
           ) : (
             <React.Fragment>
               {!isSent ? description.powerUpTransactionTo : description.powerUpTransactionFrom}
               <span className={amountClassList}>
                 {!isSent ? '- ' : '+ '}
-                {amount}
+                {amount} {isSent ? 'WP' : symbol}
               </span>
             </React.Fragment>
           )}
@@ -46,6 +57,7 @@ PowerUpTransactionFrom.propTypes = {
   timestamp: PropTypes.number.isRequired,
   amount: PropTypes.element.isRequired,
   from: PropTypes.string.isRequired,
+  symbol: PropTypes.string.isRequired,
   to: PropTypes.string.isRequired,
   transactionType: PropTypes.string.isRequired,
 };
