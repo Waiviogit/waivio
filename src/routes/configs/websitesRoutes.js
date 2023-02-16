@@ -11,15 +11,16 @@ import WebsiteMainPage from '../../client/websites/WebsiteLayoutComponents/MainP
 import { listOfWebsiteWithMainPage } from '../../common/constants/listOfWebsite';
 import RewardsMainPage from '../../client/newRewards/RewardsMainPage';
 
-const routes = host => ({
+const routes = (host, page) => ({
   component: WebsiteWrapper,
   routes: [
     {
       path: '/',
       exact: true,
-      component: listOfWebsiteWithMainPage.some(site => site === host)
-        ? WebsiteMainPage
-        : WebsiteBody,
+      component:
+        listOfWebsiteWithMainPage.some(site => site === host) || page === 'about'
+          ? WebsiteMainPage
+          : WebsiteBody,
     },
     {
       path: '/map',
@@ -398,4 +399,4 @@ const routes = host => ({
   ],
 });
 
-export default host => [createNestedRouts(routes(host))];
+export default (host, page) => [createNestedRouts(routes(host, page))];
