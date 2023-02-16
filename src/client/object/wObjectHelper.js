@@ -1,6 +1,6 @@
 import { get, filter, isEmpty, uniqBy, orderBy, has } from 'lodash';
-import { TYPES_OF_MENU_ITEM, objectFields } from '../../common/constants/listOfFields';
 import { getObjectName, isList } from '../../common/helpers/wObjectHelper';
+import { objectFields, TYPES_OF_MENU_ITEM } from '../../common/constants/listOfFields';
 
 export const getListItems = (wobj, { uniq } = { uniq: false, isMappedToClientWobject: false }) => {
   let items = [];
@@ -108,9 +108,10 @@ export const getLink = link => {
 
 export const getExposedFieldsByObjType = wobj => {
   const exposedFields = get(wobj, 'exposedFields', []).map(field => field.name);
-  const renderedFields = exposedFields.includes('listItem')
-    ? [...exposedFields.filter(f => f !== objectFields.listItem), TYPES_OF_MENU_ITEM.LIST]
-    : exposedFields;
+  const renderedFields =
+    wobj.object_type !== 'list'
+      ? [...exposedFields.filter(f => f !== objectFields.listItem), TYPES_OF_MENU_ITEM.LIST]
+      : exposedFields;
 
   return renderedFields.sort();
 };
