@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { Button } from 'antd';
 import { Link } from 'react-router-dom';
-import { connect } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 import { get } from 'lodash';
 
 import FollowButton from '../widgets/FollowButton';
@@ -25,6 +25,8 @@ import { getIsWaivio } from '../../store/appStore/appSelectors';
 
 import '../components/ObjectHeader.less';
 import HeartButton from '../widgets/HeartButton';
+import { BXY_GUEST_PREFIX, GUEST_PREFIX } from '../../common/constants/waivio';
+import { getAuthenticatedUser } from '../../store/authStore/authSelectors';
 
 const WobjHeader = ({
   isEditMode,
@@ -48,6 +50,8 @@ const WobjHeader = ({
   const name = getObjectName(wobject);
   const isHashtag = wobject.object_type === 'hashtag';
   const heartObjTypes = ['book', 'product', 'service'].includes(wobject.object_type);
+  const authUser = useSelector(getAuthenticatedUser).name;
+  const isGuest = authUser.startsWith(GUEST_PREFIX) || authUser.startsWith(BXY_GUEST_PREFIX);
 
   const getStatusLayout = statusField => (
     <div className="ObjectHeader__status-wrap">
@@ -100,7 +104,9 @@ const WobjHeader = ({
                     {wobject.youFollows && <BellButton wobj={wobject} />}
                   </React.Fragment>
                 )}
-                {heartObjTypes && authenticated && <HeartButton wobject={wobject} size={'30px'} />}
+                {heartObjTypes && authenticated && !isGuest && (
+                  <HeartButton wobject={wobject} size={'30px'} />
+                )}
               </div>
             </div>
           </div>
