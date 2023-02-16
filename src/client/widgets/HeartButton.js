@@ -25,12 +25,7 @@ const HeartButton = ({ wobject, size }) => {
   );
 
   useEffect(() => {
-    if (wobject?.authority?.weight > 0) {
-      setActiveHeart(true);
-    }
-    if (isEmpty(wobject.authority)) {
-      setActiveHeart(false);
-    }
+    !isEmpty(wobject.authority) ? setActiveHeart(true) : setActiveHeart(false);
   }, [wobject.authority]);
 
   const getWobjectData = () => ({
@@ -67,7 +62,7 @@ const HeartButton = ({ wobject, size }) => {
             authority.author,
             wobject.author_permlink,
             authority.permlink,
-            authority.weight > 0 ? downVotePower : userUpVotePower,
+            !isEmpty(wobject.authority) ? downVotePower : userUpVotePower,
             'authority',
           ),
         );
