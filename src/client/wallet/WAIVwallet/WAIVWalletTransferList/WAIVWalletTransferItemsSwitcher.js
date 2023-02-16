@@ -149,7 +149,7 @@ const WAIVWalletTransferItemsSwitcher = ({ transaction, currentName, intl }) => 
     case 'tokens_delegate':
       return (
         <DelegatedTo
-          symbol={transaction.symbol}
+          symbol={'WP'}
           quantity={transaction.quantity}
           timestamp={transaction.timestamp}
           to={transaction.to}
