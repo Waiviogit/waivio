@@ -62,6 +62,11 @@ export const getWebsiteLogo = createSelector([appState], state => state.logo);
 
 export const getWebsiteColors = createSelector([getWebsiteConfiguration], state => state.colors);
 
+export const getWebsiteStartPage = createSelector(
+  [getWebsiteConfiguration],
+  state => state.header?.startup || 'map',
+);
+
 export const getWebsiteMainMap = createSelector([appState], state => state.currMap);
 
 export const getIsWaivio = createSelector([appState], state => state.isWaivio);

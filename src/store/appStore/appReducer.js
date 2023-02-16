@@ -1,4 +1,5 @@
 import { LOCATION_CHANGE } from 'connected-react-router';
+import { get } from 'lodash';
 import * as appTypes from './appActions';
 import * as postActions from '../postsStore/postActions';
 import { GET_USER_METADATA } from '../usersStore/usersActions';
@@ -178,7 +179,9 @@ export default (state = initialState, action) => {
         helmetIcon: getObjectAvatar(action.payload.aboutObject),
         websiteName: getObjectName(action.payload.aboutObject),
         hostAddress: action.meta,
-        isDiningGifts: listOfWebsiteWithMainPage.some(site => site === action.meta),
+        isDiningGifts:
+          listOfWebsiteWithMainPage.some(site => site === action.meta) ||
+          get(action.payload, 'configuration.header.startup', 'map'),
         logo,
         currMap,
       };

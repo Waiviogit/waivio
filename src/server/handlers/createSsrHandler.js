@@ -43,7 +43,7 @@ export default function createSsrHandler(template) {
       if (req.cookies.access_token) sc2Api.setAccessToken(req.cookies.access_token);
 
       const store = getStore(sc2Api, waivioAPI, req.url);
-      const routes = switchRoutes(hostname);
+      const routes = switchRoutes(hostname, get(settings, 'configuration.header.startup'));
       const branch = matchRoutes(routes, req.url.split('?')[0]);
 
       const promises = branch.map(({ route, match }) => {
