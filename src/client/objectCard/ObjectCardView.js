@@ -23,6 +23,7 @@ import './ObjectCardView.less';
 import useWebsiteColor from '../../hooks/useWebsiteColor';
 import AffiliatLink from '../widgets/AffiliatLinks/AffiliatLink';
 import HeartButton from '../widgets/HeartButton';
+import { BXY_GUEST_PREFIX, GUEST_PREFIX } from '../../common/constants/waivio';
 
 const ObjectCardView = ({
   intl,
@@ -42,6 +43,7 @@ const ObjectCardView = ({
   rate,
 }) => {
   const username = useSelector(getAuthenticatedUserName);
+  const isGuest = username.startsWith(GUEST_PREFIX) || username.startsWith(BXY_GUEST_PREFIX);
   const isAuthUser = useSelector(getIsAuthenticated);
   const [tags, setTags] = useState([]);
   const address = parseAddress(wObject, ['postalCode', 'country']);
@@ -174,7 +176,7 @@ const ObjectCardView = ({
               </div>
             )}
           </div>
-          {heartObjTypes && isAuthUser && showHeart && (
+          {heartObjTypes && isAuthUser && showHeart && !isGuest && (
             <div className="avatar-heart">
               <HeartButton wobject={wObject} size={'20px'} />
             </div>
