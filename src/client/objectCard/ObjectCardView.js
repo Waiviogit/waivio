@@ -15,15 +15,15 @@ import {
   hasType,
 } from '../../common/helpers/wObjectHelper';
 import { getProxyImageURL } from '../../common/helpers/image';
-import { getAuthenticatedUserName, getIsAuthenticated } from '../../store/authStore/authSelectors';
+import { getAuthenticatedUserName } from '../../store/authStore/authSelectors';
 import USDDisplay from '../components/Utils/USDDisplay';
 import { defaultCurrency } from '../websites/constants/currencyTypes';
-
-import './ObjectCardView.less';
 import useWebsiteColor from '../../hooks/useWebsiteColor';
 import AffiliatLink from '../widgets/AffiliatLinks/AffiliatLink';
 import HeartButton from '../widgets/HeartButton';
-import { BXY_GUEST_PREFIX, GUEST_PREFIX } from '../../common/constants/waivio';
+import { guestUserRegex } from '../../common/helpers/regexHelpers';
+
+import './ObjectCardView.less';
 
 const ObjectCardView = ({
   intl,
@@ -43,8 +43,7 @@ const ObjectCardView = ({
   rate,
 }) => {
   const username = useSelector(getAuthenticatedUserName);
-  const isGuest = username.startsWith(GUEST_PREFIX) || username.startsWith(BXY_GUEST_PREFIX);
-  const isAuthUser = useSelector(getIsAuthenticated);
+  const isGuest = guestUserRegex.test(username);
   const [tags, setTags] = useState([]);
   const address = parseAddress(wObject, ['postalCode', 'country']);
   const parent = isEmpty(passedParent) ? get(wObject, 'parent', {}) : passedParent;
@@ -176,7 +175,7 @@ const ObjectCardView = ({
               </div>
             )}
           </div>
-          {heartObjTypes && isAuthUser && showHeart && !isGuest && (
+          {heartObjTypes && username && showHeart && !isGuest && (
             <div className="avatar-heart">
               <HeartButton wobject={wObject} size={'20px'} />
             </div>
