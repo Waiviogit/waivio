@@ -375,7 +375,7 @@ class Notifications extends React.Component {
                       object_name: <span>{notification.object_name}</span>,
                     }}
                     username={notification.author}
-                    url={`/rewards/local/all/${notification.author_permlink}`}
+                    url={`/rewards/${notification.reach}/all/${notification.author_permlink}`}
                     key={key}
                     notification={notification}
                     read={read}
@@ -779,7 +779,7 @@ class Notifications extends React.Component {
               case notificationConstants.BELL_WOBJECT_REWARDS:
                 return (
                   <NotificationTemplate
-                    url={`/rewards/local/all/${notification.primaryObject}`}
+                    url={`/rewards/${notification.reach}/all/${notification.primaryObject}`}
                     username={notification.guideName}
                     id="notification_bell_object_rewards"
                     defaultMessage="{guideName} launched a reward campaign for {objectName}"

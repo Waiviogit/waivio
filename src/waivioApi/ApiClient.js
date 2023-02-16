@@ -623,9 +623,9 @@ export const getObjectTypes = (limit = 10, skip = 0, wobjects_count = 3, locale)
     .catch(error => error);
 
 export const getObjectType = (typeName, requestData) => {
-  const { locale = 'en-US' } = requestData;
+  const { locale = 'en-US', userName } = requestData;
   return fetch(`${config.apiPrefix}${config.objectType}/${typeName}`, {
-    headers: { ...headers, app: config.appName, locale },
+    headers: { ...headers, follower: userName, app: config.appName, locale },
     method: 'POST',
     body: JSON.stringify(requestData),
   })
@@ -1293,7 +1293,7 @@ export const getTransferDetails = withdrawId =>
     method: 'GET',
   }).then(res => res.json());
 
-export const getChangedField = (authorPermlink, fieldName, author, permlink, locale) =>
+export const getChangedField = (authorPermlink, fieldName, author, permlink, locale, authUser) =>
   fetch(
     `${config.apiPrefix}${config.getObjects}/${authorPermlink}${config.getField}?fieldName=${fieldName}&author=${author}&permlink=${permlink}`,
     {
@@ -1301,6 +1301,7 @@ export const getChangedField = (authorPermlink, fieldName, author, permlink, loc
         ...headers,
         app: config.appName,
         locale,
+        follower: authUser,
       },
       method: 'GET',
     },
@@ -1688,13 +1689,10 @@ export const getExpertiseCounters = userName => {
 };
 
 export const getReservedCounter = userName => {
-  return fetch(
-    `${config.campaignApiPrefix}${config.campaigns}${config.reserved}${config.count}?userName=${userName}`,
-    {
-      headers,
-      method: 'GET',
-    },
-  )
+  return fetch(`${config.campaignV2ApiPrefix}${config.reservation_v2}${config.count}/${userName}`, {
+    headers,
+    method: 'GET',
+  })
     .then(res => res.json())
     .then(res => res)
     .catch(e => e);
@@ -3151,5 +3149,14 @@ export const searchDepartments = (searchString, limit, skip) => {
     body: JSON.stringify({ searchString: searchString, limit, skip }),
   }).then(res => res.json());
 };
+
+export const getAuthorityFields = permlink =>
+  fetch(`${config.apiPrefix}${config.getObjects}/${permlink}${config.authorityFields}`, {
+    headers,
+    method: 'GET',
+  })
+    .then(res => res.json())
+    .then(posts => posts)
+    .catch(error => error);
 
 export default null;

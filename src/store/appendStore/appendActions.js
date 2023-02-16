@@ -71,7 +71,7 @@ export const getChangedWobjectField = (
     dispatch({
       type: GET_CHANGED_WOBJECT_FIELD.ACTION,
       payload: {
-        promise: getChangedField(authorPermlink, fieldName, author, permlink, locale)
+        promise: getChangedField(authorPermlink, fieldName, author, permlink, locale, voter)
           .then(res => {
             dispatch({
               type: GET_CHANGED_WOBJECT_UPDATE.SUCCESS,
@@ -112,6 +112,7 @@ export const voteAppends = (author, permlink, weight = 10000, name = '', isNew =
   const wobj = get(state, ['object', 'wobject'], {});
   const voter = getAuthenticatedUserName(state);
   const fieldName = name || post.name;
+  const authorityField = fieldName === 'authority';
 
   if (!getIsAuthenticated(state)) return null;
 
@@ -126,13 +127,17 @@ export const voteAppends = (author, permlink, weight = 10000, name = '', isNew =
   return steemConnectAPI
     .vote(voter, author, permlink, weight)
     .then(() => {
-      message.success('Please wait, we are processing your update');
+      if (!authorityField) {
+        message.success('Please wait, we are processing your update');
+      }
       dispatch(
         getChangedWobjectField(wobj.author_permlink, fieldName, author, permlink, isNew, type),
       );
     })
     .catch(e => {
-      message.error(e.error_description);
+      if (!authorityField) {
+        message.error(e.error_description);
+      }
 
       return dispatch({
         type: VOTE_APPEND.ERROR,
@@ -143,14 +148,63 @@ export const voteAppends = (author, permlink, weight = 10000, name = '', isNew =
       });
     });
 };
+export const AUTHORITY_VOTE_APPEND = createAsyncActionType('@append/AUTHORITY_VOTE_APPEND');
+
+export const authorityVoteAppend = (
+  author,
+  authorPermlink,
+  permlink,
+  weight,
+  name = '',
+  isNew = false,
+  type,
+) => (dispatch, getState, { steemConnectAPI }) => {
+  const state = getState();
+  const voter = getAuthenticatedUserName(state);
+
+  if (!getIsAuthenticated(state)) return null;
+
+  dispatch({
+    type: AUTHORITY_VOTE_APPEND.START,
+    payload: {
+      permlink,
+    },
+  });
+
+  return steemConnectAPI.appendVote(voter, author, permlink, weight).then(() => {
+    dispatch(getChangedWobjectField(authorPermlink, name, author, permlink, isNew, type));
+  });
+};
 
 const followAndLikeAfterCreateAppend = (data, isLike, follow) => dispatch => {
   const type = data.field.name === 'listItem' ? data.field.type : null;
 
-  if (isLike)
-    dispatch(
-      voteAppends(data.author, data.permlink, data.votePower || 10000, data.field.name, true, type),
-    );
+  if (isLike) {
+    if (data.field.name === 'authority') {
+      dispatch(
+        authorityVoteAppend(
+          data.author,
+          data.parentPermlink,
+          data.permlink,
+          data.votePower || 10000,
+          data.field.name,
+          true,
+          type,
+        ),
+      );
+    } else {
+      dispatch(
+        voteAppends(
+          data.author,
+          data.permlink,
+          data.votePower || 10000,
+          data.field.name,
+          true,
+          type,
+        ),
+      );
+    }
+  }
   if (follow) dispatch(followObject(data.parentPermlink));
 
   dispatch({ type: APPEND_WAIVIO_OBJECT.SUCCESS });

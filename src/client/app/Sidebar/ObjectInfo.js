@@ -2,6 +2,7 @@ import React from 'react';
 import { get, has, identity, isEmpty, pickBy, setWith, uniq, uniqBy } from 'lodash';
 import { Button, Icon, Tag } from 'antd';
 import PropTypes from 'prop-types';
+import { ReactSVG } from 'react-svg';
 import { Link, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
@@ -181,16 +182,12 @@ class ObjectInfo extends React.Component {
     authors.forEach(author => {
       if (author.authorPermlink) {
         getObjectInfo([author?.authorPermlink]).then(res => authorsArray.push(res.wobjects[0]));
+      } else if (author.author_permlink) {
+        getObjectInfo([author?.author_permlink]).then(res => authorsArray.push(res.wobjects[0]));
       } else {
         authorsArray.push(author);
       }
     });
-
-    // const b = authors.reduce((acc, curr) => {
-    //   const g = authorsArray.map(author => author.name === curr.name);
-    //
-    //   return [...acc, g]
-    // }, [])
 
     this.setState({ authorsArray });
 
@@ -215,6 +212,7 @@ class ObjectInfo extends React.Component {
       );
     }
   }
+  authorFieldAuthorPermlink = author => author.authorPermlink || author.author_permlink;
 
   getFieldLayout = (fieldName, params) => {
     const { body } = params;
@@ -667,6 +665,18 @@ class ObjectInfo extends React.Component {
               />
             ),
           )}
+        {!isEditMode &&
+          isOptionsObjectType &&
+          this.listItem(
+            objectFields.description,
+            description && (
+              <DescriptionInfo
+                isEditMode={isEditMode}
+                description={description}
+                wobjPermlink={wobject.author_permlink}
+              />
+            ),
+          )}
       </>
     );
 
@@ -710,22 +720,9 @@ class ObjectInfo extends React.Component {
               )}
             </div>
           )}
-
           {!isList && (
             <div className="object-sidebar__menu-items">
               <React.Fragment>
-                {!isEditMode &&
-                  isOptionsObjectType &&
-                  this.listItem(
-                    objectFields.description,
-                    description && (
-                      <DescriptionInfo
-                        isEditMode={isEditMode}
-                        description={description}
-                        wobjPermlink={wobject.author_permlink}
-                      />
-                    ),
-                  )}
                 {this.listItem(
                   TYPES_OF_MENU_ITEM.LIST,
                   !isEmpty(menuLinks) && menuLinks.map(item => this.getMenuSectionLink(item)),
@@ -807,9 +804,9 @@ class ObjectInfo extends React.Component {
             objectFields.authors,
             <div>
               {this.state.authorsArray?.map((a, i) => (
-                <span key={a.author_permlink}>
-                  {a.author_permlink ? (
-                    <Link to={`/object/${a.author_permlink}`}>{a.name}</Link>
+                <span key={this.authorFieldAuthorPermlink(a)}>
+                  {this.authorFieldAuthorPermlink(a) ? (
+                    <Link to={`/object/${this.authorFieldAuthorPermlink(a)}`}>{a.name}</Link>
                   ) : (
                     <span>{a.name}</span>
                   )}
@@ -1038,11 +1035,7 @@ class ObjectInfo extends React.Component {
           ? wobject.publicationDate && (
               <div className="field-info">
                 <span className="field-website__title">
-                  <img
-                    className="ObjectInfo__margin-top"
-                    src={'/images/icons/calendar-icon.svg'}
-                    alt="Calendar icon"
-                  />{' '}
+                  <Icon className="iconfont icon-link text-icon link" type="calendar" />{' '}
                   <span className="CompanyId__wordbreak">{publicationDate}</span>
                 </span>
               </div>
@@ -1092,11 +1085,10 @@ class ObjectInfo extends React.Component {
           productWeight && (
             <div className="field-info">
               <span className="field-website__title">
-                <img
-                  style={{ width: '14px', height: '14px' }}
-                  className="ObjectInfo__margin-top"
-                  src={'/images/icons/scale.png'}
-                  alt="Scale icon"
+                <ReactSVG
+                  className="ObjectInfo__margin-top ObjectInfo__icon"
+                  src={'/images/icons/scales-icon.svg'}
+                  wrapper={'span'}
                 />{' '}
                 <span>
                   {productWeight.value} {productWeight.unit}
@@ -1109,17 +1101,16 @@ class ObjectInfo extends React.Component {
           objectFields.dimensions,
           dimensions && (
             <div className="field-info">
-              <span className="field-website__title">
-                <img
-                  style={{ width: '14px', height: '14px' }}
-                  className="ObjectInfo__margin-top"
+              <div className="field-website__title">
+                <ReactSVG
+                  className="ObjectInfo__margin-top ObjectInfo__icon"
                   src={'/images/icons/dimensions-icon.svg'}
-                  alt="Scale icon"
+                  wrapper={'span'}
                 />{' '}
                 <span className="CompanyId__wordbreak">
                   {dimensions.length} x {dimensions.width} x {dimensions.depth} {dimensions.unit}
                 </span>
-              </span>
+              </div>
             </div>
           ),
         )}
@@ -1260,9 +1251,9 @@ class ObjectInfo extends React.Component {
           <div className="mb3">
             By{' '}
             {this.state.authorsArray?.map((a, i) => (
-              <span key={a.author_permlink}>
-                {a.author_permlink ? (
-                  <Link to={`/object/${a.author_permlink}`}>{a.name}</Link>
+              <span key={this.authorFieldAuthorPermlink(a)}>
+                {this.authorFieldAuthorPermlink(a) ? (
+                  <Link to={`/object/${this.authorFieldAuthorPermlink(a)}`}>{a.name}</Link>
                 ) : (
                   <span>{a.name}</span>
                 )}

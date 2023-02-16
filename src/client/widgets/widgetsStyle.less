@@ -92,5 +92,33 @@
     margin-right: 5px;
   }
 }
+.HeartButtonContainer {
+  &.ant-tooltip.ant-tooltip-placement-topLeft {
+    padding-bottom: 0 !important;
+  }
+
+  & .ant-tooltip-inner {
+    color: @black-text-basic;
+    background: @white;
+  }
+
+  & .ant-tooltip-arrow::before {
+    background: transparent;
+  }
+}
+
+.HeartButton {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: @silver-gray;
+
+  &__active {
+    color: @orange-hot;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+  }
+}
 
 @import 'widgetsStyle-nightmode';

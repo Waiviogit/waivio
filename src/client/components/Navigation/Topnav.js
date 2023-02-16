@@ -565,7 +565,7 @@ class Topnav extends React.Component {
                 })}
               />
             </button>
-            <HeaderButton searchBarActive={this.state.searchBarActive} />
+            {!searchBarActive && <HeaderButton searchBarActive={this.state.searchBarActive} />}{' '}
           </div>
         </div>
       </div>

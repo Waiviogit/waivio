@@ -33,6 +33,7 @@ import LinkHiveAccountModal from '../../settings/LinkHiveAccountModal';
 import { getRatesList } from '../../../store/ratesStore/ratesSelector';
 
 import './WithdrawModal.less';
+import { toFixed } from '../../../common/helpers/formatter';
 
 const withdrawFeePercent = 0.75;
 const withdrawFee = withdrawFeePercent / 100;
@@ -55,6 +56,8 @@ const WithdrawModal = props => {
   const [showLinkToHive, setShowLinkToHive] = useState(false);
   const [delay, setDelay] = useState(0);
   const isError = +pair?.balance < fromAmount;
+  const isSwapHiveToHive =
+    pair?.from_coin_symbol === 'SWAP.HIVE' && pair?.to_coin_symbol === 'HIVE';
 
   const handleValidateWalletAddress = useCallback(
     debounce(async value => {
@@ -275,7 +278,8 @@ const WithdrawModal = props => {
               invalidAddress ||
               (!isHiveCurrency && !walletAddress) ||
               (isHiveCurrency && !(hiveBeneficiaryAccount || userName)) ||
-              (pair?.to_coin_symbol === 'BTC' && +toAmount <= 0.01)
+              (pair?.to_coin_symbol === 'BTC' && +toAmount <= 0.01) ||
+              (isSwapHiveToHive && pair?.balance < 0.001)
             }
           >
             <FormattedMessage id="Withdraw" defaultMessage="Withdraw" />
@@ -316,7 +320,11 @@ const WithdrawModal = props => {
             setToken={setTokenPair}
             amount={fromAmount}
             handleChangeValue={handleFromAmoundChange}
-            token={pair}
+            addErrorHiveWithdraw={isSwapHiveToHive}
+            token={{
+              ...pair,
+              balance: isSwapHiveToHive ? toFixed(pair?.balance, 1000) : pair?.balance,
+            }}
             handleClickBalance={handleFromAmoundChange}
             isError={isError}
           />

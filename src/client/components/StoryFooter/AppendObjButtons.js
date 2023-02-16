@@ -42,7 +42,7 @@ const AppendObjButtons = ({
   const isReject = post.isReject || some(downVotes, { voter: userName });
   const handleApprove = () => onActionInitiated(() => handleLikeClick(post, 10000, 'approve'));
   const handleReject = () => onActionInitiated(() => onFlagClick(post, 9999, 'reject'));
-
+  const isAthority = post.name === 'authority';
   const totalPayout =
     parseFloat(post.pending_payout_value) +
     parseFloat(post.total_payout_value) +
@@ -111,80 +111,35 @@ const AppendObjButtons = ({
 
   return (
     <div className="Buttons">
-      <React.Fragment>
-        {post.loading ? (
-          <Icon type="loading" />
-        ) : (
-          <React.Fragment>
-            <BTooltip title={likeTooltip}>
-              <a
-                role="presentation"
-                className={classNames({
-                  active: isLiked,
-                  Buttons__link: true,
-                })}
-                onClick={handleApprove}
-              >
-                <FormattedMessage id="approve" defaultMessage="Approve" />
-              </a>
-            </BTooltip>
-            {upVotes.length > 0 && (
-              <span
-                className="Buttons__number Buttons__reactions-count"
-                role="presentation"
-                onClick={() => openReactionModal('1')}
-              >
-                <BTooltip
-                  title={
-                    <div>
-                      {upVotes.length > 0 ? (
-                        upVotesPreview(upVotes)
-                      ) : (
-                        <FormattedMessage id="no_approves" defaultMessage="No approves yet" />
-                      )}
-                      {upVotesMore}
-                    </div>
-                  }
-                >
-                  <FormattedNumber value={upVotes.length} />
-                  <span />
-                </BTooltip>
-              </span>
-            )}
+      {((isAthority && post.creator === userName) || !isAthority) && (
+        <React.Fragment>
+          {post.loading ? (
+            <Icon type="loading" />
+          ) : (
             <React.Fragment>
-              <BTooltip
-                title={
-                  <span>
-                    {intl.formatMessage(
-                      isReject
-                        ? { id: 'unvote', defaultMessage: 'Unvote' }
-                        : { id: 'vote', defaultMessage: 'Vote' },
-                    )}
-                  </span>
-                }
-              >
+              <BTooltip title={likeTooltip}>
                 <a
                   role="presentation"
                   className={classNames({
-                    active: isReject,
+                    active: isLiked,
                     Buttons__link: true,
                   })}
-                  onClick={handleReject}
+                  onClick={handleApprove}
                 >
-                  <FormattedMessage id="reject" defaultMessage="Reject" />
+                  <FormattedMessage id="approve" defaultMessage="Approve" />
                 </a>
               </BTooltip>
-              {downVotes.length > 0 && (
+              {upVotes.length > 0 && (
                 <span
                   className="Buttons__number Buttons__reactions-count"
                   role="presentation"
-                  onClick={() => openReactionModal('2')}
+                  onClick={() => openReactionModal('1')}
                 >
                   <BTooltip
                     title={
                       <div>
-                        {downVotes.length > 0 ? (
-                          upVotesPreview(downVotes)
+                        {upVotes.length > 0 ? (
+                          upVotesPreview(upVotes)
                         ) : (
                           <FormattedMessage id="no_approves" defaultMessage="No approves yet" />
                         )}
@@ -192,15 +147,62 @@ const AppendObjButtons = ({
                       </div>
                     }
                   >
-                    <FormattedNumber value={downVotes.length} />
+                    <FormattedNumber value={upVotes.length} />
                     <span />
                   </BTooltip>
                 </span>
               )}
+              <React.Fragment>
+                <BTooltip
+                  title={
+                    <span>
+                      {intl.formatMessage(
+                        isReject
+                          ? { id: 'unvote', defaultMessage: 'Unvote' }
+                          : { id: 'vote', defaultMessage: 'Vote' },
+                      )}
+                    </span>
+                  }
+                >
+                  <a
+                    role="presentation"
+                    className={classNames({
+                      active: isReject,
+                      Buttons__link: true,
+                    })}
+                    onClick={handleReject}
+                  >
+                    <FormattedMessage id="reject" defaultMessage="Reject" />
+                  </a>
+                </BTooltip>
+                {downVotes.length > 0 && (
+                  <span
+                    className="Buttons__number Buttons__reactions-count"
+                    role="presentation"
+                    onClick={() => openReactionModal('2')}
+                  >
+                    <BTooltip
+                      title={
+                        <div>
+                          {downVotes.length > 0 ? (
+                            upVotesPreview(downVotes)
+                          ) : (
+                            <FormattedMessage id="no_approves" defaultMessage="No approves yet" />
+                          )}
+                          {upVotesMore}
+                        </div>
+                      }
+                    >
+                      <FormattedNumber value={downVotes.length} />
+                      <span />
+                    </BTooltip>
+                  </span>
+                )}
+              </React.Fragment>
             </React.Fragment>
-          </React.Fragment>
-        )}
-      </React.Fragment>
+          )}
+        </React.Fragment>
+      )}
       <BTooltip title={intl.formatMessage({ id: 'comment', defaultMessage: 'Comment' })}>
         <a className="Buttons__link" role="presentation" onClick={handleCommentsClick}>
           <i className="iconfont icon-message_fill" />

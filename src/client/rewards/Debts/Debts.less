@@ -69,13 +69,23 @@
   }
 
   &__transferUser {
-    padding: 10px 0;
-    border-bottom: 1px solid @white-gainsboro;
     display: flex;
     align-items: center;
 
     b {
       margin-left: 10px;
+    }
+  }
+
+  &__transferCard {
+    padding: 10px 0;
+    border-bottom: 1px solid @white-gainsboro;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    .ant-checkbox-wrapper {
+      margin-right: 15px;
     }
   }
 }

@@ -15,13 +15,15 @@ import {
   hasType,
 } from '../../common/helpers/wObjectHelper';
 import { getProxyImageURL } from '../../common/helpers/image';
-import { getAuthenticatedUserName } from '../../store/authStore/authSelectors';
+import { getAuthenticatedUserName, getIsAuthenticated } from '../../store/authStore/authSelectors';
 import USDDisplay from '../components/Utils/USDDisplay';
 import { defaultCurrency } from '../websites/constants/currencyTypes';
 
 import './ObjectCardView.less';
 import useWebsiteColor from '../../hooks/useWebsiteColor';
 import AffiliatLink from '../widgets/AffiliatLinks/AffiliatLink';
+import HeartButton from '../widgets/HeartButton';
+import { BXY_GUEST_PREFIX, GUEST_PREFIX } from '../../common/constants/waivio';
 
 const ObjectCardView = ({
   intl,
@@ -36,10 +38,13 @@ const ObjectCardView = ({
   onDelete,
   isPost,
   postAuthor,
+  showHeart,
   payoutToken,
   rate,
 }) => {
   const username = useSelector(getAuthenticatedUserName);
+  const isGuest = username.startsWith(GUEST_PREFIX) || username.startsWith(BXY_GUEST_PREFIX);
+  const isAuthUser = useSelector(getIsAuthenticated);
   const [tags, setTags] = useState([]);
   const address = parseAddress(wObject, ['postalCode', 'country']);
   const parent = isEmpty(passedParent) ? get(wObject, 'parent', {}) : passedParent;
@@ -47,6 +52,7 @@ const ObjectCardView = ({
   const objName = getObjectName(wObject);
   const parentName = getObjectName(parent);
   const prise = withRewards ? null : wObject.price;
+  const heartObjTypes = ['book', 'product', 'service'].includes(wObject.object_type);
   const objectCardClassList = classNames('ObjectCardView', {
     'ObjectCardView--hovered': hovered,
   });
@@ -170,6 +176,11 @@ const ObjectCardView = ({
               </div>
             )}
           </div>
+          {heartObjTypes && isAuthUser && showHeart && !isGuest && (
+            <div className="avatar-heart">
+              <HeartButton wobject={wObject} size={'20px'} />
+            </div>
+          )}
         </div>
         {withRewards && (
           <div className="ObjectCardView__rewardsInfo">
@@ -227,6 +238,7 @@ ObjectCardView.propTypes = {
   }),
   closeButton: PropTypes.bool,
   isPost: PropTypes.bool,
+  showHeart: PropTypes.bool,
   postAuthor: PropTypes.string,
   onDelete: PropTypes.func,
 };
@@ -239,6 +251,7 @@ ObjectCardView.defaultProps = {
   payoutToken: '',
   passedParent: {},
   withRewards: false,
+  showHeart: true,
   isReserved: false,
   isPost: false,
   rewardPrice: 0,
