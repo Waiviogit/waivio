@@ -3,7 +3,7 @@ import { Checkbox } from 'antd';
 import { isEmpty } from 'lodash';
 import PropTypes from 'prop-types';
 import { useHistory, useRouteMatch } from 'react-router';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 import Campaing from '../reuseble/Campaing';
 import Loading from '../../components/Icon/Loading';
@@ -25,6 +25,8 @@ import {
 
 import './RewardLists.less';
 import useQuery from '../../../hooks/useQuery';
+import { getCoordinates } from '../../../store/userStore/userActions';
+import { getRadius } from '../../components/Maps/mapHelper';
 
 const filterConfig = [
   { title: 'Rewards for', type: 'type' },
@@ -48,19 +50,30 @@ const LocalRewardsList = ({ title, withoutFilters }) => {
   const [showAll, setShowAll] = useState(false);
   const [sort, setSort] = useState('default');
   const [visible, setVisible] = useState(false);
-
+  const dispatch = useDispatch();
   const query = useQuery();
   const history = useHistory();
   const match = useRouteMatch();
-  const search = history.location.search.replace('?', '&');
+  const isLocation = match.params[0] === 'local';
   const onClose = () => setVisible(false);
 
-  const getRewardsMethod = skip => {
+  const getRewardsMethod = async skip => {
     query.delete('showAll');
+    const { value } = await dispatch(getCoordinates());
+
+    if (isLocation) {
+      query.set('area', [value.latitude, value.longitude]);
+      query.set('zoom', 3);
+      query.set('radius', getRadius(3));
+    } else {
+      query.delete('area');
+      query.delete('zoom');
+      query.delete('radius');
+    }
 
     return showAll
       ? getAllRewardList(skip, query.toString(), sort, match.params[0])
-      : getEligibleRewardList(authUser, skip, search, sort, match.params[0]);
+      : getEligibleRewardList(authUser, skip, query.toString(), sort, match.params[0]);
   };
   const getFilters = () =>
     showAll
@@ -151,7 +164,7 @@ const LocalRewardsList = ({ title, withoutFilters }) => {
       </div>
       {!withoutFilters && (
         <div className={'RewardLists__left'}>
-          {match.params[0] === 'local' && (
+          {isLocation && (
             <RewardsMap
               getPoints={getMarkers}
               visible={showMap}
