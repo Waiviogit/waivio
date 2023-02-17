@@ -261,14 +261,15 @@ class WebsiteWrapper extends React.PureComponent {
               }}
               data-dir={language && language.rtl ? 'rtl' : 'ltr'}
             >
-              {!signInPage &&
-                (isDiningGifts ? (
-                  <MainPageHeader withMap={location.pathname === '/map'} />
-                ) : (
-                  <MainPageHeader
-                    withMap={location.pathname === '/map' || location.pathname === '/'}
-                  />
-                ))}
+              {!signInPage && (
+                <MainPageHeader
+                  withMap={
+                    isDiningGifts
+                      ? location.pathname === '/map'
+                      : ['/map', '/'].includes(location.pathname)
+                  }
+                />
+              )}
               <div>
                 {loadingFetching ? <Loading /> : renderRoutes(this.props.route.routes)}
                 <NotificationPopup />

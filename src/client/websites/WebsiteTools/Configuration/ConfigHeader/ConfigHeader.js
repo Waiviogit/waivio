@@ -8,7 +8,7 @@ const ConfigHeader = ({ visible, config, onClose, handleSubmitConfig, loading })
   const [name, setName] = useState(config?.name);
   const [message, setMessage] = useState(config?.message);
   const [startup, setStartup] = useState(config?.startup);
-  const handleOk = () => handleSubmitConfig({ name, message });
+  const handleOk = () => handleSubmitConfig({ name, message, startup });
 
   return (
     <Modal
