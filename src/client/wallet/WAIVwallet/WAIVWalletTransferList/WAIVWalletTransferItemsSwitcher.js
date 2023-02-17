@@ -167,7 +167,7 @@ const WAIVWalletTransferItemsSwitcher = ({ transaction, currentName, intl }) => 
           to={transaction.to}
           from={transaction.from}
           account={transaction.account}
-          symbol={transaction.symbol}
+          symbol={'WP'}
         />
       );
 
@@ -176,7 +176,7 @@ const WAIVWalletTransferItemsSwitcher = ({ transaction, currentName, intl }) => 
         <UndelegateCompleted
           quantity={transaction.quantity}
           timestamp={transaction.timestamp}
-          symbol={transaction.symbol}
+          symbol={'WP'}
         />
       );
 
@@ -197,7 +197,7 @@ const WAIVWalletTransferItemsSwitcher = ({ transaction, currentName, intl }) => 
         <AirDropCard
           timestamp={transaction.timestamp}
           account={transaction.account}
-          symbol={transaction.symbol}
+          symbol={'WP'}
           quantity={transaction.quantity}
         />
       );
