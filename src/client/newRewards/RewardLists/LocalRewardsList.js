@@ -59,9 +59,10 @@ const LocalRewardsList = ({ title, withoutFilters }) => {
 
   const getRewardsMethod = async skip => {
     query.delete('showAll');
-    const { value } = await dispatch(getCoordinates());
 
     if (isLocation) {
+      const { value } = await dispatch(getCoordinates());
+
       query.set('area', [value.latitude, value.longitude]);
       query.set('zoom', 3);
       query.set('radius', getRadius(3));
