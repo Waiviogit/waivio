@@ -9,3 +9,5 @@ export const getIsAppendLoading = createSelector([appendState], state => state.l
 export const getAppendHasMore = createSelector([appendState], state => state.hasMore);
 
 export const getAppendList = createSelector([appendState], state => state.fields);
+
+export const getAuthorityList = createSelector([appendState], state => state.authorityList);

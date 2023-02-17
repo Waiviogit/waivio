@@ -4,6 +4,7 @@ const defaultState = {
   loading: false,
   error: null,
   hasMore: true,
+  authorityList: {},
 };
 
 export default (state = defaultState, action) => {
@@ -39,6 +40,18 @@ export default (state = defaultState, action) => {
         hasMore: action.payload.hasMore,
         error: null,
         loading: false,
+      };
+    }
+    case appendActions.SET_OBJECT_IN_AUTHORITY: {
+      return {
+        ...state,
+        authorityList: { ...state.authorityList, [action.permlink]: true },
+      };
+    }
+    case appendActions.REMOVE_OBJECT_FROM_AUTHORITY: {
+      return {
+        ...state,
+        authorityList: { ...state.authorityList, [action.permlink]: false },
       };
     }
 
