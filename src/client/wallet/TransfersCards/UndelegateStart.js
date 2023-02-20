@@ -15,7 +15,7 @@ const UndelegateStart = ({ timestamp, account, symbol, to, from, quantity }) => 
             </a>{' '}
           </span>
         ),
-        color: 'red',
+        color: 'black',
       }
     : {
         description: (
@@ -26,7 +26,7 @@ const UndelegateStart = ({ timestamp, account, symbol, to, from, quantity }) => 
             </a>{' '}
           </span>
         ),
-        color: 'green',
+        color: 'black',
       };
 
   return (

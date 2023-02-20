@@ -150,15 +150,11 @@ export const voteAppends = (author, permlink, weight = 10000, name = '', isNew =
 };
 export const AUTHORITY_VOTE_APPEND = createAsyncActionType('@append/AUTHORITY_VOTE_APPEND');
 
-export const authorityVoteAppend = (
-  author,
-  authorPermlink,
-  permlink,
-  weight,
-  name = '',
-  isNew = false,
-  type,
-) => (dispatch, getState, { steemConnectAPI }) => {
+export const authorityVoteAppend = (author, authorPermlink, permlink, weight, isObjectPage) => (
+  dispatch,
+  getState,
+  { steemConnectAPI },
+) => {
   const state = getState();
   const voter = getAuthenticatedUserName(state);
 
@@ -172,11 +168,23 @@ export const authorityVoteAppend = (
   });
 
   return steemConnectAPI.appendVote(voter, author, permlink, weight).then(() => {
-    dispatch(getChangedWobjectField(authorPermlink, name, author, permlink, isNew, type));
+    if (isObjectPage)
+      dispatch(getChangedWobjectField(authorPermlink, 'authority', author, permlink));
   });
 };
+export const SET_OBJECT_IN_AUTHORITY = '@append/SET_OBJECT_IN_AUTHORITY';
+export const setObjectinAuthority = permlink => ({
+  type: SET_OBJECT_IN_AUTHORITY,
+  permlink,
+});
 
-const followAndLikeAfterCreateAppend = (data, isLike, follow) => dispatch => {
+export const REMOVE_OBJECT_FROM_AUTHORITY = '@append/REMOVE_OBJECT_FROM_AUTHORITY';
+export const removeObjectFromAuthority = permlink => ({
+  type: REMOVE_OBJECT_FROM_AUTHORITY,
+  permlink,
+});
+
+const followAndLikeAfterCreateAppend = (data, isLike, follow, isObjectPage) => dispatch => {
   const type = data.field.name === 'listItem' ? data.field.type : null;
 
   if (isLike) {
@@ -187,9 +195,7 @@ const followAndLikeAfterCreateAppend = (data, isLike, follow) => dispatch => {
           data.parentPermlink,
           data.permlink,
           data.votePower || 10000,
-          data.field.name,
-          true,
-          type,
+          isObjectPage,
         ),
       );
     } else {
@@ -210,7 +216,7 @@ const followAndLikeAfterCreateAppend = (data, isLike, follow) => dispatch => {
   dispatch({ type: APPEND_WAIVIO_OBJECT.SUCCESS });
 };
 
-export const appendObject = (postData, { follow, isLike, votePercent } = {}) => (
+export const appendObject = (postData, { follow, isLike, votePercent, isObjectPage } = {}) => (
   dispatch,
   getState,
   { busyAPI },
@@ -229,6 +235,7 @@ export const appendObject = (postData, { follow, isLike, votePercent } = {}) => 
             { ...postData, votePower: votePercent, ...res },
             isLike,
             follow,
+            isObjectPage,
           ),
         );
       };
