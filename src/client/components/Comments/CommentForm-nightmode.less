@@ -2,13 +2,13 @@
 @import (reference) '../../styles/mixins';
 
 .nightmode {
-  .QuickComment {
+  .CommentForm {
+    &__editor {
+      background: none;
+      border: 1px solid @normal-grey;
+    }
     .anticon-plus-circle {
       background: none !important;
-    }
-    border: 1px solid @normal-grey;
-    &__send-comment {
-      .light-arrows-color();
     }
   }
 }
