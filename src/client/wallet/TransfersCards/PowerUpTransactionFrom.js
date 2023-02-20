@@ -32,7 +32,6 @@ const PowerUpTransactionFrom = ({
             <React.Fragment>
               <div>{description.powerUpTransaction}</div>
               <span className="UserWalletTransactions__payout-black">
-                {amount}
                 {amount} {symbol === 'WAIV' ? 'WP' : symbol}
               </span>
             </React.Fragment>
