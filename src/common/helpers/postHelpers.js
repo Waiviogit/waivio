@@ -259,8 +259,8 @@ export function getInitialState(props, hideLinkedObjectsSession = []) {
     currentRawContent: {},
     isEditPost: get(props, 'editor.isEditPost', false),
   };
-  const { draftPosts, draftId } = props;
-  const draftPost = draftPosts.find(d => d.draftId === draftId);
+  const { draftId } = props;
+  const draftPost = props.currDraft;
 
   if (draftId && draftPost) {
     const draftObjects = get(draftPost, ['jsonMetadata', WAIVIO_META_FIELD_NAME, 'wobjects'], []);
