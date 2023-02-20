@@ -37,6 +37,20 @@ const RewardsMap = ({ getPoints, defaultCenter, parent, visible, onClose, intl }
   });
   const area = query.get('area');
 
+  const setSearchArea = () => {
+    if (area) {
+      query.delete('area');
+      query.delete('zoom');
+      query.delete('radius');
+    } else {
+      query.set('area', mapRef.current._lastCenter);
+      query.set('zoom', mapRef.current._lastZoom);
+      query.set('radius', getRadius(mapRef.current._lastZoom));
+    }
+
+    history.push(`?${query.toString()}`);
+  };
+
   useEffect(() => {
     if (mapRef.current && !defaultCenter) {
       const bounce = mapRef.current.getBounds();
@@ -87,20 +101,6 @@ const RewardsMap = ({ getPoints, defaultCenter, parent, visible, onClose, intl }
     boundsParams.bottomPoint[1],
     history.location.pathname,
   ]);
-
-  const setSearchArea = () => {
-    if (area) {
-      query.delete('area');
-      query.delete('zoom');
-      query.delete('radius');
-    } else {
-      query.set('area', mapRef.current._lastCenter);
-      query.set('zoom', mapRef.current._lastZoom);
-      query.set('radius', getRadius(mapRef.current._lastZoom));
-    }
-
-    history.push(`?${query.toString()}`);
-  };
 
   const handleOnBoundsChanged = useCallback(
     debounce(bounds => {

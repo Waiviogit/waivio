@@ -6,7 +6,6 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import classNames from 'classnames';
 import RatingsWrap from './RatingsWrap/RatingsWrap';
-import WeightTag from '../components/WeightTag';
 import DEFAULTS from '../object/const/defaultValues';
 import {
   getObjectName,
@@ -131,7 +130,7 @@ const ObjectCardView = ({
               >
                 {objName}
               </Link>
-              {!isNaN(wObject.weight) && <WeightTag weight={Number(wObject.weight)} />}
+              {/* {!isNaN(wObject.weight) && <WeightTag weight={Number(wObject.weight)} />} */}
             </div>
             {wObject.rating && (
               <RatingsWrap
