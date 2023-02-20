@@ -60,7 +60,7 @@ const LocalRewardsList = ({ title, withoutFilters }) => {
   const getRewardsMethod = async skip => {
     query.delete('showAll');
 
-    if (isLocation) {
+    if (isLocation && !query.get('area')) {
       const { value } = await dispatch(getCoordinates());
 
       query.set('area', [value.latitude, value.longitude]);
