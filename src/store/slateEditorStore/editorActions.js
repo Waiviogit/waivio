@@ -585,7 +585,7 @@ export const buildPost = (draftId, data = {}, isEditPost) => (dispatch, getState
     parentPermlink,
     jsonMetadata,
     objPercentage,
-  } = { ...getEditor(state), ...currDraft, ...data };
+  } = { ...getEditor(state), isUpdating: currDraft.isUpdating, ...data };
 
   const currentObject = get(linkedObjects, '[0]', {});
   const objName = currentObject.author_permlink;
