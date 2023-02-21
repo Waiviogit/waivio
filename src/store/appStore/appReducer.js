@@ -171,6 +171,7 @@ export default (state = initialState, action) => {
       const deviceType = state.isMobile ? 'mobile' : 'desktop';
       const currMap = action.payload[`${deviceType}Map`];
       const logo = action.payload[`${deviceType}Logo`];
+      const startup = get(action.payload, 'configuration.header.startup', 'map');
 
       return {
         ...state,
@@ -180,8 +181,7 @@ export default (state = initialState, action) => {
         websiteName: getObjectName(action.payload.aboutObject),
         hostAddress: action.meta,
         isDiningGifts:
-          listOfWebsiteWithMainPage.some(site => site === action.meta) ||
-          get(action.payload, 'configuration.header.startup', 'map'),
+          listOfWebsiteWithMainPage.some(site => site === action.meta) || startup === 'about',
         logo,
         currMap,
       };

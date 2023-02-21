@@ -210,7 +210,10 @@ export const realiseRewards = proposition => (dispatch, getState, { steemConnect
           }
         });
       })
-      .catch(error => reject(error));
+      .catch(error => {
+        message.error(error);
+        reject(error);
+      });
   });
 };
 
