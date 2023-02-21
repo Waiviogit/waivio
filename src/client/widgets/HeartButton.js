@@ -74,18 +74,17 @@ const HeartButton = ({ wobject, size }) => {
         const data = getWobjectData();
 
         dispatch(appendObject(data, { votePercent: userUpVotePower, isLike: true, isObjectPage }));
-      }
-      if (!isEmpty(postInformation)) {
+      } else {
         const authority = postInformation.find(
           post => post.creator === user.name && post.body === adminAuthority,
         );
 
         dispatch(
           authorityVoteAppend(
-            authority.author,
+            authority?.author,
             wobject.author_permlink,
-            authority.permlink,
-            !isEmpty(wobject.authority) ? downVotePower : userUpVotePower,
+            authority?.permlink,
+            activeHeart ? downVotePower : userUpVotePower,
             isObjectPage,
           ),
         );
