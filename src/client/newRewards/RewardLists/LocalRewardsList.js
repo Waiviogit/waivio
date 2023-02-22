@@ -57,7 +57,6 @@ const LocalRewardsList = ({ title, withoutFilters }) => {
   const match = useRouteMatch();
   const isLocation = match.params[0] === 'local';
   const onClose = () => setVisible(false);
-
   const clearMapInfo = () => {
     query.delete('area');
     query.delete('zoom');
@@ -67,7 +66,7 @@ const LocalRewardsList = ({ title, withoutFilters }) => {
   const getRewardsMethod = async skip => {
     query.delete('showAll');
 
-    if (isLocation && !query.get('area')) {
+    if (isLocation && !history.location.search.includes('area')) {
       let coordinats = location;
 
       if (isEmpty(coordinats)) {
