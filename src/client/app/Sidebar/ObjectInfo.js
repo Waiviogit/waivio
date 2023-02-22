@@ -1245,6 +1245,16 @@ class ObjectInfo extends React.Component {
       </React.Fragment>
     );
 
+    const feedSection = (
+      <React.Fragment>
+        <div className="object-sidebar__section-title">
+          <FormattedMessage id="feed_section" defaultMessage="Feed" />
+        </div>
+        {this.listItem(objectFields.pin, null)}
+        {this.listItem(objectFields.remove, null)}
+      </React.Fragment>
+    );
+
     return (
       <div ref={this.carouselRef}>
         {!isEditMode && wobject.authors && (
@@ -1294,6 +1304,7 @@ class ObjectInfo extends React.Component {
             {!isHashtag && !hasType(wobject, OBJECT_TYPE.PAGE) && menuSection()}
             {!isHashtag && aboutSection}
             {accessExtend && hasType(wobject, OBJECT_TYPE.LIST) && listSection}
+            {accessExtend && feedSection}
             {accessExtend && settingsSection}
             {this.props.children}
             <ObjectInfoExperts wobject={wobject} />
