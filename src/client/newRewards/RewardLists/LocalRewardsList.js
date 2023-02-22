@@ -48,6 +48,7 @@ const LocalRewardsList = ({ title, withoutFilters }) => {
   const [loading, setLoading] = useState(true);
   const [showMap, setShowMap] = useState(false);
   const [showAll, setShowAll] = useState(false);
+  const [location, setLocation] = useState([]);
   const [sort, setSort] = useState('default');
   const [visible, setVisible] = useState(false);
   const dispatch = useDispatch();
@@ -56,20 +57,30 @@ const LocalRewardsList = ({ title, withoutFilters }) => {
   const match = useRouteMatch();
   const isLocation = match.params[0] === 'local';
   const onClose = () => setVisible(false);
+  const clearMapInfo = () => {
+    query.delete('area');
+    query.delete('zoom');
+    query.delete('radius');
+  };
 
   const getRewardsMethod = async skip => {
     query.delete('showAll');
 
-    if (isLocation) {
-      const { value } = await dispatch(getCoordinates());
+    if (isLocation && !history.location.search.includes('area')) {
+      let coordinats = location;
 
-      query.set('area', [value.latitude, value.longitude]);
+      if (isEmpty(coordinats)) {
+        const { value } = await dispatch(getCoordinates());
+
+        coordinats = value;
+        setLocation(value);
+      }
+
+      query.set('area', [coordinats.latitude, coordinats.longitude]);
       query.set('zoom', 3);
       query.set('radius', getRadius(3));
     } else {
-      query.delete('area');
-      query.delete('zoom');
-      query.delete('radius');
+      clearMapInfo();
     }
 
     return showAll
@@ -116,7 +127,10 @@ const LocalRewardsList = ({ title, withoutFilters }) => {
         setHasMore(res.hasMore);
         setLoading(false);
       })
-      .catch(() => setLoading(false));
+      .catch(() => {
+        setLoading(false);
+      });
+    clearMapInfo();
   }, [history.location.search, sort, match.params[0], showAll]);
 
   const handleLoadingMoreRewardsList = () => {

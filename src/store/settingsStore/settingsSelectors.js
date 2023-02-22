@@ -16,6 +16,10 @@ export const getVotePercent = createSelector([settingsState], state => state.vot
 
 export const getShowNSFWPosts = createSelector([settingsState], state => state.showNSFWPosts);
 
+export const getHideLinkedObjects = createSelector([settingsState], state =>
+  get(state, 'shop.hideLinkedObjects', false),
+);
+
 export const getNightmode = createSelector([settingsState], state => state.nightmode);
 
 export const getCurrency = createSelector([settingsState], state => state.currency);
