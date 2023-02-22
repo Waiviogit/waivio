@@ -1,23 +1,25 @@
+@import (reference) '../../styles/modules/variables.less';
+
 .ShopList {
   margin-bottom: 20px;
+  padding: 0 10px;
+
+  @media @small {
+    padding: 0;
+  }
 
   .anticon {
     font-size: 12px;
   }
 
-  &__title {
-    text-transform: capitalize;
+  a.ShopList__departments-title {
     font-weight: bold;
     cursor: pointer;
-
-    a {
-      color: black;
-    }
+    color: black;
   }
 
   &__departments {
     padding: 15px 0 0;
-    font-weight: 600;
   }
 
   &__showMore {

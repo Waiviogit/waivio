@@ -4,7 +4,7 @@ import { isEmpty } from 'lodash';
 import { Checkbox, Rate } from 'antd';
 import { useHistory, useRouteMatch } from 'react-router';
 
-import { getDepartmentsFilters } from '../../../waivioApi/ApiClient';
+import { getDepartmentsFilters, showMoreTagsForFilters } from '../../../waivioApi/ApiClient';
 import useQuery from '../../../hooks/useQuery';
 import { parseQuery } from '../../../waivioApi/helpers';
 
@@ -26,33 +26,66 @@ const ShopFilters = () => {
   }, [match.params.department]);
 
   const setActiveFilters = (type, filter) => {
-    const filreList = activeFilter[type] || [];
-
-    if (filreList.includes(filter)) {
-      const filteredList = filreList.filter(name => name !== filter);
-
-      if (isEmpty(filteredList)) {
+    if (type === 'rating') {
+      if (activeFilter[type] === +filter) {
         query.delete(type);
+        setActiveFilter({
+          ...activeFilter,
+          [type]: undefined,
+        });
       } else {
-        query.set(type, filteredList.join(','));
+        query.set(type, filter);
+        setActiveFilter({
+          ...activeFilter,
+          [type]: filter,
+        });
       }
-
-      setActiveFilter({
-        ...activeFilter,
-        [type]: filteredList,
-      });
     } else {
-      const newListFilters = [...filreList, filter];
+      const filreList = activeFilter[type] || [];
 
-      query.set(type, newListFilters.join(','));
-      setActiveFilter({
-        ...activeFilter,
-        [type]: newListFilters,
-      });
+      if (filreList.includes(filter)) {
+        const filteredList = filreList.filter(name => name !== filter);
+
+        if (isEmpty(filteredList)) {
+          query.delete(type);
+        } else {
+          query.set(type, filteredList.join(','));
+        }
+
+        setActiveFilter({
+          ...activeFilter,
+          [type]: filteredList,
+        });
+      } else {
+        const newListFilters = [...filreList, filter];
+
+        query.set(type, newListFilters.join(','));
+        setActiveFilter({
+          ...activeFilter,
+          [type]: newListFilters,
+        });
+      }
     }
 
     history.push(`?${query.toString()}`);
   };
+
+  const getMoreTags = (tagCategory, objType, skip) =>
+    showMoreTagsForFilters(tagCategory, objType, skip, 10).then(res => {
+      const tagCategoryFilters = [...filters.tagCategoryFilters];
+      const index = tagCategoryFilters.findIndex(filt => filt.tagCategory === tagCategory);
+
+      tagCategoryFilters.splice(index, 0, {
+        ...tagCategoryFilters[index],
+        tags: [...tagCategoryFilters[index].tags, ...res.tags],
+        hasMore: res.hasMore,
+      });
+
+      setFilters({
+        ...filters,
+        tagCategoryFilters,
+      });
+    });
 
   return (
     <div className="ShopFilters">
@@ -60,12 +93,12 @@ const ShopFilters = () => {
         <i className="iconfont icon-trysearchlist ShopFilters__icon" />
         <FormattedMessage id="filters" defaultMessage="Filters" />
       </div>
-      <div className="RewardsFilters__block">
-        <span className="RewardsFilters__subtitle">Ratings:</span>
+      <div className="ShopFilters__block">
+        <span className="ShopFilters__subtitle">Ratings:</span>
         {filters?.rating?.map(rate => (
           <div key={rate}>
             <Checkbox
-              checked={activeFilter.rating?.includes(rate)}
+              checked={activeFilter.rating === rate}
               onChange={() => setActiveFilters('rating', rate)}
             >
               {' '}
@@ -75,8 +108,8 @@ const ShopFilters = () => {
         ))}
       </div>
       {filters?.tagCategoryFilters?.map(category => (
-        <div key={category.tagCategory} className="RewardsFilters__block">
-          <span className="RewardsFilters__subtitle">{category.tagCategory}:</span>
+        <div key={category.tagCategory} className="ShopFilters__block">
+          <span className="ShopFilters__subtitle">{category.tagCategory}:</span>
           {category?.tags?.map(tag => (
             <div key={tag}>
               <Checkbox
@@ -88,6 +121,17 @@ const ShopFilters = () => {
               </Checkbox>
             </div>
           ))}
+          {category.hasMore && (
+            <span
+              className="ShopFilters__show-more"
+              role="presentation"
+              onClick={() =>
+                getMoreTags(category.tagCategory, category.type, category?.tags?.length)
+              }
+            >
+              show more
+            </span>
+          )}
         </div>
       ))}
     </div>
