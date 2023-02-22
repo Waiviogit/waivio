@@ -1,0 +1,29 @@
+@import (reference) '../../styles/custom.less';
+
+.DepartmentsUser {
+  font-weight: 500;
+
+  a {
+    color: @blue-gullGray;
+    text-transform: capitalize;
+    display: inline-block;
+    margin-bottom: 10px;
+
+    &:active {
+      color: @orange-light;
+    }
+  }
+
+  a.DepartmentsUser__item--active {
+    color: @orange-light;
+  }
+
+  &__list {
+    padding: 0 10px;
+  }
+
+  //a&__item--active {
+  //   {
+  //    color: orange;
+  //  }
+}

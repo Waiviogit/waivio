@@ -27,6 +27,7 @@ export default {
       'activity',
       'expertise',
       'about',
+      'shop',
     ].join('|'),
   },
   FEED: {

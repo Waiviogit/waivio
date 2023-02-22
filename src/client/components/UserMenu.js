@@ -60,6 +60,16 @@ class UserMenu extends React.Component {
               <FormattedMessage id="posts" defaultMessage="Posts" />
             </li>
             <li
+              className={classNames('UserMenu__item', {
+                'UserMenu__item--active': ['shop'].includes(this.state.current),
+              })}
+              onClick={this.handleClick}
+              role="presentation"
+              data-key="shop"
+            >
+              <FormattedMessage id="shop" defaultMessage="Shop" />
+            </li>
+            <li
               className={this.getItemClasses('followers')}
               onClick={this.handleClick}
               role="presentation"

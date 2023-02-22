@@ -6,6 +6,7 @@ import SidebarMenu from '../../components/Sidebar/SidebarMenu';
 import SidenavDiscoverObjects from '../../discoverObjects/SidenavDiscoverObjects';
 import URL from '../../../routes/constants';
 import SideBar from '../../newRewards/SideBar';
+import DepartmentsUser from '../../Shop/DepartmentsUser/DepartmentsUser';
 
 const LeftSidebar = () => {
   const isWidget =
@@ -14,6 +15,7 @@ const LeftSidebar = () => {
   return (
     !isWidget && (
       <Switch>
+        <Route path="/@:name/shop/:department?" component={DepartmentsUser} />
         <Route path="/@:name/wallet" component={SidebarMenu} />
         <Route path="/@:name" component={UserInfo} />
         <Route path="/object/:name" component={UserInfo} />

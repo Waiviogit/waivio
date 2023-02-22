@@ -10,6 +10,8 @@ import Rewards from '../../client/rewards/Rewards';
 import Discover from '../../client/discover/Discover';
 import DiscoverObjects from '../../client/discoverObjects/DiscoverObjects';
 import RewardsMainPage from '../../client/newRewards/RewardsMainPage';
+import ShopDepartments from '../../client/Shop/ShopList/ShopList';
+import DepartmentsWobjList from '../../client/Shop/DepartmentsWobjList/DepartmentsWobjList';
 
 const routes = {
   component: Wrapper,
@@ -292,7 +294,10 @@ const routes = {
       ],
     },
     {
-      path: `/@:name/(${URL.USER.tabs})?/(waiv-table|table)?`,
+      path: [
+        `/@:name/(${URL.USER.tabs})?/(waiv-table|table|:departments)?`,
+        `/@:name/shop/:departments?`,
+      ],
       component: User,
       exact: true,
       pathScope: '/@:name',
@@ -306,6 +311,16 @@ const routes = {
           path: '/followers',
           exact: true,
           component: Views.UserFollowers,
+        },
+        {
+          path: '/shop',
+          exact: true,
+          component: ShopDepartments,
+        },
+        {
+          path: '/shop/:departments?',
+          exact: true,
+          component: DepartmentsWobjList,
         },
         {
           path: '/reblogs',
