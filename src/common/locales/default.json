@@ -2166,5 +2166,13 @@
   "show all": "Show all",
   "all_available_options": "All available {category} options",
   "add_to_my_shop": "Add to my shop",
-  "remove_from_my_shop": "Remove from my shop"
+  "remove_from_my_shop": "Remove from my shop",
+  "feed_section": "Feed",
+  "object_field_pin": "Pin",
+  "object_field_remove": "Remove",
+  "pin_modal_info": "The pinned post will be displayed at the top of the object's feed. Maximum 3 pinned posts.",
+  "remove_modal_info": "The removed post won`t show up in the object's feed.",
+  "post_permlink": "Post permlink",
+  "post_author": "Post author",
+"pinned": "Pinned"
 }

@@ -53,6 +53,8 @@ import {
   manufacturerFields,
   brandFields,
   merchantFields,
+  pinPostFields,
+  removePostFields,
 } from '../../../common/constants/listOfFields';
 import OBJECT_TYPE from '../const/objectTypes';
 import { getSuitableLanguage } from '../../../store/reducers';
@@ -154,7 +156,7 @@ export default class AppendForm extends Component {
     user: PropTypes.shape(),
     /* from connect */
     wObject: PropTypes.shape(),
-    updates: PropTypes.arrayOf(PropTypes.shape()).isRequired,
+    updates: PropTypes.arrayOf(PropTypes.shape()),
     rewardFund: PropTypes.shape(),
     history: PropTypes.shape().isRequired,
     rate: PropTypes.number,
@@ -168,6 +170,7 @@ export default class AppendForm extends Component {
     currentField: PropTypes.string,
     hideModal: PropTypes.func,
     intl: PropTypes.shape(),
+    post: PropTypes.shape(),
     ratingFields: PropTypes.arrayOf(PropTypes.shape({})),
     categories: PropTypes.arrayOf(PropTypes.shape()),
     selectedAlbum: PropTypes.shape(),
@@ -186,6 +189,8 @@ export default class AppendForm extends Component {
     onImageUpload: () => {},
     onImageInvalid: () => {},
     wObject: {},
+    post: {},
+    updates: [],
     form: {},
     appendObject: () => {},
     intl: {},
@@ -391,6 +396,8 @@ export default class AppendForm extends Component {
       case objectFields.ageRange:
       case objectFields.printLength:
       case objectFields.language:
+      case objectFields.pin:
+      case objectFields.remove:
       case objectFields.departments:
       case objectFields.groupId:
       case objectFields.publicationDate:
@@ -555,6 +562,10 @@ export default class AppendForm extends Component {
           }: ${getFieldValue(featuresFields.name)}, ${featuresFields.value}: ${getFieldValue(
             featuresFields.value,
           )}`;
+        case objectFields.pin:
+          return `@${author} pinned post ${this.props.post.permlink}`;
+        case objectFields.remove:
+          return `@${author} removed post ${this.props.post.permlink}`;
         case objectFields.ageRange:
         case objectFields.language:
         case objectFields.departments:
@@ -695,7 +706,24 @@ export default class AppendForm extends Component {
           [phoneFields.number]: formValues[phoneFields.number],
         };
       }
-
+      if (currentField === objectFields.pin) {
+        fieldsObject = {
+          ...fieldsObject,
+          body: !isEmpty(this.props.post)
+            ? `${this.props.post.author}/${this.props.post.permlink}`
+            : `${formValues[pinPostFields.postAuthor]}/${formValues[pinPostFields.postPermlink]}`,
+        };
+      }
+      if (currentField === objectFields.remove) {
+        fieldsObject = {
+          ...fieldsObject,
+          body: !isEmpty(this.props.post)
+            ? `${this.props.post.author}/${this.props.post.permlink}`
+            : `${formValues[removePostFields.postAuthor]}/${
+                formValues[removePostFields.postPermlink]
+              }`,
+        };
+      }
       if (currentField === objectFields.tagCategory) {
         fieldsObject = {
           ...fieldsObject,
@@ -1312,6 +1340,8 @@ export default class AppendForm extends Component {
     if (currentField === objectFields.publicationDate)
       return filtered.some(f => f.body === currentValue);
     if (currentField === objectFields.language) return filtered.some(f => f.body === currentValue);
+    if (currentField === objectFields.pin) return filtered.some(f => f.body === currentValue);
+    if (currentField === objectFields.remove) return filtered.some(f => f.body === currentValue);
     if (currentField === objectFields.departments)
       return filtered.some(f => f.body === currentValue);
     if (currentField === objectFields.groupId) return filtered.some(f => f.body === currentValue);
@@ -1893,6 +1923,120 @@ export default class AppendForm extends Component {
                 })}
               />,
             )}
+          </Form.Item>
+        );
+      }
+      case objectFields.pin: {
+        return (
+          <Form.Item>
+            {!isEmpty(this.props.post) ? (
+              <>
+                <Input
+                  className={classNames('AppendForm__input', {
+                    'validation-error': !this.state.isSomeValue,
+                  })}
+                  value={this.props.post.author}
+                  disabled
+                />
+                <Input
+                  className={classNames('AppendForm__input', {
+                    'validation-error': !this.state.isSomeValue,
+                  })}
+                  value={this.props.post.permlink}
+                  disabled
+                />
+              </>
+            ) : (
+              <>
+                {getFieldDecorator(pinPostFields.postAuthor)(
+                  <Input
+                    className={classNames('AppendForm__input', {
+                      'validation-error': !this.state.isSomeValue,
+                    })}
+                    disabled={loading}
+                    placeholder={intl.formatMessage({
+                      id: 'post_author',
+                      defaultMessage: 'Post author',
+                    })}
+                  />,
+                )}
+                {getFieldDecorator(pinPostFields.postPermlink)(
+                  <Input
+                    className={classNames('AppendForm__input', {
+                      'validation-error': !this.state.isSomeValue,
+                    })}
+                    disabled={loading}
+                    placeholder={intl.formatMessage({
+                      id: 'post_permlink',
+                      defaultMessage: 'Post permlink',
+                    })}
+                  />,
+                )}
+              </>
+            )}
+            <p>
+              <FormattedMessage
+                id="pin_modal_info"
+                defaultMessage="The pinned post will be displayed at the top of the object`s feed. Maximum 3 pinned posts."
+              />
+            </p>
+          </Form.Item>
+        );
+      }
+      case objectFields.remove: {
+        return (
+          <Form.Item>
+            {!isEmpty(this.props.post) ? (
+              <>
+                <Input
+                  className={classNames('AppendForm__input', {
+                    'validation-error': !this.state.isSomeValue,
+                  })}
+                  value={this.props.post.author}
+                  disabled
+                />
+                <Input
+                  className={classNames('AppendForm__input', {
+                    'validation-error': !this.state.isSomeValue,
+                  })}
+                  value={this.props.post.permlink}
+                  disabled
+                />
+              </>
+            ) : (
+              <>
+                {getFieldDecorator(removePostFields.postAuthor)(
+                  <Input
+                    className={classNames('AppendForm__input', {
+                      'validation-error': !this.state.isSomeValue,
+                    })}
+                    disabled={loading}
+                    placeholder={intl.formatMessage({
+                      id: 'post_author',
+                      defaultMessage: 'Post author',
+                    })}
+                  />,
+                )}
+                {getFieldDecorator(removePostFields.postPermlink)(
+                  <Input
+                    className={classNames('AppendForm__input', {
+                      'validation-error': !this.state.isSomeValue,
+                    })}
+                    disabled={loading}
+                    placeholder={intl.formatMessage({
+                      id: 'post_permlink',
+                      defaultMessage: 'Post permlink',
+                    })}
+                  />,
+                )}
+              </>
+            )}
+            <p>
+              <FormattedMessage
+                id="remove_modal_info"
+                defaultMessage="The removed post won`t show up in the object`s feed."
+              />
+            </p>
           </Form.Item>
         );
       }
@@ -3415,6 +3559,8 @@ export default class AppendForm extends Component {
             this.state.typeList.length < 1)
         );
       case objectFields.sorting:
+      case objectFields.pin:
+      case objectFields.remove:
         return false;
 
       default:
