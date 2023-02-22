@@ -14,8 +14,10 @@ import { getSocialInfoPost as getSocialInfoPostAction } from '../../../store/pos
 import { getAuthenticatedUserName, isGuestUser } from '../../../store/authStore/authSelectors';
 import { isMobile } from '../../../common/helpers/apiHelpers';
 import { deletePost } from '../../../waivioApi/ApiClient';
+import AppendModal from '../../object/AppendModal/AppendModal';
 
 import './PostPopoverMenu.less';
+import { objectFields } from '../../../common/constants/listOfFields';
 
 const propTypes = {
   pendingFlag: PropTypes.bool,
@@ -91,6 +93,9 @@ const PostPopoverMenu = ({
   userComments,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isPin, setIsPin] = useState(false);
+  const [isRemove, setIsRemove] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
   const { isReported, isSaved } = postState;
   const hasOnlySponsorLike =
     post.active_votes.length === 1 && post.active_votes.some(vote => vote.sponsor);
@@ -114,7 +119,14 @@ const PostPopoverMenu = ({
     switch (key) {
       case 'delete':
         return setIsOpen(true);
+      case 'pin':
+        setIsVisible(false);
 
+        return setIsPin(true);
+      case 'remove':
+        setIsVisible(false);
+
+        return setIsRemove(true);
       default:
         return handlePostPopoverMenuClick(key);
     }
@@ -229,6 +241,14 @@ const PostPopoverMenu = ({
         {loading ? <Icon type="loading" /> : <i className="iconfont icon-people" />}
         {followText}
       </PopoverMenuItem>,
+      <PopoverMenuItem key="pin" disabled={loading}>
+        <Icon className="hide-button popoverIcon" type="pushpin" />
+        <FormattedMessage id="object_field_pin" defaultMessage="Pin" />
+      </PopoverMenuItem>,
+      <PopoverMenuItem key="remove" disabled={loading}>
+        <Icon type="delete" className="hide-button popoverIcon" />
+        <FormattedMessage id="object_field_remove" defaultMessage="Remove" />
+      </PopoverMenuItem>,
       <PopoverMenuItem key="hide" disabled={loading}>
         {post.loadingHide ? (
           <Icon type="loading" />
@@ -293,6 +313,8 @@ const PostPopoverMenu = ({
   return (
     <React.Fragment>
       <Popover
+        onVisibleChange={() => setIsVisible(!isVisible)}
+        visible={isVisible}
         placement="bottomRight"
         trigger={isMobile() ? 'click' : 'hover'}
         content={
@@ -343,6 +365,22 @@ const PostPopoverMenu = ({
       >
         Would you like permanently delete your post?
       </Modal>
+      {isPin && (
+        <AppendModal
+          post={post}
+          showModal={isPin}
+          hideModal={() => setIsPin(false)}
+          field={objectFields.pin}
+        />
+      )}
+      {isRemove && (
+        <AppendModal
+          post={post}
+          showModal={isRemove}
+          hideModal={() => setIsRemove(false)}
+          field={objectFields.remove}
+        />
+      )}
     </React.Fragment>
   );
 };

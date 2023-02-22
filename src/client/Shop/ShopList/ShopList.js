@@ -8,6 +8,7 @@ import { getShopUserShopMainFeed } from '../../../waivioApi/ApiClient';
 import ObjectCardView from '../../objectCard/ObjectCardView';
 
 import './ShopList.less';
+import EmptyCampaing from '../../statics/EmptyCampaing';
 
 const ShopList = () => {
   const [departments, setDepartments] = useState([]);
@@ -21,29 +22,33 @@ const ShopList = () => {
 
   return (
     <div className="ShopList">
-      <h3>Departmens</h3>
-      <div>
-        {departments.map(dep => {
-          if (isEmpty(dep.wobjects)) return null;
+      <h3>Departments</h3>
+      {departments.every(dep => isEmpty(dep.wobjects)) ? (
+        <EmptyCampaing emptyMessage={'There are no objects for this department.'} />
+      ) : (
+        <div>
+          {departments.map(dep => {
+            if (isEmpty(dep.wobjects)) return null;
 
-          return (
-            <div key={dep.department} className="ShopList__departments">
-              <Link
-                to={`/@${match.params.name}/shop/${dep.department}`}
-                className="ShopList__title"
-              >
-                {dep.department} <Icon size={12} type="right" />
-              </Link>
-              {dep.wobjects.map(wObject => (
-                <ObjectCardView key={wObject.author_permlink} wObject={wObject} />
-              ))}
-              {dep.showMore && (
-                <Link className="ShopList__showMore">Show more {dep.department.toLowerCase()}</Link>
-              )}
-            </div>
-          );
-        })}
-      </div>
+            return (
+              <div key={dep.department} className="ShopList__departments">
+                <Link
+                  to={`/@${match.params.name}/shop/${dep.department}`}
+                  className="ShopList__departments-title"
+                >
+                  {dep.department} <Icon size={12} type="right" />
+                </Link>
+                {dep.wobjects.map(wObject => (
+                  <ObjectCardView key={wObject.author_permlink} wObject={wObject} />
+                ))}
+                {dep.hasMore && (
+                  <Link className="ShopList__showMore">Show more {dep.department}</Link>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 };

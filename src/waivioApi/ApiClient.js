@@ -3159,14 +3159,13 @@ export const getAuthorityFields = permlink =>
     .then(posts => posts)
     .catch(error => error);
 
-export const getShopUserDepartments = (userName, skip, limit) =>
+export const getShopUserDepartments = (userName, filter) =>
   fetch(`${config.apiPrefix}${config.shop}${config.user}${config.departments}`, {
     headers,
     method: 'POST',
     body: JSON.stringify({
       userName,
-      // skip,
-      // limit
+      filter,
     }),
   })
     .then(res => res.json())
@@ -3175,7 +3174,10 @@ export const getShopUserDepartments = (userName, skip, limit) =>
 
 export const getShopUserShopMainFeed = userName =>
   fetch(`${config.apiPrefix}${config.shop}${config.user}${config.mainFeed}`, {
-    headers,
+    headers: {
+      ...headers,
+      follower: userName,
+    },
     method: 'POST',
     body: JSON.stringify({
       userName,
@@ -3185,7 +3187,7 @@ export const getShopUserShopMainFeed = userName =>
     .then(posts => posts)
     .catch(error => error);
 
-export const getDepartmentsFeed = (follower, department, filters, locale = 'en-US') =>
+export const getDepartmentsFeed = (follower, department, filter, locale = 'en-US') =>
   fetch(`${config.apiPrefix}${config.shop}${config.user}${config.departmentFeed}`, {
     headers: {
       ...headers,
@@ -3196,7 +3198,7 @@ export const getDepartmentsFeed = (follower, department, filters, locale = 'en-U
     body: JSON.stringify({
       department,
       userName: follower,
-      filters,
+      filter,
     }),
   })
     .then(res => res.json())

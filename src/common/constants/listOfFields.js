@@ -53,6 +53,8 @@ export const objectFields = {
   manufacturer: 'manufacturer',
   brand: 'brand',
   merchant: 'merchant',
+  pin: 'pin',
+  remove: 'remove',
 };
 
 export const TYPES_OF_MENU_ITEM = {
@@ -92,6 +94,15 @@ export const addressFields = {
   postalCode: 'postalCode',
   state: 'state',
   country: 'country',
+};
+
+export const pinPostFields = {
+  postAuthor: 'postAuthor',
+  postPermlink: 'postPermlink',
+};
+export const removePostFields = {
+  postAuthor: 'postAuthor',
+  postPermlink: 'postPermlink',
 };
 
 export const authorsFields = {
