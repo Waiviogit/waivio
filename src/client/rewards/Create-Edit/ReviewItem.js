@@ -12,7 +12,7 @@ const ReviewItem = ({ isUser, object, removeReviewObject, loading }) => {
       resetUser={removeItem}
     />
   ) : (
-    <ObjectCardView wObject={object} closeButton onDelete={removeItem} />
+    <ObjectCardView wObject={object} closeButton onDelete={removeItem} showHeart={false} />
   );
 };
 
