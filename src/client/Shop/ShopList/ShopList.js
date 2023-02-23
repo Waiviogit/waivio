@@ -6,19 +6,24 @@ import { useRouteMatch } from 'react-router';
 
 import { getShopUserShopMainFeed } from '../../../waivioApi/ApiClient';
 import ObjectCardView from '../../objectCard/ObjectCardView';
+import EmptyCampaing from '../../statics/EmptyCampaing';
+import Loading from '../../components/Icon/Loading';
 
 import './ShopList.less';
-import EmptyCampaing from '../../statics/EmptyCampaing';
 
 const ShopList = () => {
   const [departments, setDepartments] = useState([]);
+  const [loading, setLoading] = useState(true);
   const match = useRouteMatch();
 
   useEffect(() => {
     getShopUserShopMainFeed(match.params.name, 0, 10).then(res => {
       setDepartments(res);
+      setLoading(false);
     });
   }, []);
+
+  if (loading) return <Loading />;
 
   return (
     <div className="ShopList">
@@ -42,7 +47,12 @@ const ShopList = () => {
                   <ObjectCardView key={wObject.author_permlink} wObject={wObject} />
                 ))}
                 {dep.hasMore && (
-                  <Link className="ShopList__showMore">Show more {dep.department}</Link>
+                  <Link
+                    className="ShopList__showMore"
+                    to={`/@${match.params.name}/shop/${dep.department}`}
+                  >
+                    Show more {dep.department}
+                  </Link>
                 )}
               </div>
             );

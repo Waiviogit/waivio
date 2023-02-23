@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useRouteMatch } from 'react-router';
 import { isEmpty } from 'lodash';
 
@@ -14,8 +14,7 @@ const DepartmentsWobjList = () => {
   const [departmentInfo, setDepartmentInfo] = useState();
   const match = useRouteMatch();
   const query = useQuery();
-  const listRef = useRef();
-
+  const list = useRef();
   const parseQueryForFilters = () => {
     const parsedQuery = parseQuery(query.toString());
 
@@ -47,13 +46,15 @@ const DepartmentsWobjList = () => {
   }, [match.params.departments, query.toString()]);
 
   useEffect(() => {
-    if (listRef.current) {
-      listRef.current.scrollIntoView();
+    if (list.current) {
+      const listRef = document.getElementById('DepartmentsWobjList');
+
+      window.scrollTo({ top: listRef.offsetHeight, behavior: 'smooth' });
     }
-  }, [listRef.current]);
+  }, [list.current]);
 
   return (
-    <div className="DepartmentsWobjList">
+    <div className="DepartmentsWobjList" ref={list} id={'DepartmentsWobjList'}>
       <h3>{departmentInfo?.department}</h3>
       {isEmpty(departmentInfo?.wobjects) ? (
         <EmptyCampaing emptyMessage={'There are no objects for this department.'} />

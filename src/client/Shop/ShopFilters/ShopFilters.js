@@ -75,7 +75,7 @@ const ShopFilters = () => {
       const tagCategoryFilters = [...filters.tagCategoryFilters];
       const index = tagCategoryFilters.findIndex(filt => filt.tagCategory === tagCategory);
 
-      tagCategoryFilters.splice(index, 0, {
+      tagCategoryFilters.splice(index, 1, {
         ...tagCategoryFilters[index],
         tags: [...tagCategoryFilters[index].tags, ...res.tags],
         hasMore: res.hasMore,
