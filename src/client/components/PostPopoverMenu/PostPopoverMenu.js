@@ -222,6 +222,16 @@ const PostPopoverMenu = ({
         {saving ? <Icon type="loading" /> : <i className="iconfont icon-write" />}
         <FormattedMessage id="edit_post" defaultMessage="Edit post" />
       </PopoverMenuItem>,
+      <PopoverMenuItem key="pin" disabled={loading} invisible={post.pin}>
+        <Icon className="hide-button popoverIcon" type="pushpin" />
+        <span className="ml1">
+          <FormattedMessage id="object_field_pin" defaultMessage="Pin" />
+        </span>
+      </PopoverMenuItem>,
+      <PopoverMenuItem key="remove" disabled={loading}>
+        <Icon type="delete" className="hide-button popoverIcon" />
+        <FormattedMessage id="object_field_remove" defaultMessage="Remove" />
+      </PopoverMenuItem>,
     ];
   }
 
