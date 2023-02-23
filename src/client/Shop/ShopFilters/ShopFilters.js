@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { isEmpty } from 'lodash';
-import { Checkbox, Rate } from 'antd';
+import { Checkbox, Modal, Rate } from 'antd';
 import { useHistory, useRouteMatch } from 'react-router';
+import PropTypes from 'prop-types';
 
 import { getDepartmentsFilters, showMoreTagsForFilters } from '../../../waivioApi/ApiClient';
 import useQuery from '../../../hooks/useQuery';
@@ -10,7 +11,7 @@ import { parseQuery } from '../../../waivioApi/helpers';
 
 import './ShopFilters.less';
 
-const ShopFilters = () => {
+const ShopFilters = ({ visible, onClose }) => {
   const [filters, setFilters] = useState();
   const [activeFilter, setActiveFilter] = useState({});
   const query = useQuery();
@@ -87,7 +88,7 @@ const ShopFilters = () => {
       });
     });
 
-  return (
+  const body = (
     <div className="ShopFilters">
       <div className="ShopFilters__title">
         <i className="iconfont icon-trysearchlist ShopFilters__icon" />
@@ -136,6 +137,19 @@ const ShopFilters = () => {
       ))}
     </div>
   );
+
+  return visible ? (
+    <Modal visible={visible} onCancel={onClose} onOk={onClose}>
+      {body}
+    </Modal>
+  ) : (
+    body
+  );
+};
+
+ShopFilters.propTypes = {
+  visible: PropTypes.bool,
+  onClose: PropTypes.func,
 };
 
 export default ShopFilters;

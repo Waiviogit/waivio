@@ -69,7 +69,7 @@ class UserMenu extends React.Component {
             >
               <FormattedMessage id="posts" defaultMessage="Posts" />
             </li>
-            {currUserIsGuest && (
+            {!currUserIsGuest && (
               <li
                 className={classNames('UserMenu__item', {
                   'UserMenu__item--active': ['shop'].includes(this.state.current),
