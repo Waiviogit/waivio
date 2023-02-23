@@ -51,6 +51,7 @@ const propTypes = {
     youFollows: PropTypes.bool,
     loading: PropTypes.bool,
     loadingHide: PropTypes.bool,
+    pin: PropTypes.bool,
     loadingMute: PropTypes.bool,
     muted: PropTypes.bool,
     tags: PropTypes.shape(),
@@ -241,9 +242,11 @@ const PostPopoverMenu = ({
         {loading ? <Icon type="loading" /> : <i className="iconfont icon-people" />}
         {followText}
       </PopoverMenuItem>,
-      <PopoverMenuItem key="pin" disabled={loading}>
+      <PopoverMenuItem key="pin" disabled={loading} invisible={post.pin}>
         <Icon className="hide-button popoverIcon" type="pushpin" />
-        <FormattedMessage id="object_field_pin" defaultMessage="Pin" />
+        <span className="ml1">
+          <FormattedMessage id="object_field_pin" defaultMessage="Pin" />
+        </span>
       </PopoverMenuItem>,
       <PopoverMenuItem key="remove" disabled={loading}>
         <Icon type="delete" className="hide-button popoverIcon" />
