@@ -48,6 +48,8 @@ const DepartmentsWobjList = () => {
   };
 
   useEffect(() => {
+    setLoading(true);
+
     getDepartmentsFeed(match.params.name, match.params.departments, parseQueryForFilters()).then(
       res => {
         setDepartmentInfo(res);
@@ -64,7 +66,7 @@ const DepartmentsWobjList = () => {
     }
 
     if (!isMobile()) window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, [list.current, loading]);
+  }, [list.current, loading, match.params.departments]);
 
   if (loading) return <Loading />;
 
