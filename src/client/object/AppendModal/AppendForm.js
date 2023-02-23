@@ -563,9 +563,17 @@ export default class AppendForm extends Component {
             featuresFields.value,
           )}`;
         case objectFields.pin:
-          return `@${author} pinned post ${this.props.post.permlink}`;
+          return `@${author} pinned post ${
+            !isEmpty(this.props.post)
+              ? this.props.post.permlink
+              : formValues[pinPostFields.postPermlink]
+          }`;
         case objectFields.remove:
-          return `@${author} removed post ${this.props.post.permlink}`;
+          return `@${author} removed post ${
+            !isEmpty(this.props.post)
+              ? this.props.post.permlink
+              : formValues[pinPostFields.postPermlink]
+          }`;
         case objectFields.ageRange:
         case objectFields.language:
         case objectFields.departments:
