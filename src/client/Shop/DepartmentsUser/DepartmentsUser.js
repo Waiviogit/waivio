@@ -5,43 +5,18 @@ import { Modal } from 'antd';
 import PropTypes from 'prop-types';
 
 import { getShopUserDepartments } from '../../../waivioApi/ApiClient';
-import useQuery from '../../../hooks/useQuery';
-import { parseQuery } from '../../../waivioApi/helpers';
 
 import './DepartmentsUser.less';
 
 const DepartmentsUser = ({ visible, onClose }) => {
   const [department, setDepartment] = useState([]);
   const match = useRouteMatch();
-  const query = useQuery();
-
-  const parseQueryForFilters = () => {
-    const parsedQuery = parseQuery(query.toString());
-
-    return Object.keys(parsedQuery).reduce(
-      (acc, curr) => {
-        if (curr === 'rating') return { ...acc, rating: +parsedQuery.rating };
-
-        return {
-          ...acc,
-          tagCategory: [
-            ...acc.tagCategory,
-            {
-              categoryName: curr,
-              tags: parsedQuery[curr],
-            },
-          ],
-        };
-      },
-      { tagCategory: [] },
-    );
-  };
 
   useEffect(() => {
-    getShopUserDepartments(match.params.name, parseQueryForFilters()).then(res => {
+    getShopUserDepartments(match.params.name).then(res => {
       setDepartment(res.result);
     });
-  }, [query.toString()]);
+  }, []);
 
   const body = (
     <div className="DepartmentsUser">
@@ -49,6 +24,9 @@ const DepartmentsUser = ({ visible, onClose }) => {
         isActive={() => `/@${match.params.name}/shop` === match?.url}
         to={`/@${match.params.name}/shop`}
         activeClassName="DepartmentsUser__item--active"
+        onClick={() => {
+          if (onClose) onClose();
+        }}
       >
         Departments
       </NavLink>
@@ -57,7 +35,12 @@ const DepartmentsUser = ({ visible, onClose }) => {
           const path = `/@${match.params.name}/shop/${dep.name}`;
 
           return (
-            <div key={dep.name}>
+            <div
+              key={dep.name}
+              onClick={() => {
+                if (onClose) onClose();
+              }}
+            >
               <NavLink
                 to={path}
                 isActive={() => path === match?.url}
@@ -73,7 +56,7 @@ const DepartmentsUser = ({ visible, onClose }) => {
   );
 
   return visible ? (
-    <Modal visible={visible} onCancel={onClose} onOk={onClose}>
+    <Modal visible={visible} footer={null} onCancel={onClose} onOk={onClose}>
       {body}
     </Modal>
   ) : (

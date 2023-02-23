@@ -13,11 +13,14 @@ import ShopFilters from '../ShopFilters/ShopFilters';
 import FiltersForMobile from '../../newRewards/Filters/FiltersForMobile';
 import DepartmentsMobile from '../DepartmentsUser/DepartmentsMobile';
 import DepartmentsUser from '../DepartmentsUser/DepartmentsUser';
+import { isMobile } from '../../../common/helpers/apiHelpers';
+import Loading from '../../components/Icon/Loading';
 
 const DepartmentsWobjList = () => {
   const [departmentInfo, setDepartmentInfo] = useState();
   const [visible, setVisible] = useState(false);
   const [visibleNavig, setVisibleNavig] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const match = useRouteMatch();
   const query = useQuery();
@@ -48,17 +51,22 @@ const DepartmentsWobjList = () => {
     getDepartmentsFeed(match.params.name, match.params.departments, parseQueryForFilters()).then(
       res => {
         setDepartmentInfo(res);
+        setLoading(false);
       },
     );
   }, [match.params.departments, query.toString()]);
 
   useEffect(() => {
-    if (list.current) {
-      const listRef = document.getElementById('DepartmentsWobjList');
+    if (list.current && isMobile() && !loading) {
+      const listRef = document.querySelector('.UserHeader');
 
       window.scrollTo({ top: listRef.offsetHeight, behavior: 'smooth' });
     }
-  }, [list.current]);
+
+    if (!isMobile()) window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [list.current, loading]);
+
+  if (loading) return <Loading />;
 
   return (
     <div className="DepartmentsWobjList" ref={list} id={'DepartmentsWobjList'}>

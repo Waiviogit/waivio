@@ -3172,7 +3172,7 @@ export const getShopUserDepartments = (userName, filter) =>
     .then(posts => posts)
     .catch(error => error);
 
-export const getShopUserShopMainFeed = userName =>
+export const getShopUserShopMainFeed = (userName, filter) =>
   fetch(`${config.apiPrefix}${config.shop}${config.user}${config.mainFeed}`, {
     headers: {
       ...headers,
@@ -3181,6 +3181,7 @@ export const getShopUserShopMainFeed = userName =>
     method: 'POST',
     body: JSON.stringify({
       userName,
+      filter,
     }),
   })
     .then(res => res.json())

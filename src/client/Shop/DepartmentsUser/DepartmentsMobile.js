@@ -10,7 +10,7 @@ const DepartmentsMobile = ({ setVisible }) => {
 
   return (
     <div className="DepartmentsUser__mobile" onClick={setVisible}>
-      Department{' '}
+      Departments{' '}
       {match.params.departments && (
         <span>
           <Icon type="right" /> {match.params.departments}
