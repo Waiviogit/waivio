@@ -18,7 +18,7 @@ const PopoverMenuItem = ({
       'PopoverMenuItem--bold': bold,
       'PopOverMenuItem__full-screen-hidden': fullScreenHidden,
       PopOverMenuitem__topNav: topNav,
-      invisible: invisible,
+      'PopoverMenuItem-invisible': invisible,
     })}
   >
     <a
