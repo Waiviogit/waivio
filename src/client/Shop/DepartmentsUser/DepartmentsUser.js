@@ -1,17 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { useRouteMatch } from 'react-router';
 import { NavLink } from 'react-router-dom';
+import { Modal } from 'antd';
+import PropTypes from 'prop-types';
 
 import { getShopUserDepartments } from '../../../waivioApi/ApiClient';
-
-import './DepartmentsUser.less';
 import useQuery from '../../../hooks/useQuery';
 import { parseQuery } from '../../../waivioApi/helpers';
 
-const DepartmentsUser = () => {
+import './DepartmentsUser.less';
+
+const DepartmentsUser = ({ visible, onClose }) => {
   const [department, setDepartment] = useState([]);
   const match = useRouteMatch();
-
   const query = useQuery();
 
   const parseQueryForFilters = () => {
@@ -42,7 +43,7 @@ const DepartmentsUser = () => {
     });
   }, [query.toString()]);
 
-  return (
+  const body = (
     <div className="DepartmentsUser">
       <NavLink
         isActive={() => `/@${match.params.name}/shop` === match?.url}
@@ -70,6 +71,19 @@ const DepartmentsUser = () => {
       </div>
     </div>
   );
+
+  return visible ? (
+    <Modal visible={visible} onCancel={onClose} onOk={onClose}>
+      {body}
+    </Modal>
+  ) : (
+    body
+  );
+};
+
+DepartmentsUser.propTypes = {
+  visible: PropTypes.bool,
+  onClose: PropTypes.func,
 };
 
 export default DepartmentsUser;

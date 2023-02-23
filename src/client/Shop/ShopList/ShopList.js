@@ -12,11 +12,14 @@ import FiltersForMobile from '../../newRewards/Filters/FiltersForMobile';
 
 import './ShopList.less';
 import ShopFilters from '../ShopFilters/ShopFilters';
+import DepartmentsUser from '../DepartmentsUser/DepartmentsUser';
+import DepartmentsMobile from '../DepartmentsUser/DepartmentsMobile';
 
 const ShopList = () => {
   const [departments, setDepartments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [visible, setVisible] = useState(false);
+  const [visibleNavig, setVisibleNavig] = useState(false);
   const match = useRouteMatch();
 
   useEffect(() => {
@@ -30,7 +33,8 @@ const ShopList = () => {
 
   return (
     <div className="ShopList">
-      <h3>Departments</h3>
+      <h3 className="ShopList__title">Departments</h3>
+      <DepartmentsMobile setVisible={() => setVisibleNavig(true)} />
       <FiltersForMobile setVisible={() => setVisible(true)} />
       {departments.every(dep => isEmpty(dep.wobjects)) ? (
         <EmptyCampaing emptyMessage={'There are no objects for this department.'} />
@@ -64,6 +68,9 @@ const ShopList = () => {
         </div>
       )}
       {visible && <ShopFilters visible={visible} onClose={() => setVisible(false)} />}
+      {visibleNavig && (
+        <DepartmentsUser visible={visibleNavig} onClose={() => setVisibleNavig(false)} />
+      )}
     </div>
   );
 };
