@@ -14,6 +14,8 @@ import './ShopList.less';
 import ShopFilters from '../ShopFilters/ShopFilters';
 import DepartmentsUser from '../DepartmentsUser/DepartmentsUser';
 import DepartmentsMobile from '../DepartmentsUser/DepartmentsMobile';
+import useQuery from '../../../hooks/useQuery';
+import { parseQuery } from '../../../waivioApi/helpers';
 
 const ShopList = () => {
   const [departments, setDepartments] = useState([]);
@@ -21,13 +23,36 @@ const ShopList = () => {
   const [visible, setVisible] = useState(false);
   const [visibleNavig, setVisibleNavig] = useState(false);
   const match = useRouteMatch();
+  const query = useQuery();
+
+  const parseQueryForFilters = () => {
+    const parsedQuery = parseQuery(query.toString());
+
+    return Object.keys(parsedQuery).reduce(
+      (acc, curr) => {
+        if (curr === 'rating') return { ...acc, rating: +parsedQuery.rating };
+
+        return {
+          ...acc,
+          tagCategory: [
+            ...acc.tagCategory,
+            {
+              categoryName: curr,
+              tags: parsedQuery[curr],
+            },
+          ],
+        };
+      },
+      { tagCategory: [] },
+    );
+  };
 
   useEffect(() => {
-    getShopUserShopMainFeed(match.params.name, 0, 10).then(res => {
+    getShopUserShopMainFeed(match.params.name, parseQueryForFilters()).then(res => {
       setDepartments(res);
       setLoading(false);
     });
-  }, []);
+  }, [query.toString()]);
 
   if (loading) return <Loading />;
 
