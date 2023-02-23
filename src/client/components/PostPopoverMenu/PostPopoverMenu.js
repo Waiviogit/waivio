@@ -242,7 +242,7 @@ const PostPopoverMenu = ({
         {loading ? <Icon type="loading" /> : <i className="iconfont icon-people" />}
         {followText}
       </PopoverMenuItem>,
-      <PopoverMenuItem key="pin" disabled={loading}>
+      <PopoverMenuItem key="pin" disabled={loading} invisible={post.pin}>
         <Icon className="hide-button popoverIcon" type="pushpin" />
         <span className="ml1">
           <FormattedMessage id="object_field_pin" defaultMessage="Pin" />
