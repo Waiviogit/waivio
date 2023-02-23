@@ -1,0 +1,37 @@
+@import (reference) '../../styles/modules/variables.less';
+
+.ShopList {
+  margin-bottom: 20px;
+  padding: 0 10px;
+
+  @media @small {
+    padding: 0;
+  }
+
+  &__title {
+    display: none;
+
+    @media @small {
+      display: block;
+    }
+  }
+
+  .anticon {
+    font-size: 12px;
+  }
+
+  a.ShopList__departments-title {
+    font-weight: bold;
+    cursor: pointer;
+    color: black;
+  }
+
+  &__departments {
+    padding: 15px 0 0;
+  }
+
+  &__showMore {
+    margin-top: 10px;
+    display: inline-block;
+  }
+}

@@ -1,5 +1,9 @@
 import React, { useState } from 'react';
-import { Input, Modal } from 'antd';
+import {
+  Input,
+  Modal,
+  // Select
+} from 'antd';
 import PropTypes from 'prop-types';
 
 import './ConfigHeader.less';
@@ -8,7 +12,12 @@ const ConfigHeader = ({ visible, config, onClose, handleSubmitConfig, loading })
   const [name, setName] = useState(config?.name);
   const [message, setMessage] = useState(config?.message);
   // const [startup, setStartup] = useState(config?.startup);
-  const handleOk = () => handleSubmitConfig({ name, message });
+  const handleOk = () =>
+    handleSubmitConfig({
+      name,
+      message,
+      // startup
+    });
 
   return (
     <Modal
@@ -52,6 +61,7 @@ ConfigHeader.propTypes = {
   visible: PropTypes.bool,
   config: PropTypes.shape({
     name: PropTypes.string,
+    startup: PropTypes.string,
     message: PropTypes.string,
   }),
   onClose: PropTypes.func,

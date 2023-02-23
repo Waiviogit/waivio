@@ -21,6 +21,7 @@ import {
   getCurrency,
   getCurrencyList,
   getExitPageSetting,
+  getHideLinkedObjects,
   getIsSettingsLoading,
   getLocale,
   getNightmode,
@@ -47,6 +48,7 @@ import './Settings.less';
     votingPower: getVotingPower(state),
     votePercent: getVotePercent(state),
     showNSFWPosts: getShowNSFWPosts(state),
+    hideLinkedObjects: getHideLinkedObjects(state),
     nightmode: getNightmode(state),
     currency: getCurrency(state),
     isWaivio: getIsWaivio(state),
@@ -70,6 +72,7 @@ export default class Settings extends React.Component {
     votePercent: PropTypes.number,
     loading: PropTypes.bool,
     showNSFWPosts: PropTypes.bool,
+    hideLinkedObjects: PropTypes.bool,
     nightmode: PropTypes.bool,
     rewriteLinks: PropTypes.bool,
     reload: PropTypes.func,
@@ -86,6 +89,7 @@ export default class Settings extends React.Component {
 
   static defaultProps = {
     reloading: false,
+    hideLinkedObjects: false,
     locale: 'auto',
     readLanguages: [],
     votingPower: false,
@@ -117,6 +121,7 @@ export default class Settings extends React.Component {
       votingPower: props.votingPower,
       votePercent: props.votePercent,
       showNSFWPosts: props.showNSFWPosts,
+      hideLinkedObjects: props.hideLinkedObjects,
       nightmode: props.nightmode,
       rewriteLinks: props.rewriteLinks,
       exitPageSetting: props.upvoteSetting,
@@ -134,6 +139,7 @@ export default class Settings extends React.Component {
       votingPower: this.props.votingPower,
       votePercent: this.props.votePercent / 100,
       showNSFWPosts: this.props.showNSFWPosts,
+      hideLinkedObjects: this.props.hideLinkedObjects,
       nightmode: this.props.nightmode,
       rewriteLinks: this.props.rewriteLinks,
       upvoteSetting: this.props.upvoteSetting,
@@ -197,6 +203,9 @@ export default class Settings extends React.Component {
         postLocales: this.state.readLanguages,
         votePercent: this.state.votePercent * 100,
         currency: this.state.currency,
+        shop: {
+          hideLinkedObjects: this.state.hideLinkedObjects,
+        },
       })
       .then(() =>
         this.props.notify(
@@ -216,6 +225,7 @@ export default class Settings extends React.Component {
   handleVotingPowerChange = event => this.setState({ votingPower: event.target.value });
   handleVotePercentChange = value => this.setState({ votePercent: value });
   handleShowNSFWPosts = event => this.setState({ showNSFWPosts: event.target.checked });
+  handleHideLinkedObjects = event => this.setState({ hideLinkedObjects: event.target.checked });
   handleNightmode = event => this.setState({ nightmode: event.target.checked });
   handleRewriteLinksChange = event => this.setState({ rewriteLinks: event.target.checked });
   handleExitPageSettingChange = event => this.setState({ exitPageSetting: event.target.checked });
@@ -228,6 +238,7 @@ export default class Settings extends React.Component {
       readLanguages,
       votingPower: initialVotingPower,
       showNSFWPosts: initialShowNSFWPosts,
+      hideLinkedObjects: initialHideLinkedObjects,
       nightmode: initialNightmode,
       loading,
       isGuest,
@@ -236,6 +247,7 @@ export default class Settings extends React.Component {
       votingPower,
       locale,
       showNSFWPosts,
+      hideLinkedObjects,
       nightmode,
       upvoteSetting,
       exitPageSetting,
@@ -397,6 +409,30 @@ export default class Settings extends React.Component {
                   onChange={this.handleShowNSFWPosts}
                 >
                   <FormattedMessage id="display_nsfw_posts" defaultMessage="Display NSFW Posts" />
+                </Checkbox>
+              </div>
+            </div>
+            <div className="Settings__section">
+              <h3>
+                <FormattedMessage id="shop" defaultMessage="Shop" />
+              </h3>
+              <p>
+                <FormattedMessage
+                  id="manage_your_public_shopping"
+                  defaultMessage="You can manage your public shopping list in the profile."
+                />
+              </p>
+              <div className="Settings__section__checkbox">
+                <Checkbox
+                  name="hideLinkedObjects"
+                  defaultChecked={initialHideLinkedObjects}
+                  checked={hideLinkedObjects}
+                  onChange={this.handleHideLinkedObjects}
+                >
+                  <FormattedMessage
+                    id="not_show_objects_linked"
+                    defaultMessage="Do not show objects linked in posts"
+                  />
                 </Checkbox>
               </div>
             </div>

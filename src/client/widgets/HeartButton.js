@@ -1,23 +1,35 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Icon, Tooltip } from 'antd';
 import { FormattedMessage } from 'react-intl';
 import PropTypes from 'prop-types';
-import { isEmpty } from 'lodash';
+import { has, isEmpty } from 'lodash';
+import { useRouteMatch } from 'react-router';
 import classnames from 'classnames';
 import { useDispatch, useSelector } from 'react-redux';
 import { getObjectName } from '../../common/helpers/wObjectHelper';
 import { getAuthenticatedUser } from '../../store/authStore/authSelectors';
 import { getLocale, getVotePercent } from '../../store/settingsStore/settingsSelectors';
+import { getAuthorityList } from '../../store/appendStore/appendSelectors';
 import { getAuthorityFields } from '../../waivioApi/ApiClient';
-import { appendObject, authorityVoteAppend } from '../../store/appendStore/appendActions';
+import {
+  appendObject,
+  authorityVoteAppend,
+  removeObjectFromAuthority,
+  setObjectinAuthority,
+} from '../../store/appendStore/appendActions';
+import { isMobile } from '../../common/helpers/apiHelpers';
 
 const HeartButton = ({ wobject, size }) => {
-  const [activeHeart, setActiveHeart] = useState(false);
   const user = useSelector(getAuthenticatedUser);
   const userUpVotePower = useSelector(getVotePercent);
   const language = useSelector(getLocale);
+  const authorityList = useSelector(getAuthorityList);
   const dispatch = useDispatch();
   const downVotePower = 9999;
+  const match = useRouteMatch();
+  const activeHeart = authorityList[wobject.author_permlink];
+  const isObjectPage = match.params.name === wobject.author_permlink;
+  const adminAuthority = 'administrative';
   const tooltipTitle = activeHeart ? (
     <FormattedMessage id="remove_from_my_shop" defaultMessage="Remove from my shop" />
   ) : (
@@ -25,7 +37,13 @@ const HeartButton = ({ wobject, size }) => {
   );
 
   useEffect(() => {
-    !isEmpty(wobject.authority) ? setActiveHeart(true) : setActiveHeart(false);
+    if (
+      !isEmpty(wobject.authority) &&
+      wobject.authority.body === adminAuthority &&
+      !has(authorityList, wobject.author_permlink)
+    ) {
+      dispatch(setObjectinAuthority(wobject.author_permlink));
+    }
   }, [wobject.authority]);
 
   const getWobjectData = () => ({
@@ -37,52 +55,62 @@ const HeartButton = ({ wobject, size }) => {
     lastUpdated: Date.now(),
     wobjectName: getObjectName(wobject),
     votePower: userUpVotePower,
-    field: { body: 'administrative', locale: language, name: 'authority' },
+    field: { body: adminAuthority, locale: language, name: 'authority' },
     permlink: `${user?.name}-${Math.random()
       .toString(36)
       .substring(2)}`,
   });
 
   const onHeartClick = () => {
-    setActiveHeart(!activeHeart);
+    if (activeHeart) {
+      dispatch(removeObjectFromAuthority(wobject.author_permlink));
+    } else {
+      dispatch(setObjectinAuthority(wobject.author_permlink));
+    }
     getAuthorityFields(wobject.author_permlink).then(postInformation => {
       if (
         isEmpty(postInformation) ||
-        isEmpty(postInformation.filter(p => p.creator === user.name))
+        isEmpty(postInformation.filter(p => p.creator === user.name && p.body === adminAuthority))
       ) {
         const data = getWobjectData();
 
-        dispatch(appendObject(data, { votePercent: userUpVotePower, isLike: true }));
-      }
-      if (!isEmpty(postInformation)) {
-        const authority = postInformation.find(post => post.creator === user.name);
+        dispatch(appendObject(data, { votePercent: userUpVotePower, isLike: true, isObjectPage }));
+      } else {
+        const authority = postInformation.find(
+          post => post.creator === user.name && post.body === adminAuthority,
+        );
 
         dispatch(
           authorityVoteAppend(
-            authority.author,
+            authority?.author,
             wobject.author_permlink,
-            authority.permlink,
-            !isEmpty(wobject.authority) ? downVotePower : userUpVotePower,
-            'authority',
+            authority?.permlink,
+            activeHeart ? downVotePower : userUpVotePower,
+            isObjectPage,
           ),
         );
       }
     });
   };
 
-  const heartClasses = classnames({ HeartButton__active: activeHeart, HeartButton: !activeHeart });
+  const heartClasses = classnames('HeartButton', { 'HeartButton--active': activeHeart });
+  const heart = (
+    <button className={heartClasses} onClick={onHeartClick}>
+      <Icon type="heart" theme="filled" style={{ fontSize: size }} />
+    </button>
+  );
 
-  return (
+  return !isMobile() ? (
     <Tooltip
       placement="topLeft"
       title={tooltipTitle}
       overlayClassName="HeartButtonContainer"
       overlayStyle={{ top: '10px' }}
     >
-      <button className={heartClasses} onClick={onHeartClick}>
-        <Icon type="heart" theme="filled" style={{ fontSize: size }} />
-      </button>
+      {heart}
     </Tooltip>
+  ) : (
+    heart
   );
 };
 

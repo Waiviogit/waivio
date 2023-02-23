@@ -9,7 +9,7 @@ const UndelegateCompleted = ({ timestamp, symbol, quantity }) => (
     iconType={'arrow-right'}
     symbol={symbol}
     quantity={quantity}
-    color={'green'}
+    color={'black'}
   >
     <span>
       <FormattedMessage id="undelegated_completed" defaultMessage="Undelegated completed" />

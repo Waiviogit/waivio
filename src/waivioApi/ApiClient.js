@@ -3159,4 +3159,60 @@ export const getAuthorityFields = permlink =>
     .then(posts => posts)
     .catch(error => error);
 
+export const getShopUserDepartments = (userName, filter) =>
+  fetch(`${config.apiPrefix}${config.shop}${config.user}${config.departments}`, {
+    headers,
+    method: 'POST',
+    body: JSON.stringify({
+      userName,
+      filter,
+    }),
+  })
+    .then(res => res.json())
+    .then(posts => posts)
+    .catch(error => error);
+
+export const getShopUserShopMainFeed = (userName, filter) =>
+  fetch(`${config.apiPrefix}${config.shop}${config.user}${config.mainFeed}`, {
+    headers: {
+      ...headers,
+      follower: userName,
+    },
+    method: 'POST',
+    body: JSON.stringify({
+      userName,
+      filter,
+    }),
+  })
+    .then(res => res.json())
+    .then(posts => posts)
+    .catch(error => error);
+
+export const getDepartmentsFeed = (follower, department, filter, locale = 'en-US') =>
+  fetch(`${config.apiPrefix}${config.shop}${config.user}${config.departmentFeed}`, {
+    headers: {
+      ...headers,
+      locale,
+      follower,
+    },
+    method: 'POST',
+    body: JSON.stringify({
+      department,
+      userName: follower,
+      filter,
+    }),
+  })
+    .then(res => res.json())
+    .then(posts => posts)
+    .catch(error => error);
+
+export const getDepartmentsFilters = () =>
+  fetch(`${config.apiPrefix}${config.shop}${config.filters}`, {
+    headers,
+    method: 'POST',
+  })
+    .then(res => res.json())
+    .then(posts => posts)
+    .catch(error => error);
+
 export default null;

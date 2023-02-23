@@ -1,7 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
+import { withRouter } from 'react-router-dom';
 import { FormattedMessage, FormattedNumber } from 'react-intl';
+import { guestUserRegex } from '../../common/helpers/regexHelpers';
+
 import './UserMenu.less';
 
 class UserMenu extends React.Component {
@@ -9,6 +12,11 @@ class UserMenu extends React.Component {
     onChange: PropTypes.func,
     defaultKey: PropTypes.string,
     followers: PropTypes.number,
+    match: PropTypes.shape({
+      params: PropTypes.shape({
+        name: PropTypes.string,
+      }),
+    }),
   };
 
   static defaultProps = {
@@ -42,6 +50,8 @@ class UserMenu extends React.Component {
   };
 
   render() {
+    const currUserIsGuest = guestUserRegex.test(this.props.match.params.name);
+
     return (
       <div className="UserMenu">
         <div className="container menu-layout">
@@ -59,6 +69,18 @@ class UserMenu extends React.Component {
             >
               <FormattedMessage id="posts" defaultMessage="Posts" />
             </li>
+            {!currUserIsGuest && (
+              <li
+                className={classNames('UserMenu__item', {
+                  'UserMenu__item--active': ['shop'].includes(this.state.current),
+                })}
+                onClick={this.handleClick}
+                role="presentation"
+                data-key="shop"
+              >
+                <FormattedMessage id="shop" defaultMessage="Shop" />
+              </li>
+            )}
             <li
               className={this.getItemClasses('followers')}
               onClick={this.handleClick}
@@ -102,4 +124,4 @@ class UserMenu extends React.Component {
   }
 }
 
-export default UserMenu;
+export default withRouter(UserMenu);

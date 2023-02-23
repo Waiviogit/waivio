@@ -9,7 +9,7 @@ import {
   FormattedTime,
 } from 'react-intl';
 import { Link, withRouter } from 'react-router-dom';
-import { Tag } from 'antd';
+import { Icon, Tag } from 'antd';
 import {
   isPostDeleted,
   isPostTaggedNSFW,
@@ -341,7 +341,19 @@ class Story extends React.Component {
     return (
       post.depth >= 0 && (
         <div className="Story" id={`${author}-${post.permlink}`}>
-          {rebloggedUI}
+          <div>
+            {rebloggedUI}
+            {post.pin && (
+              <div className="Story__pin">
+                <Icon
+                  type="pushpin"
+                  theme="filled"
+                  style={{ fontSize: '13px', marginTop: '-1px' }}
+                />
+                <FormattedMessage id="pinned" defaultMessage="Pinned" />
+              </div>
+            )}
+          </div>
           <div className="Story__content">
             <div className="Story__header">
               <Link to={`/@${author}`}>
