@@ -345,7 +345,11 @@ class Story extends React.Component {
             {rebloggedUI}
             {post.pin && (
               <div className="Story__pin">
-                <Icon type="pushpin" theme="filled" style={{ fontSize: '13px' }} />
+                <Icon
+                  type="pushpin"
+                  theme="filled"
+                  style={{ fontSize: '13px', marginTop: '-1px' }}
+                />
                 <FormattedMessage id="pinned" defaultMessage="Pinned" />
               </div>
             )}

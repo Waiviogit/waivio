@@ -48,6 +48,8 @@ const ShopList = () => {
   };
 
   useEffect(() => {
+    setLoading(true);
+
     getShopUserShopMainFeed(match.params.name, parseQueryForFilters()).then(res => {
       setDepartments(res);
       setLoading(false);
