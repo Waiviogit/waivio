@@ -17,6 +17,7 @@ import {
   removeObjectFromAuthority,
   setObjectinAuthority,
 } from '../../store/appendStore/appendActions';
+import { isMobile } from '../../common/helpers/apiHelpers';
 
 const HeartButton = ({ wobject, size }) => {
   const user = useSelector(getAuthenticatedUser);
@@ -93,18 +94,23 @@ const HeartButton = ({ wobject, size }) => {
   };
 
   const heartClasses = classnames('HeartButton', { 'HeartButton--active': activeHeart });
+  const heart = (
+    <button className={heartClasses} onClick={onHeartClick}>
+      <Icon type="heart" theme="filled" style={{ fontSize: size }} />
+    </button>
+  );
 
-  return (
+  return !isMobile() ? (
     <Tooltip
       placement="topLeft"
       title={tooltipTitle}
       overlayClassName="HeartButtonContainer"
       overlayStyle={{ top: '10px' }}
     >
-      <button className={heartClasses} onClick={onHeartClick}>
-        <Icon type="heart" theme="filled" style={{ fontSize: size }} />
-      </button>
+      {heart}
     </Tooltip>
+  ) : (
+    heart
   );
 };
 
