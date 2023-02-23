@@ -18,6 +18,7 @@ import uuidv4 from 'uuid/v4';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 import moment from 'moment';
 import React, { Component } from 'react';
 import { FormattedMessage, injectIntl } from 'react-intl';
@@ -148,12 +149,14 @@ import SearchDepartmentAutocomplete from '../../components/SearchDepartmentAutoc
 )
 @Form.create()
 @withEditor
+@withRouter
 @injectIntl
 export default class AppendForm extends Component {
   static propTypes = {
     /* decorators */
     form: PropTypes.shape(),
     user: PropTypes.shape(),
+    match: PropTypes.shape(),
     /* from connect */
     wObject: PropTypes.shape(),
     updates: PropTypes.arrayOf(PropTypes.shape()),
@@ -282,6 +285,7 @@ export default class AppendForm extends Component {
   onSubmit = formValues => {
     const { form, wObject } = this.props;
     const postData = this.getNewPostData(formValues);
+    const isObjectPage = this.props.match.params.name === wObject.author_permlink;
 
     /* eslint-disable no-restricted-syntax */
     // eslint-disable-next-line no-unused-vars
@@ -294,6 +298,7 @@ export default class AppendForm extends Component {
           votePercent: data.votePower,
           follow: formValues.follow,
           isLike: true,
+          isObjectPage,
         })
         .then(res => {
           const mssg = get(res, ['value', 'message']);
