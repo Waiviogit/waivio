@@ -203,9 +203,9 @@ export default class Settings extends React.Component {
         postLocales: this.state.readLanguages,
         votePercent: this.state.votePercent * 100,
         currency: this.state.currency,
-        // shop: {
-        //   hideLinkedObjects: this.state.hideLinkedObjects,
-        // },
+        shop: {
+          hideLinkedObjects: this.state.hideLinkedObjects,
+        },
       })
       .then(() =>
         this.props.notify(
@@ -238,7 +238,7 @@ export default class Settings extends React.Component {
       readLanguages,
       votingPower: initialVotingPower,
       showNSFWPosts: initialShowNSFWPosts,
-      // hideLinkedObjects: initialHideLinkedObjects,
+      hideLinkedObjects: initialHideLinkedObjects,
       nightmode: initialNightmode,
       loading,
       isGuest,
@@ -247,7 +247,7 @@ export default class Settings extends React.Component {
       votingPower,
       locale,
       showNSFWPosts,
-      // hideLinkedObjects,
+      hideLinkedObjects,
       nightmode,
       upvoteSetting,
       exitPageSetting,
@@ -412,30 +412,30 @@ export default class Settings extends React.Component {
                 </Checkbox>
               </div>
             </div>
-            {/* <div className="Settings__section"> */}
-            {/*  <h3> */}
-            {/*    <FormattedMessage id="shop" defaultMessage="Shop" /> */}
-            {/*  </h3> */}
-            {/*  <p> */}
-            {/*    <FormattedMessage */}
-            {/*      id="manage_your_public_shopping" */}
-            {/*      defaultMessage="You can manage your public shopping list in the profile." */}
-            {/*    /> */}
-            {/*  </p> */}
-            {/*  <div className="Settings__section__checkbox"> */}
-            {/*    <Checkbox */}
-            {/*      name="hideLinkedObjects" */}
-            {/*      defaultChecked={initialHideLinkedObjects} */}
-            {/*      checked={hideLinkedObjects} */}
-            {/*      onChange={this.handleHideLinkedObjects} */}
-            {/*    > */}
-            {/*      <FormattedMessage */}
-            {/*        id="not_show_objects_linked" */}
-            {/*        defaultMessage="Do not show objects linked in posts" */}
-            {/*      /> */}
-            {/*    </Checkbox> */}
-            {/*  </div> */}
-            {/* </div> */}
+            <div className="Settings__section">
+              <h3>
+                <FormattedMessage id="shop" defaultMessage="Shop" />
+              </h3>
+              <p>
+                <FormattedMessage
+                  id="manage_your_public_shopping"
+                  defaultMessage="You can manage your public shopping list in the profile."
+                />
+              </p>
+              <div className="Settings__section__checkbox">
+                <Checkbox
+                  name="hideLinkedObjects"
+                  defaultChecked={initialHideLinkedObjects}
+                  checked={hideLinkedObjects}
+                  onChange={this.handleHideLinkedObjects}
+                >
+                  <FormattedMessage
+                    id="not_show_objects_linked"
+                    defaultMessage="Do not show objects linked in posts"
+                  />
+                </Checkbox>
+              </div>
+            </div>
             <div className="Settings__section">
               <h3>
                 <FormattedMessage id="nightmode" defaultMessage="Nightmode" />
