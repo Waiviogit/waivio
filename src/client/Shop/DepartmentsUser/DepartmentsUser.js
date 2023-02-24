@@ -21,8 +21,8 @@ const DepartmentsUser = ({ visible, onClose }) => {
   const body = (
     <div className="DepartmentsUser">
       <NavLink
-        isActive={() => `/@${match.params.name}/shop` === match?.url}
-        to={`/@${match.params.name}/shop`}
+        isActive={() => `/@${match.params.name}/userShop` === match?.url}
+        to={`/@${match.params.name}/userShop`}
         activeClassName="DepartmentsUser__item--active"
         onClick={() => {
           if (onClose) onClose();
@@ -32,7 +32,7 @@ const DepartmentsUser = ({ visible, onClose }) => {
       </NavLink>
       <div className="DepartmentsUser__list">
         {department?.map(dep => {
-          const path = `/@${match.params.name}/shop/${dep.name}`;
+          const path = `/@${match.params.name}/userShop/${dep.name}`;
 
           return (
             <div
