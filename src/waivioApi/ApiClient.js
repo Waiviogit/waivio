@@ -3221,7 +3221,15 @@ export const getDepartmentsFeed = (userName, follower, department, filter, skip,
     .then(posts => posts)
     .catch(error => error);
 
-export const getDepartmentFeed = (userName, follower, department, filter, skip, limit, locale) =>
+export const getShopDepartmentFeed = (
+  userName,
+  follower,
+  department,
+  filter,
+  skip,
+  limit,
+  locale,
+) =>
   fetch(`${config.apiPrefix}${config.shop}${config.departmentFeed}`, {
     headers: {
       ...headers,

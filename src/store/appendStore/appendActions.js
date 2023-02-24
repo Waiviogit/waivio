@@ -9,6 +9,7 @@ import { getAuthenticatedUserName, getIsAuthenticated } from '../authStore/authS
 
 import { getLocale } from '../settingsStore/settingsSelectors';
 import { getAppendList } from './appendSelectors';
+import { getObjectPosts } from '../feedStore/feedActions';
 
 export const APPEND_WAIVIO_OBJECT = createAsyncActionType('@append/APPEND_WAIVIO_OBJECT');
 
@@ -66,6 +67,7 @@ export const getChangedWobjectField = (
   const state = getState();
   const locale = getLocale(state);
   const voter = getAuthenticatedUserName(state);
+  const updatePosts = ['pin', 'remove'].includes(fieldName);
 
   const subscribeCallback = () =>
     dispatch({
@@ -91,12 +93,23 @@ export const getChangedWobjectField = (
       },
       meta: { isNew },
     });
-
+  const updatePostCallback = () => {
+    dispatch(
+      getObjectPosts({
+        username: authorPermlink,
+        object: authorPermlink,
+      }),
+    );
+  };
   const blockNumber = await getLastBlockNum();
 
   if (!blockNumber) throw new Error('Something went wrong');
   busyAPI.instance.sendAsync(subscribeMethod, [voter, blockNumber, subscribeTypes.votes]);
-  busyAPI.instance.subscribeBlock(subscribeTypes.votes, blockNumber, subscribeCallback);
+  busyAPI.instance.subscribeBlock(
+    subscribeTypes.votes,
+    blockNumber,
+    updatePosts ? updatePostCallback : subscribeCallback,
+  );
 };
 
 export const VOTE_APPEND = createAsyncActionType('@append/VOTE_APPEND');

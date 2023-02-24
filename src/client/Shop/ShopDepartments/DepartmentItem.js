@@ -32,6 +32,10 @@ const DepartmentItem = ({ department, match, excludedMain }) => {
     'ShopDepartmentsList__item--withNested': department.subdirectory,
   });
 
+  const itemListClassList = classNames('ShopDepartmentsList__list', {
+    'ShopDepartmentsList__list--show': showNested,
+  });
+
   return (
     <div className={itemClassList}>
       {department.subdirectory ? (
@@ -48,10 +52,11 @@ const DepartmentItem = ({ department, match, excludedMain }) => {
           {department.name}
         </NavLink>
       )}
-      {showNested &&
-        nestedDepartments.map(nest => (
+      <div className={itemListClassList}>
+        {nestedDepartments.map(nest => (
           <DepartmentItem key={nest.name} department={nest} match={match} excludedMain={excluded} />
         ))}
+      </div>
     </div>
   );
 };

@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { useRouteMatch } from 'react-router';
+import { Modal } from 'antd';
+import PropTypes from 'prop-types';
 
 import { getShopDepartments } from '../../../waivioApi/ApiClient';
 import DepartmentItem from './DepartmentItem';
 
 import './ShopDepartments.less';
 
-const ShopDepartmentsList = () => {
+const ShopDepartmentsList = ({ visible, onClose }) => {
   const match = useRouteMatch();
   const [departments, setDepartments] = useState([]);
 
@@ -15,7 +17,7 @@ const ShopDepartmentsList = () => {
     getShopDepartments().then(res => setDepartments(res));
   }, []);
 
-  return (
+  const body = (
     <div className="ShopDepartmentsList">
       <NavLink
         isActive={() => match?.url === `/shop`}
@@ -31,6 +33,19 @@ const ShopDepartmentsList = () => {
       </div>
     </div>
   );
+
+  return visible ? (
+    <Modal visible={visible} footer={null} onCancel={onClose} onOk={onClose}>
+      {body}
+    </Modal>
+  ) : (
+    body
+  );
+};
+
+ShopDepartmentsList.propTypes = {
+  visible: PropTypes.bool,
+  onClose: PropTypes.func,
 };
 
 export default ShopDepartmentsList;
