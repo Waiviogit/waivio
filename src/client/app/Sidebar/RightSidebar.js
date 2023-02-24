@@ -87,6 +87,7 @@ export default class RightSidebar extends React.Component {
         <Switch>
           <Route path="/activity" component={UserActivitySearch} />
           <Route path="/@:name/shop/:department?" component={ShopFilters} />
+          <Route path="/shop/:department?" component={ShopFilters} />
           <Route path="/@:name/activity" component={UserActivitySearch} />
           <Route path="/@:name/transfers" render={() => <WalletSidebar />} />
           <Route path="/trending/:tag" component={FeedSidebar} />

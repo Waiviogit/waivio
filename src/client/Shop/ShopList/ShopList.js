@@ -2,28 +2,29 @@ import React, { useEffect, useState } from 'react';
 import { isEmpty } from 'lodash';
 import { Link } from 'react-router-dom';
 import { Icon } from 'antd';
-import { useRouteMatch } from 'react-router';
-
+import PropTypes from 'prop-types';
+import { useSelector } from 'react-redux';
+import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 import { getShopUserShopMainFeed } from '../../../waivioApi/ApiClient';
 import ObjectCardView from '../../objectCard/ObjectCardView';
 import EmptyCampaing from '../../statics/EmptyCampaing';
 import Loading from '../../components/Icon/Loading';
 import FiltersForMobile from '../../newRewards/Filters/FiltersForMobile';
-
-import './ShopList.less';
 import ShopFilters from '../ShopFilters/ShopFilters';
 import DepartmentsUser from '../DepartmentsUser/DepartmentsUser';
 import DepartmentsMobile from '../DepartmentsUser/DepartmentsMobile';
 import useQuery from '../../../hooks/useQuery';
 import { parseQuery } from '../../../waivioApi/helpers';
 
-const ShopList = () => {
+import './ShopList.less';
+
+const ShopList = ({ userName, path }) => {
   const [departments, setDepartments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [visible, setVisible] = useState(false);
   const [visibleNavig, setVisibleNavig] = useState(false);
-  const match = useRouteMatch();
   const query = useQuery();
+  const authUser = useSelector(getAuthenticatedUserName);
 
   const parseQueryForFilters = () => {
     const parsedQuery = parseQuery(query.toString());
@@ -50,7 +51,7 @@ const ShopList = () => {
   useEffect(() => {
     setLoading(true);
 
-    getShopUserShopMainFeed(match.params.name, parseQueryForFilters()).then(res => {
+    getShopUserShopMainFeed(userName, authUser, parseQueryForFilters()).then(res => {
       setDepartments(res);
       setLoading(false);
     });
@@ -72,20 +73,14 @@ const ShopList = () => {
 
             return (
               <div key={dep.department} className="ShopList__departments">
-                <Link
-                  to={`/@${match.params.name}/shop/${dep.department}`}
-                  className="ShopList__departments-title"
-                >
+                <Link to={`${path}/${dep.department}`} className="ShopList__departments-title">
                   {dep.department} <Icon size={12} type="right" />
                 </Link>
                 {dep.wobjects.map(wObject => (
                   <ObjectCardView key={wObject.author_permlink} wObject={wObject} />
                 ))}
                 {dep.hasMore && (
-                  <Link
-                    className="ShopList__showMore"
-                    to={`/@${match.params.name}/shop/${dep.department}`}
-                  >
+                  <Link className="ShopList__showMore" to={`${path}/${dep.department}`}>
                     Show more {dep.department}
                   </Link>
                 )}
@@ -100,6 +95,11 @@ const ShopList = () => {
       )}
     </div>
   );
+};
+
+ShopList.propTypes = {
+  userName: PropTypes.string,
+  path: PropTypes.string,
 };
 
 export default ShopList;
