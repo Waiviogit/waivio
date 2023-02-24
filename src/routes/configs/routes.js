@@ -10,8 +10,10 @@ import Rewards from '../../client/rewards/Rewards';
 import Discover from '../../client/discover/Discover';
 import DiscoverObjects from '../../client/discoverObjects/DiscoverObjects';
 import RewardsMainPage from '../../client/newRewards/RewardsMainPage';
-import ShopDepartments from '../../client/Shop/ShopList/ShopList';
 import DepartmentsWobjList from '../../client/Shop/DepartmentsWobjList/DepartmentsWobjList';
+import UserShoppingList from '../../client/Shop/ShopList/UserShoppingList';
+import Shop from '../../client/Shop/Shop';
+import GlobalShopingList from '../../client/Shop/ShopList/GlobalShopingList';
 
 const routes = {
   component: Wrapper,
@@ -296,7 +298,7 @@ const routes = {
     {
       path: [
         `/@:name/(${URL.USER.tabs})?/(waiv-table|table|:departments)?`,
-        `/@:name/shop/:departments?`,
+        `/@:name/userShop/:departments?`,
       ],
       component: User,
       exact: true,
@@ -313,12 +315,12 @@ const routes = {
           component: Views.UserFollowers,
         },
         {
-          path: '/shop',
+          path: '/userShop',
           exact: true,
-          component: ShopDepartments,
+          component: UserShoppingList,
         },
         {
-          path: '/shop/:departments?',
+          path: '/userShop/:departments?',
           exact: true,
           component: DepartmentsWobjList,
         },
@@ -454,6 +456,24 @@ const routes = {
       path: '/discover/:search?',
       exact: true,
       component: Discover,
+    },
+    {
+      path: '/shop/:departments?',
+      exact: true,
+      component: Shop,
+      pathScope: '/shop',
+      routes: [
+        {
+          path: '/:departments',
+          exact: true,
+          component: DepartmentsWobjList,
+        },
+        {
+          path: '/',
+          exact: true,
+          component: GlobalShopingList,
+        },
+      ],
     },
     {
       path: '/bookmarks',

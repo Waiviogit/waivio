@@ -2,15 +2,21 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { withRouter } from 'react-router-dom';
+import { connect } from 'react-redux';
 import { FormattedMessage, FormattedNumber } from 'react-intl';
 import { guestUserRegex } from '../../common/helpers/regexHelpers';
+import { getIsWaivio } from '../../store/appStore/appSelectors';
 
 import './UserMenu.less';
 
+@connect(state => ({
+  isWaivio: getIsWaivio(state),
+}))
 class UserMenu extends React.Component {
   static propTypes = {
     onChange: PropTypes.func,
     defaultKey: PropTypes.string,
+    isWaivio: PropTypes.bool,
     followers: PropTypes.number,
     match: PropTypes.shape({
       params: PropTypes.shape({
@@ -69,14 +75,14 @@ class UserMenu extends React.Component {
             >
               <FormattedMessage id="posts" defaultMessage="Posts" />
             </li>
-            {!currUserIsGuest && (
+            {!currUserIsGuest && this.props.isWaivio && (
               <li
                 className={classNames('UserMenu__item', {
-                  'UserMenu__item--active': ['shop'].includes(this.state.current),
+                  'UserMenu__item--active': ['userShop'].includes(this.state.current),
                 })}
                 onClick={this.handleClick}
                 role="presentation"
-                data-key="shop"
+                data-key="userShop"
               >
                 <FormattedMessage id="shop" defaultMessage="Shop" />
               </li>
