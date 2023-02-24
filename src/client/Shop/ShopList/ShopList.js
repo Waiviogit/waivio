@@ -5,7 +5,6 @@ import { Icon } from 'antd';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
-import { getShopUserShopMainFeed } from '../../../waivioApi/ApiClient';
 import ObjectCardView from '../../objectCard/ObjectCardView';
 import EmptyCampaing from '../../statics/EmptyCampaing';
 import Loading from '../../components/Icon/Loading';
@@ -16,7 +15,7 @@ import ShopFilters from '../ShopFilters/ShopFilters';
 import DepartmentsMobile from '../DepartmentsUser/DepartmentsMobile';
 import './ShopList.less';
 
-const ShopList = ({ userName, path, children, setVisibleNavig }) => {
+const ShopList = ({ userName, path, children, setVisibleNavig, getShopFeed }) => {
   const [departments, setDepartments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [visible, setVisible] = useState(false);
@@ -46,7 +45,7 @@ const ShopList = ({ userName, path, children, setVisibleNavig }) => {
   };
 
   useEffect(() => {
-    getShopUserShopMainFeed(userName, authUser, parseQueryForFilters()).then(res => {
+    getShopFeed(userName, authUser, parseQueryForFilters()).then(res => {
       setDepartments(res);
       setLoading(false);
     });
@@ -94,6 +93,7 @@ ShopList.propTypes = {
   userName: PropTypes.string,
   path: PropTypes.string,
   setVisibleNavig: PropTypes.func,
+  getShopFeed: PropTypes.func,
   children: PropTypes.node,
 };
 

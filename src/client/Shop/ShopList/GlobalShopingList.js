@@ -5,6 +5,7 @@ import ShopList from './ShopList';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 
 import ShopDepartmentsList from '../ShopDepartments/ShopDepartmentsList';
+import { getShopMainFeed } from '../../../waivioApi/ApiClient';
 
 const GlobalShopingList = () => {
   const authUserName = useSelector(getAuthenticatedUserName);
@@ -14,7 +15,12 @@ const GlobalShopingList = () => {
   const onClose = () => setVisibleNavig(false);
 
   return (
-    <ShopList setVisibleNavig={onOpen} userName={authUserName} path={match.url}>
+    <ShopList
+      setVisibleNavig={onOpen}
+      userName={authUserName}
+      path={match.url}
+      getShopFeed={getShopMainFeed}
+    >
       {visibleNavig && <ShopDepartmentsList visible={visibleNavig} onClose={onClose} />}
     </ShopList>
   );

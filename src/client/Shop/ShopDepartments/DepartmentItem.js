@@ -1,23 +1,21 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { Icon } from 'antd';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import { isEmpty } from 'lodash';
+import { useHistory } from 'react-router';
+
 import { getShopDepartments } from '../../../waivioApi/ApiClient';
 
 import './ShopDepartments.less';
 
 const DepartmentItem = ({ department, match, excludedMain }) => {
   const [nestedDepartments, setNestedDepartments] = useState([]);
-  const [excluded, setExcluded] = useState([...excludedMain]);
   const [showNested, setShowNested] = useState(false);
-
-  useEffect(() => {
-    setExcluded([...excluded, department.name]);
-  }, []);
-
+  const history = useHistory();
   const getNestedDepartments = () => {
+    history.push(department.name);
     if (isEmpty(nestedDepartments)) {
       getShopDepartments(department.name, excluded).then(res => {
         setNestedDepartments(res);
@@ -35,6 +33,8 @@ const DepartmentItem = ({ department, match, excludedMain }) => {
   const itemListClassList = classNames('ShopDepartmentsList__list', {
     'ShopDepartmentsList__list--show': showNested,
   });
+
+  const excluded = [...excludedMain, ...nestedDepartments.map(nes => nes.name)];
 
   return (
     <div className={itemClassList}>
