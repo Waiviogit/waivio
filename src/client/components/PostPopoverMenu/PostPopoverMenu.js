@@ -229,8 +229,10 @@ const PostPopoverMenu = ({
         </span>
       </PopoverMenuItem>,
       <PopoverMenuItem key="remove" disabled={loading}>
-        <Icon type="delete" className="hide-button popoverIcon" />
-        <FormattedMessage id="object_field_remove" defaultMessage="Remove" />
+        <Icon type="close-circle" className="hide-button popoverIcon" />
+        <span className="ml1">
+          <FormattedMessage id="object_field_remove" defaultMessage="Remove" />
+        </span>
       </PopoverMenuItem>,
     ];
   }
@@ -259,8 +261,10 @@ const PostPopoverMenu = ({
         </span>
       </PopoverMenuItem>,
       <PopoverMenuItem key="remove" disabled={loading}>
-        <Icon type="delete" className="hide-button popoverIcon" />
-        <FormattedMessage id="object_field_remove" defaultMessage="Remove" />
+        <Icon type="close-circle" className="hide-button popoverIcon" />
+        <span className="ml1">
+          <FormattedMessage id="object_field_remove" defaultMessage="Remove" />
+        </span>
       </PopoverMenuItem>,
       <PopoverMenuItem key="hide" disabled={loading}>
         {post.loadingHide ? (
