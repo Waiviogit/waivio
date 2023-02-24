@@ -123,16 +123,16 @@ const TopNavigation = ({ location: { pathname } }) => {
               <FormattedMessage id="discover" defaultMessage="Discover" />
             </Link>
           </li>
-          {/* <li className="TopNavigation__item"> */}
-          {/*  <Link */}
-          {/*    to={`${LINKS.SHOP}`} */}
-          {/*    className={classNames('TopNavigation__link', { */}
-          {/*      'TopNavigation__link--active': pathname.includes(LINKS.SHOP), */}
-          {/*    })} */}
-          {/*  > */}
-          {/*    <FormattedMessage id="beta" defaultMessage="BETA" /> */}
-          {/*  </Link> */}
-          {/* </li> */}
+          <li className="TopNavigation__item">
+            <Link
+              to={`${LINKS.SHOP}`}
+              className={classNames('TopNavigation__link', {
+                'TopNavigation__link--active': pathname.includes(LINKS.SHOP),
+              })}
+            >
+              <FormattedMessage id="beta" defaultMessage="BETA" />
+            </Link>
+          </li>
           {!isEmpty(authenticatedUser) && (
             <li className="TopNavigation__item">
               <Link

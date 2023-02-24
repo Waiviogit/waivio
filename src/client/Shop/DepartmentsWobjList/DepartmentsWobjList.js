@@ -1,10 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { useRouteMatch } from 'react-router';
 import { isEmpty } from 'lodash';
 import { useSelector } from 'react-redux';
 import InfiniteSroll from 'react-infinite-scroller';
+import { useRouteMatch } from 'react-router';
+import PropTypes from 'prop-types';
 
-import { getDepartmentsFeed } from '../../../waivioApi/ApiClient';
 import ObjectCardView from '../../objectCard/ObjectCardView';
 import EmptyCampaing from '../../statics/EmptyCampaing';
 import useQuery from '../../../hooks/useQuery';
@@ -19,14 +19,15 @@ import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors
 
 import './DepartmentsWobjList.less';
 
-const DepartmentsWobjList = () => {
+const DepartmentsWobjList = ({ getDepartmentsFeed, user }) => {
   const [departmentInfo, setDepartmentInfo] = useState();
   const [visible, setVisible] = useState(false);
   const [visibleNavig, setVisibleNavig] = useState(false);
   const [loading, setLoading] = useState(true);
   const authUser = useSelector(getAuthenticatedUserName);
-
   const match = useRouteMatch();
+  const departments = match.params.departments;
+
   const query = useQuery();
   const list = useRef();
   const parseQueryForFilters = () => {
@@ -54,16 +55,11 @@ const DepartmentsWobjList = () => {
   useEffect(() => {
     setLoading(true);
 
-    getDepartmentsFeed(
-      match.params.name || authUser,
-      authUser,
-      match.params.departments,
-      parseQueryForFilters(),
-    ).then(res => {
+    getDepartmentsFeed(user, authUser, departments, parseQueryForFilters()).then(res => {
       setDepartmentInfo(res);
       setLoading(false);
     });
-  }, [match.params.departments, query.toString()]);
+  }, [departments, query.toString()]);
 
   useEffect(() => {
     if (list.current && isMobile() && !loading) {
@@ -73,15 +69,15 @@ const DepartmentsWobjList = () => {
     }
 
     if (!isMobile()) window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, [list.current, loading, match.params.departments]);
+  }, [list.current, loading, departments]);
 
   if (loading) return <Loading />;
 
   const loadMore = () => {
     getDepartmentsFeed(
-      match.params.name || authUser,
+      user,
       authUser,
-      match.params.departments,
+      departments,
       parseQueryForFilters(),
       departmentInfo.wobjects.length,
       10,
@@ -114,6 +110,11 @@ const DepartmentsWobjList = () => {
       )}
     </div>
   );
+};
+
+DepartmentsWobjList.propTypes = {
+  getDepartmentsFeed: PropTypes.func,
+  user: PropTypes.string,
 };
 
 export default DepartmentsWobjList;
