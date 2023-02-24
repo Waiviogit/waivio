@@ -1,0 +1,48 @@
+@import (reference) '../../styles/custom.less';
+@import (reference) '../../styles/modules/variables.less';
+
+.ShopDepartmentsList {
+  font-weight: 500;
+
+  .ShopDepartmentsList__item {
+    padding-left: 10px;
+
+    &--active {
+      color: @orange-light;
+    }
+
+    &--withNested {
+      div {
+        color: @black;
+        margin-bottom: 10px;
+      }
+    }
+  }
+
+  a {
+    color: @blue-gullGray;
+    display: inline-block;
+    margin-bottom: 10px;
+
+    &:active {
+      color: @orange-light;
+    }
+  }
+
+  &__list {
+    padding: 0 10px;
+  }
+
+  &__mobile {
+    display: block;
+    font-weight: 600;
+
+    .anticon {
+      font-size: 12px;
+    }
+
+    @media @small {
+      display: none;
+    }
+  }
+}

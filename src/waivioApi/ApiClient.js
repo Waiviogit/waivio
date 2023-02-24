@@ -3172,7 +3172,20 @@ export const getShopUserDepartments = (userName, filter) =>
     .then(posts => posts)
     .catch(error => error);
 
-export const getShopUserShopMainFeed = (userName, filter) =>
+export const getShopDepartments = (name, excluded) =>
+  fetch(`${config.apiPrefix}${config.shop}${config.departments}`, {
+    headers,
+    method: 'POST',
+    body: JSON.stringify({
+      name,
+      excluded,
+    }),
+  })
+    .then(res => res.json())
+    .then(posts => posts)
+    .catch(error => error);
+
+export const getShopUserShopMainFeed = (userName, follower, filter) =>
   fetch(`${config.apiPrefix}${config.shop}${config.user}${config.mainFeed}`, {
     headers: {
       ...headers,
@@ -3188,7 +3201,7 @@ export const getShopUserShopMainFeed = (userName, filter) =>
     .then(posts => posts)
     .catch(error => error);
 
-export const getDepartmentsFeed = (follower, department, filter, locale = 'en-US') =>
+export const getDepartmentsFeed = (userName, follower, department, filter, locale = 'en-US') =>
   fetch(`${config.apiPrefix}${config.shop}${config.user}${config.departmentFeed}`, {
     headers: {
       ...headers,
@@ -3198,7 +3211,7 @@ export const getDepartmentsFeed = (follower, department, filter, locale = 'en-US
     method: 'POST',
     body: JSON.stringify({
       department,
-      userName: follower,
+      userName,
       filter,
     }),
   })
