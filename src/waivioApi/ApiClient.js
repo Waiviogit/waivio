@@ -3185,8 +3185,24 @@ export const getShopDepartments = (name, excluded) =>
     .then(posts => posts)
     .catch(error => error);
 
-export const getShopUserShopMainFeed = (userName, follower, filter) =>
+export const getUserShopMainFeed = (userName, follower, filter) =>
   fetch(`${config.apiPrefix}${config.shop}${config.user}${config.mainFeed}`, {
+    headers: {
+      ...headers,
+      follower: userName,
+    },
+    method: 'POST',
+    body: JSON.stringify({
+      userName,
+      filter,
+    }),
+  })
+    .then(res => res.json())
+    .then(posts => posts)
+    .catch(error => error);
+
+export const getShopMainFeed = (userName, follower, filter) =>
+  fetch(`${config.apiPrefix}${config.shop}${config.mainFeed}`, {
     headers: {
       ...headers,
       follower: userName,

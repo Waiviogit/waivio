@@ -17,6 +17,8 @@ const ShopDepartmentsList = ({ visible, onClose }) => {
     getShopDepartments().then(res => setDepartments(res));
   }, []);
 
+  const excludedMain = departments.map(d => d.name);
+
   const body = (
     <div className="ShopDepartmentsList">
       <NavLink
@@ -28,7 +30,12 @@ const ShopDepartmentsList = ({ visible, onClose }) => {
       </NavLink>
       <div>
         {departments.map(dep => (
-          <DepartmentItem key={dep.name} match={match} department={dep} />
+          <DepartmentItem
+            key={dep.name}
+            match={match}
+            department={dep}
+            excludedMain={excludedMain}
+          />
         ))}
       </div>
     </div>
