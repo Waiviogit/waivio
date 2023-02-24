@@ -3201,7 +3201,7 @@ export const getShopUserShopMainFeed = (userName, follower, filter) =>
     .then(posts => posts)
     .catch(error => error);
 
-export const getDepartmentsFeed = (userName, follower, department, filter, locale = 'en-US') =>
+export const getDepartmentsFeed = (userName, follower, department, filter, skip, limit, locale) =>
   fetch(`${config.apiPrefix}${config.shop}${config.user}${config.departmentFeed}`, {
     headers: {
       ...headers,
@@ -3213,6 +3213,28 @@ export const getDepartmentsFeed = (userName, follower, department, filter, local
       department,
       userName,
       filter,
+      skip,
+      limit,
+    }),
+  })
+    .then(res => res.json())
+    .then(posts => posts)
+    .catch(error => error);
+
+export const getDepartmentFeed = (userName, follower, department, filter, skip, limit, locale) =>
+  fetch(`${config.apiPrefix}${config.shop}${config.departmentFeed}`, {
+    headers: {
+      ...headers,
+      locale,
+      follower,
+    },
+    method: 'POST',
+    body: JSON.stringify({
+      department,
+      userName,
+      filter,
+      skip,
+      limit,
     }),
   })
     .then(res => res.json())

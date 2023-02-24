@@ -16,7 +16,7 @@ const LeftSidebar = () => {
   return (
     !isWidget && (
       <Switch>
-        <Route path="/@:name/shop/:department?" component={DepartmentsUser} />
+        <Route path="/@:name/userShop/:department?" component={DepartmentsUser} />
         <Route path="/shop/:department?" component={ShopDepartmentsList} />
         <Route path="/@:name/wallet" component={SidebarMenu} />
         <Route path="/@:name" component={UserInfo} />

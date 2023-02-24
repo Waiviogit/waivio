@@ -78,11 +78,11 @@ class UserMenu extends React.Component {
             {!currUserIsGuest && this.props.isWaivio && (
               <li
                 className={classNames('UserMenu__item', {
-                  'UserMenu__item--active': ['shop'].includes(this.state.current),
+                  'UserMenu__item--active': ['userShop'].includes(this.state.current),
                 })}
                 onClick={this.handleClick}
                 role="presentation"
-                data-key="shop"
+                data-key="userShop"
               >
                 <FormattedMessage id="shop" defaultMessage="Shop" />
               </li>

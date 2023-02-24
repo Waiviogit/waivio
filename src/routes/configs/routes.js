@@ -298,7 +298,7 @@ const routes = {
     {
       path: [
         `/@:name/(${URL.USER.tabs})?/(waiv-table|table|:departments)?`,
-        `/@:name/shop/:departments?`,
+        `/@:name/userShop/:departments?`,
       ],
       component: User,
       exact: true,
@@ -315,12 +315,12 @@ const routes = {
           component: Views.UserFollowers,
         },
         {
-          path: '/shop',
+          path: '/userShop',
           exact: true,
           component: UserShoppingList,
         },
         {
-          path: '/shop/:departments?',
+          path: '/userShop/:departments?',
           exact: true,
           component: DepartmentsWobjList,
         },
