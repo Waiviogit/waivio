@@ -5,6 +5,7 @@ import { Icon, Modal } from 'antd';
 import { FormattedMessage } from 'react-intl';
 import { get, isEmpty } from 'lodash';
 import { ReactSVG } from 'react-svg';
+import { useHistory, useRouteMatch } from 'react-router';
 import Popover from '../Popover';
 import PopoverMenu, { PopoverMenuItem } from '../PopoverMenu/PopoverMenu';
 import { dropCategory, replaceBotWithGuestName } from '../../../common/helpers/postHelpers';
@@ -52,6 +53,7 @@ const propTypes = {
     loading: PropTypes.bool,
     loadingHide: PropTypes.bool,
     pin: PropTypes.bool,
+    id: PropTypes.string,
     loadingMute: PropTypes.bool,
     muted: PropTypes.bool,
     tags: PropTypes.shape(),
@@ -97,6 +99,8 @@ const PostPopoverMenu = ({
   const [isPin, setIsPin] = useState(false);
   const [isRemove, setIsRemove] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
+  const history = useHistory();
+  const match = useRouteMatch();
   const { isReported, isSaved } = postState;
   const hasOnlySponsorLike =
     post.active_votes.length === 1 && post.active_votes.some(vote => vote.sponsor);
@@ -222,7 +226,7 @@ const PostPopoverMenu = ({
         {saving ? <Icon type="loading" /> : <i className="iconfont icon-write" />}
         <FormattedMessage id="edit_post" defaultMessage="Edit post" />
       </PopoverMenuItem>,
-      <PopoverMenuItem key="pin" disabled={loading} invisible={post.pin}>
+      <PopoverMenuItem key="pin" disabled={loading}>
         <Icon className="hide-button popoverIcon" type="pushpin" />
         <span className="ml1">
           <FormattedMessage id="object_field_pin" defaultMessage="Pin" />
@@ -382,14 +386,17 @@ const PostPopoverMenu = ({
       >
         Would you like permanently delete your post?
       </Modal>
-      {isPin && (
-        <AppendModal
-          post={post}
-          showModal={isPin}
-          hideModal={() => setIsPin(false)}
-          field={objectFields.pin}
-        />
-      )}
+      {isPin &&
+        (post.pin ? (
+          history.push(`/object/${match.params.name}/updates/pin?search=${post.id}`)
+        ) : (
+          <AppendModal
+            post={post}
+            showModal={isPin}
+            hideModal={() => setIsPin(false)}
+            field={objectFields.pin}
+          />
+        ))}
       {isRemove && (
         <AppendModal
           post={post}
