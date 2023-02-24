@@ -12,17 +12,15 @@ import { parseQuery } from '../../../waivioApi/helpers';
 import ShopFilters from '../ShopFilters/ShopFilters';
 import FiltersForMobile from '../../newRewards/Filters/FiltersForMobile';
 import DepartmentsMobile from '../DepartmentsUser/DepartmentsMobile';
-import DepartmentsUser from '../DepartmentsUser/DepartmentsUser';
 import { isMobile } from '../../../common/helpers/apiHelpers';
 import Loading from '../../components/Icon/Loading';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 
 import './DepartmentsWobjList.less';
 
-const DepartmentsWobjList = ({ getDepartmentsFeed, user }) => {
+const DepartmentsWobjList = ({ getDepartmentsFeed, user, children, setVisibleNavig }) => {
   const [departmentInfo, setDepartmentInfo] = useState();
   const [visible, setVisible] = useState(false);
-  const [visibleNavig, setVisibleNavig] = useState(false);
   const [loading, setLoading] = useState(true);
   const authUser = useSelector(getAuthenticatedUserName);
   const match = useRouteMatch();
@@ -53,8 +51,6 @@ const DepartmentsWobjList = ({ getDepartmentsFeed, user }) => {
   };
 
   useEffect(() => {
-    setLoading(true);
-
     getDepartmentsFeed(user, authUser, departments, parseQueryForFilters()).then(res => {
       setDepartmentInfo(res);
       setLoading(false);
@@ -105,16 +101,16 @@ const DepartmentsWobjList = ({ getDepartmentsFeed, user }) => {
         </InfiniteSroll>
       )}
       {visible && <ShopFilters visible={visible} onClose={() => setVisible(false)} />}
-      {visibleNavig && (
-        <DepartmentsUser visible={visibleNavig} onClose={() => setVisibleNavig(false)} />
-      )}
+      {children}
     </div>
   );
 };
 
 DepartmentsWobjList.propTypes = {
   getDepartmentsFeed: PropTypes.func,
+  setVisibleNavig: PropTypes.func,
   user: PropTypes.string,
+  children: PropTypes.node,
 };
 
 export default DepartmentsWobjList;
