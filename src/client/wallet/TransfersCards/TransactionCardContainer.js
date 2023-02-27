@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Icon } from 'antd';
+import { isInteger } from 'lodash';
 import classNames from 'classnames';
 import { FormattedNumber } from 'react-intl';
 import Avatar from '../../components/Avatar';
@@ -21,6 +22,7 @@ const TransactionCardContainer = ({
     [`UserWalletTransactions__amount--${color}`]: color,
   });
   const point = color === 'red' ? '-' : '+';
+  const minimumFractionDigits = isInteger(Number(quantity)) ? 0 : 3;
 
   return (
     <div className="UserWalletTransactions__transaction">
@@ -44,7 +46,7 @@ const TransactionCardContainer = ({
               <FormattedNumber
                 value={quantity}
                 locale={'en-IN'}
-                minimumFractionDigits={3}
+                minimumFractionDigits={minimumFractionDigits}
                 maximumFractionDigits={fractionDigits || 3}
               />{' '}
               {symbol}
