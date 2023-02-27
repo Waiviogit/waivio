@@ -3066,9 +3066,12 @@ export const getNestedDepartmentFields = ({ name, names, excluded }) => {
     .catch(e => e);
 };
 
-export const getObjectsByDepartment = (departments, skip, limit) => {
+export const getObjectsByDepartment = (userName, departments, skip, limit) => {
   return fetch(`${config.apiPrefix}${config.departments}${config.wobjects}`, {
-    headers,
+    headers: {
+      ...headers,
+      follower: userName,
+    },
     method: 'POST',
     body: JSON.stringify({
       departments,
