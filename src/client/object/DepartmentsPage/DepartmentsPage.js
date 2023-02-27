@@ -9,6 +9,7 @@ import ObjectCardView from '../../objectCard/ObjectCardView';
 import { getObjectsByDepartment } from '../../../waivioApi/ApiClient';
 import { getActiveDepartment } from '../../../store/objectDepartmentsStore/objectDepartmentsSelectors';
 import { setActiveDepartment } from '../../../store/objectDepartmentsStore/objectDepartmentsActions';
+import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 
 const limit = 10;
 
@@ -16,6 +17,7 @@ const DepartmentsPage = () => {
   const [hasMore, setHasMore] = useState(false);
   const [optionsList, setOptionsList] = useState([]);
   const activeDepartment = useSelector(getActiveDepartment);
+  const userName = useSelector(getAuthenticatedUserName);
   const match = useRouteMatch();
   const dispatch = useDispatch();
   const departmentName = match.params.department;
@@ -25,13 +27,13 @@ const DepartmentsPage = () => {
     window.scrollTo(0, 0);
 
     if (!isEmpty(activeDepartment)) {
-      getObjectsByDepartment([activeDepartment.name], 0, limit).then(r => {
+      getObjectsByDepartment(userName, [activeDepartment.name], 0, limit).then(r => {
         setHasMore(r.hasMore);
         setOptionsList(r.wobjects);
       });
     } else if (!isNil(departmentName)) {
       dispatch(setActiveDepartment({ name: departmentName, id: departmentName }));
-      getObjectsByDepartment([departmentName], 0, limit).then(r => {
+      getObjectsByDepartment(userName, [departmentName], 0, limit).then(r => {
         setHasMore(r.hasMore);
         setOptionsList(r.wobjects);
       });
@@ -39,7 +41,7 @@ const DepartmentsPage = () => {
   }, [activeDepartment]);
 
   const loadMoreRelatedObjects = () => {
-    getObjectsByDepartment([activeDepartment.name], optionsList.length, limit).then(r => {
+    getObjectsByDepartment(userName, [activeDepartment.name], optionsList.length, limit).then(r => {
       setHasMore(r.hasMore);
       setOptionsList([...optionsList, ...r.wobjects]);
     });
