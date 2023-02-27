@@ -3189,7 +3189,7 @@ export const getUserShopMainFeed = (userName, follower, filter) =>
   fetch(`${config.apiPrefix}${config.shop}${config.user}${config.mainFeed}`, {
     headers: {
       ...headers,
-      follower: userName,
+      follower,
     },
     method: 'POST',
     body: JSON.stringify({

@@ -18,6 +18,9 @@ const ShopDepartmentsList = ({ visible, onClose }) => {
   }, []);
 
   const excludedMain = departments.map(d => d.name);
+  const renderDep = match.params.department
+    ? departments.filter(d => d.name === match.params.department)
+    : departments;
 
   const body = (
     <div className="ShopDepartmentsList">
@@ -29,7 +32,7 @@ const ShopDepartmentsList = ({ visible, onClose }) => {
         Departments
       </NavLink>
       <div>
-        {departments.map(dep => (
+        {renderDep.map(dep => (
           <DepartmentItem
             key={dep.name}
             match={match}

@@ -2,8 +2,10 @@ import React, { useEffect, useRef, useState } from 'react';
 import { isEmpty } from 'lodash';
 import { useSelector } from 'react-redux';
 import InfiniteSroll from 'react-infinite-scroller';
-import { useRouteMatch } from 'react-router';
+import { useLocation, useRouteMatch } from 'react-router';
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
+import classNames from 'classnames';
 
 import ObjectCardView from '../../objectCard/ObjectCardView';
 import EmptyCampaing from '../../statics/EmptyCampaing';
@@ -15,6 +17,11 @@ import DepartmentsMobile from '../DepartmentsUser/DepartmentsMobile';
 import { isMobile } from '../../../common/helpers/apiHelpers';
 import Loading from '../../components/Icon/Loading';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
+import {
+  createHash,
+  getLastPermlinksFromHash,
+  getPermlinksFromHash,
+} from '../../../common/helpers/wObjectHelper';
 
 import './DepartmentsWobjList.less';
 
@@ -24,7 +31,10 @@ const DepartmentsWobjList = ({ getDepartmentsFeed, user, children, setVisibleNav
   const [loading, setLoading] = useState(true);
   const authUser = useSelector(getAuthenticatedUserName);
   const match = useRouteMatch();
-  const departments = match.params.departments;
+  const location = useLocation();
+  const departments = location.hash
+    ? getLastPermlinksFromHash(location.hash).replaceAll('%20', ' ')
+    : match.params.departments;
 
   const query = useQuery();
   const list = useRef();
@@ -90,7 +100,33 @@ const DepartmentsWobjList = ({ getDepartmentsFeed, user, children, setVisibleNav
     <div className="DepartmentsWobjList" ref={list} id={'DepartmentsWobjList'}>
       <DepartmentsMobile setVisible={() => setVisibleNavig(true)} />
       <FiltersForMobile setVisible={() => setVisible(true)} />
-      <h3 className="DepartmentsWobjList__title">{departmentInfo?.department}</h3>
+      <h3>
+        <Link className={'DepartmentsWobjList__breadCrumbs'} to={'/shop'}>
+          Departments
+        </Link>{' '}
+        &gt;{' '}
+        <Link
+          className={'DepartmentsWobjList__breadCrumbs'}
+          to={`/shop/${match.params.departments}`}
+        >
+          {match.params.departments}
+        </Link>{' '}
+        {getPermlinksFromHash(location.hash).map(crumb => (
+          <span key={crumb}>
+            {' '}
+            &gt;{' '}
+            <Link
+              className={classNames('DepartmentsWobjList__breadCrumbs', {
+                'DepartmentsWobjList__breadCrumbs--active':
+                  getLastPermlinksFromHash(location.hash) === crumb,
+              })}
+              to={createHash(crumb, location.hash)}
+            >
+              {crumb}
+            </Link>
+          </span>
+        ))}
+      </h3>
       {isEmpty(departmentInfo?.wobjects) ? (
         <EmptyCampaing emptyMessage={'There are no objects for this department.'} />
       ) : (

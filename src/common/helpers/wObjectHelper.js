@@ -236,7 +236,23 @@ export const getLastPermlinksFromHash = url =>
     .pop()
     .replace('#', '');
 
-export const getPermlinksFromHash = url => (url ? url.replace('#', '').split('/') : []);
+export const createHash = (hash, name) => {
+  const permlinks = getPermlinksFromHash(hash);
+  const findIndex = permlinks.findIndex(el => el === name);
+  const hashPermlinks = [...permlinks];
+
+  if (findIndex >= 0) hashPermlinks.splice(findIndex + 1);
+
+  return `#${hashPermlinks.join('/')}`;
+};
+
+export const getPermlinksFromHash = url =>
+  url
+    ? url
+        .replace('#', '')
+        .split('/')
+        .map(perm => perm.replaceAll('%20', ' '))
+    : [];
 
 export const getMenuItems = (wobject, menuType, objType) => {
   const listItems = get(wobject, 'listItem', []).filter(item => item.type === menuType);
