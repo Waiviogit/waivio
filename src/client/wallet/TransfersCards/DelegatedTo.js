@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { Icon } from 'antd';
+import { isInteger } from 'lodash';
 import { FormattedMessage, FormattedNumber } from 'react-intl';
 import Avatar from '../../components/Avatar';
 import CardsTimeStamp from './CardsTimeStamp';
@@ -10,6 +11,7 @@ import '../UserWalletTransactions/UserWalletTransactions.less';
 const DelegatedTo = ({ timestamp, quantity, symbol, to, from, account }) => {
   const isReceive = account === to;
   const link = isReceive ? from : to;
+  const minimumFractionDigits = isInteger(Number(quantity)) ? 0 : 3;
   const amountClassList = classNames(
     'UserWalletTransactions__marginLeft UserWalletTransactions__amount--black',
   );
@@ -48,7 +50,7 @@ const DelegatedTo = ({ timestamp, quantity, symbol, to, from, account }) => {
               <FormattedNumber
                 value={quantity}
                 locale={'en-IN'}
-                minimumFractionDigits={3}
+                minimumFractionDigits={minimumFractionDigits}
                 maximumFractionDigits={3}
               />{' '}
               {symbol}
