@@ -29,24 +29,19 @@ const DepartmentItem = ({ department, match, excludedMain }) => {
   };
 
   const getNestedDepartments = () => {
+    if (match.params.department && match.params.department === department.name)
+      return history.push('/shop');
     if (match.params.department && match.params.department !== department.name) {
-      let hash = history.location.hash
-        ? `${history.location.hash}/${department.name}`
-        : `#${department.name}`;
+      const findIndex = categories.findIndex(el => el === department.name);
+      const hashPermlinks = [...categories];
 
-      if (history.location.hash.includes(department.name)) {
-        const permlinks = getPermlinksFromHash(history.location.hash);
-        const findIndex = permlinks.findIndex(el => el === department.name);
-        const hashPermlinks = [...permlinks];
+      if (findIndex >= 0) hashPermlinks.splice(findIndex);
+      else hashPermlinks.push(department.name);
 
-        if (findIndex >= 0) hashPermlinks.splice(findIndex);
-        hash = `#${hashPermlinks.join('/')}`;
-      }
-
-      history.push(`${hash}`);
+      history.push(`#${hashPermlinks.join('/')}`);
     } else history.push(`/shop/${department.name}`);
 
-    getNestedItems();
+    return getNestedItems();
   };
 
   useEffect(() => {
@@ -61,17 +56,36 @@ const DepartmentItem = ({ department, match, excludedMain }) => {
     }
   }, []);
 
+  useEffect(() => {
+    if (
+      (!categories.includes(department.name) && department.name !== match.params.department) ||
+      !match.params.department
+    ) {
+      setShowNested(false);
+    } else {
+      setShowNested(true);
+    }
+  }, [history.location.hash, match.params.department]);
+
   const itemClassList = classNames('ShopDepartmentsList__item', {
     'ShopDepartmentsList__item--withNested': department.subdirectory,
   });
 
-  const depNameClassList = classNames({
-    ShopDepartmentsList__depName: showNested,
+  const depNameClassList = classNames('ShopDepartmentsList__depName', {
+    'ShopDepartmentsList__depName--open': showNested,
   });
 
   const itemListClassList = classNames('ShopDepartmentsList__list', {
     'ShopDepartmentsList__list--show': showNested,
   });
+
+  const getLinkPath = () => {
+    if (match.params.department === department.name) return '/shop';
+
+    return match.params.department && match.params.department !== department.name
+      ? `/shop/${match.params.department}/#${createNewHash(department.name, history.location.hash)}`
+      : `/shop/${department.name}`;
+  };
 
   const excluded = [...excludedMain, ...nestedDepartments.map(nes => nes.name)];
   const renderList = nestedDepartments.some(j => categories.includes(j.name))
@@ -82,32 +96,32 @@ const DepartmentItem = ({ department, match, excludedMain }) => {
     <div className={itemClassList}>
       {department.subdirectory ? (
         <div onClick={getNestedDepartments} className={depNameClassList}>
-          {department.name}{' '}
-          <Icon style={{ fontSize: '12px' }} type={showNested ? 'down' : 'right'} />
+          {department.name} {!showNested && <Icon style={{ fontSize: '12px' }} type={'right'} />}
         </div>
       ) : (
         <NavLink
-          to={
-            match.params.department && match.params.department !== department.name
-              ? `/shop/${match.params.department}/#${createNewHash(
-                  department.name,
-                  history.location.hash,
-                )}`
-              : `/shop/${department.name}`
-          }
+          to={getLinkPath()}
           isActive={() =>
             match?.url.includes(`/${department.name}`) || categories.includes(department.name)
           }
-          activeClassName="ShopDepartmentsList__item--active"
+          activeClassName="ShopDepartmentsList__link-active"
+          className="ShopDepartmentsList__link"
         >
           {department.name}
         </NavLink>
       )}
-      <div className={itemListClassList}>
-        {renderList.map(nest => (
-          <DepartmentItem key={nest.name} department={nest} match={match} excludedMain={excluded} />
-        ))}
-      </div>
+      {showNested && (
+        <div className={itemListClassList}>
+          {renderList.map(nest => (
+            <DepartmentItem
+              key={nest.name}
+              department={nest}
+              match={match}
+              excludedMain={excluded}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 };
