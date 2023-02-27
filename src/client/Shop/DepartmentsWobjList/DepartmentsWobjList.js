@@ -106,7 +106,9 @@ const DepartmentsWobjList = ({ getDepartmentsFeed, user, children, setVisibleNav
         </Link>{' '}
         &gt;{' '}
         <Link
-          className={'DepartmentsWobjList__breadCrumbs'}
+          className={classNames('DepartmentsWobjList__breadCrumbs', {
+            'DepartmentsWobjList__breadCrumbs--active': !location.hash,
+          })}
           to={`/shop/${match.params.departments}`}
         >
           {match.params.departments}
@@ -118,7 +120,8 @@ const DepartmentsWobjList = ({ getDepartmentsFeed, user, children, setVisibleNav
             <Link
               className={classNames('DepartmentsWobjList__breadCrumbs', {
                 'DepartmentsWobjList__breadCrumbs--active':
-                  getLastPermlinksFromHash(location.hash) === crumb,
+                  getLastPermlinksFromHash(location.hash) === crumb ||
+                  match.params.department === crumb,
               })}
               to={createHash(crumb, location.hash)}
             >

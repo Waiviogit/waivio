@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
+import { FormattedNumber } from 'react-intl';
+import { isInteger } from 'lodash';
 import { getTransactionDescription } from '../WalletHelper';
 import CardsTimeStamp from './CardsTimeStamp';
 
@@ -20,6 +22,7 @@ const PowerUpTransactionFrom = ({
     UserWalletTransactions__received: isSent,
     UserWalletTransactions__sent: !isSent,
   });
+  const minimumFractionDigits = isInteger(Number(amount)) ? 0 : 3;
 
   return (
     <div className="UserWalletTransactions__transaction">
@@ -32,7 +35,13 @@ const PowerUpTransactionFrom = ({
             <React.Fragment>
               <div>{description.powerUpTransaction}</div>
               <span className="UserWalletTransactions__payout-black">
-                {amount} {symbol === 'WAIV' ? 'WP' : symbol}
+                <FormattedNumber
+                  value={amount}
+                  locale={'en-IN'}
+                  minimumFractionDigits={minimumFractionDigits}
+                  maximumFractionDigits={3}
+                />{' '}
+                {symbol === 'WAIV' ? 'WP' : symbol}
               </span>
             </React.Fragment>
           ) : (

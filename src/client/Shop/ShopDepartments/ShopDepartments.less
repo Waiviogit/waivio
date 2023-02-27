@@ -6,7 +6,6 @@
   padding-bottom: 30px;
 
   .ShopDepartmentsList__item {
-    padding-left: 10px;
     cursor: pointer;
 
     &--active {
@@ -21,8 +20,24 @@
     }
   }
 
+  &__link {
+    cursor: pointer;
+    padding-left: 10px;
+
+    &--active {
+      color: @orange-light;
+      padding-left: 0;
+    }
+  }
+
   &__depName {
     color: @black !important;
+    padding-left: 10px;
+
+    &--open {
+      padding: 0;
+      color: @blue-gullGray !important;
+    }
   }
 
   a {
@@ -33,10 +48,6 @@
     &:active {
       color: @orange-light;
     }
-  }
-
-  &__list {
-    padding: 0 10px;
   }
 
   &__mobile {
@@ -54,9 +65,11 @@
 
   &__list {
     display: none;
+    padding: 0 10px;
 
     &--show {
       display: block;
+      padding: 0;
     }
   }
 }
