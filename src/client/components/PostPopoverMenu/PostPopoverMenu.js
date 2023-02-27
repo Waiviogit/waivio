@@ -227,13 +227,13 @@ const PostPopoverMenu = ({
         <FormattedMessage id="edit_post" defaultMessage="Edit post" />
       </PopoverMenuItem>,
       <PopoverMenuItem key="pin" disabled={loading}>
-        <Icon className="hide-button popoverIcon" type="pushpin" />
+        <Icon className="hide-button popoverIcon ml1px" type="pushpin" />
         <span className="ml1">
           <FormattedMessage id="object_field_pin" defaultMessage="Pin" />
         </span>
       </PopoverMenuItem>,
       <PopoverMenuItem key="remove" disabled={loading}>
-        <Icon type="close-circle" className="hide-button popoverIcon" />
+        <Icon type="close-circle" className="hide-button popoverIcon ml1px" />
         <span className="ml1">
           <FormattedMessage id="object_field_remove" defaultMessage="Remove" />
         </span>
@@ -259,13 +259,13 @@ const PostPopoverMenu = ({
         {followText}
       </PopoverMenuItem>,
       <PopoverMenuItem key="pin" disabled={loading} invisible={post.pin}>
-        <Icon className="hide-button popoverIcon" type="pushpin" />
+        <Icon className="hide-button popoverIcon ml1px" type="pushpin" />
         <span className="ml1">
           <FormattedMessage id="object_field_pin" defaultMessage="Pin" />
         </span>
       </PopoverMenuItem>,
       <PopoverMenuItem key="remove" disabled={loading}>
-        <Icon type="close-circle" className="hide-button popoverIcon" />
+        <Icon type="close-circle" className="hide-button popoverIcon ml1px" />
         <span className="ml1">
           <FormattedMessage id="object_field_remove" defaultMessage="Remove" />
         </span>

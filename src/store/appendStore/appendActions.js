@@ -100,6 +100,7 @@ export const getChangedWobjectField = (
         object: authorPermlink,
       }),
     );
+    window.scrollTo(0, 0);
   };
   const blockNumber = await getLastBlockNum();
 
