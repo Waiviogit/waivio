@@ -18,7 +18,7 @@ const ShopDepartmentsWobjList = () => {
       getDepartmentsFeed={getShopDepartmentFeed}
       setVisibleNavig={onOpen}
     >
-      <ShopDepartmentsList visible={visibleNavig} onClose={onClose} />
+      {visibleNavig && <ShopDepartmentsList visible={visibleNavig} onClose={onClose} />}
     </DepartmentsWobjList>
   );
 };

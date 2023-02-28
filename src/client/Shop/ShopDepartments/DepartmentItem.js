@@ -29,13 +29,11 @@ const DepartmentItem = ({ department, match, excludedMain, onClose }) => {
   };
 
   const getNestedDepartments = () => {
-    if (match.params.department && match.params.department === department.name)
-      return history.push('/shop');
     if (match.params.department && match.params.department !== department.name) {
       const findIndex = categories.findIndex(el => el === department.name);
       const hashPermlinks = [...categories];
 
-      if (findIndex >= 0) hashPermlinks.splice(findIndex);
+      if (findIndex >= 0) hashPermlinks.splice(findIndex + 1);
       else hashPermlinks.push(department.name);
 
       history.push(`#${hashPermlinks.join('/')}`);
