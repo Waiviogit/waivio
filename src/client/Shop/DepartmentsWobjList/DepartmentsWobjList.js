@@ -123,7 +123,7 @@ const DepartmentsWobjList = ({ getDepartmentsFeed, user, children, setVisibleNav
                   getLastPermlinksFromHash(location.hash) === crumb ||
                   match.params.department === crumb,
               })}
-              to={createHash(crumb, location.hash)}
+              to={createHash(location.hash, crumb)}
             >
               {crumb}
             </Link>

@@ -28,6 +28,7 @@ const ShopDepartmentsList = ({ visible, onClose }) => {
         isActive={() => match?.url === `/shop`}
         to={`/shop`}
         activeClassName="ShopDepartmentsList__item--active"
+        className="ShopDepartmentsList__depName--open"
       >
         Departments
       </NavLink>

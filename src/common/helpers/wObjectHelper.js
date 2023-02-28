@@ -234,7 +234,8 @@ export const getLastPermlinksFromHash = url =>
   url
     .split('/')
     .pop()
-    .replace('#', '');
+    .replace('#', '')
+    .replaceAll('%20', ' ');
 
 export const createHash = (hash, name) => {
   const permlinks = getPermlinksFromHash(hash);
