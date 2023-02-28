@@ -54,7 +54,7 @@ const DepartmentItem = ({ department, match, excludedMain }) => {
         setShowNested(true);
       });
     }
-  }, []);
+  }, [match.params.department]);
 
   useEffect(() => {
     if (
