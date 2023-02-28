@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { isEmpty } from 'lodash';
-
+import { useSelector } from 'react-redux';
 import InfiniteScroll from 'react-infinite-scroller';
 import { useRouteMatch } from 'react-router';
 import { getObject, getObjectOptions } from '../../../waivioApi/ApiClient';
 import Loading from '../../components/Icon/Loading';
 import ObjectCardView from '../../objectCard/ObjectCardView';
+import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 
 const OptionsPage = () => {
   const limit = 30;
@@ -14,6 +15,7 @@ const OptionsPage = () => {
   const [wobject, setWobject] = useState({});
   const [filteredOptions, setFilteredOptions] = useState([]);
   const match = useRouteMatch();
+  const authUser = useSelector(getAuthenticatedUserName);
   const { category } = match.params;
 
   useEffect(() => {
@@ -22,7 +24,7 @@ const OptionsPage = () => {
 
     getObject(match.params.name).then(res => {
       setWobject(res);
-      getObjectOptions(res?.author_permlink, category, 0, limit).then(r => {
+      getObjectOptions(authUser, res?.author_permlink, category, 0, limit).then(r => {
         setHasMore(r.hasMore);
         setFilteredOptions(r.wobjects);
       });
@@ -33,14 +35,20 @@ const OptionsPage = () => {
     window.scrollTo(0, 0);
 
     !isEmpty(wobject) &&
-      getObjectOptions(wobject?.author_permlink, category, 0, limit).then(r => {
+      getObjectOptions(authUser, wobject?.author_permlink, category, 0, limit).then(r => {
         setHasMore(r.hasMore);
         setFilteredOptions(r.wobjects);
       });
   }, [category]);
 
   const loadMoreOptions = () => {
-    getObjectOptions(wobject.author_permlink, category, filteredOptions.length, limit).then(r => {
+    getObjectOptions(
+      authUser,
+      wobject.author_permlink,
+      category,
+      filteredOptions.length,
+      limit,
+    ).then(r => {
       setHasMore(r.hasMore);
       setFilteredOptions([...filteredOptions, ...r.wobjects]);
     });
