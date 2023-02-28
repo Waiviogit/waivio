@@ -11,7 +11,7 @@ import { createNewHash, getPermlinksFromHash } from '../../../common/helpers/wOb
 
 import './ShopDepartments.less';
 
-const DepartmentItem = ({ department, match, excludedMain }) => {
+const DepartmentItem = ({ department, match, excludedMain, onClose }) => {
   const [nestedDepartments, setNestedDepartments] = useState([]);
   const [showNested, setShowNested] = useState(false);
   const history = useHistory();
@@ -40,6 +40,8 @@ const DepartmentItem = ({ department, match, excludedMain }) => {
 
       history.push(`#${hashPermlinks.join('/')}`);
     } else history.push(`/shop/${department.name}`);
+
+    if (onClose) onClose();
 
     return getNestedItems();
   };
@@ -104,6 +106,7 @@ const DepartmentItem = ({ department, match, excludedMain }) => {
           isActive={() =>
             match?.url.includes(`/${department.name}`) || categories.includes(department.name)
           }
+          onClick={onClose}
           activeClassName="ShopDepartmentsList__link-active"
           className="ShopDepartmentsList__link"
         >
@@ -118,6 +121,7 @@ const DepartmentItem = ({ department, match, excludedMain }) => {
               department={nest}
               match={match}
               excludedMain={excluded}
+              onClose={onClose}
             />
           ))}
         </div>
@@ -136,6 +140,7 @@ DepartmentItem.propTypes = {
     params: PropTypes.string,
   }),
   excludedMain: PropTypes.arrayOf(PropTypes.string),
+  onClose: PropTypes.func,
 };
 
 DepartmentItem.defaultProps = {

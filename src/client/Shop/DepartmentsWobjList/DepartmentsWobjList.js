@@ -109,9 +109,9 @@ const DepartmentsWobjList = ({ getDepartmentsFeed, user, children, setVisibleNav
           className={classNames('DepartmentsWobjList__breadCrumbs', {
             'DepartmentsWobjList__breadCrumbs--active': !location.hash,
           })}
-          to={`/shop/${match.params.departments}`}
+          to={`/shop/${match.params.department}`}
         >
-          {match.params.departments}
+          {match.params.department}
         </Link>{' '}
         {getPermlinksFromHash(location.hash).map(crumb => (
           <span key={crumb}>

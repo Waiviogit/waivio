@@ -39,6 +39,7 @@ const ShopDepartmentsList = ({ visible, onClose }) => {
             match={match}
             department={dep}
             excludedMain={excludedMain}
+            onClose={onClose}
           />
         ))}
       </div>
