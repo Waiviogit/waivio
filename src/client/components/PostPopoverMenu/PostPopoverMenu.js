@@ -53,6 +53,7 @@ const propTypes = {
     loading: PropTypes.bool,
     loadingHide: PropTypes.bool,
     pin: PropTypes.bool,
+    hasPinUpdate: PropTypes.bool,
     id: PropTypes.string,
     loadingMute: PropTypes.bool,
     muted: PropTypes.bool,
@@ -101,6 +102,7 @@ const PostPopoverMenu = ({
   const [isVisible, setIsVisible] = useState(false);
   const history = useHistory();
   const match = useRouteMatch();
+  const userPage = match.url.includes(`/@${match.params.name}`);
   const { isReported, isSaved } = postState;
   const hasOnlySponsorLike =
     post.active_votes.length === 1 && post.active_votes.some(vote => vote.sponsor);
@@ -226,14 +228,14 @@ const PostPopoverMenu = ({
         {saving ? <Icon type="loading" /> : <i className="iconfont icon-write" />}
         <FormattedMessage id="edit_post" defaultMessage="Edit post" />
       </PopoverMenuItem>,
-      <PopoverMenuItem key="pin" disabled={loading}>
-        <Icon className="hide-button popoverIcon" type="pushpin" />
+      <PopoverMenuItem key="pin" disabled={loading} invisible={userPage}>
+        <Icon className="hide-button popoverIcon ml1px" type="pushpin" />
         <span className="ml1">
           <FormattedMessage id="object_field_pin" defaultMessage="Pin" />
         </span>
       </PopoverMenuItem>,
-      <PopoverMenuItem key="remove" disabled={loading}>
-        <Icon type="close-circle" className="hide-button popoverIcon" />
+      <PopoverMenuItem key="remove" disabled={loading} invisible={userPage}>
+        <Icon type="close-circle" className="hide-button popoverIcon ml1px" />
         <span className="ml1">
           <FormattedMessage id="object_field_remove" defaultMessage="Remove" />
         </span>
@@ -258,14 +260,14 @@ const PostPopoverMenu = ({
         {loading ? <Icon type="loading" /> : <i className="iconfont icon-people" />}
         {followText}
       </PopoverMenuItem>,
-      <PopoverMenuItem key="pin" disabled={loading} invisible={post.pin}>
-        <Icon className="hide-button popoverIcon" type="pushpin" />
+      <PopoverMenuItem key="pin" disabled={loading} invisible={userPage}>
+        <Icon className="hide-button popoverIcon ml1px" type="pushpin" />
         <span className="ml1">
           <FormattedMessage id="object_field_pin" defaultMessage="Pin" />
         </span>
       </PopoverMenuItem>,
-      <PopoverMenuItem key="remove" disabled={loading}>
-        <Icon type="close-circle" className="hide-button popoverIcon" />
+      <PopoverMenuItem key="remove" disabled={loading} invisible={userPage}>
+        <Icon type="close-circle" className="hide-button popoverIcon ml1px" />
         <span className="ml1">
           <FormattedMessage id="object_field_remove" defaultMessage="Remove" />
         </span>
@@ -387,7 +389,7 @@ const PostPopoverMenu = ({
         Would you like permanently delete your post?
       </Modal>
       {isPin &&
-        (post.pin ? (
+        (post.pin || post.hasPinUpdate ? (
           history.push(`/object/${match.params.name}/updates/pin?search=${post.id}`)
         ) : (
           <AppendModal
