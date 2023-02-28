@@ -7,17 +7,18 @@
 
   .ShopDepartmentsList__item {
     cursor: pointer;
+    margin-bottom: 10px;
 
     &--active {
       color: @orange-light;
     }
 
-    &--withNested {
-      div {
-        color: @blue-gullGray;
-        margin-bottom: 10px;
-      }
-    }
+    //&--withNested {
+    //  div {
+    //    color: @blue-gullGray;
+    //    margin-bottom: 10px;
+    //  }
+    //}
   }
 
   &__link {
@@ -38,9 +39,10 @@
   &__depName {
     color: @blue-gullGray !important;
     padding-left: 10px;
+    margin-bottom: 10px;
 
     &--open {
-      padding: 0;
+      padding-left: 0;
       color: @black !important;
     }
   }
@@ -77,3 +79,5 @@
     }
   }
 }
+
+@import 'ShopDepartments-nightmode';
