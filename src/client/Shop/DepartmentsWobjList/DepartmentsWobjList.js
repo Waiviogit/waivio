@@ -34,7 +34,7 @@ const DepartmentsWobjList = ({ getDepartmentsFeed, user, children, setVisibleNav
   const location = useLocation();
   const departments = location.hash
     ? getLastPermlinksFromHash(location.hash).replaceAll('%20', ' ')
-    : match.params.departments;
+    : match.params.department;
 
   const query = useQuery();
   const list = useRef();
@@ -100,7 +100,7 @@ const DepartmentsWobjList = ({ getDepartmentsFeed, user, children, setVisibleNav
     <div className="DepartmentsWobjList" ref={list} id={'DepartmentsWobjList'}>
       <DepartmentsMobile setVisible={() => setVisibleNavig(true)} />
       <FiltersForMobile setVisible={() => setVisible(true)} />
-      <h3>
+      <h3 className={'DepartmentsWobjList__breadCrumbsWrap'}>
         <Link className={'DepartmentsWobjList__breadCrumbs'} to={'/shop'}>
           Departments
         </Link>{' '}
