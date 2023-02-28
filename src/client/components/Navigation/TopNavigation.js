@@ -85,7 +85,8 @@ const TopNavigation = ({ location: { pathname } }) => {
   const authenticatedUser = useSelector(getAuthenticatedUser);
   const rewardsTab = useSelector(getRewardsTab);
   const isRouteMathed =
-    pathname === '/' || Object.values(LINKS).some(url => pathname.includes(url));
+    pathname === '/' ||
+    Object.values(LINKS).some(url => pathname.includes(url) && !pathname.includes(`/object/`));
 
   return isRouteMathed ? (
     <div className="TopNavigation">
