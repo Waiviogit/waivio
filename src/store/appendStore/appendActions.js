@@ -100,7 +100,8 @@ export const getChangedWobjectField = (
         username: authorPermlink,
         object: authorPermlink,
       }),
-    );
+    ).then(() => subscribeCallback());
+
     window.scrollTo(0, 0);
   };
   const blockNumber = await getLastBlockNum();
