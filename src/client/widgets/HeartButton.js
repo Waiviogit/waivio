@@ -44,7 +44,7 @@ const HeartButton = ({ wobject, size }) => {
     ) {
       dispatch(setObjectinAuthority(wobject.author_permlink));
     }
-  }, [wobject.authority]);
+  }, [wobject.authority, authorityList]);
 
   const getWobjectData = () => ({
     author: user.name,
@@ -99,6 +99,7 @@ const HeartButton = ({ wobject, size }) => {
       <Icon type="heart" theme="filled" style={{ fontSize: size }} />
     </button>
   );
+  console.log(authorityList);
 
   return !isMobile() ? (
     <Tooltip
