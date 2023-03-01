@@ -13,7 +13,7 @@ import useQuery from '../../../hooks/useQuery';
 import { parseQuery } from '../../../waivioApi/helpers';
 import ShopFilters from '../ShopFilters/ShopFilters';
 import FiltersForMobile from '../../newRewards/Filters/FiltersForMobile';
-import DepartmentsMobile from '../DepartmentsUser/DepartmentsMobile';
+import DepartmentsMobile from '../ShopDepartments/DepartmentsMobile';
 import { isMobile } from '../../../common/helpers/apiHelpers';
 import Loading from '../../components/Icon/Loading';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
@@ -25,7 +25,7 @@ import {
 
 import './DepartmentsWobjList.less';
 
-const DepartmentsWobjList = ({ getDepartmentsFeed, user, children, setVisibleNavig }) => {
+const DepartmentsWobjList = ({ getDepartmentsFeed, user, children, setVisibleNavig, path }) => {
   const [departmentInfo, setDepartmentInfo] = useState();
   const [visible, setVisible] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -101,7 +101,7 @@ const DepartmentsWobjList = ({ getDepartmentsFeed, user, children, setVisibleNav
       <DepartmentsMobile setVisible={() => setVisibleNavig(true)} />
       <FiltersForMobile setVisible={() => setVisible(true)} />
       <h3 className={'DepartmentsWobjList__breadCrumbsWrap'}>
-        <Link className={'DepartmentsWobjList__breadCrumbs'} to={'/shop'}>
+        <Link className={'DepartmentsWobjList__breadCrumbs'} to={path}>
           Departments
         </Link>{' '}
         &gt;{' '}
@@ -109,7 +109,7 @@ const DepartmentsWobjList = ({ getDepartmentsFeed, user, children, setVisibleNav
           className={classNames('DepartmentsWobjList__breadCrumbs', {
             'DepartmentsWobjList__breadCrumbs--active': !location.hash,
           })}
-          to={`/shop/${match.params.department}`}
+          to={`${path}/${match.params.department}`}
         >
           {match.params.department}
         </Link>{' '}
@@ -149,6 +149,7 @@ DepartmentsWobjList.propTypes = {
   getDepartmentsFeed: PropTypes.func,
   setVisibleNavig: PropTypes.func,
   user: PropTypes.string,
+  path: PropTypes.string,
   children: PropTypes.node,
 };
 

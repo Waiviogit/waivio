@@ -4,8 +4,8 @@ import { useRouteMatch } from 'react-router';
 import ShopList from './ShopList';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 
-import ShopDepartmentsList from '../ShopDepartments/ShopDepartmentsList';
 import { getShopMainFeed } from '../../../waivioApi/ApiClient';
+import GlobalShopDepartments from '../ShopDepartments/GlobalShopDepartments';
 
 const GlobalShopingList = () => {
   const authUserName = useSelector(getAuthenticatedUserName);
@@ -21,7 +21,7 @@ const GlobalShopingList = () => {
       path={match.url}
       getShopFeed={getShopMainFeed}
     >
-      {visibleNavig && <ShopDepartmentsList visible={visibleNavig} onClose={onClose} />}
+      {visibleNavig && <GlobalShopDepartments visible={visibleNavig} onClose={onClose} />}
     </ShopList>
   );
 };
