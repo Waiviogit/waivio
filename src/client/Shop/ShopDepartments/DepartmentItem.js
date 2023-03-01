@@ -80,7 +80,7 @@ const DepartmentItem = ({ department, match, excludedMain, onClose, getShopDepar
   });
 
   const getLinkPath = () => {
-    if (match.params.department === department.name) return '/shop';
+    if (match.params.department === department.name) return path;
 
     return match.params.department && match.params.department !== department.name
       ? `${path}/${match.params.department}/#${createNewHash(
