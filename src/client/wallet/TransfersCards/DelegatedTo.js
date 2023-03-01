@@ -15,7 +15,7 @@ const DelegatedTo = ({ timestamp, quantity, symbol, to, from, account }) => {
   const amountClassList = classNames(
     'UserWalletTransactions__marginLeft UserWalletTransactions__amount--black',
   );
-  const point = isReceive ? '-' : '+';
+  const point = isReceive ? '+' : '-';
 
   return (
     <div className="UserWalletTransactions__transaction">
