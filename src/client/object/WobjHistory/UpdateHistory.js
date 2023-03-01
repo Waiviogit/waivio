@@ -29,16 +29,16 @@ const UpdateHistory = () => {
   const [locale, setLocale] = useState();
   const history = useHistory();
   const query = new URLSearchParams(history.location.search).get('search');
-  const pinUpdate = updatesList?.filter(post => post.body === query);
-  const isPinnedPost = field === 'pin' && !isNil(query);
-  const updates = isPinnedPost ? pinUpdate : updatesList;
+  const pinorRemoveUpdate = updatesList?.filter(post => post.body === query);
+  const isPinnedOrRemovedPost = ['pin', 'remove'].includes(field) && !isNil(query);
+  const updates = isPinnedOrRemovedPost ? pinorRemoveUpdate : updatesList;
 
   useEffect(() => {
     dispatch(resetUpdateList());
   }, [name]);
 
   useEffect(() => {
-    if (isPinnedPost) window.scrollTo(0, 0);
+    if (isPinnedOrRemovedPost) window.scrollTo(0, 0);
   }, [field]);
 
   useEffect(() => {
