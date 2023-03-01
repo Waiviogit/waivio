@@ -54,6 +54,7 @@ const propTypes = {
     loadingHide: PropTypes.bool,
     pin: PropTypes.bool,
     hasPinUpdate: PropTypes.bool,
+    hasRemoveUpdate: PropTypes.bool,
     id: PropTypes.string,
     loadingMute: PropTypes.bool,
     muted: PropTypes.bool,
@@ -399,14 +400,17 @@ const PostPopoverMenu = ({
             field={objectFields.pin}
           />
         ))}
-      {isRemove && (
-        <AppendModal
-          post={post}
-          showModal={isRemove}
-          hideModal={() => setIsRemove(false)}
-          field={objectFields.remove}
-        />
-      )}
+      {isRemove &&
+        (post.hasRemoveUpdate ? (
+          history.push(`/object/${match.params.name}/updates/remove?search=${post.id}`)
+        ) : (
+          <AppendModal
+            post={post}
+            showModal={isRemove}
+            hideModal={() => setIsRemove(false)}
+            field={objectFields.remove}
+          />
+        ))}
     </React.Fragment>
   );
 };
