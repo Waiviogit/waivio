@@ -17,7 +17,7 @@ const DepartmentItem = ({ department, match, excludedMain, onClose, getShopDepar
   const categories = getPermlinksFromHash(history.location.hash);
 
   const getNestedItems = () => {
-    if (isEmpty(nestedDepartments)) {
+    if (isEmpty(nestedDepartments) && department.subdirectory) {
       getShopDepartments(department.name, excluded).then(res => {
         setNestedDepartments(res);
         setShowNested(true);
@@ -45,8 +45,9 @@ const DepartmentItem = ({ department, match, excludedMain, onClose, getShopDepar
 
   useEffect(() => {
     if (
-      match.params.department === department.name ||
-      (match.params.department !== department.name && categories.includes(department.name))
+      (match.params.department === department.name ||
+        (match.params.department !== department.name && categories.includes(department.name))) &&
+      department.subdirectory
     ) {
       getShopDepartments(department.name, excluded).then(res => {
         setNestedDepartments(res);
@@ -107,7 +108,7 @@ const DepartmentItem = ({ department, match, excludedMain, onClose, getShopDepar
             match?.url.includes(`/${department.name}`) || categories.includes(department.name)
           }
           onClick={onClose}
-          activeClassName="ShopDepartmentsList__link-active"
+          activeClassName="ShopDepartmentsList__link--active"
           className="ShopDepartmentsList__link"
         >
           {department.name}
