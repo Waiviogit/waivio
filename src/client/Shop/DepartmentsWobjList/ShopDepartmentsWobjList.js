@@ -19,7 +19,7 @@ const ShopDepartmentsWobjList = () => {
       setVisibleNavig={onOpen}
       path={'/shop'}
     >
-      <GlobalShopDepartments visible={visibleNavig} onClose={onClose} />
+      {visibleNavig && <GlobalShopDepartments visible={visibleNavig} onClose={onClose} />}
     </DepartmentsWobjList>
   );
 };
