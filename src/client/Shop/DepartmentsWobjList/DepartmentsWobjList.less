@@ -8,6 +8,14 @@
     padding: 0;
   }
 
+  &__breadCrumbsWrap {
+    display: none;
+
+    @media @small {
+      display: block;
+    }
+  }
+
   &__title {
     display: none;
     font-size: 16px;
@@ -17,4 +25,15 @@
       display: block;
     }
   }
+
+  a.DepartmentsWobjList__breadCrumbs {
+    color: black;
+    text-decoration: underline;
+
+    &--active {
+      text-decoration: none;
+    }
+  }
 }
+
+@import 'DepartmentsWobjList-nightmode';

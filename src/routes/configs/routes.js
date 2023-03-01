@@ -10,10 +10,11 @@ import Rewards from '../../client/rewards/Rewards';
 import Discover from '../../client/discover/Discover';
 import DiscoverObjects from '../../client/discoverObjects/DiscoverObjects';
 import RewardsMainPage from '../../client/newRewards/RewardsMainPage';
-import DepartmentsWobjList from '../../client/Shop/DepartmentsWobjList/DepartmentsWobjList';
 import UserShoppingList from '../../client/Shop/ShopList/UserShoppingList';
 import Shop from '../../client/Shop/Shop';
 import GlobalShopingList from '../../client/Shop/ShopList/GlobalShopingList';
+import ShopDepartmentsWobjList from '../../client/Shop/DepartmentsWobjList/ShopDepartmentsWobjList';
+import UserDepartmentsWobjList from '../../client/Shop/DepartmentsWobjList/UserDepartmentsWobjList';
 
 const routes = {
   component: Wrapper,
@@ -320,9 +321,9 @@ const routes = {
           component: UserShoppingList,
         },
         {
-          path: '/userShop/:departments?',
+          path: '/userShop/:department?',
           exact: true,
-          component: DepartmentsWobjList,
+          component: UserDepartmentsWobjList,
         },
         {
           path: '/reblogs',
@@ -458,15 +459,15 @@ const routes = {
       component: Discover,
     },
     {
-      path: '/shop/:departments?',
+      path: '/shop/:department?',
       exact: true,
       component: Shop,
       pathScope: '/shop',
       routes: [
         {
-          path: '/:departments',
+          path: '/:department',
           exact: true,
-          component: DepartmentsWobjList,
+          component: ShopDepartmentsWobjList,
         },
         {
           path: '/',

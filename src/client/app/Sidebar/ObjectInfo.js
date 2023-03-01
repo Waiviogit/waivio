@@ -762,18 +762,6 @@ class ObjectInfo extends React.Component {
                       this.getMenuSectionLink({ id: objectFields.form, ...form }),
                     ),
                 )}
-                {!isEditMode &&
-                  this.listItem(
-                    objectFields.departments,
-                    !isEmpty(wobject?.departments) && (
-                      <Department
-                        departments={departments}
-                        isEditMode={isEditMode}
-                        history={this.props.history}
-                        wobject={this.props.wobject}
-                      />
-                    ),
-                  )}
                 {this.listItem(objectFields.sorting, null)}
               </React.Fragment>
             </div>
@@ -798,6 +786,18 @@ class ObjectInfo extends React.Component {
             <FormattedMessage id="about" defaultMessage="About" />
           </div>
         )}
+        {!isEditMode &&
+          this.listItem(
+            objectFields.departments,
+            !isEmpty(wobject?.departments) && (
+              <Department
+                departments={departments}
+                isEditMode={isEditMode}
+                history={this.props.history}
+                wobject={this.props.wobject}
+              />
+            ),
+          )}
         {this.listItem(objectFields.name, null)}
         {isEditMode &&
           this.listItem(

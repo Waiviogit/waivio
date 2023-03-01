@@ -16,9 +16,9 @@ const PopoverMenuItem = ({
   <li
     className={classNames('PopoverMenuItem', {
       'PopoverMenuItem--bold': bold,
+      'PopoverMenuItem--invisible': invisible,
       'PopOverMenuItem__full-screen-hidden': fullScreenHidden,
       PopOverMenuitem__topNav: topNav,
-      'PopoverMenuItem-invisible': invisible,
     })}
   >
     <a

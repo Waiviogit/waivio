@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router';
+import { useHistory, useParams } from 'react-router';
+import { isNil } from 'lodash';
 import { useDispatch, useSelector } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
 
@@ -26,10 +27,19 @@ const UpdateHistory = () => {
   const { name, 0: field } = useParams();
   const [sort, setSort] = useState('createdAt');
   const [locale, setLocale] = useState();
+  const history = useHistory();
+  const query = new URLSearchParams(history.location.search).get('search');
+  const pinorRemoveUpdate = updatesList?.filter(post => post.body === query);
+  const isPinnedOrRemovedPost = ['pin', 'remove'].includes(field) && !isNil(query);
+  const updates = isPinnedOrRemovedPost ? pinorRemoveUpdate : updatesList;
 
   useEffect(() => {
     dispatch(resetUpdateList());
   }, [name]);
+
+  useEffect(() => {
+    if (isPinnedOrRemovedPost) window.scrollTo(0, 0);
+  }, [field]);
 
   useEffect(() => {
     dispatch(getUpdates(name, field, sort, locale));
@@ -53,7 +63,7 @@ const UpdateHistory = () => {
           elementIsScrollable={false}
           threshold={500}
         >
-          {updatesList?.map(post => (
+          {updates?.map(post => (
             <AppendCard key={post.permlink} post={post} />
           ))}
         </ReduxInfiniteScroll>

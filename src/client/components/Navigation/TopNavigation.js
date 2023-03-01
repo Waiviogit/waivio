@@ -28,7 +28,7 @@ const LINKS = {
   TOOLS_SETTINGS: '/settings',
   TOOLS_SETTINGS_GUESTS: '/guests-settings',
   TOOLS_SETTINGS_NOTIFICATIONS: '/notification-settings',
-  ABOUT: '/object/ylr-waivio/page#mwt-about-waivio',
+  ABOUT: '/object/ylr-waivio/page#oal-about-waivio',
   WEBSITE_CREATE: '/create',
   WEBSITES_MANAGE: '/manage',
   WEBSITES_PAYMENTS: '/payments',
@@ -123,16 +123,16 @@ const TopNavigation = ({ location: { pathname } }) => {
               <FormattedMessage id="discover" defaultMessage="Discover" />
             </Link>
           </li>
-          {/* <li className="TopNavigation__item"> */}
-          {/*  <Link */}
-          {/*    to={`${LINKS.SHOP}`} */}
-          {/*    className={classNames('TopNavigation__link', { */}
-          {/*      'TopNavigation__link--active': pathname.includes(LINKS.SHOP), */}
-          {/*    })} */}
-          {/*  > */}
-          {/*    <FormattedMessage id="beta" defaultMessage="BETA" /> */}
-          {/*  </Link> */}
-          {/* </li> */}
+          <li className="TopNavigation__item">
+            <Link
+              to={`${LINKS.SHOP}`}
+              className={classNames('TopNavigation__link', {
+                'TopNavigation__link--active': pathname.includes(LINKS.SHOP),
+              })}
+            >
+              <FormattedMessage id="beta" defaultMessage="BETA" />
+            </Link>
+          </li>
           {!isEmpty(authenticatedUser) && (
             <li className="TopNavigation__item">
               <Link

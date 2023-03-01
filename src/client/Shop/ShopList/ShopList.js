@@ -5,24 +5,20 @@ import { Icon } from 'antd';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
-import { getShopUserShopMainFeed } from '../../../waivioApi/ApiClient';
 import ObjectCardView from '../../objectCard/ObjectCardView';
 import EmptyCampaing from '../../statics/EmptyCampaing';
 import Loading from '../../components/Icon/Loading';
-import FiltersForMobile from '../../newRewards/Filters/FiltersForMobile';
-import ShopFilters from '../ShopFilters/ShopFilters';
-import DepartmentsUser from '../DepartmentsUser/DepartmentsUser';
-import DepartmentsMobile from '../DepartmentsUser/DepartmentsMobile';
 import useQuery from '../../../hooks/useQuery';
 import { parseQuery } from '../../../waivioApi/helpers';
-
+import FiltersForMobile from '../../newRewards/Filters/FiltersForMobile';
+import ShopFilters from '../ShopFilters/ShopFilters';
+import DepartmentsMobile from '../ShopDepartments/DepartmentsMobile';
 import './ShopList.less';
 
-const ShopList = ({ userName, path }) => {
+const ShopList = ({ userName, path, children, setVisibleNavig, getShopFeed }) => {
   const [departments, setDepartments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [visible, setVisible] = useState(false);
-  const [visibleNavig, setVisibleNavig] = useState(false);
   const query = useQuery();
   const authUser = useSelector(getAuthenticatedUserName);
 
@@ -49,9 +45,7 @@ const ShopList = ({ userName, path }) => {
   };
 
   useEffect(() => {
-    setLoading(true);
-
-    getShopUserShopMainFeed(userName, authUser, parseQueryForFilters()).then(res => {
+    getShopFeed(userName, authUser, parseQueryForFilters()).then(res => {
       setDepartments(res);
       setLoading(false);
     });
@@ -62,7 +56,7 @@ const ShopList = ({ userName, path }) => {
   return (
     <div className="ShopList">
       <h3 className="ShopList__title">Departments</h3>
-      <DepartmentsMobile setVisible={() => setVisibleNavig(true)} />
+      <DepartmentsMobile setVisible={setVisibleNavig} />
       <FiltersForMobile setVisible={() => setVisible(true)} />
       {departments.every(dep => isEmpty(dep.wobjects)) ? (
         <EmptyCampaing emptyMessage={'There are no objects for this department.'} />
@@ -89,10 +83,8 @@ const ShopList = ({ userName, path }) => {
           })}
         </div>
       )}
+      {children}
       {visible && <ShopFilters visible={visible} onClose={() => setVisible(false)} />}
-      {visibleNavig && (
-        <DepartmentsUser visible={visibleNavig} onClose={() => setVisibleNavig(false)} />
-      )}
     </div>
   );
 };
@@ -100,6 +92,9 @@ const ShopList = ({ userName, path }) => {
 ShopList.propTypes = {
   userName: PropTypes.string,
   path: PropTypes.string,
+  setVisibleNavig: PropTypes.func,
+  getShopFeed: PropTypes.func,
+  children: PropTypes.node,
 };
 
 export default ShopList;

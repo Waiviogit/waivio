@@ -26,46 +26,30 @@ const ShopFilters = ({ visible, onClose }) => {
     setActiveFilter(parseQuery(query.toString()));
   }, [match.params.department]);
 
-  const setActiveFilters = (type, filter) => {
-    if (type === 'rating') {
-      if (activeFilter[type] === +filter) {
+  const setActiveFilters = (type, filter, filterOnlyOne = false) => {
+    const filreList = activeFilter[type] || [];
+
+    if (filreList.includes(filter)) {
+      const filteredList = filreList.filter(name => name !== filter);
+
+      if (isEmpty(filteredList)) {
         query.delete(type);
-        setActiveFilter({
-          ...activeFilter,
-          [type]: undefined,
-        });
       } else {
-        query.set(type, filter);
-        setActiveFilter({
-          ...activeFilter,
-          [type]: filter,
-        });
+        query.set(type, filteredList.join(','));
       }
+
+      setActiveFilter({
+        ...activeFilter,
+        [type]: filteredList,
+      });
     } else {
-      const filreList = activeFilter[type] || [];
+      const newListFilters = filterOnlyOne ? [filter] : [...filreList, filter];
 
-      if (filreList.includes(filter)) {
-        const filteredList = filreList.filter(name => name !== filter);
-
-        if (isEmpty(filteredList)) {
-          query.delete(type);
-        } else {
-          query.set(type, filteredList.join(','));
-        }
-
-        setActiveFilter({
-          ...activeFilter,
-          [type]: filteredList,
-        });
-      } else {
-        const newListFilters = [...filreList, filter];
-
-        query.set(type, newListFilters.join(','));
-        setActiveFilter({
-          ...activeFilter,
-          [type]: newListFilters,
-        });
-      }
+      query.set(type, newListFilters.join(','));
+      setActiveFilter({
+        ...activeFilter,
+        [type]: newListFilters,
+      });
     }
 
     history.push(`?${query.toString()}`);
@@ -99,8 +83,8 @@ const ShopFilters = ({ visible, onClose }) => {
         {filters?.rating?.map(rate => (
           <div key={rate}>
             <Checkbox
-              checked={activeFilter.rating === rate}
-              onChange={() => setActiveFilters('rating', rate)}
+              checked={activeFilter?.rating?.some(r => +r === +rate)}
+              onChange={() => setActiveFilters('rating', rate, true)}
             >
               {' '}
               <Rate defaultValue={rate / 2} allowHalf disabled />

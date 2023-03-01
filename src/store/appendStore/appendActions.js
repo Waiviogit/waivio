@@ -9,6 +9,7 @@ import { getAuthenticatedUserName, getIsAuthenticated } from '../authStore/authS
 
 import { getLocale } from '../settingsStore/settingsSelectors';
 import { getAppendList } from './appendSelectors';
+import { getObjectPosts } from '../feedStore/feedActions';
 
 export const APPEND_WAIVIO_OBJECT = createAsyncActionType('@append/APPEND_WAIVIO_OBJECT');
 
@@ -62,10 +63,12 @@ export const getChangedWobjectField = (
   permlink,
   isNew = false,
   type = '',
+  appendObj,
 ) => async (dispatch, getState, { busyAPI }) => {
   const state = getState();
   const locale = getLocale(state);
   const voter = getAuthenticatedUserName(state);
+  const updatePosts = ['pin', 'remove'].includes(fieldName);
 
   const subscribeCallback = () =>
     dispatch({
@@ -91,21 +94,38 @@ export const getChangedWobjectField = (
       },
       meta: { isNew },
     });
+  const updatePostCallback = () => {
+    dispatch(
+      getObjectPosts({
+        username: authorPermlink,
+        object: authorPermlink,
+      }),
+    ).then(() => subscribeCallback());
 
+    window.scrollTo(0, 0);
+  };
   const blockNumber = await getLastBlockNum();
 
   if (!blockNumber) throw new Error('Something went wrong');
   busyAPI.instance.sendAsync(subscribeMethod, [voter, blockNumber, subscribeTypes.votes]);
-  busyAPI.instance.subscribeBlock(subscribeTypes.votes, blockNumber, subscribeCallback);
+  busyAPI.instance.subscribeBlock(
+    subscribeTypes.votes,
+    blockNumber,
+    appendObj && updatePosts ? updatePostCallback : subscribeCallback,
+  );
 };
 
 export const VOTE_APPEND = createAsyncActionType('@append/VOTE_APPEND');
 
-export const voteAppends = (author, permlink, weight = 10000, name = '', isNew = false, type) => (
-  dispatch,
-  getState,
-  { steemConnectAPI },
-) => {
+export const voteAppends = (
+  author,
+  permlink,
+  weight = 10000,
+  name = '',
+  isNew = false,
+  type,
+  appendObj,
+) => (dispatch, getState, { steemConnectAPI }) => {
   const state = getState();
   const fields = getAppendList(state);
   const post = fields.find(field => field.permlink === permlink) || null;
@@ -131,7 +151,15 @@ export const voteAppends = (author, permlink, weight = 10000, name = '', isNew =
         message.success('Please wait, we are processing your update');
       }
       dispatch(
-        getChangedWobjectField(wobj.author_permlink, fieldName, author, permlink, isNew, type),
+        getChangedWobjectField(
+          wobj.author_permlink,
+          fieldName,
+          author,
+          permlink,
+          isNew,
+          type,
+          appendObj,
+        ),
       );
     })
     .catch(e => {
@@ -184,7 +212,13 @@ export const removeObjectFromAuthority = permlink => ({
   permlink,
 });
 
-const followAndLikeAfterCreateAppend = (data, isLike, follow, isObjectPage) => dispatch => {
+const followAndLikeAfterCreateAppend = (
+  data,
+  isLike,
+  follow,
+  isObjectPage,
+  appendObj,
+) => dispatch => {
   const type = data.field.name === 'listItem' ? data.field.type : null;
 
   if (isLike) {
@@ -207,6 +241,7 @@ const followAndLikeAfterCreateAppend = (data, isLike, follow, isObjectPage) => d
           data.field.name,
           true,
           type,
+          appendObj,
         ),
       );
     }
@@ -236,6 +271,7 @@ export const appendObject = (postData, { follow, isLike, votePercent, isObjectPa
             isLike,
             follow,
             isObjectPage,
+            true,
           ),
         );
       };
