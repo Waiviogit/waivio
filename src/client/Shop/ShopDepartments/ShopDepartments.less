@@ -5,6 +5,19 @@
   font-weight: 500;
   padding-bottom: 30px;
 
+  &__mobile {
+    display: block;
+    font-weight: 600;
+
+    .anticon {
+      font-size: 12px;
+    }
+
+    @media @small {
+      display: none;
+    }
+  }
+
   .ShopDepartmentsList__item {
     cursor: pointer;
     margin-bottom: 10px;

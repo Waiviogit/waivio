@@ -3,15 +3,16 @@ import { useLocation, useRouteMatch } from 'react-router';
 import { Icon } from 'antd';
 import PropTypes from 'prop-types';
 
-import './DepartmentsUser.less';
 import { getLastPermlinksFromHash } from '../../../common/helpers/wObjectHelper';
+
+import './ShopDepartments.less';
 
 const DepartmentsMobile = ({ setVisible }) => {
   const match = useRouteMatch();
   const location = useLocation();
 
   return (
-    <div className="DepartmentsUser__mobile" onClick={setVisible}>
+    <div className="ShopDepartmentsList__mobile" onClick={setVisible}>
       Departments{' '}
       {match.params.department && (
         <span>

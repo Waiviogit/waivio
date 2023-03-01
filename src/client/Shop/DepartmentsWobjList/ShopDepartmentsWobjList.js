@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import DepartmentsWobjList from './DepartmentsWobjList';
 import { getShopDepartmentFeed } from '../../../waivioApi/ApiClient';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
-import ShopDepartmentsList from '../ShopDepartments/ShopDepartmentsList';
+import GlobalShopDepartments from '../ShopDepartments/GlobalShopDepartments';
 
 const ShopDepartmentsWobjList = () => {
   const authUser = useSelector(getAuthenticatedUserName);
@@ -17,8 +17,9 @@ const ShopDepartmentsWobjList = () => {
       user={authUser}
       getDepartmentsFeed={getShopDepartmentFeed}
       setVisibleNavig={onOpen}
+      path={'/shop'}
     >
-      <ShopDepartmentsList visible={visibleNavig} onClose={onClose} />
+      <GlobalShopDepartments visible={visibleNavig} onClose={onClose} />
     </DepartmentsWobjList>
   );
 };

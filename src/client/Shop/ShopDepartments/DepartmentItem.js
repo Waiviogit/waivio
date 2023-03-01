@@ -6,12 +6,11 @@ import PropTypes from 'prop-types';
 import { isEmpty } from 'lodash';
 import { useHistory } from 'react-router';
 
-import { getShopDepartments } from '../../../waivioApi/ApiClient';
 import { createNewHash, getPermlinksFromHash } from '../../../common/helpers/wObjectHelper';
 
 import './ShopDepartments.less';
 
-const DepartmentItem = ({ department, match, excludedMain, onClose }) => {
+const DepartmentItem = ({ department, match, excludedMain, onClose, getShopDepartments, path }) => {
   const [nestedDepartments, setNestedDepartments] = useState([]);
   const [showNested, setShowNested] = useState(false);
   const history = useHistory();
@@ -37,7 +36,7 @@ const DepartmentItem = ({ department, match, excludedMain, onClose }) => {
       else hashPermlinks.push(department.name);
 
       history.push(`#${hashPermlinks.join('/')}`);
-    } else history.push(`/shop/${department.name}`);
+    } else history.push(`${path}/${department.name}`);
 
     if (onClose) onClose();
 
@@ -83,8 +82,11 @@ const DepartmentItem = ({ department, match, excludedMain, onClose }) => {
     if (match.params.department === department.name) return '/shop';
 
     return match.params.department && match.params.department !== department.name
-      ? `/shop/${match.params.department}/#${createNewHash(department.name, history.location.hash)}`
-      : `/shop/${department.name}`;
+      ? `${path}/${match.params.department}/#${createNewHash(
+          department.name,
+          history.location.hash,
+        )}`
+      : `${path}/${department.name}`;
   };
 
   const excluded = [...excludedMain, ...nestedDepartments.map(nes => nes.name)];
@@ -120,6 +122,8 @@ const DepartmentItem = ({ department, match, excludedMain, onClose }) => {
               match={match}
               excludedMain={excluded}
               onClose={onClose}
+              getShopDepartments={getShopDepartments}
+              path={path}
             />
           ))}
         </div>
@@ -139,6 +143,8 @@ DepartmentItem.propTypes = {
   }),
   excludedMain: PropTypes.arrayOf(PropTypes.string),
   onClose: PropTypes.func,
+  getShopDepartments: PropTypes.func,
+  path: PropTypes.string,
 };
 
 DepartmentItem.defaultProps = {

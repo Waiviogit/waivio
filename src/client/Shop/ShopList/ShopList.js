@@ -12,7 +12,7 @@ import useQuery from '../../../hooks/useQuery';
 import { parseQuery } from '../../../waivioApi/helpers';
 import FiltersForMobile from '../../newRewards/Filters/FiltersForMobile';
 import ShopFilters from '../ShopFilters/ShopFilters';
-import DepartmentsMobile from '../DepartmentsUser/DepartmentsMobile';
+import DepartmentsMobile from '../ShopDepartments/DepartmentsMobile';
 import './ShopList.less';
 
 const ShopList = ({ userName, path, children, setVisibleNavig, getShopFeed }) => {
