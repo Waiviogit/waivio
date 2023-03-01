@@ -99,7 +99,6 @@ const HeartButton = ({ wobject, size }) => {
       <Icon type="heart" theme="filled" style={{ fontSize: size }} />
     </button>
   );
-  console.log(authorityList);
 
   return !isMobile() ? (
     <Tooltip
