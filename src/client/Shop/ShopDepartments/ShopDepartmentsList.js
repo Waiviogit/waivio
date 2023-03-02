@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { useRouteMatch } from 'react-router';
 import { Modal } from 'antd';
@@ -18,7 +18,10 @@ const ShopDepartmentsList = ({ visible, onClose, getShopDepartments, path }) => 
     });
   }, []);
 
-  const excludedMain = departments.map(d => d.name);
+  const excludedMain = useMemo(
+    () => departments.map(d => d.name).filter(d => d === match.params.department),
+    [match.params.department, departments],
+  );
   const renderDep = match.params.department
     ? departments.filter(d => d.name === match.params.department)
     : departments;
