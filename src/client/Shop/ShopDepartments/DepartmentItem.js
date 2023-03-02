@@ -36,11 +36,10 @@ const DepartmentItem = ({ department, match, excludedMain, onClose, getShopDepar
       else hashPermlinks.push(department.name);
 
       history.push(`#${hashPermlinks.join('/')}`);
+      getNestedItems();
     } else history.push(`${path}/${department.name}`);
 
     if (onClose) onClose();
-
-    return getNestedItems();
   };
 
   useEffect(() => {

@@ -65,7 +65,7 @@ const DepartmentsWobjList = ({ getDepartmentsFeed, user, children, setVisibleNav
       setDepartmentInfo(res);
       setLoading(false);
     });
-  }, [departments, query.toString()]);
+  }, [match.params.department, query.toString(), location.hash]);
 
   useEffect(() => {
     if (list.current && isMobile() && !loading) {
