@@ -35,17 +35,23 @@ const BlacklistUser = ({ intl, user, handleDeleteUsers }) => {
               {userWeight && <WeightTag weight={userWeight} />}
             </div>
             <div className="Blacklist__user__profile__delete">
-              <Button
-                type="primary"
-                onClick={() => handleDelUsers()}
-                loading={loading}
-                id={userName}
-              >
-                {intl.formatMessage({
-                  id: 'matchBot_btn_delete',
-                  defaultMessage: 'Delete',
-                })}
-              </Button>
+              {user.guideName ? (
+                <a className="Blacklist__guide" href={`/@${user.guideName}`}>
+                  @{user.guideName}
+                </a>
+              ) : (
+                <Button
+                  type="primary"
+                  onClick={() => handleDelUsers()}
+                  loading={loading}
+                  id={userName}
+                >
+                  {intl.formatMessage({
+                    id: 'matchBot_btn_delete',
+                    defaultMessage: 'Delete',
+                  })}
+                </Button>
+              )}
             </div>
           </div>
         </div>

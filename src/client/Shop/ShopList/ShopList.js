@@ -59,7 +59,7 @@ const ShopList = ({ userName, path, children, setVisibleNavig, getShopFeed }) =>
       <DepartmentsMobile setVisible={setVisibleNavig} />
       <FiltersForMobile setVisible={() => setVisible(true)} />
       {departments.every(dep => isEmpty(dep.wobjects)) ? (
-        <EmptyCampaing emptyMessage={'There are no objects for this department.'} />
+        <EmptyCampaing emptyMessage={'This shop does not have any products.'} />
       ) : (
         <div>
           {departments.map(dep => {

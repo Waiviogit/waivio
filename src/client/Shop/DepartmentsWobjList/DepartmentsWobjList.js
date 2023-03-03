@@ -131,7 +131,7 @@ const DepartmentsWobjList = ({ getDepartmentsFeed, user, children, setVisibleNav
         ))}
       </h3>
       {isEmpty(departmentInfo?.wobjects) ? (
-        <EmptyCampaing emptyMessage={'There are no objects for this department.'} />
+        <EmptyCampaing emptyMessage={'There are no products in this department.'} />
       ) : (
         <InfiniteSroll loadMore={loadMore} hasMore={departmentInfo.hasMore}>
           {departmentInfo?.wobjects?.map(wobj => (
