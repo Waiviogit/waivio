@@ -1,0 +1,16 @@
+@import (reference) '../../styles/custom.less';
+@import (reference) '../../styles/modules/variables.less';
+
+.nightmode {
+  .RewardsFilters {
+    @media @small {
+      background: @grey-nero;
+      border-color: @normal-grey;
+    }
+
+    &__title {
+      border-bottom: 1px solid @normal-grey;
+      color: @white;
+    }
+  }
+}
