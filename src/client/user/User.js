@@ -6,6 +6,7 @@ import { Helmet } from 'react-helmet';
 import { get, isEmpty } from 'lodash';
 import classNames from 'classnames';
 import {
+  getGlobalProperties,
   getTokenBalance,
   getUserAccountHistory,
   openTransfer,
@@ -64,6 +65,7 @@ import { getIsOpenWalletTable } from '../../store/walletStore/walletSelectors';
     openTransfer,
     getUserAccountHistory,
     getTokenBalance,
+    getGlobalProperties,
   },
 )
 export default class User extends React.Component {
@@ -80,6 +82,7 @@ export default class User extends React.Component {
     getUserAccount: PropTypes.func,
     getTokenBalance: PropTypes.func,
     getUserAccountHistory: PropTypes.func.isRequired,
+    getGlobalProperties: PropTypes.func.isRequired,
     openTransfer: PropTypes.func,
     rate: PropTypes.number.isRequired,
     rewardFund: PropTypes.shape().isRequired,
@@ -109,6 +112,7 @@ export default class User extends React.Component {
     this.props.getUserAccount(name);
     this.props.getUserAccountHistory(name);
     this.props.getTokenBalance('WAIV', name);
+    this.props.getGlobalProperties();
   }
 
   componentDidUpdate(prevProps) {
