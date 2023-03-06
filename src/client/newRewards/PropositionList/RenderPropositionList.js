@@ -64,6 +64,7 @@ const RenderPropositionList = ({
   const [visible, setVisible] = useState(false);
   const [showMap, setShowMap] = useState(false);
   const search = location.search.replace('?', '&');
+  const isLocation = match.params[0] === 'local';
 
   const getFilters = () => {
     if (!withoutFilters)
@@ -195,7 +196,7 @@ const RenderPropositionList = ({
       </div>
       {!withoutFilters && (
         <div className={'PropositionList__left'}>
-          {withMap && (
+          {withMap && isLocation && (
             <RewardsMap
               getPoints={getPoints}
               parent={parent}

@@ -644,7 +644,10 @@ export const buildPost = (draftId, data = {}, isEditPost) => (dispatch, getState
   return postData;
 };
 
-export const handleObjectSelect = (object, withFocus, intl) => async (dispatch, getState) => {
+export const handleObjectSelect = (object, withFocus, intl, match) => async (
+  dispatch,
+  getState,
+) => {
   const state = getState();
   const {
     content,
@@ -664,7 +667,7 @@ export const handleObjectSelect = (object, withFocus, intl) => async (dispatch, 
   const separator = content?.slice(-1) === '\n' ? '' : '\n';
   const draftContent = {
     title: titleValue,
-    body: `${content}${separator}[${objNameDisplay}](${getObjectLink(object)})&nbsp;\n`,
+    body: `${content}${separator}[${objNameDisplay}](${getObjectLink(object, match)})&nbsp;\n`,
   };
   const updatedStore = { content: draftContent.body, titleValue: draftContent.title };
 
@@ -679,9 +682,9 @@ export const handleObjectSelect = (object, withFocus, intl) => async (dispatch, 
   ).filter(item => has(item, '_id'));
 
   let updatedObjPercentage = setObjPercents(updatedLinkedObjects, objPercentage);
-  const isHideObject = hideLinkedObjects?.find(
-    item => item?.author_permlink === newLinkedObject?.author_permlink,
-  );
+  const isHideObject = Array.isArray(hideLinkedObjects)
+    ? hideLinkedObjects?.find(item => item?.author_permlink === newLinkedObject?.author_permlink)
+    : false;
 
   if (isHideObject) {
     const filteredObjectCards = hideLinkedObjects?.filter(

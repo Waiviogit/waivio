@@ -12,9 +12,10 @@ import { setObjPercents } from '../../../common/helpers/wObjInfluenceHelper';
 import SearchObjectsAutocomplete from '../../components/EditorObject/SearchObjectsAutocomplete';
 import CreateObject from '../CreateObjectModal/CreateObject';
 import { getCurrentDraftId } from '../../../common/helpers/editorHelper';
-import './EditPost.less';
 import { editorStateToMarkdownSlate } from '../../components/EditorExtended/util/editorStateToMarkdown';
 import { parseJSON } from '../../../common/helpers/parseJSON';
+
+import './EditPost.less';
 
 const propTypes = {
   intl: PropTypes.shape().isRequired,

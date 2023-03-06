@@ -15,6 +15,7 @@ import Shop from '../../client/Shop/Shop';
 import GlobalShopingList from '../../client/Shop/ShopList/GlobalShopingList';
 import ShopDepartmentsWobjList from '../../client/Shop/DepartmentsWobjList/ShopDepartmentsWobjList';
 import UserDepartmentsWobjList from '../../client/Shop/DepartmentsWobjList/UserDepartmentsWobjList';
+import { isMobile } from '../../common/helpers/apiHelpers';
 
 const routes = {
   component: Wrapper,
@@ -375,7 +376,7 @@ const routes = {
         {
           path: '/about',
           exact: true,
-          component: Views.ObjectAbout,
+          component: isMobile() ? Views.ObjectAbout : Views.ObjectPageFeed,
         },
         {
           path: '/followers',
