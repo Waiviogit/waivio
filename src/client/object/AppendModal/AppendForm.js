@@ -124,6 +124,7 @@ import MerchantForm from './FormComponents/MerchantForm';
 import AuthorForm from './FormComponents/AuthorForm';
 import './AppendForm.less';
 import SearchDepartmentAutocomplete from '../../components/SearchDepartmentAutocomplete/SearchDepartmentAutocomplete';
+import ShopFilterForm from './FormComponents/ShopFilterForm';
 
 @connect(
   state => ({
@@ -234,6 +235,10 @@ export default class AppendForm extends Component {
     selectedUserBlog: [],
     selectedUsers: [],
     typeList: [],
+    tags: [],
+    authoritiesList: [],
+    departmentsArray: [[]],
+    newRuleBlockArray: [[0]],
     formColumn: formColumnsField.middle,
     formForm: formFormFields.link,
     itemsInSortingList: null,
@@ -389,6 +394,7 @@ export default class AppendForm extends Component {
       case objectFields.categoryItem:
       case objectFields.parent:
       case objectFields.publisher:
+      case objectFields.shopFilter:
       case objectFields.manufacturer:
       case objectFields.brand:
       case objectFields.merchant:
@@ -486,6 +492,20 @@ export default class AppendForm extends Component {
           return `@${author} added ${currentField} (${langReadable}): ${optionsFields.category}: ${
             formValues[optionsFields.category]
           }, ${optionsFields.value}: ${formValues[optionsFields.value]}${position}${image}`;
+
+        case objectFields.shopFilter: {
+          const { typeList, tags, authoritiesList, departmentsArray } = this.state;
+          const typeInfo = !isEmpty(typeList) ? `Type: ${typeList.flat()}` : '';
+          const departmentsInfo = !isEmpty(departmentsArray)
+            ? `, Departments: ${departmentsArray.map(dep => dep.join(' and '))}`
+            : '';
+          const tagsInfo = !isEmpty(tags) ? `, Tags: ${tags.map(t => t)}` : '';
+          const authoritiesInfo = !isEmpty(authoritiesList)
+            ? `, Authorities: ${tags.map(user => `@${user}`)}`
+            : '';
+
+          return `@${author} added ${currentField} (${langReadable}): ${typeInfo}${departmentsInfo}${tagsInfo}${authoritiesInfo}`;
+        }
         case objectFields.publisher: {
           const linkInfo = this.state.selectedObject
             ? `, link: ${this.state.selectedObject.author_permlink}`
@@ -769,6 +789,17 @@ export default class AppendForm extends Component {
           }),
         };
       }
+      if (currentField === objectFields.shopFilter) {
+        fieldsObject = {
+          ...fieldsObject,
+          body: JSON.stringify({
+            type: this.state.typeList.join() || undefined,
+            departments: this.state.departmentsArray || undefined,
+            tags: this.state.tags || undefined,
+            authorities: this.state.authoritiesList || undefined,
+          }),
+        };
+      }
       if (currentField === objectFields.manufacturer) {
         fieldsObject = {
           ...fieldsObject,
@@ -968,6 +999,41 @@ export default class AppendForm extends Component {
   handleAddTypeToIgnoreTypeList = type =>
     this.setState(prevState => ({ typeList: [...prevState.typeList, type] }));
 
+  handleChangeDepartmentValue = (str, index) => {
+    const { departmentsArray } = this.state;
+    const deps = [...departmentsArray];
+    let currentArray = deps[index];
+
+    if (!currentArray.includes(str)) {
+      currentArray.push(str);
+    } else {
+      currentArray = currentArray.filter(dep => dep !== str);
+    }
+    deps.splice(index, 1, currentArray);
+
+    this.setState({ departmentsArray: deps });
+  };
+  onAddDepartmentSection = () => {
+    const { departmentsArray, newRuleBlockArray } = this.state;
+
+    this.setState({ departmentsArray: [...departmentsArray, []] });
+    this.setState({ newRuleBlockArray: [...newRuleBlockArray, newRuleBlockArray.length] });
+  };
+
+  handleAddTypeToShopTypeList = type =>
+    this.setState(prevState => ({ typeList: [...prevState.typeList, type] }));
+  handleRemoveTypeFromShopTypeList = () => this.setState({ typeList: [] });
+
+  addUserToAuthorityList = user => {
+    this.setState(prevState => ({
+      authoritiesList: [...prevState.authoritiesList, user],
+    }));
+  };
+  deleteUserFromAuthorityList = user => {
+    this.setState(prevState => ({
+      authoritiesList: prevState.authoritiesList.filter(d => d.account !== user.account),
+    }));
+  };
   handleRemoveObjectFromIgnoreTypeList = type =>
     this.setState(prevState => ({ typeList: prevState.typeList.filter(g => g !== type) }));
 
@@ -975,6 +1041,14 @@ export default class AppendForm extends Component {
     this.setState(prevState => ({
       ignoreList: filter(prevState.ignoreList, o => o.author_permlink !== obj.author_permlink),
     }));
+  handleSelectTag = tag => {
+    this.setState(prevState => ({ tags: [...prevState.tags, tag.author_permlink] }));
+  };
+  handleRemoveTag = tag => {
+    this.setState(prevState => ({
+      tags: prevState.tags.filter(d => d !== tag),
+    }));
+  };
 
   calculateVoteWorth = value => {
     const { user, rewardFund, rate } = this.props;
@@ -1316,6 +1390,7 @@ export default class AppendForm extends Component {
       currentField === objectFields.companyId ||
       currentField === objectFields.authors ||
       currentField === objectFields.publisher ||
+      currentField === objectFields.shopFilter ||
       currentField === objectFields.manufacturer ||
       currentField === objectFields.brand ||
       currentField === objectFields.merchant ||
@@ -2061,7 +2136,9 @@ export default class AppendForm extends Component {
             })(
               <SearchDepartmentAutocomplete
                 disabled={loading}
-                setFieldsValue={this.props.form.setFieldsValue}
+                handleSelectValue={val =>
+                  this.props.form.setFieldsValue({ [this.props.currentField]: val })
+                }
               />,
             )}
             <p>
@@ -3233,7 +3310,25 @@ export default class AppendForm extends Component {
             deleteUser={this.deleteUser}
           />
         );
-
+      case objectFields.shopFilter: {
+        return (
+          <ShopFilterForm
+            handleAddTypeToShopTypeList={this.handleAddTypeToShopTypeList}
+            handleRemoveTypeFromShopTypeList={this.handleRemoveTypeFromShopTypeList}
+            typeList={this.state.typeList}
+            handleSelectTag={this.handleSelectTag}
+            tags={this.state.tags}
+            handleRemoveTag={this.handleRemoveTag}
+            authoritiesList={this.state.authoritiesList}
+            deleteUserFromAuthorityList={this.deleteUserFromAuthorityList}
+            addUserToAuthorityList={this.addUserToAuthorityList}
+            departmentsArray={this.state.departmentsArray}
+            handleChangeDepartmentValue={this.handleChangeDepartmentValue}
+            onAddDepartmentSection={this.onAddDepartmentSection}
+            newRuleBlockArray={this.state.newRuleBlockArray}
+          />
+        );
+      }
       case objectFields.tagCategory: {
         return (
           <Form.Item>
@@ -3574,6 +3669,7 @@ export default class AppendForm extends Component {
       case objectFields.sorting:
       case objectFields.pin:
       case objectFields.remove:
+      case objectFields.shopFilter:
         return false;
 
       default:

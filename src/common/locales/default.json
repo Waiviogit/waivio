@@ -2175,6 +2175,7 @@
   "post_permlink": "Post permlink",
   "post_author": "Post author",
 "pinned": "Pinned",
- "object_field_shopFilter": "Filter",
-  "shop": "Shop"
+ "object_field_shopFilter": "Shop filter",
+  "shop": "Shop",
+  "add_new_rule": "Add new rule"
 }

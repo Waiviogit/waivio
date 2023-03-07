@@ -580,6 +580,7 @@ class ObjectInfo extends React.Component {
 
     const dimensions = parseWobjectField(wobject, 'dimensions');
     const productWeight = parseWobjectField(wobject, 'productWeight');
+    // const shopFilter = parseWobjectField(wobject, 'shopFilter');
     const profile = linkField
       ? {
           facebook: linkField[linkFields.linkFacebook] || '',

@@ -11,10 +11,10 @@ import listOfObjectTypes from '../../../../common/constants/listOfObjectTypes';
 import './NewsFilterForm.less';
 import SearchUsersAutocomplete from '../../../components/EditorUser/SearchUsersAutocomplete';
 import SelectUserForAutocomplete from '../../../widgets/SelectUserForAutocomplete';
+import { andLayout, orLayout } from '../../../../common/helpers/AppendFormHelper';
 
 const ExtendedNewsFilterForm = props => {
   const [searchString, setSearchString] = useState('');
-  const isMobile = screenSize => screenSize === 'xsmall' || screenSize === 'small';
   const typesList = listOfObjectTypes.filter(type => !props.typeList.includes(type));
   const handleSelect = value => {
     props.handleAddTypeToIgnoreTypeList(value);
@@ -25,27 +25,6 @@ const ExtendedNewsFilterForm = props => {
   useEffect(() => {
     titleInputEl.current.focus();
   }, [titleInputEl.current]);
-
-  const andLayout = compareItems =>
-    compareItems > 0 &&
-    !isMobile(props.screenSize) && (
-      <div className={`NewsFiltersRule__line-and`}>
-        {props.intl.formatMessage({
-          id: 'and',
-          defaultMessage: 'and',
-        })}
-      </div>
-    );
-  const orLayout = compareItems =>
-    compareItems > 0 &&
-    !isMobile(props.screenSize) && (
-      <div className={`NewsFiltersRule__line-and`}>
-        {props.intl.formatMessage({
-          id: 'or',
-          defaultMessage: 'or',
-        })}
-      </div>
-    );
 
   const getAllowListLayout = () => (
     <React.Fragment>
@@ -273,7 +252,6 @@ ExtendedNewsFilterForm.propTypes = {
   intl: PropTypes.shape({
     formatMessage: PropTypes.func,
   }).isRequired,
-  screenSize: PropTypes.string.isRequired,
   currObjId: PropTypes.string.isRequired,
   allowList: PropTypes.arrayOf().isRequired,
   selectedUsers: PropTypes.arrayOf().isRequired,
