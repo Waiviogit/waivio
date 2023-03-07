@@ -5,6 +5,7 @@ import { FormattedMessage, FormattedNumber } from 'react-intl';
 import OBJECT_TYPE from '../object/const/objectTypes';
 import { hasType } from '../../common/helpers/wObjectHelper';
 import './ObjectMenu.less';
+import { isMobile } from '../../common/helpers/apiHelpers';
 
 class ObjectMenu extends React.Component {
   static propTypes = {
@@ -51,9 +52,10 @@ class ObjectMenu extends React.Component {
       current: nextProps.defaultKey ? nextProps.defaultKey : ObjectMenu.TAB_NAME.ABOUT,
     });
   }
-
   getItemClasses = key =>
-    classNames('ObjectMenu__item', { 'ObjectMenu__item--active': this.state.current === key });
+    classNames('ObjectMenu__item', {
+      'ObjectMenu__item--active': key.includes(this.state.current),
+    });
 
   handleClick = e => {
     const key = e.currentTarget.dataset.key;
@@ -122,7 +124,11 @@ class ObjectMenu extends React.Component {
               </li>
             )}
             <li
-              className={this.getItemClasses(ObjectMenu.TAB_NAME.REVIEWS)}
+              className={this.getItemClasses([
+                ObjectMenu.TAB_NAME.REVIEWS,
+                isMobile() ? '' : ObjectMenu.TAB_NAME.ABOUT,
+                '',
+              ])}
               onClick={this.handleClick}
               role="presentation"
               data-key={ObjectMenu.TAB_NAME.REVIEWS}

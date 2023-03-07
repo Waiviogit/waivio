@@ -12,7 +12,7 @@ import useQuery from '../../../hooks/useQuery';
 import { parseQuery } from '../../../waivioApi/helpers';
 import FiltersForMobile from '../../newRewards/Filters/FiltersForMobile';
 import ShopFilters from '../ShopFilters/ShopFilters';
-import DepartmentsMobile from '../DepartmentsUser/DepartmentsMobile';
+import DepartmentsMobile from '../ShopDepartments/DepartmentsMobile';
 import './ShopList.less';
 
 const ShopList = ({ userName, path, children, setVisibleNavig, getShopFeed }) => {
@@ -59,7 +59,7 @@ const ShopList = ({ userName, path, children, setVisibleNavig, getShopFeed }) =>
       <DepartmentsMobile setVisible={setVisibleNavig} />
       <FiltersForMobile setVisible={() => setVisible(true)} />
       {departments.every(dep => isEmpty(dep.wobjects)) ? (
-        <EmptyCampaing emptyMessage={'There are no objects for this department.'} />
+        <EmptyCampaing emptyMessage={'This shop does not have any products.'} />
       ) : (
         <div>
           {departments.map(dep => {

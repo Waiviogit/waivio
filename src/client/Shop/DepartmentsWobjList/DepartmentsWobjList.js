@@ -13,7 +13,7 @@ import useQuery from '../../../hooks/useQuery';
 import { parseQuery } from '../../../waivioApi/helpers';
 import ShopFilters from '../ShopFilters/ShopFilters';
 import FiltersForMobile from '../../newRewards/Filters/FiltersForMobile';
-import DepartmentsMobile from '../DepartmentsUser/DepartmentsMobile';
+import DepartmentsMobile from '../ShopDepartments/DepartmentsMobile';
 import { isMobile } from '../../../common/helpers/apiHelpers';
 import Loading from '../../components/Icon/Loading';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
@@ -25,7 +25,7 @@ import {
 
 import './DepartmentsWobjList.less';
 
-const DepartmentsWobjList = ({ getDepartmentsFeed, user, children, setVisibleNavig }) => {
+const DepartmentsWobjList = ({ getDepartmentsFeed, user, children, setVisibleNavig, path }) => {
   const [departmentInfo, setDepartmentInfo] = useState();
   const [visible, setVisible] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -34,7 +34,7 @@ const DepartmentsWobjList = ({ getDepartmentsFeed, user, children, setVisibleNav
   const location = useLocation();
   const departments = location.hash
     ? getLastPermlinksFromHash(location.hash).replaceAll('%20', ' ')
-    : match.params.departments;
+    : match.params.department;
 
   const query = useQuery();
   const list = useRef();
@@ -65,7 +65,7 @@ const DepartmentsWobjList = ({ getDepartmentsFeed, user, children, setVisibleNav
       setDepartmentInfo(res);
       setLoading(false);
     });
-  }, [departments, query.toString()]);
+  }, [match.params.department, query.toString(), location.hash]);
 
   useEffect(() => {
     if (list.current && isMobile() && !loading) {
@@ -100,8 +100,8 @@ const DepartmentsWobjList = ({ getDepartmentsFeed, user, children, setVisibleNav
     <div className="DepartmentsWobjList" ref={list} id={'DepartmentsWobjList'}>
       <DepartmentsMobile setVisible={() => setVisibleNavig(true)} />
       <FiltersForMobile setVisible={() => setVisible(true)} />
-      <h3>
-        <Link className={'DepartmentsWobjList__breadCrumbs'} to={'/shop'}>
+      <h3 className={'DepartmentsWobjList__breadCrumbsWrap'}>
+        <Link className={'DepartmentsWobjList__breadCrumbs'} to={path}>
           Departments
         </Link>{' '}
         &gt;{' '}
@@ -109,9 +109,9 @@ const DepartmentsWobjList = ({ getDepartmentsFeed, user, children, setVisibleNav
           className={classNames('DepartmentsWobjList__breadCrumbs', {
             'DepartmentsWobjList__breadCrumbs--active': !location.hash,
           })}
-          to={`/shop/${match.params.departments}`}
+          to={`${path}/${match.params.department}`}
         >
-          {match.params.departments}
+          {match.params.department}
         </Link>{' '}
         {getPermlinksFromHash(location.hash).map(crumb => (
           <span key={crumb}>
@@ -131,7 +131,7 @@ const DepartmentsWobjList = ({ getDepartmentsFeed, user, children, setVisibleNav
         ))}
       </h3>
       {isEmpty(departmentInfo?.wobjects) ? (
-        <EmptyCampaing emptyMessage={'There are no objects for this department.'} />
+        <EmptyCampaing emptyMessage={'There are no products in this department.'} />
       ) : (
         <InfiniteSroll loadMore={loadMore} hasMore={departmentInfo.hasMore}>
           {departmentInfo?.wobjects?.map(wobj => (
@@ -149,6 +149,7 @@ DepartmentsWobjList.propTypes = {
   getDepartmentsFeed: PropTypes.func,
   setVisibleNavig: PropTypes.func,
   user: PropTypes.string,
+  path: PropTypes.string,
   children: PropTypes.node,
 };
 

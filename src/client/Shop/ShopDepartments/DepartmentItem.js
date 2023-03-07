@@ -6,55 +6,50 @@ import PropTypes from 'prop-types';
 import { isEmpty } from 'lodash';
 import { useHistory } from 'react-router';
 
-import { getShopDepartments } from '../../../waivioApi/ApiClient';
 import { createNewHash, getPermlinksFromHash } from '../../../common/helpers/wObjectHelper';
 
 import './ShopDepartments.less';
 
-const DepartmentItem = ({ department, match, excludedMain }) => {
+const DepartmentItem = ({ department, match, excludedMain, onClose, getShopDepartments, path }) => {
   const [nestedDepartments, setNestedDepartments] = useState([]);
   const [showNested, setShowNested] = useState(false);
   const history = useHistory();
   const categories = getPermlinksFromHash(history.location.hash);
 
-  const getNestedItems = () => {
-    if (isEmpty(nestedDepartments)) {
-      getShopDepartments(department.name, excluded).then(res => {
-        setNestedDepartments(res);
-        setShowNested(true);
-      });
-    } else {
-      setShowNested(!showNested);
-    }
-  };
-
   const getNestedDepartments = () => {
-    if (match.params.department && match.params.department === department.name)
-      return history.push('/shop');
     if (match.params.department && match.params.department !== department.name) {
       const findIndex = categories.findIndex(el => el === department.name);
       const hashPermlinks = [...categories];
 
-      if (findIndex >= 0) hashPermlinks.splice(findIndex);
+      if (findIndex >= 0) hashPermlinks.splice(findIndex + 1);
       else hashPermlinks.push(department.name);
 
       history.push(`#${hashPermlinks.join('/')}`);
-    } else history.push(`/shop/${department.name}`);
+      if (isEmpty(nestedDepartments) && department.subdirectory) {
+        getShopDepartments(department.name, excludedMain).then(res => {
+          setNestedDepartments(res);
+          setShowNested(true);
+        });
+      } else {
+        setShowNested(!showNested);
+      }
+    } else history.push(`${path}/${department.name}`);
 
-    return getNestedItems();
+    if (onClose) onClose();
   };
 
   useEffect(() => {
     if (
-      match.params.department === department.name ||
-      (match.params.department !== department.name && categories.includes(department.name))
+      (match.params.department === department.name ||
+        (match.params.department !== department.name && categories.includes(department.name))) &&
+      department.subdirectory
     ) {
-      getShopDepartments(department.name, excluded).then(res => {
+      getShopDepartments(department.name, excludedMain).then(res => {
         setNestedDepartments(res);
         setShowNested(true);
       });
     }
-  }, []);
+  }, [match.params.department]);
 
   useEffect(() => {
     if (
@@ -80,11 +75,14 @@ const DepartmentItem = ({ department, match, excludedMain }) => {
   });
 
   const getLinkPath = () => {
-    if (match.params.department === department.name) return '/shop';
+    if (match.params.department === department.name) return path;
 
     return match.params.department && match.params.department !== department.name
-      ? `/shop/${match.params.department}/#${createNewHash(department.name, history.location.hash)}`
-      : `/shop/${department.name}`;
+      ? `${path}/${match.params.department}/#${createNewHash(
+          department.name,
+          history.location.hash,
+        )}`
+      : `${path}/${department.name}`;
   };
 
   const excluded = [...excludedMain, ...nestedDepartments.map(nes => nes.name)];
@@ -104,7 +102,8 @@ const DepartmentItem = ({ department, match, excludedMain }) => {
           isActive={() =>
             match?.url.includes(`/${department.name}`) || categories.includes(department.name)
           }
-          activeClassName="ShopDepartmentsList__link-active"
+          onClick={onClose}
+          activeClassName="ShopDepartmentsList__link--active"
           className="ShopDepartmentsList__link"
         >
           {department.name}
@@ -118,6 +117,9 @@ const DepartmentItem = ({ department, match, excludedMain }) => {
               department={nest}
               match={match}
               excludedMain={excluded}
+              onClose={onClose}
+              getShopDepartments={getShopDepartments}
+              path={path}
             />
           ))}
         </div>
@@ -136,6 +138,9 @@ DepartmentItem.propTypes = {
     params: PropTypes.string,
   }),
   excludedMain: PropTypes.arrayOf(PropTypes.string),
+  onClose: PropTypes.func,
+  getShopDepartments: PropTypes.func,
+  path: PropTypes.string,
 };
 
 DepartmentItem.defaultProps = {

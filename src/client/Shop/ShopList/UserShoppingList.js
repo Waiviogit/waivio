@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useRouteMatch } from 'react-router';
 
 import ShopList from './ShopList';
-import DepartmentsUser from '../DepartmentsUser/DepartmentsUser';
+import DepartmentsUser from '../ShopDepartments/DepartmentsUser';
 import { getUserShopMainFeed } from '../../../waivioApi/ApiClient';
 
 const UserShoppingList = () => {

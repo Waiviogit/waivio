@@ -13,8 +13,9 @@ import RewardsMainPage from '../../client/newRewards/RewardsMainPage';
 import UserShoppingList from '../../client/Shop/ShopList/UserShoppingList';
 import Shop from '../../client/Shop/Shop';
 import GlobalShopingList from '../../client/Shop/ShopList/GlobalShopingList';
-import UserDepartmentsWobjList from '../../client/Shop/DepartmentsWobjList/UserDepartmentsWobjList';
 import ShopDepartmentsWobjList from '../../client/Shop/DepartmentsWobjList/ShopDepartmentsWobjList';
+import UserDepartmentsWobjList from '../../client/Shop/DepartmentsWobjList/UserDepartmentsWobjList';
+import { isMobile } from '../../common/helpers/apiHelpers';
 
 const routes = {
   component: Wrapper,
@@ -321,7 +322,7 @@ const routes = {
           component: UserShoppingList,
         },
         {
-          path: '/userShop/:departments?',
+          path: '/userShop/:department?',
           exact: true,
           component: UserDepartmentsWobjList,
         },
@@ -375,7 +376,7 @@ const routes = {
         {
           path: '/about',
           exact: true,
-          component: Views.ObjectAbout,
+          component: isMobile() ? Views.ObjectAbout : Views.ObjectPageFeed,
         },
         {
           path: '/followers',
@@ -459,13 +460,13 @@ const routes = {
       component: Discover,
     },
     {
-      path: '/shop/:departments?',
+      path: '/shop/:department?',
       exact: true,
       component: Shop,
       pathScope: '/shop',
       routes: [
         {
-          path: '/:departments',
+          path: '/:department',
           exact: true,
           component: ShopDepartmentsWobjList,
         },

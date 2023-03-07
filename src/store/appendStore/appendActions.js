@@ -63,6 +63,7 @@ export const getChangedWobjectField = (
   permlink,
   isNew = false,
   type = '',
+  appendObj,
 ) => async (dispatch, getState, { busyAPI }) => {
   const state = getState();
   const locale = getLocale(state);
@@ -99,7 +100,9 @@ export const getChangedWobjectField = (
         username: authorPermlink,
         object: authorPermlink,
       }),
-    );
+    ).then(() => subscribeCallback());
+
+    window.scrollTo(0, 0);
   };
   const blockNumber = await getLastBlockNum();
 
@@ -108,17 +111,21 @@ export const getChangedWobjectField = (
   busyAPI.instance.subscribeBlock(
     subscribeTypes.votes,
     blockNumber,
-    updatePosts ? updatePostCallback : subscribeCallback,
+    appendObj && updatePosts ? updatePostCallback : subscribeCallback,
   );
 };
 
 export const VOTE_APPEND = createAsyncActionType('@append/VOTE_APPEND');
 
-export const voteAppends = (author, permlink, weight = 10000, name = '', isNew = false, type) => (
-  dispatch,
-  getState,
-  { steemConnectAPI },
-) => {
+export const voteAppends = (
+  author,
+  permlink,
+  weight = 10000,
+  name = '',
+  isNew = false,
+  type,
+  appendObj,
+) => (dispatch, getState, { steemConnectAPI }) => {
   const state = getState();
   const fields = getAppendList(state);
   const post = fields.find(field => field.permlink === permlink) || null;
@@ -144,7 +151,15 @@ export const voteAppends = (author, permlink, weight = 10000, name = '', isNew =
         message.success('Please wait, we are processing your update');
       }
       dispatch(
-        getChangedWobjectField(wobj.author_permlink, fieldName, author, permlink, isNew, type),
+        getChangedWobjectField(
+          wobj.author_permlink,
+          fieldName,
+          author,
+          permlink,
+          isNew,
+          type,
+          appendObj,
+        ),
       );
     })
     .catch(e => {
@@ -197,7 +212,13 @@ export const removeObjectFromAuthority = permlink => ({
   permlink,
 });
 
-const followAndLikeAfterCreateAppend = (data, isLike, follow, isObjectPage) => dispatch => {
+const followAndLikeAfterCreateAppend = (
+  data,
+  isLike,
+  follow,
+  isObjectPage,
+  appendObj,
+) => dispatch => {
   const type = data.field.name === 'listItem' ? data.field.type : null;
 
   if (isLike) {
@@ -220,6 +241,7 @@ const followAndLikeAfterCreateAppend = (data, isLike, follow, isObjectPage) => d
           data.field.name,
           true,
           type,
+          appendObj,
         ),
       );
     }
@@ -249,6 +271,7 @@ export const appendObject = (postData, { follow, isLike, votePercent, isObjectPa
             isLike,
             follow,
             isObjectPage,
+            true,
           ),
         );
       };

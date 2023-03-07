@@ -3130,9 +3130,12 @@ export const getNewsPermlinkByObjectName = ({
     .then(posts => posts)
     .catch(error => error);
 
-export const getObjectOptions = (authorPermlink, category, skip, limit) => {
+export const getObjectOptions = (userName, authorPermlink, category, skip, limit) => {
   return fetch(`${config.apiPrefix}${config.wobjects}${config.options}`, {
-    headers,
+    headers: {
+      ...headers,
+      follower: userName,
+    },
     method: 'POST',
     body: JSON.stringify({
       authorPermlink,
@@ -3162,13 +3165,14 @@ export const getAuthorityFields = permlink =>
     .then(posts => posts)
     .catch(error => error);
 
-export const getShopUserDepartments = (userName, filter) =>
+export const getShopUserDepartments = (userName, name, excluded) =>
   fetch(`${config.apiPrefix}${config.shop}${config.user}${config.departments}`, {
     headers,
     method: 'POST',
     body: JSON.stringify({
       userName,
-      filter,
+      name,
+      excluded,
     }),
   })
     .then(res => res.json())

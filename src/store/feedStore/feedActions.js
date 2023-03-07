@@ -205,7 +205,7 @@ export const getObjectPosts = ({ username, object, limit = 10, newsPermlink }) =
   const locale = getLocale(state);
   const follower = getAuthenticatedUserName(state);
 
-  dispatch({
+  return dispatch({
     type: GET_OBJECT_POSTS.ACTION,
     payload: ApiClient.getFeedContentByObject(
       object,

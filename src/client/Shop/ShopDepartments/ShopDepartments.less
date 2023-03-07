@@ -5,48 +5,54 @@
   font-weight: 500;
   padding-bottom: 30px;
 
+  &__mobile {
+    display: block;
+    font-weight: 600;
+
+    .anticon {
+      font-size: 12px;
+    }
+
+    @media @small {
+      display: none;
+    }
+  }
+
   .ShopDepartmentsList__item {
     cursor: pointer;
+    margin-bottom: 10px;
 
     &--active {
       color: @orange-light;
-    }
-
-    &--withNested {
-      div {
-        color: @blue-gullGray;
-        margin-bottom: 10px;
-      }
     }
   }
 
   &__link {
     cursor: pointer;
     padding-left: 10px;
+    color: @blue-gullGray;
+    display: inline-block;
 
     &--active {
-      color: @orange-light;
+      color: @black;
       padding-left: 0;
     }
+  }
+
+  &__maindepName {
+    display: inline-block;
+    color: @black !important;
+    margin-bottom: 10px;
   }
 
   &__depName {
     color: @blue-gullGray !important;
     padding-left: 10px;
-
-    &--open {
-      padding: 0;
-      color: @black !important;
-    }
-  }
-
-  a {
-    color: @blue-gullGray;
-    display: inline-block;
     margin-bottom: 10px;
 
-    &:active {
-      color: @orange-light;
+    &--open {
+      padding-left: 0;
+      color: @black !important;
     }
   }
 
@@ -73,3 +79,5 @@
     }
   }
 }
+
+@import 'ShopDepartments-nightmode';

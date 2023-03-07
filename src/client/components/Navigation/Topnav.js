@@ -425,6 +425,12 @@ class Topnav extends React.Component {
 
   searchSelectBar = searchResults => {
     const options = getTranformSearchCountData(searchResults, listOfObjectTypes);
+    const reduceHref = opt => {
+      const mainLink = opt.name === 'user' ? '/discover' : `/discover-objects/${opt.name}`;
+      const search = this.state.searchBarValue ? `?search=${this.state.searchBarValue}` : '';
+
+      return `${mainLink}/${search}`;
+    };
 
     return (
       <AutoComplete.OptGroup key={Topnav.markers.SELECT_BAR} label=" ">
@@ -436,7 +442,10 @@ class Topnav extends React.Component {
             type={option.type}
             className={this.changeItemClass(option.name)}
           >
-            {`${option.name}(${option.count})`}
+            <a
+              href={reduceHref(option)}
+              className="Topnav__searchOpt"
+            >{`${option.name}(${option.count})`}</a>
           </AutoComplete.Option>
         ))}
       </AutoComplete.OptGroup>

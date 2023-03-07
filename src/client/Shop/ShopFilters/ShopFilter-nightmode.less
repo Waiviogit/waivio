@@ -1,0 +1,24 @@
+@import (reference) '../../styles/modules/variables.less';
+@import (reference) '../../styles/custom.less';
+
+.nightmode {
+  .ShopFilters {
+    @media @small {
+      background: @grey-nero;
+      border: 1px solid @normal-grey;
+    }
+
+    &__show-more {
+      color: @white;
+
+      &:hover {
+        color: @neon-carrot;
+      }
+    }
+
+    &__title {
+      border-bottom: @base-border;
+      color: @blue-baliHai;
+    }
+  }
+}
