@@ -144,7 +144,7 @@ const UserHeader = ({
               {isGuest && guestPrefix}
             </span>
             <div className="UserHeader__flexWrap">
-              {Boolean(parseFloat(user.vesting_shares)) && Boolean(votingWaivPower) && (
+              {Boolean(totalVestingShares) && Boolean(totalVestingFundSteem) && (
                 <div className="UserHeader__rank">
                   <i className="iconfont icon-ranking" />
                   <FormattedMessage

@@ -78,6 +78,7 @@ export const parseLink = appUrl => (tagName, attribs) => {
   const linkWebsiteUrl = url.format({
     protocol: linkUrl.protocol,
     host: linkUrl.host,
+    hash: linkUrl.hash,
   });
 
   const internalLink = href.indexOf('/') === 0;
@@ -86,6 +87,9 @@ export const parseLink = appUrl => (tagName, attribs) => {
 
   if (linkWebsiteUrl.includes('waivio')) {
     href = appUrl + linkUrl.pathname;
+
+    if (linkUrl.hash) href = href + linkUrl.hash;
+
     attys.target = '';
   }
 

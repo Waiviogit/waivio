@@ -669,6 +669,7 @@ export const handleObjectSelect = (object, withFocus, intl, match) => async (
     title: titleValue,
     body: `${content}${separator}[${objNameDisplay}](${getObjectLink(object, match)})&nbsp;\n`,
   };
+
   const updatedStore = { content: draftContent.body, titleValue: draftContent.title };
 
   const { rawContentUpdated } = await dispatch(getRestoreObjects(fromMarkdown(draftContent)));
@@ -723,7 +724,7 @@ export const handleObjectSelect = (object, withFocus, intl, match) => async (
   );
 
   const { beforeRange } = checkCursorInSearchSlate(editor);
-  const url = getObjectUrl(object.id || object.author_permlink);
+  const url = getObjectLink(object, match);
   const textReplace = objType === objectTypes.HASHTAG ? `#${objName}` : objName;
 
   Transforms.select(editor, beforeRange);
@@ -740,7 +741,7 @@ export const getObjectIds = (rawContent, newObject, draftId) => (dispatch, getSt
   const isReview = includes(draftId, 'review');
   const state = getState();
   const linkedObjects = getEditorLinkedObjects(state);
-  const isLinked = string => linkedObjects.some(item => item.defaultShowLink.includes(string));
+  const isLinked = string => linkedObjects.some(item => item.defaultShowLink?.includes(string));
 
   return (
     Object.values(rawContent.entityMap)
