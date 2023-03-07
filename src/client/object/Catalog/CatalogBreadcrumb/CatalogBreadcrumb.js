@@ -73,7 +73,7 @@ const CatalogBreadcrumb = ({
 
       handleChangeBreadCrumbs(usedObj);
     }
-  }, [wobject.author_permlink, nestedWobject.author_permlink]);
+  }, [wobject.author_permlink, nestedWobject.author_permlink, location.hash]);
 
   return (
     <div className="CustomBreadCrumbs">

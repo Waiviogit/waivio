@@ -1,6 +1,7 @@
 import sanitizeHtml from 'sanitize-html';
 import url from 'url';
 import { knownDomains } from '../../common/helpers/constants';
+import { getLastPermlinksFromHash } from '../../common/helpers/wObjectHelper';
 
 /**
 This function is extracted from steemit.com source code and does the same tasks with some slight-
@@ -68,13 +69,12 @@ export const allowedTags = `
   .trim()
   .split(/,\s*/);
 
-export const parseLink = appUrl => (tagName, attribs) => {
+export const parseLink = (appUrl, location) => (tagName, attribs) => {
   let { href } = attribs;
   if (!href) href = '#';
   href = href.trim();
   const attys = {};
   const linkUrl = url.parse(href);
-
   const linkWebsiteUrl = url.format({
     protocol: linkUrl.protocol,
     host: linkUrl.host,
@@ -84,11 +84,16 @@ export const parseLink = appUrl => (tagName, attribs) => {
   const internalLink = href.indexOf('/') === 0;
 
   if (!internalLink) attys.target = '_blank';
-
   if (linkWebsiteUrl.includes('waivio')) {
-    href = appUrl + linkUrl.pathname;
+    href = linkUrl.pathname;
+    if (location.hash) {
+      href = href + location.hash;
+    }
 
-    if (linkUrl.hash) href = href + linkUrl.hash;
+    if (linkUrl.hash)
+      href = href.includes('#')
+        ? href + `/${getLastPermlinksFromHash(linkUrl.hash)}`
+        : href + linkUrl.hash;
 
     attys.target = '';
   }
@@ -108,6 +113,7 @@ export default ({
   sanitizeErrors = [],
   appUrl,
   secureLinks = false,
+  location,
 }) => ({
   allowedTags,
   // figure, figcaption,
@@ -207,6 +213,6 @@ export default ({
         attribs: attys,
       };
     },
-    a: parseLink(appUrl, secureLinks),
+    a: parseLink(appUrl, location),
   },
 });

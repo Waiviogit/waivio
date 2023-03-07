@@ -72,7 +72,7 @@ import {
 } from './editorSelectors';
 import { getCurrentLocation, getQueryString, getSuitableLanguage } from '../reducers';
 import { getObjectName, getObjectType } from '../../common/helpers/wObjectHelper';
-import { createPostMetadata, getObjectLink, getObjectUrl } from '../../common/helpers/postHelpers';
+import { createPostMetadata, getObjectLink } from '../../common/helpers/postHelpers';
 import { createEditorState, Entity, fromMarkdown } from '../../client/components/EditorExtended';
 import { setObjPercents } from '../../common/helpers/wObjInfluenceHelper';
 import { extractLinks } from '../../common/helpers/parser';
@@ -669,7 +669,6 @@ export const handleObjectSelect = (object, withFocus, intl, match) => async (
     title: titleValue,
     body: `${content}${separator}[${objNameDisplay}](${getObjectLink(object, match)})&nbsp;\n`,
   };
-
   const updatedStore = { content: draftContent.body, titleValue: draftContent.title };
 
   const { rawContentUpdated } = await dispatch(getRestoreObjects(fromMarkdown(draftContent)));
@@ -741,7 +740,7 @@ export const getObjectIds = (rawContent, newObject, draftId) => (dispatch, getSt
   const isReview = includes(draftId, 'review');
   const state = getState();
   const linkedObjects = getEditorLinkedObjects(state);
-  const isLinked = string => linkedObjects.some(item => item.defaultShowLink?.includes(string));
+  const isLinked = string => linkedObjects.some(item => item.defaultShowLink.includes(string));
 
   return (
     Object.values(rawContent.entityMap)
@@ -953,7 +952,7 @@ export const handlePasteText = html => async (dispatch, getState) => {
   }
 };
 
-export const selectObjectFromSearch = (selectedObject, editor) => (dispatch, getState) => {
+export const selectObjectFromSearch = (selectedObject, editor, match) => (dispatch, getState) => {
   if (selectedObject) {
     const state = getState();
     const titleValue = getTitleValue(state);
@@ -962,7 +961,7 @@ export const selectObjectFromSearch = (selectedObject, editor) => (dispatch, get
     const objectType = getObjectType(selectedObject);
     const objectName = getObjectName(selectedObject);
     const textReplace = objectType === objectTypes.HASHTAG ? `#${objectName}` : objectName;
-    const url = getObjectUrl(selectedObject.id || selectedObject.author_permlink);
+    const url = getObjectLink(selectedObject, match);
 
     Transforms.select(editor, beforeRange);
     insertObject(editor, url, textReplace, true);
