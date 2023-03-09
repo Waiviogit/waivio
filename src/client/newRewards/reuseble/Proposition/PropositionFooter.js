@@ -132,25 +132,18 @@ const PropositionFooter = ({ type, openDetailsModal, proposition, getProposition
                 )}
                 <RewardsPopover proposition={proposition} getProposition={getProposition} />
               </div>
-              {proposition.guideName === authUserName ? (
-                <div className={'Proposition-new__userCard'}>
-                  <Avatar size={24} username={proposition?.userName} />
-                  <a href={`/@${proposition?.userName}`}>{proposition?.userName}</a>
-                </div>
-              ) : (
-                <Button type="primary" onClick={openDetailsModal}>
-                  <span className="Proposition-new__yourRewards">
-                    {isWaivio ? (
-                      'Submit'
-                    ) : (
-                      <span>
-                        <b>Submit</b> dish
-                      </span>
-                    )}{' '}
-                    photos
-                  </span>
-                </Button>
-              )}
+              <Button type="primary" onClick={openDetailsModal}>
+                <span className="Proposition-new__yourRewards">
+                  {isWaivio ? (
+                    'Submit'
+                  ) : (
+                    <span>
+                      <b>Submit</b> dish
+                    </span>
+                  )}{' '}
+                  photos
+                </span>
+              </Button>
             </div>
             {showComment &&
               comments.map(comment => (
