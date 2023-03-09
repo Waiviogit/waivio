@@ -46,13 +46,18 @@
   }
 
   &__depName {
-    color: @blue-gullGray !important;
+    color: @blue-gullGray;
     padding-left: 10px;
     margin-bottom: 10px;
+    transition: 0.5s;
 
     &--open {
       padding-left: 0;
-      color: @black !important;
+      color: @black;
+    }
+
+    &:hover {
+      color: @orange-hot;
     }
   }
 

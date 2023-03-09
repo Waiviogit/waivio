@@ -40,7 +40,6 @@ const DetailsModal = ({
     notAssigned: true,
     notBlacklisted: true,
     posts: true,
-    notGuide: true,
   });
   const [agreementObjects, setAgreementObjects] = useState([]);
   const isWidget = new URLSearchParams(history.location.search).get('display');
@@ -178,14 +177,6 @@ const DetailsModal = ({
         requirements={requirements}
         agreementObjects={agreementObjects}
       />
-      {!requirements.notGuide && (
-        <div className="DetailsModal__message">
-          {intl.formatMessage({
-            id: 'do_not_reserve',
-            defaultMessage: 'It is not possible to reserve your own campaign.',
-          })}
-        </div>
-      )}
       <div className="DetailsModal__footer">
         <div className="DetailsModal__footer-reserve-btn">
           <Button className="DetailsModal__cancel" onClick={handleCancelModalBtn}>
