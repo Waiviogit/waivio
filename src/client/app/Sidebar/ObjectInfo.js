@@ -56,6 +56,7 @@ import { getLocale } from '../../../common/helpers/localStorageHelpers';
 import Department from '../../object/Department/Department';
 import AffiliatLink from '../../widgets/AffiliatLinks/AffiliatLink';
 import ObjectFeatures from '../../object/ObjectFeatures/ObjectFeatures';
+import DepartmentsWobject from '../../object/ObjectTypeShop/DepartmentsWobject';
 import './ObjectInfo.less';
 
 @withRouter
@@ -580,7 +581,6 @@ class ObjectInfo extends React.Component {
 
     const dimensions = parseWobjectField(wobject, 'dimensions');
     const productWeight = parseWobjectField(wobject, 'productWeight');
-    // const shopFilter = parseWobjectField(wobject, 'shopFilter');
     const profile = linkField
       ? {
           facebook: linkField[linkFields.linkFacebook] || '',
@@ -789,7 +789,10 @@ class ObjectInfo extends React.Component {
             <FormattedMessage id="shop" defaultMessage="Shop" />
           </div>
         )}
-        {this.listItem(objectFields.shopFilter, null)}
+        {this.listItem(
+          objectFields.shopFilter,
+          <DepartmentsWobject authorPermlink={wobject.author_permlink} />,
+        )}
       </React.Fragment>
     );
     const aboutSection = (

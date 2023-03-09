@@ -3224,6 +3224,35 @@ export const getShopMainFeed = (userName, follower, filter) =>
     .then(posts => posts)
     .catch(error => error);
 
+export const getWobjectShopMainFeed = (authorPermlink, follower) =>
+  fetch(`${config.apiPrefix}${config.shop}${config.getObjects}${config.mainFeed}`, {
+    headers: {
+      ...headers,
+      follower,
+    },
+    method: 'POST',
+    body: JSON.stringify({
+      authorPermlink,
+    }),
+  })
+    .then(res => res.json())
+    .then(posts => posts)
+    .catch(error => error);
+
+export const getWobjectShopDepartments = (authorPermlink, name, excluded) =>
+  fetch(`${config.apiPrefix}${config.shop}${config.getObjects}${config.departments}`, {
+    headers,
+    method: 'POST',
+    body: JSON.stringify({
+      authorPermlink,
+      name,
+      excluded,
+    }),
+  })
+    .then(res => res.json())
+    .then(posts => posts)
+    .catch(error => error);
+
 export const getDepartmentsFeed = (userName, follower, department, filter, skip, limit, locale) =>
   fetch(`${config.apiPrefix}${config.shop}${config.user}${config.departmentFeed}`, {
     headers: {
@@ -3236,6 +3265,32 @@ export const getDepartmentsFeed = (userName, follower, department, filter, skip,
       department,
       userName,
       filter,
+      skip,
+      limit,
+    }),
+  })
+    .then(res => res.json())
+    .then(posts => posts)
+    .catch(error => error);
+
+export const getWobjectDepartmentsFeed = (
+  authorPermlink,
+  department,
+  follower,
+  skip,
+  limit,
+  locale,
+) =>
+  fetch(`${config.apiPrefix}${config.shop}${config.getObjects}${config.departmentFeed}`, {
+    headers: {
+      ...headers,
+      locale,
+      follower,
+    },
+    method: 'POST',
+    body: JSON.stringify({
+      department,
+      authorPermlink,
       skip,
       limit,
     }),
