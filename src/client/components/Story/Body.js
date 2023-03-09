@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 import PropTypes from 'prop-types';
 import { isUndefined, filter, isEmpty } from 'lodash';
+import { useLocation } from 'react-router';
 import classNames from 'classnames';
 import sanitizeHtml from 'sanitize-html';
 import Remarkable from 'remarkable';
@@ -45,6 +46,7 @@ const getEmbed = link => {
 // Should return Object(React Compatible) if returnType is Object
 export function getHtml(body, jsonMetadata = {}, returnType = 'Object', options = {}) {
   const parsedJsonMetadata = jsonParse(jsonMetadata) || {};
+  const location = useLocation();
 
   parsedJsonMetadata.image = parsedJsonMetadata.image ? [...parsedJsonMetadata.image] : [];
   if (!body) return '';
@@ -82,6 +84,7 @@ export function getHtml(body, jsonMetadata = {}, returnType = 'Object', options 
     sanitizeConfig({
       appUrl: options.appUrl,
       secureLinks: options.secureLinks,
+      location,
     }),
   );
 
