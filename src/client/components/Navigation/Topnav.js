@@ -426,8 +426,13 @@ class Topnav extends React.Component {
   searchSelectBar = searchResults => {
     const options = getTranformSearchCountData(searchResults, listOfObjectTypes);
     const reduceHref = opt => {
-      const mainLink = opt.name === 'user' ? '/discover' : `/discover-objects/${opt.name}`;
-      const search = this.state.searchBarValue ? `?search=${this.state.searchBarValue}` : '';
+      const isUsers = opt.name === 'Users';
+      const mainLink = isUsers ? '/discover' : `/discover-objects/${opt.name}`;
+      let search = this.state.searchBarValue ? `?search=${this.state.searchBarValue}` : '';
+
+      if (isUsers && this.state.searchBarValue) {
+        search = `${this.state.searchBarValue}`;
+      }
 
       return `${mainLink}/${search}`;
     };

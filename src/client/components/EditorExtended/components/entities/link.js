@@ -16,9 +16,9 @@ export const findLinkEntities = (contentBlock, callback, contentState) => {
 };
 
 const Link = props => {
-  const { contentState, entityKey, appUrl, exitPageSettings } = props;
+  const { contentState, entityKey, appUrl } = props;
   const { url } = contentState.getEntity(entityKey).getData();
-  const parsed = parseLink(appUrl, exitPageSettings)('a', { href: url });
+  const parsed = parseLink(appUrl)('a', { href: url });
 
   return (
     <a className="md-link" {...parsed.attribs} rel="noopener noreferrer" aria-label={url}>

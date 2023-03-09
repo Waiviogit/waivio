@@ -131,7 +131,7 @@ const TopNavigation = ({ location: { pathname } }) => {
                 'TopNavigation__link--active': pathname.includes(LINKS.SHOP),
               })}
             >
-              <FormattedMessage id="beta" defaultMessage="BETA" />
+              <FormattedMessage id="shop" defaultMessage="Shop" />
             </Link>
           </li>
           {!isEmpty(authenticatedUser) && (

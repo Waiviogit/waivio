@@ -65,6 +65,8 @@ const DepartmentsWobjList = ({ getDepartmentsFeed, user, children, setVisibleNav
       setDepartmentInfo(res);
       setLoading(false);
     });
+
+    if (!isMobile()) window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [match.params.department, query.toString(), location.hash]);
 
   useEffect(() => {
@@ -73,8 +75,6 @@ const DepartmentsWobjList = ({ getDepartmentsFeed, user, children, setVisibleNav
 
       window.scrollTo({ top: listRef?.offsetHeight || 0, behavior: 'smooth' });
     }
-
-    if (!isMobile()) window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [list.current, loading, departments]);
 
   if (loading) return <Loading />;

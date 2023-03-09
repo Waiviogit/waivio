@@ -123,7 +123,6 @@ const WebsiteSignIn = props => {
             id: 'eat_out_earn_crypto',
             defaultMessage: 'eat out, earn crypto',
           })}
-          .
         </h1>
         <h2
           style={{
