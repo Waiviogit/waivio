@@ -93,6 +93,30 @@ const CatalogWrap = props => {
       }
     }
 
+    if (!isEmpty(wobjectNested)) {
+      setLists(
+        sortListItemsBy(
+          itemsList(get(wobjectNested, 'sortCustom', []), wobjectNested),
+          defaultSortBy(wobjectNested),
+          isDefaultCustom(wobjectNested)
+            ? wobjectNested.sortCustom
+            : recencySortOrder(getListItem(wobjectNested)),
+        ),
+      );
+      setRecencySortList(recencySortOrder(getListItem(wobjectNested)));
+    } else {
+      setSortingBy(defaultSortBy(wobject));
+      setLists(
+        sortListItemsBy(
+          itemsList(get(wobject, 'sortCustom', []), wobject),
+          defaultSortBy(wobject),
+          isDefaultCustom(wobject) ? wobject.sortCustom : recencySortOrder(getListItem(wobject)),
+        ),
+      );
+      setLoadingNestedWobject(false);
+      setRecencySortList(recencySortOrder(getListItem(wobject)));
+    }
+
     return () => {
       setNestedWobj({});
     };

@@ -19,6 +19,7 @@ const ShopDepartmentsList = ({ visible, onClose, getShopDepartments, path }) => 
   }, []);
 
   const excludedMain = departments.map(d => d.name);
+
   const renderDep = match.params.department
     ? departments.filter(d => d.name === match.params.department)
     : departments;

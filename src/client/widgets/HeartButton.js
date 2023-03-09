@@ -44,7 +44,7 @@ const HeartButton = ({ wobject, size }) => {
     ) {
       dispatch(setObjectinAuthority(wobject.author_permlink));
     }
-  }, [wobject.authority]);
+  }, [wobject.authority, authorityList]);
 
   const getWobjectData = () => ({
     author: user.name,

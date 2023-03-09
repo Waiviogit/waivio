@@ -72,7 +72,7 @@ import {
 } from './editorSelectors';
 import { getCurrentLocation, getQueryString, getSuitableLanguage } from '../reducers';
 import { getObjectName, getObjectType } from '../../common/helpers/wObjectHelper';
-import { createPostMetadata, getObjectLink, getObjectUrl } from '../../common/helpers/postHelpers';
+import { createPostMetadata, getObjectLink } from '../../common/helpers/postHelpers';
 import { createEditorState, Entity, fromMarkdown } from '../../client/components/EditorExtended';
 import { setObjPercents } from '../../common/helpers/wObjInfluenceHelper';
 import { extractLinks } from '../../common/helpers/parser';
@@ -644,7 +644,10 @@ export const buildPost = (draftId, data = {}, isEditPost) => (dispatch, getState
   return postData;
 };
 
-export const handleObjectSelect = (object, withFocus, intl) => async (dispatch, getState) => {
+export const handleObjectSelect = (object, withFocus, intl, match) => async (
+  dispatch,
+  getState,
+) => {
   const state = getState();
   const {
     content,
@@ -664,7 +667,7 @@ export const handleObjectSelect = (object, withFocus, intl) => async (dispatch, 
   const separator = content?.slice(-1) === '\n' ? '' : '\n';
   const draftContent = {
     title: titleValue,
-    body: `${content}${separator}[${objNameDisplay}](${getObjectLink(object)})&nbsp;\n`,
+    body: `${content}${separator}[${objNameDisplay}](${getObjectLink(object, match)})&nbsp;\n`,
   };
   const updatedStore = { content: draftContent.body, titleValue: draftContent.title };
 
@@ -679,9 +682,9 @@ export const handleObjectSelect = (object, withFocus, intl) => async (dispatch, 
   ).filter(item => has(item, '_id'));
 
   let updatedObjPercentage = setObjPercents(updatedLinkedObjects, objPercentage);
-  const isHideObject = hideLinkedObjects?.find(
-    item => item?.author_permlink === newLinkedObject?.author_permlink,
-  );
+  const isHideObject = Array.isArray(hideLinkedObjects)
+    ? hideLinkedObjects?.find(item => item?.author_permlink === newLinkedObject?.author_permlink)
+    : false;
 
   if (isHideObject) {
     const filteredObjectCards = hideLinkedObjects?.filter(
@@ -720,7 +723,7 @@ export const handleObjectSelect = (object, withFocus, intl) => async (dispatch, 
   );
 
   const { beforeRange } = checkCursorInSearchSlate(editor);
-  const url = getObjectUrl(object.id || object.author_permlink);
+  const url = getObjectLink(object, match);
   const textReplace = objType === objectTypes.HASHTAG ? `#${objName}` : objName;
 
   Transforms.select(editor, beforeRange);
@@ -949,7 +952,7 @@ export const handlePasteText = html => async (dispatch, getState) => {
   }
 };
 
-export const selectObjectFromSearch = (selectedObject, editor) => (dispatch, getState) => {
+export const selectObjectFromSearch = (selectedObject, editor, match) => (dispatch, getState) => {
   if (selectedObject) {
     const state = getState();
     const titleValue = getTitleValue(state);
@@ -958,7 +961,7 @@ export const selectObjectFromSearch = (selectedObject, editor) => (dispatch, get
     const objectType = getObjectType(selectedObject);
     const objectName = getObjectName(selectedObject);
     const textReplace = objectType === objectTypes.HASHTAG ? `#${objectName}` : objectName;
-    const url = getObjectUrl(selectedObject.id || selectedObject.author_permlink);
+    const url = getObjectLink(selectedObject, match);
 
     Transforms.select(editor, beforeRange);
     insertObject(editor, url, textReplace, true);

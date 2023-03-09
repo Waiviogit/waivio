@@ -65,7 +65,9 @@ const DepartmentsWobjList = ({ getDepartmentsFeed, user, children, setVisibleNav
       setDepartmentInfo(res);
       setLoading(false);
     });
-  }, [departments, query.toString()]);
+
+    if (!isMobile()) window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [match.params.department, query.toString(), location.hash]);
 
   useEffect(() => {
     if (list.current && isMobile() && !loading) {
@@ -73,8 +75,6 @@ const DepartmentsWobjList = ({ getDepartmentsFeed, user, children, setVisibleNav
 
       window.scrollTo({ top: listRef?.offsetHeight || 0, behavior: 'smooth' });
     }
-
-    if (!isMobile()) window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [list.current, loading, departments]);
 
   if (loading) return <Loading />;
@@ -131,7 +131,7 @@ const DepartmentsWobjList = ({ getDepartmentsFeed, user, children, setVisibleNav
         ))}
       </h3>
       {isEmpty(departmentInfo?.wobjects) ? (
-        <EmptyCampaing emptyMessage={'There are no objects for this department.'} />
+        <EmptyCampaing emptyMessage={'There are no products in this department.'} />
       ) : (
         <InfiniteSroll loadMore={loadMore} hasMore={departmentInfo.hasMore}>
           {departmentInfo?.wobjects?.map(wobj => (

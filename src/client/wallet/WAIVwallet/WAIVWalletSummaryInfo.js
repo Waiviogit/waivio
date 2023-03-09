@@ -28,10 +28,7 @@ const WAIVWalletSummaryInfo = props => {
   const estAccValue =
     props.rates.WAIV *
     props.rates.HIVE *
-    (Number(balance) +
-      Number(stake) +
-      Number(unstake) +
-      Number(delegation > 0 ? delegation : delegation * -1));
+    (Number(balance) + Number(stake) + Number(unstake) + Number(delegationsOut));
   const hasDelegations =
     !isEmpty(delegateList) || !isEmpty(recivedList) || !isEmpty(undeligatedList);
   const powerClassList = classNames('WalletSummaryInfo__value', {

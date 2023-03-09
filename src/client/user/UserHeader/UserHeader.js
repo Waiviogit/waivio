@@ -59,8 +59,8 @@ const UserHeader = ({
       formatter.vestToSteem(1, totalVestingShares, totalVestingFundSteem),
     6,
   );
-  const vestingShares = parseFloat(user.vesting_shares) + votingWaivPower;
 
+  const vestingShares = parseFloat(user.vesting_shares) + votingWaivPower;
   let metadata = {};
   let location = null;
   let website = null;
@@ -144,13 +144,15 @@ const UserHeader = ({
               {isGuest && guestPrefix}
             </span>
             <div className="UserHeader__flexWrap">
-              <div className="UserHeader__rank">
-                <i className="iconfont icon-ranking" />
-                <FormattedMessage
-                  id={getUserRankKey(vestingShares)}
-                  defaultMessage={getUserRank(vestingShares)}
-                />
-              </div>
+              {Boolean(totalVestingShares) && Boolean(totalVestingFundSteem) && (
+                <div className="UserHeader__rank">
+                  <i className="iconfont icon-ranking" />
+                  <FormattedMessage
+                    id={getUserRankKey(vestingShares)}
+                    defaultMessage={getUserRank(vestingShares)}
+                  />
+                </div>
+              )}
               {!isGuest && !user.sideBarLoading && (
                 <div className="UserHeader__voteValue">
                   <img

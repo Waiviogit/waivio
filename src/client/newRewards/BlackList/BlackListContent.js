@@ -10,6 +10,7 @@ import SelectUserForAutocomplete from '../../widgets/SelectUserForAutocomplete';
 import { changeBlackAndWhiteLists } from '../../../store/rewardsStore/rewardsActions';
 
 import './Blacklist.less';
+import EmptyCampaing from '../../statics/EmptyCampaing';
 
 const BlacklistContentNew = ({
   intl,
@@ -88,17 +89,21 @@ const BlacklistContentNew = ({
           {buttonTitle}
         </Button>
       </div>
-      <h3>{type}</h3>
-      <div className="Blacklist__container">
-        {!isEmpty(userList)
-          ? map(userList, user => (
-              <BlacklistUser user={user} handleDeleteUsers={handleDeleteListUser} />
-            ))
-          : intl.formatMessage({
-              id: 'your_list_is_empty',
-              defaultMessage: 'Your list is empty',
-            })}
-      </div>
+      <h3 className="Blacklist__title">{type}</h3>
+      {!isEmpty(userList) ? (
+        <div className="Blacklist__container">
+          {map(userList, user => (
+            <BlacklistUser user={user} handleDeleteUsers={handleDeleteListUser} />
+          ))}
+        </div>
+      ) : (
+        <EmptyCampaing
+          emptyMessage={intl.formatMessage({
+            id: 'your_list_is_empty',
+            defaultMessage: 'Your list is empty',
+          })}
+        />
+      )}
     </div>
   );
 };

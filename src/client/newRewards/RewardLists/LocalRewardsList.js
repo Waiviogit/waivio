@@ -41,7 +41,7 @@ const sortConfig = [
   { key: 'proximity', title: 'Proximity' },
 ];
 
-const LocalRewardsList = ({ title, withoutFilters }) => {
+const LocalRewardsList = ({ withoutFilters }) => {
   const authUser = useSelector(getAuthenticatedUserName);
   const [rewards, setRewards] = useState([]);
   const [hasMore, setHasMore] = useState(true);
@@ -65,7 +65,6 @@ const LocalRewardsList = ({ title, withoutFilters }) => {
 
   const getRewardsMethod = async skip => {
     query.delete('showAll');
-
     if (isLocation && !history.location.search.includes('area')) {
       let coordinats = location;
 
@@ -79,9 +78,7 @@ const LocalRewardsList = ({ title, withoutFilters }) => {
       query.set('area', [coordinats.latitude, coordinats.longitude]);
       query.set('zoom', 3);
       query.set('radius', getRadius(3));
-    } else {
-      clearMapInfo();
-    }
+    } else if (!history.location.search) clearMapInfo();
 
     return showAll
       ? getAllRewardList(skip, query.toString(), sort, match.params[0])
@@ -151,7 +148,7 @@ const LocalRewardsList = ({ title, withoutFilters }) => {
     <div className="RewardLists">
       <div className="RewardLists__feed">
         <FiltersForMobile setVisible={setVisible} />
-        <h2 className="RewardLists__title">{title}</h2>
+        <h2 className="RewardLists__title">{isLocation ? 'Local' : 'Global'} rewards</h2>
         <ViewMapButton handleClick={() => setShowMap(true)} />
         <SortSelector sort={sort} onChange={setSort}>
           {sortConfig.map(item => (
@@ -210,7 +207,6 @@ const LocalRewardsList = ({ title, withoutFilters }) => {
 };
 
 LocalRewardsList.propTypes = {
-  title: PropTypes.string.isRequired,
   withoutFilters: PropTypes.bool,
 };
 

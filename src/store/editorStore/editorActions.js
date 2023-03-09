@@ -642,12 +642,12 @@ export const handleObjectSelect = (object, isCursorToEnd, intl) => async (dispat
   ).filter(item => has(item, '_id'));
 
   let updatedObjPercentage = setObjPercents(updatedLinkedObjects, objPercentage);
-  const isHideObject = hideLinkedObjects.find(
+  const isHideObject = hideLinkedObjects?.find(
     item => item.author_permlink === newLinkedObject.author_permlink,
   );
 
   if (isHideObject) {
-    const filteredObjectCards = hideLinkedObjects.filter(
+    const filteredObjectCards = hideLinkedObjects?.filter(
       item => item.author_permlink !== newLinkedObject.author_permlink,
     );
 
