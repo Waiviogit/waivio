@@ -44,9 +44,8 @@ const getEmbed = link => {
 
 // Should return text(html) if returnType is text
 // Should return Object(React Compatible) if returnType is Object
-export function getHtml(body, jsonMetadata = {}, returnType = 'Object', options = {}) {
+export function getHtml(body, jsonMetadata = {}, returnType = 'Object', options = {}, location) {
   const parsedJsonMetadata = jsonParse(jsonMetadata) || {};
-  const location = useLocation();
 
   parsedJsonMetadata.image = parsedJsonMetadata.image ? [...parsedJsonMetadata.image] : [];
   if (!body) return '';
@@ -159,21 +158,13 @@ export function getHtml(body, jsonMetadata = {}, returnType = 'Object', options 
 }
 
 const Body = props => {
+  const location = useLocation();
   const options = {
     appUrl: props.appUrl.replace('http://', 'https://'),
     rewriteLinks: props.rewriteLinks,
     secureLinks: props.exitPageSetting,
   };
-  const htmlSections = getHtml(
-    props.body,
-    props.jsonMetadata,
-    'Object',
-    options,
-    props.isModal,
-    props.isPostPreviewModal,
-    props.full,
-    props.isGuest,
-  );
+  const htmlSections = getHtml(props.body, props.jsonMetadata, 'Object', options, location);
 
   return <div className={classNames('Body', { 'Body--full': props.full })}>{htmlSections}</div>;
 };
@@ -185,18 +176,12 @@ Body.propTypes = {
   body: PropTypes.string,
   jsonMetadata: PropTypes.string,
   full: PropTypes.bool,
-  isModal: PropTypes.bool,
-  isPostPreviewModal: PropTypes.bool,
-  isGuest: PropTypes.bool,
 };
 
 Body.defaultProps = {
   body: '',
   jsonMetadata: '',
   full: false,
-  isModal: false,
-  isPostPreviewModal: false,
-  isGuest: false,
 };
 
 export default Body;

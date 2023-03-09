@@ -181,10 +181,10 @@ export function getObjectUrl(objPermlink) {
   }/object/${objPermlink}`;
 }
 
-export const getObjectLink = (obj, match) => {
+export const getObjectLink = (obj, match = {}) => {
   if (isEmpty(obj)) return '';
 
-  if (match.url.includes('/page') && ['page', 'list'].includes(obj.object_type)) {
+  if (match?.url?.includes('/page') && ['page', 'list'].includes(obj.object_type)) {
     return `${apiConfig[process.env.NODE_ENV].protocol}${
       apiConfig[process.env.NODE_ENV].host
     }/object/${match.params.name}/page#${obj.author_permlink}`;
