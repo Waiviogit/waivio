@@ -85,7 +85,7 @@ export const parseLink = (appUrl, location) => (tagName, attribs) => {
 
   if (!internalLink) attys.target = '_blank';
   if (linkWebsiteUrl.includes('waivio')) {
-    href = linkUrl.hash ? location.pathname : linkUrl.pathname;
+    href = linkUrl.hash && location?.pathname ? location.pathname : linkUrl.pathname;
 
     if (location?.hash) {
       href = href + location.hash;
