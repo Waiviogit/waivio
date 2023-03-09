@@ -652,7 +652,7 @@ export const handleObjectSelect = (object, withFocus, intl, match) => async (
   const {
     content,
     titleValue,
-    topics,
+    topics = [],
     linkedObjects,
     hideLinkedObjects,
     objPercentage,
@@ -708,7 +708,6 @@ export const handleObjectSelect = (object, withFocus, intl, match) => async (
     ...updatedStore,
     ...getCurrentDraftContent(updatedStore, rawContentUpdated, currentRawContent),
   };
-
   const updateTopics = uniqWith(
     object.type === 'hashtag' || (object.object_type === 'hashtag' && [...topics, objPermlink]),
     isEqual,
