@@ -1317,7 +1317,10 @@ class ObjectInfo extends React.Component {
                   )),
               )}
             {isOptionsObjectType && galleryPriceOptionsSection}
-            {!isHashtag && !hasType(wobject, OBJECT_TYPE.PAGE) && menuSection()}
+            {!isHashtag &&
+              !hasType(wobject, OBJECT_TYPE.PAGE) &&
+              !hasType(wobject, 'shop') &&
+              menuSection()}
             {!isHashtag && aboutSection}
             {shopType && shopSection}
             {accessExtend && hasType(wobject, OBJECT_TYPE.LIST) && listSection}

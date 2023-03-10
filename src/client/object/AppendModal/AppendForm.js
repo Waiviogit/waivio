@@ -496,7 +496,7 @@ export default class AppendForm extends Component {
         case objectFields.shopFilter: {
           const { typeList, tags, authoritiesList, departmentsArray } = this.state;
           const typeInfo = !isEmpty(typeList) ? `Type: ${typeList.flat()}` : '';
-          const departmentsInfo = !isEmpty(departmentsArray)
+          const departmentsInfo = !isEmpty(departmentsArray[0])
             ? `, Departments: ${departmentsArray.map(dep => dep.join(' and '))}`
             : '';
           const tagsInfo = !isEmpty(tags) ? `, Tags: ${tags.map(t => t)}` : '';
