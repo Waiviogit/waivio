@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import { Icon } from 'antd';
 import { isInteger } from 'lodash';
 import { FormattedMessage, FormattedNumber } from 'react-intl';
 import Avatar from '../../components/Avatar';
@@ -19,17 +18,7 @@ const DelegatedTo = ({ timestamp, quantity, symbol, to, from, account }) => {
 
   return (
     <div className="UserWalletTransactions__transaction">
-      {account ? (
-        <Avatar size={40} username={account} />
-      ) : (
-        <div className="UserWalletTransactions__icon-container">
-          <Icon
-            type={'arrow-right'}
-            style={{ fontSize: '16px' }}
-            className="UserWalletTransactions__icon"
-          />
-        </div>
-      )}
+      <Avatar size={40} username={isReceive ? from : to} />
       <div className="UserWalletTransactions__content">
         <div className="UserWalletTransactions__content-recipient">
           <p>
