@@ -24,8 +24,8 @@ import { getLocale } from '../../../store/settingsStore/settingsSelectors';
 import FilterPosts from '../../components/Sidebar/FilterPosts/FilterPosts';
 import { setProfileFilters } from '../../../store/feedStore/feedActions';
 import WalletSidebar from '../../components/Sidebar/WalletSidebar/WalletSidebar';
-import ShopFilters from '../../Shop/ShopFilters/ShopFilters';
 import UserFilters from '../../Shop/ShopFilters/UserFilters';
+import GlobalShopFilters from '../../Shop/ShopFilters/GlobalShopFilters';
 
 @withRouter
 @connect(
@@ -88,7 +88,7 @@ export default class RightSidebar extends React.Component {
         <Switch>
           <Route path="/activity" component={UserActivitySearch} />
           <Route path="/@:name/userShop/:department?" component={UserFilters} />
-          <Route path="/shop/:department?" component={ShopFilters} />
+          <Route path="/shop/:department?" component={GlobalShopFilters} />
           <Route path="/@:name/activity" component={UserActivitySearch} />
           <Route path="/@:name/transfers" render={() => <WalletSidebar />} />
           <Route path="/trending/:tag" component={FeedSidebar} />
