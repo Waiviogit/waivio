@@ -5,6 +5,7 @@ import DepartmentsWobjList from './DepartmentsWobjList';
 import { getShopDepartmentFeed } from '../../../waivioApi/ApiClient';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 import GlobalShopDepartments from '../ShopDepartments/GlobalShopDepartments';
+import GlobalShopFilters from '../ShopFilters/GlobalShopFilters';
 
 const ShopDepartmentsWobjList = () => {
   const authUser = useSelector(getAuthenticatedUserName);
@@ -18,6 +19,7 @@ const ShopDepartmentsWobjList = () => {
       getDepartmentsFeed={getShopDepartmentFeed}
       setVisibleNavig={onOpen}
       path={'/shop'}
+      Filter={GlobalShopFilters}
     >
       {visibleNavig && <GlobalShopDepartments visible={visibleNavig} onClose={onClose} />}
     </DepartmentsWobjList>

@@ -1332,6 +1332,21 @@ export const showMoreTagsForFilters = (category, objectTypeName, skip = 0, limit
     .then(result => result)
     .catch(error => error);
 
+export const showMoreTagsForUserFilters = (userName, tagCategory, skip = 0, limit = 10) =>
+  fetch(`${config.apiPrefix}${config.shop}${config.user}${config.filters}${config.tags}`, {
+    headers,
+    method: 'POST',
+    body: JSON.stringify({
+      userName,
+      tagCategory,
+      skip,
+      limit,
+    }),
+  })
+    .then(res => res.json())
+    .then(result => result)
+    .catch(error => error);
+
 export const getSocialInfoPost = (author, postPermlink) =>
   fetch(
     `${config.apiPrefix}${config.post}${config.social}?author=${author}&permlink=${postPermlink}`,
@@ -3276,6 +3291,16 @@ export const getDepartmentsFilters = () =>
   fetch(`${config.apiPrefix}${config.shop}${config.filters}`, {
     headers,
     method: 'POST',
+  })
+    .then(res => res.json())
+    .then(posts => posts)
+    .catch(error => error);
+
+export const getDepartmentsUserFilters = userName =>
+  fetch(`${config.apiPrefix}${config.shop}${config.user}${config.filters}`, {
+    headers,
+    method: 'POST',
+    body: JSON.stringify({ userName }),
   })
     .then(res => res.json())
     .then(posts => posts)

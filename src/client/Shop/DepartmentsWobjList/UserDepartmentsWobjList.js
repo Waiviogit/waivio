@@ -3,6 +3,7 @@ import { useRouteMatch } from 'react-router';
 import DepartmentsWobjList from './DepartmentsWobjList';
 import { getDepartmentsFeed } from '../../../waivioApi/ApiClient';
 import DepartmentsUser from '../ShopDepartments/DepartmentsUser';
+import UserFilters from '../ShopFilters/UserFilters';
 
 const UserDepartmentsWobjList = () => {
   const match = useRouteMatch();
@@ -16,6 +17,7 @@ const UserDepartmentsWobjList = () => {
       getDepartmentsFeed={getDepartmentsFeed}
       setVisibleNavig={onOpen}
       path={`/@${match.params.name}/userShop`}
+      filter={UserFilters}
     >
       {visibleNavig && <DepartmentsUser visible={visibleNavig} onClose={onClose} />}
     </DepartmentsWobjList>

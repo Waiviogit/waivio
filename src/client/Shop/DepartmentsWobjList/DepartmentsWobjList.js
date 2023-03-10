@@ -11,7 +11,6 @@ import ObjectCardView from '../../objectCard/ObjectCardView';
 import EmptyCampaing from '../../statics/EmptyCampaing';
 import useQuery from '../../../hooks/useQuery';
 import { parseQuery } from '../../../waivioApi/helpers';
-import ShopFilters from '../ShopFilters/ShopFilters';
 import FiltersForMobile from '../../newRewards/Filters/FiltersForMobile';
 import DepartmentsMobile from '../ShopDepartments/DepartmentsMobile';
 import { isMobile } from '../../../common/helpers/apiHelpers';
@@ -25,7 +24,14 @@ import {
 
 import './DepartmentsWobjList.less';
 
-const DepartmentsWobjList = ({ getDepartmentsFeed, user, children, setVisibleNavig, path }) => {
+const DepartmentsWobjList = ({
+  getDepartmentsFeed,
+  user,
+  children,
+  setVisibleNavig,
+  path,
+  Filter,
+}) => {
   const [departmentInfo, setDepartmentInfo] = useState();
   const [visible, setVisible] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -139,7 +145,7 @@ const DepartmentsWobjList = ({ getDepartmentsFeed, user, children, setVisibleNav
           ))}
         </InfiniteSroll>
       )}
-      {visible && <ShopFilters visible={visible} onClose={() => setVisible(false)} />}
+      {visible && <Filter visible={visible} onClose={() => setVisible(false)} />}
       {children}
     </div>
   );
@@ -151,6 +157,7 @@ DepartmentsWobjList.propTypes = {
   user: PropTypes.string,
   path: PropTypes.string,
   children: PropTypes.node,
+  Filter: PropTypes.node,
 };
 
 export default DepartmentsWobjList;
