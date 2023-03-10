@@ -3,16 +3,14 @@ import { AutoComplete, Icon, Input } from 'antd';
 import { map, get } from 'lodash';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
-
 import SearchObjectsAutocomplete from '../../../components/EditorObject/SearchObjectsAutocomplete';
 import ObjectCard from '../../../components/Sidebar/ObjectCard';
 import listOfObjectTypes from '../../../../common/constants/listOfObjectTypes';
-
+import { andLayout } from '../../../../common/helpers/AppendFormHelper';
 import './NewsFilterForm.less';
 
 const NewsFilterForm = props => {
   const [searchString, setSearchString] = useState('');
-  const isMobile = screenSize => screenSize === 'xsmall' || screenSize === 'small';
   const typesList = listOfObjectTypes.filter(type => !props.typeList.includes(type));
   const handleSelect = value => {
     props.handleAddTypeToIgnoreTypeList(value);
@@ -23,17 +21,6 @@ const NewsFilterForm = props => {
   useEffect(() => {
     titleInputEl.current.focus();
   }, [titleInputEl.current]);
-
-  const andLayout = compareItems =>
-    compareItems > 0 &&
-    !isMobile(props.screenSize) && (
-      <div className={`NewsFiltersRule__line-and`}>
-        {props.intl.formatMessage({
-          id: 'and',
-          defaultMessage: 'and',
-        })}
-      </div>
-    );
 
   const getAllowListLayout = () => (
     <React.Fragment>
@@ -234,7 +221,6 @@ NewsFilterForm.propTypes = {
   intl: PropTypes.shape({
     formatMessage: PropTypes.func,
   }).isRequired,
-  screenSize: PropTypes.string.isRequired,
   currObjId: PropTypes.string.isRequired,
   allowList: PropTypes.arrayOf().isRequired,
   ignoreList: PropTypes.arrayOf().isRequired,

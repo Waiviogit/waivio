@@ -8,6 +8,7 @@ export default [
   'page',
   'book',
   'product',
+  'shop',
   'widget',
   'newsfeed',
   'hashtag',
