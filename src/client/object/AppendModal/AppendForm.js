@@ -122,9 +122,9 @@ import ManufacturerForm from './FormComponents/ManufacturerForm';
 import BrandForm from './FormComponents/BrandForm';
 import MerchantForm from './FormComponents/MerchantForm';
 import AuthorForm from './FormComponents/AuthorForm';
-import './AppendForm.less';
 import SearchDepartmentAutocomplete from '../../components/SearchDepartmentAutocomplete/SearchDepartmentAutocomplete';
 import ShopFilterForm from './FormComponents/ShopFilterForm';
+import './AppendForm.less';
 
 @connect(
   state => ({

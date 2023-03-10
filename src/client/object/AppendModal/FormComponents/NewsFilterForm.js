@@ -3,13 +3,11 @@ import { AutoComplete, Icon, Input } from 'antd';
 import { map, get } from 'lodash';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
-
 import SearchObjectsAutocomplete from '../../../components/EditorObject/SearchObjectsAutocomplete';
 import ObjectCard from '../../../components/Sidebar/ObjectCard';
 import listOfObjectTypes from '../../../../common/constants/listOfObjectTypes';
-
-import './NewsFilterForm.less';
 import { andLayout } from '../../../../common/helpers/AppendFormHelper';
+import './NewsFilterForm.less';
 
 const NewsFilterForm = props => {
   const [searchString, setSearchString] = useState('');
