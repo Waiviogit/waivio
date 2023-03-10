@@ -5,13 +5,12 @@ import { Checkbox, Modal, Rate } from 'antd';
 import { useHistory, useRouteMatch } from 'react-router';
 import PropTypes from 'prop-types';
 
-import { getDepartmentsFilters, showMoreTagsForFilters } from '../../../waivioApi/ApiClient';
 import useQuery from '../../../hooks/useQuery';
 import { parseQuery } from '../../../waivioApi/helpers';
 
 import './ShopFilters.less';
 
-const ShopFilters = ({ visible, onClose }) => {
+const ShopFilters = ({ visible, onClose, getDepartmentsFilters, showMoreTagsForFilters }) => {
   const [filters, setFilters] = useState();
   const [activeFilter, setActiveFilter] = useState({});
   const query = useQuery();
@@ -134,6 +133,8 @@ const ShopFilters = ({ visible, onClose }) => {
 ShopFilters.propTypes = {
   visible: PropTypes.bool,
   onClose: PropTypes.func,
+  getDepartmentsFilters: PropTypes.func,
+  showMoreTagsForFilters: PropTypes.func,
 };
 
 export default ShopFilters;

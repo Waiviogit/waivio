@@ -130,6 +130,7 @@
   "getField": "/getField",
   "showMoreTags": "/showMoreTags",
   "shop": "/shop",
+  "tags": "/tags",
   "departmentFeed": "/department-feed",
   "mainFeed": "/main-feed",
   "setSentryNotify": "/sentry",

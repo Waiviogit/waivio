@@ -1,27 +1,28 @@
 import React, { useState } from 'react';
 import { useRouteMatch } from 'react-router';
-import DepartmentsWobjList from './DepartmentsWobjList';
-import { getDepartmentsFeed } from '../../../waivioApi/ApiClient';
-import DepartmentsUser from '../ShopDepartments/DepartmentsUser';
-import UserFilters from '../ShopFilters/UserFilters';
+import DepartmentsWobjList from '../../Shop/DepartmentsWobjList/DepartmentsWobjList';
+import { getWobjectDepartmentsFeed } from '../../../waivioApi/ApiClient';
+import DepartmentsUser from '../../Shop/ShopDepartments/DepartmentsUser';
 
-const UserDepartmentsWobjList = () => {
+const ObjectDepartmentsWobjList = () => {
   const match = useRouteMatch();
+  const authorPermlink = match.params.name;
   const [visibleNavig, setVisibleNavig] = useState(false);
   const onOpen = () => setVisibleNavig(true);
   const onClose = () => setVisibleNavig(false);
+  const getDepartmentsFeed = () =>
+    getWobjectDepartmentsFeed(authorPermlink, match.params.department);
 
   return (
     <DepartmentsWobjList
       user={match.params.name}
       getDepartmentsFeed={getDepartmentsFeed}
       setVisibleNavig={onOpen}
-      path={`/@${match.params.name}/userShop`}
-      filter={UserFilters}
+      path={match.url}
     >
       {visibleNavig && <DepartmentsUser visible={visibleNavig} onClose={onClose} />}
     </DepartmentsWobjList>
   );
 };
 
-export default UserDepartmentsWobjList;
+export default ObjectDepartmentsWobjList;

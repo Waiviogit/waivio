@@ -56,6 +56,7 @@ import { getLocale } from '../../../common/helpers/localStorageHelpers';
 import Department from '../../object/Department/Department';
 import AffiliatLink from '../../widgets/AffiliatLinks/AffiliatLink';
 import ObjectFeatures from '../../object/ObjectFeatures/ObjectFeatures';
+import DepartmentsWobject from '../../object/ObjectTypeShop/DepartmentsWobject';
 import './ObjectInfo.less';
 
 @withRouter
@@ -591,6 +592,8 @@ class ObjectInfo extends React.Component {
       : {};
     const phones = get(wobject, 'phone', []);
     const isHashtag = hasType(wobject, OBJECT_TYPE.HASHTAG);
+    const shopType = wobject.object_type === 'shop';
+    const showFeedSection = ['pin', 'remove'].includes(wobject.exposedFields);
     const accessExtend = haveAccess(wobject, userName, accessTypesArr[0]) && isEditMode;
     const isRenderMap = map && isCoordinatesValid(map.latitude, map.longitude);
     const menuLinks = getMenuItems(wobject, TYPES_OF_MENU_ITEM.LIST, OBJECT_TYPE.LIST);
@@ -779,6 +782,19 @@ class ObjectInfo extends React.Component {
       </React.Fragment>
     );
 
+    const shopSection = (
+      <React.Fragment>
+        {isEditMode && (
+          <div className="object-sidebar__section-title">
+            <FormattedMessage id="shop" defaultMessage="Shop" />
+          </div>
+        )}
+        {this.listItem(
+          objectFields.shopFilter,
+          <DepartmentsWobject authorPermlink={wobject.author_permlink} />,
+        )}
+      </React.Fragment>
+    );
     const aboutSection = (
       <React.Fragment>
         {isEditMode && (
@@ -1303,8 +1319,9 @@ class ObjectInfo extends React.Component {
             {isOptionsObjectType && galleryPriceOptionsSection}
             {!isHashtag && !hasType(wobject, OBJECT_TYPE.PAGE) && menuSection()}
             {!isHashtag && aboutSection}
+            {shopType && shopSection}
             {accessExtend && hasType(wobject, OBJECT_TYPE.LIST) && listSection}
-            {accessExtend && feedSection}
+            {showFeedSection && feedSection}
             {accessExtend && settingsSection}
             {this.props.children}
             <ObjectInfoExperts wobject={wobject} />
