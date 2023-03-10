@@ -55,6 +55,7 @@ export const objectFields = {
   merchant: 'merchant',
   pin: 'pin',
   remove: 'remove',
+  shopFilter: 'shopFilter',
 };
 
 export const TYPES_OF_MENU_ITEM = {
@@ -96,6 +97,7 @@ export const addressFields = {
   country: 'country',
 };
 
+export const shopFilterFields = {};
 export const pinPostFields = {
   postAuthor: 'postAuthor',
   postPermlink: 'postPermlink',
