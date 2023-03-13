@@ -3,7 +3,7 @@ import { NavLink } from 'react-router-dom';
 import { useRouteMatch } from 'react-router';
 import { Modal } from 'antd';
 import PropTypes from 'prop-types';
-
+import { isEmpty } from 'lodash';
 import DepartmentItem from './DepartmentItem';
 
 import './ShopDepartments.less';
@@ -24,7 +24,7 @@ const ShopDepartmentsList = ({ visible, onClose, getShopDepartments, path }) => 
     ? departments.filter(d => d.name === match.params.department)
     : departments;
 
-  const body = (
+  const body = !isEmpty(departments) && (
     <div className="ShopDepartmentsList">
       <NavLink
         isActive={() => match?.url === path}

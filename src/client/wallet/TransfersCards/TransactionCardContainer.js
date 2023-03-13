@@ -17,11 +17,13 @@ const TransactionCardContainer = ({
   account,
   fractionDigits,
   memo,
+  point,
 }) => {
   const amountClassList = classNames('UserWalletTransactions__marginLeft', {
     [`UserWalletTransactions__amount--${color}`]: color,
   });
-  const point = color === 'red' ? '-' : '+';
+  const colorPoint = color === 'red' ? '-' : '+';
+  const defaultPoint = point || colorPoint;
   const minimumFractionDigits = isInteger(Number(quantity)) ? 0 : 3;
 
   return (
@@ -42,7 +44,7 @@ const TransactionCardContainer = ({
           {children}
           {!!quantity && (
             <span className={amountClassList}>
-              {color ? point : ''}{' '}
+              {color ? defaultPoint : ''}{' '}
               <FormattedNumber
                 value={quantity}
                 locale={'en-IN'}
@@ -70,6 +72,7 @@ TransactionCardContainer.propTypes = {
   fractionDigits: PropTypes.number,
   children: PropTypes.node.isRequired,
   symbol: PropTypes.string,
+  point: PropTypes.string,
 };
 
 TransactionCardContainer.defaultProps = {
