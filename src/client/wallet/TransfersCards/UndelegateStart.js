@@ -9,13 +9,14 @@ const UndelegateStart = ({ timestamp, account, symbol, to, from, quantity }) => 
     ? {
         description: (
           <span>
-            <FormattedMessage id="lowercase_from" defaultMessage="from" />{' '}
+            <FormattedMessage id="undelegated_by" defaultMessage="by" />{' '}
             <a href={`/@${to}`} className="username">
               {to}
             </a>{' '}
           </span>
         ),
         color: 'black',
+        point: '-',
       }
     : {
         description: (
@@ -27,19 +28,21 @@ const UndelegateStart = ({ timestamp, account, symbol, to, from, quantity }) => 
           </span>
         ),
         color: 'black',
+        point: '+',
       };
 
   return (
     <TransactionCardContainer
       timestamp={timestamp}
-      iconType={'arrow-left'}
+      // iconType={'arrow-left'}
       symbol={symbol}
       quantity={quantity}
       color={cardInfo.color}
       point={cardInfo.point}
+      account={isReceive ? to : from}
     >
       <span>
-        <FormattedMessage id="undelegated_started" defaultMessage="Undelegated started" />{' '}
+        <FormattedMessage id="undelegated" defaultMessage="Undelegated" />{' '}
         {(to || from) && cardInfo.description}{' '}
       </span>{' '}
     </TransactionCardContainer>
