@@ -46,7 +46,7 @@ const ShopList = ({ userName, path, children, setVisibleNavig, getShopFeed }) =>
 
   useEffect(() => {
     getShopFeed(userName, authUser, parseQueryForFilters()).then(res => {
-      setDepartments(res);
+      setDepartments(res.result);
       setLoading(false);
     });
   }, [query.toString()]);
@@ -58,11 +58,11 @@ const ShopList = ({ userName, path, children, setVisibleNavig, getShopFeed }) =>
       <h3 className="ShopList__title">Departments</h3>
       <DepartmentsMobile setVisible={setVisibleNavig} />
       <FiltersForMobile setVisible={() => setVisible(true)} />
-      {departments.every(dep => isEmpty(dep.wobjects)) ? (
+      {departments?.every(dep => isEmpty(dep.wobjects)) ? (
         <EmptyCampaing emptyMessage={'This shop does not have any products.'} />
       ) : (
         <div>
-          {departments.map(dep => {
+          {departments?.map(dep => {
             if (isEmpty(dep.wobjects)) return null;
 
             return (

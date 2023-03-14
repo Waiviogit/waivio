@@ -8,7 +8,7 @@ import DepartmentItem from './DepartmentItem';
 
 import './ShopDepartments.less';
 
-const ShopDepartmentsList = ({ visible, onClose, getShopDepartments, path }) => {
+const ShopDepartmentsList = ({ shopFilter, visible, onClose, getShopDepartments, path }) => {
   const match = useRouteMatch();
   const [departments, setDepartments] = useState([]);
 
@@ -16,7 +16,7 @@ const ShopDepartmentsList = ({ visible, onClose, getShopDepartments, path }) => 
     getShopDepartments().then(res => {
       setDepartments(res);
     });
-  }, []);
+  }, [shopFilter]);
 
   const excludedMain = departments.map(d => d.name);
 
@@ -64,6 +64,7 @@ ShopDepartmentsList.propTypes = {
   path: PropTypes.string,
   onClose: PropTypes.func,
   getShopDepartments: PropTypes.func,
+  shopFilter: PropTypes.shape(),
 };
 
 export default ShopDepartmentsList;
