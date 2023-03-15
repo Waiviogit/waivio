@@ -22,7 +22,9 @@ const WobjectShoppingList = ({ wobject }) => {
       setVisibleNavig={onOpen}
       userName={authUserName}
       path={`/object/${authorPermlink}/shop`}
-      getShopFeed={() => getWobjectShopMainFeed(authorPermlink)}
+      getShopFeed={(userName, authUser, filters, excluded, crumb, skip) =>
+        getWobjectShopMainFeed(authorPermlink, authUser, skip)
+      }
     >
       {visibleNavig && <DepartmentsWobject visible={visibleNavig} onClose={onClose} />}
     </ListSwitcher>

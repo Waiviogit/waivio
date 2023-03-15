@@ -24,7 +24,7 @@ import './DepartmentsWobjList.less';
 const DepartmentsWobjList = ({ getDepartmentsFeed, user, children, setVisibleNavig, Filter }) => {
   const [departmentInfo, setDepartmentInfo] = useState();
   const [visible, setVisible] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const authUser = useSelector(getAuthenticatedUserName);
   const match = useRouteMatch();
   const location = useLocation();

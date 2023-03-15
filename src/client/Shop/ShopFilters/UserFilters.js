@@ -10,9 +10,9 @@ import {
 
 const UserFilters = ({ visible, onClose }) => {
   const match = useRouteMatch();
-  const getDepartmentsFilters = () => getDepartmentsUserFilters(match.params.name);
-  const showMoreTagsForFilters = (tagCategory, objType, skip, limit) =>
-    showMoreTagsForUserFilters(match.params.name, tagCategory, skip, limit);
+  const getDepartmentsFilters = path => getDepartmentsUserFilters(match.params.name, path);
+  const showMoreTagsForFilters = (path, tagCategory, objType, skip, limit) =>
+    showMoreTagsForUserFilters(match.params.name, path, tagCategory, skip, limit);
 
   return (
     <ShopFilters
