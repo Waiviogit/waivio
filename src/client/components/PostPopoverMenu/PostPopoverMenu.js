@@ -68,6 +68,7 @@ const propTypes = {
   }).isRequired,
   handlePostPopoverMenuClick: PropTypes.func,
   ownPost: PropTypes.bool,
+  disableRemove: PropTypes.bool,
   children: PropTypes.node.isRequired,
   isGuest: PropTypes.bool.isRequired,
   userName: PropTypes.string.isRequired,

@@ -36,6 +36,8 @@ const ShopList = ({ userName, path, children, setVisibleNavig, getShopFeed }) =>
 
   useEffect(() => {
     if (department === activeCrumb?.name || !department) {
+      setLoading(true);
+
       getShopFeed(
         userName,
         authUser,
@@ -53,7 +55,7 @@ const ShopList = ({ userName, path, children, setVisibleNavig, getShopFeed }) =>
 
   const getPath = name => {
     if (match.params.department && match.params.department !== name) {
-      return `${location.hash}/${name}`;
+      return location.hash ? `${location.hash}/${name}` : `#${name}`;
     }
 
     return `${path}/${name}`;
@@ -61,6 +63,7 @@ const ShopList = ({ userName, path, children, setVisibleNavig, getShopFeed }) =>
 
   return (
     <div className="ShopList">
+      {!match.params.department && <h3 className="ShopList__title">Departments</h3>}
       <DepartmentsMobile setVisible={setVisibleNavig} />
       <FiltersForMobile setVisible={() => setVisible(true)} />
       {departments?.every(dep => isEmpty(dep.wobjects)) ? (
@@ -72,7 +75,7 @@ const ShopList = ({ userName, path, children, setVisibleNavig, getShopFeed }) =>
 
             return (
               <div key={dep.department} className="ShopList__departments">
-                <Link to={`${path}/${dep.department}`} className="ShopList__departments-title">
+                <Link to={getPath(dep.department)} className="ShopList__departments-title">
                   {dep.department} <Icon size={12} type="right" />
                 </Link>
                 {dep.wobjects.map(wObject => (
