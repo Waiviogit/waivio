@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import Helmet from 'react-helmet';
 import { withRouter } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { renderRoutes } from 'react-router-config';
 
 import Affix from '../components/Utils/Affix';
@@ -10,14 +10,18 @@ import LeftSidebar from '../app/Sidebar/LeftSidebar';
 
 import RightSidebar from '../app/Sidebar/RightSidebar';
 import { getHelmetIcon } from '../../store/appStore/appSelectors';
+import { resetBreadCrumb } from '../../store/shopStore/shopActions';
 
 const Shop = ({ route }) => {
   const favicon = useSelector(getHelmetIcon);
+  const dispatch = useDispatch();
   const title = `Shop - Waivio`;
   const desc = 'Find and buy easily. Shop with pleasure!';
   const image =
     'https://images.hive.blog/p/DogN7fF3oJDSFnVMQK19qE7K3somrX2dTE7F3viyR7zVngPPv827QvEAy1h8dJVrY1Pa5KJWZrwXeHPHqzW6dL9AG9fWHRaRVeY8B4YZh4QrcaPRHtAtYLGebHH7zUL9jyKqZ6NyLgCk3FRecMX7daQ96Zpjc86N6DUQrX18jSRqjSKZgaj2wVpnJ82x7nSGm5mmjSih5Xf71?format=match&mode=fit&width=800&height=600';
   const canonicalUrl = 'https://www.waivio.com/shop';
+
+  useEffect(() => () => dispatch(resetBreadCrumb()), []);
 
   return (
     <div className="shifted">
