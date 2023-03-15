@@ -3278,11 +3278,15 @@ export const getShopMainFeed = (
     .then(posts => posts)
     .catch(error => error);
 
-export const getWobjectShopMainFeed = (authorPermlink, follower, skip, limit) =>
-  fetch(`${config.apiPrefix}${config.shop}${config.getObjects}${config.mainFeed}`, {
+export const getWobjectShopMainFeed = (authorPermlink, follower, skip, limit = 10, path) => {
+  console.log(skip);
+  return fetch(`${config.apiPrefix}${config.shop}${config.getObjects}${config.mainFeed}`, {
     headers: {
       ...headers,
       follower,
+      skip,
+      limit,
+      path,
     },
     method: 'POST',
     body: JSON.stringify({
@@ -3292,8 +3296,9 @@ export const getWobjectShopMainFeed = (authorPermlink, follower, skip, limit) =>
     .then(res => res.json())
     .then(posts => posts)
     .catch(error => error);
+};
 
-export const getWobjectShopDepartments = (authorPermlink, name, excluded) =>
+export const getWobjectShopDepartments = (authorPermlink, name, excluded, path) =>
   fetch(`${config.apiPrefix}${config.shop}${config.getObjects}${config.departments}`, {
     headers,
     method: 'POST',
@@ -3301,6 +3306,7 @@ export const getWobjectShopDepartments = (authorPermlink, name, excluded) =>
       authorPermlink,
       name,
       excluded,
+      path,
     }),
   })
     .then(res => res.json())
@@ -3341,6 +3347,7 @@ export const getWobjectDepartmentsFeed = (
   authorPermlink,
   department,
   follower,
+  path,
   skip,
   limit,
   locale,
@@ -3355,6 +3362,7 @@ export const getWobjectDepartmentsFeed = (
     body: JSON.stringify({
       department,
       authorPermlink,
+      path,
       skip,
       limit,
     }),
