@@ -41,10 +41,10 @@ const DepartmentItem = ({ department, match, excludedMain, onClose, getShopDepar
 
       history.push(`#${hashPermlinks.join('/')}`);
       if (isEmpty(nestedDepartments) && department.subdirectory) {
-        getShopDepartments(department.name, excludedMain).then(res => {
-          setNestedDepartments(res);
-          setShowNested(true);
-        });
+        // getShopDepartments(department.name, excludedMain).then(res => {
+        //   setNestedDepartments(res);
+        //   setShowNested(true);
+        // });
       } else {
         setShowNested(!showNested);
       }
@@ -66,21 +66,32 @@ const DepartmentItem = ({ department, match, excludedMain, onClose, getShopDepar
         setShowNested(true);
       });
     }
+  }, [match.params.department, history.location.hash]);
 
-    if (department.name === getLastPermlinksFromHash(history.location.hash)) {
+  useEffect(() => {
+    if (
+      history.location.hash &&
+      getLastPermlinksFromHash(history.location.hash) === department.name
+    ) {
+      dispatch(setBreadCrumb(department));
       dispatch(setExcluded(excludedMain));
     }
 
-    dispatch(setBreadCrumb(department));
-  }, [match.params.department]);
+    if (!history.location.hash && department.name === match.params.department) {
+      dispatch(setBreadCrumb(department));
+      dispatch(setExcluded(excludedMain));
+    }
+  }, [history.location.hash]);
 
   useEffect(() => {
     if (
       (!categories.includes(department.name) && department.name !== match.params.department) ||
       !match.params.department
-    )
+    ) {
       setShowNested(false);
-    else setShowNested(true);
+    } else {
+      setShowNested(true);
+    }
   }, [history.location.hash, match.params.department]);
 
   const excluded = [...excludedMain, ...nestedDepartments.map(nes => nes.name)];
@@ -98,7 +109,7 @@ const DepartmentItem = ({ department, match, excludedMain, onClose, getShopDepar
         <NavLink
           to={getLinkPath(match, department, path, history.location)}
           isActive={() =>
-            match?.url.includes(`/${department.name}`) || categories.includes(department.name)
+            match.params.department === department.name || categories.includes(department.name)
           }
           onClick={getNestedDepartments}
           activeClassName="ShopDepartmentsList__link--active"

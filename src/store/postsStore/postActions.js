@@ -190,14 +190,13 @@ export const handleHidePost = post => (dispatch, getState, { steemConnectAPI }) 
   });
 };
 export const REMOVE_POST = 'REMOVE_POST';
-export const handleRemovePost = post => dispatch => {
-  return dispatch({
+export const handleRemovePost = post => dispatch =>
+  dispatch({
     type: REMOVE_POST,
     meta: {
       post,
     },
   });
-};
 
 export const MUTE_POSTS_AUTHOR = createAsyncActionType('MUTE_POSTS_AUTHOR');
 

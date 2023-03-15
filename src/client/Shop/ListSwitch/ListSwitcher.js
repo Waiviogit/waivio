@@ -53,7 +53,7 @@ const ListSwitcher = props => {
   return (
     <div className={'ListSwitcher'}>
       <h3 className={'ListSwitcher__breadCrumbsWrap'}>
-        <div
+        <span
           className={'ListSwitcher__breadCrumbs'}
           onClick={() => {
             dispatch(resetBreadCrumb());
@@ -61,7 +61,7 @@ const ListSwitcher = props => {
           }}
         >
           Departments
-        </div>{' '}
+        </span>{' '}
         &gt;{' '}
         <Link
           className={classNames('ListSwitcher__breadCrumbs', {
