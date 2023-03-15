@@ -3282,19 +3282,19 @@ export const getShopMainFeed = (
     .then(posts => posts)
     .catch(error => error);
 
-export const getWobjectShopMainFeed = (authorPermlink, follower, skip, limit = 10, path) => {
-  console.log(skip);
+export const getWobjectShopMainFeed = (authorPermlink, follower, skip, path, limit = 10) => {
+  console.log(path);
   return fetch(`${config.apiPrefix}${config.shop}${config.getObjects}${config.mainFeed}`, {
     headers: {
       ...headers,
       follower,
-      skip,
-      limit,
-      path,
     },
     method: 'POST',
     body: JSON.stringify({
       authorPermlink,
+      skip,
+      limit,
+      path,
     }),
   })
     .then(res => res.json())

@@ -55,6 +55,7 @@ import { getConfiguration } from '../../../store/websiteStore/websiteSelectors';
 import { getRate, getRewardFund } from '../../../store/appStore/appActions';
 import { setStoreActiveOption } from '../../../store/optionsStore/optionsActions';
 import { login } from '../../../store/authStore/authActions';
+import { resetBreadCrumb } from '../../../store/shopStore/shopActions';
 
 @withRouter
 @connect(
@@ -90,6 +91,7 @@ import { login } from '../../../store/authStore/authActions';
     getObjectFollowers: getObjectFollowersAction,
     getRelatedWobjects,
     setStoreActiveOption,
+    resetBreadCrumb,
   },
 )
 export default class WobjectContainer extends React.Component {
@@ -105,6 +107,7 @@ export default class WobjectContainer extends React.Component {
     failed: PropTypes.bool,
     isFetching: PropTypes.bool,
     getObject: PropTypes.func.isRequired,
+    resetBreadCrumb: PropTypes.func.isRequired,
     weightValue: PropTypes.number.isRequired,
     supportedObjectTypes: PropTypes.arrayOf(PropTypes.string),
     isWaivio: PropTypes.bool.isRequired,
@@ -208,6 +211,7 @@ export default class WobjectContainer extends React.Component {
       this.props.setNestedWobject({});
       this.props.getRelatedWobjects(match.params.name);
       this.props.getWobjectExpertise(newsFilter, match.params.name);
+      this.props.resetBreadCrumb();
       this.props.getObjectFollowers({
         object: match.params.name,
         skip: 0,
@@ -223,6 +227,7 @@ export default class WobjectContainer extends React.Component {
     this.props.setNestedWobject({});
     this.props.clearRelatedPhoto();
     this.props.setStoreActiveOption({});
+    this.props.resetBreadCrumb();
   }
 
   toggleViewEditMode = () => this.setState(prevState => ({ isEditMode: !prevState.isEditMode }));
