@@ -4,19 +4,22 @@ import { useRouteMatch } from 'react-router';
 import { Modal } from 'antd';
 import PropTypes from 'prop-types';
 import { isEmpty } from 'lodash';
+import { useDispatch } from 'react-redux';
 import DepartmentItem from './DepartmentItem';
+import { resetBreadCrumb } from '../../../store/shopStore/shopActions';
 
 import './ShopDepartments.less';
 
-const ShopDepartmentsList = ({ visible, onClose, getShopDepartments, path }) => {
+const ShopDepartmentsList = ({ shopFilter, visible, onClose, getShopDepartments, path }) => {
   const match = useRouteMatch();
+  const dispatch = useDispatch();
   const [departments, setDepartments] = useState([]);
 
   useEffect(() => {
     getShopDepartments().then(res => {
       setDepartments(res);
     });
-  }, []);
+  }, [shopFilter]);
 
   const excludedMain = departments.map(d => d.name);
 
@@ -31,6 +34,7 @@ const ShopDepartmentsList = ({ visible, onClose, getShopDepartments, path }) => 
         to={path}
         activeClassName="ShopDepartmentsList__item--active"
         className="ShopDepartmentsList__maindepName"
+        onClick={() => dispatch(resetBreadCrumb())}
       >
         Departments
       </NavLink>
@@ -64,6 +68,7 @@ ShopDepartmentsList.propTypes = {
   path: PropTypes.string,
   onClose: PropTypes.func,
   getShopDepartments: PropTypes.func,
+  shopFilter: PropTypes.shape(),
 };
 
 export default ShopDepartmentsList;

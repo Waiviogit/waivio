@@ -5,8 +5,13 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import { isEmpty } from 'lodash';
 import { useHistory } from 'react-router';
-
-import { createNewHash, getPermlinksFromHash } from '../../../common/helpers/wObjectHelper';
+import { useDispatch } from 'react-redux';
+import { setBreadCrumb, setExcluded } from '../../../store/shopStore/shopActions';
+import {
+  getLastPermlinksFromHash,
+  getLinkPath,
+  getPermlinksFromHash,
+} from '../../../common/helpers/wObjectHelper';
 
 import './ShopDepartments.less';
 
@@ -14,7 +19,17 @@ const DepartmentItem = ({ department, match, excludedMain, onClose, getShopDepar
   const [nestedDepartments, setNestedDepartments] = useState([]);
   const [showNested, setShowNested] = useState(false);
   const history = useHistory();
+  const dispatch = useDispatch();
   const categories = getPermlinksFromHash(history.location.hash);
+  const itemClassList = classNames('ShopDepartmentsList__item', {
+    'ShopDepartmentsList__item--withNested': department.subdirectory,
+  });
+  const depNameClassList = classNames('ShopDepartmentsList__depName', {
+    'ShopDepartmentsList__depName--open': showNested,
+  });
+  const itemListClassList = classNames('ShopDepartmentsList__list', {
+    'ShopDepartmentsList__list--show': showNested,
+  });
 
   const getNestedDepartments = () => {
     if (match.params.department && match.params.department !== department.name) {
@@ -36,6 +51,8 @@ const DepartmentItem = ({ department, match, excludedMain, onClose, getShopDepar
     } else history.push(`${path}/${department.name}`);
 
     if (onClose) onClose();
+    dispatch(setBreadCrumb(department));
+    dispatch(setExcluded(excludedMain));
   };
 
   useEffect(() => {
@@ -49,41 +66,22 @@ const DepartmentItem = ({ department, match, excludedMain, onClose, getShopDepar
         setShowNested(true);
       });
     }
+
+    if (department.name === getLastPermlinksFromHash(history.location.hash)) {
+      dispatch(setExcluded(excludedMain));
+    }
+
+    dispatch(setBreadCrumb(department));
   }, [match.params.department]);
 
   useEffect(() => {
     if (
       (!categories.includes(department.name) && department.name !== match.params.department) ||
       !match.params.department
-    ) {
+    )
       setShowNested(false);
-    } else {
-      setShowNested(true);
-    }
+    else setShowNested(true);
   }, [history.location.hash, match.params.department]);
-
-  const itemClassList = classNames('ShopDepartmentsList__item', {
-    'ShopDepartmentsList__item--withNested': department.subdirectory,
-  });
-
-  const depNameClassList = classNames('ShopDepartmentsList__depName', {
-    'ShopDepartmentsList__depName--open': showNested,
-  });
-
-  const itemListClassList = classNames('ShopDepartmentsList__list', {
-    'ShopDepartmentsList__list--show': showNested,
-  });
-
-  const getLinkPath = () => {
-    if (match.params.department === department.name) return path;
-
-    return match.params.department && match.params.department !== department.name
-      ? `${path}/${match.params.department}/#${createNewHash(
-          department.name,
-          history.location.hash,
-        )}`
-      : `${path}/${department.name}`;
-  };
 
   const excluded = [...excludedMain, ...nestedDepartments.map(nes => nes.name)];
   const renderList = nestedDepartments.some(j => categories.includes(j.name))
@@ -98,11 +96,11 @@ const DepartmentItem = ({ department, match, excludedMain, onClose, getShopDepar
         </div>
       ) : (
         <NavLink
-          to={getLinkPath()}
+          to={getLinkPath(match, department, path, history.location)}
           isActive={() =>
             match?.url.includes(`/${department.name}`) || categories.includes(department.name)
           }
-          onClick={onClose}
+          onClick={getNestedDepartments}
           activeClassName="ShopDepartmentsList__link--active"
           className="ShopDepartmentsList__link"
         >

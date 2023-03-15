@@ -320,6 +320,14 @@ export const createNewHash = (currPermlink, hash, wobj = {}) => {
   return hashPermlinks.join('/');
 };
 
+export const getLinkPath = (match, department, path, location) => {
+  if (match.params.department === department.name) return path;
+
+  return match.params.department && match.params.department !== department.name
+    ? `${path}/${match.params.department}/#${createNewHash(department.name, location.hash)}`
+    : `${path}/${department.name}`;
+};
+
 export const createNewPath = (wobj, type) => {
   let currType = type;
 

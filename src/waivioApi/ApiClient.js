@@ -3207,7 +3207,7 @@ export const getShopDepartments = (name, excluded) =>
     .then(posts => posts)
     .catch(error => error);
 
-export const getUserShopMainFeed = (userName, follower, filter) =>
+export const getUserShopMainFeed = (userName, follower, filter, excludedDepartments, department) =>
   fetch(`${config.apiPrefix}${config.shop}${config.user}${config.mainFeed}`, {
     headers: {
       ...headers,
@@ -3217,13 +3217,15 @@ export const getUserShopMainFeed = (userName, follower, filter) =>
     body: JSON.stringify({
       userName,
       filter,
+      excludedDepartments,
+      department,
     }),
   })
     .then(res => res.json())
     .then(posts => posts)
     .catch(error => error);
 
-export const getShopMainFeed = (userName, follower, filter) =>
+export const getShopMainFeed = (userName, follower, filter, excludedDepartments, department) =>
   fetch(`${config.apiPrefix}${config.shop}${config.mainFeed}`, {
     headers: {
       ...headers,
@@ -3233,6 +3235,8 @@ export const getShopMainFeed = (userName, follower, filter) =>
     body: JSON.stringify({
       userName,
       filter,
+      excludedDepartments,
+      department,
     }),
   })
     .then(res => res.json())
@@ -3268,7 +3272,16 @@ export const getWobjectShopDepartments = (authorPermlink, name, excluded) =>
     .then(posts => posts)
     .catch(error => error);
 
-export const getDepartmentsFeed = (userName, follower, department, filter, skip, limit, locale) =>
+export const getDepartmentsFeed = (
+  userName,
+  follower,
+  department,
+  filter,
+  path,
+  skip,
+  limit,
+  locale,
+) =>
   fetch(`${config.apiPrefix}${config.shop}${config.user}${config.departmentFeed}`, {
     headers: {
       ...headers,
@@ -3282,6 +3295,7 @@ export const getDepartmentsFeed = (userName, follower, department, filter, skip,
       filter,
       skip,
       limit,
+      path,
     }),
   })
     .then(res => res.json())
@@ -3319,6 +3333,7 @@ export const getShopDepartmentFeed = (
   follower,
   department,
   filter,
+  path,
   skip,
   limit,
   locale,
@@ -3336,6 +3351,7 @@ export const getShopDepartmentFeed = (
       filter,
       skip,
       limit,
+      path,
     }),
   })
     .then(res => res.json())

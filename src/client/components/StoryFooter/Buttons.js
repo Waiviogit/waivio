@@ -201,6 +201,7 @@ export default class Buttons extends React.Component {
     const upVotes = this.state.upVotes.sort(sortVotes);
     const downVotes = this.state.downVotes.sort(sortVotes).reverse();
     const hasRebloggedUsers = post.reblogged_users && !!post.reblogged_users.length;
+    const disableRemove = true;
 
     const upVotesPreview = votes => {
       const sponsors = [];
@@ -398,6 +399,7 @@ export default class Buttons extends React.Component {
           postState={postState}
           intl={intl}
           post={post}
+          disableRemove={post.isRemove}
           handlePostPopoverMenuClick={handlePostPopoverMenuClick}
           ownPost={ownPost}
           userComments={userComments}
