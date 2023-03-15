@@ -1,0 +1,22 @@
+@import (reference) '../../styles/modules/variables.less';
+
+.ListSwitcher {
+  &__breadCrumbs {
+    color: black;
+    text-decoration: underline;
+
+    &--active {
+      text-decoration: none;
+    }
+  }
+
+  &__breadCrumbsWrap {
+    display: none;
+
+    @media @small {
+      display: block;
+    }
+  }
+}
+
+@import 'ListSwitcher-nightmode';

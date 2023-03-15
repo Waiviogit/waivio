@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import DepartmentsWobjList from './DepartmentsWobjList';
 import { getShopDepartmentFeed } from '../../../waivioApi/ApiClient';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 import GlobalShopDepartments from '../ShopDepartments/GlobalShopDepartments';
 import GlobalShopFilters from '../ShopFilters/GlobalShopFilters';
+import ListSwitcher from '../ListSwitch/ListSwitcher';
 
 const ShopDepartmentsWobjList = () => {
   const authUser = useSelector(getAuthenticatedUserName);
@@ -14,7 +14,7 @@ const ShopDepartmentsWobjList = () => {
   const onClose = () => setVisibleNavig(false);
 
   return (
-    <DepartmentsWobjList
+    <ListSwitcher
       user={authUser}
       getDepartmentsFeed={getShopDepartmentFeed}
       setVisibleNavig={onOpen}
@@ -22,7 +22,7 @@ const ShopDepartmentsWobjList = () => {
       Filter={GlobalShopFilters}
     >
       {visibleNavig && <GlobalShopDepartments visible={visibleNavig} onClose={onClose} />}
-    </DepartmentsWobjList>
+    </ListSwitcher>
   );
 };
 

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
+import { connect, useDispatch } from 'react-redux';
 import { Icon, Modal } from 'antd';
 import { FormattedMessage } from 'react-intl';
 import { get, isEmpty } from 'lodash';
@@ -11,7 +11,10 @@ import PopoverMenu, { PopoverMenuItem } from '../PopoverMenu/PopoverMenu';
 import { dropCategory, replaceBotWithGuestName } from '../../../common/helpers/postHelpers';
 import { getFacebookShareURL, getTwitterShareURL } from '../../../common/helpers/socialProfiles';
 import { isPostCashout } from '../../vendor/steemitHelpers';
-import { getSocialInfoPost as getSocialInfoPostAction } from '../../../store/postsStore/postActions';
+import {
+  getSocialInfoPost as getSocialInfoPostAction,
+  handleRemovePost,
+} from '../../../store/postsStore/postActions';
 import { getAuthenticatedUserName, isGuestUser } from '../../../store/authStore/authSelectors';
 import { isMobile } from '../../../common/helpers/apiHelpers';
 import { deletePost } from '../../../waivioApi/ApiClient';
@@ -96,12 +99,14 @@ const PostPopoverMenu = ({
   userName,
   getSocialInfoPost,
   userComments,
+  disableRemove,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isPin, setIsPin] = useState(false);
   const [isRemove, setIsRemove] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const history = useHistory();
+  const dispatch = useDispatch();
   const match = useRouteMatch();
   const userPage = match.url.includes(`/@${match.params.name}`);
   const { isReported, isSaved } = postState;
@@ -132,6 +137,7 @@ const PostPopoverMenu = ({
 
         return setIsPin(true);
       case 'remove':
+        dispatch(handleRemovePost(post));
         setIsVisible(false);
 
         return setIsRemove(true);
@@ -235,7 +241,7 @@ const PostPopoverMenu = ({
           <FormattedMessage id="object_field_pin" defaultMessage="Pin" />
         </span>
       </PopoverMenuItem>,
-      <PopoverMenuItem key="remove" disabled={loading} invisible={userPage}>
+      <PopoverMenuItem key="remove" disabled={loading || disableRemove} invisible={userPage}>
         <Icon type="close-circle" className="hide-button popoverIcon ml1px" />
         <span className="ml1">
           <FormattedMessage id="object_field_remove" defaultMessage="Remove" />
@@ -267,7 +273,7 @@ const PostPopoverMenu = ({
           <FormattedMessage id="object_field_pin" defaultMessage="Pin" />
         </span>
       </PopoverMenuItem>,
-      <PopoverMenuItem key="remove" disabled={loading} invisible={userPage}>
+      <PopoverMenuItem key="remove" disabled={loading || disableRemove} invisible={userPage}>
         <Icon type="close-circle" className="hide-button popoverIcon ml1px" />
         <span className="ml1">
           <FormattedMessage id="object_field_remove" defaultMessage="Remove" />
