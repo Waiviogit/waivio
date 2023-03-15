@@ -3,7 +3,6 @@ import { NavLink } from 'react-router-dom';
 import { Icon } from 'antd';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import { isEmpty } from 'lodash';
 import { useHistory } from 'react-router';
 import { useDispatch } from 'react-redux';
 import { setBreadCrumb, setExcluded } from '../../../store/shopStore/shopActions';
@@ -40,19 +39,9 @@ const DepartmentItem = ({ department, match, excludedMain, onClose, getShopDepar
       else hashPermlinks.push(department.name);
 
       history.push(`#${hashPermlinks.join('/')}`);
-      if (isEmpty(nestedDepartments) && department.subdirectory) {
-        // getShopDepartments(department.name, excludedMain).then(res => {
-        //   setNestedDepartments(res);
-        //   setShowNested(true);
-        // });
-      } else {
-        setShowNested(!showNested);
-      }
     } else history.push(`${path}/${department.name}`);
 
     if (onClose) onClose();
-    dispatch(setBreadCrumb(department));
-    dispatch(setExcluded(excludedMain));
   };
 
   useEffect(() => {
@@ -66,7 +55,23 @@ const DepartmentItem = ({ department, match, excludedMain, onClose, getShopDepar
         setShowNested(true);
       });
     }
+
+    if (
+      (!categories.includes(department.name) && department.name !== match.params.department) ||
+      !match.params.department
+    ) {
+      setShowNested(false);
+    } else {
+      setShowNested(true);
+    }
   }, [match.params.department, history.location.hash]);
+
+  useEffect(() => {
+    if (match.params.department === department.name) {
+      dispatch(setBreadCrumb(department));
+      dispatch(setExcluded(excludedMain));
+    }
+  }, [match.params.department]);
 
   useEffect(() => {
     if (
@@ -82,17 +87,6 @@ const DepartmentItem = ({ department, match, excludedMain, onClose, getShopDepar
       dispatch(setExcluded(excludedMain));
     }
   }, [history.location.hash]);
-
-  useEffect(() => {
-    if (
-      (!categories.includes(department.name) && department.name !== match.params.department) ||
-      !match.params.department
-    ) {
-      setShowNested(false);
-    } else {
-      setShowNested(true);
-    }
-  }, [history.location.hash, match.params.department]);
 
   const excluded = [...excludedMain, ...nestedDepartments.map(nes => nes.name)];
   const renderList = nestedDepartments.some(j => categories.includes(j.name))
