@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { useLocation, useRouteMatch } from 'react-router';
 import { Icon } from 'antd';
+import InfiniteSroll from 'react-infinite-scroller';
 
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 import ObjectCardView from '../../objectCard/ObjectCardView';
@@ -22,6 +23,7 @@ import './ShopList.less';
 
 const ShopList = ({ userName, path, children, setVisibleNavig, getShopFeed }) => {
   const [departments, setDepartments] = useState([]);
+  const [hasMore, setHasMore] = useState(false);
   const [loading, setLoading] = useState(true);
   const [visible, setVisible] = useState(false);
   const query = useQuery();
@@ -46,6 +48,7 @@ const ShopList = ({ userName, path, children, setVisibleNavig, getShopFeed }) =>
         activeCrumb?.name,
       ).then(res => {
         setDepartments(res.result);
+        setHasMore(res.hasMore);
         setLoading(false);
       });
     }
@@ -60,6 +63,22 @@ const ShopList = ({ userName, path, children, setVisibleNavig, getShopFeed }) =>
 
     return `${path}/${name}`;
   };
+  const loadMore = () => {
+    if (department === activeCrumb?.name || !department) {
+      getShopFeed(
+        userName,
+        authUser,
+        parseQueryForFilters(query),
+        excluded,
+        activeCrumb?.name,
+        departments.length,
+      ).then(res => {
+        setDepartments([...departments, ...res.result]);
+        setHasMore(res.hasMore);
+        setLoading(false);
+      });
+    }
+  };
 
   return (
     <div className="ShopList">
@@ -69,27 +88,29 @@ const ShopList = ({ userName, path, children, setVisibleNavig, getShopFeed }) =>
       {departments?.every(dep => isEmpty(dep.wobjects)) ? (
         <EmptyCampaing emptyMessage={'This shop does not have any products.'} />
       ) : (
-        <div>
-          {departments?.map(dep => {
-            if (isEmpty(dep.wobjects)) return null;
+        <InfiniteSroll loadMore={loadMore} hasMore={hasMore}>
+          <div>
+            {departments?.map(dep => {
+              if (isEmpty(dep.wobjects)) return null;
 
-            return (
-              <div key={dep.department} className="ShopList__departments">
-                <Link to={getPath(dep.department)} className="ShopList__departments-title">
-                  {dep.department} <Icon size={12} type="right" />
-                </Link>
-                {dep.wobjects.map(wObject => (
-                  <ObjectCardView key={wObject.author_permlink} wObject={wObject} />
-                ))}
-                {dep.hasMore && (
-                  <Link className="ShopList__showMore" to={getPath(dep.department)}>
-                    Show more {dep.department}
+              return (
+                <div key={dep.department} className="ShopList__departments">
+                  <Link to={getPath(dep.department)} className="ShopList__departments-title">
+                    {dep.department} <Icon size={12} type="right" />
                   </Link>
-                )}
-              </div>
-            );
-          })}
-        </div>
+                  {dep.wobjects.map(wObject => (
+                    <ObjectCardView key={wObject.author_permlink} wObject={wObject} />
+                  ))}
+                  {dep.hasMore && (
+                    <Link className="ShopList__showMore" to={getPath(dep.department)}>
+                      Show more {dep.department}
+                    </Link>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </InfiniteSroll>
       )}
       {children}
       {visible && <ShopFilters visible={visible} onClose={() => setVisible(false)} />}

@@ -9,6 +9,7 @@ import useQuery from '../../../hooks/useQuery';
 import { parseQuery } from '../../../waivioApi/helpers';
 
 import './ShopFilters.less';
+import { getPermlinksFromHash } from '../../../common/helpers/wObjectHelper';
 
 const ShopFilters = ({ visible, onClose, getDepartmentsFilters, showMoreTagsForFilters }) => {
   const [filters, setFilters] = useState();
@@ -16,10 +17,13 @@ const ShopFilters = ({ visible, onClose, getDepartmentsFilters, showMoreTagsForF
   const query = useQuery();
   const history = useHistory();
   const match = useRouteMatch();
+  const path = match.params.department
+    ? [match.params.department, ...getPermlinksFromHash(history.location.hash)]
+    : undefined;
 
   useEffect(() => {
-    getDepartmentsFilters().then(res => setFilters(res));
-  }, []);
+    getDepartmentsFilters(path).then(res => setFilters(res));
+  }, [history.location.hash, match.params.department]);
 
   useEffect(() => {
     setActiveFilter(parseQuery(query.toString()));
@@ -55,7 +59,7 @@ const ShopFilters = ({ visible, onClose, getDepartmentsFilters, showMoreTagsForF
   };
 
   const getMoreTags = (tagCategory, objType, skip) =>
-    showMoreTagsForFilters(tagCategory, objType, skip, 10).then(res => {
+    showMoreTagsForFilters(path, tagCategory, objType, skip, 10).then(res => {
       const tagCategoryFilters = [...filters.tagCategoryFilters];
       const index = tagCategoryFilters.findIndex(filt => filt.tagCategory === tagCategory);
 
