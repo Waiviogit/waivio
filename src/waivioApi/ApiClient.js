@@ -3229,6 +3229,7 @@ export const getUserShopMainFeed = (
   excludedDepartments,
   department,
   skip,
+  path,
   limit,
 ) =>
   fetch(`${config.apiPrefix}${config.shop}${config.user}${config.mainFeed}`, {
@@ -3244,6 +3245,7 @@ export const getUserShopMainFeed = (
       department,
       skip,
       limit,
+      path,
     }),
   })
     .then(res => res.json())
@@ -3257,6 +3259,7 @@ export const getShopMainFeed = (
   excludedDepartments,
   department,
   skip,
+  path,
   limit = 10,
 ) =>
   fetch(`${config.apiPrefix}${config.shop}${config.mainFeed}`, {
@@ -3272,6 +3275,7 @@ export const getShopMainFeed = (
       department,
       skip,
       limit,
+      path,
     }),
   })
     .then(res => res.json())
