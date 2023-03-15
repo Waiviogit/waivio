@@ -17,7 +17,10 @@ import FiltersForMobile from '../../newRewards/Filters/FiltersForMobile';
 import ShopFilters from '../ShopFilters/ShopFilters';
 import DepartmentsMobile from '../ShopDepartments/DepartmentsMobile';
 import { getActiveBreadCrumb, getExcludedDepartment } from '../../../store/shopStore/shopSelectors';
-import { getLastPermlinksFromHash } from '../../../common/helpers/wObjectHelper';
+import {
+  getLastPermlinksFromHash,
+  getPermlinksFromHash,
+} from '../../../common/helpers/wObjectHelper';
 
 import './ShopList.less';
 
@@ -32,6 +35,9 @@ const ShopList = ({ userName, path, children, setVisibleNavig, getShopFeed }) =>
   const authUser = useSelector(getAuthenticatedUserName);
   const excluded = useSelector(getExcludedDepartment);
   const activeCrumb = useSelector(getActiveBreadCrumb);
+  const pathList = match.params.department
+    ? [match.params.department, ...getPermlinksFromHash(location.hash)]
+    : [];
   const department = location.hash
     ? getLastPermlinksFromHash(location.hash)
     : match.params.department;
@@ -46,6 +52,8 @@ const ShopList = ({ userName, path, children, setVisibleNavig, getShopFeed }) =>
         parseQueryForFilters(query),
         excluded,
         activeCrumb?.name,
+        0,
+        pathList,
       ).then(res => {
         setDepartments(res.result);
         setHasMore(res.hasMore);
@@ -72,6 +80,7 @@ const ShopList = ({ userName, path, children, setVisibleNavig, getShopFeed }) =>
         excluded,
         activeCrumb?.name,
         departments.length,
+        pathList,
       ).then(res => {
         setDepartments([...departments, ...res.result]);
         setHasMore(res.hasMore);

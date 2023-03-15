@@ -30,18 +30,21 @@ const DepartmentsWobjList = ({ getDepartmentsFeed, user, children, setVisibleNav
   const location = useLocation();
   const query = useQuery();
   const list = useRef();
+  const path = match.params.department
+    ? [match.params.department, ...getPermlinksFromHash(location.hash)]
+    : [];
+
   const departments = location.hash
     ? getLastPermlinksFromHash(location.hash).replaceAll('%20', ' ')
     : match.params.department;
 
   useEffect(() => {
-    getDepartmentsFeed(user, authUser, departments, parseQueryForFilters(query), [
-      match.params.department,
-      ...getPermlinksFromHash(location.hash),
-    ]).then(res => {
-      setDepartmentInfo(res);
-      setLoading(false);
-    });
+    getDepartmentsFeed(user, authUser, departments, parseQueryForFilters(query), path, 0).then(
+      res => {
+        setDepartmentInfo(res);
+        setLoading(false);
+      },
+    );
 
     if (!isMobile()) window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [match.params.department, query.toString(), location.hash]);
@@ -62,7 +65,7 @@ const DepartmentsWobjList = ({ getDepartmentsFeed, user, children, setVisibleNav
       authUser,
       departments,
       parseQueryForFilters(query),
-      [match.params.department, ...getPermlinksFromHash(location.hash)],
+      path,
       departmentInfo.wobjects.length,
       10,
     ).then(res => {
