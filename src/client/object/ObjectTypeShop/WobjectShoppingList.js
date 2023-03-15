@@ -4,10 +4,10 @@ import { useRouteMatch } from 'react-router';
 import PropTypes from 'prop-types';
 import { has } from 'lodash';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
-import ShopList from '../../Shop/ShopList/ShopList';
 import { getWobjectShopMainFeed } from '../../../waivioApi/ApiClient';
 import DepartmentsWobject from './DepartmentsWobject';
 import EmptyCampaing from '../../statics/EmptyCampaing';
+import ListSwitcher from '../../Shop/ListSwitch/ListSwitcher';
 
 const WobjectShoppingList = ({ wobject }) => {
   const authUserName = useSelector(getAuthenticatedUserName);
@@ -18,14 +18,14 @@ const WobjectShoppingList = ({ wobject }) => {
   const onClose = () => setVisibleNavig(false);
 
   return has(wobject, 'shopFilter') ? (
-    <ShopList
+    <ListSwitcher
       setVisibleNavig={onOpen}
       userName={authUserName}
       path={`/object/${authorPermlink}/shop`}
       getShopFeed={() => getWobjectShopMainFeed(authorPermlink)}
     >
       {visibleNavig && <DepartmentsWobject visible={visibleNavig} onClose={onClose} />}
-    </ShopList>
+    </ListSwitcher>
   ) : (
     <EmptyCampaing emptyMessage={'This shop does not have any products.'} />
   );

@@ -22,6 +22,7 @@ const ObjectDepartmentsWobjList = () => {
       getDepartmentsFeed={getDepartmentsFeed}
       setVisibleNavig={onOpen}
       path={`/object/${match.params.name}/shop`}
+      type={'wobject'}
     >
       {visibleNavig && <DepartmentsUser visible={visibleNavig} onClose={onClose} />}
     </DepartmentsWobjList>

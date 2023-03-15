@@ -4,70 +4,41 @@ import { useSelector } from 'react-redux';
 import InfiniteSroll from 'react-infinite-scroller';
 import { useLocation, useRouteMatch } from 'react-router';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
-import classNames from 'classnames';
 
 import ObjectCardView from '../../objectCard/ObjectCardView';
 import EmptyCampaing from '../../statics/EmptyCampaing';
 import useQuery from '../../../hooks/useQuery';
-import { parseQuery } from '../../../waivioApi/helpers';
+import { parseQueryForFilters } from '../../../waivioApi/helpers';
 import FiltersForMobile from '../../newRewards/Filters/FiltersForMobile';
 import DepartmentsMobile from '../ShopDepartments/DepartmentsMobile';
 import { isMobile } from '../../../common/helpers/apiHelpers';
 import Loading from '../../components/Icon/Loading';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 import {
-  createHash,
   getLastPermlinksFromHash,
   getPermlinksFromHash,
 } from '../../../common/helpers/wObjectHelper';
 
 import './DepartmentsWobjList.less';
 
-const DepartmentsWobjList = ({
-  getDepartmentsFeed,
-  user,
-  children,
-  setVisibleNavig,
-  path,
-  Filter,
-}) => {
+const DepartmentsWobjList = ({ getDepartmentsFeed, user, children, setVisibleNavig, Filter }) => {
   const [departmentInfo, setDepartmentInfo] = useState();
   const [visible, setVisible] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const authUser = useSelector(getAuthenticatedUserName);
   const match = useRouteMatch();
   const location = useLocation();
+  const query = useQuery();
+  const list = useRef();
   const departments = location.hash
     ? getLastPermlinksFromHash(location.hash).replaceAll('%20', ' ')
     : match.params.department;
 
-  const query = useQuery();
-  const list = useRef();
-  const parseQueryForFilters = () => {
-    const parsedQuery = parseQuery(query.toString());
-
-    return Object.keys(parsedQuery).reduce(
-      (acc, curr) => {
-        if (curr === 'rating') return { ...acc, rating: +parsedQuery.rating };
-
-        return {
-          ...acc,
-          tagCategory: [
-            ...acc.tagCategory,
-            {
-              categoryName: curr,
-              tags: parsedQuery[curr],
-            },
-          ],
-        };
-      },
-      { tagCategory: [] },
-    );
-  };
-
   useEffect(() => {
-    getDepartmentsFeed(user, authUser, departments, parseQueryForFilters()).then(res => {
+    getDepartmentsFeed(user, authUser, departments, parseQueryForFilters(query), [
+      match.params.department,
+      ...getPermlinksFromHash(location.hash),
+    ]).then(res => {
       setDepartmentInfo(res);
       setLoading(false);
     });
@@ -90,7 +61,8 @@ const DepartmentsWobjList = ({
       user,
       authUser,
       departments,
-      parseQueryForFilters(),
+      parseQueryForFilters(query),
+      [match.params.department, ...getPermlinksFromHash(location.hash)],
       departmentInfo.wobjects.length,
       10,
     ).then(res => {
@@ -106,36 +78,6 @@ const DepartmentsWobjList = ({
     <div className="DepartmentsWobjList" ref={list} id={'DepartmentsWobjList'}>
       <DepartmentsMobile setVisible={() => setVisibleNavig(true)} />
       <FiltersForMobile setVisible={() => setVisible(true)} />
-      <h3 className={'DepartmentsWobjList__breadCrumbsWrap'}>
-        <Link className={'DepartmentsWobjList__breadCrumbs'} to={path}>
-          Departments
-        </Link>{' '}
-        &gt;{' '}
-        <Link
-          className={classNames('DepartmentsWobjList__breadCrumbs', {
-            'DepartmentsWobjList__breadCrumbs--active': !location.hash,
-          })}
-          to={`${path}/${match.params.department}`}
-        >
-          {match.params.department}
-        </Link>{' '}
-        {getPermlinksFromHash(location.hash).map(crumb => (
-          <span key={crumb}>
-            {' '}
-            &gt;{' '}
-            <Link
-              className={classNames('DepartmentsWobjList__breadCrumbs', {
-                'DepartmentsWobjList__breadCrumbs--active':
-                  getLastPermlinksFromHash(location.hash) === crumb ||
-                  match.params.department === crumb,
-              })}
-              to={createHash(location.hash, crumb)}
-            >
-              {crumb}
-            </Link>
-          </span>
-        ))}
-      </h3>
       {isEmpty(departmentInfo?.wobjects) ? (
         <EmptyCampaing emptyMessage={'There are no products in this department.'} />
       ) : (
@@ -155,7 +97,6 @@ DepartmentsWobjList.propTypes = {
   getDepartmentsFeed: PropTypes.func,
   setVisibleNavig: PropTypes.func,
   user: PropTypes.string,
-  path: PropTypes.string,
   children: PropTypes.node,
   Filter: PropTypes.node,
 };
