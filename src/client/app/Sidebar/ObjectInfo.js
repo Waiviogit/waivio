@@ -256,14 +256,6 @@ class ObjectInfo extends React.Component {
     const exposedFields = getExposedFieldsByObjType(wobject);
     const shouldDisplay = exposedFields.includes(name);
     const accessExtend = haveAccess(wobject, userName, accessTypesArr[0]) && isEditMode;
-    // const paddingObjTypes = [
-    //   objectFields.publisher,
-    //   objectFields.manufacturer,
-    //   objectFields.brand,
-    //   objectFields.merchant,
-    //   objectFields.description,
-    // ].includes(name);
-    // const paddingBottom = paddingObjTypes || (isEditMode && !wobject.publisher) || wobject.groupId;
 
     return (
       shouldDisplay &&
@@ -593,7 +585,7 @@ class ObjectInfo extends React.Component {
     const phones = get(wobject, 'phone', []);
     const isHashtag = hasType(wobject, OBJECT_TYPE.HASHTAG);
     const shopType = wobject.object_type === 'shop';
-    const showFeedSection = wobject.exposedFields.some(f => ['pin', 'remove'].includes(f.name));
+    const showFeedSection = wobject?.exposedFields?.some(f => ['pin', 'remove'].includes(f.name));
     const accessExtend = haveAccess(wobject, userName, accessTypesArr[0]) && isEditMode;
     const isRenderMap = map && isCoordinatesValid(map.latitude, map.longitude);
     const menuLinks = getMenuItems(wobject, TYPES_OF_MENU_ITEM.LIST, OBJECT_TYPE.LIST);
@@ -791,7 +783,10 @@ class ObjectInfo extends React.Component {
         )}
         {this.listItem(
           objectFields.shopFilter,
-          <DepartmentsWobject authorPermlink={wobject.author_permlink} />,
+          <DepartmentsWobject
+            authorPermlink={wobject.author_permlink}
+            shopFilter={wobject.shopFilter}
+          />,
         )}
       </React.Fragment>
     );
