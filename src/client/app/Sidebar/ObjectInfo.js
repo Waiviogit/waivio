@@ -1263,9 +1263,11 @@ class ObjectInfo extends React.Component {
 
     const feedSection = (
       <React.Fragment>
-        <div className="object-sidebar__section-title">
-          <FormattedMessage id="feed_section" defaultMessage="Feed" />
-        </div>
+        {isEditMode && (
+          <div className="object-sidebar__section-title">
+            <FormattedMessage id="feed_section" defaultMessage="Feed" />
+          </div>
+        )}
         {this.listItem(objectFields.pin, null)}
         {this.listItem(objectFields.remove, null)}
       </React.Fragment>
