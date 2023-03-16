@@ -70,7 +70,7 @@ const WobjectNearby = ({
           {intl.formatMessage({ id: 'nearby_to_object', defaultMessage: 'Nearby' })}
         </div>
         <div className="SidebarContentBlock__content">
-          {nearbyObjects.map(item => (
+          {nearbyObjects?.map(item => (
             <ObjectCard
               key={item.author_permlink}
               wobject={item}

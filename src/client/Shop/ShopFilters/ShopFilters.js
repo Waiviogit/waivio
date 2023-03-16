@@ -7,9 +7,9 @@ import PropTypes from 'prop-types';
 
 import useQuery from '../../../hooks/useQuery';
 import { parseQuery } from '../../../waivioApi/helpers';
+import { getPermlinksFromHash } from '../../../common/helpers/wObjectHelper';
 
 import './ShopFilters.less';
-import { getPermlinksFromHash } from '../../../common/helpers/wObjectHelper';
 
 const ShopFilters = ({ visible, onClose, getDepartmentsFilters, showMoreTagsForFilters }) => {
   const [filters, setFilters] = useState();
@@ -22,7 +22,9 @@ const ShopFilters = ({ visible, onClose, getDepartmentsFilters, showMoreTagsForF
     : undefined;
 
   useEffect(() => {
-    getDepartmentsFilters(path).then(res => setFilters(res));
+    getDepartmentsFilters(path).then(res => {
+      setFilters(res);
+    });
   }, [history.location.hash, match.params.department]);
 
   useEffect(() => {
@@ -55,7 +57,7 @@ const ShopFilters = ({ visible, onClose, getDepartmentsFilters, showMoreTagsForF
       });
     }
 
-    history.push(`?${query.toString()}`);
+    history.push(`?${query.toString()}${history.location.hash}`);
   };
 
   const getMoreTags = (tagCategory, objType, skip) =>
@@ -74,6 +76,8 @@ const ShopFilters = ({ visible, onClose, getDepartmentsFilters, showMoreTagsForF
         tagCategoryFilters,
       });
     });
+
+  if (isEmpty(filters?.rating) && isEmpty(filters?.tagCategoryFilters)) return null;
 
   const body = (
     <div className="ShopFilters">

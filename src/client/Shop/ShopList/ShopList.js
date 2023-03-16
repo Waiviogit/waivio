@@ -55,6 +55,8 @@ const ShopList = ({ userName, path, children, setVisibleNavig, getShopFeed }) =>
         0,
         pathList,
       ).then(res => {
+        if (res.message) return;
+
         setDepartments(res.result);
         setHasMore(res.hasMore);
         setLoading(false);
@@ -94,7 +96,7 @@ const ShopList = ({ userName, path, children, setVisibleNavig, getShopFeed }) =>
       {!match.params.department && <h3 className="ShopList__title">Departments</h3>}
       <DepartmentsMobile setVisible={setVisibleNavig} />
       <FiltersForMobile setVisible={() => setVisible(true)} />
-      {departments?.every(dep => isEmpty(dep.wobjects)) ? (
+      {isEmpty(departments) || departments?.every(dep => isEmpty(dep.wobjects)) ? (
         <EmptyCampaing emptyMessage={'This shop does not have any products.'} />
       ) : (
         <InfiniteSroll loadMore={loadMore} hasMore={hasMore}>
