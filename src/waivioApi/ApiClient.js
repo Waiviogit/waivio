@@ -1347,7 +1347,7 @@ export const showMoreTagsForUserFilters = (userName, path, tagCategory, skip = 0
     .then(result => result)
     .catch(error => error);
 
-export const showMoreTagsForShopFilters = (path, tagCategory, skip = 0, limit = 10) =>
+export const showMoreTagsForShopFilters = (tagCategory, path, skip = 0, limit = 10) =>
   fetch(`${config.apiPrefix}${config.shop}${config.filters}${config.tags}`, {
     headers,
     method: 'POST',

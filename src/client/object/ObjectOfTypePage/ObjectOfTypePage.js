@@ -55,6 +55,7 @@ const ObjectOfTypePage = props => {
   const [draft, setDraft] = useState(null);
   const [isNotificaion, setNotification] = useState(null);
   const [editorInitialized, setEditorInitialized] = useState(false);
+  const currObj = isEmpty(props.nestedWobject) ? wobject : props.nestedWobject;
 
   useEffect(() => {
     if (draft) {
@@ -64,7 +65,7 @@ const ObjectOfTypePage = props => {
 
   useEffect(() => {
     if (!wobject.author_permlink) return;
-    if (userName) {
+    if (userName && currObj.object_type === 'page') {
       getDraftPage(
         userName,
         props.nestedWobject.author_permlink || props.wobject.author_permlink,

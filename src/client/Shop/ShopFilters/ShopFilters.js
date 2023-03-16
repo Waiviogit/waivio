@@ -60,8 +60,8 @@ const ShopFilters = ({ visible, onClose, getDepartmentsFilters, showMoreTagsForF
     history.push(`?${query.toString()}${history.location.hash}`);
   };
 
-  const getMoreTags = (tagCategory, objType, skip) =>
-    showMoreTagsForFilters(path, tagCategory, objType, skip, 10).then(res => {
+  const getMoreTags = (tagCategory, skip) =>
+    showMoreTagsForFilters(tagCategory, path, skip, 10).then(res => {
       const tagCategoryFilters = [...filters.tagCategoryFilters];
       const index = tagCategoryFilters.findIndex(filt => filt.tagCategory === tagCategory);
 
@@ -117,9 +117,7 @@ const ShopFilters = ({ visible, onClose, getDepartmentsFilters, showMoreTagsForF
             <span
               className="ShopFilters__show-more"
               role="presentation"
-              onClick={() =>
-                getMoreTags(category.tagCategory, category.type, category?.tags?.length)
-              }
+              onClick={() => getMoreTags(category.tagCategory, category?.tags?.length)}
             >
               show more
             </span>
