@@ -55,14 +55,20 @@ const ShopList = ({ userName, path, children, setVisibleNavig, getShopFeed }) =>
         0,
         pathList,
       ).then(res => {
-        if (res.message) return;
+        if (res.message) {
+          setLoading(false);
+          setDepartments([]);
+          setHasMore(false);
+
+          return;
+        }
 
         setDepartments(res.result);
         setHasMore(res.hasMore);
         setLoading(false);
       });
     }
-  }, [query.toString(), activeCrumb]);
+  }, [query.toString(), activeCrumb, match.params.name]);
 
   if (loading) return <Loading />;
 

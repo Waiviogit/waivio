@@ -25,7 +25,7 @@ const ShopFilters = ({ visible, onClose, getDepartmentsFilters, showMoreTagsForF
     getDepartmentsFilters(path).then(res => {
       setFilters(res);
     });
-  }, [history.location.hash, match.params.department]);
+  }, [history.location.hash, match.params.department, match.params.name]);
 
   useEffect(() => {
     setActiveFilter(parseQuery(query.toString()));
