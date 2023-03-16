@@ -420,6 +420,20 @@ const posts = (state = initialState, action) => {
         },
       };
     }
+    case postsActions.REMOVE_POST: {
+      const key = getPostKey(action.meta.post);
+
+      return {
+        ...state,
+        list: {
+          ...state.list,
+          [key]: {
+            ...state.list[key],
+            isRemove: true,
+          },
+        },
+      };
+    }
 
     case postsActions.MUTE_POSTS_AUTHOR.START: {
       const key = getPostKey(action.meta.post);

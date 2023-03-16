@@ -6,7 +6,6 @@ import PropTypes from 'prop-types';
 import { searchDepartments } from '../../../waivioApi/ApiClient';
 import DepartmentSearchCard from './DepartmentSearchCard';
 import { pendingSearch } from '../../search/helpers';
-import { objectFields } from '../../../common/constants/listOfFields';
 
 const depLimit = 15;
 
@@ -15,7 +14,10 @@ const SearchDepartmentAutocomplete = ({
   autoFocus,
   disabled,
   intl,
-  setFieldsValue,
+  normalSize,
+  handleSelectValue,
+  isMultiple,
+  placeholder,
 }) => {
   const [searchString, setSearchString] = useState('');
   const [departments, setDepartments] = useState([]);
@@ -23,12 +25,18 @@ const SearchDepartmentAutocomplete = ({
 
   const handleChange = (value = '') => {
     setSearchString(value);
-    setFieldsValue({ [objectFields.departments]: value });
+    if (!isMultiple) {
+      handleSelectValue(value);
+    }
   };
   const handleSelect = val => {
-    setSearchString(val);
-    if (!isEmpty(searchString) && !isEmpty(val))
-      setFieldsValue({ [objectFields.departments]: val });
+    if (isMultiple) {
+      handleSelectValue(val);
+      setSearchString('');
+    } else {
+      setSearchString(val);
+      if (!isEmpty(searchString) && !isEmpty(val)) handleSelectValue(val);
+    }
   };
   const debouncedSearch = useCallback(
     debounce(
@@ -72,7 +80,7 @@ const SearchDepartmentAutocomplete = ({
 
   return (
     <AutoComplete
-      className="SearchDepartmentAutocomplete"
+      className={normalSize ? '' : SearchDepartmentAutocomplete}
       onChange={handleChange}
       onSelect={handleSelect}
       onSearch={handleSearch}
@@ -80,10 +88,13 @@ const SearchDepartmentAutocomplete = ({
       dataSource={
         loading ? pendingSearch(searchString, intl) : renderSearchObjectsOptions(searchString)
       }
-      placeholder={intl.formatMessage({
-        id: 'department',
-        defaultMessage: 'Department',
-      })}
+      placeholder={
+        placeholder ||
+        intl.formatMessage({
+          id: 'department',
+          defaultMessage: 'Department',
+        })
+      }
       value={searchString}
       allowClear={allowClear}
       autoFocus={autoFocus}
@@ -96,12 +107,18 @@ SearchDepartmentAutocomplete.propTypes = {
   allowClear: PropTypes.bool,
   autoFocus: PropTypes.bool,
   disabled: PropTypes.bool,
+  isMultiple: PropTypes.bool,
+  normalSize: PropTypes.bool,
   intl: PropTypes.bool.isRequired,
-  setFieldsValue: PropTypes.func.isRequired,
+  placeholder: PropTypes.bool,
+  handleSelectValue: PropTypes.func.isRequired,
 };
 SearchDepartmentAutocomplete.defaultPropTypes = {
   allowClear: true,
   autoFocus: true,
   disabled: false,
+  normalSize: false,
+  isMultiple: false,
+  placeholder: {},
 };
 export default injectIntl(SearchDepartmentAutocomplete);

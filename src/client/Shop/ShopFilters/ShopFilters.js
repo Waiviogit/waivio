@@ -5,22 +5,27 @@ import { Checkbox, Modal, Rate } from 'antd';
 import { useHistory, useRouteMatch } from 'react-router';
 import PropTypes from 'prop-types';
 
-import { getDepartmentsFilters, showMoreTagsForFilters } from '../../../waivioApi/ApiClient';
 import useQuery from '../../../hooks/useQuery';
 import { parseQuery } from '../../../waivioApi/helpers';
+import { getPermlinksFromHash } from '../../../common/helpers/wObjectHelper';
 
 import './ShopFilters.less';
 
-const ShopFilters = ({ visible, onClose }) => {
+const ShopFilters = ({ visible, onClose, getDepartmentsFilters, showMoreTagsForFilters }) => {
   const [filters, setFilters] = useState();
   const [activeFilter, setActiveFilter] = useState({});
   const query = useQuery();
   const history = useHistory();
   const match = useRouteMatch();
+  const path = match.params.department
+    ? [match.params.department, ...getPermlinksFromHash(history.location.hash)]
+    : undefined;
 
   useEffect(() => {
-    getDepartmentsFilters().then(res => setFilters(res));
-  }, []);
+    getDepartmentsFilters(path).then(res => {
+      setFilters(res);
+    });
+  }, [history.location.hash, match.params.department, match.params.name]);
 
   useEffect(() => {
     setActiveFilter(parseQuery(query.toString()));
@@ -52,11 +57,11 @@ const ShopFilters = ({ visible, onClose }) => {
       });
     }
 
-    history.push(`?${query.toString()}`);
+    history.push(`?${query.toString()}${history.location.hash}`);
   };
 
-  const getMoreTags = (tagCategory, objType, skip) =>
-    showMoreTagsForFilters(tagCategory, objType, skip, 10).then(res => {
+  const getMoreTags = (tagCategory, skip) =>
+    showMoreTagsForFilters(tagCategory, path, skip, 10).then(res => {
       const tagCategoryFilters = [...filters.tagCategoryFilters];
       const index = tagCategoryFilters.findIndex(filt => filt.tagCategory === tagCategory);
 
@@ -71,6 +76,8 @@ const ShopFilters = ({ visible, onClose }) => {
         tagCategoryFilters,
       });
     });
+
+  if (isEmpty(filters?.rating) && isEmpty(filters?.tagCategoryFilters)) return null;
 
   const body = (
     <div className="ShopFilters">
@@ -110,9 +117,7 @@ const ShopFilters = ({ visible, onClose }) => {
             <span
               className="ShopFilters__show-more"
               role="presentation"
-              onClick={() =>
-                getMoreTags(category.tagCategory, category.type, category?.tags?.length)
-              }
+              onClick={() => getMoreTags(category.tagCategory, category?.tags?.length)}
             >
               show more
             </span>
@@ -134,6 +139,8 @@ const ShopFilters = ({ visible, onClose }) => {
 ShopFilters.propTypes = {
   visible: PropTypes.bool,
   onClose: PropTypes.func,
+  getDepartmentsFilters: PropTypes.func,
+  showMoreTagsForFilters: PropTypes.func,
 };
 
 export default ShopFilters;

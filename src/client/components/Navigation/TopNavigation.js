@@ -85,7 +85,8 @@ const TopNavigation = ({ location: { pathname } }) => {
   const authenticatedUser = useSelector(getAuthenticatedUser);
   const rewardsTab = useSelector(getRewardsTab);
   const isRouteMathed =
-    pathname === '/' || Object.values(LINKS).some(url => pathname.includes(url));
+    pathname === '/' ||
+    Object.values(LINKS).some(url => pathname.includes(url) && !pathname.includes(`/object/`));
 
   return isRouteMathed ? (
     <div className="TopNavigation">
@@ -127,7 +128,8 @@ const TopNavigation = ({ location: { pathname } }) => {
             <Link
               to={`${LINKS.SHOP}`}
               className={classNames('TopNavigation__link', {
-                'TopNavigation__link--active': pathname.includes(LINKS.SHOP),
+                'TopNavigation__link--active':
+                  pathname.includes(LINKS.SHOP) && !pathname.includes(LINKS.DISCOVER),
               })}
             >
               <FormattedMessage id="shop" defaultMessage="Shop" />

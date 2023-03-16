@@ -33,6 +33,7 @@ class ObjectMenu extends React.Component {
     PAGE: 'page',
     WIDGET: 'widget',
     NEWSFEED: 'newsfeed',
+    SHOP: 'shop',
     UPDATES: 'updates',
     REVIEWS: 'reviews',
     FOLLOWERS: 'followers',
@@ -68,6 +69,7 @@ class ObjectMenu extends React.Component {
     const isPage = hasType(this.props.wobject, OBJECT_TYPE.PAGE);
     const isWidget = hasType(this.props.wobject, OBJECT_TYPE.WIDGET);
     const isNewsfeed = hasType(this.props.wobject, OBJECT_TYPE.NEWSFEED);
+    const isShop = hasType(this.props.wobject, OBJECT_TYPE.SHOP);
     const isHashtag = hasType(this.props.wobject, OBJECT_TYPE.HASHTAG);
 
     return (
@@ -121,6 +123,16 @@ class ObjectMenu extends React.Component {
                 data-key={ObjectMenu.TAB_NAME.NEWSFEED}
               >
                 <FormattedMessage id="newsfeed" defaultMessage="Newsfeed" />
+              </li>
+            )}{' '}
+            {isShop && (
+              <li
+                className={this.getItemClasses(ObjectMenu.TAB_NAME.SHOP)}
+                onClick={this.handleClick}
+                role="presentation"
+                data-key={ObjectMenu.TAB_NAME.SHOP}
+              >
+                <FormattedMessage id="shop" defaultMessage="Shop" />
               </li>
             )}
             <li

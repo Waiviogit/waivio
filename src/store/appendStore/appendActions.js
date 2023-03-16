@@ -68,7 +68,7 @@ export const getChangedWobjectField = (
   const state = getState();
   const locale = getLocale(state);
   const voter = getAuthenticatedUserName(state);
-  const updatePosts = ['pin', 'remove'].includes(fieldName);
+  const updatePosts = ['pin'].includes(fieldName);
 
   const subscribeCallback = () =>
     dispatch({

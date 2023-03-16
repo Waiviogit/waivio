@@ -2174,5 +2174,13 @@
   "remove_modal_info": "The removed post won't show up in the object's feed.",
   "post_permlink": "Post permlink",
   "post_author": "Post author",
-  "pinned": "Pinned"
+"pinned": "Pinned",
+ "object_field_shopFilter": "Shop filter",
+  "shop": "Shop",
+  "add_new_rule": "Add new rule",
+  "undelegated": "Undelegated",
+  "undelegated_by": "by",
+ "object_field_shopFilter": "Shop filter",
+  "shop": "Shop",
+  "add_new_rule": "Add new rule"
 }
