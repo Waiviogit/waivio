@@ -3195,7 +3195,7 @@ export const getAuthorityFields = permlink =>
     .then(posts => posts)
     .catch(error => error);
 
-export const getShopUserDepartments = (userName, name, excluded) =>
+export const getShopUserDepartments = (userName, name, excluded, path) =>
   fetch(`${config.apiPrefix}${config.shop}${config.user}${config.departments}`, {
     headers,
     method: 'POST',
@@ -3203,19 +3203,21 @@ export const getShopUserDepartments = (userName, name, excluded) =>
       userName,
       name,
       excluded,
+      path,
     }),
   })
     .then(res => res.json())
     .then(posts => posts)
     .catch(error => error);
 
-export const getShopDepartments = (name, excluded) =>
+export const getShopDepartments = (name, excluded, path) =>
   fetch(`${config.apiPrefix}${config.shop}${config.departments}`, {
     headers,
     method: 'POST',
     body: JSON.stringify({
       name,
       excluded,
+      path,
     }),
   })
     .then(res => res.json())

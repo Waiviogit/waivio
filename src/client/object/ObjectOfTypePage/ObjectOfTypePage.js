@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { isEmpty } from 'lodash';
+import { isEmpty, trimEnd } from 'lodash';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
@@ -54,7 +54,7 @@ const ObjectOfTypePage = props => {
   const [isLoading, setIsLoading] = useState(true);
   const [draft, setDraft] = useState(null);
   const [isNotificaion, setNotification] = useState(null);
-  const [editorInitialized, setEditorInitialized] = useState(false);
+  const currObj = isEmpty(props.nestedWobject) ? wobject : props.nestedWobject;
 
   useEffect(() => {
     if (draft) {
@@ -64,21 +64,15 @@ const ObjectOfTypePage = props => {
 
   useEffect(() => {
     if (!wobject.author_permlink) return;
-    if (userName) {
+    if (userName && currObj.object_type === 'page' && isEditMode) {
       getDraftPage(
         userName,
         props.nestedWobject.author_permlink || props.wobject.author_permlink,
       ).then(res => {
-        if (res.message || !res.body) {
-          setEditorInitialized(true);
-
-          return;
-        }
         setDraft(res.body);
-        setEditorInitialized(false);
       });
-    } else setEditorInitialized(true);
-  }, [wobject.author_permlink, props.nestedWobject.author_permlink]);
+    }
+  }, [wobject.author_permlink, props.nestedWobject.author_permlink, isEditMode]);
 
   useEffect(() => {
     const {
@@ -107,7 +101,7 @@ const ObjectOfTypePage = props => {
   const handleChangeContent = editor => {
     const newContent = editorStateToMarkdownSlate(editor.children);
 
-    if (content !== newContent) {
+    if (trimEnd(content) !== trimEnd(newContent)) {
       setContent(newContent);
       if (newContent)
         saveDraftPage(
@@ -204,12 +198,12 @@ const ObjectOfTypePage = props => {
   return (
     <React.Fragment>
       {hasType(props.nestedWobject, 'list') ? (
-        <CatalogWrap />
+        <CatalogWrap isEditMode={isEditMode} />
       ) : (
         <React.Fragment>
           {!isLoadingFlag && <CatalogBreadcrumb wobject={wobject} intl={intl} />}
           <div className={classObjPage}>
-            {isEditMode && editorInitialized ? (
+            {isEditMode ? (
               <React.Fragment>
                 {isReadyToPublish ? (
                   <div className="object-page-preview">
@@ -286,11 +280,9 @@ const ObjectOfTypePage = props => {
         onOk={() => {
           setCurrentContent(draft);
           setNotification(false);
-          setEditorInitialized(true);
         }}
         onCancel={() => {
           setNotification(false);
-          setEditorInitialized(true);
         }}
         okText={intl.formatMessage({ defaultMessage: 'Continue', id: 'continue' })}
         cancelText={intl.formatMessage({ defaultMessage: 'Discard', id: 'discard' })}

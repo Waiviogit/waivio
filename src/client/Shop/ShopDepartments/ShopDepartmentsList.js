@@ -9,14 +9,18 @@ import DepartmentItem from './DepartmentItem';
 import { resetBreadCrumb } from '../../../store/shopStore/shopActions';
 
 import './ShopDepartments.less';
+import { getPermlinksFromHash } from '../../../common/helpers/wObjectHelper';
 
 const ShopDepartmentsList = ({ shopFilter, visible, onClose, getShopDepartments, path }) => {
   const match = useRouteMatch();
   const dispatch = useDispatch();
   const [departments, setDepartments] = useState([]);
+  const pathList = match.params.department
+    ? [match.params.department, ...getPermlinksFromHash(history.location.hash)]
+    : undefined;
 
   useEffect(() => {
-    getShopDepartments().then(res => {
+    getShopDepartments(pathList).then(res => {
       setDepartments(res);
     });
   }, [shopFilter]);
@@ -48,6 +52,7 @@ const ShopDepartmentsList = ({ shopFilter, visible, onClose, getShopDepartments,
             onClose={onClose}
             getShopDepartments={getShopDepartments}
             path={path}
+            pathList={pathList}
           />
         ))}
       </div>
