@@ -149,7 +149,11 @@ const ShopFilterForm = ({
       </div>
       <React.Fragment>
         <div className="NewsFiltersRule__line-search">
-          <SearchObjectsAutocomplete handleSelect={handleSelectTag} objectType="hashtag" />
+          <SearchObjectsAutocomplete
+            autoFocus={false}
+            handleSelect={handleSelectTag}
+            objectType="hashtag"
+          />
         </div>
       </React.Fragment>
       <div className="NewsFiltersRule-title AppendForm__appendTitles">
@@ -171,7 +175,7 @@ const ShopFilterForm = ({
           ))}
         </div>
         <div className="NewsFiltersRule__line-search">
-          <SearchUsersAutocomplete handleSelect={addUserToAuthorityList} />
+          <SearchUsersAutocomplete autoFocus={false} handleSelect={addUserToAuthorityList} />
         </div>
       </div>
     </div>
