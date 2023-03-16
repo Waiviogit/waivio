@@ -3,18 +3,42 @@ import { NavLink } from 'react-router-dom';
 import { Icon } from 'antd';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
-import { isEmpty } from 'lodash';
 import { useHistory } from 'react-router';
+import { useDispatch } from 'react-redux';
+import { isEmpty } from 'lodash';
 
-import { createNewHash, getPermlinksFromHash } from '../../../common/helpers/wObjectHelper';
+import { setBreadCrumb, setExcluded } from '../../../store/shopStore/shopActions';
+import {
+  getLastPermlinksFromHash,
+  getLinkPath,
+  getPermlinksFromHash,
+} from '../../../common/helpers/wObjectHelper';
 
 import './ShopDepartments.less';
 
-const DepartmentItem = ({ department, match, excludedMain, onClose, getShopDepartments, path }) => {
+const DepartmentItem = ({
+  department,
+  match,
+  excludedMain,
+  onClose,
+  getShopDepartments,
+  path,
+  pathList,
+}) => {
   const [nestedDepartments, setNestedDepartments] = useState([]);
   const [showNested, setShowNested] = useState(false);
   const history = useHistory();
+  const dispatch = useDispatch();
   const categories = getPermlinksFromHash(history.location.hash);
+  const itemClassList = classNames('ShopDepartmentsList__item', {
+    'ShopDepartmentsList__item--withNested': department.subdirectory,
+  });
+  const depNameClassList = classNames('ShopDepartmentsList__depName', {
+    'ShopDepartmentsList__depName--open': showNested,
+  });
+  const itemListClassList = classNames('ShopDepartmentsList__list', {
+    'ShopDepartmentsList__list--show': showNested,
+  });
 
   const getNestedDepartments = () => {
     if (match.params.department && match.params.department !== department.name) {
@@ -25,14 +49,6 @@ const DepartmentItem = ({ department, match, excludedMain, onClose, getShopDepar
       else hashPermlinks.push(department.name);
 
       history.push(`#${hashPermlinks.join('/')}`);
-      if (isEmpty(nestedDepartments) && department.subdirectory) {
-        getShopDepartments(department.name, excludedMain).then(res => {
-          setNestedDepartments(res);
-          setShowNested(true);
-        });
-      } else {
-        setShowNested(!showNested);
-      }
     } else history.push(`${path}/${department.name}`);
 
     if (onClose) onClose();
@@ -42,16 +58,15 @@ const DepartmentItem = ({ department, match, excludedMain, onClose, getShopDepar
     if (
       (match.params.department === department.name ||
         (match.params.department !== department.name && categories.includes(department.name))) &&
-      department.subdirectory
+      department.subdirectory &&
+      isEmpty(nestedDepartments)
     ) {
-      getShopDepartments(department.name, excludedMain).then(res => {
+      getShopDepartments(department.name, excludedMain, pathList).then(res => {
         setNestedDepartments(res);
         setShowNested(true);
       });
     }
-  }, [match.params.department]);
 
-  useEffect(() => {
     if (
       (!categories.includes(department.name) && department.name !== match.params.department) ||
       !match.params.department
@@ -60,30 +75,29 @@ const DepartmentItem = ({ department, match, excludedMain, onClose, getShopDepar
     } else {
       setShowNested(true);
     }
-  }, [history.location.hash, match.params.department]);
+  }, [match.params.department, history.location.hash]);
 
-  const itemClassList = classNames('ShopDepartmentsList__item', {
-    'ShopDepartmentsList__item--withNested': department.subdirectory,
-  });
+  useEffect(() => {
+    if (match.params.department === department.name) {
+      dispatch(setBreadCrumb(department));
+      dispatch(setExcluded(excludedMain));
+    }
+  }, [match.params.department]);
 
-  const depNameClassList = classNames('ShopDepartmentsList__depName', {
-    'ShopDepartmentsList__depName--open': showNested,
-  });
+  useEffect(() => {
+    if (
+      history.location.hash &&
+      getLastPermlinksFromHash(history.location.hash) === department.name
+    ) {
+      dispatch(setBreadCrumb(department));
+      dispatch(setExcluded(excludedMain));
+    }
 
-  const itemListClassList = classNames('ShopDepartmentsList__list', {
-    'ShopDepartmentsList__list--show': showNested,
-  });
-
-  const getLinkPath = () => {
-    if (match.params.department === department.name) return path;
-
-    return match.params.department && match.params.department !== department.name
-      ? `${path}/${match.params.department}/#${createNewHash(
-          department.name,
-          history.location.hash,
-        )}`
-      : `${path}/${department.name}`;
-  };
+    if (!history.location.hash && department.name === match.params.department) {
+      dispatch(setBreadCrumb(department));
+      dispatch(setExcluded(excludedMain));
+    }
+  }, [history.location.hash]);
 
   const excluded = [...excludedMain, ...nestedDepartments.map(nes => nes.name)];
   const renderList = nestedDepartments.some(j => categories.includes(j.name))
@@ -98,11 +112,11 @@ const DepartmentItem = ({ department, match, excludedMain, onClose, getShopDepar
         </div>
       ) : (
         <NavLink
-          to={getLinkPath()}
+          to={getLinkPath(match, department, path, history.location)}
           isActive={() =>
-            match?.url.includes(`/${department.name}`) || categories.includes(department.name)
+            match.params.department === department.name || categories.includes(department.name)
           }
-          onClick={onClose}
+          onClick={getNestedDepartments}
           activeClassName="ShopDepartmentsList__link--active"
           className="ShopDepartmentsList__link"
         >
@@ -120,6 +134,7 @@ const DepartmentItem = ({ department, match, excludedMain, onClose, getShopDepar
               onClose={onClose}
               getShopDepartments={getShopDepartments}
               path={path}
+              pathList={pathList}
             />
           ))}
         </div>
@@ -138,6 +153,7 @@ DepartmentItem.propTypes = {
     params: PropTypes.string,
   }),
   excludedMain: PropTypes.arrayOf(PropTypes.string),
+  pathList: PropTypes.arrayOf(PropTypes.string),
   onClose: PropTypes.func,
   getShopDepartments: PropTypes.func,
   path: PropTypes.string,

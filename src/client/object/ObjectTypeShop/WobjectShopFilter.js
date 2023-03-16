@@ -2,17 +2,17 @@ import React from 'react';
 import { useRouteMatch } from 'react-router';
 import PropTypes from 'prop-types';
 
-import ShopFilters from './ShopFilters';
 import {
-  getDepartmentsUserFilters,
-  showMoreTagsForUserFilters,
+  getMoreTagsForWobjectShopFilters,
+  getWobjectShopFilters,
 } from '../../../waivioApi/ApiClient';
+import ShopFilters from '../../Shop/ShopFilters/ShopFilters';
 
-const UserFilters = ({ visible, onClose }) => {
+const WobjectShopFilter = ({ visible, onClose }) => {
   const match = useRouteMatch();
-  const getDepartmentsFilters = path => getDepartmentsUserFilters(match.params.name, path);
+  const getDepartmentsFilters = path => getWobjectShopFilters(match.params.name, path);
   const showMoreTagsForFilters = (tagCategory, path, skip, limit) =>
-    showMoreTagsForUserFilters(match.params.name, path, tagCategory, skip, limit);
+    getMoreTagsForWobjectShopFilters(match.params.name, path, tagCategory, skip, limit);
 
   return (
     <ShopFilters
@@ -24,9 +24,9 @@ const UserFilters = ({ visible, onClose }) => {
   );
 };
 
-UserFilters.propTypes = {
+WobjectShopFilter.propTypes = {
   visible: PropTypes.bool,
   onClose: PropTypes.func,
 };
 
-export default UserFilters;
+export default WobjectShopFilter;

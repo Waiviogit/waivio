@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import { isEmpty, map } from 'lodash';
+import { isEmpty, map, get } from 'lodash';
 import { AutoComplete, Icon } from 'antd';
 import PropTypes from 'prop-types';
 import listOfObjectTypes from '../../../../common/constants/listOfObjectTypes';
@@ -65,11 +65,11 @@ const ShopFilterForm = ({
                   defaultMessage: 'Please select',
                 })}
                 optionFilterProp="children"
-                // filterOption={(inputValue, option) =>
-                //   get(option, 'props.value', '')
-                //     .toUpperCase()
-                //     .indexOf(inputValue.toUpperCase()) !== -1
-                // }
+                filterOption={(inputValue, option) =>
+                  get(option, 'key', '')
+                    .toUpperCase()
+                    .indexOf(inputValue.toUpperCase()) !== -1
+                }
               >
                 {typesList.map(type => (
                   <AutoComplete.Option key={type} value={type}>
@@ -149,7 +149,11 @@ const ShopFilterForm = ({
       </div>
       <React.Fragment>
         <div className="NewsFiltersRule__line-search">
-          <SearchObjectsAutocomplete handleSelect={handleSelectTag} objectType="hashtag" />
+          <SearchObjectsAutocomplete
+            autoFocus={false}
+            handleSelect={handleSelectTag}
+            objectType="hashtag"
+          />
         </div>
       </React.Fragment>
       <div className="NewsFiltersRule-title AppendForm__appendTitles">
@@ -171,7 +175,7 @@ const ShopFilterForm = ({
           ))}
         </div>
         <div className="NewsFiltersRule__line-search">
-          <SearchUsersAutocomplete handleSelect={addUserToAuthorityList} />
+          <SearchUsersAutocomplete autoFocus={false} handleSelect={addUserToAuthorityList} />
         </div>
       </div>
     </div>

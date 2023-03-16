@@ -35,6 +35,7 @@ import depositWithdraw from './depositeWithdrawStore/depositeWithdrawReducer';
 import optionsReducer from './optionsStore/optionsReducer';
 import objectDepartmentsReducer from './objectDepartmentsStore/objectDepartmentsReducer';
 import ratesReducer from './ratesStore/ratesReducer';
+import shopReducer from './shopStore/shopReducer';
 
 export default history =>
   combineReducers({
@@ -70,6 +71,7 @@ export default history =>
     options: optionsReducer,
     department: objectDepartmentsReducer,
     rates: ratesReducer,
+    shop: shopReducer,
   });
 
 // common selectors

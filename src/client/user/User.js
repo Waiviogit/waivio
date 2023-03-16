@@ -43,6 +43,7 @@ import {
   getUser,
 } from '../../store/usersStore/usersSelectors';
 import { getIsOpenWalletTable } from '../../store/walletStore/walletSelectors';
+import { resetBreadCrumb } from '../../store/shopStore/shopActions';
 
 @connect(
   (state, ownProps) => ({
@@ -66,6 +67,7 @@ import { getIsOpenWalletTable } from '../../store/walletStore/walletSelectors';
     getUserAccountHistory,
     getTokenBalance,
     getGlobalProperties,
+    resetBreadCrumb,
   },
 )
 export default class User extends React.Component {
@@ -82,6 +84,7 @@ export default class User extends React.Component {
     getUserAccount: PropTypes.func,
     getTokenBalance: PropTypes.func,
     getUserAccountHistory: PropTypes.func.isRequired,
+    resetBreadCrumb: PropTypes.func.isRequired,
     getGlobalProperties: PropTypes.func.isRequired,
     openTransfer: PropTypes.func,
     rate: PropTypes.number.isRequired,
@@ -122,7 +125,12 @@ export default class User extends React.Component {
     ) {
       this.props.getUserAccount(this.props.match.params.name);
       this.props.getUserAccountHistory(this.props.match.params.name);
+      this.props.resetBreadCrumb();
     }
+  }
+
+  componentWillUnmount() {
+    this.props.resetBreadCrumb();
   }
 
   handleTransferClick = () => {

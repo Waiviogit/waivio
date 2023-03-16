@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { isEmpty } from 'lodash';
+import { isEmpty, trimEnd } from 'lodash';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
@@ -55,6 +55,7 @@ const ObjectOfTypePage = props => {
   const [draft, setDraft] = useState(null);
   const [isNotificaion, setNotification] = useState(null);
   const [editorInitialized, setEditorInitialized] = useState(false);
+  const currObj = isEmpty(props.nestedWobject) ? wobject : props.nestedWobject;
 
   useEffect(() => {
     if (draft) {
@@ -64,7 +65,7 @@ const ObjectOfTypePage = props => {
 
   useEffect(() => {
     if (!wobject.author_permlink) return;
-    if (userName) {
+    if (userName && currObj.object_type === 'page') {
       getDraftPage(
         userName,
         props.nestedWobject.author_permlink || props.wobject.author_permlink,
@@ -107,7 +108,7 @@ const ObjectOfTypePage = props => {
   const handleChangeContent = editor => {
     const newContent = editorStateToMarkdownSlate(editor.children);
 
-    if (content !== newContent) {
+    if (trimEnd(content) !== trimEnd(newContent)) {
       setContent(newContent);
       if (newContent)
         saveDraftPage(
@@ -204,7 +205,7 @@ const ObjectOfTypePage = props => {
   return (
     <React.Fragment>
       {hasType(props.nestedWobject, 'list') ? (
-        <CatalogWrap />
+        <CatalogWrap isEditMode={isEditMode} />
       ) : (
         <React.Fragment>
           {!isLoadingFlag && <CatalogBreadcrumb wobject={wobject} intl={intl} />}

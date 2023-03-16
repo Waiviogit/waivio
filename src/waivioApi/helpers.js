@@ -19,4 +19,26 @@ export const parseQuery = queryString => {
   }, {});
 };
 
+export const parseQueryForFilters = query => {
+  const parsedQuery = parseQuery(query.toString());
+
+  return Object.keys(parsedQuery).reduce(
+    (acc, curr) => {
+      if (curr === 'rating') return { ...acc, rating: +parsedQuery.rating };
+
+      return {
+        ...acc,
+        tagCategory: [
+          ...acc.tagCategory,
+          {
+            categoryName: curr,
+            tags: parsedQuery[curr],
+          },
+        ],
+      };
+    },
+    { tagCategory: [] },
+  );
+};
+
 export default null;
