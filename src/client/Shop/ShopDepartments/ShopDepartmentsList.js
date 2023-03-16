@@ -1,18 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import { useRouteMatch } from 'react-router';
+import { useHistory, useRouteMatch } from 'react-router';
 import { Modal } from 'antd';
 import PropTypes from 'prop-types';
 import { isEmpty } from 'lodash';
 import { useDispatch } from 'react-redux';
 import DepartmentItem from './DepartmentItem';
 import { resetBreadCrumb } from '../../../store/shopStore/shopActions';
+import { getPermlinksFromHash } from '../../../common/helpers/wObjectHelper';
 
 import './ShopDepartments.less';
-import { getPermlinksFromHash } from '../../../common/helpers/wObjectHelper';
 
 const ShopDepartmentsList = ({ shopFilter, visible, onClose, getShopDepartments, path }) => {
   const match = useRouteMatch();
+  const history = useHistory();
   const dispatch = useDispatch();
   const [departments, setDepartments] = useState([]);
   const pathList = match.params.department
@@ -20,12 +21,12 @@ const ShopDepartmentsList = ({ shopFilter, visible, onClose, getShopDepartments,
     : undefined;
 
   useEffect(() => {
-    getShopDepartments(pathList).then(res => {
+    getShopDepartments().then(res => {
       setDepartments(res);
     });
   }, [shopFilter]);
 
-  const excludedMain = departments.map(d => d.name);
+  const excludedMain = departments?.map(d => d.name);
 
   const renderDep = match.params.department
     ? departments.filter(d => d.name === match.params.department)
