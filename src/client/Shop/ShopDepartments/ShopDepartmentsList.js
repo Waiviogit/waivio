@@ -11,7 +11,7 @@ import { getPermlinksFromHash } from '../../../common/helpers/wObjectHelper';
 
 import './ShopDepartments.less';
 
-const ShopDepartmentsList = ({ shopFilter, visible, onClose, getShopDepartments, path }) => {
+const ShopDepartmentsList = ({ visible, onClose, getShopDepartments, path }) => {
   const match = useRouteMatch();
   const history = useHistory();
   const dispatch = useDispatch();
@@ -24,12 +24,14 @@ const ShopDepartmentsList = ({ shopFilter, visible, onClose, getShopDepartments,
     getShopDepartments().then(res => {
       setDepartments(res);
     });
-  }, [shopFilter]);
+  }, [match.params.name]);
 
-  const excludedMain = departments?.map(d => d.name);
+  if (isEmpty(departments)) return null;
+
+  const excludedMain = isEmpty(departments) ? [] : departments?.map(d => d.name);
 
   const renderDep = match.params.department
-    ? departments.filter(d => d.name === match.params.department)
+    ? departments?.filter(d => d.name === match.params.department)
     : departments;
 
   const body = !isEmpty(departments) && (
@@ -74,7 +76,6 @@ ShopDepartmentsList.propTypes = {
   path: PropTypes.string,
   onClose: PropTypes.func,
   getShopDepartments: PropTypes.func,
-  shopFilter: PropTypes.shape(),
 };
 
 export default ShopDepartmentsList;

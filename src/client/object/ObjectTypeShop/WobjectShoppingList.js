@@ -13,15 +13,15 @@ const WobjectShoppingList = () => {
   const [visibleNavig, setVisibleNavig] = useState(false);
   const onOpen = () => setVisibleNavig(true);
   const onClose = () => setVisibleNavig(false);
+  const getShopFeed = (userName, authUser, filter, excluded, crumb, skip, path) =>
+    getWobjectShopMainFeed(authorPermlink, authUser, skip, path);
 
   return (
     <ShopList
       setVisibleNavig={onOpen}
       userName={authUserName}
       path={`/object/${authorPermlink}/shop`}
-      getShopFeed={(userName, authUser, filter, excluded, crumb, skip, path) =>
-        getWobjectShopMainFeed(authorPermlink, authUser, skip, path)
-      }
+      getShopFeed={getShopFeed}
     >
       {visibleNavig && <DepartmentsWobject visible={visibleNavig} onClose={onClose} />}
     </ShopList>

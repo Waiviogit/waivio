@@ -54,7 +54,7 @@ const ObjectOfTypePage = props => {
   const [isLoading, setIsLoading] = useState(true);
   const [draft, setDraft] = useState(null);
   const [isNotificaion, setNotification] = useState(null);
-  const currObj = isEmpty(props.nestedWobject) ? wobject : props.nestedWobject;
+  const [editorInitialized, setEditorInitialized] = useState(false);
 
   useEffect(() => {
     if (draft) {
@@ -64,15 +64,21 @@ const ObjectOfTypePage = props => {
 
   useEffect(() => {
     if (!wobject.author_permlink) return;
-    if (userName && currObj.object_type === 'page' && isEditMode) {
+    if (userName) {
       getDraftPage(
         userName,
         props.nestedWobject.author_permlink || props.wobject.author_permlink,
       ).then(res => {
+        if (res.message || !res.body) {
+          setEditorInitialized(true);
+
+          return;
+        }
         setDraft(res.body);
+        setEditorInitialized(false);
       });
-    }
-  }, [wobject.author_permlink, props.nestedWobject.author_permlink, isEditMode]);
+    } else setEditorInitialized(true);
+  }, [wobject.author_permlink, props.nestedWobject.author_permlink]);
 
   useEffect(() => {
     const {
@@ -203,7 +209,7 @@ const ObjectOfTypePage = props => {
         <React.Fragment>
           {!isLoadingFlag && <CatalogBreadcrumb wobject={wobject} intl={intl} />}
           <div className={classObjPage}>
-            {isEditMode ? (
+            {isEditMode && editorInitialized ? (
               <React.Fragment>
                 {isReadyToPublish ? (
                   <div className="object-page-preview">
@@ -280,9 +286,11 @@ const ObjectOfTypePage = props => {
         onOk={() => {
           setCurrentContent(draft);
           setNotification(false);
+          setEditorInitialized(true);
         }}
         onCancel={() => {
           setNotification(false);
+          setEditorInitialized(true);
         }}
         okText={intl.formatMessage({ defaultMessage: 'Continue', id: 'continue' })}
         cancelText={intl.formatMessage({ defaultMessage: 'Discard', id: 'discard' })}

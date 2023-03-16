@@ -48,7 +48,7 @@ const ListSwitcher = props => {
         {props.children}
       </DepartmentsWobjList>
     );
-  }, [props.type, activeCrumb]);
+  }, [props.type, activeCrumb, match.params.name]);
 
   return (
     <div className={'ListSwitcher'}>

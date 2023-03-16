@@ -47,7 +47,7 @@ const DepartmentsWobjList = ({ getDepartmentsFeed, user, children, setVisibleNav
     );
 
     if (!isMobile()) window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, [match.params.department, query.toString(), location.hash]);
+  }, [match.params.department, match.params.name, query.toString(), location.hash]);
 
   useEffect(() => {
     if (list.current && isMobile() && !loading) {
