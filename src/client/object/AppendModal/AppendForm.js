@@ -501,7 +501,7 @@ export default class AppendForm extends Component {
             : '';
           const tagsInfo = !isEmpty(tags) ? `, Tags: ${tags.map(t => t)}` : '';
           const authoritiesInfo = !isEmpty(authoritiesList)
-            ? `, Authorities: ${tags.map(user => `@${user}`)}`
+            ? `, Authorities: ${authoritiesList.map(user => `@${user.account}`)}`
             : '';
 
           return `@${author} added ${currentField} (${langReadable}): ${typeInfo}${departmentsInfo}${tagsInfo}${authoritiesInfo}`;
@@ -801,10 +801,14 @@ export default class AppendForm extends Component {
         fieldsObject = {
           ...fieldsObject,
           body: JSON.stringify({
-            type: this.state.typeList.join() || undefined,
-            departments: this.state.departmentsArray || undefined,
-            tags: this.state.tags || undefined,
-            authorities: this.state.authoritiesList || undefined,
+            type: !isEmpty(this.state.typeList) ? this.state.typeList.join() : undefined,
+            departments: !isEmpty(this.state.departmentsArray[0])
+              ? this.state.departmentsArray
+              : undefined,
+            tags: !isEmpty(this.state.tags) ? this.state.tags : undefined,
+            authorities: !isEmpty(this.state.authoritiesList)
+              ? this.state.authoritiesList.map(user => user.account)
+              : undefined,
           }),
         };
       }
