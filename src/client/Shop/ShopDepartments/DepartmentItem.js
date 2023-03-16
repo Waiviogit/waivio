@@ -5,6 +5,8 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import { useHistory } from 'react-router';
 import { useDispatch } from 'react-redux';
+import { isEmpty } from 'lodash';
+
 import { setBreadCrumb, setExcluded } from '../../../store/shopStore/shopActions';
 import {
   getLastPermlinksFromHash,
@@ -48,7 +50,8 @@ const DepartmentItem = ({ department, match, excludedMain, onClose, getShopDepar
     if (
       (match.params.department === department.name ||
         (match.params.department !== department.name && categories.includes(department.name))) &&
-      department.subdirectory
+      department.subdirectory &&
+      isEmpty(nestedDepartments)
     ) {
       getShopDepartments(department.name, excludedMain).then(res => {
         setNestedDepartments(res);

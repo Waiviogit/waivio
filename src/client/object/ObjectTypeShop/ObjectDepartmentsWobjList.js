@@ -5,6 +5,7 @@ import { getWobjectDepartmentsFeed } from '../../../waivioApi/ApiClient';
 import DepartmentsUser from '../../Shop/ShopDepartments/DepartmentsUser';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 import ListSwitcher from '../../Shop/ListSwitch/ListSwitcher';
+import WobjectShopFilter from './WobjectShopFilter';
 
 const ObjectDepartmentsWobjList = () => {
   const match = useRouteMatch();
@@ -31,6 +32,7 @@ const ObjectDepartmentsWobjList = () => {
       setVisibleNavig={onOpen}
       path={`/object/${match.params.name}/shop`}
       type={'wobject'}
+      Filter={WobjectShopFilter}
     >
       {visibleNavig && <DepartmentsUser visible={visibleNavig} onClose={onClose} />}
     </ListSwitcher>

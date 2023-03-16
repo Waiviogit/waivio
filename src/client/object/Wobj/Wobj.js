@@ -22,6 +22,7 @@ import { formColumnsField } from '../../../common/constants/listOfFields';
 import WobjectSidebarFollowers from '../../app/Sidebar/ObjectInfoExperts/WobjectSidebarFollowers';
 import WobjectNearby from '../../app/Sidebar/ObjectInfoExperts/WobjectNearby';
 import { compareObjectTitle } from '../../../common/helpers/seoHelpes';
+import WobjectShopFilter from '../ObjectTypeShop/WobjectShopFilter';
 
 const Wobj = ({
   authenticated,
@@ -49,7 +50,6 @@ const Wobj = ({
   const address = parseAddress(wobject);
   const titleText = compareObjectTitle(isWaivio, objectName, address, siteName);
   const rank = hasType(wobject, 'restaurant') ? `Restaurant rank: ${round(weightValue, 2)}.` : '';
-
   const tagCategories = reduce(
     wobject.tagCategory,
     (acc, curr) => {
@@ -148,10 +148,16 @@ const Wobj = ({
           </Affix>
           {wobject.author_permlink && (
             <Affix className={rightSidebarClassList} stickPosition={72}>
-              <ObjectExpertise wobject={wobject} />
-              {wobject.map && <WobjectNearby wobject={wobject} />}
-              <ObjectsRelated wobject={wobject} />
-              <WobjectSidebarFollowers wobject={wobject} />
+              {match.url.includes('/shop') ? (
+                <WobjectShopFilter />
+              ) : (
+                <React.Fragment>
+                  <ObjectExpertise wobject={wobject} />
+                  {wobject.map && <WobjectNearby wobject={wobject} />}
+                  <ObjectsRelated wobject={wobject} />
+                  <WobjectSidebarFollowers wobject={wobject} />
+                </React.Fragment>
+              )}
             </Affix>
           )}
           <div className={centerClassList}>
