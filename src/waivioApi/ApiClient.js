@@ -3283,7 +3283,6 @@ export const getShopMainFeed = (
     .catch(error => error);
 
 export const getWobjectShopMainFeed = (authorPermlink, follower, skip, path, limit = 10) => {
-  console.log(path);
   return fetch(`${config.apiPrefix}${config.shop}${config.getObjects}${config.mainFeed}`, {
     headers: {
       ...headers,
@@ -3311,6 +3310,41 @@ export const getWobjectShopDepartments = (authorPermlink, name, excluded, path) 
       name,
       excluded,
       path,
+    }),
+  })
+    .then(res => res.json())
+    .then(posts => posts)
+    .catch(error => error);
+
+export const getWobjectShopFilters = (authorPermlink, path) =>
+  fetch(`${config.apiPrefix}${config.shop}${config.getObjects}${config.filters}`, {
+    headers,
+    method: 'POST',
+    body: JSON.stringify({
+      authorPermlink,
+      path,
+    }),
+  })
+    .then(res => res.json())
+    .then(posts => posts)
+    .catch(error => error);
+
+export const getMoreTagsForWobjectShopFilters = (
+  authorPermlink,
+  path,
+  tagCategory,
+  skip = 0,
+  limit = 10,
+) =>
+  fetch(`${config.apiPrefix}${config.shop}${config.getObjects}${config.filters}${config.tags}`, {
+    headers,
+    method: 'POST',
+    body: JSON.stringify({
+      authorPermlink,
+      path,
+      tagCategory,
+      skip,
+      limit,
     }),
   })
     .then(res => res.json())
