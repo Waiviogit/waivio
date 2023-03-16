@@ -7,8 +7,8 @@ import ShopDepartmentsList from './ShopDepartmentsList';
 
 const DepartmentsUser = ({ visible, onClose }) => {
   const match = useRouteMatch();
-  const getShopDepartments = (department, excluded) =>
-    getShopUserDepartments(match.params.name, department, excluded);
+  const getShopDepartments = (department, excluded, path) =>
+    getShopUserDepartments(match.params.name, department, excluded, path);
 
   return (
     <ShopDepartmentsList

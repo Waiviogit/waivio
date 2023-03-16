@@ -16,7 +16,15 @@ import {
 
 import './ShopDepartments.less';
 
-const DepartmentItem = ({ department, match, excludedMain, onClose, getShopDepartments, path }) => {
+const DepartmentItem = ({
+  department,
+  match,
+  excludedMain,
+  onClose,
+  getShopDepartments,
+  path,
+  pathList,
+}) => {
   const [nestedDepartments, setNestedDepartments] = useState([]);
   const [showNested, setShowNested] = useState(false);
   const history = useHistory();
@@ -53,7 +61,7 @@ const DepartmentItem = ({ department, match, excludedMain, onClose, getShopDepar
       department.subdirectory &&
       isEmpty(nestedDepartments)
     ) {
-      getShopDepartments(department.name, excludedMain).then(res => {
+      getShopDepartments(department.name, excludedMain, pathList).then(res => {
         setNestedDepartments(res);
         setShowNested(true);
       });
@@ -126,6 +134,7 @@ const DepartmentItem = ({ department, match, excludedMain, onClose, getShopDepar
               onClose={onClose}
               getShopDepartments={getShopDepartments}
               path={path}
+              pathList={pathList}
             />
           ))}
         </div>
@@ -144,6 +153,7 @@ DepartmentItem.propTypes = {
     params: PropTypes.string,
   }),
   excludedMain: PropTypes.arrayOf(PropTypes.string),
+  pathList: PropTypes.arrayOf(PropTypes.string),
   onClose: PropTypes.func,
   getShopDepartments: PropTypes.func,
   path: PropTypes.string,

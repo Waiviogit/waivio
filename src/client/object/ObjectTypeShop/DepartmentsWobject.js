@@ -4,8 +4,8 @@ import { getWobjectShopDepartments } from '../../../waivioApi/ApiClient';
 import ShopDepartmentsList from '../../Shop/ShopDepartments/ShopDepartmentsList';
 
 const DepartmentsWobject = ({ shopFilter, authorPermlink, visible, onClose }) => {
-  const getShopDepartments = (department, excluded) =>
-    getWobjectShopDepartments(authorPermlink, department, excluded);
+  const getShopDepartments = (department, excluded, path) =>
+    getWobjectShopDepartments(authorPermlink, department, excluded, path);
 
   return (
     <ShopDepartmentsList
