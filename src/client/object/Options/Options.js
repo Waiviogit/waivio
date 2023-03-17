@@ -26,6 +26,18 @@ const Options = ({ wobject, isEditMode, setHoveredOption }) => {
 
   const options = Object.entries(wobject?.options);
 
+  const optionsBack = Object.values(wobject.options).reduce((acc, arrVal) => {
+    arrVal.forEach(option => {
+      if (acc[option.body.value]) {
+        acc[option.body.value] = [...acc[option.body.value], option.author_permlink];
+      } else {
+        acc[option.body.value] = [option.author_permlink];
+      }
+    });
+
+    return acc;
+  }, {});
+
   const filteredOptions = options.map(opt => [
     opt[0],
     uniqBy(
@@ -50,6 +62,7 @@ const Options = ({ wobject, isEditMode, setHoveredOption }) => {
               {filteredOptions.map(option => (
                 <div className="Options__block" key={option[0]}>
                   <OptionItemView
+                    optionsBack={optionsBack}
                     optionsNumber={option[2]}
                     option={option}
                     wobject={wobject}

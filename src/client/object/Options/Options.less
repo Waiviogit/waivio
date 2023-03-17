@@ -71,8 +71,8 @@
     text-overflow: ellipsis;
     white-space: nowrap;
 
-    &-selected {
-      border: 1px solid @orange-hot;
+    &--selected {
+      border: 1px solid @orange-hot !important;
     }
 
     &:hover {
@@ -96,6 +96,10 @@
     white-space: nowrap;
     &-selected {
       border: 1px solid @orange-hot;
+    }
+    &--black {
+      border: 1px solid @black-text-basic;
+      color: @black-text-basic;
     }
     &:hover {
       cursor: pointer;
