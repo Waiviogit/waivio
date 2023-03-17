@@ -78,7 +78,11 @@ const ObjectOfTypePage = props => {
         setDraft(res.body);
         setEditorInitialized(false);
       });
-    } else setEditorInitialized(true);
+    } else {
+      setEditorInitialized(true);
+      setNotification(false);
+      setDraft(null);
+    }
   }, [wobject.author_permlink, props.nestedWobject.author_permlink]);
 
   useEffect(() => {

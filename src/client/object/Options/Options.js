@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux';
 import { getActiveOption } from '../../../store/optionsStore/optionsSelectors';
 import { isMobile } from '../../../common/helpers/apiHelpers';
 import OptionItemEdit from './OptionItem/OptionItemEdit';
-import { sortOptions } from '../../../common/helpers/wObjectHelper';
+import { sortOptions, sortOwnOptions } from '../../../common/helpers/wObjectHelper';
 import OptionItemView from './OptionItem/OptionItemView';
 import './Options.less';
 
@@ -26,9 +26,24 @@ const Options = ({ wobject, isEditMode, setHoveredOption }) => {
 
   const options = Object.entries(wobject?.options);
 
+  const optionsBack = Object.values(wobject.options).reduce((acc, arrVal) => {
+    arrVal.forEach(option => {
+      if (acc[option.body.value]) {
+        acc[option.body.value] = [...acc[option.body.value], option.author_permlink];
+      } else {
+        acc[option.body.value] = [option.author_permlink];
+      }
+    });
+
+    return acc;
+  }, {});
+
   const filteredOptions = options.map(opt => [
     opt[0],
-    uniqBy(opt[1], 'body.value').sort((a, b) => sortOptions(a, b)),
+    uniqBy(
+      opt[1].sort((a, b) => sortOwnOptions(a, b, wobject.author_permlink)),
+      'body.value',
+    ).sort((a, b) => sortOptions(a, b)),
     uniqBy(uniqBy(opt[1], 'author_permlink'), 'body.value').sort((a, b) => sortOptions(a, b))
       .length,
   ]);
@@ -47,6 +62,7 @@ const Options = ({ wobject, isEditMode, setHoveredOption }) => {
               {filteredOptions.map(option => (
                 <div className="Options__block" key={option[0]}>
                   <OptionItemView
+                    optionsBack={optionsBack}
                     optionsNumber={option[2]}
                     option={option}
                     wobject={wobject}

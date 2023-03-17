@@ -91,7 +91,6 @@ export const getReviewTitle = (campaignData, linkedObjects, body, altTitle) => {
   const requiredObj = get(campaignData, 'requiredObject', {});
   const secondObj = get(campaignData, 'secondaryObject', {});
   const reviewTitle = `Review: ${firstTitle}, ${secondTitle}`;
-
   const topics = [];
 
   if (requiredObj.object_type === 'hashtag' || secondObj.object_type === 'hashtag') {
@@ -113,7 +112,6 @@ export const getReviewTitleNew = (campaignData, linkedObjects, body, altTitle) =
   const requiredObj = get(linkedObjects, '[0]', {});
   const secondObj = get(linkedObjects, '[1]', {});
   const reviewTitle = `Review: ${firstTitle}, ${secondTitle}`;
-
   const topics = [];
 
   if (requiredObj.object_type === 'hashtag' || secondObj.object_type === 'hashtag') {
