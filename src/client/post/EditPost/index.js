@@ -23,7 +23,6 @@ import {
   leaveEditor,
   setClearState,
   setEditorState,
-  reviewCheckInfo,
   handlePasteText,
   handleObjectSelect,
   setUpdatedEditorData,
@@ -54,7 +53,6 @@ const mapStateToProps = (state, props) => {
 const mapDispatchToProps = (dispatch, props) => {
   const query = new URLSearchParams(props.location.search);
   const draftId = query.get('draft');
-  const newCampaing = query.get('newCampaing');
 
   return {
     setEditorState: editorState => dispatch(setEditorState(editorState)),
@@ -63,9 +61,7 @@ const mapDispatchToProps = (dispatch, props) => {
       dispatch(createPost(postData, beneficiaries, isReview, campaign, intl)),
     saveDraft: data => dispatch(saveDraft(draftId, props.intl, data)),
     getReviewCheckInfo: (data, needReviewTitle, intl) =>
-      newCampaing
-        ? dispatch(getCampaignInfo(data, needReviewTitle, intl))
-        : dispatch(reviewCheckInfo(data, needReviewTitle, intl)),
+      dispatch(getCampaignInfo(data, needReviewTitle, intl)),
     setUpdatedEditorData: data => dispatch(setUpdatedEditorData(data)),
     buildPost: () => dispatch(buildPost(draftId)),
     handleObjectSelect: object => dispatch(handleObjectSelect(object, false, props.intl)),

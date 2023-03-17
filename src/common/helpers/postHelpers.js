@@ -195,22 +195,71 @@ export const getObjectLink = (obj, match = {}) => {
   }${getObjectUrlForLink(obj)}`;
 };
 
-const setTitle = (initObjects, props) => {
+const setTitle = (initObjects, props, authors) => {
   if (size(initObjects)) {
     const title = initObjects.reduce((acc, curr) => {
       const matches = curr.match(/^\[(.+)\]\((\S+)\)/);
 
       if (!isNil(matches) && matches[1]) {
-        return `${acc}${matches[1]}, `;
+        return initObjects.length > 1 ? `${acc}${matches[1]}, ` : `${acc}${matches[1]}`;
       }
 
       return acc;
     }, 'Review: ');
 
-    return title.substr(0, title.length - 2);
+    if (!isEmpty(authors)) {
+      let authorAcc = title;
+
+      authors.forEach((author, i) => {
+        const matchesAuthor = author.match(/^\[(.+)\]\((\S+)\)/);
+
+        authorAcc =
+          i === 0 ? `${authorAcc} by ${matchesAuthor[1]}` : `${authorAcc}, ${matchesAuthor[1]}`;
+      });
+
+      return authorAcc;
+    }
+
+    return title;
   }
 
   return get(props, 'editor.draftContent.title', '');
+};
+
+const setBody = (initObjects, props, authors) => {
+  const body =
+    get(props, 'editor.draftContent.body', false) || size(initObjects)
+      ? initObjects.reduce((acc, curr, i) => {
+          const matches = curr.match(/^\[(.+)\]\((\S+)\)/);
+
+          if (!isNil(matches) && matches[1] && matches[2]) {
+            if (isEmpty(authors)) return `${acc}[${matches[1]}](${getObjectUrl(matches[2])})\n`;
+
+            return initObjects.length - 1 === i || initObjects.length > 1
+              ? `${acc}[${matches[1]}](${getObjectUrl(matches[2])})`
+              : `${acc}[${matches[1]}](${getObjectUrl(matches[2])}), `;
+          }
+
+          return acc;
+        }, '')
+      : '';
+
+  if (!isEmpty(authors)) {
+    let authorAcc = body;
+
+    authors.forEach((author, i) => {
+      const matchesAuthor = author.match(/^\[(.+)\]\((\S+)\)/);
+
+      authorAcc =
+        i === 0
+          ? `${authorAcc} by [${matchesAuthor[1]}](${getObjectUrl(matchesAuthor[2])})`
+          : `${authorAcc}, [${matchesAuthor[1]}](${getObjectUrl(matchesAuthor[2])})`;
+    });
+
+    return authorAcc;
+  }
+
+  return body;
 };
 
 const getObjects = state => {
@@ -222,31 +271,22 @@ const getObjects = state => {
 };
 
 export function getInitialState(props, hideLinkedObjectsSession = []) {
+  const query = new URLSearchParams(props.location.search);
   const initObjects = props.location.state
     ? getObjects(props.location.state)
-    : new URLSearchParams(props.location.search).getAll('object');
+    : query.getAll('object');
+  const authors = query.getAll('author');
   const hideObjects = hideLinkedObjectsSession || props.editor.hideLinkedObjects || [];
   const campaignId = props.campaignId ? { id: props.campaignId } : null;
   const campaign = get(props, 'editor.campaign', null) ? props.editor.campaign : campaignId;
-  const title = setTitle(initObjects, props);
+  const title = setTitle(initObjects, props, authors);
   let state = {
     campaign,
     draftId: props.draftId || uuidv4(),
     parentPermlink: WAIVIO_PARENT_PERMLINK,
     draftContent: {
       title,
-      body:
-        get(props, 'editor.draftContent.body', false) || size(initObjects)
-          ? initObjects.reduce((acc, curr) => {
-              const matches = curr.match(/^\[(.+)\]\((\S+)\)/);
-
-              if (!isNil(matches) && matches[1] && matches[2]) {
-                return `${acc}[${matches[1]}](${getObjectUrl(matches[2])})\n`;
-              }
-
-              return acc;
-            }, '')
-          : '',
+      body: setBody(initObjects, props, authors),
     },
     content: '',
     topics: [],

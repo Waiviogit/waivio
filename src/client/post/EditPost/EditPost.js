@@ -95,7 +95,6 @@ const EditPost = props => {
     }
 
     const isReview = !isEmpty(campaignId);
-
     props.setUpdatedEditorData({ isReview, hideLinkedObjects: hideLinkedObjectsSession });
     if (isReview) {
       props.getReviewCheckInfo({ campaignId }, intl, true);

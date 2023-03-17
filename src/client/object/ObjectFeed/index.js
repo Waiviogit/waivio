@@ -10,6 +10,7 @@ import { getObjectName } from '../../../common/helpers/wObjectHelper';
 import Loading from '../../components/Icon/Loading';
 import { getIsAuthenticated } from '../../../store/authStore/authSelectors';
 import { getObjectFetchingState } from '../../../store/wObjectStore/wObjectSelectors';
+import { parseJSON } from '../../../common/helpers/parseJSON';
 
 const propTypes = {
   history: PropTypes.shape().isRequired,
@@ -41,6 +42,15 @@ const ObjectFeedContainer = ({ history, match, wobject, userName, isPageMode }) 
       }
 
       redirectUrl += encodeURIComponent(`[${getObjectName(wobject)}](${wobject.author_permlink})`);
+
+      if (!isEmpty(wobject.authors)) {
+        wobject.authors.forEach(author => {
+          const body = parseJSON(author.body);
+
+          redirectUrl += `&author=${encodeURIComponent(`[${body.name}](${body.authorPermlink})`)}`;
+        });
+      }
+
       history.push(redirectUrl);
     }
   };
