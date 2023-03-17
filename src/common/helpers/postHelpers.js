@@ -229,13 +229,13 @@ const setTitle = (initObjects, props, authors) => {
 const setBody = (initObjects, props, authors) => {
   const body =
     get(props, 'editor.draftContent.body', false) || size(initObjects)
-      ? initObjects.reduce((acc, curr, i) => {
+      ? initObjects.reduce((acc, curr) => {
           const matches = curr.match(/^\[(.+)\]\((\S+)\)/);
 
           if (!isNil(matches) && matches[1] && matches[2]) {
             if (isEmpty(authors)) return `${acc}[${matches[1]}](${getObjectUrl(matches[2])})\n`;
 
-            return initObjects.length - 1 === i || initObjects.length > 1
+            return initObjects.length <= 1
               ? `${acc}[${matches[1]}](${getObjectUrl(matches[2])})`
               : `${acc}[${matches[1]}](${getObjectUrl(matches[2])}), `;
           }
