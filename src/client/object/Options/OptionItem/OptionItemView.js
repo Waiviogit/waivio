@@ -45,8 +45,7 @@ const OptionItemView = ({ option, wobject, setHoveredOption, optionsNumber, opti
       'Options__option-button': el.author_permlink !== wobject.author_permlink,
       'Options__my-option-button': el.author_permlink === wobject.author_permlink,
       'Options__my-option-button--selected':
-        activeStoreOption[el.body.category]?.body?.value === el.body?.value ||
-        (!isEmpty(activeStoreOption) && el.author_permlink === wobject.author_permlink),
+        activeStoreOption[el.body.category]?.body?.value === el.body?.value || func(el),
     });
 
   const onMouseOver = (e, el) => {
@@ -60,13 +59,13 @@ const OptionItemView = ({ option, wobject, setHoveredOption, optionsNumber, opti
   const onOptionButtonClick = (e, el) => {
     dispatch(setStoreActiveCategory(el.body.category));
     setHoveredOption(el);
-    dispatch(setStoreActiveOption({ ...activeStoreOption, [el.body.category]: el }));
+    dispatch(setStoreActiveOption({ [el.body.category]: el }));
     if (el.author_permlink !== wobject.author_permlink) {
       getObject(el.author_permlink, userName, locale).then(obj =>
         history.push(obj.defaultShowLink),
       );
       dispatch(setStoreActiveCategory(el.body.category));
-      dispatch(setStoreActiveOption({ ...activeStoreOption, [el.body.category]: el }));
+      dispatch(setStoreActiveOption({ [el.body.category]: el }));
     }
   };
 
