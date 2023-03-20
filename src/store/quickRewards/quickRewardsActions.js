@@ -144,10 +144,11 @@ export const createQuickPost = (userBody, topics, images, reservationPermlink) =
     .map(tag => `\n[#${tag}](https://www.waivio.com/object/${tag})`)
     .join('');
   const title = `Review: ${getObjectName(restaurant)}, ${getObjectName(dish)}`;
-  let body = `\n[${getObjectName(restaurant)}](${host}/object/${restaurant.author_permlink}),
-    \n[${getObjectName(dish)}](${host}/object/${
+  let body = `\n[${getObjectName(restaurant)}](${host}/object/${
+    restaurant.author_permlink
+  })\n[${getObjectName(dish)}](${host}/object/${
     dish.author_permlink
-  }) ${imagesLink} ${userBody} ${topicsLink}`;
+  })\n ${imagesLink} ${userBody} ${topicsLink}`;
 
   if (isReview) {
     const guideName = dish?.guideName || dish?.propositions?.[0]?.guideName;
