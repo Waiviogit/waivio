@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { NavLink } from 'react-router-dom';
 import { Icon } from 'antd';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
@@ -10,7 +9,6 @@ import { isEmpty } from 'lodash';
 import { setBreadCrumb, setExcluded } from '../../../store/shopStore/shopActions';
 import {
   getLastPermlinksFromHash,
-  getLinkPath,
   getPermlinksFromHash,
 } from '../../../common/helpers/wObjectHelper';
 
@@ -35,6 +33,10 @@ const DepartmentItem = ({
   });
   const depNameClassList = classNames('ShopDepartmentsList__depName', {
     'ShopDepartmentsList__depName--open': showNested,
+  });
+  const depNameWithoutNestedClassList = classNames('ShopDepartmentsList__link', {
+    'ShopDepartmentsList__link--active':
+      match.params.department === department.name || categories.includes(department.name),
   });
   const itemListClassList = classNames('ShopDepartmentsList__list', {
     'ShopDepartmentsList__list--show': showNested,
@@ -111,17 +113,17 @@ const DepartmentItem = ({
           {department.name} {!showNested && <Icon style={{ fontSize: '12px' }} type={'right'} />}
         </div>
       ) : (
-        <NavLink
-          to={getLinkPath(match, department, path, history.location)}
-          isActive={() =>
-            match.params.department === department.name || categories.includes(department.name)
-          }
+        <div
+          className={depNameWithoutNestedClassList}
+          // to={getLinkPath(match, department, path, history.location)}
+          // isActive={() =>
+          //   match.params.department === department.name || categories.includes(department.name)
+          // }
           onClick={getNestedDepartments}
-          activeClassName="ShopDepartmentsList__link--active"
-          className="ShopDepartmentsList__link"
+          // activeClassName="ShopDepartmentsList__link--active"
         >
           {department.name}
-        </NavLink>
+        </div>
       )}
       {showNested && (
         <div className={itemListClassList}>

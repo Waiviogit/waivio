@@ -283,6 +283,11 @@ export function editorStateToMarkdownSlate(value) {
           children: next(node.children),
           ordered: false,
         }),
+        bulletedList: (node, next) => ({
+          type: 'list',
+          children: next(node.children),
+          ordered: false,
+        }),
         paragraph: (node, next) => {
           const children = node.children.map(child => {
             if (child.text && child.underline) {
