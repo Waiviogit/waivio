@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import classNames from 'classnames';
 import { useHistory } from 'react-router';
 import PropTypes from 'prop-types';
-import { isEmpty } from 'lodash';
 import { FormattedMessage } from 'react-intl';
 import {
   setStoreActiveCategory,
@@ -30,13 +29,18 @@ const OptionItemView = ({ option, wobject, setHoveredOption, optionsNumber, opti
       .filter(opt => opt.body.category !== el.body.category)
       .some(o => optionsBack[o.body.value].includes(el.author_permlink));
 
+  const myFunc = el =>
+    Object.values(activeStoreOption)
+      .filter(opt => opt.body.category !== el.body.category)
+      .some(() => wobject.author_permlink === el.author_permlink);
+
   const getOptionsPicturesClassName = el =>
     classNames({
+      'Options__pictures--black': func(el),
       Options__pictures: el.author_permlink !== wobject.author_permlink,
       'Options__my-pictures': el.author_permlink === wobject.author_permlink,
       'Options__my-pictures--selected':
-        el.body?.image === activeStoreOption[el.body.category]?.body?.image ||
-        (!isEmpty(activeStoreOption) && el.author_permlink === wobject.author_permlink),
+        el.body?.image === activeStoreOption[el.body.category]?.body?.image || myFunc(el),
     });
 
   const getOptionsClassName = el =>
@@ -45,8 +49,7 @@ const OptionItemView = ({ option, wobject, setHoveredOption, optionsNumber, opti
       'Options__option-button': el.author_permlink !== wobject.author_permlink,
       'Options__my-option-button': el.author_permlink === wobject.author_permlink,
       'Options__my-option-button--selected':
-        activeStoreOption[el.body.category]?.body?.value === el.body?.value ||
-        (!isEmpty(activeStoreOption) && el.author_permlink === wobject.author_permlink),
+        activeStoreOption[el.body.category]?.body?.value === el.body?.value || myFunc(el),
     });
 
   const onMouseOver = (e, el) => {
@@ -60,13 +63,13 @@ const OptionItemView = ({ option, wobject, setHoveredOption, optionsNumber, opti
   const onOptionButtonClick = (e, el) => {
     dispatch(setStoreActiveCategory(el.body.category));
     setHoveredOption(el);
-    dispatch(setStoreActiveOption({ ...activeStoreOption, [el.body.category]: el }));
+    dispatch(setStoreActiveOption({ [el.body.category]: el }));
     if (el.author_permlink !== wobject.author_permlink) {
       getObject(el.author_permlink, userName, locale).then(obj =>
         history.push(obj.defaultShowLink),
       );
       dispatch(setStoreActiveCategory(el.body.category));
-      dispatch(setStoreActiveOption({ ...activeStoreOption, [el.body.category]: el }));
+      dispatch(setStoreActiveOption({ [el.body.category]: el }));
     }
   };
 
