@@ -108,7 +108,7 @@ export const getLink = link => {
 
 export const getExposedFieldsByObjType = wobj => {
   const exposedFields = get(wobj, 'exposedFields', []).map(field => field.name);
-  const renderedFields = !['list', 'shop'].includes(wobj.object_type)
+  const renderedFields = !['list', 'shop', 'widget', 'newsfeed'].includes(wobj.object_type)
     ? [...exposedFields.filter(f => f !== objectFields.listItem), TYPES_OF_MENU_ITEM.LIST]
     : exposedFields;
 
