@@ -43,12 +43,11 @@ import {
 } from '../appStore/appSelectors';
 import { getAuthenticatedUser, getAuthenticatedUserName } from '../authStore/authSelectors';
 import { getHiveBeneficiaryAccount, getLocale } from '../settingsStore/settingsSelectors';
-import { getCampaign, getObjectsByIds, getReviewCheckInfo } from '../../waivioApi/ApiClient';
+import { getCampaign, getObjectsByIds } from '../../waivioApi/ApiClient';
 import {
   getCurrentLinkPermlink,
   getCurrentLoadObjects,
   getNewLinkedObjectsCards,
-  getReviewTitle,
   getObjPercentsHideObject,
   getCurrentDraftContent,
   getFilteredLinkedObjects,
@@ -70,7 +69,7 @@ import {
   getLinkedObjects,
   getTitleValue,
 } from './editorSelectors';
-import { getCurrentLocation, getQueryString, getSuitableLanguage } from '../reducers';
+import { getCurrentLocation, getQueryString } from '../reducers';
 import { getObjectName, getObjectType } from '../../common/helpers/wObjectHelper';
 import { createPostMetadata, getObjectLink } from '../../common/helpers/postHelpers';
 import { createEditorState, Entity, fromMarkdown } from '../../client/components/EditorExtended';
@@ -472,55 +471,6 @@ export const setUpdatedEditorExtendedData = payload => ({
   type: SET_UPDATED_EDITOR_EXTENDED_DATA,
   payload,
 });
-
-export const reviewCheckInfo = (
-  { campaignId, isPublicReview, postPermlinkParam },
-  intl,
-  needReviewTitle = false,
-) => {
-  return (dispatch, getState) => {
-    const state = getState();
-    const userName = getAuthenticatedUserName(state);
-    const locale = getSuitableLanguage(state);
-    const linkedObjects = getLinkedObjects(state);
-    const draftBody = getEditorDraftBody(state);
-    const postPermlink = postPermlinkParam || isPublicReview;
-
-    return getReviewCheckInfo({ campaignId, locale, userName, postPermlink })
-      .then(campaignData => {
-        const draftId = new URLSearchParams(getQueryString(state)).get('draft');
-        const currDraft = getCurrentDraft(state, { draftId });
-
-        const reviewedTitle = needReviewTitle
-          ? getReviewTitle(campaignData, linkedObjects, draftBody, get(currDraft, 'title', ''))
-          : {};
-        const updatedEditorData = {
-          ...reviewedTitle,
-          campaign: campaignData,
-        };
-
-        dispatch(setUpdatedEditorData(updatedEditorData));
-        dispatch(firstParseLinkedObjects(updatedEditorData.draftContent));
-        dispatch(
-          saveDraft(draftId, intl, {
-            content: updatedEditorData.draftContent.body,
-            titleValue: updatedEditorData.draftContent.title,
-          }),
-        );
-      })
-      .catch(error => {
-        message.error(
-          intl.formatMessage(
-            {
-              id: 'imageSetter_link_is_already_added',
-              defaultMessage: `Failed to get campaign data: {error}`,
-            },
-            { error },
-          ),
-        );
-      });
-  };
-};
 
 export const getCampaignInfo = ({ campaignId }, intl, needReviewTitle = false) => {
   return (dispatch, getState) => {

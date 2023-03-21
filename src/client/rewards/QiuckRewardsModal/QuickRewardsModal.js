@@ -13,7 +13,11 @@ import {
 import USDDisplay from '../../components/Utils/USDDisplay';
 import ModalFirstScreen from './components/FirstScreen/FirstScreen';
 import ModalSecondScreen from './components/SecondScreen/SecondScreen';
-import { createQuickPost, toggleModal } from '../../../store/quickRewards/quickRewardsActions';
+import {
+  createQuickPost,
+  setSelectedDish,
+  toggleModal,
+} from '../../../store/quickRewards/quickRewardsActions';
 import SubmitReviewPublish from '../../post/CheckReviewModal/SubmitReviewPublish';
 import StepsItems from '../../widgets/CircleSteps/StepsItems';
 import { generatePermlink } from '../../../common/helpers/wObjectHelper';
@@ -87,6 +91,10 @@ const QuickRewardsModal = props => {
     setTopic(['food', 'restaurant']);
     setBody('');
     setImages([]);
+
+    if (props.selectedDish.author_permlink === props.selectedRestaurant.author_permlink) {
+      props.setSelectedDish(null);
+    }
   };
 
   const handleOnClickPublishButton = e => {
@@ -144,8 +152,11 @@ const QuickRewardsModal = props => {
           buttonHandler: e => {
             e.currentTarget.blur();
             setPageNumber(2);
+            if (!props.selectedDish) {
+              props.setSelectedDish(props.selectedRestaurant);
+            }
           },
-          disabled: isEmpty(props.selectedDish) || isEmpty(props.selectedRestaurant),
+          disabled: isEmpty(props.selectedRestaurant),
         };
       case 2:
         const secondScreenButtonName = isPropositionObj
@@ -160,6 +171,10 @@ const QuickRewardsModal = props => {
               e.currentTarget.blur();
               handelRejectReservation();
               setPageNumber(1);
+
+              if (props.selectedDish.author_permlink === props.selectedRestaurant.author_permlink) {
+                props.setSelectedDish(null);
+              }
             }
           : handleOnClickBack;
 
@@ -277,6 +292,7 @@ QuickRewardsModal.propTypes = {
   selectedDish: PropTypes.shape(),
   selectedRestaurant: PropTypes.shape(),
   toggleModal: PropTypes.func.isRequired,
+  setSelectedDish: PropTypes.func.isRequired,
   createQuickPost: PropTypes.func.isRequired,
   realiseRewards: PropTypes.func.isRequired,
   isOpenModal: PropTypes.bool.isRequired,
@@ -293,6 +309,7 @@ export default injectIntl(
       authUser: getAuthenticatedUserName(state),
     }),
     {
+      setSelectedDish,
       createQuickPost,
       toggleModal,
       realiseRewards: newRewards.realiseRewards,

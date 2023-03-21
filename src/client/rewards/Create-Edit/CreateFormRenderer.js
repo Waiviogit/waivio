@@ -412,7 +412,7 @@ const CreateFormRenderer = props => {
 
         <Form.Item
           label={
-            <span className="CreateReward__label">
+            <span>
               {fields.secondaryObject.label}{' '}
               {!isEmpty(primaryObject) && getObjectType(primaryObject) !== 'list' && (
                 <React.Fragment>
@@ -431,7 +431,7 @@ const CreateFormRenderer = props => {
           }
         >
           {getFieldDecorator(fields.secondaryObject.name, {
-            rules: fields.secondaryObject.rules,
+            // rules: fields.secondaryObject.rules,
             initialValue: secondaryObjectsList,
             validateTrigger: ['onChange', 'onBlur', 'onSubmit'],
           })(
