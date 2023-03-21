@@ -224,7 +224,9 @@ class CreateRewards extends React.Component {
   prepareSubmitData = (data, userName) => {
     const { campaignId, pageObjects } = this.state;
     const { rewardFund, rate } = this.props;
-    const objects = map(data.secondaryObject, o => o.author_permlink);
+    const objects = isEmpty(data.secondaryObject)
+      ? [data.primaryObject.author_permlink]
+      : map(data.secondaryObject, o => o.author_permlink);
     const agreementObjects = size(pageObjects) ? map(pageObjects, o => o.author_permlink) : [];
     const matchBots = Array.isArray(data.sponsorsList)
       ? map(data.sponsorsList, o => o.account || o)
@@ -419,7 +421,7 @@ class CreateRewards extends React.Component {
       e.preventDefault();
 
       this.props.form.validateFieldsAndScroll((err, values) => {
-        if (!err && !isEmpty(values.primaryObject) && !isEmpty(values.secondaryObject)) {
+        if (!err && !isEmpty(values.primaryObject)) {
           const isDetails = this.props.match?.params?.[0] === 'details';
           const submitMethod = isDetails ? updateCampaing : createNewCampaing;
 

@@ -1,3 +1,5 @@
+@import (reference) '../../styles/custom.less';
+
 .CircleSteps {
   display: flex;
   position: relative;
@@ -69,6 +71,30 @@
 
       .CircleSteps__itemTitle {
         color: var(--website-color);
+      }
+    }
+  }
+}
+
+.nightmode {
+  .CircleSteps {
+    &__item {
+      .CircleSteps__itemCircle {
+        background: @grey-darkGrey;
+      }
+
+      .CircleSteps__itemTitle {
+        color: @grey-darkGrey;
+      }
+
+      &--active {
+        .CircleSteps__itemCircle {
+          background: var(--website-color);
+        }
+
+        .CircleSteps__itemTitle {
+          color: var(--website-color);
+        }
       }
     }
   }

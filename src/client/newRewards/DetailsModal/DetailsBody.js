@@ -13,7 +13,13 @@ import { getRate, getRewardFund } from '../../../store/appStore/appSelectors';
 
 import './Details.less';
 
-const DetailsModalBody = ({ proposition, requirements, agreementObjects, intl }) => {
+const DetailsModalBody = ({
+  proposition,
+  requirements,
+  agreementObjects,
+  intl,
+  withoutSecondary,
+}) => {
   const getClassForCurrCreteria = creteria => classNames({ 'criteria-row__required': !creteria });
   const rate = useSelector(getRate);
   const rewardFund = useSelector(getRewardFund);
@@ -170,15 +176,17 @@ const DetailsModalBody = ({ proposition, requirements, agreementObjects, intl })
             </Link>
             ;
           </li>
-          <li>
-            <span className="nowrap">
-              {intl.formatMessage({ id: 'rewards_details_link_to', defaultMessage: 'Link to' })}
-            </span>
-            <Link className="ml1 DetailsModal__container" to={requiredObject?.defaultShowLink}>
-              {getObjectName(requiredObject)}
-            </Link>
-            ;
-          </li>
+          {!withoutSecondary && (
+            <li>
+              <span className="nowrap">
+                {intl.formatMessage({ id: 'rewards_details_link_to', defaultMessage: 'Link to' })}
+              </span>
+              <Link className="ml1 DetailsModal__container" to={requiredObject?.defaultShowLink}>
+                {getObjectName(requiredObject)}
+              </Link>
+              ;
+            </li>
+          )}
           {proposition?.description && (
             <li>
               <span>
@@ -324,6 +332,7 @@ DetailsModalBody.propTypes = {
   intl: PropTypes.shape({
     formatMessage: PropTypes.func,
   }).isRequired,
+  withoutSecondary: PropTypes.bool,
 };
 
 export default injectIntl(DetailsModalBody);
