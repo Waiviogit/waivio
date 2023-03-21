@@ -2180,7 +2180,5 @@
   "add_new_rule": "Add new rule",
   "undelegated": "Undelegated",
   "undelegated_by": "by",
- "object_field_shopFilter": "Shop filter",
-  "shop": "Shop",
-  "add_new_rule": "Add new rule"
+  "menu_legacy": "Menu (legacy)"
 }

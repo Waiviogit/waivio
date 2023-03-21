@@ -122,6 +122,7 @@ class ObjectInfo extends React.Component {
     brandObject: {},
     merchantObject: {},
     authorsArray: [],
+    showMenuLegacy: false,
   };
 
   componentDidMount() {
@@ -706,16 +707,34 @@ class ObjectInfo extends React.Component {
 
       return (
         <React.Fragment>
-          {isEditMode && !isList && (
-            <div className="object-sidebar__section-title">
-              {objectTypeMenuTitle ? (
+          {isEditMode &&
+            !isList &&
+            (objectTypeMenuTitle ? (
+              <div className="object-sidebar__section-title">
                 <FormattedMessage id={wobject.object_type} />
-              ) : (
-                <FormattedMessage id="menu" defaultMessage="Menu" />
-              )}
-            </div>
-          )}
-          {!isList && (
+              </div>
+            ) : (
+              <div
+                className={
+                  this.state.showMenuLegacy
+                    ? ' object-sidebar__section-title'
+                    : 'object-sidebar__section-title paddingBottom'
+                }
+              >
+                <button
+                  className="object-sidebar__menu-button"
+                  onClick={() => this.setState({ showMenuLegacy: !this.state.showMenuLegacy })}
+                >
+                  <FormattedMessage id="menu_legacy" defaultMessage="Menu (Legacy)" />
+                  {this.state.showMenuLegacy ? (
+                    <Icon type="up" className="CompanyId__icon object-sidebar__section-title" />
+                  ) : (
+                    <Icon type="down" className="CompanyId__icon object-sidebar__section-title" />
+                  )}
+                </button>
+              </div>
+            ))}
+          {!isList && this.state.showMenuLegacy && (
             <div className="object-sidebar__menu-items">
               <React.Fragment>
                 {this.listItem(
