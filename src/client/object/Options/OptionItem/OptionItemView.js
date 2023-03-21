@@ -29,11 +29,6 @@ const OptionItemView = ({ option, wobject, setHoveredOption, optionsNumber, opti
       .filter(opt => opt.body.category !== el.body.category)
       .some(o => optionsBack[o.body.value].includes(el.author_permlink));
 
-  const getOwnAvailableOption = el =>
-    Object.values(activeStoreOption)
-      .filter(opt => opt.body.category !== el.body.category)
-      .some(() => wobject.author_permlink === el.author_permlink);
-
   const getOptionsPicturesClassName = el =>
     classNames({
       'Options__pictures--black': getAvailableOption(el),
@@ -41,7 +36,7 @@ const OptionItemView = ({ option, wobject, setHoveredOption, optionsNumber, opti
       'Options__my-pictures': el.author_permlink === wobject.author_permlink,
       'Options__my-pictures--selected':
         el.body?.image === activeStoreOption[el.body.category]?.body?.image ||
-        getOwnAvailableOption(el),
+        wobject.author_permlink === el.author_permlink,
     });
 
   const getOptionsClassName = el =>
@@ -51,7 +46,7 @@ const OptionItemView = ({ option, wobject, setHoveredOption, optionsNumber, opti
       'Options__my-option-button': el.author_permlink === wobject.author_permlink,
       'Options__my-option-button--selected':
         activeStoreOption[el.body.category]?.body?.value === el.body?.value ||
-        getOwnAvailableOption(el),
+        wobject.author_permlink === el.author_permlink,
     });
 
   const onMouseOver = (e, el) => {
