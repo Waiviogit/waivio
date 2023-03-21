@@ -24,32 +24,34 @@ const OptionItemView = ({ option, wobject, setHoveredOption, optionsNumber, opti
   const history = useHistory();
   const dispatch = useDispatch();
 
-  const func = el =>
+  const getAvailableOption = el =>
     Object.values(activeStoreOption)
       .filter(opt => opt.body.category !== el.body.category)
       .some(o => optionsBack[o.body.value].includes(el.author_permlink));
 
-  const myFunc = el =>
+  const getOwnAvailableOption = el =>
     Object.values(activeStoreOption)
       .filter(opt => opt.body.category !== el.body.category)
       .some(() => wobject.author_permlink === el.author_permlink);
 
   const getOptionsPicturesClassName = el =>
     classNames({
-      'Options__pictures--black': func(el),
+      'Options__pictures--black': getAvailableOption(el),
       Options__pictures: el.author_permlink !== wobject.author_permlink,
       'Options__my-pictures': el.author_permlink === wobject.author_permlink,
       'Options__my-pictures--selected':
-        el.body?.image === activeStoreOption[el.body.category]?.body?.image || myFunc(el),
+        el.body?.image === activeStoreOption[el.body.category]?.body?.image ||
+        getOwnAvailableOption(el),
     });
 
   const getOptionsClassName = el =>
     classNames({
-      'Options__option-button--black': func(el),
+      'Options__option-button--black': getAvailableOption(el),
       'Options__option-button': el.author_permlink !== wobject.author_permlink,
       'Options__my-option-button': el.author_permlink === wobject.author_permlink,
       'Options__my-option-button--selected':
-        activeStoreOption[el.body.category]?.body?.value === el.body?.value || myFunc(el),
+        activeStoreOption[el.body.category]?.body?.value === el.body?.value ||
+        getOwnAvailableOption(el),
     });
 
   const onMouseOver = (e, el) => {
