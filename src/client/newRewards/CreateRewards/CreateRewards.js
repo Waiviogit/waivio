@@ -169,8 +169,10 @@ class CreateRewards extends React.Component {
       const primaryObject = combinedObjects.wobjects.find(
         wobj => wobj.author_permlink === campaign.requiredObject,
       );
-      const secondaryObjects = combinedObjects.wobjects.filter(wobj =>
-        includes(campaign.objects, wobj.author_permlink),
+      const secondaryObjects = combinedObjects.wobjects.filter(
+        wobj =>
+          includes(campaign.objects, wobj.author_permlink) &&
+          wobj.author_permlink !== primaryObject.author_permlink,
       );
       const agreementObjects = combinedObjects.wobjects.filter(wobj =>
         campaign.agreementObjects.some(agreementObject => agreementObject === wobj.author_permlink),
