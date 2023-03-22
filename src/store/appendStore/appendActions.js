@@ -106,7 +106,7 @@ export const getChangedWobjectField = (
   const blockNumber = await getLastBlockNum();
   const timeoutId = setTimeout(() => {
     if (isNew) dispatch(getUpdates(authorPermlink, type || fieldName, 'createdAt', locale));
-  }, 6000);
+  }, 8000);
 
   if (!blockNumber) throw new Error('Something went wrong');
   busyAPI.instance.sendAsync(subscribeMethod, [voter, blockNumber, subscribeTypes.votes]);
