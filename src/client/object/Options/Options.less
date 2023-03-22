@@ -15,16 +15,18 @@
   &__my-pictures {
     width: 50px;
     height: 50px;
-    border: 1px solid @silver-gray;
+    border: 1px solid @black-text-basic;
     border-radius: 4px;
     margin-left: 4px;
     margin-bottom: 4px;
     object-fit: contain;
-
-    &-selected {
+    &--black {
+      border: 1px solid @black-text-basic;
+    }
+    &--selected {
       width: 50px;
       height: 50px;
-      border: 1px solid @orange-hot;
+      border: 1px solid @orange-hot !important;
       border-radius: 4px;
       margin-left: 4px;
       margin-bottom: 4px;
@@ -43,6 +45,9 @@
     margin-left: 4px;
     margin-bottom: 4px;
     object-fit: contain;
+    &--black {
+      border: 1px solid @black-text-basic;
+    }
 
     &-selected {
       width: 50px;
@@ -60,7 +65,7 @@
   }
   &__my-option-button {
     background: none;
-    border: 1px solid @white-gainsboro;
+    border: 1px solid @black-text-basic;
     min-width: 85px;
     height: 25px;
     border-radius: 4px;
@@ -71,8 +76,8 @@
     text-overflow: ellipsis;
     white-space: nowrap;
 
-    &-selected {
-      border: 1px solid @orange-hot;
+    &--selected {
+      border: 1px solid @orange-hot !important;
     }
 
     &:hover {
@@ -96,6 +101,10 @@
     white-space: nowrap;
     &-selected {
       border: 1px solid @orange-hot;
+    }
+    &--black {
+      border: 1px solid @black-text-basic;
+      color: @black-text-basic;
     }
     &:hover {
       cursor: pointer;

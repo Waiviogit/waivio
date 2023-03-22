@@ -280,7 +280,10 @@ export const getNewDetailsBody = async (propos, parentObj) => {
 <p>Only users who meet all eligibility criteria can participate in this rewards campaign.</p>
 <ul><li>Minimum Waivio expertise: ${proposition?.userRequirements?.minExpertise};</li><li>Minimum number of followers: ${proposition.userRequirements.minFollowers};</li><li>Minimum number of posts: ${proposition.userRequirements.minPosts};</li></ul>`;
   const blacklist = `<ul><li>User account is not blacklisted by <a href='/@${proposition?.guideName}'>${proposition?.guideName}</a> or referenced accounts.</li></ul>`;
-  const linkToFollowingObjects = `<li>Link to <a href="${proposition.object.defaultShowLink}">${proposedWobjName}</a>;</li>`;
+  const linkToFollowingObjects =
+    proposition.object.author_permlink !== parent.author_permlink
+      ? `<li>Link to <a href="${proposition.object.defaultShowLink}">${proposedWobjName}</a>;</li>`
+      : '';
   const proposedWobj = proposedWobjName
     ? `of <a href='${proposition.object.defaultShowLink}'>${proposedWobjName}</a>`
     : '';

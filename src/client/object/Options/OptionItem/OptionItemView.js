@@ -16,7 +16,7 @@ import LinkButton from '../../../components/LinkButton/LinkButton';
 
 const optionsLimit = 15;
 
-const OptionItemView = ({ option, wobject, setHoveredOption, optionsNumber }) => {
+const OptionItemView = ({ option, wobject, setHoveredOption, optionsNumber, optionsBack }) => {
   const [hovered, setHovered] = useState({});
   const locale = useSelector(getLocale);
   const userName = useSelector(getAuthenticatedUserName);
@@ -24,20 +24,29 @@ const OptionItemView = ({ option, wobject, setHoveredOption, optionsNumber }) =>
   const history = useHistory();
   const dispatch = useDispatch();
 
+  const getAvailableOption = el =>
+    Object.values(activeStoreOption)
+      .filter(opt => opt.body.category !== el.body.category)
+      .some(o => optionsBack[o.body.value]?.includes(el.author_permlink));
+
   const getOptionsPicturesClassName = el =>
     classNames({
+      'Options__pictures--black': getAvailableOption(el),
       Options__pictures: el.author_permlink !== wobject.author_permlink,
       'Options__my-pictures': el.author_permlink === wobject.author_permlink,
-      'Options__my-pictures-selected':
-        el.body?.image === activeStoreOption[el.body.category]?.body?.image,
+      'Options__my-pictures--selected':
+        el.body?.image === activeStoreOption[el.body.category]?.body?.image ||
+        wobject.author_permlink === el.author_permlink,
     });
 
   const getOptionsClassName = el =>
     classNames({
+      'Options__option-button--black': getAvailableOption(el),
       'Options__option-button': el.author_permlink !== wobject.author_permlink,
       'Options__my-option-button': el.author_permlink === wobject.author_permlink,
-      'Options__my-option-button-selected':
-        activeStoreOption[el.body.category]?.body?.value === el.body?.value,
+      'Options__my-option-button--selected':
+        activeStoreOption[el.body.category]?.body?.value === el.body?.value ||
+        wobject.author_permlink === el.author_permlink,
     });
 
   const onMouseOver = (e, el) => {
@@ -51,13 +60,13 @@ const OptionItemView = ({ option, wobject, setHoveredOption, optionsNumber }) =>
   const onOptionButtonClick = (e, el) => {
     dispatch(setStoreActiveCategory(el.body.category));
     setHoveredOption(el);
-    dispatch(setStoreActiveOption({ ...activeStoreOption, [el.body.category]: el }));
+    dispatch(setStoreActiveOption({ [el.body.category]: el }));
     if (el.author_permlink !== wobject.author_permlink) {
       getObject(el.author_permlink, userName, locale).then(obj =>
         history.push(obj.defaultShowLink),
       );
       dispatch(setStoreActiveCategory(el.body.category));
-      dispatch(setStoreActiveOption({ ...activeStoreOption, [el.body.category]: el }));
+      dispatch(setStoreActiveOption({ [el.body.category]: el }));
     }
   };
 
@@ -115,6 +124,7 @@ const OptionItemView = ({ option, wobject, setHoveredOption, optionsNumber }) =>
 
 OptionItemView.propTypes = {
   wobject: PropTypes.shape().isRequired,
+  optionsBack: PropTypes.shape(),
   option: PropTypes.arrayOf().isRequired,
   setHoveredOption: PropTypes.func.isRequired,
   optionsNumber: PropTypes.number.isRequired,

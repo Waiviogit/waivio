@@ -31,22 +31,11 @@ import {
   getWobjectNested,
 } from '../../../store/wObjectStore/wObjectSelectors';
 import { getLocale } from '../../../store/settingsStore/settingsSelectors';
-import { getIsAppendLoading } from '../../../store/appendStore/appendSelectors';
 
 import './ObjectOfTypePage.less';
 
 const ObjectOfTypePage = props => {
-  const {
-    intl,
-    form,
-    isEditMode,
-    isAppending,
-    locale,
-    wobject,
-    followingList,
-    isLoadingFlag,
-    userName,
-  } = props;
+  const { intl, form, isEditMode, locale, wobject, followingList, isLoadingFlag, userName } = props;
   const [content, setContent] = useState('');
   const [contentForPublish, setCurrentContent] = useState('');
   const [isReadyToPublish, setIsReadyToPublish] = useState(false);
@@ -58,18 +47,24 @@ const ObjectOfTypePage = props => {
   const currObj = isEmpty(props.nestedWobject) ? wobject : props.nestedWobject;
 
   useEffect(() => {
+    if (!isEditMode) {
+      setCurrentContent(currObj.pageContent || '');
+      setContent(currObj.pageContent || '');
+      setEditorInitialized(false);
+
+      return;
+    }
+
     if (draft) {
       setNotification(true);
     }
-  }, [draft]);
+  }, [isEditMode, draft]);
 
   useEffect(() => {
     if (!wobject.author_permlink) return;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
     if (userName && currObj.object_type === 'page') {
-      getDraftPage(
-        userName,
-        props.nestedWobject.author_permlink || props.wobject.author_permlink,
-      ).then(res => {
+      getDraftPage(userName, currObj.author_permlink).then(res => {
         if (res.message || !res.body) {
           setEditorInitialized(true);
 
@@ -78,7 +73,11 @@ const ObjectOfTypePage = props => {
         setDraft(res.body);
         setEditorInitialized(false);
       });
-    } else setEditorInitialized(true);
+    } else {
+      setEditorInitialized(true);
+      setNotification(false);
+      setDraft(null);
+    }
   }, [wobject.author_permlink, props.nestedWobject.author_permlink]);
 
   useEffect(() => {
@@ -92,14 +91,14 @@ const ObjectOfTypePage = props => {
         const pathUrl = getLastPermlinksFromHash(hash);
 
         getObject(pathUrl, userName, locale).then(wObject => {
-          setCurrentContent(wObject.pageContent);
-          setContent(wObject.pageContent);
+          setCurrentContent(wObject.pageContent || '');
+          setContent(wObject.pageContent || '');
           setNestedWobj(wObject);
           setIsLoading(false);
         });
       } else {
-        setCurrentContent(wobject.pageContent);
-        setContent(wobject.pageContent);
+        setCurrentContent(wobject.pageContent || '');
+        setContent(wobject.pageContent || '');
         setIsLoading(false);
       }
     }
@@ -218,7 +217,6 @@ const ObjectOfTypePage = props => {
                       <div>Preview</div>
                       <IconButton
                         className="object-page-preview__close-btn"
-                        disabled={isAppending}
                         icon={<Icon type="close" />}
                         onClick={handleReadyPublishClick}
                       />
@@ -240,7 +238,6 @@ const ObjectOfTypePage = props => {
                           <Button
                             htmlType="submit"
                             disabled={form.getFieldError('like')}
-                            loading={isAppending}
                             onClick={handleSubmit}
                             size="large"
                           >
@@ -253,8 +250,8 @@ const ObjectOfTypePage = props => {
                 ) : (
                   <div className="object-of-type-page__editor-wrapper">
                     <Editor
-                      enabled={!isAppending}
                       withTitle={false}
+                      enabled
                       initialContent={{ body: contentForPublish }}
                       locale={editorLocale}
                       onChange={handleChangeContent}
@@ -286,6 +283,7 @@ const ObjectOfTypePage = props => {
         title="Page draft"
         onOk={() => {
           setCurrentContent(draft);
+          setContent(draft);
           setNotification(false);
           setEditorInitialized(true);
         }}
@@ -310,7 +308,6 @@ ObjectOfTypePage.propTypes = {
   /* connect */
   locale: PropTypes.string,
   location: PropTypes.string,
-  isAppending: PropTypes.bool,
   isLoadingFlag: PropTypes.bool,
   appendPageContent: PropTypes.func.isRequired,
   setNestedWobj: PropTypes.func.isRequired,
@@ -329,7 +326,6 @@ ObjectOfTypePage.defaultProps = {
   wobject: {},
   nestedWobject: {},
   location: '',
-  isAppending: false,
   isLoadingFlag: false,
   locale: 'en-US',
   followingList: [],
@@ -338,7 +334,6 @@ ObjectOfTypePage.defaultProps = {
 
 const mapStateToProps = state => ({
   locale: getLocale(state),
-  isAppending: getIsAppendLoading(state),
   followingList: getFollowingObjectsList(state),
   isLoadingFlag: getLoadingFlag(state),
   nestedWobject: getWobjectNested(state),

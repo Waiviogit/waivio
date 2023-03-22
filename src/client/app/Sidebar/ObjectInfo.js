@@ -78,7 +78,6 @@ class ObjectInfo extends React.Component {
     location: PropTypes.shape(),
     activeOption: PropTypes.shape(),
     activeCategory: PropTypes.string,
-    storeGroupId: PropTypes.string,
     wobject: PropTypes.shape().isRequired,
     match: PropTypes.shape().isRequired,
     userName: PropTypes.string.isRequired,
@@ -91,9 +90,9 @@ class ObjectInfo extends React.Component {
     relatedAlbum: PropTypes.shape().isRequired,
     getRelatedAlbum: PropTypes.func.isRequired,
     setStoreGroupId: PropTypes.func.isRequired,
-    setStoreActiveOption: PropTypes.func.isRequired,
     locale: PropTypes.func.isRequired,
     children: PropTypes.node.isRequired,
+    setStoreActiveOption: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -125,18 +124,14 @@ class ObjectInfo extends React.Component {
   };
 
   componentDidMount() {
-    const { wobject, storeGroupId } = this.props;
+    const { wobject } = this.props;
 
     this.getPublisherManufacturerBrandMerchantObjects();
 
     this.props.getRelatedAlbum(this.props.match.params.name, 10);
-    const hasGroupId = Object.prototype.hasOwnProperty.call(wobject, 'groupId');
 
     if (wobject.groupId) {
       this.props.setStoreGroupId(wobject.groupId);
-    }
-    if (storeGroupId !== wobject.groupId || !hasGroupId) {
-      this.props.setStoreActiveOption({});
     }
   }
   componentDidUpdate(prevProps) {
@@ -147,6 +142,7 @@ class ObjectInfo extends React.Component {
       manufacturer,
       brand,
       merchant,
+      groupId,
     } = this.props.wobject;
 
     if (
@@ -159,10 +155,9 @@ class ObjectInfo extends React.Component {
     ) {
       this.getPublisherManufacturerBrandMerchantObjects();
     }
-  }
-
-  componentWillUnmount() {
-    this.props.setStoreActiveOption({});
+    if (groupId !== prevProps.wobject.groupId) {
+      this.props.setStoreActiveOption({});
+    }
   }
 
   incrementPhoneCount = 3;
@@ -432,7 +427,6 @@ class ObjectInfo extends React.Component {
       getObject(pic.parentPermlink, this.props.userName, this.props.locale).then(obj =>
         this.props.history.push(obj.defaultShowLink),
       );
-      this.props.setStoreActiveOption({});
     }
   };
 

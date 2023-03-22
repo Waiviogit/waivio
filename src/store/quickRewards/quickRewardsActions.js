@@ -140,14 +140,20 @@ export const createQuickPost = (userBody, topics, images, reservationPermlink) =
   const isReview = Boolean(dish.propositions || dish.reward);
   const campaignId = isReview ? get(dish, 'propositions[0]._id') : null;
   const imagesLink = images.map(img => `\n<center>![image]( ${img.src})</center>`).join('');
+  const withDish = dish.author_permlink !== restaurant.author_permlink;
   const topicsLink = topics
     .map(tag => `\n[#${tag}](https://www.waivio.com/object/${tag})`)
     .join('');
-  const title = `Review: ${getObjectName(restaurant)}, ${getObjectName(dish)}`;
-  let body = `\n[${getObjectName(restaurant)}](${host}/object/${restaurant.author_permlink}),
-    \n[${getObjectName(dish)}](${host}/object/${
-    dish.author_permlink
-  }) ${imagesLink} ${userBody} ${topicsLink}`;
+  const title = withDish
+    ? `Review: ${getObjectName(restaurant)}, ${getObjectName(dish)}`
+    : `Review: ${getObjectName(restaurant)}`;
+  let body = `\n[${getObjectName(restaurant)}](${host}/object/${restaurant.author_permlink})`;
+
+  if (withDish) {
+    body += `\n[${getObjectName(dish)}](${host}/object/${dish.author_permlink})\n`;
+  }
+
+  body += `${imagesLink} ${userBody} ${topicsLink}`;
 
   if (isReview) {
     const guideName = dish?.guideName || dish?.propositions?.[0]?.guideName;

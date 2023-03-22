@@ -170,16 +170,24 @@ const PaymentTableRow = ({ intl, sponsor, isReports, reservationPermlink }) => {
                 >
                   {prymaryObjectName}
                 </Link>
-                ,{' '}
-                <Link
-                  to={
-                    sponsor?.reviewObject
-                      ? sponsor?.reviewObject?.defaultShowLink
-                      : `/object/${get(sponsor, ['details', 'review_object', 'author_permlink'])}`
-                  }
-                >
-                  {reviewObjectName}
-                </Link>
+                {sponsor?.mainObject.defaultShowLink !== sponsor?.reviewObject.defaultShowLink && (
+                  <React.Fragment>
+                    ,{' '}
+                    <Link
+                      to={
+                        sponsor?.reviewObject
+                          ? sponsor?.reviewObject?.defaultShowLink
+                          : `/object/${get(sponsor, [
+                              'details',
+                              'review_object',
+                              'author_permlink',
+                            ])}`
+                      }
+                    >
+                      {reviewObjectName}
+                    </Link>
+                  </React.Fragment>
+                )}
               </div>
               <div>
                 {intl.formatMessage({
