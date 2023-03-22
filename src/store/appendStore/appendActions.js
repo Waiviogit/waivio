@@ -267,7 +267,7 @@ export const appendObject = (postData, { follow, isLike, votePercent, isObjectPa
     type: APPEND_WAIVIO_OBJECT.START,
   });
 
-  return postAppendWaivioObject(postData)
+  return postAppendWaivioObject({ ...postData, votePower: undefined })
     .then(async res => {
       const blockNumber = await getLastBlockNum();
       const voter = getAuthenticatedUserName(getState());

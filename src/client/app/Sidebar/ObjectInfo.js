@@ -92,6 +92,7 @@ class ObjectInfo extends React.Component {
     setStoreGroupId: PropTypes.func.isRequired,
     locale: PropTypes.func.isRequired,
     children: PropTypes.node.isRequired,
+    setStoreActiveOption: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -141,6 +142,7 @@ class ObjectInfo extends React.Component {
       manufacturer,
       brand,
       merchant,
+      groupId,
     } = this.props.wobject;
 
     if (
@@ -152,6 +154,9 @@ class ObjectInfo extends React.Component {
       merchant !== prevProps.wobject.merchant
     ) {
       this.getPublisherManufacturerBrandMerchantObjects();
+    }
+    if (groupId !== prevProps.wobject.groupId) {
+      this.props.setStoreActiveOption({});
     }
   }
 

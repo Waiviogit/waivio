@@ -10,7 +10,6 @@ import { createPostMetadata } from '../../common/helpers/postHelpers';
 import { createAsyncActionType, getPostKey } from '../../common/helpers/stateHelpers';
 import { findRoot } from '../../common/helpers/commentHelpers';
 import * as ApiClient from '../../waivioApi/ApiClient';
-import { sendCommentAppend } from '../wObjectStore/wobjActions';
 import { subscribeMethod, subscribeTypes } from '../../common/constants/blockTypes';
 import {
   getAuthenticatedUserName,
@@ -233,14 +232,15 @@ export const sendComment = (parentPost, newBody, isUpdating = false, originalCom
           !isUpdating,
         ),
       );
+
       if (parentPost.name) {
-        dispatch(sendCommentAppend(parentPost.permlink));
         dispatch(updateCounter(parentPost));
+      } else {
+        setTimeout(
+          () => dispatch(getSingleComment(parentPost.author, parentPost.permlink, !isUpdating)),
+          auth.isGuestUser ? 6000 : 2000,
+        );
       }
-      setTimeout(
-        () => dispatch(getSingleComment(parentPost.author, parentPost.permlink, !isUpdating)),
-        auth.isGuestUser ? 6000 : 2000,
-      );
 
       if (window.gtag) window.gtag('event', 'publish_comment');
     })

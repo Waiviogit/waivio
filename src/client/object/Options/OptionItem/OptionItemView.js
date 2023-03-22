@@ -27,7 +27,7 @@ const OptionItemView = ({ option, wobject, setHoveredOption, optionsNumber, opti
   const getAvailableOption = el =>
     Object.values(activeStoreOption)
       .filter(opt => opt.body.category !== el.body.category)
-      .some(o => optionsBack[o.body.value].includes(el.author_permlink));
+      .some(o => optionsBack[o.body.value]?.includes(el.author_permlink));
 
   const getOptionsPicturesClassName = el =>
     classNames({
