@@ -94,7 +94,7 @@ Proposition.propTypes = {
   handleSelectField: PropTypes.func,
   selectedField: PropTypes.string,
   linkTo: PropTypes.string,
-  albums: PropTypes.shape(),
+  albums: PropTypes.arrayOf(PropTypes.shape()),
   appendAlbum: PropTypes.func,
 };
 

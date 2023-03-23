@@ -78,6 +78,7 @@ export const configProductTable = [
       defaultMessage: 'Actions',
     },
     type: 'delete',
+    name: 'stop',
   },
 ];
 export const configHistoryTable = [

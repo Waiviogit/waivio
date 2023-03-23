@@ -458,7 +458,7 @@ class ObjectInfo extends React.Component {
     const email = get(wobject, 'email');
     const workTime = get(wobject, 'workTime');
     const linkField = parseWobjectField(wobject, 'link');
-    const customSort = get(wobject, 'sortCustom', []);
+    const customSort = get(wobject, 'sortCustom.include', []);
     const companyIdBody = wobject.companyId
       ? wobject.companyId.map(el => parseWobjectField(el, 'body', []))
       : [];
