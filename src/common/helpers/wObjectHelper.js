@@ -270,9 +270,21 @@ export const getMenuItems = (wobject, menuType, objType) => {
 };
 
 export const getSortList = (sortedList, itemsList) => {
-  const withoutSorting = itemsList.filter(list => !sortedList.includes(list.author_permlink));
-  const customSort = itemsList.reduce((acc, item) => {
-    if (sortedList.includes(item.author_permlink)) {
+  let customSortInfo = sortedList;
+
+  if (Array.isArray(sortedList)) {
+    customSortInfo = {
+      exclude: [],
+      include: sortedList,
+    };
+  }
+
+  const filtered = itemsList.filter(list => !customSortInfo.exclude.includes(list.author_permlink));
+  const withoutSorting = filtered.filter(
+    list => !customSortInfo.include.includes(list.author_permlink),
+  );
+  const customSort = filtered.reduce((acc, item) => {
+    if (customSortInfo.include.includes(item.author_permlink)) {
       return [...acc, item];
     }
 
