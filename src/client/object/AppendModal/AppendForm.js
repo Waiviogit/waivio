@@ -11,7 +11,6 @@ import {
   map,
   omitBy,
   size,
-  uniqBy,
   debounce,
 } from 'lodash';
 import uuidv4 from 'uuid/v4';
@@ -81,11 +80,12 @@ import {
   getNewsFilterItems,
   getNewsFeedItems,
   sortAlphabetically,
+  getSortItemListForModal,
 } from '../../../common/helpers/wObjectHelper';
 import { appendObject } from '../../../store/appendStore/appendActions';
 import withEditor from '../../components/Editor/withEditor';
 import { getVoteValue } from '../../../common/helpers/user';
-import { getExposedFieldsByObjType, sortListItemsBy } from '../wObjectHelper';
+import { getExposedFieldsByObjType } from '../wObjectHelper';
 import { rateObject } from '../../../store/wObjectStore/wobjActions';
 import SortingList from '../../components/DnDList/DnDList';
 import SearchObjectsAutocomplete from '../../components/EditorObject/SearchObjectsAutocomplete';
@@ -249,38 +249,32 @@ export default class AppendForm extends Component {
     const { currentAlbum } = this.state;
     const { albums, wObject } = this.props;
 
-    if (this.props.sliderMode) {
-      if (!this.state.sliderVisible) {
-        // eslint-disable-next-line react/no-did-mount-set-state
-        this.setState(prevState => ({ sliderVisible: !prevState.sliderVisible }));
-      }
+    if (this.props.sliderMode && !this.state.sliderVisible) {
+      // eslint-disable-next-line react/no-did-mount-set-state
+      this.setState(prevState => ({ sliderVisible: !prevState.sliderVisible }));
     }
+
     if (isEmpty(currentAlbum)) {
       const defaultAlbum = getDefaultAlbum(albums);
-
       // eslint-disable-next-line react/no-did-mount-set-state
       this.setState({ currentAlbum: defaultAlbum.id });
     }
-    if (getObjectType(wObject) === OBJECT_TYPE.LIST) {
-      const sortCustom = get(wObject, 'sortCustom.include', []);
 
+    if (getObjectType(wObject) === OBJECT_TYPE.LIST) {
+      const sortCustom = get(wObject, 'sortCustom', []);
       // eslint-disable-next-line react/no-did-mount-set-state
       this.setState({ loading: true });
-      const defaultSortBy = obj => (isEmpty(obj.sortCustom) ? 'recency' : 'custom');
       const listItems = getListItems(wObject).map(item => ({
         ...item,
         id: item.body || item.author_permlink,
-        checkedItemInList: !isEmpty(sortCustom.include)
-          ? sortCustom.include.includes(item.author_permlink)
-          : true,
+        checkedItemInList: !(
+          !isEmpty(sortCustom.exclude) && sortCustom.exclude.includes(item.author_permlink)
+        ),
       }));
-      let sortedListItems = sortListItemsBy(listItems, defaultSortBy(wObject), sortCustom, true);
-      const sorting = listItems.filter(item => !sortCustom.includes(item.author_permlink));
 
-      sortedListItems = uniqBy([...sortedListItems, ...sorting], '_id');
       // eslint-disable-next-line react/no-did-mount-set-state
       this.setState({
-        itemsInSortingList: sortedListItems,
+        itemsInSortingList: getSortItemListForModal(sortCustom, listItems),
         loading: false,
       });
     }
