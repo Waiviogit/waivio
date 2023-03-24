@@ -285,7 +285,9 @@ export const getSortList = (sortedList = {}, itemsList) => {
   return [...customSort, ...withoutSorting];
 };
 
-export const getSortItemListForModal = (sortedList = {}, itemsList) => {
+export const getSortItemListForModal = (sortedList, itemsList) => {
+  if (isEmpty(sortedList)) return itemsList;
+
   const exclude = itemsList.filter(list => sortedList?.exclude.includes(list.author_permlink));
   const withoutSorting = itemsList.filter(
     list =>

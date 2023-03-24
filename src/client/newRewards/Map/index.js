@@ -1,4 +1,4 @@
-import { Map } from 'pigeon-maps';
+import { Map, ZoomControl } from 'pigeon-maps';
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { Icon, Modal } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
@@ -32,7 +32,6 @@ const RewardsMap = ({ getPoints, defaultCenter, parent, visible, onClose, intl }
   const mapRef = useRef();
   const [fullScreen, setFullScreen] = useState(false);
   const [center, setCenter] = useState();
-  const [zoom, setZoom] = useState(3);
   const [points, setPoints] = useState([]);
   const [infoboxData, setInfoboxData] = useState(null);
   const [boundsParams, setBoundsParams] = useState({
@@ -48,8 +47,8 @@ const RewardsMap = ({ getPoints, defaultCenter, parent, visible, onClose, intl }
       query.delete('radius');
     } else {
       query.set('area', mapRef.current._lastCenter);
-      query.set('zoom', zoom);
-      query.set('radius', getRadius(zoom));
+      query.set('zoom', mapRef.current._lastZoom);
+      query.set('radius', getRadius(mapRef.current._lastZoom));
     }
 
     history.push(`?${query.toString()}`);
@@ -117,9 +116,8 @@ const RewardsMap = ({ getPoints, defaultCenter, parent, visible, onClose, intl }
     [setBoundsParams, boundsParams],
   );
 
-  const onBoundsChanged = ({ bounds, center: boundsCenter, zoom: boundsZoom }) => {
+  const onBoundsChanged = ({ bounds, center: boundsCenter }) => {
     setCenter(boundsCenter);
-    setZoom(boundsZoom);
     handleOnBoundsChanged(bounds);
   };
 
@@ -151,7 +149,7 @@ const RewardsMap = ({ getPoints, defaultCenter, parent, visible, onClose, intl }
         center={center}
         height={height}
         width={width}
-        zoom={zoom}
+        defaultZoom={3}
         provider={mapProvider}
         onClick={({ event }) => {
           if (event.target.classList.value === 'overlay') {
@@ -197,10 +195,15 @@ const RewardsMap = ({ getPoints, defaultCenter, parent, visible, onClose, intl }
             <span className={'overlay'}>{getObjectName(infoboxData.wobject)}</span>
           </Overlay>
         )}
+        <ZoomControl
+          style={{
+            right: '10px',
+            left: 'auto',
+          }}
+        />
         <MapControllers
           className={'WebsiteBodyControl'}
-          decrementZoom={() => setZoom(zoom + 1)}
-          incrementZoom={() => setZoom(zoom - 1)}
+          withoutZoom
           successCallback={geo => {
             setCenter([geo.coords.latitude, geo.coords.longitude]);
           }}
