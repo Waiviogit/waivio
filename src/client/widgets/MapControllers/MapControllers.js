@@ -9,22 +9,24 @@ const MapControllers = React.memo(props => {
 
   return (
     <div className={props.className}>
-      <div className={`${props.className}__zoom`}>
-        <div
-          role="presentation"
-          className="MapConfigurationControl__zoom__button"
-          onClick={props.incrementZoom}
-        >
-          +
+      {!props.withoutZoom && (
+        <div className={`${props.className}__zoom`}>
+          <div
+            role="presentation"
+            className="MapConfigurationControl__zoom__button"
+            onClick={props.incrementZoom}
+          >
+            +
+          </div>
+          <div
+            role="presentation"
+            className="MapConfigurationControl__zoom__button"
+            onClick={props.decrementZoom}
+          >
+            -
+          </div>
         </div>
-        <div
-          role="presentation"
-          className="MapConfigurationControl__zoom__button"
-          onClick={props.decrementZoom}
-        >
-          -
-        </div>
-      </div>
+      )}
       <div className={'MapConfigurationControl__gps'}>
         <div
           role="presentation"
@@ -46,12 +48,14 @@ MapControllers.propTypes = {
   incrementZoom: PropTypes.func.isRequired,
   decrementZoom: PropTypes.func.isRequired,
   className: PropTypes.string,
+  withoutZoom: PropTypes.bool,
   successCallback: PropTypes.func.isRequired,
   rejectCallback: PropTypes.func.isRequired,
 };
 
 MapControllers.defaultProps = {
   className: 'MapConfigurationControl',
+  withoutZoom: false,
 };
 
 export default MapControllers;
