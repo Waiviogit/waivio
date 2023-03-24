@@ -262,7 +262,7 @@ export default class AppendForm extends Component {
       this.setState({ currentAlbum: defaultAlbum.id });
     }
     if (getObjectType(wObject) === OBJECT_TYPE.LIST) {
-      const sortCustom = get(wObject, 'sortCustom', []);
+      const sortCustom = get(wObject, 'sortCustom.include', []);
 
       // eslint-disable-next-line react/no-did-mount-set-state
       this.setState({ loading: true });
@@ -270,7 +270,9 @@ export default class AppendForm extends Component {
       const listItems = getListItems(wObject).map(item => ({
         ...item,
         id: item.body || item.author_permlink,
-        checkedItemInList: !isEmpty(sortCustom) ? sortCustom.includes(item.author_permlink) : true,
+        checkedItemInList: !isEmpty(sortCustom.include)
+          ? sortCustom.include.includes(item.author_permlink)
+          : true,
       }));
       let sortedListItems = sortListItemsBy(listItems, defaultSortBy(wObject), sortCustom, true);
       const sorting = listItems.filter(item => !sortCustom.includes(item.author_permlink));
@@ -436,7 +438,7 @@ export default class AppendForm extends Component {
         break;
       }
       case objectFields.sorting: {
-        const sortingData = JSON.stringify(rest[objectFields.sorting].split(','));
+        const sortingData = JSON.stringify(rest[objectFields.sorting]);
 
         fieldBody.push(sortingData);
         break;
@@ -1550,7 +1552,11 @@ export default class AppendForm extends Component {
   };
 
   handleChangeSorting = sortedList => {
-    this.props.form.setFieldsValue({ [objectFields.sorting]: sortedList.join(',') });
+    this.props.form.setFieldsValue({
+      [objectFields.sorting]: {
+        ...sortedList,
+      },
+    });
   };
 
   onLoadingImage = value => this.setState({ isLoadingImage: value });
@@ -3155,6 +3161,7 @@ export default class AppendForm extends Component {
         const wobjType = getObjectType(wObject);
         const newsFilters = getNewsFilterItems(wObject);
         const newsFeed = getNewsFeedItems(wObject);
+
         let listItems =
           [...menuLinks, ...menuPages].map(item => ({
             id: item.body || item.author_permlink,
@@ -3224,23 +3231,19 @@ export default class AppendForm extends Component {
           <React.Fragment>
             <Form.Item>
               {getFieldDecorator(objectFields.sorting, {
-                initialValue: listItems.map(item => item.id).join(','),
+                initialValue: {
+                  exclude: [],
+                  include: listItems.map(item => item.id),
+                },
               })(
-                <Select
-                  className="AppendForm__hidden"
-                  mode="tags"
-                  disabled={loading}
-                  dropdownStyle={{ display: 'none' }}
-                  tokenSeparators={[' ', ',']}
+                <SortingList
+                  listItems={listItems}
+                  accentColor={PRIMARY_COLOR}
+                  onChange={this.handleChangeSorting}
+                  wobjType={wobjType}
                 />,
               )}
             </Form.Item>
-            <SortingList
-              listItems={listItems}
-              accentColor={PRIMARY_COLOR}
-              onChange={this.handleChangeSorting}
-              wobjType={wobjType}
-            />
           </React.Fragment>
         );
       }

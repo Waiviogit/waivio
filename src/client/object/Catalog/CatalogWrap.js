@@ -9,7 +9,6 @@ import AddItemModal from './AddItemModal/AddItemModal';
 import { getSuitableLanguage } from '../../../store/reducers';
 import {
   getLastPermlinksFromHash,
-  itemsList,
   recencySortOrder,
   getListItem,
   getListItems,
@@ -50,7 +49,6 @@ const CatalogWrap = props => {
 
   useEffect(() => {
     const defaultSortBy = obj => (isEmpty(obj.sortCustom) ? 'rank' : 'custom');
-    const isDefaultCustom = obj => defaultSortBy(obj) === 'custom';
 
     ApiClient.getObjectsRewards(wobject.author_permlink, userName).then(res => {
       setReward(res);
@@ -67,11 +65,9 @@ const CatalogWrap = props => {
             setSortingBy(defaultSortBy(wObject));
             setLists(
               sortListItemsBy(
-                itemsList(get(wObject, 'sortCustom', []), wObject),
+                getListItems(wObject),
                 defaultSortBy(wObject),
-                isDefaultCustom(wObject)
-                  ? wObject.sortCustom
-                  : recencySortOrder(getListItem(wObject)),
+                get(wObject, 'sortCustom', []),
               ),
             );
             setNestedWobj(wObject);
@@ -83,9 +79,9 @@ const CatalogWrap = props => {
         setSortingBy(defaultSortBy(wobject));
         setLists(
           sortListItemsBy(
-            itemsList(get(wobject, 'sortCustom', []), wobject),
+            getListItems(wobject),
             defaultSortBy(wobject),
-            isDefaultCustom(wobject) ? wobject.sortCustom : recencySortOrder(getListItem(wobject)),
+            get(wobject, 'sortCustom', {}),
           ),
         );
         setLoadingNestedWobject(false);
@@ -96,11 +92,9 @@ const CatalogWrap = props => {
     if (!isEmpty(wobjectNested)) {
       setLists(
         sortListItemsBy(
-          itemsList(get(wobjectNested, 'sortCustom', []), wobjectNested),
+          getListItems(wobjectNested),
           defaultSortBy(wobjectNested),
-          isDefaultCustom(wobjectNested)
-            ? wobjectNested.sortCustom
-            : recencySortOrder(getListItem(wobjectNested)),
+          wobjectNested.sortCustom,
         ),
       );
       setRecencySortList(recencySortOrder(getListItem(wobjectNested)));
@@ -108,9 +102,9 @@ const CatalogWrap = props => {
       setSortingBy(defaultSortBy(wobject));
       setLists(
         sortListItemsBy(
-          itemsList(get(wobject, 'sortCustom', []), wobject),
+          getListItems(wobject),
           defaultSortBy(wobject),
-          isDefaultCustom(wobject) ? wobject.sortCustom : recencySortOrder(getListItem(wobject)),
+          get(wobject, 'sortCustom', {}),
         ),
       );
       setLoadingNestedWobject(false);
@@ -132,12 +126,8 @@ const CatalogWrap = props => {
   const obj = isEmpty(wobjectNested) ? wobject : wobjectNested;
 
   const handleSortChange = sortType => {
-    const currentList =
-      sortType === 'custom' ? itemsList(get(obj, 'sortCustom', []), obj) : getListItems(obj);
-    const sortOrder = sortType === 'recency' ? recencySortList : get(obj, 'sortCustom', []);
-
     setSortingBy(sortType);
-    setLists(sortListItemsBy(currentList, sortType, sortOrder));
+    setLists(sortListItemsBy(getListItems(obj), sortType, get(obj, 'sortCustom', [])));
   };
 
   const itemsIdsToOmit = listItems?.map(item => item.author_permlink);
