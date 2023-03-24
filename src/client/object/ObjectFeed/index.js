@@ -47,7 +47,9 @@ const ObjectFeedContainer = ({ history, match, wobject, userName, isPageMode }) 
         wobject.authors.forEach(author => {
           const body = parseJSON(author.body);
 
-          redirectUrl += `&author=${encodeURIComponent(`[${body.name}](${body.authorPermlink})`)}`;
+          redirectUrl += body.authorPermlink
+            ? `&author=${encodeURIComponent(`[${body.name}](${body.authorPermlink})`)}`
+            : `&author=${encodeURIComponent(body.name)}`;
         });
       }
 

@@ -212,9 +212,9 @@ const setTitle = (initObjects, props, authors) => {
 
       authors.forEach((author, i) => {
         const matchesAuthor = author.match(/^\[(.+)\]\((\S+)\)/);
+        const authorName = matchesAuthor ? matchesAuthor[1] : author;
 
-        authorAcc =
-          i === 0 ? `${authorAcc} by ${matchesAuthor[1]}` : `${authorAcc}, ${matchesAuthor[1]}`;
+        authorAcc = i === 0 ? `${authorAcc} by ${authorName}` : `${authorAcc}, ${authorName}`;
       });
 
       return authorAcc;
@@ -249,11 +249,11 @@ const setBody = (initObjects, props, authors) => {
 
     authors.forEach((author, i) => {
       const matchesAuthor = author.match(/^\[(.+)\]\((\S+)\)/);
+      const authorLink = matchesAuthor
+        ? `[${matchesAuthor[1]}](${getObjectUrl(matchesAuthor[2])})`
+        : author;
 
-      authorAcc =
-        i === 0
-          ? `${authorAcc} by [${matchesAuthor[1]}](${getObjectUrl(matchesAuthor[2])})`
-          : `${authorAcc}, [${matchesAuthor[1]}](${getObjectUrl(matchesAuthor[2])})`;
+      authorAcc = i === 0 ? `${authorAcc} by ${authorLink}` : `${authorAcc}, ${authorLink}`;
     });
 
     return authorAcc;
