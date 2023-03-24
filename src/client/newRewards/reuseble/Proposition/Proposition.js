@@ -30,7 +30,11 @@ const Proposition = ({ proposition, type, getProposition, hovered }) => {
         rewardPrice={proposition.rewardInUSD}
         payoutToken={proposition.payoutToken}
         isReserved={propositionType === 'reserved'}
-        passedParent={proposition.requiredObject}
+        passedParent={
+          proposition.requiredObject.author_permlink === proposition.object.author_permlink
+            ? null
+            : proposition.requiredObject
+        }
         rate={proposition.payoutTokenRateUSD}
       />
       <PropositionFooter

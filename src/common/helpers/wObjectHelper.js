@@ -269,10 +269,13 @@ export const getMenuItems = (wobject, menuType, objType) => {
     });
 };
 
-export const getSortList = (sortedList, itemsList) => {
-  const withoutSorting = itemsList.filter(list => !sortedList.includes(list.author_permlink));
-  const customSort = itemsList.reduce((acc, item) => {
-    if (sortedList.includes(item.author_permlink)) {
+export const getSortList = (sortedList = {}, itemsList) => {
+  const filtered = itemsList.filter(list => !sortedList?.exclude.includes(list.author_permlink));
+  const withoutSorting = filtered.filter(
+    list => !sortedList.include.includes(list.author_permlink),
+  );
+  const customSort = filtered.reduce((acc, item) => {
+    if (sortedList.include.includes(item.author_permlink)) {
       return [...acc, item];
     }
 
@@ -280,6 +283,24 @@ export const getSortList = (sortedList, itemsList) => {
   }, []);
 
   return [...customSort, ...withoutSorting];
+};
+
+export const getSortItemListForModal = (sortedList = {}, itemsList) => {
+  const exclude = itemsList.filter(list => sortedList?.exclude.includes(list.author_permlink));
+  const withoutSorting = itemsList.filter(
+    list =>
+      !sortedList.include.includes(list.author_permlink) &&
+      !sortedList.exclude.includes(list.author_permlink),
+  );
+  const customSort = itemsList.reduce((acc, item) => {
+    if (sortedList.include.includes(item.author_permlink)) {
+      return [...acc, item];
+    }
+
+    return acc;
+  }, []);
+
+  return [...customSort, ...withoutSorting, ...exclude];
 };
 
 export const getListItems = wobject => get(wobject, 'listItems', []);

@@ -1,6 +1,5 @@
 /* eslint-disable arrow-body-style */
 import { batch } from 'react-redux';
-import { message } from 'antd';
 import assert from 'assert';
 import Cookie from 'js-cookie';
 import { push } from 'connected-react-router';
@@ -42,12 +41,11 @@ import {
 } from '../appStore/appSelectors';
 import { getAuthenticatedUser, getAuthenticatedUserName } from '../authStore/authSelectors';
 import { getHiveBeneficiaryAccount, getLocale } from '../settingsStore/settingsSelectors';
-import { getObjectsByIds, getReviewCheckInfo } from '../../waivioApi/ApiClient';
+import { getObjectsByIds } from '../../waivioApi/ApiClient';
 import {
   getCurrentLinkPermlink,
   getCurrentLoadObjects,
   getNewLinkedObjectsCards,
-  getReviewTitle,
   getObjPercentsHideObject,
   getCurrentDraftContent,
   getFilteredLinkedObjects,
@@ -58,17 +56,15 @@ import {
 import {
   getCurrentDraft,
   getEditor,
-  getEditorDraftBody,
   getEditorDraftId,
   getEditorExtended,
   getEditorExtendedState,
   getEditorLinkedObjects,
   getEditorLinkedObjectsCards,
   getIsEditorSaving,
-  getLinkedObjects,
   getTitleValue,
 } from './editorSelectors';
-import { getCurrentLocation, getQueryString, getSuitableLanguage } from '../reducers';
+import { getCurrentLocation } from '../reducers';
 import { getObjectName, getObjectType } from '../../common/helpers/wObjectHelper';
 import { createPostMetadata, getObjectUrl } from '../../common/helpers/postHelpers';
 import {
@@ -471,63 +467,6 @@ export const setUpdatedEditorExtendedData = payload => ({
   type: SET_UPDATED_EDITOR_EXTENDED_DATA,
   payload,
 });
-
-export const reviewCheckInfo = (
-  { campaignId, isPublicReview, postPermlinkParam },
-  intl,
-  needReviewTitle = false,
-) => {
-  return (dispatch, getState) => {
-    const state = getState();
-    const userName = getAuthenticatedUserName(state);
-    const locale = getSuitableLanguage(state);
-    const linkedObjects = getLinkedObjects(state);
-    const draftBody = getEditorDraftBody(state);
-    const postPermlink = postPermlinkParam || isPublicReview;
-
-    return getReviewCheckInfo({ campaignId, locale, userName, postPermlink })
-      .then(campaignData => {
-        const draftId = new URLSearchParams(getQueryString(state)).get('draft');
-        const currDraft = getCurrentDraft(state, { draftId });
-
-        const reviewedTitle = needReviewTitle
-          ? getReviewTitle(campaignData, linkedObjects, draftBody, get(currDraft, 'title', ''))
-          : {};
-        const updatedEditorData = {
-          ...reviewedTitle,
-          campaign: campaignData,
-        };
-
-        dispatch(setUpdatedEditorData(updatedEditorData));
-        dispatch(
-          setUpdatedEditorExtendedData({
-            titleValue: get(currDraft, 'title', '') || updatedEditorData.draftContent.title,
-            editorState: EditorState.moveFocusToEnd(
-              createEditorState(fromMarkdown(updatedEditorData.draftContent)),
-            ),
-          }),
-        );
-        dispatch(firstParseLinkedObjects(updatedEditorData.draftContent));
-        dispatch(
-          saveDraft(draftId, intl, {
-            content: updatedEditorData.draftContent.body,
-            titleValue: updatedEditorData.draftContent.title,
-          }),
-        );
-      })
-      .catch(error => {
-        message.error(
-          intl.formatMessage(
-            {
-              id: 'imageSetter_link_is_already_added',
-              defaultMessage: `Failed to get campaign data: {error}`,
-            },
-            { error },
-          ),
-        );
-      });
-  };
-};
 
 export const buildPost = (draftId, data = {}, isEditPost) => (dispatch, getState) => {
   const state = getState();

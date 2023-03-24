@@ -81,7 +81,6 @@ export const getChangedWobjectField = (
               payload: res,
               meta: { isNew },
             });
-            if (isNew) dispatch(getUpdates(authorPermlink, type || fieldName, 'createdAt', locale));
 
             return res;
           })
@@ -111,7 +110,12 @@ export const getChangedWobjectField = (
   busyAPI.instance.subscribeBlock(
     subscribeTypes.votes,
     blockNumber,
-    appendObj && updatePosts ? updatePostCallback : subscribeCallback,
+    appendObj && updatePosts
+      ? updatePostCallback
+      : () => {
+          dispatch(getUpdates(authorPermlink, type || fieldName, 'createdAt', locale));
+          subscribeCallback();
+        },
   );
 };
 
@@ -260,7 +264,7 @@ export const appendObject = (postData, { follow, isLike, votePercent, isObjectPa
     type: APPEND_WAIVIO_OBJECT.START,
   });
 
-  return postAppendWaivioObject(postData)
+  return postAppendWaivioObject({ ...postData, votePower: undefined })
     .then(async res => {
       const blockNumber = await getLastBlockNum();
       const voter = getAuthenticatedUserName(getState());

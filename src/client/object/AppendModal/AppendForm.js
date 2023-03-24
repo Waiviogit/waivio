@@ -11,7 +11,6 @@ import {
   map,
   omitBy,
   size,
-  uniqBy,
   debounce,
 } from 'lodash';
 import uuidv4 from 'uuid/v4';
@@ -82,11 +81,12 @@ import {
   getNewsFilterItems,
   getNewsFeedItems,
   sortAlphabetically,
+  getSortItemListForModal,
 } from '../../../common/helpers/wObjectHelper';
 import { appendObject } from '../../../store/appendStore/appendActions';
 import withEditor from '../../components/Editor/withEditor';
 import { getVoteValue } from '../../../common/helpers/user';
-import { getExposedFieldsByObjType, sortListItemsBy } from '../wObjectHelper';
+import { getExposedFieldsByObjType } from '../wObjectHelper';
 import { rateObject } from '../../../store/wObjectStore/wobjActions';
 import SortingList from '../../components/DnDList/DnDList';
 import SearchObjectsAutocomplete from '../../components/EditorObject/SearchObjectsAutocomplete';
@@ -252,36 +252,32 @@ export default class AppendForm extends Component {
     const { currentAlbum } = this.state;
     const { albums, wObject } = this.props;
 
-    if (this.props.sliderMode) {
-      if (!this.state.sliderVisible) {
-        // eslint-disable-next-line react/no-did-mount-set-state
-        this.setState(prevState => ({ sliderVisible: !prevState.sliderVisible }));
-      }
+    if (this.props.sliderMode && !this.state.sliderVisible) {
+      // eslint-disable-next-line react/no-did-mount-set-state
+      this.setState(prevState => ({ sliderVisible: !prevState.sliderVisible }));
     }
+
     if (isEmpty(currentAlbum)) {
       const defaultAlbum = getDefaultAlbum(albums);
-
       // eslint-disable-next-line react/no-did-mount-set-state
       this.setState({ currentAlbum: defaultAlbum.id });
     }
+
     if (getObjectType(wObject) === OBJECT_TYPE.LIST) {
       const sortCustom = get(wObject, 'sortCustom', []);
-
       // eslint-disable-next-line react/no-did-mount-set-state
       this.setState({ loading: true });
-      const defaultSortBy = obj => (isEmpty(obj.sortCustom) ? 'recency' : 'custom');
       const listItems = getListItems(wObject).map(item => ({
         ...item,
         id: item.body || item.author_permlink,
-        checkedItemInList: !isEmpty(sortCustom) ? sortCustom.includes(item.author_permlink) : true,
+        checkedItemInList: !(
+          !isEmpty(sortCustom.exclude) && sortCustom.exclude.includes(item.author_permlink)
+        ),
       }));
-      let sortedListItems = sortListItemsBy(listItems, defaultSortBy(wObject), sortCustom, true);
-      const sorting = listItems.filter(item => !sortCustom.includes(item.author_permlink));
 
-      sortedListItems = uniqBy([...sortedListItems, ...sorting], '_id');
       // eslint-disable-next-line react/no-did-mount-set-state
       this.setState({
-        itemsInSortingList: sortedListItems,
+        itemsInSortingList: getSortItemListForModal(sortCustom, listItems),
         loading: false,
       });
     }
@@ -439,7 +435,7 @@ export default class AppendForm extends Component {
         break;
       }
       case objectFields.sorting: {
-        const sortingData = JSON.stringify(rest[objectFields.sorting].split(','));
+        const sortingData = JSON.stringify(rest[objectFields.sorting]);
 
         fieldBody.push(sortingData);
         break;
@@ -1589,7 +1585,11 @@ export default class AppendForm extends Component {
   };
 
   handleChangeSorting = sortedList => {
-    this.props.form.setFieldsValue({ [objectFields.sorting]: sortedList.join(',') });
+    this.props.form.setFieldsValue({
+      [objectFields.sorting]: {
+        ...sortedList,
+      },
+    });
   };
 
   onLoadingImage = value => this.setState({ isLoadingImage: value });
@@ -3211,6 +3211,7 @@ export default class AppendForm extends Component {
         const wobjType = getObjectType(wObject);
         const newsFilters = getNewsFilterItems(wObject);
         const newsFeed = getNewsFeedItems(wObject);
+
         let listItems =
           [...menuLinks, ...menuPages].map(item => ({
             id: item.body || item.author_permlink,
@@ -3280,23 +3281,19 @@ export default class AppendForm extends Component {
           <React.Fragment>
             <Form.Item>
               {getFieldDecorator(objectFields.sorting, {
-                initialValue: listItems.map(item => item.id).join(','),
+                initialValue: {
+                  exclude: [],
+                  include: listItems.map(item => item.id),
+                },
               })(
-                <Select
-                  className="AppendForm__hidden"
-                  mode="tags"
-                  disabled={loading}
-                  dropdownStyle={{ display: 'none' }}
-                  tokenSeparators={[' ', ',']}
+                <SortingList
+                  listItems={listItems}
+                  accentColor={PRIMARY_COLOR}
+                  onChange={this.handleChangeSorting}
+                  wobjType={wobjType}
                 />,
               )}
             </Form.Item>
-            <SortingList
-              listItems={listItems}
-              accentColor={PRIMARY_COLOR}
-              onChange={this.handleChangeSorting}
-              wobjType={wobjType}
-            />
           </React.Fragment>
         );
       }

@@ -8,7 +8,7 @@ export const configProductTable = [
       defaultMessage: 'Active',
     },
     type: 'checkbox',
-    getChecked: item => item.status === 'active',
+    getChecked: item => ['active', 'waitingRecover'].includes(item.status),
   },
   {
     id: 'createdAt',
@@ -78,6 +78,7 @@ export const configProductTable = [
       defaultMessage: 'Actions',
     },
     type: 'delete',
+    name: 'stop',
   },
 ];
 export const configHistoryTable = [

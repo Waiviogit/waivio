@@ -44,7 +44,7 @@ export const DynamicTable = ({
       case 'delete':
         return (
           <a role="presentation" className="DynamicTable__delete" onClick={() => deleteItem(item)}>
-            {intl.formatMessage({ id: 'delete', defaultMessage: 'Delete' })}
+            {head.name || intl.formatMessage({ id: 'delete', defaultMessage: 'Delete' })}
           </a>
         );
 

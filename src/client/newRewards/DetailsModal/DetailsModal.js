@@ -48,6 +48,7 @@ const DetailsModal = ({
   const requiredObject = proposition?.requiredObject;
   const userName = useSelector(getAuthenticatedUserName);
   const disable = Object.values(requirements).some(requirement => !requirement);
+  const withoutSecondary = requiredObject.author_permlink === proposition?.object?.author_permlink;
 
   useEffect(() => {
     if (!proposition?.reserved) {
@@ -66,25 +67,22 @@ const DetailsModal = ({
   }, [proposition?.activationPermlink, userName]);
 
   const handleClickReserve = () => {
+    let search = `?object=[${getObjectName(requiredObject)}](${requiredObject?.author_permlink})`;
+
+    if (!withoutSecondary) {
+      search += `&object=[${getObjectName(proposition.object)}](${
+        proposition?.object?.author_permlink
+      })`;
+    }
+
+    search += `&campaign=${proposition._id}`;
+
     if (!proposition?.reserved) {
       dispatch(reserveProposition(proposition, userName))
         .then(() => {
-          const mainObject = `[${getObjectName(requiredObject)}](${
-            requiredObject?.author_permlink
-          })`;
-
-          const secondaryObject = `[${getObjectName(proposition.object)}](${
-            proposition?.object?.author_permlink
-          })`;
-
           const urlConfig = {
             pathname: '/editor',
-            search: `?object=${mainObject}&object=${secondaryObject}&newCampaing=true&campaign=${proposition._id}`,
-            state: {
-              mainObject,
-              secondaryObject,
-              campaign: proposition._id,
-            },
+            search,
           };
 
           history.push(urlConfig);
@@ -93,20 +91,9 @@ const DetailsModal = ({
           message.error(e.error_description);
         });
     } else {
-      const mainObject = `[${getObjectName(requiredObject)}](${requiredObject?.author_permlink})`;
-
-      const secondaryObject = `[${getObjectName(proposition.object)}](${
-        proposition?.object?.author_permlink
-      })`;
-
       const urlConfig = {
         pathname: '/editor',
-        search: `?object=${mainObject}&object=${secondaryObject}&newCampaing=true&campaign=${proposition._id}`,
-        state: {
-          mainObject,
-          secondaryObject,
-          campaign: proposition._id,
-        },
+        search,
       };
 
       history.push(urlConfig);
@@ -176,6 +163,7 @@ const DetailsModal = ({
         proposition={proposition}
         requirements={requirements}
         agreementObjects={agreementObjects}
+        withoutSecondary={withoutSecondary}
       />
       <div className="DetailsModal__footer">
         <div className="DetailsModal__footer-reserve-btn">
