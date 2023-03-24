@@ -56,6 +56,7 @@ import {
   merchantFields,
   pinPostFields,
   removePostFields,
+  menuItemFields,
 } from '../../../common/constants/listOfFields';
 import OBJECT_TYPE from '../const/objectTypes';
 import { getSuitableLanguage } from '../../../store/reducers';
@@ -125,6 +126,7 @@ import AuthorForm from './FormComponents/AuthorForm';
 import SearchDepartmentAutocomplete from '../../components/SearchDepartmentAutocomplete/SearchDepartmentAutocomplete';
 import ShopFilterForm from './FormComponents/ShopFilterForm';
 import './AppendForm.less';
+import MenuItemForm from './FormComponents/MenuItemForm';
 
 @connect(
   state => ({
@@ -243,6 +245,7 @@ export default class AppendForm extends Component {
     formForm: formFormFields.link,
     itemsInSortingList: null,
     newsFilterTitle: null,
+    menuItemButtonType: 'standard',
   };
 
   componentDidMount = () => {
@@ -465,6 +468,10 @@ export default class AppendForm extends Component {
         fieldBody.push(rest[objectFields.productId]);
         break;
       }
+      case objectFields.menuItem: {
+        fieldBody.push(rest[objectFields.menuItem]);
+        break;
+      }
       default:
         fieldBody.push(JSON.stringify(rest));
         break;
@@ -573,6 +580,15 @@ export default class AppendForm extends Component {
           return `@${author} added ${productIdFields.productIdType} (${langReadable}): ${
             formValues[productIdFields.productIdType]
           }, ${currentField}: ${appendValue}, ${imageDescription}`;
+        case objectFields.menuItem:
+          return `@${author} added ${objectFields.menuItem} (${langReadable}): Title: ${
+            formValues[menuItemFields.menuItemTitle]
+          }, style: ${this.state.menuItemButtonType}, link: ${
+            !isEmpty(this.state.selectedObject)
+              ? this.state.selectedObject.author_permlink
+              : formValues[menuItemFields.linkToWeb]
+          }`;
+
         case objectFields.dimensions:
           return `@${author} added ${currentField} (${langReadable}): ${
             dimensionsFields.length
@@ -875,6 +891,22 @@ export default class AppendForm extends Component {
           }),
         };
       }
+      if (currentField === objectFields.menuItem) {
+        fieldsObject = {
+          ...fieldsObject,
+          body: JSON.stringify({
+            title: formValues[menuItemFields.menuItemTitle],
+            style: this.state.menuItemButtonType,
+            image: formValues[objectFields.menuItem],
+            linkToObject: !isEmpty(this.state.selectedObject)
+              ? this.state.selectedObject.author_permlink
+              : undefined,
+            linkToWeb: !isEmpty(formValues[menuItemFields.linkToWeb])
+              ? formValues[menuItemFields.linkToWeb]
+              : undefined,
+          }),
+        };
+      }
       if (currentField === objectFields.options) {
         fieldsObject = {
           ...fieldsObject,
@@ -1008,6 +1040,9 @@ export default class AppendForm extends Component {
     this.setState({ ignoreList });
   };
 
+  handleMenuItemButtonStyleChange = type => {
+    this.setState({ menuItemButtonType: type });
+  };
   handleAddTypeToIgnoreTypeList = type =>
     this.setState(prevState => ({ typeList: [...prevState.typeList, type] }));
 
@@ -1358,6 +1393,9 @@ export default class AppendForm extends Component {
       case objectFields.productId:
         formFields = form.getFieldsValue(Object.values(productIdFields));
         break;
+      case objectFields.menuItem:
+        formFields = form.getFieldsValue(Object.values(menuItemFields));
+        break;
       case objectFields.map:
         formFields = form.getFieldsValue(Object.values(mapFields));
         break;
@@ -1407,6 +1445,7 @@ export default class AppendForm extends Component {
       currentField === objectFields.brand ||
       currentField === objectFields.merchant ||
       currentField === objectFields.dimensions ||
+      currentField === objectFields.menuItem ||
       currentField === objectFields.features ||
       currentField === objectFields.productWeight
     ) {
@@ -2666,6 +2705,23 @@ export default class AppendForm extends Component {
           </React.Fragment>
         );
       }
+      case objectFields.menuItem: {
+        return (
+          <MenuItemForm
+            getFieldDecorator={getFieldDecorator}
+            loading={loading}
+            getFieldRules={this.getFieldRules}
+            getImages={this.getImages}
+            onLoadingImage={this.onLoadingImage}
+            handleMenuItemButtonStyleChange={this.handleMenuItemButtonStyleChange}
+            selectedObject={this.state.selectedObject}
+            onObjectCardDelete={this.onObjectCardDelete}
+            onCreateObject={this.handleCreateObject}
+            handleSelectObject={this.handleSelectObject}
+            menuItemButtonType={this.state.menuItemButtonType}
+          />
+        );
+      }
       case objectFields.productId: {
         return (
           <React.Fragment>
@@ -3626,6 +3682,21 @@ export default class AppendForm extends Component {
         return (
           isEmpty(getFieldValue(productIdFields.productIdType)) ||
           isEmpty(getFieldValue(productIdFields.productId))
+        );
+      case objectFields.menuItem:
+        if (['image', 'icon'].includes(this.state.menuItemButtonType)) {
+          return (
+            isEmpty(getFieldValue(menuItemFields.menuItemTitle)) ||
+            isEmpty(this.state.menuItemButtonType) ||
+            isEmpty(getFieldValue(objectFields.menuItem)) ||
+            (isEmpty(getFieldValue(menuItemFields.linkToWeb)) && isEmpty(this.state.selectedObject))
+          );
+        }
+
+        return (
+          isEmpty(getFieldValue(menuItemFields.menuItemTitle)) ||
+          isEmpty(this.state.menuItemButtonType) ||
+          (isEmpty(getFieldValue(menuItemFields.linkToWeb)) && isEmpty(this.state.selectedObject))
         );
       case objectFields.form:
       case objectFields.widget:

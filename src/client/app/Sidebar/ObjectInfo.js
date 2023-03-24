@@ -58,6 +58,7 @@ import AffiliatLink from '../../widgets/AffiliatLinks/AffiliatLink';
 import ObjectFeatures from '../../object/ObjectFeatures/ObjectFeatures';
 import DepartmentsWobject from '../../object/ObjectTypeShop/DepartmentsWobject';
 import './ObjectInfo.less';
+import MenuItemButtons from './MenuItemButtons/MenuItemButtons';
 
 @withRouter
 @connect(
@@ -450,6 +451,7 @@ class ObjectInfo extends React.Component {
     const isEditMode = isAuthenticated ? this.props.isEditMode : false;
     const newsFilters = get(wobject, 'newsFilter', []);
     const website = parseWobjectField(wobject, 'website');
+    const menuItem = get(wobject, 'menuItem');
     const wobjName = getObjectName(wobject);
     const tagCategories = get(wobject, 'tagCategory', []);
     const map = parseWobjectField(wobject, 'map');
@@ -714,6 +716,28 @@ class ObjectInfo extends React.Component {
                 <FormattedMessage id={wobject.object_type} />
               </div>
             ) : (
+              <div className=" object-sidebar__section-title">
+                <FormattedMessage id="menu" defaultMessage="Menu" />
+              </div>
+            ))}
+          {!isList && (
+            <div className="object-sidebar__menu-items">
+              {isEditMode && this.listItem(objectFields.newsFeed, null)}
+              {isEditMode && this.listItem(objectFields.widget, null)}
+              {this.listItem(
+                objectFields.menuItem,
+                !isEmpty(menuItem) && <MenuItemButtons menuItem={menuItem} />,
+              )}
+              {this.listItem(objectFields.sorting, null)}
+            </div>
+          )}
+          {isEditMode &&
+            !isList &&
+            (objectTypeMenuTitle ? (
+              <div className="object-sidebar__section-title">
+                <FormattedMessage id={wobject.object_type} />
+              </div>
+            ) : (
               <div
                 className={
                   this.state.showMenuLegacy
@@ -774,14 +798,7 @@ class ObjectInfo extends React.Component {
                       this.getMenuSectionLink({ id: objectFields.form, ...form }),
                     ),
                 )}
-                {this.listItem(objectFields.sorting, null)}
               </React.Fragment>
-            </div>
-          )}
-          {!isList && (
-            <div className="object-sidebar__menu-items">
-              {isEditMode && this.listItem(objectFields.newsFeed, null)}
-              {isEditMode && this.listItem(objectFields.widget, null)}
             </div>
           )}
         </React.Fragment>
