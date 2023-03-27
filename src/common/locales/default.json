@@ -485,7 +485,7 @@
   "object_field_background": "Background",
   "object_field_phone": "Phone",
   "object_field_email": "Email",
-  "object_field_sortCustom": "Custom sorting",
+  "object_field_sortCustom": "Menu sorting",
   "object_field_listItem": "List item",
   "object_field_menuItem": "Menu item",
   "object_field_list": "List",
@@ -2180,7 +2180,16 @@
   "add_new_rule": "Add new rule",
   "undelegated": "Undelegated",
   "undelegated_by": "by",
- "object_field_shopFilter": "Shop filter",
-  "shop": "Shop",
-  "add_new_rule": "Add new rule"
+  "menu_legacy": "Menu (legacy)",
+  "option_standard": "Standard",
+  "option_highlight": "Highlight",
+  "option_icon": "Icon",
+  "option_image": "Image",
+  "option_link": "Link",
+  "option_website": "Website",
+"image_for_the_button": "Image for the button",
+  "style_of_the_button": "Style of the button",
+  "link_type":"Link type",
+  "link_to_a_website":"Link to a website",
+  "link_to_an_object":"Link to an object"
 }
