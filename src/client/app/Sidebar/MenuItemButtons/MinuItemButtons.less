@@ -1,0 +1,26 @@
+@import (reference) '../../../styles/custom.less';
+@import (reference) '../../../styles/modules/variables.less';
+
+.MenuItemButtons {
+  &__icon {
+    width: 55px;
+    height: 43px;
+    border: 1px solid @blue-baliHai;
+    border-radius: 4px;
+    margin-right: 10px;
+    object-fit: fill;
+  }
+  &__image {
+    width: 180px;
+    height: 112px;
+    border: 1px solid @blue-baliHai;
+    border-radius: 12px;
+    object-fit: fill;
+  }
+  &__link {
+    color: @black-text-basic;
+    &:hover {
+      color: @orange-hot;
+    }
+  }
+}

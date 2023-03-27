@@ -10,14 +10,11 @@ import Rewards from '../../client/rewards/Rewards';
 import Discover from '../../client/discover/Discover';
 import DiscoverObjects from '../../client/discoverObjects/DiscoverObjects';
 import RewardsMainPage from '../../client/newRewards/RewardsMainPage';
-import UserShoppingList from '../../client/Shop/ShopList/UserShoppingList';
 import Shop from '../../client/Shop/Shop';
-import GlobalShopingList from '../../client/Shop/ShopList/GlobalShopingList';
 import ShopDepartmentsWobjList from '../../client/Shop/DepartmentsWobjList/ShopDepartmentsWobjList';
 import UserDepartmentsWobjList from '../../client/Shop/DepartmentsWobjList/UserDepartmentsWobjList';
 import { isMobile } from '../../common/helpers/apiHelpers';
 import ObjectDepartmentsWobjList from '../../client/object/ObjectTypeShop/ObjectDepartmentsWobjList';
-import WobjectShoppingList from '../../client/object/ObjectTypeShop/WobjectShoppingList';
 
 const routes = {
   component: Wrapper,
@@ -319,11 +316,6 @@ const routes = {
           component: Views.UserFollowers,
         },
         {
-          path: '/userShop',
-          exact: true,
-          component: UserShoppingList,
-        },
-        {
           path: '/userShop/:department?',
           exact: true,
           component: UserDepartmentsWobjList,
@@ -367,7 +359,7 @@ const routes = {
     {
       path: [
         `/object/:name/(${URL.WOBJ.tabs})?/(${URL.WOBJ.filters})?/:itemId?`,
-        `/object/:name/shop/:department`,
+        `/object/:name/shop/:department?`,
       ],
       component: WobjectContainer,
       exact: true,
@@ -428,13 +420,9 @@ const routes = {
           component: Views.ObjectFeed,
         },
         {
-          path: '/shop/:department',
+          path: '/shop/:department?',
           exact: true,
           component: ObjectDepartmentsWobjList,
-        },
-        {
-          path: '/shop',
-          component: WobjectShoppingList,
         },
         {
           path: '/form/:permlink',
@@ -480,14 +468,9 @@ const routes = {
       pathScope: '/shop',
       routes: [
         {
-          path: '/:department',
+          path: '/:department?',
           exact: true,
           component: ShopDepartmentsWobjList,
-        },
-        {
-          path: '/',
-          exact: true,
-          component: GlobalShopingList,
         },
       ],
     },

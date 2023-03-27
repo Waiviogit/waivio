@@ -113,15 +113,7 @@ const DepartmentItem = ({
           {department.name} {!showNested && <Icon style={{ fontSize: '12px' }} type={'right'} />}
         </div>
       ) : (
-        <div
-          className={depNameWithoutNestedClassList}
-          // to={getLinkPath(match, department, path, history.location)}
-          // isActive={() =>
-          //   match.params.department === department.name || categories.includes(department.name)
-          // }
-          onClick={getNestedDepartments}
-          // activeClassName="ShopDepartmentsList__link--active"
-        >
+        <div className={depNameWithoutNestedClassList} onClick={getNestedDepartments}>
           {department.name}
         </div>
       )}

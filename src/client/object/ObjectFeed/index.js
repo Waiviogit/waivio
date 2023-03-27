@@ -9,8 +9,10 @@ import IconButton from '../../components/IconButton';
 import { getObjectName } from '../../../common/helpers/wObjectHelper';
 import Loading from '../../components/Icon/Loading';
 import { getIsAuthenticated } from '../../../store/authStore/authSelectors';
-import { getObjectFetchingState } from '../../../store/wObjectStore/wObjectSelectors';
-import { parseJSON } from '../../../common/helpers/parseJSON';
+import {
+  getObjectFetchingState,
+  getWobjectAuthors,
+} from '../../../store/wObjectStore/wObjectSelectors';
 
 const propTypes = {
   history: PropTypes.shape().isRequired,
@@ -28,6 +30,7 @@ const ObjectFeedContainer = ({ history, match, wobject, userName, isPageMode }) 
   /* redux store */
   const isAuthenticated = useSelector(getIsAuthenticated);
   const isFetching = useSelector(getObjectFetchingState);
+  const authors = useSelector(getWobjectAuthors);
 
   const handleCreatePost = () => {
     if (wobject && wobject.author_permlink) {
@@ -44,12 +47,10 @@ const ObjectFeedContainer = ({ history, match, wobject, userName, isPageMode }) 
       redirectUrl += encodeURIComponent(`[${getObjectName(wobject)}](${wobject.author_permlink})`);
 
       if (!isEmpty(wobject.authors)) {
-        wobject.authors.forEach(author => {
-          const body = parseJSON(author.body);
-
-          redirectUrl += body.authorPermlink
-            ? `&author=${encodeURIComponent(`[${body.name}](${body.authorPermlink})`)}`
-            : `&author=${encodeURIComponent(body.name)}`;
+        authors.forEach(author => {
+          redirectUrl += author.author_permlink
+            ? `&author=${encodeURIComponent(`[${author.name}](${author.author_permlink})`)}`
+            : `&author=${encodeURIComponent(author.name)}`;
         });
       }
 

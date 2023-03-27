@@ -6,7 +6,6 @@ import classNames from 'classnames';
 import { FormattedMessage } from 'react-intl';
 import { Link } from 'react-router-dom';
 import { withRouter } from 'react-router';
-import { PATH_NAME_DISCOVER } from '../../../common/constants/rewards';
 import { getAuthenticatedUser, getRewardsTab } from '../../../store/authStore/authSelectors';
 
 import './TopNavigation.less';
@@ -19,7 +18,6 @@ const LINKS = {
   MY_FEED_NOTIFICATIONS: '/notifications-list',
   FEED_PROMOTED: '/promoted',
   REWARDS: '/rewards/',
-  DISCOVER: '/discover-objects',
   SHOP: '/shop',
   TOOLS_DRAFTS: '/drafts',
   TOOLS_BOOKMARKS: '/bookmarks',
@@ -42,7 +40,6 @@ const LINKS = {
   NOTIFICATIONS: '/notifications-list',
   NEW_ACCOUNT: '/new-accounts',
   DATA_IMPORT: '/data-import',
-  USERS: PATH_NAME_DISCOVER,
   BLOG: '/user-blog',
   FEED: '/feed',
   BLACKLIST: '/blacklist',
@@ -115,21 +112,9 @@ const TopNavigation = ({ location: { pathname } }) => {
           </li>
           <li className="TopNavigation__item">
             <Link
-              to={`${LINKS.DISCOVER}/restaurant`}
-              className={classNames('TopNavigation__link', {
-                'TopNavigation__link--active':
-                  pathname.includes(LINKS.DISCOVER) || pathname.includes(LINKS.USERS),
-              })}
-            >
-              <FormattedMessage id="discover" defaultMessage="Discover" />
-            </Link>
-          </li>
-          <li className="TopNavigation__item">
-            <Link
               to={`${LINKS.SHOP}`}
               className={classNames('TopNavigation__link', {
-                'TopNavigation__link--active':
-                  pathname.includes(LINKS.SHOP) && !pathname.includes(LINKS.DISCOVER),
+                'TopNavigation__link--active': pathname.includes(LINKS.SHOP),
               })}
             >
               <FormattedMessage id="shop" defaultMessage="Shop" />
