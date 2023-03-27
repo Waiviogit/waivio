@@ -40,7 +40,7 @@ const ReportHeader = ({ intl, currencyInfo, reportDetails, payoutToken }) => {
   const secondaryObjects = map(singleReportData.secondaryObjects, secondaryObject => ({
     name: secondaryObject.object_name,
     permlink: secondaryObject.author_permlink,
-  }));
+  })).filter(o => o.permlink !== primaryObject.permlink);
 
   return (
     <React.Fragment>
@@ -154,21 +154,28 @@ const ReportHeader = ({ intl, currencyInfo, reportDetails, payoutToken }) => {
           <a href={getObjectUrlForLink(primaryObject)}>
             <span className="ReportHeader__campaignInfo-links">{`${getObjectName(
               primaryObject,
-            )}, `}</span>
+            )}`}</span>
           </a>
-          {!isEmpty(secondaryObjects) ? (
-            map(secondaryObjects, object => (
-              <a key={object.permlink} href={getObjectUrlForLink(object)}>
-                <span className="ReportHeader__campaignInfo-links">{object.name}</span>
-              </a>
-            ))
-          ) : (
-            <a href={getObjectUrlForLink(singleReportData?.secondaryObject)}>
-              <span className="ReportHeader__campaignInfo-links">
-                {getObjectName(singleReportData?.secondaryObject)}
-              </span>
-            </a>
-          )}
+          {!isEmpty(secondaryObjects) ||
+            (singleReportData?.secondaryObject.author_permlink !==
+              primaryObject.author_permlink && (
+              <React.Fragment>
+                ,{' '}
+                {!isEmpty(secondaryObjects) ? (
+                  map(secondaryObjects, object => (
+                    <a key={object.permlink} href={getObjectUrlForLink(object)}>
+                      <span className="ReportHeader__campaignInfo-links">{object.name}</span>
+                    </a>
+                  ))
+                ) : (
+                  <a href={getObjectUrlForLink(singleReportData?.secondaryObject)}>
+                    <span className="ReportHeader__campaignInfo-links">
+                      {getObjectName(singleReportData?.secondaryObject)}
+                    </span>
+                  </a>
+                )}
+              </React.Fragment>
+            ))}
         </div>
       </div>
     </React.Fragment>

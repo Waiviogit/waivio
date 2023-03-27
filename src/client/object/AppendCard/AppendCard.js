@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { some, find } from 'lodash';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
+import { useRouteMatch } from 'react-router';
 import { FormattedDate, FormattedRelative, FormattedTime, injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import WeightTag from '../../components/WeightTag';
@@ -34,6 +35,7 @@ const AppendCard = props => {
   const [commentsVisible, setCommentsVisible] = useState(false);
   const [sliderValue, setSliderValue] = useState(100);
   const [voteWorth, setVoteWorth] = useState(100);
+  const match = useRouteMatch();
 
   const calculateSliderValue = () => {
     const { user, post, defaultVotePercent } = props;
@@ -58,11 +60,11 @@ const AppendCard = props => {
     const { sliderMode } = props;
 
     if (isLiked) {
-      props.voteAppends(props.post.author, props.post.permlink, 0);
+      props.voteAppends(props.post.author, props.post.permlink, 0, '', false, match.params[0]);
     } else if (sliderMode && !isLiked) {
       showSlider(true);
     } else {
-      props.voteAppends(props.post.author, props.post.permlink, weight);
+      props.voteAppends(props.post.author, props.post.permlink, weight, '', false, match.params[0]);
     }
   };
 
@@ -82,9 +84,9 @@ const AppendCard = props => {
     const isReject = post.isReject || some(downVotes, { voter: user.name });
 
     if (isReject) {
-      props.voteAppends(post.author, post.permlink, 0);
+      props.voteAppends(post.author, post.permlink, 0, '', false, match.params[0]);
     } else {
-      props.voteAppends(post.author, post.permlink, myWeight);
+      props.voteAppends(post.author, post.permlink, myWeight, '', false, match.params[0]);
     }
   };
 
@@ -100,7 +102,14 @@ const AppendCard = props => {
 
   const handleLikeConfirm = () => {
     showSlider(false);
-    props.voteAppends(props.post.author, props.post.permlink, sliderValue * 100);
+    props.voteAppends(
+      props.post.author,
+      props.post.permlink,
+      sliderValue * 100,
+      '',
+      false,
+      match.params[0],
+    );
   };
 
   const fieldName = {

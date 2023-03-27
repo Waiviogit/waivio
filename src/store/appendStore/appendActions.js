@@ -104,9 +104,6 @@ export const getChangedWobjectField = (
     window.scrollTo(0, 0);
   };
   const blockNumber = await getLastBlockNum();
-  const timeoutId = setTimeout(() => {
-    if (isNew) dispatch(getUpdates(authorPermlink, type || fieldName, 'createdAt', locale));
-  }, 6000);
 
   if (!blockNumber) throw new Error('Something went wrong');
   busyAPI.instance.sendAsync(subscribeMethod, [voter, blockNumber, subscribeTypes.votes]);
@@ -116,7 +113,7 @@ export const getChangedWobjectField = (
     appendObj && updatePosts
       ? updatePostCallback
       : () => {
-          clearTimeout(timeoutId);
+          dispatch(getUpdates(authorPermlink, type, 'createdAt', locale));
           subscribeCallback();
         },
   );
@@ -267,7 +264,7 @@ export const appendObject = (postData, { follow, isLike, votePercent, isObjectPa
     type: APPEND_WAIVIO_OBJECT.START,
   });
 
-  return postAppendWaivioObject(postData)
+  return postAppendWaivioObject({ ...postData, votePower: undefined })
     .then(async res => {
       const blockNumber = await getLastBlockNum();
       const voter = getAuthenticatedUserName(getState());

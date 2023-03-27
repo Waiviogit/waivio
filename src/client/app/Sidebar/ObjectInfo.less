@@ -5,6 +5,17 @@
   @media @small {
     padding-bottom: 50px;
   }
+  &__menu-button {
+    cursor: pointer;
+    border: none;
+    background: transparent;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 16px;
+    font-weight: 500;
+    text-transform: uppercase;
+  }
 
   .AffiliatLink {
     border: 1px solid #f1f0f0;
@@ -29,6 +40,25 @@
     .menu-btn {
       height: 35px;
       margin-bottom: 5px;
+
+      &.field-button {
+        width: 100%;
+        overflow: hidden;
+        color: @white-gainsboro;
+        background-color: @primary-color;
+        border-color: @primary-color;
+
+        &:hover {
+          background-color: @secondary-color;
+          color: @white;
+        }
+      }
+    }
+    .menu-button {
+      height: 45px;
+      margin-bottom: 5px;
+      width: 180px;
+      border-radius: 12px;
 
       &.field-button {
         width: 100%;

@@ -1,5 +1,5 @@
 import { get, filter, isEmpty, uniqBy, orderBy, has } from 'lodash';
-import { getObjectName, isList } from '../../common/helpers/wObjectHelper';
+import { getObjectName, getSortList, isList } from '../../common/helpers/wObjectHelper';
 import { objectFields, TYPES_OF_MENU_ITEM } from '../../common/constants/listOfFields';
 
 export const getListItems = (wobj, { uniq } = { uniq: false, isMappedToClientWobject: false }) => {
@@ -54,9 +54,8 @@ export const sortListItemsBy = (
   isSortByDateAdding = false,
 ) => {
   if (!items || !items.length) return [];
-  if (!sortByParam) return items;
-  const isCustomSorting = sortByParam === 'custom';
-  const isRecencySorting = sortByParam === 'recency';
+  if (!sortByParam || ['recency'].includes(sortByParam)) return items;
+  if (!sortByParam || ['custom'].includes(sortByParam)) return getSortList(sortOrder, items);
   let comparator;
 
   switch (sortByParam) {
@@ -72,27 +71,15 @@ export const sortListItemsBy = (
     default:
       break;
   }
-  let sorted = uniqBy(items, 'author_permlink').sort(comparator);
 
-  if ((isCustomSorting || isRecencySorting) && !isEmpty(sortOrder)) {
-    const withoutSorting = sorted.filter(list => !sortOrder.includes(list.author_permlink));
-
-    sorted = sortOrder
-      .map(permlink => sorted.find(item => item.author_permlink === permlink))
-      .filter(item => item);
-
-    sorted = [...sorted, ...withoutSorting];
-  }
-
+  const sorted = uniqBy(items, 'author_permlink').sort(comparator);
   const sortedByDate =
     sorted.every(item => has(item, 'addedAt')) && isSortByDateAdding
       ? orderBy(sorted, ['addedAt'], 'desc')
       : sorted;
-
   const sorting = (a, b) => isList(b) - isList(a);
-  const resultArr = isCustomSorting ? sorted : sortedByDate.sort(sorting);
 
-  return resultArr;
+  return sortedByDate.sort(sorting);
 };
 
 export const getWobjectsForMap = objects =>
@@ -108,7 +95,7 @@ export const getLink = link => {
 
 export const getExposedFieldsByObjType = wobj => {
   const exposedFields = get(wobj, 'exposedFields', []).map(field => field.name);
-  const renderedFields = !['list', 'shop'].includes(wobj.object_type)
+  const renderedFields = !['list', 'shop', 'widget', 'newsfeed'].includes(wobj.object_type)
     ? [...exposedFields.filter(f => f !== objectFields.listItem), TYPES_OF_MENU_ITEM.LIST]
     : exposedFields;
 

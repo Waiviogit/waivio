@@ -36,6 +36,10 @@ class DnDList extends Component {
     onChange: PropTypes.func,
     wobjType: PropTypes.string,
     screenSize: PropTypes.string,
+    customSort: PropTypes.shape({
+      include: PropTypes.arrayOf(PropTypes.string),
+      exclude: PropTypes.arrayOf(PropTypes.string),
+    }),
   };
   static defaultProps = {
     accentColor: 'lightgreen',
@@ -57,47 +61,42 @@ class DnDList extends Component {
 
     if (this.props.wobjType === OBJECT_TYPE.LIST && !isEqual(prevProps.listItems, listItems)) {
       // eslint-disable-next-line react/no-did-update-set-state
-      this.setState({ items: listItems });
+      this.setState({
+        items: listItems,
+      });
     }
   }
 
   filterItems = items => items.filter(item => item.checkedItemInList);
 
   onDragEnd(result) {
-    if (!result.destination) {
-      return;
-    }
+    if (!result.destination) return;
 
     const items = reorder(this.state.items, result.source.index, result.destination.index);
-
-    this.setState({
-      items,
-    });
     let itemsList = items;
 
-    if (this.props.wobjType === OBJECT_TYPE.LIST) {
-      itemsList = this.filterItems(items);
-    }
-    this.props.onChange(itemsList.map(item => item.id));
+    this.setState({ items });
+
+    if (this.props.wobjType === OBJECT_TYPE.LIST) itemsList = this.filterItems(items);
+
+    this.props.onChange({
+      include: itemsList.map(item => item.id),
+      exclude: items.filter(i => !i.checkedItemInList).map(item => item.id),
+    });
   }
 
   toggleItemInSortingList = e => {
     const { items } = this.state;
-    const itemsList = items.map(item =>
-      item.id === e.target.id
-        ? {
-            ...item,
-            checkedItemInList: e.target.checked,
-          }
-        : item,
-    );
+    const itemsList = items.map(item => ({
+      ...item,
+      checkedItemInList: item.id === e.target.id ? e.target.checked : item.checkedItemInList,
+    }));
 
     this.setState({ items: itemsList });
-    if (this.props.wobjType === OBJECT_TYPE.LIST) {
-      const itemsListFiltered = this.filterItems(itemsList);
-
-      this.props.onChange(itemsListFiltered.map(item => item.id));
-    }
+    this.props.onChange({
+      exclude: itemsList.filter(i => !i.checkedItemInList).map(item => item.id),
+      include: itemsList.filter(i => i.checkedItemInList).map(item => item.id),
+    });
   };
 
   render() {
@@ -121,18 +120,10 @@ class DnDList extends Component {
                         this.props.accentColor,
                       )}
                     >
-                      {this.props.wobjType === OBJECT_TYPE.LIST ? (
-                        <DnDListItem
-                          name={item.name}
-                          type={item.type}
-                          wobjType={item.wobjType}
-                          toggleItemInSortingList={this.toggleItemInSortingList}
-                          id={item.id}
-                          checkedItemInList={item.checkedItemInList}
-                        />
-                      ) : (
-                        <DnDListItem name={item.name} type={item.type} />
-                      )}
+                      <DnDListItem
+                        item={item}
+                        toggleItemInSortingList={this.toggleItemInSortingList}
+                      />
                     </div>
                   )}
                 </Draggable>

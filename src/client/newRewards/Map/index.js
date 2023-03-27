@@ -1,5 +1,5 @@
 import { Map, ZoomControl } from 'pigeon-maps';
-import React, { useEffect, useRef, useState, useCallback, useMemo } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { Icon, Modal } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import { debounce, isEmpty, isEqual, noop } from 'lodash';
@@ -18,12 +18,15 @@ import CustomMarker from '../../components/Maps/CustomMarker';
 import { getObjectMap, getObjectName } from '../../../common/helpers/wObjectHelper';
 
 import ObjectAvatar from '../../components/ObjectAvatar';
+import MapControllers from '../../widgets/MapControllers/MapControllers';
+import { getUserLocation } from '../../../store/userStore/userSelectors';
 
 import './styles.less';
 
 const RewardsMap = ({ getPoints, defaultCenter, parent, visible, onClose, intl }) => {
   const dispatch = useDispatch();
   const userName = useSelector(getAuthenticatedUserName);
+  const location = useSelector(getUserLocation);
   const query = useQuery();
   const history = useHistory();
   const mapRef = useRef();
@@ -63,12 +66,6 @@ const RewardsMap = ({ getPoints, defaultCenter, parent, visible, onClose, intl }
       }
     }
   }, [mapRef.current]);
-
-  const defaultZoom = useMemo(() => {
-    const zoom = query.get('zoom');
-
-    return +zoom || 3;
-  }, []);
 
   const getCurrentCoordinates = async () => {
     if (area) {
@@ -119,7 +116,8 @@ const RewardsMap = ({ getPoints, defaultCenter, parent, visible, onClose, intl }
     [setBoundsParams, boundsParams],
   );
 
-  const onBoundsChanged = ({ bounds }) => {
+  const onBoundsChanged = ({ bounds, center: boundsCenter }) => {
+    setCenter(boundsCenter);
     handleOnBoundsChanged(bounds);
   };
 
@@ -151,7 +149,7 @@ const RewardsMap = ({ getPoints, defaultCenter, parent, visible, onClose, intl }
         center={center}
         height={height}
         width={width}
-        zoom={defaultZoom}
+        defaultZoom={3}
         provider={mapProvider}
         onClick={({ event }) => {
           if (event.target.classList.value === 'overlay') {
@@ -197,27 +195,20 @@ const RewardsMap = ({ getPoints, defaultCenter, parent, visible, onClose, intl }
             <span className={'overlay'}>{getObjectName(infoboxData.wobject)}</span>
           </Overlay>
         )}
-        <ZoomControl style={{ right: '10px', top: '10px', left: 'unset' }} />
-        <div
-          role="presentation"
-          className="RewardsMap__locateGPS RewardsMap__mapButton"
-          onClick={() => {
-            navigator.geolocation.getCurrentPosition(
-              position => {
-                const { latitude, longitude } = position.coords;
-
-                mapRef.current.setCenterZoom([latitude, longitude]);
-              },
-              () => mapRef.current.setCenterZoom(center),
-            );
+        <ZoomControl
+          style={{
+            right: '10px',
+            left: 'auto',
           }}
-        >
-          <img
-            src="/images/focus.svg"
-            alt="aim"
-            className="MapConfigurationControl__locateGPS-button"
-          />
-        </div>
+        />
+        <MapControllers
+          className={'WebsiteBodyControl'}
+          withoutZoom
+          successCallback={geo => {
+            setCenter([geo.coords.latitude, geo.coords.longitude]);
+          }}
+          rejectCallback={() => setCenter([location.latitude, location.longitude])}
+        />
         <div
           role="presentation"
           className="RewardsMap__mapButton RewardsMap__full"

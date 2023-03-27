@@ -47,9 +47,11 @@ export const reserveProposition = (proposition, username) => async (
         proposition.payoutToken
       } for a period of ${proposition.countReservationDays} days to write a review of <a href='${
         dish.defaultShowLink
-      }'>${proposedWobjName}</a>, <a href='${primaryObject.defaultShowLink}'>${getObjectName(
-        primaryObject,
-      )}</a>.</p>${detailsBody}`,
+      }'>${proposedWobjName}</a>${
+        primaryObject.author_permlink !== proposedAuthorPermlink
+          ? `, <a href='${getObjectUrlForLink(primaryObject)}'>${getObjectName(primaryObject)}</a>`
+          : ''
+      }.</p>${detailsBody}`,
       json_metadata: JSON.stringify({
         app: config.appName,
         waivioRewards: {
@@ -122,9 +124,11 @@ export const reservePropositionForQuick = permlink => async (
         secondaryObject.countReservationDays
       } days to write a review of <a href='${getObjectUrlForLink(
         secondaryObject,
-      )}'>${proposedWobjName}</a>, <a href='${getObjectUrlForLink(primaryObject)}'>${getObjectName(
-        primaryObject,
-      )}</a>.</p>${detailsBody}`,
+      )}'>${proposedWobjName}</a>${
+        primaryObject.author_permlink !== secondaryObject.author_permlink
+          ? `, <a href='${getObjectUrlForLink(primaryObject)}'>${getObjectName(primaryObject)}</a>`
+          : ''
+      }.</p>${detailsBody}`,
       json_metadata: JSON.stringify({
         app: config.appName,
         waivioRewards: {
