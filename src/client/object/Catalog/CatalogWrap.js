@@ -67,7 +67,7 @@ const CatalogWrap = props => {
               sortListItemsBy(
                 getListItems(wObject),
                 defaultSortBy(wObject),
-                get(wObject, 'sortCustom', []),
+                get(wObject, 'sortCustom', {}),
               ),
             );
             setNestedWobj(wObject);
@@ -127,7 +127,7 @@ const CatalogWrap = props => {
 
   const handleSortChange = sortType => {
     setSortingBy(sortType);
-    setLists(sortListItemsBy(getListItems(obj), sortType, get(obj, 'sortCustom', [])));
+    setLists(sortListItemsBy(getListItems(obj), sortType, get(obj, 'sortCustom', {})));
   };
 
   const itemsIdsToOmit = listItems?.map(item => item.author_permlink);
