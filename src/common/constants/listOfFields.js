@@ -56,6 +56,7 @@ export const objectFields = {
   pin: 'pin',
   remove: 'remove',
   shopFilter: 'shopFilter',
+  menuItem: 'menuItem',
 };
 
 export const TYPES_OF_MENU_ITEM = {
@@ -86,7 +87,13 @@ export const objectFieldsWithInnerData = [
   'email',
   'rating',
 ];
-
+export const menuItemFields = {
+  menuItemTitle: 'menuItemTitle',
+  menuItemStyle: 'menuItemStyle',
+  menuItemImage: 'menuItemImage',
+  linkToObject: 'linkToObject',
+  linkToWeb: 'linkToWeb',
+};
 export const addressFields = {
   accommodation: 'accommodation',
   address: 'address',
