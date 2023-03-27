@@ -274,9 +274,12 @@ export const getSortList = (sortedList = {}, itemsList) => {
   const withoutSorting = filtered.filter(
     list => !sortedList.include.includes(list.author_permlink),
   );
-  const customSort = filtered.reduce((acc, item) => {
-    if (sortedList.include.includes(item.author_permlink)) {
-      return [...acc, item];
+
+  const customSort = sortedList.include.reduce((acc, item) => {
+    const findItem = filtered.find(i => i.author_permlink === item);
+
+    if (findItem) {
+      return [...acc, findItem];
     }
 
     return acc;
@@ -294,9 +297,12 @@ export const getSortItemListForModal = (sortedList, itemsList) => {
       !sortedList.include.includes(list.author_permlink) &&
       !sortedList.exclude.includes(list.author_permlink),
   );
-  const customSort = itemsList.reduce((acc, item) => {
-    if (sortedList.include.includes(item.author_permlink)) {
-      return [...acc, item];
+
+  const customSort = sortedList.include.reduce((acc, item) => {
+    const findItem = itemsList.find(i => i.author_permlink === item);
+
+    if (findItem) {
+      return [...acc, findItem];
     }
 
     return acc;
