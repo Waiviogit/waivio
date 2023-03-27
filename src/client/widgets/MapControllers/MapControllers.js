@@ -45,8 +45,8 @@ const MapControllers = React.memo(props => {
 });
 
 MapControllers.propTypes = {
-  incrementZoom: PropTypes.func.isRequired,
-  decrementZoom: PropTypes.func.isRequired,
+  incrementZoom: PropTypes.func,
+  decrementZoom: PropTypes.func,
   className: PropTypes.string,
   withoutZoom: PropTypes.bool,
   successCallback: PropTypes.func.isRequired,
@@ -56,6 +56,8 @@ MapControllers.propTypes = {
 MapControllers.defaultProps = {
   className: 'MapConfigurationControl',
   withoutZoom: false,
+  incrementZoom: () => {},
+  decrementZoom: () => {},
 };
 
 export default MapControllers;

@@ -256,12 +256,14 @@ export default class AppendForm extends Component {
 
     if (isEmpty(currentAlbum)) {
       const defaultAlbum = getDefaultAlbum(albums);
+
       // eslint-disable-next-line react/no-did-mount-set-state
       this.setState({ currentAlbum: defaultAlbum.id });
     }
 
     if (getObjectType(wObject) === OBJECT_TYPE.LIST) {
       const sortCustom = get(wObject, 'sortCustom', []);
+
       // eslint-disable-next-line react/no-did-mount-set-state
       this.setState({ loading: true });
       const listItems = getListItems(wObject).map(item => ({
