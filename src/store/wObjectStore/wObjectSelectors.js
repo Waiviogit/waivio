@@ -27,6 +27,8 @@ export const getBreadCrumbs = createSelector([objectState], state => state.bread
 
 export const getWobjectNested = createSelector([objectState], state => state.nestedWobject);
 
+export const getWobjectAuthors = createSelector([objectState], state => state.authors);
+
 export const getObjectLists = createSelector([objectState], state => state.lists);
 
 export const getLoadingFlag = createSelector([objectState], state => state.isLoadingFlag);

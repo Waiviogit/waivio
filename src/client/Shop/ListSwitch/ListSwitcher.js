@@ -1,9 +1,10 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import classNames from 'classnames';
 import { useHistory, useRouteMatch } from 'react-router';
 import PropTypes from 'prop-types';
+import { Icon } from 'antd';
 
 import { getActiveBreadCrumb } from '../../../store/shopStore/shopSelectors';
 import DepartmentsWobjList from '../DepartmentsWobjList/DepartmentsWobjList';
@@ -18,15 +19,17 @@ import {
 } from '../../../common/helpers/wObjectHelper';
 
 import './ListSwitch.less';
+import DepartmentsMobile from '../ShopDepartments/DepartmentsMobile';
 
 const ListSwitcher = props => {
   const activeCrumb = useSelector(getActiveBreadCrumb);
   const dispatch = useDispatch();
   const match = useRouteMatch();
   const history = useHistory();
+  const [visibleNavig, setVisibleNavig] = useState(false);
 
   const list = useMemo(() => {
-    if (activeCrumb?.subdirectory) {
+    if (activeCrumb?.subdirectory || !activeCrumb) {
       switch (props.type) {
         case 'user':
           return <UserShoppingList />;
@@ -44,9 +47,7 @@ const ListSwitcher = props => {
         user={props.user}
         setVisibleNavig={props.setVisibleNavig}
         Filter={props.Filter}
-      >
-        {props.children}
-      </DepartmentsWobjList>
+      />
     );
   }, [props.type, activeCrumb, match.params.name]);
 
@@ -62,7 +63,7 @@ const ListSwitcher = props => {
         >
           Departments
         </span>{' '}
-        &gt;{' '}
+        {match.params.department && <Icon type="right" />}{' '}
         <Link
           className={classNames('ListSwitcher__breadCrumbs', {
             'ListSwitcher__breadCrumbs--active': !history.location.hash,
@@ -88,6 +89,11 @@ const ListSwitcher = props => {
           </span>
         ))}
       </h3>
+      <DepartmentsMobile
+        type={props.type}
+        visible={visibleNavig}
+        setVisible={vis => setVisibleNavig(vis)}
+      />
       {list}
     </div>
   );
@@ -99,7 +105,6 @@ ListSwitcher.propTypes = {
   user: PropTypes.string,
   type: PropTypes.string,
   path: PropTypes.string,
-  children: PropTypes.node,
   Filter: PropTypes.node,
 };
 

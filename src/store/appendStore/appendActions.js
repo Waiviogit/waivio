@@ -113,7 +113,7 @@ export const getChangedWobjectField = (
     appendObj && updatePosts
       ? updatePostCallback
       : () => {
-          dispatch(getUpdates(authorPermlink, type || fieldName, 'createdAt', locale));
+          dispatch(getUpdates(authorPermlink, type, 'createdAt', locale));
           subscribeCallback();
         },
   );

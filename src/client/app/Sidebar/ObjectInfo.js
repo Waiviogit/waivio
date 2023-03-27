@@ -58,6 +58,7 @@ import AffiliatLink from '../../widgets/AffiliatLinks/AffiliatLink';
 import ObjectFeatures from '../../object/ObjectFeatures/ObjectFeatures';
 import DepartmentsWobject from '../../object/ObjectTypeShop/DepartmentsWobject';
 import './ObjectInfo.less';
+import { setAuthors } from '../../../store/wObjectStore/wobjActions';
 
 @withRouter
 @connect(
@@ -71,7 +72,7 @@ import './ObjectInfo.less';
     activeCategory: getActiveCategory(state),
     storeGroupId: getGroupId(state),
   }),
-  { getRelatedAlbum, setStoreGroupId, setStoreActiveOption },
+  { getRelatedAlbum, setStoreGroupId, setStoreActiveOption, setAuthors },
 )
 class ObjectInfo extends React.Component {
   static propTypes = {
@@ -91,6 +92,7 @@ class ObjectInfo extends React.Component {
     getRelatedAlbum: PropTypes.func.isRequired,
     setStoreGroupId: PropTypes.func.isRequired,
     locale: PropTypes.func.isRequired,
+    setAuthors: PropTypes.func.isRequired,
     children: PropTypes.node.isRequired,
     setStoreActiveOption: PropTypes.func.isRequired,
   };
@@ -186,6 +188,7 @@ class ObjectInfo extends React.Component {
     });
 
     this.setState({ authorsArray });
+    this.props.setAuthors(authorsArray);
 
     if (publisher?.authorPermlink) {
       getObjectInfo([publisher?.authorPermlink]).then(res =>
