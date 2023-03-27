@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import classNames from 'classnames';
 import { useHistory } from 'react-router';
 import PropTypes from 'prop-types';
+import { isEmpty } from 'lodash';
 import { FormattedMessage } from 'react-intl';
 import {
   setStoreActiveCategory,
@@ -16,7 +17,14 @@ import LinkButton from '../../../components/LinkButton/LinkButton';
 
 const optionsLimit = 15;
 
-const OptionItemView = ({ option, wobject, setHoveredOption, optionsNumber, optionsBack }) => {
+const OptionItemView = ({
+  option,
+  wobject,
+  setHoveredOption,
+  optionsNumber,
+  optionsBack,
+  ownOptions,
+}) => {
   const [hovered, setHovered] = useState({});
   const locale = useSelector(getLocale);
   const userName = useSelector(getAuthenticatedUserName);
@@ -24,10 +32,14 @@ const OptionItemView = ({ option, wobject, setHoveredOption, optionsNumber, opti
   const history = useHistory();
   const dispatch = useDispatch();
 
+  useEffect(() => {
+    dispatch(setStoreActiveOption(ownOptions));
+  }, []);
+
   const getAvailableOption = el =>
-    Object.values(activeStoreOption)
-      .filter(opt => opt.body.category !== el.body.category)
-      .some(o => optionsBack[o.body.value]?.includes(el.author_permlink));
+    Object.values(!isEmpty(activeStoreOption) ? activeStoreOption : ownOptions)
+      ?.filter(opt => opt.body.category !== el.body.category)
+      ?.some(o => optionsBack[o.body.value]?.includes(el.author_permlink));
 
   const getOptionsPicturesClassName = el =>
     classNames({
@@ -60,13 +72,13 @@ const OptionItemView = ({ option, wobject, setHoveredOption, optionsNumber, opti
   const onOptionButtonClick = (e, el) => {
     dispatch(setStoreActiveCategory(el.body.category));
     setHoveredOption(el);
-    dispatch(setStoreActiveOption({ [el.body.category]: el }));
+    dispatch(setStoreActiveOption({ ...activeStoreOption, [el.body.category]: el }));
     if (el.author_permlink !== wobject.author_permlink) {
       getObject(el.author_permlink, userName, locale).then(obj =>
         history.push(obj.defaultShowLink),
       );
       dispatch(setStoreActiveCategory(el.body.category));
-      dispatch(setStoreActiveOption({ [el.body.category]: el }));
+      dispatch(setStoreActiveOption({ ...activeStoreOption, [el.body.category]: el }));
     }
   };
 
@@ -125,6 +137,7 @@ const OptionItemView = ({ option, wobject, setHoveredOption, optionsNumber, opti
 OptionItemView.propTypes = {
   wobject: PropTypes.shape().isRequired,
   optionsBack: PropTypes.shape(),
+  ownOptions: PropTypes.shape(),
   option: PropTypes.arrayOf().isRequired,
   setHoveredOption: PropTypes.func.isRequired,
   optionsNumber: PropTypes.number.isRequired,
