@@ -15,7 +15,9 @@ const MenuItemButton = ({ item }) => {
       case 'icon':
         return (
           <div>
-            <img src={itemBody.image} className="MenuItemButtons__icon" alt="pic" />
+            <a href={linkTo} className="MenuItemButtons__link ">
+              <img src={itemBody.image} className="MenuItemButtons__icon" alt="pic" />
+            </a>
             <a href={linkTo} className="MenuItemButtons__link">
               {' '}
               {itemBody.title}
@@ -34,7 +36,9 @@ const MenuItemButton = ({ item }) => {
         return (
           <div className="object-sidebar__menu-item">
             <Button className="LinkButton menu-button" type={defaultButtonType}>
-              <a href={linkTo}>{itemBody.title}</a>
+              <a href={linkTo} className="MenuItemButtons__hideLongTitle">
+                {itemBody.title}
+              </a>
             </Button>
           </div>
         );
