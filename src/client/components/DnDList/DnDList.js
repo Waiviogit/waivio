@@ -81,7 +81,10 @@ class DnDList extends Component {
 
     this.props.onChange({
       include: itemsList.map(item => item.id),
-      exclude: items.filter(i => !i.checkedItemInList).map(item => item.id),
+      exclude:
+        this.props.wobjType === OBJECT_TYPE.LIST
+          ? items.filter(i => !i.checkedItemInList).map(item => item.id)
+          : [],
     });
   }
 

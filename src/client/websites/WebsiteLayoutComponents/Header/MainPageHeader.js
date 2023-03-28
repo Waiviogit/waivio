@@ -26,6 +26,10 @@ const MainPageHeader = props => {
     aboutObject && !isHelpingObjTypes
       ? `/object/${aboutObject.author_permlink}/menu#ljc-legal`
       : `/object/ljc-legal/list`;
+  const reviewLink =
+    aboutObject && !isHelpingObjTypes
+      ? `/object/${aboutObject.author_permlink}/reviews/mds-dining-gifts`
+      : '/object/mds-dining-gifts/newsFilter/dininggifts-dw09owbl6bh';
 
   return (
     <div className="MainPageHeader">
@@ -55,7 +59,7 @@ const MainPageHeader = props => {
                 {props.intl.formatMessage({ id: 'about', defaultMessage: 'About' })}
               </Link>
             )}
-            <Link to="/object/mds-dining-gifts/newsFilter/dininggifts-dw09owbl6bh">
+            <Link to={reviewLink}>
               {props.intl.formatMessage({ id: 'reviews', defaultMessage: 'Reviews' })}
             </Link>
             <Link to={legalLink}>

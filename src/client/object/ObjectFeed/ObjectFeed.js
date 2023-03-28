@@ -98,7 +98,8 @@ export default class ObjectFeed extends React.Component {
 
   getFeedPosts = () => {
     const { readLocales, limit, match } = this.props;
-    const { name } = match.params;
+    const { name, itemId } = match.params;
+
     const isNewsfeedType =
       new URLSearchParams(this.props.history.location.search).get('category') === 'newsfeed';
 
@@ -115,7 +116,7 @@ export default class ObjectFeed extends React.Component {
       });
     } else {
       this.props.getObjectPosts({
-        object: name,
+        object: match.params[0] === 'reviews' ? itemId : name,
         username: name,
         readLanguages: readLocales,
         limit,
@@ -123,6 +124,7 @@ export default class ObjectFeed extends React.Component {
       });
     }
   };
+
   getWobjPropos = () =>
     getObjectsRewards(this.props.match.params.name, this.props.userName).then(res =>
       this.setState({ reward: res }),
