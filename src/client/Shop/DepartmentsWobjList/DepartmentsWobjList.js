@@ -9,7 +9,6 @@ import ObjectCardView from '../../objectCard/ObjectCardView';
 import EmptyCampaing from '../../statics/EmptyCampaing';
 import useQuery from '../../../hooks/useQuery';
 import { parseQueryForFilters } from '../../../waivioApi/helpers';
-import FiltersForMobile from '../../newRewards/Filters/FiltersForMobile';
 import { isMobile } from '../../../common/helpers/apiHelpers';
 import Loading from '../../components/Icon/Loading';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
@@ -20,9 +19,8 @@ import {
 
 import './DepartmentsWobjList.less';
 
-const DepartmentsWobjList = ({ getDepartmentsFeed, user, Filter }) => {
+const DepartmentsWobjList = ({ getDepartmentsFeed, user }) => {
   const [departmentInfo, setDepartmentInfo] = useState();
-  const [visible, setVisible] = useState(false);
   const [loading, setLoading] = useState(true);
   const authUser = useSelector(getAuthenticatedUserName);
   const match = useRouteMatch();
@@ -78,7 +76,6 @@ const DepartmentsWobjList = ({ getDepartmentsFeed, user, Filter }) => {
 
   return (
     <div className="DepartmentsWobjList" ref={list} id={'DepartmentsWobjList'}>
-      <FiltersForMobile setVisible={() => setVisible(true)} />
       {isEmpty(departmentInfo?.wobjects) ? (
         <EmptyCampaing emptyMessage={'There are no products in this department.'} />
       ) : (
@@ -88,7 +85,6 @@ const DepartmentsWobjList = ({ getDepartmentsFeed, user, Filter }) => {
           ))}
         </InfiniteSroll>
       )}
-      {visible && <Filter visible={visible} onClose={() => setVisible(false)} />}
     </div>
   );
 };
@@ -96,7 +92,6 @@ const DepartmentsWobjList = ({ getDepartmentsFeed, user, Filter }) => {
 DepartmentsWobjList.propTypes = {
   getDepartmentsFeed: PropTypes.func,
   user: PropTypes.string,
-  Filter: PropTypes.node,
 };
 
 export default DepartmentsWobjList;

@@ -4,7 +4,6 @@ import { useRouteMatch } from 'react-router';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 import ShopList from '../../Shop/ShopList/ShopList';
 import { getWobjectShopMainFeed } from '../../../waivioApi/ApiClient';
-import WobjectShopFilter from './WobjectShopFilter';
 
 const WobjectShoppingList = () => {
   const authUserName = useSelector(getAuthenticatedUserName);
@@ -18,7 +17,6 @@ const WobjectShoppingList = () => {
       userName={authUserName}
       path={`/object/${authorPermlink}/shop`}
       getShopFeed={getShopFeed}
-      Filter={WobjectShopFilter}
     />
   );
 };

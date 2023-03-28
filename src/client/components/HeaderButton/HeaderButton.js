@@ -93,9 +93,6 @@ const HeaderButtons = props => {
         <FormattedMessage id="feed" defaultMessage="My Feed" />
       </PopoverMenuItem>,
       rewardItem,
-      <PopoverMenuItem key="discover" topNav>
-        <FormattedMessage id="menu_discover" defaultMessage="Discover" />
-      </PopoverMenuItem>,
       ...popoverItems,
     ];
   }

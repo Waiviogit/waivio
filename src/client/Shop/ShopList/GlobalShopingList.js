@@ -5,20 +5,12 @@ import ShopList from './ShopList';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 
 import { getShopMainFeed } from '../../../waivioApi/ApiClient';
-import GlobalShopFilters from '../ShopFilters/GlobalShopFilters';
 
 const GlobalShopingList = () => {
   const authUserName = useSelector(getAuthenticatedUserName);
   const match = useRouteMatch();
 
-  return (
-    <ShopList
-      userName={authUserName}
-      path={match.url}
-      getShopFeed={getShopMainFeed}
-      Filter={GlobalShopFilters}
-    />
-  );
+  return <ShopList userName={authUserName} path={match.url} getShopFeed={getShopMainFeed} />;
 };
 
 export default GlobalShopingList;

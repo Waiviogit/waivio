@@ -58,9 +58,6 @@ const AuthUserBar = props => {
       <PopoverMenuItem key="feed" topNav>
         <FormattedMessage id="feed" defaultMessage="My Feed" />
       </PopoverMenuItem>,
-      <PopoverMenuItem key="discover" topNav>
-        <FormattedMessage id="menu_discover" defaultMessage="Discover" />
-      </PopoverMenuItem>,
       ...popoverItems,
     ];
   }
