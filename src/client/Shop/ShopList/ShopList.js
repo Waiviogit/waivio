@@ -13,7 +13,6 @@ import EmptyCampaing from '../../statics/EmptyCampaing';
 import Loading from '../../components/Icon/Loading';
 import useQuery from '../../../hooks/useQuery';
 import { parseQueryForFilters } from '../../../waivioApi/helpers';
-import FiltersForMobile from '../../newRewards/Filters/FiltersForMobile';
 import { getActiveBreadCrumb, getExcludedDepartment } from '../../../store/shopStore/shopSelectors';
 import {
   getLastPermlinksFromHash,
@@ -22,11 +21,10 @@ import {
 
 import './ShopList.less';
 
-const ShopList = ({ userName, path, getShopFeed, Filter }) => {
+const ShopList = ({ userName, path, getShopFeed }) => {
   const [departments, setDepartments] = useState([]);
   const [hasMore, setHasMore] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [visible, setVisible] = useState(false);
   const query = useQuery();
   const location = useLocation();
   const match = useRouteMatch();
@@ -96,7 +94,6 @@ const ShopList = ({ userName, path, getShopFeed, Filter }) => {
 
   return (
     <div className="ShopList">
-      <FiltersForMobile setVisible={() => setVisible(true)} />
       {isEmpty(departments) || departments?.every(dep => isEmpty(dep.wobjects)) ? (
         <EmptyCampaing emptyMessage={'This shop does not have any products.'} />
       ) : (
@@ -124,7 +121,6 @@ const ShopList = ({ userName, path, getShopFeed, Filter }) => {
           </div>
         </InfiniteSroll>
       )}
-      {visible && <Filter visible={visible} onClose={() => setVisible(false)} />}
     </div>
   );
 };
@@ -133,7 +129,6 @@ ShopList.propTypes = {
   userName: PropTypes.string,
   path: PropTypes.string,
   getShopFeed: PropTypes.func,
-  Filter: PropTypes.node,
 };
 
 export default ShopList;

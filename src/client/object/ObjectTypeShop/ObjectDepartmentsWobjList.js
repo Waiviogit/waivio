@@ -4,7 +4,6 @@ import { useSelector } from 'react-redux';
 import { getWobjectDepartmentsFeed } from '../../../waivioApi/ApiClient';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 import ListSwitcher from '../../Shop/ListSwitch/ListSwitcher';
-import WobjectShopFilter from './WobjectShopFilter';
 
 const ObjectDepartmentsWobjList = () => {
   const match = useRouteMatch();
@@ -27,7 +26,6 @@ const ObjectDepartmentsWobjList = () => {
       getDepartmentsFeed={getDepartmentsFeed}
       path={`/object/${match.params.name}/shop`}
       type={'wobject'}
-      Filter={WobjectShopFilter}
     />
   );
 };

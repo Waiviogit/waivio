@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import classNames from 'classnames';
 import { useHistory, useRouteMatch } from 'react-router';
 import PropTypes from 'prop-types';
-import { Icon } from 'antd';
+import { Icon, Modal } from 'antd';
 
 import { getActiveBreadCrumb } from '../../../store/shopStore/shopSelectors';
 import DepartmentsWobjList from '../DepartmentsWobjList/DepartmentsWobjList';
@@ -17,9 +17,13 @@ import {
   getLastPermlinksFromHash,
   getPermlinksFromHash,
 } from '../../../common/helpers/wObjectHelper';
+import DepartmentsMobile from '../ShopDepartments/DepartmentsMobile';
+import FiltersForMobile from '../../newRewards/Filters/FiltersForMobile';
+import UserFilters from '../ShopFilters/UserFilters';
+import WobjectShopFilter from '../../object/ObjectTypeShop/WobjectShopFilter';
+import GlobalShopFilters from '../ShopFilters/GlobalShopFilters';
 
 import './ListSwitch.less';
-import DepartmentsMobile from '../ShopDepartments/DepartmentsMobile';
 
 const ListSwitcher = props => {
   const activeCrumb = useSelector(getActiveBreadCrumb);
@@ -27,9 +31,10 @@ const ListSwitcher = props => {
   const match = useRouteMatch();
   const history = useHistory();
   const [visibleNavig, setVisibleNavig] = useState(false);
+  const [visibleFilter, setVisibleFilter] = useState(false);
 
   const list = useMemo(() => {
-    if (activeCrumb?.subdirectory || !activeCrumb) {
+    if (activeCrumb?.subdirectory || !match.params.department) {
       switch (props.type) {
         case 'user':
           return <UserShoppingList />;
@@ -46,10 +51,24 @@ const ListSwitcher = props => {
         getDepartmentsFeed={props.getDepartmentsFeed}
         user={props.user}
         setVisibleNavig={props.setVisibleNavig}
-        Filter={props.Filter}
       />
     );
-  }, [props.type, activeCrumb, match.params.name]);
+  }, [props.type, activeCrumb, match.params.name, match.params.department]);
+
+  const filter = useMemo(() => {
+    const closeFilter = () => setVisibleFilter(false);
+
+    switch (props.type) {
+      case 'user':
+        return <UserFilters onClose={closeFilter} />;
+
+      case 'wobject':
+        return <WobjectShopFilter onClose={closeFilter} />;
+
+      default:
+        return <GlobalShopFilters onClose={closeFilter} />;
+    }
+  }, [props.type, activeCrumb, match.params.name, match.params.department]);
 
   return (
     <div className={'ListSwitcher'}>
@@ -89,11 +108,17 @@ const ListSwitcher = props => {
           </span>
         ))}
       </h3>
-      <DepartmentsMobile
-        type={props.type}
-        visible={visibleNavig}
-        setVisible={vis => setVisibleNavig(vis)}
-      />
+      <div className={'ListSwitcher__navInfo'}>
+        <DepartmentsMobile
+          type={props.type}
+          visible={visibleNavig}
+          setVisible={vis => setVisibleNavig(vis)}
+        />
+        <FiltersForMobile setVisible={() => setVisibleFilter(true)} />
+      </div>
+      <Modal visible={visibleFilter} onCancel={() => setVisibleFilter(true)}>
+        {filter}
+      </Modal>
       {list}
     </div>
   );
@@ -105,7 +130,6 @@ ListSwitcher.propTypes = {
   user: PropTypes.string,
   type: PropTypes.string,
   path: PropTypes.string,
-  Filter: PropTypes.node,
 };
 
 export default ListSwitcher;
