@@ -452,7 +452,7 @@ class ObjectInfo extends React.Component {
     const isEditMode = isAuthenticated ? this.props.isEditMode : false;
     const newsFilters = get(wobject, 'newsFilter', []);
     const website = parseWobjectField(wobject, 'website');
-    const menuItem = get(wobject, 'menuItem');
+    const menuItem = get(wobject, 'menuItem', []);
     const wobjName = getObjectName(wobject);
     const tagCategories = get(wobject, 'tagCategory', []);
     const map = parseWobjectField(wobject, 'map');

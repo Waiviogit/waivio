@@ -10,7 +10,7 @@ const WobjectShoppingList = () => {
   const match = useRouteMatch();
   const authorPermlink = match.params.name;
   const getShopFeed = (userName, authUser, filter, excluded, crumb, skip, path) =>
-    getWobjectShopMainFeed(authorPermlink, authUser, skip, path);
+    getWobjectShopMainFeed(authorPermlink, authUser, skip, excluded, filter, path);
 
   return (
     <ShopList

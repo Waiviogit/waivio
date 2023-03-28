@@ -11,7 +11,7 @@ import { getPermlinksFromHash } from '../../../common/helpers/wObjectHelper';
 
 import './ShopFilters.less';
 
-const ShopFilters = ({ onClose, getDepartmentsFilters, showMoreTagsForFilters }) => {
+const ShopFilters = ({ getDepartmentsFilters, showMoreTagsForFilters }) => {
   const [filters, setFilters] = useState();
   const [activeFilter, setActiveFilter] = useState({});
   const query = useQuery();
@@ -58,7 +58,6 @@ const ShopFilters = ({ onClose, getDepartmentsFilters, showMoreTagsForFilters })
     }
 
     history.push(`?${query.toString()}${history.location.hash}`);
-    onClose();
   };
 
   const getMoreTags = (tagCategory, skip) =>
@@ -130,7 +129,6 @@ const ShopFilters = ({ onClose, getDepartmentsFilters, showMoreTagsForFilters })
 };
 
 ShopFilters.propTypes = {
-  onClose: PropTypes.func,
   getDepartmentsFilters: PropTypes.func,
   showMoreTagsForFilters: PropTypes.func,
 };
