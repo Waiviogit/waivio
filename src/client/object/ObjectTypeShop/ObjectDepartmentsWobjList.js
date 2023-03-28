@@ -14,10 +14,11 @@ const ObjectDepartmentsWobjList = () => {
       authorPermlink,
       match.params.department,
       authUserName,
+      departments,
+      filters,
       path,
       skip,
       limit,
-      path,
     );
 
   return (

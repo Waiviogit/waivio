@@ -116,7 +116,11 @@ const ListSwitcher = props => {
         />
         <FiltersForMobile setVisible={() => setVisibleFilter(true)} />
       </div>
-      <Modal visible={visibleFilter} onCancel={() => setVisibleFilter(true)}>
+      <Modal
+        visible={visibleFilter}
+        onCancel={() => setVisibleFilter(false)}
+        onOk={() => setVisibleFilter(false)}
+      >
         {filter}
       </Modal>
       {list}
