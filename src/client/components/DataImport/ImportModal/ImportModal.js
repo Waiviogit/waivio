@@ -18,6 +18,7 @@ const ImportModal = ({ visible, toggleModal, getImportList, intl }) => {
   const [objectType, setObjectType] = useState('book');
   const [authority, setAuthority] = useState('administrative');
   const [translate, setTranslate] = useState(false);
+  const [chatGPT, setChatGPT] = useState(false);
 
   const handleUploadFile = e => {
     setUploadedFile(e.currentTarget.files[0]);
@@ -32,6 +33,7 @@ const ImportModal = ({ visible, toggleModal, getImportList, intl }) => {
     formData.append('objectType', objectType);
     formData.append('authority', authority);
     formData.append('translate', translate);
+    formData.append('useGPT', chatGPT);
     uploadObject(formData).then(res => {
       if (res.message) message.error(res.message);
 
@@ -78,6 +80,14 @@ const ImportModal = ({ visible, toggleModal, getImportList, intl }) => {
           {intl.formatMessage({
             id: 'data_import_translate_tags',
             defaultMessage: 'Translate tags to the selected locale',
+          })}
+        </Checkbox>
+      </div>
+      <div className="ImportModal__checkbox-wrap">
+        <Checkbox checked={chatGPT} onClick={() => setChatGPT(!chatGPT)}>
+          {intl.formatMessage({
+            id: 'optimize_description_with_ChatGPT',
+            defaultMessage: 'Optimize description with ChatGPT',
           })}
         </Checkbox>
       </div>
