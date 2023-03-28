@@ -291,6 +291,7 @@ export default class AppendForm extends Component {
   onSubmit = formValues => {
     const { form, wObject } = this.props;
     const postData = this.getNewPostData(formValues);
+
     const isObjectPage = this.props.match.params.name === wObject.author_permlink;
 
     /* eslint-disable no-restricted-syntax */
@@ -3206,6 +3207,7 @@ export default class AppendForm extends Component {
       case objectFields.sorting: {
         const { itemsInSortingList } = this.state;
         const buttons = parseButtonsField(wObject);
+        const menuItem = wObject?.menuItem;
         const menuLinks = getMenuItems(wObject, TYPES_OF_MENU_ITEM.LIST, OBJECT_TYPE.LIST);
         const menuPages = getMenuItems(wObject, TYPES_OF_MENU_ITEM.PAGE, OBJECT_TYPE.PAGE);
         const blogs = getBlogItems(wObject);
@@ -3239,6 +3241,15 @@ export default class AppendForm extends Component {
               id: btn.permlink,
               name: btn.body.title,
               type: objectFields.button,
+            });
+          });
+        }
+        if (!isEmpty(menuItem)) {
+          menuItem.forEach(item => {
+            listItems.push({
+              id: item.permlink,
+              name: JSON.parse(item.body).title,
+              type: '',
             });
           });
         }

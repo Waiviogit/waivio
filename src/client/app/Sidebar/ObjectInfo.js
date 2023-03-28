@@ -60,6 +60,7 @@ import DepartmentsWobject from '../../object/ObjectTypeShop/DepartmentsWobject';
 import { setAuthors } from '../../../store/wObjectStore/wobjActions';
 import MenuItemButtons from './MenuItemButtons/MenuItemButtons';
 import './ObjectInfo.less';
+import MenuItemButton from './MenuItemButtons/MenuItemButton';
 
 @withRouter
 @connect(
@@ -362,6 +363,9 @@ class ObjectInfo extends React.Component {
     );
 
     switch (item.id) {
+      case objectFields.menuItem:
+        menuItem = <MenuItemButton item={item} />;
+        break;
       case TYPES_OF_MENU_ITEM.BUTTON:
         menuItem = (
           <Button
@@ -678,6 +682,7 @@ class ObjectInfo extends React.Component {
     const menuSection = () => {
       if (!isEditMode && !isEmpty(customSort) && !hasType(wobject, OBJECT_TYPE.LIST)) {
         const buttonArray = [
+          ...menuItem,
           ...menuLinks,
           ...menuPages,
           ...button,
@@ -728,33 +733,27 @@ class ObjectInfo extends React.Component {
               {this.listItem(objectFields.sorting, null)}
             </div>
           )}
-          {isEditMode &&
-            !isList &&
-            (objectTypeMenuTitle ? (
-              <div className="object-sidebar__section-title">
-                <FormattedMessage id={wobject.object_type} />
-              </div>
-            ) : (
-              <div
-                className={
-                  this.state.showMenuLegacy
-                    ? ' object-sidebar__section-title'
-                    : 'object-sidebar__section-title paddingBottom'
-                }
+          {!objectTypeMenuTitle && isEditMode && !isList && (
+            <div
+              className={
+                this.state.showMenuLegacy
+                  ? ' object-sidebar__section-title'
+                  : 'object-sidebar__section-title paddingBottom'
+              }
+            >
+              <button
+                className="object-sidebar__menu-button"
+                onClick={() => this.setState({ showMenuLegacy: !this.state.showMenuLegacy })}
               >
-                <button
-                  className="object-sidebar__menu-button"
-                  onClick={() => this.setState({ showMenuLegacy: !this.state.showMenuLegacy })}
-                >
-                  <FormattedMessage id="menu_legacy" defaultMessage="Menu (Legacy)" />
-                  {this.state.showMenuLegacy ? (
-                    <Icon type="up" className="CompanyId__icon object-sidebar__section-title" />
-                  ) : (
-                    <Icon type="down" className="CompanyId__icon object-sidebar__section-title" />
-                  )}
-                </button>
-              </div>
-            ))}
+                <FormattedMessage id="menu_legacy" defaultMessage="Menu (Legacy)" />
+                {this.state.showMenuLegacy ? (
+                  <Icon type="up" className="CompanyId__icon object-sidebar__section-title" />
+                ) : (
+                  <Icon type="down" className="CompanyId__icon object-sidebar__section-title" />
+                )}
+              </button>
+            </div>
+          )}
           {!isList && this.state.showMenuLegacy && (
             <div className="object-sidebar__menu-items">
               <React.Fragment>
