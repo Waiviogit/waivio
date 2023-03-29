@@ -3,12 +3,14 @@ import PropTypes from 'prop-types';
 import { useRouteMatch } from 'react-router';
 import { Button } from 'antd';
 import { has } from 'lodash';
+import { Link } from 'react-router-dom';
 import { getObject } from '../../../../waivioApi/ApiClient';
 
 const MenuItemButton = ({ item }) => {
   const [url, setUrl] = useState('');
   const itemBody = JSON.parse(item.body);
-  const linkTarget = has(itemBody, 'linkToWeb') ? '_blank' : '_self';
+  const webLink = has(itemBody, 'linkToWeb');
+  const linkTarget = webLink ? '_blank' : '_self';
   const defaultButtonType = itemBody.style === 'highlight' ? 'primary' : 'default';
   const match = useRouteMatch();
   const authorPermlink = match.params.name;
@@ -39,7 +41,7 @@ const MenuItemButton = ({ item }) => {
   const renderItem = () => {
     switch (itemBody.style) {
       case 'icon':
-        return (
+        return webLink ? (
           <div>
             <a target={linkTarget} href={url} className="MenuItemButtons__link ">
               <img src={itemBody.image} className="MenuItemButtons__icon" alt="pic" />
@@ -49,22 +51,46 @@ const MenuItemButton = ({ item }) => {
               {itemBody.title}
             </a>
           </div>
+        ) : (
+          <div>
+            <Link target={linkTarget} to={url} className="MenuItemButtons__link ">
+              <img src={itemBody.image} className="MenuItemButtons__icon" alt="pic" />
+            </Link>
+            <Link target={linkTarget} to={url} className="MenuItemButtons__link">
+              {' '}
+              {itemBody.title}
+            </Link>
+          </div>
         );
       case 'image':
-        return (
+        return webLink ? (
           <div>
             <a href={url} target={linkTarget}>
               <img src={itemBody.image} className="MenuItemButtons__image" alt="pic" />
             </a>
           </div>
+        ) : (
+          <div>
+            <Link to={url} target={linkTarget}>
+              <img src={itemBody.image} className="MenuItemButtons__image" alt="pic" />
+            </Link>
+          </div>
         );
       default:
-        return (
+        return webLink ? (
           <div className="object-sidebar__menu-item">
             <Button className="LinkButton menu-button" type={defaultButtonType}>
               <a target={linkTarget} href={url} className="MenuItemButtons__hideLongTitle">
                 {itemBody.title}
               </a>
+            </Button>
+          </div>
+        ) : (
+          <div className="object-sidebar__menu-item">
+            <Button className="LinkButton menu-button" type={defaultButtonType}>
+              <Link target={linkTarget} to={url} className="MenuItemButtons__hideLongTitle">
+                {itemBody.title}
+              </Link>
             </Button>
           </div>
         );
