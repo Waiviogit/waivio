@@ -3700,7 +3700,7 @@ export default class AppendForm extends Component {
           return (
             isEmpty(getFieldValue(menuItemFields.menuItemTitle)) ||
             isEmpty(this.state.menuItemButtonType) ||
-            isEmpty(getFieldValue(objectFields.menuItem)) ||
+            isEmpty(this.state.currentImages) ||
             (isEmpty(getFieldValue(menuItemFields.linkToWeb)) && isEmpty(this.state.selectedObject))
           );
         }
