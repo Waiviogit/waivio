@@ -1,24 +1,26 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { useRouteMatch } from 'react-router';
+
 import { getWobjectShopDepartments } from '../../../waivioApi/ApiClient';
 import ShopDepartmentsList from '../../Shop/ShopDepartments/ShopDepartmentsList';
 
-const DepartmentsWobject = ({ shopFilter, authorPermlink, onClose }) => {
+const DepartmentsWobject = ({ shopFilter, onClose }) => {
+  const match = useRouteMatch();
   const getShopDepartments = (department, excluded, path) =>
-    getWobjectShopDepartments(authorPermlink, department, excluded, path);
+    getWobjectShopDepartments(match.params.name, department, excluded, path);
 
   return (
     <ShopDepartmentsList
       shopFilter={shopFilter}
       getShopDepartments={getShopDepartments}
       onClose={onClose}
-      path={`/object/${authorPermlink}/shop`}
+      path={`/object/${match.params.name}/shop`}
     />
   );
 };
 
 DepartmentsWobject.propTypes = {
-  authorPermlink: PropTypes.string.isRequired,
   onClose: PropTypes.func,
   shopFilter: PropTypes.shape(),
 };
