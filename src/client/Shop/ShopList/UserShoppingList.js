@@ -1,25 +1,13 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useRouteMatch } from 'react-router';
-
 import ShopList from './ShopList';
-import DepartmentsUser from '../ShopDepartments/DepartmentsUser';
 import { getUserShopMainFeed } from '../../../waivioApi/ApiClient';
 
 const UserShoppingList = () => {
   const match = useRouteMatch();
-  const [visibleNavig, setVisibleNavig] = useState(false);
-  const onOpen = () => setVisibleNavig(true);
-  const onClose = () => setVisibleNavig(false);
 
   return (
-    <ShopList
-      userName={match.params.name}
-      path={match.url}
-      setVisibleNavig={onOpen}
-      getShopFeed={getUserShopMainFeed}
-    >
-      {visibleNavig && <DepartmentsUser visible={visibleNavig} onClose={onClose} />}
-    </ShopList>
+    <ShopList userName={match.params.name} path={match.url} getShopFeed={getUserShopMainFeed} />
   );
 };
 

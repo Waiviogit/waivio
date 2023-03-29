@@ -8,7 +8,7 @@ import {
 } from '../../../waivioApi/ApiClient';
 import ShopFilters from '../../Shop/ShopFilters/ShopFilters';
 
-const WobjectShopFilter = ({ visible, onClose }) => {
+const WobjectShopFilter = ({ onClose }) => {
   const match = useRouteMatch();
   const getDepartmentsFilters = path => getWobjectShopFilters(match.params.name, path);
   const showMoreTagsForFilters = (tagCategory, path, skip, limit) =>
@@ -17,7 +17,6 @@ const WobjectShopFilter = ({ visible, onClose }) => {
   return (
     <ShopFilters
       getDepartmentsFilters={getDepartmentsFilters}
-      visible={visible}
       onClose={onClose}
       showMoreTagsForFilters={showMoreTagsForFilters}
     />
@@ -25,7 +24,6 @@ const WobjectShopFilter = ({ visible, onClose }) => {
 };
 
 WobjectShopFilter.propTypes = {
-  visible: PropTypes.bool,
   onClose: PropTypes.func,
 };
 

@@ -13,9 +13,6 @@ import EmptyCampaing from '../../statics/EmptyCampaing';
 import Loading from '../../components/Icon/Loading';
 import useQuery from '../../../hooks/useQuery';
 import { parseQueryForFilters } from '../../../waivioApi/helpers';
-import FiltersForMobile from '../../newRewards/Filters/FiltersForMobile';
-import ShopFilters from '../ShopFilters/ShopFilters';
-import DepartmentsMobile from '../ShopDepartments/DepartmentsMobile';
 import { getActiveBreadCrumb, getExcludedDepartment } from '../../../store/shopStore/shopSelectors';
 import {
   getLastPermlinksFromHash,
@@ -24,11 +21,10 @@ import {
 
 import './ShopList.less';
 
-const ShopList = ({ userName, path, children, setVisibleNavig, getShopFeed }) => {
+const ShopList = ({ userName, path, getShopFeed }) => {
   const [departments, setDepartments] = useState([]);
   const [hasMore, setHasMore] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [visible, setVisible] = useState(false);
   const query = useQuery();
   const location = useLocation();
   const match = useRouteMatch();
@@ -45,13 +41,12 @@ const ShopList = ({ userName, path, children, setVisibleNavig, getShopFeed }) =>
   useEffect(() => {
     if (department === activeCrumb?.name || !department) {
       setLoading(true);
-
       getShopFeed(
         userName,
         authUser,
         parseQueryForFilters(query),
-        excluded,
-        activeCrumb?.name,
+        match.params.department ? excluded : [],
+        match.params.department ? activeCrumb.name : undefined,
         0,
         pathList,
       ).then(res => {
@@ -68,7 +63,7 @@ const ShopList = ({ userName, path, children, setVisibleNavig, getShopFeed }) =>
         setLoading(false);
       });
     }
-  }, [query.toString(), activeCrumb, match.params.name]);
+  }, [query.toString(), activeCrumb, match.params.name, match.params.department]);
 
   if (loading) return <Loading />;
 
@@ -85,8 +80,8 @@ const ShopList = ({ userName, path, children, setVisibleNavig, getShopFeed }) =>
         userName,
         authUser,
         parseQueryForFilters(query),
-        excluded,
-        activeCrumb?.name,
+        match.params.department ? excluded : [],
+        match.params.department ? activeCrumb?.name : undefined,
         departments.length,
         pathList,
       ).then(res => {
@@ -99,9 +94,6 @@ const ShopList = ({ userName, path, children, setVisibleNavig, getShopFeed }) =>
 
   return (
     <div className="ShopList">
-      {!match.params.department && <h3 className="ShopList__title">Departments</h3>}
-      <DepartmentsMobile setVisible={setVisibleNavig} />
-      <FiltersForMobile setVisible={() => setVisible(true)} />
       {isEmpty(departments) || departments?.every(dep => isEmpty(dep.wobjects)) ? (
         <EmptyCampaing emptyMessage={'This shop does not have any products.'} />
       ) : (
@@ -129,8 +121,6 @@ const ShopList = ({ userName, path, children, setVisibleNavig, getShopFeed }) =>
           </div>
         </InfiniteSroll>
       )}
-      {children}
-      {visible && <ShopFilters visible={visible} onClose={() => setVisible(false)} />}
     </div>
   );
 };
@@ -138,9 +128,7 @@ const ShopList = ({ userName, path, children, setVisibleNavig, getShopFeed }) =>
 ShopList.propTypes = {
   userName: PropTypes.string,
   path: PropTypes.string,
-  setVisibleNavig: PropTypes.func,
   getShopFeed: PropTypes.func,
-  children: PropTypes.node,
 };
 
 export default ShopList;

@@ -2233,6 +2233,16 @@ export const getPendingUndelegationsToken = (account, symbol = 'WAIV') =>
     },
   });
 
+export const getPendingUnstakesToken = (account, symbol = 'WAIV') =>
+  hiveEngineContract({
+    contract: 'tokens',
+    table: 'pendingUnstakes',
+    query: {
+      account,
+      symbol,
+    },
+  });
+
 export const getHiveEngineSwap = () =>
   fetch(`${config.campaignApiPrefix}${config.hiveEngine}${config.swap}`, {
     headers,
@@ -3284,7 +3294,16 @@ export const getShopMainFeed = (
     .then(posts => posts)
     .catch(error => error);
 
-export const getWobjectShopMainFeed = (authorPermlink, follower, skip, path, limit = 10) => {
+export const getWobjectShopMainFeed = (
+  authorPermlink,
+  department,
+  follower,
+  skip,
+  excludedDepartments,
+  filter,
+  path,
+  limit = 10,
+) => {
   return fetch(`${config.apiPrefix}${config.shop}${config.getObjects}${config.mainFeed}`, {
     headers: {
       ...headers,
@@ -3294,7 +3313,10 @@ export const getWobjectShopMainFeed = (authorPermlink, follower, skip, path, lim
     body: JSON.stringify({
       authorPermlink,
       skip,
+      excludedDepartments,
+      filter,
       limit,
+      department,
       path,
     }),
   })
@@ -3387,6 +3409,7 @@ export const getWobjectDepartmentsFeed = (
   authorPermlink,
   department,
   follower,
+  filter,
   path,
   skip,
   limit,
@@ -3405,6 +3428,7 @@ export const getWobjectDepartmentsFeed = (
       path,
       skip,
       limit,
+      filter,
     }),
   })
     .then(res => res.json())

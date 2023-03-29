@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { isEmpty } from 'lodash';
-import { Checkbox, Modal, Rate } from 'antd';
+import { Checkbox, Rate } from 'antd';
 import { useHistory, useRouteMatch } from 'react-router';
 import PropTypes from 'prop-types';
 
@@ -11,7 +11,7 @@ import { getPermlinksFromHash } from '../../../common/helpers/wObjectHelper';
 
 import './ShopFilters.less';
 
-const ShopFilters = ({ visible, onClose, getDepartmentsFilters, showMoreTagsForFilters }) => {
+const ShopFilters = ({ getDepartmentsFilters, showMoreTagsForFilters }) => {
   const [filters, setFilters] = useState();
   const [activeFilter, setActiveFilter] = useState({});
   const query = useQuery();
@@ -29,7 +29,7 @@ const ShopFilters = ({ visible, onClose, getDepartmentsFilters, showMoreTagsForF
 
   useEffect(() => {
     setActiveFilter(parseQuery(query.toString()));
-  }, [match.params.department]);
+  }, [match.params.department, query.toString()]);
 
   const setActiveFilters = (type, filter, filterOnlyOne = false) => {
     const filreList = activeFilter[type] || [];
@@ -79,7 +79,7 @@ const ShopFilters = ({ visible, onClose, getDepartmentsFilters, showMoreTagsForF
 
   if (isEmpty(filters?.rating) && isEmpty(filters?.tagCategoryFilters)) return null;
 
-  const body = (
+  return (
     <div className="ShopFilters">
       <div className="ShopFilters__title">
         <i className="iconfont icon-trysearchlist ShopFilters__icon" />
@@ -126,19 +126,9 @@ const ShopFilters = ({ visible, onClose, getDepartmentsFilters, showMoreTagsForF
       ))}
     </div>
   );
-
-  return visible ? (
-    <Modal visible={visible} onCancel={onClose} onOk={onClose}>
-      {body}
-    </Modal>
-  ) : (
-    body
-  );
 };
 
 ShopFilters.propTypes = {
-  visible: PropTypes.bool,
-  onClose: PropTypes.func,
   getDepartmentsFilters: PropTypes.func,
   showMoreTagsForFilters: PropTypes.func,
 };

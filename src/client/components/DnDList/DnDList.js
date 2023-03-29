@@ -36,6 +36,10 @@ class DnDList extends Component {
     onChange: PropTypes.func,
     wobjType: PropTypes.string,
     screenSize: PropTypes.string,
+    customSort: PropTypes.shape({
+      include: PropTypes.arrayOf(PropTypes.string),
+      exclude: PropTypes.arrayOf(PropTypes.string),
+    }),
   };
   static defaultProps = {
     accentColor: 'lightgreen',
@@ -47,10 +51,7 @@ class DnDList extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      items: props.listItems.map(item => ({
-        ...item,
-        checkedItemInList: true,
-      })),
+      items: props.listItems,
     };
     this.onDragEnd = this.onDragEnd.bind(this);
   }
@@ -61,10 +62,7 @@ class DnDList extends Component {
     if (this.props.wobjType === OBJECT_TYPE.LIST && !isEqual(prevProps.listItems, listItems)) {
       // eslint-disable-next-line react/no-did-update-set-state
       this.setState({
-        items: listItems.map(item => ({
-          ...item,
-          checkedItemInList: true,
-        })),
+        items: listItems,
       });
     }
   }
@@ -83,7 +81,10 @@ class DnDList extends Component {
 
     this.props.onChange({
       include: itemsList.map(item => item.id),
-      exclude: items.filter(i => !i.checkedItemInList).map(item => item.id),
+      exclude:
+        this.props.wobjType === OBJECT_TYPE.LIST
+          ? items.filter(i => !i.checkedItemInList).map(item => item.id)
+          : [],
     });
   }
 

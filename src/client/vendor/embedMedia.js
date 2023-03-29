@@ -4,7 +4,6 @@
  * https://github.com/busyorg/embedjs/blob/dev/lib/embedjs.js
  */
 import React from 'react';
-import getUrls from 'get-urls';
 
 import { VIDEO_MATCH_URL } from '../../common/helpers/regexHelpers';
 import AsyncVideo from './asyncVideo';
@@ -21,7 +20,7 @@ const SteemEmbed = {};
 SteemEmbed.getUrls = function(text) {
   let urls = [];
   try {
-    urls = getUrls(text);
+    urls = text.match(/(https?:\/\/[^\s]+)/g) || [];
   } catch (e) {
     console.log(e);
   }

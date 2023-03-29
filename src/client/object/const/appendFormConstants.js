@@ -13,6 +13,7 @@ import {
   manufacturerFields,
   brandFields,
   merchantFields,
+  menuItemFields,
 } from '../../../common/constants/listOfFields';
 import {
   emailValidationRegExp,
@@ -1337,6 +1338,34 @@ export const fieldsRules = {
           defaultMessage: 'Field is required',
         },
         intlMeta: { field: 'Tag Category' },
+      },
+    },
+    {
+      max: 100,
+      message: {
+        intlId: {
+          id: 'value_error_long',
+          defaultMessage: "Value can't be longer than 100 characters.",
+        },
+        intlMeta: { value: 100 },
+      },
+    },
+    {
+      validator: true,
+    },
+  ],
+  [menuItemFields.menuItemTitle]: [
+    {
+      transform: value => value && value.toLowerCase(),
+    },
+    {
+      required: true,
+      message: {
+        intlId: {
+          id: 'field_error',
+          defaultMessage: 'Field is required',
+        },
+        intlMeta: { field: 'Title' },
       },
     },
     {

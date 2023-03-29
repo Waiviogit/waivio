@@ -1,0 +1,32 @@
+@import (reference) '../../../styles/custom.less';
+@import (reference) '../../../styles/modules/variables.less';
+
+.MenuItemButtons {
+  &__icon {
+    width: 55px;
+    height: 43px;
+    border: 1px solid @white-gainsboro;
+    border-radius: 4px;
+    margin-right: 10px;
+    object-fit: contain;
+  }
+  &__image {
+    width: 180px;
+    height: 112px;
+    border: 1px solid @white-gainsboro;
+    border-radius: 4px;
+    object-fit: contain;
+  }
+
+  &__hideLongTitle {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  &__link {
+    color: @black-text-basic;
+    &:hover {
+      color: @orange-hot;
+    }
+  }
+}

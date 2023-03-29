@@ -244,6 +244,7 @@ export const SET_CATALOG_BREADCRUMBS = '@wobj/SET_CATALOG_BREADCRUMBS';
 export const SET_WOBJECT_NESTED = '@wobj/SET_WOBJECT_NESTED';
 export const SET_LOADING_NESTED_WOBJECT = '@wobj/SET_LOADING_NESTED_WOBJECT';
 export const SET_LIST_ITEMS = '@wobj/SET_LIST_ITEMS';
+export const SET_AUTHORS = '@wobj/SET_AUTHORS';
 
 export const setCatalogBreadCrumbs = payload => ({
   type: SET_CATALOG_BREADCRUMBS,
@@ -263,6 +264,11 @@ export const setLoadedNestedWobject = payload => ({
 export const setListItems = lists => ({
   type: SET_LIST_ITEMS,
   lists,
+});
+
+export const setAuthors = authors => ({
+  type: SET_AUTHORS,
+  authors,
 });
 
 export const BELL_WOBJECT_NOTIFICATION = createAsyncActionType('@wobj/BELL_WOBJECT_NOTIFICATION');

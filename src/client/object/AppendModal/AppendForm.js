@@ -11,7 +11,6 @@ import {
   map,
   omitBy,
   size,
-  uniqBy,
   debounce,
 } from 'lodash';
 import uuidv4 from 'uuid/v4';
@@ -56,6 +55,7 @@ import {
   merchantFields,
   pinPostFields,
   removePostFields,
+  menuItemFields,
 } from '../../../common/constants/listOfFields';
 import OBJECT_TYPE from '../const/objectTypes';
 import { getSuitableLanguage } from '../../../store/reducers';
@@ -81,11 +81,12 @@ import {
   getNewsFilterItems,
   getNewsFeedItems,
   sortAlphabetically,
+  getSortItemListForModal,
 } from '../../../common/helpers/wObjectHelper';
 import { appendObject } from '../../../store/appendStore/appendActions';
 import withEditor from '../../components/Editor/withEditor';
 import { getVoteValue } from '../../../common/helpers/user';
-import { getExposedFieldsByObjType, sortListItemsBy } from '../wObjectHelper';
+import { getExposedFieldsByObjType } from '../wObjectHelper';
 import { rateObject } from '../../../store/wObjectStore/wobjActions';
 import SortingList from '../../components/DnDList/DnDList';
 import SearchObjectsAutocomplete from '../../components/EditorObject/SearchObjectsAutocomplete';
@@ -124,6 +125,7 @@ import MerchantForm from './FormComponents/MerchantForm';
 import AuthorForm from './FormComponents/AuthorForm';
 import SearchDepartmentAutocomplete from '../../components/SearchDepartmentAutocomplete/SearchDepartmentAutocomplete';
 import ShopFilterForm from './FormComponents/ShopFilterForm';
+import MenuItemForm from './FormComponents/MenuItemForm';
 import './AppendForm.less';
 
 @connect(
@@ -243,44 +245,41 @@ export default class AppendForm extends Component {
     formForm: formFormFields.link,
     itemsInSortingList: null,
     newsFilterTitle: null,
+    menuItemButtonType: 'standard',
   };
 
   componentDidMount = () => {
     const { currentAlbum } = this.state;
     const { albums, wObject } = this.props;
 
-    if (this.props.sliderMode) {
-      if (!this.state.sliderVisible) {
-        // eslint-disable-next-line react/no-did-mount-set-state
-        this.setState(prevState => ({ sliderVisible: !prevState.sliderVisible }));
-      }
+    if (this.props.sliderMode && !this.state.sliderVisible) {
+      // eslint-disable-next-line react/no-did-mount-set-state
+      this.setState(prevState => ({ sliderVisible: !prevState.sliderVisible }));
     }
+
     if (isEmpty(currentAlbum)) {
       const defaultAlbum = getDefaultAlbum(albums);
 
       // eslint-disable-next-line react/no-did-mount-set-state
       this.setState({ currentAlbum: defaultAlbum.id });
     }
+
     if (getObjectType(wObject) === OBJECT_TYPE.LIST) {
-      const sortCustom = get(wObject, 'sortCustom.include', []);
+      const sortCustom = get(wObject, 'sortCustom', []);
 
       // eslint-disable-next-line react/no-did-mount-set-state
       this.setState({ loading: true });
-      const defaultSortBy = obj => (isEmpty(obj.sortCustom) ? 'recency' : 'custom');
       const listItems = getListItems(wObject).map(item => ({
         ...item,
         id: item.body || item.author_permlink,
-        checkedItemInList: !isEmpty(sortCustom.include)
-          ? sortCustom.include.includes(item.author_permlink)
-          : true,
+        checkedItemInList: !(
+          !isEmpty(sortCustom.exclude) && sortCustom.exclude.includes(item.author_permlink)
+        ),
       }));
-      let sortedListItems = sortListItemsBy(listItems, defaultSortBy(wObject), sortCustom, true);
-      const sorting = listItems.filter(item => !sortCustom.includes(item.author_permlink));
 
-      sortedListItems = uniqBy([...sortedListItems, ...sorting], '_id');
       // eslint-disable-next-line react/no-did-mount-set-state
       this.setState({
-        itemsInSortingList: sortedListItems,
+        itemsInSortingList: getSortItemListForModal(sortCustom, listItems),
         loading: false,
       });
     }
@@ -292,7 +291,9 @@ export default class AppendForm extends Component {
   onSubmit = formValues => {
     const { form, wObject } = this.props;
     const postData = this.getNewPostData(formValues);
+
     const isObjectPage = this.props.match.params.name === wObject.author_permlink;
+
     /* eslint-disable no-restricted-syntax */
     // eslint-disable-next-line no-unused-vars
     for (const data of postData) {
@@ -466,6 +467,10 @@ export default class AppendForm extends Component {
         fieldBody.push(rest[objectFields.productId]);
         break;
       }
+      case objectFields.menuItem: {
+        fieldBody.push(rest[objectFields.menuItem]);
+        break;
+      }
       default:
         fieldBody.push(JSON.stringify(rest));
         break;
@@ -574,6 +579,15 @@ export default class AppendForm extends Component {
           return `@${author} added ${productIdFields.productIdType} (${langReadable}): ${
             formValues[productIdFields.productIdType]
           }, ${currentField}: ${appendValue}, ${imageDescription}`;
+        case objectFields.menuItem:
+          return `@${author} added ${objectFields.menuItem} (${langReadable}): Title: ${
+            formValues[menuItemFields.menuItemTitle]
+          }, style: ${this.state.menuItemButtonType}, link: ${
+            !isEmpty(this.state.selectedObject)
+              ? this.state.selectedObject.author_permlink
+              : formValues[menuItemFields.linkToWeb]
+          }`;
+
         case objectFields.dimensions:
           return `@${author} added ${currentField} (${langReadable}): ${
             dimensionsFields.length
@@ -850,7 +864,9 @@ export default class AppendForm extends Component {
         fieldsObject = {
           ...fieldsObject,
           body: JSON.stringify({
-            name: formValues[authorsFields.name] || this.state.selectedObject.name,
+            name: !isEmpty(formValues[authorsFields.name])
+              ? formValues[authorsFields.name]
+              : undefined,
             authorPermlink: this.state.selectedObject?.author_permlink,
           }),
         };
@@ -871,6 +887,24 @@ export default class AppendForm extends Component {
             [productIdFields.productIdType]: formValues[productIdFields.productIdType],
             [productIdFields.productId]: formValues[productIdFields.productId],
             [productIdFields.productIdImage]: formValues[productIdFields.productIdImage],
+          }),
+        };
+      }
+      if (currentField === objectFields.menuItem) {
+        fieldsObject = {
+          ...fieldsObject,
+          body: JSON.stringify({
+            title: formValues[menuItemFields.menuItemTitle],
+            style: this.state.menuItemButtonType,
+            image: !isEmpty(this.state?.currentImages)
+              ? this.state?.currentImages[0]?.src
+              : undefined,
+            linkToObject: !isEmpty(this.state.selectedObject)
+              ? this.state.selectedObject.author_permlink
+              : undefined,
+            linkToWeb: !isEmpty(formValues[menuItemFields.linkToWeb])
+              ? formValues[menuItemFields.linkToWeb]
+              : undefined,
           }),
         };
       }
@@ -1007,6 +1041,9 @@ export default class AppendForm extends Component {
     this.setState({ ignoreList });
   };
 
+  handleMenuItemButtonStyleChange = type => {
+    this.setState({ menuItemButtonType: type });
+  };
   handleAddTypeToIgnoreTypeList = type =>
     this.setState(prevState => ({ typeList: [...prevState.typeList, type] }));
 
@@ -1357,6 +1394,9 @@ export default class AppendForm extends Component {
       case objectFields.productId:
         formFields = form.getFieldsValue(Object.values(productIdFields));
         break;
+      case objectFields.menuItem:
+        formFields = form.getFieldsValue(Object.values(menuItemFields));
+        break;
       case objectFields.map:
         formFields = form.getFieldsValue(Object.values(mapFields));
         break;
@@ -1406,6 +1446,7 @@ export default class AppendForm extends Component {
       currentField === objectFields.brand ||
       currentField === objectFields.merchant ||
       currentField === objectFields.dimensions ||
+      currentField === objectFields.menuItem ||
       currentField === objectFields.features ||
       currentField === objectFields.productWeight
     ) {
@@ -2669,6 +2710,23 @@ export default class AppendForm extends Component {
           </React.Fragment>
         );
       }
+      case objectFields.menuItem: {
+        return (
+          <MenuItemForm
+            getFieldDecorator={getFieldDecorator}
+            loading={loading}
+            getFieldRules={this.getFieldRules}
+            getImages={this.getImage}
+            onLoadingImage={this.onLoadingImage}
+            handleMenuItemButtonStyleChange={this.handleMenuItemButtonStyleChange}
+            selectedObject={this.state.selectedObject}
+            onObjectCardDelete={this.onObjectCardDelete}
+            onCreateObject={this.handleCreateObject}
+            handleSelectObject={this.handleSelectObject}
+            menuItemButtonType={this.state.menuItemButtonType}
+          />
+        );
+      }
       case objectFields.productId: {
         return (
           <React.Fragment>
@@ -3151,6 +3209,7 @@ export default class AppendForm extends Component {
       case objectFields.sorting: {
         const { itemsInSortingList } = this.state;
         const buttons = parseButtonsField(wObject);
+        const menuItem = wObject?.menuItem;
         const menuLinks = getMenuItems(wObject, TYPES_OF_MENU_ITEM.LIST, OBJECT_TYPE.LIST);
         const menuPages = getMenuItems(wObject, TYPES_OF_MENU_ITEM.PAGE, OBJECT_TYPE.PAGE);
         const blogs = getBlogItems(wObject);
@@ -3184,6 +3243,15 @@ export default class AppendForm extends Component {
               id: btn.permlink,
               name: btn.body.title,
               type: objectFields.button,
+            });
+          });
+        }
+        if (!isEmpty(menuItem)) {
+          menuItem.forEach(item => {
+            listItems.push({
+              id: item.permlink,
+              name: JSON.parse(item.body).title,
+              type: '',
             });
           });
         }
@@ -3626,6 +3694,21 @@ export default class AppendForm extends Component {
         return (
           isEmpty(getFieldValue(productIdFields.productIdType)) ||
           isEmpty(getFieldValue(productIdFields.productId))
+        );
+      case objectFields.menuItem:
+        if (['image', 'icon'].includes(this.state.menuItemButtonType)) {
+          return (
+            isEmpty(getFieldValue(menuItemFields.menuItemTitle)) ||
+            isEmpty(this.state.menuItemButtonType) ||
+            isEmpty(this.state.currentImages) ||
+            (isEmpty(getFieldValue(menuItemFields.linkToWeb)) && isEmpty(this.state.selectedObject))
+          );
+        }
+
+        return (
+          isEmpty(getFieldValue(menuItemFields.menuItemTitle)) ||
+          isEmpty(this.state.menuItemButtonType) ||
+          (isEmpty(getFieldValue(menuItemFields.linkToWeb)) && isEmpty(this.state.selectedObject))
         );
       case objectFields.form:
       case objectFields.widget:

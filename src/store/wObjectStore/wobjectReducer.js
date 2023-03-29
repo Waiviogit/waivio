@@ -18,6 +18,7 @@ import {
   CLEAR_RELATED_OBJECTS,
   FOLLOW_UNFOLLOW_USER_WOBJECT_EXPERTISE,
   GET_CHANGED_WOBJECT_UPDATE,
+  SET_AUTHORS,
 } from './wobjActions';
 import { objectFields } from '../../common/constants/listOfFields';
 import { FOLLOW_USER, UNFOLLOW_USER } from '../usersStore/usersActions';
@@ -25,6 +26,7 @@ import { FOLLOW_USER, UNFOLLOW_USER } from '../usersStore/usersActions';
 export const initialState = {
   wobject: {},
   nestedWobject: {},
+  authors: [],
   nearbyWobjects: [],
   objectExpertise: {
     users: [],
@@ -60,6 +62,11 @@ export default function wobjectReducer(state = initialState, action) {
         ...state,
         isFetching: false,
         isFailed: true,
+      };
+    case SET_AUTHORS:
+      return {
+        ...state,
+        authors: action.authors,
       };
     case actions.CLEAR_OBJECT:
       return {

@@ -99,8 +99,9 @@ export default class ObjectFeed extends React.Component {
   getFeedPosts = () => {
     const { readLocales, limit, match } = this.props;
     const { name } = match.params;
-    const isNewsfeedType =
-      new URLSearchParams(this.props.history.location.search).get('category') === 'newsfeed';
+    const query = new URLSearchParams(this.props.history.location.search);
+    const isNewsfeedType = query.get('category') === 'newsfeed';
+    const newsfeedParent = query.get('parentObj');
 
     if (isNewsfeedType) {
       getObject(name).then(res => {
@@ -115,7 +116,7 @@ export default class ObjectFeed extends React.Component {
       });
     } else {
       this.props.getObjectPosts({
-        object: name,
+        object: newsfeedParent || name,
         username: name,
         readLanguages: readLocales,
         limit,
@@ -123,6 +124,7 @@ export default class ObjectFeed extends React.Component {
       });
     }
   };
+
   getWobjPropos = () =>
     getObjectsRewards(this.props.match.params.name, this.props.userName).then(res =>
       this.setState({ reward: res }),
@@ -145,13 +147,14 @@ export default class ObjectFeed extends React.Component {
     const isFetching = getFeedLoadingFromState('objectPosts', name, feed);
     const hasMore = getFeedHasMoreFromState('objectPosts', name, feed);
     const skip = content.length;
-    const isNewsfeedType =
-      new URLSearchParams(this.props.history.location.search).get('category') === 'newsfeed';
+    const query = new URLSearchParams(this.props.history.location.search);
+    const isNewsfeedType = query.get('category') === 'newsfeed';
+    const newsfeedParent = query.get('parentObj');
 
     const loadMoreContentAction = () => {
       this.props.getMoreObjectPosts({
         username: name,
-        authorPermlink: name,
+        authorPermlink: newsfeedParent || name,
         limit,
         skip,
         newsPermlink: isNewsfeedType ? this.state.newsPermlink : this.getNewsPermlink(),
