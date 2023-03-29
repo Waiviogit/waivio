@@ -29,7 +29,7 @@ const MainPageHeader = props => {
   const reviewLink =
     aboutObject && !isHelpingObjTypes
       ? `/object/${aboutObject.author_permlink}/newsFilter/dininggifts-dw09owbl6bh?parentObj=mds-dining-gifts`
-      : '/object/mds-dining-gifts/newsFilter/dininggifts-dw09owbl6bh';
+      : '/object/vsx-dining-gifts/newsfeed';
 
   return (
     <div className="MainPageHeader">
