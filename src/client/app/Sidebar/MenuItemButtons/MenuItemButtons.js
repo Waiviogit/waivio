@@ -4,7 +4,6 @@ import MenuItemButton from './MenuItemButton';
 import './MinuItemButtons.less';
 
 const MenuItemButtons = ({ menuItem }) =>
-  !isEmpty(menuItem) &&
-  menuItem?.map(item => <MenuItemButton key={item.author_permlink} item={item} />);
+  !isEmpty(menuItem) && menuItem?.map(item => <MenuItemButton key={item.permlink} item={item} />);
 
 export default MenuItemButtons;
