@@ -5,17 +5,23 @@
   &__icon {
     width: 55px;
     height: 43px;
-    border: 1px solid @blue-baliHai;
+    border: 1px solid @white-gainsboro;
     border-radius: 4px;
     margin-right: 10px;
-    object-fit: fill;
+    object-fit: contain;
   }
   &__image {
     width: 180px;
     height: 112px;
-    border: 1px solid @blue-baliHai;
-    border-radius: 12px;
-    object-fit: fill;
+    border: 1px solid @white-gainsboro;
+    border-radius: 4px;
+    object-fit: contain;
+  }
+
+  &__hideLongTitle {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
   &__link {
     color: @black-text-basic;

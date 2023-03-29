@@ -47,18 +47,20 @@ const MenuItemForm = ({
   return (
     <React.Fragment>
       <Form.Item>
-        {getFieldDecorator(menuItemFields.menuItemTitle, {
-          rules: getFieldRules(menuItemFields.menuItemTitle),
-        })(
-          <Input
-            className={classNames('AppendForm__input', {})}
-            disabled={loading}
-            placeholder={intl.formatMessage({
-              id: 'title',
-              defaultMessage: 'Title',
-            })}
-          />,
-        )}
+        <Form.Item>
+          {getFieldDecorator(menuItemFields.menuItemTitle, {
+            rules: getFieldRules(menuItemFields.menuItemTitle),
+          })(
+            <Input
+              className={classNames('AppendForm__input', {})}
+              disabled={loading}
+              placeholder={intl.formatMessage({
+                id: 'title',
+                defaultMessage: 'Title',
+              })}
+            />,
+          )}
+        </Form.Item>
         <Form.Item>
           <div className="AppendForm__appendTitles">
             <FormattedMessage id="style_of_the_button" defaultMessage="Style of the button" />
@@ -76,9 +78,10 @@ const MenuItemForm = ({
         {imageButtonType && (
           <div className="image-wrapper">
             <Form.Item>
-              {getFieldDecorator(objectFields.menuItem, {
-                rules: getFieldRules(objectFields.menuItem),
-              })(
+              {getFieldDecorator(
+                objectFields.menuItem,
+                {},
+              )(
                 <ImageSetter
                   onImageLoaded={getImages}
                   onLoadingImage={onLoadingImage}
@@ -109,7 +112,7 @@ const MenuItemForm = ({
               <FormattedMessage id="link_to_an_object" defaultMessage="Link to an object" />
             </div>
             {getFieldDecorator(menuItemFields.linkToObject, {
-              rules: getFieldRules(menuItemFields.linkToObject),
+              // rules: getFieldRules(menuItemFields.linkToObject),
             })(
               <SearchObjectsAutocomplete
                 placeholder={intl.formatMessage({
@@ -142,7 +145,7 @@ const MenuItemForm = ({
               <FormattedMessage id="link_to_a_website" defaultMessage="Link to a website" />
             </div>
             {getFieldDecorator(menuItemFields.linkToWeb, {
-              rules: getFieldRules(menuItemFields.linkToWeb),
+              // rules: getFieldRules(menuItemFields.linkToWeb),
             })(
               <Input
                 disabled={loading}
