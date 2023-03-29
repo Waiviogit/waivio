@@ -125,8 +125,8 @@ import MerchantForm from './FormComponents/MerchantForm';
 import AuthorForm from './FormComponents/AuthorForm';
 import SearchDepartmentAutocomplete from '../../components/SearchDepartmentAutocomplete/SearchDepartmentAutocomplete';
 import ShopFilterForm from './FormComponents/ShopFilterForm';
-import './AppendForm.less';
 import MenuItemForm from './FormComponents/MenuItemForm';
+import './AppendForm.less';
 
 @connect(
   state => ({
@@ -896,7 +896,9 @@ export default class AppendForm extends Component {
           body: JSON.stringify({
             title: formValues[menuItemFields.menuItemTitle],
             style: this.state.menuItemButtonType,
-            image: formValues[objectFields.menuItem],
+            image: !isEmpty(this.state?.currentImages)
+              ? this.state?.currentImages[0]?.src
+              : undefined,
             linkToObject: !isEmpty(this.state.selectedObject)
               ? this.state.selectedObject.author_permlink
               : undefined,
@@ -2714,7 +2716,7 @@ export default class AppendForm extends Component {
             getFieldDecorator={getFieldDecorator}
             loading={loading}
             getFieldRules={this.getFieldRules}
-            getImages={this.getImages}
+            getImages={this.getImage}
             onLoadingImage={this.onLoadingImage}
             handleMenuItemButtonStyleChange={this.handleMenuItemButtonStyleChange}
             selectedObject={this.state.selectedObject}
