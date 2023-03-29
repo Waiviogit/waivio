@@ -3286,6 +3286,7 @@ export const getShopMainFeed = (
 
 export const getWobjectShopMainFeed = (
   authorPermlink,
+  department,
   follower,
   skip,
   excludedDepartments,
@@ -3293,6 +3294,7 @@ export const getWobjectShopMainFeed = (
   path,
   limit = 10,
 ) => {
+  console.log(department);
   return fetch(`${config.apiPrefix}${config.shop}${config.getObjects}${config.mainFeed}`, {
     headers: {
       ...headers,
@@ -3305,6 +3307,7 @@ export const getWobjectShopMainFeed = (
       excludedDepartments,
       filter,
       limit,
+      department,
       path,
     }),
   })

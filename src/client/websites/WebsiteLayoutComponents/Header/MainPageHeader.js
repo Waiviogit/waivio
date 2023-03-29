@@ -28,7 +28,7 @@ const MainPageHeader = props => {
       : `/object/ljc-legal/list`;
   const reviewLink =
     aboutObject && !isHelpingObjTypes
-      ? `/object/${aboutObject.author_permlink}/reviews/mds-dining-gifts`
+      ? `/object/${aboutObject.author_permlink}/newsFilter/dininggifts-dw09owbl6bh?parentObj=mds-dining-gifts`
       : '/object/mds-dining-gifts/newsFilter/dininggifts-dw09owbl6bh';
 
   return (

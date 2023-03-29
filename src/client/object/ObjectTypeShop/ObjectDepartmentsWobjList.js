@@ -9,12 +9,12 @@ const ObjectDepartmentsWobjList = () => {
   const match = useRouteMatch();
   const authorPermlink = match.params.name;
   const authUserName = useSelector(getAuthenticatedUserName);
-  const getDepartmentsFeed = (user, authUser, departments, filters, path, skip, limit) =>
+  const getDepartmentsFeed = (user, authUser, department, exclude, filters, path, skip, limit) =>
     getWobjectDepartmentsFeed(
       authorPermlink,
-      match.params.department,
+      department,
       authUserName,
-      departments,
+      exclude,
       filters,
       path,
       skip,
