@@ -20,7 +20,7 @@ const SteemEmbed = {};
 SteemEmbed.getUrls = function(text) {
   let urls = [];
   try {
-    urls = getUrls(text);
+    urls = text.match(/(https?:\/\/[^\s]+)/g) || [];
   } catch (e) {
     console.log(e);
   }
@@ -35,7 +35,7 @@ SteemEmbed.getAll = function(text, options) {
   options.height = options.height || '400';
   options.autoplay = 'autoplay' in options ? options.autoplay : true;
 
-  let urls = text.match(/(https?:\/\/[^\s]+)/g);
+  let urls = this.getUrls(text);
   urls.forEach(
     function(url) {
       let embed = this.get(url, options);
