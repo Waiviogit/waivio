@@ -18,11 +18,14 @@ import {
 } from '../../../common/helpers/wObjectHelper';
 
 import './DepartmentsWobjList.less';
+import { getExcludedDepartment } from '../../../store/shopStore/shopSelectors';
 
 const DepartmentsWobjList = ({ getDepartmentsFeed, user }) => {
   const [departmentInfo, setDepartmentInfo] = useState();
   const [loading, setLoading] = useState(true);
   const authUser = useSelector(getAuthenticatedUserName);
+  const excluded = useSelector(getExcludedDepartment);
+
   const match = useRouteMatch();
   const location = useLocation();
   const query = useQuery();
@@ -31,17 +34,23 @@ const DepartmentsWobjList = ({ getDepartmentsFeed, user }) => {
     ? [match.params.department, ...getPermlinksFromHash(location.hash)]
     : [];
 
-  const departments = location.hash
+  const department = location.hash
     ? getLastPermlinksFromHash(location.hash).replaceAll('%20', ' ')
     : match.params.department;
 
   useEffect(() => {
-    getDepartmentsFeed(user, authUser, departments, parseQueryForFilters(query), path, 0).then(
-      res => {
-        setDepartmentInfo(res);
-        setLoading(false);
-      },
-    );
+    getDepartmentsFeed(
+      user,
+      authUser,
+      department,
+      excluded,
+      parseQueryForFilters(query),
+      path,
+      0,
+    ).then(res => {
+      setDepartmentInfo(res);
+      setLoading(false);
+    });
 
     if (!isMobile()) window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [match.params.department, match.params.name, query.toString(), location.hash]);
@@ -52,7 +61,7 @@ const DepartmentsWobjList = ({ getDepartmentsFeed, user }) => {
 
       window.scrollTo({ top: listRef?.offsetHeight || 0, behavior: 'smooth' });
     }
-  }, [list.current, loading, departments]);
+  }, [list.current, loading, department]);
 
   if (loading) return <Loading />;
 
@@ -60,7 +69,7 @@ const DepartmentsWobjList = ({ getDepartmentsFeed, user }) => {
     getDepartmentsFeed(
       user,
       authUser,
-      departments,
+      department,
       parseQueryForFilters(query),
       path,
       departmentInfo.wobjects.length,

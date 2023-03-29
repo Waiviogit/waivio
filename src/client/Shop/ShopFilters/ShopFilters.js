@@ -29,7 +29,7 @@ const ShopFilters = ({ getDepartmentsFilters, showMoreTagsForFilters }) => {
 
   useEffect(() => {
     setActiveFilter(parseQuery(query.toString()));
-  }, [match.params.department]);
+  }, [match.params.department, query.toString()]);
 
   const setActiveFilters = (type, filter, filterOnlyOne = false) => {
     const filreList = activeFilter[type] || [];
