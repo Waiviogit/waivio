@@ -8,6 +8,7 @@ const MenuItemButton = ({ item }) => {
   const linkTo = has(itemBody, 'linkToObject')
     ? `/object/${itemBody.linkToObject}`
     : `${itemBody.linkToWeb}`;
+  const linkTarget = has(itemBody, 'linkToWeb') ? '_blank' : '_self';
   const defaultButtonType = itemBody.style === 'highlight' ? 'primary' : 'default';
 
   const renderItem = () => {
@@ -15,8 +16,10 @@ const MenuItemButton = ({ item }) => {
       case 'icon':
         return (
           <div>
-            <img src={itemBody.image} className="MenuItemButtons__icon" alt="pic" />
-            <a href={linkTo} className="MenuItemButtons__link">
+            <a target={linkTarget} href={linkTo} className="MenuItemButtons__link ">
+              <img src={itemBody.image} className="MenuItemButtons__icon" alt="pic" />
+            </a>
+            <a target={linkTarget} href={linkTo} className="MenuItemButtons__link">
               {' '}
               {itemBody.title}
             </a>
@@ -25,7 +28,7 @@ const MenuItemButton = ({ item }) => {
       case 'image':
         return (
           <div>
-            <a href={linkTo}>
+            <a href={linkTo} target={linkTarget}>
               <img src={itemBody.image} className="MenuItemButtons__image" alt="pic" />
             </a>
           </div>
@@ -34,7 +37,9 @@ const MenuItemButton = ({ item }) => {
         return (
           <div className="object-sidebar__menu-item">
             <Button className="LinkButton menu-button" type={defaultButtonType}>
-              <a href={linkTo}>{itemBody.title}</a>
+              <a target={linkTarget} href={linkTo} className="MenuItemButtons__hideLongTitle">
+                {itemBody.title}
+              </a>
             </Button>
           </div>
         );

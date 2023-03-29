@@ -599,6 +599,12 @@ class ObjectInfo extends React.Component {
     const isList = hasType(wobject, OBJECT_TYPE.LIST);
     const tagCategoriesList = tagCategories.filter(item => !isEmpty(item.items));
     const blogsList = getBlogItems(wobject);
+    const showMenuSection =
+      !hasType(wobject, OBJECT_TYPE.PAGE) &&
+      !hasType(wobject, OBJECT_TYPE.SHOP) &&
+      !hasType(wobject, OBJECT_TYPE.LIST) &&
+      !hasType(wobject, OBJECT_TYPE.DISH) &&
+      !hasType(wobject, OBJECT_TYPE.DRINK);
     const formsList = getFormItems(wobject)?.map(item => ({
       ...item,
       id: objectFields.form,
@@ -754,7 +760,7 @@ class ObjectInfo extends React.Component {
               </button>
             </div>
           )}
-          {!isList && this.state.showMenuLegacy && (
+          {((!isList && this.state.showMenuLegacy) || !isEditMode) && (
             <div className="object-sidebar__menu-items">
               <React.Fragment>
                 {this.listItem(
@@ -1350,10 +1356,7 @@ class ObjectInfo extends React.Component {
                   )),
               )}
             {isOptionsObjectType && galleryPriceOptionsSection}
-            {!isHashtag &&
-              !hasType(wobject, OBJECT_TYPE.PAGE) &&
-              !hasType(wobject, 'shop') &&
-              menuSection()}
+            {!isHashtag && showMenuSection && menuSection()}
             {!isHashtag && aboutSection}
             {shopType && shopSection}
             {accessExtend && hasType(wobject, OBJECT_TYPE.LIST) && listSection}
