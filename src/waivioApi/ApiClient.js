@@ -2233,6 +2233,16 @@ export const getPendingUndelegationsToken = (account, symbol = 'WAIV') =>
     },
   });
 
+export const getPendingUnstakesToken = (account, symbol = 'WAIV') =>
+  hiveEngineContract({
+    contract: 'tokens',
+    table: 'pendingUnstakes',
+    query: {
+      account,
+      symbol,
+    },
+  });
+
 export const getHiveEngineSwap = () =>
   fetch(`${config.campaignApiPrefix}${config.hiveEngine}${config.swap}`, {
     headers,

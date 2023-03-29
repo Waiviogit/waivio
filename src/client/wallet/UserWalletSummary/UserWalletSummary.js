@@ -51,9 +51,7 @@ const getFormattedTotalDelegatedSP = (user, totalVestingShares, totalVestingFund
       >
         <span>
           {totalDelegatedSP > 0 ? ' (+' : ' ('}
-          <FormattedNumber
-            value={calculateTotalDelegatedSP(user, totalVestingShares, totalVestingFundSteem)}
-          />
+          <FormattedNumber value={totalDelegatedSP} />
           {')'}
         </span>
       </BTooltip>

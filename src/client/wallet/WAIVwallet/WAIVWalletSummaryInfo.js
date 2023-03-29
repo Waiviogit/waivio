@@ -2,20 +2,90 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { round, get, isNil, isEmpty } from 'lodash';
 import PropTypes from 'prop-types';
-import { FormattedMessage, FormattedNumber } from 'react-intl';
+import { FormattedDate, FormattedMessage, FormattedNumber, FormattedTime } from 'react-intl';
 import classNames from 'classnames';
 
 import WalletSummaryInfo from '../WalletSummaryInfo/WalletSummaryInfo';
 import { getUserCurrencyBalance } from '../../../store/walletStore/walletSelectors';
 import Loading from '../../components/Icon/Loading';
 import DelegateListModal from '../DelegateModals/DelegateListModal/DelegateListModal';
-import { getDelegateList, getPendingUndelegationsToken } from '../../../waivioApi/ApiClient';
+import {
+  getDelegateList,
+  getPendingUndelegationsToken,
+  getPendingUnstakesToken,
+} from '../../../waivioApi/ApiClient';
 import WalletAction from '../WalletSummaryInfo/components/WalletAction/WalletActions';
 import { getRatesList } from '../../../store/ratesStore/ratesSelector';
+import BTooltip from '../../components/BTooltip';
+import { isMobile } from '../../../common/helpers/apiHelpers';
+import { epochToUTC } from '../../../common/helpers/formatter';
+
+const getFormattedTotalDelegated = delegate => {
+  if (delegate !== 0) {
+    return (
+      <BTooltip
+        title={
+          delegate < 0 ? (
+            <span>
+              <FormattedMessage
+                id="waiv_power_delegated_from_account_tooltip"
+                defaultMessage="Waiv Power delegated from this account"
+              />
+            </span>
+          ) : (
+            <span>
+              <FormattedMessage
+                id="waiv_power_delegated_to_account_tooltip"
+                defaultMessage="Waiv Power delegated to this account"
+              />
+            </span>
+          )
+        }
+        {...(isMobile() ? { visible: false } : {})}
+      >
+        <span>
+          {delegate > 0 ? ' (+' : ' ('}
+          <FormattedNumber value={delegate} />
+          {')'}
+        </span>
+      </BTooltip>
+    );
+  }
+
+  return null;
+};
+const getFormattedPendingWithdrawal = (pendingWithdrawal, unstakesTokenInfo = {}) => {
+  if (pendingWithdrawal !== 0) {
+    const timestamp = epochToUTC(unstakesTokenInfo.nextTransactionTimestamp / 1000);
+
+    return (
+      <BTooltip
+        title={
+          <span>
+            <FormattedMessage
+              id="steem_power_pending_withdrawal_tooltip"
+              defaultMessage="The next power down is scheduled to happen on "
+            />
+            <FormattedDate value={timestamp} /> <FormattedTime value={timestamp} />
+          </span>
+        }
+        {...(isMobile() ? { visible: false } : {})}
+      >
+        <span>
+          {' - '}
+          <FormattedNumber value={pendingWithdrawal} />
+        </span>
+      </BTooltip>
+    );
+  }
+
+  return null;
+};
 
 const WAIVWalletSummaryInfo = props => {
   const [delegateList, setDeligateList] = useState([]);
   const [recivedList, setRecivedList] = useState([]);
+  const [unstakesTokenInfo, setUnstakesTokenInfo] = useState([]);
   const [undeligatedList, setUndeligatedList] = useState([]);
   const [visible, setVisible] = useState(false);
   const balance = +get(props.currencyInfo, 'balance', 0);
@@ -24,7 +94,6 @@ const WAIVWalletSummaryInfo = props => {
   const delegationsIn = +get(props.currencyInfo, 'delegationsIn', 0);
   const delegationsOut = +get(props.currencyInfo, 'delegationsOut', 0);
   const delegation = delegationsIn - delegationsOut;
-
   const estAccValue =
     props.rates.WAIV *
     props.rates.HIVE *
@@ -40,10 +109,12 @@ const WAIVWalletSummaryInfo = props => {
     const delegated = await getDelegateList({ from: props.name, symbol: 'WAIV' });
     const recived = await getDelegateList({ to: props.name, symbol: 'WAIV' });
     const undeligated = await getPendingUndelegationsToken(props.name);
+    const unstakeTokens = (await getPendingUnstakesToken(props.name, 'WAIV')) || [];
 
     setDeligateList(delegated);
     setRecivedList(recived);
     setUndeligatedList(undeligated);
+    setUnstakesTokenInfo(unstakeTokens[0]);
   };
 
   useEffect(() => {
@@ -94,13 +165,8 @@ const WAIVWalletSummaryInfo = props => {
               }}
             >
               {formattedNumber(stake + delegationsOut)}
-              {!!unstake && <span> - {formattedNumber(unstake)}</span>}{' '}
-              {!!delegation && (
-                <span>
-                  ({delegation > 0 && '+'}
-                  {formattedNumber(delegation)})
-                </span>
-              )}{' '}
+              {getFormattedPendingWithdrawal(unstake, unstakesTokenInfo)}
+              {getFormattedTotalDelegated(delegation)}
               WP
             </div>
           </div>
