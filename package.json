@@ -22,9 +22,7 @@
     "test": "jest --config jest.config.json --coverage",
     "test-one": "jest --config jest.config.json",
     "test:watch": "jest --config jest.config.json --watch",
-    "eslint-autofix": "eslint --fix \"src/**/*.js\"",
-    "heroku-prebuild": "npm i -g pm2 && pm2 install pm2-logrotate",
-    "heroku-postbuild": "npm run build"
+    "eslint-autofix": "eslint --fix \"src/**/*.js\""
   },
   "husky": {
     "hooks": {
@@ -32,8 +30,7 @@
     }
   },
   "keywords": [
-    "example",
-    "heroku"
+    "example"
   ],
   "dependencies": {
     "@babel/eslint-parser": "^7.17.0",
@@ -69,7 +66,6 @@
     "handlebars": "^4.5.3",
     "handlebars-intl": "^1.1.2",
     "he": "^1.2.0",
-    "heroku": "^7.18.3",
     "history": "^4.6.3",
     "hivesigner": "^3.2.1",
     "hoist-non-react-statics": "^3.3.2",
