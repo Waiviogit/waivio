@@ -1,8 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { useSelector } from 'react-redux';
+import { useHistory } from 'react-router';
+
+import { getWobjectNested } from '../../../store/wObjectStore/wObjectSelectors';
 
 const WidgetPage = props => {
-  const { widgetForm } = props;
+  const nestedWobject = useSelector(getWobjectNested);
+  const { wobject } = props;
+  const hash = useHistory().location.hash;
+  const currentWobject = hash ? nestedWobject : wobject;
+  const widgetForm = currentWobject?.widget && JSON.parse(currentWobject?.widget);
 
   const widgetView = widgetForm?.content?.includes('<iframe') ? (
     <div className="FormPage__block" dangerouslySetInnerHTML={{ __html: widgetForm.content }} />
@@ -42,7 +50,7 @@ const WidgetPage = props => {
 };
 
 WidgetPage.propTypes = {
-  widgetForm: PropTypes.shape(),
+  wobject: PropTypes.shape(),
 };
 
 WidgetPage.defaultProps = {
