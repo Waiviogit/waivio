@@ -31,9 +31,9 @@ import { withdrawGuest } from '../../../waivioApi/walletApi';
 import { getHiveBeneficiaryAccount } from '../../../store/settingsStore/settingsSelectors';
 import LinkHiveAccountModal from '../../settings/LinkHiveAccountModal';
 import { getRatesList } from '../../../store/ratesStore/ratesSelector';
+import { toFixed } from '../../../common/helpers/formatter';
 
 import './WithdrawModal.less';
-import { toFixed } from '../../../common/helpers/formatter';
 
 const withdrawFeePercent = 0.75;
 const withdrawFee = withdrawFeePercent / 100;
@@ -254,7 +254,13 @@ const WithdrawModal = props => {
 
   const handleSetScanAmount = value => {
     setToAmount(value);
-    setFromAmount(+value + persentCalculate(value));
+    if (pair.symbol === 'WAIV') {
+      const key = `SWAP.${pair.to_coin_symbol}`;
+
+      setFromAmount((value * rate[key]) / rate.WAIV);
+    } else {
+      setFromAmount(+value + persentCalculate(value));
+    }
   };
   const isHiveCurrency = ['HIVE', 'HBD'].includes(pair?.to_coin_symbol);
 
