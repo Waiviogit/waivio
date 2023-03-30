@@ -37,6 +37,7 @@ const Wobj = ({
   objectName,
   appendAlbum,
   helmetIcon,
+  nestedWobject,
   isWaivio,
   supportedObjectTypes,
   weightValue,
@@ -66,7 +67,8 @@ const Wobj = ({
     ''} ${tagCategories}`;
   const formsList = get(wobject, 'form', []);
   const currentForm = formsList?.find(item => item?.permlink === match.params.itemId) || {};
-  const widgetForm = (wobject?.widget && JSON.parse(wobject?.widget)) || {};
+  const currentWobject = history.location.hash ? nestedWobject : wobject;
+  const widgetForm = currentWobject?.widget && JSON.parse(currentWobject?.widget);
   const isWidgetPage = isNil(match.params[0]) && match.params[1] === 'widget';
   const currentColumn = get(currentForm, 'column', '');
   const currentWidgetColumn = get(widgetForm, 'column', '');
@@ -169,7 +171,6 @@ const Wobj = ({
               toggleViewEditMode,
               appendAlbum,
               currentForm,
-              widgetForm,
               route,
             })}
           </div>
@@ -185,6 +186,7 @@ Wobj.propTypes = {
   authenticatedUserName: PropTypes.string.isRequired,
   match: PropTypes.shape().isRequired,
   wobject: PropTypes.shape(),
+  nestedWobject: PropTypes.shape(),
   history: PropTypes.shape().isRequired,
   supportedObjectTypes: PropTypes.arrayOf(PropTypes.string),
   isEditMode: PropTypes.bool.isRequired,

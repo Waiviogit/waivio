@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useRouteMatch } from 'react-router';
+import { useDispatch } from 'react-redux';
 import { Button } from 'antd';
 import { has } from 'lodash';
 import { Link } from 'react-router-dom';
 import { getObject } from '../../../../waivioApi/ApiClient';
+import { setNestedWobject } from '../../../../store/wObjectStore/wobjActions';
 
 const MenuItemButton = ({ item }) => {
   const [url, setUrl] = useState('');
@@ -14,6 +16,7 @@ const MenuItemButton = ({ item }) => {
   const defaultButtonType = itemBody.style === 'highlight' ? 'primary' : 'default';
   const match = useRouteMatch();
   const authorPermlink = match.params.name;
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (has(itemBody, 'linkToObject')) {
@@ -27,8 +30,10 @@ const MenuItemButton = ({ item }) => {
             return setUrl(
               `/object/${authorPermlink}/newsFilter/${res.newsFeed.permlink}?parentObj=${res.author_permlink}`,
             );
-          // case 'widget':
-          //   return setUrl(`/object/${authorPermlink}/widget#${res.author_permlink}`)
+          case 'widget':
+            dispatch(setNestedWobject(res));
+
+            return setUrl(`/object/${authorPermlink}/widget#${res.author_permlink}`);
           default:
             return setUrl(`/object/${itemBody.linkToObject}`);
         }
