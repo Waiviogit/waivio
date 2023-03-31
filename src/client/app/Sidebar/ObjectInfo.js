@@ -753,9 +753,17 @@ class ObjectInfo extends React.Component {
               >
                 <FormattedMessage id="menu_legacy" defaultMessage="Menu (Legacy)" />
                 {this.state.showMenuLegacy ? (
-                  <Icon type="up" className="CompanyId__icon object-sidebar__section-title" />
+                  <Icon
+                    type="up"
+                    style={{ fontSize: '14px' }}
+                    className="CompanyId__icon object-sidebar__section-title"
+                  />
                 ) : (
-                  <Icon type="down" className="CompanyId__icon object-sidebar__section-title" />
+                  <Icon
+                    type="down"
+                    style={{ fontSize: '14px' }}
+                    className="CompanyId__icon object-sidebar__section-title"
+                  />
                 )}
               </button>
             </div>
