@@ -9,6 +9,8 @@ import FollowObjectForm from '../FollowObjectForm';
 import { getFollowingObjectsList } from '../../../store/userStore/userSelectors';
 import { getObject } from '../../../store/wObjectStore/wObjectSelectors';
 import { getVotingPower } from '../../../store/settingsStore/settingsSelectors';
+import { checkUserInObjWhiteList } from '../../../waivioApi/ApiClient';
+import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 
 const AppendFormFooter = ({
   loading,
@@ -21,24 +23,31 @@ const AppendFormFooter = ({
   disabled,
 }) => {
   const [isSliderVisible, setSliderVisibility] = useState(false);
+  const [inWhiteList, setInWhiteList] = useState(false);
   const followingList = useSelector(getFollowingObjectsList);
   const wObject = useSelector(getObject);
   const sliderMode = useSelector(getVotingPower);
+  const authUser = useSelector(getAuthenticatedUserName);
   const { getFieldValue } = form;
 
-  const calculateVoteWorth = percent => {
-    calcVote(percent);
+  const calculateVoteWorth = (percent, worth) => {
+    calcVote(percent, worth);
   };
 
   useEffect(() => {
     if (sliderMode && !isSliderVisible) {
       setSliderVisibility(!isSliderVisible);
     }
+    checkUserInObjWhiteList(authUser).then(res => {
+      setInWhiteList(res);
+    });
   }, []);
 
   const handleLikeClick = () => {
     setSliderVisibility(sliderMode);
   };
+
+  const littleVotePower = inWhiteList ? false : voteWorth < 0.001;
 
   return (
     <React.Fragment>
@@ -52,6 +61,18 @@ const AppendFormFooter = ({
         disabled={loading}
         selectedType={selectWobj}
       />
+      {littleVotePower && (
+        <div
+          style={{
+            color: 'red',
+            textAlign: 'center',
+            paddingTop: '10px',
+          }}
+        >
+          Your vote power is less than $0.001 in WAIV token. To continue, please deselect the
+          &quot;Like&quot; checkbox and add the update without a like.
+        </div>
+      )}
       {followingList.includes(wObject.author_permlink) ? null : (
         <FollowObjectForm loading={loading} form={form} />
       )}
@@ -62,7 +83,7 @@ const AppendFormFooter = ({
             className="AppendForm__submit"
             type="primary"
             loading={loading}
-            disabled={loading || disabled}
+            disabled={(loading || disabled) && littleVotePower}
             onClick={handleSubmit}
           >
             <FormattedMessage

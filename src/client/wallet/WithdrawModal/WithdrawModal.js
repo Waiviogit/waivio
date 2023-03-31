@@ -257,7 +257,7 @@ const WithdrawModal = props => {
     if (pair.symbol === 'WAIV') {
       const key = `SWAP.${pair.to_coin_symbol}`;
 
-      setFromAmount((value * rate[key]) / rate.WAIV);
+      setFromAmount(((+value + persentCalculate(value)) * rate[key]) / rate.HIVE / rate.WAIV);
     } else {
       setFromAmount(+value + persentCalculate(value));
     }

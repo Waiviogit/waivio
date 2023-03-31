@@ -16,8 +16,6 @@ import ObjectCardView from '../../objectCard/ObjectCardView';
 import { fieldsRules } from '../const/appendFormConstants';
 import AppendFormFooter from '../AppendModal/AppendFormFooter';
 import { getLanguageText } from '../../../common/translations';
-import { getVoteValue } from '../../../common/helpers/user';
-import { getRate, getRewardFund } from '../../../store/appStore/appSelectors';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 import { getFollowingObjectsList } from '../../../store/userStore/userSelectors';
 import { getObject, getObjectTagCategory } from '../../../store/wObjectStore/wObjectSelectors';
@@ -34,8 +32,6 @@ import './CreateTag.less';
     locale: getSuitableLanguage(state),
     usedLocale: getSuitableLanguage(state),
     defaultVotePercent: getVotePercent(state),
-    rewardFund: getRewardFund(state),
-    rate: getRate(state),
   }),
   dispatch =>
     bindActionCreators(
@@ -92,18 +88,7 @@ class CreateTag extends React.Component {
     });
   };
 
-  calculateVoteWorth = value => {
-    const { currentUsername, rewardFund, rate } = this.props;
-    const voteWorth = getVoteValue(
-      currentUsername,
-      rewardFund.recent_claims,
-      rewardFund.reward_balance,
-      rate,
-      value * 100,
-    );
-
-    this.setState({ votePercent: value, voteWorth });
-  };
+  calculateVoteWorth = (value, voteWorth) => this.setState({ votePercent: value, voteWorth });
 
   validateFieldValue = (rule, value, callback) => {
     const { intl, wObject, form } = this.props;
@@ -355,8 +340,6 @@ CreateTag.propTypes = {
   appendObject: PropTypes.func,
   usedLocale: PropTypes.string,
   defaultVotePercent: PropTypes.number,
-  rewardFund: PropTypes.shape(),
-  rate: PropTypes.number,
 };
 
 CreateTag.defaultProps = {
@@ -367,8 +350,6 @@ CreateTag.defaultProps = {
   categories: [],
   followingList: [],
   usedLocale: 'en-US',
-  rewardFund: {},
-  rate: 0,
   defaultVotePercent: 100,
 };
 

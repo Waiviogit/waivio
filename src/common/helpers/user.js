@@ -1,5 +1,3 @@
-import { calculateVoteValue, calculateVotingPower } from '../../client/vendor/steemitHelpers';
-
 export const getUserRank = vests => {
   let rank = 'Plankton';
 
@@ -39,16 +37,6 @@ export const getTotalShares = user =>
   Math.min(
     parseFloat(user.vesting_withdraw_rate),
     (parseFloat(user.to_withdraw) - parseFloat(user.withdrawn)) / 100000,
-  );
-
-export const getVoteValue = (user, recentClaims, rewardBalance, rate, weight = 10000) =>
-  calculateVoteValue(
-    getTotalShares(user),
-    parseFloat(recentClaims),
-    parseFloat(rewardBalance),
-    rate,
-    calculateVotingPower(user) * 10000,
-    weight,
   );
 
 export default null;
