@@ -24,6 +24,7 @@ import WobjectShopFilter from '../../object/ObjectTypeShop/WobjectShopFilter';
 import GlobalShopFilters from '../ShopFilters/GlobalShopFilters';
 
 import './ListSwitch.less';
+import Loading from '../../components/Icon/Loading';
 
 const ListSwitcher = props => {
   const activeCrumb = useSelector(getActiveBreadCrumb);
@@ -34,6 +35,8 @@ const ListSwitcher = props => {
   const [visibleFilter, setVisibleFilter] = useState(false);
 
   const list = useMemo(() => {
+    if (!activeCrumb) return <Loading />;
+
     if (activeCrumb?.subdirectory || !match.params.department) {
       switch (props.type) {
         case 'user':

@@ -1,23 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import { useHistory, useRouteMatch } from 'react-router';
+import { useRouteMatch } from 'react-router';
 import PropTypes from 'prop-types';
 import { isEmpty } from 'lodash';
 import { useDispatch } from 'react-redux';
 import DepartmentItem from './DepartmentItem';
 import { resetBreadCrumb } from '../../../store/shopStore/shopActions';
-import { getPermlinksFromHash } from '../../../common/helpers/wObjectHelper';
 
 import './ShopDepartments.less';
 
 const ShopDepartmentsList = ({ shopFilter, onClose, getShopDepartments, path }) => {
   const match = useRouteMatch();
-  const history = useHistory();
   const dispatch = useDispatch();
   const [departments, setDepartments] = useState([]);
-  const pathList = match.params.department
-    ? [match.params.department, ...getPermlinksFromHash(history.location.hash)]
-    : undefined;
 
   useEffect(() => {
     getShopDepartments().then(res => {
@@ -55,7 +50,7 @@ const ShopDepartmentsList = ({ shopFilter, onClose, getShopDepartments, path }) 
               onClose={onClose}
               getShopDepartments={getShopDepartments}
               path={path}
-              pathList={pathList}
+              pathList={[]}
             />
           ))}
         </div>
