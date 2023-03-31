@@ -95,7 +95,7 @@ const RewardsFilters = ({ config, getFilters, onlyOne, visible, onClose, intl, c
                     onChange={() => setFilters(filter.type, value, filter.onlyOne)}
                   >
                     {' '}
-                    {intl.formatMessage({ id: `filter_${title}`, defaultMessage: title })}
+                    {intl.formatMessage({ id: `filter_${filter.type}`, defaultMessage: title })}
                   </Checkbox>
                 </div>
               );

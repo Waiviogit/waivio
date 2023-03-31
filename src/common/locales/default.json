@@ -533,8 +533,8 @@
   "image_link_validation": "Please enter valid link",
   "email_append_validation": "Please enter valid email",
   "add_object": "Add object",
-  "warning_message": "Object updates are posted by Waivio Bots in order to avoid technical posts in user feeds and spending limited resource credits on multiple posts by users, authors are required to upvote updates with voting power that should generate an equivalent of at least $0.001 to ensure validity of the posted content. Users receive 70% of author rewards in addition to standard curation rewards.",
-  "vote_worth": "Your vote will be worth ${value} (min. $0.001)",
+  "warning_message": "Object updates are posted by Waivio Bots in order to avoid technical posts in user feeds and spending limited resource credits on multiple posts by users, authors are required to upvote updates with voting power that should generate an equivalent of at least $0.001 in WAIV token to ensure validity of the posted content. Users receive 70% of author rewards in addition to standard curation rewards.",
+  "vote_worth": "Your vote will be worth ${value} (min. $0.001 in WAIV token)",
   "write_new_review": "Write a new review",
   "add_photo": "Add photo",
   "need_like": "You need to like these updates to take effect",
@@ -2191,5 +2191,8 @@
   "style_of_the_button": "Style of the button",
   "link_type":"Link type",
   "link_to_a_website":"Link to a website",
+  "eligibility":"Eligibility",
+  "filter_type":"Type",
+  "filter_sponsors":"Sponsors",
   "link_to_an_object":"Link to an object"
 }

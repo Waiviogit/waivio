@@ -85,7 +85,6 @@ import {
 } from '../../../common/helpers/wObjectHelper';
 import { appendObject } from '../../../store/appendStore/appendActions';
 import withEditor from '../../components/Editor/withEditor';
-import { getVoteValue } from '../../../common/helpers/user';
 import { getExposedFieldsByObjType } from '../wObjectHelper';
 import { rateObject } from '../../../store/wObjectStore/wobjActions';
 import SortingList from '../../components/DnDList/DnDList';
@@ -103,7 +102,7 @@ import {
   blogNameValidationRegExp,
 } from '../../../common/constants/validation';
 import { addAlbumToStore, addImageToAlbumStore } from '../../../store/galleryStore/galleryActions';
-import { getRate, getRewardFund, getScreenSize } from '../../../store/appStore/appSelectors';
+import { getScreenSize } from '../../../store/appStore/appSelectors';
 import { getFollowingObjectsList } from '../../../store/userStore/userSelectors';
 import {
   getObject,
@@ -132,8 +131,6 @@ import './AppendForm.less';
   state => ({
     wObject: getObject(state),
     updates: getAppendList(state),
-    rewardFund: getRewardFund(state),
-    rate: getRate(state),
     sliderMode: getVotingPower(state),
     defaultVotePercent: getVotePercent(state),
     followingList: getFollowingObjectsList(state),
@@ -163,9 +160,7 @@ export default class AppendForm extends Component {
     /* from connect */
     wObject: PropTypes.shape(),
     updates: PropTypes.arrayOf(PropTypes.shape()),
-    rewardFund: PropTypes.shape(),
     history: PropTypes.shape().isRequired,
-    rate: PropTypes.number,
     sliderMode: PropTypes.bool,
     defaultVotePercent: PropTypes.number.isRequired,
     appendObject: PropTypes.func,
@@ -304,7 +299,7 @@ export default class AppendForm extends Component {
         .appendObject(data, {
           votePercent: data.votePower,
           follow: formValues.follow,
-          isLike: true,
+          isLike: data.isLike,
           isObjectPage,
         })
         .then(res => {
@@ -726,6 +721,7 @@ export default class AppendForm extends Component {
       const data = {};
 
       data.author = this.props.user.name;
+      data.isLike = like;
       data.parentAuthor = wObject.author;
       data.parentPermlink = wObject.author_permlink;
       data.body = getAppendMsg(data.author, bodyField);
@@ -1098,18 +1094,7 @@ export default class AppendForm extends Component {
     }));
   };
 
-  calculateVoteWorth = value => {
-    const { user, rewardFund, rate } = this.props;
-    const voteWorth = getVoteValue(
-      user,
-      rewardFund.recent_claims,
-      rewardFund.reward_balance,
-      rate,
-      value * 100,
-    );
-
-    this.setState({ votePercent: value, voteWorth });
-  };
+  calculateVoteWorth = (value, voteWorth) => this.setState({ votePercent: value, voteWorth });
 
   handleCreateAlbum = async formData => {
     const { user, wObject, hideModal, addAlbum } = this.props;
@@ -1120,7 +1105,7 @@ export default class AppendForm extends Component {
     this.setState({ loading: true });
 
     try {
-      const { author } = await this.props.appendObject(data, { votePercent });
+      const { author } = await this.props.appendObject(data, { votePercent, isLike: data.isLike });
 
       await addAlbum({ ...album, author }).then(() => hideModal());
       message.success(
@@ -1154,7 +1139,7 @@ export default class AppendForm extends Component {
     this.setState({ loading: true });
 
     this.props
-      .appendObject(data, { isLike: true })
+      .appendObject(data, { isLike: data.isLike })
       .then(() => {
         hideModal();
         this.setState({ selectedUserBlog: null, loading: false });
@@ -1235,7 +1220,7 @@ export default class AppendForm extends Component {
       const response = await this.props.appendObject(postData, {
         votePower: data.votePower,
         follow: following,
-        isLike: true,
+        isLike: postData.isLike,
       });
 
       await new Promise(resolve => setTimeout(resolve, 2000));
