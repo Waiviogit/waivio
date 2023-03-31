@@ -83,7 +83,7 @@ const AppendFormFooter = ({
             className="AppendForm__submit"
             type="primary"
             loading={loading}
-            disabled={(loading || disabled) && littleVotePower}
+            disabled={littleVotePower || loading || disabled}
             onClick={handleSubmit}
           >
             <FormattedMessage
