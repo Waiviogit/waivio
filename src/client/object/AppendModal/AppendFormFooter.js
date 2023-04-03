@@ -56,7 +56,7 @@ const AppendFormFooter = ({
         votePercent={votePercent}
         voteWorth={voteWorth}
         form={form}
-        sliderVisible={isSliderVisible}
+        showSlider
         onLikeClick={handleLikeClick}
         disabled={loading}
         selectedType={selectWobj}
@@ -69,8 +69,7 @@ const AppendFormFooter = ({
             paddingTop: '10px',
           }}
         >
-          Your vote power is less than $0.001 in WAIV token. To continue, please deselect the
-          &quot;Like&quot; checkbox and add the update without a like.
+          Your vote power is less than $0.001 in WAIV token.
         </div>
       )}
       {followingList.includes(wObject.author_permlink) ? null : (
@@ -83,7 +82,7 @@ const AppendFormFooter = ({
             className="AppendForm__submit"
             type="primary"
             loading={loading}
-            disabled={littleVotePower || loading || disabled}
+            disabled={littleVotePower || !form.getFieldValue('like') || loading || disabled}
             onClick={handleSubmit}
           >
             <FormattedMessage

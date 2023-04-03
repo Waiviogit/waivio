@@ -125,6 +125,7 @@ export default {
       'payments',
       'new-accounts',
       'data-import',
+      'ASIN-scanner',
     ].join('|'),
   },
   WEBSITES: {

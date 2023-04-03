@@ -60,6 +60,11 @@ export const dataManagementSettings = {
       id: 'data_import',
       defaultMessage: 'Data import',
     },
+    {
+      to: '/ASIN-scanner',
+      id: 'c',
+      defaultMessage: 'ASIN scanner',
+    },
   ],
 };
 export const websiteSettings = {
