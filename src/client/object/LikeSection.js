@@ -25,6 +25,7 @@ class LikeSection extends React.Component {
     disabled: PropTypes.bool,
     intl: PropTypes.shape().isRequired,
     sliderMode: PropTypes.bool,
+    showSlider: PropTypes.bool,
     defaultVotePercent: PropTypes.number,
     user: PropTypes.shape(),
     selectedType: PropTypes.shape({
@@ -54,7 +55,7 @@ class LikeSection extends React.Component {
   }
 
   componentDidMount = () => {
-    if (this.props.sliderMode) {
+    if (this.props.sliderMode || this.props.showSlider) {
       if (!this.state.sliderVisible) {
         // eslint-disable-next-line react/no-did-mount-set-state
         this.setState(prevState => ({ sliderVisible: !prevState.sliderVisible }));
@@ -82,7 +83,7 @@ class LikeSection extends React.Component {
   };
 
   handleLikeClick = () => {
-    if (this.props.sliderMode) {
+    if (this.props.sliderMode || this.props.showSlider) {
       if (!this.state.sliderVisible) {
         this.setState(prevState => ({ sliderVisible: !prevState.sliderVisible }));
       }

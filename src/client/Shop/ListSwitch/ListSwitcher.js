@@ -35,7 +35,7 @@ const ListSwitcher = props => {
   const [visibleFilter, setVisibleFilter] = useState(false);
 
   const list = useMemo(() => {
-    if (!activeCrumb) return <Loading />;
+    if (!activeCrumb && match.params.department) return <Loading />;
 
     if (activeCrumb?.subdirectory || !match.params.department) {
       switch (props.type) {
