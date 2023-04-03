@@ -1656,6 +1656,11 @@ export default class AppendForm extends Component {
     const currentField = this.props.form.getFieldValue('currentField');
     const timeoutCallback = () => setTimeout(e => this.handleSubmit(e), 3000);
 
+    if (currentField === objectFields.menuItem) {
+      this.props.form.setFieldsValue({
+        [menuItemFields.menuItemTitle]: createdObject.name,
+      });
+    }
     this.props.form.setFieldsValue({
       [currentField]: createdObject.author_permlink,
       menuItemName: createdObject.name,
