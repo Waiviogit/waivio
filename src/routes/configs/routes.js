@@ -247,6 +247,11 @@ const routes = {
           component: Views.DataImport,
         },
         {
+          path: '/ASIN-scanner',
+          exact: true,
+          component: Views.AsinScanner,
+        },
+        {
           path: `/:site/(${URL.WEBSITES.tabs})`,
           pathScope: '/:site',
           exact: true,

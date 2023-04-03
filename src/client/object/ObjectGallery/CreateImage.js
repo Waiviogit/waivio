@@ -17,8 +17,6 @@ import {
 } from '../../../common/helpers/wObjectHelper';
 import AppendFormFooter from '../AppendModal/AppendFormFooter';
 import ImageSetter from '../../components/ImageSetter/ImageSetter';
-import { getVoteValue } from '../../../common/helpers/user';
-import { getRate, getRewardFund } from '../../../store/appStore/appSelectors';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 import { getObject } from '../../../store/wObjectStore/wObjectSelectors';
 import { getVotePercent } from '../../../store/settingsStore/settingsSelectors';
@@ -32,8 +30,6 @@ import './CreateImage.less';
     wObject: getObject(state),
     albums: getObjectAlbums(state),
     defaultVotePercent: getVotePercent(state),
-    rewardFund: getRewardFund(state),
-    rate: getRate(state),
   }),
   dispatch =>
     bindActionCreators(
@@ -84,16 +80,7 @@ class CreateImage extends React.Component {
     return data;
   };
 
-  calculateVoteWorth = value => {
-    const { currentUsername, rewardFund, rate } = this.props;
-    const voteWorth = getVoteValue(
-      currentUsername,
-      rewardFund.recent_claims,
-      rewardFund.reward_balance,
-      rate,
-      value * 100,
-    );
-
+  calculateVoteWorth = (value, voteWorth) => {
     this.setState({ votePercent: value, voteWorth });
   };
 
@@ -391,8 +378,6 @@ CreateImage.propTypes = {
   wObject: PropTypes.shape(),
   appendObject: PropTypes.func,
   addImageToAlbumStore: PropTypes.func,
-  rewardFund: PropTypes.shape(),
-  rate: PropTypes.number,
   defaultVotePercent: PropTypes.number,
 };
 
@@ -403,8 +388,6 @@ CreateImage.defaultProps = {
   albums: [],
   appendObject: () => {},
   addImageToAlbumStore: () => {},
-  rewardFund: {},
-  rate: 0,
   defaultVotePercent: 100,
 };
 

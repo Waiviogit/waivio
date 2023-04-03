@@ -63,10 +63,12 @@ const DepartmentItem = ({
       department.subdirectory &&
       isEmpty(nestedDepartments)
     ) {
-      getShopDepartments(department.name, excludedMain, pathList).then(res => {
-        setNestedDepartments(res);
-        setShowNested(true);
-      });
+      getShopDepartments(department.name, excludedMain, [...pathList, department.name]).then(
+        res => {
+          setNestedDepartments(res);
+          setShowNested(true);
+        },
+      );
     }
 
     if (
@@ -128,7 +130,7 @@ const DepartmentItem = ({
               onClose={onClose}
               getShopDepartments={getShopDepartments}
               path={path}
-              pathList={pathList}
+              pathList={[...pathList, department.name]}
             />
           ))}
         </div>

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Checkbox } from 'antd';
 import { isEmpty } from 'lodash';
 import PropTypes from 'prop-types';
+import { injectIntl } from 'react-intl';
 import { useHistory, useRouteMatch } from 'react-router';
 import { useDispatch, useSelector } from 'react-redux';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
@@ -22,11 +23,11 @@ import {
   getMarkersForAll,
   getMarkersForEligible,
 } from '../../../waivioApi/ApiClient';
-
-import './RewardLists.less';
 import useQuery from '../../../hooks/useQuery';
 import { getCoordinates } from '../../../store/userStore/userActions';
 import { getRadius } from '../../components/Maps/mapHelper';
+
+import './RewardLists.less';
 
 const filterConfig = [
   { title: 'Rewards for', type: 'type' },
@@ -41,7 +42,7 @@ const sortConfig = [
   { key: 'proximity', title: 'Proximity' },
 ];
 
-const LocalRewardsList = ({ withoutFilters }) => {
+const LocalRewardsList = ({ withoutFilters, intl }) => {
   const authUser = useSelector(getAuthenticatedUserName);
   const [rewards, setRewards] = useState([]);
   const [hasMore, setHasMore] = useState(true);
@@ -84,10 +85,12 @@ const LocalRewardsList = ({ withoutFilters }) => {
       ? getAllRewardList(skip, query.toString(), sort, match.params[0])
       : getEligibleRewardList(authUser, skip, query.toString(), sort, match.params[0]);
   };
+
   const getFilters = () =>
     showAll
       ? getFiltersForAllRewards(match.params[0])
       : getFiltersForEligibleRewards(authUser, match.params[0]);
+
   const getMarkers = (userName, boundsParams) =>
     showAll
       ? getMarkersForAll(userName, boundsParams, 0, 20, match.params[0])
@@ -191,7 +194,13 @@ const LocalRewardsList = ({ withoutFilters }) => {
             onClose={onClose}
           >
             <div className="RewardsFilters__block">
-              <span className="RewardsFilters__subtitle">Eligibility:</span>
+              <span className="RewardsFilters__subtitle">
+                {intl.formatMessage({
+                  id: 'eligibility',
+                  defaultMessage: 'Eligibility',
+                })}
+                :
+              </span>
               <div>
                 <Checkbox disabled={!authUser} checked={showAll} onChange={handleCheckshowAll}>
                   {' '}
@@ -208,6 +217,7 @@ const LocalRewardsList = ({ withoutFilters }) => {
 
 LocalRewardsList.propTypes = {
   withoutFilters: PropTypes.bool,
+  intl: PropTypes.shape(),
 };
 
-export default LocalRewardsList;
+export default injectIntl(LocalRewardsList);
