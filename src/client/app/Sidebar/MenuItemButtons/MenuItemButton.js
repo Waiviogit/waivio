@@ -30,7 +30,7 @@ const MenuItemButton = ({ item }) => {
             return setUrl(
               has(res, 'newsFeed')
                 ? `/object/${authorPermlink}/newsFilter/${res.newsFeed.permlink}?parentObj=${res.author_permlink}`
-                : `/object/${res.defaultShowLink}`,
+                : `${res.defaultShowLink}`,
             );
           case 'widget':
             dispatch(setNestedWobject(res));
