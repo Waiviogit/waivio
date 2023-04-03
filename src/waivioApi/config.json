@@ -52,6 +52,7 @@
   "balance": "/balance",
   "activate": "/activate",
   "importProduct":  "/import-products",
+  "amazonAsins":  "/amazon-asins",
   "power": "/power",
   "deactivate": "/deactivate",
   "childWobjects": "/child_wobjects",

@@ -69,7 +69,7 @@ const AppendFormFooter = ({
             paddingTop: '10px',
           }}
         >
-          Your vote power is less than $0.001 in WAIV token.
+          Your vote is less than $0.001 in WAIV token.
         </div>
       )}
       {followingList.includes(wObject.author_permlink) ? null : (
