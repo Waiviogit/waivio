@@ -28,7 +28,9 @@ const MenuItemButton = ({ item }) => {
             return setUrl(`/object/${authorPermlink}/page#${itemBody.linkToObject}`);
           case 'newsfeed':
             return setUrl(
-              `/object/${authorPermlink}/newsFilter/${res.newsFeed.permlink}?parentObj=${res.author_permlink}`,
+              has(res, 'newsFeed')
+                ? `/object/${authorPermlink}/newsFilter/${res.newsFeed.permlink}?parentObj=${res.author_permlink}`
+                : `/object/${itemBody.linkToObject}`,
             );
           case 'widget':
             dispatch(setNestedWobject(res));
