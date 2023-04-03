@@ -1,4 +1,5 @@
 import Cookie from 'js-cookie';
+import { message } from 'antd';
 
 import config from './routes';
 import { headers } from './ApiClient';
@@ -90,5 +91,20 @@ export const deleteObjectImport = (user, importId) =>
     .then(res => res.json())
     .then(response => response)
     .catch(e => e);
+
+export const getAmazonAsins = uri =>
+  fetch(`${config.importApiPrefix}${config.amazonAsins}`, {
+    headers,
+    method: 'POST',
+    body: JSON.stringify({
+      uri,
+    }),
+  })
+    .then(res => res.json())
+    .then(response => {
+      if (response.message) message.error(response.message);
+
+      return response;
+    });
 
 export default null;
