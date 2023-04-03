@@ -6,24 +6,25 @@ import { debounce } from 'lodash';
 import { getAmazonAsins } from '../../../../waivioApi/importApi';
 
 import './AsinScanner.less';
-import Loading from '../../Icon/Loading';
+import EmptyCampaing from '../../../statics/EmptyCampaing';
 
 const AsinScanner = ({ intl }) => {
   const [uri, setUri] = useState('');
   const [loading, setLoading] = useState(false);
-  const [asin, setAsin] = useState('');
+  const [asin, setAsin] = useState(null);
 
   const getAmazonAsinsLinks = () => {
     setLoading(true);
 
     getAmazonAsins(uri)
       .then(r => {
-        if (r.result) message.error('Result is empty, try another url');
+        if (!r.result) message.error('Result is empty, try another url');
         setAsin(r.result);
         setLoading(false);
       })
       .catch(e => message.error(e.message));
   };
+
   const setUrlDebounce = useCallback(
     debounce(value => {
       setUri(value);
@@ -45,7 +46,7 @@ const AsinScanner = ({ intl }) => {
       </p>
       <div>
         <h4 className="AsinScanner__label">
-          {intl.formatMessage({ id: 'enter_url', defaultMessage: 'Enter URL' })}
+          {intl.formatMessage({ id: 'enter_url', defaultMessage: 'Enter URL' })}:
         </h4>
         <Input
           disabled={loading}
@@ -54,18 +55,17 @@ const AsinScanner = ({ intl }) => {
           placeholder={'URL'}
         />
         <Button loading={loading} onClick={getAmazonAsinsLinks} type="primary">
-          Scans for ASINs
+          Scan for ASINs
         </Button>
       </div>
-      {loading ? (
-        <Loading />
-      ) : (
-        asin && (
-          <div className="AsinScanner__datafinitiBlock">
-            <h4>Datafiniti product search request (API tab)</h4>
-            {asin}
-          </div>
-        )
+      {asin && (
+        <div className="AsinScanner__datafinitiBlock">
+          <h4>Datafiniti product search request (API tab)</h4>
+          {asin}
+        </div>
+      )}
+      {typeof asin === 'string' && !asin && (
+        <EmptyCampaing emptyMessage={'There are no ASIN numbers on the webpage'} />
       )}
     </div>
   );

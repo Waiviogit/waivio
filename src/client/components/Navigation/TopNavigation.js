@@ -40,6 +40,7 @@ const LINKS = {
   NOTIFICATIONS: '/notifications-list',
   NEW_ACCOUNT: '/new-accounts',
   DATA_IMPORT: '/data-import',
+  ASIN_SCANER: '/ASIN-scanner',
   BLOG: '/user-blog',
   FEED: '/feed',
   BLACKLIST: '/blacklist',
