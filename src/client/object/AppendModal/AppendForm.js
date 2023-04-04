@@ -126,6 +126,9 @@ import SearchDepartmentAutocomplete from '../../components/SearchDepartmentAutoc
 import ShopFilterForm from './FormComponents/ShopFilterForm';
 import MenuItemForm from './FormComponents/MenuItemForm';
 import './AppendForm.less';
+import RelatedForm from './FormComponents/RelatedForm';
+import AddOnForm from './FormComponents/AddOnForm';
+import SimilarForm from './FormComponents/SimilarForm';
 
 @connect(
   state => ({
@@ -391,6 +394,9 @@ export default class AppendForm extends Component {
       case objectFields.categoryItem:
       case objectFields.parent:
       case objectFields.publisher:
+      case objectFields.related:
+      case objectFields.similar:
+      case objectFields.addOn:
       case objectFields.shopFilter:
       case objectFields.manufacturer:
       case objectFields.brand:
@@ -507,6 +513,10 @@ export default class AppendForm extends Component {
 
           return `@${author} added ${currentField} (${langReadable}): ${typeInfo}${departmentsInfo}${tagsInfo}${authoritiesInfo}`;
         }
+        case objectFields.related:
+        case objectFields.similar:
+        case objectFields.addOn:
+          return `@${author} added ${currentField} (${langReadable}):\n ${this.state.selectedObject.author_permlink}`;
         case objectFields.publisher: {
           const linkInfo = this.state.selectedObject
             ? `, link: ${this.state.selectedObject.author_permlink}`
@@ -795,6 +805,24 @@ export default class AppendForm extends Component {
             [companyIdFields.companyIdType]: formValues[companyIdFields.companyIdType],
             [companyIdFields.companyId]: formValues[companyIdFields.companyId],
           }),
+        };
+      }
+      if (currentField === objectFields.related) {
+        fieldsObject = {
+          ...fieldsObject,
+          body: this.state.selectedObject?.author_permlink,
+        };
+      }
+      if (currentField === objectFields.similar) {
+        fieldsObject = {
+          ...fieldsObject,
+          body: this.state.selectedObject?.author_permlink,
+        };
+      }
+      if (currentField === objectFields.addOn) {
+        fieldsObject = {
+          ...fieldsObject,
+          body: this.state.selectedObject?.author_permlink,
         };
       }
       if (currentField === objectFields.publisher) {
@@ -1416,24 +1444,29 @@ export default class AppendForm extends Component {
     const filtered = updates.filter(f => f.locale === currentLocale && f.name === currentField);
 
     if (
-      currentField === objectFields.website ||
-      currentField === objectFields.address ||
-      currentField === objectFields.map ||
-      currentField === objectFields.status ||
-      currentField === objectFields.button ||
-      currentField === objectFields.link ||
-      currentField === objectFields.companyIdType ||
-      currentField === objectFields.companyId ||
-      currentField === objectFields.authors ||
-      currentField === objectFields.publisher ||
-      currentField === objectFields.shopFilter ||
-      currentField === objectFields.manufacturer ||
-      currentField === objectFields.brand ||
-      currentField === objectFields.merchant ||
-      currentField === objectFields.dimensions ||
-      currentField === objectFields.menuItem ||
-      currentField === objectFields.features ||
-      currentField === objectFields.productWeight
+      [
+        objectFields.website,
+        objectFields.address,
+        objectFields.map,
+        objectFields.status,
+        objectFields.button,
+        objectFields.link,
+        objectFields.companyIdType,
+        objectFields.companyId,
+        objectFields.authors,
+        objectFields.publisher,
+        objectFields.related,
+        objectFields.similar,
+        objectFields.addOn,
+        objectFields.shopFilter,
+        objectFields.manufacturer,
+        objectFields.brand,
+        objectFields.merchant,
+        objectFields.dimensions,
+        objectFields.menuItem,
+        objectFields.features,
+        objectFields.productWeight,
+      ].includes(currentField)
     ) {
       return filtered.some(f =>
         isEqual(this.getCurrentObjectBody(currentField), parseJSON(f.body)),
@@ -1850,6 +1883,45 @@ export default class AppendForm extends Component {
           <PublisherForm
             onCreateObject={this.handleCreateObject}
             loading={loading}
+            selectedObject={this.state.selectedObject}
+            handleSelectObject={this.handleSelectObject}
+            getFieldRules={this.getFieldRules}
+            isSomeValue={this.state.isSomeValue}
+            onObjectCardDelete={this.onObjectCardDelete}
+            getFieldDecorator={getFieldDecorator}
+          />
+        );
+      }
+      case objectFields.related: {
+        return (
+          <RelatedForm
+            onCreateObject={this.handleCreateObject}
+            selectedObject={this.state.selectedObject}
+            handleSelectObject={this.handleSelectObject}
+            getFieldRules={this.getFieldRules}
+            isSomeValue={this.state.isSomeValue}
+            onObjectCardDelete={this.onObjectCardDelete}
+            getFieldDecorator={getFieldDecorator}
+          />
+        );
+      }
+      case objectFields.addOn: {
+        return (
+          <AddOnForm
+            onCreateObject={this.handleCreateObject}
+            selectedObject={this.state.selectedObject}
+            handleSelectObject={this.handleSelectObject}
+            getFieldRules={this.getFieldRules}
+            isSomeValue={this.state.isSomeValue}
+            onObjectCardDelete={this.onObjectCardDelete}
+            getFieldDecorator={getFieldDecorator}
+          />
+        );
+      }
+      case objectFields.similar: {
+        return (
+          <SimilarForm
+            onCreateObject={this.handleCreateObject}
             selectedObject={this.state.selectedObject}
             handleSelectObject={this.handleSelectObject}
             getFieldRules={this.getFieldRules}
@@ -3635,6 +3707,10 @@ export default class AppendForm extends Component {
         );
       case objectFields.publisher:
         return isEmpty(getFieldValue(publisherFields.publisherName)) && !this.state.selectedObject;
+      case objectFields.related:
+      case objectFields.similar:
+      case objectFields.addOn:
+        return isEmpty(this.state.selectedObject);
       case objectFields.manufacturer:
         return (
           isEmpty(getFieldValue(manufacturerFields.manufacturerName)) && !this.state.selectedObject

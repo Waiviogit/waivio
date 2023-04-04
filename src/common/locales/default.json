@@ -2198,5 +2198,9 @@
   "filter_sponsors":"Sponsors",
   "ASIN_scanner":"ASIN scanner",
   "ASIN_scanner_description":"The ASIN scanner tool can scan any Amazon URL and extract ASIN numbers of products from that webpage. It generates a search query for Datafiniti's product search API tab. Upon finding a match for these products in the Datafiniti database, users can download a JSON file that can be uploaded to Waivio for further processing using the Data Import tool.",
-  "link_to_an_object":"Link to an object"
+  "link_to_an_object":"Link to an object",
+  "connect": "Connect",
+  "object_field_related": "Related",
+  "object_field_add-on": "Add on",
+  "object_field_similar": "Similar"
 }

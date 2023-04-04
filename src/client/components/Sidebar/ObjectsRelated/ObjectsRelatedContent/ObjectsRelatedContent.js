@@ -12,14 +12,17 @@ const ObjectsRelatedContent = ({
   setShowModal,
   intl,
   objects,
+  relatedObjects,
   currWobject,
   isLoading,
 }) => {
   let renderCard = <RightSidebarLoading id="RightSidebarLoading" />;
 
+  const renderedObjects = [...relatedObjects, ...objects];
+
   if (!isLoading) {
-    if (!isEmpty(objects)) {
-      const renderObjects = objects.map(item => (
+    if (!isEmpty(renderedObjects)) {
+      const renderObjects = renderedObjects?.map(item => (
         <ObjectCard
           key={item.author_permlink}
           wobject={item}
@@ -66,6 +69,7 @@ ObjectsRelatedContent.propTypes = {
   isCenterContent: PropTypes.bool.isRequired,
   setShowModal: PropTypes.func.isRequired,
   currWobject: PropTypes.shape().isRequired,
+  relatedObjects: PropTypes.arrayOf(PropTypes.shape()),
   objectsState: PropTypes.shape({
     objects: PropTypes.arrayOf(PropTypes.shape()),
     skip: PropTypes.number,
