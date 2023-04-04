@@ -11,6 +11,7 @@ import { getObject } from '../../../store/wObjectStore/wObjectSelectors';
 import { getVotingPower } from '../../../store/settingsStore/settingsSelectors';
 import { checkUserInObjWhiteList } from '../../../waivioApi/ApiClient';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
+import { guestUserRegex } from '../../../common/helpers/regexHelpers';
 
 const AppendFormFooter = ({
   loading,
@@ -28,6 +29,7 @@ const AppendFormFooter = ({
   const wObject = useSelector(getObject);
   const sliderMode = useSelector(getVotingPower);
   const authUser = useSelector(getAuthenticatedUserName);
+  const isGuest = guestUserRegex.test(authUser);
   const { getFieldValue } = form;
 
   const calculateVoteWorth = (percent, worth) => {
@@ -61,7 +63,7 @@ const AppendFormFooter = ({
         disabled={loading}
         selectedType={selectWobj}
       />
-      {littleVotePower && (
+      {littleVotePower && !isGuest && (
         <div
           style={{
             color: 'red',
@@ -82,7 +84,9 @@ const AppendFormFooter = ({
             className="AppendForm__submit"
             type="primary"
             loading={loading}
-            disabled={littleVotePower || !form.getFieldValue('like') || loading || disabled}
+            disabled={
+              (!isGuest && littleVotePower) || !form.getFieldValue('like') || loading || disabled
+            }
             onClick={handleSubmit}
           >
             <FormattedMessage
