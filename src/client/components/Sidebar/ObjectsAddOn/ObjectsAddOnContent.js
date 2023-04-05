@@ -1,28 +1,26 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { isEmpty } from 'lodash';
+import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
+import ObjectCard from '../ObjectCard';
+import WeightTag from '../../WeightTag';
+import RightSidebarLoading from '../../../app/Sidebar/RightSidebarLoading';
 
-import ObjectCard from '../../ObjectCard';
-import WeightTag from '../../../WeightTag';
-import RightSidebarLoading from '../../../../app/Sidebar/RightSidebarLoading';
-
-const ObjectsRelatedContent = ({
+const ObjectsAddOnContent = ({
   isCenterContent,
   setShowModal,
   intl,
-  objects,
-  relatedObjects,
+  addOnObjects,
   currWobject,
   isLoading,
 }) => {
   let renderCard = <RightSidebarLoading id="RightSidebarLoading" />;
-  const objsArr = [...relatedObjects, ...objects];
-  const renderedObjects = objsArr.length > 5 ? objsArr.slice(0, 5) : objsArr;
+
+  const addOnObjectsArr = addOnObjects.length > 5 ? addOnObjects.slice(0, 5) : addOnObjects;
 
   if (!isLoading) {
-    if (!isEmpty(renderedObjects)) {
-      const renderObjects = renderedObjects?.map(item => (
+    if (!isEmpty(addOnObjects)) {
+      const renderObjects = addOnObjectsArr?.map(item => (
         <ObjectCard
           key={item.author_permlink}
           wobject={item}
@@ -50,8 +48,15 @@ const ObjectsRelatedContent = ({
       renderCard = (
         <div className="SidebarContentBlock" data-test="objectsRelatedComponent">
           <div className="SidebarContentBlock__title" onClick={handleOpenModal}>
-            {!isCenterContent && <i className="iconfont icon-link SidebarContentBlock__icon" />}{' '}
-            {intl.formatMessage({ id: 'related_to_object', defaultMessage: 'Related to object' })}
+            {!isCenterContent && (
+              <img
+                src={'/images/icons/add-on-icon.svg'}
+                style={{ width: '18px', height: '18px' }}
+                alt="add on icon"
+                className=" icon-link SidebarContentBlock__icon"
+              />
+            )}{' '}
+            {intl.formatMessage({ id: 'object_field_add-on', defaultMessage: 'Add-on' })}
           </div>
           <div className="SidebarContentBlock__content">{renderObjects}</div>
           {renderButtons()}
@@ -65,20 +70,19 @@ const ObjectsRelatedContent = ({
   return renderCard;
 };
 
-ObjectsRelatedContent.propTypes = {
+ObjectsAddOnContent.propTypes = {
   isCenterContent: PropTypes.bool.isRequired,
   setShowModal: PropTypes.func.isRequired,
   currWobject: PropTypes.shape().isRequired,
-  relatedObjects: PropTypes.arrayOf(PropTypes.shape()),
+  addOnObjects: PropTypes.arrayOf(PropTypes.shape()),
   objectsState: PropTypes.shape({
     objects: PropTypes.arrayOf(PropTypes.shape()),
     skip: PropTypes.number,
     hasNext: PropTypes.bool,
     isLoading: PropTypes.bool,
   }).isRequired,
-  objects: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   intl: PropTypes.shape().isRequired,
   isLoading: PropTypes.bool.isRequired,
 };
 
-export default injectIntl(ObjectsRelatedContent);
+export default injectIntl(ObjectsAddOnContent);
