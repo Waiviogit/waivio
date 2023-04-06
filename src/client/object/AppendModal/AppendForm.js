@@ -154,7 +154,7 @@ import SimilarForm from './FormComponents/SimilarForm';
 @withEditor
 @withRouter
 @injectIntl
-export default class AppendForm extends Component {
+class AppendForm extends Component {
   static propTypes = {
     /* decorators */
     form: PropTypes.shape(),
@@ -3924,3 +3924,5 @@ export default class AppendForm extends Component {
     );
   }
 }
+
+export default AppendForm;

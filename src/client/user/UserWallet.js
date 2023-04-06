@@ -39,37 +39,6 @@ import {
 
 import './UserWallet.less';
 
-@injectIntl
-@withRouter
-@connect(
-  state => ({
-    totalVestingShares: getTotalVestingShares(state),
-    totalVestingFundSteem: getTotalVestingFundSteem(state),
-    usersAccountHistory: getUsersAccountHistory(state),
-    usersAccountHistoryLoading: getUsersAccountHistoryLoading(state),
-    loadingGlobalProperties: getLoadingGlobalProperties(state),
-    loadingMoreUsersAccountHistory: getLoadingMoreUsersAccountHistory(state),
-    screenSize: getScreenSize(state),
-    demoHasMoreActions: hasMoreGuestActions(state),
-    cryptosPriceHistory: getCryptosPriceHistory(state),
-    usersTransactions: getUsersTransactions(state),
-    transactionsHistory: getTransactions(state),
-    hasMore: getUserHasMore(state),
-    isErrorLoading: getIsErrorLoading(state),
-    operationNum: getOperationNum(state),
-    isloadingMoreTransactions: getIsloadingMoreTransactions(state),
-    isloadingMoreDemoTransactions: getLoadingMoreUsersAccountHistory(state),
-    isWithdrawOpen: getStatusWithdraw(state),
-    isTransactionsHistoryLoading: getIsTransactionsHistoryLoading(state),
-  }),
-  {
-    getMoreUserAccountHistory,
-    getUserTransactionHistory,
-    getMoreUserTransactionHistory,
-    getUserAccountHistory,
-    clearTransactionsHistory,
-  },
-)
 class Wallet extends Component {
   static propTypes = {
     intl: PropTypes.shape({
@@ -260,4 +229,36 @@ class Wallet extends Component {
   }
 }
 
-export default Wallet;
+export default injectIntl(
+  withRouter(
+    connect(
+      state => ({
+        totalVestingShares: getTotalVestingShares(state),
+        totalVestingFundSteem: getTotalVestingFundSteem(state),
+        usersAccountHistory: getUsersAccountHistory(state),
+        usersAccountHistoryLoading: getUsersAccountHistoryLoading(state),
+        loadingGlobalProperties: getLoadingGlobalProperties(state),
+        loadingMoreUsersAccountHistory: getLoadingMoreUsersAccountHistory(state),
+        screenSize: getScreenSize(state),
+        demoHasMoreActions: hasMoreGuestActions(state),
+        cryptosPriceHistory: getCryptosPriceHistory(state),
+        usersTransactions: getUsersTransactions(state),
+        transactionsHistory: getTransactions(state),
+        hasMore: getUserHasMore(state),
+        isErrorLoading: getIsErrorLoading(state),
+        operationNum: getOperationNum(state),
+        isloadingMoreTransactions: getIsloadingMoreTransactions(state),
+        isloadingMoreDemoTransactions: getLoadingMoreUsersAccountHistory(state),
+        isWithdrawOpen: getStatusWithdraw(state),
+        isTransactionsHistoryLoading: getIsTransactionsHistoryLoading(state),
+      }),
+      {
+        getMoreUserAccountHistory,
+        getUserTransactionHistory,
+        getMoreUserTransactionHistory,
+        getUserAccountHistory,
+        clearTransactionsHistory,
+      },
+    )(Wallet),
+  ),
+);
