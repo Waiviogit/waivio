@@ -55,22 +55,22 @@ const OptionItemView = ({
 
   const getOptionsPicturesClassName = el =>
     classNames({
+      'Options__my-pictures--selected':
+        el.body?.image === ownOptions[el.body.category]?.body?.image ||
+        wobject.author_permlink === el.author_permlink,
       'Options__pictures--black': getAvailableOption(el) || getAvailableOptions(el),
       Options__pictures: el.author_permlink !== wobject.author_permlink,
       'Options__my-pictures': el.author_permlink === wobject.author_permlink,
-      'Options__my-pictures--selected':
-        el.body?.image === activeStoreOption[el.body.category]?.body?.image ||
-        wobject.author_permlink === el.author_permlink,
     });
 
   const getOptionsClassName = el =>
     classNames({
+      'Options__my-option-button--selected':
+        ownOptions[el.body.category]?.body?.value === el.body?.value ||
+        wobject.author_permlink === el.author_permlink,
       'Options__option-button--black': getAvailableOption(el) || getAvailableOptions(el),
       'Options__option-button': el.author_permlink !== wobject.author_permlink,
       'Options__my-option-button': el.author_permlink === wobject.author_permlink,
-      'Options__my-option-button--selected':
-        activeStoreOption[el.body.category]?.body?.value === el.body?.value ||
-        wobject.author_permlink === el.author_permlink,
     });
 
   const onMouseOver = (e, el) => {
@@ -89,7 +89,7 @@ const OptionItemView = ({
       if (isMobile()) {
         history.push(`/object/${getAvailableOptions(el, true)}/about`);
       } else {
-        history.push(`/object/${getAvailableOptions(el, true)}`);
+        history.push(`/object/${el.author_permlink}`);
       }
       dispatch(setStoreActiveCategory(el.body.category));
       dispatch(setStoreActiveOption({ ...activeStoreOption, [el.body.category]: el }));
