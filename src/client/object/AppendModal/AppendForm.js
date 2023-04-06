@@ -10,6 +10,7 @@ import {
   isNil,
   map,
   omitBy,
+  trimEnd,
   size,
   debounce,
 } from 'lodash';
@@ -739,14 +740,14 @@ export default class AppendForm extends Component {
       data.title = '';
       let fieldsObject = {
         name: includes(TYPES_OF_MENU_ITEM, currentField) ? objectFields.listItem : currentField,
-        body: bodyField.trim(),
+        body: trimEnd(bodyField),
         locale: currentLocale,
       };
 
       if (currentField === objectFields.newsFilter) {
         fieldsObject = {
           ...fieldsObject,
-          title: this.getNewsFilterTitle(this.state.newsFilterTitle).trim(),
+          title: this.getNewsFilterTitle(this.state.newsFilterTitle)?.trim(),
         };
       }
       if (currentField === objectFields.avatar) {
@@ -781,9 +782,9 @@ export default class AppendForm extends Component {
           ...fieldsObject,
           body: !isEmpty(this.props.post)
             ? `${this.props.post.author}/${this.props.post.permlink}`
-            : `${formValues[removePostFields.postAuthor].trim()}/${formValues[
+            : `${formValues[removePostFields.postAuthor]?.trim()}/${formValues[
                 removePostFields.postPermlink
-              ].trim()}`,
+              ]?.trim()}`,
         };
       }
       if (currentField === objectFields.tagCategory) {
@@ -795,15 +796,15 @@ export default class AppendForm extends Component {
       if (currentField === objectFields.name) {
         fieldsObject = {
           ...fieldsObject,
-          body: formValues[objectFields.objectName].trim(),
+          body: formValues[objectFields.objectName]?.trim(),
         };
       }
       if (currentField === objectFields.companyId) {
         fieldsObject = {
           ...fieldsObject,
           body: JSON.stringify({
-            [companyIdFields.companyIdType]: formValues[companyIdFields.companyIdType].trim(),
-            [companyIdFields.companyId]: formValues[companyIdFields.companyId].trim(),
+            [companyIdFields.companyIdType]: formValues[companyIdFields.companyIdType]?.trim(),
+            [companyIdFields.companyId]: formValues[companyIdFields.companyId]?.trim(),
           }),
         };
       }
@@ -818,7 +819,7 @@ export default class AppendForm extends Component {
           ...fieldsObject,
           body: JSON.stringify({
             name: !isEmpty(formValues[publisherFields.publisherName])
-              ? formValues[publisherFields.publisherName].trim()
+              ? formValues[publisherFields.publisherName]?.trim()
               : undefined,
             authorPermlink: this.state.selectedObject?.author_permlink,
           }),
@@ -844,7 +845,7 @@ export default class AppendForm extends Component {
           ...fieldsObject,
           body: JSON.stringify({
             name: !isEmpty(formValues[manufacturerFields.manufacturerName])
-              ? formValues[manufacturerFields.manufacturerName].trim()
+              ? formValues[manufacturerFields.manufacturerName]?.trim()
               : undefined,
             authorPermlink: this.state.selectedObject?.author_permlink,
           }),
@@ -855,7 +856,7 @@ export default class AppendForm extends Component {
           ...fieldsObject,
           body: JSON.stringify({
             name: !isEmpty(formValues[brandFields.brandName])
-              ? formValues[brandFields.brandName].trim()
+              ? formValues[brandFields.brandName]?.trim()
               : undefined,
             authorPermlink: this.state.selectedObject?.author_permlink,
           }),
@@ -866,7 +867,7 @@ export default class AppendForm extends Component {
           ...fieldsObject,
           body: JSON.stringify({
             name: !isEmpty(formValues[merchantFields.merchantName])
-              ? formValues[merchantFields.merchantName].trim()
+              ? formValues[merchantFields.merchantName]?.trim()
               : undefined,
             authorPermlink: this.state.selectedObject?.author_permlink,
           }),
@@ -877,7 +878,7 @@ export default class AppendForm extends Component {
           ...fieldsObject,
           body: JSON.stringify({
             name: !isEmpty(formValues[authorsFields.name])
-              ? formValues[authorsFields.name].trim()
+              ? formValues[authorsFields.name]?.trim()
               : undefined,
             authorPermlink: this.state.selectedObject?.author_permlink,
           }),
@@ -887,8 +888,8 @@ export default class AppendForm extends Component {
         fieldsObject = {
           ...fieldsObject,
           body: JSON.stringify({
-            value: formValues[weightFields.weight].trim(),
-            unit: formValues[weightFields.unitOfWeight].trim(),
+            value: formValues[weightFields.weight]?.trim(),
+            unit: formValues[weightFields.unitOfWeight]?.trim(),
           }),
         };
       }
@@ -896,9 +897,9 @@ export default class AppendForm extends Component {
         fieldsObject = {
           ...fieldsObject,
           body: JSON.stringify({
-            [productIdFields.productIdType]: formValues[productIdFields.productIdType].trim(),
-            [productIdFields.productId]: formValues[productIdFields.productId].trim(),
-            [productIdFields.productIdImage]: formValues[productIdFields.productIdImage].trim(),
+            [productIdFields.productIdType]: formValues[productIdFields.productIdType]?.trim(),
+            [productIdFields.productId]: formValues[productIdFields.productId]?.trim(),
+            [productIdFields.productIdImage]: formValues[productIdFields.productIdImage]?.trim(),
           }),
         };
       }
@@ -906,7 +907,7 @@ export default class AppendForm extends Component {
         fieldsObject = {
           ...fieldsObject,
           body: JSON.stringify({
-            title: formValues[menuItemFields.menuItemTitle].trim(),
+            title: formValues[menuItemFields.menuItemTitle]?.trim(),
             style: this.state.menuItemButtonType,
             image: !isEmpty(this.state?.currentImages)
               ? this.state?.currentImages[0]?.src
@@ -915,7 +916,7 @@ export default class AppendForm extends Component {
               ? this.state.selectedObject.author_permlink
               : undefined,
             linkToWeb: !isEmpty(formValues[menuItemFields.linkToWeb])
-              ? formValues[menuItemFields.linkToWeb].trim()
+              ? formValues[menuItemFields.linkToWeb]?.trim()
               : undefined,
           }),
         };
@@ -924,10 +925,10 @@ export default class AppendForm extends Component {
         fieldsObject = {
           ...fieldsObject,
           body: JSON.stringify({
-            [optionsFields.category]: formValues[optionsFields.category].trim(),
-            [optionsFields.value]: formValues[optionsFields.value].trim(),
-            [optionsFields.position]: formValues[optionsFields.position].trim(),
-            image: formValues[objectFields.options].trim(),
+            [optionsFields.category]: formValues[optionsFields.category]?.trim(),
+            [optionsFields.value]: formValues[optionsFields.value]?.trim(),
+            [optionsFields.position]: formValues[optionsFields.position]?.trim(),
+            image: formValues[objectFields.options]?.trim(),
           }),
         };
       }
@@ -943,10 +944,10 @@ export default class AppendForm extends Component {
         fieldsObject = {
           ...fieldsObject,
           body: JSON.stringify({
-            length: formValues[dimensionsFields.length].trim(),
-            width: formValues[dimensionsFields.width].trim(),
-            depth: formValues[dimensionsFields.depth].trim(),
-            unit: formValues[dimensionsFields.unitOfLength].trim(),
+            length: formValues[dimensionsFields.length]?.trim(),
+            width: formValues[dimensionsFields.width]?.trim(),
+            depth: formValues[dimensionsFields.depth]?.trim(),
+            unit: formValues[dimensionsFields.unitOfLength]?.trim(),
           }),
         };
       }
@@ -954,8 +955,8 @@ export default class AppendForm extends Component {
         fieldsObject = {
           ...fieldsObject,
           body: JSON.stringify({
-            key: formValues[featuresFields.name].trim(),
-            value: formValues[featuresFields.value].trim(),
+            key: formValues[featuresFields.name]?.trim(),
+            value: formValues[featuresFields.value]?.trim(),
           }),
         };
       }
@@ -963,10 +964,10 @@ export default class AppendForm extends Component {
         fieldsObject = {
           ...fieldsObject,
           name: 'form',
-          title: formValues.formTitle.trim(),
+          title: formValues.formTitle?.trim(),
           column: formValues.formColumn,
           form: formValues.formForm,
-          link: formValues.formLink.trim() || formValues.formWidget.trim(),
+          link: formValues.formLink?.trim() || formValues.formWidget?.trim(),
         };
       }
       if (currentField === objectFields.widget) {
@@ -974,10 +975,10 @@ export default class AppendForm extends Component {
           ...fieldsObject,
           body: JSON.stringify({
             name: objectFields.widget,
-            title: formValues.formTitle.trim(),
+            title: formValues.formTitle?.trim(),
             column: formValues.formColumn,
             type: formValues.formForm,
-            content: formValues.formLink.trim() || formValues.formWidget.trim(),
+            content: formValues.formLink?.trim() || formValues.formWidget?.trim(),
           }),
         };
       }
