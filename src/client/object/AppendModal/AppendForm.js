@@ -3769,6 +3769,11 @@ class AppendForm extends Component {
           isEmpty(getFieldValue(pinPostFields.postPermlink)) ||
           isEmpty(getFieldValue(pinPostFields.postAuthor))
         );
+      case objectFields.remove:
+        return (
+          isEmpty(getFieldValue(removePostFields.postPermlink)) ||
+          isEmpty(getFieldValue(removePostFields.postAuthor))
+        );
       case objectFields.form:
       case objectFields.widget:
         return (
@@ -3821,7 +3826,6 @@ class AppendForm extends Component {
             this.state.typeList.length < 1)
         );
       case objectFields.sorting:
-      case objectFields.remove:
       case objectFields.shopFilter:
         return false;
 
