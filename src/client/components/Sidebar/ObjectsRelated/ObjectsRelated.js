@@ -1,10 +1,11 @@
-import { throttle } from 'lodash';
-import React, { useState } from 'react';
+import { isEmpty, throttle } from 'lodash';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Modal } from 'antd';
 
 import WeightTag from '../../WeightTag';
 import ObjectCard from '../ObjectCard';
+import { getObjectInfo } from '../../../../waivioApi/ApiClient';
 import ObjectsRelatedContent from './ObjectsRelatedContent';
 
 import './ObjectsRelated.less';
@@ -18,8 +19,18 @@ const ObjectsRelated = ({
   objects,
 }) => {
   const [showModal, setShowModal] = useState(false);
+  const [relatedObjects, setRelatedObjects] = useState([]);
+  const relatedObjectsPermlinks =
+    !isEmpty(currWobject.related) && currWobject?.related?.map(obj => obj.body);
 
-  React.useEffect(
+  useEffect(() => {
+    !isEmpty(relatedObjectsPermlinks) &&
+      getObjectInfo(relatedObjectsPermlinks).then(res => setRelatedObjects(res.wobjects));
+  }, []);
+
+  const renderedObjects = [...relatedObjects, ...objects];
+
+  useEffect(
     () => () => {
       clearRelateObjects();
     },
@@ -32,7 +43,7 @@ const ObjectsRelated = ({
     }
   };
 
-  const renderObjectsModal = objects.map(item => (
+  const renderObjectsModal = renderedObjects?.map(item => (
     <ObjectCard
       key={item.author_permlink}
       wobject={item}
@@ -45,7 +56,11 @@ const ObjectsRelated = ({
 
   return (
     <div onWheel={throttle(onWheelHandler, 500)}>
-      <ObjectsRelatedContent setShowModal={setShowModal} isCenterContent={isCenterContent} />
+      <ObjectsRelatedContent
+        setShowModal={setShowModal}
+        isCenterContent={isCenterContent}
+        relatedObjects={relatedObjects}
+      />
       <Modal
         title="Related"
         visible={showModal}

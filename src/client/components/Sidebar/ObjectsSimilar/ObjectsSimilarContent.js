@@ -1,28 +1,26 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { isEmpty } from 'lodash';
+import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
+import ObjectCard from '../ObjectCard';
+import WeightTag from '../../WeightTag';
+import RightSidebarLoading from '../../../app/Sidebar/RightSidebarLoading';
 
-import ObjectCard from '../../ObjectCard';
-import WeightTag from '../../../WeightTag';
-import RightSidebarLoading from '../../../../app/Sidebar/RightSidebarLoading';
-
-const ObjectsRelatedContent = ({
+const ObjectssimilarContent = ({
   isCenterContent,
   setShowModal,
   intl,
-  objects,
-  relatedObjects,
+  similarObjects,
   currWobject,
   isLoading,
 }) => {
   let renderCard = <RightSidebarLoading id="RightSidebarLoading" />;
-  const objsArr = [...relatedObjects, ...objects];
-  const renderedObjects = objsArr.length > 5 ? objsArr.slice(0, 5) : objsArr;
+
+  const similarObjectsArr = similarObjects.length > 5 ? similarObjects.slice(0, 5) : similarObjects;
 
   if (!isLoading) {
-    if (!isEmpty(renderedObjects)) {
-      const renderObjects = renderedObjects?.map(item => (
+    if (!isEmpty(similarObjects)) {
+      const renderObjects = similarObjectsArr?.map(item => (
         <ObjectCard
           key={item.author_permlink}
           wobject={item}
@@ -51,7 +49,7 @@ const ObjectsRelatedContent = ({
         <div className="SidebarContentBlock" data-test="objectsRelatedComponent">
           <div className="SidebarContentBlock__title" onClick={handleOpenModal}>
             {!isCenterContent && <i className="iconfont icon-link SidebarContentBlock__icon" />}{' '}
-            {intl.formatMessage({ id: 'related_to_object', defaultMessage: 'Related to object' })}
+            {intl.formatMessage({ id: 'object_field_similar', defaultMessage: 'Similar' })}
           </div>
           <div className="SidebarContentBlock__content">{renderObjects}</div>
           {renderButtons()}
@@ -65,20 +63,19 @@ const ObjectsRelatedContent = ({
   return renderCard;
 };
 
-ObjectsRelatedContent.propTypes = {
+ObjectssimilarContent.propTypes = {
   isCenterContent: PropTypes.bool.isRequired,
   setShowModal: PropTypes.func.isRequired,
   currWobject: PropTypes.shape().isRequired,
-  relatedObjects: PropTypes.arrayOf(PropTypes.shape()),
+  similarObjects: PropTypes.arrayOf(PropTypes.shape()),
   objectsState: PropTypes.shape({
     objects: PropTypes.arrayOf(PropTypes.shape()),
     skip: PropTypes.number,
     hasNext: PropTypes.bool,
     isLoading: PropTypes.bool,
   }).isRequired,
-  objects: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   intl: PropTypes.shape().isRequired,
   isLoading: PropTypes.bool.isRequired,
 };
 
-export default injectIntl(ObjectsRelatedContent);
+export default injectIntl(ObjectssimilarContent);
