@@ -3700,6 +3700,11 @@ export default class AppendForm extends Component {
           isEmpty(this.state.menuItemButtonType) ||
           (isEmpty(getFieldValue(menuItemFields.linkToWeb)) && isEmpty(this.state.selectedObject))
         );
+      case objectFields.pin:
+        return (
+          isEmpty(getFieldValue(pinPostFields.postPermlink)) ||
+          isEmpty(getFieldValue(pinPostFields.postAuthor))
+        );
       case objectFields.form:
       case objectFields.widget:
         return (
@@ -3752,7 +3757,6 @@ export default class AppendForm extends Component {
             this.state.typeList.length < 1)
         );
       case objectFields.sorting:
-      case objectFields.pin:
       case objectFields.remove:
       case objectFields.shopFilter:
         return false;
