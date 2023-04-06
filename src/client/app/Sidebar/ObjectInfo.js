@@ -831,6 +831,19 @@ class ObjectInfo extends React.Component {
         )}
       </React.Fragment>
     );
+
+    const connectSection = (
+      <React.Fragment>
+        {isEditMode && (
+          <div className="object-sidebar__section-title">
+            <FormattedMessage id="connect" defaultMessage="Connect" />
+          </div>
+        )}
+        {isEditMode && this.listItem(objectFields.related, null)}
+        {isEditMode && this.listItem(objectFields.addOn, null)}
+        {isEditMode && this.listItem(objectFields.similar, null)}
+      </React.Fragment>
+    );
     const aboutSection = (
       <React.Fragment>
         {isEditMode && (
@@ -1357,6 +1370,7 @@ class ObjectInfo extends React.Component {
             {isOptionsObjectType && galleryPriceOptionsSection}
             {!isHashtag && showMenuSection && menuSection()}
             {!isHashtag && aboutSection}
+            {!isHashtag && connectSection}
             {shopType && shopSection}
             {accessExtend && hasType(wobject, OBJECT_TYPE.LIST) && listSection}
             {showFeedSection && feedSection}
