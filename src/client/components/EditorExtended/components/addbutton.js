@@ -17,7 +17,7 @@ import './addbutton.less';
 @connect(state => ({
   isClearSearchObjects: getIsClearSearchObjects(state),
 }))
-export default class AddButton extends React.Component {
+class AddButton extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -201,3 +201,5 @@ AddButton.defaultProps = {
   withTitleLine: false,
   isClearSearchObjects: false,
 };
+
+export default AddButton;

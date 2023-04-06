@@ -57,6 +57,9 @@ export const objectFields = {
   remove: 'remove',
   shopFilter: 'shopFilter',
   menuItem: 'menuItem',
+  related: 'related',
+  addOn: 'add-on',
+  similar: 'similar',
 };
 
 export const TYPES_OF_MENU_ITEM = {

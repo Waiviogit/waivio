@@ -1,4 +1,8 @@
 import { addLocaleData } from 'react-intl';
+import ruRU from 'antd/es/locale/ru_RU';
+import ukUA from 'antd/es/locale/uk_UA';
+import enUS from 'antd/es/locale/en_US';
+
 import LANGUAGES from './languages';
 
 export function findLanguage(locale) {
@@ -44,3 +48,14 @@ export async function loadLanguage(locale) {
     translations,
   };
 }
+
+export const getAntdLocale = language => {
+  switch (language.id) {
+    case 'ru-RU':
+      return ruRU;
+    case 'uk-UA':
+      return ukUA;
+    default:
+      return enUS;
+  }
+};

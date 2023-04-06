@@ -23,6 +23,8 @@ import WobjectSidebarFollowers from '../../app/Sidebar/ObjectInfoExperts/Wobject
 import WobjectNearby from '../../app/Sidebar/ObjectInfoExperts/WobjectNearby';
 import { compareObjectTitle } from '../../../common/helpers/seoHelpes';
 import WobjectShopFilter from '../ObjectTypeShop/WobjectShopFilter';
+import ObjectsAddOn from '../../components/Sidebar/ObjectsAddOn/ObjectsAddOn';
+import ObjectsSimilar from '../../components/Sidebar/ObjectsSimilar/ObjectsSimilar';
 
 const Wobj = ({
   authenticated,
@@ -157,6 +159,8 @@ const Wobj = ({
                   <ObjectExpertise wobject={wobject} />
                   {wobject.map && <WobjectNearby wobject={wobject} />}
                   <ObjectsRelated wobject={wobject} />
+                  <ObjectsAddOn wobject={wobject} />
+                  <ObjectsSimilar wobject={wobject} />
                   <WobjectSidebarFollowers wobject={wobject} />
                 </React.Fragment>
               )}

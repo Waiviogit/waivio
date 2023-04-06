@@ -96,7 +96,7 @@ import { resetBreadCrumb } from '../../../store/shopStore/shopActions';
     resetBreadCrumb,
   },
 )
-export default class WobjectContainer extends React.Component {
+class WobjectContainer extends React.Component {
   static propTypes = {
     route: PropTypes.shape().isRequired,
     authenticatedUserName: PropTypes.string.isRequired,
@@ -300,3 +300,5 @@ export default class WobjectContainer extends React.Component {
     );
   }
 }
+
+export default WobjectContainer;

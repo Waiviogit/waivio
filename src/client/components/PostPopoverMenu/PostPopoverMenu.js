@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect, useDispatch } from 'react-redux';
 import { Icon, Modal } from 'antd';
@@ -17,7 +17,7 @@ import {
 } from '../../../store/postsStore/postActions';
 import { getAuthenticatedUserName, isGuestUser } from '../../../store/authStore/authSelectors';
 import { isMobile } from '../../../common/helpers/apiHelpers';
-import { deletePost } from '../../../waivioApi/ApiClient';
+import { deletePost, getObjectInfo } from '../../../waivioApi/ApiClient';
 import AppendModal from '../../object/AppendModal/AppendModal';
 
 import './PostPopoverMenu.less';
@@ -106,15 +106,21 @@ const PostPopoverMenu = ({
   const [isPin, setIsPin] = useState(false);
   const [isRemove, setIsRemove] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
+  const [wobjName, setWobjName] = useState('');
   const history = useHistory();
   const dispatch = useDispatch();
   const match = useRouteMatch();
-  const userPage = match.url.includes(`/@${match.params.name}`);
+  const wobjAuthorPermlink = match.params.name;
+  const userPage = match.url.includes(`/@${wobjAuthorPermlink}`);
   const { isReported, isSaved } = postState;
   const hasOnlySponsorLike =
     post.active_votes.length === 1 && post.active_votes.some(vote => vote.sponsor);
   const withoutLike = (!post.net_rshares_WAIV && !post.net_rshares) || hasOnlySponsorLike;
   const canDeletePost = ownPost && withoutLike && !post.children;
+
+  useEffect(() => {
+    getObjectInfo([wobjAuthorPermlink]).then(res => setWobjName(res.wobjects[0].name));
+  }, [wobjAuthorPermlink]);
 
   const {
     guestInfo,
@@ -398,9 +404,10 @@ const PostPopoverMenu = ({
       </Modal>
       {isPin &&
         (post.pin || post.hasPinUpdate ? (
-          history.push(`/object/${match.params.name}/updates/pin?search=${post.id}`)
+          history.push(`/object/${wobjAuthorPermlink}/updates/pin?search=${post.id}`)
         ) : (
           <AppendModal
+            objName={wobjName}
             post={post}
             showModal={isPin}
             hideModal={() => setIsPin(false)}
@@ -409,10 +416,11 @@ const PostPopoverMenu = ({
         ))}
       {isRemove &&
         (post.hasRemoveUpdate ? (
-          history.push(`/object/${match.params.name}/updates/remove?search=${post.id}`)
+          history.push(`/object/${wobjAuthorPermlink}/updates/remove?search=${post.id}`)
         ) : (
           <AppendModal
             post={post}
+            objName={wobjName}
             showModal={isRemove}
             hideModal={() => setIsRemove(false)}
             field={objectFields.remove}
