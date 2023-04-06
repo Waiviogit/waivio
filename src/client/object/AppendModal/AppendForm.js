@@ -807,19 +807,7 @@ export default class AppendForm extends Component {
           }),
         };
       }
-      if (currentField === objectFields.related) {
-        fieldsObject = {
-          ...fieldsObject,
-          body: this.state.selectedObject?.author_permlink,
-        };
-      }
-      if (currentField === objectFields.similar) {
-        fieldsObject = {
-          ...fieldsObject,
-          body: this.state.selectedObject?.author_permlink,
-        };
-      }
-      if (currentField === objectFields.addOn) {
+      if ([objectFields.related, objectFields.addOn, objectFields.similar].includes(currentField)) {
         fieldsObject = {
           ...fieldsObject,
           body: this.state.selectedObject?.author_permlink,
