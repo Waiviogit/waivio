@@ -56,7 +56,7 @@ const OptionItemView = ({
   const getOptionsPicturesClassName = el =>
     classNames({
       'Options__my-pictures--selected':
-        el.body?.image === ownOptions[el.body.category]?.body?.image ||
+        ownOptions[el.body.category]?.body?.value === el.body?.value ||
         wobject.author_permlink === el.author_permlink,
       'Options__pictures--black': getAvailableOption(el) || getAvailableOptionPermlinkAndStyle(el),
       Options__pictures: el.author_permlink !== wobject.author_permlink,
