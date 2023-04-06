@@ -585,13 +585,17 @@ class AppendForm extends Component {
             formValues[productIdFields.productIdType]
           }, ${currentField}: ${appendValue}, ${imageDescription}`;
         case objectFields.menuItem:
+          const imageMenuItem = !isEmpty(this.state.currentImages)
+            ? `, image: \n ![${objectFields.menuItem}](${this.state?.currentImages[0]?.src})`
+            : '';
+
           return `@${author} added ${objectFields.menuItem} (${langReadable}): Title: ${
             formValues[menuItemFields.menuItemTitle]
           }, style: ${this.state.menuItemButtonType}, link: ${
             !isEmpty(this.state.selectedObject)
               ? this.state.selectedObject.author_permlink
               : formValues[menuItemFields.linkToWeb]
-          }`;
+          }${imageMenuItem}`;
 
         case objectFields.dimensions:
           return `@${author} added ${currentField} (${langReadable}): ${
