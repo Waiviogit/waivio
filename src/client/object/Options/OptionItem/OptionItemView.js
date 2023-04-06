@@ -37,22 +37,25 @@ const OptionItemView = ({
       ?.filter(opt => opt.body.category !== el.body.category)
       ?.some(o => optionsBack[o.body.value]?.includes(el.author_permlink));
 
-  const func = (el, getPermlink = false) => {
+  const getAvailableOptions = (el, getPermlink = false) => {
     const activeCategories = Object.keys(ownOptions).filter(key => key !== el.body.category);
     const activeOptions = activeCategories
       .map(key => ownOptions[key])
       .reduce((acc, currOpt) => [...acc, ...optionsBack[currOpt.body.value]], []);
 
+    const category = optionsBack[el.body.value];
+    const callback = permlink => activeOptions.some(p => p === permlink);
+
     if (getPermlink) {
-      return optionsBack[el.body.value].find(perm => activeOptions.some(p => p === perm));
+      return category.find(callback);
     }
 
-    return optionsBack[el.body.value].some(perm => activeOptions.some(p => p === perm));
+    return category.some(callback);
   };
 
   const getOptionsPicturesClassName = el =>
     classNames({
-      'Options__pictures--black': getAvailableOption(el) || func(el),
+      'Options__pictures--black': getAvailableOption(el) || getAvailableOptions(el),
       Options__pictures: el.author_permlink !== wobject.author_permlink,
       'Options__my-pictures': el.author_permlink === wobject.author_permlink,
       'Options__my-pictures--selected':
@@ -62,7 +65,7 @@ const OptionItemView = ({
 
   const getOptionsClassName = el =>
     classNames({
-      'Options__option-button--black': getAvailableOption(el) || func(el),
+      'Options__option-button--black': getAvailableOption(el) || getAvailableOptions(el),
       'Options__option-button': el.author_permlink !== wobject.author_permlink,
       'Options__my-option-button': el.author_permlink === wobject.author_permlink,
       'Options__my-option-button--selected':
@@ -84,9 +87,10 @@ const OptionItemView = ({
     dispatch(setStoreActiveOption({ ...activeStoreOption, [el.body.category]: el }));
     if (el.author_permlink !== wobject.author_permlink) {
       if (isMobile()) {
-        history.push(`/object/${func(el, true)}/about`);
+        history.push(`/object/${getAvailableOptions(el, true)}/about`);
+      } else {
+        history.push(`/object/${getAvailableOptions(el, true)}`);
       }
-      history.push(`/object/${func(el, true)}`);
       dispatch(setStoreActiveCategory(el.body.category));
       dispatch(setStoreActiveOption({ ...activeStoreOption, [el.body.category]: el }));
     }
