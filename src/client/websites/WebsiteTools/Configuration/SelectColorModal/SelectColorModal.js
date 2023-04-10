@@ -1,11 +1,11 @@
-import { Modal } from 'antd';
+import { Button, Modal } from 'antd';
 import React, { useCallback, useEffect, useState } from 'react';
 import { injectIntl } from 'react-intl';
 import { debounce } from 'lodash';
 import PropTypes from 'prop-types';
 import { initialColors } from '../../../constants/colors';
 
-const SelectColorModal = props => {
+const SelectColorBlock = props => {
   const [markerColor, setMarkerColor] = useState('');
   const [textColor, setTextColor] = useState('');
 
@@ -34,53 +34,94 @@ const SelectColorModal = props => {
     });
 
   return (
-    <Modal
-      wrapClassName={'mapModalClassList'}
-      title={props.intl.formatMessage({
-        id: 'website_colors',
-        defaultMessage: 'Website colors',
-      })}
-      closable
-      onCancel={handleCancelModal}
-      onOk={handleOkModal}
-      visible={props.openColorsModal}
-      okButtonProps={{
-        loading: props.loading,
-      }}
-    >
-      <div className="WebsitesConfigurations__colorsItemForm">
-        <b>
-          {props.intl.formatMessage({
-            id: 'website_colors_marker',
-            defaultMessage: 'Marker color',
-          })}
-          :
-        </b>{' '}
-        <input
-          type={'color'}
-          value={markerColor}
-          onChange={e => handleChangeMarkerColor(e.target.value)}
-        />
+    <div>
+      <h3>
+        {props.intl.formatMessage({
+          id: 'website_colors',
+          defaultMessage: 'Website colors',
+        })}
+        :
+      </h3>
+      <div className="WebsitesConfigurations__colors-wrap">
+        <div className="WebsitesConfigurations__colorsItem">
+          <div
+            className="WebsitesConfigurations__colors"
+            style={{ backgroundColor: props.colors.mapMarkerBody || initialColors.marker }}
+          />
+          <b>
+            {props.intl.formatMessage({
+              id: 'website_colors_marker',
+              defaultMessage: 'Marker color',
+            })}
+          </b>
+        </div>
+        <div className="WebsitesConfigurations__colorsItem">
+          <div
+            className="WebsitesConfigurations__colors"
+            style={{ backgroundColor: props.colors.mapMarkerText || initialColors.text }}
+          />
+          <b>
+            {props.intl.formatMessage({
+              id: 'website_colors_text',
+              defaultMessage: 'Marker text',
+            })}
+          </b>
+        </div>
       </div>
-      <div className="WebsitesConfigurations__colorsItemForm">
-        <b>
-          {props.intl.formatMessage({
-            id: 'website_colors_text',
-            defaultMessage: 'Marker text',
-          })}
-          :
-        </b>{' '}
-        <input
-          type={'color'}
-          value={textColor}
-          onChange={e => handleChangeTextColor(e.target.value)}
-        />
-      </div>
-    </Modal>
+      <Button type="primary" onClick={() => props.setOpenColorsModal(true)}>
+        {props.intl.formatMessage({
+          id: 'select_color',
+          defaultMessage: 'Select color',
+        })}
+      </Button>
+      <Modal
+        wrapClassName={'mapModalClassList'}
+        title={props.intl.formatMessage({
+          id: 'website_colors',
+          defaultMessage: 'Website colors',
+        })}
+        closable
+        onCancel={handleCancelModal}
+        onOk={handleOkModal}
+        visible={props.openColorsModal}
+        okButtonProps={{
+          loading: props.loading,
+        }}
+      >
+        <div className="WebsitesConfigurations__colorsItemForm">
+          <b>
+            {props.intl.formatMessage({
+              id: 'website_colors_marker',
+              defaultMessage: 'Marker color',
+            })}
+            :
+          </b>{' '}
+          <input
+            type={'color'}
+            value={markerColor}
+            onChange={e => handleChangeMarkerColor(e.target.value)}
+          />
+        </div>
+        <div className="WebsitesConfigurations__colorsItemForm">
+          <b>
+            {props.intl.formatMessage({
+              id: 'website_colors_text',
+              defaultMessage: 'Marker text',
+            })}
+            :
+          </b>{' '}
+          <input
+            type={'color'}
+            value={textColor}
+            onChange={e => handleChangeTextColor(e.target.value)}
+          />
+        </div>
+      </Modal>
+    </div>
   );
 };
 
-SelectColorModal.propTypes = {
+SelectColorBlock.propTypes = {
   intl: PropTypes.shape({
     formatMessage: PropTypes.func,
   }).isRequired,
@@ -94,4 +135,4 @@ SelectColorModal.propTypes = {
   }).isRequired,
 };
 
-export default injectIntl(SelectColorModal);
+export default injectIntl(SelectColorBlock);

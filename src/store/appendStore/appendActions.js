@@ -69,6 +69,7 @@ export const getChangedWobjectField = (
   const locale = getLocale(state);
   const voter = getAuthenticatedUserName(state);
   const updatePosts = ['pin'].includes(fieldName);
+  const fieldType = isNew ? fieldName : type;
 
   const subscribeCallback = () =>
     dispatch({
@@ -113,7 +114,7 @@ export const getChangedWobjectField = (
     appendObj && updatePosts
       ? updatePostCallback
       : () => {
-          dispatch(getUpdates(authorPermlink, type, 'createdAt', locale));
+          dispatch(getUpdates(authorPermlink, fieldType, 'createdAt', locale));
           subscribeCallback();
         },
   );
