@@ -94,6 +94,9 @@ export default {
   WebsitesConfigurations: loableComponent(
     import('../client/websites/WebsiteTools/Configuration/WebsitesConfigurations'),
   ),
+  ShopWebsiteConfigurations: loableComponent(
+    import('../client/websites/WebsiteTools/Configuration/ShopWebsiteConfigurations'),
+  ),
   ReferralDetails: loableComponent(
     import('../client/rewards/ReferralProgram/Details/ReferralDetails'),
   ),

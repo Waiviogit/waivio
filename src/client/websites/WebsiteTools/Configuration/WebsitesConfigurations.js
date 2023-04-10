@@ -32,9 +32,9 @@ import {
 } from '../../../../store/websiteStore/websiteSelectors';
 import SelectColorModal from './SelectColorModal/SelectColorModal';
 import { initialColors } from '../../constants/colors';
+import ConfigHeader from './ConfigHeader/ConfigHeader';
 
 import './WebsitesConfigurations.less';
-import ConfigHeader from './ConfigHeader/ConfigHeader';
 
 export const WebsitesConfigurations = ({
   intl,
@@ -47,8 +47,6 @@ export const WebsitesConfigurations = ({
   getCurrentUserCoordinates,
   userLocation,
   wobjects,
-  // userName,
-  // getMapPropositions,
 }) => {
   const [modalsState, setModalState] = useState({});
   const [showMap, setShowMap] = useState('');

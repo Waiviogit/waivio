@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Input, Modal, Select } from 'antd';
+import { Input, Modal } from 'antd';
 import PropTypes from 'prop-types';
 
 import './ConfigHeader.less';
@@ -7,8 +7,8 @@ import './ConfigHeader.less';
 const ConfigHeader = ({ visible, config, onClose, handleSubmitConfig, loading }) => {
   const [name, setName] = useState(config?.name);
   const [message, setMessage] = useState(config?.message);
-  const [startup, setStartup] = useState(config?.startup);
-  const handleOk = () => handleSubmitConfig({ name, message, startup });
+  // const [startup, setStartup] = useState(config?.startup);
+  const handleOk = () => handleSubmitConfig({ name, message });
 
   return (
     <Modal
@@ -33,17 +33,17 @@ const ConfigHeader = ({ visible, config, onClose, handleSubmitConfig, loading })
         <h3>Message:</h3>
         <Input maxLength={50} value={message} onChange={e => setMessage(e.target.value)} />
       </div>
-      <div>
-        <h3>Starup page:</h3>
-        <Select
-          defaultValue={startup}
-          onChange={key => setStartup(key)}
-          className="ConfigHeader__select"
-        >
-          <Select.Option key={'map'}>MAP</Select.Option>
-          <Select.Option key={'about'}>ABOUT</Select.Option>
-        </Select>
-      </div>
+      {/* <div> */}
+      {/*  <h3>Starup page:</h3> */}
+      {/*  <Select */}
+      {/*    defaultValue={startup} */}
+      {/*    onChange={key => setStartup(key)} */}
+      {/*    className="ConfigHeader__select" */}
+      {/*  > */}
+      {/*    <Select.Option key={'map'}>MAP</Select.Option> */}
+      {/*    <Select.Option key={'about'}>ABOUT</Select.Option> */}
+      {/*  </Select> */}
+      {/* </div> */}
     </Modal>
   );
 };
@@ -52,7 +52,6 @@ ConfigHeader.propTypes = {
   visible: PropTypes.bool,
   config: PropTypes.shape({
     name: PropTypes.string,
-    startup: PropTypes.string,
     message: PropTypes.string,
   }),
   onClose: PropTypes.func,
