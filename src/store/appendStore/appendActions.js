@@ -64,6 +64,7 @@ export const getChangedWobjectField = (
   isNew = false,
   type = '',
   appendObj,
+  isUpdatesPage,
 ) => async (dispatch, getState, { busyAPI }) => {
   const state = getState();
   const locale = getLocale(state);
@@ -111,7 +112,7 @@ export const getChangedWobjectField = (
   busyAPI.instance.subscribeBlock(
     subscribeTypes.votes,
     blockNumber,
-    appendObj && updatePosts
+    appendObj && updatePosts && !isUpdatesPage
       ? updatePostCallback
       : () => {
           dispatch(getUpdates(authorPermlink, fieldType, 'createdAt', locale));
@@ -130,6 +131,7 @@ export const voteAppends = (
   isNew = false,
   type,
   appendObj,
+  isUpdatesPage,
 ) => (dispatch, getState, { steemConnectAPI }) => {
   const state = getState();
   const fields = getAppendList(state);
@@ -164,6 +166,7 @@ export const voteAppends = (
           isNew,
           type,
           appendObj,
+          isUpdatesPage,
         ),
       );
     })
@@ -217,10 +220,14 @@ export const removeObjectFromAuthority = permlink => ({
   permlink,
 });
 
-const followAndLikeAfterCreateAppend = (data, isLike, follow, isObjectPage, appendObj) => (
-  dispatch,
-  getState,
-) => {
+const followAndLikeAfterCreateAppend = (
+  data,
+  isLike,
+  follow,
+  isObjectPage,
+  isUpdatesPage,
+  appendObj,
+) => (dispatch, getState) => {
   const type = data.field.name === 'listItem' ? data.field.type : null;
   const state = getState();
 
@@ -245,6 +252,7 @@ const followAndLikeAfterCreateAppend = (data, isLike, follow, isObjectPage, appe
           true,
           type,
           appendObj,
+          isUpdatesPage,
         ),
       );
     }
@@ -271,11 +279,10 @@ const followAndLikeAfterCreateAppend = (data, isLike, follow, isObjectPage, appe
   dispatch({ type: APPEND_WAIVIO_OBJECT.SUCCESS });
 };
 
-export const appendObject = (postData, { follow, isLike, votePercent, isObjectPage } = {}) => (
-  dispatch,
-  getState,
-  { busyAPI },
-) => {
+export const appendObject = (
+  postData,
+  { follow, isLike, votePercent, isObjectPage, isUpdatesPage } = {},
+) => (dispatch, getState, { busyAPI }) => {
   dispatch({
     type: APPEND_WAIVIO_OBJECT.START,
   });
@@ -291,6 +298,7 @@ export const appendObject = (postData, { follow, isLike, votePercent, isObjectPa
             isLike,
             follow,
             isObjectPage,
+            isUpdatesPage,
             true,
           ),
         );

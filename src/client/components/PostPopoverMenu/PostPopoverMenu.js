@@ -128,7 +128,7 @@ const PostPopoverMenu = ({
 
   useEffect(() => {
     if (wobjAuthorPermlink)
-      getObjectInfo([wobjAuthorPermlink]).then(res => setWobjName(res.wobjects[0].name));
+      getObjectInfo([wobjAuthorPermlink]).then(res => setWobjName(res.wobjects[0]?.name));
   }, [wobjAuthorPermlink]);
 
   const {
