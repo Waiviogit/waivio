@@ -381,3 +381,14 @@ export const sortOptions = (a, b) => {
 
   return !a.body.position ? 1 : -1;
 };
+
+export const sortByFieldPermlinksList = (permlinksArr, objects) =>
+  permlinksArr.reduce((acc, item) => {
+    const findItem = objects.find(i => i.author_permlink === item);
+
+    if (findItem) {
+      return [...acc, findItem];
+    }
+
+    return acc;
+  }, []);
