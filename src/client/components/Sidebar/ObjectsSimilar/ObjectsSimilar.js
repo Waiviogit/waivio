@@ -17,7 +17,7 @@ const ObjectsSimilar = ({ wobject, isCenterContent }) => {
   useEffect(() => {
     !isEmpty(similar) &&
       getObjectInfo(similarObjectsPermlinks).then(res => setSimilarObjects(res.wobjects));
-  }, []);
+  }, [wobject.similar]);
 
   const renderObjectsModal = similarObjectsArr?.map(item => (
     <ObjectCard

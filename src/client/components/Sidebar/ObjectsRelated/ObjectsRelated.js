@@ -26,7 +26,7 @@ const ObjectsRelated = ({
   useEffect(() => {
     !isEmpty(relatedObjectsPermlinks) &&
       getObjectInfo(relatedObjectsPermlinks).then(res => setRelatedObjects(res.wobjects));
-  }, []);
+  }, [currWobject.related]);
 
   const renderedObjects = [...relatedObjects, ...objects];
 

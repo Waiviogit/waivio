@@ -17,7 +17,7 @@ const ObjectsAddOn = ({ wobject, isCenterContent }) => {
   useEffect(() => {
     !isEmpty(addOn) &&
       getObjectInfo(relatedObjectsPermlinks).then(res => setAddOnObjects(res.wobjects));
-  }, []);
+  }, [wobject.addOn]);
 
   const renderObjectsModal = addOnObjectsArr?.map(item => (
     <ObjectCard
