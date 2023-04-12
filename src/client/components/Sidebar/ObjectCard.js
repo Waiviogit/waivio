@@ -6,6 +6,7 @@ import classnames from 'classnames';
 import ObjectAvatar from '../ObjectAvatar';
 import FollowButton from '../../widgets/FollowButton';
 import { getObjectName } from '../../../common/helpers/wObjectHelper';
+import { isMobile } from '../../../common/helpers/apiHelpers';
 import './ObjectCard.less';
 
 const ObjectCard = ({
@@ -25,7 +26,7 @@ const ObjectCard = ({
     const name = getObjectName(wobject);
     const pathname = wobject.defaultShowLink;
     const objectCardClassnames = classnames('ObjectCard__name', {
-      'ObjectCard__name-long': isModal,
+      'ObjectCard__name-long': isModal || isMobile(),
       'ObjectCard__name-short': showFollow,
     });
 
