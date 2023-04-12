@@ -178,17 +178,18 @@ class ObjectInfo extends React.Component {
       ? wobject.authors.map(el => parseWobjectField(el, 'body', []))
       : [];
 
-    const authorsArray = [];
+    const authorsArray = await authors.reduce(async (acc, curr) => {
+      const res = await acc;
+      const permlink = curr.authorPermlink || curr.author_permlink;
 
-    authors.forEach(author => {
-      if (author.authorPermlink) {
-        getObjectInfo([author?.authorPermlink]).then(res => authorsArray.push(res.wobjects[0]));
-      } else if (author.author_permlink) {
-        getObjectInfo([author?.author_permlink]).then(res => authorsArray.push(res.wobjects[0]));
-      } else {
-        authorsArray.push(author);
+      if (permlink && !has(curr, 'name')) {
+        const newObj = await getObjectInfo([permlink]);
+
+        return [...res, newObj.wobjects[0]];
       }
-    });
+
+      return [...res, curr];
+    }, []);
 
     this.setState({ authorsArray });
     this.props.setAuthors(authorsArray);
