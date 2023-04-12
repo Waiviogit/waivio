@@ -156,11 +156,11 @@ const Wobj = ({
                 <WobjectShopFilter />
               ) : (
                 <React.Fragment>
-                  <ObjectExpertise wobject={wobject} />
-                  {wobject.map && <WobjectNearby wobject={wobject} />}
                   <ObjectsRelated wobject={wobject} />
                   <ObjectsAddOn wobject={wobject} />
                   <ObjectsSimilar wobject={wobject} />
+                  <ObjectExpertise wobject={wobject} />
+                  {wobject.map && <WobjectNearby wobject={wobject} />}
                   <WobjectSidebarFollowers wobject={wobject} />
                 </React.Fragment>
               )}

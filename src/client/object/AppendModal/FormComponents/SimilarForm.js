@@ -15,39 +15,45 @@ const SimilarForm = ({
   handleSelectObject,
   onCreateObject,
   onObjectCardDelete,
-}) => (
-  <>
-    <Form.Item>
-      {getFieldDecorator(objectFields.similar, {
-        rules: getFieldRules(objectFields.similar),
-      })(
-        <SearchObjectsAutocomplete
-          placeholder={intl.formatMessage({
-            id: 'objects_auto_complete_placeholder',
-            defaultMessage: 'Find object',
-          })}
-          handleSelect={handleSelectObject}
-        />,
-      )}
-      {selectedObject && (
-        <ObjectCardView closeButton onDelete={onObjectCardDelete} wObject={selectedObject} />
-      )}
-      <br />
-      <div className="add-create-btns">
-        <CreateObject
-          withOpenModalBtn={!selectedObject}
-          openModalBtnText={intl.formatMessage({
-            id: 'create_new_object',
-            defaultMessage: 'Create new object',
-          })}
-          currentField={objectFields.similar}
-          onCreateObject={onCreateObject}
-          parentObject={{}}
-        />
-      </div>{' '}
-    </Form.Item>
-  </>
-);
+  wobjSimilar,
+}) => {
+  const similarPermlinks = wobjSimilar?.map(obj => obj.body);
+
+  return (
+    <>
+      <Form.Item>
+        {getFieldDecorator(objectFields.similar, {
+          rules: getFieldRules(objectFields.similar),
+        })(
+          <SearchObjectsAutocomplete
+            itemsIdsToOmit={similarPermlinks}
+            placeholder={intl.formatMessage({
+              id: 'objects_auto_complete_placeholder',
+              defaultMessage: 'Find object',
+            })}
+            handleSelect={handleSelectObject}
+          />,
+        )}
+        {selectedObject && (
+          <ObjectCardView closeButton onDelete={onObjectCardDelete} wObject={selectedObject} />
+        )}
+        <br />
+        <div className="add-create-btns">
+          <CreateObject
+            withOpenModalBtn={!selectedObject}
+            openModalBtnText={intl.formatMessage({
+              id: 'create_new_object',
+              defaultMessage: 'Create new object',
+            })}
+            currentField={objectFields.similar}
+            onCreateObject={onCreateObject}
+            parentObject={{}}
+          />
+        </div>{' '}
+      </Form.Item>
+    </>
+  );
+};
 
 SimilarForm.propTypes = {
   getFieldDecorator: PropTypes.func.isRequired,
@@ -57,6 +63,7 @@ SimilarForm.propTypes = {
   getFieldRules: PropTypes.func.isRequired,
   selectedObject: PropTypes.shape().isRequired,
   intl: PropTypes.shape().isRequired,
+  wobjSimilar: PropTypes.shape().isRequired,
 };
 
 export default injectIntl(SimilarForm);

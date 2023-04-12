@@ -10,15 +10,16 @@ import ObjectsAddOnContent from './ObjectsAddOnContent';
 const ObjectsAddOn = ({ wobject, isCenterContent }) => {
   const [showModal, setShowModal] = useState(false);
   const [addOnObjects, setAddOnObjects] = useState([]);
-  const addOn = get(wobject, 'add-on', []);
+  const addOn = get(wobject, 'addOn', []);
   const relatedObjectsPermlinks = !isEmpty(addOn) && addOn.map(obj => obj.body);
+  const addOnObjectsArr = addOnObjects.length > 5 ? addOnObjects.slice(0, 5) : addOnObjects;
 
   useEffect(() => {
     !isEmpty(addOn) &&
       getObjectInfo(relatedObjectsPermlinks).then(res => setAddOnObjects(res.wobjects));
-  }, []);
+  }, [wobject.addOn]);
 
-  const renderObjectsModal = addOnObjects?.map(item => (
+  const renderObjectsModal = addOnObjectsArr?.map(item => (
     <ObjectCard
       key={item.author_permlink}
       wobject={item}

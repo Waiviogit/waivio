@@ -2,19 +2,33 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { isEmpty } from 'lodash';
-
+import classnames from 'classnames';
 import ObjectAvatar from '../ObjectAvatar';
 import FollowButton from '../../widgets/FollowButton';
 import { getObjectName } from '../../../common/helpers/wObjectHelper';
+import { isMobile } from '../../../common/helpers/apiHelpers';
 import './ObjectCard.less';
 
-const ObjectCard = ({ wobject, alt, showFollow, isNewWindow, unfollow, follow, parent }) => {
+const ObjectCard = ({
+  wobject,
+  alt,
+  showFollow,
+  isNewWindow,
+  unfollow,
+  follow,
+  parent,
+  isModal,
+}) => {
   if (!isEmpty(wobject)) {
     const updatedWObject = { ...wobject };
 
     if (!wobject.avatar && isEmpty(wobject.parent)) updatedWObject.avatar = parent.avatar;
     const name = getObjectName(wobject);
     const pathname = wobject.defaultShowLink;
+    const objectCardClassnames = classnames('ObjectCard__name', {
+      'ObjectCard__name-long': isModal || isMobile(),
+      'ObjectCard__name-short': showFollow,
+    });
 
     return (
       <div key={wobject.author_permlink} className="ObjectCard">
@@ -23,11 +37,7 @@ const ObjectCard = ({ wobject, alt, showFollow, isNewWindow, unfollow, follow, p
             <Link to={pathname} title={name} target={isNewWindow ? '_blank' : null}>
               <ObjectAvatar item={updatedWObject} size={34} />
             </Link>
-            <Link
-              to={pathname}
-              title={name}
-              className={`ObjectCard__name ${showFollow ? 'ObjectCard__name-short' : ''}`}
-            >
+            <Link to={pathname} title={name} className={objectCardClassnames}>
               {name}
             </Link>
           </div>
@@ -65,6 +75,7 @@ ObjectCard.propTypes = {
   }),
   alt: PropTypes.node,
   showFollow: PropTypes.bool,
+  isModal: PropTypes.bool,
   isNewWindow: PropTypes.bool,
   unfollow: PropTypes.func,
   follow: PropTypes.func,
