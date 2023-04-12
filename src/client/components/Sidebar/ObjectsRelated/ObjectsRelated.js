@@ -9,6 +9,7 @@ import { getObjectInfo } from '../../../../waivioApi/ApiClient';
 import ObjectsRelatedContent from './ObjectsRelatedContent';
 
 import './ObjectsRelated.less';
+import { sortByFieldPermlinksList } from '../../../../common/helpers/wObjectHelper';
 
 const ObjectsRelated = ({
   clearRelateObjects,
@@ -28,7 +29,9 @@ const ObjectsRelated = ({
       getObjectInfo(relatedObjectsPermlinks).then(res => setRelatedObjects(res.wobjects));
   }, [currWobject.related]);
 
-  const renderedObjects = [...relatedObjects, ...objects];
+  const sortedRelatedObjects = sortByFieldPermlinksList(relatedObjectsPermlinks, relatedObjects);
+
+  const renderedObjects = [...sortedRelatedObjects, ...objects];
 
   useEffect(
     () => () => {
@@ -61,7 +64,7 @@ const ObjectsRelated = ({
       <ObjectsRelatedContent
         setShowModal={setShowModal}
         isCenterContent={isCenterContent}
-        relatedObjects={relatedObjects}
+        relatedObjects={sortedRelatedObjects}
       />
       <Modal
         title="Related"

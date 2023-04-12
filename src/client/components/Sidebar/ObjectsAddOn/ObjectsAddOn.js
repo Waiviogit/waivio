@@ -6,13 +6,16 @@ import { getObjectInfo } from '../../../../waivioApi/ApiClient';
 import ObjectCard from '../ObjectCard';
 import WeightTag from '../../WeightTag';
 import ObjectsAddOnContent from './ObjectsAddOnContent';
+import { sortByFieldPermlinksList } from '../../../../common/helpers/wObjectHelper';
 
 const ObjectsAddOn = ({ wobject, isCenterContent }) => {
   const [showModal, setShowModal] = useState(false);
   const [addOnObjects, setAddOnObjects] = useState([]);
   const addOn = get(wobject, 'addOn', []);
   const relatedObjectsPermlinks = !isEmpty(addOn) && addOn.map(obj => obj.body);
-  const addOnObjectsArr = addOnObjects.length > 5 ? addOnObjects.slice(0, 5) : addOnObjects;
+  const sortedAddOnObjects = sortByFieldPermlinksList(relatedObjectsPermlinks, addOnObjects);
+  const addOnObjectsArr =
+    sortedAddOnObjects.length > 5 ? sortedAddOnObjects.slice(0, 5) : sortedAddOnObjects;
 
   useEffect(() => {
     !isEmpty(addOn) &&

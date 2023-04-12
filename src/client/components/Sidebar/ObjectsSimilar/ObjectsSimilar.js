@@ -6,13 +6,16 @@ import { getObjectInfo } from '../../../../waivioApi/ApiClient';
 import ObjectCard from '../ObjectCard';
 import WeightTag from '../../WeightTag';
 import ObjectsSimilarContent from './ObjectsSimilarContent';
+import { sortByFieldPermlinksList } from '../../../../common/helpers/wObjectHelper';
 
 const ObjectsSimilar = ({ wobject, isCenterContent }) => {
   const [showModal, setShowModal] = useState(false);
   const [similarObjects, setSimilarObjects] = useState([]);
   const similar = get(wobject, 'similar', []);
   const similarObjectsPermlinks = !isEmpty(similar) && similar.map(obj => obj.body);
-  const similarObjectsArr = similarObjects.length > 5 ? similarObjects.slice(0, 5) : similarObjects;
+  const sortedSimilarObjects = sortByFieldPermlinksList(similarObjectsPermlinks, similarObjects);
+  const similarObjectsArr =
+    sortedSimilarObjects.length > 5 ? sortedSimilarObjects.slice(0, 5) : sortedSimilarObjects;
 
   useEffect(() => {
     !isEmpty(similar) &&
