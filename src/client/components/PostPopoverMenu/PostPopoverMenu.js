@@ -162,8 +162,8 @@ const PostPopoverMenu = ({
         setIsVisible(false);
 
         return Modal.confirm({
-          title: 'Reject reservation',
-          content: 'Do you want to reject this reservation?',
+          title: 'Reject review',
+          content: 'Do you want to reject this review?',
           onOk() {
             return new Promise(resolve => {
               dispatch(rejectAuthorReview(post))
@@ -388,10 +388,14 @@ const PostPopoverMenu = ({
   if (post.guideName === userName) {
     popoverMenu = [
       ...popoverMenu,
-      <PopoverMenuItem key={'rejectReservation'}>Reject reservation</PopoverMenuItem>,
+      <PopoverMenuItem key={'rejectReservation'}>
+        <Icon type="stop" /> Reject review
+      </PopoverMenuItem>,
       <PopoverMenuItem key={'blackList'}>
-        {loadingType === 'blackList' && <Icon type={'loading'} />}{' '}
-        {inBlackList ? 'Remove from blacklist' : 'Add to blacklist'} @{post?.author}
+        {loadingType === 'blackList' ? <Icon type={'loading'} /> : <Icon type="user-add" />}{' '}
+        {inBlackList
+          ? `Remove @${post?.author} from blacklist`
+          : `Add @${post?.author} to blacklist`}
       </PopoverMenuItem>,
     ];
   }
