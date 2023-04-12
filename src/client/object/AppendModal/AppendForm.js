@@ -298,6 +298,9 @@ class AppendForm extends Component {
     for (const data of postData) {
       const field = form.getFieldValue('currentField');
 
+      // eslint-disable-next-line no-multi-assign
+      const isUpdatesPage = (this.props.match.params[0] = 'updates');
+
       this.setState({ loading: true });
       this.props
         .appendObject(data, {
@@ -305,6 +308,7 @@ class AppendForm extends Component {
           follow: formValues.follow,
           isLike: data.isLike,
           isObjectPage,
+          isUpdatesPage,
         })
         .then(res => {
           const mssg = get(res, ['value', 'message']);
@@ -3770,15 +3774,22 @@ class AppendForm extends Component {
           (isEmpty(getFieldValue(menuItemFields.linkToWeb)) && isEmpty(this.state.selectedObject))
         );
       case objectFields.pin:
-        return (
-          isEmpty(getFieldValue(pinPostFields.postPermlink)) ||
-          isEmpty(getFieldValue(pinPostFields.postAuthor))
-        );
+        if (isEmpty(this.props.post)) {
+          return (
+            isEmpty(getFieldValue(pinPostFields.postPermlink)) ||
+            isEmpty(getFieldValue(pinPostFields.postAuthor))
+          );
+        }
+
+        return false;
       case objectFields.remove:
-        return (
-          isEmpty(getFieldValue(removePostFields.postPermlink)) ||
-          isEmpty(getFieldValue(removePostFields.postAuthor))
-        );
+        if (isEmpty(this.props.post)) {
+          return (
+            isEmpty(getFieldValue(removePostFields.postPermlink)) ||
+            isEmpty(getFieldValue(removePostFields.postAuthor))
+          );
+        }
+        return false;
       case objectFields.form:
       case objectFields.widget:
         return (
