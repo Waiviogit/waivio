@@ -292,14 +292,12 @@ class AppendForm extends Component {
     const postData = this.getNewPostData(formValues);
 
     const isObjectPage = this.props.match.params.name === wObject.author_permlink;
+    const isUpdatesPage = this.props.match.params[0] === 'updates';
 
     /* eslint-disable no-restricted-syntax */
     // eslint-disable-next-line no-unused-vars
     for (const data of postData) {
       const field = form.getFieldValue('currentField');
-
-      // eslint-disable-next-line no-multi-assign
-      const isUpdatesPage = (this.props.match.params[0] = 'updates');
 
       this.setState({ loading: true });
       this.props
@@ -3789,6 +3787,7 @@ class AppendForm extends Component {
             isEmpty(getFieldValue(removePostFields.postAuthor))
           );
         }
+
         return false;
       case objectFields.form:
       case objectFields.widget:
