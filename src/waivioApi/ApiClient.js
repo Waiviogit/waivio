@@ -2433,7 +2433,7 @@ export const getMessagesList = (userName, skip, query, sort) => {
   const filters = parseQuery(query);
 
   return fetch(
-    `${config.campaignV2ApiPrefix}${config.rewards}${config.messages}${config.guide}/${userName}?limit=10&skip=${skip}`,
+    `${config.campaignV2ApiPrefix}${config.rewards}${config.messages}${config.guide}/${userName}`,
     {
       headers,
       method: 'POST',
