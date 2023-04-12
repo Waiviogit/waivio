@@ -65,13 +65,11 @@ const UserHeader = ({
   let location = null;
   let website = null;
   let about = null;
-  let lastActive;
+  const lastActive = intl.formatRelative(user.last_activity);
 
   const handleMuteCurrUser = () => setVisible(true);
 
   if (user && user.posting_json_metadata && user.posting_json_metadata !== '') {
-    lastActive = intl.formatRelative(user.last_activity);
-
     if (user.posting_json_metadata.profile) {
       location = user.posting_json_metadata.profile.location;
       website = user.posting_json_metadata.profile.website;

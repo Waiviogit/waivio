@@ -258,7 +258,7 @@ export const calculateDownVote = user => {
     return pow % 10 ? pow.toFixed(2) : pow.toFixed(0);
   }
 
-  return 0;
+  return 100;
 };
 
 export const calculateTotalDelegatedSP = (user, totalVestingShares, totalVestingFundSteem) => {
