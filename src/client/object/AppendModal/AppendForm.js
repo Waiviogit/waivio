@@ -1888,6 +1888,7 @@ class AppendForm extends Component {
       case objectFields.related: {
         return (
           <RelatedForm
+            wobjRelated={wObject?.related}
             onCreateObject={this.handleCreateObject}
             selectedObject={this.state.selectedObject}
             handleSelectObject={this.handleSelectObject}
@@ -1901,6 +1902,7 @@ class AppendForm extends Component {
       case objectFields.addOn: {
         return (
           <AddOnForm
+            wobjAddOn={wObject?.addOn}
             onCreateObject={this.handleCreateObject}
             selectedObject={this.state.selectedObject}
             handleSelectObject={this.handleSelectObject}
@@ -1914,6 +1916,7 @@ class AppendForm extends Component {
       case objectFields.similar: {
         return (
           <SimilarForm
+            wobjSimilar={wObject?.similar}
             onCreateObject={this.handleCreateObject}
             selectedObject={this.state.selectedObject}
             handleSelectObject={this.handleSelectObject}

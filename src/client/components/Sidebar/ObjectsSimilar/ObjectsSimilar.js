@@ -12,13 +12,14 @@ const ObjectsSimilar = ({ wobject, isCenterContent }) => {
   const [similarObjects, setSimilarObjects] = useState([]);
   const similar = get(wobject, 'similar', []);
   const similarObjectsPermlinks = !isEmpty(similar) && similar.map(obj => obj.body);
+  const similarObjectsArr = similarObjects.length > 5 ? similarObjects.slice(0, 5) : similarObjects;
 
   useEffect(() => {
     !isEmpty(similar) &&
       getObjectInfo(similarObjectsPermlinks).then(res => setSimilarObjects(res.wobjects));
   }, []);
 
-  const renderObjectsModal = similarObjects?.map(item => (
+  const renderObjectsModal = similarObjectsArr?.map(item => (
     <ObjectCard
       key={item.author_permlink}
       wobject={item}

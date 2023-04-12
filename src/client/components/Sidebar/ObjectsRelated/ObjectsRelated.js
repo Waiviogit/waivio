@@ -43,16 +43,18 @@ const ObjectsRelated = ({
     }
   };
 
-  const renderObjectsModal = renderedObjects?.map(item => (
-    <ObjectCard
-      key={item.author_permlink}
-      wobject={item}
-      parent={currWobject}
-      showFollow={false}
-      alt={<WeightTag weight={item.weight} />}
-      isNewWindow={false}
-    />
-  ));
+  const renderObjectsModal = () =>
+    renderedObjects?.map(item => (
+      <ObjectCard
+        isModal
+        key={item.author_permlink}
+        wobject={item}
+        parent={currWobject}
+        showFollow={false}
+        alt={<WeightTag weight={item.weight} />}
+        isNewWindow={false}
+      />
+    ));
 
   return (
     <div onWheel={throttle(onWheelHandler, 500)}>
@@ -68,7 +70,7 @@ const ObjectsRelated = ({
         onCancel={() => setShowModal(false)}
         id="ObjectRelated__Modal"
       >
-        {renderObjectsModal}
+        {renderObjectsModal(true)}
       </Modal>
     </div>
   );

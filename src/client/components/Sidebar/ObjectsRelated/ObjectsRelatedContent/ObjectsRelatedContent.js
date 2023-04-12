@@ -18,7 +18,8 @@ const ObjectsRelatedContent = ({
 }) => {
   let renderCard = <RightSidebarLoading id="RightSidebarLoading" />;
   const objsArr = [...relatedObjects, ...objects];
-  const renderedObjects = objsArr.length > 5 ? objsArr.slice(0, 5) : objsArr;
+  const moreObjects = objsArr.length > 5;
+  const renderedObjects = moreObjects ? objsArr.slice(0, 5) : objsArr;
 
   if (!isLoading) {
     if (!isEmpty(renderedObjects)) {
@@ -35,7 +36,8 @@ const ObjectsRelatedContent = ({
       ));
 
       const renderButtons = () =>
-        !isCenterContent && (
+        !isCenterContent &&
+        moreObjects && (
           <div className="ObjectsRelated__more">
             <a onClick={() => setShowModal(true)} id="show_more_div">
               {intl.formatMessage({ id: 'show_more', defaultMessage: 'Show more' })}

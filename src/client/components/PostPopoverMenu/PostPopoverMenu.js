@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect, useDispatch } from 'react-redux';
 import { Icon, Modal } from 'antd';
 import { FormattedMessage } from 'react-intl';
-import { get, isEmpty } from 'lodash';
+import { get, isEmpty, isNil } from 'lodash';
 import { ReactSVG } from 'react-svg';
 import { useHistory, useRouteMatch } from 'react-router';
 import Popover from '../Popover';
@@ -127,7 +127,7 @@ const PostPopoverMenu = ({
   const canDeletePost = ownPost && withoutLike && !post.children;
 
   useEffect(() => {
-    if (wobjAuthorPermlink)
+    !isNil(wobjAuthorPermlink) &&
       getObjectInfo([wobjAuthorPermlink]).then(res => setWobjName(res.wobjects[0].name));
   }, [wobjAuthorPermlink]);
 
