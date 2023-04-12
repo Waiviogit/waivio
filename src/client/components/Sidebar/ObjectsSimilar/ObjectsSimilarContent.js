@@ -1,5 +1,6 @@
 import React from 'react';
 import { isEmpty } from 'lodash';
+import { Icon } from 'antd';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import ObjectCard from '../ObjectCard';
@@ -15,8 +16,8 @@ const ObjectssimilarContent = ({
   isLoading,
 }) => {
   let renderCard = <RightSidebarLoading id="RightSidebarLoading" />;
-
-  const similarObjectsArr = similarObjects.length > 5 ? similarObjects.slice(0, 5) : similarObjects;
+  const moreObjects = similarObjects.length > 5;
+  const similarObjectsArr = moreObjects ? similarObjects.slice(0, 5) : similarObjects;
 
   if (!isLoading) {
     if (!isEmpty(similarObjects)) {
@@ -33,7 +34,8 @@ const ObjectssimilarContent = ({
       ));
 
       const renderButtons = () =>
-        !isCenterContent && (
+        !isCenterContent &&
+        moreObjects && (
           <div className="ObjectsRelated__more">
             <a onClick={() => setShowModal(true)} id="show_more_div">
               {intl.formatMessage({ id: 'show_more', defaultMessage: 'Show more' })}
@@ -48,7 +50,9 @@ const ObjectssimilarContent = ({
       renderCard = (
         <div className="SidebarContentBlock" data-test="objectsRelatedComponent">
           <div className="SidebarContentBlock__title" onClick={handleOpenModal}>
-            {!isCenterContent && <i className="iconfont icon-link SidebarContentBlock__icon" />}{' '}
+            {!isCenterContent && (
+              <Icon type="block" className="iconfont icon-link SidebarContentBlock__icon" />
+            )}{' '}
             {intl.formatMessage({ id: 'object_field_similar', defaultMessage: 'Similar' })}
           </div>
           <div className="SidebarContentBlock__content">{renderObjects}</div>

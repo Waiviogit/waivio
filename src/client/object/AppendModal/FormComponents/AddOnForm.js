@@ -15,39 +15,45 @@ const AddOnForm = ({
   handleSelectObject,
   onCreateObject,
   onObjectCardDelete,
-}) => (
-  <>
-    <Form.Item>
-      {getFieldDecorator(objectFields.addOn, {
-        rules: getFieldRules(objectFields.addOn),
-      })(
-        <SearchObjectsAutocomplete
-          placeholder={intl.formatMessage({
-            id: 'objects_auto_complete_placeholder',
-            defaultMessage: 'Find object',
-          })}
-          handleSelect={handleSelectObject}
-        />,
-      )}
-      {selectedObject && (
-        <ObjectCardView closeButton onDelete={onObjectCardDelete} wObject={selectedObject} />
-      )}
-      <br />
-      <div className="add-create-btns">
-        <CreateObject
-          withOpenModalBtn={!selectedObject}
-          openModalBtnText={intl.formatMessage({
-            id: 'create_new_object',
-            defaultMessage: 'Create new object',
-          })}
-          currentField={objectFields.addOn}
-          onCreateObject={onCreateObject}
-          parentObject={{}}
-        />
-      </div>{' '}
-    </Form.Item>
-  </>
-);
+  wobjAddOn,
+}) => {
+  const addOnPermlinks = wobjAddOn?.map(obj => obj.body);
+
+  return (
+    <>
+      <Form.Item>
+        {getFieldDecorator(objectFields.addOn, {
+          rules: getFieldRules(objectFields.addOn),
+        })(
+          <SearchObjectsAutocomplete
+            itemsIdsToOmit={addOnPermlinks}
+            placeholder={intl.formatMessage({
+              id: 'objects_auto_complete_placeholder',
+              defaultMessage: 'Find object',
+            })}
+            handleSelect={handleSelectObject}
+          />,
+        )}
+        {selectedObject && (
+          <ObjectCardView closeButton onDelete={onObjectCardDelete} wObject={selectedObject} />
+        )}
+        <br />
+        <div className="add-create-btns">
+          <CreateObject
+            withOpenModalBtn={!selectedObject}
+            openModalBtnText={intl.formatMessage({
+              id: 'create_new_object',
+              defaultMessage: 'Create new object',
+            })}
+            currentField={objectFields.addOn}
+            onCreateObject={onCreateObject}
+            parentObject={{}}
+          />
+        </div>{' '}
+      </Form.Item>
+    </>
+  );
+};
 
 AddOnForm.propTypes = {
   getFieldDecorator: PropTypes.func.isRequired,
@@ -57,6 +63,7 @@ AddOnForm.propTypes = {
   getFieldRules: PropTypes.func.isRequired,
   selectedObject: PropTypes.shape().isRequired,
   intl: PropTypes.shape().isRequired,
+  wobjAddOn: PropTypes.arrayOf().isRequired,
 };
 
 export default injectIntl(AddOnForm);

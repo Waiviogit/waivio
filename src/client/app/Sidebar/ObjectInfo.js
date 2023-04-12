@@ -590,6 +590,9 @@ class ObjectInfo extends React.Component {
     const isHashtag = hasType(wobject, OBJECT_TYPE.HASHTAG);
     const shopType = wobject.object_type === 'shop';
     const showFeedSection = wobject?.exposedFields?.some(f => ['pin', 'remove'].includes(f.name));
+    const showConnectSection = wobject?.exposedFields?.some(f =>
+      ['addOn', 'similar', 'related'].includes(f.name),
+    );
     const accessExtend = haveAccess(wobject, userName, accessTypesArr[0]) && isEditMode;
     const isRenderMap = map && isCoordinatesValid(map.latitude, map.longitude);
     const menuLinks = getMenuItems(wobject, TYPES_OF_MENU_ITEM.LIST, OBJECT_TYPE.LIST);
@@ -1370,7 +1373,7 @@ class ObjectInfo extends React.Component {
             {isOptionsObjectType && galleryPriceOptionsSection}
             {!isHashtag && showMenuSection && menuSection()}
             {!isHashtag && aboutSection}
-            {!isHashtag && connectSection}
+            {showConnectSection && connectSection}
             {shopType && shopSection}
             {accessExtend && hasType(wobject, OBJECT_TYPE.LIST) && listSection}
             {showFeedSection && feedSection}

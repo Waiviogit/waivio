@@ -15,8 +15,8 @@ const ObjectsAddOnContent = ({
   isLoading,
 }) => {
   let renderCard = <RightSidebarLoading id="RightSidebarLoading" />;
-
-  const addOnObjectsArr = addOnObjects.length > 5 ? addOnObjects.slice(0, 5) : addOnObjects;
+  const moreObjects = addOnObjects.length > 5;
+  const addOnObjectsArr = moreObjects ? addOnObjects.slice(0, 5) : addOnObjects;
 
   if (!isLoading) {
     if (!isEmpty(addOnObjects)) {
@@ -33,7 +33,8 @@ const ObjectsAddOnContent = ({
       ));
 
       const renderButtons = () =>
-        !isCenterContent && (
+        !isCenterContent &&
+        moreObjects && (
           <div className="ObjectsRelated__more">
             <a onClick={() => setShowModal(true)} id="show_more_div">
               {intl.formatMessage({ id: 'show_more', defaultMessage: 'Show more' })}
@@ -56,7 +57,7 @@ const ObjectsAddOnContent = ({
                 className=" icon-link SidebarContentBlock__icon"
               />
             )}{' '}
-            {intl.formatMessage({ id: 'object_field_add-on', defaultMessage: 'Add-on' })}
+            {intl.formatMessage({ id: 'object_field_addOn', defaultMessage: 'Add-on' })}
           </div>
           <div className="SidebarContentBlock__content">{renderObjects}</div>
           {renderButtons()}

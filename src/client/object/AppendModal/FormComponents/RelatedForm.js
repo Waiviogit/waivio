@@ -15,39 +15,45 @@ const RelatedForm = ({
   handleSelectObject,
   onCreateObject,
   onObjectCardDelete,
-}) => (
-  <>
-    <Form.Item>
-      {getFieldDecorator(objectFields.related, {
-        rules: getFieldRules(objectFields.related),
-      })(
-        <SearchObjectsAutocomplete
-          placeholder={intl.formatMessage({
-            id: 'objects_auto_complete_placeholder',
-            defaultMessage: 'Find object',
-          })}
-          handleSelect={handleSelectObject}
-        />,
-      )}
-      {selectedObject && (
-        <ObjectCardView closeButton onDelete={onObjectCardDelete} wObject={selectedObject} />
-      )}
-      <br />
-      <div className="add-create-btns">
-        <CreateObject
-          withOpenModalBtn={!selectedObject}
-          openModalBtnText={intl.formatMessage({
-            id: 'create_new_object',
-            defaultMessage: 'Create new object',
-          })}
-          currentField={objectFields.related}
-          onCreateObject={onCreateObject}
-          parentObject={{}}
-        />
-      </div>{' '}
-    </Form.Item>
-  </>
-);
+  wobjRelated,
+}) => {
+  const relatedPermlinks = wobjRelated?.map(obj => obj.body);
+
+  return (
+    <>
+      <Form.Item>
+        {getFieldDecorator(objectFields.related, {
+          rules: getFieldRules(objectFields.related),
+        })(
+          <SearchObjectsAutocomplete
+            itemsIdsToOmit={relatedPermlinks}
+            placeholder={intl.formatMessage({
+              id: 'objects_auto_complete_placeholder',
+              defaultMessage: 'Find object',
+            })}
+            handleSelect={handleSelectObject}
+          />,
+        )}
+        {selectedObject && (
+          <ObjectCardView closeButton onDelete={onObjectCardDelete} wObject={selectedObject} />
+        )}
+        <br />
+        <div className="add-create-btns">
+          <CreateObject
+            withOpenModalBtn={!selectedObject}
+            openModalBtnText={intl.formatMessage({
+              id: 'create_new_object',
+              defaultMessage: 'Create new object',
+            })}
+            currentField={objectFields.related}
+            onCreateObject={onCreateObject}
+            parentObject={{}}
+          />
+        </div>{' '}
+      </Form.Item>
+    </>
+  );
+};
 
 RelatedForm.propTypes = {
   getFieldDecorator: PropTypes.func.isRequired,
@@ -57,6 +63,7 @@ RelatedForm.propTypes = {
   getFieldRules: PropTypes.func.isRequired,
   selectedObject: PropTypes.shape().isRequired,
   intl: PropTypes.shape().isRequired,
+  wobjRelated: PropTypes.arrayOf().isRequired,
 };
 
 export default injectIntl(RelatedForm);

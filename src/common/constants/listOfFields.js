@@ -58,7 +58,7 @@ export const objectFields = {
   shopFilter: 'shopFilter',
   menuItem: 'menuItem',
   related: 'related',
-  addOn: 'add-on',
+  addOn: 'addOn',
   similar: 'similar',
 };
 
