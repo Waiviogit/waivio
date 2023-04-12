@@ -383,8 +383,8 @@ export const sortOptions = (a, b) => {
 };
 
 export const sortByFieldPermlinksList = (permlinksArr, objects) =>
-  permlinksArr.reduce((acc, item) => {
-    const findItem = objects.find(i => i.author_permlink === item);
+  permlinksArr?.reduce((acc, item) => {
+    const findItem = objects?.find(i => i.author_permlink === item);
 
     if (findItem) {
       return [...acc, findItem];

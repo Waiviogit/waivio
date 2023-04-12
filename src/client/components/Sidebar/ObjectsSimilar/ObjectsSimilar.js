@@ -12,14 +12,15 @@ const ObjectsSimilar = ({ wobject, isCenterContent }) => {
   const [showModal, setShowModal] = useState(false);
   const [similarObjects, setSimilarObjects] = useState([]);
   const similar = get(wobject, 'similar', []);
-  const similarObjectsPermlinks = !isEmpty(similar) && similar.map(obj => obj.body);
+  const similarObjectsPermlinks = !isEmpty(similar) ? similar.map(obj => obj.body) : [];
   const sortedSimilarObjects = sortByFieldPermlinksList(similarObjectsPermlinks, similarObjects);
   const similarObjectsArr =
     sortedSimilarObjects.length > 5 ? sortedSimilarObjects.slice(0, 5) : sortedSimilarObjects;
 
   useEffect(() => {
-    !isEmpty(similar) &&
+    if (!isEmpty(similar)) {
       getObjectInfo(similarObjectsPermlinks).then(res => setSimilarObjects(res.wobjects));
+    }
   }, [wobject.similar]);
 
   const renderObjectsModal = similarObjectsArr?.map(item => (

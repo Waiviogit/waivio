@@ -21,12 +21,14 @@ const ObjectsRelated = ({
 }) => {
   const [showModal, setShowModal] = useState(false);
   const [relatedObjects, setRelatedObjects] = useState([]);
-  const relatedObjectsPermlinks =
-    !isEmpty(currWobject.related) && currWobject?.related?.map(obj => obj.body);
+  const relatedObjectsPermlinks = !isEmpty(currWobject.related)
+    ? currWobject?.related?.map(obj => obj.body)
+    : [];
 
   useEffect(() => {
-    !isEmpty(relatedObjectsPermlinks) &&
+    if (!isEmpty(relatedObjectsPermlinks)) {
       getObjectInfo(relatedObjectsPermlinks).then(res => setRelatedObjects(res.wobjects));
+    }
   }, [currWobject.related]);
 
   const sortedRelatedObjects = sortByFieldPermlinksList(relatedObjectsPermlinks, relatedObjects);
