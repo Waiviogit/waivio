@@ -64,11 +64,13 @@ export const getChangedWobjectField = (
   isNew = false,
   type = '',
   appendObj,
+  isUpdatesPage,
 ) => async (dispatch, getState, { busyAPI }) => {
   const state = getState();
   const locale = getLocale(state);
   const voter = getAuthenticatedUserName(state);
   const updatePosts = ['pin'].includes(fieldName);
+  const fieldType = isNew ? fieldName : type;
 
   const subscribeCallback = () =>
     dispatch({
@@ -110,10 +112,10 @@ export const getChangedWobjectField = (
   busyAPI.instance.subscribeBlock(
     subscribeTypes.votes,
     blockNumber,
-    appendObj && updatePosts
+    appendObj && updatePosts && !isUpdatesPage
       ? updatePostCallback
       : () => {
-          dispatch(getUpdates(authorPermlink, type, 'createdAt', locale));
+          dispatch(getUpdates(authorPermlink, fieldType, 'createdAt', locale));
           subscribeCallback();
         },
   );
@@ -129,6 +131,7 @@ export const voteAppends = (
   isNew = false,
   type,
   appendObj,
+  isUpdatesPage,
 ) => (dispatch, getState, { steemConnectAPI }) => {
   const state = getState();
   const fields = getAppendList(state);
@@ -163,6 +166,7 @@ export const voteAppends = (
           isNew,
           type,
           appendObj,
+          isUpdatesPage,
         ),
       );
     })
@@ -221,9 +225,11 @@ const followAndLikeAfterCreateAppend = (
   isLike,
   follow,
   isObjectPage,
+  isUpdatesPage,
   appendObj,
-) => dispatch => {
+) => (dispatch, getState) => {
   const type = data.field.name === 'listItem' ? data.field.type : null;
+  const state = getState();
 
   if (isLike) {
     if (data.field.name === 'authority') {
@@ -246,25 +252,42 @@ const followAndLikeAfterCreateAppend = (
           true,
           type,
           appendObj,
+          isUpdatesPage,
         ),
       );
     }
+  } else {
+    const fields = getAppendList(state);
+    const post = fields.find(field => field.permlink === data.permlink) || null;
+    const wobj = get(state, ['object', 'wobject'], {});
+    const fieldName = data.field.name || post.name;
+
+    dispatch(
+      getChangedWobjectField(
+        wobj.author_permlink,
+        fieldName,
+        data.author,
+        data.permlink,
+        true,
+        type,
+        appendObj,
+      ),
+    );
   }
   if (follow) dispatch(followObject(data.parentPermlink));
 
   dispatch({ type: APPEND_WAIVIO_OBJECT.SUCCESS });
 };
 
-export const appendObject = (postData, { follow, isLike, votePercent, isObjectPage } = {}) => (
-  dispatch,
-  getState,
-  { busyAPI },
-) => {
+export const appendObject = (
+  postData,
+  { follow, isLike, votePercent, isObjectPage, isUpdatesPage } = {},
+) => (dispatch, getState, { busyAPI }) => {
   dispatch({
     type: APPEND_WAIVIO_OBJECT.START,
   });
 
-  return postAppendWaivioObject({ ...postData, votePower: undefined })
+  return postAppendWaivioObject({ ...postData, votePower: undefined, isLike: undefined })
     .then(async res => {
       const blockNumber = await getLastBlockNum();
       const voter = getAuthenticatedUserName(getState());
@@ -275,6 +298,7 @@ export const appendObject = (postData, { follow, isLike, votePercent, isObjectPa
             isLike,
             follow,
             isObjectPage,
+            isUpdatesPage,
             true,
           ),
         );

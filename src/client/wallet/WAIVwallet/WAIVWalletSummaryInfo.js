@@ -166,8 +166,7 @@ const WAIVWalletSummaryInfo = props => {
             >
               {formattedNumber(stake + delegationsOut)}
               {getFormattedPendingWithdrawal(unstake, unstakesTokenInfo)}
-              {getFormattedTotalDelegated(delegation)}
-              WP
+              {getFormattedTotalDelegated(delegation)} WP
             </div>
           </div>
           <div className="WalletSummaryInfo__actions">

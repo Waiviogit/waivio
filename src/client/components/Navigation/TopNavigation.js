@@ -40,6 +40,7 @@ const LINKS = {
   NOTIFICATIONS: '/notifications-list',
   NEW_ACCOUNT: '/new-accounts',
   DATA_IMPORT: '/data-import',
+  ASIN_SCANER: '/ASIN-scanner',
   BLOG: '/user-blog',
   FEED: '/feed',
   BLACKLIST: '/blacklist',
@@ -64,6 +65,8 @@ const TOOLS_URLS = [
   LINKS.TOOLS_SETTINGS_NOTIFICATIONS,
   LINKS.WEBSITE_CREATE,
   LINKS.NEW_ACCOUNT,
+  LINKS.DATA_IMPORT,
+  LINKS.ASIN_SCANER,
 ];
 const WEBSITE_URLS = [
   LINKS.TOOLS_SETTINGS,

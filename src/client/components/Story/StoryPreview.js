@@ -70,6 +70,11 @@ const StoryPreview = ({ post, isUpdates, isVimeo }) => {
       imagePath = parseJSON(post.body)?.productIdImage;
     }
   }
+  if (isUpdates && post.name === objectFields.menuItem) {
+    if (!isEmpty(post.body) && post.body.includes('waivio.nyc3.digitaloceanspaces')) {
+      imagePath = parseJSON(post.body)?.image;
+    }
+  }
   if (isUpdates && post.name === objectFields.options) {
     if (!isEmpty(post.body) && post.body.includes('waivio.nyc3.digitaloceanspaces')) {
       imagePath = parseJSON(post.body)?.image;

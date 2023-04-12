@@ -12,14 +12,18 @@ const ObjectsRelatedContent = ({
   setShowModal,
   intl,
   objects,
+  relatedObjects,
   currWobject,
   isLoading,
 }) => {
   let renderCard = <RightSidebarLoading id="RightSidebarLoading" />;
+  const objsArr = [...relatedObjects, ...objects];
+  const moreObjects = objsArr.length > 5;
+  const renderedObjects = moreObjects ? objsArr.slice(0, 5) : objsArr;
 
   if (!isLoading) {
-    if (!isEmpty(objects)) {
-      const renderObjects = objects.map(item => (
+    if (!isEmpty(renderedObjects)) {
+      const renderObjects = renderedObjects?.map(item => (
         <ObjectCard
           key={item.author_permlink}
           wobject={item}
@@ -32,7 +36,8 @@ const ObjectsRelatedContent = ({
       ));
 
       const renderButtons = () =>
-        !isCenterContent && (
+        !isCenterContent &&
+        moreObjects && (
           <div className="ObjectsRelated__more">
             <a onClick={() => setShowModal(true)} id="show_more_div">
               {intl.formatMessage({ id: 'show_more', defaultMessage: 'Show more' })}
@@ -66,6 +71,7 @@ ObjectsRelatedContent.propTypes = {
   isCenterContent: PropTypes.bool.isRequired,
   setShowModal: PropTypes.func.isRequired,
   currWobject: PropTypes.shape().isRequired,
+  relatedObjects: PropTypes.arrayOf(PropTypes.shape()),
   objectsState: PropTypes.shape({
     objects: PropTypes.arrayOf(PropTypes.shape()),
     skip: PropTypes.number,

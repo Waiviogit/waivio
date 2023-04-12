@@ -9,7 +9,7 @@ import withEditor from '../../../Editor/withEditor';
 
 @withEditor
 @injectIntl
-export default class ImageSideButton extends React.Component {
+class ImageSideButton extends React.Component {
   static propTypes = {
     intl: PropTypes.shape().isRequired,
     setEditorState: PropTypes.func.isRequired,
@@ -95,3 +95,5 @@ export default class ImageSideButton extends React.Component {
     );
   }
 }
+
+export default ImageSideButton;

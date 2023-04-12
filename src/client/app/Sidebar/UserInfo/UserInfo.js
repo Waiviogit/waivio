@@ -65,6 +65,7 @@ class UserInfo extends React.Component {
     let website = null;
     let about = null;
     let email;
+
     const lastActive = !isGuestPage ? user.last_activity : null;
 
     if (user && user.posting_json_metadata && user.posting_json_metadata !== '') {

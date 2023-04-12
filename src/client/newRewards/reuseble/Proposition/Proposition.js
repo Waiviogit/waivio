@@ -10,6 +10,8 @@ import PropositionFooter from './PropositionFooter';
 import './Proposition.less';
 
 const Proposition = ({ proposition, type, getProposition, hovered }) => {
+  if (!proposition?.object) return null;
+
   const [openDetails, setOpenDitails] = useState(false);
   const onOpenDetailsModal = () => setOpenDitails(true);
   const propositionType =

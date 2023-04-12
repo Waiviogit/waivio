@@ -76,7 +76,7 @@ export const createWaivioObject = postData => async (dispatch, getState) => {
 
   if (!auth.isAuthenticated) return null;
 
-  const { votePower, follow, ...wobj } = postData;
+  const { votePower, follow, like, ...wobj } = postData;
   const isHashtag = wobj.type === 'hashtag';
 
   if (isHashtag) {
@@ -125,7 +125,7 @@ export const createWaivioObject = postData => async (dispatch, getState) => {
     if (follow) {
       dispatch(followObject(response.permlink));
     }
-    dispatch(voteObject(response.author, response.permlink, votePower));
+    if (like) dispatch(voteObject(response.author, response.permlink, votePower));
 
     return response;
   });

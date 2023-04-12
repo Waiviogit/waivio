@@ -36,15 +36,17 @@ export const getInfoForSideBar = username => async dispatch => {
       savings_hbd_balance: acc?.savings_hbd_balance,
       received_vesting_shares: acc?.received_vesting_shares,
       delegated_vesting_shares: acc?.delegated_vesting_shares,
+      downvote_manabar: acc?.downvote_manabar,
+      voting_manabar: voting_mana,
     };
 
     data.rc_percentage = rc.percentage * 0.01 || 0;
-    data.voting_mana = voting_mana.percentage * 0.01 || 0;
+    data.voting_mana = voting_mana.max_mana ? voting_mana.percentage * 0.01 || 0 : 100;
     data.waivVotingPower = waivPowerMana?.votingPower ? waivPowerMana.votingPower : 100;
     data.waivDownvotingPower = waivVotingMana ? waivPowerMana.downvotingPower : 100;
     data.waivVotingPowerPrice = userVoteValue.estimatedWAIV;
     data.hiveVotingPowerPrice = userVoteValue.estimatedHIVE;
-    data.last_activity = `${lastActivity}Z`;
+    data.last_activity = lastActivity ? `${lastActivity}Z` : acc.created || acc.createdAt;
     data.totalVotingPowerPrice = userVoteValue.estimatedHIVE + userVoteValue.estimatedWAIV;
 
     return dispatch({

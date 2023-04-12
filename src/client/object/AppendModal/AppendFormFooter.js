@@ -9,6 +9,9 @@ import FollowObjectForm from '../FollowObjectForm';
 import { getFollowingObjectsList } from '../../../store/userStore/userSelectors';
 import { getObject } from '../../../store/wObjectStore/wObjectSelectors';
 import { getVotingPower } from '../../../store/settingsStore/settingsSelectors';
+import { checkUserInObjWhiteList } from '../../../waivioApi/ApiClient';
+import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
+import { guestUserRegex } from '../../../common/helpers/regexHelpers';
 
 const AppendFormFooter = ({
   loading,
@@ -21,24 +24,32 @@ const AppendFormFooter = ({
   disabled,
 }) => {
   const [isSliderVisible, setSliderVisibility] = useState(false);
+  const [inWhiteList, setInWhiteList] = useState(false);
   const followingList = useSelector(getFollowingObjectsList);
   const wObject = useSelector(getObject);
   const sliderMode = useSelector(getVotingPower);
+  const authUser = useSelector(getAuthenticatedUserName);
+  const isGuest = guestUserRegex.test(authUser);
   const { getFieldValue } = form;
 
-  const calculateVoteWorth = percent => {
-    calcVote(percent);
+  const calculateVoteWorth = (percent, worth) => {
+    calcVote(percent, worth);
   };
 
   useEffect(() => {
     if (sliderMode && !isSliderVisible) {
       setSliderVisibility(!isSliderVisible);
     }
+    checkUserInObjWhiteList(authUser).then(res => {
+      setInWhiteList(res);
+    });
   }, []);
 
   const handleLikeClick = () => {
     setSliderVisibility(sliderMode);
   };
+
+  const littleVotePower = inWhiteList ? false : voteWorth < 0.001;
 
   return (
     <React.Fragment>
@@ -47,11 +58,22 @@ const AppendFormFooter = ({
         votePercent={votePercent}
         voteWorth={voteWorth}
         form={form}
-        sliderVisible={isSliderVisible}
+        showSlider
         onLikeClick={handleLikeClick}
         disabled={loading}
         selectedType={selectWobj}
       />
+      {littleVotePower && !isGuest && (
+        <div
+          style={{
+            color: 'red',
+            textAlign: 'center',
+            paddingTop: '10px',
+          }}
+        >
+          Your vote is less than $0.001 in WAIV token.
+        </div>
+      )}
       {followingList.includes(wObject.author_permlink) ? null : (
         <FollowObjectForm loading={loading} form={form} />
       )}
@@ -62,7 +84,9 @@ const AppendFormFooter = ({
             className="AppendForm__submit"
             type="primary"
             loading={loading}
-            disabled={loading || disabled}
+            disabled={
+              (!isGuest && littleVotePower) || !form.getFieldValue('like') || loading || disabled
+            }
             onClick={handleSubmit}
           >
             <FormattedMessage

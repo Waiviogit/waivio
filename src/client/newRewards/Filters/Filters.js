@@ -83,7 +83,11 @@ const RewardsFilters = ({ config, getFilters, onlyOne, visible, onClose, intl, c
 
         return (
           <div className="RewardsFilters__block" key={filter.title}>
-            {filter.title && <span className="RewardsFilters__subtitle">{filter.title}:</span>}
+            {filter.title && (
+              <span className="RewardsFilters__subtitle">
+                {intl.formatMessage({ id: `filter_${filter.type}`, defaultMessage: filter.title })}:
+              </span>
+            )}
             {filters?.[filter?.type]?.map(check => {
               const value = typeof check === 'object' ? check.value : check;
               const title = typeof check === 'object' ? check.title : check;
@@ -95,7 +99,7 @@ const RewardsFilters = ({ config, getFilters, onlyOne, visible, onClose, intl, c
                     onChange={() => setFilters(filter.type, value, filter.onlyOne)}
                   >
                     {' '}
-                    {intl.formatMessage({ id: `filter_${title}`, defaultMessage: title })}
+                    {intl.formatMessage({ id: `filter_${value}`, defaultMessage: title })}
                   </Checkbox>
                 </div>
               );

@@ -2046,6 +2046,28 @@ export const getUserVoteValueInfo = userName => {
     .catch(e => e);
 };
 
+export const getUserVoteValueInWaiv = (userName, weight) => {
+  return fetch(`${config.apiPrefix}${config.user}/${userName}/waiv-vote?weight=${weight}`, {
+    headers,
+    method: 'GET',
+  })
+    .then(handleErrors)
+    .then(res => res.json())
+    .then(response => response.result)
+    .catch(e => e);
+};
+
+export const checkUserInObjWhiteList = userName => {
+  return fetch(`${config.apiPrefix}${config.user}/${userName}/white-list-object`, {
+    headers,
+    method: 'GET',
+  })
+    .then(handleErrors)
+    .then(res => res.json())
+    .then(response => response.result)
+    .catch(e => e);
+};
+
 export const getEngineTransactionHistory = body => {
   return fetch(`${config.campaignApiPrefix}${config.hiveEngine}${config.accountHistory}`, {
     headers,
@@ -2411,7 +2433,7 @@ export const getMessagesList = (userName, skip, query, sort) => {
   const filters = parseQuery(query);
 
   return fetch(
-    `${config.campaignV2ApiPrefix}${config.rewards}${config.messages}${config.guide}/${userName}?limit=10&skip=${skip}`,
+    `${config.campaignV2ApiPrefix}${config.rewards}${config.messages}${config.guide}/${userName}`,
     {
       headers,
       method: 'POST',

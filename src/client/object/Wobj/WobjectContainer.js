@@ -49,6 +49,7 @@ import {
   getObjectFetchingState,
   getWobjectIsFailed,
   getWobjectIsFatching,
+  getWobjectNested,
 } from '../../../store/wObjectStore/wObjectSelectors';
 import { getLocale } from '../../../store/settingsStore/settingsSelectors';
 import { getConfiguration } from '../../../store/websiteStore/websiteSelectors';
@@ -67,6 +68,7 @@ import { resetBreadCrumb } from '../../../store/shopStore/shopActions';
     failed: getWobjectIsFailed(state),
     locale: getLocale(state),
     wobject: getObjectState(state),
+    nestedWobject: getWobjectNested(state),
     isFetching: getObjectFetchingState(state),
     screenSize: getScreenSize(state),
     helmetIcon: getHelmetIcon(state),
@@ -94,7 +96,7 @@ import { resetBreadCrumb } from '../../../store/shopStore/shopActions';
     resetBreadCrumb,
   },
 )
-export default class WobjectContainer extends React.Component {
+class WobjectContainer extends React.Component {
   static propTypes = {
     route: PropTypes.shape().isRequired,
     authenticatedUserName: PropTypes.string.isRequired,
@@ -113,6 +115,7 @@ export default class WobjectContainer extends React.Component {
     isWaivio: PropTypes.bool.isRequired,
     resetGallery: PropTypes.func.isRequired,
     wobject: PropTypes.shape(),
+    nestedWobject: PropTypes.shape(),
     clearObjectFromStore: PropTypes.func,
     setNestedWobject: PropTypes.func,
     setCatalogBreadCrumbs: PropTypes.func,
@@ -254,6 +257,7 @@ export default class WobjectContainer extends React.Component {
       authenticatedUserName,
       match,
       wobject,
+      nestedWobject,
       isFetching,
       history,
     } = this.props;
@@ -279,6 +283,7 @@ export default class WobjectContainer extends React.Component {
         authenticatedUserName={authenticatedUserName}
         match={match}
         wobject={wobject}
+        nestedWobject={nestedWobject}
         isFetching={isFetching}
         history={history}
         isEditMode={isEditMode}
@@ -295,3 +300,5 @@ export default class WobjectContainer extends React.Component {
     );
   }
 }
+
+export default WobjectContainer;

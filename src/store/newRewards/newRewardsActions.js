@@ -229,7 +229,7 @@ export const rejectAuthorReview = proposition => (
   const commentOp = [
     'comment',
     {
-      parent_author: proposition.rootName,
+      parent_author: proposition.rootName || proposition.root_author,
       parent_permlink: proposition.reservationPermlink,
       author: proposition.guideName,
       permlink: createCommentPermlink(proposition.userName, proposition.reservationPermlink),

@@ -251,14 +251,14 @@ export const calculateDownVote = user => {
 
   if (currentMana && downvoteMana) {
     const downvoteUpdate = user.downvote_manabar.last_update_time;
-    const downvotePer = downvoteMana / (currentMana / (user.voting_power / 100) / 4);
+    const downvotePer = downvoteMana / (currentMana / user.voting_mana / 4);
     const secondsago = (new Date() - new Date(downvoteUpdate * 1000)) / 1000;
     const pow = Math.min((downvotePer * 100 + (10000 * secondsago) / 432000) / 100, 100);
 
     return pow % 10 ? pow.toFixed(2) : pow.toFixed(0);
   }
 
-  return 0;
+  return 100;
 };
 
 export const calculateTotalDelegatedSP = (user, totalVestingShares, totalVestingFundSteem) => {

@@ -2,13 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Checkbox, Form } from 'antd';
 import { connect } from 'react-redux';
-import { ceil, isEmpty } from 'lodash';
+import { round, isEmpty } from 'lodash';
 import { FormattedMessage, FormattedNumber, injectIntl } from 'react-intl';
 import RawSlider from '../components/Slider/RawSlider';
 import USDDisplay from '../components/Utils/USDDisplay';
 import { getAuthenticatedUser } from '../../store/authStore/authSelectors';
 import { getVotePercent, getVotingPower } from '../../store/settingsStore/settingsSelectors';
-import { calculateVotePowerForSlider } from '../vendor/steemitHelpers';
+import { getUserVoteValueInWaiv } from '../../waivioApi/ApiClient';
 
 import './LikeSection.less';
 
@@ -25,6 +25,7 @@ class LikeSection extends React.Component {
     disabled: PropTypes.bool,
     intl: PropTypes.shape().isRequired,
     sliderMode: PropTypes.bool,
+    showSlider: PropTypes.bool,
     defaultVotePercent: PropTypes.number,
     user: PropTypes.shape(),
     selectedType: PropTypes.shape({
@@ -54,7 +55,7 @@ class LikeSection extends React.Component {
   }
 
   componentDidMount = () => {
-    if (this.props.sliderMode) {
+    if (this.props.sliderMode || this.props.showSlider) {
       if (!this.state.sliderVisible) {
         // eslint-disable-next-line react/no-did-mount-set-state
         this.setState(prevState => ({ sliderVisible: !prevState.sliderVisible }));
@@ -74,20 +75,15 @@ class LikeSection extends React.Component {
 
     if (isEmpty(selectedType)) return;
 
-    const voteWorth = await calculateVotePowerForSlider(
-      user.name,
-      value,
-      selectedType.author,
-      selectedType.author_permlink || selectedType.permlink,
-    );
+    const voteWorth = await getUserVoteValueInWaiv(user.name, value);
+    const roundVoteWorth = round(voteWorth, voteWorth >= 0.001 ? 3 : 6);
 
-    this.setState({ votePercent: value, voteWorth: ceil(voteWorth, 3) });
-
-    onVotePercentChange(value);
+    this.setState({ votePercent: value, voteWorth: roundVoteWorth });
+    onVotePercentChange(value, voteWorth);
   };
 
   handleLikeClick = () => {
-    if (this.props.sliderMode) {
+    if (this.props.sliderMode || this.props.showSlider) {
       if (!this.state.sliderVisible) {
         this.setState(prevState => ({ sliderVisible: !prevState.sliderVisible }));
       }
@@ -110,7 +106,7 @@ class LikeSection extends React.Component {
   render() {
     const { voteWorth, votePercent, sliderVisible } = this.state;
     const { form, intl, disabled } = this.props;
-    const likePrice = Number(voteWorth.toFixed(3)) || '0.001';
+    const likePrice = Number(voteWorth) || '0.001';
 
     return (
       <div className="LikeSection">

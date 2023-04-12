@@ -23,6 +23,8 @@ import WobjectSidebarFollowers from '../../app/Sidebar/ObjectInfoExperts/Wobject
 import WobjectNearby from '../../app/Sidebar/ObjectInfoExperts/WobjectNearby';
 import { compareObjectTitle } from '../../../common/helpers/seoHelpes';
 import WobjectShopFilter from '../ObjectTypeShop/WobjectShopFilter';
+import ObjectsAddOn from '../../components/Sidebar/ObjectsAddOn/ObjectsAddOn';
+import ObjectsSimilar from '../../components/Sidebar/ObjectsSimilar/ObjectsSimilar';
 
 const Wobj = ({
   authenticated,
@@ -37,6 +39,7 @@ const Wobj = ({
   objectName,
   appendAlbum,
   helmetIcon,
+  nestedWobject,
   isWaivio,
   supportedObjectTypes,
   weightValue,
@@ -66,7 +69,8 @@ const Wobj = ({
     ''} ${tagCategories}`;
   const formsList = get(wobject, 'form', []);
   const currentForm = formsList?.find(item => item?.permlink === match.params.itemId) || {};
-  const widgetForm = (wobject?.widget && JSON.parse(wobject?.widget)) || {};
+  const currentWobject = history.location.hash ? nestedWobject : wobject;
+  const widgetForm = currentWobject?.widget && JSON.parse(currentWobject?.widget);
   const isWidgetPage = isNil(match.params[0]) && match.params[1] === 'widget';
   const currentColumn = get(currentForm, 'column', '');
   const currentWidgetColumn = get(widgetForm, 'column', '');
@@ -152,9 +156,11 @@ const Wobj = ({
                 <WobjectShopFilter />
               ) : (
                 <React.Fragment>
+                  <ObjectsRelated wobject={wobject} />
+                  <ObjectsAddOn wobject={wobject} />
+                  <ObjectsSimilar wobject={wobject} />
                   <ObjectExpertise wobject={wobject} />
                   {wobject.map && <WobjectNearby wobject={wobject} />}
-                  <ObjectsRelated wobject={wobject} />
                   <WobjectSidebarFollowers wobject={wobject} />
                 </React.Fragment>
               )}
@@ -169,7 +175,6 @@ const Wobj = ({
               toggleViewEditMode,
               appendAlbum,
               currentForm,
-              widgetForm,
               route,
             })}
           </div>
@@ -185,6 +190,7 @@ Wobj.propTypes = {
   authenticatedUserName: PropTypes.string.isRequired,
   match: PropTypes.shape().isRequired,
   wobject: PropTypes.shape(),
+  nestedWobject: PropTypes.shape(),
   history: PropTypes.shape().isRequired,
   supportedObjectTypes: PropTypes.arrayOf(PropTypes.string),
   isEditMode: PropTypes.bool.isRequired,

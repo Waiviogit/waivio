@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect, useDispatch } from 'react-redux';
 import { Icon, Modal } from 'antd';
 import { FormattedMessage } from 'react-intl';
-import { get, isEmpty } from 'lodash';
+import { get, isEmpty, isNil } from 'lodash';
 import { ReactSVG } from 'react-svg';
 import { useHistory, useRouteMatch } from 'react-router';
 import Popover from '../Popover';
@@ -17,11 +17,14 @@ import {
 } from '../../../store/postsStore/postActions';
 import { getAuthenticatedUserName, isGuestUser } from '../../../store/authStore/authSelectors';
 import { isMobile } from '../../../common/helpers/apiHelpers';
-import { deletePost } from '../../../waivioApi/ApiClient';
+import { deletePost, getObjectInfo } from '../../../waivioApi/ApiClient';
 import AppendModal from '../../object/AppendModal/AppendModal';
+import { objectFields } from '../../../common/constants/listOfFields';
+import { rejectAuthorReview } from '../../../store/newRewards/newRewardsActions';
+import ids from '../../newRewards/BlackList/constants';
+import { changeBlackAndWhiteLists } from '../../../store/rewardsStore/rewardsActions';
 
 import './PostPopoverMenu.less';
-import { objectFields } from '../../../common/constants/listOfFields';
 
 const propTypes = {
   pendingFlag: PropTypes.bool,
@@ -38,8 +41,10 @@ const propTypes = {
       userId: PropTypes.string,
     }),
     author: PropTypes.string,
+    guideName: PropTypes.string,
     root_author: PropTypes.string,
     isHide: PropTypes.bool,
+    blacklisted: PropTypes.bool,
     url: PropTypes.string,
     title: PropTypes.string,
     author_original: PropTypes.string,
@@ -106,15 +111,25 @@ const PostPopoverMenu = ({
   const [isPin, setIsPin] = useState(false);
   const [isRemove, setIsRemove] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
+  const [wobjName, setWobjName] = useState('');
+  const [inBlackList, setInBlackList] = useState(post.blacklisted);
+  const [loadingType, setLoadingType] = useState('');
+
   const history = useHistory();
   const dispatch = useDispatch();
   const match = useRouteMatch();
-  const userPage = match.url.includes(`/@${match.params.name}`);
+  const wobjAuthorPermlink = match.params.name;
+  const userPage = match.url.includes(`/@${wobjAuthorPermlink}`);
   const { isReported, isSaved } = postState;
   const hasOnlySponsorLike =
     post.active_votes.length === 1 && post.active_votes.some(vote => vote.sponsor);
   const withoutLike = (!post.net_rshares_WAIV && !post.net_rshares) || hasOnlySponsorLike;
   const canDeletePost = ownPost && withoutLike && !post.children;
+
+  useEffect(() => {
+    !isNil(wobjAuthorPermlink) &&
+      getObjectInfo([wobjAuthorPermlink]).then(res => setWobjName(res.wobjects[0].name));
+  }, [wobjAuthorPermlink]);
 
   const {
     guestInfo,
@@ -142,6 +157,35 @@ const PostPopoverMenu = ({
         setIsVisible(false);
 
         return setIsRemove(true);
+
+      case 'rejectReservation':
+        setIsVisible(false);
+
+        return Modal.confirm({
+          title: 'Reject review',
+          content: 'Do you want to reject this review?',
+          onOk() {
+            return new Promise(resolve => {
+              dispatch(rejectAuthorReview(post))
+                .then(() => resolve())
+                .catch(() => {
+                  resolve();
+                });
+            });
+          },
+        });
+
+      case 'blackList':
+        setLoadingType('blackList');
+        const methodType = inBlackList ? ids.blackList.remove : ids.blackList.add;
+
+        dispatch(changeBlackAndWhiteLists(methodType, [post?.author])).then(() => {
+          setInBlackList(!inBlackList);
+          setLoadingType('');
+        });
+
+        return () => setIsVisible(false);
+
       default:
         return handlePostPopoverMenuClick(key);
     }
@@ -341,6 +385,21 @@ const PostPopoverMenu = ({
       </PopoverMenuItem>,
     );
 
+  if (post.guideName === userName) {
+    popoverMenu = [
+      ...popoverMenu,
+      <PopoverMenuItem key={'rejectReservation'}>
+        <Icon type="stop" /> Reject review
+      </PopoverMenuItem>,
+      <PopoverMenuItem key={'blackList'}>
+        {loadingType === 'blackList' ? <Icon type={'loading'} /> : <Icon type="user-add" />}{' '}
+        {inBlackList
+          ? `Remove @${post?.author} from blacklist`
+          : `Add @${post?.author} to blacklist`}
+      </PopoverMenuItem>,
+    ];
+  }
+
   return (
     <React.Fragment>
       <Popover
@@ -398,9 +457,10 @@ const PostPopoverMenu = ({
       </Modal>
       {isPin &&
         (post.pin || post.hasPinUpdate ? (
-          history.push(`/object/${match.params.name}/updates/pin?search=${post.id}`)
+          history.push(`/object/${wobjAuthorPermlink}/updates/pin?search=${post.id}`)
         ) : (
           <AppendModal
+            objName={wobjName}
             post={post}
             showModal={isPin}
             hideModal={() => setIsPin(false)}
@@ -409,10 +469,11 @@ const PostPopoverMenu = ({
         ))}
       {isRemove &&
         (post.hasRemoveUpdate ? (
-          history.push(`/object/${match.params.name}/updates/remove?search=${post.id}`)
+          history.push(`/object/${wobjAuthorPermlink}/updates/remove?search=${post.id}`)
         ) : (
           <AppendModal
             post={post}
+            objName={wobjName}
             showModal={isRemove}
             hideModal={() => setIsRemove(false)}
             field={objectFields.remove}

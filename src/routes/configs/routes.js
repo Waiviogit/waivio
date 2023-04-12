@@ -247,6 +247,11 @@ const routes = {
           component: Views.DataImport,
         },
         {
+          path: '/ASIN-scanner',
+          exact: true,
+          component: Views.AsinScanner,
+        },
+        {
           path: `/:site/(${URL.WEBSITES.tabs})`,
           pathScope: '/:site',
           exact: true,
@@ -493,11 +498,6 @@ const routes = {
       path: '/activity',
       exact: true,
       component: Views.Activity,
-    },
-    {
-      path: '/wallet',
-      exact: true,
-      component: Views.Wallet,
     },
     {
       path: '/editor',

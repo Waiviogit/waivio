@@ -10,6 +10,7 @@ import {
   isNil,
   map,
   omitBy,
+  trimEnd,
   size,
   debounce,
 } from 'lodash';
@@ -85,7 +86,6 @@ import {
 } from '../../../common/helpers/wObjectHelper';
 import { appendObject } from '../../../store/appendStore/appendActions';
 import withEditor from '../../components/Editor/withEditor';
-import { getVoteValue } from '../../../common/helpers/user';
 import { getExposedFieldsByObjType } from '../wObjectHelper';
 import { rateObject } from '../../../store/wObjectStore/wobjActions';
 import SortingList from '../../components/DnDList/DnDList';
@@ -103,7 +103,7 @@ import {
   blogNameValidationRegExp,
 } from '../../../common/constants/validation';
 import { addAlbumToStore, addImageToAlbumStore } from '../../../store/galleryStore/galleryActions';
-import { getRate, getRewardFund, getScreenSize } from '../../../store/appStore/appSelectors';
+import { getScreenSize } from '../../../store/appStore/appSelectors';
 import { getFollowingObjectsList } from '../../../store/userStore/userSelectors';
 import {
   getObject,
@@ -126,14 +126,15 @@ import AuthorForm from './FormComponents/AuthorForm';
 import SearchDepartmentAutocomplete from '../../components/SearchDepartmentAutocomplete/SearchDepartmentAutocomplete';
 import ShopFilterForm from './FormComponents/ShopFilterForm';
 import MenuItemForm from './FormComponents/MenuItemForm';
+import RelatedForm from './FormComponents/RelatedForm';
+import AddOnForm from './FormComponents/AddOnForm';
+import SimilarForm from './FormComponents/SimilarForm';
 import './AppendForm.less';
 
 @connect(
   state => ({
     wObject: getObject(state),
     updates: getAppendList(state),
-    rewardFund: getRewardFund(state),
-    rate: getRate(state),
     sliderMode: getVotingPower(state),
     defaultVotePercent: getVotePercent(state),
     followingList: getFollowingObjectsList(state),
@@ -154,7 +155,7 @@ import './AppendForm.less';
 @withEditor
 @withRouter
 @injectIntl
-export default class AppendForm extends Component {
+class AppendForm extends Component {
   static propTypes = {
     /* decorators */
     form: PropTypes.shape(),
@@ -163,9 +164,7 @@ export default class AppendForm extends Component {
     /* from connect */
     wObject: PropTypes.shape(),
     updates: PropTypes.arrayOf(PropTypes.shape()),
-    rewardFund: PropTypes.shape(),
     history: PropTypes.shape().isRequired,
-    rate: PropTypes.number,
     sliderMode: PropTypes.bool,
     defaultVotePercent: PropTypes.number.isRequired,
     appendObject: PropTypes.func,
@@ -293,6 +292,7 @@ export default class AppendForm extends Component {
     const postData = this.getNewPostData(formValues);
 
     const isObjectPage = this.props.match.params.name === wObject.author_permlink;
+    const isUpdatesPage = this.props.match.params[0] === 'updates';
 
     /* eslint-disable no-restricted-syntax */
     // eslint-disable-next-line no-unused-vars
@@ -304,8 +304,9 @@ export default class AppendForm extends Component {
         .appendObject(data, {
           votePercent: data.votePower,
           follow: formValues.follow,
-          isLike: true,
+          isLike: data.isLike,
           isObjectPage,
+          isUpdatesPage,
         })
         .then(res => {
           const mssg = get(res, ['value', 'message']);
@@ -396,6 +397,9 @@ export default class AppendForm extends Component {
       case objectFields.categoryItem:
       case objectFields.parent:
       case objectFields.publisher:
+      case objectFields.related:
+      case objectFields.similar:
+      case objectFields.addOn:
       case objectFields.shopFilter:
       case objectFields.manufacturer:
       case objectFields.brand:
@@ -512,6 +516,10 @@ export default class AppendForm extends Component {
 
           return `@${author} added ${currentField} (${langReadable}): ${typeInfo}${departmentsInfo}${tagsInfo}${authoritiesInfo}`;
         }
+        case objectFields.related:
+        case objectFields.similar:
+        case objectFields.addOn:
+          return `@${author} added ${currentField} (${langReadable}):\n ${this.state.selectedObject.author_permlink}`;
         case objectFields.publisher: {
           const linkInfo = this.state.selectedObject
             ? `, link: ${this.state.selectedObject.author_permlink}`
@@ -580,13 +588,17 @@ export default class AppendForm extends Component {
             formValues[productIdFields.productIdType]
           }, ${currentField}: ${appendValue}, ${imageDescription}`;
         case objectFields.menuItem:
+          const imageMenuItem = !isEmpty(this.state.currentImages)
+            ? `, image: \n ![${objectFields.menuItem}](${this.state?.currentImages[0]?.src})`
+            : '';
+
           return `@${author} added ${objectFields.menuItem} (${langReadable}): Title: ${
             formValues[menuItemFields.menuItemTitle]
           }, style: ${this.state.menuItemButtonType}, link: ${
             !isEmpty(this.state.selectedObject)
               ? this.state.selectedObject.author_permlink
               : formValues[menuItemFields.linkToWeb]
-          }`;
+          }${imageMenuItem}`;
 
         case objectFields.dimensions:
           return `@${author} added ${currentField} (${langReadable}): ${
@@ -726,6 +738,7 @@ export default class AppendForm extends Component {
       const data = {};
 
       data.author = this.props.user.name;
+      data.isLike = like;
       data.parentAuthor = wObject.author;
       data.parentPermlink = wObject.author_permlink;
       data.body = getAppendMsg(data.author, bodyField);
@@ -733,14 +746,14 @@ export default class AppendForm extends Component {
       data.title = '';
       let fieldsObject = {
         name: includes(TYPES_OF_MENU_ITEM, currentField) ? objectFields.listItem : currentField,
-        body: bodyField,
+        body: trimEnd(bodyField),
         locale: currentLocale,
       };
 
       if (currentField === objectFields.newsFilter) {
         fieldsObject = {
           ...fieldsObject,
-          title: this.getNewsFilterTitle(this.state.newsFilterTitle),
+          title: this.getNewsFilterTitle(this.state.newsFilterTitle)?.trim(),
         };
       }
       if (currentField === objectFields.avatar) {
@@ -775,9 +788,9 @@ export default class AppendForm extends Component {
           ...fieldsObject,
           body: !isEmpty(this.props.post)
             ? `${this.props.post.author}/${this.props.post.permlink}`
-            : `${formValues[removePostFields.postAuthor]}/${
-                formValues[removePostFields.postPermlink]
-              }`,
+            : `${formValues[removePostFields.postAuthor]?.trim()}/${formValues[
+                removePostFields.postPermlink
+              ]?.trim()}`,
         };
       }
       if (currentField === objectFields.tagCategory) {
@@ -789,16 +802,22 @@ export default class AppendForm extends Component {
       if (currentField === objectFields.name) {
         fieldsObject = {
           ...fieldsObject,
-          body: formValues[objectFields.objectName],
+          body: formValues[objectFields.objectName]?.trim(),
         };
       }
       if (currentField === objectFields.companyId) {
         fieldsObject = {
           ...fieldsObject,
           body: JSON.stringify({
-            [companyIdFields.companyIdType]: formValues[companyIdFields.companyIdType],
-            [companyIdFields.companyId]: formValues[companyIdFields.companyId],
+            [companyIdFields.companyIdType]: formValues[companyIdFields.companyIdType]?.trim(),
+            [companyIdFields.companyId]: formValues[companyIdFields.companyId]?.trim(),
           }),
+        };
+      }
+      if ([objectFields.related, objectFields.addOn, objectFields.similar].includes(currentField)) {
+        fieldsObject = {
+          ...fieldsObject,
+          body: this.state.selectedObject?.author_permlink,
         };
       }
       if (currentField === objectFields.publisher) {
@@ -806,7 +825,7 @@ export default class AppendForm extends Component {
           ...fieldsObject,
           body: JSON.stringify({
             name: !isEmpty(formValues[publisherFields.publisherName])
-              ? formValues[publisherFields.publisherName]
+              ? formValues[publisherFields.publisherName]?.trim()
               : undefined,
             authorPermlink: this.state.selectedObject?.author_permlink,
           }),
@@ -832,7 +851,7 @@ export default class AppendForm extends Component {
           ...fieldsObject,
           body: JSON.stringify({
             name: !isEmpty(formValues[manufacturerFields.manufacturerName])
-              ? formValues[manufacturerFields.manufacturerName]
+              ? formValues[manufacturerFields.manufacturerName]?.trim()
               : undefined,
             authorPermlink: this.state.selectedObject?.author_permlink,
           }),
@@ -843,7 +862,7 @@ export default class AppendForm extends Component {
           ...fieldsObject,
           body: JSON.stringify({
             name: !isEmpty(formValues[brandFields.brandName])
-              ? formValues[brandFields.brandName]
+              ? formValues[brandFields.brandName]?.trim()
               : undefined,
             authorPermlink: this.state.selectedObject?.author_permlink,
           }),
@@ -854,7 +873,7 @@ export default class AppendForm extends Component {
           ...fieldsObject,
           body: JSON.stringify({
             name: !isEmpty(formValues[merchantFields.merchantName])
-              ? formValues[merchantFields.merchantName]
+              ? formValues[merchantFields.merchantName]?.trim()
               : undefined,
             authorPermlink: this.state.selectedObject?.author_permlink,
           }),
@@ -865,7 +884,7 @@ export default class AppendForm extends Component {
           ...fieldsObject,
           body: JSON.stringify({
             name: !isEmpty(formValues[authorsFields.name])
-              ? formValues[authorsFields.name]
+              ? formValues[authorsFields.name]?.trim()
               : undefined,
             authorPermlink: this.state.selectedObject?.author_permlink,
           }),
@@ -875,8 +894,8 @@ export default class AppendForm extends Component {
         fieldsObject = {
           ...fieldsObject,
           body: JSON.stringify({
-            value: formValues[weightFields.weight],
-            unit: formValues[weightFields.unitOfWeight],
+            value: formValues[weightFields.weight]?.trim(),
+            unit: formValues[weightFields.unitOfWeight]?.trim(),
           }),
         };
       }
@@ -884,9 +903,9 @@ export default class AppendForm extends Component {
         fieldsObject = {
           ...fieldsObject,
           body: JSON.stringify({
-            [productIdFields.productIdType]: formValues[productIdFields.productIdType],
-            [productIdFields.productId]: formValues[productIdFields.productId],
-            [productIdFields.productIdImage]: formValues[productIdFields.productIdImage],
+            [productIdFields.productIdType]: formValues[productIdFields.productIdType]?.trim(),
+            [productIdFields.productId]: formValues[productIdFields.productId]?.trim(),
+            [productIdFields.productIdImage]: formValues[productIdFields.productIdImage]?.trim(),
           }),
         };
       }
@@ -894,7 +913,7 @@ export default class AppendForm extends Component {
         fieldsObject = {
           ...fieldsObject,
           body: JSON.stringify({
-            title: formValues[menuItemFields.menuItemTitle],
+            title: formValues[menuItemFields.menuItemTitle]?.trim(),
             style: this.state.menuItemButtonType,
             image: !isEmpty(this.state?.currentImages)
               ? this.state?.currentImages[0]?.src
@@ -903,7 +922,7 @@ export default class AppendForm extends Component {
               ? this.state.selectedObject.author_permlink
               : undefined,
             linkToWeb: !isEmpty(formValues[menuItemFields.linkToWeb])
-              ? formValues[menuItemFields.linkToWeb]
+              ? formValues[menuItemFields.linkToWeb]?.trim()
               : undefined,
           }),
         };
@@ -912,10 +931,10 @@ export default class AppendForm extends Component {
         fieldsObject = {
           ...fieldsObject,
           body: JSON.stringify({
-            [optionsFields.category]: formValues[optionsFields.category],
-            [optionsFields.value]: formValues[optionsFields.value],
-            [optionsFields.position]: formValues[optionsFields.position],
-            image: formValues[objectFields.options],
+            [optionsFields.category]: formValues[optionsFields.category]?.trim(),
+            [optionsFields.value]: formValues[optionsFields.value]?.trim(),
+            [optionsFields.position]: formValues[optionsFields.position]?.trim(),
+            image: formValues[objectFields.options]?.trim(),
           }),
         };
       }
@@ -931,10 +950,10 @@ export default class AppendForm extends Component {
         fieldsObject = {
           ...fieldsObject,
           body: JSON.stringify({
-            length: formValues[dimensionsFields.length],
-            width: formValues[dimensionsFields.width],
-            depth: formValues[dimensionsFields.depth],
-            unit: formValues[dimensionsFields.unitOfLength],
+            length: formValues[dimensionsFields.length]?.trim(),
+            width: formValues[dimensionsFields.width]?.trim(),
+            depth: formValues[dimensionsFields.depth]?.trim(),
+            unit: formValues[dimensionsFields.unitOfLength]?.trim(),
           }),
         };
       }
@@ -942,8 +961,8 @@ export default class AppendForm extends Component {
         fieldsObject = {
           ...fieldsObject,
           body: JSON.stringify({
-            key: formValues[featuresFields.name],
-            value: formValues[featuresFields.value],
+            key: formValues[featuresFields.name]?.trim(),
+            value: formValues[featuresFields.value]?.trim(),
           }),
         };
       }
@@ -951,10 +970,10 @@ export default class AppendForm extends Component {
         fieldsObject = {
           ...fieldsObject,
           name: 'form',
-          title: formValues.formTitle,
+          title: formValues.formTitle?.trim(),
           column: formValues.formColumn,
           form: formValues.formForm,
-          link: formValues.formLink || formValues.formWidget,
+          link: formValues.formLink?.trim() || formValues.formWidget?.trim(),
         };
       }
       if (currentField === objectFields.widget) {
@@ -962,10 +981,10 @@ export default class AppendForm extends Component {
           ...fieldsObject,
           body: JSON.stringify({
             name: objectFields.widget,
-            title: formValues.formTitle,
+            title: formValues.formTitle?.trim(),
             column: formValues.formColumn,
             type: formValues.formForm,
-            content: formValues.formLink || formValues.formWidget,
+            content: formValues.formLink?.trim() || formValues.formWidget?.trim(),
           }),
         };
       }
@@ -1098,18 +1117,7 @@ export default class AppendForm extends Component {
     }));
   };
 
-  calculateVoteWorth = value => {
-    const { user, rewardFund, rate } = this.props;
-    const voteWorth = getVoteValue(
-      user,
-      rewardFund.recent_claims,
-      rewardFund.reward_balance,
-      rate,
-      value * 100,
-    );
-
-    this.setState({ votePercent: value, voteWorth });
-  };
+  calculateVoteWorth = (value, voteWorth) => this.setState({ votePercent: value, voteWorth });
 
   handleCreateAlbum = async formData => {
     const { user, wObject, hideModal, addAlbum } = this.props;
@@ -1120,7 +1128,7 @@ export default class AppendForm extends Component {
     this.setState({ loading: true });
 
     try {
-      const { author } = await this.props.appendObject(data, { votePercent });
+      const { author } = await this.props.appendObject(data, { votePercent, isLike: data.isLike });
 
       await addAlbum({ ...album, author }).then(() => hideModal());
       message.success(
@@ -1154,7 +1162,7 @@ export default class AppendForm extends Component {
     this.setState({ loading: true });
 
     this.props
-      .appendObject(data, { isLike: true })
+      .appendObject(data, { isLike: data.isLike })
       .then(() => {
         hideModal();
         this.setState({ selectedUserBlog: null, loading: false });
@@ -1235,7 +1243,7 @@ export default class AppendForm extends Component {
       const response = await this.props.appendObject(postData, {
         votePower: data.votePower,
         follow: following,
-        isLike: true,
+        isLike: postData.isLike,
       });
 
       await new Promise(resolve => setTimeout(resolve, 2000));
@@ -1431,24 +1439,29 @@ export default class AppendForm extends Component {
     const filtered = updates.filter(f => f.locale === currentLocale && f.name === currentField);
 
     if (
-      currentField === objectFields.website ||
-      currentField === objectFields.address ||
-      currentField === objectFields.map ||
-      currentField === objectFields.status ||
-      currentField === objectFields.button ||
-      currentField === objectFields.link ||
-      currentField === objectFields.companyIdType ||
-      currentField === objectFields.companyId ||
-      currentField === objectFields.authors ||
-      currentField === objectFields.publisher ||
-      currentField === objectFields.shopFilter ||
-      currentField === objectFields.manufacturer ||
-      currentField === objectFields.brand ||
-      currentField === objectFields.merchant ||
-      currentField === objectFields.dimensions ||
-      currentField === objectFields.menuItem ||
-      currentField === objectFields.features ||
-      currentField === objectFields.productWeight
+      [
+        objectFields.website,
+        objectFields.address,
+        objectFields.map,
+        objectFields.status,
+        objectFields.button,
+        objectFields.link,
+        objectFields.companyIdType,
+        objectFields.companyId,
+        objectFields.authors,
+        objectFields.publisher,
+        objectFields.related,
+        objectFields.similar,
+        objectFields.addOn,
+        objectFields.shopFilter,
+        objectFields.manufacturer,
+        objectFields.brand,
+        objectFields.merchant,
+        objectFields.dimensions,
+        objectFields.menuItem,
+        objectFields.features,
+        objectFields.productWeight,
+      ].includes(currentField)
     ) {
       return filtered.some(f =>
         isEqual(this.getCurrentObjectBody(currentField), parseJSON(f.body)),
@@ -1671,6 +1684,11 @@ export default class AppendForm extends Component {
     const currentField = this.props.form.getFieldValue('currentField');
     const timeoutCallback = () => setTimeout(e => this.handleSubmit(e), 3000);
 
+    if (currentField === objectFields.menuItem) {
+      this.props.form.setFieldsValue({
+        [menuItemFields.menuItemTitle]: createdObject.name,
+      });
+    }
     this.props.form.setFieldsValue({
       [currentField]: createdObject.author_permlink,
       menuItemName: createdObject.name,
@@ -1860,6 +1878,48 @@ export default class AppendForm extends Component {
           <PublisherForm
             onCreateObject={this.handleCreateObject}
             loading={loading}
+            selectedObject={this.state.selectedObject}
+            handleSelectObject={this.handleSelectObject}
+            getFieldRules={this.getFieldRules}
+            isSomeValue={this.state.isSomeValue}
+            onObjectCardDelete={this.onObjectCardDelete}
+            getFieldDecorator={getFieldDecorator}
+          />
+        );
+      }
+      case objectFields.related: {
+        return (
+          <RelatedForm
+            wobjRelated={wObject?.related}
+            onCreateObject={this.handleCreateObject}
+            selectedObject={this.state.selectedObject}
+            handleSelectObject={this.handleSelectObject}
+            getFieldRules={this.getFieldRules}
+            isSomeValue={this.state.isSomeValue}
+            onObjectCardDelete={this.onObjectCardDelete}
+            getFieldDecorator={getFieldDecorator}
+          />
+        );
+      }
+      case objectFields.addOn: {
+        return (
+          <AddOnForm
+            wobjAddOn={wObject?.addOn}
+            onCreateObject={this.handleCreateObject}
+            selectedObject={this.state.selectedObject}
+            handleSelectObject={this.handleSelectObject}
+            getFieldRules={this.getFieldRules}
+            isSomeValue={this.state.isSomeValue}
+            onObjectCardDelete={this.onObjectCardDelete}
+            getFieldDecorator={getFieldDecorator}
+          />
+        );
+      }
+      case objectFields.similar: {
+        return (
+          <SimilarForm
+            wobjSimilar={wObject?.similar}
+            onCreateObject={this.handleCreateObject}
             selectedObject={this.state.selectedObject}
             handleSelectObject={this.handleSelectObject}
             getFieldRules={this.getFieldRules}
@@ -3645,6 +3705,10 @@ export default class AppendForm extends Component {
         );
       case objectFields.publisher:
         return isEmpty(getFieldValue(publisherFields.publisherName)) && !this.state.selectedObject;
+      case objectFields.related:
+      case objectFields.similar:
+      case objectFields.addOn:
+        return isEmpty(this.state.selectedObject);
       case objectFields.manufacturer:
         return (
           isEmpty(getFieldValue(manufacturerFields.manufacturerName)) && !this.state.selectedObject
@@ -3710,6 +3774,24 @@ export default class AppendForm extends Component {
           isEmpty(this.state.menuItemButtonType) ||
           (isEmpty(getFieldValue(menuItemFields.linkToWeb)) && isEmpty(this.state.selectedObject))
         );
+      case objectFields.pin:
+        if (isEmpty(this.props.post)) {
+          return (
+            isEmpty(getFieldValue(pinPostFields.postPermlink)) ||
+            isEmpty(getFieldValue(pinPostFields.postAuthor))
+          );
+        }
+
+        return false;
+      case objectFields.remove:
+        if (isEmpty(this.props.post)) {
+          return (
+            isEmpty(getFieldValue(removePostFields.postPermlink)) ||
+            isEmpty(getFieldValue(removePostFields.postAuthor))
+          );
+        }
+
+        return false;
       case objectFields.form:
       case objectFields.widget:
         return (
@@ -3762,8 +3844,6 @@ export default class AppendForm extends Component {
             this.state.typeList.length < 1)
         );
       case objectFields.sorting:
-      case objectFields.pin:
-      case objectFields.remove:
       case objectFields.shopFilter:
         return false;
 
@@ -3866,3 +3946,5 @@ export default class AppendForm extends Component {
     );
   }
 }
+
+export default AppendForm;
