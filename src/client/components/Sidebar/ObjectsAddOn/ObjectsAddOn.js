@@ -12,14 +12,15 @@ const ObjectsAddOn = ({ wobject, isCenterContent }) => {
   const [showModal, setShowModal] = useState(false);
   const [addOnObjects, setAddOnObjects] = useState([]);
   const addOn = get(wobject, 'addOn', []);
-  const relatedObjectsPermlinks = !isEmpty(addOn) && addOn.map(obj => obj.body);
+  const relatedObjectsPermlinks = !isEmpty(addOn) ? addOn.map(obj => obj.body) : [];
   const sortedAddOnObjects = sortByFieldPermlinksList(relatedObjectsPermlinks, addOnObjects);
   const addOnObjectsArr =
     sortedAddOnObjects.length > 5 ? sortedAddOnObjects.slice(0, 5) : sortedAddOnObjects;
 
   useEffect(() => {
-    !isEmpty(addOn) &&
+    if (!isEmpty(addOn)) {
       getObjectInfo(relatedObjectsPermlinks).then(res => setAddOnObjects(res.wobjects));
+    }
   }, [wobject.addOn]);
 
   const renderObjectsModal = addOnObjectsArr?.map(item => (
