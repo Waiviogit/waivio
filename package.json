@@ -39,7 +39,7 @@
     "@babel/plugin-transform-runtime": "^7.17.10",
     "@babel/preset-env": "^7.17.10",
     "@babel/preset-react": "^7.16.7",
-    "@hiveio/dhive": "^1.0.1",
+    "@hiveio/dhive": "^1.2.6",
     "@hot-loader/react-dom": "^16.8.6",
     "@sentry/react": "^5.24.2",
     "@sentry/tracing": "^5.24.2",
