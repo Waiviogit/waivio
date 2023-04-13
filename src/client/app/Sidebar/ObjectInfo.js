@@ -679,11 +679,7 @@ class ObjectInfo extends React.Component {
           this.listItem(
             objectFields.description,
             description && (
-              <DescriptionInfo
-                isEditMode={isEditMode}
-                description={description}
-                wobjPermlink={wobject.author_permlink}
-              />
+              <DescriptionInfo description={description} wobjPermlink={wobject.author_permlink} />
             ),
           )}
       </>
@@ -908,11 +904,7 @@ class ObjectInfo extends React.Component {
           this.listItem(
             objectFields.description,
             description && (
-              <DescriptionInfo
-                description={description}
-                isEditMode={isEditMode}
-                wobjPermlink={wobject.author_permlink}
-              />
+              <DescriptionInfo description={description} wobjPermlink={wobject.author_permlink} />
             ),
           )}
         {!isEditMode &&
@@ -920,11 +912,7 @@ class ObjectInfo extends React.Component {
           this.listItem(
             objectFields.description,
             description && (
-              <DescriptionInfo
-                description={description}
-                isEditMode={isEditMode}
-                wobjPermlink={wobject.author_permlink}
-              />
+              <DescriptionInfo description={description} wobjPermlink={wobject.author_permlink} />
             ),
           )}
         {this.listItem(
@@ -938,7 +926,9 @@ class ObjectInfo extends React.Component {
         {!isOptionsObjectType &&
           this.listItem(
             objectFields.galleryItem,
-            <PicturesCarousel pics={pictures} objectID={wobject.author_permlink} />,
+            !isEmpty(pictures) && (
+              <PicturesCarousel pics={pictures} objectID={wobject.author_permlink} />
+            ),
           )}
         {!isOptionsObjectType &&
           this.listItem(
@@ -1008,33 +998,35 @@ class ObjectInfo extends React.Component {
         )}
         {this.listItem(
           objectFields.phone,
-          <React.Fragment>
-            {phones.length <= 3 || accessExtend ? (
-              phones
-                .slice(0, 3)
-                .map(({ body, number }) =>
-                  this.getFieldLayout(objectFields.phone, { body, number }),
-                )
-            ) : (
-              <React.Fragment>
-                {phones.map(
-                  ({ body, number }, index) =>
-                    index < this.state.countPhones &&
+          phones.length > 0 && (
+            <React.Fragment>
+              {phones.length <= 3 || accessExtend ? (
+                phones
+                  .slice(0, 3)
+                  .map(({ body, number }) =>
                     this.getFieldLayout(objectFields.phone, { body, number }),
-                )}
-                {phones.length > this.state.countPhones && (
-                  <Link
-                    to={`/object/${wobject.author_permlink}/updates/${objectFields.phone}`}
-                    onClick={() => this.handleShowMorePhones(objectFields.phone)}
-                  >
-                    <FormattedMessage id="show_more_tags" defaultMessage="show more">
-                      {value => <div className="phone">{value}</div>}
-                    </FormattedMessage>
-                  </Link>
-                )}
-              </React.Fragment>
-            )}
-          </React.Fragment>,
+                  )
+              ) : (
+                <React.Fragment>
+                  {phones.map(
+                    ({ body, number }, index) =>
+                      index < this.state.countPhones &&
+                      this.getFieldLayout(objectFields.phone, { body, number }),
+                  )}
+                  {phones.length > this.state.countPhones && (
+                    <Link
+                      to={`/object/${wobject.author_permlink}/updates/${objectFields.phone}`}
+                      onClick={() => this.handleShowMorePhones(objectFields.phone)}
+                    >
+                      <FormattedMessage id="show_more_tags" defaultMessage="show more">
+                        {value => <div className="phone">{value}</div>}
+                      </FormattedMessage>
+                    </Link>
+                  )}
+                </React.Fragment>
+              )}
+            </React.Fragment>
+          ),
         )}
         {this.listItem(
           objectFields.email,
@@ -1047,7 +1039,10 @@ class ObjectInfo extends React.Component {
             </div>
           ),
         )}
-        {this.listItem(objectFields.link, <SocialLinks profile={pickBy(profile, identity)} />)}
+        {this.listItem(
+          objectFields.link,
+          has(wobject, 'link') && <SocialLinks profile={pickBy(profile, identity)} />,
+        )}
         {!isEditMode
           ? companyIdBody.length > 0 && <CompanyId companyIdBody={companyIdBody} />
           : this.listItem(
