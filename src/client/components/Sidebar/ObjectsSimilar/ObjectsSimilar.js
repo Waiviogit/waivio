@@ -41,7 +41,7 @@ const ObjectsSimilar = ({ wobject, isCenterContent }) => {
       <ObjectsSimilarContent
         setShowModal={setShowModal}
         isCenterContent={isCenterContent}
-        similarObjects={similarObjects}
+        similarObjects={sortedSimilarObjects}
       />
       <Modal
         title="Similar"
