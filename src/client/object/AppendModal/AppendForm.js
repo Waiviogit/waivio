@@ -3792,6 +3792,7 @@ class AppendForm extends Component {
             isEmpty(getFieldValue(removePostFields.postAuthor))
           );
         }
+
         return false;
       case objectFields.form:
       case objectFields.widget:
