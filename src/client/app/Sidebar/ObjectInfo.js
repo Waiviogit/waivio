@@ -625,12 +625,8 @@ class ObjectInfo extends React.Component {
           objectFields.galleryItem,
           (pictures.length > 0 || avatar || hasOptionsPics) && (
             <PicturesCarousel
-              albums={wobject.galleryAlbum}
-              isOptionsType
               activePicture={hoveredOption || activeOption}
               pics={activeOptionPicture}
-              objectID={wobject.author_permlink}
-              onOptionPicClick={this.onOptionPicClick}
             />
           ),
         )}
@@ -926,9 +922,7 @@ class ObjectInfo extends React.Component {
         {!isOptionsObjectType &&
           this.listItem(
             objectFields.galleryItem,
-            !isEmpty(pictures) && (
-              <PicturesCarousel pics={pictures} objectID={wobject.author_permlink} />
-            ),
+            !isEmpty(pictures) && <PicturesCarousel pics={pictures} />,
           )}
         {!isOptionsObjectType &&
           this.listItem(
