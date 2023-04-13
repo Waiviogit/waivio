@@ -1974,6 +1974,7 @@ class AppendForm extends Component {
       case objectFields.authors: {
         return (
           <AuthorForm
+            wobjAuthors={wObject.authors}
             loading={loading}
             onCreateObject={this.handleCreateObject}
             selectedObject={this.state.selectedObject}
