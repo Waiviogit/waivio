@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect, useDispatch } from 'react-redux';
 import { Icon, Modal } from 'antd';
@@ -126,11 +126,6 @@ const PostPopoverMenu = ({
   const withoutLike = (!post.net_rshares_WAIV && !post.net_rshares) || hasOnlySponsorLike;
   const canDeletePost = ownPost && withoutLike && !post.children;
 
-  useEffect(() => {
-    !isNil(wobjAuthorPermlink) &&
-      getObjectInfo([wobjAuthorPermlink]).then(res => setWobjName(res.wobjects[0].name));
-  }, [wobjAuthorPermlink]);
-
   const {
     guestInfo,
     author,
@@ -149,10 +144,14 @@ const PostPopoverMenu = ({
       case 'delete':
         return setIsOpen(true);
       case 'pin':
+        !isNil(wobjAuthorPermlink) &&
+          getObjectInfo([wobjAuthorPermlink]).then(res => setWobjName(res.wobjects[0].name));
         setIsVisible(false);
 
         return setIsPin(true);
       case 'remove':
+        !isNil(wobjAuthorPermlink) &&
+          getObjectInfo([wobjAuthorPermlink]).then(res => setWobjName(res.wobjects[0].name));
         dispatch(handleRemovePost(post));
         setIsVisible(false);
 
