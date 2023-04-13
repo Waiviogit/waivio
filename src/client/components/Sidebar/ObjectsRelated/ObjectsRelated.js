@@ -66,7 +66,7 @@ const ObjectsRelated = ({
       <ObjectsRelatedContent
         setShowModal={setShowModal}
         isCenterContent={isCenterContent}
-        relatedObjects={sortedRelatedObjects}
+        relatedObjects={renderedObjects}
       />
       <Modal
         title="Related"

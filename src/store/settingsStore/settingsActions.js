@@ -124,3 +124,9 @@ export const getCurrencyForSettings = () => dispatch =>
       promise: getCurrencyType(),
     },
   });
+
+export const getImportUpdate = callback => (dispatch, getState, { busyAPI }) => {
+  busyAPI.instance.subscribe((e, data) => {
+    if (data.type === 'updateImport') callback();
+  });
+};

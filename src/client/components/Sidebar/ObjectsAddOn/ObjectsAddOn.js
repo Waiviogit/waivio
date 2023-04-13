@@ -41,7 +41,7 @@ const ObjectsAddOn = ({ wobject, isCenterContent }) => {
       <ObjectsAddOnContent
         setShowModal={setShowModal}
         isCenterContent={isCenterContent}
-        addOnObjects={addOnObjects}
+        addOnObjects={sortedAddOnObjects}
       />
       <Modal
         title="Add-on"
