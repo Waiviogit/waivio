@@ -51,7 +51,7 @@ import {
   getGroupId,
 } from '../../../store/optionsStore/optionsSelectors';
 import { setStoreActiveOption, setStoreGroupId } from '../../../store/optionsStore/optionsActions';
-import { getObject, getObjectInfo } from '../../../waivioApi/ApiClient';
+import { getObjectInfo } from '../../../waivioApi/ApiClient';
 import { getLocale } from '../../../common/helpers/localStorageHelpers';
 import Department from '../../object/Department/Department';
 import AffiliatLink from '../../widgets/AffiliatLinks/AffiliatLink';
@@ -93,7 +93,6 @@ class ObjectInfo extends React.Component {
     relatedAlbum: PropTypes.shape().isRequired,
     getRelatedAlbum: PropTypes.func.isRequired,
     setStoreGroupId: PropTypes.func.isRequired,
-    locale: PropTypes.func.isRequired,
     setAuthors: PropTypes.func.isRequired,
     children: PropTypes.node.isRequired,
     setStoreActiveOption: PropTypes.func.isRequired,
@@ -432,13 +431,6 @@ class ObjectInfo extends React.Component {
 
       return album;
     });
-  onOptionPicClick = pic => {
-    if (pic.name === 'options') {
-      getObject(pic.parentPermlink, this.props.userName, this.props.locale).then(obj =>
-        this.props.history.push(obj.defaultShowLink),
-      );
-    }
-  };
 
   render() {
     const {
