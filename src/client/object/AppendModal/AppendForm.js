@@ -1243,7 +1243,7 @@ class AppendForm extends Component {
       const response = await this.props.appendObject(postData, {
         votePower: data.votePower,
         follow: following,
-        isLike: postData.isLike,
+        isLike: true,
       });
 
       await new Promise(resolve => setTimeout(resolve, 2000));

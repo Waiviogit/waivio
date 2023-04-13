@@ -15,7 +15,7 @@ const ImportModal = ({ visible, toggleModal, getImportList, intl }) => {
   const authName = useSelector(getAuthenticatedUserName);
   const [uploadedFile, setUploadedFile] = useState(null);
   const [locale, setLocale] = useState('en-US');
-  const [objectType, setObjectType] = useState('book');
+  const [objectType, setObjectType] = useState('');
   const [authority, setAuthority] = useState('administrative');
   const [translate, setTranslate] = useState(false);
   const [chatGPT, setChatGPT] = useState(false);
