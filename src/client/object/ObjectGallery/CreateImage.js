@@ -220,8 +220,6 @@ class CreateImage extends React.Component {
 
     const data = this.getWobjectData();
 
-    /* eslint-disable no-restricted-syntax */
-    // eslint-disable-next-line no-unused-vars
     currentImages.forEach(async image => {
       const postData = {
         ...data,
@@ -230,10 +228,9 @@ class CreateImage extends React.Component {
         body: this.getWobjectBody(image),
       };
 
-      /* eslint-disable no-await-in-loop */
       const response = await this.props.appendObject(postData, {
         isLike: true,
-        votePercent: this.getVote(),
+        votePercent: postData.votePower,
       });
 
       await new Promise(resolve => setTimeout(resolve, 2000));
