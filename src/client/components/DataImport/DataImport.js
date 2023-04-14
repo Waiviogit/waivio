@@ -44,15 +44,24 @@ const DataImport = ({ intl }) => {
       setImportedObject(res);
     });
 
+  const updateImportDate = () => {
+    getImportedObjects(authUserName).then(res => {
+      getHistoryImportedObjects(authUserName).then(his => {
+        setHistoryImportedObject(his);
+      });
+      setImportedObject(res);
+    });
+  };
+
   useEffect(() => {
     getImportVote(authUserName).then(res => {
       setVotingValue(res.minVotingPower / 100);
     });
     getImportList();
-    getHistoryImportedObjects(authUserName).then(res => {
-      setHistoryImportedObject(res);
+    getHistoryImportedObjects(authUserName).then(his => {
+      setHistoryImportedObject(his);
     });
-    dispatch(getImportUpdate(getImportList));
+    dispatch(getImportUpdate(updateImportDate));
   }, []);
 
   const toggleModal = () => setVisible(!visible);

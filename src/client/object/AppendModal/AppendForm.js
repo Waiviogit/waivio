@@ -1162,7 +1162,7 @@ class AppendForm extends Component {
     this.setState({ loading: true });
 
     this.props
-      .appendObject(data, { isLike: data.isLike })
+      .appendObject(data, { votePercent: this.getVote(), isLike: data.isLike })
       .then(() => {
         hideModal();
         this.setState({ selectedUserBlog: null, loading: false });
@@ -1236,9 +1236,8 @@ class AppendForm extends Component {
         body: this.getWobjectBody(image),
       };
       const following = form.getFieldValue('follow');
-
       const response = await this.props.appendObject(postData, {
-        votePower: data.votePower,
+        votePercent: this.getVote(),
         follow: following,
         isLike: true,
       });

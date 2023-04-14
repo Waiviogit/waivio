@@ -3,12 +3,9 @@ import { map, get, isEmpty } from 'lodash';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
-import { bindActionCreators } from 'redux';
 import { Form, Select, Modal, message } from 'antd';
 import { ALLOWED_IMG_FORMATS, MAX_IMG_SIZE } from '../../../common/constants/validation';
 import { objectFields } from '../../../common/constants/listOfFields';
-import * as galleryActions from '../../../store/galleryStore/galleryActions';
-import * as appendActions from '../../../store/appendStore/appendActions';
 import {
   generatePermlink,
   prepareImageToStore,
@@ -21,6 +18,8 @@ import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors
 import { getObject } from '../../../store/wObjectStore/wObjectSelectors';
 import { getVotePercent } from '../../../store/settingsStore/settingsSelectors';
 import { getObjectAlbums } from '../../../store/galleryStore/gallerySelectors';
+import { addImageToAlbumStore } from '../../../store/galleryStore/galleryActions';
+import { appendObject } from '../../../store/appendStore/appendActions';
 
 import './CreateImage.less';
 
@@ -31,14 +30,10 @@ import './CreateImage.less';
     albums: getObjectAlbums(state),
     defaultVotePercent: getVotePercent(state),
   }),
-  dispatch =>
-    bindActionCreators(
-      {
-        addImageToAlbumStore: image => galleryActions.addImageToAlbumStore(image),
-        appendObject: wObject => appendActions.appendObject(wObject),
-      },
-      dispatch,
-    ),
+  {
+    addImageToAlbumStore,
+    appendObject,
+  },
 )
 class CreateImage extends React.Component {
   state = {
@@ -220,14 +215,14 @@ class CreateImage extends React.Component {
   };
 
   appendImages = async () => {
-    const { addImageToAlbumStore, form } = this.props;
+    const { form } = this.props;
     const { currentImages } = this.state;
 
     const data = this.getWobjectData();
 
     /* eslint-disable no-restricted-syntax */
     // eslint-disable-next-line no-unused-vars
-    for (const image of currentImages) {
+    currentImages.forEach(async image => {
       const postData = {
         ...data,
         permlink: `${data.author}-${generatePermlink()}`,
@@ -236,7 +231,10 @@ class CreateImage extends React.Component {
       };
 
       /* eslint-disable no-await-in-loop */
-      const response = await this.props.appendObject(postData);
+      const response = await this.props.appendObject(postData, {
+        isLike: true,
+        votePercent: this.getVote(),
+      });
 
       await new Promise(resolve => setTimeout(resolve, 2000));
 
@@ -246,14 +244,14 @@ class CreateImage extends React.Component {
         this.setState({ fileList: filteredFileList }, async () => {
           const img = prepareImageToStore(postData);
 
-          await addImageToAlbumStore({
+          await this.props.addImageToAlbumStore({
             ...img,
             author: get(response, ['value', 'author']),
             id: form.getFieldValue('id'),
           });
         });
       }
-    }
+    });
   };
 
   handleModalCancel = () => {
@@ -268,7 +266,7 @@ class CreateImage extends React.Component {
   };
 
   render() {
-    const { showModal, form, intl, selectedAlbum, albums } = this.props;
+    const { showModal, form, intl, selectedAlbum, albums, wObject } = this.props;
     const { fileList, uploadingList, loading } = this.state;
     const uploadingListLength = uploadingList.length;
     const isLoading = !uploadingListLength ? loading : Boolean(uploadingListLength); // must be uploadingList.length
@@ -359,6 +357,7 @@ class CreateImage extends React.Component {
               handleSubmit={this.handleSubmit}
               votePercent={this.state.votePercent}
               voteWorth={this.state.voteWorth}
+              selectWobj={wObject}
             />
           </Form.Item>
         </Form>
