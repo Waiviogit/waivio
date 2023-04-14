@@ -1228,9 +1228,7 @@ class AppendForm extends Component {
 
     const data = this.getWobjectData();
 
-    /* eslint-disable no-restricted-syntax */
-    // eslint-disable-next-line no-unused-vars
-    for (const image of currentImages) {
+    currentImages.forEach(async image => {
       const postData = {
         ...data,
         permlink: `${data.author}-${generatePermlink()}`,
@@ -1239,7 +1237,6 @@ class AppendForm extends Component {
       };
       const following = form.getFieldValue('follow');
 
-      /* eslint-disable no-await-in-loop */
       const response = await this.props.appendObject(postData, {
         votePower: data.votePower,
         follow: following,
@@ -1261,7 +1258,7 @@ class AppendForm extends Component {
           });
         });
       }
-    }
+    });
   };
 
   getImage = image => {
