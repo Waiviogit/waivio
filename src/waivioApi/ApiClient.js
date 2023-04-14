@@ -96,7 +96,7 @@ export const getObjects = ({
     .catch(error => error);
 };
 
-export const getObjectsByIds = ({ authorPermlinks = [], locale = 'en-US', limit = 30 }) =>
+export const getObjectsByIds = ({ authorPermlinks = [], locale = 'en-US', limit = 30, skip }) =>
   fetch(`${config.apiPrefix}${config.getObjects}`, {
     headers: {
       ...headers,
@@ -107,6 +107,7 @@ export const getObjectsByIds = ({ authorPermlinks = [], locale = 'en-US', limit 
     body: JSON.stringify({
       author_permlinks: authorPermlinks,
       limit,
+      skip,
       locale,
     }),
   })
