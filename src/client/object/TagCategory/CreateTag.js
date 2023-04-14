@@ -232,7 +232,7 @@ class CreateTag extends React.Component {
   };
 
   render() {
-    const { showModal, form, intl, categories, usedLocale } = this.props;
+    const { showModal, form, intl, categories, usedLocale, wObject } = this.props;
     const { categoryItem, loading, selectedCategory, currentTags } = this.state;
     const languageOptions = [];
 
@@ -322,6 +322,7 @@ class CreateTag extends React.Component {
             handleSubmit={this.handleSubmit}
             votePercent={this.state.votePercent}
             voteWorth={this.state.voteWorth}
+            selectWobj={wObject}
           />
         </Form>
       </Modal>
