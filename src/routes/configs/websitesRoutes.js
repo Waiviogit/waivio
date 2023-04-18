@@ -228,6 +228,11 @@ const routes = (host, page) => ({
           component: Views.OptionsPage,
         },
         {
+          path: '/groupId/:id',
+          exact: true,
+          component: Views.GroupIdPage,
+        },
+        {
           path: '/departments/:department',
           exact: true,
           component: Views.DepartmentsPage,

@@ -1,16 +1,35 @@
 import React, { useState } from 'react';
 import { Icon } from 'antd';
 import PropTypes from 'prop-types';
+import { FormattedMessage } from 'react-intl';
+import { Link } from 'react-router-dom';
 
-function ProductId({ productIdBody, groupIdContent }) {
+const ProductId = ({ productIdBody, groupId, authorPermlink }) => {
   const [showMore, setShowMore] = useState(false);
 
   const toggleShowMoreState = () => {
     setShowMore(!showMore);
   };
+  const groupIdContent = (
+    <div className="field-info">
+      <div className="CompanyId__title">
+        <FormattedMessage id="object_field_groupId" formattedMessage="Group ID" />
+      </div>
+      {groupId?.map(id => (
+        <div key={id} className="field-website__title">
+          <Link
+            to={`/object/${authorPermlink}/groupId/${id}`}
+            className="CompanyId__wordbreak MenuItemButtons__link"
+          >
+            {id}
+          </Link>
+        </div>
+      ))}
+    </div>
+  );
 
   return (
-    (groupIdContent || Boolean(productIdBody.length)) && (
+    (groupId || Boolean(productIdBody.length)) && (
       <div className="CompanyId__container">
         <button className="CompanyId__button CompanyId__title" onClick={toggleShowMoreState}>
           Product ID{' '}
@@ -43,14 +62,15 @@ function ProductId({ productIdBody, groupIdContent }) {
       </div>
     )
   );
-}
+};
+
 ProductId.propTypes = {
   productIdBody: PropTypes.string,
-  groupIdContent: PropTypes.string,
+  authorPermlink: PropTypes.string.isRequired,
+  groupId: PropTypes.arrayOf(),
 };
 
 ProductId.defaultProps = {
   productIdBody: '',
-  groupIdContent: '',
 };
 export default ProductId;

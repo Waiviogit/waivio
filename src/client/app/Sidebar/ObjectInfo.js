@@ -1216,20 +1216,9 @@ class ObjectInfo extends React.Component {
         )}
         {!isEditMode ? (
           <ProductId
-            groupIdContent={
-              groupId && (
-                <div className="field-info">
-                  <div className="CompanyId__title">
-                    <FormattedMessage id="object_field_groupId" formattedMessage="Group ID" />
-                  </div>
-                  {groupId.map(id => (
-                    <div key={id} className="field-website__title">
-                      <span className="CompanyId__wordbreak">{id}</span>
-                    </div>
-                  ))}
-                </div>
-              )
-            }
+            isEditMode={isEditMode}
+            authorPermlink={wobject.author_permlink}
+            groupId={groupId}
             productIdBody={productIdBody}
           />
         ) : (
