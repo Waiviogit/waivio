@@ -15,6 +15,7 @@ const ImportModal = ({ visible, toggleModal, getImportList, intl }) => {
   const authName = useSelector(getAuthenticatedUserName);
   const [uploadedFile, setUploadedFile] = useState(null);
   const [locale, setLocale] = useState('en-US');
+  const [loading, setLoading] = useState(false);
   const [objectType, setObjectType] = useState('');
   const [authority, setAuthority] = useState('administrative');
   const [translate, setTranslate] = useState(false);
@@ -34,11 +35,13 @@ const ImportModal = ({ visible, toggleModal, getImportList, intl }) => {
     formData.append('authority', authority);
     formData.append('translate', translate);
     formData.append('useGPT', chatGPT);
+    setLoading(true);
     uploadObject(formData).then(res => {
       if (res.message) message.error(res.message);
 
       toggleModal();
       getImportList();
+      setLoading(true);
     });
   };
 
@@ -51,6 +54,7 @@ const ImportModal = ({ visible, toggleModal, getImportList, intl }) => {
       onOk={onSubmit}
       okButtonProps={{
         disabled: !objectType || !uploadedFile,
+        loading,
       }}
       okText={intl.formatMessage({ id: 'send_confirmation', defaultMessage: 'Submit' })}
     >

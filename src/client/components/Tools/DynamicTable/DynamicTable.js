@@ -159,6 +159,7 @@ export const DynamicTable = ({
           onCancel={() => setModalVisible(null)}
           onOk={() => setModalVisible(null)}
           footer={null}
+          className={'DynamicTable__modal'}
         >
           {modalVisible.body}
         </Modal>
