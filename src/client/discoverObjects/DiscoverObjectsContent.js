@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { isEmpty, omit, size, map } from 'lodash';
+import { isEmpty, omit, size, map, trimEnd } from 'lodash';
 import { connect } from 'react-redux';
 import { Button, Modal, Tag } from 'antd';
 import {
@@ -157,22 +157,29 @@ class DiscoverObjectsContent extends Component {
     const { dispatchGetObjectType, typeName, getCryptoPriceHistoryAction, location } = this.props;
     const activeFilters = parseUrl(location.search);
     const activeTagsFilter = parseTagsFilters(location.search);
-
+    const query = new URLSearchParams(location.search);
+    const search = query.get('search');
     const searchFilters = {};
 
-    if (activeFilters.searchString) searchFilters.searchString = activeFilters.searchString;
-    if (activeFilters.rating) searchFilters.rating = activeFilters.rating.split(',');
-    if (activeFilters.mapX)
-      searchFilters.map = {
-        zoom: +activeFilters.zoom,
-        radius: +activeFilters.radius,
-        coordinates: [+activeFilters.mapX, +activeFilters.mapY],
-      };
+    if (search) searchFilters.searchString = trimEnd(search);
+
+    if (activeTagsFilter) {
+      if (activeFilters?.rating) searchFilters.rating = activeFilters.rating.split(',');
+      if (activeFilters?.mapX)
+        searchFilters.map = {
+          zoom: +activeFilters.zoom,
+          radius: +activeFilters.radius,
+          coordinates: [+activeFilters.mapX, +activeFilters.mapY],
+        };
+    }
+
     this.props.setActiveFilters(searchFilters);
+
     if (searchFilters.map) {
       this.props.setObjectSortType(SORT_OPTIONS.PROXIMITY);
     }
     if (!isEmpty(activeFilters)) this.props.setActiveTagsFilters(activeTagsFilter);
+
     dispatchGetObjectType(typeName, { skip: 0 });
     getCryptoPriceHistoryAction([HIVE.coinGeckoId, HBD.coinGeckoId]);
   }
