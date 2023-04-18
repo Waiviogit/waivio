@@ -1,10 +1,6 @@
 import { isEmpty, throttle } from 'lodash';
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { Modal } from 'antd';
-
-import WeightTag from '../../WeightTag';
-import ObjectCard from '../ObjectCard';
 import { getObjectInfo } from '../../../../waivioApi/ApiClient';
 import ObjectsRelatedContent from './ObjectsRelatedContent';
 
@@ -19,7 +15,6 @@ const ObjectsRelated = ({
   hasNext,
   objects,
 }) => {
-  const [showModal, setShowModal] = useState(false);
   const [relatedObjects, setRelatedObjects] = useState([]);
   const relatedObjectsPermlinks = !isEmpty(currWobject.related)
     ? currWobject?.related?.map(obj => obj.body)
@@ -48,35 +43,9 @@ const ObjectsRelated = ({
     }
   };
 
-  const renderObjectsModal = () =>
-    renderedObjects?.map(item => (
-      <ObjectCard
-        isModal
-        key={item.author_permlink}
-        wobject={item}
-        parent={currWobject}
-        showFollow={false}
-        alt={<WeightTag weight={item.weight} />}
-        isNewWindow={false}
-      />
-    ));
-
   return (
     <div onWheel={throttle(onWheelHandler, 500)}>
-      <ObjectsRelatedContent
-        setShowModal={setShowModal}
-        isCenterContent={isCenterContent}
-        relatedObjects={renderedObjects}
-      />
-      <Modal
-        title="Related"
-        visible={showModal}
-        footer={null}
-        onCancel={() => setShowModal(false)}
-        id="ObjectRelated__Modal"
-      >
-        {renderObjectsModal(true)}
-      </Modal>
+      <ObjectsRelatedContent isCenterContent={isCenterContent} relatedObjects={renderedObjects} />
     </div>
   );
 };

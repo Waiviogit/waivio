@@ -2,18 +2,12 @@ import React from 'react';
 import { isEmpty } from 'lodash';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
+import { Link } from 'react-router-dom';
 import ObjectCard from '../ObjectCard';
 import WeightTag from '../../WeightTag';
 import RightSidebarLoading from '../../../app/Sidebar/RightSidebarLoading';
 
-const ObjectsAddOnContent = ({
-  isCenterContent,
-  setShowModal,
-  intl,
-  addOnObjects,
-  currWobject,
-  isLoading,
-}) => {
+const ObjectsAddOnContent = ({ isCenterContent, intl, addOnObjects, currWobject, isLoading }) => {
   let renderCard = <RightSidebarLoading id="RightSidebarLoading" />;
   const moreObjects = addOnObjects.length > 5;
   const addOnObjectsArr = moreObjects ? addOnObjects.slice(0, 5) : addOnObjects;
@@ -24,7 +18,6 @@ const ObjectsAddOnContent = ({
         <ObjectCard
           key={item.author_permlink}
           wobject={item}
-          parent={currWobject}
           showFollow={false}
           alt={<WeightTag weight={item.weight} />}
           isNewWindow={false}
@@ -36,19 +29,15 @@ const ObjectsAddOnContent = ({
         !isCenterContent &&
         moreObjects && (
           <div className="ObjectsRelated__more">
-            <a onClick={() => setShowModal(true)} id="show_more_div">
+            <Link to={`/object/${currWobject.author_permlink}/add-on`} id="show_more_div">
               {intl.formatMessage({ id: 'show_more', defaultMessage: 'Show more' })}
-            </a>
+            </Link>
           </div>
         );
 
-      const handleOpenModal = () => {
-        if (isCenterContent) setShowModal(true);
-      };
-
       renderCard = (
         <div className="SidebarContentBlock" data-test="objectsRelatedComponent">
-          <div className="SidebarContentBlock__title" onClick={handleOpenModal}>
+          <div className="SidebarContentBlock__title">
             {!isCenterContent && (
               <img
                 src={'/images/icons/add-on-icon.svg'}
@@ -73,7 +62,6 @@ const ObjectsAddOnContent = ({
 
 ObjectsAddOnContent.propTypes = {
   isCenterContent: PropTypes.bool.isRequired,
-  setShowModal: PropTypes.func.isRequired,
   currWobject: PropTypes.shape().isRequired,
   addOnObjects: PropTypes.arrayOf(PropTypes.shape()),
   objectsState: PropTypes.shape({
