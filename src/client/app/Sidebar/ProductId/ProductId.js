@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { Icon } from 'antd';
 import PropTypes from 'prop-types';
-import { FormattedMessage } from 'react-intl';
-import { Link } from 'react-router-dom';
+import GroupIdContent from './GroupIdContent';
 
 const ProductId = ({ productIdBody, groupId, authorPermlink }) => {
   const [showMore, setShowMore] = useState(false);
@@ -10,23 +9,6 @@ const ProductId = ({ productIdBody, groupId, authorPermlink }) => {
   const toggleShowMoreState = () => {
     setShowMore(!showMore);
   };
-  const groupIdContent = (
-    <div className="field-info">
-      <div className="CompanyId__title">
-        <FormattedMessage id="object_field_groupId" formattedMessage="Group ID" />
-      </div>
-      {groupId?.map(id => (
-        <div key={id} className="field-website__title">
-          <Link
-            to={`/object/${authorPermlink}/groupId/${id}`}
-            className="CompanyId__wordbreak MenuItemButtons__link"
-          >
-            {id}
-          </Link>
-        </div>
-      ))}
-    </div>
-  );
 
   return (
     (groupId || Boolean(productIdBody.length)) && (
@@ -52,11 +34,11 @@ const ProductId = ({ productIdBody, groupId, authorPermlink }) => {
                     </div>
                   </div>
                 ))}
-                <div>{groupIdContent}</div>
+                <GroupIdContent authorPermlink={authorPermlink} groupId={groupId} />
               </div>
             )
           ) : (
-            <div>{groupIdContent}</div>
+            <GroupIdContent authorPermlink={authorPermlink} groupId={groupId} />
           )}
         </div>
       </div>
