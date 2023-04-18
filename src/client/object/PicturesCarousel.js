@@ -21,13 +21,18 @@ const PicturesCarousel = ({ activePicture, pics }) => {
     slider.current.goTo(0);
   }, [activePicture]);
 
+  const onImgClick = (e, img) => {
+    setIsOpen(true);
+    setPhotoIndex(pics.indexOf(img));
+  };
+
   return pics ? (
     <div className="PicturesCarousel">
       <Carousel {...settings} ref={slider} afterChange={i => setPhotoIndex(i)}>
         {map(pics, pic => (
           <div key={pic.id} className="PicturesCarousel__imageWrap">
             <img
-              onClick={() => setIsOpen(true)}
+              onClick={e => onImgClick(e, pic)}
               src={pic.body}
               alt="pic"
               className="PicturesCarousel__image"

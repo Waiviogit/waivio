@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { Icon } from 'antd';
 import PropTypes from 'prop-types';
+import GroupIdContent from './GroupIdContent';
 
-function ProductId({ productIdBody, groupIdContent }) {
+const ProductId = ({ productIdBody, groupId, authorPermlink }) => {
   const [showMore, setShowMore] = useState(false);
 
   const toggleShowMoreState = () => {
@@ -10,7 +11,7 @@ function ProductId({ productIdBody, groupIdContent }) {
   };
 
   return (
-    (groupIdContent || Boolean(productIdBody.length)) && (
+    (groupId || Boolean(productIdBody.length)) && (
       <div className="CompanyId__container">
         <button className="CompanyId__button CompanyId__title" onClick={toggleShowMoreState}>
           Product ID{' '}
@@ -33,24 +34,25 @@ function ProductId({ productIdBody, groupIdContent }) {
                     </div>
                   </div>
                 ))}
-                <div>{groupIdContent}</div>
+                <GroupIdContent authorPermlink={authorPermlink} groupId={groupId} />
               </div>
             )
           ) : (
-            <div>{groupIdContent}</div>
+            <GroupIdContent authorPermlink={authorPermlink} groupId={groupId} />
           )}
         </div>
       </div>
     )
   );
-}
+};
+
 ProductId.propTypes = {
   productIdBody: PropTypes.string,
-  groupIdContent: PropTypes.string,
+  authorPermlink: PropTypes.string.isRequired,
+  groupId: PropTypes.arrayOf(),
 };
 
 ProductId.defaultProps = {
   productIdBody: '',
-  groupIdContent: '',
 };
 export default ProductId;

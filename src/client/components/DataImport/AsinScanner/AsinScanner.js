@@ -4,9 +4,9 @@ import PropTypes from 'prop-types';
 import { Button, Input, message } from 'antd';
 import { debounce } from 'lodash';
 import { getAmazonAsins } from '../../../../waivioApi/importApi';
+import EmptyCampaing from '../../../statics/EmptyCampaing';
 
 import './AsinScanner.less';
-import EmptyCampaing from '../../../statics/EmptyCampaing';
 
 const AsinScanner = ({ intl }) => {
   const [uri, setUri] = useState('');

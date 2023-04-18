@@ -7,23 +7,22 @@ import { Link, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import Loading from '../../components/Icon/Loading';
 import Album from './Album';
-import CreateImage from './CreateImage';
 import withEditor from '../../components/Editor/withEditor';
 import {
   getAlbums,
   getRelatedAlbum,
   getMoreRelatedAlbum,
 } from '../../../store/galleryStore/galleryActions';
-import {
-  getAuthenticatedUserName,
-  getIsAuthenticated,
-} from '../../../store/authStore/authSelectors';
+import { getIsAuthenticated } from '../../../store/authStore/authSelectors';
 import { getObject } from '../../../store/wObjectStore/wObjectSelectors';
 import {
   getIsObjectAlbumsLoading,
   getObjectAlbums,
   getRelatedPhotos,
 } from '../../../store/galleryStore/gallerySelectors';
+import AppendModal from '../AppendModal/AppendModal';
+import { getObjectName } from '../../../common/helpers/wObjectHelper';
+import { objectFields } from '../../../common/constants/listOfFields';
 
 import './ObjectGallery.less';
 
@@ -31,7 +30,6 @@ import './ObjectGallery.less';
 @withRouter
 @connect(
   state => ({
-    currentUsername: getAuthenticatedUserName(state),
     wObject: getObject(state),
     loading: getIsObjectAlbumsLoading(state),
     albums: getObjectAlbums(state),
@@ -46,12 +44,11 @@ export default class ObjectGalleryAlbum extends Component {
     albums: PropTypes.arrayOf(PropTypes.shape()).isRequired,
     loading: PropTypes.bool.isRequired,
     isAuthenticated: PropTypes.bool.isRequired,
-    onImageUpload: PropTypes.func.isRequired,
-    onImageInvalid: PropTypes.func.isRequired,
     getAlbums: PropTypes.func.isRequired,
     getRelatedAlbum: PropTypes.func.isRequired,
     moreRelatedAlbum: PropTypes.func,
     relatedAlbum: PropTypes.shape().isRequired,
+    wObject: PropTypes.shape(),
   };
 
   static defaultProps = {
@@ -114,13 +111,12 @@ export default class ObjectGalleryAlbum extends Component {
                     <Icon type="plus-circle" className="proposition-line__icon" />
                   </a>
                   <FormattedMessage id="add_new_image" defaultMessage="Add new image" />
-                  <CreateImage
-                    albums={album}
-                    selectedAlbum={selectedAlbum}
+                  <AppendModal
                     showModal={showModal}
                     hideModal={this.handleToggleModal}
-                    onImageUpload={this.props.onImageUpload}
-                    onImageInvalid={this.props.onImageInvalid}
+                    field={objectFields.galleryItem}
+                    objName={getObjectName(this.props.wObject)}
+                    selectedAlbum={selectedAlbum}
                   />
                 </div>
               )}

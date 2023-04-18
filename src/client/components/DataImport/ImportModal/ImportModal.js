@@ -56,7 +56,7 @@ const ImportModal = ({ visible, toggleModal, getImportList, intl }) => {
         disabled: !objectType || !uploadedFile,
         loading,
       }}
-      okText={intl.formatMessage({ id: 'send_confirmation', defaultMessage: 'Submit' })}
+      okText={intl.formatMessage({ id: 'submit', defaultMessage: 'Submit' })}
     >
       <div>
         <h4>
