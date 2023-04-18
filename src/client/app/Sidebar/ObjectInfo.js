@@ -1295,11 +1295,11 @@ class ObjectInfo extends React.Component {
       </React.Fragment>
     );
 
-    const feedSection = (
+    const reviewsSection = (
       <React.Fragment>
         {isEditMode && (
           <div className="object-sidebar__section-title">
-            <FormattedMessage id="feed_section" defaultMessage="Feed" />
+            <FormattedMessage id="reviews" defaultMessage="Reviews" />
           </div>
         )}
         {this.listItem(objectFields.pin, null)}
@@ -1358,7 +1358,7 @@ class ObjectInfo extends React.Component {
             {showConnectSection && connectSection}
             {shopType && shopSection}
             {accessExtend && hasType(wobject, OBJECT_TYPE.LIST) && listSection}
-            {showFeedSection && feedSection}
+            {showFeedSection && reviewsSection}
             {accessExtend && settingsSection}
             {this.props.children}
             <ObjectInfoExperts wobject={wobject} />
