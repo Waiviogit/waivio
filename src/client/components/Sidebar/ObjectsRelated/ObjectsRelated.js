@@ -16,18 +16,18 @@ const ObjectsRelated = ({
   objects,
 }) => {
   const [relatedObjects, setRelatedObjects] = useState([]);
+  const objectsPermlinks = objects?.map(obj => obj.author_permlink);
   const relatedObjectsPermlinks = !isEmpty(currWobject.related)
-    ? currWobject?.related?.map(obj => obj.body)
-    : [];
+    ? [...currWobject?.related?.map(obj => obj.body), ...objectsPermlinks]
+    : objectsPermlinks;
 
   useEffect(() => {
-    if (!isEmpty(relatedObjectsPermlinks)) {
+    if (!isEmpty(relatedObjectsPermlinks) || !isEmpty(objectsPermlinks)) {
       getObjectInfo(relatedObjectsPermlinks).then(res => setRelatedObjects(res.wobjects));
     }
   }, [currWobject.related]);
 
   const sortedRelatedObjects = sortByFieldPermlinksList(relatedObjectsPermlinks, relatedObjects);
-
   const renderedObjects = [...sortedRelatedObjects, ...objects];
 
   useEffect(

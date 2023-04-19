@@ -26,8 +26,7 @@ const ObjectsAddOnContent = ({ isCenterContent, intl, addOnObjects, currWobject,
       ));
 
       const renderButtons = () =>
-        !isCenterContent &&
-        moreObjects && (
+        !isCenterContent && (
           <div className="ObjectsRelated__more">
             <Link to={`/object/${currWobject.author_permlink}/add-on`} id="show_more_div">
               {intl.formatMessage({ id: 'show_more', defaultMessage: 'Show more' })}
@@ -37,7 +36,10 @@ const ObjectsAddOnContent = ({ isCenterContent, intl, addOnObjects, currWobject,
 
       renderCard = (
         <div className="SidebarContentBlock" data-test="objectsRelatedComponent">
-          <div className="SidebarContentBlock__title">
+          <Link
+            to={`/object/${currWobject.author_permlink}/add-on`}
+            className="SidebarContentBlock__title"
+          >
             {!isCenterContent && (
               <img
                 src={'/images/icons/add-on-icon.svg'}
@@ -47,7 +49,7 @@ const ObjectsAddOnContent = ({ isCenterContent, intl, addOnObjects, currWobject,
               />
             )}{' '}
             {intl.formatMessage({ id: 'object_field_addOn', defaultMessage: 'Add-on' })}
-          </div>
+          </Link>
           <div className="SidebarContentBlock__content">{renderObjects}</div>
           {renderButtons()}
         </div>
