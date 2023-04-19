@@ -33,8 +33,7 @@ const ObjectssimilarContent = ({
       ));
 
       const renderButtons = () =>
-        !isCenterContent &&
-        moreObjects && (
+        !isCenterContent && (
           <div className="ObjectsRelated__more">
             <Link to={`/object/${currWobject.author_permlink}/similar`} id="show_more_div">
               {intl.formatMessage({ id: 'show_more', defaultMessage: 'Show more' })}
@@ -44,12 +43,15 @@ const ObjectssimilarContent = ({
 
       renderCard = (
         <div className="SidebarContentBlock" data-test="objectsRelatedComponent">
-          <div className="SidebarContentBlock__title">
+          <Link
+            to={`/object/${currWobject.author_permlink}/similar`}
+            className="SidebarContentBlock__title"
+          >
             {!isCenterContent && (
               <Icon type="block" className="iconfont icon-link SidebarContentBlock__icon" />
             )}{' '}
             {intl.formatMessage({ id: 'object_field_similar', defaultMessage: 'Similar' })}
-          </div>
+          </Link>
           <div className="SidebarContentBlock__content">{renderObjects}</div>
           {renderButtons()}
         </div>

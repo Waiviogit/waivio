@@ -12,14 +12,6 @@ import './ObjectInfoExperts.less';
 
 const ObjectInfoExperts = ({ wobject }) => (
   <div className="objectInfo">
-    <div className="objectInfo__experts">
-      <ObjectExpertise wobject={wobject} isCenterContent />
-    </div>
-    <div className="objectInfo__related">
-      {wobject.author_permlink && wobject.map && (
-        <WobjectNearby wobject={wobject} isCenterContent />
-      )}
-    </div>
     <div className="objectInfo__related">
       {wobject.author_permlink && <ObjectsRelated wobject={wobject} isCenterContent />}
     </div>
@@ -28,6 +20,14 @@ const ObjectInfoExperts = ({ wobject }) => (
     </div>
     <div className="objectInfo__related">
       {wobject.author_permlink && <ObjectsSimilar wobject={wobject} isCenterContent />}
+    </div>
+    <div className="objectInfo__experts">
+      <ObjectExpertise wobject={wobject} isCenterContent />
+    </div>
+    <div className="objectInfo__related">
+      {wobject.author_permlink && wobject.map && (
+        <WobjectNearby wobject={wobject} isCenterContent />
+      )}
     </div>
     <div className="objectInfo__followers">
       <WobjectSidebarFollowers wobject={wobject} isCenterContent />
