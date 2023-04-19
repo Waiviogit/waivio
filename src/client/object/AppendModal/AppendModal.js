@@ -57,7 +57,7 @@ AppendModal.defaultProps = {
   chosenLocale: '',
   objName: '',
   post: {},
-  selectedAlbum: {},
+  selectedAlbum: null,
 };
 
 export default injectIntl(withRouter(AppendModal));

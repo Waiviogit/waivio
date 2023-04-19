@@ -111,13 +111,15 @@ export default class ObjectGalleryAlbum extends Component {
                     <Icon type="plus-circle" className="proposition-line__icon" />
                   </a>
                   <FormattedMessage id="add_new_image" defaultMessage="Add new image" />
-                  <AppendModal
-                    showModal={showModal}
-                    hideModal={this.handleToggleModal}
-                    field={objectFields.galleryItem}
-                    objName={getObjectName(this.props.wObject)}
-                    selectedAlbum={selectedAlbum}
-                  />
+                  {showModal && (
+                    <AppendModal
+                      showModal={showModal}
+                      hideModal={this.handleToggleModal}
+                      field={objectFields.galleryItem}
+                      objName={getObjectName(this.props.wObject)}
+                      selectedAlbum={selectedAlbum}
+                    />
+                  )}
                 </div>
               )}
             </div>
