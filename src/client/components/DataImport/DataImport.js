@@ -45,12 +45,14 @@ const DataImport = ({ intl }) => {
     });
 
   const updateImportDate = () => {
-    getImportedObjects(authUserName).then(res => {
-      getHistoryImportedObjects(authUserName).then(his => {
-        setHistoryImportedObject(his);
+    if (history.location.pathname === '/data-import') {
+      getImportedObjects(authUserName).then(res => {
+        getHistoryImportedObjects(authUserName).then(his => {
+          setHistoryImportedObject(his);
+        });
+        setImportedObject(res);
       });
-      setImportedObject(res);
-    });
+    }
   };
 
   useEffect(() => {
@@ -61,6 +63,7 @@ const DataImport = ({ intl }) => {
     getHistoryImportedObjects(authUserName).then(his => {
       setHistoryImportedObject(his);
     });
+
     dispatch(getImportUpdate(updateImportDate));
   }, []);
 

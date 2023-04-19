@@ -1253,7 +1253,7 @@ class AppendForm extends Component {
           await addImageToAlbum({
             ...img,
             author: get(response, ['value', 'author']),
-            id: this.state.currentAlbum,
+            id: this.props.selectedAlbum?.id || this.state.currentAlbum,
           });
         });
       }
@@ -1283,18 +1283,18 @@ class AppendForm extends Component {
     name: 'galleryItem',
     body: image.src,
     locale: this.props.form.getFieldValue('currentLocale'),
-    id: this.state.currentAlbum,
+    id: this.props.selectedAlbum?.id || this.state.currentAlbum,
   });
 
   getImageAlbum = () => {
     const { currentAlbum } = this.state;
-    const { albums } = this.props;
-    let albumName = '';
+    const { albums, selectedAlbum } = this.props;
+
+    if (selectedAlbum) return selectedAlbum.body;
+
     const album = albums.find(item => item.id === currentAlbum);
 
-    albumName = get(album, 'body');
-
-    return albumName;
+    return get(album, 'body', '');
   };
 
   getWobjectBody = image => {
