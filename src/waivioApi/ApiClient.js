@@ -96,11 +96,18 @@ export const getObjects = ({
     .catch(error => error);
 };
 
-export const getObjectsByIds = ({ authorPermlinks = [], locale = 'en-US', limit = 30, skip }) =>
+export const getObjectsByIds = ({
+  authorPermlinks = [],
+  authUserName = '',
+  locale = 'en-US',
+  limit = 30,
+  skip,
+}) =>
   fetch(`${config.apiPrefix}${config.getObjects}`, {
     headers: {
       ...headers,
       app: config.appName,
+      follower: authUserName,
       locale,
     },
     method: 'POST',

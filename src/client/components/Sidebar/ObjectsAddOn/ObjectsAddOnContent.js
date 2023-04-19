@@ -36,7 +36,10 @@ const ObjectsAddOnContent = ({ isCenterContent, intl, addOnObjects, currWobject,
 
       renderCard = (
         <div className="SidebarContentBlock" data-test="objectsRelatedComponent">
-          <Link to={`/object/${currWobject.author_permlink}/add-on`}>
+          <Link
+            to={`/object/${currWobject.author_permlink}/add-on`}
+            className="SidebarContentBlock__title"
+          >
             {!isCenterContent && (
               <img
                 src={'/images/icons/add-on-icon.svg'}
