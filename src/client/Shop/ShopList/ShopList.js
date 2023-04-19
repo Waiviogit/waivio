@@ -95,7 +95,7 @@ const ShopList = ({ userName, path, getShopFeed }) => {
   return (
     <div className="ShopList">
       {isEmpty(departments) || departments?.every(dep => isEmpty(dep.wobjects)) ? (
-        <EmptyCampaing emptyMessage={'This shop does not have any products.'} />
+        <EmptyCampaing emptyMessage={'There are no products available in this department.'} />
       ) : (
         <InfiniteSroll loadMore={loadMore} hasMore={hasMore} loader={<Loading />}>
           <div>

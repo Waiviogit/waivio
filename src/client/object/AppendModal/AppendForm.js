@@ -1282,7 +1282,7 @@ class AppendForm extends Component {
   getWobjectField = image => ({
     name: 'galleryItem',
     body: image.src,
-    locale: 'en-US',
+    locale: this.props.form.getFieldValue('currentLocale'),
     id: this.state.currentAlbum,
   });
 
