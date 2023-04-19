@@ -68,7 +68,7 @@ const AsinScanner = ({ intl }) => {
       )}
       {notPublished && (
         <div className="AsinScanner__datafinitiBlock">
-          <h4>ASINs that have not yet been published on the blockhain</h4>
+          <h4>ASINs that have not yet been published on the blockchain</h4>
           {notPublished}
         </div>
       )}
