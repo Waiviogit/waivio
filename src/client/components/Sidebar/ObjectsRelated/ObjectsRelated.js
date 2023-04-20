@@ -1,15 +1,10 @@
-import { isEmpty, throttle } from 'lodash';
 import React, { useEffect, useState } from 'react';
+import { isEmpty, throttle } from 'lodash';
 import PropTypes from 'prop-types';
-import { Modal } from 'antd';
-
-import WeightTag from '../../WeightTag';
-import ObjectCard from '../ObjectCard';
 import { getObjectInfo } from '../../../../waivioApi/ApiClient';
 import ObjectsRelatedContent from './ObjectsRelatedContent';
-
-import './ObjectsRelated.less';
 import { sortByFieldPermlinksList } from '../../../../common/helpers/wObjectHelper';
+import './ObjectsRelated.less';
 
 const ObjectsRelated = ({
   clearRelateObjects,
@@ -19,28 +14,30 @@ const ObjectsRelated = ({
   hasNext,
   objects,
 }) => {
-  const [showModal, setShowModal] = useState(false);
   const [relatedObjects, setRelatedObjects] = useState([]);
+  const objectsPermlinks = objects?.map(obj => obj.author_permlink);
   const relatedObjectsPermlinks = !isEmpty(currWobject.related)
-    ? currWobject?.related?.map(obj => obj.body)
-    : [];
+    ? [...currWobject?.related?.map(obj => obj.body), ...objectsPermlinks]
+    : objectsPermlinks;
 
   useEffect(() => {
-    if (!isEmpty(relatedObjectsPermlinks)) {
+    if (!isEmpty(relatedObjectsPermlinks) || !isEmpty(objectsPermlinks)) {
       getObjectInfo(relatedObjectsPermlinks).then(res => setRelatedObjects(res.wobjects));
     }
   }, [currWobject.related]);
 
   const sortedRelatedObjects = sortByFieldPermlinksList(relatedObjectsPermlinks, relatedObjects);
+  const renderedObjects = !isEmpty(currWobject.related)
+    ? [...sortedRelatedObjects, ...objects]
+    : objects;
 
-  const renderedObjects = [...sortedRelatedObjects, ...objects];
+  useEffect(() => {
+    getObjectRelated();
 
-  useEffect(
-    () => () => {
+    return () => {
       clearRelateObjects();
-    },
-    [],
-  );
+    };
+  }, [currWobject.related]);
 
   const onWheelHandler = () => {
     if (hasNext) {
@@ -48,35 +45,9 @@ const ObjectsRelated = ({
     }
   };
 
-  const renderObjectsModal = () =>
-    renderedObjects?.map(item => (
-      <ObjectCard
-        isModal
-        key={item.author_permlink}
-        wobject={item}
-        parent={currWobject}
-        showFollow={false}
-        alt={<WeightTag weight={item.weight} />}
-        isNewWindow={false}
-      />
-    ));
-
   return (
     <div onWheel={throttle(onWheelHandler, 500)}>
-      <ObjectsRelatedContent
-        setShowModal={setShowModal}
-        isCenterContent={isCenterContent}
-        relatedObjects={sortedRelatedObjects}
-      />
-      <Modal
-        title="Related"
-        visible={showModal}
-        footer={null}
-        onCancel={() => setShowModal(false)}
-        id="ObjectRelated__Modal"
-      >
-        {renderObjectsModal(true)}
-      </Modal>
+      <ObjectsRelatedContent isCenterContent={isCenterContent} relatedObjects={renderedObjects} />
     </div>
   );
 };

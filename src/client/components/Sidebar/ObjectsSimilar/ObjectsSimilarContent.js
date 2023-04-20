@@ -1,6 +1,7 @@
 import React from 'react';
 import { isEmpty } from 'lodash';
 import { Icon } from 'antd';
+import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import ObjectCard from '../ObjectCard';
@@ -9,7 +10,6 @@ import RightSidebarLoading from '../../../app/Sidebar/RightSidebarLoading';
 
 const ObjectssimilarContent = ({
   isCenterContent,
-  setShowModal,
   intl,
   similarObjects,
   currWobject,
@@ -25,7 +25,6 @@ const ObjectssimilarContent = ({
         <ObjectCard
           key={item.author_permlink}
           wobject={item}
-          parent={currWobject}
           showFollow={false}
           alt={<WeightTag weight={item.weight} />}
           isNewWindow={false}
@@ -34,27 +33,25 @@ const ObjectssimilarContent = ({
       ));
 
       const renderButtons = () =>
-        !isCenterContent &&
-        moreObjects && (
+        !isCenterContent && (
           <div className="ObjectsRelated__more">
-            <a onClick={() => setShowModal(true)} id="show_more_div">
+            <Link to={`/object/${currWobject.author_permlink}/similar`} id="show_more_div">
               {intl.formatMessage({ id: 'show_more', defaultMessage: 'Show more' })}
-            </a>
+            </Link>
           </div>
         );
 
-      const handleOpenModal = () => {
-        if (isCenterContent) setShowModal(true);
-      };
-
       renderCard = (
         <div className="SidebarContentBlock" data-test="objectsRelatedComponent">
-          <div className="SidebarContentBlock__title" onClick={handleOpenModal}>
+          <Link
+            to={`/object/${currWobject.author_permlink}/similar`}
+            className="SidebarContentBlock__title"
+          >
             {!isCenterContent && (
               <Icon type="block" className="iconfont icon-link SidebarContentBlock__icon" />
             )}{' '}
             {intl.formatMessage({ id: 'object_field_similar', defaultMessage: 'Similar' })}
-          </div>
+          </Link>
           <div className="SidebarContentBlock__content">{renderObjects}</div>
           {renderButtons()}
         </div>
@@ -69,7 +66,6 @@ const ObjectssimilarContent = ({
 
 ObjectssimilarContent.propTypes = {
   isCenterContent: PropTypes.bool.isRequired,
-  setShowModal: PropTypes.func.isRequired,
   currWobject: PropTypes.shape().isRequired,
   similarObjects: PropTypes.arrayOf(PropTypes.shape()),
   objectsState: PropTypes.shape({

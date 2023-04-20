@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Modal, Switch } from 'antd';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 
@@ -22,6 +22,7 @@ import {
   setImportVote,
   setObjectImport,
 } from '../../../waivioApi/importApi';
+import { closeImportSoket, getImportUpdate } from '../../../store/settingsStore/settingsActions';
 
 import './DataImport.less';
 
@@ -30,6 +31,7 @@ const DataImport = ({ intl }) => {
     getIsConnectMatchBot(state, { botType: MATCH_BOTS_TYPES.IMPORT }),
   );
   const authUserName = useSelector(getAuthenticatedUserName);
+  const dispatch = useDispatch();
   const handleRedirect = () => redirectAuthHiveSigner(isAuthBot, 'waivio.import');
   const [visible, setVisible] = useState(false);
   const [visibleVoting, setVisibleVoting] = useState(false);
@@ -42,14 +44,27 @@ const DataImport = ({ intl }) => {
       setImportedObject(res);
     });
 
+  const updateImportDate = () => {
+    getImportedObjects(authUserName).then(res => {
+      getHistoryImportedObjects(authUserName).then(his => {
+        setHistoryImportedObject(his);
+      });
+      setImportedObject(res);
+    });
+  };
+
   useEffect(() => {
     getImportVote(authUserName).then(res => {
       setVotingValue(res.minVotingPower / 100);
     });
     getImportList();
-    getHistoryImportedObjects(authUserName).then(res => {
-      setHistoryImportedObject(res);
+    getHistoryImportedObjects(authUserName).then(his => {
+      setHistoryImportedObject(his);
     });
+
+    dispatch(getImportUpdate(updateImportDate));
+
+    return () => dispatch(closeImportSoket());
   }, []);
 
   const toggleModal = () => setVisible(!visible);

@@ -1,0 +1,47 @@
+.ShopObjectCard {
+  background: #ffffff;
+  padding: 10px;
+  border-radius: 4px;
+  width: 225px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 15px;
+
+  &__affiliatLinks {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  &__affiliatLinksWrap,
+  &__avatarWrap {
+    display: flex;
+  }
+
+  &__avatarWrap {
+    align-items: flex-start;
+
+    .HeartButton {
+      margin-left: 10px;
+    }
+  }
+
+  .AffiliatLink {
+    border: 1px solid #b0bcc5;
+    width: 100px;
+    padding: 0;
+    margin-left: 5px;
+
+    &:first-child {
+      margin: 0;
+    }
+  }
+
+  &__name {
+    margin-top: 10px;
+  }
+
+  &--rewards {
+    border: 1px solid orange;
+  }
+}

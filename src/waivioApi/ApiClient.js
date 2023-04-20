@@ -96,17 +96,25 @@ export const getObjects = ({
     .catch(error => error);
 };
 
-export const getObjectsByIds = ({ authorPermlinks = [], locale = 'en-US', limit = 30 }) =>
+export const getObjectsByIds = ({
+  authorPermlinks = [],
+  authUserName = '',
+  locale = 'en-US',
+  limit = 30,
+  skip,
+}) =>
   fetch(`${config.apiPrefix}${config.getObjects}`, {
     headers: {
       ...headers,
       app: config.appName,
+      follower: authUserName,
       locale,
     },
     method: 'POST',
     body: JSON.stringify({
       author_permlinks: authorPermlinks,
       limit,
+      skip,
       locale,
     }),
   })
@@ -3137,6 +3145,23 @@ export const getObjectsByDepartment = (userName, departments, skip, limit) => {
     method: 'POST',
     body: JSON.stringify({
       departments,
+      skip,
+      limit,
+    }),
+  })
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+};
+export const getObjectsByGroupId = (userName, groupId, skip, limit = 10) => {
+  return fetch(`${config.apiPrefix}${config.wobjects}${config.groupId}`, {
+    headers: {
+      ...headers,
+      follower: userName,
+    },
+    method: 'POST',
+    body: JSON.stringify({
+      groupId,
       skip,
       limit,
     }),

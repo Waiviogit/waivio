@@ -434,7 +434,7 @@ class Topnav extends React.Component {
         search = `${this.state.searchBarValue}`;
       }
 
-      return `${mainLink}/${search}`;
+      return `${mainLink}${search}`;
     };
 
     return (
@@ -447,10 +447,14 @@ class Topnav extends React.Component {
             type={option.type}
             className={this.changeItemClass(option.name)}
           >
-            <a
-              href={reduceHref(option)}
-              className="Topnav__searchOpt"
-            >{`${option.name}(${option.count})`}</a>
+            {option.name === 'Types' ? (
+              `${option.name}(${option.count})`
+            ) : (
+              <a
+                href={reduceHref(option)}
+                className="Topnav__searchOpt"
+              >{`${option.name}(${option.count})`}</a>
+            )}
           </AutoComplete.Option>
         ))}
       </AutoComplete.OptGroup>

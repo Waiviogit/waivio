@@ -1,20 +1,11 @@
-import React, { useEffect, useRef } from 'react';
-import { isEmpty, map } from 'lodash';
+import React, { useEffect, useRef, useState } from 'react';
+import { map } from 'lodash';
 import PropTypes from 'prop-types';
 import { Carousel, Icon } from 'antd';
-import { Link } from 'react-router-dom';
-
+import Lightbox from 'react-image-lightbox';
 import './PicturesCarousel.less';
-import { isMobile } from '../../common/helpers/apiHelpers';
 
-const PicturesCarousel = ({
-  onOptionPicClick,
-  albums,
-  isOptionsType,
-  activePicture,
-  pics,
-  objectID,
-}) => {
+const PicturesCarousel = ({ activePicture, pics }) => {
   const settings = {
     dots: false,
     arrows: true,
@@ -23,39 +14,42 @@ const PicturesCarousel = ({
     prevArrow: <Icon type="left" style={{ fontSize: '20px' }} />,
   };
   const slider = useRef();
+  const [isOpen, setIsOpen] = useState(false);
+  const [photoIndex, setPhotoIndex] = useState(0);
 
   useEffect(() => {
     slider.current.goTo(0);
   }, [activePicture]);
-  const albumsLink = albums?.map(album => album.id);
 
-  const getOptionUrl = pic => {
-    if (!isEmpty(albumsLink) && !albumsLink.includes(pic.id)) return `/object/${objectID}/gallery`;
-    if (isOptionsType) {
-      if (pic.name === 'galleryItem' || (pic.name === 'options' && objectID === pic.parentPermlink))
-        return `/object/${objectID}/gallery/album/${pic.id}`;
-      if (pic.name === 'galleryItem' || (pic.name === 'options' && objectID !== pic.parentPermlink))
-        return isMobile() ? `/object/${pic.id}/about` : `/object/${pic.id}`;
-    }
-    if (pic.name === 'avatar') return `/object/${objectID}/gallery`;
-
-    return `/object/${objectID}/gallery/album/${pic.id}`;
+  const onImgClick = (e, img) => {
+    setIsOpen(true);
+    setPhotoIndex(pics.indexOf(img));
   };
 
   return pics ? (
     <div className="PicturesCarousel">
-      <Carousel {...settings} ref={slider}>
+      <Carousel {...settings} ref={slider} afterChange={i => setPhotoIndex(i)}>
         {map(pics, pic => (
-          <Link key={pic.id} to={getOptionUrl(pic)} className="PicturesCarousel__imageWrap">
+          <div key={pic.id} className="PicturesCarousel__imageWrap">
             <img
-              onClick={() => onOptionPicClick(pic)}
+              onClick={e => onImgClick(e, pic)}
               src={pic.body}
               alt="pic"
               className="PicturesCarousel__image"
             />
-          </Link>
+          </div>
         ))}
       </Carousel>
+      {isOpen && (
+        <Lightbox
+          mainSrc={pics[photoIndex]?.body}
+          nextSrc={pics[(photoIndex + 1) % pics.length]?.body}
+          prevSrc={pics[(photoIndex - 1) % pics.length]?.body}
+          onCloseRequest={() => setIsOpen(false)}
+          onMovePrevRequest={() => setPhotoIndex((photoIndex - 1) % pics.length)}
+          onMoveNextRequest={() => setPhotoIndex((photoIndex + 1) % pics.length)}
+        />
+      )}
     </div>
   ) : (
     <div />

@@ -22,7 +22,12 @@ export const parseUrl = url => {
 
   const parseSearchParams = url
     .split('&')
-    .map(search => search.replace('=', '": "').replace('?', ''))
+    .map(search =>
+      search
+        .replace('=', ': "')
+        .replace('?', '')
+        .replace('%20', ' '),
+    )
     .join('", "');
 
   return parseJSON(`{"${parseSearchParams}"}`);
@@ -72,6 +77,8 @@ export const updateActiveTagsFilters = (activeTagsFilters, filterValue, value, c
 
 export const parseTagsFilters = url => {
   const parseSearchParams = parseUrl(url);
+
+  if (!parseSearchParams) return {};
 
   delete parseSearchParams.rating;
   delete parseSearchParams.search;

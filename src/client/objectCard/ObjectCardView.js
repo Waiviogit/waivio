@@ -63,7 +63,7 @@ const ObjectCardView = ({
     const objectTags = get(wObject, 'topTags', []);
 
     setTags(uniq([wObject.object_type, ...objectTags]));
-  }, [wObject.author_permlink, setTags]);
+  }, [wObject.author_permlink]);
 
   const avatarLayout = () => {
     let url = getObjectAvatar(wObject) || getObjectAvatar(parent);

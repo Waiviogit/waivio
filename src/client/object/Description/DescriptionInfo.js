@@ -4,8 +4,8 @@ import { FormattedMessage } from 'react-intl';
 import { truncate } from '../wObjectHelper';
 import LinkButton from '../../components/LinkButton/LinkButton';
 
-const DescriptionInfo = ({ description, wobjPermlink, isEditMode }) => (
-  <div className={isEditMode ? 'description-field' : 'description-field paddingBottom'}>
+const DescriptionInfo = ({ description, wobjPermlink }) => (
+  <div className="description-field">
     {description.length > 255 ? (
       <>
         {truncate(description)}
@@ -22,7 +22,6 @@ const DescriptionInfo = ({ description, wobjPermlink, isEditMode }) => (
 DescriptionInfo.propTypes = {
   description: PropTypes.string.isRequired,
   wobjPermlink: PropTypes.string.isRequired,
-  isEditMode: PropTypes.bool.isRequired,
 };
 
 export default DescriptionInfo;

@@ -51,7 +51,7 @@ import {
   getGroupId,
 } from '../../../store/optionsStore/optionsSelectors';
 import { setStoreActiveOption, setStoreGroupId } from '../../../store/optionsStore/optionsActions';
-import { getObject, getObjectInfo } from '../../../waivioApi/ApiClient';
+import { getObjectInfo } from '../../../waivioApi/ApiClient';
 import { getLocale } from '../../../common/helpers/localStorageHelpers';
 import Department from '../../object/Department/Department';
 import AffiliatLink from '../../widgets/AffiliatLinks/AffiliatLink';
@@ -93,7 +93,6 @@ class ObjectInfo extends React.Component {
     relatedAlbum: PropTypes.shape().isRequired,
     getRelatedAlbum: PropTypes.func.isRequired,
     setStoreGroupId: PropTypes.func.isRequired,
-    locale: PropTypes.func.isRequired,
     setAuthors: PropTypes.func.isRequired,
     children: PropTypes.node.isRequired,
     setStoreActiveOption: PropTypes.func.isRequired,
@@ -178,17 +177,18 @@ class ObjectInfo extends React.Component {
       ? wobject.authors.map(el => parseWobjectField(el, 'body', []))
       : [];
 
-    const authorsArray = [];
+    const authorsArray = await authors.reduce(async (acc, curr) => {
+      const res = await acc;
+      const permlink = curr.authorPermlink || curr.author_permlink;
 
-    authors.forEach(author => {
-      if (author.authorPermlink) {
-        getObjectInfo([author?.authorPermlink]).then(res => authorsArray.push(res.wobjects[0]));
-      } else if (author.author_permlink) {
-        getObjectInfo([author?.author_permlink]).then(res => authorsArray.push(res.wobjects[0]));
-      } else {
-        authorsArray.push(author);
+      if (permlink && !has(curr, 'name')) {
+        const newObj = await getObjectInfo([permlink]);
+
+        return [...res, newObj.wobjects[0]];
       }
-    });
+
+      return [...res, curr];
+    }, []);
 
     this.setState({ authorsArray });
     this.props.setAuthors(authorsArray);
@@ -431,13 +431,6 @@ class ObjectInfo extends React.Component {
 
       return album;
     });
-  onOptionPicClick = pic => {
-    if (pic.name === 'options') {
-      getObject(pic.parentPermlink, this.props.userName, this.props.locale).then(obj =>
-        this.props.history.push(obj.defaultShowLink),
-      );
-    }
-  };
 
   render() {
     const {
@@ -624,12 +617,8 @@ class ObjectInfo extends React.Component {
           objectFields.galleryItem,
           (pictures.length > 0 || avatar || hasOptionsPics) && (
             <PicturesCarousel
-              albums={wobject.galleryAlbum}
-              isOptionsType
               activePicture={hoveredOption || activeOption}
               pics={activeOptionPicture}
-              objectID={wobject.author_permlink}
-              onOptionPicClick={this.onOptionPicClick}
             />
           ),
         )}
@@ -678,11 +667,7 @@ class ObjectInfo extends React.Component {
           this.listItem(
             objectFields.description,
             description && (
-              <DescriptionInfo
-                isEditMode={isEditMode}
-                description={description}
-                wobjPermlink={wobject.author_permlink}
-              />
+              <DescriptionInfo description={description} wobjPermlink={wobject.author_permlink} />
             ),
           )}
       </>
@@ -907,11 +892,7 @@ class ObjectInfo extends React.Component {
           this.listItem(
             objectFields.description,
             description && (
-              <DescriptionInfo
-                description={description}
-                isEditMode={isEditMode}
-                wobjPermlink={wobject.author_permlink}
-              />
+              <DescriptionInfo description={description} wobjPermlink={wobject.author_permlink} />
             ),
           )}
         {!isEditMode &&
@@ -919,11 +900,7 @@ class ObjectInfo extends React.Component {
           this.listItem(
             objectFields.description,
             description && (
-              <DescriptionInfo
-                description={description}
-                isEditMode={isEditMode}
-                wobjPermlink={wobject.author_permlink}
-              />
+              <DescriptionInfo description={description} wobjPermlink={wobject.author_permlink} />
             ),
           )}
         {this.listItem(
@@ -937,7 +914,7 @@ class ObjectInfo extends React.Component {
         {!isOptionsObjectType &&
           this.listItem(
             objectFields.galleryItem,
-            <PicturesCarousel pics={pictures} objectID={wobject.author_permlink} />,
+            !isEmpty(pictures) && <PicturesCarousel pics={pictures} />,
           )}
         {!isOptionsObjectType &&
           this.listItem(
@@ -1007,33 +984,35 @@ class ObjectInfo extends React.Component {
         )}
         {this.listItem(
           objectFields.phone,
-          <React.Fragment>
-            {phones.length <= 3 || accessExtend ? (
-              phones
-                .slice(0, 3)
-                .map(({ body, number }) =>
-                  this.getFieldLayout(objectFields.phone, { body, number }),
-                )
-            ) : (
-              <React.Fragment>
-                {phones.map(
-                  ({ body, number }, index) =>
-                    index < this.state.countPhones &&
+          phones.length > 0 && (
+            <React.Fragment>
+              {phones.length <= 3 || accessExtend ? (
+                phones
+                  .slice(0, 3)
+                  .map(({ body, number }) =>
                     this.getFieldLayout(objectFields.phone, { body, number }),
-                )}
-                {phones.length > this.state.countPhones && (
-                  <Link
-                    to={`/object/${wobject.author_permlink}/updates/${objectFields.phone}`}
-                    onClick={() => this.handleShowMorePhones(objectFields.phone)}
-                  >
-                    <FormattedMessage id="show_more_tags" defaultMessage="show more">
-                      {value => <div className="phone">{value}</div>}
-                    </FormattedMessage>
-                  </Link>
-                )}
-              </React.Fragment>
-            )}
-          </React.Fragment>,
+                  )
+              ) : (
+                <React.Fragment>
+                  {phones.map(
+                    ({ body, number }, index) =>
+                      index < this.state.countPhones &&
+                      this.getFieldLayout(objectFields.phone, { body, number }),
+                  )}
+                  {phones.length > this.state.countPhones && (
+                    <Link
+                      to={`/object/${wobject.author_permlink}/updates/${objectFields.phone}`}
+                      onClick={() => this.handleShowMorePhones(objectFields.phone)}
+                    >
+                      <FormattedMessage id="show_more_tags" defaultMessage="show more">
+                        {value => <div className="phone">{value}</div>}
+                      </FormattedMessage>
+                    </Link>
+                  )}
+                </React.Fragment>
+              )}
+            </React.Fragment>
+          ),
         )}
         {this.listItem(
           objectFields.email,
@@ -1046,7 +1025,10 @@ class ObjectInfo extends React.Component {
             </div>
           ),
         )}
-        {this.listItem(objectFields.link, <SocialLinks profile={pickBy(profile, identity)} />)}
+        {this.listItem(
+          objectFields.link,
+          has(wobject, 'link') && <SocialLinks profile={pickBy(profile, identity)} />,
+        )}
         {!isEditMode
           ? companyIdBody.length > 0 && <CompanyId companyIdBody={companyIdBody} />
           : this.listItem(
@@ -1234,20 +1216,9 @@ class ObjectInfo extends React.Component {
         )}
         {!isEditMode ? (
           <ProductId
-            groupIdContent={
-              groupId && (
-                <div className="field-info">
-                  <div className="CompanyId__title">
-                    <FormattedMessage id="object_field_groupId" formattedMessage="Group ID" />
-                  </div>
-                  {groupId.map(id => (
-                    <div key={id} className="field-website__title">
-                      <span className="CompanyId__wordbreak">{id}</span>
-                    </div>
-                  ))}
-                </div>
-              )
-            }
+            isEditMode={isEditMode}
+            authorPermlink={wobject.author_permlink}
+            groupId={groupId}
             productIdBody={productIdBody}
           />
         ) : (
@@ -1313,11 +1284,11 @@ class ObjectInfo extends React.Component {
       </React.Fragment>
     );
 
-    const feedSection = (
+    const reviewsSection = (
       <React.Fragment>
         {isEditMode && (
           <div className="object-sidebar__section-title">
-            <FormattedMessage id="feed_section" defaultMessage="Feed" />
+            <FormattedMessage id="reviews" defaultMessage="Reviews" />
           </div>
         )}
         {this.listItem(objectFields.pin, null)}
@@ -1376,7 +1347,7 @@ class ObjectInfo extends React.Component {
             {showConnectSection && connectSection}
             {shopType && shopSection}
             {accessExtend && hasType(wobject, OBJECT_TYPE.LIST) && listSection}
-            {showFeedSection && feedSection}
+            {showFeedSection && reviewsSection}
             {accessExtend && settingsSection}
             {this.props.children}
             <ObjectInfoExperts wobject={wobject} />

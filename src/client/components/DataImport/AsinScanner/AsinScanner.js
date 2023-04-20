@@ -4,14 +4,15 @@ import PropTypes from 'prop-types';
 import { Button, Input, message } from 'antd';
 import { debounce } from 'lodash';
 import { getAmazonAsins } from '../../../../waivioApi/importApi';
+import EmptyCampaing from '../../../statics/EmptyCampaing';
 
 import './AsinScanner.less';
-import EmptyCampaing from '../../../statics/EmptyCampaing';
 
 const AsinScanner = ({ intl }) => {
   const [uri, setUri] = useState('');
   const [loading, setLoading] = useState(false);
   const [asin, setAsin] = useState(null);
+  const [notPublished, setNotPublishedAsin] = useState(null);
 
   const getAmazonAsinsLinks = () => {
     setLoading(true);
@@ -20,6 +21,7 @@ const AsinScanner = ({ intl }) => {
       .then(r => {
         if (!r.result) message.error('Result is empty, try another url');
         setAsin(r.result);
+        setNotPublishedAsin(r.notPublished);
         setLoading(false);
       })
       .catch(e => message.error(e.message));
@@ -64,7 +66,13 @@ const AsinScanner = ({ intl }) => {
           {asin}
         </div>
       )}
-      {typeof asin === 'string' && !asin && (
+      {notPublished && (
+        <div className="AsinScanner__datafinitiBlock">
+          <h4>ASINs that have not yet been published on the blockchain</h4>
+          {notPublished}
+        </div>
+      )}
+      {typeof asin === 'string' && !asin && !notPublished && (
         <EmptyCampaing emptyMessage={'There are no ASIN numbers on the webpage'} />
       )}
     </div>

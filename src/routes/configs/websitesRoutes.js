@@ -218,6 +218,21 @@ const routes = (host, page) => ({
           component: Views.WidgetPage,
         },
         {
+          path: '/related',
+          exact: true,
+          component: Views.RelatedPage,
+        },
+        {
+          path: '/add-on',
+          exact: true,
+          component: Views.AddOnPage,
+        },
+        {
+          path: '/similar',
+          exact: true,
+          component: Views.SimilarPage,
+        },
+        {
           path: '/description',
           exact: true,
           component: Views.DescriptionPage,
@@ -226,6 +241,11 @@ const routes = (host, page) => ({
           path: '/options/:category',
           exact: true,
           component: Views.OptionsPage,
+        },
+        {
+          path: '/groupId/:id',
+          exact: true,
+          component: Views.GroupIdPage,
         },
         {
           path: '/departments/:department',

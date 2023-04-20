@@ -1162,7 +1162,7 @@ class AppendForm extends Component {
     this.setState({ loading: true });
 
     this.props
-      .appendObject(data, { isLike: data.isLike })
+      .appendObject(data, { votePercent: this.getVote(), isLike: data.isLike })
       .then(() => {
         hideModal();
         this.setState({ selectedUserBlog: null, loading: false });
@@ -1228,9 +1228,7 @@ class AppendForm extends Component {
 
     const data = this.getWobjectData();
 
-    /* eslint-disable no-restricted-syntax */
-    // eslint-disable-next-line no-unused-vars
-    for (const image of currentImages) {
+    currentImages.forEach(async image => {
       const postData = {
         ...data,
         permlink: `${data.author}-${generatePermlink()}`,
@@ -1238,12 +1236,10 @@ class AppendForm extends Component {
         body: this.getWobjectBody(image),
       };
       const following = form.getFieldValue('follow');
-
-      /* eslint-disable no-await-in-loop */
       const response = await this.props.appendObject(postData, {
-        votePower: data.votePower,
+        votePercent: this.getVote(),
         follow: following,
-        isLike: postData.isLike,
+        isLike: true,
       });
 
       await new Promise(resolve => setTimeout(resolve, 2000));
@@ -1257,11 +1253,11 @@ class AppendForm extends Component {
           await addImageToAlbum({
             ...img,
             author: get(response, ['value', 'author']),
-            id: this.state.currentAlbum,
+            id: this.props.selectedAlbum?.id || this.state.currentAlbum,
           });
         });
       }
-    }
+    });
   };
 
   getImage = image => {
@@ -1286,19 +1282,19 @@ class AppendForm extends Component {
   getWobjectField = image => ({
     name: 'galleryItem',
     body: image.src,
-    locale: 'en-US',
-    id: this.state.currentAlbum,
+    locale: this.props.form.getFieldValue('currentLocale'),
+    id: this.props.selectedAlbum?.id || this.state.currentAlbum,
   });
 
   getImageAlbum = () => {
     const { currentAlbum } = this.state;
-    const { albums } = this.props;
-    let albumName = '';
+    const { albums, selectedAlbum } = this.props;
+
+    if (selectedAlbum) return selectedAlbum.body;
+
     const album = albums.find(item => item.id === currentAlbum);
 
-    albumName = get(album, 'body');
-
-    return albumName;
+    return get(album, 'body', '');
   };
 
   getWobjectBody = image => {
@@ -1974,6 +1970,7 @@ class AppendForm extends Component {
       case objectFields.authors: {
         return (
           <AuthorForm
+            wobjAuthors={wObject.authors}
             loading={loading}
             onCreateObject={this.handleCreateObject}
             selectedObject={this.state.selectedObject}
