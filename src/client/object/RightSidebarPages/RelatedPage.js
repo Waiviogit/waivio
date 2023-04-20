@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 import { isEmpty } from 'lodash';
 import InfiniteScroll from 'react-infinite-scroller';
 import Loading from '../../components/Icon/Loading';
-import ObjectCardView from '../../objectCard/ObjectCardView';
 import {
   getObject,
   getRelatedObjectsForSidebar,
@@ -11,6 +10,7 @@ import {
 import { getObjectsByIds } from '../../../waivioApi/ApiClient';
 import { sortByFieldPermlinksList } from '../../../common/helpers/wObjectHelper';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
+import ObjectCardSwitcher from '../../objectCard/ObjectCardSwitcher';
 
 const limit = 10;
 
@@ -62,7 +62,7 @@ const RelatedPage = () => {
         hasMore={hasMore}
       >
         {sortedRelatedObjects?.map(obj => (
-          <ObjectCardView key={obj._id} wObject={obj} showHeart />
+          <ObjectCardSwitcher key={obj._id} wObj={obj} />
         ))}
       </InfiniteScroll>
     </>
