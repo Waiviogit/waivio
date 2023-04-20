@@ -22,7 +22,7 @@ import {
   setImportVote,
   setObjectImport,
 } from '../../../waivioApi/importApi';
-import { getImportUpdate } from '../../../store/settingsStore/settingsActions';
+import { closeImportSoket, getImportUpdate } from '../../../store/settingsStore/settingsActions';
 
 import './DataImport.less';
 
@@ -45,14 +45,12 @@ const DataImport = ({ intl }) => {
     });
 
   const updateImportDate = () => {
-    if (history.location.pathname === '/data-import') {
-      getImportedObjects(authUserName).then(res => {
-        getHistoryImportedObjects(authUserName).then(his => {
-          setHistoryImportedObject(his);
-        });
-        setImportedObject(res);
+    getImportedObjects(authUserName).then(res => {
+      getHistoryImportedObjects(authUserName).then(his => {
+        setHistoryImportedObject(his);
       });
-    }
+      setImportedObject(res);
+    });
   };
 
   useEffect(() => {
@@ -65,6 +63,8 @@ const DataImport = ({ intl }) => {
     });
 
     dispatch(getImportUpdate(updateImportDate));
+
+    return () => dispatch(closeImportSoket());
   }, []);
 
   const toggleModal = () => setVisible(!visible);

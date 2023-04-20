@@ -98,8 +98,8 @@ const ShopList = ({ userName, path, getShopFeed }) => {
         <EmptyCampaing
           emptyMessage={
             match.params.department
-              ? 'This shop does not have any products.'
-              : 'There are no products available in this department.'
+              ? 'There are no products available in this department.'
+              : 'This shop does not have any products.'
           }
         />
       ) : (

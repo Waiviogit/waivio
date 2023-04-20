@@ -130,3 +130,7 @@ export const getImportUpdate = callback => (dispatch, getState, { busyAPI }) => 
     if (data.type === 'updateImport') callback();
   });
 };
+
+export const closeImportSoket = () => (dispatch, getState, { busyAPI }) => {
+  busyAPI.instance.close();
+};

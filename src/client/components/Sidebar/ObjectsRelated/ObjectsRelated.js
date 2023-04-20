@@ -1,11 +1,10 @@
-import { isEmpty, throttle } from 'lodash';
 import React, { useEffect, useState } from 'react';
+import { isEmpty, throttle } from 'lodash';
 import PropTypes from 'prop-types';
 import { getObjectInfo } from '../../../../waivioApi/ApiClient';
 import ObjectsRelatedContent from './ObjectsRelatedContent';
-
-import './ObjectsRelated.less';
 import { sortByFieldPermlinksList } from '../../../../common/helpers/wObjectHelper';
+import './ObjectsRelated.less';
 
 const ObjectsRelated = ({
   clearRelateObjects,
@@ -28,14 +27,17 @@ const ObjectsRelated = ({
   }, [currWobject.related]);
 
   const sortedRelatedObjects = sortByFieldPermlinksList(relatedObjectsPermlinks, relatedObjects);
-  const renderedObjects = [...sortedRelatedObjects, ...objects];
+  const renderedObjects = !isEmpty(currWobject.related)
+    ? [...sortedRelatedObjects, ...objects]
+    : objects;
 
-  useEffect(
-    () => () => {
+  useEffect(() => {
+    getObjectRelated();
+
+    return () => {
       clearRelateObjects();
-    },
-    [],
-  );
+    };
+  }, [currWobject.related]);
 
   const onWheelHandler = () => {
     if (hasNext) {
