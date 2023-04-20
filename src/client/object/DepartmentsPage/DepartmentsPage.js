@@ -6,26 +6,32 @@ import { FormattedMessage } from 'react-intl';
 import InfiniteScroll from 'react-infinite-scroller';
 import Loading from '../../components/Icon/Loading';
 import ObjectCardView from '../../objectCard/ObjectCardView';
-import { getObjectsByDepartment } from '../../../waivioApi/ApiClient';
+import { getObjectsByDepartment, getObjectsRewards } from '../../../waivioApi/ApiClient';
 import { getActiveDepartment } from '../../../store/objectDepartmentsStore/objectDepartmentsSelectors';
 import { setActiveDepartment } from '../../../store/objectDepartmentsStore/objectDepartmentsActions';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
+import Campaing from '../../newRewards/reuseble/Campaing';
 
 const limit = 10;
 
 const DepartmentsPage = () => {
   const [hasMore, setHasMore] = useState(false);
+  const [reward, setReward] = useState([]);
   const [optionsList, setOptionsList] = useState([]);
   const activeDepartment = useSelector(getActiveDepartment);
   const userName = useSelector(getAuthenticatedUserName);
   const match = useRouteMatch();
   const dispatch = useDispatch();
+  const wobjPermlink = match.params.name;
   const departmentName = match.params.department;
 
   useEffect(() => {
     setOptionsList([]);
     window.scrollTo(0, 0);
 
+    getObjectsRewards(wobjPermlink, userName).then(res => {
+      setReward(res);
+    });
     if (!isEmpty(activeDepartment)) {
       getObjectsByDepartment(userName, [activeDepartment.name], 0, limit).then(r => {
         setHasMore(r.hasMore);
@@ -54,6 +60,7 @@ const DepartmentsPage = () => {
           <FormattedMessage id="department" defaultMessage="Department" />: {activeDepartment.name}
         </div>
       </div>
+      {!isEmpty(reward?.main) && <Campaing campain={reward?.main} />}
       <InfiniteScroll
         className="Feed"
         loadMore={loadMoreRelatedObjects}

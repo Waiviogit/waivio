@@ -1,17 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroller';
 import { useSelector } from 'react-redux';
+import { isEmpty } from 'lodash';
 import { getObject } from '../../../store/wObjectStore/wObjectSelectors';
-import { getObjectsByIds } from '../../../waivioApi/ApiClient';
+import { getObjectsByIds, getObjectsRewards } from '../../../waivioApi/ApiClient';
 import Loading from '../../components/Icon/Loading';
 import ObjectCardView from '../../objectCard/ObjectCardView';
 import { sortByFieldPermlinksList } from '../../../common/helpers/wObjectHelper';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
+import Campaing from '../../newRewards/reuseble/Campaing';
 
 const limit = 10;
 
 const SimilarPage = () => {
   const [similarObjects, setSimilarObjects] = useState([]);
+  const [reward, setReward] = useState([]);
   const [hasMore, setHasMore] = useState(false);
   const wobject = useSelector(getObject);
   const authUserName = useSelector(getAuthenticatedUserName);
@@ -19,6 +22,10 @@ const SimilarPage = () => {
   const sortedSimilarObjects = sortByFieldPermlinksList(similarPermlinks, similarObjects);
 
   useEffect(() => {
+    getObjectsRewards(wobject.author_permlink, authUserName).then(res => {
+      setReward(res);
+    });
+
     getObjectsByIds({
       authorPermlinks: similarPermlinks,
       authUserName,
@@ -44,6 +51,7 @@ const SimilarPage = () => {
 
   return (
     <>
+      {!isEmpty(reward?.main) && <Campaing campain={reward?.main} />}
       <InfiniteScroll
         className="Feed"
         loadMore={loadMoreAddOnObjects}

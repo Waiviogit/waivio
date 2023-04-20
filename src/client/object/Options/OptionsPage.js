@@ -4,25 +4,31 @@ import { isEmpty } from 'lodash';
 import { useSelector } from 'react-redux';
 import InfiniteScroll from 'react-infinite-scroller';
 import { useRouteMatch } from 'react-router';
-import { getObject, getObjectOptions } from '../../../waivioApi/ApiClient';
+import { getObject, getObjectOptions, getObjectsRewards } from '../../../waivioApi/ApiClient';
 import Loading from '../../components/Icon/Loading';
 import ObjectCardView from '../../objectCard/ObjectCardView';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
+import Campaing from '../../newRewards/reuseble/Campaing';
 
 const OptionsPage = () => {
   const limit = 30;
   const [hasMore, setHasMore] = useState(false);
+  const [reward, setReward] = useState([]);
   const [wobject, setWobject] = useState({});
   const [filteredOptions, setFilteredOptions] = useState([]);
   const match = useRouteMatch();
   const authUser = useSelector(getAuthenticatedUserName);
+  const wobjPermlink = match.params.name;
   const { category } = match.params;
 
   useEffect(() => {
     setFilteredOptions([]);
     window.scrollTo(0, 0);
+    getObjectsRewards(wobjPermlink, authUser).then(res => {
+      setReward(res);
+    });
 
-    getObject(match.params.name).then(res => {
+    getObject(wobjPermlink).then(res => {
       setWobject(res);
       getObjectOptions(authUser, res?.author_permlink, category, 0, limit).then(r => {
         setHasMore(r.hasMore);
@@ -65,6 +71,7 @@ const OptionsPage = () => {
           />
         </div>
       </div>
+      {!isEmpty(reward?.main) && <Campaing campain={reward?.main} />}
       <InfiniteScroll
         className="Feed"
         loadMore={loadMoreOptions}

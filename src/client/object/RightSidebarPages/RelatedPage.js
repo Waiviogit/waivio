@@ -8,14 +8,16 @@ import {
   getObject,
   getRelatedObjectsForSidebar,
 } from '../../../store/wObjectStore/wObjectSelectors';
-import { getObjectsByIds } from '../../../waivioApi/ApiClient';
+import { getObjectsByIds, getObjectsRewards } from '../../../waivioApi/ApiClient';
 import { sortByFieldPermlinksList } from '../../../common/helpers/wObjectHelper';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
+import Campaing from '../../newRewards/reuseble/Campaing';
 
 const limit = 10;
 
 const RelatedPage = () => {
   const [relatedObjects, setRelatedObjects] = useState([]);
+  const [reward, setReward] = useState([]);
   const [hasMore, setHasMore] = useState(false);
   const objects = useSelector(getRelatedObjectsForSidebar);
   const authUserName = useSelector(getAuthenticatedUserName);
@@ -27,6 +29,9 @@ const RelatedPage = () => {
   const sortedRelatedObjects = sortByFieldPermlinksList(relatedPermlinks, relatedObjects);
 
   useEffect(() => {
+    getObjectsRewards(wobject.author_permlink, authUserName).then(res => {
+      setReward(res);
+    });
     if (!isEmpty(relatedPermlinks)) {
       getObjectsByIds({
         authorPermlinks: relatedPermlinks,
@@ -54,6 +59,7 @@ const RelatedPage = () => {
 
   return (
     <>
+      {!isEmpty(reward?.main) && <Campaing campain={reward?.main} />}
       <InfiniteScroll
         className="Feed"
         loadMore={loadMoreRelatedObjects}
