@@ -22,7 +22,7 @@ import {
   setImportVote,
   setObjectImport,
 } from '../../../waivioApi/importApi';
-import { getImportUpdate } from '../../../store/settingsStore/settingsActions';
+import { closeImportSoket, getImportUpdate } from '../../../store/settingsStore/settingsActions';
 
 import './DataImport.less';
 
@@ -61,7 +61,10 @@ const DataImport = ({ intl }) => {
     getHistoryImportedObjects(authUserName).then(his => {
       setHistoryImportedObject(his);
     });
+
     dispatch(getImportUpdate(updateImportDate));
+
+    return () => dispatch(closeImportSoket());
   }, []);
 
   const toggleModal = () => setVisible(!visible);

@@ -78,7 +78,7 @@ const DepartmentsWobjList = ({ getDepartmentsFeed, user }) => {
   return (
     <div className="DepartmentsWobjList" ref={list} id={'DepartmentsWobjList'}>
       {isEmpty(departmentInfo?.wobjects) ? (
-        <EmptyCampaing emptyMessage={'There are no products in this department.'} />
+        <EmptyCampaing emptyMessage={'There are no products available in this department.'} />
       ) : (
         <InfiniteSroll loadMore={loadMore} hasMore={departmentInfo.hasMore}>
           {departmentInfo?.wobjects?.map(wobj => (

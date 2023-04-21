@@ -199,5 +199,6 @@
   "names": "/names",
   "newsfeed": "/newsfeed",
   "options": "/options",
-  "authorityFields": "/authority-fields"
+  "authorityFields": "/authority-fields",
+  "groupId": "/group-Id"
 }

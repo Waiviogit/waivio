@@ -1,4 +1,6 @@
 import { createAction } from 'redux-actions';
+import Cookie from 'js-cookie';
+
 import { saveSettingsMetadata } from '../../common/helpers/metadata';
 import {
   setUserStatus,
@@ -10,6 +12,7 @@ import { createAsyncActionType } from '../../common/helpers/stateHelpers';
 import { getAuthenticatedUserName, isGuestUser } from '../authStore/authSelectors';
 import { getVipTicketsQuery } from '../../client/settings/common/helpers';
 import { getCurrentCurrencyRate } from '../appStore/appActions';
+import { getGuestAccessToken } from '../../common/helpers/localStorageHelpers';
 
 export const SAVE_SETTINGS = '@app/SAVE_SETTINGS';
 export const SAVE_SETTINGS_START = '@app/SAVE_SETTINGS_START';
@@ -126,7 +129,24 @@ export const getCurrencyForSettings = () => dispatch =>
   });
 
 export const getImportUpdate = callback => (dispatch, getState, { busyAPI }) => {
+  let accessToken = Cookie.get('access_token');
+  let method = 'login';
+
+  if (typeof localStorage !== 'undefined') {
+    const guestAccessToken = getGuestAccessToken();
+
+    if (guestAccessToken) {
+      method = 'guest_login';
+      accessToken = guestAccessToken;
+    }
+  }
+
+  busyAPI.instance.sendAsync(method, [accessToken]);
   busyAPI.instance.subscribe((e, data) => {
     if (data.type === 'updateImport') callback();
   });
+};
+
+export const closeImportSoket = () => (dispatch, getState, { busyAPI }) => {
+  busyAPI.instance.close();
 };

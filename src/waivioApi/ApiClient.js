@@ -3153,6 +3153,23 @@ export const getObjectsByDepartment = (userName, departments, skip, limit) => {
     .then(response => response)
     .catch(e => e);
 };
+export const getObjectsByGroupId = (userName, groupId, skip, limit = 10) => {
+  return fetch(`${config.apiPrefix}${config.wobjects}${config.groupId}`, {
+    headers: {
+      ...headers,
+      follower: userName,
+    },
+    method: 'POST',
+    body: JSON.stringify({
+      groupId,
+      skip,
+      limit,
+    }),
+  })
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+};
 
 export const getUserProfileBlogTags = (userName, { limit = 10, skip }) => {
   return fetch(`${config.apiPrefix}${config.user}/${userName}${config.blogTags}`, {

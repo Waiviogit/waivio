@@ -135,6 +135,7 @@ export default {
   AddOnPage: loableComponent(import('../client/object/RightSidebarPages/AddOnPage')),
   SimilarPage: loableComponent(import('../client/object/RightSidebarPages/SimilarPage')),
   OptionsPage: loableComponent(import('../client/object/Options/OptionsPage')),
+  GroupIdPage: loableComponent(import('../client/object/GroupId/GroupIdPage')),
   DepartmentsPage: loableComponent(import('../client/object/DepartmentsPage/DepartmentsPage')),
   WebsiteSignIn: loableComponent(import(`../client/websites/WebsiteSignIn/WebsiteSignIn`)),
   VipTicketsSetting: loableComponent(import(`../client/settings/Viptickets/VipTicketsSetting`)),

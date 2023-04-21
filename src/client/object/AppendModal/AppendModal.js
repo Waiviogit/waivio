@@ -14,6 +14,7 @@ const AppendModal = ({
   objName,
   intl,
   post,
+  selectedAlbum,
 }) => (
   <Modal
     title={`${intl.formatMessage({
@@ -33,6 +34,7 @@ const AppendModal = ({
       hideModal={hideModal}
       intl={intl}
       history={history}
+      selectedAlbum={selectedAlbum}
     />
   </Modal>
 );
@@ -45,6 +47,7 @@ AppendModal.propTypes = {
   objName: PropTypes.string,
   intl: PropTypes.shape().isRequired,
   post: PropTypes.shape(),
+  selectedAlbum: PropTypes.shape(),
   history: PropTypes.shape().isRequired,
 };
 
@@ -54,6 +57,7 @@ AppendModal.defaultProps = {
   chosenLocale: '',
   objName: '',
   post: {},
+  selectedAlbum: null,
 };
 
 export default injectIntl(withRouter(AppendModal));
