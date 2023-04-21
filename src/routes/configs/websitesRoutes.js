@@ -223,6 +223,11 @@ const routes = (host, page) => ({
           component: Views.RelatedPage,
         },
         {
+          path: '/search/:searchStr',
+          exact: true,
+          component: Views.WobjSearchPage,
+        },
+        {
           path: '/add-on',
           exact: true,
           component: Views.AddOnPage,

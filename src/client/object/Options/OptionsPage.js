@@ -6,8 +6,8 @@ import InfiniteScroll from 'react-infinite-scroller';
 import { useRouteMatch } from 'react-router';
 import { getObject, getObjectOptions } from '../../../waivioApi/ApiClient';
 import Loading from '../../components/Icon/Loading';
-import ObjectCardView from '../../objectCard/ObjectCardView';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
+import ObjectCardSwitcher from '../../objectCard/ObjectCardSwitcher';
 
 const OptionsPage = () => {
   const limit = 30;
@@ -73,7 +73,7 @@ const OptionsPage = () => {
         hasMore={hasMore}
       >
         {filteredOptions?.map(wObj => (
-          <ObjectCardView key={wObj._id} wObject={wObj} passedParent={wObj.parent} />
+          <ObjectCardSwitcher key={wObj._id} wObj={wObj} />
         ))}
       </InfiniteScroll>
     </>

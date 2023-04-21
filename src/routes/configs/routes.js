@@ -365,6 +365,7 @@ const routes = {
       path: [
         `/object/:name/(${URL.WOBJ.tabs})?/(${URL.WOBJ.filters})?/:itemId?`,
         `/object/:name/shop/:department?`,
+        `/object/:name/search/:searchStr?`,
       ],
       component: WobjectContainer,
       exact: true,
@@ -443,6 +444,11 @@ const routes = {
           path: '/related',
           exact: true,
           component: Views.RelatedPage,
+        },
+        {
+          path: '/search/:searchStr',
+          exact: true,
+          component: Views.WobjSearchPage,
         },
         {
           path: '/add-on',
