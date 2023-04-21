@@ -46,6 +46,8 @@ import { initialColors } from '../websites/constants/colors';
 import { getSwapEnginRates } from '../../store/ratesStore/ratesAction';
 import { setLocale } from '../../store/settingsStore/settingsActions';
 
+import './common.less';
+
 const SocialWrapper = props => {
   const language = findLanguage(props.usedLocale);
   const antdLocale = getAntdLocale(language);
