@@ -1176,7 +1176,12 @@ class ObjectInfo extends React.Component {
             ) : (
               <div className="flex ObjectCard__links ">
                 <ObjectAvatar item={manufacturer} size={34} />{' '}
-                <span className="ObjectCard__name-grey">{manufacturer.name}</span>
+                <Link
+                  to={`/object/${wobject.author_permlink}/search/${manufacturer.name}`}
+                  className="ObjectCard__name-grey"
+                >
+                  {manufacturer.name}
+                </Link>
               </div>
             )),
         )}
@@ -1188,7 +1193,12 @@ class ObjectInfo extends React.Component {
             ) : (
               <div className="flex ObjectCard__links ">
                 <ObjectAvatar item={brand} size={34} />{' '}
-                <span className="ObjectCard__name-grey">{brand.name}</span>
+                <Link
+                  to={`/object/${wobject.author_permlink}/search/${brand.name}`}
+                  className="ObjectCard__name-grey"
+                >
+                  {brand.name}
+                </Link>
               </div>
             )),
         )}
@@ -1200,7 +1210,12 @@ class ObjectInfo extends React.Component {
             ) : (
               <div className="flex ObjectCard__links ">
                 <ObjectAvatar item={merchant} size={34} />{' '}
-                <span className="ObjectCard__name-grey">{merchant.name}</span>
+                <Link
+                  to={`/object/${wobject.author_permlink}/search/${merchant.name}`}
+                  className="ObjectCard__name-grey"
+                >
+                  {merchant.name}
+                </Link>
               </div>
             )),
         )}
