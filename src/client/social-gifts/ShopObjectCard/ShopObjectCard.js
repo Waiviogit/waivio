@@ -10,6 +10,7 @@ import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors
 import { getObjectName } from '../../../common/helpers/wObjectHelper';
 import AffiliatLink from '../../widgets/AffiliatLinks/AffiliatLink';
 import HeartButton from '../../widgets/HeartButton';
+import USDDisplay from '../../components/Utils/USDDisplay';
 
 import './ShopObjectCard.less';
 
@@ -17,8 +18,10 @@ const ShopObjectCard = ({ wObject }) => {
   const username = useSelector(getAuthenticatedUserName);
   const [tags, setTags] = useState([]);
   const wobjName = getObjectName(wObject);
+  const withRewards = !isEmpty(wObject.propositions);
+  const proposition = withRewards ? wObject.propositions[0] : null;
   const shopObjectCardClassList = classNames('ShopObjectCard', {
-    'ShopObjectCard--rewards': !wObject.proposition,
+    'ShopObjectCard--rewards': withRewards,
   });
 
   useEffect(() => {
@@ -29,6 +32,12 @@ const ShopObjectCard = ({ wObject }) => {
 
   return (
     <div className={shopObjectCardClassList}>
+      {withRewards && (
+        <h3>
+          Share {proposition.requirements.minPhotos} photos & earn{' '}
+          <USDDisplay value={proposition.rewardInUSD} currencyDisplay={'code'} />
+        </h3>
+      )}
       <div className="ShopObjectCard__avatarWrap">
         <ObjectAvatar size={150} item={wObject} />
         <HeartButton wobject={wObject} size={'20px'} />
@@ -73,6 +82,7 @@ ShopObjectCard.propTypes = {
     proposition: PropTypes.shape(),
     price: PropTypes.string,
     affiliateLinks: PropTypes.arrayOf(PropTypes.shape()),
+    propositions: PropTypes.arrayOf(PropTypes.shape()),
   }),
 };
 
