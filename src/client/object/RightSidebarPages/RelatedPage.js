@@ -35,7 +35,7 @@ const RelatedPage = () => {
         setHasMore(res.hasMore);
       });
     }
-  }, [wobject.author_permlink, relatedObjects.length]);
+  }, [wobject.author_permlink, relatedPermlinks.length]);
 
   const loadMoreRelatedObjects = () => {
     getObjectsByIds({
