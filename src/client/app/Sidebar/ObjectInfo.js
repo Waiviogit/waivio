@@ -667,7 +667,11 @@ class ObjectInfo extends React.Component {
           this.listItem(
             objectFields.description,
             description && (
-              <DescriptionInfo description={description} wobjPermlink={wobject.author_permlink} />
+              <DescriptionInfo
+                description={description}
+                wobjPermlink={wobject.author_permlink}
+                showDescriptionBtn={wobject.galleryItem.length > 1}
+              />
             ),
           )}
       </>
@@ -892,7 +896,11 @@ class ObjectInfo extends React.Component {
           this.listItem(
             objectFields.description,
             description && (
-              <DescriptionInfo description={description} wobjPermlink={wobject.author_permlink} />
+              <DescriptionInfo
+                description={description}
+                wobjPermlink={wobject.author_permlink}
+                showDescriptionBtn={wobject.galleryItem.length > 1}
+              />
             ),
           )}
         {!isEditMode &&
@@ -900,7 +908,11 @@ class ObjectInfo extends React.Component {
           this.listItem(
             objectFields.description,
             description && (
-              <DescriptionInfo description={description} wobjPermlink={wobject.author_permlink} />
+              <DescriptionInfo
+                description={description}
+                wobjPermlink={wobject.author_permlink}
+                showDescriptionBtn={wobject.galleryItem.length > 1}
+              />
             ),
           )}
         {this.listItem(
