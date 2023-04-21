@@ -1178,7 +1178,7 @@ class ObjectInfo extends React.Component {
                 <ObjectAvatar item={manufacturer} size={34} />{' '}
                 <Link
                   to={`/object/${wobject.author_permlink}/search/${manufacturer.name}`}
-                  className="ObjectCard__name-grey"
+                  className="ObjectCard__name"
                 >
                   {manufacturer.name}
                 </Link>
@@ -1195,7 +1195,7 @@ class ObjectInfo extends React.Component {
                 <ObjectAvatar item={brand} size={34} />{' '}
                 <Link
                   to={`/object/${wobject.author_permlink}/search/${brand.name}`}
-                  className="ObjectCard__name-grey"
+                  className="ObjectCard__name"
                 >
                   {brand.name}
                 </Link>
@@ -1212,7 +1212,7 @@ class ObjectInfo extends React.Component {
                 <ObjectAvatar item={merchant} size={34} />{' '}
                 <Link
                   to={`/object/${wobject.author_permlink}/search/${merchant.name}`}
-                  className="ObjectCard__name-grey"
+                  className="ObjectCard__name"
                 >
                   {merchant.name}
                 </Link>

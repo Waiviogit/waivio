@@ -7,6 +7,7 @@ import { searchObjects } from '../../../waivioApi/ApiClient';
 import ObjectCardView from '../../objectCard/ObjectCardView';
 import Loading from '../../components/Icon/Loading';
 import { getLocale } from '../../../store/settingsStore/settingsSelectors';
+import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 
 const limit = 10;
 
@@ -15,22 +16,32 @@ const WobjSearchPage = () => {
   const [hasMore, setHasMore] = useState(false);
   const match = useRouteMatch();
   const locale = useSelector(getLocale);
+  const userName = useSelector(getAuthenticatedUserName);
   const objType = 'product';
   const searchStr = match.params.searchStr;
 
   useEffect(() => {
     window.scrollTo(0, 0);
 
-    searchObjects(searchStr, objType, false, limit, locale, {}, null, 0).then(res => {
+    searchObjects(searchStr, objType, false, limit, locale, { userName }, null, 0).then(res => {
       setHasMore(res.hasMore);
       setWobjects(res.wobjects);
     });
   }, [searchStr]);
 
   const loadMoreObjects = () => {
-    searchObjects(searchStr, objType, false, limit, locale, {}, null, wobjects.length).then(res => {
+    searchObjects(
+      searchStr,
+      objType,
+      false,
+      limit,
+      locale,
+      { userName },
+      null,
+      wobjects.length,
+    ).then(res => {
       setHasMore(res.hasMore);
-      setWobjects(res.wobjects);
+      setWobjects([...wobjects, ...res.wobjects]);
     });
   };
 
