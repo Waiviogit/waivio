@@ -667,7 +667,11 @@ class ObjectInfo extends React.Component {
           this.listItem(
             objectFields.description,
             description && (
-              <DescriptionInfo description={description} wobjPermlink={wobject.author_permlink} />
+              <DescriptionInfo
+                description={description}
+                wobjPermlink={wobject.author_permlink}
+                showDescriptionBtn={wobject.galleryItem.length > 1}
+              />
             ),
           )}
       </>
@@ -892,7 +896,11 @@ class ObjectInfo extends React.Component {
           this.listItem(
             objectFields.description,
             description && (
-              <DescriptionInfo description={description} wobjPermlink={wobject.author_permlink} />
+              <DescriptionInfo
+                description={description}
+                wobjPermlink={wobject.author_permlink}
+                showDescriptionBtn={wobject.galleryItem.length > 1}
+              />
             ),
           )}
         {!isEditMode &&
@@ -900,7 +908,11 @@ class ObjectInfo extends React.Component {
           this.listItem(
             objectFields.description,
             description && (
-              <DescriptionInfo description={description} wobjPermlink={wobject.author_permlink} />
+              <DescriptionInfo
+                description={description}
+                wobjPermlink={wobject.author_permlink}
+                showDescriptionBtn={wobject.galleryItem.length > 1}
+              />
             ),
           )}
         {this.listItem(
@@ -1178,7 +1190,7 @@ class ObjectInfo extends React.Component {
                 <ObjectAvatar item={manufacturer} size={34} />{' '}
                 <Link
                   to={`/object/${wobject.author_permlink}/search/${manufacturer.name}`}
-                  className="ObjectCard__name-grey"
+                  className="ObjectCard__name"
                 >
                   {manufacturer.name}
                 </Link>
@@ -1195,7 +1207,7 @@ class ObjectInfo extends React.Component {
                 <ObjectAvatar item={brand} size={34} />{' '}
                 <Link
                   to={`/object/${wobject.author_permlink}/search/${brand.name}`}
-                  className="ObjectCard__name-grey"
+                  className="ObjectCard__name"
                 >
                   {brand.name}
                 </Link>
@@ -1212,7 +1224,7 @@ class ObjectInfo extends React.Component {
                 <ObjectAvatar item={merchant} size={34} />{' '}
                 <Link
                   to={`/object/${wobject.author_permlink}/search/${merchant.name}`}
-                  className="ObjectCard__name-grey"
+                  className="ObjectCard__name"
                 >
                   {merchant.name}
                 </Link>
