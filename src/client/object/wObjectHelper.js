@@ -39,6 +39,16 @@ export const getFieldsCount = (wObject, fieldName) => {
 
 export const truncate = str => (str && str.length > 255 ? str.substring(0, 255) : str);
 
+export const shortenDescription = description => {
+  if (description.length <= 300) {
+    return description;
+  }
+  const shortened = description.substr(0, 300);
+  const lastPeriod = shortened.lastIndexOf('.');
+
+  return shortened.substr(0, lastPeriod + 1);
+};
+
 /**
  *
  * @param items - array of waivio objects
