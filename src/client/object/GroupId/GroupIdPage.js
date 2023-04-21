@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 import { getObjectsByGroupId } from '../../../waivioApi/ApiClient';
 import Loading from '../../components/Icon/Loading';
-import ObjectCardView from '../../objectCard/ObjectCardView';
+import ObjectCardSwitcher from '../../objectCard/ObjectCardSwitcher';
 
 const GroupIdPage = () => {
   const [wobjects, setWobjects] = useState([]);
@@ -45,7 +45,7 @@ const GroupIdPage = () => {
         hasMore={hasMore}
       >
         {wobjects?.map(wObj => (
-          <ObjectCardView key={wObj._id} wObject={wObj} passedParent={wObj.parent} />
+          <ObjectCardSwitcher key={wObj._id} wObj={wObj} />
         ))}
       </InfiniteScroll>
     </>

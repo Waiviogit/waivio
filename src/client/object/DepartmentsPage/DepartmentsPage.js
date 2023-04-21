@@ -5,11 +5,11 @@ import { useRouteMatch } from 'react-router';
 import { FormattedMessage } from 'react-intl';
 import InfiniteScroll from 'react-infinite-scroller';
 import Loading from '../../components/Icon/Loading';
-import ObjectCardView from '../../objectCard/ObjectCardView';
 import { getObjectsByDepartment } from '../../../waivioApi/ApiClient';
 import { getActiveDepartment } from '../../../store/objectDepartmentsStore/objectDepartmentsSelectors';
 import { setActiveDepartment } from '../../../store/objectDepartmentsStore/objectDepartmentsActions';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
+import ObjectCardSwitcher from '../../objectCard/ObjectCardSwitcher';
 
 const limit = 10;
 
@@ -62,7 +62,7 @@ const DepartmentsPage = () => {
         hasMore={hasMore}
       >
         {optionsList?.map(wObj => (
-          <ObjectCardView key={wObj._id} wObject={wObj} passedParent={wObj.parent} />
+          <ObjectCardSwitcher key={wObj._id} wObj={wObj} />
         ))}
       </InfiniteScroll>
     </>
