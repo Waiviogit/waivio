@@ -4,9 +4,9 @@ import InfiniteScroll from 'react-infinite-scroller';
 import { getObject } from '../../../store/wObjectStore/wObjectSelectors';
 import { getObjectsByIds } from '../../../waivioApi/ApiClient';
 import Loading from '../../components/Icon/Loading';
-import ObjectCardView from '../../objectCard/ObjectCardView';
 import { sortByFieldPermlinksList } from '../../../common/helpers/wObjectHelper';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
+import ObjectCardSwitcher from '../../objectCard/ObjectCardSwitcher';
 
 const limit = 10;
 
@@ -52,7 +52,7 @@ const AddOnPage = () => {
         hasMore={hasMore}
       >
         {sortedAddOnObjects?.map(obj => (
-          <ObjectCardView key={obj._id} wObject={obj} showHeart />
+          <ObjectCardSwitcher key={obj._id} wObj={obj} />
         ))}
       </InfiniteScroll>
     </>
