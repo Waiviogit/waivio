@@ -1,18 +1,29 @@
+@import (reference) '../../styles/custom.less';
+@import (reference) '../../styles/modules/variables.less';
+
 .ShopObjectCard {
-  background: #ffffff;
-  padding: 10px;
+  background: @white;
+  padding: 35px 10px;
   border-radius: 4px;
-  width: 225px;
+  width: 48%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-bottom: 15px;
-  margin-right: 10px;
-  border-color: #99aab5;
+  margin-bottom: 10px;
+  border: @base-border;
+
+  @media @small {
+    width: 32%;
+  }
 
   &__affiliatLinks {
     display: flex;
     flex-wrap: wrap;
+    margin: 5px 0;
+
+    @media @small {
+      margin: 15px 0;
+    }
   }
 
   &__affiliatLinksWrap,
@@ -29,10 +40,15 @@
   }
 
   .AffiliatLink {
-    border: 1px solid #b0bcc5;
-    width: 100px;
-    padding: 0;
+    border: @base-border;
+    width: 65px;
+    padding: 0 2px;
     margin-left: 5px;
+
+    @media @small {
+      width: 100px;
+      padding: 0;
+    }
 
     &:first-child {
       margin: 0;
@@ -44,6 +60,11 @@
   }
 
   &--rewards {
-    border: 1px solid orange;
+    border: 1px solid @orange-hot;
+    padding: 30px 10px;
+  }
+
+  &__rewardTitle {
+    margin-bottom: 30px;
   }
 }
