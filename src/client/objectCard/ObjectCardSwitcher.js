@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
-
+import { isEmpty } from 'lodash';
 import ObjectCardView from './ObjectCardView';
 import PropositionNew from '../newRewards/reuseble/Proposition/Proposition';
 import Campaing from '../newRewards/reuseble/Campaing';
@@ -16,7 +16,11 @@ const ObjectCardSwitcher = ({ wObj, intl }) => {
     return wObj.propositions.map(proposition => (
       <PropositionNew
         key={proposition._id}
-        proposition={{ ...proposition, requiredObject: wObj.parent, object: wObj }}
+        proposition={{
+          ...proposition,
+          requiredObject: !isEmpty(wObj.parent) ? wObj.parent : proposition?.requiredObject,
+          object: wObj,
+        }}
       />
     ));
   }

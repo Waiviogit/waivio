@@ -13,7 +13,11 @@ import { clearAllSessionProposition } from '../../rewards/rewardsHelper';
 import WebsiteReservedButtons from '../../rewards/Proposition/WebsiteReservedButtons/WebsiteReservedButtons';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 import DetailsModalBody from './DetailsBody';
-import { getObjectsByIds, validateEgibilitiesForUser } from '../../../waivioApi/ApiClient';
+import {
+  getObjectInfo,
+  getObjectsByIds,
+  validateEgibilitiesForUser,
+} from '../../../waivioApi/ApiClient';
 import RewardsHeader from '../reuseble/RewardsHeader';
 import { reserveProposition } from '../../../store/newRewards/newRewardsActions';
 import { getObjectName } from '../../../common/helpers/wObjectHelper';
@@ -42,15 +46,20 @@ const DetailsModal = ({
     posts: true,
   });
   const [agreementObjects, setAgreementObjects] = useState([]);
+  const [requiredObject, setRequiredObject] = useState([]);
   const isWidget = new URLSearchParams(history.location.search).get('display');
   const isReserved = new URLSearchParams(location.search).get('toReserved');
   const isWaivio = useSelector(getIsWaivio);
-  const requiredObject = proposition?.requiredObject;
+  const stringRequiredObj =
+    typeof proposition.requiredObject === 'string' && !isEmpty(proposition.requiredObject);
   const userName = useSelector(getAuthenticatedUserName);
   const disable = Object.values(requirements).some(requirement => !requirement);
   const withoutSecondary = requiredObject.author_permlink === proposition?.object?.author_permlink;
 
   useEffect(() => {
+    if (stringRequiredObj) {
+      getObjectInfo([proposition?.requiredObject]).then(res => setRequiredObject(res.wobjects[0]));
+    }
     if (!proposition?.reserved) {
       validateEgibilitiesForUser({
         userName,
@@ -160,7 +169,7 @@ const DetailsModal = ({
         <RewardsHeader proposition={proposition} />
       </div>
       <DetailsModalBody
-        proposition={proposition}
+        proposition={{ ...proposition, requiredObject }}
         requirements={requirements}
         agreementObjects={agreementObjects}
         withoutSecondary={withoutSecondary}
