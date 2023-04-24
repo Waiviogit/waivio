@@ -13,6 +13,7 @@ import HeartButton from '../../widgets/HeartButton';
 import USDDisplay from '../../components/Utils/USDDisplay';
 
 import './ShopObjectCard.less';
+import { isMobile } from '../../../common/helpers/apiHelpers';
 
 const ShopObjectCard = ({ wObject }) => {
   const username = useSelector(getAuthenticatedUserName);
@@ -33,13 +34,13 @@ const ShopObjectCard = ({ wObject }) => {
   return (
     <div className={shopObjectCardClassList}>
       {withRewards && (
-        <h3>
+        <h3 className="ShopObjectCard__rewardTitle">
           Share {proposition.requirements.minPhotos} photos & earn{' '}
           <USDDisplay value={proposition.rewardInUSD} currencyDisplay={'code'} />
         </h3>
       )}
       <div className="ShopObjectCard__avatarWrap">
-        <ObjectAvatar size={150} item={wObject} />
+        <ObjectAvatar size={isMobile() ? 100 : 150} item={wObject} />
         <HeartButton wobject={wObject} size={'20px'} />
       </div>
       <h4 className="ShopObjectCard__name">{wobjName}</h4>
