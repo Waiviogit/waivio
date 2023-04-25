@@ -38,6 +38,7 @@ const ImageSetter = ({
   isOkayBtn,
   isModal,
   imagesList,
+  autoFocus,
 }) => {
   const imageLinkInput = useRef(null);
   const [currentImages, setCurrentImages] = useState([]);
@@ -351,6 +352,8 @@ const ImageSetter = ({
           </span>
           <div className="input-upload">
             <input
+              // eslint-disable-next-line jsx-a11y/no-autofocus
+              autoFocus={autoFocus}
               className="input-upload__item"
               size="large"
               ref={imageLinkInput}
@@ -385,6 +388,7 @@ ImageSetter.propTypes = {
   labeledImage: PropTypes.string,
   Block: PropTypes.shape(),
   isOkayBtn: PropTypes.bool,
+  autoFocus: PropTypes.bool,
   imagesList: PropTypes.arrayOf(),
   isModal: PropTypes.bool,
 };
@@ -403,6 +407,7 @@ ImageSetter.defaultProps = {
   isOkayBtn: false,
   imagesList: [],
   isModal: false,
+  autoFocus: false,
   labeledImage: '',
 };
 

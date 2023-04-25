@@ -1145,7 +1145,7 @@ class ObjectInfo extends React.Component {
         {this.listItem(
           objectFields.productWeight,
           productWeight && (
-            <div className="field-info">
+            <div>
               <span className="field-website__title">
                 <ReactSVG
                   className="ObjectInfo__margin-top ObjectInfo__icon"
@@ -1162,17 +1162,15 @@ class ObjectInfo extends React.Component {
         {this.listItem(
           objectFields.dimensions,
           dimensions && (
-            <div className="field-info">
-              <div className="field-website__title">
-                <ReactSVG
-                  className="ObjectInfo__margin-top ObjectInfo__icon"
-                  src={'/images/icons/dimensions-icon.svg'}
-                  wrapper={'span'}
-                />{' '}
-                <span className="CompanyId__wordbreak">
-                  {dimensions.length} x {dimensions.width} x {dimensions.depth} {dimensions.unit}
-                </span>
-              </div>
+            <div className="field-website__title">
+              <ReactSVG
+                className="ObjectInfo__margin-top ObjectInfo__icon"
+                src={'/images/icons/dimensions-icon.svg'}
+                wrapper={'span'}
+              />{' '}
+              <span className="CompanyId__wordbreak">
+                {dimensions.length} x {dimensions.width} x {dimensions.depth} {dimensions.unit}
+              </span>
             </div>
           ),
         )}
