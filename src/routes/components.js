@@ -91,11 +91,8 @@ export default {
   CreateWebsite: loableComponent(import('../client/websites/WebsiteTools/Create/CreateWebsite')),
   ManageWebsite: loableComponent(import('../client/websites/WebsiteTools/Manage/ManageWebsite')),
   ReportsWebsite: loableComponent(import('../client/websites/WebsiteTools/Reports/ReportsWebsite')),
-  WebsitesConfigurations: loableComponent(
-    import('../client/websites/WebsiteTools/Configuration/WebsitesConfigurations'),
-  ),
-  ShopWebsiteConfigurations: loableComponent(
-    import('../client/websites/WebsiteTools/Configuration/ShopWebsiteConfigurations'),
+  SwitchConfigPage: loableComponent(
+    import('../client/websites/WebsiteTools/Configuration/SwitchConfigPage'),
   ),
   ReferralDetails: loableComponent(
     import('../client/rewards/ReferralProgram/Details/ReferralDetails'),

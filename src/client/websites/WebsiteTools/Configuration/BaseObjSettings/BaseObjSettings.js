@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { debounce, isEmpty } from 'lodash';
 import { AutoComplete, Icon } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
@@ -16,10 +16,11 @@ import {
   getIsStartSearchAutoComplete,
 } from '../../../../../store/searchStore/searchSelectors';
 import { pendingSearch } from '../../../../search/helpers';
+import { getObject } from '../../../../../waivioApi/ApiClient';
 
 import './BaseObjSettings.less';
 
-const BaseObjSettings = ({ handleSubmit, intl }) => {
+const BaseObjSettings = ({ handleSubmit, intl, shopSettings }) => {
   const dispatch = useDispatch();
   const autoCompleteSearchResults = useSelector(getAutoCompleteSearchResults);
   const loading = useSelector(getIsStartSearchAutoComplete);
@@ -31,6 +32,18 @@ const BaseObjSettings = ({ handleSubmit, intl }) => {
     debounce(value => dispatch(searchAutoComplete(value, 3, 15, null, true)), 300),
     [],
   );
+
+  useEffect(() => {
+    if (shopSettings?.type) {
+      if (shopSettings.type === 'user') {
+        setSelectedObj({
+          account: shopSettings.value,
+        });
+      } else {
+        getObject(shopSettings.value).then(res => setSelectedObj(res));
+      }
+    }
+  }, [shopSettings.value]);
 
   const resetMainObj = () => {
     setSelectedObj(null);
@@ -88,6 +101,10 @@ const BaseObjSettings = ({ handleSubmit, intl }) => {
 
 BaseObjSettings.propTypes = {
   intl: PropTypes.shape({}),
+  shopSettings: PropTypes.shape({
+    value: PropTypes.string,
+    type: PropTypes.string,
+  }),
   handleSubmit: PropTypes.string,
 };
 
