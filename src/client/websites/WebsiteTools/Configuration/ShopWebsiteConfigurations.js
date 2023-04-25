@@ -21,6 +21,7 @@ import SelectColorBlock from './SelectColorModal/SelectColorModal';
 
 import ConfigHeader from './ConfigHeader/ConfigHeader';
 import LogoSettings from './LogoSettings/LogoSettings';
+import BaseObjSettings from './BaseObjSettings/BaseObjSettings';
 
 import './WebsitesConfigurations.less';
 
@@ -82,6 +83,23 @@ const ShopWebsiteConfigurations = ({
     handleSubmit({
       colors,
     });
+
+  const handleSubmitObjMain = obj => {
+    if (!obj)
+      handleSubmit({
+        shopSettings: {
+          type: '',
+          object: '',
+        },
+      });
+
+    handleSubmit({
+      shopSettings: {
+        type: obj.account ? 'user' : 'object',
+        object: obj.account || obj.author_permlink,
+      },
+    });
+  };
 
   const handleSubmitHeader = headerConfig =>
     handleSubmit({
@@ -177,9 +195,7 @@ const ShopWebsiteConfigurations = ({
                 })}
                 :
               </h3>
-              <div className="WebsitesConfigurations__headers">
-                <b>{header.name}</b> | {header.message}
-              </div>
+              <BaseObjSettings handleSubmit={handleSubmitObjMain} />
               <p>
                 <FormattedMessage
                   id="base_obj_description"
