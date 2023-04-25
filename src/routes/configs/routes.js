@@ -260,7 +260,7 @@ const routes = {
             {
               path: '/configuration',
               exact: true,
-              component: Views.ShopWebsiteConfigurations,
+              component: Views.WebsitesConfigurations,
             },
             {
               path: '/administrations',
