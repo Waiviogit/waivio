@@ -4,11 +4,13 @@ import { FormattedMessage } from 'react-intl';
 import LinkButton from '../../components/LinkButton/LinkButton';
 import { shortenDescription } from '../wObjectHelper';
 
-const DescriptionInfo = ({ description, wobjPermlink, showDescriptionBtn }) => (
-  <div className="description-field">
-    {showDescriptionBtn ? (
-      <>
-        {shortenDescription(description)}
+const DescriptionInfo = ({ description, wobjPermlink, showDescriptionBtn }) => {
+  const showBtn = (description.length < 300 && showDescriptionBtn) || description.length > 300;
+
+  return (
+    <div className="description-field">
+      {shortenDescription(description)}
+      {showBtn && (
         <div className="object-sidebar__menu-item">
           <LinkButton
             className="LinkButton menu-button mt2"
@@ -17,12 +19,10 @@ const DescriptionInfo = ({ description, wobjPermlink, showDescriptionBtn }) => (
             <FormattedMessage id="description" defaultMessage="Description" />
           </LinkButton>
         </div>
-      </>
-    ) : (
-      description
-    )}
-  </div>
-);
+      )}
+    </div>
+  );
+};
 
 DescriptionInfo.propTypes = {
   description: PropTypes.string.isRequired,
