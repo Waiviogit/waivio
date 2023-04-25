@@ -16,7 +16,9 @@ const DescriptionInfo = ({ description, wobjPermlink, showDescriptionBtn }) => {
             className="LinkButton menu-button mt2"
             to={`/object/${wobjPermlink}/description`}
           >
-            <FormattedMessage id="description" defaultMessage="Description" />
+            <div>
+              <FormattedMessage id="description" defaultMessage="Description" />
+            </div>
           </LinkButton>
         </div>
       )}

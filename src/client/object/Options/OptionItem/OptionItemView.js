@@ -137,13 +137,17 @@ const OptionItemView = ({
         ))}
       </>
       {option[1]?.length > optionsLimit && (
-        <LinkButton
-          className="menu-btn mt2"
-          to={`/object/${wobject.author_permlink}/options/${option[0]}`}
-        >
-          <FormattedMessage id="show_all" defaultMessage="Show all" />
-          <span className="ml1">({optionsNumber})</span>
-        </LinkButton>
+        <div className="object-sidebar__menu-item">
+          <LinkButton
+            className="LinkButton menu-button mt2"
+            to={`/object/${wobject.author_permlink}/options/${option[0]}`}
+          >
+            <div>
+              <FormattedMessage id="show_all" defaultMessage="Show all" />
+            </div>
+            <div className="ml1">({optionsNumber})</div>
+          </LinkButton>
+        </div>
       )}
     </div>
   );
