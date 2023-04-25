@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { noop } from 'lodash';
+import { has, noop } from 'lodash';
 import classNames from 'classnames';
 import RewardsHeader from '../RewardsHeader';
 import ObjectCardView from '../../../objectCard/ObjectCardView';
@@ -33,9 +33,10 @@ const Proposition = ({ proposition, type, getProposition, hovered }) => {
         payoutToken={proposition.payoutToken}
         isReserved={propositionType === 'reserved'}
         passedParent={
-          proposition.requiredObject.author_permlink === proposition.object.author_permlink
+          !has(proposition?.requiredObject, 'author_permlink') ||
+          proposition?.requiredObject?.author_permlink === proposition.object.author_permlink
             ? null
-            : proposition.requiredObject
+            : proposition?.requiredObject
         }
         rate={proposition.payoutTokenRateUSD}
       />

@@ -17,7 +17,7 @@ import {
   getLastPermlinksFromHash,
   getPermlinksFromHash,
 } from '../../../common/helpers/wObjectHelper';
-import ObjCardViewSwitcherForShop from '../../social-gifts/ShopObjectCard/ObjCardViewSwitcherForShop';
+import ObjCardListViewSwitcherForShop from '../../social-gifts/ShopObjectCard/ObjCardViewSwitcherForShop';
 
 import './ShopList.less';
 
@@ -114,11 +114,7 @@ const ShopList = ({ userName, path, getShopFeed }) => {
                   <Link to={getPath(dep.department)} className="ShopList__departments-title">
                     {dep.department} <Icon size={12} type="right" />
                   </Link>
-                  <div className="ShopList__departmentsList">
-                    {dep.wobjects.map(wObject => (
-                      <ObjCardViewSwitcherForShop key={wObject.author_permlink} wObject={wObject} />
-                    ))}
-                  </div>
+                  <ObjCardListViewSwitcherForShop wobjects={dep.wobjects} />
                   {dep.hasMore && (
                     <Link className="ShopList__showMore" to={getPath(dep.department)}>
                       Show more {dep.department}

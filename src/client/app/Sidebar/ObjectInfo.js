@@ -477,6 +477,9 @@ class ObjectInfo extends React.Component {
     const manufacturer = parseWobjectField(wobject, 'manufacturer');
     const brand = parseWobjectField(wobject, 'brand');
     const merchant = parseWobjectField(wobject, 'merchant');
+    const showDescriptionButton = has(wobject, 'galleryItem')
+      ? wobject?.galleryItem.length > 1
+      : false;
     const merchantObj = {
       ...this.state.merchantObject,
       name: merchant?.name || this.state.merchantObject?.name,
@@ -662,18 +665,6 @@ class ObjectInfo extends React.Component {
               />
             ),
           )}
-        {!isEditMode &&
-          isOptionsObjectType &&
-          this.listItem(
-            objectFields.description,
-            description && (
-              <DescriptionInfo
-                description={description}
-                wobjPermlink={wobject.author_permlink}
-                showDescriptionBtn={wobject.galleryItem.length > 1}
-              />
-            ),
-          )}
       </>
     );
 
@@ -844,6 +835,18 @@ class ObjectInfo extends React.Component {
           </div>
         )}
         {!isEditMode &&
+          isOptionsObjectType &&
+          this.listItem(
+            objectFields.description,
+            description && (
+              <DescriptionInfo
+                description={description}
+                wobjPermlink={wobject.author_permlink}
+                showDescriptionBtn={showDescriptionButton}
+              />
+            ),
+          )}
+        {!isEditMode &&
           this.listItem(
             objectFields.departments,
             !isEmpty(wobject?.departments) && (
@@ -899,7 +902,7 @@ class ObjectInfo extends React.Component {
               <DescriptionInfo
                 description={description}
                 wobjPermlink={wobject.author_permlink}
-                showDescriptionBtn={wobject.galleryItem.length > 1}
+                showDescriptionBtn={showDescriptionButton}
               />
             ),
           )}
@@ -911,7 +914,7 @@ class ObjectInfo extends React.Component {
               <DescriptionInfo
                 description={description}
                 wobjPermlink={wobject.author_permlink}
-                showDescriptionBtn={wobject.galleryItem.length > 1}
+                showDescriptionBtn={showDescriptionButton}
               />
             ),
           )}
