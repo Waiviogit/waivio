@@ -12,6 +12,7 @@ function ObjectFeaturesForm({ loading, intl, getFieldDecorator, getFieldRules, i
           rules: getFieldRules(featuresFields.name),
         })(
           <Input
+            autoFocus
             className={classNames('AppendForm__input', {
               'validation-error': !isSomeValue,
             })}
@@ -46,7 +47,7 @@ function ObjectFeaturesForm({ loading, intl, getFieldDecorator, getFieldRules, i
 ObjectFeaturesForm.propTypes = {
   intl: PropTypes.shape().isRequired,
   loading: PropTypes.bool.isRequired,
-  isSomeValue: PropTypes.bool.isRequired,
+  isSomeValue: PropTypes.bool,
   getFieldRules: PropTypes.func.isRequired,
   getFieldDecorator: PropTypes.func.isRequired,
 };
