@@ -3,30 +3,45 @@ import { useRouteMatch } from 'react-router';
 import InfiniteScroll from 'react-infinite-scroller';
 import { FormattedMessage } from 'react-intl';
 import { useSelector } from 'react-redux';
-import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
-import { getObjectsByGroupId } from '../../../waivioApi/ApiClient';
+import { searchObjects } from '../../../waivioApi/ApiClient';
+import ObjectCardView from '../../objectCard/ObjectCardView';
 import Loading from '../../components/Icon/Loading';
-import ObjectCardSwitcher from '../../objectCard/ObjectCardSwitcher';
+import { getLocale } from '../../../store/settingsStore/settingsSelectors';
+import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 
-const GroupIdPage = () => {
+const limit = 10;
+
+const WobjSearchPage = () => {
   const [wobjects, setWobjects] = useState([]);
   const [hasMore, setHasMore] = useState(false);
   const match = useRouteMatch();
-  const groupId = match.params.id;
+  const locale = useSelector(getLocale);
   const userName = useSelector(getAuthenticatedUserName);
+  const objType = 'product';
+  const searchStr = match.params.searchStr;
 
   useEffect(() => {
     window.scrollTo(0, 0);
-    getObjectsByGroupId(userName, groupId, 0).then(res => {
-      setWobjects(res.wobjects);
+
+    searchObjects(searchStr, objType, false, limit, locale, { userName }, null, 0).then(res => {
       setHasMore(res.hasMore);
+      setWobjects(res.wobjects);
     });
-  }, [groupId]);
+  }, [searchStr]);
 
   const loadMoreObjects = () => {
-    getObjectsByGroupId(userName, groupId, wobjects.length).then(res => {
-      setWobjects([...wobjects, ...res.wobjects]);
+    searchObjects(
+      searchStr,
+      objType,
+      false,
+      limit,
+      locale,
+      { userName },
+      null,
+      wobjects.length,
+    ).then(res => {
       setHasMore(res.hasMore);
+      setWobjects([...wobjects, ...res.wobjects]);
     });
   };
 
@@ -34,7 +49,7 @@ const GroupIdPage = () => {
     <>
       <div className="ObjectCardView__prefix">
         <div className="ObjectCardView__prefix-content">
-          <FormattedMessage id="object_field_groupId" defaultMessage="Group Id" />: {groupId}
+          <FormattedMessage id="search" defaultMessage="Search" />: {searchStr}
         </div>
       </div>
       <InfiniteScroll
@@ -45,11 +60,11 @@ const GroupIdPage = () => {
         hasMore={hasMore}
       >
         {wobjects?.map(wObj => (
-          <ObjectCardSwitcher key={wObj._id} wObj={wObj} />
+          <ObjectCardView key={wObj._id} wObject={wObj} passedParent={wObj.parent} />
         ))}
       </InfiniteScroll>
     </>
   );
 };
 
-export default GroupIdPage;
+export default WobjSearchPage;

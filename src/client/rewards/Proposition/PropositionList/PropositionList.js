@@ -36,7 +36,11 @@ const PropositionList = ({
       return listItem?.propositions.map(propos => (
         <PropositionNew
           key={listItem._id}
-          proposition={{ ...propos, object: listItem, requiredObject: listItem.parent }}
+          proposition={{
+            ...propos,
+            object: listItem,
+            requiredObject: !isEmpty(listItem.parent) ? listItem.parent : propos?.requiredObject,
+          }}
           type={propos.reserved ? 'reserved' : ''}
         />
       ));

@@ -24,13 +24,11 @@ import {
 } from '../../store/objectTypeStore/objectTypeActions';
 import { setMapFullscreenMode } from '../../store/mapStore/mapActions';
 import Loading from '../components/Icon/Loading';
-import ObjectCardView from '../objectCard/ObjectCardView';
 import ReduxInfiniteScroll from '../vendor/ReduxInfiniteScroll';
 import DiscoverObjectsFilters from './DiscoverFiltersSidebar/FiltersContainer';
 import SidenavDiscoverObjects from './SidenavDiscoverObjects';
 import SortSelector from '../components/SortSelector/SortSelector';
 import MobileNavigation from '../components/Navigation/MobileNavigation/MobileNavigation';
-import PropositionNew from '../newRewards/reuseble/Proposition/Proposition';
 
 import { getCoordinates } from '../../store/userStore/userActions';
 import { RADIUS, ZOOM } from '../../common/constants/map';
@@ -50,7 +48,7 @@ import {
   getObjectTypeState,
 } from '../../store/objectTypeStore/objectTypeSelectors';
 import { getIsMapModalOpen } from '../../store/mapStore/mapSelectors';
-import Campaing from '../newRewards/reuseble/Campaing';
+import ObjectCardSwitcher from '../objectCard/ObjectCardSwitcher';
 
 const modalName = {
   FILTERS: 'filters',
@@ -376,35 +374,9 @@ class DiscoverObjectsContent extends Component {
             elementIsScrollable={false}
             threshold={1500}
           >
-            {filteredObjects.map(wObj => {
-              if (wObj.campaigns) {
-                return (
-                  <Campaing
-                    key={wObj.author_permlink}
-                    campain={{ ...wObj.campaigns, object: wObj }}
-                  />
-                );
-              }
-
-              if (wObj.propositions && wObj.propositions.length) {
-                // eslint-disable-next-line array-callback-return,consistent-return
-                return wObj.propositions.map(proposition => (
-                  <PropositionNew
-                    key={proposition._id}
-                    proposition={{ ...proposition, requiredObject: wObj.parent, object: wObj }}
-                  />
-                ));
-              }
-
-              return (
-                <ObjectCardView
-                  key={wObj.id}
-                  wObject={wObj}
-                  passedParent={wObj.parent}
-                  intl={intl}
-                />
-              );
-            })}
+            {filteredObjects.map(wObj => (
+              <ObjectCardSwitcher key={wObj.author_permlink} wObj={wObj} />
+            ))}
           </ReduxInfiniteScroll>
         ) : (
           (isFetching && <Loading />) || (

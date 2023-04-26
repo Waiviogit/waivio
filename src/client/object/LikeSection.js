@@ -1,96 +1,72 @@
-import React from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Checkbox, Form } from 'antd';
-import { connect } from 'react-redux';
-import { round, isEmpty } from 'lodash';
+import { useSelector } from 'react-redux';
+import { round, isEmpty, debounce } from 'lodash';
 import { FormattedMessage, FormattedNumber, injectIntl } from 'react-intl';
 import RawSlider from '../components/Slider/RawSlider';
 import USDDisplay from '../components/Utils/USDDisplay';
-import { getAuthenticatedUser } from '../../store/authStore/authSelectors';
-import { getVotePercent, getVotingPower } from '../../store/settingsStore/settingsSelectors';
-import { getUserVoteValueInWaiv } from '../../waivioApi/ApiClient';
+import {
+  getAuthenticatedUser,
+  getAuthenticatedUserName,
+} from '../../store/authStore/authSelectors';
+import { checkUserInObjWhiteList, getUserVoteValueInWaiv } from '../../waivioApi/ApiClient';
+import { guestUserRegex } from '../../common/helpers/regexHelpers';
 
 import './LikeSection.less';
+import { getVotePercent } from '../../store/settingsStore/settingsSelectors';
 
-@injectIntl
-@connect(state => ({
-  defaultVotePercent: getVotePercent(state),
-  user: getAuthenticatedUser(state),
-  sliderMode: getVotingPower(state),
-}))
-class LikeSection extends React.Component {
-  static propTypes = {
-    form: PropTypes.shape().isRequired,
-    onVotePercentChange: PropTypes.func.isRequired,
-    disabled: PropTypes.bool,
-    intl: PropTypes.shape().isRequired,
-    sliderMode: PropTypes.bool,
-    showSlider: PropTypes.bool,
-    defaultVotePercent: PropTypes.number,
-    user: PropTypes.shape(),
-    selectedType: PropTypes.shape({
-      author: PropTypes.string,
-      author_permlink: PropTypes.string,
-      permlink: PropTypes.string,
-    }),
-  };
+const LikeSection = props => {
+  const [sliderVisible, setSliderVisible] = useState();
+  const [voteWorth, setVoteWorth] = useState();
+  const [votePercent, setVotePercent] = useState();
+  const [inWhiteList, setInWhiteList] = useState(false);
+  const [minVotePersent, setMinVotePersent] = useState(0);
+  const user = useSelector(getAuthenticatedUser);
+  const authUser = useSelector(getAuthenticatedUserName);
+  const defaultPercent = useSelector(getVotePercent);
+  const isGuest = guestUserRegex.test(authUser);
+  const { form, intl, disabled } = props;
+  const littleVotePower = inWhiteList ? false : voteWorth < 0.001;
 
-  static defaultProps = {
-    sliderMode: false,
-    defaultVotePercent: 100,
-    user: {},
-    rewardFund: {},
-    selectedType: {},
-    rate: 1,
-    disabled: false,
-  };
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      votePercent: props.defaultVotePercent / 100,
-      voteWorth: 0,
-      sliderVisible: false,
-    };
-  }
-
-  componentDidMount = () => {
-    if (this.props.sliderMode || this.props.showSlider) {
-      if (!this.state.sliderVisible) {
-        // eslint-disable-next-line react/no-did-mount-set-state
-        this.setState(prevState => ({ sliderVisible: !prevState.sliderVisible }));
-      }
+  useEffect(() => {
+    if (!isGuest) {
+      checkUserInObjWhiteList(authUser).then(res => {
+        setInWhiteList(res.result);
+        setMinVotePersent(res.minWeight / 100);
+        setVotePercent(res.minWeight / 100);
+      });
+    } else {
+      setMinVotePersent(defaultPercent);
+      setVotePercent(defaultPercent);
     }
-    this.calculateVoteWorth(this.state.votePercent);
-  };
+  }, []);
 
-  componentDidUpdate(prevProps) {
-    if (prevProps.selectedType !== this.props.selectedType) {
-      this.calculateVoteWorth(this.state.votePercent);
-    }
-  }
+  useEffect(() => {
+    if (votePercent && !isGuest) calculateVoteWorth(votePercent);
+  }, [votePercent]);
 
-  calculateVoteWorth = async value => {
-    const { user, onVotePercentChange, selectedType } = this.props;
+  const calculateVoteWorth = async value => {
+    const { onVotePercentChange, selectedType } = props;
 
     if (isEmpty(selectedType)) return;
 
-    const voteWorth = await getUserVoteValueInWaiv(user.name, value);
-    const roundVoteWorth = round(voteWorth, voteWorth >= 0.001 ? 3 : 6);
+    const voteValue = await getUserVoteValueInWaiv(user.name, value);
+    const roundVoteWorth = round(voteValue, voteValue >= 0.001 ? 3 : 6);
 
-    this.setState({ votePercent: value, voteWorth: roundVoteWorth });
-    onVotePercentChange(value, voteWorth);
+    setVoteWorth(roundVoteWorth);
+    onVotePercentChange(value, roundVoteWorth);
+    if (!isGuest) form.setFieldsValue({ littleVotePower: inWhiteList ? false : voteValue < 0.001 });
   };
 
-  handleLikeClick = () => {
-    if (this.props.sliderMode || this.props.showSlider) {
-      if (!this.state.sliderVisible) {
-        this.setState(prevState => ({ sliderVisible: !prevState.sliderVisible }));
-      }
-    }
-  };
+  const changeVotePercent = useCallback(
+    debounce(value => setVotePercent(value), 300),
+    [],
+  );
 
-  formatTip = value => (
+  const handleLikeClick = () => setSliderVisible(!sliderVisible);
+
+  const formatTip = value => (
     <div>
       <FormattedNumber
         style="percent" // eslint-disable-line react/style-prop-object
@@ -98,71 +74,95 @@ class LikeSection extends React.Component {
       />
       <span style={{ opacity: '0.5' }}>
         {' '}
-        <USDDisplay value={this.state.voteWorth} />
+        <USDDisplay value={voteWorth} />
       </span>
     </div>
   );
 
-  render() {
-    const { voteWorth, votePercent, sliderVisible } = this.state;
-    const { form, intl, disabled } = this.props;
-    const likePrice = Number(voteWorth) || '0.001';
+  const likePrice = Number(voteWorth) || '0.001';
 
-    return (
-      <div className="LikeSection">
-        <Form.Item className="like-form">
-          {form.getFieldDecorator('like', {
-            valuePropName: 'checked',
-            initialValue: true,
-            rules: [
-              {
-                required: true,
-                transform: value => value || undefined,
-                type: 'boolean',
-                message: intl.formatMessage({
-                  id: 'need_like',
-                  defaultMessage: 'Field is required',
-                }),
-              },
-            ],
-          })(
-            <Checkbox onChange={this.handleLikeClick} disabled={disabled}>
-              {intl.formatMessage({ id: 'like', defaultMessage: 'Like' })}
-            </Checkbox>,
-          )}
-        </Form.Item>
-        {form.getFieldValue('like') && sliderVisible && (
-          <React.Fragment>
-            <div className="like-slider">
-              <RawSlider
-                min={1}
-                initialValue={votePercent}
-                onChange={this.calculateVoteWorth}
-                disabled={disabled}
-                tipFormatter={this.formatTip}
-              />
-            </div>
-            <div className="like-worth">
-              <FormattedMessage
-                id="vote_worth"
-                defaultMessage="Vote worth {value}"
-                values={{
-                  value: likePrice,
-                }}
-              />
-            </div>
-          </React.Fragment>
+  return (
+    <div className="LikeSection">
+      <Form.Item className="like-form">
+        {form.getFieldDecorator('like', {
+          valuePropName: 'checked',
+          initialValue: true,
+          rules: [
+            {
+              required: true,
+              transform: value => value || undefined,
+              type: 'boolean',
+              message: intl.formatMessage({
+                id: 'need_like',
+                defaultMessage: 'Field is required',
+              }),
+            },
+          ],
+        })(
+          <Checkbox onChange={handleLikeClick} disabled={disabled}>
+            {intl.formatMessage({ id: 'like', defaultMessage: 'Like' })}
+          </Checkbox>,
         )}
+      </Form.Item>
+      {form.getFieldValue('like') && (
+        <React.Fragment>
+          <div className="like-slider">
+            <RawSlider
+              min={1}
+              initialValue={minVotePersent}
+              onChange={changeVotePercent}
+              disabled={disabled}
+              tipFormatter={formatTip}
+            />
+          </div>
+          <div className="like-worth">
+            <FormattedMessage
+              id="vote_worth"
+              defaultMessage="Vote worth {value}"
+              values={{
+                value: likePrice,
+              }}
+            />
+          </div>
+        </React.Fragment>
+      )}
 
-        <div className="warning-wrapper">
-          <FormattedMessage
-            id="warning_message"
-            defaultMessage="Object updates are posted by Waivio Bots in order to avoid technical posts in user feeds and spending limited resource credits on multiple posts by users, authors are required to upvote updates with voting power that should generate an equivalent of at least $0.001 to ensure validity of the posted content. Users receive 70% of author rewards in addition to standard curation rewards."
-          />
-        </div>
+      <div className="warning-wrapper">
+        <FormattedMessage
+          id="warning_message"
+          defaultMessage="Object updates are posted by Waivio Bots in order to avoid technical posts in user feeds and spending limited resource credits on multiple posts by users, authors are required to upvote updates with voting power that should generate an equivalent of at least $0.001 to ensure validity of the posted content. Users receive 70% of author rewards in addition to standard curation rewards."
+        />
       </div>
-    );
-  }
-}
+      {littleVotePower && !isGuest && (
+        <div
+          style={{
+            color: 'red',
+            textAlign: 'center',
+            paddingTop: '10px',
+          }}
+        >
+          Your vote is less than $0.001 in WAIV token.
+        </div>
+      )}
+    </div>
+  );
+};
 
-export default LikeSection;
+LikeSection.propTypes = {
+  form: PropTypes.shape().isRequired,
+  onVotePercentChange: PropTypes.func.isRequired,
+  disabled: PropTypes.bool,
+  intl: PropTypes.shape().isRequired,
+  selectedType: PropTypes.shape({
+    author: PropTypes.string,
+    author_permlink: PropTypes.string,
+    permlink: PropTypes.string,
+  }),
+};
+
+LikeSection.defaultProps = {
+  selectedType: {},
+  disabled: false,
+};
+
+export default injectIntl(LikeSection);

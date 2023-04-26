@@ -6,14 +6,7 @@ import ObjectsRelatedContent from './ObjectsRelatedContent';
 import { sortByFieldPermlinksList } from '../../../../common/helpers/wObjectHelper';
 import './ObjectsRelated.less';
 
-const ObjectsRelated = ({
-  clearRelateObjects,
-  currWobject,
-  isCenterContent,
-  getObjectRelated,
-  hasNext,
-  objects,
-}) => {
+const ObjectsRelated = ({ currWobject, isCenterContent, getObjectRelated, hasNext, objects }) => {
   const [relatedObjects, setRelatedObjects] = useState([]);
   const objectsPermlinks = objects?.map(obj => obj.author_permlink);
   const relatedObjectsPermlinks = !isEmpty(currWobject.related)
@@ -33,10 +26,6 @@ const ObjectsRelated = ({
 
   useEffect(() => {
     getObjectRelated();
-
-    return () => {
-      clearRelateObjects();
-    };
   }, [currWobject.related]);
 
   const onWheelHandler = () => {
@@ -55,7 +44,6 @@ const ObjectsRelated = ({
 ObjectsRelated.propTypes = {
   currWobject: PropTypes.shape().isRequired,
   getObjectRelated: PropTypes.func.isRequired,
-  clearRelateObjects: PropTypes.func.isRequired,
   isCenterContent: PropTypes.bool,
   hasNext: PropTypes.bool,
   objects: PropTypes.arrayOf(PropTypes.shape()),

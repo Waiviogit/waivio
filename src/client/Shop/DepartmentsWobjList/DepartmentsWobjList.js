@@ -5,7 +5,6 @@ import InfiniteSroll from 'react-infinite-scroller';
 import { useLocation, useRouteMatch } from 'react-router';
 import PropTypes from 'prop-types';
 
-import ObjectCardView from '../../objectCard/ObjectCardView';
 import EmptyCampaing from '../../statics/EmptyCampaing';
 import useQuery from '../../../hooks/useQuery';
 import { parseQueryForFilters } from '../../../waivioApi/helpers';
@@ -16,6 +15,7 @@ import {
   getLastPermlinksFromHash,
   getPermlinksFromHash,
 } from '../../../common/helpers/wObjectHelper';
+import ObjCardViewSwitcherForShop from '../../social-gifts/ShopObjectCard/ObjCardViewSwitcherForShop';
 
 import './DepartmentsWobjList.less';
 
@@ -81,9 +81,7 @@ const DepartmentsWobjList = ({ getDepartmentsFeed, user }) => {
         <EmptyCampaing emptyMessage={'There are no products available in this department.'} />
       ) : (
         <InfiniteSroll loadMore={loadMore} hasMore={departmentInfo.hasMore}>
-          {departmentInfo?.wobjects?.map(wobj => (
-            <ObjectCardView key={wobj.author_permlink} wObject={wobj} />
-          ))}
+          <ObjCardViewSwitcherForShop wobjects={departmentInfo?.wobjects} />
         </InfiniteSroll>
       )}
     </div>

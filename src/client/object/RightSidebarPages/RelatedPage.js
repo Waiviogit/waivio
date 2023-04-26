@@ -3,21 +3,18 @@ import { useSelector } from 'react-redux';
 import { isEmpty } from 'lodash';
 import InfiniteScroll from 'react-infinite-scroller';
 import Loading from '../../components/Icon/Loading';
-import ObjectCardView from '../../objectCard/ObjectCardView';
-import {
-  getObject,
-  getRelatedObjectsForSidebar,
-} from '../../../store/wObjectStore/wObjectSelectors';
+import { getObject, getRelatedObjectsArray } from '../../../store/wObjectStore/wObjectSelectors';
 import { getObjectsByIds } from '../../../waivioApi/ApiClient';
 import { sortByFieldPermlinksList } from '../../../common/helpers/wObjectHelper';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
+import ObjectCardSwitcher from '../../objectCard/ObjectCardSwitcher';
 
 const limit = 10;
 
 const RelatedPage = () => {
   const [relatedObjects, setRelatedObjects] = useState([]);
   const [hasMore, setHasMore] = useState(false);
-  const objects = useSelector(getRelatedObjectsForSidebar);
+  const objects = useSelector(getRelatedObjectsArray);
   const authUserName = useSelector(getAuthenticatedUserName);
   const wobject = useSelector(getObject);
   const objectsPermlinks = objects?.map(obj => obj.author_permlink);
@@ -38,7 +35,7 @@ const RelatedPage = () => {
         setHasMore(res.hasMore);
       });
     }
-  }, [wobject.author_permlink, relatedObjects.length]);
+  }, [wobject.author_permlink, relatedPermlinks.length]);
 
   const loadMoreRelatedObjects = () => {
     getObjectsByIds({
@@ -62,7 +59,7 @@ const RelatedPage = () => {
         hasMore={hasMore}
       >
         {sortedRelatedObjects?.map(obj => (
-          <ObjectCardView key={obj._id} wObject={obj} showHeart />
+          <ObjectCardSwitcher key={obj._id} wObj={obj} />
         ))}
       </InfiniteScroll>
     </>

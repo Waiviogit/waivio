@@ -8,7 +8,6 @@ import { Icon } from 'antd';
 import InfiniteSroll from 'react-infinite-scroller';
 
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
-import ObjectCardView from '../../objectCard/ObjectCardView';
 import EmptyCampaing from '../../statics/EmptyCampaing';
 import Loading from '../../components/Icon/Loading';
 import useQuery from '../../../hooks/useQuery';
@@ -18,6 +17,7 @@ import {
   getLastPermlinksFromHash,
   getPermlinksFromHash,
 } from '../../../common/helpers/wObjectHelper';
+import ObjCardListViewSwitcherForShop from '../../social-gifts/ShopObjectCard/ObjCardViewSwitcherForShop';
 
 import './ShopList.less';
 
@@ -74,6 +74,7 @@ const ShopList = ({ userName, path, getShopFeed }) => {
 
     return `${path}/${name}`;
   };
+
   const loadMore = () => {
     if (department === activeCrumb?.name || !department) {
       getShopFeed(
@@ -113,9 +114,7 @@ const ShopList = ({ userName, path, getShopFeed }) => {
                   <Link to={getPath(dep.department)} className="ShopList__departments-title">
                     {dep.department} <Icon size={12} type="right" />
                   </Link>
-                  {dep.wobjects.map(wObject => (
-                    <ObjectCardView key={wObject.author_permlink} wObject={wObject} />
-                  ))}
+                  <ObjCardListViewSwitcherForShop wobjects={dep.wobjects} />
                   {dep.hasMore && (
                     <Link className="ShopList__showMore" to={getPath(dep.department)}>
                       Show more {dep.department}

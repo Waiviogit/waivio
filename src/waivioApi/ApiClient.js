@@ -339,7 +339,7 @@ export const searchObjects = (
   if (forParent && typeof forParent === 'string') requestBody.forParent = forParent;
 
   return fetch(`${config.apiPrefix}${config.searchObjects}`, {
-    headers: { ...headers, locale, app: config.appName },
+    headers: { ...headers, locale, follower: body.userName, app: config.appName },
     method: 'POST',
     body: JSON.stringify(requestBody),
     ...(abortController && { signal: abortController.signal }),
@@ -2072,7 +2072,7 @@ export const checkUserInObjWhiteList = userName => {
   })
     .then(handleErrors)
     .then(res => res.json())
-    .then(response => response.result)
+    .then(response => response)
     .catch(e => e);
 };
 

@@ -91,11 +91,8 @@ export default {
   CreateWebsite: loableComponent(import('../client/websites/WebsiteTools/Create/CreateWebsite')),
   ManageWebsite: loableComponent(import('../client/websites/WebsiteTools/Manage/ManageWebsite')),
   ReportsWebsite: loableComponent(import('../client/websites/WebsiteTools/Reports/ReportsWebsite')),
-  WebsitesConfigurations: loableComponent(
-    import('../client/websites/WebsiteTools/Configuration/WebsitesConfigurations'),
-  ),
-  ShopWebsiteConfigurations: loableComponent(
-    import('../client/websites/WebsiteTools/Configuration/ShopWebsiteConfigurations'),
+  SwitchConfigPage: loableComponent(
+    import('../client/websites/WebsiteTools/Configuration/SwitchConfigPage'),
   ),
   ReferralDetails: loableComponent(
     import('../client/rewards/ReferralProgram/Details/ReferralDetails'),
@@ -137,6 +134,7 @@ export default {
   OptionsPage: loableComponent(import('../client/object/Options/OptionsPage')),
   GroupIdPage: loableComponent(import('../client/object/GroupId/GroupIdPage')),
   DepartmentsPage: loableComponent(import('../client/object/DepartmentsPage/DepartmentsPage')),
+  WobjSearchPage: loableComponent(import('../client/object/WobjSearchPage/WobjSearchPage')),
   WebsiteSignIn: loableComponent(import(`../client/websites/WebsiteSignIn/WebsiteSignIn`)),
   VipTicketsSetting: loableComponent(import(`../client/settings/Viptickets/VipTicketsSetting`)),
   MatchBotsAuthors: loableComponent(import('../client/rewards/MatchBots/MatchBotsAuthors')),

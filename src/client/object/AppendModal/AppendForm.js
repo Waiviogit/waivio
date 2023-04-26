@@ -507,11 +507,17 @@ class AppendForm extends Component {
           const { typeList, tags, authoritiesList, departmentsArray } = this.state;
           const typeInfo = !isEmpty(typeList) ? `Type: ${typeList.flat()}` : '';
           const departmentsInfo = !isEmpty(departmentsArray[0])
-            ? `, Departments: ${departmentsArray.map(dep => dep.join(' and '))}`
+            ? `${!isEmpty(typeInfo) ? ', ' : ' '}Departments: ${departmentsArray.map(dep =>
+                dep.join(' and '),
+              )}`
             : '';
-          const tagsInfo = !isEmpty(tags) ? `, Tags: ${tags.map(t => t)}` : '';
+          const tagsInfo = !isEmpty(tags)
+            ? `${!isEmpty(departmentsArray[0]) ? ', ' : ' '}Tags: ${tags.map(t => t)}`
+            : '';
           const authoritiesInfo = !isEmpty(authoritiesList)
-            ? `, Authorities: ${authoritiesList.map(user => `@${user.account}`)}`
+            ? `${!isEmpty(tags) ? ', ' : ' '}Authorities: ${authoritiesList.map(
+                user => `@${user.account}`,
+              )}`
             : '';
 
           return `@${author} added ${currentField} (${langReadable}): ${typeInfo}${departmentsInfo}${tagsInfo}${authoritiesInfo}`;
@@ -579,14 +585,14 @@ class AppendForm extends Component {
           }: ${formValues[companyIdFields.companyIdType]}  `;
         case objectFields.productId:
           const imageDescription = formValues[productIdFields.productIdImage]
-            ? `${productIdFields.productIdImage}:  \n ![${productIdFields.productIdImage}](${
+            ? `, ${productIdFields.productIdImage}:  \n ![${productIdFields.productIdImage}](${
                 formValues[productIdFields.productIdImage]
               })`
             : '';
 
           return `@${author} added ${productIdFields.productIdType} (${langReadable}): ${
             formValues[productIdFields.productIdType]
-          }, ${currentField}: ${appendValue}, ${imageDescription}`;
+          }, ${currentField}: ${formValues[productIdFields.productId]}${imageDescription}`;
         case objectFields.menuItem:
           const imageMenuItem = !isEmpty(this.state.currentImages)
             ? `, image: \n ![${objectFields.menuItem}](${this.state?.currentImages[0]?.src})`
@@ -1848,6 +1854,7 @@ class AppendForm extends Component {
               rules: this.getFieldRules(objectFields.objectName),
             })(
               <Input
+                autoFocus
                 className="AppendForm__input"
                 disabled={loading}
                 placeholder={intl.formatMessage({
@@ -2026,6 +2033,7 @@ class AppendForm extends Component {
             <Form.Item>
               {getFieldDecorator(currentField, { rules: this.getFieldRules(currentField) })(
                 <ImageSetter
+                  autoFocus
                   onImageLoaded={this.getImages}
                   onLoadingImage={this.onLoadingImage}
                   isRequired
@@ -2043,6 +2051,7 @@ class AppendForm extends Component {
               rules: this.getFieldRules('objectFields.title'),
             })(
               <Input
+                autoFocus
                 className={classNames('AppendForm__input', {
                   'validation-error': !this.state.isSomeValue,
                 })}
@@ -2151,6 +2160,7 @@ class AppendForm extends Component {
               <>
                 {getFieldDecorator(pinPostFields.postAuthor)(
                   <Input
+                    autoFocus
                     className={classNames('AppendForm__input', {
                       'validation-error': !this.state.isSomeValue,
                     })}
@@ -2208,6 +2218,7 @@ class AppendForm extends Component {
               <>
                 {getFieldDecorator(removePostFields.postAuthor)(
                   <Input
+                    autoFocus
                     className={classNames('AppendForm__input', {
                       'validation-error': !this.state.isSomeValue,
                     })}
@@ -2248,6 +2259,7 @@ class AppendForm extends Component {
               rules: this.getFieldRules(objectFields.departments),
             })(
               <SearchDepartmentAutocomplete
+                autoFocus
                 disabled={loading}
                 handleSelectValue={val =>
                   this.props.form.setFieldsValue({ [this.props.currentField]: val })
@@ -2271,6 +2283,7 @@ class AppendForm extends Component {
                 rules: this.getFieldRules(objectFields.groupId),
               })(
                 <Input
+                  autoFocus
                   className={classNames('AppendForm__input', {
                     'validation-error': !this.state.isSomeValue,
                   })}
@@ -2337,6 +2350,7 @@ class AppendForm extends Component {
                 rules: this.getFieldRules(dimensionsFields.length),
               })(
                 <Input
+                  autoFocus
                   type="number"
                   className={classNames('AppendForm__input', {
                     'validation-error': !this.state.isSomeValue,
@@ -2496,11 +2510,11 @@ class AppendForm extends Component {
                   'validation-error': !this.state.isSomeValue,
                 })}
                 disabled={loading}
-                autoSize={{ minRows: 4, maxRows: 8 }}
                 placeholder={intl.formatMessage({
                   id: 'price_field',
                   defaultMessage: 'Price',
                 })}
+                autoSize={{ minRows: 4, maxRows: 100 }}
               />,
             )}
           </Form.Item>
@@ -2513,6 +2527,7 @@ class AppendForm extends Component {
               rules: this.getFieldRules(objectFields.description),
             })(
               <Input.TextArea
+                autoFocus
                 className={classNames('AppendForm__description-input', {
                   'validation-error': !this.state.isSomeValue,
                 })}
@@ -2684,6 +2699,7 @@ class AppendForm extends Component {
                 rules: this.getFieldRules('websiteFields.title'),
               })(
                 <Input
+                  autoFocus
                   className={classNames('AppendForm__input', {
                     'validation-error': !this.state.isSomeValue,
                   })}
@@ -2792,6 +2808,7 @@ class AppendForm extends Component {
                 rules: this.getFieldRules(objectFields.productIdType),
               })(
                 <Input
+                  autoFocus
                   className={classNames('AppendForm__input', {
                     'validation-error': !this.state.isSomeValue,
                   })}
@@ -2857,6 +2874,7 @@ class AppendForm extends Component {
                 rules: this.getFieldRules(optionsFields.category),
               })(
                 <Input
+                  autoFocus
                   className={classNames('AppendForm__input', {
                     'validation-error': !this.state.isSomeValue,
                   })}
@@ -3022,6 +3040,7 @@ class AppendForm extends Component {
                 rules: this.getFieldRules(weightFields.weight),
               })(
                 <Input
+                  autoFocus
                   type="number"
                   className={classNames('AppendForm__input', {
                     'validation-error': !this.state.isSomeValue,
@@ -3377,6 +3396,7 @@ class AppendForm extends Component {
                 rules: this.getFieldRules(objectFields.rating),
               })(
                 <Input
+                  autoFocus
                   className={classNames('AppendForm__input', {
                     'validation-error': !this.state.isSomeValue,
                   })}
@@ -3473,6 +3493,7 @@ class AppendForm extends Component {
               rules: this.getFieldRules(objectFields.tagCategory),
             })(
               <Input
+                autoFocus
                 className={classNames('AppendForm__input', {
                   'validation-error': !this.state.isSomeValue,
                 })}
@@ -3579,6 +3600,7 @@ class AppendForm extends Component {
               })(
                 <div className="clearfix">
                   <ImageSetter
+                    autoFocus
                     onImageLoaded={this.getImage}
                     onLoadingImage={this.onLoadingImage}
                     isMultiple

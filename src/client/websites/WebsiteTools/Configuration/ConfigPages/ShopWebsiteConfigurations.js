@@ -8,19 +8,20 @@ import { isEmpty, get } from 'lodash';
 import {
   getWebConfiguration,
   saveWebConfiguration,
-} from '../../../../store/websiteStore/websiteActions';
-import Loading from '../../../components/Icon/Loading';
-import { getAuthenticatedUserName } from '../../../../store/authStore/authSelectors';
-import { getUserLocation } from '../../../../store/userStore/userSelectors';
-import { getObjectsMap } from '../../../../store/mapStore/mapSelectors';
+} from '../../../../../store/websiteStore/websiteActions';
+import Loading from '../../../../components/Icon/Loading';
+import { getAuthenticatedUserName } from '../../../../../store/authStore/authSelectors';
+import { getUserLocation } from '../../../../../store/userStore/userSelectors';
+import { getObjectsMap } from '../../../../../store/mapStore/mapSelectors';
 import {
   getConfiguration,
   getWebsiteLoading,
-} from '../../../../store/websiteStore/websiteSelectors';
-import SelectColorBlock from './SelectColorModal/SelectColorModal';
+} from '../../../../../store/websiteStore/websiteSelectors';
+import SelectColorBlock from '../SelectColorModal/SelectColorModal';
 
-import ConfigHeader from './ConfigHeader/ConfigHeader';
-import LogoSettings from './LogoSettings/LogoSettings';
+import ConfigHeader from '../ConfigHeader/ConfigHeader';
+import LogoSettings from '../LogoSettings/LogoSettings';
+import BaseObjSettings from '../BaseObjSettings/BaseObjSettings';
 
 import './WebsitesConfigurations.less';
 
@@ -41,6 +42,7 @@ const ShopWebsiteConfigurations = ({
   const host = match.params.site || '';
   const mobileLogo = get(config, 'mobileLogo');
   const desktopLogo = get(config, 'desktopLogo');
+  const shopSettings = get(config, 'shopSettings', {});
   const header = {
     ...{
       name: host,
@@ -82,6 +84,23 @@ const ShopWebsiteConfigurations = ({
     handleSubmit({
       colors,
     });
+
+  const handleSubmitObjMain = obj => {
+    if (!obj)
+      handleSubmit({
+        shopSettings: {
+          type: '',
+          value: '',
+        },
+      });
+
+    handleSubmit({
+      shopSettings: {
+        type: obj.account ? 'user' : 'object',
+        value: obj.account || obj.author_permlink,
+      },
+    });
+  };
 
   const handleSubmitHeader = headerConfig =>
     handleSubmit({
@@ -177,9 +196,7 @@ const ShopWebsiteConfigurations = ({
                 })}
                 :
               </h3>
-              <div className="WebsitesConfigurations__headers">
-                <b>{header.name}</b> | {header.message}
-              </div>
+              <BaseObjSettings shopSettings={shopSettings} handleSubmit={handleSubmitObjMain} />
               <p>
                 <FormattedMessage
                   id="base_obj_description"

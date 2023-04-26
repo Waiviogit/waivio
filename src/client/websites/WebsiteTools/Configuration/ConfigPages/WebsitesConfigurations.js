@@ -7,36 +7,36 @@ import { Button, Form, Modal, Avatar, message, Icon } from 'antd';
 import { connect } from 'react-redux';
 import { isEmpty, get, map } from 'lodash';
 import { Map } from 'pigeon-maps';
-import SearchObjectsAutocomplete from '../../../components/EditorObject/SearchObjectsAutocomplete';
-import ImageSetter from '../../../components/ImageSetter/ImageSetter';
-import { getObjectName } from '../../../../common/helpers/wObjectHelper';
-import ObjectAvatar from '../../../components/ObjectAvatar';
-import mapProvider from '../../../../common/helpers/mapProvider';
+import SearchObjectsAutocomplete from '../../../../components/EditorObject/SearchObjectsAutocomplete';
+import ImageSetter from '../../../../components/ImageSetter/ImageSetter';
+import { getObjectName } from '../../../../../common/helpers/wObjectHelper';
+import ObjectAvatar from '../../../../components/ObjectAvatar';
+import mapProvider from '../../../../../common/helpers/mapProvider';
 import {
   getCoordinatesForMap,
   getWebConfiguration,
   saveWebConfiguration,
-} from '../../../../store/websiteStore/websiteActions';
-import Loading from '../../../components/Icon/Loading';
-import { getCoordinates } from '../../../../store/userStore/userActions';
-import { getParsedMap } from '../../../components/Maps/mapHelper';
-import CustomMarker from '../../../components/Maps/CustomMarker';
-import { getPropositionsForMap } from '../../../../store/mapStore/mapActions';
-import MapControllers from '../../../widgets/MapControllers/MapControllers';
-import { getAuthenticatedUserName } from '../../../../store/authStore/authSelectors';
-import { getUserLocation } from '../../../../store/userStore/userSelectors';
-import { getObjectsMap } from '../../../../store/mapStore/mapSelectors';
+} from '../../../../../store/websiteStore/websiteActions';
+import Loading from '../../../../components/Icon/Loading';
+import { getCoordinates } from '../../../../../store/userStore/userActions';
+import { getParsedMap } from '../../../../components/Maps/mapHelper';
+import CustomMarker from '../../../../components/Maps/CustomMarker';
+import { getPropositionsForMap } from '../../../../../store/mapStore/mapActions';
+import MapControllers from '../../../../widgets/MapControllers/MapControllers';
+import { getAuthenticatedUserName } from '../../../../../store/authStore/authSelectors';
+import { getUserLocation } from '../../../../../store/userStore/userSelectors';
+import { getObjectsMap } from '../../../../../store/mapStore/mapSelectors';
 import {
   getConfiguration,
   getWebsiteLoading,
-} from '../../../../store/websiteStore/websiteSelectors';
-import SelectColorModal from './SelectColorModal/SelectColorModal';
-import { initialColors } from '../../constants/colors';
-import ConfigHeader from './ConfigHeader/ConfigHeader';
+} from '../../../../../store/websiteStore/websiteSelectors';
+import SelectColorModal from '../SelectColorModal/SelectColorModal';
+import { initialColors } from '../../../constants/colors';
+import ConfigHeader from '../ConfigHeader/ConfigHeader';
 
 import './WebsitesConfigurations.less';
 
-export const WebsitesConfigurations = ({
+const WebsitesConfigurations = ({
   intl,
   loading,
   getWebConfig,
