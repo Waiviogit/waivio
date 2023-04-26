@@ -17,16 +17,13 @@ const ObjectsRelated = ({ currWobject, isCenterContent, getObjectRelated, hasNex
     if (!isEmpty(relatedObjectsPermlinks) || !isEmpty(objectsPermlinks)) {
       getObjectInfo(relatedObjectsPermlinks).then(res => setRelatedObjects(res.wobjects));
     }
-  }, [currWobject.related]);
+  }, [currWobject.related, objects.length]);
 
   const sortedRelatedObjects = sortByFieldPermlinksList(relatedObjectsPermlinks, relatedObjects);
-  const renderedObjects = !isEmpty(currWobject.related)
-    ? [...sortedRelatedObjects, ...objects]
-    : objects;
 
   useEffect(() => {
     getObjectRelated();
-  }, [currWobject.related]);
+  }, [currWobject.related, objects.length]);
 
   const onWheelHandler = () => {
     if (hasNext) {
@@ -36,7 +33,10 @@ const ObjectsRelated = ({ currWobject, isCenterContent, getObjectRelated, hasNex
 
   return (
     <div onWheel={throttle(onWheelHandler, 500)}>
-      <ObjectsRelatedContent isCenterContent={isCenterContent} relatedObjects={renderedObjects} />
+      <ObjectsRelatedContent
+        isCenterContent={isCenterContent}
+        relatedObjects={sortedRelatedObjects}
+      />
     </div>
   );
 };
