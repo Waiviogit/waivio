@@ -11,7 +11,7 @@ const ObjCardListViewSwitcherForShop = ({ wobjects }) => {
   if (isWebsite)
     return (
       <div className="ObjCardListViewSwitcherForShop__departmentsList">
-        {wobjects.map(wObject => (
+        {wobjects?.map(wObject => (
           <ShopObjectCard key={wObject.author_permlink} wObject={wObject} />
         ))}
       </div>
@@ -19,7 +19,7 @@ const ObjCardListViewSwitcherForShop = ({ wobjects }) => {
 
   return (
     <div>
-      {wobjects.map(wObject => (
+      {wobjects?.map(wObject => (
         <ObjectCardSwitcher key={wObject.author_permlink} wObj={wObject} />
       ))}
     </div>
