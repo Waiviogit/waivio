@@ -190,14 +190,16 @@ const GuestSignUpFormContent = ({
           )}
         </Form.Item>
         <Form.Item>
-          <Button
-            type="primary"
-            htmlType="submit"
-            disabled={hasErrors(getFieldsError())}
-            loading={isLoading}
-          >
-            <FormattedMessage id="signup" defaultMessage="Sign up" />
-          </Button>
+          <div className={'GuestSignUpFormContent__submit'}>
+            <Button
+              type="primary"
+              htmlType="submit"
+              disabled={hasErrors(getFieldsError())}
+              loading={isLoading}
+            >
+              <FormattedMessage id="signup" defaultMessage="Sign up" />
+            </Button>
+          </div>
         </Form.Item>
       </Form>
     </div>
