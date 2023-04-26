@@ -81,9 +81,7 @@ const DepartmentsWobjList = ({ getDepartmentsFeed, user }) => {
         <EmptyCampaing emptyMessage={'There are no products available in this department.'} />
       ) : (
         <InfiniteSroll loadMore={loadMore} hasMore={departmentInfo.hasMore}>
-          {departmentInfo?.wobjects?.map(wobj => (
-            <ObjCardViewSwitcherForShop key={wobj.author_permlink} wObject={wobj} />
-          ))}
+          <ObjCardViewSwitcherForShop wobjects={departmentInfo?.wobjects} />
         </InfiniteSroll>
       )}
     </div>
