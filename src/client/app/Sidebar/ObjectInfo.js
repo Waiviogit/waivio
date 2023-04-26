@@ -1324,7 +1324,7 @@ class ObjectInfo extends React.Component {
     return (
       <div ref={this.carouselRef}>
         {!isEditMode && wobject.authors && (
-          <div className="mb3">
+          <div className="mb3 wordBreak">
             By{' '}
             {this.state.authorsArray?.map((a, i) => (
               <span key={this.authorFieldAuthorPermlink(a)}>
