@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Checkbox, Form } from 'antd';
 import { useSelector } from 'react-redux';
-import { round, isEmpty } from 'lodash';
+import { round, isEmpty, debounce } from 'lodash';
 import { FormattedMessage, FormattedNumber, injectIntl } from 'react-intl';
 import RawSlider from '../components/Slider/RawSlider';
 import USDDisplay from '../components/Utils/USDDisplay';
@@ -14,6 +14,7 @@ import { checkUserInObjWhiteList, getUserVoteValueInWaiv } from '../../waivioApi
 import { guestUserRegex } from '../../common/helpers/regexHelpers';
 
 import './LikeSection.less';
+import { getVotePercent } from '../../store/settingsStore/settingsSelectors';
 
 const LikeSection = props => {
   const [sliderVisible, setSliderVisible] = useState();
@@ -22,20 +23,27 @@ const LikeSection = props => {
   const [inWhiteList, setInWhiteList] = useState(false);
   const [minVotePersent, setMinVotePersent] = useState(0);
   const user = useSelector(getAuthenticatedUser);
+  const authUser = useSelector(getAuthenticatedUserName);
+  const defaultPercent = useSelector(getVotePercent);
+  const isGuest = guestUserRegex.test(authUser);
   const { form, intl, disabled } = props;
   const littleVotePower = inWhiteList ? false : voteWorth < 0.001;
-  const authUser = useSelector(getAuthenticatedUserName);
-  const isGuest = guestUserRegex.test(authUser);
 
   useEffect(() => {
-    checkUserInObjWhiteList(authUser).then(res => {
-      setInWhiteList(res.result);
-      setMinVotePersent(res.minWeight / 100);
-    });
+    if (!isGuest) {
+      checkUserInObjWhiteList(authUser).then(res => {
+        setInWhiteList(res.result);
+        setMinVotePersent(res.minWeight / 100);
+        setVotePercent(res.minWeight / 100);
+      });
+    } else {
+      setMinVotePersent(defaultPercent);
+      setVotePercent(defaultPercent);
+    }
   }, []);
 
   useEffect(() => {
-    calculateVoteWorth(votePercent);
+    if (votePercent && !isGuest) calculateVoteWorth(votePercent);
   }, [votePercent]);
 
   const calculateVoteWorth = async value => {
@@ -47,10 +55,14 @@ const LikeSection = props => {
     const roundVoteWorth = round(voteValue, voteValue >= 0.001 ? 3 : 6);
 
     setVoteWorth(roundVoteWorth);
-    setVotePercent(value);
     onVotePercentChange(value, roundVoteWorth);
-    if (!isGuest) form.setFieldsValue({ littleVotePower: inWhiteList ? false : voteWorth < 0.001 });
+    if (!isGuest) form.setFieldsValue({ littleVotePower: inWhiteList ? false : voteValue < 0.001 });
   };
+
+  const changeVotePercent = useCallback(
+    debounce(value => setVotePercent(value), 300),
+    [],
+  );
 
   const handleLikeClick = () => setSliderVisible(!sliderVisible);
 
@@ -98,7 +110,7 @@ const LikeSection = props => {
             <RawSlider
               min={1}
               initialValue={minVotePersent}
-              onChange={calculateVoteWorth}
+              onChange={changeVotePercent}
               disabled={disabled}
               tipFormatter={formatTip}
             />
