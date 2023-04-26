@@ -130,6 +130,7 @@ export default {
   },
   WEBSITES: {
     tabs: [
+      'affiliate',
       'configuration',
       'settings',
       'administrations',

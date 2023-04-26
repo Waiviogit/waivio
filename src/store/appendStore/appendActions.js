@@ -4,7 +4,11 @@ import { createAsyncActionType } from '../../common/helpers/stateHelpers';
 import { getChangedField, getUpdatesList, postAppendWaivioObject } from '../../waivioApi/ApiClient';
 import { followObject, GET_CHANGED_WOBJECT_UPDATE } from '../wObjectStore/wobjActions';
 import { subscribeTypes } from '../../common/constants/blockTypes';
-import { getAuthenticatedUserName, getIsAuthenticated } from '../authStore/authSelectors';
+import {
+  getAuthenticatedUserName,
+  getIsAuthenticated,
+  isGuestUser,
+} from '../authStore/authSelectors';
 
 import { getLocale } from '../settingsStore/settingsSelectors';
 import { getAppendList } from './appendSelectors';
@@ -69,6 +73,7 @@ export const getChangedWobjectField = (
   const state = getState();
   const locale = getLocale(state);
   const voter = getAuthenticatedUserName(state);
+  const isGuest = isGuestUser(state);
   const updatePosts = ['pin'].includes(fieldName);
   const fieldType = isNew ? fieldName : type;
 
@@ -106,17 +111,28 @@ export const getChangedWobjectField = (
     window.scrollTo(0, 0);
   };
 
-  busyAPI.instance.sendAsync(subscribeTypes.subscribeTransactionId, [voter, id]);
-  busyAPI.instance.subscribe((datad, j) => {
-    if (j?.success && j?.permlink === id) {
+  if (isGuest) {
+    setTimeout(() => {
       if (appendObj && updatePosts && !isUpdatesPage) {
         updatePostCallback();
       } else {
         dispatch(getUpdates(authorPermlink, fieldType, 'createdAt', locale));
         subscribeCallback();
       }
-    }
-  });
+    }, 10000);
+  } else {
+    busyAPI.instance.sendAsync(subscribeTypes.subscribeTransactionId, [voter, id]);
+    busyAPI.instance.subscribe((datad, j) => {
+      if (j?.success && j?.permlink === id) {
+        if (appendObj && updatePosts && !isUpdatesPage) {
+          updatePostCallback();
+        } else {
+          dispatch(getUpdates(authorPermlink, fieldType, 'createdAt', locale));
+          subscribeCallback();
+        }
+      }
+    });
+  }
 };
 
 export const VOTE_APPEND = createAsyncActionType('@append/VOTE_APPEND');
@@ -155,6 +171,7 @@ export const voteAppends = (
       if (!authorityField) {
         message.success('Please wait, we are processing your update');
       }
+
       dispatch(
         getChangedWobjectField(
           wobj.author_permlink,
@@ -165,7 +182,7 @@ export const voteAppends = (
           type,
           appendObj,
           isUpdatesPage,
-          res.result.id,
+          res.id || res.result.id,
         ),
       );
     })

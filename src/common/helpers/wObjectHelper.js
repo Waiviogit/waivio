@@ -270,9 +270,9 @@ export const getMenuItems = (wobject, menuType, objType) => {
 };
 
 export const getSortList = (sortedList = {}, itemsList) => {
-  const filtered = itemsList.filter(list => !sortedList?.exclude.includes(list.author_permlink));
+  const filtered = itemsList.filter(list => !sortedList?.exclude?.includes(list.author_permlink));
   const withoutSorting = filtered.filter(
-    list => !sortedList.include.includes(list.author_permlink),
+    list => !sortedList?.include?.includes(list.author_permlink),
   );
 
   const customSort = sortedList.include.reduce((acc, item) => {
