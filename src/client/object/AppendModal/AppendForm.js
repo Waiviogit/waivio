@@ -2514,6 +2514,7 @@ class AppendForm extends Component {
                   id: 'price_field',
                   defaultMessage: 'Price',
                 })}
+                autoSize={{ minRows: 4, maxRows: 100 }}
               />,
             )}
           </Form.Item>
