@@ -45,6 +45,7 @@ const ObjectOfTypePage = props => {
   const [isNotificaion, setNotification] = useState(null);
   const [editorInitialized, setEditorInitialized] = useState(false);
   const currObj = isEmpty(props.nestedWobject) ? wobject : props.nestedWobject;
+  const littleVotePower = form.getFieldValue('littleVotePower');
 
   useEffect(() => {
     if (!isEditMode) {
@@ -268,7 +269,7 @@ const ObjectOfTypePage = props => {
             <div className="object-of-type-page__row align-center">
               <Button
                 htmlType="button"
-                disabled={!content}
+                disabled={littleVotePower || !content}
                 onClick={handleReadyPublishClick}
                 size="large"
               >

@@ -2072,7 +2072,7 @@ export const checkUserInObjWhiteList = userName => {
   })
     .then(handleErrors)
     .then(res => res.json())
-    .then(response => response.result)
+    .then(response => response)
     .catch(e => e);
 };
 

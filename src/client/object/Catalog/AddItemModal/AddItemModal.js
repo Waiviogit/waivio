@@ -140,8 +140,8 @@ class AddItemModal extends Component {
   render() {
     const { isModalOpen, isLoading, selectedItem } = this.state;
     const { intl, wobject, itemsIdsToOmit, form, followingList } = this.props;
-    const { getFieldDecorator } = form;
-
+    const { getFieldDecorator, getFieldValue } = form;
+    const littleVotePower = getFieldValue('littleVotePower');
     const listName = getObjectName(wobject);
     const itemType = ['list'].includes(selectedItem && selectedItem.type)
       ? intl.formatMessage({
@@ -228,7 +228,7 @@ class AddItemModal extends Component {
                   className="modal-content__submit-btn"
                   type="primary"
                   loading={isLoading}
-                  disabled={isLoading}
+                  disabled={littleVotePower || isLoading}
                   onClick={this.handleSubmit}
                 >
                   {intl.formatMessage({
