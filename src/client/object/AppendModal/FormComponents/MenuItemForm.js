@@ -52,6 +52,7 @@ const MenuItemForm = ({
             rules: getFieldRules(menuItemFields.menuItemTitle),
           })(
             <Input
+              autoFocus
               className={classNames('AppendForm__input', {})}
               disabled={loading}
               placeholder={intl.formatMessage({
