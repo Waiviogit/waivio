@@ -928,7 +928,9 @@ export const broadcastGuestOperation = async (operationId, data) => {
       method: 'POST',
       headers: { ...headers, 'access-token': userData.token },
       body: JSON.stringify(body),
-    }).then(res => res);
+    })
+      .then(res => res.json())
+      .then(res => res);
   }
 };
 // endregion

@@ -278,6 +278,11 @@ const routes = {
               component: Views.WebsitesAuthorities,
             },
             {
+              path: '/affiliate',
+              exact: true,
+              component: Views.AffiliateCodes,
+            },
+            {
               path: '/settings',
               exact: true,
               component: Views.WebsitesSettings,
