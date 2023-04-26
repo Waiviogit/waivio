@@ -46,7 +46,7 @@ const DetailsModal = ({
     posts: true,
   });
   const [agreementObjects, setAgreementObjects] = useState([]);
-  const [requiredObject, setRequiredObject] = useState([]);
+  const [requiredObject, setRequiredObject] = useState({});
   const isWidget = new URLSearchParams(history.location.search).get('display');
   const isReserved = new URLSearchParams(location.search).get('toReserved');
   const isWaivio = useSelector(getIsWaivio);
@@ -59,6 +59,8 @@ const DetailsModal = ({
   useEffect(() => {
     if (stringRequiredObj) {
       getObjectInfo([proposition?.requiredObject]).then(res => setRequiredObject(res.wobjects[0]));
+    } else {
+      setRequiredObject(proposition.requiredObject);
     }
     if (!proposition?.reserved) {
       validateEgibilitiesForUser({
