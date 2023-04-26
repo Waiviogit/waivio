@@ -1,9 +1,7 @@
 import React, { useState } from 'react';
 import { Form, Input, Select } from 'antd';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import classNames from 'classnames';
 import PropTypes from 'prop-types';
-
 import { menuItemFields, objectFields } from '../../../../common/constants/listOfFields';
 import ImageSetter from '../../../components/ImageSetter/ImageSetter';
 import SearchObjectsAutocomplete from '../../../components/EditorObject/SearchObjectsAutocomplete';
@@ -53,7 +51,7 @@ const MenuItemForm = ({
           })(
             <Input
               autoFocus
-              className={classNames('AppendForm__input', {})}
+              className="AppendForm__input"
               disabled={loading}
               placeholder={intl.formatMessage({
                 id: 'title',
@@ -116,6 +114,7 @@ const MenuItemForm = ({
               // rules: getFieldRules(menuItemFields.linkToObject),
             })(
               <SearchObjectsAutocomplete
+                autoFocus={false}
                 placeholder={intl.formatMessage({
                   id: 'objects_auto_complete_placeholder',
                   defaultMessage: 'Find objects',
