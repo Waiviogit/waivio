@@ -23,6 +23,8 @@ const DescriptionPage = ({ match }) => {
         top: objectHeaderEl?.offsetHeight,
         behavior: 'smooth',
       });
+    } else {
+      window.scrollTo(0, 0);
     }
 
     if (isEmpty(wobject)) getObject(wobjName).then(res => setWobject(res));
