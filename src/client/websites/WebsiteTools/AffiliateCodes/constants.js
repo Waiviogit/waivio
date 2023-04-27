@@ -19,3 +19,24 @@ export const AMAZON_LINKS_BY_COUNTRY = {
   JP: 'amazon.co.jp',
   AU: 'amazon.com.au',
 };
+
+export const affiliateCodesConfig = [
+  {
+    title: 'Amazon',
+    descriptionIntl: {
+      id: 'amazon_website_serving',
+      defaultMessage:
+        'A distinct Associate ID is necessary for every Amazon website serving a specific region. The system will automatically link affiliate codes to the geographical location of users, subject to certain limitations.',
+    },
+    linksByCountry: AMAZON_LINKS_BY_COUNTRY,
+  },
+  // {
+  //   title: 'Wallmart',
+  //   descriptionIntl: {
+  //     id: 'walmart_description',
+  //     defaultMessage:
+  //       'Each regional Walmart website has its own affiliate program and requires a unique ID, managed by different companies. The system will automatically utilize the code that is most suitable for the user\'s geographical location, subject to some restrictions.',
+  //   },
+  //   linksByCountry: {}
+  // },
+];
