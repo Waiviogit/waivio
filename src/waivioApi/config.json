@@ -62,6 +62,7 @@
   "history": "/history",
   "global": "/global",
   "guestOperations": "/guest_operations",
+  "affiliate": "/affiliate",
   "dashboard": "/dashboard",
   "demoPayables": "/demo_payables",
   "eligible": "/eligible",
