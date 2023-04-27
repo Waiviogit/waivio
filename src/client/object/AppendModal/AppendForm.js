@@ -13,6 +13,7 @@ import {
   trimEnd,
   size,
   debounce,
+  multiply,
 } from 'lodash';
 import uuidv4 from 'uuid/v4';
 import PropTypes from 'prop-types';
@@ -285,7 +286,7 @@ class AppendForm extends Component {
     this.calculateVoteWorth(this.state.votePercent);
   };
 
-  getVote = () => (this.state.votePercent !== null ? this.state.votePercent * 100 : null);
+  getVote = () => (this.state.votePercent !== null ? multiply(this.state.votePercent, 100) : null);
 
   onSubmit = formValues => {
     const { form, wObject } = this.props;
