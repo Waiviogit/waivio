@@ -29,7 +29,7 @@ const WobjReferencePage = () => {
       setHasMore(res.hasMore);
       setWobjects(res.wobjects);
     });
-  }, [wobject.author_permlink]);
+  }, [wobject.author_permlink, type]);
 
   const loadMoreAddOnObjects = () => {
     getReferenceObjectsListByType({
