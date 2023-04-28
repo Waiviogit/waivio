@@ -3,7 +3,7 @@ import { withRouter } from 'react-router';
 import { injectIntl } from 'react-intl';
 import { connect, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
-import { Button, Input } from 'antd';
+import { Button, Input, message } from 'antd';
 import { debounce } from 'lodash';
 
 import {
@@ -64,6 +64,7 @@ export const AffiliateCodes = ({ intl, match, location }) => {
     setSave(true);
     safeAffiliateCodesForWebsite(userName, host, links).then(() => {
       setSave(false);
+      message.success('Affiliate codes updated successfully');
     });
   };
 

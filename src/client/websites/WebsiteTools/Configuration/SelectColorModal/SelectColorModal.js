@@ -9,9 +9,13 @@ const SelectColorBlock = props => {
   const [markerColor, setMarkerColor] = useState('');
   const [textColor, setTextColor] = useState('');
 
-  useEffect(() => {
+  const setDefaultColors = () => {
     setMarkerColor(props.colors.mapMarkerBody || initialColors.marker);
     setTextColor(props.colors.mapMarkerText || initialColors.text);
+  };
+
+  useEffect(() => {
+    setDefaultColors();
   }, []);
 
   const handleChangeMarkerColor = useCallback(
@@ -24,8 +28,7 @@ const SelectColorBlock = props => {
   );
   const handleCancelModal = () => {
     props.setOpenColorsModal(false);
-    setMarkerColor('');
-    setTextColor('');
+    setDefaultColors();
   };
   const handleOkModal = () =>
     props.handleSubmitColors({
@@ -50,8 +53,8 @@ const SelectColorBlock = props => {
           />
           <b>
             {props.intl.formatMessage({
-              id: 'website_colors_marker',
-              defaultMessage: 'Marker color',
+              id: 'website_colors_main',
+              defaultMessage: 'Main color',
             })}
           </b>
         </div>
@@ -63,7 +66,7 @@ const SelectColorBlock = props => {
           <b>
             {props.intl.formatMessage({
               id: 'website_colors_text',
-              defaultMessage: 'Marker text',
+              defaultMessage: 'Text color',
             })}
           </b>
         </div>
@@ -91,8 +94,8 @@ const SelectColorBlock = props => {
         <div className="WebsitesConfigurations__colorsItemForm">
           <b>
             {props.intl.formatMessage({
-              id: 'website_colors_marker',
-              defaultMessage: 'Marker color',
+              id: 'website_colors_main',
+              defaultMessage: 'Main color',
             })}
             :
           </b>{' '}
@@ -106,7 +109,7 @@ const SelectColorBlock = props => {
           <b>
             {props.intl.formatMessage({
               id: 'website_colors_text',
-              defaultMessage: 'Marker text',
+              defaultMessage: 'Text color',
             })}
             :
           </b>{' '}

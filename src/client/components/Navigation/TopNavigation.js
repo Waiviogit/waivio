@@ -41,6 +41,7 @@ const LINKS = {
   NEW_ACCOUNT: '/new-accounts',
   DATA_IMPORT: '/data-import',
   ASIN_SCANER: '/ASIN-scanner',
+  AFFILIAT_CODES: '/affiliate',
   BLOG: '/user-blog',
   FEED: '/feed',
   BLACKLIST: '/blacklist',
