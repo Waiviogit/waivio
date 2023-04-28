@@ -2507,6 +2507,7 @@ class AppendForm extends Component {
               rules: this.getFieldRules(objectFields.price),
             })(
               <Input.TextArea
+                autoFocus
                 className={classNames('AppendForm__input', {
                   'validation-error': !this.state.isSomeValue,
                 })}
