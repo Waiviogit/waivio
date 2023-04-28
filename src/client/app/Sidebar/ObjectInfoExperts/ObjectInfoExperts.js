@@ -9,9 +9,10 @@ import ObjectsAddOn from '../../../components/Sidebar/ObjectsAddOn/ObjectsAddOn'
 import ObjectsSimilar from '../../../components/Sidebar/ObjectsSimilar/ObjectsSimilar';
 import ObjectReference from '../../../components/Sidebar/ObjectReference/ObjectReference';
 import './ObjectInfoExperts.less';
+import { isMobile } from '../../../../common/helpers/apiHelpers';
 
 const ObjectInfoExperts = ({ wobject }) => {
-  const referenceWobjType = ['business', 'person'].includes(wobject.object_type);
+  const referenceWobjType = ['business', 'person'].includes(wobject.object_type) && isMobile();
 
   return (
     <div className="objectInfo">

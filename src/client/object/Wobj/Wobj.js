@@ -26,6 +26,7 @@ import WobjectShopFilter from '../ObjectTypeShop/WobjectShopFilter';
 import ObjectsAddOn from '../../components/Sidebar/ObjectsAddOn/ObjectsAddOn';
 import ObjectsSimilar from '../../components/Sidebar/ObjectsSimilar/ObjectsSimilar';
 import ObjectReference from '../../components/Sidebar/ObjectReference/ObjectReference';
+import { isMobile } from '../../../common/helpers/apiHelpers';
 
 const Wobj = ({
   authenticated,
@@ -50,7 +51,7 @@ const Wobj = ({
   const image = getObjectAvatar(wobject) || DEFAULTS.AVATAR;
   const canonicalUrl = `${appUrl}/object/${match.params.name}`;
   const url = `${appUrl}/object/${match.params.name}`;
-  const referenceWobjType = ['business', 'person'].includes(wobject.object_type);
+  const referenceWobjType = ['business', 'person'].includes(wobject.object_type) && !isMobile();
   const albumsAndImagesCount = wobject.albums_count;
   const address = parseAddress(wobject);
   const titleText = compareObjectTitle(isWaivio, objectName, address, siteName);
