@@ -50,7 +50,7 @@ const Wobj = ({
   const image = getObjectAvatar(wobject) || DEFAULTS.AVATAR;
   const canonicalUrl = `${appUrl}/object/${match.params.name}`;
   const url = `${appUrl}/object/${match.params.name}`;
-  const businessType = wobject.object_type === 'business';
+  const referenceType = ['business', 'person'].includes(wobject.object_type);
   const albumsAndImagesCount = wobject.albums_count;
   const address = parseAddress(wobject);
   const titleText = compareObjectTitle(isWaivio, objectName, address, siteName);
@@ -161,7 +161,7 @@ const Wobj = ({
                   <ObjectsRelated wobject={wobject} />
                   <ObjectsAddOn wobject={wobject} />
                   <ObjectsSimilar wobject={wobject} />
-                  {businessType && <ObjectReference wobject={wobject} />}
+                  {referenceType && <ObjectReference wobject={wobject} />}
                   <ObjectExpertise wobject={wobject} />
                   {wobject.map && <WobjectNearby wobject={wobject} />}
                   <WobjectSidebarFollowers wobject={wobject} />
