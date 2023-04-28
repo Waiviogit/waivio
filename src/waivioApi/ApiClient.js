@@ -3536,6 +3536,35 @@ export const getDepartmentsUserFilters = (userName, path) =>
     .then(posts => posts)
     .catch(error => error);
 
+export const getAffiliateCodesForWebsite = (userName, host) =>
+  fetch(`${config.apiPrefix}${config.sites}${config.affiliate}?userName=${userName}&host=${host}`, {
+    headers: {
+      ...headers,
+      'access-token': Cookie.get('access_token'),
+    },
+    method: 'GET',
+  })
+    .then(res => res.json())
+    .then(res => res)
+    .catch(error => error);
+
+export const safeAffiliateCodesForWebsite = (userName, host, links) =>
+  fetch(`${config.apiPrefix}${config.sites}${config.affiliate}`, {
+    headers: {
+      ...headers,
+      'access-token': Cookie.get('access_token'),
+    },
+    method: 'PUT',
+    body: JSON.stringify({
+      userName,
+      host,
+      links,
+    }),
+  })
+    .then(res => res.json())
+    .then(res => res)
+    .catch(error => error);
+
 export const getReferenceObjectsList = ({ authorPermlink, userName, locale }) =>
   fetch(`${config.apiPrefix}${config.shop}${config.getObjects}${config.reference}`, {
     headers: { ...headers, follower: userName, locale },

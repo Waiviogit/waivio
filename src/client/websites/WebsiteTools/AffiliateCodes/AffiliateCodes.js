@@ -1,156 +1,111 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { withRouter } from 'react-router';
-import { FormattedMessage, injectIntl } from 'react-intl';
-import { Button, message } from 'antd';
-import { connect } from 'react-redux';
+import { injectIntl } from 'react-intl';
+import { connect, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
-import { isEmpty } from 'lodash';
-import classNames from 'classnames';
+import { Button, Input } from 'antd';
+import { debounce } from 'lodash';
 
 import {
   addWebAdministrator,
   deleteWebAdministrator,
   getWebAdministrators,
 } from '../../../../store/websiteStore/websiteActions';
-import SearchUsersAutocomplete from '../../../components/EditorUser/SearchUsersAutocomplete';
-import Avatar from '../../../components/Avatar';
-import SelectUserForAutocomplete from '../../../widgets/SelectUserForAutocomplete';
-import WeightTag from '../../../components/WeightTag';
 import {
   getAdministrators,
   getWebsiteLoading,
 } from '../../../../store/websiteStore/websiteSelectors';
+import { affiliateCodesConfig } from './constants';
+import {
+  getAffiliateCodesForWebsite,
+  safeAffiliateCodesForWebsite,
+} from '../../../../waivioApi/ApiClient';
+import { getAuthenticatedUserName } from '../../../../store/authStore/authSelectors';
 
-export const AffiliateCodes = ({
-  getWebAdmins,
-  match,
-  admins,
-  intl,
-  addWebAdmins,
-  deleteWebAdmins,
-  isLoading,
-  location,
-}) => {
-  const [selectUser, setSelectUser] = useState('');
-  const [searchString, setSearchString] = useState('');
+import './AffiliateCodes.less';
+
+export const AffiliateCodes = ({ intl, match, location }) => {
+  const userName = useSelector(getAuthenticatedUserName);
   const host = match.params.site;
-  const emptyAdmins = isEmpty(admins);
-  const adminsClassList = classNames('WebsitesAdministrators__user-table', {
-    'WebsitesAdministrators__table-empty': emptyAdmins,
-  });
-
-  const addAdmin = () => {
-    if (admins.includes(selectUser.name)) {
-      message.error('This user in admins list');
-    } else {
-      addWebAdmins(host, selectUser);
-      setSearchString('');
-    }
-  };
+  const [links, setLinks] = useState([]);
+  const [save, setSave] = useState(false);
 
   useEffect(() => {
-    getWebAdmins(host);
+    getAffiliateCodesForWebsite(userName, host).then(res => {
+      setLinks(
+        res.links.map(link => ({
+          affiliateCode: link.affiliateCode,
+          countryCode: link.countryCode,
+          host: link.host,
+          type: link.type,
+        })),
+      );
+    });
   }, [location.pathname]);
 
-  useEffect(() => {
-    if (!isLoading) {
-      setSelectUser(null);
-    }
-  }, [isLoading]);
+  const handleLinkChange = useCallback(
+    debounce((type, countryCode, value) => {
+      const copyLinks = [...links];
+      const findedIndx = copyLinks.findIndex(
+        link => link.type === type && link.countryCode === countryCode,
+      );
+
+      copyLinks.splice(findedIndx, 1, {
+        ...copyLinks[findedIndx],
+        affiliateCode: value,
+      });
+
+      setLinks(copyLinks);
+    }, 300),
+    [links],
+  );
+
+  const saveAffiliate = () => {
+    setSave(true);
+    safeAffiliateCodesForWebsite(userName, host, links).then(() => {
+      setSave(false);
+    });
+  };
 
   return (
-    <div className="WebsitesAdministrators">
-      <h1>
-        <FormattedMessage id="affiliate_codes" defaultMessage="Affiliate codes" />
+    <div className="AffiliateCodes">
+      <h1 className="AffiliateCodes__mainTitle">
+        {intl.formatMessage({
+          id: 'affiliate_codes',
+          defaultMessage: 'Affiliate codes',
+        })}
       </h1>
-      <h2>Amazon</h2>
-      <p>
-        {intl.formatMessage({
-          id: 'amazon_website_serving',
-          defaultMessage:
-            'A distinct Associate ID is necessary for every Amazon website serving a specific region. The system will automatically link affiliate codes to the geographical location of users, subject to certain limitations.',
-        })}
-      </p>
-      <p>
-        {intl.formatMessage({
-          id: 'certain_objects_appear',
-          defaultMessage:
-            'But sometimes it is essential that certain objects appear on the website exactly as intended by the site operators. To do this, the website owner may grant administrative privileges to some Hive users.',
-        })}
-      </p>
-      <p>
-        {intl.formatMessage({
-          id: 'admin_rules',
-          defaultMessage:
-            'Administrators have a deciding right to approve or reject object updates on the website. If several administrators vote on the same update, only the last vote stands.',
-        })}
-      </p>
-      <h3>
-        <FormattedMessage
-          id="grant_administrative_privileges"
-          defaultMessage="Grant administrative privileges:"
-        />
-      </h3>
-      <div className="WebsitesAdministrators__search-user">
-        {selectUser ? (
-          <SelectUserForAutocomplete
-            account={selectUser.name}
-            resetUser={() => setSelectUser(null)}
-          />
-        ) : (
-          <SearchUsersAutocomplete
-            handleSelect={({ account, wobjects_weight: weight }) =>
-              setSelectUser({
-                name: account,
-                wobjects_weight: weight,
-              })
-            }
-            searchString={searchString}
-            setSearchString={setSearchString}
-            style={{ width: '100%' }}
-          />
-        )}
-      </div>
-
-      <Button
-        className="WebsitesAdministrators__add-button"
-        type="primary"
-        onClick={addAdmin}
-        disabled={!selectUser}
-        loading={isLoading}
-      >
-        <FormattedMessage id="add" defaultMessage="Add" />
+      {affiliateCodesConfig.map(affiliate => (
+        <div className="AffiliateCodes__block" key={affiliate.title}>
+          <h3 className="AffiliateCodes__title">{affiliate.title}</h3>
+          <p>{intl.formatMessage(affiliate.descriptionIntl)}</p>
+          <div className="AffiliateCodes__list">
+            {links.map(link => (
+              <div key={link[1]}>
+                <h3>{affiliate.linksByCountry[link.countryCode]}:</h3>
+                <Input
+                  onChange={e =>
+                    handleLinkChange(
+                      affiliate.title.toLowerCase(),
+                      link.countryCode,
+                      e.target.value,
+                    )
+                  }
+                  defaultValue={link.affiliateCode}
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+      ))}
+      <Button loading={save} onClick={saveAffiliate} type="primary">
+        Save
       </Button>
-      <h3>
-        <FormattedMessage id="website_administrators" defaultMessage="Website administrators" />:
-      </h3>
-      <div className={adminsClassList}>
-        {emptyAdmins ? (
-          <FormattedMessage id={'web_admins_empty'} defaultMessage={'No administrators added.'} />
-        ) : (
-          admins.map(({ name, _id: id, wobjects_weight: weight, loading }) => (
-            <div key={id} className="WebsitesAdministrators__user">
-              <span className="WebsitesAdministrators__user-info">
-                <Avatar size={50} username={name} />
-                <span>{name}</span>
-                <WeightTag weight={weight} />
-              </span>
-              <Button type="primary" onClick={() => deleteWebAdmins(host, name)} loading={loading}>
-                <FormattedMessage id="delete" defaultMessage="Delete" />
-              </Button>
-            </div>
-          ))
-        )}
-      </div>
     </div>
   );
 };
 
 AffiliateCodes.propTypes = {
-  getWebAdmins: PropTypes.func.isRequired,
-  addWebAdmins: PropTypes.func.isRequired,
-  deleteWebAdmins: PropTypes.func.isRequired,
-  admins: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   intl: PropTypes.shape({
     formatMessage: PropTypes.func,
   }).isRequired,
@@ -159,7 +114,6 @@ AffiliateCodes.propTypes = {
       site: PropTypes.string,
     }),
   }).isRequired,
-  isLoading: PropTypes.bool.isRequired,
   location: PropTypes.shape().isRequired,
 };
 
