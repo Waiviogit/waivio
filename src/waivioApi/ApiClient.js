@@ -650,6 +650,7 @@ export const getSearchResult = (
   user,
   locale,
   abortController,
+  onlyObjectTypes,
 ) =>
   fetch(`${config.apiPrefix}${config.generalSearch}`, {
     headers: {
@@ -660,7 +661,7 @@ export const getSearchResult = (
       locale,
     },
     method: 'POST',
-    body: JSON.stringify({ string, userLimit, wobjectsLimit, objectTypesLimit }),
+    body: JSON.stringify({ string, userLimit, wobjectsLimit, objectTypesLimit, onlyObjectTypes }),
     ...(abortController && { signal: abortController.signal }),
   })
     .then(res => res.json())
