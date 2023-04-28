@@ -451,6 +451,11 @@ const routes = {
           component: Views.RelatedPage,
         },
         {
+          path: '/(products|books)',
+          exact: true,
+          component: Views.WobjProductsPage,
+        },
+        {
           path: '/search/:searchStr',
           exact: true,
           component: Views.WobjSearchPage,

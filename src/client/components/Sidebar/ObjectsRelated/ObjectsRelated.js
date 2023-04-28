@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { isEmpty, throttle } from 'lodash';
 import PropTypes from 'prop-types';
+import { FormattedMessage } from 'react-intl';
 import { getObjectInfo } from '../../../../waivioApi/ApiClient';
-import ObjectsRelatedContent from './ObjectsRelatedContent';
 import { sortByFieldPermlinksList } from '../../../../common/helpers/wObjectHelper';
 import './ObjectsRelated.less';
+import ObjectsSidebarTablesContent from '../ObjectSidebarTablesContent/ObjectSidebarTablesContent';
 
 const ObjectsRelated = ({ currWobject, isCenterContent, getObjectRelated, hasNext, objects }) => {
   const [relatedObjects, setRelatedObjects] = useState([]);
@@ -12,6 +13,9 @@ const ObjectsRelated = ({ currWobject, isCenterContent, getObjectRelated, hasNex
   const relatedObjectsPermlinks = !isEmpty(currWobject.related)
     ? [...currWobject?.related?.map(obj => obj.body), ...objectsPermlinks]
     : objectsPermlinks;
+  const title = <FormattedMessage id="related_to_object" defaultMessage="Related" />;
+  const linkTo = `/object/${currWobject.author_permlink}/related`;
+  const icon = <i className="iconfont icon-link SidebarContentBlock__icon" />;
 
   useEffect(() => {
     if (!isEmpty(relatedObjectsPermlinks) || !isEmpty(objectsPermlinks)) {
@@ -33,9 +37,12 @@ const ObjectsRelated = ({ currWobject, isCenterContent, getObjectRelated, hasNex
 
   return (
     <div onWheel={throttle(onWheelHandler, 500)}>
-      <ObjectsRelatedContent
+      <ObjectsSidebarTablesContent
         isCenterContent={isCenterContent}
-        relatedObjects={sortedRelatedObjects}
+        objects={sortedRelatedObjects}
+        title={title}
+        linkTo={linkTo}
+        icon={icon}
       />
     </div>
   );
