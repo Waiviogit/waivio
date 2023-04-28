@@ -201,5 +201,7 @@
   "newsfeed": "/newsfeed",
   "options": "/options",
   "authorityFields": "/authority-fields",
-  "groupId": "/group-Id"
+  "groupId": "/group-Id",
+  "reference": "/reference",
+  "type": "/type"
 }
