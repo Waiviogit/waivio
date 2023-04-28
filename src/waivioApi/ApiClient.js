@@ -3536,4 +3536,38 @@ export const getDepartmentsUserFilters = (userName, path) =>
     .then(posts => posts)
     .catch(error => error);
 
+export const getReferenceObjectsList = ({ authorPermlink, userName, locale }) =>
+  fetch(`${config.apiPrefix}${config.shop}${config.getObjects}${config.reference}`, {
+    headers: { ...headers, follower: userName, locale },
+    method: 'POST',
+    body: JSON.stringify({
+      authorPermlink,
+    }),
+  })
+    .then(res => res.json())
+    .then(r => r)
+    .catch(error => error);
+
+export const getReferenceObjectsListByType = ({
+  authorPermlink,
+  type,
+  skip,
+  limit = 10,
+  userName,
+  locale,
+}) =>
+  fetch(`${config.apiPrefix}${config.shop}${config.getObjects}${config.reference}${config.type}`, {
+    headers: { ...headers, follower: userName, locale },
+    method: 'POST',
+    body: JSON.stringify({
+      authorPermlink,
+      referenceObjectType: type,
+      skip,
+      limit,
+    }),
+  })
+    .then(res => res.json())
+    .then(r => r)
+    .catch(error => error);
+
 export default null;

@@ -7,7 +7,7 @@ import ObjectExpertise from '../../../components/Sidebar/ObjectExpertise';
 import ObjectsRelated from '../../../components/Sidebar/ObjectsRelated/index';
 import ObjectsAddOn from '../../../components/Sidebar/ObjectsAddOn/ObjectsAddOn';
 import ObjectsSimilar from '../../../components/Sidebar/ObjectsSimilar/ObjectsSimilar';
-
+import ObjectReference from '../../../components/Sidebar/ObjectReference/ObjectReference';
 import './ObjectInfoExperts.less';
 
 const ObjectInfoExperts = ({ wobject }) => (
@@ -20,6 +20,9 @@ const ObjectInfoExperts = ({ wobject }) => (
     </div>
     <div className="objectInfo__related">
       {wobject.author_permlink && <ObjectsSimilar wobject={wobject} isCenterContent />}
+    </div>
+    <div className="objectInfo__related">
+      {wobject.author_permlink && <ObjectReference wobject={wobject} isCenterContent />}
     </div>
     <div className="objectInfo__experts">
       <ObjectExpertise wobject={wobject} isCenterContent />
