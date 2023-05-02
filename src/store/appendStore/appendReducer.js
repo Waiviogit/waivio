@@ -1,4 +1,5 @@
 import * as appendActions from './appendActions';
+import { GET_CHANGED_WOBJECT_UPDATE } from '../wObjectStore/wobjActions';
 
 const defaultState = {
   loading: false,
@@ -65,7 +66,7 @@ export default (state = defaultState, action) => {
       };
     }
 
-    case appendActions.GET_CHANGED_WOBJECT_FIELD.SUCCESS: {
+    case GET_CHANGED_WOBJECT_UPDATE.SUCCESS: {
       const { field } = action.payload;
       const fields = [...state.fields];
 
@@ -84,7 +85,8 @@ export default (state = defaultState, action) => {
       };
     }
 
-    case appendActions.GET_CHANGED_WOBJECT_FIELD.ERROR: {
+    case appendActions.GET_CHANGED_WOBJECT_FIELD.ERROR:
+    case appendActions.GET_CHANGED_WOBJECT_FIELD.SUCCESS: {
       return {
         ...state,
         loading: false,

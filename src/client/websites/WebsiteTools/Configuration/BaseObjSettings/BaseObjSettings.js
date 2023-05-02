@@ -69,7 +69,9 @@ const BaseObjSettings = ({ handleSubmit, intl, shopSettings }) => {
         )}
         <span className="BaseObjSettings__name">{getOptionName(selectedObj)}</span>
       </div>
-      <b className="BaseObjSettings__type">{selectedObj.account ? 'user' : 'object'}</b>
+      <b className="BaseObjSettings__type">
+        {selectedObj.account ? 'user' : selectedObj.object_type}
+      </b>
       <span className="BaseObjSettings__clear" onClick={resetMainObj}>
         <Icon type="close-circle" />
       </span>
@@ -79,6 +81,7 @@ const BaseObjSettings = ({ handleSubmit, intl, shopSettings }) => {
       onSearch={handleAutoCompleteSearch}
       placeholder={'Find object'}
       dropdownClassName={'BaseObjSettings__resultList'}
+      allowClear
       dataSource={
         loading
           ? pendingSearch('', intl)
@@ -94,7 +97,7 @@ const BaseObjSettings = ({ handleSubmit, intl, shopSettings }) => {
                 className={'BaseObjSettings__resulItem'}
               >
                 {o.account ? (
-                  <UserSearchItem user={o} />
+                  <UserSearchItem user={o} withType />
                 ) : (
                   <ObjectSearchCard
                     object={o}
