@@ -82,11 +82,13 @@ const AppendCard = props => {
     const { user } = props;
     const downVotes = getAppendDownvotes(post.active_votes);
     const isReject = post.isReject || some(downVotes, { voter: user.name });
+    const onlyMyLike = isLiked && post.active_votes.length === 1;
+    const voteWeight = onlyMyLike ? 1 : myWeight;
 
     if (isReject) {
       props.voteAppends(post.author, post.permlink, 0, '', false, match.params[0]);
     } else {
-      props.voteAppends(post.author, post.permlink, myWeight, '', false, match.params[0]);
+      props.voteAppends(post.author, post.permlink, voteWeight, '', false, match.params[0]);
     }
   };
 
