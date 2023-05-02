@@ -2176,7 +2176,7 @@
   "remove_modal_info": "The removed post won't show up in the object's feed.",
   "post_permlink": "Post permlink",
   "post_author": "Post author",
-"pinned": "Pinned",
+  "pinned": "Pinned",
  "object_field_shopFilter": "Shop filter",
   "shop": "Shop",
   "add_new_rule": "Add new rule",
@@ -2204,5 +2204,11 @@
   "object_field_addOn": "Add-on",
   "object_field_similar": "Similar",
   "products": "Products",
-  "books": "Books"
+  "books": "Books",
+  "global": "Global",
+  "local": "Local",
+  "for_more_options": "For more options please",
+  "empty_campaign_message": "There are no rewards available for you to claim at this moment.",
+  "account_balance": "Account balance",
+  "note_all_campaign_suspended": "All campaigns will be suspended if accounts payable exceed 30 days"
 }

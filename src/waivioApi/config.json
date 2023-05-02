@@ -203,5 +203,6 @@
   "authorityFields": "/authority-fields",
   "groupId": "/group-Id",
   "reference": "/reference",
-  "type": "/type"
+  "type": "/type",
+  "similar": "/similar"
 }

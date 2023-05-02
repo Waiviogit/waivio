@@ -1,32 +1,32 @@
 import React, { useEffect, useState } from 'react';
-import { isEmpty, get } from 'lodash';
 import PropTypes from 'prop-types';
+import { useSelector } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
 import { Icon } from 'antd';
-import { getObjectInfo } from '../../../../waivioApi/ApiClient';
-import { sortByFieldPermlinksList } from '../../../../common/helpers/wObjectHelper';
+import { getSimilarObjectsFromDepartments } from '../../../../waivioApi/ApiClient';
 import ObjectsSidebarTablesContent from '../ObjectSidebarTablesContent/ObjectSidebarTablesContent';
+import { getAuthenticatedUserName } from '../../../../store/authStore/authSelectors';
+import { getUsedLocale } from '../../../../store/appStore/appSelectors';
 
 const ObjectsSimilar = ({ wobject, isCenterContent }) => {
   const [similarObjects, setSimilarObjects] = useState([]);
-  const similar = get(wobject, 'similar', []);
-  const similarObjectsPermlinks = !isEmpty(similar) ? similar.map(obj => obj.body) : [];
-  const sortedSimilarObjects = sortByFieldPermlinksList(similarObjectsPermlinks, similarObjects);
+  const userName = useSelector(getAuthenticatedUserName);
+  const locale = useSelector(getUsedLocale);
   const title = <FormattedMessage id="object_field_similar" defaultMessage="Similar" />;
   const linkTo = `/object/${wobject.author_permlink}/similar`;
   const icon = <Icon type="block" className="iconfont icon-link SidebarContentBlock__icon" />;
 
   useEffect(() => {
-    if (!isEmpty(similar)) {
-      getObjectInfo(similarObjectsPermlinks).then(res => setSimilarObjects(res.wobjects));
-    }
+    getSimilarObjectsFromDepartments(wobject.author_permlink, userName, locale, 0, 5).then(res =>
+      setSimilarObjects(res.wobjects || []),
+    );
   }, [wobject.similar]);
 
   return (
     <div>
       <ObjectsSidebarTablesContent
         isCenterContent={isCenterContent}
-        objects={sortedSimilarObjects}
+        objects={similarObjects}
         title={title}
         linkTo={linkTo}
         icon={icon}
