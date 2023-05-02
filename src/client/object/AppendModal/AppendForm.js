@@ -13,13 +13,14 @@ import {
   trimEnd,
   size,
   debounce,
-  multiply,
 } from 'lodash';
 import uuidv4 from 'uuid/v4';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
+import BigNumber from 'bignumber.js';
+
 import moment from 'moment';
 import React, { Component } from 'react';
 import { FormattedMessage, injectIntl } from 'react-intl';
@@ -286,7 +287,14 @@ class AppendForm extends Component {
     this.calculateVoteWorth(this.state.votePercent);
   };
 
-  getVote = () => (this.state.votePercent !== null ? multiply(this.state.votePercent, 100) : null);
+  getVote = () =>
+    this.state.votePercent !== null
+      ? Number(
+          BigNumber(this.state.votePercent)
+            .multipliedBy(100)
+            .toFixed(0),
+        )
+      : null;
 
   onSubmit = formValues => {
     const { form, wObject } = this.props;
