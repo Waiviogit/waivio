@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
+import { injectIntl } from 'react-intl';
 
 import SettingsItem from '../components/Navigation/SettingsSidenav/SettingsItem';
 import {
@@ -17,7 +18,7 @@ import { guestUserRegex } from '../../common/helpers/regexHelpers';
 
 import './SideBar.less';
 
-const SideBar = () => {
+const SideBar = ({ intl }) => {
   const isAuth = useSelector(getIsAuthenticated);
   const authUserName = useSelector(getAuthenticatedUserName);
   const isWaivio = useSelector(getIsWaivio);
@@ -74,7 +75,11 @@ const SideBar = () => {
       )}
       {!isAuth && (
         <span>
-          For more options please <ModalSignIn isButton={false} />
+          {intl.formatMessage({
+            id: 'for_more_options',
+            defaultMessage: 'For more options please',
+          })}{' '}
+          <ModalSignIn isButton={false} />
         </span>
       )}
     </ul>
@@ -87,6 +92,9 @@ SideBar.propTypes = {
       site: PropTypes.string,
     }),
   }).isRequired,
+  intl: PropTypes.shape({
+    formatMessage: PropTypes.func,
+  }).isRequired,
 };
 
-export default SideBar;
+export default injectIntl(SideBar);
