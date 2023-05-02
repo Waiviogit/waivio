@@ -3581,7 +3581,7 @@ export const getReferenceObjectsListByType = ({
   authorPermlink,
   type,
   skip,
-  limit = 10,
+  limit = 15,
   userName,
   locale,
 }) =>
