@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroller';
 import { useSelector } from 'react-redux';
 import { useRouteMatch } from 'react-router';
+import { isEmpty } from 'lodash';
 import { getObject } from '../../../store/wObjectStore/wObjectSelectors';
 import Loading from '../../components/Icon/Loading';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
@@ -19,23 +20,25 @@ const WobjReferencePage = () => {
   const type = match.params[0].slice(0, -1);
 
   useEffect(() => {
-    getReferenceObjectsListByType({
-      authorPermlink: wobject.author_permlink,
-      type,
-      skip: 0,
-      userName,
-      locale,
-    }).then(res => {
-      setHasMore(res.hasMore);
-      setWobjects(res.wobjects);
-    });
+    if (!isEmpty(wobject.author_permlink)) {
+      getReferenceObjectsListByType({
+        authorPermlink: wobject.author_permlink,
+        type,
+        skip: 0,
+        userName,
+        locale,
+      }).then(res => {
+        setHasMore(res.hasMore);
+        setWobjects(res.wobjects);
+      });
+    }
   }, [wobject.author_permlink, type]);
 
   const loadMoreAddOnObjects = () => {
     getReferenceObjectsListByType({
       authorPermlink: wobject.author_permlink,
       type,
-      skip: wobjects.length,
+      skip: wobjects?.length,
       userName,
       locale,
     }).then(res => {
