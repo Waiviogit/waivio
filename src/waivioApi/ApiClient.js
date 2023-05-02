@@ -3600,4 +3600,32 @@ export const getReferenceObjectsListByType = ({
     .then(r => r)
     .catch(error => error);
 
+export const getRelatedObjectsFromDepartments = (authorPermlink, userName, locale, skip, limit) =>
+  fetch(`${config.apiPrefix}${config.shop}${config.getObjects}${config.related}`, {
+    headers: { ...headers, follower: userName, locale },
+    method: 'POST',
+    body: JSON.stringify({
+      authorPermlink,
+      skip,
+      limit,
+    }),
+  })
+    .then(res => res.json())
+    .then(r => r)
+    .catch(error => error);
+
+export const getSimilarObjectsFromDepartments = (authorPermlink, userName, locale, skip, limit) =>
+  fetch(`${config.apiPrefix}${config.shop}${config.getObjects}${config.similar}`, {
+    headers: { ...headers, follower: userName, locale },
+    method: 'POST',
+    body: JSON.stringify({
+      authorPermlink,
+      skip,
+      limit,
+    }),
+  })
+    .then(res => res.json())
+    .then(r => r)
+    .catch(error => error);
+
 export default null;

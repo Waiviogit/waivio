@@ -2,11 +2,11 @@ import React, { useEffect, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroller';
 import { useSelector } from 'react-redux';
 import { getObject } from '../../../store/wObjectStore/wObjectSelectors';
-import { getObjectsByIds } from '../../../waivioApi/ApiClient';
+import { getSimilarObjectsFromDepartments } from '../../../waivioApi/ApiClient';
 import Loading from '../../components/Icon/Loading';
-import { sortByFieldPermlinksList } from '../../../common/helpers/wObjectHelper';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 import ObjectCardSwitcher from '../../objectCard/ObjectCardSwitcher';
+import { getUsedLocale } from '../../../store/appStore/appSelectors';
 
 const limit = 10;
 
@@ -14,29 +14,26 @@ const SimilarPage = () => {
   const [similarObjects, setSimilarObjects] = useState([]);
   const [hasMore, setHasMore] = useState(false);
   const wobject = useSelector(getObject);
-  const authUserName = useSelector(getAuthenticatedUserName);
-  const similarPermlinks = wobject?.similar?.map(obj => obj.body);
-  const sortedSimilarObjects = sortByFieldPermlinksList(similarPermlinks, similarObjects);
+  const userName = useSelector(getAuthenticatedUserName);
+  const locale = useSelector(getUsedLocale);
 
   useEffect(() => {
-    getObjectsByIds({
-      authorPermlinks: similarPermlinks,
-      authUserName,
-      limit,
-      skip: 0,
-    }).then(res => {
-      setSimilarObjects(res.wobjects);
-      setHasMore(res.hasMore);
-    });
+    getSimilarObjectsFromDepartments(wobject.author_permlink, userName, locale, 0, limit).then(
+      res => {
+        setSimilarObjects(res.wobjects);
+        setHasMore(res.hasMore);
+      },
+    );
   }, [wobject.author_permlink]);
 
   const loadMoreAddOnObjects = () => {
-    getObjectsByIds({
-      authorPermlinks: similarPermlinks,
-      authUserName,
+    getSimilarObjectsFromDepartments(
+      wobject.author_permlink,
+      userName,
+      locale,
+      similarObjects.length,
       limit,
-      skip: similarObjects.length,
-    }).then(res => {
+    ).then(res => {
       setSimilarObjects([...similarObjects, ...res.wobjects]);
       setHasMore(res.hasMore);
     });
@@ -51,7 +48,7 @@ const SimilarPage = () => {
         initialLoad={false}
         hasMore={hasMore}
       >
-        {sortedSimilarObjects?.map(obj => (
+        {similarObjects?.map(obj => (
           <ObjectCardSwitcher key={obj._id} wObj={obj} />
         ))}
       </InfiniteScroll>

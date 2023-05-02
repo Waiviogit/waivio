@@ -1,33 +1,37 @@
 import React, { useEffect, useState } from 'react';
-import { isEmpty, throttle } from 'lodash';
+import { throttle } from 'lodash';
 import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
-import { getObjectInfo } from '../../../../waivioApi/ApiClient';
-import { sortByFieldPermlinksList } from '../../../../common/helpers/wObjectHelper';
-import './ObjectsRelated.less';
+import { useSelector } from 'react-redux';
+import { getAuthenticatedUserName } from '../../../../store/authStore/authSelectors';
+import { getRelatedObjectsFromDepartments } from '../../../../waivioApi/ApiClient';
 import ObjectsSidebarTablesContent from '../ObjectSidebarTablesContent/ObjectSidebarTablesContent';
+import './ObjectsRelated.less';
+import { getUsedLocale } from '../../../../store/appStore/appSelectors';
 
 const ObjectsRelated = ({ currWobject, isCenterContent, getObjectRelated, hasNext, objects }) => {
   const [relatedObjects, setRelatedObjects] = useState([]);
-  const objectsPermlinks = objects?.map(obj => obj.author_permlink);
-  const relatedObjectsPermlinks = !isEmpty(currWobject.related)
-    ? [...currWobject?.related?.map(obj => obj.body), ...objectsPermlinks]
-    : objectsPermlinks;
+  const userName = useSelector(getAuthenticatedUserName);
+  const locale = useSelector(getUsedLocale);
   const title = <FormattedMessage id="related_to_object" defaultMessage="Related" />;
   const linkTo = `/object/${currWobject.author_permlink}/related`;
   const icon = <i className="iconfont icon-link SidebarContentBlock__icon" />;
 
   useEffect(() => {
-    if (!isEmpty(relatedObjectsPermlinks) || !isEmpty(objectsPermlinks)) {
-      getObjectInfo(relatedObjectsPermlinks).then(res => setRelatedObjects(res.wobjects));
-    }
-  }, [currWobject.related, objects.length]);
+    getRelatedObjectsFromDepartments(
+      currWobject.author_permlink,
+      userName,
+      locale,
+      0,
+      5,
+    ).then(res => setRelatedObjects(res.wobjects || []));
+  }, [currWobject.related]);
 
-  const sortedRelatedObjects = sortByFieldPermlinksList(relatedObjectsPermlinks, relatedObjects);
+  const sortedRelatedObjects = [...relatedObjects, ...objects];
 
   useEffect(() => {
     getObjectRelated();
-  }, [currWobject.related, objects.length]);
+  }, [currWobject.related]);
 
   const onWheelHandler = () => {
     if (hasNext) {
