@@ -48,7 +48,7 @@ export const searchAutoComplete = (
   wobjectsLimi,
   objectTypesLimit,
   withController,
-  onlyObjectTypes = [],
+  onlyObjectTypes = undefined,
 ) => (dispatch, getState) => {
   const state = getState();
   const searchString = replacer(search);
