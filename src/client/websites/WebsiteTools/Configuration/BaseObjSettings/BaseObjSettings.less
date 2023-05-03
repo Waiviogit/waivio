@@ -16,10 +16,27 @@
     align-items: center;
   }
 
+  &__resultList {
+    .BaseObjSettings__resulItem {
+      transition: 0.5s;
+      border-bottom: @base-border;
+      background: @white;
+      font-weight: 800;
+
+      &:hover {
+        //background: tan;
+      }
+    }
+  }
+
   &__clear {
     position: absolute;
     top: -5px;
     right: 5px;
+
+    &:hover {
+      cursor: pointer;
+    }
   }
 
   &__type {
@@ -28,5 +45,6 @@
 
   &__name {
     margin-left: 10px;
+    line-height: 20px;
   }
 }

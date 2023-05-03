@@ -650,6 +650,7 @@ export const getSearchResult = (
   user,
   locale,
   abortController,
+  onlyObjectTypes,
 ) =>
   fetch(`${config.apiPrefix}${config.generalSearch}`, {
     headers: {
@@ -660,7 +661,7 @@ export const getSearchResult = (
       locale,
     },
     method: 'POST',
-    body: JSON.stringify({ string, userLimit, wobjectsLimit, objectTypesLimit }),
+    body: JSON.stringify({ string, userLimit, wobjectsLimit, objectTypesLimit, onlyObjectTypes }),
     ...(abortController && { signal: abortController.signal }),
   })
     .then(res => res.json())
@@ -3534,6 +3535,97 @@ export const getDepartmentsUserFilters = (userName, path) =>
   })
     .then(res => res.json())
     .then(posts => posts)
+    .catch(error => error);
+
+export const getAffiliateCodesForWebsite = (userName, host) =>
+  fetch(`${config.apiPrefix}${config.sites}${config.affiliate}?userName=${userName}&host=${host}`, {
+    headers: {
+      ...headers,
+      'access-token': Cookie.get('access_token'),
+    },
+    method: 'GET',
+  })
+    .then(res => res.json())
+    .then(res => res)
+    .catch(error => error);
+
+export const safeAffiliateCodesForWebsite = (userName, host, links) =>
+  fetch(`${config.apiPrefix}${config.sites}${config.affiliate}`, {
+    headers: {
+      ...headers,
+      'access-token': Cookie.get('access_token'),
+    },
+    method: 'PUT',
+    body: JSON.stringify({
+      userName,
+      host,
+      links,
+    }),
+  })
+    .then(res => res.json())
+    .then(res => res)
+    .catch(error => error);
+
+export const getReferenceObjectsList = ({ authorPermlink, userName, locale }) =>
+  fetch(`${config.apiPrefix}${config.shop}${config.getObjects}${config.reference}`, {
+    headers: { ...headers, follower: userName, locale },
+    method: 'POST',
+    body: JSON.stringify({
+      authorPermlink,
+    }),
+  })
+    .then(res => res.json())
+    .then(r => r)
+    .catch(error => error);
+
+export const getReferenceObjectsListByType = ({
+  authorPermlink,
+  type,
+  skip,
+  limit = 15,
+  userName,
+  locale,
+}) =>
+  fetch(`${config.apiPrefix}${config.shop}${config.getObjects}${config.reference}${config.type}`, {
+    headers: { ...headers, follower: userName, locale },
+    method: 'POST',
+    body: JSON.stringify({
+      authorPermlink,
+      referenceObjectType: type,
+      skip,
+      limit,
+    }),
+  })
+    .then(res => res.json())
+    .then(r => r)
+    .catch(error => error);
+
+export const getRelatedObjectsFromDepartments = (authorPermlink, userName, locale, skip, limit) =>
+  fetch(`${config.apiPrefix}${config.shop}${config.getObjects}${config.related}`, {
+    headers: { ...headers, follower: userName, locale },
+    method: 'POST',
+    body: JSON.stringify({
+      authorPermlink,
+      skip,
+      limit,
+    }),
+  })
+    .then(res => res.json())
+    .then(r => r)
+    .catch(error => error);
+
+export const getSimilarObjectsFromDepartments = (authorPermlink, userName, locale, skip, limit) =>
+  fetch(`${config.apiPrefix}${config.shop}${config.getObjects}${config.similar}`, {
+    headers: { ...headers, follower: userName, locale },
+    method: 'POST',
+    body: JSON.stringify({
+      authorPermlink,
+      skip,
+      limit,
+    }),
+  })
+    .then(res => res.json())
+    .then(r => r)
     .catch(error => error);
 
 export default null;

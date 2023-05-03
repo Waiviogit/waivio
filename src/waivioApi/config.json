@@ -62,6 +62,7 @@
   "history": "/history",
   "global": "/global",
   "guestOperations": "/guest_operations",
+  "affiliate": "/affiliate",
   "dashboard": "/dashboard",
   "demoPayables": "/demo_payables",
   "eligible": "/eligible",
@@ -200,5 +201,8 @@
   "newsfeed": "/newsfeed",
   "options": "/options",
   "authorityFields": "/authority-fields",
-  "groupId": "/group-Id"
+  "groupId": "/group-Id",
+  "reference": "/reference",
+  "type": "/type",
+  "similar": "/similar"
 }

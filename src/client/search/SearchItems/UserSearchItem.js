@@ -1,22 +1,38 @@
 import { FormattedMessage } from 'react-intl';
 import React from 'react';
+import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import Avatar from '../../components/Avatar';
 import WeightTag from '../../components/WeightTag';
 
-const UserSearchItem = ({ user }) => {
+const UserSearchItem = ({ user, withType }) => {
   if (!user) return null;
+  const wrapClassList = classNames({
+    Topnav__wrapWithType: withType,
+  });
 
   return (
     <React.Fragment>
-      <div className="Topnav__search-content-wrap">
-        <Avatar username={user.account} size={40} />
-        <div className="Topnav__search-content">{user.account}</div>
-        <span className="Topnav__search-expertize">
-          <WeightTag weight={user.wobjects_weight} />
-          &middot;
-          <span className="Topnav__search-follow-counter">{user.followers_count}</span>
-        </span>
+      <div className={wrapClassList}>
+        <div className="Topnav__search-content-wrap">
+          <Avatar username={user.account} size={40} />
+          <div className="Topnav__search-content">{user.account}</div>
+          <span className="Topnav__search-expertize">
+            <WeightTag weight={user.wobjects_weight} />
+            &middot;
+            <span className="Topnav__search-follow-counter">{user.followers_count}</span>
+          </span>
+        </div>
+        {withType && (
+          <b
+            style={{
+              color: '#99aab5',
+              fontSize: 'small',
+            }}
+          >
+            user
+          </b>
+        )}
       </div>
       <div className="Topnav__search-content-small">
         {user.youFollows && !user.followsYou && (
@@ -41,6 +57,7 @@ UserSearchItem.propTypes = {
     wobjects_weight: PropTypes.number,
     account: PropTypes.string,
   }).isRequired,
+  withType: PropTypes.bool,
 };
 
 export default UserSearchItem;

@@ -151,7 +151,12 @@ const LocalRewardsList = ({ withoutFilters, intl }) => {
     <div className="RewardLists">
       <div className="RewardLists__feed">
         <FiltersForMobile setVisible={setVisible} />
-        <h2 className="RewardLists__title">{isLocation ? 'Local' : 'Global'} rewards</h2>
+        <h2 className="RewardLists__title">
+          {isLocation
+            ? intl.formatMessage({ id: 'local', defaultMessage: 'Local' })
+            : intl.formatMessage({ id: 'global', defaultMessage: 'Global' })}{' '}
+          {intl.formatMessage({ id: 'rewards', defaultMessage: 'rewards' })}
+        </h2>
         <ViewMapButton handleClick={() => setShowMap(true)} />
         <SortSelector sort={sort} onChange={setSort}>
           {sortConfig.map(item => (
@@ -160,7 +165,10 @@ const LocalRewardsList = ({ withoutFilters, intl }) => {
         </SortSelector>
         {isEmpty(rewards) ? (
           <EmptyCampaing
-            emptyMessage={'There are no rewards available for you to claim at this moment.'}
+            emptyMessage={intl.formatMessage({
+              id: 'empty_campaign_message',
+              defaultMessage: 'There are no rewards available for you to claim at this moment.',
+            })}
           />
         ) : (
           <ReduxInfiniteScroll

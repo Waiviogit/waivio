@@ -1,29 +1,50 @@
 import React, { useEffect, useState } from 'react';
 import { isEmpty, throttle } from 'lodash';
 import PropTypes from 'prop-types';
-import { getObjectInfo } from '../../../../waivioApi/ApiClient';
-import ObjectsRelatedContent from './ObjectsRelatedContent';
-import { sortByFieldPermlinksList } from '../../../../common/helpers/wObjectHelper';
+import { FormattedMessage } from 'react-intl';
+import { useSelector } from 'react-redux';
+import { getAuthenticatedUserName } from '../../../../store/authStore/authSelectors';
+import { getRelatedObjectsFromDepartments } from '../../../../waivioApi/ApiClient';
+import ObjectsSidebarTablesContent from '../ObjectSidebarTablesContent/ObjectSidebarTablesContent';
 import './ObjectsRelated.less';
+import { getUsedLocale } from '../../../../store/appStore/appSelectors';
 
-const ObjectsRelated = ({ currWobject, isCenterContent, getObjectRelated, hasNext, objects }) => {
+const ObjectsRelated = ({
+  currWobject,
+  isCenterContent,
+  getObjectRelated,
+  hasNext,
+  objects,
+  clearRelateObjects,
+}) => {
   const [relatedObjects, setRelatedObjects] = useState([]);
-  const objectsPermlinks = objects?.map(obj => obj.author_permlink);
-  const relatedObjectsPermlinks = !isEmpty(currWobject.related)
-    ? [...currWobject?.related?.map(obj => obj.body), ...objectsPermlinks]
-    : objectsPermlinks;
+  const userName = useSelector(getAuthenticatedUserName);
+  const locale = useSelector(getUsedLocale);
+  const title = <FormattedMessage id="related_to_object" defaultMessage="Related" />;
+  const linkTo = `/object/${currWobject.author_permlink}/related`;
+  const icon = <i className="iconfont icon-link SidebarContentBlock__icon" />;
 
   useEffect(() => {
-    if (!isEmpty(relatedObjectsPermlinks) || !isEmpty(objectsPermlinks)) {
-      getObjectInfo(relatedObjectsPermlinks).then(res => setRelatedObjects(res.wobjects));
+    if (!isEmpty(currWobject.author_permlink)) {
+      getRelatedObjectsFromDepartments(
+        currWobject.author_permlink,
+        userName,
+        locale,
+        0,
+        5,
+      ).then(res => setRelatedObjects(res.wobjects || []));
     }
-  }, [currWobject.related, objects.length]);
+  }, [currWobject.related, currWobject.author_permlink]);
 
-  const sortedRelatedObjects = sortByFieldPermlinksList(relatedObjectsPermlinks, relatedObjects);
+  const sortedRelatedObjects = [...relatedObjects, ...objects];
 
   useEffect(() => {
     getObjectRelated();
-  }, [currWobject.related, objects.length]);
+
+    return () => {
+      clearRelateObjects();
+    };
+  }, [currWobject.related, currWobject.author_permlink]);
 
   const onWheelHandler = () => {
     if (hasNext) {
@@ -33,9 +54,12 @@ const ObjectsRelated = ({ currWobject, isCenterContent, getObjectRelated, hasNex
 
   return (
     <div onWheel={throttle(onWheelHandler, 500)}>
-      <ObjectsRelatedContent
+      <ObjectsSidebarTablesContent
         isCenterContent={isCenterContent}
-        relatedObjects={sortedRelatedObjects}
+        objects={sortedRelatedObjects}
+        title={title}
+        linkTo={linkTo}
+        icon={icon}
       />
     </div>
   );
@@ -44,6 +68,7 @@ const ObjectsRelated = ({ currWobject, isCenterContent, getObjectRelated, hasNex
 ObjectsRelated.propTypes = {
   currWobject: PropTypes.shape().isRequired,
   getObjectRelated: PropTypes.func.isRequired,
+  clearRelateObjects: PropTypes.func.isRequired,
   isCenterContent: PropTypes.bool,
   hasNext: PropTypes.bool,
   objects: PropTypes.arrayOf(PropTypes.shape()),

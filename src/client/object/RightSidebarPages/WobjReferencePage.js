@@ -1,41 +1,49 @@
 import React, { useEffect, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroller';
 import { useSelector } from 'react-redux';
+import { useRouteMatch } from 'react-router';
+import { isEmpty } from 'lodash';
 import { getObject } from '../../../store/wObjectStore/wObjectSelectors';
-import { getSimilarObjectsFromDepartments } from '../../../waivioApi/ApiClient';
 import Loading from '../../components/Icon/Loading';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 import ObjectCardSwitcher from '../../objectCard/ObjectCardSwitcher';
+import { getReferenceObjectsListByType } from '../../../waivioApi/ApiClient';
 import { getUsedLocale } from '../../../store/appStore/appSelectors';
 
-const limit = 10;
-
-const SimilarPage = () => {
-  const [similarObjects, setSimilarObjects] = useState([]);
+const WobjReferencePage = () => {
+  const [wobjects, setWobjects] = useState([]);
   const [hasMore, setHasMore] = useState(false);
   const wobject = useSelector(getObject);
   const userName = useSelector(getAuthenticatedUserName);
   const locale = useSelector(getUsedLocale);
+  const match = useRouteMatch();
+  const type = match.params[0].slice(0, -1);
 
   useEffect(() => {
-    getSimilarObjectsFromDepartments(wobject.author_permlink, userName, locale, 0, limit).then(
-      res => {
-        setSimilarObjects(res.wobjects);
+    if (!isEmpty(wobject.author_permlink)) {
+      getReferenceObjectsListByType({
+        authorPermlink: wobject.author_permlink,
+        type,
+        skip: 0,
+        userName,
+        locale,
+      }).then(res => {
         setHasMore(res.hasMore);
-      },
-    );
-  }, [wobject.author_permlink]);
+        setWobjects(res.wobjects);
+      });
+    }
+  }, [wobject.author_permlink, type]);
 
   const loadMoreAddOnObjects = () => {
-    getSimilarObjectsFromDepartments(
-      wobject.author_permlink,
+    getReferenceObjectsListByType({
+      authorPermlink: wobject.author_permlink,
+      type,
+      skip: wobjects?.length,
       userName,
       locale,
-      similarObjects.length,
-      limit,
-    ).then(res => {
-      setSimilarObjects([...similarObjects, ...res.wobjects]);
+    }).then(res => {
       setHasMore(res.hasMore);
+      setWobjects([...wobjects, ...res.wobjects]);
     });
   };
 
@@ -48,7 +56,7 @@ const SimilarPage = () => {
         initialLoad={false}
         hasMore={hasMore}
       >
-        {similarObjects?.map(obj => (
+        {wobjects?.map(obj => (
           <ObjectCardSwitcher key={obj._id} wObj={obj} />
         ))}
       </InfiniteScroll>
@@ -56,4 +64,4 @@ const SimilarPage = () => {
   );
 };
 
-export default SimilarPage;
+export default WobjReferencePage;

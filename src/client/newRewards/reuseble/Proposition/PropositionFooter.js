@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Button, Icon } from 'antd';
 import PropTypes from 'prop-types';
 import { isEmpty, noop } from 'lodash';
@@ -110,6 +110,16 @@ const PropositionFooter = ({ type, openDetailsModal, proposition, getProposition
 
   const handleReserveForPopup = () => dispatch(reserveProposition(proposition, authUserName));
 
+  const userCard = useMemo(
+    () => (
+      <div className={'Proposition-new__userCard'}>
+        <Avatar size={24} username={proposition?.userName} />
+        <a href={`/@${proposition?.userName}`}>{proposition?.userName}</a>
+      </div>
+    ),
+    [proposition.userName],
+  );
+
   const getFooter = () => {
     switch (type) {
       case 'reserved':
@@ -132,18 +142,22 @@ const PropositionFooter = ({ type, openDetailsModal, proposition, getProposition
                 )}
                 <RewardsPopover proposition={proposition} getProposition={getProposition} />
               </div>
-              <Button type="primary" onClick={openDetailsModal}>
-                <span className="Proposition-new__yourRewards">
-                  {isWaivio ? (
-                    'Submit'
-                  ) : (
-                    <span>
-                      <b>Submit</b> dish
-                    </span>
-                  )}{' '}
-                  photos
-                </span>
-              </Button>
+              {authUserName === proposition.guideName ? (
+                userCard
+              ) : (
+                <Button type="primary" onClick={openDetailsModal}>
+                  <span className="Proposition-new__yourRewards">
+                    {isWaivio ? (
+                      'Submit'
+                    ) : (
+                      <span>
+                        <b>Submit</b> dish
+                      </span>
+                    )}{' '}
+                    photos
+                  </span>
+                </Button>
+              )}
             </div>
             {showComment &&
               comments.map(comment => (
@@ -185,12 +199,7 @@ const PropositionFooter = ({ type, openDetailsModal, proposition, getProposition
                   type={type}
                 />
               </div>
-              {proposition?.userName && (
-                <div className={'Proposition-new__userCard'}>
-                  <Avatar size={24} username={proposition?.userName} />
-                  <a href={`/@${proposition?.userName}`}>{proposition?.userName}</a>
-                </div>
-              )}
+              {proposition?.userName && userCard}
             </div>
             {!isEmpty(proposition?.fraudCodes) && (
               <div>Codes: {proposition?.fraudCodes.join(', ')}</div>

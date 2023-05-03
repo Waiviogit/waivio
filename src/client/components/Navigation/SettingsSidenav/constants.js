@@ -119,11 +119,6 @@ export const currentWebsiteSettings = site => {
       defaultMessage: 'Authorities',
     },
     {
-      to: `/${site}/objects-filters`,
-      id: 'objects_filters',
-      defaultMessage: 'Objects filters',
-    },
-    {
       to: `/${site}/muted-users`,
       id: 'muted_users',
       defaultMessage: 'Muted users',
@@ -143,6 +138,11 @@ export const currentWebsiteSettings = site => {
       to: `/${site}/objects`,
       id: 'areas',
       defaultMessage: 'Areas',
+    });
+    items.splice(6, 0, {
+      to: `/${site}/objects-filters`,
+      id: 'objects_filters',
+      defaultMessage: 'Objects filters',
     });
   }
 

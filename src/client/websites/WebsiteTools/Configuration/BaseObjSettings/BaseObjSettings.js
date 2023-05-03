@@ -25,11 +25,18 @@ const BaseObjSettings = ({ handleSubmit, intl, shopSettings }) => {
   const autoCompleteSearchResults = useSelector(getAutoCompleteSearchResults);
   const loading = useSelector(getIsStartSearchAutoComplete);
   const [selectedObj, setSelectedObj] = useState(null);
-  const dataSource = isEmpty(autoCompleteSearchResults)
-    ? []
-    : [...autoCompleteSearchResults.users, ...autoCompleteSearchResults.wobjects];
+  const dataSource =
+    isEmpty(autoCompleteSearchResults) || loading
+      ? []
+      : [...autoCompleteSearchResults.users, ...autoCompleteSearchResults.wobjects].filter(
+          item => item.object_type !== 'hashtag',
+        );
   const handleAutoCompleteSearch = useCallback(
-    debounce(value => dispatch(searchAutoComplete(value, 3, 15, null, true)), 300),
+    debounce(
+      value =>
+        dispatch(searchAutoComplete(value, 3, 15, null, true, ['business', 'book', 'product'])),
+      300,
+    ),
     [],
   );
 
@@ -62,7 +69,9 @@ const BaseObjSettings = ({ handleSubmit, intl, shopSettings }) => {
         )}
         <span className="BaseObjSettings__name">{getOptionName(selectedObj)}</span>
       </div>
-      <b className="BaseObjSettings__type">{selectedObj.account ? 'user' : 'object'}</b>
+      <b className="BaseObjSettings__type">
+        {selectedObj.account ? 'user' : selectedObj.object_type}
+      </b>
       <span className="BaseObjSettings__clear" onClick={resetMainObj}>
         <Icon type="close-circle" />
       </span>
@@ -70,6 +79,9 @@ const BaseObjSettings = ({ handleSubmit, intl, shopSettings }) => {
   ) : (
     <AutoComplete
       onSearch={handleAutoCompleteSearch}
+      placeholder={'Find object'}
+      dropdownClassName={'BaseObjSettings__resultList'}
+      allowClear
       dataSource={
         loading
           ? pendingSearch('', intl)
@@ -82,9 +94,10 @@ const BaseObjSettings = ({ handleSubmit, intl, shopSettings }) => {
                   setSelectedObj(o);
                   handleSubmit(o);
                 }}
+                className={'BaseObjSettings__resulItem'}
               >
                 {o.account ? (
-                  <UserSearchItem user={o} />
+                  <UserSearchItem user={o} withType />
                 ) : (
                   <ObjectSearchCard
                     object={o}

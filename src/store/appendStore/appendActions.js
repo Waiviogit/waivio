@@ -116,7 +116,7 @@ export const getChangedWobjectField = (
       if (appendObj && updatePosts && !isUpdatesPage) {
         updatePostCallback();
       } else {
-        dispatch(getUpdates(authorPermlink, fieldType, 'createdAt', locale));
+        if (isNew) dispatch(getUpdates(authorPermlink, fieldType, 'createdAt', locale));
         subscribeCallback();
       }
     }, 10000);
@@ -127,7 +127,7 @@ export const getChangedWobjectField = (
         if (appendObj && updatePosts && !isUpdatesPage) {
           updatePostCallback();
         } else {
-          dispatch(getUpdates(authorPermlink, fieldType, 'createdAt', locale));
+          if (isNew) dispatch(getUpdates(authorPermlink, fieldType, 'createdAt', locale));
           subscribeCallback();
         }
       }
