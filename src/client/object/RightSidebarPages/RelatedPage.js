@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { isEmpty } from 'lodash';
 import InfiniteScroll from 'react-infinite-scroller';
 import Loading from '../../components/Icon/Loading';
 import { getObject, getRelatedObjectsArray } from '../../../store/wObjectStore/wObjectSelectors';
@@ -21,12 +22,14 @@ const RelatedPage = () => {
   const sortedRelatedObjects = [...relatedObjects, ...objs];
 
   useEffect(() => {
-    getRelatedObjectsFromDepartments(wobject.author_permlink, userName, locale, 0, limit).then(
-      res => {
-        setRelatedObjects(res.wobjects);
-        setHasMore(res.hasMore);
-      },
-    );
+    if (!isEmpty(wobject.author_permlink)) {
+      getRelatedObjectsFromDepartments(wobject.author_permlink, userName, locale, 0, limit).then(
+        res => {
+          setRelatedObjects(res.wobjects);
+          setHasMore(res.hasMore);
+        },
+      );
+    }
   }, [wobject.author_permlink]);
 
   const loadMoreRelatedObjects = () => {

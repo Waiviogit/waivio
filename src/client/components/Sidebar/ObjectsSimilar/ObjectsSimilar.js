@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
 import { Icon } from 'antd';
+import { isEmpty } from 'lodash';
 import { getSimilarObjectsFromDepartments } from '../../../../waivioApi/ApiClient';
 import ObjectsSidebarTablesContent from '../ObjectSidebarTablesContent/ObjectSidebarTablesContent';
 import { getAuthenticatedUserName } from '../../../../store/authStore/authSelectors';
@@ -17,10 +18,12 @@ const ObjectsSimilar = ({ wobject, isCenterContent }) => {
   const icon = <Icon type="block" className="iconfont icon-link SidebarContentBlock__icon" />;
 
   useEffect(() => {
-    getSimilarObjectsFromDepartments(wobject.author_permlink, userName, locale, 0, 5).then(res =>
-      setSimilarObjects(res.wobjects || []),
-    );
-  }, [wobject.similar]);
+    if (!isEmpty(wobject.author_permlink)) {
+      getSimilarObjectsFromDepartments(wobject.author_permlink, userName, locale, 0, 5).then(res =>
+        setSimilarObjects(res.wobjects || []),
+      );
+    }
+  }, [wobject.similar, wobject.author_permlink]);
 
   return (
     <div>

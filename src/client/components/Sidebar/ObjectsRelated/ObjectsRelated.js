@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { throttle } from 'lodash';
+import { isEmpty, throttle } from 'lodash';
 import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
 import { useSelector } from 'react-redux';
@@ -18,14 +18,16 @@ const ObjectsRelated = ({ currWobject, isCenterContent, getObjectRelated, hasNex
   const icon = <i className="iconfont icon-link SidebarContentBlock__icon" />;
 
   useEffect(() => {
-    getRelatedObjectsFromDepartments(
-      currWobject.author_permlink,
-      userName,
-      locale,
-      0,
-      5,
-    ).then(res => setRelatedObjects(res.wobjects || []));
-  }, [currWobject.related]);
+    if (!isEmpty(currWobject.author_permlink)) {
+      getRelatedObjectsFromDepartments(
+        currWobject.author_permlink,
+        userName,
+        locale,
+        0,
+        5,
+      ).then(res => setRelatedObjects(res.wobjects || []));
+    }
+  }, [currWobject.related, currWobject.author_permlink]);
 
   const sortedRelatedObjects = [...relatedObjects, ...objects];
 
