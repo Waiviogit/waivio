@@ -27,6 +27,7 @@ const UserSearchItem = ({ user, withType }) => {
           <b
             style={{
               color: '#99aab5',
+              fontSize: 'small',
             }}
           >
             user
