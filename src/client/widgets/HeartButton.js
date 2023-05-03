@@ -25,7 +25,7 @@ const HeartButton = ({ wobject, size }) => {
   const language = useSelector(getLocale);
   const authorityList = useSelector(getAuthorityList);
   const dispatch = useDispatch();
-  const downVotePower = 9999;
+  const downVotePower = 1;
   const match = useRouteMatch();
   const activeHeart = authorityList[wobject.author_permlink];
   const isObjectPage = match.params.name === wobject.author_permlink;
