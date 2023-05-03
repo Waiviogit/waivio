@@ -47,6 +47,7 @@ import { getSwapEnginRates } from '../../store/ratesStore/ratesAction';
 import { setLocale } from '../../store/settingsStore/settingsActions';
 
 import './common.less';
+import Header from './Header/Header';
 
 const SocialWrapper = props => {
   const language = findLanguage(props.usedLocale);
@@ -115,7 +116,7 @@ const SocialWrapper = props => {
           }}
           data-dir={language && language.rtl ? 'rtl' : 'ltr'}
         >
-          {!signInPage && <div>header</div>}
+          {!signInPage && <Header />}
           <div>
             {props.loadingFetching ? <Loading /> : renderRoutes(props.route.routes)}
             <NotificationPopup />
