@@ -9,7 +9,14 @@ import ObjectsSidebarTablesContent from '../ObjectSidebarTablesContent/ObjectSid
 import './ObjectsRelated.less';
 import { getUsedLocale } from '../../../../store/appStore/appSelectors';
 
-const ObjectsRelated = ({ currWobject, isCenterContent, getObjectRelated, hasNext, objects }) => {
+const ObjectsRelated = ({
+  currWobject,
+  isCenterContent,
+  getObjectRelated,
+  hasNext,
+  objects,
+  clearRelateObjects,
+}) => {
   const [relatedObjects, setRelatedObjects] = useState([]);
   const userName = useSelector(getAuthenticatedUserName);
   const locale = useSelector(getUsedLocale);
@@ -33,7 +40,11 @@ const ObjectsRelated = ({ currWobject, isCenterContent, getObjectRelated, hasNex
 
   useEffect(() => {
     getObjectRelated();
-  }, [currWobject.related]);
+
+    return () => {
+      clearRelateObjects();
+    };
+  }, [currWobject.related, currWobject.author_permlink]);
 
   const onWheelHandler = () => {
     if (hasNext) {
@@ -57,6 +68,7 @@ const ObjectsRelated = ({ currWobject, isCenterContent, getObjectRelated, hasNex
 ObjectsRelated.propTypes = {
   currWobject: PropTypes.shape().isRequired,
   getObjectRelated: PropTypes.func.isRequired,
+  clearRelateObjects: PropTypes.func.isRequired,
   isCenterContent: PropTypes.bool,
   hasNext: PropTypes.bool,
   objects: PropTypes.arrayOf(PropTypes.shape()),
