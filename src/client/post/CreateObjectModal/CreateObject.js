@@ -5,6 +5,7 @@ import { injectIntl } from 'react-intl';
 import { Form, Input, Select, Button, Modal, Dropdown, Icon, Menu } from 'antd';
 import { isEmpty, map, get } from 'lodash';
 import { withRouter } from 'react-router';
+import BigNumber from 'bignumber.js';
 
 import LANGUAGES from '../../../common/translations/languages';
 import { getLanguageText } from '../../../common/translations';
@@ -112,6 +113,15 @@ class CreateObject extends React.Component {
       this.props.onCloseModal();
     });
 
+  getVote = () =>
+    this.state.votePercent !== null
+      ? Number(
+          BigNumber(this.state.votePercent)
+            .multipliedBy(100)
+            .toFixed(0),
+        )
+      : null;
+
   handleSubmit = e => {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
@@ -125,7 +135,7 @@ class CreateObject extends React.Component {
           type: values.type.toLowerCase(),
           isExtendingOpen: true,
           isPostingOpen: true,
-          votePower: this.state.votePercent * 100,
+          votePower: this.getVote(),
           parentAuthor: selectedType.author,
           parentPermlink: selectedType.permlink,
         };
@@ -245,6 +255,7 @@ class CreateObject extends React.Component {
     } = this.props;
     const { loading } = this.state;
     const Option = Select.Option;
+
     const menu = (
       <Menu onClick={e => handleCaseSelect(e.key)}>
         <Menu.Item key="sentenceCase">

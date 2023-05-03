@@ -9,12 +9,12 @@ import USDDisplay from '../components/Utils/USDDisplay';
 import {
   getAuthenticatedUser,
   getAuthenticatedUserName,
+  isGuestUser,
 } from '../../store/authStore/authSelectors';
 import { checkUserInObjWhiteList, getUserVoteValueInWaiv } from '../../waivioApi/ApiClient';
-import { guestUserRegex } from '../../common/helpers/regexHelpers';
+import { getVotePercent } from '../../store/settingsStore/settingsSelectors';
 
 import './LikeSection.less';
-import { getVotePercent } from '../../store/settingsStore/settingsSelectors';
 
 const LikeSection = props => {
   const [sliderVisible, setSliderVisible] = useState();
@@ -25,7 +25,7 @@ const LikeSection = props => {
   const user = useSelector(getAuthenticatedUser);
   const authUser = useSelector(getAuthenticatedUserName);
   const defaultPercent = useSelector(getVotePercent);
-  const isGuest = guestUserRegex.test(authUser);
+  const isGuest = useSelector(isGuestUser);
   const { form, intl, disabled } = props;
   const littleVotePower = inWhiteList ? false : voteWorth < 0.001;
 
@@ -46,7 +46,7 @@ const LikeSection = props => {
 
   useEffect(() => {
     if (votePercent && !isGuest) calculateVoteWorth(votePercent);
-  }, [votePercent]);
+  }, [votePercent, props.selectedType]);
 
   const calculateVoteWorth = async value => {
     const { onVotePercentChange, selectedType } = props;
