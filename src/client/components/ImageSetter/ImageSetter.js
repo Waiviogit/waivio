@@ -57,7 +57,7 @@ const ImageSetter = ({
     position: { x: 0.5, y: 0.5 },
     scale: 1,
     rotate: 0,
-    borderRadius: isUserAvatar ? '50%' : 0,
+    borderRadius: isUserAvatar ? 50 : 0,
     preview: null,
     width: 200,
     height: 200,
@@ -90,6 +90,25 @@ const ImageSetter = ({
   };
 
   const handleSave = async () => {
+    // console.log(editor)
+    // const rect = editor.getCroppingRect()
+    //
+    // const img = editor.getImageScaledToCanvas()
+    //
+    // img.blob()
+    // console.log(img)
+    //
+    // setState({...state,
+    //   img,
+    //   rect,
+    //   scale: state.scale,
+    //   width: state.width,
+    //   height: state.height,
+    //   borderRadius: state.borderRadius
+    // })
+    // setCurrentImages([{src: img,avatar:img, body:img, id: img, name: state.image.name}])
+    // const rect = editor.getCroppingRect()
+
     const dataUrl = editor.getImage().toDataURL();
     const result = await fetch(dataUrl);
     const blob = await result.blob();

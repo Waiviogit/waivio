@@ -2058,7 +2058,7 @@ class AppendForm extends Component {
             <Form.Item>
               {getFieldDecorator(currentField, { rules: this.getFieldRules(currentField) })(
                 <ImageSetter
-                  isAvatar
+                  isEditable
                   autoFocus
                   onImageLoaded={this.getImages}
                   onLoadingImage={this.onLoadingImage}
