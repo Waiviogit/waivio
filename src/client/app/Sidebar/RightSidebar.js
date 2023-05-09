@@ -87,8 +87,6 @@ export default class RightSidebar extends React.Component {
         {!authenticated && <SignUp />}
         <Switch>
           <Route path="/activity" component={UserActivitySearch} />
-          <Route path="/@:name/userShop/:department?" component={UserFilters} />
-          <Route path="/shop/:department?" component={GlobalShopFilters} />
           <Route path="/@:name/activity" component={UserActivitySearch} />
           <Route path="/@:name/transfers" render={() => <WalletSidebar />} />
           <Route path="/trending/:tag" component={FeedSidebar} />
@@ -125,6 +123,8 @@ export default class RightSidebar extends React.Component {
               </React.Fragment>
             )}
           />
+          <Route path="/@:name/userShop/:department?" component={UserFilters} />
+          <Route path={['/shop/:department?', '/:department?']} component={GlobalShopFilters} />
           <Route
             path="/"
             render={() => (

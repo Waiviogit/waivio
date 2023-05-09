@@ -1,14 +1,17 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { useSelector } from 'react-redux';
+
 import ShopObjectCard from './ShopObjectCard';
 import ObjectCardSwitcher from '../../objectCard/ObjectCardSwitcher';
+import { getIsSocial } from '../../../store/appStore/appSelectors';
 
 import './ObjCardListViewSwitcherForShop.less';
 
 const ObjCardListViewSwitcherForShop = ({ wobjects }) => {
-  const isWebsite = false;
+  const isSocial = useSelector(getIsSocial);
 
-  if (isWebsite)
+  if (isSocial)
     return (
       <div className="ObjCardListViewSwitcherForShop__departmentsList">
         {wobjects?.map(wObject => (

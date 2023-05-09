@@ -181,6 +181,12 @@ export const getWebsiteConfigForSSR = host => ({
   meta: host,
 });
 
+export const SET_SOCIAL_FLAG = '@app/SET_SOCIAL_FLAG';
+
+export const setSocialFlag = () => ({
+  type: SET_SOCIAL_FLAG,
+});
+
 export const GET_CURRENCY_RATE = createAsyncActionType('@app/GET_CURRENCY_RATE');
 
 export const getCurrentCurrencyRate = currency => (dispatch, getState) => {
