@@ -53,7 +53,7 @@ const ImageSetter = ({
   const colors = useWebsiteColor();
   const initialState = {
     image: '',
-    allowZoomOut: false,
+    allowZoomOut: true,
     position: { x: 0.5, y: 0.5 },
     scale: 1,
     rotate: 0,
