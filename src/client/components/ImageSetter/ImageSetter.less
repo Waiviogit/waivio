@@ -4,6 +4,39 @@
 .ImageSetter {
   display: flex;
   flex-direction: column;
+  &__save-btn {
+    .btn;
+    .btn-primary;
+    margin-top: 10px;
+    color: @white-darker;
+  }
+  &__edit {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+  }
+  &__rotate {
+    width: 90px;
+    margin-top: 10px;
+    display: flex;
+    justify-content: space-between;
+    &__button {
+      border: none;
+      background: transparent;
+      font-size: 23px;
+    }
+  }
+  &__zoom {
+    width: 400px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    .ant-slider {
+      margin-left: 15px !important;
+      width: 350px !important;
+    }
+  }
 
   .Image-box__remove-icon {
     color: var(--website-color);
@@ -47,6 +80,7 @@
       padding: 8px;
       margin: 16px 16px 0 0;
       position: relative;
+      width: fit-content;
 
       &-loader {
         width: 86px;

@@ -2210,5 +2210,6 @@
   "for_more_options": "For more options please",
   "empty_campaign_message": "There are no rewards available for you to claim at this moment.",
   "account_balance": "Account balance",
-  "note_all_campaign_suspended": "All campaigns will be suspended if accounts payable exceed 30 days"
+  "note_all_campaign_suspended": "All campaigns will be suspended if accounts payable exceed 30 days",
+  "zoom": "Zoom"
 }

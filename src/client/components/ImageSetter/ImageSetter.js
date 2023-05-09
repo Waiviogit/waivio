@@ -1,10 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
-import { injectIntl } from 'react-intl';
-import { Icon, message } from 'antd';
+import { FormattedMessage, injectIntl } from 'react-intl';
+import { Icon, message, Slider } from 'antd';
+import AvatarEditor from 'react-avatar-editor';
 import { map, isEmpty, get, isEqual, isNil, size } from 'lodash';
 import { EditorState } from 'draft-js';
 import uuidv4 from 'uuid/v4';
+import fetch from 'isomorphic-fetch';
 import classNames from 'classnames';
 import withEditor from '../Editor/withEditor';
 import { isValidImage } from '../../../common/helpers/image';
@@ -39,12 +41,88 @@ const ImageSetter = ({
   isModal,
   imagesList,
   autoFocus,
+  isEditable,
+  isUserAvatar,
 }) => {
   const imageLinkInput = useRef(null);
   const [currentImages, setCurrentImages] = useState([]);
   const [isLoadingImage, setLoadingImage] = useState(false);
   const [fileImages, setFileImages] = useState([]);
+  const [editor, setEditor] = useState('');
+  const [isOpen, setIsOpen] = useState(false);
   const colors = useWebsiteColor();
+  const initialState = {
+    image: '',
+    allowZoomOut: false,
+    position: { x: 0.5, y: 0.5 },
+    scale: 1,
+    rotate: 0,
+    borderRadius: isUserAvatar ? '50%' : 0,
+    preview: null,
+    width: 200,
+    height: 200,
+  };
+
+  const [state, setState] = useState(initialState);
+  const handlePositionChange = position => {
+    setState({ ...state, position });
+  };
+
+  const handleNewImage = async e => {
+    await setState({ ...state, image: e.target.files[0] });
+    setIsOpen(true);
+  };
+
+  const handleScale = scale => {
+    setState({ ...state, scale });
+  };
+
+  const rotateLeft = e => {
+    e.preventDefault();
+    setState({ ...state, rotate: state.rotate - 90 });
+  };
+  const rotateRight = e => {
+    e.preventDefault();
+    setState({ ...state, rotate: state.rotate + 90 });
+  };
+  const setEditorRef = ed => {
+    setEditor(ed);
+  };
+
+  const handleSave = async () => {
+    //
+    // console.log(editor)
+    // const rect = editor.getCroppingRect()
+    //
+    // const img = editor.getImageScaledToCanvas()
+    //
+    // img.blob()
+    // console.log(img)
+    //
+    // setState({...state,
+    //   img,
+    //   rect,
+    //   scale: state.scale,
+    //   width: state.width,
+    //   height: state.height,
+    //   borderRadius: state.borderRadius
+    // })
+    // setCurrentImages([{src: img,avatar:img, body:img, id: img, name: state.image.name}])
+    // const rect = editor.getCroppingRect()
+
+    const dataUrl = editor.getImage().toDataURL();
+    const result = await fetch(dataUrl);
+    const blob = await result.blob();
+
+    const res = new File([blob], 'filename', { type: 'image/png' });
+
+    handleChangeImage({ target: { files: [res] } });
+    setIsOpen(false);
+  };
+  const resetImage = () => {
+    setState(initialState);
+    setIsOpen(false);
+  };
 
   useEffect(() => {
     if (currentImages.length) {
@@ -320,7 +398,7 @@ const ImageSetter = ({
             ))}
         </div>
       )}
-      {(isMultiple || !currentImages.length) && (
+      {(isMultiple || !currentImages.length) && !isOpen && (
         <div className="image-upload">
           <input
             id="inputfile"
@@ -328,7 +406,7 @@ const ImageSetter = ({
             type="file"
             accept="image/*"
             multiple={isMultiple}
-            onChange={handleChangeImage}
+            onChange={isEditable ? handleNewImage : handleChangeImage}
             onClick={e => {
               e.target.value = null;
             }}
@@ -375,6 +453,50 @@ const ImageSetter = ({
           </div>
         </div>
       )}
+      {isOpen && (
+        <div className="ImageSetter__edit">
+          <div className="image-box__preview">
+            <div className="image-box__remove" onClick={() => resetImage()} role="presentation">
+              <i className="iconfont icon-delete_fill Image-box__remove-icon" />
+            </div>
+            <AvatarEditor
+              ref={setEditorRef}
+              scale={parseFloat(state.scale)}
+              width={state.width}
+              height={state.height}
+              position={state.position}
+              onPositionChange={handlePositionChange}
+              rotate={parseFloat(state.rotate)}
+              borderRadius={state.width / (100 / state.borderRadius)}
+              image={state.image}
+            />
+          </div>
+          <div className="ImageSetter__rotate">
+            <button className="ImageSetter__rotate__button" onClick={rotateLeft}>
+              <Icon type="undo" />
+            </button>
+            <button className="ImageSetter__rotate__button" onClick={rotateRight}>
+              <Icon type="redo" />
+            </button>
+          </div>
+          <div className="ImageSetter__zoom">
+            <div>
+              <FormattedMessage id="zoom" defaultMessage="Zoom" />:
+            </div>
+            <Slider
+              tipFormatter={null}
+              defaultValue={1}
+              min={state.allowZoomOut ? 0.1 : 1}
+              max={3}
+              step={0.01}
+              onChange={handleScale}
+            />
+          </div>
+          <button onClick={handleSave} type="button" className="ImageSetter__save-btn">
+            <FormattedMessage id="save" defaultMessage="Save" />
+          </button>
+        </div>
+      )}
     </div>
   );
 };
@@ -397,6 +519,8 @@ ImageSetter.propTypes = {
   Block: PropTypes.shape(),
   isOkayBtn: PropTypes.bool,
   autoFocus: PropTypes.bool,
+  isUserAvatar: PropTypes.bool,
+  isEditable: PropTypes.bool,
   imagesList: PropTypes.arrayOf(),
   isModal: PropTypes.bool,
 };
@@ -415,6 +539,8 @@ ImageSetter.defaultProps = {
   isOkayBtn: false,
   imagesList: [],
   isModal: false,
+  isEditable: false,
+  isUserAvatar: false,
   autoFocus: false,
   labeledImage: '',
 };
