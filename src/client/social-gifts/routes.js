@@ -9,6 +9,8 @@ import createNestedRouts from '../../routes/helper';
 import SocialWrapper from './Wrapper';
 import Shop from '../Shop/Shop';
 import ShopDepartmentsWobjList from '../Shop/DepartmentsWobjList/ShopDepartmentsWobjList';
+import DiscoverObjects from '../discoverObjects/DiscoverObjects';
+import Discover from '../discover/Discover';
 
 const routes = () => ({
   component: SocialWrapper,
@@ -24,6 +26,16 @@ const routes = () => ({
           component: ShopDepartmentsWobjList,
         },
       ],
+    },
+    {
+      path: '/discover-objects/:typeName?',
+      exact: true,
+      component: DiscoverObjects,
+    },
+    {
+      path: '/discover/:search?',
+      exact: true,
+      component: Discover,
     },
     {
       path: '/confirmation',
