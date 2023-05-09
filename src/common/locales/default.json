@@ -1036,7 +1036,7 @@
   "imageSetter_add_images": "Add images",
   "imageSetter_upload": "Upload",
   "imageSetter_or": "or",
-  "imageSetter_paste_image_link": "Paste image link",
+  "imageSetter_paste_image_link": "Paste image or image link ",
   "imageSetter_link_is_already_added": "The link you are trying to add is already added",
   "imageSetter_cannot ": "You cannot upload more then 25 images",
   "iAgreePostMyData": "I agree to post my public data into the blockchain",
@@ -2210,5 +2210,9 @@
   "for_more_options": "For more options please",
   "empty_campaign_message": "There are no rewards available for you to claim at this moment.",
   "account_balance": "Account balance",
-  "note_all_campaign_suspended": "All campaigns will be suspended if accounts payable exceed 30 days"
+  "note_all_campaign_suspended": "All campaigns will be suspended if accounts payable exceed 30 days",
+  "zoom": "Zoom",
+  "rotate": "Rotate",
+  "left": "Left",
+  "right": "Right"
 }
