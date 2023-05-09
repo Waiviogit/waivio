@@ -119,7 +119,7 @@ const PostPopoverMenu = ({
   const dispatch = useDispatch();
   const match = useRouteMatch();
   const wobjAuthorPermlink = match.params.name;
-  const userPage = match.url.includes(`/@${wobjAuthorPermlink}`);
+  const hidePinRemove = !match.url.includes(`/${wobjAuthorPermlink}`);
   const { isReported, isSaved } = postState;
   const hasOnlySponsorLike =
     post.active_votes.length === 1 && post.active_votes.some(vote => vote.sponsor);
@@ -279,13 +279,13 @@ const PostPopoverMenu = ({
         {saving ? <Icon type="loading" /> : <i className="iconfont icon-write" />}
         <FormattedMessage id="edit_post" defaultMessage="Edit post" />
       </PopoverMenuItem>,
-      <PopoverMenuItem key="pin" disabled={loading} invisible={userPage}>
+      <PopoverMenuItem key="pin" disabled={loading} invisible={hidePinRemove}>
         <Icon className="hide-button popoverIcon ml1px" type="pushpin" />
         <span className="ml1">
           <FormattedMessage id="object_field_pin" defaultMessage="Pin" />
         </span>
       </PopoverMenuItem>,
-      <PopoverMenuItem key="remove" disabled={loading || disableRemove} invisible={userPage}>
+      <PopoverMenuItem key="remove" disabled={loading || disableRemove} invisible={hidePinRemove}>
         <Icon type="close-circle" className="hide-button popoverIcon ml1px" />
         <span className="ml1">
           <FormattedMessage id="object_field_remove" defaultMessage="Remove" />
@@ -311,13 +311,13 @@ const PostPopoverMenu = ({
         {loading ? <Icon type="loading" /> : <i className="iconfont icon-people" />}
         {followText}
       </PopoverMenuItem>,
-      <PopoverMenuItem key="pin" disabled={loading} invisible={userPage}>
+      <PopoverMenuItem key="pin" disabled={loading} invisible={hidePinRemove}>
         <Icon className="hide-button popoverIcon ml1px" type="pushpin" />
         <span className="ml1">
           <FormattedMessage id="object_field_pin" defaultMessage="Pin" />
         </span>
       </PopoverMenuItem>,
-      <PopoverMenuItem key="remove" disabled={loading || disableRemove} invisible={userPage}>
+      <PopoverMenuItem key="remove" disabled={loading || disableRemove} invisible={hidePinRemove}>
         <Icon type="close-circle" className="hide-button popoverIcon ml1px" />
         <span className="ml1">
           <FormattedMessage id="object_field_remove" defaultMessage="Remove" />
