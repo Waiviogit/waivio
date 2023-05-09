@@ -16,8 +16,6 @@ const LeftSidebar = () => {
   return (
     !isWidget && (
       <Switch>
-        <Route path="/@:name/userShop/:department?" component={DepartmentsUser} />
-        <Route path="/shop/:department?" component={GlobalShopDepartments} />
         <Route path="/@:name/wallet" component={SidebarMenu} />
         <Route path="/@:name" component={UserInfo} />
         <Route path="/object/:name" component={UserInfo} />
@@ -28,6 +26,8 @@ const LeftSidebar = () => {
         <Route path="/replies" component={SidebarMenu} />
         <Route path={`/(${URL.SETTINGS.tabs})`} component={SettingsSidenav} />
         <Route path={`/:site/(${URL.WEBSITES.tabs})`} component={SettingsSidenav} />
+        <Route path="/@:name/userShop/:department?" component={DepartmentsUser} />
+        <Route path={['/shop/:department?', '/:department?']} component={GlobalShopDepartments} />
         <Route path="/" component={SidebarMenu} />
       </Switch>
     )

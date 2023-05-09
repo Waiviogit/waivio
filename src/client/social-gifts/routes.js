@@ -3,11 +3,14 @@ import User from '../../client/user/User';
 import Views from '../../routes/components';
 import URL from '../../routes/constants';
 import WobjectContainer from '../../client/object/Wobj/WobjectContainer';
-import WebsiteBody from '../../client/websites/WebsiteLayoutComponents/Body/WebsiteBody';
 import RedirectedSignIn from '../../client/components/Navigation/redirectedSignIn/RedirectedSignIn';
 import RewardsMainPage from '../../client/newRewards/RewardsMainPage';
 import createNestedRouts from '../../routes/helper';
 import SocialWrapper from './Wrapper';
+import Shop from '../Shop/Shop';
+import ShopDepartmentsWobjList from '../Shop/DepartmentsWobjList/ShopDepartmentsWobjList';
+import DiscoverObjects from '../discoverObjects/DiscoverObjects';
+import Discover from '../discover/Discover';
 
 const routes = () => ({
   component: SocialWrapper,
@@ -15,7 +18,24 @@ const routes = () => ({
     {
       path: '/',
       exact: true,
-      component: WebsiteBody,
+      component: Shop,
+      routes: [
+        {
+          path: '/:department?',
+          exact: true,
+          component: ShopDepartmentsWobjList,
+        },
+      ],
+    },
+    {
+      path: '/discover-objects/:typeName?',
+      exact: true,
+      component: DiscoverObjects,
+    },
+    {
+      path: '/discover/:search?',
+      exact: true,
+      component: Discover,
     },
     {
       path: '/confirmation',
