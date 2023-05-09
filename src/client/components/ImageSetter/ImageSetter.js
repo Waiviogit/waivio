@@ -124,7 +124,14 @@ const ImageSetter = ({
       );
     }
   };
+  const onPaste = async () => {
+    const clipboardItems = await navigator.clipboard.read();
+    const blobOutput = await clipboardItems[0].getType('image/png');
 
+    const res = new File([blobOutput], 'filename', { type: 'image/png' });
+
+    handleChangeImage({ target: { files: [res] } });
+  };
   // For image pasted for link
   const handleOnUploadImageByLink = async image => {
     if (currentImages.length >= 25) {
@@ -357,9 +364,10 @@ const ImageSetter = ({
               className="input-upload__item"
               size="large"
               ref={imageLinkInput}
+              onPaste={onPaste}
               placeholder={intl.formatMessage({
                 id: 'imageSetter_paste_image_link',
-                defaultMessage: 'Paste image link',
+                defaultMessage: 'Paste image or image link',
               })}
               onInput={() => handleOnUploadImageByLink()}
             />
