@@ -26,8 +26,29 @@
       width: 100%;
     }
     &__button {
+      line-height: 1.499;
+      position: relative;
+      display: inline-block;
+      font-weight: 400;
+      white-space: nowrap;
+      text-align: center;
+      background-image: none;
+      border: 1px solid @white-gainsboro;
+      cursor: pointer;
+      height: 30px;
+      padding: 0 15px;
+      font-size: 16px;
+      border-radius: 4px;
+      background-color: @white;
       width: 160px;
       margin-left: 15px !important;
+      transition: 0.3s;
+
+      &:hover,
+      &:active {
+        color: @orange;
+        border-color: @orange;
+      }
     }
   }
   &__zoom {
