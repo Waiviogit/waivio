@@ -465,13 +465,13 @@ const ImageSetter = ({
             />
           </div>
           <div className="ImageSetter__rotate">
-            Rotate:
+            <FormattedMessage id="rotate" defaultMessage="Rotate" />:
             <div className="ImageSetter__rotate-btns">
               <button className="ant-btn ImageSetter__rotate__button" onClick={rotateLeft}>
-                Left
+                <FormattedMessage id="left" defaultMessage="Left" />
               </button>
               <button className="ant-btn ImageSetter__rotate__button" onClick={rotateRight}>
-                Right
+                <FormattedMessage id="right" defaultMessage="Right" />
               </button>
             </div>
           </div>
