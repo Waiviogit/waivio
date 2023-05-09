@@ -451,14 +451,6 @@ const ImageSetter = ({
               image={state.image}
             />
           </div>
-          <div className="ImageSetter__rotate">
-            <button className="ImageSetter__rotate__button" onClick={rotateLeft}>
-              <Icon type="undo" />
-            </button>
-            <button className="ImageSetter__rotate__button" onClick={rotateRight}>
-              <Icon type="redo" />
-            </button>
-          </div>
           <div className="ImageSetter__zoom">
             <div>
               <FormattedMessage id="zoom" defaultMessage="Zoom" />:
@@ -471,6 +463,17 @@ const ImageSetter = ({
               step={0.01}
               onChange={handleScale}
             />
+          </div>
+          <div className="ImageSetter__rotate">
+            Rotate:
+            <div className="ImageSetter__rotate-btns">
+              <button className="ant-btn ImageSetter__rotate__button" onClick={rotateLeft}>
+                Left
+              </button>
+              <button className="ant-btn ImageSetter__rotate__button" onClick={rotateRight}>
+                Right
+              </button>
+            </div>
           </div>
           <button onClick={handleSave} type="button" className="ImageSetter__save-btn">
             <FormattedMessage id="save" defaultMessage="Save" />
