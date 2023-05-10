@@ -26,6 +26,7 @@ import { setProfileFilters } from '../../../store/feedStore/feedActions';
 import WalletSidebar from '../../components/Sidebar/WalletSidebar/WalletSidebar';
 import UserFilters from '../../Shop/ShopFilters/UserFilters';
 import GlobalShopFilters from '../../Shop/ShopFilters/GlobalShopFilters';
+import { getIsSocial } from '../../../store/appStore/appSelectors';
 
 @withRouter
 @connect(
@@ -36,6 +37,7 @@ import GlobalShopFilters from '../../Shop/ShopFilters/GlobalShopFilters';
     locale: getLocale(state),
     isGuest: isGuestUser(state),
     feed: getFeed(state),
+    isSocial: getIsSocial(state),
   }),
   {
     setProfileFilters,
@@ -45,6 +47,7 @@ export default class RightSidebar extends React.Component {
   static propTypes = {
     authenticated: PropTypes.bool,
     isAuthFetching: PropTypes.bool,
+    isSocial: PropTypes.bool,
     showPostRecommendation: PropTypes.bool,
     match: PropTypes.shape(),
     authUserName: PropTypes.string,
@@ -74,6 +77,7 @@ export default class RightSidebar extends React.Component {
       locale,
       isGuest,
       feed,
+      isSocial,
     } = this.props;
 
     const content = getFeedFromState('blog', authUserName, feed);
@@ -124,7 +128,8 @@ export default class RightSidebar extends React.Component {
             )}
           />
           <Route path="/@:name/userShop/:department?" component={UserFilters} />
-          <Route path={['/shop/:department?', '/:department?']} component={GlobalShopFilters} />
+          <Route path="/shop/:department?" component={GlobalShopFilters} />
+          {isSocial && <Route path="/:department?" component={GlobalShopFilters} />}
           <Route
             path="/"
             render={() => (
