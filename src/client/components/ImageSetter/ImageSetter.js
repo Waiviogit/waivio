@@ -53,7 +53,7 @@ const ImageSetter = ({
   const colors = useWebsiteColor();
   const initialState = {
     image: '',
-    allowZoomOut: false,
+    allowZoomOut: true,
     position: { x: 0.5, y: 0.5 },
     scale: 1,
     rotate: 0,
@@ -467,10 +467,10 @@ const ImageSetter = ({
           <div className="ImageSetter__rotate">
             <FormattedMessage id="rotate" defaultMessage="Rotate" />:
             <div className="ImageSetter__rotate-btns">
-              <button className="ant-btn ImageSetter__rotate__button" onClick={rotateLeft}>
+              <button className="ImageSetter__rotate__button" onClick={rotateLeft}>
                 <FormattedMessage id="left" defaultMessage="Left" />
               </button>
-              <button className="ant-btn ImageSetter__rotate__button" onClick={rotateRight}>
+              <button className="ImageSetter__rotate__button" onClick={rotateRight}>
                 <FormattedMessage id="right" defaultMessage="Right" />
               </button>
             </div>
