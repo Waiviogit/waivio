@@ -9,16 +9,7 @@ import { getObjectName } from '../../../common/helpers/wObjectHelper';
 import { isMobile } from '../../../common/helpers/apiHelpers';
 import './ObjectCard.less';
 
-const ObjectCard = ({
-  wobject,
-  alt,
-  showFollow,
-  isNewWindow,
-  unfollow,
-  follow,
-  parent,
-  isModal,
-}) => {
+const ObjectCard = ({ wobject, showFollow, isNewWindow, unfollow, follow, parent, isModal }) => {
   if (!isEmpty(wobject)) {
     const updatedWObject = { ...wobject };
 
@@ -41,7 +32,6 @@ const ObjectCard = ({
               {name}
             </Link>
           </div>
-          {alt && <span className="ObjectCard__alt">{alt}</span>}
         </div>
         <div className="ObjectCard__follow">
           {showFollow && (
@@ -73,7 +63,6 @@ ObjectCard.propTypes = {
     youFollows: PropTypes.bool,
     parent: PropTypes.shape(),
   }),
-  alt: PropTypes.node,
   showFollow: PropTypes.bool,
   isModal: PropTypes.bool,
   isNewWindow: PropTypes.bool,
@@ -82,7 +71,6 @@ ObjectCard.propTypes = {
 };
 
 ObjectCard.defaultProps = {
-  alt: '',
   showFollow: true,
   isNewWindow: false,
   unfollow: () => {},
