@@ -11,6 +11,7 @@
   align-items: center;
   margin-bottom: 10px;
   border: @base-border;
+  position: relative;
 
   @media @small {
     width: 32%;
@@ -35,7 +36,14 @@
     align-items: flex-start;
 
     .HeartButton {
+      position: absolute;
       margin-left: 10px;
+      top: 10px;
+      right: 10px;
+
+      &--active {
+        color: var(--website-color);
+      }
     }
   }
 
@@ -44,6 +52,7 @@
     width: 65px;
     padding: 0 2px;
     margin-left: 5px;
+    margin-bottom: 5px;
 
     @media @small {
       width: 100px;
@@ -51,7 +60,7 @@
     }
 
     &:first-child {
-      margin: 0;
+      margin-left: 0;
     }
   }
 
@@ -66,5 +75,14 @@
 
   &__rewardTitle {
     margin-bottom: 30px;
+  }
+
+  &__price {
+    color: var(--website-color);
+    font-weight: 600;
+  }
+
+  .ObjectAvatar {
+    border: none;
   }
 }

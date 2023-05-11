@@ -198,6 +198,7 @@ export default (state = initialState, action) => {
       return {
         ...state,
         isSocial: true,
+        isWaivio: false,
       };
 
     case appTypes.GET_RESERVED_COUNTER.SUCCESS:

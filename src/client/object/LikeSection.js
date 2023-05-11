@@ -58,7 +58,7 @@ const LikeSection = props => {
 
     setVoteWorth(roundVoteWorth);
     onVotePercentChange(value, roundVoteWorth);
-    if (!isGuest) form.setFieldsValue({ littleVotePower: inWhiteList ? false : voteValue < 0.001 });
+    if (!isGuest) props.setLittleVotePower(inWhiteList ? false : voteValue < 0.001);
   };
 
   const changeVotePercent = useCallback(
@@ -153,6 +153,7 @@ const LikeSection = props => {
 LikeSection.propTypes = {
   form: PropTypes.shape().isRequired,
   onVotePercentChange: PropTypes.func.isRequired,
+  setLittleVotePower: PropTypes.func.isRequired,
   disabled: PropTypes.bool,
   intl: PropTypes.shape().isRequired,
   selectedType: PropTypes.shape({
