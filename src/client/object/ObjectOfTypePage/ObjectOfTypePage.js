@@ -42,10 +42,10 @@ const ObjectOfTypePage = props => {
   const [votePercent, setVotePercent] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [draft, setDraft] = useState(null);
+  const [littleVotePower, setLittleVotePower] = useState(null);
   const [isNotificaion, setNotification] = useState(null);
   const [editorInitialized, setEditorInitialized] = useState(false);
   const currObj = isEmpty(props.nestedWobject) ? wobject : props.nestedWobject;
-  const littleVotePower = form.getFieldValue('littleVotePower');
 
   useEffect(() => {
     if (!isEditMode) {
@@ -230,6 +230,7 @@ const ObjectOfTypePage = props => {
                             form={form}
                             onVotePercentChange={handleVotePercentChange}
                             selectedType={wobject}
+                            setLittleVotePower={setLittleVotePower}
                           />
                           {followingList.includes(wobject.author_permlink) ? null : (
                             <FollowObjectForm form={form} />

@@ -28,6 +28,19 @@ const routes = () => ({
       ],
     },
     {
+      path: '/shop/:department?',
+      exact: true,
+      component: Shop,
+      pathScope: '/shop',
+      routes: [
+        {
+          path: '/:department?',
+          exact: true,
+          component: ShopDepartmentsWobjList,
+        },
+      ],
+    },
+    {
       path: '/discover-objects/:typeName?',
       exact: true,
       component: DiscoverObjects,

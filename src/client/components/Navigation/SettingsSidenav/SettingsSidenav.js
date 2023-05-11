@@ -48,7 +48,7 @@ const SettingsSidenav = ({ match }) => {
   };
 
   return (
-    <ul className="Sidenav">
+    <ul className="Sidenav SettingsSidenav">
       <SettingsItem
         condition={menuCondition.personal}
         configItem={personalSettings}

@@ -38,7 +38,7 @@ const Header = () => {
             })}
           />
         </button>
-        <HeaderButton searchBarActive={searchBarActive} />
+        <HeaderButton isWebsite searchBarActive={searchBarActive} />
       </div>
     </div>
   );

@@ -52,12 +52,12 @@ const Shop = ({ route }) => {
             <LeftSidebar />
           </div>
         </Affix>
+        <div className="center">{renderRoutes(route.routes)}</div>
         <Affix className="rightContainer" stickPosition={77}>
           <div className="right">
             <RightSidebar />
           </div>
         </Affix>
-        <div className="center">{renderRoutes(route.routes)}</div>
       </div>
     </div>
   );
