@@ -8,7 +8,14 @@ import PropTypes from 'prop-types';
 
 import './ConfigHeader.less';
 
-const ConfigHeader = ({ visible, config, onClose, handleSubmitConfig, loading }) => {
+const ConfigHeader = ({
+  visible,
+  config,
+  onClose,
+  handleSubmitConfig,
+  loading,
+  withioutMessage,
+}) => {
   const [name, setName] = useState(config?.name);
   const [message, setMessage] = useState(config?.message);
   // const [startup, setStartup] = useState(config?.startup);
@@ -38,10 +45,12 @@ const ConfigHeader = ({ visible, config, onClose, handleSubmitConfig, loading })
         <h3>Website name:</h3>
         <Input maxLength={30} value={name} onChange={e => setName(e.target.value)} />
       </div>
-      <div>
-        <h3>Message:</h3>
-        <Input maxLength={50} value={message} onChange={e => setMessage(e.target.value)} />
-      </div>
+      {!withioutMessage && (
+        <div>
+          <h3>Message:</h3>
+          <Input maxLength={50} value={message} onChange={e => setMessage(e.target.value)} />
+        </div>
+      )}
       {/* <div> */}
       {/*  <h3>Starup page:</h3> */}
       {/*  <Select */}
@@ -67,6 +76,7 @@ ConfigHeader.propTypes = {
   onClose: PropTypes.func,
   handleSubmitConfig: PropTypes.func,
   loading: PropTypes.bool,
+  withioutMessage: PropTypes.bool,
 };
 
 export default ConfigHeader;

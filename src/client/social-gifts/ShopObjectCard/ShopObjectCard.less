@@ -12,6 +12,23 @@
   margin-bottom: 10px;
   border: @base-border;
   position: relative;
+  margin-right: 10px;
+
+  &:nth-child(3n) {
+    @media @small {
+      margin-right: 0;
+    }
+
+    margin-right: 10px;
+  }
+
+  &:nth-child(2n) {
+    @media @small {
+      margin-right: 10px;
+    }
+
+    margin-right: 0;
+  }
 
   @media @small {
     width: 32%;
@@ -21,6 +38,7 @@
     display: flex;
     flex-wrap: wrap;
     margin: 5px 0;
+    justify-content: center;
 
     @media @small {
       margin: 15px 0;
@@ -66,6 +84,8 @@
 
   &__name {
     margin-top: 10px;
+    text-align: center;
+    padding: 0 10px;
   }
 
   &--rewards {

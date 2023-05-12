@@ -15,16 +15,32 @@
 .ShopWebsiteWrapper {
   .container {
     position: relative;
-    margin: 0 30px;
+    margin: 0;
     max-width: none;
     //display: flex;
     //justify-content: space-between;
+
+    @media @small {
+      margin: 0 30px;
+    }
   }
 
   .feed-layout {
     padding: 0;
 
     .right {
+      width: 240px;
+    }
+
+    .leftContainer {
+      width: 200px;
+    }
+
+    .left {
+      width: 100%;
+    }
+
+    .rightContainer {
       width: 250px;
     }
   }
