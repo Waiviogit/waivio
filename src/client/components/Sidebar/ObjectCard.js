@@ -18,7 +18,6 @@ const ObjectCard = ({ wobject, showFollow, isNewWindow, unfollow, follow, parent
     const pathname = wobject.defaultShowLink;
     const objectCardClassnames = classnames('ObjectCard__name', {
       'ObjectCard__name-long': isModal || isMobile(),
-      'ObjectCard__name-short': showFollow,
     });
 
     return (
