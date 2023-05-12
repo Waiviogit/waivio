@@ -37,6 +37,7 @@ const GeneralSearch = props => {
 
   const handleAutoCompleteSearch = useCallback(
     debounce(value => {
+      setSeachValue(value);
       dispatch(searchAutoComplete(value, 3, 15, null, true, ['business', 'book', 'product']));
     }, 300),
     [],
