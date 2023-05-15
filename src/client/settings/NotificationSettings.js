@@ -120,12 +120,8 @@ export default class NotificationSettings extends React.Component {
                   id="instant_mobile_notifications_open"
                   defaultMessage="Open the Telegram chart with"
                 />
-                <a
-                  href="https://web.telegram.org/#/im?p=@WaivioNotificationsBot"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  @WaivioNotificationsBot
+                <a href="http://t.me/waivio_notifications_bot" target="_blank" rel="noreferrer">
+                  @waivio_notifications_bot
                 </a>
                 <FormattedMessage
                   id="instant_mobile_notifications_hive"

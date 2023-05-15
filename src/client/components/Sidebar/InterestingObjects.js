@@ -8,7 +8,6 @@ import { FormattedMessage } from 'react-intl';
 import ObjectCard from './ObjectCard';
 import { getRecommendedObj } from '../../../store/userStore/userActions';
 import RightSidebarLoading from '../../app/Sidebar/RightSidebarLoading';
-import WeightTag from '../WeightTag';
 import { getRecommendedObjects } from '../../../store/userStore/userSelectors';
 
 import './InterestingObjects.less';
@@ -53,12 +52,7 @@ class InterestingObjects extends React.Component {
         <div className="SidebarContentBlock__content">
           {recommendedObjects &&
             recommendedObjects.map(wobject => (
-              <ObjectCard
-                key={wobject.author_permlink}
-                wobject={wobject}
-                showFollow={false}
-                alt={<WeightTag weight={wobject.weight} />}
-              />
+              <ObjectCard key={wobject.author_permlink} wobject={wobject} showFollow={false} />
             ))}
           <h4 className="InterestingObjects__more">
             <Link to={'/discover-objects/hashtag'}>
