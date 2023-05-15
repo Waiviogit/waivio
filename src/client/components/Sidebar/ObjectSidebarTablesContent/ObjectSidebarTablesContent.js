@@ -4,7 +4,6 @@ import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
 import ObjectCard from '../ObjectCard';
-import WeightTag from '../../WeightTag';
 import RightSidebarLoading from '../../../app/Sidebar/RightSidebarLoading';
 
 const ObjectsSidebarTablesContent = ({
@@ -26,7 +25,6 @@ const ObjectsSidebarTablesContent = ({
           key={item.author_permlink}
           wobject={item}
           showFollow={false}
-          alt={<WeightTag weight={item.weight} />}
           isNewWindow={false}
           id="ObjectCard"
         />

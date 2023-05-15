@@ -6,7 +6,6 @@ import { Link } from 'react-router-dom';
 import RightSidebarLoading from '../../../client/app/Sidebar/RightSidebarLoading';
 import { getWobjectsWithUserWeight } from '../../../waivioApi/ApiClient';
 import ObjectCard from './ObjectCard';
-import WeightTag from '../WeightTag';
 
 import './ObjectWeightBlock.less';
 
@@ -66,12 +65,7 @@ class ObjectWeightBlock extends React.Component {
         <div className="SidebarContentBlock__content">
           {wObjects &&
             wObjects.map(wobject => (
-              <ObjectCard
-                key={wobject.author_permlink}
-                wobject={wobject}
-                showFollow={false}
-                alt={<WeightTag weight={wobject.user_weight} />}
-              />
+              <ObjectCard key={wobject.author_permlink} wobject={wobject} showFollow={false} />
             ))}
           {hasMore && (
             <h4 className="ObjectWeightBlock__more">
