@@ -5,7 +5,6 @@ import { Link } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
 import { withRouter } from 'react-router';
 import UserCard from '../../UserCard';
-import WeightTag from '../../WeightTag';
 import RightSidebarLoading from '../../../app/Sidebar/RightSidebarLoading';
 
 import '../ObjectExpertise.less';
@@ -48,7 +47,6 @@ const ObjectExpertise = ({
                 showFollow={isCenterContent}
                 follow={follow}
                 unfollow={unFollow}
-                alt={<WeightTag weight={user.weight} />}
               />
             ))}
           {size(users) > 5 && (
