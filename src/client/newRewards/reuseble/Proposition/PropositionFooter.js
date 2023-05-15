@@ -145,7 +145,7 @@ const PropositionFooter = ({ type, openDetailsModal, proposition, getProposition
                 <RewardsPopover proposition={proposition} getProposition={getProposition} />
               </div>
               {authUserName === proposition.guideName &&
-              (authUserName !== proposition.userName || authUserName !== proposition.rootName) ? (
+              proposition.guideName !== proposition.rootName ? (
                 userCard
               ) : (
                 <Button type="primary" onClick={openDetailsModal}>
