@@ -13,7 +13,7 @@ import { isMobileDevice } from '../common/helpers/apiHelpers';
 import { createQuery, parseQuery } from './helpers';
 import { TRANSACTION_TYPES } from '../client/wallet/WalletHelper';
 
-export let headers = {
+export const headers = {
   Accept: 'application/json',
   'Content-Type': 'application/json',
   ...isMobileDevice(),
@@ -25,6 +25,7 @@ export function handleErrors(response) {
   if (!response.ok) {
     throw new Error(response.statusText);
   }
+
   return response;
 }
 
@@ -32,6 +33,7 @@ export function handleErrorReserve(response) {
   if (response.ok) {
     return response;
   }
+
   return response.json().then(data => {
     throw Error(data.message);
   });
@@ -41,6 +43,7 @@ export function handleValidateCampaignErrors(response) {
   if (!response.ok) {
     return response.json().then(data => Promise.reject(data));
   }
+
   return response;
 }
 
@@ -50,7 +53,7 @@ export const getRecommendedObjects = (locale = 'en-US') =>
     method: 'POST',
     body: JSON.stringify({
       userLimit: 5,
-      locale: locale,
+      locale,
       limit: 6,
       exclude_object_types: [
         'list',
@@ -82,6 +85,7 @@ export const getObjects = ({
 
   if (isOnlyHashtags) reqData.object_types = ['hashtag'];
   else reqData.exclude_object_types = ['hashtag'];
+
   return fetch(`${config.apiPrefix}${config.getObjects}`, {
     headers: {
       ...headers,
@@ -218,6 +222,7 @@ export const saveDraftPage = (userName, authorPermlink, body) =>
 
 export const getDraftPage = (userName, authorPermlink) => {
   const query = createQuery({ authorPermlink });
+
   return fetch(`${config.apiPrefix}${config.user}/${userName}${config.draft}/?${query}`, {
     headers: {
       ...headers,
@@ -314,6 +319,7 @@ export const postCreateWaivioObject = requestBody =>
 
 export const getContent = (author, permlink = '', locale, follower) => {
   if (follower) headers.follower = follower;
+
   return fetch(`${config.apiPrefix}${config.post}/${author}/${permlink}`, {
     headers: { ...headers, app: config.appName, locale },
     method: 'GET',
@@ -367,6 +373,7 @@ export const searchUsers = (searchString, username, limit = 15, notGuest = false
 
 export const searchObjectTypes = (searchString, limit = 15, skip) => {
   const requestBody = { search_string: searchString, limit, skip };
+
   return fetch(`${config.apiPrefix}${config.objectTypesSearch}`, {
     headers,
     method: 'POST',
@@ -517,6 +524,7 @@ export const getWobjectsWithUserWeight = (
   locale,
 ) => {
   const reqData = { skip, limit };
+
   if (objectTypes) reqData.object_types = objectTypes;
   if (excludeObjectTypes) reqData.exclude_object_types = excludeObjectTypes;
 
@@ -632,6 +640,7 @@ export const getObjectTypes = (limit = 10, skip = 0, wobjects_count = 3, locale)
 
 export const getObjectType = (typeName, requestData) => {
   const { locale = 'en-US', userName } = requestData;
+
   return fetch(`${config.apiPrefix}${config.objectType}/${typeName}`, {
     headers: { ...headers, follower: userName, app: config.appName, locale },
     method: 'POST',
@@ -702,6 +711,7 @@ export const getReviewCheckInfo = ({ campaignId, locale = 'en-US', userName, pos
   const queryString = `${
     postPermlink ? `?userName=${userName}&postPermlink=${postPermlink}` : `?userName=${userName}`
   }`;
+
   return fetch(
     `${config.campaignApiPrefix}${config.campaign}${config.reviewCheck}/${campaignId}${queryString}`,
     {
@@ -750,7 +760,7 @@ export const getLenders = ({ sponsor, user, globalReport, filters }, skip = 0, l
       if (!globalReport) {
         if (sponsor) {
           preparedObject = {
-            sponsor: sponsor,
+            sponsor,
           };
         } else {
           preparedObject = {
@@ -762,8 +772,10 @@ export const getLenders = ({ sponsor, user, globalReport, filters }, skip = 0, l
           preparedObject.days = obj.days || obj.moreDays || obj.otherDays;
         if (obj.payable) preparedObject.payable = obj.payable;
       }
+
       return { ...preparedObject, skip, limit };
     }
+
     return {
       userName: user,
       sponsor,
@@ -801,6 +813,7 @@ export const getReport = ({ guideName, userName, reservationPermlink }) =>
 // region UserMetadata Requests
 export const getAuthenticatedUserMetadata = userName => {
   const { apiPrefix, user, userMetadata } = config;
+
   return fetch(`${apiPrefix}${user}/${userName}${userMetadata}`, {
     headers,
     method: 'GET',
@@ -812,6 +825,7 @@ export const getAuthenticatedUserMetadata = userName => {
 export const updateUserMetadata = async (userName, data) => {
   let isGuest;
   let token = getGuestAccessToken();
+
   isGuest = token === 'null' ? false : Boolean(token);
 
   if (isGuest) token = await getValidTokenData();
@@ -837,9 +851,11 @@ export const getGuestPaymentsHistory = async (
 ) => {
   const token = await getValidTokenData();
   let url = `${config.campaignApiPrefix}${config.payments}${config.demoPayables}?userName=${userName}&skip=${skip}&limit=${limit}`;
+
   if (tableView) {
     url += `&tableView=${tableView}&startDate=${startDate}&endDate=${endDate}`;
   }
+
   return fetch(url, {
     headers: { ...headers, 'access-token': token.token, 'waivio-auth': true },
     method: 'GET',
@@ -855,6 +871,7 @@ export const getGuestPaymentsHistory = async (
 export const getAccessToken = (token, social, regData) => {
   const response = {};
   const body = {};
+
   body.access_token = token;
 
   if (!isEmpty(regData)) {
@@ -870,10 +887,12 @@ export const getAccessToken = (token, social, regData) => {
       response.accessToken = data.headers.get('access-token');
       response.expiration = data.headers.get('expires-in');
       response.refreshToken = data.headers.get('refresh-token');
+
       return data.json();
     })
     .then(data => {
       response.userData = data.user;
+
       return response;
     })
     .catch(err => err);
@@ -881,6 +900,7 @@ export const getAccessToken = (token, social, regData) => {
 
 export const refreshToken = token => {
   const response = {};
+
   return fetch(`${config.baseUrl}${config.auth}/${config.refreshAuthToken}`, {
     method: 'POST',
     headers: { 'refresh-token': token },
@@ -890,6 +910,7 @@ export const refreshToken = token => {
       response.refreshToken = data.headers.get('refresh-token');
       response.expiration = data.headers.get('expires-in');
       response.status = data.status;
+
       return response;
     })
     .catch(e => {
@@ -909,8 +930,10 @@ export const isUserRegistered = (id, socialNetwork) =>
 export const broadcastGuestOperation = async (operationId, data) => {
   const userData = await getValidTokenData();
   const isReview = includes(data[0][1].title, 'Review');
+
   if (userData.token) {
     let body;
+
     if (isReview) {
       body = {
         id: operationId,
@@ -925,6 +948,7 @@ export const broadcastGuestOperation = async (operationId, data) => {
         userName: userData.userData.name,
       };
     }
+
     return fetch(`${config.baseUrl}${config.auth}${config.guestOperations}`, {
       method: 'POST',
       headers: { ...headers, 'access-token': userData.token },
@@ -943,7 +967,7 @@ export const getFollowersFromAPI = (username, limit = 10, skip = 0, sort = 'rece
       headers: {
         ...headers,
         following: follower,
-        follower: follower,
+        follower,
       },
     },
   )
@@ -975,9 +999,11 @@ export const getFollowingsFromAPI = (
 
 export const getGuestAvatarUrl = (username, url, intl) => {
   const formData = new FormData();
+
   formData.append('userName', username);
   formData.append('type', 'avatar');
   formData.append('imageUrl', url);
+
   return fetch(`https://www.waivio.com/api/image`, {
     method: 'POST',
     body: formData,
@@ -1018,6 +1044,7 @@ export const updateGuestProfile = async (username, json_metadata) => {
     },
   };
   const userData = await getValidTokenData();
+
   return fetch(`${config.baseUrl}${config.auth}${config.guestOperations}`, {
     method: 'POST',
     headers: { ...headers, 'access-token': userData.token },
@@ -1034,6 +1061,7 @@ export const sendGuestTransfer = async ({ to, amount, memo, app }) => {
     id: overpaymentRefund ? 'overpayment_refund' : 'waivio_guest_transfer',
     data: { to, amount: +amount.split(' ')[0] },
   };
+
   if (app) body.app = app;
   if (memo && !overpaymentRefund) {
     body.data.memo = memo;
@@ -1076,6 +1104,7 @@ export const sendPendingTransfer = async ({ sponsor, userName, amount, transacti
     transactionId,
     memo,
   };
+
   return fetch(`${config.campaignApiPrefix}${config.payments}${config.setPendingStatus}`, {
     method: 'POST',
     headers,
@@ -1087,6 +1116,7 @@ export const sendPendingTransfer = async ({ sponsor, userName, amount, transacti
 
 export const getUserCommentsFromApi = (username, skip = 0, limit = 10, startPermlink, follower) => {
   let res;
+
   if (startPermlink) {
     res = fetch(
       `${config.apiPrefix}${config.user}/${username}${config.comments}?skip=${skip}&limit=${limit}&start_permlink=${startPermlink}`,
@@ -1108,6 +1138,7 @@ export const getUserCommentsFromApi = (username, skip = 0, limit = 10, startPerm
       },
     );
   }
+
   return res
     .then(responsive => responsive.json())
     .then(data => data)
@@ -1214,6 +1245,7 @@ export const estimateAmount = (inputAmount, inputCoinType, outputCoinType) => {
     amount,
     17,
   )}&inputCoinType=${inputCoinType}&outputCoinType=${outputCoinType}`;
+
   return fetch(
     `${config.campaignApiPrefix}${config.withdraw}${config.estimateOutputAmount}?${query}`,
     {
@@ -1223,8 +1255,8 @@ export const estimateAmount = (inputAmount, inputCoinType, outputCoinType) => {
   ).then(res => res.json());
 };
 
-export const confirmWithDraw = (userName, transactionData) => {
-  return fetch(`${config.campaignApiPrefix}${config.withdraw}${config.immediateWithdraw}`, {
+export const confirmWithDraw = (userName, transactionData) =>
+  fetch(`${config.campaignApiPrefix}${config.withdraw}${config.immediateWithdraw}`, {
     headers: { ...headers, 'access-token': store.get('accessToken') },
     method: 'POST',
     body: JSON.stringify({
@@ -1232,7 +1264,6 @@ export const confirmWithDraw = (userName, transactionData) => {
       transactionData,
     }),
   }).then(res => res.json());
-};
 
 export const sendEmailConfirmation = (userName, type, email, isGuest) => {
   const accessToken = isGuest ? store.get('accessToken') : Cookie.get('accessToken');
@@ -1321,7 +1352,8 @@ export const getChangedField = (authorPermlink, fieldName, author, permlink, loc
     .catch(error => error);
 
 export const getFollowingSponsorsRewards = ({ userName, skip }) => {
-  let query = skip ? `/?skip=${skip}` : '';
+  const query = skip ? `/?skip=${skip}` : '';
+
   fetch(`${config.campaignApiPrefix}${config.rewards}/${userName}${query}`, {
     headers,
     method: 'GET',
@@ -1490,27 +1522,25 @@ export const getRelatedPhotos = (authorPermlink, limit, skip) =>
     .then(result => result)
     .catch(error => error);
 
-//websites
+// websites
 
-export const getDomainList = () => {
-  return fetch(`${config.apiPrefix}${config.sites}${config.getParents}`, {
+export const getDomainList = () =>
+  fetch(`${config.apiPrefix}${config.sites}${config.getParents}`, {
     method: 'GET',
     headers,
   })
     .then(r => r.json())
     .catch(err => err);
-};
 
-export const createWebsite = body => {
-  return fetch(`${config.apiPrefix}${config.sites}${config.create}`, {
+export const createWebsite = body =>
+  fetch(`${config.apiPrefix}${config.sites}${config.create}`, {
     headers: { ...headers, 'access-token': Cookie.get('access_token') },
     body: JSON.stringify(body),
     method: 'PUT',
   }).then(res => res.json());
-};
 
-export const checkAvailable = (name, parent) => {
-  return fetch(
+export const checkAvailable = (name, parent) =>
+  fetch(
     `${config.apiPrefix}${config.sites}${config.checkAvailable}?name=${name}&parentId=${parent}`,
     {
       headers,
@@ -1519,19 +1549,17 @@ export const checkAvailable = (name, parent) => {
   )
     .then(res => res)
     .catch(e => e);
-};
 
-export const getInfoForManagePage = name => {
-  return fetch(`${config.apiPrefix}${config.sites}${config.managePage}?userName=${name}`, {
+export const getInfoForManagePage = name =>
+  fetch(`${config.apiPrefix}${config.sites}${config.managePage}?userName=${name}`, {
     headers: { ...headers, 'access-token': Cookie.get('access_token') },
     method: 'GET',
   })
     .then(res => res)
     .catch(e => e);
-};
 
-export const deleteSite = (userName, host) => {
-  return fetch(`${config.apiPrefix}${config.sites}`, {
+export const deleteSite = (userName, host) =>
+  fetch(`${config.apiPrefix}${config.sites}`, {
     headers: { ...headers, 'access-token': Cookie.get('access_token') },
     body: JSON.stringify({ userName, host }),
     method: 'DELETE',
@@ -1539,7 +1567,6 @@ export const deleteSite = (userName, host) => {
     .then(res => res.json())
     .then(res => res)
     .catch(e => e);
-};
 
 export const getWebsitesReports = formData => {
   const queryString = Object.keys(formData).reduce(
@@ -1652,15 +1679,14 @@ export const getSettingsWebsite = host =>
     .then(res => res)
     .catch(e => e);
 
-export const getCurrentAppSettings = () => {
-  return fetch(`${config.apiPrefix}${config.sites}`, {
+export const getCurrentAppSettings = () =>
+  fetch(`${config.apiPrefix}${config.sites}`, {
     headers,
     method: 'POST',
   })
     .then(res => res.json())
     .then(res => res)
     .catch(e => e);
-};
 
 export const getObjectTypeFilters = (objectType, wobjectLinks) =>
   fetch(`${config.apiPrefix}${config.objectTypes}${config.tagForFilter}`, {
@@ -1719,38 +1745,35 @@ export const getWebsiteObjectsWithCoordinates = (params = {}, accessToken) =>
     .then(res => res)
     .catch(e => e);
 
-export const getExpertiseCounters = userName => {
-  return fetch(`${config.apiPrefix}${config.user}/${userName}${config.expertiseCounters}`, {
+export const getExpertiseCounters = userName =>
+  fetch(`${config.apiPrefix}${config.user}/${userName}${config.expertiseCounters}`, {
     headers,
     method: 'GET',
   })
     .then(res => res.json())
     .then(res => res)
     .catch(e => e);
-};
 
-export const getReservedCounter = userName => {
-  return fetch(`${config.campaignV2ApiPrefix}${config.reservation_v2}${config.count}/${userName}`, {
+export const getReservedCounter = userName =>
+  fetch(`${config.campaignV2ApiPrefix}${config.reservation_v2}${config.count}/${userName}`, {
     headers,
     method: 'GET',
   })
     .then(res => res.json())
     .then(res => res)
     .catch(e => e);
-};
 
-export const getUserCoordinatesByIpAdress = () => {
-  return fetch(`${config.apiPrefix}${config.geoIp}`, {
+export const getUserCoordinatesByIpAdress = () =>
+  fetch(`${config.apiPrefix}${config.geoIp}`, {
     headers,
     method: 'GET',
   })
     .then(res => res.json())
     .then(res => res)
     .catch(e => e);
-};
 
-export const putUserCoordinates = params => {
-  return fetch(`${config.apiPrefix}${config.geoIp}`, {
+export const putUserCoordinates = params =>
+  fetch(`${config.apiPrefix}${config.geoIp}`, {
     headers,
     body: JSON.stringify(params),
     method: 'PUT',
@@ -1758,7 +1781,6 @@ export const putUserCoordinates = params => {
     .then(res => res.json())
     .then(res => res)
     .catch(e => e);
-};
 
 export const checkExpiredPayment = userName =>
   fetch(
@@ -1788,8 +1810,8 @@ export const getVipTicketsInfo = (queryData, isGuest) => {
     .catch(e => e);
 };
 
-export const addNoteInVipTicket = (body, isGuest) => {
-  return fetch(`${config.apiPrefix}${config.vipTickets}`, {
+export const addNoteInVipTicket = (body, isGuest) =>
+  fetch(`${config.apiPrefix}${config.vipTickets}`, {
     headers: {
       ...headers,
       'access-token': isGuest ? getGuestAccessToken() : Cookie.get('access_token'),
@@ -1801,10 +1823,10 @@ export const addNoteInVipTicket = (body, isGuest) => {
     .then(res => res.json())
     .then(res => res)
     .catch(e => e);
-};
 
 export const getAdvancedReports = (body, user = '') => {
   const actualHeaders = user ? { ...headers, user } : { ...headers };
+
   return fetch(`${config.campaignApiPrefix}${config.payments}${config.advancedReport}`, {
     headers: actualHeaders,
     body: JSON.stringify(body),
@@ -1817,6 +1839,7 @@ export const getAdvancedReports = (body, user = '') => {
 
 export const getWaivAdvancedReports = (body, user = '', abortController) => {
   const actualHeaders = user ? { ...headers, user } : { ...headers };
+
   return fetch(`${config.apiPrefix}${config.user}${config.advancedReport}`, {
     headers: actualHeaders,
     body: JSON.stringify(body),
@@ -1828,15 +1851,14 @@ export const getWaivAdvancedReports = (body, user = '', abortController) => {
     .catch(e => e);
 };
 
-export const accountsCreationDate = userName => {
-  return fetch(`${config.apiPrefix}${config.user}/${userName}${config.creationDate}`, {
+export const accountsCreationDate = userName =>
+  fetch(`${config.apiPrefix}${config.user}/${userName}${config.creationDate}`, {
     headers,
     method: 'GET',
   })
     .then(res => res.json())
     .then(res => res)
     .catch(e => e);
-};
 
 export const calculateVoteValueForSlider = (userName, query) => {
   const queryString = createQuery(query);
@@ -1878,6 +1900,7 @@ export const getCurrentCurrencyRate = currency =>
 
 export const getNearbyObjects = (authorPermlink, host, skip = 0, limit = 5, radius = 20000) => {
   const queryString = `?skip=${skip}&limit=${limit}&radius=${radius}`;
+
   return fetch(
     `${config.apiPrefix}${config.getObjects}/${authorPermlink}${config.nearby}${queryString}`,
     {
@@ -1892,28 +1915,27 @@ export const getNearbyObjects = (authorPermlink, host, skip = 0, limit = 5, radi
     .then(res => res.json());
 };
 
-export const getRewardFund = () => {
-  return fetch(`${config.apiPrefix}${config.hive}${config.rewardFund}`, {
-    headers: headers,
+export const getRewardFund = () =>
+  fetch(`${config.apiPrefix}${config.hive}${config.rewardFund}`, {
+    headers,
     method: 'GET',
   })
     .then(handleErrors)
     .then(res => res.json())
     .catch(e => e);
-};
 
-export const getCurrentMedianHistory = () => {
-  return fetch(`${config.apiPrefix}${config.hive}${config.currentMedianHistory}`, {
-    headers: headers,
+export const getCurrentMedianHistory = () =>
+  fetch(`${config.apiPrefix}${config.hive}${config.currentMedianHistory}`, {
+    headers,
     method: 'GET',
   })
     .then(handleErrors)
     .then(res => res.json())
     .catch(e => e);
-};
 
 export const getMatchBots = (botName, botType) => {
   const queryString = `?botName=${botName}`;
+
   return fetch(`${config.campaignApiPrefix}${config.getMatchBots}/${botType}${queryString}`, {
     headers,
     method: 'GET',
@@ -1922,24 +1944,23 @@ export const getMatchBots = (botName, botType) => {
     .then(res => res.json());
 };
 
-export const getDistrictsWithCount = () => {
-  return fetch(
+export const getDistrictsWithCount = () =>
+  fetch(
     `${config.apiPrefix}${config.getObjects}${config.count}${config.area}?objectType=restaurant`,
     {
-      headers: headers,
+      headers,
       method: 'GET',
     },
   )
     .then(handleErrors)
     .then(res => res.json())
     .catch(e => e);
-};
 
 export const getTypesPrefetch = types => {
   const type = types.length > 1 ? types.join(',') : types.toString();
 
   return fetch(`${config.apiPrefix}${config.sites}${config.prefetch}?types=${type}`, {
-    headers: headers,
+    headers,
     method: 'GET',
   })
     .then(handleErrors)
@@ -1947,8 +1968,8 @@ export const getTypesPrefetch = types => {
     .catch(e => e);
 };
 
-export const getMapExperts = (userName, params) => {
-  return fetch(`${config.apiPrefix}${config.wobjects}${config.map}${config.experts}`, {
+export const getMapExperts = (userName, params) =>
+  fetch(`${config.apiPrefix}${config.wobjects}${config.map}${config.experts}`, {
     headers: {
       ...headers,
       follower: userName,
@@ -1960,10 +1981,9 @@ export const getMapExperts = (userName, params) => {
     .then(handleErrors)
     .then(res => res.json())
     .catch(e => e);
-};
 
-export const getPostsForMap = params => {
-  return fetch(`${config.apiPrefix}${config.wobjects}${config.map}${config.lastPost}`, {
+export const getPostsForMap = params =>
+  fetch(`${config.apiPrefix}${config.wobjects}${config.map}${config.lastPost}`, {
     headers,
     body: JSON.stringify(params),
     method: 'POST',
@@ -1971,7 +1991,6 @@ export const getPostsForMap = params => {
     .then(handleErrors)
     .then(res => res.json())
     .catch(e => e);
-};
 
 const hiveEngineContract = params =>
   fetch('https://ha.herpc.dtools.dev/contracts', {
@@ -1989,21 +2008,32 @@ const hiveEngineContract = params =>
     .then(response => response.result)
     .catch(e => e);
 
-const engineProxy = params =>
-  fetch('https://api.hive-engine.com/rpc/contracts', {
-    headers,
-    body: JSON.stringify({
-      jsonrpc: '2.0',
-      id: 10,
-      method: 'find',
-      params,
-    }),
-    method: 'POST',
-  })
-    .then(handleErrors)
-    .then(res => res.json())
-    .then(response => response.result)
-    .catch(e => e);
+const engineProxy = params => {
+  const nodes = [
+    // 'https://api.hive-engine.com/rpc', // Germany
+    // 'https://api2.hive-engine.com/rpc', // Finland
+    'https://herpc.dtools.dev', // Miami
+    'https://us.engine.rishipanthee.com', // Finland
+    'https://ha.herpc.dtools.dev', // New Jersey
+  ];
+
+  const callBack = (url, i, arr) =>
+    fetch(`${url}/contracts`, {
+      headers,
+      body: JSON.stringify({
+        jsonrpc: '2.0',
+        id: 10,
+        method: 'find',
+        params,
+      }),
+      method: 'POST',
+    })
+      .then(res => res.json())
+      .then(response => response.result)
+      .catch(() => callBack(arr[i + 1], i + 1, arr));
+
+  return callBack(nodes[0], 0, nodes);
+};
 
 export const getMarketPools = async ({ query }) =>
   engineProxy({
@@ -2035,8 +2065,8 @@ export const getWithdraws = () =>
     // indexes: '',
   });
 
-export const getTokensEngineRates = currency => {
-  return fetch(`${config.currenciesApiPrefix}${config.engineRates}?base=${currency}`, {
+export const getTokensEngineRates = currency =>
+  fetch(`${config.currenciesApiPrefix}${config.engineRates}?base=${currency}`, {
     headers,
     method: 'GET',
   })
@@ -2044,10 +2074,9 @@ export const getTokensEngineRates = currency => {
     .then(res => res.json())
     .then(response => response)
     .catch(e => e);
-};
 
-export const getUserVoteValueInfo = userName => {
-  return fetch(`${config.apiPrefix}${config.user}/${userName}${config.voteValueInfo}`, {
+export const getUserVoteValueInfo = userName =>
+  fetch(`${config.apiPrefix}${config.user}/${userName}${config.voteValueInfo}`, {
     headers,
     method: 'GET',
   })
@@ -2055,10 +2084,9 @@ export const getUserVoteValueInfo = userName => {
     .then(res => res.json())
     .then(response => response)
     .catch(e => e);
-};
 
-export const getUserVoteValueInWaiv = (userName, weight) => {
-  return fetch(`${config.apiPrefix}${config.user}/${userName}/waiv-vote?weight=${weight}`, {
+export const getUserVoteValueInWaiv = (userName, weight) =>
+  fetch(`${config.apiPrefix}${config.user}/${userName}/waiv-vote?weight=${weight}`, {
     headers,
     method: 'GET',
   })
@@ -2066,10 +2094,9 @@ export const getUserVoteValueInWaiv = (userName, weight) => {
     .then(res => res.json())
     .then(response => response.result)
     .catch(e => e);
-};
 
-export const checkUserInObjWhiteList = userName => {
-  return fetch(`${config.apiPrefix}${config.user}/${userName}/white-list-object`, {
+export const checkUserInObjWhiteList = userName =>
+  fetch(`${config.apiPrefix}${config.user}/${userName}/white-list-object`, {
     headers,
     method: 'GET',
   })
@@ -2077,10 +2104,9 @@ export const checkUserInObjWhiteList = userName => {
     .then(res => res.json())
     .then(response => response)
     .catch(e => e);
-};
 
-export const getEngineTransactionHistory = body => {
-  return fetch(`${config.campaignApiPrefix}${config.hiveEngine}${config.accountHistory}`, {
+export const getEngineTransactionHistory = body =>
+  fetch(`${config.campaignApiPrefix}${config.hiveEngine}${config.accountHistory}`, {
     headers,
     method: 'POST',
     body: JSON.stringify(body),
@@ -2089,7 +2115,6 @@ export const getEngineTransactionHistory = body => {
     .then(res => res.json())
     .then(response => response)
     .catch(e => e);
-};
 
 export const likePost = body => {
   const guestToken = getGuestAccessToken();
@@ -2109,8 +2134,8 @@ export const likePost = body => {
     .catch(e => e);
 };
 
-export const getHiveDelegate = username => {
-  return fetch(`${config.apiPrefix}${config.user}/${username}${config.delegation}`, {
+export const getHiveDelegate = username =>
+  fetch(`${config.apiPrefix}${config.user}/${username}${config.delegation}`, {
     headers,
     method: 'GET',
   })
@@ -2118,10 +2143,9 @@ export const getHiveDelegate = username => {
     .then(res => res.json())
     .then(response => response)
     .catch(e => e);
-};
 
-export const getTokensTransferList = (symbol, account, offset = 0, limit = 10) => {
-  return fetch(
+export const getTokensTransferList = (symbol, account, offset = 0, limit = 10) =>
+  fetch(
     `https://accounts.hive-engine.com/accountHistory?account=${account}&limit=${limit}&offset=${offset}${
       symbol ? `&symbol=${symbol}` : ''
     }`,
@@ -2134,7 +2158,6 @@ export const getTokensTransferList = (symbol, account, offset = 0, limit = 10) =
     .then(res => res.json())
     .then(response => response)
     .catch(e => e);
-};
 
 export const getWaivVoteMana = async account => {
   const mana = await hiveEngineContract({
@@ -2156,8 +2179,8 @@ export const getTokensRate = symbols =>
     table: 'metrics',
   });
 
-export const getHiveBookList = account => {
-  return fetch('https://api.hive.blog/', {
+export const getHiveBookList = account =>
+  fetch('https://api.hive.blog/', {
     method: 'POST',
     body: JSON.stringify({
       id: 6,
@@ -2170,7 +2193,6 @@ export const getHiveBookList = account => {
     .then(res => res.json())
     .then(response => response.result)
     .catch(e => e);
-};
 
 export const getSellBookList = (account, offset) =>
   hiveEngineContract({
@@ -2202,49 +2224,21 @@ export const getBuyBookList = (account, offset) =>
     table: 'buyBook',
   });
 
-export const getFeeInfo = () => {
-  return fetch('https://api2.hive-engine.com/rpc/contracts', {
-    headers,
-    body: JSON.stringify({
-      jsonrpc: '2.0',
-      method: 'find',
-      params: {
-        contract: 'marketpools',
-        table: 'params',
-        query: {},
-      },
-      id: 'ssc-mainnet-hive',
-    }),
-    method: 'POST',
-  })
-    .then(handleErrors)
-    .then(res => res.json())
-    .then(response => response.result[0])
-    .catch(e => e);
-};
+export const getFeeInfo = () =>
+  engineProxy({
+    contract: 'marketpools',
+    table: 'params',
+    query: {},
+  });
 
-export const getDelegateList = data => {
-  return fetch('https://api2.hive-engine.com/rpc/contracts', {
-    headers,
-    body: JSON.stringify({
-      jsonrpc: '2.0',
-      method: 'find',
-      params: {
-        contract: 'tokens',
-        table: 'delegations',
-        query: {
-          ...data,
-        },
-      },
-      id: 'ssc-mainnet-hive',
-    }),
-    method: 'POST',
-  })
-    .then(handleErrors)
-    .then(res => res.json())
-    .then(response => response.result)
-    .catch(e => e);
-};
+export const getDelegateList = data =>
+  engineProxy({
+    contract: 'tokens',
+    table: 'delegations',
+    query: {
+      ...data,
+    },
+  });
 
 export const getTokensInformation = symbols =>
   hiveEngineContract({
@@ -2316,8 +2310,8 @@ export const converHiveEngineCoins = data =>
     .then(response => response)
     .catch(e => e);
 
-export const checkExistPermlink = permlink => {
-  return fetch(`${config.apiPrefix}${config.getObjects}/${permlink}${config.exist}`, {
+export const checkExistPermlink = permlink =>
+  fetch(`${config.apiPrefix}${config.getObjects}/${permlink}${config.exist}`, {
     headers,
     method: 'GET',
   })
@@ -2325,7 +2319,6 @@ export const checkExistPermlink = permlink => {
     .then(res => res.json())
     .then(response => response)
     .catch(e => e);
-};
 
 export const getUpdatesList = (permlink, skip = 0, query) => {
   const compareQuery = createQuery(query);
@@ -2343,10 +2336,10 @@ export const getUpdatesList = (permlink, skip = 0, query) => {
     .catch(e => e);
 };
 
-//new campaings
+// new campaings
 
-export const createNewCampaing = (data, account) => {
-  return fetch(`${config.campaignV2ApiPrefix}${config.campaign}`, {
+export const createNewCampaing = (data, account) =>
+  fetch(`${config.campaignV2ApiPrefix}${config.campaign}`, {
     headers: {
       ...headers,
       account,
@@ -2359,10 +2352,9 @@ export const createNewCampaing = (data, account) => {
     .then(res => res.json())
     .then(response => response)
     .catch(e => e);
-};
 
-export const getRewardsFollowerUser = (skip = 0, query, sort, userName) => {
-  return fetch(
+export const getRewardsFollowerUser = (skip = 0, query, sort, userName) =>
+  fetch(
     `${config.campaignV2ApiPrefix}${config.rewards}${config.user}?sort=${sort}&userName=${userName}&skip=${skip}`,
     {
       headers,
@@ -2373,10 +2365,9 @@ export const getRewardsFollowerUser = (skip = 0, query, sort, userName) => {
     .then(res => res.json())
     .then(response => response)
     .catch(e => e);
-};
 
-export const updateCampaing = (data, account) => {
-  return fetch(`${config.campaignV2ApiPrefix}${config.campaign}`, {
+export const updateCampaing = (data, account) =>
+  fetch(`${config.campaignV2ApiPrefix}${config.campaign}`, {
     headers: {
       ...headers,
       account,
@@ -2389,10 +2380,9 @@ export const updateCampaing = (data, account) => {
     .then(res => res.json())
     .then(response => response)
     .catch(e => e);
-};
 
-export const getCampaingManageList = giudeName => {
-  return fetch(`${config.campaignV2ApiPrefix}${config.campaigns}${config.manager}/${giudeName}`, {
+export const getCampaingManageList = giudeName =>
+  fetch(`${config.campaignV2ApiPrefix}${config.campaigns}${config.manager}/${giudeName}`, {
     headers,
     method: 'GET',
   })
@@ -2400,10 +2390,9 @@ export const getCampaingManageList = giudeName => {
     .then(res => res.json())
     .then(response => response)
     .catch(e => e);
-};
 
-export const getCampaingBalanceList = giudeName => {
-  return fetch(`${config.campaignV2ApiPrefix}${config.campaigns}${config.balance}/${giudeName}`, {
+export const getCampaingBalanceList = giudeName =>
+  fetch(`${config.campaignV2ApiPrefix}${config.campaigns}${config.balance}/${giudeName}`, {
     headers,
     method: 'GET',
   })
@@ -2411,10 +2400,9 @@ export const getCampaingBalanceList = giudeName => {
     .then(res => res.json())
     .then(response => response)
     .catch(e => e);
-};
 
-export const getCampaingHistoryList = (giudeName, skip = 0) => {
-  return fetch(
+export const getCampaingHistoryList = (giudeName, skip = 0) =>
+  fetch(
     `${config.campaignV2ApiPrefix}${config.campaigns}${config.history}/${giudeName}?limit=10&skip=${skip}`,
     {
       headers,
@@ -2424,10 +2412,9 @@ export const getCampaingHistoryList = (giudeName, skip = 0) => {
     .then(res => res.json())
     .then(response => response)
     .catch(e => e);
-};
 
-export const getAllRewardList = (skip = 0, query, sort, reach) => {
-  return fetch(
+export const getAllRewardList = (skip = 0, query, sort, reach) =>
+  fetch(
     `${config.campaignV2ApiPrefix}${config.rewards}${config.all}?limit=10&skip=${skip}&reach=${reach}&sort=${sort}&${query}`,
     {
       headers,
@@ -2438,7 +2425,6 @@ export const getAllRewardList = (skip = 0, query, sort, reach) => {
     .then(res => res.json())
     .then(response => response)
     .catch(e => e);
-};
 
 export const getMessagesList = (userName, skip, query, sort) => {
   const filters = parseQuery(query);
@@ -2464,8 +2450,8 @@ export const getMessagesList = (userName, skip, query, sort) => {
     .catch(e => e);
 };
 
-export const getFraudDetectionList = (userName, skip, query, sort) => {
-  return fetch(
+export const getFraudDetectionList = (userName, skip, query, sort) =>
+  fetch(
     `${config.campaignV2ApiPrefix}${config.rewards}${config.frauds}/${userName}?limit=10&skip=${skip}`,
     {
       headers,
@@ -2482,10 +2468,9 @@ export const getFraudDetectionList = (userName, skip, query, sort) => {
     .then(res => res.json())
     .then(response => response)
     .catch(e => e);
-};
 
-export const getReservedRewardList = (userName, skip = 0) => {
-  return fetch(
+export const getReservedRewardList = (userName, skip = 0) =>
+  fetch(
     `${config.campaignV2ApiPrefix}${config.rewards}${config.reserved}/${userName}?limit=10&skip=${skip}`,
     {
       headers,
@@ -2496,10 +2481,9 @@ export const getReservedRewardList = (userName, skip = 0) => {
     .then(res => res.json())
     .then(response => response)
     .catch(e => e);
-};
 
-export const getEligibleRewardList = (userName, skip = 0, query, sort, reach) => {
-  return fetch(
+export const getEligibleRewardList = (userName, skip = 0, query, sort, reach) =>
+  fetch(
     `${config.campaignV2ApiPrefix}${config.rewards}${config.eligible}?userName=${userName}&limit=10&skip=${skip}&sort=${sort}&reach=${reach}&${query}`,
     {
       headers,
@@ -2510,7 +2494,6 @@ export const getEligibleRewardList = (userName, skip = 0, query, sort, reach) =>
     .then(res => res.json())
     .then(response => response)
     .catch(e => e);
-};
 
 export const getPropositionByCampaingObjectPermlink = (
   parentPermlink,
@@ -2519,8 +2502,8 @@ export const getPropositionByCampaingObjectPermlink = (
   query,
   sort = 'payout',
   reach,
-) => {
-  return fetch(
+) =>
+  fetch(
     `${config.campaignV2ApiPrefix}${config.rewards}${
       config.all
     }/object/${parentPermlink}?limit=10&skip=${skip}&sort=${sort}&reach=${reach}${
@@ -2535,10 +2518,9 @@ export const getPropositionByCampaingObjectPermlink = (
     .then(res => res.json())
     .then(response => response)
     .catch(e => e);
-};
 
-export const getReservedProposition = (userName, skip = 0, query, sort) => {
-  return fetch(
+export const getReservedProposition = (userName, skip = 0, query, sort) =>
+  fetch(
     `${config.campaignV2ApiPrefix}${config.rewards}${config.reserved}/${userName}?limit=10&skip=${skip}${query}&sort=${sort}`,
     {
       headers,
@@ -2549,30 +2531,26 @@ export const getReservedProposition = (userName, skip = 0, query, sort) => {
     .then(res => res.json())
     .then(response => response)
     .catch(e => e);
-};
 
-export const getReservationsList = (guideName, skip = 0, query, sort) => {
-  return fetch(
-    `${config.campaignV2ApiPrefix}${config.rewards}${config.reservations}/${guideName}`,
-    {
-      headers,
-      method: 'POST',
-      body: JSON.stringify({
-        limit: 10,
-        skip,
-        sort,
-        ...parseQuery(query),
-      }),
-    },
-  )
+export const getReservationsList = (guideName, skip = 0, query, sort) =>
+  fetch(`${config.campaignV2ApiPrefix}${config.rewards}${config.reservations}/${guideName}`, {
+    headers,
+    method: 'POST',
+    body: JSON.stringify({
+      limit: 10,
+      skip,
+      sort,
+      ...parseQuery(query),
+    }),
+  })
     .then(handleErrors)
     .then(res => res.json())
     .then(response => response)
     .catch(e => e);
-};
 
 export const getHistoryList = (guideName, skip = 0, query, sort) => {
   const filters = parseQuery(query);
+
   return fetch(`${config.campaignV2ApiPrefix}${config.rewards}${config.history}/${guideName}`, {
     headers,
     method: 'POST',
@@ -2590,15 +2568,14 @@ export const getHistoryList = (guideName, skip = 0, query, sort) => {
     .catch(e => e);
 };
 
-export const getRewardTab = userName => {
-  return fetch(`${config.campaignV2ApiPrefix}${config.rewards}${config.tabType}/${userName}`, {
+export const getRewardTab = userName =>
+  fetch(`${config.campaignV2ApiPrefix}${config.rewards}${config.tabType}/${userName}`, {
     headers,
     method: 'GET',
   })
     .then(res => res.json())
     .then(response => response)
     .catch(e => e);
-};
 
 export const getEligiblePropositionByCampaingObjectPermlink = (
   parentPermlink,
@@ -2607,8 +2584,8 @@ export const getEligiblePropositionByCampaingObjectPermlink = (
   query,
   sort,
   reach,
-) => {
-  return fetch(
+) =>
+  fetch(
     `${config.campaignV2ApiPrefix}${config.rewards}${
       config.eligible
     }/object/${parentPermlink}?limit=10&skip=${skip}${
@@ -2623,10 +2600,9 @@ export const getEligiblePropositionByCampaingObjectPermlink = (
     .then(res => res.json())
     .then(response => response)
     .catch(e => e);
-};
 
-export const validateActivateCampaing = data => {
-  return fetch(`${config.campaignV2ApiPrefix}${config.campaign}${config.activate}`, {
+export const validateActivateCampaing = data =>
+  fetch(`${config.campaignV2ApiPrefix}${config.campaign}${config.activate}`, {
     headers,
     method: 'POST',
     body: JSON.stringify(data),
@@ -2635,10 +2611,9 @@ export const validateActivateCampaing = data => {
     .then(res => res.json())
     .then(response => response)
     .catch(e => e);
-};
 
-export const validateEgibilitiesForUser = data => {
-  return fetch(
+export const validateEgibilitiesForUser = data =>
+  fetch(
     `${config.campaignV2ApiPrefix}${config.rewards}${config.availability}?${createQuery(data)}`,
     {
       headers,
@@ -2649,10 +2624,9 @@ export const validateEgibilitiesForUser = data => {
     .then(res => res.json())
     .then(response => response)
     .catch(e => e);
-};
 
-export const validateDeactivateCampaing = data => {
-  return fetch(`${config.campaignV2ApiPrefix}${config.campaign}${config.deactivate}`, {
+export const validateDeactivateCampaing = data =>
+  fetch(`${config.campaignV2ApiPrefix}${config.campaign}${config.deactivate}`, {
     headers,
     method: 'POST',
     body: JSON.stringify(data),
@@ -2661,10 +2635,9 @@ export const validateDeactivateCampaing = data => {
     .then(res => res.json())
     .then(response => response)
     .catch(e => e);
-};
 
-export const getNewCampaingById = id => {
-  return fetch(`${config.campaignV2ApiPrefix}${config.campaign}/${id}`, {
+export const getNewCampaingById = id =>
+  fetch(`${config.campaignV2ApiPrefix}${config.campaign}/${id}`, {
     headers,
     method: 'GET',
   })
@@ -2672,10 +2645,9 @@ export const getNewCampaingById = id => {
     .then(res => res.json())
     .then(response => response)
     .catch(e => e);
-};
 // {guideName, payoutToken, days, payable}
-export const getPaybelsList = (guideName, data = {}) => {
-  return fetch(
+export const getPaybelsList = (guideName, data = {}) =>
+  fetch(
     `${config.campaignV2ApiPrefix}${config.payables}${config.guide}/${guideName}?${createQuery(
       data,
     )}`,
@@ -2688,9 +2660,8 @@ export const getPaybelsList = (guideName, data = {}) => {
     .then(res => res.json())
     .then(response => response)
     .catch(e => e);
-};
-export const getReceivablesList = (user, data = {}) => {
-  return fetch(
+export const getReceivablesList = (user, data = {}) =>
+  fetch(
     `${config.campaignV2ApiPrefix}${config.payables}${config.user}/${user}?${createQuery(data)}`,
     {
       headers,
@@ -2701,39 +2672,30 @@ export const getReceivablesList = (user, data = {}) => {
     .then(res => res.json())
     .then(response => response)
     .catch(e => e);
-};
 
-export const getPaybelsListByUser = (guideName, userName) => {
-  return fetch(
-    `${config.campaignV2ApiPrefix}${config.payables}${config.guide}/${guideName}/${userName}`,
-    {
-      headers,
-      method: 'GET',
-    },
-  )
+export const getPaybelsListByUser = (guideName, userName) =>
+  fetch(`${config.campaignV2ApiPrefix}${config.payables}${config.guide}/${guideName}/${userName}`, {
+    headers,
+    method: 'GET',
+  })
     .then(handleErrors)
     .then(res => res.json())
     .then(response => response)
     .catch(e => e);
-};
 
 // userName*, guideName*, reviewPermlink*, payoutToken
-export const getReportByUser = data => {
-  return fetch(
-    `${config.campaignV2ApiPrefix}${config.payables}${config.report}?${createQuery(data)}`,
-    {
-      headers,
-      method: 'GET',
-    },
-  )
+export const getReportByUser = data =>
+  fetch(`${config.campaignV2ApiPrefix}${config.payables}${config.report}?${createQuery(data)}`, {
+    headers,
+    method: 'GET',
+  })
     .then(handleErrors)
     .then(res => res.json())
     .then(response => response)
     .catch(e => e);
-};
 
-export const getFiltersForAllRewards = reach => {
-  return fetch(
+export const getFiltersForAllRewards = reach =>
+  fetch(
     `${config.campaignV2ApiPrefix}${config.rewards}${config.all}${config.sponsors}?reach=${reach}`,
     {
       headers,
@@ -2744,10 +2706,9 @@ export const getFiltersForAllRewards = reach => {
     .then(res => res.json())
     .then(response => response)
     .catch(e => e);
-};
 
-export const getFiltersForEligibleRewards = (userName, reach) => {
-  return fetch(
+export const getFiltersForEligibleRewards = (userName, reach) =>
+  fetch(
     `${config.campaignV2ApiPrefix}${config.rewards}${config.eligible}${config.sponsors}?userName=${userName}&reach=${reach}`,
     {
       headers,
@@ -2758,24 +2719,19 @@ export const getFiltersForEligibleRewards = (userName, reach) => {
     .then(res => res.json())
     .then(response => response)
     .catch(e => e);
-};
 
-export const getFiltersForMessages = () => {
-  return fetch(
-    `${config.campaignV2ApiPrefix}${config.rewards}${config.messages}${config.filters}`,
-    {
-      headers,
-      method: 'GET',
-    },
-  )
+export const getFiltersForMessages = () =>
+  fetch(`${config.campaignV2ApiPrefix}${config.rewards}${config.messages}${config.filters}`, {
+    headers,
+    method: 'GET',
+  })
     .then(handleErrors)
     .then(res => res.json())
     .then(response => response)
     .catch(e => e);
-};
 
-export const getFiltersForEligibleProposition = (reqObj, userName, reach) => {
-  return fetch(
+export const getFiltersForEligibleProposition = (reqObj, userName, reach) =>
+  fetch(
     `${config.campaignV2ApiPrefix}${config.rewards}${config.eligible}${config.sponsors}${config.object}/${reqObj}?userName=${userName}&reach=${reach}`,
     {
       headers,
@@ -2786,10 +2742,9 @@ export const getFiltersForEligibleProposition = (reqObj, userName, reach) => {
     .then(res => res.json())
     .then(response => response)
     .catch(e => e);
-};
 
-export const getFiltersForAllProposition = (reqObj, name, reach) => {
-  return fetch(
+export const getFiltersForAllProposition = (reqObj, name, reach) =>
+  fetch(
     `${config.campaignV2ApiPrefix}${config.rewards}${config.all}${config.sponsors}${config.object}/${reqObj}?reach=${reach}`,
     {
       headers,
@@ -2800,10 +2755,9 @@ export const getFiltersForAllProposition = (reqObj, name, reach) => {
     .then(res => res.json())
     .then(response => response)
     .catch(e => e);
-};
 
-export const getFiltersForReservedProposition = (reqObj, userName) => {
-  return fetch(
+export const getFiltersForReservedProposition = (reqObj, userName) =>
+  fetch(
     `${config.campaignV2ApiPrefix}${config.rewards}${config.reserved}/${userName}${config.filters}`,
     {
       headers,
@@ -2814,10 +2768,9 @@ export const getFiltersForReservedProposition = (reqObj, userName) => {
     .then(res => res.json())
     .then(response => response)
     .catch(e => e);
-};
 
-export const getFiltersForReservationsProposition = (reqObj, userName) => {
-  return fetch(
+export const getFiltersForReservationsProposition = (reqObj, userName) =>
+  fetch(
     `${config.campaignV2ApiPrefix}${config.rewards}${config.reservations}/${userName}${config.filters}`,
     {
       headers,
@@ -2828,10 +2781,9 @@ export const getFiltersForReservationsProposition = (reqObj, userName) => {
     .then(res => res.json())
     .then(response => response)
     .catch(e => e);
-};
 
-export const getFiltersForHistoryProposition = userName => {
-  return fetch(
+export const getFiltersForHistoryProposition = userName =>
+  fetch(
     `${config.campaignV2ApiPrefix}${config.rewards}${config.history}/${userName}${config.filters}`,
     {
       headers,
@@ -2842,10 +2794,9 @@ export const getFiltersForHistoryProposition = userName => {
     .then(res => res.json())
     .then(response => response)
     .catch(e => e);
-};
 
-export const getSponsorsMatchBots = botName => {
-  return fetch(`${config.campaignV2ApiPrefix}${config.bots}${config.sponsors}?botName=${botName}`, {
+export const getSponsorsMatchBots = botName =>
+  fetch(`${config.campaignV2ApiPrefix}${config.bots}${config.sponsors}?botName=${botName}`, {
     headers,
     method: 'GET',
   })
@@ -2853,26 +2804,22 @@ export const getSponsorsMatchBots = botName => {
     .then(res => res.json())
     .then(response => response)
     .catch(e => e);
-};
 
-export const getCampaign = (user, id) => {
-  return fetch(
-    `${config.campaignV2ApiPrefix}${config.reservation_v2}${config.details}/${user}/${id}`,
-    {
-      headers,
-      method: 'GET',
-    },
-  )
+export const getCampaign = (user, id) =>
+  fetch(`${config.campaignV2ApiPrefix}${config.reservation_v2}${config.details}/${user}/${id}`, {
+    headers,
+    method: 'GET',
+  })
     .then(handleErrors)
     .then(res => res.json())
     .then(response => response)
     .catch(e => e);
-};
 
-//avarage
+// avarage
 
 export const getRebalancingTable = (account, params) => {
   const query = createQuery(params);
+
   return fetch(`${config.arbitrageApiPrefix}${config.rebalancing}/${account}?${query}`, {
     headers,
     method: 'GET',
@@ -2880,9 +2827,7 @@ export const getRebalancingTable = (account, params) => {
     .then(handleErrors)
     .then(res => res.json())
     .then(async response => {
-      const tokensList = response.table.reduce((acc, tab) => {
-        return [...acc, tab.base, tab.quote];
-      }, []);
+      const tokensList = response.table.reduce((acc, tab) => [...acc, tab.base, tab.quote], []);
       const balances = await getTokenBalance(account, { $in: tokensList });
       const table = response.table.reduce((acc, curr) => {
         const { balance } = balances.find(bal => bal.symbol === curr.base) || { balance: 0 };
@@ -2901,8 +2846,8 @@ export const getRebalancingTable = (account, params) => {
     .catch(e => e);
 };
 
-export const getProfitTable = account => {
-  return fetch(`${config.arbitrageApiPrefix}${config.profit}${config.report}/${account}`, {
+export const getProfitTable = account =>
+  fetch(`${config.arbitrageApiPrefix}${config.profit}${config.report}/${account}`, {
     headers,
     method: 'GET',
   })
@@ -2910,10 +2855,9 @@ export const getProfitTable = account => {
     .then(res => res.json())
     .then(response => response)
     .catch(e => e);
-};
 
-export const addTokenReport = (account, data) => {
-  return fetch(`${config.arbitrageApiPrefix}${config.profit}${config.report}/${account}`, {
+export const addTokenReport = (account, data) =>
+  fetch(`${config.arbitrageApiPrefix}${config.profit}${config.report}/${account}`, {
     headers: {
       ...headers,
       'access-token': Cookie.get('access_token'),
@@ -2925,10 +2869,9 @@ export const addTokenReport = (account, data) => {
     .then(res => res.json())
     .then(response => response)
     .catch(e => e);
-};
 
-export const editTokenProfit = (account, data) => {
-  return fetch(`${config.arbitrageApiPrefix}${config.profit}${config.report}/${account}`, {
+export const editTokenProfit = (account, data) =>
+  fetch(`${config.arbitrageApiPrefix}${config.profit}${config.report}/${account}`, {
     headers: {
       ...headers,
       'access-token': Cookie.get('access_token'),
@@ -2940,10 +2883,9 @@ export const editTokenProfit = (account, data) => {
     .then(res => res.json())
     .then(response => response)
     .catch(e => e);
-};
 
-export const deleteTokenProfit = (account, data) => {
-  return fetch(`${config.arbitrageApiPrefix}${config.profit}${config.report}/${account}`, {
+export const deleteTokenProfit = (account, data) =>
+  fetch(`${config.arbitrageApiPrefix}${config.profit}${config.report}/${account}`, {
     headers: {
       ...headers,
       'access-token': Cookie.get('access_token'),
@@ -2955,10 +2897,9 @@ export const deleteTokenProfit = (account, data) => {
     .then(res => res.json())
     .then(response => response)
     .catch(e => e);
-};
 
-export const setRebalancingTableItem = (account, body) => {
-  return fetch(`${config.arbitrageApiPrefix}${config.rebalancing}/${account}`, {
+export const setRebalancingTableItem = (account, body) =>
+  fetch(`${config.arbitrageApiPrefix}${config.rebalancing}/${account}`, {
     headers: {
       ...headers,
       'access-token': Cookie.get('access_token'),
@@ -2970,10 +2911,9 @@ export const setRebalancingTableItem = (account, body) => {
     .then(res => res.json())
     .then(response => response)
     .catch(e => e);
-};
 
-export const getSwapInfoForRebalance = (account, pair) => {
-  return fetch(`${config.arbitrageApiPrefix}${config.rebalancing}/${account}`, {
+export const getSwapInfoForRebalance = (account, pair) =>
+  fetch(`${config.arbitrageApiPrefix}${config.rebalancing}/${account}`, {
     headers: {
       ...headers,
       'access-token': Cookie.get('access_token'),
@@ -2987,34 +2927,28 @@ export const getSwapInfoForRebalance = (account, pair) => {
     .then(res => res.json())
     .then(response => response)
     .catch(e => e);
-};
 
-export const getEnginePoolRate = tokens => {
-  return fetch(
-    `${config.currenciesApiPrefix}${config.enginePoolsRate}?symbols=${tokens.join(',')}`,
-    {
-      headers,
-      method: 'GET',
-    },
-  )
+export const getEnginePoolRate = tokens =>
+  fetch(`${config.currenciesApiPrefix}${config.enginePoolsRate}?symbols=${tokens.join(',')}`, {
+    headers,
+    method: 'GET',
+  })
     .then(handleErrors)
     .then(res => res.json())
     .then(response => response)
     .catch(e => e);
-};
 
-export const getBlackListInfo = user => {
-  return fetch(`${config.campaignV2ApiPrefix}${config.blacklists}/${user}`, {
+export const getBlackListInfo = user =>
+  fetch(`${config.campaignV2ApiPrefix}${config.blacklists}/${user}`, {
     headers,
     method: 'GET',
   })
     .then(res => res.json())
     .then(response => response)
     .catch(e => e);
-};
 
-export const getObjectsRewards = (requiredObj, userName) => {
-  return fetch(
+export const getObjectsRewards = (requiredObj, userName) =>
+  fetch(
     `${config.campaignV2ApiPrefix}${config.rewards}${config.object}/${requiredObj}${
       userName ? `?userName=${userName}` : ''
     }`,
@@ -3026,10 +2960,9 @@ export const getObjectsRewards = (requiredObj, userName) => {
     .then(res => res.json())
     .then(response => response)
     .catch(e => e);
-};
 
-export const getGlobalReports = body => {
-  return fetch(`${config.campaignV2ApiPrefix}${config.payables}${config.report}${config.global}`, {
+export const getGlobalReports = body =>
+  fetch(`${config.campaignV2ApiPrefix}${config.payables}${config.report}${config.global}`, {
     headers,
     method: 'POST',
     body: JSON.stringify(body),
@@ -3037,20 +2970,18 @@ export const getGlobalReports = body => {
     .then(res => res.json())
     .then(response => response)
     .catch(e => e);
-};
 
-export const checkPayblesWarning = guideName => {
-  return fetch(`${config.campaignV2ApiPrefix}${config.payables}${config.warning}/${guideName}`, {
+export const checkPayblesWarning = guideName =>
+  fetch(`${config.campaignV2ApiPrefix}${config.payables}${config.warning}/${guideName}`, {
     headers,
     method: 'GET',
   })
     .then(res => res.json())
     .then(response => response)
     .catch(e => e);
-};
 
-export const checkUserInBlackList = (guideName, userName) => {
-  return fetch(
+export const checkUserInBlackList = (guideName, userName) =>
+  fetch(
     `${config.campaignV2ApiPrefix}${config.rewards}${config.blacklist}/${guideName}/${userName}`,
     {
       headers,
@@ -3060,10 +2991,9 @@ export const checkUserInBlackList = (guideName, userName) => {
     .then(res => res.json())
     .then(response => response)
     .catch(e => e);
-};
 
-export const checkUserFollowing = (userName, users, objects) => {
-  return fetch(`${config.campaignV2ApiPrefix}${config.rewards}${config.following}/${userName}`, {
+export const checkUserFollowing = (userName, users, objects) =>
+  fetch(`${config.campaignV2ApiPrefix}${config.rewards}${config.following}/${userName}`, {
     headers,
     method: 'POST',
     body: JSON.stringify({
@@ -3074,29 +3004,24 @@ export const checkUserFollowing = (userName, users, objects) => {
     .then(res => res.json())
     .then(response => response)
     .catch(e => e);
-};
 
-export const getMarkersForAll = (userName, box, skip, limit = 20, reach) => {
-  return fetch(
-    `${config.campaignV2ApiPrefix}${config.rewards}${config.all}${config.map}?reach=${reach}`,
-    {
-      headers,
-      method: 'POST',
-      body: JSON.stringify({
-        userName,
-        box,
-        skip,
-        limit,
-      }),
-    },
-  )
+export const getMarkersForAll = (userName, box, skip, limit = 20, reach) =>
+  fetch(`${config.campaignV2ApiPrefix}${config.rewards}${config.all}${config.map}?reach=${reach}`, {
+    headers,
+    method: 'POST',
+    body: JSON.stringify({
+      userName,
+      box,
+      skip,
+      limit,
+    }),
+  })
     .then(res => res.json())
     .then(response => response)
     .catch(e => e);
-};
 
-export const getMarkersForEligible = (userName, box, skip, limit = 20, reach) => {
-  return fetch(
+export const getMarkersForEligible = (userName, box, skip, limit = 20, reach) =>
+  fetch(
     `${config.campaignV2ApiPrefix}${config.rewards}${config.eligible}${config.map}?reach=${reach}`,
     {
       headers,
@@ -3112,20 +3037,18 @@ export const getMarkersForEligible = (userName, box, skip, limit = 20, reach) =>
     .then(res => res.json())
     .then(response => response)
     .catch(e => e);
-};
 
-export const getCurrencyType = () => {
-  return fetch(`${config.currenciesApiPrefix}${config.rate}${config.available}`, {
+export const getCurrencyType = () =>
+  fetch(`${config.currenciesApiPrefix}${config.rate}${config.available}`, {
     headers,
     method: 'GET',
   })
     .then(res => res.json())
     .then(response => response)
     .catch(e => e);
-};
 
-export const getNestedDepartmentFields = ({ name, names, excluded }) => {
-  return fetch(`${config.apiPrefix}${config.departments}`, {
+export const getNestedDepartmentFields = ({ name, names, excluded }) =>
+  fetch(`${config.apiPrefix}${config.departments}`, {
     headers,
     method: 'POST',
     body: JSON.stringify({
@@ -3137,10 +3060,9 @@ export const getNestedDepartmentFields = ({ name, names, excluded }) => {
     .then(res => res.json())
     .then(response => response)
     .catch(e => e);
-};
 
-export const getObjectsByDepartment = (userName, departments, skip, limit) => {
-  return fetch(`${config.apiPrefix}${config.departments}${config.wobjects}`, {
+export const getObjectsByDepartment = (userName, departments, skip, limit) =>
+  fetch(`${config.apiPrefix}${config.departments}${config.wobjects}`, {
     headers: {
       ...headers,
       follower: userName,
@@ -3155,9 +3077,8 @@ export const getObjectsByDepartment = (userName, departments, skip, limit) => {
     .then(res => res.json())
     .then(response => response)
     .catch(e => e);
-};
-export const getObjectsByGroupId = (userName, groupId, skip, limit = 10) => {
-  return fetch(`${config.apiPrefix}${config.wobjects}${config.groupId}`, {
+export const getObjectsByGroupId = (userName, groupId, skip, limit = 10) =>
+  fetch(`${config.apiPrefix}${config.wobjects}${config.groupId}`, {
     headers: {
       ...headers,
       follower: userName,
@@ -3172,10 +3093,9 @@ export const getObjectsByGroupId = (userName, groupId, skip, limit = 10) => {
     .then(res => res.json())
     .then(response => response)
     .catch(e => e);
-};
 
-export const getUserProfileBlogTags = (userName, { limit = 10, skip }) => {
-  return fetch(`${config.apiPrefix}${config.user}/${userName}${config.blogTags}`, {
+export const getUserProfileBlogTags = (userName, { limit = 10, skip }) =>
+  fetch(`${config.apiPrefix}${config.user}/${userName}${config.blogTags}`, {
     headers,
     method: 'POST',
     body: JSON.stringify({
@@ -3186,9 +3106,8 @@ export const getUserProfileBlogTags = (userName, { limit = 10, skip }) => {
     .then(res => res.json())
     .then(response => response)
     .catch(e => e);
-};
-export const getObjectInfo = links => {
-  return fetch(`${config.apiPrefix}${config.wobjects}${config.names}`, {
+export const getObjectInfo = links =>
+  fetch(`${config.apiPrefix}${config.wobjects}${config.names}`, {
     headers,
     method: 'POST',
     body: JSON.stringify({
@@ -3198,7 +3117,6 @@ export const getObjectInfo = links => {
     .then(res => res.json())
     .then(response => response)
     .catch(e => e);
-};
 export const getNewsPermlinkByObjectName = ({
   name,
   limit = 10,
@@ -3220,8 +3138,8 @@ export const getNewsPermlinkByObjectName = ({
     .then(posts => posts)
     .catch(error => error);
 
-export const getObjectOptions = (userName, authorPermlink, category, skip, limit) => {
-  return fetch(`${config.apiPrefix}${config.wobjects}${config.options}`, {
+export const getObjectOptions = (userName, authorPermlink, category, skip, limit) =>
+  fetch(`${config.apiPrefix}${config.wobjects}${config.options}`, {
     headers: {
       ...headers,
       follower: userName,
@@ -3237,14 +3155,12 @@ export const getObjectOptions = (userName, authorPermlink, category, skip, limit
     .then(res => res.json())
     .then(response => response)
     .catch(e => e);
-};
-export const searchDepartments = (searchString, limit, skip) => {
-  return fetch(`${config.apiPrefix}${config.departments}${config.search}`, {
+export const searchDepartments = (searchString, limit, skip) =>
+  fetch(`${config.apiPrefix}${config.departments}${config.search}`, {
     headers,
     method: 'POST',
-    body: JSON.stringify({ searchString: searchString, limit, skip }),
+    body: JSON.stringify({ searchString, limit, skip }),
   }).then(res => res.json());
-};
 
 export const getAuthorityFields = permlink =>
   fetch(`${config.apiPrefix}${config.getObjects}/${permlink}${config.authorityFields}`, {
@@ -3353,8 +3269,8 @@ export const getWobjectShopMainFeed = (
   filter,
   path,
   limit = 10,
-) => {
-  return fetch(`${config.apiPrefix}${config.shop}${config.getObjects}${config.mainFeed}`, {
+) =>
+  fetch(`${config.apiPrefix}${config.shop}${config.getObjects}${config.mainFeed}`, {
     headers: {
       ...headers,
       follower,
@@ -3373,7 +3289,6 @@ export const getWobjectShopMainFeed = (
     .then(res => res.json())
     .then(posts => posts)
     .catch(error => error);
-};
 
 export const getWobjectShopDepartments = (authorPermlink, name, excluded, path) =>
   fetch(`${config.apiPrefix}${config.shop}${config.getObjects}${config.departments}`, {
