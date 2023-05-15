@@ -13,6 +13,7 @@ import { getFacebookShareURL, getTwitterShareURL } from '../../../common/helpers
 import { isPostCashout } from '../../vendor/steemitHelpers';
 import {
   getSocialInfoPost as getSocialInfoPostAction,
+  handleHidePost,
   handleRemovePost,
 } from '../../../store/postsStore/postActions';
 import { getAuthenticatedUserName, isGuestUser } from '../../../store/authStore/authSelectors';
@@ -156,6 +157,9 @@ const PostPopoverMenu = ({
         setIsVisible(false);
 
         return setIsRemove(true);
+
+      case 'hide':
+        return dispatch(handleHidePost(post));
 
       case 'rejectReservation':
         setIsVisible(false);
