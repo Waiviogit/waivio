@@ -7,10 +7,18 @@ import { StaticRouter } from 'react-router';
 import { matchRoutes, renderRoutes } from 'react-router-config';
 import hivesigner from 'hivesigner';
 
-import { getSettingsWebsite, waivioAPI } from '../../waivioApi/ApiClient';
+import {
+  getCurrentAppSettings,
+  getSettingsWebsite,
+  getWebsitesConfiguration,
+  waivioAPI,
+} from '../../waivioApi/ApiClient';
 import getStore from '../../store/store';
 import renderSsrPage from '../renderers/ssrRenderer';
 import switchRoutes from '../../routes/switchRoutes';
+import { initialColors } from '../../client/websites/constants/colors';
+import { hexToRgb } from '../../common/helpers';
+import { getWebsiteColors } from '../../store/appStore/appSelectors';
 
 // eslint-disable-next-line import/no-dynamic-require
 const assets = require(process.env.MANIFEST_PATH);
@@ -37,8 +45,12 @@ export default function createSsrHandler(template) {
       const hostname = req.hostname;
       const isWaivio = hostname.includes('waivio');
       let settings = {};
+      let config = {};
 
-      if (!isWaivio) settings = await getSettingsWebsite(hostname);
+      if (!isWaivio) {
+        settings = await getSettingsWebsite(hostname);
+        config = await getCurrentAppSettings(hostname);
+      }
 
       if (req.cookies.access_token) sc2Api.setAccessToken(req.cookies.access_token);
 
@@ -71,7 +83,10 @@ export default function createSsrHandler(template) {
       );
 
       if (context.status) res.status(context.status);
-
+      const mainColor = config?.configuration?.colors?.mapMarkerBody || initialColors.marker;
+      const secondaryColor = config?.configuration?.colors?.mapMarkerText || initialColors.text;
+      console.log(mainColor);
+      console.log(secondaryColor);
       return res.send(
         renderSsrPage(
           store,
@@ -80,6 +95,9 @@ export default function createSsrHandler(template) {
           template,
           isWaivio,
           get(settings, 'googleAnalyticsTag', ''),
+          mainColor,
+          hexToRgb(mainColor, 1),
+          secondaryColor,
         ),
       );
     } catch (err) {

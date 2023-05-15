@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Button, Form } from 'antd';
@@ -10,10 +10,10 @@ import { getFollowingObjectsList } from '../../../store/userStore/userSelectors'
 import { getObject } from '../../../store/wObjectStore/wObjectSelectors';
 
 const AppendFormFooter = ({ loading, form, handleSubmit, calcVote, selectWobj, disabled }) => {
+  const [littleVotePower, setLittleVotePower] = useState();
   const followingList = useSelector(getFollowingObjectsList);
   const wObject = useSelector(getObject);
   const { getFieldValue } = form;
-  const littleVotePower = getFieldValue('littleVotePower');
   const calculateVoteWorth = (percent, worth) => {
     calcVote(percent, worth);
   };
@@ -26,6 +26,7 @@ const AppendFormFooter = ({ loading, form, handleSubmit, calcVote, selectWobj, d
         showSlider
         disabled={loading}
         selectedType={selectWobj}
+        setLittleVotePower={setLittleVotePower}
       />
       {followingList.includes(wObject.author_permlink) ? null : (
         <FollowObjectForm loading={loading} form={form} />

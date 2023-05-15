@@ -1,10 +1,10 @@
 import React from 'react';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
+import { isMobile } from '../../../common/helpers/apiHelpers';
 
 import styles from './styles';
 import './WebsiteSignIn.less';
-import { isMobile } from '../../../common/helpers/apiHelpers';
 
 const SocialButton = props => (
   // eslint-disable-next-line jsx-a11y/interactive-supports-focus

@@ -138,10 +138,9 @@ class AddItemModal extends Component {
   };
 
   render() {
-    const { isModalOpen, isLoading, selectedItem } = this.state;
+    const { isModalOpen, isLoading, selectedItem, littleVotePower } = this.state;
     const { intl, wobject, itemsIdsToOmit, form, followingList } = this.props;
-    const { getFieldDecorator, getFieldValue } = form;
-    const littleVotePower = getFieldValue('littleVotePower');
+    const { getFieldDecorator } = form;
     const listName = getObjectName(wobject);
     const itemType = ['list'].includes(selectedItem && selectedItem.type)
       ? intl.formatMessage({
@@ -217,6 +216,11 @@ class AddItemModal extends Component {
                 onVotePercentChange={this.handleVotePercentChange}
                 disabled={isLoading}
                 selectedType={selectedItem}
+                setLittleVotePower={value =>
+                  this.setState({
+                    littleVotePower: value,
+                  })
+                }
               />
 
               {followingList.includes(wobject.author_permlink) ? null : (

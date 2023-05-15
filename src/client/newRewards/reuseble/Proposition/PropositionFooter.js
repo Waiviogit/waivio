@@ -113,11 +113,13 @@ const PropositionFooter = ({ type, openDetailsModal, proposition, getProposition
   const userCard = useMemo(
     () => (
       <div className={'Proposition-new__userCard'}>
-        <Avatar size={24} username={proposition?.userName} />
-        <a href={`/@${proposition?.userName}`}>{proposition?.userName}</a>
+        <Avatar size={24} username={proposition?.userName || proposition.rootName} />
+        <a href={`/@${proposition?.userName || proposition.rootName}`}>
+          {proposition?.userName || proposition.rootName}
+        </a>
       </div>
     ),
-    [proposition.userName],
+    [proposition.userName, proposition.rootName],
   );
 
   const getFooter = () => {
@@ -142,7 +144,8 @@ const PropositionFooter = ({ type, openDetailsModal, proposition, getProposition
                 )}
                 <RewardsPopover proposition={proposition} getProposition={getProposition} />
               </div>
-              {authUserName === proposition.guideName ? (
+              {authUserName === proposition.guideName &&
+              proposition.guideName !== proposition.rootName ? (
                 userCard
               ) : (
                 <Button type="primary" onClick={openDetailsModal}>

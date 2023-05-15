@@ -2035,13 +2035,30 @@ class AppendForm extends Component {
           </React.Fragment>
         );
       }
-      case objectFields.background:
+      case objectFields.background: {
+        return (
+          <div className="image-wrapper">
+            <Form.Item>
+              {getFieldDecorator(currentField, { rules: this.getFieldRules(currentField) })(
+                <ImageSetter
+                  autoFocus
+                  onImageLoaded={this.getImages}
+                  onLoadingImage={this.onLoadingImage}
+                  isRequired
+                  isMultiple={false}
+                />,
+              )}
+            </Form.Item>
+          </div>
+        );
+      }
       case objectFields.avatar: {
         return (
           <div className="image-wrapper">
             <Form.Item>
               {getFieldDecorator(currentField, { rules: this.getFieldRules(currentField) })(
                 <ImageSetter
+                  isEditable
                   autoFocus
                   onImageLoaded={this.getImages}
                   onLoadingImage={this.onLoadingImage}

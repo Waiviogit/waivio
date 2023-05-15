@@ -15,7 +15,7 @@ import {
 } from '../../../store/searchStore/searchActions';
 import listOfObjectTypes from '../../../common/constants/listOfObjectTypes';
 import { replacer } from '../../../common/helpers/parser';
-import { getObjectName } from '../../../common/helpers/wObjectHelper';
+import { getObjectUrlForLink } from '../../../common/helpers/wObjectHelper';
 import { setFiltersAndLoad } from '../../../store/objectTypeStore/objectTypeActions';
 import HeaderButton from '../HeaderButton/HeaderButton';
 import { getTranformSearchCountData, pendingSearch } from '../../search/helpers';
@@ -356,8 +356,8 @@ class Topnav extends React.Component {
         {map(wobjects, option => (
           <AutoComplete.Option
             marker={Topnav.markers.WOBJ}
-            key={`wobj${getObjectName(option)}`}
-            value={`wobj${option.defaultShowLink}`}
+            key={`wobj${getObjectUrlForLink(option)}`}
+            value={`wobj${getObjectUrlForLink(option)}`}
             className="Topnav__search-autocomplete"
           >
             <ObjectSearchItem wobj={option} />

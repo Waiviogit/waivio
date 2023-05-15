@@ -11,10 +11,10 @@ import './ObjectCard.less';
 
 const ObjectCard = ({
   wobject,
-  alt,
   showFollow,
   isNewWindow,
   unfollow,
+  alt,
   follow,
   parent,
   isModal,
@@ -27,7 +27,6 @@ const ObjectCard = ({
     const pathname = wobject.defaultShowLink;
     const objectCardClassnames = classnames('ObjectCard__name', {
       'ObjectCard__name-long': isModal || isMobile(),
-      'ObjectCard__name-short': showFollow,
     });
 
     return (
@@ -73,8 +72,8 @@ ObjectCard.propTypes = {
     youFollows: PropTypes.bool,
     parent: PropTypes.shape(),
   }),
-  alt: PropTypes.node,
   showFollow: PropTypes.bool,
+  alt: PropTypes.string,
   isModal: PropTypes.bool,
   isNewWindow: PropTypes.bool,
   unfollow: PropTypes.func,
@@ -82,7 +81,6 @@ ObjectCard.propTypes = {
 };
 
 ObjectCard.defaultProps = {
-  alt: '',
   showFollow: true,
   isNewWindow: false,
   unfollow: () => {},

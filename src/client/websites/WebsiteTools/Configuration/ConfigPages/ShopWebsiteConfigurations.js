@@ -212,7 +212,7 @@ const ShopWebsiteConfigurations = ({
                 })}
               </h3>
               <div className="WebsitesConfigurations__headers">
-                <b>{header.name}</b> | {header.message}
+                <b>{header.name}</b>
               </div>
               <Button type="primary" onClick={() => setOpenHeaderConfig(true)}>
                 Edit
@@ -226,6 +226,7 @@ const ShopWebsiteConfigurations = ({
               visible={openHeaderConfig}
               onClose={() => setOpenHeaderConfig(false)}
               loading={paramsSaving}
+              withioutMessage
             />
           )}
         </React.Fragment>

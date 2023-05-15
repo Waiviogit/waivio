@@ -11,6 +11,24 @@
   align-items: center;
   margin-bottom: 10px;
   border: @base-border;
+  position: relative;
+  margin-right: 10px;
+
+  &:nth-child(3n) {
+    @media @small {
+      margin-right: 0;
+    }
+
+    margin-right: 10px;
+  }
+
+  &:nth-child(2n) {
+    @media @small {
+      margin-right: 10px;
+    }
+
+    margin-right: 0;
+  }
 
   @media @small {
     width: 32%;
@@ -20,6 +38,7 @@
     display: flex;
     flex-wrap: wrap;
     margin: 5px 0;
+    justify-content: center;
 
     @media @small {
       margin: 15px 0;
@@ -35,7 +54,14 @@
     align-items: flex-start;
 
     .HeartButton {
+      position: absolute;
       margin-left: 10px;
+      top: 10px;
+      right: 10px;
+
+      &--active {
+        color: var(--website-color);
+      }
     }
   }
 
@@ -44,6 +70,7 @@
     width: 65px;
     padding: 0 2px;
     margin-left: 5px;
+    margin-bottom: 5px;
 
     @media @small {
       width: 100px;
@@ -51,12 +78,14 @@
     }
 
     &:first-child {
-      margin: 0;
+      margin-left: 0;
     }
   }
 
   &__name {
     margin-top: 10px;
+    text-align: center;
+    padding: 0 10px;
   }
 
   &--rewards {
@@ -66,5 +95,14 @@
 
   &__rewardTitle {
     margin-bottom: 30px;
+  }
+
+  &__price {
+    color: var(--website-color);
+    font-weight: 600;
+  }
+
+  .ObjectAvatar {
+    border: none;
   }
 }

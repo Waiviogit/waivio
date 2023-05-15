@@ -4,6 +4,63 @@
 .ImageSetter {
   display: flex;
   flex-direction: column;
+  &__save-btn {
+    .btn;
+    .btn-primary;
+    margin-top: 15px;
+    width: 400px;
+    color: @white-darker;
+  }
+  &__edit {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+  }
+  &__rotate {
+    width: 400px;
+    margin-top: 10px;
+    display: flex;
+
+    &-btns {
+      width: 100%;
+    }
+    &__button {
+      line-height: 1.499;
+      position: relative;
+      display: inline-block;
+      font-weight: 400;
+      white-space: nowrap;
+      text-align: center;
+      background-image: none;
+      border: 1px solid @white-gainsboro;
+      cursor: pointer;
+      height: 30px;
+      padding: 0 15px;
+      font-size: 16px;
+      border-radius: 4px;
+      background-color: @white;
+      width: 160px;
+      margin-left: 15px !important;
+      transition: 0.3s;
+
+      &:hover,
+      &:active {
+        color: @orange;
+        border-color: @orange;
+      }
+    }
+  }
+  &__zoom {
+    width: 400px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    .ant-slider {
+      margin-left: 15px !important;
+      width: 350px !important;
+    }
+  }
 
   .Image-box__remove-icon {
     color: var(--website-color);
@@ -47,6 +104,7 @@
       padding: 8px;
       margin: 16px 16px 0 0;
       position: relative;
+      width: fit-content;
 
       &-loader {
         width: 86px;

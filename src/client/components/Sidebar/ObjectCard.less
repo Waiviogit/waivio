@@ -50,10 +50,10 @@
 .ObjectCard__name {
   margin-left: 8px;
   margin-right: 8px;
+  white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
-  white-space: nowrap;
-  max-width: 125px;
+  width: 183px;
   color: @black;
   font-weight: 500;
 
@@ -61,10 +61,10 @@
     color: @black;
   }
   &-long {
-    white-space: normal;
-    overflow: unset;
-    text-overflow: unset;
-    max-width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 100%;
   }
 }
 

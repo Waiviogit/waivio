@@ -25,7 +25,9 @@ import {
   getCurrentAppSettings,
   getWebsiteConfigForSSR,
   getCryptoPriceHistory,
+  setSocialFlag,
 } from '../../store/appStore/appActions';
+import Header from './Header/Header';
 import NotificationPopup from './../notifications/NotificationPopup';
 import BBackTop from './../components/BBackTop';
 import ErrorBoundary from './../widgets/ErrorBoundary';
@@ -46,8 +48,6 @@ import { initialColors } from '../websites/constants/colors';
 import { getSwapEnginRates } from '../../store/ratesStore/ratesAction';
 import { setLocale } from '../../store/settingsStore/settingsActions';
 
-import './common.less';
-
 const SocialWrapper = props => {
   const language = findLanguage(props.usedLocale);
   const antdLocale = getAntdLocale(language);
@@ -65,6 +65,7 @@ const SocialWrapper = props => {
     const provider = query.get('socialProvider');
     const locale = query.get('usedLocale');
 
+    props.setSocialFlag();
     props.getCurrentAppSettings().then(res => {
       props.getRate();
       props.getTokenRates('WAIV');
@@ -115,9 +116,13 @@ const SocialWrapper = props => {
           }}
           data-dir={language && language.rtl ? 'rtl' : 'ltr'}
         >
-          {!signInPage && <div>header</div>}
-          <div>
-            {props.loadingFetching ? <Loading /> : renderRoutes(props.route.routes)}
+          {!signInPage && <Header />}
+          <div className={'ShopWebsiteWrapper'}>
+            {props.loadingFetching ? (
+              <Loading />
+            ) : (
+              renderRoutes(props.route.routes, { isSocial: true })
+            )}
             <NotificationPopup />
             <BBackTop
               className={props.isOpenWalletTable ? 'WalletTable__bright' : 'primary-modal'}
@@ -146,6 +151,7 @@ SocialWrapper.propTypes = {
   nightmode: PropTypes.bool,
   isOpenModal: PropTypes.bool,
   dispatchGetAuthGuestBalance: PropTypes.func,
+  setSocialFlag: PropTypes.func,
   getTokenRates: PropTypes.func.isRequired,
   isOpenWalletTable: PropTypes.bool,
   loadingFetching: PropTypes.bool,
@@ -229,6 +235,7 @@ export default ErrorBoundary(
         getTokenRates,
         getCryptoPriceHistory,
         getSwapEnginRates,
+        setSocialFlag,
       },
     )(SocialWrapper),
   ),

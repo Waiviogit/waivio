@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { get, isEmpty, uniq } from 'lodash';
+import { get, isEmpty, truncate, uniq } from 'lodash';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
@@ -43,7 +43,12 @@ const ShopObjectCard = ({ wObject }) => {
         <ObjectAvatar size={isMobile() ? 100 : 150} item={wObject} />
         <HeartButton wobject={wObject} size={'20px'} />
       </div>
-      <h4 className="ShopObjectCard__name">{wobjName}</h4>
+      <h4 className="ShopObjectCard__name">
+        {truncate(wobjName, {
+          length: 110,
+          separator: '...',
+        })}
+      </h4>
       <RatingsWrap
         ratings={[wObject.rating[0]]}
         username={username}
@@ -52,7 +57,7 @@ const ShopObjectCard = ({ wObject }) => {
       />
       <span className="ObjectCardView__tag-text">
         {wObject.price && (
-          <span className="ObjectCardView__price" title={wObject.price}>
+          <span className="ShopObjectCard__price" title={wObject.price}>
             {wObject.price}
           </span>
         )}
@@ -65,9 +70,11 @@ const ShopObjectCard = ({ wObject }) => {
       {!isEmpty(wObject.affiliateLinks) && (
         <div className="ShopObjectCard__affiliatLinksWrap">
           <div className="ShopObjectCard__affiliatLinks">
-            {wObject.affiliateLinks.map(link => (
-              <AffiliatLink key={link.link} link={link} />
-            ))}
+            {wObject.affiliateLinks
+              .sort((a, b) => a.type.charCodeAt(0) - b.type.charCodeAt(0))
+              .map(link => (
+                <AffiliatLink key={link.link} link={link} />
+              ))}
           </div>
         </div>
       )}

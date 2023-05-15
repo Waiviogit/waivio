@@ -36,6 +36,7 @@ const initialState = {
   isWaivio: true,
   reservedCounter: 0,
   helmetIcon: DEFAULTS.FAVICON,
+  isSocial: false,
 };
 
 export default (state = initialState, action) => {
@@ -191,6 +192,13 @@ export default (state = initialState, action) => {
       return {
         ...state,
         currPage: action.payload,
+      };
+
+    case appTypes.SET_SOCIAL_FLAG:
+      return {
+        ...state,
+        isSocial: true,
+        isWaivio: false,
       };
 
     case appTypes.GET_RESERVED_COUNTER.SUCCESS:

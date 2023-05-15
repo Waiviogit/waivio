@@ -509,12 +509,14 @@ export default class ProfileSettings extends React.Component {
           closable
           onCancel={isAvatar ? this.onOpenChangeAvatarModal : this.onOpenChangeCoverModal}
           onOk={isAvatar ? this.onOkAvatarModal : this.onOkCoverModal}
-          okButtonProps={{ disabled: isLoadingImage }}
+          okButtonProps={{ disabled: isAvatar ? isEmpty(avatarImage) : isLoadingImage }}
           cancelButtonProps={{ disabled: isLoadingImage }}
           visible={isModal}
         >
           {isModal && (
             <ImageSetter
+              isUserAvatar
+              isEditable={!!isAvatar}
               onImageLoaded={isAvatar ? this.getAvatar : this.getCover}
               onLoadingImage={this.onLoadingImage}
               isRequired
