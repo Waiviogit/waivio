@@ -5,7 +5,6 @@ import { injectIntl } from 'react-intl';
 import React from 'react';
 import { withRouter } from 'react-router-dom';
 
-import WeightTag from '../../../../components/WeightTag';
 import ObjectCard from '../../../../components/Sidebar/ObjectCard';
 import RightSidebarLoading from '../../RightSidebarLoading';
 
@@ -75,7 +74,6 @@ const WobjectNearby = ({
               key={item.author_permlink}
               wobject={item}
               showFollow={false}
-              alt={<WeightTag weight={item.weight} />}
               isNewWindow={false}
               id="ObjectCard"
             />
