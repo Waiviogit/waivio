@@ -49,12 +49,14 @@ const ShopObjectCard = ({ wObject }) => {
           separator: '...',
         })}
       </h4>
-      <RatingsWrap
-        ratings={[wObject.rating[0]]}
-        username={username}
-        wobjId={wObject.author_permlink}
-        wobjName={wobjName}
-      />
+      {!isEmpty(wObject.rating) && (
+        <RatingsWrap
+          ratings={[wObject.rating[0]]}
+          username={username}
+          wobjId={wObject.author_permlink}
+          wobjName={wobjName}
+        />
+      )}
       <span className="ObjectCardView__tag-text">
         {wObject.price && (
           <span className="ShopObjectCard__price" title={wObject.price}>
