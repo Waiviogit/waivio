@@ -3790,7 +3790,7 @@ class AppendForm extends Component {
       case objectFields.phone:
         return isEmpty(getFieldValue(phoneFields.number));
       case objectFields.galleryItem:
-        return isEmpty(getFieldValue('upload')) || this.state.currentImages.length < 1;
+        return this.state.currentImages.length < 1;
       case objectFields.blog:
         return (
           isEmpty(getFieldValue(blogFields.title)) || isEmpty(getFieldValue(blogFields.account))
