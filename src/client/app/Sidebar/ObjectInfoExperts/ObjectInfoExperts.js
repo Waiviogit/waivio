@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { isEmpty } from 'lodash';
 import WobjectNearby from './WobjectNearby';
 import WobjectSidebarFollowers from './WobjectSidebarFollowers';
 import ObjectExpertise from '../../../components/Sidebar/ObjectExpertise';
@@ -11,27 +12,22 @@ import { isMobile } from '../../../../common/helpers/apiHelpers';
 import './ObjectInfoExperts.less';
 
 const ObjectInfoExperts = ({ wobject }) => {
-  const referenceWobjType = ['business', 'person'].includes(wobject.object_type) && isMobile();
+  const referenceWobjType = ['business', 'person'].includes(wobject.object_type);
+  const showContent = isMobile() && !isEmpty(wobject.author_permlink);
 
   return (
     <div className="objectInfo">
       <div className="objectInfo__related">
-        {isMobile() && wobject.author_permlink && (
-          <ObjectsRelated wobject={wobject} isCenterContent />
-        )}
+        {showContent && <ObjectsRelated wobject={wobject} isCenterContent />}
       </div>
       <div className="objectInfo__related">
-        {wobject.author_permlink && <ObjectsAddOn wobject={wobject} isCenterContent />}
+        {showContent && <ObjectsAddOn wobject={wobject} isCenterContent />}
       </div>
       <div className="objectInfo__related">
-        {isMobile() && wobject.author_permlink && (
-          <ObjectsSimilar wobject={wobject} isCenterContent />
-        )}
+        {showContent && <ObjectsSimilar wobject={wobject} isCenterContent />}
       </div>
       <div className="objectInfo__related">
-        {wobject.author_permlink && referenceWobjType && (
-          <ObjectReference wobject={wobject} isCenterContent />
-        )}
+        {showContent && referenceWobjType && <ObjectReference wobject={wobject} isCenterContent />}
       </div>
       <div className="objectInfo__experts">
         <ObjectExpertise wobject={wobject} isCenterContent />
