@@ -50,7 +50,6 @@ const ImageSetter = ({
   const [fileImages, setFileImages] = useState([]);
   const [editor, setEditor] = useState('');
   const [isOpen, setIsOpen] = useState(false);
-  const colors = useWebsiteColor();
   const initialState = {
     image: '',
     allowZoomOut: true,
@@ -64,6 +63,9 @@ const ImageSetter = ({
   };
 
   const [state, setState] = useState(initialState);
+
+  const colors = useWebsiteColor();
+
   const handlePositionChange = position => {
     setState({ ...state, position });
   };
@@ -88,7 +90,6 @@ const ImageSetter = ({
   const setEditorRef = ed => {
     setEditor(ed);
   };
-
   const handleSave = async () => {
     const dataUrl = editor.getImage().toDataURL();
     const result = await fetch(dataUrl);
