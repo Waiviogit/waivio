@@ -1,7 +1,7 @@
 import React from 'react';
 import { isEmpty } from 'lodash';
 import MenuItemButton from './MenuItemButton';
-import './MinuItemButtons.less';
+import './MenuItemButtons.less';
 
 const MenuItemButtons = ({ menuItem }) =>
   !isEmpty(menuItem) && menuItem?.map(item => <MenuItemButton key={item.permlink} item={item} />);
