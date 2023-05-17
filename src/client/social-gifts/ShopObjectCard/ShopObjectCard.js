@@ -11,9 +11,9 @@ import { getObjectName } from '../../../common/helpers/wObjectHelper';
 import AffiliatLink from '../../widgets/AffiliatLinks/AffiliatLink';
 import HeartButton from '../../widgets/HeartButton';
 import USDDisplay from '../../components/Utils/USDDisplay';
+import { isMobile } from '../../../common/helpers/apiHelpers';
 
 import './ShopObjectCard.less';
-import { isMobile } from '../../../common/helpers/apiHelpers';
 
 const ShopObjectCard = ({ wObject }) => {
   const username = useSelector(getAuthenticatedUserName);

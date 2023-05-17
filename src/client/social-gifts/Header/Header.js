@@ -15,7 +15,7 @@ const Header = () => {
   const handleMobileSearchButtonClick = () => setSearchBarActive(!searchBarActive);
   const logo = isMobile() ? config.mobileLogo : config.desktopLogo;
   const currHost = typeof location !== 'undefined' && location.hostname;
-  const header = config?.header;
+  const header = config?.header?.name;
 
   return (
     <div className="Header">

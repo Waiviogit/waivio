@@ -35,13 +35,21 @@ const GeneralSearch = props => {
   const dispatch = useDispatch();
   const history = useHistory();
 
-  const handleAutoCompleteSearch = useCallback(
+  const handleAutoCompleteSearchDebounce = useCallback(
     debounce(value => {
-      setSeachValue(value);
       dispatch(searchAutoComplete(value, 3, 15, null, true, ['business', 'book', 'product']));
-    }, 300),
+    }, 500),
     [],
   );
+
+  const handleAutoCompleteSearch = value => {
+    setSeachValue(value);
+    setType(null);
+    if (value) setOpen(true);
+    else setOpen(false);
+
+    handleAutoCompleteSearchDebounce(value);
+  };
 
   const searchSelectBar = () => {
     const options = getTranformSearchCountData(searchResults, listOfObjectTypes);
@@ -168,6 +176,7 @@ const GeneralSearch = props => {
           setType(type ? null : markers.TYPE);
           setSeachValue(searchBarValue);
         }
+
         break;
       }
 
@@ -193,20 +202,15 @@ const GeneralSearch = props => {
       <i className={'iconfont icon-search'} />
       <AutoComplete
         open={open}
-        onSearch={handleAutoCompleteSearch}
+        onChange={handleAutoCompleteSearch}
         onSelect={handleSelectOnAutoCompleteDropdown}
-        onChange={value => {
-          setSeachValue(value);
-          setType(null);
-          if (value) setOpen(true);
-          else setOpen(false);
-        }}
         placeholder={'What are you looking for?'}
         dropdownClassName={'BaseObjSettings__resultList'}
         allowClear
+        optionLabelProp="value"
         dataSource={loading ? pendingSearch('', props.intl) : prepareOptions()}
         value={searchBarValue}
-      />
+      />{' '}
     </div>
   );
 };

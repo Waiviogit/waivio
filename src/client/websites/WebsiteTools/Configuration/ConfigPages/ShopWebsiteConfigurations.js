@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { withRouter } from 'react-router';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
-import { Button, Form, message } from 'antd';
+import { Avatar, Button, Form, message, Modal } from 'antd';
 import { connect } from 'react-redux';
 import { isEmpty, get } from 'lodash';
 import {
@@ -20,8 +20,8 @@ import {
 import SelectColorBlock from '../SelectColorModal/SelectColorModal';
 
 import ConfigHeader from '../ConfigHeader/ConfigHeader';
-import LogoSettings from '../LogoSettings/LogoSettings';
 import BaseObjSettings from '../BaseObjSettings/BaseObjSettings';
+import ImageSetter from '../../../../components/ImageSetter/ImageSetter';
 
 import './WebsitesConfigurations.less';
 
@@ -137,24 +137,26 @@ const ShopWebsiteConfigurations = ({
               />
             </Form.Item>
             <Form.Item>
-              <LogoSettings
-                title={intl.formatMessage({
+              <h3>
+                {intl.formatMessage({
                   id: 'desktop_logo',
                   defaultMessage: 'Desktop logo',
                 })}
-                src={desktopLogo}
-                closeLogoModal={closeLogoModal}
-                onImageLoaded={modalsState.method}
-                visible={!isEmpty(modalsState)}
-                openModal={() => handleModalState('desktopLogo')}
-                handleSubmitLogoModal={handleSubmitLogoModal}
-                paramsSaving={paramsSaving}
-                className={'WebsitesConfigurations__avatar WebsitesConfigurations__avatar--desktop'}
-                buttonTitle={intl.formatMessage({
-                  id: 'website_change_logo',
-                  defaultMessage: 'Change logo',
-                })}
-              />
+              </h3>
+              <div className="Settings__profile-image">
+                <Avatar
+                  icon="picture"
+                  shape="square"
+                  src={desktopLogo}
+                  className="WebsitesConfigurations__avatar WebsitesConfigurations__avatar--desktop"
+                />
+                <Button type="primary" onClick={() => handleModalState('desktopLogo')}>
+                  {intl.formatMessage({
+                    id: 'website_change_logo',
+                    defaultMessage: 'Change logo',
+                  })}
+                </Button>
+              </div>
               <p>
                 <FormattedMessage
                   id="desktop_logo_description"
@@ -163,31 +165,33 @@ const ShopWebsiteConfigurations = ({
               </p>
             </Form.Item>
             <Form.Item>
-              <LogoSettings
-                title={intl.formatMessage({
+              <h3>
+                {intl.formatMessage({
                   id: 'mobile_logo',
                   defaultMessage: 'Mobile logo',
                 })}
-                src={mobileLogo}
-                closeLogoModal={closeLogoModal}
-                onImageLoaded={modalsState.method}
-                visible={!isEmpty(modalsState)}
-                openModal={() => handleModalState('mobileLogo')}
-                handleSubmitLogoModal={handleSubmitLogoModal}
-                paramsSaving={paramsSaving}
-                className="WebsitesConfigurations__avatar WebsitesConfigurations__avatar--mobile"
-                buttonTitle={intl.formatMessage({
-                  id: 'website_change_logo',
-                  defaultMessage: 'Change logo',
-                })}
-              />
+              </h3>
+              <div className="Settings__profile-image">
+                <Avatar
+                  icon="picture"
+                  shape="square"
+                  src={mobileLogo}
+                  className="WebsitesConfigurations__avatar WebsitesConfigurations__avatar--mobile"
+                />
+                <Button type="primary" onClick={() => handleModalState('mobileLogo')}>
+                  {intl.formatMessage({
+                    id: 'website_change_logo',
+                    defaultMessage: 'Change logo',
+                  })}
+                </Button>
+              </div>
               <p>
                 <FormattedMessage
                   id="mobile_logo_description"
                   defaultMessage="Mobile logo will appear on the home page of the mobile version of the site."
                 />
               </p>
-            </Form.Item>
+            </Form.Item>{' '}
             <Form.Item>
               <h3>
                 {intl.formatMessage({
@@ -233,6 +237,21 @@ const ShopWebsiteConfigurations = ({
       ) : (
         <Loading />
       )}
+      <Modal
+        wrapClassName="Settings__modal"
+        title={`Choose logo`}
+        closable
+        onCancel={closeLogoModal}
+        onOk={handleSubmitLogoModal}
+        visible={!isEmpty(modalsState)}
+        okButtonProps={{
+          loading: paramsSaving,
+        }}
+      >
+        {!isEmpty(modalsState) && (
+          <ImageSetter onImageLoaded={modalsState.method} isRequired isMultiple={false} />
+        )}
+      </Modal>
     </React.Fragment>
   );
 };
