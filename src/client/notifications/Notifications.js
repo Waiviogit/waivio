@@ -83,7 +83,7 @@ class Notifications extends React.Component {
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  <b>@waivio_notifications_bot</b>
+                  <b>@WaivioNotificationsBot</b>
                 </a>
               ),
             }}
