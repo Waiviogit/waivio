@@ -46,7 +46,7 @@ const Shop = ({ route }) => {
         <link rel="image_src" href={image} />
         <link id="favicon" rel="icon" href={favicon} type="image/x-icon" />
       </Helmet>
-      <div className="feed-layout container">
+      <div className="feed-layout container Shop">
         <Affix className="leftContainer" stickPosition={77}>
           <div className="left">
             <LeftSidebar />

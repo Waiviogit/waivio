@@ -11,9 +11,9 @@ import { getObjectName } from '../../../common/helpers/wObjectHelper';
 import AffiliatLink from '../../widgets/AffiliatLinks/AffiliatLink';
 import HeartButton from '../../widgets/HeartButton';
 import USDDisplay from '../../components/Utils/USDDisplay';
+import { isMobile } from '../../../common/helpers/apiHelpers';
 
 import './ShopObjectCard.less';
-import { isMobile } from '../../../common/helpers/apiHelpers';
 
 const ShopObjectCard = ({ wObject }) => {
   const username = useSelector(getAuthenticatedUserName);
@@ -49,12 +49,14 @@ const ShopObjectCard = ({ wObject }) => {
           separator: '...',
         })}
       </h4>
-      <RatingsWrap
-        ratings={[wObject.rating[0]]}
-        username={username}
-        wobjId={wObject.author_permlink}
-        wobjName={wobjName}
-      />
+      {!isEmpty(wObject.rating) && (
+        <RatingsWrap
+          ratings={[wObject.rating[0]]}
+          username={username}
+          wobjId={wObject.author_permlink}
+          wobjName={wobjName}
+        />
+      )}
       <span className="ObjectCardView__tag-text">
         {wObject.price && (
           <span className="ShopObjectCard__price" title={wObject.price}>

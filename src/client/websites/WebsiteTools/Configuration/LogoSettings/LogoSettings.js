@@ -23,19 +23,21 @@ const LogoSettings = ({
         {buttonTitle}
       </Button>
     </div>
-    <Modal
-      wrapClassName="Settings__modal"
-      title={`Choose logo`}
-      closable
-      onCancel={closeLogoModal}
-      onOk={handleSubmitLogoModal}
-      visible={visible}
-      okButtonProps={{
-        loading: paramsSaving,
-      }}
-    >
-      {visible && <ImageSetter onImageLoaded={onImageLoaded} isRequired isMultiple={false} />}
-    </Modal>
+    {visible && (
+      <Modal
+        wrapClassName="Settings__modal"
+        title={`Choose logo`}
+        closable
+        onCancel={closeLogoModal}
+        onOk={handleSubmitLogoModal}
+        visible={visible}
+        okButtonProps={{
+          loading: paramsSaving,
+        }}
+      >
+        <ImageSetter isModal onImageLoaded={onImageLoaded} isRequired isMultiple={false} />
+      </Modal>
+    )}
   </div>
 );
 

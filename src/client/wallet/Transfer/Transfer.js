@@ -53,11 +53,11 @@ import {
   isOpenLinkModal,
 } from '../../../store/settingsStore/settingsSelectors';
 import { getSearchUsersResults } from '../../../store/searchStore/searchSelectors';
-
-import './Transfer.less';
 import { fixedNumber } from '../../../common/helpers/parser';
 import { sendGuestTransferWAIV } from '../../../waivioApi/walletApi';
 import { getRatesList } from '../../../store/ratesStore/ratesSelector';
+
+import './Transfer.less';
 
 const InputGroup = Input.Group;
 

@@ -26,7 +26,8 @@ const ObjectCard = ({
     const name = getObjectName(wobject);
     const pathname = wobject.defaultShowLink;
     const objectCardClassnames = classnames('ObjectCard__name', {
-      'ObjectCard__name-long': isModal || isMobile(),
+      'ObjectCard__name-long': isModal,
+      'ObjectCard__name-full': isMobile(),
     });
 
     return (

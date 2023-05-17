@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Checkbox, Form } from 'antd';
 import { useSelector } from 'react-redux';
-import { round, isEmpty, debounce } from 'lodash';
+import { isEmpty, debounce } from 'lodash';
 import { FormattedMessage, FormattedNumber, injectIntl } from 'react-intl';
 import RawSlider from '../components/Slider/RawSlider';
 import USDDisplay from '../components/Utils/USDDisplay';
@@ -13,6 +13,7 @@ import {
 } from '../../store/authStore/authSelectors';
 import { checkUserInObjWhiteList, getUserVoteValueInWaiv } from '../../waivioApi/ApiClient';
 import { getVotePercent } from '../../store/settingsStore/settingsSelectors';
+import { fixedNumber } from '../../common/helpers/parser';
 
 import './LikeSection.less';
 
@@ -32,7 +33,7 @@ const LikeSection = props => {
   useEffect(() => {
     if (!isGuest) {
       checkUserInObjWhiteList(authUser).then(res => {
-        const minWeight = res.minWeight ? res.minWeight / 100 : defaultPercent;
+        const minWeight = res.minWeight ? (res.minWeight + 200) / 100 : defaultPercent;
 
         setInWhiteList(res.result);
         setMinVotePersent(minWeight);
@@ -54,7 +55,7 @@ const LikeSection = props => {
     if (isEmpty(selectedType)) return;
 
     const voteValue = await getUserVoteValueInWaiv(user.name, value);
-    const roundVoteWorth = round(voteValue, voteValue >= 0.001 ? 3 : 6);
+    const roundVoteWorth = fixedNumber(voteValue, voteValue >= 0.001 ? 3 : 6);
 
     setVoteWorth(roundVoteWorth);
     onVotePercentChange(value, roundVoteWorth);
@@ -81,7 +82,7 @@ const LikeSection = props => {
     </div>
   );
 
-  const likePrice = Number(voteWorth) || '0.001';
+  const likePrice = Number(voteWorth);
 
   return (
     <div className="LikeSection">
