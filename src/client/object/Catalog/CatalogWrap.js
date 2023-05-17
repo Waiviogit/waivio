@@ -53,12 +53,20 @@ const CatalogWrap = props => {
     ApiClient.getObjectsRewards(wobject.author_permlink, userName).then(res => {
       setReward(res);
     });
-
     if (!isEmpty(wobject)) {
       if (hash) {
         const pathUrl = getLastPermlinksFromHash(hash);
 
-        if (pathUrl !== wobjectNested.author_permlink) {
+        if (!isEmpty(wobjectNested) && wobjectNested.author_permlink === pathUrl) {
+          setLists(
+            sortListItemsBy(
+              getListItems(wobjectNested),
+              defaultSortBy(wobjectNested),
+              wobjectNested.sortCustom,
+            ),
+          );
+          setRecencySortList(recencySortOrder(getListItem(wobjectNested)));
+        } else {
           setLoadingNestedWobject(true);
 
           ApiClient.getObject(pathUrl, userName, locale).then(wObject => {
@@ -77,6 +85,7 @@ const CatalogWrap = props => {
         }
       } else {
         setSortingBy(defaultSortBy(wobject));
+
         setLists(
           sortListItemsBy(
             getListItems(wobject),
@@ -87,28 +96,6 @@ const CatalogWrap = props => {
         setLoadingNestedWobject(false);
         setRecencySortList(recencySortOrder(getListItem(wobject)));
       }
-    }
-
-    if (!isEmpty(wobjectNested)) {
-      setLists(
-        sortListItemsBy(
-          getListItems(wobjectNested),
-          defaultSortBy(wobjectNested),
-          wobjectNested.sortCustom,
-        ),
-      );
-      setRecencySortList(recencySortOrder(getListItem(wobjectNested)));
-    } else {
-      setSortingBy(defaultSortBy(wobject));
-      setLists(
-        sortListItemsBy(
-          getListItems(wobject),
-          defaultSortBy(wobject),
-          get(wobject, 'sortCustom', {}),
-        ),
-      );
-      setLoadingNestedWobject(false);
-      setRecencySortList(recencySortOrder(getListItem(wobject)));
     }
 
     return () => {
