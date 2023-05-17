@@ -79,7 +79,7 @@ class Notifications extends React.Component {
             values={{
               link: (
                 <a
-                  href={'http://t.me/waivio_notifications_bot'}
+                  href={'https://t.me/WaivioNotificationsBot'}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
