@@ -2214,5 +2214,7 @@
   "zoom": "Zoom",
   "rotate": "Rotate",
   "left": "Left",
-  "right": "Right"
+  "right": "Right",
+  "product_extension": "Product extension",
+  "product_extension_description": "The Product Extension is a Chrome browser extension designed to efficiently scrape Amazon pages and extract crucial information tailored to Waivio's requirements. By effortlessly parsing through a product page, this extension gathers relevant data such as product names, prices, avatars, and more. After processing the collected information, it generates a compatible output file."
 }
