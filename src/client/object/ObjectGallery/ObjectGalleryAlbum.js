@@ -127,6 +127,7 @@ export default class ObjectGalleryAlbum extends Component {
         )}
         {album && selectedAlbum ? (
           <Album
+            objName={getObjectName(this.props.wObject)}
             key={selectedAlbum.body + selectedAlbum.weight}
             album={selectedAlbum}
             getMoreRelatedAlbum={moreRelatedAlbum}

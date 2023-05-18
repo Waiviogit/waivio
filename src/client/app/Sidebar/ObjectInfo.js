@@ -620,6 +620,8 @@ class ObjectInfo extends React.Component {
           objectFields.galleryItem,
           (pictures.length > 0 || avatar || hasOptionsPics) && (
             <PicturesCarousel
+              albums={[...this.props.albums, this.props.relatedAlbum]}
+              objName={wobject.default_name}
               activePicture={hoveredOption || activeOption}
               pics={activeOptionPicture}
             />
@@ -929,7 +931,13 @@ class ObjectInfo extends React.Component {
         {!isOptionsObjectType &&
           this.listItem(
             objectFields.galleryItem,
-            !isEmpty(pictures) && <PicturesCarousel pics={pictures} />,
+            !isEmpty(pictures) && (
+              <PicturesCarousel
+                pics={pictures}
+                albums={[...this.props.albums, this.props.relatedAlbum]}
+                objName={wobject.default_name}
+              />
+            ),
           )}
         {!isOptionsObjectType &&
           this.listItem(

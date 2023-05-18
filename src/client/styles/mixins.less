@@ -61,15 +61,15 @@
 
 .referrals-link-button {
   cursor: pointer;
-  color: @orange-hot;
+  color: var(--website-color);
   transition: all 0.3s ease;
 
   &:hover {
-    color: @neon-carrot;
+    color: var(--website-hover-color);
   }
 
   &:active {
-    color: @burnt-orange;
+    color: var(--website-color);
   }
 }
 
@@ -79,16 +79,16 @@
   margin-top: 10px;
   margin-bottom: -15px;
   cursor: pointer;
-  color: @orange-hot;
+  color: var(--website-color);
   transition: all 0.3s ease;
   margin-right: 20px;
 
   &:hover {
-    color: @neon-carrot;
+    color: var(--website-hover-color);
   }
 
   &:active {
-    color: @burnt-orange;
+    color: var(--website-color);
   }
 
   @media @small {
@@ -96,8 +96,8 @@
   }
 }
 
-.view-as-link(@color: @orange-hot, @color-hover: #ff9130) {
-  color: @color;
+.view-as-link() {
+  color: var(--website-color) !important;
   text-decoration: none;
   background-color: transparent;
   outline: none;
@@ -105,7 +105,7 @@
   transition: color 0.3s;
 
   &:hover {
-    color: @color-hover;
+    color: var(--website-hover-color) !important;
   }
 }
 
@@ -139,11 +139,11 @@
   text-transform: capitalize;
 
   & > span {
-    color: @primary-color;
+    color: var(--website-color);
   }
 
   &:hover {
-    color: @primary-color;
+    color: var(--website-hover-color);
   }
 }
 
@@ -182,7 +182,7 @@
   line-height: 30px !important;
 
   &:hover {
-    color: @primary-color !important;
+    color: var(--website-color) !important;
   }
 
   &[disabled] {
@@ -201,7 +201,7 @@
   padding-left: 10px;
 
   &:hover {
-    color: @primary-color;
+    color: var(--website-color);
     cursor: pointer;
   }
 }
@@ -217,6 +217,6 @@
   transition: 0.5s;
 
   &:hover {
-    color: @orange-hot;
+    color: var(--website-color);
   }
 }

@@ -12,10 +12,10 @@
     }
 
     &__button-footer {
-      background-color: @orange-hot;
+      background-color: var(--website-color);
 
       &:hover {
-        background-color: @neon-carrot;
+        background-color: var(--website-hover-color);
       }
 
       &:disabled {
@@ -52,18 +52,18 @@
       }
 
       &--active {
-        color: @orange-hot;
-        border-color: @orange-hot;
+        color: var(--website-color);
+        border-color: var(--website-color);
       }
 
       &--active-radius {
-        color: @orange-hot;
-        border-color: @orange-hot;
-        border-right: 1px solid @orange-hot;
+        color: var(--website-color);
+        border-color: var(--website-color);
+        border-right: 1px solid var(--website-color);
 
         &:first-child {
           border-radius: 4px 0 0 4px;
-          border-left: 1px solid @orange-hot;
+          border-left: 1px solid var(--website-color);
 
           @media @small {
             border-radius: 0;
@@ -72,7 +72,7 @@
 
         &:last-child {
           border-radius: 0 4px 4px 0;
-          border-right: 1px solid @orange-hot;
+          border-right: 1px solid var(--website-color);
         }
       }
     }

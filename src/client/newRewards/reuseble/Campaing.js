@@ -10,10 +10,9 @@ import USDDisplay from '../../components/Utils/USDDisplay';
 import useQuickRewards from '../../../hooks/useQuickRewards';
 import withAuthActions from '../../auth/withAuthActions';
 import { getIsWaivio } from '../../../store/appStore/appSelectors';
-import useWebsiteColor from '../../../hooks/useWebsiteColor';
+import useQuery from '../../../hooks/useQuery';
 
 import './Campaing.less';
-import useQuery from '../../../hooks/useQuery';
 
 const Campaing = ({ campain, onActionInitiated, hovered, intl }) => {
   const minReward = campain?.minReward || get(campain, ['min_reward'], 0);
@@ -34,7 +33,6 @@ const Campaing = ({ campain, onActionInitiated, hovered, intl }) => {
 
   const { setRestaurant, openModal } = useQuickRewards();
   const isWaivio = useSelector(getIsWaivio);
-  const styles = useWebsiteColor();
   const handleOpenQuickRewards = () =>
     onActionInitiated(() => {
       openModal(true);
@@ -59,7 +57,7 @@ const Campaing = ({ campain, onActionInitiated, hovered, intl }) => {
         rewardPrice={maxReward}
         hovered={hovered}
       />
-      <span onClick={goToProducts} style={styles} className="Campaing__button">
+      <span onClick={goToProducts} className="Campaing__button">
         {buttonLabel}{' '}
         <b>
           <USDDisplay value={maxReward} />
