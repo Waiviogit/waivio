@@ -10,7 +10,7 @@ import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors
 
 import './AppendCard.less';
 
-const ApprovingCard = ({ post, intl, rewardFund, rate, modal }) => {
+const ApprovingCard = ({ post, intl, rewardFund, rate, modal, lightbox }) => {
   const isFullParams = rewardFund && rewardFund.recent_claims && rewardFund.reward_balance && rate;
   const voteValue = isFullParams
     ? (post.weight / rewardFund.recent_claims) *
@@ -40,7 +40,35 @@ const ApprovingCard = ({ post, intl, rewardFund, rate, modal }) => {
     </span>
   );
 
-  return (
+  return lightbox ? (
+    <div className="LightboxTools__approving-card">
+      <div className={'LightboxTools__albumInfo-title'}>
+        {intl.formatMessage({
+          id: 'approval',
+          defaultMessage: 'Approval',
+        })}
+        :{' '}
+        <span>
+          <span className={'Buttons__number-green'}>{post?.approvePercent?.toFixed(2)}%</span>
+        </span>
+      </div>
+      <div className={'LightboxTools__albumInfo-title ml2'}>
+        {intl.formatMessage({
+          id: 'vote_count_tag',
+          defaultMessage: 'Vote count',
+        })}
+        :{' '}
+        <span className={'Buttons__number-green'} title={voteValue}>
+          {post.adminVote
+            ? intl.formatMessage({
+                id: post.adminVote.status,
+                defaultMessage: post.adminVote.status,
+              })
+            : calcVoteValue}
+        </span>
+      </div>
+    </div>
+  ) : (
     <div className={classListModal}>
       <div>
         {intl.formatMessage({
@@ -106,6 +134,7 @@ ApprovingCard.propTypes = {
   }).isRequired,
   rate: PropTypes.number.isRequired,
   modal: PropTypes.bool,
+  lightbox: PropTypes.bool,
 };
 
 ApprovingCard.defaultProps = {

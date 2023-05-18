@@ -20,6 +20,7 @@ import { getTokenRatesInUSD } from '../../../store/walletStore/walletSelectors';
 import { getWaivVotePrice } from '../../../common/helpers';
 
 const AppendObjButtons = ({
+  lightbox,
   post,
   intl,
   handleLikeClick,
@@ -110,7 +111,7 @@ const AppendObjButtons = ({
   }
 
   return (
-    <div className="Buttons">
+    <div className={classNames('Buttons', { 'Buttons-lightbox': lightbox })}>
       {((isAthority && post.creator === userName) || !isAthority) && (
         <React.Fragment>
           {post.loading ? (
@@ -123,6 +124,7 @@ const AppendObjButtons = ({
                   className={classNames({
                     active: isLiked,
                     Buttons__link: true,
+                    'LightboxTools__albumInfo-title': lightbox,
                   })}
                   onClick={handleApprove}
                 >
@@ -131,7 +133,9 @@ const AppendObjButtons = ({
               </BTooltip>
               {upVotes.length > 0 && (
                 <span
-                  className="Buttons__number Buttons__reactions-count"
+                  className={classNames('Buttons__number Buttons__reactions-count', {
+                    'Buttons__number-green': lightbox,
+                  })}
                   role="presentation"
                   onClick={() => openReactionModal('1')}
                 >
@@ -169,6 +173,7 @@ const AppendObjButtons = ({
                     className={classNames({
                       active: isReject,
                       Buttons__link: true,
+                      'LightboxTools__albumInfo-title': lightbox,
                     })}
                     onClick={handleReject}
                   >
@@ -177,7 +182,9 @@ const AppendObjButtons = ({
                 </BTooltip>
                 {downVotes.length > 0 && (
                   <span
-                    className="Buttons__number Buttons__reactions-count"
+                    className={classNames('Buttons__number Buttons__reactions-count', {
+                      'Buttons__number-green': lightbox,
+                    })}
                     role="presentation"
                     onClick={() => openReactionModal('2')}
                   >
@@ -203,26 +210,30 @@ const AppendObjButtons = ({
           )}
         </React.Fragment>
       )}
-      <BTooltip title={intl.formatMessage({ id: 'comment', defaultMessage: 'Comment' })}>
-        <a className="Buttons__link" role="presentation" onClick={handleCommentsClick}>
-          <i className="iconfont icon-message_fill" />
-        </a>
-      </BTooltip>
-      <span className="Buttons__number">
-        {post.children > 0 && <FormattedNumber value={post.children} />}
-      </span>
-      <ReactionsModal
-        visible={reactionsModalVisible}
-        upVotes={upVotes}
-        ratio={ratio}
-        downVotes={downVotes}
-        onClose={handleCloseReactions}
-        tab={key}
-        append
-        post={post}
-        user={userName}
-        setTabs={setKey}
-      />
+      {!lightbox && (
+        <>
+          <BTooltip title={intl.formatMessage({ id: 'comment', defaultMessage: 'Comment' })}>
+            <a className="Buttons__link" role="presentation" onClick={handleCommentsClick}>
+              <i className="iconfont icon-message_fill" />
+            </a>
+          </BTooltip>
+          <span className="Buttons__number">
+            {post.children > 0 && <FormattedNumber value={post.children} />}
+          </span>
+          <ReactionsModal
+            visible={reactionsModalVisible}
+            upVotes={upVotes}
+            ratio={ratio}
+            downVotes={downVotes}
+            onClose={handleCloseReactions}
+            tab={key}
+            append
+            post={post}
+            user={userName}
+            setTabs={setKey}
+          />
+        </>
+      )}
     </div>
   );
 };
@@ -233,7 +244,8 @@ AppendObjButtons.propTypes = {
   handleLikeClick: PropTypes.func.isRequired,
   reactionsModalVisible: PropTypes.bool.isRequired,
   userName: PropTypes.string,
-  handleCommentsClick: PropTypes.func.isRequired,
+  handleCommentsClick: PropTypes.func,
+  lightbox: PropTypes.bool,
   handleCloseReactions: PropTypes.func.isRequired,
   onFlagClick: PropTypes.func.isRequired,
   handleShowReactions: PropTypes.func.isRequired,
@@ -242,7 +254,7 @@ AppendObjButtons.propTypes = {
   waivRates: PropTypes.number.isRequired,
 };
 
-AppendObjButtons.defaultProps = { userName: '' };
+AppendObjButtons.defaultProps = { userName: '', lightbox: false };
 
 export default connect(state => ({
   userName: getAuthenticatedUserName(state),

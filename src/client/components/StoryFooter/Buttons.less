@@ -1,6 +1,10 @@
 @import (reference) '../../styles/custom.less';
 
 .Buttons {
+  &-lightbox {
+    display: flex;
+    align-items: center;
+  }
   color: @blue-botticelli;
   font-size: 14px;
   font-weight: bold;
@@ -65,6 +69,9 @@
   &__number {
     vertical-align: 3px;
     margin-right: 10px;
+    &-green {
+      color: @green;
+    }
     &.amount-users:hover {
       cursor: pointer;
     }

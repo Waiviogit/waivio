@@ -1,0 +1,67 @@
+@import (reference) '../../styles/modules/variables.less';
+@import (reference) '../../styles/custom.less';
+
+.LightboxTools {
+  .ril-toolbar.ril__toolbar {
+    display: flex !important;
+    justify-content: normal !important;
+  }
+  .ril__toolbarRightSide {
+    display: flex;
+  }
+  .ril__toolbarLeftSide {
+    width: 90%;
+  }
+
+  .ril__captionContent,
+  .ril__toolbarItem {
+    width: 100%;
+  }
+  &__container {
+    font-size: 16px;
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+  }
+  &__albumInfo,
+  select {
+    border-radius: 4px;
+    padding: 4px 16px;
+    margin-left: 10px;
+    min-width: 300px;
+    line-height: 1;
+    color: @white-smoke;
+    opacity: 0.7;
+    border: 1px solid @normal-grey;
+    background-color: @grey-nero;
+    &-container {
+      display: flex;
+      align-items: center;
+      min-width: 375px;
+    }
+    &-title {
+      color: @white-smoke;
+      opacity: 0.7;
+    }
+  }
+
+  &__name {
+    margin-left: 10px;
+    color: @white-smoke;
+    opacity: 0.7;
+    &:hover {
+      opacity: 1;
+    }
+  }
+  &__width {
+    display: flex;
+    width: 100%;
+    margin-left: 10px;
+  }
+  &__approving-card {
+    font-weight: bold;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+  }
+}
