@@ -52,7 +52,6 @@ const SocialWrapper = props => {
   const language = findLanguage(props.usedLocale);
   const antdLocale = getAntdLocale(language);
   const signInPage = props.location.pathname.includes('sign-in');
-  const mainColor = props.colors?.mapMarkerBody || initialColors.marker;
   const loadLocale = async locale => {
     const lang = await loadLanguage(locale);
 
@@ -72,6 +71,13 @@ const SocialWrapper = props => {
       props.getCryptoPriceHistory();
       props.getSwapEnginRates();
       if (!props.username) props.setLocale(locale || res.language);
+
+      const mainColor = res.colors?.mapMarkerBody || initialColors.marker;
+      const textColor = res.colors?.mapMarkerText || initialColors.text;
+
+      document.body.style.setProperty('--website-color', mainColor);
+      document.body.style.setProperty('--website-hover-color', hexToRgb(mainColor, 1));
+      document.body.style.setProperty('--website-text-color', textColor);
 
       props.login(token, provider).then(() => {
         batch(() => {
@@ -109,13 +115,7 @@ const SocialWrapper = props => {
       messages={props.translations}
     >
       <ConfigProvider locale={antdLocale}>
-        <Layout
-          style={{
-            '--website-color': `${mainColor}`,
-            '--website-hover-color': `${hexToRgb(mainColor, 1)}`,
-          }}
-          data-dir={language && language.rtl ? 'rtl' : 'ltr'}
-        >
+        <Layout data-dir={language && language.rtl ? 'rtl' : 'ltr'}>
           {!signInPage && <Header />}
           <div className={'ShopWebsiteWrapper'}>
             {props.loadingFetching ? (

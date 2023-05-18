@@ -17,7 +17,6 @@ import { getProxyImageURL } from '../../common/helpers/image';
 import { getAuthenticatedUserName } from '../../store/authStore/authSelectors';
 import USDDisplay from '../components/Utils/USDDisplay';
 import { defaultCurrency } from '../websites/constants/currencyTypes';
-import useWebsiteColor from '../../hooks/useWebsiteColor';
 import AffiliatLink from '../widgets/AffiliatLinks/AffiliatLink';
 import HeartButton from '../widgets/HeartButton';
 import { guestUserRegex } from '../../common/helpers/regexHelpers';
@@ -54,7 +53,6 @@ const ObjectCardView = ({
   const objectCardClassList = classNames('ObjectCardView', {
     'ObjectCardView--hovered': hovered,
   });
-  const styles = useWebsiteColor();
   let pathName = wObject.defaultShowLink || `/object/${wObject.author_permlink}`;
 
   pathName = hasType(wObject, 'page') && path ? path : pathName;
@@ -197,16 +195,14 @@ const ObjectCardView = ({
               </b>{' '}
               {isReserved ? (
                 <React.Fragment>
-                  <b className="ObjectCardView__priceColor" style={{ color: styles.background }}>
-                    {round(rewardPrice / rate, 3)}
-                  </b>{' '}
+                  <b className="ObjectCardView__priceColor">{round(rewardPrice / rate, 3)}</b>{' '}
                   {payoutToken || 'HIVE'}
                 </React.Fragment>
               ) : (
                 <USDDisplay
                   value={rewardPrice}
                   currencyDisplay="symbol"
-                  style={{ color: styles.background, fontWeight: 'bolder' }}
+                  style={{ fontWeight: 'bolder' }}
                 />
               )}
             </span>

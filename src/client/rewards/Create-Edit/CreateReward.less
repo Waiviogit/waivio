@@ -54,7 +54,7 @@
       opacity: 0.85;
 
       &:hover {
-        color: @orange-hot;
+        color: var(--website-color);
       }
     }
   }
@@ -100,12 +100,12 @@
   }
 
   &__addChild {
-    color: @orange-hot;
+    color: var(--website-color);
     cursor: pointer;
     transition: 0.5s;
 
     &:hover {
-      color: @orange-light;
+      color: var(--website-hover-color);
     }
   }
 
@@ -173,7 +173,7 @@
 }
 
 .ant-calendar-picker:hover .ant-calendar-picker-input:not(.ant-input-disabled) {
-  border-color: @orange-hot !important;
+  border-color: var(--website-color) !important;
 }
 
 @import 'CreateReward-nightmode';

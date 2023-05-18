@@ -4,14 +4,16 @@
   display: inline-block;
   border-radius: 8px;
   padding: 0 2px;
-  color: @white;
   font-size: 13px;
   position: relative;
   min-width: 50px;
   text-align: center;
-  border: 1px solid @white;
+  border: 1px solid var(--website-text-color);
+  background: var(--website-color);
+  color: var(--website-text-color);
 
   &__triangular {
+    border-color: var(--website-color) transparent transparent transparent;
     display: inline-block;
     width: 0;
     height: 0;
@@ -25,6 +27,7 @@
   &--hovered {
     font-size: 15px;
     border: none;
+    box-shadow: 0 0 6px 3px var(--website-color);
 
     &__triangular {
       left: 31%;
