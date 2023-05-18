@@ -4,20 +4,22 @@ import { Card, Row } from 'antd';
 import Lightbox from 'react-image-lightbox';
 import { FormattedMessage } from 'react-intl';
 import { getImagePath } from '../../../common/helpers/image';
-
+import LightboxHeader from '../../widgets/LightboxTools/LightboxHeader';
 import AlbumFeed from './AlbumFeed';
 
 import './GalleryAlbum.less';
+import LightboxFooter from '../../widgets/LightboxTools/LightboxFooter';
 
 class Album extends React.Component {
   static propTypes = {
     album: PropTypes.shape(),
     getMoreRelatedAlbum: PropTypes.func,
     permlink: PropTypes.string.isRequired,
+    objName: PropTypes.string,
   };
   static defaultProps = {
     album: {},
-    wobjMainer: {},
+    objName: '',
     getMoreRelatedAlbum: () => {},
     isFetching: false,
   };
@@ -58,6 +60,15 @@ class Album extends React.Component {
         </Card>
         {isOpen && (
           <Lightbox
+            wrapperClassName="LightboxTools"
+            imageTitle={
+              <LightboxHeader
+                objName={this.props.objName}
+                albumName={album.body}
+                userName={pictures[photoIndex].creator}
+              />
+            }
+            imageCaption={<LightboxFooter post={pictures[photoIndex]} />}
             mainSrc={getImagePath(album, pictures[photoIndex].body, 'preview')}
             nextSrc={getImagePath(
               album,

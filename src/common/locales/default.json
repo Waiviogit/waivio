@@ -2214,5 +2214,7 @@
   "zoom": "Zoom",
   "rotate": "Rotate",
   "left": "Left",
-  "right": "Right"
+  "right": "Right",
+  "album": "Album",
+  "related_wobjects": "Related objects"
 }
