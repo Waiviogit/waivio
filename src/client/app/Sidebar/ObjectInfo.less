@@ -45,11 +45,11 @@
         width: 100%;
         overflow: hidden;
         color: @white-gainsboro;
-        background-color: @primary-color;
-        border-color: @primary-color;
+        background-color: var(--website-color);
+        border-color: var(--website-color);
 
         &:hover {
-          background-color: @secondary-color;
+          background-color: var(--website-hover-color);
           color: @white;
         }
       }
@@ -64,11 +64,11 @@
         width: 100%;
         overflow: hidden;
         color: @white-gainsboro;
-        background-color: @primary-color;
-        border-color: @primary-color;
+        background-color: var(--website-color);
+        border-color: var(--website-color);
 
         &:hover {
-          background-color: @secondary-color;
+          background-color: var(--website-hover-color);
           color: @white;
         }
       }
@@ -87,7 +87,7 @@
   }
 
   &__more:hover {
-    color: @neon-carrot;
+    color: var(--website-hover-color);
   }
 
   &__content {
@@ -137,19 +137,19 @@
       &:hover {
         a,
         span {
-          color: @primary-color;
+          color: var(--website-color);
         }
 
-        border-bottom: 2px solid @primary-color;
+        border-bottom: 2px solid var(--website-color);
       }
 
       &.field-selected {
         a,
         span {
-          color: @primary-color;
+          color: var(--website-color);
         }
 
-        border-bottom: 2px solid @primary-color;
+        border-bottom: 2px solid var(--website-color);
       }
     }
   }
@@ -318,7 +318,7 @@
   transition: 0.3s;
 
   &:hover {
-    color: @orange-hot;
+    color: var(--website-color);
     cursor: pointer;
   }
 }

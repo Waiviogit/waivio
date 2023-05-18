@@ -175,6 +175,12 @@ class WebsiteWrapper extends React.PureComponent {
       this.props.getCryptoPriceHistory();
       this.props.getSwapEnginRates();
       if (!this.props.username) this.props.setLocale(locale || res.language);
+      const mainColor = res.colors?.mapMarkerBody || initialColors.marker;
+      const textColor = res.colors?.mapMarkerText || initialColors.text;
+
+      document.body.style.setProperty('--website-color', mainColor);
+      document.body.style.setProperty('--website-hover-color', hexToRgb(mainColor, 1));
+      document.body.style.setProperty('--website-text-color', textColor);
 
       this.props.login(token, provider).then(() => {
         batch(() => {
