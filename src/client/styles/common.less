@@ -297,20 +297,20 @@ ul {
 
 // region ant-slider
 .ant-slider-track {
-  background-color: var(--website-color) !important;
+  background-color: var(--website-hover-color) !important;
 }
 
 .ant-slider-handle {
-  border-color: var(--website-color) !important;
+  border-color: var(--website-hover-color) !important;
 
   &:focus {
-    border-color: var(--website-color) !important;
+    border-color: var(--website-hover-color) !important;
     box-shadow: 0 0 0 5px rgba(248, 112, 7, 0.2) !important;
   }
 }
 
 .ant-slider-dot-active {
-  border-color: var(--website-color) !important;
+  border-color: var(--website-slider-color) !important;
 }
 // endregion
 
@@ -326,4 +326,11 @@ ul {
   background-color: var(--website-color) !important;
 }
 
+a {
+  color: var(--website-color);
+
+  &:hover {
+    color: var(--website-hover-color);
+  }
+}
 @import 'common-nightmode';

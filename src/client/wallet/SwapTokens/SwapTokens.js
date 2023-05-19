@@ -104,12 +104,12 @@ const SwapTokens = props => {
       });
     }
 
-    if (!from?.tokenPair) return {};
+    if (!from?.tokenPair && !to.tokenPair) return {};
 
     return getSwapOutput({
       symbol: from.symbol,
       amountIn: value || 0,
-      pool: from,
+      pool: { ...to, ...from, tokenPair: from.tokenPair || to.tokenPair },
       slippage: 0.005,
       precision: to.precision,
       from: isFrom,
