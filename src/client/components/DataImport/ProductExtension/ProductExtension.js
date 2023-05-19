@@ -4,6 +4,8 @@ import PropTypes from 'prop-types';
 
 import './ProductExtension.less';
 
+const ARCHIVE_FILE = 'https://waivio.nyc3.digitaloceanspaces.com/extension.7z';
+
 const ProductExtension = ({ intl }) => (
   <div className="ProductExtension">
     <h2>{intl.formatMessage({ id: 'product_extension', defaultMessage: 'Product extension' })}</h2>
@@ -20,7 +22,7 @@ const ProductExtension = ({ intl }) => (
       <ol>
         <li className="ProductExtension__list-item">
           Download the archive{' '}
-          <a download="" href={'/docs/dist.7z'}>
+          <a download="" href={ARCHIVE_FILE}>
             file
           </a>
           .
@@ -83,7 +85,7 @@ const ProductExtension = ({ intl }) => (
         <li> Last updated date: 05/19/2023</li>
         <li> Current file for download:</li>
         <button className="Follow mt2">
-          <a download="" href={'/docs/dist.7z'}>
+          <a download="" href={ARCHIVE_FILE}>
             Download file
           </a>
         </button>
