@@ -122,6 +122,24 @@ class StoryFull extends React.Component {
     this.handleClick = this.handleClick.bind(this);
     this.handleContentClick = this.handleContentClick.bind(this);
   }
+  componentDidMount() {
+    const taggedObjects = [];
+    const linkedObjects = [];
+
+    forEach(this.props.post.wobjects, wobj => {
+      if (wobj.tagged) taggedObjects.push(wobj);
+      else linkedObjects.push(wobj);
+    });
+    if (window.location.hash) {
+      setTimeout(() => {
+        const hash = window.location.hash;
+
+        window.location.hash = '';
+        window.location.hash = hash;
+        this.setState({ activeKey: !isEmpty(linkedObjects) ? 1 : 2 });
+      }, 300);
+    }
+  }
 
   componentWillUnmount() {
     const { post } = this.props;
