@@ -20,7 +20,7 @@ const LightboxHeader = ({
         {userName && (
           <div className="ObjectCard__links">
             <Link to={`/@${userName}`} title={userName}>
-              <Avatar username={userName} size={34} />
+              <Avatar username={userName} size={34} lightbox />
             </Link>
             <Link to={`/@${userName}`} title={userName} className="LightboxTools__name">
               {userName}
@@ -50,7 +50,7 @@ const LightboxHeader = ({
             {relatedWobjs.slice(0, 4).map(wobj => (
               <div className="Story__published ml2" key={wobj.author_permlink}>
                 <Link to={wobj.defaultShowLink}>
-                  <ObjectAvatar item={wobj} size={34} />
+                  <ObjectAvatar item={wobj} size={34} className={'Avatar-lightbox'} />
                 </Link>
               </div>
             ))}

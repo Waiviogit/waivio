@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import { isEmpty } from 'lodash';
 import moment from 'moment';
@@ -25,7 +26,11 @@ export function getAvatarURL(username, size = 100, authenticatedUser) {
   return size > 64 ? `${url}/${username}/avatar` : `${url}/${username}/avatar/small`;
 }
 
-const Avatar = ({ username, size, authenticatedUser, isSquare }) => {
+const Avatar = ({ username, size, authenticatedUser, isSquare, lightbox }) => {
+  const avatarClassNames = classnames('Avatar', {
+    'Avatar-square': isSquare,
+    'Avatar-lightbox': lightbox,
+  });
   let style = {
     minWidth: `${size}px`,
     width: `${size}px`,
@@ -40,7 +45,7 @@ const Avatar = ({ username, size, authenticatedUser, isSquare }) => {
     };
   }
 
-  return <div className={isSquare ? 'Avatar-square' : 'Avatar'} style={style} title={username} />;
+  return <div className={avatarClassNames} style={style} title={username} />;
 };
 
 Avatar.propTypes = {
@@ -48,6 +53,7 @@ Avatar.propTypes = {
   authenticatedUser: PropTypes.shape({}),
   size: PropTypes.number,
   isSquare: PropTypes.bool,
+  lightbox: PropTypes.bool,
 };
 
 Avatar.defaultProps = {
@@ -55,6 +61,7 @@ Avatar.defaultProps = {
   username: '',
   authenticatedUser: {},
   isSquare: false,
+  lightbox: false,
 };
 
 export default connect(state => ({ authenticatedUser: getAuthenticatedUser(state) }))(Avatar);
