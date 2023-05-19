@@ -189,7 +189,8 @@ const ImageSetter = ({
 
     const res = new File([blobOutput], 'filename', { type: 'image/png' });
 
-    handleChangeImage({ target: { files: [res] } });
+    setState({ ...state, image: res });
+    setIsOpen(true);
   };
   // For image pasted for link
   const handleOnUploadImageByLink = async image => {
