@@ -15,7 +15,7 @@ import { getAppendList } from '../../../store/appendStore/appendSelectors';
 
 const LightboxFooter = ({ post }) => {
   const [reactionsModalVisible, showReactionModal] = useState(false);
-  const [currentPost, setCurrentPost] = useState({});
+  const [currentPost, setCurrentPost] = useState(post);
   const updatesList = useSelector(getAppendList);
 
   const user = useSelector(getAuthenticatedUser);
@@ -53,13 +53,17 @@ const LightboxFooter = ({ post }) => {
 
   useEffect(() => {
     if (updatesList) {
-      setCurrentPost(updatesList.find(p => p.permlink === post.permlink));
-    } else {
-      setCurrentPost(post);
-    }
-  }, [updatesList]);
+      const newPost = updatesList.find(p => p.permlink === post.permlink);
 
-  return currentPost.approvePercent ? (
+      if (newPost) {
+        setCurrentPost(updatesList.find(p => p.permlink === post.permlink));
+      } else {
+        setCurrentPost(post);
+      }
+    }
+  }, [updatesList, post]);
+
+  return post?.approvePercent && currentPost ? (
     <div className="LightboxTools__container">
       <AppendObjButtons
         post={currentPost}

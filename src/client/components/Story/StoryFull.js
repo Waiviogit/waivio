@@ -122,6 +122,24 @@ class StoryFull extends React.Component {
     this.handleClick = this.handleClick.bind(this);
     this.handleContentClick = this.handleContentClick.bind(this);
   }
+  componentDidMount() {
+    const taggedObjects = [];
+    const linkedObjects = [];
+
+    forEach(this.props.post.wobjects, wobj => {
+      if (wobj.tagged) taggedObjects.push(wobj);
+      else linkedObjects.push(wobj);
+    });
+    if (window.location.hash) {
+      setTimeout(() => {
+        const hash = window.location.hash;
+
+        window.location.hash = '';
+        window.location.hash = hash;
+        this.setState({ activeKey: !isEmpty(linkedObjects) ? 1 : 2 });
+      }, 300);
+    }
+  }
 
   componentWillUnmount() {
     const { post } = this.props;
@@ -182,8 +200,8 @@ class StoryFull extends React.Component {
       }
     }
   }
-  closeLightboxModal = () => {
-    this.setState({ lightbox: { open: false }, activeKey: 2 });
+  closeLightboxModal = linkedObjects => {
+    this.setState({ lightbox: { open: false }, activeKey: !isEmpty(linkedObjects) ? 1 : 2 });
   };
 
   toggleBookmark = () => this.clickMenuItem('save');
@@ -389,8 +407,8 @@ class StoryFull extends React.Component {
             imageTitle={
               <LightboxHeader
                 relatedWobjs={post.wobjects}
-                closeModal={this.closeLightboxModal}
-                relatedPath="#allRelatedObjects"
+                closeModal={() => this.closeLightboxModal(linkedObjects)}
+                relatedPath={!isEmpty(linkedObjects) ? '#allLinkedObjects' : '#allRelatedObjects'}
                 userName={post.author}
               />
             }
@@ -435,6 +453,7 @@ class StoryFull extends React.Component {
         >
           {!isEmpty(linkedObjects) && (
             <Collapse.Panel
+              id="allLinkedObjects"
               header={`${intl.formatMessage({
                 id: 'editor_linked_objects',
                 defaultMessage: 'Linked objects',
