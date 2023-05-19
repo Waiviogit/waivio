@@ -72,11 +72,11 @@ const SocialWrapper = props => {
       props.getSwapEnginRates();
       if (!props.username) props.setLocale(locale || res.language);
 
-      const mainColor = res.colors?.mapMarkerBody || initialColors.marker;
-      const textColor = res.colors?.mapMarkerText || initialColors.text;
+      const mainColor = res.configuration.colors?.mapMarkerBody || initialColors.marker;
+      const textColor = res.configuration.colors?.mapMarkerText || initialColors.text;
 
       document.body.style.setProperty('--website-color', mainColor);
-      document.body.style.setProperty('--website-hover-color', hexToRgb(mainColor, 1));
+      document.body.style.setProperty('--website-hover-color', hexToRgb(mainColor, 6));
       document.body.style.setProperty('--website-text-color', textColor);
 
       props.login(token, provider).then(() => {

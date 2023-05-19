@@ -182,11 +182,10 @@ class Wrapper extends React.PureComponent {
       // eslint-disable-next-line react/no-did-mount-set-state
       this.setState({ prevtLocationPath: location.pathname });
       setSessionData('isWidget', isWidget);
-
-      document.body.style.setProperty('--website-color', initialColors.marker);
-      document.body.style.setProperty('--website-hover-color', hexToRgb(initialColors.marker, 1));
-      document.body.style.setProperty('--website-text-color', initialColors.text);
     }
+    document.body.style.setProperty('--website-color', initialColors.marker);
+    document.body.style.setProperty('--website-hover-color', hexToRgb(initialColors.marker, 6));
+    document.body.style.setProperty('--website-text-color', initialColors.text);
 
     this.props.login().then(() => {
       batch(() => {
