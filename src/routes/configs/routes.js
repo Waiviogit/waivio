@@ -252,6 +252,11 @@ const routes = {
           component: Views.AsinScanner,
         },
         {
+          path: '/product-extension',
+          exact: true,
+          component: Views.ProductExtension,
+        },
+        {
           path: `/:site/(${URL.WEBSITES.tabs})`,
           pathScope: '/:site',
           exact: true,
