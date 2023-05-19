@@ -65,6 +65,11 @@ export const dataManagementSettings = {
       id: 'c',
       defaultMessage: 'ASIN scanner',
     },
+    {
+      to: '/product-extension',
+      id: 'product-extension',
+      defaultMessage: 'Product extension',
+    },
   ],
 };
 export const websiteSettings = {
