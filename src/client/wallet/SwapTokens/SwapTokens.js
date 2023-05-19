@@ -59,7 +59,7 @@ const SwapTokens = props => {
   const setFeeInfo = async () => {
     const data = await getFeeInfo();
 
-    setParams(data);
+    setParams(data[0]);
   };
 
   const setSwapData = async () => {

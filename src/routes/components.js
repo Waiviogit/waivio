@@ -146,4 +146,7 @@ export default {
   MatchBotsSponsors: loableComponent(import('../client/rewards/MatchBotSponsors')),
   DataImport: loableComponent(import('../client/components/DataImport/DataImport')),
   AsinScanner: loableComponent(import('../client/components/DataImport/AsinScanner/AsinScanner')),
+  ProductExtension: loableComponent(
+    import('../client/components/DataImport/ProductExtension/ProductExtension'),
+  ),
 };
