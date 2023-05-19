@@ -80,7 +80,7 @@ const ProductExtension = ({ intl }) => (
     <p>
       <b>Version:</b>
       <ul>
-        <li> Last updated date: 05/18/2023</li>
+        <li> Last updated date: 05/19/2023</li>
         <li> Current file for download:</li>
         <button className="Follow mt2">
           <a download="" href={'/docs/dist.7z'}>
