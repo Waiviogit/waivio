@@ -438,6 +438,7 @@ class ObjectInfo extends React.Component {
       userName,
       isAuthenticated,
       relatedAlbum,
+      albums,
       activeOption,
       activeCategory,
     } = this.props;
@@ -456,7 +457,10 @@ class ObjectInfo extends React.Component {
     const price = get(wobject, 'price');
     const avatar = get(wobject, 'avatar');
     const background = get(wobject, 'background');
-    const pictures = [...get(wobject, 'preview_gallery', []), ...get(relatedAlbum, 'items', [])];
+    const photoAlbum = get(albums[0], 'items', []).sort(
+      (a, b) => (b.name === 'avatar') - (a.name === 'avatar'),
+    );
+    const pictures = [...photoAlbum, ...get(relatedAlbum, 'items', [])];
     const short = get(wobject, 'title');
     const email = get(wobject, 'email');
     const workTime = get(wobject, 'workTime');
