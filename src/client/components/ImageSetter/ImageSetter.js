@@ -71,7 +71,7 @@ const ImageSetter = ({
   };
 
   const handleNewImage = async e => {
-    await setState({ ...state, image: e.target.files[0] });
+    await setState({ ...initialState, image: e.target.files[0] });
     setIsOpen(true);
   };
 
@@ -189,7 +189,7 @@ const ImageSetter = ({
 
     const res = new File([blobOutput], 'filename', { type: 'image/png' });
 
-    setState({ ...state, image: res });
+    setState({ ...initialState, image: res });
     setIsOpen(true);
   };
   // For image pasted for link
@@ -339,8 +339,6 @@ const ImageSetter = ({
       defaultMessage: 'Add image',
     });
   };
-
-  useEffect(() => {}, [state, editor]);
 
   return (
     <div
