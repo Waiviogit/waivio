@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { Icon } from 'antd';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import { useHistory } from 'react-router';
@@ -112,7 +111,7 @@ const DepartmentItem = ({
     <div className={itemClassList}>
       {department.subdirectory ? (
         <div onClick={getNestedDepartments} className={depNameClassList}>
-          {department.name} {!showNested && <Icon style={{ fontSize: '12px' }} type={'right'} />}
+          {department.name}
         </div>
       ) : (
         <div className={depNameWithoutNestedClassList} onClick={getNestedDepartments}>

@@ -2,7 +2,7 @@
 @import (reference) '../../styles/custom.less';
 
 .Header {
-  padding: 15px 10px;
+  padding: 10px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -124,7 +124,24 @@
   }
 
   .iconfont {
+    transition: 0.5s;
     color: #99aab5;
+  }
+
+  .Topnav__link.Topnav__link--light.Topnav__link--action {
+    &:hover {
+      .iconfont {
+        color: var(--website-color);
+      }
+    }
+  }
+
+  .Topnav__link.Topnav__link--action {
+    &:hover {
+      .iconfont {
+        color: var(--website-color);
+      }
+    }
   }
 
   &__item {
