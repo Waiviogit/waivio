@@ -6,6 +6,7 @@ import HeaderButton from '../../components/HeaderButton/HeaderButton';
 import { isMobile } from '../../../common/helpers/apiHelpers';
 import { getConfigurationValues } from '../../../store/appStore/appSelectors';
 import GeneralSearch from '../../websites/WebsiteLayoutComponents/Header/GeneralSearch';
+import WebsiteTopNavigation from './TopNavigation/WebsiteTopNavigation';
 
 import './Header.less';
 
@@ -18,29 +19,32 @@ const Header = () => {
   const header = config?.header?.name;
 
   return (
-    <div className="Header">
-      <Link to={'/'} className="Header__logo">
-        <img alt="logo" src={logo} className="Header__img" />
-        <span>{header || config.host || currHost}</span>
-      </Link>
-      <GeneralSearch searchBarActive={searchBarActive} />
-      <div className={'Header__rightWrap'}>
-        <button
-          className={classNames('Header__mobile-search', {
-            'Header__mobile-search-close': searchBarActive,
-          })}
-          onClick={handleMobileSearchButtonClick}
-        >
-          <i
-            className={classNames('iconfont', {
-              'icon-close': searchBarActive,
-              'icon-search': !searchBarActive,
+    <React.Fragment>
+      <div className="Header">
+        <Link to={'/'} className="Header__logo">
+          <img alt="logo" src={logo} className="Header__img" />
+          <span>{header || config.host || currHost}</span>
+        </Link>
+        <GeneralSearch searchBarActive={searchBarActive} />
+        <div className={'Header__rightWrap'}>
+          <button
+            className={classNames('Header__mobile-search', {
+              'Header__mobile-search-close': searchBarActive,
             })}
-          />
-        </button>
-        <HeaderButton isWebsite searchBarActive={searchBarActive} />
+            onClick={handleMobileSearchButtonClick}
+          >
+            <i
+              className={classNames('iconfont', {
+                'icon-close': searchBarActive,
+                'icon-search': !searchBarActive,
+              })}
+            />
+          </button>
+          <HeaderButton isWebsite searchBarActive={searchBarActive} />
+        </div>
       </div>
-    </div>
+      <WebsiteTopNavigation shopSettings={config.shopSettings} />
+    </React.Fragment>
   );
 };
 

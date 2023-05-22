@@ -10,8 +10,8 @@
   color: @white;
 
   &--primary {
-    .colorize-button(@primary-color, @primary-button-border);
-
+    background: var(--website-color) !important;
+    border-color: var(--website-color) !important;
     color: @white-darker;
 
     &:disabled,
@@ -19,6 +19,8 @@
     &:focus,
     &:active,
     &.active {
+      background: var(--website-color) !important;
+      border-color: var(--website-color) !important;
       color: @white-darker !important;
     }
   }
