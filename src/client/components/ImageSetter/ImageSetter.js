@@ -340,6 +340,8 @@ const ImageSetter = ({
     });
   };
 
+  useEffect(() => {}, [state, editor]);
+
   return (
     <div
       className="ImageSetter"
