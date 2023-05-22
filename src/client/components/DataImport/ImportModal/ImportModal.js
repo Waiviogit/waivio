@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Icon, Modal, Select, message, Checkbox } from 'antd';
+import { Icon, Modal, Select, Checkbox } from 'antd';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
@@ -11,7 +11,6 @@ import { getAuthenticatedUserName } from '../../../../store/authStore/authSelect
 import './ImportModal.less';
 
 const ImportModal = ({ visible, toggleModal, getImportList, intl }) => {
-  const formData = new FormData();
   const authName = useSelector(getAuthenticatedUserName);
   const [uploadedFile, setUploadedFile] = useState(null);
   const [locale, setLocale] = useState('en-US');
@@ -27,7 +26,9 @@ const ImportModal = ({ visible, toggleModal, getImportList, intl }) => {
 
   const deleteFile = () => setUploadedFile(null);
 
-  const onSubmit = () => {
+  const onSubmit = (forceUpdate = false) => {
+    const formData = new FormData();
+
     formData.append('file', uploadedFile);
     formData.append('user', authName);
     formData.append('locale', locale);
@@ -35,10 +36,27 @@ const ImportModal = ({ visible, toggleModal, getImportList, intl }) => {
     formData.append('authority', authority);
     formData.append('translate', translate);
     formData.append('useGPT', chatGPT);
+    if (forceUpdate) {
+      formData.append('forceImport', true);
+    }
     setLoading(true);
     uploadObject(formData).then(res => {
-      if (res.message) message.error(res.message);
-
+      if (res.message) {
+        Modal.confirm({
+          title: intl.formatMessage({
+            id: 'repeat_json_data_file_import',
+            defaultMessage: 'Repeat JSON data file import',
+          }),
+          content: intl.formatMessage({
+            id: 'force_import_json_message',
+            defaultMessage:
+              'It looks like you are trying to import books with type product. Are you sure you want to continue with the import?',
+          }),
+          onOk: () => onSubmit(true),
+          okText: intl.formatMessage({ id: 'import', defaultMessage: 'Import' }),
+          cancelText: intl.formatMessage({ id: 'cancel', defaultMessage: 'Cancel' }),
+        });
+      }
       toggleModal();
       getImportList();
       setLoading(true);
@@ -51,7 +69,7 @@ const ImportModal = ({ visible, toggleModal, getImportList, intl }) => {
       title={intl.formatMessage({ id: 'upload_new_file', defaultMessage: 'Upload new file' })}
       className={'ImportModal'}
       onCancel={toggleModal}
-      onOk={onSubmit}
+      onOk={() => onSubmit(false)}
       okButtonProps={{
         disabled: !objectType || !uploadedFile,
         loading,
