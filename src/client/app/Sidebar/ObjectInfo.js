@@ -457,9 +457,8 @@ class ObjectInfo extends React.Component {
     const price = get(wobject, 'price');
     const avatar = get(wobject, 'avatar');
     const background = get(wobject, 'background');
-    const photoAlbum = get(albums[0], 'items', []).sort(
-      (a, b) => (b.name === 'avatar') - (a.name === 'avatar'),
-    );
+    const allPhotos = albums.flatMap(alb => alb.items.flat());
+    const photoAlbum = allPhotos.sort((a, b) => (b.name === 'avatar') - (a.name === 'avatar'));
     const pictures = [...photoAlbum, ...get(relatedAlbum, 'items', [])];
     const short = get(wobject, 'title');
     const email = get(wobject, 'email');
