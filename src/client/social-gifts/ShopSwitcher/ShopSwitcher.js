@@ -5,7 +5,6 @@ import Affix from '../../components/Utils/Affix';
 import DepartmentsUser from '../../Shop/ShopDepartments/DepartmentsUser';
 import UserFilters from '../../Shop/ShopFilters/UserFilters';
 import UserDepartmentsWobjList from '../../Shop/DepartmentsWobjList/UserDepartmentsWobjList';
-import Shop from '../../Shop/Shop';
 import ShopMainForWobject from '../ShopMainForWobject/ShopMainForWobject';
 
 import './ShopSwitcher.less';
@@ -36,7 +35,7 @@ const ShopSwitcher = () => {
       return <ShopMainForWobject wobjPermlink={shopSettings.value} />;
 
     default:
-      return <Shop />;
+      return <div>fffrfr</div>;
   }
 };
 
