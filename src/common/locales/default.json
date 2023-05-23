@@ -2221,6 +2221,6 @@
   "related_wobjects": "Related objects",
   "import": "Import",
   "repeat_json_data_file_import": "Repeat JSON data file import",
-  "force_import_json_message": "It looks like you are trying to import books with type product. Are you sure you want to continue with the import?"
-
+  "force_import_json_message": "It looks like you are trying to import books with type product. Are you sure you want to continue with the import?",
+  "mobnav_product_extension": "Product extension"
 }
