@@ -1,25 +1,36 @@
 import React from 'react';
 import { useRouteMatch } from 'react-router';
-import { useSelector } from 'react-redux';
+import PropTypes from 'prop-types';
+
 import { getWobjectDepartmentsFeed } from '../../../waivioApi/ApiClient';
-import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 import ListSwitcher from '../../Shop/ListSwitch/ListSwitcher';
 
-const ObjectDepartmentsWobjList = () => {
+const ObjectDepartmentsWobjList = ({ permlink }) => {
   const match = useRouteMatch();
-  const authorPermlink = match.params.name;
-  const authUserName = useSelector(getAuthenticatedUserName);
-  const getDepartmentsFeed = (user, authUser, department, filters, path, skip, limit) =>
-    getWobjectDepartmentsFeed(authorPermlink, department, authUserName, filters, path, skip, limit);
+
+  const getDepartmentsFeed = (
+    authorPermlink,
+    user,
+    authUser,
+    department,
+    filters,
+    path,
+    skip,
+    limit,
+  ) => getWobjectDepartmentsFeed(authorPermlink, department, authUser, filters, path, skip, limit);
 
   return (
     <ListSwitcher
-      user={match.params.name}
+      user={permlink || match.params.name}
       getDepartmentsFeed={getDepartmentsFeed}
-      path={`/object/${match.params.name}/shop`}
+      path={permlink ? '/' : `/object/${match.params.name}/shop`}
       type={'wobject'}
     />
   );
+};
+
+ObjectDepartmentsWobjList.propTypes = {
+  permlink: PropTypes.string,
 };
 
 export default ObjectDepartmentsWobjList;

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { isEmpty } from 'lodash';
 
@@ -28,31 +28,39 @@ const obj = [
   },
 ];
 
+const user = [
+  // {
+  //   name: 'Blog',
+  //   link: '/blog',
+  // },
+  {
+    name: 'Shop',
+    link: '/',
+  },
+  {
+    name: 'Legal',
+    link: '/object/ljc-legal/list',
+  },
+];
+
 const WebsiteTopNavigation = ({ shopSettings }) => {
-  if (isEmpty(shopSettings)) return null;
+  if (isEmpty(shopSettings) || shopSettings?.type === 'object') return null;
+
+  const linkList = shopSettings?.type === 'user' ? user : obj;
 
   return (
     <div className="WebsiteTopNavigation">
-      {shopSettings?.type === 'user' ? (
-        <React.Fragment>
-          <Link to={`/blog`}>Blog</Link>
-          <Link to={`/`}>Shop</Link>
-          <Link to={`/object/ljc-legal/list`}>Legal</Link>
-        </React.Fragment>
-      ) : (
-        <React.Fragment>
-          {obj.map(l => (
-            <Link key={l.link} to={l.link}>
-              {l.name}
-            </Link>
-          ))}
-        </React.Fragment>
-      )}
-      <React.Fragment>
-        <Link to={`/blog`}>Blog</Link>
-        <Link to={`/`}>Shop</Link>
-        <Link to={`/object/ljc-legal/list`}>Legal</Link>
-      </React.Fragment>
+      {linkList.map(l => (
+        <NavLink
+          className="WebsiteTopNavigation__link"
+          isActive={match => l?.link === match?.url}
+          activeClassName={'WebsiteTopNavigation__link--active'}
+          key={l.link}
+          to={l.link}
+        >
+          {l.name}
+        </NavLink>
+      ))}
     </div>
   );
 };

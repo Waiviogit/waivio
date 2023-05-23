@@ -60,6 +60,11 @@ export const getConfigurationValues = createSelector([appState], state => state.
 
 export const getWebsiteLogo = createSelector([appState], state => state.logo);
 
+export const getShopSettings = createSelector(
+  [appState],
+  state => state.configuration?.shopSettings,
+);
+
 export const getIsSocial = createSelector([appState], state => state.isSocial);
 
 export const getWebsiteColors = createSelector([getWebsiteConfiguration], state => state.colors);

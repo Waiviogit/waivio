@@ -1,19 +1,24 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { useRouteMatch } from 'react-router';
 import { getDepartmentsFeed } from '../../../waivioApi/ApiClient';
 import ListSwitcher from '../ListSwitch/ListSwitcher';
 
-const UserDepartmentsWobjList = () => {
+const UserDepartmentsWobjList = ({ userName }) => {
   const match = useRouteMatch();
 
   return (
     <ListSwitcher
-      user={match.params.name}
+      user={userName || match.params.name}
       getDepartmentsFeed={getDepartmentsFeed}
-      path={`/@${match.params.name}/userShop`}
+      path={userName ? '/' : `/@${match.params.name}/userShop`}
       type={'user'}
     />
   );
+};
+
+UserDepartmentsWobjList.propTypes = {
+  userName: PropTypes.string,
 };
 
 export default UserDepartmentsWobjList;
