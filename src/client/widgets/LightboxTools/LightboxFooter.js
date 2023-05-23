@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useRouteMatch } from 'react-router';
 import { some } from 'lodash';
+import classNames from 'classnames';
 import { useDispatch, useSelector } from 'react-redux';
 import ApprovingCard from '../../object/AppendCard/ApprovingCard';
 import AppendObjButtons from '../../components/StoryFooter/AppendObjButtons';
@@ -9,9 +10,9 @@ import { getVotePercent } from '../../../store/settingsStore/settingsSelectors';
 import { getAppendDownvotes, getAppendUpvotes } from '../../../common/helpers/voteHelpers';
 import { getAuthenticatedUser } from '../../../store/authStore/authSelectors';
 import { voteAppends } from '../../../store/appendStore/appendActions';
-
-import './LightboxTools.less';
 import { getAppendList } from '../../../store/appendStore/appendSelectors';
+import { isMobile } from '../../../common/helpers/apiHelpers';
+import './LightboxTools.less';
 
 const LightboxFooter = ({ post }) => {
   const [reactionsModalVisible, showReactionModal] = useState(false);
@@ -64,7 +65,12 @@ const LightboxFooter = ({ post }) => {
   }, [updatesList, post]);
 
   return post?.approvePercent && currentPost ? (
-    <div className="LightboxTools__container">
+    <div
+      className={classNames({
+        LightboxTools__container: !isMobile(),
+        LightboxTools__container__column: isMobile(),
+      })}
+    >
       <AppendObjButtons
         post={currentPost}
         lightbox

@@ -7,7 +7,7 @@ import { useRouteMatch } from 'react-router';
 import classnames from 'classnames';
 import { useDispatch, useSelector } from 'react-redux';
 import { getObjectName } from '../../common/helpers/wObjectHelper';
-import { getAuthenticatedUser } from '../../store/authStore/authSelectors';
+import { getAuthenticatedUser, getIsAuthenticated } from '../../store/authStore/authSelectors';
 import { getLocale, getVotePercent } from '../../store/settingsStore/settingsSelectors';
 import { getAuthorityList } from '../../store/appendStore/appendSelectors';
 import { getAuthorityFields } from '../../waivioApi/ApiClient';
@@ -24,6 +24,7 @@ const HeartButton = ({ wobject, size }) => {
   const userUpVotePower = useSelector(getVotePercent);
   const language = useSelector(getLocale);
   const authorityList = useSelector(getAuthorityList);
+  const isAuth = useSelector(getIsAuthenticated);
   const dispatch = useDispatch();
   const downVotePower = 1;
   const match = useRouteMatch();
@@ -35,6 +36,8 @@ const HeartButton = ({ wobject, size }) => {
   ) : (
     <FormattedMessage id="add_to_my_shop" defaultMessage="Add to my shop" />
   );
+
+  if (!isAuth) return null;
 
   useEffect(() => {
     if (

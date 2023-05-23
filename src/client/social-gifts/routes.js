@@ -11,21 +11,15 @@ import Shop from '../Shop/Shop';
 import ShopDepartmentsWobjList from '../Shop/DepartmentsWobjList/ShopDepartmentsWobjList';
 import DiscoverObjects from '../discoverObjects/DiscoverObjects';
 import Discover from '../discover/Discover';
+import ShopSwitcher from './ShopSwitcher/ShopSwitcher';
 
 const routes = () => ({
   component: SocialWrapper,
   routes: [
     {
-      path: '/',
+      path: '/:department?',
       exact: true,
-      component: Shop,
-      routes: [
-        {
-          path: '/:department?',
-          exact: true,
-          component: ShopDepartmentsWobjList,
-        },
-      ],
+      component: ShopSwitcher,
     },
     {
       path: '/shop/:department?',
