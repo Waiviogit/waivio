@@ -148,6 +148,10 @@ const MobileNavigation = ({ location, match }) => {
       pageName = 'tools';
       filterName = 'ASIN_scanner';
       break;
+    case '/product-extension':
+      pageName = 'tools';
+      filterName = 'product_extension';
+      break;
     case '/create':
       pageName = 'website';
       filterName = 'create';
