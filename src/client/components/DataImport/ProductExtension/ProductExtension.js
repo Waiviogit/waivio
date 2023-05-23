@@ -50,17 +50,23 @@ const ProductExtension = ({ intl }) => (
     <p className="ProductExtension__list">
       <ul>
         <li className="ProductExtension__list-ordered-item">
-          <span className="ProductExtension__list-item-underline">Get JSON </span>: users can
-          receive a .json file containing the Amazon page information.
+          <span className="ProductExtension__list-item-underline">Get JSON</span>: users can receive
+          a .json file containing the Amazon page information.
         </li>
         <li className="ProductExtension__list-ordered-item">
-          <span className="ProductExtension__list-item-underline"> Get XLSX </span>: users can
+          <span className="ProductExtension__list-item-underline"> Get XLSX</span>: users can
           download an .xlsx file in a tabular format.
         </li>
         <li className="ProductExtension__list-ordered-item">
-          <span className="ProductExtension__list-item-underline"> Copy to clipboard </span>: page
+          <span className="ProductExtension__list-item-underline"> Copy to clipboard</span>: page
           information can be copied to the clipboard for easy insertion into Google Sheets. This
           option copies the data without field names.
+        </li>
+        <li className="ProductExtension__list-ordered-item">
+          <span className="ProductExtension__list-item-underline"> Scan for ASINs</span>: tool can
+          scan any Amazon URL and extract ASIN numbers of products from that webpage. It generates a
+          search query for Datafile`&apos;`s product search API tab, downloads the file, and also
+          instantly copies the information to the clipboard.
         </li>
       </ul>
     </p>
@@ -82,9 +88,9 @@ const ProductExtension = ({ intl }) => (
     <p>
       <b>Version:</b>
       <ul>
-        <li> Last updated date: 05/19/2023</li>
+        <li> Last updated date: 05/24/2023</li>
         <li> Current file for download:</li>
-        <button className="Follow mt2">
+        <button className="ant-btn ant-btn-primary mt2 ">
           <a download="" href={ARCHIVE_FILE}>
             Download file
           </a>

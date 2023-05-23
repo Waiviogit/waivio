@@ -13,6 +13,7 @@ import DiscoverObjects from '../discoverObjects/DiscoverObjects';
 import Discover from '../discover/Discover';
 import { listOfSocialWebsites } from './listOfSocialWebsites';
 import SocialGiftsLandingPage from '../SocialGiftsLandingPage/SocialGiftsLandingPage';
+import ShopSwitcher from './ShopSwitcher/ShopSwitcher';
 
 const routes = host => ({
   component: SocialWrapper,
@@ -20,7 +21,9 @@ const routes = host => ({
     {
       path: '/',
       exact: true,
-      component: listOfSocialWebsites.some(site => site === host) ? SocialGiftsLandingPage : Shop,
+      component: listOfSocialWebsites.some(site => site === host)
+        ? SocialGiftsLandingPage
+        : ShopSwitcher,
       routes: [
         {
           path: '/:department?',

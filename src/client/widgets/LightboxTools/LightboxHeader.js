@@ -1,10 +1,12 @@
 import React from 'react';
 import * as PropType from 'prop-types';
 import { Link } from 'react-router-dom';
+import classNames from 'classnames';
 import { FormattedMessage } from 'react-intl';
 import Avatar from '../../components/Avatar';
-import './LightboxTools.less';
 import ObjectAvatar from '../../components/ObjectAvatar';
+import { isMobile } from '../../../common/helpers/apiHelpers';
+import './LightboxTools.less';
 
 const LightboxHeader = ({
   objName,
@@ -22,7 +24,11 @@ const LightboxHeader = ({
             <Link to={`/@${userName}`} title={userName}>
               <Avatar username={userName} size={34} lightbox />
             </Link>
-            <Link to={`/@${userName}`} title={userName} className="LightboxTools__name">
+            <Link
+              to={`/@${userName}`}
+              title={userName}
+              className="LightboxTools__albumInfo-title  LightboxTools__name"
+            >
               {userName}
             </Link>
           </div>
@@ -30,8 +36,13 @@ const LightboxHeader = ({
       </div>
     </div>
 
-    <div className="LightboxTools__albumInfo-container">
-      {objName && albumName && (
+    <div
+      className={classNames({
+        'LightboxTools__albumInfo-container': albumName,
+        'LightboxTools__albumInfo-related-container': relatedWobjs,
+      })}
+    >
+      {objName && albumName && !isMobile() && (
         <>
           <span className="LightboxTools__albumInfo-title">
             <FormattedMessage id="album" defaultMessage="Album" />:
@@ -41,7 +52,7 @@ const LightboxHeader = ({
           </span>
         </>
       )}
-      {relatedWobjs && (
+      {relatedWobjs && !isMobile() && (
         <>
           <a onClick={closeModal} href={relatedPath} className="LightboxTools__albumInfo-title">
             <FormattedMessage id="related_wobjects" defaultMessage="Related objects" />:
