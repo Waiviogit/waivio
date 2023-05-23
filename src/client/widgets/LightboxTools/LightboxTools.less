@@ -37,18 +37,26 @@
     &-container {
       display: flex;
       align-items: center;
+      max-width: 370px;
+    }
+    &-related-container {
+      display: flex;
+      align-items: center;
       max-width: 290px;
     }
     &-title {
       color: @white-smoke;
       opacity: 0.7;
+      font-weight: 600;
     }
   }
 
+  &__column {
+    display: flex;
+    flex-direction: column;
+  }
   &__name {
     margin-left: 10px;
-    color: @white-smoke;
-    opacity: 0.7;
 
     &:hover {
       opacity: 1;

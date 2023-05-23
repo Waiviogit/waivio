@@ -133,9 +133,7 @@ const AppendObjButtons = ({
               </BTooltip>
               {upVotes.length > 0 && (
                 <span
-                  className={classNames('Buttons__number Buttons__reactions-count', {
-                    'Buttons__number-green': lightbox,
-                  })}
+                  className="Buttons__number Buttons__reactions-count"
                   role="presentation"
                   onClick={() => openReactionModal('1')}
                 >
@@ -182,9 +180,7 @@ const AppendObjButtons = ({
                 </BTooltip>
                 {downVotes.length > 0 && (
                   <span
-                    className={classNames('Buttons__number Buttons__reactions-count', {
-                      'Buttons__number-green': lightbox,
-                    })}
+                    className="Buttons__number Buttons__reactions-count"
                     role="presentation"
                     onClick={() => openReactionModal('2')}
                   >

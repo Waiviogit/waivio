@@ -132,10 +132,11 @@ class StoryFull extends React.Component {
     });
     if (window.location.hash) {
       setTimeout(() => {
-        const hash = window.location.hash;
+        const relElement = document.getElementById(
+          !isEmpty(linkedObjects) ? 'allLinkedObjects' : 'allRelatedObjects',
+        );
 
-        window.location.hash = '';
-        window.location.hash = hash;
+        window.scrollTo({ top: relElement.offsetTop });
         this.setState({ activeKey: !isEmpty(linkedObjects) ? 1 : 2 });
       }, 300);
     }

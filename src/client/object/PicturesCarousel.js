@@ -50,7 +50,7 @@ const PicturesCarousel = ({ activePicture, pics, objName, albums }) => {
           imageTitle={
             <LightboxHeader
               objName={objName}
-              albumName={album.body}
+              albumName={album?.body}
               userName={pics[photoIndex].creator}
             />
           }
@@ -72,7 +72,6 @@ const PicturesCarousel = ({ activePicture, pics, objName, albums }) => {
 PicturesCarousel.propTypes = {
   pics: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   albums: PropTypes.arrayOf(PropTypes.shape()).isRequired,
-  objectID: PropTypes.string.isRequired,
   objName: PropTypes.string,
   activePicture: PropTypes.shape(),
   isOptionsType: PropTypes.bool,
