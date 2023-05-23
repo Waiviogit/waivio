@@ -49,6 +49,7 @@ import { getSwapEnginRates } from '../../store/ratesStore/ratesAction';
 import { setLocale } from '../../store/settingsStore/settingsActions';
 
 const SocialWrapper = props => {
+  const isMainPage = props.match.url === '/';
   const language = findLanguage(props.usedLocale);
   const antdLocale = getAntdLocale(language);
   const signInPage = props.location.pathname.includes('sign-in');
@@ -116,7 +117,7 @@ const SocialWrapper = props => {
     >
       <ConfigProvider locale={antdLocale}>
         <Layout data-dir={language && language.rtl ? 'rtl' : 'ltr'}>
-          {!signInPage && <Header />}
+          {!signInPage && !isMainPage && <Header />}
           <div className={'ShopWebsiteWrapper'}>
             {props.loadingFetching ? (
               <Loading />
@@ -137,6 +138,7 @@ const SocialWrapper = props => {
 
 SocialWrapper.propTypes = {
   route: PropTypes.shape().isRequired,
+  match: PropTypes.shape().isRequired,
   locale: PropTypes.string.isRequired,
   usedLocale: PropTypes.string,
   translations: PropTypes.shape(),

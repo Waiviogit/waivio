@@ -11,14 +11,16 @@ import Shop from '../Shop/Shop';
 import ShopDepartmentsWobjList from '../Shop/DepartmentsWobjList/ShopDepartmentsWobjList';
 import DiscoverObjects from '../discoverObjects/DiscoverObjects';
 import Discover from '../discover/Discover';
+import { listOfSocialWebsites } from './listOfSocialWebsites';
+import SocialGiftsLandingPage from '../SocialGiftsLandingPage/SocialGiftsLandingPage';
 
-const routes = () => ({
+const routes = host => ({
   component: SocialWrapper,
   routes: [
     {
       path: '/',
       exact: true,
-      component: Shop,
+      component: listOfSocialWebsites.some(site => site === host) ? SocialGiftsLandingPage : Shop,
       routes: [
         {
           path: '/:department?',
