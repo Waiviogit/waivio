@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { connect, batch } from 'react-redux';
+import { connect, batch, useSelector } from 'react-redux';
 import { IntlProvider } from 'react-intl';
 import { withRouter } from 'react-router-dom';
 import { renderRoutes } from 'react-router-config';
@@ -33,6 +33,7 @@ import BBackTop from './../components/BBackTop';
 import ErrorBoundary from './../widgets/ErrorBoundary';
 import Loading from './../components/Icon/Loading';
 import {
+  getIsSocialGifts,
   getTranslations,
   getUsedLocale,
   getWebsiteColors,
@@ -49,7 +50,7 @@ import { getSwapEnginRates } from '../../store/ratesStore/ratesAction';
 import { setLocale } from '../../store/settingsStore/settingsActions';
 
 const SocialWrapper = props => {
-  const isMainPage = props.match.url === '/';
+  const isSocialGifts = useSelector(getIsSocialGifts);
   const language = findLanguage(props.usedLocale);
   const antdLocale = getAntdLocale(language);
   const signInPage = props.location.pathname.includes('sign-in');
@@ -117,7 +118,7 @@ const SocialWrapper = props => {
     >
       <ConfigProvider locale={antdLocale}>
         <Layout data-dir={language && language.rtl ? 'rtl' : 'ltr'}>
-          {!signInPage && !isMainPage && <Header />}
+          {!signInPage && isSocialGifts && <Header />}
           <div className={'ShopWebsiteWrapper'}>
             {props.loadingFetching ? (
               <Loading />
@@ -138,7 +139,6 @@ const SocialWrapper = props => {
 
 SocialWrapper.propTypes = {
   route: PropTypes.shape().isRequired,
-  match: PropTypes.shape().isRequired,
   locale: PropTypes.string.isRequired,
   usedLocale: PropTypes.string,
   translations: PropTypes.shape(),

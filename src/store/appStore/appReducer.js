@@ -7,6 +7,7 @@ import { mobileUserAgents } from '../../common/helpers/regexHelpers';
 import { getObjectAvatar, getObjectName } from '../../common/helpers/wObjectHelper';
 import DEFAULTS from '../../client/object/const/defaultValues';
 import { listOfWebsiteWithMainPage } from '../../common/constants/listOfWebsite';
+import { listOfSocialWebsites } from '../../client/social-gifts/listOfSocialWebsites';
 
 const initialState = {
   isFetching: false,
@@ -183,6 +184,7 @@ export default (state = initialState, action) => {
         hostAddress: action.meta,
         isDiningGifts:
           listOfWebsiteWithMainPage.some(site => site === action.meta) || startup === 'about',
+        isSocialGifts: listOfSocialWebsites.some(site => site === action.meta),
         logo,
         currMap,
       };
