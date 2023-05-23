@@ -65,7 +65,7 @@ const ProductExtension = ({ intl }) => (
         <li className="ProductExtension__list-ordered-item">
           <span className="ProductExtension__list-item-underline"> Scan for ASINs</span>: tool can
           scan any Amazon URL and extract ASIN numbers of products from that webpage. It generates a
-          search query for Datafile&apos;s product search API tab, downloads the file, and also
+          search query for Datafiniti&apos;s product search API tab, downloads the file, and also
           instantly copies the information to the clipboard.
         </li>
       </ul>
