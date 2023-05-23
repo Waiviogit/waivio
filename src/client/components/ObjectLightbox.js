@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import Lightbox from 'react-image-lightbox';
-import { Link } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 import { Icon } from 'antd';
 import { get } from 'lodash';
 import ObjectAvatar from './ObjectAvatar';
@@ -9,10 +10,17 @@ import AppendModal from '../object/AppendModal/AppendModal';
 import { objectFields } from '../../common/constants/listOfFields';
 import DEFAULTS from '../object/const/defaultValues';
 import { getProxyImageURL } from '../../common/helpers/image';
+import LightboxHeader from '../widgets/LightboxTools/LightboxHeader';
+import { getObjectAlbums } from '../../store/galleryStore/gallerySelectors';
 
+@withRouter
+@connect(state => ({
+  albums: getObjectAlbums(state),
+}))
 export default class ObjectLightbox extends Component {
   static propTypes = {
     wobject: PropTypes.shape(),
+    albums: PropTypes.shape(),
     size: PropTypes.number,
     accessExtend: PropTypes.bool,
   };
@@ -35,6 +43,10 @@ export default class ObjectLightbox extends Component {
     const { wobject, size, accessExtend } = this.props;
     const objectName = wobject.name || wobject.default_name;
     let currentImage = wobject.avatar || get(wobject, ['parent', 'avatar']);
+    const album = this.props.albums?.find(alb =>
+      alb?.items?.some(pic => pic.body === wobject.avatar),
+    );
+    const creator = album?.items?.find(pic => pic.body === wobject.avatar).creator;
 
     if (currentImage) currentImage = getProxyImageURL(currentImage, 'preview');
     else currentImage = DEFAULTS.AVATAR;
@@ -64,7 +76,18 @@ export default class ObjectLightbox extends Component {
               <ObjectAvatar item={wobject} size={size} />
             </a>
             {this.state.open && (
-              <Lightbox mainSrc={currentImage} onCloseRequest={this.handleCloseRequest} />
+              <Lightbox
+                wrapperClassName="LightboxTools"
+                imageTitle={
+                  <LightboxHeader
+                    objName={wobject.name}
+                    albumName={album?.body}
+                    userName={creator}
+                  />
+                }
+                mainSrc={currentImage}
+                onCloseRequest={this.handleCloseRequest}
+              />
             )}
           </React.Fragment>
         )}
