@@ -118,7 +118,7 @@ const SocialWrapper = props => {
     >
       <ConfigProvider locale={antdLocale}>
         <Layout data-dir={language && language.rtl ? 'rtl' : 'ltr'}>
-          {!signInPage && isSocialGifts && <Header />}
+          {!signInPage && !isSocialGifts && <Header />}
           <div className={'ShopWebsiteWrapper'}>
             {props.loadingFetching ? (
               <Loading />
