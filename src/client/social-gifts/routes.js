@@ -38,6 +38,7 @@ const routes = host => ({
       exact: true,
       component: Shop,
       pathScope: '/object-shop/:name',
+      isSocial: true,
       routes: [
         {
           path: '/:department?',
@@ -182,7 +183,10 @@ const routes = host => ({
       component: Post,
     },
     {
-      path: `/object/:name/(${URL.WOBJ.tabs})?/(${URL.WOBJ.filters})?/:itemId?`,
+      path: [
+        `/object/:name/(${URL.WOBJ.tabs})?/(${URL.WOBJ.filters})?/:itemId?`,
+        `/object/:name/shop/:department?`,
+      ],
       component: WobjectContainer,
       exact: true,
       pathScope: '/object/:name',

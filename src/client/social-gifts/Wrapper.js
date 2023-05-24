@@ -130,21 +130,15 @@ const SocialWrapper = props => {
             const buttonList = [
               ...sortingButton,
               ...compareList.filter(i => !customSort.includes(i.permlink)),
-            ];
+            ].map(i => ({
+              link:
+                i.object_type === 'shop' ? `/object-shop/${i.author_permlink}` : i.defaultShowLink,
+              name: i?.body?.title,
+            }));
 
-            dispatch(
-              setItemsForNavigation(
-                buttonList.map(i => ({
-                  link:
-                    i.object_type === 'shop'
-                      ? `/object-shop/${i.author_permlink}`
-                      : i.defaultShowLink,
-                  name: i?.body?.title,
-                })),
-              ),
-            );
+            dispatch(setItemsForNavigation(buttonList));
 
-            if (props.location.pathname === '/') props.history.push(buttonList[0].defaultShowLink);
+            if (props.location.pathname === '/') props.history.push(buttonList[0].link);
           });
         });
       }

@@ -1,10 +1,11 @@
 import React from 'react';
 import { useRouteMatch } from 'react-router';
+import PropTypes from 'prop-types';
 
 import { getWobjectDepartmentsFeed } from '../../../waivioApi/ApiClient';
 import ListSwitcher from '../../Shop/ListSwitch/ListSwitcher';
 
-const ObjectDepartmentsWobjList = () => {
+const ObjectDepartmentsWobjList = ({ isSocial }) => {
   const match = useRouteMatch();
 
   const getDepartmentsFeed = (
@@ -28,10 +29,13 @@ const ObjectDepartmentsWobjList = () => {
           : `/object/${match.params.name}/shop`
       }
       type={'wobject'}
+      isSocial={isSocial}
     />
   );
 };
 
-ObjectDepartmentsWobjList.propTypes = {};
+ObjectDepartmentsWobjList.propTypes = {
+  isSocial: PropTypes.bool,
+};
 
 export default ObjectDepartmentsWobjList;

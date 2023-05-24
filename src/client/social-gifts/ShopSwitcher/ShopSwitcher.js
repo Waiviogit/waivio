@@ -16,14 +16,19 @@ const ShopSwitcher = () => {
   switch (shopSettings?.type) {
     case 'user':
       return (
-        <div className="feed-layout container Shop">
+        <div
+          className="feed-layout container Shop"
+          style={{
+            marginTop: '20px',
+          }}
+        >
           <Affix className="leftContainer" stickPosition={77}>
             <div className="left">
               <DepartmentsUser userName={shopSettings.value} />
             </div>
           </Affix>
           <div className="center">
-            <UserDepartmentsWobjList userName={shopSettings.value} />
+            <UserDepartmentsWobjList isSocial userName={shopSettings.value} />
           </div>
           <Affix className="rightContainer" stickPosition={77}>
             <div className="right">

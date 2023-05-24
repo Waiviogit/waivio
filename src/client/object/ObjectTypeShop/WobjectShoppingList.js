@@ -1,12 +1,13 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { useRouteMatch } from 'react-router';
+import PropTypes from 'prop-types';
 
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 import ShopList from '../../Shop/ShopList/ShopList';
 import { getWobjectShopMainFeed } from '../../../waivioApi/ApiClient';
 
-const WobjectShoppingList = () => {
+const WobjectShoppingList = ({ isSocial }) => {
   const authUserName = useSelector(getAuthenticatedUserName);
   const match = useRouteMatch();
   const authorPermlink = match.params.name;
@@ -22,10 +23,13 @@ const WobjectShoppingList = () => {
           : `/object/${authorPermlink}/shop`
       }
       getShopFeed={getShopFeed}
+      isSocial={isSocial}
     />
   );
 };
 
-WobjectShoppingList.propTypes = {};
+WobjectShoppingList.propTypes = {
+  isSocial: PropTypes.bool,
+};
 
 export default WobjectShoppingList;
