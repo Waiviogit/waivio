@@ -61,11 +61,6 @@ export const dataManagementSettings = {
       defaultMessage: 'Data import',
     },
     {
-      to: '/ASIN-scanner',
-      id: 'c',
-      defaultMessage: 'ASIN scanner',
-    },
-    {
       to: '/product-extension',
       id: 'product-extension',
       defaultMessage: 'Product extension',
