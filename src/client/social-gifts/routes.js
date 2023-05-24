@@ -14,6 +14,7 @@ import Discover from '../discover/Discover';
 import { listOfSocialWebsites } from './listOfSocialWebsites';
 import SocialGiftsLandingPage from '../SocialGiftsLandingPage/SocialGiftsLandingPage';
 import ShopSwitcher from './ShopSwitcher/ShopSwitcher';
+import ObjectDepartmentsWobjList from '../object/ObjectTypeShop/ObjectDepartmentsWobjList';
 
 const routes = host => ({
   component: SocialWrapper,
@@ -259,6 +260,11 @@ const routes = host => ({
           path: '/departments/:department',
           exact: true,
           component: Views.DepartmentsPage,
+        },
+        {
+          path: '/shop/:department?',
+          exact: true,
+          component: ObjectDepartmentsWobjList,
         },
       ],
     },

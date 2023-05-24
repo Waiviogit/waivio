@@ -1,42 +1,20 @@
-import React from 'react';
-// import PropTypes from 'prop-types';
-// import { get } from 'lodash';
-//
-// import { getObject, getObjectsByIds } from '../../../waivioApi/ApiClient';
-// import { parseJSON } from '../../../common/helpers/parseJSON';
+import React, { useEffect } from 'react';
+import { Skeleton } from 'antd';
+import { useSelector } from 'react-redux';
+import { useHistory } from 'react-router';
+import { isEmpty } from 'lodash';
 
-const ShopMainForWobject = () => (
-  // useEffect(() => {
-  //   getObject(wobjPermlink).then(res => {
-  //     const menuItemLinks = res.menuItem.map(item => parseJSON(item.body)?.linkToObject);
-  //     const customSort = get(res, 'sortCustom.include', []);
-  //
-  //     getObjectsByIds({ authorPermlinks: menuItemLinks }).then(u => {
-  //       const compareList = res.menuItem.map(l => {
-  //         const y = u.wobjects.find(
-  //           wobj => wobj.author_permlink === parseJSON(l.body)?.linkToObject,
-  //         );
-  //
-  //         return {
-  //           ...l,
-  //           ...y,
-  //         };
-  //       });
-  //
-  //       const sortingButton = customSort.reduce((acc, curr) => {
-  //         const findObj = compareList.find(wobj => wobj.permlink === curr);
-  //
-  //         return findObj ? [...acc, findObj] : acc;
-  //       }, []);
-  //     });
-  //   });
-  // }, []);
+import { getNavigItems } from '../../../store/appStore/appSelectors';
 
-  <div>fefefgser</div>
-);
+const ShopMainForWobject = () => {
+  const history = useHistory();
+  const linkList = useSelector(getNavigItems);
 
-// ShopMainForWobject.propTypes = {
-// wobjPermlink: PropTypes.string.isRequired,
-// };
+  useEffect(() => {
+    if (!isEmpty(linkList)) history.push(linkList[0].link);
+  }, [linkList]);
+
+  return <Skeleton active />;
+};
 
 export default ShopMainForWobject;
