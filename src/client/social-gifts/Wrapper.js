@@ -135,7 +135,10 @@ const SocialWrapper = props => {
             dispatch(
               setItemsForNavigation(
                 buttonList.map(i => ({
-                  link: i.defaultShowLink,
+                  link:
+                    i.object_type === 'shop'
+                      ? `/object-shop/${i.author_permlink}`
+                      : i.defaultShowLink,
                   name: i?.body?.title,
                 })),
               ),

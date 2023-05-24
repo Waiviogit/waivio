@@ -34,15 +34,15 @@ const routes = host => ({
       ],
     },
     {
-      path: '/shop/:department?',
+      path: ['/object-shop/:name/:department?'],
       exact: true,
       component: Shop,
-      pathScope: '/shop',
+      pathScope: '/object-shop/:name',
       routes: [
         {
           path: '/:department?',
           exact: true,
-          component: ShopDepartmentsWobjList,
+          component: ObjectDepartmentsWobjList,
         },
       ],
     },

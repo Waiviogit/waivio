@@ -6,6 +6,7 @@ import DepartmentsUser from '../../Shop/ShopDepartments/DepartmentsUser';
 import UserFilters from '../../Shop/ShopFilters/UserFilters';
 import UserDepartmentsWobjList from '../../Shop/DepartmentsWobjList/UserDepartmentsWobjList';
 import ShopMainForWobject from '../ShopMainForWobject/ShopMainForWobject';
+import SocialGiftsLandingPage from '../../SocialGiftsLandingPage/SocialGiftsLandingPage';
 
 import './ShopSwitcher.less';
 
@@ -35,7 +36,7 @@ const ShopSwitcher = () => {
       return <ShopMainForWobject wobjPermlink={shopSettings.value} />;
 
     default:
-      return <div>fffrfr</div>;
+      return <SocialGiftsLandingPage />;
   }
 };
 
