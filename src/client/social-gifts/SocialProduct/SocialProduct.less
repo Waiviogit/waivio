@@ -1,0 +1,19 @@
+@import (reference) '../../styles/custom.less';
+@import (reference) '../../styles/modules/variables.less';
+.SocialProduct {
+  border: 1px solid blue;
+  display: grid;
+  padding: 4px;
+  grid-template-rows: 1fr 1fr;
+  &__column {
+    padding: 16px;
+  }
+  &__column-wrapper {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    border: 1px solid indianred;
+  }
+  &__row {
+    border: 1px solid green;
+  }
+}
