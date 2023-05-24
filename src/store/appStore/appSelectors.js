@@ -95,6 +95,10 @@ export const getIsSocialGifts = createSelector([appState], state => state.isSoci
 
 export const getWebsiteName = createSelector([appState], state => state.websiteName);
 
+export const getNavigItems = createSelector([appState], state => state.navigItems);
+
+export const getSettingsLoading = createSelector([appState], state => state.settingsLoading);
+
 export const getWeightValue = createSelector(
   getRate,
   getRewardFund,

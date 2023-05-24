@@ -200,3 +200,10 @@ export const getCurrentCurrencyRate = currency => (dispatch, getState) => {
     meta: currency,
   });
 };
+
+export const SET_ITEMS_FOR_NAVIGATION = '@app/SET_ITEMS_FOR_NAVIGATION';
+
+export const setItemsForNavigation = items => ({
+  type: SET_ITEMS_FOR_NAVIGATION,
+  items,
+});

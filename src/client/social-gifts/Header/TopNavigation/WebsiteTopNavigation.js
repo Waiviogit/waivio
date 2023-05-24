@@ -2,33 +2,13 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { isEmpty } from 'lodash';
+import { useSelector } from 'react-redux';
+import { getNavigItems, getSettingsLoading } from '../../../../store/appStore/appSelectors';
+import SkeletonRow from '../../../components/Skeleton/SkeletonRow';
 
 import './WebsiteTopNavigation.less';
 
-const obj = [
-  {
-    name: 'Community',
-    link: '/newsfeed',
-  },
-  {
-    name: 'Shop',
-    link: '/',
-  },
-  {
-    name: 'Bookstore',
-    link: '/bookstore',
-  },
-  {
-    name: 'Checklist',
-    link: '/checklist',
-  },
-  {
-    name: 'about',
-    link: '/checklist',
-  },
-];
-
-const user = [
+const userNav = [
   // {
   //   name: 'Blog',
   //   link: '/blog',
@@ -44,9 +24,11 @@ const user = [
 ];
 
 const WebsiteTopNavigation = ({ shopSettings }) => {
-  if (isEmpty(shopSettings) || shopSettings?.type === 'object') return null;
+  const linkList = shopSettings?.type === 'user' ? userNav : useSelector(getNavigItems);
+  const loading = useSelector(getSettingsLoading);
 
-  const linkList = shopSettings?.type === 'user' ? user : obj;
+  if (loading) return <SkeletonRow rows={1} />;
+  if (isEmpty(shopSettings) || isEmpty(linkList)) return null;
 
   return (
     <div className="WebsiteTopNavigation">

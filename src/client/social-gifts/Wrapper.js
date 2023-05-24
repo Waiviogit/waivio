@@ -1,9 +1,10 @@
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { connect, batch, useSelector } from 'react-redux';
+import { connect, batch, useSelector, useDispatch } from 'react-redux';
 import { IntlProvider } from 'react-intl';
 import { withRouter } from 'react-router-dom';
 import { renderRoutes } from 'react-router-config';
+import { get } from 'lodash';
 import { ConfigProvider, Layout } from 'antd';
 import {
   findLanguage,
@@ -26,6 +27,7 @@ import {
   getWebsiteConfigForSSR,
   getCryptoPriceHistory,
   setSocialFlag,
+  setItemsForNavigation,
 } from '../../store/appStore/appActions';
 import Header from './Header/Header';
 import NotificationPopup from './../notifications/NotificationPopup';
@@ -48,9 +50,12 @@ import { hexToRgb } from '../../common/helpers';
 import { initialColors } from '../websites/constants/colors';
 import { getSwapEnginRates } from '../../store/ratesStore/ratesAction';
 import { setLocale } from '../../store/settingsStore/settingsActions';
+import { getObject, getObjectsByIds } from '../../waivioApi/ApiClient';
+import { parseJSON } from '../../common/helpers/parseJSON';
 
 const SocialWrapper = props => {
   const isSocialGifts = useSelector(getIsSocialGifts);
+  const dispatch = useDispatch();
   const language = findLanguage(props.usedLocale);
   const antdLocale = getAntdLocale(language);
   const signInPage = props.location.pathname.includes('sign-in');
@@ -99,6 +104,47 @@ const SocialWrapper = props => {
           props.history.push(`${props.location.pathname}${queryString}`);
         }
       });
+
+      if (res.configuration.shopSettings.type === 'object') {
+        getObject(res.configuration.shopSettings.value).then(wobject => {
+          const menuItemLinks = wobject.menuItem.map(item => parseJSON(item.body)?.linkToObject);
+          const customSort = get(wobject, 'sortCustom.include', []);
+
+          getObjectsByIds({ authorPermlinks: menuItemLinks }).then(u => {
+            const compareList = wobject.menuItem.map(l => {
+              const body = parseJSON(l.body);
+              const y = u.wobjects.find(wobj => wobj.author_permlink === body?.linkToObject);
+
+              return {
+                ...l,
+                ...y,
+                body,
+              };
+            });
+
+            const sortingButton = customSort.reduce((acc, curr) => {
+              const findObj = compareList.find(wobj => wobj.permlink === curr);
+
+              return findObj ? [...acc, findObj] : acc;
+            }, []);
+            const buttonList = [
+              ...sortingButton,
+              ...compareList.filter(i => !customSort.includes(i.permlink)),
+            ];
+
+            dispatch(
+              setItemsForNavigation(
+                buttonList.map(i => ({
+                  link: i.defaultShowLink,
+                  name: i?.body?.title,
+                })),
+              ),
+            );
+
+            if (props.location.pathname === '/') props.history.push(buttonList[0].defaultShowLink);
+          });
+        });
+      }
     });
   }, []);
 
@@ -118,7 +164,7 @@ const SocialWrapper = props => {
     >
       <ConfigProvider locale={antdLocale}>
         <Layout data-dir={language && language.rtl ? 'rtl' : 'ltr'}>
-          {!signInPage && isSocialGifts && <Header />}
+          {!signInPage && !isSocialGifts && <Header />}
           <div className={'ShopWebsiteWrapper'}>
             {props.loadingFetching ? (
               <Loading />
