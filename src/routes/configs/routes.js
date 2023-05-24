@@ -247,9 +247,9 @@ const routes = {
           component: Views.DataImport,
         },
         {
-          path: '/ASIN-scanner',
+          path: '/product-extension',
           exact: true,
-          component: Views.AsinScanner,
+          component: Views.ProductExtension,
         },
         {
           path: `/:site/(${URL.WEBSITES.tabs})`,

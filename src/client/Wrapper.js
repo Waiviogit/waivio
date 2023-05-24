@@ -51,6 +51,8 @@ import { getIsOpenWalletTable } from '../store/walletStore/walletSelectors';
 import { getLocale, getNightmode } from '../store/settingsStore/settingsSelectors';
 import { getTokenRates } from '../store/walletStore/walletActions';
 import { getSwapEnginRates } from '../store/ratesStore/ratesAction';
+import { initialColors } from './websites/constants/colors';
+import { hexToRgb } from '../common/helpers';
 
 export const AppSharedContext = React.createContext({ usedLocale: 'en-US', isGuestUser: false });
 
@@ -181,6 +183,9 @@ class Wrapper extends React.PureComponent {
       this.setState({ prevtLocationPath: location.pathname });
       setSessionData('isWidget', isWidget);
     }
+    document.body.style.setProperty('--website-color', initialColors.marker);
+    document.body.style.setProperty('--website-hover-color', hexToRgb(initialColors.marker, 6));
+    document.body.style.setProperty('--website-text-color', initialColors.text);
 
     this.props.login().then(() => {
       batch(() => {

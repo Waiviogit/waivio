@@ -1,9 +1,10 @@
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { connect, batch } from 'react-redux';
+import { connect, batch, useSelector, useDispatch } from 'react-redux';
 import { IntlProvider } from 'react-intl';
 import { withRouter } from 'react-router-dom';
 import { renderRoutes } from 'react-router-config';
+import { get } from 'lodash';
 import { ConfigProvider, Layout } from 'antd';
 import {
   findLanguage,
@@ -26,6 +27,7 @@ import {
   getWebsiteConfigForSSR,
   getCryptoPriceHistory,
   setSocialFlag,
+  setItemsForNavigation,
 } from '../../store/appStore/appActions';
 import Header from './Header/Header';
 import NotificationPopup from './../notifications/NotificationPopup';
@@ -33,6 +35,7 @@ import BBackTop from './../components/BBackTop';
 import ErrorBoundary from './../widgets/ErrorBoundary';
 import Loading from './../components/Icon/Loading';
 import {
+  getIsSocialGifts,
   getTranslations,
   getUsedLocale,
   getWebsiteColors,
@@ -47,12 +50,15 @@ import { hexToRgb } from '../../common/helpers';
 import { initialColors } from '../websites/constants/colors';
 import { getSwapEnginRates } from '../../store/ratesStore/ratesAction';
 import { setLocale } from '../../store/settingsStore/settingsActions';
+import { getObject, getObjectsByIds } from '../../waivioApi/ApiClient';
+import { parseJSON } from '../../common/helpers/parseJSON';
 
 const SocialWrapper = props => {
+  const isSocialGifts = useSelector(getIsSocialGifts);
+  const dispatch = useDispatch();
   const language = findLanguage(props.usedLocale);
   const antdLocale = getAntdLocale(language);
   const signInPage = props.location.pathname.includes('sign-in');
-  const mainColor = props.colors?.mapMarkerBody || initialColors.marker;
   const loadLocale = async locale => {
     const lang = await loadLanguage(locale);
 
@@ -73,6 +79,13 @@ const SocialWrapper = props => {
       props.getSwapEnginRates();
       if (!props.username) props.setLocale(locale || res.language);
 
+      const mainColor = res.configuration.colors?.mapMarkerBody || initialColors.marker;
+      const textColor = res.configuration.colors?.mapMarkerText || initialColors.text;
+
+      document.body.style.setProperty('--website-color', mainColor);
+      document.body.style.setProperty('--website-hover-color', hexToRgb(mainColor, 6));
+      document.body.style.setProperty('--website-text-color', textColor);
+
       props.login(token, provider).then(() => {
         batch(() => {
           props.getNotifications();
@@ -91,6 +104,47 @@ const SocialWrapper = props => {
           props.history.push(`${props.location.pathname}${queryString}`);
         }
       });
+
+      if (res.configuration.shopSettings.type === 'object') {
+        getObject(res.configuration.shopSettings.value).then(wobject => {
+          const menuItemLinks = wobject.menuItem.map(item => parseJSON(item.body)?.linkToObject);
+          const customSort = get(wobject, 'sortCustom.include', []);
+
+          getObjectsByIds({ authorPermlinks: menuItemLinks }).then(u => {
+            const compareList = wobject.menuItem.map(l => {
+              const body = parseJSON(l.body);
+              const y = u.wobjects.find(wobj => wobj.author_permlink === body?.linkToObject);
+
+              return {
+                ...l,
+                ...y,
+                body,
+              };
+            });
+
+            const sortingButton = customSort.reduce((acc, curr) => {
+              const findObj = compareList.find(wobj => wobj.permlink === curr);
+
+              return findObj ? [...acc, findObj] : acc;
+            }, []);
+            const buttonList = [
+              ...sortingButton,
+              ...compareList.filter(i => !customSort.includes(i.permlink)),
+            ];
+
+            dispatch(
+              setItemsForNavigation(
+                buttonList.map(i => ({
+                  link: i.defaultShowLink,
+                  name: i?.body?.title,
+                })),
+              ),
+            );
+
+            if (props.location.pathname === '/') props.history.push(buttonList[0].defaultShowLink);
+          });
+        });
+      }
     });
   }, []);
 
@@ -109,14 +163,8 @@ const SocialWrapper = props => {
       messages={props.translations}
     >
       <ConfigProvider locale={antdLocale}>
-        <Layout
-          style={{
-            '--website-color': `${mainColor}`,
-            '--website-hover-color': `${hexToRgb(mainColor, 1)}`,
-          }}
-          data-dir={language && language.rtl ? 'rtl' : 'ltr'}
-        >
-          {!signInPage && <Header />}
+        <Layout data-dir={language && language.rtl ? 'rtl' : 'ltr'}>
+          {!signInPage && !isSocialGifts && <Header />}
           <div className={'ShopWebsiteWrapper'}>
             {props.loadingFetching ? (
               <Loading />

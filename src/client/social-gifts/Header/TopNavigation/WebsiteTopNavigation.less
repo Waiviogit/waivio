@@ -1,0 +1,36 @@
+.WebsiteTopNavigation {
+  display: flex;
+  justify-content: center;
+  padding: 10px;
+  background: #fafbfc;
+  -webkit-box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.12);
+  -moz-box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.12);
+  box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.12);
+  border-top: solid 1px #e9e7e7;
+
+  &__link {
+    display: inline-block;
+    text-transform: uppercase;
+    width: 200px;
+    text-align: center;
+
+    &::after {
+      content: '';
+      transition: 0.5s;
+      display: block;
+      width: 0;
+      height: 1px;
+      margin-left: 25px;
+    }
+
+    &--active,
+    &:hover {
+      &::after {
+        content: '';
+        width: calc(100% - 50px);
+        height: 1px;
+        background: var(--website-color);
+      }
+    }
+  }
+}

@@ -1,6 +1,10 @@
 @import (reference) '../../styles/custom.less';
 
 .Buttons {
+  &-lightbox {
+    display: flex;
+    align-items: center;
+  }
   color: @blue-botticelli;
   font-size: 14px;
   font-weight: bold;
@@ -18,15 +22,15 @@
     cursor: pointer;
 
     &:hover {
-      color: @primary-color;
+      color: var(--website-color);
     }
   }
 
   .active {
-    color: @primary-color !important;
+    color: var(--website-color) !important;
 
     &:hover {
-      color: @secondary-color !important;
+      color: var(--website-hover-color) !important;
     }
   }
 
@@ -53,18 +57,21 @@
     }
 
     &:hover {
-      color: @primary-color;
+      color: var(--website-color);
     }
 
     &:hover > .iconfont,
     &.active > .iconfont {
-      color: @primary-color;
+      color: var(--website-color);
     }
   }
 
   &__number {
     vertical-align: 3px;
     margin-right: 10px;
+    &-green {
+      color: @green;
+    }
     &.amount-users:hover {
       cursor: pointer;
     }
@@ -95,7 +102,7 @@
     cursor: pointer;
 
     &:hover {
-      color: @primary-color;
+      color: var(--website-color);
     }
   }
 }

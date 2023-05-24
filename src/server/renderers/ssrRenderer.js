@@ -1,16 +1,6 @@
 import { Helmet } from 'react-helmet';
 
-export default function renderSsrPage(
-  store,
-  html,
-  assets,
-  template,
-  isWaivio,
-  googleTag,
-  color,
-  opacity,
-  textColor,
-) {
+export default function renderSsrPage(store, html, assets, template, isWaivio, googleTag) {
   const preloadedState = store ? store.getState() : {};
 
   const helmet = Helmet.renderStatic();
@@ -41,8 +31,5 @@ export default function renderSsrPage(
     production,
     nightmode,
     tag,
-    color,
-    opacity,
-    textColor,
   });
 }

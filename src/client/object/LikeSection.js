@@ -82,7 +82,7 @@ const LikeSection = props => {
     </div>
   );
 
-  const likePrice = Number(voteWorth);
+  const likePrice = Number(voteWorth) || '0.001';
 
   return (
     <div className="LikeSection">

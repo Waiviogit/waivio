@@ -22,9 +22,9 @@ import FiltersForMobile from '../../newRewards/Filters/FiltersForMobile';
 import UserFilters from '../ShopFilters/UserFilters';
 import WobjectShopFilter from '../../object/ObjectTypeShop/WobjectShopFilter';
 import GlobalShopFilters from '../ShopFilters/GlobalShopFilters';
+import Loading from '../../components/Icon/Loading';
 
 import './ListSwitch.less';
-import Loading from '../../components/Icon/Loading';
 
 const ListSwitcher = props => {
   const activeCrumb = useSelector(getActiveBreadCrumb);
@@ -40,9 +40,9 @@ const ListSwitcher = props => {
     if (activeCrumb?.subdirectory || !match.params.department) {
       switch (props.type) {
         case 'user':
-          return <UserShoppingList />;
+          return <UserShoppingList user={props.user} />;
         case 'wobject':
-          return <WobjectShoppingList />;
+          return <WobjectShoppingList permlink={props.user} />;
 
         default:
           return <GlobalShopingList />;
@@ -56,14 +56,14 @@ const ListSwitcher = props => {
         setVisibleNavig={props.setVisibleNavig}
       />
     );
-  }, [props.type, activeCrumb, match.params.name, match.params.department]);
+  }, [props.type, props.user, activeCrumb, match.params.name, match.params.department]);
 
   const filter = useMemo(() => {
     const closeFilter = () => setVisibleFilter(false);
 
     switch (props.type) {
       case 'user':
-        return <UserFilters onClose={closeFilter} />;
+        return <UserFilters userName={props.user} onClose={closeFilter} />;
 
       case 'wobject':
         return <WobjectShopFilter onClose={closeFilter} />;

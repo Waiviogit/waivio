@@ -60,6 +60,11 @@ export const getConfigurationValues = createSelector([appState], state => state.
 
 export const getWebsiteLogo = createSelector([appState], state => state.logo);
 
+export const getShopSettings = createSelector(
+  [appState],
+  state => state.configuration?.shopSettings,
+);
+
 export const getIsSocial = createSelector([appState], state => state.isSocial);
 
 export const getWebsiteColors = createSelector([getWebsiteConfiguration], state => state.colors);
@@ -86,8 +91,13 @@ export const getHostAddress = createSelector([appState], state => state.hostAddr
 export const getCurrentCurrency = createSelector([appState], state => state.currencyInfo);
 
 export const getIsDiningGifts = createSelector([appState], state => state.isDiningGifts);
+export const getIsSocialGifts = createSelector([appState], state => state.isSocialGifts);
 
 export const getWebsiteName = createSelector([appState], state => state.websiteName);
+
+export const getNavigItems = createSelector([appState], state => state.navigItems);
+
+export const getSettingsLoading = createSelector([appState], state => state.settingsLoading);
 
 export const getWeightValue = createSelector(
   getRate,

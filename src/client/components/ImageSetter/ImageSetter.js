@@ -71,7 +71,7 @@ const ImageSetter = ({
   };
 
   const handleNewImage = async e => {
-    await setState({ ...state, image: e.target.files[0] });
+    await setState({ ...initialState, image: e.target.files[0] });
     setIsOpen(true);
   };
 
@@ -189,9 +189,14 @@ const ImageSetter = ({
 
     const res = new File([blobOutput], 'filename', { type: 'image/png' });
 
-    handleChangeImage({ target: { files: [res] } });
+    if (isEditable) {
+      setState({ ...initialState, image: res });
+      setIsOpen(true);
+    } else {
+      handleChangeImage({ target: { files: [res] } });
+    }
   };
-  // For image pasted for link
+
   const handleOnUploadImageByLink = async image => {
     if (currentImages.length >= 25) {
       message.error(

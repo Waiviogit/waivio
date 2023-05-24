@@ -7,6 +7,7 @@ import { mobileUserAgents } from '../../common/helpers/regexHelpers';
 import { getObjectAvatar, getObjectName } from '../../common/helpers/wObjectHelper';
 import DEFAULTS from '../../client/object/const/defaultValues';
 import { listOfWebsiteWithMainPage } from '../../common/constants/listOfWebsite';
+import { listOfSocialWebsites } from '../../client/social-gifts/listOfSocialWebsites';
 
 const initialState = {
   isFetching: false,
@@ -37,6 +38,7 @@ const initialState = {
   reservedCounter: 0,
   helmetIcon: DEFAULTS.FAVICON,
   isSocial: false,
+  navigItems: [],
 };
 
 export default (state = initialState, action) => {
@@ -166,8 +168,16 @@ export default (state = initialState, action) => {
         logo,
         currMap,
         isWaivio: mainPage === 'waivio',
+        settingsLoading: false,
       };
     }
+
+    case appTypes.GET_CURRENT_APP_SETTINGS.START: {
+      return {
+        ...state,
+      };
+    }
+
     case appTypes.GET_WEBSITE_CONFIG_FOR_SSR.SUCCESS: {
       const deviceType = state.isMobile ? 'mobile' : 'desktop';
       const currMap = action.payload[`${deviceType}Map`];
@@ -183,6 +193,7 @@ export default (state = initialState, action) => {
         hostAddress: action.meta,
         isDiningGifts:
           listOfWebsiteWithMainPage.some(site => site === action.meta) || startup === 'about',
+        isSocialGifts: listOfSocialWebsites.some(site => site === action.meta),
         logo,
         currMap,
       };
@@ -214,6 +225,13 @@ export default (state = initialState, action) => {
           type: action.meta,
           rate: action.payload[action.meta],
         },
+      };
+
+    case appTypes.SET_ITEMS_FOR_NAVIGATION:
+      return {
+        ...state,
+        navigItems: action.items,
+        settingsLoading: false,
       };
 
     default:

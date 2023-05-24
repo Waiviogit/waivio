@@ -3,6 +3,9 @@
 
 .nightmode {
   .ImageSetter {
+    &__rotate__button {
+      color: @black-text-basic;
+    }
     .button-upload {
       @media @small {
         border-color: @normal-grey;
@@ -10,7 +13,7 @@
       }
 
       &:hover {
-        border-color: @orange-hot;
+        border-color: var(--website-color);
       }
     }
 

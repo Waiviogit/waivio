@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux';
 import { getCurrentCurrency } from '../../../store/appStore/appSelectors';
 import { currencyPrefix } from '../../websites/constants/currencyTypes';
 
-const USDDisplay = React.memo(({ value, currencyDisplay, style }) => {
+const USDDisplay = React.memo(({ value, currencyDisplay }) => {
   const currencyInfo = useSelector(getCurrentCurrency);
   const absValue = Math.abs(value) || 0;
   const precision = absValue > 0.01 || absValue === 0 || absValue < 0.001 ? 2 : 3;
@@ -40,7 +40,7 @@ const USDDisplay = React.memo(({ value, currencyDisplay, style }) => {
   };
 
   return (
-    <span style={style} title={sum}>
+    <span className="USDDisplay" title={sum}>
       {formattedCurrency(sum)}
     </span>
   );

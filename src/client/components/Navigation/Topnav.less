@@ -72,7 +72,7 @@
   }
 
   &__search-selected-active {
-    color: @orange-light !important;
+    color: var(--website-hover-color) !important;
   }
 
   &__search-content-wrap {
@@ -213,7 +213,7 @@
           }
 
           &:hover {
-            color: @quaternary-color !important;
+            color: var(--website-color) !important;
           }
         }
       }
@@ -240,7 +240,7 @@
     &__username {
       display: none;
       margin-left: 8px;
-      color: @primary-color;
+      color: var(--website-color);
 
       @media @medium {
         display: inline;
@@ -460,6 +460,7 @@ div[data-dir='rtl'] .Topnav {
   .search-btn {
     .view-as-link();
 
+    color: var(--website-color) !important;
     width: 100%;
     text-overflow: ellipsis;
     white-space: pre-wrap;
@@ -473,7 +474,7 @@ div[data-dir='rtl'] .Topnav {
   padding: 10px 14px;
 
   .pending-status {
-    color: @orange-hot;
+    color: var(--website-color);
   }
 }
 

@@ -70,7 +70,7 @@ textarea.ant-input {
 
 .ant-input:hover,
 .ant-input-number:hover {
-  border-color: @orange !important;
+  border-color: var(--website-color) !important;
 }
 
 .nightmode .ant-calendar-selected-day .ant-calendar-date {
@@ -168,7 +168,7 @@ video {
   color: @black;
 
   &:hover {
-    color: @orange-hot;
+    color: var(--website-color);
   }
 
   font-weight: 500;
@@ -297,20 +297,20 @@ ul {
 
 // region ant-slider
 .ant-slider-track {
-  background-color: @orange !important;
+  background-color: var(--website-hover-color) !important;
 }
 
 .ant-slider-handle {
-  border-color: @orange !important;
+  border-color: var(--website-hover-color) !important;
 
   &:focus {
-    border-color: @neon-carrot !important;
+    border-color: var(--website-hover-color) !important;
     box-shadow: 0 0 0 5px rgba(248, 112, 7, 0.2) !important;
   }
 }
 
 .ant-slider-dot-active {
-  border-color: @primary-color !important;
+  border-color: var(--website-slider-color) !important;
 }
 // endregion
 
@@ -318,12 +318,70 @@ ul {
 .ant-tabs-nav {
   .ant-tabs-tab-active,
   .ant-tabs-tab:hover {
-    color: @primary-color !important;
+    color: var(--website-color) !important;
   }
 }
 
 .ant-tabs-ink-bar {
-  background-color: @primary-color !important;
+  background-color: var(--website-color) !important;
 }
 
+a {
+  color: var(--website-color);
+
+  &:hover {
+    color: var(--website-hover-color);
+  }
+}
+
+.ant-btn-primary {
+  color: var(--website-text-color);
+  background: var(--website-color);
+  border-color: var(--website-color);
+
+  &:hover {
+    background: var(--website-hover-color);
+    border-color: var(--website-hover-color);
+  }
+}
+
+.ant-checkbox-wrapper:hover .ant-checkbox-inner,
+.ant-checkbox:hover .ant-checkbox-inner,
+.ant-checkbox-input:focus + .ant-checkbox-inner {
+  border-color: var(--website-color);
+}
+
+.ant-radio-checked .ant-radio-inner {
+  border-color: var(--website-color);
+
+  &:hover,
+  &:focus {
+    border-color: var(--website-color);
+  }
+}
+
+.ant-radio-inner::after {
+  background-color: var(--website-color);
+}
+
+.ant-checkbox-checked .ant-checkbox-inner {
+  background: var(--website-color);
+  border-color: var(--website-color);
+}
+
+.ant-radio-button-wrapper:hover {
+  color: var(--website-color);
+}
+
+.ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled) {
+  border-color: var(--website-color);
+  color: var(--website-color);
+  box-shadow: -1px 0 0 0 var(--website-color);
+
+  &:hover {
+    border-color: var(--website-hover-color);
+    color: var(--website-hover-color);
+    box-shadow: -1px 0 0 0 var(--website-hover-color);
+  }
+}
 @import 'common-nightmode';

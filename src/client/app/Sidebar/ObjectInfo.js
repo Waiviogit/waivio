@@ -438,6 +438,7 @@ class ObjectInfo extends React.Component {
       userName,
       isAuthenticated,
       relatedAlbum,
+      albums,
       activeOption,
       activeCategory,
     } = this.props;
@@ -456,7 +457,9 @@ class ObjectInfo extends React.Component {
     const price = get(wobject, 'price');
     const avatar = get(wobject, 'avatar');
     const background = get(wobject, 'background');
-    const pictures = [...get(wobject, 'preview_gallery', []), ...get(relatedAlbum, 'items', [])];
+    const allPhotos = albums.flatMap(alb => alb.items.flat());
+    const photoAlbum = allPhotos.sort((a, b) => (b.name === 'avatar') - (a.name === 'avatar'));
+    const pictures = [...photoAlbum, ...get(relatedAlbum, 'items', [])];
     const short = get(wobject, 'title');
     const email = get(wobject, 'email');
     const workTime = get(wobject, 'workTime');
@@ -620,6 +623,8 @@ class ObjectInfo extends React.Component {
           objectFields.galleryItem,
           (pictures.length > 0 || avatar || hasOptionsPics) && (
             <PicturesCarousel
+              albums={[...this.props.albums, this.props.relatedAlbum]}
+              objName={wobject.default_name}
               activePicture={hoveredOption || activeOption}
               pics={activeOptionPicture}
             />
@@ -929,7 +934,13 @@ class ObjectInfo extends React.Component {
         {!isOptionsObjectType &&
           this.listItem(
             objectFields.galleryItem,
-            !isEmpty(pictures) && <PicturesCarousel pics={pictures} />,
+            !isEmpty(pictures) && (
+              <PicturesCarousel
+                pics={pictures}
+                albums={[...this.props.albums, this.props.relatedAlbum]}
+                objName={wobject.default_name}
+              />
+            ),
           )}
         {!isOptionsObjectType &&
           this.listItem(

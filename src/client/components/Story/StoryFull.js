@@ -40,6 +40,7 @@ import PropositionNew from '../../newRewards/reuseble/Proposition/Proposition';
 import Campaing from '../../newRewards/reuseble/Campaing';
 
 import './StoryFull.less';
+import LightboxHeader from '../../widgets/LightboxTools/LightboxHeader';
 
 @injectIntl
 @withRouter
@@ -105,6 +106,8 @@ class StoryFull extends React.Component {
     super(props);
 
     this.state = {
+      activeKey: 1,
+      showObjects: false,
       lightbox: {
         open: false,
         index: 0,
@@ -118,6 +121,25 @@ class StoryFull extends React.Component {
 
     this.handleClick = this.handleClick.bind(this);
     this.handleContentClick = this.handleContentClick.bind(this);
+  }
+  componentDidMount() {
+    const taggedObjects = [];
+    const linkedObjects = [];
+
+    forEach(this.props.post.wobjects, wobj => {
+      if (wobj.tagged) taggedObjects.push(wobj);
+      else linkedObjects.push(wobj);
+    });
+    if (window.location.hash) {
+      setTimeout(() => {
+        const relElement = document.getElementById(
+          !isEmpty(linkedObjects) ? 'allLinkedObjects' : 'allRelatedObjects',
+        );
+
+        window.scrollTo({ top: relElement.offsetTop });
+        this.setState({ activeKey: !isEmpty(linkedObjects) ? 1 : 2 });
+      }, 300);
+    }
   }
 
   componentWillUnmount() {
@@ -179,6 +201,9 @@ class StoryFull extends React.Component {
       }
     }
   }
+  closeLightboxModal = linkedObjects => {
+    this.setState({ lightbox: { open: false }, activeKey: !isEmpty(linkedObjects) ? 1 : 2 });
+  };
 
   toggleBookmark = () => this.clickMenuItem('save');
 
@@ -379,7 +404,15 @@ class StoryFull extends React.Component {
         <div className="StoryFull__content">{content}</div>
         {open && (
           <Lightbox
-            imageTitle={this.images[index].alt}
+            wrapperClassName="LightboxTools"
+            imageTitle={
+              <LightboxHeader
+                relatedWobjs={post.wobjects}
+                closeModal={() => this.closeLightboxModal(linkedObjects)}
+                relatedPath={!isEmpty(linkedObjects) ? '#allLinkedObjects' : '#allRelatedObjects'}
+                userName={post.author}
+              />
+            }
             mainSrc={this.images[index].src}
             nextSrc={imagesArraySize > 1 && this.images[(index + 1) % imagesArraySize].src}
             prevSrc={
@@ -413,9 +446,15 @@ class StoryFull extends React.Component {
           />
         )}
 
-        <Collapse defaultActiveKey={['1']} accordion>
+        <Collapse
+          onChange={() => this.setState({ activeKey: this.state.activeKey === 1 ? 2 : 1 })}
+          accordion
+          defaultActiveKey={['1']}
+          activeKey={this.state.activeKey}
+        >
           {!isEmpty(linkedObjects) && (
             <Collapse.Panel
+              id="allLinkedObjects"
               header={`${intl.formatMessage({
                 id: 'editor_linked_objects',
                 defaultMessage: 'Linked objects',
@@ -455,6 +494,7 @@ class StoryFull extends React.Component {
           )}
           {!isEmpty(taggedObjects) && (
             <Collapse.Panel
+              id="allRelatedObjects"
               header={`${intl.formatMessage({
                 id: 'objects_related_by_tags',
                 defaultMessage: 'Objects related by #tags',
