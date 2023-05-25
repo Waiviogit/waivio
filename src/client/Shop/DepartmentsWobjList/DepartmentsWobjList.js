@@ -19,7 +19,7 @@ import ObjCardViewSwitcherForShop from '../../social-gifts/ShopObjectCard/ObjCar
 
 import './DepartmentsWobjList.less';
 
-const DepartmentsWobjList = ({ getDepartmentsFeed, user }) => {
+const DepartmentsWobjList = ({ getDepartmentsFeed, user, isSocial }) => {
   const [departmentInfo, setDepartmentInfo] = useState();
   const [loading, setLoading] = useState(true);
   const authUser = useSelector(getAuthenticatedUserName);
@@ -81,7 +81,7 @@ const DepartmentsWobjList = ({ getDepartmentsFeed, user }) => {
         <EmptyCampaing emptyMessage={'There are no products available in this department.'} />
       ) : (
         <InfiniteSroll loadMore={loadMore} hasMore={departmentInfo.hasMore}>
-          <ObjCardViewSwitcherForShop wobjects={departmentInfo?.wobjects} />
+          <ObjCardViewSwitcherForShop isSocial={isSocial} wobjects={departmentInfo?.wobjects} />
         </InfiniteSroll>
       )}
     </div>
@@ -91,6 +91,7 @@ const DepartmentsWobjList = ({ getDepartmentsFeed, user }) => {
 DepartmentsWobjList.propTypes = {
   getDepartmentsFeed: PropTypes.func,
   user: PropTypes.string,
+  isSocial: PropTypes.bool,
 };
 
 export default DepartmentsWobjList;

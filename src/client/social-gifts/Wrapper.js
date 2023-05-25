@@ -85,6 +85,7 @@ const SocialWrapper = props => {
       document.body.style.setProperty('--website-color', mainColor);
       document.body.style.setProperty('--website-hover-color', hexToRgb(mainColor, 6));
       document.body.style.setProperty('--website-text-color', textColor);
+      document.body.style.setProperty('--website-light-color', hexToRgb(mainColor, 1));
 
       props.login(token, provider).then(() => {
         batch(() => {
@@ -130,18 +131,15 @@ const SocialWrapper = props => {
             const buttonList = [
               ...sortingButton,
               ...compareList.filter(i => !customSort.includes(i.permlink)),
-            ];
+            ].map(i => ({
+              link:
+                i.object_type === 'shop' ? `/object-shop/${i.author_permlink}` : i.defaultShowLink,
+              name: i?.body?.title,
+            }));
 
-            dispatch(
-              setItemsForNavigation(
-                buttonList.map(i => ({
-                  link: i.defaultShowLink,
-                  name: i?.body?.title,
-                })),
-              ),
-            );
+            dispatch(setItemsForNavigation(buttonList));
 
-            if (props.location.pathname === '/') props.history.push(buttonList[0].defaultShowLink);
+            if (props.location.pathname === '/') props.history.push(buttonList[0].link);
           });
         });
       }
