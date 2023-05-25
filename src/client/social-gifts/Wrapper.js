@@ -85,6 +85,7 @@ const SocialWrapper = props => {
       document.body.style.setProperty('--website-color', mainColor);
       document.body.style.setProperty('--website-hover-color', hexToRgb(mainColor, 6));
       document.body.style.setProperty('--website-text-color', textColor);
+      document.body.style.setProperty('--website-light-color', hexToRgb(mainColor, 1));
 
       props.login(token, provider).then(() => {
         batch(() => {
