@@ -22,7 +22,7 @@ const Header = () => {
     <React.Fragment>
       <div className="Header">
         <Link to={'/'} className="Header__logo">
-          <img alt="logo" src={logo} className="Header__img" />
+          {logo && <img alt="logo" src={logo} className="Header__img" />}
           <span>{header || config.host || currHost}</span>
         </Link>
         <GeneralSearch searchBarActive={searchBarActive} />

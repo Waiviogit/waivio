@@ -37,7 +37,6 @@ export const uploadObject = data =>
     method: 'POST',
     body: data,
   })
-    .then(res => res.json())
     .then(response => response)
     .catch(e => e);
 

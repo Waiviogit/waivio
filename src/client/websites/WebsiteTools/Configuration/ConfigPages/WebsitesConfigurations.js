@@ -453,7 +453,13 @@ const WebsitesConfigurations = ({
             }}
           >
             {!isEmpty(modalsState) && (
-              <ImageSetter onImageLoaded={modalsState.method} isRequired isMultiple={false} />
+              <ImageSetter
+                isEditable
+                autoFocus
+                onImageLoaded={modalsState.method}
+                isRequired
+                isMultiple={false}
+              />
             )}
           </Modal>
           <Modal

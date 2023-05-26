@@ -148,7 +148,7 @@ const ShopWebsiteConfigurations = ({
                   icon="picture"
                   shape="square"
                   src={desktopLogo}
-                  className="WebsitesConfigurations__avatar WebsitesConfigurations__avatar--desktop"
+                  className="WebsitesConfigurations__avatar"
                 />
                 <Button type="primary" onClick={() => handleModalState('desktopLogo')}>
                   {intl.formatMessage({
@@ -176,7 +176,7 @@ const ShopWebsiteConfigurations = ({
                   icon="picture"
                   shape="square"
                   src={mobileLogo}
-                  className="WebsitesConfigurations__avatar WebsitesConfigurations__avatar--mobile"
+                  className="WebsitesConfigurations__avatar"
                 />
                 <Button type="primary" onClick={() => handleModalState('mobileLogo')}>
                   {intl.formatMessage({
@@ -249,7 +249,13 @@ const ShopWebsiteConfigurations = ({
         }}
       >
         {!isEmpty(modalsState) && (
-          <ImageSetter onImageLoaded={modalsState.method} isRequired isMultiple={false} />
+          <ImageSetter
+            isEditable
+            autoFocus
+            onImageLoaded={modalsState.method}
+            isRequired
+            isMultiple={false}
+          />
         )}
       </Modal>
     </React.Fragment>
