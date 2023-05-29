@@ -3,8 +3,7 @@ import { Link } from 'react-router-dom';
 import classNames from 'classnames';
 import { useSelector } from 'react-redux';
 import HeaderButton from '../../components/HeaderButton/HeaderButton';
-import { isMobile } from '../../../common/helpers/apiHelpers';
-import { getConfigurationValues } from '../../../store/appStore/appSelectors';
+import { getConfigurationValues, getWebsiteLogo } from '../../../store/appStore/appSelectors';
 import GeneralSearch from '../../websites/WebsiteLayoutComponents/Header/GeneralSearch';
 import WebsiteTopNavigation from './TopNavigation/WebsiteTopNavigation';
 
@@ -14,7 +13,7 @@ const Header = () => {
   const [searchBarActive, setSearchBarActive] = useState(false);
   const config = useSelector(getConfigurationValues);
   const handleMobileSearchButtonClick = () => setSearchBarActive(!searchBarActive);
-  const logo = isMobile() ? config.mobileLogo : config.desktopLogo;
+  const logo = useSelector(getWebsiteLogo);
   const currHost = typeof location !== 'undefined' && location.hostname;
   const header = config?.header?.name;
 
