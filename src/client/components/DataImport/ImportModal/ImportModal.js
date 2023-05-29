@@ -59,7 +59,7 @@ const ImportModal = ({ visible, toggleModal, getImportList, intl }) => {
           okText: intl.formatMessage({ id: 'import', defaultMessage: 'Import' }),
           cancelText: intl.formatMessage({ id: 'cancel', defaultMessage: 'Cancel' }),
         });
-      } else {
+      } else if (!res.ok) {
         message.error(msg);
       }
       toggleModal();
