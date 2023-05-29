@@ -43,6 +43,7 @@ const ShopWebsiteConfigurations = ({
   const mobileLogo = get(config, 'mobileLogo');
   const desktopLogo = get(config, 'desktopLogo');
   const shopSettings = get(config, 'shopSettings', {});
+  const disabled = isEmpty(image);
   const header = {
     ...{
       name: host,
@@ -246,6 +247,7 @@ const ShopWebsiteConfigurations = ({
         visible={!isEmpty(modalsState)}
         okButtonProps={{
           loading: paramsSaving,
+          disabled,
         }}
       >
         {!isEmpty(modalsState) && (
@@ -255,6 +257,7 @@ const ShopWebsiteConfigurations = ({
             onImageLoaded={modalsState.method}
             isRequired
             isMultiple={false}
+            clearImage={() => setImage('')}
           />
         )}
       </Modal>
