@@ -56,6 +56,7 @@ const WebsitesConfigurations = ({
   const [settingMap, setSettingMap] = useState({});
   const [paramsSaving, setParamsSaving] = useState(false);
   const host = match.params.site;
+  const disabled = isEmpty(image);
   const mobileLogo = get(config, 'mobileLogo');
   const desktopLogo = get(config, 'desktopLogo');
   const aboutObj = get(config, 'aboutObject');
@@ -450,6 +451,7 @@ const WebsitesConfigurations = ({
             visible={!isEmpty(modalsState)}
             okButtonProps={{
               loading: paramsSaving,
+              disabled,
             }}
           >
             {!isEmpty(modalsState) && (
@@ -459,6 +461,7 @@ const WebsitesConfigurations = ({
                 onImageLoaded={modalsState.method}
                 isRequired
                 isMultiple={false}
+                clearImage={() => setImage('')}
               />
             )}
           </Modal>
