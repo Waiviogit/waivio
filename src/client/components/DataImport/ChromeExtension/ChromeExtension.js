@@ -29,7 +29,7 @@ const ChromeExtension = ({ intl }) => (
           ,
           <a download="" href={FILE_RAR}>
             {' '}
-            .rar
+            .tar
           </a>
           ).
         </li>
@@ -73,6 +73,11 @@ const ChromeExtension = ({ intl }) => (
           scan any Amazon URL and extract ASIN numbers of products from that webpage. It generates a
           search query for Datafiniti&apos;s product search API tab, downloads the file, and also
           instantly copies the information to the clipboard.
+        </li>{' '}
+        <li className="ChromeExtension__list-ordered-item">
+          <span className="ChromeExtension__list-item-underline"> Import to Waivio</span>: tool
+          scans the Amazon URL, generates the required file, and immediately initiates the import to
+          Waivio under the currently logged-in user.
         </li>
       </ul>
     </p>
@@ -103,7 +108,7 @@ const ChromeExtension = ({ intl }) => (
         </button>
         <button className="ant-btn ant-btn-primary mt2 ml2">
           <a download="" href={FILE_RAR}>
-            Download file .rar
+            Download file .tar
           </a>
         </button>
       </ul>
