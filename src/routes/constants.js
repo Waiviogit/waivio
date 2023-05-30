@@ -128,7 +128,7 @@ export default {
       'new-accounts',
       'data-import',
       'ASIN-scanner',
-      'product-extension',
+      'chrome-extension',
     ].join('|'),
   },
   WEBSITES: {

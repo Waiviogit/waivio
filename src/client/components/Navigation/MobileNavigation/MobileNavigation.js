@@ -144,9 +144,9 @@ const MobileNavigation = ({ location, match }) => {
       pageName = 'tools';
       filterName = 'data_import';
       break;
-    case '/product-extension':
+    case '/chrome-extension':
       pageName = 'tools';
-      filterName = 'product_extension';
+      filterName = 'chrome_extension';
       break;
     case '/create':
       pageName = 'website';
