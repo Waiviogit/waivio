@@ -43,6 +43,7 @@ const ImageSetter = ({
   autoFocus,
   isEditable,
   isUserAvatar,
+  clearImage,
 }) => {
   const imageLinkInput = useRef(null);
   const [currentImages, setCurrentImages] = useState([]);
@@ -291,6 +292,8 @@ const ImageSetter = ({
   };
 
   const handleRemoveImage = imageDetail => {
+    if (clearImage) clearImage();
+
     const filteredImages = currentImages.filter(f => f.id !== imageDetail.id);
 
     setCurrentImages(filteredImages);
@@ -504,6 +507,7 @@ ImageSetter.propTypes = {
   getEditorState: PropTypes.func,
   addNewBlockAt: PropTypes.func,
   selection: PropTypes.func,
+  clearImage: PropTypes.func,
   labeledImage: PropTypes.string,
   Block: PropTypes.shape(),
   isOkayBtn: PropTypes.bool,
@@ -520,6 +524,7 @@ ImageSetter.defaultProps = {
   isRequired: false,
   isTitle: true,
   setEditorState: () => {},
+  clearImage: () => {},
   getEditorState: null,
   addNewBlockAt: () => {},
   onLoadingImage: () => {},

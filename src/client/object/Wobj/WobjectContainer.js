@@ -210,6 +210,7 @@ class WobjectContainer extends React.Component {
       prevProps.locale !== locale ||
       prevProps.authenticatedUserName !== authenticatedUserName
     ) {
+      this.props.getAlbums(match.params.name);
       this.props.getObject(match.params.name, authenticatedUserName);
       this.props.resetGallery();
       this.props.clearObjectFromStore();
