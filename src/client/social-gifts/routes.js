@@ -15,6 +15,7 @@ import { listOfSocialWebsites } from './listOfSocialWebsites';
 import SocialGiftsLandingPage from '../SocialGiftsLandingPage/SocialGiftsLandingPage';
 import ShopSwitcher from './ShopSwitcher/ShopSwitcher';
 import ObjectDepartmentsWobjList from '../object/ObjectTypeShop/ObjectDepartmentsWobjList';
+import Checklist from './Checklist/Checklist';
 
 const routes = host => ({
   component: SocialWrapper,
@@ -46,6 +47,11 @@ const routes = host => ({
           component: ObjectDepartmentsWobjList,
         },
       ],
+    },
+    {
+      path: ['/checklist/:name'],
+      exact: true,
+      component: Checklist,
     },
     {
       path: '/discover-objects/:typeName?',

@@ -61,9 +61,9 @@ export const dataManagementSettings = {
       defaultMessage: 'Data import',
     },
     {
-      to: '/product-extension',
-      id: 'product-extension',
-      defaultMessage: 'Product extension',
+      to: '/chrome-extension',
+      id: 'chrome-extension',
+      defaultMessage: 'Chrome extension',
     },
   ],
 };
