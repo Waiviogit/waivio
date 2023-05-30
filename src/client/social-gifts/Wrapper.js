@@ -131,11 +131,23 @@ const SocialWrapper = props => {
             const buttonList = [
               ...sortingButton,
               ...compareList.filter(i => !customSort.includes(i.permlink)),
-            ].map(i => ({
-              link:
-                i.object_type === 'shop' ? `/object-shop/${i.author_permlink}` : i.defaultShowLink,
-              name: i?.body?.title,
-            }));
+            ].map(i => {
+              const createLink = () => {
+                switch (i.object_type) {
+                  case 'shop':
+                    return `/object-shop/${i.author_permlink}`;
+                  case 'list':
+                    return `/checklist/${i.author_permlink}`;
+                  default:
+                    return i.defaultShowLink;
+                }
+              };
+
+              return {
+                link: createLink(),
+                name: i?.body?.title,
+              };
+            });
 
             dispatch(setItemsForNavigation(buttonList));
 
