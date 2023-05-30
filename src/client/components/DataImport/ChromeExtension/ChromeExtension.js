@@ -99,7 +99,7 @@ const ChromeExtension = ({ intl }) => (
     <p>
       <b>Version:</b>
       <ul>
-        <li> Last updated date: 05/24/2023</li>
+        <li> Last updated date: 05/31/2023</li>
         <li> Current file for download:</li>
         <button className="ant-btn ant-btn-primary mt2 ">
           <a download="" href={FILE_ZIP}>
