@@ -26,8 +26,9 @@ const ChromeExtension = ({ intl }) => (
           <a download="" href={FILE_ZIP}>
             .zip
           </a>
-          ,{' '}
+          ,
           <a download="" href={FILE_RAR}>
+            {' '}
             .rar
           </a>
           ).
