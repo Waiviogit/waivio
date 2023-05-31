@@ -6,7 +6,7 @@ import { injectIntl } from 'react-intl';
 import { useHistory, useLocation } from 'react-router';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
-import { getIsWaivio } from '../../../store/appStore/appSelectors';
+import { getIsSocial, getIsWaivio } from '../../../store/appStore/appSelectors';
 
 import withAuthActions from '../../auth/withAuthActions';
 import { clearAllSessionProposition } from '../../rewards/rewardsHelper';
@@ -50,6 +50,7 @@ const DetailsModal = ({
   const isWidget = new URLSearchParams(history.location.search).get('display');
   const isReserved = new URLSearchParams(location.search).get('toReserved');
   const isWaivio = useSelector(getIsWaivio);
+  const isSocialGifts = useSelector(getIsSocial);
   const stringRequiredObj =
     typeof proposition.requiredObject === 'string' && !isEmpty(proposition.requiredObject);
   const userName = useSelector(getAuthenticatedUserName);
@@ -112,33 +113,34 @@ const DetailsModal = ({
   };
   const onClick = () => onActionInitiated(handleClickReserve);
 
-  const reserveButton = isWaivio ? (
-    <ReservedButtons
-      reserved={proposition.reserved}
-      handleReserve={onClick}
-      disable={disable}
-      reservedDays={proposition?.countReservationDays}
-      handleReserveForPopover={() =>
-        dispatch(reserveProposition(proposition, userName)).then(() => {
+  const reserveButton =
+    isWaivio || isSocialGifts ? (
+      <ReservedButtons
+        reserved={proposition.reserved}
+        handleReserve={onClick}
+        disable={disable}
+        reservedDays={proposition?.countReservationDays}
+        handleReserveForPopover={() =>
+          dispatch(reserveProposition(proposition, userName)).then(() => {
+            toggleModal();
+
+            return Promise.resolve();
+          })
+        }
+      />
+    ) : (
+      <WebsiteReservedButtons
+        reserved={proposition.reserved}
+        dish={{ ...proposition, ...proposition?.object }}
+        disable={disable}
+        handleReserve={() => {
           toggleModal();
 
-          return Promise.resolve();
-        })
-      }
-    />
-  ) : (
-    <WebsiteReservedButtons
-      reserved={proposition.reserved}
-      dish={{ ...proposition, ...proposition?.object }}
-      disable={disable}
-      handleReserve={() => {
-        toggleModal();
-
-        return dispatch(reserveProposition(proposition, userName));
-      }}
-      onCloseDetails={toggleModal}
-    />
-  );
+          return dispatch(reserveProposition(proposition, userName));
+        }}
+        onCloseDetails={toggleModal}
+      />
+    );
 
   const handleCancelModalBtn = value => {
     clearAllSessionProposition();
