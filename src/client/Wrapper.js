@@ -184,7 +184,7 @@ class Wrapper extends React.PureComponent {
       setSessionData('isWidget', isWidget);
     }
     document.body.style.setProperty('--website-color', initialColors.marker);
-    document.body.style.setProperty('--website-hover-color', hexToRgb(initialColors.marker, 7));
+    document.body.style.setProperty('--website-hover-color', hexToRgb(initialColors.marker, 8));
     document.body.style.setProperty('--website-text-color', initialColors.text);
     document.body.style.setProperty('--website-light-color', hexToRgb(initialColors.marker, 1));
 
