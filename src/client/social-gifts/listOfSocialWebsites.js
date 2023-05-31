@@ -6,4 +6,6 @@ export const listOfSocialWebsites = [
   'social.gifts',
 ];
 
+export const socialDomens = ['socialgifts', 'social.gifts'];
+
 export default null;
