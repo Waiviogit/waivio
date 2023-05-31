@@ -18,7 +18,6 @@ import Checklist from './Checklist/Checklist';
 
 const routes = host => ({
   component: SocialWrapper,
-
   routes: [
     {
       path: '/sign-in',
