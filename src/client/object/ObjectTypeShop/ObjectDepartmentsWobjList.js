@@ -8,16 +8,8 @@ import ListSwitcher from '../../Shop/ListSwitch/ListSwitcher';
 const ObjectDepartmentsWobjList = ({ isSocial }) => {
   const match = useRouteMatch();
 
-  const getDepartmentsFeed = (
-    authorPermlink,
-    user,
-    authUser,
-    department,
-    filters,
-    path,
-    skip,
-    limit,
-  ) => getWobjectDepartmentsFeed(authorPermlink, department, authUser, filters, path, skip, limit);
+  const getDepartmentsFeed = (authorPermlink, authUser, department, filters, path, skip, limit) =>
+    getWobjectDepartmentsFeed(authorPermlink, department, authUser, filters, path, skip, limit);
 
   return (
     <ListSwitcher

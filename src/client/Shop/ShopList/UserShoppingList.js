@@ -11,7 +11,7 @@ const UserShoppingList = ({ user, isSocial }) => {
   return (
     <ShopList
       userName={user || match.params.name}
-      path={user ? '/' : match.url}
+      path={user ? '' : match.url}
       getShopFeed={getUserShopMainFeed}
       isSocial={isSocial}
     />

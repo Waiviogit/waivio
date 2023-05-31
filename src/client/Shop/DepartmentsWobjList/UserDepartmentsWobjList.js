@@ -11,7 +11,7 @@ const UserDepartmentsWobjList = ({ userName, isSocial }) => {
     <ListSwitcher
       user={userName || match.params.name}
       getDepartmentsFeed={getDepartmentsFeed}
-      path={userName ? '/' : `/@${match.params.name}/userShop`}
+      path={userName ? '' : `/@${match.params.name}/userShop`}
       type={'user'}
       isSocial={isSocial}
     />
