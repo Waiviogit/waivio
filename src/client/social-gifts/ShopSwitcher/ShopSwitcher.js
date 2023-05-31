@@ -7,11 +7,14 @@ import UserFilters from '../../Shop/ShopFilters/UserFilters';
 import UserDepartmentsWobjList from '../../Shop/DepartmentsWobjList/UserDepartmentsWobjList';
 import ShopMainForWobject from '../ShopMainForWobject/ShopMainForWobject';
 import SocialGiftsLandingPage from '../../SocialGiftsLandingPage/SocialGiftsLandingPage';
+import SignUp from '../../components/Sidebar/SignUp';
+import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 
 import './ShopSwitcher.less';
 
 const ShopSwitcher = () => {
   const shopSettings = useSelector(getShopSettings);
+  const isAuth = useSelector(getAuthenticatedUserName);
 
   switch (shopSettings?.type) {
     case 'user':
@@ -32,6 +35,7 @@ const ShopSwitcher = () => {
           </div>
           <Affix className="rightContainer" stickPosition={77}>
             <div className="right">
+              {!isAuth && <SignUp />}
               <UserFilters userName={shopSettings.value} />
             </div>
           </Affix>

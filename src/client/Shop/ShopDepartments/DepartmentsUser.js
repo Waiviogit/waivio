@@ -14,7 +14,7 @@ const DepartmentsUser = ({ onClose, userName }) => {
     <ShopDepartmentsList
       getShopDepartments={getShopDepartments}
       onClose={onClose}
-      path={userName ? '/' : `/@${match.params.name}/userShop`}
+      path={userName ? '' : `/@${match.params.name}/userShop`}
     />
   );
 };
