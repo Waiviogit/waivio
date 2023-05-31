@@ -8,7 +8,6 @@ import RewardsMainPage from '../../client/newRewards/RewardsMainPage';
 import createNestedRouts from '../../routes/helper';
 import SocialWrapper from './Wrapper';
 import Shop from '../Shop/Shop';
-import ShopDepartmentsWobjList from '../Shop/DepartmentsWobjList/ShopDepartmentsWobjList';
 import DiscoverObjects from '../discoverObjects/DiscoverObjects';
 import Discover from '../discover/Discover';
 import { listOfSocialWebsites } from './listOfSocialWebsites';
@@ -21,18 +20,11 @@ const routes = host => ({
   component: SocialWrapper,
   routes: [
     {
-      path: '/',
+      path: ['/', '/:department?'],
       exact: true,
       component: listOfSocialWebsites.some(site => site === host)
         ? SocialGiftsLandingPage
         : ShopSwitcher,
-      routes: [
-        {
-          path: '/:department?',
-          exact: true,
-          component: ShopDepartmentsWobjList,
-        },
-      ],
     },
     {
       path: ['/object-shop/:name/:department?'],
