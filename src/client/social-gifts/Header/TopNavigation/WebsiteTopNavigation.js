@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { isEmpty, take, takeRight, truncate } from 'lodash';
 import { useSelector } from 'react-redux';
 import { Icon } from 'antd';
+import { useHistory } from 'react-router';
+
 import Popover from '../../../components/Popover';
 import { isMobile } from '../../../../common/helpers/apiHelpers';
 import { getNavigItems, getSettingsLoading } from '../../../../store/appStore/appSelectors';
@@ -31,11 +33,14 @@ const WebsiteTopNavigation = ({ shopSettings }) => {
   const listItem = useSelector(getNavigItems);
   const linkList = shopSettings?.type === 'user' ? userNav : listItem;
   const loading = useSelector(getSettingsLoading);
+  const history = useHistory();
+  const [visible, setVisible] = useState(false);
 
   if (loading) return <SkeletonRow rows={1} />;
   if (isEmpty(shopSettings) || isEmpty(linkList)) return null;
 
   const listLength = isMobile() ? 2 : 5;
+  const handleMoreMenuVisibleChange = vis => setVisible(vis);
 
   return (
     <div className="WebsiteTopNavigation">
@@ -57,13 +62,20 @@ const WebsiteTopNavigation = ({ shopSettings }) => {
         <Popover
           placement="bottom"
           trigger="click"
-          // visible={popoverVisible}
-          // onVisibleChange={handleMoreMenuVisibleChange}
+          visible={visible}
+          onVisibleChange={handleMoreMenuVisibleChange}
           overlayStyle={{ position: 'fixed' }}
           content={
-            <PopoverMenu onSelect={() => {}}>
+            <PopoverMenu
+              onSelect={i => {
+                setVisible(false);
+                history.push(i);
+              }}
+            >
               {takeRight(linkList, linkList.length - listLength).map(i => (
-                <PopoverMenuItem key={i.name}>{i.name}</PopoverMenuItem>
+                <PopoverMenuItem active={history.location.pathname.includes(i.link)} key={i.link}>
+                  {i.name}
+                </PopoverMenuItem>
               ))}
             </PopoverMenu>
           }
