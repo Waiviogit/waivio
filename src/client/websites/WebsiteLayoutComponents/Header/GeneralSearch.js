@@ -12,7 +12,6 @@ import { getObjectName } from '../../../../common/helpers/wObjectHelper';
 import ObjectSearchItem from '../../../search/SearchItems/ObjectSearchItem';
 import { getTranformSearchCountData, pendingSearch } from '../../../search/helpers';
 import listOfObjectTypes from '../../../../common/constants/listOfObjectTypes';
-import { isMobile } from '../../../../common/helpers/apiHelpers';
 import {
   getAutoCompleteSearchResults,
   getIsStartSearchAutoComplete,
@@ -37,7 +36,7 @@ const GeneralSearch = props => {
 
   const handleAutoCompleteSearchDebounce = useCallback(
     debounce(value => {
-      dispatch(searchAutoComplete(value, 3, 15, null, true, ['business', 'book', 'product']));
+      dispatch(searchAutoComplete(value, 0, 15, undefined, true, []));
     }, 500),
     [],
   );
@@ -196,7 +195,7 @@ const GeneralSearch = props => {
   return (
     <div
       className={classNames('Header__search', {
-        'Header__search--hidden': isMobile() && !props.searchBarActive,
+        'Header__search--hidden': !props.searchBarActive,
       })}
     >
       <i className={'iconfont icon-search'} />

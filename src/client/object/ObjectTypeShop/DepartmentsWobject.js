@@ -15,7 +15,11 @@ const DepartmentsWobject = ({ shopFilter, onClose }) => {
       shopFilter={shopFilter}
       getShopDepartments={getShopDepartments}
       onClose={onClose}
-      path={`/object/${match.params.name}/shop`}
+      path={
+        match.url.includes('object-shop')
+          ? `/object-shop/${match.params.name}`
+          : `/object/${match.params.name}/shop`
+      }
     />
   );
 };

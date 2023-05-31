@@ -29,12 +29,7 @@ import BBackTop from './components/BBackTop';
 import { guestUserRegex } from '../common/helpers/regexHelpers';
 import ErrorBoundary from './widgets/ErrorBoundary';
 import Loading from './components/Icon/Loading';
-import {
-  getIsDiningGifts,
-  getTranslations,
-  getUsedLocale,
-  getWebsiteColors,
-} from '../store/appStore/appSelectors';
+import { getIsDiningGifts, getTranslations, getUsedLocale } from '../store/appStore/appSelectors';
 import { getAuthenticatedUserName, getIsAuthFetching } from '../store/authStore/authSelectors';
 import { getIsOpenWalletTable } from '../store/walletStore/walletSelectors';
 import { getLocale, getNightmode } from '../store/settingsStore/settingsSelectors';
@@ -61,7 +56,6 @@ export const AppSharedContext = React.createContext({ usedLocale: 'en-US', isGue
     loadingFetching: getIsAuthFetching(state),
     isDiningGifts: getIsDiningGifts(state),
     isOpenModal: getIsOpenModal(state),
-    colors: getWebsiteColors(state),
   }),
   {
     login,
@@ -102,9 +96,6 @@ class WebsiteWrapper extends React.PureComponent {
     location: PropTypes.shape({
       search: PropTypes.string,
       pathname: PropTypes.string,
-    }).isRequired,
-    colors: PropTypes.shape({
-      mapMarkerBody: PropTypes.string,
     }).isRequired,
     history: PropTypes.shape({
       push: PropTypes.func,
@@ -175,11 +166,12 @@ class WebsiteWrapper extends React.PureComponent {
       this.props.getCryptoPriceHistory();
       this.props.getSwapEnginRates();
       if (!this.props.username) this.props.setLocale(locale || res.language);
-      const mainColor = res.colors?.mapMarkerBody || initialColors.marker;
-      const textColor = res.colors?.mapMarkerText || initialColors.text;
+      const mainColor = res.configuration?.colors?.mapMarkerBody || initialColors.marker;
+      const textColor = res.configuration?.colors?.mapMarkerText || initialColors.text;
 
       document.body.style.setProperty('--website-color', mainColor);
-      document.body.style.setProperty('--website-hover-color', hexToRgb(mainColor, 1));
+      document.body.style.setProperty('--website-hover-color', hexToRgb(mainColor, 6));
+      document.body.style.setProperty('--website-light-color', hexToRgb(mainColor, 2));
       document.body.style.setProperty('--website-text-color', textColor);
 
       this.props.login(token, provider).then(() => {
@@ -239,12 +231,10 @@ class WebsiteWrapper extends React.PureComponent {
       location,
       isDiningGifts,
       isOpenModal,
-      colors,
     } = this.props;
     const language = findLanguage(usedLocale);
     const antdLocale = this.getAntdLocale(language);
     const signInPage = location.pathname.includes('sign-in');
-    const mainColor = colors?.mapMarkerBody || initialColors.marker;
 
     return (
       <IntlProvider
@@ -260,13 +250,7 @@ class WebsiteWrapper extends React.PureComponent {
               isGuestUser: username && guestUserRegex.test(username),
             }}
           >
-            <Layout
-              style={{
-                '--website-color': `${mainColor}`,
-                '--website-hover-color': `${hexToRgb(mainColor, 1)}`,
-              }}
-              data-dir={language && language.rtl ? 'rtl' : 'ltr'}
-            >
+            <Layout data-dir={language && language.rtl ? 'rtl' : 'ltr'}>
               {!signInPage && (
                 <MainPageHeader
                   withMap={

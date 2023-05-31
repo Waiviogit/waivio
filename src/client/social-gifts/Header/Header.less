@@ -58,6 +58,7 @@
     .iconfont {
       position: absolute;
       display: none;
+      font-size: 20px;
 
       @media @small {
         display: inline;
@@ -69,9 +70,13 @@
     }
 
     .ant-input.ant-select-search__field {
-      padding: 4px 40px 4px 30px;
+      padding: 4px 5px;
       border: none;
-      width: 105%;
+      width: 100%;
+
+      @media @small {
+        padding: 4px 40px 4px 25px;
+      }
     }
 
     .ant-select-selection__clear {
@@ -88,6 +93,10 @@
 
     &--hidden {
       display: none;
+
+      @media @small {
+        display: block;
+      }
     }
   }
 

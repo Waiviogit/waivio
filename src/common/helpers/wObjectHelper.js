@@ -346,7 +346,7 @@ export const createNewHash = (currPermlink, hash, wobj = {}) => {
   if (findIndex >= 0) hashPermlinks.splice(findIndex + 1);
   else hashPermlinks.push(currPermlink);
 
-  return hashPermlinks.join('/');
+  return hashPermlinks.length > 1 ? hashPermlinks.join('/') : hashPermlinks[0];
 };
 
 export const getLinkPath = (match, department, path, location) => {

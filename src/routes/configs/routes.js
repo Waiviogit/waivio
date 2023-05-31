@@ -247,7 +247,7 @@ const routes = {
           component: Views.DataImport,
         },
         {
-          path: '/product-extension',
+          path: '/chrome-extension',
           exact: true,
           component: Views.ProductExtension,
         },

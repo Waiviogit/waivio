@@ -1,0 +1,72 @@
+@import (reference) '../../styles/custom.less';
+@import (reference) '../../styles/modules/variables.less';
+
+.Checklist {
+  margin: 20px;
+
+  &__list {
+    display: flex;
+    flex-wrap: wrap;
+
+    .ShopObjectCard,
+    .Checklist__listItems {
+      width: calc((100% - 30px) / 4);
+
+      &:nth-child(4n) {
+        @media @small {
+          margin-right: 0;
+        }
+
+        margin-right: 10px;
+      }
+
+      &:nth-child(3n) {
+        //@media @small {
+        //  margin-right: 0;
+        //}
+
+        margin-right: 10px;
+      }
+
+      //&:nth-child(2n) {
+      //  @media @small {
+      //    margin-right: 10px;
+      //  }
+      //
+      //  margin-right: 0;
+      //}
+    }
+  }
+
+  &__listItems {
+    border-radius: 4px;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 10px;
+    position: relative;
+    margin-right: 10px;
+
+    .Checklist__itemsAvatar {
+      width: 100%;
+      height: 205px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border: 1px solid @white-gainsboro;
+      border-radius: 4px;
+      background: @white;
+    }
+
+    .anticon.anticon-shopping {
+      font-size: 60px;
+      color: @silver-gray;
+    }
+
+    a {
+      color: rgba(0, 0, 0, 0.85);
+      font-weight: 500;
+      display: inline-block;
+      margin-top: 10px;
+    }
+  }
+}

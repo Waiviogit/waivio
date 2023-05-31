@@ -1,16 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { useSelector } from 'react-redux';
 
 import ShopObjectCard from './ShopObjectCard';
 import ObjectCardSwitcher from '../../objectCard/ObjectCardSwitcher';
-import { getIsSocial } from '../../../store/appStore/appSelectors';
 
 import './ObjCardListViewSwitcherForShop.less';
 
-const ObjCardListViewSwitcherForShop = ({ wobjects }) => {
-  const isSocial = useSelector(getIsSocial);
-
+const ObjCardListViewSwitcherForShop = ({ wobjects, isSocial }) => {
   if (isSocial)
     return (
       <div className="ObjCardListViewSwitcherForShop__departmentsList">
@@ -31,6 +27,7 @@ const ObjCardListViewSwitcherForShop = ({ wobjects }) => {
 
 ObjCardListViewSwitcherForShop.propTypes = {
   wobjects: PropTypes.arrayOf(),
+  isSocial: PropTypes.bool,
 };
 
 export default ObjCardListViewSwitcherForShop;

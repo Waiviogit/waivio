@@ -60,16 +60,11 @@
   }
 
   &__avatar {
-    &--mobile {
-      width: 55px;
-      height: 55px;
-      line-height: 55px;
-    }
-
-    &--desktop {
-      width: 150px;
-      height: 80px;
-      line-height: 80px;
+    width: 55px;
+    height: 55px;
+    line-height: 55px;
+    & > img {
+      object-fit: contain;
     }
   }
 

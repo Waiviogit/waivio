@@ -310,7 +310,7 @@ ul {
 }
 
 .ant-slider-dot-active {
-  border-color: var(--website-slider-color) !important;
+  border-color: var(--website-hover-color) !important;
 }
 // endregion
 
@@ -365,12 +365,16 @@ a {
 }
 
 .ant-checkbox-checked .ant-checkbox-inner {
-  background: var(--website-color);
   border-color: var(--website-color);
 }
 
 .ant-radio-button-wrapper:hover {
   color: var(--website-color);
+}
+
+.ant-select-auto-complete.ant-select .ant-input:focus,
+.ant-select-auto-complete.ant-select .ant-input:hover {
+  border-color: var(--website-color);
 }
 
 .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled) {
@@ -383,5 +387,9 @@ a {
     color: var(--website-hover-color);
     box-shadow: -1px 0 0 0 var(--website-hover-color);
   }
+}
+
+.ant-select-dropdown-menu-item:hover:not(.ant-select-dropdown-menu-item-disabled) {
+  background: var(--website-light-color);
 }
 @import 'common-nightmode';

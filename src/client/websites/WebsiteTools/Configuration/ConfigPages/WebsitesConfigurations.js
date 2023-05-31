@@ -56,6 +56,7 @@ const WebsitesConfigurations = ({
   const [settingMap, setSettingMap] = useState({});
   const [paramsSaving, setParamsSaving] = useState(false);
   const host = match.params.site;
+  const disabled = isEmpty(image);
   const mobileLogo = get(config, 'mobileLogo');
   const desktopLogo = get(config, 'desktopLogo');
   const aboutObj = get(config, 'aboutObject');
@@ -237,7 +238,7 @@ const WebsitesConfigurations = ({
                   icon="picture"
                   shape="square"
                   src={desktopLogo}
-                  className="WebsitesConfigurations__avatar WebsitesConfigurations__avatar--desktop"
+                  className="WebsitesConfigurations__avatar"
                 />
                 <Button type="primary" onClick={() => handleModalState('desktopLogo')}>
                   {intl.formatMessage({
@@ -265,7 +266,7 @@ const WebsitesConfigurations = ({
                   icon="picture"
                   shape="square"
                   src={mobileLogo}
-                  className="WebsitesConfigurations__avatar WebsitesConfigurations__avatar--mobile"
+                  className="WebsitesConfigurations__avatar"
                 />
                 <Button type="primary" onClick={() => handleModalState('mobileLogo')}>
                   {intl.formatMessage({
@@ -450,10 +451,18 @@ const WebsitesConfigurations = ({
             visible={!isEmpty(modalsState)}
             okButtonProps={{
               loading: paramsSaving,
+              disabled,
             }}
           >
             {!isEmpty(modalsState) && (
-              <ImageSetter onImageLoaded={modalsState.method} isRequired isMultiple={false} />
+              <ImageSetter
+                isEditable
+                autoFocus
+                onImageLoaded={modalsState.method}
+                isRequired
+                isMultiple={false}
+                clearImage={() => setImage('')}
+              />
             )}
           </Modal>
           <Modal

@@ -8,43 +8,48 @@ import RewardsMainPage from '../../client/newRewards/RewardsMainPage';
 import createNestedRouts from '../../routes/helper';
 import SocialWrapper from './Wrapper';
 import Shop from '../Shop/Shop';
-import ShopDepartmentsWobjList from '../Shop/DepartmentsWobjList/ShopDepartmentsWobjList';
 import DiscoverObjects from '../discoverObjects/DiscoverObjects';
 import Discover from '../discover/Discover';
 import { listOfSocialWebsites } from './listOfSocialWebsites';
 import SocialGiftsLandingPage from '../SocialGiftsLandingPage/SocialGiftsLandingPage';
 import ShopSwitcher from './ShopSwitcher/ShopSwitcher';
 import ObjectDepartmentsWobjList from '../object/ObjectTypeShop/ObjectDepartmentsWobjList';
+import Checklist from './Checklist/Checklist';
 
 const routes = host => ({
   component: SocialWrapper,
+
   routes: [
     {
-      path: '/',
+      path: '/sign-in',
+      exact: true,
+      component: RedirectedSignIn,
+    },
+    {
+      path: ['/', '/:department?'],
       exact: true,
       component: listOfSocialWebsites.some(site => site === host)
         ? SocialGiftsLandingPage
         : ShopSwitcher,
+    },
+    {
+      path: ['/object-shop/:name/:department?'],
+      exact: true,
+      component: Shop,
+      pathScope: '/object-shop/:name',
+      isSocial: true,
       routes: [
         {
           path: '/:department?',
           exact: true,
-          component: ShopDepartmentsWobjList,
+          component: ObjectDepartmentsWobjList,
         },
       ],
     },
     {
-      path: '/shop/:department?',
+      path: ['/checklist/:name'],
       exact: true,
-      component: Shop,
-      pathScope: '/shop',
-      routes: [
-        {
-          path: '/:department?',
-          exact: true,
-          component: ShopDepartmentsWobjList,
-        },
-      ],
+      component: Checklist,
     },
     {
       path: '/discover-objects/:typeName?',
@@ -182,7 +187,10 @@ const routes = host => ({
       component: Post,
     },
     {
-      path: `/object/:name/(${URL.WOBJ.tabs})?/(${URL.WOBJ.filters})?/:itemId?`,
+      path: [
+        `/object/:name/(${URL.WOBJ.tabs})?/(${URL.WOBJ.filters})?/:itemId?`,
+        `/object/:name/shop/:department?`,
+      ],
       component: WobjectContainer,
       exact: true,
       pathScope: '/object/:name',
@@ -384,11 +392,6 @@ const routes = host => ({
     {
       path: '/exit',
       component: Views.ExitPage,
-    },
-    {
-      path: '/sign-in',
-      exact: true,
-      component: RedirectedSignIn,
     },
     {
       path: '*',

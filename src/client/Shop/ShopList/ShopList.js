@@ -21,7 +21,7 @@ import ObjCardListViewSwitcherForShop from '../../social-gifts/ShopObjectCard/Ob
 
 import './ShopList.less';
 
-const ShopList = ({ userName, path, getShopFeed }) => {
+const ShopList = ({ userName, path, getShopFeed, isSocial }) => {
   const [departments, setDepartments] = useState([]);
   const [hasMore, setHasMore] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -114,7 +114,7 @@ const ShopList = ({ userName, path, getShopFeed }) => {
                   <Link to={getPath(dep.department)} className="ShopList__departments-title">
                     {dep.department} <Icon size={12} type="right" />
                   </Link>
-                  <ObjCardListViewSwitcherForShop wobjects={dep.wobjects} />
+                  <ObjCardListViewSwitcherForShop isSocial={isSocial} wobjects={dep.wobjects} />
                   {dep.hasMore && (
                     <Link className="ShopList__showMore" to={getPath(dep.department)}>
                       Show more {dep.department}
@@ -134,6 +134,7 @@ ShopList.propTypes = {
   userName: PropTypes.string,
   path: PropTypes.string,
   getShopFeed: PropTypes.func,
+  isSocial: PropTypes.bool,
 };
 
 export default ShopList;
