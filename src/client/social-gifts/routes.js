@@ -15,17 +15,13 @@ import SocialGiftsLandingPage from '../SocialGiftsLandingPage/SocialGiftsLanding
 import ShopSwitcher from './ShopSwitcher/ShopSwitcher';
 import ObjectDepartmentsWobjList from '../object/ObjectTypeShop/ObjectDepartmentsWobjList';
 import Checklist from './Checklist/Checklist';
+import UserDepartmentsWobjList from '../Shop/DepartmentsWobjList/UserDepartmentsWobjList';
 
 const routes = host => ({
   component: SocialWrapper,
   routes: [
     {
-      path: '/sign-in',
-      exact: true,
-      component: RedirectedSignIn,
-    },
-    {
-      path: ['/', '/:department?'],
+      path: ['/'],
       exact: true,
       component: listOfSocialWebsites.some(site => site === host)
         ? SocialGiftsLandingPage
@@ -42,6 +38,20 @@ const routes = host => ({
           path: '/:department?',
           exact: true,
           component: ObjectDepartmentsWobjList,
+        },
+      ],
+    },
+    {
+      path: ['/user-shop/:name/:department?'],
+      exact: true,
+      component: Shop,
+      pathScope: '/user-shop/:name',
+      isSocial: true,
+      routes: [
+        {
+          path: '/:department?',
+          exact: true,
+          component: UserDepartmentsWobjList,
         },
       ],
     },
@@ -391,6 +401,11 @@ const routes = host => ({
     {
       path: '/exit',
       component: Views.ExitPage,
+    },
+    {
+      path: '/sign-in',
+      exact: true,
+      component: RedirectedSignIn,
     },
     {
       path: '*',

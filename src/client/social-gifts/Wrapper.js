@@ -154,7 +154,8 @@ const SocialWrapper = props => {
             if (props.location.pathname === '/') props.history.push(buttonList[0].link);
           });
         });
-      }
+      } else if (props.location.pathname === '/')
+        props.history.push(`/user-shop/${res.configuration.shopSettings.value}`);
     });
   }, []);
 

@@ -13,7 +13,7 @@ import {
   getObjectAvatar,
   getObjectName,
 } from '../../../common/helpers/wObjectHelper';
-import { setListItems } from '../../../store/wObjectStore/wobjActions';
+import { setBreadcrumbForChecklist, setListItems } from '../../../store/wObjectStore/wobjActions';
 import { getObjectLists } from '../../../store/wObjectStore/wObjectSelectors';
 import Loading from '../../components/Icon/Loading';
 import { getAuthenticatedUser } from '../../../store/authStore/authSelectors';
@@ -22,10 +22,20 @@ import { getAuthenticatedUser } from '../../../store/authStore/authSelectors';
 import ShopObjectCard from '../ShopObjectCard/ShopObjectCard';
 import { sortListItemsBy } from '../../object/wObjectHelper';
 import { getObject } from '../../../waivioApi/ApiClient';
+// import Breadcrumbs from '../Breadcrumbs/Breadcrumbs';
 
 import './Checklist.less';
 
-const Checklist = ({ userName, listItems, locale, setLists, location, intl, match }) => {
+const Checklist = ({
+  userName,
+  listItems,
+  locale,
+  setLists,
+  location,
+  intl,
+  match,
+  setBreadcrumb,
+}) => {
   const [loading, setLoading] = useState();
 
   useEffect(() => {
@@ -34,6 +44,7 @@ const Checklist = ({ userName, listItems, locale, setLists, location, intl, matc
     setLoading(true);
 
     getObject(pathUrl, userName, locale).then(wObject => {
+      setBreadcrumb(wObject);
       setLists(
         sortListItemsBy(
           wObject?.listItems,
@@ -96,9 +107,7 @@ const Checklist = ({ userName, listItems, locale, setLists, location, intl, matc
 
   return (
     <div className="Checklist">
-      {/* <div className="CatalogWrap__breadcrumb"> */}
-      {/*  <CatalogBreadcrumb intl={intl} wobject={wobject} /> */}
-      {/* </div> */}
+      {/* <Breadcrumbs /> */}
       {loading ? <Loading /> : getMenuList()}
     </div>
   );
@@ -116,6 +125,7 @@ Checklist.propTypes = {
     }),
   }).isRequired,
   setLists: PropTypes.func.isRequired,
+  setBreadcrumb: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = state => ({
@@ -126,6 +136,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = {
   setLists: setListItems,
+  setBreadcrumb: setBreadcrumbForChecklist,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(injectIntl(Checklist)));

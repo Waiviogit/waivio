@@ -23,6 +23,7 @@ const LeftSidebar = () => {
         <Route path={'/shop/:department?'} component={GlobalShopDepartments} />
         <Route path={'/object-shop/:name/:department?'} component={DepartmentsWobject} />
         <Route path="/@:name/userShop/:department?" component={DepartmentsUser} />
+        <Route path="/user-shop/:name/:department?" render={() => <DepartmentsUser isSocial />} />
         <Route path="/@:name/wallet" component={SidebarMenu} />
         <Route path="/@:name" component={UserInfo} />
         <Route path="/object/:name" component={UserInfo} />
