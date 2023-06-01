@@ -19,6 +19,8 @@ import {
   FOLLOW_UNFOLLOW_USER_WOBJECT_EXPERTISE,
   GET_CHANGED_WOBJECT_UPDATE,
   SET_AUTHORS,
+  SET_BREDCRUMB_FOR_CHECKLIST,
+  SET_ALL_BREDCRUMBS_FOR_CHECKLIST,
 } from './wobjActions';
 import { objectFields } from '../../common/constants/listOfFields';
 import { FOLLOW_USER, UNFOLLOW_USER } from '../usersStore/usersActions';
@@ -42,6 +44,7 @@ export const initialState = {
   isFetching: false,
   isFailed: false,
   breadcrumb: [],
+  shopBreadcrumbs: [],
   isLoadingFlag: true,
   followers: {
     users: [],
@@ -516,6 +519,23 @@ export default function wobjectReducer(state = initialState, action) {
         ...state,
         relatedWobjects: initialState.relatedWobjects,
       };
+
+    case SET_BREDCRUMB_FOR_CHECKLIST:
+      return {
+        ...state,
+        shopBreadcrumbs: state.shopBreadcrumbs.some(
+          crubm => crubm.author_permlink === action.crumb.author_permlink,
+        )
+          ? state.shopBreadcrumbs
+          : [...state.shopBreadcrumbs, action.crumb],
+      };
+
+    case SET_ALL_BREDCRUMBS_FOR_CHECKLIST:
+      return {
+        ...state,
+        shopBreadcrumbs: action.crumbs,
+      };
+
     default: {
       return state;
     }

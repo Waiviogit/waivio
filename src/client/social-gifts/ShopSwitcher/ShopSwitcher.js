@@ -1,46 +1,20 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+import { useHistory } from 'react-router';
+
 import { getShopSettings } from '../../../store/appStore/appSelectors';
-import Affix from '../../components/Utils/Affix';
-import DepartmentsUser from '../../Shop/ShopDepartments/DepartmentsUser';
-import UserFilters from '../../Shop/ShopFilters/UserFilters';
-import UserDepartmentsWobjList from '../../Shop/DepartmentsWobjList/UserDepartmentsWobjList';
 import ShopMainForWobject from '../ShopMainForWobject/ShopMainForWobject';
 import SocialGiftsLandingPage from '../../SocialGiftsLandingPage/SocialGiftsLandingPage';
-import SignUp from '../../components/Sidebar/SignUp';
-import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 
 import './ShopSwitcher.less';
 
 const ShopSwitcher = () => {
   const shopSettings = useSelector(getShopSettings);
-  const isAuth = useSelector(getAuthenticatedUserName);
+  const history = useHistory();
 
   switch (shopSettings?.type) {
     case 'user':
-      return (
-        <div
-          className="feed-layout container Shop"
-          style={{
-            marginTop: '20px',
-          }}
-        >
-          <Affix className="leftContainer" stickPosition={77}>
-            <div className="left">
-              <DepartmentsUser userName={shopSettings.value} />
-            </div>
-          </Affix>
-          <div className="center">
-            <UserDepartmentsWobjList isSocial userName={shopSettings.value} />
-          </div>
-          <Affix className="rightContainer" stickPosition={77}>
-            <div className="right">
-              {!isAuth && <SignUp />}
-              <UserFilters userName={shopSettings.value} />
-            </div>
-          </Affix>
-        </div>
-      );
+      return history.push(`/user-shop/${shopSettings.value}`);
     case 'object':
       return <ShopMainForWobject wobjPermlink={shopSettings.value} />;
 

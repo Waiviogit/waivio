@@ -25,6 +25,8 @@ export const getWobjectIsFatching = createSelector([getObject], state => state.i
 
 export const getBreadCrumbs = createSelector([objectState], state => state.breadcrumb);
 
+export const getShopBreadCrumbs = createSelector([objectState], state => state.shopBreadcrumbs);
+
 export const getWobjectNested = createSelector([objectState], state => state.nestedWobject);
 
 export const getWobjectAuthors = createSelector([objectState], state => state.authors);

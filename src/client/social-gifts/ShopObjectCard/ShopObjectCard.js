@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import { get, isEmpty, truncate, uniq } from 'lodash';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
+import { Link } from 'react-router-dom';
 
 import ObjectAvatar from '../../components/ObjectAvatar';
 import RatingsWrap from '../../objectCard/RatingsWrap/RatingsWrap';
@@ -36,19 +37,19 @@ const ShopObjectCard = ({ wObject }) => {
       {withRewards && (
         <h3 className="ShopObjectCard__rewardTitle">
           Share {proposition.requirements.minPhotos} photos & earn{' '}
-          <USDDisplay value={proposition.rewardInUSD} currencyDisplay={'code'} />
+          <USDDisplay value={proposition.rewardInUSD} currencyDisplay={'symbol'} />
         </h3>
       )}
       <div className="ShopObjectCard__avatarWrap">
         <ObjectAvatar size={isMobile() ? 100 : 150} item={wObject} />
         <HeartButton wobject={wObject} size={'20px'} />
       </div>
-      <h4 className="ShopObjectCard__name">
+      <Link to={wObject.defaultShowLink} className="ShopObjectCard__name">
         {truncate(wobjName, {
           length: 110,
           separator: '...',
         })}
-      </h4>
+      </Link>
       {!isEmpty(wObject.rating) && (
         <RatingsWrap
           ratings={[wObject.rating[0]]}
@@ -87,6 +88,7 @@ const ShopObjectCard = ({ wObject }) => {
 ShopObjectCard.propTypes = {
   wObject: PropTypes.shape({
     object_type: PropTypes.string,
+    defaultShowLink: PropTypes.string,
     author_permlink: PropTypes.string,
     rating: PropTypes.arrayOf(PropTypes.shape()),
     proposition: PropTypes.shape(),
