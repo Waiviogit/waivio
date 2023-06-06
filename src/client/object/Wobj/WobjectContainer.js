@@ -28,7 +28,7 @@ import {
   getWobjectExpertise as getWobjectExpertiseAction,
   getRelatedWobjects,
 } from '../../../store/wObjectStore/wobjActions';
-import { appendObject, getUpdates } from '../../../store/appendStore/appendActions';
+import { appendObject } from '../../../store/appendStore/appendActions';
 import Wobj from './Wobj';
 import NotFound from '../../statics/NotFound';
 import {
@@ -79,7 +79,6 @@ import { resetBreadCrumb } from '../../../store/shopStore/shopActions';
     appUrl: getAppUrl(state),
   }),
   {
-    getUpdates,
     clearObjectFromStore,
     setCatalogBreadCrumbs,
     setNestedWobject,
@@ -110,7 +109,6 @@ class WobjectContainer extends React.Component {
     failed: PropTypes.bool,
     isFetching: PropTypes.bool,
     getObject: PropTypes.func.isRequired,
-    getUpdates: PropTypes.func.isRequired,
     resetBreadCrumb: PropTypes.func.isRequired,
     weightValue: PropTypes.number.isRequired,
     supportedObjectTypes: PropTypes.arrayOf(PropTypes.string),
@@ -187,7 +185,6 @@ class WobjectContainer extends React.Component {
     const newsFilter = match.params[1] === 'newsFilter' ? { newsFilter: match.params.itemId } : {};
 
     this.props.getObject(match.params.name, authenticatedUserName).then(() => {
-      this.props.getUpdates(match.params.name, '', 'createdAt', this.props.locale);
       this.props.getAlbums(match.params.name);
       this.props.getNearbyObjects(match.params.name);
       this.props.getWobjectExpertise(newsFilter, match.params.name);

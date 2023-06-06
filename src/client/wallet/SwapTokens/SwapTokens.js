@@ -26,7 +26,10 @@ import {
   getVisibleModal,
 } from '../../../store/swapStore/swapSelectors';
 import USDDisplay from '../../components/Utils/USDDisplay';
-import { swapImpactPercent } from '../../../common/constants/swapList';
+import {
+  HIVE_ENGINE_DEFAULT_SWAP_LIST,
+  swapImpactPercent,
+} from '../../../common/constants/swapList';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 import { getCryptosPriceHistory } from '../../../store/appStore/appSelectors';
 import { getSwapOutput } from '../../../common/helpers/swapTokenHelpers';
@@ -97,8 +100,8 @@ const SwapTokens = props => {
       return getSwapInfo({
         data: {
           quantity: value,
-          inputSymbol: to.symbol,
-          outputSymbol: from.symbol,
+          inputSymbol: from.symbol,
+          outputSymbol: to.symbol,
         },
         onlyAmount,
       });
@@ -202,6 +205,9 @@ const SwapTokens = props => {
       console.error(e);
     }
   };
+  const estimateValue = HIVE_ENGINE_DEFAULT_SWAP_LIST.includes(props.from.symbol)
+    ? fromAmount * rates[props.from.symbol]
+    : fromAmount * rates[props.from.symbol] * props.hiveRateInUsd;
 
   return (
     <Modal
@@ -260,7 +266,7 @@ const SwapTokens = props => {
               id="estimated_transaction_value"
               defaultMessage="Estimated transaction value"
             />
-            : <USDDisplay value={fromAmount * rates[props.from.symbol] * props.hiveRateInUsd} />
+            : <USDDisplay value={estimateValue} />
           </p>
           <p>
             <FormattedMessage id="estimated_price_impact" defaultMessage="Estimated price impact" />

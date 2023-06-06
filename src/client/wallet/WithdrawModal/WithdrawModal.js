@@ -32,6 +32,7 @@ import { getHiveBeneficiaryAccount } from '../../../store/settingsStore/settings
 import LinkHiveAccountModal from '../../settings/LinkHiveAccountModal';
 import { getRatesList } from '../../../store/ratesStore/ratesSelector';
 import { toFixed } from '../../../common/helpers/formatter';
+import { HIVE_ENGINE_DEFAULT_SWAP_LIST } from '../../../common/constants/swapList';
 
 import './WithdrawModal.less';
 
@@ -263,6 +264,9 @@ const WithdrawModal = props => {
     }
   };
   const isHiveCurrency = ['HIVE', 'HBD'].includes(pair?.to_coin_symbol);
+  const estimateValue = HIVE_ENGINE_DEFAULT_SWAP_LIST.includes(pair.symbol)
+    ? fromAmount * rate[pair.symbol]
+    : fromAmount * rate[pair.symbol] * rate.HIVE;
 
   return (
     <React.Fragment>
@@ -352,7 +356,7 @@ const WithdrawModal = props => {
         </div>
         <p>
           <FormattedMessage id="est_amount" defaultMessage="Est. amount" />:{' '}
-          <USDDisplay value={fromAmount * rate[pair?.symbol] * rate.HIVE} />
+          <USDDisplay value={estimateValue} />
         </p>
         {showMinWithdraw.includes(get(pair, 'to_coin_symbol')) && (
           <p>
