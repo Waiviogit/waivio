@@ -37,6 +37,7 @@ const Checklist = ({
 }) => {
   const [loading, setLoading] = useState();
   const [withCustomSort, setWithCustomSort] = useState(false);
+  const [object, setObject] = useState(false);
 
   useEffect(() => {
     const pathUrl = getLastPermlinksFromHash(location.hash) || match.params.name;
@@ -47,6 +48,7 @@ const Checklist = ({
 
       if (!isEmpty(sortCustom)) setWithCustomSort(true);
 
+      setObject(wObject);
       setBreadcrumb(wObject);
       setLists(
         sortListItemsBy(
@@ -63,6 +65,8 @@ const Checklist = ({
     const isList = listItem.object_type === 'list';
 
     if (isList) {
+      const avatar = getObjectAvatar(listItem);
+
       return (
         <div className="Checklist__listItems">
           <Link
@@ -71,19 +75,20 @@ const Checklist = ({
               hash: createNewHash(listItem?.author_permlink, location.hash),
             }}
           >
-            {getObjectAvatar(listItem) ? (
-              <img className="Checklist__itemsAvatar" src={getObjectAvatar(listItem)} alt={''} />
-            ) : (
-              <div className="Checklist__itemsAvatar">
-                <Icon type="shopping" />
-              </div>
-            )}
-            <span>
-              {getObjectName(listItem)}
-              {!isNaN(listItem.listItemsCount) ? (
-                <span className="items-count"> ({listItem.listItemsCount})</span>
-              ) : null}
-            </span>
+            <div
+              className="Checklist__itemsAvatar"
+              style={{
+                backgroundImage: `url(${avatar})`,
+              }}
+            >
+              {!avatar && <Icon type="shopping" />}
+              <span className="Checklist__itemsTitle">
+                {getObjectName(listItem)}
+                {!isNaN(listItem.listItemsCount) ? (
+                  <span className="items-count"> ({listItem.listItemsCount})</span>
+                ) : null}
+              </span>
+            </div>
           </Link>
         </div>
       );
@@ -124,6 +129,11 @@ const Checklist = ({
   return (
     <div className="Checklist">
       <Breadcrumbs />
+      {object.background && !loading && (
+        <div className="Checklist__banner">
+          <img src={object.background} alt={''} />
+        </div>
+      )}
       {loading ? <Loading /> : getMenuList()}
     </div>
   );
