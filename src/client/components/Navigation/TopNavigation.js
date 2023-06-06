@@ -41,7 +41,7 @@ const LINKS = {
   NEW_ACCOUNT: '/new-accounts',
   DATA_IMPORT: '/data-import',
   ASIN_SCANER: '/ASIN-scanner',
-  PRODUCT_EXTENSION: '/product-extension',
+  CHROME_EXTENSION: '/chrome-extension',
   AFFILIAT_CODES: '/affiliate',
   BLOG: '/user-blog',
   FEED: '/feed',
@@ -69,7 +69,7 @@ const TOOLS_URLS = [
   LINKS.NEW_ACCOUNT,
   LINKS.DATA_IMPORT,
   LINKS.ASIN_SCANER,
-  LINKS.PRODUCT_EXTENSION,
+  LINKS.CHROME_EXTENSION,
 ];
 const WEBSITE_URLS = [
   LINKS.TOOLS_SETTINGS,

@@ -1,5 +1,168 @@
-import React from 'react';
+import { Link, withRouter } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { connect } from 'react-redux';
+import { isEmpty, map } from 'lodash';
+import { injectIntl } from 'react-intl';
+import PropTypes from 'prop-types';
+import { Icon } from 'antd';
 
-const Checklist = () => <div />;
+import { getSuitableLanguage } from '../../../store/reducers';
+import {
+  createNewHash,
+  getLastPermlinksFromHash,
+  getObjectAvatar,
+  getObjectName,
+} from '../../../common/helpers/wObjectHelper';
+import { setBreadcrumbForChecklist, setListItems } from '../../../store/wObjectStore/wobjActions';
+import { getObjectLists } from '../../../store/wObjectStore/wObjectSelectors';
+import Loading from '../../components/Icon/Loading';
+import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 
-export default Checklist;
+import ShopObjectCard from '../ShopObjectCard/ShopObjectCard';
+import { sortListItemsBy } from '../../object/wObjectHelper';
+import { getObject } from '../../../waivioApi/ApiClient';
+import Breadcrumbs from '../Breadcrumbs/Breadcrumbs';
+
+import './Checklist.less';
+
+const Checklist = ({
+  userName,
+  listItems,
+  locale,
+  setLists,
+  location,
+  intl,
+  match,
+  setBreadcrumb,
+}) => {
+  const [loading, setLoading] = useState();
+  const [withCustomSort, setWithCustomSort] = useState(false);
+  const [object, setObject] = useState(false);
+
+  useEffect(() => {
+    const pathUrl = getLastPermlinksFromHash(location.hash) || match.params.name;
+
+    setLoading(true);
+    getObject(pathUrl, userName, locale).then(wObject => {
+      const sortCustom = wObject?.sortCustom?.include;
+
+      if (!isEmpty(sortCustom)) setWithCustomSort(true);
+
+      setObject(wObject);
+      setBreadcrumb(wObject);
+      setLists(
+        sortListItemsBy(
+          wObject?.listItems,
+          isEmpty(wObject?.sortCustom) ? 'rank' : 'custom',
+          wObject?.sortCustom,
+        ),
+      );
+      setLoading(false);
+    });
+  }, [location.hash, match.params.name]);
+
+  const getListRow = listItem => {
+    const isList = listItem.object_type === 'list';
+
+    if (isList) {
+      const avatar = getObjectAvatar(listItem);
+
+      return (
+        <div className="Checklist__listItems">
+          <Link
+            to={{
+              pathname: `/checklist/${match.params.name}`,
+              hash: createNewHash(listItem?.author_permlink, location.hash),
+            }}
+          >
+            <div
+              className="Checklist__itemsAvatar"
+              style={{
+                backgroundImage: `url(${avatar})`,
+              }}
+            >
+              {!avatar && <Icon type="shopping" />}
+              <span className="Checklist__itemsTitle">
+                {getObjectName(listItem)}
+                {!isNaN(listItem.listItemsCount) ? (
+                  <span className="items-count"> ({listItem.listItemsCount})</span>
+                ) : null}
+              </span>
+            </div>
+          </Link>
+        </div>
+      );
+    }
+
+    return <ShopObjectCard wObject={listItem} />;
+  };
+
+  const getMenuList = () => {
+    if (isEmpty(listItems)) {
+      return (
+        <div className={'Checklist__empty'}>
+          {intl.formatMessage({
+            id: 'emptyList',
+            defaultMessage: 'This list is empty',
+          })}
+        </div>
+      );
+    }
+
+    if (!withCustomSort) {
+      const itemsListType = listItems.filter(item => item.object_type === 'list');
+      const itemsProducts = listItems.filter(item => item.object_type !== 'list');
+
+      return (
+        <div>
+          <div className="Checklist__list">{itemsListType.map(item => getListRow(item))}</div>
+          <div className="Checklist__list">{itemsProducts.map(item => getListRow(item))}</div>
+        </div>
+      );
+    }
+
+    return (
+      <div className="Checklist__list">{map(listItems, listItem => getListRow(listItem))}</div>
+    );
+  };
+
+  return (
+    <div className="Checklist">
+      <Breadcrumbs />
+      {object.background && !loading && (
+        <div className="Checklist__banner">
+          <img src={object.background} alt={''} />
+        </div>
+      )}
+      {loading ? <Loading /> : getMenuList()}
+    </div>
+  );
+};
+
+Checklist.propTypes = {
+  location: PropTypes.shape().isRequired,
+  userName: PropTypes.string.isRequired,
+  locale: PropTypes.string.isRequired,
+  listItems: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
+  intl: PropTypes.arrayOf(PropTypes.shape({ formatMessage: PropTypes.func })).isRequired,
+  match: PropTypes.shape({
+    params: PropTypes.shape({
+      name: PropTypes.string,
+    }),
+  }).isRequired,
+  setLists: PropTypes.func.isRequired,
+  setBreadcrumb: PropTypes.func.isRequired,
+};
+
+const mapStateToProps = state => ({
+  listItems: getObjectLists(state),
+  locale: getSuitableLanguage(state),
+  userName: getAuthenticatedUserName(state),
+});
+
+const mapDispatchToProps = {
+  setLists: setListItems,
+  setBreadcrumb: setBreadcrumbForChecklist,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(injectIntl(Checklist)));

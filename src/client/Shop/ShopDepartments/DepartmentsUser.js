@@ -5,23 +5,23 @@ import PropTypes from 'prop-types';
 import { getShopUserDepartments } from '../../../waivioApi/ApiClient';
 import ShopDepartmentsList from './ShopDepartmentsList';
 
-const DepartmentsUser = ({ onClose, userName }) => {
+const DepartmentsUser = ({ onClose, isSocial }) => {
   const match = useRouteMatch();
   const getShopDepartments = (department, excluded, path) =>
-    getShopUserDepartments(userName || match.params.name, department, excluded, path);
+    getShopUserDepartments(match.params.name, department, excluded, path);
 
   return (
     <ShopDepartmentsList
       getShopDepartments={getShopDepartments}
       onClose={onClose}
-      path={userName ? '/' : `/@${match.params.name}/userShop`}
+      path={isSocial ? `/user-shop/${match.params.name}` : `/@${match.params.name}/userShop`}
     />
   );
 };
 
 DepartmentsUser.propTypes = {
   onClose: PropTypes.func,
-  userName: PropTypes.string,
+  isSocial: PropTypes.bool,
 };
 
 export default DepartmentsUser;

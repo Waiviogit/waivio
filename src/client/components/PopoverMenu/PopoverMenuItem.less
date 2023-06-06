@@ -10,6 +10,7 @@
   &--invisible {
     display: none;
   }
+
   a {
     .menu-item-link();
 
@@ -32,4 +33,9 @@
 .PopoverMenuItem.PopOverMenuitem__topNav {
   font-size: 18px !important;
   font-weight: 400 !important;
+}
+
+.PopoverMenuItem.PopoverMenuItem--active a {
+  color: var(--website-color) !important;
+  font-weight: bold !important;
 }

@@ -7,24 +7,29 @@ import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors
 import ShopList from '../../Shop/ShopList/ShopList';
 import { getWobjectShopMainFeed } from '../../../waivioApi/ApiClient';
 
-const WobjectShoppingList = ({ permlink }) => {
+const WobjectShoppingList = ({ isSocial }) => {
   const authUserName = useSelector(getAuthenticatedUserName);
   const match = useRouteMatch();
-  const authorPermlink = permlink || match.params.name;
+  const authorPermlink = match.params.name;
   const getShopFeed = (userName, authUser, filter, excluded, department, skip, path) =>
     getWobjectShopMainFeed(authorPermlink, department, authUser, skip, excluded, filter, path);
 
   return (
     <ShopList
       userName={authUserName}
-      path={permlink ? '/' : `/object/${authorPermlink}/shop`}
+      path={
+        match.url.includes('object-shop')
+          ? `/object-shop/${authorPermlink}`
+          : `/object/${authorPermlink}/shop`
+      }
       getShopFeed={getShopFeed}
+      isSocial={isSocial}
     />
   );
 };
 
 WobjectShoppingList.propTypes = {
-  permlink: PropTypes.string,
+  isSocial: PropTypes.bool,
 };
 
 export default WobjectShoppingList;

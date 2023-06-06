@@ -8,7 +8,6 @@ import RewardsMainPage from '../../client/newRewards/RewardsMainPage';
 import createNestedRouts from '../../routes/helper';
 import SocialWrapper from './Wrapper';
 import Shop from '../Shop/Shop';
-import ShopDepartmentsWobjList from '../Shop/DepartmentsWobjList/ShopDepartmentsWobjList';
 import DiscoverObjects from '../discoverObjects/DiscoverObjects';
 import Discover from '../discover/Discover';
 import { listOfSocialWebsites } from './listOfSocialWebsites';
@@ -16,36 +15,51 @@ import SocialGiftsLandingPage from '../SocialGiftsLandingPage/SocialGiftsLanding
 import ShopSwitcher from './ShopSwitcher/ShopSwitcher';
 import SocialProduct from './SocialProduct/SocialProduct';
 import ObjectDepartmentsWobjList from '../object/ObjectTypeShop/ObjectDepartmentsWobjList';
+import Checklist from './Checklist/Checklist';
+import UserDepartmentsWobjList from '../Shop/DepartmentsWobjList/UserDepartmentsWobjList';
 
 const routes = host => ({
   component: SocialWrapper,
   routes: [
     {
-      path: '/',
+      path: ['/'],
       exact: true,
       component: listOfSocialWebsites.some(site => site === host)
         ? SocialGiftsLandingPage
         : ShopSwitcher,
+    },
+    {
+      path: ['/object-shop/:name/:department?'],
+      exact: true,
+      component: Shop,
+      pathScope: '/object-shop/:name',
+      isSocial: true,
       routes: [
         {
           path: '/:department?',
           exact: true,
-          component: ShopDepartmentsWobjList,
+          component: ObjectDepartmentsWobjList,
         },
       ],
     },
     {
-      path: '/shop/:department?',
+      path: ['/user-shop/:name/:department?'],
       exact: true,
       component: Shop,
-      pathScope: '/shop',
+      pathScope: '/user-shop/:name',
+      isSocial: true,
       routes: [
         {
           path: '/:department?',
           exact: true,
-          component: ShopDepartmentsWobjList,
+          component: UserDepartmentsWobjList,
         },
       ],
+    },
+    {
+      path: ['/checklist/:name'],
+      exact: true,
+      component: Checklist,
     },
     {
       path: '/discover-objects/:typeName?',
@@ -188,7 +202,10 @@ const routes = host => ({
       component: Post,
     },
     {
-      path: `/object/:name/(${URL.WOBJ.tabs})?/(${URL.WOBJ.filters})?/:itemId?`,
+      path: [
+        `/object/:name/(${URL.WOBJ.tabs})?/(${URL.WOBJ.filters})?/:itemId?`,
+        `/object/:name/shop/:department?`,
+      ],
       component: WobjectContainer,
       exact: true,
       pathScope: '/object/:name',

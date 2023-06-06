@@ -85,6 +85,7 @@ const SocialWrapper = props => {
       document.body.style.setProperty('--website-color', mainColor);
       document.body.style.setProperty('--website-hover-color', hexToRgb(mainColor, 6));
       document.body.style.setProperty('--website-text-color', textColor);
+      document.body.style.setProperty('--website-light-color', hexToRgb(mainColor, 1));
 
       props.login(token, provider).then(() => {
         batch(() => {
@@ -130,21 +131,31 @@ const SocialWrapper = props => {
             const buttonList = [
               ...sortingButton,
               ...compareList.filter(i => !customSort.includes(i.permlink)),
-            ];
+            ].map(i => {
+              const createLink = () => {
+                switch (i.object_type) {
+                  case 'shop':
+                    return `/object-shop/${i.author_permlink}`;
+                  case 'list':
+                    return `/checklist/${i.author_permlink}`;
+                  default:
+                    return i.defaultShowLink;
+                }
+              };
 
-            dispatch(
-              setItemsForNavigation(
-                buttonList.map(i => ({
-                  link: i.defaultShowLink,
-                  name: i?.body?.title,
-                })),
-              ),
-            );
+              return {
+                link: createLink(),
+                name: i?.body?.title,
+              };
+            });
 
-            if (props.location.pathname === '/') props.history.push(buttonList[0].defaultShowLink);
+            dispatch(setItemsForNavigation(buttonList));
+
+            if (props.location.pathname === '/') props.history.push(buttonList[0].link);
           });
         });
-      }
+      } else if (props.location.pathname === '/')
+        props.history.push(`/user-shop/${res.configuration.shopSettings.value}`);
     });
   }, []);
 

@@ -37,8 +37,6 @@ const HeartButton = ({ wobject, size }) => {
     <FormattedMessage id="add_to_my_shop" defaultMessage="Add to my shop" />
   );
 
-  if (!isAuth) return null;
-
   useEffect(() => {
     if (
       !isEmpty(wobject.authority) &&
@@ -48,6 +46,8 @@ const HeartButton = ({ wobject, size }) => {
       dispatch(setObjectinAuthority(wobject.author_permlink));
     }
   }, [wobject.authority, authorityList]);
+
+  if (!isAuth) return null;
 
   const getWobjectData = () => ({
     author: user.name,

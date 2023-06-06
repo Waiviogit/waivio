@@ -5,32 +5,29 @@ import PropTypes from 'prop-types';
 import { getWobjectDepartmentsFeed } from '../../../waivioApi/ApiClient';
 import ListSwitcher from '../../Shop/ListSwitch/ListSwitcher';
 
-const ObjectDepartmentsWobjList = ({ permlink }) => {
+const ObjectDepartmentsWobjList = ({ isSocial }) => {
   const match = useRouteMatch();
 
-  const getDepartmentsFeed = (
-    authorPermlink,
-    user,
-    authUser,
-    department,
-    filters,
-    path,
-    skip,
-    limit,
-  ) => getWobjectDepartmentsFeed(authorPermlink, department, authUser, filters, path, skip, limit);
+  const getDepartmentsFeed = (authorPermlink, authUser, department, filters, path, skip, limit) =>
+    getWobjectDepartmentsFeed(authorPermlink, department, authUser, filters, path, skip, limit);
 
   return (
     <ListSwitcher
-      user={permlink || match.params.name}
+      user={match.params.name}
       getDepartmentsFeed={getDepartmentsFeed}
-      path={permlink ? '/' : `/object/${match.params.name}/shop`}
+      path={
+        match.url.includes('object-shop')
+          ? `/object-shop/${match.params.name}`
+          : `/object/${match.params.name}/shop`
+      }
       type={'wobject'}
+      isSocial={isSocial}
     />
   );
 };
 
 ObjectDepartmentsWobjList.propTypes = {
-  permlink: PropTypes.string,
+  isSocial: PropTypes.bool,
 };
 
 export default ObjectDepartmentsWobjList;

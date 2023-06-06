@@ -52,7 +52,11 @@ const Shop = ({ route }) => {
             <LeftSidebar />
           </div>
         </Affix>
-        <div className="center">{renderRoutes(route.routes)}</div>
+        <div className="center">
+          {renderRoutes(route.routes, {
+            isSocial: route.isSocial,
+          })}
+        </div>
         <Affix className="rightContainer" stickPosition={77}>
           <div className="right">
             <RightSidebar />
@@ -66,6 +70,7 @@ const Shop = ({ route }) => {
 Shop.propTypes = {
   route: PropTypes.shape({
     routes: PropTypes.shape(),
+    isSocial: PropTypes.bool,
   }),
 };
 

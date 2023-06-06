@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { useLocation, useRouteMatch } from 'react-router';
 import { get, isEmpty, truncate, uniq } from 'lodash';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { Link } from 'react-router-dom';
+
 import ObjectAvatar from '../../components/ObjectAvatar';
 import RatingsWrap from '../../objectCard/RatingsWrap/RatingsWrap';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
@@ -22,14 +22,6 @@ const ShopObjectCard = ({ wObject }) => {
   const wobjName = getObjectName(wObject);
   const withRewards = !isEmpty(wObject.propositions);
   const proposition = withRewards ? wObject.propositions[0] : null;
-  const match = useRouteMatch();
-  const location = useLocation();
-  const linkToObject =
-    match.params.department && location.hash
-      ? `/object/${wObject.object_type}/${wObject.author_permlink}#${
-          match.params.department
-        }/${location.hash.replace('#', '')}`
-      : `/object/${wObject.object_type}/${wObject.author_permlink}`;
   const shopObjectCardClassList = classNames('ShopObjectCard', {
     'ShopObjectCard--rewards': withRewards,
   });
@@ -45,14 +37,14 @@ const ShopObjectCard = ({ wObject }) => {
       {withRewards && (
         <h3 className="ShopObjectCard__rewardTitle">
           Share {proposition.requirements.minPhotos} photos & earn{' '}
-          <USDDisplay value={proposition.rewardInUSD} currencyDisplay={'code'} />
+          <USDDisplay value={proposition.rewardInUSD} currencyDisplay={'symbol'} />
         </h3>
       )}
       <div className="ShopObjectCard__avatarWrap">
         <ObjectAvatar size={isMobile() ? 100 : 150} item={wObject} />
         <HeartButton wobject={wObject} size={'20px'} />
       </div>
-      <Link to={linkToObject} className="ShopObjectCard__name">
+      <Link to={wObject.defaultShowLink} className="ShopObjectCard__name">
         {truncate(wobjName, {
           length: 110,
           separator: '...',
@@ -96,6 +88,7 @@ const ShopObjectCard = ({ wObject }) => {
 ShopObjectCard.propTypes = {
   wObject: PropTypes.shape({
     object_type: PropTypes.string,
+    defaultShowLink: PropTypes.string,
     author_permlink: PropTypes.string,
     rating: PropTypes.arrayOf(PropTypes.shape()),
     proposition: PropTypes.shape(),

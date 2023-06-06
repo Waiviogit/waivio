@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Icon, Modal, Select, Checkbox } from 'antd';
+import { Icon, Modal, Select, Checkbox, message } from 'antd';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
@@ -40,8 +40,11 @@ const ImportModal = ({ visible, toggleModal, getImportList, intl }) => {
       formData.append('forceImport', true);
     }
     setLoading(true);
-    uploadObject(formData).then(res => {
-      if (res.message) {
+    uploadObject(formData).then(async res => {
+      const response = await res.json();
+      const msg = response.message;
+
+      if (res.status === 425 && msg) {
         Modal.confirm({
           title: intl.formatMessage({
             id: 'repeat_json_data_file_import',
@@ -56,6 +59,8 @@ const ImportModal = ({ visible, toggleModal, getImportList, intl }) => {
           okText: intl.formatMessage({ id: 'import', defaultMessage: 'Import' }),
           cancelText: intl.formatMessage({ id: 'cancel', defaultMessage: 'Cancel' }),
         });
+      } else if (!res.ok) {
+        message.error(msg);
       }
       toggleModal();
       getImportList();

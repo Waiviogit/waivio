@@ -27,6 +27,7 @@ import WalletSidebar from '../../components/Sidebar/WalletSidebar/WalletSidebar'
 import UserFilters from '../../Shop/ShopFilters/UserFilters';
 import GlobalShopFilters from '../../Shop/ShopFilters/GlobalShopFilters';
 import { getIsSocial } from '../../../store/appStore/appSelectors';
+import WobjectShopFilter from '../../object/ObjectTypeShop/WobjectShopFilter';
 
 @withRouter
 @connect(
@@ -90,7 +91,9 @@ export default class RightSidebar extends React.Component {
       <div>
         {!authenticated && <SignUp />}
         <Switch>
+          <Route path="/user-shop/:name/:department?" component={UserFilters} />
           <Route path="/@:name/userShop/:department?" component={UserFilters} />
+          <Route path={'/object-shop/:name/:department?'} component={WobjectShopFilter} />
           <Route path="/shop/:department?" component={GlobalShopFilters} />
           <Route path="/activity" component={UserActivitySearch} />
           <Route path="/@:name/activity" component={UserActivitySearch} />

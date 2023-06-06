@@ -271,6 +271,20 @@ export const setAuthors = authors => ({
   authors,
 });
 
+export const SET_BREDCRUMB_FOR_CHECKLIST = '@wobj/SET_BREDCRUMB_FOR_CHECKLIST';
+
+export const setBreadcrumbForChecklist = crumb => ({
+  type: SET_BREDCRUMB_FOR_CHECKLIST,
+  crumb,
+});
+
+export const SET_ALL_BREDCRUMBS_FOR_CHECKLIST = '@wobj/SET_ALL_BREDCRUMBS_FOR_CHECKLIST';
+
+export const setAllBreadcrumbsForChecklist = crumbs => ({
+  type: SET_ALL_BREDCRUMBS_FOR_CHECKLIST,
+  crumbs,
+});
+
 export const BELL_WOBJECT_NOTIFICATION = createAsyncActionType('@wobj/BELL_WOBJECT_NOTIFICATION');
 
 export const wobjectBellNotification = followingWobj => (

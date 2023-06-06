@@ -13,6 +13,12 @@
     text-transform: uppercase;
     width: 200px;
     text-align: center;
+    cursor: pointer;
+    color: var(--website-color);
+
+    &:hover {
+      color: var(--website-hover-color);
+    }
 
     &::after {
       content: '';
@@ -25,6 +31,15 @@
 
     &--active,
     &:hover {
+      &::after {
+        content: '';
+        width: calc(100% - 50px);
+        height: 1px;
+        background: var(--website-hover-color);
+      }
+    }
+
+    &--active {
       &::after {
         content: '';
         width: calc(100% - 50px);

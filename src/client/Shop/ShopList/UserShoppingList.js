@@ -5,20 +5,21 @@ import PropTypes from 'prop-types';
 import ShopList from './ShopList';
 import { getUserShopMainFeed } from '../../../waivioApi/ApiClient';
 
-const UserShoppingList = ({ user }) => {
+const UserShoppingList = ({ isSocial }) => {
   const match = useRouteMatch();
 
   return (
     <ShopList
-      userName={user || match.params.name}
-      path={user ? '/' : match.url}
+      userName={match.params.name}
+      path={isSocial ? `/user-shop/${match.params.name}` : match.url}
       getShopFeed={getUserShopMainFeed}
+      isSocial={isSocial}
     />
   );
 };
 
 UserShoppingList.propTypes = {
-  user: PropTypes.string,
+  isSocial: PropTypes.bool,
 };
 
 export default UserShoppingList;

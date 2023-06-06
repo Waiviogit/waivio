@@ -438,7 +438,6 @@ class ObjectInfo extends React.Component {
       userName,
       isAuthenticated,
       relatedAlbum,
-      albums,
       activeOption,
       activeCategory,
     } = this.props;
@@ -457,9 +456,7 @@ class ObjectInfo extends React.Component {
     const price = get(wobject, 'price');
     const avatar = get(wobject, 'avatar');
     const background = get(wobject, 'background');
-    const allPhotos = albums.flatMap(alb => alb.items.flat());
-    const photoAlbum = allPhotos.sort((a, b) => (b.name === 'avatar') - (a.name === 'avatar'));
-    const pictures = [...photoAlbum, ...get(relatedAlbum, 'items', [])];
+    const pictures = [...get(wobject, 'preview_gallery', []), ...get(relatedAlbum, 'items', [])];
     const short = get(wobject, 'title');
     const email = get(wobject, 'email');
     const workTime = get(wobject, 'workTime');
@@ -504,75 +501,78 @@ class ObjectInfo extends React.Component {
     const features = wobject.features
       ? wobject.features?.map(el => parseWobjectField(el, 'body', []))
       : [];
-
-    let activeOptionPicture = uniqBy([...pictures], 'body');
-    const optionsPictures = wobject?.options
-      ? Object.entries(wobject?.options)
-          .map(option => Object.values(option))
-          .flatMap(el => el[1])
-          // .filter(el => el.body.image)
-          .map(o => ({
-            body: o?.avatar,
-            id:
-              o.author_permlink === wobject.author_permlink && wobject.galleryAlbum
-                ? wobject?.galleryAlbum[0]?.id || wobject.galleryItem[0]?.id
-                : o.author_permlink,
-            name: 'options',
-            parentPermlink: o.author_permlink,
-          }))
-          // eslint-disable-next-line array-callback-return,consistent-return
-          .sort((a, b) => {
-            if (a.body === wobject?.avatar) {
-              return -1;
-            }
-            if (b.body === wobject?.avatar) {
-              return 1;
-            }
-          })
-      : [];
-
     const hasOptionsPics =
       !isEmpty(wobject.options) &&
       Object.values(wobject?.options)
         .flatMap(o => o)
         .some(option => has(option, 'avatar'));
 
-    const sortedOptions = optionsPictures.filter(
-      o => activeOption[activeCategory]?.avatar !== o?.body,
-    );
+    const getPictures = () => {
+      const activeOptionPicture = uniqBy([...pictures], 'body');
+      const optionsPictures = wobject?.options
+        ? Object.entries(wobject?.options)
+            .map(option => Object.values(option))
+            .flatMap(el => el[1])
+            // .filter(el => el.body.image)
+            .map(o => ({
+              body: o?.avatar,
+              id:
+                o.author_permlink === wobject.author_permlink && wobject.galleryAlbum
+                  ? wobject?.galleryAlbum[0]?.id || wobject.galleryItem[0]?.id
+                  : o.author_permlink,
+              name: 'options',
+              parentPermlink: o.author_permlink,
+            }))
+            // eslint-disable-next-line array-callback-return,consistent-return
+            .sort((a, b) => {
+              if (a.body === wobject?.avatar) {
+                return -1;
+              }
+              if (b.body === wobject?.avatar) {
+                return 1;
+              }
+            })
+        : [];
 
-    if (hoveredOption?.avatar || activeOption[activeCategory]?.avatar) {
-      activeOptionPicture = uniqBy(
-        [
-          {
-            name: 'galleryItem',
-            body: hoveredOption?.avatar || activeOption[activeCategory]?.avatar,
-            id: wobject?.galleryAlbum ? wobject?.galleryAlbum[0]?.id : wobject.author_permlink,
-          },
-          ...pictures,
-        ],
-        'body',
+      const sortedOptions = optionsPictures.filter(
+        o => activeOption[activeCategory]?.avatar !== o?.body,
       );
-    }
-    if (!has(wobject, 'groupId')) {
-      activeOptionPicture = activeOptionPicture.filter(o => o.name !== 'avatar');
-    }
-    if (has(wobject, 'groupId') && !has(wobject, 'avatar') && !has(wobject, 'galleryItem')) {
-      activeOptionPicture = uniqBy(
-        [
-          {
-            name: 'galleryItem',
-            body:
-              hoveredOption?.avatar ||
-              activeOption[activeCategory]?.avatar ||
-              sortedOptions[0]?.body,
-            id: wobject?.galleryAlbum ? wobject?.galleryAlbum[0]?.id : wobject.author_permlink,
-          },
-          ...sortedOptions,
-        ],
-        'body',
-      );
-    }
+
+      if (hoveredOption?.avatar || activeOption[activeCategory]?.avatar) {
+        return uniqBy(
+          [
+            {
+              name: 'galleryItem',
+              body: hoveredOption?.avatar || activeOption[activeCategory]?.avatar,
+              id: wobject?.galleryAlbum ? wobject?.galleryAlbum[0]?.id : wobject.author_permlink,
+            },
+            ...pictures,
+          ],
+          'body',
+        );
+      }
+      if (!has(wobject, 'groupId')) {
+        return activeOptionPicture.filter(o => o.name !== 'avatar');
+      }
+      if (has(wobject, 'groupId') && !has(wobject, 'avatar') && !has(wobject, 'galleryItem')) {
+        return uniqBy(
+          [
+            {
+              name: 'galleryItem',
+              body:
+                hoveredOption?.avatar ||
+                activeOption[activeCategory]?.avatar ||
+                sortedOptions[0]?.body,
+              id: wobject?.galleryAlbum ? wobject?.galleryAlbum[0]?.id : wobject.author_permlink,
+            },
+            ...sortedOptions,
+          ],
+          'body',
+        );
+      }
+
+      return activeOptionPicture;
+    };
 
     const dimensions = parseWobjectField(wobject, 'dimensions');
     const productWeight = parseWobjectField(wobject, 'productWeight');
@@ -626,7 +626,7 @@ class ObjectInfo extends React.Component {
               albums={[...this.props.albums, this.props.relatedAlbum]}
               objName={wobject.default_name}
               activePicture={hoveredOption || activeOption}
-              pics={activeOptionPicture}
+              pics={getPictures()}
             />
           ),
         )}

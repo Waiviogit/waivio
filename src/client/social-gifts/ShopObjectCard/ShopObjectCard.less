@@ -3,9 +3,9 @@
 
 .ShopObjectCard {
   background: @white;
-  padding: 35px 10px;
+  padding: 35px 10px 10px;
   border-radius: 4px;
-  width: 48%;
+  width: calc((100% - 20px) / 2);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -31,7 +31,7 @@
   }
 
   @media @small {
-    width: 31%;
+    width: calc((100% - 30px) / 3);
   }
 
   &__affiliatLinks {
@@ -87,6 +87,12 @@
     margin-top: 10px;
     text-align: center;
     padding: 0 10px;
+    color: @black;
+    font-weight: 500;
+
+    &:hover {
+      color: @black;
+    }
   }
 
   &--rewards {
@@ -96,6 +102,10 @@
 
   &__rewardTitle {
     margin-bottom: 30px;
+
+    .USDDisplay {
+      color: var(--website-color);
+    }
   }
 
   &__price {

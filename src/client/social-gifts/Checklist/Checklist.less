@@ -1,0 +1,105 @@
+@import (reference) '../../styles/custom.less';
+@import (reference) '../../styles/modules/variables.less';
+
+.Checklist {
+  margin: 20px;
+
+  &__banner {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+  }
+
+  &__list {
+    display: flex;
+    flex-wrap: wrap;
+
+    .Checklist__listItems {
+      .Checklist__itemsTitle {
+        display: inline-block;
+        position: absolute;
+        width: calc(100% - 20px);
+        background: var(--website-color);
+        color: var(--website-text-color);
+        padding: 0 10px;
+        clip-path: polygon(0 0, 100% 0, 90% 100%, 0% 100%);
+        left: 0;
+        bottom: 20px;
+      }
+    }
+
+    .ShopObjectCard,
+    .Checklist__listItems {
+      width: calc((100% - 30px) / 4);
+
+      &:nth-child(4n) {
+        @media @small {
+          margin-right: 0;
+        }
+
+        margin-right: 10px;
+      }
+
+      &:nth-child(3n) {
+        //@media @small {
+        //  margin-right: 0;
+        //}
+
+        margin-right: 10px;
+      }
+
+      //&:nth-child(2n) {
+      //  @media @small {
+      //    margin-right: 10px;
+      //  }
+      //
+      //  margin-right: 0;
+      //}
+    }
+  }
+
+  &__listItems {
+    border-radius: 4px;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 10px;
+    position: relative;
+    margin-right: 10px;
+
+    .Checklist__itemsAvatar {
+      width: 100%;
+      position: relative;
+      height: calc((100vw - 70px) / 4);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border: 1px solid @white-gainsboro;
+      border-radius: 4px;
+      background-color: @white;
+      background-position: center;
+      background-size: contain;
+      transition: 0.5s;
+
+      &:hover {
+        -webkit-box-shadow: inset -11px 11px 24px -14px var(--website-hover-color);
+        -moz-box-shadow: inset -11px 11px 24px -14px var(--website-hover-color);
+        box-shadow: inset -11px 11px 24px -14px var(--website-hover-color);
+      }
+    }
+
+    .anticon.anticon-shopping {
+      font-size: 60px;
+      color: @silver-gray;
+    }
+
+    .items-count {
+      margin-left: 5px;
+    }
+
+    span {
+      font-weight: 500;
+      display: inline-block;
+      color: var(--website-text-color);
+    }
+  }
+}

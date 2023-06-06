@@ -1,3 +1,5 @@
+import { socialDomens } from '../../../social-gifts/listOfSocialWebsites';
+
 export const personalSettings = {
   tab: {
     name: 'personal',
@@ -61,9 +63,9 @@ export const dataManagementSettings = {
       defaultMessage: 'Data import',
     },
     {
-      to: '/product-extension',
-      id: 'product-extension',
-      defaultMessage: 'Product extension',
+      to: '/chrome-extension',
+      id: 'chrome-extension',
+      defaultMessage: 'Chrome extension',
     },
   ],
 };
@@ -125,7 +127,7 @@ export const currentWebsiteSettings = site => {
     },
   ];
 
-  if (site.includes('socialgifts.')) {
+  if (socialDomens.some(item => site.includes(item))) {
     items.splice(2, 0, {
       to: `/${site}/affiliate`,
       id: 'affiliate_codes',

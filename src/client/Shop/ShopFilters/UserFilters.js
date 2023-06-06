@@ -8,12 +8,11 @@ import {
   showMoreTagsForUserFilters,
 } from '../../../waivioApi/ApiClient';
 
-const UserFilters = ({ onClose, userName }) => {
+const UserFilters = ({ onClose }) => {
   const match = useRouteMatch();
-  const getDepartmentsFilters = path =>
-    getDepartmentsUserFilters(userName || match.params.name, path);
+  const getDepartmentsFilters = path => getDepartmentsUserFilters(match.params.name, path);
   const showMoreTagsForFilters = (tagCategory, path, skip, limit) =>
-    showMoreTagsForUserFilters(userName || match.params.name, path, tagCategory, skip, limit);
+    showMoreTagsForUserFilters(match.params.name, path, tagCategory, skip, limit);
 
   return (
     <ShopFilters
@@ -26,7 +25,6 @@ const UserFilters = ({ onClose, userName }) => {
 
 UserFilters.propTypes = {
   onClose: PropTypes.func,
-  userName: PropTypes.string,
 };
 
 export default UserFilters;
