@@ -56,11 +56,11 @@ const ChromeExtension = ({ intl }) => (
     <p className="ChromeExtension__list">
       <ul>
         <li className="ChromeExtension__list-ordered-item">
-          <span className="ChromeExtension__list-item-underline">Get JSON</span>: users can receive
-          a .json file containing the Amazon page information.
+          <span className="ChromeExtension__list-item-underline">Create JSON</span>: users can
+          receive a .json file containing the Amazon page information.
         </li>
         <li className="ChromeExtension__list-ordered-item">
-          <span className="ChromeExtension__list-item-underline"> Get XLSX</span>: users can
+          <span className="ChromeExtension__list-item-underline"> Create XLSX</span>: users can
           download an .xlsx file in a tabular format.
         </li>
         <li className="ChromeExtension__list-ordered-item">
@@ -75,7 +75,7 @@ const ChromeExtension = ({ intl }) => (
           instantly copies the information to the clipboard.
         </li>{' '}
         <li className="ChromeExtension__list-ordered-item">
-          <span className="ChromeExtension__list-item-underline"> Import to Waivio</span>: tool
+          <span className="ChromeExtension__list-item-underline"> Upload to Waivio</span>: tool
           scans the Amazon URL, generates the required file, and immediately initiates the import to
           Waivio under the currently logged-in user.
         </li>
@@ -99,7 +99,6 @@ const ChromeExtension = ({ intl }) => (
     <p>
       <b>Version:</b>
       <ul>
-        <li> Last updated date: 05/31/2023</li>
         <li> Current file for download:</li>
         <button className="ant-btn ant-btn-primary mt2 ">
           <a download="" href={FILE_ZIP}>
