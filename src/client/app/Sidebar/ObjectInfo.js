@@ -193,26 +193,26 @@ class ObjectInfo extends React.Component {
     this.setState({ authorsArray });
     this.props.setAuthors(authorsArray);
 
-    if (publisher?.authorPermlink) {
-      getObjectInfo([publisher?.authorPermlink]).then(res =>
-        this.setState({ publisherObject: res.wobjects[0] }),
-      );
-    }
-    if (manufacturer?.authorPermlink) {
-      getObjectInfo([manufacturer?.authorPermlink]).then(res =>
-        this.setState({ manufacturerObject: res.wobjects[0] }),
-      );
-    }
-    if (brand?.authorPermlink) {
-      getObjectInfo([brand?.authorPermlink]).then(res =>
-        this.setState({ brandObject: res.wobjects[0] }),
-      );
-    }
-    if (merchant?.authorPermlink) {
-      getObjectInfo([merchant?.authorPermlink]).then(res =>
-        this.setState({ merchantObject: res.wobjects[0] }),
-      );
-    }
+    const backObjects = [
+      publisher?.authorPermlink,
+      manufacturer?.authorPermlink,
+      brand?.authorPermlink,
+      merchant?.authorPermlink,
+    ].filter(permlink => permlink);
+
+    getObjectInfo(backObjects).then(res => {
+      const brandObject =
+        res.wobjects.find(wobj => wobj.author_permlink === brand?.authorPermlink) || brand;
+      const manufacturerObject =
+        res.wobjects.find(wobj => wobj.author_permlink === manufacturer?.authorPermlink) ||
+        manufacturer;
+      const publisherObject =
+        res.wobjects.find(wobj => wobj.author_permlink === publisher?.authorPermlink) || publisher;
+      const merchantObject =
+        res.wobjects.find(wobj => wobj.author_permlink === merchant?.authorPermlink) || merchant;
+
+      this.setState({ brandObject, manufacturerObject, publisherObject, merchantObject });
+    });
   }
   authorFieldAuthorPermlink = author => author.authorPermlink || author.author_permlink;
 

@@ -3,9 +3,12 @@
 @import '~react-image-gallery/styles/css/image-gallery.css';
 
 .SocialProduct {
-  display: grid;
+  display: flex;
+  flex-direction: column;
   padding: 4px 20px;
-  grid-template-rows: 1fr 1fr;
+
+  &__name {
+  }
 
   &__wobjName {
     font-weight: 600;
@@ -15,18 +18,34 @@
 
   &__ratings {
     padding-bottom: 7px;
-    //font-size: 28px;
   }
 
   &__column {
-    padding: 16px;
+    padding: 16px 16px 0;
+    @media @small {
+      padding: 16px;
+    }
   }
 
   &__price {
     padding-bottom: 12px;
   }
+
   &__paddingBottom {
-    padding-bottom: 12px;
+    padding-bottom: 15px;
+  }
+
+  &__heading {
+    padding-bottom: 8px;
+    text-transform: uppercase;
+    font-weight: 500;
+    font-size: 18px;
+  }
+
+  &__productDetails-content {
+    display: flex;
+    flex-direction: column;
+    border-radius: 8px;
   }
 
   &__column-wrapper {
@@ -39,7 +58,6 @@
   }
 
   &__row {
-    margin-top: 20px;
     padding: 16px;
     min-height: fit-content;
 
@@ -49,7 +67,9 @@
   }
 
   &__right-row {
-    padding: 16px 16px 16px 0;
+    @media @small {
+      padding: 16px 16px 16px 0;
+    }
   }
 
   &__carouselWrapper {
@@ -88,11 +108,11 @@
 
     & .image-gallery-content.left .image-gallery-slide .image-gallery-image,
     & .image-gallery-content.right .image-gallery-slide .image-gallery-image {
-      width: 250px;
-      height: 250px;
+      //width: 250px;
+      //height: 250px;
       @media @small {
         height: 500px;
-        width: 500px;
+        max-width: 500px;
       }
     }
   }

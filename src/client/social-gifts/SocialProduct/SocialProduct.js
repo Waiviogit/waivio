@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { useRouteMatch } from 'react-router';
+import { useHistory, useRouteMatch } from 'react-router';
+import { Collapse } from 'antd';
+import { Link } from 'react-router-dom';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import ImageGallery from 'react-image-gallery';
 import { FormattedMessage } from 'react-intl';
@@ -7,6 +9,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { remove, orderBy, get, isEmpty } from 'lodash';
 import {
   getObject,
+  getObjectInfo,
+  // getObjectsByIds,
   getObjectsRewards,
   getRelatedPhotos,
   getWobjectGallery,
@@ -14,13 +18,21 @@ import {
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 import { getUsedLocale } from '../../../store/appStore/appSelectors';
 import RatingsWrap from '../../objectCard/RatingsWrap/RatingsWrap';
-import Options from '../../object/Options/Options';
+import { objectFields } from '../../../common/constants/listOfFields';
 import { getActiveCategory, getActiveOption } from '../../../store/optionsStore/optionsSelectors';
 import { setStoreActiveOption } from '../../../store/optionsStore/optionsActions';
-import './SocialProduct.less';
 import AffiliatLink from '../../widgets/AffiliatLinks/AffiliatLink';
 import { isMobile } from '../../../common/helpers/apiHelpers';
 import ProductRewardCard from '../ShopObjectCard/ProductRewardCard/ProductRewardCard';
+import { parseWobjectField } from '../../../common/helpers/wObjectHelper';
+import Department from '../../object/Department/Department';
+import Options from '../../object/Options/Options';
+
+import './SocialProduct.less';
+import ProductId from '../../app/Sidebar/ProductId';
+// import ShopObjectCard from '../ShopObjectCard/ShopObjectCard';
+
+const limit = 30;
 
 const SocialProduct = () => {
   const [wobject, setWobject] = useState({});
@@ -30,6 +42,14 @@ const SocialProduct = () => {
   const [carouselRef, setCarouselRef] = useState(null);
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [relatedAlbum, setRelatedAlbum] = useState({});
+  // const [addOns, setAddOns] = useState([]);
+  // const [hasMoreAddOns, setHasMoreAddOns] = useState(false);
+  const [fields, setFields] = useState({
+    brandObject: {},
+    manufacturerObject: {},
+    merchantObject: {},
+  });
+  const history = useHistory();
   const match = useRouteMatch();
   const dispatch = useDispatch();
   const userName = useSelector(getAuthenticatedUserName);
@@ -39,6 +59,30 @@ const SocialProduct = () => {
   const authorPermlink = match.params.name;
   const affiliateLinks = wobject?.affiliateLinks || [];
   const price = hoveredOption.price || get(wobject, 'price');
+  const manufacturer = parseWobjectField(wobject, 'manufacturer');
+  const parent = get(wobject, 'parent');
+  const departments = get(wobject, 'departments');
+  const dimensions = parseWobjectField(wobject, 'dimensions');
+  const brand = parseWobjectField(wobject, 'brand');
+  const groupId = wobject.groupId;
+  const productIdBody = wobject.productId
+    ? wobject?.productId.map(el => parseWobjectField(el, 'body', []))
+    : [];
+  const merchant = parseWobjectField(wobject, 'merchant');
+  const productWeight = parseWobjectField(wobject, 'productWeight');
+  const menuItem = get(wobject, 'menuItem', []);
+  // const addOnPermlinks = wobject.addOn ? wobject?.addOn?.map(obj => obj.body) : [];
+
+  const showProductDetails =
+    !isEmpty(brand) ||
+    !isEmpty(manufacturer) ||
+    !isEmpty(merchant) ||
+    !isEmpty(parent) ||
+    !isEmpty(productWeight) ||
+    !isEmpty(dimensions) ||
+    !isEmpty(departments) ||
+    !isEmpty(groupId) ||
+    !isEmpty(productIdBody);
   const allPhotos = allAlbums?.flatMap(alb => alb.items.flat());
   const photoAlbum = allPhotos?.sort((a, b) => (b.name === 'avatar') - (a.name === 'avatar'));
   const pictures = [...photoAlbum, ...get(relatedAlbum, 'items', [])].map(pic => ({
@@ -62,21 +106,97 @@ const SocialProduct = () => {
     carouselRef.fullScreen();
   };
 
+  const getPublisherManufacturerBrandMerchantObjects = () => {
+    const authorPermlinks = [
+      manufacturer?.authorPermlink,
+      brand?.authorPermlink,
+      merchant?.authorPermlink,
+    ].filter(permlink => permlink);
+
+    getObjectInfo(authorPermlinks).then(res => {
+      const brandObject =
+        res.wobjects.find(wobj => wobj.author_permlink === brand?.authorPermlink) || brand;
+      const manufacturerObject =
+        res.wobjects.find(wobj => wobj.author_permlink === manufacturer?.authorPermlink) ||
+        manufacturer;
+      const merchantObject =
+        res.wobjects.find(wobj => wobj.author_permlink === merchant?.authorPermlink) || merchant;
+
+      setFields({ brandObject, manufacturerObject, merchantObject });
+    });
+  };
+  const objAuthorPermlink = obj => obj.authorPermlink || obj.author_permlink;
+
   useEffect(() => {
     if (!isEmpty(authorPermlink)) {
-      getObject(authorPermlink, userName, locale).then(obj => setWobject(obj));
+      getObject(authorPermlink, userName, locale).then(obj => {
+        setWobject(obj);
+      });
       getWobjectGallery(authorPermlink, locale).then(albums => {
         const defaultAlbum = remove(albums, alb => alb.id === authorPermlink);
         const sortedAlbums = orderBy(albums, ['weight'], ['desc']);
 
         return setAllAlbums([...defaultAlbum, ...sortedAlbums]);
       });
-      getRelatedPhotos(authorPermlink, 30, 0).then(alb => setRelatedAlbum(alb));
+      getRelatedPhotos(authorPermlink, limit, 0).then(alb => setRelatedAlbum(alb));
       getObjectsRewards(authorPermlink, userName).then(res => setReward(res));
+      // if( !isEmpty(addOnPermlinks) && !isNil(addOnPermlinks)) {
+      //   getObjectsByIds({
+      //     authorPermlinks: addOnPermlinks,
+      //     authUserName: userName,
+      //     limit,
+      //     skip: 0,
+      //   }).then(res => {
+      //     setAddOns(res.wobjects);
+      //     setHasMoreAddOns(res.hasMore);
+      //   });
+      // }
     }
 
     return () => dispatch(setStoreActiveOption({}));
   }, [authorPermlink]);
+
+  useEffect(() => {
+    !isEmpty(wobject) && getPublisherManufacturerBrandMerchantObjects();
+  }, [wobject.brand, wobject.manufacturer, wobject.merchant]);
+
+  const getLayout = (fieldName, field) => {
+    switch (fieldName) {
+      case objectFields.parent:
+      case objectFields.merchant:
+      case objectFields.brand:
+      case objectFields.manufacturer:
+        return objAuthorPermlink(field) ? (
+          <Link to={`/object/product/${objAuthorPermlink(field)}`}>{field.name}</Link>
+        ) : (
+          <span>{field.name}</span>
+        );
+      case objectFields.productWeight:
+        return (
+          <span>
+            {field.value} {field.unit}
+          </span>
+        );
+
+      case objectFields.dimensions:
+        return (
+          <span>
+            {dimensions.length} x {dimensions.width} x {dimensions.depth} {dimensions.unit}
+          </span>
+        );
+      default:
+        return null;
+    }
+  };
+
+  const listItem = (fieldName, field) => (
+    <div>
+      <b>
+        <FormattedMessage id={`object_field_${fieldName}`} defaultMessage={fieldName} />:{' '}
+      </b>
+      {getLayout(fieldName, field)}
+    </div>
+  );
 
   return (
     <div className="SocialProduct">
@@ -123,26 +243,92 @@ const SocialProduct = () => {
               />
             )}
           </div>
-          <div className="SocialProduct__paddingBottom">
-            {!isEmpty(affiliateLinks) && (
-              <>
-                <p>
-                  {' '}
-                  <FormattedMessage id="buy_it_on" defaultMessage="Buy it on" />:
-                </p>
-                <div className="SocialProduct__affLinks">
-                  {affiliateLinks.map(link => (
-                    <div key={link.link} className="SocialProduct__links">
-                      <AffiliatLink link={link} />
-                    </div>
-                  ))}
-                </div>
-              </>
-            )}
-          </div>
+          {!isEmpty(affiliateLinks) && (
+            <div className="SocialProduct__paddingBottom">
+              <div>
+                <FormattedMessage id="buy_it_on" defaultMessage="Buy it on" />:
+              </div>
+              <div className="SocialProduct__affLinks">
+                {affiliateLinks.map(link => (
+                  <div key={link.link} className="SocialProduct__links">
+                    <AffiliatLink link={link} />
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </div>
-      <div className="SocialProduct__column"> lalalalalalalalala lalalalalala lalalalalaalal</div>
+      <div className="SocialProduct__column">
+        {!isEmpty(wobject.description) && (
+          <div className="SocialProduct__aboutItem  SocialProduct__paddingBottom">
+            <div className="SocialProduct__heading"> About this item</div>
+            <div>{wobject.description}</div>
+          </div>
+        )}
+        {!isEmpty(menuItem) && (
+          <div className="SocialProduct__collapse SocialProduct__paddingBottom">
+            <Collapse
+            // onChange={callback}
+            >
+              {menuItem.map(item => {
+                const itemBody = JSON.parse(item.body);
+
+                return (
+                  <Collapse.Panel header={itemBody.title} key={menuItem[item]}>
+                    <div> content</div>
+                  </Collapse.Panel>
+                );
+              })}
+            </Collapse>
+          </div>
+        )}
+        {showProductDetails && (
+          <div className="SocialProduct__productDetails SocialProduct__paddingBottom">
+            <div className="SocialProduct__heading">Product details</div>
+            <div className="SocialProduct__productDetails-content">
+              <div className="SocialProduct__productDetails-content-column">
+                {!isEmpty(fields.brandObject) && listItem(objectFields.brand, fields.brandObject)}
+                {!isEmpty(fields.manufacturerObject) &&
+                  listItem(objectFields.manufacturer, fields.manufacturerObject)}
+                {!isEmpty(fields.merchantObject) &&
+                  listItem(objectFields.merchant, fields.merchantObject)}
+                {!isEmpty(parent) && listItem(objectFields.parent, parent)}
+                {!isEmpty(productWeight) && listItem(objectFields.productWeight, productWeight)}
+                {!isEmpty(dimensions) && listItem(objectFields.dimensions, dimensions)}
+                {!isEmpty(departments) && (
+                  <Department
+                    isSocialGifts
+                    departments={departments}
+                    isEditMode={false}
+                    history={history}
+                    wobject={wobject}
+                  />
+                )}
+                {
+                  <ProductId
+                    isSocialGifts
+                    isEditMode={false}
+                    authorPermlink={wobject.author_permlink}
+                    groupId={groupId}
+                    productIdBody={productIdBody}
+                  />
+                }
+              </div>
+            </div>
+          </div>
+        )}
+        {
+          <div>
+            <div className="SocialProduct__heading">Bought together/ Add-ons</div>
+            <div className="SocialProduct__productDetails-content">
+              <div className="SocialProduct__productDetails-content-column">
+                {/* {addOns?.map(wObject=><ShopObjectCard key={wObject.author_permlink} wObject={wObject}/>)} */}
+              </div>
+            </div>
+          </div>
+        }
+      </div>
     </div>
   );
 };
