@@ -13,27 +13,40 @@ import {
   getObjectAvatar,
   getObjectName,
 } from '../../../common/helpers/wObjectHelper';
-import { setListItems } from '../../../store/wObjectStore/wobjActions';
+import { setBreadcrumbForChecklist, setListItems } from '../../../store/wObjectStore/wobjActions';
 import { getObjectLists } from '../../../store/wObjectStore/wObjectSelectors';
 import Loading from '../../components/Icon/Loading';
-import { getAuthenticatedUser } from '../../../store/authStore/authSelectors';
+import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 
-// import CatalogBreadcrumb from "../../object/Catalog/CatalogBreadcrumb/CatalogBreadcrumb";
 import ShopObjectCard from '../ShopObjectCard/ShopObjectCard';
 import { sortListItemsBy } from '../../object/wObjectHelper';
 import { getObject } from '../../../waivioApi/ApiClient';
+import Breadcrumbs from '../Breadcrumbs/Breadcrumbs';
+import { getWebsiteDefaultIconList } from '../../../store/appStore/appSelectors';
 
 import './Checklist.less';
 
-const Checklist = ({ userName, listItems, locale, setLists, location, intl, match }) => {
+const Checklist = ({
+  userName,
+  listItems,
+  locale,
+  setLists,
+  location,
+  intl,
+  match,
+  setBreadcrumb,
+  defaultListImage,
+}) => {
   const [loading, setLoading] = useState();
+  const [object, setObject] = useState(false);
 
   useEffect(() => {
     const pathUrl = getLastPermlinksFromHash(location.hash) || match.params.name;
 
     setLoading(true);
-
     getObject(pathUrl, userName, locale).then(wObject => {
+      setObject(wObject);
+      setBreadcrumb(wObject);
       setLists(
         sortListItemsBy(
           wObject?.listItems,
@@ -49,26 +62,30 @@ const Checklist = ({ userName, listItems, locale, setLists, location, intl, matc
     const isList = listItem.object_type === 'list';
 
     if (isList) {
+      const avatar = getObjectAvatar(listItem);
+
       return (
         <div className="Checklist__listItems">
-          {getObjectAvatar(listItem) ? (
-            <img className="Checklist__itemsAvatar" src={getObjectAvatar(listItem)} alt={''} />
-          ) : (
-            <div className="Checklist__itemsAvatar">
-              <Icon type="shopping" />
-            </div>
-          )}
           <Link
             to={{
               pathname: `/checklist/${match.params.name}`,
               hash: createNewHash(listItem?.author_permlink, location.hash),
             }}
-            className={'Checklist__itemsTitle'}
           >
-            {getObjectName(listItem)}
-            {!isNaN(listItem.listItemsCount) ? (
-              <span className="items-count"> ({listItem.listItemsCount})</span>
-            ) : null}
+            <div
+              className="Checklist__itemsAvatar"
+              style={{
+                backgroundImage: `url(${avatar || defaultListImage})`,
+              }}
+            >
+              {!avatar && !defaultListImage && <Icon type="shopping" />}
+            </div>
+            <span className="Checklist__itemsTitle">
+              {getObjectName(listItem)}
+              {!isNaN(listItem.listItemsCount) ? (
+                <span className="items-count"> ({listItem.listItemsCount})</span>
+              ) : null}
+            </span>
           </Link>
         </div>
       );
@@ -89,6 +106,18 @@ const Checklist = ({ userName, listItems, locale, setLists, location, intl, matc
       );
     }
 
+    if (isEmpty(object.customSort?.include)) {
+      const itemsListType = listItems.filter(item => item.object_type === 'list');
+      const itemsProducts = listItems.filter(item => item.object_type !== 'list');
+
+      return (
+        <div>
+          <div className="Checklist__list">{itemsListType.map(item => getListRow(item))}</div>
+          <div className="Checklist__list">{itemsProducts.map(item => getListRow(item))}</div>
+        </div>
+      );
+    }
+
     return (
       <div className="Checklist__list">{map(listItems, listItem => getListRow(listItem))}</div>
     );
@@ -96,9 +125,12 @@ const Checklist = ({ userName, listItems, locale, setLists, location, intl, matc
 
   return (
     <div className="Checklist">
-      {/* <div className="CatalogWrap__breadcrumb"> */}
-      {/*  <CatalogBreadcrumb intl={intl} wobject={wobject} /> */}
-      {/* </div> */}
+      <Breadcrumbs />
+      {object.background && !loading && (
+        <div className="Checklist__banner">
+          <img src={object.background} alt={''} />
+        </div>
+      )}
       {loading ? <Loading /> : getMenuList()}
     </div>
   );
@@ -107,6 +139,7 @@ const Checklist = ({ userName, listItems, locale, setLists, location, intl, matc
 Checklist.propTypes = {
   location: PropTypes.shape().isRequired,
   userName: PropTypes.string.isRequired,
+  defaultListImage: PropTypes.string,
   locale: PropTypes.string.isRequired,
   listItems: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   intl: PropTypes.arrayOf(PropTypes.shape({ formatMessage: PropTypes.func })).isRequired,
@@ -116,16 +149,19 @@ Checklist.propTypes = {
     }),
   }).isRequired,
   setLists: PropTypes.func.isRequired,
+  setBreadcrumb: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = state => ({
   listItems: getObjectLists(state),
   locale: getSuitableLanguage(state),
-  userName: getAuthenticatedUser(state),
+  userName: getAuthenticatedUserName(state),
+  defaultListImage: getWebsiteDefaultIconList(state),
 });
 
 const mapDispatchToProps = {
   setLists: setListItems,
+  setBreadcrumb: setBreadcrumbForChecklist,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(injectIntl(Checklist)));

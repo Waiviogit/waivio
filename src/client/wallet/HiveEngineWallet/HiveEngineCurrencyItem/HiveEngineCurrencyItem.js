@@ -5,9 +5,9 @@ import USDDisplay from '../../../components/Utils/USDDisplay';
 import { getProxyImageURL } from '../../../../common/helpers/image';
 import { HIVE_ENGINE_DEFAULT_SWAP_LIST } from '../../../../common/constants/swapList';
 import WalletActionEngine from '../../WalletSummaryInfo/components/WalletAction/WalletActionEngine';
+import { toFixed } from '../../../../common/helpers/formatter';
 
 import './HiveEngineCurrencyItem.less';
-import { toFixed } from '../../../../common/helpers/formatter';
 
 const HiveEngineCurrencyItem = ({ token, rates }) => {
   const stake = token.stake || 0;

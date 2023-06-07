@@ -14,14 +14,14 @@ import PopoverMenu, { PopoverMenuItem } from '../../../components/PopoverMenu/Po
 
 import './WebsiteTopNavigation.less';
 
-const userNav = [
+const userNav = user => [
   // {
   //   name: 'Blog',
   //   link: '/blog',
   // },
   {
     name: 'Shop',
-    link: '/',
+    link: `/user-shop/${user}`,
   },
   {
     name: 'Legal',
@@ -31,7 +31,7 @@ const userNav = [
 
 const WebsiteTopNavigation = ({ shopSettings }) => {
   const listItem = useSelector(getNavigItems);
-  const linkList = shopSettings?.type === 'user' ? userNav : listItem;
+  const linkList = shopSettings?.type === 'user' ? userNav(shopSettings?.value) : listItem;
   const loading = useSelector(getSettingsLoading);
   const history = useHistory();
   const [visible, setVisible] = useState(false);
@@ -47,7 +47,7 @@ const WebsiteTopNavigation = ({ shopSettings }) => {
       {take(linkList, listLength).map(l => (
         <NavLink
           className="WebsiteTopNavigation__link"
-          isActive={match => l?.link === match?.url}
+          isActive={() => history.location.pathname.includes(l?.link)}
           activeClassName={'WebsiteTopNavigation__link--active'}
           key={l.link}
           to={l.link}
@@ -58,7 +58,7 @@ const WebsiteTopNavigation = ({ shopSettings }) => {
           })}
         </NavLink>
       ))}
-      {((isMobile() && linkList.length > 2) || (!isMobile() && linkList.length)) > 5 && (
+      {linkList.length > listLength && (
         <Popover
           placement="bottom"
           trigger="click"
@@ -74,7 +74,10 @@ const WebsiteTopNavigation = ({ shopSettings }) => {
             >
               {takeRight(linkList, linkList.length - listLength).map(i => (
                 <PopoverMenuItem active={history.location.pathname.includes(i.link)} key={i.link}>
-                  {i.name}
+                  {truncate(i.name, {
+                    length: 90,
+                    separator: '...',
+                  })}
                 </PopoverMenuItem>
               ))}
             </PopoverMenu>
@@ -93,6 +96,7 @@ const WebsiteTopNavigation = ({ shopSettings }) => {
 WebsiteTopNavigation.propTypes = {
   shopSettings: PropTypes.shape({
     type: PropTypes.string,
+    value: PropTypes.string,
   }),
 };
 

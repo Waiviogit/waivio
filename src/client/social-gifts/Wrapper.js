@@ -108,53 +108,58 @@ const SocialWrapper = props => {
 
       if (res.configuration.shopSettings.type === 'object') {
         getObject(res.configuration.shopSettings.value).then(wobject => {
-          const menuItemLinks = wobject.menuItem.map(item => parseJSON(item.body)?.linkToObject);
-          const customSort = get(wobject, 'sortCustom.include', []);
+          if (!wobject.menuItem) {
+            if (props.location.pathname === '/') props.history.push(wobject.defaultShowLink);
+          } else {
+            const menuItemLinks = wobject.menuItem?.map(item => parseJSON(item.body)?.linkToObject);
+            const customSort = get(wobject, 'sortCustom.include', []);
 
-          getObjectsByIds({ authorPermlinks: menuItemLinks }).then(u => {
-            const compareList = wobject.menuItem.map(l => {
-              const body = parseJSON(l.body);
-              const y = u.wobjects.find(wobj => wobj.author_permlink === body?.linkToObject);
+            getObjectsByIds({ authorPermlinks: menuItemLinks }).then(u => {
+              const compareList = wobject.menuItem.map(l => {
+                const body = parseJSON(l.body);
+                const y = u.wobjects.find(wobj => wobj.author_permlink === body?.linkToObject);
 
-              return {
-                ...l,
-                ...y,
-                body,
-              };
+                return {
+                  ...l,
+                  ...y,
+                  body,
+                };
+              });
+
+              const sortingButton = customSort.reduce((acc, curr) => {
+                const findObj = compareList.find(wobj => wobj.permlink === curr);
+
+                return findObj ? [...acc, findObj] : acc;
+              }, []);
+              const buttonList = [
+                ...sortingButton,
+                ...compareList.filter(i => !customSort.includes(i.permlink)),
+              ].map(i => {
+                const createLink = () => {
+                  switch (i.object_type) {
+                    case 'shop':
+                      return `/object-shop/${i.author_permlink}`;
+                    case 'list':
+                      return `/checklist/${i.author_permlink}`;
+                    default:
+                      return i.defaultShowLink;
+                  }
+                };
+
+                return {
+                  link: createLink(),
+                  name: i?.body?.title,
+                };
+              });
+
+              dispatch(setItemsForNavigation(buttonList));
+
+              if (props.location.pathname === '/') props.history.push(buttonList[0].link);
             });
-
-            const sortingButton = customSort.reduce((acc, curr) => {
-              const findObj = compareList.find(wobj => wobj.permlink === curr);
-
-              return findObj ? [...acc, findObj] : acc;
-            }, []);
-            const buttonList = [
-              ...sortingButton,
-              ...compareList.filter(i => !customSort.includes(i.permlink)),
-            ].map(i => {
-              const createLink = () => {
-                switch (i.object_type) {
-                  case 'shop':
-                    return `/object-shop/${i.author_permlink}`;
-                  case 'list':
-                    return `/checklist/${i.author_permlink}`;
-                  default:
-                    return i.defaultShowLink;
-                }
-              };
-
-              return {
-                link: createLink(),
-                name: i?.body?.title,
-              };
-            });
-
-            dispatch(setItemsForNavigation(buttonList));
-
-            if (props.location.pathname === '/') props.history.push(buttonList[0].link);
-          });
+          }
         });
-      }
+      } else if (props.location.pathname === '/')
+        props.history.push(`/user-shop/${res.configuration.shopSettings.value}`);
     });
   }, []);
 
