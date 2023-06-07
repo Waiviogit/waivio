@@ -298,7 +298,7 @@ const ShopWebsiteConfigurations = ({
       )}
       <Modal
         wrapClassName="Settings__modal"
-        title={`Choose logo`}
+        title={`Choose image`}
         closable
         onCancel={closeLogoModal}
         onOk={handleSubmitLogoModal}
