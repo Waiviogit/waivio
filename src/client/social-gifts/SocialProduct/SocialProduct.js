@@ -217,10 +217,10 @@ const SocialProduct = () => {
   return (
     <div className="SocialProduct">
       <div className="SocialProduct__column SocialProduct__column-wrapper">
-        <div className="SocialProduct__row">
-          {isMobile() && <div className="SocialProduct__wobjName">{wobject.name}</div>}
-          <div className="SocialProduct__carouselWrapper">
-            {!isEmpty(items) && (
+        {isMobile() && <div className="SocialProduct__wobjName">{wobject.name}</div>}
+        {!isEmpty(items) && (
+          <div className="SocialProduct__row">
+            <div className="SocialProduct__carouselWrapper">
               <ImageGallery
                 ref={ref => setCarouselRef(ref)}
                 onScreenChange={val => setIsFullScreen(val)}
@@ -230,12 +230,12 @@ const SocialProduct = () => {
                 onClick={handleGalleryImageClick}
                 additionalClass={!isFullScreen ? 'SocialProduct__imageGallery' : ''}
               />
-            )}
+            </div>
+            <div>
+              <ProductRewardCard reward={reward} />
+            </div>
           </div>
-          <div>
-            <ProductRewardCard reward={reward} />
-          </div>
-        </div>
+        )}
         <div className="SocialProduct__row SocialProduct__right-row">
           {!isMobile() && <div className="SocialProduct__wobjName">{wobject.name}</div>}
           <div className="SocialProduct__ratings">
@@ -334,7 +334,7 @@ const SocialProduct = () => {
             </div>
           </div>
         )}
-        {
+        {!isEmpty(addOns) && (
           <div className="SocialProduct__addOn-section">
             <div className="SocialProduct__heading">Bought together/ Add-ons</div>
             <div className="CarouselSection__wrapper">
@@ -345,7 +345,7 @@ const SocialProduct = () => {
               </Carousel>
             </div>
           </div>
-        }
+        )}
       </div>
     </div>
   );
