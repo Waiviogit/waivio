@@ -44,7 +44,7 @@ const ShopObjectCard = ({ wObject }) => {
         <ObjectAvatar size={isMobile() ? 100 : 150} item={wObject} />
         <HeartButton wobject={wObject} size={'20px'} />
       </div>
-      <Link to={wObject.defaultShowLink} className="ShopObjectCard__name">
+      <Link to={`/object/product/${wObject.author_permlink}`} className="ShopObjectCard__name">
         {truncate(wobjName, {
           length: 110,
           separator: '...',
@@ -88,7 +88,6 @@ const ShopObjectCard = ({ wObject }) => {
 ShopObjectCard.propTypes = {
   wObject: PropTypes.shape({
     object_type: PropTypes.string,
-    defaultShowLink: PropTypes.string,
     author_permlink: PropTypes.string,
     rating: PropTypes.arrayOf(PropTypes.shape()),
     proposition: PropTypes.shape(),

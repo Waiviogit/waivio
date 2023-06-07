@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { useHistory, useRouteMatch } from 'react-router';
-import { Collapse } from 'antd';
+import { Carousel, Collapse, Icon } from 'antd';
 import { Link } from 'react-router-dom';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import ImageGallery from 'react-image-gallery';
 import { FormattedMessage } from 'react-intl';
 import { useDispatch, useSelector } from 'react-redux';
-import { remove, orderBy, get, isEmpty } from 'lodash';
+import { remove, orderBy, get, isEmpty, isNil } from 'lodash';
 import {
   getObject,
   getObjectInfo,
-  // getObjectsByIds,
+  getObjectsByIds,
   getObjectsRewards,
   getRelatedPhotos,
   getWobjectGallery,
@@ -27,10 +27,9 @@ import ProductRewardCard from '../ShopObjectCard/ProductRewardCard/ProductReward
 import { parseWobjectField } from '../../../common/helpers/wObjectHelper';
 import Department from '../../object/Department/Department';
 import Options from '../../object/Options/Options';
-
-import './SocialProduct.less';
 import ProductId from '../../app/Sidebar/ProductId';
-// import ShopObjectCard from '../ShopObjectCard/ShopObjectCard';
+import ShopObjectCard from '../ShopObjectCard/ShopObjectCard';
+import './SocialProduct.less';
 
 const limit = 30;
 
@@ -42,8 +41,7 @@ const SocialProduct = () => {
   const [carouselRef, setCarouselRef] = useState(null);
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [relatedAlbum, setRelatedAlbum] = useState({});
-  // const [addOns, setAddOns] = useState([]);
-  // const [hasMoreAddOns, setHasMoreAddOns] = useState(false);
+  const [addOns, setAddOns] = useState([]);
   const [fields, setFields] = useState({
     brandObject: {},
     manufacturerObject: {},
@@ -71,7 +69,19 @@ const SocialProduct = () => {
   const merchant = parseWobjectField(wobject, 'merchant');
   const productWeight = parseWobjectField(wobject, 'productWeight');
   const menuItem = get(wobject, 'menuItem', []);
-  // const addOnPermlinks = wobject.addOn ? wobject?.addOn?.map(obj => obj.body) : [];
+  const addOnPermlinks = wobject.addOn ? wobject?.addOn?.map(obj => obj.body) : [];
+  const slideWidth = 250;
+  const slidesToShow = Math.floor(window.innerWidth / slideWidth);
+  const carouselSettings = {
+    dots: false,
+    arrows: true,
+    lazyLoad: true,
+    rows: 1,
+    nextArrow: <Icon type="caret-right" />,
+    prevArrow: <Icon type="caret-left" />,
+    infinite: slidesToShow < addOns.length,
+    slidesToShow,
+  };
 
   const showProductDetails =
     !isEmpty(brand) ||
@@ -104,6 +114,18 @@ const SocialProduct = () => {
 
   const handleGalleryImageClick = () => {
     carouselRef.fullScreen();
+  };
+  const getAddOns = () => {
+    if (!isEmpty(addOnPermlinks) && !isNil(addOnPermlinks)) {
+      getObjectsByIds({
+        authorPermlinks: addOnPermlinks,
+        authUserName: userName,
+        limit,
+        skip: 0,
+      }).then(res => {
+        setAddOns(res.wobjects);
+      });
+    }
   };
 
   const getPublisherManufacturerBrandMerchantObjects = () => {
@@ -140,17 +162,7 @@ const SocialProduct = () => {
       });
       getRelatedPhotos(authorPermlink, limit, 0).then(alb => setRelatedAlbum(alb));
       getObjectsRewards(authorPermlink, userName).then(res => setReward(res));
-      // if( !isEmpty(addOnPermlinks) && !isNil(addOnPermlinks)) {
-      //   getObjectsByIds({
-      //     authorPermlinks: addOnPermlinks,
-      //     authUserName: userName,
-      //     limit,
-      //     skip: 0,
-      //   }).then(res => {
-      //     setAddOns(res.wobjects);
-      //     setHasMoreAddOns(res.hasMore);
-      //   });
-      // }
+      getAddOns();
     }
 
     return () => dispatch(setStoreActiveOption({}));
@@ -159,6 +171,10 @@ const SocialProduct = () => {
   useEffect(() => {
     !isEmpty(wobject) && getPublisherManufacturerBrandMerchantObjects();
   }, [wobject.brand, wobject.manufacturer, wobject.merchant]);
+
+  useEffect(() => {
+    !isEmpty(wobject) && getAddOns();
+  }, [addOnPermlinks.length, wobject.author_permlink]);
 
   const getLayout = (fieldName, field) => {
     switch (fieldName) {
@@ -319,12 +335,14 @@ const SocialProduct = () => {
           </div>
         )}
         {
-          <div>
+          <div className="SocialProduct__addOn-section">
             <div className="SocialProduct__heading">Bought together/ Add-ons</div>
-            <div className="SocialProduct__productDetails-content">
-              <div className="SocialProduct__productDetails-content-column">
-                {/* {addOns?.map(wObject=><ShopObjectCard key={wObject.author_permlink} wObject={wObject}/>)} */}
-              </div>
+            <div className="CarouselSection__wrapper">
+              <Carousel {...carouselSettings}>
+                {addOns?.map(wObject => (
+                  <ShopObjectCard key={wObject.author_permlink} wObject={wObject} />
+                ))}
+              </Carousel>
             </div>
           </div>
         }

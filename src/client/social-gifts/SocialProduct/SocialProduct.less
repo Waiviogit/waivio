@@ -5,15 +5,25 @@
 .SocialProduct {
   display: flex;
   flex-direction: column;
-  padding: 4px 20px;
+  padding: 0;
+  @media @small {
+    padding: 4px 20px;
+  }
 
   &__name {
+  }
+
+  &__addOn-section {
   }
 
   &__wobjName {
     font-weight: 600;
     font-size: 26px;
     word-break: break-word;
+    padding-bottom: 15px;
+    @media @small {
+      padding-bottom: 0;
+    }
   }
 
   &__ratings {
@@ -58,10 +68,11 @@
   }
 
   &__row {
-    padding: 16px;
+    padding: 0;
     min-height: fit-content;
 
     @media @small {
+      padding: 16px;
       max-width: 600px;
     }
   }
@@ -157,6 +168,57 @@
     &:hover {
       border-radius: 4px;
       border: 3px solid var(--website-hover-color);
+    }
+  }
+
+  .ShopObjectCard {
+    width: 240px;
+    //width: calc(100% - 20px);
+    height: 356px;
+    @media @medium {
+      width: 240px;
+    }
+  }
+
+  .CarouselSection {
+    &__wrapper {
+      position: absolute;
+      margin-left: 65%;
+      transform: translateX(-50%);
+      @media @small {
+        width: 100%;
+        position: initial;
+        margin-left: 0;
+        transform: translateX(0);
+      }
+
+      .slick-prev,
+      .slick-next {
+        display: none;
+
+        @media @small {
+          display: inline-block;
+          z-index: 1200;
+          color: #bebebe !important;
+
+          svg {
+            height: auto;
+            width: 30px;
+          }
+        }
+      }
+
+      .ant-carousel .slick-prev {
+        left: -35px;
+
+        @media @small {
+          left: -40px;
+        }
+      }
+
+      .ant-carousel .slick-next {
+        right: -25px;
+      }
     }
   }
 }
