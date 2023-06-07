@@ -41,6 +41,8 @@ const ShopWebsiteConfigurations = ({
   const [paramsSaving, setParamsSaving] = useState(false);
   const host = match.params.site || '';
   const mobileLogo = get(config, 'mobileLogo');
+  const banner = get(config, 'mainBanner');
+  const listDefaultImage = get(config, 'defaultListImage');
   const desktopLogo = get(config, 'desktopLogo');
   const shopSettings = get(config, 'shopSettings', {});
   const disabled = isEmpty(image);
@@ -196,6 +198,62 @@ const ShopWebsiteConfigurations = ({
             <Form.Item>
               <h3>
                 {intl.formatMessage({
+                  id: 'main_banner',
+                  defaultMessage: 'Main banner',
+                })}
+              </h3>
+              <div className="Settings__profile-image">
+                <Avatar
+                  icon="picture"
+                  shape="square"
+                  src={banner}
+                  className="WebsitesConfigurations__avatar"
+                />
+                <Button type="primary" onClick={() => handleModalState('mainBanner')}>
+                  {intl.formatMessage({
+                    id: 'website_change_banner',
+                    defaultMessage: 'Change banner',
+                  })}
+                </Button>
+              </div>
+              <p>
+                <FormattedMessage
+                  id="banner_description"
+                  defaultMessage="Main banner will be displayed at the top of all website pages."
+                />
+              </p>
+            </Form.Item>{' '}
+            <Form.Item>
+              <h3>
+                {intl.formatMessage({
+                  id: 'list_default image',
+                  defaultMessage: 'List default image',
+                })}
+              </h3>
+              <div className="Settings__profile-image">
+                <Avatar
+                  icon="picture"
+                  shape="square"
+                  src={listDefaultImage}
+                  className="WebsitesConfigurations__avatar"
+                />
+                <Button type="primary" onClick={() => handleModalState('defaultListImage')}>
+                  {intl.formatMessage({
+                    id: 'website_change_image',
+                    defaultMessage: 'Change image',
+                  })}
+                </Button>
+              </div>
+              <p>
+                <FormattedMessage
+                  id="list_default_image_description"
+                  defaultMessage="List default image will be displayed for those lists that don't have an avatar."
+                />
+              </p>
+            </Form.Item>{' '}
+            <Form.Item>
+              <h3>
+                {intl.formatMessage({
                   id: 'base_object',
                   defaultMessage: 'Base object',
                 })}
@@ -252,7 +310,7 @@ const ShopWebsiteConfigurations = ({
       >
         {!isEmpty(modalsState) && (
           <ImageSetter
-            isEditable
+            isEditable={['mobileLogo', 'desktopLogo'].includes(modalsState.type)}
             autoFocus
             onImageLoaded={modalsState.method}
             isRequired

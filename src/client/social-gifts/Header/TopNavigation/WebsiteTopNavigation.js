@@ -58,7 +58,7 @@ const WebsiteTopNavigation = ({ shopSettings }) => {
           })}
         </NavLink>
       ))}
-      {((isMobile() && linkList.length > 2) || (!isMobile() && linkList.length)) > 5 && (
+      {linkList.length > listLength && (
         <Popover
           placement="bottom"
           trigger="click"
@@ -74,7 +74,10 @@ const WebsiteTopNavigation = ({ shopSettings }) => {
             >
               {takeRight(linkList, linkList.length - listLength).map(i => (
                 <PopoverMenuItem active={history.location.pathname.includes(i.link)} key={i.link}>
-                  {i.name}
+                  {truncate(i.name, {
+                    length: 90,
+                    separator: '...',
+                  })}
                 </PopoverMenuItem>
               ))}
             </PopoverMenu>
