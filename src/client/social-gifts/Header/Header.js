@@ -42,6 +42,15 @@ const Header = () => {
           <HeaderButton isWebsite searchBarActive={searchBarActive} />
         </div>
       </div>
+      {config.mainBanner && (
+        <img
+          alt={''}
+          src={config.mainBanner}
+          style={{
+            width: '100%',
+          }}
+        />
+      )}
       <WebsiteTopNavigation shopSettings={config.shopSettings} />
     </React.Fragment>
   );

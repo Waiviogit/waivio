@@ -100,8 +100,8 @@ const SwapTokens = props => {
       return getSwapInfo({
         data: {
           quantity: value,
-          inputSymbol: from.symbol,
-          outputSymbol: to.symbol,
+          inputSymbol: to.symbol,
+          outputSymbol: from.symbol,
         },
         onlyAmount,
       });

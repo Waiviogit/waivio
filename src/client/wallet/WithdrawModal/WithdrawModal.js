@@ -264,9 +264,9 @@ const WithdrawModal = props => {
     }
   };
   const isHiveCurrency = ['HIVE', 'HBD'].includes(pair?.to_coin_symbol);
-  const estimateValue = HIVE_ENGINE_DEFAULT_SWAP_LIST.includes(pair.symbol)
-    ? fromAmount * rate[pair.symbol]
-    : fromAmount * rate[pair.symbol] * rate.HIVE;
+  const estimateValue = HIVE_ENGINE_DEFAULT_SWAP_LIST.includes(pair?.symbol)
+    ? fromAmount * rate[pair?.symbol]
+    : fromAmount * rate[pair?.symbol] * rate.HIVE;
 
   return (
     <React.Fragment>
@@ -356,7 +356,7 @@ const WithdrawModal = props => {
         </div>
         <p>
           <FormattedMessage id="est_amount" defaultMessage="Est. amount" />:{' '}
-          <USDDisplay value={estimateValue} />
+          <USDDisplay value={estimateValue || 0} />
         </p>
         {showMinWithdraw.includes(get(pair, 'to_coin_symbol')) && (
           <p>

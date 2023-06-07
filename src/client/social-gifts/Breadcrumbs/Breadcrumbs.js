@@ -44,7 +44,7 @@ const Breadcrumbs = () => {
         ),
       );
     }
-  }, [location.hash]);
+  }, [location.hash, match.params.name]);
 
   return (
     <div className="Breadcrumbs">

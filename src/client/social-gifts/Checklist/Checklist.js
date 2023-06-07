@@ -22,6 +22,7 @@ import ShopObjectCard from '../ShopObjectCard/ShopObjectCard';
 import { sortListItemsBy } from '../../object/wObjectHelper';
 import { getObject } from '../../../waivioApi/ApiClient';
 import Breadcrumbs from '../Breadcrumbs/Breadcrumbs';
+import { getWebsiteDefaultIconList } from '../../../store/appStore/appSelectors';
 
 import './Checklist.less';
 
@@ -34,9 +35,9 @@ const Checklist = ({
   intl,
   match,
   setBreadcrumb,
+  defaultListImage,
 }) => {
   const [loading, setLoading] = useState();
-  const [withCustomSort, setWithCustomSort] = useState(false);
   const [object, setObject] = useState(false);
 
   useEffect(() => {
@@ -44,10 +45,6 @@ const Checklist = ({
 
     setLoading(true);
     getObject(pathUrl, userName, locale).then(wObject => {
-      const sortCustom = wObject?.sortCustom?.include;
-
-      if (!isEmpty(sortCustom)) setWithCustomSort(true);
-
       setObject(wObject);
       setBreadcrumb(wObject);
       setLists(
@@ -78,17 +75,17 @@ const Checklist = ({
             <div
               className="Checklist__itemsAvatar"
               style={{
-                backgroundImage: `url(${avatar})`,
+                backgroundImage: `url(${avatar || defaultListImage})`,
               }}
             >
-              {!avatar && <Icon type="shopping" />}
-              <span className="Checklist__itemsTitle">
-                {getObjectName(listItem)}
-                {!isNaN(listItem.listItemsCount) ? (
-                  <span className="items-count"> ({listItem.listItemsCount})</span>
-                ) : null}
-              </span>
+              {!avatar && !defaultListImage && <Icon type="shopping" />}
             </div>
+            <span className="Checklist__itemsTitle">
+              {getObjectName(listItem)}
+              {!isNaN(listItem.listItemsCount) ? (
+                <span className="items-count"> ({listItem.listItemsCount})</span>
+              ) : null}
+            </span>
           </Link>
         </div>
       );
@@ -109,7 +106,7 @@ const Checklist = ({
       );
     }
 
-    if (!withCustomSort) {
+    if (isEmpty(object.customSort?.include)) {
       const itemsListType = listItems.filter(item => item.object_type === 'list');
       const itemsProducts = listItems.filter(item => item.object_type !== 'list');
 
@@ -142,6 +139,7 @@ const Checklist = ({
 Checklist.propTypes = {
   location: PropTypes.shape().isRequired,
   userName: PropTypes.string.isRequired,
+  defaultListImage: PropTypes.string,
   locale: PropTypes.string.isRequired,
   listItems: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   intl: PropTypes.arrayOf(PropTypes.shape({ formatMessage: PropTypes.func })).isRequired,
@@ -158,6 +156,7 @@ const mapStateToProps = state => ({
   listItems: getObjectLists(state),
   locale: getSuitableLanguage(state),
   userName: getAuthenticatedUserName(state),
+  defaultListImage: getWebsiteDefaultIconList(state),
 });
 
 const mapDispatchToProps = {
