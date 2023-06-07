@@ -30,6 +30,7 @@
         padding: 0 10px;
         border-radius: 0 0 4px 4px;
         width: 100%;
+        font-weight: 600;
         transition: 0.5s;
       }
     }
@@ -39,7 +40,15 @@
       width: calc((100% - 10px) / 2);
 
       @media @small {
-        width: calc((100% - 30px) / 4);
+        width: calc((100% - 40px) / 4);
+      }
+
+      &:nth-child(3n) {
+        //@media @small {
+        //  margin-right: 0;
+        //}
+
+        margin-right: 10px;
       }
 
       &:nth-child(4n) {
@@ -100,6 +109,7 @@
 
     .items-count {
       margin-left: 5px;
+      font-weight: 600;
     }
 
     span {
