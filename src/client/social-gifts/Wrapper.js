@@ -4,7 +4,7 @@ import { connect, batch, useSelector, useDispatch } from 'react-redux';
 import { IntlProvider } from 'react-intl';
 import { withRouter } from 'react-router-dom';
 import { renderRoutes } from 'react-router-config';
-import { get } from 'lodash';
+import { get, isEmpty } from 'lodash';
 import { ConfigProvider, Layout } from 'antd';
 import {
   findLanguage,
@@ -108,12 +108,12 @@ const SocialWrapper = props => {
 
       if (res.configuration.shopSettings.type === 'object') {
         getObject(res.configuration.shopSettings.value).then(wobject => {
-          if (!wobject.menuItem) {
-            if (props.location.pathname === '/') props.history.push(wobject.defaultShowLink);
-          } else {
-            const menuItemLinks = wobject.menuItem?.map(item => parseJSON(item.body)?.linkToObject);
-            const customSort = get(wobject, 'sortCustom.include', []);
+          const menuItemLinks = wobject.menuItem?.map(item => parseJSON(item.body)?.linkToObject);
+          const customSort = get(wobject, 'sortCustom.include', []);
 
+          if (isEmpty(menuItemLinks) && props.location.pathname === '/')
+            props.history.push(`/object/${res.configuration.shopSettings.value}`);
+          else
             getObjectsByIds({ authorPermlinks: menuItemLinks }).then(u => {
               const compareList = wobject.menuItem.map(l => {
                 const body = parseJSON(l.body);
@@ -156,7 +156,6 @@ const SocialWrapper = props => {
 
               if (props.location.pathname === '/') props.history.push(buttonList[0].link);
             });
-          }
         });
       } else if (props.location.pathname === '/')
         props.history.push(`/user-shop/${res.configuration.shopSettings.value}`);
