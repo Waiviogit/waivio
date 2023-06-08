@@ -4,7 +4,7 @@ import classNames from 'classnames';
 import { useSelector } from 'react-redux';
 import HeaderButton from '../../components/HeaderButton/HeaderButton';
 import { getConfigurationValues, getWebsiteLogo } from '../../../store/appStore/appSelectors';
-import GeneralSearch from '../../websites/WebsiteLayoutComponents/Header/GeneralSearch';
+import GeneralSearch from '../../websites/WebsiteLayoutComponents/Header/GeneralSearch/GeneralSearch';
 import WebsiteTopNavigation from './TopNavigation/WebsiteTopNavigation';
 
 import './Header.less';

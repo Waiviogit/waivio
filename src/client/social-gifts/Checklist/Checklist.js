@@ -106,7 +106,7 @@ const Checklist = ({
       );
     }
 
-    if (isEmpty(object.customSort?.include)) {
+    if (isEmpty(object.sortCustom?.include)) {
       const itemsListType = listItems.filter(item => item.object_type === 'list');
       const itemsProducts = listItems.filter(item => item.object_type !== 'list');
 

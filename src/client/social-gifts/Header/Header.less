@@ -11,6 +11,16 @@
   -moz-box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.12);
   box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.12);
 
+  .Topnav__menu-container__menu > li.ant-menu-item > a {
+    color: @gray;
+    font-weight: 100 !important;
+    font-size: 26px;
+
+    &:hover {
+      color: var(--website-color);
+    }
+  }
+
   &__item {
     &--active {
       border: var(--website-color) !important;
@@ -147,6 +157,10 @@
   }
 
   .iconfont {
+    transition: 0.5s;
+  }
+
+  .iconfont.icon-search {
     transition: 0.5s;
     color: var(--website-color);
   }
