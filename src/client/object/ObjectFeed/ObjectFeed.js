@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import { isEmpty, uniq, get, isNil } from 'lodash';
+import { isEmpty, uniq, isNil } from 'lodash';
 import Feed from '../../feed/Feed';
 import { getSuitableLanguage } from '../../../store/reducers';
 import {
@@ -47,7 +47,6 @@ export default class ObjectFeed extends React.Component {
     history: PropTypes.shape().isRequired,
     limit: PropTypes.number,
     handleCreatePost: PropTypes.func,
-    wobject: PropTypes.shape(),
     userName: PropTypes.string.isRequired,
   };
 
@@ -68,39 +67,59 @@ export default class ObjectFeed extends React.Component {
   };
 
   componentDidMount() {
-    this.getWobjPropos();
-    this.getFeedPosts();
-  }
+    const { parentName } = this.props.match.params;
+    let newsPermlink;
 
-  componentWillReceiveProps(nextProps) {
-    const { match } = this.props;
-    const nextName = get(nextProps, ['match', 'params', 'name']);
-    const objectPosts = get(nextProps, ['feed', 'objectPosts', nextName]);
-
-    if (match.params.name !== nextName && isEmpty(objectPosts)) {
-      this.getFeedPosts();
-
-      this.getWobjPropos();
-      window.scrollTo(0, 0);
+    if (parentName) {
+      getObject(parentName).then(wobj => {
+        newsPermlink = wobj?.newsFeed?.permlink;
+        this.setState({ newsPermlink });
+      });
     }
+    this.getWobjPropos();
+    this.getFeedPosts(newsPermlink);
   }
+
+  // componentWillReceiveProps(nextProps) {
+  //   const { match } = this.props;
+  //   const nextName = get(nextProps, ['match', 'params', 'name']);
+  //   const objectPosts = get(nextProps, ['feed', 'objectPosts', nextName]);
+  //
+  //   if (match.params.name !== nextName && isEmpty(objectPosts)) {
+  //     this.getFeedPosts();
+  //
+  //     this.getWobjPropos();
+  //     window.scrollTo(0, 0);
+  //   }
+  // }
 
   componentDidUpdate(prevProps) {
     const { match } = this.props;
-    const { name, itemId } = match.params;
+    const { name, parentName } = match.params;
+    let newsPermlink;
 
-    if (prevProps.match.params.name !== name || prevProps.match.params.itemId !== itemId) {
-      this.getFeedPosts();
+    if (parentName !== prevProps.match.params.parentName) {
+      getObject(parentName).then(wobj => {
+        newsPermlink = wobj?.newsFeed?.permlink;
+        this.setState({ newsPermlink });
+        this.getFeedPosts(newsPermlink);
+      });
+    }
+
+    if (
+      (prevProps.match.params.name !== name || prevProps.match.params.parentName !== parentName) &&
+      newsPermlink
+    ) {
+      this.getFeedPosts(newsPermlink);
       this.getWobjPropos();
     }
   }
 
-  getFeedPosts = () => {
+  getFeedPosts = newsPerml => {
     const { readLocales, limit, match } = this.props;
-    const { name } = match.params;
+    const { name, parentName } = match.params;
     const query = new URLSearchParams(this.props.history.location.search);
     const isNewsfeedType = query.get('category') === 'newsfeed';
-    const newsfeedParent = query.get('parentObj');
 
     if (isNewsfeedType) {
       getObject(name).then(res => {
@@ -115,11 +134,11 @@ export default class ObjectFeed extends React.Component {
       });
     } else {
       this.props.getObjectPosts({
-        object: newsfeedParent || name,
+        object: parentName || name,
         username: name,
         readLanguages: readLocales,
         limit,
-        newsPermlink: this.getNewsPermlink(),
+        newsPermlink: newsPerml || this.getNewsPermlink(),
       });
     }
   };
@@ -130,16 +149,14 @@ export default class ObjectFeed extends React.Component {
     );
 
   getNewsPermlink() {
-    const { itemId } = this.props.match.params;
-
     if (isEmpty(this.props.match.params[1]) || isNil(this.props.match.params[1])) return undefined;
 
-    return itemId || this.props.wobject?.newsFeed?.permlink;
+    return this.state.newsPermlink;
   }
 
   render() {
     const { feed, limit, handleCreatePost } = this.props;
-    const { name } = this.props.match.params;
+    const { name, parentName } = this.props.match.params;
     const { loadingPropositions, reward } = this.state;
     const objectFeed = getFeedFromState('objectPosts', name, feed);
     const content = uniq(objectFeed);
@@ -148,12 +165,11 @@ export default class ObjectFeed extends React.Component {
     const skip = content.length;
     const query = new URLSearchParams(this.props.history.location.search);
     const isNewsfeedType = query.get('category') === 'newsfeed';
-    const newsfeedParent = query.get('parentObj');
 
     const loadMoreContentAction = () => {
       this.props.getMoreObjectPosts({
         username: name,
-        authorPermlink: newsfeedParent || name,
+        authorPermlink: parentName || name,
         limit,
         skip,
         newsPermlink: isNewsfeedType ? this.state.newsPermlink : this.getNewsPermlink(),

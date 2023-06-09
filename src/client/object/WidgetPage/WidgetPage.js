@@ -1,16 +1,32 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router';
-
-import { getWobjectNested } from '../../../store/wObjectStore/wObjectSelectors';
+import { getLastPermlinksFromHash } from '../../../common/helpers/wObjectHelper';
+import { getObject } from '../../../waivioApi/ApiClient';
+import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
+import { getUsedLocale } from '../../../store/appStore/appSelectors';
+import Loading from '../../components/Icon/Loading';
 
 const WidgetPage = props => {
-  const nestedWobject = useSelector(getWobjectNested);
+  const [nestedWobject, setNestedWobject] = useState();
   const { wobject } = props;
+  const userName = useSelector(getAuthenticatedUserName);
+  const locale = useSelector(getUsedLocale);
   const hash = useHistory().location.hash;
+  const nestedObjPermlink = getLastPermlinksFromHash(hash);
   const currentWobject = hash ? nestedWobject : wobject;
   const widgetForm = currentWobject?.widget && JSON.parse(currentWobject?.widget);
+
+  useEffect(() => {
+    if (nestedObjPermlink) {
+      getObject(nestedObjPermlink, userName, locale).then(wobj => setNestedWobject(wobj));
+    }
+  }, [hash]);
+
+  if (!widgetForm?.content) {
+    return <Loading />;
+  }
 
   const widgetView = widgetForm?.content?.includes('<iframe') ? (
     <div className="FormPage__block" dangerouslySetInnerHTML={{ __html: widgetForm.content }} />
