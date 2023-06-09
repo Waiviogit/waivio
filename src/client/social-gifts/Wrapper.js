@@ -28,6 +28,7 @@ import {
   getCryptoPriceHistory,
   setSocialFlag,
   setItemsForNavigation,
+  setLoadingStatus,
 } from '../../store/appStore/appActions';
 import Header from './Header/Header';
 import NotificationPopup from './../notifications/NotificationPopup';
@@ -111,9 +112,10 @@ const SocialWrapper = props => {
           const menuItemLinks = wobject.menuItem?.map(item => parseJSON(item.body)?.linkToObject);
           const customSort = get(wobject, 'sortCustom.include', []);
 
-          if (isEmpty(menuItemLinks) && props.location.pathname === '/')
+          if (isEmpty(menuItemLinks) && props.location.pathname === '/') {
             props.history.push(`/object/${res.configuration.shopSettings.value}`);
-          else
+            dispatch(setLoadingStatus(true));
+          } else
             getObjectsByIds({ authorPermlinks: menuItemLinks }).then(u => {
               const compareList = wobject.menuItem.map(l => {
                 const body = parseJSON(l.body);
@@ -153,6 +155,7 @@ const SocialWrapper = props => {
               });
 
               dispatch(setItemsForNavigation(buttonList));
+              dispatch(setLoadingStatus(true));
 
               if (props.location.pathname === '/') props.history.push(buttonList[0].link);
             });

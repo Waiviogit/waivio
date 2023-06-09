@@ -60,6 +60,8 @@ export const getConfigurationValues = createSelector([appState], state => state.
 
 export const getWebsiteLogo = createSelector([appState], state => state.logo);
 
+export const getInfoLoaded = createSelector([appState], state => state.infoLoaded);
+
 export const getShopSettings = createSelector(
   [appState],
   state => state.configuration?.shopSettings,

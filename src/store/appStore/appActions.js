@@ -207,3 +207,10 @@ export const setItemsForNavigation = items => ({
   type: SET_ITEMS_FOR_NAVIGATION,
   items,
 });
+
+export const SET_LOADING_STATUS = '@app/SET_LOADING_STATUS';
+
+export const setLoadingStatus = status => ({
+  type: SET_LOADING_STATUS,
+  status,
+});
