@@ -936,6 +936,9 @@ class AppendForm extends Component {
             linkToObject: !isEmpty(this.state.selectedObject)
               ? this.state.selectedObject.author_permlink
               : undefined,
+            objectType: !isEmpty(this.state.selectedObject)
+              ? this.state.selectedObject.object_type
+              : undefined,
             linkToWeb: !isEmpty(formValues[menuItemFields.linkToWeb])
               ? formValues[menuItemFields.linkToWeb]?.trim()
               : undefined,
