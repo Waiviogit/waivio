@@ -36,7 +36,7 @@ import ObjectCardView from '../../objectCard/ObjectCardView';
 import Loading from '../../components/Icon/Loading';
 import CatalogBreadcrumb from './CatalogBreadcrumb/CatalogBreadcrumb';
 import CatalogSorting from './CatalogSorting/CatalogSorting';
-import { getAuthenticatedUser } from '../../../store/authStore/authSelectors';
+import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 
 import './CatalogWrap.less';
 
@@ -252,7 +252,7 @@ const mapStateToProps = state => ({
   wobjectNested: getWobjectNested(state),
   wobject: getObject(state),
   locale: getSuitableLanguage(state),
-  userName: getAuthenticatedUser(state),
+  userName: getAuthenticatedUserName(state),
 });
 
 const mapDispatchToProps = {
