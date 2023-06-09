@@ -39,6 +39,7 @@ const initialState = {
   helmetIcon: DEFAULTS.FAVICON,
   isSocial: false,
   navigItems: [],
+  infoLoaded: false,
 };
 
 export default (state = initialState, action) => {
@@ -232,6 +233,12 @@ export default (state = initialState, action) => {
         ...state,
         navigItems: action.items,
         settingsLoading: false,
+      };
+
+    case appTypes.SET_LOADING_STATUS:
+      return {
+        ...state,
+        infoLoaded: action.status,
       };
 
     default:
