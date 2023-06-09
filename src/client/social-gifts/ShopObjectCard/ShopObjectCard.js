@@ -22,6 +22,9 @@ const ShopObjectCard = ({ wObject }) => {
   const wobjName = getObjectName(wObject);
   const withRewards = !isEmpty(wObject.propositions);
   const proposition = withRewards ? wObject.propositions[0] : null;
+  const linkToObject = ['book', 'product'].includes(wObject.object_type)
+    ? `/object/${wObject.object_type}/${wObject.author_permlink}`
+    : wObject.defaultShowLink;
   const shopObjectCardClassList = classNames('ShopObjectCard', {
     'ShopObjectCard--rewards': withRewards,
   });
@@ -44,7 +47,7 @@ const ShopObjectCard = ({ wObject }) => {
         <ObjectAvatar size={isMobile() ? 100 : 150} item={wObject} />
         <HeartButton wobject={wObject} size={'20px'} />
       </div>
-      <Link to={`/object/product/${wObject.author_permlink}`} className="ShopObjectCard__name">
+      <Link to={linkToObject} className="ShopObjectCard__name">
         {truncate(wobjName, {
           length: 110,
           separator: '...',
@@ -88,6 +91,7 @@ const ShopObjectCard = ({ wObject }) => {
 ShopObjectCard.propTypes = {
   wObject: PropTypes.shape({
     object_type: PropTypes.string,
+    defaultShowLink: PropTypes.string,
     author_permlink: PropTypes.string,
     rating: PropTypes.arrayOf(PropTypes.shape()),
     proposition: PropTypes.shape(),

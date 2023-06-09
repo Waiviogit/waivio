@@ -28,12 +28,13 @@ const OptionItemView = ({
   const activeStoreOption = useSelector(getActiveOption);
   const history = useHistory();
   const dispatch = useDispatch();
-  const linkToOption = isSocialGifts
-    ? `/object/product/${wobject.author_permlink}/options/${option[0]}`
+  const isSocialObject = isSocialGifts && ['book', 'product'].includes(wobject.object_type);
+  const linkToOption = isSocialObject
+    ? `/object/${wobject.object_type}/${wobject.author_permlink}/options/${option[0]}`
     : `/object/${wobject.author_permlink}/options/${option[0]}`;
   const linkToAvailableOption = el =>
-    isSocialGifts
-      ? `/object/product/${getAvailableOptionPermlinkAndStyle(el, true)}`
+    isSocialObject
+      ? `/object/${wobject.object_type}/${getAvailableOptionPermlinkAndStyle(el, true)}`
       : `/object/${getAvailableOptionPermlinkAndStyle(el, true)}`;
 
   useEffect(() => {
