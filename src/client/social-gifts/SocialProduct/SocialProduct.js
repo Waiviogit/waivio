@@ -281,7 +281,7 @@ const SocialProduct = () => {
       </div>
       <div className="SocialProduct__column">
         {!isEmpty(wobject.description) && (
-          <div className="SocialProduct__paddingBottom">
+          <div className="SocialProduct__aboutItem">
             <div className="SocialProduct__heading"> About this item</div>
             <div className="SocialProduct__contentPaddingLeft">{wobject.description}</div>
           </div>
