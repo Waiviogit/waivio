@@ -8,15 +8,17 @@ import PropTypes from 'prop-types';
 import { useHistory } from 'react-router';
 
 // import UserSearchItem from '../../../search/SearchItems/UserSearchItem';
-import { getObjectName } from '../../../../common/helpers/wObjectHelper';
-import ObjectSearchItem from '../../../search/SearchItems/ObjectSearchItem';
-import { getTranformSearchCountData, pendingSearch } from '../../../search/helpers';
-import listOfObjectTypes from '../../../../common/constants/listOfObjectTypes';
+import { getObjectName } from '../../../../../common/helpers/wObjectHelper';
+import ObjectSearchItem from '../../../../search/SearchItems/ObjectSearchItem';
+import { getTranformSearchCountData, pendingSearch } from '../../../../search/helpers';
+import listOfObjectTypes from '../../../../../common/constants/listOfObjectTypes';
 import {
   getAutoCompleteSearchResults,
   getIsStartSearchAutoComplete,
-} from '../../../../store/searchStore/searchSelectors';
-import { searchAutoComplete } from '../../../../store/searchStore/searchActions';
+} from '../../../../../store/searchStore/searchSelectors';
+import { searchAutoComplete } from '../../../../../store/searchStore/searchActions';
+
+import './GeneralSearch.less';
 
 const markers = {
   USER: 'user',
@@ -204,7 +206,7 @@ const GeneralSearch = props => {
         onChange={handleAutoCompleteSearch}
         onSelect={handleSelectOnAutoCompleteDropdown}
         placeholder={'What are you looking for?'}
-        dropdownClassName={'BaseObjSettings__resultList'}
+        dropdownClassName={'GeneralSearch'}
         allowClear
         optionLabelProp="value"
         dataSource={loading ? pendingSearch('', props.intl) : prepareOptions()}

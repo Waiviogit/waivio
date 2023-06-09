@@ -4,7 +4,7 @@ import { connect, batch, useSelector, useDispatch } from 'react-redux';
 import { IntlProvider } from 'react-intl';
 import { withRouter } from 'react-router-dom';
 import { renderRoutes } from 'react-router-config';
-import { get } from 'lodash';
+import { get, isEmpty } from 'lodash';
 import { ConfigProvider, Layout } from 'antd';
 import {
   findLanguage,
@@ -108,51 +108,54 @@ const SocialWrapper = props => {
 
       if (res.configuration.shopSettings.type === 'object') {
         getObject(res.configuration.shopSettings.value).then(wobject => {
-          const menuItemLinks = wobject.menuItem.map(item => parseJSON(item.body)?.linkToObject);
+          const menuItemLinks = wobject.menuItem?.map(item => parseJSON(item.body)?.linkToObject);
           const customSort = get(wobject, 'sortCustom.include', []);
 
-          getObjectsByIds({ authorPermlinks: menuItemLinks }).then(u => {
-            const compareList = wobject.menuItem.map(l => {
-              const body = parseJSON(l.body);
-              const y = u.wobjects.find(wobj => wobj.author_permlink === body?.linkToObject);
+          if (isEmpty(menuItemLinks) && props.location.pathname === '/')
+            props.history.push(`/object/${res.configuration.shopSettings.value}`);
+          else
+            getObjectsByIds({ authorPermlinks: menuItemLinks }).then(u => {
+              const compareList = wobject.menuItem.map(l => {
+                const body = parseJSON(l.body);
+                const y = u.wobjects.find(wobj => wobj.author_permlink === body?.linkToObject);
 
-              return {
-                ...l,
-                ...y,
-                body,
-              };
+                return {
+                  ...l,
+                  ...y,
+                  body,
+                };
+              });
+
+              const sortingButton = customSort.reduce((acc, curr) => {
+                const findObj = compareList.find(wobj => wobj.permlink === curr);
+
+                return findObj ? [...acc, findObj] : acc;
+              }, []);
+              const buttonList = [
+                ...sortingButton,
+                ...compareList.filter(i => !customSort.includes(i.permlink)),
+              ].map(i => {
+                const createLink = () => {
+                  switch (i.object_type) {
+                    case 'shop':
+                      return `/object-shop/${i.author_permlink}`;
+                    case 'list':
+                      return `/checklist/${i.author_permlink}`;
+                    default:
+                      return i.defaultShowLink;
+                  }
+                };
+
+                return {
+                  link: createLink(),
+                  name: i?.body?.title,
+                };
+              });
+
+              dispatch(setItemsForNavigation(buttonList));
+
+              if (props.location.pathname === '/') props.history.push(buttonList[0].link);
             });
-
-            const sortingButton = customSort.reduce((acc, curr) => {
-              const findObj = compareList.find(wobj => wobj.permlink === curr);
-
-              return findObj ? [...acc, findObj] : acc;
-            }, []);
-            const buttonList = [
-              ...sortingButton,
-              ...compareList.filter(i => !customSort.includes(i.permlink)),
-            ].map(i => {
-              const createLink = () => {
-                switch (i.object_type) {
-                  case 'shop':
-                    return `/object-shop/${i.author_permlink}`;
-                  case 'list':
-                    return `/checklist/${i.author_permlink}`;
-                  default:
-                    return i.defaultShowLink;
-                }
-              };
-
-              return {
-                link: createLink(),
-                name: i?.body?.title,
-              };
-            });
-
-            dispatch(setItemsForNavigation(buttonList));
-
-            if (props.location.pathname === '/') props.history.push(buttonList[0].link);
-          });
         });
       } else if (props.location.pathname === '/')
         props.history.push(`/user-shop/${res.configuration.shopSettings.value}`);

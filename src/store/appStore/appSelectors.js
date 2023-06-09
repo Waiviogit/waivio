@@ -69,6 +69,11 @@ export const getIsSocial = createSelector([appState], state => state.isSocial);
 
 export const getWebsiteColors = createSelector([getWebsiteConfiguration], state => state.colors);
 
+export const getWebsiteDefaultIconList = createSelector(
+  [getWebsiteConfiguration],
+  state => state.defaultListImage,
+);
+
 export const getWebsiteStartPage = createSelector(
   [getWebsiteConfiguration],
   state => state.header?.startup || 'map',
