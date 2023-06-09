@@ -368,7 +368,7 @@ const routes = {
     },
     {
       path: [
-        `/object/:name/(${URL.WOBJ.tabs})?/(${URL.WOBJ.filters})?/:itemId?`,
+        `/object/:name/(${URL.WOBJ.tabs})?/(${URL.WOBJ.filters})?/:parentName?/:itemId?`,
         `/object/:name/shop/:department?`,
         `/object/:name/search/:searchStr?`,
       ],
@@ -377,7 +377,7 @@ const routes = {
       pathScope: '/object/:name',
       routes: [
         {
-          path: ['', '/newsFilter/:itemId'],
+          path: ['', '/newsFilter/:parentName/:itemId?'],
           exact: true,
           component: Views.ObjectPageFeed,
         },
