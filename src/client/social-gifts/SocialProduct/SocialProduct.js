@@ -30,6 +30,7 @@ import Options from '../../object/Options/Options';
 import ProductId from '../../app/Sidebar/ProductId';
 import ShopObjectCard from '../ShopObjectCard/ShopObjectCard';
 import './SocialProduct.less';
+import ObjectFeatures from '../../object/ObjectFeatures/ObjectFeatures';
 
 const limit = 30;
 
@@ -63,6 +64,9 @@ const SocialProduct = () => {
   const dimensions = parseWobjectField(wobject, 'dimensions');
   const brand = parseWobjectField(wobject, 'brand');
   const groupId = wobject.groupId;
+  const features = wobject.features
+    ? wobject.features?.map(el => parseWobjectField(el, 'body', []))
+    : [];
   const productIdBody = wobject.productId
     ? wobject?.productId.map(el => parseWobjectField(el, 'body', []))
     : [];
@@ -206,7 +210,7 @@ const SocialProduct = () => {
   };
 
   const listItem = (fieldName, field) => (
-    <div>
+    <div className="paddingBottom">
       <b>
         <FormattedMessage id={`object_field_${fieldName}`} defaultMessage={fieldName} />:{' '}
       </b>
@@ -277,13 +281,13 @@ const SocialProduct = () => {
       </div>
       <div className="SocialProduct__column">
         {!isEmpty(wobject.description) && (
-          <div className="SocialProduct__aboutItem  SocialProduct__paddingBottom">
+          <div className="SocialProduct__paddingBottom">
             <div className="SocialProduct__heading"> About this item</div>
-            <div>{wobject.description}</div>
+            <div className="SocialProduct__contentPaddingLeft">{wobject.description}</div>
           </div>
         )}
         {!isEmpty(menuItem) && (
-          <div className="SocialProduct__collapse SocialProduct__paddingBottom">
+          <div className="SocialProduct__paddingBottom">
             <Collapse
             // onChange={callback}
             >
@@ -300,37 +304,35 @@ const SocialProduct = () => {
           </div>
         )}
         {showProductDetails && (
-          <div className="SocialProduct__productDetails SocialProduct__paddingBottom">
+          <div className="SocialProduct__productDetails">
             <div className="SocialProduct__heading">Product details</div>
-            <div className="SocialProduct__productDetails-content">
-              <div className="SocialProduct__productDetails-content-column">
-                {!isEmpty(fields.brandObject) && listItem(objectFields.brand, fields.brandObject)}
-                {!isEmpty(fields.manufacturerObject) &&
-                  listItem(objectFields.manufacturer, fields.manufacturerObject)}
-                {!isEmpty(fields.merchantObject) &&
-                  listItem(objectFields.merchant, fields.merchantObject)}
-                {!isEmpty(parent) && listItem(objectFields.parent, parent)}
-                {!isEmpty(productWeight) && listItem(objectFields.productWeight, productWeight)}
-                {!isEmpty(dimensions) && listItem(objectFields.dimensions, dimensions)}
-                {!isEmpty(departments) && (
-                  <Department
-                    isSocialGifts
-                    departments={departments}
-                    isEditMode={false}
-                    history={history}
-                    wobject={wobject}
-                  />
-                )}
-                {
-                  <ProductId
-                    isSocialGifts
-                    isEditMode={false}
-                    authorPermlink={wobject.author_permlink}
-                    groupId={groupId}
-                    productIdBody={productIdBody}
-                  />
-                }
-              </div>
+            <div className="SocialProduct__productDetails-content SocialProduct__contentPaddingLeft">
+              {!isEmpty(fields.brandObject) && listItem(objectFields.brand, fields.brandObject)}
+              {!isEmpty(fields.manufacturerObject) &&
+                listItem(objectFields.manufacturer, fields.manufacturerObject)}
+              {!isEmpty(fields.merchantObject) &&
+                listItem(objectFields.merchant, fields.merchantObject)}
+              {!isEmpty(parent) && listItem(objectFields.parent, parent)}
+              {!isEmpty(productWeight) && listItem(objectFields.productWeight, productWeight)}
+              {!isEmpty(dimensions) && listItem(objectFields.dimensions, dimensions)}
+              {!isEmpty(departments) && (
+                <Department
+                  isSocialGifts
+                  departments={departments}
+                  isEditMode={false}
+                  history={history}
+                  wobject={wobject}
+                />
+              )}
+              {
+                <ProductId
+                  isSocialGifts
+                  isEditMode={false}
+                  authorPermlink={wobject.author_permlink}
+                  groupId={groupId}
+                  productIdBody={productIdBody}
+                />
+              }
             </div>
           </div>
         )}
@@ -343,6 +345,19 @@ const SocialProduct = () => {
                   <ShopObjectCard key={wObject.author_permlink} wObject={wObject} />
                 ))}
               </Carousel>
+            </div>
+          </div>
+        )}
+        {!isEmpty(features) && (
+          <div className="SocialProduct__featuresContainer">
+            <div className="SocialProduct__heading">Features</div>
+            <div className="SocialProduct__centralContent">
+              <ObjectFeatures
+                isSocialGifts
+                features={features}
+                isEditMode={false}
+                wobjPermlink={wobject.author_permlink}
+              />
             </div>
           </div>
         )}

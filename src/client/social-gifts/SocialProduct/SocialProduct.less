@@ -2,6 +2,7 @@
 @import (reference) '../../styles/modules/variables.less';
 @import '~react-image-gallery/styles/css/image-gallery.css';
 
+@paddingBottom: 20px;
 .SocialProduct {
   display: flex;
   flex-direction: column;
@@ -10,10 +11,17 @@
     padding: 4px 20px;
   }
 
-  &__name {
+  &__centralContent {
+    @media @small {
+      margin-left: calc(2% + 100px);
+      margin-right: calc(2% + 100px);
+    }
   }
 
-  &__addOn-section {
+  &__contentPaddingLeft {
+    @media @small {
+      padding-left: 20px;
+    }
   }
 
   &__wobjName {
@@ -38,11 +46,11 @@
   }
 
   &__price {
-    padding-bottom: 12px;
+    padding-bottom: 15px;
   }
 
   &__paddingBottom {
-    padding-bottom: 15px;
+    padding-bottom: @paddingBottom;
   }
 
   &__heading {
@@ -52,10 +60,16 @@
     font-size: 18px;
   }
 
+  &__productDetails,
+  &__featuresContainer {
+    border-bottom: 1px solid grey;
+    margin-bottom: 20px;
+    padding-bottom: @paddingBottom;
+  }
+
   &__productDetails-content {
     display: flex;
     flex-direction: column;
-    border-radius: 8px;
   }
 
   &__column-wrapper {
@@ -81,9 +95,6 @@
     @media @small {
       padding: 16px 16px 16px 0;
     }
-  }
-
-  &__carouselWrapper {
   }
 
   &__affLinks {
@@ -119,8 +130,6 @@
 
     & .image-gallery-content.left .image-gallery-slide .image-gallery-image,
     & .image-gallery-content.right .image-gallery-slide .image-gallery-image {
-      //width: 250px;
-      //height: 250px;
       @media @small {
         height: 500px;
         max-width: 500px;
@@ -173,7 +182,6 @@
 
   .ShopObjectCard {
     width: 240px;
-    //width: calc(100% - 20px);
     height: 356px;
     @media @medium {
       width: 240px;
