@@ -12,7 +12,6 @@ import {
 import { getActiveOption } from '../../../../store/optionsStore/optionsSelectors';
 import LinkButton from '../../../components/LinkButton/LinkButton';
 import { isMobile } from '../../../../common/helpers/apiHelpers';
-import { getIsSocial } from '../../../../store/appStore/appSelectors';
 
 const OptionItemView = ({
   option,
@@ -21,14 +20,14 @@ const OptionItemView = ({
   optionsNumber,
   optionsBack,
   ownOptions,
+  isSocialProduct,
 }) => {
-  const isSocialGifts = useSelector(getIsSocial);
-  const optionsLimit = isSocialGifts ? 30 : 15;
+  const optionsLimit = isSocialProduct ? 30 : 15;
   const [hovered, setHovered] = useState({});
   const activeStoreOption = useSelector(getActiveOption);
   const history = useHistory();
   const dispatch = useDispatch();
-  const isSocialObject = isSocialGifts && ['book', 'product'].includes(wobject.object_type);
+  const isSocialObject = isSocialProduct && ['book', 'product'].includes(wobject.object_type);
   const linkToOption = isSocialObject
     ? `/object/${wobject.object_type}/${wobject.author_permlink}/options/${option[0]}`
     : `/object/${wobject.author_permlink}/options/${option[0]}`;
@@ -38,7 +37,7 @@ const OptionItemView = ({
       : `/object/${getAvailableOptionPermlinkAndStyle(el, true)}`;
 
   useEffect(() => {
-    if (!isSocialGifts) dispatch(setStoreActiveOption(ownOptions));
+    if (!isSocialProduct) dispatch(setStoreActiveOption(ownOptions));
   }, []);
 
   const getAvailableOption = el =>
@@ -163,6 +162,7 @@ OptionItemView.propTypes = {
   wobject: PropTypes.shape().isRequired,
   optionsBack: PropTypes.shape(),
   ownOptions: PropTypes.shape(),
+  isSocialProduct: PropTypes.bool,
   option: PropTypes.arrayOf().isRequired,
   setHoveredOption: PropTypes.func.isRequired,
   optionsNumber: PropTypes.number.isRequired,

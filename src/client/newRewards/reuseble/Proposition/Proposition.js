@@ -7,15 +7,13 @@ import RewardsHeader from '../RewardsHeader';
 import ObjectCardView from '../../../objectCard/ObjectCardView';
 import DetailsModal from '../../DetailsModal/DetailsModal';
 import PropositionFooter from './PropositionFooter';
-import { getIsSocial } from '../../../../store/appStore/appSelectors';
 import SocialCampaignCard from '../../../social-gifts/ShopObjectCard/ProductRewardCard/SocialCampaignCard';
 import { reserveProposition } from '../../../../store/newRewards/newRewardsActions';
 import { getAuthenticatedUserName } from '../../../../store/authStore/authSelectors';
 
 import './Proposition.less';
 
-const Proposition = ({ proposition, type, getProposition, hovered }) => {
-  const isSocialGifts = useSelector(getIsSocial);
+const Proposition = ({ proposition, type, getProposition, hovered, isSocialProduct }) => {
   const dispatch = useDispatch();
   const authUserName = useSelector(getAuthenticatedUserName);
 
@@ -32,8 +30,9 @@ const Proposition = ({ proposition, type, getProposition, hovered }) => {
 
   return (
     <>
-      {isSocialGifts ? (
+      {isSocialProduct ? (
         <SocialCampaignCard
+          isSocialProduct={isSocialProduct}
           maxReward={proposition.rewardInUSD}
           sponsor={proposition.guideName}
           proposition={proposition}
@@ -73,6 +72,7 @@ const Proposition = ({ proposition, type, getProposition, hovered }) => {
       )}
       {openDetails && (
         <DetailsModal
+          isSocialProduct={isSocialProduct}
           proposition={{ ...proposition, reserved: propositionType === 'reserved' }}
           isModalDetailsOpen={openDetails}
           toggleModal={() => setOpenDitails(!openDetails)}
@@ -104,6 +104,7 @@ Proposition.propTypes = {
     _id: PropTypes.string,
   }).isRequired,
   hovered: PropTypes.bool,
+  isSocialProduct: PropTypes.bool,
   type: PropTypes.string,
   getProposition: PropTypes.func,
 };

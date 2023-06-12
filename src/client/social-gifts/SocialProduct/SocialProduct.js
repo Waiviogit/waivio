@@ -43,6 +43,8 @@ const SocialProduct = () => {
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [relatedAlbum, setRelatedAlbum] = useState({});
   const [addOns, setAddOns] = useState([]);
+  const [similarObjects, setSimilarObjects] = useState([]);
+  const [relatedObjects, setRelatedObjects] = useState([]);
   const [fields, setFields] = useState({
     brandObject: {},
     manufacturerObject: {},
@@ -74,18 +76,20 @@ const SocialProduct = () => {
   const productWeight = parseWobjectField(wobject, 'productWeight');
   const menuItem = get(wobject, 'menuItem', []);
   const addOnPermlinks = wobject.addOn ? wobject?.addOn?.map(obj => obj.body) : [];
+  const similarObjectsPermlinks = wobject.similar ? wobject?.similar?.map(obj => obj.body) : [];
+  const relatedObjectsPermlinks = wobject.related ? wobject?.related?.map(obj => obj.body) : [];
   const slideWidth = 250;
   const slidesToShow = Math.floor(window.innerWidth / slideWidth);
-  const carouselSettings = {
+  const carouselSettings = objects => ({
     dots: false,
     arrows: true,
     lazyLoad: true,
     rows: 1,
     nextArrow: <Icon type="caret-right" />,
     prevArrow: <Icon type="caret-left" />,
-    infinite: slidesToShow < addOns.length,
+    infinite: slidesToShow < objects.length,
     slidesToShow,
-  };
+  });
 
   const showProductDetails =
     !isEmpty(brand) ||
@@ -119,7 +123,7 @@ const SocialProduct = () => {
   const handleGalleryImageClick = () => {
     carouselRef.fullScreen();
   };
-  const getAddOns = () => {
+  const getAddOnsSimilarRelatedObjects = () => {
     if (!isEmpty(addOnPermlinks) && !isNil(addOnPermlinks)) {
       getObjectsByIds({
         authorPermlinks: addOnPermlinks,
@@ -128,6 +132,26 @@ const SocialProduct = () => {
         skip: 0,
       }).then(res => {
         setAddOns(res.wobjects);
+      });
+    }
+    if (!isEmpty(similarObjectsPermlinks) && !isNil(similarObjectsPermlinks)) {
+      getObjectsByIds({
+        authorPermlinks: similarObjectsPermlinks,
+        authUserName: userName,
+        limit,
+        skip: 0,
+      }).then(res => {
+        setSimilarObjects(res.wobjects);
+      });
+    }
+    if (!isEmpty(relatedObjectsPermlinks) && !isNil(relatedObjectsPermlinks)) {
+      getObjectsByIds({
+        authorPermlinks: relatedObjectsPermlinks,
+        authUserName: userName,
+        limit,
+        skip: 0,
+      }).then(res => {
+        setRelatedObjects(res.wobjects);
       });
     }
   };
@@ -166,7 +190,7 @@ const SocialProduct = () => {
       });
       getRelatedPhotos(authorPermlink, limit, 0).then(alb => setRelatedAlbum(alb));
       getObjectsRewards(authorPermlink, userName).then(res => setReward(res));
-      getAddOns();
+      getAddOnsSimilarRelatedObjects();
     }
 
     return () => dispatch(setStoreActiveOption({}));
@@ -177,7 +201,7 @@ const SocialProduct = () => {
   }, [wobject.brand, wobject.manufacturer, wobject.merchant]);
 
   useEffect(() => {
-    !isEmpty(wobject) && getAddOns();
+    !isEmpty(wobject) && getAddOnsSimilarRelatedObjects();
   }, [addOnPermlinks.length, wobject.author_permlink]);
 
   const getLayout = (fieldName, field) => {
@@ -218,6 +242,20 @@ const SocialProduct = () => {
     </div>
   );
 
+  const getObjectsGalleryLayout = (title, objects) =>
+    !isEmpty(objects) && (
+      <div className="SocialProduct__addOn-section">
+        <div className="SocialProduct__heading">{title}</div>
+        <div className="CarouselSection__wrapper">
+          <Carousel {...carouselSettings(objects)}>
+            {objects?.map(wObject => (
+              <ShopObjectCard key={wObject.author_permlink} wObject={wObject} />
+            ))}
+          </Carousel>
+        </div>
+      </div>
+    );
+
   return (
     <div className="SocialProduct">
       <div className="SocialProduct__column SocialProduct__column-wrapper">
@@ -236,7 +274,7 @@ const SocialProduct = () => {
               />
             </div>
             <div>
-              <ProductRewardCard reward={reward} />
+              <ProductRewardCard isSocialProduct reward={reward} />
             </div>
           </div>
         )}
@@ -257,6 +295,7 @@ const SocialProduct = () => {
           <div className="SocialProduct__paddingBottom">
             {!isEmpty(wobject?.options) && (
               <Options
+                isSocialProduct
                 setHoveredOption={option => setHoveredOption(option)}
                 isEditMode={false}
                 wobject={wobject}
@@ -336,18 +375,7 @@ const SocialProduct = () => {
             </div>
           </div>
         )}
-        {!isEmpty(addOns) && (
-          <div className="SocialProduct__addOn-section">
-            <div className="SocialProduct__heading">Bought together/ Add-ons</div>
-            <div className="CarouselSection__wrapper">
-              <Carousel {...carouselSettings}>
-                {addOns?.map(wObject => (
-                  <ShopObjectCard key={wObject.author_permlink} wObject={wObject} />
-                ))}
-              </Carousel>
-            </div>
-          </div>
-        )}
+        {getObjectsGalleryLayout('Bought together/ Add-ons', addOns)}
         {!isEmpty(features) && (
           <div className="SocialProduct__featuresContainer">
             <div className="SocialProduct__heading">Features</div>
@@ -361,6 +389,8 @@ const SocialProduct = () => {
             </div>
           </div>
         )}
+        {getObjectsGalleryLayout('Similar', similarObjects)}
+        {getObjectsGalleryLayout('Related items', relatedObjects)}
       </div>
     </div>
   );

@@ -182,11 +182,9 @@
   }
 
   .ShopObjectCard {
+    display: flex;
+    //height: 100%;
     width: 240px;
-    height: 356px;
-    @media @medium {
-      width: 240px;
-    }
   }
 
   .CarouselSection {
@@ -229,5 +227,16 @@
         right: -25px;
       }
     }
+  }
+
+  .slick-slide {
+    display: flex !important;
+    height: 100% !important;
+  }
+
+  .slick-list,
+  .slick-track,
+  .slick-slide div {
+    display: flex !important;
   }
 }
