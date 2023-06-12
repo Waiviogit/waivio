@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import { FormattedMessage, injectIntl } from 'react-intl';
+import { useHistory, useRouteMatch } from 'react-router';
+import { useDispatch, useSelector } from 'react-redux';
+import { FormattedMessage } from 'react-intl';
 import { isEmpty, uniq, isNil } from 'lodash';
 import Feed from '../../feed/Feed';
-import { getSuitableLanguage } from '../../../store/reducers';
 import {
   getFeedLoadingFromState,
   getFeedHasMoreFromState,
@@ -23,202 +23,138 @@ import Campaing from '../../newRewards/reuseble/Campaing';
 
 import './ObjectFeed.less';
 
-@injectIntl
-@connect(
-  state => ({
-    feed: getFeed(state),
-    readLocales: getReadLanguages(state),
-    usedLocale: getSuitableLanguage(state),
-  }),
-  {
-    getObjectPosts,
-    getMoreObjectPosts,
-    showPostModal,
-  },
-)
-export default class ObjectFeed extends React.Component {
-  static propTypes = {
-    feed: PropTypes.shape().isRequired,
-    getObjectPosts: PropTypes.func,
-    getMoreObjectPosts: PropTypes.func,
-    showPostModal: PropTypes.func.isRequired,
-    readLocales: PropTypes.arrayOf(PropTypes.string),
-    match: PropTypes.shape().isRequired,
-    history: PropTypes.shape().isRequired,
-    limit: PropTypes.number,
-    handleCreatePost: PropTypes.func,
-    userName: PropTypes.string.isRequired,
-  };
+const ObjectFeed = ({ limit, handleCreatePost, userName, wobject }) => {
+  const [loadingPropositions, setLoadingPropositions] = useState(false);
+  const [newsPermlink, setNewsPermlink] = useState('');
+  const [reward, setReward] = useState({});
+  const match = useRouteMatch();
+  const history = useHistory();
+  const dispatch = useDispatch();
+  const readLocales = useSelector(getReadLanguages);
+  const feed = useSelector(getFeed);
+  const { name, parentName } = match.params;
+  const objectFeed = getFeedFromState('objectPosts', name, feed);
+  const content = uniq(objectFeed);
+  const isFetching = getFeedLoadingFromState('objectPosts', name, feed);
+  const hasMore = getFeedHasMoreFromState('objectPosts', name, feed);
+  const skip = content.length;
+  const query = new URLSearchParams(history.location.search);
+  const isNewsfeedType = query.get('category') === 'newsfeed';
+  let newsPerml;
 
-  static defaultProps = {
-    limit: 10,
-    getObjectPosts: () => {},
-    getMoreObjectPosts: () => {},
-    readLocales: [],
-    handleCreatePost: () => {},
-    wobject: {},
-    usedLocale: 'en-US',
-    user: {},
-  };
-
-  state = {
-    loadingPropositions: false,
-    newsPermlink: '',
-  };
-
-  componentDidMount() {
-    const { parentName } = this.props.match.params;
-    let newsPermlink;
-
-    if (parentName) {
-      getObject(parentName).then(wobj => {
-        newsPermlink = wobj?.newsFeed?.permlink;
-        this.setState({ newsPermlink });
-      });
-    }
-    this.getWobjPropos();
-    this.getFeedPosts(newsPermlink);
-  }
-  //
-  // componentWillReceiveProps(nextProps) {
-  //   const { match } = this.props;
-  //   const nextName = get(nextProps, ['match', 'params', 'name']);
-  //   const objectPosts = get(nextProps, ['feed', 'objectPosts', nextName]);
-  //
-  //   if (match.params.name !== nextName && isEmpty(objectPosts)) {
-  //     this.getFeedPosts();
-  //
-  //     this.getWobjPropos();
-  //     window.scrollTo(0, 0);
-  //   }
-  // }
-
-  componentDidUpdate(prevProps) {
-    const { match } = this.props;
-    const { name, parentName } = match.params;
-    let newsPermlink;
-
-    if (parentName !== prevProps.match.params.parentName) {
-      getObject(parentName).then(wobj => {
-        newsPermlink = wobj?.newsFeed?.permlink;
-        this.setState({ newsPermlink });
-        this.getFeedPosts(newsPermlink);
-      });
-    }
-
-    if (
-      (prevProps.match.params.name !== name || prevProps.match.params.parentName !== parentName) &&
-      newsPermlink
-    ) {
-      this.getFeedPosts(newsPermlink);
-      this.getWobjPropos();
-    }
-  }
-
-  getFeedPosts = newsPerml => {
-    const { readLocales, limit, match } = this.props;
-    const { name, parentName } = match.params;
-    const query = new URLSearchParams(this.props.history.location.search);
-    const isNewsfeedType = query.get('category') === 'newsfeed';
-
+  const getFeedPosts = permlink => {
     if (isNewsfeedType) {
       getObject(name).then(res => {
-        this.props.getObjectPosts({
-          object: name,
+        dispatch(
+          getObjectPosts({
+            object: name,
+            username: name,
+            readLanguages: readLocales,
+            limit,
+            newsPermlink: res?.newsFeed?.permlink,
+          }),
+        );
+        setNewsPermlink(res?.newsFeed?.permlink);
+      });
+    } else {
+      dispatch(
+        getObjectPosts({
+          object: parentName || name,
           username: name,
           readLanguages: readLocales,
           limit,
-          newsPermlink: res?.newsFeed?.permlink,
-        });
-        this.setState({ newsPermlink: res?.newsFeed?.permlink });
-      });
-    } else {
-      this.props.getObjectPosts({
-        object: parentName || name,
-        username: name,
-        readLanguages: readLocales,
-        limit,
-        newsPermlink: newsPerml || this.getNewsPermlink(),
-      });
+          newsPermlink: permlink || getNewsPermlink(),
+        }),
+      );
     }
   };
 
-  getWobjPropos = () =>
-    getObjectsRewards(this.props.match.params.name, this.props.userName).then(res =>
-      this.setState({ reward: res }),
-    );
+  const getWobjPropos = () => getObjectsRewards(name, userName).then(res => setReward(res));
 
-  getNewsPermlink() {
-    if (isEmpty(this.props.match.params[1]) || isNil(this.props.match.params[1])) return undefined;
+  const getNewsPermlink = () => {
+    if (isEmpty(match.params[1]) || isNil(match.params[1])) return undefined;
 
-    return this.state.newsPermlink;
-  }
+    return newsPermlink;
+  };
 
-  render() {
-    const { feed, limit, handleCreatePost } = this.props;
-    const { name, parentName } = this.props.match.params;
-    const { loadingPropositions, reward } = this.state;
-    const objectFeed = getFeedFromState('objectPosts', name, feed);
-    const content = uniq(objectFeed);
-    const isFetching = getFeedLoadingFromState('objectPosts', name, feed);
-    const hasMore = getFeedHasMoreFromState('objectPosts', name, feed);
-    const skip = content.length;
-    const query = new URLSearchParams(this.props.history.location.search);
-    const isNewsfeedType = query.get('category') === 'newsfeed';
+  useEffect(() => {
+    if (wobject?.newsFeed && match.params[0] === 'newsfeed') {
+      getFeedPosts(wobject?.newsFeed?.permlink);
+    } else {
+      getFeedPosts();
+    }
 
-    const loadMoreContentAction = () => {
-      this.props.getMoreObjectPosts({
+    if (parentName) {
+      getObject(parentName).then(wobj => {
+        newsPerml = wobj?.newsFeed?.permlink;
+        setNewsPermlink(newsPerml);
+        getFeedPosts(newsPerml);
+      });
+    }
+    getWobjPropos();
+    setLoadingPropositions(false);
+  }, [parentName]);
+
+  const loadMoreContentAction = () => {
+    dispatch(
+      getMoreObjectPosts({
         username: name,
         authorPermlink: parentName || name,
         limit,
         skip,
-        newsPermlink: isNewsfeedType ? this.state.newsPermlink : this.getNewsPermlink(),
-      });
-    };
-
-    const getFeedContent = () => {
-      if (!isEmpty(content) || isFetching) {
-        return (
-          <Feed
-            content={content}
-            isFetching={isFetching}
-            hasMore={hasMore}
-            loadMoreContent={loadMoreContentAction}
-            showPostModal={this.props.showPostModal}
-          />
-        );
-      }
-
-      return (
-        <div
-          role="presentation"
-          className="object-feed__row justify-center"
-          onClick={handleCreatePost}
-        >
-          <FormattedMessage
-            id="empty_object_profile"
-            defaultMessage="Be the first to write a review"
-          />
-        </div>
-      );
-    };
-
-    return (
-      <div className="object-feed">
-        {loadingPropositions ? (
-          <Loading />
-        ) : (
-          <React.Fragment>
-            {!isEmpty(reward?.main) && <Campaing campain={reward.main} />}
-            {!isEmpty(reward?.secondary) &&
-              reward?.secondary?.map((proposition, i) => (
-                <Proposition key={getPropositionsKey(proposition, i)} proposition={proposition} />
-              ))}
-            {getFeedContent()}
-          </React.Fragment>
-        )}
-        <PostModal />
-      </div>
+        newsPermlink: isNewsfeedType ? newsPermlink : getNewsPermlink(),
+      }),
     );
-  }
-}
+  };
+
+  return (
+    <div className="object-feed">
+      {loadingPropositions ? (
+        <Loading />
+      ) : (
+        <React.Fragment>
+          {!isEmpty(reward?.main) && <Campaing campain={reward.main} />}
+          {!isEmpty(reward?.secondary) &&
+            reward?.secondary?.map((proposition, i) => (
+              <Proposition key={getPropositionsKey(proposition, i)} proposition={proposition} />
+            ))}
+          {!isEmpty(content) || isFetching ? (
+            <Feed
+              content={content}
+              isFetching={isFetching}
+              hasMore={hasMore}
+              loadMoreContent={loadMoreContentAction}
+              showPostModal={dispatch(showPostModal)}
+            />
+          ) : (
+            <div
+              role="presentation"
+              className="object-feed__row justify-center"
+              onClick={handleCreatePost}
+            >
+              <FormattedMessage
+                id="empty_object_profile"
+                defaultMessage="Be the first to write a review"
+              />
+            </div>
+          )}
+        </React.Fragment>
+      )}
+      <PostModal />
+    </div>
+  );
+};
+
+ObjectFeed.propTypes = {
+  wobject: PropTypes.shape(),
+  limit: PropTypes.number,
+  handleCreatePost: PropTypes.func,
+  userName: PropTypes.string.isRequired,
+};
+
+ObjectFeed.defaultProps = {
+  limit: 10,
+  handleCreatePost: () => {},
+};
+
+export default ObjectFeed;
