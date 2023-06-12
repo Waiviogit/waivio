@@ -23,7 +23,7 @@ import Campaing from '../../newRewards/reuseble/Campaing';
 
 import './ObjectFeed.less';
 
-const ObjectFeed = ({ limit, handleCreatePost, userName }) => {
+const ObjectFeed = ({ limit, handleCreatePost, userName, wobject }) => {
   const [loadingPropositions, setLoadingPropositions] = useState(false);
   const [newsPermlink, setNewsPermlink] = useState('');
   const [reward, setReward] = useState({});
@@ -33,12 +33,16 @@ const ObjectFeed = ({ limit, handleCreatePost, userName }) => {
   const readLocales = useSelector(getReadLanguages);
   const feed = useSelector(getFeed);
   const { name, parentName } = match.params;
+  const objectFeed = getFeedFromState('objectPosts', name, feed);
+  const content = uniq(objectFeed);
+  const isFetching = getFeedLoadingFromState('objectPosts', name, feed);
+  const hasMore = getFeedHasMoreFromState('objectPosts', name, feed);
+  const skip = content.length;
+  const query = new URLSearchParams(history.location.search);
+  const isNewsfeedType = query.get('category') === 'newsfeed';
   let newsPerml;
 
   const getFeedPosts = permlink => {
-    const query = new URLSearchParams(history.location.search);
-    const isNewsfeedType = query.get('category') === 'newsfeed';
-
     if (isNewsfeedType) {
       getObject(name).then(res => {
         dispatch(
@@ -74,6 +78,12 @@ const ObjectFeed = ({ limit, handleCreatePost, userName }) => {
   };
 
   useEffect(() => {
+    if (wobject?.newsFeed && match.params[0] === 'newsfeed') {
+      getFeedPosts(wobject?.newsFeed?.permlink);
+    } else {
+      getFeedPosts();
+    }
+
     if (parentName) {
       getObject(parentName).then(wobj => {
         newsPerml = wobj?.newsFeed?.permlink;
@@ -82,19 +92,8 @@ const ObjectFeed = ({ limit, handleCreatePost, userName }) => {
       });
     }
     getWobjPropos();
-    if (isNil(parentName)) {
-      getFeedPosts();
-    }
     setLoadingPropositions(false);
-  }, [parentName, name]);
-
-  const objectFeed = getFeedFromState('objectPosts', name, feed);
-  const content = uniq(objectFeed);
-  const isFetching = getFeedLoadingFromState('objectPosts', name, feed);
-  const hasMore = getFeedHasMoreFromState('objectPosts', name, feed);
-  const skip = content.length;
-  const query = new URLSearchParams(history.location.search);
-  const isNewsfeedType = query.get('category') === 'newsfeed';
+  }, [parentName]);
 
   const loadMoreContentAction = () => {
     dispatch(
@@ -105,33 +104,6 @@ const ObjectFeed = ({ limit, handleCreatePost, userName }) => {
         skip,
         newsPermlink: isNewsfeedType ? newsPermlink : getNewsPermlink(),
       }),
-    );
-  };
-
-  const getFeedContent = () => {
-    if (!isEmpty(content) || isFetching) {
-      return (
-        <Feed
-          content={content}
-          isFetching={isFetching}
-          hasMore={hasMore}
-          loadMoreContent={loadMoreContentAction}
-          showPostModal={dispatch(showPostModal)}
-        />
-      );
-    }
-
-    return (
-      <div
-        role="presentation"
-        className="object-feed__row justify-center"
-        onClick={handleCreatePost}
-      >
-        <FormattedMessage
-          id="empty_object_profile"
-          defaultMessage="Be the first to write a review"
-        />
-      </div>
     );
   };
 
@@ -146,7 +118,26 @@ const ObjectFeed = ({ limit, handleCreatePost, userName }) => {
             reward?.secondary?.map((proposition, i) => (
               <Proposition key={getPropositionsKey(proposition, i)} proposition={proposition} />
             ))}
-          {getFeedContent()}
+          {!isEmpty(content) || isFetching ? (
+            <Feed
+              content={content}
+              isFetching={isFetching}
+              hasMore={hasMore}
+              loadMoreContent={loadMoreContentAction}
+              showPostModal={dispatch(showPostModal)}
+            />
+          ) : (
+            <div
+              role="presentation"
+              className="object-feed__row justify-center"
+              onClick={handleCreatePost}
+            >
+              <FormattedMessage
+                id="empty_object_profile"
+                defaultMessage="Be the first to write a review"
+              />
+            </div>
+          )}
         </React.Fragment>
       )}
       <PostModal />
@@ -155,6 +146,7 @@ const ObjectFeed = ({ limit, handleCreatePost, userName }) => {
 };
 
 ObjectFeed.propTypes = {
+  wobject: PropTypes.shape(),
   limit: PropTypes.number,
   handleCreatePost: PropTypes.func,
   userName: PropTypes.string.isRequired,
@@ -162,9 +154,7 @@ ObjectFeed.propTypes = {
 
 ObjectFeed.defaultProps = {
   limit: 10,
-  readLocales: [],
   handleCreatePost: () => {},
-  user: {},
 };
 
 export default ObjectFeed;
