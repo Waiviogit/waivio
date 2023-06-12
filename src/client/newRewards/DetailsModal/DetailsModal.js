@@ -7,7 +7,6 @@ import { useHistory, useLocation } from 'react-router';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { getIsWaivio } from '../../../store/appStore/appSelectors';
-
 import withAuthActions from '../../auth/withAuthActions';
 import { clearAllSessionProposition } from '../../rewards/rewardsHelper';
 import WebsiteReservedButtons from '../../rewards/Proposition/WebsiteReservedButtons/WebsiteReservedButtons';
@@ -31,6 +30,7 @@ const DetailsModal = ({
   isModalDetailsOpen,
   onActionInitiated,
   intl,
+  isSocialProduct,
 }) => {
   const location = useLocation();
   const history = useHistory();
@@ -112,33 +112,34 @@ const DetailsModal = ({
   };
   const onClick = () => onActionInitiated(handleClickReserve);
 
-  const reserveButton = isWaivio ? (
-    <ReservedButtons
-      reserved={proposition.reserved}
-      handleReserve={onClick}
-      disable={disable}
-      reservedDays={proposition?.countReservationDays}
-      handleReserveForPopover={() =>
-        dispatch(reserveProposition(proposition, userName)).then(() => {
+  const reserveButton =
+    isWaivio || isSocialProduct ? (
+      <ReservedButtons
+        reserved={proposition.reserved}
+        handleReserve={onClick}
+        disable={disable}
+        reservedDays={proposition?.countReservationDays}
+        handleReserveForPopover={() =>
+          dispatch(reserveProposition(proposition, userName)).then(() => {
+            toggleModal();
+
+            return Promise.resolve();
+          })
+        }
+      />
+    ) : (
+      <WebsiteReservedButtons
+        reserved={proposition.reserved}
+        dish={{ ...proposition, ...proposition?.object }}
+        disable={disable}
+        handleReserve={() => {
           toggleModal();
 
-          return Promise.resolve();
-        })
-      }
-    />
-  ) : (
-    <WebsiteReservedButtons
-      reserved={proposition.reserved}
-      dish={{ ...proposition, ...proposition?.object }}
-      disable={disable}
-      handleReserve={() => {
-        toggleModal();
-
-        return dispatch(reserveProposition(proposition, userName));
-      }}
-      onCloseDetails={toggleModal}
-    />
-  );
+          return dispatch(reserveProposition(proposition, userName));
+        }}
+        onCloseDetails={toggleModal}
+      />
+    );
 
   const handleCancelModalBtn = value => {
     clearAllSessionProposition();
@@ -192,6 +193,7 @@ DetailsModal.propTypes = {
   toggleModal: PropTypes.func.isRequired,
   isModalDetailsOpen: PropTypes.bool.isRequired,
   proposition: PropTypes.shape().isRequired,
+  isSocialProduct: PropTypes.bool,
   onActionInitiated: PropTypes.func.isRequired,
   intl: PropTypes.shape({
     formatMessage: PropTypes.func,

@@ -1,5 +1,4 @@
 import React from 'react';
-import { FormattedMessage } from 'react-intl';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { isEmpty } from 'lodash';
@@ -7,9 +6,7 @@ import { isEmpty } from 'lodash';
 const GroupIdContent = ({ groupId, authorPermlink }) =>
   !isEmpty(groupId) ? (
     <div className="field-info">
-      <div className="CompanyId__title">
-        <FormattedMessage id="object_field_groupId" formattedMessage="Group ID" />
-      </div>
+      <div className="CompanyId__title">Group IDs:</div>
       {groupId?.map(id => (
         <div key={id} className="field-website__title">
           <Link

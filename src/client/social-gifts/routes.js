@@ -13,6 +13,7 @@ import Discover from '../discover/Discover';
 import { listOfSocialWebsites } from './listOfSocialWebsites';
 import SocialGiftsLandingPage from '../SocialGiftsLandingPage/SocialGiftsLandingPage';
 import ShopSwitcher from './ShopSwitcher/ShopSwitcher';
+import SocialProduct from './SocialProduct/SocialProduct';
 import ObjectDepartmentsWobjList from '../object/ObjectTypeShop/ObjectDepartmentsWobjList';
 import Checklist from './Checklist/Checklist';
 import UserDepartmentsWobjList from '../Shop/DepartmentsWobjList/UserDepartmentsWobjList';
@@ -69,6 +70,11 @@ const routes = host => ({
       path: '/discover/:search?',
       exact: true,
       component: Discover,
+    },
+    {
+      path: '/object/:type/:name',
+      exact: true,
+      component: SocialProduct,
     },
     {
       path: '/confirmation',
