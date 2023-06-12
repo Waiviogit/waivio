@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { Button } from 'antd';
 import { has } from 'lodash';
 import { Link } from 'react-router-dom';
+import { useRouteMatch } from 'react-router';
 
 const MenuItemButton = ({ item }) => {
   const [url, setUrl] = useState('');
@@ -10,13 +11,26 @@ const MenuItemButton = ({ item }) => {
   const webLink = has(itemBody, 'linkToWeb');
   const linkTarget = webLink ? '_blank' : '_self';
   const defaultButtonType = itemBody.style === 'highlight' ? 'primary' : 'default';
+  const match = useRouteMatch();
+  const authorPermlink = match.params.name;
 
   useEffect(() => {
     if (has(itemBody, 'linkToObject')) {
-      setUrl(`/object/${item.defaultShowLink}`);
+      switch (itemBody.objectType) {
+        case 'list':
+          return setUrl(`/object/${authorPermlink}/menu#${itemBody.linkToObject}`);
+        case 'page':
+          return setUrl(`/object/${authorPermlink}/page#${itemBody.linkToObject}`);
+        case 'newsfeed':
+          return setUrl(`/object/${authorPermlink}/newsFilter/${itemBody.linkToObject}`);
+        case 'widget':
+          return setUrl(`/object/${authorPermlink}/widget#${itemBody.linkToObject}`);
+        default:
+          return setUrl(`/object/${itemBody.linkToObject}`);
+      }
     }
 
-    setUrl(`${itemBody.linkToWeb}`);
+    return setUrl(`${itemBody.linkToWeb}`);
   }, []);
 
   const renderItem = () => {
