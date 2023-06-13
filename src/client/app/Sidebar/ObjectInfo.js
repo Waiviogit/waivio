@@ -551,9 +551,9 @@ class ObjectInfo extends React.Component {
           'body',
         );
       }
-      if (!has(wobject, 'groupId')) {
-        return activeOptionPicture.filter(o => o.name !== 'avatar');
-      }
+      // if (!has(wobject, 'groupId')) {
+      //   return activeOptionPicture.filter(o => o.name !== 'avatar');
+      // }
       if (has(wobject, 'groupId') && !has(wobject, 'avatar') && !has(wobject, 'galleryItem')) {
         return uniqBy(
           [
