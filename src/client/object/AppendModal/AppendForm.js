@@ -608,7 +608,9 @@ class AppendForm extends Component {
             : '';
 
           return `@${author} added ${objectFields.menuItem} (${langReadable}): Title: ${
-            formValues[menuItemFields.menuItemTitle]
+            !isNil(formValues[menuItemFields.menuItemTitle])
+              ? formValues[menuItemFields.menuItemTitle].trim()
+              : this.state.selectedObject.name
           }, style: ${this.state.menuItemButtonType}, link: ${
             !isEmpty(this.state.selectedObject)
               ? this.state.selectedObject.author_permlink
@@ -925,10 +927,14 @@ class AppendForm extends Component {
         };
       }
       if (currentField === objectFields.menuItem) {
+        const title = !isNil(formValues[menuItemFields.menuItemTitle])
+          ? formValues[menuItemFields.menuItemTitle].trim()
+          : this.state.selectedObject.name;
+
         fieldsObject = {
           ...fieldsObject,
           body: JSON.stringify({
-            title: formValues[menuItemFields.menuItemTitle]?.trim(),
+            title,
             style: this.state.menuItemButtonType,
             image: !isEmpty(this.state?.currentImages)
               ? this.state?.currentImages[0]?.src
@@ -1416,9 +1422,9 @@ class AppendForm extends Component {
       case objectFields.productId:
         formFields = form.getFieldsValue(Object.values(productIdFields));
         break;
-      case objectFields.menuItem:
-        formFields = form.getFieldsValue(Object.values(menuItemFields));
-        break;
+      // case objectFields.menuItem:
+      //   formFields = form.getFieldsValue(Object.values(menuItemFields));
+      //   break;
       case objectFields.map:
         formFields = form.getFieldsValue(Object.values(mapFields));
         break;
@@ -3811,7 +3817,8 @@ class AppendForm extends Component {
       case objectFields.menuItem:
         if (['image', 'icon'].includes(this.state.menuItemButtonType)) {
           return (
-            isEmpty(getFieldValue(menuItemFields.menuItemTitle)) ||
+            (isEmpty(getFieldValue(menuItemFields.menuItemTitle)) &&
+              isEmpty(this.state.selectedObject)) ||
             isEmpty(this.state.menuItemButtonType) ||
             isEmpty(this.state.currentImages) ||
             (isEmpty(getFieldValue(menuItemFields.linkToWeb)) && isEmpty(this.state.selectedObject))
@@ -3819,7 +3826,8 @@ class AppendForm extends Component {
         }
 
         return (
-          isEmpty(getFieldValue(menuItemFields.menuItemTitle)) ||
+          (isEmpty(getFieldValue(menuItemFields.menuItemTitle)) &&
+            isEmpty(this.state.selectedObject)) ||
           isEmpty(this.state.menuItemButtonType) ||
           (isEmpty(getFieldValue(menuItemFields.linkToWeb)) && isEmpty(this.state.selectedObject))
         );
