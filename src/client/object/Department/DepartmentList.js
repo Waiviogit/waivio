@@ -4,7 +4,7 @@ import { FormattedMessage } from 'react-intl';
 import { useHistory } from 'react-router';
 import DepartmentItem from './DepartmentItem';
 
-const DepartmentList = ({ wobject, departments }) => {
+const DepartmentList = ({ wobject, departments, isSocialGifts }) => {
   const history = useHistory();
   const [hasMore, setHasMore] = useState(false);
   const onShowMoreClick = () => setHasMore(false);
@@ -29,7 +29,14 @@ const DepartmentList = ({ wobject, departments }) => {
       ))}
       {hasMore && (
         <button onClick={onShowMoreClick} className="WalletTable__csv-button">
-          <FormattedMessage id="show_more" defaultMessage="Show more" />
+          {isSocialGifts ? (
+            <span>
+              <FormattedMessage id="show_all" defaultMessage="Show all" />
+              {` (${departments.length})`}
+            </span>
+          ) : (
+            <FormattedMessage id="show_more" defaultMessage="Show more" />
+          )}
         </button>
       )}
     </>
@@ -37,6 +44,7 @@ const DepartmentList = ({ wobject, departments }) => {
 };
 
 DepartmentList.propTypes = {
+  isSocialGifts: PropTypes.bool,
   wobject: PropTypes.shape().isRequired,
   departments: PropTypes.arrayOf().isRequired,
 };

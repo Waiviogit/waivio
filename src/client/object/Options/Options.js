@@ -9,7 +9,7 @@ import { sortOptions } from '../../../common/helpers/wObjectHelper';
 import OptionItemView from './OptionItem/OptionItemView';
 import './Options.less';
 
-const Options = ({ wobject, isEditMode, setHoveredOption }) => {
+const Options = ({ wobject, isEditMode, setHoveredOption, isSocialProduct }) => {
   const activeStoreOption = useSelector(getActiveOption);
   const optionsDiv = useRef();
 
@@ -71,6 +71,7 @@ const Options = ({ wobject, isEditMode, setHoveredOption }) => {
               {filteredOptions.map(option => (
                 <div className="Options__block" key={option[0]}>
                   <OptionItemView
+                    isSocialProduct={isSocialProduct}
                     ownOptions={ownOptions}
                     optionsBack={optionsBack}
                     optionsNumber={option[1].length}
@@ -89,6 +90,7 @@ const Options = ({ wobject, isEditMode, setHoveredOption }) => {
 Options.propTypes = {
   wobject: PropTypes.shape().isRequired,
   isEditMode: PropTypes.bool.isRequired,
+  isSocialProduct: PropTypes.bool,
   setHoveredOption: PropTypes.func.isRequired,
 };
 
