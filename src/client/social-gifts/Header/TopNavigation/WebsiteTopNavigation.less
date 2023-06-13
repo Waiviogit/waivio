@@ -1,3 +1,6 @@
+@import (reference) '../../../styles/modules/variables.less';
+@import (reference) '../../../styles/custom.less';
+
 .WebsiteTopNavigation {
   display: flex;
   justify-content: center;
@@ -7,6 +10,8 @@
   -moz-box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.12);
   box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.12);
   border-top: solid 1px #e9e7e7;
+  width: 100%;
+  z-index: 99;
 
   &__link {
     display: inline-block;
@@ -26,25 +31,37 @@
       display: block;
       width: 0;
       height: 1px;
-      margin-left: 25px;
+      margin-left: 0;
+
+      @media @small {
+        margin-left: 25px;
+      }
     }
 
     &--active,
     &:hover {
       &::after {
         content: '';
-        width: calc(100% - 50px);
+        width: 100%;
         height: 1px;
         background: var(--website-hover-color);
+
+        @media @small {
+          width: calc(100% - 50px);
+        }
       }
     }
 
     &--active {
       &::after {
         content: '';
-        width: calc(100% - 50px);
+        width: 100%;
         height: 1px;
         background: var(--website-color);
+
+        @media @small {
+          width: calc(100% - 50px);
+        }
       }
     }
   }

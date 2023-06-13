@@ -39,7 +39,7 @@ const Header = () => {
               })}
             />
           </button>
-          <HeaderButton isWebsite searchBarActive={searchBarActive} />
+          <HeaderButton searchBarActive={searchBarActive} />
         </div>
       </div>
       {config.mainBanner && (
