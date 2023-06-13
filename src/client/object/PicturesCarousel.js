@@ -7,11 +7,12 @@ import './PicturesCarousel.less';
 import LightboxHeader from '../widgets/LightboxTools/LightboxHeader';
 import LightboxFooter from '../widgets/LightboxTools/LightboxFooter';
 
-const PicturesCarousel = ({ activePicture, pics, objName, albums }) => {
+const PicturesCarousel = ({ activePicture, pics, objName, albums, isSocialProduct }) => {
   const settings = {
     dots: false,
     arrows: true,
     lazyLoad: true,
+    slidesToShow: 1,
     nextArrow: <Icon type="right" style={{ fontSize: '20px' }} />,
     prevArrow: <Icon type="left" style={{ fontSize: '20px' }} />,
   };
@@ -31,15 +32,22 @@ const PicturesCarousel = ({ activePicture, pics, objName, albums }) => {
   const album = albums?.find(alb => alb?.items?.some(pic => pic.body === pics[photoIndex]?.body));
 
   return pics ? (
-    <div className="PicturesCarousel">
+    <div className={isSocialProduct ? 'SocialPicturesCarousel' : 'PicturesCarousel'}>
       <Carousel {...settings} ref={slider} afterChange={i => setPhotoIndex(i)}>
         {map(pics, pic => (
-          <div key={pic.id} className="PicturesCarousel__imageWrap">
+          <div
+            key={pic.id}
+            className={
+              isSocialProduct ? 'SocialPicturesCarousel__imageWrap' : 'PicturesCarousel__imageWrap'
+            }
+          >
             <img
               onClick={e => onImgClick(e, pic)}
               src={pic.body}
               alt="pic"
-              className="PicturesCarousel__image"
+              className={
+                isSocialProduct ? 'SocialPicturesCarousel__image' : 'PicturesCarousel__image'
+              }
             />
           </div>
         ))}
@@ -75,6 +83,7 @@ PicturesCarousel.propTypes = {
   objName: PropTypes.string,
   activePicture: PropTypes.shape(),
   isOptionsType: PropTypes.bool,
+  isSocialProduct: PropTypes.bool,
   onOptionPicClick: PropTypes.func,
 };
 PicturesCarousel.defaultProps = {
