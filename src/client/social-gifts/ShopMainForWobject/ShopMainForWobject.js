@@ -15,7 +15,7 @@ const ShopMainForWobject = ({ wobjPermlink }) => {
   useEffect(() => {
     if (loaded) {
       if (!isEmpty(linkList)) history.push(linkList[0].link);
-      else history.push(`/object/${wobjPermlink}`);
+      else history.push(`/object/product/${wobjPermlink}`);
     }
   }, [linkList]);
 
