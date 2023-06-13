@@ -38,14 +38,17 @@ const WebsiteTopNavigation = ({ shopSettings }) => {
   const element = useRef();
 
   useEffect(() => {
-    window.addEventListener('scroll', () => {
-      if (element.current.getBoundingClientRect().top <= 0) {
-        element.current.style.top = '0';
-        element.current.style.position = 'fixed';
-      } else {
-        element.current.style.position = 'static';
-      }
-    });
+    if (element.current) {
+      if (window)
+        window.addEventListener('scroll', () => {
+          if (element.current?.getBoundingClientRect().top <= 0) {
+            element.current.style.top = '0';
+            element.current.style.position = 'fixed';
+          } else {
+            element.current.style.position = 'static';
+          }
+        });
+    }
   }, []);
 
   if (loading) return <SkeletonRow rows={1} />;
