@@ -4,6 +4,7 @@ export const listOfSocialWebsites = [
   'www.socialgifts.pp.ua',
   'www.social.gifts',
   'social.gifts',
+  'localhost',
 ];
 
 export const socialDomens = ['socialgifts', 'social.gifts'];

@@ -88,7 +88,7 @@ ReservedButtons.propTypes = {
   disable: PropTypes.bool,
   reserved: PropTypes.bool,
   inCard: PropTypes.bool,
-  reservedDays: PropTypes.bool,
+  reservedDays: PropTypes.number,
   intl: PropTypes.shape().isRequired,
 };
 

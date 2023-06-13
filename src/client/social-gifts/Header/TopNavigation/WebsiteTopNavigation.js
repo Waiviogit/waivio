@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { isEmpty, take, takeRight, truncate } from 'lodash';
@@ -35,6 +35,18 @@ const WebsiteTopNavigation = ({ shopSettings }) => {
   const loading = useSelector(getSettingsLoading);
   const history = useHistory();
   const [visible, setVisible] = useState(false);
+  const element = useRef();
+
+  useEffect(() => {
+    window.addEventListener('scroll', () => {
+      if (element.current.getBoundingClientRect().top <= 0) {
+        element.current.style.top = '0';
+        element.current.style.position = 'fixed';
+      } else {
+        element.current.style.position = 'static';
+      }
+    });
+  }, []);
 
   if (loading) return <SkeletonRow rows={1} />;
   if (isEmpty(shopSettings) || isEmpty(linkList)) return null;
@@ -43,7 +55,7 @@ const WebsiteTopNavigation = ({ shopSettings }) => {
   const handleMoreMenuVisibleChange = vis => setVisible(vis);
 
   return (
-    <div className="WebsiteTopNavigation">
+    <div className="WebsiteTopNavigation" id={'WebsiteTopNavigation'}>
       {take(linkList, listLength).map(l => (
         <NavLink
           className="WebsiteTopNavigation__link"

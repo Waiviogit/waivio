@@ -13,8 +13,6 @@ import { getActiveOption } from '../../../../store/optionsStore/optionsSelectors
 import LinkButton from '../../../components/LinkButton/LinkButton';
 import { isMobile } from '../../../../common/helpers/apiHelpers';
 
-const optionsLimit = 15;
-
 const OptionItemView = ({
   option,
   wobject,
@@ -22,14 +20,24 @@ const OptionItemView = ({
   optionsNumber,
   optionsBack,
   ownOptions,
+  isSocialProduct,
 }) => {
+  const optionsLimit = isSocialProduct ? 30 : 15;
   const [hovered, setHovered] = useState({});
   const activeStoreOption = useSelector(getActiveOption);
   const history = useHistory();
   const dispatch = useDispatch();
+  const isSocialObject = isSocialProduct && ['book', 'product'].includes(wobject.object_type);
+  const linkToOption = isSocialObject
+    ? `/object/${wobject.object_type}/${wobject.author_permlink}/options/${option[0]}`
+    : `/object/${wobject.author_permlink}/options/${option[0]}`;
+  const linkToAvailableOption = el =>
+    isSocialObject
+      ? `/object/${wobject.object_type}/${getAvailableOptionPermlinkAndStyle(el, true)}`
+      : `/object/${getAvailableOptionPermlinkAndStyle(el, true)}`;
 
   useEffect(() => {
-    dispatch(setStoreActiveOption(ownOptions));
+    if (!isSocialProduct) dispatch(setStoreActiveOption(ownOptions));
   }, []);
 
   const getAvailableOption = el =>
@@ -88,9 +96,9 @@ const OptionItemView = ({
     dispatch(setStoreActiveOption({ ...activeStoreOption, [el.body.category]: el }));
     if (el.author_permlink !== wobject.author_permlink) {
       if (isMobile()) {
-        history.push(`/object/${getAvailableOptionPermlinkAndStyle(el, true)}/about`);
+        history.push(`${linkToAvailableOption(el)}/about`);
       } else {
-        history.push(`/object/${getAvailableOptionPermlinkAndStyle(el, true)}`);
+        history.push(linkToAvailableOption(el));
       }
       dispatch(setStoreActiveCategory(el.body.category));
       dispatch(setStoreActiveOption({ ...activeStoreOption, [el.body.category]: el }));
@@ -138,10 +146,7 @@ const OptionItemView = ({
       </>
       {option[1]?.length > optionsLimit && (
         <div className="object-sidebar__menu-item">
-          <LinkButton
-            className="LinkButton menu-button mt2"
-            to={`/object/${wobject.author_permlink}/options/${option[0]}`}
-          >
+          <LinkButton className="LinkButton menu-button mt2" to={linkToOption}>
             <div>
               <FormattedMessage id="show_all" defaultMessage="Show all" />
             </div>
@@ -157,6 +162,7 @@ OptionItemView.propTypes = {
   wobject: PropTypes.shape().isRequired,
   optionsBack: PropTypes.shape(),
   ownOptions: PropTypes.shape(),
+  isSocialProduct: PropTypes.bool,
   option: PropTypes.arrayOf().isRequired,
   setHoveredOption: PropTypes.func.isRequired,
   optionsNumber: PropTypes.number.isRequired,
