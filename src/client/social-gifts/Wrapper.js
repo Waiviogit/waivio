@@ -28,6 +28,7 @@ import {
   getCryptoPriceHistory,
   setSocialFlag,
   setItemsForNavigation,
+  setLoadingStatus,
 } from '../../store/appStore/appActions';
 import Header from './Header/Header';
 import NotificationPopup from './../notifications/NotificationPopup';
@@ -106,16 +107,18 @@ const SocialWrapper = props => {
         }
       });
 
-      if (res.configuration.shopSettings.type === 'object') {
-        getObject(res.configuration.shopSettings.value).then(wobject => {
+      if (res.configuration.shopSettings?.type === 'object') {
+        getObject(res.configuration.shopSettings.type).then(wobject => {
           const menuItemLinks = wobject.menuItem?.map(item => parseJSON(item.body)?.linkToObject);
           const customSort = get(wobject, 'sortCustom.include', []);
 
-          if (isEmpty(menuItemLinks) && props.location.pathname === '/')
-            props.history.push(`/object/${res.configuration.shopSettings.value}`);
-          else
+          if (isEmpty(menuItemLinks)) {
+            if (props.location.pathname === '/')
+              props.history.push(`/object/${res.configuration.shopSettings.value}`);
+            props.setLoadingStatus(true);
+          } else
             getObjectsByIds({ authorPermlinks: menuItemLinks }).then(u => {
-              const compareList = wobject.menuItem.map(l => {
+              const compareList = wobject?.menuItem?.map(l => {
                 const body = parseJSON(l.body);
                 const y = u.wobjects.find(wobj => wobj.author_permlink === body?.linkToObject);
 
@@ -133,7 +136,7 @@ const SocialWrapper = props => {
               }, []);
               const buttonList = [
                 ...sortingButton,
-                ...compareList.filter(i => !customSort.includes(i.permlink)),
+                ...compareList?.filter(i => !customSort.includes(i.permlink)),
               ].map(i => {
                 const createLink = () => {
                   switch (i.object_type) {
@@ -153,6 +156,7 @@ const SocialWrapper = props => {
               });
 
               dispatch(setItemsForNavigation(buttonList));
+              props.setLoadingStatus(true);
 
               if (props.location.pathname === '/') props.history.push(buttonList[0].link);
             });
@@ -214,6 +218,7 @@ SocialWrapper.propTypes = {
   isOpenModal: PropTypes.bool,
   dispatchGetAuthGuestBalance: PropTypes.func,
   setSocialFlag: PropTypes.func,
+  setLoadingStatus: PropTypes.func,
   getTokenRates: PropTypes.func.isRequired,
   isOpenWalletTable: PropTypes.bool,
   loadingFetching: PropTypes.bool,
@@ -298,6 +303,7 @@ export default ErrorBoundary(
         getCryptoPriceHistory,
         getSwapEnginRates,
         setSocialFlag,
+        setLoadingStatus,
       },
     )(SocialWrapper),
   ),

@@ -275,7 +275,7 @@ const ShopWebsiteConfigurations = ({
                 })}
               </h3>
               <div className="WebsitesConfigurations__headers">
-                <b>{header.name}</b>
+                <b style={{ textTransform: 'uppercase' }}>{header.name}</b>
               </div>
               <Button type="primary" onClick={() => setOpenHeaderConfig(true)}>
                 Edit

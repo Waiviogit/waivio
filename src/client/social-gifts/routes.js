@@ -203,7 +203,7 @@ const routes = host => ({
     },
     {
       path: [
-        `/object/:name/(${URL.WOBJ.tabs})?/(${URL.WOBJ.filters})?/:itemId?`,
+        `/object/:name/(${URL.WOBJ.tabs})?/(${URL.WOBJ.filters})?/:parentName?/:itemId?`,
         `/object/:name/shop/:department?`,
       ],
       component: WobjectContainer,
@@ -211,7 +211,7 @@ const routes = host => ({
       pathScope: '/object/:name',
       routes: [
         {
-          path: ['', '/newsFilter/:itemId', '/reviews/:itemId'],
+          path: ['', '/newsFilter/:parentName/:itemId?', '/reviews/:itemId'],
           exact: true,
           component: Views.ObjectPageFeed,
         },

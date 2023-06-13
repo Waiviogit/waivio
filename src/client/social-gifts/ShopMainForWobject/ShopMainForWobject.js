@@ -5,15 +5,18 @@ import { useHistory } from 'react-router';
 import { isEmpty } from 'lodash';
 import PropTypes from 'prop-types';
 
-import { getNavigItems } from '../../../store/appStore/appSelectors';
+import { getInfoLoaded, getNavigItems } from '../../../store/appStore/appSelectors';
 
 const ShopMainForWobject = ({ wobjPermlink }) => {
   const history = useHistory();
   const linkList = useSelector(getNavigItems);
+  const loaded = useSelector(getInfoLoaded);
 
   useEffect(() => {
-    if (!isEmpty(linkList)) history.push(linkList[0].link);
-    else history.push(`/object/${wobjPermlink}`);
+    if (loaded) {
+      if (!isEmpty(linkList)) history.push(linkList[0].link);
+      else history.push(`/object/${wobjPermlink}`);
+    }
   }, [linkList]);
 
   return <Skeleton active />;

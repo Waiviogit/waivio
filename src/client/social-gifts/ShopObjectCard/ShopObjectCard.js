@@ -44,7 +44,7 @@ const ShopObjectCard = ({ wObject }) => {
         </h3>
       )}
       <div className="ShopObjectCard__avatarWrap">
-        <ObjectAvatar size={isMobile() ? 100 : 150} item={wObject} />
+        <ObjectAvatar size={isMobile() ? 175 : 225} item={wObject} />
         <HeartButton wobject={wObject} size={'20px'} />
       </div>
       <Link to={linkToObject} className="ShopObjectCard__name">

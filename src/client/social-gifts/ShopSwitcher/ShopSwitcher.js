@@ -13,14 +13,14 @@ const ShopSwitcher = () => {
   const shopSettings = useSelector(getShopSettings);
   const history = useHistory();
 
-  switch (shopSettings.type) {
+  switch (shopSettings?.type) {
     case 'user': {
-      history.push(`/user-shop/${shopSettings.value}`);
+      history.push(`/user-shop/${shopSettings?.value}`);
 
       return <Skeleton active />;
     }
     case 'object':
-      return <ShopMainForWobject wobjPermlink={shopSettings.value} />;
+      return <ShopMainForWobject wobjPermlink={shopSettings?.value} />;
 
     default:
       return <SocialGiftsLandingPage />;

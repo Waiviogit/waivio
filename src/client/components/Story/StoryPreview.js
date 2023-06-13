@@ -24,6 +24,8 @@ import { getBodyLink } from '../EditorExtended/util/videoHelper';
 import { videoPreviewRegex } from '../../../common/helpers/regexHelpers';
 import { parseJSON } from '../../../common/helpers/parseJSON';
 
+const regexPattern = /(?:https?:\/\/)?(?:www\.)?youtu(?:be\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=)|\.be\/)([\w-]+)(?:\S+)?/g;
+
 const StoryPreview = ({ post, isUpdates, isVimeo }) => {
   const storyContentBodyClassList = classNames('Story__content__body', {
     'Story__content__body-vimeo': isVimeo,
@@ -98,6 +100,7 @@ const StoryPreview = ({ post, isUpdates, isVimeo }) => {
   }
 
   const videoPreviewResult = post.body.match(videoPreviewRegex);
+  const videoPreviewResulYoutube = post.body.match(regexPattern);
 
   if (!embeds[0] && videoPreviewResult) {
     const videoLink = getBodyLink(videoPreviewResult);
@@ -123,6 +126,21 @@ const StoryPreview = ({ post, isUpdates, isVimeo }) => {
       if (embeds[0]) {
         embeds[0] = steemEmbed.get(videoLink, options);
       }
+    }
+  }
+
+  if (!embeds[0] && videoPreviewResulYoutube) {
+    const videoLink = videoPreviewResulYoutube[0];
+
+    if (videoLink) {
+      const options = {
+        width: '100%',
+        height: 340,
+        autoplay: false,
+        thumbnail: '',
+      };
+
+      embeds[0] = steemEmbed.get(videoLink.replaceAll('\\', ''), options);
     }
   }
 
