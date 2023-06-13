@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { useHistory, useRouteMatch } from 'react-router';
 import { Carousel, Collapse, Icon } from 'antd';
 import { Link } from 'react-router-dom';
-import ImageGallery from 'react-image-gallery';
 import { FormattedMessage } from 'react-intl';
 import { useDispatch, useSelector } from 'react-redux';
 import { remove, orderBy, get, isEmpty, isNil } from 'lodash';
@@ -30,6 +29,7 @@ import ProductId from '../../app/Sidebar/ProductId';
 import ShopObjectCard from '../ShopObjectCard/ShopObjectCard';
 import './SocialProduct.less';
 import ObjectFeatures from '../../object/ObjectFeatures/ObjectFeatures';
+import PicturesCarousel from '../../object/PicturesCarousel';
 
 const limit = 30;
 
@@ -38,8 +38,6 @@ const SocialProduct = () => {
   const [allAlbums, setAllAlbums] = useState([]);
   const [reward, setReward] = useState([]);
   const [hoveredOption, setHoveredOption] = useState({});
-  const [carouselRef, setCarouselRef] = useState(null);
-  const [isFullScreen, setIsFullScreen] = useState(false);
   const [relatedAlbum, setRelatedAlbum] = useState({});
   const [addOns, setAddOns] = useState([]);
   const [similarObjects, setSimilarObjects] = useState([]);
@@ -102,26 +100,13 @@ const SocialProduct = () => {
     !isEmpty(productIdBody);
   const allPhotos = allAlbums?.flatMap(alb => alb.items.flat());
   const photoAlbum = allPhotos?.sort((a, b) => (b.name === 'avatar') - (a.name === 'avatar'));
-  const pictures = [...photoAlbum, ...get(relatedAlbum, 'items', [])].map(pic => ({
-    ...pic,
-    original: pic.body,
-    thumbnail: pic.body,
-  }));
+  const pictures = [...photoAlbum, ...get(relatedAlbum, 'items', [])];
   let items = pictures;
 
   if (hoveredOption?.avatar || activeOption[activeCategory]?.avatar) {
-    items = [
-      { ...hoveredOption, original: hoveredOption.avatar } || {
-        ...activeOption[activeCategory],
-        original: activeOption[activeCategory]?.avatar,
-      },
-      ...pictures,
-    ];
+    items = [hoveredOption || activeOption[activeCategory], ...pictures];
   }
 
-  const handleGalleryImageClick = () => {
-    carouselRef.fullScreen();
-  };
   const getAddOnsSimilarRelatedObjects = () => {
     if (!isEmpty(addOnPermlinks) && !isNil(addOnPermlinks)) {
       getObjectsByIds({
@@ -262,15 +247,7 @@ const SocialProduct = () => {
         {!isEmpty(items) && (
           <div className="SocialProduct__row">
             <div className="SocialProduct__carouselWrapper">
-              <ImageGallery
-                ref={ref => setCarouselRef(ref)}
-                onScreenChange={val => setIsFullScreen(val)}
-                items={items}
-                showFullscreenButton={isFullScreen}
-                thumbnailPosition="left"
-                onClick={handleGalleryImageClick}
-                additionalClass={!isFullScreen ? 'SocialProduct__imageGallery' : ''}
-              />
+              <PicturesCarousel albums={allAlbums} pics={pictures} isSocialProduct />
             </div>
             <div>
               <ProductRewardCard isSocialProduct reward={reward} />
