@@ -3543,4 +3543,12 @@ export const getSimilarObjectsFromDepartments = (authorPermlink, userName, local
     .then(r => r)
     .catch(error => error);
 
+export const getChromeExtensionVersion = () =>
+  fetch(
+    'https://raw.githubusercontent.com/Waiviogit/waivio-import-extension/master/extension/manifest.json',
+  )
+    .then(response => response.json())
+    .then(data => data.version)
+    .catch(error => error);
+
 export default null;
