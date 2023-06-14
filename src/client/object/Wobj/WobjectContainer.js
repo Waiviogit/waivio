@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
-import { get } from 'lodash';
+import { get, has } from 'lodash';
 import OBJECT_TYPE from '../const/objectTypes';
 import {
   clearObjectFromStore,
@@ -181,10 +181,13 @@ class WobjectContainer extends React.Component {
   }
 
   componentDidMount() {
-    const { match, authenticatedUserName } = this.props;
+    const { match, authenticatedUserName, history } = this.props;
     const newsFilter = match.params[1] === 'newsFilter' ? { newsFilter: match.params.itemId } : {};
 
-    this.props.getObject(match.params.name, authenticatedUserName).then(() => {
+    this.props.getObject(match.params.name, authenticatedUserName).then(res => {
+      if (has(res.value, 'description') && !res.value.count_posts) {
+        history.push(`/object/${res.value.author_permlink}/description`);
+      }
       this.props.getAlbums(match.params.name);
       this.props.getNearbyObjects(match.params.name);
       this.props.getWobjectExpertise(newsFilter, match.params.name);
