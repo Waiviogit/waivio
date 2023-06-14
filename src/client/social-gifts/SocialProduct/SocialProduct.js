@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useHistory, useRouteMatch } from 'react-router';
-import { Carousel, Collapse, Icon } from 'antd';
+import { Carousel, Collapse, Icon, Tag } from 'antd';
 import { Link } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
 import { useDispatch, useSelector } from 'react-redux';
@@ -37,6 +37,7 @@ const SocialProduct = () => {
   const [wobject, setWobject] = useState({});
   const [allAlbums, setAllAlbums] = useState([]);
   const [reward, setReward] = useState([]);
+  const [showMoreCategoryItems, setShowMoreCategoryItems] = useState(false);
   const [hoveredOption, setHoveredOption] = useState({});
   const [relatedAlbum, setRelatedAlbum] = useState({});
   const [addOns, setAddOns] = useState([]);
@@ -72,6 +73,8 @@ const SocialProduct = () => {
   const merchant = parseWobjectField(wobject, 'merchant');
   const productWeight = parseWobjectField(wobject, 'productWeight');
   const menuItem = get(wobject, 'menuItem', []);
+  const tagCategories = get(wobject, 'tagCategory', []);
+  const tagCategoriesList = tagCategories.filter(item => !isEmpty(item.items));
   const addOnPermlinks = wobject.addOn ? wobject?.addOn?.map(obj => obj.body) : [];
   const similarObjectsPermlinks = wobject.similar ? wobject?.similar?.map(obj => obj.body) : [];
   const relatedObjectsPermlinks = wobject.related ? wobject?.related?.map(obj => obj.body) : [];
@@ -239,6 +242,41 @@ const SocialProduct = () => {
         </div>
       </div>
     );
+  const renderTagCategories = tags =>
+    tags.map(item => (
+      <div className="paddingBottom" key={item.id}>
+        {`${item.body}:`}
+        <span>{item.items && renderCategoryItems(item.items, item.body)}</span>
+      </div>
+    ));
+
+  const renderCategoryItems = (categoryItems = [], category) => {
+    const { object_type: type } = wobject;
+    const onlyFiveItems = categoryItems.filter((f, i) => i < 5);
+    const tagArray = showMoreCategoryItems ? categoryItems : onlyFiveItems;
+
+    return (
+      <span>
+        {tagArray.map((item, i) => (
+          <>
+            <Tag key={`${category}/${item.body}`} color="orange" className="ml2">
+              <Link to={`/discover-objects/${type}?${category}=${item.body}`}>{item.body}</Link>
+            </Tag>{' '}
+            {i !== tagArray.length - 1 && ','}
+          </>
+        ))}
+        {categoryItems.length > 5 && !showMoreCategoryItems && (
+          <span
+            role="presentation"
+            className="show-more"
+            onClick={() => setShowMoreCategoryItems(true)}
+          >
+            <FormattedMessage id="show_more" defaultMessage="Show more" />
+          </span>
+        )}
+      </span>
+    );
+  };
 
   return (
     <div className="SocialProduct">
@@ -367,6 +405,14 @@ const SocialProduct = () => {
         )}
         {getObjectsGalleryLayout('Similar', similarObjects)}
         {getObjectsGalleryLayout('Related items', relatedObjects)}
+        {!isEmpty(tagCategoriesList) && (
+          <div className="SocialProduct__featuresContainer">
+            <div className="SocialProduct__heading">Tag categories</div>
+            <div className="SocialProduct__centralContent">
+              {renderTagCategories(tagCategoriesList)}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

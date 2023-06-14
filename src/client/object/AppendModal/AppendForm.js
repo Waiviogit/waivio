@@ -2824,7 +2824,6 @@ class AppendForm extends Component {
           <MenuItemForm
             getFieldDecorator={getFieldDecorator}
             loading={loading}
-            getFieldRules={this.getFieldRules}
             getImages={this.getImage}
             onLoadingImage={this.onLoadingImage}
             handleMenuItemButtonStyleChange={this.handleMenuItemButtonStyleChange}
