@@ -79,7 +79,7 @@ const SocialProduct = () => {
   const similarObjectsPermlinks = wobject.similar ? wobject?.similar?.map(obj => obj.body) : [];
   const relatedObjectsPermlinks = wobject.related ? wobject?.related?.map(obj => obj.body) : [];
   const slideWidth = 250;
-  const slidesToShow = Math.floor(window.innerWidth / slideWidth);
+  const slidesToShow = Math.floor(typeof window !== 'undefined' && window.innerWidth / slideWidth);
   const carouselSettings = objects => ({
     dots: false,
     arrows: true,

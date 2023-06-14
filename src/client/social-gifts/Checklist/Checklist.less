@@ -3,7 +3,6 @@
 
 .Checklist {
   margin: 5px;
-  text-transform: uppercase;
 
   @media @small {
     margin: 20px;
@@ -84,19 +83,31 @@
     .Checklist__itemsAvatar {
       width: 100%;
       position: relative;
-      height: calc((100vw - 20px) / 2);
       display: flex;
       justify-content: center;
       align-items: center;
       border: 1px solid @white-gainsboro;
+      border-bottom: none;
       border-radius: 4px 4px 0 0;
       background-color: @white;
       background-position: center;
       background-size: cover;
       transition: 0.5s;
 
-      @media @small {
-        height: calc((100vw - 70px) / 4);
+      @media (min-width: 1201px) {
+        height: calc((100vw - 40px) / 5);
+      }
+
+      @media (max-width: 1200px) and (min-width: 999px) {
+        height: calc((100vw - 30px) / 4);
+      }
+
+      @media (max-width: 998px) and (min-width: 481px) {
+        height: calc((100vw - 20px) / 3);
+      }
+
+      @media (max-width: 480px) {
+        height: calc((100vw - 10px) / 2);
       }
 
       &:hover {

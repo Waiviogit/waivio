@@ -4,16 +4,14 @@ import { get, isEmpty, truncate, uniq } from 'lodash';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { Link } from 'react-router-dom';
-
-import ObjectAvatar from '../../components/ObjectAvatar';
 import RatingsWrap from '../../objectCard/RatingsWrap/RatingsWrap';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 import { getObjectName } from '../../../common/helpers/wObjectHelper';
 import AffiliatLink from '../../widgets/AffiliatLinks/AffiliatLink';
 import HeartButton from '../../widgets/HeartButton';
 import USDDisplay from '../../components/Utils/USDDisplay';
-import { isMobile } from '../../../common/helpers/apiHelpers';
-
+import { getProxyImageURL } from '../../../common/helpers/image';
+import DEFAULTS from '../../object/const/defaultValues';
 import './ShopObjectCard.less';
 
 const ShopObjectCard = ({ wObject }) => {
@@ -44,6 +42,12 @@ const ShopObjectCard = ({ wObject }) => {
       break;
   }
 
+  const parent = get(wObject, ['parent'], {});
+  let url = wObject?.avatar || parent.avatar;
+
+  if (url) url = getProxyImageURL(url, 'preview');
+  else url = DEFAULTS.AVATAR;
+
   return (
     <div className={shopObjectCardClassList}>
       {withRewards && (
@@ -53,7 +57,12 @@ const ShopObjectCard = ({ wObject }) => {
         </h3>
       )}
       <Link to={link} className="ShopObjectCard__avatarWrap">
-        <ObjectAvatar size={isMobile() ? 100 : 150} item={wObject} />
+        <div
+          className="ShopObjectCard__avatarWrap"
+          style={{
+            backgroundImage: `url(${url})`,
+          }}
+        />
         <HeartButton wobject={wObject} size={'20px'} />
       </Link>
       <Link to={link} className="ShopObjectCard__name">
@@ -100,6 +109,7 @@ const ShopObjectCard = ({ wObject }) => {
 ShopObjectCard.propTypes = {
   wObject: PropTypes.shape({
     object_type: PropTypes.string,
+    avatar: PropTypes.string,
     defaultShowLink: PropTypes.string,
     author_permlink: PropTypes.string,
     rating: PropTypes.arrayOf(PropTypes.shape()),
