@@ -31,19 +31,22 @@ const WebsiteTopNavigation = ({ shopSettings }) => {
   const loading = useSelector(getSettingsLoading);
   const history = useHistory();
   const [visible, setVisible] = useState(false);
-  const element = document.getElementById('WebsiteTopNavigation');
-  const container = document.getElementById('WebsiteTopNavigationContainer');
 
-  window.addEventListener('scroll', () => {
-    if (element) {
-      if (container.getBoundingClientRect().top <= 0) {
-        element.style.top = '0';
-        element.style.position = 'fixed';
-      } else {
-        element.style.position = 'static';
+  if (typeof document !== 'undefined' && typeof window !== 'undefined') {
+    const element = document.getElementById('WebsiteTopNavigation');
+    const container = document.getElementById('WebsiteTopNavigationContainer');
+
+    window.addEventListener('scroll', () => {
+      if (element) {
+        if (container.getBoundingClientRect().top <= 0) {
+          element.style.top = '0';
+          element.style.position = 'fixed';
+        } else {
+          element.style.position = 'static';
+        }
       }
-    }
-  });
+    });
+  }
 
   if (loading) return <SkeletonRow rows={1} />;
   if (isEmpty(shopSettings) || isEmpty(linkList)) return null;

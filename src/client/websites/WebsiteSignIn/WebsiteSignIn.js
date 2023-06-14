@@ -36,6 +36,7 @@ const WebsiteSignIn = props => {
   const currentHost = useSelector(getCurrentHost);
   const query = new URLSearchParams(props.location.search);
   const url = query.get('host') || currentHost + location.pathname;
+
   const urlObj = new URL(url);
   const hiveSinger = new hivesigner.Client({
     app: process.env.STEEMCONNECT_CLIENT_ID,
