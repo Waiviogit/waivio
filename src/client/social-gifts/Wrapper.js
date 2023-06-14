@@ -144,6 +144,10 @@ const SocialWrapper = props => {
                       return `/object-shop/${i.author_permlink}`;
                     case 'list':
                       return `/checklist/${i.author_permlink}`;
+                    case 'product':
+                    case 'book':
+                    case 'business':
+                      return `/object/product/${i.author_permlink}`;
                     default:
                       return i.defaultShowLink;
                   }

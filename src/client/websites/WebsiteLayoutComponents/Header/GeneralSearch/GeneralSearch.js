@@ -205,7 +205,10 @@ const GeneralSearch = props => {
         open={open}
         onChange={handleAutoCompleteSearch}
         onSelect={handleSelectOnAutoCompleteDropdown}
-        placeholder={'What are you looking for?'}
+        placeholder={props.intl.formatMessage({
+          id: 'search_placeholder',
+          defaultMessage: 'What are you looking for?',
+        })}
         dropdownClassName={'GeneralSearch'}
         allowClear
         optionLabelProp="value"

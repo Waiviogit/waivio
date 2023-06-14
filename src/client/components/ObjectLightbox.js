@@ -12,15 +12,19 @@ import DEFAULTS from '../object/const/defaultValues';
 import { getProxyImageURL } from '../../common/helpers/image';
 import LightboxHeader from '../widgets/LightboxTools/LightboxHeader';
 import { getObjectAlbums } from '../../store/galleryStore/gallerySelectors';
+import { getRelatedAlbum } from '../../store/galleryStore/galleryActions';
+import LightboxFooter from '../widgets/LightboxTools/LightboxFooter';
 
 @withRouter
 @connect(state => ({
   albums: getObjectAlbums(state),
+  relatedAlbum: getRelatedAlbum(state),
 }))
 export default class ObjectLightbox extends Component {
   static propTypes = {
     wobject: PropTypes.shape(),
-    albums: PropTypes.shape(),
+    albums: PropTypes.arrayOf(),
+    relatedAlbum: PropTypes.shape(),
     size: PropTypes.number,
     accessExtend: PropTypes.bool,
   };
@@ -32,20 +36,23 @@ export default class ObjectLightbox extends Component {
   };
 
   state = {
+    photoIndex: 0,
     open: false,
   };
 
   handleAvatarClick = () => this.setState({ open: true });
 
-  handleCloseRequest = () => this.setState({ open: false });
+  handleCloseRequest = () => this.setState({ open: false, photoIndex: 0 });
 
   render() {
-    const { wobject, size, accessExtend } = this.props;
+    const { wobject, size, accessExtend, relatedAlbum } = this.props;
+    const { photoIndex } = this.state;
     const objectName = wobject.name || wobject.default_name;
     let currentImage = wobject.avatar || get(wobject, ['parent', 'avatar']);
     const album = this.props.albums?.find(alb =>
       alb?.items?.some(pic => pic.body === wobject.avatar),
     );
+    const pics = [...get(wobject, 'preview_gallery', []), ...get(relatedAlbum, 'items', [])];
     const creator = album?.items?.find(pic => pic.body === wobject.avatar).creator;
 
     if (currentImage) currentImage = getProxyImageURL(currentImage, 'preview');
@@ -85,7 +92,16 @@ export default class ObjectLightbox extends Component {
                     userName={creator}
                   />
                 }
-                mainSrc={currentImage}
+                imageCaption={<LightboxFooter post={pics[photoIndex]} />}
+                mainSrc={pics[photoIndex]?.body}
+                nextSrc={pics[(photoIndex + 1) % pics.length]?.body}
+                prevSrc={pics[(photoIndex - 1) % pics.length]?.body}
+                onMovePrevRequest={() =>
+                  this.setState({ photoIndex: (photoIndex - 1) % pics.length })
+                }
+                onMoveNextRequest={() =>
+                  this.setState({ photoIndex: (photoIndex + 1) % pics.length })
+                }
                 onCloseRequest={this.handleCloseRequest}
               />
             )}

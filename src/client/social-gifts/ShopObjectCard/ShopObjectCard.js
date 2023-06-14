@@ -22,9 +22,6 @@ const ShopObjectCard = ({ wObject }) => {
   const wobjName = getObjectName(wObject);
   const withRewards = !isEmpty(wObject.propositions);
   const proposition = withRewards ? wObject.propositions[0] : null;
-  const linkToObject = ['book', 'product'].includes(wObject.object_type)
-    ? `/object/${wObject.object_type}/${wObject.author_permlink}`
-    : wObject.defaultShowLink;
   const shopObjectCardClassList = classNames('ShopObjectCard', {
     'ShopObjectCard--rewards': withRewards,
   });
@@ -35,6 +32,18 @@ const ShopObjectCard = ({ wObject }) => {
     setTags(uniq([wObject.object_type, ...objectTags]));
   }, [wObject.author_permlink]);
 
+  let link;
+
+  switch (wObject.object_type) {
+    case 'product':
+    case 'book':
+      link = `/object/product/${wObject.author_permlink}`;
+      break;
+    default:
+      link = wObject.defaultShowLink;
+      break;
+  }
+
   return (
     <div className={shopObjectCardClassList}>
       {withRewards && (
@@ -43,11 +52,11 @@ const ShopObjectCard = ({ wObject }) => {
           <USDDisplay value={proposition.rewardInUSD} currencyDisplay={'symbol'} />
         </h3>
       )}
-      <div className="ShopObjectCard__avatarWrap">
-        <ObjectAvatar size={isMobile() ? 175 : 225} item={wObject} />
+      <Link to={link} className="ShopObjectCard__avatarWrap">
+        <ObjectAvatar size={isMobile() ? 100 : 150} item={wObject} />
         <HeartButton wobject={wObject} size={'20px'} />
-      </div>
-      <Link to={linkToObject} className="ShopObjectCard__name">
+      </Link>
+      <Link to={link} className="ShopObjectCard__name">
         {truncate(wobjName, {
           length: 110,
           separator: '...',
@@ -78,8 +87,8 @@ const ShopObjectCard = ({ wObject }) => {
           <div className="ShopObjectCard__affiliatLinks">
             {wObject.affiliateLinks
               .sort((a, b) => a.type.charCodeAt(0) - b.type.charCodeAt(0))
-              .map(link => (
-                <AffiliatLink key={link.link} link={link} />
+              .map(affLink => (
+                <AffiliatLink key={affLink.link} link={affLink} />
               ))}
           </div>
         </div>
