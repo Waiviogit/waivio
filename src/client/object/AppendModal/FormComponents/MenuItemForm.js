@@ -12,7 +12,6 @@ const MenuItemForm = ({
   getFieldDecorator,
   loading,
   intl,
-  getFieldRules,
   getImages,
   onLoadingImage,
   handleMenuItemButtonStyleChange,
@@ -46,11 +45,11 @@ const MenuItemForm = ({
     <React.Fragment>
       <Form.Item>
         <Form.Item>
-          {getFieldDecorator(menuItemFields.menuItemTitle, {
-            rules: getFieldRules(menuItemFields.menuItemTitle),
-          })(
+          {getFieldDecorator(
+            menuItemFields.menuItemTitle,
+            {},
+          )(
             <Input
-              autoFocus
               className="AppendForm__input"
               disabled={loading}
               placeholder={intl.formatMessage({
@@ -110,11 +109,12 @@ const MenuItemForm = ({
             <div className="AppendForm__appendTitles">
               <FormattedMessage id="link_to_an_object" defaultMessage="Link to an object" />
             </div>
-            {getFieldDecorator(menuItemFields.linkToObject, {
-              // rules: getFieldRules(menuItemFields.linkToObject),
-            })(
+            {getFieldDecorator(
+              menuItemFields.linkToObject,
+              {},
+            )(
               <SearchObjectsAutocomplete
-                autoFocus={false}
+                autoFocus
                 placeholder={intl.formatMessage({
                   id: 'objects_auto_complete_placeholder',
                   defaultMessage: 'Find objects',
@@ -164,7 +164,6 @@ const MenuItemForm = ({
 
 MenuItemForm.propTypes = {
   getFieldDecorator: PropTypes.func.isRequired,
-  getFieldRules: PropTypes.func.isRequired,
   getImages: PropTypes.func.isRequired,
   onLoadingImage: PropTypes.func.isRequired,
   handleMenuItemButtonStyleChange: PropTypes.func.isRequired,
