@@ -342,8 +342,8 @@ const HeaderButtons = props => {
 
 HeaderButtons.propTypes = {
   intl: PropTypes.shape().isRequired,
-  aboutObject: PropTypes.shape().isRequired,
-  isHelpingObjTypes: PropTypes.shape().isRequired,
+  aboutObject: PropTypes.shape(),
+  isHelpingObjTypes: PropTypes.shape(),
   notifications: PropTypes.arrayOf(PropTypes.shape()),
   userMetaData: PropTypes.shape(),
   loadingNotifications: PropTypes.bool,

@@ -62,7 +62,7 @@ const ProductId = ({ productIdBody, groupId, authorPermlink, isSocialGifts }) =>
 };
 
 ProductId.propTypes = {
-  productIdBody: PropTypes.string,
+  productIdBody: PropTypes.arrayOf(),
   isSocialGifts: PropTypes.bool,
   authorPermlink: PropTypes.string.isRequired,
   groupId: PropTypes.arrayOf(),

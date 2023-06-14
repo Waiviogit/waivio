@@ -228,7 +228,7 @@ SocialWrapper.propTypes = {
   }).isRequired,
   colors: PropTypes.shape({
     mapMarkerBody: PropTypes.string,
-  }).isRequired,
+  }),
   history: PropTypes.shape({
     push: PropTypes.func,
   }).isRequired,
