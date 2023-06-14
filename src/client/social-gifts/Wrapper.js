@@ -53,6 +53,22 @@ import { getSwapEnginRates } from '../../store/ratesStore/ratesAction';
 import { setLocale } from '../../store/settingsStore/settingsActions';
 import { getObject, getObjectsByIds } from '../../waivioApi/ApiClient';
 import { parseJSON } from '../../common/helpers/parseJSON';
+import { getObjectName } from '../../common/helpers/wObjectHelper';
+
+const createLink = i => {
+  switch (i.object_type) {
+    case 'shop':
+      return `/object-shop/${i.author_permlink}`;
+    case 'list':
+      return `/checklist/${i.author_permlink}`;
+    case 'product':
+    case 'book':
+    case 'business':
+      return `/object/product/${i.author_permlink}`;
+    default:
+      return i.defaultShowLink;
+  }
+};
 
 const SocialWrapper = props => {
   const isSocialGifts = useSelector(getIsSocialGifts);
@@ -108,13 +124,26 @@ const SocialWrapper = props => {
       });
 
       if (res.configuration.shopSettings?.type === 'object') {
-        getObject(res.configuration.shopSettings.type).then(wobject => {
+        getObject(res.configuration.shopSettings.value).then(wobject => {
           const menuItemLinks = wobject.menuItem?.map(item => parseJSON(item.body)?.linkToObject);
           const customSort = get(wobject, 'sortCustom.include', []);
 
           if (isEmpty(menuItemLinks)) {
             if (props.location.pathname === '/')
-              props.history.push(`/object/${res.configuration.shopSettings.value}`);
+              props.history.push(`/object/product/${res.configuration.shopSettings.value}`);
+            dispatch(
+              setItemsForNavigation([
+                {
+                  link: createLink(wobject),
+                  name: getObjectName(wobject),
+                },
+                {
+                  name: 'Legal',
+                  link: '/object/ljc-legal/list',
+                },
+              ]),
+            );
+
             props.setLoadingStatus(true);
           } else
             getObjectsByIds({ authorPermlinks: menuItemLinks }).then(u => {
@@ -137,29 +166,20 @@ const SocialWrapper = props => {
               const buttonList = [
                 ...sortingButton,
                 ...compareList?.filter(i => !customSort.includes(i.permlink)),
-              ].map(i => {
-                const createLink = () => {
-                  switch (i.object_type) {
-                    case 'shop':
-                      return `/object-shop/${i.author_permlink}`;
-                    case 'list':
-                      return `/checklist/${i.author_permlink}`;
-                    case 'product':
-                    case 'book':
-                    case 'business':
-                      return `/object/product/${i.author_permlink}`;
-                    default:
-                      return i.defaultShowLink;
-                  }
-                };
+              ].map(i => ({
+                link: createLink(i),
+                name: i?.body?.title,
+              }));
 
-                return {
-                  link: createLink(),
-                  name: i?.body?.title,
-                };
-              });
-
-              dispatch(setItemsForNavigation(buttonList));
+              dispatch(
+                setItemsForNavigation([
+                  ...buttonList,
+                  {
+                    name: 'Legal',
+                    link: '/object/ljc-legal/list',
+                  },
+                ]),
+              );
               props.setLoadingStatus(true);
 
               if (props.location.pathname === '/') props.history.push(buttonList[0].link);
