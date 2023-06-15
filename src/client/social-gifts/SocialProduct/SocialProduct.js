@@ -10,7 +10,9 @@ import {
   getObjectInfo,
   getObjectsByIds,
   getObjectsRewards,
+  getRelatedObjectsFromDepartments,
   getRelatedPhotos,
+  getSimilarObjectsFromDepartments,
   getWobjectGallery,
 } from '../../../waivioApi/ApiClient';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
@@ -28,8 +30,8 @@ import ProductId from '../../app/Sidebar/ProductId';
 import ShopObjectCard from '../ShopObjectCard/ShopObjectCard';
 import ObjectFeatures from '../../object/ObjectFeatures/ObjectFeatures';
 import PicturesCarousel from '../../object/PicturesCarousel';
-import './SocialProduct.less';
 import RatingsWrap from '../../objectCard/RatingsWrap/RatingsWrap';
+import './SocialProduct.less';
 
 const limit = 30;
 
@@ -76,8 +78,6 @@ const SocialProduct = () => {
   const tagCategories = get(wobject, 'tagCategory', []);
   const tagCategoriesList = tagCategories.filter(item => !isEmpty(item.items));
   const addOnPermlinks = wobject.addOn ? wobject?.addOn?.map(obj => obj.body) : [];
-  const similarObjectsPermlinks = wobject.similar ? wobject?.similar?.map(obj => obj.body) : [];
-  const relatedObjectsPermlinks = wobject.related ? wobject?.related?.map(obj => obj.body) : [];
   const slideWidth = 250;
   const slidesToShow = Math.floor(typeof window !== 'undefined' && window.innerWidth / slideWidth);
   const carouselSettings = objects => ({
@@ -121,26 +121,20 @@ const SocialProduct = () => {
         setAddOns(res.wobjects);
       });
     }
-    if (!isEmpty(similarObjectsPermlinks) && !isNil(similarObjectsPermlinks)) {
-      getObjectsByIds({
-        authorPermlinks: similarObjectsPermlinks,
-        authUserName: userName,
-        limit,
-        skip: 0,
-      }).then(res => {
-        setSimilarObjects(res.wobjects);
-      });
-    }
-    if (!isEmpty(relatedObjectsPermlinks) && !isNil(relatedObjectsPermlinks)) {
-      getObjectsByIds({
-        authorPermlinks: relatedObjectsPermlinks,
-        authUserName: userName,
-        limit,
-        skip: 0,
-      }).then(res => {
-        setRelatedObjects(res.wobjects);
-      });
-    }
+    getRelatedObjectsFromDepartments(
+      wobject.author_permlink,
+      userName,
+      locale,
+      0,
+      limit,
+    ).then(res => setRelatedObjects(res.wobjects || []));
+    getSimilarObjectsFromDepartments(
+      wobject.author_permlink,
+      userName,
+      locale,
+      0,
+      limit,
+    ).then(res => setSimilarObjects(res.wobjects || []));
   };
 
   const getPublisherManufacturerBrandMerchantObjects = () => {
