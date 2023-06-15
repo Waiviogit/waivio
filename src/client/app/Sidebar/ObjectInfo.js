@@ -124,6 +124,7 @@ class ObjectInfo extends React.Component {
     brandObject: {},
     merchantObject: {},
     authorsArray: [],
+    menuItemsArray: [],
     showMenuLegacy: false,
   };
 
@@ -176,6 +177,9 @@ class ObjectInfo extends React.Component {
     const authors = wobject.authors
       ? wobject.authors.map(el => parseWobjectField(el, 'body', []))
       : [];
+    const menuItem = wobject.menuItem
+      ? wobject.menuItem.map(el => parseWobjectField(el, 'body', []))
+      : [];
 
     const authorsArray = await authors.reduce(async (acc, curr) => {
       const res = await acc;
@@ -192,6 +196,20 @@ class ObjectInfo extends React.Component {
 
     this.setState({ authorsArray });
     this.props.setAuthors(authorsArray);
+
+    const menuItemsArray = await menuItem.reduce(async (acc, curr) => {
+      const res = await acc;
+
+      if (curr.linkToObject && !has(curr, 'title')) {
+        const newObj = await getObjectInfo([curr.linkToObject]);
+
+        return [...res, { ...curr, ...newObj.wobjects[0] }];
+      }
+
+      return [...res, curr];
+    }, []);
+
+    this.setState({ menuItemsArray });
 
     const backObjects = [
       publisher?.authorPermlink,
@@ -722,7 +740,7 @@ class ObjectInfo extends React.Component {
               {isEditMode && this.listItem(objectFields.widget, null)}
               {this.listItem(
                 objectFields.menuItem,
-                !isEmpty(menuItem) && <MenuItemButtons menuItem={menuItem} />,
+                !isEmpty(menuItem) && <MenuItemButtons menuItem={this.state.menuItemsArray} />,
               )}
               {this.listItem(objectFields.sorting, null)}
             </div>
