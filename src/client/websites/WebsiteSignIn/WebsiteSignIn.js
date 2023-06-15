@@ -146,7 +146,10 @@ const WebsiteSignIn = props => {
           }}
         >
           {props.isSocial
-            ? query.get('websiteName')
+            ? query
+                .get('websiteName')
+                .replace('http://', '')
+                .replace('https://', '')
             : props.intl.formatMessage({
                 id: 'sign_in_for_reward',
                 defaultMessage: 'Sign-In for rewards per meal',
