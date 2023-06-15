@@ -14,22 +14,6 @@
   position: relative;
   margin-right: 10px;
 
-  &:nth-child(3n) {
-    @media @small {
-      margin-right: 0;
-    }
-
-    margin-right: 10px;
-  }
-
-  &:nth-child(2n) {
-    @media @small {
-      margin-right: 10px;
-    }
-
-    margin-right: 0;
-  }
-
   @media @small {
     width: calc((100% - 30px) / 3);
   }
@@ -51,6 +35,19 @@
   }
 
   &__avatarWrap {
+    width: 175px;
+    height: 175px;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+
+    @media @small {
+      width: 225px;
+      height: 225px;
+    }
+  }
+
+  &__avatarWrap {
     align-items: flex-start;
 
     .HeartButton {
@@ -68,9 +65,19 @@
   .AffiliatLink {
     border: @base-border;
     width: 65px;
-    padding: 0 2px;
+    padding: 0 5px;
     margin-left: 5px;
     margin-bottom: 5px;
+
+    &__icon {
+      div {
+        padding: 2px 0;
+
+        @media @small {
+          padding: 5px 0;
+        }
+      }
+    }
 
     @media @small {
       width: 100px;
@@ -83,6 +90,7 @@
   }
 
   &__name {
+    color: @black-text-basic;
     margin-top: 10px;
     text-align: center;
     padding: 0 10px;

@@ -4,7 +4,7 @@ import { connect, batch, useSelector, useDispatch } from 'react-redux';
 import { IntlProvider } from 'react-intl';
 import { withRouter } from 'react-router-dom';
 import { renderRoutes } from 'react-router-config';
-import { get } from 'lodash';
+import { get, isEmpty } from 'lodash';
 import { ConfigProvider, Layout } from 'antd';
 import {
   findLanguage,
@@ -28,6 +28,7 @@ import {
   getCryptoPriceHistory,
   setSocialFlag,
   setItemsForNavigation,
+  setLoadingStatus,
 } from '../../store/appStore/appActions';
 import Header from './Header/Header';
 import NotificationPopup from './../notifications/NotificationPopup';
@@ -52,6 +53,22 @@ import { getSwapEnginRates } from '../../store/ratesStore/ratesAction';
 import { setLocale } from '../../store/settingsStore/settingsActions';
 import { getObject, getObjectsByIds } from '../../waivioApi/ApiClient';
 import { parseJSON } from '../../common/helpers/parseJSON';
+import { getObjectName } from '../../common/helpers/wObjectHelper';
+
+const createLink = i => {
+  switch (i.object_type) {
+    case 'shop':
+      return `/object-shop/${i.author_permlink}`;
+    case 'list':
+      return `/checklist/${i.author_permlink}`;
+    case 'product':
+    case 'book':
+    case 'business':
+      return `/object/product/${i.author_permlink}`;
+    default:
+      return i.defaultShowLink;
+  }
+};
 
 const SocialWrapper = props => {
   const isSocialGifts = useSelector(getIsSocialGifts);
@@ -106,22 +123,39 @@ const SocialWrapper = props => {
         }
       });
 
-      if (res.configuration.shopSettings.type === 'object') {
+      if (res.configuration.shopSettings?.type === 'object') {
         getObject(res.configuration.shopSettings.value).then(wobject => {
-          if (!wobject.menuItem) {
-            if (props.location.pathname === '/') props.history.push(wobject.defaultShowLink);
-          } else {
-            const menuItemLinks = wobject.menuItem?.map(item => parseJSON(item.body)?.linkToObject);
-            const customSort = get(wobject, 'sortCustom.include', []);
+          const menuItemLinks = wobject.menuItem?.map(item => parseJSON(item.body)?.linkToObject);
+          const customSort = get(wobject, 'sortCustom.include', []);
 
-            getObjectsByIds({ authorPermlinks: menuItemLinks }).then(u => {
-              const compareList = wobject.menuItem.map(l => {
-                const body = parseJSON(l.body);
-                const y = u.wobjects.find(wobj => wobj.author_permlink === body?.linkToObject);
+          if (isEmpty(menuItemLinks)) {
+            if (props.location.pathname === '/')
+              props.history.push(`/object/product/${res.configuration.shopSettings.value}`);
+            dispatch(
+              setItemsForNavigation([
+                {
+                  link: createLink(wobject),
+                  name: getObjectName(wobject),
+                },
+                {
+                  name: 'Legal',
+                  link: '/object/ljc-legal/list',
+                },
+              ]),
+            );
+
+            props.setLoadingStatus(true);
+          } else
+            getObjectsByIds({ authorPermlinks: menuItemLinks }).then(listItems => {
+              const compareList = wobject?.menuItem?.map(wobjItem => {
+                const body = parseJSON(wobjItem.body);
+                const currItem = listItems.wobjects.find(
+                  wobj => wobj.author_permlink === body?.linkToObject,
+                );
 
                 return {
-                  ...l,
-                  ...y,
+                  ...wobjItem,
+                  ...currItem,
                   body,
                 };
               });
@@ -133,30 +167,25 @@ const SocialWrapper = props => {
               }, []);
               const buttonList = [
                 ...sortingButton,
-                ...compareList.filter(i => !customSort.includes(i.permlink)),
-              ].map(i => {
-                const createLink = () => {
-                  switch (i.object_type) {
-                    case 'shop':
-                      return `/object-shop/${i.author_permlink}`;
-                    case 'list':
-                      return `/checklist/${i.author_permlink}`;
-                    default:
-                      return i.defaultShowLink;
-                  }
-                };
+                ...compareList?.filter(i => !customSort.includes(i.permlink)),
+              ].map(i => ({
+                link: createLink(i),
+                name: i?.body?.title || getObjectName(i),
+              }));
 
-                return {
-                  link: createLink(),
-                  name: i?.body?.title,
-                };
-              });
-
-              dispatch(setItemsForNavigation(buttonList));
+              dispatch(
+                setItemsForNavigation([
+                  ...buttonList,
+                  {
+                    name: 'Legal',
+                    link: '/object/ljc-legal/list',
+                  },
+                ]),
+              );
+              props.setLoadingStatus(true);
 
               if (props.location.pathname === '/') props.history.push(buttonList[0].link);
             });
-          }
         });
       } else if (props.location.pathname === '/')
         props.history.push(`/user-shop/${res.configuration.shopSettings.value}`);
@@ -215,6 +244,7 @@ SocialWrapper.propTypes = {
   isOpenModal: PropTypes.bool,
   dispatchGetAuthGuestBalance: PropTypes.func,
   setSocialFlag: PropTypes.func,
+  setLoadingStatus: PropTypes.func,
   getTokenRates: PropTypes.func.isRequired,
   isOpenWalletTable: PropTypes.bool,
   loadingFetching: PropTypes.bool,
@@ -224,7 +254,7 @@ SocialWrapper.propTypes = {
   }).isRequired,
   colors: PropTypes.shape({
     mapMarkerBody: PropTypes.string,
-  }).isRequired,
+  }),
   history: PropTypes.shape({
     push: PropTypes.func,
   }).isRequired,
@@ -299,6 +329,7 @@ export default ErrorBoundary(
         getCryptoPriceHistory,
         getSwapEnginRates,
         setSocialFlag,
+        setLoadingStatus,
       },
     )(SocialWrapper),
   ),

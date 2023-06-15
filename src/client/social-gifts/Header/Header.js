@@ -4,7 +4,7 @@ import classNames from 'classnames';
 import { useSelector } from 'react-redux';
 import HeaderButton from '../../components/HeaderButton/HeaderButton';
 import { getConfigurationValues, getWebsiteLogo } from '../../../store/appStore/appSelectors';
-import GeneralSearch from '../../websites/WebsiteLayoutComponents/Header/GeneralSearch';
+import GeneralSearch from '../../websites/WebsiteLayoutComponents/Header/GeneralSearch/GeneralSearch';
 import WebsiteTopNavigation from './TopNavigation/WebsiteTopNavigation';
 
 import './Header.less';
@@ -16,11 +16,14 @@ const Header = () => {
   const logo = useSelector(getWebsiteLogo);
   const currHost = typeof location !== 'undefined' && location.hostname;
   const header = config?.header?.name;
+  const logoClassList = classNames('Header__logo', {
+    'Header__logo--upperCase': !header,
+  });
 
   return (
     <React.Fragment>
       <div className="Header">
-        <Link to={'/'} className="Header__logo">
+        <Link to={'/'} className={logoClassList}>
           {logo && <img alt="logo" src={logo} className="Header__img" />}
           <span>{header || config.host || currHost}</span>
         </Link>
@@ -39,7 +42,7 @@ const Header = () => {
               })}
             />
           </button>
-          <HeaderButton isWebsite searchBarActive={searchBarActive} />
+          <HeaderButton searchBarActive={searchBarActive} />
         </div>
       </div>
       {config.mainBanner && (

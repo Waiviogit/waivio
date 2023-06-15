@@ -11,6 +11,24 @@
   -moz-box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.12);
   box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.12);
 
+  .anticon.anticon-caret-down,
+  .anticon.anticon-bars,
+  .iconfont.icon-remind,
+  .iconfont.icon-language,
+  .iconfont.icon-write {
+    color: var(--website-color);
+  }
+
+  .Topnav__menu-container__menu > li.ant-menu-item > a {
+    color: @gray;
+    font-weight: 100 !important;
+    font-size: 26px;
+
+    &:hover {
+      color: var(--website-color);
+    }
+  }
+
   &__item {
     &--active {
       border: var(--website-color) !important;
@@ -26,10 +44,14 @@
   &__logo {
     display: flex;
     align-items: center;
-    color: #000000;
+    color: var(--website-color);
+
+    &--upperCase {
+      text-transform: uppercase;
+    }
 
     &:hover {
-      color: #000000;
+      color: var(--website-color);
     }
 
     span {
@@ -66,7 +88,7 @@
     }
 
     .ant-select-auto-complete.ant-select .ant-select-selection__placeholder {
-      margin-left: 3px;
+      margin-left: 10px;
     }
 
     .iconfont {
@@ -79,8 +101,10 @@
         color: #99aab5;
       }
     }
+
     .icon-search {
-      margin-left: 2px;
+      margin-left: 5px;
+      margin-top: 0 !important;
     }
 
     .ant-input.ant-select-search__field {
@@ -89,7 +113,7 @@
       width: 100%;
 
       @media @small {
-        padding: 4px 40px 4px 25px;
+        padding: 4px 40px 4px 30px;
       }
     }
 
@@ -117,14 +141,13 @@
   &__mobile-search {
     background: transparent;
     border: 0;
-    color: @tertiary-color;
     display: block;
     height: 55px;
     outline: none;
     width: 30px;
 
-    .icon-search {
-      font-size: 28px !important;
+    i.iconfont.icon-search {
+      font-size: 26px !important;
     }
 
     &-close {
@@ -148,7 +171,13 @@
 
   .iconfont {
     transition: 0.5s;
+  }
+
+  .iconfont.icon-search {
+    transition: 0.5s;
     color: var(--website-color);
+    margin-top: 5px;
+    display: inline-block;
   }
 
   .Topnav__link.Topnav__link--light.Topnav__link--action {
@@ -174,7 +203,7 @@
   .Topnav__menu-container__menu > li.ant-menu-item > a.ModalSignIn__link-type {
     display: flex;
     align-items: center;
-    border-radius: 12px;
+    border-radius: 4px;
     border: 1px solid var(--website-color);
     background-color: transparent;
     color: var(--website-color) !important;

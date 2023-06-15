@@ -32,39 +32,42 @@
         width: 100%;
         font-weight: 600;
         transition: 0.5s;
+        font-size: 18px;
       }
     }
 
     .ShopObjectCard,
     .Checklist__listItems {
-      width: calc((100% - 10px) / 2);
+      @media (min-width: 1201px) {
+        width: calc((100% - 40px) / 5);
 
-      @media @small {
-        width: calc((100% - 40px) / 4);
-      }
-
-      &:nth-child(3n) {
-        //@media @small {
-        //  margin-right: 0;
-        //}
-
-        margin-right: 10px;
-      }
-
-      &:nth-child(4n) {
-        @media @small {
+        &:nth-child(5n) {
           margin-right: 0;
         }
-
-        margin-right: 10px;
       }
 
-      &:nth-child(2n) {
-        @media @small {
-          margin-right: 10px;
-        }
+      @media (max-width: 1200px) and (min-width: 999px) {
+        width: calc((100% - 30px) / 4);
 
-        margin-right: 0;
+        &:nth-child(4n) {
+          margin-right: 0;
+        }
+      }
+
+      @media (max-width: 998px) and (min-width: 481px) {
+        width: calc((100% - 20px) / 3);
+
+        &:nth-child(3n) {
+          margin-right: 0;
+        }
+      }
+
+      @media (max-width: 480px) {
+        width: calc((100% - 10px) / 2);
+
+        &:nth-child(2n) {
+          margin-right: 0;
+        }
       }
     }
   }
@@ -80,19 +83,32 @@
     .Checklist__itemsAvatar {
       width: 100%;
       position: relative;
-      height: calc((100vw - 20px) / 2);
       display: flex;
       justify-content: center;
       align-items: center;
       border: 1px solid @white-gainsboro;
+      border-top: none;
       border-radius: 4px 4px 0 0;
       background-color: @white;
       background-position: center;
       background-size: cover;
+      background-repeat: no-repeat;
       transition: 0.5s;
 
-      @media @small {
-        height: calc((100vw - 70px) / 4);
+      @media (min-width: 1201px) {
+        height: calc((100vw - 40px) / 5);
+      }
+
+      @media (max-width: 1200px) and (min-width: 999px) {
+        height: calc((100vw - 30px) / 4);
+      }
+
+      @media (max-width: 998px) and (min-width: 481px) {
+        height: calc((100vw - 20px) / 3);
+      }
+
+      @media (max-width: 480px) {
+        height: calc((100vw - 10px) / 2);
       }
 
       &:hover {
@@ -117,5 +133,14 @@
       display: inline-block;
       color: var(--website-text-color);
     }
+  }
+
+  &__empty {
+    text-align: center;
+    padding: 20px 0;
+    color: var(--website-color);
+    border: 1px solid var(--website-color);
+    border-radius: 4px;
+    font-size: 18px;
   }
 }

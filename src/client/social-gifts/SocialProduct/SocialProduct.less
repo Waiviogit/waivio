@@ -1,0 +1,253 @@
+@import (reference) '../../styles/custom.less';
+@import (reference) '../../styles/modules/variables.less';
+
+@paddingBottom: 20px;
+.SocialProduct {
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  @media @small {
+    padding: 4px 20px;
+  }
+
+  &__centralContent {
+    @media @small {
+      margin-left: calc(2% + 100px);
+      margin-right: calc(2% + 100px);
+    }
+  }
+
+  &__contentPaddingLeft {
+    @media @small {
+      padding-left: 20px;
+    }
+  }
+
+  &__wobjName {
+    color: @black;
+    font-weight: 600;
+    font-size: 26px;
+    word-break: break-word;
+    padding-bottom: 15px;
+    @media @small {
+      padding-bottom: 0;
+    }
+  }
+
+  &__ratings {
+    padding-bottom: 7px;
+    //@media @small {
+    //  display: flex;
+    //}
+  }
+  &__subtitle {
+    color: @blue-botticelli;
+    text-transform: uppercase;
+  }
+
+  &__column {
+    padding: 16px 16px 0;
+    @media @small {
+      padding: 16px;
+    }
+  }
+
+  &__price {
+    padding-bottom: 15px;
+    font-weight: 600;
+    font-size: 26px;
+    color: var(--website-hover-color);
+  }
+
+  &__paddingBottom {
+    padding-bottom: @paddingBottom;
+  }
+
+  &__heading {
+    padding-bottom: 8px;
+    text-transform: uppercase;
+    font-weight: 600;
+    font-size: 18px;
+    color: @black;
+  }
+
+  &__productDetails,
+  &__featuresContainer,
+  &__aboutItem {
+    //border-bottom: 1px solid grey;
+    margin-bottom: 20px;
+    padding-bottom: @paddingBottom;
+  }
+
+  &__productDetails-content {
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__column-wrapper {
+    display: flex;
+    flex-direction: column;
+    @media @small {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  &__row {
+    padding: 0;
+    min-height: fit-content;
+
+    @media @small {
+      padding: 16px;
+      max-width: 600px;
+    }
+  }
+
+  &__right-row {
+    @media @small {
+      padding: 16px 16px 16px 0;
+    }
+  }
+
+  &__affLinks {
+    display: flex;
+    flex-direction: row;
+  }
+
+  &__links {
+    border: 1px solid @white-gainsboro;
+    border-radius: 4px;
+    width: 150px;
+    padding: 5px 0;
+
+    &:not(:first-child) {
+      margin-left: 20px;
+    }
+  }
+
+  &__imageGallery {
+    .image-gallery-icon.image-gallery-play-button {
+      display: flex;
+      justify-content: flex-end;
+      width: 100%;
+    }
+
+    .image-gallery-thumbnail .image-gallery-thumbnail-inner {
+      width: 55px;
+    }
+
+    .image-gallery-thumbnails-wrapper.left .image-gallery-thumbnails .image-gallery-thumbnail {
+      width: 62px;
+    }
+
+    & .image-gallery-content.left .image-gallery-slide .image-gallery-image,
+    & .image-gallery-content.right .image-gallery-slide .image-gallery-image {
+      @media @small {
+        height: 500px;
+        max-width: 500px;
+      }
+    }
+  }
+
+  .image-gallery-content.left.fullscreen {
+    height: 100vh;
+  }
+
+  .image-gallery-svg {
+    height: 50px;
+    width: 30px;
+  }
+
+  .image-gallery-icon.image-gallery-left-nav,
+  .image-gallery-icon.image-gallery-right-nav {
+    height: 50px;
+    width: 30px;
+    padding: inherit;
+
+    &:hover {
+      color: var(--website-hover-color);
+    }
+  }
+
+  .image-gallery-thumbnail.active {
+    border: 3px solid var(--website-hover-color);
+    border-radius: 4px;
+  }
+
+  .image-gallery-icon.image-gallery-fullscreen-button,
+  .image-gallery-icon.image-gallery-play-button {
+    padding: 4px;
+
+    &:hover {
+      color: var(--website-hover-color);
+    }
+  }
+
+  .image-gallery-thumbnail {
+    width: 60px;
+
+    &:hover {
+      border-radius: 4px;
+      border: 3px solid var(--website-hover-color);
+    }
+  }
+
+  .ShopObjectCard {
+    display: flex;
+    //height: 100%;
+    width: 240px;
+  }
+
+  .CarouselSection {
+    &__wrapper {
+      position: absolute;
+      margin-left: 65%;
+      transform: translateX(-50%);
+      @media @small {
+        width: 100%;
+        position: initial;
+        margin-left: 0;
+        transform: translateX(0);
+      }
+
+      .slick-prev,
+      .slick-next {
+        display: none;
+
+        @media @small {
+          display: inline-block;
+          z-index: 1200;
+          color: #bebebe !important;
+
+          svg {
+            height: auto;
+            width: 30px;
+          }
+        }
+      }
+
+      .ant-carousel .slick-prev {
+        left: -35px;
+
+        @media @small {
+          left: -40px;
+        }
+      }
+
+      .ant-carousel .slick-next {
+        right: -25px;
+      }
+    }
+  }
+
+  .slick-slide {
+    display: flex !important;
+    height: 100% !important;
+  }
+
+  .slick-list,
+  .slick-track,
+  .slick-slide div {
+    display: flex !important;
+  }
+}

@@ -5,6 +5,7 @@ import classNames from 'classnames';
 import { useHistory, useRouteMatch } from 'react-router';
 import PropTypes from 'prop-types';
 import { Icon, Modal } from 'antd';
+import { injectIntl } from 'react-intl';
 
 import { getActiveBreadCrumb } from '../../../store/shopStore/shopSelectors';
 import DepartmentsWobjList from '../DepartmentsWobjList/DepartmentsWobjList';
@@ -84,7 +85,7 @@ const ListSwitcher = props => {
             history.push(props.path);
           }}
         >
-          Departments
+          {props.intl.formatMessage({ id: 'departments', defaultMessage: 'Departments' })}
         </span>{' '}
         {match.params.department && <Icon type="right" />}{' '}
         <Link
@@ -139,6 +140,9 @@ ListSwitcher.propTypes = {
   type: PropTypes.string,
   path: PropTypes.string,
   isSocial: PropTypes.bool,
+  intl: PropTypes.shape({
+    formatMessage: PropTypes.func,
+  }),
 };
 
-export default ListSwitcher;
+export default injectIntl(ListSwitcher);

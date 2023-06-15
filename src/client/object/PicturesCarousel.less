@@ -1,13 +1,67 @@
 @import (reference) '../styles/custom.less';
+@import (reference) '../styles/modules/variables.less';
 
+.SocialPicturesCarousel {
+  margin-bottom: 15px;
+  .slick-slide.slick-active.slick-current {
+    display: flex;
+    justify-content: center;
+  }
+  &__image {
+    max-width: 100%;
+    max-height: 340px;
+    @media @small {
+      max-width: 500px;
+      max-height: 500px;
+    }
+  }
+  &__imageWrap {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+  .ant-carousel .slick-slide {
+    height: 160px;
+    line-height: 160px;
+    overflow: hidden;
+  }
+
+  .slick-prev,
+  .slick-next {
+    z-index: 1200;
+    background: initial !important;
+    color: initial !important;
+
+    svg {
+      height: 20px;
+      width: 20px;
+      color: @blue-botticelli;
+    }
+  }
+
+  .slick-prev {
+    margin-left: 32px;
+  }
+
+  .slick-next {
+    margin-right: 32px;
+  }
+
+  .slick-track {
+    div {
+      height: 100%;
+    }
+  }
+}
 .PicturesCarousel {
+  cursor: pointer;
   &__imageWrap {
     display: flex !important;
     align-items: center;
     justify-content: center;
     height: 100%;
     width: 100%;
-    cursor: pointer;
   }
 
   &__image {

@@ -11,7 +11,7 @@ import { getIsAuthenticated } from '../../../store/authStore/authSelectors';
 
 import './RatingsWrap.less';
 
-const RatingsWrap = React.memo(({ ratings, wobjId, username, overlay }) => {
+const RatingsWrap = React.memo(({ ratings, wobjId, username, overlay, isSocialProduct }) => {
   const [sortedRatings, setSortingRatings] = useState([]);
   const mappedRatings = ratings.map(d => ({ ...d, rating: averageRate(d) }));
   const isAuth = useSelector(getIsAuthenticated);
@@ -24,7 +24,9 @@ const RatingsWrap = React.memo(({ ratings, wobjId, username, overlay }) => {
     setSortingRatings(ratingList);
   }, []);
 
-  const ratingTitleClassList = classNames('RatingsWrap__rate-title');
+  const ratingTitleClassList = classNames('RatingsWrap__rate-title', {
+    'RatingsWrap__rate-title-black': isSocialProduct,
+  });
 
   const handleSubmit = (rate, field) =>
     steemConnectAPI.rankingObject(username, field.author, field.permlink, wobjId, rate * 2);
@@ -54,11 +56,15 @@ const RatingsWrap = React.memo(({ ratings, wobjId, username, overlay }) => {
     });
     const ratingWrapClassList = classNames('RatingsWrap__rate', {
       RatingsWrap__overlay: overlay,
+      RatingsWrap__socialRate: isSocialProduct,
     });
 
     return (
       <Col className={ratingWrapClassList} span={colNum}>
-        <div className="RatingsWrap__stars" role="presentation">
+        <div
+          className={isSocialProduct ? 'RatingsWrap__socialStars' : 'RatingsWrap__stars'}
+          role="presentation"
+        >
           <Rate
             allowHalf
             defaultValue={defaultValue}
@@ -90,6 +96,7 @@ const RatingsWrap = React.memo(({ ratings, wobjId, username, overlay }) => {
 
 RatingsWrap.propTypes = {
   overlay: PropTypes.bool,
+  isSocialProduct: PropTypes.bool,
   ratings: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   wobjId: PropTypes.string.isRequired,
   username: PropTypes.string,
@@ -97,6 +104,7 @@ RatingsWrap.propTypes = {
 
 RatingsWrap.defaultProps = {
   overlay: false,
+  isSocialProduct: false,
   username: '',
 };
 

@@ -5,6 +5,8 @@ import PropTypes from 'prop-types';
 import { Avatar, Button, Form, message, Modal } from 'antd';
 import { connect } from 'react-redux';
 import { isEmpty, get } from 'lodash';
+import classNames from 'classnames';
+
 import {
   getWebConfiguration,
   saveWebConfiguration,
@@ -39,6 +41,9 @@ const ShopWebsiteConfigurations = ({
   const [openHeaderConfig, setOpenHeaderConfig] = useState('');
   const [image, setImage] = useState('');
   const [paramsSaving, setParamsSaving] = useState(false);
+  const classListHeaderConfig = classNames('WebsitesConfigurations__headers', {
+    'WebsitesConfigurations__headers--upperCase': !config?.header?.name,
+  });
   const host = match.params.site || '';
   const mobileLogo = get(config, 'mobileLogo');
   const banner = get(config, 'mainBanner');
@@ -274,9 +279,7 @@ const ShopWebsiteConfigurations = ({
                   defaultMessage: 'Website header:',
                 })}
               </h3>
-              <div className="WebsitesConfigurations__headers">
-                <b>{header.name}</b>
-              </div>
+              <div className={classListHeaderConfig}>{header.name}</div>
               <Button type="primary" onClick={() => setOpenHeaderConfig(true)}>
                 Edit
               </Button>

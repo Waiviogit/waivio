@@ -15,10 +15,6 @@ import PopoverMenu, { PopoverMenuItem } from '../../../components/PopoverMenu/Po
 import './WebsiteTopNavigation.less';
 
 const userNav = user => [
-  // {
-  //   name: 'Blog',
-  //   link: '/blog',
-  // },
   {
     name: 'Shop',
     link: `/user-shop/${user}`,
@@ -36,6 +32,22 @@ const WebsiteTopNavigation = ({ shopSettings }) => {
   const history = useHistory();
   const [visible, setVisible] = useState(false);
 
+  if (typeof document !== 'undefined' && typeof window !== 'undefined') {
+    const element = document.getElementById('WebsiteTopNavigation');
+    const container = document.getElementById('WebsiteTopNavigationContainer');
+
+    window.addEventListener('scroll', () => {
+      if (element) {
+        if (container.getBoundingClientRect().top <= 0) {
+          element.style.top = '0';
+          element.style.position = 'fixed';
+        } else {
+          element.style.position = 'static';
+        }
+      }
+    });
+  }
+
   if (loading) return <SkeletonRow rows={1} />;
   if (isEmpty(shopSettings) || isEmpty(linkList)) return null;
 
@@ -43,52 +55,54 @@ const WebsiteTopNavigation = ({ shopSettings }) => {
   const handleMoreMenuVisibleChange = vis => setVisible(vis);
 
   return (
-    <div className="WebsiteTopNavigation">
-      {take(linkList, listLength).map(l => (
-        <NavLink
-          className="WebsiteTopNavigation__link"
-          isActive={() => history.location.pathname.includes(l?.link)}
-          activeClassName={'WebsiteTopNavigation__link--active'}
-          key={l.link}
-          to={l.link}
-        >
-          {truncate(l.name, {
-            length: 24,
-            separator: '...',
-          })}
-        </NavLink>
-      ))}
-      {linkList.length > listLength && (
-        <Popover
-          placement="bottom"
-          trigger="click"
-          visible={visible}
-          onVisibleChange={handleMoreMenuVisibleChange}
-          overlayStyle={{ position: 'fixed' }}
-          content={
-            <PopoverMenu
-              onSelect={i => {
-                setVisible(false);
-                history.push(i);
-              }}
-            >
-              {takeRight(linkList, linkList.length - listLength).map(i => (
-                <PopoverMenuItem active={history.location.pathname.includes(i.link)} key={i.link}>
-                  {truncate(i.name, {
-                    length: 90,
-                    separator: '...',
-                  })}
-                </PopoverMenuItem>
-              ))}
-            </PopoverMenu>
-          }
-          overlayClassName="WebsiteTopNavigation__popover"
-        >
-          <span className={'WebsiteTopNavigation__link'}>
-            More <Icon type="caret-down" />
-          </span>
-        </Popover>
-      )}
+    <div id={'WebsiteTopNavigationContainer'}>
+      <div className="WebsiteTopNavigation" id={'WebsiteTopNavigation'}>
+        {take(linkList, listLength).map(l => (
+          <NavLink
+            className="WebsiteTopNavigation__link"
+            isActive={() => history.location.pathname.includes(l?.link)}
+            activeClassName={'WebsiteTopNavigation__link--active'}
+            key={l.link}
+            to={l.link}
+          >
+            {truncate(l.name, {
+              length: 24,
+              separator: '...',
+            })}
+          </NavLink>
+        ))}
+        {linkList.length > listLength && (
+          <Popover
+            placement="bottom"
+            trigger="click"
+            visible={visible}
+            onVisibleChange={handleMoreMenuVisibleChange}
+            overlayStyle={{ position: 'fixed' }}
+            content={
+              <PopoverMenu
+                onSelect={i => {
+                  setVisible(false);
+                  history.push(i);
+                }}
+              >
+                {takeRight(linkList, linkList.length - listLength).map(i => (
+                  <PopoverMenuItem active={history.location.pathname.includes(i.link)} key={i.link}>
+                    {truncate(i.name, {
+                      length: 90,
+                      separator: '...',
+                    })}
+                  </PopoverMenuItem>
+                ))}
+              </PopoverMenu>
+            }
+            overlayClassName="WebsiteTopNavigation__popover"
+          >
+            <span className={'WebsiteTopNavigation__link'}>
+              More <Icon type="caret-down" />
+            </span>
+          </Popover>
+        )}
+      </div>
     </div>
   );
 };

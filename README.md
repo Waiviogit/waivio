@@ -71,3 +71,12 @@ Please, DO NOT use `fixes`, `applied fixes` and other meaningless messages. If y
 
 PR titles should follow the same format as commit messages. Just so that you know, if you submit a PR with one commit only, GitHub assigns the title of the commit to the PR and saves you quite a bit of typing.
 
+
+```
+How switch port? PORT=4000 yarn dev 
+By default 3000
+
+localhost:3000 - dining.gifts
+localhost:3002 - waivio
+localhost:4000 - social.gifts
+```

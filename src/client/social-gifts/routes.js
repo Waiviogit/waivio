@@ -13,6 +13,7 @@ import Discover from '../discover/Discover';
 import { listOfSocialWebsites } from './listOfSocialWebsites';
 import SocialGiftsLandingPage from '../SocialGiftsLandingPage/SocialGiftsLandingPage';
 import ShopSwitcher from './ShopSwitcher/ShopSwitcher';
+import SocialProduct from './SocialProduct/SocialProduct';
 import ObjectDepartmentsWobjList from '../object/ObjectTypeShop/ObjectDepartmentsWobjList';
 import Checklist from './Checklist/Checklist';
 import UserDepartmentsWobjList from '../Shop/DepartmentsWobjList/UserDepartmentsWobjList';
@@ -69,6 +70,11 @@ const routes = host => ({
       path: '/discover/:search?',
       exact: true,
       component: Discover,
+    },
+    {
+      path: '/object/product/:name',
+      exact: true,
+      component: SocialProduct,
     },
     {
       path: '/confirmation',
@@ -197,7 +203,7 @@ const routes = host => ({
     },
     {
       path: [
-        `/object/:name/(${URL.WOBJ.tabs})?/(${URL.WOBJ.filters})?/:itemId?`,
+        `/object/:name/(${URL.WOBJ.tabs})?/(${URL.WOBJ.filters})?/:parentName?/:itemId?`,
         `/object/:name/shop/:department?`,
       ],
       component: WobjectContainer,
@@ -205,7 +211,7 @@ const routes = host => ({
       pathScope: '/object/:name',
       routes: [
         {
-          path: ['', '/newsFilter/:itemId', '/reviews/:itemId'],
+          path: ['', '/newsFilter/:parentName/:itemId?', '/reviews/:itemId'],
           exact: true,
           component: Views.ObjectPageFeed,
         },
@@ -405,6 +411,7 @@ const routes = host => ({
     {
       path: '/sign-in',
       exact: true,
+      isSocial: true,
       component: RedirectedSignIn,
     },
     {

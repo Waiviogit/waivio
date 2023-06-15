@@ -49,6 +49,10 @@
     display: flex;
     align-items: center;
   }
+  &__socialRate.ant-col.ant-col-24 {
+    display: flex;
+    align-items: flex-end;
+  }
 
   .ant-row {
     display: flex;
@@ -60,6 +64,14 @@
     white-space: nowrap;
     font-weight: 500;
     padding-left: 5px;
+    &-black {
+      text-overflow: ellipsis;
+      overflow: hidden;
+      white-space: nowrap;
+      font-weight: 500;
+      padding-left: 5px;
+      color: @black;
+    }
 
     &--withoutTruncate {
       overflow: visible;
@@ -90,6 +102,12 @@
         margin-right: 1px;
         font-size: 16px;
       }
+    }
+  }
+  &__socialStars:extend(.RatingsWrap__stars) {
+    .ant-rate-star {
+      font-size: 20px;
+      margin-right: 3px !important;
     }
   }
 }

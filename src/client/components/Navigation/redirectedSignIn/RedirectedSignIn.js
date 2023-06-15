@@ -25,7 +25,11 @@ const RedirectedSignIn = props => {
             marginTop: '100px',
           }}
         >
-          <WebsiteSignIn setUserData={setUserData} setIsFormVisible={setIsFormVisible} />
+          <WebsiteSignIn
+            isSocial={props.isSocial}
+            setUserData={setUserData}
+            setIsFormVisible={setIsFormVisible}
+          />
         </div>
       )}
     </div>
@@ -36,6 +40,7 @@ RedirectedSignIn.propTypes = {
   location: PropTypes.shape({
     search: PropTypes.string,
   }).isRequired,
+  isSocial: PropTypes.bool,
 };
 
 export default RedirectedSignIn;

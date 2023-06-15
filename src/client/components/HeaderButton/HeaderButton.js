@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { connect, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import store from 'store';
@@ -49,17 +49,6 @@ const HeaderButtons = props => {
     location,
   } = props;
   const lastSeenTimestamp = get(userMetaData, 'notifications_last_timestamp');
-
-  useEffect(() => {
-    if (
-      notifications.some(
-        notific => notific.type === 'transfer' && notific.timestamp > lastSeenTimestamp,
-      )
-    ) {
-      // props.getUserAccount(username);
-      // props.getTokenBalance('WAIV', username);
-    }
-  }, [notifications]);
 
   let popoverItems = [
     <PopoverMenuItem key="rewards" topNav>
@@ -353,8 +342,8 @@ const HeaderButtons = props => {
 
 HeaderButtons.propTypes = {
   intl: PropTypes.shape().isRequired,
-  aboutObject: PropTypes.shape().isRequired,
-  isHelpingObjTypes: PropTypes.shape().isRequired,
+  aboutObject: PropTypes.shape(),
+  isHelpingObjTypes: PropTypes.shape(),
   notifications: PropTypes.arrayOf(PropTypes.shape()),
   userMetaData: PropTypes.shape(),
   loadingNotifications: PropTypes.bool,

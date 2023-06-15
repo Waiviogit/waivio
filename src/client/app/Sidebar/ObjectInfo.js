@@ -124,6 +124,7 @@ class ObjectInfo extends React.Component {
     brandObject: {},
     merchantObject: {},
     authorsArray: [],
+    menuItemsArray: [],
     showMenuLegacy: false,
   };
 
@@ -193,26 +194,44 @@ class ObjectInfo extends React.Component {
     this.setState({ authorsArray });
     this.props.setAuthors(authorsArray);
 
-    if (publisher?.authorPermlink) {
-      getObjectInfo([publisher?.authorPermlink]).then(res =>
-        this.setState({ publisherObject: res.wobjects[0] }),
-      );
-    }
-    if (manufacturer?.authorPermlink) {
-      getObjectInfo([manufacturer?.authorPermlink]).then(res =>
-        this.setState({ manufacturerObject: res.wobjects[0] }),
-      );
-    }
-    if (brand?.authorPermlink) {
-      getObjectInfo([brand?.authorPermlink]).then(res =>
-        this.setState({ brandObject: res.wobjects[0] }),
-      );
-    }
-    if (merchant?.authorPermlink) {
-      getObjectInfo([merchant?.authorPermlink]).then(res =>
-        this.setState({ merchantObject: res.wobjects[0] }),
-      );
-    }
+    const menuItemsArray = await wobject.menuItem.reduce(async (acc, curr) => {
+      const res = await acc;
+      const itemBody = JSON.parse(curr.body);
+
+      if (itemBody.linkToObject && !has(itemBody, 'title')) {
+        const newObj = await getObjectInfo([itemBody.linkToObject]);
+
+        return [
+          ...res,
+          { ...curr, body: JSON.stringify({ ...itemBody, title: newObj.wobjects[0].name }) },
+        ];
+      }
+
+      return [...res, curr];
+    }, []);
+
+    this.setState({ menuItemsArray });
+
+    const backObjects = [
+      publisher?.authorPermlink,
+      manufacturer?.authorPermlink,
+      brand?.authorPermlink,
+      merchant?.authorPermlink,
+    ].filter(permlink => permlink);
+
+    getObjectInfo(backObjects).then(res => {
+      const brandObject =
+        res.wobjects.find(wobj => wobj.author_permlink === brand?.authorPermlink) || brand;
+      const manufacturerObject =
+        res.wobjects.find(wobj => wobj.author_permlink === manufacturer?.authorPermlink) ||
+        manufacturer;
+      const publisherObject =
+        res.wobjects.find(wobj => wobj.author_permlink === publisher?.authorPermlink) || publisher;
+      const merchantObject =
+        res.wobjects.find(wobj => wobj.author_permlink === merchant?.authorPermlink) || merchant;
+
+      this.setState({ brandObject, manufacturerObject, publisherObject, merchantObject });
+    });
   }
   authorFieldAuthorPermlink = author => author.authorPermlink || author.author_permlink;
 
@@ -551,9 +570,9 @@ class ObjectInfo extends React.Component {
           'body',
         );
       }
-      if (!has(wobject, 'groupId')) {
-        return activeOptionPicture.filter(o => o.name !== 'avatar');
-      }
+      // if (!has(wobject, 'groupId')) {
+      //   return activeOptionPicture.filter(o => o.name !== 'avatar');
+      // }
       if (has(wobject, 'groupId') && !has(wobject, 'avatar') && !has(wobject, 'galleryItem')) {
         return uniqBy(
           [
@@ -676,7 +695,7 @@ class ObjectInfo extends React.Component {
     const menuSection = () => {
       if (!isEditMode && !isEmpty(customSort) && !hasType(wobject, OBJECT_TYPE.LIST)) {
         const buttonArray = [
-          ...menuItem,
+          ...this.state.menuItemsArray,
           ...menuLinks,
           ...menuPages,
           ...button,
@@ -722,7 +741,7 @@ class ObjectInfo extends React.Component {
               {isEditMode && this.listItem(objectFields.widget, null)}
               {this.listItem(
                 objectFields.menuItem,
-                !isEmpty(menuItem) && <MenuItemButtons menuItem={menuItem} />,
+                !isEmpty(menuItem) && <MenuItemButtons menuItem={this.state.menuItemsArray} />,
               )}
               {this.listItem(objectFields.sorting, null)}
             </div>

@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import classNames from 'classnames';
 import { useHistory } from 'react-router';
 import PropTypes from 'prop-types';
-import { isEmpty } from 'lodash';
+import { has, isEmpty } from 'lodash';
 import { FormattedMessage } from 'react-intl';
 import {
   setStoreActiveCategory,
@@ -13,8 +13,6 @@ import { getActiveOption } from '../../../../store/optionsStore/optionsSelectors
 import LinkButton from '../../../components/LinkButton/LinkButton';
 import { isMobile } from '../../../../common/helpers/apiHelpers';
 
-const optionsLimit = 15;
-
 const OptionItemView = ({
   option,
   wobject,
@@ -22,14 +20,33 @@ const OptionItemView = ({
   optionsNumber,
   optionsBack,
   ownOptions,
+  isSocialProduct,
 }) => {
+  const optionsLimit = isSocialProduct ? 30 : 15;
   const [hovered, setHovered] = useState({});
   const activeStoreOption = useSelector(getActiveOption);
   const history = useHistory();
   const dispatch = useDispatch();
+  const isSocialObject = isSocialProduct && ['book', 'product'].includes(wobject.object_type);
+  const showDescriptionPage =
+    has(wobject, 'description') && !wobject.count_posts && !wobject.menuItem && !wobject.menuItems;
+  const waivioOptionsLink = showDescriptionPage
+    ? `/object/${wobject.author_permlink}/options/${option[0]}/description`
+    : `/object/${wobject.author_permlink}/options/${option[0]}`;
+  const waivioAvailableOptionsLink = el =>
+    showDescriptionPage
+      ? `/object/${getAvailableOptionPermlinkAndStyle(el, true)}/description`
+      : `/object/${getAvailableOptionPermlinkAndStyle(el, true)}`;
+  const linkToOption = isSocialObject
+    ? `/object/${wobject.object_type}/${wobject.author_permlink}/options/${option[0]}`
+    : waivioOptionsLink;
+  const linkToAvailableOption = el =>
+    isSocialObject
+      ? `/object/${wobject.object_type}/${getAvailableOptionPermlinkAndStyle(el, true)}`
+      : waivioAvailableOptionsLink(el);
 
   useEffect(() => {
-    dispatch(setStoreActiveOption(ownOptions));
+    if (!isSocialProduct) dispatch(setStoreActiveOption(ownOptions));
   }, []);
 
   const getAvailableOption = el =>
@@ -88,9 +105,9 @@ const OptionItemView = ({
     dispatch(setStoreActiveOption({ ...activeStoreOption, [el.body.category]: el }));
     if (el.author_permlink !== wobject.author_permlink) {
       if (isMobile()) {
-        history.push(`/object/${getAvailableOptionPermlinkAndStyle(el, true)}/about`);
+        history.push(`${linkToAvailableOption(el)}/about`);
       } else {
-        history.push(`/object/${getAvailableOptionPermlinkAndStyle(el, true)}`);
+        history.push(linkToAvailableOption(el));
       }
       dispatch(setStoreActiveCategory(el.body.category));
       dispatch(setStoreActiveOption({ ...activeStoreOption, [el.body.category]: el }));
@@ -102,9 +119,11 @@ const OptionItemView = ({
   return (
     <div key={option[0]}>
       {' '}
-      <div className="Options__option-category">
+      <div
+        className={isSocialProduct ? 'Options__option-socialCategory' : 'Options__option-category'}
+      >
         {option[0]}:{' '}
-        <span className="fw8">
+        <span className="Options__hoveredOption">
           {hovered?.[option[0]]?.body?.value || activeStoreOption?.[option[0]]?.body?.value}
         </span>
       </div>
@@ -138,10 +157,7 @@ const OptionItemView = ({
       </>
       {option[1]?.length > optionsLimit && (
         <div className="object-sidebar__menu-item">
-          <LinkButton
-            className="LinkButton menu-button mt2"
-            to={`/object/${wobject.author_permlink}/options/${option[0]}`}
-          >
+          <LinkButton className="LinkButton menu-button mt2" to={linkToOption}>
             <div>
               <FormattedMessage id="show_all" defaultMessage="Show all" />
             </div>
@@ -157,6 +173,7 @@ OptionItemView.propTypes = {
   wobject: PropTypes.shape().isRequired,
   optionsBack: PropTypes.shape(),
   ownOptions: PropTypes.shape(),
+  isSocialProduct: PropTypes.bool,
   option: PropTypes.arrayOf().isRequired,
   setHoveredOption: PropTypes.func.isRequired,
   optionsNumber: PropTypes.number.isRequired,
