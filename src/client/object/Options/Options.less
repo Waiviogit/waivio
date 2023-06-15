@@ -5,6 +5,7 @@
   &__block:not(:last-child) {
     margin-bottom: 0.5rem;
   }
+
   &__option-category {
     line-height: 1;
     padding-bottom: 5px;
@@ -12,6 +13,22 @@
     overflow: hidden;
     text-overflow: ellipsis;
   }
+
+  &__option-socialCategory {
+    line-height: 1;
+    padding-bottom: 5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: @black;
+    font-weight: 600;
+  }
+
+  &__hoveredOption {
+    font-weight: 600;
+    color: var(--website-color);
+  }
+
   &__my-pictures {
     width: 50px;
     height: 50px;
@@ -20,31 +37,7 @@
     margin-left: 4px;
     margin-bottom: 4px;
     object-fit: contain;
-    &--black {
-      border: 1px solid @black-text-basic;
-    }
-    &--selected {
-      width: 50px;
-      height: 50px;
-      border: 1px solid var(--website-color) !important;
-      border-radius: 4px;
-      margin-left: 4px;
-      margin-bottom: 4px;
-      object-fit: contain;
-    }
-    &:hover {
-      cursor: pointer;
-      border-color: var(--website-hover-color);
-    }
-  }
-  &__pictures {
-    width: 50px;
-    height: 50px;
-    border: 1px dashed @silver-gray;
-    border-radius: 4px;
-    margin-left: 4px;
-    margin-bottom: 4px;
-    object-fit: contain;
+
     &--black {
       border: 1px solid @black-text-basic;
     }
@@ -58,11 +51,42 @@
       margin-bottom: 4px;
       object-fit: contain;
     }
+
     &:hover {
       cursor: pointer;
       border-color: var(--website-hover-color);
     }
   }
+
+  &__pictures {
+    width: 50px;
+    height: 50px;
+    border: 1px dashed @silver-gray;
+    border-radius: 4px;
+    margin-left: 4px;
+    margin-bottom: 4px;
+    object-fit: contain;
+
+    &--black {
+      border: 1px solid @black-text-basic;
+    }
+
+    &--selected {
+      width: 50px;
+      height: 50px;
+      border: 1px solid var(--website-color) !important;
+      border-radius: 4px;
+      margin-left: 4px;
+      margin-bottom: 4px;
+      object-fit: contain;
+    }
+
+    &:hover {
+      cursor: pointer;
+      border-color: var(--website-hover-color);
+    }
+  }
+
   &__my-option-button {
     background: none;
     border: 1px solid @black-text-basic;
@@ -99,13 +123,16 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+
     &--selected {
       border: 1px solid var(--website-color) !important;
     }
+
     &--black {
       border: 1px solid @black-text-basic;
       color: @black-text-basic;
     }
+
     &:hover {
       cursor: pointer;
       border-color: var(--website-hover-color);

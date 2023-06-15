@@ -7,53 +7,53 @@ import { useRouteMatch } from 'react-router';
 
 const MenuItemButton = ({ item }) => {
   const [url, setUrl] = useState('');
-  const itemBody = JSON.parse(item.body);
-  const webLink = has(itemBody, 'linkToWeb');
+  const webLink = has(item, 'linkToWeb');
   const linkTarget = webLink ? '_blank' : '_self';
-  const defaultButtonType = itemBody.style === 'highlight' ? 'primary' : 'default';
+  const defaultButtonType = item.style === 'highlight' ? 'primary' : 'default';
   const match = useRouteMatch();
   const authorPermlink = match.params.name;
+  const title = item?.title || item?.name;
 
   useEffect(() => {
-    if (has(itemBody, 'linkToObject')) {
-      switch (itemBody.objectType) {
+    if (has(item, 'linkToObject')) {
+      switch (item.objectType) {
         case 'list':
-          return setUrl(`/object/${authorPermlink}/menu#${itemBody.linkToObject}`);
+          return setUrl(`/object/${authorPermlink}/menu#${item.linkToObject}`);
         case 'page':
-          return setUrl(`/object/${authorPermlink}/page#${itemBody.linkToObject}`);
+          return setUrl(`/object/${authorPermlink}/page#${item.linkToObject}`);
         case 'newsfeed':
-          return setUrl(`/object/${authorPermlink}/newsFilter/${itemBody.linkToObject}`);
+          return setUrl(`/object/${authorPermlink}/newsFilter/${item.linkToObject}`);
         case 'widget':
-          return setUrl(`/object/${authorPermlink}/widget#${itemBody.linkToObject}`);
+          return setUrl(`/object/${authorPermlink}/widget#${item.linkToObject}`);
         default:
-          return setUrl(`/object/${itemBody.linkToObject}`);
+          return setUrl(`/object/${item.linkToObject}`);
       }
     }
 
-    return setUrl(`${itemBody.linkToWeb}`);
+    return setUrl(`${item.linkToWeb}`);
   }, []);
 
   const renderItem = () => {
-    switch (itemBody.style) {
+    switch (item.style) {
       case 'icon':
         return webLink ? (
           <div>
             <a target={linkTarget} href={url} className="MenuItemButtons__link ">
-              <img src={itemBody.image} className="MenuItemButtons__icon" alt="pic" />
+              <img src={item.image} className="MenuItemButtons__icon" alt="pic" />
             </a>
             <a target={linkTarget} href={url} className="MenuItemButtons__link">
               {' '}
-              {itemBody.title}
+              {title}
             </a>
           </div>
         ) : (
           <div>
             <Link target={linkTarget} to={url} className="MenuItemButtons__link ">
-              <img src={itemBody.image} className="MenuItemButtons__icon" alt="pic" />
+              <img src={item.image} className="MenuItemButtons__icon" alt="pic" />
             </Link>
             <Link target={linkTarget} to={url} className="MenuItemButtons__link">
               {' '}
-              {itemBody.title}
+              {title}
             </Link>
           </div>
         );
@@ -61,13 +61,13 @@ const MenuItemButton = ({ item }) => {
         return webLink ? (
           <div>
             <a href={url} target={linkTarget}>
-              <img src={itemBody.image} className="MenuItemButtons__image" alt="pic" />
+              <img src={item.image} className="MenuItemButtons__image" alt="pic" />
             </a>
           </div>
         ) : (
           <div>
             <Link to={url} target={linkTarget}>
-              <img src={itemBody.image} className="MenuItemButtons__image" alt="pic" />
+              <img src={item.image} className="MenuItemButtons__image" alt="pic" />
             </Link>
           </div>
         );
@@ -76,7 +76,7 @@ const MenuItemButton = ({ item }) => {
           <div className="object-sidebar__menu-item">
             <Button className="LinkButton menu-button" type={defaultButtonType}>
               <a target={linkTarget} href={url} className="MenuItemButtons__hideLongTitle">
-                {itemBody.title}
+                {title}
               </a>
             </Button>
           </div>
@@ -84,7 +84,7 @@ const MenuItemButton = ({ item }) => {
           <div className="object-sidebar__menu-item">
             <Button className="LinkButton menu-button" type={defaultButtonType}>
               <Link target={linkTarget} to={url} className="MenuItemButtons__hideLongTitle">
-                {itemBody.title}
+                {title}
               </Link>
             </Button>
           </div>

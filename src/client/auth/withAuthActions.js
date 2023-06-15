@@ -6,6 +6,8 @@ import {
   getCurrentHost,
   getIsWaivio,
   getUsedLocale,
+  getWebsiteColors,
+  getWebsiteNameForHeader,
   getWebsiteParentHost,
 } from '../../store/appStore/appSelectors';
 import { getIsAuthenticated } from '../../store/authStore/authSelectors';
@@ -20,7 +22,9 @@ export default function withAuthActions(WrappedComponent) {
     isWaivio: getIsWaivio(state),
     domain: getWebsiteParentHost(state),
     host: getCurrentHost(state),
+    websiteName: getWebsiteNameForHeader(state),
     usedLocale: getUsedLocale(state),
+    colors: getWebsiteColors(state),
   }))
   class Wrapper extends React.Component {
     static propTypes = {
@@ -28,7 +32,11 @@ export default function withAuthActions(WrappedComponent) {
       isWaivio: PropTypes.bool,
       domain: PropTypes.string,
       host: PropTypes.string,
+      websiteName: PropTypes.string,
       usedLocale: PropTypes.string,
+      colors: PropTypes.shape({
+        mapMarkerBody: PropTypes.string,
+      }),
     };
 
     static defaultProps = {
@@ -68,8 +76,12 @@ export default function withAuthActions(WrappedComponent) {
         this.displayLoginModal();
       } else {
         const path = window.location.pathname === '/' ? '' : window.location.pathname;
+        const color = this.props.colors.mapMarkerBody.replace('#', '');
 
-        window.location.href = `https://${this.props.domain}/sign-in?host=${this.props.host}${path}&usedLocale=${this.props.usedLocale}`;
+        window.location.href = `https://${this.props.domain}/sign-in?host=${
+          this.props.host
+        }${path}&color=${color}&usedLocale=${this.props.usedLocale}&websiteName=${this.props
+          .websiteName || this.props.host}`;
       }
     }
 

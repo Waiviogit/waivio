@@ -411,6 +411,7 @@ const routes = host => ({
     {
       path: '/sign-in',
       exact: true,
+      isSocial: true,
       component: RedirectedSignIn,
     },
     {

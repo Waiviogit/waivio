@@ -14,6 +14,7 @@
   .anticon.anticon-caret-down,
   .anticon.anticon-bars,
   .iconfont.icon-remind,
+  .iconfont.icon-language,
   .iconfont.icon-write {
     color: var(--website-color);
   }
@@ -44,7 +45,10 @@
     display: flex;
     align-items: center;
     color: var(--website-color);
-    text-transform: uppercase;
+
+    &--upperCase {
+      text-transform: uppercase;
+    }
 
     &:hover {
       color: var(--website-color);
@@ -84,7 +88,7 @@
     }
 
     .ant-select-auto-complete.ant-select .ant-select-selection__placeholder {
-      margin-left: 3px;
+      margin-left: 10px;
     }
 
     .iconfont {
@@ -99,7 +103,7 @@
     }
 
     .icon-search {
-      margin-left: 2px;
+      margin-left: 5px;
       margin-top: 0 !important;
     }
 
@@ -109,7 +113,7 @@
       width: 100%;
 
       @media @small {
-        padding: 4px 40px 4px 25px;
+        padding: 4px 40px 4px 30px;
       }
     }
 

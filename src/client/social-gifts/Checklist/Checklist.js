@@ -42,7 +42,7 @@ const Checklist = ({
   setBreadcrumb,
   defaultListImage,
 }) => {
-  const [loading, setLoading] = useState();
+  const [loading, setLoading] = useState(true);
   const [object, setObject] = useState(false);
   const favicon = useSelector(getHelmetIcon);
   const config = useSelector(getConfigurationValues);

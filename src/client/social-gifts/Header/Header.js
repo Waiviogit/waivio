@@ -16,11 +16,14 @@ const Header = () => {
   const logo = useSelector(getWebsiteLogo);
   const currHost = typeof location !== 'undefined' && location.hostname;
   const header = config?.header?.name;
+  const logoClassList = classNames('Header__logo', {
+    'Header__logo--upperCase': !header,
+  });
 
   return (
     <React.Fragment>
       <div className="Header">
-        <Link to={'/'} className="Header__logo">
+        <Link to={'/'} className={logoClassList}>
           {logo && <img alt="logo" src={logo} className="Header__img" />}
           <span>{header || config.host || currHost}</span>
         </Link>

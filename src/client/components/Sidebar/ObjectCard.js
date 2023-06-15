@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-import { isEmpty } from 'lodash';
+import { has, isEmpty } from 'lodash';
 import classnames from 'classnames';
 import ObjectAvatar from '../ObjectAvatar';
 import FollowButton from '../../widgets/FollowButton';
@@ -18,13 +18,22 @@ const ObjectCard = ({
   follow,
   parent,
   isModal,
+  isSocialProduct,
 }) => {
   if (!isEmpty(wobject)) {
     const updatedWObject = { ...wobject };
 
     if (!wobject.avatar && isEmpty(wobject.parent)) updatedWObject.avatar = parent.avatar;
     const name = getObjectName(wobject);
-    const pathname = wobject.defaultShowLink;
+    const showDescriptionPage =
+      !isSocialProduct &&
+      has(wobject, 'description') &&
+      !wobject.count_posts &&
+      !wobject.menuItem &&
+      !wobject.menuItems;
+    const pathname = showDescriptionPage
+      ? `/object/${wobject.author_permlink}/description`
+      : wobject.defaultShowLink;
     const objectCardClassnames = classnames('ObjectCard__name', {
       'ObjectCard__name-long': isModal,
       'ObjectCard__name-full': isMobile(),
@@ -72,8 +81,12 @@ ObjectCard.propTypes = {
     author_permlink: PropTypes.string,
     youFollows: PropTypes.bool,
     parent: PropTypes.shape(),
+    count_posts: PropTypes.number,
+    menuItems: PropTypes.arrayOf(),
+    menuItem: PropTypes.arrayOf(),
   }),
   showFollow: PropTypes.bool,
+  isSocialProduct: PropTypes.bool,
   alt: PropTypes.string,
   isModal: PropTypes.bool,
   isNewWindow: PropTypes.bool,
@@ -84,6 +97,7 @@ ObjectCard.propTypes = {
 ObjectCard.defaultProps = {
   showFollow: true,
   isNewWindow: false,
+  isSocialProduct: false,
   unfollow: () => {},
   follow: () => {},
   wobject: {},

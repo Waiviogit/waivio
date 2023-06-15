@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import hivesigner from 'hivesigner';
 import { injectIntl } from 'react-intl';
 import { withRouter } from 'react-router-dom';
@@ -28,6 +28,8 @@ import {
 import { getRate, getRewardFund } from '../../../store/appStore/appActions';
 import { getRebloggedList } from '../../../store/reblogStore/reblogActions';
 import styles from './styles';
+import { hexToRgb } from '../../../common/helpers';
+
 import './WebsiteSignIn.less';
 
 const WebsiteSignIn = props => {
@@ -36,12 +38,20 @@ const WebsiteSignIn = props => {
   const currentHost = useSelector(getCurrentHost);
   const query = new URLSearchParams(props.location.search);
   const url = query.get('host') || currentHost + location.pathname;
-
   const urlObj = new URL(url);
   const hiveSinger = new hivesigner.Client({
     app: process.env.STEEMCONNECT_CLIENT_ID,
     callbackURL: `${urlObj.origin}/callback`,
   });
+
+  useEffect(() => {
+    if (query.get('color')) {
+      const color = `#${query.get('color')}`;
+
+      document.body.style.setProperty('--website-color', color);
+      document.body.style.setProperty('--website-hover-color', hexToRgb(color, 8));
+    }
+  }, []);
 
   const onClickHiveSingerAuthButton = () => {
     if (window.gtag) window.gtag('event', 'login_hive_singer');
@@ -120,21 +130,27 @@ const WebsiteSignIn = props => {
     >
       <div style={styles.formHeader}>
         <h1 style={{ ...styles.mainTitle, ...styles.resetTitleStyles }}>
-          {props.intl.formatMessage({
-            id: 'eat_out_earn_crypto',
-            defaultMessage: 'eat out, earn crypto',
-          })}
+          {props.isSocial
+            ? props.intl.formatMessage({
+                id: 'start_shopping_here',
+                defaultMessage: 'Start shopping here!',
+              })
+            : props.intl.formatMessage({
+                id: 'eat_out_earn_crypto',
+                defaultMessage: 'eat out, earn crypto',
+              })}
         </h1>
         <h2
           style={{
-            color: '#f86b26',
             ...styles.resetTitleStyles,
           }}
         >
-          {props.intl.formatMessage({
-            id: 'sign_in_for_reward',
-            defaultMessage: 'Sign-In for rewards per meal',
-          })}
+          {props.isSocial
+            ? query.get('websiteName')
+            : props.intl.formatMessage({
+                id: 'sign_in_for_reward',
+                defaultMessage: 'Sign-In for rewards per meal',
+              })}
           .
         </h2>
       </div>
@@ -284,6 +300,7 @@ WebsiteSignIn.propTypes = {
     formatMessage: PropTypes.func,
   }).isRequired,
   setUserData: PropTypes.func.isRequired,
+  isSocial: PropTypes.bool,
   setIsFormVisible: PropTypes.func.isRequired,
 };
 
