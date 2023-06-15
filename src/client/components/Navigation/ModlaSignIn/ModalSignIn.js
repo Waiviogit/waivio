@@ -32,11 +32,13 @@ import {
   getCurrentHost,
   getIsWaivio,
   getUsedLocale,
+  getWebsiteNameForHeader,
   getWebsiteParentHost,
 } from '../../../../store/appStore/appSelectors';
 import WebsiteSignIn from '../../../websites/WebsiteSignIn/WebsiteSignIn';
 
 import './ModalSignIn.less';
+import useWebsiteColor from '../../../../hooks/useWebsiteColor';
 
 const ModalSignIn = ({
   intl,
@@ -53,6 +55,7 @@ const ModalSignIn = ({
   isWaivio,
   domain,
   usedLocale,
+  websiteName,
 }) => {
   const dispatch = useDispatch();
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -60,6 +63,7 @@ const ModalSignIn = ({
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [lastError, setLastError] = React.useState('');
+  const colors = useWebsiteColor();
   let host = currHost;
 
   if (!host && typeof location !== 'undefined') host = location.host;
@@ -254,7 +258,10 @@ const ModalSignIn = ({
 
   const onSignUpClick = isOpen => {
     if (!isWaivio && domain) {
-      window.location.href = `https://${domain}/sign-in?host=${host}&usedLocale=${usedLocale}`;
+      window.location.href = `https://${domain}/sign-in?host=${host}&color=${colors.background.replace(
+        '#',
+        '',
+      )}&usedLocale=${usedLocale}&websiteName=${websiteName || host}`;
     } else {
       setIsModalOpen(isOpen);
     }
@@ -306,6 +313,7 @@ ModalSignIn.propTypes = {
   usedLocale: PropTypes.bool,
   setIsShowSignInModal: PropTypes.func,
   toCurrentWobjLink: PropTypes.string,
+  websiteName: PropTypes.string,
   buttonClassName: PropTypes.string,
   history: PropTypes.shape(),
   currHost: PropTypes.string.isRequired,
@@ -331,4 +339,5 @@ export default connect(state => ({
   domain: getWebsiteParentHost(state),
   isWaivio: getIsWaivio(state),
   usedLocale: getUsedLocale(state),
+  websiteName: getWebsiteNameForHeader(state),
 }))(injectIntl(ModalSignIn));
