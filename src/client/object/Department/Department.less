@@ -2,6 +2,14 @@
 @import (reference) '../../styles/modules/variables';
 
 .Department {
+  &__wrapper {
+    display: flex;
+  }
+  &__item {
+    &:hover {
+      color: var(--website-color);
+    }
+  }
   &__activeDepartment {
     color: var(--website-color);
   }

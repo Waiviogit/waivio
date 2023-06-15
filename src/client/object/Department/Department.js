@@ -7,17 +7,21 @@ import DepartmentList from './DepartmentList';
 import './Department.less';
 
 const Department = ({ wobject, departments, isEditMode, isSocialGifts }) => (
-  <div className={classNames('flex-column', { paddingBottom: !isEditMode })}>
+  <div
+    className={classNames(isSocialGifts ? 'flex ' : 'flex-column', { paddingBottom: !isEditMode })}
+  >
     {!isEditMode && !isEmpty(departments) && (
       <div className="CompanyId__title">
         <FormattedMessage id="departments" formattedMessage="Departments" />:{' '}
       </div>
     )}
-    <DepartmentList
-      isSocialGifts={isSocialGifts}
-      wobject={wobject}
-      departments={wobject?.departments}
-    />
+    <div className={isSocialGifts ? 'Department__wrapper' : ''}>
+      <DepartmentList
+        isSocialGifts={isSocialGifts}
+        wobject={wobject}
+        departments={wobject?.departments}
+      />
+    </div>
   </div>
 );
 

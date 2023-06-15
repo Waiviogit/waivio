@@ -24,6 +24,7 @@
   }
 
   &__wobjName {
+    color: @black;
     font-weight: 600;
     font-size: 26px;
     word-break: break-word;
@@ -35,6 +36,13 @@
 
   &__ratings {
     padding-bottom: 7px;
+    //@media @small {
+    //  display: flex;
+    //}
+  }
+  &__subtitle {
+    color: @blue-botticelli;
+    text-transform: uppercase;
   }
 
   &__column {
@@ -46,6 +54,9 @@
 
   &__price {
     padding-bottom: 15px;
+    font-weight: 600;
+    font-size: 26px;
+    color: var(--website-hover-color);
   }
 
   &__paddingBottom {
@@ -55,14 +66,15 @@
   &__heading {
     padding-bottom: 8px;
     text-transform: uppercase;
-    font-weight: 500;
+    font-weight: 600;
     font-size: 18px;
+    color: @black;
   }
 
   &__productDetails,
   &__featuresContainer,
   &__aboutItem {
-    border-bottom: 1px solid grey;
+    //border-bottom: 1px solid grey;
     margin-bottom: 20px;
     padding-bottom: @paddingBottom;
   }
