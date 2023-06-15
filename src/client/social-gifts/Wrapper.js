@@ -146,14 +146,16 @@ const SocialWrapper = props => {
 
             props.setLoadingStatus(true);
           } else
-            getObjectsByIds({ authorPermlinks: menuItemLinks }).then(u => {
-              const compareList = wobject?.menuItem?.map(l => {
-                const body = parseJSON(l.body);
-                const y = u.wobjects.find(wobj => wobj.author_permlink === body?.linkToObject);
+            getObjectsByIds({ authorPermlinks: menuItemLinks }).then(listItems => {
+              const compareList = wobject?.menuItem?.map(wobjItem => {
+                const body = parseJSON(wobjItem.body);
+                const currItem = listItems.wobjects.find(
+                  wobj => wobj.author_permlink === body?.linkToObject,
+                );
 
                 return {
-                  ...l,
-                  ...y,
+                  ...wobjItem,
+                  ...currItem,
                   body,
                 };
               });
@@ -168,7 +170,7 @@ const SocialWrapper = props => {
                 ...compareList?.filter(i => !customSort.includes(i.permlink)),
               ].map(i => ({
                 link: createLink(i),
-                name: i?.body?.title,
+                name: i?.body?.title || getObjectName(i),
               }));
 
               dispatch(
