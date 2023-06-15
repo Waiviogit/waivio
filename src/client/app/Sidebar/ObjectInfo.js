@@ -177,9 +177,6 @@ class ObjectInfo extends React.Component {
     const authors = wobject.authors
       ? wobject.authors.map(el => parseWobjectField(el, 'body', []))
       : [];
-    const menuItem = wobject.menuItem
-      ? wobject.menuItem.map(el => parseWobjectField(el, 'body', []))
-      : [];
 
     const authorsArray = await authors.reduce(async (acc, curr) => {
       const res = await acc;
@@ -197,13 +194,17 @@ class ObjectInfo extends React.Component {
     this.setState({ authorsArray });
     this.props.setAuthors(authorsArray);
 
-    const menuItemsArray = await menuItem.reduce(async (acc, curr) => {
+    const menuItemsArray = await wobject.menuItem.reduce(async (acc, curr) => {
       const res = await acc;
+      const itemBody = JSON.parse(curr.body);
 
-      if (curr.linkToObject && !has(curr, 'title')) {
-        const newObj = await getObjectInfo([curr.linkToObject]);
+      if (itemBody.linkToObject && !has(itemBody, 'title')) {
+        const newObj = await getObjectInfo([itemBody.linkToObject]);
 
-        return [...res, { ...curr, ...newObj.wobjects[0] }];
+        return [
+          ...res,
+          { ...curr, body: JSON.stringify({ ...itemBody, title: newObj.wobjects[0].name }) },
+        ];
       }
 
       return [...res, curr];
@@ -694,7 +695,7 @@ class ObjectInfo extends React.Component {
     const menuSection = () => {
       if (!isEditMode && !isEmpty(customSort) && !hasType(wobject, OBJECT_TYPE.LIST)) {
         const buttonArray = [
-          ...menuItem,
+          ...this.state.menuItemsArray,
           ...menuLinks,
           ...menuPages,
           ...button,
