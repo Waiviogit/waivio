@@ -56,6 +56,7 @@ const RatingsWrap = React.memo(({ ratings, wobjId, username, overlay, isSocialPr
     });
     const ratingWrapClassList = classNames('RatingsWrap__rate', {
       RatingsWrap__overlay: overlay,
+      RatingsWrap__socialRate: isSocialProduct,
     });
 
     return (
