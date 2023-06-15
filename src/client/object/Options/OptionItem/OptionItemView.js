@@ -119,9 +119,11 @@ const OptionItemView = ({
   return (
     <div key={option[0]}>
       {' '}
-      <div className="Options__option-category">
+      <div
+        className={isSocialProduct ? 'Options__option-socialCategory' : 'Options__option-category'}
+      >
         {option[0]}:{' '}
-        <span className="fw8">
+        <span className="Options__hoveredOption">
           {hovered?.[option[0]]?.body?.value || activeStoreOption?.[option[0]]?.body?.value}
         </span>
       </div>
