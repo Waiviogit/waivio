@@ -18,19 +18,22 @@ const DepartmentList = ({ wobject, departments, isSocialGifts }) => {
 
   return (
     <>
-      {departmentsList?.map(dep => (
-        <DepartmentItem
-          id={dep.body}
-          key={dep.body}
-          history={history}
-          wobject={wobject}
-          department={dep}
-        />
+      {departmentsList?.map((dep, i) => (
+        <>
+          <DepartmentItem
+            isSocialGifts={isSocialGifts}
+            id={dep.body}
+            history={history}
+            wobject={wobject}
+            department={dep}
+          />
+          {isSocialGifts && i !== departmentsList.length - 1 && ','}{' '}
+        </>
       ))}
       {hasMore && (
         <button onClick={onShowMoreClick} className="WalletTable__csv-button">
           {isSocialGifts ? (
-            <span>
+            <span className="ml2">
               <FormattedMessage id="show_all" defaultMessage="Show all" />
               {` (${departments.length})`}
             </span>

@@ -185,7 +185,13 @@ class WobjectContainer extends React.Component {
     const newsFilter = match.params[1] === 'newsFilter' ? { newsFilter: match.params.itemId } : {};
 
     this.props.getObject(match.params.name, authenticatedUserName).then(res => {
-      if (has(res.value, 'description') && !res.value.count_posts) {
+      const showDescriptionPage =
+        has(res.value, 'description') &&
+        !res.value.count_posts &&
+        !res.value.menuItem &&
+        !res.value.menuItems;
+
+      if (showDescriptionPage) {
         history.push(`/object/${res.value.author_permlink}/description`);
       }
       this.props.getAlbums(match.params.name);

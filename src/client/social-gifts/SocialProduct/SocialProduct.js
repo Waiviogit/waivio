@@ -15,7 +15,6 @@ import {
 } from '../../../waivioApi/ApiClient';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 import { getUsedLocale } from '../../../store/appStore/appSelectors';
-import RatingsWrap from '../../objectCard/RatingsWrap/RatingsWrap';
 import { objectFields } from '../../../common/constants/listOfFields';
 import { getActiveCategory, getActiveOption } from '../../../store/optionsStore/optionsSelectors';
 import { setStoreActiveOption } from '../../../store/optionsStore/optionsActions';
@@ -27,9 +26,10 @@ import Department from '../../object/Department/Department';
 import Options from '../../object/Options/Options';
 import ProductId from '../../app/Sidebar/ProductId';
 import ShopObjectCard from '../ShopObjectCard/ShopObjectCard';
-import './SocialProduct.less';
 import ObjectFeatures from '../../object/ObjectFeatures/ObjectFeatures';
 import PicturesCarousel from '../../object/PicturesCarousel';
+import './SocialProduct.less';
+import RatingsWrap from '../../objectCard/RatingsWrap/RatingsWrap';
 
 const limit = 30;
 
@@ -184,6 +184,10 @@ const SocialProduct = () => {
   }, [authorPermlink]);
 
   useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [authorPermlink]);
+
+  useEffect(() => {
     !isEmpty(wobject) && getPublisherManufacturerBrandMerchantObjects();
   }, [wobject.brand, wobject.manufacturer, wobject.merchant]);
 
@@ -296,14 +300,18 @@ const SocialProduct = () => {
           {!isMobile() && <div className="SocialProduct__wobjName">{wobject.name}</div>}
           <div className="SocialProduct__ratings">
             {' '}
-            {!isEmpty(wobject.rating) && (
-              <RatingsWrap
-                ratings={[wobject.rating[0]]}
-                username={userName}
-                wobjId={wobject.author_permlink}
-                wobjName={wobject.name}
-              />
-            )}
+            {!isEmpty(wobject.rating) &&
+              wobject.rating.map(rating => (
+                <div key={rating.permlink} className="ml2">
+                  <RatingsWrap
+                    isSocialProduct
+                    ratings={[rating]}
+                    username={userName}
+                    wobjId={wobject.author_permlink}
+                    wobjName={wobject.name}
+                  />
+                </div>
+              ))}
           </div>
           <div className="SocialProduct__price">{price}</div>
           <div className="SocialProduct__paddingBottom">
@@ -318,7 +326,7 @@ const SocialProduct = () => {
           </div>
           {!isEmpty(affiliateLinks) && (
             <div className="SocialProduct__paddingBottom">
-              <div>
+              <div className="SocialProduct__subtitle">
                 <FormattedMessage id="buy_it_on" defaultMessage="Buy it on" />:
               </div>
               <div className="SocialProduct__affLinks">
@@ -389,7 +397,7 @@ const SocialProduct = () => {
             </div>
           </div>
         )}
-        {getObjectsGalleryLayout('Bought together/ Add-ons', addOns)}
+        {getObjectsGalleryLayout('Bought together / Add-ons', addOns)}
         {!isEmpty(features) && (
           <div className="SocialProduct__featuresContainer">
             <div className="SocialProduct__heading">Features</div>
