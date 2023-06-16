@@ -3,10 +3,14 @@
 
 .Department {
   &__wrapper {
-    display: flex;
+    display: block;
+    @media @small {
+      display: flex;
+    }
   }
 
   &__item {
+    margin-left: 4px;
     &:hover {
       color: var(--website-color);
     }
