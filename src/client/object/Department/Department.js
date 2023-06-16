@@ -5,7 +5,6 @@ import { isEmpty } from 'lodash';
 import { FormattedMessage } from 'react-intl';
 import DepartmentList from './DepartmentList';
 import './Department.less';
-import { isMobile } from '../../../common/helpers/apiHelpers';
 
 const Department = ({ wobject, departments, isEditMode, isSocialGifts }) => (
   <div
@@ -16,7 +15,7 @@ const Department = ({ wobject, departments, isEditMode, isSocialGifts }) => (
         <FormattedMessage id="departments" formattedMessage="Departments" />:{' '}
       </div>
     )}
-    <div className={isSocialGifts && !isMobile() ? 'Department__wrapper' : ''}>
+    <div className={isSocialGifts ? 'Department__wrapper' : ''}>
       <DepartmentList
         isSocialGifts={isSocialGifts}
         wobject={wobject}
