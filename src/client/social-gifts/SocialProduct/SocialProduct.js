@@ -231,7 +231,7 @@ const SocialProduct = () => {
     !isEmpty(objects) && (
       <div className="SocialProduct__addOn-section">
         <div className="SocialProduct__heading">{title}</div>
-        <div className="CarouselSection__wrapper">
+        <div className="Slider__wrapper">
           <Carousel {...carouselSettings(objects)}>
             {objects?.map(wObject => (
               <ShopObjectCard key={wObject.author_permlink} wObject={wObject} />
