@@ -124,6 +124,7 @@ export function createPostMetadata(
     format: 'markdown',
     timeOfPostCreation: Date.now() + 3000,
     host,
+    tags: [],
   };
 
   metaData = {
