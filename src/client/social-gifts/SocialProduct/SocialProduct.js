@@ -296,7 +296,7 @@ const SocialProduct = () => {
             {' '}
             {!isEmpty(wobject.rating) &&
               wobject.rating.map(rating => (
-                <div key={rating.permlink} className="ml2">
+                <div key={rating.permlink} className="SocialProduct__ratings-item">
                   <RatingsWrap
                     isSocialProduct
                     ratings={[rating]}
@@ -308,16 +308,16 @@ const SocialProduct = () => {
               ))}
           </div>
           <div className="SocialProduct__price">{price}</div>
-          <div className="SocialProduct__paddingBottom">
-            {!isEmpty(wobject?.options) && (
+          {!isEmpty(wobject?.options) && (
+            <div className="SocialProduct__paddingBottom">
               <Options
                 isSocialProduct
                 setHoveredOption={option => setHoveredOption(option)}
                 isEditMode={false}
                 wobject={wobject}
               />
-            )}
-          </div>
+            </div>
+          )}
           {!isEmpty(affiliateLinks) && (
             <div className="SocialProduct__paddingBottom">
               <div className="SocialProduct__subtitle">
