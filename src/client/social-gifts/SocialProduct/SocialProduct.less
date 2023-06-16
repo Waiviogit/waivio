@@ -78,11 +78,17 @@
   }
 
   &__productDetails,
-  &__featuresContainer,
   &__aboutItem {
     //border-bottom: 1px solid grey;
     margin-bottom: 20px;
     padding-bottom: @paddingBottom;
+  }
+  &__featuresContainer {
+    margin-bottom: 20px;
+    @media @small {
+      margin-bottom: 20px;
+      padding-bottom: @paddingBottom;
+    }
   }
 
   &__productDetails-content {
@@ -205,6 +211,7 @@
   }
 
   .Slider__wrapper {
+    margin-bottom: 20px;
   }
   .CarouselSection {
     &__wrapper {

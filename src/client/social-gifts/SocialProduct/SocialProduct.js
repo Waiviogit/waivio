@@ -255,12 +255,11 @@ const SocialProduct = () => {
 
     return (
       <span>
-        {tagArray.map((item, i) => (
+        {tagArray.map(item => (
           <>
-            <Tag key={`${category}/${item.body}`} color="orange" className="ml2">
+            <Tag key={`${category}/${item.body}`} className="ml2">
               <Link to={`/discover-objects/${type}?${category}=${item.body}`}>{item.body}</Link>
             </Tag>{' '}
-            {i !== tagArray.length - 1 && ','}
           </>
         ))}
         {categoryItems.length > 5 && !showMoreCategoryItems && (
@@ -409,8 +408,8 @@ const SocialProduct = () => {
         {getObjectsGalleryLayout('Related items', relatedObjects)}
         {!isEmpty(tagCategoriesList) && (
           <div className="SocialProduct__featuresContainer">
-            <div className="SocialProduct__heading">Tag categories</div>
-            <div className="SocialProduct__centralContent">
+            <div className="SocialProduct__heading">Tags</div>
+            <div className="SocialProduct__tagsContainer">
               {renderTagCategories(tagCategoriesList)}
             </div>
           </div>
