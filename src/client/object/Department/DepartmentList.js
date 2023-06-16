@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
 import { useHistory } from 'react-router';
 import DepartmentItem from './DepartmentItem';
+import { isMobile } from '../../../common/helpers/apiHelpers';
 
 const DepartmentList = ({ wobject, departments, isSocialGifts }) => {
   const history = useHistory();
@@ -20,14 +21,8 @@ const DepartmentList = ({ wobject, departments, isSocialGifts }) => {
     <>
       {departmentsList?.map((dep, i) => (
         <>
-          <DepartmentItem
-            isSocialGifts={isSocialGifts}
-            id={dep.body}
-            history={history}
-            wobject={wobject}
-            department={dep}
-          />
-          {isSocialGifts && i !== departmentsList.length - 1 && ','}{' '}
+          <DepartmentItem id={dep.body} history={history} wobject={wobject} department={dep} />
+          {isSocialGifts && !isMobile() && i !== departmentsList.length - 1 && ','}{' '}
         </>
       ))}
       {hasMore && (

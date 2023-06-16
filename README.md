@@ -12,8 +12,9 @@ Waivio is an Open Source social network and communications platform which extend
 git clone https://github.com/Waiviogit/waivio.git
 cd waivio
 
-yarn
-yarn dev
+yarn dev - waivio
+yarn dev:dining - dining.gifts
+yarn dev:social - social.gifts
 ```
 
 ##Project Structure
@@ -71,12 +72,3 @@ Please, DO NOT use `fixes`, `applied fixes` and other meaningless messages. If y
 
 PR titles should follow the same format as commit messages. Just so that you know, if you submit a PR with one commit only, GitHub assigns the title of the commit to the PR and saves you quite a bit of typing.
 
-
-```
-How switch port? PORT=4000 yarn dev 
-By default 3000
-
-localhost:3000 - dining.gifts
-localhost:3002 - waivio
-localhost:4000 - social.gifts
-```
