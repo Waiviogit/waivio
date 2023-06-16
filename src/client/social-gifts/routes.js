@@ -256,7 +256,7 @@ const routes = host => ({
           component: Views.UserProfile,
         },
         {
-          path: '/newsfeed',
+          path: '/(newsfeed)',
           component: Views.ObjectFeed,
         },
         {
