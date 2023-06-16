@@ -409,7 +409,7 @@ const SocialProduct = () => {
         {!isEmpty(tagCategoriesList) && (
           <div className="SocialProduct__featuresContainer">
             <div className="SocialProduct__heading">Tags</div>
-            <div className="SocialProduct__tagsContainer">
+            <div className="SocialProduct__centralContent">
               {renderTagCategories(tagCategoriesList)}
             </div>
           </div>
