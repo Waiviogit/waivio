@@ -1359,16 +1359,6 @@ export const fieldsRules = {
       transform: value => value && value.toLowerCase(),
     },
     {
-      required: true,
-      message: {
-        intlId: {
-          id: 'field_error',
-          defaultMessage: 'Field is required',
-        },
-        intlMeta: { field: 'Title' },
-      },
-    },
-    {
       max: 100,
       message: {
         intlId: {
@@ -1379,7 +1369,7 @@ export const fieldsRules = {
       },
     },
     {
-      validator: true,
+      validator: false,
     },
   ],
   [objectFields.categoryItem]: [

@@ -124,6 +124,7 @@ class ObjectInfo extends React.Component {
     brandObject: {},
     merchantObject: {},
     authorsArray: [],
+    menuItemsArray: [],
     showMenuLegacy: false,
   };
 
@@ -192,6 +193,24 @@ class ObjectInfo extends React.Component {
 
     this.setState({ authorsArray });
     this.props.setAuthors(authorsArray);
+
+    const menuItemsArray = await wobject.menuItem.reduce(async (acc, curr) => {
+      const res = await acc;
+      const itemBody = JSON.parse(curr.body);
+
+      if (itemBody.linkToObject && !has(itemBody, 'title')) {
+        const newObj = await getObjectInfo([itemBody.linkToObject]);
+
+        return [
+          ...res,
+          { ...curr, body: JSON.stringify({ ...itemBody, title: newObj.wobjects[0].name }) },
+        ];
+      }
+
+      return [...res, curr];
+    }, []);
+
+    this.setState({ menuItemsArray });
 
     const backObjects = [
       publisher?.authorPermlink,
@@ -676,7 +695,7 @@ class ObjectInfo extends React.Component {
     const menuSection = () => {
       if (!isEditMode && !isEmpty(customSort) && !hasType(wobject, OBJECT_TYPE.LIST)) {
         const buttonArray = [
-          ...menuItem,
+          ...this.state.menuItemsArray,
           ...menuLinks,
           ...menuPages,
           ...button,
@@ -722,7 +741,7 @@ class ObjectInfo extends React.Component {
               {isEditMode && this.listItem(objectFields.widget, null)}
               {this.listItem(
                 objectFields.menuItem,
-                !isEmpty(menuItem) && <MenuItemButtons menuItem={menuItem} />,
+                !isEmpty(menuItem) && <MenuItemButtons menuItem={this.state.menuItemsArray} />,
               )}
               {this.listItem(objectFields.sorting, null)}
             </div>

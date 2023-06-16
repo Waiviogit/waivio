@@ -72,7 +72,7 @@ const routes = host => ({
       component: Discover,
     },
     {
-      path: '/object/:type/:name',
+      path: '/object/product/:name',
       exact: true,
       component: SocialProduct,
     },
@@ -411,6 +411,7 @@ const routes = host => ({
     {
       path: '/sign-in',
       exact: true,
+      isSocial: true,
       component: RedirectedSignIn,
     },
     {

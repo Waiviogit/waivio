@@ -927,14 +927,12 @@ class AppendForm extends Component {
         };
       }
       if (currentField === objectFields.menuItem) {
-        const title = !isNil(formValues[menuItemFields.menuItemTitle])
-          ? formValues[menuItemFields.menuItemTitle].trim()
-          : this.state.selectedObject.name;
-
         fieldsObject = {
           ...fieldsObject,
           body: JSON.stringify({
-            title,
+            title: !isNil(formValues[menuItemFields.menuItemTitle])
+              ? formValues[menuItemFields.menuItemTitle].trim()
+              : undefined,
             style: this.state.menuItemButtonType,
             image: !isEmpty(this.state?.currentImages)
               ? this.state?.currentImages[0]?.src
@@ -2824,7 +2822,6 @@ class AppendForm extends Component {
           <MenuItemForm
             getFieldDecorator={getFieldDecorator}
             loading={loading}
-            getFieldRules={this.getFieldRules}
             getImages={this.getImage}
             onLoadingImage={this.onLoadingImage}
             handleMenuItemButtonStyleChange={this.handleMenuItemButtonStyleChange}

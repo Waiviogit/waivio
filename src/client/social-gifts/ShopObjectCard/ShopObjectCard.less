@@ -35,6 +35,19 @@
   }
 
   &__avatarWrap {
+    width: 175px;
+    height: 175px;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+
+    @media @small {
+      width: 225px;
+      height: 225px;
+    }
+  }
+
+  &__avatarWrap {
     align-items: flex-start;
 
     .HeartButton {
