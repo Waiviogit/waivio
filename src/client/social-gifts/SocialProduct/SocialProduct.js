@@ -171,7 +171,7 @@ const SocialProduct = () => {
       });
       getRelatedPhotos(authorPermlink, limit, 0).then(alb => setRelatedAlbum(alb));
       getObjectsRewards(authorPermlink, userName).then(res => setReward(res));
-      getAddOnsSimilarRelatedObjects();
+      // getAddOnsSimilarRelatedObjects();
     }
 
     return () => dispatch(setStoreActiveOption({}));
@@ -337,7 +337,9 @@ const SocialProduct = () => {
         {!isEmpty(wobject.description) && (
           <div className="SocialProduct__aboutItem">
             <div className="SocialProduct__heading"> About this item</div>
-            <div className="SocialProduct__contentPaddingLeft">{wobject.description}</div>
+            <div className="SocialProduct__contentPaddingLeft SocialProduct__description">
+              {wobject.description}
+            </div>
           </div>
         )}
         {!isEmpty(menuItem) && (

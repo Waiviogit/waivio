@@ -105,7 +105,9 @@ const OptionItemView = ({
     dispatch(setStoreActiveOption({ ...activeStoreOption, [el.body.category]: el }));
     if (el.author_permlink !== wobject.author_permlink) {
       if (isMobile()) {
-        history.push(`${linkToAvailableOption(el)}/about`);
+        isSocialObject
+          ? history.push(`${linkToAvailableOption(el)}`)
+          : history.push(`${linkToAvailableOption(el)}/about`);
       } else {
         history.push(linkToAvailableOption(el));
       }
