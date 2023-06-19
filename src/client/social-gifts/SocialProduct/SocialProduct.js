@@ -171,7 +171,7 @@ const SocialProduct = () => {
       });
       getRelatedPhotos(authorPermlink, limit, 0).then(alb => setRelatedAlbum(alb));
       getObjectsRewards(authorPermlink, userName).then(res => setReward(res));
-      getAddOnsSimilarRelatedObjects();
+      // getAddOnsSimilarRelatedObjects();
     }
 
     return () => dispatch(setStoreActiveOption({}));
@@ -255,12 +255,11 @@ const SocialProduct = () => {
 
     return (
       <span>
-        {tagArray.map((item, i) => (
+        {tagArray.map(item => (
           <>
-            <Tag key={`${category}/${item.body}`} color="orange" className="ml2">
+            <Tag key={`${category}/${item.body}`} className="ml2">
               <Link to={`/discover-objects/${type}?${category}=${item.body}`}>{item.body}</Link>
             </Tag>{' '}
-            {i !== tagArray.length - 1 && ','}
           </>
         ))}
         {categoryItems.length > 5 && !showMoreCategoryItems && (
@@ -338,7 +337,9 @@ const SocialProduct = () => {
         {!isEmpty(wobject.description) && (
           <div className="SocialProduct__aboutItem">
             <div className="SocialProduct__heading"> About this item</div>
-            <div className="SocialProduct__contentPaddingLeft">{wobject.description}</div>
+            <div className="SocialProduct__contentPaddingLeft SocialProduct__description">
+              {wobject.description}
+            </div>
           </div>
         )}
         {!isEmpty(menuItem) && (
@@ -409,7 +410,7 @@ const SocialProduct = () => {
         {getObjectsGalleryLayout('Related items', relatedObjects)}
         {!isEmpty(tagCategoriesList) && (
           <div className="SocialProduct__featuresContainer">
-            <div className="SocialProduct__heading">Tag categories</div>
+            <div className="SocialProduct__heading">Tags</div>
             <div className="SocialProduct__centralContent">
               {renderTagCategories(tagCategoriesList)}
             </div>

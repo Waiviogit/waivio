@@ -22,7 +22,7 @@ const DepartmentList = ({ wobject, departments, isSocialGifts }) => {
       {departmentsList?.map((dep, i) => (
         <>
           <DepartmentItem id={dep.body} history={history} wobject={wobject} department={dep} />
-          {isSocialGifts && !isMobile() && i !== departmentsList.length - 1 && ','}{' '}
+          {isSocialGifts && !isMobile() && i !== departmentsList.length - 1 && ', '}{' '}
         </>
       ))}
       {hasMore && (

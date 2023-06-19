@@ -8,10 +8,12 @@ import './Department.less';
 
 const Department = ({ wobject, departments, isEditMode, isSocialGifts }) => (
   <div
-    className={classNames(isSocialGifts ? 'flex ' : 'flex-column', { paddingBottom: !isEditMode })}
+    className={classNames(isSocialGifts ? 'Department__socialLayout' : 'flex-column', {
+      paddingBottom: !isEditMode,
+    })}
   >
     {!isEditMode && !isEmpty(departments) && (
-      <div className="CompanyId__title">
+      <div className="Department__title">
         <FormattedMessage id="departments" formattedMessage="Departments" />:{' '}
       </div>
     )}
