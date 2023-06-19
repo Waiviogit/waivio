@@ -1,7 +1,7 @@
 @import (reference) '../../styles/custom.less';
 @import (reference) '../../styles/modules/variables.less';
 
-@paddingBottom: 20px;
+@bottom: 20px;
 .SocialProduct {
   display: flex;
   flex-direction: column;
@@ -22,20 +22,23 @@
       padding-left: 20px;
     }
   }
+  &__description {
+    white-space: break-spaces;
+  }
 
   &__wobjName {
     color: @black;
     font-weight: 600;
     font-size: 26px;
     word-break: break-word;
-    padding-bottom: 15px;
+    margin-bottom: @bottom;
     @media @small {
       padding-bottom: 0;
     }
   }
 
   &__ratings {
-    padding-bottom: 7px;
+    margin-bottom: 15px;
     @media @small {
       display: flex;
       width: auto;
@@ -59,14 +62,14 @@
   }
 
   &__price {
-    padding-bottom: 15px;
+    margin-bottom: @bottom;
     font-weight: 600;
     font-size: 26px;
     color: var(--website-hover-color);
   }
 
   &__paddingBottom {
-    padding-bottom: @paddingBottom;
+    padding-bottom: @bottom;
   }
 
   &__heading {
@@ -78,11 +81,10 @@
   }
 
   &__productDetails,
-  &__featuresContainer,
-  &__aboutItem {
-    //border-bottom: 1px solid grey;
-    margin-bottom: 20px;
-    padding-bottom: @paddingBottom;
+  &__aboutItem,
+  &__addOn-section,
+  &__featuresContainer {
+    margin-bottom: @bottom;
   }
 
   &__productDetails-content {
@@ -205,6 +207,7 @@
   }
 
   .Slider__wrapper {
+    margin-bottom: @bottom;
   }
   .CarouselSection {
     &__wrapper {
