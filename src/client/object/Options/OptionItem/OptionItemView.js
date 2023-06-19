@@ -22,7 +22,7 @@ const OptionItemView = ({
   ownOptions,
   isSocialProduct,
 }) => {
-  const optionsLimit = isSocialProduct ? 30 : 15;
+  const optionsLimit = 15;
   const [hovered, setHovered] = useState({});
   const activeStoreOption = useSelector(getActiveOption);
   const history = useHistory();
@@ -116,7 +116,8 @@ const OptionItemView = ({
     }
   };
 
-  const getOptions = optionsList => optionsList?.slice(0, optionsLimit);
+  const getOptions = optionsList =>
+    isSocialObject ? optionsList : optionsList?.slice(0, optionsLimit);
 
   return (
     <div key={option[0]}>
@@ -157,7 +158,7 @@ const OptionItemView = ({
           </span>
         ))}
       </>
-      {option[1]?.length > optionsLimit && (
+      {option[1]?.length > optionsLimit && !isSocialObject && (
         <div className="object-sidebar__menu-item">
           <LinkButton className="LinkButton menu-button mt2" to={linkToOption}>
             <div>

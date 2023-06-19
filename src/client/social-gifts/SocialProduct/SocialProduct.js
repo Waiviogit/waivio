@@ -78,7 +78,7 @@ const SocialProduct = () => {
   const tagCategories = get(wobject, 'tagCategory', []);
   const tagCategoriesList = tagCategories.filter(item => !isEmpty(item.items));
   const addOnPermlinks = wobject.addOn ? wobject?.addOn?.map(obj => obj.body) : [];
-  const slideWidth = 250;
+  const slideWidth = 270;
   const slidesToShow = Math.floor(typeof window !== 'undefined' && window.innerWidth / slideWidth);
   const carouselSettings = objects => ({
     dots: false,
@@ -89,6 +89,7 @@ const SocialProduct = () => {
     prevArrow: <Icon type="caret-left" />,
     infinite: slidesToShow < objects.length,
     slidesToShow,
+    slidesToScroll: slidesToShow,
   });
 
   const showProductDetails =
@@ -101,7 +102,7 @@ const SocialProduct = () => {
     !isEmpty(departments) ||
     !isEmpty(groupId) ||
     !isEmpty(productIdBody);
-  const allPhotos = allAlbums?.flatMap(alb => alb.items.flat());
+  const allPhotos = allAlbums?.flatMap(alb => alb?.items?.flat());
   const photoAlbum = allPhotos?.sort((a, b) => (b.name === 'avatar') - (a.name === 'avatar'));
   const pictures = [...photoAlbum, ...get(relatedAlbum, 'items', [])];
   let items = pictures;
@@ -242,9 +243,11 @@ const SocialProduct = () => {
     );
   const renderTagCategories = tags =>
     tags.map(item => (
-      <div className="paddingBottom" key={item.id}>
+      <div className="SocialProduct__tag-wrapper" key={item.id}>
         {`${item.body}:`}
-        <span>{item.items && renderCategoryItems(item.items, item.body)}</span>
+        <div className="SocialProduct__tags">
+          {item.items && renderCategoryItems(item.items, item.body)}
+        </div>
       </div>
     ));
 
@@ -257,7 +260,7 @@ const SocialProduct = () => {
       <span>
         {tagArray.map(item => (
           <>
-            <Tag key={`${category}/${item.body}`} className="ml2">
+            <Tag key={`${category}/${item.body}`} className="SocialProduct__tag-item">
               <Link to={`/discover-objects/${type}?${category}=${item.body}`}>{item.body}</Link>
             </Tag>{' '}
           </>
