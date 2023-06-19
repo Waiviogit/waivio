@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
-import { get, has } from 'lodash';
+import { get } from 'lodash';
 import OBJECT_TYPE from '../const/objectTypes';
 import {
   clearObjectFromStore,
@@ -21,6 +21,7 @@ import {
   getObjectName,
   prepareAlbumData,
   prepareAlbumToStore,
+  showDescriptionPage,
 } from '../../../common/helpers/wObjectHelper';
 import {
   setNestedWobject,
@@ -185,13 +186,7 @@ class WobjectContainer extends React.Component {
     const newsFilter = match.params[1] === 'newsFilter' ? { newsFilter: match.params.itemId } : {};
 
     this.props.getObject(match.params.name, authenticatedUserName).then(res => {
-      const showDescriptionPage =
-        has(res.value, 'description') &&
-        !res.value.count_posts &&
-        !res.value.menuItem &&
-        !res.value.menuItems;
-
-      if (showDescriptionPage) {
+      if (showDescriptionPage(res.value)) {
         history.push(`/object/${res.value.author_permlink}/description`);
       }
       this.props.getAlbums(match.params.name);
@@ -208,7 +203,7 @@ class WobjectContainer extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { authenticatedUserName, match, locale } = this.props;
+    const { authenticatedUserName, match, locale, history } = this.props;
     const newsFilter = match.params[1] === 'newsFilter' ? { newsFilter: match.params.itemId } : {};
 
     if (
@@ -217,7 +212,11 @@ class WobjectContainer extends React.Component {
       prevProps.authenticatedUserName !== authenticatedUserName
     ) {
       this.props.getAlbums(match.params.name);
-      this.props.getObject(match.params.name, authenticatedUserName);
+      this.props.getObject(match.params.name, authenticatedUserName).then(res => {
+        if (showDescriptionPage(res.value)) {
+          history.push(`/object/${res.value.author_permlink}/description`);
+        }
+      });
       this.props.resetGallery();
       this.props.clearObjectFromStore();
       this.props.setCatalogBreadCrumbs([]);

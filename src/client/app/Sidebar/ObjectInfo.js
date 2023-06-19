@@ -695,7 +695,7 @@ class ObjectInfo extends React.Component {
     const menuSection = () => {
       if (!isEditMode && !isEmpty(customSort) && !hasType(wobject, OBJECT_TYPE.LIST)) {
         const buttonArray = [
-          ...this.state.menuItemsArray,
+          ...(this.state.menuItemsArray || []),
           ...menuLinks,
           ...menuPages,
           ...button,

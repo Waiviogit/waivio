@@ -1,4 +1,4 @@
-import { get, some, filter, isEmpty, compact, isEqual } from 'lodash';
+import { get, some, filter, isEmpty, compact, isEqual, has } from 'lodash';
 import { addressFieldsForFormatting, TYPES_OF_MENU_ITEM } from '../constants/listOfFields';
 import LANGUAGES from '../translations/languages';
 import { parseJSON } from './parseJSON';
@@ -392,3 +392,10 @@ export const sortByFieldPermlinksList = (permlinksArr, objects) =>
 
     return acc;
   }, []);
+
+export const showDescriptionPage = wobject =>
+  !['list', 'page', 'widget', 'newsfeed'].includes(wobject.object_type) &&
+  has(wobject, 'description') &&
+  !wobject.count_posts &&
+  !wobject.menuItem &&
+  !wobject.menuItems;
