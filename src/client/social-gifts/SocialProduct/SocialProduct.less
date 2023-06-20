@@ -233,6 +233,13 @@
     .RatingsWrap {
       max-width: fit-content;
     }
+    &:hover {
+      transform: translateY(0px);
+      @media @small {
+        transition-duration: 0.3s;
+        transform: translateY(-5px);
+      }
+    }
   }
 
   .Slider__wrapper {
@@ -277,8 +284,10 @@
 
     .slick-slide.slick-active,
     .slick-slide.slick-active.slick-current {
+      margin-top: 0;
       //width: 250px ;
       @media @small {
+        margin-top: 5px;
       }
     }
     .slick-slide div {
