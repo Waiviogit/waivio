@@ -76,50 +76,54 @@ const WebsiteTopNavigation = ({ shopSettings }) => {
             })}
           </NavLink>
         ))}
-        {lastItemsLength > 1 ? (
-          <Popover
-            placement="bottom"
-            trigger="click"
-            visible={visible}
-            onVisibleChange={handleMoreMenuVisibleChange}
-            overlayStyle={{ position: 'fixed' }}
-            content={
-              <PopoverMenu
-                onSelect={i => {
-                  setVisible(false);
-                  history.push(i);
-                }}
-              >
-                {lastItems.map(i => (
-                  <PopoverMenuItem active={history.location.pathname.includes(i.link)} key={i.link}>
-                    {truncate(i.name, {
-                      length: 90,
-                      separator: '...',
-                    })}
-                  </PopoverMenuItem>
-                ))}
-              </PopoverMenu>
-            }
-            overlayClassName="WebsiteTopNavigation__popover"
-          >
-            <span className={'WebsiteTopNavigation__link'}>
-              More <Icon type="caret-down" />
-            </span>
-          </Popover>
-        ) : (
-          <NavLink
-            className="WebsiteTopNavigation__link"
-            isActive={() => history.location.pathname.includes(lastItems[0]?.link)}
-            activeClassName={'WebsiteTopNavigation__link--active'}
-            key={lastItems[0].link}
-            to={lastItems[0].link}
-          >
-            {truncate(lastItems[0].name, {
-              length: 24,
-              separator: '...',
-            })}
-          </NavLink>
-        )}
+        {!isEmpty(lastItems) &&
+          (lastItemsLength > 1 ? (
+            <Popover
+              placement="bottom"
+              trigger="click"
+              visible={visible}
+              onVisibleChange={handleMoreMenuVisibleChange}
+              overlayStyle={{ position: 'fixed' }}
+              content={
+                <PopoverMenu
+                  onSelect={i => {
+                    setVisible(false);
+                    history.push(i);
+                  }}
+                >
+                  {lastItems.map(i => (
+                    <PopoverMenuItem
+                      active={history.location.pathname.includes(i.link)}
+                      key={i.link}
+                    >
+                      {truncate(i.name, {
+                        length: 90,
+                        separator: '...',
+                      })}
+                    </PopoverMenuItem>
+                  ))}
+                </PopoverMenu>
+              }
+              overlayClassName="WebsiteTopNavigation__popover"
+            >
+              <span className={'WebsiteTopNavigation__link'}>
+                More <Icon type="caret-down" />
+              </span>
+            </Popover>
+          ) : (
+            <NavLink
+              className="WebsiteTopNavigation__link"
+              isActive={() => history.location.pathname.includes(lastItems[0]?.link)}
+              activeClassName={'WebsiteTopNavigation__link--active'}
+              key={lastItems[0]?.link}
+              to={lastItems[0]?.link}
+            >
+              {truncate(lastItems[0]?.name, {
+                length: 24,
+                separator: '...',
+              })}
+            </NavLink>
+          ))}
       </div>
     </div>
   );

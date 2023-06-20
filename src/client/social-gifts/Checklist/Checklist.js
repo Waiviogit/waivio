@@ -31,6 +31,7 @@ import {
 import { getProxyImageURL } from '../../../common/helpers/image';
 
 import './Checklist.less';
+import PageContent from '../PageContent/PageContent';
 
 const Checklist = ({
   userName,
@@ -50,7 +51,7 @@ const Checklist = ({
   const currHost = useSelector(getHostAddress);
   const header = config?.header?.name;
   const title = header || config.host || currHost;
-  const desc = title;
+  const desc = object.description;
   const image = favicon;
   const canonicalUrl = typeof location !== 'undefined' && location?.origin;
 
@@ -92,7 +93,7 @@ const Checklist = ({
                 backgroundImage: `url(${avatar})`,
               }}
             >
-              {!avatar && !defaultListImage && <Icon type="shopping" />}
+              {!listItem?.avatar && !defaultListImage && <Icon type="shopping" />}
             </div>
             <span className="Checklist__itemsTitle">
               {getObjectName(listItem)}
@@ -105,10 +106,12 @@ const Checklist = ({
       );
     }
 
-    return <ShopObjectCard wObject={listItem} />;
+    return <ShopObjectCard isChecklist wObject={listItem} />;
   };
 
   const getMenuList = () => {
+    if (object.object_type === 'page') return <PageContent />;
+
     if (isEmpty(listItems)) {
       return (
         <div className={'Checklist__empty'}>
@@ -156,7 +159,7 @@ const Checklist = ({
         <meta property="og:image:width" content="600" />
         <meta property="og:image:height" content="600" />
         <meta property="og:description" content={desc} />
-        <meta property="og:site_name" content="Waivio" />
+        <meta property="og:site_name" content={title} />
         <link rel="image_src" href={image} />
         <link id="favicon" rel="icon" href={favicon} type="image/x-icon" />
       </Helmet>
