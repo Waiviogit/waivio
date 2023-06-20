@@ -4,6 +4,8 @@ import { get, isEmpty, truncate, uniq } from 'lodash';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { Link } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router';
+
 import RatingsWrap from '../../objectCard/RatingsWrap/RatingsWrap';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 import { getObjectName } from '../../../common/helpers/wObjectHelper';
@@ -16,10 +18,12 @@ import { getRatingForSocial } from '../../components/Sidebar/Rate/rateHelper';
 
 import './ShopObjectCard.less';
 
-const ShopObjectCard = ({ wObject }) => {
+const ShopObjectCard = ({ wObject, isChecklist }) => {
   const username = useSelector(getAuthenticatedUserName);
   const [tags, setTags] = useState([]);
   const wobjName = getObjectName(wObject);
+  const { name } = useParams();
+  const location = useLocation();
   const withRewards = !isEmpty(wObject.propositions);
   const proposition = withRewards ? wObject.propositions[0] : null;
   const shopObjectCardClassList = classNames('ShopObjectCard', {
@@ -40,7 +44,15 @@ const ShopObjectCard = ({ wObject }) => {
       link = `/object/product/${wObject.author_permlink}`;
       break;
     case 'page':
-      link = `/object/page/${wObject.author_permlink}`;
+      {
+        const hash = location?.hash
+          ? `${location?.hash}/${wObject.author_permlink}`
+          : wObject.author_permlink;
+
+        link = isChecklist
+          ? `/checklist/${name}#${hash}`
+          : `/object/page/${wObject.author_permlink}`;
+      }
       break;
     default:
       link = wObject.defaultShowLink;
@@ -115,6 +127,7 @@ const ShopObjectCard = ({ wObject }) => {
 };
 
 ShopObjectCard.propTypes = {
+  isChecklist: PropTypes.bool,
   wObject: PropTypes.shape({
     object_type: PropTypes.string,
     avatar: PropTypes.string,
