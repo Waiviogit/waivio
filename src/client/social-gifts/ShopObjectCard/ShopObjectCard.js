@@ -12,6 +12,8 @@ import HeartButton from '../../widgets/HeartButton';
 import USDDisplay from '../../components/Utils/USDDisplay';
 import { getProxyImageURL } from '../../../common/helpers/image';
 import DEFAULTS from '../../object/const/defaultValues';
+import { getRatingForSocial } from '../../components/Sidebar/Rate/rateHelper';
+
 import './ShopObjectCard.less';
 
 const ShopObjectCard = ({ wObject }) => {
@@ -37,6 +39,9 @@ const ShopObjectCard = ({ wObject }) => {
     case 'book':
       link = `/object/product/${wObject.author_permlink}`;
       break;
+    case 'page':
+      link = `/object/page/${wObject.author_permlink}`;
+      break;
     default:
       link = wObject.defaultShowLink;
       break;
@@ -47,6 +52,7 @@ const ShopObjectCard = ({ wObject }) => {
 
   if (url) url = getProxyImageURL(url, 'preview');
   else url = DEFAULTS.AVATAR;
+  const rating = getRatingForSocial(wObject.rating);
 
   return (
     <div className={shopObjectCardClassList}>
@@ -56,24 +62,26 @@ const ShopObjectCard = ({ wObject }) => {
           <USDDisplay value={proposition.rewardInUSD} currencyDisplay={'symbol'} />
         </h3>
       )}
-      <Link to={link} className="ShopObjectCard__avatarWrap">
-        <div
-          className="ShopObjectCard__avatarWrap"
-          style={{
-            backgroundImage: `url(${url})`,
-          }}
-        />
+      <div className="ShopObjectCard__topInfoWrap">
         <HeartButton wobject={wObject} size={'20px'} />
-      </Link>
+        <Link to={link} className="ShopObjectCard__avatarWrap">
+          <div
+            className="ShopObjectCard__avatarWrap"
+            style={{
+              backgroundImage: `url(${url})`,
+            }}
+          />
+        </Link>
+      </div>
       <Link to={link} className="ShopObjectCard__name">
         {truncate(wobjName, {
           length: 110,
           separator: '...',
         })}
       </Link>
-      {!isEmpty(wObject.rating) && (
+      {!isEmpty(rating) && (
         <RatingsWrap
-          ratings={[wObject.rating[0]]}
+          ratings={[rating]}
           username={username}
           wobjId={wObject.author_permlink}
           wobjName={wobjName}

@@ -28,6 +28,7 @@ import {
   getHostAddress,
   getWebsiteDefaultIconList,
 } from '../../../store/appStore/appSelectors';
+import { getProxyImageURL } from '../../../common/helpers/image';
 
 import './Checklist.less';
 
@@ -75,7 +76,7 @@ const Checklist = ({
     const isList = listItem.object_type === 'list';
 
     if (isList) {
-      const avatar = listItem?.avatar;
+      const avatar = getProxyImageURL(listItem?.avatar || defaultListImage, 'preview');
 
       return (
         <div className="Checklist__listItems">
@@ -88,7 +89,7 @@ const Checklist = ({
             <div
               className="Checklist__itemsAvatar"
               style={{
-                backgroundImage: `url(${avatar || defaultListImage})`,
+                backgroundImage: `url(${avatar})`,
               }}
             >
               {!avatar && !defaultListImage && <Icon type="shopping" />}
