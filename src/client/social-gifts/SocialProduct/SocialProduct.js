@@ -81,8 +81,10 @@ const SocialProduct = () => {
   const slideWidth = 270;
   const slidesToShow = Math.floor(typeof window !== 'undefined' && window.innerWidth / slideWidth);
   const carouselSettings = objects => ({
-    dots: false,
-    arrows: true,
+    dots: isMobile(),
+    dotPosition: 'bottom',
+    dotNumber: 5,
+    arrows: !isMobile(),
     lazyLoad: true,
     rows: 1,
     nextArrow: <Icon type="caret-right" />,
