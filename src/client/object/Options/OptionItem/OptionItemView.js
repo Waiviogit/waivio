@@ -12,6 +12,7 @@ import {
 import { getActiveOption } from '../../../../store/optionsStore/optionsSelectors';
 import LinkButton from '../../../components/LinkButton/LinkButton';
 import { isMobile } from '../../../../common/helpers/apiHelpers';
+import { getProxyImageURL } from '../../../../common/helpers/image';
 
 const OptionItemView = ({
   option,
@@ -139,7 +140,7 @@ const OptionItemView = ({
                 onMouseOut={onMouseOut}
                 onClick={e => onOptionButtonClick(e, el)}
                 className={getOptionsPicturesClassName(el)}
-                src={el.body.image}
+                src={getProxyImageURL(el.body.image)}
                 alt="option"
                 key={el.permlink}
               />
