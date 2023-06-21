@@ -11,6 +11,7 @@ import { getSuitableLanguage } from '../../../store/reducers';
 import {
   createNewHash,
   getLastPermlinksFromHash,
+  getObjectAvatar,
   getObjectName,
 } from '../../../common/helpers/wObjectHelper';
 import { setBreadcrumbForChecklist, setListItems } from '../../../store/wObjectStore/wobjActions';
@@ -23,9 +24,8 @@ import { sortListItemsBy } from '../../object/wObjectHelper';
 import { getObject } from '../../../waivioApi/ApiClient';
 import Breadcrumbs from '../Breadcrumbs/Breadcrumbs';
 import {
-  getConfigurationValues,
   getHelmetIcon,
-  getHostAddress,
+  getSiteName,
   getWebsiteDefaultIconList,
 } from '../../../store/appStore/appSelectors';
 import { getProxyImageURL } from '../../../common/helpers/image';
@@ -47,12 +47,10 @@ const Checklist = ({
   const [loading, setLoading] = useState(true);
   const [object, setObject] = useState(false);
   const favicon = useSelector(getHelmetIcon);
-  const config = useSelector(getConfigurationValues);
-  const currHost = useSelector(getHostAddress);
-  const header = config?.header?.name;
-  const title = header || config.host || currHost;
-  const desc = object.description;
-  const image = favicon;
+  const siteName = useSelector(getSiteName);
+  const title = getObjectName(object);
+  const desc = object?.description;
+  const image = getObjectAvatar(object);
   const canonicalUrl = typeof location !== 'undefined' && location?.origin;
 
   useEffect(() => {
@@ -159,7 +157,7 @@ const Checklist = ({
         <meta property="og:image:width" content="600" />
         <meta property="og:image:height" content="600" />
         <meta property="og:description" content={desc} />
-        <meta property="og:site_name" content={title} />
+        <meta property="og:site_name" content={siteName} />
         <link rel="image_src" href={image} />
         <link id="favicon" rel="icon" href={favicon} type="image/x-icon" />
       </Helmet>
