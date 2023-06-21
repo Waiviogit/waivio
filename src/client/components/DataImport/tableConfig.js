@@ -8,7 +8,7 @@ export const configProductTable = [
       defaultMessage: 'Active',
     },
     type: 'checkbox',
-    getChecked: item => ['active', 'waitingRecover'].includes(item.status),
+    getChecked: item => ['active', 'waitingRecover', 'pending'].includes(item.status),
   },
   {
     id: 'createdAt',

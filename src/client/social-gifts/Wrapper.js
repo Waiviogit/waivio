@@ -62,7 +62,7 @@ const createLink = i => {
     case 'list':
       return `/checklist/${i.author_permlink}`;
     case 'page':
-      return `/page/${i.author_permlink}`;
+      return `/object/page/${i.author_permlink}`;
     case 'product':
     case 'book':
     case 'business':
