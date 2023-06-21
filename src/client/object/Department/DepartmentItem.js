@@ -32,8 +32,8 @@ const DepartmentItem = ({ wobject, history, department, id }) => {
   useEffect(() => () => dispatch(setActiveDepartment({})), [wobject.author_permlink]);
 
   return (
-    <div className="Department__container ">
-      <div key={department.body}>
+    <div className="Department__container">
+      <div className="Department__block" key={department.body}>
         <button className="Department__button" onClick={() => onDepartmentClick(department)}>
           <span className={getDepartmentsClassNames(department)}>{department.body}</span>{' '}
         </button>
