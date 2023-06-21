@@ -4,6 +4,8 @@ import { get, isEmpty, truncate, uniq } from 'lodash';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { Link } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router';
+
 import RatingsWrap from '../../objectCard/RatingsWrap/RatingsWrap';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 import { getObjectName } from '../../../common/helpers/wObjectHelper';
@@ -12,12 +14,16 @@ import HeartButton from '../../widgets/HeartButton';
 import USDDisplay from '../../components/Utils/USDDisplay';
 import { getProxyImageURL } from '../../../common/helpers/image';
 import DEFAULTS from '../../object/const/defaultValues';
+import { getRatingForSocial } from '../../components/Sidebar/Rate/rateHelper';
+
 import './ShopObjectCard.less';
 
-const ShopObjectCard = ({ wObject }) => {
+const ShopObjectCard = ({ wObject, isChecklist }) => {
   const username = useSelector(getAuthenticatedUserName);
   const [tags, setTags] = useState([]);
   const wobjName = getObjectName(wObject);
+  const { name } = useParams();
+  const location = useLocation();
   const withRewards = !isEmpty(wObject.propositions);
   const proposition = withRewards ? wObject.propositions[0] : null;
   const shopObjectCardClassList = classNames('ShopObjectCard', {
@@ -37,6 +43,17 @@ const ShopObjectCard = ({ wObject }) => {
     case 'book':
       link = `/object/product/${wObject.author_permlink}`;
       break;
+    case 'page':
+      {
+        const hash = location?.hash
+          ? `${location?.hash}/${wObject.author_permlink}`
+          : wObject.author_permlink;
+
+        link = isChecklist
+          ? `/checklist/${name}#${hash}`
+          : `/object/page/${wObject.author_permlink}`;
+      }
+      break;
     default:
       link = wObject.defaultShowLink;
       break;
@@ -47,6 +64,7 @@ const ShopObjectCard = ({ wObject }) => {
 
   if (url) url = getProxyImageURL(url, 'preview');
   else url = DEFAULTS.AVATAR;
+  const rating = getRatingForSocial(wObject.rating);
 
   return (
     <div className={shopObjectCardClassList}>
@@ -56,24 +74,26 @@ const ShopObjectCard = ({ wObject }) => {
           <USDDisplay value={proposition.rewardInUSD} currencyDisplay={'symbol'} />
         </h3>
       )}
-      <Link to={link} className="ShopObjectCard__avatarWrap">
-        <div
-          className="ShopObjectCard__avatarWrap"
-          style={{
-            backgroundImage: `url(${url})`,
-          }}
-        />
+      <div className="ShopObjectCard__topInfoWrap">
         <HeartButton wobject={wObject} size={'20px'} />
-      </Link>
+        <Link to={link} className="ShopObjectCard__avatarWrap">
+          <div
+            className="ShopObjectCard__avatarWrap"
+            style={{
+              backgroundImage: `url(${url})`,
+            }}
+          />
+        </Link>
+      </div>
       <Link to={link} className="ShopObjectCard__name">
         {truncate(wobjName, {
           length: 110,
           separator: '...',
         })}
       </Link>
-      {!isEmpty(wObject.rating) && (
+      {!isEmpty(rating) && (
         <RatingsWrap
-          ratings={[wObject.rating[0]]}
+          ratings={[rating]}
           username={username}
           wobjId={wObject.author_permlink}
           wobjName={wobjName}
@@ -107,6 +127,7 @@ const ShopObjectCard = ({ wObject }) => {
 };
 
 ShopObjectCard.propTypes = {
+  isChecklist: PropTypes.bool,
   wObject: PropTypes.shape({
     object_type: PropTypes.string,
     avatar: PropTypes.string,
