@@ -2,9 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { useHistory, useRouteMatch } from 'react-router';
 import { Carousel, Collapse, Icon, Tag } from 'antd';
 import { Link } from 'react-router-dom';
+import { Helmet } from 'react-helmet';
 import { FormattedMessage } from 'react-intl';
 import { useDispatch, useSelector } from 'react-redux';
-import { get, isEmpty, isNil } from 'lodash';
+import { get, isEmpty, isNil, reduce } from 'lodash';
 import {
   getObject,
   getObjectInfo,
@@ -14,14 +15,23 @@ import {
   getSimilarObjectsFromDepartments,
 } from '../../../waivioApi/ApiClient';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
-import { getUsedLocale } from '../../../store/appStore/appSelectors';
+import {
+  getAppUrl,
+  getHelmetIcon,
+  getUsedLocale,
+  getWebsiteName,
+} from '../../../store/appStore/appSelectors';
 import { objectFields } from '../../../common/constants/listOfFields';
 import { getActiveCategory, getActiveOption } from '../../../store/optionsStore/optionsSelectors';
 import { setStoreActiveOption } from '../../../store/optionsStore/optionsActions';
 import AffiliatLink from '../../widgets/AffiliatLinks/AffiliatLink';
 import { isMobile } from '../../../common/helpers/apiHelpers';
 import ProductRewardCard from '../ShopObjectCard/ProductRewardCard/ProductRewardCard';
-import { parseWobjectField } from '../../../common/helpers/wObjectHelper';
+import {
+  getObjectAvatar,
+  parseAddress,
+  parseWobjectField,
+} from '../../../common/helpers/wObjectHelper';
 import Department from '../../object/Department/Department';
 import Options from '../../object/Options/Options';
 import ProductId from '../../app/Sidebar/ProductId';
@@ -30,6 +40,8 @@ import ObjectFeatures from '../../object/ObjectFeatures/ObjectFeatures';
 import RatingsWrap from '../../objectCard/RatingsWrap/RatingsWrap';
 import './SocialProduct.less';
 import PicturesSlider from './PicturesSlider/PicturesSlider';
+import { compareObjectTitle } from '../../../common/helpers/seoHelpes';
+import DEFAULTS from '../../object/const/defaultValues';
 
 const limit = 100;
 
@@ -53,6 +65,9 @@ const SocialProduct = () => {
   const locale = useSelector(getUsedLocale);
   const activeOption = useSelector(getActiveOption);
   const activeCategory = useSelector(getActiveCategory);
+  const siteName = useSelector(getWebsiteName);
+  const appUrl = useSelector(getAppUrl);
+  const helmetIcon = useSelector(getHelmetIcon);
   const authorPermlink = match.params.name;
   const affiliateLinks = wobject?.affiliateLinks || [];
   const price = hoveredOption.price || get(wobject, 'price');
@@ -74,8 +89,26 @@ const SocialProduct = () => {
   const tagCategories = get(wobject, 'tagCategory', []);
   const tagCategoriesList = tagCategories.filter(item => !isEmpty(item.items));
   const addOnPermlinks = wobject.addOn ? wobject?.addOn?.map(obj => obj.body) : [];
+  const tagCategoriesForDescr = reduce(
+    wobject.tagCategory,
+    (acc, curr) => {
+      const currentCategory = !isEmpty(curr.items)
+        ? `${curr.body}: ${curr.items.map(item => item.body).join(', ')}`
+        : '';
+
+      return acc ? `${acc}. ${currentCategory}` : currentCategory;
+    },
+    '',
+  );
   const slideWidth = 270;
   const slidesToShow = Math.floor(typeof window !== 'undefined' && window.innerWidth / slideWidth);
+  const image = getObjectAvatar(wobject) || DEFAULTS.AVATAR;
+  const desc = `${wobject.name}. ${parseAddress(wobject) || ''} ${wobject.description ||
+    ''} ${tagCategoriesForDescr}`;
+  const address = parseAddress(wobject);
+  const titleText = compareObjectTitle(false, wobject.name, address, siteName);
+  const canonicalUrl = `${appUrl}/object/${wobject.object_type}/${match.params.name}`;
+  const url = `${appUrl}/object/${wobject.object_type}/${match.params.name}`;
   const carouselSettings = objects => ({
     dots: isMobile(),
     dotPosition: 'bottom',
@@ -263,153 +296,176 @@ const SocialProduct = () => {
   };
 
   return (
-    <div className="SocialProduct">
-      <div className="SocialProduct__column SocialProduct__column-wrapper">
-        {isMobile() && <div className="SocialProduct__wobjName">{wobject.name}</div>}
-        {!isEmpty(wobject.preview_gallery) && (
-          <div className="SocialProduct__row">
-            <div className="SocialProduct__carouselWrapper">
-              <PicturesSlider
-                hoveredOption={hoveredOption}
-                activeOption={activeOption}
-                activeCategory={activeCategory}
-              />
-            </div>
-            <div>
-              <ProductRewardCard isSocialProduct reward={reward} />
-            </div>
-          </div>
-        )}
-        <div className="SocialProduct__row SocialProduct__right-row">
-          {!isMobile() && <div className="SocialProduct__wobjName">{wobject.name}</div>}
-          <div className="SocialProduct__ratings">
-            {' '}
-            {!isEmpty(wobject.rating) &&
-              wobject.rating.map(rating => (
-                <div key={rating.permlink} className="SocialProduct__ratings-item">
-                  <RatingsWrap
-                    isSocialProduct
-                    ratings={[rating]}
-                    username={userName}
-                    wobjId={wobject.author_permlink}
-                    wobjName={wobject.name}
-                  />
-                </div>
-              ))}
-          </div>
-          <div className="SocialProduct__price">{price}</div>
-          {!isEmpty(wobject?.options) && (
-            <div className="SocialProduct__paddingBottom">
-              <Options
-                isSocialProduct
-                setHoveredOption={option => setHoveredOption(option)}
-                isEditMode={false}
-                wobject={wobject}
-              />
+    <div>
+      <Helmet>
+        <title>{titleText}</title>
+        <link rel="canonical" href={canonicalUrl} />
+        <meta property="description" content={desc} />
+        <meta property="og:title" content={titleText} />
+        <meta property="og:type" content="article" />
+        <meta property="og:url" content={url} />
+        <meta property="og:image" content={image} />
+        <meta property="og:image:url" content={image} />
+        <meta property="og:image:width" content="600" />
+        <meta property="og:image:height" content="600" />
+        <meta property="og:description" content={desc} />
+        <meta name="twitter:card" content={image ? 'summary_large_image' : 'summary'} />
+        <meta name="twitter:site" content={`@${siteName}`} />
+        <meta name="twitter:title" content={titleText} />
+        <meta name="twitter:description" content={desc} />
+        <meta name="twitter:image" property="twitter:image" content={image} />
+        <meta property="og:site_name" content={siteName} />
+        <link rel="image_src" href={image} />
+        <link id="favicon" rel="icon" href={helmetIcon} type="image/x-icon" />
+      </Helmet>
+      <div className="SocialProduct">
+        <div className="SocialProduct__column SocialProduct__column-wrapper">
+          {isMobile() && <div className="SocialProduct__wobjName">{wobject.name}</div>}
+          {!isEmpty(wobject.preview_gallery) && (
+            <div className="SocialProduct__row">
+              <div className="SocialProduct__carouselWrapper">
+                <PicturesSlider
+                  hoveredOption={hoveredOption}
+                  activeOption={activeOption}
+                  activeCategory={activeCategory}
+                />
+              </div>
+              <div>
+                <ProductRewardCard isSocialProduct reward={reward} />
+              </div>
             </div>
           )}
-          {!isEmpty(affiliateLinks) && (
-            <div className="SocialProduct__paddingBottom">
-              <div className="SocialProduct__subtitle">
-                <FormattedMessage id="buy_it_on" defaultMessage="Buy it on" />:
-              </div>
-              <div className="SocialProduct__affLinks">
-                {affiliateLinks.map(link => (
-                  <div key={link.link} className="SocialProduct__links">
-                    <AffiliatLink link={link} />
+          <div className="SocialProduct__row SocialProduct__right-row">
+            {!isMobile() && <div className="SocialProduct__wobjName">{wobject.name}</div>}
+            <div className="SocialProduct__ratings">
+              {' '}
+              {!isEmpty(wobject.rating) &&
+                wobject.rating.map(rating => (
+                  <div key={rating.permlink} className="SocialProduct__ratings-item">
+                    <RatingsWrap
+                      isSocialProduct
+                      ratings={[rating]}
+                      username={userName}
+                      wobjId={wobject.author_permlink}
+                      wobjName={wobject.name}
+                    />
                   </div>
                 ))}
+            </div>
+            <div className="SocialProduct__price">{price}</div>
+            {!isEmpty(wobject?.options) && (
+              <div className="SocialProduct__paddingBottom">
+                <Options
+                  isSocialProduct
+                  setHoveredOption={option => setHoveredOption(option)}
+                  isEditMode={false}
+                  wobject={wobject}
+                />
+              </div>
+            )}
+            {!isEmpty(affiliateLinks) && (
+              <div className="SocialProduct__paddingBottom">
+                <div className="SocialProduct__subtitle">
+                  <FormattedMessage id="buy_it_on" defaultMessage="Buy it on" />:
+                </div>
+                <div className="SocialProduct__affLinks">
+                  {affiliateLinks.map(link => (
+                    <div key={link.link} className="SocialProduct__links">
+                      <AffiliatLink link={link} />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+            {isEmpty(wobject.preview_gallery) && (
+              <ProductRewardCard isSocialProduct reward={reward} />
+            )}
+          </div>
+        </div>
+        <div className="SocialProduct__column">
+          {!isEmpty(wobject.description) && (
+            <div className="SocialProduct__aboutItem">
+              <div className="SocialProduct__heading"> About this item</div>
+              <div className="SocialProduct__contentPaddingLeft SocialProduct__description">
+                {wobject.description}
               </div>
             </div>
           )}
-          {isEmpty(wobject.preview_gallery) && (
-            <ProductRewardCard isSocialProduct reward={reward} />
+          {!isEmpty(menuItem) && (
+            <div className="SocialProduct__paddingBottom">
+              <Collapse
+              // onChange={callback}
+              >
+                {menuItem.map(item => {
+                  const itemBody = JSON.parse(item.body);
+
+                  return (
+                    <Collapse.Panel header={itemBody.title} key={menuItem[item]}>
+                      <div> content</div>
+                    </Collapse.Panel>
+                  );
+                })}
+              </Collapse>
+            </div>
+          )}
+          {showProductDetails && (
+            <div className="SocialProduct__productDetails">
+              <div className="SocialProduct__heading">Product details</div>
+              <div className="SocialProduct__productDetails-content SocialProduct__contentPaddingLeft">
+                {!isEmpty(fields.brandObject) && listItem(objectFields.brand, fields.brandObject)}
+                {!isEmpty(fields.manufacturerObject) &&
+                  listItem(objectFields.manufacturer, fields.manufacturerObject)}
+                {!isEmpty(fields.merchantObject) &&
+                  listItem(objectFields.merchant, fields.merchantObject)}
+                {!isEmpty(parent) && listItem(objectFields.parent, parent)}
+                {!isEmpty(productWeight) && listItem(objectFields.productWeight, productWeight)}
+                {!isEmpty(dimensions) && listItem(objectFields.dimensions, dimensions)}
+                {!isEmpty(departments) && (
+                  <Department
+                    isSocialGifts
+                    departments={departments}
+                    isEditMode={false}
+                    history={history}
+                    wobject={wobject}
+                  />
+                )}
+                {
+                  <ProductId
+                    isSocialGifts
+                    isEditMode={false}
+                    authorPermlink={wobject.author_permlink}
+                    groupId={groupId}
+                    productIdBody={productIdBody}
+                  />
+                }
+              </div>
+            </div>
+          )}
+          {getObjectsSliderLayout('Bought together / Add-ons', addOns)}
+          {!isEmpty(features) && (
+            <div className="SocialProduct__featuresContainer">
+              <div className="SocialProduct__heading">Features</div>
+              <div className="SocialProduct__centralContent">
+                <ObjectFeatures
+                  isSocialGifts
+                  features={features}
+                  isEditMode={false}
+                  wobjPermlink={wobject.author_permlink}
+                />
+              </div>
+            </div>
+          )}
+          {getObjectsSliderLayout('Similar', similarObjects)}
+          {getObjectsSliderLayout('Related items', relatedObjects)}
+          {!isEmpty(tagCategoriesList) && (
+            <div className="SocialProduct__featuresContainer">
+              <div className="SocialProduct__heading">Tags</div>
+              <div className="SocialProduct__centralContent">
+                {renderTagCategories(tagCategoriesList)}
+              </div>
+            </div>
           )}
         </div>
-      </div>
-      <div className="SocialProduct__column">
-        {!isEmpty(wobject.description) && (
-          <div className="SocialProduct__aboutItem">
-            <div className="SocialProduct__heading"> About this item</div>
-            <div className="SocialProduct__contentPaddingLeft SocialProduct__description">
-              {wobject.description}
-            </div>
-          </div>
-        )}
-        {!isEmpty(menuItem) && (
-          <div className="SocialProduct__paddingBottom">
-            <Collapse
-            // onChange={callback}
-            >
-              {menuItem.map(item => {
-                const itemBody = JSON.parse(item.body);
-
-                return (
-                  <Collapse.Panel header={itemBody.title} key={menuItem[item]}>
-                    <div> content</div>
-                  </Collapse.Panel>
-                );
-              })}
-            </Collapse>
-          </div>
-        )}
-        {showProductDetails && (
-          <div className="SocialProduct__productDetails">
-            <div className="SocialProduct__heading">Product details</div>
-            <div className="SocialProduct__productDetails-content SocialProduct__contentPaddingLeft">
-              {!isEmpty(fields.brandObject) && listItem(objectFields.brand, fields.brandObject)}
-              {!isEmpty(fields.manufacturerObject) &&
-                listItem(objectFields.manufacturer, fields.manufacturerObject)}
-              {!isEmpty(fields.merchantObject) &&
-                listItem(objectFields.merchant, fields.merchantObject)}
-              {!isEmpty(parent) && listItem(objectFields.parent, parent)}
-              {!isEmpty(productWeight) && listItem(objectFields.productWeight, productWeight)}
-              {!isEmpty(dimensions) && listItem(objectFields.dimensions, dimensions)}
-              {!isEmpty(departments) && (
-                <Department
-                  isSocialGifts
-                  departments={departments}
-                  isEditMode={false}
-                  history={history}
-                  wobject={wobject}
-                />
-              )}
-              {
-                <ProductId
-                  isSocialGifts
-                  isEditMode={false}
-                  authorPermlink={wobject.author_permlink}
-                  groupId={groupId}
-                  productIdBody={productIdBody}
-                />
-              }
-            </div>
-          </div>
-        )}
-        {getObjectsSliderLayout('Bought together / Add-ons', addOns)}
-        {!isEmpty(features) && (
-          <div className="SocialProduct__featuresContainer">
-            <div className="SocialProduct__heading">Features</div>
-            <div className="SocialProduct__centralContent">
-              <ObjectFeatures
-                isSocialGifts
-                features={features}
-                isEditMode={false}
-                wobjPermlink={wobject.author_permlink}
-              />
-            </div>
-          </div>
-        )}
-        {getObjectsSliderLayout('Similar', similarObjects)}
-        {getObjectsSliderLayout('Related items', relatedObjects)}
-        {!isEmpty(tagCategoriesList) && (
-          <div className="SocialProduct__featuresContainer">
-            <div className="SocialProduct__heading">Tags</div>
-            <div className="SocialProduct__centralContent">
-              {renderTagCategories(tagCategoriesList)}
-            </div>
-          </div>
-        )}
       </div>
     </div>
   );
