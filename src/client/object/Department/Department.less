@@ -5,6 +5,8 @@
   &__wrapper {
     display: block;
     @media @small {
+      width: auto;
+      flex-wrap: wrap;
       display: flex;
     }
   }
@@ -18,6 +20,9 @@
     @media @small {
       flex-direction: row;
     }
+  }
+  &__block {
+    width: max-content;
   }
   &__item {
     margin-left: 4px;
