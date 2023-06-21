@@ -32,6 +32,7 @@ import { getProxyImageURL } from '../../../common/helpers/image';
 
 import './Checklist.less';
 import PageContent from '../PageContent/PageContent';
+import SocialProduct from '../SocialProduct/SocialProduct';
 
 const Checklist = ({
   userName,
@@ -111,6 +112,7 @@ const Checklist = ({
 
   const getMenuList = () => {
     if (object.object_type === 'page') return <PageContent />;
+    if (['product', 'book'].includes(object.object_type)) return <SocialProduct />;
 
     if (isEmpty(listItems)) {
       return (

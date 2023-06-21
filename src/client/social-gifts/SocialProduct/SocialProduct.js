@@ -28,6 +28,7 @@ import AffiliatLink from '../../widgets/AffiliatLinks/AffiliatLink';
 import { isMobile } from '../../../common/helpers/apiHelpers';
 import ProductRewardCard from '../ShopObjectCard/ProductRewardCard/ProductRewardCard';
 import {
+  getLastPermlinksFromHash,
   getObjectAvatar,
   parseAddress,
   parseWobjectField,
@@ -68,7 +69,9 @@ const SocialProduct = () => {
   const siteName = useSelector(getWebsiteName);
   const appUrl = useSelector(getAppUrl);
   const helmetIcon = useSelector(getHelmetIcon);
-  const authorPermlink = match.params.name;
+  const authorPermlink = history.location.hash
+    ? getLastPermlinksFromHash(history.location.hash)
+    : match.params.name;
   const affiliateLinks = wobject?.affiliateLinks || [];
   const price = hoveredOption.price || get(wobject, 'price');
   const manufacturer = parseWobjectField(wobject, 'manufacturer');
