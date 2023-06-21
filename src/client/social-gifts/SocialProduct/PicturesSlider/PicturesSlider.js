@@ -8,6 +8,7 @@ import './PicturesSlider.less';
 import { getRelatedPhotos, getWobjectGallery } from '../../../../waivioApi/ApiClient';
 import { getUsedLocale } from '../../../../store/appStore/appSelectors';
 import { isMobile } from '../../../../common/helpers/apiHelpers';
+import { getProxyImageURL } from '../../../../common/helpers/image';
 
 const limit = 100;
 
@@ -61,7 +62,11 @@ const PicturesSlider = ({ hoveredOption, activeOption, activeCategory }) => {
   return !isEmpty(pictures) ? (
     <div className={'PicturesSlider'}>
       <div>
-        <img className="PicturesSlider__previewImage" src={currentSrc} alt={'pic'} />
+        <img
+          className="PicturesSlider__previewImage"
+          src={getProxyImageURL(currentSrc)}
+          alt={'pic'}
+        />
       </div>
       <br />
       <Carousel {...carouselSettings(pictures)}>
@@ -69,7 +74,7 @@ const PicturesSlider = ({ hoveredOption, activeOption, activeCategory }) => {
           <div key={pic.id}>
             <img
               onClick={e => onImgClick(e, pic)}
-              src={pic?.body}
+              src={getProxyImageURL(pic?.body)}
               className={
                 pic?.body === currentImage?.body
                   ? 'PicturesSlider__thumbnail-active'

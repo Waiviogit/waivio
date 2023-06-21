@@ -37,7 +37,7 @@ import {
   getHelmetIcon,
   getIsWaivio,
   getScreenSize,
-  getWebsiteName,
+  getSiteName,
   getWeightValue,
 } from '../../../store/appStore/appSelectors';
 import {
@@ -76,7 +76,7 @@ import { resetBreadCrumb } from '../../../store/shopStore/shopActions';
     isWaivio: getIsWaivio(state),
     supportedObjectTypes: get(getConfiguration(state), 'supported_object_types'),
     weightValue: getWeightValue(state, getObjectState(state).weight),
-    siteName: getWebsiteName(state),
+    siteName: getSiteName(state),
     appUrl: getAppUrl(state),
   }),
   {
