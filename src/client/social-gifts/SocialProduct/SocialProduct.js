@@ -31,7 +31,7 @@ import RatingsWrap from '../../objectCard/RatingsWrap/RatingsWrap';
 import './SocialProduct.less';
 import PicturesSlider from './PicturesSlider/PicturesSlider';
 
-const limit = 30;
+const limit = 100;
 
 const SocialProduct = () => {
   const [wobject, setWobject] = useState({});
