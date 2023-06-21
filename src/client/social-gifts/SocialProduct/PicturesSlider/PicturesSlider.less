@@ -1,0 +1,51 @@
+@import (reference) '../../../styles/custom.less';
+@import (reference) '../../../styles/modules/variables.less';
+
+.PicturesSlider {
+  //display: flex;
+  //justify-content: center;
+  &__previewImage {
+    object-fit: contain;
+    width: 350px;
+    height: 350px;
+    @media @small {
+      width: 500px;
+      height: 500px;
+    }
+  }
+  &__thumbnail {
+    object-fit: contain;
+    width: 50px;
+    height: 50px;
+    border: 1px solid @normal-grey;
+    border-radius: 4px;
+    &:hover,
+    &-active {
+      object-fit: contain;
+      width: 50px;
+      height: 50px;
+      border: 1px solid var(--website-color);
+      border-radius: 4px;
+    }
+  }
+  .ant-carousel {
+    width: 345px;
+    @media @small {
+      width: 480px;
+    }
+  }
+  .slick-slide.slick-active {
+    width: 58px !important;
+    cursor: pointer;
+  }
+  .slick-prev,
+  .slick-next {
+    display: none;
+    @media @small {
+      font-size: 20px !important;
+      display: inline-block;
+      z-index: 1200;
+      color: #bebebe !important;
+    }
+  }
+}

@@ -63,10 +63,7 @@
   }
 
   &__column {
-    padding: 16px 16px 0;
-    @media @small {
-      padding: 16px;
-    }
+    padding: 0 16px;
   }
 
   &__price {
@@ -297,6 +294,11 @@
         justify-content: center !important;
       }
     }
+  }
+  &__carouselWrapper {
+    display: flex;
+    justify-content: center;
+    margin-bottom: @bottom;
   }
   .CarouselSection {
     &__wrapper {
