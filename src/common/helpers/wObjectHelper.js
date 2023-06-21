@@ -396,6 +396,6 @@ export const sortByFieldPermlinksList = (permlinksArr, objects) =>
 export const showDescriptionPage = wobject =>
   !['list', 'page', 'widget', 'newsfeed'].includes(wobject.object_type) &&
   has(wobject, 'description') &&
-  !wobject.count_posts &&
+  wobject.count_posts === 0 &&
   !wobject.menuItem &&
   !wobject.menuItems;
