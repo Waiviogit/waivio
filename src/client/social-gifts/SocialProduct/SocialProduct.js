@@ -4,16 +4,14 @@ import { Carousel, Collapse, Icon, Tag } from 'antd';
 import { Link } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
 import { useDispatch, useSelector } from 'react-redux';
-import { remove, orderBy, get, isEmpty, isNil } from 'lodash';
+import { get, isEmpty, isNil } from 'lodash';
 import {
   getObject,
   getObjectInfo,
   getObjectsByIds,
   getObjectsRewards,
   getRelatedObjectsFromDepartments,
-  getRelatedPhotos,
   getSimilarObjectsFromDepartments,
-  getWobjectGallery,
 } from '../../../waivioApi/ApiClient';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 import { getUsedLocale } from '../../../store/appStore/appSelectors';
@@ -29,19 +27,17 @@ import Options from '../../object/Options/Options';
 import ProductId from '../../app/Sidebar/ProductId';
 import ShopObjectCard from '../ShopObjectCard/ShopObjectCard';
 import ObjectFeatures from '../../object/ObjectFeatures/ObjectFeatures';
-import PicturesCarousel from '../../object/PicturesCarousel';
 import RatingsWrap from '../../objectCard/RatingsWrap/RatingsWrap';
 import './SocialProduct.less';
+import PicturesSlider from './PicturesSlider/PicturesSlider';
 
-const limit = 30;
+const limit = 100;
 
 const SocialProduct = () => {
   const [wobject, setWobject] = useState({});
-  const [allAlbums, setAllAlbums] = useState([]);
   const [reward, setReward] = useState([]);
   const [showMoreCategoryItems, setShowMoreCategoryItems] = useState(false);
   const [hoveredOption, setHoveredOption] = useState({});
-  const [relatedAlbum, setRelatedAlbum] = useState({});
   const [addOns, setAddOns] = useState([]);
   const [similarObjects, setSimilarObjects] = useState([]);
   const [relatedObjects, setRelatedObjects] = useState([]);
@@ -104,14 +100,6 @@ const SocialProduct = () => {
     !isEmpty(departments) ||
     !isEmpty(groupId) ||
     !isEmpty(productIdBody);
-  const allPhotos = allAlbums?.flatMap(alb => alb?.items?.flat());
-  const photoAlbum = allPhotos?.sort((a, b) => (b.name === 'avatar') - (a.name === 'avatar'));
-  const pictures = [...photoAlbum, ...get(relatedAlbum, 'items', [])];
-  let items = pictures;
-
-  if (hoveredOption?.avatar || activeOption[activeCategory]?.avatar) {
-    items = [hoveredOption || activeOption[activeCategory], ...pictures];
-  }
 
   const getAddOnsSimilarRelatedObjects = () => {
     if (!isEmpty(addOnPermlinks) && !isNil(addOnPermlinks)) {
@@ -166,13 +154,7 @@ const SocialProduct = () => {
       getObject(authorPermlink, userName, locale).then(obj => {
         setWobject(obj);
       });
-      getWobjectGallery(authorPermlink, locale).then(albums => {
-        const defaultAlbum = remove(albums, alb => alb.id === authorPermlink);
-        const sortedAlbums = orderBy(albums, ['weight'], ['desc']);
 
-        return setAllAlbums([...defaultAlbum, ...sortedAlbums]);
-      });
-      getRelatedPhotos(authorPermlink, limit, 0).then(alb => setRelatedAlbum(alb));
       getObjectsRewards(authorPermlink, userName).then(res => setReward(res));
       // getAddOnsSimilarRelatedObjects();
     }
@@ -230,7 +212,7 @@ const SocialProduct = () => {
     </div>
   );
 
-  const getObjectsGalleryLayout = (title, objects) =>
+  const getObjectsSliderLayout = (title, objects) =>
     !isEmpty(objects) && (
       <div className="SocialProduct__addOn-section">
         <div className="SocialProduct__heading">{title}</div>
@@ -284,10 +266,14 @@ const SocialProduct = () => {
     <div className="SocialProduct">
       <div className="SocialProduct__column SocialProduct__column-wrapper">
         {isMobile() && <div className="SocialProduct__wobjName">{wobject.name}</div>}
-        {!isEmpty(items) && (
+        {!isEmpty(wobject.preview_gallery) && (
           <div className="SocialProduct__row">
             <div className="SocialProduct__carouselWrapper">
-              <PicturesCarousel albums={allAlbums} pics={pictures} isSocialProduct />
+              <PicturesSlider
+                hoveredOption={hoveredOption}
+                activeOption={activeOption}
+                activeCategory={activeCategory}
+              />
             </div>
             <div>
               <ProductRewardCard isSocialProduct reward={reward} />
@@ -335,6 +321,9 @@ const SocialProduct = () => {
                 ))}
               </div>
             </div>
+          )}
+          {isEmpty(wobject.preview_gallery) && (
+            <ProductRewardCard isSocialProduct reward={reward} />
           )}
         </div>
       </div>
@@ -397,7 +386,7 @@ const SocialProduct = () => {
             </div>
           </div>
         )}
-        {getObjectsGalleryLayout('Bought together / Add-ons', addOns)}
+        {getObjectsSliderLayout('Bought together / Add-ons', addOns)}
         {!isEmpty(features) && (
           <div className="SocialProduct__featuresContainer">
             <div className="SocialProduct__heading">Features</div>
@@ -411,8 +400,8 @@ const SocialProduct = () => {
             </div>
           </div>
         )}
-        {getObjectsGalleryLayout('Similar', similarObjects)}
-        {getObjectsGalleryLayout('Related items', relatedObjects)}
+        {getObjectsSliderLayout('Similar', similarObjects)}
+        {getObjectsSliderLayout('Related items', relatedObjects)}
         {!isEmpty(tagCategoriesList) && (
           <div className="SocialProduct__featuresContainer">
             <div className="SocialProduct__heading">Tags</div>
