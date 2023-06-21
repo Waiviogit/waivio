@@ -11,6 +11,7 @@ import { getSuitableLanguage } from '../../../store/reducers';
 import {
   createNewHash,
   getLastPermlinksFromHash,
+  getObjectAvatar,
   getObjectName,
 } from '../../../common/helpers/wObjectHelper';
 import { setBreadcrumbForChecklist, setListItems } from '../../../store/wObjectStore/wobjActions';
@@ -23,13 +24,15 @@ import { sortListItemsBy } from '../../object/wObjectHelper';
 import { getObject } from '../../../waivioApi/ApiClient';
 import Breadcrumbs from '../Breadcrumbs/Breadcrumbs';
 import {
-  getConfigurationValues,
   getHelmetIcon,
-  getHostAddress,
+  getSiteName,
   getWebsiteDefaultIconList,
 } from '../../../store/appStore/appSelectors';
+import { getProxyImageURL } from '../../../common/helpers/image';
 
 import './Checklist.less';
+import PageContent from '../PageContent/PageContent';
+import SocialProduct from '../SocialProduct/SocialProduct';
 
 const Checklist = ({
   userName,
@@ -45,12 +48,10 @@ const Checklist = ({
   const [loading, setLoading] = useState(true);
   const [object, setObject] = useState(false);
   const favicon = useSelector(getHelmetIcon);
-  const config = useSelector(getConfigurationValues);
-  const currHost = useSelector(getHostAddress);
-  const header = config?.header?.name;
-  const title = header || config.host || currHost;
-  const desc = title;
-  const image = favicon;
+  const siteName = useSelector(getSiteName);
+  const title = getObjectName(object);
+  const desc = object?.description;
+  const image = getObjectAvatar(object);
   const canonicalUrl = typeof location !== 'undefined' && location?.origin;
 
   useEffect(() => {
@@ -75,7 +76,7 @@ const Checklist = ({
     const isList = listItem.object_type === 'list';
 
     if (isList) {
-      const avatar = listItem?.avatar;
+      const avatar = getProxyImageURL(listItem?.avatar || defaultListImage, 'preview');
 
       return (
         <div className="Checklist__listItems">
@@ -88,10 +89,10 @@ const Checklist = ({
             <div
               className="Checklist__itemsAvatar"
               style={{
-                backgroundImage: `url(${avatar || defaultListImage})`,
+                backgroundImage: `url(${avatar})`,
               }}
             >
-              {!avatar && !defaultListImage && <Icon type="shopping" />}
+              {!listItem?.avatar && !defaultListImage && <Icon type="shopping" />}
             </div>
             <span className="Checklist__itemsTitle">
               {getObjectName(listItem)}
@@ -104,10 +105,13 @@ const Checklist = ({
       );
     }
 
-    return <ShopObjectCard wObject={listItem} />;
+    return <ShopObjectCard isChecklist wObject={listItem} />;
   };
 
   const getMenuList = () => {
+    if (object.object_type === 'page') return <PageContent />;
+    if (['product', 'book'].includes(object.object_type)) return <SocialProduct />;
+
     if (isEmpty(listItems)) {
       return (
         <div className={'Checklist__empty'}>
@@ -155,7 +159,7 @@ const Checklist = ({
         <meta property="og:image:width" content="600" />
         <meta property="og:image:height" content="600" />
         <meta property="og:description" content={desc} />
-        <meta property="og:site_name" content="Waivio" />
+        <meta property="og:site_name" content={siteName} />
         <link rel="image_src" href={image} />
         <link id="favicon" rel="icon" href={favicon} type="image/x-icon" />
       </Helmet>

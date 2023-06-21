@@ -17,6 +17,7 @@ import SocialProduct from './SocialProduct/SocialProduct';
 import ObjectDepartmentsWobjList from '../object/ObjectTypeShop/ObjectDepartmentsWobjList';
 import Checklist from './Checklist/Checklist';
 import UserDepartmentsWobjList from '../Shop/DepartmentsWobjList/UserDepartmentsWobjList';
+import PageContent from './PageContent/PageContent';
 
 const routes = host => ({
   component: SocialWrapper,
@@ -75,6 +76,11 @@ const routes = host => ({
       path: '/object/product/:name',
       exact: true,
       component: SocialProduct,
+    },
+    {
+      path: '/object/page/:name',
+      exact: true,
+      component: PageContent,
     },
     {
       path: '/confirmation',
@@ -256,7 +262,7 @@ const routes = host => ({
           component: Views.UserProfile,
         },
         {
-          path: '/newsfeed',
+          path: '/(newsfeed)',
           component: Views.ObjectFeed,
         },
         {

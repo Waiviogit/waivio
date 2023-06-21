@@ -18,7 +18,7 @@ const Options = ({ wobject, isEditMode, setHoveredOption, isSocialProduct }) => 
 
     if (activeStoreOption && isMobile()) {
       window.scrollTo({
-        top: objectHeaderEl?.offsetHeight,
+        top: isSocialProduct ? 0 : objectHeaderEl?.offsetHeight,
         behavior: 'smooth',
       });
     }

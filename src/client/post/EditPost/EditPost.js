@@ -156,7 +156,6 @@ const EditPost = props => {
 
   const handleSubmit = () => {
     const postData = props.buildPost();
-
     const isReview =
       !isEmpty(campaign) || includes(get(props.history, ['location', 'search']), 'review');
 

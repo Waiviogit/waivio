@@ -3,9 +3,29 @@
 
 .Department {
   &__wrapper {
+    display: block;
+    @media @small {
+      width: auto;
+      flex-wrap: wrap;
+      display: flex;
+    }
+  }
+  &__title {
+    font-weight: 550;
+    margin-right: 4px;
+  }
+  &__socialLayout {
     display: flex;
+    flex-direction: column;
+    @media @small {
+      flex-direction: row;
+    }
+  }
+  &__block {
+    width: max-content;
   }
   &__item {
+    margin-left: 4px;
     &:hover {
       color: var(--website-color);
     }

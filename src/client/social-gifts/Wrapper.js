@@ -61,6 +61,8 @@ const createLink = i => {
       return `/object-shop/${i.author_permlink}`;
     case 'list':
       return `/checklist/${i.author_permlink}`;
+    case 'page':
+      return `/object/page/${i.author_permlink}`;
     case 'product':
     case 'book':
     case 'business':
@@ -139,7 +141,7 @@ const SocialWrapper = props => {
                 },
                 {
                   name: 'Legal',
-                  link: '/object/ljc-legal/list',
+                  link: '/checklist/ljc-legal',
                 },
               ]),
             );
@@ -178,7 +180,7 @@ const SocialWrapper = props => {
                   ...buttonList,
                   {
                     name: 'Legal',
-                    link: '/object/ljc-legal/list',
+                    link: '/checklist/ljc-legal',
                   },
                 ]),
               );

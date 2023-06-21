@@ -1,7 +1,7 @@
 @import (reference) '../../styles/custom.less';
 @import (reference) '../../styles/modules/variables.less';
 
-@paddingBottom: 20px;
+@bottom: 20px;
 .SocialProduct {
   display: flex;
   flex-direction: column;
@@ -16,11 +16,21 @@
       margin-right: calc(2% + 100px);
     }
   }
+  &__tags {
+    margin-top: 10px;
+    @media @small {
+      margin-top: 0;
+    }
+  }
 
   &__contentPaddingLeft {
     @media @small {
       padding-left: 20px;
     }
+  }
+  &__description {
+    white-space: break-spaces;
+    font-size: 18px;
   }
 
   &__wobjName {
@@ -28,17 +38,24 @@
     font-weight: 600;
     font-size: 26px;
     word-break: break-word;
-    padding-bottom: 15px;
+    margin-bottom: 15px;
     @media @small {
       padding-bottom: 0;
+      margin-bottom: 8px;
     }
   }
 
   &__ratings {
-    padding-bottom: 7px;
-    //@media @small {
-    //  display: flex;
-    //}
+    margin-bottom: 15px;
+    @media @small {
+      display: flex;
+      width: auto;
+      flex-wrap: wrap;
+      flex-direction: row;
+    }
+    &-item {
+      margin-right: 30px;
+    }
   }
   &__subtitle {
     color: @blue-botticelli;
@@ -46,21 +63,19 @@
   }
 
   &__column {
-    padding: 16px 16px 0;
-    @media @small {
-      padding: 16px;
-    }
+    padding: 0 16px;
   }
 
   &__price {
-    padding-bottom: 15px;
+    margin-bottom: @bottom;
     font-weight: 600;
+    white-space: break-spaces;
     font-size: 26px;
     color: var(--website-hover-color);
   }
 
   &__paddingBottom {
-    padding-bottom: @paddingBottom;
+    padding-bottom: @bottom;
   }
 
   &__heading {
@@ -72,11 +87,10 @@
   }
 
   &__productDetails,
-  &__featuresContainer,
-  &__aboutItem {
-    //border-bottom: 1px solid grey;
-    margin-bottom: 20px;
-    padding-bottom: @paddingBottom;
+  &__aboutItem,
+  &__addOn-section,
+  &__featuresContainer {
+    margin-bottom: @bottom;
   }
 
   &__productDetails-content {
@@ -122,6 +136,13 @@
 
     &:not(:first-child) {
       margin-left: 20px;
+    }
+  }
+  &__tag-wrapper {
+    margin-bottom: @bottom;
+    display: block;
+    @media @small {
+      display: flex;
     }
   }
 
@@ -193,11 +214,92 @@
   }
 
   .ShopObjectCard {
-    display: flex;
-    //height: 100%;
-    width: 240px;
+    margin-right: 0;
+    @media @small {
+      display: flex;
+      //height: 100%;
+      width: 240px;
+      margin-right: 10px;
+    }
+    &__avatarWrap {
+      width: 165px;
+      @media @small {
+        width: 175px;
+      }
+    }
+    .RatingsWrap {
+      max-width: fit-content;
+    }
+    &:hover {
+      transform: translateY(0px);
+      @media @small {
+        transition-duration: 0.3s;
+        transform: translateY(-5px);
+      }
+    }
   }
 
+  .Slider__wrapper {
+    margin-bottom: @bottom;
+    //margin-left: 50%;
+    //width: 250px;
+    //transform: translateX(-50%);
+    @media @small {
+      width: 100%;
+      position: initial;
+      margin-left: 0;
+      transform: translateX(0);
+    }
+
+    .slick-prev,
+    .slick-next {
+      display: none;
+
+      @media @small {
+        display: inline-block;
+        z-index: 1200;
+        color: #bebebe !important;
+
+        svg {
+          height: auto;
+          width: 30px;
+        }
+      }
+    }
+
+    .ant-carousel .slick-prev {
+      left: -35px;
+
+      @media @small {
+        left: -40px;
+      }
+    }
+
+    .ant-carousel .slick-next {
+      right: -25px;
+    }
+
+    .slick-slide.slick-active,
+    .slick-slide.slick-active.slick-current {
+      margin-top: 0;
+      //width: 250px ;
+      @media @small {
+        margin-top: 5px;
+      }
+    }
+    .slick-slide div {
+      width: 100%;
+      justify-content: center !important;
+      @media @small {
+        display: flex !important;
+      }
+    }
+  }
+  &__carouselWrapper {
+    display: flex;
+    justify-content: center;
+    margin-bottom: @bottom;
+  }
   .CarouselSection {
     &__wrapper {
       position: absolute;
@@ -249,5 +351,35 @@
   .slick-track,
   .slick-slide div {
     display: flex !important;
+  }
+  .ant-tag {
+    background-color: var(--website-light-color);
+    border: 1px solid var(--website-color);
+    margin: 0 0 10px 10px;
+  }
+  .ant-carousel .slick-dots li button {
+    background: @normal-grey;
+    opacity: 0.4;
+    width: 5px;
+    height: 5px;
+    border-radius: 100%;
+  }
+  .ant-carousel .slick-dots li {
+    margin: 0 2px;
+  }
+  .ant-carousel .slick-dots li.slick-active button {
+    opacity: 1;
+    background: @normal-grey;
+    width: 5px;
+    height: 5px;
+    border-radius: 100%;
+  }
+  .ant-carousel .slick-dots-bottom {
+    bottom: 0;
+    overflow: hidden;
+    max-width: 85px;
+    height: 20px;
+    position: inherit;
+    margin: 0 auto;
   }
 }

@@ -156,7 +156,7 @@ export default (state = initialState, action) => {
 
       return {
         ...state,
-        websiteName: getObjectName(configuration.aboutObject),
+        websiteName: getObjectName(configuration.aboutObject) || configuration?.header?.name,
         mainPage,
         host,
         configuration,
@@ -189,8 +189,8 @@ export default (state = initialState, action) => {
         ...state,
         configuration: action.payload,
         currency: action.payload.currency,
-        helmetIcon: getObjectAvatar(action.payload.aboutObject),
-        websiteName: getObjectName(action.payload.aboutObject),
+        helmetIcon: getObjectAvatar(action.payload.aboutObject) || logo,
+        websiteName: getObjectName(action.payload.aboutObject) || action.payload?.header?.name,
         hostAddress: action.meta,
         isDiningGifts:
           listOfWebsiteWithMainPage.some(site => site === action.meta) || startup === 'about',

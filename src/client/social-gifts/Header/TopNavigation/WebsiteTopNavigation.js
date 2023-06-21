@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { isEmpty, take, takeRight, truncate } from 'lodash';
@@ -21,7 +21,7 @@ const userNav = user => [
   },
   {
     name: 'Legal',
-    link: '/object/ljc-legal/list',
+    link: '/checklist/ljc-legal',
   },
 ];
 
@@ -32,27 +32,32 @@ const WebsiteTopNavigation = ({ shopSettings }) => {
   const history = useHistory();
   const [visible, setVisible] = useState(false);
 
-  if (typeof document !== 'undefined' && typeof window !== 'undefined') {
-    const element = document.getElementById('WebsiteTopNavigation');
-    const container = document.getElementById('WebsiteTopNavigationContainer');
+  useEffect(() => {
+    if (typeof document !== 'undefined' && typeof window !== 'undefined') {
+      const element = document.getElementById('WebsiteTopNavigation');
+      const container = document.getElementById('WebsiteTopNavigationContainer');
 
-    window.addEventListener('scroll', () => {
-      if (element) {
-        if (container.getBoundingClientRect().top <= 0) {
-          element.style.top = '0';
-          element.style.position = 'fixed';
-        } else {
-          element.style.position = 'static';
+      window.addEventListener('scroll', () => {
+        if (element) {
+          if (container.getBoundingClientRect().top <= 0) {
+            element.style.top = '0';
+            element.style.position = 'fixed';
+          } else {
+            element.style.position = 'static';
+          }
         }
-      }
-    });
-  }
+      });
+    }
+  }, []);
+
+  const listLength = isMobile() ? 2 : 5;
+
+  const handleMoreMenuVisibleChange = vis => setVisible(vis);
 
   if (loading) return <SkeletonRow rows={1} />;
   if (isEmpty(shopSettings) || isEmpty(linkList)) return null;
-
-  const listLength = isMobile() ? 2 : 5;
-  const handleMoreMenuVisibleChange = vis => setVisible(vis);
+  const lastItemsLength = linkList.length - listLength;
+  const lastItems = takeRight(linkList, lastItemsLength);
 
   return (
     <div id={'WebsiteTopNavigationContainer'}>
@@ -71,37 +76,54 @@ const WebsiteTopNavigation = ({ shopSettings }) => {
             })}
           </NavLink>
         ))}
-        {linkList.length > listLength && (
-          <Popover
-            placement="bottom"
-            trigger="click"
-            visible={visible}
-            onVisibleChange={handleMoreMenuVisibleChange}
-            overlayStyle={{ position: 'fixed' }}
-            content={
-              <PopoverMenu
-                onSelect={i => {
-                  setVisible(false);
-                  history.push(i);
-                }}
-              >
-                {takeRight(linkList, linkList.length - listLength).map(i => (
-                  <PopoverMenuItem active={history.location.pathname.includes(i.link)} key={i.link}>
-                    {truncate(i.name, {
-                      length: 90,
-                      separator: '...',
-                    })}
-                  </PopoverMenuItem>
-                ))}
-              </PopoverMenu>
-            }
-            overlayClassName="WebsiteTopNavigation__popover"
-          >
-            <span className={'WebsiteTopNavigation__link'}>
-              More <Icon type="caret-down" />
-            </span>
-          </Popover>
-        )}
+        {!isEmpty(lastItems) &&
+          (lastItemsLength > 1 ? (
+            <Popover
+              placement="bottom"
+              trigger="click"
+              visible={visible}
+              onVisibleChange={handleMoreMenuVisibleChange}
+              overlayStyle={{ position: 'fixed' }}
+              content={
+                <PopoverMenu
+                  onSelect={i => {
+                    setVisible(false);
+                    history.push(i);
+                  }}
+                >
+                  {lastItems.map(i => (
+                    <PopoverMenuItem
+                      active={history.location.pathname.includes(i.link)}
+                      key={i.link}
+                    >
+                      {truncate(i.name, {
+                        length: 90,
+                        separator: '...',
+                      })}
+                    </PopoverMenuItem>
+                  ))}
+                </PopoverMenu>
+              }
+              overlayClassName="WebsiteTopNavigation__popover"
+            >
+              <span className={'WebsiteTopNavigation__link'}>
+                More <Icon type="caret-down" />
+              </span>
+            </Popover>
+          ) : (
+            <NavLink
+              className="WebsiteTopNavigation__link"
+              isActive={() => history.location.pathname.includes(lastItems[0]?.link)}
+              activeClassName={'WebsiteTopNavigation__link--active'}
+              key={lastItems[0]?.link}
+              to={lastItems[0]?.link}
+            >
+              {truncate(lastItems[0]?.name, {
+                length: 24,
+                separator: '...',
+              })}
+            </NavLink>
+          ))}
       </div>
     </div>
   );

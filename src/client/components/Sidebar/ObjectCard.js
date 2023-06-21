@@ -1,11 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-import { has, isEmpty } from 'lodash';
+import { isEmpty } from 'lodash';
 import classnames from 'classnames';
 import ObjectAvatar from '../ObjectAvatar';
 import FollowButton from '../../widgets/FollowButton';
-import { getObjectName } from '../../../common/helpers/wObjectHelper';
+import { getObjectName, showDescriptionPage } from '../../../common/helpers/wObjectHelper';
 import { isMobile } from '../../../common/helpers/apiHelpers';
 import './ObjectCard.less';
 
@@ -18,20 +18,13 @@ const ObjectCard = ({
   follow,
   parent,
   isModal,
-  isSocialProduct,
 }) => {
   if (!isEmpty(wobject)) {
     const updatedWObject = { ...wobject };
 
     if (!wobject.avatar && isEmpty(wobject.parent)) updatedWObject.avatar = parent.avatar;
     const name = getObjectName(wobject);
-    const showDescriptionPage =
-      !isSocialProduct &&
-      has(wobject, 'description') &&
-      !wobject.count_posts &&
-      !wobject.menuItem &&
-      !wobject.menuItems;
-    const pathname = showDescriptionPage
+    const pathname = showDescriptionPage(wobject)
       ? `/object/${wobject.author_permlink}/description`
       : wobject.defaultShowLink;
     const objectCardClassnames = classnames('ObjectCard__name', {
@@ -86,7 +79,6 @@ ObjectCard.propTypes = {
     menuItem: PropTypes.arrayOf(),
   }),
   showFollow: PropTypes.bool,
-  isSocialProduct: PropTypes.bool,
   alt: PropTypes.string,
   isModal: PropTypes.bool,
   isNewWindow: PropTypes.bool,

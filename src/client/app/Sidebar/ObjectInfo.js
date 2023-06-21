@@ -194,7 +194,7 @@ class ObjectInfo extends React.Component {
     this.setState({ authorsArray });
     this.props.setAuthors(authorsArray);
 
-    const menuItemsArray = await wobject.menuItem.reduce(async (acc, curr) => {
+    const menuItemsArray = await wobject.menuItem?.reduce(async (acc, curr) => {
       const res = await acc;
       const itemBody = JSON.parse(curr.body);
 
@@ -695,7 +695,7 @@ class ObjectInfo extends React.Component {
     const menuSection = () => {
       if (!isEditMode && !isEmpty(customSort) && !hasType(wobject, OBJECT_TYPE.LIST)) {
         const buttonArray = [
-          ...this.state.menuItemsArray,
+          ...(this.state.menuItemsArray || []),
           ...menuLinks,
           ...menuPages,
           ...button,

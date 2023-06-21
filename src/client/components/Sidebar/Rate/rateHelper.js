@@ -1,4 +1,4 @@
-import { meanBy, forEach } from 'lodash';
+import { meanBy, forEach, isEmpty } from 'lodash';
 
 export const rateCount = field => (field.rating_votes && field.rating_votes.length) || 0;
 
@@ -27,6 +27,21 @@ export const calculateRateCurrUser = (votes, user) => {
   const rate = Math.round(vote.rate);
 
   return rate / 2;
+};
+
+export const getRatingForSocial = ratings => {
+  if (!ratings) return null;
+  const filtered = ratings.filter(i => i.average_rating_weight);
+
+  if (!isEmpty(filtered)) {
+    const sortingList = filtered.sort((a, b) => b.average_rating_weight - a.average_rating_weight);
+
+    return sortingList[0];
+  }
+
+  const valueRating = ratings.find(o => o.body === 'Value');
+
+  return valueRating || ratings[0];
 };
 
 export const avrRate = ratings => {

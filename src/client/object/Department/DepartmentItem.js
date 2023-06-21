@@ -5,12 +5,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setActiveDepartment } from '../../../store/objectDepartmentsStore/objectDepartmentsActions';
 import { getActiveDepartment } from '../../../store/objectDepartmentsStore/objectDepartmentsSelectors';
 
-const DepartmentItem = ({ wobject, history, department, id, isSocialGifts }) => {
+const DepartmentItem = ({ wobject, history, department, id }) => {
   const dispatch = useDispatch();
   const storeActiveDep = useSelector(getActiveDepartment);
 
   const getDepartmentsClassNames = element =>
-    classNames(isSocialGifts ? ' Department__item ml2' : ' Department__item', {
+    classNames('Department__item', {
       Department__activeDepartment:
         element.body === storeActiveDep.name && storeActiveDep.id === id,
     });
@@ -32,8 +32,8 @@ const DepartmentItem = ({ wobject, history, department, id, isSocialGifts }) => 
   useEffect(() => () => dispatch(setActiveDepartment({})), [wobject.author_permlink]);
 
   return (
-    <div className="Department__container ">
-      <div key={department.body}>
+    <div className="Department__container">
+      <div className="Department__block" key={department.body}>
         <button className="Department__button" onClick={() => onDepartmentClick(department)}>
           <span className={getDepartmentsClassNames(department)}>{department.body}</span>{' '}
         </button>
@@ -47,7 +47,6 @@ DepartmentItem.propTypes = {
   department: PropTypes.arrayOf().isRequired,
   history: PropTypes.func.isRequired,
   id: PropTypes.string.isRequired,
-  isSocialGifts: PropTypes.bool,
 };
 
 export default DepartmentItem;

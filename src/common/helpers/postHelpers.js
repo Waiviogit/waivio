@@ -11,6 +11,7 @@ import {
   size,
   isNil,
   uniqBy,
+  uniq,
 } from 'lodash';
 import { getHtml } from '../../client/components/Story/Body';
 import { extractImageTags, extractLinks } from './parser';
@@ -29,6 +30,12 @@ import { getObjectName, getObjectUrlForLink } from './wObjectHelper';
 import { parseJSON } from './parseJSON';
 
 const appVersion = require('../../../package.json').version;
+
+const getTagsFromBody = text => {
+  const regex = /#\w+/g;
+
+  return text.match(regex);
+};
 
 export const isPostDeleted = post => post.title === 'deleted' && post.body === 'deleted';
 
@@ -117,6 +124,7 @@ export function createPostMetadata(
     format: 'markdown',
     timeOfPostCreation: Date.now() + 3000,
     host,
+    tags: [],
   };
 
   metaData = {
@@ -138,8 +146,15 @@ export function createPostMetadata(
   const parsedBody = getHtml(body, {}, 'text', { appUrl: host });
   const images = getContentImages(parsedBody, true);
   const links = extractLinks(parsedBody);
+  const parseTags = getTagsFromBody(parsedBody);
 
   if (!isEmpty(tags)) metaData.tags = tags.map(tag => tag.toLowerCase());
+  if (!isEmpty(parseTags))
+    metaData.tags = uniq([
+      ...metaData.tags,
+      ...parseTags.map(tag => tag.toLowerCase().replace('#', '')),
+    ]);
+
   metaData.users = users;
   metaData.links = links.slice(0, 10);
   metaData.image = images;
