@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Carousel, Icon } from 'antd';
-import { useRouteMatch } from 'react-router';
+import { useHistory, useRouteMatch } from 'react-router';
 import { useSelector } from 'react-redux';
 import { get, isEmpty, map } from 'lodash';
 import PropTypes from 'prop-types';
@@ -9,6 +9,7 @@ import { getRelatedPhotos, getWobjectGallery } from '../../../../waivioApi/ApiCl
 import { getUsedLocale } from '../../../../store/appStore/appSelectors';
 import { isMobile } from '../../../../common/helpers/apiHelpers';
 import { getProxyImageURL } from '../../../../common/helpers/image';
+import { getLastPermlinksFromHash } from '../../../../common/helpers/wObjectHelper';
 
 const limit = 100;
 
@@ -32,10 +33,12 @@ const carouselSettings = pics => {
 const PicturesSlider = ({ hoveredOption, activeOption, activeCategory }) => {
   const [currentImage, setCurrentImage] = useState({});
   const [pictures, setPictures] = useState([]);
-
+  const history = useHistory();
   const match = useRouteMatch();
   const locale = useSelector(getUsedLocale);
-  const authorPermlink = match.params.name;
+  const authorPermlink = history.location.hash
+    ? getLastPermlinksFromHash(history.location.hash)
+    : match.params.name;
   let currentSrc = currentImage?.body;
 
   if (hoveredOption?.avatar || activeOption[activeCategory]?.avatar) {

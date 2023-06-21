@@ -355,7 +355,15 @@ const SocialProduct = () => {
                   </div>
                 ))}
             </div>
-            <div className="SocialProduct__price">{price}</div>
+            <div
+              className={
+                isNil(price) && !isEmpty(wobject?.options)
+                  ? 'SocialProduct__price-no'
+                  : 'SocialProduct__price'
+              }
+            >
+              {price}
+            </div>
             {!isEmpty(wobject?.options) && (
               <div className="SocialProduct__paddingBottom">
                 <Options
