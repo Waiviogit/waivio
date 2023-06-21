@@ -37,22 +37,21 @@ const ShopObjectCard = ({ wObject, isChecklist }) => {
   }, [wObject.author_permlink]);
 
   let link;
+  const hash = location?.hash
+    ? `${location?.hash}/${wObject.author_permlink}`
+    : wObject.author_permlink;
 
   switch (wObject.object_type) {
     case 'product':
     case 'book':
-      link = `/object/product/${wObject.author_permlink}`;
+      link = isChecklist
+        ? `/checklist/${name}#${hash}`
+        : `/object/product/${wObject.author_permlink}`;
+
       break;
     case 'page':
-      {
-        const hash = location?.hash
-          ? `${location?.hash}/${wObject.author_permlink}`
-          : wObject.author_permlink;
+      link = isChecklist ? `/checklist/${name}#${hash}` : `/object/page/${wObject.author_permlink}`;
 
-        link = isChecklist
-          ? `/checklist/${name}#${hash}`
-          : `/object/page/${wObject.author_permlink}`;
-      }
       break;
     default:
       link = wObject.defaultShowLink;
