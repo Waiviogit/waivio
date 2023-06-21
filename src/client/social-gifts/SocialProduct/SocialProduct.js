@@ -266,18 +266,20 @@ const SocialProduct = () => {
     <div className="SocialProduct">
       <div className="SocialProduct__column SocialProduct__column-wrapper">
         {isMobile() && <div className="SocialProduct__wobjName">{wobject.name}</div>}
-        <div className="SocialProduct__row">
-          <div className="SocialProduct__carouselWrapper">
-            <PicturesSlider
-              hoveredOption={hoveredOption}
-              activeOption={activeOption}
-              activeCategory={activeCategory}
-            />
+        {!isEmpty(wobject.preview_gallery) && (
+          <div className="SocialProduct__row">
+            <div className="SocialProduct__carouselWrapper">
+              <PicturesSlider
+                hoveredOption={hoveredOption}
+                activeOption={activeOption}
+                activeCategory={activeCategory}
+              />
+            </div>
+            <div>
+              <ProductRewardCard isSocialProduct reward={reward} />
+            </div>
           </div>
-          <div>
-            <ProductRewardCard isSocialProduct reward={reward} />
-          </div>
-        </div>
+        )}
         <div className="SocialProduct__row SocialProduct__right-row">
           {!isMobile() && <div className="SocialProduct__wobjName">{wobject.name}</div>}
           <div className="SocialProduct__ratings">
@@ -319,6 +321,9 @@ const SocialProduct = () => {
                 ))}
               </div>
             </div>
+          )}
+          {isEmpty(wobject.preview_gallery) && (
+            <ProductRewardCard isSocialProduct reward={reward} />
           )}
         </div>
       </div>

@@ -12,7 +12,7 @@ import { isMobile } from '../../../../common/helpers/apiHelpers';
 const limit = 100;
 
 const carouselSettings = pics => {
-  const limitToShow = isMobile() ? 5 : 8;
+  const limitToShow = isMobile() ? 6 : 8;
   const slidesToShow = pics.length > limitToShow ? limitToShow : pics.length;
 
   return {
@@ -85,7 +85,6 @@ const PicturesSlider = ({ hoveredOption, activeOption, activeCategory }) => {
 };
 
 PicturesSlider.propTypes = {
-  pictures: PropTypes.arrayOf().isRequired,
   hoveredOption: PropTypes.shape(),
   activeOption: PropTypes.shape(),
   activeCategory: PropTypes.string,
