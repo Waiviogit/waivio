@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useHistory, useRouteMatch } from 'react-router';
-import { Carousel, Collapse, Icon, Tag } from 'antd';
-import { Link } from 'react-router-dom';
+import { Collapse } from 'antd';
 import { Helmet } from 'react-helmet';
 import { FormattedMessage } from 'react-intl';
 import { useDispatch, useSelector } from 'react-redux';
@@ -21,7 +20,6 @@ import {
   getUsedLocale,
   getWebsiteName,
 } from '../../../store/appStore/appSelectors';
-import { objectFields } from '../../../common/constants/listOfFields';
 import { getActiveCategory, getActiveOption } from '../../../store/optionsStore/optionsSelectors';
 import { setStoreActiveOption } from '../../../store/optionsStore/optionsActions';
 import AffiliatLink from '../../widgets/AffiliatLinks/AffiliatLink';
@@ -33,23 +31,22 @@ import {
   parseAddress,
   parseWobjectField,
 } from '../../../common/helpers/wObjectHelper';
-import Department from '../../object/Department/Department';
 import Options from '../../object/Options/Options';
-import ProductId from '../../app/Sidebar/ProductId';
-import ShopObjectCard from '../ShopObjectCard/ShopObjectCard';
 import ObjectFeatures from '../../object/ObjectFeatures/ObjectFeatures';
 import RatingsWrap from '../../objectCard/RatingsWrap/RatingsWrap';
 import './SocialProduct.less';
 import PicturesSlider from './PicturesSlider/PicturesSlider';
 import { compareObjectTitle } from '../../../common/helpers/seoHelpes';
 import DEFAULTS from '../../object/const/defaultValues';
+import ProductDetails from './ProductDetails/ProductDetails';
+import { getObjectsSliderLayout, listItem } from './SocialProductHelper';
+import SocialTagCategories from './SocialTagCategories';
 
 const limit = 100;
 
 const SocialProduct = () => {
   const [wobject, setWobject] = useState({});
   const [reward, setReward] = useState([]);
-  const [showMoreCategoryItems, setShowMoreCategoryItems] = useState(false);
   const [hoveredOption, setHoveredOption] = useState({});
   const [addOns, setAddOns] = useState([]);
   const [similarObjects, setSimilarObjects] = useState([]);
@@ -103,8 +100,6 @@ const SocialProduct = () => {
     },
     '',
   );
-  const slideWidth = 270;
-  const slidesToShow = Math.floor(typeof window !== 'undefined' && window.innerWidth / slideWidth);
   const image = getObjectAvatar(wobject) || DEFAULTS.AVATAR;
   const desc = `${wobject.name}. ${parseAddress(wobject) || ''} ${wobject.description ||
     ''} ${tagCategoriesForDescr}`;
@@ -112,19 +107,6 @@ const SocialProduct = () => {
   const titleText = compareObjectTitle(false, wobject.name, address, siteName);
   const canonicalUrl = `${appUrl}/object/${wobject.object_type}/${match.params.name}`;
   const url = `${appUrl}/object/${wobject.object_type}/${match.params.name}`;
-  const carouselSettings = objects => ({
-    dots: isMobile(),
-    dotPosition: 'bottom',
-    dotNumber: 5,
-    arrows: !isMobile(),
-    lazyLoad: true,
-    rows: 1,
-    nextArrow: <Icon type="caret-right" />,
-    prevArrow: <Icon type="caret-left" />,
-    infinite: slidesToShow < objects.length,
-    slidesToShow,
-    slidesToScroll: slidesToShow,
-  });
 
   const showProductDetails =
     !isEmpty(brand) ||
@@ -183,7 +165,6 @@ const SocialProduct = () => {
       setFields({ brandObject, manufacturerObject, merchantObject });
     });
   };
-  const objAuthorPermlink = obj => obj.authorPermlink || obj.author_permlink;
 
   useEffect(() => {
     if (!isEmpty(authorPermlink)) {
@@ -209,94 +190,6 @@ const SocialProduct = () => {
   useEffect(() => {
     !isEmpty(wobject) && getAddOnsSimilarRelatedObjects();
   }, [addOnPermlinks.length, wobject.author_permlink]);
-
-  const getLayout = (fieldName, field) => {
-    switch (fieldName) {
-      case objectFields.parent:
-      case objectFields.merchant:
-      case objectFields.brand:
-      case objectFields.manufacturer:
-        return objAuthorPermlink(field) ? (
-          <Link to={`/object/product/${objAuthorPermlink(field)}`}>{field.name}</Link>
-        ) : (
-          <span>{field.name}</span>
-        );
-      case objectFields.productWeight:
-        return (
-          <span>
-            {field.value} {field.unit}
-          </span>
-        );
-
-      case objectFields.dimensions:
-        return (
-          <span>
-            {dimensions.length} x {dimensions.width} x {dimensions.depth} {dimensions.unit}
-          </span>
-        );
-      default:
-        return null;
-    }
-  };
-
-  const listItem = (fieldName, field) => (
-    <div className="paddingBottom">
-      <b>
-        <FormattedMessage id={`object_field_${fieldName}`} defaultMessage={fieldName} />:{' '}
-      </b>
-      {getLayout(fieldName, field)}
-    </div>
-  );
-
-  const getObjectsSliderLayout = (title, objects) =>
-    !isEmpty(objects) && (
-      <div className="SocialProduct__addOn-section">
-        <div className="SocialProduct__heading">{title}</div>
-        <div className="Slider__wrapper">
-          <Carousel {...carouselSettings(objects)}>
-            {objects?.map(wObject => (
-              <ShopObjectCard key={wObject.author_permlink} wObject={wObject} />
-            ))}
-          </Carousel>
-        </div>
-      </div>
-    );
-  const renderTagCategories = tags =>
-    tags.map(item => (
-      <div className="SocialProduct__tag-wrapper" key={item.id}>
-        {`${item.body}:`}
-        <div className="SocialProduct__tags">
-          {item.items && renderCategoryItems(item.items, item.body)}
-        </div>
-      </div>
-    ));
-
-  const renderCategoryItems = (categoryItems = [], category) => {
-    const { object_type: type } = wobject;
-    const onlyFiveItems = categoryItems.filter((f, i) => i < 5);
-    const tagArray = showMoreCategoryItems ? categoryItems : onlyFiveItems;
-
-    return (
-      <span>
-        {tagArray.map(item => (
-          <>
-            <Tag key={`${category}/${item.body}`} className="SocialProduct__tag-item">
-              <Link to={`/discover-objects/${type}?${category}=${item.body}`}>{item.body}</Link>
-            </Tag>{' '}
-          </>
-        ))}
-        {categoryItems.length > 5 && !showMoreCategoryItems && (
-          <span
-            role="presentation"
-            className="show-more"
-            onClick={() => setShowMoreCategoryItems(true)}
-          >
-            <FormattedMessage id="show_more" defaultMessage="Show more" />
-          </span>
-        )}
-      </span>
-    );
-  };
 
   return (
     <div>
@@ -404,9 +297,7 @@ const SocialProduct = () => {
           )}
           {!isEmpty(menuItem) && (
             <div className="SocialProduct__paddingBottom">
-              <Collapse
-              // onChange={callback}
-              >
+              <Collapse>
                 {menuItem.map(item => {
                   const itemBody = JSON.parse(item.body);
 
@@ -420,37 +311,17 @@ const SocialProduct = () => {
             </div>
           )}
           {showProductDetails && (
-            <div className="SocialProduct__productDetails">
-              <div className="SocialProduct__heading">Product details</div>
-              <div className="SocialProduct__productDetails-content SocialProduct__contentPaddingLeft">
-                {!isEmpty(fields.brandObject) && listItem(objectFields.brand, fields.brandObject)}
-                {!isEmpty(fields.manufacturerObject) &&
-                  listItem(objectFields.manufacturer, fields.manufacturerObject)}
-                {!isEmpty(fields.merchantObject) &&
-                  listItem(objectFields.merchant, fields.merchantObject)}
-                {!isEmpty(parent) && listItem(objectFields.parent, parent)}
-                {!isEmpty(productWeight) && listItem(objectFields.productWeight, productWeight)}
-                {!isEmpty(dimensions) && listItem(objectFields.dimensions, dimensions)}
-                {!isEmpty(departments) && (
-                  <Department
-                    isSocialGifts
-                    departments={departments}
-                    isEditMode={false}
-                    history={history}
-                    wobject={wobject}
-                  />
-                )}
-                {
-                  <ProductId
-                    isSocialGifts
-                    isEditMode={false}
-                    authorPermlink={wobject.author_permlink}
-                    groupId={groupId}
-                    productIdBody={productIdBody}
-                  />
-                }
-              </div>
-            </div>
+            <ProductDetails
+              wobject={wobject}
+              groupId={groupId}
+              history={history}
+              productWeight={productWeight}
+              dimensions={dimensions}
+              productIdBody={productIdBody}
+              listItem={listItem}
+              departments={departments}
+              fields={fields}
+            />
           )}
           {getObjectsSliderLayout('Bought together / Add-ons', addOns)}
           {!isEmpty(features) && (
@@ -472,7 +343,7 @@ const SocialProduct = () => {
             <div className="SocialProduct__featuresContainer">
               <div className="SocialProduct__heading">Tags</div>
               <div className="SocialProduct__centralContent">
-                {renderTagCategories(tagCategoriesList)}
+                <SocialTagCategories tagCategoriesList={tagCategoriesList} wobject={wobject} />
               </div>
             </div>
           )}
