@@ -186,7 +186,7 @@ class WobjectContainer extends React.Component {
     const newsFilter = match.params[1] === 'newsFilter' ? { newsFilter: match.params.itemId } : {};
 
     this.props.getObject(match.params.name, authenticatedUserName).then(res => {
-      if (showDescriptionPage(res.value)) {
+      if (showDescriptionPage(res.value) && !match.params[0]) {
         history.push(`/object/${res.value.author_permlink}/description`);
       }
       this.props.getAlbums(match.params.name);
@@ -213,7 +213,7 @@ class WobjectContainer extends React.Component {
     ) {
       this.props.getAlbums(match.params.name);
       this.props.getObject(match.params.name, authenticatedUserName).then(res => {
-        if (showDescriptionPage(res.value)) {
+        if (showDescriptionPage(res.value) && !match.params[0]) {
           history.push(`/object/${res.value.author_permlink}/description`);
         }
       });
