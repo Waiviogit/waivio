@@ -15,6 +15,10 @@ import PopoverMenu, { PopoverMenuItem } from '../../../components/PopoverMenu/Po
 import './WebsiteTopNavigation.less';
 
 const userNav = user => [
+  // {
+  //   name: 'Blog',
+  //   link: `/blog`,
+  // },
   {
     name: 'Shop',
     link: `/user-shop/${user}`,
@@ -99,7 +103,7 @@ const WebsiteTopNavigation = ({ shopSettings }) => {
                       {truncate(i.name, {
                         length: 90,
                         separator: '...',
-                      })}
+                      }).toUpperCase()}
                     </PopoverMenuItem>
                   ))}
                 </PopoverMenu>

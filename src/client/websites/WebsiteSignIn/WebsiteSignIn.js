@@ -152,9 +152,8 @@ const WebsiteSignIn = props => {
                 .replace('https://', '')
             : props.intl.formatMessage({
                 id: 'sign_in_for_reward',
-                defaultMessage: 'Sign-In for rewards per meal',
+                defaultMessage: 'Sign-In for rewards per meal.',
               })}
-          .
         </h2>
       </div>
       <div

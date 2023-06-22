@@ -29,10 +29,10 @@ import {
   getWebsiteDefaultIconList,
 } from '../../../store/appStore/appSelectors';
 import { getProxyImageURL } from '../../../common/helpers/image';
-
-import './Checklist.less';
 import PageContent from '../PageContent/PageContent';
 import SocialProduct from '../SocialProduct/SocialProduct';
+
+import './Checklist.less';
 
 const Checklist = ({
   userName,
