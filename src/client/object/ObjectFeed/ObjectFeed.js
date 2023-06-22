@@ -107,6 +107,8 @@ const ObjectFeed = ({ limit, handleCreatePost, userName, wobject }) => {
     );
   };
 
+  const handleShowPostModal = post => dispatch(showPostModal(post));
+
   return (
     <div className="object-feed">
       {loadingPropositions ? (
@@ -124,7 +126,7 @@ const ObjectFeed = ({ limit, handleCreatePost, userName, wobject }) => {
               isFetching={isFetching}
               hasMore={hasMore}
               loadMoreContent={loadMoreContentAction}
-              showPostModal={dispatch(showPostModal)}
+              showPostModal={handleShowPostModal}
             />
           ) : (
             <div
