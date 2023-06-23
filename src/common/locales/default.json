@@ -2143,9 +2143,9 @@
   "object_field_manufacturer": "Manufacturer",
   "object_field_brand": "Brand",
   "object_field_merchant": "Merchant",
-  "create_new_manufacturer": " Create new manufacturer",
-  "create_new_brand": " Create new brand",
-  "create_new_merchant": " Create new merchant",
+  "create_new_manufacturer": "Create new manufacturer",
+  "create_new_brand": "Create new brand",
+  "create_new_merchant": "Create new merchant",
   "earn_quick": "Earn",
   "refferals": "Referrals",
   "instructions": "Instructions",
@@ -2224,5 +2224,9 @@
   "chrome_extension": "Chrome extension",
   "chrome_extension_description": "The Waivio Chrome Extension is a browser extension designed to efficiently scrape Amazon pages and extract crucial information tailored to Waivio's requirements. By effortlessly parsing through a product page, this extension gathers relevant data such as product names, prices, avatars, and more. After processing the collected information, it generates a compatible output file.",
   "mobnav_product_extension": "Product extension",
-  "buy_it_on": "Buy it on"
+  "buy_it_on": "Buy it on",
+  "product_id_type_text": "Some product ID types are recognized globally, such as UPC, EAN, ISBN, GTIN-8. But manufactures can use their own systems for naming products.",
+  "product_id_text": "Product identifiers are often alphanumeric, but there are no limitations on this text field.",
+  "product_id_image_text": "Visual representation of the product ID, such as a bar code, label, QR code, etc.",
+  "error_vote_less": "Your vote is less than $0.001 in WAIV token."
 }
