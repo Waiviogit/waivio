@@ -1,13 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
-import { get, has, isEmpty } from 'lodash';
+import { get, has } from 'lodash';
 import classNames from 'classnames';
 import steemEmbed from '../../vendor/embedMedia';
 import PostFeedEmbed from './PostFeedEmbed';
 import BodyShort from './BodyShort';
 import { jsonParse } from '../../../common/helpers/formatter';
-import { getContentImages } from '../../../common/helpers/postHelpers';
+import { getImageForPreview } from '../../../common/helpers/postHelpers';
 import {
   getPositions,
   isPostStartsWithAnEmbed,
@@ -19,10 +19,8 @@ import {
 } from './StoryHelper';
 import { getHtml } from './Body';
 import { getImagePathPost, getProxyImageURL } from '../../../common/helpers/image';
-import { objectFields } from '../../../common/constants/listOfFields';
 import { getBodyLink } from '../EditorExtended/util/videoHelper';
 import { videoPreviewRegex } from '../../../common/helpers/regexHelpers';
-import { parseJSON } from '../../../common/helpers/parseJSON';
 
 const regexPattern = /(?:https?:\/\/)?(?:www\.)?youtu(?:be\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=)|\.be\/)([\w-]+)(?:\S+)?/g;
 
@@ -33,55 +31,7 @@ const StoryPreview = ({ post, isUpdates, isVimeo }) => {
 
   if (!post) return '';
   const jsonMetadata = jsonParse(post.json_metadata);
-  const field = get(jsonMetadata, ['wobj', 'field'], {});
-  let imagePath = '';
-
-  if (
-    !isEmpty(jsonMetadata) &&
-    !isEmpty(jsonMetadata.image) &&
-    jsonMetadata.image[0]?.includes('waivio.nyc3.digitaloceanspaces')
-  ) {
-    imagePath = jsonMetadata.image[0];
-  } else if (jsonMetadata && jsonMetadata.image && jsonMetadata.image[0]) {
-    imagePath = jsonMetadata.image[0];
-  } else if (
-    [objectFields.galleryItem, objectFields.avatar, objectFields.background].includes(field.name)
-  ) {
-    imagePath = jsonMetadata.wobj.field.body;
-  } else {
-    const contentImages = getContentImages(post.body);
-
-    if (contentImages.length) {
-      imagePath = contentImages[0];
-    }
-  }
-  if (
-    isUpdates &&
-    (post.name === objectFields.avatar ||
-      post.name === objectFields.galleryItem ||
-      post.name === objectFields.background)
-  ) {
-    if (!isEmpty(post.body) && post.body.includes('waivio.nyc3.digitaloceanspaces')) {
-      imagePath = post.body;
-    } else {
-      imagePath = post.body;
-    }
-  }
-  if (isUpdates && post.name === objectFields.productId) {
-    if (!isEmpty(post.body) && post.body.includes('waivio.nyc3.digitaloceanspaces')) {
-      imagePath = parseJSON(post.body)?.productIdImage;
-    }
-  }
-  if (isUpdates && post.name === objectFields.menuItem) {
-    if (!isEmpty(post.body) && post.body.includes('waivio.nyc3.digitaloceanspaces')) {
-      imagePath = parseJSON(post.body)?.image;
-    }
-  }
-  if (isUpdates && post.name === objectFields.options) {
-    if (!isEmpty(post.body) && post.body.includes('waivio.nyc3.digitaloceanspaces')) {
-      imagePath = parseJSON(post.body)?.image;
-    }
-  }
+  const imagePath = getImageForPreview(post, isUpdates)[0];
   const embeds = steemEmbed.getAll(post.body, { height: '100%' });
   const video = jsonMetadata && jsonMetadata.video;
 
@@ -144,7 +94,7 @@ const StoryPreview = ({ post, isUpdates, isVimeo }) => {
     }
   }
 
-  const hasVideo = embeds && embeds[0] && true;
+  const hasVideo = embeds && embeds[0];
   const preview = {
     text: () => (
       <BodyShort
