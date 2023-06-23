@@ -1,28 +1,70 @@
+.Feed {
+  &__item {
+    max-width: 300px;
+    margin-bottom: 20px;
+  }
+
+  &__img {
+    display: inline-block;
+    width: 100%;
+    //border-bottom: 1px dotted green;
+
+    &--bottom {
+      border-bottom: none;
+      border-radius: 0 0 16px 16px;
+    }
+
+    &--top {
+      border-radius: 16px 16px 0 0;
+    }
+
+    &--only {
+      border-bottom: none;
+      border-radius: 16px;
+    }
+  }
+
+  &__imgWrap {
+    border-radius: 16px;
+    margin-bottom: 5px;
+  }
+
+  &__title {
+    font-weight: bold;
+    margin-bottom: 5px;
+  }
+
+  &__authorInfo {
+    display: flex;
+    align-items: center;
+    color: #000000a6;
+
+    &:hover {
+      color: #000000a6;
+    }
+
+    .Avatar {
+      margin-right: 10px;
+    }
+  }
+
+  &__postInfo {
+    padding: 0 5px;
+  }
+
+  .PostFeedEmbed__preview,
+  .PostFeedEmbed,
+  .PostFeedEmbed__container iframe {
+    border-radius: 16px;
+  }
+}
+
 .my-masonry-grid {
-  display: -webkit-box; /* Not needed if autoprefixing */
-  display: -ms-flexbox; /* Not needed if autoprefixing */
   display: flex;
   padding: 20px;
-  margin-left: 0px; /* gutter size offset */
   width: auto;
-  max-width: 980px;
-  margin: auto;
 }
 .my-masonry-grid_column {
-  padding-left: 15px; /* gutter size */
+  padding-left: 10px; /* gutter size */
   background-clip: padding-box;
-}
-
-/* Style your items */
-.my-masonry-grid_column > div {
-  /* change div to reference your elements you put in <Masonry> */
-
-  margin-bottom: 15px;
-}
-
-.item {
-  width: 90%;
-  max-width: 300px;
-  margin: auto;
-  padding: 0 0 15px;
 }

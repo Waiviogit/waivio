@@ -44,7 +44,7 @@ const routes = host => ({
       ],
     },
     {
-      path: ['/blog'],
+      path: ['/blog/:name'],
       exact: true,
       component: Feed,
     },

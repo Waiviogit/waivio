@@ -12,10 +12,11 @@ import {
   isNil,
   uniqBy,
   uniq,
+  has,
 } from 'lodash';
 import { getHtml } from '../../client/components/Story/Body';
 import { extractImageTags, extractLinks } from './parser';
-import { categoryRegex, botNameRegex } from './regexHelpers';
+import { categoryRegex, botNameRegex, videoPreviewRegex } from './regexHelpers';
 import { jsonParse } from './formatter';
 import DMCA from '../constants/dmca.json';
 import whiteListedApps from './apps';
@@ -28,6 +29,10 @@ import { rewardsValues } from '../constants/rewards';
 import * as apiConfig from '../../waivioApi/config.json';
 import { getObjectName, getObjectUrlForLink } from './wObjectHelper';
 import { parseJSON } from './parseJSON';
+import { objectFields } from '../constants/listOfFields';
+import steemEmbed from '../../client/vendor/embedMedia';
+import { getProxyImageURL } from './image';
+import { getBodyLink } from '../../client/components/EditorExtended/util/videoHelper';
 
 const appVersion = require('../../../package.json').version;
 
@@ -374,3 +379,112 @@ export function getPostHashtags(items) {
 
 export const getAuthorName = post =>
   post.guestInfo && post.guestInfo.userId ? post.guestInfo.userId : post.author;
+
+export const getImageForPreview = (post, isUpdates = false) => {
+  const jsonMetadata = jsonParse(post.json_metadata);
+  const field = get(jsonMetadata, ['wobj', 'field'], {});
+  let imagePath = [];
+
+  if (!isEmpty(jsonMetadata) && !isEmpty(jsonMetadata.image)) {
+    imagePath = jsonMetadata.image;
+  } else if (
+    [objectFields.galleryItem, objectFields.avatar, objectFields.background].includes(field.name)
+  ) {
+    imagePath = [jsonMetadata.wobj.field.body];
+  } else {
+    const contentImages = getContentImages(post.body);
+
+    if (contentImages.length) {
+      imagePath = contentImages;
+    }
+  }
+
+  if (isUpdates) {
+    if (
+      [objectFields.avatar, objectFields.galleryItem, objectFields.background].includes(post.name)
+    )
+      imagePath = post.body;
+    if (
+      post.name === objectFields.productId &&
+      !isEmpty(post.body) &&
+      post.body.includes('waivio.nyc3.digitaloceanspaces')
+    ) {
+      imagePath = [parseJSON(post.body)?.productIdImage];
+    }
+    if ([objectFields.options, objectFields.menuItem].includes(post.name)) {
+      if (!isEmpty(post.body) && post.body.includes('waivio.nyc3.digitaloceanspaces')) {
+        imagePath = [parseJSON(post.body)?.image];
+      }
+    }
+  }
+
+  return imagePath;
+};
+
+export const getVideoForPreview = post => {
+  const regexPattern = /(?:https?:\/\/)?(?:www\.)?youtu(?:be\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=)|\.be\/)([\w-]+)(?:\S+)?/g;
+  const embeds = steemEmbed.getAll(post.body, { height: '100%' });
+  const jsonMetadata = jsonParse(post.json_metadata);
+  const video = jsonMetadata && jsonMetadata.video;
+
+  if (has(video, 'content.videohash') && has(video, 'info.snaphash')) {
+    const author = get(video, 'info.author', '');
+    const permlink = get(video, 'info.permlink', '');
+    const dTubeEmbedUrl = `https://emb.d.tube/#!/${author}/${permlink}/true`;
+    const dTubeIFrame = `<iframe width="100%" height="340" src="${dTubeEmbedUrl}" allowFullScreen></iframe>`;
+
+    embeds[0] = {
+      type: 'video',
+      provider_name: 'DTube',
+      embed: dTubeIFrame,
+      thumbnail: getProxyImageURL(`https://ipfs.io/ipfs/${video.info.snaphash}`, 'preview'),
+    };
+  }
+
+  const videoPreviewResult = post.body.match(videoPreviewRegex);
+  const videoPreviewResulYoutube = post.body.match(regexPattern);
+
+  if (!embeds[0] && videoPreviewResult) {
+    const videoLink = getBodyLink(videoPreviewResult);
+
+    if (videoLink) {
+      const options = {
+        width: '100%',
+        height: 340,
+        autoplay: false,
+        thumbnail: '',
+      };
+      let thumbnailID;
+
+      if (video && video.files) {
+        if (video.files.ipfs && video.files.ipfs.img) {
+          thumbnailID = video.files.ipfs.img[360];
+          options.thumbnail = thumbnailID && `https://ipfs.io/ipfs/${thumbnailID}`;
+        } else {
+          thumbnailID = video.files.youtube;
+          options.thumbnail = thumbnailID && `https://img.youtube.com/vi/${thumbnailID}/0.jpg`;
+        }
+      }
+      if (embeds[0]) {
+        embeds[0] = steemEmbed.get(videoLink, options);
+      }
+    }
+  }
+
+  if (!embeds[0] && videoPreviewResulYoutube) {
+    const videoLink = videoPreviewResulYoutube[0];
+
+    if (videoLink) {
+      const options = {
+        width: '100%',
+        height: 340,
+        autoplay: false,
+        thumbnail: '',
+      };
+
+      embeds[0] = steemEmbed.get(videoLink.replaceAll('\\', ''), options);
+    }
+  }
+
+  return embeds;
+};
