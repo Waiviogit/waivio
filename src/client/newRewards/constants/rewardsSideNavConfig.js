@@ -99,7 +99,7 @@ export const matchBotsSettings = {
   tab: {
     name: 'matchbots',
     id: 'match_bots',
-    defaultMessage: 'Match bots',
+    defaultMessage: 'Match bots:',
     forUser: true,
   },
   settings: [
@@ -125,7 +125,7 @@ export const refferalsSettings = {
   tab: {
     name: 'refferals',
     id: 'refferals',
-    defaultMessage: 'Refferals',
+    defaultMessage: 'Refferals:',
     forUser: true,
   },
   settings: [

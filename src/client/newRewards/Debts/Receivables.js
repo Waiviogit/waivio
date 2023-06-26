@@ -13,7 +13,7 @@ import './DebtsList.less';
 import '../../rewards/Payment/Payment.less';
 
 const filterConfig = [
-  { title: 'Receivables', type: 'days' },
+  { title: 'Receivable', type: 'days' },
   { title: '', type: 'payable' },
 ];
 
