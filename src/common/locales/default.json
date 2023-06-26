@@ -2147,7 +2147,7 @@
   "create_new_brand": "Create new brand",
   "create_new_merchant": "Create new merchant",
   "earn_quick": "Earn",
-  "refferals": "Referrals",
+  "refferals": "Referrals:",
   "instructions": "Instructions",
   "authors": "Authors",
   "share_verb": "Share",
@@ -2228,5 +2228,6 @@
   "product_id_type_text": "Some product ID types are recognized globally, such as UPC, EAN, ISBN, GTIN-8. But manufactures can use their own systems for naming products.",
   "product_id_text": "Product identifiers are often alphanumeric, but there are no limitations on this text field.",
   "product_id_image_text": "Visual representation of the product ID, such as a bar code, label, QR code, etc.",
-  "error_vote_less": "Your vote is less than $0.001 in WAIV token."
+  "error_vote_less": "Your vote is less than $0.001 in WAIV token.",
+  "match_bots": "Match bots:"
 }
