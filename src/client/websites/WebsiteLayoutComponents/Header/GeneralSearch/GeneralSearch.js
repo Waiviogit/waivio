@@ -35,6 +35,8 @@ const GeneralSearch = props => {
   const loading = useSelector(getIsStartSearchAutoComplete);
   const dispatch = useDispatch();
   const history = useHistory();
+  const isSocialWobj = wobj =>
+    props.isSocialProduct && ['product', 'book'].includes(wobj.object_type);
 
   const handleAutoCompleteSearchDebounce = useCallback(
     debounce(value => {
@@ -104,7 +106,11 @@ const GeneralSearch = props => {
         <AutoComplete.Option
           marker={markers.WOBJ}
           key={getObjectName(option)}
-          value={option.defaultShowLink}
+          value={
+            isSocialWobj(option)
+              ? `/object/${option.object_type}/${option.author_permlink}`
+              : option.defaultShowLink
+          }
           className="Topnav__search-autocomplete"
         >
           <ObjectSearchItem wobj={option} />
@@ -224,6 +230,7 @@ GeneralSearch.propTypes = {
     formatMessage: PropTypes.func,
   }),
   searchBarActive: PropTypes.bool,
+  isSocialProduct: PropTypes.bool,
 };
 
 export default injectIntl(GeneralSearch);

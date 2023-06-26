@@ -12,9 +12,9 @@ Waivio is an Open Source social network and communications platform which extend
 git clone https://github.com/Waiviogit/waivio.git
 cd waivio
 
-yarn dev - waivio
-yarn dev:dining - dining.gifts
-yarn dev:social - social.gifts
+yarn dev - waivio (PORT = 3002)
+yarn dev:dg - dining.gifts  (PORT = 3000)
+yarn dev:sg - social.gifts  (PORT = 4000)
 ```
 
 ##Project Structure
