@@ -107,6 +107,14 @@ const SocialProduct = () => {
   const titleText = compareObjectTitle(false, wobject.name, address, siteName);
   const canonicalUrl = `${appUrl}/object/${wobject.object_type}/${match.params.name}`;
   const url = `${appUrl}/object/${wobject.object_type}/${match.params.name}`;
+  const bannerEl =
+    typeof document !== 'undefined' && document.getElementById('socialGiftsMainBanner');
+  const socialHeaderEl = typeof document !== 'undefined' && document.querySelector('.Header');
+  const socialScrollHeight = bannerEl
+    ? socialHeaderEl.offsetHeight + bannerEl.offsetHeight
+    : socialHeaderEl?.offsetHeight;
+  const scrollHeight =
+    typeof window !== 'undefined' && window.scrollY < 50 ? 0 : socialScrollHeight;
 
   const showProductDetails =
     !isEmpty(brand) ||
@@ -167,20 +175,16 @@ const SocialProduct = () => {
   };
 
   useEffect(() => {
+    window.scrollTo({ top: scrollHeight, behavior: 'smooth' });
     if (!isEmpty(authorPermlink)) {
       getObject(authorPermlink, userName, locale).then(obj => {
         setWobject(obj);
       });
 
       getObjectsRewards(authorPermlink, userName).then(res => setReward(res));
-      // getAddOnsSimilarRelatedObjects();
     }
 
     return () => dispatch(setStoreActiveOption({}));
-  }, [authorPermlink]);
-
-  useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [authorPermlink]);
 
   useEffect(() => {

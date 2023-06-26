@@ -27,6 +27,7 @@ const carouselSettings = pics => {
     prevArrow: <Icon type="caret-left" />,
     infinite: false,
     slidesToShow,
+    swipeToSlide: isMobile(),
     slidesToScroll: 1,
   };
 };
