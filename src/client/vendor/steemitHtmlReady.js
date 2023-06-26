@@ -135,7 +135,7 @@ function iframe(state, child) {
   if (embed && embed.id) {
     const { images, links } = state;
     links.add(embed.url);
-    images.add(`https://img.youtube.com/vi/${embed.id}/0.jpg`);
+    images.add(`https://img.youtube.com/vi/${embed.id}/hqdefault.jpg`);
     if (!resolveIframe) domString = `~~~ embed:${embed.id} ${embed.provider_name} ${embed.url} ~~~`;
   }
 
@@ -279,7 +279,7 @@ function isEmbedable(child, links, images, resolveIframe) {
       const v = DOMParser.parseFromString(domString);
       if (v) child?.parentNode.replaceChild(v, child);
       if (links) links.add(embed.url);
-      if (images) images.add(`https://img.youtube.com/vi/${embed.id}/0.jpg`);
+      if (images) images.add(`https://img.youtube.com/vi/${embed.id}/hqdefault.jpg`);
       return true;
     }
     return false;

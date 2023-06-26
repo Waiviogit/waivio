@@ -12,7 +12,10 @@ const images = {
 
 const AffiliatLink = ({ link }) => (
   <a rel="noreferrer" key={link.link} target="_blank" href={link.link} className="AffiliatLink">
-    <ReactSVG className="AffiliatLink__icon" src={images[link.type]} />
+    <ReactSVG
+      className={link.type !== 'amazon' ? 'AffiliatLink__icon' : 'AffiliatLink__icon-amazon'}
+      src={images[link.type]}
+    />
   </a>
 );
 

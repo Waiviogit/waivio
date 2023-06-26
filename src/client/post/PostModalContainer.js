@@ -11,7 +11,6 @@ import {
   getWebsiteColors,
 } from '../../store/appStore/appSelectors';
 import { getAuthenticatedUserName, isGuestUser } from '../../store/authStore/authSelectors';
-import { getPostContent } from '../../store/postsStore/postsSelectors';
 import { getUser } from '../../store/usersStore/usersSelectors';
 import { addPayoutForActiveVotes } from '../../common/helpers';
 import { getTokenRatesInUSD } from '../../store/walletStore/walletSelectors';
@@ -27,6 +26,7 @@ const PostModalContainer = ({
   isGuest,
   userName,
   mainColor,
+  isFeedMasonry,
 }) =>
   showPostModal && (
     <PostModal
@@ -39,6 +39,7 @@ const PostModalContainer = ({
       isGuest={isGuest}
       username={userName}
       mainColor={mainColor}
+      isFeedMasonry={isFeedMasonry}
     />
   );
 
@@ -46,6 +47,7 @@ PostModalContainer.propTypes = {
   hidePostModal: PropTypes.func.isRequired,
   author: PropTypes.shape().isRequired,
   showPostModal: PropTypes.bool,
+  isFeedMasonry: PropTypes.bool,
   currentShownPost: PropTypes.shape(),
   shownPostContents: PropTypes.shape(),
   getSocialInfoPost: PropTypes.func.isRequired,
@@ -67,9 +69,6 @@ export default connect(
   state => {
     const currentShownPost = getCurrentShownPost(state);
     const author = get(currentShownPost, 'author');
-    const permlink = get(currentShownPost, 'permlink');
-    const getContent = getPostContent(permlink, author);
-    const post = getContent(state);
     const waivRates = getTokenRatesInUSD(state, 'WAIV');
     const userName = getAuthenticatedUserName(state);
     const colors = getWebsiteColors(state);
@@ -80,8 +79,8 @@ export default connect(
       author: getUser(state, author),
       currentShownPost,
       shownPostContents: {
-        ...post,
-        active_votes: addPayoutForActiveVotes(post, waivRates),
+        ...currentShownPost,
+        active_votes: addPayoutForActiveVotes(currentShownPost, waivRates),
       },
       isGuest: isGuestUser(state),
       userName,

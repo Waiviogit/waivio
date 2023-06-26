@@ -5,13 +5,14 @@ import { useSelector } from 'react-redux';
 import InfiniteSroll from 'react-infinite-scroller';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 import { getUserProfileBlog } from '../../../waivioApi/ApiClient';
-
-import './Feed.less';
 import FeedItem from './FeedItem';
+import PostModal from '../../post/PostModalContainer';
+
+import './FeedMasonry.less';
 
 const limit = 20;
 
-const Feed = () => {
+const FeedMasonry = () => {
   const { name } = useParams();
   const authUserName = useSelector(getAuthenticatedUserName);
   const [posts, setPosts] = useState();
@@ -41,15 +42,16 @@ const Feed = () => {
     <InfiniteSroll hasMore={hasMore} loadMore={loadMore}>
       <Masonry
         breakpointCols={breakpointColumnsObj}
-        className="Feed my-masonry-grid"
+        className="FeedMasonry my-masonry-grid"
         columnClassName="my-masonry-grid_column"
       >
         {posts?.map(post => (
           <FeedItem key={`${post.author}/${post?.permlink}`} post={post} />
         ))}
       </Masonry>
+      <PostModal isFeedMasonry />
     </InfiniteSroll>
   );
 };
 
-export default Feed;
+export default FeedMasonry;

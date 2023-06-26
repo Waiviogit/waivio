@@ -144,7 +144,10 @@ const LikeSection = props => {
             paddingTop: '10px',
           }}
         >
-          Your vote is less than $0.001 in WAIV token.
+          {intl.formatMessage({
+            id: 'error_vote_less',
+            defaultMessage: 'Your vote is less than $0.001 in WAIV token.',
+          })}
         </div>
       )}
     </div>
