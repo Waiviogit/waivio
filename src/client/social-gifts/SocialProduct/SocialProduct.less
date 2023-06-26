@@ -247,7 +247,43 @@
     }
   }
 
-  .Slider__wrapper {
+  .Slider__wrapper-addOn,
+  .Slider__wrapper-similar,
+  .Slider__wrapper-related {
+    .ant-carousel .slick-dots li button {
+      background: @normal-grey;
+      opacity: 0.4;
+      width: 5px;
+      height: 5px;
+      border-radius: 100%;
+    }
+    .ant-carousel .slick-dots li {
+      margin: 0 2px;
+    }
+    .ant-carousel .slick-dots li.slick-active button {
+      opacity: 1;
+      background: @normal-grey;
+      width: 5px;
+      height: 5px;
+      border-radius: 100%;
+    }
+    .ant-carousel .slick-dots li {
+      transform: translateX(var(--translate-dots));
+      transition: transform 0.1s ease-in-out;
+    }
+
+    .ant-carousel .slick-dots-bottom {
+      display: flex !important;
+      flex-wrap: nowrap;
+      justify-content: flex-start;
+      bottom: 0;
+      overflow: hidden;
+      max-width: 80px;
+      height: 20px;
+      position: inherit;
+      margin: 0 auto;
+    }
+
     margin-bottom: @bottom;
     //margin-left: 50%;
     //width: 250px;
@@ -366,29 +402,37 @@
     margin: 0 0 10px 10px;
     color: @black;
   }
-  .ant-carousel .slick-dots li button {
-    background: @normal-grey;
-    opacity: 0.4;
-    width: 5px;
-    height: 5px;
-    border-radius: 100%;
-  }
-  .ant-carousel .slick-dots li {
-    margin: 0 2px;
-  }
-  .ant-carousel .slick-dots li.slick-active button {
-    opacity: 1;
-    background: @normal-grey;
-    width: 5px;
-    height: 5px;
-    border-radius: 100%;
-  }
-  .ant-carousel .slick-dots-bottom {
-    bottom: 0;
-    overflow: hidden;
-    max-width: 85px;
-    height: 20px;
-    position: inherit;
-    margin: 0 auto;
-  }
+  //.ant-carousel .slick-dots li button {
+  //  background: @normal-grey;
+  //  opacity: 0.4;
+  //  width: 5px;
+  //  height: 5px;
+  //  border-radius: 100%;
+  //}
+  //.ant-carousel .slick-dots li {
+  //  margin: 0 2px;
+  //}
+  //.ant-carousel .slick-dots li.slick-active button {
+  //  opacity: 1;
+  //  background: @normal-grey;
+  //  width: 5px;
+  //  height: 5px;
+  //  border-radius: 100%;
+  //}
+  ////.ant-carousel .slick-dots li {
+  ////  transform: translateX(var(--translate-dots));
+  ////  transition: transform 0.3s ease-in-out;
+  ////}
+  //
+  //.ant-carousel .slick-dots-bottom {
+  //  display: flex !important;
+  //  flex-wrap: nowrap;
+  //  justify-content: center;
+  //  bottom: 0;
+  //  overflow: hidden;
+  //  max-width: 85px;
+  //  height: 20px;
+  //  position: inherit;
+  //  margin: 0 auto;
+  //}
 }

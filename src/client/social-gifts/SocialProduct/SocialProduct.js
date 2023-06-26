@@ -39,8 +39,8 @@ import PicturesSlider from './PicturesSlider/PicturesSlider';
 import { compareObjectTitle } from '../../../common/helpers/seoHelpes';
 import DEFAULTS from '../../object/const/defaultValues';
 import ProductDetails from './ProductDetails/ProductDetails';
-import { getObjectsSliderLayout, listItem } from './SocialProductHelper';
-import SocialTagCategories from './SocialTagCategories';
+import SocialTagCategories from './SocialTagCategories/SocialTagCategories';
+import ObjectsSlider from './ObjectsSlider/ObjectsSlider';
 
 const limit = 100;
 
@@ -318,12 +318,12 @@ const SocialProduct = () => {
               productWeight={productWeight}
               dimensions={dimensions}
               productIdBody={productIdBody}
-              listItem={listItem}
               departments={departments}
               fields={fields}
+              parent={parent}
             />
           )}
-          {getObjectsSliderLayout('Bought together / Add-ons', addOns)}
+          <ObjectsSlider objects={addOns} title={'Bought together / Add-ons'} name={'addOn'} />
           {!isEmpty(features) && (
             <div className="SocialProduct__featuresContainer">
               <div className="SocialProduct__heading">Features</div>
@@ -337,8 +337,8 @@ const SocialProduct = () => {
               </div>
             </div>
           )}
-          {getObjectsSliderLayout('Similar', similarObjects)}
-          {getObjectsSliderLayout('Related items', relatedObjects)}
+          <ObjectsSlider objects={similarObjects} title={'Similar'} name={'similar'} />
+          <ObjectsSlider objects={relatedObjects} title={'Related items'} name={'related'} />
           {!isEmpty(tagCategoriesList) && (
             <div className="SocialProduct__featuresContainer">
               <div className="SocialProduct__heading">Tags</div>

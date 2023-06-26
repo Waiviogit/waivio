@@ -20,12 +20,12 @@ const carouselSettings = pics => {
 
   return {
     dots: false,
-    arrows: true,
+    arrows: !isMobile(),
     lazyLoad: true,
     rows: 1,
     nextArrow: <Icon type="caret-right" />,
     prevArrow: <Icon type="caret-left" />,
-    infinite: true,
+    infinite: false,
     slidesToShow,
     slidesToScroll: 1,
   };
@@ -33,6 +33,7 @@ const carouselSettings = pics => {
 
 const PicturesSlider = ({ hoveredOption, activeOption, activeCategory }) => {
   const [currentImage, setCurrentImage] = useState({});
+  const [hoveredPic, setHoveredPic] = useState({});
   const [pictures, setPictures] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const [photoIndex, setPhotoIndex] = useState(0);
@@ -42,7 +43,7 @@ const PicturesSlider = ({ hoveredOption, activeOption, activeCategory }) => {
   const authorPermlink = history.location.hash
     ? getLastPermlinksFromHash(history.location.hash)
     : match.params.name;
-  let currentSrc = currentImage?.body;
+  let currentSrc = hoveredPic.body || currentImage?.body;
 
   if (hoveredOption?.avatar || activeOption[activeCategory]?.avatar) {
     currentSrc = hoveredOption.avatar || activeOption[activeCategory].avatar;
@@ -83,6 +84,12 @@ const PicturesSlider = ({ hoveredOption, activeOption, activeCategory }) => {
           <div key={pic.id}>
             <img
               onClick={e => onImgClick(e, pic)}
+              onMouseOver={() => {
+                setHoveredPic(pic);
+              }}
+              onMouseOut={() => {
+                setHoveredPic({});
+              }}
               src={getProxyImageURL(pic?.body)}
               className={
                 pic?.body === currentImage?.body

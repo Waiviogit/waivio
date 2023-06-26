@@ -4,10 +4,10 @@ import { isEmpty } from 'lodash';
 import { objectFields } from '../../../../common/constants/listOfFields';
 import Department from '../../../object/Department/Department';
 import ProductId from '../../../app/Sidebar/ProductId';
+import SocialListItem from '../SocialListItem/SocialListItem';
 
 const ProductDetails = ({
   fields,
-  listItem,
   productWeight,
   departments,
   wobject,
@@ -15,17 +15,27 @@ const ProductDetails = ({
   groupId,
   dimensions,
   productIdBody,
+  parent,
 }) => (
   <div className="SocialProduct__productDetails">
     <div className="SocialProduct__heading">Product details</div>
     <div className="SocialProduct__productDetails-content SocialProduct__contentPaddingLeft">
-      {!isEmpty(fields.brandObject) && listItem(objectFields.brand, fields.brandObject)}
-      {!isEmpty(fields.manufacturerObject) &&
-        listItem(objectFields.manufacturer, fields.manufacturerObject)}
-      {!isEmpty(fields.merchantObject) && listItem(objectFields.merchant, fields.merchantObject)}
-      {!isEmpty(parent) && listItem(objectFields.parent, parent)}
-      {!isEmpty(productWeight) && listItem(objectFields.productWeight, productWeight)}
-      {!isEmpty(dimensions) && listItem(objectFields.dimensions, dimensions)}
+      {!isEmpty(fields.brandObject) && (
+        <SocialListItem fieldName={objectFields.brand} field={fields.brandObject} />
+      )}
+      {!isEmpty(fields.manufacturerObject) && (
+        <SocialListItem fieldName={objectFields.manufacturer} field={fields.manufacturerObject} />
+      )}
+      {!isEmpty(fields.merchantObject) && (
+        <SocialListItem fieldName={objectFields.merchant} field={fields.merchantObject} />
+      )}
+      {!isEmpty(parent) && <SocialListItem fieldName={objectFields.parent} field={parent} />}
+      {!isEmpty(productWeight) && (
+        <SocialListItem fieldName={objectFields.productWeight} field={productWeight} />
+      )}
+      {!isEmpty(dimensions) && (
+        <SocialListItem fieldName={objectFields.dimensions} field={dimensions} />
+      )}
       {!isEmpty(departments) && (
         <Department
           isSocialGifts
@@ -55,7 +65,7 @@ ProductDetails.propTypes = {
   productIdBody: PropTypes.arrayOf(),
   dimensions: PropTypes.shape(),
   history: PropTypes.shape(),
-  listItem: PropTypes.func,
+  parent: PropTypes.shape(),
   departments: PropTypes.arrayOf(),
   groupId: PropTypes.arrayOf(),
 };
