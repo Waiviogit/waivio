@@ -70,7 +70,8 @@ const StoryPreview = ({ post, isUpdates, isVimeo }) => {
           options.thumbnail = thumbnailID && `https://ipfs.io/ipfs/${thumbnailID}`;
         } else {
           thumbnailID = video.files.youtube;
-          options.thumbnail = thumbnailID && `https://img.youtube.com/vi/${thumbnailID}/0.jpg`;
+          options.thumbnail =
+            thumbnailID && `https://img.youtube.com/vi/${thumbnailID}/hqdefault.jpg`;
         }
       }
       if (embeds[0]) {

@@ -15,10 +15,10 @@ import PopoverMenu, { PopoverMenuItem } from '../../../components/PopoverMenu/Po
 import './WebsiteTopNavigation.less';
 
 const userNav = user => [
-  // {
-  //   name: 'Blog',
-  //   link: `/blog`,
-  // },
+  {
+    name: 'Blog',
+    link: `/blog/${user}`,
+  },
   {
     name: 'Shop',
     link: `/user-shop/${user}`,

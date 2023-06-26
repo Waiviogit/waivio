@@ -17,7 +17,7 @@ import SocialProduct from './SocialProduct/SocialProduct';
 import ObjectDepartmentsWobjList from '../object/ObjectTypeShop/ObjectDepartmentsWobjList';
 import Checklist from './Checklist/Checklist';
 import UserDepartmentsWobjList from '../Shop/DepartmentsWobjList/UserDepartmentsWobjList';
-import Feed from './Feed/Feed';
+import FeedMasonry from './FeedMasonry/FeedMasonry';
 
 const routes = host => ({
   component: SocialWrapper,
@@ -46,7 +46,7 @@ const routes = host => ({
     {
       path: ['/blog/:name'],
       exact: true,
-      component: Feed,
+      component: FeedMasonry,
     },
     {
       path: ['/user-shop/:name/:department?'],

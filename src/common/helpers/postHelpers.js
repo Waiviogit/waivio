@@ -423,7 +423,7 @@ export const getImageForPreview = (post, isUpdates = false) => {
 
 export const getVideoForPreview = post => {
   const regexPattern = /(?:https?:\/\/)?(?:www\.)?youtu(?:be\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=)|\.be\/)([\w-]+)(?:\S+)?/g;
-  const embeds = steemEmbed.getAll(post.body, { height: '100%' });
+  const embeds = steemEmbed.getAll(post.body, { height: '100%' }, true);
   const jsonMetadata = jsonParse(post.json_metadata);
   const video = jsonMetadata && jsonMetadata.video;
 
@@ -462,11 +462,12 @@ export const getVideoForPreview = post => {
           options.thumbnail = thumbnailID && `https://ipfs.io/ipfs/${thumbnailID}`;
         } else {
           thumbnailID = video.files.youtube;
-          options.thumbnail = thumbnailID && `https://img.youtube.com/vi/${thumbnailID}/0.jpg`;
+          options.thumbnail =
+            thumbnailID && `https://img.youtube.com/vi/${thumbnailID}/mqdefault.jpg`;
         }
       }
       if (embeds[0]) {
-        embeds[0] = steemEmbed.get(videoLink, options);
+        embeds[0] = steemEmbed.get(videoLink, options, true);
       }
     }
   }
@@ -482,7 +483,7 @@ export const getVideoForPreview = post => {
         thumbnail: '',
       };
 
-      embeds[0] = steemEmbed.get(videoLink.replaceAll('\\', ''), options);
+      embeds[0] = steemEmbed.get(videoLink.replaceAll('\\', ''), options, true);
     }
   }
 
