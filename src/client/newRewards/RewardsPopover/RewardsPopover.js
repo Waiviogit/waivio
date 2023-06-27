@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { debounce, noop } from 'lodash';
 import { Link } from 'react-router-dom';
+import { injectIntl } from 'react-intl';
 
 import Popover from '../../components/Popover';
 import PopoverMenu, { PopoverMenuItem } from '../../components/PopoverMenu/PopoverMenu';
@@ -23,7 +24,7 @@ import { followObject, unfollowObject } from '../../../store/wObjectStore/wobjAc
 import { getObjectName } from '../../../common/helpers/wObjectHelper';
 import { handleHidePost, muteAuthorPost } from '../../../store/postsStore/postActions';
 
-const RewardsPopover = ({ proposition, getProposition, type }) => {
+const RewardsPopover = ({ proposition, getProposition, type, intl }) => {
   const [isVisiblePopover, setIsVisiblePopover] = useState(false);
   const [amount, setAmount] = useState(0);
   const [inBlackList, setInBlackList] = useState(false);
@@ -162,7 +163,7 @@ const RewardsPopover = ({ proposition, getProposition, type }) => {
     () => (
       <PopoverMenuItem key={'view_reservation'}>
         <Link to={`/@${proposition?.userName}/${proposition?.reservationPermlink}`}>
-          View reservation
+          {intl.formatMessage({ id: 'view_reservation', defaultMessage: 'View reservation' })}
         </Link>
       </PopoverMenuItem>
     ),
@@ -173,7 +174,7 @@ const RewardsPopover = ({ proposition, getProposition, type }) => {
     () => (
       <PopoverMenuItem key={'decrease'}>
         <div role="presentation" onClick={() => openDecreaseModal('decrease')}>
-          Decrease reward
+          {intl.formatMessage({ id: 'decrease_reward', defaultMessage: 'Decrease reward' })}
         </div>
       </PopoverMenuItem>
     ),
@@ -184,7 +185,7 @@ const RewardsPopover = ({ proposition, getProposition, type }) => {
     () => (
       <PopoverMenuItem key={'increase'}>
         <div role="presentation" onClick={() => openDecreaseModal('increase')}>
-          Increase reward
+          {intl.formatMessage({ id: 'increase_reward', defaultMessage: 'Increase reward' })}
         </div>
       </PopoverMenuItem>
     ),
@@ -194,7 +195,9 @@ const RewardsPopover = ({ proposition, getProposition, type }) => {
   const openReview = useMemo(
     () => (
       <PopoverMenuItem key={'open_review'}>
-        <Link to={`/@${proposition?.userName}/${proposition?.reviewPermlink}`}>Open review</Link>
+        <Link to={`/@${proposition?.userName}/${proposition?.reviewPermlink}`}>
+          {intl.formatMessage({ id: 'open_review', defaultMessage: 'Open review' })}
+        </Link>
       </PopoverMenuItem>
     ),
     [proposition?.userName, proposition?.reviewPermlink],
@@ -204,7 +207,7 @@ const RewardsPopover = ({ proposition, getProposition, type }) => {
     () => (
       <PopoverMenuItem key={'rejection_note'}>
         <Link to={`/@${proposition?.guideName}/${proposition?.rejectionPermlink}`}>
-          Rejection note
+          {intl.formatMessage({ id: 'rejection_note', defaultMessage: 'Rejection note' })}
         </Link>
       </PopoverMenuItem>
     ),
@@ -214,7 +217,9 @@ const RewardsPopover = ({ proposition, getProposition, type }) => {
   const report = useMemo(
     () => (
       <PopoverMenuItem key={'show_report'}>
-        <div onClick={() => setIsModalReportOpen(true)}>Show report</div>
+        <div onClick={() => setIsModalReportOpen(true)}>
+          {intl.formatMessage({ id: 'show_report', defaultMessage: 'Show report' })}
+        </div>
       </PopoverMenuItem>
     ),
     [],
@@ -235,7 +240,10 @@ const RewardsPopover = ({ proposition, getProposition, type }) => {
           }}
         >
           {loadingType === 'user' && <Icon type={'loading'} />}{' '}
-          {followingGuide ? 'Unfollow' : 'Follow'} @{proposition?.guideName}
+          {followingGuide
+            ? intl.formatMessage({ id: 'unfollow', defaultMessage: 'Unfollow' })
+            : intl.formatMessage({ id: 'follow', defaultMessage: 'Follow' })}{' '}
+          @{proposition?.guideName}
         </div>
       </PopoverMenuItem>
     ),
@@ -257,7 +265,10 @@ const RewardsPopover = ({ proposition, getProposition, type }) => {
           }}
         >
           {loadingType === 'object' && <Icon type={'loading'} />}{' '}
-          {followingObj ? 'Unfollow' : 'Follow'} {getObjectName(proposition?.requiredObject)}
+          {followingObj
+            ? intl.formatMessage({ id: 'unfollow', defaultMessage: 'Unfollow' })
+            : intl.formatMessage({ id: 'follow', defaultMessage: 'Follow' })}{' '}
+          {getObjectName(proposition?.requiredObject)}
         </div>
       </PopoverMenuItem>
     ),
@@ -279,7 +290,16 @@ const RewardsPopover = ({ proposition, getProposition, type }) => {
           }}
         >
           {loadingType === 'blackList' && <Icon type={'loading'} />}{' '}
-          {inBlackList ? 'Remove from blacklist' : 'Add to blacklist'} @{proposition?.userName}
+          {inBlackList
+            ? intl.formatMessage({
+                id: 'remove_from_blacklist',
+                defaultMessage: 'Remove from blacklist',
+              })
+            : intl.formatMessage({
+                id: 'add_to_blacklist',
+                defaultMessage: 'Add to blacklist',
+              })}{' '}
+          @{proposition?.userName}
         </div>
       </PopoverMenuItem>
     ),
@@ -290,7 +310,7 @@ const RewardsPopover = ({ proposition, getProposition, type }) => {
     () => (
       <PopoverMenuItem key={'release'}>
         <div role="presentation" onClick={rejectReward}>
-          Reject review
+          {intl.formatMessage({ id: 'reject_review', defaultMessage: 'Reject review' })}
         </div>
       </PopoverMenuItem>
     ),
@@ -301,7 +321,7 @@ const RewardsPopover = ({ proposition, getProposition, type }) => {
     () => (
       <PopoverMenuItem key={'rejectReservation'}>
         <div role="presentation" onClick={rejectReservation}>
-          Reject reservation
+          {intl.formatMessage({ id: 'reject_reservation', defaultMessage: 'Reject reservation' })}
         </div>
       </PopoverMenuItem>
     ),
@@ -312,7 +332,7 @@ const RewardsPopover = ({ proposition, getProposition, type }) => {
     () => (
       <PopoverMenuItem key={'release'}>
         <div role="presentation" onClick={realeaseReward}>
-          Release reservation
+          {intl.formatMessage({ id: 'reject_campaign', defaultMessage: 'Release reservation' })}
         </div>
       </PopoverMenuItem>
     ),
@@ -323,7 +343,7 @@ const RewardsPopover = ({ proposition, getProposition, type }) => {
     () => (
       <PopoverMenuItem key={'release'}>
         <div role="presentation" onClick={handleReinstateReward}>
-          Reinstate reward
+          {intl.formatMessage({ id: 'reinstate_reward', defaultMessage: 'Reinstate reward' })}
         </div>
       </PopoverMenuItem>
     ),
@@ -350,7 +370,9 @@ const RewardsPopover = ({ proposition, getProposition, type }) => {
           }}
         >
           {loadingType === 'hidepost' && <Icon type={'loading'} />}{' '}
-          {hidedPost ? 'Unhide post' : 'Hide post'}
+          {hidedPost
+            ? intl.formatMessage({ id: 'unhide_post', defaultMessage: 'Unhide post' })
+            : intl.formatMessage({ id: 'hide_post', defaultMessage: 'Hide post' })}
         </div>
       </PopoverMenuItem>
     ),
@@ -371,7 +393,10 @@ const RewardsPopover = ({ proposition, getProposition, type }) => {
           }}
         >
           {loadingType === 'muteuser' && <Icon type={'loading'} />}{' '}
-          {mutedAuthor ? 'Unmute user' : 'Mute user'} @{proposition?.userName}
+          {mutedAuthor
+            ? intl.formatMessage({ id: 'unmute_user', defaultMessage: 'Unmute user' })
+            : intl.formatMessage({ id: 'mute_user', defaultMessage: 'Mute user' })}{' '}
+          @{proposition?.userName}
         </div>
       </PopoverMenuItem>
     ),
@@ -474,10 +499,13 @@ RewardsPopover.propTypes = {
   }).isRequired,
   type: PropTypes.string.isRequired,
   getProposition: PropTypes.func,
+  intl: PropTypes.shape({
+    formatMessage: PropTypes.func,
+  }).isRequired,
 };
 
 RewardsPopover.defaultProps = {
   getProposition: noop,
 };
 
-export default RewardsPopover;
+export default injectIntl(RewardsPopover);
