@@ -64,6 +64,7 @@ const ShopObjectCard = ({ wObject, isChecklist }) => {
   if (url) url = getProxyImageURL(url, 'preview');
   else url = DEFAULTS.AVATAR;
   const rating = getRatingForSocial(wObject.rating);
+  const withoutHeard = ['page'].includes(wObject?.object_type);
 
   return (
     <div className={shopObjectCardClassList}>
@@ -74,7 +75,7 @@ const ShopObjectCard = ({ wObject, isChecklist }) => {
         </h3>
       )}
       <div className="ShopObjectCard__topInfoWrap">
-        <HeartButton wobject={wObject} size={'20px'} />
+        {!withoutHeard && <HeartButton wobject={wObject} size={'20px'} />}
         <Link to={link} className="ShopObjectCard__avatarWrap">
           <div
             className="ShopObjectCard__avatarWrap"

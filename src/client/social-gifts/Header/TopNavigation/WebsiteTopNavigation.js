@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { NavLink } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { isEmpty, take, takeRight, truncate } from 'lodash';
 import { useSelector } from 'react-redux';
@@ -11,6 +10,7 @@ import { isMobile } from '../../../../common/helpers/apiHelpers';
 import { getNavigItems, getSettingsLoading } from '../../../../store/appStore/appSelectors';
 import SkeletonRow from '../../../components/Skeleton/SkeletonRow';
 import PopoverMenu, { PopoverMenuItem } from '../../../components/PopoverMenu/PopoverMenu';
+import LinkItem from './LinkItem';
 
 import './WebsiteTopNavigation.less';
 
@@ -67,18 +67,7 @@ const WebsiteTopNavigation = ({ shopSettings }) => {
     <div id={'WebsiteTopNavigationContainer'}>
       <div className="WebsiteTopNavigation" id={'WebsiteTopNavigation'}>
         {take(linkList, listLength).map(l => (
-          <NavLink
-            className="WebsiteTopNavigation__link"
-            isActive={() => history.location.pathname.includes(l?.link)}
-            activeClassName={'WebsiteTopNavigation__link--active'}
-            key={l.link}
-            to={l.link}
-          >
-            {truncate(l.name, {
-              length: 24,
-              separator: '...',
-            })}
-          </NavLink>
+          <LinkItem key={l.link} link={l} />
         ))}
         {!isEmpty(lastItems) &&
           (lastItemsLength > 1 ? (
@@ -90,7 +79,9 @@ const WebsiteTopNavigation = ({ shopSettings }) => {
               overlayStyle={{ position: 'fixed' }}
               content={
                 <PopoverMenu
-                  onSelect={i => {
+                  onSelect={(i, type) => {
+                    if (type === 'blank') window.location.replace(i);
+
                     setVisible(false);
                     history.push(i);
                   }}
@@ -99,6 +90,7 @@ const WebsiteTopNavigation = ({ shopSettings }) => {
                     <PopoverMenuItem
                       active={history.location.pathname.includes(i.link)}
                       key={i.link}
+                      data={i.type}
                     >
                       {truncate(i.name, {
                         length: 90,
@@ -115,18 +107,7 @@ const WebsiteTopNavigation = ({ shopSettings }) => {
               </span>
             </Popover>
           ) : (
-            <NavLink
-              className="WebsiteTopNavigation__link"
-              isActive={() => history.location.pathname.includes(lastItems[0]?.link)}
-              activeClassName={'WebsiteTopNavigation__link--active'}
-              key={lastItems[0]?.link}
-              to={lastItems[0]?.link}
-            >
-              {truncate(lastItems[0]?.name, {
-                length: 24,
-                separator: '...',
-              })}
-            </NavLink>
+            <LinkItem link={lastItems[0]} />
           ))}
       </div>
     </div>
