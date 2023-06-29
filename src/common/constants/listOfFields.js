@@ -291,7 +291,7 @@ export const errorObjectFields = {
   ],
   [objectFields.groupId]: [objectFields.groupId],
   [objectFields.options]: [optionsFields.category, optionsFields.value, optionsFields.value],
-  [objectFields.features]: [featuresFields.name, featuresFields.value],
+  [objectFields.features]: [featuresFields.featuresName, featuresFields.featuresValue],
   [objectFields.publisher]: [publisherFields.publisher, publisherFields.publisherName],
   [objectFields.manufacturer]: [
     manufacturerFields.manufacturer,
