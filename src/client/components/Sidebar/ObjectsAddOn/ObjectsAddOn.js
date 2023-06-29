@@ -2,12 +2,15 @@ import React, { useEffect, useState } from 'react';
 import { isEmpty, get } from 'lodash';
 import { FormattedMessage } from 'react-intl';
 import PropTypes from 'prop-types';
+import { useSelector } from 'react-redux';
 import { getObjectInfo } from '../../../../waivioApi/ApiClient';
 import { sortByFieldPermlinksList } from '../../../../common/helpers/wObjectHelper';
 import ObjectsSidebarTablesContent from '../ObjectSidebarTablesContent/ObjectSidebarTablesContent';
+import { getUsedLocale } from '../../../../store/appStore/appSelectors';
 
 const ObjectsAddOn = ({ wobject, isCenterContent }) => {
   const [addOnObjects, setAddOnObjects] = useState([]);
+  const locale = useSelector(getUsedLocale);
   const addOn = get(wobject, 'addOn', []);
   const addOnObjectsPermlinks = !isEmpty(addOn) ? addOn.map(obj => obj.body) : [];
   const sortedAddOnObjects = sortByFieldPermlinksList(addOnObjectsPermlinks, addOnObjects);
@@ -26,7 +29,7 @@ const ObjectsAddOn = ({ wobject, isCenterContent }) => {
 
   useEffect(() => {
     if (!isEmpty(addOn)) {
-      getObjectInfo(addOnObjectsPermlinks).then(res => setAddOnObjects(res.wobjects));
+      getObjectInfo(addOnObjectsPermlinks, locale).then(res => setAddOnObjects(res.wobjects));
     }
   }, [wobject.addOn]);
 

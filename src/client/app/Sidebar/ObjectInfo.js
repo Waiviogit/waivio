@@ -81,6 +81,7 @@ class ObjectInfo extends React.Component {
     location: PropTypes.shape(),
     activeOption: PropTypes.shape(),
     activeCategory: PropTypes.string,
+    locale: PropTypes.string,
     wobject: PropTypes.shape().isRequired,
     match: PropTypes.shape().isRequired,
     userName: PropTypes.string.isRequired,
@@ -183,7 +184,7 @@ class ObjectInfo extends React.Component {
       const permlink = curr.authorPermlink || curr.author_permlink;
 
       if (permlink && !has(curr, 'name')) {
-        const newObj = await getObjectInfo([permlink]);
+        const newObj = await getObjectInfo([permlink], this.props.locale);
 
         return [...res, newObj.wobjects[0]];
       }
@@ -199,7 +200,7 @@ class ObjectInfo extends React.Component {
       const itemBody = JSON.parse(curr.body);
 
       if (itemBody.linkToObject && !has(itemBody, 'title')) {
-        const newObj = await getObjectInfo([itemBody.linkToObject]);
+        const newObj = await getObjectInfo([itemBody.linkToObject], this.props.locale);
 
         return [
           ...res,
@@ -219,7 +220,7 @@ class ObjectInfo extends React.Component {
       merchant?.authorPermlink,
     ].filter(permlink => permlink);
 
-    getObjectInfo(backObjects).then(res => {
+    getObjectInfo(backObjects, this.props.locale).then(res => {
       const brandObject =
         res.wobjects.find(wobj => wobj.author_permlink === brand?.authorPermlink) || brand;
       const manufacturerObject =
