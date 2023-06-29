@@ -10,9 +10,11 @@ import { getObjectInfo } from '../../../waivioApi/ApiClient';
 import { setAllBreadcrumbsForChecklist } from '../../../store/wObjectStore/wobjActions';
 
 import './Breadcrumbs.less';
+import { getUsedLocale } from '../../../store/appStore/appSelectors';
 
 const Breadcrumbs = () => {
   const breadcrumbs = useSelector(getShopBreadCrumbs);
+  const locale = useSelector(getUsedLocale);
   const match = useRouteMatch();
   const location = useLocation();
   const dispatch = useDispatch();
@@ -21,7 +23,7 @@ const Breadcrumbs = () => {
     : [match.params.name];
 
   useEffect(() => {
-    getObjectInfo(linkList).then(res => {
+    getObjectInfo(linkList, locale).then(res => {
       dispatch(
         setAllBreadcrumbsForChecklist(
           linkList.reduce((acc, curr) => {
