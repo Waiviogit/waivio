@@ -159,7 +159,7 @@ const routes = (host, page) => ({
       pathScope: '/object/:name',
       routes: [
         {
-          path: ['', '/newsFilter/:itemId', '/reviews/:itemId'],
+          path: ['', '/newsFilter/:itemId', '/reviews/:itemId', '/(reviews)'],
           exact: true,
           component: Views.ObjectPageFeed,
         },
