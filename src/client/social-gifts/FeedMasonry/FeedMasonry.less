@@ -7,7 +7,7 @@
   &__img {
     display: inline-block;
     width: 100%;
-    //border-bottom: 1px dotted green;
+    cursor: pointer;
 
     &--bottom {
       border-bottom: none;
@@ -24,6 +24,10 @@
     }
   }
 
+  &__like {
+    font-weight: bold;
+  }
+
   &__imgWrap {
     border-radius: 16px;
     margin-bottom: 5px;
@@ -32,6 +36,7 @@
   &__title {
     font-weight: bold;
     margin-bottom: 5px;
+    cursor: pointer;
   }
 
   &__authorInfo {
@@ -98,6 +103,7 @@
     align-items: center;
     justify-content: space-between;
     padding: 5px;
+    color: var(--website-color);
   }
 }
 
