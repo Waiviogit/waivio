@@ -194,8 +194,8 @@ export const dimensionsFields = {
   unitOfLength: 'unitOfLength',
 };
 export const featuresFields = {
-  name: 'name',
-  value: 'value',
+  featuresName: 'featuresName',
+  featuresValue: 'featuresValue',
 };
 export const ratingFields = {
   category: 'category',
