@@ -2854,8 +2854,11 @@ class AppendForm extends Component {
               )}
             </Form.Item>
             <p>
-              Some product ID types are recognized globally, such as UPC, EAN, ISBN, GTIN-8. But
-              manufactures can use their own systems for naming products.
+              {intl.formatMessage({
+                id: 'product_id_type_text',
+                defaultMessage:
+                  'Some product ID types are recognized globally, such as UPC, EAN, ISBN, GTIN-8. But manufactures can use their own systems for naming products.',
+              })}
             </p>
             <br />
             <Form.Item>
@@ -2875,8 +2878,11 @@ class AppendForm extends Component {
               )}
             </Form.Item>
             <p>
-              Product identifiers are often alphanumeric, but there are no limitations on this text
-              field.
+              {intl.formatMessage({
+                id: 'product_id_text',
+                defaultMessage:
+                  'Product identifiers are often alphanumeric, but there are no limitations on this text field.',
+              })}
             </p>
             <br />
             <div className="image-wrapper">
@@ -2893,7 +2899,13 @@ class AppendForm extends Component {
                 )}
               </Form.Item>
             </div>
-            <p>Visual representation of the product ID, such as a bar code, label, QR code, etc.</p>
+            <p>
+              {intl.formatMessage({
+                id: 'product_id_image_text',
+                defaultMessage:
+                  'Visual representation of the product ID, such as a bar code, label, QR code, etc.',
+              })}
+            </p>
           </React.Fragment>
         );
       }

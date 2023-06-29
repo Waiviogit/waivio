@@ -27,7 +27,7 @@ const Header = () => {
           {logo && <img alt="logo" src={logo} className="Header__img" />}
           <span>{header || config.host || currHost}</span>
         </Link>
-        <GeneralSearch searchBarActive={searchBarActive} />
+        <GeneralSearch searchBarActive={searchBarActive} isSocialProduct />
         <div className={'Header__rightWrap'}>
           <button
             className={classNames('Header__mobile-search', {

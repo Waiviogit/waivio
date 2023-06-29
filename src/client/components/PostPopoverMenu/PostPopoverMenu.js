@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { connect, useDispatch } from 'react-redux';
+import { connect, useDispatch, useSelector } from 'react-redux';
 import { Icon, Modal } from 'antd';
 import { FormattedMessage } from 'react-intl';
 import { get, isEmpty, isNil } from 'lodash';
@@ -26,6 +26,7 @@ import ids from '../../newRewards/BlackList/constants';
 import { changeBlackAndWhiteLists } from '../../../store/rewardsStore/rewardsActions';
 
 import './PostPopoverMenu.less';
+import { getUsedLocale } from '../../../store/appStore/appSelectors';
 
 const propTypes = {
   pendingFlag: PropTypes.bool,
@@ -115,7 +116,7 @@ const PostPopoverMenu = ({
   const [wobjName, setWobjName] = useState('');
   const [inBlackList, setInBlackList] = useState(post.blacklisted);
   const [loadingType, setLoadingType] = useState('');
-
+  const locale = useSelector(getUsedLocale);
   const history = useHistory();
   const dispatch = useDispatch();
   const match = useRouteMatch();
@@ -146,13 +147,17 @@ const PostPopoverMenu = ({
         return setIsOpen(true);
       case 'pin':
         !isNil(wobjAuthorPermlink) &&
-          getObjectInfo([wobjAuthorPermlink]).then(res => setWobjName(res.wobjects[0].name));
+          getObjectInfo([wobjAuthorPermlink], locale).then(res =>
+            setWobjName(res.wobjects[0].name),
+          );
         setIsVisible(false);
 
         return setIsPin(true);
       case 'remove':
         !isNil(wobjAuthorPermlink) &&
-          getObjectInfo([wobjAuthorPermlink]).then(res => setWobjName(res.wobjects[0].name));
+          getObjectInfo([wobjAuthorPermlink], locale).then(res =>
+            setWobjName(res.wobjects[0].name),
+          );
         dispatch(handleRemovePost(post));
         setIsVisible(false);
 

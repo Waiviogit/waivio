@@ -129,14 +129,22 @@ const PropositionFooter = ({ type, openDetailsModal, proposition, getProposition
           <React.Fragment>
             <div className={propositionFooterContainerClassList}>
               <div className="Proposition-new__button-container">
-                <b>Reserved</b>
+                <b>
+                  {intl.formatMessage({
+                    id: 'campaign_buttons_reserved',
+                    defaultMessage: 'Reserved',
+                  })}
+                </b>
                 <b>
                   <span className="Proposition-new__minus">{'-'}</span>
                   {getDaysLeftForNew(
                     proposition?.reservationCreatedAt,
                     proposition?.countReservationDays,
                   )}{' '}
-                  days left
+                  {intl.formatMessage({
+                    id: 'campaign_buttons_days_left',
+                    defaultMessage: 'days left',
+                  })}
                 </b>
                 <i className="iconfont icon-message_fill" onClick={handleCommentsClick} />
                 {Boolean(commentsCount) && (
@@ -151,13 +159,13 @@ const PropositionFooter = ({ type, openDetailsModal, proposition, getProposition
                 <Button type="primary" onClick={openDetailsModal}>
                   <span className="Proposition-new__yourRewards">
                     {isWaivio ? (
-                      'Submit'
+                      intl.formatMessage({ id: 'submit', defaultMessage: 'Submit' })
                     ) : (
                       <span>
                         <b>Submit</b> dish
                       </span>
                     )}{' '}
-                    photos
+                    {intl.formatMessage({ id: 'photos_lowercase', defaultMessage: 'photos' })}
                   </span>
                 </Button>
               )}
@@ -205,7 +213,10 @@ const PropositionFooter = ({ type, openDetailsModal, proposition, getProposition
               {proposition?.userName && userCard}
             </div>
             {!isEmpty(proposition?.fraudCodes) && (
-              <div>Codes: {proposition?.fraudCodes.join(', ')}</div>
+              <div>
+                {intl.formatMessage({ id: 'codes', defaultMessage: 'Codes' })}:{' '}
+                {proposition?.fraudCodes.join(', ')}
+              </div>
             )}
             {showComment &&
               comments.map(comment => (

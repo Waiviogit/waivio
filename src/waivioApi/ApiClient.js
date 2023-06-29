@@ -3109,9 +3109,9 @@ export const getUserProfileBlogTags = (userName, { limit = 10, skip }) =>
     .then(res => res.json())
     .then(response => response)
     .catch(e => e);
-export const getObjectInfo = links =>
+export const getObjectInfo = (links, locale) =>
   fetch(`${config.apiPrefix}${config.wobjects}${config.names}`, {
-    headers,
+    headers: { ...headers, locale },
     method: 'POST',
     body: JSON.stringify({
       links,
