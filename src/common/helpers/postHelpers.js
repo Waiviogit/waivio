@@ -385,7 +385,7 @@ export const getImageForPreview = (post, isUpdates = false) => {
   let imagePath = [];
 
   if (!isEmpty(jsonMetadata) && !isEmpty(jsonMetadata.image)) {
-    imagePath = [jsonMetadata.image];
+    imagePath = jsonMetadata.image;
   } else {
     const contentImages = getContentImages(post.body);
 
