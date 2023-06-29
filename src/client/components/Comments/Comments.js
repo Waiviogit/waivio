@@ -239,7 +239,6 @@ class Comments extends React.Component {
     const { sort } = this.state;
     const linkedComment = getLinkedComment(comments);
     const rootLinkedComment = findTopComment(parentPost, comments, linkedComment);
-    console.log(rootLinkedComment);
     const commentsToRender = this.commentsToRender(rootLevelComments, rootLinkedComment);
     const isParentPostFetching = loadingPostId === getPostKey(parentPost);
 
