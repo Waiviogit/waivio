@@ -54,7 +54,7 @@ export const getCurrentHost = createSelector([appState], state => state.appUrl);
 
 export const getMapForMainPage = createSelector([appState], state => state.currMap);
 
-export const getWebsiteConfiguration = createSelector([appState], state => state.configuration);
+export const getWebsiteConfiguration = createSelector([appState], state => state?.configuration);
 
 export const getConfigurationValues = createSelector([appState], state => state.configuration);
 
@@ -99,6 +99,15 @@ export const getWebsiteParentHost = createSelector([appState], state => state.pa
 export const getHelmetIcon = createSelector([appState], state => state.helmetIcon);
 
 export const getHostAddress = createSelector([appState], state => state.hostAddress);
+
+export const getSiteName = createSelector(
+  [appState],
+  state =>
+    state.configuration?.header?.name ||
+    state?.configuration?.host ||
+    state.hostAddress ||
+    state?.websiteName,
+);
 
 export const getCurrentCurrency = createSelector([appState], state => state.currencyInfo);
 

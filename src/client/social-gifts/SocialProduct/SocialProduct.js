@@ -164,7 +164,7 @@ const SocialProduct = () => {
       merchant?.authorPermlink,
     ].filter(permlink => permlink);
 
-    getObjectInfo(authorPermlinks).then(res => {
+    getObjectInfo(authorPermlinks, locale).then(res => {
       const brandObject =
         res.wobjects.find(wobj => wobj.author_permlink === brand?.authorPermlink) || brand;
       const manufacturerObject =

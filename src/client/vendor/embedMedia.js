@@ -27,7 +27,7 @@ SteemEmbed.getUrls = function(text) {
   return urls;
 };
 
-SteemEmbed.getAll = function(text, options) {
+SteemEmbed.getAll = function(text, options, mediaSize) {
   const embeds = [];
 
   if (!options) options = {};
@@ -38,16 +38,16 @@ SteemEmbed.getAll = function(text, options) {
   let urls = this.getUrls(text);
   urls.forEach(
     function(url) {
-      let embed = this.get(url, options);
+      let embed = this.get(url, options, mediaSize);
       if (embed) {
-        embeds.push(this.get(url, options));
+        embeds.push(this.get(url, options, mediaSize));
       }
     }.bind(this),
   );
   return embeds;
 };
 
-SteemEmbed.get = function(url, options = {}) {
+SteemEmbed.get = function(url, options = {}, mediumSize) {
   const youtubeId = this.isYoutube(url);
   const dTubeId = this.isDTube(url);
   const threeSpeakId = this.is3Speak(url);
@@ -65,11 +65,12 @@ SteemEmbed.get = function(url, options = {}) {
   const peerTubeId = this.isPeerTube(url);
 
   if (youtubeId) {
+    const imageName = mediumSize ? '/mqdefault.jpg' : '/hqdefault.jpg';
     return {
       type: 'video',
       url: url,
       provider_name: 'YouTube',
-      thumbnail: 'https://img.youtube.com/vi/' + youtubeId + '/0.jpg',
+      thumbnail: 'https://img.youtube.com/vi/' + youtubeId + imageName,
       id: youtubeId,
       embed: this.youtube(url, youtubeId, options),
     };

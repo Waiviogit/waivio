@@ -38,9 +38,8 @@ class WobjMenuWrapper extends React.Component {
 
   onChange = key => {
     const { match, history } = this.props;
-    const section = key === 'reviews' ? '' : `/${key}`;
 
-    history.push(`${match.url.replace(/\/$/, '')}${section}`);
+    history.push(`${match.url.replace(/\/$/, '')}/${key}`);
   };
 
   render() {

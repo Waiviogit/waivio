@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
-import { get } from 'lodash';
+import { get, isEmpty, isNil } from 'lodash';
 import OBJECT_TYPE from '../const/objectTypes';
 import {
   clearObjectFromStore,
@@ -29,7 +29,7 @@ import {
   getWobjectExpertise as getWobjectExpertiseAction,
   getRelatedWobjects,
 } from '../../../store/wObjectStore/wobjActions';
-import { appendObject } from '../../../store/appendStore/appendActions';
+import { appendObject, getUpdates } from '../../../store/appendStore/appendActions';
 import Wobj from './Wobj';
 import NotFound from '../../statics/NotFound';
 import {
@@ -37,7 +37,7 @@ import {
   getHelmetIcon,
   getIsWaivio,
   getScreenSize,
-  getWebsiteName,
+  getSiteName,
   getWeightValue,
 } from '../../../store/appStore/appSelectors';
 import {
@@ -58,10 +58,12 @@ import { getRate, getRewardFund } from '../../../store/appStore/appActions';
 import { setStoreActiveOption } from '../../../store/optionsStore/optionsActions';
 import { login } from '../../../store/authStore/authActions';
 import { resetBreadCrumb } from '../../../store/shopStore/shopActions';
+import { getAppendList } from '../../../store/appendStore/appendSelectors';
 
 @withRouter
 @connect(
   state => ({
+    updates: getAppendList(state),
     authenticated: getIsAuthenticated(state),
     authenticatedUser: getAuthenticatedUser(state),
     authenticatedUserName: getAuthenticatedUserName(state),
@@ -76,7 +78,7 @@ import { resetBreadCrumb } from '../../../store/shopStore/shopActions';
     isWaivio: getIsWaivio(state),
     supportedObjectTypes: get(getConfiguration(state), 'supported_object_types'),
     weightValue: getWeightValue(state, getObjectState(state).weight),
-    siteName: getWebsiteName(state),
+    siteName: getSiteName(state),
     appUrl: getAppUrl(state),
   }),
   {
@@ -87,6 +89,7 @@ import { resetBreadCrumb } from '../../../store/shopStore/shopActions';
     resetGallery,
     getAlbums,
     appendObject,
+    getUpdates,
     addAlbumToStore,
     clearRelatedPhoto,
     getNearbyObjects: getNearbyObjectsAction,
@@ -117,6 +120,7 @@ class WobjectContainer extends React.Component {
     resetGallery: PropTypes.func.isRequired,
     wobject: PropTypes.shape(),
     nestedWobject: PropTypes.shape(),
+    updates: PropTypes.arrayOf(),
     clearObjectFromStore: PropTypes.func,
     setNestedWobject: PropTypes.func,
     setCatalogBreadCrumbs: PropTypes.func,
@@ -126,6 +130,7 @@ class WobjectContainer extends React.Component {
     appUrl: PropTypes.string.isRequired,
     getAlbums: PropTypes.func,
     appendObject: PropTypes.func,
+    getUpdates: PropTypes.func,
     addAlbumToStore: PropTypes.func,
     clearRelatedPhoto: PropTypes.func,
     getNearbyObjects: PropTypes.func.isRequired,
@@ -186,7 +191,7 @@ class WobjectContainer extends React.Component {
     const newsFilter = match.params[1] === 'newsFilter' ? { newsFilter: match.params.itemId } : {};
 
     this.props.getObject(match.params.name, authenticatedUserName).then(res => {
-      if (showDescriptionPage(res.value)) {
+      if (showDescriptionPage(res.value) && !match.params[0]) {
         history.push(`/object/${res.value.author_permlink}/description`);
       }
       this.props.getAlbums(match.params.name);
@@ -199,6 +204,9 @@ class WobjectContainer extends React.Component {
         userName: authenticatedUserName,
       });
       this.props.getRelatedWobjects(match.params.name);
+      if (isEmpty(this.props.updates) || isNil(this.props.updates)) {
+        this.props.getUpdates(match.params.name);
+      }
     });
   }
 
@@ -213,7 +221,7 @@ class WobjectContainer extends React.Component {
     ) {
       this.props.getAlbums(match.params.name);
       this.props.getObject(match.params.name, authenticatedUserName).then(res => {
-        if (showDescriptionPage(res.value)) {
+        if (showDescriptionPage(res.value) && !match.params[0]) {
           history.push(`/object/${res.value.author_permlink}/description`);
         }
       });

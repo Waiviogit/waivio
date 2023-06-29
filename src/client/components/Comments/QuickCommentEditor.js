@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { Icon } from 'antd';
 import { debounce } from 'lodash';
 import { Transforms } from 'slate';
+import { injectIntl } from 'react-intl';
 
 import withEditor from '../Editor/withEditor';
 import { getIsAuthenticated } from '../../../store/authStore/authSelectors';
@@ -142,7 +143,7 @@ class QuickCommentEditor extends React.Component {
   };
 
   render() {
-    const { isLoading, isAuth } = this.props;
+    const { isLoading, isAuth, intl } = this.props;
 
     return (
       <div className="QuickComment">
@@ -156,7 +157,10 @@ class QuickCommentEditor extends React.Component {
               onChange={this.handleMsgChange}
               minHeight="auto"
               initialPosTopBtn="-14px"
-              placeholder="Write your comment..."
+              placeholder={intl.formatMessage({
+                id: 'write_comment',
+                defaultMessage: 'Write your comment...',
+              })}
               handleObjectSelect={this.handleObjectSelect}
               setEditorCb={this.setEditor}
               ADD_BTN_DIF={24}
@@ -188,6 +192,9 @@ class QuickCommentEditor extends React.Component {
 QuickCommentEditor.propTypes = {
   setCursorCoordinates: PropTypes.func,
   searchObjects: PropTypes.func,
+  intl: PropTypes.shape({
+    formatMessage: PropTypes.func,
+  }).isRequired,
 };
 
 const mapDispatchToProps = dispatch => ({
@@ -195,4 +202,4 @@ const mapDispatchToProps = dispatch => ({
   searchObjects: value => dispatch(searchObjectsAutoCompete(value, '', null, true)),
 });
 
-export default connect(null, mapDispatchToProps)(QuickCommentEditor);
+export default connect(null, mapDispatchToProps)(injectIntl(QuickCommentEditor));

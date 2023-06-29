@@ -39,18 +39,18 @@ const ShopObjectCard = ({ wObject, isChecklist }) => {
   let link;
   const hash = location?.hash
     ? `${location?.hash}/${wObject.author_permlink}`
-    : wObject.author_permlink;
+    : `#${wObject.author_permlink}`;
 
   switch (wObject.object_type) {
     case 'product':
     case 'book':
       link = isChecklist
-        ? `/checklist/${name}#${hash}`
+        ? `/checklist/${name}${hash}`
         : `/object/product/${wObject.author_permlink}`;
 
       break;
     case 'page':
-      link = isChecklist ? `/checklist/${name}#${hash}` : `/object/page/${wObject.author_permlink}`;
+      link = isChecklist ? `/checklist/${name}${hash}` : `/object/page/${wObject.author_permlink}`;
 
       break;
     default:
@@ -64,6 +64,7 @@ const ShopObjectCard = ({ wObject, isChecklist }) => {
   if (url) url = getProxyImageURL(url, 'preview');
   else url = DEFAULTS.AVATAR;
   const rating = getRatingForSocial(wObject.rating);
+  const withoutHeard = ['page'].includes(wObject?.object_type);
 
   return (
     <div className={shopObjectCardClassList}>
@@ -74,7 +75,7 @@ const ShopObjectCard = ({ wObject, isChecklist }) => {
         </h3>
       )}
       <div className="ShopObjectCard__topInfoWrap">
-        <HeartButton wobject={wObject} size={'20px'} />
+        {!withoutHeard && <HeartButton wobject={wObject} size={'20px'} />}
         <Link to={link} className="ShopObjectCard__avatarWrap">
           <div
             className="ShopObjectCard__avatarWrap"

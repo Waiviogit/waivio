@@ -1375,8 +1375,9 @@ export const showMoreTagsForFilters = (category, objectTypeName, skip = 0, limit
     .then(result => result)
     .catch(error => error);
 
-export const showMoreTagsForUserFilters = (userName, path, tagCategory, skip = 0, limit = 10) =>
-  fetch(`${config.apiPrefix}${config.shop}${config.user}${config.filters}${config.tags}`, {
+export const showMoreTagsForUserFilters = (userName, path, tagCategory, skip = 0, limit = 10) => {
+  console.log(path);
+  return fetch(`${config.apiPrefix}${config.shop}${config.user}${config.filters}${config.tags}`, {
     headers,
     method: 'POST',
     body: JSON.stringify({
@@ -1384,11 +1385,13 @@ export const showMoreTagsForUserFilters = (userName, path, tagCategory, skip = 0
       tagCategory,
       skip,
       limit,
+      path,
     }),
   })
     .then(res => res.json())
     .then(result => result)
     .catch(error => error);
+};
 
 export const showMoreTagsForShopFilters = (tagCategory, path, skip = 0, limit = 10) =>
   fetch(`${config.apiPrefix}${config.shop}${config.filters}${config.tags}`, {
@@ -3106,9 +3109,9 @@ export const getUserProfileBlogTags = (userName, { limit = 10, skip }) =>
     .then(res => res.json())
     .then(response => response)
     .catch(e => e);
-export const getObjectInfo = links =>
+export const getObjectInfo = (links, locale) =>
   fetch(`${config.apiPrefix}${config.wobjects}${config.names}`, {
-    headers,
+    headers: { ...headers, locale },
     method: 'POST',
     body: JSON.stringify({
       links,

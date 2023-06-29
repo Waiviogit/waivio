@@ -6,7 +6,7 @@ import { injectIntl } from 'react-intl';
 import { useHistory, useLocation } from 'react-router';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
-import { getIsWaivio } from '../../../store/appStore/appSelectors';
+import { getIsWaivio, getUsedLocale } from '../../../store/appStore/appSelectors';
 import withAuthActions from '../../auth/withAuthActions';
 import { clearAllSessionProposition } from '../../rewards/rewardsHelper';
 import WebsiteReservedButtons from '../../rewards/Proposition/WebsiteReservedButtons/WebsiteReservedButtons';
@@ -50,6 +50,7 @@ const DetailsModal = ({
   const isWidget = new URLSearchParams(history.location.search).get('display');
   const isReserved = new URLSearchParams(location.search).get('toReserved');
   const isWaivio = useSelector(getIsWaivio);
+  const locale = useSelector(getUsedLocale);
   const stringRequiredObj =
     typeof proposition.requiredObject === 'string' && !isEmpty(proposition.requiredObject);
   const userName = useSelector(getAuthenticatedUserName);
@@ -58,7 +59,9 @@ const DetailsModal = ({
 
   useEffect(() => {
     if (stringRequiredObj) {
-      getObjectInfo([proposition?.requiredObject]).then(res => setRequiredObject(res.wobjects[0]));
+      getObjectInfo([proposition?.requiredObject], locale).then(res =>
+        setRequiredObject(res.wobjects[0]),
+      );
     } else {
       setRequiredObject(proposition.requiredObject);
     }

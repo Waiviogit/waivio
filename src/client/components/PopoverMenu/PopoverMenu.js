@@ -8,7 +8,7 @@ const PopoverMenu = ({ children, onSelect, bold, hide }) => (
     {React.Children.map(children, child => {
       const { children: itemChildren, ...otherProps } = child.props;
       const onItemClick = () => {
-        onSelect(child.key);
+        onSelect(child.key, child.props.data);
         hide();
       };
 
