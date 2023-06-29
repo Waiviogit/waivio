@@ -22,7 +22,7 @@ const MenuItemButton = ({ item }) => {
         case 'page':
           return setUrl(`/object/${authorPermlink}/page#${itemBody.linkToObject}`);
         case 'newsfeed':
-          return setUrl(`/object/${authorPermlink}/newsFilter/${itemBody.linkToObject}`);
+          return setUrl(`/object/${authorPermlink}/newsfeed/${itemBody.linkToObject}`);
         case 'widget':
           return setUrl(`/object/${authorPermlink}/widget#${itemBody.linkToObject}`);
         default:
