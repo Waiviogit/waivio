@@ -185,7 +185,7 @@ const SocialWrapper = props => {
             ].map(i => ({
               link: createLink(i),
               name: i?.body?.title || getObjectName(i),
-              type: i.linkToObject ? 'nav' : 'blank',
+              type: i.body.linkToObject ? 'nav' : 'blank',
             }));
 
             dispatch(

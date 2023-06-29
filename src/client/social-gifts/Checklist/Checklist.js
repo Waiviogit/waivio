@@ -164,7 +164,7 @@ const Checklist = ({
         <link id="favicon" rel="icon" href={favicon} type="image/x-icon" />
       </Helmet>
       <Breadcrumbs />
-      {object.background && !loading && (
+      {object.object_type === 'list' && object.background && !loading && (
         <div className="Checklist__banner">
           <img src={object.background} alt={''} />
         </div>

@@ -15,7 +15,6 @@ import { getPostKey } from '../../../common/helpers/stateHelpers';
 import { findTopComment, getLinkedComment } from '../../../common/helpers/commentHelpers';
 import './Comments.less';
 
-@injectIntl
 class Comments extends React.Component {
   static propTypes = {
     intl: PropTypes.shape().isRequired,
@@ -240,6 +239,7 @@ class Comments extends React.Component {
     const { sort } = this.state;
     const linkedComment = getLinkedComment(comments);
     const rootLinkedComment = findTopComment(parentPost, comments, linkedComment);
+    console.log(rootLinkedComment);
     const commentsToRender = this.commentsToRender(rootLevelComments, rootLinkedComment);
     const isParentPostFetching = loadingPostId === getPostKey(parentPost);
 
@@ -340,4 +340,4 @@ class Comments extends React.Component {
   }
 }
 
-export default Comments;
+export default injectIntl(Comments);

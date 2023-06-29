@@ -93,7 +93,7 @@ const WebsiteTopNavigation = ({ shopSettings }) => {
                       data={i.type}
                     >
                       {truncate(i.name, {
-                        length: 90,
+                        length: 15,
                         separator: '...',
                       }).toUpperCase()}
                     </PopoverMenuItem>
