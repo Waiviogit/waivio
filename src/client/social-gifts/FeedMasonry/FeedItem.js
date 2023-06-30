@@ -70,11 +70,7 @@ const FeedItem = ({ post }) => {
       </div>
       <div className="FeedMasonry__likeWrap">
         <span className="FeedMasonry__like">
-          {Boolean(post.active_votes.length) && (
-            <React.Fragment>
-              <Icon type="like" /> {post.active_votes.length}
-            </React.Fragment>
-          )}
+          <Icon type="like" /> {Boolean(post.active_votes.length) && post.active_votes.length}
         </span>
         <Payout post={post} />
       </div>

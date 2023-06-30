@@ -16,12 +16,12 @@ import './WebsiteTopNavigation.less';
 
 const userNav = user => [
   {
-    name: 'Blog',
-    link: `/blog/${user}`,
-  },
-  {
     name: 'Shop',
     link: `/user-shop/${user}`,
+  },
+  {
+    name: 'Blog',
+    link: `/blog/${user}`,
   },
   {
     name: 'Legal',

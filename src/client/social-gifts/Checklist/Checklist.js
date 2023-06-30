@@ -31,7 +31,8 @@ import {
 import { getProxyImageURL } from '../../../common/helpers/image';
 import PageContent from '../PageContent/PageContent';
 import SocialProduct from '../SocialProduct/SocialProduct';
-
+import WidgetContent from '../WidgetContent/WidgetContent';
+import ObjectNewsFeed from '../FeedMasonry/ObjectNewsFeed';
 import './Checklist.less';
 
 const Checklist = ({
@@ -110,6 +111,8 @@ const Checklist = ({
 
   const getMenuList = () => {
     if (object.object_type === 'page') return <PageContent />;
+    if (object.object_type === 'widget') return <WidgetContent />;
+    if (object.object_type === 'newsfeed') return <ObjectNewsFeed />;
     if (['product', 'book'].includes(object.object_type)) return <SocialProduct />;
 
     if (isEmpty(listItems)) {

@@ -1,45 +1,34 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import Masonry from 'react-masonry-css';
-import { useParams } from 'react-router';
-import { useSelector } from 'react-redux';
+import { isEmpty } from 'lodash';
 import InfiniteSroll from 'react-infinite-scroller';
-import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
-import { getUserProfileBlog } from '../../../waivioApi/ApiClient';
+import PropTypes from 'prop-types';
+
+import Loading from '../../components/Icon/Loading';
 import FeedItem from './FeedItem';
 import PostModal from '../../post/PostModalContainer';
 
 import './FeedMasonry.less';
 
-const limit = 20;
+const breakpointColumnsObj = {
+  default: 5,
+  1100: 4,
+  700: 3,
+  500: 2,
+};
 
-const FeedMasonry = () => {
-  const { name } = useParams();
-  const authUserName = useSelector(getAuthenticatedUserName);
-  const [posts, setPosts] = useState();
-  const [hasMore, setHasMore] = useState();
-  const breakpointColumnsObj = {
-    default: 5,
-    1100: 4,
-    700: 3,
-    500: 2,
-  };
+const FeedMasonry = ({ loadMore, hasMore, posts, loading }) => {
+  if (loading && isEmpty(posts))
+    return (
+      <div className="FeedMasonry__loading">
+        <Loading />
+      </div>
+    );
 
-  useEffect(() => {
-    getUserProfileBlog(name, authUserName, { limit, skip: 0 }).then(res => {
-      setPosts(res.posts);
-      setHasMore(res.hasMore);
-    });
-  }, [name]);
-
-  const loadMore = () => {
-    getUserProfileBlog(name, authUserName, { limit, skip: posts?.length }).then(res => {
-      setPosts([...posts, ...res.posts]);
-      setHasMore(res.hasMore);
-    });
-  };
+  if (isEmpty(posts)) return <div className="FeedMasonry__emptyFeed">There are no posts yet</div>;
 
   return (
-    <InfiniteSroll hasMore={hasMore} loadMore={loadMore}>
+    <InfiniteSroll loader={<Loading />} hasMore={hasMore} loadMore={loadMore}>
       <Masonry
         breakpointCols={breakpointColumnsObj}
         className="FeedMasonry my-masonry-grid"
@@ -52,6 +41,13 @@ const FeedMasonry = () => {
       <PostModal isFeedMasonry />
     </InfiniteSroll>
   );
+};
+
+FeedMasonry.propTypes = {
+  loadMore: PropTypes.func,
+  hasMore: PropTypes.bool,
+  posts: PropTypes.arrayOf(PropTypes.shape({})),
+  loading: PropTypes.bool,
 };
 
 export default FeedMasonry;
