@@ -46,7 +46,7 @@ const DescriptionPage = ({ match }) => {
 
   const paragraphs = description && description.split('\n\n');
 
-  const renderedParagraphs = paragraphs.map((paragraph, index) => (
+  const renderedParagraphs = paragraphs?.map((paragraph, index) => (
     // eslint-disable-next-line react/no-array-index-key
     <React.Fragment key={index}>
       <p>{paragraph}</p>
@@ -59,8 +59,8 @@ const DescriptionPage = ({ match }) => {
   ));
 
   const remainingPictures = pictures
-    ?.slice(renderedParagraphs.length)
-    .map(picture => (
+    ?.slice(renderedParagraphs?.length)
+    ?.map(picture => (
       <img
         className="DescriptionPage__image"
         key={picture.id}
