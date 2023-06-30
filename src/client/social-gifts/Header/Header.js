@@ -47,6 +47,7 @@ const Header = () => {
       </div>
       {config.mainBanner && (
         <img
+          id="socialGiftsMainBanner"
           alt={''}
           src={config.mainBanner}
           style={{
