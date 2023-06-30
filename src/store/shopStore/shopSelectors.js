@@ -8,3 +8,4 @@ export const getBreadCrumbsFromState = createSelector([shopState], state => stat
 export const getActiveBreadCrumb = createSelector([shopState], state => state.activeCrumb);
 
 export const getExcludedDepartment = createSelector([shopState], state => state.excluded);
+export const getIsOptionClicked = createSelector([shopState], state => state.isOptionClicked);
