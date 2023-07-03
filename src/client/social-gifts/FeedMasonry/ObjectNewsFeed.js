@@ -13,6 +13,7 @@ import {
 import { getMoreObjectPosts, getObjectPosts } from '../../../store/feedStore/feedActions';
 import { getPosts } from '../../../store/postsStore/postsSelectors';
 import { getLastPermlinksFromHash } from '../../../common/helpers/wObjectHelper';
+import { preparationPostList } from './helpers';
 
 const ObjectNewsFeed = () => {
   const [newsPermlink, setNewsPermlink] = useState();
@@ -27,7 +28,7 @@ const ObjectNewsFeed = () => {
   const postsIds = uniq(getFeedFromState('objectPosts', objName, feed));
   const hasMore = getFeedHasMoreFromState('objectPosts', objName, feed);
   const isFetching = getFeedLoadingFromState('objectPosts', objName, feed);
-  const posts = postsIds.reduce((acc, curr) => [...acc, postsList[curr]], []);
+  const posts = preparationPostList(postsIds, postsList);
 
   const getPostsList = () => {
     getObject(objName).then(res => {

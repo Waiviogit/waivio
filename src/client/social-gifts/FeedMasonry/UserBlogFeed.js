@@ -14,7 +14,7 @@ import ReduxInfiniteScroll from '../../vendor/ReduxInfiniteScroll';
 import Loading from '../../components/Icon/Loading';
 import FeedItem from './FeedItem';
 import PostModal from '../../post/PostModalContainer';
-import { breakpointColumnsObj } from './constants';
+import { breakpointColumnsObj, preparationPostList } from './helpers';
 
 const UserBlogFeed = () => {
   const { name } = useParams();
@@ -25,7 +25,7 @@ const UserBlogFeed = () => {
   const postsIds = getFeedFromState('blog', name, feed);
   const hasMore = getFeedHasMoreFromState('blog', name, feed);
   const isFetching = getFeedLoadingFromState('blog', name, feed);
-  const posts = postsIds.reduce((acc, curr) => [...acc, postsList[curr]], []);
+  const posts = preparationPostList(postsIds, postsList);
 
   useEffect(() => {
     dispatch(getUserProfileBlogPosts(name, { limit: 20, initialLoad: true }));
@@ -50,7 +50,7 @@ const UserBlogFeed = () => {
       elementIsScrollable={false}
     >
       <Masonry
-        breakpointCols={breakpointColumnsObj}
+        breakpointCols={breakpointColumnsObj(posts?.length)}
         className="FeedMasonry my-masonry-grid"
         columnClassName="my-masonry-grid_column"
       >
