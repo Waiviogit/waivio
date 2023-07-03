@@ -67,8 +67,12 @@ const DescriptionPage = ({ match }) => {
           }
           imageCaption={<LightboxFooter post={pics[photoIndex]} />}
           mainSrc={pictures[photoIndex]?.body}
-          nextSrc={pictures[(photoIndex + 1) % pictures.length]?.body}
-          prevSrc={pictures[(photoIndex - 1) % pictures.length]?.body}
+          nextSrc={
+            pictures.length <= 1 || photoIndex === pictures.length - 1
+              ? null
+              : pictures[(photoIndex + 1) % pictures.length]?.body
+          }
+          prevSrc={pictures.length <= 1 ? null : pictures[(photoIndex - 1) % pictures.length]?.body}
           onCloseRequest={() => setIsOpen(false)}
           onMovePrevRequest={() => setPhotoIndex((photoIndex - 1) % pictures.length)}
           onMoveNextRequest={() => setPhotoIndex((photoIndex + 1) % pictures.length)}

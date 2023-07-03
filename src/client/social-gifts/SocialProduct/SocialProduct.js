@@ -42,7 +42,7 @@ import ProductDetails from './ProductDetails/ProductDetails';
 import SocialTagCategories from './SocialTagCategories/SocialTagCategories';
 import ObjectsSlider from './ObjectsSlider/ObjectsSlider';
 
-const limit = 100;
+const limit = 30;
 
 const SocialProduct = () => {
   const [wobject, setWobject] = useState({});
