@@ -47,9 +47,10 @@
     margin-bottom: 5px;
   }
 
-  &__title {
-    font-weight: bold;
-    margin-bottom: 5px;
+  &__title,
+  &__authorInfo {
+    font-weight: 500;
+    font-size: 14px;
     cursor: pointer;
   }
 
@@ -57,15 +58,20 @@
     display: flex;
     align-items: center;
     color: #000000a6;
-    font-weight: 600;
 
     &:hover {
       color: #000000a6;
     }
 
     .Avatar {
-      margin-right: 10px;
+      margin-right: 5px;
     }
+  }
+
+  &__icon {
+    display: flex;
+    align-items: center;
+    font-weight: bold;
   }
 
   &__postInfo {

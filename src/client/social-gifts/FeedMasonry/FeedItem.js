@@ -12,7 +12,7 @@ import { getImageForPreview, getVideoForPreview } from '../../../common/helpers/
 import { showPostModal } from '../../../store/appStore/appActions';
 import Payout from '../../components/StoryFooter/Payout';
 
-const FeedItem = ({ post }) => {
+const FeedItem = ({ post, photoQuantity }) => {
   const imagePath = getImageForPreview(post);
   const embeds = getVideoForPreview(post);
   const lastIndex = imagePath?.length - 1;
@@ -27,7 +27,7 @@ const FeedItem = ({ post }) => {
     <div className="FeedMasonry__item">
       {isEmpty(embeds) ? (
         <div className="FeedMasonry__imgWrap">
-          {take(imagePath, 3)?.map((image, index) => (
+          {take(imagePath, photoQuantity)?.map((image, index) => (
             <img
               className={classNames('FeedMasonry__img', {
                 'FeedMasonry__img--bottom': lastIndex && (index === 2 || index === lastIndex),
@@ -65,13 +65,23 @@ const FeedItem = ({ post }) => {
           {post?.title}
         </div>
         <Link to={`/@${post?.author}`} className="FeedMasonry__authorInfo">
-          <Avatar username={post?.author} size={35} /> {post?.author}
+          <Avatar username={post?.author} size={25} /> {post?.author}
         </Link>
       </div>
       <div className="FeedMasonry__likeWrap">
         <span className="FeedMasonry__like">
           <Icon type="like" /> {Boolean(post.active_votes.length) && post.active_votes.length}
         </span>
+        {Boolean(post.children) && (
+          <span className="FeedMasonry__icon">
+            <i className="iconfont icon-message_fill" /> {post.children}
+          </span>
+        )}
+        {Boolean(post?.reblogged_users?.length) && (
+          <span className="FeedMasonry__icon">
+            <i className="iconfont icon-share1" /> {post?.reblogged_users?.length}
+          </span>
+        )}
         <Payout post={post} />
       </div>
     </div>
@@ -84,7 +94,10 @@ FeedItem.propTypes = {
     permlink: PropTypes.string,
     title: PropTypes.string,
     active_votes: PropTypes.arrayOf(),
+    reblogged_users: PropTypes.arrayOf(PropTypes.string),
+    children: PropTypes.number,
   }),
+  photoQuantity: PropTypes.number,
 };
 
 export default FeedItem;

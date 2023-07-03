@@ -46,7 +46,7 @@ const DescriptionPage = ({ match }) => {
 
   const paragraphs = description && description.split('\n\n');
 
-  const renderedParagraphs = paragraphs.map((paragraph, index) => (
+  const renderedParagraphs = paragraphs?.map((paragraph, index) => (
     // eslint-disable-next-line react/no-array-index-key
     <React.Fragment key={index}>
       <p>{paragraph}</p>
@@ -59,8 +59,8 @@ const DescriptionPage = ({ match }) => {
   ));
 
   const remainingPictures = pictures
-    ?.slice(renderedParagraphs.length)
-    .map(picture => (
+    ?.slice(renderedParagraphs?.length)
+    ?.map(picture => (
       <img
         className="DescriptionPage__image"
         key={picture.id}
@@ -88,8 +88,12 @@ const DescriptionPage = ({ match }) => {
           }
           imageCaption={<LightboxFooter post={pics[photoIndex]} />}
           mainSrc={pictures[photoIndex]?.body}
-          nextSrc={pictures[(photoIndex + 1) % pictures.length]?.body}
-          prevSrc={pictures[(photoIndex - 1) % pictures.length]?.body}
+          nextSrc={
+            pictures.length <= 1 || photoIndex === pictures.length - 1
+              ? null
+              : pictures[(photoIndex + 1) % pictures.length]?.body
+          }
+          prevSrc={pictures.length <= 1 ? null : pictures[(photoIndex - 1) % pictures.length]?.body}
           onCloseRequest={() => setIsOpen(false)}
           onMovePrevRequest={() => setPhotoIndex((photoIndex - 1) % pictures.length)}
           onMoveNextRequest={() => setPhotoIndex((photoIndex + 1) % pictures.length)}

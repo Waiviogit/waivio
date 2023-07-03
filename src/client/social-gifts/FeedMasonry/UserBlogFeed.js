@@ -1,37 +1,66 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useParams } from 'react-router';
-import { useSelector } from 'react-redux';
-import FeedMasonry from './FeedMasonry';
-import { getUserProfileBlog } from '../../../waivioApi/ApiClient';
-import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
+import { useDispatch, useSelector } from 'react-redux';
+import Masonry from 'react-masonry-css';
+import { getUserProfileBlogPosts } from '../../../store/feedStore/feedActions';
+import {
+  getFeedFromState,
+  getFeedHasMoreFromState,
+  getFeedLoadingFromState,
+} from '../../../common/helpers/stateHelpers';
+import { getFeed } from '../../../store/feedStore/feedSelectors';
+import { getPosts } from '../../../store/postsStore/postsSelectors';
+import ReduxInfiniteScroll from '../../vendor/ReduxInfiniteScroll';
+import Loading from '../../components/Icon/Loading';
+import FeedItem from './FeedItem';
+import PostModal from '../../post/PostModalContainer';
+import { breakpointColumnsObj } from './constants';
 
 const UserBlogFeed = () => {
   const { name } = useParams();
-  const authUserName = useSelector(getAuthenticatedUserName);
-  const [posts, setPosts] = useState();
-  const [hasMore, setHasMore] = useState();
-  const [loading, setLoading] = useState(true);
+  const feed = useSelector(getFeed);
+  const postsList = useSelector(getPosts);
+  const dispatch = useDispatch();
 
-  const getPosts = skip => getUserProfileBlog(name, authUserName, { limit: 20, skip });
+  const postsIds = getFeedFromState('blog', name, feed);
+  const hasMore = getFeedHasMoreFromState('blog', name, feed);
+  const isFetching = getFeedLoadingFromState('blog', name, feed);
+  const posts = postsIds.reduce((acc, curr) => [...acc, postsList[curr]], []);
 
   useEffect(() => {
-    getPosts(0).then(res => {
-      setPosts(res.posts);
-      setHasMore(res.hasMore);
-      setLoading(false);
-    });
+    dispatch(getUserProfileBlogPosts(name, { limit: 20, initialLoad: true }));
   }, [name]);
 
   const loadMore = () => {
-    setLoading(true);
-    getPosts(posts?.length).then(res => {
-      setPosts([...posts, ...res.posts]);
-      setHasMore(res.hasMore);
-      setLoading(false);
-    });
+    dispatch(
+      getUserProfileBlogPosts(name, {
+        limit: 20,
+        initialLoad: false,
+      }),
+    );
   };
 
-  return <FeedMasonry loading={loading} posts={posts} hasMore={hasMore} loadMore={loadMore} />;
+  return (
+    <ReduxInfiniteScroll
+      className="Feed"
+      loadMore={loadMore}
+      loader={<Loading />}
+      loadingMore={isFetching}
+      hasMore={hasMore}
+      elementIsScrollable={false}
+    >
+      <Masonry
+        breakpointCols={breakpointColumnsObj}
+        className="FeedMasonry my-masonry-grid"
+        columnClassName="my-masonry-grid_column"
+      >
+        {posts?.map(post => (
+          <FeedItem key={`${post.author}/${post?.permlink}`} photoQuantity={3} post={post} />
+        ))}
+      </Masonry>
+      <PostModal />
+    </ReduxInfiniteScroll>
+  );
 };
 
 export default UserBlogFeed;
