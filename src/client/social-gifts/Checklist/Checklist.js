@@ -45,6 +45,8 @@ const Checklist = ({
   match,
   setBreadcrumb,
   defaultListImage,
+  permlink,
+  hideBreadCrumbs,
 }) => {
   const [loading, setLoading] = useState(true);
   const [object, setObject] = useState(false);
@@ -56,7 +58,8 @@ const Checklist = ({
   const canonicalUrl = typeof location !== 'undefined' && location?.origin;
 
   useEffect(() => {
-    const pathUrl = getLastPermlinksFromHash(history.location.hash) || match.params.name;
+    const pathUrl =
+      permlink || getLastPermlinksFromHash(history.location.hash) || match.params.name;
 
     setLoading(true);
     getObject(pathUrl, userName, locale).then(wObject => {
@@ -110,9 +113,9 @@ const Checklist = ({
   };
 
   const getMenuList = () => {
-    if (object.object_type === 'page') return <PageContent />;
-    if (object.object_type === 'widget') return <WidgetContent />;
-    if (object.object_type === 'newsfeed') return <ObjectNewsFeed />;
+    if (object.object_type === 'page') return <PageContent wobj={object} />;
+    if (object.object_type === 'widget') return <WidgetContent wobj={object} />;
+    if (object.object_type === 'newsfeed') return <ObjectNewsFeed wobj={object} />;
     if (['product', 'book'].includes(object.object_type)) return <SocialProduct />;
 
     if (isEmpty(listItems)) {
@@ -166,7 +169,7 @@ const Checklist = ({
         <link rel="image_src" href={image} />
         <link id="favicon" rel="icon" href={favicon} type="image/x-icon" />
       </Helmet>
-      <Breadcrumbs />
+      {!hideBreadCrumbs && <Breadcrumbs />}
       {object.object_type === 'list' && object.background && !loading && (
         <div className="Checklist__banner">
           <img src={object.background} alt={''} />
@@ -185,6 +188,8 @@ Checklist.propTypes = {
   }).isRequired,
   userName: PropTypes.string.isRequired,
   defaultListImage: PropTypes.string,
+  permlink: PropTypes.string,
+  hideBreadCrumbs: PropTypes.bool,
   locale: PropTypes.string.isRequired,
   listItems: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   intl: PropTypes.arrayOf(PropTypes.shape({ formatMessage: PropTypes.func })).isRequired,
