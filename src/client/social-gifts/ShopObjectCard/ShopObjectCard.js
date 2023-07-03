@@ -50,9 +50,13 @@ const ShopObjectCard = ({ wObject, isChecklist }) => {
 
       break;
     case 'page':
-      link = isChecklist ? `/checklist/${name}${hash}` : `/object/page/${wObject.author_permlink}`;
-
+    case 'widget':
+    case 'newsfeed':
+      link = isChecklist
+        ? `/checklist/${name}${hash}`
+        : `/object/${wObject.object_type}/${wObject.author_permlink}`;
       break;
+
     default:
       link = wObject.defaultShowLink;
       break;

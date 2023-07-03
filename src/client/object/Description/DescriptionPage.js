@@ -44,16 +44,37 @@ const DescriptionPage = ({ match }) => {
     setPhotoIndex(pics.indexOf(pic));
   };
 
+  const paragraphs = description && description.split('\n\n');
+
+  const renderedParagraphs = paragraphs.map((paragraph, index) => (
+    // eslint-disable-next-line react/no-array-index-key
+    <React.Fragment key={index}>
+      <p>{paragraph}</p>
+      {index > 0 && (
+        <div key={pictures[index - 1].id} onClick={e => onPicClick(e, pictures[index - 1])}>
+          <img className="DescriptionPage__image" src={pictures[index - 1].body} alt=" " />
+        </div>
+      )}
+    </React.Fragment>
+  ));
+
+  const remainingPictures = pictures
+    ?.slice(renderedParagraphs.length)
+    .map(picture => (
+      <img
+        className="DescriptionPage__image"
+        key={picture.id}
+        onClick={e => onPicClick(e, picture)}
+        src={picture.body}
+        alt=""
+      />
+    ));
+
   return (
     <div className="DescriptionPage Body">
-      <div className="DescriptionPage__body">{description}</div>
-      <div>
-        {!isEmpty(pictures) &&
-          pictures?.map(p => (
-            <div key={p.id} onClick={e => onPicClick(e, p)}>
-              <img className="DescriptionPage__image" src={p.body} alt=" " />
-            </div>
-          ))}
+      <div className="DescriptionPage__body">
+        {renderedParagraphs}
+        {remainingPictures}
       </div>
       {isOpen && (
         <Lightbox
