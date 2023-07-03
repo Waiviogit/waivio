@@ -7,7 +7,7 @@ import PropTypes from 'prop-types';
 import Loading from '../../components/Icon/Loading';
 import FeedItem from './FeedItem';
 import PostModal from '../../post/PostModalContainer';
-import { breakpointColumnsObj } from './constants';
+import { breakpointColumnsObj } from './helpers';
 
 import './FeedMasonry.less';
 
@@ -24,7 +24,7 @@ const FeedMasonry = ({ loadMore, hasMore, posts, loading }) => {
   return (
     <InfiniteSroll loader={<Loading />} hasMore={hasMore} loadMore={loadMore}>
       <Masonry
-        breakpointCols={breakpointColumnsObj}
+        breakpointCols={breakpointColumnsObj(posts?.length)}
         className="FeedMasonry my-masonry-grid"
         columnClassName="my-masonry-grid_column"
       >

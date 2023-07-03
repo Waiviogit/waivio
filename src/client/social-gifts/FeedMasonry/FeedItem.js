@@ -1,5 +1,5 @@
 import React from 'react';
-import { isEmpty, take } from 'lodash';
+import { isEmpty, take, truncate } from 'lodash';
 import classNames from 'classnames';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
@@ -8,13 +8,12 @@ import { Icon } from 'antd';
 import { getProxyImageURL } from '../../../common/helpers/image';
 import PostFeedEmbed from '../../components/Story/PostFeedEmbed';
 import Avatar from '../../components/Avatar';
-import { getImageForPreview, getVideoForPreview } from '../../../common/helpers/postHelpers';
 import { showPostModal } from '../../../store/appStore/appActions';
 import Payout from '../../components/StoryFooter/Payout';
 
 const FeedItem = ({ post, photoQuantity }) => {
-  const imagePath = getImageForPreview(post);
-  const embeds = getVideoForPreview(post);
+  const imagePath = post?.imagePath;
+  const embeds = post?.embeds;
   const lastIndex = imagePath?.length - 1;
   const withoutImage = isEmpty(imagePath);
   const dispatch = useDispatch();
@@ -30,7 +29,8 @@ const FeedItem = ({ post, photoQuantity }) => {
           {take(imagePath, photoQuantity)?.map((image, index) => (
             <img
               className={classNames('FeedMasonry__img', {
-                'FeedMasonry__img--bottom': lastIndex && (index === 2 || index === lastIndex),
+                'FeedMasonry__img--bottom':
+                  lastIndex && (index === photoQuantity - 1 || index === lastIndex),
                 'FeedMasonry__img--top': lastIndex && !index,
                 'FeedMasonry__img--only': !lastIndex,
               })}
@@ -62,26 +62,33 @@ const FeedItem = ({ post, photoQuantity }) => {
       )}
       <div className={'FeedMasonry__postInfo'}>
         <div className="FeedMasonry__title" onClick={handleShowPostModal}>
-          {post?.title}
+          {truncate(post?.title, {
+            length: 70,
+            separator: '...',
+          })}
         </div>
         <Link to={`/@${post?.author}`} className="FeedMasonry__authorInfo">
           <Avatar username={post?.author} size={25} /> {post?.author}
         </Link>
       </div>
       <div className="FeedMasonry__likeWrap">
-        <span className="FeedMasonry__like">
-          <Icon type="like" /> {Boolean(post.active_votes.length) && post.active_votes.length}
-        </span>
-        {Boolean(post.children) && (
-          <span className="FeedMasonry__icon">
-            <i className="iconfont icon-message_fill" /> {post.children}
-          </span>
-        )}
-        {Boolean(post?.reblogged_users?.length) && (
-          <span className="FeedMasonry__icon">
-            <i className="iconfont icon-share1" /> {post?.reblogged_users?.length}
-          </span>
-        )}
+        <div className="FeedMasonry__likeWrap">
+          {Boolean(post.active_votes.length) && (
+            <span className="FeedMasonry__icon">
+              <Icon type="like" /> {post.active_votes.length}
+            </span>
+          )}
+          {Boolean(post.children) && (
+            <span className="FeedMasonry__icon">
+              <i className="iconfont icon-message_fill" /> {post.children}
+            </span>
+          )}
+          {Boolean(post?.reblogged_users?.length) && (
+            <span className="FeedMasonry__icon">
+              <i className="iconfont icon-share1" /> {post?.reblogged_users?.length}
+            </span>
+          )}
+        </div>
         <Payout post={post} />
       </div>
     </div>
@@ -96,6 +103,8 @@ FeedItem.propTypes = {
     active_votes: PropTypes.arrayOf(),
     reblogged_users: PropTypes.arrayOf(PropTypes.string),
     children: PropTypes.number,
+    imagePath: PropTypes.arrayOf(),
+    embeds: PropTypes.arrayOf(),
   }),
   photoQuantity: PropTypes.number,
 };
