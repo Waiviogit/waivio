@@ -4,7 +4,6 @@ import { uniq } from 'lodash';
 import { useLocation, useParams } from 'react-router';
 import FeedMasonry from './FeedMasonry';
 import { getObject } from '../../../waivioApi/ApiClient';
-import { getReadLanguages } from '../../../store/settingsStore/settingsSelectors';
 import { getFeed } from '../../../store/feedStore/feedSelectors';
 import {
   getFeedFromState,
@@ -16,19 +15,18 @@ import { getPosts } from '../../../store/postsStore/postsSelectors';
 import { getLastPermlinksFromHash } from '../../../common/helpers/wObjectHelper';
 
 const ObjectNewsFeed = () => {
-  const readLanguages = useSelector(getReadLanguages);
+  const [newsPermlink, setNewsPermlink] = useState();
   const feed = useSelector(getFeed);
+  const postsList = useSelector(getPosts);
+  const dispatch = useDispatch();
+
   const { name } = useParams();
   const location = useLocation();
   const objName = location.hash ? getLastPermlinksFromHash(location.hash) : name;
-  const objectFeed = getFeedFromState('objectPosts', objName, feed);
-  const postsIds = uniq(objectFeed);
-  const dispatch = useDispatch();
+
+  const postsIds = uniq(getFeedFromState('objectPosts', objName, feed));
   const hasMore = getFeedHasMoreFromState('objectPosts', objName, feed);
   const isFetching = getFeedLoadingFromState('objectPosts', objName, feed);
-  const [newsPermlink, setNewsPermlink] = useState();
-
-  const postsList = useSelector(getPosts);
   const posts = postsIds.reduce((acc, curr) => [...acc, postsList[curr]], []);
 
   const getPostsList = () => {
@@ -37,7 +35,6 @@ const ObjectNewsFeed = () => {
         getObjectPosts({
           object: objName,
           username: objName,
-          readLanguages,
           limit: 20,
           newsPermlink: res?.newsFeed?.permlink,
         }),

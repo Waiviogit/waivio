@@ -7,15 +7,9 @@ import PropTypes from 'prop-types';
 import Loading from '../../components/Icon/Loading';
 import FeedItem from './FeedItem';
 import PostModal from '../../post/PostModalContainer';
+import { breakpointColumnsObj } from './constants';
 
 import './FeedMasonry.less';
-
-const breakpointColumnsObj = {
-  default: 5,
-  1100: 4,
-  700: 3,
-  500: 2,
-};
 
 const FeedMasonry = ({ loadMore, hasMore, posts, loading }) => {
   if (loading && isEmpty(posts))
@@ -35,10 +29,10 @@ const FeedMasonry = ({ loadMore, hasMore, posts, loading }) => {
         columnClassName="my-masonry-grid_column"
       >
         {posts?.map(post => (
-          <FeedItem key={`${post.author}/${post?.permlink}`} post={post} />
+          <FeedItem key={`${post.author}/${post?.permlink}`} photoQuantity={2} post={post} />
         ))}
       </Masonry>
-      <PostModal isFeedMasonry />
+      <PostModal />
     </InfiniteSroll>
   );
 };
