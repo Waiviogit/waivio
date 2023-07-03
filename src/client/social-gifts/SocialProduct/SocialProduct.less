@@ -145,7 +145,10 @@
     padding: 5px 0;
 
     &:not(:first-child) {
-      margin-left: 20px;
+      margin-left: 4px;
+      @media @small {
+        margin-left: 20px;
+      }
     }
   }
   &__tag-wrapper {

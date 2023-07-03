@@ -94,7 +94,11 @@ export default class ObjectLightbox extends Component {
                 }
                 imageCaption={<LightboxFooter post={pics[photoIndex]} />}
                 mainSrc={pics[photoIndex]?.body}
-                nextSrc={pics.length <= 1 ? null : pics[(photoIndex + 1) % pics.length]?.body}
+                nextSrc={
+                  pics.length <= 1 || photoIndex === pics.length - 1
+                    ? null
+                    : pics[(photoIndex + 1) % pics.length]?.body
+                }
                 prevSrc={pics.length <= 1 ? null : pics[(photoIndex - 1) % pics.length]?.body}
                 onMovePrevRequest={() =>
                   this.setState({ photoIndex: (photoIndex - 1) % pics.length })
