@@ -148,6 +148,7 @@ class ObjectInfo extends React.Component {
       brand,
       merchant,
       groupId,
+      menuItem,
     } = this.props.wobject;
 
     if (
@@ -156,7 +157,8 @@ class ObjectInfo extends React.Component {
       authors !== prevProps.wobject.authors ||
       manufacturer !== prevProps.wobject.manufacturer ||
       brand !== prevProps.wobject.brand ||
-      merchant !== prevProps.wobject.merchant
+      merchant !== prevProps.wobject.merchant ||
+      menuItem !== prevProps.wobject.menuItem
     ) {
       this.getPublisherManufacturerBrandMerchantObjects();
     }

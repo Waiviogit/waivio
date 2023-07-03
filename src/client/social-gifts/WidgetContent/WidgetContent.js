@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useLocation, useParams } from 'react-router';
-
+import PropTypes from 'prop-types';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 import { getUsedLocale } from '../../../store/appStore/appSelectors';
 import { getLastPermlinksFromHash } from '../../../common/helpers/wObjectHelper';
 import { getObject } from '../../../waivioApi/ApiClient';
 import Loading from '../../components/Icon/Loading';
 
-const WidgetContent = () => {
+const WidgetContent = ({ wobj }) => {
   const [currentWobject, setWobject] = useState();
   const userName = useSelector(getAuthenticatedUserName);
   const locale = useSelector(getUsedLocale);
@@ -18,7 +18,11 @@ const WidgetContent = () => {
   const widgetForm = currentWobject?.widget && JSON.parse(currentWobject?.widget);
 
   useEffect(() => {
-    getObject(objName, userName, locale).then(wobj => setWobject(wobj));
+    if (wobj) {
+      setWobject(wobj);
+    } else {
+      getObject(objName, userName, locale).then(obj => setWobject(obj));
+    }
   }, [objName]);
 
   if (!widgetForm?.content) {
@@ -60,6 +64,10 @@ const WidgetContent = () => {
       )}
     </div>
   );
+};
+
+WidgetContent.propTypes = {
+  wobj: PropTypes.shape(),
 };
 
 export default WidgetContent;
