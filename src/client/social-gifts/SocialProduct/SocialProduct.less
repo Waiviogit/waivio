@@ -347,7 +347,8 @@
     }
 
     .slick-slide.slick-active,
-    .slick-slide.slick-active.slick-current {
+    .slick-slide.slick-active.slick-current,
+    .slick-slide {
       margin-top: 0;
       //width: 250px ;
       @media @small {
@@ -355,7 +356,7 @@
       }
     }
     .slick-slide div {
-      width: 100%;
+      width: 98%;
       justify-content: center !important;
       @media @small {
         display: flex !important;
@@ -432,5 +433,9 @@
       justify-content: center;
       padding: 10px 0 2px 0;
     }
+  }
+
+  .Checklist {
+    width: inherit;
   }
 }
