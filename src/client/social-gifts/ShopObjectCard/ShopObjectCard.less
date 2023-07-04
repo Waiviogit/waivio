@@ -70,33 +70,38 @@
 
   .AffiliatLink {
     border: @base-border;
-    width: 65px;
-    padding: 0 5px;
+    width: 100px;
+    padding: 7px 0;
     margin-left: 5px;
     margin-bottom: 5px;
 
-    &__icon {
+    &__icon-amazon {
       div {
-        padding: 2px 0;
-
-        @media @small {
-          padding: 5px 0;
-        }
+        width: 100px;
+        padding: 5px 0 0 0;
       }
     }
 
-    @media @small {
-      width: 100px;
-      padding: 0;
-    }
+    &__icon {
+      div {
+        width: 100px;
+        padding: 0;
+      }
 
-    &:first-child {
-      margin-left: 0;
+      @media @small {
+        width: 100px;
+        padding: 0;
+      }
+
+      &:first-child {
+        @media @small {
+          margin-left: 0;
+        }
+      }
     }
   }
 
   &__name {
-    color: @black-text-basic;
     margin-top: 10px;
     text-align: center;
     padding: 0 10px;
