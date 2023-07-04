@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import Lightbox from 'react-image-lightbox';
-import { get, isEmpty } from 'lodash';
+import { get } from 'lodash';
 import { useSelector } from 'react-redux';
 import { getObject } from '../../../waivioApi/ApiClient';
 import { isMobile } from '../../../common/helpers/apiHelpers';
@@ -18,7 +18,9 @@ const DescriptionPage = ({ match }) => {
   const description = wobject?.description;
   const relatedAlbum = useSelector(getRelatedPhotos);
   const albums = useSelector(getObjectAlbums);
-  const pics = [...get(wobject, 'preview_gallery', [])];
+  const pics = [...get(wobject, 'preview_gallery', [])].sort(
+    (a, b) => (a.name === 'avatar') - (b.name === 'avatar'),
+  );
   const pictures = pics.length > 15 ? pics.slice(0, 15) : pics;
   const album = [...albums, relatedAlbum]?.find(alb =>
     alb?.items?.some(pic => pic.body === pics[photoIndex]?.body),
@@ -36,8 +38,8 @@ const DescriptionPage = ({ match }) => {
       window.scrollTo(0, 0);
     }
 
-    if (isEmpty(wobject)) getObject(wobjName).then(res => setWobject(res));
-  }, [wobject.author_permlink]);
+    getObject(wobjName).then(res => setWobject(res));
+  }, [wobjName]);
 
   const onPicClick = (e, pic) => {
     setIsOpen(true);
@@ -50,9 +52,9 @@ const DescriptionPage = ({ match }) => {
     // eslint-disable-next-line react/no-array-index-key
     <React.Fragment key={index}>
       <p>{paragraph}</p>
-      {index > 0 && (
-        <div key={pictures[index - 1].id} onClick={e => onPicClick(e, pictures[index - 1])}>
-          <img className="DescriptionPage__image" src={pictures[index - 1].body} alt=" " />
+      {pictures && index < pictures.length && (
+        <div key={pictures[index]} onClick={e => onPicClick(e, pictures[index])}>
+          <img className="DescriptionPage__image" src={pictures[index]?.body} alt=" " />
         </div>
       )}
     </React.Fragment>
