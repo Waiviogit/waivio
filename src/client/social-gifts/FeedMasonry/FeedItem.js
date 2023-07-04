@@ -10,6 +10,7 @@ import PostFeedEmbed from '../../components/Story/PostFeedEmbed';
 import Avatar from '../../components/Avatar';
 import { showPostModal } from '../../../store/appStore/appActions';
 import Payout from '../../components/StoryFooter/Payout';
+import { isMobile } from '../../../common/helpers/apiHelpers';
 
 const FeedItem = ({ post, photoQuantity }) => {
   const imagePath = post?.imagePath;
@@ -63,7 +64,7 @@ const FeedItem = ({ post, photoQuantity }) => {
       <div className={'FeedMasonry__postInfo'}>
         <div className="FeedMasonry__title" onClick={handleShowPostModal}>
           {truncate(post?.title, {
-            length: 70,
+            length: isMobile() ? 70 : 80,
             separator: '...',
           })}
         </div>
