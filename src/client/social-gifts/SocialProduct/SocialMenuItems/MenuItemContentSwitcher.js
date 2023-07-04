@@ -6,8 +6,8 @@ const MenuItemContentSwitcher = ({ item }) => {
   const itemBody = JSON.parse(item.body);
 
   const getContentLayout = () => {
-    if (['page', 'list', 'newsfeed', 'widget', 'product', 'book'].includes(itemBody.objectType)) {
-      return <Checklist permlink={itemBody.linkToObject} hideBreadCrumbs />;
+    if (['page', 'list', 'newsfeed', 'widget'].includes(itemBody.objectType)) {
+      return <Checklist isSocialProduct permlink={itemBody.linkToObject} hideBreadCrumbs />;
     }
     if (itemBody.linkToWeb) {
       return (
