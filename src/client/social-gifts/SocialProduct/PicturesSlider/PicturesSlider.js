@@ -75,9 +75,12 @@ const PicturesSlider = ({ hoveredOption, activeOption, activeCategory }) => {
 
   const onClosePicture = () => {
     setIsOpen(false);
-    const currIndex = pictures.find(pic => pic.body === currentImage.body);
-
-    setPhotoIndex(indexOf(pictures, currIndex));
+    setPhotoIndex(
+      indexOf(
+        pictures,
+        pictures.find(pic => pic.body === currentImage.body),
+      ),
+    );
   };
 
   return !isEmpty(pictures) ? (
