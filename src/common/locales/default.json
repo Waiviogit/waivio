@@ -922,7 +922,7 @@
   "peyment_oct": "Oct",
   "peyment_nov": "Nov",
   "peyment_dec": "Dec",
-  "filter_days": "Over {value} days",
+  "filter_days": "Completed",
   "filter_moreDays": "Over {value} days",
   "filter_otherDays": "Over {value} days",
   "filter_payable": "Over {value} HIVE",
@@ -2275,5 +2275,8 @@
   "chrome_extension_download_file_button": "Download file",
   "chrome_extension_reinstall_note": "Please note that after each of our updates, you need to reinstall the extension or refresh the file and extension to use the most current version",
   "chrome_extension_repository": "The Waivio Chrome Extension original repository",
-  "chrome-extension": "Chrome extension"
+  "chrome-extension": "Chrome extension",
+  "manage_your_public_shopping": "You can manage your public shopping list in the profile.",
+  "not_show_objects_linked": "Do not show objects linked in posts",
+  "any_campaigns_yet": "You don't have any campaigns yet"
 }
