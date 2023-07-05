@@ -67,6 +67,7 @@ const ObjectFeed = ({ limit, handleCreatePost, userName, wobject }) => {
           newsPermlink: permlink || getNewsPermlink(),
         }),
       );
+      setNewsPermlink(permlink);
     }
   };
 
@@ -103,7 +104,7 @@ const ObjectFeed = ({ limit, handleCreatePost, userName, wobject }) => {
         authorPermlink: parentName || name,
         limit,
         skip,
-        newsPermlink: isNewsfeedCategoryType ? newsPermlink : getNewsPermlink(),
+        newsPermlink: isNewsfeedCategoryType ? newsPermlink : getNewsPermlink() || newsPermlink,
       }),
     );
   };
