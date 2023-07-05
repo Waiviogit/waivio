@@ -12,9 +12,10 @@ const SocialMenuItem = ({ item, isOpen }) => {
   const webLink = has(itemBody, 'linkToWeb');
   const linkTarget = webLink ? '_blank' : '_self';
   const isImageButton = ['image', 'icon'].includes(itemBody.style);
+  const isNestedObjType = ['page', 'list', 'newsfeed', 'widget'].includes(itemBody.objectType);
 
   const handleOpenItem = () => {
-    if (isImageButton && !['page', 'list', 'newsfeed', 'widget'].includes(itemBody.objectType)) {
+    if ((isImageButton && !isNestedObjType) || !isNestedObjType) {
       history.push(`/object/product/${itemBody.linkToObject}`);
     } else {
       setOpen(!open);
@@ -62,7 +63,9 @@ const SocialMenuItem = ({ item, isOpen }) => {
         <div className="SocialMenuItems__item-title">
           {isImageButton ? getimagesLayout() : itemBody.title}
         </div>
-        <Icon type={open ? 'minus' : 'plus'} style={{ fontSize: '20px' }} />
+        {(isNestedObjType || webLink) && (
+          <Icon type={open ? 'minus' : 'plus'} style={{ fontSize: '20px' }} />
+        )}
       </div>
       <div className={`SocialMenuItems__content ${open ? 'SocialMenuItems__content--open' : ''}`}>
         {open && <MenuItemContentSwitcher item={item} />}

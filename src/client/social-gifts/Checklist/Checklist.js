@@ -47,6 +47,7 @@ const Checklist = ({
   defaultListImage,
   permlink,
   hideBreadCrumbs,
+  isSocialProduct,
 }) => {
   const [loading, setLoading] = useState(true);
   const [object, setObject] = useState(false);
@@ -64,7 +65,9 @@ const Checklist = ({
     setLoading(true);
     getObject(pathUrl, userName, locale).then(wObject => {
       setObject(wObject);
-      setBreadcrumb(wObject);
+      if (!isSocialProduct) {
+        setBreadcrumb(wObject);
+      }
       setLists(
         sortListItemsBy(
           wObject?.listItems,
@@ -199,6 +202,7 @@ Checklist.propTypes = {
     }),
   }).isRequired,
   setLists: PropTypes.func.isRequired,
+  isSocialProduct: PropTypes.bool,
   setBreadcrumb: PropTypes.func.isRequired,
 };
 

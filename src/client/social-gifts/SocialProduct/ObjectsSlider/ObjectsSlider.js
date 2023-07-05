@@ -22,7 +22,7 @@ const ObjectsSlider = ({ title, objects, name }) => {
     slidesToScroll: !isTabletOrMobile ? slidesToShow : 1,
     swipeToSlide: isTabletOrMobile,
     infinite: false,
-    slidesToShow,
+    slidesToShow: isTabletOrMobile ? 2 : slidesToShow,
   };
 
   const onSlideChange = (curr, next) => {
@@ -36,7 +36,7 @@ const ObjectsSlider = ({ title, objects, name }) => {
         <div className={`Slider__wrapper-${name}`}>
           <Carousel {...carouselSettings} beforeChange={onSlideChange}>
             {objects?.map(wObject => (
-              <ShopObjectCard key={wObject.author_permlink} wObject={wObject} />
+              <ShopObjectCard key={wObject.author_permlink} wObject={wObject} isSocialProduct />
             ))}
           </Carousel>
         </div>

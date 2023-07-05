@@ -4,7 +4,6 @@ import classNames from 'classnames';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { useDispatch } from 'react-redux';
-import { Icon } from 'antd';
 import { getProxyImageURL } from '../../../common/helpers/image';
 import PostFeedEmbed from '../../components/Story/PostFeedEmbed';
 import Avatar from '../../components/Avatar';
@@ -76,17 +75,17 @@ const FeedItem = ({ post, photoQuantity }) => {
         <div className="FeedMasonry__likeWrap">
           {Boolean(post.active_votes.length) && (
             <span className="FeedMasonry__icon">
-              <Icon type="like" /> {post.active_votes.length}
+              <i className="iconfont icon-praise_fill" /> <span>{post.active_votes.length}</span>
             </span>
           )}
           {Boolean(post.children) && (
             <span className="FeedMasonry__icon">
-              <i className="iconfont icon-message_fill" /> {post.children}
+              <i className="iconfont icon-message_fill" /> <span>{post.children}</span>
             </span>
           )}
           {Boolean(post?.reblogged_users?.length) && (
             <span className="FeedMasonry__icon">
-              <i className="iconfont icon-share1" /> {post?.reblogged_users?.length}
+              <i className="iconfont icon-share1" /> <span>{post?.reblogged_users?.length}</span>
             </span>
           )}
         </div>
