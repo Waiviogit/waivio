@@ -3,7 +3,7 @@ import { Carousel, Icon } from 'antd';
 import { useHistory, useRouteMatch } from 'react-router';
 import Lightbox from 'react-image-lightbox';
 import { useSelector } from 'react-redux';
-import { get, isEmpty, map } from 'lodash';
+import { get, indexOf, isEmpty, map } from 'lodash';
 import PropTypes from 'prop-types';
 import './PicturesSlider.less';
 import { getRelatedPhotos, getWobjectGallery } from '../../../../waivioApi/ApiClient';
@@ -12,7 +12,7 @@ import { isMobile } from '../../../../common/helpers/apiHelpers';
 import { getProxyImageURL } from '../../../../common/helpers/image';
 import { getLastPermlinksFromHash } from '../../../../common/helpers/wObjectHelper';
 
-const limit = 100;
+const limit = 30;
 
 const PicturesSlider = ({ hoveredOption, activeOption, activeCategory }) => {
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -73,6 +73,13 @@ const PicturesSlider = ({ hoveredOption, activeOption, activeCategory }) => {
     };
   };
 
+  const onClosePicture = () => {
+    setIsOpen(false);
+    const currIndex = pictures.find(pic => pic.body === currentImage.body);
+
+    setPhotoIndex(indexOf(pictures, currIndex));
+  };
+
   return !isEmpty(pictures) ? (
     <div className={'PicturesSlider'}>
       <div>
@@ -110,9 +117,13 @@ const PicturesSlider = ({ hoveredOption, activeOption, activeCategory }) => {
         <Lightbox
           wrapperClassName="LightboxTools"
           mainSrc={pictures[photoIndex]?.body}
-          nextSrc={pictures[(photoIndex + 1) % pictures.length]?.body}
-          prevSrc={pictures[(photoIndex - 1) % pictures.length]?.body}
-          onCloseRequest={() => setIsOpen(false)}
+          nextSrc={
+            pictures.length <= 1 || photoIndex === pictures.length - 1
+              ? null
+              : pictures[(photoIndex + 1) % pictures.length]?.body
+          }
+          prevSrc={pictures.length <= 1 ? null : pictures[(photoIndex - 1) % pictures.length]?.body}
+          onCloseRequest={onClosePicture}
           onMovePrevRequest={() => setPhotoIndex((photoIndex - 1) % pictures.length)}
           onMoveNextRequest={() => setPhotoIndex((photoIndex + 1) % pictures.length)}
         />
