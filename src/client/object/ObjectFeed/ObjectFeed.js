@@ -74,7 +74,8 @@ const ObjectFeed = ({ limit, handleCreatePost, userName, wobject }) => {
   const getWobjPropos = () => getObjectsRewards(name, userName).then(res => setReward(res));
 
   const getNewsPermlink = () => {
-    if (isEmpty(match.params[1]) || isNil(match.params[1])) return undefined;
+    if ((isEmpty(match.params[1]) || isNil(match.params[1])) && match.params[0] !== 'newsfeed')
+      return undefined;
 
     return newsPermlink;
   };
@@ -104,7 +105,7 @@ const ObjectFeed = ({ limit, handleCreatePost, userName, wobject }) => {
         authorPermlink: parentName || name,
         limit,
         skip,
-        newsPermlink: isNewsfeedCategoryType ? newsPermlink : getNewsPermlink() || newsPermlink,
+        newsPermlink: isNewsfeedCategoryType ? newsPermlink : getNewsPermlink(),
       }),
     );
   };
