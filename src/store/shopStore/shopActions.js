@@ -24,3 +24,14 @@ export const RESET_BREAD_CRUMB = '@shop/RESET_BREAD_CRUMB';
 export const resetBreadCrumb = () => ({
   type: RESET_BREAD_CRUMB,
 });
+export const SET_OPTION_CLICKED = '@shop/SET_OPTION_CLICKED';
+
+export const setOptionClicked = () => ({
+  type: SET_OPTION_CLICKED,
+});
+
+export const RESET_OPTION_CLICKED = '@shop/RESET_OPTION_CLICKED';
+
+export const resetOptionClicked = () => ({
+  type: RESET_OPTION_CLICKED,
+});

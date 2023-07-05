@@ -918,7 +918,6 @@
   "manage": "Управлять",
   "payables": "Задолженность",
   "filter_payable": "Больше {value} HIVE",
-  "filter_days": "Больше {value} дней",
   "filter_moreDays": "Больше {value} дней",
   "filter_otherDays": "Больше {value} дней",
   "filter_payment": "Больше {payment} HIVE",
@@ -2276,5 +2275,8 @@
   "chrome_extension_download_file_button": "Скачать файл",
   "chrome_extension_reinstall_note": "Обратите внимание, что после каждого нашего обновления вам необходимо переустановить расширение или обновить файл и расширение, чтобы использовать самую актуальную версию",
   "chrome_extension_repository": "Оригинальный репозиторий Waivio Chrome расширения",
-  "chrome-extension": "Chrome расширение"
+  "chrome-extension": "Chrome расширение",
+  "manage_your_public_shopping": "Вы можете управлять своим общедоступным списком покупок в профиле.",
+  "not_show_objects_linked": "Не показывать объекты, связанные в сообщениях",
+  "any_campaigns_yet": "У вас пока нет кампаний"
 }

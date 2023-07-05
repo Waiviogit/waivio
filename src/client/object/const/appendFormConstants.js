@@ -290,7 +290,7 @@ export const fieldsRules = {
       validator: true,
     },
   ],
-  [featuresFields.value]: [
+  [featuresFields.featuresValue]: [
     {
       transform: value => value && value.toLowerCase(),
     },
@@ -305,20 +305,20 @@ export const fieldsRules = {
       },
     },
     {
-      max: 100,
+      max: 500,
       message: {
         intlId: {
           id: 'value_error_long',
-          defaultMessage: "Value can't be longer than 100 characters.",
+          defaultMessage: "Value can't be longer than 500 characters.",
         },
-        intlMeta: { value: 100 },
+        intlMeta: { value: 500 },
       },
     },
     {
       validator: true,
     },
   ],
-  [featuresFields.name]: [
+  [featuresFields.featuresName]: [
     {
       transform: value => value && value.toLowerCase(),
     },
@@ -333,13 +333,13 @@ export const fieldsRules = {
       },
     },
     {
-      max: 100,
+      max: 500,
       message: {
         intlId: {
           id: 'value_error_long',
-          defaultMessage: "Value can't be longer than 100 characters.",
+          defaultMessage: "Value can't be longer than 500 characters.",
         },
-        intlMeta: { value: 100 },
+        intlMeta: { value: 500 },
       },
     },
     {

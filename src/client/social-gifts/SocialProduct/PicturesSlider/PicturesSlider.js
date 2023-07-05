@@ -14,24 +14,8 @@ import { getLastPermlinksFromHash } from '../../../../common/helpers/wObjectHelp
 
 const limit = 100;
 
-const carouselSettings = pics => {
-  const limitToShow = isMobile() ? 6 : 8;
-  const slidesToShow = pics.length > limitToShow ? limitToShow : pics.length;
-
-  return {
-    dots: false,
-    arrows: !isMobile(),
-    lazyLoad: true,
-    rows: 1,
-    nextArrow: <Icon type="caret-right" />,
-    prevArrow: <Icon type="caret-left" />,
-    infinite: false,
-    slidesToShow,
-    slidesToScroll: 1,
-  };
-};
-
 const PicturesSlider = ({ hoveredOption, activeOption, activeCategory }) => {
+  const [currentSlide, setCurrentSlide] = useState(0);
   const [currentImage, setCurrentImage] = useState({});
   const [hoveredPic, setHoveredPic] = useState({});
   const [pictures, setPictures] = useState([]);
@@ -53,6 +37,9 @@ const PicturesSlider = ({ hoveredOption, activeOption, activeCategory }) => {
     setCurrentImage(pic);
     setPhotoIndex(pictures.indexOf(pic));
   };
+  const onSlideChange = (curr, next) => {
+    setCurrentSlide(next);
+  };
 
   useEffect(() => {
     getWobjectGallery(authorPermlink, locale).then(async albums => {
@@ -68,6 +55,24 @@ const PicturesSlider = ({ hoveredOption, activeOption, activeCategory }) => {
     });
   }, [authorPermlink]);
 
+  const carouselSettings = pics => {
+    const limitToShow = isMobile() ? 6 : 8;
+    const slidesToShow = pics.length > limitToShow ? limitToShow : pics.length;
+
+    return {
+      dots: false,
+      arrows: !isMobile(),
+      lazyLoad: true,
+      rows: 1,
+      nextArrow: currentSlide >= pics.length - slidesToShow ? <></> : <Icon type="caret-right" />,
+      prevArrow: currentSlide === 0 ? <></> : <Icon type="caret-left" />,
+      infinite: false,
+      slidesToShow,
+      swipeToSlide: isMobile(),
+      slidesToScroll: 1,
+    };
+  };
+
   return !isEmpty(pictures) ? (
     <div className={'PicturesSlider'}>
       <div>
@@ -79,7 +84,7 @@ const PicturesSlider = ({ hoveredOption, activeOption, activeCategory }) => {
         />
       </div>
       <br />
-      <Carousel {...carouselSettings(pictures)}>
+      <Carousel {...carouselSettings(pictures)} beforeChange={onSlideChange}>
         {map(pictures, pic => (
           <div key={pic.id}>
             <img

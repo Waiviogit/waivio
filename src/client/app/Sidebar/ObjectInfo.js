@@ -37,7 +37,7 @@ import MapObjectInfo from '../../components/Maps/MapObjectInfo';
 import ObjectCard from '../../components/Sidebar/ObjectCard';
 import ObjectInfoExperts from './ObjectInfoExperts';
 import LinkButton from '../../components/LinkButton/LinkButton';
-import { getIsWaivio } from '../../../store/appStore/appSelectors';
+import { getIsWaivio, getUsedLocale } from '../../../store/appStore/appSelectors';
 import { getIsAuthenticated } from '../../../store/authStore/authSelectors';
 import { getObjectAlbums, getRelatedPhotos } from '../../../store/galleryStore/gallerySelectors';
 import { getRelatedAlbum } from '../../../store/galleryStore/galleryActions';
@@ -52,7 +52,6 @@ import {
 } from '../../../store/optionsStore/optionsSelectors';
 import { setStoreActiveOption, setStoreGroupId } from '../../../store/optionsStore/optionsActions';
 import { getObjectInfo } from '../../../waivioApi/ApiClient';
-import { getLocale } from '../../../common/helpers/localStorageHelpers';
 import Department from '../../object/Department/Department';
 import AffiliatLink from '../../widgets/AffiliatLinks/AffiliatLink';
 import ObjectFeatures from '../../object/ObjectFeatures/ObjectFeatures';
@@ -67,7 +66,7 @@ import MenuItemButton from './MenuItemButtons/MenuItemButton';
   state => ({
     albums: getObjectAlbums(state),
     isAuthenticated: getIsAuthenticated(state),
-    locale: getLocale(),
+    locale: getUsedLocale(state),
     isWaivio: getIsWaivio(state),
     relatedAlbum: getRelatedPhotos(state),
     activeOption: getActiveOption(state),
@@ -149,6 +148,7 @@ class ObjectInfo extends React.Component {
       brand,
       merchant,
       groupId,
+      menuItem,
     } = this.props.wobject;
 
     if (
@@ -157,7 +157,8 @@ class ObjectInfo extends React.Component {
       authors !== prevProps.wobject.authors ||
       manufacturer !== prevProps.wobject.manufacturer ||
       brand !== prevProps.wobject.brand ||
-      merchant !== prevProps.wobject.merchant
+      merchant !== prevProps.wobject.merchant ||
+      menuItem !== prevProps.wobject.menuItem
     ) {
       this.getPublisherManufacturerBrandMerchantObjects();
     }

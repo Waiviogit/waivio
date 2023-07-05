@@ -20,12 +20,12 @@ const userNav = user => [
   //   link: `/blog`,
   // },
   {
-    name: 'Blog',
-    link: `/blog/${user}`,
-  },
-  {
     name: 'Shop',
     link: `/user-shop/${user}`,
+  },
+  {
+    name: 'Blog',
+    link: `/blog/${user}`,
   },
   {
     name: 'Legal',
@@ -84,10 +84,12 @@ const WebsiteTopNavigation = ({ shopSettings }) => {
               content={
                 <PopoverMenu
                   onSelect={(i, type) => {
-                    if (type === 'blank') window.location.replace(i);
-
-                    setVisible(false);
-                    history.push(i);
+                    if (type === 'blank') {
+                      window.location.replace(i);
+                    } else {
+                      setVisible(false);
+                      history.push(i);
+                    }
                   }}
                 >
                   {lastItems.map(i => (

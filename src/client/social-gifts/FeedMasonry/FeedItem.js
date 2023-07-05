@@ -1,20 +1,19 @@
 import React from 'react';
-import { isEmpty, take } from 'lodash';
+import { isEmpty, take, truncate } from 'lodash';
 import classNames from 'classnames';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { useDispatch } from 'react-redux';
-import { Icon } from 'antd';
 import { getProxyImageURL } from '../../../common/helpers/image';
 import PostFeedEmbed from '../../components/Story/PostFeedEmbed';
 import Avatar from '../../components/Avatar';
-import { getImageForPreview, getVideoForPreview } from '../../../common/helpers/postHelpers';
 import { showPostModal } from '../../../store/appStore/appActions';
 import Payout from '../../components/StoryFooter/Payout';
+import { isMobile } from '../../../common/helpers/apiHelpers';
 
-const FeedItem = ({ post }) => {
-  const imagePath = getImageForPreview(post);
-  const embeds = getVideoForPreview(post);
+const FeedItem = ({ post, photoQuantity }) => {
+  const imagePath = post?.imagePath;
+  const embeds = post?.embeds;
   const lastIndex = imagePath?.length - 1;
   const withoutImage = isEmpty(imagePath);
   const dispatch = useDispatch();
@@ -27,10 +26,11 @@ const FeedItem = ({ post }) => {
     <div className="FeedMasonry__item">
       {isEmpty(embeds) ? (
         <div className="FeedMasonry__imgWrap">
-          {take(imagePath, 3)?.map((image, index) => (
+          {take(imagePath, photoQuantity)?.map((image, index) => (
             <img
               className={classNames('FeedMasonry__img', {
-                'FeedMasonry__img--bottom': lastIndex && (index === 2 || index === lastIndex),
+                'FeedMasonry__img--bottom':
+                  lastIndex && (index === photoQuantity - 1 || index === lastIndex),
                 'FeedMasonry__img--top': lastIndex && !index,
                 'FeedMasonry__img--only': !lastIndex,
               })}
@@ -62,20 +62,33 @@ const FeedItem = ({ post }) => {
       )}
       <div className={'FeedMasonry__postInfo'}>
         <div className="FeedMasonry__title" onClick={handleShowPostModal}>
-          {post?.title}
+          {truncate(post?.title, {
+            length: isMobile() ? 70 : 80,
+            separator: '...',
+          })}
         </div>
         <Link to={`/@${post?.author}`} className="FeedMasonry__authorInfo">
-          <Avatar username={post?.author} size={35} /> {post?.author}
+          <Avatar username={post?.author} size={25} /> {post?.author}
         </Link>
       </div>
       <div className="FeedMasonry__likeWrap">
-        <span className="FeedMasonry__like">
+        <div className="FeedMasonry__likeWrap">
           {Boolean(post.active_votes.length) && (
-            <React.Fragment>
-              <Icon type="like" /> {post.active_votes.length}
-            </React.Fragment>
+            <span className="FeedMasonry__icon">
+              <i className="iconfont icon-praise_fill" /> <span>{post.active_votes.length}</span>
+            </span>
           )}
-        </span>
+          {Boolean(post.children) && (
+            <span className="FeedMasonry__icon">
+              <i className="iconfont icon-message_fill" /> <span>{post.children}</span>
+            </span>
+          )}
+          {Boolean(post?.reblogged_users?.length) && (
+            <span className="FeedMasonry__icon">
+              <i className="iconfont icon-share1" /> <span>{post?.reblogged_users?.length}</span>
+            </span>
+          )}
+        </div>
         <Payout post={post} />
       </div>
     </div>
@@ -88,7 +101,12 @@ FeedItem.propTypes = {
     permlink: PropTypes.string,
     title: PropTypes.string,
     active_votes: PropTypes.arrayOf(),
+    reblogged_users: PropTypes.arrayOf(PropTypes.string),
+    children: PropTypes.number,
+    imagePath: PropTypes.arrayOf(),
+    embeds: PropTypes.arrayOf(),
   }),
+  photoQuantity: PropTypes.number,
 };
 
 export default FeedItem;

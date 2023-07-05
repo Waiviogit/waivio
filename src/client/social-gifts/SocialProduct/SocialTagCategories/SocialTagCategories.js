@@ -14,11 +14,11 @@ const SocialTagCategories = ({ tagCategoriesList, wobject }) => {
     return (
       <span>
         {tagArray.map(item => (
-          <>
+          <div key={item.body}>
             <Tag key={`${category}/${item.body}`} className="SocialProduct__tag-item">
               <Link to={`/discover-objects/${type}?${category}=${item.body}`}>{item.body}</Link>
             </Tag>{' '}
-          </>
+          </div>
         ))}
         {categoryItems.length > 5 && !showMoreCategoryItems && (
           <span

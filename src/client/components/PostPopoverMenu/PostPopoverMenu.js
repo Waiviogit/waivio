@@ -26,10 +26,11 @@ import ids from '../../newRewards/BlackList/constants';
 import { changeBlackAndWhiteLists } from '../../../store/rewardsStore/rewardsActions';
 
 import './PostPopoverMenu.less';
-import { getUsedLocale } from '../../../store/appStore/appSelectors';
+import { getIsSocial, getUsedLocale } from '../../../store/appStore/appSelectors';
 
 const propTypes = {
   pendingFlag: PropTypes.bool,
+  isSocial: PropTypes.bool,
   pendingBookmark: PropTypes.bool,
   saving: PropTypes.bool,
   postState: PropTypes.shape({
@@ -108,6 +109,7 @@ const PostPopoverMenu = ({
   getSocialInfoPost,
   userComments,
   disableRemove,
+  isSocial,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isPin, setIsPin] = useState(false);
@@ -121,7 +123,8 @@ const PostPopoverMenu = ({
   const dispatch = useDispatch();
   const match = useRouteMatch();
   const wobjAuthorPermlink = match.params.name;
-  const hidePinRemove = !match.url.includes(`/${wobjAuthorPermlink}`);
+  const hidePinRemove = !match.url.includes(`/${wobjAuthorPermlink}`) || isSocial;
+
   const { isReported, isSaved } = postState;
   const hasOnlySponsorLike =
     post.active_votes.length === 1 && post.active_votes.some(vote => vote.sponsor);
@@ -140,7 +143,6 @@ const PostPopoverMenu = ({
   let followText = '';
   const postAuthor = (guestInfo && guestInfo.userId) || author;
   const baseURL = typeof window !== 'undefined' ? window.location.origin : 'https://waivio.com';
-
   const handleSelect = key => {
     switch (key) {
       case 'delete':
@@ -498,6 +500,7 @@ export default connect(
   state => ({
     isGuest: isGuestUser(state),
     userName: getAuthenticatedUserName(state),
+    isSocial: getIsSocial(state),
   }),
   {
     getSocialInfoPost: getSocialInfoPostAction,

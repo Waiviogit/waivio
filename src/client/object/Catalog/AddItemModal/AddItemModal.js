@@ -99,7 +99,7 @@ class AddItemModal extends Component {
 
         this.props
           .appendObject(appendData, {
-            votePower: isManualSelected ? votePercent * 100 : null,
+            votePercent: isManualSelected ? votePercent * 100 : null,
             follow: objectValues.follow,
             isLike: values.like,
           })

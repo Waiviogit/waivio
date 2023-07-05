@@ -14,6 +14,7 @@ import LinkButton from '../../../components/LinkButton/LinkButton';
 import { isMobile } from '../../../../common/helpers/apiHelpers';
 import { getProxyImageURL } from '../../../../common/helpers/image';
 import { showDescriptionPage } from '../../../../common/helpers/wObjectHelper';
+import { setOptionClicked } from '../../../../store/shopStore/shopActions';
 
 const OptionItemView = ({
   option,
@@ -101,6 +102,7 @@ const OptionItemView = ({
   };
   const onOptionButtonClick = (e, el) => {
     dispatch(setStoreActiveCategory(el.body.category));
+    dispatch(setOptionClicked());
     setHoveredOption(el);
     dispatch(setStoreActiveOption({ ...activeStoreOption, [el.body.category]: el }));
     if (el.author_permlink !== wobject.author_permlink) {

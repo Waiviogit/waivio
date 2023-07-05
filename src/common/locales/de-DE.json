@@ -903,7 +903,6 @@
   "peyment_oct": "Okt",
   "peyment_nov": "Nov",
   "peyment_dec": "Dez",
-  "filter_days": "Über {value} Tage",
   "filter_moreDays": "Über {value} Tage",
   "filter_otherDays": "Über {value} Tage",
   "filter_payable": "Über {value} HIVE",
@@ -2204,5 +2203,8 @@
   "chrome_extension_download_file_button": "Datei herunterladen",
   "chrome_extension_reinstall_note": "Bitte beachten Sie, dass Sie nach jedem unserer Updates das Erweiterung neu installieren oder die Datei und die Erweiterung aktualisieren müssen, um die aktuellste Version zu verwenden",
   "chrome_extension_repository": "Das ursprüngliche Repository der Waivio Chrome-Erweiterung",
-  "chrome-extension": "Chrome-Erweiterung"
+  "chrome-extension": "Chrome-Erweiterung",
+  "manage_your_public_shopping": "Sie können Ihre öffentliche Einkaufsliste in Ihrem Profil verwalten.",
+  "not_show_objects_linked": "Verknüpfte Objekte nicht in Beiträgen anzeigen",
+  "any_campaigns_yet": "Du hast noch keine Kampagnen"
 }

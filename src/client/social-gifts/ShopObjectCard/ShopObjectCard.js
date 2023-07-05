@@ -17,8 +17,9 @@ import DEFAULTS from '../../object/const/defaultValues';
 import { getRatingForSocial } from '../../components/Sidebar/Rate/rateHelper';
 
 import './ShopObjectCard.less';
+import { isMobile } from '../../../common/helpers/apiHelpers';
 
-const ShopObjectCard = ({ wObject, isChecklist }) => {
+const ShopObjectCard = ({ wObject, isChecklist, isSocialProduct }) => {
   const username = useSelector(getAuthenticatedUserName);
   const [tags, setTags] = useState([]);
   const wobjName = getObjectName(wObject);
@@ -50,9 +51,13 @@ const ShopObjectCard = ({ wObject, isChecklist }) => {
 
       break;
     case 'page':
-      link = isChecklist ? `/checklist/${name}${hash}` : `/object/page/${wObject.author_permlink}`;
-
+    case 'widget':
+    case 'newsfeed':
+      link = isChecklist
+        ? `/checklist/${name}${hash}`
+        : `/object/${wObject.object_type}/${wObject.author_permlink}`;
       break;
+
     default:
       link = wObject.defaultShowLink;
       break;
@@ -87,7 +92,7 @@ const ShopObjectCard = ({ wObject, isChecklist }) => {
       </div>
       <Link to={link} className="ShopObjectCard__name">
         {truncate(wobjName, {
-          length: 110,
+          length: isSocialProduct && isMobile() ? 35 : 110,
           separator: '...',
         })}
       </Link>
@@ -128,6 +133,7 @@ const ShopObjectCard = ({ wObject, isChecklist }) => {
 
 ShopObjectCard.propTypes = {
   isChecklist: PropTypes.bool,
+  isSocialProduct: PropTypes.bool,
   wObject: PropTypes.shape({
     object_type: PropTypes.string,
     avatar: PropTypes.string,
