@@ -17,7 +17,9 @@ import SocialProduct from './SocialProduct/SocialProduct';
 import ObjectDepartmentsWobjList from '../object/ObjectTypeShop/ObjectDepartmentsWobjList';
 import Checklist from './Checklist/Checklist';
 import UserDepartmentsWobjList from '../Shop/DepartmentsWobjList/UserDepartmentsWobjList';
-import FeedMasonry from './FeedMasonry/FeedMasonry';
+import WidgetContent from './WidgetContent/WidgetContent';
+import UserBlogFeed from './FeedMasonry/UserBlogFeed';
+import ObjectNewsFeed from './FeedMasonry/ObjectNewsFeed';
 
 const routes = host => ({
   component: SocialWrapper,
@@ -46,7 +48,7 @@ const routes = host => ({
     {
       path: ['/blog/:name'],
       exact: true,
-      component: FeedMasonry,
+      component: UserBlogFeed,
     },
     {
       path: ['/user-shop/:name/:department?'],
@@ -68,6 +70,11 @@ const routes = host => ({
       component: Checklist,
     },
     {
+      path: ['/object/widget/:name'],
+      exact: true,
+      component: WidgetContent,
+    },
+    {
       path: '/discover-objects/:typeName?',
       exact: true,
       component: DiscoverObjects,
@@ -86,6 +93,16 @@ const routes = host => ({
       path: '/object/page/:name',
       exact: true,
       component: Checklist,
+    },
+    {
+      path: '/object/newsfeed/:name',
+      exact: true,
+      component: ObjectNewsFeed,
+    },
+    {
+      path: '/object/widget/:name',
+      exact: true,
+      component: WidgetContent,
     },
     {
       path: '/confirmation',

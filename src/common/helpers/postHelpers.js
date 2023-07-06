@@ -382,15 +382,10 @@ export const getAuthorName = post =>
 
 export const getImageForPreview = (post, isUpdates = false) => {
   const jsonMetadata = jsonParse(post.json_metadata);
-  const field = get(jsonMetadata, ['wobj', 'field'], {});
   let imagePath = [];
 
   if (!isEmpty(jsonMetadata) && !isEmpty(jsonMetadata.image)) {
     imagePath = jsonMetadata.image;
-  } else if (
-    [objectFields.galleryItem, objectFields.avatar, objectFields.background].includes(field.name)
-  ) {
-    imagePath = [jsonMetadata.wobj.field.body];
   } else {
     const contentImages = getContentImages(post.body);
 
@@ -403,7 +398,7 @@ export const getImageForPreview = (post, isUpdates = false) => {
     if (
       [objectFields.avatar, objectFields.galleryItem, objectFields.background].includes(post.name)
     )
-      imagePath = post.body;
+      imagePath = [post.body];
     if (
       post.name === objectFields.productId &&
       !isEmpty(post.body) &&

@@ -26,9 +26,7 @@ class PostModal extends React.Component {
     shownPostContents: PropTypes.shape(),
     author: PropTypes.shape(),
     isGuest: PropTypes.bool.isRequired,
-    isFeedMasonry: PropTypes.bool.isRequired,
     username: PropTypes.string.isRequired,
-    mainColor: PropTypes.string.isRequired,
     getSocialInfoPost: PropTypes.func,
   };
 
@@ -72,7 +70,7 @@ class PostModal extends React.Component {
 
       document.body.classList.add('post-modal');
     }
-    const { currentShownPost, isFeedMasonry } = this.props;
+    const { currentShownPost } = this.props;
     const { title, author, guestInfo } = currentShownPost;
     const authorName = get(currentShownPost, ['guestInfo', 'userId'], '') || author;
     const permlink = get(currentShownPost, 'permlink', '');
@@ -82,7 +80,7 @@ class PostModal extends React.Component {
     const postURL = isEmpty(guestInfo) ? userPostURL : guestUserPostURL;
     const baseURL = window ? window.location.origin : 'https://waivio.com';
 
-    if (!isFeedMasonry) PostModal.pushURLState(title, `${baseURL}/${postURL}`);
+    PostModal.pushURLState(title, `${baseURL}/${postURL}`);
     if (permlink === rootPermlink) {
       this.props.getSocialInfoPost(authorName, permlink);
     }
@@ -121,7 +119,6 @@ class PostModal extends React.Component {
       shownPostContents,
       isGuest,
       username,
-      mainColor,
     } = this.props;
     const { permlink, title, url } = currentShownPost;
     const { tags, cities, userTwitter, wobjectsTwitter } = shownPostContents;
@@ -156,7 +153,6 @@ class PostModal extends React.Component {
         width={767}
         wrapClassName={classNames('PostModal', { PostModal__hidden: !showPostModal })}
         destroyOnClose
-        style={{ '--website-color': `${mainColor}` }}
       >
         <BBackTop isModal target={PostModal.findScrollElement} />
         <div className="PostModal__back">

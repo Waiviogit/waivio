@@ -37,7 +37,7 @@ import MapObjectInfo from '../../components/Maps/MapObjectInfo';
 import ObjectCard from '../../components/Sidebar/ObjectCard';
 import ObjectInfoExperts from './ObjectInfoExperts';
 import LinkButton from '../../components/LinkButton/LinkButton';
-import { getIsWaivio } from '../../../store/appStore/appSelectors';
+import { getIsWaivio, getUsedLocale } from '../../../store/appStore/appSelectors';
 import { getIsAuthenticated } from '../../../store/authStore/authSelectors';
 import { getObjectAlbums, getRelatedPhotos } from '../../../store/galleryStore/gallerySelectors';
 import { getRelatedAlbum } from '../../../store/galleryStore/galleryActions';
@@ -52,7 +52,6 @@ import {
 } from '../../../store/optionsStore/optionsSelectors';
 import { setStoreActiveOption, setStoreGroupId } from '../../../store/optionsStore/optionsActions';
 import { getObjectInfo } from '../../../waivioApi/ApiClient';
-import { getLocale } from '../../../common/helpers/localStorageHelpers';
 import Department from '../../object/Department/Department';
 import AffiliatLink from '../../widgets/AffiliatLinks/AffiliatLink';
 import ObjectFeatures from '../../object/ObjectFeatures/ObjectFeatures';
@@ -67,7 +66,7 @@ import MenuItemButton from './MenuItemButtons/MenuItemButton';
   state => ({
     albums: getObjectAlbums(state),
     isAuthenticated: getIsAuthenticated(state),
-    locale: getLocale(),
+    locale: getUsedLocale(state),
     isWaivio: getIsWaivio(state),
     relatedAlbum: getRelatedPhotos(state),
     activeOption: getActiveOption(state),
@@ -81,6 +80,7 @@ class ObjectInfo extends React.Component {
     location: PropTypes.shape(),
     activeOption: PropTypes.shape(),
     activeCategory: PropTypes.string,
+    locale: PropTypes.string,
     wobject: PropTypes.shape().isRequired,
     match: PropTypes.shape().isRequired,
     userName: PropTypes.string.isRequired,
@@ -148,6 +148,7 @@ class ObjectInfo extends React.Component {
       brand,
       merchant,
       groupId,
+      menuItem,
     } = this.props.wobject;
 
     if (
@@ -156,7 +157,8 @@ class ObjectInfo extends React.Component {
       authors !== prevProps.wobject.authors ||
       manufacturer !== prevProps.wobject.manufacturer ||
       brand !== prevProps.wobject.brand ||
-      merchant !== prevProps.wobject.merchant
+      merchant !== prevProps.wobject.merchant ||
+      menuItem !== prevProps.wobject.menuItem
     ) {
       this.getPublisherManufacturerBrandMerchantObjects();
     }
@@ -183,7 +185,7 @@ class ObjectInfo extends React.Component {
       const permlink = curr.authorPermlink || curr.author_permlink;
 
       if (permlink && !has(curr, 'name')) {
-        const newObj = await getObjectInfo([permlink]);
+        const newObj = await getObjectInfo([permlink], this.props.locale);
 
         return [...res, newObj.wobjects[0]];
       }
@@ -199,7 +201,7 @@ class ObjectInfo extends React.Component {
       const itemBody = JSON.parse(curr.body);
 
       if (itemBody.linkToObject && !has(itemBody, 'title')) {
-        const newObj = await getObjectInfo([itemBody.linkToObject]);
+        const newObj = await getObjectInfo([itemBody.linkToObject], this.props.locale);
 
         return [
           ...res,
@@ -219,7 +221,7 @@ class ObjectInfo extends React.Component {
       merchant?.authorPermlink,
     ].filter(permlink => permlink);
 
-    getObjectInfo(backObjects).then(res => {
+    getObjectInfo(backObjects, this.props.locale).then(res => {
       const brandObject =
         res.wobjects.find(wobj => wobj.author_permlink === brand?.authorPermlink) || brand;
       const manufacturerObject =

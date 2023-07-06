@@ -15,7 +15,6 @@ import { getPostKey } from '../../../common/helpers/stateHelpers';
 import { findTopComment, getLinkedComment } from '../../../common/helpers/commentHelpers';
 import './Comments.less';
 
-@injectIntl
 class Comments extends React.Component {
   static propTypes = {
     intl: PropTypes.shape().isRequired,
@@ -340,4 +339,4 @@ class Comments extends React.Component {
   }
 }
 
-export default Comments;
+export default injectIntl(Comments);

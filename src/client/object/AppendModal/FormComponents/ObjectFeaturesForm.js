@@ -8,8 +8,8 @@ function ObjectFeaturesForm({ loading, intl, getFieldDecorator, getFieldRules, i
   return (
     <React.Fragment>
       <Form.Item>
-        {getFieldDecorator(featuresFields.name, {
-          rules: getFieldRules(featuresFields.name),
+        {getFieldDecorator(featuresFields.featuresName, {
+          rules: getFieldRules(featuresFields.featuresName),
         })(
           <Input
             autoFocus
@@ -25,8 +25,8 @@ function ObjectFeaturesForm({ loading, intl, getFieldDecorator, getFieldRules, i
         )}
       </Form.Item>
       <Form.Item>
-        {getFieldDecorator(featuresFields.value, {
-          rules: getFieldRules(featuresFields.value),
+        {getFieldDecorator(featuresFields.featuresValue, {
+          rules: getFieldRules(featuresFields.featuresValue),
         })(
           <Input
             className={classNames('AppendForm__input', {

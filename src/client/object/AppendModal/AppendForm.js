@@ -627,10 +627,10 @@ class AppendForm extends Component {
           }: ${getFieldValue(dimensionsFields.unitOfLength)}`;
         case objectFields.features:
           return `@${author} added ${currentField} (${langReadable}): ${
-            featuresFields.name
-          }: ${getFieldValue(featuresFields.name)}, ${featuresFields.value}: ${getFieldValue(
-            featuresFields.value,
-          )}`;
+            featuresFields.featuresName
+          }: ${getFieldValue(featuresFields.featuresName)}, ${
+            featuresFields.featuresValue
+          }: ${getFieldValue(featuresFields.featuresValue)}`;
         case objectFields.pin:
           return `@${author} pinned post: author: ${
             !isEmpty(this.props.post)
@@ -983,8 +983,8 @@ class AppendForm extends Component {
         fieldsObject = {
           ...fieldsObject,
           body: JSON.stringify({
-            key: formValues[featuresFields.name]?.trim(),
-            value: formValues[featuresFields.value]?.trim(),
+            key: formValues[featuresFields.featuresName]?.trim(),
+            value: formValues[featuresFields.featuresValue]?.trim(),
           }),
         };
       }
@@ -1677,25 +1677,6 @@ class AppendForm extends Component {
         ),
       );
     callback();
-  };
-
-  checkLengthHashtags = intl => (rule, values, callback) => {
-    // eslint-disable-next-line no-unused-vars
-    for (const val of values) {
-      if (val.length > 100) {
-        return callback(
-          intl.formatMessage(
-            {
-              id: 'value_error_long',
-              defaultMessage: "Value can't be longer than 100 characters.",
-            },
-            { value: 100 },
-          ),
-        );
-      }
-    }
-
-    return callback();
   };
 
   handleCreateObject = (createdObject, options) => {
@@ -3790,8 +3771,8 @@ class AppendForm extends Component {
         );
       case objectFields.features:
         return (
-          isEmpty(getFieldValue(featuresFields.name)) ||
-          isEmpty(getFieldValue(featuresFields.value))
+          isEmpty(getFieldValue(featuresFields.featuresName)) ||
+          isEmpty(getFieldValue(featuresFields.featuresValue))
         );
       case objectFields.options:
         return (

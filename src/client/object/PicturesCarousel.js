@@ -64,8 +64,12 @@ const PicturesCarousel = ({ activePicture, pics, objName, albums, isSocialProduc
           }
           imageCaption={<LightboxFooter post={pics[photoIndex]} />}
           mainSrc={pics[photoIndex]?.body}
-          nextSrc={pics[(photoIndex + 1) % pics.length]?.body}
-          prevSrc={pics[(photoIndex - 1) % pics.length]?.body}
+          nextSrc={
+            pics.length <= 1 || photoIndex === pics.length - 1
+              ? null
+              : pics[(photoIndex + 1) % pics.length]?.body
+          }
+          prevSrc={pics.length <= 1 ? null : pics[(photoIndex - 1) % pics.length]?.body}
           onCloseRequest={() => setIsOpen(false)}
           onMovePrevRequest={() => setPhotoIndex((photoIndex - 1) % pics.length)}
           onMoveNextRequest={() => setPhotoIndex((photoIndex + 1) % pics.length)}

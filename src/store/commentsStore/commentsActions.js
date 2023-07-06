@@ -20,6 +20,7 @@ import { getCommentsList } from './commentsSelectors';
 import { getLocale } from '../settingsStore/settingsSelectors';
 import { getAppendList } from '../appendStore/appendSelectors';
 import { updateCounter } from '../appendStore/appendActions';
+import { getCurrentShownPost } from '../appStore/appSelectors';
 
 export const GET_SINGLE_COMMENT = createAsyncActionType('@comments/GET_SINGLE_COMMENT');
 
@@ -130,7 +131,8 @@ export const getComments = postId => (dispatch, getState) => {
   const userName = getAuthenticatedUserName(state);
   const listFields = getAppendList(state);
   const matchPost = listFields && listFields.find(field => field.permlink === postId);
-  const content = posts.list[postId] || comments.comments[postId] || matchPost;
+  const currentShownPost = getCurrentShownPost(state);
+  const content = posts.list[postId] || comments.comments[postId] || matchPost || currentShownPost;
   const locale = getLocale(state);
 
   if (content) {

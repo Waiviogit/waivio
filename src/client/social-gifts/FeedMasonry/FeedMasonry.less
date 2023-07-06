@@ -1,13 +1,29 @@
+@import (reference) '../../styles/modules/variables.less';
+
 .FeedMasonry {
   &__item {
     max-width: 300px;
     margin-bottom: 20px;
   }
 
+  &__loading {
+    margin: 50px;
+  }
+
+  &__emptyFeed {
+    text-align: center;
+    padding: 20px 0;
+    color: var(--website-color);
+    border: 1px solid var(--website-color);
+    border-radius: 4px;
+    font-size: 18px;
+    margin: 20px;
+  }
+
   &__img {
     display: inline-block;
     width: 100%;
-    //border-bottom: 1px dotted green;
+    cursor: pointer;
 
     &--bottom {
       border-bottom: none;
@@ -30,22 +46,75 @@
   }
 
   &__title {
-    font-weight: bold;
-    margin-bottom: 5px;
+    margin: 5px 0;
+  }
+
+  &__title,
+  &__authorInfo {
+    font-weight: 500;
+    font-size: 14px;
+    cursor: pointer;
   }
 
   &__authorInfo {
     display: flex;
     align-items: center;
     color: #000000a6;
-    font-weight: 600;
 
     &:hover {
       color: #000000a6;
     }
 
     .Avatar {
-      margin-right: 10px;
+      margin-right: 5px;
+    }
+  }
+
+  &__icon {
+    display: flex;
+    align-items: center;
+    font-weight: bold;
+    margin-right: 5px;
+    font-size: 14px;
+
+    i {
+      margin-right: 2px;
+    }
+
+    span {
+      margin-top: 1px;
+    }
+
+    @media @small {
+      font-size: 16px;
+    }
+  }
+
+  .USDDisplay {
+    font-size: 14px;
+
+    @media @small {
+      font-size: 16px;
+    }
+  }
+
+  .iconfont {
+    font-size: 17px;
+
+    @media @small {
+      font-size: 20px;
+    }
+  }
+
+  .Payout__waiv-eligible {
+    width: 20px;
+    height: 20px;
+    margin-left: 5px;
+
+    @media @small {
+      width: 25px;
+      height: 25px;
+      margin-left: 10px;
     }
   }
 
@@ -98,15 +167,37 @@
     align-items: center;
     justify-content: space-between;
     padding: 5px;
+    color: var(--website-color);
+  }
+
+  .PostFeedEmbed__playButton .iconfont {
+    font-size: 3em;
+  }
+
+  .PostFeedEmbed {
+    margin: 0;
   }
 }
 
 .my-masonry-grid {
   display: flex;
-  padding: 20px;
+  padding: 5px;
   width: auto;
+
+  @media @small {
+    padding: 20px;
+  }
 }
+
 .my-masonry-grid_column {
-  padding-left: 10px; /* gutter size */
+  padding-right: 5px;
   background-clip: padding-box;
+
+  &:last-child {
+    padding-right: 0;
+  }
+
+  @media @small {
+    padding-right: 10px;
+  }
 }

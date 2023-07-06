@@ -58,18 +58,6 @@ export default class ObjectLightbox extends Component {
     if (currentImage) currentImage = getProxyImageURL(currentImage, 'preview');
     else currentImage = DEFAULTS.AVATAR;
 
-    const buttonsNextClass = document.querySelector(
-      '.ril-next-button.ril__navButtons.ril__navButtonNext',
-    );
-    const buttonsPrevClass = document.querySelector(
-      '.ril-prev-button.ril__navButtons.ril__navButtonPrev',
-    );
-
-    if (this.state.open && pics.length <= 1) {
-      buttonsNextClass?.classList.add('display-none-important');
-      buttonsPrevClass?.classList.add('display-none-important');
-    }
-
     return (
       <React.Fragment>
         {accessExtend && !currentImage ? (
@@ -106,8 +94,12 @@ export default class ObjectLightbox extends Component {
                 }
                 imageCaption={<LightboxFooter post={pics[photoIndex]} />}
                 mainSrc={pics[photoIndex]?.body}
-                nextSrc={pics[(photoIndex + 1) % pics.length]?.body}
-                prevSrc={pics[(photoIndex - 1) % pics.length]?.body}
+                nextSrc={
+                  pics.length <= 1 || photoIndex === pics.length - 1
+                    ? null
+                    : pics[(photoIndex + 1) % pics.length]?.body
+                }
+                prevSrc={pics.length <= 1 ? null : pics[(photoIndex - 1) % pics.length]?.body}
                 onMovePrevRequest={() =>
                   this.setState({ photoIndex: (photoIndex - 1) % pics.length })
                 }

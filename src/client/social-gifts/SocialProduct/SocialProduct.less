@@ -34,12 +34,14 @@
   }
 
   &__wobjName {
+    margin-top: 15px;
     color: @black;
     font-weight: 600;
     font-size: 26px;
     word-break: break-word;
     margin-bottom: 15px;
     @media @small {
+      margin-top: 0;
       padding-bottom: 0;
       margin-bottom: 8px;
     }
@@ -143,7 +145,10 @@
     padding: 5px 0;
 
     &:not(:first-child) {
-      margin-left: 20px;
+      margin-left: 4px;
+      @media @small {
+        margin-left: 20px;
+      }
     }
   }
   &__tag-wrapper {
@@ -222,6 +227,24 @@
   }
 
   .ShopObjectCard {
+    .AffiliatLink {
+      width: 100px;
+      padding: 7px 0;
+    }
+
+    .AffiliatLink__icon-amazon {
+      div {
+        width: 100px;
+        padding: 5px 0 0 0;
+      }
+    }
+
+    .AffiliatLink__icon {
+      div {
+        width: 100px;
+        padding: 0;
+      }
+    }
     margin-right: 0;
     @media @small {
       display: flex;
@@ -324,7 +347,8 @@
     }
 
     .slick-slide.slick-active,
-    .slick-slide.slick-active.slick-current {
+    .slick-slide.slick-active.slick-current,
+    .slick-slide {
       margin-top: 0;
       //width: 250px ;
       @media @small {
@@ -332,7 +356,7 @@
       }
     }
     .slick-slide div {
-      width: 100%;
+      width: 98%;
       justify-content: center !important;
       @media @small {
         display: flex !important;
@@ -402,37 +426,16 @@
     margin: 0 0 10px 10px;
     color: @black;
   }
-  //.ant-carousel .slick-dots li button {
-  //  background: @normal-grey;
-  //  opacity: 0.4;
-  //  width: 5px;
-  //  height: 5px;
-  //  border-radius: 100%;
-  //}
-  //.ant-carousel .slick-dots li {
-  //  margin: 0 2px;
-  //}
-  //.ant-carousel .slick-dots li.slick-active button {
-  //  opacity: 1;
-  //  background: @normal-grey;
-  //  width: 5px;
-  //  height: 5px;
-  //  border-radius: 100%;
-  //}
-  ////.ant-carousel .slick-dots li {
-  ////  transform: translateX(var(--translate-dots));
-  ////  transition: transform 0.3s ease-in-out;
-  ////}
-  //
-  //.ant-carousel .slick-dots-bottom {
-  //  display: flex !important;
-  //  flex-wrap: nowrap;
-  //  justify-content: center;
-  //  bottom: 0;
-  //  overflow: hidden;
-  //  max-width: 85px;
-  //  height: 20px;
-  //  position: inherit;
-  //  margin: 0 auto;
-  //}
+  .AffiliatLink__icon-amazon {
+    div {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 0 2px 0;
+    }
+  }
+
+  .Checklist {
+    width: inherit;
+  }
 }

@@ -1,16 +1,23 @@
 import React from 'react';
-import PropsType from 'prop-types';
+import PropTypes from 'prop-types';
+import { injectIntl } from 'react-intl';
 
 import './EmptyFeed.less';
 
-const EmptyCampaing = ({ emptyMessage }) => (
+const EmptyCampaing = ({ emptyMessage, intl }) => (
   <div className="feed_empty">
-    <h3>{emptyMessage || "We don't have any rewards yet"}</h3>
+    <h3>
+      {emptyMessage ||
+        intl.formatMessage({ id: 'empty_rewards_message', defaultMessage: 'There are no rewards' })}
+    </h3>
   </div>
 );
 
 EmptyCampaing.propTypes = {
-  emptyMessage: PropsType.string,
+  emptyMessage: PropTypes.string,
+  intl: PropTypes.shape({
+    formatMessage: PropTypes.func,
+  }).isRequired,
 };
 
-export default EmptyCampaing;
+export default injectIntl(EmptyCampaing);
