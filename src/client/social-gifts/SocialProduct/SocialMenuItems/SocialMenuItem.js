@@ -15,8 +15,10 @@ const SocialMenuItem = ({ item, isOpen }) => {
   const isNestedObjType = ['page', 'list', 'newsfeed', 'widget'].includes(itemBody.objectType);
 
   const handleOpenItem = () => {
-    if ((isImageButton && !isNestedObjType) || !isNestedObjType) {
+    if ((isImageButton && !isNestedObjType && !webLink) || (!isNestedObjType && !webLink)) {
       history.push(`/object/product/${itemBody.linkToObject}`);
+    } else if (webLink) {
+      setOpen(false);
     } else {
       setOpen(!open);
     }
@@ -26,7 +28,7 @@ const SocialMenuItem = ({ item, isOpen }) => {
       case 'icon':
         return webLink ? (
           <div>
-            <a target={linkTarget} href={itemBody.linkToWeb} className="SocialMenuItems__link ">
+            <a target={linkTarget} href={itemBody.linkToWeb} className="SocialMenuItems__link">
               <img src={itemBody.image} className="SocialMenuItems__icon" alt="pic" />
             </a>
             <a target={linkTarget} href={itemBody.linkToWeb} className="SocialMenuItems__link">
@@ -59,14 +61,31 @@ const SocialMenuItem = ({ item, isOpen }) => {
 
   return (
     <div className="SocialMenuItems__container">
-      <div className="SocialMenuItems__item" onClick={handleOpenItem}>
-        <div className="SocialMenuItems__item-title">
-          {isImageButton ? getimagesLayout() : itemBody.title}
+      {webLink ? (
+        <a
+          className="SocialMenuItems__item"
+          rel="noreferrer"
+          target="_blank"
+          href={itemBody.linkToWeb}
+          onClick={handleOpenItem}
+        >
+          <div className="SocialMenuItems__item-title">
+            {isImageButton ? getimagesLayout() : itemBody.title}
+          </div>
+          {(isNestedObjType || !webLink) && (
+            <Icon type={open ? 'minus' : 'plus'} style={{ fontSize: '20px' }} />
+          )}
+        </a>
+      ) : (
+        <div className="SocialMenuItems__item" onClick={handleOpenItem}>
+          <div className="SocialMenuItems__item-title">
+            {isImageButton ? getimagesLayout() : itemBody.title}
+          </div>
+          {(isNestedObjType || !webLink) && (
+            <Icon type={open ? 'minus' : 'plus'} style={{ fontSize: '20px' }} />
+          )}
         </div>
-        {(isNestedObjType || webLink) && (
-          <Icon type={open ? 'minus' : 'plus'} style={{ fontSize: '20px' }} />
-        )}
-      </div>
+      )}
       <div className={`SocialMenuItems__content ${open ? 'SocialMenuItems__content--open' : ''}`}>
         {open && <MenuItemContentSwitcher item={item} />}
       </div>
