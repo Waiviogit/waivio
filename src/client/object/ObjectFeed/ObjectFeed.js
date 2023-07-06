@@ -67,13 +67,18 @@ const ObjectFeed = ({ limit, handleCreatePost, userName, wobject }) => {
           newsPermlink: permlink || getNewsPermlink(),
         }),
       );
+      setNewsPermlink(permlink);
     }
   };
 
   const getWobjPropos = () => getObjectsRewards(name, userName).then(res => setReward(res));
 
   const getNewsPermlink = () => {
-    if (isEmpty(match.params[1]) || isNil(match.params[1])) return undefined;
+    if (
+      (isEmpty(match.params[1]) || isNil(match.params[1])) &&
+      !['newsfeed', 'newsFilter'].includes(match.params[0])
+    )
+      return undefined;
 
     return newsPermlink;
   };
@@ -100,7 +105,7 @@ const ObjectFeed = ({ limit, handleCreatePost, userName, wobject }) => {
     dispatch(
       getMoreObjectPosts({
         username: name,
-        authorPermlink: parentName || name,
+        authorPermlink: isNewsfeedObjectPosts ? parentName : name,
         limit,
         skip,
         newsPermlink: isNewsfeedCategoryType ? newsPermlink : getNewsPermlink(),
