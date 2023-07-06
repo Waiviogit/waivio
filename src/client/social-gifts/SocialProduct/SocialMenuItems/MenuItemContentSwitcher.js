@@ -9,20 +9,6 @@ const MenuItemContentSwitcher = ({ item }) => {
     if (['page', 'list', 'newsfeed', 'widget'].includes(itemBody.objectType)) {
       return <Checklist isSocialProduct permlink={itemBody.linkToObject} hideBreadCrumbs />;
     }
-    if (itemBody.linkToWeb) {
-      return (
-        <div className="SocialMenuItems__webLink">
-          <a
-            rel="noreferrer"
-            target="_blank"
-            href={itemBody.linkToWeb}
-            className="SocialMenuItems__hideLongTitle"
-          >
-            {itemBody.linkToWeb}
-          </a>
-        </div>
-      );
-    }
 
     return null;
   };
