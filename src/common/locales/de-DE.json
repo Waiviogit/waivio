@@ -2206,5 +2206,7 @@
   "chrome-extension": "Chrome-Erweiterung",
   "manage_your_public_shopping": "Sie können Ihre öffentliche Einkaufsliste in Ihrem Profil verwalten.",
   "not_show_objects_linked": "Verknüpfte Objekte nicht in Beiträgen anzeigen",
-  "any_campaigns_yet": "Du hast noch keine Kampagnen"
+  "any_campaigns_yet": "Du hast noch keine Kampagnen",
+  "campaign_stopped": "Die Bedingungen der Belohnungskampagne ${item.name} werden auf der Hive-Blockchain gestoppt",
+  "campaign_published": "Die Bedingungen der Belohnungskampagne ${item.name} werden auf der Hive-Blockchain veröffentlicht"
 }
