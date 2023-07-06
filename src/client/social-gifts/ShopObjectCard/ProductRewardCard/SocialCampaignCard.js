@@ -49,6 +49,8 @@ const SocialCampaignCard = ({
               return Promise.resolve();
             }}
             reserved={proposition.reserved}
+            reservedDays={proposition.countReservationDays}
+            inCard
           />
           {proposition.reserved && (
             <RewardsPopover
