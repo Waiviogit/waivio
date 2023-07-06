@@ -70,6 +70,7 @@ export const PATH_NAME_MESSAGES = '/rewards/messages';
 export const PATH_NAME_HISTORY = '/rewards/history';
 export const PATH_NAME_ACTIVE = '/rewards/eligible';
 export const PATH_NAME_DISCOVER = '/discover';
+export const PATH_NAME_DISCOVER_OBJECTS = '/discover';
 export const PATH_NAME_CREATE = '/rewards/create';
 export const PATH_NAME_MATCH_BOT = '/rewards/match-bot';
 export const PATH_NAME_MANAGE = '/rewards/manage';

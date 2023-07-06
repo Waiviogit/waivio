@@ -55,7 +55,7 @@ const UserBlogFeed = () => {
         columnClassName="my-masonry-grid_column"
       >
         {posts?.map(post => (
-          <FeedItem key={`${post.author}/${post?.permlink}`} photoQuantity={3} post={post} />
+          <FeedItem key={`${post.author}/${post?.permlink}`} photoQuantity={2} post={post} />
         ))}
       </Masonry>
       <PostModal />
