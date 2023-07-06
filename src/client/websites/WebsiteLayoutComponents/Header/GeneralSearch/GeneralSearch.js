@@ -59,16 +59,20 @@ const GeneralSearch = props => {
 
     return (
       <AutoComplete.OptGroup className="Header__itemWrap">
-        {map(options, option => (
-          <AutoComplete.Option
-            marker={'searchSelectBar'}
-            key={option.name}
-            value={option.name}
-            className={classNames({ 'Header__item--active': option.name === 'Types' && type })}
-          >
-            {`${option.name}(${option.count})`}
-          </AutoComplete.Option>
-        ))}
+        {map(options, option => {
+          if (option.name === 'Types') return null;
+
+          return (
+            <AutoComplete.Option
+              marker={'searchSelectBar'}
+              key={option.name}
+              value={option.name}
+              className={classNames({ 'Header__item--active': option.name === 'Types' && type })}
+            >
+              {`${option.name}(${option.count})`}
+            </AutoComplete.Option>
+          );
+        })}
       </AutoComplete.OptGroup>
     );
   };
@@ -119,43 +123,39 @@ const GeneralSearch = props => {
     </AutoComplete.OptGroup>
   );
 
-  const wobjectTypeSearchLayout = objectTypes => (
-    <AutoComplete.OptGroup
-      key="typesTitle"
-      label={props.intl.formatMessage({
-        id: 'wobjectType_search_title',
-        defaultMessage: 'Types',
-      })}
-    >
-      {map(objectTypes, option => (
-        <AutoComplete.Option
-          marker={markers.TYPE}
-          key={option.name}
-          value={option.name}
-          className="Header__item"
-        >
-          <div>{option.name}</div>
-        </AutoComplete.Option>
-      ))}
-    </AutoComplete.OptGroup>
-  );
+  // const wobjectTypeSearchLayout = objectTypes => (
+  //   <AutoComplete.OptGroup
+  //     key="typesTitle"
+  //     label={props.intl.formatMessage({
+  //       id: 'wobjectType_search_title',
+  //       defaultMessage: 'Types',
+  //     })}
+  //   >
+  //     {map(objectTypes, option => (
+  //       <AutoComplete.Option
+  //         marker={markers.TYPE}
+  //         key={option.name}
+  //         value={option.name}
+  //         className="Header__item"
+  //       >
+  //         <div>{option.name}</div>
+  //       </AutoComplete.Option>
+  //     ))}
+  //   </AutoComplete.OptGroup>
+  // );
 
   const prepareOptions = () => {
     const dataSource = [];
 
-    if (!isEmpty(searchResults)) {
-      dataSource.push(searchSelectBar(searchResults));
-    }
+    if (!isEmpty(searchResults)) dataSource.push(searchSelectBar(searchResults));
 
     if (!isEmpty(searchResults.wobjects))
       dataSource.push(wobjectSearchLayout(searchResults.wobjects.slice(0, 5)));
     // if (!isEmpty(searchResults.users)) dataSource.push(usersSearchLayout(searchResults.users));
-    if (!isEmpty(searchResults.objectTypes))
-      dataSource.push(wobjectTypeSearchLayout(searchResults.objectTypes));
+    // if (!isEmpty(searchResults.objectTypes))
+    //   dataSource.push(wobjectTypeSearchLayout(searchResults.objectTypes));
 
-    return type
-      ? [searchSelectBar(searchResults), wobjectTypeSearchLayout(searchResults.objectTypes)]
-      : dataSource;
+    return type ? [searchSelectBar(searchResults)] : dataSource;
   };
 
   const handleSelectOnAutoCompleteDropdown = (value, data) => {
