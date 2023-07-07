@@ -1,18 +1,25 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router';
-
+import { useLocation, useParams } from 'react-router';
+import PropTypes from 'prop-types';
 import BodyContainer from '../../containers/Story/BodyContainer';
 import { getObject } from '../../../waivioApi/ApiClient';
 
 import './PageContent.less';
+import { getLastPermlinksFromHash } from '../../../common/helpers/wObjectHelper';
 
-const PageContent = () => {
+const PageContent = ({ wobj }) => {
   const [content, setContent] = useState('');
   const { name } = useParams();
+  const location = useLocation();
+  const objName = location.hash ? getLastPermlinksFromHash(location.hash) : name;
 
   useEffect(() => {
-    getObject(name).then(res => setContent(res.pageContent));
-  }, [name]);
+    if (wobj) {
+      setContent(wobj.pageContent);
+    } else {
+      getObject(objName).then(res => setContent(res.pageContent));
+    }
+  }, [objName]);
 
   return (
     <div className={'PageContent'}>
@@ -21,4 +28,7 @@ const PageContent = () => {
   );
 };
 
+PageContent.propTypes = {
+  wobj: PropTypes.shape(),
+};
 export default PageContent;

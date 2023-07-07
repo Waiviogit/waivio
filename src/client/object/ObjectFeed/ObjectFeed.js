@@ -39,11 +39,12 @@ const ObjectFeed = ({ limit, handleCreatePost, userName, wobject }) => {
   const hasMore = getFeedHasMoreFromState('objectPosts', name, feed);
   const skip = content.length;
   const query = new URLSearchParams(history.location.search);
-  const isNewsfeedType = query.get('category') === 'newsfeed';
+  const isNewsfeedCategoryType = query.get('category') === 'newsfeed';
+  const isNewsfeedObjectPosts = match.params[0] === 'newsfeed' && parentName;
   let newsPerml;
 
   const getFeedPosts = permlink => {
-    if (isNewsfeedType) {
+    if (isNewsfeedCategoryType) {
       getObject(name).then(res => {
         dispatch(
           getObjectPosts({
@@ -59,20 +60,25 @@ const ObjectFeed = ({ limit, handleCreatePost, userName, wobject }) => {
     } else {
       dispatch(
         getObjectPosts({
-          object: parentName || name,
+          object: isNewsfeedObjectPosts ? parentName : name,
           username: name,
           readLanguages: readLocales,
           limit,
           newsPermlink: permlink || getNewsPermlink(),
         }),
       );
+      setNewsPermlink(permlink);
     }
   };
 
   const getWobjPropos = () => getObjectsRewards(name, userName).then(res => setReward(res));
 
   const getNewsPermlink = () => {
-    if (isEmpty(match.params[1]) || isNil(match.params[1])) return undefined;
+    if (
+      (isEmpty(match.params[1]) || isNil(match.params[1])) &&
+      !['newsfeed', 'newsFilter'].includes(match.params[0])
+    )
+      return undefined;
 
     return newsPermlink;
   };
@@ -80,16 +86,16 @@ const ObjectFeed = ({ limit, handleCreatePost, userName, wobject }) => {
   useEffect(() => {
     if (wobject?.newsFeed && match.params[0] === 'newsfeed') {
       getFeedPosts(wobject?.newsFeed?.permlink);
+    } else if (parentName) {
+      isNewsfeedObjectPosts
+        ? getObject(parentName).then(wobj => {
+            newsPerml = wobj?.newsFeed?.permlink;
+            setNewsPermlink(newsPerml);
+            getFeedPosts(newsPerml);
+          })
+        : getFeedPosts(parentName);
     } else {
       getFeedPosts();
-    }
-
-    if (parentName) {
-      getObject(parentName).then(wobj => {
-        newsPerml = wobj?.newsFeed?.permlink;
-        setNewsPermlink(newsPerml);
-        getFeedPosts(newsPerml);
-      });
     }
     getWobjPropos();
     setLoadingPropositions(false);
@@ -99,13 +105,15 @@ const ObjectFeed = ({ limit, handleCreatePost, userName, wobject }) => {
     dispatch(
       getMoreObjectPosts({
         username: name,
-        authorPermlink: parentName || name,
+        authorPermlink: isNewsfeedObjectPosts ? parentName : name,
         limit,
         skip,
-        newsPermlink: isNewsfeedType ? newsPermlink : getNewsPermlink(),
+        newsPermlink: isNewsfeedCategoryType ? newsPermlink : getNewsPermlink(),
       }),
     );
   };
+
+  const handleShowPostModal = post => dispatch(showPostModal(post));
 
   return (
     <div className="object-feed">
@@ -124,7 +132,7 @@ const ObjectFeed = ({ limit, handleCreatePost, userName, wobject }) => {
               isFetching={isFetching}
               hasMore={hasMore}
               loadMoreContent={loadMoreContentAction}
-              showPostModal={dispatch(showPostModal)}
+              showPostModal={handleShowPostModal}
             />
           ) : (
             <div

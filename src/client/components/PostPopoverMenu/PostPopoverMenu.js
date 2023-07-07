@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { connect, useDispatch } from 'react-redux';
+import { connect, useDispatch, useSelector } from 'react-redux';
 import { Icon, Modal } from 'antd';
 import { FormattedMessage } from 'react-intl';
 import { get, isEmpty, isNil } from 'lodash';
@@ -26,9 +26,11 @@ import ids from '../../newRewards/BlackList/constants';
 import { changeBlackAndWhiteLists } from '../../../store/rewardsStore/rewardsActions';
 
 import './PostPopoverMenu.less';
+import { getIsSocial, getUsedLocale } from '../../../store/appStore/appSelectors';
 
 const propTypes = {
   pendingFlag: PropTypes.bool,
+  isSocial: PropTypes.bool,
   pendingBookmark: PropTypes.bool,
   saving: PropTypes.bool,
   postState: PropTypes.shape({
@@ -107,6 +109,7 @@ const PostPopoverMenu = ({
   getSocialInfoPost,
   userComments,
   disableRemove,
+  isSocial,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isPin, setIsPin] = useState(false);
@@ -115,12 +118,13 @@ const PostPopoverMenu = ({
   const [wobjName, setWobjName] = useState('');
   const [inBlackList, setInBlackList] = useState(post.blacklisted);
   const [loadingType, setLoadingType] = useState('');
-
+  const locale = useSelector(getUsedLocale);
   const history = useHistory();
   const dispatch = useDispatch();
   const match = useRouteMatch();
   const wobjAuthorPermlink = match.params.name;
-  const hidePinRemove = !match.url.includes(`/${wobjAuthorPermlink}`);
+  const hidePinRemove = !match.url.includes(`/${wobjAuthorPermlink}`) || isSocial;
+
   const { isReported, isSaved } = postState;
   const hasOnlySponsorLike =
     post.active_votes.length === 1 && post.active_votes.some(vote => vote.sponsor);
@@ -139,20 +143,23 @@ const PostPopoverMenu = ({
   let followText = '';
   const postAuthor = (guestInfo && guestInfo.userId) || author;
   const baseURL = typeof window !== 'undefined' ? window.location.origin : 'https://waivio.com';
-
   const handleSelect = key => {
     switch (key) {
       case 'delete':
         return setIsOpen(true);
       case 'pin':
         !isNil(wobjAuthorPermlink) &&
-          getObjectInfo([wobjAuthorPermlink]).then(res => setWobjName(res.wobjects[0].name));
+          getObjectInfo([wobjAuthorPermlink], locale).then(res =>
+            setWobjName(res.wobjects[0].name),
+          );
         setIsVisible(false);
 
         return setIsPin(true);
       case 'remove':
         !isNil(wobjAuthorPermlink) &&
-          getObjectInfo([wobjAuthorPermlink]).then(res => setWobjName(res.wobjects[0].name));
+          getObjectInfo([wobjAuthorPermlink], locale).then(res =>
+            setWobjName(res.wobjects[0].name),
+          );
         dispatch(handleRemovePost(post));
         setIsVisible(false);
 
@@ -493,6 +500,7 @@ export default connect(
   state => ({
     isGuest: isGuestUser(state),
     userName: getAuthenticatedUserName(state),
+    isSocial: getIsSocial(state),
   }),
   {
     getSocialInfoPost: getSocialInfoPostAction,

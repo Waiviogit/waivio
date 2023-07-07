@@ -11,6 +11,7 @@ import { getSuitableLanguage } from '../../../store/reducers';
 import {
   createNewHash,
   getLastPermlinksFromHash,
+  getObjectAvatar,
   getObjectName,
 } from '../../../common/helpers/wObjectHelper';
 import { setBreadcrumbForChecklist, setListItems } from '../../../store/wObjectStore/wobjActions';
@@ -23,13 +24,15 @@ import { sortListItemsBy } from '../../object/wObjectHelper';
 import { getObject } from '../../../waivioApi/ApiClient';
 import Breadcrumbs from '../Breadcrumbs/Breadcrumbs';
 import {
-  getConfigurationValues,
   getHelmetIcon,
-  getHostAddress,
+  getSiteName,
   getWebsiteDefaultIconList,
 } from '../../../store/appStore/appSelectors';
 import { getProxyImageURL } from '../../../common/helpers/image';
-
+import PageContent from '../PageContent/PageContent';
+import SocialProduct from '../SocialProduct/SocialProduct';
+import WidgetContent from '../WidgetContent/WidgetContent';
+import ObjectNewsFeed from '../FeedMasonry/ObjectNewsFeed';
 import './Checklist.less';
 
 const Checklist = ({
@@ -42,25 +45,29 @@ const Checklist = ({
   match,
   setBreadcrumb,
   defaultListImage,
+  permlink,
+  hideBreadCrumbs,
+  isSocialProduct,
 }) => {
   const [loading, setLoading] = useState(true);
   const [object, setObject] = useState(false);
   const favicon = useSelector(getHelmetIcon);
-  const config = useSelector(getConfigurationValues);
-  const currHost = useSelector(getHostAddress);
-  const header = config?.header?.name;
-  const title = header || config.host || currHost;
-  const desc = title;
-  const image = favicon;
+  const siteName = useSelector(getSiteName);
+  const title = getObjectName(object);
+  const desc = object?.description;
+  const image = getObjectAvatar(object);
   const canonicalUrl = typeof location !== 'undefined' && location?.origin;
 
   useEffect(() => {
-    const pathUrl = getLastPermlinksFromHash(history.location.hash) || match.params.name;
+    const pathUrl =
+      permlink || getLastPermlinksFromHash(history.location.hash) || match.params.name;
 
     setLoading(true);
     getObject(pathUrl, userName, locale).then(wObject => {
       setObject(wObject);
-      setBreadcrumb(wObject);
+      if (!isSocialProduct) {
+        setBreadcrumb(wObject);
+      }
       setLists(
         sortListItemsBy(
           wObject?.listItems,
@@ -92,7 +99,7 @@ const Checklist = ({
                 backgroundImage: `url(${avatar})`,
               }}
             >
-              {!avatar && !defaultListImage && <Icon type="shopping" />}
+              {!listItem?.avatar && !defaultListImage && <Icon type="shopping" />}
             </div>
             <span className="Checklist__itemsTitle">
               {getObjectName(listItem)}
@@ -105,10 +112,15 @@ const Checklist = ({
       );
     }
 
-    return <ShopObjectCard wObject={listItem} />;
+    return <ShopObjectCard isChecklist wObject={listItem} />;
   };
 
   const getMenuList = () => {
+    if (object.object_type === 'page') return <PageContent wobj={object} />;
+    if (object.object_type === 'widget') return <WidgetContent wobj={object} />;
+    if (object.object_type === 'newsfeed') return <ObjectNewsFeed wobj={object} />;
+    if (['product', 'book'].includes(object.object_type)) return <SocialProduct />;
+
     if (isEmpty(listItems)) {
       return (
         <div className={'Checklist__empty'}>
@@ -156,12 +168,12 @@ const Checklist = ({
         <meta property="og:image:width" content="600" />
         <meta property="og:image:height" content="600" />
         <meta property="og:description" content={desc} />
-        <meta property="og:site_name" content="Waivio" />
+        <meta property="og:site_name" content={siteName} />
         <link rel="image_src" href={image} />
         <link id="favicon" rel="icon" href={favicon} type="image/x-icon" />
       </Helmet>
-      <Breadcrumbs />
-      {object.background && !loading && (
+      {!hideBreadCrumbs && <Breadcrumbs />}
+      {object.object_type === 'list' && object.background && !loading && (
         <div className="Checklist__banner">
           <img src={object.background} alt={''} />
         </div>
@@ -179,6 +191,8 @@ Checklist.propTypes = {
   }).isRequired,
   userName: PropTypes.string.isRequired,
   defaultListImage: PropTypes.string,
+  permlink: PropTypes.string,
+  hideBreadCrumbs: PropTypes.bool,
   locale: PropTypes.string.isRequired,
   listItems: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   intl: PropTypes.arrayOf(PropTypes.shape({ formatMessage: PropTypes.func })).isRequired,
@@ -188,6 +202,7 @@ Checklist.propTypes = {
     }),
   }).isRequired,
   setLists: PropTypes.func.isRequired,
+  isSocialProduct: PropTypes.bool,
   setBreadcrumb: PropTypes.func.isRequired,
 };
 

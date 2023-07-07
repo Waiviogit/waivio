@@ -1,0 +1,60 @@
+@import (reference) '../../../styles/custom.less';
+@import (reference) '../../../styles/modules/variables.less';
+
+.PicturesSlider {
+  //display: flex;
+  //justify-content: center;
+  &__previewImage {
+    object-fit: contain;
+    width: 350px;
+    height: 350px;
+    cursor: pointer;
+    @media @small {
+      width: 500px;
+      height: 500px;
+    }
+  }
+  &__thumbnail {
+    object-fit: contain;
+    width: 50px;
+    height: 50px;
+    border: 1px solid @silver-gray;
+    border-radius: 4px;
+    &:hover,
+    &-active {
+      object-fit: contain;
+      width: 50px;
+      height: 50px;
+      border: 1px solid var(--website-color);
+      border-radius: 4px;
+    }
+  }
+  .ant-carousel {
+    width: 345px;
+    margin: auto;
+    @media @small {
+      width: 457px;
+    }
+  }
+  .slick-track {
+    justify-content: center !important;
+  }
+  .slick-slide.slick-active {
+    width: 58px !important;
+    cursor: pointer;
+  }
+  .slick-prev,
+  .slick-next {
+    display: none;
+    @media @small {
+      font-size: 20px !important;
+      display: inline-block;
+      z-index: 1200;
+      color: @silver-gray !important;
+    }
+  }
+  .slick-arrow.slick-next.slick-disabled,
+  .slick-arrow.slick-prev.slick-disabled {
+    //display: none !important;
+  }
+}

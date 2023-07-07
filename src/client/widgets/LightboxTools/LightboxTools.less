@@ -2,6 +2,14 @@
 @import (reference) '../../styles/custom.less';
 
 .LightboxTools {
+  .ril-image-current.ril__image {
+    background-color: @white !important;
+  }
+  .ril-image-current.ril__image.ril-errored,
+  .ril-loadingContainer,
+  .ril-image-current.ril__image.ril-not-loaded {
+    background-color: transparent !important;
+  }
   .ril-toolbar.ril__toolbar {
     display: flex !important;
     justify-content: normal !important;
@@ -22,6 +30,12 @@
     display: flex;
     width: 100%;
     justify-content: space-between;
+  }
+  &__guestContainer {
+    font-size: 16px;
+    display: flex;
+    width: 100%;
+    justify-content: flex-end;
   }
   &__albumInfo,
   select {

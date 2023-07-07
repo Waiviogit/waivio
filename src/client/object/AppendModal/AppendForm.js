@@ -627,10 +627,10 @@ class AppendForm extends Component {
           }: ${getFieldValue(dimensionsFields.unitOfLength)}`;
         case objectFields.features:
           return `@${author} added ${currentField} (${langReadable}): ${
-            featuresFields.name
-          }: ${getFieldValue(featuresFields.name)}, ${featuresFields.value}: ${getFieldValue(
-            featuresFields.value,
-          )}`;
+            featuresFields.featuresName
+          }: ${getFieldValue(featuresFields.featuresName)}, ${
+            featuresFields.featuresValue
+          }: ${getFieldValue(featuresFields.featuresValue)}`;
         case objectFields.pin:
           return `@${author} pinned post: author: ${
             !isEmpty(this.props.post)
@@ -983,8 +983,8 @@ class AppendForm extends Component {
         fieldsObject = {
           ...fieldsObject,
           body: JSON.stringify({
-            key: formValues[featuresFields.name]?.trim(),
-            value: formValues[featuresFields.value]?.trim(),
+            key: formValues[featuresFields.featuresName]?.trim(),
+            value: formValues[featuresFields.featuresValue]?.trim(),
           }),
         };
       }
@@ -1677,25 +1677,6 @@ class AppendForm extends Component {
         ),
       );
     callback();
-  };
-
-  checkLengthHashtags = intl => (rule, values, callback) => {
-    // eslint-disable-next-line no-unused-vars
-    for (const val of values) {
-      if (val.length > 100) {
-        return callback(
-          intl.formatMessage(
-            {
-              id: 'value_error_long',
-              defaultMessage: "Value can't be longer than 100 characters.",
-            },
-            { value: 100 },
-          ),
-        );
-      }
-    }
-
-    return callback();
   };
 
   handleCreateObject = (createdObject, options) => {
@@ -2854,8 +2835,11 @@ class AppendForm extends Component {
               )}
             </Form.Item>
             <p>
-              Some product ID types are recognized globally, such as UPC, EAN, ISBN, GTIN-8. But
-              manufactures can use their own systems for naming products.
+              {intl.formatMessage({
+                id: 'product_id_type_text',
+                defaultMessage:
+                  'Some product ID types are recognized globally, such as UPC, EAN, ISBN, GTIN-8. But manufactures can use their own systems for naming products.',
+              })}
             </p>
             <br />
             <Form.Item>
@@ -2875,8 +2859,11 @@ class AppendForm extends Component {
               )}
             </Form.Item>
             <p>
-              Product identifiers are often alphanumeric, but there are no limitations on this text
-              field.
+              {intl.formatMessage({
+                id: 'product_id_text',
+                defaultMessage:
+                  'Product identifiers are often alphanumeric, but there are no limitations on this text field.',
+              })}
             </p>
             <br />
             <div className="image-wrapper">
@@ -2893,7 +2880,13 @@ class AppendForm extends Component {
                 )}
               </Form.Item>
             </div>
-            <p>Visual representation of the product ID, such as a bar code, label, QR code, etc.</p>
+            <p>
+              {intl.formatMessage({
+                id: 'product_id_image_text',
+                defaultMessage:
+                  'Visual representation of the product ID, such as a bar code, label, QR code, etc.',
+              })}
+            </p>
           </React.Fragment>
         );
       }
@@ -3778,8 +3771,8 @@ class AppendForm extends Component {
         );
       case objectFields.features:
         return (
-          isEmpty(getFieldValue(featuresFields.name)) ||
-          isEmpty(getFieldValue(featuresFields.value))
+          isEmpty(getFieldValue(featuresFields.featuresName)) ||
+          isEmpty(getFieldValue(featuresFields.featuresValue))
         );
       case objectFields.options:
         return (

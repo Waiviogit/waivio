@@ -71,7 +71,7 @@ const Wobj = ({
   const desc = `${objectName}. ${rank} ${parseAddress(wobject) || ''} ${wobject.description ||
     ''} ${tagCategories}`;
   const formsList = get(wobject, 'form', []);
-  const currentForm = formsList?.find(item => item?.permlink === match.params.itemId) || {};
+  const currentForm = formsList?.find(item => item?.permlink === match.params.parentName) || {};
   const currentWobject = history.location.hash ? nestedWobject : wobject;
   const widgetForm = currentWobject?.widget && JSON.parse(currentWobject?.widget);
   const isWidgetPage = isNil(match.params[0]) && match.params[1] === 'widget';

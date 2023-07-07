@@ -8,7 +8,6 @@ import RewardsMainPage from '../../client/newRewards/RewardsMainPage';
 import createNestedRouts from '../../routes/helper';
 import SocialWrapper from './Wrapper';
 import Shop from '../Shop/Shop';
-import DiscoverObjects from '../discoverObjects/DiscoverObjects';
 import Discover from '../discover/Discover';
 import { listOfSocialWebsites } from './listOfSocialWebsites';
 import SocialGiftsLandingPage from '../SocialGiftsLandingPage/SocialGiftsLandingPage';
@@ -17,7 +16,10 @@ import SocialProduct from './SocialProduct/SocialProduct';
 import ObjectDepartmentsWobjList from '../object/ObjectTypeShop/ObjectDepartmentsWobjList';
 import Checklist from './Checklist/Checklist';
 import UserDepartmentsWobjList from '../Shop/DepartmentsWobjList/UserDepartmentsWobjList';
-import PageContent from './PageContent/PageContent';
+import WidgetContent from './WidgetContent/WidgetContent';
+import UserBlogFeed from './FeedMasonry/UserBlogFeed';
+import ObjectNewsFeed from './FeedMasonry/ObjectNewsFeed';
+import NewDiscover from './NewDiscover/NewDiscover';
 
 const routes = host => ({
   component: SocialWrapper,
@@ -44,6 +46,11 @@ const routes = host => ({
       ],
     },
     {
+      path: ['/blog/:name'],
+      exact: true,
+      component: UserBlogFeed,
+    },
+    {
       path: ['/user-shop/:name/:department?'],
       exact: true,
       component: Shop,
@@ -63,9 +70,19 @@ const routes = host => ({
       component: Checklist,
     },
     {
-      path: '/discover-objects/:typeName?',
+      path: ['/object/widget/:name'],
       exact: true,
-      component: DiscoverObjects,
+      component: WidgetContent,
+    },
+    // {
+    //   path: '/discover-objects/:typeName?',
+    //   exact: true,
+    //   component: DiscoverObjects,
+    // },
+    {
+      path: '/discover-objects/:type?',
+      exact: true,
+      component: NewDiscover,
     },
     {
       path: '/discover/:search?',
@@ -80,7 +97,17 @@ const routes = host => ({
     {
       path: '/object/page/:name',
       exact: true,
-      component: PageContent,
+      component: Checklist,
+    },
+    {
+      path: '/object/newsfeed/:name',
+      exact: true,
+      component: ObjectNewsFeed,
+    },
+    {
+      path: '/object/widget/:name',
+      exact: true,
+      component: WidgetContent,
     },
     {
       path: '/confirmation',
@@ -217,7 +244,7 @@ const routes = host => ({
       pathScope: '/object/:name',
       routes: [
         {
-          path: ['', '/newsFilter/:parentName/:itemId?', '/reviews/:itemId'],
+          path: ['', '/newsFilter/:parentName/:itemId?', '/reviews/:itemId', '/(reviews)'],
           exact: true,
           component: Views.ObjectPageFeed,
         },

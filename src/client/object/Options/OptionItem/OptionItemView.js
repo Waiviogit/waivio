@@ -12,6 +12,8 @@ import {
 import { getActiveOption } from '../../../../store/optionsStore/optionsSelectors';
 import LinkButton from '../../../components/LinkButton/LinkButton';
 import { isMobile } from '../../../../common/helpers/apiHelpers';
+import { getProxyImageURL } from '../../../../common/helpers/image';
+import { setOptionClicked } from '../../../../store/shopStore/shopActions';
 
 const OptionItemView = ({
   option,
@@ -95,6 +97,7 @@ const OptionItemView = ({
   };
   const onOptionButtonClick = (e, el) => {
     dispatch(setStoreActiveCategory(el.body.category));
+    dispatch(setOptionClicked());
     setHoveredOption(el);
     dispatch(setStoreActiveOption({ ...activeStoreOption, [el.body.category]: el }));
     if (el.author_permlink !== wobject.author_permlink) {
@@ -110,7 +113,8 @@ const OptionItemView = ({
     }
   };
 
-  const getOptions = optionsList => optionsList?.slice(0, optionsLimit);
+  const getOptions = optionsList =>
+    isSocialObject ? optionsList : optionsList?.slice(0, optionsLimit);
 
   return (
     <div key={option[0]}>
@@ -132,7 +136,7 @@ const OptionItemView = ({
                 onMouseOut={onMouseOut}
                 onClick={e => onOptionButtonClick(e, el)}
                 className={getOptionsPicturesClassName(el)}
-                src={el.body.image}
+                src={getProxyImageURL(el.body.image)}
                 alt="option"
                 key={el.permlink}
               />
@@ -151,7 +155,7 @@ const OptionItemView = ({
           </span>
         ))}
       </>
-      {option[1]?.length > optionsLimit && (
+      {option[1]?.length > optionsLimit && !isSocialObject && (
         <div className="object-sidebar__menu-item">
           <LinkButton className="LinkButton menu-button mt2" to={linkToOption}>
             <div>

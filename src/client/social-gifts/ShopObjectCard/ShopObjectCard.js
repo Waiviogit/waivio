@@ -4,6 +4,8 @@ import { get, isEmpty, truncate, uniq } from 'lodash';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { Link } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router';
+
 import RatingsWrap from '../../objectCard/RatingsWrap/RatingsWrap';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 import { getObjectName } from '../../../common/helpers/wObjectHelper';
@@ -15,11 +17,14 @@ import DEFAULTS from '../../object/const/defaultValues';
 import { getRatingForSocial } from '../../components/Sidebar/Rate/rateHelper';
 
 import './ShopObjectCard.less';
+import { isMobile } from '../../../common/helpers/apiHelpers';
 
-const ShopObjectCard = ({ wObject }) => {
+const ShopObjectCard = ({ wObject, isChecklist, isSocialProduct }) => {
   const username = useSelector(getAuthenticatedUserName);
   const [tags, setTags] = useState([]);
   const wobjName = getObjectName(wObject);
+  const { name } = useParams();
+  const location = useLocation();
   const withRewards = !isEmpty(wObject.propositions);
   const proposition = withRewards ? wObject.propositions[0] : null;
   const shopObjectCardClassList = classNames('ShopObjectCard', {
@@ -33,15 +38,26 @@ const ShopObjectCard = ({ wObject }) => {
   }, [wObject.author_permlink]);
 
   let link;
+  const hash = location?.hash
+    ? `${location?.hash}/${wObject.author_permlink}`
+    : `#${wObject.author_permlink}`;
 
   switch (wObject.object_type) {
     case 'product':
     case 'book':
-      link = `/object/product/${wObject.author_permlink}`;
+      link = isChecklist
+        ? `/checklist/${name}${hash}`
+        : `/object/product/${wObject.author_permlink}`;
+
       break;
     case 'page':
-      link = `/object/page/${wObject.author_permlink}`;
+    case 'widget':
+    case 'newsfeed':
+      link = isChecklist
+        ? `/checklist/${name}${hash}`
+        : `/object/${wObject.object_type}/${wObject.author_permlink}`;
       break;
+
     default:
       link = wObject.defaultShowLink;
       break;
@@ -53,6 +69,7 @@ const ShopObjectCard = ({ wObject }) => {
   if (url) url = getProxyImageURL(url, 'preview');
   else url = DEFAULTS.AVATAR;
   const rating = getRatingForSocial(wObject.rating);
+  const withoutHeard = ['page'].includes(wObject?.object_type);
 
   return (
     <div className={shopObjectCardClassList}>
@@ -63,7 +80,7 @@ const ShopObjectCard = ({ wObject }) => {
         </h3>
       )}
       <div className="ShopObjectCard__topInfoWrap">
-        <HeartButton wobject={wObject} size={'20px'} />
+        {!withoutHeard && <HeartButton wobject={wObject} size={'20px'} />}
         <Link to={link} className="ShopObjectCard__avatarWrap">
           <div
             className="ShopObjectCard__avatarWrap"
@@ -75,7 +92,7 @@ const ShopObjectCard = ({ wObject }) => {
       </div>
       <Link to={link} className="ShopObjectCard__name">
         {truncate(wobjName, {
-          length: 110,
+          length: isSocialProduct && isMobile() ? 35 : 110,
           separator: '...',
         })}
       </Link>
@@ -115,6 +132,8 @@ const ShopObjectCard = ({ wObject }) => {
 };
 
 ShopObjectCard.propTypes = {
+  isChecklist: PropTypes.bool,
+  isSocialProduct: PropTypes.bool,
   wObject: PropTypes.shape({
     object_type: PropTypes.string,
     avatar: PropTypes.string,

@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import Lightbox from 'react-image-lightbox';
 import { Link, withRouter } from 'react-router-dom';
 import { Icon } from 'antd';
-import { get } from 'lodash';
+import { get, isEmpty } from 'lodash';
 import ObjectAvatar from './ObjectAvatar';
 import AppendModal from '../object/AppendModal/AppendModal';
 import { objectFields } from '../../common/constants/listOfFields';
@@ -82,7 +82,7 @@ export default class ObjectLightbox extends Component {
             <a role="presentation" onClick={this.handleAvatarClick}>
               <ObjectAvatar item={wobject} size={size} />
             </a>
-            {this.state.open && (
+            {this.state.open && !isEmpty(pics) && (
               <Lightbox
                 wrapperClassName="LightboxTools"
                 imageTitle={
@@ -94,8 +94,12 @@ export default class ObjectLightbox extends Component {
                 }
                 imageCaption={<LightboxFooter post={pics[photoIndex]} />}
                 mainSrc={pics[photoIndex]?.body}
-                nextSrc={pics[(photoIndex + 1) % pics.length]?.body}
-                prevSrc={pics[(photoIndex - 1) % pics.length]?.body}
+                nextSrc={
+                  pics.length <= 1 || photoIndex === pics.length - 1
+                    ? null
+                    : pics[(photoIndex + 1) % pics.length]?.body
+                }
+                prevSrc={pics.length <= 1 ? null : pics[(photoIndex - 1) % pics.length]?.body}
                 onMovePrevRequest={() =>
                   this.setState({ photoIndex: (photoIndex - 1) % pics.length })
                 }

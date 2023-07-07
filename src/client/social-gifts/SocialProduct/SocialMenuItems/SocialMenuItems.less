@@ -1,0 +1,71 @@
+@import (reference) '../../../styles/custom.less';
+@import (reference) '../../../styles/modules/variables.less';
+
+.SocialMenuItems {
+  margin-bottom: 20px;
+  border-bottom: 1px solid @silver-gray;
+  &__container {
+  }
+  &__item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 0;
+    border-top: 1px solid @silver-gray;
+    cursor: pointer;
+  }
+  &__content {
+    opacity: 0;
+    height: 0;
+    overflow: hidden;
+    transition: opacity 0.3s ease, height 0.3s ease;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0;
+    width: 100%;
+    &--open {
+      opacity: 1;
+      height: auto;
+      //padding: 20px;
+    }
+  }
+
+  &__item-title {
+    font-weight: 600;
+    font-size: 18px;
+    color: @black;
+  }
+  &__webLink {
+    color: var(--website-color);
+    padding: 20px 0;
+  }
+  &__icon {
+    width: 55px;
+    height: 43px;
+    border: 1px solid @white-gainsboro;
+    border-radius: 4px;
+    margin-right: 10px;
+    object-fit: contain;
+    &:hover {
+      cursor: pointer;
+      border-color: var(--website-color);
+    }
+  }
+  &__image {
+    width: 180px;
+    height: 112px;
+    border-radius: 4px;
+    object-fit: contain;
+    &:hover {
+      cursor: pointer;
+      border-color: var(--website-color);
+    }
+  }
+  &__link {
+    color: @black;
+    &:hover {
+      color: @black;
+    }
+  }
+}

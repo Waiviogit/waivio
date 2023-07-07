@@ -1,14 +1,17 @@
 import {
   RESET_BREAD_CRUMB,
+  RESET_OPTION_CLICKED,
   SET_BREAD_ACTIVE_CRUMB,
   SET_BREAD_CRUMB,
   SET_EXCLUDED,
+  SET_OPTION_CLICKED,
 } from './shopActions';
 
 const initialState = {
   crumbs: [],
   activeCrumb: null,
   exclude: [],
+  isOptionClicked: false,
 };
 
 export default function shopReducer(state = initialState, action) {
@@ -39,6 +42,16 @@ export default function shopReducer(state = initialState, action) {
       return {
         ...state,
         excluded: action.excluded,
+      };
+    case SET_OPTION_CLICKED:
+      return {
+        ...state,
+        isOptionClicked: true,
+      };
+    case RESET_OPTION_CLICKED:
+      return {
+        ...state,
+        isOptionClicked: false,
       };
 
     default:

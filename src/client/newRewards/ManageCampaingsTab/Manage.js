@@ -4,6 +4,7 @@ import { Checkbox, message, Modal } from 'antd';
 import { Link } from 'react-router-dom';
 import { isEmpty, round } from 'lodash';
 import PropTypes from 'prop-types';
+import { injectIntl } from 'react-intl';
 
 import { manageTableHeaderConfig } from '../constants/manageTableConfig';
 import {
@@ -96,10 +97,24 @@ export const Manage = ({ intl, guideName, setHistoryLoading }) => {
 
   const showConfirm = item => {
     const isActive = campaingIsActive(item.status);
-    const title = isActive ? 'Deactivate rewards campaign' : 'Activate rewards campaign';
+    const title = isActive
+      ? intl.formatMessage({
+          id: 'deactivate_campaign',
+          defaultMessage: 'Deactivate rewards campaign',
+        })
+      : intl.formatMessage({
+          id: 'activate_campaign',
+          defaultMessage: 'Activate rewards campaign',
+        });
     const content = isActive
-      ? `The terms and conditions of the rewards campaign ${item.name} will be stopped on Hive blockchain`
-      : `The terms and conditions of the rewards campaign ${item.name} will be published on Hive blockchain`;
+      ? intl.formatMessage({
+          id: 'campaign_stopped',
+          defaultMessage: `The terms and conditions of the rewards campaign ${item.name} will be stopped on Hive blockchain`,
+        })
+      : intl.formatMessage({
+          id: 'campaign_published',
+          defaultMessage: `The terms and conditions of the rewards campaign ${item.name} will be published on Hive blockchain`,
+        });
 
     Modal.confirm({
       title,
@@ -112,7 +127,12 @@ export const Manage = ({ intl, guideName, setHistoryLoading }) => {
 
   return (
     <div>
-      <h2>Active and pending campaigns</h2>
+      <h2>
+        {intl.formatMessage({
+          id: 'manage_page_active_and_pending_campaign',
+          defaultMessage: 'Active and pending campaigns',
+        })}
+      </h2>
       <table className="DynamicTable">
         <thead>
           {manageTableHeaderConfig?.map(tr => (
@@ -169,11 +189,26 @@ export const Manage = ({ intl, guideName, setHistoryLoading }) => {
           ))
         ) : (
           <tr>
-            <td colSpan={9}>{loading ? <Loading /> : "You don't have any campaigns yet"}</td>
+            <td colSpan={9}>
+              {loading ? (
+                <Loading />
+              ) : (
+                intl.formatMessage({
+                  id: 'any_campaigns_yet',
+                  defaultMessage: "You don't have any campaigns yet",
+                })
+              )}
+            </td>
           </tr>
         )}
       </table>
-      <p>** Only pending campaigns can be edited</p>
+      <p>
+        **{' '}
+        {intl.formatMessage({
+          id: 'only_pending_campaigns',
+          defaultMessage: 'Only pending campaigns can be edited',
+        })}
+      </p>
     </div>
   );
 };
@@ -186,4 +221,4 @@ Manage.propTypes = {
   setHistoryLoading: PropTypes.func.isRequired,
 };
 
-export default Manage;
+export default injectIntl(Manage);

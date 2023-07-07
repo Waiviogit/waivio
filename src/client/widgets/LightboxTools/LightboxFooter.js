@@ -8,7 +8,11 @@ import ApprovingCard from '../../object/AppendCard/ApprovingCard';
 import AppendObjButtons from '../../components/StoryFooter/AppendObjButtons';
 import { getVotePercent } from '../../../store/settingsStore/settingsSelectors';
 import { getAppendDownvotes, getAppendUpvotes } from '../../../common/helpers/voteHelpers';
-import { getAuthenticatedUser } from '../../../store/authStore/authSelectors';
+import {
+  getAuthenticatedUser,
+  getIsAuthenticated,
+  isGuestUser,
+} from '../../../store/authStore/authSelectors';
 import { voteAppends } from '../../../store/appendStore/appendActions';
 import { getAppendList } from '../../../store/appendStore/appendSelectors';
 import { isMobile } from '../../../common/helpers/apiHelpers';
@@ -18,7 +22,8 @@ const LightboxFooter = ({ post }) => {
   const [reactionsModalVisible, showReactionModal] = useState(false);
   const [currentPost, setCurrentPost] = useState(post);
   const updatesList = useSelector(getAppendList);
-
+  const isGuest = useSelector(isGuestUser);
+  const isAuthUser = useSelector(getIsAuthenticated);
   const user = useSelector(getAuthenticatedUser);
   const defaultVotePercent = useSelector(getVotePercent);
   const match = useRouteMatch();
@@ -69,19 +74,22 @@ const LightboxFooter = ({ post }) => {
       className={classNames({
         LightboxTools__container: !isMobile(),
         LightboxTools__container__column: isMobile(),
+        LightboxTools__guestContainer: isGuest || !isAuthUser,
       })}
     >
-      <AppendObjButtons
-        post={currentPost}
-        lightbox
-        handleLikeClick={handleLikeClick}
-        onFlagClick={handleReportClick}
-        handleShowReactions={() => showReactionModal(true)}
-        // handleCommentsClick={handleCommentsClick}
-        handleCloseReactions={() => showReactionModal(false)}
-        reactionsModalVisible={reactionsModalVisible}
-        defaultVotePercent={defaultVotePercent}
-      />
+      {!isGuest && isAuthUser && (
+        <AppendObjButtons
+          post={currentPost}
+          lightbox
+          handleLikeClick={handleLikeClick}
+          onFlagClick={handleReportClick}
+          handleShowReactions={() => showReactionModal(true)}
+          // handleCommentsClick={handleCommentsClick}
+          handleCloseReactions={() => showReactionModal(false)}
+          reactionsModalVisible={reactionsModalVisible}
+          defaultVotePercent={defaultVotePercent}
+        />
+      )}
       <ApprovingCard lightbox post={currentPost} />
     </div>
   ) : null;
