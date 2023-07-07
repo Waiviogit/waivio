@@ -13,7 +13,6 @@ import { getActiveOption } from '../../../../store/optionsStore/optionsSelectors
 import LinkButton from '../../../components/LinkButton/LinkButton';
 import { isMobile } from '../../../../common/helpers/apiHelpers';
 import { getProxyImageURL } from '../../../../common/helpers/image';
-import { showDescriptionPage } from '../../../../common/helpers/wObjectHelper';
 import { setOptionClicked } from '../../../../store/shopStore/shopActions';
 
 const OptionItemView = ({
@@ -25,19 +24,15 @@ const OptionItemView = ({
   ownOptions,
   isSocialProduct,
 }) => {
-  const optionsLimit = 15;
+  const optionsLimit = isSocialProduct ? 30 : 15;
   const [hovered, setHovered] = useState({});
   const activeStoreOption = useSelector(getActiveOption);
   const history = useHistory();
   const dispatch = useDispatch();
   const isSocialObject = isSocialProduct && ['book', 'product'].includes(wobject.object_type);
-  const waivioOptionsLink = showDescriptionPage(wobject)
-    ? `/object/${wobject.author_permlink}/options/${option[0]}/description`
-    : `/object/${wobject.author_permlink}/options/${option[0]}`;
+  const waivioOptionsLink = `/object/${wobject.author_permlink}/options/${option[0]}`;
   const waivioAvailableOptionsLink = el =>
-    showDescriptionPage(wobject)
-      ? `/object/${getAvailableOptionPermlinkAndStyle(el, true)}/description`
-      : `/object/${getAvailableOptionPermlinkAndStyle(el, true)}`;
+    `/object/${getAvailableOptionPermlinkAndStyle(el, true)}`;
   const linkToOption = isSocialObject
     ? `/object/${wobject.object_type}/${wobject.author_permlink}/options/${option[0]}`
     : waivioOptionsLink;
