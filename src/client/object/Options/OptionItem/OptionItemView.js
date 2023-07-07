@@ -12,7 +12,6 @@ import {
 import { getActiveOption } from '../../../../store/optionsStore/optionsSelectors';
 import LinkButton from '../../../components/LinkButton/LinkButton';
 import { isMobile } from '../../../../common/helpers/apiHelpers';
-import { showDescriptionPage } from '../../../../common/helpers/wObjectHelper';
 
 const OptionItemView = ({
   option,
@@ -29,13 +28,9 @@ const OptionItemView = ({
   const history = useHistory();
   const dispatch = useDispatch();
   const isSocialObject = isSocialProduct && ['book', 'product'].includes(wobject.object_type);
-  const waivioOptionsLink = showDescriptionPage(wobject)
-    ? `/object/${wobject.author_permlink}/options/${option[0]}/description`
-    : `/object/${wobject.author_permlink}/options/${option[0]}`;
+  const waivioOptionsLink = `/object/${wobject.author_permlink}/options/${option[0]}`;
   const waivioAvailableOptionsLink = el =>
-    showDescriptionPage(wobject)
-      ? `/object/${getAvailableOptionPermlinkAndStyle(el, true)}/description`
-      : `/object/${getAvailableOptionPermlinkAndStyle(el, true)}`;
+    `/object/${getAvailableOptionPermlinkAndStyle(el, true)}`;
   const linkToOption = isSocialObject
     ? `/object/${wobject.object_type}/${wobject.author_permlink}/options/${option[0]}`
     : waivioOptionsLink;

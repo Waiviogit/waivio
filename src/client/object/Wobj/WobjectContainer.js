@@ -182,11 +182,11 @@ class WobjectContainer extends React.Component {
   }
 
   componentDidMount() {
-    const { match, authenticatedUserName, history } = this.props;
+    const { match, authenticatedUserName, history, locale } = this.props;
     const newsFilter = match.params[1] === 'newsFilter' ? { newsFilter: match.params.itemId } : {};
 
-    this.props.getObject(match.params.name, authenticatedUserName).then(res => {
-      if (showDescriptionPage(res.value) && !match.params[0]) {
+    this.props.getObject(match.params.name, authenticatedUserName).then(async res => {
+      if ((await showDescriptionPage(res.value, locale)) && !match.params[0]) {
         history.push(`/object/${res.value.author_permlink}/description`);
       }
       this.props.getAlbums(match.params.name);
@@ -212,8 +212,8 @@ class WobjectContainer extends React.Component {
       prevProps.authenticatedUserName !== authenticatedUserName
     ) {
       this.props.getAlbums(match.params.name);
-      this.props.getObject(match.params.name, authenticatedUserName).then(res => {
-        if (showDescriptionPage(res.value) && !match.params[0]) {
+      this.props.getObject(match.params.name, authenticatedUserName).then(async res => {
+        if ((await showDescriptionPage(res.value, locale)) && !match.params[0]) {
           history.push(`/object/${res.value.author_permlink}/description`);
         }
       });

@@ -2,6 +2,7 @@ import { get, some, filter, isEmpty, compact, isEqual, has } from 'lodash';
 import { addressFieldsForFormatting, TYPES_OF_MENU_ITEM } from '../constants/listOfFields';
 import LANGUAGES from '../translations/languages';
 import { parseJSON } from './parseJSON';
+import { getFeedContentByObject } from '../../waivioApi/ApiClient';
 
 export const getObjectName = (wobj = {}) =>
   get(wobj, 'name') ||
@@ -393,9 +394,16 @@ export const sortByFieldPermlinksList = (permlinksArr, objects) =>
     return acc;
   }, []);
 
-export const showDescriptionPage = wobject =>
-  !['list', 'page', 'widget', 'newsfeed'].includes(wobject.object_type) &&
-  has(wobject, 'description') &&
-  wobject.count_posts === 0 &&
-  !wobject.menuItem &&
-  !wobject.menuItems;
+export const showDescriptionPage = async (wobject, locale) => {
+  const hasPosts = await getFeedContentByObject(wobject.author_permlink, 1, [], locale).then(
+    res => !isEmpty(res),
+  );
+
+  return (
+    !['list', 'page', 'widget', 'newsfeed'].includes(wobject.object_type) &&
+    has(wobject, 'description') &&
+    !hasPosts &&
+    !wobject.menuItem &&
+    !wobject.menuItems
+  );
+};
