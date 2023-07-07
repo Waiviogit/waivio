@@ -74,6 +74,7 @@ class ImageSideButton extends React.Component {
           onOk={this.handleOnOk}
         >
           <ImageSetter
+            isEditable
             onImageLoaded={this.getImages}
             onLoadingImage={this.onLoadingImage}
             isRequired
