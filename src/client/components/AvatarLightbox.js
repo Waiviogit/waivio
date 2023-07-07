@@ -48,7 +48,11 @@ export default class AvatarLightbox extends React.Component {
           />
         )}
         {this.state.open && (
-          <Lightbox mainSrc={lightboxSrc} onCloseRequest={this.handleCloseRequest} />
+          <Lightbox
+            wrapperClassName="LightboxTools"
+            mainSrc={lightboxSrc}
+            onCloseRequest={this.handleCloseRequest}
+          />
         )}
       </div>
     );
