@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { uniq } from 'lodash';
+import { isEmpty, uniq } from 'lodash';
 import PropTypes from 'prop-types';
 import { useLocation, useParams } from 'react-router';
 import FeedMasonry from './FeedMasonry';
@@ -16,6 +16,7 @@ import { getMoreObjectPosts, getObjectPosts } from '../../../store/feedStore/fee
 import { getPosts } from '../../../store/postsStore/postsSelectors';
 import { getLastPermlinksFromHash } from '../../../common/helpers/wObjectHelper';
 import { preparationPostList } from './helpers';
+import Loading from '../../components/Icon/Loading';
 
 const ObjectNewsFeed = ({ wobj }) => {
   const readLanguages = useSelector(getReadLanguages);
@@ -74,6 +75,8 @@ const ObjectNewsFeed = ({ wobj }) => {
         newsPermlink,
       }),
     );
+
+  if (isEmpty(posts) && isFetching) return <Loading />;
 
   return <FeedMasonry posts={posts} hasMore={hasMore} loadMore={loadMore} loading={isFetching} />;
 };

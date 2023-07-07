@@ -22,7 +22,7 @@ const FeedMasonry = ({ loadMore, hasMore, posts, loading }) => {
   if (isEmpty(posts)) return <div className="FeedMasonry__emptyFeed">There are no posts yet</div>;
 
   return (
-    <InfiniteSroll loader={<Loading />} hasMore={hasMore} loadMore={loadMore}>
+    <InfiniteSroll threshold={2000} loader={<Loading />} hasMore={hasMore} loadMore={loadMore}>
       <Masonry
         breakpointCols={breakpointColumnsObj(posts?.length)}
         className="FeedMasonry my-masonry-grid"
