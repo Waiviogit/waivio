@@ -310,7 +310,7 @@ ModalSignIn.propTypes = {
   handleLoginModalCancel: PropTypes.func,
   hideLink: PropTypes.bool,
   isButton: PropTypes.bool,
-  usedLocale: PropTypes.bool,
+  usedLocale: PropTypes.string,
   setIsShowSignInModal: PropTypes.func,
   toCurrentWobjLink: PropTypes.string,
   websiteName: PropTypes.string,

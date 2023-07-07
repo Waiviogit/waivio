@@ -205,7 +205,7 @@ class WobjectContainer extends React.Component {
       });
       this.props.getRelatedWobjects(match.params.name);
       if (isEmpty(this.props.updates) || isNil(this.props.updates)) {
-        this.props.getUpdates(match.params.name);
+        this.props.getUpdates(match.params.name, match.params[0]);
       }
     });
   }

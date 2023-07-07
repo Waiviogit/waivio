@@ -16,6 +16,8 @@ import FeedItem from './FeedItem';
 import PostModal from '../../post/PostModalContainer';
 import { breakpointColumnsObj, preparationPostList } from './helpers';
 
+const limit = 25;
+
 const UserBlogFeed = () => {
   const { name } = useParams();
   const feed = useSelector(getFeed);
@@ -28,13 +30,13 @@ const UserBlogFeed = () => {
   const posts = preparationPostList(postsIds, postsList);
 
   useEffect(() => {
-    dispatch(getUserProfileBlogPosts(name, { limit: 20, initialLoad: true }));
+    dispatch(getUserProfileBlogPosts(name, { limit, initialLoad: true }));
   }, [name]);
 
   const loadMore = () => {
     dispatch(
       getUserProfileBlogPosts(name, {
-        limit: 20,
+        limit,
         initialLoad: false,
       }),
     );
@@ -48,6 +50,7 @@ const UserBlogFeed = () => {
       loadingMore={isFetching}
       hasMore={hasMore}
       elementIsScrollable={false}
+      threshold={1500}
     >
       <Masonry
         breakpointCols={breakpointColumnsObj(posts?.length)}

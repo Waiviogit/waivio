@@ -8,7 +8,6 @@ import RewardsMainPage from '../../client/newRewards/RewardsMainPage';
 import createNestedRouts from '../../routes/helper';
 import SocialWrapper from './Wrapper';
 import Shop from '../Shop/Shop';
-import Discover from '../discover/Discover';
 import { listOfSocialWebsites } from './listOfSocialWebsites';
 import SocialGiftsLandingPage from '../SocialGiftsLandingPage/SocialGiftsLandingPage';
 import ShopSwitcher from './ShopSwitcher/ShopSwitcher';
@@ -74,20 +73,10 @@ const routes = host => ({
       exact: true,
       component: WidgetContent,
     },
-    // {
-    //   path: '/discover-objects/:typeName?',
-    //   exact: true,
-    //   component: DiscoverObjects,
-    // },
     {
       path: '/discover-objects/:type?',
       exact: true,
       component: NewDiscover,
-    },
-    {
-      path: '/discover/:search?',
-      exact: true,
-      component: Discover,
     },
     {
       path: '/object/product/:name',

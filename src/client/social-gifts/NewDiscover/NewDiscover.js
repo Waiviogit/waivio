@@ -1,35 +1,31 @@
-import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router';
 import Helmet from 'react-helmet';
 import InfiniteSroll from 'react-infinite-scroller';
 import { Tag } from 'antd';
-import { trimEnd } from 'lodash';
+import { uniqBy } from 'lodash';
 
 import { getHelmetIcon } from '../../../store/appStore/appSelectors';
-import {
-  getObjectTypeByStateFilters,
-  setActiveFilters,
-} from '../../../store/objectTypeStore/objectTypeActions';
-import {
-  getFilteredObjects,
-  getHasMoreRelatedObjects,
-} from '../../../store/objectTypeStore/objectTypeSelectors';
 import ShopObjectCard from '../ShopObjectCard/ShopObjectCard';
 import Loading from '../../components/Icon/Loading';
-import { resetSearchUsersForDiscoverPage } from '../../../store/searchStore/searchActions';
 import useQuery from '../../../hooks/useQuery';
+import { getObjectType } from '../../../waivioApi/ApiClient';
+import { getLocale } from '../../../store/settingsStore/settingsSelectors';
 
 import './NewDiscover.less';
 
+const wobjects_count = 20;
+
 const NewDiscover = () => {
   const { type } = useParams();
-  const dispatch = useDispatch();
   const favicon = useSelector(getHelmetIcon);
-  const filteredObjects = useSelector(getFilteredObjects);
-  const hasMoreObjects = useSelector(getHasMoreRelatedObjects);
+  const locale = useSelector(getLocale);
   const history = useHistory();
   const query = useQuery();
+  const [objects, setObjects] = useState([]);
+  const [hasMoreObjects, setHasMoreObjects] = useState();
+  const [loading, setLoading] = useState(true);
   const search = query.get('search');
 
   const desc = 'All objects are located here. Discover new objects!';
@@ -39,21 +35,44 @@ const NewDiscover = () => {
   const title = 'Discover - Waivio';
 
   useEffect(() => {
-    const searchFilters = {};
+    const ac = new AbortController();
 
-    if (search) searchFilters.searchString = trimEnd(search);
+    setLoading(true);
 
-    dispatch(setActiveFilters(searchFilters));
-    dispatch(getObjectTypeByStateFilters(type));
-  }, [type, search]);
+    getObjectType(
+      type,
+      {
+        locale,
+        searchString: search,
+        wobjects_count,
+      },
+      ac,
+    ).then(res => {
+      setObjects(uniqBy(res?.related_wobjects, 'author_permlink'));
+      setHasMoreObjects(res?.hasMoreWobjects);
+      setLoading(false);
+    });
+
+    return () => ac.abort();
+  }, [search, type]);
 
   const loadMore = () => {
-    dispatch(getObjectTypeByStateFilters(type, { skip: filteredObjects?.length }));
+    getObjectType(type, {
+      locale,
+      searchString: search,
+      wobjects_count,
+      wobjects_skip: objects?.length,
+    }).then(res => {
+      setObjects([...objects, ...res?.related_wobjects]);
+      setHasMoreObjects(res?.hasMoreWobjects);
+    });
   };
 
   const handleDeleteTag = () => {
     history.push(`/discover-objects/${type}`);
-    dispatch(resetSearchUsersForDiscoverPage());
+    setObjects([]);
+    setHasMoreObjects(false);
+    setLoading(true);
   };
 
   return (
@@ -78,21 +97,25 @@ const NewDiscover = () => {
         <meta property="og:site_name" content="Waivio" />
         <link id="favicon" rel="icon" href={favicon} type="image/x-icon" />
       </Helmet>
-      <h3 className="NewDiscover__type">{type}</h3>
-      {search && (
-        <div className="Objects__tags">
+      <div className="NewDiscover__wrap">
+        <h3 className="NewDiscover__type">{type}</h3>
+        {search && (
           <Tag closable onClose={handleDeleteTag}>
             {search}
           </Tag>
-        </div>
+        )}
+      </div>
+      {loading ? (
+        <Loading />
+      ) : (
+        <InfiniteSroll hasMore={hasMoreObjects} loader={<Loading />} loadMore={loadMore}>
+          <div className="NewDiscover__list" key={'list'}>
+            {objects?.map(obj => (
+              <ShopObjectCard key={obj?.author_permlink} wObject={obj} />
+            ))}{' '}
+          </div>
+        </InfiniteSroll>
       )}
-      <InfiniteSroll hasMore={hasMoreObjects} loader={<Loading />} loadMore={loadMore}>
-        <div className="NewDiscover__list">
-          {filteredObjects?.map(obj => (
-            <ShopObjectCard key={obj?.author_permlink} wObject={obj} />
-          ))}
-        </div>
-      </InfiniteSroll>
     </div>
   );
 };

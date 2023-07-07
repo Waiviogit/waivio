@@ -33,7 +33,7 @@ const LikeSection = props => {
   useEffect(() => {
     if (!isGuest) {
       checkUserInObjWhiteList(authUser).then(res => {
-        const minWeight = res.minWeight ? (res.minWeight + 200) / 100 : defaultPercent;
+        const minWeight = res.minWeight ? res.minWeight / 100 : defaultPercent;
 
         setInWhiteList(res.result);
         setMinVotePersent(minWeight);

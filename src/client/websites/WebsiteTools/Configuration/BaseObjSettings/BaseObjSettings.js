@@ -4,9 +4,10 @@ import { AutoComplete, Button, Icon } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
+import { Link } from 'react-router-dom';
 
 import { searchAutoComplete } from '../../../../../store/searchStore/searchActions';
-import { getObjectName } from '../../../../../common/helpers/wObjectHelper';
+import { getObjectName, getObjectUrlForLink } from '../../../../../common/helpers/wObjectHelper';
 import Avatar from '../../../../components/Avatar';
 import ObjectAvatar from '../../../../components/ObjectAvatar';
 import UserSearchItem from '../../../../search/SearchItems/UserSearchItem';
@@ -70,14 +71,17 @@ const BaseObjSettings = ({ handleSubmit, intl, shopSettings }) => {
     <div>
       {!edit && selectedObj ? (
         <div className="BaseObjSettings__searchCard">
-          <div className="BaseObjSettings__content">
+          <Link
+            to={selectedObj.account ? `/@${selectedObj.account}` : getObjectUrlForLink(selectedObj)}
+            className="BaseObjSettings__content"
+          >
             {selectedObj.account ? (
               <Avatar username={selectedObj.account} size={40} />
             ) : (
               <ObjectAvatar item={selectedObj} size={40} />
             )}
             <span className="BaseObjSettings__name">{getOptionName(selectedObj)}</span>
-          </div>
+          </Link>
           <b className="BaseObjSettings__type">
             {selectedObj.account ? 'user' : selectedObj.object_type}
           </b>
