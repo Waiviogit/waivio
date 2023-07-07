@@ -202,4 +202,4 @@ const mapDispatchToProps = dispatch => ({
   searchObjects: value => dispatch(searchObjectsAutoCompete(value, '', null, true)),
 });
 
-export default connect(null, mapDispatchToProps)(injectIntl(QuickCommentEditor));
+export default injectIntl(connect(null, mapDispatchToProps)(QuickCommentEditor));

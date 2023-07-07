@@ -103,7 +103,7 @@ const WobjHeader = ({
                   </React.Fragment>
                 )}
                 {heartObjTypes && authenticated && !isGuest && (
-                  <HeartButton wobject={wobject} size={'30px'} />
+                  <HeartButton wobject={wobject} size={'28px'} />
                 )}
               </div>
             </div>
