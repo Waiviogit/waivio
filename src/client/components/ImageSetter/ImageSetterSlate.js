@@ -17,11 +17,11 @@ import {
   objectURLValidationRegExp,
 } from '../../../common/constants/validation';
 import { objectFields } from '../../../common/constants/listOfFields';
-
-import './ImageSetter.less';
 import { createEmptyNode, createImageNode } from '../EditorExtended/util/SlateEditor/utils/embed';
 import useWebsiteColor from '../../../hooks/useWebsiteColor';
 import { hexToRgb } from '../../../common/helpers';
+import ImageSetterEditor from './ImageSetterEditor';
+import './ImageSetter.less';
 
 const ImageSetter = ({
   intl,
@@ -39,11 +39,44 @@ const ImageSetter = ({
   isOkayBtn,
   isModal,
   imagesList,
+  isEditable,
 }) => {
   const imageLinkInput = useRef(null);
   const [currentImages, setCurrentImages] = useState([]);
   const [isLoadingImage, setLoadingImage] = useState(false);
   const [fileImages, setFileImages] = useState([]);
+  const [isOpen, setIsOpen] = useState(false);
+  const initialState = {
+    image: '',
+    allowZoomOut: true,
+    position: { x: 0.5, y: 0.5 },
+    scale: 1,
+    rotate: 0,
+    borderRadius: 0,
+    preview: null,
+    width: 200,
+    height: 200,
+  };
+  const [state, setState] = useState(initialState);
+
+  const handleNewImage = async e => {
+    await setState({ ...initialState, image: e.target.files[0] });
+    setIsOpen(true);
+  };
+
+  const onPaste = async () => {
+    const clipboardItems = await navigator.clipboard.read();
+    const blobOutput = await clipboardItems[0].getType('image/png');
+
+    const res = new File([blobOutput], 'filename', { type: 'image/png' });
+
+    if (isEditable) {
+      setState({ ...initialState, image: res });
+      setIsOpen(true);
+    } else {
+      handleChangeImage({ target: { files: [res] } });
+    }
+  };
   const colors = useWebsiteColor();
 
   const editor = useSlate();
@@ -291,7 +324,7 @@ const ImageSetter = ({
             ))}
         </div>
       )}
-      {(isMultiple || !currentImages.length) && (
+      {(isMultiple || !currentImages.length) && !isOpen && (
         <div className="image-upload">
           <input
             id="inputfile"
@@ -299,7 +332,7 @@ const ImageSetter = ({
             type="file"
             accept="image/*"
             multiple={isMultiple}
-            onChange={handleChangeImage}
+            onChange={isEditable ? handleNewImage : handleChangeImage}
             onClick={e => {
               e.target.value = null;
             }}
@@ -333,6 +366,7 @@ const ImageSetter = ({
               className="input-upload__item"
               size="large"
               ref={imageLinkInput}
+              onPaste={onPaste}
               placeholder={intl.formatMessage({
                 id: 'imageSetter_paste_image_link',
                 defaultMessage: 'Paste image link',
@@ -343,6 +377,14 @@ const ImageSetter = ({
           </div>
         </div>
       )}
+      <ImageSetterEditor
+        state={state}
+        setState={setState}
+        isOpen={isOpen}
+        setIsOpen={setIsOpen}
+        initialState={initialState}
+        handleChangeImage={handleChangeImage}
+      />
     </div>
   );
 };
@@ -363,6 +405,7 @@ ImageSetter.propTypes = {
   imagesList: PropTypes.arrayOf(),
   isModal: PropTypes.bool,
   isEditor: PropTypes.bool,
+  isEditable: PropTypes.bool,
 };
 
 ImageSetter.defaultProps = {

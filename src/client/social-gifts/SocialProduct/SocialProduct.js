@@ -1,18 +1,21 @@
 import React, { useEffect, useState } from 'react';
-import { useHistory, useRouteMatch } from 'react-router';
 import { Helmet } from 'react-helmet';
+import { withRouter } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
-import { useDispatch, useSelector } from 'react-redux';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import { get, isEmpty, isNil, reduce } from 'lodash';
 import {
-  getObject,
   getObjectInfo,
   getObjectsByIds,
   getObjectsRewards,
   getRelatedObjectsFromDepartments,
   getSimilarObjectsFromDepartments,
 } from '../../../waivioApi/ApiClient';
-import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
+import {
+  getAuthenticatedUserName,
+  getIsAuthenticated,
+} from '../../../store/authStore/authSelectors';
 import {
   getAppUrl,
   getHelmetIcon,
@@ -20,7 +23,6 @@ import {
   getWebsiteName,
 } from '../../../store/appStore/appSelectors';
 import { getActiveCategory, getActiveOption } from '../../../store/optionsStore/optionsSelectors';
-import { setStoreActiveOption } from '../../../store/optionsStore/optionsActions';
 import AffiliatLink from '../../widgets/AffiliatLinks/AffiliatLink';
 import { isMobile } from '../../../common/helpers/apiHelpers';
 import ProductRewardCard from '../ShopObjectCard/ProductRewardCard/ProductRewardCard';
@@ -33,7 +35,6 @@ import {
 import Options from '../../object/Options/Options';
 import ObjectFeatures from '../../object/ObjectFeatures/ObjectFeatures';
 import RatingsWrap from '../../objectCard/RatingsWrap/RatingsWrap';
-import './SocialProduct.less';
 import PicturesSlider from './PicturesSlider/PicturesSlider';
 import { compareObjectTitle } from '../../../common/helpers/seoHelpes';
 import DEFAULTS from '../../object/const/defaultValues';
@@ -42,12 +43,37 @@ import SocialTagCategories from './SocialTagCategories/SocialTagCategories';
 import ObjectsSlider from './ObjectsSlider/ObjectsSlider';
 import SocialMenuItems from './SocialMenuItems/SocialMenuItems';
 import { getIsOptionClicked } from '../../../store/shopStore/shopSelectors';
+import SocialProductActions from './SocialProductActions/SocialProductActions';
+import OBJECT_TYPE from '../../object/const/objectTypes';
+import { objectFields } from '../../../common/constants/listOfFields';
 import { resetOptionClicked } from '../../../store/shopStore/shopActions';
+import { setStoreActiveOption } from '../../../store/optionsStore/optionsActions';
+import { getObject } from '../../../store/wObjectStore/wobjectsActions';
+import { getObject as getObjectState } from '../../../store/wObjectStore/wObjectSelectors';
+import './SocialProduct.less';
 
 const limit = 30;
 
-const SocialProduct = () => {
-  const [wobject, setWobject] = useState({});
+const SocialProduct = ({
+  userName,
+  locale,
+  activeOption,
+  activeCategory,
+  siteName,
+  appUrl,
+  wobject,
+  authenticated,
+  optionClicked,
+  helmetIcon,
+  match,
+  history,
+  setStoreActiveOpt,
+  resetOptClicked,
+  getWobject,
+}) => {
+  const [isEditMode, setIsEditMode] = useState(
+    wobject.type === OBJECT_TYPE.PAGE && authenticated && wobject[objectFields.pageContent],
+  );
   const [reward, setReward] = useState([]);
   const [hoveredOption, setHoveredOption] = useState({});
   const [addOns, setAddOns] = useState([]);
@@ -58,17 +84,6 @@ const SocialProduct = () => {
     manufacturerObject: {},
     merchantObject: {},
   });
-  const history = useHistory();
-  const match = useRouteMatch();
-  const dispatch = useDispatch();
-  const userName = useSelector(getAuthenticatedUserName);
-  const locale = useSelector(getUsedLocale);
-  const activeOption = useSelector(getActiveOption);
-  const activeCategory = useSelector(getActiveCategory);
-  const siteName = useSelector(getWebsiteName);
-  const appUrl = useSelector(getAppUrl);
-  const optionClicked = useSelector(getIsOptionClicked);
-  const helmetIcon = useSelector(getHelmetIcon);
   const authorPermlink = history.location.hash
     ? getLastPermlinksFromHash(history.location.hash)
     : match.params.name;
@@ -118,6 +133,7 @@ const SocialProduct = () => {
     : socialHeaderEl?.offsetHeight;
   const scrollHeight =
     (typeof window !== 'undefined' && window.scrollY > 0) || optionClicked ? socialScrollHeight : 0;
+  const toggleViewEditMode = () => setIsEditMode(!isEditMode);
 
   const showProductDetails =
     !isEmpty(brand) ||
@@ -180,16 +196,14 @@ const SocialProduct = () => {
   useEffect(() => {
     window.scrollTo({ top: scrollHeight, behavior: 'smooth' });
     if (!isEmpty(authorPermlink)) {
-      getObject(authorPermlink, userName, locale).then(obj => {
-        setWobject(obj);
-      });
+      getWobject(authorPermlink, userName);
 
       getObjectsRewards(authorPermlink, userName).then(res => setReward(res));
     }
 
     return () => {
-      dispatch(setStoreActiveOption({}));
-      dispatch(resetOptionClicked());
+      setStoreActiveOpt({});
+      resetOptClicked();
     };
   }, [authorPermlink]);
 
@@ -227,22 +241,7 @@ const SocialProduct = () => {
       <div className="SocialProduct">
         <div className="SocialProduct__column SocialProduct__column-wrapper">
           {isMobile() && <div className="SocialProduct__wobjName">{wobject.name}</div>}
-          {!isEmpty(wobject.preview_gallery) && (
-            <div className="SocialProduct__row">
-              <div className="SocialProduct__carouselWrapper">
-                <PicturesSlider
-                  hoveredOption={hoveredOption}
-                  activeOption={activeOption}
-                  activeCategory={activeCategory}
-                />
-              </div>
-              <div>
-                <ProductRewardCard isSocialProduct reward={reward} />
-              </div>
-            </div>
-          )}
-          <div className="SocialProduct__row SocialProduct__right-row">
-            {!isMobile() && <div className="SocialProduct__wobjName">{wobject.name}</div>}
+          {isMobile() && (
             <div className="SocialProduct__ratings">
               {' '}
               {!isEmpty(wobject.rating) &&
@@ -258,6 +257,60 @@ const SocialProduct = () => {
                   </div>
                 ))}
             </div>
+          )}
+          {isMobile() && (
+            <div className="SocialProduct__socialActions">
+              <SocialProductActions
+                toggleViewEditMode={toggleViewEditMode}
+                isEditMode={isEditMode}
+                authenticated={authenticated}
+              />
+            </div>
+          )}
+          {!isEmpty(wobject.preview_gallery) && (
+            <div className="SocialProduct__row">
+              <div className="SocialProduct__carouselWrapper">
+                <PicturesSlider
+                  currentWobj={wobject}
+                  hoveredOption={hoveredOption}
+                  activeOption={activeOption}
+                  activeCategory={activeCategory}
+                />
+              </div>
+              <div>
+                <ProductRewardCard isSocialProduct reward={reward} />
+              </div>
+            </div>
+          )}
+          <div className="SocialProduct__row SocialProduct__right-row">
+            {!isMobile() && <div className="SocialProduct__wobjName">{wobject.name}</div>}
+            {!isMobile() && (
+              <div className="SocialProduct__socialActions">
+                <SocialProductActions
+                  currentWobj={wobject}
+                  toggleViewEditMode={toggleViewEditMode}
+                  isEditMode={isEditMode}
+                  authenticated={authenticated}
+                />
+              </div>
+            )}
+            {!isMobile() && (
+              <div className="SocialProduct__ratings">
+                {' '}
+                {!isEmpty(wobject.rating) &&
+                  wobject.rating.map(rating => (
+                    <div key={rating.permlink} className="SocialProduct__ratings-item">
+                      <RatingsWrap
+                        isSocialProduct
+                        ratings={[rating]}
+                        username={userName}
+                        wobjId={wobject.author_permlink}
+                        wobjName={wobject.name}
+                      />
+                    </div>
+                  ))}
+              </div>
+            )}
             <div
               className={
                 isNil(price) && !isEmpty(wobject?.options)
@@ -349,4 +402,40 @@ const SocialProduct = () => {
   );
 };
 
-export default SocialProduct;
+SocialProduct.propTypes = {
+  userName: PropTypes.string,
+  locale: PropTypes.string,
+  activeOption: PropTypes.shape(),
+  wobject: PropTypes.shape(),
+  history: PropTypes.shape(),
+  match: PropTypes.shape(),
+  activeCategory: PropTypes.string,
+  siteName: PropTypes.string,
+  appUrl: PropTypes.string,
+  authenticated: PropTypes.bool,
+  optionClicked: PropTypes.bool,
+  helmetIcon: PropTypes.string,
+  setStoreActiveOpt: PropTypes.string,
+  resetOptClicked: PropTypes.string,
+  getWobject: PropTypes.string,
+};
+
+const mapStateToProps = state => ({
+  userName: getAuthenticatedUserName(state),
+  locale: getUsedLocale(state),
+  activeOption: getActiveOption(state),
+  activeCategory: getActiveCategory(state),
+  siteName: getWebsiteName(state),
+  wobject: getObjectState(state),
+  appUrl: getAppUrl(state),
+  authenticated: getIsAuthenticated(state),
+  optionClicked: getIsOptionClicked(state),
+  helmetIcon: getHelmetIcon(state),
+});
+const mapDispatchToProps = dispatch => ({
+  setStoreActiveOpt: obj => dispatch(setStoreActiveOption(obj)),
+  resetOptClicked: opt => dispatch(resetOptionClicked(opt)),
+  getWobject: (obj, name) => dispatch(getObject(obj, name)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(SocialProduct));

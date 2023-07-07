@@ -185,7 +185,7 @@ const ChromeExtension = ({ intl }) => {
             :{' '}
             {intl.formatMessage({
               id: 'chrome_extension_about_create_draft',
-              defaultMessage: 'tool can create a post based on a YouTube video using chat GPT',
+              defaultMessage: 'tool can create a post based on a YouTube video using chatGPT',
             })}
             .
           </li>
