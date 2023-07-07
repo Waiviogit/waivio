@@ -2264,7 +2264,7 @@
   "chrome_extension_upload": "Upload to Waivio",
   "chrome_extension_about_upload": "tool scans the Amazon URL, generates the required file, and immediately initiates the import to Waivio under the currently logged-in user",
   "chrome_extension_create_draft": "Create post draft",
-  "chrome_extension_about_create_draft": "tool can create a post based on a YouTube video using chat GPT",
+  "chrome_extension_about_create_draft": "tool can create a post based on a YouTube video using chatGPT",
   "chrome_extension_link_information_title": "Link information",
   "chrome_extension_link_note": "Please note that in order for the extension to work correctly, the Amazon page link should look as follows",
   "chrome_extension_region_note": "Here, amazon.com can be replaced with any Amazon regional site as well",
