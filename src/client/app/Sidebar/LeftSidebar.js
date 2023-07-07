@@ -11,6 +11,8 @@ import DepartmentsUser from '../../Shop/ShopDepartments/DepartmentsUser';
 import GlobalShopDepartments from '../../Shop/ShopDepartments/GlobalShopDepartments';
 import { getIsSocial } from '../../../store/appStore/appSelectors';
 import DepartmentsWobject from '../../object/ObjectTypeShop/DepartmentsWobject';
+import WobjectShopFilter from '../../object/ObjectTypeShop/WobjectShopFilter';
+import UserFilters from '../../Shop/ShopFilters/UserFilters';
 
 const LeftSidebar = () => {
   const isWidget =
@@ -21,8 +23,25 @@ const LeftSidebar = () => {
     !isWidget && (
       <Switch>
         <Route path={'/shop/:department?'} component={GlobalShopDepartments} />
-        <Route path={'/object-shop/:name/:department?'} component={DepartmentsWobject} />
-        <Route path="/@:name/userShop/:department?" component={DepartmentsUser} />
+        <Route
+          path={'/object-shop/:name/:department?'}
+          render={() => (
+            <div>
+              <DepartmentsWobject />
+              <WobjectShopFilter />
+            </div>
+          )}
+        />
+        <Route
+          path="/@:name/userShop/:department?"
+          render={() => (
+            <div>
+              <DepartmentsUser />
+              <UserFilters />
+            </div>
+          )}
+        />
+
         <Route path="/user-shop/:name/:department?" render={() => <DepartmentsUser isSocial />} />
         <Route path="/@:name/wallet" component={SidebarMenu} />
         <Route path="/@:name" component={UserInfo} />

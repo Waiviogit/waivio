@@ -45,6 +45,9 @@ const NewDiscover = () => {
         locale,
         searchString: search,
         wobjects_count,
+        filter: {
+          searchString: search,
+        },
       },
       ac,
     ).then(res => {
@@ -59,9 +62,11 @@ const NewDiscover = () => {
   const loadMore = () => {
     getObjectType(type, {
       locale,
-      searchString: search,
       wobjects_count,
       wobjects_skip: objects?.length,
+      filter: {
+        searchString: search,
+      },
     }).then(res => {
       setObjects([...objects, ...res?.related_wobjects]);
       setHasMoreObjects(res?.hasMoreWobjects);

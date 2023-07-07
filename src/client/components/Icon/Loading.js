@@ -4,14 +4,15 @@ import classNames from 'classnames';
 import { Icon } from 'antd';
 import './Loading.less';
 
-const Loading = ({ center }) => (
-  <div className={classNames('Loading', { 'Loading--center': center })}>
+const Loading = ({ center, margin }) => (
+  <div className={classNames('Loading', { 'Loading--center': center, 'Loading--margin': margin })}>
     <Icon className="Loading__icon" type="loading" />
   </div>
 );
 
 Loading.propTypes = {
   center: PropTypes.bool,
+  margin: PropTypes.bool,
 };
 
 Loading.defaultProps = {
