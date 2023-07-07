@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { useLocation, useRouteMatch } from 'react-router';
 import { Icon } from 'antd';
+import classNames from 'classnames';
 import InfiniteSroll from 'react-infinite-scroller';
 import Helmet from 'react-helmet';
 import { getHelmetIcon, getSiteName } from '../../../store/appStore/appSelectors';
@@ -55,6 +56,8 @@ const ShopList = ({ userName, path, getShopFeed, isSocial }) => {
         match.params.department ? activeCrumb.name : undefined,
         0,
         pathList,
+        10,
+        isSocial ? 5 : 3,
       ).then(res => {
         if (res.message) {
           setLoading(false);
@@ -91,6 +94,8 @@ const ShopList = ({ userName, path, getShopFeed, isSocial }) => {
         match.params.department ? activeCrumb?.name : undefined,
         departments.length,
         pathList,
+        10,
+        isSocial ? 5 : 3,
       ).then(res => {
         setDepartments([...departments, ...res.result]);
         setHasMore(res.hasMore);
@@ -132,7 +137,11 @@ const ShopList = ({ userName, path, getShopFeed, isSocial }) => {
         />
       ) : (
         <InfiniteSroll loadMore={loadMore} hasMore={hasMore} loader={<Loading />}>
-          <div>
+          <div
+            className={classNames('ShopList__departments', {
+              'ShopList__departments--isSocial': isSocial,
+            })}
+          >
             {departments?.map(dep => {
               if (isEmpty(dep.wobjects)) return null;
 

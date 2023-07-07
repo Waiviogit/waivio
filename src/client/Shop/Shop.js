@@ -4,6 +4,7 @@ import Helmet from 'react-helmet';
 import { withRouter } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { renderRoutes } from 'react-router-config';
+import classNames from 'classnames';
 
 import Affix from '../components/Utils/Affix';
 import LeftSidebar from '../app/Sidebar/LeftSidebar';
@@ -50,16 +51,22 @@ const Shop = ({ route }) => {
             <LeftSidebar />
           </div>
         </Affix>
-        <div className="center">
+        <div
+          className={classNames('center', {
+            'center--withoutRigth': route.isSocial,
+          })}
+        >
           {renderRoutes(route.routes, {
             isSocial: route.isSocial,
           })}
         </div>
-        <Affix className="rightContainer" stickPosition={77}>
-          <div className="right">
-            <RightSidebar />
-          </div>
-        </Affix>
+        {!route.isSocial && (
+          <Affix className="rightContainer" stickPosition={77}>
+            <div className="right">
+              <RightSidebar />
+            </div>
+          </Affix>
+        )}
       </div>
     </div>
   );

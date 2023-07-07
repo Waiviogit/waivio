@@ -11,8 +11,28 @@ const WobjectShoppingList = ({ isSocial }) => {
   const authUserName = useSelector(getAuthenticatedUserName);
   const match = useRouteMatch();
   const authorPermlink = match.params.name;
-  const getShopFeed = (userName, authUser, filter, excluded, department, skip, path) =>
-    getWobjectShopMainFeed(authorPermlink, department, authUser, skip, excluded, filter, path);
+  const getShopFeed = (
+    userName,
+    authUser,
+    filter,
+    excluded,
+    department,
+    skip,
+    path,
+    limit,
+    categoryLimit,
+  ) =>
+    getWobjectShopMainFeed(
+      authorPermlink,
+      department,
+      authUser,
+      skip,
+      excluded,
+      filter,
+      path,
+      limit,
+      categoryLimit,
+    );
 
   return (
     <ShopList
