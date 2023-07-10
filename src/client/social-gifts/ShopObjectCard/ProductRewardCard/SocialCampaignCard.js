@@ -18,6 +18,7 @@ const SocialCampaignCard = ({
   handleReserveForPopup,
   getProposition,
   propositionType,
+  isSocialProduct,
 }) => (
   <div className="SocialCampaignCard">
     <div className="SocialCampaignCard__card">
@@ -51,6 +52,7 @@ const SocialCampaignCard = ({
             reserved={proposition.reserved}
             reservedDays={proposition.countReservationDays}
             inCard
+            isSocialProduct={isSocialProduct}
           />
           {proposition.reserved && (
             <RewardsPopover
@@ -76,6 +78,7 @@ SocialCampaignCard.propTypes = {
   propositionType: PropTypes.string.isRequired,
   proposition: PropTypes.shape().isRequired,
   maxReward: PropTypes.number.isRequired,
+  isSocialProduct: PropTypes.bool,
 };
 
 SocialCampaignCard.defaultProps = {

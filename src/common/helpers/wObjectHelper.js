@@ -407,3 +407,28 @@ export const showDescriptionPage = async (wobject, locale) => {
     !wobject.menuItems
   );
 };
+export const handleCreatePost = (wobject, authors, history) => {
+  if (wobject && wobject.author_permlink) {
+    let redirectUrl = `/editor?object=`;
+
+    if (!isEmpty(wobject.parent)) {
+      const parentObject = wobject.parent;
+
+      redirectUrl += `${encodeURIComponent(
+        `[${getObjectName(parentObject)}](${parentObject.author_permlink})`,
+      )}&object=`;
+    }
+
+    redirectUrl += encodeURIComponent(`[${getObjectName(wobject)}](${wobject.author_permlink})`);
+
+    if (!isEmpty(wobject.authors)) {
+      authors.forEach(author => {
+        redirectUrl += author.author_permlink
+          ? `&author=${encodeURIComponent(`[${author.name}](${author.author_permlink})`)}`
+          : `&author=${encodeURIComponent(author.name)}`;
+      });
+    }
+
+    history.push(redirectUrl);
+  }
+};
