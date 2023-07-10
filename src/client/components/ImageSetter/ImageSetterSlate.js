@@ -302,18 +302,19 @@ const ImageSetter = ({
       </div>
       {(!isEmpty(currentImages) || isLoadingImage) && (
         <div className="image-box">
-          {map(currentImages, image => (
-            <div className="image-box__preview" key={image.id}>
-              <div
-                className="image-box__remove"
-                onClick={() => handleRemoveImage(image)}
-                role="presentation"
-              >
-                <i className="iconfont icon-delete_fill Image-box__remove-icon" />
+          {!isOpen &&
+            map(currentImages, image => (
+              <div className="image-box__preview" key={image.id}>
+                <div
+                  className="image-box__remove"
+                  onClick={() => handleRemoveImage(image)}
+                  role="presentation"
+                >
+                  <i className="iconfont icon-delete_fill Image-box__remove-icon" />
+                </div>
+                <img src={image.src} height="86" alt={image.src} />
               </div>
-              <img src={image.src} height="86" alt={image.src} />
-            </div>
-          ))}
+            ))}
           {isLoadingImage &&
             map(fileImages, () => (
               <div key={`${fileImages.size}/${fileImages.name}`} className="image-box__preview">
