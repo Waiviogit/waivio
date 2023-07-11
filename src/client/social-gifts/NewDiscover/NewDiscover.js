@@ -58,14 +58,18 @@ const NewDiscover = () => {
   }, [search, type]);
 
   const loadMore = () => {
-    getObjectType(type, {
+    const requestData = {
       locale,
-      wobjects_count,
       wobjects_skip: objects?.length,
-      filter: {
+      wobjects_count,
+    };
+
+    if (search)
+      requestData.filter = {
         searchString: search,
-      },
-    }).then(res => {
+      };
+
+    getObjectType(type, requestData).then(res => {
       setObjects([...objects, ...res?.related_wobjects]);
       setHasMoreObjects(res?.hasMoreWobjects);
     });

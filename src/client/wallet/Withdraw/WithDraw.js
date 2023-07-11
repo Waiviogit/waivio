@@ -226,6 +226,10 @@ const Withdraw = ({
           loading: isLoading,
         }}
       >
+        <div className="Withdraw__warning">
+          Withdrawal of Hive funds is currently unavailable due to the cessation of blocktrades
+          operations.
+        </div>
         <Form className="Withdraw" hideRequiredMark>
           <Form.Item
             className="Withdraw__title"
@@ -234,6 +238,7 @@ const Withdraw = ({
           <div className="Withdraw__input-wrapper">
             <input
               placeholder={0}
+              disabled
               ref={hiveInput}
               onChange={e => {
                 setHiveAmount(e.currentTarget.value);
@@ -275,6 +280,7 @@ const Withdraw = ({
                 setCurrencyAmount(e.currentTarget.value);
                 debounceAmountCurrency(e.currentTarget.value);
               }}
+              disabled
               placeholder={0}
               className="Withdraw__input-text"
               step="any"
@@ -286,7 +292,7 @@ const Withdraw = ({
                   key={crypto}
                   className={switchButtonClassList(crypto)}
                   role="presentation"
-                  onClick={() => setCurrentCurrency(crypto)}
+                  // onClick={() => setCurrentCurrency(crypto)}
                 >
                   {upperFirst(CRYPTO_FOR_VALIDATE_WALLET[crypto])}
                 </span>
@@ -311,12 +317,13 @@ const Withdraw = ({
               className="Withdraw__input"
               value={walletAddress}
               onChange={handleChange}
+              disabled
               placeholder={intl.formatMessage({
                 id: 'enter_address',
                 defaultMessage: 'Enter address',
               })}
             />
-            <button className="Withdraw__qr-button" onClick={() => setShowScanner(true)}>
+            <button className="Withdraw__qr-button" disabled onClick={() => setShowScanner(true)}>
               <img src={'/images/icons/qr.png'} className="qr-img" alt="qr" />
               <span>QR scanner</span>
             </button>
