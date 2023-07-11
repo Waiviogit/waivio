@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import Lightbox from 'react-image-lightbox';
-import { get } from 'lodash';
-import { useSelector } from 'react-redux';
+import { isEmpty } from 'lodash';
+import { useParams } from 'react-router';
+import { connect } from 'react-redux';
 import { getObject } from '../../../waivioApi/ApiClient';
 import { isMobile } from '../../../common/helpers/apiHelpers';
 import LightboxFooter from '../../widgets/LightboxTools/LightboxFooter';
@@ -10,18 +11,14 @@ import LightboxHeader from '../../widgets/LightboxTools/LightboxHeader';
 import { getObjectAlbums, getRelatedPhotos } from '../../../store/galleryStore/gallerySelectors';
 import './DescriptionPage.less';
 
-const DescriptionPage = ({ match }) => {
+const DescriptionPage = ({ relatedAlbum, albums }) => {
   const [wobject, setWobject] = useState({});
   const [isOpen, setIsOpen] = useState(false);
   const [photoIndex, setPhotoIndex] = useState(0);
-  const wobjName = match.params.name;
+  const { name } = useParams();
   const description = wobject?.description;
-  const relatedAlbum = useSelector(getRelatedPhotos);
-  const albums = useSelector(getObjectAlbums);
-  const pics = [...get(wobject, 'preview_gallery', [])].sort(
-    (a, b) => (a.name === 'avatar') - (b.name === 'avatar'),
-  );
-  const pictures = pics.length > 15 ? pics.slice(0, 15) : pics;
+  const pics = !isEmpty(albums) ? albums?.find(alb => alb.body === 'Photos').items : [];
+  const pictures = pics?.length > 15 ? pics.slice(0, 15) : pics;
   const album = [...albums, relatedAlbum]?.find(alb =>
     alb?.items?.some(pic => pic.body === pics[photoIndex]?.body),
   );
@@ -38,8 +35,8 @@ const DescriptionPage = ({ match }) => {
       window.scrollTo(0, 0);
     }
 
-    getObject(wobjName).then(res => setWobject(res));
-  }, [wobjName]);
+    getObject(name).then(res => setWobject(res));
+  }, [name]);
 
   const onPicClick = (e, pic) => {
     setIsOpen(true);
@@ -106,7 +103,13 @@ const DescriptionPage = ({ match }) => {
 };
 
 DescriptionPage.propTypes = {
-  match: PropTypes.shape.isRequired,
+  albums: PropTypes.arrayOf(),
+  relatedAlbum: PropTypes.shape(),
 };
 
-export default DescriptionPage;
+const mapStateToProps = state => ({
+  relatedAlbum: getRelatedPhotos(state),
+  albums: getObjectAlbums(state),
+});
+
+export default connect(mapStateToProps)(DescriptionPage);

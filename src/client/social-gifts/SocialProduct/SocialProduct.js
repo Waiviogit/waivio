@@ -49,8 +49,12 @@ import { objectFields } from '../../../common/constants/listOfFields';
 import { resetOptionClicked } from '../../../store/shopStore/shopActions';
 import { setStoreActiveOption } from '../../../store/optionsStore/optionsActions';
 import { getObject } from '../../../store/wObjectStore/wobjectsActions';
-import { getObject as getObjectState } from '../../../store/wObjectStore/wObjectSelectors';
+import {
+  getObject as getObjectState,
+  getWobjectAuthors,
+} from '../../../store/wObjectStore/wObjectSelectors';
 import './SocialProduct.less';
+import SocialProductReviews from './SocialProductReviews/SocialProductReviews';
 
 const limit = 30;
 
@@ -58,6 +62,7 @@ const SocialProduct = ({
   userName,
   locale,
   activeOption,
+  authors,
   activeCategory,
   siteName,
   appUrl,
@@ -258,7 +263,7 @@ const SocialProduct = ({
                 ))}
             </div>
           )}
-          {isMobile() && (
+          {isMobile() && authenticated && (
             <div className="SocialProduct__socialActions">
               <SocialProductActions
                 toggleViewEditMode={toggleViewEditMode}
@@ -284,7 +289,7 @@ const SocialProduct = ({
           )}
           <div className="SocialProduct__row SocialProduct__right-row">
             {!isMobile() && <div className="SocialProduct__wobjName">{wobject.name}</div>}
-            {!isMobile() && (
+            {!isMobile() && authenticated && (
               <div className="SocialProduct__socialActions">
                 <SocialProductActions
                   currentWobj={wobject}
@@ -396,6 +401,7 @@ const SocialProduct = ({
               </div>
             </div>
           )}
+          <SocialProductReviews wobject={wobject} authors={authors} />
         </div>
       </div>
     </div>
@@ -413,6 +419,7 @@ SocialProduct.propTypes = {
   siteName: PropTypes.string,
   appUrl: PropTypes.string,
   authenticated: PropTypes.bool,
+  authors: PropTypes.arrayOf(),
   optionClicked: PropTypes.bool,
   helmetIcon: PropTypes.string,
   setStoreActiveOpt: PropTypes.string,
@@ -427,6 +434,7 @@ const mapStateToProps = state => ({
   activeCategory: getActiveCategory(state),
   siteName: getWebsiteName(state),
   wobject: getObjectState(state),
+  authors: getWobjectAuthors(state),
   appUrl: getAppUrl(state),
   authenticated: getIsAuthenticated(state),
   optionClicked: getIsOptionClicked(state),

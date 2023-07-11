@@ -11,7 +11,11 @@ import AppendModal from '../AppendModal/AppendModal';
 import IconButton from '../../components/IconButton';
 import SortSelector from '../../components/SortSelector/SortSelector';
 import OBJECT_TYPE from '../const/objectTypes';
-import { getObjectName, sortAlphabetically } from '../../../common/helpers/wObjectHelper';
+import {
+  getObjectFieldName,
+  getObjectName,
+  sortAlphabetically,
+} from '../../../common/helpers/wObjectHelper';
 import { getExposedFieldsByObjType } from '../wObjectHelper';
 import { getIsAuthenticated } from '../../../store/authStore/authSelectors';
 import { getObject } from '../../../store/wObjectStore/wObjectSelectors';
@@ -59,6 +63,7 @@ const WobjHistory = ({
     <React.Fragment>
       <div className="wobj-history__filters">
         <Select
+          showSearch
           placeholder={
             <FormattedMessage id="object_field_placeholder" defaultMessage="Object field" />
           }
@@ -66,11 +71,7 @@ const WobjHistory = ({
           onChange={handleFieldChange}
         >
           {getExposedFieldsByObjType(object)
-            .map(f => (
-              <Select.Option key={f}>
-                {intl.formatMessage({ id: `object_field_${f}`, defaultMessage: f })}
-              </Select.Option>
-            ))
+            .map(f => <Select.Option key={f}>{getObjectFieldName(f, object, intl)}</Select.Option>)
             .sort((a, b) => sortAlphabetically(a.props.children, b.props.children))}
         </Select>
         <Select

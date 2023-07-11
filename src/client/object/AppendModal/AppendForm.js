@@ -85,6 +85,7 @@ import {
   getNewsFeedItems,
   sortAlphabetically,
   getSortItemListForModal,
+  getObjectFieldName,
 } from '../../../common/helpers/wObjectHelper';
 import { appendObject } from '../../../store/appendStore/appendActions';
 import withEditor from '../../components/Editor/withEditor';
@@ -3918,7 +3919,7 @@ class AppendForm extends Component {
     const fieldOptions = getExposedFieldsByObjType(wObject)
       .map(option => (
         <Select.Option key={option} value={option} className="Topnav__search-autocomplete">
-          {this.props.intl.formatMessage({ id: `object_field_${option}`, defaultMessage: option })}
+          {getObjectFieldName(option, wObject, this.props.intl)}
         </Select.Option>
       ))
       .sort((a, b) => sortAlphabetically(a.props.children, b.props.children));
