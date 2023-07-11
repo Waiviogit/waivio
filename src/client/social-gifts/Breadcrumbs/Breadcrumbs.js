@@ -6,11 +6,11 @@ import { Link } from 'react-router-dom';
 import { Icon } from 'antd';
 import { createNewHash, getObjectName } from '../../../common/helpers/wObjectHelper';
 import { getShopBreadCrumbs } from '../../../store/wObjectStore/wObjectSelectors';
+import { getUsedLocale } from '../../../store/appStore/appSelectors';
 import { getObjectInfo } from '../../../waivioApi/ApiClient';
 import { setAllBreadcrumbsForChecklist } from '../../../store/wObjectStore/wobjActions';
 
 import './Breadcrumbs.less';
-import { getUsedLocale } from '../../../store/appStore/appSelectors';
 
 const Breadcrumbs = () => {
   const breadcrumbs = useSelector(getShopBreadCrumbs);
@@ -21,6 +21,14 @@ const Breadcrumbs = () => {
   const linkList = location.hash
     ? [match.params.name, ...location.hash.replace('#', '').split('/')]
     : [match.params.name];
+
+  const getTruncatedTitle = title =>
+    title.length < 30
+      ? title
+      : `${title
+          .split(' ')
+          .slice(0, 3)
+          .join(' ')}...`;
 
   useEffect(() => {
     getObjectInfo(linkList, locale).then(res => {
@@ -61,7 +69,7 @@ const Breadcrumbs = () => {
               pathname: location.pathname,
             }}
           >
-            {getObjectName(crumb)}
+            {getTruncatedTitle(getObjectName(crumb))}
           </Link>
           {breadcrumbs.length > 1 && index !== breadcrumbs.length - 1 ? <Icon type="right" /> : ''}
         </React.Fragment>
