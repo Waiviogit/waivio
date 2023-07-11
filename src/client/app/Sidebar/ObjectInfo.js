@@ -287,6 +287,7 @@ class ObjectInfo extends React.Component {
             {accessExtend && (
               <div className="field-info__title">
                 <Proposition
+                  wObject={wobject}
                   objectID={wobject.author_permlink}
                   fieldName={name}
                   objName={getObjectName(wobject)}

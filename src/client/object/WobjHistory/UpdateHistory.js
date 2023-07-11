@@ -32,6 +32,7 @@ const UpdateHistory = () => {
   const pinorRemoveUpdate = updatesList?.filter(post => post.body === query);
   const isPinnedOrRemovedPost = ['pin', 'remove'].includes(field) && !isNil(query);
   const updates = isPinnedOrRemovedPost ? pinorRemoveUpdate : updatesList;
+  const searchField = field && field === 'menuList' ? 'listItem' : field;
 
   useEffect(() => {
     dispatch(resetUpdateList());
@@ -42,11 +43,11 @@ const UpdateHistory = () => {
   }, [field]);
 
   useEffect(() => {
-    dispatch(getUpdates(name, field, sort, locale));
+    dispatch(getUpdates(name, searchField, sort, locale));
   }, [name, field, sort, locale]);
 
   const handleLoadMore = () => {
-    dispatch(getMoreUpdates(name, updatesList?.length, field, sort, locale));
+    dispatch(getMoreUpdates(name, updatesList?.length, searchField, sort, locale));
   };
 
   if (appendLoading && !updatesList?.length) return <Loading />;
