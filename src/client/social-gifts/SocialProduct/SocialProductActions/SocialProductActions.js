@@ -37,12 +37,12 @@ const SocialProductActions = ({
       />
       {accessExtend && authenticated && (
         <React.Fragment>
-          {/*<Button onClick={toggleViewEditMode}>*/}
-          {/*  {isEditMode*/}
-          {/*    ? intl.formatMessage({ id: 'view', defaultMessage: 'View' })*/}
-          {/*    : intl.formatMessage({ id: 'edit', defaultMessage: 'Edit' })}*/}
-          {/*</Button>*/}
-          {wobject.youFollows && <BellButton wobj={wobject} />}
+          {/* <Button onClick={toggleViewEditMode}> */}
+          {/*  {isEditMode */}
+          {/*    ? intl.formatMessage({ id: 'view', defaultMessage: 'View' }) */}
+          {/*    : intl.formatMessage({ id: 'edit', defaultMessage: 'Edit' })} */}
+          {/* </Button> */}
+          {wobject.youFollows && <BellButton isSocialProduct wobj={wobject} />}
         </React.Fragment>
       )}
       {heartObjTypes && authenticated && !isGuest && (
