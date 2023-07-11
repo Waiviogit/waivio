@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
+import { isEmpty } from 'lodash';
 import { injectIntl } from 'react-intl';
 import { Modal } from 'antd';
 import { Block } from '../..';
@@ -68,7 +69,7 @@ class ImageSideButton extends React.Component {
         <Modal
           wrapClassName="Settings__modal"
           onCancel={this.handleOpenModal}
-          okButtonProps={{ disabled: isLoading }}
+          okButtonProps={{ disabled: isLoading || isEmpty(this.state.currentImage) }}
           cancelButtonProps={{ disabled: isLoading }}
           visible={isModal}
           onOk={this.handleOnOk}

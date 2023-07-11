@@ -32,17 +32,17 @@ const LeftSidebar = () => {
             </div>
           )}
         />
+        <Route path="/@:name/userShop/:department?" component={DepartmentsUser} />
         <Route
-          path="/@:name/userShop/:department?"
+          path="/user-shop/:name/:department?"
           render={() => (
             <div>
-              <DepartmentsUser />
+              <DepartmentsUser isSocial />
               <UserFilters />
             </div>
           )}
         />
-
-        <Route path="/user-shop/:name/:department?" render={() => <DepartmentsUser isSocial />} />
+        u
         <Route path="/@:name/wallet" component={SidebarMenu} />
         <Route path="/@:name" component={UserInfo} />
         <Route path="/object/:name" component={UserInfo} />

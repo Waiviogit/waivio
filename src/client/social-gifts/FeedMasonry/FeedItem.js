@@ -72,7 +72,7 @@ const FeedItem = ({ post, photoQuantity }) => {
         </Link>
       </div>
       <div className="FeedMasonry__likeWrap">
-        <div className="FeedMasonry__likeWrap">
+        <div className="FeedMasonry__postWrap">
           {Boolean(post.active_votes.length) && (
             <span className="FeedMasonry__icon">
               <i className="iconfont icon-praise_fill" /> <span>{post.active_votes.length}</span>
@@ -84,7 +84,7 @@ const FeedItem = ({ post, photoQuantity }) => {
             </span>
           )}
           {Boolean(post?.reblogged_users?.length) && (
-            <span className="FeedMasonry__icon">
+            <span className="FeedMasonry__icon FeedMasonry__icon--reblog">
               <i className="iconfont icon-share1" /> <span>{post?.reblogged_users?.length}</span>
             </span>
           )}

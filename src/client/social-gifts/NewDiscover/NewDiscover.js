@@ -36,21 +36,19 @@ const NewDiscover = () => {
 
   useEffect(() => {
     const ac = new AbortController();
+    const requestData = {
+      locale,
+      wobjects_count,
+    };
 
     setLoading(true);
 
-    getObjectType(
-      type,
-      {
-        locale,
+    if (search)
+      requestData.filter = {
         searchString: search,
-        wobjects_count,
-        filter: {
-          searchString: search,
-        },
-      },
-      ac,
-    ).then(res => {
+      };
+
+    getObjectType(type, requestData, ac).then(res => {
       setObjects(uniqBy(res?.related_wobjects, 'author_permlink'));
       setHasMoreObjects(res?.hasMoreWobjects);
       setLoading(false);
