@@ -407,3 +407,18 @@ export const showDescriptionPage = async (wobject, locale) => {
     !wobject.menuItems
   );
 };
+
+export const getObjectFieldName = (field, object, intl) => {
+  if (object?.object_type === 'list') {
+    switch (field) {
+      case 'sortCustom':
+        return intl.formatMessage({ id: `list_sorting`, defaultMessage: 'List sorting' });
+      case 'menuList':
+        return intl.formatMessage({ id: `list_item`, defaultMessage: 'List item' });
+      default:
+        return intl.formatMessage({ id: `object_field_${field}`, defaultMessage: field });
+    }
+  } else {
+    return intl.formatMessage({ id: `object_field_${field}`, defaultMessage: field });
+  }
+};

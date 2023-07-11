@@ -8,7 +8,7 @@ import AppendModal from '../../object/AppendModal/AppendModal';
 import IconButton from '../IconButton';
 import { objectFields } from '../../../common/constants/listOfFields';
 import CreateAlbum from '../../object/ObjectGallery/CreateAlbum';
-import { isPhotosAlbumExist } from '../../../common/helpers/wObjectHelper';
+import { getObjectFieldName, isPhotosAlbumExist } from '../../../common/helpers/wObjectHelper';
 import './Proposition.less';
 
 class Proposition extends React.Component {
@@ -74,10 +74,7 @@ class Proposition extends React.Component {
               to={{ pathname: `/object/${objectID}/updates/${fieldName}` }}
               onClick={handleSelectField(fieldName)}
             >
-              {intl.formatMessage({
-                id: `object_field_${fieldName}`,
-                defaultMessage: fieldName,
-              })}
+              {getObjectFieldName(fieldName, this.props.wObject, intl)}
             </Link>
           </div>
         </div>
@@ -88,6 +85,7 @@ class Proposition extends React.Component {
 }
 Proposition.propTypes = {
   objName: PropTypes.string,
+  wObject: PropTypes.shape(),
   fieldName: PropTypes.string.isRequired,
   objectID: PropTypes.string.isRequired,
   intl: PropTypes.shape().isRequired,

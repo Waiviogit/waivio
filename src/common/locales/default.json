@@ -2280,5 +2280,7 @@
   "not_show_objects_linked": "Do not show objects linked in posts",
   "any_campaigns_yet": "You don't have any campaigns yet",
   "campaign_stopped": "The terms and conditions of the rewards campaign ${item.name} will be stopped on Hive blockchain",
-  "campaign_published": "The terms and conditions of the rewards campaign ${item.name} will be published on Hive blockchain"
+  "campaign_published": "The terms and conditions of the rewards campaign ${item.name} will be published on Hive blockchain",
+  "list_sorting":"List sorting",
+  "list_item":"List item"
 }
