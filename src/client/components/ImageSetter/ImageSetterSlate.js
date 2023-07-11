@@ -40,6 +40,7 @@ const ImageSetter = ({
   isModal,
   imagesList,
   isEditable,
+  setDisabledOkButton,
 }) => {
   const imageLinkInput = useRef(null);
   const [currentImages, setCurrentImages] = useState([]);
@@ -86,6 +87,10 @@ const ImageSetter = ({
       onImageLoaded(currentImages);
     }
   }, [currentImages]);
+
+  useEffect(() => {
+    setDisabledOkButton(isOpen);
+  }, [isOpen]);
 
   const clearImageState = () => setCurrentImages([]);
 
@@ -401,6 +406,7 @@ ImageSetter.propTypes = {
   isRequired: PropTypes.bool,
   isTitle: PropTypes.bool,
   setEditorState: PropTypes.func,
+  setDisabledOkButton: PropTypes.func,
   getEditorState: PropTypes.func,
   isOkayBtn: PropTypes.bool,
   imagesList: PropTypes.arrayOf(),
