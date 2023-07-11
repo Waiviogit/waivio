@@ -124,6 +124,17 @@
     &--fullForm {
       width: calc(100% - (@margin));
     }
+
+    &--withoutRigth {
+      width: calc(100% - (220px + @margin));
+
+      @media only screen and (max-width: @medium-bp) and (min-width: @small-bp) {
+        width: 100%;
+      }
+      @media only screen and (max-width: @small-bp) {
+        width: 100%;
+      }
+    }
   }
 }
 

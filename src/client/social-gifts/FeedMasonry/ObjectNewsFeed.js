@@ -27,7 +27,7 @@ const ObjectNewsFeed = ({ wobj }) => {
 
   const { name } = useParams();
   const location = useLocation();
-  const objName = location.hash ? getLastPermlinksFromHash(location.hash) : name;
+  const objName = wobj?.author_permlink || getLastPermlinksFromHash(location.hash) || name;
 
   const postsIds = uniq(getFeedFromState('objectPosts', objName, feed));
   const hasMore = getFeedHasMoreFromState('objectPosts', objName, feed);
@@ -76,7 +76,7 @@ const ObjectNewsFeed = ({ wobj }) => {
       }),
     );
 
-  if (isEmpty(posts) && isFetching) return <Loading />;
+  if (isEmpty(posts) && isFetching) return <Loading margin />;
 
   return <FeedMasonry posts={posts} hasMore={hasMore} loadMore={loadMore} loading={isFetching} />;
 };

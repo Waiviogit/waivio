@@ -3213,6 +3213,7 @@ export const getUserShopMainFeed = (
   skip,
   path,
   limit,
+  categoryLimit,
 ) =>
   fetch(`${config.apiPrefix}${config.shop}${config.user}${config.mainFeed}`, {
     headers: {
@@ -3228,6 +3229,7 @@ export const getUserShopMainFeed = (
       skip,
       limit,
       path,
+      categoryLimit,
     }),
   })
     .then(res => res.json())
@@ -3243,6 +3245,7 @@ export const getShopMainFeed = (
   skip,
   path,
   limit = 10,
+  categoryLimit,
 ) =>
   fetch(`${config.apiPrefix}${config.shop}${config.mainFeed}`, {
     headers: {
@@ -3258,6 +3261,7 @@ export const getShopMainFeed = (
       skip,
       limit,
       path,
+      categoryLimit,
     }),
   })
     .then(res => res.json())
@@ -3273,6 +3277,7 @@ export const getWobjectShopMainFeed = (
   filter,
   path,
   limit = 10,
+  categoryLimit,
 ) =>
   fetch(`${config.apiPrefix}${config.shop}${config.getObjects}${config.mainFeed}`, {
     headers: {
@@ -3288,6 +3293,7 @@ export const getWobjectShopMainFeed = (
       limit,
       department,
       path,
+      categoryLimit,
     }),
   })
     .then(res => res.json())

@@ -57,7 +57,7 @@ const ReservedButtons = props => {
             <React.Fragment>
               <PopoverMenu onSelect={handlePopoverClick} bold={false}>
                 <PopoverMenuItem key="reserve" disabled={props.disable}>
-                  <Icon type="user" />{' '}
+                  {!props.isSocialProduct && <Icon type="user" />}{' '}
                   {props.intl.formatMessage({
                     id: 'reserve_the_rewards_for',
                     defaultMessage: 'Reserve the reward for',
@@ -88,6 +88,7 @@ ReservedButtons.propTypes = {
   disable: PropTypes.bool,
   reserved: PropTypes.bool,
   inCard: PropTypes.bool,
+  isSocialProduct: PropTypes.bool,
   reservedDays: PropTypes.number,
   intl: PropTypes.shape().isRequired,
 };

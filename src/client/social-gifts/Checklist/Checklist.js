@@ -14,8 +14,7 @@ import {
   getObjectAvatar,
   getObjectName,
 } from '../../../common/helpers/wObjectHelper';
-import { setBreadcrumbForChecklist, setListItems } from '../../../store/wObjectStore/wobjActions';
-import { getObjectLists } from '../../../store/wObjectStore/wObjectSelectors';
+import { setBreadcrumbForChecklist } from '../../../store/wObjectStore/wobjActions';
 import Loading from '../../components/Icon/Loading';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 
@@ -37,9 +36,7 @@ import './Checklist.less';
 
 const Checklist = ({
   userName,
-  listItems,
   locale,
-  setLists,
   history,
   intl,
   match,
@@ -50,6 +47,7 @@ const Checklist = ({
   isSocialProduct,
 }) => {
   const [loading, setLoading] = useState(true);
+  const [listItems, setLists] = useState(true);
   const [object, setObject] = useState(false);
   const favicon = useSelector(getHelmetIcon);
   const siteName = useSelector(getSiteName);
@@ -194,27 +192,23 @@ Checklist.propTypes = {
   permlink: PropTypes.string,
   hideBreadCrumbs: PropTypes.bool,
   locale: PropTypes.string.isRequired,
-  listItems: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   intl: PropTypes.arrayOf(PropTypes.shape({ formatMessage: PropTypes.func })).isRequired,
   match: PropTypes.shape({
     params: PropTypes.shape({
       name: PropTypes.string,
     }),
   }).isRequired,
-  setLists: PropTypes.func.isRequired,
   isSocialProduct: PropTypes.bool,
   setBreadcrumb: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = state => ({
-  listItems: getObjectLists(state),
   locale: getSuitableLanguage(state),
   userName: getAuthenticatedUserName(state),
   defaultListImage: getWebsiteDefaultIconList(state),
 });
 
 const mapDispatchToProps = {
-  setLists: setListItems,
   setBreadcrumb: setBreadcrumbForChecklist,
 };
 

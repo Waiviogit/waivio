@@ -50,7 +50,7 @@ const UserBlogFeed = () => {
       loadingMore={isFetching}
       hasMore={hasMore}
       elementIsScrollable={false}
-      threshold={1500}
+      threshold={2500}
     >
       <Masonry
         breakpointCols={breakpointColumnsObj(posts?.length)}

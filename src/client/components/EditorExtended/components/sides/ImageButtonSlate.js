@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
+import { isEmpty } from 'lodash';
 import { injectIntl } from 'react-intl';
 import { Modal } from 'antd';
 import { Block } from '../..';
@@ -19,6 +20,7 @@ class ImageSideButton extends React.Component {
 
     this.state = {
       isModal: false,
+      disabledOkButton: true,
       isLoadingImage: false,
       isLoading: false,
       currentImage: [],
@@ -41,7 +43,7 @@ class ImageSideButton extends React.Component {
   getImages = image => this.setState({ currentImage: image });
 
   render() {
-    const { isLoading, isModal, isOkayBtn } = this.state;
+    const { isLoading, isModal, isOkayBtn, disabledOkButton, currentImage } = this.state;
 
     return (
       <React.Fragment>
@@ -68,12 +70,13 @@ class ImageSideButton extends React.Component {
         <Modal
           wrapClassName="Settings__modal"
           onCancel={this.handleOpenModal}
-          okButtonProps={{ disabled: isLoading }}
+          okButtonProps={{ disabled: isLoading || isEmpty(currentImage) || disabledOkButton }}
           cancelButtonProps={{ disabled: isLoading }}
           visible={isModal}
           onOk={this.handleOnOk}
         >
           <ImageSetter
+            setDisabledOkButton={val => this.setState({ disabledOkButton: val })}
             isEditable
             onImageLoaded={this.getImages}
             onLoadingImage={this.onLoadingImage}
