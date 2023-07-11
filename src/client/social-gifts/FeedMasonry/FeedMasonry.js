@@ -12,17 +12,12 @@ import { breakpointColumnsObj } from './helpers';
 import './FeedMasonry.less';
 
 const FeedMasonry = ({ loadMore, hasMore, posts, loading }) => {
-  if (loading && isEmpty(posts))
-    return (
-      <div className="FeedMasonry__loading">
-        <Loading />
-      </div>
-    );
+  if (loading && isEmpty(posts)) return <Loading margin />;
 
   if (isEmpty(posts)) return <div className="FeedMasonry__emptyFeed">There are no posts yet</div>;
 
   return (
-    <InfiniteSroll threshold={2000} loader={<Loading />} hasMore={hasMore} loadMore={loadMore}>
+    <InfiniteSroll threshold={3000} loader={<Loading />} hasMore={hasMore} loadMore={loadMore}>
       <Masonry
         breakpointCols={breakpointColumnsObj(posts?.length)}
         className="FeedMasonry my-masonry-grid"

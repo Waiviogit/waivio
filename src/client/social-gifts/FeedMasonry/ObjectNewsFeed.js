@@ -76,7 +76,7 @@ const ObjectNewsFeed = ({ wobj }) => {
       }),
     );
 
-  if (isEmpty(posts) && isFetching) return <Loading />;
+  if (isEmpty(posts) && isFetching) return <Loading margin />;
 
   return <FeedMasonry posts={posts} hasMore={hasMore} loadMore={loadMore} loading={isFetching} />;
 };
