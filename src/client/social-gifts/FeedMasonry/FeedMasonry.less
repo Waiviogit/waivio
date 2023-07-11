@@ -73,6 +73,14 @@
     margin-right: 5px;
     font-size: 14px;
 
+    &--reblog {
+      display: none;
+
+      @media @small {
+        display: inline-block;
+      }
+    }
+
     i {
       margin-right: 2px;
     }
@@ -88,6 +96,7 @@
 
   .USDDisplay {
     font-size: 14px;
+    white-space: nowrap;
 
     @media @small {
       font-size: 16px;
@@ -163,6 +172,22 @@
     align-items: center;
     justify-content: space-between;
     padding: 5px;
+    color: var(--website-color);
+    flex-wrap: wrap;
+
+    .Payout__waiv-eligible {
+      display: none;
+    }
+
+    .iconfont.icon-flashlight {
+      display: none;
+    }
+  }
+
+  &__postWrap {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     color: var(--website-color);
   }
 
