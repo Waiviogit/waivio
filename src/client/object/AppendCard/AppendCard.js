@@ -28,6 +28,8 @@ import { voteAppends } from '../../../store/appendStore/appendActions';
 import '../../components/Story/Story.less';
 import '../../components/StoryFooter/StoryFooter.less';
 import '../../components/StoryFooter/Buttons.less';
+import { getObjectFieldName } from '../../../common/helpers/wObjectHelper';
+import { getObject } from '../../../store/wObjectStore/wObjectSelectors';
 
 const AppendCard = props => {
   const [visibleSlider, showSlider] = useState(false);
@@ -114,11 +116,6 @@ const AppendCard = props => {
     );
   };
 
-  const fieldName = {
-    id: `object_field_${props.post.name}`,
-    defaultMessage: props.post.name,
-  };
-
   return (
     <div className="Story">
       <div className="Story__content">
@@ -158,7 +155,7 @@ const AppendCard = props => {
           rel="noopener noreferrer"
           className="Story__content__title"
         >
-          <h2>{props.intl.formatMessage(fieldName)}</h2>
+          <h2>{getObjectFieldName(props.post.name, props.wobj, props.intl)}</h2>
         </a>
         <a
           href={`/@${props.post.author}/${props.post.permlink}`}
@@ -200,6 +197,7 @@ const AppendCard = props => {
 
 AppendCard.propTypes = {
   post: PropTypes.shape().isRequired,
+  wobj: PropTypes.shape().isRequired,
   defaultVotePercent: PropTypes.number.isRequired,
   voteAppends: PropTypes.func.isRequired,
   user: PropTypes.shape().isRequired,
@@ -216,6 +214,7 @@ const mapStateToProps = state => ({
   showNSFWPosts: getShowNSFWPosts(state),
   user: getAuthenticatedUser(state),
   isGuest: isGuestUser(state),
+  wobj: getObject(state),
 });
 
 export default connect(mapStateToProps, {
