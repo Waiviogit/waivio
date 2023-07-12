@@ -146,6 +146,7 @@ const CatalogWrap = props => {
     const isRejected = getAppendDownvotes(listItem?.active_votes).some(
       item => item?.voter === userName,
     );
+    const onReportClick = isEditMode ? handleReportClick : null;
 
     if (listItem?.propositions)
       return listItem?.propositions.map(propos => (
@@ -156,7 +157,7 @@ const CatalogWrap = props => {
             object: listItem,
             requiredObject: !isEmpty(listItem.parent) ? listItem.parent : propos?.requiredObject,
           }}
-          handleReportClick={handleReportClick}
+          handleReportClick={onReportClick}
           isRejected={isRejected}
           type={propos.reserved ? 'reserved' : ''}
         />
@@ -165,7 +166,7 @@ const CatalogWrap = props => {
     if (listItem?.campaigns) {
       return (
         <Campaing
-          handleReportClick={handleReportClick}
+          handleReportClick={onReportClick}
           isRejected={isRejected}
           campain={{ object: listItem, ...listItem?.campaigns }}
         />
@@ -185,7 +186,7 @@ const CatalogWrap = props => {
     if (isList) {
       item = (
         <CategoryItemView
-          handleReportClick={handleReportClick}
+          handleReportClick={onReportClick}
           wObject={listItem}
           location={location}
           isRejected={isRejected}
@@ -194,7 +195,7 @@ const CatalogWrap = props => {
     } else {
       item = (
         <ObjectCardView
-          handleReportClick={handleReportClick}
+          handleReportClick={onReportClick}
           wObject={listItem}
           path={path}
           inList

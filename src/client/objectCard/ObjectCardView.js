@@ -5,6 +5,8 @@ import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import classNames from 'classnames';
+import { Icon } from 'antd';
+
 import RatingsWrap from './RatingsWrap/RatingsWrap';
 import DEFAULTS from '../object/const/defaultValues';
 import {
@@ -45,6 +47,8 @@ const ObjectCardView = ({
   const username = useSelector(getAuthenticatedUserName);
   const isGuest = guestUserRegex.test(username);
   const [tags, setTags] = useState([]);
+  const [rejected, setRejected] = useState(isRejected);
+  const [rejectedLoading, setRejectedLoading] = useState(isRejected);
   const address = parseAddress(wObject, ['postalCode', 'country']);
   const parent = isEmpty(passedParent) ? get(wObject, 'parent', {}) : passedParent;
   const parentLink = get(parent, 'defaultShowLink');
@@ -130,17 +134,28 @@ const ObjectCardView = ({
               >
                 {objName}
               </Link>
-              {handleReportClick && username && (
-                <span
-                  className={classNames({
-                    CategoryItemView__reject: !isRejected,
-                    CategoryItemView__rejected: isRejected,
-                  })}
-                  onClick={() => handleReportClick(wObject.author_permlink)}
-                >
-                  ({isRejected ? 'rejected' : 'reject'})
-                </span>
-              )}
+              {handleReportClick &&
+                username &&
+                (rejectedLoading ? (
+                  <Icon type="loading" />
+                ) : (
+                  <span
+                    className={classNames({
+                      CategoryItemView__reject: !rejected,
+                      CategoryItemView__rejected: rejected,
+                    })}
+                    onClick={() => {
+                      setRejectedLoading(true);
+                      if (!rejected)
+                        handleReportClick(wObject.author_permlink).then(() => {
+                          setRejected(true);
+                          setRejectedLoading(false);
+                        });
+                    }}
+                  >
+                    ({rejected ? 'rejected' : 'reject'})
+                  </span>
+                ))}
               {/* {!isNaN(wObject.weight) && <WeightTag weight={Number(wObject.weight)} />} */}
             </div>
             {wObject.rating && (

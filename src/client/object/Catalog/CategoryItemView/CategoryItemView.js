@@ -12,6 +12,7 @@ import './CategoryItemView.less';
 
 const CategoryItemView = ({ wObject, intl, location, handleReportClick, isRejected }) => {
   const [rejected, setRejected] = useState(isRejected);
+  const [rejectedLoading, setRejectedLoading] = useState(isRejected);
   const pathName = wObject.author_permlink;
   const isAuth = useSelector(getIsAuthenticated);
   const linkTo = location.hash === '' ? `#${pathName}` : `${location.hash}/${pathName}`;
@@ -37,20 +38,28 @@ const CategoryItemView = ({ wObject, intl, location, handleReportClick, isReject
             <span className="items-count">&nbsp;({wObject.listItemsCount})</span>
           ) : null}
         </Link>
-        {isAuth && (
-          <span
-            className={classNames({
-              CategoryItemView__reject: !isRejected,
-              CategoryItemView__rejected: isRejected,
-            })}
-            onClick={() => {
-              if (!rejected)
-                handleReportClick(wObject.author_permlink).then(() => setRejected(true));
-            }}
-          >
-            ({rejected ? 'rejected' : 'reject'})
-          </span>
-        )}
+        {isAuth &&
+          handleReportClick &&
+          (rejectedLoading ? (
+            <Icon type="loading" />
+          ) : (
+            <span
+              className={classNames({
+                CategoryItemView__reject: !isRejected,
+                CategoryItemView__rejected: isRejected,
+              })}
+              onClick={() => {
+                setRejectedLoading(true);
+                if (!rejected)
+                  handleReportClick(wObject.author_permlink).then(() => {
+                    setRejected(true);
+                    setRejectedLoading(false);
+                  });
+              }}
+            >
+              ({rejected ? 'rejected' : 'reject'})
+            </span>
+          ))}
       </div>
       <Link
         key={wObject.author_permlink}
@@ -74,7 +83,7 @@ CategoryItemView.propTypes = {
 
 CategoryItemView.defaultProps = {
   location: '',
-  handleReportClick: () => {},
+  handleReportClick: null,
 };
 
 export default injectIntl(CategoryItemView);
