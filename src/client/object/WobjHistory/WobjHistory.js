@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Select, Icon } from 'antd';
 import { connect } from 'react-redux';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import { useHistory } from 'react-router';
+import { useHistory, useParams } from 'react-router';
 import { objectFields } from '../../../common/constants/listOfFields';
 import LANGUAGES from '../../../common/translations/languages';
 import { getLanguageText } from '../../../common/translations';
@@ -34,7 +34,8 @@ const WobjHistory = ({
   intl,
 }) => {
   const history = useHistory();
-  const [currField, setCurrField] = useState(undefined);
+  const { 0: fieldUpdate } = useParams();
+  const [currField, setCurrField] = useState(getObjectFieldName(fieldUpdate, object, intl));
   const [showModal, setShowModal] = useState(false);
 
   const updateFields = getExposedFieldsByObjType(object).reduce(
