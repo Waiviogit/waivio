@@ -1,7 +1,7 @@
 import { withRouter } from 'react-router-dom';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
-import { isEmpty, get, map } from 'lodash';
+import { isEmpty, get, map, some } from 'lodash';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { sortListItemsBy } from '../wObjectHelper';
@@ -20,6 +20,7 @@ import {
   setLoadedNestedWobject,
   setListItems,
   setNestedWobject,
+  rejectListItem,
 } from '../../../store/wObjectStore/wobjActions';
 import * as ApiClient from '../../../waivioApi/ApiClient';
 import {
@@ -37,6 +38,7 @@ import Loading from '../../components/Icon/Loading';
 import CatalogBreadcrumb from './CatalogBreadcrumb/CatalogBreadcrumb';
 import CatalogSorting from './CatalogSorting/CatalogSorting';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
+import { getAppendDownvotes, getAppendUpvotes } from '../../../common/helpers/voteHelpers';
 
 import './CatalogWrap.less';
 
@@ -123,6 +125,15 @@ const CatalogWrap = props => {
     setRecencySortList(currentRecencySortList);
   };
   const obj = isEmpty(wobjectNested) ? wobject : wobjectNested;
+  const handleReportClick = permlink => {
+    const post = obj?.listItem.find(({ body }) => body === permlink);
+    const upVotes = getAppendUpvotes(post.active_votes);
+    const isLiked = some(upVotes, { voter: userName });
+    const onlyMyLike = isLiked && post.active_votes.length === 1;
+    const voteWeight = onlyMyLike || isEmpty(post.active_votes) ? 1 : 9999;
+
+    return props.rejectListItem(userName, post.author, post.permlink, voteWeight);
+  };
 
   const handleSortChange = sortType => {
     setSortingBy(sortType);
@@ -132,6 +143,11 @@ const CatalogWrap = props => {
   const isReviewPage = location.pathname === `/object/${get(wobject, 'author_permlink', '')}`;
 
   const getListRow = listItem => {
+    const isRejected = getAppendDownvotes(listItem?.active_votes).some(
+      item => item?.voter === userName,
+    );
+    const onReportClick = isEditMode ? handleReportClick : null;
+
     if (listItem?.propositions)
       return listItem?.propositions.map(propos => (
         <PropositionNew
@@ -141,12 +157,20 @@ const CatalogWrap = props => {
             object: listItem,
             requiredObject: !isEmpty(listItem.parent) ? listItem.parent : propos?.requiredObject,
           }}
+          handleReportClick={onReportClick}
+          isRejected={isRejected}
           type={propos.reserved ? 'reserved' : ''}
         />
       ));
 
     if (listItem?.campaigns) {
-      return <Campaing campain={{ object: listItem, ...listItem?.campaigns }} />;
+      return (
+        <Campaing
+          handleReportClick={onReportClick}
+          isRejected={isRejected}
+          campain={{ object: listItem, ...listItem?.campaigns }}
+        />
+      );
     }
 
     const isList = listItem.object_type === OBJ_TYPE.LIST || listItem.type === OBJ_TYPE.LIST;
@@ -160,9 +184,24 @@ const CatalogWrap = props => {
     let item;
 
     if (isList) {
-      item = <CategoryItemView wObject={listItem} location={location} />;
+      item = (
+        <CategoryItemView
+          handleReportClick={onReportClick}
+          wObject={listItem}
+          location={location}
+          isRejected={isRejected}
+        />
+      );
     } else {
-      item = <ObjectCardView wObject={listItem} path={path} inList />;
+      item = (
+        <ObjectCardView
+          handleReportClick={onReportClick}
+          wObject={listItem}
+          path={path}
+          inList
+          isRejected={isRejected}
+        />
+      );
     }
 
     return !isReviewPage && <div key={`category-${listItem.author_permlink}`}>{item}</div>;
@@ -231,6 +270,7 @@ CatalogWrap.propTypes = {
   intl: PropTypes.arrayOf(PropTypes.shape({ formatMessage: PropTypes.func })).isRequired,
   setLists: PropTypes.func.isRequired,
   setNestedWobj: PropTypes.func.isRequired,
+  rejectListItem: PropTypes.func.isRequired,
   setLoadingNestedWobject: PropTypes.func.isRequired,
   isLoadingFlag: PropTypes.bool,
 };
@@ -259,6 +299,7 @@ const mapDispatchToProps = {
   setLists: setListItems,
   setNestedWobj: setNestedWobject,
   setLoadingNestedWobject: setLoadedNestedWobject,
+  rejectListItem,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(injectIntl(CatalogWrap)));

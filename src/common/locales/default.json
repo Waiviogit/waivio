@@ -1556,7 +1556,7 @@
   "days_remaning": "Days remaining (est)**",
   "website": "Website",
   "website_management": "Manage websites",
-  "empty_dynamic_table": "No records",
+  "empty_dynamic_table": "There are no records yet",
   "vote_sponsor": "Sponsor:",
   "vote_upvotes": "Upvotes:",
   "flag": "Flag",
@@ -1579,7 +1579,7 @@
   "balance_run_out_three_days": "Warning: website account balance may run out in 3 days",
   "balance_run_out_two_days": "Warning: website account balance may run out in 2 days",
   "balance_run_out_day": "Warning: website account balance may run out in 1 day",
-  "manage_website_empty_table": "You don't have any websites.",
+  "manage_website_empty_table": "There are no websites yet",
   "delete_website_modal_body": "Warning: All configuration data and website pages will be removed. The name of the website will be no longer protected.",
   "delete_website_modal_title": "Delete {host} website",
   "unmute": "Unmute",
@@ -2264,7 +2264,7 @@
   "chrome_extension_upload": "Upload to Waivio",
   "chrome_extension_about_upload": "tool scans the Amazon URL, generates the required file, and immediately initiates the import to Waivio under the currently logged-in user",
   "chrome_extension_create_draft": "Create post draft",
-  "chrome_extension_about_create_draft": "tool can create a post based on a YouTube video using chat GPT",
+  "chrome_extension_about_create_draft": "tool can create a post based on a YouTube video using ChatGPT",
   "chrome_extension_link_information_title": "Link information",
   "chrome_extension_link_note": "Please note that in order for the extension to work correctly, the Amazon page link should look as follows",
   "chrome_extension_region_note": "Here, amazon.com can be replaced with any Amazon regional site as well",
@@ -2278,5 +2278,10 @@
   "chrome-extension": "Chrome extension",
   "manage_your_public_shopping": "You can manage your public shopping list in the profile.",
   "not_show_objects_linked": "Do not show objects linked in posts",
-  "any_campaigns_yet": "You don't have any campaigns yet"
+  "any_campaigns_yet": "You don't have any campaigns yet",
+  "campaign_stopped": "The terms and conditions of the rewards campaign ${item.name} will be stopped on Hive blockchain",
+  "receive_object_news": "Receive object news",
+  "campaign_published": "The terms and conditions of the rewards campaign ${item.name} will be published on Hive blockchain",
+  "list_sorting":"List sorting",
+  "list_item":"List item"
 }

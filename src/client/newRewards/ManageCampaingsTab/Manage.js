@@ -97,10 +97,24 @@ export const Manage = ({ intl, guideName, setHistoryLoading }) => {
 
   const showConfirm = item => {
     const isActive = campaingIsActive(item.status);
-    const title = isActive ? 'Deactivate rewards campaign' : 'Activate rewards campaign';
+    const title = isActive
+      ? intl.formatMessage({
+          id: 'deactivate_campaign',
+          defaultMessage: 'Deactivate rewards campaign',
+        })
+      : intl.formatMessage({
+          id: 'activate_campaign',
+          defaultMessage: 'Activate rewards campaign',
+        });
     const content = isActive
-      ? `The terms and conditions of the rewards campaign ${item.name} will be stopped on Hive blockchain`
-      : `The terms and conditions of the rewards campaign ${item.name} will be published on Hive blockchain`;
+      ? intl.formatMessage({
+          id: 'campaign_stopped',
+          defaultMessage: `The terms and conditions of the rewards campaign ${item.name} will be stopped on Hive blockchain`,
+        })
+      : intl.formatMessage({
+          id: 'campaign_published',
+          defaultMessage: `The terms and conditions of the rewards campaign ${item.name} will be published on Hive blockchain`,
+        });
 
     Modal.confirm({
       title,

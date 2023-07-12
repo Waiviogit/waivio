@@ -2,6 +2,7 @@ import { get, some, filter, isEmpty, compact, isEqual, has } from 'lodash';
 import { addressFieldsForFormatting, TYPES_OF_MENU_ITEM } from '../constants/listOfFields';
 import LANGUAGES from '../translations/languages';
 import { parseJSON } from './parseJSON';
+import { getFeedContentByObject } from '../../waivioApi/ApiClient';
 
 export const getObjectName = (wobj = {}) =>
   get(wobj, 'name') ||
@@ -311,7 +312,15 @@ export const getSortItemListForModal = (sortedList, itemsList) => {
   return [...customSort, ...withoutSorting, ...exclude];
 };
 
-export const getListItems = wobject => get(wobject, 'listItems', []);
+export const getListItems = wobject =>
+  get(wobject, 'listItems', []).map(item => {
+    const post = wobject?.listItem.find(({ body }) => body === item.author_permlink);
+
+    return {
+      ...item,
+      active_votes: post.active_votes,
+    };
+  });
 export const getListItem = wobject => get(wobject, 'listItem', []);
 
 export const itemsList = (sort, wobj) =>
@@ -393,9 +402,57 @@ export const sortByFieldPermlinksList = (permlinksArr, objects) =>
     return acc;
   }, []);
 
-export const showDescriptionPage = wobject =>
-  !['list', 'page', 'widget', 'newsfeed'].includes(wobject.object_type) &&
-  has(wobject, 'description') &&
-  wobject.count_posts === 0 &&
-  !wobject.menuItem &&
-  !wobject.menuItems;
+export const showDescriptionPage = async (wobject, locale) => {
+  const hasPosts = await getFeedContentByObject(wobject.author_permlink, 1, [], locale).then(
+    res => !isEmpty(res),
+  );
+
+  return (
+    !['list', 'page', 'widget', 'newsfeed'].includes(wobject.object_type) &&
+    has(wobject, 'description') &&
+    !hasPosts &&
+    !wobject.menuItem &&
+    !wobject.menuItems
+  );
+};
+export const handleCreatePost = (wobject, authors, history) => {
+  if (wobject && wobject.author_permlink) {
+    let redirectUrl = `/editor?object=`;
+
+    if (!isEmpty(wobject.parent)) {
+      const parentObject = wobject.parent;
+
+      redirectUrl += `${encodeURIComponent(
+        `[${getObjectName(parentObject)}](${parentObject.author_permlink})`,
+      )}&object=`;
+    }
+
+    redirectUrl += encodeURIComponent(`[${getObjectName(wobject)}](${wobject.author_permlink})`);
+
+    if (!isEmpty(wobject.authors)) {
+      authors.forEach(author => {
+        redirectUrl += author.author_permlink
+          ? `&author=${encodeURIComponent(`[${author.name}](${author.author_permlink})`)}`
+          : `&author=${encodeURIComponent(author.name)}`;
+      });
+    }
+
+    history.push(redirectUrl);
+  }
+};
+
+export const getObjectFieldName = (field, object, intl) => {
+  if (object?.object_type === 'list') {
+    switch (field) {
+      case 'sortCustom':
+        return intl.formatMessage({ id: `list_sorting`, defaultMessage: 'List sorting' });
+      case 'menuList':
+        return intl.formatMessage({ id: `list_item`, defaultMessage: 'List item' });
+      default:
+        return intl.formatMessage({ id: `object_field_${field}`, defaultMessage: field });
+    }
+  } else {
+    return intl.formatMessage({ id: `object_field_${field}`, defaultMessage: field });
+  }
+};
+export const getUpdateFieldName = field => (field && field === 'menuList' ? 'listItem' : field);

@@ -638,13 +638,14 @@ export const getObjectTypes = (limit = 10, skip = 0, wobjects_count = 3, locale)
     .then(result => result)
     .catch(error => error);
 
-export const getObjectType = (typeName, requestData) => {
+export const getObjectType = (typeName, requestData, abortController) => {
   const { locale = 'en-US', userName } = requestData;
 
   return fetch(`${config.apiPrefix}${config.objectType}/${typeName}`, {
     headers: { ...headers, follower: userName, app: config.appName, locale },
     method: 'POST',
     body: JSON.stringify(requestData),
+    ...(abortController && { signal: abortController.signal }),
   })
     .then(res => res.json())
     .then(data => data)
@@ -3212,6 +3213,7 @@ export const getUserShopMainFeed = (
   skip,
   path,
   limit,
+  categoryLimit,
 ) =>
   fetch(`${config.apiPrefix}${config.shop}${config.user}${config.mainFeed}`, {
     headers: {
@@ -3227,6 +3229,7 @@ export const getUserShopMainFeed = (
       skip,
       limit,
       path,
+      categoryLimit,
     }),
   })
     .then(res => res.json())
@@ -3242,6 +3245,7 @@ export const getShopMainFeed = (
   skip,
   path,
   limit = 10,
+  categoryLimit,
 ) =>
   fetch(`${config.apiPrefix}${config.shop}${config.mainFeed}`, {
     headers: {
@@ -3257,6 +3261,7 @@ export const getShopMainFeed = (
       skip,
       limit,
       path,
+      categoryLimit,
     }),
   })
     .then(res => res.json())
@@ -3272,6 +3277,7 @@ export const getWobjectShopMainFeed = (
   filter,
   path,
   limit = 10,
+  categoryLimit,
 ) =>
   fetch(`${config.apiPrefix}${config.shop}${config.getObjects}${config.mainFeed}`, {
     headers: {
@@ -3287,6 +3293,7 @@ export const getWobjectShopMainFeed = (
       limit,
       department,
       path,
+      categoryLimit,
     }),
   })
     .then(res => res.json())

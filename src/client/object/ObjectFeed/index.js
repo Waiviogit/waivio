@@ -3,10 +3,9 @@ import { useSelector } from 'react-redux';
 import { Icon } from 'antd';
 import { FormattedMessage } from 'react-intl';
 import PropTypes from 'prop-types';
-import { isEmpty } from 'lodash';
 import ObjectFeed from './ObjectFeed';
 import IconButton from '../../components/IconButton';
-import { getObjectName } from '../../../common/helpers/wObjectHelper';
+import { handleCreatePost } from '../../../common/helpers/wObjectHelper';
 import Loading from '../../components/Icon/Loading';
 import { getIsAuthenticated } from '../../../store/authStore/authSelectors';
 import {
@@ -32,30 +31,8 @@ const ObjectFeedContainer = ({ history, match, wobject, userName, isPageMode }) 
   const isFetching = useSelector(getObjectFetchingState);
   const authors = useSelector(getWobjectAuthors);
 
-  const handleCreatePost = () => {
-    if (wobject && wobject.author_permlink) {
-      let redirectUrl = `/editor?object=`;
-
-      if (!isEmpty(wobject.parent)) {
-        const parentObject = wobject.parent;
-
-        redirectUrl += `${encodeURIComponent(
-          `[${getObjectName(parentObject)}](${parentObject.author_permlink})`,
-        )}&object=`;
-      }
-
-      redirectUrl += encodeURIComponent(`[${getObjectName(wobject)}](${wobject.author_permlink})`);
-
-      if (!isEmpty(wobject.authors)) {
-        authors.forEach(author => {
-          redirectUrl += author.author_permlink
-            ? `&author=${encodeURIComponent(`[${author.name}](${author.author_permlink})`)}`
-            : `&author=${encodeURIComponent(author.name)}`;
-        });
-      }
-
-      history.push(redirectUrl);
-    }
+  const handleWriteReviewClick = () => {
+    handleCreatePost(wobject, authors, history);
   };
 
   return (
@@ -64,7 +41,7 @@ const ObjectFeedContainer = ({ history, match, wobject, userName, isPageMode }) 
         <div className="object-feed__row justify-end">
           <IconButton
             icon={<Icon type="plus-circle" />}
-            onClick={handleCreatePost}
+            onClick={handleWriteReviewClick}
             caption={<FormattedMessage id="write_new_review" defaultMessage="Write a new review" />}
           />
         </div>
@@ -76,7 +53,7 @@ const ObjectFeedContainer = ({ history, match, wobject, userName, isPageMode }) 
           match={match}
           userName={userName}
           history={history}
-          handleCreatePost={handleCreatePost}
+          handleCreatePost={handleWriteReviewClick}
           wobject={wobject}
         />
       )}

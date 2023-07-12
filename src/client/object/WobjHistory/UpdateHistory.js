@@ -18,6 +18,7 @@ import Loading from '../../components/Icon/Loading';
 import AppendCard from '../AppendCard/AppendCard';
 import ReduxInfiniteScroll from '../../vendor/ReduxInfiniteScroll';
 import WobjHistory from './WobjHistory';
+import { getUpdateFieldName } from '../../../common/helpers/wObjectHelper';
 
 const UpdateHistory = () => {
   const dispatch = useDispatch();
@@ -32,6 +33,7 @@ const UpdateHistory = () => {
   const pinorRemoveUpdate = updatesList?.filter(post => post.body === query);
   const isPinnedOrRemovedPost = ['pin', 'remove'].includes(field) && !isNil(query);
   const updates = isPinnedOrRemovedPost ? pinorRemoveUpdate : updatesList;
+  const updateFieldName = getUpdateFieldName(field);
 
   useEffect(() => {
     dispatch(resetUpdateList());
@@ -42,11 +44,11 @@ const UpdateHistory = () => {
   }, [field]);
 
   useEffect(() => {
-    dispatch(getUpdates(name, field, sort, locale));
+    dispatch(getUpdates(name, updateFieldName, sort, locale));
   }, [name, field, sort, locale]);
 
   const handleLoadMore = () => {
-    dispatch(getMoreUpdates(name, updatesList?.length, field, sort, locale));
+    dispatch(getMoreUpdates(name, updatesList?.length, updateFieldName, sort, locale));
   };
 
   if (appendLoading && !updatesList?.length) return <Loading />;

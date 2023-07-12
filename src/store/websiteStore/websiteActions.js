@@ -55,6 +55,8 @@ export const createNewWebsite = (formData, history) => (dispatch, getState, { bu
       busyAPI.instance.subscribeBlock(subscribeTypes.posts, blockNumber, () => {
         dispatch(getOwnWebsite());
         dispatch({ type: CREATE_NEW_WEBSITE.SUCCESS });
+        message.success(`The website ${formData.domain} has been successfully activated
+`);
         history.push(`/${formData.domain}.${formData.parent}/configuration`);
       });
     }

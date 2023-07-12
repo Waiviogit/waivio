@@ -1524,7 +1524,7 @@
   "days_remaning": "Verbleibende Tage",
   "website": "Website",
   "website_management": "Verwaltung von Websites",
-  "empty_dynamic_table": "Tabelle ist noch leer",
+  "empty_dynamic_table": "Es gibt noch keine Aufzeichnungen",
   "vote_sponsor": "Förderer:",
   "vote_upvotes": "Stimmabgabe:",
   "flag": "Flagge",
@@ -1547,7 +1547,7 @@
   "balance_run_out_three_days": "Warnung: Kontostand auf der Website kann in 3 Tagen aufgebraucht sein",
   "balance_run_out_two_days": "Warnung: Kontostand auf der Website kann in 2 Tagen aufgebraucht sein",
   "balance_run_out_day": "Warnung: Kontostand auf der Website kann in 1 Tag aufgebraucht sein",
-  "manage_website_empty_table": "Sie haben keine Websites.",
+  "manage_website_empty_table": "Es gibt noch keine Websites",
   "delete_website_modal_body": "Warnung: Alle Konfigurationsdaten und Webseiten werden entfernt. Der Name der Website wird nicht mehr geschützt.",
   "delete_website_modal_title": "Website löschen {host}",
   "unmute": "Stummschaltung aufheben",
@@ -2206,5 +2206,7 @@
   "chrome-extension": "Chrome-Erweiterung",
   "manage_your_public_shopping": "Sie können Ihre öffentliche Einkaufsliste in Ihrem Profil verwalten.",
   "not_show_objects_linked": "Verknüpfte Objekte nicht in Beiträgen anzeigen",
-  "any_campaigns_yet": "Du hast noch keine Kampagnen"
+  "any_campaigns_yet": "Du hast noch keine Kampagnen",
+  "campaign_stopped": "Die Bedingungen der Belohnungskampagne ${item.name} werden auf der Hive-Blockchain gestoppt",
+  "campaign_published": "Die Bedingungen der Belohnungskampagne ${item.name} werden auf der Hive-Blockchain veröffentlicht"
 }

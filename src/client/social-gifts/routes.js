@@ -8,8 +8,6 @@ import RewardsMainPage from '../../client/newRewards/RewardsMainPage';
 import createNestedRouts from '../../routes/helper';
 import SocialWrapper from './Wrapper';
 import Shop from '../Shop/Shop';
-import DiscoverObjects from '../discoverObjects/DiscoverObjects';
-import Discover from '../discover/Discover';
 import { listOfSocialWebsites } from './listOfSocialWebsites';
 import SocialGiftsLandingPage from '../SocialGiftsLandingPage/SocialGiftsLandingPage';
 import ShopSwitcher from './ShopSwitcher/ShopSwitcher';
@@ -20,6 +18,7 @@ import UserDepartmentsWobjList from '../Shop/DepartmentsWobjList/UserDepartments
 import WidgetContent from './WidgetContent/WidgetContent';
 import UserBlogFeed from './FeedMasonry/UserBlogFeed';
 import ObjectNewsFeed from './FeedMasonry/ObjectNewsFeed';
+import NewDiscover from './NewDiscover/NewDiscover';
 
 const routes = host => ({
   component: SocialWrapper,
@@ -75,14 +74,9 @@ const routes = host => ({
       component: WidgetContent,
     },
     {
-      path: '/discover-objects/:typeName?',
+      path: '/discover-objects/:type?',
       exact: true,
-      component: DiscoverObjects,
-    },
-    {
-      path: '/discover/:search?',
-      exact: true,
-      component: Discover,
+      component: NewDiscover,
     },
     {
       path: '/object/product/:name',

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { some, find } from 'lodash';
+import { some, find, isEmpty } from 'lodash';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { useRouteMatch } from 'react-router';
@@ -28,6 +28,8 @@ import { voteAppends } from '../../../store/appendStore/appendActions';
 import '../../components/Story/Story.less';
 import '../../components/StoryFooter/StoryFooter.less';
 import '../../components/StoryFooter/Buttons.less';
+import { getObjectFieldName } from '../../../common/helpers/wObjectHelper';
+import { getObject } from '../../../store/wObjectStore/wObjectSelectors';
 
 const AppendCard = props => {
   const [visibleSlider, showSlider] = useState(false);
@@ -83,7 +85,7 @@ const AppendCard = props => {
     const downVotes = getAppendDownvotes(post.active_votes);
     const isReject = post.isReject || some(downVotes, { voter: user.name });
     const onlyMyLike = isLiked && post.active_votes.length === 1;
-    const voteWeight = onlyMyLike ? 1 : myWeight;
+    const voteWeight = onlyMyLike || isEmpty(post.active_votes) ? 1 : myWeight;
 
     if (isReject) {
       props.voteAppends(post.author, post.permlink, 0, '', false, match.params[0]);
@@ -112,11 +114,6 @@ const AppendCard = props => {
       false,
       match.params[0],
     );
-  };
-
-  const fieldName = {
-    id: `object_field_${props.post.name}`,
-    defaultMessage: props.post.name,
   };
 
   return (
@@ -158,7 +155,7 @@ const AppendCard = props => {
           rel="noopener noreferrer"
           className="Story__content__title"
         >
-          <h2>{props.intl.formatMessage(fieldName)}</h2>
+          <h2>{getObjectFieldName(props.post.name, props.wobj, props.intl)}</h2>
         </a>
         <a
           href={`/@${props.post.author}/${props.post.permlink}`}
@@ -200,6 +197,7 @@ const AppendCard = props => {
 
 AppendCard.propTypes = {
   post: PropTypes.shape().isRequired,
+  wobj: PropTypes.shape().isRequired,
   defaultVotePercent: PropTypes.number.isRequired,
   voteAppends: PropTypes.func.isRequired,
   user: PropTypes.shape().isRequired,
@@ -216,6 +214,7 @@ const mapStateToProps = state => ({
   showNSFWPosts: getShowNSFWPosts(state),
   user: getAuthenticatedUser(state),
   isGuest: isGuestUser(state),
+  wobj: getObject(state),
 });
 
 export default connect(mapStateToProps, {

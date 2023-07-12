@@ -1531,7 +1531,7 @@
   "days_remaning": "Осталось дней",
   "website": "Cайт",
   "website_management": "Управление сайтами",
-  "empty_dynamic_table": "Нет записей",
+  "empty_dynamic_table": "Пока нет записей",
   "vote_sponsor": "Спонсор:",
   "vote_upvotes": "Лайки:",
   "flag": "Пожаловаться",
@@ -1554,7 +1554,7 @@
   "balance_run_out_three_days": "Предупреждение: баланс аккаунта на сайте может закончиться через 3 дня",
   "balance_run_out_two_days": "Предупреждение: баланс аккаунта на сайте может закончиться через 2 дня",
   "balance_run_out_day": "Предупреждение: баланс аккаунта на сайте может закончиться через 1 день",
-  "manage_website_empty_table": "У вас нет веб-сайтов.",
+  "manage_website_empty_table": "Пока нет никаких веб-сайтов",
   "delete_website_modal_body": "Предупреждение: все данные конфигурации и страницы веб-сайта будут удалены. Имя веб-сайта больше не будет защищено.",
   "delete_website_modal_title": "Удалить веб-сайт {host}",
   "unmuted": "Unmuted",
@@ -2277,6 +2277,8 @@
   "chrome_extension_repository": "Оригинальный репозиторий Waivio Chrome расширения",
   "chrome-extension": "Chrome расширение",
   "manage_your_public_shopping": "Вы можете управлять своим общедоступным списком покупок в профиле.",
-  "not_show_objects_linked": "Не показывать объекты, связанные в сообщениях",
-  "any_campaigns_yet": "У вас пока нет кампаний"
+  "not_show_objects_linked": "Не показывать объекты, связанные с постами",
+  "any_campaigns_yet": "У вас пока нет кампаний",
+  "campaign_stopped": "Условия по вознаграждениям ${item.name} будут остановлены на блокчейне Hive",
+  "campaign_published": "Условия по вознаграждениям ${item.name} будут опубликованы на блокчейне Hive"
 }

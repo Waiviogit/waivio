@@ -203,34 +203,6 @@ const ShopWebsiteConfigurations = ({
             <Form.Item>
               <h3>
                 {intl.formatMessage({
-                  id: 'main_banner',
-                  defaultMessage: 'Main banner',
-                })}
-              </h3>
-              <div className="Settings__profile-image">
-                <Avatar
-                  icon="picture"
-                  shape="square"
-                  src={banner}
-                  className="WebsitesConfigurations__avatar"
-                />
-                <Button type="primary" onClick={() => handleModalState('mainBanner')}>
-                  {intl.formatMessage({
-                    id: 'website_change_banner',
-                    defaultMessage: 'Change banner',
-                  })}
-                </Button>
-              </div>
-              <p>
-                <FormattedMessage
-                  id="banner_description"
-                  defaultMessage="Main banner will be displayed at the top of all website pages."
-                />
-              </p>
-            </Form.Item>{' '}
-            <Form.Item>
-              <h3>
-                {intl.formatMessage({
                   id: 'list_default image',
                   defaultMessage: 'List default image',
                 })}
@@ -253,6 +225,34 @@ const ShopWebsiteConfigurations = ({
                 <FormattedMessage
                   id="list_default_image_description"
                   defaultMessage="List default image will be displayed for those lists that don't have an avatar."
+                />
+              </p>
+            </Form.Item>{' '}
+            <Form.Item>
+              <h3>
+                {intl.formatMessage({
+                  id: 'main_banner',
+                  defaultMessage: 'Main banner',
+                })}
+              </h3>
+              <div className="Settings__profile-image">
+                <Avatar
+                  icon="picture"
+                  shape="square"
+                  src={banner}
+                  className="WebsitesConfigurations__avatar"
+                />
+                <Button type="primary" onClick={() => handleModalState('mainBanner')}>
+                  {intl.formatMessage({
+                    id: 'website_change_banner',
+                    defaultMessage: 'Change banner',
+                  })}
+                </Button>
+              </div>
+              <p>
+                <FormattedMessage
+                  id="banner_description"
+                  defaultMessage="Main banner will be displayed at the top of all website pages."
                 />
               </p>
             </Form.Item>{' '}

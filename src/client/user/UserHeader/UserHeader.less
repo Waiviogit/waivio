@@ -134,12 +134,11 @@
 
     .anticon-bell {
       transition: 0.5s;
-      color: @blue-gullGray;
+      color: @silver-gray;
       cursor: pointer;
-
-      &:hover {
-        color: @red-danger;
-      }
+    }
+    .bell-active {
+      color: var(--website-color) !important;
     }
   }
 
@@ -262,14 +261,6 @@
   .UserHeader__user {
     padding-bottom: 0;
     margin: 0 20px;
-  }
-
-  .bell-active {
-    color: var(--website-color) !important;
-
-    &:hover {
-      color: @red-danger !important;
-    }
   }
 }
 
