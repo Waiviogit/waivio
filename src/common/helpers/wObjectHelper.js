@@ -312,7 +312,15 @@ export const getSortItemListForModal = (sortedList, itemsList) => {
   return [...customSort, ...withoutSorting, ...exclude];
 };
 
-export const getListItems = wobject => get(wobject, 'listItems', []);
+export const getListItems = wobject =>
+  get(wobject, 'listItems', []).map(item => {
+    const post = wobject?.listItem.find(({ body }) => body === item.author_permlink);
+
+    return {
+      ...item,
+      active_votes: post.active_votes,
+    };
+  });
 export const getListItem = wobject => get(wobject, 'listItem', []);
 
 export const itemsList = (sort, wobj) =>
@@ -447,3 +455,4 @@ export const getObjectFieldName = (field, object, intl) => {
     return intl.formatMessage({ id: `object_field_${field}`, defaultMessage: field });
   }
 };
+export const getUpdateFieldName = field => (field && field === 'menuList' ? 'listItem' : field);

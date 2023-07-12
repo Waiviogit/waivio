@@ -14,7 +14,7 @@ import useQuery from '../../../hooks/useQuery';
 
 import './Campaing.less';
 
-const Campaing = ({ campain, onActionInitiated, hovered, intl }) => {
+const Campaing = ({ campain, isRejected, onActionInitiated, hovered, intl, handleReportClick }) => {
   const minReward = campain?.minReward || get(campain, ['min_reward'], 0);
   const maxReward = campain?.maxReward || get(campain, ['max_reward'], 0);
   const buttonLabel =
@@ -56,6 +56,8 @@ const Campaing = ({ campain, onActionInitiated, hovered, intl }) => {
         withRewards
         rewardPrice={maxReward}
         hovered={hovered}
+        handleReportClick={handleReportClick}
+        isRejected={isRejected}
       />
       <span onClick={goToProducts} className="Campaing__button">
         {buttonLabel}{' '}
@@ -79,12 +81,16 @@ Campaing.propTypes = {
     _id: PropTypes.string,
   }).isRequired,
   onActionInitiated: PropTypes.func.isRequired,
+  handleReportClick: PropTypes.func,
   hovered: PropTypes.bool,
+  isRejected: PropTypes.bool,
   intl: PropTypes.shape().isRequired,
 };
 
 Campaing.defaultProps = {
   hovered: false,
+  isRejected: false,
+  handleReportClick: null,
 };
 
 export default injectIntl(withAuthActions(Campaing));

@@ -266,6 +266,12 @@ export const setListItems = lists => ({
   lists,
 });
 
+export const rejectListItem = (voter, author, permlink, weight) => (
+  dispatch,
+  getState,
+  { steemConnectAPI },
+) => steemConnectAPI.vote(voter, author, permlink, weight).then(res => res);
+
 export const setAuthors = authors => ({
   type: SET_AUTHORS,
   authors,

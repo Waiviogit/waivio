@@ -13,7 +13,15 @@ import { getAuthenticatedUserName } from '../../../../store/authStore/authSelect
 
 import './Proposition.less';
 
-const Proposition = ({ proposition, type, getProposition, hovered, isSocialProduct }) => {
+const Proposition = ({
+  handleReportClick,
+  proposition,
+  type,
+  getProposition,
+  hovered,
+  isSocialProduct,
+  isRejected,
+}) => {
   const dispatch = useDispatch();
   const authUserName = useSelector(getAuthenticatedUserName);
 
@@ -52,6 +60,8 @@ const Proposition = ({ proposition, type, getProposition, hovered, isSocialProdu
             rewardPrice={proposition.rewardInUSD}
             payoutToken={proposition.payoutToken}
             isReserved={propositionType === 'reserved'}
+            handleReportClick={handleReportClick}
+            isRejected={isRejected}
             passedParent={
               !has(proposition?.requiredObject, 'author_permlink') ||
               proposition?.requiredObject?.author_permlink === proposition.object.author_permlink
@@ -105,14 +115,18 @@ Proposition.propTypes = {
   }).isRequired,
   hovered: PropTypes.bool,
   isSocialProduct: PropTypes.bool,
+  isRejected: PropTypes.bool,
   type: PropTypes.string,
   getProposition: PropTypes.func,
+  handleReportClick: PropTypes.func,
 };
 
 Proposition.defaultProps = {
   getProposition: noop,
   type: '',
   hovered: false,
+  isRejected: false,
+  handleReportClick: null,
 };
 
 export default Proposition;

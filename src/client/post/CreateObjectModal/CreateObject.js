@@ -195,7 +195,7 @@ class CreateObject extends React.Component {
                 background: '',
                 author_permlink: parentPermlink,
               },
-              { locale: values.locale },
+              { locale: values.locale, votePercent: this.getVote() },
             );
 
             if (isObjType(objData.type)) {

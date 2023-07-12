@@ -106,9 +106,9 @@ class AddItemModal extends Component {
                     .multipliedBy(100)
                     .toFixed(0),
                 )
-              : null,
+              : createdObjectValues?.votePercent,
             follow: objectValues.follow,
-            isLike: values.like,
+            isLike: true,
           })
           .then(() => {
             this.setState({ isLoading: false });
@@ -139,9 +139,9 @@ class AddItemModal extends Component {
     });
   };
 
-  handleCreateObject = (wobj, { locale = 'en-US' }) => {
+  handleCreateObject = (wobj, { locale = 'en-US', votePercent }) => {
     this.setState({ selectedItem: wobj });
-    this.handleSubmit({ locale, follow: false });
+    this.handleSubmit({ locale, follow: false, votePercent });
   };
 
   render() {
