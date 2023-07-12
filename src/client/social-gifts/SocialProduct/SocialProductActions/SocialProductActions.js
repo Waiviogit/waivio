@@ -42,7 +42,7 @@ const SocialProductActions = ({
           {/*    ? intl.formatMessage({ id: 'view', defaultMessage: 'View' }) */}
           {/*    : intl.formatMessage({ id: 'edit', defaultMessage: 'Edit' })} */}
           {/* </Button> */}
-          {wobject.youFollows && <BellButton isSocialProduct wobj={wobject} />}
+          {wobject.youFollows && <BellButton wobj={wobject} />}
         </React.Fragment>
       )}
       {heartObjTypes && authenticated && !isGuest && (
