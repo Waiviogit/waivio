@@ -447,3 +447,4 @@ export const getObjectFieldName = (field, object, intl) => {
     return intl.formatMessage({ id: `object_field_${field}`, defaultMessage: field });
   }
 };
+export const getUpdateFieldName = field => (field && field === 'menuList' ? 'listItem' : field);
