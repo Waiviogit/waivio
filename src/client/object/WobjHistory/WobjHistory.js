@@ -35,7 +35,9 @@ const WobjHistory = ({
 }) => {
   const history = useHistory();
   const { 0: fieldUpdate } = useParams();
-  const [currField, setCurrField] = useState(getObjectFieldName(fieldUpdate, object, intl));
+  const [currField, setCurrField] = useState(
+    fieldUpdate ? getObjectFieldName(fieldUpdate, object, intl) : undefined,
+  );
   const [showModal, setShowModal] = useState(false);
 
   const updateFields = getExposedFieldsByObjType(object).reduce(
@@ -114,7 +116,7 @@ const WobjHistory = ({
                 showModal={showModal}
                 hideModal={handleToggleModal}
                 chosenLocale={locale}
-                field={currField}
+                field={updateFields.find(f => f.translation === currField).name}
                 objName={objName}
                 history={history}
               />
