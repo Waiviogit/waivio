@@ -3,7 +3,7 @@ import { isEmpty, uniq } from 'lodash';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router';
 import PropTypes from 'prop-types';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, injectIntl } from 'react-intl';
 import { getFeed } from '../../../../store/feedStore/feedSelectors';
 import { getPosts } from '../../../../store/postsStore/postsSelectors';
 import {
@@ -16,18 +16,22 @@ import { getMoreObjectPosts, getObjectPosts } from '../../../../store/feedStore/
 
 import Loading from '../../../components/Icon/Loading';
 import FeedMasonry from '../../FeedMasonry/FeedMasonry';
-import { handleCreatePost } from '../../../../common/helpers/wObjectHelper';
+import {
+  getLastPermlinksFromHash,
+  handleCreatePost,
+} from '../../../../common/helpers/wObjectHelper';
 import './SocialProductReviews.less';
 
-const SocialProductReviews = ({ wobject, authors }) => {
+const SocialProductReviews = ({ wobject, authors, intl }) => {
   const feed = useSelector(getFeed);
   const postsList = useSelector(getPosts);
   const dispatch = useDispatch();
   const history = useHistory();
   const { name } = useParams();
-  const postsIds = uniq(getFeedFromState('objectPosts', name, feed));
-  const hasMore = getFeedHasMoreFromState('objectPosts', name, feed);
-  const isFetching = getFeedLoadingFromState('objectPosts', name, feed);
+  const objName = history.location.hash ? getLastPermlinksFromHash(history.location.hash) : name;
+  const postsIds = uniq(getFeedFromState('objectPosts', objName, feed));
+  const hasMore = getFeedHasMoreFromState('objectPosts', objName, feed);
+  const isFetching = getFeedLoadingFromState('objectPosts', objName, feed);
   const posts = preparationPostList(postsIds, postsList);
   const handleWriteReviewClick = () => {
     handleCreatePost(wobject, authors, history);
@@ -36,8 +40,8 @@ const SocialProductReviews = ({ wobject, authors }) => {
   const getPostsList = () => {
     dispatch(
       getObjectPosts({
-        object: name,
-        username: name,
+        object: objName,
+        username: objName,
         limit: 20,
       }),
     );
@@ -45,13 +49,13 @@ const SocialProductReviews = ({ wobject, authors }) => {
 
   useEffect(() => {
     getPostsList();
-  }, [name]);
+  }, [objName]);
 
   const loadMore = () =>
     dispatch(
       getMoreObjectPosts({
-        username: name,
-        authorPermlink: name,
+        username: objName,
+        authorPermlink: objName,
         limit: 20,
         skip: posts?.length,
       }),
@@ -62,12 +66,23 @@ const SocialProductReviews = ({ wobject, authors }) => {
   return (
     <div>
       <div className="SocialProductReviews__container">
-        <div className="SocialProductReviews__heading">User reviews</div>
+        <div className="SocialProductReviews__heading">
+          {intl.formatMessage({ id: 'user_reviews', defaultMessage: 'User reviews' })}
+        </div>
         <button className="SocialProductReviews__link" onClick={handleWriteReviewClick}>
           <FormattedMessage id="write_review" defaultMessage="Write review" />
         </button>
       </div>
-      <FeedMasonry posts={posts} hasMore={hasMore} loadMore={loadMore} loading={isFetching} />
+      <FeedMasonry
+        emptyLable={intl.formatMessage({
+          id: 'empty_object_profile',
+          defaultMessage: 'Be the first to write a review',
+        })}
+        posts={posts}
+        hasMore={hasMore}
+        loadMore={loadMore}
+        loading={isFetching}
+      />
     </div>
   );
 };
@@ -75,5 +90,6 @@ const SocialProductReviews = ({ wobject, authors }) => {
 SocialProductReviews.propTypes = {
   wobject: PropTypes.shape().isRequired,
   authors: PropTypes.arrayOf().isRequired,
+  intl: PropTypes.shape(),
 };
-export default SocialProductReviews;
+export default injectIntl(SocialProductReviews);

@@ -55,6 +55,7 @@ import {
 } from '../../../store/wObjectStore/wObjectSelectors';
 import './SocialProduct.less';
 import SocialProductReviews from './SocialProductReviews/SocialProductReviews';
+import Loading from '../../components/Icon/Loading';
 
 const limit = 30;
 
@@ -79,6 +80,7 @@ const SocialProduct = ({
   const [isEditMode, setIsEditMode] = useState(
     wobject.type === OBJECT_TYPE.PAGE && authenticated && wobject[objectFields.pageContent],
   );
+  const [isLoading, setIsLoading] = useState(true);
   const [reward, setReward] = useState([]);
   const [hoveredOption, setHoveredOption] = useState({});
   const [addOns, setAddOns] = useState([]);
@@ -205,6 +207,9 @@ const SocialProduct = ({
 
       getObjectsRewards(authorPermlink, userName).then(res => setReward(res));
     }
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 2000);
 
     return () => {
       setStoreActiveOpt({});
@@ -243,63 +248,15 @@ const SocialProduct = ({
         <link rel="image_src" href={image} />
         <link id="favicon" rel="icon" href={helmetIcon} type="image/x-icon" />
       </Helmet>
-      <div className="SocialProduct">
-        <div className="SocialProduct__column SocialProduct__column-wrapper">
-          {isMobile() && <div className="SocialProduct__wobjName">{wobject.name}</div>}
-          {isMobile() && (
-            <div className="SocialProduct__ratings">
-              {' '}
-              {!isEmpty(wobject.rating) &&
-                wobject.rating.map(rating => (
-                  <div key={rating.permlink} className="SocialProduct__ratings-item">
-                    <RatingsWrap
-                      isSocialProduct
-                      ratings={[rating]}
-                      username={userName}
-                      wobjId={wobject.author_permlink}
-                      wobjName={wobject.name}
-                    />
-                  </div>
-                ))}
-            </div>
-          )}
-          {isMobile() && authenticated && (
-            <div className="SocialProduct__socialActions">
-              <SocialProductActions
-                toggleViewEditMode={toggleViewEditMode}
-                isEditMode={isEditMode}
-                authenticated={authenticated}
-              />
-            </div>
-          )}
-          {!isEmpty(wobject.preview_gallery) && (
-            <div className="SocialProduct__row">
-              <div className="SocialProduct__carouselWrapper">
-                <PicturesSlider
-                  currentWobj={wobject}
-                  hoveredOption={hoveredOption}
-                  activeOption={activeOption}
-                  activeCategory={activeCategory}
-                />
-              </div>
-              <div>
-                <ProductRewardCard isSocialProduct reward={reward} />
-              </div>
-            </div>
-          )}
-          <div className="SocialProduct__row SocialProduct__right-row">
-            {!isMobile() && <div className="SocialProduct__wobjName">{wobject.name}</div>}
-            {!isMobile() && authenticated && (
-              <div className="SocialProduct__socialActions">
-                <SocialProductActions
-                  currentWobj={wobject}
-                  toggleViewEditMode={toggleViewEditMode}
-                  isEditMode={isEditMode}
-                  authenticated={authenticated}
-                />
-              </div>
-            )}
-            {!isMobile() && (
+      {isLoading ? (
+        <div className="mt3">
+          <Loading />
+        </div>
+      ) : (
+        <div className="SocialProduct">
+          <div className="SocialProduct__column SocialProduct__column-wrapper">
+            {isMobile() && <div className="SocialProduct__wobjName">{wobject.name}</div>}
+            {isMobile() && (
               <div className="SocialProduct__ratings">
                 {' '}
                 {!isEmpty(wobject.rating) &&
@@ -316,94 +273,148 @@ const SocialProduct = ({
                   ))}
               </div>
             )}
-            <div
-              className={
-                isNil(price) && !isEmpty(wobject?.options)
-                  ? 'SocialProduct__price-no'
-                  : 'SocialProduct__price'
-              }
-            >
-              {price}
-            </div>
-            {!isEmpty(wobject?.options) && (
-              <div className="SocialProduct__paddingBottom">
-                <Options
-                  isSocialProduct
-                  setHoveredOption={option => setHoveredOption(option)}
-                  isEditMode={false}
-                  wobject={wobject}
+            {isMobile() && authenticated && (
+              <div className="SocialProduct__socialActions">
+                <SocialProductActions
+                  toggleViewEditMode={toggleViewEditMode}
+                  isEditMode={isEditMode}
+                  authenticated={authenticated}
                 />
               </div>
             )}
-            {!isEmpty(affiliateLinks) && (
-              <div className="SocialProduct__paddingBottom">
-                <div className="SocialProduct__subtitle">
-                  <FormattedMessage id="buy_it_on" defaultMessage="Buy it on" />:
+            {!isEmpty(wobject.preview_gallery) && (
+              <div className="SocialProduct__row">
+                <div className="SocialProduct__carouselWrapper">
+                  <PicturesSlider
+                    currentWobj={wobject}
+                    hoveredOption={hoveredOption}
+                    activeOption={activeOption}
+                    activeCategory={activeCategory}
+                  />
                 </div>
-                <div className="SocialProduct__affLinks">
-                  {affiliateLinks.map(link => (
-                    <div key={link.link} className="SocialProduct__links">
-                      <AffiliatLink link={link} />
-                    </div>
-                  ))}
+                <div>
+                  <ProductRewardCard isSocialProduct reward={reward} />
                 </div>
               </div>
             )}
-            {isEmpty(wobject.preview_gallery) && (
-              <ProductRewardCard isSocialProduct reward={reward} />
+            <div className="SocialProduct__row SocialProduct__right-row">
+              {!isMobile() && <div className="SocialProduct__wobjName">{wobject.name}</div>}
+              {!isMobile() && authenticated && (
+                <div className="SocialProduct__socialActions">
+                  <SocialProductActions
+                    currentWobj={wobject}
+                    toggleViewEditMode={toggleViewEditMode}
+                    isEditMode={isEditMode}
+                    authenticated={authenticated}
+                  />
+                </div>
+              )}
+              {!isMobile() && (
+                <div className="SocialProduct__ratings">
+                  {' '}
+                  {!isEmpty(wobject.rating) &&
+                    wobject.rating.map(rating => (
+                      <div key={rating.permlink} className="SocialProduct__ratings-item">
+                        <RatingsWrap
+                          isSocialProduct
+                          ratings={[rating]}
+                          username={userName}
+                          wobjId={wobject.author_permlink}
+                          wobjName={wobject.name}
+                        />
+                      </div>
+                    ))}
+                </div>
+              )}
+              <div
+                className={
+                  isNil(price) && !isEmpty(wobject?.options)
+                    ? 'SocialProduct__price-no'
+                    : 'SocialProduct__price'
+                }
+              >
+                {price}
+              </div>
+              {!isEmpty(wobject?.options) && (
+                <div className="SocialProduct__paddingBottom">
+                  <Options
+                    isSocialProduct
+                    setHoveredOption={option => setHoveredOption(option)}
+                    isEditMode={false}
+                    wobject={wobject}
+                  />
+                </div>
+              )}
+              {!isEmpty(affiliateLinks) && (
+                <div className="SocialProduct__paddingBottom">
+                  <div className="SocialProduct__subtitle">
+                    <FormattedMessage id="buy_it_on" defaultMessage="Buy it on" />:
+                  </div>
+                  <div className="SocialProduct__affLinks">
+                    {affiliateLinks.map(link => (
+                      <div key={link.link} className="SocialProduct__links">
+                        <AffiliatLink link={link} />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+              {isEmpty(wobject.preview_gallery) && (
+                <ProductRewardCard isSocialProduct reward={reward} />
+              )}
+            </div>
+          </div>
+          <div className="SocialProduct__column">
+            {!isEmpty(wobject.description) && (
+              <div className="SocialProduct__aboutItem">
+                <div className="SocialProduct__heading"> About this item</div>
+                <div className="SocialProduct__contentPaddingLeft SocialProduct__description">
+                  {wobject.description}
+                </div>
+              </div>
             )}
+            {!isEmpty(menuItem) && <SocialMenuItems menuItem={menuItem} />}
+            {showProductDetails && (
+              <ProductDetails
+                wobject={wobject}
+                groupId={groupId}
+                history={history}
+                productWeight={productWeight}
+                dimensions={dimensions}
+                productIdBody={productIdBody}
+                departments={departments}
+                fields={fields}
+                parent={parent}
+              />
+            )}
+            <ObjectsSlider objects={addOns} title={'Bought together / Add-ons'} name={'addOn'} />
+            {!isEmpty(features) && (
+              <div className="SocialProduct__featuresContainer">
+                <div className="SocialProduct__heading">Features</div>
+                <div className="SocialProduct__centralContent">
+                  <ObjectFeatures
+                    isSocialGifts
+                    features={features}
+                    isEditMode={false}
+                    wobjPermlink={wobject.author_permlink}
+                  />
+                </div>
+              </div>
+            )}
+            <ObjectsSlider objects={similarObjects} title={'Similar'} name={'similar'} />
+            <ObjectsSlider objects={relatedObjects} title={'Related items'} name={'related'} />
+            {!isEmpty(tagCategoriesList) && (
+              <div className="SocialProduct__featuresContainer">
+                <div className="SocialProduct__heading">Tags</div>
+                <div className="SocialProduct__centralContent">
+                  <SocialTagCategories tagCategoriesList={tagCategoriesList} wobject={wobject} />
+                </div>
+              </div>
+            )}
+            <SocialProductReviews wobject={wobject} authors={authors} />
           </div>
         </div>
-        <div className="SocialProduct__column">
-          {!isEmpty(wobject.description) && (
-            <div className="SocialProduct__aboutItem">
-              <div className="SocialProduct__heading"> About this item</div>
-              <div className="SocialProduct__contentPaddingLeft SocialProduct__description">
-                {wobject.description}
-              </div>
-            </div>
-          )}
-          {!isEmpty(menuItem) && <SocialMenuItems menuItem={menuItem} />}
-          {showProductDetails && (
-            <ProductDetails
-              wobject={wobject}
-              groupId={groupId}
-              history={history}
-              productWeight={productWeight}
-              dimensions={dimensions}
-              productIdBody={productIdBody}
-              departments={departments}
-              fields={fields}
-              parent={parent}
-            />
-          )}
-          <ObjectsSlider objects={addOns} title={'Bought together / Add-ons'} name={'addOn'} />
-          {!isEmpty(features) && (
-            <div className="SocialProduct__featuresContainer">
-              <div className="SocialProduct__heading">Features</div>
-              <div className="SocialProduct__centralContent">
-                <ObjectFeatures
-                  isSocialGifts
-                  features={features}
-                  isEditMode={false}
-                  wobjPermlink={wobject.author_permlink}
-                />
-              </div>
-            </div>
-          )}
-          <ObjectsSlider objects={similarObjects} title={'Similar'} name={'similar'} />
-          <ObjectsSlider objects={relatedObjects} title={'Related items'} name={'related'} />
-          {!isEmpty(tagCategoriesList) && (
-            <div className="SocialProduct__featuresContainer">
-              <div className="SocialProduct__heading">Tags</div>
-              <div className="SocialProduct__centralContent">
-                <SocialTagCategories tagCategoriesList={tagCategoriesList} wobject={wobject} />
-              </div>
-            </div>
-          )}
-          <SocialProductReviews wobject={wobject} authors={authors} />
-        </div>
-      </div>
+      )}
     </div>
   );
 };
