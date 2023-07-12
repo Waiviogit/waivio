@@ -39,6 +39,8 @@ const ObjectCardView = ({
   showHeart,
   payoutToken,
   rate,
+  handleReportClick,
+  isRejected,
 }) => {
   const username = useSelector(getAuthenticatedUserName);
   const isGuest = guestUserRegex.test(username);
@@ -128,6 +130,17 @@ const ObjectCardView = ({
               >
                 {objName}
               </Link>
+              {handleReportClick && username && (
+                <span
+                  className={classNames({
+                    CategoryItemView__reject: !isRejected,
+                    CategoryItemView__rejected: isRejected,
+                  })}
+                  onClick={() => handleReportClick(wObject.author_permlink)}
+                >
+                  ({isRejected ? 'rejected' : 'reject'})
+                </span>
+              )}
               {/* {!isNaN(wObject.weight) && <WeightTag weight={Number(wObject.weight)} />} */}
             </div>
             {wObject.rating && (
@@ -235,8 +248,10 @@ ObjectCardView.propTypes = {
   closeButton: PropTypes.bool,
   isPost: PropTypes.bool,
   showHeart: PropTypes.bool,
+  isRejected: PropTypes.bool,
   postAuthor: PropTypes.string,
   onDelete: PropTypes.func,
+  handleReportClick: PropTypes.func,
 };
 
 ObjectCardView.defaultProps = {
@@ -253,6 +268,7 @@ ObjectCardView.defaultProps = {
   rewardPrice: 0,
   currency: defaultCurrency,
   hovered: false,
+  handleReportClick: null,
   closeButton: false,
   onDelete: null,
 };
