@@ -21,6 +21,7 @@ import Loading from '../../components/Icon/Loading';
 const ObjectNewsFeed = ({ wobj }) => {
   const readLanguages = useSelector(getReadLanguages);
   const [newsPermlink, setNewsPermlink] = useState();
+  const [firstLoading, setFirstLoading] = useState(true);
   const feed = useSelector(getFeed);
   const postsList = useSelector(getPosts);
   const dispatch = useDispatch();
@@ -44,7 +45,7 @@ const ObjectNewsFeed = ({ wobj }) => {
           limit: 20,
           newsPermlink: wobj?.newsFeed?.permlink,
         }),
-      );
+      ).then(() => setFirstLoading(false));
       setNewsPermlink(wobj?.newsFeed?.permlink);
     } else {
       getObject(objName).then(res => {
@@ -76,7 +77,7 @@ const ObjectNewsFeed = ({ wobj }) => {
       }),
     );
 
-  if (isEmpty(posts) && isFetching) return <Loading margin />;
+  if (isEmpty(posts) && firstLoading) return <Loading margin />;
 
   return <FeedMasonry posts={posts} hasMore={hasMore} loadMore={loadMore} loading={isFetching} />;
 };

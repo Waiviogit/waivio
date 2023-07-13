@@ -369,6 +369,8 @@ const ImageSetter = ({
           </span>
           <div className="input-upload">
             <input
+              /* eslint-disable-next-line jsx-a11y/no-autofocus */
+              autoFocus
               className="input-upload__item"
               size="large"
               ref={imageLinkInput}

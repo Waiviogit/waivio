@@ -34,11 +34,26 @@ const WobjHistory = ({
   intl,
 }) => {
   const history = useHistory();
-  const { 0: currField } = useParams();
+  const { 0: fieldUpdate } = useParams();
+  const [currField, setCurrField] = useState(
+    fieldUpdate ? getObjectFieldName(fieldUpdate, object, intl) : undefined,
+  );
   const [showModal, setShowModal] = useState(false);
 
-  const handleFieldChange = field =>
-    history.push(`/object/${object.author_permlink}/${field ? `updates/${field}` : 'updates'}`);
+  const updateFields = getExposedFieldsByObjType(object).reduce(
+    (acc, name) => [...acc, { name, translation: getObjectFieldName(name, object, intl) }],
+    [],
+  );
+
+  const handleFieldChange = translation => {
+    const field = updateFields.find(f => f.translation === translation);
+
+    setCurrField(field.translation);
+
+    history.push(
+      `/object/${object.author_permlink}/${field.name ? `updates/${field.name}` : 'updates'}`,
+    );
+  };
 
   const handleToggleModal = () => setShowModal(!showModal);
 
@@ -70,8 +85,12 @@ const WobjHistory = ({
           value={currField}
           onChange={handleFieldChange}
         >
-          {getExposedFieldsByObjType(object)
-            .map(f => <Select.Option key={f}>{getObjectFieldName(f, object, intl)}</Select.Option>)
+          {updateFields
+            .map(f => (
+              <Select.Option key={f.name} value={f.translation}>
+                {f.translation}
+              </Select.Option>
+            ))
             .sort((a, b) => sortAlphabetically(a.props.children, b.props.children))}
         </Select>
         <Select
@@ -97,7 +116,7 @@ const WobjHistory = ({
                 showModal={showModal}
                 hideModal={handleToggleModal}
                 chosenLocale={locale}
-                field={currField}
+                field={updateFields.find(f => f.translation === currField).name}
                 objName={objName}
                 history={history}
               />

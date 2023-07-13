@@ -19,6 +19,7 @@ import {
 import { objectFields } from '../../../common/constants/listOfFields';
 import {
   getObjectName,
+  getUpdateFieldName,
   prepareAlbumData,
   prepareAlbumToStore,
   showDescriptionPage,
@@ -204,8 +205,10 @@ class WobjectContainer extends React.Component {
         userName: authenticatedUserName,
       });
       this.props.getRelatedWobjects(match.params.name);
-      if (isEmpty(this.props.updates) || isNil(this.props.updates)) {
-        this.props.getUpdates(match.params.name, match.params[1]);
+      if (isEmpty(this.props.updates) || isNil(this.props.updates) || isNil(match.params[1])) {
+        const field = getUpdateFieldName(match.params[1]);
+
+        this.props.getUpdates(match.params.name, field, 'createdAt', locale);
       }
     });
   }
@@ -295,6 +298,7 @@ class WobjectContainer extends React.Component {
     return (
       <Wobj
         route={route}
+        isSocial={route.isSocial}
         authenticated={authenticated}
         failed={failed}
         authenticatedUserName={authenticatedUserName}

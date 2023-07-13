@@ -8,6 +8,19 @@
   .iconfont.icon-delete::before {
     cursor: pointer;
   }
+
+  &__reject {
+    color: var(--website-color);
+    font-weight: 500;
+    cursor: pointer;
+  }
+
+  &__rejected {
+    color: @blue-gullGray;
+    font-weight: 500;
+    cursor: auto;
+  }
+
   &__prefix {
     font-size: 16px;
     display: flex;
@@ -100,6 +113,7 @@
     display: flex;
     font-weight: 600;
     align-items: center;
+    flex-wrap: wrap;
 
     &-truncated {
       margin-right: 10px;

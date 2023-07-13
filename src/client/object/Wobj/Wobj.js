@@ -27,6 +27,7 @@ import ObjectsAddOn from '../../components/Sidebar/ObjectsAddOn/ObjectsAddOn';
 import ObjectsSimilar from '../../components/Sidebar/ObjectsSimilar/ObjectsSimilar';
 import ObjectReference from '../../components/Sidebar/ObjectReference/ObjectReference';
 import { isMobile } from '../../../common/helpers/apiHelpers';
+import SocialProduct from '../../social-gifts/SocialProduct/SocialProduct';
 
 const Wobj = ({
   authenticated,
@@ -47,6 +48,7 @@ const Wobj = ({
   weightValue,
   siteName,
   appUrl,
+  isSocial,
 }) => {
   const image = getObjectAvatar(wobject) || DEFAULTS.AVATAR;
   const canonicalUrl = `${appUrl}/object/${match.params.name}`;
@@ -129,61 +131,67 @@ const Wobj = ({
         <link id="favicon" rel="icon" href={helmetIcon} type="image/x-icon" />
       </Helmet>
       <ScrollToTopOnMount />
-      <WobjHero
-        isEditMode={isEditMode}
-        authenticated={authenticated}
-        isFetching={isEmpty(wobject)}
-        wobject={wobject}
-        username={objectName}
-        onFollowClick={handleFollowClick}
-        toggleViewEditMode={toggleViewEditMode}
-        albumsAndImagesCount={albumsAndImagesCount}
-        appendAlbum={appendAlbum}
-      />
-      <div className="shifted">
-        <div className="container feed-layout">
-          <Affix key={match.params.name} className={leftSidebarClassList} stickPosition={72}>
-            <div className="left">
-              <LeftObjectProfileSidebar
-                isEditMode={isEditMode}
-                wobject={wobject}
-                userName={userName}
-                history={history}
-                appendAlbum={appendAlbum}
-              />
-            </div>
-          </Affix>
-          {wobject.author_permlink && (
-            <Affix className={rightSidebarClassList} stickPosition={72}>
-              {match.url.includes('/shop') ? (
-                <WobjectShopFilter />
-              ) : (
-                <React.Fragment>
-                  <ObjectsRelated wobject={wobject} />
-                  <ObjectsAddOn wobject={wobject} />
-                  <ObjectsSimilar wobject={wobject} />
-                  {referenceWobjType && <ObjectReference wobject={wobject} />}
-                  <ObjectExpertise wobject={wobject} />
-                  {wobject.map && <WobjectNearby wobject={wobject} />}
-                  <WobjectSidebarFollowers wobject={wobject} />
-                </React.Fragment>
+      {isSocial && ['book', 'product'].includes(wobject?.object_type) ? (
+        <SocialProduct />
+      ) : (
+        <React.Fragment>
+          <WobjHero
+            isEditMode={isEditMode}
+            authenticated={authenticated}
+            isFetching={isEmpty(wobject)}
+            wobject={wobject}
+            username={objectName}
+            onFollowClick={handleFollowClick}
+            toggleViewEditMode={toggleViewEditMode}
+            albumsAndImagesCount={albumsAndImagesCount}
+            appendAlbum={appendAlbum}
+          />
+          <div className="shifted">
+            <div className="container feed-layout">
+              <Affix key={match.params.name} className={leftSidebarClassList} stickPosition={72}>
+                <div className="left">
+                  <LeftObjectProfileSidebar
+                    isEditMode={isEditMode}
+                    wobject={wobject}
+                    userName={userName}
+                    history={history}
+                    appendAlbum={appendAlbum}
+                  />
+                </div>
+              </Affix>
+              {wobject.author_permlink && (
+                <Affix className={rightSidebarClassList} stickPosition={72}>
+                  {match.url.includes('/shop') ? (
+                    <WobjectShopFilter />
+                  ) : (
+                    <React.Fragment>
+                      <ObjectsRelated wobject={wobject} />
+                      <ObjectsAddOn wobject={wobject} />
+                      <ObjectsSimilar wobject={wobject} />
+                      {referenceWobjType && <ObjectReference wobject={wobject} />}
+                      <ObjectExpertise wobject={wobject} />
+                      {wobject.map && <WobjectNearby wobject={wobject} />}
+                      <WobjectSidebarFollowers wobject={wobject} />
+                    </React.Fragment>
+                  )}
+                </Affix>
               )}
-            </Affix>
-          )}
-          <div className={centerClassList}>
-            {renderRoutes(route.routes, {
-              isEditMode,
-              wobject,
-              userName,
-              match,
-              toggleViewEditMode,
-              appendAlbum,
-              currentForm,
-              route,
-            })}
+              <div className={centerClassList}>
+                {renderRoutes(route.routes, {
+                  isEditMode,
+                  wobject,
+                  userName,
+                  match,
+                  toggleViewEditMode,
+                  appendAlbum,
+                  currentForm,
+                  route,
+                })}
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
+        </React.Fragment>
+      )}
     </div>
   );
 };
@@ -199,6 +207,7 @@ Wobj.propTypes = {
   supportedObjectTypes: PropTypes.arrayOf(PropTypes.string),
   isEditMode: PropTypes.bool.isRequired,
   isWaivio: PropTypes.bool.isRequired,
+  isSocial: PropTypes.bool,
   toggleViewEditMode: PropTypes.func,
   handleFollowClick: PropTypes.func,
   objectName: PropTypes.string.isRequired,
