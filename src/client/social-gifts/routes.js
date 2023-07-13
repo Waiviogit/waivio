@@ -231,6 +231,7 @@ const routes = host => ({
       component: WobjectContainer,
       exact: true,
       pathScope: '/object/:name',
+      isSocial: true,
       routes: [
         {
           path: ['', '/newsFilter/:parentName/:itemId?', '/reviews/:itemId', '/(reviews)'],
