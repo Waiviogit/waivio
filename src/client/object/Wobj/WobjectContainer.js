@@ -298,6 +298,7 @@ class WobjectContainer extends React.Component {
     return (
       <Wobj
         route={route}
+        isSocial={route.isSocial}
         authenticated={authenticated}
         failed={failed}
         authenticatedUserName={authenticatedUserName}
