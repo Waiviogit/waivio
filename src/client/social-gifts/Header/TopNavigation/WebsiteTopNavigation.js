@@ -4,6 +4,7 @@ import { isEmpty, take, takeRight, truncate } from 'lodash';
 import { useSelector } from 'react-redux';
 import { Icon } from 'antd';
 import { useHistory } from 'react-router';
+import { injectIntl } from 'react-intl';
 
 import Popover from '../../../components/Popover';
 import { isMobile } from '../../../../common/helpers/apiHelpers';
@@ -29,7 +30,7 @@ const userNav = user => [
   },
 ];
 
-const WebsiteTopNavigation = ({ shopSettings }) => {
+const WebsiteTopNavigation = ({ shopSettings, intl }) => {
   const listItem = useSelector(getNavigItems);
   const linkList = shopSettings?.type === 'user' ? userNav(shopSettings?.value) : listItem;
   const loading = useSelector(getSettingsLoading);
@@ -105,7 +106,8 @@ const WebsiteTopNavigation = ({ shopSettings }) => {
               overlayClassName="WebsiteTopNavigation__popover"
             >
               <span className={'WebsiteTopNavigation__link'}>
-                More <Icon type="caret-down" />
+                {intl.formatMessage({ id: 'more', defaultMessage: 'More' })}{' '}
+                <Icon type="caret-down" />
               </span>
             </Popover>
           ) : (
@@ -121,6 +123,7 @@ WebsiteTopNavigation.propTypes = {
     type: PropTypes.string,
     value: PropTypes.string,
   }),
+  intl: PropTypes.shape().isRequired,
 };
 
-export default WebsiteTopNavigation;
+export default injectIntl(WebsiteTopNavigation);
