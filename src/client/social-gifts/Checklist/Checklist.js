@@ -14,7 +14,10 @@ import {
   getObjectAvatar,
   getObjectName,
 } from '../../../common/helpers/wObjectHelper';
-import { setBreadcrumbForChecklist } from '../../../store/wObjectStore/wobjActions';
+import {
+  setBreadcrumbForChecklist,
+  setNestedWobject,
+} from '../../../store/wObjectStore/wobjActions';
 import Loading from '../../components/Icon/Loading';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 
@@ -45,6 +48,7 @@ const Checklist = ({
   permlink,
   hideBreadCrumbs,
   isSocialProduct,
+  setNestedObject,
 }) => {
   const [loading, setLoading] = useState(true);
   const [listItems, setLists] = useState(true);
@@ -63,6 +67,10 @@ const Checklist = ({
     setLoading(true);
     getObject(pathUrl, userName, locale).then(wObject => {
       setObject(wObject);
+      if (history.location.hash) {
+        setNestedObject(wObject);
+      }
+
       if (!isSocialProduct) {
         setBreadcrumb(wObject);
       }
@@ -192,6 +200,7 @@ Checklist.propTypes = {
   permlink: PropTypes.string,
   hideBreadCrumbs: PropTypes.bool,
   locale: PropTypes.string.isRequired,
+  setNestedObject: PropTypes.func,
   intl: PropTypes.arrayOf(PropTypes.shape({ formatMessage: PropTypes.func })).isRequired,
   match: PropTypes.shape({
     params: PropTypes.shape({
@@ -210,6 +219,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = {
   setBreadcrumb: setBreadcrumbForChecklist,
+  setNestedObject: setNestedWobject,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(injectIntl(Checklist)));

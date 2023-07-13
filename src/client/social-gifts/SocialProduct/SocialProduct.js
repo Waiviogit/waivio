@@ -4,7 +4,7 @@ import { withRouter } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { get, isEmpty, isNil, reduce } from 'lodash';
+import { get, has, isEmpty, isNil, reduce } from 'lodash';
 import {
   getObjectInfo,
   getObjectsByIds,
@@ -48,13 +48,17 @@ import OBJECT_TYPE from '../../object/const/objectTypes';
 import { objectFields } from '../../../common/constants/listOfFields';
 import { resetOptionClicked } from '../../../store/shopStore/shopActions';
 import { setStoreActiveOption } from '../../../store/optionsStore/optionsActions';
+import SocialProductReviews from './SocialProductReviews/SocialProductReviews';
+import SocialProductDescription from './SocialProductDescription/SocialProductDescription';
 import { getObject } from '../../../store/wObjectStore/wobjectsActions';
 import {
   getObject as getObjectState,
   getWobjectAuthors,
+  getWobjectNested,
 } from '../../../store/wObjectStore/wObjectSelectors';
 import './SocialProduct.less';
-import SocialProductReviews from './SocialProductReviews/SocialProductReviews';
+import { getObjectAlbums } from '../../../store/galleryStore/gallerySelectors';
+import { getAlbums, resetGallery } from '../../../store/galleryStore/galleryActions';
 import Loading from '../../components/Icon/Loading';
 
 const limit = 30;
@@ -67,7 +71,7 @@ const SocialProduct = ({
   activeCategory,
   siteName,
   appUrl,
-  wobject,
+  wobj,
   authenticated,
   optionClicked,
   helmetIcon,
@@ -76,16 +80,21 @@ const SocialProduct = ({
   setStoreActiveOpt,
   resetOptClicked,
   getWobject,
+  getWobjAlbums,
+  albums,
+  resetWobjGallery,
+  nestedWobj,
 }) => {
+  const wobject = history.location.hash ? nestedWobj : wobj;
   const [isEditMode, setIsEditMode] = useState(
     wobject.type === OBJECT_TYPE.PAGE && authenticated && wobject[objectFields.pageContent],
   );
-  const [isLoading, setIsLoading] = useState(true);
   const [reward, setReward] = useState([]);
   const [hoveredOption, setHoveredOption] = useState({});
   const [addOns, setAddOns] = useState([]);
   const [similarObjects, setSimilarObjects] = useState([]);
   const [relatedObjects, setRelatedObjects] = useState([]);
+  const [loading, setIsLoading] = useState(true);
   const [fields, setFields] = useState({
     brandObject: {},
     manufacturerObject: {},
@@ -101,6 +110,7 @@ const SocialProduct = ({
   const departments = get(wobject, 'departments');
   const dimensions = parseWobjectField(wobject, 'dimensions');
   const brand = parseWobjectField(wobject, 'brand');
+  const photosAlbum = !isEmpty(albums) ? albums?.find(alb => alb.body === 'Photos') : [];
   const groupId = wobject.groupId;
   const features = wobject.features
     ? wobject.features?.map(el => parseWobjectField(el, 'body', []))
@@ -114,6 +124,8 @@ const SocialProduct = ({
   const tagCategories = get(wobject, 'tagCategory', []);
   const tagCategoriesList = tagCategories.filter(item => !isEmpty(item.items));
   const addOnPermlinks = wobject.addOn ? wobject?.addOn?.map(obj => obj.body) : [];
+  const showGallery =
+    !isEmpty(wobject.preview_gallery) || (!isEmpty(parent) && has(parent, 'avatar'));
   const tagCategoriesForDescr = reduce(
     wobject.tagCategory,
     (acc, curr) => {
@@ -189,12 +201,12 @@ const SocialProduct = ({
 
     getObjectInfo(authorPermlinks, locale).then(res => {
       const brandObject =
-        res.wobjects.find(wobj => wobj.author_permlink === brand?.authorPermlink) || brand;
+        res.wobjects.find(obj => obj.author_permlink === brand?.authorPermlink) || brand;
       const manufacturerObject =
-        res.wobjects.find(wobj => wobj.author_permlink === manufacturer?.authorPermlink) ||
+        res.wobjects.find(obj => obj.author_permlink === manufacturer?.authorPermlink) ||
         manufacturer;
       const merchantObject =
-        res.wobjects.find(wobj => wobj.author_permlink === merchant?.authorPermlink) || merchant;
+        res.wobjects.find(obj => obj.author_permlink === merchant?.authorPermlink) || merchant;
 
       setFields({ brandObject, manufacturerObject, merchantObject });
     });
@@ -206,12 +218,12 @@ const SocialProduct = ({
       getWobject(authorPermlink, userName);
 
       getObjectsRewards(authorPermlink, userName).then(res => setReward(res));
+      getWobjAlbums(authorPermlink);
     }
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 2000);
+    setIsLoading(false);
 
     return () => {
+      resetWobjGallery();
       setStoreActiveOpt({});
       resetOptClicked();
     };
@@ -248,10 +260,8 @@ const SocialProduct = ({
         <link rel="image_src" href={image} />
         <link id="favicon" rel="icon" href={helmetIcon} type="image/x-icon" />
       </Helmet>
-      {isLoading ? (
-        <div className="mt3">
-          <Loading />
-        </div>
+      {loading ? (
+        <Loading margin />
       ) : (
         <div className="SocialProduct">
           <div className="SocialProduct__column SocialProduct__column-wrapper">
@@ -273,7 +283,7 @@ const SocialProduct = ({
                   ))}
               </div>
             )}
-            {isMobile() && authenticated && (
+            {isMobile() && authenticated && !isEmpty(wobject) && (
               <div className="SocialProduct__socialActions">
                 <SocialProductActions
                   toggleViewEditMode={toggleViewEditMode}
@@ -282,7 +292,7 @@ const SocialProduct = ({
                 />
               </div>
             )}
-            {!isEmpty(wobject.preview_gallery) && (
+            {showGallery && (
               <div className="SocialProduct__row">
                 <div className="SocialProduct__carouselWrapper">
                   <PicturesSlider
@@ -299,7 +309,7 @@ const SocialProduct = ({
             )}
             <div className="SocialProduct__row SocialProduct__right-row">
               {!isMobile() && <div className="SocialProduct__wobjName">{wobject.name}</div>}
-              {!isMobile() && authenticated && (
+              {!isMobile() && authenticated && !isEmpty(wobject) && (
                 <div className="SocialProduct__socialActions">
                   <SocialProductActions
                     currentWobj={wobject}
@@ -368,9 +378,11 @@ const SocialProduct = ({
             {!isEmpty(wobject.description) && (
               <div className="SocialProduct__aboutItem">
                 <div className="SocialProduct__heading"> About this item</div>
-                <div className="SocialProduct__contentPaddingLeft SocialProduct__description">
-                  {wobject.description}
-                </div>
+                <SocialProductDescription
+                  description={wobject.description}
+                  pictures={photosAlbum.items}
+                  authorPermlink={wobject.author_permlink}
+                />
               </div>
             )}
             {!isEmpty(menuItem) && <SocialMenuItems menuItem={menuItem} />}
@@ -411,7 +423,7 @@ const SocialProduct = ({
                 </div>
               </div>
             )}
-            <SocialProductReviews wobject={wobject} authors={authors} />
+            {!isEmpty(wobject) && <SocialProductReviews wobject={wobject} authors={authors} />}
           </div>
         </div>
       )}
@@ -423,19 +435,23 @@ SocialProduct.propTypes = {
   userName: PropTypes.string,
   locale: PropTypes.string,
   activeOption: PropTypes.shape(),
-  wobject: PropTypes.shape(),
+  wobj: PropTypes.shape(),
   history: PropTypes.shape(),
   match: PropTypes.shape(),
+  nestedWobj: PropTypes.shape(),
   activeCategory: PropTypes.string,
   siteName: PropTypes.string,
   appUrl: PropTypes.string,
   authenticated: PropTypes.bool,
   authors: PropTypes.arrayOf(),
+  albums: PropTypes.arrayOf(),
   optionClicked: PropTypes.bool,
   helmetIcon: PropTypes.string,
-  setStoreActiveOpt: PropTypes.string,
-  resetOptClicked: PropTypes.string,
-  getWobject: PropTypes.string,
+  setStoreActiveOpt: PropTypes.func,
+  resetOptClicked: PropTypes.func,
+  getWobject: PropTypes.func,
+  getWobjAlbums: PropTypes.func,
+  resetWobjGallery: PropTypes.func,
 };
 
 const mapStateToProps = state => ({
@@ -444,17 +460,21 @@ const mapStateToProps = state => ({
   activeOption: getActiveOption(state),
   activeCategory: getActiveCategory(state),
   siteName: getWebsiteName(state),
-  wobject: getObjectState(state),
+  wobj: getObjectState(state),
   authors: getWobjectAuthors(state),
   appUrl: getAppUrl(state),
+  albums: getObjectAlbums(state),
   authenticated: getIsAuthenticated(state),
   optionClicked: getIsOptionClicked(state),
   helmetIcon: getHelmetIcon(state),
+  nestedWobj: getWobjectNested(state),
 });
 const mapDispatchToProps = dispatch => ({
-  setStoreActiveOpt: obj => dispatch(setStoreActiveOption(obj)),
+  setStoreActiveOpt: obj => setStoreActiveOption(obj),
   resetOptClicked: opt => dispatch(resetOptionClicked(opt)),
   getWobject: (obj, name) => dispatch(getObject(obj, name)),
+  getWobjAlbums: obj => dispatch(getAlbums(obj)),
+  resetWobjGallery: () => dispatch(resetGallery()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(SocialProduct));
