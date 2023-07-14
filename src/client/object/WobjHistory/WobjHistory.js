@@ -75,9 +75,11 @@ const WobjHistory = ({
   const objName = getObjectName(object);
 
   useEffect(() => {
-    const field = updateFields.find(f => f.name === fieldUpdate);
+    if (fieldUpdate) {
+      const field = updateFields.find(f => f.name === fieldUpdate);
 
-    setCurrField(field.translation);
+      setCurrField(field.translation);
+    }
   }, [fieldUpdate]);
 
   return (
