@@ -20,13 +20,21 @@
     height: 50px;
     border: 1px solid @silver-gray;
     border-radius: 4px;
-    &:hover,
-    &-active {
+    &--active {
       object-fit: contain;
       width: 50px;
       height: 50px;
       border: 1px solid var(--website-color);
       border-radius: 4px;
+    }
+    @media @small {
+      &:hover {
+        object-fit: contain;
+        width: 50px;
+        height: 50px;
+        border: 1px solid var(--website-color);
+        border-radius: 4px;
+      }
     }
   }
   .ant-carousel {
@@ -56,5 +64,11 @@
   .slick-arrow.slick-next.slick-disabled,
   .slick-arrow.slick-prev.slick-disabled {
     //display: none !important;
+  }
+  .MobileCarousel {
+    .slick-slide.slick-active {
+      width: 350px !important;
+      cursor: pointer;
+    }
   }
 }

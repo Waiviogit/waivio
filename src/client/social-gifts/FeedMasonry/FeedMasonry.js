@@ -3,11 +3,11 @@ import Masonry from 'react-masonry-css';
 import { isEmpty } from 'lodash';
 import InfiniteSroll from 'react-infinite-scroller';
 import PropTypes from 'prop-types';
+import { injectIntl } from 'react-intl';
 import { useSelector } from 'react-redux';
 import Helmet from 'react-helmet';
 
 import { getHelmetIcon, getSiteName } from '../../../store/appStore/appSelectors';
-
 import Loading from '../../components/Icon/Loading';
 import FeedItem from './FeedItem';
 import PostModal from '../../post/PostModalContainer';
@@ -15,7 +15,7 @@ import { breakpointColumnsObj } from './helpers';
 
 import './FeedMasonry.less';
 
-const FeedMasonry = ({ loadMore, hasMore, posts, loading }) => {
+const FeedMasonry = ({ loadMore, hasMore, posts, loading, emptyLable, intl }) => {
   const favicon = useSelector(getHelmetIcon);
   const siteName = useSelector(getSiteName);
   const title = siteName;
@@ -25,7 +25,13 @@ const FeedMasonry = ({ loadMore, hasMore, posts, loading }) => {
 
   if (loading && isEmpty(posts)) return <Loading margin />;
 
-  if (isEmpty(posts)) return <div className="FeedMasonry__emptyFeed">There are no posts yet</div>;
+  if (isEmpty(posts))
+    return (
+      <div className="FeedMasonry__emptyFeed">
+        {emptyLable ||
+          intl.formatMessage({ id: 'empty_posts', defaultMessage: 'There are no posts yet' })}
+      </div>
+    );
 
   return (
     <React.Fragment>
@@ -69,8 +75,10 @@ const FeedMasonry = ({ loadMore, hasMore, posts, loading }) => {
 FeedMasonry.propTypes = {
   loadMore: PropTypes.func,
   hasMore: PropTypes.bool,
+  emptyLable: PropTypes.bool,
   posts: PropTypes.arrayOf(PropTypes.shape({})),
   loading: PropTypes.bool,
+  intl: PropTypes.shape(),
 };
 
-export default FeedMasonry;
+export default injectIntl(FeedMasonry);

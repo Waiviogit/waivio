@@ -21,9 +21,7 @@ const BellButton = ({
 }) => {
   const type = !isEmpty(wobj) ? wobj : user;
   const bellStyle = type.bell ? 'bell-active' : 'bell';
-  const tooltipTitle = (
-    <FormattedMessage id="receive_object_news" defaultMessage="Receive object news" />
-  );
+  const tooltipTitle = <FormattedMessage id="receive_news" defaultMessage="Receive news" />;
 
   const bellNotification = () => {
     if (!isEmpty(wobj.author_permlink)) {
