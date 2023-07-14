@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import Lightbox from 'react-image-lightbox';
 import { Link, withRouter } from 'react-router-dom';
 import { Icon } from 'antd';
-import { get, isEmpty } from 'lodash';
+import { get, has, isEmpty } from 'lodash';
 import ObjectAvatar from './ObjectAvatar';
 import AppendModal from '../object/AppendModal/AppendModal';
 import { objectFields } from '../../common/constants/listOfFields';
@@ -52,7 +52,14 @@ export default class ObjectLightbox extends Component {
     const album = this.props.albums?.find(alb =>
       alb?.items?.some(pic => pic.body === wobject.avatar),
     );
-    const pics = [...get(wobject, 'preview_gallery', []), ...get(relatedAlbum, 'items', [])];
+    const parentAvatar =
+      !isEmpty(wobject.parent) && has(wobject.parent, 'avatar')
+        ? { body: wobject?.parent?.avatar }
+        : {};
+    const pics =
+      !has(wobject, 'avatar') && !isEmpty(parentAvatar)
+        ? [parentAvatar, ...get(wobject, 'preview_gallery', []), ...get(relatedAlbum, 'items', [])]
+        : [...get(wobject, 'preview_gallery', []), ...get(relatedAlbum, 'items', [])];
     const creator = album?.items?.find(pic => pic.body === wobject.avatar).creator;
 
     if (currentImage) currentImage = getProxyImageURL(currentImage, 'preview');
@@ -82,7 +89,7 @@ export default class ObjectLightbox extends Component {
             <a role="presentation" onClick={this.handleAvatarClick}>
               <ObjectAvatar item={wobject} size={size} />
             </a>
-            {this.state.open && !isEmpty(pics) && (
+            {this.state.open && (!isEmpty(pics) || !isEmpty(parentAvatar)) && (
               <Lightbox
                 wrapperClassName="LightboxTools"
                 imageTitle={

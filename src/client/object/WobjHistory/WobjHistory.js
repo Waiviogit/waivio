@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Select, Icon } from 'antd';
 import { connect } from 'react-redux';
@@ -73,6 +73,14 @@ const WobjHistory = ({
   });
 
   const objName = getObjectName(object);
+
+  useEffect(() => {
+    if (fieldUpdate) {
+      const field = updateFields.find(f => f.name === fieldUpdate);
+
+      setCurrField(field.translation);
+    }
+  }, [fieldUpdate]);
 
   return (
     <React.Fragment>
