@@ -56,7 +56,7 @@ const FeedMasonry = ({ loadMore, hasMore, posts, loading, emptyLable, intl }) =>
         <link rel="image_src" href={image} />
         <link id="favicon" rel="icon" href={favicon} type="image/x-icon" />
       </Helmet>
-      <InfiniteSroll threshold={3000} loader={<Loading />} hasMore={hasMore} loadMore={loadMore}>
+      <InfiniteSroll threshold={2000} loader={<Loading />} hasMore={hasMore} loadMore={loadMore}>
         <Masonry
           breakpointCols={breakpointColumnsObj(posts?.length)}
           className="FeedMasonry my-masonry-grid"
