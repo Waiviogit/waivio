@@ -15,7 +15,7 @@ import { breakpointColumnsObj } from './helpers';
 
 import './FeedMasonry.less';
 
-const FeedMasonry = ({ loadMore, hasMore, posts, loading, emptyLable, intl }) => {
+const FeedMasonry = ({ loadMore, hasMore, posts, loading, emptyLable, intl, writeReview }) => {
   const favicon = useSelector(getHelmetIcon);
   const siteName = useSelector(getSiteName);
   const title = siteName;
@@ -27,7 +27,7 @@ const FeedMasonry = ({ loadMore, hasMore, posts, loading, emptyLable, intl }) =>
 
   if (isEmpty(posts))
     return (
-      <div className="FeedMasonry__emptyFeed">
+      <div className="FeedMasonry__emptyFeed" onClick={writeReview}>
         {emptyLable ||
           intl.formatMessage({ id: 'empty_posts', defaultMessage: 'There are no posts yet' })}
       </div>
@@ -74,6 +74,7 @@ const FeedMasonry = ({ loadMore, hasMore, posts, loading, emptyLable, intl }) =>
 
 FeedMasonry.propTypes = {
   loadMore: PropTypes.func,
+  writeReview: PropTypes.func,
   hasMore: PropTypes.bool,
   emptyLable: PropTypes.bool,
   posts: PropTypes.arrayOf(PropTypes.shape({})),

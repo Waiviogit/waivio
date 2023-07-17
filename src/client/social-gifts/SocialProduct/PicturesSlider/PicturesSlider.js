@@ -10,7 +10,10 @@ import { getRelatedPhotos, getWobjectGallery } from '../../../../waivioApi/ApiCl
 import { getUsedLocale } from '../../../../store/appStore/appSelectors';
 import { isMobile } from '../../../../common/helpers/apiHelpers';
 import { getProxyImageURL } from '../../../../common/helpers/image';
-import { getLastPermlinksFromHash } from '../../../../common/helpers/wObjectHelper';
+import {
+  getLastPermlinksFromHash,
+  getObjectAvatar,
+} from '../../../../common/helpers/wObjectHelper';
 
 const limit = 30;
 
@@ -36,11 +39,10 @@ const PicturesSlider = ({ hoveredOption, activeOption, activeCategory, currentWo
   const onImgClick = (e, pic) => {
     setCurrentImage(pic);
     setPhotoIndex(pictures.indexOf(pic));
-    slider.current.goTo(pictures.indexOf(pic));
+    isMobile() && slider.current.goTo(pictures.indexOf(pic));
   };
   const onSlideChange = (curr, next) => {
     setPhotoIndex(next);
-    setCurrentImage(pictures[next]);
   };
 
   const MobileSlideChange = (curr, next) => {
@@ -55,13 +57,13 @@ const PicturesSlider = ({ hoveredOption, activeOption, activeCategory, currentWo
         ?.flatMap(alb => alb?.items)
         ?.sort((a, b) => (b.name === 'avatar') - (a.name === 'avatar'));
       const photos = [...allPhotos, ...get(relatedAlbum, 'items', [])];
-      const parentAvatarObj = { body: currentWobj?.parent?.avatar };
+      const avatar = getObjectAvatar(currentWobj);
 
-      setPictures(!isEmpty(photos) ? photos : [parentAvatarObj]);
-      setCurrentImage(!isEmpty(photos) ? photos[0] : parentAvatarObj);
+      setPictures(photos);
+      setCurrentImage(isEmpty(avatar) ? photos[0] : { body: avatar });
       setPhotoIndex(0);
     });
-  }, [authorPermlink]);
+  }, [authorPermlink, currentWobj.author_permlink]);
 
   const carouselSettings = pics => {
     const limitToShow = isMobile() ? 6 : 8;

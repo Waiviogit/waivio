@@ -4,8 +4,10 @@ import { Link } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
 import { objAuthorPermlink } from '../SocialProductHelper';
 import { objectFields } from '../../../../common/constants/listOfFields';
+import { getObjectName } from '../../../../common/helpers/wObjectHelper';
 
-const SocialListItem = ({ fieldName, field }) => {
+const SocialListItem = ({ fieldName, field, title }) => {
+  const fieldPermlink = field.author_permlink || field.authorPermlink;
   const getLayout = () => {
     switch (fieldName) {
       case objectFields.parent:
@@ -30,6 +32,45 @@ const SocialListItem = ({ fieldName, field }) => {
             {field.length} x {field.width} x {field.depth} {field.unit}
           </span>
         );
+      case objectFields.ageRange:
+      case objectFields.language:
+      case objectFields.publicationDate:
+        return <span>{field}</span>;
+      case objectFields.printLength:
+        return (
+          <>
+            {' '}
+            <span>{field}</span> <FormattedMessage id="lowercase_pages" />{' '}
+          </>
+        );
+      case 'authors':
+        return (
+          <span>
+            {field.map((a, i) => (
+              <>
+                <>
+                  {a.author_permlink || a.authorPermlink ? (
+                    <Link key={a.defaultShowLink} to={a.defaultShowLink}>
+                      {a.name}
+                    </Link>
+                  ) : (
+                    <span key={a.defaultShowLink}>{a.name}</span>
+                  )}
+                </>
+                {i !== field.length - 1 && ','}
+                {'  '}
+              </>
+            ))}
+          </span>
+        );
+      case objectFields.publisher:
+        return fieldPermlink ? (
+          <span>
+            <Link to={field.defaultShowLink}>{getObjectName(field)}</Link>
+          </span>
+        ) : (
+          <span>{field.name}</span>
+        );
       default:
         return null;
     }
@@ -38,7 +79,7 @@ const SocialListItem = ({ fieldName, field }) => {
   return (
     <div className="paddingBottom">
       <b>
-        <FormattedMessage id={`object_field_${fieldName}`} defaultMessage={fieldName} />:{' '}
+        {title || <FormattedMessage id={`object_field_${fieldName}`} defaultMessage={fieldName} />}:{' '}
       </b>
       {getLayout(fieldName, field)}
     </div>
@@ -47,6 +88,7 @@ const SocialListItem = ({ fieldName, field }) => {
 
 SocialListItem.propTypes = {
   fieldName: PropTypes.string,
+  title: PropTypes.string,
   field: PropTypes.shape(),
 };
 

@@ -13,11 +13,16 @@ const SocialMenuItem = ({ item, isOpen }) => {
   const linkTarget = webLink ? '_blank' : '_self';
   const isImageButton = ['image', 'icon'].includes(itemBody.style);
   const isNestedObjType = ['page', 'list', 'newsfeed', 'widget'].includes(itemBody.objectType);
+  const shopObj = itemBody.objectType === 'shop';
+  const historyPushObjType = !isNestedObjType && !webLink && !shopObj;
 
   const handleOpenItem = () => {
-    if ((isImageButton && !isNestedObjType && !webLink) || (!isNestedObjType && !webLink)) {
+    if ((isImageButton && historyPushObjType) || historyPushObjType) {
       history.push(`/object/product/${itemBody.linkToObject}`);
     } else if (webLink) {
+      setOpen(false);
+    } else if (shopObj) {
+      history.push(`/object-shop/${itemBody.linkToObject}`);
       setOpen(false);
     } else {
       setOpen(!open);
@@ -72,18 +77,14 @@ const SocialMenuItem = ({ item, isOpen }) => {
           <div className="SocialMenuItems__item-title">
             {isImageButton ? getimagesLayout() : itemBody.title}
           </div>
-          {(isNestedObjType || !webLink) && (
-            <Icon type={open ? 'minus' : 'plus'} style={{ fontSize: '20px' }} />
-          )}
+          {isNestedObjType && <Icon type={open ? 'minus' : 'plus'} style={{ fontSize: '20px' }} />}
         </a>
       ) : (
         <div className="SocialMenuItems__item" onClick={handleOpenItem}>
           <div className="SocialMenuItems__item-title">
             {isImageButton ? getimagesLayout() : itemBody.title}
           </div>
-          {(isNestedObjType || !webLink) && (
-            <Icon type={open ? 'minus' : 'plus'} style={{ fontSize: '20px' }} />
-          )}
+          {isNestedObjType && <Icon type={open ? 'minus' : 'plus'} style={{ fontSize: '20px' }} />}
         </div>
       )}
       <div className={`SocialMenuItems__content ${open ? 'SocialMenuItems__content--open' : ''}`}>
