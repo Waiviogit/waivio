@@ -82,6 +82,7 @@ const SocialProductReviews = ({ wobject, authors, intl }) => {
         hasMore={hasMore}
         loadMore={loadMore}
         loading={isFetching}
+        writeReview={handleWriteReviewClick}
       />
     </div>
   );
