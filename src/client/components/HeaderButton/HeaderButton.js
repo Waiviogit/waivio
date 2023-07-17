@@ -73,8 +73,7 @@ const HeaderButtons = props => {
       <FormattedMessage id="logout" defaultMessage="Logout" />
     </PopoverMenuItem>,
   ];
-
-  if (props.isWaivio) {
+  if (props.isWaivio || props.isWebsite) {
     const rewardItem = popoverItems.shift();
 
     popoverItems = [
@@ -154,7 +153,7 @@ const HeaderButtons = props => {
         history.push('/settings');
         break;
       case 'feed':
-        history.push('/');
+        props.isWebsite ? history.push('/feed') : history.push('/');
         break;
       case 'news':
         history.push('/trending');

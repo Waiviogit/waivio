@@ -88,7 +88,7 @@ const SocialWrapper = props => {
   };
   const createWebsiteMenu = configuration => {
     if (configuration.shopSettings?.type === 'object') {
-      getObject(configuration.shopSettings.value).then(async wobject => {
+      getObject(configuration.shopSettings?.value).then(async wobject => {
         const menuItemLinks = wobject.menuItem?.reduce((acc, item) => {
           const body = parseJSON(item.body);
 
@@ -103,7 +103,7 @@ const SocialWrapper = props => {
 
         if (isEmpty(wobject.menuItem)) {
           if (props.location.pathname === '/')
-            props.history.push(`/object/product/${configuration.shopSettings.value}`);
+            props.history.push(`/object/product/${configuration.shopSettings?.value}`);
           dispatch(
             setItemsForNavigation([
               {
@@ -165,7 +165,7 @@ const SocialWrapper = props => {
         }
       });
     } else if (props.location.pathname === '/')
-      props.history.push(`/user-shop/${configuration.shopSettings.value}`);
+      props.history.push(`/user-shop/${configuration.shopSettings?.value}`);
   };
 
   useEffect(() => {
