@@ -43,7 +43,7 @@ class ImageSideButton extends React.Component {
   getImages = image => this.setState({ currentImage: image });
 
   render() {
-    const { isLoading, isModal, isOkayBtn, disabledOkButton, currentImage } = this.state;
+    const { isLoading, isModal, isOkayBtn, currentImage } = this.state;
 
     return (
       <React.Fragment>
@@ -70,14 +70,12 @@ class ImageSideButton extends React.Component {
         <Modal
           wrapClassName="Settings__modal"
           onCancel={this.handleOpenModal}
-          okButtonProps={{ disabled: isLoading || isEmpty(currentImage) || disabledOkButton }}
+          okButtonProps={{ disabled: isLoading || isEmpty(currentImage) }}
           cancelButtonProps={{ disabled: isLoading }}
           visible={isModal}
           onOk={this.handleOnOk}
         >
           <ImageSetter
-            setDisabledOkButton={val => this.setState({ disabledOkButton: val })}
-            isEditable
             onImageLoaded={this.getImages}
             onLoadingImage={this.onLoadingImage}
             isRequired

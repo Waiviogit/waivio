@@ -4,6 +4,7 @@ import { withRouter } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import moment from 'moment';
 import { get, has, isEmpty, isNil, reduce } from 'lodash';
 import {
   getObjectInfo,
@@ -60,6 +61,7 @@ import './SocialProduct.less';
 import { getObjectAlbums } from '../../../store/galleryStore/gallerySelectors';
 import { getAlbums, resetGallery } from '../../../store/galleryStore/galleryActions';
 import Loading from '../../components/Icon/Loading';
+import SocialBookAuthors from './SocialBookAuthors/SocialBookAuthors';
 
 const limit = 30;
 
@@ -85,7 +87,13 @@ const SocialProduct = ({
   resetWobjGallery,
   nestedWobj,
 }) => {
-  const wobject = history.location.hash ? nestedWobj : wobj;
+  const authorPermlink = history.location.hash
+    ? getLastPermlinksFromHash(history.location.hash)
+    : match.params.name;
+  const wobject =
+    history.location.hash && history.location.hash !== `#${wobj.author_permlink}`
+      ? nestedWobj
+      : wobj;
   const [isEditMode, setIsEditMode] = useState(
     wobject.type === OBJECT_TYPE.PAGE && authenticated && wobject[objectFields.pageContent],
   );
@@ -100,13 +108,18 @@ const SocialProduct = ({
     manufacturerObject: {},
     merchantObject: {},
   });
-  const authorPermlink = history.location.hash
-    ? getLastPermlinksFromHash(history.location.hash)
-    : match.params.name;
   const affiliateLinks = wobject?.affiliateLinks || [];
   const price = hoveredOption.price || get(wobject, 'price');
   const manufacturer = parseWobjectField(wobject, 'manufacturer');
   const parent = get(wobject, 'parent');
+  const ageRange = get(wobject, 'ageRange');
+  const language = get(wobject, 'language');
+  const publicationDate = moment(wobject.publicationDate).format('MMMM DD, YYYY');
+  const printLength = wobject.printLength;
+  const publisher = parseWobjectField(wobject, 'publisher');
+  const productAuthors = wobject.authors
+    ? wobject.authors.map(el => parseWobjectField(el, 'body', []))
+    : [];
   const departments = get(wobject, 'departments');
   const dimensions = parseWobjectField(wobject, 'dimensions');
   const brand = parseWobjectField(wobject, 'brand');
@@ -163,7 +176,14 @@ const SocialProduct = ({
     !isEmpty(dimensions) ||
     !isEmpty(departments) ||
     !isEmpty(groupId) ||
-    !isEmpty(productIdBody);
+    !isEmpty(productIdBody) ||
+    !isEmpty(language) ||
+    !isEmpty(publicationDate) ||
+    !isEmpty(printLength) ||
+    !isEmpty(publisher) ||
+    !isEmpty(productAuthors) ||
+    !isEmpty(authors) ||
+    !isEmpty(ageRange);
 
   const getAddOnsSimilarRelatedObjects = () => {
     if (!isEmpty(addOnPermlinks) && !isNil(addOnPermlinks)) {
@@ -265,7 +285,20 @@ const SocialProduct = ({
       ) : (
         <div className="SocialProduct">
           <div className="SocialProduct__column SocialProduct__column-wrapper">
-            {isMobile() && <div className="SocialProduct__wobjName">{wobject.name}</div>}
+            {isMobile() && (
+              <div
+                className={
+                  isEmpty(productAuthors)
+                    ? 'SocialProduct__wobjName'
+                    : 'SocialProduct__bookWobjName'
+                }
+              >
+                {wobject.name}
+              </div>
+            )}
+            {isMobile() && !isEmpty(productAuthors) && (
+              <SocialBookAuthors authors={productAuthors} />
+            )}
             {isMobile() && (
               <div className="SocialProduct__ratings">
                 {' '}
@@ -308,7 +341,20 @@ const SocialProduct = ({
               </div>
             )}
             <div className="SocialProduct__row SocialProduct__right-row">
-              {!isMobile() && <div className="SocialProduct__wobjName">{wobject.name}</div>}
+              {!isMobile() && (
+                <div
+                  className={
+                    isEmpty(productAuthors)
+                      ? 'SocialProduct__wobjName'
+                      : 'SocialProduct__bookWobjName'
+                  }
+                >
+                  {wobject.name}
+                </div>
+              )}
+              {!isMobile() && !isEmpty(productAuthors) && (
+                <SocialBookAuthors authors={productAuthors} />
+              )}
               {!isMobile() && authenticated && !isEmpty(wobject) && (
                 <div className="SocialProduct__socialActions">
                   <SocialProductActions
@@ -388,6 +434,12 @@ const SocialProduct = ({
             {!isEmpty(menuItem) && <SocialMenuItems menuItem={menuItem} />}
             {showProductDetails && (
               <ProductDetails
+                locale={locale}
+                publisher={publisher}
+                printLength={printLength}
+                publicationDate={publicationDate}
+                language={language}
+                ageRange={ageRange}
                 wobject={wobject}
                 groupId={groupId}
                 history={history}
@@ -470,7 +522,7 @@ const mapStateToProps = state => ({
   nestedWobj: getWobjectNested(state),
 });
 const mapDispatchToProps = dispatch => ({
-  setStoreActiveOpt: obj => setStoreActiveOption(obj),
+  setStoreActiveOpt: obj => dispatch(setStoreActiveOption(obj)),
   resetOptClicked: opt => dispatch(resetOptionClicked(opt)),
   getWobject: (obj, name) => dispatch(getObject(obj, name)),
   getWobjAlbums: obj => dispatch(getAlbums(obj)),
