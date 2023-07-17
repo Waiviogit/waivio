@@ -15,7 +15,7 @@ import LinkItem from './LinkItem';
 
 import './WebsiteTopNavigation.less';
 
-const userNav = user => [
+const userNav = (user, intl) => [
   {
     name: 'Shop',
     link: `/user-shop/${user}`,
@@ -25,7 +25,7 @@ const userNav = user => [
     link: `/blog/${user}`,
   },
   {
-    name: 'Legal',
+    name: intl.formatMessage({ id: 'legal', defaultMessage: 'Legal' }),
     link: '/checklist/ljc-legal',
   },
 ];

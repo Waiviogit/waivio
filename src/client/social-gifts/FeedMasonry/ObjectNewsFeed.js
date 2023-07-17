@@ -18,6 +18,8 @@ import { getLastPermlinksFromHash } from '../../../common/helpers/wObjectHelper'
 import { preparationPostList } from './helpers';
 import Loading from '../../components/Icon/Loading';
 
+const limit = 15;
+
 const ObjectNewsFeed = ({ wobj }) => {
   const readLanguages = useSelector(getReadLanguages);
   const [newsPermlink, setNewsPermlink] = useState();
@@ -25,11 +27,10 @@ const ObjectNewsFeed = ({ wobj }) => {
   const feed = useSelector(getFeed);
   const postsList = useSelector(getPosts);
   const dispatch = useDispatch();
-
   const { name } = useParams();
   const location = useLocation();
-  const objName = wobj?.author_permlink || getLastPermlinksFromHash(location.hash) || name;
 
+  const objName = wobj?.author_permlink || getLastPermlinksFromHash(location.hash) || name;
   const postsIds = uniq(getFeedFromState('objectPosts', objName, feed));
   const hasMore = getFeedHasMoreFromState('objectPosts', objName, feed);
   const isFetching = getFeedLoadingFromState('objectPosts', objName, feed);
@@ -42,7 +43,7 @@ const ObjectNewsFeed = ({ wobj }) => {
           object: wobj.author_permlink,
           username: wobj.author_permlink,
           readLanguages,
-          limit: 20,
+          limit,
           newsPermlink: wobj?.newsFeed?.permlink,
         }),
       ).then(() => setFirstLoading(false));
@@ -71,7 +72,7 @@ const ObjectNewsFeed = ({ wobj }) => {
       getMoreObjectPosts({
         username: objName,
         authorPermlink: objName,
-        limit: 20,
+        limit,
         skip: posts?.length,
         newsPermlink,
       }),
