@@ -3,6 +3,7 @@ import { Button, Modal, Switch } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
+import { round } from 'lodash';
 
 import ChangeVotingModal from '../../widgets/ChangeVotingModal/ChangeVotingModal';
 import ImportModal from './ImportModal/ImportModal';
@@ -204,12 +205,12 @@ const DataImport = ({ intl }) => {
           <b>
             {intl.formatMessage({
               id: 'users_up_state',
-              defaultMessage: 'User`s up-to-date state',
+              defaultMessage: "User's up-to-date state",
             })}
             :
           </b>{' '}
-          <div>WAIV upvoting mana: {usersState.waivPowerMana}%</div>
-          <div>Resource credits: {usersState.resourceCredits}%</div>
+          <div>WAIV upvoting mana: {round(usersState.waivPowerMana, 2)}%</div>
+          <div>Resource credits: {round(usersState.resourceCredits, 2)}%</div>
         </p>
       )}
       <p>

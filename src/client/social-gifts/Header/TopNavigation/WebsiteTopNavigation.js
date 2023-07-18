@@ -32,7 +32,7 @@ const userNav = (user, intl) => [
 
 const WebsiteTopNavigation = ({ shopSettings, intl }) => {
   const listItem = useSelector(getNavigItems);
-  const linkList = shopSettings?.type === 'user' ? userNav(shopSettings?.value) : listItem;
+  const linkList = shopSettings?.type === 'user' ? userNav(shopSettings?.value, intl) : listItem;
   const loading = useSelector(getSettingsLoading);
   const history = useHistory();
   const [visible, setVisible] = useState(false);
