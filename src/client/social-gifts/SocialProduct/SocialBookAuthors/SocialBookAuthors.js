@@ -35,7 +35,7 @@ const SocialBookAuthors = ({ authors }) => {
 
       {newAuthors.map((a, i) => (
         <>
-          <span className={'ml2'}>
+          <span className={'ml1'}>
             {a.author_permlink || a.authorPermlink ? (
               <Link key={a.defaultShowLink} to={a.defaultShowLink}>
                 {a.name}

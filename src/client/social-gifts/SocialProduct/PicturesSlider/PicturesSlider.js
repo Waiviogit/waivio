@@ -19,6 +19,7 @@ const limit = 30;
 
 const PicturesSlider = ({ hoveredOption, activeOption, activeCategory, currentWobj }) => {
   const [currentImage, setCurrentImage] = useState({});
+  const [lastSlideToShow, setLastSlideToShow] = useState(null);
   const [hoveredPic, setHoveredPic] = useState({});
   const [pictures, setPictures] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
@@ -35,6 +36,7 @@ const PicturesSlider = ({ hoveredOption, activeOption, activeCategory, currentWo
   if (hoveredOption?.avatar || activeOption[activeCategory]?.avatar) {
     currentSrc = hoveredOption.avatar || activeOption[activeCategory].avatar;
   }
+  const limitToShow = isMobile() ? 6 : 8;
 
   const onImgClick = (e, pic) => {
     setCurrentImage(pic);
@@ -42,6 +44,7 @@ const PicturesSlider = ({ hoveredOption, activeOption, activeCategory, currentWo
     isMobile() && slider.current.goTo(pictures.indexOf(pic));
   };
   const onSlideChange = (curr, next) => {
+    setLastSlideToShow(next + limitToShow - 1);
     setPhotoIndex(next);
   };
 
@@ -66,7 +69,6 @@ const PicturesSlider = ({ hoveredOption, activeOption, activeCategory, currentWo
   }, [authorPermlink, currentWobj.author_permlink]);
 
   const carouselSettings = pics => {
-    const limitToShow = isMobile() ? 6 : 8;
     const slidesToShow = pics.length > limitToShow ? limitToShow : pics.length;
 
     return {
@@ -74,7 +76,7 @@ const PicturesSlider = ({ hoveredOption, activeOption, activeCategory, currentWo
       arrows: !isMobile(),
       lazyLoad: true,
       rows: 1,
-      nextArrow: photoIndex >= pics.length - slidesToShow ? <></> : <Icon type="caret-right" />,
+      nextArrow: lastSlideToShow >= pics.length - 1 ? <></> : <Icon type="caret-right" />,
       prevArrow: photoIndex === 0 ? <></> : <Icon type="caret-left" />,
       infinite: false,
       slidesToShow,
