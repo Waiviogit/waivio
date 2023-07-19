@@ -73,6 +73,7 @@ const HeaderButtons = props => {
       <FormattedMessage id="logout" defaultMessage="Logout" />
     </PopoverMenuItem>,
   ];
+
   if (props.isWaivio || props.isWebsite) {
     const rewardItem = popoverItems.shift();
 

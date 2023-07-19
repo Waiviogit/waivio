@@ -465,7 +465,10 @@ class CreateObject extends React.Component {
                 >
                   {map(objectTypes, type => (
                     <Option value={type.name} key={type.name}>
-                      {type.name}
+                      {this.props.intl.formatMessage({
+                        id: `object_type_${type.name}`,
+                        defaultMessage: type.name,
+                      })}
                     </Option>
                   ))}
                 </Select>,

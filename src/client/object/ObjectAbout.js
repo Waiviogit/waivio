@@ -6,7 +6,7 @@ import { isEmpty, uniq } from 'lodash';
 import { Link } from 'react-router-dom';
 
 import { showPostModal } from '../../store/appStore/appActions';
-import ObjectInfo from '../app/Sidebar/ObjectInfo';
+import ObjectInfo from '../app/Sidebar/ObjectInfo/ObjectInfo';
 import { getObjectsRewards } from '../../waivioApi/ApiClient';
 import PostModal from '../post/PostModalContainer';
 import { getAuthenticatedUserName } from '../../store/authStore/authSelectors';
