@@ -251,6 +251,7 @@ class WobjectContainer extends React.Component {
     this.props.clearRelatedPhoto();
     this.props.setStoreActiveOption({});
     this.props.resetBreadCrumb();
+    this.props.resetGallery();
   }
 
   toggleViewEditMode = () => this.setState(prevState => ({ isEditMode: !prevState.isEditMode }));
