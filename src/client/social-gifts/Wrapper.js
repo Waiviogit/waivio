@@ -87,85 +87,87 @@ const SocialWrapper = props => {
     props.setUsedLocale(lang);
   };
   const createWebsiteMenu = configuration => {
-    if (configuration.shopSettings?.type === 'object') {
-      getObject(configuration.shopSettings?.value).then(async wobject => {
-        const menuItemLinks = wobject.menuItem?.reduce((acc, item) => {
-          const body = parseJSON(item.body);
+    if (!isEmpty(configuration?.shopSettings)) {
+      if (configuration.shopSettings?.type === 'object') {
+        getObject(configuration.shopSettings?.value).then(async wobject => {
+          const menuItemLinks = wobject.menuItem?.reduce((acc, item) => {
+            const body = parseJSON(item.body);
 
-          if (body?.linkToObject) {
-            return [...acc, body?.linkToObject];
-          }
+            if (body?.linkToObject) {
+              return [...acc, body?.linkToObject];
+            }
 
-          return acc;
-        }, []);
-
-        const customSort = get(wobject, 'sortCustom.include', []);
-
-        if (isEmpty(wobject.menuItem)) {
-          if (props.location.pathname === '/')
-            props.history.push(`/object/product/${configuration.shopSettings?.value}`);
-          dispatch(
-            setItemsForNavigation([
-              {
-                link: createLink(wobject),
-                name: getObjectName(wobject),
-              },
-              {
-                name: 'Legal',
-                link: '/checklist/ljc-legal',
-              },
-            ]),
-          );
-
-          props.setLoadingStatus(true);
-        } else {
-          const listItems = isEmpty(menuItemLinks)
-            ? []
-            : await getObjectsByIds({ authorPermlinks: menuItemLinks, locale: props.locale });
-
-          const compareList = wobject?.menuItem?.map(wobjItem => {
-            const body = parseJSON(wobjItem.body);
-            const currItem = body?.linkToObject
-              ? listItems.wobjects.find(wobj => wobj.author_permlink === body?.linkToObject)
-              : body;
-
-            return {
-              ...wobjItem,
-              ...currItem,
-              body,
-            };
-          });
-
-          const sortingButton = customSort.reduce((acc, curr) => {
-            const findObj = compareList.find(wobj => wobj.permlink === curr);
-
-            return findObj ? [...acc, findObj] : acc;
+            return acc;
           }, []);
-          const buttonList = [
-            ...sortingButton,
-            ...compareList?.filter(i => !customSort.includes(i.permlink)),
-          ].map(i => ({
-            link: createLink(i),
-            name: i?.body?.title || getObjectName(i),
-            type: i.body.linkToObject ? 'nav' : 'blank',
-          }));
 
-          dispatch(
-            setItemsForNavigation([
-              ...buttonList,
-              {
-                name: 'Legal',
-                link: '/checklist/ljc-legal',
-              },
-            ]),
-          );
-          props.setLoadingStatus(true);
+          const customSort = get(wobject, 'sortCustom.include', []);
 
-          if (props.location.pathname === '/') props.history.push(buttonList[0].link);
-        }
-      });
-    } else if (props.location.pathname === '/')
-      props.history.push(`/user-shop/${configuration.shopSettings?.value}`);
+          if (isEmpty(wobject.menuItem)) {
+            if (props.location.pathname === '/')
+              props.history.push(`/object/product/${configuration.shopSettings?.value}`);
+            dispatch(
+              setItemsForNavigation([
+                {
+                  link: createLink(wobject),
+                  name: getObjectName(wobject),
+                },
+                {
+                  name: 'Legal',
+                  link: '/checklist/ljc-legal',
+                },
+              ]),
+            );
+
+            props.setLoadingStatus(true);
+          } else {
+            const listItems = isEmpty(menuItemLinks)
+              ? []
+              : await getObjectsByIds({ authorPermlinks: menuItemLinks, locale: props.locale });
+
+            const compareList = wobject?.menuItem?.map(wobjItem => {
+              const body = parseJSON(wobjItem.body);
+              const currItem = body?.linkToObject
+                ? listItems.wobjects.find(wobj => wobj.author_permlink === body?.linkToObject)
+                : body;
+
+              return {
+                ...wobjItem,
+                ...currItem,
+                body,
+              };
+            });
+
+            const sortingButton = customSort.reduce((acc, curr) => {
+              const findObj = compareList.find(wobj => wobj.permlink === curr);
+
+              return findObj ? [...acc, findObj] : acc;
+            }, []);
+            const buttonList = [
+              ...sortingButton,
+              ...compareList?.filter(i => !customSort.includes(i.permlink)),
+            ].map(i => ({
+              link: createLink(i),
+              name: i?.body?.title || getObjectName(i),
+              type: i.body.linkToObject ? 'nav' : 'blank',
+            }));
+
+            dispatch(
+              setItemsForNavigation([
+                ...buttonList,
+                {
+                  name: 'Legal',
+                  link: '/checklist/ljc-legal',
+                },
+              ]),
+            );
+            props.setLoadingStatus(true);
+
+            if (props.location.pathname === '/') props.history.push(buttonList[0].link);
+          }
+        });
+      } else if (props.location.pathname === '/')
+        props.history.push(`/user-shop/${configuration.shopSettings?.value}`);
+    }
   };
 
   useEffect(() => {

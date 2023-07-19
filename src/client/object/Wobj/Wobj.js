@@ -114,7 +114,7 @@ const Wobj = ({
     switch (wobject?.object_type) {
       case 'book':
       case 'product':
-        return <SocialProduct />;
+        return <SocialProduct toggleViewEditMode={toggleViewEditMode} />;
       case 'widget':
         return <WidgetContent />;
       case 'page':
@@ -210,7 +210,7 @@ const Wobj = ({
         <link id="favicon" rel="icon" href={helmetIcon} type="image/x-icon" />
       </Helmet>
       <ScrollToTopOnMount />
-      {isSocial ? (
+      {isSocial && !isEditMode ? (
         getWobjView()
       ) : (
         <React.Fragment>

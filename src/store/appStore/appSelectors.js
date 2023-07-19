@@ -16,6 +16,8 @@ export const getIsTrendingTopicsLoading = createSelector(
 
 export const getRewardFund = createSelector([appState], state => state.rewardFund);
 
+export const getUserAdministrator = createSelector([appState], state => state.isUserAdministrator);
+
 export const getRewardFundRecentClaims = createSelector(
   [getRewardFund],
   state => state.recent_claims,

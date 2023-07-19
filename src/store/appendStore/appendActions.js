@@ -186,19 +186,27 @@ export const voteAppends = (
         ),
       );
     })
-    .catch(e => {
-      if (!authorityField) {
-        message.error(e.error_description);
-      }
+    .catch(() =>
+      steemConnectAPI.appendVote(voter, author, permlink, weight).then(res => {
+        if (!authorityField) {
+          message.success('Please wait, we are processing your update');
+        }
 
-      return dispatch({
-        type: VOTE_APPEND.ERROR,
-        payload: {
-          post,
-          permlink,
-        },
-      });
-    });
+        dispatch(
+          getChangedWobjectField(
+            wobj.author_permlink,
+            fieldName,
+            author,
+            permlink,
+            isNew,
+            type,
+            appendObj,
+            isUpdatesPage,
+            res.id || res.result.id,
+          ),
+        );
+      }),
+    );
 };
 export const AUTHORITY_VOTE_APPEND = createAsyncActionType('@append/AUTHORITY_VOTE_APPEND');
 
@@ -236,6 +244,7 @@ export const authorityVoteAppend = (author, authorPermlink, permlink, weight, is
       );
   });
 };
+
 export const SET_OBJECT_IN_AUTHORITY = '@append/SET_OBJECT_IN_AUTHORITY';
 export const setObjectinAuthority = permlink => ({
   type: SET_OBJECT_IN_AUTHORITY,

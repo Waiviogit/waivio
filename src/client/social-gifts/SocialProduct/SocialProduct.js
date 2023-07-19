@@ -45,8 +45,6 @@ import ObjectsSlider from './ObjectsSlider/ObjectsSlider';
 import SocialMenuItems from './SocialMenuItems/SocialMenuItems';
 import { getIsOptionClicked } from '../../../store/shopStore/shopSelectors';
 import SocialProductActions from './SocialProductActions/SocialProductActions';
-import OBJECT_TYPE from '../../object/const/objectTypes';
-import { objectFields } from '../../../common/constants/listOfFields';
 import { resetOptionClicked } from '../../../store/shopStore/shopActions';
 import { setStoreActiveOption } from '../../../store/optionsStore/optionsActions';
 import SocialProductReviews from './SocialProductReviews/SocialProductReviews';
@@ -62,6 +60,7 @@ import { getObjectAlbums } from '../../../store/galleryStore/gallerySelectors';
 import { getAlbums, resetGallery } from '../../../store/galleryStore/galleryActions';
 import Loading from '../../components/Icon/Loading';
 import SocialBookAuthors from './SocialBookAuthors/SocialBookAuthors';
+import Breadcrumbs from '../Breadcrumbs/Breadcrumbs';
 
 const limit = 30;
 
@@ -86,6 +85,8 @@ const SocialProduct = ({
   albums,
   resetWobjGallery,
   nestedWobj,
+  isEditMode,
+  toggleViewEditMode,
 }) => {
   const authorPermlink = history.location.hash
     ? getLastPermlinksFromHash(history.location.hash)
@@ -94,9 +95,6 @@ const SocialProduct = ({
     history.location.hash && history.location.hash !== `#${wobj.author_permlink}`
       ? nestedWobj
       : wobj;
-  const [isEditMode, setIsEditMode] = useState(
-    wobject.type === OBJECT_TYPE.PAGE && authenticated && wobject[objectFields.pageContent],
-  );
   const [reward, setReward] = useState([]);
   const [hoveredOption, setHoveredOption] = useState({});
   const [addOns, setAddOns] = useState([]);
@@ -165,7 +163,6 @@ const SocialProduct = ({
     : socialHeaderEl?.offsetHeight;
   const scrollHeight =
     (typeof window !== 'undefined' && window.scrollY > 0) || optionClicked ? socialScrollHeight : 0;
-  const toggleViewEditMode = () => setIsEditMode(!isEditMode);
 
   const showProductDetails =
     !isEmpty(brand) ||
@@ -284,6 +281,7 @@ const SocialProduct = ({
         <Loading margin />
       ) : (
         <div className="SocialProduct">
+          <Breadcrumbs inProduct />
           <div className="SocialProduct__column SocialProduct__column-wrapper">
             {isMobile() && (
               <div
@@ -504,6 +502,8 @@ SocialProduct.propTypes = {
   getWobject: PropTypes.func,
   getWobjAlbums: PropTypes.func,
   resetWobjGallery: PropTypes.func,
+  isEditMode: PropTypes.bool,
+  toggleViewEditMode: PropTypes.func,
 };
 
 const mapStateToProps = state => ({

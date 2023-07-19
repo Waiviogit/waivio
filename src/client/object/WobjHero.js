@@ -6,13 +6,14 @@ import WobjHeader from './WobjHeader';
 import UserHeaderLoading from '../components/UserHeaderLoading';
 import ObjectMenu from '../components/ObjectMenu';
 import { accessTypesArr, haveAccess } from '../../common/helpers/wObjectHelper';
-import { getIsWaivio } from '../../store/appStore/appSelectors';
+import { getIsWaivio, getUserAdministrator } from '../../store/appStore/appSelectors';
 import { getObjectAlbums } from '../../store/galleryStore/gallerySelectors';
 
 @withRouter
 @connect(state => ({
   albums: getObjectAlbums(state),
   isWaivio: getIsWaivio(state),
+  isAdministrator: getUserAdministrator(state),
 }))
 class WobjMenuWrapper extends React.Component {
   static propTypes = {
@@ -24,6 +25,7 @@ class WobjMenuWrapper extends React.Component {
     albumsAndImagesCount: PropTypes.number,
     albums: PropTypes.arrayOf(PropTypes.shape()),
     isWaivio: PropTypes.bool,
+    isAdministrator: PropTypes.bool,
   };
 
   static defaultProps = {

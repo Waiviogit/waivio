@@ -3,10 +3,16 @@
 .Breadcrumbs {
   margin: 10px 0;
 
-  a {
+  a,
+  span {
     color: @blue-gullGray;
     font-size: 18px;
-    //text-transform: uppercase;
+    cursor: pointer;
+    transition: 0.5s;
+
+    &:hover {
+      color: var(--website-hover-color);
+    }
   }
 
   .anticon.anticon-right {
