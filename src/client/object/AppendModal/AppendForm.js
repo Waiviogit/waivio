@@ -250,7 +250,7 @@ class AppendForm extends Component {
     itemsInSortingList: null,
     newsFilterTitle: null,
     menuItemButtonType: 'standard',
-    context: 'waivio.com',
+    context: 'PERSONAL',
   };
 
   componentDidMount = () => {
@@ -2264,7 +2264,7 @@ class AppendForm extends Component {
               )}
             </Form.Item>
             <div className={'mt3'}>
-              <p>{`CONTEXT: ${this.state.context}`}</p>
+              <p>{`CONTEXT: waivio.com`}</p>
             </div>
           </>
         );
