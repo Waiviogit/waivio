@@ -130,6 +130,7 @@ export const getCurrentAppSettings = () => (dispatch, getState) => {
       dispatch({
         type: GET_CURRENT_APP_SETTINGS.SUCCESS,
         payload: res,
+        userName: isAuth,
       });
       const { account, percent: weight } = res.beneficiary;
 

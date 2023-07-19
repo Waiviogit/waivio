@@ -4,23 +4,29 @@ import { useLocation, useRouteMatch } from 'react-router';
 import { isEmpty } from 'lodash';
 import { Link } from 'react-router-dom';
 import { Icon } from 'antd';
+import PropTypes from 'prop-types';
 import { createNewHash, getObjectName } from '../../../common/helpers/wObjectHelper';
 import { getShopBreadCrumbs } from '../../../store/wObjectStore/wObjectSelectors';
 import { getUsedLocale } from '../../../store/appStore/appSelectors';
 import { getObjectInfo } from '../../../waivioApi/ApiClient';
 import { setAllBreadcrumbsForChecklist } from '../../../store/wObjectStore/wobjActions';
+import useQuery from '../../../hooks/useQuery';
 
 import './Breadcrumbs.less';
 
-const Breadcrumbs = () => {
+const Breadcrumbs = ({ inProduct }) => {
   const breadcrumbs = useSelector(getShopBreadCrumbs);
   const locale = useSelector(getUsedLocale);
   const match = useRouteMatch();
   const location = useLocation();
   const dispatch = useDispatch();
-  const linkList = location.hash
-    ? [match.params.name, ...location.hash.replace('#', '').split('/')]
-    : [match.params.name];
+  const query = useQuery();
+  const permlinks = location.hash.replace('#', '').split('/');
+  let linkList = location.hash ? [match.params.name, ...permlinks] : [match.params.name];
+
+  if (inProduct) {
+    linkList = query.get('breadbrumbs').split('/');
+  }
 
   const getTruncatedTitle = title =>
     title.length < 30
@@ -76,6 +82,10 @@ const Breadcrumbs = () => {
       ))}
     </div>
   );
+};
+
+Breadcrumbs.propTypes = {
+  inProduct: PropTypes.bool,
 };
 
 export default Breadcrumbs;

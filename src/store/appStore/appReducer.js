@@ -12,6 +12,7 @@ import { listOfSocialWebsites } from '../../client/social-gifts/listOfSocialWebs
 const initialState = {
   isFetching: false,
   isLoaded: false,
+  isUserAdministrator: false,
   rate: 0,
   trendingTopicsLoading: false,
   trendingTopics: [],
@@ -149,13 +150,21 @@ export default (state = initialState, action) => {
         isMobile: mobileUserAgents.test(navigator.userAgent),
       };
     case appTypes.GET_CURRENT_APP_SETTINGS.SUCCESS: {
-      const { mainPage, host, configuration, beneficiary, parentHost } = action.payload;
+      const {
+        mainPage,
+        host,
+        configuration,
+        beneficiary,
+        parentHost,
+        administrators,
+      } = action.payload;
       const deviceType = mobileUserAgents.test(navigator.userAgent) ? 'mobile' : 'desktop';
       const currMap = configuration?.[`${deviceType}Map`];
       const logo = configuration?.[`${deviceType}Logo`];
 
       return {
         ...state,
+        isUserAdministrator: administrators?.includes(action?.userName),
         websiteName: getObjectName(configuration.aboutObject) || configuration?.header?.name,
         mainPage,
         host,

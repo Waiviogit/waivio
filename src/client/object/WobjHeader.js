@@ -21,7 +21,7 @@ import {
   parseWobjectField,
 } from '../../common/helpers/wObjectHelper';
 import { followWobject, unfollowWobject } from '../../store/wObjectStore/wobjActions';
-import { getIsWaivio } from '../../store/appStore/appSelectors';
+import { getIsWaivio, getUserAdministrator } from '../../store/appStore/appSelectors';
 import HeartButton from '../widgets/HeartButton';
 import { guestUserRegex } from '../../common/helpers/regexHelpers';
 
@@ -37,6 +37,7 @@ const WobjHeader = ({
   followWobj,
   unfollowWobj,
   isWaivio,
+  isAdministrator,
 }) => {
   const coverImage = wobject.background || DEFAULTS.BACKGROUND;
   const style = { backgroundImage: `url("${coverImage}")` };
@@ -92,7 +93,7 @@ const WobjHeader = ({
                   wobj={wobject}
                   followingType="wobject"
                 />
-                {accessExtend && authenticated && isWaivio && (
+                {accessExtend && authenticated && (isWaivio || isAdministrator) && (
                   <React.Fragment>
                     <Button onClick={toggleViewEditMode}>
                       {isEditMode
@@ -145,6 +146,7 @@ const WobjHeader = ({
 WobjHeader.propTypes = {
   intl: PropTypes.shape(),
   isEditMode: PropTypes.bool,
+  isAdministrator: PropTypes.bool,
   authenticated: PropTypes.bool,
   wobject: PropTypes.shape(),
   username: PropTypes.string,
@@ -170,6 +172,7 @@ WobjHeader.defaultProps = {
 const mapStateToProps = state => ({
   isMobile: state.app.screenSize !== 'large',
   isWaivio: getIsWaivio(state),
+  isAdministrator: getUserAdministrator(state),
 });
 
 export default injectIntl(
