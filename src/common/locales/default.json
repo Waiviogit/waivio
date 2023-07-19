@@ -2285,5 +2285,16 @@
   "list_sorting":"List sorting",
   "list_item":"List item",
   "empty_posts": "There are no posts yet",
-  "user_reviews": "User reviews"
+  "user_reviews": "User reviews",
+  "object_field_affiliateButton": "Affiliate button",
+  "object_field_affiliateProductIdTypes": "Product ID types",
+  "object_field_affiliateGeoArea": "GEO areas",
+  "object_field_affiliateUrlTemplate": "URL template",
+  "object_field_affiliateCode": "My affiliate code",
+  "object_type_affiliate": "Affiliate program",
+  "affiliate": "Affiliate",
+  "geo_area": "GEO area",
+  "affiliate_url_template_info": "URL template will be used to generate product links. URL template should begin with the website name and incorporate parameters PRODUCTID and AFFILIATECODE. URL template should be formatted as follows: http://www.affiliatesite.com?productid=PRODUCTID&affiliatecode=AFFILIATECODE.",
+  "affiliate_url_error": "Please enter valid URL. It should begin with the website name and include PRODUCTID and AFFILIATECODE.",
+  "my_affiliate_code": "My affiliate code"
 }
