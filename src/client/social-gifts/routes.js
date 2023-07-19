@@ -275,6 +275,11 @@ const routes = host => ({
           component: Views.ObjectOfTypePage,
         },
         {
+          path: `/updates/(${URL.WOBJ.filters})?`,
+          exact: true,
+          component: Views.WobjHistory,
+        },
+        {
           path: '/blog/@:name',
           exact: true,
           component: Views.UserProfile,
