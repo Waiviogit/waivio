@@ -110,6 +110,13 @@ export const hidePostModal = createAction(HIDE_POST_MODAL);
 export const SET_IS_MOBILE = '@app/SET_IS_MOBILE';
 export const setIsMobile = createAction(SET_IS_MOBILE);
 
+export const CHANGE_ADMIN_STATUS = '@app/CHANGE_ADMIN_STATUS';
+
+export const changeAdminStatus = userName => ({
+  type: CHANGE_ADMIN_STATUS,
+  userName,
+});
+
 export const GET_CURRENT_APP_SETTINGS = createAsyncActionType('@app/GET_CURRENT_APP_SETTINGS');
 
 export const getCurrentAppSettings = () => (dispatch, getState) => {

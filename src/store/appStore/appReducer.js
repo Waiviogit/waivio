@@ -165,6 +165,7 @@ export default (state = initialState, action) => {
       return {
         ...state,
         isUserAdministrator: administrators?.includes(action?.userName),
+        administrators,
         websiteName: getObjectName(configuration.aboutObject) || configuration?.header?.name,
         mainPage,
         host,
@@ -179,6 +180,15 @@ export default (state = initialState, action) => {
         currMap,
         isWaivio: mainPage === 'waivio',
         settingsLoading: false,
+      };
+    }
+
+    case appTypes.CHANGE_ADMIN_STATUS: {
+      const { administrators } = state;
+
+      return {
+        ...state,
+        isUserAdministrator: administrators?.includes(action?.userName),
       };
     }
 
