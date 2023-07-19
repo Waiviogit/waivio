@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { isEmpty, take, truncate } from 'lodash';
 import classNames from 'classnames';
 import { Link } from 'react-router-dom';
@@ -17,8 +17,26 @@ const FeedItem = ({ post, photoQuantity }) => {
   const lastIndex = imagePath?.length - 1;
   const withoutImage = isEmpty(imagePath);
   const dispatch = useDispatch();
+  const isTiktok = embeds[0]?.provider_name === 'TikTok';
+  const [thumbnail, setThumbnail] = useState('');
+
+  useEffect(() => {
+    if (isTiktok) {
+      fetch(
+        `https://www.tiktok.com/oembed?url=https://www.tiktok.com/${embeds[0].url.replace(
+          /\?.*/,
+          '',
+        )}`,
+      )
+        .then(res => res.json())
+        .then(res => {
+          setThumbnail(res.thumbnail_url);
+        });
+    }
+  }, []);
 
   if (withoutImage && isEmpty(embeds)) return null;
+  if (isTiktok && !thumbnail) return null;
 
   const handleShowPostModal = () => dispatch(showPostModal(post));
 
@@ -45,10 +63,14 @@ const FeedItem = ({ post, photoQuantity }) => {
         <div
           className={classNames('FeedMasonry__videoContainer', {
             'FeedMasonry__videoContainer--withImage': !withoutImage,
-            'FeedMasonry__videoContainer--tiktok': embeds[0]?.provider_name === 'TikTok',
+            'FeedMasonry__videoContainer--tiktok': isTiktok,
           })}
         >
-          <PostFeedEmbed key="embed" embed={embeds[0]} />
+          <PostFeedEmbed
+            key="embed"
+            isSocial
+            embed={isTiktok ? { ...embeds[0], thumbnail } : embeds[0]}
+          />
           {!withoutImage && (
             <img
               className={classNames('FeedMasonry__img', 'FeedMasonry__img--bottom')}

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Carousel, Icon } from 'antd';
 import { useHistory, useRouteMatch } from 'react-router';
 import Lightbox from 'react-image-lightbox';
@@ -10,17 +10,21 @@ import { getRelatedPhotos, getWobjectGallery } from '../../../../waivioApi/ApiCl
 import { getUsedLocale } from '../../../../store/appStore/appSelectors';
 import { isMobile } from '../../../../common/helpers/apiHelpers';
 import { getProxyImageURL } from '../../../../common/helpers/image';
-import { getLastPermlinksFromHash } from '../../../../common/helpers/wObjectHelper';
+import {
+  getLastPermlinksFromHash,
+  getObjectAvatar,
+} from '../../../../common/helpers/wObjectHelper';
 
 const limit = 30;
 
-const PicturesSlider = ({ hoveredOption, activeOption, activeCategory }) => {
-  const [currentSlide, setCurrentSlide] = useState(0);
+const PicturesSlider = ({ hoveredOption, activeOption, activeCategory, currentWobj }) => {
   const [currentImage, setCurrentImage] = useState({});
+  const [lastSlideToShow, setLastSlideToShow] = useState(null);
   const [hoveredPic, setHoveredPic] = useState({});
   const [pictures, setPictures] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const [photoIndex, setPhotoIndex] = useState(0);
+  const slider = useRef();
   const history = useHistory();
   const match = useRouteMatch();
   const locale = useSelector(getUsedLocale);
@@ -32,13 +36,21 @@ const PicturesSlider = ({ hoveredOption, activeOption, activeCategory }) => {
   if (hoveredOption?.avatar || activeOption[activeCategory]?.avatar) {
     currentSrc = hoveredOption.avatar || activeOption[activeCategory].avatar;
   }
+  const limitToShow = isMobile() ? 6 : 8;
 
   const onImgClick = (e, pic) => {
     setCurrentImage(pic);
     setPhotoIndex(pictures.indexOf(pic));
+    isMobile() && slider.current.goTo(pictures.indexOf(pic));
   };
   const onSlideChange = (curr, next) => {
-    setCurrentSlide(next);
+    setLastSlideToShow(next + limitToShow - 1);
+    setPhotoIndex(next);
+  };
+
+  const MobileSlideChange = (curr, next) => {
+    setPhotoIndex(next);
+    setCurrentImage(pictures[next]);
   };
 
   useEffect(() => {
@@ -48,15 +60,15 @@ const PicturesSlider = ({ hoveredOption, activeOption, activeCategory }) => {
         ?.flatMap(alb => alb?.items)
         ?.sort((a, b) => (b.name === 'avatar') - (a.name === 'avatar'));
       const photos = [...allPhotos, ...get(relatedAlbum, 'items', [])];
+      const avatar = getObjectAvatar(currentWobj);
 
       setPictures(photos);
-      setCurrentImage(photos[0]);
+      setCurrentImage(isEmpty(avatar) ? photos[0] : { body: avatar });
       setPhotoIndex(0);
     });
-  }, [authorPermlink]);
+  }, [authorPermlink, currentWobj.author_permlink]);
 
   const carouselSettings = pics => {
-    const limitToShow = isMobile() ? 6 : 8;
     const slidesToShow = pics.length > limitToShow ? limitToShow : pics.length;
 
     return {
@@ -64,13 +76,24 @@ const PicturesSlider = ({ hoveredOption, activeOption, activeCategory }) => {
       arrows: !isMobile(),
       lazyLoad: true,
       rows: 1,
-      nextArrow: currentSlide >= pics.length - slidesToShow ? <></> : <Icon type="caret-right" />,
-      prevArrow: currentSlide === 0 ? <></> : <Icon type="caret-left" />,
+      nextArrow: lastSlideToShow >= pics.length - 1 ? <></> : <Icon type="caret-right" />,
+      prevArrow: photoIndex === 0 ? <></> : <Icon type="caret-left" />,
       infinite: false,
       slidesToShow,
       swipeToSlide: isMobile(),
       slidesToScroll: 1,
+      beforeChange: onSlideChange,
     };
+  };
+  const mobileSlider = {
+    dots: false,
+    arrows: false,
+    lazyLoad: true,
+    rows: 1,
+    infinite: false,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    beforeChange: MobileSlideChange,
   };
 
   const onClosePicture = () => {
@@ -85,16 +108,33 @@ const PicturesSlider = ({ hoveredOption, activeOption, activeCategory }) => {
 
   return !isEmpty(pictures) ? (
     <div className={'PicturesSlider'}>
-      <div>
-        <img
-          className="PicturesSlider__previewImage"
-          src={getProxyImageURL(currentSrc)}
-          alt={'pic'}
-          onClick={() => setIsOpen(true)}
-        />
-      </div>
+      {!isMobile() ? (
+        <div>
+          <img
+            className="PicturesSlider__previewImage"
+            src={getProxyImageURL(currentSrc)}
+            alt={'pic'}
+            onClick={() => setIsOpen(true)}
+          />
+        </div>
+      ) : (
+        <div className={'MobileCarousel'}>
+          <Carousel ref={slider} {...mobileSlider}>
+            {map(pictures, pic => (
+              <div key={pic.id}>
+                <img
+                  className="PicturesSlider__previewImage"
+                  src={getProxyImageURL(pic.body)}
+                  alt={'pic'}
+                  onClick={() => setIsOpen(true)}
+                />
+              </div>
+            ))}
+          </Carousel>
+        </div>
+      )}
       <br />
-      <Carousel {...carouselSettings(pictures)} beforeChange={onSlideChange}>
+      <Carousel {...carouselSettings(pictures)}>
         {map(pictures, pic => (
           <div key={pic.id}>
             <img
@@ -108,7 +148,7 @@ const PicturesSlider = ({ hoveredOption, activeOption, activeCategory }) => {
               src={getProxyImageURL(pic?.body)}
               className={
                 pic?.body === currentImage?.body
-                  ? 'PicturesSlider__thumbnail-active'
+                  ? 'PicturesSlider__thumbnail--active'
                   : 'PicturesSlider__thumbnail'
               }
               alt="pic"
@@ -136,6 +176,7 @@ const PicturesSlider = ({ hoveredOption, activeOption, activeCategory }) => {
 };
 
 PicturesSlider.propTypes = {
+  currentWobj: PropTypes.shape(),
   hoveredOption: PropTypes.shape(),
   activeOption: PropTypes.shape(),
   activeCategory: PropTypes.string,

@@ -4,6 +4,7 @@ import { isEmpty, take, takeRight, truncate } from 'lodash';
 import { useSelector } from 'react-redux';
 import { Icon } from 'antd';
 import { useHistory } from 'react-router';
+import { injectIntl } from 'react-intl';
 
 import Popover from '../../../components/Popover';
 import { isMobile } from '../../../../common/helpers/apiHelpers';
@@ -14,11 +15,7 @@ import LinkItem from './LinkItem';
 
 import './WebsiteTopNavigation.less';
 
-const userNav = user => [
-  // {
-  //   name: 'Blog',
-  //   link: `/blog`,
-  // },
+const userNav = (user, intl) => [
   {
     name: 'Shop',
     link: `/user-shop/${user}`,
@@ -28,14 +25,14 @@ const userNav = user => [
     link: `/blog/${user}`,
   },
   {
-    name: 'Legal',
+    name: intl.formatMessage({ id: 'legal', defaultMessage: 'Legal' }),
     link: '/checklist/ljc-legal',
   },
 ];
 
-const WebsiteTopNavigation = ({ shopSettings }) => {
+const WebsiteTopNavigation = ({ shopSettings, intl }) => {
   const listItem = useSelector(getNavigItems);
-  const linkList = shopSettings?.type === 'user' ? userNav(shopSettings?.value) : listItem;
+  const linkList = shopSettings?.type === 'user' ? userNav(shopSettings?.value, intl) : listItem;
   const loading = useSelector(getSettingsLoading);
   const history = useHistory();
   const [visible, setVisible] = useState(false);
@@ -109,7 +106,8 @@ const WebsiteTopNavigation = ({ shopSettings }) => {
               overlayClassName="WebsiteTopNavigation__popover"
             >
               <span className={'WebsiteTopNavigation__link'}>
-                More <Icon type="caret-down" />
+                {intl.formatMessage({ id: 'more', defaultMessage: 'More' })}{' '}
+                <Icon type="caret-down" />
               </span>
             </Popover>
           ) : (
@@ -125,6 +123,7 @@ WebsiteTopNavigation.propTypes = {
     type: PropTypes.string,
     value: PropTypes.string,
   }),
+  intl: PropTypes.shape().isRequired,
 };
 
-export default WebsiteTopNavigation;
+export default injectIntl(WebsiteTopNavigation);

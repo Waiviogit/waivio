@@ -14,6 +14,7 @@ export default class PostFeedEmbed extends React.Component {
       url: PropTypes.string,
     }).isRequired,
     inPost: PropTypes.bool,
+    isSocial: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -53,13 +54,13 @@ export default class PostFeedEmbed extends React.Component {
   }
 
   render() {
-    const { embed, inPost } = this.props;
+    const { embed, inPost, isSocial } = this.props;
     const shouldRenderThumb = inPost ? false : !this.state.showIframe;
 
     if (embed?.url?.includes('odysee.com/')) {
       return <AsyncVideo url={embed.url} />;
     }
-    if (isPostVideo(embed.provider_name, shouldRenderThumb)) {
+    if (isPostVideo(embed.provider_name, shouldRenderThumb, isSocial)) {
       return this.renderThumbFirst(embed.thumbnail);
     } else if (embed.embed) {
       return this.renderWithIframe(embed.embed);

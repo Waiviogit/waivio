@@ -143,7 +143,7 @@ export const getObject = (authorPermlink, user, locale) => {
 export const getUsersByObject = object =>
   fetch(`${config.apiPrefix}${config.getObjects}/${object}`).then(res => res.json());
 
-// region Feed requests
+// region WebsiteFeed requests
 export const getFeedContentByObject = (
   name,
   limit = 10,

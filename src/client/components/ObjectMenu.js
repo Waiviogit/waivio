@@ -15,6 +15,7 @@ class ObjectMenu extends React.Component {
     accessExtend: PropTypes.bool,
     wobject: PropTypes.shape(),
     isWaivio: PropTypes.bool,
+    isAdministrator: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -157,7 +158,7 @@ class ObjectMenu extends React.Component {
                 <FormattedMessage id="gallery" defaultMessage="Gallery" />
               </li>
             )}
-            {this.props.accessExtend && this.props.isWaivio && (
+            {this.props.accessExtend && (this.props.isWaivio || this.props.isAdministrator) && (
               <li
                 className={this.getItemClasses(ObjectMenu.TAB_NAME.UPDATES)}
                 onClick={this.handleClick}

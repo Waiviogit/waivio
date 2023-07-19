@@ -51,6 +51,9 @@ const HeaderButtons = props => {
   const lastSeenTimestamp = get(userMetaData, 'notifications_last_timestamp');
 
   let popoverItems = [
+    <PopoverMenuItem key="feed" topNav>
+      <FormattedMessage id="feed" defaultMessage="My Feed" />
+    </PopoverMenuItem>,
     <PopoverMenuItem key="rewards" topNav>
       <FormattedMessage id="menu_rewards" defaultMessage="Rewards" />
     </PopoverMenuItem>,
@@ -74,17 +77,6 @@ const HeaderButtons = props => {
     </PopoverMenuItem>,
   ];
 
-  if (props.isWaivio) {
-    const rewardItem = popoverItems.shift();
-
-    popoverItems = [
-      <PopoverMenuItem key="feed" topNav>
-        <FormattedMessage id="feed" defaultMessage="My Feed" />
-      </PopoverMenuItem>,
-      rewardItem,
-      ...popoverItems,
-    ];
-  }
   if (props.isWebsite && isMobile()) {
     popoverItems = [
       <PopoverMenuItem key="reviews" topNav>
@@ -154,7 +146,7 @@ const HeaderButtons = props => {
         history.push('/settings');
         break;
       case 'feed':
-        history.push('/');
+        !props.isWaivio ? history.push('/feed') : history.push('/');
         break;
       case 'news':
         history.push('/trending');

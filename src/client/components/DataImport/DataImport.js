@@ -3,6 +3,7 @@ import { Button, Modal, Switch } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
+import { round } from 'lodash';
 
 import ChangeVotingModal from '../../widgets/ChangeVotingModal/ChangeVotingModal';
 import ImportModal from './ImportModal/ImportModal';
@@ -23,6 +24,8 @@ import {
   setObjectImport,
 } from '../../../waivioApi/importApi';
 import { closeImportSoket, getImportUpdate } from '../../../store/settingsStore/settingsActions';
+import { calculateMana, dHive } from '../../vendor/steemitHelpers';
+import * as ApiClient from '../../../waivioApi/ApiClient';
 
 import './DataImport.less';
 
@@ -38,6 +41,7 @@ const DataImport = ({ intl }) => {
   const [votingValue, setVotingValue] = useState(100);
   const [importedObject, setImportedObject] = useState([]);
   const [history, setHistoryImportedObject] = useState([]);
+  const [usersState, setUsersState] = useState(null);
 
   const getImportList = () =>
     getImportedObjects(authUserName).then(res => {
@@ -53,16 +57,31 @@ const DataImport = ({ intl }) => {
     });
   };
 
+  const getVotingInfo = async () => {
+    const [acc] = await dHive.database.getAccounts([authUserName]);
+    const rc = await dHive.rc.getRCMana(authUserName, acc);
+    const waivVotingMana = await ApiClient.getWaivVoteMana(authUserName, acc);
+    const waivPowerBar = waivVotingMana ? calculateMana(waivVotingMana) : null;
+    const resourceCredits = rc.percentage * 0.01 || 0;
+
+    setUsersState({
+      waivPowerMana: waivPowerBar?.votingPower ? waivPowerBar.votingPower : 100,
+      resourceCredits,
+    });
+  };
+
   useEffect(() => {
     getImportVote(authUserName).then(res => {
       setVotingValue(res.minVotingPower / 100);
     });
+
     getImportList();
     getHistoryImportedObjects(authUserName).then(his => {
       setHistoryImportedObject(his);
     });
 
     dispatch(getImportUpdate(updateImportDate));
+    getVotingInfo();
 
     return () => dispatch(closeImportSoket());
   }, []);
@@ -181,6 +200,19 @@ const DataImport = ({ intl }) => {
             'The data import bot will pause if WAIV voting power on the account drops below the set threshold.',
         })}
       </p>
+      {usersState && (
+        <p>
+          <b>
+            {intl.formatMessage({
+              id: 'users_up_state',
+              defaultMessage: "User's up-to-date state",
+            })}
+            :
+          </b>{' '}
+          <div>WAIV upvoting mana: {round(usersState.waivPowerMana, 2)}%</div>
+          <div>Resource credits: {round(usersState.resourceCredits, 2)}%</div>
+        </p>
+      )}
       <p>
         <b>{intl.formatMessage({ id: 'disclaimer', defaultMessage: 'Disclaimer' })}:</b>{' '}
         {intl.formatMessage({

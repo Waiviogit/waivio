@@ -44,18 +44,20 @@ const ShopObjectCard = ({ wObject, isChecklist, isSocialProduct }) => {
 
   switch (wObject.object_type) {
     case 'product':
-    case 'book':
-      link = isChecklist
-        ? `/checklist/${name}${hash}`
-        : `/object/product/${wObject.author_permlink}`;
+    case 'book': {
+      const query = location.hash
+        ? `${location.hash.replace('#', '')}/${wObject?.author_permlink}`
+        : wObject?.author_permlink;
 
+      link = isChecklist
+        ? `${wObject?.defaultShowLink}?breadbrumbs=${name}/${query}`
+        : wObject?.defaultShowLink;
       break;
+    }
     case 'page':
     case 'widget':
     case 'newsfeed':
-      link = isChecklist
-        ? `/checklist/${name}${hash}`
-        : `/object/${wObject.object_type}/${wObject.author_permlink}`;
+      link = isChecklist ? `/checklist/${name}${hash}` : wObject?.defaultShowLink;
       break;
 
     default:

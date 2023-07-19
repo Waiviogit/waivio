@@ -14,7 +14,10 @@ import {
   getObjectAvatar,
   getObjectName,
 } from '../../../common/helpers/wObjectHelper';
-import { setBreadcrumbForChecklist } from '../../../store/wObjectStore/wobjActions';
+import {
+  setBreadcrumbForChecklist,
+  setNestedWobject,
+} from '../../../store/wObjectStore/wobjActions';
 import Loading from '../../components/Icon/Loading';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 
@@ -29,7 +32,6 @@ import {
 } from '../../../store/appStore/appSelectors';
 import { getProxyImageURL } from '../../../common/helpers/image';
 import PageContent from '../PageContent/PageContent';
-import SocialProduct from '../SocialProduct/SocialProduct';
 import WidgetContent from '../WidgetContent/WidgetContent';
 import ObjectNewsFeed from '../FeedMasonry/ObjectNewsFeed';
 import './Checklist.less';
@@ -45,6 +47,7 @@ const Checklist = ({
   permlink,
   hideBreadCrumbs,
   isSocialProduct,
+  setNestedObject,
 }) => {
   const [loading, setLoading] = useState(true);
   const [listItems, setLists] = useState(true);
@@ -63,6 +66,10 @@ const Checklist = ({
     setLoading(true);
     getObject(pathUrl, userName, locale).then(wObject => {
       setObject(wObject);
+      if (history.location.hash) {
+        setNestedObject(wObject);
+      }
+
       if (!isSocialProduct) {
         setBreadcrumb(wObject);
       }
@@ -117,7 +124,6 @@ const Checklist = ({
     if (object.object_type === 'page') return <PageContent wobj={object} />;
     if (object.object_type === 'widget') return <WidgetContent wobj={object} />;
     if (object.object_type === 'newsfeed') return <ObjectNewsFeed wobj={object} />;
-    if (['product', 'book'].includes(object.object_type)) return <SocialProduct />;
 
     if (isEmpty(listItems)) {
       return (
@@ -192,6 +198,7 @@ Checklist.propTypes = {
   permlink: PropTypes.string,
   hideBreadCrumbs: PropTypes.bool,
   locale: PropTypes.string.isRequired,
+  setNestedObject: PropTypes.func,
   intl: PropTypes.arrayOf(PropTypes.shape({ formatMessage: PropTypes.func })).isRequired,
   match: PropTypes.shape({
     params: PropTypes.shape({
@@ -210,6 +217,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = {
   setBreadcrumb: setBreadcrumbForChecklist,
+  setNestedObject: setNestedWobject,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(injectIntl(Checklist)));

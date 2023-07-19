@@ -10,6 +10,7 @@ import RedirectedSignIn from '../../client/components/Navigation/redirectedSignI
 import WebsiteMainPage from '../../client/websites/WebsiteLayoutComponents/MainPage/WebsiteMainPage';
 import { listOfWebsiteWithMainPage } from '../../common/constants/listOfWebsite';
 import RewardsMainPage from '../../client/newRewards/RewardsMainPage';
+import WebsiteFeed from '../../client/websites/WebsiteFeed/WebsiteFeed';
 
 const routes = (host, page) => ({
   component: WebsiteWrapper,
@@ -391,37 +392,11 @@ const routes = (host, page) => ({
       exact: true,
       component: RedirectedSignIn,
     },
-    // {
-    //   path: `/:sortBy(${URL.FEED.tabs})?/:category?`,
-    //   component: Views.Page,
-    //   routes: [
-    //     {
-    //       path: '/confirmation',
-    //       exact: true,
-    //       component: Views.ConfirmationModal,
-    //     },
-    //     {
-    //       path: '/notifications-list',
-    //       component: Views.Notifications,
-    //     },
-    //     {
-    //       path: '/rewards-list',
-    //       component: Views.RewardsList,
-    //     },
-    //     {
-    //       path: '/feed/:name',
-    //       component: Views.ObjectFeed,
-    //     },
-    //     {
-    //       path: '/blog/@:name',
-    //       component: Views.UserProfile,
-    //     },
-    //     {
-    //       path: '/:sortBy(trending|created|hot)?/:category?',
-    //       component: Views.SubFeed,
-    //     },
-    //   ],
-    // },
+    {
+      path: '/feed',
+      exact: true,
+      component: WebsiteFeed,
+    },
     {
       path: '*',
       component: Views.Error404,
