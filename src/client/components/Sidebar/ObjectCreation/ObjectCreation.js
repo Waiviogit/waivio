@@ -92,7 +92,12 @@ class ObjectCreation extends React.Component {
                 role="presentation"
                 onClick={this.setObjectType}
               >
-                <div className="ObjectCreation__obj-type-item-name">{objTypeName}</div>
+                <div className="ObjectCreation__obj-type-item-name">
+                  {this.props.intl.formatMessage({
+                    id: `object_type_${objTypeName}`,
+                    defaultMessage: objTypeName,
+                  })}
+                </div>
               </div>
             ))}
           {showedTypesCount <= _.size(objectTypes) && (

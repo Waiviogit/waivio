@@ -19,47 +19,51 @@ import {
   parseAddress,
   parseButtonsField,
   parseWobjectField,
-} from '../../../common/helpers/wObjectHelper';
-import SocialLinks from '../../components/SocialLinks';
-import { getExposedFieldsByObjType, getFieldsCount, getLink } from '../../object/wObjectHelper';
+} from '../../../../common/helpers/wObjectHelper';
+import SocialLinks from '../../../components/SocialLinks';
+import { getExposedFieldsByObjType, getFieldsCount, getLink } from '../../../object/wObjectHelper';
 import {
   linkFields,
   objectFields,
   TYPES_OF_MENU_ITEM,
-} from '../../../common/constants/listOfFields';
-import OBJECT_TYPE from '../../object/const/objectTypes';
-import Proposition from '../../components/Proposition/Proposition';
-import { isCoordinatesValid } from '../../components/Maps/mapHelper';
-import PicturesCarousel from '../../object/PicturesCarousel';
-import DescriptionInfo from '../../object/Description/DescriptionInfo';
-import RateInfo from '../../components/Sidebar/Rate/RateInfo';
-import MapObjectInfo from '../../components/Maps/MapObjectInfo';
-import ObjectCard from '../../components/Sidebar/ObjectCard';
-import ObjectInfoExperts from './ObjectInfoExperts';
-import LinkButton from '../../components/LinkButton/LinkButton';
-import { getIsWaivio, getUsedLocale } from '../../../store/appStore/appSelectors';
-import { getIsAuthenticated } from '../../../store/authStore/authSelectors';
-import { getObjectAlbums, getRelatedPhotos } from '../../../store/galleryStore/gallerySelectors';
-import { getRelatedAlbum } from '../../../store/galleryStore/galleryActions';
-import CompanyId from './CompanyId';
-import ProductId from './ProductId';
-import ObjectAvatar from '../../components/ObjectAvatar';
-import Options from '../../object/Options/Options';
+} from '../../../../common/constants/listOfFields';
+import OBJECT_TYPE from '../../../object/const/objectTypes';
+import Proposition from '../../../components/Proposition/Proposition';
+import { isCoordinatesValid } from '../../../components/Maps/mapHelper';
+import PicturesCarousel from '../../../object/PicturesCarousel';
+import DescriptionInfo from '../../../object/Description/DescriptionInfo';
+import RateInfo from '../../../components/Sidebar/Rate/RateInfo';
+import MapObjectInfo from '../../../components/Maps/MapObjectInfo';
+import ObjectCard from '../../../components/Sidebar/ObjectCard';
+import ObjectInfoExperts from '../ObjectInfoExperts';
+import LinkButton from '../../../components/LinkButton/LinkButton';
+import { getIsWaivio, getUsedLocale } from '../../../../store/appStore/appSelectors';
+import { getIsAuthenticated } from '../../../../store/authStore/authSelectors';
+import { getObjectAlbums, getRelatedPhotos } from '../../../../store/galleryStore/gallerySelectors';
+import { getRelatedAlbum } from '../../../../store/galleryStore/galleryActions';
+import CompanyId from '../CompanyId';
+import ProductId from '../ProductId';
+import ObjectAvatar from '../../../components/ObjectAvatar';
+import Options from '../../../object/Options/Options';
 import {
   getActiveCategory,
   getActiveOption,
   getGroupId,
-} from '../../../store/optionsStore/optionsSelectors';
-import { setStoreActiveOption, setStoreGroupId } from '../../../store/optionsStore/optionsActions';
-import { getObjectInfo } from '../../../waivioApi/ApiClient';
-import Department from '../../object/Department/Department';
-import AffiliatLink from '../../widgets/AffiliatLinks/AffiliatLink';
-import ObjectFeatures from '../../object/ObjectFeatures/ObjectFeatures';
-import DepartmentsWobject from '../../object/ObjectTypeShop/DepartmentsWobject';
-import { setAuthors } from '../../../store/wObjectStore/wobjActions';
-import MenuItemButtons from './MenuItemButtons/MenuItemButtons';
+} from '../../../../store/optionsStore/optionsSelectors';
+import {
+  setStoreActiveOption,
+  setStoreGroupId,
+} from '../../../../store/optionsStore/optionsActions';
+import { getObjectInfo } from '../../../../waivioApi/ApiClient';
+import Department from '../../../object/Department/Department';
+import AffiliatLink from '../../../widgets/AffiliatLinks/AffiliatLink';
+import ObjectFeatures from '../../../object/ObjectFeatures/ObjectFeatures';
+import DepartmentsWobject from '../../../object/ObjectTypeShop/DepartmentsWobject';
+import { setAuthors } from '../../../../store/wObjectStore/wobjActions';
+import MenuItemButtons from '../MenuItemButtons/MenuItemButtons';
 import './ObjectInfo.less';
-import MenuItemButton from './MenuItemButtons/MenuItemButton';
+import MenuItemButton from '../MenuItemButtons/MenuItemButton';
+import AffiliateSection from './ObjectInfoComponents/AffiliateSection';
 
 @withRouter
 @connect(
@@ -609,6 +613,7 @@ class ObjectInfo extends React.Component {
       : {};
     const phones = get(wobject, 'phone', []);
     const isHashtag = hasType(wobject, OBJECT_TYPE.HASHTAG);
+    const isAffiliate = hasType(wobject, OBJECT_TYPE.AFFILIATE);
     const shopType = wobject.object_type === 'shop';
     const showFeedSection = wobject?.exposedFields?.some(f => ['pin', 'remove'].includes(f.name));
     const showConnectSection = wobject?.exposedFields?.some(f =>
@@ -628,6 +633,7 @@ class ObjectInfo extends React.Component {
       !hasType(wobject, OBJECT_TYPE.SHOP) &&
       !hasType(wobject, OBJECT_TYPE.LIST) &&
       !hasType(wobject, OBJECT_TYPE.DISH) &&
+      !hasType(wobject, OBJECT_TYPE.AFFILIATE) &&
       !hasType(wobject, OBJECT_TYPE.DRINK);
     const formsList = getFormItems(wobject)?.map(item => ({
       ...item,
@@ -1405,6 +1411,13 @@ class ObjectInfo extends React.Component {
             {isOptionsObjectType && galleryPriceOptionsSection}
             {!isHashtag && showMenuSection && menuSection()}
             {!isHashtag && aboutSection}
+            {isAffiliate && (
+              <AffiliateSection
+                listItem={this.listItem}
+                isEditMode={isEditMode}
+                wobject={wobject}
+              />
+            )}
             {showConnectSection && connectSection}
             {shopType && shopSection}
             {accessExtend && hasType(wobject, OBJECT_TYPE.LIST) && listSection}

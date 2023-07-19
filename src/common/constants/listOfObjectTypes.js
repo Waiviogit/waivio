@@ -11,6 +11,7 @@ export default [
   'shop',
   'widget',
   'newsfeed',
+  'affiliate',
   'hashtag',
   'business',
   'person',

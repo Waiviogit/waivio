@@ -21,6 +21,7 @@ import {
   phoneNameValidationRegExp,
 } from '../../../common/constants/validation';
 import { regexCoordsLatitude, regexCoordsLongitude } from '../../components/Maps/mapHelper';
+import { validateAffiliateUrl } from '../AppendModal/appendFormHelper';
 
 export const fieldsRules = {
   [objectFields.objectName]: [
@@ -253,6 +254,18 @@ export const fieldsRules = {
     // {
     //   validator: true,
     // },
+  ],
+  [objectFields.affiliateUrlTemplate]: [
+    {
+      validator: validateAffiliateUrl,
+      message: {
+        intlId: {
+          id: 'affiliate_url_error',
+          defaultMessage:
+            'Please enter valid URL. It should begin with the website name and include PRODUCTID and AFFILIATECODE.',
+        },
+      },
+    },
   ],
   [optionsFields.image]: [
     {

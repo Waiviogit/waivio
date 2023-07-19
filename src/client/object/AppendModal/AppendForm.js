@@ -133,6 +133,8 @@ import RelatedForm from './FormComponents/RelatedForm';
 import AddOnForm from './FormComponents/AddOnForm';
 import SimilarForm from './FormComponents/SimilarForm';
 import './AppendForm.less';
+import AffiliateProductIdTypesForm from './FormComponents/AffiliateProductIdTypesForm';
+import AffiliateGeoAreaForm from './FormComponents/AffiliateGeoAreaForm';
 
 @connect(
   state => ({
@@ -248,6 +250,7 @@ class AppendForm extends Component {
     itemsInSortingList: null,
     newsFilterTitle: null,
     menuItemButtonType: 'standard',
+    context: 'PERSONAL',
   };
 
   componentDidMount = () => {
@@ -402,6 +405,9 @@ class AppendForm extends Component {
       case objectFields.title:
       case objectFields.description:
       case objectFields.avatar:
+      case objectFields.affiliateButton:
+      case objectFields.affiliateProductIdTypes:
+      case objectFields.affiliateGeoArea:
       case objectFields.background:
       case objectFields.price:
       case objectFields.categoryItem:
@@ -423,6 +429,8 @@ class AppendForm extends Component {
       case objectFields.ageRange:
       case objectFields.printLength:
       case objectFields.language:
+      case objectFields.affiliateUrlTemplate:
+      case objectFields.affiliateCode:
       case objectFields.pin:
       case objectFields.remove:
       case objectFields.departments:
@@ -499,6 +507,7 @@ class AppendForm extends Component {
             formValues[objectFields.objectName]
           }`;
         case objectFields.avatar:
+        case objectFields.affiliateButton:
         case objectFields.background:
           return `@${author} added ${currentField} (${langReadable}):\n ![${currentField}](${appendValue})`;
         case objectFields.options:
@@ -603,6 +612,18 @@ class AppendForm extends Component {
           return `@${author} added ${productIdFields.productIdType} (${langReadable}): ${
             formValues[productIdFields.productIdType]
           }, ${currentField}: ${formValues[productIdFields.productId]}${imageDescription}`;
+        case objectFields.affiliateProductIdTypes:
+          return `@${author} added ${
+            objectFields.affiliateProductIdTypes
+          } (${langReadable}): ${formValues[objectFields.affiliateProductIdTypes].toLowerCase()}`;
+        case objectFields.affiliateGeoArea:
+          return `@${author} added ${objectFields.affiliateGeoArea} (${langReadable}): ${
+            formValues[objectFields.affiliateGeoArea]
+          }`;
+        case objectFields.affiliateCode:
+          return `@${author} added ${objectFields.affiliateCode} (${langReadable}): ${
+            formValues[objectFields.affiliateCode]
+          }`;
         case objectFields.menuItem:
           const imageMenuItem = !isEmpty(this.state.currentImages)
             ? `, image: \n ![${objectFields.menuItem}](${this.state?.currentImages[0]?.src})`
@@ -654,6 +675,7 @@ class AppendForm extends Component {
           }`;
         case objectFields.ageRange:
         case objectFields.language:
+        case objectFields.affiliateUrlTemplate:
         case objectFields.departments:
         case objectFields.groupId:
           return `@${author} added ${currentField} (${langReadable}): ${appendValue}`;
@@ -778,6 +800,31 @@ class AppendForm extends Component {
         fieldsObject = {
           ...fieldsObject,
           id: wObject?.galleryAlbum?.find(album => album.body === 'Photos').id,
+        };
+      }
+      if (currentField === objectFields.affiliateButton) {
+        fieldsObject = {
+          ...fieldsObject,
+          body: formValues[objectFields.affiliateButton],
+        };
+      }
+      if (currentField === objectFields.affiliateCode) {
+        const affiliateCodeBody = JSON.stringify([
+          this.state.context,
+          formValues[objectFields.affiliateCode],
+        ]);
+
+        fieldsObject = {
+          ...fieldsObject,
+          body: affiliateCodeBody,
+        };
+      }
+      if (currentField === objectFields.affiliateUrlTemplate) {
+        fieldsObject = {
+          ...fieldsObject,
+          body: formValues[objectFields.affiliateUrlTemplate]
+            .replace('PRODUCTID', '$productId')
+            .replace('AFFILIATECODE', '$affiliateCode'),
         };
       }
       if (currentField === objectFields.newsFeed) {
@@ -925,6 +972,18 @@ class AppendForm extends Component {
             [productIdFields.productId]: formValues[productIdFields.productId]?.trim(),
             [productIdFields.productIdImage]: formValues[productIdFields.productIdImage]?.trim(),
           }),
+        };
+      }
+      if (currentField === objectFields.affiliateProductIdTypes) {
+        fieldsObject = {
+          ...fieldsObject,
+          body: formValues[objectFields.affiliateProductIdTypes].toLowerCase(),
+        };
+      }
+      if (currentField === objectFields.affiliateGeoArea) {
+        fieldsObject = {
+          ...fieldsObject,
+          body: formValues[objectFields.affiliateGeoArea],
         };
       }
       if (currentField === objectFields.menuItem) {
@@ -1479,6 +1538,10 @@ class AppendForm extends Component {
         objectFields.dimensions,
         objectFields.menuItem,
         objectFields.features,
+        objectFields.affiliateProductIdTypes,
+        objectFields.affiliateUrlTemplate,
+        objectFields.affiliateCode,
+        objectFields.affiliateGeoArea,
         objectFields.productWeight,
       ].includes(currentField)
     ) {
@@ -1987,6 +2050,14 @@ class AppendForm extends Component {
           />
         );
       }
+      case objectFields.affiliateGeoArea: {
+        return (
+          <AffiliateGeoAreaForm
+            getFieldDecorator={getFieldDecorator}
+            getFieldRules={this.getFieldRules}
+          />
+        );
+      }
       case objectFields.categoryItem: {
         return (
           <React.Fragment>
@@ -2048,6 +2119,23 @@ class AppendForm extends Component {
               {getFieldDecorator(currentField, { rules: this.getFieldRules(currentField) })(
                 <ImageSetter
                   isEditable
+                  autoFocus
+                  onImageLoaded={this.getImages}
+                  onLoadingImage={this.onLoadingImage}
+                  isRequired
+                  isMultiple={false}
+                />,
+              )}
+            </Form.Item>
+          </div>
+        );
+      }
+      case objectFields.affiliateButton: {
+        return (
+          <div className="image-wrapper">
+            <Form.Item>
+              {getFieldDecorator(currentField, { rules: this.getFieldRules(currentField) })(
+                <ImageSetter
                   autoFocus
                   onImageLoaded={this.getImages}
                   onLoadingImage={this.onLoadingImage}
@@ -2127,6 +2215,57 @@ class AppendForm extends Component {
                 placeholder={intl.formatMessage({ id: 'pages', defaultMessage: 'Pages' })}
               />
             </Form.Item>
+          </>
+        );
+      }
+      case objectFields.affiliateUrlTemplate: {
+        return (
+          <>
+            <Form.Item>
+              {getFieldDecorator(objectFields.affiliateUrlTemplate, {
+                rules: this.getFieldRules(objectFields.affiliateUrlTemplate),
+              })(
+                <Input
+                  autoFocus
+                  disabled={loading}
+                  placeholder={intl.formatMessage({
+                    id: 'url_template',
+                    defaultMessage: 'URL template',
+                  })}
+                />,
+              )}
+            </Form.Item>
+            <div className={'mt3'}>
+              <p>
+                <FormattedMessage
+                  id="affiliate_url_template_info"
+                  defaultMessage="URL template will be used to generate product links. URL template should begin with the website name and incorporate parameters PRODUCTID and AFFILIATECODE. URL template should be formatted as follows: http://www.affiliatesite.com?productid=PRODUCTID&affiliatecode=AFFILIATECODE."
+                />
+              </p>
+            </div>
+          </>
+        );
+      }
+      case objectFields.affiliateCode: {
+        return (
+          <>
+            <Form.Item>
+              {getFieldDecorator(objectFields.affiliateCode, {
+                rules: this.getFieldRules(objectFields.affiliateCode),
+              })(
+                <Input
+                  autoFocus
+                  disabled={loading}
+                  placeholder={intl.formatMessage({
+                    id: 'my_affiliate_code',
+                    defaultMessage: 'My affiliate code',
+                  })}
+                />,
+              )}
+            </Form.Item>
+            <div className={'mt3'}>
+              <p>{`CONTEXT: waivio.com`}</p>
+            </div>
           </>
         );
       }
@@ -2797,6 +2936,16 @@ class AppendForm extends Component {
               })}
             </p>
           </React.Fragment>
+        );
+      }
+      case objectFields.affiliateProductIdTypes: {
+        return (
+          <AffiliateProductIdTypesForm
+            loading={loading}
+            getFieldDecorator={getFieldDecorator}
+            getFieldRules={this.getFieldRules}
+            isSomeValue={this.state.isSomeValue}
+          />
         );
       }
       case objectFields.menuItem: {
