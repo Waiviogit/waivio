@@ -66,10 +66,6 @@ const createLink = i => {
     case 'widget':
     case 'newsfeed':
       return `/object/${i.object_type}/${i.author_permlink}`;
-    case 'product':
-    case 'book':
-    case 'business':
-      return `/object/product/${i.author_permlink}`;
     default:
       return i.linkToWeb || i.defaultShowLink;
   }
@@ -104,7 +100,7 @@ const SocialWrapper = props => {
 
           if (isEmpty(wobject.menuItem)) {
             if (props.location.pathname === '/')
-              props.history.push(`/object/product/${configuration.shopSettings?.value}`);
+              props.history.push(`/object/${configuration.shopSettings?.value}`);
             dispatch(
               setItemsForNavigation([
                 {

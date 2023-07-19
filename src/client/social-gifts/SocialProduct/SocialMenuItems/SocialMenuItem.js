@@ -18,7 +18,7 @@ const SocialMenuItem = ({ item, isOpen }) => {
 
   const handleOpenItem = () => {
     if ((isImageButton && historyPushObjType) || historyPushObjType) {
-      history.push(`/object/product/${itemBody.linkToObject}`);
+      history.push(`/object/${itemBody.linkToObject}`);
     } else if (webLink) {
       setOpen(false);
     } else if (shopObj) {
