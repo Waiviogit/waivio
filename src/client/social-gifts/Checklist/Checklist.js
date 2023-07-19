@@ -32,7 +32,6 @@ import {
 } from '../../../store/appStore/appSelectors';
 import { getProxyImageURL } from '../../../common/helpers/image';
 import PageContent from '../PageContent/PageContent';
-import SocialProduct from '../SocialProduct/SocialProduct';
 import WidgetContent from '../WidgetContent/WidgetContent';
 import ObjectNewsFeed from '../FeedMasonry/ObjectNewsFeed';
 import './Checklist.less';
@@ -125,7 +124,6 @@ const Checklist = ({
     if (object.object_type === 'page') return <PageContent wobj={object} />;
     if (object.object_type === 'widget') return <WidgetContent wobj={object} />;
     if (object.object_type === 'newsfeed') return <ObjectNewsFeed wobj={object} />;
-    if (['product', 'book'].includes(object.object_type)) return <SocialProduct />;
 
     if (isEmpty(listItems)) {
       return (

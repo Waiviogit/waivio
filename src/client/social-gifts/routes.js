@@ -19,6 +19,7 @@ import WidgetContent from './WidgetContent/WidgetContent';
 import UserBlogFeed from './FeedMasonry/UserBlogFeed';
 import ObjectNewsFeed from './FeedMasonry/ObjectNewsFeed';
 import NewDiscover from './NewDiscover/NewDiscover';
+import WebsiteFeed from '../websites/WebsiteFeed/WebsiteFeed';
 
 const routes = host => ({
   component: SocialWrapper,
@@ -436,6 +437,11 @@ const routes = host => ({
       exact: true,
       isSocial: true,
       component: RedirectedSignIn,
+    },
+    {
+      path: '/feed',
+      exact: true,
+      component: WebsiteFeed,
     },
     {
       path: '*',
