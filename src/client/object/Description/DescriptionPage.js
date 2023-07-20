@@ -46,8 +46,7 @@ const DescriptionPage = ({ relatedAlbum, albums }) => {
   const paragraphs = description && description.split('\n\n');
 
   const renderedParagraphs = paragraphs?.map((paragraph, index) => (
-    // eslint-disable-next-line react/no-array-index-key
-    <React.Fragment key={index}>
+    <React.Fragment key={paragraph}>
       <p>{paragraph}</p>
       {pictures && index < pictures.length && (
         <div key={pictures[index]} onClick={e => onPicClick(e, pictures[index])}>
@@ -62,7 +61,7 @@ const DescriptionPage = ({ relatedAlbum, albums }) => {
     ?.map(picture => (
       <img
         className="DescriptionPage__image"
-        key={picture.id}
+        key={picture.body}
         onClick={e => onPicClick(e, picture)}
         src={picture.body}
         alt=""
