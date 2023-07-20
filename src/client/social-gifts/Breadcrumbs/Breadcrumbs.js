@@ -59,7 +59,7 @@ const Breadcrumbs = ({ inProduct }) => {
     if (!isEmpty(breadcrumbs)) {
       dispatch(
         setAllBreadcrumbsForChecklist(
-          breadcrumbs.filter(item => linkList.includes(item.author_permlink)),
+          breadcrumbs.filter(item => linkList?.includes(item.author_permlink)),
         ),
       );
     }
