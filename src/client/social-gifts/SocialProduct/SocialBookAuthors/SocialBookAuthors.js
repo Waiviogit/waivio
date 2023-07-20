@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { FormattedMessage } from 'react-intl';
 import PropTypes from 'prop-types';
 import { has } from 'lodash';
 import { getObjectInfo } from '../../../../waivioApi/ApiClient';
@@ -31,8 +30,7 @@ const SocialBookAuthors = ({ authors }) => {
 
   return (
     <div className="SocialProduct__authors">
-      <FormattedMessage id={'by'} defaultMessage={'By'} />
-
+      <span>By</span>
       {newAuthors.map((a, i) => (
         <>
           <span className={'ml1'}>

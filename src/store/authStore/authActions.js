@@ -2,7 +2,11 @@ import Cookie from 'js-cookie';
 import { get } from 'lodash';
 import { createAction } from 'redux-actions';
 import { createAsyncActionType } from '../../common/helpers/stateHelpers';
-import { addNewNotification, getCurrentCurrencyRate } from '../appStore/appActions';
+import {
+  addNewNotification,
+  changeAdminStatus,
+  getCurrentCurrencyRate,
+} from '../appStore/appActions';
 import { getFollowing } from '../userStore/userActions';
 import { BUSY_API_TYPES } from '../../common/constants/notifications';
 import { setToken } from '../../common/helpers/getToken';
@@ -114,8 +118,10 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
 
   if (isUserLoaded(state)) {
     const userMetaData = getAuthenticatedUserMetaData(state);
+    const authenticatedUserName = getAuthenticatedUserName(state);
 
     dispatch(getCurrentCurrencyRate(userMetaData.settings.currency));
+    dispatch(changeAdminStatus(authenticatedUserName));
     promise = Promise.resolve(null);
   } else if (accessToken && socialNetwork) {
     promise = new Promise(async (resolve, reject) => {
@@ -127,6 +133,7 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
         const { WAIV } = await getGuestWaivBalance(userData.name);
 
         dispatch(getCurrentCurrencyRate(userMetaData.settings.currency));
+        dispatch(changeAdminStatus(userData.name));
 
         resolve({
           account: userData,
@@ -153,6 +160,7 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
         const rewardsTab = await getRewardTab(scUserData.name);
         const { WAIV } = isGuest ? await getGuestWaivBalance(scUserData.name) : {};
 
+        dispatch(changeAdminStatus(scUserData.name));
         dispatch(getCurrentCurrencyRate(userMetaData.settings.currency));
 
         resolve({

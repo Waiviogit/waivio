@@ -15,7 +15,7 @@ const SocialListItem = ({ fieldName, field, title }) => {
       case objectFields.brand:
       case objectFields.manufacturer:
         return objAuthorPermlink(field) ? (
-          <Link to={`/object/product/${objAuthorPermlink(field)}`}>{field.name}</Link>
+          <Link to={`/object/${objAuthorPermlink(field)}`}>{field.name}</Link>
         ) : (
           <span>{field.name}</span>
         );

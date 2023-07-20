@@ -111,9 +111,7 @@ const GeneralSearch = props => {
           marker={markers.WOBJ}
           key={getObjectName(option)}
           value={
-            isSocialWobj(option)
-              ? `/object/${option.object_type}/${option.author_permlink}`
-              : option.defaultShowLink
+            isSocialWobj(option) ? `/object/${option.author_permlink}` : option.defaultShowLink
           }
           className="Topnav__search-autocomplete"
         >
