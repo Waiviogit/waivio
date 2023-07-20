@@ -277,7 +277,7 @@ const SocialProduct = ({
         <link rel="image_src" href={image} />
         <link id="favicon" rel="icon" href={helmetIcon} type="image/x-icon" />
       </Helmet>
-      {loading ? (
+      {loading && isEmpty(wobject) ? (
         <Loading margin />
       ) : (
         <div className="SocialProduct">
