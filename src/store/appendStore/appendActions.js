@@ -146,6 +146,7 @@ export const voteAppends = (
   type,
   appendObj,
   isUpdatesPage,
+  isObjectPage,
 ) => (dispatch, getState, { steemConnectAPI }) => {
   const state = getState();
   const fields = getAppendList(state);
@@ -172,19 +173,20 @@ export const voteAppends = (
         message.success('Please wait, we are processing your update');
       }
 
-      dispatch(
-        getChangedWobjectField(
-          wobj.author_permlink,
-          fieldName,
-          author,
-          permlink,
-          isNew,
-          type,
-          appendObj,
-          isUpdatesPage,
-          res.id || res.result.id,
-        ),
-      );
+      isObjectPage &&
+        dispatch(
+          getChangedWobjectField(
+            wobj.author_permlink,
+            fieldName,
+            author,
+            permlink,
+            isNew,
+            type,
+            appendObj,
+            isUpdatesPage,
+            res.id || res.result.id,
+          ),
+        );
     })
     .catch(() =>
       steemConnectAPI.appendVote(voter, author, permlink, weight).then(res => {
@@ -244,6 +246,29 @@ export const authorityVoteAppend = (author, authorPermlink, permlink, weight, is
       );
   });
 };
+export const AFFILIATE_CODE_VOTE_APPEND = createAsyncActionType(
+  '@append/AFFILIATE_CODE_VOTE_APPEND',
+);
+
+export const affiliateCodeVoteAppend = (author, authorPermlink, permlink, weight) => (
+  dispatch,
+  getState,
+  { steemConnectAPI },
+) => {
+  const state = getState();
+  const voter = getAuthenticatedUserName(state);
+
+  if (!getIsAuthenticated(state)) return null;
+
+  dispatch({
+    type: AFFILIATE_CODE_VOTE_APPEND.START,
+    payload: {
+      permlink,
+    },
+  });
+
+  return steemConnectAPI.appendVote(voter, author, permlink, weight);
+};
 
 export const SET_OBJECT_IN_AUTHORITY = '@append/SET_OBJECT_IN_AUTHORITY';
 export const setObjectinAuthority = permlink => ({
@@ -290,6 +315,7 @@ const followAndLikeAfterCreateAppend = (
           type,
           appendObj,
           isUpdatesPage,
+          isObjectPage,
         ),
       );
     }

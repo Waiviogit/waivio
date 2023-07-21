@@ -1,20 +1,66 @@
+@import (reference) '../../../styles/custom.less';
 .AffiliateCodes {
-  padding-bottom: 30px;
-
-  &__title {
-    padding-bottom: 0;
+  &__object-table {
+    background: @white;
+    border-radius: 4px;
+    border: 1px solid @white-gainsboro;
+    padding: 10px 15px;
   }
 
-  &__list {
-    h3 {
-      padding: 15px 0 10px;
+  &__table-empty {
+    background: @white;
+    border-radius: 4px;
+    border: 1px solid @white-gainsboro;
+    padding: 10px 15px;
+    display: flex;
+    justify-content: center;
+  }
+  p {
+    margin-bottom: 10px;
+    color: @blue-botticelli;
+  }
+  padding-bottom: 30px;
+  h3 {
+    padding: 20px 0;
+  }
+  &__object {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid @white-gainsboro;
+    padding: 10px 0;
+
+    &:last-child {
+      border-bottom: none;
     }
 
-    padding: 0 20px;
-  }
+    .ant-btn.ant-btn-primary {
+      width: 140px;
 
-  &__block {
-    padding-bottom: 30px;
+      span {
+        &::first-letter {
+          text-transform: uppercase;
+        }
+      }
+    }
+  }
+  &__aff-code {
+    color: @blue-botticelli;
+  }
+  &__object-info-text {
+    display: flex;
+    flex-direction: column;
+    margin-left: 10px;
+  }
+  &__object-info {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    font-weight: bolder;
+
+    span {
+      display: inline-block;
+    }
   }
 
   &__mainTitle {

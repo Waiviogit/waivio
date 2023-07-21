@@ -3474,6 +3474,19 @@ export const getAffiliateCodesForWebsite = (userName, host) =>
     .then(res => res)
     .catch(error => error);
 
+export const getAffiliateObjectForWebsite = (userName, host) =>
+  fetch(`${config.apiPrefix}${config.user}/${userName}${config.affiliate}`, {
+    headers: {
+      ...headers,
+      'access-token': Cookie.get('access_token'),
+    },
+    body: JSON.stringify({ host }),
+    method: 'POST',
+  })
+    .then(res => res.json())
+    .then(res => res)
+    .catch(error => error);
+
 export const safeAffiliateCodesForWebsite = (userName, host, links) =>
   fetch(`${config.apiPrefix}${config.sites}${config.affiliate}`, {
     headers: {

@@ -175,6 +175,7 @@ class AppendForm extends Component {
     appendObject: PropTypes.func,
     rateObject: PropTypes.func,
     usedLocale: PropTypes.string,
+    context: PropTypes.string,
     /* passed props */
     chosenLocale: PropTypes.string,
     currentField: PropTypes.string,
@@ -250,7 +251,6 @@ class AppendForm extends Component {
     itemsInSortingList: null,
     newsFilterTitle: null,
     menuItemButtonType: 'standard',
-    context: 'PERSONAL',
   };
 
   componentDidMount = () => {
@@ -810,7 +810,7 @@ class AppendForm extends Component {
       }
       if (currentField === objectFields.affiliateCode) {
         const affiliateCodeBody = JSON.stringify([
-          this.state.context,
+          this.props.context || 'PERSONAL',
           formValues[objectFields.affiliateCode],
         ]);
 
@@ -2264,7 +2264,7 @@ class AppendForm extends Component {
               )}
             </Form.Item>
             <div className={'mt3'}>
-              <p>{`CONTEXT: waivio.com`}</p>
+              <p>{`CONTEXT: ${this.props.context || 'waivio.com'}`}</p>
             </div>
           </>
         );

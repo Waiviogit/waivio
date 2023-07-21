@@ -13,6 +13,8 @@ const AffiliateSection = ({ listItem, isEditMode, wobject }) => {
     : [];
   const affiliateGeoAreas = has(wobject, 'affiliateGeoArea') ? wobject?.affiliateGeoArea : [];
   const affiliateCode = has(wobject, 'affiliateCode') ? JSON.parse(wobject?.affiliateCode) : [];
+  const [affiliateSite, affCode] = affiliateCode;
+  const affSiteName = affiliateSite === 'PERSONAL' ? 'waivio.com' : affiliateSite;
   const affiliateUrlTemplate = get(wobject, 'affiliateUrlTemplate');
 
   return (
@@ -59,20 +61,23 @@ const AffiliateSection = ({ listItem, isEditMode, wobject }) => {
       )}{' '}
       {listItem(
         objectFields.affiliateUrlTemplate,
-        <div>
-          {' '}
-          {!isEditMode && <div className="CompanyId__title">URL template:</div>}
-          {affiliateUrlTemplate}
-        </div>,
+        !isEmpty(affiliateUrlTemplate) && (
+          <div>
+            {' '}
+            {!isEditMode && <div className="CompanyId__title">URL template:</div>}
+            {affiliateUrlTemplate}
+          </div>
+        ),
       )}{' '}
       {listItem(
         objectFields.affiliateCode,
-        <div>
-          {!isEditMode && <div className="CompanyId__title">My affiliate code:</div>}
-          {affiliateCode.map(code => (
-            <div key={code}>{code}</div>
-          ))}
-        </div>,
+        !isEmpty(affiliateCode) && (
+          <div>
+            {!isEditMode && <div className="CompanyId__title">My affiliate code:</div>}
+            <div>{affSiteName}</div>
+            <div>{affCode}</div>
+          </div>
+        ),
       )}
     </>
   );
