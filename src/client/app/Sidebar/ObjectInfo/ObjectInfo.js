@@ -951,12 +951,13 @@ class ObjectInfo extends React.Component {
               />
             ),
           )}
-        {this.listItem(
-          objectFields.rating,
-          has(wobject, 'rating') && (
-            <RateInfo username={userName} authorPermlink={wobject.author_permlink} />
-          ),
-        )}
+        {!isAffiliate &&
+          this.listItem(
+            objectFields.rating,
+            has(wobject, 'rating') && (
+              <RateInfo username={userName} authorPermlink={wobject.author_permlink} />
+            ),
+          )}
         {this.listItem(objectFields.tagCategory, this.renderTagCategories(tagCategoriesList))}
         {this.listItem(objectFields.categoryItem, null)}
         {!isOptionsObjectType &&
@@ -1413,6 +1414,7 @@ class ObjectInfo extends React.Component {
             {!isHashtag && aboutSection}
             {isAffiliate && (
               <AffiliateSection
+                userName={userName}
                 listItem={this.listItem}
                 isEditMode={isEditMode}
                 wobject={wobject}

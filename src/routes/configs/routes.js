@@ -278,7 +278,7 @@ const routes = {
               component: Views.WebsitesAuthorities,
             },
             {
-              path: '/affiliate',
+              path: '/affiliateCodes',
               exact: true,
               component: Views.AffiliateCodes,
             },

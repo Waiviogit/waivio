@@ -133,7 +133,7 @@ export default {
   },
   WEBSITES: {
     tabs: [
-      'affiliate',
+      'affiliateCodes',
       'configuration',
       'settings',
       'administrations',

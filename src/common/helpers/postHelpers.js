@@ -396,7 +396,12 @@ export const getImageForPreview = (post, isUpdates = false) => {
 
   if (isUpdates) {
     if (
-      [objectFields.avatar, objectFields.galleryItem, objectFields.background].includes(post.name)
+      [
+        objectFields.avatar,
+        objectFields.galleryItem,
+        objectFields.background,
+        objectFields.affiliateButton,
+      ].includes(post.name)
     )
       imagePath = [post.body];
     if (

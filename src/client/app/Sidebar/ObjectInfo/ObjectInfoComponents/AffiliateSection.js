@@ -5,8 +5,9 @@ import { FormattedMessage } from 'react-intl';
 
 import { objectFields } from '../../../../../common/constants/listOfFields';
 import './AffiliateSection.less';
+import RateInfo from '../../../../components/Sidebar/Rate/RateInfo';
 
-const AffiliateSection = ({ listItem, isEditMode, wobject }) => {
+const AffiliateSection = ({ listItem, isEditMode, wobject, userName }) => {
   const affiliateButton = get(wobject, 'affiliateButton', '');
   const affiliateProductIdTypes = has(wobject, 'affiliateProductIdTypes')
     ? wobject?.affiliateProductIdTypes
@@ -14,8 +15,9 @@ const AffiliateSection = ({ listItem, isEditMode, wobject }) => {
   const affiliateGeoAreas = has(wobject, 'affiliateGeoArea') ? wobject?.affiliateGeoArea : [];
   const affiliateCode = has(wobject, 'affiliateCode') ? JSON.parse(wobject?.affiliateCode) : [];
   const [affiliateSite, affCode] = affiliateCode;
-  const affSiteName = affiliateSite === 'PERSONAL' ? 'waivio.com' : affiliateSite;
-  const affiliateUrlTemplate = get(wobject, 'affiliateUrlTemplate');
+  const affiliateUrlTemplate = get(wobject, 'affiliateUrlTemplate', '')
+    .replace('$productId', 'PRODUCTID')
+    .replace('$affiliateCode', 'AFFILIATECODE');
 
   return (
     <>
@@ -74,9 +76,15 @@ const AffiliateSection = ({ listItem, isEditMode, wobject }) => {
         !isEmpty(affiliateCode) && (
           <div>
             {!isEditMode && <div className="CompanyId__title">Affiliate code:</div>}
-            <div>{affSiteName}</div>
+            <div>{affiliateSite}</div>
             <div>{affCode}</div>
           </div>
+        ),
+      )}
+      {listItem(
+        objectFields.rating,
+        has(wobject, 'rating') && (
+          <RateInfo username={userName} authorPermlink={wobject.author_permlink} />
         ),
       )}
     </>
@@ -85,6 +93,7 @@ const AffiliateSection = ({ listItem, isEditMode, wobject }) => {
 
 AffiliateSection.propTypes = {
   listItem: PropTypes.func.isRequired,
+  userName: PropTypes.func.isRequired,
   wobject: PropTypes.shape().isRequired,
   isEditMode: PropTypes.bool.isRequired,
 };

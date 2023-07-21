@@ -2290,7 +2290,7 @@
   "object_field_affiliateProductIdTypes": "Product ID type",
   "object_field_affiliateGeoArea": "GEO area",
   "object_field_affiliateUrlTemplate": "URL template",
-  "object_field_affiliateCode": "My affiliate code",
+  "object_field_affiliateCode": "Affiliate code",
   "object_type_affiliate": "Affiliate program",
   "affiliate": "Affiliate",
   "geo_area": "GEO area",

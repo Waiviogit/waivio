@@ -135,6 +135,7 @@ import SimilarForm from './FormComponents/SimilarForm';
 import './AppendForm.less';
 import AffiliateProductIdTypesForm from './FormComponents/AffiliateProductIdTypesForm';
 import AffiliateGeoAreaForm from './FormComponents/AffiliateGeoAreaForm';
+import AffiliateCodeForm from './FormComponents/AffiliateCodeForm';
 
 @connect(
   state => ({
@@ -250,7 +251,6 @@ class AppendForm extends Component {
     itemsInSortingList: null,
     newsFilterTitle: null,
     menuItemButtonType: 'standard',
-    context: 'PERSONAL',
   };
 
   componentDidMount = () => {
@@ -623,7 +623,7 @@ class AppendForm extends Component {
         case objectFields.affiliateCode:
           return `@${author} added ${objectFields.affiliateCode} (${langReadable}): ${
             formValues[objectFields.affiliateCode]
-          }`;
+          }, context: ${formValues[objectFields.affiliateContext]}`;
         case objectFields.menuItem:
           const imageMenuItem = !isEmpty(this.state.currentImages)
             ? `, image: \n ![${objectFields.menuItem}](${this.state?.currentImages[0]?.src})`
@@ -810,7 +810,7 @@ class AppendForm extends Component {
       }
       if (currentField === objectFields.affiliateCode) {
         const affiliateCodeBody = JSON.stringify([
-          this.state.context,
+          formValues[objectFields.affiliateContext],
           formValues[objectFields.affiliateCode],
         ]);
 
@@ -2248,25 +2248,11 @@ class AppendForm extends Component {
       }
       case objectFields.affiliateCode: {
         return (
-          <>
-            <Form.Item>
-              {getFieldDecorator(objectFields.affiliateCode, {
-                rules: this.getFieldRules(objectFields.affiliateCode),
-              })(
-                <Input
-                  autoFocus
-                  disabled={loading}
-                  placeholder={intl.formatMessage({
-                    id: 'my_affiliate_code',
-                    defaultMessage: 'My affiliate code',
-                  })}
-                />,
-              )}
-            </Form.Item>
-            <div className={'mt3'}>
-              <p>{`CONTEXT: waivio.com`}</p>
-            </div>
-          </>
+          <AffiliateCodeForm
+            getFieldRules={this.getFieldRules}
+            loading={loading}
+            getFieldDecorator={getFieldDecorator}
+          />
         );
       }
       case objectFields.language: {
@@ -4001,6 +3987,8 @@ class AppendForm extends Component {
         );
       case objectFields.name:
         return isEmpty(getFieldValue(objectFields.objectName));
+      case objectFields.affiliateCode:
+        return isEmpty(getFieldValue(objectFields.affiliateCode));
       case objectFields.status:
         return (
           isEmpty(getFieldValue(statusFields.title)) ||
