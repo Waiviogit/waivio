@@ -124,7 +124,9 @@ const WobjHistory = ({
                 showModal={showModal}
                 hideModal={handleToggleModal}
                 chosenLocale={locale}
-                field={updateFields.find(f => f.translation === currField).name}
+                field={
+                  currField ? updateFields.find(f => f.translation === currField)?.name : undefined
+                }
                 objName={objName}
                 history={history}
               />
