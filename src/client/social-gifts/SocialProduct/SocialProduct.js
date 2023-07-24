@@ -150,7 +150,7 @@ const SocialProduct = ({
   const image = getObjectAvatar(wobject) || DEFAULTS.AVATAR;
   const desc = `${wobject.name}. ${parseAddress(wobject) || ''} ${wobject.description ||
     ''} ${tagCategoriesForDescr}`;
-  const title = `${siteName} - ${wobject.name}`;
+  const title = `${wobject.name} - ${siteName}`;
   const canonicalUrl = `${appUrl}/object/${wobject.object_type}/${match.params.name}`;
   const url = `${appUrl}/object/${wobject.object_type}/${match.params.name}`;
   const bannerEl =
