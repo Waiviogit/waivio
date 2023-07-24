@@ -951,13 +951,15 @@ class ObjectInfo extends React.Component {
               />
             ),
           )}
-        {!isAffiliate &&
-          this.listItem(
-            objectFields.rating,
-            has(wobject, 'rating') && (
-              <RateInfo username={userName} authorPermlink={wobject.author_permlink} />
-            ),
-          )}
+        {!isAffiliate ||
+          (isAffiliate &&
+            isEditMode &&
+            this.listItem(
+              objectFields.rating,
+              has(wobject, 'rating') && (
+                <RateInfo username={userName} authorPermlink={wobject.author_permlink} />
+              ),
+            ))}
         {this.listItem(objectFields.tagCategory, this.renderTagCategories(tagCategoriesList))}
         {this.listItem(objectFields.categoryItem, null)}
         {!isOptionsObjectType &&
