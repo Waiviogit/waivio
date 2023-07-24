@@ -19,6 +19,7 @@ import {
 } from '../../../store/authStore/authSelectors';
 import {
   getAppUrl,
+  getConfigurationValues,
   getHelmetIcon,
   getUsedLocale,
   getWebsiteName,
@@ -87,6 +88,7 @@ const SocialProduct = ({
   nestedWobj,
   isEditMode,
   toggleViewEditMode,
+  config,
 }) => {
   const authorPermlink = history.location.hash
     ? getLastPermlinksFromHash(history.location.hash)
@@ -153,6 +155,9 @@ const SocialProduct = ({
     ''} ${tagCategoriesForDescr}`;
   const address = parseAddress(wobject);
   const titleText = compareObjectTitle(false, wobject.name, address, siteName);
+  const currHost = typeof location !== 'undefined' && location.hostname;
+  const header = config?.header?.name || config.host || currHost;
+  const websiteHeaderName = `${header}-${titleText}`;
   const canonicalUrl = `${appUrl}/object/${wobject.object_type}/${match.params.name}`;
   const url = `${appUrl}/object/${wobject.object_type}/${match.params.name}`;
   const bannerEl =
@@ -257,10 +262,10 @@ const SocialProduct = ({
   return (
     <div>
       <Helmet>
-        <title>{titleText}</title>
+        <title>{websiteHeaderName}</title>
         <link rel="canonical" href={canonicalUrl} />
         <meta property="description" content={desc} />
-        <meta property="og:title" content={titleText} />
+        <meta property="og:title" content={websiteHeaderName} />
         <meta property="og:type" content="article" />
         <meta property="og:url" content={url} />
         <meta property="og:image" content={image} />
@@ -270,7 +275,7 @@ const SocialProduct = ({
         <meta property="og:description" content={desc} />
         <meta name="twitter:card" content={image ? 'summary_large_image' : 'summary'} />
         <meta name="twitter:site" content={`@${siteName}`} />
-        <meta name="twitter:title" content={titleText} />
+        <meta name="twitter:title" content={websiteHeaderName} />
         <meta name="twitter:description" content={desc} />
         <meta name="twitter:image" property="twitter:image" content={image} />
         <meta property="og:site_name" content={siteName} />
@@ -489,6 +494,7 @@ SocialProduct.propTypes = {
   history: PropTypes.shape(),
   match: PropTypes.shape(),
   nestedWobj: PropTypes.shape(),
+  config: PropTypes.shape(),
   activeCategory: PropTypes.string,
   siteName: PropTypes.string,
   appUrl: PropTypes.string,
@@ -520,6 +526,7 @@ const mapStateToProps = state => ({
   optionClicked: getIsOptionClicked(state),
   helmetIcon: getHelmetIcon(state),
   nestedWobj: getWobjectNested(state),
+  config: getConfigurationValues(state),
 });
 const mapDispatchToProps = dispatch => ({
   setStoreActiveOpt: obj => dispatch(setStoreActiveOption(obj)),
