@@ -19,6 +19,7 @@ import {
 } from '../../../store/authStore/authSelectors';
 import {
   getAppUrl,
+  getConfigurationValues,
   getHelmetIcon,
   getUsedLocale,
   getWebsiteName,
@@ -87,6 +88,7 @@ const SocialProduct = ({
   nestedWobj,
   isEditMode,
   toggleViewEditMode,
+  config,
 }) => {
   const authorPermlink = history.location.hash
     ? getLastPermlinksFromHash(history.location.hash)
@@ -152,6 +154,9 @@ const SocialProduct = ({
   const desc = `${wobject.name}. ${parseAddress(wobject) || ''} ${wobject.description ||
     ''} ${tagCategoriesForDescr}`;
   const address = parseAddress(wobject);
+  const currHost = typeof location !== 'undefined' && location.hostname;
+  const header = config?.header?.name;
+  const websiteHeaderName = header || config.host || currHost;
   const titleText = compareObjectTitle(false, wobject.name, address, siteName);
   const canonicalUrl = `${appUrl}/object/${wobject.object_type}/${match.params.name}`;
   const url = `${appUrl}/object/${wobject.object_type}/${match.params.name}`;
@@ -257,7 +262,7 @@ const SocialProduct = ({
   return (
     <div>
       <Helmet>
-        <title>{titleText}</title>
+        <title>{`${websiteHeaderName}-${titleText}`}</title>
         <link rel="canonical" href={canonicalUrl} />
         <meta property="description" content={desc} />
         <meta property="og:title" content={titleText} />
@@ -489,6 +494,7 @@ SocialProduct.propTypes = {
   history: PropTypes.shape(),
   match: PropTypes.shape(),
   nestedWobj: PropTypes.shape(),
+  config: PropTypes.shape(),
   activeCategory: PropTypes.string,
   siteName: PropTypes.string,
   appUrl: PropTypes.string,
@@ -520,6 +526,7 @@ const mapStateToProps = state => ({
   optionClicked: getIsOptionClicked(state),
   helmetIcon: getHelmetIcon(state),
   nestedWobj: getWobjectNested(state),
+  config: getConfigurationValues(state),
 });
 const mapDispatchToProps = dispatch => ({
   setStoreActiveOpt: obj => dispatch(setStoreActiveOption(obj)),
