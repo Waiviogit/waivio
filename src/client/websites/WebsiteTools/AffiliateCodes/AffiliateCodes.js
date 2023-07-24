@@ -121,6 +121,7 @@ export const AffiliateCodes = ({ intl, match, form, appendWobject, rejectCode })
           setAffiliateObjects(r);
           setAffCodesArray(getNewCodes(r));
           setOpenAppendModal(false);
+          setLoading(false);
           setFieldsValue({ [objectFields.affiliateCode]: '' });
           // setAffiliateObjects([
           //   ...affiliateObjects,
@@ -148,7 +149,6 @@ export const AffiliateCodes = ({ intl, match, form, appendWobject, rejectCode })
               ),
             );
           }
-          setLoading(false);
         })
         .catch(() => {
           message.error(
