@@ -39,7 +39,7 @@ const AffiliateSection = ({ listItem, isEditMode, wobject, userName }) => {
         objectFields.affiliateProductIdTypes,
         !isEmpty(affiliateProductIdTypes) && (
           <div>
-            {!isEditMode && <div className="CompanyId__title">Product ID types:</div>}
+            {!isEditMode && <div className="CompanyId__title">Product ID type:</div>}
             {affiliateProductIdTypes.map(id => (
               <div key={id} className={'AffiliateSection__affiliate-ids'}>
                 {id}
@@ -52,7 +52,7 @@ const AffiliateSection = ({ listItem, isEditMode, wobject, userName }) => {
         objectFields.affiliateGeoArea,
         !isEmpty(affiliateGeoAreas) && (
           <div>
-            {!isEditMode && <div className="CompanyId__title">GEO areas:</div>}
+            {!isEditMode && <div className="CompanyId__title">GEO area:</div>}
             {affiliateGeoAreas.map(area => (
               <div key={area} className={'AffiliateSection__affiliate-ids'}>
                 {area}
@@ -81,12 +81,13 @@ const AffiliateSection = ({ listItem, isEditMode, wobject, userName }) => {
           </div>
         ),
       )}
-      {listItem(
-        objectFields.rating,
-        has(wobject, 'rating') && (
-          <RateInfo username={userName} authorPermlink={wobject.author_permlink} />
-        ),
-      )}
+      {!isEditMode &&
+        listItem(
+          objectFields.rating,
+          has(wobject, 'rating') && (
+            <RateInfo username={userName} authorPermlink={wobject.author_permlink} />
+          ),
+        )}
     </>
   );
 };

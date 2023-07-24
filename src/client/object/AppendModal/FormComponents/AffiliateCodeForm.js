@@ -18,7 +18,7 @@ const AffiliateCodeForm = ({ getFieldDecorator, getFieldRules, loading, intl }) 
 
   return (
     <>
-      <p>Context</p>
+      <p className={'ant-form-item-label AppendForm__appendTitles'}>Context</p>
       <Form.Item>
         {getFieldDecorator(objectFields.affiliateContext, {
           initialValue: host,
@@ -33,7 +33,7 @@ const AffiliateCodeForm = ({ getFieldDecorator, getFieldRules, loading, intl }) 
           </Select>,
         )}
       </Form.Item>
-      <p>Affiliate code</p>
+      <p className={'ant-form-item-label AppendForm__appendTitles'}>Affiliate code</p>
       <Form.Item>
         {getFieldDecorator(objectFields.affiliateCode, {
           rules: getFieldRules(objectFields.affiliateCode),

@@ -19,10 +19,9 @@ import {
 } from '../../../store/authStore/authSelectors';
 import {
   getAppUrl,
-  getConfigurationValues,
   getHelmetIcon,
+  getSiteName,
   getUsedLocale,
-  getWebsiteName,
 } from '../../../store/appStore/appSelectors';
 import { getActiveCategory, getActiveOption } from '../../../store/optionsStore/optionsSelectors';
 import AffiliatLink from '../../widgets/AffiliatLinks/AffiliatLink';
@@ -38,7 +37,6 @@ import Options from '../../object/Options/Options';
 import ObjectFeatures from '../../object/ObjectFeatures/ObjectFeatures';
 import RatingsWrap from '../../objectCard/RatingsWrap/RatingsWrap';
 import PicturesSlider from './PicturesSlider/PicturesSlider';
-import { compareObjectTitle } from '../../../common/helpers/seoHelpes';
 import DEFAULTS from '../../object/const/defaultValues';
 import ProductDetails from './ProductDetails/ProductDetails';
 import SocialTagCategories from './SocialTagCategories/SocialTagCategories';
@@ -88,7 +86,6 @@ const SocialProduct = ({
   nestedWobj,
   isEditMode,
   toggleViewEditMode,
-  config,
 }) => {
   const authorPermlink = history.location.hash
     ? getLastPermlinksFromHash(history.location.hash)
@@ -153,11 +150,7 @@ const SocialProduct = ({
   const image = getObjectAvatar(wobject) || DEFAULTS.AVATAR;
   const desc = `${wobject.name}. ${parseAddress(wobject) || ''} ${wobject.description ||
     ''} ${tagCategoriesForDescr}`;
-  const address = parseAddress(wobject);
-  const titleText = compareObjectTitle(false, wobject.name, address, siteName);
-  const currHost = typeof location !== 'undefined' && location.hostname;
-  const header = config?.header?.name || config.host || currHost;
-  const websiteHeaderName = `${header}-${titleText}`;
+  const title = `${siteName} - ${wobject.name}`;
   const canonicalUrl = `${appUrl}/object/${wobject.object_type}/${match.params.name}`;
   const url = `${appUrl}/object/${wobject.object_type}/${match.params.name}`;
   const bannerEl =
@@ -262,10 +255,10 @@ const SocialProduct = ({
   return (
     <div>
       <Helmet>
-        <title>{websiteHeaderName}</title>
+        <title>{title}</title>
         <link rel="canonical" href={canonicalUrl} />
         <meta property="description" content={desc} />
-        <meta property="og:title" content={websiteHeaderName} />
+        <meta property="og:title" content={title} />
         <meta property="og:type" content="article" />
         <meta property="og:url" content={url} />
         <meta property="og:image" content={image} />
@@ -275,7 +268,7 @@ const SocialProduct = ({
         <meta property="og:description" content={desc} />
         <meta name="twitter:card" content={image ? 'summary_large_image' : 'summary'} />
         <meta name="twitter:site" content={`@${siteName}`} />
-        <meta name="twitter:title" content={websiteHeaderName} />
+        <meta name="twitter:title" content={title} />
         <meta name="twitter:description" content={desc} />
         <meta name="twitter:image" property="twitter:image" content={image} />
         <meta property="og:site_name" content={siteName} />
@@ -494,7 +487,6 @@ SocialProduct.propTypes = {
   history: PropTypes.shape(),
   match: PropTypes.shape(),
   nestedWobj: PropTypes.shape(),
-  config: PropTypes.shape(),
   activeCategory: PropTypes.string,
   siteName: PropTypes.string,
   appUrl: PropTypes.string,
@@ -517,7 +509,7 @@ const mapStateToProps = state => ({
   locale: getUsedLocale(state),
   activeOption: getActiveOption(state),
   activeCategory: getActiveCategory(state),
-  siteName: getWebsiteName(state),
+  siteName: getSiteName(state),
   wobj: getObjectState(state),
   authors: getWobjectAuthors(state),
   appUrl: getAppUrl(state),
@@ -526,7 +518,6 @@ const mapStateToProps = state => ({
   optionClicked: getIsOptionClicked(state),
   helmetIcon: getHelmetIcon(state),
   nestedWobj: getWobjectNested(state),
-  config: getConfigurationValues(state),
 });
 const mapDispatchToProps = dispatch => ({
   setStoreActiveOpt: obj => dispatch(setStoreActiveOption(obj)),
