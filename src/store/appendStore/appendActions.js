@@ -1,7 +1,12 @@
 import { get } from 'lodash';
 import { message } from 'antd';
 import { createAsyncActionType } from '../../common/helpers/stateHelpers';
-import { getChangedField, getUpdatesList, postAppendWaivioObject } from '../../waivioApi/ApiClient';
+import {
+  getAffiliateObjectForWebsite,
+  getChangedField,
+  getUpdatesList,
+  postAppendWaivioObject,
+} from '../../waivioApi/ApiClient';
 import { followObject, GET_CHANGED_WOBJECT_UPDATE } from '../wObjectStore/wobjActions';
 import { subscribeTypes } from '../../common/constants/blockTypes';
 import {
@@ -250,11 +255,14 @@ export const AFFILIATE_CODE_VOTE_APPEND = createAsyncActionType(
   '@append/AFFILIATE_CODE_VOTE_APPEND',
 );
 
-export const affiliateCodeVoteAppend = (author, authorPermlink, permlink, weight) => (
-  dispatch,
-  getState,
-  { steemConnectAPI },
-) => {
+export const affiliateCodeVoteAppend = (
+  author,
+  authorPermlink,
+  permlink,
+  weight,
+  userName,
+  host,
+) => async (dispatch, getState, { steemConnectAPI, busyAPI }) => {
   const state = getState();
   const voter = getAuthenticatedUserName(state);
 
@@ -267,7 +275,17 @@ export const affiliateCodeVoteAppend = (author, authorPermlink, permlink, weight
     },
   });
 
-  return steemConnectAPI.appendVote(voter, author, permlink, weight);
+  steemConnectAPI.appendVote(voter, author, permlink, weight);
+
+  return new Promise(resolve => {
+    busyAPI.instance.subscribe((response, mess) => {
+      if (mess.type === 'updateInfo') {
+        const result = getAffiliateObjectForWebsite(userName, host);
+
+        resolve(result);
+      }
+    });
+  });
 };
 
 export const SET_OBJECT_IN_AUTHORITY = '@append/SET_OBJECT_IN_AUTHORITY';
@@ -344,7 +362,7 @@ const followAndLikeAfterCreateAppend = (
 
 export const appendObject = (
   postData,
-  { follow, isLike, votePercent, isObjectPage, isUpdatesPage } = {},
+  { follow, isLike, votePercent, isObjectPage, isUpdatesPage, host } = {},
 ) => (dispatch, getState, { busyAPI }) => {
   dispatch({
     type: APPEND_WAIVIO_OBJECT.START,
@@ -367,6 +385,17 @@ export const appendObject = (
       };
 
       busyAPI.instance.sendAsync(subscribeTypes.subscribeTransactionId, [voter, res.transactionId]);
+      if (postData.field.name === 'affiliateCode') {
+        return new Promise(resolve => {
+          busyAPI.instance.subscribe((response, mess) => {
+            if (mess?.success && mess?.permlink === res.transactionId) {
+              const result = getAffiliateObjectForWebsite(voter, host);
+
+              resolve(result);
+            }
+          });
+        });
+      }
       busyAPI.instance.subscribe((datad, j) => {
         if (j?.success && j?.permlink === res.transactionId) {
           websocketCallback();

@@ -28,6 +28,22 @@ import ObjectAvatar from '../../../components/ObjectAvatar';
 
 export const AffiliateCodes = ({ intl, match, form, appendWobject, rejectCode }) => {
   const [affiliateObjects, setAffiliateObjects] = useState([]);
+  const [affCodesArray, setAffCodesArray] = useState([]);
+  const getNewCodes = objs =>
+    objs?.reduce((acc, currentObject) => {
+      if (has(currentObject, 'affiliateCode')) {
+        acc.push(currentObject.affiliateCode);
+      }
+
+      return acc;
+    }, []);
+  const itemsToOmit = affiliateObjects?.reduce((acc, currentObject) => {
+    if (has(currentObject, 'affiliateCode')) {
+      acc.push(currentObject.author_permlink);
+    }
+
+    return acc;
+  }, []);
   const [openAppendModal, setOpenAppendModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [selectedObj, setSelectedObj] = useState({});
@@ -36,7 +52,7 @@ export const AffiliateCodes = ({ intl, match, form, appendWobject, rejectCode })
   const userUpVotePower = useSelector(getVotePercent);
   const langReadable = useSelector(getUsedLocale);
   const site = match.params.site;
-  const emptyCodes = affiliateObjects.every(obj => !has(obj, 'affiliateCode'));
+  const emptyCodes = affiliateObjects?.every(obj => !has(obj, 'affiliateCode'));
   const codesClassList = classNames('AffiliateCodes__object-table', {
     'AffiliateCodes__table-empty': emptyCodes,
   });
@@ -99,16 +115,21 @@ export const AffiliateCodes = ({ intl, match, form, appendWobject, rejectCode })
         isLike: data.isLike,
         isObjectPage: false,
         isUpdatesPage: false,
+        host: site,
       })
         .then(r => {
-          setAffiliateObjects([
-            ...affiliateObjects,
-            {
-              ...selectedObj,
-              permlink: data.permlink,
-              affiliateCode: JSON.stringify([site, getFieldValue(objectFields.affiliateCode)]),
-            },
-          ]);
+          setAffiliateObjects(r);
+          setAffCodesArray(getNewCodes(r));
+          setOpenAppendModal(false);
+          setFieldsValue({ [objectFields.affiliateCode]: '' });
+          // setAffiliateObjects([
+          //   ...affiliateObjects,
+          //   {
+          //     ...selectedObj,
+          //     permlink: data.permlink,
+          //     affiliateCode: JSON.stringify([site, getFieldValue(objectFields.affiliateCode)]),
+          //   },
+          // ]);
           const mssg = get(r, ['value', 'message']);
 
           if (mssg) {
@@ -126,8 +147,6 @@ export const AffiliateCodes = ({ intl, match, form, appendWobject, rejectCode })
                 },
               ),
             );
-            setOpenAppendModal(false);
-            setFieldsValue({ [objectFields.affiliateCode]: '' });
           }
           setLoading(false);
         })
@@ -166,12 +185,27 @@ export const AffiliateCodes = ({ intl, match, form, appendWobject, rejectCode })
       }
     });
 
-    rejectCode(currUpdate.author, obj.author_permlink, currUpdate.permlink, 1);
+    rejectCode(
+      currUpdate.author,
+      obj.author_permlink,
+      currUpdate.permlink,
+      1,
+      user.name,
+      site,
+    ).then(result => {
+      if (result) {
+        setAffiliateObjects(result);
+        setAffCodesArray(getNewCodes(result));
+      }
+    });
   };
 
   useEffect(() => {
-    getAffiliateObjectForWebsite(user.name, site).then(res => setAffiliateObjects(res));
-  }, [site]);
+    getAffiliateObjectForWebsite(user.name, site).then(res => {
+      setAffiliateObjects(res);
+      setAffCodesArray(getNewCodes(res));
+    });
+  }, [site, affCodesArray?.length]);
 
   return (
     <div className="AffiliateCodes">
@@ -205,6 +239,7 @@ export const AffiliateCodes = ({ intl, match, form, appendWobject, rejectCode })
       <h3>Find affiliate program</h3>
 
       <SearchObjectsAutocomplete
+        itemsIdsToOmit={itemsToOmit}
         objectType={'affiliate'}
         handleSelect={handleSelectObject}
         placeholder={'Find'}
@@ -218,7 +253,7 @@ export const AffiliateCodes = ({ intl, match, form, appendWobject, rejectCode })
           <FormattedMessage id={'aff_codes_empty'} defaultMessage={'No affiliate codes added.'} />
         ) : (
           // eslint-disable-next-line array-callback-return,consistent-return
-          affiliateObjects.map(obj => {
+          affiliateObjects?.map(obj => {
             if (obj.affiliateCode) {
               const affiliateCode = JSON.parse(obj.affiliateCode);
 
