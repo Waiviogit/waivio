@@ -154,10 +154,10 @@ const SocialProduct = ({
   const desc = `${wobject.name}. ${parseAddress(wobject) || ''} ${wobject.description ||
     ''} ${tagCategoriesForDescr}`;
   const address = parseAddress(wobject);
-  const currHost = typeof location !== 'undefined' && location.hostname;
-  const header = config?.header?.name;
-  const websiteHeaderName = header || config.host || currHost;
   const titleText = compareObjectTitle(false, wobject.name, address, siteName);
+  const currHost = typeof location !== 'undefined' && location.hostname;
+  const header = config?.header?.name || config.host || currHost;
+  const websiteHeaderName = `${header}-${titleText}`;
   const canonicalUrl = `${appUrl}/object/${wobject.object_type}/${match.params.name}`;
   const url = `${appUrl}/object/${wobject.object_type}/${match.params.name}`;
   const bannerEl =
@@ -262,10 +262,10 @@ const SocialProduct = ({
   return (
     <div>
       <Helmet>
-        <title>{`${websiteHeaderName}-${titleText}`}</title>
+        <title>{websiteHeaderName}</title>
         <link rel="canonical" href={canonicalUrl} />
         <meta property="description" content={desc} />
-        <meta property="og:title" content={titleText} />
+        <meta property="og:title" content={websiteHeaderName} />
         <meta property="og:type" content="article" />
         <meta property="og:url" content={url} />
         <meta property="og:image" content={image} />
@@ -275,7 +275,7 @@ const SocialProduct = ({
         <meta property="og:description" content={desc} />
         <meta name="twitter:card" content={image ? 'summary_large_image' : 'summary'} />
         <meta name="twitter:site" content={`@${siteName}`} />
-        <meta name="twitter:title" content={titleText} />
+        <meta name="twitter:title" content={websiteHeaderName} />
         <meta name="twitter:description" content={desc} />
         <meta name="twitter:image" property="twitter:image" content={image} />
         <meta property="og:site_name" content={siteName} />
