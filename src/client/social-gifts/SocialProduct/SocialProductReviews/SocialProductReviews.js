@@ -18,6 +18,7 @@ import Loading from '../../../components/Icon/Loading';
 import FeedMasonry from '../../FeedMasonry/FeedMasonry';
 import {
   getLastPermlinksFromHash,
+  getObjectName,
   handleCreatePost,
 } from '../../../../common/helpers/wObjectHelper';
 import './SocialProductReviews.less';
@@ -74,6 +75,7 @@ const SocialProductReviews = ({ wobject, authors, intl }) => {
         </button>
       </div>
       <FeedMasonry
+        objName={getObjectName(wobject)}
         emptyLable={intl.formatMessage({
           id: 'empty_object_profile',
           defaultMessage: 'Be the first to write a review',

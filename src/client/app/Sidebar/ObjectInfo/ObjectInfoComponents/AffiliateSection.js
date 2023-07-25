@@ -5,8 +5,13 @@ import { FormattedMessage } from 'react-intl';
 
 import { objectFields } from '../../../../../common/constants/listOfFields';
 import './AffiliateSection.less';
+import RateInfo from '../../../../components/Sidebar/Rate/RateInfo';
+import {
+  allContinents,
+  allCountries,
+} from '../../../../object/AppendModal/AppendModalData/affiliateData';
 
-const AffiliateSection = ({ listItem, isEditMode, wobject }) => {
+const AffiliateSection = ({ listItem, isEditMode, wobject, userName }) => {
   const affiliateButton = get(wobject, 'affiliateButton', '');
   const affiliateProductIdTypes = has(wobject, 'affiliateProductIdTypes')
     ? wobject?.affiliateProductIdTypes
@@ -14,8 +19,9 @@ const AffiliateSection = ({ listItem, isEditMode, wobject }) => {
   const affiliateGeoAreas = has(wobject, 'affiliateGeoArea') ? wobject?.affiliateGeoArea : [];
   const affiliateCode = has(wobject, 'affiliateCode') ? JSON.parse(wobject?.affiliateCode) : [];
   const [affiliateSite, affCode] = affiliateCode;
-  const affSiteName = affiliateSite === 'PERSONAL' ? 'waivio.com' : affiliateSite;
-  const affiliateUrlTemplate = get(wobject, 'affiliateUrlTemplate');
+  const affiliateUrlTemplate = get(wobject, 'affiliateUrlTemplate', '')
+    .replace('$productId', 'PRODUCTID')
+    .replace('$affiliateCode', 'AFFILIATECODE');
 
   return (
     <>
@@ -37,7 +43,7 @@ const AffiliateSection = ({ listItem, isEditMode, wobject }) => {
         objectFields.affiliateProductIdTypes,
         !isEmpty(affiliateProductIdTypes) && (
           <div>
-            {!isEditMode && <div className="CompanyId__title">Product ID types:</div>}
+            {!isEditMode && <div className="CompanyId__title">Product ID type:</div>}
             {affiliateProductIdTypes.map(id => (
               <div key={id} className={'AffiliateSection__affiliate-ids'}>
                 {id}
@@ -50,10 +56,10 @@ const AffiliateSection = ({ listItem, isEditMode, wobject }) => {
         objectFields.affiliateGeoArea,
         !isEmpty(affiliateGeoAreas) && (
           <div>
-            {!isEditMode && <div className="CompanyId__title">GEO areas:</div>}
+            {!isEditMode && <div className="CompanyId__title">GEO area:</div>}
             {affiliateGeoAreas.map(area => (
               <div key={area} className={'AffiliateSection__affiliate-ids'}>
-                {area}
+                {{ ...allCountries, ...allContinents }[area]}
               </div>
             ))}
           </div>
@@ -73,18 +79,26 @@ const AffiliateSection = ({ listItem, isEditMode, wobject }) => {
         objectFields.affiliateCode,
         !isEmpty(affiliateCode) && (
           <div>
-            {!isEditMode && <div className="CompanyId__title">My affiliate code:</div>}
-            <div>{affSiteName}</div>
+            {!isEditMode && <div className="CompanyId__title">Affiliate code:</div>}
+            <div>{affiliateSite}</div>
             <div>{affCode}</div>
           </div>
         ),
       )}
+      {!isEditMode &&
+        listItem(
+          objectFields.rating,
+          has(wobject, 'rating') && (
+            <RateInfo username={userName} authorPermlink={wobject.author_permlink} />
+          ),
+        )}
     </>
   );
 };
 
 AffiliateSection.propTypes = {
   listItem: PropTypes.func.isRequired,
+  userName: PropTypes.func.isRequired,
   wobject: PropTypes.shape().isRequired,
   isEditMode: PropTypes.bool.isRequired,
 };

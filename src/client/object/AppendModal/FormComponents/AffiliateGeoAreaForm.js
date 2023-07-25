@@ -10,14 +10,18 @@ const AffiliateGeoAreaForm = ({ getFieldDecorator, getFieldRules, intl }) => (
     {getFieldDecorator(objectFields.affiliateGeoArea, {
       rules: getFieldRules(objectFields.affiliateGeoArea),
     })(
-      <Select placeholder={intl.formatMessage({ id: 'geo_area', defaultMessage: 'GEO area' })}>
-        {Object.entries(allContinents).map(([label, value]) => (
-          <Select.Option key={value} value={value}>
+      <Select
+        placeholder={intl.formatMessage({ id: 'geo_area', defaultMessage: 'GEO area' })}
+        showSearch
+        optionFilterProp="label"
+      >
+        {Object.entries(allContinents).map(([value, label]) => (
+          <Select.Option key={value} value={value} label={label}>
             {label}
           </Select.Option>
         ))}
         {Object.entries(allCountries).map(([value, label]) => (
-          <Select.Option key={value} value={value}>
+          <Select.Option key={value} value={value} label={label}>
             {label}
           </Select.Option>
         ))}

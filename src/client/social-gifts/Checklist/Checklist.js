@@ -54,7 +54,7 @@ const Checklist = ({
   const [object, setObject] = useState(false);
   const favicon = useSelector(getHelmetIcon);
   const siteName = useSelector(getSiteName);
-  const title = getObjectName(object);
+  const title = `${getObjectName(object)} - ${siteName}`;
   const desc = object?.description;
   const image = getObjectAvatar(object);
   const canonicalUrl = typeof location !== 'undefined' && location?.origin;

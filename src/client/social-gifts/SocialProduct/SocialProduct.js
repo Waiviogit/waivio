@@ -20,8 +20,8 @@ import {
 import {
   getAppUrl,
   getHelmetIcon,
+  getSiteName,
   getUsedLocale,
-  getWebsiteName,
 } from '../../../store/appStore/appSelectors';
 import { getActiveCategory, getActiveOption } from '../../../store/optionsStore/optionsSelectors';
 import AffiliatLink from '../../widgets/AffiliatLinks/AffiliatLink';
@@ -37,7 +37,6 @@ import Options from '../../object/Options/Options';
 import ObjectFeatures from '../../object/ObjectFeatures/ObjectFeatures';
 import RatingsWrap from '../../objectCard/RatingsWrap/RatingsWrap';
 import PicturesSlider from './PicturesSlider/PicturesSlider';
-import { compareObjectTitle } from '../../../common/helpers/seoHelpes';
 import DEFAULTS from '../../object/const/defaultValues';
 import ProductDetails from './ProductDetails/ProductDetails';
 import SocialTagCategories from './SocialTagCategories/SocialTagCategories';
@@ -151,8 +150,7 @@ const SocialProduct = ({
   const image = getObjectAvatar(wobject) || DEFAULTS.AVATAR;
   const desc = `${wobject.name}. ${parseAddress(wobject) || ''} ${wobject.description ||
     ''} ${tagCategoriesForDescr}`;
-  const address = parseAddress(wobject);
-  const titleText = compareObjectTitle(false, wobject.name, address, siteName);
+  const title = `${wobject.name} - ${siteName}`;
   const canonicalUrl = `${appUrl}/object/${wobject.object_type}/${match.params.name}`;
   const url = `${appUrl}/object/${wobject.object_type}/${match.params.name}`;
   const bannerEl =
@@ -257,10 +255,10 @@ const SocialProduct = ({
   return (
     <div>
       <Helmet>
-        <title>{titleText}</title>
+        <title>{title}</title>
         <link rel="canonical" href={canonicalUrl} />
         <meta property="description" content={desc} />
-        <meta property="og:title" content={titleText} />
+        <meta property="og:title" content={title} />
         <meta property="og:type" content="article" />
         <meta property="og:url" content={url} />
         <meta property="og:image" content={image} />
@@ -270,18 +268,18 @@ const SocialProduct = ({
         <meta property="og:description" content={desc} />
         <meta name="twitter:card" content={image ? 'summary_large_image' : 'summary'} />
         <meta name="twitter:site" content={`@${siteName}`} />
-        <meta name="twitter:title" content={titleText} />
+        <meta name="twitter:title" content={title} />
         <meta name="twitter:description" content={desc} />
         <meta name="twitter:image" property="twitter:image" content={image} />
         <meta property="og:site_name" content={siteName} />
         <link rel="image_src" href={image} />
         <link id="favicon" rel="icon" href={helmetIcon} type="image/x-icon" />
       </Helmet>
-      {loading ? (
+      {loading && isEmpty(wobject) ? (
         <Loading margin />
       ) : (
         <div className="SocialProduct">
-          <Breadcrumbs inProduct />
+          {history.location.query && <Breadcrumbs inProduct />}
           <div className="SocialProduct__column SocialProduct__column-wrapper">
             {isMobile() && (
               <div
@@ -511,7 +509,7 @@ const mapStateToProps = state => ({
   locale: getUsedLocale(state),
   activeOption: getActiveOption(state),
   activeCategory: getActiveCategory(state),
-  siteName: getWebsiteName(state),
+  siteName: getSiteName(state),
   wobj: getObjectState(state),
   authors: getWobjectAuthors(state),
   appUrl: getAppUrl(state),

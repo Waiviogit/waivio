@@ -15,10 +15,19 @@ import { breakpointColumnsObj } from './helpers';
 
 import './FeedMasonry.less';
 
-const FeedMasonry = ({ loadMore, hasMore, posts, loading, emptyLable, intl, writeReview }) => {
+const FeedMasonry = ({
+  objName,
+  loadMore,
+  hasMore,
+  posts,
+  loading,
+  emptyLable,
+  intl,
+  writeReview,
+}) => {
   const favicon = useSelector(getHelmetIcon);
   const siteName = useSelector(getSiteName);
-  const title = siteName;
+  const title = `${objName} - ${siteName}`;
   const desc = siteName;
   const image = favicon;
   const canonicalUrl = typeof location !== 'undefined' && location?.origin;
@@ -79,6 +88,7 @@ FeedMasonry.propTypes = {
   emptyLable: PropTypes.bool,
   posts: PropTypes.arrayOf(PropTypes.shape({})),
   loading: PropTypes.bool,
+  objName: PropTypes.string,
   intl: PropTypes.shape(),
 };
 
