@@ -36,6 +36,7 @@ import optionsReducer from './optionsStore/optionsReducer';
 import objectDepartmentsReducer from './objectDepartmentsStore/objectDepartmentsReducer';
 import ratesReducer from './ratesStore/ratesReducer';
 import shopReducer from './shopStore/shopReducer';
+import affiliateCodesReducer from './affiliateCodes/affiliateCodesReducer';
 
 export default history =>
   combineReducers({
@@ -69,6 +70,7 @@ export default history =>
     swap: swapReducer,
     depositWithdraw,
     options: optionsReducer,
+    affiliateCodes: affiliateCodesReducer,
     department: objectDepartmentsReducer,
     rates: ratesReducer,
     shop: shopReducer,

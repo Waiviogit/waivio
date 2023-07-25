@@ -1,12 +1,7 @@
 import { get } from 'lodash';
 import { message } from 'antd';
 import { createAsyncActionType } from '../../common/helpers/stateHelpers';
-import {
-  getAffiliateObjectForWebsite,
-  getChangedField,
-  getUpdatesList,
-  postAppendWaivioObject,
-} from '../../waivioApi/ApiClient';
+import { getChangedField, getUpdatesList, postAppendWaivioObject } from '../../waivioApi/ApiClient';
 import { followObject, GET_CHANGED_WOBJECT_UPDATE } from '../wObjectStore/wobjActions';
 import { subscribeTypes } from '../../common/constants/blockTypes';
 import {
@@ -18,6 +13,10 @@ import {
 import { getLocale } from '../settingsStore/settingsSelectors';
 import { getAppendList } from './appendSelectors';
 import { getObjectPosts } from '../feedStore/feedActions';
+import {
+  SET_AFFILIATE_OBJECTS,
+  setAffiliateObjects,
+} from '../affiliateCodes/affiliateCodesActions';
 
 export const APPEND_WAIVIO_OBJECT = createAsyncActionType('@append/APPEND_WAIVIO_OBJECT');
 
@@ -262,7 +261,7 @@ export const affiliateCodeVoteAppend = (
   weight,
   userName,
   host,
-) => async (dispatch, getState, { steemConnectAPI, busyAPI }) => {
+) => (dispatch, getState, { steemConnectAPI, busyAPI }) => {
   const state = getState();
   const voter = getAuthenticatedUserName(state);
 
@@ -275,14 +274,18 @@ export const affiliateCodeVoteAppend = (
     },
   });
 
-  steemConnectAPI.appendVote(voter, author, permlink, weight);
+  dispatch({
+    type: SET_AFFILIATE_OBJECTS.START,
+    payload: {
+      authorPermlink,
+    },
+  });
 
-  return new Promise(resolve => {
+  return steemConnectAPI.appendVote(voter, author, permlink, weight).then(res => {
+    busyAPI.instance.sendAsync(subscribeTypes.subscribeTransactionId, [voter, res.transactionId]);
     busyAPI.instance.subscribe((response, mess) => {
-      if (mess.type === 'updateInfo') {
-        const result = getAffiliateObjectForWebsite(userName, host);
-
-        resolve(result);
+      if (mess?.success && mess?.permlink === res.transactionId) {
+        dispatch(setAffiliateObjects(userName, host));
       }
     });
   });
@@ -367,6 +370,8 @@ export const appendObject = (
   dispatch({
     type: APPEND_WAIVIO_OBJECT.START,
   });
+  const state = getState();
+  const userName = getAuthenticatedUserName(state);
 
   return postAppendWaivioObject({ ...postData, votePower: undefined, isLike: undefined })
     .then(async res => {
@@ -382,20 +387,13 @@ export const appendObject = (
             true,
           ),
         );
+
+        if (postData.field.name === 'affiliateCode') {
+          dispatch(setAffiliateObjects(userName, host));
+        }
       };
 
       busyAPI.instance.sendAsync(subscribeTypes.subscribeTransactionId, [voter, res.transactionId]);
-      if (postData.field.name === 'affiliateCode') {
-        return new Promise(resolve => {
-          busyAPI.instance.subscribe((response, mess) => {
-            if (mess?.success && mess?.permlink === res.transactionId) {
-              const result = getAffiliateObjectForWebsite(voter, host);
-
-              resolve(result);
-            }
-          });
-        });
-      }
       busyAPI.instance.subscribe((datad, j) => {
         if (j?.success && j?.permlink === res.transactionId) {
           websocketCallback();

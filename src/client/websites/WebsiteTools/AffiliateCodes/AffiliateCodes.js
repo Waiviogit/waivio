@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { withRouter } from 'react-router';
+import { Link } from 'react-router-dom';
 import { Button, Form, Input, message, Modal } from 'antd';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import { connect, useSelector } from 'react-redux';
+import { connect, useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import { get, has, isEmpty } from 'lodash';
+import { get, has, isEmpty, isNil } from 'lodash';
 import {
   addWebAdministrator,
   deleteWebAdministrator,
@@ -22,21 +23,13 @@ import { getAuthenticatedUser } from '../../../../store/authStore/authSelectors'
 import { getVotePercent } from '../../../../store/settingsStore/settingsSelectors';
 import { affiliateCodeVoteAppend, appendObject } from '../../../../store/appendStore/appendActions';
 import { getUsedLocale } from '../../../../store/appStore/appSelectors';
-import { getAffiliateObjectForWebsite } from '../../../../waivioApi/ApiClient';
 import './AffiliateCodes.less';
 import ObjectAvatar from '../../../components/ObjectAvatar';
+import { getAffiliateObjects } from '../../../../store/affiliateCodes/affiliateCodesSelectors';
+import { setAffiliateObjects } from '../../../../store/affiliateCodes/affiliateCodesActions';
 
 export const AffiliateCodes = ({ intl, match, form, appendWobject, rejectCode }) => {
-  const [affiliateObjects, setAffiliateObjects] = useState([]);
-  const [affCodesArray, setAffCodesArray] = useState([]);
-  const getNewCodes = objs =>
-    objs?.reduce((acc, currentObject) => {
-      if (has(currentObject, 'affiliateCode')) {
-        acc.push(currentObject.affiliateCode);
-      }
-
-      return acc;
-    }, []);
+  const affiliateObjects = useSelector(getAffiliateObjects);
   const itemsToOmit = affiliateObjects?.reduce((acc, currentObject) => {
     if (has(currentObject, 'affiliateCode')) {
       acc.push(currentObject.author_permlink);
@@ -52,6 +45,7 @@ export const AffiliateCodes = ({ intl, match, form, appendWobject, rejectCode })
   const userUpVotePower = useSelector(getVotePercent);
   const langReadable = useSelector(getUsedLocale);
   const site = match.params.site;
+  const dispatch = useDispatch();
   const emptyCodes = affiliateObjects?.every(obj => !has(obj, 'affiliateCode'));
   const codesClassList = classNames('AffiliateCodes__object-table', {
     'AffiliateCodes__table-empty': emptyCodes,
@@ -118,19 +112,10 @@ export const AffiliateCodes = ({ intl, match, form, appendWobject, rejectCode })
         host: site,
       })
         .then(r => {
-          setAffiliateObjects(r);
-          setAffCodesArray(getNewCodes(r));
           setOpenAppendModal(false);
           setLoading(false);
           setFieldsValue({ [objectFields.affiliateCode]: '' });
-          // setAffiliateObjects([
-          //   ...affiliateObjects,
-          //   {
-          //     ...selectedObj,
-          //     permlink: data.permlink,
-          //     affiliateCode: JSON.stringify([site, getFieldValue(objectFields.affiliateCode)]),
-          //   },
-          // ]);
+
           const mssg = get(r, ['value', 'message']);
 
           if (mssg) {
@@ -175,7 +160,6 @@ export const AffiliateCodes = ({ intl, match, form, appendWobject, rejectCode })
     setOpenAppendModal(false);
   };
   const deleteCode = obj => {
-    setAffiliateObjects(affiliateObjects.filter(o => o.author_permlink !== obj.author_permlink));
     // eslint-disable-next-line array-callback-return,consistent-return
     const currUpdate = obj.affiliateCodeFields.find(update => {
       if (update.name === 'affiliateCode') {
@@ -185,27 +169,16 @@ export const AffiliateCodes = ({ intl, match, form, appendWobject, rejectCode })
       }
     });
 
-    rejectCode(
-      currUpdate.author,
-      obj.author_permlink,
-      currUpdate.permlink,
-      1,
-      user.name,
-      site,
-    ).then(result => {
-      if (result) {
-        setAffiliateObjects(result);
-        setAffCodesArray(getNewCodes(result));
-      }
-    });
+    rejectCode(currUpdate.author, obj.author_permlink, currUpdate.permlink, 1, user.name, site);
   };
 
   useEffect(() => {
-    getAffiliateObjectForWebsite(user.name, site).then(res => {
-      setAffiliateObjects(res);
-      setAffCodesArray(getNewCodes(res));
-    });
-  }, [site, affCodesArray?.length]);
+    if (!isEmpty(site) && !isNil(site)) {
+      dispatch(setAffiliateObjects(user.name, site));
+    }
+
+    return () => dispatch(setAffiliateObjects([]));
+  }, [site]);
 
   return (
     <div className="AffiliateCodes">
@@ -259,13 +232,16 @@ export const AffiliateCodes = ({ intl, match, form, appendWobject, rejectCode })
 
               return (
                 <div key={obj._id} className="AffiliateCodes__object">
-                  <span className="AffiliateCodes__object-info">
+                  <Link
+                    to={`/object/${obj.author_permlink}`}
+                    className="AffiliateCodes__object-info"
+                  >
                     <ObjectAvatar size={50} item={obj} />
                     <div className="AffiliateCodes__object-info-text">
-                      <span>{obj.name}</span>
+                      <Link to={`/object/${obj.author_permlink}`}>{obj.name}</Link>
                       <div className="AffiliateCodes__aff-code">{affiliateCode[1]}</div>
                     </div>
-                  </span>
+                  </Link>
                   <Button type="primary" onClick={() => deleteCode(obj)}>
                     <FormattedMessage id="delete" defaultMessage="Delete" />
                   </Button>
@@ -292,7 +268,16 @@ export const AffiliateCodes = ({ intl, match, form, appendWobject, rejectCode })
             Affiliate code:
             <Form.Item>
               {getFieldDecorator(objectFields.affiliateCode, {
-                // rules: getFieldRules(objectFields.affiliateCode),
+                rules: [
+                  {
+                    required: true,
+                    message: 'Please input your username!',
+                  },
+                  {
+                    max: 200,
+                    message: "Value can't be longer than 200 characters.",
+                  },
+                ],
               })(
                 <Input
                   autoFocus
