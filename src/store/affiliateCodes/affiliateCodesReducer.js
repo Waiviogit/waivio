@@ -18,6 +18,11 @@ export default (state = defaultState, action) => {
         ...state,
         objects: action.payload,
       };
+    case affiliateCodesActions.RESET_AFFILIATE_OBJECTS:
+      return {
+        ...state,
+        objects: [],
+      };
     default:
       return state;
   }

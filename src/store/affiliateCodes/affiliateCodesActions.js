@@ -14,3 +14,9 @@ export const setLoadingAffiliateObjects = authorPermlink => dispatch => {
     payload: { authorPermlink },
   });
 };
+export const RESET_AFFILIATE_OBJECTS = '@affiliateCodes/RESET_AFFILIATE_OBJECTS';
+export const resetAffiliateObjects = () => dispatch => {
+  dispatch({
+    type: RESET_AFFILIATE_OBJECTS,
+  });
+};

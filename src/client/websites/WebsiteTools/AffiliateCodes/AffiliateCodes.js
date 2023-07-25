@@ -3,19 +3,10 @@ import { withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
 import { Button, Form, Input, message, Modal } from 'antd';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import { connect, useDispatch, useSelector } from 'react-redux';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { get, has, isEmpty, isNil } from 'lodash';
-import {
-  addWebAdministrator,
-  deleteWebAdministrator,
-  getWebAdministrators,
-} from '../../../../store/websiteStore/websiteActions';
-import {
-  getAdministrators,
-  getWebsiteLoading,
-} from '../../../../store/websiteStore/websiteSelectors';
 import SearchObjectsAutocomplete from '../../../components/EditorObject/SearchObjectsAutocomplete';
 import { objectFields } from '../../../../common/constants/listOfFields';
 import { getObjectName } from '../../../../common/helpers/wObjectHelper';
@@ -26,26 +17,37 @@ import { getUsedLocale } from '../../../../store/appStore/appSelectors';
 import './AffiliateCodes.less';
 import ObjectAvatar from '../../../components/ObjectAvatar';
 import { getAffiliateObjects } from '../../../../store/affiliateCodes/affiliateCodesSelectors';
-import { setAffiliateObjects } from '../../../../store/affiliateCodes/affiliateCodesActions';
+import {
+  resetAffiliateObjects,
+  setAffiliateObjects,
+} from '../../../../store/affiliateCodes/affiliateCodesActions';
 
-export const AffiliateCodes = ({ intl, match, form, appendWobject, rejectCode }) => {
-  const affiliateObjects = useSelector(getAffiliateObjects);
-  const itemsToOmit = affiliateObjects?.reduce((acc, currentObject) => {
-    if (has(currentObject, 'affiliateCode')) {
-      acc.push(currentObject.author_permlink);
-    }
+export const AffiliateCodes = ({
+  intl,
+  match,
+  form,
+  appendWobject,
+  rejectCode,
+  affiliateObjects,
+  setAffiliateObjs,
+  resetAffiliateObjs,
+  user,
+  langReadable,
+  userUpVotePower,
+}) => {
+  const itemsToOmit =
+    affiliateObjects?.reduce((acc, currentObject) => {
+      if (has(currentObject, 'affiliateCode')) {
+        acc.push(currentObject.author_permlink);
+      }
 
-    return acc;
-  }, []);
+      return acc;
+    }, []) || [];
   const [openAppendModal, setOpenAppendModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [selectedObj, setSelectedObj] = useState({});
   const { getFieldDecorator, getFieldValue, validateFieldsAndScroll, setFieldsValue } = form;
-  const user = useSelector(getAuthenticatedUser);
-  const userUpVotePower = useSelector(getVotePercent);
-  const langReadable = useSelector(getUsedLocale);
   const site = match.params.site;
-  const dispatch = useDispatch();
   const emptyCodes = affiliateObjects?.every(obj => !has(obj, 'affiliateCode'));
   const codesClassList = classNames('AffiliateCodes__object-table', {
     'AffiliateCodes__table-empty': emptyCodes,
@@ -174,10 +176,10 @@ export const AffiliateCodes = ({ intl, match, form, appendWobject, rejectCode })
 
   useEffect(() => {
     if (!isEmpty(site) && !isNil(site)) {
-      dispatch(setAffiliateObjects(user.name, site));
+      setAffiliateObjs(user.name, site);
     }
 
-    return () => dispatch(setAffiliateObjects([]));
+    return () => resetAffiliateObjs();
   }, [site]);
 
   return (
@@ -325,24 +327,27 @@ AffiliateCodes.propTypes = {
     }),
   }).isRequired,
   form: PropTypes.shape(),
+  user: PropTypes.shape(),
   appendWobject: PropTypes.func,
+  affiliateObjects: PropTypes.arrayOf(),
   rejectCode: PropTypes.func,
-};
-
-AffiliateCodes.defaultProps = {
-  admins: [],
+  setAffiliateObjs: PropTypes.func,
+  resetAffiliateObjs: PropTypes.func,
+  langReadable: PropTypes.string,
+  userUpVotePower: PropTypes.number,
 };
 
 export default connect(
   state => ({
-    admins: getAdministrators(state),
-    isLoading: getWebsiteLoading(state),
+    affiliateObjects: getAffiliateObjects(state),
+    langReadable: getUsedLocale(state),
+    user: getAuthenticatedUser(state),
+    userUpVotePower: getVotePercent(state),
   }),
   {
     rejectCode: affiliateCodeVoteAppend,
     appendWobject: appendObject,
-    getWebAdmins: getWebAdministrators,
-    addWebAdmins: addWebAdministrator,
-    deleteWebAdmins: deleteWebAdministrator,
+    setAffiliateObjs: setAffiliateObjects,
+    resetAffiliateObjs: resetAffiliateObjects,
   },
 )(withRouter(injectIntl(Form.create()(AffiliateCodes))));
