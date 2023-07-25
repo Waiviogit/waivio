@@ -122,7 +122,7 @@ const ShopObjectCard = ({ wObject, isChecklist, isSocialProduct }) => {
         <div className="ShopObjectCard__affiliatLinksWrap">
           <div className="ShopObjectCard__affiliatLinks">
             {wObject.affiliateLinks
-              .sort((a, b) => a.type.charCodeAt(0) - b.type.charCodeAt(0))
+              .sort((a, b) => a?.type?.charCodeAt(0) - b?.type?.charCodeAt(0))
               .map(affLink => (
                 <AffiliatLink key={affLink.link} link={affLink} />
               ))}
