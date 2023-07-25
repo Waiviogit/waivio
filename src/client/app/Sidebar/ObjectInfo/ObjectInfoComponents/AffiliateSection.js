@@ -6,6 +6,10 @@ import { FormattedMessage } from 'react-intl';
 import { objectFields } from '../../../../../common/constants/listOfFields';
 import './AffiliateSection.less';
 import RateInfo from '../../../../components/Sidebar/Rate/RateInfo';
+import {
+  allContinents,
+  allCountries,
+} from '../../../../object/AppendModal/AppendModalData/affiliateData';
 
 const AffiliateSection = ({ listItem, isEditMode, wobject, userName }) => {
   const affiliateButton = get(wobject, 'affiliateButton', '');
@@ -55,7 +59,7 @@ const AffiliateSection = ({ listItem, isEditMode, wobject, userName }) => {
             {!isEditMode && <div className="CompanyId__title">GEO area:</div>}
             {affiliateGeoAreas.map(area => (
               <div key={area} className={'AffiliateSection__affiliate-ids'}>
-                {area}
+                {{ ...allCountries, ...allContinents }[area]}
               </div>
             ))}
           </div>

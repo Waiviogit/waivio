@@ -136,6 +136,7 @@ import './AppendForm.less';
 import AffiliateProductIdTypesForm from './FormComponents/AffiliateProductIdTypesForm';
 import AffiliateGeoAreaForm from './FormComponents/AffiliateGeoAreaForm';
 import AffiliateCodeForm from './FormComponents/AffiliateCodeForm';
+import { allContinents, allCountries } from './AppendModalData/affiliateData';
 
 @connect(
   state => ({
@@ -618,7 +619,7 @@ class AppendForm extends Component {
           } (${langReadable}): ${formValues[objectFields.affiliateProductIdTypes].toLowerCase()}`;
         case objectFields.affiliateGeoArea:
           return `@${author} added ${objectFields.affiliateGeoArea} (${langReadable}): ${
-            formValues[objectFields.affiliateGeoArea]
+            { ...allCountries, ...allContinents }[formValues[objectFields.affiliateGeoArea]]
           }`;
         case objectFields.affiliateCode:
           return `@${author} added ${objectFields.affiliateCode} (${langReadable}): ${

@@ -12,10 +12,14 @@ const images = {
 
 const AffiliatLink = ({ link }) => (
   <a rel="noreferrer" key={link.link} target="_blank" href={link.link} className="AffiliatLink">
-    <ReactSVG
-      className={link.type !== 'amazon' ? 'AffiliatLink__icon' : 'AffiliatLink__icon-amazon'}
-      src={images[link.type]}
-    />
+    {link.image ? (
+      <img className={'AffiliatLink__image'} src={link.image || images[link.type]} alt={' '} />
+    ) : (
+      <ReactSVG
+        className={link.type !== 'amazon' ? 'AffiliatLink__icon' : 'AffiliatLink__icon-amazon'}
+        src={images[link.type]}
+      />
+    )}
   </a>
 );
 
@@ -23,6 +27,7 @@ AffiliatLink.propTypes = {
   link: PropTypes.shape({
     link: PropTypes.string,
     type: PropTypes.string,
+    image: PropTypes.string,
   }).isRequired,
 };
 
