@@ -59,7 +59,7 @@ class DnDList extends Component {
   componentDidUpdate(prevProps) {
     const { listItems } = this.props;
 
-    if (this.props.wobjType === OBJECT_TYPE.LIST && !isEqual(prevProps.listItems, listItems)) {
+    if (!isEqual(prevProps.listItems, listItems)) {
       // eslint-disable-next-line react/no-did-update-set-state
       this.setState({
         items: listItems,

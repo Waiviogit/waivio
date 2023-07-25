@@ -100,13 +100,13 @@ import CreateObject from '../../post/CreateObjectModal/CreateObject';
 import AppendFormFooter from './AppendFormFooter';
 import ImageSetter from '../../components/ImageSetter/ImageSetter';
 import ObjectForm from '../Form/ObjectForm';
-import { getObjectsByIds } from '../../../waivioApi/ApiClient';
+import { getObjectInfo, getObjectsByIds } from '../../../waivioApi/ApiClient';
 import {
   objectNameValidationRegExp,
   blogNameValidationRegExp,
 } from '../../../common/constants/validation';
 import { addAlbumToStore, addImageToAlbumStore } from '../../../store/galleryStore/galleryActions';
-import { getScreenSize } from '../../../store/appStore/appSelectors';
+import { getScreenSize, getUsedLocale } from '../../../store/appStore/appSelectors';
 import { getFollowingObjectsList } from '../../../store/userStore/userSelectors';
 import {
   getObject,
@@ -145,6 +145,7 @@ import AffiliateCodeForm from './FormComponents/AffiliateCodeForm';
     defaultVotePercent: getVotePercent(state),
     followingList: getFollowingObjectsList(state),
     usedLocale: getSuitableLanguage(state),
+    locale: getUsedLocale(state),
     ratingFields: getRatingFields(state),
     categories: getObjectTagCategory(state),
     albums: getObjectAlbums(state),
@@ -179,6 +180,7 @@ class AppendForm extends Component {
     /* passed props */
     chosenLocale: PropTypes.string,
     currentField: PropTypes.string,
+    locale: PropTypes.string,
     hideModal: PropTypes.func,
     intl: PropTypes.shape(),
     post: PropTypes.shape(),
@@ -241,6 +243,7 @@ class AppendForm extends Component {
     currentImages: [],
     selectedUserBlog: [],
     selectedUsers: [],
+    menuItem: [],
     typeList: [],
     tags: [],
     authoritiesList: [],
@@ -257,6 +260,7 @@ class AppendForm extends Component {
     const { currentAlbum } = this.state;
     const { albums, wObject } = this.props;
 
+    this.getMenuItem();
     if (this.props.sliderMode && !this.state.sliderVisible) {
       // eslint-disable-next-line react/no-did-mount-set-state
       this.setState(prevState => ({ sliderVisible: !prevState.sliderVisible }));
@@ -289,6 +293,26 @@ class AppendForm extends Component {
       });
     }
     this.calculateVoteWorth(this.state.votePercent);
+  };
+
+  getMenuItem = async () => {
+    const menuItemsArray = await this.props.wObject.menuItem?.reduce(async (acc, curr) => {
+      const res = await acc;
+      const itemBody = JSON.parse(curr.body);
+
+      if (itemBody.linkToObject && !has(itemBody, 'title')) {
+        const newObj = await getObjectInfo([itemBody.linkToObject], this.props.locale);
+
+        return [
+          ...res,
+          { ...curr, body: JSON.stringify({ ...itemBody, title: newObj.wobjects[0].name }) },
+        ];
+      }
+
+      return [...res, curr];
+    }, []);
+
+    this.setState({ menuItem: menuItemsArray });
   };
 
   getVote = () =>
@@ -3445,9 +3469,8 @@ class AppendForm extends Component {
         );
       }
       case objectFields.sorting: {
-        const { itemsInSortingList } = this.state;
+        const { itemsInSortingList, menuItem } = this.state;
         const buttons = parseButtonsField(wObject);
-        const menuItem = wObject?.menuItem;
         const menuLinks = getMenuItems(wObject, TYPES_OF_MENU_ITEM.LIST, OBJECT_TYPE.LIST);
         const menuPages = getMenuItems(wObject, TYPES_OF_MENU_ITEM.PAGE, OBJECT_TYPE.PAGE);
         const blogs = getBlogItems(wObject);
