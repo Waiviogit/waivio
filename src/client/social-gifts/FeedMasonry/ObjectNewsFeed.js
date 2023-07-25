@@ -14,7 +14,7 @@ import {
 } from '../../../common/helpers/stateHelpers';
 import { getMoreObjectPosts, getObjectPosts } from '../../../store/feedStore/feedActions';
 import { getPosts } from '../../../store/postsStore/postsSelectors';
-import { getLastPermlinksFromHash } from '../../../common/helpers/wObjectHelper';
+import { getLastPermlinksFromHash, getObjectName } from '../../../common/helpers/wObjectHelper';
 import { preparationPostList } from './helpers';
 import Loading from '../../components/Icon/Loading';
 
@@ -80,7 +80,15 @@ const ObjectNewsFeed = ({ wobj }) => {
 
   if (isEmpty(posts) && firstLoading) return <Loading margin />;
 
-  return <FeedMasonry posts={posts} hasMore={hasMore} loadMore={loadMore} loading={isFetching} />;
+  return (
+    <FeedMasonry
+      objName={getObjectName(wobj)}
+      posts={posts}
+      hasMore={hasMore}
+      loadMore={loadMore}
+      loading={isFetching}
+    />
+  );
 };
 
 ObjectNewsFeed.propTypes = {

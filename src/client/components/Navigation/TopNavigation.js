@@ -42,7 +42,7 @@ const LINKS = {
   DATA_IMPORT: '/data-import',
   ASIN_SCANER: '/ASIN-scanner',
   CHROME_EXTENSION: '/chrome-extension',
-  AFFILIAT_CODES: '/affiliate',
+  AFFILIAT_CODES: '/affiliateCodes',
   BLOG: '/user-blog',
   FEED: '/feed',
   BLACKLIST: '/blacklist',
