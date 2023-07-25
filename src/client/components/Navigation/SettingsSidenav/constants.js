@@ -67,6 +67,11 @@ export const dataManagementSettings = {
       id: 'chrome-extension',
       defaultMessage: 'Chrome extension',
     },
+    {
+      to: '/claim-athority',
+      id: 'claim_athority',
+      defaultMessage: 'Claim authority',
+    },
   ],
 };
 export const websiteSettings = {

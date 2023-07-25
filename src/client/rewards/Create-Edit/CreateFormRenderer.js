@@ -19,6 +19,7 @@ import {
   getTokenRatesInUSD,
   getUserCurrencyBalance,
 } from '../../../store/walletStore/walletSelectors';
+import Loading from '../../components/Icon/Loading';
 
 const { Option } = Select;
 
@@ -41,7 +42,6 @@ const CreateFormRenderer = props => {
     description,
     expiredAt,
     usersLegalNotice,
-    agreement,
     user,
     sponsorsList,
     compensationAccount,
@@ -63,7 +63,6 @@ const CreateFormRenderer = props => {
   const currentItemId = get(match, ['params', 'campaignId']);
   const currencyInfo = useSelector(state => getUserCurrencyBalance(state, 'WAIV'));
   const rates = useSelector(state => getTokenRatesInUSD(state, 'WAIV'));
-
   const isCreateDublicate =
     get(match, ['params', '0']) === 'createDuplicate' ||
     get(match, ['params', '0']) === 'duplicate';
@@ -177,6 +176,8 @@ const CreateFormRenderer = props => {
       <span>{fields.createButton.spanText}</span>
     </div>
   );
+
+  if (!campaignName && (currentItemId || isCreateDublicate)) return <Loading />;
 
   return (
     <div className="CreateRewardForm">
@@ -431,8 +432,7 @@ const CreateFormRenderer = props => {
           }
         >
           {getFieldDecorator(fields.secondaryObject.name, {
-            // rules: fields.secondaryObject.rules,
-            initialValue: secondaryObjectsList,
+            rules: fields.secondaryObject.rules,
             validateTrigger: ['onChange', 'onBlur', 'onSubmit'],
           })(
             <SearchObjectsAutocomplete
@@ -508,7 +508,7 @@ const CreateFormRenderer = props => {
         </Form.Item>
 
         <Form.Item label={fields.agreement.label}>
-          {getFieldDecorator(fields.agreement.name, { initialValue: agreement })(
+          {getFieldDecorator(fields.agreement.name)(
             <SearchObjectsAutocomplete
               className="menu-item-search"
               itemsIdsToOmit={pageObjectsIdsToOmit}
@@ -656,7 +656,6 @@ CreateFormRenderer.propTypes = {
   description: PropTypes.string,
   expiredAt: PropTypes.shape(),
   usersLegalNotice: PropTypes.string,
-  agreement: PropTypes.shape(),
   commissionAgreement: PropTypes.number,
   handlers: PropTypes.shape({
     handleAddSponsorToList: PropTypes.func.isRequired,
