@@ -23,6 +23,7 @@ const limit = 15;
 const ObjectNewsFeed = ({ wobj }) => {
   const readLanguages = useSelector(getReadLanguages);
   const [newsPermlink, setNewsPermlink] = useState();
+  const [currObj, setCurrObj] = useState();
   const [firstLoading, setFirstLoading] = useState(true);
   const feed = useSelector(getFeed);
   const postsList = useSelector(getPosts);
@@ -59,6 +60,7 @@ const ObjectNewsFeed = ({ wobj }) => {
           }),
         );
         setNewsPermlink(res?.newsFeed?.permlink);
+        setCurrObj(res);
       });
     }
   };
@@ -82,7 +84,7 @@ const ObjectNewsFeed = ({ wobj }) => {
 
   return (
     <FeedMasonry
-      objName={getObjectName(wobj)}
+      objName={getObjectName(wobj) || getObjectName(currObj)}
       posts={posts}
       hasMore={hasMore}
       loadMore={loadMore}
