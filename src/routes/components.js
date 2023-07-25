@@ -148,4 +148,7 @@ export default {
   ProductExtension: loableComponent(
     import('../client/components/DataImport/ChromeExtension/ChromeExtension'),
   ),
+  ClaimAthorityBot: loableComponent(
+    import('../client/components/ClaimAthorityBot/ClaimAthorityBot'),
+  ),
 };

@@ -2280,5 +2280,20 @@
   "not_show_objects_linked": "Не показывать объекты, связанные с постами",
   "any_campaigns_yet": "У вас пока нет кампаний",
   "campaign_stopped": "Условия по вознаграждениям ${item.name} будут остановлены на блокчейне Hive",
-  "campaign_published": "Условия по вознаграждениям ${item.name} будут опубликованы на блокчейне Hive"
+  "campaign_published": "Условия по вознаграждениям ${item.name} будут опубликованы на блокчейне Hive",
+  "receive_news": "Получать новости",
+  "list_sorting": "Сортировка списка",
+  "list_item": "Элемент списка",
+  "empty_posts": "Пока нет постов",
+  "user_reviews": "Отзывы пользователей",
+  "object_field_affiliateButton": "Партнерская кнопка",
+  "object_field_affiliateProductIdTypes": "Тип идентификатора продукта",
+  "object_field_affiliateGeoArea": "Гео-область партнерской программы",
+  "object_field_affiliateUrlTemplate": "Шаблон URL",
+  "object_field_affiliateCode": "Партнерский код",
+  "affiliate": "Партнерская программа",
+  "geo_area": "Гео-область",
+  "affiliate_url_template_info": "Шаблон URL будет использоваться для создания ссылок на продукты. Шаблон URL должен начинаться с названия веб-сайта и включать параметры PRODUCTID и AFFILIATECODE. Формат шаблона URL должен быть следующим: http://www.affiliatesite.com?productid=PRODUCTID&affiliatecode=AFFILIATECODE.",
+  "affiliate_url_error": "Введите действительный URL. Он должен начинаться с названия веб-сайта и включать PRODUCTID и AFFILIATECODE.",
+  "my_affiliate_code": "Мой партнерский код"
 }

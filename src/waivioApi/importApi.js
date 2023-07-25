@@ -13,6 +13,24 @@ export const getImportVote = userName =>
     .then(response => response)
     .catch(e => e);
 
+export const getAthorityVote = userName =>
+  fetch(`${config.importApiPrefix}${config.authority}${config.power}?user=${userName}`, {
+    headers,
+    method: 'GET',
+  })
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+
+export const getAuthorityList = userName =>
+  fetch(`${config.importApiPrefix}${config.authority}?user=${userName}`, {
+    headers,
+    method: 'GET',
+  })
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+
 export const setImportVote = (user, minVotingPower) =>
   fetch(`${config.importApiPrefix}${config.importProduct}${config.power}`, {
     headers: {
@@ -53,6 +71,56 @@ export const getHistoryImportedObjects = userName =>
   fetch(`${config.importApiPrefix}${config.importProduct}${config.history}?user=${userName}`, {
     headers,
     method: 'GET',
+  })
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+
+export const getHistoryAuthorityObjects = userName =>
+  fetch(`${config.importApiPrefix}${config.authority}${config.history}?user=${userName}`, {
+    headers,
+    method: 'GET',
+  })
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+
+export const createAuthority = (user, authorPermlink, authority = 'administrative') =>
+  fetch(`${config.importApiPrefix}${config.authority}`, {
+    headers: { ...headers, 'access-token': Cookie.get('access_token') },
+    method: 'POST',
+    body: JSON.stringify({
+      user,
+      authorPermlink,
+      authority,
+    }),
+  })
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+
+export const deleteAuthority = (user, importId) =>
+  fetch(`${config.importApiPrefix}${config.authority}`, {
+    headers: { ...headers, 'access-token': Cookie.get('access_token') },
+    method: 'DELETE',
+    body: JSON.stringify({
+      user,
+      importId,
+    }),
+  })
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+
+export const changeAuthority = (user, status, importId) =>
+  fetch(`${config.importApiPrefix}${config.authority}`, {
+    headers: { ...headers, 'access-token': Cookie.get('access_token') },
+    method: 'PUT',
+    body: JSON.stringify({
+      user,
+      status,
+      importId,
+    }),
   })
     .then(res => res.json())
     .then(response => response)

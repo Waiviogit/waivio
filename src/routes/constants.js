@@ -129,6 +129,7 @@ export default {
       'data-import',
       'ASIN-scanner',
       'chrome-extension',
+      'claim-athority',
     ].join('|'),
   },
   WEBSITES: {
