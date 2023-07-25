@@ -210,14 +210,14 @@ export const allCountries = {
 };
 
 export const allContinents = {
-  Global: 'GLOBAL',
-  Asia: 'ASIA',
-  Africa: 'AFRICA',
-  'North America': 'NORTH AMERICA',
-  'South America': 'SOUTH AMERICA',
-  Antarctica: 'ANTARCTICA',
-  Europe: 'EUROPE',
-  Australia: 'AUSTRALIA',
+  GLOBAL: 'Global',
+  ASIA: 'Asia',
+  AFRICA: 'Africa',
+  'NORTH AMERICA': 'North America',
+  'SOUTH AMERICA': 'South America',
+  ANTARCTICA: 'Antarctica',
+  EUROPE: 'Europe',
+  AUSTRALIA: 'Australia',
 };
 
 export default null;

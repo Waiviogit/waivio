@@ -15,7 +15,7 @@ const AffiliateGeoAreaForm = ({ getFieldDecorator, getFieldRules, intl }) => (
         showSearch
         optionFilterProp="label"
       >
-        {Object.entries(allContinents).map(([label, value]) => (
+        {Object.entries(allContinents).map(([value, label]) => (
           <Select.Option key={value} value={value} label={label}>
             {label}
           </Select.Option>
