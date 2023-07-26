@@ -43,7 +43,7 @@ const LINKS = {
   CLAIM_AUTHORITY_BOT: '/claim-athority',
   ASIN_SCANER: '/ASIN-scanner',
   CHROME_EXTENSION: '/chrome-extension',
-  AFFILIAT_CODES: '/affiliateCodes',
+  AFFILIAT_CODES: '/affiliate-codes',
   BLOG: '/user-blog',
   FEED: '/feed',
   BLACKLIST: '/blacklist',
@@ -83,6 +83,7 @@ const WEBSITE_URLS = [
   LINKS.WEBSITES_AUTHORITIES,
   LINKS.WEBSITES_OBJECT_FILTERS,
   LINKS.WEBSITES_MUTED_USER,
+  LINKS.AFFILIAT_CODES,
   LINKS.WEBSITES_AREAS,
 ];
 

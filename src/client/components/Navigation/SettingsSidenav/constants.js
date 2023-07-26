@@ -134,7 +134,7 @@ export const currentWebsiteSettings = site => {
 
   if (socialDomens.some(item => site.includes(item))) {
     items.splice(2, 0, {
-      to: `/${site}/affiliateCodes`,
+      to: `/${site}/affiliate-codes`,
       id: 'affiliate_codes',
       defaultMessage: 'Affiliate codes',
     });
