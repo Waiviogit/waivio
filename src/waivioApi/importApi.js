@@ -85,7 +85,7 @@ export const getHistoryAuthorityObjects = userName =>
     .then(response => response)
     .catch(e => e);
 
-export const createAuthority = (user, authorPermlink, authority = 'administrative') =>
+export const createAuthority = (user, authorPermlink, scanEmbedded, authority = 'administrative') =>
   fetch(`${config.importApiPrefix}${config.authority}`, {
     headers: { ...headers, 'access-token': Cookie.get('access_token') },
     method: 'POST',
@@ -93,6 +93,7 @@ export const createAuthority = (user, authorPermlink, authority = 'administrativ
       user,
       authorPermlink,
       authority,
+      scanEmbedded,
     }),
   })
     .then(res => res.json())

@@ -182,7 +182,7 @@ export const configAthorityBotHistoryTable = [
         <ol>
           {item.lists.map(link => (
             <li key={link}>
-              <a rel="noopener noreferrer" target="_blank" href={`/object/${link}`}>
+              <a rel="noopener noreferrer" target="_blank" href={`/object/${link}/list`}>
                 {link}
               </a>
             </li>
@@ -244,7 +244,7 @@ export const configAthorityBotProductTable = [
         <ol>
           {item.lists.map(link => (
             <li key={link}>
-              <a rel="noopener noreferrer" target="_blank" href={`/object/${link}`}>
+              <a rel="noopener noreferrer" target="_blank" href={`/object/${link}/list`}>
                 {link}
               </a>
             </li>

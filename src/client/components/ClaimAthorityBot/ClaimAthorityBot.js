@@ -1,15 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
-import { Button, Switch } from 'antd';
+import { Button, Modal, Switch } from 'antd';
 import { useSelector } from 'react-redux';
 import { MATCH_BOTS_TYPES, redirectAuthHiveSigner } from '../../../common/helpers/matchBotsHelpers';
 import {
   getAuthenticatedUserName,
   getIsConnectMatchBot,
 } from '../../../store/authStore/authSelectors';
-
-import './ClaimAthorityBot.less';
 import ChangeVotingModal from '../../widgets/ChangeVotingModal/ChangeVotingModal';
 import {
   changeAuthority,
@@ -25,6 +23,9 @@ import {
   configAthorityBotProductTable,
 } from '../DataImport/tableConfig';
 import FindClaimAthorityModal from './FindClaimAthorityModal';
+import VoteInfoBlock from '../DataImport/VoteInfoBlock';
+
+import './ClaimAthorityBot.less';
 
 const ClaimAthorityBot = ({ intl }) => {
   const isAuthBot = useSelector(state =>
@@ -59,19 +60,34 @@ const ClaimAthorityBot = ({ intl }) => {
 
   const handleRedirect = () => redirectAuthHiveSigner(isAuthBot, 'waivio.import');
 
-  const handleDeleteAuthority = item =>
-    deleteAuthority(authUserName, item?.importId).then(() => {
+  const handleDeleteAuthority = item => {
+    Modal.confirm({
+      title: intl.formatMessage({
+        id: 'stop_json_title',
+        defaultMessage: 'Stop JSON data file import',
+      }),
+      content: intl.formatMessage({
+        id: 'stop_json_message',
+        defaultMessage:
+          'Once stopped, the import cannot be resumed. To temporarily suspend/resume the data import, please consider using the Active checkbox.',
+      }),
+      onOk: () => {
+        deleteAuthority(authUserName, item?.importId).then(() => {
+          updateAuthorityList();
+        });
+      },
+      okText: intl.formatMessage({ id: 'stop_import_ok_button', defaultMessage: 'Stop import' }),
+      cancelText: intl.formatMessage({ id: 'cancel', defaultMessage: 'Cancel' }),
+    });
+  };
+
+  const handleChangeStatusAuthority = (e, item) => {
+    const status = item.status === 'active' ? 'onHold' : 'active';
+
+    changeAuthority(authUserName, status, item.importId).then(() => {
       updateAuthorityList();
     });
-
-  const handleChangeStatusAuthority = (e, item) =>
-    deleteAuthority(authUserName, item?.importId).then(() => {
-      const status = item.status === 'active' ? 'onHold' : 'active';
-
-      changeAuthority(authUserName, status, item.importId).then(() => {
-        updateAuthorityList();
-      });
-    });
+  };
 
   const toggleVotingModal = () => setVisibleVoting(!visibleVoting);
 
@@ -84,7 +100,9 @@ const ClaimAthorityBot = ({ intl }) => {
   return (
     <div className="ClaimAthorityBot">
       <div className="ClaimAthorityBot__title">
-        <h2>{intl.formatMessage({ id: 'claim_authority', defaultMessage: 'Claim authority' })}</h2>
+        <h2>
+          {intl.formatMessage({ id: 'claim_authority_bot', defaultMessage: 'Claim authority bot' })}
+        </h2>
         <Switch checked={isAuthBot} onChange={handleRedirect} />
       </div>
       <p>
@@ -152,6 +170,7 @@ const ClaimAthorityBot = ({ intl }) => {
             'The data import bot will pause if WAIV voting power on the account drops below the set threshold.',
         })}
       </p>
+      <VoteInfoBlock />
       <hr />
       <Button type="primary" onClick={() => setOpenClaim(true)}>
         {intl.formatMessage({ id: 'claim_authority', defaultMessage: 'Claim authority' })}

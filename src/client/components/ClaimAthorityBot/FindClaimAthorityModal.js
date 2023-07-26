@@ -17,7 +17,7 @@ const FindClaimAthorityModal = ({ visible, onClose, updateAuthorityList }) => {
   const [loading, setLoading] = useState(false);
   const handleSubmit = () => {
     setLoading(true);
-    createAuthority(userName, selectedObj.author_permlink).then(() => {
+    createAuthority(userName, selectedObj.author_permlink, includeObjects).then(() => {
       onClose();
       setLoading(false);
       updateAuthorityList();
