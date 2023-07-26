@@ -115,6 +115,9 @@ export default {
   AffiliateCodes: loableComponent(
     import('../client/websites/WebsiteTools/AffiliateCodes/AffiliateCodes'),
   ),
+  UserAffiliateCodes: loableComponent(
+    import('../client/websites/WebsiteTools/AffiliateCodes/UserAffiliateCodes'),
+  ),
   WebsitesSettings: loableComponent(
     import('../client/websites/WebsiteTools/Settings/WebsitesSettings'),
   ),

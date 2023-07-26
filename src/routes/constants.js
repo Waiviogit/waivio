@@ -115,6 +115,7 @@ export default {
   },
   SETTINGS: {
     tabs: [
+      'user-affiliate-codes',
       'bookmarks',
       'drafts',
       'edit-profile',
@@ -134,7 +135,7 @@ export default {
   },
   WEBSITES: {
     tabs: [
-      'affiliateCodes',
+      'affiliate-codes',
       'configuration',
       'settings',
       'administrations',
