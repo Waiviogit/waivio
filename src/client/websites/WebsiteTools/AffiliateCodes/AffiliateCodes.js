@@ -188,7 +188,8 @@ export const AffiliateCodes = ({
         {intl.formatMessage({
           id: 'affiliate_codes',
           defaultMessage: 'Affiliate codes',
-        })}
+        })}{' '}
+        for {site}
       </h1>
       {/* eslint-disable-next-line react/no-unescaped-entities */}
       <p>
@@ -256,8 +257,8 @@ export const AffiliateCodes = ({
 
       <Modal
         title={`${intl.formatMessage({
-          id: 'suggestion_add_field',
-          defaultMessage: 'Update object',
+          id: 'object_type_affiliate',
+          defaultMessage: 'Affiliate program',
         })}: ${selectedObj.name}`}
         footer={null}
         visible={openAppendModal}
@@ -267,7 +268,7 @@ export const AffiliateCodes = ({
       >
         <Form className="AppendForm" layout="vertical" onSubmit={handleSubmit}>
           <>
-            Affiliate code:
+            <p className={'ant-modal-title'}>Affiliate code:</p>
             <Form.Item>
               {getFieldDecorator(objectFields.affiliateCode, {
                 rules: [
