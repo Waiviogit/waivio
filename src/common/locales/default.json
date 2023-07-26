@@ -2326,5 +2326,7 @@
   "geo_area": "GEO area",
   "affiliate_url_template_info": "URL template will be used to generate product links. URL template should begin with the website name and incorporate parameters PRODUCTID and AFFILIATECODE. URL template should be formatted as follows: http://www.affiliatesite.com?productid=PRODUCTID&affiliatecode=AFFILIATECODE.",
   "affiliate_url_error": "Please enter valid URL. It should begin with the website name and include PRODUCTID and AFFILIATECODE.",
-  "my_affiliate_code": "My affiliate code"
+  "my_affiliate_code": "My affiliate code",
+  "aff_codes_empty": "No affiliate codes added.",
+  "affiliate_codes": "Affiliate codes"
 }
