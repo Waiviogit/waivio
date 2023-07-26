@@ -256,10 +256,7 @@ export const AffiliateCodes = ({
       </div>
 
       <Modal
-        title={`${intl.formatMessage({
-          id: 'object_type_affiliate',
-          defaultMessage: 'Affiliate program',
-        })}: ${selectedObj.name}`}
+        title={`Affiliate program : ${selectedObj.name}`}
         footer={null}
         visible={openAppendModal}
         onCancel={hideModal}

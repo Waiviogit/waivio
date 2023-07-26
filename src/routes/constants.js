@@ -134,7 +134,7 @@ export default {
   },
   WEBSITES: {
     tabs: [
-      'affiliateCodes',
+      'affiliate-codes',
       'configuration',
       'settings',
       'administrations',
