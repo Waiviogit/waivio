@@ -283,7 +283,7 @@ const routes = {
               component: Views.WebsitesAuthorities,
             },
             {
-              path: '/affiliateCodes',
+              path: '/affiliate-codes',
               exact: true,
               component: Views.AffiliateCodes,
             },
