@@ -63,20 +63,20 @@ const ClaimAthorityBot = ({ intl }) => {
   const handleDeleteAuthority = item => {
     Modal.confirm({
       title: intl.formatMessage({
-        id: 'stop_json_title',
-        defaultMessage: 'Stop JSON data file import',
+        id: 'stop_claim_authority',
+        defaultMessage: 'Stop claim authority',
       }),
       content: intl.formatMessage({
-        id: 'stop_json_message',
+        id: 'stop_claim_authority_message',
         defaultMessage:
-          'Once stopped, the import cannot be resumed. To temporarily suspend/resume the data import, please consider using the Active checkbox.',
+          'Once stopped, the claim authority cannot be resumed. To temporarily suspend/resume the data import, please consider using the Active checkbox.',
       }),
       onOk: () => {
         deleteAuthority(authUserName, item?.importId).then(() => {
           updateAuthorityList();
         });
       },
-      okText: intl.formatMessage({ id: 'stop_import_ok_button', defaultMessage: 'Stop import' }),
+      okText: intl.formatMessage({ id: 'stop_claim_ok_button', defaultMessage: 'Stop claim' }),
       cancelText: intl.formatMessage({ id: 'cancel', defaultMessage: 'Cancel' }),
     });
   };
