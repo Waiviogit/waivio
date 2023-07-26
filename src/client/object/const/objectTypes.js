@@ -1,5 +1,6 @@
 export default {
   LIST: 'list',
+  AFFILIATE: 'affiliate',
   SHOP: 'shop',
   PAGE: 'page',
   HASHTAG: 'hashtag',

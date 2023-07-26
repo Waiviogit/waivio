@@ -100,13 +100,13 @@ import CreateObject from '../../post/CreateObjectModal/CreateObject';
 import AppendFormFooter from './AppendFormFooter';
 import ImageSetter from '../../components/ImageSetter/ImageSetter';
 import ObjectForm from '../Form/ObjectForm';
-import { getObjectsByIds } from '../../../waivioApi/ApiClient';
+import { getObjectInfo, getObjectsByIds } from '../../../waivioApi/ApiClient';
 import {
   objectNameValidationRegExp,
   blogNameValidationRegExp,
 } from '../../../common/constants/validation';
 import { addAlbumToStore, addImageToAlbumStore } from '../../../store/galleryStore/galleryActions';
-import { getScreenSize } from '../../../store/appStore/appSelectors';
+import { getScreenSize, getUsedLocale } from '../../../store/appStore/appSelectors';
 import { getFollowingObjectsList } from '../../../store/userStore/userSelectors';
 import {
   getObject,
@@ -133,6 +133,10 @@ import RelatedForm from './FormComponents/RelatedForm';
 import AddOnForm from './FormComponents/AddOnForm';
 import SimilarForm from './FormComponents/SimilarForm';
 import './AppendForm.less';
+import AffiliateProductIdTypesForm from './FormComponents/AffiliateProductIdTypesForm';
+import AffiliateGeoAreaForm from './FormComponents/AffiliateGeoAreaForm';
+import AffiliateCodeForm from './FormComponents/AffiliateCodeForm';
+import { allContinents, allCountries } from './AppendModalData/affiliateData';
 
 @connect(
   state => ({
@@ -142,6 +146,7 @@ import './AppendForm.less';
     defaultVotePercent: getVotePercent(state),
     followingList: getFollowingObjectsList(state),
     usedLocale: getSuitableLanguage(state),
+    locale: getUsedLocale(state),
     ratingFields: getRatingFields(state),
     categories: getObjectTagCategory(state),
     albums: getObjectAlbums(state),
@@ -176,6 +181,7 @@ class AppendForm extends Component {
     /* passed props */
     chosenLocale: PropTypes.string,
     currentField: PropTypes.string,
+    locale: PropTypes.string,
     hideModal: PropTypes.func,
     intl: PropTypes.shape(),
     post: PropTypes.shape(),
@@ -238,6 +244,7 @@ class AppendForm extends Component {
     currentImages: [],
     selectedUserBlog: [],
     selectedUsers: [],
+    menuItem: [],
     typeList: [],
     tags: [],
     authoritiesList: [],
@@ -254,6 +261,7 @@ class AppendForm extends Component {
     const { currentAlbum } = this.state;
     const { albums, wObject } = this.props;
 
+    this.getMenuItem();
     if (this.props.sliderMode && !this.state.sliderVisible) {
       // eslint-disable-next-line react/no-did-mount-set-state
       this.setState(prevState => ({ sliderVisible: !prevState.sliderVisible }));
@@ -286,6 +294,26 @@ class AppendForm extends Component {
       });
     }
     this.calculateVoteWorth(this.state.votePercent);
+  };
+
+  getMenuItem = async () => {
+    const menuItemsArray = await this.props.wObject.menuItem?.reduce(async (acc, curr) => {
+      const res = await acc;
+      const itemBody = JSON.parse(curr.body);
+
+      if (itemBody.linkToObject && !has(itemBody, 'title')) {
+        const newObj = await getObjectInfo([itemBody.linkToObject], this.props.locale);
+
+        return [
+          ...res,
+          { ...curr, body: JSON.stringify({ ...itemBody, title: newObj.wobjects[0].name }) },
+        ];
+      }
+
+      return [...res, curr];
+    }, []);
+
+    this.setState({ menuItem: menuItemsArray });
   };
 
   getVote = () =>
@@ -402,6 +430,9 @@ class AppendForm extends Component {
       case objectFields.title:
       case objectFields.description:
       case objectFields.avatar:
+      case objectFields.affiliateButton:
+      case objectFields.affiliateProductIdTypes:
+      case objectFields.affiliateGeoArea:
       case objectFields.background:
       case objectFields.price:
       case objectFields.categoryItem:
@@ -423,6 +454,8 @@ class AppendForm extends Component {
       case objectFields.ageRange:
       case objectFields.printLength:
       case objectFields.language:
+      case objectFields.affiliateUrlTemplate:
+      case objectFields.affiliateCode:
       case objectFields.pin:
       case objectFields.remove:
       case objectFields.departments:
@@ -499,6 +532,7 @@ class AppendForm extends Component {
             formValues[objectFields.objectName]
           }`;
         case objectFields.avatar:
+        case objectFields.affiliateButton:
         case objectFields.background:
           return `@${author} added ${currentField} (${langReadable}):\n ![${currentField}](${appendValue})`;
         case objectFields.options:
@@ -603,6 +637,18 @@ class AppendForm extends Component {
           return `@${author} added ${productIdFields.productIdType} (${langReadable}): ${
             formValues[productIdFields.productIdType]
           }, ${currentField}: ${formValues[productIdFields.productId]}${imageDescription}`;
+        case objectFields.affiliateProductIdTypes:
+          return `@${author} added ${
+            objectFields.affiliateProductIdTypes
+          } (${langReadable}): ${formValues[objectFields.affiliateProductIdTypes].toLowerCase()}`;
+        case objectFields.affiliateGeoArea:
+          return `@${author} added ${objectFields.affiliateGeoArea} (${langReadable}): ${
+            { ...allCountries, ...allContinents }[formValues[objectFields.affiliateGeoArea]]
+          }`;
+        case objectFields.affiliateCode:
+          return `@${author} added ${objectFields.affiliateCode} (${langReadable}): ${
+            formValues[objectFields.affiliateCode]
+          }, context: ${formValues[objectFields.affiliateContext]}`;
         case objectFields.menuItem:
           const imageMenuItem = !isEmpty(this.state.currentImages)
             ? `, image: \n ![${objectFields.menuItem}](${this.state?.currentImages[0]?.src})`
@@ -654,6 +700,7 @@ class AppendForm extends Component {
           }`;
         case objectFields.ageRange:
         case objectFields.language:
+        case objectFields.affiliateUrlTemplate:
         case objectFields.departments:
         case objectFields.groupId:
           return `@${author} added ${currentField} (${langReadable}): ${appendValue}`;
@@ -778,6 +825,31 @@ class AppendForm extends Component {
         fieldsObject = {
           ...fieldsObject,
           id: wObject?.galleryAlbum?.find(album => album.body === 'Photos').id,
+        };
+      }
+      if (currentField === objectFields.affiliateButton) {
+        fieldsObject = {
+          ...fieldsObject,
+          body: formValues[objectFields.affiliateButton],
+        };
+      }
+      if (currentField === objectFields.affiliateCode) {
+        const affiliateCodeBody = JSON.stringify([
+          formValues[objectFields.affiliateContext],
+          formValues[objectFields.affiliateCode],
+        ]);
+
+        fieldsObject = {
+          ...fieldsObject,
+          body: affiliateCodeBody,
+        };
+      }
+      if (currentField === objectFields.affiliateUrlTemplate) {
+        fieldsObject = {
+          ...fieldsObject,
+          body: formValues[objectFields.affiliateUrlTemplate]
+            .replace('PRODUCTID', '$productId')
+            .replace('AFFILIATECODE', '$affiliateCode'),
         };
       }
       if (currentField === objectFields.newsFeed) {
@@ -925,6 +997,18 @@ class AppendForm extends Component {
             [productIdFields.productId]: formValues[productIdFields.productId]?.trim(),
             [productIdFields.productIdImage]: formValues[productIdFields.productIdImage]?.trim(),
           }),
+        };
+      }
+      if (currentField === objectFields.affiliateProductIdTypes) {
+        fieldsObject = {
+          ...fieldsObject,
+          body: formValues[objectFields.affiliateProductIdTypes].toLowerCase(),
+        };
+      }
+      if (currentField === objectFields.affiliateGeoArea) {
+        fieldsObject = {
+          ...fieldsObject,
+          body: formValues[objectFields.affiliateGeoArea],
         };
       }
       if (currentField === objectFields.menuItem) {
@@ -1479,6 +1563,10 @@ class AppendForm extends Component {
         objectFields.dimensions,
         objectFields.menuItem,
         objectFields.features,
+        objectFields.affiliateProductIdTypes,
+        objectFields.affiliateUrlTemplate,
+        objectFields.affiliateCode,
+        objectFields.affiliateGeoArea,
         objectFields.productWeight,
       ].includes(currentField)
     ) {
@@ -1987,6 +2075,14 @@ class AppendForm extends Component {
           />
         );
       }
+      case objectFields.affiliateGeoArea: {
+        return (
+          <AffiliateGeoAreaForm
+            getFieldDecorator={getFieldDecorator}
+            getFieldRules={this.getFieldRules}
+          />
+        );
+      }
       case objectFields.categoryItem: {
         return (
           <React.Fragment>
@@ -2048,6 +2144,23 @@ class AppendForm extends Component {
               {getFieldDecorator(currentField, { rules: this.getFieldRules(currentField) })(
                 <ImageSetter
                   isEditable
+                  autoFocus
+                  onImageLoaded={this.getImages}
+                  onLoadingImage={this.onLoadingImage}
+                  isRequired
+                  isMultiple={false}
+                />,
+              )}
+            </Form.Item>
+          </div>
+        );
+      }
+      case objectFields.affiliateButton: {
+        return (
+          <div className="image-wrapper">
+            <Form.Item>
+              {getFieldDecorator(currentField, { rules: this.getFieldRules(currentField) })(
+                <ImageSetter
                   autoFocus
                   onImageLoaded={this.getImages}
                   onLoadingImage={this.onLoadingImage}
@@ -2128,6 +2241,43 @@ class AppendForm extends Component {
               />
             </Form.Item>
           </>
+        );
+      }
+      case objectFields.affiliateUrlTemplate: {
+        return (
+          <>
+            <Form.Item>
+              {getFieldDecorator(objectFields.affiliateUrlTemplate, {
+                rules: this.getFieldRules(objectFields.affiliateUrlTemplate),
+              })(
+                <Input
+                  autoFocus
+                  disabled={loading}
+                  placeholder={intl.formatMessage({
+                    id: 'url_template',
+                    defaultMessage: 'URL template',
+                  })}
+                />,
+              )}
+            </Form.Item>
+            <div className={'mt3'}>
+              <p>
+                <FormattedMessage
+                  id="affiliate_url_template_info"
+                  defaultMessage="URL template will be used to generate product links. URL template should begin with the website name and incorporate parameters PRODUCTID and AFFILIATECODE. URL template should be formatted as follows: http://www.affiliatesite.com?productid=PRODUCTID&affiliatecode=AFFILIATECODE."
+                />
+              </p>
+            </div>
+          </>
+        );
+      }
+      case objectFields.affiliateCode: {
+        return (
+          <AffiliateCodeForm
+            getFieldRules={this.getFieldRules}
+            loading={loading}
+            getFieldDecorator={getFieldDecorator}
+          />
         );
       }
       case objectFields.language: {
@@ -2799,6 +2949,16 @@ class AppendForm extends Component {
           </React.Fragment>
         );
       }
+      case objectFields.affiliateProductIdTypes: {
+        return (
+          <AffiliateProductIdTypesForm
+            loading={loading}
+            getFieldDecorator={getFieldDecorator}
+            getFieldRules={this.getFieldRules}
+            isSomeValue={this.state.isSomeValue}
+          />
+        );
+      }
       case objectFields.menuItem: {
         return (
           <MenuItemForm
@@ -3310,9 +3470,8 @@ class AppendForm extends Component {
         );
       }
       case objectFields.sorting: {
-        const { itemsInSortingList } = this.state;
+        const { itemsInSortingList, menuItem } = this.state;
         const buttons = parseButtonsField(wObject);
-        const menuItem = wObject?.menuItem;
         const menuLinks = getMenuItems(wObject, TYPES_OF_MENU_ITEM.LIST, OBJECT_TYPE.LIST);
         const menuPages = getMenuItems(wObject, TYPES_OF_MENU_ITEM.PAGE, OBJECT_TYPE.PAGE);
         const blogs = getBlogItems(wObject);
@@ -3852,6 +4011,8 @@ class AppendForm extends Component {
         );
       case objectFields.name:
         return isEmpty(getFieldValue(objectFields.objectName));
+      case objectFields.affiliateCode:
+        return isEmpty(getFieldValue(objectFields.affiliateCode));
       case objectFields.status:
         return (
           isEmpty(getFieldValue(statusFields.title)) ||

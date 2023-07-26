@@ -84,6 +84,7 @@ export const configProductTable = [
     name: 'stop',
   },
 ];
+
 export const configHistoryTable = [
   {
     id: 'createdAt',
@@ -149,5 +150,117 @@ export const configHistoryTable = [
       id: 'posted_updates',
       defaultMessage: 'Posted updates',
     },
+  },
+];
+
+export const configAthorityBotHistoryTable = [
+  {
+    id: 'createdAt',
+    intl: {
+      id: 'start_date',
+      defaultMessage: 'Start date',
+    },
+    type: 'date',
+  },
+  {
+    id: 'finishedAt',
+    intl: {
+      id: 'finish_date',
+      defaultMessage: 'Finish date',
+    },
+    type: 'date',
+  },
+  {
+    id: 'lists',
+    intl: {
+      id: 'base_list',
+      defaultMessage: 'Base list',
+    },
+    type: 'openModal',
+    modal: {
+      body: item => (
+        <ol>
+          {item.lists.map(link => (
+            <li key={link}>
+              <a rel="noopener noreferrer" target="_blank" href={`/object/${link}/list`}>
+                {link}
+              </a>
+            </li>
+          ))}
+        </ol>
+      ),
+    },
+  },
+  {
+    id: 'objectsCount',
+    intl: {
+      id: 'number_of_objects',
+      defaultMessage: 'Number of objects',
+    },
+  },
+  {
+    id: 'objectsClaimed',
+    intl: {
+      id: 'claimed_objects',
+      defaultMessage: 'Claimed objects',
+    },
+  },
+];
+
+export const configAthorityBotProductTable = [
+  {
+    id: 'active',
+    intl: {
+      id: 'active',
+      defaultMessage: 'Active',
+    },
+    type: 'checkbox',
+    getChecked: item => ['active', 'waitingRecover', 'pending'].includes(item.status),
+  },
+  {
+    id: 'createdAt',
+    intl: {
+      id: 'start_date',
+      defaultMessage: 'Start date',
+    },
+    type: 'date',
+  },
+  {
+    id: 'objectsCount',
+    intl: {
+      id: 'number_object',
+      defaultMessage: 'Number of objects',
+    },
+  },
+  {
+    id: 'objectsClaimed',
+    intl: {
+      id: 'claimed_object',
+      defaultMessage: 'Claimed objects',
+    },
+    type: 'openModal',
+    modal: {
+      body: item => (
+        <ol>
+          {item.lists.map(link => (
+            <li key={link}>
+              <a rel="noopener noreferrer" target="_blank" href={`/object/${link}/list`}>
+                {link}
+              </a>
+            </li>
+          ))}
+        </ol>
+      ),
+    },
+  },
+
+  {
+    id: 'delete',
+    intl: {
+      id: 'actions',
+      defaultMessage: 'Actions',
+    },
+    type: 'delete',
+    name: 'stop',
   },
 ];

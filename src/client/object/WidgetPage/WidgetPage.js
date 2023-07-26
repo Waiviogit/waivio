@@ -29,6 +29,7 @@ const WidgetPage = props => {
   }
 
   const widgetView = widgetForm?.content?.includes('<iframe') ? (
+    // eslint-disable-next-line react/no-danger
     <div className="FormPage__block" dangerouslySetInnerHTML={{ __html: widgetForm.content }} />
   ) : (
     <>

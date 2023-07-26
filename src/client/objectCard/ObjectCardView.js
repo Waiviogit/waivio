@@ -174,7 +174,14 @@ const ObjectCardView = ({
               )}
               {tags.map((tag, index) => (
                 <span key={tag}>
-                  {index === 0 && !prise ? tag : <span>&nbsp;&middot;{` ${tag}`}</span>}
+                  {index === 0 && !prise ? (
+                    intl.formatMessage({ id: `object_type_${tag}`, defaultMessage: tag })
+                  ) : (
+                    <span>
+                      &nbsp;&middot;
+                      {`  ${intl.formatMessage({ id: `object_type_${tag}`, defaultMessage: tag })}`}
+                    </span>
+                  )}
                 </span>
               ))}
             </span>

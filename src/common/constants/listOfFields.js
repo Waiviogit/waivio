@@ -60,6 +60,13 @@ export const objectFields = {
   related: 'related',
   addOn: 'addOn',
   similar: 'similar',
+  affiliate: 'affiliate',
+  affiliateButton: 'affiliateButton',
+  affiliateProductIdTypes: 'affiliateProductIdTypes',
+  affiliateGeoArea: 'affiliateGeoArea',
+  affiliateUrlTemplate: 'affiliateUrlTemplate',
+  affiliateCode: 'affiliateCode',
+  affiliateContext: 'affiliateContext',
 };
 
 export const TYPES_OF_MENU_ITEM = {

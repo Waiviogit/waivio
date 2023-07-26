@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import WobjHeader from './WobjHeader';
 import UserHeaderLoading from '../components/UserHeaderLoading';
 import ObjectMenu from '../components/ObjectMenu';
-import { accessTypesArr, haveAccess } from '../../common/helpers/wObjectHelper';
+import { accessTypesArr, getObjectName, haveAccess } from '../../common/helpers/wObjectHelper';
 import { getIsWaivio, getUserAdministrator } from '../../store/appStore/appSelectors';
 import { getObjectAlbums } from '../../store/galleryStore/gallerySelectors';
 
@@ -21,7 +21,6 @@ class WobjMenuWrapper extends React.Component {
     location: PropTypes.shape(),
     history: PropTypes.shape(),
     wobject: PropTypes.shape().isRequired,
-    username: PropTypes.string,
     albumsAndImagesCount: PropTypes.number,
     albums: PropTypes.arrayOf(PropTypes.shape()),
     isWaivio: PropTypes.bool,
@@ -34,7 +33,6 @@ class WobjMenuWrapper extends React.Component {
     location: {},
     history: {},
     albums: [],
-    username: '',
     isWaivio: true,
   };
 
@@ -48,7 +46,11 @@ class WobjMenuWrapper extends React.Component {
     const { ...otherProps } = this.props;
     const current = this.props.location.pathname.split('/')[3];
     const currentKey = current || 'reviews';
-    const accessExtend = haveAccess(this.props.wobject, this.props.username, accessTypesArr[0]);
+    const accessExtend = haveAccess(
+      this.props.wobject,
+      getObjectName(this.props.wobject),
+      accessTypesArr[0],
+    );
 
     return (
       <ObjectMenu
@@ -66,46 +68,48 @@ const WobjHero = ({
   authenticated,
   wobject,
   isFetching,
-  username,
   isFollowing,
   toggleViewEditMode,
   albumsAndImagesCount,
-}) => (
-  <React.Fragment>
-    <Switch>
-      <Route
-        path="/object/:name"
-        render={() => (
-          <React.Fragment>
-            {isFetching ? (
-              <UserHeaderLoading />
-            ) : (
-              <WobjHeader
-                isEditMode={isEditMode}
-                username={username}
-                authenticated={authenticated}
+}) => {
+  const username = getObjectName(wobject);
+
+  return (
+    <React.Fragment>
+      <Switch>
+        <Route
+          path="/object/:name"
+          render={() => (
+            <React.Fragment>
+              {isFetching ? (
+                <UserHeaderLoading />
+              ) : (
+                <WobjHeader
+                  isEditMode={isEditMode}
+                  username={username}
+                  authenticated={authenticated}
+                  wobject={wobject}
+                  isFollowing={isFollowing}
+                  toggleViewEditMode={toggleViewEditMode}
+                />
+              )}
+              <WobjMenuWrapper
+                followers={wobject.followers_count || 0}
                 wobject={wobject}
-                isFollowing={isFollowing}
-                toggleViewEditMode={toggleViewEditMode}
+                username={username}
+                albumsAndImagesCount={albumsAndImagesCount}
               />
-            )}
-            <WobjMenuWrapper
-              followers={wobject.followers_count || 0}
-              wobject={wobject}
-              username={username}
-              albumsAndImagesCount={albumsAndImagesCount}
-            />
-          </React.Fragment>
-        )}
-      />
-    </Switch>
-  </React.Fragment>
-);
+            </React.Fragment>
+          )}
+        />
+      </Switch>
+    </React.Fragment>
+  );
+};
 
 WobjHero.propTypes = {
   authenticated: PropTypes.bool.isRequired,
   isFetching: PropTypes.bool.isRequired,
-  username: PropTypes.string.isRequired,
   isEditMode: PropTypes.bool,
   isFollowing: PropTypes.bool,
   wobject: PropTypes.shape(),

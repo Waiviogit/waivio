@@ -67,6 +67,11 @@ export const dataManagementSettings = {
       id: 'chrome-extension',
       defaultMessage: 'Chrome extension',
     },
+    {
+      to: '/claim-athority',
+      id: 'claim_athority',
+      defaultMessage: 'Claim authority',
+    },
   ],
 };
 export const websiteSettings = {
@@ -129,7 +134,7 @@ export const currentWebsiteSettings = site => {
 
   if (socialDomens.some(item => site.includes(item))) {
     items.splice(2, 0, {
-      to: `/${site}/affiliate`,
+      to: `/${site}/affiliate-codes`,
       id: 'affiliate_codes',
       defaultMessage: 'Affiliate codes',
     });

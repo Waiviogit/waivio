@@ -90,7 +90,10 @@ const SidenavDiscoverObjects = ({ withTitle, intl }) => {
                       className="sidenav-discover-objects__item"
                       activeClassName="Sidenav__item--active"
                     >
-                      {type.name}
+                      {intl.formatMessage({
+                        id: `object_type_${type.name}`,
+                        defaultMessage: type.name,
+                      })}
                     </NavLink>
                   </li>
                 ))}

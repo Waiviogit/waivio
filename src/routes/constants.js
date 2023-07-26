@@ -129,11 +129,12 @@ export default {
       'data-import',
       'ASIN-scanner',
       'chrome-extension',
+      'claim-athority',
     ].join('|'),
   },
   WEBSITES: {
     tabs: [
-      'affiliate',
+      'affiliate-codes',
       'configuration',
       'settings',
       'administrations',

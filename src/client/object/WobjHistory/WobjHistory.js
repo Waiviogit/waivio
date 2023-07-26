@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { Select, Icon } from 'antd';
 import { connect } from 'react-redux';
@@ -34,26 +34,11 @@ const WobjHistory = ({
   intl,
 }) => {
   const history = useHistory();
-  const { 0: fieldUpdate } = useParams();
-  const [currField, setCurrField] = useState(
-    fieldUpdate ? getObjectFieldName(fieldUpdate, object, intl) : undefined,
-  );
+  const { 0: currField } = useParams();
   const [showModal, setShowModal] = useState(false);
 
-  const updateFields = getExposedFieldsByObjType(object).reduce(
-    (acc, name) => [...acc, { name, translation: getObjectFieldName(name, object, intl) }],
-    [],
-  );
-
-  const handleFieldChange = translation => {
-    const field = updateFields.find(f => f.translation === translation);
-
-    setCurrField(field.translation);
-
-    history.push(
-      `/object/${object.author_permlink}/${field.name ? `updates/${field.name}` : 'updates'}`,
-    );
-  };
+  const handleFieldChange = field =>
+    history.push(`/object/${object.author_permlink}/${field ? `updates/${field}` : 'updates'}`);
 
   const handleToggleModal = () => setShowModal(!showModal);
 
@@ -74,18 +59,11 @@ const WobjHistory = ({
 
   const objName = getObjectName(object);
 
-  useEffect(() => {
-    if (fieldUpdate) {
-      const field = updateFields.find(f => f.name === fieldUpdate);
-
-      setCurrField(field.translation);
-    }
-  }, [fieldUpdate]);
-
   return (
     <React.Fragment>
       <div className="wobj-history__filters">
         <Select
+          optionFilterProp="label"
           showSearch
           placeholder={
             <FormattedMessage id="object_field_placeholder" defaultMessage="Object field" />
@@ -93,10 +71,11 @@ const WobjHistory = ({
           value={currField}
           onChange={handleFieldChange}
         >
-          {updateFields
+          {getExposedFieldsByObjType(object)
             .map(f => (
-              <Select.Option key={f.name} value={f.translation}>
-                {f.translation}
+              <Select.Option key={f} value={f} label={getObjectFieldName(f, object, intl)}>
+                {' '}
+                {getObjectFieldName(f, object, intl)}
               </Select.Option>
             ))
             .sort((a, b) => sortAlphabetically(a.props.children, b.props.children))}
@@ -124,7 +103,7 @@ const WobjHistory = ({
                 showModal={showModal}
                 hideModal={handleToggleModal}
                 chosenLocale={locale}
-                field={updateFields.find(f => f.translation === currField).name}
+                field={currField}
                 objName={objName}
                 history={history}
               />

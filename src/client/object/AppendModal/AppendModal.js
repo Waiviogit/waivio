@@ -15,6 +15,7 @@ const AppendModal = ({
   intl,
   post,
   selectedAlbum,
+  context,
 }) => (
   <Modal
     title={`${intl.formatMessage({
@@ -28,6 +29,7 @@ const AppendModal = ({
     width={767}
   >
     <AppendForm
+      context={context}
       post={post}
       chosenLocale={chosenLocale}
       currentField={field}
@@ -45,6 +47,7 @@ AppendModal.propTypes = {
   field: PropTypes.string,
   chosenLocale: PropTypes.string,
   objName: PropTypes.string,
+  context: PropTypes.string,
   intl: PropTypes.shape().isRequired,
   post: PropTypes.shape(),
   selectedAlbum: PropTypes.shape(),

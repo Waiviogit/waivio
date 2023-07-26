@@ -216,7 +216,6 @@ class SearchObjectsAutocomplete extends Component {
         onSelect={this.handleSelect}
         onSearch={this.handleSearch}
         optionLabelProp={'label'}
-        open
         dataSource={
           isSearchObject
             ? pendingSearch(searchString, intl)
