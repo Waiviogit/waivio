@@ -115,6 +115,7 @@ export default {
   },
   SETTINGS: {
     tabs: [
+      'user-affiliate-codes',
       'bookmarks',
       'drafts',
       'edit-profile',
@@ -129,11 +130,12 @@ export default {
       'data-import',
       'ASIN-scanner',
       'chrome-extension',
+      'claim-athority',
     ].join('|'),
   },
   WEBSITES: {
     tabs: [
-      'affiliateCodes',
+      'affiliate-codes',
       'configuration',
       'settings',
       'administrations',

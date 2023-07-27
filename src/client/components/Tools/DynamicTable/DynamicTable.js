@@ -73,7 +73,7 @@ export const DynamicTable = ({
                   });
               }}
             >
-              {item[head.id]}
+              {Array.isArray(item[head.id]) ? item[head.id].length : item[head.id]}
             </span>
           </React.Fragment>
         );

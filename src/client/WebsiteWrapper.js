@@ -137,7 +137,7 @@ class WebsiteWrapper extends React.PureComponent {
     const lang = loadLanguage(activeLocale);
 
     return Promise.all([
-      store.dispatch(setAppUrl(`${req.protocol}://${req.headers.host}`)),
+      store.dispatch(setAppUrl(`https://${req.headers.host}`)),
       store.dispatch(setUsedLocale(lang)),
       store.dispatch(login()),
       store.dispatch(getWebsiteConfigForSSR(req.hostname)),

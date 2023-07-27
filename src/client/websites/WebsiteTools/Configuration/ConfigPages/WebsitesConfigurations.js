@@ -225,7 +225,7 @@ const WebsitesConfigurations = ({
           <h1>
             <FormattedMessage id="website_configuration" defaultMessage="Website configuration" />
           </h1>
-          <Form className="WebsitesConfigurations" id="WebsitesConfigurations">
+          <Form className="center WebsitesConfigurations" id="WebsitesConfigurations">
             <Form.Item>
               <h3>
                 {intl.formatMessage({

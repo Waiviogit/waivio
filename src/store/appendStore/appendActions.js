@@ -13,6 +13,10 @@ import {
 import { getLocale } from '../settingsStore/settingsSelectors';
 import { getAppendList } from './appendSelectors';
 import { getObjectPosts } from '../feedStore/feedActions';
+import {
+  SET_AFFILIATE_OBJECTS,
+  setAffiliateObjects,
+} from '../affiliateCodes/affiliateCodesActions';
 
 export const APPEND_WAIVIO_OBJECT = createAsyncActionType('@append/APPEND_WAIVIO_OBJECT');
 
@@ -146,6 +150,7 @@ export const voteAppends = (
   type,
   appendObj,
   isUpdatesPage,
+  isObjectPage,
 ) => (dispatch, getState, { steemConnectAPI }) => {
   const state = getState();
   const fields = getAppendList(state);
@@ -172,19 +177,20 @@ export const voteAppends = (
         message.success('Please wait, we are processing your update');
       }
 
-      dispatch(
-        getChangedWobjectField(
-          wobj.author_permlink,
-          fieldName,
-          author,
-          permlink,
-          isNew,
-          type,
-          appendObj,
-          isUpdatesPage,
-          res.id || res.result.id,
-        ),
-      );
+      isObjectPage &&
+        dispatch(
+          getChangedWobjectField(
+            wobj.author_permlink,
+            fieldName,
+            author,
+            permlink,
+            isNew,
+            type,
+            appendObj,
+            isUpdatesPage,
+            res.id || res.result.id,
+          ),
+        );
     })
     .catch(() =>
       steemConnectAPI.appendVote(voter, author, permlink, weight).then(res => {
@@ -244,6 +250,46 @@ export const authorityVoteAppend = (author, authorPermlink, permlink, weight, is
       );
   });
 };
+export const AFFILIATE_CODE_VOTE_APPEND = createAsyncActionType(
+  '@append/AFFILIATE_CODE_VOTE_APPEND',
+);
+
+export const affiliateCodeVoteAppend = (
+  author,
+  authorPermlink,
+  permlink,
+  weight,
+  userName,
+  host,
+) => (dispatch, getState, { steemConnectAPI, busyAPI }) => {
+  const state = getState();
+  const voter = getAuthenticatedUserName(state);
+
+  if (!getIsAuthenticated(state)) return null;
+
+  dispatch({
+    type: AFFILIATE_CODE_VOTE_APPEND.START,
+    payload: {
+      permlink,
+    },
+  });
+
+  dispatch({
+    type: SET_AFFILIATE_OBJECTS.START,
+    payload: {
+      authorPermlink,
+    },
+  });
+
+  return steemConnectAPI.appendVote(voter, author, permlink, weight).then(res => {
+    busyAPI.instance.sendAsync(subscribeTypes.subscribeTransactionId, [voter, res.transactionId]);
+    busyAPI.instance.subscribe((response, mess) => {
+      if (mess?.success && mess?.permlink === res.transactionId) {
+        dispatch(setAffiliateObjects(userName, host));
+      }
+    });
+  });
+};
 
 export const SET_OBJECT_IN_AUTHORITY = '@append/SET_OBJECT_IN_AUTHORITY';
 export const setObjectinAuthority = permlink => ({
@@ -290,6 +336,7 @@ const followAndLikeAfterCreateAppend = (
           type,
           appendObj,
           isUpdatesPage,
+          isObjectPage,
         ),
       );
     }
@@ -318,11 +365,13 @@ const followAndLikeAfterCreateAppend = (
 
 export const appendObject = (
   postData,
-  { follow, isLike, votePercent, isObjectPage, isUpdatesPage } = {},
+  { follow, isLike, votePercent, isObjectPage, isUpdatesPage, host } = {},
 ) => (dispatch, getState, { busyAPI }) => {
   dispatch({
     type: APPEND_WAIVIO_OBJECT.START,
   });
+  const state = getState();
+  const userName = getAuthenticatedUserName(state);
 
   return postAppendWaivioObject({ ...postData, votePower: undefined, isLike: undefined })
     .then(async res => {
@@ -338,6 +387,10 @@ export const appendObject = (
             true,
           ),
         );
+
+        if (postData.field.name === 'affiliateCode') {
+          dispatch(setAffiliateObjects(userName, host));
+        }
       };
 
       busyAPI.instance.sendAsync(subscribeTypes.subscribeTransactionId, [voter, res.transactionId]);

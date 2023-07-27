@@ -10,15 +10,17 @@ import Affix from '../components/Utils/Affix';
 import LeftSidebar from '../app/Sidebar/LeftSidebar';
 
 import RightSidebar from '../app/Sidebar/RightSidebar';
-import { getHelmetIcon } from '../../store/appStore/appSelectors';
+import { getHelmetIcon, getMainObj, getSiteName } from '../../store/appStore/appSelectors';
 import { resetBreadCrumb } from '../../store/shopStore/shopActions';
 
 const Shop = ({ route }) => {
   const favicon = useSelector(getHelmetIcon);
+  const siteName = useSelector(getSiteName);
+  const mainObj = useSelector(getMainObj);
   const dispatch = useDispatch();
-  const title = `Shop - Waivio`;
-  const desc = 'Find and buy easily. Shop with pleasure!';
-  const canonicalUrl = 'https://www.waivio.com/shop';
+  const title = `Shop - ${siteName}`;
+  const desc = route.isSocial ? mainObj?.description : 'Find and buy easily. Shop with pleasure!';
+  const canonicalUrl = typeof location !== 'undefined' && location?.origin;
 
   useEffect(() => () => dispatch(resetBreadCrumb()), []);
 

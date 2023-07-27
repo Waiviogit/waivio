@@ -115,6 +115,9 @@ export default {
   AffiliateCodes: loableComponent(
     import('../client/websites/WebsiteTools/AffiliateCodes/AffiliateCodes'),
   ),
+  UserAffiliateCodes: loableComponent(
+    import('../client/websites/WebsiteTools/AffiliateCodes/UserAffiliateCodes'),
+  ),
   WebsitesSettings: loableComponent(
     import('../client/websites/WebsiteTools/Settings/WebsitesSettings'),
   ),
@@ -147,5 +150,8 @@ export default {
   DataImport: loableComponent(import('../client/components/DataImport/DataImport')),
   ProductExtension: loableComponent(
     import('../client/components/DataImport/ChromeExtension/ChromeExtension'),
+  ),
+  ClaimAthorityBot: loableComponent(
+    import('../client/components/ClaimAthorityBot/ClaimAthorityBot'),
   ),
 };
