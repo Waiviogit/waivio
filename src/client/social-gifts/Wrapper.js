@@ -88,6 +88,7 @@ const SocialWrapper = props => {
     if (!isEmpty(configuration?.shopSettings)) {
       if (configuration.shopSettings?.type === 'object') {
         getObject(configuration.shopSettings?.value).then(async wobject => {
+          dispatch(setMainObj(wobject));
           const menuItemLinks = wobject.menuItem?.reduce((acc, item) => {
             const body = parseJSON(item.body);
 
@@ -157,14 +158,13 @@ const SocialWrapper = props => {
                 },
               ]),
             );
-            dispatch(setMainObj(wobject));
             props.setLoadingStatus(true);
 
             if (props.location.pathname === '/') props.history.push(buttonList[0].link);
           }
         });
       } else {
-        getUserAccount('wiv01').then(res => {
+        getUserAccount(configuration.shopSettings?.value).then(res => {
           const metadata = getMetadata(res);
           const profile = get(metadata, 'profile', {});
           const description = metadata && get(profile, 'about');
