@@ -256,7 +256,7 @@ export const AffiliateCodes = ({
       </div>
 
       <Modal
-        title={`Affiliate program : ${selectedObj.name}`}
+        title={`Affiliate program: ${selectedObj.name}`}
         footer={null}
         visible={openAppendModal}
         onCancel={hideModal}
