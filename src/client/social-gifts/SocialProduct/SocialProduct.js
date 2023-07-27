@@ -10,6 +10,7 @@ import {
   getObjectInfo,
   getObjectsByIds,
   getObjectsRewards,
+  getReferenceObjectsList,
   getRelatedObjectsFromDepartments,
   getSimilarObjectsFromDepartments,
 } from '../../../waivioApi/ApiClient';
@@ -98,6 +99,7 @@ const SocialProduct = ({
   const [hoveredOption, setHoveredOption] = useState({});
   const [addOns, setAddOns] = useState([]);
   const [similarObjects, setSimilarObjects] = useState([]);
+  const [references, setReferences] = useState([]);
   const [relatedObjects, setRelatedObjects] = useState([]);
   const [loading, setIsLoading] = useState(true);
   const [fields, setFields] = useState({
@@ -106,6 +108,7 @@ const SocialProduct = ({
     merchantObject: {},
   });
   const affiliateLinks = wobject?.affiliateLinks || [];
+  const referenceWobjType = ['business', 'person'].includes(wobject.object_type);
   const price = hoveredOption.price || get(wobject, 'price');
   const manufacturer = parseWobjectField(wobject, 'manufacturer');
   const parent = get(wobject, 'parent');
@@ -246,6 +249,12 @@ const SocialProduct = ({
 
       getObjectsRewards(authorPermlink, userName).then(res => setReward(res));
       getWobjAlbums(authorPermlink);
+      referenceWobjType &&
+        getReferenceObjectsList({
+          authorPermlink,
+          userName,
+          locale,
+        }).then(res => setReferences(Object.entries(res)));
     }
     setIsLoading(false);
 
@@ -481,6 +490,10 @@ const SocialProduct = ({
             )}
             <ObjectsSlider objects={similarObjects} title={'Similar'} name={'similar'} />
             <ObjectsSlider objects={relatedObjects} title={'Related items'} name={'related'} />
+            {!isEmpty(references) &&
+              references?.map(ref => (
+                <ObjectsSlider key={ref[0]} objects={ref[1]} title={`${ref[0]}s`} name={ref[0]} />
+              ))}
             {!isEmpty(tagCategoriesList) && (
               <div className="SocialProduct__featuresContainer">
                 <div className="SocialProduct__heading">Tags</div>
