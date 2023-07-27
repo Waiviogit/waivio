@@ -109,8 +109,8 @@ export const getSiteName = createSelector(
   state =>
     state.configuration?.header?.name ||
     state?.configuration?.host ||
-    state.hostAddress ||
-    state?.websiteName,
+    state?.websiteName ||
+    state?.host,
 );
 
 export const getCurrentCurrency = createSelector([appState], state => state.currencyInfo);
