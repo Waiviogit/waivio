@@ -29,7 +29,8 @@ const OptionItemView = ({
   const activeStoreOption = useSelector(getActiveOption);
   const history = useHistory();
   const dispatch = useDispatch();
-  const isSocialObject = isSocialProduct && ['book', 'product'].includes(wobject.object_type);
+  const isSocialObject =
+    isSocialProduct && ['book', 'product', 'person', 'business'].includes(wobject.object_type);
   const waivioOptionsLink = `/object/${wobject.author_permlink}/options/${option[0]}`;
   const waivioAvailableOptionsLink = el =>
     `/object/${getAvailableOptionPermlinkAndStyle(el, true)}`;

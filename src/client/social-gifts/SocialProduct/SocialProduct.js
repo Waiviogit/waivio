@@ -111,6 +111,7 @@ const SocialProduct = ({
   const parent = get(wobject, 'parent');
   const ageRange = get(wobject, 'ageRange');
   const language = get(wobject, 'language');
+  const wobjTitle = get(wobject, 'title');
   const publicationDate = moment(wobject.publicationDate).format('MMMM DD, YYYY');
   const printLength = wobject.printLength;
   const publisher = parseWobjectField(wobject, 'publisher');
@@ -122,6 +123,7 @@ const SocialProduct = ({
   const brand = parseWobjectField(wobject, 'brand');
   const photosAlbum = !isEmpty(albums) ? albums?.find(alb => alb.body === 'Photos') : [];
   const groupId = wobject.groupId;
+  const customSort = get(wobject, 'sortCustom.include', []);
   const features = wobject.features
     ? wobject.features?.map(el => parseWobjectField(el, 'body', []))
     : [];
@@ -130,7 +132,17 @@ const SocialProduct = ({
     : [];
   const merchant = parseWobjectField(wobject, 'merchant');
   const productWeight = parseWobjectField(wobject, 'productWeight');
-  const menuItem = get(wobject, 'menuItem', []);
+  const menuItem = customSort.reduce((acc, curr) => {
+    const currentLink = wobject?.menuItem?.find(
+      btn =>
+        btn.body === curr ||
+        btn.author_permlink === curr ||
+        btn.permlink === curr ||
+        btn.id === curr,
+    );
+
+    return currentLink ? [...acc, currentLink] : acc;
+  }, []);
   const tagCategories = get(wobject, 'tagCategory', []);
   const tagCategoriesList = tagCategories.filter(item => !isEmpty(item.items));
   const addOnPermlinks = wobject.addOn ? wobject?.addOn?.map(obj => obj.body) : [];
@@ -284,13 +296,16 @@ const SocialProduct = ({
             {isMobile() && (
               <div
                 className={
-                  isEmpty(productAuthors)
+                  isEmpty(productAuthors) && isEmpty(wobjTitle)
                     ? 'SocialProduct__wobjName'
                     : 'SocialProduct__bookWobjName'
                 }
               >
                 {wobject.name}
               </div>
+            )}
+            {isMobile() && !isEmpty(wobjTitle) && (
+              <div className="SocialProduct__title">{wobjTitle}</div>
             )}
             {isMobile() && !isEmpty(productAuthors) && (
               <SocialBookAuthors authors={productAuthors} />
@@ -340,13 +355,16 @@ const SocialProduct = ({
               {!isMobile() && (
                 <div
                   className={
-                    isEmpty(productAuthors)
+                    isEmpty(productAuthors) && isEmpty(wobjTitle)
                       ? 'SocialProduct__wobjName'
                       : 'SocialProduct__bookWobjName'
                   }
                 >
                   {wobject.name}
                 </div>
+              )}
+              {!isMobile() && !isEmpty(wobjTitle) && (
+                <div className="SocialProduct__title">{wobjTitle}</div>
               )}
               {!isMobile() && !isEmpty(productAuthors) && (
                 <SocialBookAuthors authors={productAuthors} />
