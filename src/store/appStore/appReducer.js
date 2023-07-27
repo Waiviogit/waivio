@@ -41,6 +41,7 @@ const initialState = {
   isSocial: false,
   navigItems: [],
   infoLoaded: false,
+  mainObj: {},
 };
 
 export default (state = initialState, action) => {
@@ -75,6 +76,13 @@ export default (state = initialState, action) => {
         rewardFund: {
           ...state.rewardFund,
           ...action.payload,
+        },
+      };
+    case appTypes.SET_MAIN_OBJ:
+      return {
+        ...state,
+        mainObj: {
+          ...action.obj,
         },
       };
     case appTypes.GET_TRENDING_TOPICS_START:

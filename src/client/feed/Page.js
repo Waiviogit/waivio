@@ -67,14 +67,15 @@ class Page extends React.Component {
     const sortBy = authenticated ? match.params.sortBy : match.params.sortBy || 'trending';
     const description =
       'Discover Waivio, a unique social media platform built on the Hive blockchain. Earn crypto rewards for your posts and maintain full control over your social profile in a censorship-free environment. Dive into the future of social media with Waivio today.\n';
+    const title = 'Waivio | Decentralized Social Media Platform on Hive Blockchain';
 
     return (
       <div>
         <Helmet>
-          <title>Waivio | Decentralized Social Media Platform on Hive Blockchain</title>
-          <meta property="description" content={description} />
+          <title>{title}</title>
+          <meta name="description" content={description} />
           <link rel="canonical" href={this.props.host} />
-          <meta property="og:title" content={'Waivio'} />
+          <meta property="og:title" content={title} />
           <meta property="og:type" content="article" />
           <meta property="og:url" content={this.props.host} />
           <meta property="og:image" content={this.props.helmetIcon} />
@@ -84,7 +85,7 @@ class Page extends React.Component {
           <meta property="og:description" content={description} />
           <meta name="twitter:card" content={'summary_large_image'} />
           <meta name="twitter:site" content={'@waivio'} />
-          <meta name="twitter:title" content={'Waivio'} />
+          <meta name="twitter:title" content={title} />
           <meta name="twitter:description" content={description} />
           <meta name="twitter:image" property="twitter:image" content={this.props.helmetIcon} />
           <meta property="og:site_name" content={'Waivio'} />
