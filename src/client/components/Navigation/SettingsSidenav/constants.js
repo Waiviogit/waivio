@@ -35,7 +35,7 @@ export const personalSettings = {
     {
       to: '/user-affiliate-codes',
       id: 'user_affiliate_codes',
-      defaultMessage: 'Affiliate Codes',
+      defaultMessage: 'Affiliate codes',
     },
     {
       to: '/guests-settings',

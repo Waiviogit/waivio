@@ -101,8 +101,8 @@ export const UserAffiliateCodes = ({
         loading={loading}
         getFieldDecorator={getFieldDecorator}
         getFieldValue={getFieldValue}
-        context={user.name}
-        codeContext={'PERSONAL'}
+        context={`@${user.name}`}
+        appendContext={'PERSONAL'}
         openAppendModal={openAppendModal}
         selectedObj={selectedObj}
       />

@@ -13,7 +13,7 @@ const AffiliateCodesModal = ({
   openAppendModal,
   getFieldDecorator,
   context,
-  codeContext,
+  appendContext,
   loading,
   langReadable,
   user,
@@ -34,7 +34,7 @@ const AffiliateCodesModal = ({
       langReadable,
       user,
       selectedObj,
-      codeContext,
+      appendContext,
       userUpVotePower,
     );
 
@@ -49,7 +49,7 @@ const AffiliateCodesModal = ({
         isLike: data.isLike,
         isObjectPage: false,
         isUpdatesPage: false,
-        host: codeContext === 'PERSONAL' ? undefined : context,
+        host: appendContext === 'PERSONAL' ? undefined : context,
       })
         .then(r => {
           setOpenAppendModal(false);
@@ -97,10 +97,7 @@ const AffiliateCodesModal = ({
 
   return (
     <Modal
-      title={`${intl.formatMessage({
-        id: 'object_type_affiliate',
-        defaultMessage: 'Affiliate program',
-      })}: ${selectedObj.name}`}
+      title={`Affiliate program: ${selectedObj.name}`}
       footer={null}
       visible={openAppendModal}
       onCancel={hideModal}
@@ -133,7 +130,7 @@ const AffiliateCodesModal = ({
             )}
           </Form.Item>
           <div className={'mt3'}>
-            <p>{`CONTEXT: @${context}`}</p>
+            <p>{`CONTEXT: ${context}`}</p>
           </div>
         </>
         <Form.Item className="AppendForm__bottom__submit">
@@ -173,7 +170,7 @@ AffiliateCodesModal.propTypes = {
   appendWobject: PropTypes.func,
   loading: PropTypes.bool,
   context: PropTypes.string,
-  codeContext: PropTypes.string,
+  appendContext: PropTypes.string,
   langReadable: PropTypes.string,
   userUpVotePower: PropTypes.number,
 };

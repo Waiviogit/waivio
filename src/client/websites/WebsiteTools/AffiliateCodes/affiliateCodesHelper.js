@@ -14,11 +14,10 @@ export const getNewPostData = (
   const { body, preview, currentField, currentLocale, follow, ...rest } = formValues;
   const fieldBody = [];
   const postData = [];
-  const appUrl = location.hostname;
   const getAppendMsg = author =>
     `@${author} added ${objectFields.affiliateCode} (${langReadable}): ${
       formValues[objectFields.affiliateCode]
-    }, context: ${context === 'PERSONAL' ? appUrl : context}`;
+    }, context: ${context}`;
 
   fieldBody.push(rest[currentField]);
   fieldBody.forEach(bodyField => {
