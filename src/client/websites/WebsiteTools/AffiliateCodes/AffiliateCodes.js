@@ -92,7 +92,7 @@ export const AffiliateCodes = ({
         affiliateObjects={affiliateObjects}
       />
       <AffiliateCodesModal
-        codeContext={site}
+        appendContext={site}
         user={user}
         form={form}
         appendWobject={appendWobject}
