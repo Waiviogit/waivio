@@ -33,6 +33,11 @@ export const personalSettings = {
       defaultMessage: 'Settings',
     },
     {
+      to: '/user-affiliate-codes',
+      id: 'user_affiliate_codes',
+      defaultMessage: 'Affiliate Codes',
+    },
+    {
       to: '/guests-settings',
       id: 'guest_settings',
       defaultMessage: 'Guests Settings',

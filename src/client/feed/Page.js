@@ -65,12 +65,13 @@ class Page extends React.Component {
     const { authenticated, history, wobject, match } = this.props;
     const isPageMode = true;
     const sortBy = authenticated ? match.params.sortBy : match.params.sortBy || 'trending';
-    const description = 'Waivio is an open distributed attention marketplace for business';
+    const description =
+      'Discover Waivio, a unique social media platform built on the Hive blockchain. Earn crypto rewards for your posts and maintain full control over your social profile in a censorship-free environment. Dive into the future of social media with Waivio today.\n';
 
     return (
       <div>
         <Helmet>
-          <title>Waivio</title>
+          <title>Waivio | Decentralized Social Media Platform on Hive Blockchain</title>
           <meta property="description" content={description} />
           <link rel="canonical" href={this.props.host} />
           <meta property="og:title" content={'Waivio'} />

@@ -88,7 +88,7 @@ export default function createSsrHandler(template) {
       console.error('SSR error occured, falling back to bundled application instead', err);
 
       return res.send(
-        renderSsrPage(null, null, assets, template, req.hostname === 'waivio.com', ''),
+        renderSsrPage(null, null, assets, template, req.hostname.includes('waivio'), ''),
       );
     }
   };

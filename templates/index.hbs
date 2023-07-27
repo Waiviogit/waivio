@@ -3,15 +3,8 @@
 
 <head>
   <!-- Global site tag (gtag.js) - Google Analytics -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id={{tag}}"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-
-    gtag('config', '{{tag}}');
-  </script>
-  <meta charset="UTF-8">
+  {{#if googleAnalytics}} {{{googleAnalytics}}}{{/if}}
+    <meta charset="UTF-8">
   <meta http-equiv="x-ua-compatible" content="IE=edge">
   <meta id="viewport" name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> {{#if header}} {{{header}}} {{else}}
