@@ -27,6 +27,7 @@ import { getObject } from '../../../waivioApi/ApiClient';
 import Breadcrumbs from '../Breadcrumbs/Breadcrumbs';
 import {
   getHelmetIcon,
+  getMainObj,
   getSiteName,
   getWebsiteDefaultIconList,
 } from '../../../store/appStore/appSelectors';
@@ -54,8 +55,9 @@ const Checklist = ({
   const [object, setObject] = useState(false);
   const favicon = useSelector(getHelmetIcon);
   const siteName = useSelector(getSiteName);
+  const mainObj = useSelector(getMainObj);
   const title = `${getObjectName(object)} - ${siteName}`;
-  const desc = object?.description;
+  const desc = mainObj?.description;
   const image = getObjectAvatar(object);
   const canonicalUrl = typeof location !== 'undefined' && location?.origin;
 
@@ -159,7 +161,7 @@ const Checklist = ({
         <title>{title}</title>
         <meta property="og:title" content={title} />
         <link rel="canonical" href={canonicalUrl} />
-        <meta property="description" content={desc} />
+        <meta name="description" content={desc} />
         <meta name="twitter:card" content={'summary_large_image'} />
         <meta name="twitter:site" content={'@waivio'} />
         <meta name="twitter:title" content={title} />
