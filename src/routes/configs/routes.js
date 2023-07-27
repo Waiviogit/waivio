@@ -202,6 +202,11 @@ const routes = {
           component: Views.Settings,
         },
         {
+          path: '/user-affiliate-codes',
+          exact: true,
+          component: Views.UserAffiliateCodes,
+        },
+        {
           path: '/edit-profile',
           exact: true,
           component: Views.ProfileSettings,

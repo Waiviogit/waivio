@@ -1,4 +1,6 @@
 @import (reference) '../../../styles/custom.less';
+@import (reference) '../../../styles/modules/variables.less';
+
 .AffiliateCodes {
   &__object-table {
     background: @white;
@@ -46,6 +48,7 @@
   }
   &__aff-code {
     color: @blue-botticelli;
+    word-break: break-word;
   }
   &__object-info-text {
     display: flex;
@@ -56,10 +59,14 @@
     }
   }
   &__object-info {
+    max-width: 50%;
     display: flex;
     justify-content: flex-start;
     align-items: center;
     font-weight: bolder;
+    @media @small {
+      max-width: 80%;
+    }
 
     span {
       display: inline-block;
