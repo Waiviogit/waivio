@@ -84,11 +84,24 @@ export default function createSsrHandler(template) {
           get(settings, 'googleAnalyticsTag', ''),
         ),
       );
+      console.log(`Open on ${req.hostname}`);
     } catch (err) {
       console.error('SSR error occured, falling back to bundled application instead', err);
+      let settings = {};
+      const isWaivio = req.hostname.includes('waivio');
 
+      if (!isWaivio) {
+        settings = await getSettingsWebsite(req.hostname);
+      }
       return res.send(
-        renderSsrPage(null, null, assets, template, req.hostname.includes('waivio'), ''),
+        renderSsrPage(
+          null,
+          null,
+          assets,
+          template,
+          isWaivio,
+          get(settings, 'googleAnalyticsTag', ''),
+        ),
       );
     }
   };

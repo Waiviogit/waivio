@@ -49,7 +49,7 @@ const FindClaimAthorityModal = ({ visible, onClose, updateAuthorityList }) => {
         checked={includeObjects}
         onChange={e => setIncludeObjects(e.target.checked)}
       />{' '}
-      Include objects from embeddes lists
+      Include objects from embedded lists
     </Modal>
   );
 };

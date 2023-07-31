@@ -5,7 +5,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setActiveDepartment } from '../../../store/objectDepartmentsStore/objectDepartmentsActions';
 import { getActiveDepartment } from '../../../store/objectDepartmentsStore/objectDepartmentsSelectors';
 
-const DepartmentItem = ({ wobject, history, department, id }) => {
+const DepartmentItem = ({ wobject, history, department, id, isSocialGifts }) => {
+  const linkToSearch = dep =>
+    isSocialGifts
+      ? `/discover-objects/product?search=${dep.body}`
+      : `/object/${wobject.author_permlink}/departments/${dep.body}`;
   const dispatch = useDispatch();
   const storeActiveDep = useSelector(getActiveDepartment);
 
@@ -16,7 +20,7 @@ const DepartmentItem = ({ wobject, history, department, id }) => {
     });
 
   const onNewActiveDep = dep => {
-    history.push(`/object/${wobject.author_permlink}/departments/${dep.body}`);
+    history.push(linkToSearch(dep));
 
     dispatch(setActiveDepartment({ name: dep.body, id }));
   };
@@ -47,6 +51,7 @@ DepartmentItem.propTypes = {
   department: PropTypes.arrayOf().isRequired,
   history: PropTypes.func.isRequired,
   id: PropTypes.string.isRequired,
+  isSocialGifts: PropTypes.bool,
 };
 
 export default DepartmentItem;

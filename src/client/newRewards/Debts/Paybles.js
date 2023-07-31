@@ -20,6 +20,7 @@ const Payables = () => {
   const [lenders, setLenders] = useState({});
   const [loading, setLoading] = useState(false);
   const [visible, setVisible] = useState(false);
+  const [sort, setSort] = useState('amount');
   const location = useLocation();
   const query = new URLSearchParams(location.search);
   const authUserName = useSelector(getAuthenticatedUserName);
@@ -31,17 +32,18 @@ const Payables = () => {
       limit: 30,
       days: query.get('days'),
       payable: query.get('payable'),
+      sort,
     })
       .then(data => {
         setLenders({
           ...data,
-          histories: data?.histories?.sort((a, b) => b.payable - a.payable),
+          histories: data?.histories,
           hasMore: false,
         });
         setLoading(false);
       })
       .catch(() => setLoading(false));
-  }, [location.search]);
+  }, [location.search, sort]);
 
   const handleLoadingMore = () =>
     getPaybelsList(authUserName, {
@@ -49,6 +51,7 @@ const Payables = () => {
       limit: 30,
       days: query.get('days'),
       payable: query.get('payable'),
+      sort,
     }).then(data => {
       setLenders({
         ...lenders,
@@ -78,6 +81,8 @@ const Payables = () => {
           loading={loading}
           payoutToken={'WAIV'}
           setVisible={setVisible}
+          setSorting={value => setSort(value)}
+          sort={sort}
         />
       </div>
       <RewardsFilters
