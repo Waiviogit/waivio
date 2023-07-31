@@ -3,13 +3,20 @@ import { isEmpty, take, truncate } from 'lodash';
 import classNames from 'classnames';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import { useDispatch } from 'react-redux';
+import { Icon } from 'antd';
+
+import { useDispatch, useSelector } from 'react-redux';
 import { getProxyImageURL } from '../../../common/helpers/image';
 import PostFeedEmbed from '../../components/Story/PostFeedEmbed';
 import Avatar from '../../components/Avatar';
 import { showPostModal } from '../../../store/appStore/appActions';
 import Payout from '../../components/StoryFooter/Payout';
 import { isMobile } from '../../../common/helpers/apiHelpers';
+import { votePost } from '../../../store/postsStore/postActions';
+import { getVotePercent } from '../../../store/settingsStore/settingsSelectors';
+import { getUpvotes } from '../../../common/helpers/voteHelpers';
+import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
+import { getPendingLikes } from '../../../store/postsStore/postsSelectors';
 
 const FeedItem = ({ post, photoQuantity }) => {
   const imagePath = post?.imagePath;
@@ -17,8 +24,23 @@ const FeedItem = ({ post, photoQuantity }) => {
   const lastIndex = imagePath?.length - 1;
   const withoutImage = isEmpty(imagePath);
   const dispatch = useDispatch();
+  const defaultVotePersent = useSelector(getVotePercent);
+  const authUserName = useSelector(getAuthenticatedUserName);
+  const pendingVote = useSelector(getPendingLikes)[post.id];
+  const isLiked = getUpvotes(post.active_votes).some(
+    vote => vote.voter === authUserName && !vote.fake,
+  );
+  const pendingLike =
+    pendingVote && (pendingVote.weight > 0 || (pendingVote.weight === 0 && isLiked));
+
   const isTiktok = embeds[0]?.provider_name === 'TikTok';
   const [thumbnail, setThumbnail] = useState('');
+
+  const handleLike = () => {
+    const authorName = post.guestInfo ? post.root_author : post.author;
+
+    dispatch(votePost(post.id, authorName, post.permlink, isLiked ? 0 : defaultVotePersent));
+  };
 
   useEffect(() => {
     if (isTiktok) {
@@ -96,8 +118,17 @@ const FeedItem = ({ post, photoQuantity }) => {
       <div className="FeedMasonry__likeWrap">
         <div className="FeedMasonry__postWrap">
           {Boolean(post.active_votes.length) && (
-            <span className="FeedMasonry__icon">
-              <i className="iconfont icon-praise_fill" /> <span>{post.active_votes.length}</span>
+            <span className="FeedMasonry__icon FeedMasonry__icon--cursor" onClick={handleLike}>
+              {pendingLike ? (
+                <Icon type="loading" />
+              ) : (
+                <i
+                  className={classNames('iconfont icon-praise_fill', {
+                    'iconfont--withMyLike': isLiked,
+                  })}
+                />
+              )}{' '}
+              <span>{getUpvotes(post.active_votes).length}</span>
             </span>
           )}
           {Boolean(post.children) && (
@@ -127,6 +158,9 @@ FeedItem.propTypes = {
     children: PropTypes.number,
     imagePath: PropTypes.arrayOf(),
     embeds: PropTypes.arrayOf(),
+    guestInfo: PropTypes.shape({}),
+    root_author: PropTypes.string,
+    id: PropTypes.string,
   }),
   photoQuantity: PropTypes.number,
 };
