@@ -137,8 +137,14 @@ const ModalSignIn = ({
   );
 
   const renderSignIn = () => {
-    if (!isWaivio || isSocialGifts)
-      return <WebsiteSignIn setUserData={setUserData} setIsFormVisible={setIsFormVisible} />;
+    if (!isWaivio)
+      return (
+        <WebsiteSignIn
+          isSocial={isSocialGifts}
+          setUserData={setUserData}
+          setIsFormVisible={setIsFormVisible}
+        />
+      );
 
     return (
       <React.Fragment>

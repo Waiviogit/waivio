@@ -33,6 +33,7 @@ const SocialProductReviews = ({ wobject, authors, intl }) => {
   const dispatch = useDispatch();
   const history = useHistory();
   const { name } = useParams();
+  const currHost = typeof location !== 'undefined' && location.hostname;
   const objName = history.location.hash ? getLastPermlinksFromHash(history.location.hash) : name;
   const postsIds = uniq(getFeedFromState('objectPosts', objName, feed));
   const hasMore = getFeedHasMoreFromState('objectPosts', objName, feed);
@@ -96,6 +97,7 @@ const SocialProductReviews = ({ wobject, authors, intl }) => {
       />
       <ModalSignIn
         isSocialGifts
+        domain={currHost}
         hideLink
         isButton={false}
         handleLoginModalCancel={() => setShowSignIn(false)}
