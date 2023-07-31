@@ -36,7 +36,7 @@ const GeneralSearch = props => {
   const dispatch = useDispatch();
   const history = useHistory();
   const isSocialWobj = wobj =>
-    props.isSocialProduct && ['product', 'book'].includes(wobj.object_type);
+    props.isSocialProduct && ['product', 'book', 'person', 'business'].includes(wobj.object_type);
 
   const handleAutoCompleteSearchDebounce = useCallback(
     debounce(value => {
