@@ -300,7 +300,7 @@ const SocialProduct = ({
         <Loading margin />
       ) : (
         <div className="SocialProduct">
-          {history.location.query && <Breadcrumbs inProduct />}
+          {history.location.search && <Breadcrumbs inProduct />}
           <div className="SocialProduct__column SocialProduct__column-wrapper">
             {isMobile() && (
               <div
