@@ -16,7 +16,7 @@ export const preparationPostList = (postsIds, postsList) =>
 
     if (isEmpty(imagePath) && isEmpty(embeds)) return acc;
 
-    return [...acc, { ...post, imagePath, embeds }];
+    return [...acc, { ...post, id: curr, imagePath, embeds }];
   }, []);
 
 export default null;
