@@ -181,7 +181,7 @@ const Checklist = ({
       {!hideBreadCrumbs && <Breadcrumbs />}
       {object.object_type === 'list' && object.background && !loading && (
         <div className="Checklist__banner">
-          <img src={object.background} alt={''} />
+          <img src={object.background} alt={'Promotional list banner'} />
         </div>
       )}
       {loading ? <Loading /> : getMenuList()}
