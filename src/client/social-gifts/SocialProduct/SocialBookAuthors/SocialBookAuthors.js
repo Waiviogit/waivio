@@ -24,6 +24,8 @@ const SocialBookAuthors = ({ authors }) => {
     setNewAuthors(authorsArr);
   };
 
+  const getPermlink = a => a.author_permlink || a.authorPermlink;
+
   useEffect(() => {
     getAuthors();
   }, [authors]);
@@ -34,12 +36,12 @@ const SocialBookAuthors = ({ authors }) => {
       {newAuthors.map((a, i) => (
         <>
           <span className={'ml1'}>
-            {a.author_permlink || a.authorPermlink ? (
-              <Link key={a.defaultShowLink} to={a.defaultShowLink}>
+            {getPermlink(a) ? (
+              <Link key={getPermlink(a)} to={`/object/${getPermlink(a)}`}>
                 {a.name}
               </Link>
             ) : (
-              <span key={a.defaultShowLink}>{a.name}</span>
+              <span key={a.name}>{a.name}</span>
             )}
           </span>
           {i !== newAuthors.length - 1 && ','}

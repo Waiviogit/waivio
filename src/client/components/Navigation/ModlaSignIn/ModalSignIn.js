@@ -56,6 +56,7 @@ const ModalSignIn = ({
   domain,
   usedLocale,
   websiteName,
+  isSocialGifts,
 }) => {
   const dispatch = useDispatch();
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -136,7 +137,7 @@ const ModalSignIn = ({
   );
 
   const renderSignIn = () => {
-    if (!isWaivio)
+    if (!isWaivio || isSocialGifts)
       return <WebsiteSignIn setUserData={setUserData} setIsFormVisible={setIsFormVisible} />;
 
     return (
@@ -309,6 +310,7 @@ ModalSignIn.propTypes = {
   showModal: PropTypes.bool,
   handleLoginModalCancel: PropTypes.func,
   hideLink: PropTypes.bool,
+  isSocialGifts: PropTypes.bool,
   isButton: PropTypes.bool,
   usedLocale: PropTypes.string,
   setIsShowSignInModal: PropTypes.func,

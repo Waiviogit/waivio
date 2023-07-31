@@ -95,6 +95,7 @@ const SocialProductReviews = ({ wobject, authors, intl }) => {
         writeReview={handleWriteReviewClick}
       />
       <ModalSignIn
+        isSocialGifts
         hideLink
         isButton={false}
         handleLoginModalCancel={() => setShowSignIn(false)}
