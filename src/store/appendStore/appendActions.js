@@ -96,7 +96,7 @@ export const getChangedWobjectField = (
             return res;
           })
           .catch(() => {
-            message.error('An error has occurred, please reload the page');
+            // message.error('An error has occurred, please reload the page');
             dispatch({
               type: GET_CHANGED_WOBJECT_FIELD.ERROR,
             });

@@ -337,13 +337,15 @@ SocialWrapper.fetchData = ({ store, req }) => {
     store.dispatch(setUsedLocale(lang)),
     store.dispatch(login()),
     store.dispatch(getWebsiteConfigForSSR(req.hostname)).then(res => {
-      if (!isEmpty(res.payload.shopSettings)) {
-        if (res.payload.shopSettings?.type === 'object') {
-          getObject(res.payload.shopSettings.shopSettings?.value).then(async wobject => {
+      const shopSettings = res.action.payload?.shopSettings;
+
+      if (!isEmpty(shopSettings)) {
+        if (shopSettings?.type === 'object') {
+          getObject(shopSettings?.value).then(async wobject => {
             store.dispatch(setMainObj(wobject));
           });
         } else {
-          getUserAccount(res.payload.shopSettings.shopSettings?.value).then(user => {
+          getUserAccount(shopSettings?.value).then(user => {
             const metadata = getMetadata(user);
             const profile = get(metadata, 'profile', {});
             const description = metadata && get(profile, 'about');

@@ -15,7 +15,7 @@ import {
   getAthorityVote,
   getAuthorityList,
   getHistoryAuthorityObjects,
-  setImportVote,
+  setClaimAuthorityVote,
 } from '../../../waivioApi/importApi';
 import DynamicTbl from '../Tools/DynamicTable/DynamicTable';
 import {
@@ -92,7 +92,7 @@ const ClaimAthorityBot = ({ intl }) => {
   const toggleVotingModal = () => setVisibleVoting(!visibleVoting);
 
   const handleSetMinVotingPower = voting => {
-    setImportVote(authUserName, voting * 100);
+    setClaimAuthorityVote(authUserName, voting * 100);
     setVotingValue(voting);
     toggleVotingModal();
   };
