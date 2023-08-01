@@ -81,6 +81,15 @@ export const DynamicTable = ({
       default: {
         let button = get(buttons, head.id);
 
+        if (head.id === 'name' && item.status === 'active') {
+          return (
+            <a href={`https://${item.host}`} target={'_blank'} rel="noreferrer">
+              {' '}
+              {get(item, head.id)}
+              {button}
+            </a>
+          );
+        }
         if (typeof button === 'function') button = button(item);
 
         return (
