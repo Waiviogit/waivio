@@ -22,7 +22,7 @@ const DepartmentList = ({ wobject, departments, isSocialGifts }) => {
       {departmentsList?.map((dep, i) => (
         <>
           <DepartmentItem
-            isSocialGifts
+            isSocialGifts={isSocialGifts}
             id={dep.body}
             history={history}
             wobject={wobject}
