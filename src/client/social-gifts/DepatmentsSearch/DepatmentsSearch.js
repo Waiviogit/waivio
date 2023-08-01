@@ -79,7 +79,7 @@ const DepatmentsSearch = () => {
         <link id="favicon" rel="icon" href={favicon} type="image/x-icon" />
       </Helmet>
       <div className="NewDiscover__wrap">
-        <h3 className="NewDiscover__type">{department}</h3>
+        <h3 className="NewDiscover__type">Department</h3>
         {department && (
           <Tag closable onClose={handleDeleteTag}>
             {department}
