@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { has } from 'lodash';
 import { getObjectInfo } from '../../../../waivioApi/ApiClient';
+import { getUsedLocale } from '../../../../store/appStore/appSelectors';
 
 const SocialBookAuthors = ({ authors }) => {
   const [newAuthors, setNewAuthors] = useState([]);
+  const locale = useSelector(getUsedLocale);
 
   const getAuthors = async () => {
     const authorsArr = await authors.reduce(async (acc, curr) => {
@@ -13,7 +16,7 @@ const SocialBookAuthors = ({ authors }) => {
       const permlink = curr.authorPermlink || curr.author_permlink;
 
       if (permlink && !has(curr, 'name')) {
-        const newObj = await getObjectInfo([permlink], this.props.locale);
+        const newObj = await getObjectInfo([permlink], locale);
 
         return [...res, newObj.wobjects[0]];
       }
@@ -41,7 +44,9 @@ const SocialBookAuthors = ({ authors }) => {
                 {a.name}
               </Link>
             ) : (
-              <span key={a.name}>{a.name}</span>
+              <Link to={`/discover-objects/book?search=${a.name}`} key={a.name}>
+                {a.name}
+              </Link>
             )}
           </span>
           {i !== newAuthors.length - 1 && ','}

@@ -8,6 +8,7 @@ import SocialListItem from '../SocialListItem/SocialListItem';
 import { getObjectInfo } from '../../../../waivioApi/ApiClient';
 
 const ProductDetails = ({
+  website,
   fields,
   productWeight,
   departments,
@@ -59,7 +60,7 @@ const ProductDetails = ({
         {!isEmpty(language) && (
           <SocialListItem fieldName={objectFields.language} field={language} />
         )}
-        {!isEmpty(publicationDate) && (
+        {!isEmpty(wobject.publicationDate) && (
           <SocialListItem fieldName={objectFields.publicationDate} field={publicationDate} />
         )}
         {!isEmpty(printLength) && (
@@ -89,6 +90,7 @@ const ProductDetails = ({
             productIdBody={productIdBody}
           />
         }
+        {!isEmpty(website) && <SocialListItem fieldName={objectFields.website} field={website} />}
       </div>
     </div>
   );
@@ -102,6 +104,7 @@ ProductDetails.propTypes = {
   dimensions: PropTypes.shape(),
   history: PropTypes.shape(),
   parent: PropTypes.shape(),
+  website: PropTypes.shape(),
   publisher: PropTypes.shape(),
   departments: PropTypes.arrayOf(),
   groupId: PropTypes.arrayOf(),
