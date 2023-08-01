@@ -42,6 +42,7 @@ export const configUsersWebsitesTableHeader = [
   },
   {
     id: 'name',
+    type: 'websiteName',
     intl: {
       id: 'website',
       defaultMessage: 'Website',
