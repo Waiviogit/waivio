@@ -42,7 +42,7 @@ const Header = () => {
               })}
             />
           </button>
-          <HeaderButton searchBarActive={searchBarActive} />
+          <HeaderButton isSocialGifts domain={currHost} searchBarActive={searchBarActive} />
         </div>
       </div>
       {config.mainBanner && (

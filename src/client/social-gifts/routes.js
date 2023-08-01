@@ -20,6 +20,7 @@ import UserBlogFeed from './FeedMasonry/UserBlogFeed';
 import ObjectNewsFeed from './FeedMasonry/ObjectNewsFeed';
 import NewDiscover from './NewDiscover/NewDiscover';
 import WebsiteFeed from '../websites/WebsiteFeed/WebsiteFeed';
+import DepatmentsSearch from './DepatmentsSearch/DepatmentsSearch';
 
 const routes = host => ({
   component: SocialWrapper,
@@ -78,6 +79,11 @@ const routes = host => ({
       path: '/discover-objects/:type?',
       exact: true,
       component: NewDiscover,
+    },
+    {
+      path: '/discover-departments/:name/:department',
+      exact: true,
+      component: DepatmentsSearch,
     },
     {
       path: '/object/product/:name',

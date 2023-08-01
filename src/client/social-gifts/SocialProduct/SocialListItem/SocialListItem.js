@@ -17,9 +17,7 @@ const SocialListItem = ({ fieldName, field, title }) => {
         return objAuthorPermlink(field) ? (
           <Link to={`/object/${objAuthorPermlink(field)}`}>{field.name}</Link>
         ) : (
-          <Link to={`/discover-objects/product?search=${field.name}`} className="ObjectCard__name">
-            {field.name}
-          </Link>
+          <Link to={`/discover-objects/product?search=${field.name}`}>{field.name}</Link>
         );
       case objectFields.productWeight:
         return (
