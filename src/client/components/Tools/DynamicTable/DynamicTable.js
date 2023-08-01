@@ -51,6 +51,13 @@ export const DynamicTable = ({
       case 'link':
         return <Link to={head.to(item)}>{item[head.id]}</Link>;
 
+      case 'websiteName':
+        return (
+          <a href={`https://${item.host}`} target={'_blank'} rel="noreferrer">
+            {item[head.id]}
+          </a>
+        );
+
       case 'date':
         return moment(item[head.id]).format('DD-MMM-YYYY');
 
@@ -81,15 +88,6 @@ export const DynamicTable = ({
       default: {
         let button = get(buttons, head.id);
 
-        if (head.id === 'name' && item.status === 'active') {
-          return (
-            <a href={`https://${item.host}`} target={'_blank'} rel="noreferrer">
-              {' '}
-              {get(item, head.id)}
-              {button}
-            </a>
-          );
-        }
         if (typeof button === 'function') button = button(item);
 
         return (
