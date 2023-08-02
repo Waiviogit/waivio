@@ -45,7 +45,7 @@ const FeedItem = ({ post, photoQuantity, preview }) => {
 
   useEffect(() => {
     if (isTiktok) {
-      if (preview) {
+      if (!preview) {
         fetch(
           `https://www.tiktok.com/oembed?url=https://www.tiktok.com/${embeds[0].url.replace(
             /\?.*/,
@@ -62,7 +62,7 @@ const FeedItem = ({ post, photoQuantity, preview }) => {
   }, []);
 
   if (withoutImage && isEmpty(embeds)) return null;
-  if (isTiktok && !thumbnail) return null;
+  if (isTiktok && !(thumbnail || preview)) return null;
 
   const handleShowPostModal = () => dispatch(showPostModal(post));
   const likesCount = getUpvotes(post.active_votes).length;
@@ -96,7 +96,7 @@ const FeedItem = ({ post, photoQuantity, preview }) => {
           <PostFeedEmbed
             key="embed"
             isSocial
-            embed={isTiktok ? { ...embeds[0], thumbnail } : embeds[0]}
+            embed={isTiktok ? { ...embeds[0], thumbnail: preview || thumbnail } : embeds[0]}
           />
           {!withoutImage && (
             <img

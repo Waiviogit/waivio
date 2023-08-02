@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { isEmpty, uniq } from 'lodash';
+import { uniq } from 'lodash';
 import PropTypes from 'prop-types';
 import { useLocation, useParams } from 'react-router';
 import FeedMasonry from './FeedMasonry';
@@ -26,6 +26,7 @@ const ObjectNewsFeed = ({ wobj }) => {
   const [currObj, setCurrObj] = useState();
   const [previews, setPreviews] = useState();
   const [firstLoading, setFirstLoading] = useState(true);
+  const [previewLoading, setPreviewLoading] = useState(true);
   const feed = useSelector(getFeed);
   const postsList = useSelector(getPosts);
   const dispatch = useDispatch();
@@ -50,7 +51,7 @@ const ObjectNewsFeed = ({ wobj }) => {
         }),
       ).then(res => {
         setFirstLoading(false);
-        preparationPreview(res.value?.posts, setPreviews);
+        preparationPreview(res.value?.posts, setPreviews).then(() => setPreviewLoading(false));
       });
       setNewsPermlink(wobj?.newsFeed?.permlink);
     } else {
@@ -62,7 +63,9 @@ const ObjectNewsFeed = ({ wobj }) => {
             limit: 20,
             newsPermlink: res?.newsFeed?.permlink,
           }),
-        ).then(result => preparationPreview(result.value, setPreviews));
+        ).then(result =>
+          preparationPreview(result.value, setPreviews).then(() => setPreviewLoading(false)),
+        );
         setNewsPermlink(res?.newsFeed?.permlink);
         setCurrObj(res);
       });
@@ -75,6 +78,7 @@ const ObjectNewsFeed = ({ wobj }) => {
 
   const loadMore = () => {
     try {
+      setPreviewLoading(true);
       dispatch(
         getMoreObjectPosts({
           username: objName,
@@ -84,13 +88,13 @@ const ObjectNewsFeed = ({ wobj }) => {
           newsPermlink,
         }),
       ).then(res => {
-        preparationPreview(res.value, setPreviews, previews);
+        preparationPreview(res.value, setPreviews, previews).then(() => setPreviewLoading(false));
       });
       // eslint-disable-next-line no-empty
     } catch (e) {}
   };
 
-  if (isEmpty(posts) && firstLoading) return <Loading margin />;
+  if (firstLoading && previewLoading) return <Loading margin />;
 
   return (
     <FeedMasonry
@@ -98,7 +102,7 @@ const ObjectNewsFeed = ({ wobj }) => {
       posts={posts}
       hasMore={hasMore}
       loadMore={loadMore}
-      loading={isFetching}
+      loading={isFetching || previewLoading}
       previews={previews}
     />
   );

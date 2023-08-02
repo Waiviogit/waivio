@@ -10,22 +10,33 @@ const images = {
   target: '/images/target-logo.svg',
 };
 
-const AffiliatLink = ({ link }) => (
-  <a rel="noreferrer" key={link.link} target="_blank" href={link.link} className="AffiliatLink">
-    {link.image ? (
-      <img
-        className={'AffiliatLink__image'}
-        src={link.image || images[link.type]}
-        alt={'Affiliate button logo'}
-      />
-    ) : (
-      <ReactSVG
-        className={link.type !== 'amazon' ? 'AffiliatLink__icon' : 'AffiliatLink__icon-amazon'}
-        src={images[link.type]}
-      />
-    )}
-  </a>
-);
+const AffiliatLink = ({ link }) => {
+  const onClick = () => window.gtag('event', `click_${link.type}_com`);
+
+  return (
+    <a
+      rel="noreferrer"
+      onClick={onClick}
+      key={link.link}
+      target="_blank"
+      href={link.link}
+      className="AffiliatLink"
+    >
+      {link.image ? (
+        <img
+          className={'AffiliatLink__image'}
+          src={link.image || images[link.type]}
+          alt={'Affiliate button logo'}
+        />
+      ) : (
+        <ReactSVG
+          className={link.type !== 'amazon' ? 'AffiliatLink__icon' : 'AffiliatLink__icon-amazon'}
+          src={images[link.type]}
+        />
+      )}
+    </a>
+  );
+};
 
 AffiliatLink.propTypes = {
   link: PropTypes.shape({

@@ -30,6 +30,8 @@ const UserBlogFeed = () => {
   const favicon = useSelector(getHelmetIcon);
   const siteName = useSelector(getSiteName);
   const [previews, setPreviews] = useState();
+  const [firstLoading, setFirstLoading] = useState(true);
+  const [previewLoading, setPreviewLoading] = useState(true);
   const title = `Blog - ${siteName}`;
   const desc = siteName;
   const image = favicon;
@@ -42,17 +44,26 @@ const UserBlogFeed = () => {
 
   useEffect(() => {
     dispatch(getUserProfileBlogPosts(name, { limit, initialLoad: true })).then(res => {
-      preparationPreview(res.value.posts, setPreviews);
+      setFirstLoading(false);
+      preparationPreview(res.value.posts, setPreviews).then(() => setPreviewLoading(false));
     });
   }, [name]);
 
-  const loadMore = () =>
+  const loadMore = () => {
+    setPreviewLoading(true);
     dispatch(
       getUserProfileBlogPosts(name, {
         limit,
         initialLoad: false,
       }),
-    ).then(res => preparationPreview(res.value.posts, setPreviews, previews));
+    ).then(res =>
+      preparationPreview(res.value.posts, setPreviews, previews).then(() =>
+        setPreviewLoading(false),
+      ),
+    );
+  };
+
+  if (firstLoading && previewLoading) return <Loading margin />;
 
   return (
     <React.Fragment>
@@ -81,7 +92,7 @@ const UserBlogFeed = () => {
         className="Feed"
         loadMore={loadMore}
         loader={<Loading />}
-        loadingMore={isFetching}
+        loadingMore={isFetching || previewLoading}
         hasMore={hasMore}
         elementIsScrollable={false}
         threshold={2500}
