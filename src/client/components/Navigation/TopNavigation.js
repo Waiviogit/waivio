@@ -40,9 +40,11 @@ const LINKS = {
   NOTIFICATIONS: '/notifications-list',
   NEW_ACCOUNT: '/new-accounts',
   DATA_IMPORT: '/data-import',
+  CLAIM_AUTHORITY_BOT: '/claim-athority',
   ASIN_SCANER: '/ASIN-scanner',
   CHROME_EXTENSION: '/chrome-extension',
-  AFFILIAT_CODES: '/affiliateCodes',
+  AFFILIATE_CODES: '/affiliate-codes',
+  USER_AFFILIATE_CODES: '/user-affiliate-codes',
   BLOG: '/user-blog',
   FEED: '/feed',
   BLACKLIST: '/blacklist',
@@ -68,8 +70,10 @@ const TOOLS_URLS = [
   LINKS.WEBSITE_CREATE,
   LINKS.NEW_ACCOUNT,
   LINKS.DATA_IMPORT,
+  LINKS.CLAIM_AUTHORITY_BOT,
   LINKS.ASIN_SCANER,
   LINKS.CHROME_EXTENSION,
+  LINKS.USER_AFFILIATE_CODES,
 ];
 const WEBSITE_URLS = [
   LINKS.TOOLS_SETTINGS,
@@ -81,6 +85,7 @@ const WEBSITE_URLS = [
   LINKS.WEBSITES_AUTHORITIES,
   LINKS.WEBSITES_OBJECT_FILTERS,
   LINKS.WEBSITES_MUTED_USER,
+  LINKS.AFFILIATE_CODES,
   LINKS.WEBSITES_AREAS,
 ];
 

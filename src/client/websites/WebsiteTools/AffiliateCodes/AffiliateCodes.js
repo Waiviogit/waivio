@@ -1,72 +1,50 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { withRouter } from 'react-router';
-import { injectIntl } from 'react-intl';
-import { connect, useSelector } from 'react-redux';
+import { Form } from 'antd';
+import { FormattedMessage, injectIntl } from 'react-intl';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { Button, Input, message } from 'antd';
-import { debounce } from 'lodash';
-
+import { isEmpty, isNil } from 'lodash';
+import { getAuthenticatedUser } from '../../../../store/authStore/authSelectors';
+import { getVotePercent } from '../../../../store/settingsStore/settingsSelectors';
+import { affiliateCodeVoteAppend, appendObject } from '../../../../store/appendStore/appendActions';
+import { getUsedLocale } from '../../../../store/appStore/appSelectors';
+import { getAffiliateObjects } from '../../../../store/affiliateCodes/affiliateCodesSelectors';
 import {
-  addWebAdministrator,
-  deleteWebAdministrator,
-  getWebAdministrators,
-} from '../../../../store/websiteStore/websiteActions';
-import {
-  getAdministrators,
-  getWebsiteLoading,
-} from '../../../../store/websiteStore/websiteSelectors';
-import { affiliateCodesConfig } from './constants';
-import {
-  getAffiliateCodesForWebsite,
-  safeAffiliateCodesForWebsite,
-} from '../../../../waivioApi/ApiClient';
-import { getAuthenticatedUserName } from '../../../../store/authStore/authSelectors';
-
+  resetAffiliateObjects,
+  setAffiliateObjects,
+} from '../../../../store/affiliateCodes/affiliateCodesActions';
+import AffiliateCodesModal from './AffiliateCodesModal';
+import AffiliateCodesList from './AffiliateCodesList';
+import AffiliateCodesAutoComplete from './AffiliateCodesAutoComplete';
 import './AffiliateCodes.less';
 
-export const AffiliateCodes = ({ intl, match, location }) => {
-  const userName = useSelector(getAuthenticatedUserName);
-  const host = match.params.site;
-  const [links, setLinks] = useState([]);
-  const [save, setSave] = useState(false);
+export const AffiliateCodes = ({
+  intl,
+  match,
+  form,
+  appendWobject,
+  rejectCode,
+  affiliateObjects,
+  setAffiliateObjs,
+  resetAffiliateObjs,
+  user,
+  langReadable,
+  userUpVotePower,
+}) => {
+  const [openAppendModal, setOpenAppendModal] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [selectedObj, setSelectedObj] = useState({});
+  const { getFieldDecorator, getFieldValue } = form;
+  const site = match.params.site;
 
   useEffect(() => {
-    getAffiliateCodesForWebsite(userName, host).then(res => {
-      setLinks(
-        res.links.map(link => ({
-          affiliateCode: link.affiliateCode,
-          countryCode: link.countryCode,
-          host: link.host,
-          type: link.type,
-        })),
-      );
-    });
-  }, [location.pathname]);
+    if (!isEmpty(site) && !isNil(site)) {
+      setAffiliateObjs(user.name, site);
+    }
 
-  const handleLinkChange = useCallback(
-    debounce((type, countryCode, value) => {
-      const copyLinks = [...links];
-      const findedIndx = copyLinks.findIndex(
-        link => link.type === type && link.countryCode === countryCode,
-      );
-
-      copyLinks.splice(findedIndx, 1, {
-        ...copyLinks[findedIndx],
-        affiliateCode: value,
-      });
-
-      setLinks(copyLinks);
-    }, 300),
-    [links],
-  );
-
-  const saveAffiliate = () => {
-    setSave(true);
-    safeAffiliateCodesForWebsite(userName, host, links).then(() => {
-      setSave(false);
-      message.success('Affiliate codes updated successfully');
-    });
-  };
+    return () => resetAffiliateObjs();
+  }, [site]);
 
   return (
     <div className="AffiliateCodes">
@@ -74,34 +52,62 @@ export const AffiliateCodes = ({ intl, match, location }) => {
         {intl.formatMessage({
           id: 'affiliate_codes',
           defaultMessage: 'Affiliate codes',
-        })}
+        })}{' '}
+        for {site}
       </h1>
-      {affiliateCodesConfig.map(affiliate => (
-        <div className="AffiliateCodes__block" key={affiliate.title}>
-          <h3 className="AffiliateCodes__title">{affiliate.title}</h3>
-          <p>{intl.formatMessage(affiliate.descriptionIntl)}</p>
-          <div className="AffiliateCodes__list">
-            {links.map(link => (
-              <div key={link[1]}>
-                <h3>{affiliate.linksByCountry[link.countryCode]}:</h3>
-                <Input
-                  onChange={e =>
-                    handleLinkChange(
-                      affiliate.title.toLowerCase(),
-                      link.countryCode,
-                      e.target.value,
-                    )
-                  }
-                  defaultValue={link.affiliateCode}
-                />
-              </div>
-            ))}
-          </div>
-        </div>
-      ))}
-      <Button loading={save} onClick={saveAffiliate} type="primary">
-        Save
-      </Button>
+      {/* eslint-disable-next-line react/no-unescaped-entities */}
+      <p>
+        Enter your affiliate program codes from various platforms, including Amazon.com,
+        Walmart.com, and others. These codes will be automatically integrated into the &apos;Buy
+        Now&apos; links across your website&apos;s product listings. This ensures you earn affiliate
+        commissions from all sales initiated by your website visitors.
+      </p>
+
+      <p>
+        Take advantage of the geo-targeting feature by entering affiliate codes for
+        location-specific shops, such as Amazon.ca, Amazon.co.uk, and more. These codes will direct
+        traffic based on the geographical location of your website visitors, thereby maximizing your
+        potential affiliate revenues.
+      </p>
+
+      <p>
+        {' '}
+        For a seamless and uninterrupted user experience, we also recommend checking and confirming
+        the Product IDs on your products.
+      </p>
+
+      <h3>Find affiliate program</h3>
+      <AffiliateCodesAutoComplete
+        setOpenAppendModal={setOpenAppendModal}
+        affiliateObjects={affiliateObjects}
+        setSelectedObj={setSelectedObj}
+      />
+      <h3>
+        <FormattedMessage id="affiliate_codes" defaultMessage="Affiliate codes" />:
+      </h3>
+      <AffiliateCodesList
+        user={user}
+        context={site}
+        rejectCode={rejectCode}
+        affiliateObjects={affiliateObjects}
+      />
+      <AffiliateCodesModal
+        appendContext={site}
+        user={user}
+        form={form}
+        appendWobject={appendWobject}
+        setOpenAppendModal={setOpenAppendModal}
+        setLoading={setLoading}
+        langReadable={langReadable}
+        userUpVotePower={userUpVotePower}
+        intl={intl}
+        loading={loading}
+        getFieldDecorator={getFieldDecorator}
+        getFieldValue={getFieldValue}
+        context={site}
+        openAppendModal={openAppendModal}
+        selectedObj={selectedObj}
+      />
     </div>
   );
 };
@@ -115,21 +121,28 @@ AffiliateCodes.propTypes = {
       site: PropTypes.string,
     }),
   }).isRequired,
-  location: PropTypes.shape().isRequired,
-};
-
-AffiliateCodes.defaultProps = {
-  admins: [],
+  form: PropTypes.shape(),
+  user: PropTypes.shape(),
+  appendWobject: PropTypes.func,
+  affiliateObjects: PropTypes.arrayOf(),
+  rejectCode: PropTypes.func,
+  setAffiliateObjs: PropTypes.func,
+  resetAffiliateObjs: PropTypes.func,
+  langReadable: PropTypes.string,
+  userUpVotePower: PropTypes.number,
 };
 
 export default connect(
   state => ({
-    admins: getAdministrators(state),
-    isLoading: getWebsiteLoading(state),
+    affiliateObjects: getAffiliateObjects(state),
+    langReadable: getUsedLocale(state),
+    user: getAuthenticatedUser(state),
+    userUpVotePower: getVotePercent(state),
   }),
   {
-    getWebAdmins: getWebAdministrators,
-    addWebAdmins: addWebAdministrator,
-    deleteWebAdmins: deleteWebAdministrator,
+    rejectCode: affiliateCodeVoteAppend,
+    appendWobject: appendObject,
+    setAffiliateObjs: setAffiliateObjects,
+    resetAffiliateObjs: resetAffiliateObjects,
   },
-)(withRouter(injectIntl(AffiliateCodes)));
+)(withRouter(injectIntl(Form.create()(AffiliateCodes))));

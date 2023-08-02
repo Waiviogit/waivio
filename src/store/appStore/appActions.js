@@ -216,6 +216,13 @@ export const setItemsForNavigation = items => ({
   items,
 });
 
+export const SET_MAIN_OBJ = '@app/SET_MAIN_OBJ';
+
+export const setMainObj = obj => ({
+  type: SET_MAIN_OBJ,
+  obj,
+});
+
 export const SET_LOADING_STATUS = '@app/SET_LOADING_STATUS';
 
 export const setLoadingStatus = status => ({

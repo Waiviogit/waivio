@@ -89,7 +89,7 @@ const WebsitesSettings = ({
   if (settingsLoading) return <Loading />;
 
   return (
-    <div className="WebsitesSettings-middle">
+    <div className="WebsitesSettings-middle center">
       <h1>{intl.formatMessage({ id: 'settings' })}</h1>
       <Form className="WebsitesSettings" id="WebsitesSettings" onSubmit={handleSubmit}>
         <Form.Item>

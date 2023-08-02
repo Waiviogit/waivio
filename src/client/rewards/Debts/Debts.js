@@ -6,7 +6,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useRouteMatch } from 'react-router';
 
 import SortSelector from '../../components/SortSelector/SortSelector';
-import { sortDebtObjsData } from '../rewardsHelper';
 import PaymentList from '../Payment/PaymentList';
 import { getTokenRatesInUSD } from '../../../store/walletStore/walletSelectors';
 import FiltersForMobile from '../../newRewards/Filters/FiltersForMobile';
@@ -25,11 +24,11 @@ const Debts = ({
   loading,
   payoutToken,
   setVisible,
+  setSorting,
+  sort,
 }) => {
   const dispatch = useDispatch();
-  const [sort, setSort] = useState('amount');
   const [showModal, setShowModal] = useState(false);
-  const [sortedDebtObjsData, setSortedDebtObjsData] = useState([]);
   const currentUSDPrice = useSelector(state => getTokenRatesInUSD(state, payoutToken));
   const authUserName = useSelector(getAuthenticatedUserName);
   const match = useRouteMatch();
@@ -41,10 +40,7 @@ const Debts = ({
   }, []);
 
   const handleSortChange = sortBy => {
-    const sortedData = sortDebtObjsData(debtObjsData.histories, sortBy);
-
-    setSort(sortBy);
-    setSortedDebtObjsData(sortedData);
+    setSorting(sortBy);
   };
 
   const sortSelector = !isEmpty(debtObjsData.histories) && (
@@ -61,14 +57,6 @@ const Debts = ({
       </SortSelector.Item>
     </SortSelector>
   );
-
-  const getRenderData = () => {
-    if (isEmpty(sortedDebtObjsData)) return debtObjsData.histories;
-
-    return sortedDebtObjsData;
-  };
-
-  const renderData = getRenderData();
 
   return (
     <React.Fragment>
@@ -98,7 +86,7 @@ const Debts = ({
           <FiltersForMobile setVisible={setVisible} />
         </div>
         <PaymentList
-          renderData={renderData}
+          renderData={debtObjsData.histories}
           debtObjsData={debtObjsData}
           componentLocation={componentLocation}
           handleLoadingMore={handleLoadingMore}
@@ -111,7 +99,7 @@ const Debts = ({
           showModal={showModal}
           setShowModal={setShowModal}
           currentUSDPrice={currentUSDPrice}
-          renderData={renderData}
+          renderData={debtObjsData.histories}
           authUserName={authUserName}
         />
       )}
@@ -124,9 +112,11 @@ Debts.propTypes = {
   debtObjsData: PropTypes.shape().isRequired,
   componentLocation: PropTypes.string.isRequired,
   payoutToken: PropTypes.string,
+  sort: PropTypes.string,
   handleLoadingMore: PropTypes.func,
   setVisible: PropTypes.func,
   loading: PropTypes.bool,
+  setSorting: PropTypes.func,
 };
 
 Debts.defaultProps = {

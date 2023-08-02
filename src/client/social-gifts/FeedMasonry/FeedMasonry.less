@@ -74,6 +74,10 @@
     margin-right: 5px;
     font-size: 14px;
 
+    &--cursor {
+      cursor: pointer;
+    }
+
     &--reblog {
       display: none;
 
@@ -109,6 +113,10 @@
 
     @media @small {
       font-size: 20px;
+    }
+
+    &--withMyLike {
+      color: var(--website-color);
     }
   }
 
@@ -153,6 +161,7 @@
         height: 460px;
         padding-bottom: 0;
         min-height: 460px;
+        object-fit: cover;
       }
 
       .PostFeedEmbed__preview,
@@ -173,7 +182,7 @@
     align-items: center;
     justify-content: space-between;
     padding: 5px;
-    color: var(--website-color);
+    color: #99aab5;
     flex-wrap: wrap;
 
     .Payout__waiv-eligible {
@@ -189,7 +198,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    color: var(--website-color);
+    color: #99aab5;
   }
 
   .PostFeedEmbed__playButton .iconfont {

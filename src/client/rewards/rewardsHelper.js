@@ -313,24 +313,6 @@ export const getNewDetailsBody = async (propos, parentObj) => {
   return `${eligibilityRequirements} ${frequencyAssign} ${blacklist} ${postRequirements} ${sponsor} ${rewards} ${legal}`;
 };
 
-export const sortDebtObjsData = (items, sortBy) => {
-  if (!items || !items.length) return [];
-  if (!sortBy) return items;
-  let comparator;
-
-  switch (sortBy) {
-    case 'time':
-      comparator = (a, b) => (a.lastCreatedAt < b.lastCreatedAt ? 1 : -1);
-      break;
-    default:
-      comparator = (a, b) => (b.payable > a.payable ? 1 : -1);
-      break;
-  }
-  const sorted = items.sort(comparator);
-
-  return sorted;
-};
-
 export const getProcessingFee = data => {
   if (!data || isEmpty(data)) return null;
   const amounts = {

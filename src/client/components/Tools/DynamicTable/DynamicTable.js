@@ -51,6 +51,13 @@ export const DynamicTable = ({
       case 'link':
         return <Link to={head.to(item)}>{item[head.id]}</Link>;
 
+      case 'websiteName':
+        return (
+          <a href={`https://${item.host}`} target={'_blank'} rel="noreferrer">
+            {item[head.id]}
+          </a>
+        );
+
       case 'date':
         return moment(item[head.id]).format('DD-MMM-YYYY');
 
@@ -73,7 +80,7 @@ export const DynamicTable = ({
                   });
               }}
             >
-              {item[head.id]}
+              {Array.isArray(item[head.id]) ? item[head.id].length : item[head.id]}
             </span>
           </React.Fragment>
         );

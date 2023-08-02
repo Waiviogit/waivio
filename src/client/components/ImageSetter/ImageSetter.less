@@ -7,9 +7,10 @@
   &__save-btn {
     .btn;
     .btn-primary;
+    background-color: var(--website-color) !important;
     margin-top: 15px;
     width: 400px;
-    color: @white-darker;
+    color: var(--website-text-color) !important;
   }
   &__edit {
     display: flex;
@@ -46,8 +47,8 @@
 
       &:hover,
       &:active {
-        color: @orange;
-        border-color: @orange;
+        color: var(--website-color);
+        border-color: var(--website-color);
       }
     }
   }

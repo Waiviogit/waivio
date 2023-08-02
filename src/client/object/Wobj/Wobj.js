@@ -72,7 +72,9 @@ const Wobj = ({
 
     if (
       !isSocial ||
-      !['book', 'product', 'widget', 'page', 'list', 'newsfeed'].includes(wobject.object_type) ||
+      !['book', 'product', 'person', 'business', 'widget', 'page', 'list', 'newsfeed'].includes(
+        wobject.object_type,
+      ) ||
       (isSocial && isEditMode)
     )
       return (
@@ -91,6 +93,8 @@ const Wobj = ({
     switch (wobject?.object_type) {
       case 'book':
       case 'product':
+      case 'person':
+      case 'business':
         return <SocialProduct toggleViewEditMode={toggleViewEditMode} />;
       case 'widget':
         return <WidgetContent />;

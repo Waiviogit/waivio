@@ -202,6 +202,11 @@ const routes = {
           component: Views.Settings,
         },
         {
+          path: '/user-affiliate-codes',
+          exact: true,
+          component: Views.UserAffiliateCodes,
+        },
+        {
           path: '/edit-profile',
           exact: true,
           component: Views.ProfileSettings,
@@ -252,6 +257,11 @@ const routes = {
           component: Views.ProductExtension,
         },
         {
+          path: '/claim-athority',
+          exact: true,
+          component: Views.ClaimAthorityBot,
+        },
+        {
           path: `/:site/(${URL.WEBSITES.tabs})`,
           pathScope: '/:site',
           exact: true,
@@ -278,7 +288,7 @@ const routes = {
               component: Views.WebsitesAuthorities,
             },
             {
-              path: '/affiliateCodes',
+              path: '/affiliate-codes',
               exact: true,
               component: Views.AffiliateCodes,
             },

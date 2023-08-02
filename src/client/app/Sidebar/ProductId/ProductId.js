@@ -49,11 +49,19 @@ const ProductId = ({ productIdBody, groupId, authorPermlink, isSocialGifts }) =>
                     </div>
                   ),
                 )}
-                <GroupIdContent authorPermlink={authorPermlink} groupId={groupId} />
+                <GroupIdContent
+                  authorPermlink={authorPermlink}
+                  groupId={groupId}
+                  isSocialGifts={isSocialGifts}
+                />
               </div>
             )
           ) : (
-            <GroupIdContent authorPermlink={authorPermlink} groupId={groupId} />
+            <GroupIdContent
+              isSocialGifts={isSocialGifts}
+              authorPermlink={authorPermlink}
+              groupId={groupId}
+            />
           )}
         </div>
       </div>

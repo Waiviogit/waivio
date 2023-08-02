@@ -24,7 +24,7 @@ const Header = () => {
     <React.Fragment>
       <div className="Header">
         <Link to={'/'} className={logoClassList}>
-          {logo && <img alt="logo" src={logo} className="Header__img" />}
+          {logo && <img alt="Social Gifts Logo" src={logo} className="Header__img" />}
           <span>{header || config.host || currHost}</span>
         </Link>
         <GeneralSearch searchBarActive={searchBarActive} isSocialProduct />
@@ -42,13 +42,13 @@ const Header = () => {
               })}
             />
           </button>
-          <HeaderButton searchBarActive={searchBarActive} />
+          <HeaderButton isSocialGifts domain={currHost} searchBarActive={searchBarActive} />
         </div>
       </div>
       {config.mainBanner && (
         <img
           id="socialGiftsMainBanner"
-          alt={''}
+          alt={'Promotional banner for Social Gift Site'}
           src={config.mainBanner}
           style={{
             width: '100%',

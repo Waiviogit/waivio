@@ -36,7 +36,7 @@ const ShopList = ({ userName, path, getShopFeed, isSocial }) => {
   const siteName = useSelector(getSiteName);
   const favicon = useSelector(getHelmetIcon);
   const image = favicon;
-  const title = department || 'Shop';
+  const title = `${department || 'Shop'} - ${siteName}`;
   const canonicalUrl = typeof location !== 'undefined' && location?.origin;
   const pathList = match.params.department
     ? [match.params.department, ...getPermlinksFromHash(location.hash)]

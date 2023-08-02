@@ -33,6 +33,11 @@ export const personalSettings = {
       defaultMessage: 'Settings',
     },
     {
+      to: '/user-affiliate-codes',
+      id: 'user_affiliate_codes',
+      defaultMessage: 'Affiliate codes',
+    },
+    {
       to: '/guests-settings',
       id: 'guest_settings',
       defaultMessage: 'Guests Settings',
@@ -66,6 +71,11 @@ export const dataManagementSettings = {
       to: '/chrome-extension',
       id: 'chrome-extension',
       defaultMessage: 'Chrome extension',
+    },
+    {
+      to: '/claim-athority',
+      id: 'claim_athority',
+      defaultMessage: 'Claim authority',
     },
   ],
 };
@@ -129,7 +139,7 @@ export const currentWebsiteSettings = site => {
 
   if (socialDomens.some(item => site.includes(item))) {
     items.splice(2, 0, {
-      to: `/${site}/affiliateCodes`,
+      to: `/${site}/affiliate-codes`,
       id: 'affiliate_codes',
       defaultMessage: 'Affiliate codes',
     });

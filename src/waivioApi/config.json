@@ -54,6 +54,7 @@
   "importProduct":  "/import-products",
   "amazonAsins":  "/amazon-asins",
   "power": "/power",
+  "authority": "/authority",
   "deactivate": "/deactivate",
   "childWobjects": "/child_wobjects",
   "createCampaign": "/create_campaign",

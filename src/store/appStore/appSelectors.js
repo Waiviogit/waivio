@@ -31,6 +31,8 @@ export const getIsBannerClosed = createSelector([appState], state => state.banne
 
 export const getAppUrl = createSelector([appState], state => state.appUrl);
 
+export const getMainObj = createSelector([appState], state => state.mainObj);
+
 export const getUsedLocale = createSelector([appState], state => state.usedLocale);
 
 export const getScreenSize = createSelector([appState], state => state.screenSize);
@@ -107,8 +109,8 @@ export const getSiteName = createSelector(
   state =>
     state.configuration?.header?.name ||
     state?.configuration?.host ||
-    state.hostAddress ||
-    state?.websiteName,
+    state?.websiteName ||
+    state?.host,
 );
 
 export const getCurrentCurrency = createSelector([appState], state => state.currencyInfo);
