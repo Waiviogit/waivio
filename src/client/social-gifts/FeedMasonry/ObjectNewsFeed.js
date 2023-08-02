@@ -15,7 +15,7 @@ import {
 import { getMoreObjectPosts, getObjectPosts } from '../../../store/feedStore/feedActions';
 import { getPosts } from '../../../store/postsStore/postsSelectors';
 import { getLastPermlinksFromHash, getObjectName } from '../../../common/helpers/wObjectHelper';
-import { preparationPostList } from './helpers';
+import { preparationPostList, preparationPreview } from './helpers';
 import Loading from '../../components/Icon/Loading';
 
 const limit = 15;
@@ -24,6 +24,7 @@ const ObjectNewsFeed = ({ wobj }) => {
   const readLanguages = useSelector(getReadLanguages);
   const [newsPermlink, setNewsPermlink] = useState();
   const [currObj, setCurrObj] = useState();
+  const [previews, setPreviews] = useState();
   const [firstLoading, setFirstLoading] = useState(true);
   const feed = useSelector(getFeed);
   const postsList = useSelector(getPosts);
@@ -47,7 +48,10 @@ const ObjectNewsFeed = ({ wobj }) => {
           limit,
           newsPermlink: wobj?.newsFeed?.permlink,
         }),
-      ).then(() => setFirstLoading(false));
+      ).then(res => {
+        setFirstLoading(false);
+        preparationPreview(res.value?.posts, setPreviews);
+      });
       setNewsPermlink(wobj?.newsFeed?.permlink);
     } else {
       getObject(objName).then(res => {
@@ -58,7 +62,7 @@ const ObjectNewsFeed = ({ wobj }) => {
             limit: 20,
             newsPermlink: res?.newsFeed?.permlink,
           }),
-        );
+        ).then(result => preparationPreview(result.value, setPreviews));
         setNewsPermlink(res?.newsFeed?.permlink);
         setCurrObj(res);
       });
@@ -69,16 +73,22 @@ const ObjectNewsFeed = ({ wobj }) => {
     getPostsList();
   }, [objName]);
 
-  const loadMore = () =>
-    dispatch(
-      getMoreObjectPosts({
-        username: objName,
-        authorPermlink: objName,
-        limit,
-        skip: posts?.length,
-        newsPermlink,
-      }),
-    );
+  const loadMore = () => {
+    try {
+      dispatch(
+        getMoreObjectPosts({
+          username: objName,
+          authorPermlink: objName,
+          limit,
+          skip: posts?.length,
+          newsPermlink,
+        }),
+      ).then(res => {
+        preparationPreview(res.value, setPreviews, previews);
+      });
+      // eslint-disable-next-line no-empty
+    } catch (e) {}
+  };
 
   if (isEmpty(posts) && firstLoading) return <Loading margin />;
 
@@ -89,6 +99,7 @@ const ObjectNewsFeed = ({ wobj }) => {
       hasMore={hasMore}
       loadMore={loadMore}
       loading={isFetching}
+      previews={previews}
     />
   );
 };

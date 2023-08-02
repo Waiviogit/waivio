@@ -159,9 +159,9 @@ const GeneralSearch = props => {
     let redirectUrl = '';
 
     switch (data.props.marker) {
-      // case markers.USER:
-      //   redirectUrl = `/@${value}`;
-      //   break;
+      case markers.USER:
+        redirectUrl = `/@${value}`;
+        break;
       case markers.WOBJ:
         redirectUrl = value;
         break;
