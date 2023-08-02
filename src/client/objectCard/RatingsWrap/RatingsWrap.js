@@ -73,7 +73,7 @@ const RatingsWrap = React.memo(({ ratings, wobjId, username, overlay, isSocialPr
             disabled={!isAuth}
           />
         </div>
-        <div className={ratingTitleClassList}>{currRate.body}</div>
+        <span className={ratingTitleClassList}>{currRate.body}</span>
       </Col>
     );
   };
