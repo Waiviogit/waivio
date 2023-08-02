@@ -110,6 +110,7 @@ const SocialProduct = ({
   const affiliateLinks = wobject?.affiliateLinks || [];
   const referenceWobjType = ['business', 'person'].includes(wobject.object_type);
   const price = hoveredOption.price || get(wobject, 'price');
+  const website = parseWobjectField(wobject, 'website');
   const manufacturer = parseWobjectField(wobject, 'manufacturer');
   const parent = get(wobject, 'parent');
   const ageRange = get(wobject, 'ageRange');
@@ -196,6 +197,7 @@ const SocialProduct = ({
     !isEmpty(publisher) ||
     !isEmpty(productAuthors) ||
     !isEmpty(authors) ||
+    !isEmpty(website) ||
     !isEmpty(ageRange);
 
   const getAddOnsSimilarRelatedObjects = () => {
@@ -460,6 +462,7 @@ const SocialProduct = ({
             {!isEmpty(menuItem) && <SocialMenuItems menuItem={menuItem} />}
             {showProductDetails && (
               <ProductDetails
+                website={website}
                 locale={locale}
                 publisher={publisher}
                 printLength={printLength}
