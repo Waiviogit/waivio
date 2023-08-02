@@ -63,9 +63,10 @@ const ObjectNewsFeed = ({ wobj }) => {
             limit: 20,
             newsPermlink: res?.newsFeed?.permlink,
           }),
-        ).then(result =>
-          preparationPreview(result.value, setPreviews).then(() => setPreviewLoading(false)),
-        );
+        ).then(result => {
+          setFirstLoading(false);
+          preparationPreview(result.value, setPreviews).then(() => setPreviewLoading(false));
+        });
         setNewsPermlink(res?.newsFeed?.permlink);
         setCurrObj(res);
       });
