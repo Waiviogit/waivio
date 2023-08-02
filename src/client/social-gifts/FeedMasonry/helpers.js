@@ -21,9 +21,11 @@ export const preparationPreview = (postItems, setPreviews, previousRes = []) => 
     .filter(i => i);
 
   if (!isEmpty(urls))
-    getVideoPostsPriview(urls).then(res => {
+    return getVideoPostsPriview(urls).then(res => {
       setPreviews([...res, ...previousRes]);
     });
+
+  return Promise.resolve('Done');
 };
 
 export const preparationPostList = (postsIds, postsList) =>

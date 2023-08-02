@@ -27,6 +27,8 @@ const limit = 20;
 const WebsiteFeed = () => {
   const [firstLoading, setFirstLoading] = useState(true);
   const [previews, setPreviews] = useState();
+  const [previewLoading, setPreviewLoading] = useState(true);
+
   const feed = useSelector(getFeed);
   const postsList = useSelector(getPosts);
   const authUserName = useSelector(getAuthenticatedUserName);
@@ -40,23 +42,28 @@ const WebsiteFeed = () => {
   useEffect(() => {
     dispatch(getUserFeedContent({ userName: authUserName, limit })).then(res => {
       setFirstLoading(false);
-      preparationPreview(res.value.posts, setPreviews);
+      preparationPreview(res.value, setPreviews).then(() => {
+        setPreviewLoading(false);
+      });
     });
   }, []);
 
-  const loadMore = () =>
-    dispatch(getMoreUserFeedContent({ userName: authUserName, limit })).then(res =>
-      preparationPreview(res.value.posts, setPreviews, previews),
-    );
+  const loadMore = () => {
+    setPreviewLoading(true);
 
-  if (isEmpty(posts) && firstLoading) return <Loading margin />;
+    dispatch(getMoreUserFeedContent({ userName: authUserName, limit })).then(res =>
+      preparationPreview(res.value, setPreviews, previews).then(() => setPreviewLoading(false)),
+    );
+  };
+
+  if (firstLoading && previewLoading) return <Loading margin />;
 
   return (
     <ReduxInfiniteScroll
       className="Feed"
       loadMore={loadMore}
       loader={<Loading />}
-      loadingMore={isFetching}
+      loadingMore={isFetching || previewLoading}
       hasMore={hasMore}
       elementIsScrollable={false}
       threshold={3000}
