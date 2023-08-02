@@ -88,6 +88,16 @@ export const notificationType = {
       defaultMessage: 'Activation campaign',
       name: 'activationCampaign',
     },
+    {
+      id: 'claimed_object_updates',
+      defaultMessage: 'Claimed object updates',
+      name: 'objectUpdates',
+    },
+    {
+      id: 'group_id_control',
+      defaultMessage: 'Group ID control',
+      name: 'objectGroupId',
+    },
   ],
   walletTransactions: [
     {
