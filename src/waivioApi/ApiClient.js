@@ -3566,6 +3566,34 @@ export const getSimilarObjectsFromDepartments = (authorPermlink, userName, local
     .then(r => r)
     .catch(error => error);
 
+export const sendTiktokPriview = (url, urlPreview) =>
+  fetch(`${config.apiPrefix}${config.posts}${config.previewCache}`, {
+    headers,
+    method: 'PUT',
+    body: JSON.stringify({
+      url,
+      urlPreview,
+    }),
+  })
+    .then(res => res.json())
+    .then(r => r)
+    .catch(error => error);
+
+export const getVideoPostsPriview = urls => {
+  if (isEmpty(urls)) return Promise.resolve([]);
+
+  return fetch(`${config.apiPrefix}${config.posts}${config.previewCache}`, {
+    headers,
+    method: 'POST',
+    body: JSON.stringify({
+      urls,
+    }),
+  })
+    .then(res => res.json())
+    .then(r => r)
+    .catch(error => error);
+};
+
 export const getChromeExtensionVersion = () =>
   fetch(
     'https://raw.githubusercontent.com/Waiviogit/waivio-import-extension/master/extension/manifest.json',

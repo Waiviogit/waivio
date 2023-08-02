@@ -55,6 +55,7 @@
   "amazonAsins":  "/amazon-asins",
   "power": "/power",
   "authority": "/authority",
+  "previewCache": "/preview-cache",
   "deactivate": "/deactivate",
   "childWobjects": "/child_wobjects",
   "createCampaign": "/create_campaign",

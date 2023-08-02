@@ -24,6 +24,7 @@ const FeedMasonry = ({
   emptyLable,
   intl,
   writeReview,
+  previews,
 }) => {
   const favicon = useSelector(getHelmetIcon);
   const siteName = useSelector(getSiteName);
@@ -71,9 +72,20 @@ const FeedMasonry = ({
           className="FeedMasonry my-masonry-grid"
           columnClassName="my-masonry-grid_column"
         >
-          {posts?.map(post => (
-            <FeedItem key={`${post.author}/${post?.permlink}`} photoQuantity={2} post={post} />
-          ))}
+          {posts?.map(post => {
+            const urlPreview = isEmpty(previews)
+              ? ''
+              : previews?.find(i => i.url === post?.embeds[0]?.url)?.urlPreview;
+
+            return (
+              <FeedItem
+                preview={urlPreview}
+                key={`${post.author}/${post?.permlink}`}
+                photoQuantity={2}
+                post={post}
+              />
+            );
+          })}
         </Masonry>
         <PostModal />
       </InfiniteSroll>
@@ -87,6 +99,7 @@ FeedMasonry.propTypes = {
   hasMore: PropTypes.bool,
   emptyLable: PropTypes.bool,
   posts: PropTypes.arrayOf(PropTypes.shape({})),
+  previews: PropTypes.arrayOf(PropTypes.shape({})),
   loading: PropTypes.bool,
   objName: PropTypes.string,
   intl: PropTypes.shape(),

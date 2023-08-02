@@ -52,10 +52,12 @@ export const DynamicTable = ({
         return <Link to={head.to(item)}>{item[head.id]}</Link>;
 
       case 'websiteName':
-        return (
+        return item.status === 'active' ? (
           <a href={`https://${item.host}`} target={'_blank'} rel="noreferrer">
             {item[head.id]}
           </a>
+        ) : (
+          <span>{item[head.id]}</span>
         );
 
       case 'date':
