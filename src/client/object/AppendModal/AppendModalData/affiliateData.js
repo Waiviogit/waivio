@@ -6,7 +6,7 @@ export const allCountries = {
   AG: 'Antigua and Barbuda',
   AR: 'Argentina',
   AM: 'Armenia',
-  AU: 'Australia',
+  AU: 'Australia (country)',
   AT: 'Austria',
   AZ: 'Azerbaijan',
   BS: 'Bahamas',
@@ -217,7 +217,7 @@ export const allContinents = {
   'SOUTH AMERICA': 'South America',
   ANTARCTICA: 'Antarctica',
   EUROPE: 'Europe',
-  AUSTRALIA: 'Australia',
+  AUSTRALIA: 'Australia (continent)',
 };
 
 export default null;
