@@ -2328,5 +2328,11 @@
   "affiliate_url_error": "Please enter valid URL. It should begin with the website name and include PRODUCTID and AFFILIATECODE.",
   "my_affiliate_code": "My affiliate code",
   "aff_codes_empty": "No affiliate codes added.",
-  "affiliate_codes": "Affiliate codes"
+  "affiliate_codes": "Affiliate codes",
+"claimed_object_updates": "Claimed object updates",
+"group_id_control": "Group ID control",
+  "notification_object_update": "{user} added new {update} for {objectName}",
+  "notification_object_update_reject": "{user} rejected the {update} for {objectName}",
+  "notification_group_id_update": "{user} added Group ID for {objectName}",
+  "notification_group_id_update_reject": "{user} rejected the Group ID for {objectName}"
 }

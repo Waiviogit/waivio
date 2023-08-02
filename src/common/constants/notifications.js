@@ -36,6 +36,10 @@ export const DELEGATE = 'delegate';
 export const UNDELEGATE = 'undelegate';
 export const POWER_DOWN = 'power_down';
 export const CANCEL_UNSTAKE = 'cancelUnstake';
+export const OBJECT_UPDATES = 'objectUpdates';
+export const OBJECT_UPDATES_REJECT = 'objectUpdatesReject';
+export const GROUP_ID_UPDATES = 'groupIdUpdates';
+export const GROUP_ID_UPDATES_REJECT = 'groupIdUpdatesReject';
 
 export const PARSED_NOTIFICATIONS = [
   REPLY,
@@ -74,6 +78,10 @@ export const PARSED_NOTIFICATIONS = [
   POWER_DOWN,
   CANCEL_UNSTAKE,
   ARBITRAGE,
+  OBJECT_UPDATES_REJECT,
+  OBJECT_UPDATES,
+  GROUP_ID_UPDATES,
+  GROUP_ID_UPDATES_REJECT,
 ];
 
 export const BUSY_API_TYPES = {
