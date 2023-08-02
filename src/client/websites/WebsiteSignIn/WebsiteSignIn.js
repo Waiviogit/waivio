@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import hivesigner from 'hivesigner';
 import { injectIntl } from 'react-intl';
 import { withRouter } from 'react-router-dom';
-import { has, isEmpty } from 'lodash';
+import { isEmpty } from 'lodash';
 import PropTypes from 'prop-types';
 import { message } from 'antd';
 
@@ -37,11 +37,10 @@ const WebsiteSignIn = props => {
   const dispatch = useDispatch();
   const currentHost = useSelector(getCurrentHost);
   const query = new URLSearchParams(props.location.search);
-  const websiteTitle = has(query, 'websiteName')
-    ? query
-        .get('websiteName')
-        .replace('http://', '')
-        .replace('https://', '')
+  const websiteName = query.get('websiteName');
+
+  const websiteTitle = websiteName
+    ? websiteName.replace('http://', '').replace('https://', '')
     : location.hostname;
   const url = query.get('host') || currentHost + location.pathname;
   const urlObj = new URL(url);
