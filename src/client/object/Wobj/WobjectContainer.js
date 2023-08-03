@@ -281,6 +281,7 @@ class WobjectContainer extends React.Component {
       nestedWobject,
       isFetching,
       history,
+      location,
     } = this.props;
     const { isEditMode } = this.state;
     const objectName = getObjectName(wobject);
@@ -303,7 +304,7 @@ class WobjectContainer extends React.Component {
         authenticated={authenticated}
         failed={failed}
         authenticatedUserName={authenticatedUserName}
-        match={match}
+        location={location}
         wobject={wobject}
         nestedWobject={nestedWobject}
         isFetching={isFetching}
