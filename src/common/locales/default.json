@@ -1530,7 +1530,7 @@
   "pay_now": "Pay now",
   "websites": "Websites:",
   "website_save_webconfig_success": "Website successfully updated",
-  "website_domain_pattern": "You`ve entered invalid data. Only Latin lowercase letters and 0-9 digits allowed",
+  "website_domain_pattern": "You've entered invalid data. Only Latin lowercase letters and 0-9 digits allowed",
   "website_domain_available": "The domain must contain at least {symbol} characters.",
   "website_domain_name_available": "You can`t use only www in domain name",
   "website_politics_available": "Should accept agreement",
@@ -2334,5 +2334,7 @@
   "notification_object_update": "{user} added new {update} for {objectName}",
   "notification_object_update_reject": "{user} rejected the {update} for {objectName}",
   "notification_group_id_update": "{user} added Group ID for {objectName}",
-  "notification_group_id_update_reject": "{user} rejected the Group ID for {objectName}"
+  "notification_group_id_update_reject": "{user} rejected the Group ID for {objectName}",
+  "select_template": "Select template",
+  "select_name": "Select name"
 }
