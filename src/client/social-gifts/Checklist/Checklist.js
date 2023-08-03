@@ -67,7 +67,8 @@ const Checklist = ({
 
     setLoading(true);
     getObject(pathUrl, userName, locale).then(wObject => {
-      if (wObject.object_type === 'list') window.gtag('event', getObjectName(wObject));
+      if (wObject.object_type === 'list' && window.gtag)
+        window.gtag('event', getObjectName(wObject));
       setObject(wObject);
       if (history.location.hash) {
         setNestedObject(wObject);
