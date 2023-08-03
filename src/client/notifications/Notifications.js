@@ -134,7 +134,15 @@ class Notifications extends React.Component {
                     defaultMessage="{user} added new {update} for {objectName}"
                     values={{
                       user: <span className="username">{notification.initiator}</span>,
-                      update: <span>{notification.fieldName}</span>,
+                      update: (
+                        <span>
+                          {' '}
+                          <FormattedMessage
+                            id={`object_field_${notification.fieldName}`}
+                            defaultMessage={notification.fieldName}
+                          />
+                        </span>
+                      ),
                       objectName: <span className="username">{notification.objectName}</span>,
                     }}
                     key={key}
@@ -186,7 +194,15 @@ class Notifications extends React.Component {
                     defaultMessage="{user} rejected the {update} for {objectName}"
                     values={{
                       user: <span className="username">{notification.initiator}</span>,
-                      update: <span>{notification.fieldName}</span>,
+                      update: (
+                        <span>
+                          {' '}
+                          <FormattedMessage
+                            id={`object_field_${notification.fieldName}`}
+                            defaultMessage={notification.fieldName}
+                          />
+                        </span>
+                      ),
                       objectName: <span className="username">{notification.objectName}</span>,
                     }}
                     key={key}
