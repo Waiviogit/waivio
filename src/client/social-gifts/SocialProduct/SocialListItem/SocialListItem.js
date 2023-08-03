@@ -5,6 +5,7 @@ import { FormattedMessage } from 'react-intl';
 import { objAuthorPermlink } from '../SocialProductHelper';
 import { objectFields } from '../../../../common/constants/listOfFields';
 import { getObjectName } from '../../../../common/helpers/wObjectHelper';
+import { getLink } from '../../../object/wObjectHelper';
 
 const SocialListItem = ({ fieldName, field, title }) => {
   const fieldPermlink = field.author_permlink || field.authorPermlink;
@@ -17,7 +18,7 @@ const SocialListItem = ({ fieldName, field, title }) => {
         return objAuthorPermlink(field) ? (
           <Link to={`/object/${objAuthorPermlink(field)}`}>{field.name}</Link>
         ) : (
-          <span>{field.name}</span>
+          <Link to={`/discover-objects/product?search=${field.name}`}>{field.name}</Link>
         );
       case objectFields.productWeight:
         return (
@@ -36,6 +37,14 @@ const SocialListItem = ({ fieldName, field, title }) => {
       case objectFields.language:
       case objectFields.publicationDate:
         return <span>{field}</span>;
+      case objectFields.website:
+        return (
+          <span>
+            <a target="_blank" rel="noopener noreferrer" href={getLink(field.link)}>
+              {field.title}
+            </a>
+          </span>
+        );
       case objectFields.printLength:
         return (
           <>
@@ -69,7 +78,7 @@ const SocialListItem = ({ fieldName, field, title }) => {
             <Link to={field.defaultShowLink}>{getObjectName(field)}</Link>
           </span>
         ) : (
-          <span>{field.name}</span>
+          <Link to={`/discover-objects/book?search=${field.name}`}>{field.name}</Link>
         );
       default:
         return null;

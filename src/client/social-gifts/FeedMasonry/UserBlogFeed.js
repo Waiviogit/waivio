@@ -1,8 +1,10 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
 import { Helmet } from 'react-helmet/es/Helmet';
-import { useDispatch, useSelector } from 'react-redux';
 import Masonry from 'react-masonry-css';
+import { isEmpty } from 'lodash';
+
+import { useDispatch, useSelector } from 'react-redux';
 import { getUserProfileBlogPosts } from '../../../store/feedStore/feedActions';
 import {
   getFeedFromState,
@@ -11,12 +13,12 @@ import {
 } from '../../../common/helpers/stateHelpers';
 import { getFeed } from '../../../store/feedStore/feedSelectors';
 import { getPosts } from '../../../store/postsStore/postsSelectors';
+import PostModal from '../../post/PostModalContainer';
+import { breakpointColumnsObj, preparationPostList, preparationPreview } from './helpers';
+import { getHelmetIcon, getSiteName } from '../../../store/appStore/appSelectors';
 import ReduxInfiniteScroll from '../../vendor/ReduxInfiniteScroll';
 import Loading from '../../components/Icon/Loading';
 import FeedItem from './FeedItem';
-import PostModal from '../../post/PostModalContainer';
-import { breakpointColumnsObj, preparationPostList } from './helpers';
-import { getHelmetIcon, getSiteName } from '../../../store/appStore/appSelectors';
 
 const limit = 25;
 
@@ -27,6 +29,9 @@ const UserBlogFeed = () => {
   const dispatch = useDispatch();
   const favicon = useSelector(getHelmetIcon);
   const siteName = useSelector(getSiteName);
+  const [previews, setPreviews] = useState();
+  const [firstLoading, setFirstLoading] = useState(true);
+  const [previewLoading, setPreviewLoading] = useState(true);
   const title = `Blog - ${siteName}`;
   const desc = siteName;
   const image = favicon;
@@ -38,17 +43,27 @@ const UserBlogFeed = () => {
   const posts = preparationPostList(postsIds, postsList);
 
   useEffect(() => {
-    dispatch(getUserProfileBlogPosts(name, { limit, initialLoad: true }));
+    dispatch(getUserProfileBlogPosts(name, { limit, initialLoad: true })).then(res => {
+      setFirstLoading(false);
+      preparationPreview(res.value.posts, setPreviews).then(() => setPreviewLoading(false));
+    });
   }, [name]);
 
   const loadMore = () => {
+    setPreviewLoading(true);
     dispatch(
       getUserProfileBlogPosts(name, {
         limit,
         initialLoad: false,
       }),
+    ).then(res =>
+      preparationPreview(res.value.posts, setPreviews, previews).then(() =>
+        setPreviewLoading(false),
+      ),
     );
   };
+
+  if (firstLoading && previewLoading) return <Loading margin />;
 
   return (
     <React.Fragment>
@@ -77,7 +92,7 @@ const UserBlogFeed = () => {
         className="Feed"
         loadMore={loadMore}
         loader={<Loading />}
-        loadingMore={isFetching}
+        loadingMore={isFetching || previewLoading}
         hasMore={hasMore}
         elementIsScrollable={false}
         threshold={2500}
@@ -87,9 +102,20 @@ const UserBlogFeed = () => {
           className="FeedMasonry my-masonry-grid"
           columnClassName="my-masonry-grid_column"
         >
-          {posts?.map(post => (
-            <FeedItem key={`${post.author}/${post?.permlink}`} photoQuantity={2} post={post} />
-          ))}
+          {posts?.map(post => {
+            const urlPreview = isEmpty(previews)
+              ? ''
+              : previews?.find(i => i.url === post?.embeds[0].url).urlPreview;
+
+            return (
+              <FeedItem
+                key={`${post.author}/${post?.permlink}`}
+                preview={urlPreview}
+                photoQuantity={2}
+                post={post}
+              />
+            );
+          })}
         </Masonry>
         <PostModal />
       </ReduxInfiniteScroll>

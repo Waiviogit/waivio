@@ -20,7 +20,6 @@ import Loading from '../../components/Icon/Loading';
 
 const Wobj = ({
   authenticatedUserName: userName,
-  match,
   wobject,
   isEditMode,
   toggleViewEditMode,
@@ -36,10 +35,10 @@ const Wobj = ({
   siteName,
   appUrl,
   isSocial,
+  location,
 }) => {
   const image = getObjectAvatar(wobject) || DEFAULTS.AVATAR;
-  const canonicalUrl = `${appUrl}/object/${match.params.name}`;
-  const url = `${appUrl}/object/${match.params.name}`;
+  const canonicalUrl = `${appUrl}${location?.pathname}`;
   const address = parseAddress(wobject);
   const titleText = compareObjectTitle(isWaivio, objectName, address, siteName);
   const rank = hasType(wobject, 'restaurant') ? `Restaurant rank: ${round(weightValue, 2)}.` : '';
@@ -72,7 +71,9 @@ const Wobj = ({
 
     if (
       !isSocial ||
-      !['book', 'product', 'widget', 'page', 'list', 'newsfeed'].includes(wobject.object_type) ||
+      !['book', 'product', 'person', 'business', 'widget', 'page', 'list', 'newsfeed'].includes(
+        wobject.object_type,
+      ) ||
       (isSocial && isEditMode)
     )
       return (
@@ -91,6 +92,8 @@ const Wobj = ({
     switch (wobject?.object_type) {
       case 'book':
       case 'product':
+      case 'person':
+      case 'business':
         return <SocialProduct toggleViewEditMode={toggleViewEditMode} />;
       case 'widget':
         return <WidgetContent />;
@@ -123,7 +126,7 @@ const Wobj = ({
         <meta property="description" content={desc} />
         <meta property="og:title" content={titleText} />
         <meta property="og:type" content="article" />
-        <meta property="og:url" content={url} />
+        <meta property="og:url" content={canonicalUrl} />
         <meta property="og:image" content={image} />
         <meta property="og:image:url" content={image} />
         <meta property="og:image:width" content="600" />
@@ -147,9 +150,9 @@ const Wobj = ({
 Wobj.propTypes = {
   route: PropTypes.shape().isRequired,
   authenticatedUserName: PropTypes.string.isRequired,
-  match: PropTypes.shape().isRequired,
   wobject: PropTypes.shape(),
   nestedWobject: PropTypes.shape(),
+  location: PropTypes.shape(),
   supportedObjectTypes: PropTypes.arrayOf(PropTypes.string),
   isEditMode: PropTypes.bool.isRequired,
   isWaivio: PropTypes.bool.isRequired,

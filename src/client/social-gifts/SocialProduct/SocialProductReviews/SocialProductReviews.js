@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { isEmpty, uniq } from 'lodash';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router';
@@ -22,20 +22,29 @@ import {
   handleCreatePost,
 } from '../../../../common/helpers/wObjectHelper';
 import './SocialProductReviews.less';
+import { getIsAuthenticated } from '../../../../store/authStore/authSelectors';
+import ModalSignIn from '../../../components/Navigation/ModlaSignIn/ModalSignIn';
 
 const SocialProductReviews = ({ wobject, authors, intl }) => {
+  const [showSignIn, setShowSignIn] = useState(false);
   const feed = useSelector(getFeed);
   const postsList = useSelector(getPosts);
+  const isAuthUser = useSelector(getIsAuthenticated);
   const dispatch = useDispatch();
   const history = useHistory();
   const { name } = useParams();
+  const currHost = typeof location !== 'undefined' && location.hostname;
   const objName = history.location.hash ? getLastPermlinksFromHash(history.location.hash) : name;
   const postsIds = uniq(getFeedFromState('objectPosts', objName, feed));
   const hasMore = getFeedHasMoreFromState('objectPosts', objName, feed);
   const isFetching = getFeedLoadingFromState('objectPosts', objName, feed);
   const posts = preparationPostList(postsIds, postsList);
   const handleWriteReviewClick = () => {
-    handleCreatePost(wobject, authors, history);
+    if (!isAuthUser) {
+      setShowSignIn(true);
+    } else {
+      handleCreatePost(wobject, authors, history);
+    }
   };
 
   const getPostsList = () => {
@@ -85,6 +94,14 @@ const SocialProductReviews = ({ wobject, authors, intl }) => {
         loadMore={loadMore}
         loading={isFetching}
         writeReview={handleWriteReviewClick}
+      />
+      <ModalSignIn
+        isSocialGifts
+        domain={currHost}
+        hideLink
+        isButton={false}
+        handleLoginModalCancel={() => setShowSignIn(false)}
+        showModal={showSignIn}
       />
     </div>
   );

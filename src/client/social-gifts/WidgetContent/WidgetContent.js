@@ -27,8 +27,12 @@ const WidgetContent = ({ wobj }) => {
   useEffect(() => {
     if (wobj) {
       setWobject(wobj);
+      if (window.gtag) window.gtag('event', getObjectName(wobj));
     } else {
-      getObject(objName, userName, locale).then(obj => setWobject(obj));
+      getObject(objName, userName, locale).then(obj => {
+        setWobject(obj);
+        if (window.gtag) window.gtag('event', getObjectName(obj));
+      });
     }
   }, [objName]);
 

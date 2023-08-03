@@ -123,7 +123,9 @@ const PostPopoverMenu = ({
   const dispatch = useDispatch();
   const match = useRouteMatch();
   const wobjAuthorPermlink = match.params.name;
-  const hidePinRemove = !match.url.includes(`/${wobjAuthorPermlink}`) || isSocial;
+  const hidePinRemove =
+    !match.url.includes(`/${wobjAuthorPermlink}`) ||
+    (isSocial && !match.url.includes(`/${wobjAuthorPermlink}`));
 
   const { isReported, isSaved } = postState;
   const hasOnlySponsorLike =

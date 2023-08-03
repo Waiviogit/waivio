@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { Helmet } from 'react-helmet';
+import { useLocation } from 'react-router';
 
 import { renderRoutes } from 'react-router-config';
 import Affix from '../components/Utils/Affix';
@@ -16,9 +17,10 @@ const RewardsMainPage = props => {
   const helmetIcon = useSelector(getHelmetIcon);
   const siteName = useSelector(getWebsiteName);
   const appUrl = useSelector(getAppUrl);
+  const location = useLocation();
   const desc = 'Reserve the reward for a few days. Share photos of the dish and get the reward!';
   const img = DEFAULTS.FAVICON;
-  const urlCurr = `${appUrl}/rewards`;
+  const urlCurr = `${appUrl}${location.pathname}`;
   const title = `Rewards - ${siteName}`;
 
   return (

@@ -15,7 +15,7 @@ import QuickPostEditor from '../components/QuickPostEditor/QuickPostEditor';
 import MobileNavigation from '../components/Navigation/MobileNavigation/MobileNavigation';
 import { getIsAuthenticated, getIsLoaded } from '../../store/authStore/authSelectors';
 import { getObject as getObjectState } from '../../store/wObjectStore/wObjectSelectors';
-import { getCurrentHost, getHelmetIcon } from '../../store/appStore/appSelectors';
+import { getAppUrl, getHelmetIcon } from '../../store/appStore/appSelectors';
 
 @injectIntl
 @withRouter
@@ -24,7 +24,7 @@ import { getCurrentHost, getHelmetIcon } from '../../store/appStore/appSelectors
   loaded: getIsLoaded(state),
   wobject: getObjectState(state),
   helmetIcon: getHelmetIcon(state),
-  host: getCurrentHost(state),
+  appUrl: getAppUrl(state),
 }))
 class Page extends React.Component {
   static fetchData({ store, match }) {
@@ -36,8 +36,9 @@ class Page extends React.Component {
   static propTypes = {
     authenticated: PropTypes.bool.isRequired,
     helmetIcon: PropTypes.string.isRequired,
-    host: PropTypes.string.isRequired,
+    appUrl: PropTypes.string.isRequired,
     history: PropTypes.shape().isRequired,
+    location: PropTypes.shape().isRequired,
     match: PropTypes.shape().isRequired,
     route: PropTypes.shape().isRequired,
     wobject: PropTypes.shape(),
@@ -62,20 +63,23 @@ class Page extends React.Component {
   handleTopicClose = () => this.props.history.push('/trending');
 
   render() {
-    const { authenticated, history, wobject, match } = this.props;
+    const { authenticated, history, wobject, match, appUrl } = this.props;
     const isPageMode = true;
     const sortBy = authenticated ? match.params.sortBy : match.params.sortBy || 'trending';
-    const description = 'Waivio is an open distributed attention marketplace for business';
+    const description =
+      'Discover Waivio, a unique social media platform built on the Hive blockchain. Earn crypto rewards for your posts and maintain full control over your social profile in a censorship-free environment. Dive into the future of social media with Waivio today.\n';
+    const title = 'Waivio | Decentralized Social Media Platform on Hive Blockchain';
+    const canonicalUrl = `${appUrl}${this.props.location?.pathname}`;
 
     return (
       <div>
         <Helmet>
-          <title>Waivio</title>
-          <meta property="description" content={description} />
-          <link rel="canonical" href={this.props.host} />
-          <meta property="og:title" content={'Waivio'} />
+          <title>{title}</title>
+          <meta name="description" content={description} />
+          <link rel="canonical" href={canonicalUrl} />
+          <meta property="og:title" content={title} />
           <meta property="og:type" content="article" />
-          <meta property="og:url" content={this.props.host} />
+          <meta property="og:url" content={canonicalUrl} />
           <meta property="og:image" content={this.props.helmetIcon} />
           <meta property="og:image:url" content={this.props.helmetIcon} />
           <meta property="og:image:width" content="600" />
@@ -83,7 +87,7 @@ class Page extends React.Component {
           <meta property="og:description" content={description} />
           <meta name="twitter:card" content={'summary_large_image'} />
           <meta name="twitter:site" content={'@waivio'} />
-          <meta name="twitter:title" content={'Waivio'} />
+          <meta name="twitter:title" content={title} />
           <meta name="twitter:description" content={description} />
           <meta name="twitter:image" property="twitter:image" content={this.props.helmetIcon} />
           <meta property="og:site_name" content={'Waivio'} />

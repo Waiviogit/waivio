@@ -26,7 +26,7 @@ const NewDiscover = () => {
   const [objects, setObjects] = useState([]);
   const [hasMoreObjects, setHasMoreObjects] = useState();
   const [loading, setLoading] = useState(true);
-  const search = query.get('search');
+  const search = query.get('search')?.replaceAll('%26%', '&');
 
   const desc = 'All objects are located here. Discover new objects!';
   const image =

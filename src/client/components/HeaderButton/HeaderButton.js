@@ -220,7 +220,7 @@ const HeaderButtons = props => {
       <div className={'Topnav__menu-container Topnav__menu-logged-out'}>
         <Menu className="Topnav__menu-container__menu" mode="horizontal">
           <Menu.Item key="login">
-            <ModalSignIn next={next} />
+            <ModalSignIn isSocialGifts={props.isSocialGifts} domain={props.domain} next={next} />
           </Menu.Item>
           <Menu.Item key="language">
             <LanguageSettings />
@@ -350,8 +350,10 @@ HeaderButtons.propTypes = {
     pathname: PropTypes.string,
   }).isRequired,
   username: PropTypes.string,
+  domain: PropTypes.string,
   searchBarActive: PropTypes.bool,
   isWaivio: PropTypes.bool,
+  isSocialGifts: PropTypes.bool,
 };
 
 HeaderButtons.defaultProps = {

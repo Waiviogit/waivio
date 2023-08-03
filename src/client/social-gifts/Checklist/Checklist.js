@@ -27,6 +27,7 @@ import { getObject } from '../../../waivioApi/ApiClient';
 import Breadcrumbs from '../Breadcrumbs/Breadcrumbs';
 import {
   getHelmetIcon,
+  getMainObj,
   getSiteName,
   getWebsiteDefaultIconList,
 } from '../../../store/appStore/appSelectors';
@@ -54,8 +55,9 @@ const Checklist = ({
   const [object, setObject] = useState(false);
   const favicon = useSelector(getHelmetIcon);
   const siteName = useSelector(getSiteName);
+  const mainObj = useSelector(getMainObj);
   const title = `${getObjectName(object)} - ${siteName}`;
-  const desc = object?.description;
+  const desc = mainObj?.description;
   const image = getObjectAvatar(object);
   const canonicalUrl = typeof location !== 'undefined' && location?.origin;
 
@@ -65,6 +67,8 @@ const Checklist = ({
 
     setLoading(true);
     getObject(pathUrl, userName, locale).then(wObject => {
+      if (wObject.object_type === 'list' && window.gtag)
+        window.gtag('event', getObjectName(wObject));
       setObject(wObject);
       if (history.location.hash) {
         setNestedObject(wObject);
@@ -159,7 +163,7 @@ const Checklist = ({
         <title>{title}</title>
         <meta property="og:title" content={title} />
         <link rel="canonical" href={canonicalUrl} />
-        <meta property="description" content={desc} />
+        <meta name="description" content={desc} />
         <meta name="twitter:card" content={'summary_large_image'} />
         <meta name="twitter:site" content={'@waivio'} />
         <meta name="twitter:title" content={title} />
@@ -179,7 +183,7 @@ const Checklist = ({
       {!hideBreadCrumbs && <Breadcrumbs />}
       {object.object_type === 'list' && object.background && !loading && (
         <div className="Checklist__banner">
-          <img src={object.background} alt={''} />
+          <img src={object.background} alt={'Promotional list banner'} />
         </div>
       )}
       {loading ? <Loading /> : getMenuList()}

@@ -6,6 +6,12 @@
     font-size: 100px;
   }
 
+  &__title {
+    font-size: 28px;
+    color: @white;
+    font-weight: 700;
+  }
+
   background-color: #f3f4f6;
   background-size: cover;
   background-position: center;
@@ -51,7 +57,20 @@
     top: 30px;
     right: 30px;
   }
-
+  .Follow {
+    background: var(--website-color) !important ;
+    border-color: var(--website-color) !important;
+    color: var(--website-text-color) !important;
+  }
+  .Follow--danger {
+    color: @white !important;
+    background: @red !important ;
+    border-color: @red !important;
+  }
+  .ant-btn:hover {
+    border-color: var(--website-color) !important;
+    color: var(--website-color) !important;
+  }
   &__follows-you--mobile {
     position: relative;
     top: -30px;

@@ -148,7 +148,7 @@ class Wrapper extends React.PureComponent {
     store.dispatch(login());
 
     return Promise.all([
-      store.dispatch(setAppUrl(`${req.protocol}://${req.headers.host}`)),
+      store.dispatch(setAppUrl(`https://${req.headers.host}`)),
       store.dispatch(setUsedLocale(lang)),
     ]);
   }

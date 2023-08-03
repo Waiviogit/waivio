@@ -79,6 +79,10 @@
     color: @blue-botticelli;
     text-transform: uppercase;
   }
+  &__title {
+    color: @blue-botticelli;
+    margin-bottom: 15px;
+  }
 
   &__column {
     padding: 0 16px;
@@ -281,7 +285,13 @@
       }
     }
     .RatingsWrap {
-      max-width: fit-content;
+      &__rate {
+        max-width: fit-content !important;
+        width: inherit;
+      }
+      &__stars {
+        max-width: fit-content;
+      }
     }
     &:hover {
       transform: translateY(0px);
@@ -294,6 +304,8 @@
 
   .Slider__wrapper-addOn,
   .Slider__wrapper-similar,
+  .Slider__wrapper-product,
+  .Slider__wrapper-book,
   .Slider__wrapper-related {
     .ant-carousel .slick-dots li button {
       background: @normal-grey;

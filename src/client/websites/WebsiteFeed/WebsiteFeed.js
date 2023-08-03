@@ -10,7 +10,11 @@ import {
   getUserFeedFromState,
   getUserFeedLoadingFromState,
 } from '../../../common/helpers/stateHelpers';
-import { breakpointColumnsObj, preparationPostList } from '../../social-gifts/FeedMasonry/helpers';
+import {
+  breakpointColumnsObj,
+  preparationPostList,
+  preparationPreview,
+} from '../../social-gifts/FeedMasonry/helpers';
 import { getMoreUserFeedContent, getUserFeedContent } from '../../../store/feedStore/feedActions';
 import Loading from '../../components/Icon/Loading';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
@@ -22,6 +26,9 @@ const limit = 20;
 
 const WebsiteFeed = () => {
   const [firstLoading, setFirstLoading] = useState(true);
+  const [previews, setPreviews] = useState();
+  const [previewLoading, setPreviewLoading] = useState(true);
+
   const feed = useSelector(getFeed);
   const postsList = useSelector(getPosts);
   const authUserName = useSelector(getAuthenticatedUserName);
@@ -33,23 +40,30 @@ const WebsiteFeed = () => {
   const posts = preparationPostList(postsIds, postsList);
 
   useEffect(() => {
-    dispatch(getUserFeedContent({ userName: authUserName, limit })).then(() => {
+    dispatch(getUserFeedContent({ userName: authUserName, limit })).then(res => {
       setFirstLoading(false);
+      preparationPreview(res.value, setPreviews).then(() => {
+        setPreviewLoading(false);
+      });
     });
   }, []);
 
   const loadMore = () => {
-    dispatch(getMoreUserFeedContent({ userName: authUserName, limit }));
+    setPreviewLoading(true);
+
+    dispatch(getMoreUserFeedContent({ userName: authUserName, limit })).then(res =>
+      preparationPreview(res.value, setPreviews, previews).then(() => setPreviewLoading(false)),
+    );
   };
 
-  if (isEmpty(posts) && firstLoading) return <Loading margin />;
+  if (firstLoading && previewLoading) return <Loading margin />;
 
   return (
     <ReduxInfiniteScroll
       className="Feed"
       loadMore={loadMore}
       loader={<Loading />}
-      loadingMore={isFetching}
+      loadingMore={isFetching || previewLoading}
       hasMore={hasMore}
       elementIsScrollable={false}
       threshold={3000}
@@ -59,9 +73,20 @@ const WebsiteFeed = () => {
         className="FeedMasonry my-masonry-grid"
         columnClassName="my-masonry-grid_column"
       >
-        {posts?.map(post => (
-          <FeedItem key={`${post.author}/${post?.permlink}`} photoQuantity={2} post={post} />
-        ))}
+        {posts?.map(post => {
+          const urlPreview = isEmpty(previews)
+            ? ''
+            : previews?.find(i => i.url === post?.embeds[0].url).urlPreview;
+
+          return (
+            <FeedItem
+              preview={urlPreview}
+              key={`${post.author}/${post?.permlink}`}
+              photoQuantity={2}
+              post={post}
+            />
+          );
+        })}
       </Masonry>
       <PostModal />
     </ReduxInfiniteScroll>

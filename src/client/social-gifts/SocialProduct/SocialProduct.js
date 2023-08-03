@@ -10,6 +10,7 @@ import {
   getObjectInfo,
   getObjectsByIds,
   getObjectsRewards,
+  getReferenceObjectsList,
   getRelatedObjectsFromDepartments,
   getSimilarObjectsFromDepartments,
 } from '../../../waivioApi/ApiClient';
@@ -98,6 +99,7 @@ const SocialProduct = ({
   const [hoveredOption, setHoveredOption] = useState({});
   const [addOns, setAddOns] = useState([]);
   const [similarObjects, setSimilarObjects] = useState([]);
+  const [references, setReferences] = useState([]);
   const [relatedObjects, setRelatedObjects] = useState([]);
   const [loading, setIsLoading] = useState(true);
   const [fields, setFields] = useState({
@@ -106,11 +108,14 @@ const SocialProduct = ({
     merchantObject: {},
   });
   const affiliateLinks = wobject?.affiliateLinks || [];
+  const referenceWobjType = ['business', 'person'].includes(wobject.object_type);
   const price = hoveredOption.price || get(wobject, 'price');
+  const website = parseWobjectField(wobject, 'website');
   const manufacturer = parseWobjectField(wobject, 'manufacturer');
   const parent = get(wobject, 'parent');
   const ageRange = get(wobject, 'ageRange');
   const language = get(wobject, 'language');
+  const wobjTitle = get(wobject, 'title');
   const publicationDate = moment(wobject.publicationDate).format('MMMM DD, YYYY');
   const printLength = wobject.printLength;
   const publisher = parseWobjectField(wobject, 'publisher');
@@ -122,6 +127,20 @@ const SocialProduct = ({
   const brand = parseWobjectField(wobject, 'brand');
   const photosAlbum = !isEmpty(albums) ? albums?.find(alb => alb.body === 'Photos') : [];
   const groupId = wobject.groupId;
+  const customSort = get(wobject, 'sortCustom.include', []);
+  const menuItems = get(wobject, 'menuItem', []);
+  const sortedItems = customSort.reduce((acc, curr) => {
+    const currentLink = wobject?.menuItem?.find(
+      btn =>
+        btn.body === curr ||
+        btn.author_permlink === curr ||
+        btn.permlink === curr ||
+        btn.id === curr,
+    );
+
+    return currentLink ? [...acc, currentLink] : acc;
+  }, []);
+
   const features = wobject.features
     ? wobject.features?.map(el => parseWobjectField(el, 'body', []))
     : [];
@@ -130,7 +149,7 @@ const SocialProduct = ({
     : [];
   const merchant = parseWobjectField(wobject, 'merchant');
   const productWeight = parseWobjectField(wobject, 'productWeight');
-  const menuItem = get(wobject, 'menuItem', []);
+  const menuItem = isEmpty(customSort) ? menuItems : sortedItems;
   const tagCategories = get(wobject, 'tagCategory', []);
   const tagCategoriesList = tagCategories.filter(item => !isEmpty(item.items));
   const addOnPermlinks = wobject.addOn ? wobject?.addOn?.map(obj => obj.body) : [];
@@ -178,6 +197,7 @@ const SocialProduct = ({
     !isEmpty(publisher) ||
     !isEmpty(productAuthors) ||
     !isEmpty(authors) ||
+    !isEmpty(website) ||
     !isEmpty(ageRange);
 
   const getAddOnsSimilarRelatedObjects = () => {
@@ -234,6 +254,12 @@ const SocialProduct = ({
 
       getObjectsRewards(authorPermlink, userName).then(res => setReward(res));
       getWobjAlbums(authorPermlink);
+      referenceWobjType &&
+        getReferenceObjectsList({
+          authorPermlink,
+          userName,
+          locale,
+        }).then(res => setReferences(Object.entries(res)));
     }
     setIsLoading(false);
 
@@ -279,18 +305,21 @@ const SocialProduct = ({
         <Loading margin />
       ) : (
         <div className="SocialProduct">
-          {history.location.query && <Breadcrumbs inProduct />}
+          {history.location.search && <Breadcrumbs inProduct />}
           <div className="SocialProduct__column SocialProduct__column-wrapper">
             {isMobile() && (
               <div
                 className={
-                  isEmpty(productAuthors)
+                  isEmpty(productAuthors) && isEmpty(wobjTitle)
                     ? 'SocialProduct__wobjName'
                     : 'SocialProduct__bookWobjName'
                 }
               >
                 {wobject.name}
               </div>
+            )}
+            {isMobile() && !isEmpty(wobjTitle) && (
+              <div className="SocialProduct__title">{wobjTitle}</div>
             )}
             {isMobile() && !isEmpty(productAuthors) && (
               <SocialBookAuthors authors={productAuthors} />
@@ -340,13 +369,16 @@ const SocialProduct = ({
               {!isMobile() && (
                 <div
                   className={
-                    isEmpty(productAuthors)
+                    isEmpty(productAuthors) && isEmpty(wobjTitle)
                       ? 'SocialProduct__wobjName'
                       : 'SocialProduct__bookWobjName'
                   }
                 >
                   {wobject.name}
                 </div>
+              )}
+              {!isMobile() && !isEmpty(wobjTitle) && (
+                <div className="SocialProduct__title">{wobjTitle}</div>
               )}
               {!isMobile() && !isEmpty(productAuthors) && (
                 <SocialBookAuthors authors={productAuthors} />
@@ -430,6 +462,7 @@ const SocialProduct = ({
             {!isEmpty(menuItem) && <SocialMenuItems menuItem={menuItem} />}
             {showProductDetails && (
               <ProductDetails
+                website={website}
                 locale={locale}
                 publisher={publisher}
                 printLength={printLength}
@@ -463,6 +496,10 @@ const SocialProduct = ({
             )}
             <ObjectsSlider objects={similarObjects} title={'Similar'} name={'similar'} />
             <ObjectsSlider objects={relatedObjects} title={'Related items'} name={'related'} />
+            {!isEmpty(references) &&
+              references?.map(ref => (
+                <ObjectsSlider key={ref[0]} objects={ref[1]} title={`${ref[0]}s`} name={ref[0]} />
+              ))}
             {!isEmpty(tagCategoriesList) && (
               <div className="SocialProduct__featuresContainer">
                 <div className="SocialProduct__heading">Tags</div>

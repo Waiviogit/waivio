@@ -125,6 +125,92 @@ class Notifications extends React.Component {
                     onClick={this.handleNotificationsClick}
                   />
                 );
+              case notificationConstants.OBJECT_UPDATES:
+                return (
+                  <NotificationTemplate
+                    url={`/object/${notification.authorPermlink}/updates/${notification.fieldName}`}
+                    username={notification.initiator}
+                    id="notification_object_update"
+                    defaultMessage="{user} added a new {update} for {objectName}"
+                    values={{
+                      user: <span className="username">{notification.initiator}</span>,
+                      update: (
+                        <span style={{ textTransform: 'lowercase' }}>
+                          {' '}
+                          <FormattedMessage
+                            id={`object_field_${notification.fieldName}`}
+                            defaultMessage={notification.fieldName}
+                          />
+                        </span>
+                      ),
+                      objectName: <span className="username">{notification.objectName}</span>,
+                    }}
+                    key={key}
+                    notification={notification}
+                    read={read}
+                    onClick={this.handleNotificationsClick}
+                  />
+                );
+              case notificationConstants.GROUP_ID_UPDATES:
+                return (
+                  <NotificationTemplate
+                    url={`/object/${notification.authorPermlink}/updates/groupId`}
+                    username={notification.initiator}
+                    id="notification_group_id_update"
+                    defaultMessage="{user} used the group ID for {objectName}"
+                    values={{
+                      user: <span className="username">{notification.initiator}</span>,
+                      objectName: <span className="username">{notification.objectName}</span>,
+                    }}
+                    key={key}
+                    notification={notification}
+                    read={read}
+                    onClick={this.handleNotificationsClick}
+                  />
+                );
+              case notificationConstants.GROUP_ID_UPDATES_REJECT:
+                return (
+                  <NotificationTemplate
+                    url={`/object/${notification.authorPermlink}/updates/groupId`}
+                    username={notification.initiator}
+                    id="notification_group_id_update_reject"
+                    defaultMessage="{user} removed the group ID from {objectName}"
+                    values={{
+                      user: <span className="username">{notification.initiator}</span>,
+                      objectName: <span className="username">{notification.objectName}</span>,
+                    }}
+                    key={key}
+                    notification={notification}
+                    read={read}
+                    onClick={this.handleNotificationsClick}
+                  />
+                );
+              case notificationConstants.OBJECT_UPDATES_REJECT:
+                return (
+                  <NotificationTemplate
+                    url={`/object/${notification.authorPermlink}/updates/${notification.fieldName}`}
+                    username={notification.initiator}
+                    id="notification_object_update_reject"
+                    defaultMessage="{user} rejected the {update} for {objectName}"
+                    values={{
+                      user: <span className="username">{notification.initiator}</span>,
+                      update: (
+                        <span style={{ textTransform: 'lowercase' }}>
+                          {' '}
+                          <FormattedMessage
+                            id={`object_field_${notification.fieldName}`}
+                            defaultMessage={notification.fieldName}
+                          />
+                        </span>
+                      ),
+                      objectName: <span className="username">{notification.objectName}</span>,
+                    }}
+                    key={key}
+                    notification={notification}
+                    read={read}
+                    onClick={this.handleNotificationsClick}
+                  />
+                );
               case notificationConstants.FOLLOW:
                 return (
                   <NotificationTemplate

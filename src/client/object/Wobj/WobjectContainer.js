@@ -188,11 +188,11 @@ class WobjectContainer extends React.Component {
   }
 
   componentDidMount() {
-    const { match, authenticatedUserName, history, locale } = this.props;
+    const { match, authenticatedUserName, history, locale, isWaivio } = this.props;
     const newsFilter = match.params[1] === 'newsFilter' ? { newsFilter: match.params.itemId } : {};
 
     this.props.getObject(match.params.name, authenticatedUserName).then(async res => {
-      if ((await showDescriptionPage(res.value, locale)) && !match.params[0]) {
+      if ((await showDescriptionPage(res.value, locale)) && !match.params[0] && isWaivio) {
         history.push(`/object/${res.value.author_permlink}/description`);
       }
       this.props.getAlbums(match.params.name);
@@ -214,7 +214,7 @@ class WobjectContainer extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { authenticatedUserName, match, locale, history } = this.props;
+    const { authenticatedUserName, match, locale, history, isWaivio } = this.props;
     const newsFilter = match.params[1] === 'newsFilter' ? { newsFilter: match.params.itemId } : {};
 
     if (
@@ -224,7 +224,7 @@ class WobjectContainer extends React.Component {
     ) {
       this.props.getAlbums(match.params.name);
       this.props.getObject(match.params.name, authenticatedUserName).then(async res => {
-        if ((await showDescriptionPage(res.value, locale)) && !match.params[0]) {
+        if ((await showDescriptionPage(res.value, locale)) && !match.params[0] && isWaivio) {
           history.push(`/object/${res.value.author_permlink}/description`);
         }
       });
@@ -281,6 +281,7 @@ class WobjectContainer extends React.Component {
       nestedWobject,
       isFetching,
       history,
+      location,
     } = this.props;
     const { isEditMode } = this.state;
     const objectName = getObjectName(wobject);
@@ -303,7 +304,7 @@ class WobjectContainer extends React.Component {
         authenticated={authenticated}
         failed={failed}
         authenticatedUserName={authenticatedUserName}
-        match={match}
+        location={location}
         wobject={wobject}
         nestedWobject={nestedWobject}
         isFetching={isFetching}

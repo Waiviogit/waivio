@@ -37,6 +37,11 @@ const WebsiteSignIn = props => {
   const dispatch = useDispatch();
   const currentHost = useSelector(getCurrentHost);
   const query = new URLSearchParams(props.location.search);
+  const websiteName = query.get('websiteName');
+
+  const websiteTitle = websiteName
+    ? websiteName.replace('http://', '').replace('https://', '')
+    : location.hostname;
   const url = query.get('host') || currentHost + location.pathname;
   const urlObj = new URL(url);
   const hiveSinger = new hivesigner.Client({
@@ -146,10 +151,7 @@ const WebsiteSignIn = props => {
           }}
         >
           {props.isSocial
-            ? query
-                .get('websiteName')
-                .replace('http://', '')
-                .replace('https://', '')
+            ? websiteTitle
             : props.intl.formatMessage({
                 id: 'sign_in_for_reward',
                 defaultMessage: 'Sign-In for rewards per meal.',

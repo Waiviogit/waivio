@@ -134,7 +134,7 @@ const ShopWebsiteConfigurations = ({
           <h1>
             <FormattedMessage id="website_configuration" defaultMessage="Website configuration" />
           </h1>
-          <Form className="WebsitesConfigurations" id="WebsitesConfigurations">
+          <Form className="WebsitesConfigurations center" id="WebsitesConfigurations">
             <Form.Item>
               <SelectColorBlock
                 openColorsModal={openColorsModal}
