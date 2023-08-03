@@ -131,11 +131,11 @@ class Notifications extends React.Component {
                     url={`/object/${notification.authorPermlink}/updates/${notification.fieldName}`}
                     username={notification.initiator}
                     id="notification_object_update"
-                    defaultMessage="{user} added new {update} for {objectName}"
+                    defaultMessage="{user} added a new {update} for {objectName}"
                     values={{
                       user: <span className="username">{notification.initiator}</span>,
                       update: (
-                        <span>
+                        <span style={{ textTransform: 'lowercase' }}>
                           {' '}
                           <FormattedMessage
                             id={`object_field_${notification.fieldName}`}
@@ -157,10 +157,10 @@ class Notifications extends React.Component {
                     url={`/object/${notification.authorPermlink}/updates/groupId`}
                     username={notification.initiator}
                     id="notification_group_id_update"
-                    defaultMessage="{user} added Group ID for {objectName}"
+                    defaultMessage="{user} used the group ID for {objectName}"
                     values={{
                       user: <span className="username">{notification.initiator}</span>,
-                      objectName: <span>{notification.objectName}</span>,
+                      objectName: <span className="username">{notification.objectName}</span>,
                     }}
                     key={key}
                     notification={notification}
@@ -174,7 +174,7 @@ class Notifications extends React.Component {
                     url={`/object/${notification.authorPermlink}/updates/groupId`}
                     username={notification.initiator}
                     id="notification_group_id_update_reject"
-                    defaultMessage="{user} rejected the Group ID for {objectName}"
+                    defaultMessage="{user} removed the group ID from {objectName}"
                     values={{
                       user: <span className="username">{notification.initiator}</span>,
                       objectName: <span className="username">{notification.objectName}</span>,
@@ -195,7 +195,7 @@ class Notifications extends React.Component {
                     values={{
                       user: <span className="username">{notification.initiator}</span>,
                       update: (
-                        <span>
+                        <span style={{ textTransform: 'lowercase' }}>
                           {' '}
                           <FormattedMessage
                             id={`object_field_${notification.fieldName}`}

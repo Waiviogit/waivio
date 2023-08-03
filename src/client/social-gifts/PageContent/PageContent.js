@@ -16,11 +16,11 @@ const PageContent = ({ wobj }) => {
   useEffect(() => {
     if (wobj) {
       setContent(wobj.pageContent);
-      window.gtag('event', getObjectName(wobj));
+      if (window.gtag) window.gtag('event', getObjectName(wobj));
     } else {
       getObject(objName).then(res => {
         setContent(res.pageContent);
-        window.gtag('event', getObjectName(res));
+        if (window.gtag) window.gtag('event', getObjectName(res));
       });
     }
   }, [objName]);

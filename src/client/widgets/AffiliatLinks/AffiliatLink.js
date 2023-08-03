@@ -11,7 +11,9 @@ const images = {
 };
 
 const AffiliatLink = ({ link }) => {
-  const onClick = () => window.gtag('event', `click_${link.type}_com`);
+  const onClick = () => {
+    if (window.gtag) window.gtag('event', `click_${link.type}_com`);
+  };
 
   return (
     <a

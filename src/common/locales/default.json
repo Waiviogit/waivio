@@ -2331,10 +2331,10 @@
   "affiliate_codes": "Affiliate codes",
 "claimed_object_updates": "Claimed object updates",
 "group_id_control": "Group ID control",
-  "notification_object_update": "{user} added new {update} for {objectName}",
+  "notification_object_update": "{user} added a new {update} for {objectName}",
   "notification_object_update_reject": "{user} rejected the {update} for {objectName}",
-  "notification_group_id_update": "{user} added Group ID for {objectName}",
-  "notification_group_id_update_reject": "{user} rejected the Group ID for {objectName}",
+  "notification_group_id_update": "{user} used the group ID for {objectName}",
+  "notification_group_id_update_reject": "{user} removed the group ID from {objectName}",
   "select_template": "Select template",
   "select_name": "Select name"
 }
