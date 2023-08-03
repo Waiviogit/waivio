@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { Button, Modal, Switch } from 'antd';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { MATCH_BOTS_TYPES, redirectAuthHiveSigner } from '../../../common/helpers/matchBotsHelpers';
 import {
   getAuthenticatedUserName,
@@ -26,6 +26,7 @@ import FindClaimAthorityModal from './FindClaimAthorityModal';
 import VoteInfoBlock from '../DataImport/VoteInfoBlock';
 
 import './ClaimAthorityBot.less';
+import { closeImportSoket, getImportUpdate } from '../../../store/settingsStore/settingsActions';
 
 const ClaimAthorityBot = ({ intl }) => {
   const isAuthBot = useSelector(state =>
@@ -37,6 +38,7 @@ const ClaimAthorityBot = ({ intl }) => {
   const [openClaim, setOpenClaim] = useState(false);
   const [history, setHistoryImportedObject] = useState([]);
   const [authorities, setAuthorities] = useState([]);
+  const dispatch = useDispatch();
   const updateAuthorityList = () => {
     getAuthorityList(authUserName).then(res => {
       setAuthorities(res);
@@ -53,9 +55,9 @@ const ClaimAthorityBot = ({ intl }) => {
 
     updateAuthorityList();
 
-    // dispatch(getImportUpdate(updateImportDate));
-    //
-    // return () => dispatch(closeImportSoket());
+    dispatch(getImportUpdate(updateAuthorityList));
+
+    return () => dispatch(closeImportSoket());
   }, []);
 
   const handleRedirect = () => redirectAuthHiveSigner(isAuthBot, 'waivio.import');
