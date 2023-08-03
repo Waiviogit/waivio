@@ -2333,6 +2333,6 @@
 "group_id_control": "Group ID control",
   "notification_object_update": "{user} added new {update} for {objectName}",
   "notification_object_update_reject": "{user} rejected the {update} for {objectName}",
-  "notification_group_id_update": "{user} added Group ID for {objectName}",
-  "notification_group_id_update_reject": "{user} rejected the Group ID for {objectName}"
+  "notification_group_id_update": "{user} added group ID for {objectName}",
+  "notification_group_id_update_reject": "{user} rejected the group ID for {objectName}"
 }
