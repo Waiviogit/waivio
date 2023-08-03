@@ -65,6 +65,8 @@ export default class NotificationSettings extends React.Component {
         downvote: props.settingsNotifications.downvote,
         claimReward: props.settingsNotifications.claimReward,
         powerUp: props.settingsNotifications.powerUp,
+        objectUpdates: props.settingsNotifications.objectUpdates,
+        objectGroupId: props.settingsNotifications.objectGroupId,
       },
 
       isLoading: false,
