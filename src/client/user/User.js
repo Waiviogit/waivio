@@ -78,6 +78,7 @@ export default class User extends React.Component {
     authenticatedUserName: PropTypes.string,
     helmetIcon: PropTypes.string.isRequired,
     match: PropTypes.shape().isRequired,
+    location: PropTypes.shape().isRequired,
     user: PropTypes.shape().isRequired,
     loaded: PropTypes.bool,
     failed: PropTypes.bool,
@@ -181,7 +182,7 @@ export default class User extends React.Component {
     }
     const hasCover = !!coverImage;
     const image = getAvatarURL(username) || DEFAULTS.AVATAR;
-    const url = `${appUrl}/@${username}`;
+    const url = `${appUrl}${this.props.location.pathname}`;
     const title = displayedUsername;
     const isSameUser = authenticated && authenticatedUser.name === username;
     const isAboutPage = match.params['0'] === 'about';

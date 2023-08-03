@@ -130,10 +130,10 @@ const UserHeader = ({
         <AvatarLightbox username={user.name} size={100} isActive={isActive} />
         <div className="UserHeader__user">
           <div className="UserHeader__flexWrap">
-            <h2 className="UserHeader__name-container">
+            <h1 className="UserHeader__name-container">
               <span className="UserHeader__name">{headerUserName}</span>
               <WeightTag weight={user.wobjects_weight} />
-            </h2>
+            </h1>
             {!isMobileDevice && buttons}
           </div>
           <div className="UserHeader__userInfo">

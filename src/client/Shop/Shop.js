@@ -20,7 +20,6 @@ const Shop = ({ route }) => {
   const dispatch = useDispatch();
   const title = `Shop - ${siteName}`;
   const desc = route.isSocial ? mainObj?.description : 'Find and buy easily. Shop with pleasure!';
-  const canonicalUrl = typeof location !== 'undefined' && location?.origin;
 
   useEffect(() => () => dispatch(resetBreadCrumb()), []);
 
@@ -29,7 +28,6 @@ const Shop = ({ route }) => {
       <Helmet>
         <title>{title}</title>
         <meta property="og:title" content={title} />
-        <link rel="canonical" href={canonicalUrl} />
         <meta property="description" content={desc} />
         <meta name="twitter:card" content={'summary_large_image'} />
         <meta name="twitter:site" content={'@waivio'} />
@@ -38,7 +36,6 @@ const Shop = ({ route }) => {
         <meta name="twitter:image" content={favicon} />
         <meta property="og:title" content={title} />
         <meta property="og:type" content="article" />
-        <meta property="og:url" content={canonicalUrl} />
         <meta property="og:image" content={favicon} />
         <meta property="og:image:width" content="600" />
         <meta property="og:image:height" content="600" />

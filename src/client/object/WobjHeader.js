@@ -82,9 +82,9 @@ const WobjHeader = ({
           )}
           <div className="ObjectHeader__row">
             <div className="ObjectHeader__user__username">
-              <div className="ObjectHeader__text" title={name}>
+              <h1 className="ObjectHeader__text ObjectHeader__title" title={name}>
                 {name}
-              </div>
+              </h1>
               <div className="ObjectHeader__controls">
                 <FollowButton
                   followObject={followWobj}

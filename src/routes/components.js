@@ -82,7 +82,6 @@ export default {
   WobjExpertise: loableComponent(import('../client/object/WobjExpertise')),
   UserExpertise: loableComponent(import('../client/user/UserExpertise')),
   DiscoverObjects: loableComponent(import('../client/discoverObjects/DiscoverObjects')),
-  Rewards: loableComponent(import('../client/rewards/Rewards')),
   Reports: loableComponent(import('../client/rewards/Reports/Reports')),
   ObjectOfTypePage: loableComponent(import('../client/object/ObjectOfTypePage/ObjectOfTypePage')),
   SubFeed: loableComponent(import('../client/feed/SubFeed')),

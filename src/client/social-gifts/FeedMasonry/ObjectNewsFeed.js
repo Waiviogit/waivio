@@ -75,6 +75,7 @@ const ObjectNewsFeed = ({ wobj }) => {
 
   useEffect(() => {
     getPostsList();
+    window.gtag('event', getObjectName(getObjectName(wobj) || getObjectName(currObj)));
   }, [objName]);
 
   const loadMore = () => {

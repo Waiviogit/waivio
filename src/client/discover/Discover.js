@@ -3,24 +3,28 @@ import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import Helmet from 'react-helmet';
 import { Tag } from 'antd';
+import { useLocation } from 'react-router';
+
 import LeftSidebar from '../app/Sidebar/LeftSidebar';
 import DiscoverContent from './DiscoverContent';
 import Affix from '../components/Utils/Affix';
 import MobileNavigation from '../components/Navigation/MobileNavigation/MobileNavigation';
 import { resetSearchUsersForDiscoverPage } from '../../store/searchStore/searchActions';
 import { PATH_NAME_DISCOVER } from '../../common/constants/rewards';
-import { getHelmetIcon } from '../../store/appStore/appSelectors';
+import { getAppUrl, getHelmetIcon } from '../../store/appStore/appSelectors';
 
 import './Discover.less';
 
 const Discover = ({ match, history }) => {
   const dispatch = useDispatch();
+  const location = useLocation();
+  const appUrl = useSelector(getAppUrl);
+  const favicon = useSelector(getHelmetIcon);
   const desc = 'All users are located here. Discover new users!';
   const image =
     'https://images.hive.blog/p/DogN7fF3oJDSFnVMQK19qE7K3somrX2dTE7F3viyR7zVngPPv827QvEAy1h8dJVrY1Pa5KJWZrwXeHPHqzW6dL9AG9fWHRaRVeY8B4YZh4QrcaPRHtAtYLGebHH7zUL9jyKqZ6NyLgCk3FRecMX7daQ96Zpjc86N6DUQrX18jSRqjSKZgaj2wVpnJ82x7nSGm5mmjSih5Xf71?format=match&mode=fit&width=800&height=600';
-  const canonicalUrl = 'https://www.waivio.com/rewards/all';
+  const canonicalUrl = `${appUrl}${location?.pathname}`;
   const title = 'Discover - Waivio';
-  const favicon = useSelector(getHelmetIcon);
 
   const handleDeleteTag = () => {
     history.push(PATH_NAME_DISCOVER);
