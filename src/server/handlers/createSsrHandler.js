@@ -34,7 +34,7 @@ export default function createSsrHandler(template) {
         baseURL: process.env.STEEMCONNECT_HOST || 'https://hivesigner.com',
         callbackURL: process.env.STEEMCONNECT_REDIRECT_URL,
       });
-      const hostname = req.hostname;
+      const hostname = req.headers.host;
       const isWaivio = hostname.includes('waivio');
       let settings = {};
 
@@ -45,7 +45,7 @@ export default function createSsrHandler(template) {
       if (req.cookies.access_token) sc2Api.setAccessToken(req.cookies.access_token);
 
       const store = getStore(sc2Api, waivioAPI, req.url);
-      const routes = switchRoutes(hostname, get(settings, 'configuration.header.startup'));
+      const routes = switchRoutes(hostname);
       const branch = matchRoutes(routes, req.url.split('?')[0]);
 
       const promises = branch.map(({ route, match }) => {
