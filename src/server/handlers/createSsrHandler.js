@@ -30,7 +30,6 @@ function createTimeout(timeout, promise) {
 export default function createSsrHandler(template) {
   return async function serverSideResponse(req, res) {
     try {
-
       if (await isSearchBot(req)) {
         const cachedPage = await getCachedPage(req);
         if (cachedPage) return res.send(cachedPage);
@@ -88,9 +87,9 @@ export default function createSsrHandler(template) {
         template,
         isWaivio,
         get(settings, 'googleAnalyticsTag', ''),
-      )
+      );
 
-      await setCachedPage({ page, req });
+      // await setCachedPage({ page, req });
       return res.send(page);
     } catch (err) {
       console.error('SSR error occured, falling back to bundled application instead', err);
