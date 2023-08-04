@@ -2,8 +2,8 @@ import redisClient from './redis';
 
 const checkClientState = () => {
   if (!redisClient.connected) throw new Error('not connected');
-}
-const operations = {}
+};
+const operations = {};
 
 operations.get = async ({ key }) => {
   try {
@@ -11,9 +11,9 @@ operations.get = async ({ key }) => {
     const result = await redisClient.get(key);
     return { result };
   } catch (error) {
-    return {error};
+    return { error };
   }
-}
+};
 
 operations.set = async ({ key, data }) => {
   try {
@@ -23,7 +23,7 @@ operations.set = async ({ key, data }) => {
   } catch (error) {
     return { error };
   }
-}
+};
 
 operations.expire = async ({ key, time }) => {
   try {
@@ -33,7 +33,7 @@ operations.expire = async ({ key, time }) => {
   } catch (error) {
     return { error };
   }
-}
+};
 
 operations.sadd = async ({ key, member }) => {
   try {
@@ -43,7 +43,7 @@ operations.sadd = async ({ key, member }) => {
   } catch (error) {
     return { error };
   }
-}
+};
 
 operations.sismember = async ({ key, member }) => {
   try {
@@ -53,6 +53,6 @@ operations.sismember = async ({ key, member }) => {
   } catch (error) {
     return { error };
   }
-}
+};
 
 export default operations;

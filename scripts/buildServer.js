@@ -31,8 +31,7 @@ async function main() {
   await deleteServerJsFiles(paths.build);
 
   const serverCompiler = webpack(createServerConfig('prod'));
-  serverCompiler.run(() => {
-  });
+  serverCompiler.run(() => {});
 }
 
 main();

@@ -30,7 +30,6 @@ function createTimeout(timeout, promise) {
 export default function createSsrHandler(template) {
   return async function serverSideResponse(req, res) {
     try {
-
       if (await isSearchBot(req)) {
         const cachedPage = await getCachedPage(req);
         if (cachedPage) return res.send(cachedPage);
@@ -88,7 +87,7 @@ export default function createSsrHandler(template) {
         template,
         isWaivio,
         get(settings, 'googleAnalyticsTag', ''),
-      )
+      );
 
       // await setCachedPage({ page, req });
       return res.send(page);

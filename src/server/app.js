@@ -15,7 +15,7 @@ const template = Handlebars.compile(indexHtml);
 // const ampIndexPath = `${paths.templates}/amp_index.hbs`;
 // const ampIndexHtml = fs.readFileSync(ampIndexPath, 'utf-8');
 // const ampTemplate = Handlebars.compile(ampIndexHtml);
-loadUserAgents()
+loadUserAgents();
 const ssrHandler = createSsrHandler(template);
 // const ampHandler = createAmpHandler(ampTemplate);
 
