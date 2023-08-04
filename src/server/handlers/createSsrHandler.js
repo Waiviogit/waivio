@@ -11,6 +11,7 @@ import { getSettingsWebsite, waivioAPI } from '../../waivioApi/ApiClient';
 import getStore from '../../store/store';
 import renderSsrPage from '../renderers/ssrRenderer';
 import switchRoutes from '../../routes/switchRoutes';
+import { getCachedPage, isSearchBot, setCachedPage } from './cachePageHandler';
 
 // eslint-disable-next-line import/no-dynamic-require
 const assets = require(process.env.MANIFEST_PATH);
@@ -29,6 +30,12 @@ function createTimeout(timeout, promise) {
 export default function createSsrHandler(template) {
   return async function serverSideResponse(req, res) {
     try {
+
+      if (await isSearchBot(req)) {
+        const cachedPage = await getCachedPage(req);
+        if (cachedPage) return res.send(cachedPage);
+      }
+
       const sc2Api = new hivesigner.Client({
         app: process.env.STEEMCONNECT_CLIENT_ID,
         baseURL: process.env.STEEMCONNECT_HOST || 'https://hivesigner.com',
@@ -74,17 +81,17 @@ export default function createSsrHandler(template) {
 
       if (context.status) res.status(context.status);
 
-      return res.send(
-        renderSsrPage(
-          store,
-          content,
-          assets,
-          template,
-          isWaivio,
-          get(settings, 'googleAnalyticsTag', ''),
-        ),
-      );
-      console.log(`Open on ${req.hostname}`);
+      const page = renderSsrPage(
+        store,
+        content,
+        assets,
+        template,
+        isWaivio,
+        get(settings, 'googleAnalyticsTag', ''),
+      )
+
+      await setCachedPage({ page, req });
+      return res.send(page);
     } catch (err) {
       console.error('SSR error occured, falling back to bundled application instead', err);
       let settings = {};

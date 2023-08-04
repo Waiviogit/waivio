@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
-import { AutoComplete, Button, Checkbox, Input, Form } from 'antd';
+import { Button, Checkbox, Input, Form, Select } from 'antd';
 import { connect } from 'react-redux';
 import { debounce, get, isEmpty } from 'lodash';
 import { withRouter } from 'react-router-dom';
@@ -73,7 +73,7 @@ export const CreateWebsite = ({
   };
 
   return (
-    <div className="center">
+    <div>
       <h1>
         <FormattedMessage id="create_new_website" defaultMessage="Create new website" />
       </h1>
@@ -89,21 +89,29 @@ export const CreateWebsite = ({
           </h3>
           {getFieldDecorator('parent', {
             rules: validateRules.autocomplete,
-          })(<div />)}
-          <AutoComplete
-            onSelect={value => {
-              form.setFieldsValue({ parent: value });
-            }}
-            onChange={handleSearchHost}
-          >
-            {showingParentList.map(domain => (
-              <AutoComplete.Option key={domain} value={domain}>
-                {domain}
-              </AutoComplete.Option>
-            ))}
-          </AutoComplete>
+          })(
+            <div className="CreateWebsite__parent-wrap">
+              <Select
+                showSearch
+                onSelect={value => {
+                  form.setFieldsValue({ parent: value });
+                }}
+                onChange={handleSearchHost}
+                placeholder={intl.formatMessage({
+                  id: 'select_template',
+                  defaultMessage: 'Select  template:',
+                })}
+              >
+                {showingParentList.map(domain => (
+                  <Select.Option key={domain} value={domain}>
+                    {domain}
+                  </Select.Option>
+                ))}
+              </Select>
+            </div>,
+          )}
         </Form.Item>
-        <Form.Item>
+        <Form.Item className="CreateWebsite__padding">
           <h3>
             <span className="ant-form-item-required">
               {intl.formatMessage({
@@ -116,7 +124,17 @@ export const CreateWebsite = ({
             {getFieldDecorator('domain', {
               rules: validateRules.domain,
               getValueFromEvent: e => e.target.value.toLowerCase(),
-            })(<Input disabled={!template} id="domain" onInput={domainStatus} />)}
+            })(
+              <Input
+                placeholder={intl.formatMessage({
+                  id: 'select_name',
+                  defaultMessage: 'Select name',
+                })}
+                disabled={!template}
+                id="domain"
+                onInput={domainStatus}
+              />,
+            )}
             {template && <span className="CreateWebsite__domain-name">.{template}</span>}
           </div>
         </Form.Item>
