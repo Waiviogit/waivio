@@ -90,7 +90,7 @@ export default function createSsrHandler(template) {
         get(settings, 'googleAnalyticsTag', ''),
       )
 
-      await setCachedPage({ page, req });
+      // await setCachedPage({ page, req });
       return res.send(page);
     } catch (err) {
       console.error('SSR error occured, falling back to bundled application instead', err);
