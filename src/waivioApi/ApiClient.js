@@ -1377,7 +1377,6 @@ export const showMoreTagsForFilters = (category, objectTypeName, skip = 0, limit
     .catch(error => error);
 
 export const showMoreTagsForUserFilters = (userName, path, tagCategory, skip = 0, limit = 10) => {
-  console.log(path);
   return fetch(`${config.apiPrefix}${config.shop}${config.user}${config.filters}${config.tags}`, {
     headers,
     method: 'POST',
