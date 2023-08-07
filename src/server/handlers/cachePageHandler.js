@@ -23,6 +23,9 @@ export const getCachedPage = async req => {
 export const setCachedPage = async ({ page, req }) => {
   const key = getUrlForRedis(req);
 
+  const { result: exist } = await redis.keys({ key });
+  if(exist) return;
+
   await redis.set({ key, data: page });
   await redis.expire({ key, time: SSR_CACHE_TTL });
 };
