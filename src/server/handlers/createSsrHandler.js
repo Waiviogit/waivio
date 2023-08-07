@@ -32,7 +32,10 @@ export default function createSsrHandler(template) {
     try {
       if (await isSearchBot(req)) {
         const cachedPage = await getCachedPage(req);
-        if (cachedPage) return res.send(cachedPage);
+        if (cachedPage) {
+          console.log('SEND CACHED PAGE');
+          return res.send(cachedPage);
+        }
       }
 
       const sc2Api = new hivesigner.Client({
@@ -88,7 +91,7 @@ export default function createSsrHandler(template) {
         get(settings, 'googleAnalyticsTag', ''),
       );
 
-      // await setCachedPage({ page, req });
+      await setCachedPage({ page, req });
       return res.send(page);
     } catch (err) {
       console.error('SSR error occured, falling back to bundled application instead', err);
