@@ -332,34 +332,32 @@ SocialWrapper.fetchData = ({ store, req }) => {
   }
   const lang = loadLanguage(activeLocale);
 
-  return Promise.all([
-    store.dispatch(setAppUrl(`https://${req.headers.host}`)),
-    store.dispatch(setUsedLocale(lang)),
-    store.dispatch(login()),
-    store.dispatch(getWebsiteConfigForSSR(req.hostname)).then(res => {
-      const shopSettings = res.action.payload?.shopSettings;
+  store.dispatch(getWebsiteConfigForSSR(req.headers.host)).then(res => {
+    const shopSettings = res.action.payload?.shopSettings;
 
-      if (!isEmpty(shopSettings)) {
-        if (shopSettings?.type === 'object') {
-          getObject(shopSettings?.value).then(async wobject => {
-            store.dispatch(setMainObj(wobject));
-          });
-        } else {
-          getUserAccount(shopSettings?.value).then(user => {
-            const metadata = getMetadata(user);
-            const profile = get(metadata, 'profile', {});
-            const description = metadata && get(profile, 'about');
+    if (!isEmpty(shopSettings)) {
+      if (shopSettings?.type === 'object') {
+        getObject(shopSettings?.value).then(async wobject => {
+          store.dispatch(setMainObj(wobject));
+        });
+      } else {
+        getUserAccount(shopSettings?.value).then(user => {
+          const metadata = getMetadata(user);
+          const profile = get(metadata, 'profile', {});
+          const description = metadata && get(profile, 'about');
 
-            store.dispatch(
-              setMainObj({
-                description,
-              }),
-            );
-          });
-        }
+          store.dispatch(
+            setMainObj({
+              description,
+            }),
+          );
+        });
       }
-    }),
-  ]);
+    }
+  });
+  store.dispatch(setAppUrl(`https://${req.headers.host}`));
+  store.dispatch(setUsedLocale(lang));
+  store.dispatch(login());
 };
 
 export default ErrorBoundary(
