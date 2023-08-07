@@ -22,11 +22,14 @@ export const getAthorityVote = userName =>
     .then(response => response)
     .catch(e => e);
 
-export const getAuthorityList = userName =>
-  fetch(`${config.importApiPrefix}${config.authority}?user=${userName}`, {
-    headers,
-    method: 'GET',
-  })
+export const getAuthorityList = (userName, skip, limit) =>
+  fetch(
+    `${config.importApiPrefix}${config.authority}?user=${userName}&skip=${skip}&limit=${limit}`,
+    {
+      headers,
+      method: 'GET',
+    },
+  )
     .then(res => res.json())
     .then(response => response)
     .catch(e => e);
@@ -74,29 +77,38 @@ export const uploadObject = data =>
     .then(response => response)
     .catch(e => e);
 
-export const getImportedObjects = userName =>
-  fetch(`${config.importApiPrefix}${config.importProduct}?user=${userName}`, {
-    headers,
-    method: 'GET',
-  })
+export const getImportedObjects = (userName, skip, limit) =>
+  fetch(
+    `${config.importApiPrefix}${config.importProduct}?user=${userName}&skip=${skip}&limit=${limit}`,
+    {
+      headers,
+      method: 'GET',
+    },
+  )
     .then(res => res.json())
     .then(response => response)
     .catch(e => e);
 
-export const getHistoryImportedObjects = userName =>
-  fetch(`${config.importApiPrefix}${config.importProduct}${config.history}?user=${userName}`, {
-    headers,
-    method: 'GET',
-  })
+export const getHistoryImportedObjects = (userName, skip, limit) =>
+  fetch(
+    `${config.importApiPrefix}${config.importProduct}${config.history}?user=${userName}&skip=${skip}&limit=${limit}`,
+    {
+      headers,
+      method: 'GET',
+    },
+  )
     .then(res => res.json())
     .then(response => response)
     .catch(e => e);
 
-export const getHistoryAuthorityObjects = userName =>
-  fetch(`${config.importApiPrefix}${config.authority}${config.history}?user=${userName}`, {
-    headers,
-    method: 'GET',
-  })
+export const getHistoryAuthorityObjects = (userName, skip, limit) =>
+  fetch(
+    `${config.importApiPrefix}${config.authority}${config.history}?user=${userName}&skip=${skip}&limit=${limit}`,
+    {
+      headers,
+      method: 'GET',
+    },
+  )
     .then(res => res.json())
     .then(response => response)
     .catch(e => e);

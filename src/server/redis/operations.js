@@ -55,4 +55,14 @@ operations.sismember = async ({ key, member }) => {
   }
 };
 
+operations.keys = async ({ key }) => {
+  try {
+    checkClientState();
+    const result = await redisClient.keys(key);
+    return { result };
+  } catch (error) {
+    return { error };
+  }
+};
+
 export default operations;

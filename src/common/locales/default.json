@@ -2336,5 +2336,7 @@
   "notification_group_id_update": "{user} used the group ID for {objectName}",
   "notification_group_id_update_reject": "{user} removed the group ID from {objectName}",
   "select_template": "Select template",
+  "select_name": "Select name",
+  "select_type": "Select type",
   "enter_name": "Enter name"
 }
