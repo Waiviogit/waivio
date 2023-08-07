@@ -14,30 +14,36 @@ import EmptyCampaing from '../../statics/EmptyCampaing';
 import Loading from '../../components/Icon/Loading';
 import useQuery from '../../../hooks/useQuery';
 import { parseQueryForFilters } from '../../../waivioApi/helpers';
-import { getActiveBreadCrumb, getExcludedDepartment } from '../../../store/shopStore/shopSelectors';
+import {
+  getActiveBreadCrumb,
+  getExcludedDepartment,
+  getShopList,
+  getShopListHasMore,
+} from '../../../store/shopStore/shopSelectors';
 import {
   getLastPermlinksFromHash,
   getPermlinksFromHash,
 } from '../../../common/helpers/wObjectHelper';
 import ObjCardListViewSwitcherForShop from '../../social-gifts/ShopObjectCard/ObjCardViewSwitcherForShop';
+import { useSeoInfo } from '../../../hooks/useSeoInfo';
 
 import './ShopList.less';
 
 const ShopList = ({ userName, path, getShopFeed, isSocial }) => {
-  const [departments, setDepartments] = useState([]);
-  const [hasMore, setHasMore] = useState(false);
-  const [loading, setLoading] = useState(true);
   const query = useQuery();
   const location = useLocation();
+  const [loading, setLoading] = useState(false);
   const match = useRouteMatch();
   const authUser = useSelector(getAuthenticatedUserName);
   const excluded = useSelector(getExcludedDepartment);
   const activeCrumb = useSelector(getActiveBreadCrumb);
   const siteName = useSelector(getSiteName);
   const favicon = useSelector(getHelmetIcon);
+  const departments = useSelector(getShopList);
+  const hasMore = useSelector(getShopListHasMore);
   const image = favicon;
   const title = `${department || 'Shop'} - ${siteName}`;
-  const canonicalUrl = typeof location !== 'undefined' && location?.origin;
+  const { canonicalUrl } = useSeoInfo();
   const pathList = match.params.department
     ? [match.params.department, ...getPermlinksFromHash(location.hash)]
     : [];
@@ -46,8 +52,8 @@ const ShopList = ({ userName, path, getShopFeed, isSocial }) => {
     : match.params.department;
 
   useEffect(() => {
+    setLoading(true);
     if (department === activeCrumb?.name || !department) {
-      setLoading(true);
       getShopFeed(
         userName,
         authUser,
@@ -58,19 +64,7 @@ const ShopList = ({ userName, path, getShopFeed, isSocial }) => {
         pathList,
         10,
         isSocial ? 5 : 3,
-      ).then(res => {
-        if (res.message) {
-          setLoading(false);
-          setDepartments([]);
-          setHasMore(false);
-
-          return;
-        }
-
-        setDepartments(res.result);
-        setHasMore(res.hasMore);
-        setLoading(false);
-      });
+      ).then(() => setLoading(false));
     }
   }, [query.toString(), activeCrumb, match.params.name, match.params.department]);
 
@@ -96,11 +90,8 @@ const ShopList = ({ userName, path, getShopFeed, isSocial }) => {
         pathList,
         10,
         isSocial ? 5 : 3,
-      ).then(res => {
-        setDepartments([...departments, ...res.result]);
-        setHasMore(res.hasMore);
-        setLoading(false);
-      });
+        true,
+      );
     }
   };
 

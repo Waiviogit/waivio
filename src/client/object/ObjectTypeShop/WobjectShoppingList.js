@@ -1,16 +1,17 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useRouteMatch } from 'react-router';
 import PropTypes from 'prop-types';
 
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 import ShopList from '../../Shop/ShopList/ShopList';
-import { getWobjectShopMainFeed } from '../../../waivioApi/ApiClient';
+import { getWobjectsShopList } from '../../../store/shopStore/shopActions';
 
 const WobjectShoppingList = ({ isSocial }) => {
   const authUserName = useSelector(getAuthenticatedUserName);
   const match = useRouteMatch();
   const authorPermlink = match.params.name;
+  const dispatch = useDispatch();
   const getShopFeed = (
     userName,
     authUser,
@@ -21,17 +22,21 @@ const WobjectShoppingList = ({ isSocial }) => {
     path,
     limit,
     categoryLimit,
+    isLoadMore,
   ) =>
-    getWobjectShopMainFeed(
-      authorPermlink,
-      department,
-      authUser,
-      skip,
-      excluded,
-      filter,
-      path,
-      limit,
-      categoryLimit,
+    dispatch(
+      getWobjectsShopList(
+        authorPermlink,
+        department,
+        authUser,
+        skip,
+        excluded,
+        filter,
+        path,
+        limit,
+        categoryLimit,
+        isLoadMore,
+      ),
     );
 
   return (
