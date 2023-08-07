@@ -28,32 +28,65 @@ import VoteInfoBlock from '../DataImport/VoteInfoBlock';
 import './ClaimAthorityBot.less';
 import { closeImportSoket, getImportUpdate } from '../../../store/settingsStore/settingsActions';
 
+const limit = 30;
+
 const ClaimAthorityBot = ({ intl }) => {
   const isAuthBot = useSelector(state =>
     getIsConnectMatchBot(state, { botType: MATCH_BOTS_TYPES.IMPORT }),
   );
   const authUserName = useSelector(getAuthenticatedUserName);
+  const dispatch = useDispatch();
   const [votingValue, setVotingValue] = useState(100);
   const [visibleVoting, setVisibleVoting] = useState(false);
   const [openClaim, setOpenClaim] = useState(false);
-  const [history, setHistoryImportedObject] = useState([]);
+  const [history, setHistoryAuthoritiesObject] = useState([]);
   const [authorities, setAuthorities] = useState([]);
-  const dispatch = useDispatch();
-  const updateAuthorityList = () => {
-    getAuthorityList(authUserName).then(res => {
+  const [hasMoreAuthorities, setHasMoreAuthorities] = useState(false);
+  const [hasMoreHistory, setHasMoreHistory] = useState(false);
+  const setHasMore = list => list.length === limit;
+
+  const getAthList = () =>
+    getAuthorityList(authUserName, 0, limit).then(res => {
       setAuthorities(res);
+      setHasMoreAuthorities(setHasMore(res));
     });
-    getHistoryAuthorityObjects(authUserName).then(his => {
-      setHistoryImportedObject(his);
+
+  const updateAuthorityList = () => {
+    getAuthorityList(authUserName, 0, limit).then(res => {
+      setAuthorities(res);
+      setHasMoreAuthorities(setHasMore(res));
+    });
+    getHistoryAuthorityObjects(authUserName, 0, limit).then(his => {
+      setHistoryAuthoritiesObject(his);
+      setHasMoreHistory(setHasMore(his));
     });
   };
+  const loadMoreAuthorityDate = () =>
+    getAuthorityList(authUserName, authorities.length, limit).then(res => {
+      setHasMoreAuthorities(setHasMore(res));
+
+      setAuthorities([...authorities, ...res]);
+    });
+  const loadMoreHistoryDate = () =>
+    getHistoryAuthorityObjects(authUserName, history.length, limit).then(his => {
+      setHasMoreHistory(setHasMore(his));
+
+      setHistoryAuthoritiesObject([...history, ...his]);
+    });
 
   useEffect(() => {
     getAthorityVote(authUserName).then(res => {
       if (res.minVotingPower) setVotingValue(res.minVotingPower / 100);
     });
 
-    updateAuthorityList();
+    getAuthorityList(authUserName, 0, limit).then(res => {
+      setAuthorities(res);
+      setHasMoreAuthorities(setHasMore(res));
+    });
+    getHistoryAuthorityObjects(authUserName, 0, limit).then(his => {
+      setHistoryAuthoritiesObject(his);
+      setHasMoreHistory(setHasMore(his));
+    });
 
     dispatch(getImportUpdate(updateAuthorityList));
 
@@ -75,7 +108,9 @@ const ClaimAthorityBot = ({ intl }) => {
       }),
       onOk: () => {
         deleteAuthority(authUserName, item?.importId).then(() => {
-          updateAuthorityList();
+          getAuthorityList(authUserName, 0, authorities.length).then(res => {
+            setAuthorities(res);
+          });
         });
       },
       okText: intl.formatMessage({ id: 'stop_claim_ok_button', defaultMessage: 'Stop claim' }),
@@ -87,7 +122,9 @@ const ClaimAthorityBot = ({ intl }) => {
     const status = item.status === 'active' ? 'onHold' : 'active';
 
     changeAuthority(authUserName, status, item.importId).then(() => {
-      updateAuthorityList();
+      getAuthorityList(authUserName, 0, authorities.length).then(res => {
+        setAuthorities(res);
+      });
     });
   };
 
@@ -178,6 +215,8 @@ const ClaimAthorityBot = ({ intl }) => {
         {intl.formatMessage({ id: 'claim_authority', defaultMessage: 'Claim authority' })}
       </Button>
       <DynamicTbl
+        handleShowMore={loadMoreAuthorityDate}
+        showMore={hasMoreAuthorities}
         header={configAthorityBotProductTable}
         bodyConfig={authorities}
         deleteItem={handleDeleteAuthority}
@@ -189,7 +228,12 @@ const ClaimAthorityBot = ({ intl }) => {
           defaultMessage: 'History',
         })}
       </h3>
-      <DynamicTbl header={configAthorityBotHistoryTable} bodyConfig={history} />
+      <DynamicTbl
+        handleShowMore={loadMoreHistoryDate}
+        showMore={hasMoreHistory}
+        header={configAthorityBotHistoryTable}
+        bodyConfig={history}
+      />
       {visibleVoting && (
         <ChangeVotingModal
           handleSetMinVotingPower={handleSetMinVotingPower}
@@ -200,7 +244,7 @@ const ClaimAthorityBot = ({ intl }) => {
       )}
       {openClaim && (
         <FindClaimAthorityModal
-          updateAuthorityList={updateAuthorityList}
+          updateAuthorityList={getAthList}
           visible={openClaim}
           onClose={() => setOpenClaim(false)}
         />
