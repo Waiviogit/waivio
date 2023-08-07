@@ -6,7 +6,6 @@ import {
   USER_AGENTS_COUNT_KEY,
   USER_AGENTS_KEY,
 } from '../../common/constants/ssrData';
-import USER_AGENTS from '../../common/constants/googleUserAgents';
 
 export const isSearchBot = async req => {
   const userAgent = req.get(USER_AGENT);
@@ -29,10 +28,6 @@ export const setCachedPage = async ({ page, req }) => {
 
   await redis.set({ key, data: page });
   await redis.expire({ key, time: SSR_CACHE_TTL });
-};
-
-export const loadUserAgents = async () => {
-  await redis.sadd({ key: USER_AGENTS_KEY, member: USER_AGENTS });
 };
 
 export const updateBotCount = async req => {
