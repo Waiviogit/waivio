@@ -65,4 +65,14 @@ operations.keys = async ({ key }) => {
   }
 };
 
+operations.zincrby = async ({ key, increment, member }) => {
+  try {
+    checkClientState();
+    const result = await redisClient.zincrby(key, increment, member);
+    return { result };
+  } catch (error) {
+    return { error };
+  }
+};
+
 export default operations;

@@ -11,7 +11,7 @@ import { getSettingsWebsite, waivioAPI } from '../../waivioApi/ApiClient';
 import getStore from '../../store/store';
 import renderSsrPage from '../renderers/ssrRenderer';
 import switchRoutes from '../../routes/switchRoutes';
-import { getCachedPage, isSearchBot, setCachedPage } from './cachePageHandler';
+import { getCachedPage, isSearchBot, setCachedPage, updateBotCount } from './cachePageHandler';
 
 // eslint-disable-next-line import/no-dynamic-require
 const assets = require(process.env.MANIFEST_PATH);
@@ -31,6 +31,7 @@ export default function createSsrHandler(template) {
   return async function serverSideResponse(req, res) {
     try {
       if (await isSearchBot(req)) {
+        await updateBotCount(req);
         const cachedPage = await getCachedPage(req);
         if (cachedPage) {
           console.log('SEND CACHED PAGE');
