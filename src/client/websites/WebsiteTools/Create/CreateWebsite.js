@@ -127,8 +127,8 @@ export const CreateWebsite = ({
             })(
               <Input
                 placeholder={intl.formatMessage({
-                  id: 'select_name',
-                  defaultMessage: 'Select name',
+                  id: 'enter_name',
+                  defaultMessage: 'Enter name',
                 })}
                 disabled={!template}
                 id="domain"

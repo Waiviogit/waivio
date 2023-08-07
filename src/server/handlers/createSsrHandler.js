@@ -33,7 +33,7 @@ export default function createSsrHandler(template) {
       if (await isSearchBot(req)) {
         const cachedPage = await getCachedPage(req);
         if (cachedPage) {
-          console.log("SEND CACHED PAGE");
+          console.log('SEND CACHED PAGE');
           return res.send(cachedPage);
         }
       }
