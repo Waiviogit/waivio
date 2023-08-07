@@ -14,6 +14,7 @@ import ShopMainForWobject from '../ShopMainForWobject/ShopMainForWobject';
 import SocialGiftsLandingPage from '../../SocialGiftsLandingPage/SocialGiftsLandingPage';
 
 import './ShopSwitcher.less';
+import { useSeoInfo } from '../../../hooks/useSeoInfo';
 
 const ShopSwitcher = () => {
   const shopSettings = useSelector(getShopSettings);
@@ -23,13 +24,39 @@ const ShopSwitcher = () => {
   const mainObj = useSelector(getMainObj);
   const title = siteName;
   const desc = mainObj?.description;
-  const canonicalUrl = typeof location !== 'undefined' && location?.origin;
+  const { canonicalUrl } = useSeoInfo();
+
   const getCurrComp = () => {
     switch (shopSettings?.type) {
       case 'user': {
         history.push(`/user-shop/${shopSettings?.value}`);
 
-        return <Skeleton active />;
+        return (
+          <React.Fragment>
+            <Helmet>
+              <title>{title}</title>
+              <meta property="og:title" content={title} />
+              <meta property="description" content={desc} />
+              <meta name="twitter:card" content={'summary_large_image'} />
+              <meta name="twitter:site" content={'@waivio'} />
+              <meta name="twitter:title" content={title} />
+              <meta name="twitter:description" content={desc} />
+              <link rel="canonical" href={canonicalUrl} />
+              <meta property="og:url" content={canonicalUrl} />
+              <meta name="twitter:image" content={favicon} />
+              <meta property="og:title" content={title} />
+              <meta property="og:type" content="article" />
+              <meta property="og:image" content={favicon} />
+              <meta property="og:image:width" content="600" />
+              <meta property="og:image:height" content="600" />
+              <meta property="og:description" content={desc} />
+              <meta property="og:site_name" content={siteName} />
+              <link rel="image_src" href={favicon} />
+              <link id="favicon" rel="icon" href={favicon} type="image/x-icon" />
+            </Helmet>
+            <Skeleton active />
+          </React.Fragment>
+        );
       }
       case 'object':
         return <ShopMainForWobject wobjPermlink={shopSettings?.value} />;
@@ -39,32 +66,7 @@ const ShopSwitcher = () => {
     }
   };
 
-  return (
-    <React.Fragment>
-      <Helmet>
-        <title>{title}</title>
-        <meta property="og:title" content={title} />
-        <link rel="canonical" href={canonicalUrl} />
-        <meta property="description" content={desc} />
-        <meta name="twitter:card" content={'summary_large_image'} />
-        <meta name="twitter:site" content={'@waivio'} />
-        <meta name="twitter:title" content={title} />
-        <meta name="twitter:description" content={desc} />
-        <meta name="twitter:image" content={favicon} />
-        <meta property="og:title" content={title} />
-        <meta property="og:type" content="article" />
-        <meta property="og:url" content={canonicalUrl} />
-        <meta property="og:image" content={favicon} />
-        <meta property="og:image:width" content="600" />
-        <meta property="og:image:height" content="600" />
-        <meta property="og:description" content={desc} />
-        <meta property="og:site_name" content="Waivio" />
-        <link rel="image_src" href={favicon} />
-        <link id="favicon" rel="icon" href={favicon} type="image/x-icon" />
-      </Helmet>
-      {getCurrComp()}
-    </React.Fragment>
-  );
+  return getCurrComp();
 };
 
 export default ShopSwitcher;

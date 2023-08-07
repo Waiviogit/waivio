@@ -62,9 +62,9 @@ const DepartmentItem = ({
       department.subdirectory &&
       isEmpty(nestedDepartments)
     ) {
-      getShopDepartments(department.name, excludedMain, [...pathList, department.name]).then(
+      getShopDepartments(department.name, excludedMain, [...pathList, department.name], true).then(
         res => {
-          setNestedDepartments(res);
+          setNestedDepartments(res.value);
           setShowNested(true);
         },
       );

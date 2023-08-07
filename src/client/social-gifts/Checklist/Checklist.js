@@ -6,7 +6,7 @@ import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { Icon } from 'antd';
 import Helmet from 'react-helmet';
-
+import { useSeoInfo } from '../../../hooks/useSeoInfo';
 import { getSuitableLanguage } from '../../../store/reducers';
 import {
   createNewHash,
@@ -62,7 +62,7 @@ const Checklist = ({
   const title = `${getObjectName(wobject)} - ${siteName}`;
   const desc = mainObj?.description;
   const image = getObjectAvatar(wobject);
-  const canonicalUrl = typeof location !== 'undefined' && location?.origin;
+  const { canonicalUrl } = useSeoInfo();
 
   useEffect(() => {
     const pathUrl =
