@@ -2,15 +2,7 @@ import * as redis from 'redis';
 import util from 'util';
 import { REDIS_DB_NUM } from '../../common/constants/ssrData';
 
-const methodsToPromisify = [
-  'get',
-  'expire',
-  'set',
-  'sismember',
-  'sadd',
-  'keys',
-  'zincrby'
-];
+const methodsToPromisify = ['get', 'expire', 'set', 'sismember', 'sadd', 'keys', 'zincrby'];
 methodsToPromisify.forEach(method => {
   redis.RedisClient.prototype[method] = util.promisify(redis.RedisClient.prototype[method]);
 });

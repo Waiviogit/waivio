@@ -80,6 +80,6 @@ operations.zincrby = async ({ key, increment, member }) => {
 redisClient.once('connect', async () => {
   await operations.sadd({ key: USER_AGENTS_KEY, member: USER_AGENTS });
   console.log('USER_AGENTS loaded');
-})
+});
 
 export default operations;
