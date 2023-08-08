@@ -43,35 +43,36 @@ const ClaimAthorityBot = ({ intl }) => {
   const [authorities, setAuthorities] = useState([]);
   const [hasMoreAuthorities, setHasMoreAuthorities] = useState(false);
   const [hasMoreHistory, setHasMoreHistory] = useState(false);
-  const setHasMore = list => list.length === limit;
+  const setListAndSetHasMore = (res, list, isLoadMore, setObjs, setMoreObjs) => {
+    if (res.length > limit) {
+      setMoreObjs(true);
+      setObjs(isLoadMore ? [...list, ...res.slice(0, -1)] : res.slice(0, -1));
+    } else {
+      setObjs(isLoadMore ? [...list, ...res] : res);
+      setMoreObjs(false);
+    }
+  };
 
   const getAthList = () =>
-    getAuthorityList(authUserName, 0, limit).then(res => {
-      setAuthorities(res);
-      setHasMoreAuthorities(setHasMore(res));
+    getAuthorityList(authUserName, 0, limit + 1).then(res => {
+      setListAndSetHasMore(res, authorities, false, setAuthorities, setHasMoreAuthorities);
     });
 
   const updateAuthorityList = () => {
-    getAuthorityList(authUserName, 0, limit).then(res => {
-      setAuthorities(res);
-      setHasMoreAuthorities(setHasMore(res));
+    getAuthorityList(authUserName, 0, limit + 1).then(res => {
+      setListAndSetHasMore(res, authorities, false, setAuthorities, setHasMoreAuthorities);
     });
-    getHistoryAuthorityObjects(authUserName, 0, limit).then(his => {
-      setHistoryAuthoritiesObject(his);
-      setHasMoreHistory(setHasMore(his));
+    getHistoryAuthorityObjects(authUserName, 0, limit + 1).then(his => {
+      setListAndSetHasMore(his, history, false, setHistoryAuthoritiesObject, setHasMoreHistory);
     });
   };
   const loadMoreAuthorityDate = () =>
-    getAuthorityList(authUserName, authorities.length, limit).then(res => {
-      setHasMoreAuthorities(setHasMore(res));
-
-      setAuthorities([...authorities, ...res]);
+    getAuthorityList(authUserName, authorities.length, limit + 1).then(res => {
+      setListAndSetHasMore(res, authorities, true, setAuthorities, setHasMoreAuthorities);
     });
   const loadMoreHistoryDate = () =>
-    getHistoryAuthorityObjects(authUserName, history.length, limit).then(his => {
-      setHasMoreHistory(setHasMore(his));
-
-      setHistoryAuthoritiesObject([...history, ...his]);
+    getHistoryAuthorityObjects(authUserName, history.length, limit + 1).then(his => {
+      setListAndSetHasMore(his, history, true, setHistoryAuthoritiesObject, setHasMoreHistory);
     });
 
   useEffect(() => {
@@ -79,13 +80,11 @@ const ClaimAthorityBot = ({ intl }) => {
       if (res.minVotingPower) setVotingValue(res.minVotingPower / 100);
     });
 
-    getAuthorityList(authUserName, 0, limit).then(res => {
-      setAuthorities(res);
-      setHasMoreAuthorities(setHasMore(res));
+    getAuthorityList(authUserName, 0, limit + 1).then(res => {
+      setListAndSetHasMore(res, authorities, false, setAuthorities, setHasMoreAuthorities);
     });
-    getHistoryAuthorityObjects(authUserName, 0, limit).then(his => {
-      setHistoryAuthoritiesObject(his);
-      setHasMoreHistory(setHasMore(his));
+    getHistoryAuthorityObjects(authUserName, 0, limit + 1).then(his => {
+      setListAndSetHasMore(his, history, false, setHistoryAuthoritiesObject, setHasMoreHistory);
     });
 
     dispatch(getImportUpdate(updateAuthorityList));
