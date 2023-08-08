@@ -9,8 +9,8 @@ import { getUserDepartments } from '../../../store/shopStore/shopActions';
 const DepartmentsUser = ({ onClose, isSocial }) => {
   const match = useRouteMatch();
   const dispatch = useDispatch();
-  const getShopDepartments = (department, excluded, path, notWrite) =>
-    dispatch(getUserDepartments(match.params.name, department, excluded, path, notWrite));
+  const getShopDepartments = (department, excluded, path) =>
+    dispatch(getUserDepartments(match.params.name, department, excluded, path));
 
   return (
     <ShopDepartmentsList
