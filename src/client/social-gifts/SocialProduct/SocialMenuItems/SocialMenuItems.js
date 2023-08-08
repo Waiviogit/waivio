@@ -1,47 +1,51 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { has, indexOf } from 'lodash';
+import { has, isEmpty } from 'lodash';
 import SocialMenuItem from './SocialMenuItem';
-import './SocialMenuItems.less';
 import { getObjectInfo } from '../../../../waivioApi/ApiClient';
 
-const SocialMenuItems = ({ menuItem }) => {
+import './SocialMenuItems.less';
+
+const SocialMenuItems = React.memo(({ menuItem }) => {
   const [menuItems, setMenuItems] = useState([]);
 
+  const prepareMenuItems = () => {
+    const menuItemList = [];
+
+    menuItem?.forEach(async curr => {
+      const itemBody = JSON.parse(curr.body);
+
+      if (itemBody.linkToObject && !has(itemBody, 'title')) {
+        const res = await getObjectInfo([itemBody.linkToObject]);
+
+        menuItemList.push({
+          ...curr,
+          body: JSON.stringify({ ...itemBody, title: res.wobjects[0].name }),
+        });
+      } else {
+        menuItemList.push(curr);
+      }
+    });
+
+    setMenuItems(menuItemList);
+  };
+
   useEffect(() => {
-    menuItem
-      ?.reduce(async (acc, curr) => {
-        const res = await acc;
-        const itemBody = JSON.parse(curr.body);
-
-        if (itemBody.linkToObject && !has(itemBody, 'title')) {
-          const newObj = await getObjectInfo([itemBody.linkToObject]);
-
-          return [
-            ...res,
-            { ...curr, body: JSON.stringify({ ...itemBody, title: newObj.wobjects[0].name }) },
-          ];
-        }
-
-        return [...res, curr];
-      }, [])
-      .then(r => setMenuItems(r));
+    prepareMenuItems();
   }, [menuItem]);
+
+  if (isEmpty(menuItems)) return null;
 
   return (
     <div className="SocialMenuItems">
       <div>
-        {menuItems?.map(item => (
-          <SocialMenuItem
-            key={menuItems[item]}
-            item={item}
-            isOpen={indexOf(menuItems, item) === 0}
-          />
+        {menuItems?.map((item, index) => (
+          <SocialMenuItem key={item._id} item={item} isOpen={index === 0} />
         ))}
       </div>
     </div>
   );
-};
+});
 
 SocialMenuItems.propTypes = {
   menuItem: PropTypes.arrayOf(),
