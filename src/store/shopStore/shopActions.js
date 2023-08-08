@@ -48,33 +48,33 @@ export const resetOptionClicked = () => ({
 
 export const GET_DEPARTMENTS = createAsyncActionType('@shop/GET_DEPARTMENTS');
 
-export const getWobjectDepartments = (name, department, excluded, path, notWrite) => ({
+export const getWobjectDepartments = (name, department, excluded, path) => ({
   type: GET_DEPARTMENTS.ACTION,
   payload: {
     promise: getWobjectShopDepartments(name, department, excluded, path),
   },
   meta: {
-    notWrite,
+    department,
   },
 });
 
-export const getUserDepartments = (name, department, excluded, path, notWrite) => ({
+export const getUserDepartments = (name, department, excluded, path) => ({
   type: GET_DEPARTMENTS.ACTION,
   payload: {
     promise: getShopUserDepartments(name, department, excluded, path),
   },
   meta: {
-    notWrite,
+    department,
   },
 });
 
-export const getGlobalDepartments = (name, department, excluded, path, notWrite) => ({
+export const getGlobalDepartments = (name, department, excluded, path) => ({
   type: GET_DEPARTMENTS.ACTION,
   payload: {
     promise: getShopDepartments(name, department, excluded, path),
   },
   meta: {
-    notWrite,
+    department,
   },
 });
 
