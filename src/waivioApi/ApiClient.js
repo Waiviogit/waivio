@@ -1377,7 +1377,6 @@ export const showMoreTagsForFilters = (category, objectTypeName, skip = 0, limit
     .catch(error => error);
 
 export const showMoreTagsForUserFilters = (userName, path, tagCategory, skip = 0, limit = 10) => {
-  console.log(path);
   return fetch(`${config.apiPrefix}${config.shop}${config.user}${config.filters}${config.tags}`, {
     headers,
     method: 'POST',
@@ -3602,4 +3601,57 @@ export const getChromeExtensionVersion = () =>
     .then(data => data.version)
     .catch(error => error);
 
+export const getMinMaxHiveAmount = outputCoinType => {
+  return fetch(
+    `${config.apiPrefix}${config.users}${config.guestWallet}${config.hiveWithdrawRange}`,
+    {
+      headers,
+      method: 'POST',
+      body: JSON.stringify({
+        outputCoinType,
+      }),
+    },
+  )
+    .then(res => res.json())
+    .then(r => r)
+    .catch(error => error);
+};
+
+export const getEstimatedHiveAmount = (amount, outputCoinType) => {
+  return fetch(
+    `${config.apiPrefix}${config.users}${config.guestWallet}${config.hiveWithdrawEstimates}`,
+    {
+      headers,
+      method: 'POST',
+      body: JSON.stringify({
+        amount,
+        outputCoinType,
+      }),
+    },
+  )
+    .then(res => res.json())
+    .then(r => r)
+    .catch(error => error);
+};
+
+export const withdrawHiveForGuest = (amount, outputCoinType, userName, address) => {
+  const guestToken = getGuestAccessToken();
+  return fetch(`${config.apiPrefix}${config.users}${config.guestWallet}${config.hiveWithdraw}`, {
+    headers: {
+      ...headers,
+      'access-token': guestToken || Cookie.get('access_token'),
+      'waivio-auth': Boolean(guestToken),
+    },
+    method: 'POST',
+    body: JSON.stringify({
+      amount,
+      outputCoinType,
+      userName,
+      address,
+    }),
+  })
+    .then(res => res.json())
+    .then(r => r)
+    .catch(error => error);
+};
 export default null;

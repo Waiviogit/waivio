@@ -1,14 +1,16 @@
 import React from 'react';
 import { useRouteMatch } from 'react-router';
 import PropTypes from 'prop-types';
+import { useDispatch } from 'react-redux';
 
-import { getShopUserDepartments } from '../../../waivioApi/ApiClient';
 import ShopDepartmentsList from './ShopDepartmentsList';
+import { getUserDepartments } from '../../../store/shopStore/shopActions';
 
 const DepartmentsUser = ({ onClose, isSocial }) => {
   const match = useRouteMatch();
-  const getShopDepartments = (department, excluded, path) =>
-    getShopUserDepartments(match.params.name, department, excluded, path);
+  const dispatch = useDispatch();
+  const getShopDepartments = (department, excluded, path, notWrite) =>
+    dispatch(getUserDepartments(match.params.name, department, excluded, path, notWrite));
 
   return (
     <ShopDepartmentsList

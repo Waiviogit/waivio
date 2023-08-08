@@ -1,4 +1,6 @@
 import {
+  GET_DEPARTMENTS,
+  GET_SHOP_LIST,
   RESET_BREAD_CRUMB,
   RESET_OPTION_CLICKED,
   SET_BREAD_ACTIVE_CRUMB,
@@ -12,6 +14,7 @@ const initialState = {
   activeCrumb: null,
   exclude: [],
   isOptionClicked: false,
+  departmentsList: [],
 };
 
 export default function shopReducer(state = initialState, action) {
@@ -52,6 +55,21 @@ export default function shopReducer(state = initialState, action) {
       return {
         ...state,
         isOptionClicked: false,
+      };
+    case GET_DEPARTMENTS.SUCCESS:
+      return {
+        ...state,
+        departmentsList: action.meta.notWrite ? state.departmentsList : action.payload,
+      };
+    case GET_SHOP_LIST.SUCCESS:
+      if (action.payload.message) return state;
+
+      return {
+        ...state,
+        shopList: action.meta.isLoadMore
+          ? [...state.shopList, ...action.payload.result]
+          : action.payload.result,
+        shopListHasMore: action.payload.hasMore,
       };
 
     default:

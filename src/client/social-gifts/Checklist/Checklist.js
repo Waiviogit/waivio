@@ -6,7 +6,7 @@ import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { Icon } from 'antd';
 import Helmet from 'react-helmet';
-
+import { useSeoInfo } from '../../../hooks/useSeoInfo';
 import { getSuitableLanguage } from '../../../store/reducers';
 import {
   createNewHash,
@@ -23,7 +23,6 @@ import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors
 
 import ShopObjectCard from '../ShopObjectCard/ShopObjectCard';
 import { sortListItemsBy } from '../../object/wObjectHelper';
-import { getObject } from '../../../waivioApi/ApiClient';
 import Breadcrumbs from '../Breadcrumbs/Breadcrumbs';
 import {
   getHelmetIcon,
@@ -35,6 +34,9 @@ import { getProxyImageURL } from '../../../common/helpers/image';
 import PageContent from '../PageContent/PageContent';
 import WidgetContent from '../WidgetContent/WidgetContent';
 import ObjectNewsFeed from '../FeedMasonry/ObjectNewsFeed';
+import { login } from '../../../store/authStore/authActions';
+import { getObject as getObjectState } from '../../../store/wObjectStore/wObjectSelectors';
+import { getObject } from '../../../store/wObjectStore/wobjectsActions';
 import './Checklist.less';
 
 const Checklist = ({
@@ -49,43 +51,67 @@ const Checklist = ({
   hideBreadCrumbs,
   isSocialProduct,
   setNestedObject,
+  wobject,
+  getObjectAction,
 }) => {
-  const [loading, setLoading] = useState(true);
-  const [listItems, setLists] = useState(true);
-  const [object, setObject] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [listItems, setLists] = useState(wobject?.listItems);
   const favicon = useSelector(getHelmetIcon);
   const siteName = useSelector(getSiteName);
   const mainObj = useSelector(getMainObj);
-  const title = `${getObjectName(object)} - ${siteName}`;
+  const title = `${getObjectName(wobject)} - ${siteName}`;
   const desc = mainObj?.description;
-  const image = getObjectAvatar(object);
-  const canonicalUrl = typeof location !== 'undefined' && location?.origin;
+  const image = getObjectAvatar(wobject);
+  const { canonicalUrl } = useSeoInfo();
 
   useEffect(() => {
     const pathUrl =
       permlink || getLastPermlinksFromHash(history.location.hash) || match.params.name;
 
     setLoading(true);
-    getObject(pathUrl, userName, locale).then(wObject => {
-      if (wObject.object_type === 'list' && window.gtag)
-        window.gtag('event', getObjectName(wObject));
-      setObject(wObject);
+
+    if (wobject.author_permlink !== pathUrl) {
+      setLoading(true);
+      getObjectAction(pathUrl, userName, locale).then(res => {
+        const wObject = res.value;
+
+        if (wObject?.object_type === 'list' && window.gtag)
+          window.gtag('event', getObjectName(wObject));
+        if (history.location.hash) {
+          setNestedObject(wObject);
+        }
+
+        if (!isSocialProduct) {
+          setBreadcrumb(wObject);
+        }
+        setLists(
+          sortListItemsBy(
+            wObject?.listItems,
+            isEmpty(wObject?.sortCustom) ? 'rank' : 'custom',
+            wObject?.sortCustom,
+          ),
+        );
+        setLoading(false);
+      });
+    } else {
+      if (wobject?.object_type === 'list' && window.gtag)
+        window.gtag('event', getObjectName(wobject));
       if (history.location.hash) {
-        setNestedObject(wObject);
+        setNestedObject(wobject);
       }
 
       if (!isSocialProduct) {
-        setBreadcrumb(wObject);
+        setBreadcrumb(wobject);
       }
       setLists(
         sortListItemsBy(
-          wObject?.listItems,
-          isEmpty(wObject?.sortCustom) ? 'rank' : 'custom',
-          wObject?.sortCustom,
+          wobject?.listItems,
+          isEmpty(wobject?.sortCustom) ? 'rank' : 'custom',
+          wobject?.sortCustom,
         ),
       );
       setLoading(false);
-    });
+    }
   }, [history.location.hash, match.params.name]);
 
   const getListRow = listItem => {
@@ -125,9 +151,9 @@ const Checklist = ({
   };
 
   const getMenuList = () => {
-    if (object.object_type === 'page') return <PageContent wobj={object} />;
-    if (object.object_type === 'widget') return <WidgetContent wobj={object} />;
-    if (object.object_type === 'newsfeed') return <ObjectNewsFeed wobj={object} />;
+    if (wobject.object_type === 'page') return <PageContent wobj={wobject} />;
+    if (wobject.object_type === 'widget') return <WidgetContent wobj={wobject} />;
+    if (wobject.object_type === 'newsfeed') return <ObjectNewsFeed wobj={wobject} />;
 
     if (isEmpty(listItems)) {
       return (
@@ -140,7 +166,7 @@ const Checklist = ({
       );
     }
 
-    if (isEmpty(object.sortCustom?.include)) {
+    if (isEmpty(wobject.sortCustom?.include)) {
       const itemsListType = listItems.filter(item => item.object_type === 'list');
       const itemsProducts = listItems.filter(item => item.object_type !== 'list');
 
@@ -181,9 +207,9 @@ const Checklist = ({
         <link id="favicon" rel="icon" href={favicon} type="image/x-icon" />
       </Helmet>
       {!hideBreadCrumbs && <Breadcrumbs />}
-      {object.object_type === 'list' && object.background && !loading && (
+      {wobject?.object_type === 'list' && wobject.background && !loading && (
         <div className="Checklist__banner">
-          <img src={object.background} alt={'Promotional list banner'} />
+          <img src={wobject.background} alt={'Promotional list banner'} />
         </div>
       )}
       {loading ? <Loading /> : getMenuList()}
@@ -197,13 +223,23 @@ Checklist.propTypes = {
       hash: PropTypes.string,
     }),
   }).isRequired,
-  userName: PropTypes.string.isRequired,
+  wobject: PropTypes.shape({
+    object_type: PropTypes.string,
+    author_permlink: PropTypes.string,
+    background: PropTypes.string,
+    sortCustom: PropTypes.shape({
+      include: PropTypes.arrayOf(PropTypes.string),
+    }),
+    listItems: PropTypes.arrayOf(),
+  }).isRequired,
+  userName: PropTypes.string,
   defaultListImage: PropTypes.string,
   permlink: PropTypes.string,
   hideBreadCrumbs: PropTypes.bool,
   locale: PropTypes.string.isRequired,
   setNestedObject: PropTypes.func,
-  intl: PropTypes.arrayOf(PropTypes.shape({ formatMessage: PropTypes.func })).isRequired,
+  getObjectAction: PropTypes.func,
+  intl: PropTypes.shape({ formatMessage: PropTypes.func }).isRequired,
   match: PropTypes.shape({
     params: PropTypes.shape({
       name: PropTypes.string,
@@ -213,15 +249,22 @@ Checklist.propTypes = {
   setBreadcrumb: PropTypes.func.isRequired,
 };
 
+Checklist.fetchData = ({ store, match }) =>
+  store
+    .dispatch(login())
+    .then(res => store.dispatch(getObject(match.params.name, res?.value?.name)));
+
 const mapStateToProps = state => ({
   locale: getSuitableLanguage(state),
   userName: getAuthenticatedUserName(state),
   defaultListImage: getWebsiteDefaultIconList(state),
+  wobject: getObjectState(state),
 });
 
 const mapDispatchToProps = {
   setBreadcrumb: setBreadcrumbForChecklist,
   setNestedObject: setNestedWobject,
+  getObjectAction: getObject,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(injectIntl(Checklist)));

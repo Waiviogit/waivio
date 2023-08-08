@@ -1,3 +1,13 @@
+import { createAsyncActionType } from '../../common/helpers/stateHelpers';
+import {
+  getShopDepartments,
+  getShopMainFeed,
+  getShopUserDepartments,
+  getUserShopMainFeed,
+  getWobjectShopDepartments,
+  getWobjectShopMainFeed,
+} from '../../waivioApi/ApiClient';
+
 export const SET_BREAD_CRUMB = '@shop/SET_BREAD_CRUMB';
 
 export const setBreadCrumb = crumb => ({
@@ -34,4 +44,131 @@ export const RESET_OPTION_CLICKED = '@shop/RESET_OPTION_CLICKED';
 
 export const resetOptionClicked = () => ({
   type: RESET_OPTION_CLICKED,
+});
+
+export const GET_DEPARTMENTS = createAsyncActionType('@shop/GET_DEPARTMENTS');
+
+export const getWobjectDepartments = (name, department, excluded, path, notWrite) => ({
+  type: GET_DEPARTMENTS.ACTION,
+  payload: {
+    promise: getWobjectShopDepartments(name, department, excluded, path),
+  },
+  meta: {
+    notWrite,
+  },
+});
+
+export const getUserDepartments = (name, department, excluded, path, notWrite) => ({
+  type: GET_DEPARTMENTS.ACTION,
+  payload: {
+    promise: getShopUserDepartments(name, department, excluded, path),
+  },
+  meta: {
+    notWrite,
+  },
+});
+
+export const getGlobalDepartments = (name, department, excluded, path, notWrite) => ({
+  type: GET_DEPARTMENTS.ACTION,
+  payload: {
+    promise: getShopDepartments(name, department, excluded, path),
+  },
+  meta: {
+    notWrite,
+  },
+});
+
+export const GET_SHOP_LIST = createAsyncActionType('@shop/GET_SHOP_LIST');
+
+export const getGlobalShopList = (
+  userName,
+  follower,
+  filter,
+  excludedDepartments,
+  department,
+  skip,
+  path,
+  limit = 10,
+  categoryLimit,
+  isLoadMore,
+) => ({
+  type: GET_SHOP_LIST.ACTION,
+  payload: {
+    promise: getShopMainFeed(
+      userName,
+      follower,
+      filter,
+      excludedDepartments,
+      department,
+      skip,
+      path,
+      limit,
+      categoryLimit,
+    ),
+  },
+  meta: {
+    isLoadMore,
+  },
+});
+
+export const getUserShopList = (
+  userName,
+  follower,
+  filter,
+  excludedDepartments,
+  department,
+  skip,
+  path,
+  limit = 10,
+  categoryLimit,
+  isLoadMore,
+) => ({
+  type: GET_SHOP_LIST.ACTION,
+  payload: {
+    promise: getUserShopMainFeed(
+      userName,
+      follower,
+      filter,
+      excludedDepartments,
+      department,
+      skip,
+      path,
+      limit,
+      categoryLimit,
+    ),
+  },
+  meta: {
+    isLoadMore,
+  },
+});
+
+export const getWobjectsShopList = (
+  userName,
+  follower,
+  filter,
+  excludedDepartments,
+  department,
+  skip,
+  path,
+  limit = 10,
+  categoryLimit,
+  isLoadMore,
+) => ({
+  type: GET_SHOP_LIST.ACTION,
+  payload: {
+    promise: getWobjectShopMainFeed(
+      userName,
+      follower,
+      filter,
+      excludedDepartments,
+      department,
+      skip,
+      path,
+      limit,
+      categoryLimit,
+    ),
+  },
+  meta: {
+    isLoadMore,
+  },
 });

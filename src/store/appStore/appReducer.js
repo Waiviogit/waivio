@@ -174,7 +174,7 @@ export default (state = initialState, action) => {
         ...state,
         isUserAdministrator: administrators?.includes(action?.userName),
         administrators,
-        websiteName: getObjectName(configuration.aboutObject) || configuration?.header?.name,
+        websiteName: configuration?.header?.name || getObjectName(configuration.aboutObject),
         mainPage,
         host,
         configuration,
@@ -217,7 +217,8 @@ export default (state = initialState, action) => {
         configuration: action.payload,
         currency: action.payload.currency,
         helmetIcon: getObjectAvatar(action.payload.aboutObject) || logo,
-        websiteName: getObjectName(action.payload.aboutObject) || action.payload?.header?.name,
+        websiteName:
+          action.payload?.header?.name || getObjectName(action.payload.aboutObject) || action.meta,
         hostAddress: action.meta,
         isDiningGifts:
           listOfWebsiteWithMainPage.some(site => site === action.meta) || startup === 'about',

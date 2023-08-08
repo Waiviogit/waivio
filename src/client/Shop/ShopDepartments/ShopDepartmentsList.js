@@ -1,24 +1,23 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
 import { useRouteMatch } from 'react-router';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { isEmpty } from 'lodash';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import DepartmentItem from './DepartmentItem';
 import { resetBreadCrumb } from '../../../store/shopStore/shopActions';
 
 import './ShopDepartments.less';
+import { getDepartmentsList } from '../../../store/shopStore/shopSelectors';
 
 const ShopDepartmentsList = ({ shopFilter, onClose, getShopDepartments, path, intl }) => {
   const match = useRouteMatch();
   const dispatch = useDispatch();
-  const [departments, setDepartments] = useState([]);
+  const departments = useSelector(getDepartmentsList);
 
   useEffect(() => {
-    getShopDepartments().then(res => {
-      setDepartments(res);
-    });
+    getShopDepartments();
   }, [match.params.name, shopFilter]);
 
   if (isEmpty(departments)) return null;

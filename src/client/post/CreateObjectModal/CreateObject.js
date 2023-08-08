@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { injectIntl } from 'react-intl';
+import { FormattedMessage, injectIntl } from 'react-intl';
 import { Form, Input, Select, Button, Modal, Dropdown, Icon, Menu } from 'antd';
 import { isEmpty, map, get } from 'lodash';
 import { withRouter } from 'react-router';
@@ -362,6 +362,9 @@ class CreateObject extends React.Component {
             footer={null}
           >
             <Form.Item>
+              <div className="CreateObject__label">
+                <FormattedMessage id="profile_name" defaultMessage="Name" />
+              </div>
               {getFieldDecorator(objectFields.name, {
                 getValueFromEvent:
                   defaultObjectType === 'hashtag' ? e => e.target.value.toLowerCase() : null,
@@ -398,8 +401,8 @@ class CreateObject extends React.Component {
                   disabled={loading}
                   className="Editor__title"
                   placeholder={intl.formatMessage({
-                    id: 'value_placeholder',
-                    defaultMessage: 'Add value',
+                    id: 'enter_name',
+                    defaultMessage: 'Enter name',
                   })}
                   suffix={
                     !hashtagObjType &&
@@ -420,6 +423,9 @@ class CreateObject extends React.Component {
               )}
             </Form.Item>
             <Form.Item>
+              <div className="CreateObject__label">
+                <FormattedMessage id="object_field_language" defaultMessage="Language" />
+              </div>
               {getFieldDecorator('locale', {
                 initialValue: locale,
                 rules: [
@@ -432,14 +438,17 @@ class CreateObject extends React.Component {
                   },
                 ],
               })(
-                <Select disabled={loading} style={{ width: '100%' }} className="languageOptions">
+                <Select disabled={loading} style={{ width: '100%' }}>
                   {languageOptions}
                 </Select>,
               )}
             </Form.Item>
             <Form.Item>
+              <div className="CreateObject__label">
+                <FormattedMessage id="type" defaultMessage="Type" />
+              </div>
               {getFieldDecorator('type', {
-                initialValue: defaultObjectType,
+                initialValue: defaultObjectType || undefined,
                 rules: [
                   {
                     required: true,
@@ -455,7 +464,7 @@ class CreateObject extends React.Component {
                   disabled={isSingleType}
                   style={{ width: '100%' }}
                   placeholder={intl.formatMessage({
-                    id: 'placeholder_obj_type',
+                    id: 'select_type',
                     defaultMessage: 'Object type',
                   })}
                   optionFilterProp="children"

@@ -33,7 +33,7 @@ const routes = host => ({
         : ShopSwitcher,
     },
     {
-      path: ['/object-shop/:name/:department?'],
+      path: ['/(object-shop)/:name/:department?'],
       exact: true,
       component: Shop,
       pathScope: '/object-shop/:name',
@@ -52,7 +52,7 @@ const routes = host => ({
       component: UserBlogFeed,
     },
     {
-      path: ['/user-shop/:name/:department?'],
+      path: ['/(user-shop)/:name/:department?'],
       exact: true,
       component: Shop,
       pathScope: '/user-shop/:name',
