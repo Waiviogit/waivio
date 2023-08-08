@@ -43,36 +43,37 @@ const DataImport = ({ intl }) => {
   const [hasMoreImports, setHasMoreImports] = useState(false);
   const [hasMoreHistory, setHasMoreHistory] = useState(false);
   const [history, setHistoryImportedObject] = useState([]);
-  const setHasMore = list => list.length === limit;
+  const setListAndSetHasMore = (res, list, isLoadMore, setObjs, setMoreObjs) => {
+    if (res.length > limit) {
+      setMoreObjs(true);
+      setObjs(isLoadMore ? [...list, ...res.slice(0, -1)] : res.slice(0, -1));
+    } else {
+      setObjs(isLoadMore ? [...list, ...res] : res);
+      setMoreObjs(false);
+    }
+  };
 
   const getImportList = () =>
-    getImportedObjects(authUserName, 0, limit).then(res => {
-      setImportedObject(res);
-      setHasMoreImports(setHasMore(res));
+    getImportedObjects(authUserName, 0, limit + 1).then(res => {
+      setListAndSetHasMore(res, importedObject, false, setImportedObject, setHasMoreImports);
     });
 
   const updateImportDate = () => {
-    getImportedObjects(authUserName, 0, limit).then(res => {
-      getHistoryImportedObjects(authUserName, 0, limit).then(his => {
-        setHistoryImportedObject(his);
-        setHasMoreHistory(setHasMore(his));
+    getImportedObjects(authUserName, 0, limit + 1).then(res => {
+      getHistoryImportedObjects(authUserName, 0, limit + 1).then(his => {
+        setListAndSetHasMore(his, history, false, setHistoryImportedObject, setHasMoreHistory);
       });
-      setImportedObject(res);
-      setHasMoreImports(setHasMore(res));
+      setListAndSetHasMore(res, importedObject, false, setImportedObject, setHasMoreImports);
     });
   };
 
   const loadMoreImportDate = () =>
-    getImportedObjects(authUserName, importedObject.length, limit).then(res => {
-      setHasMoreImports(setHasMore(res));
-
-      setImportedObject([...importedObject, ...res]);
+    getImportedObjects(authUserName, importedObject.length, limit + 1).then(res => {
+      setListAndSetHasMore(res, importedObject, true, setImportedObject, setHasMoreImports);
     });
   const loadMoreHistoryDate = () =>
-    getHistoryImportedObjects(authUserName, history.length, limit).then(his => {
-      setHasMoreHistory(setHasMore(his));
-
-      setHistoryImportedObject([...history, ...his]);
+    getHistoryImportedObjects(authUserName, history.length, limit + 1).then(his => {
+      setListAndSetHasMore(his, history, true, setHistoryImportedObject, setHasMoreHistory);
     });
 
   useEffect(() => {
@@ -80,13 +81,11 @@ const DataImport = ({ intl }) => {
       setVotingValue(res.minVotingPower / 100);
     });
 
-    getImportedObjects(authUserName, 0, limit).then(res => {
-      setImportedObject(res);
-      setHasMoreImports(setHasMore(res));
+    getImportedObjects(authUserName, 0, limit + 1).then(res => {
+      setListAndSetHasMore(res, importedObject, false, setImportedObject, setHasMoreImports);
     });
-    getHistoryImportedObjects(authUserName, 0, limit).then(his => {
-      setHistoryImportedObject(his);
-      setHasMoreHistory(setHasMore(his));
+    getHistoryImportedObjects(authUserName, 0, limit + 1).then(his => {
+      setListAndSetHasMore(his, history, false, setHistoryImportedObject, setHasMoreHistory);
     });
 
     dispatch(getImportUpdate(updateImportDate));
