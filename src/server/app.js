@@ -6,7 +6,6 @@ import paths from '../../scripts/paths';
 import createSsrHandler from './handlers/createSsrHandler';
 // import createAmpHandler from './handlers/createAmpHandler';
 import steemAPI from './steemAPI';
-import { loadUserAgents } from './handlers/cachePageHandler';
 
 const indexPath = `${paths.templates}/index.hbs`;
 const indexHtml = fs.readFileSync(indexPath, 'utf-8');
@@ -15,7 +14,6 @@ const template = Handlebars.compile(indexHtml);
 // const ampIndexPath = `${paths.templates}/amp_index.hbs`;
 // const ampIndexHtml = fs.readFileSync(ampIndexPath, 'utf-8');
 // const ampTemplate = Handlebars.compile(ampIndexHtml);
-loadUserAgents();
 const ssrHandler = createSsrHandler(template);
 // const ampHandler = createAmpHandler(ampTemplate);
 
