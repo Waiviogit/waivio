@@ -1,15 +1,13 @@
-import { Link, withRouter } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import React, { useEffect, useState } from 'react';
 import { connect, useSelector } from 'react-redux';
-import { isEmpty, map } from 'lodash';
+import { isEmpty } from 'lodash';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
-import { Icon } from 'antd';
 import Helmet from 'react-helmet';
 import { useSeoInfo } from '../../../hooks/useSeoInfo';
 import { getSuitableLanguage } from '../../../store/reducers';
 import {
-  createNewHash,
   getLastPermlinksFromHash,
   getObjectAvatar,
   getObjectName,
@@ -18,37 +16,24 @@ import {
   setBreadcrumbForChecklist,
   setNestedWobject,
 } from '../../../store/wObjectStore/wobjActions';
-import Loading from '../../components/Icon/Loading';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 
-import ShopObjectCard from '../ShopObjectCard/ShopObjectCard';
 import { sortListItemsBy } from '../../object/wObjectHelper';
-import Breadcrumbs from '../Breadcrumbs/Breadcrumbs';
-import {
-  getHelmetIcon,
-  getMainObj,
-  getSiteName,
-  getWebsiteDefaultIconList,
-} from '../../../store/appStore/appSelectors';
-import { getProxyImageURL } from '../../../common/helpers/image';
-import PageContent from '../PageContent/PageContent';
-import WidgetContent from '../WidgetContent/WidgetContent';
-import ObjectNewsFeed from '../FeedMasonry/ObjectNewsFeed';
+import { getHelmetIcon, getMainObj, getSiteName } from '../../../store/appStore/appSelectors';
 import { login } from '../../../store/authStore/authActions';
 import { getObject as getObjectState } from '../../../store/wObjectStore/wObjectSelectors';
 import { getObject } from '../../../store/wObjectStore/wobjectsActions';
+import CheckListView from './CheckListView';
+
 import './Checklist.less';
 
 const Checklist = ({
   userName,
   locale,
   history,
-  intl,
   match,
   setBreadcrumb,
-  defaultListImage,
   permlink,
-  hideBreadCrumbs,
   isSocialProduct,
   setNestedObject,
   wobject,
@@ -114,77 +99,8 @@ const Checklist = ({
     }
   }, [history.location.hash, match.params.name]);
 
-  const getListRow = listItem => {
-    const isList = listItem.object_type === 'list';
-
-    if (isList) {
-      const avatar = getProxyImageURL(listItem?.avatar || defaultListImage, 'preview');
-
-      return (
-        <div className="Checklist__listItems">
-          <Link
-            to={{
-              pathname: `/checklist/${match.params.name}`,
-              hash: createNewHash(listItem?.author_permlink, history.location.hash),
-            }}
-          >
-            <div
-              className="Checklist__itemsAvatar"
-              style={{
-                backgroundImage: `url(${avatar})`,
-              }}
-            >
-              {!listItem?.avatar && !defaultListImage && <Icon type="shopping" />}
-            </div>
-            <span className="Checklist__itemsTitle">
-              {getObjectName(listItem)}
-              {!isNaN(listItem.listItemsCount) ? (
-                <span className="items-count"> ({listItem.listItemsCount})</span>
-              ) : null}
-            </span>
-          </Link>
-        </div>
-      );
-    }
-
-    return <ShopObjectCard isChecklist wObject={listItem} />;
-  };
-
-  const getMenuList = () => {
-    if (wobject.object_type === 'page') return <PageContent wobj={wobject} />;
-    if (wobject.object_type === 'widget') return <WidgetContent wobj={wobject} />;
-    if (wobject.object_type === 'newsfeed') return <ObjectNewsFeed wobj={wobject} />;
-
-    if (isEmpty(listItems)) {
-      return (
-        <div className={'Checklist__empty'}>
-          {intl.formatMessage({
-            id: 'checklist_empty',
-            defaultMessage: 'There are no items in the list',
-          })}
-        </div>
-      );
-    }
-
-    if (isEmpty(wobject.sortCustom?.include)) {
-      const itemsListType = listItems.filter(item => item.object_type === 'list');
-      const itemsProducts = listItems.filter(item => item.object_type !== 'list');
-
-      return (
-        <div>
-          <div className="Checklist__list">{itemsListType.map(item => getListRow(item))}</div>
-          <div className="Checklist__list">{itemsProducts.map(item => getListRow(item))}</div>
-        </div>
-      );
-    }
-
-    return (
-      <div className="Checklist__list">{map(listItems, listItem => getListRow(listItem))}</div>
-    );
-  };
-
   return (
-    <div className="Checklist">
+    <React.Fragment>
       <Helmet>
         <title>{title}</title>
         <meta property="og:title" content={title} />
@@ -206,14 +122,8 @@ const Checklist = ({
         <link rel="image_src" href={image} />
         <link id="favicon" rel="icon" href={favicon} type="image/x-icon" />
       </Helmet>
-      {!hideBreadCrumbs && <Breadcrumbs />}
-      {wobject?.object_type === 'list' && wobject.background && !loading && (
-        <div className="Checklist__banner">
-          <img src={wobject.background} alt={'Promotional list banner'} />
-        </div>
-      )}
-      {loading ? <Loading /> : getMenuList()}
-    </div>
+      <CheckListView wobject={wobject} listItems={listItems} loading={loading} />
+    </React.Fragment>
   );
 };
 
@@ -233,9 +143,7 @@ Checklist.propTypes = {
     listItems: PropTypes.arrayOf(),
   }).isRequired,
   userName: PropTypes.string,
-  defaultListImage: PropTypes.string,
   permlink: PropTypes.string,
-  hideBreadCrumbs: PropTypes.bool,
   locale: PropTypes.string.isRequired,
   setNestedObject: PropTypes.func,
   getObjectAction: PropTypes.func,
@@ -257,7 +165,6 @@ Checklist.fetchData = ({ store, match }) =>
 const mapStateToProps = state => ({
   locale: getSuitableLanguage(state),
   userName: getAuthenticatedUserName(state),
-  defaultListImage: getWebsiteDefaultIconList(state),
   wobject: getObjectState(state),
 });
 
