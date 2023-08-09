@@ -27,6 +27,8 @@ import { closeImportSoket, getImportUpdate } from '../../../store/settingsStore/
 import './DataImport.less';
 import VoteInfoBlock from './VoteInfoBlock';
 
+const limit = 30;
+
 const DataImport = ({ intl }) => {
   const isAuthBot = useSelector(state =>
     getIsConnectMatchBot(state, { botType: MATCH_BOTS_TYPES.IMPORT }),
@@ -38,30 +40,52 @@ const DataImport = ({ intl }) => {
   const [visibleVoting, setVisibleVoting] = useState(false);
   const [votingValue, setVotingValue] = useState(100);
   const [importedObject, setImportedObject] = useState([]);
+  const [hasMoreImports, setHasMoreImports] = useState(false);
+  const [hasMoreHistory, setHasMoreHistory] = useState(false);
   const [history, setHistoryImportedObject] = useState([]);
+  const setListAndSetHasMore = (res, list, isLoadMore, setObjs, setMoreObjs) => {
+    if (res.length > limit) {
+      setMoreObjs(true);
+      setObjs(isLoadMore ? [...list, ...res.slice(0, -1)] : res.slice(0, -1));
+    } else {
+      setObjs(isLoadMore ? [...list, ...res] : res);
+      setMoreObjs(false);
+    }
+  };
 
   const getImportList = () =>
-    getImportedObjects(authUserName).then(res => {
-      setImportedObject(res);
+    getImportedObjects(authUserName, 0, limit + 1).then(res => {
+      setListAndSetHasMore(res, importedObject, false, setImportedObject, setHasMoreImports);
     });
 
   const updateImportDate = () => {
-    getImportedObjects(authUserName).then(res => {
-      getHistoryImportedObjects(authUserName).then(his => {
-        setHistoryImportedObject(his);
+    getImportedObjects(authUserName, 0, limit + 1).then(res => {
+      getHistoryImportedObjects(authUserName, 0, limit + 1).then(his => {
+        setListAndSetHasMore(his, history, false, setHistoryImportedObject, setHasMoreHistory);
       });
-      setImportedObject(res);
+      setListAndSetHasMore(res, importedObject, false, setImportedObject, setHasMoreImports);
     });
   };
+
+  const loadMoreImportDate = () =>
+    getImportedObjects(authUserName, importedObject.length, limit + 1).then(res => {
+      setListAndSetHasMore(res, importedObject, true, setImportedObject, setHasMoreImports);
+    });
+  const loadMoreHistoryDate = () =>
+    getHistoryImportedObjects(authUserName, history.length, limit + 1).then(his => {
+      setListAndSetHasMore(his, history, true, setHistoryImportedObject, setHasMoreHistory);
+    });
 
   useEffect(() => {
     getImportVote(authUserName).then(res => {
       setVotingValue(res.minVotingPower / 100);
     });
 
-    getImportList();
-    getHistoryImportedObjects(authUserName).then(his => {
-      setHistoryImportedObject(his);
+    getImportedObjects(authUserName, 0, limit + 1).then(res => {
+      setListAndSetHasMore(res, importedObject, false, setImportedObject, setHasMoreImports);
+    });
+    getHistoryImportedObjects(authUserName, 0, limit + 1).then(his => {
+      setListAndSetHasMore(his, history, false, setHistoryImportedObject, setHasMoreHistory);
     });
 
     dispatch(getImportUpdate(updateImportDate));
@@ -83,7 +107,9 @@ const DataImport = ({ intl }) => {
     const status = item.status === 'active' ? 'onHold' : 'active';
 
     setObjectImport(authUserName, status, item.importId).then(() => {
-      getImportList();
+      getImportedObjects(authUserName, 0, importedObject.length).then(res => {
+        setImportedObject(res);
+      });
     });
   };
 
@@ -100,7 +126,7 @@ const DataImport = ({ intl }) => {
       }),
       onOk: () => {
         deleteObjectImport(authUserName, item.importId).then(() => {
-          getImportedObjects(authUserName).then(res => {
+          getImportedObjects(authUserName, 0, importedObject.length).then(res => {
             setImportedObject(res);
           });
         });
@@ -189,13 +215,20 @@ const DataImport = ({ intl }) => {
         {intl.formatMessage({ id: 'upload_new_file', defaultMessage: 'Upload new file' })}
       </Button>
       <DynamicTbl
+        handleShowMore={loadMoreImportDate}
+        showMore={hasMoreImports}
         header={configProductTable}
         bodyConfig={importedObject}
         onChange={handleChangeStatus}
         deleteItem={handleDeleteObject}
       />
       <h3>{intl.formatMessage({ id: 'history', defaultMessage: 'History' })}</h3>
-      <DynamicTbl header={configHistoryTable} bodyConfig={history} />
+      <DynamicTbl
+        handleShowMore={loadMoreHistoryDate}
+        showMore={hasMoreHistory}
+        header={configHistoryTable}
+        bodyConfig={history}
+      />
       {visible && (
         <ImportModal getImportList={getImportList} visible={visible} toggleModal={toggleModal} />
       )}

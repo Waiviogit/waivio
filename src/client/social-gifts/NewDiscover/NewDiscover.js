@@ -14,6 +14,7 @@ import { getObjectType } from '../../../waivioApi/ApiClient';
 import { getLocale } from '../../../store/settingsStore/settingsSelectors';
 
 import './NewDiscover.less';
+import { useSeoInfo } from '../../../hooks/useSeoInfo';
 
 const wobjects_count = 20;
 
@@ -31,7 +32,7 @@ const NewDiscover = () => {
   const desc = 'All objects are located here. Discover new objects!';
   const image =
     'https://images.hive.blog/p/DogN7fF3oJDSFnVMQK19qE7K3somrX2dTE7F3viyR7zVngPPv827QvEAy1h8dJVrY1Pa5KJWZrwXeHPHqzW6dL9AG9fWHRaRVeY8B4YZh4QrcaPRHtAtYLGebHH7zUL9jyKqZ6NyLgCk3FRecMX7daQ96Zpjc86N6DUQrX18jSRqjSKZgaj2wVpnJ82x7nSGm5mmjSih5Xf71?format=match&mode=fit&width=800&height=600';
-  const canonicalUrl = `https://www.waivio.com/discover-objects/${type}`;
+  const { canonicalUrl } = useSeoInfo();
   const title = 'Discover - Waivio';
 
   useEffect(() => {
@@ -88,7 +89,7 @@ const NewDiscover = () => {
         <title>{title}</title>
         <meta property="og:title" content={title} />
         <link rel="canonical" href={canonicalUrl} />
-        <meta property="description" content={desc} />
+        <meta name="description" content={desc} />
         <meta name="twitter:card" content={'summary_large_image'} />
         <meta name="twitter:site" content={'@waivio'} />
         <meta name="twitter:title" content={title} />

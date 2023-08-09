@@ -11,6 +11,7 @@ import { getSettingsWebsite, waivioAPI } from '../../waivioApi/ApiClient';
 import getStore from '../../store/store';
 import renderSsrPage from '../renderers/ssrRenderer';
 import switchRoutes from '../../routes/switchRoutes';
+import { getCachedPage, isSearchBot, setCachedPage, updateBotCount } from './cachePageHandler';
 
 // eslint-disable-next-line import/no-dynamic-require
 const assets = require(process.env.MANIFEST_PATH);
@@ -29,12 +30,21 @@ function createTimeout(timeout, promise) {
 export default function createSsrHandler(template) {
   return async function serverSideResponse(req, res) {
     try {
+      if (await isSearchBot(req)) {
+        await updateBotCount(req);
+        const cachedPage = await getCachedPage(req);
+        if (cachedPage) {
+          console.log('SEND CACHED PAGE');
+          return res.send(cachedPage);
+        }
+      }
+
       const sc2Api = new hivesigner.Client({
         app: process.env.STEEMCONNECT_CLIENT_ID,
         baseURL: process.env.STEEMCONNECT_HOST || 'https://hivesigner.com',
         callbackURL: process.env.STEEMCONNECT_REDIRECT_URL,
       });
-      const hostname = req.hostname;
+      const hostname = req.headers.host;
       const isWaivio = hostname.includes('waivio');
       let settings = {};
 
@@ -45,9 +55,8 @@ export default function createSsrHandler(template) {
       if (req.cookies.access_token) sc2Api.setAccessToken(req.cookies.access_token);
 
       const store = getStore(sc2Api, waivioAPI, req.url);
-      const routes = switchRoutes(hostname, get(settings, 'configuration.header.startup'));
+      const routes = switchRoutes(hostname);
       const branch = matchRoutes(routes, req.url.split('?')[0]);
-
       const promises = branch.map(({ route, match }) => {
         const fetchData = route?.component?.fetchData;
 
@@ -74,17 +83,17 @@ export default function createSsrHandler(template) {
 
       if (context.status) res.status(context.status);
 
-      return res.send(
-        renderSsrPage(
-          store,
-          content,
-          assets,
-          template,
-          isWaivio,
-          get(settings, 'googleAnalyticsTag', ''),
-        ),
+      const page = renderSsrPage(
+        store,
+        content,
+        assets,
+        template,
+        isWaivio,
+        get(settings, 'googleAnalyticsTag', ''),
       );
-      console.log(`Open on ${req.hostname}`);
+
+      await setCachedPage({ page, req });
+      return res.send(page);
     } catch (err) {
       console.error('SSR error occured, falling back to bundled application instead', err);
       let settings = {};

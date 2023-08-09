@@ -1,10 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import { isNil } from 'lodash';
 import { FormattedMessage } from 'react-intl';
-import { getUser } from '../../../store/usersStore/usersSelectors';
 import USDDisplay from '../../components/Utils/USDDisplay';
 import Loading from '../../components/Icon/Loading';
 import WalletSidebar from '../../components/Sidebar/WalletSidebar/WalletSidebar';
@@ -48,6 +46,4 @@ WalletSummaryInfo.defaultProps = {
   estAccValue: 0,
 };
 
-export default connect((state, ownProps) => ({
-  user: getUser(state, ownProps.userName),
-}))(withRouter(WalletSummaryInfo));
+export default withRouter(WalletSummaryInfo);

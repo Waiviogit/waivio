@@ -1,17 +1,21 @@
 import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Form, Modal, message } from 'antd';
+import { Form, Modal, message, Input } from 'antd';
 import classNames from 'classnames';
-import { ceil, get, upperFirst, debounce } from 'lodash';
+import { ceil, get, upperFirst, debounce, isNil } from 'lodash';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import store from 'store';
+// import store from 'store';
 import WAValidator from 'multicoin-address-validator';
 
 import { closeWithdraw } from '../../../store/walletStore/walletActions';
 import QrModal from '../../widgets/QrModal';
-import { confirmWithDraw, estimateAmount } from '../../../waivioApi/ApiClient';
-import EmailConfirmation from '../../widgets/EmailConfirmation';
+import {
+  getEstimatedHiveAmount,
+  getMinMaxHiveAmount,
+  withdrawHiveForGuest,
+} from '../../../waivioApi/ApiClient';
+// import EmailConfirmation from '../../widgets/EmailConfirmation';
 import {
   CRYPTO_FOR_VALIDATE_WALLET,
   CRYPTO_LIST_FOR_WALLET,
@@ -30,37 +34,34 @@ const Withdraw = ({
   user,
   closeWithdrawModal,
   cryptosPriceHistory,
-  getPrivateEmail,
+  // getPrivateEmail,
   currCurrency,
 }) => {
   const [isShowScanner, setShowScanner] = useState(false);
   const [walletAddress, setWalletAddress] = useState('');
   const [currentCurrency, setCurrentCurrency] = useState(currCurrency);
-  const [isShowConfirm, setShowConfirm] = useState();
+  // const [isShowConfirm, setShowConfirm] = useState();
   const [isLoading, setIsLoading] = useState(false);
   const [hiveCount, setHiveCount] = useState(false);
   const [validationAddressState, setIsValidate] = useState({ loading: false, valid: false });
   const [hiveAmount, setHiveAmount] = useState('');
   const [currencyAmount, setCurrencyAmount] = useState('');
+  const [minAmount, setMinAmount] = useState(0);
+  const [maxAmount, setMaxAmount] = useState(0);
   const hiveInput = useRef();
   const currencyInput = useRef();
   // const hiveAmount = get(hiveInput, ['current', 'value'], 0);
   // const currencyAmount = get(currencyInput, ['current', 'value'], 0);
-  const draftTransfer = store.get('withdrawData');
+  // const draftTransfer = store.get('withdrawData');
   const hivePrice = get(cryptosPriceHistory, `${HIVE.coinGeckoId}.usdPriceHistory.usd`, 0);
-  const estimateValue = ceil(hiveCount * hivePrice, 3) || 0;
+  const estimateValue = ceil(hiveCount * hivePrice, 2) || 0;
   const currentBalance = `${user.balance} HIVE`;
   const hiveAmountClassList = classNames('Withdraw__input-text Withdraw__input-text--send-input', {
     'Withdraw__input-text--error': hiveAmount > user.balance,
   });
   const isUserCanMakeTransfer =
     Number(currentBalance && currentBalance.replace(' HIVE', '')) >= Number(hiveCount);
-  // const setHiveAmount = value => {
-  //   hiveInput.current.value = value;
-  // };
-  // const setCurrencyAmount = value => {
-  //   currencyInput.current.value = value;
-  // };
+
   const walletAddressValidation = (address, crypto) => {
     setIsValidate({ valid: false, loading: true });
 
@@ -73,37 +74,42 @@ const Withdraw = ({
     return setIsValidate({ valid: false, loading: false });
   };
 
-  useEffect(() => {
-    if (draftTransfer) {
-      setCurrentCurrency(draftTransfer.currentCurrency);
-      setWalletAddress(draftTransfer.walletAddress);
-      walletAddressValidation(
-        draftTransfer.walletAddress,
-        CRYPTO_FOR_VALIDATE_WALLET[draftTransfer.currentCurrency],
-      );
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (draftTransfer) {
+  //     setCurrentCurrency(draftTransfer.currentCurrency);
+  //     setWalletAddress(draftTransfer.walletAddress);
+  //     walletAddressValidation(
+  //       draftTransfer.walletAddress,
+  //       CRYPTO_FOR_VALIDATE_WALLET[draftTransfer.currentCurrency],
+  //     );
+  //   }
+  // }, []);
 
   useEffect(() => {
+    getMinMaxHiveAmount(currentCurrency).then(res => {
+      setMinAmount(parseFloat(res.min));
+      setMaxAmount(!isNil(res.max) ? parseFloat(res.max) : null);
+    });
     if (hiveAmount) {
-      estimateAmount(hiveAmount, 'hive', currentCurrency).then(r =>
-        setCurrencyAmount(r.outputAmount),
-      );
+      getEstimatedHiveAmount(parseFloat(hiveAmount), currentCurrency).then(r => {
+        setCurrencyAmount(r.result);
+      });
     }
 
     if (walletAddress) {
       walletAddressValidation(walletAddress, CRYPTO_FOR_VALIDATE_WALLET[currentCurrency]);
     }
-  }, [currentCurrency]);
+  }, [currentCurrency, hiveAmount]);
 
   const handleCurrencyCountChange = (validateValue, outputSetter, input, output) => {
     if (input === 'hive') setHiveCount(validateValue);
 
     if (!isNaN(validateValue) && Number(validateValue)) {
-      estimateAmount(validateValue, input, output)
+      getEstimatedHiveAmount(parseFloat(validateValue), currentCurrency)
         .then(r => {
-          outputSetter(r.outputAmount);
-          if (output === 'hive') setHiveCount(r.outputAmount);
+          outputSetter(r.result);
+
+          if (output === 'hive') setHiveCount(r.result);
         })
         .catch(e => message.error(e.message));
     } else if (output !== 'hive') outputSetter(0);
@@ -129,18 +135,12 @@ const Withdraw = ({
     walletAddressValidation(address, CRYPTO_FOR_VALIDATE_WALLET[currentCurrency]);
   };
 
-  const handleRequest = () => {
-    setIsLoading(true);
-    store.set('withdrawData', {
-      walletAddress,
-      currentCurrency,
-      hiveAmount: hiveCount,
-    });
-    getPrivateEmail(user.name).then(() => {
-      setShowConfirm(true);
-      setIsLoading(false);
-    });
-  };
+  // const handleRequest = () => {
+  //   getPrivateEmail(user.name).then(() => {
+  //     setShowConfirm(true);
+  //     setIsLoading(false);
+  //   });
+  // };
 
   const handleClickCurrentAmount = () => {
     const currentBal = parseFloat(currentBalance);
@@ -149,9 +149,9 @@ const Withdraw = ({
     setHiveCount(currentBal);
 
     if (currentBal) {
-      estimateAmount(currentBal, 'hive', currentCurrency).then(r =>
-        setCurrencyAmount(r.outputAmount),
-      );
+      getEstimatedHiveAmount(parseFloat(currentBal), currentCurrency).then(r => {
+        setCurrencyAmount(r.result);
+      });
     } else {
       setCurrencyAmount(0);
     }
@@ -180,20 +180,22 @@ const Withdraw = ({
       isUserCanMakeTransfer
     ) || estimateValue > 100;
 
-  const handleSubmitTransaction = () =>
-    confirmWithDraw(user.name, {
-      outputCoinType: currentCurrency,
-      inputCoinType: 'hive',
-      address: walletAddress,
-      amount: hiveAmount,
-    })
+  const handleSubmitTransaction = () => {
+    setIsLoading(true);
+    // store.set('withdrawData', {
+    //   walletAddress,
+    //   currentCurrency,
+    //   hiveAmount: hiveCount,
+    // });
+
+    return withdrawHiveForGuest(hiveAmount, currentCurrency, user.name, walletAddress)
       .then(r => {
-        if (r.result) {
+        if (r) {
           closeWithdrawModal();
           message.success(
             intl.formatMessage({
               id: 'transaction_success',
-              defaultMessage: 'Your transaction success',
+              defaultMessage: 'Your transaction is successful',
             }),
           );
         }
@@ -207,6 +209,7 @@ const Withdraw = ({
 
         return e;
       });
+  };
 
   return (
     <React.Fragment>
@@ -215,21 +218,17 @@ const Withdraw = ({
         className="Withdraw__modal"
         title={intl.formatMessage({
           id: 'withdraw_modal_title',
-          defaultMessage: 'Blocktrades.us exchange',
+          defaultMessage: 'SimpleSwap.io exchange',
         })}
-        okText={intl.formatMessage({ id: 'withdraw_continue', defaultMessage: 'Request withdraw' })}
+        okText={intl.formatMessage({ id: 'withdraw', defaultMessage: 'Withdraw' })}
         cancelText={intl.formatMessage({ id: 'cancel', defaultMessage: 'Cancel' })}
-        onOk={handleRequest}
+        onOk={handleSubmitTransaction}
         onCancel={closeWithdrawModal}
         okButtonProps={{
           disabled,
           loading: isLoading,
         }}
       >
-        <div className="Withdraw__warning">
-          Withdrawal of Hive funds is currently unavailable due to the cessation of blocktrades
-          operations.
-        </div>
         <Form className="Withdraw" hideRequiredMark>
           <Form.Item
             className="Withdraw__title"
@@ -238,7 +237,6 @@ const Withdraw = ({
           <div className="Withdraw__input-wrapper">
             <input
               placeholder={0}
-              disabled
               ref={hiveInput}
               onChange={e => {
                 setHiveAmount(e.currentTarget.value);
@@ -261,27 +259,44 @@ const Withdraw = ({
               })}
             </p>
           )}
+          {!!hiveAmount && hiveAmount < minAmount && (
+            <p className="invalid">
+              <FormattedMessage
+                values={{ minAmount: minAmount.toFixed(3) }}
+                id="min_amount_error_funds"
+                defaultMessage="Minimum: {minAmount}"
+              />
+            </p>
+          )}
+          {!!hiveAmount && !isNil(maxAmount) && hiveAmount > maxAmount && (
+            <p className="invalid">
+              <FormattedMessage
+                values={{ maxAmount: maxAmount.toFixed(3) }}
+                id="max_amount_error_funds"
+                defaultMessage="Maximum: {maxAmount}"
+              />
+            </p>
+          )}
           <div className="Withdraw__subtitle">
             <FormattedMessage id="balance_amount" defaultMessage="Your balance" />:{' '}
             <span className="balance" role="presentation" onClick={handleClickCurrentAmount}>
               {currentBalance || 0}
             </span>
-            .
           </div>
           <Form.Item
             className="Withdraw__title"
             label={<FormattedMessage id="receive" defaultMessage="Receive" />}
           />
           <div className="Withdraw__input-wrapper">
-            <input
+            <Input
               type="number"
               ref={currencyInput}
               onChange={e => {
                 setCurrencyAmount(e.currentTarget.value);
                 debounceAmountCurrency(e.currentTarget.value);
               }}
-              disabled
               placeholder={0}
+              disabled
               className="Withdraw__input-text"
               step="any"
               value={currencyAmount}
@@ -292,7 +307,7 @@ const Withdraw = ({
                   key={crypto}
                   className={switchButtonClassList(crypto)}
                   role="presentation"
-                  // onClick={() => setCurrentCurrency(crypto)}
+                  onClick={() => setCurrentCurrency(crypto)}
                 >
                   {upperFirst(CRYPTO_FOR_VALIDATE_WALLET[crypto])}
                 </span>
@@ -303,27 +318,28 @@ const Withdraw = ({
             {intl.formatMessage(
               {
                 id: 'est_account_value_withdraw',
-                defaultMessage: 'Est. amount: {amount} USD (limit: 100 per day)',
+                defaultMessage: 'Est. amount: {amount} USD',
               },
               { amount: estimateValue || '0.00' },
             )}
           </div>
           <Form.Item
             className="Withdraw__title"
-            label={<FormattedMessage id="receive" defaultMessage="Receive" />}
+            label={
+              <FormattedMessage id="destination_address" defaultMessage=" Destination address" />
+            }
           />
           <div className="Withdraw__address-wrapper">
             <input
               className="Withdraw__input"
               value={walletAddress}
               onChange={handleChange}
-              disabled
               placeholder={intl.formatMessage({
                 id: 'enter_address',
                 defaultMessage: 'Enter address',
               })}
             />
-            <button className="Withdraw__qr-button" disabled onClick={() => setShowScanner(true)}>
+            <button className="Withdraw__qr-button" onClick={() => setShowScanner(true)}>
               <img src={'/images/icons/qr.png'} className="qr-img" alt="qr" />
               <span>QR scanner</span>
             </button>
@@ -348,11 +364,11 @@ const Withdraw = ({
           handleClose={setShowScanner}
         />
       )}
-      <EmailConfirmation
-        visible={isShowConfirm}
-        handleClose={setShowConfirm}
-        handleSubmit={handleSubmitTransaction}
-      />
+      {/* <EmailConfirmation */}
+      {/*  visible={isShowConfirm} */}
+      {/*  handleClose={setShowConfirm} */}
+      {/*  handleSubmit={handleSubmitTransaction} */}
+      {/* /> */}
     </React.Fragment>
   );
 };
@@ -363,7 +379,7 @@ Withdraw.propTypes = {
   visible: PropTypes.bool.isRequired,
   closeWithdrawModal: PropTypes.func.isRequired,
   cryptosPriceHistory: PropTypes.shape().isRequired,
-  getPrivateEmail: PropTypes.func.isRequired,
+  // getPrivateEmail: PropTypes.func.isRequired,
   currCurrency: PropTypes.string.isRequired,
 };
 export default connect(

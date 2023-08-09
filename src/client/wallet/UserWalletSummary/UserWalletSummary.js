@@ -17,11 +17,7 @@ import BTooltip from '../../components/BTooltip';
 import Loading from '../../components/Icon/Loading';
 import { guestUserRegex } from '../../../common/helpers/regexHelpers';
 import WalletSummaryInfo from '../WalletSummaryInfo/WalletSummaryInfo';
-import {
-  getAuthenticatedUser,
-  getAuthenticatedUserName,
-  isGuestUser,
-} from '../../../store/authStore/authSelectors';
+import { isGuestUser } from '../../../store/authStore/authSelectors';
 import { getHiveDelegate } from '../../../waivioApi/ApiClient';
 import DelegateListModal from '../DelegateModals/DelegateListModal/DelegateListModal';
 import { isMobile } from '../../../common/helpers/apiHelpers';
@@ -313,8 +309,5 @@ UserWalletSummary.defaultProps = {
 };
 
 export default connect((state, ownProps) => ({
-  user:
-    ownProps.userName === getAuthenticatedUserName(state)
-      ? getAuthenticatedUser(state)
-      : getUser(state, ownProps.userName),
+  user: getUser(state, ownProps.userName),
 }))(withRouter(UserWalletSummary));

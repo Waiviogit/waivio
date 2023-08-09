@@ -8,6 +8,7 @@ import { getHelmetIcon, getSiteName, getUsedLocale } from '../../../store/appSto
 import { getLastPermlinksFromHash, getObjectName } from '../../../common/helpers/wObjectHelper';
 import { getObject } from '../../../waivioApi/ApiClient';
 import Loading from '../../components/Icon/Loading';
+import { useSeoInfo } from '../../../hooks/useSeoInfo';
 
 const WidgetContent = ({ wobj }) => {
   const [currentWobject, setWobject] = useState();
@@ -20,7 +21,7 @@ const WidgetContent = ({ wobj }) => {
   const title = `${getObjectName(currentWobject)} - ${siteName}`;
   const desc = siteName;
   const image = favicon;
-  const canonicalUrl = typeof location !== 'undefined' && location?.origin;
+  const { canonicalUrl } = useSeoInfo();
   const objName = location.hash ? getLastPermlinksFromHash(location.hash) : name;
   const widgetForm = currentWobject?.widget && JSON.parse(currentWobject?.widget);
 
@@ -62,7 +63,7 @@ const WidgetContent = ({ wobj }) => {
         <title>{title}</title>
         <meta property="og:title" content={title} />
         <link rel="canonical" href={canonicalUrl} />
-        <meta property="description" content={desc} />
+        <meta name="description" content={desc} />
         <meta name="twitter:card" content={'summary_large_image'} />
         <meta name="twitter:site" content={'@waivio'} />
         <meta name="twitter:title" content={title} />
