@@ -127,7 +127,7 @@ class StoryFull extends React.Component {
     const linkedObjects = [];
 
     forEach(this.props.post.wobjects, wobj => {
-      if (wobj.tagged) taggedObjects.push(wobj);
+      if (wobj.object_type === 'hashtag') taggedObjects.push(wobj);
       else linkedObjects.push(wobj);
     });
     if (window.location.hash) {
@@ -236,7 +236,7 @@ class StoryFull extends React.Component {
     const imagesArraySize = size(this.images);
 
     forEach(post.wobjects, wobj => {
-      if (wobj.tagged) taggedObjects.push(wobj);
+      if (wobj.object_type === 'hashtag') taggedObjects.push(wobj);
       else linkedObjects.push(wobj);
     });
     const { open, index } = this.state.lightbox;
@@ -446,12 +446,7 @@ class StoryFull extends React.Component {
           />
         )}
 
-        <Collapse
-          onChange={() => this.setState({ activeKey: this.state.activeKey === 1 ? 2 : 1 })}
-          accordion
-          defaultActiveKey={['1']}
-          activeKey={this.state.activeKey}
-        >
+        <Collapse defaultActiveKey={['1']}>
           {!isEmpty(linkedObjects) && (
             <Collapse.Panel
               id="allLinkedObjects"
@@ -496,8 +491,8 @@ class StoryFull extends React.Component {
             <Collapse.Panel
               id="allRelatedObjects"
               header={`${intl.formatMessage({
-                id: 'objects_related_by_tags',
-                defaultMessage: 'Objects related by #tags',
+                id: 'hashtags',
+                defaultMessage: 'Hashtags',
               })} ${taggedObjects.length}`}
               key="2"
             >
