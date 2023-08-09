@@ -39,7 +39,13 @@ export default function shopReducer(state = initialState, action) {
       };
 
     case RESET_BREAD_CRUMB:
-      return initialState;
+      return {
+        ...state,
+        crumbs: [],
+        activeCrumb: null,
+        exclude: [],
+        isOptionClicked: false,
+      };
 
     case SET_EXCLUDED:
       return {

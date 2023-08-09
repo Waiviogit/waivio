@@ -61,6 +61,7 @@ import { getAlbums, resetGallery } from '../../../store/galleryStore/galleryActi
 import Loading from '../../components/Icon/Loading';
 import SocialBookAuthors from './SocialBookAuthors/SocialBookAuthors';
 import Breadcrumbs from '../Breadcrumbs/Breadcrumbs';
+import { useSeoInfo } from '../../../hooks/useSeoInfo';
 
 const limit = 30;
 
@@ -71,7 +72,6 @@ const SocialProduct = ({
   authors,
   activeCategory,
   siteName,
-  appUrl,
   wobj,
   authenticated,
   optionClicked,
@@ -167,11 +167,11 @@ const SocialProduct = ({
     '',
   );
   const image = getObjectAvatar(wobject) || DEFAULTS.AVATAR;
-  const desc = `${wobject.name}. ${parseAddress(wobject) || ''} ${wobject.description ||
+  const desc = `${wobject.description || ''} ${wobject.name}. ${parseAddress(wobject) ||
     ''} ${tagCategoriesForDescr}`;
   const title = `${wobject.name} - ${siteName}`;
-  const canonicalUrl = `${appUrl}/object/${wobject.object_type}/${match.params.name}`;
-  const url = `${appUrl}/object/${wobject.object_type}/${match.params.name}`;
+  const { canonicalUrl } = useSeoInfo();
+  const url = canonicalUrl;
   const bannerEl =
     typeof document !== 'undefined' && document.getElementById('socialGiftsMainBanner');
   const socialHeaderEl = typeof document !== 'undefined' && document.querySelector('.Header');
@@ -282,10 +282,10 @@ const SocialProduct = ({
     <div>
       <Helmet>
         <title>{title}</title>
-        <link rel="canonical" href={canonicalUrl} />
-        <meta property="description" content={desc} />
+        <meta name="description" content={desc} />
         <meta property="og:title" content={title} />
         <meta property="og:type" content="article" />
+        <link rel="canonical" href={canonicalUrl} />
         <meta property="og:url" content={url} />
         <meta property="og:image" content={image} />
         <meta property="og:image:url" content={image} />
@@ -526,7 +526,6 @@ SocialProduct.propTypes = {
   nestedWobj: PropTypes.shape(),
   activeCategory: PropTypes.string,
   siteName: PropTypes.string,
-  appUrl: PropTypes.string,
   authenticated: PropTypes.bool,
   authors: PropTypes.arrayOf(),
   albums: PropTypes.arrayOf(),

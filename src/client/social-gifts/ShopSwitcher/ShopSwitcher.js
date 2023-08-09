@@ -39,7 +39,7 @@ const ShopSwitcher = () => {
             <Helmet>
               <title>{title}</title>
               <meta property="og:title" content={title} />
-              <meta property="description" content={desc} />
+              <meta name="description" content={desc} />
               <meta name="twitter:card" content={'summary_large_image'} />
               <meta name="twitter:site" content={'@waivio'} />
               <meta name="twitter:title" content={title} />
@@ -70,7 +70,7 @@ const ShopSwitcher = () => {
             <Helmet>
               <title>{title}</title>
               <meta property="og:title" content={title} />
-              <meta property="description" content={desc} />
+              <meta name="description" content={desc} />
               <meta name="twitter:card" content={'summary_large_image'} />
               <meta name="twitter:site" content={'@waivio'} />
               <meta name="twitter:title" content={title} />

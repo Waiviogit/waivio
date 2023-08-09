@@ -36,11 +36,13 @@ import {
 import { getShowReloadButton } from '../../../../store/websiteStore/websiteSelectors';
 import { createFilterBody, parseTagsFilters } from '../../../discoverObjects/helper';
 import MainMap from '../../MainMap/MainMap';
+import { useSeoInfo } from '../../../../hooks/useSeoInfo';
 
 import './WebsiteBody.less';
 
 const WebsiteBody = props => {
   const [hoveredCardPermlink, setHoveredCardPermlink] = useState('');
+  const { canonicalUrl } = useSeoInfo();
   const reservedButtonClassList = classNames('WebsiteBody__reserved', {
     'WebsiteBody__reserved--withMobileFilters': props.isActiveFilters,
   });
@@ -98,11 +100,11 @@ const WebsiteBody = props => {
     <div className={bodyClassList}>
       <Helmet>
         <title>{title ? `${objName} - ${title}` : objName}</title>
-        <link rel="canonical" href={`https://${props.host}/`} />
-        <meta property="description" content={description} />
+        <link rel="canonical" href={canonicalUrl} />
+        <meta name="description" content={description} />
         <meta property="og:title" content={title} />
         <meta property="og:type" content="article" />
-        <meta property="og:url" content={`https://${props.host}/`} />
+        <meta property="og:url" content={canonicalUrl} />
         <meta property="og:image" content={currentLogo} />
         <meta property="og:image:url" content={currentLogo} />
         <meta property="og:image:width" content="600" />
@@ -157,7 +159,6 @@ WebsiteBody.propTypes = {
   isShowResult: PropTypes.bool.isRequired,
   configuration: PropTypes.shape().isRequired,
   searchString: PropTypes.string.isRequired,
-  host: PropTypes.string.isRequired,
   getReservedCounter: PropTypes.func.isRequired,
   setShowReload: PropTypes.func.isRequired,
   resetWebsiteFilters: PropTypes.func.isRequired,

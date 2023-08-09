@@ -36,7 +36,7 @@ const WebsiteMainPage = props => {
       <Helmet>
         <title>Dining.Gifts</title>
         <link rel="canonical" href={'https://dining.gifts/'} />
-        <meta property="description" content={'Dining.Gifts'} />
+        <meta property="name" content={'Dining.Gifts'} />
         <meta property="og:title" content={'Dining.Gifts'} />
         <meta property="og:type" content="article" />
         <meta property="og:url" content={'https://dining.gifts/'} />

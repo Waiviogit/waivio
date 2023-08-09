@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import InfiniteSroll from 'react-infinite-scroller';
 import { useLocation, useRouteMatch } from 'react-router';
 import PropTypes from 'prop-types';
+import classNames from 'classnames';
 
 import EmptyCampaing from '../../statics/EmptyCampaing';
 import useQuery from '../../../hooks/useQuery';
@@ -81,7 +82,13 @@ const DepartmentsWobjList = ({ getDepartmentsFeed, user, isSocial }) => {
         <EmptyCampaing emptyMessage={'There are no products available in this department.'} />
       ) : (
         <InfiniteSroll loadMore={loadMore} hasMore={departmentInfo.hasMore}>
-          <ObjCardViewSwitcherForShop isSocial={isSocial} wobjects={departmentInfo?.wobjects} />
+          <div
+            className={classNames('DepartmentsWobjList__departments', {
+              'DepartmentsWobjList__departments--isSocial': isSocial,
+            })}
+          >
+            <ObjCardViewSwitcherForShop isSocial={isSocial} wobjects={departmentInfo?.wobjects} />
+          </div>
         </InfiniteSroll>
       )}
     </div>

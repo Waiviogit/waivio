@@ -34,7 +34,6 @@ import { appendObject, getUpdates } from '../../../store/appendStore/appendActio
 import Wobj from './Wobj';
 import NotFound from '../../statics/NotFound';
 import {
-  getAppUrl,
   getHelmetIcon,
   getIsWaivio,
   getScreenSize,
@@ -80,7 +79,6 @@ import { getAppendList } from '../../../store/appendStore/appendSelectors';
     supportedObjectTypes: get(getConfiguration(state), 'supported_object_types'),
     weightValue: getWeightValue(state, getObjectState(state).weight),
     siteName: getSiteName(state),
-    appUrl: getAppUrl(state),
   }),
   {
     clearObjectFromStore,
@@ -128,7 +126,6 @@ class WobjectContainer extends React.Component {
     locale: PropTypes.string,
     helmetIcon: PropTypes.string.isRequired,
     siteName: PropTypes.string.isRequired,
-    appUrl: PropTypes.string.isRequired,
     getAlbums: PropTypes.func,
     appendObject: PropTypes.func,
     getUpdates: PropTypes.func,
@@ -315,7 +312,6 @@ class WobjectContainer extends React.Component {
         appendAlbum={this.appendAlbum}
         helmetIcon={this.props.helmetIcon}
         siteName={this.props.siteName}
-        appUrl={this.props.appUrl}
         isWaivio={this.props.isWaivio}
         supportedObjectTypes={this.props.supportedObjectTypes}
         weightValue={this.props.weightValue}

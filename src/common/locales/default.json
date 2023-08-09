@@ -1227,7 +1227,7 @@
   "withdraw_modal_title": "SimpleSwap.io exchange",
   "send": "Send",
   "receive": "Receive",
-  "est_account_value_withdraw": "Est. amount: {amount} USD (limit: 100 per day)",
+  "est_account_value_withdraw": "Est. amount: {amount} USD",
   "enter_address": "Enter address",
   "check_address": "Please wait, we validate your address",
   "withdraw_continue": "Request withdraw",
@@ -1597,7 +1597,7 @@
   "authorities": "Authorities",
   "objects_filters": "Objects filters",
   "web_hosting_service": "Web Hosting Service Agreement",
-  "select_website_template": "Select the website:",
+  "select_website_template": "Select the website template:",
   "select_period": "Select the period",
   "insufficient_balance": "Insufficient funds on the balance sheet.",
   "desktop_logo": "Desktop logo",
@@ -2339,6 +2339,7 @@
   "select_name": "Select name",
   "select_type": "Select type",
   "enter_name": "Enter name",
-  "min_amount_error_funds": "Insufficient funds. Minimum: {minAmount}",
-  "max_amount_error_funds": "Insufficient funds. Maximum: {maxAmount}"
+  "min_amount_error_funds": "Minimum: {minAmount} HIVE",
+  "max_amount_error_funds": "Maximum: {maxAmount} HIVE",
+  "destination_address": "Destination address"
 }

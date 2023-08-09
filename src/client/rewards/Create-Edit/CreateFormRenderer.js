@@ -432,7 +432,7 @@ const CreateFormRenderer = props => {
           }
         >
           {getFieldDecorator(fields.secondaryObject.name, {
-            rules: fields.secondaryObject.rules,
+            // rules: fields.secondaryObject.rules,
             validateTrigger: ['onChange', 'onBlur', 'onSubmit'],
           })(
             <SearchObjectsAutocomplete

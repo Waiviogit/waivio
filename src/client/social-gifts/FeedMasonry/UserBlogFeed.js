@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useLocation, useParams } from 'react-router';
+import { useParams } from 'react-router';
 import { Helmet } from 'react-helmet/es/Helmet';
 import Masonry from 'react-masonry-css';
 import { isEmpty } from 'lodash';
@@ -15,10 +15,11 @@ import { getFeed } from '../../../store/feedStore/feedSelectors';
 import { getPosts } from '../../../store/postsStore/postsSelectors';
 import PostModal from '../../post/PostModalContainer';
 import { breakpointColumnsObj, preparationPostList, preparationPreview } from './helpers';
-import { getAppUrl, getHelmetIcon, getSiteName } from '../../../store/appStore/appSelectors';
+import { getHelmetIcon, getSiteName } from '../../../store/appStore/appSelectors';
 import ReduxInfiniteScroll from '../../vendor/ReduxInfiniteScroll';
 import Loading from '../../components/Icon/Loading';
 import FeedItem from './FeedItem';
+import { useSeoInfo } from '../../../hooks/useSeoInfo';
 
 const limit = 25;
 
@@ -29,15 +30,13 @@ const UserBlogFeed = () => {
   const dispatch = useDispatch();
   const favicon = useSelector(getHelmetIcon);
   const siteName = useSelector(getSiteName);
-  const appUrl = useSelector(getAppUrl);
-  const location = useLocation();
   const [previews, setPreviews] = useState();
   const [firstLoading, setFirstLoading] = useState(true);
   const [previewLoading, setPreviewLoading] = useState(true);
   const title = `Blog - ${siteName}`;
   const desc = siteName;
   const image = favicon;
-  const canonicalUrl = `${appUrl}${location.pathname}`;
+  const { canonicalUrl } = useSeoInfo();
 
   const postsIds = getFeedFromState('blog', name, feed);
   const hasMore = getFeedHasMoreFromState('blog', name, feed);
@@ -73,7 +72,7 @@ const UserBlogFeed = () => {
         <title>{title}</title>
         <meta property="og:title" content={title} />
         <link rel="canonical" href={canonicalUrl} />
-        <meta property="description" content={desc} />
+        <meta name="description" content={desc} />
         <meta name="twitter:card" content={'summary_large_image'} />
         <meta name="twitter:site" content={'@waivio'} />
         <meta name="twitter:title" content={title} />

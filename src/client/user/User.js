@@ -197,7 +197,7 @@ export default class User extends React.Component {
         <Helmet>
           <title>{title}</title>
           <link rel="canonical" href={url} />
-          <meta property="description" content={desc} />
+          <meta name="description" content={desc} />
           <meta name="twitter:card" content={image ? 'summary_large_image' : 'summary'} />
           <meta name="twitter:site" content={`@${siteName}`} />
           <meta name="twitter:title" content={title} />
