@@ -2,6 +2,9 @@
 @import (reference) '../../styles/modules/variables.less';
 
 .Withdraw {
+  .ant-form-item-label > label::after {
+    margin-left: 0;
+  }
   font-size: 16px;
 
   &__warning {
@@ -243,14 +246,17 @@
   }
 
   .qr-img {
+    margin-right: 5px;
     width: 25px;
   }
 
   .invalid {
+    margin-top: 5px;
     color: @red;
   }
 
   .valid {
+    margin-top: 5px;
     color: @green;
   }
 

@@ -1,9 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Form, Modal, message } from 'antd';
+import { Form, Modal, message, Input } from 'antd';
 import classNames from 'classnames';
-import { ceil, get, upperFirst, debounce, isNil, isEmpty } from 'lodash';
+import { ceil, get, upperFirst, debounce, isNil } from 'lodash';
 import { FormattedMessage, injectIntl } from 'react-intl';
 // import store from 'store';
 import WAValidator from 'multicoin-address-validator';
@@ -54,7 +54,7 @@ const Withdraw = ({
   // const currencyAmount = get(currencyInput, ['current', 'value'], 0);
   // const draftTransfer = store.get('withdrawData');
   const hivePrice = get(cryptosPriceHistory, `${HIVE.coinGeckoId}.usdPriceHistory.usd`, 0);
-  const estimateValue = ceil(hiveCount * hivePrice, 3) || 0;
+  const estimateValue = ceil(hiveCount * hivePrice, 2) || 0;
   const currentBalance = `${user.balance} HIVE`;
   const hiveAmountClassList = classNames('Withdraw__input-text Withdraw__input-text--send-input', {
     'Withdraw__input-text--error': hiveAmount > user.balance,
@@ -99,7 +99,7 @@ const Withdraw = ({
     if (walletAddress) {
       walletAddressValidation(walletAddress, CRYPTO_FOR_VALIDATE_WALLET[currentCurrency]);
     }
-  }, [currentCurrency]);
+  }, [currentCurrency, hiveAmount]);
 
   const handleCurrencyCountChange = (validateValue, outputSetter, input, output) => {
     if (input === 'hive') setHiveCount(validateValue);
@@ -259,40 +259,36 @@ const Withdraw = ({
               })}
             </p>
           )}
-          {!isEmpty(hiveAmount) && user.balance >= hiveAmount && hiveAmount < minAmount && (
+          {!!hiveAmount && hiveAmount < minAmount && (
             <p className="invalid">
               <FormattedMessage
                 values={{ minAmount: minAmount.toFixed(3) }}
                 id="min_amount_error_funds"
-                defaultMessage="Insufficient funds. Minimum: {minAmount}"
+                defaultMessage="Minimum: {minAmount}"
               />
             </p>
           )}
-          {!isEmpty(hiveAmount) &&
-            user.balance >= hiveAmount &&
-            !isNil(maxAmount) &&
-            hiveAmount > maxAmount && (
-              <p className="invalid">
-                <FormattedMessage
-                  values={{ maxAmount: maxAmount.toFixed(3) }}
-                  id="max_amount_error_funds"
-                  defaultMessage="Insufficient funds. Maximum: {maxAmount}"
-                />
-              </p>
-            )}
+          {!!hiveAmount && !isNil(maxAmount) && hiveAmount > maxAmount && (
+            <p className="invalid">
+              <FormattedMessage
+                values={{ maxAmount: maxAmount.toFixed(3) }}
+                id="max_amount_error_funds"
+                defaultMessage="Maximum: {maxAmount}"
+              />
+            </p>
+          )}
           <div className="Withdraw__subtitle">
             <FormattedMessage id="balance_amount" defaultMessage="Your balance" />:{' '}
             <span className="balance" role="presentation" onClick={handleClickCurrentAmount}>
               {currentBalance || 0}
             </span>
-            .
           </div>
           <Form.Item
             className="Withdraw__title"
             label={<FormattedMessage id="receive" defaultMessage="Receive" />}
           />
           <div className="Withdraw__input-wrapper">
-            <input
+            <Input
               type="number"
               ref={currencyInput}
               onChange={e => {
@@ -300,6 +296,7 @@ const Withdraw = ({
                 debounceAmountCurrency(e.currentTarget.value);
               }}
               placeholder={0}
+              disabled
               className="Withdraw__input-text"
               step="any"
               value={currencyAmount}
@@ -321,14 +318,16 @@ const Withdraw = ({
             {intl.formatMessage(
               {
                 id: 'est_account_value_withdraw',
-                defaultMessage: 'Est. amount: {amount} USD (limit: 100 per day)',
+                defaultMessage: 'Est. amount: {amount} USD',
               },
               { amount: estimateValue || '0.00' },
             )}
           </div>
           <Form.Item
             className="Withdraw__title"
-            label={<FormattedMessage id="receive" defaultMessage="Receive" />}
+            label={
+              <FormattedMessage id="destination_address" defaultMessage=" Destination address" />
+            }
           />
           <div className="Withdraw__address-wrapper">
             <input
