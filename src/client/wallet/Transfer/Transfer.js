@@ -30,6 +30,7 @@ import { createQuery } from '../../../common/helpers/apiHelpers';
 import { getScreenSize } from '../../../store/appStore/appSelectors';
 import {
   getAuthenticatedUser,
+  getAuthenticatedUserName,
   getIsAuthenticated,
   isGuestUser,
 } from '../../../store/authStore/authSelectors';
@@ -56,6 +57,7 @@ import { getSearchUsersResults } from '../../../store/searchStore/searchSelector
 import { fixedNumber } from '../../../common/helpers/parser';
 import { sendGuestTransferWAIV } from '../../../waivioApi/walletApi';
 import { getRatesList } from '../../../store/ratesStore/ratesSelector';
+import { getUser } from '../../../store/usersStore/usersSelectors';
 
 import './Transfer.less';
 
@@ -73,7 +75,10 @@ const InputGroup = Input.Group;
     app: getTransferApp(state),
     isTip: getTransferIsTip(state),
     authenticated: getIsAuthenticated(state),
-    user: getAuthenticatedUser(state),
+    user: {
+      ...getAuthenticatedUser(state),
+      ...getUser(state, getAuthenticatedUserName(state)),
+    },
     screenSize: getScreenSize(state),
     isGuest: isGuestUser(state),
     searchByUser: getSearchUsersResults(state),
