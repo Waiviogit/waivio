@@ -1,9 +1,12 @@
 import React from 'react';
 import { renderRoutes } from 'react-router-config';
 import classNames from 'classnames';
-import { get, isEmpty, isNil } from 'lodash';
+import { get, isEmpty, isNil, reduce, round } from 'lodash';
 import { withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import { Helmet } from 'react-helmet';
+import { useSelector } from 'react-redux';
+
 import WobjHero from '../WobjHero';
 import Affix from '../../components/Utils/Affix';
 import LeftObjectProfileSidebar from '../../app/Sidebar/LeftObjectProfileSidebar';
@@ -15,10 +18,19 @@ import ObjectReference from '../../components/Sidebar/ObjectReference/ObjectRefe
 import ObjectExpertise from '../../components/Sidebar/ObjectExpertise';
 import WobjectNearby from '../../app/Sidebar/ObjectInfoExperts/WobjectNearby';
 import WobjectSidebarFollowers from '../../app/Sidebar/ObjectInfoExperts/WobjectSidebarFollowers';
-import { hasType } from '../../../common/helpers/wObjectHelper';
+import {
+  getObjectAvatar,
+  getObjectName,
+  hasType,
+  parseAddress,
+} from '../../../common/helpers/wObjectHelper';
 import { isMobile } from '../../../common/helpers/apiHelpers';
 import { formColumnsField } from '../../../common/constants/listOfFields';
 import OBJECT_TYPE from '../const/objectTypes';
+import DEFAULTS from '../const/defaultValues';
+import { useSeoInfo } from '../../../hooks/useSeoInfo';
+import { compareObjectTitle } from '../../../common/helpers/seoHelpes';
+import { getHelmetIcon, getIsWaivio, getSiteName } from '../../../store/appStore/appSelectors';
 
 const WobjectView = ({
   authenticatedUserName,
@@ -31,7 +43,33 @@ const WobjectView = ({
   handleFollowClick,
   appendAlbum,
   nestedWobject,
+  weightValue,
 }) => {
+  const image = getObjectAvatar(wobject) || DEFAULTS.AVATAR;
+  const objectName = getObjectName(wobject);
+  const { canonicalUrl } = useSeoInfo();
+  const isWaivio = useSelector(getIsWaivio);
+  const siteName = useSelector(getSiteName);
+  const helmetIcon = useSelector(getHelmetIcon);
+
+  const address = parseAddress(wobject);
+  const titleText = compareObjectTitle(isWaivio, objectName, address, siteName);
+  const rank = hasType(wobject, 'restaurant') ? `Restaurant rank: ${round(weightValue, 2)}.` : '';
+
+  const tagCategories = reduce(
+    wobject.tagCategory,
+    (acc, curr) => {
+      const currentCategory = !isEmpty(curr.items)
+        ? `${curr.body}: ${curr.items.map(item => item.body).join(', ')}`
+        : '';
+
+      return acc ? `${acc}. ${currentCategory}` : currentCategory;
+    },
+    '',
+  );
+
+  const desc = `${objectName}. ${rank} ${parseAddress(wobject) || ''} ${wobject.description ||
+    ''} ${tagCategories}`;
   const referenceWobjType = ['business', 'person'].includes(wobject.object_type) && !isMobile();
   const albumsAndImagesCount = wobject.albums_count;
   const formsList = get(wobject, 'form', []);
@@ -62,6 +100,27 @@ const WobjectView = ({
 
   return (
     <React.Fragment>
+      <Helmet>
+        <title>{titleText}</title>
+        <meta name="description" content={desc} />
+        <meta property="og:title" content={titleText} />
+        <meta property="og:type" content="article" />
+        <link rel="canonical" href={canonicalUrl} />
+        <meta property="og:url" content={canonicalUrl} />
+        <meta property="og:image" content={image} />
+        <meta property="og:image:url" content={image} />
+        <meta property="og:image:width" content="600" />
+        <meta property="og:image:height" content="600" />
+        <meta property="og:description" content={desc} />
+        <meta name="twitter:card" content={image ? 'summary_large_image' : 'summary'} />
+        <meta name="twitter:site" content={`@${siteName}`} />
+        <meta name="twitter:title" content={titleText} />
+        <meta name="twitter:description" content={desc} />
+        <meta name="twitter:image" property="twitter:image" content={image} />
+        <meta property="og:site_name" content={siteName} />
+        <link rel="image_src" href={image} />
+        <link id="favicon" rel="icon" href={helmetIcon} type="image/x-icon" />
+      </Helmet>
       <WobjHero
         isEditMode={isEditMode}
         authenticated={authenticatedUserName}
@@ -131,6 +190,7 @@ WobjectView.propTypes = {
   handleFollowClick: PropTypes.func,
   appendAlbum: PropTypes.func,
   nestedWobject: PropTypes.string,
+  weightValue: PropTypes.number,
 };
 
 export default withRouter(WobjectView);

@@ -304,7 +304,7 @@ class PostContent extends React.Component {
           <meta property="og:type" content="article" />
           <meta property="og:title" content={metaTitle} />
           <meta property="og:description" content={desc} />
-          <meta property="description" content={desc} />
+          <meta name="description" content={desc} />
           <meta name="twitter:card" content={image ? 'summary_large_image' : 'summary'} />
           <meta name="twitter:site" content={`@${siteName}`} />
           <meta name="twitter:title" content={metaTitle} />

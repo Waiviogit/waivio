@@ -101,7 +101,7 @@ const ShopList = ({ userName, path, getShopFeed, isSocial }) => {
         <title>{title}</title>
         <meta property="og:title" content={title} />
         <link rel="canonical" href={canonicalUrl} />
-        <meta property="description" content={title} />
+        <meta name="description" content={title} />
         <meta name="twitter:card" content={'summary_large_image'} />
         <meta name="twitter:site" content={'@waivio'} />
         <meta name="twitter:title" content={title} />

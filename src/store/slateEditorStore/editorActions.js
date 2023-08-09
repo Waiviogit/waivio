@@ -321,8 +321,10 @@ export function createPost(postData, beneficiaries, isReview, campaign) {
       // eslint-disable-next-line no-param-reassign
       postData.body += `\n***\nThis review was sponsored in part by [@${campaign.guideName}](/@${campaign.guideName})`;
     }
-
-    const host = getCurrentHost(getState()).slice(7);
+    const url = getCurrentHost(getState());
+    const regex = /^(?:https?:\/\/)?(?:www\.)?([^/]+).*$/;
+    const match = url.match(regex);
+    const host = match[1];
 
     const {
       parentAuthor,

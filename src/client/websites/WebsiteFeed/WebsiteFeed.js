@@ -25,7 +25,7 @@ import PostModal from '../../post/PostModalContainer';
 const limit = 20;
 
 const WebsiteFeed = () => {
-  const [firstLoading, setFirstLoading] = useState(true);
+  const [firstLoading, setFirstLoading] = useState(false);
   const [previews, setPreviews] = useState();
   const [previewLoading, setPreviewLoading] = useState(true);
 
@@ -40,6 +40,7 @@ const WebsiteFeed = () => {
   const posts = preparationPostList(postsIds, postsList);
 
   useEffect(() => {
+    setFirstLoading(true);
     dispatch(getUserFeedContent({ userName: authUserName, limit })).then(res => {
       setFirstLoading(false);
       preparationPreview(res.value, setPreviews).then(() => {
@@ -92,5 +93,7 @@ const WebsiteFeed = () => {
     </ReduxInfiniteScroll>
   );
 };
+
+WebsiteFeed.fetchData = ({ store }) => store.dispatch(getUserFeedContent({ limit }));
 
 export default WebsiteFeed;
