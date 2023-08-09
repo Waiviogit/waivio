@@ -362,7 +362,7 @@ class CreateObject extends React.Component {
             footer={null}
           >
             <Form.Item>
-              <div className="CreateObject__label">
+              <div className="CreateObject__input-label">
                 <FormattedMessage id="profile_name" defaultMessage="Name" />
               </div>
               {getFieldDecorator(objectFields.name, {
