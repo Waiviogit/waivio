@@ -368,6 +368,12 @@ a {
   border-color: var(--website-color);
   background-color: var(--website-color);
 }
+.ant-checkbox-disabled.ant-checkbox-checked.ant-checkbox-inner::after {
+  color: var(--website-color);
+}
+.ant-checkbox.ant-checkbox-checked.ant-checkbox-disabled .ant-checkbox-inner {
+  background-color: @white-smoke;
+}
 
 .ant-radio-button-wrapper:hover {
   color: var(--website-color);
