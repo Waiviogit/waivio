@@ -59,7 +59,7 @@ export default function shopReducer(state = initialState, action) {
     case GET_DEPARTMENTS.SUCCESS:
       return {
         ...state,
-        departmentsList: action.meta.notWrite ? state.departmentsList : action.payload,
+        departmentsList: action.meta.department ? state.departmentsList : action.payload,
       };
     case GET_SHOP_LIST.SUCCESS:
       if (action.payload.message) return state;

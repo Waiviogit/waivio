@@ -362,7 +362,7 @@ class CreateObject extends React.Component {
             footer={null}
           >
             <Form.Item>
-              <div className="ant-form-item-label label AppendForm__appendTitles">
+              <div className="CreateObject__label">
                 <FormattedMessage id="profile_name" defaultMessage="Name" />
               </div>
               {getFieldDecorator(objectFields.name, {
@@ -423,7 +423,7 @@ class CreateObject extends React.Component {
               )}
             </Form.Item>
             <Form.Item>
-              <div className="ant-form-item-label label AppendForm__appendTitles">
+              <div className="CreateObject__label">
                 <FormattedMessage id="object_field_language" defaultMessage="Language" />
               </div>
               {getFieldDecorator('locale', {
@@ -444,7 +444,7 @@ class CreateObject extends React.Component {
               )}
             </Form.Item>
             <Form.Item>
-              <div className="ant-form-item-label label AppendForm__appendTitles">
+              <div className="CreateObject__label">
                 <FormattedMessage id="type" defaultMessage="Type" />
               </div>
               {getFieldDecorator('type', {

@@ -7,8 +7,8 @@ import { getGlobalDepartments } from '../../../store/shopStore/shopActions';
 
 const GlobalShopDepartments = ({ onClose }) => {
   const dispatch = useDispatch();
-  const getShopDepartments = (name, department, excluded, path, notWrite) =>
-    dispatch(getGlobalDepartments(name, department, excluded, path, notWrite));
+  const getShopDepartments = (name, department, excluded, path) =>
+    dispatch(getGlobalDepartments(name, department, excluded, path));
 
   return (
     <ShopDepartmentsList getShopDepartments={getShopDepartments} onClose={onClose} path={`/shop`} />
