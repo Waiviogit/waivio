@@ -77,7 +77,7 @@ const WebsiteFeed = () => {
         {posts?.map(post => {
           const urlPreview = isEmpty(previews)
             ? ''
-            : previews?.find(i => i.url === post?.embeds[0].url).urlPreview;
+            : previews?.find(i => i.url === post?.embeds[0].url)?.urlPreview;
 
           return (
             <FeedItem
