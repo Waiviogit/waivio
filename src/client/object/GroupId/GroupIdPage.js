@@ -14,7 +14,6 @@ const GroupIdPage = () => {
   const match = useRouteMatch();
   const groupId = match.params.id;
   const userName = useSelector(getAuthenticatedUserName);
-
   useEffect(() => {
     window.scrollTo(0, 0);
     getObjectsByGroupId(userName, groupId, 0).then(res => {
@@ -24,10 +23,11 @@ const GroupIdPage = () => {
   }, [groupId]);
 
   const loadMoreObjects = () => {
-    getObjectsByGroupId(userName, groupId, wobjects.length).then(res => {
-      setWobjects([...wobjects, ...res.wobjects]);
-      setHasMore(res.hasMore);
-    });
+    hasMore &&
+      getObjectsByGroupId(userName, groupId, wobjects.length).then(res => {
+        setWobjects([...wobjects, ...res.wobjects]);
+        setHasMore(res.hasMore);
+      });
   };
 
   return (
