@@ -59,6 +59,7 @@ const CreateFormRenderer = props => {
     handleCreateDuplicate,
     payoutToken,
     reachType,
+    agreement,
   } = props;
   const currentItemId = get(match, ['params', 'campaignId']);
   const currencyInfo = useSelector(state => getUserCurrencyBalance(state, 'WAIV'));
@@ -432,6 +433,7 @@ const CreateFormRenderer = props => {
           }
         >
           {getFieldDecorator(fields.secondaryObject.name, {
+            initialValue: secondaryObjectsList,
             // rules: fields.secondaryObject.rules,
             validateTrigger: ['onChange', 'onBlur', 'onSubmit'],
           })(
@@ -508,7 +510,9 @@ const CreateFormRenderer = props => {
         </Form.Item>
 
         <Form.Item label={fields.agreement.label}>
-          {getFieldDecorator(fields.agreement.name)(
+          {getFieldDecorator(fields.agreement.name, {
+            initialValue: agreement,
+          })(
             <SearchObjectsAutocomplete
               className="menu-item-search"
               itemsIdsToOmit={pageObjectsIdsToOmit}
@@ -682,6 +686,7 @@ CreateFormRenderer.propTypes = {
   }).isRequired,
   user: PropTypes.shape(),
   sponsorsList: PropTypes.arrayOf(PropTypes.shape()),
+  agreement: PropTypes.arrayOf(PropTypes.shape()),
   secondaryObjectsList: PropTypes.arrayOf(PropTypes.shape()),
   pageObjects: PropTypes.arrayOf(PropTypes.shape()),
   compensationAccount: PropTypes.shape(),

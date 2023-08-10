@@ -7,7 +7,10 @@ import { round } from 'lodash';
 import { closePowerUpOrDown } from '../../../store/walletStore/walletActions';
 import formatter from '../../../common/helpers/steemitFormatter';
 import { createQuery } from '../../../common/helpers/apiHelpers';
-import { getAuthenticatedUser } from '../../../store/authStore/authSelectors';
+import {
+  getAuthenticatedUser,
+  getAuthenticatedUserName,
+} from '../../../store/authStore/authSelectors';
 import {
   getCurrentWalletType,
   getIsPowerDown,
@@ -21,12 +24,16 @@ import {
 import PowerSwitcher from './PowerSwitcher/PowerSwitcher';
 
 import './PowerUpOrDown.less';
+import { getUser } from '../../../store/usersStore/usersSelectors';
 
 @injectIntl
 @connect(
   state => ({
     visible: getIsPowerUpOrDownVisible(state),
-    user: getAuthenticatedUser(state),
+    user: {
+      ...getAuthenticatedUser(state),
+      ...getUser(state, getAuthenticatedUserName(state)),
+    },
     totalVestingShares: getTotalVestingShares(state),
     totalVestingFundSteem: getTotalVestingFundSteem(state),
     down: getIsPowerDown(state),
