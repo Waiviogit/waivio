@@ -217,6 +217,8 @@ const GeneralSearch = props => {
         optionLabelProp="value"
         dataSource={loading ? pendingSearch('', props.intl) : prepareOptions()}
         value={searchBarValue}
+        onBlur={() => setOpen(false)}
+        onFocus={() => setOpen(true)}
       />{' '}
     </div>
   );

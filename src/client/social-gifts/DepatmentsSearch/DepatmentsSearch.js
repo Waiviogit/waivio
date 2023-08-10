@@ -10,6 +10,7 @@ import { getHelmetIcon } from '../../../store/appStore/appSelectors';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 import { getObjectsByDepartment } from '../../../waivioApi/ApiClient';
 import { useSeoInfo } from '../../../hooks/useSeoInfo';
+import './DepartmentsSearch.less';
 
 const wobjects_count = 20;
 
@@ -58,7 +59,7 @@ const DepatmentsSearch = () => {
   };
 
   return (
-    <div className="NewDiscover">
+    <div className="DepartmentSearch">
       <Helmet>
         <title>{title}</title>
         <meta property="og:title" content={title} />
@@ -79,8 +80,8 @@ const DepatmentsSearch = () => {
         <meta property="og:site_name" content={siteName} />
         <link id="favicon" rel="icon" href={favicon} type="image/x-icon" />
       </Helmet>
-      <div className="NewDiscover__wrap">
-        <h3 className="NewDiscover__type">Department</h3>
+      <div className="DepartmentSearch__wrap">
+        <h3 className="DepartmentSearch__type">Department</h3>
         {department && (
           <Tag closable onClose={handleDeleteTag}>
             {department}
@@ -91,7 +92,7 @@ const DepatmentsSearch = () => {
         <Loading />
       ) : (
         <InfiniteSroll hasMore={hasMoreObjects} loader={<Loading />} loadMore={loadMore}>
-          <div className="NewDiscover__list" key={'list'}>
+          <div className="DepartmentSearch__list" key={'list'}>
             {objects?.map(obj => (
               <ShopObjectCard key={obj?.author_permlink} wObject={obj} />
             ))}{' '}

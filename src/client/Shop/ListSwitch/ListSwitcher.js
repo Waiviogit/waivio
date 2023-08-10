@@ -118,6 +118,7 @@ const ListSwitcher = props => {
           type={props.type}
           visible={visibleNavig}
           setVisible={vis => setVisibleNavig(vis)}
+          isSocial={props.isSocial}
         />
         <FiltersForMobile setVisible={() => setVisibleFilter(true)} />
       </div>

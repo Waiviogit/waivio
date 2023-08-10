@@ -202,13 +202,16 @@ class Comments extends React.Component {
 
   commentsToRender(rootLevelComments, rootLinkedComment) {
     const { nRenderedComments, sort } = this.state;
-    const filteredComments = sortComments(rootLevelComments, sort)
-      .filter(comment => comment && comment.id !== (rootLinkedComment && rootLinkedComment.id))
-      .slice(
+    let filteredComments = sortComments(rootLevelComments, sort).filter(
+      comment => comment && comment.id !== (rootLinkedComment && rootLinkedComment.id),
+    );
+
+    if (this.props.isQuickComments) {
+      filteredComments = filteredComments.slice(
         0,
         rootLinkedComment ? nRenderedComments - this.SHOW_COMMENTS_INCREMENT : nRenderedComments,
       );
-
+    }
     const result = rootLinkedComment ? [rootLinkedComment, ...filteredComments] : filteredComments;
 
     return this.props.isQuickComments ? result.reverse() : result;

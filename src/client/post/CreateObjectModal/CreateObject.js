@@ -398,6 +398,7 @@ class CreateObject extends React.Component {
                 ],
               })(
                 <Input
+                  autoFocus
                   disabled={loading}
                   className="Editor__title"
                   placeholder={intl.formatMessage({

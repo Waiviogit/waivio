@@ -125,8 +125,11 @@ export const createAuthority = (user, authorPermlink, scanEmbedded, authority = 
     }),
   })
     .then(res => res.json())
-    .then(response => response)
-    .catch(e => e);
+    .then(response => {
+      if (response.message) message.error(response.message);
+
+      return response;
+    });
 
 export const deleteAuthority = (user, importId) =>
   fetch(`${config.importApiPrefix}${config.authority}`, {

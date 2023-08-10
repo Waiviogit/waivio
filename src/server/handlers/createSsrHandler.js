@@ -30,14 +30,14 @@ function createTimeout(timeout, promise) {
 export default function createSsrHandler(template) {
   return async function serverSideResponse(req, res) {
     try {
-      if (await isSearchBot(req)) {
-        await updateBotCount(req);
-        const cachedPage = await getCachedPage(req);
-        if (cachedPage) {
-          console.log('SEND CACHED PAGE');
-          return res.send(cachedPage);
-        }
-      }
+      // if (await isSearchBot(req)) {
+      //   await updateBotCount(req);
+      //   const cachedPage = await getCachedPage(req);
+      //   if (cachedPage) {
+      //     console.log('SEND CACHED PAGE');
+      //     return res.send(cachedPage);
+      //   }
+      // }
 
       const sc2Api = new hivesigner.Client({
         app: process.env.STEEMCONNECT_CLIENT_ID,
@@ -92,7 +92,7 @@ export default function createSsrHandler(template) {
         get(settings, 'googleAnalyticsTag', ''),
       );
 
-      await setCachedPage({ page, req });
+     // await setCachedPage({ page, req });
       return res.send(page);
     } catch (err) {
       console.error('SSR error occured, falling back to bundled application instead', err);

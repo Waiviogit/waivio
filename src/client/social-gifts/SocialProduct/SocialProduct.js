@@ -192,11 +192,9 @@ const SocialProduct = ({
     !isEmpty(groupId) ||
     !isEmpty(productIdBody) ||
     !isEmpty(language) ||
-    !isEmpty(publicationDate) ||
+    !isEmpty(wobject.publicationDate) ||
     !isEmpty(printLength) ||
     !isEmpty(publisher) ||
-    !isEmpty(productAuthors) ||
-    !isEmpty(authors) ||
     !isEmpty(website) ||
     !isEmpty(ageRange);
 
@@ -308,7 +306,7 @@ const SocialProduct = ({
           {history.location.search && <Breadcrumbs inProduct />}
           <div className="SocialProduct__column SocialProduct__column-wrapper">
             {isMobile() && (
-              <div
+              <h1
                 className={
                   isEmpty(productAuthors) && isEmpty(wobjTitle)
                     ? 'SocialProduct__wobjName'
@@ -316,7 +314,7 @@ const SocialProduct = ({
                 }
               >
                 {wobject.name}
-              </div>
+              </h1>
             )}
             {isMobile() && !isEmpty(wobjTitle) && (
               <div className="SocialProduct__title">{wobjTitle}</div>
@@ -367,7 +365,7 @@ const SocialProduct = ({
             )}
             <div className="SocialProduct__row SocialProduct__right-row">
               {!isMobile() && (
-                <div
+                <h1
                   className={
                     isEmpty(productAuthors) && isEmpty(wobjTitle)
                       ? 'SocialProduct__wobjName'
@@ -375,7 +373,7 @@ const SocialProduct = ({
                   }
                 >
                   {wobject.name}
-                </div>
+                </h1>
               )}
               {!isMobile() && !isEmpty(wobjTitle) && (
                 <div className="SocialProduct__title">{wobjTitle}</div>
