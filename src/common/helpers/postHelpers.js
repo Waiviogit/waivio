@@ -16,7 +16,7 @@ import {
 } from 'lodash';
 import { getHtml } from '../../client/components/Story/Body';
 import { extractImageTags, extractLinks } from './parser';
-import { categoryRegex, botNameRegex, videoPreviewRegex } from './regexHelpers';
+import { categoryRegex, botNameRegex, videoPreviewRegex, hashRegex } from './regexHelpers';
 import { jsonParse } from './formatter';
 import DMCA from '../constants/dmca.json';
 import whiteListedApps from './apps';
@@ -55,7 +55,7 @@ export const isPostTaggedNSFW = post => {
 };
 
 export function dropCategory(url) {
-  return url ? url.replace(categoryRegex, '') : null;
+  return url ? url.replace(categoryRegex, '').replace(hashRegex, '') : null;
 }
 
 export const replaceBotWithGuestName = (url, guestInfo) => {
