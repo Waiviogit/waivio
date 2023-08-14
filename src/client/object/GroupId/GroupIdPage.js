@@ -24,10 +24,11 @@ const GroupIdPage = () => {
   }, [groupId]);
 
   const loadMoreObjects = () => {
-    getObjectsByGroupId(userName, groupId, wobjects.length).then(res => {
-      setWobjects([...wobjects, ...res.wobjects]);
-      setHasMore(res.hasMore);
-    });
+    hasMore &&
+      getObjectsByGroupId(userName, groupId, wobjects.length).then(res => {
+        setWobjects([...wobjects, ...res.wobjects]);
+        setHasMore(res.hasMore);
+      });
   };
 
   return (

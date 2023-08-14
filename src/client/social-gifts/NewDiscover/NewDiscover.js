@@ -15,6 +15,7 @@ import { getLocale } from '../../../store/settingsStore/settingsSelectors';
 
 import './NewDiscover.less';
 import { useSeoInfo } from '../../../hooks/useSeoInfo';
+import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 
 const wobjects_count = 20;
 
@@ -22,6 +23,7 @@ const NewDiscover = () => {
   const { type } = useParams();
   const favicon = useSelector(getHelmetIcon);
   const locale = useSelector(getLocale);
+  const userName = useSelector(getAuthenticatedUserName);
   const history = useHistory();
   const query = useQuery();
   const [objects, setObjects] = useState([]);
@@ -39,6 +41,7 @@ const NewDiscover = () => {
     const ac = new AbortController();
     const requestData = {
       locale,
+      userName,
       wobjects_count,
     };
 
