@@ -1,8 +1,11 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { get } from 'lodash';
 import * as PropTypes from 'prop-types';
-import { getSocialInfoPost as getSocialInfoPostAction } from '../../store/postsStore/postActions';
+import {
+  getContent as getContentAction,
+  getSocialInfoPost as getSocialInfoPostAction,
+} from '../../store/postsStore/postActions';
 import { hidePostModal as hidePostModalAction } from '../../store/appStore/appActions';
 import PostModal from './PostModal';
 import { getCurrentShownPost, getShowPostModal } from '../../store/appStore/appSelectors';
@@ -22,23 +25,32 @@ const PostModalContainer = ({
   isGuest,
   userName,
   isFeedMasonry,
-}) =>
-  showPostModal && (
-    <PostModal
-      showPostModal={showPostModal}
-      currentShownPost={currentShownPost}
-      hidePostModal={hidePostModal}
-      author={author}
-      shownPostContents={shownPostContents}
-      getSocialInfoPost={getSocialInfoPost}
-      isGuest={isGuest}
-      username={userName}
-      isFeedMasonry={isFeedMasonry}
-    />
+  getContent,
+}) => {
+  useEffect(() => {
+    getContent(currentShownPost.author, currentShownPost.permlink);
+  }, [currentShownPost.author, currentShownPost.permlink]);
+
+  return (
+    showPostModal && (
+      <PostModal
+        showPostModal={showPostModal}
+        currentShownPost={currentShownPost}
+        hidePostModal={hidePostModal}
+        author={author}
+        shownPostContents={shownPostContents}
+        getSocialInfoPost={getSocialInfoPost}
+        isGuest={isGuest}
+        username={userName}
+        isFeedMasonry={isFeedMasonry}
+      />
+    )
   );
+};
 
 PostModalContainer.propTypes = {
   hidePostModal: PropTypes.func.isRequired,
+  getContent: PropTypes.func.isRequired,
   author: PropTypes.shape().isRequired,
   showPostModal: PropTypes.bool,
   isFeedMasonry: PropTypes.bool,
@@ -63,8 +75,8 @@ export default connect(
     const currentShownPost = getCurrentShownPost(state);
     const author = get(currentShownPost, 'author');
     const permlink = get(currentShownPost, 'permlink');
-    const getContent = getPostContent(permlink, author);
-    const post = getContent(state);
+    const getContentFromState = getPostContent(permlink, author);
+    const post = getContentFromState(state);
     const waivRates = getTokenRatesInUSD(state, 'WAIV');
     const userName = getAuthenticatedUserName(state);
 
@@ -83,5 +95,6 @@ export default connect(
   {
     hidePostModal: hidePostModalAction,
     getSocialInfoPost: getSocialInfoPostAction,
+    getContent: getContentAction,
   },
 )(PostModalContainer);
