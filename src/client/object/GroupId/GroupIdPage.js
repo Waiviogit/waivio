@@ -14,6 +14,7 @@ const GroupIdPage = () => {
   const match = useRouteMatch();
   const groupId = match.params.id;
   const userName = useSelector(getAuthenticatedUserName);
+
   useEffect(() => {
     window.scrollTo(0, 0);
     getObjectsByGroupId(userName, groupId, 0).then(res => {
