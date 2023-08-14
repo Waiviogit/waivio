@@ -5,18 +5,20 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { FormattedMessage, FormattedNumber } from 'react-intl';
 import { guestUserRegex } from '../../common/helpers/regexHelpers';
-import { getIsWaivio } from '../../store/appStore/appSelectors';
+import { getIsSocial, getIsWaivio } from '../../store/appStore/appSelectors';
 
 import './UserMenu.less';
 
 @connect(state => ({
   isWaivio: getIsWaivio(state),
+  isSocial: getIsSocial(state),
 }))
 class UserMenu extends React.Component {
   static propTypes = {
     onChange: PropTypes.func,
     defaultKey: PropTypes.string,
     isWaivio: PropTypes.bool,
+    isSocial: PropTypes.bool,
     followers: PropTypes.number,
     match: PropTypes.shape({
       params: PropTypes.shape({
@@ -56,7 +58,9 @@ class UserMenu extends React.Component {
   };
 
   render() {
+    const { isWaivio, isSocial } = this.props;
     const currUserIsGuest = guestUserRegex.test(this.props.match.params.name);
+    const showUserShop = isWaivio || isSocial;
 
     return (
       <div className="UserMenu">
@@ -75,7 +79,7 @@ class UserMenu extends React.Component {
             >
               <FormattedMessage id="posts" defaultMessage="Posts" />
             </li>
-            {!currUserIsGuest && this.props.isWaivio && (
+            {!currUserIsGuest && showUserShop && (
               <li
                 className={classNames('UserMenu__item', {
                   'UserMenu__item--active': ['userShop'].includes(this.state.current),
