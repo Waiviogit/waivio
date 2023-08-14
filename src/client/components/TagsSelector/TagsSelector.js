@@ -8,6 +8,7 @@ class TagsSelector extends Component {
     className: PropTypes.string,
     disabled: PropTypes.bool,
     label: PropTypes.string,
+    defaultHashtag: PropTypes.string,
     placeholder: PropTypes.string,
     tags: PropTypes.arrayOf(PropTypes.string).isRequired,
     onChange: PropTypes.func.isRequired,
@@ -36,11 +37,12 @@ class TagsSelector extends Component {
   }
 
   render() {
-    const { label, placeholder, tags, className, disabled } = this.props;
+    const { label, placeholder, tags, defaultHashtag, className, disabled } = this.props;
     const currentURL = window.location.href.includes('objects-filters');
 
-    if (!tags.includes('waivio') && !currentURL) {
-      tags.unshift('waivio');
+    if (!currentURL) {
+      if (defaultHashtag) tags.unshift(defaultHashtag);
+      if (!tags.includes('waivio')) tags.unshift('waivio');
     }
 
     return (
