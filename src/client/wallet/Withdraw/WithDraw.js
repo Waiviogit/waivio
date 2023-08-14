@@ -90,7 +90,7 @@ const Withdraw = ({
       setMinAmount(parseFloat(res.min));
       setMaxAmount(!isNil(res.max) ? parseFloat(res.max) : null);
     });
-    if (hiveAmount) {
+    if (hiveAmount && hiveAmount >= minAmount) {
       getEstimatedHiveAmount(parseFloat(hiveAmount), currentCurrency).then(r => {
         setCurrencyAmount(r.result);
       });
@@ -104,7 +104,7 @@ const Withdraw = ({
   const handleCurrencyCountChange = (validateValue, outputSetter, input, output) => {
     if (input === 'hive') setHiveCount(validateValue);
 
-    if (!isNaN(validateValue) && Number(validateValue)) {
+    if (!isNaN(validateValue) && Number(validateValue) && hiveAmount >= minAmount) {
       getEstimatedHiveAmount(parseFloat(validateValue), currentCurrency)
         .then(r => {
           outputSetter(r.result);
