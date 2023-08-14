@@ -127,6 +127,11 @@ const routes = host => ({
           component: Views.Drafts,
         },
         {
+          path: '/user-affiliate-codes',
+          exact: true,
+          component: Views.UserAffiliateCodes,
+        },
+        {
           path: '/replies',
           exact: true,
           component: Views.Replies,
