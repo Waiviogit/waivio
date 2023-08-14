@@ -41,7 +41,7 @@ class TagsSelector extends Component {
     const currentURL = window.location.href.includes('objects-filters');
 
     if (!currentURL) {
-      if (defaultHashtag) tags.unshift(defaultHashtag);
+      if (!tags.includes(defaultHashtag) && defaultHashtag) tags.unshift(defaultHashtag);
       if (!tags.includes('waivio')) tags.unshift('waivio');
     }
 

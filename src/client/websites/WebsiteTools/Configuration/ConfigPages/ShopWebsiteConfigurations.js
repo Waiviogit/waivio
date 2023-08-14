@@ -26,7 +26,7 @@ import BaseObjSettings from '../BaseObjSettings/BaseObjSettings';
 import ImageSetter from '../../../../components/ImageSetter/ImageSetter';
 import SearchObjectsAutocomplete from '../../../../components/EditorObject/SearchObjectsAutocomplete';
 import ObjectAvatar from '../../../../components/ObjectAvatar';
-import { getObjectName } from '../../../../../common/helpers/wObjectHelper';
+import { getObjectName, getObjectType } from '../../../../../common/helpers/wObjectHelper';
 
 import './WebsitesConfigurations.less';
 
@@ -286,42 +286,44 @@ const ShopWebsiteConfigurations = ({
               </h3>
               {!isEmpty(defaultHashtag) ? (
                 <div>
-                  <div className="Transfer__search-content-wrap-current">
-                    <div className="Transfer__search-content-wrap-current-user">
+                  <div className="BaseObjSettings__searchCard">
+                    <div className="BaseObjSettings__content">
                       <ObjectAvatar item={defaultHashtag} size={40} />
-                      <div className="Transfer__search-content">
-                        {getObjectName(defaultHashtag)}
-                      </div>
+                      <span className="BaseObjSettings__name">{getObjectName(defaultHashtag)}</span>
                     </div>
+                    <b className="BaseObjSettings__type">{getObjectType(defaultHashtag)} </b>
                     {paramsSaving ? (
                       <Icon type={'loading'} />
                     ) : (
                       <span
-                        role="presentation"
+                        className="BaseObjSettings__clear"
                         onClick={() => {
                           handleSubmit({
                             deefaultHashtag: null,
                           });
                         }}
-                        className="iconfont icon-delete"
-                      />
+                      >
+                        <Icon type="close-circle" />
+                      </span>
                     )}
                   </div>
                 </div>
               ) : (
                 <SearchObjectsAutocomplete
+                  placeholder={'Find object'}
                   handleSelect={u => {
                     handleSubmit({
                       defaultHashtag: u.author_permlink,
                     });
                   }}
                   objectType={'hashtag'}
+                  autoFocus={false}
                 />
               )}
               <p>
                 <FormattedMessage
-                  id="base_obj_description"
-                  defaultMessage="The main menu of the website will be created using the base object."
+                  id="default_tag_description"
+                  defaultMessage="This hashtag will be recommended for all new posts on the website, ensuring that they consistently appear in the website's custom newsfeed."
                 />
               </p>
             </Form.Item>
