@@ -205,7 +205,7 @@ class WobjectContainer extends React.Component {
       if (isEmpty(this.props.updates) || isNil(this.props.updates) || isNil(match.params[1])) {
         const field = getUpdateFieldName(match.params[1]);
 
-        this.props.getUpdates(match.params.name, field, 'createdAt', locale);
+        this.props.getUpdates(match.params.name, field, 'createdAt');
       }
     });
   }
