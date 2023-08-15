@@ -127,6 +127,11 @@ const routes = host => ({
           component: Views.Drafts,
         },
         {
+          path: '/user-affiliate-codes',
+          exact: true,
+          component: Views.UserAffiliateCodes,
+        },
+        {
           path: '/replies',
           exact: true,
           component: Views.Replies,
@@ -179,7 +184,7 @@ const routes = host => ({
       ],
     },
     {
-      path: `/@:name/(${URL.USER.tabs})?/(waiv-table|table)?`,
+      path: [`/@:name/(${URL.USER.tabs})?/(waiv-table|table)?`, `/@:name/userShop/:department?`],
       component: User,
       exact: true,
       pathScope: '/@:name',
@@ -188,6 +193,11 @@ const routes = host => ({
           path: ['', '/(comments|activity)'],
           exact: true,
           component: Views.PostsCommentsActivity,
+        },
+        {
+          path: '/userShop/:department?',
+          exact: true,
+          component: UserDepartmentsWobjList,
         },
         {
           path: '/followers',

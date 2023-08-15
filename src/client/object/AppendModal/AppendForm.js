@@ -1405,20 +1405,10 @@ class AppendForm extends Component {
   };
 
   getWobjectBody = image => {
-    const { user, intl } = this.props;
+    const { user } = this.props;
     const album = this.getImageAlbum();
 
-    return intl.formatMessage(
-      {
-        id: 'append_new_image',
-        defaultMessage: `@{user} added a new image to album {album} <br /> {image.response.image}`,
-      },
-      {
-        user: user.name,
-        album,
-        url: image.src,
-      },
-    );
+    return `@${user.name} added a new image to album ${album}  \n ![${image.src}](${image.src})`;
   };
 
   handleSubmit = event => {

@@ -28,6 +28,7 @@ import ObjCardListViewSwitcherForShop from '../../social-gifts/ShopObjectCard/Ob
 import { useSeoInfo } from '../../../hooks/useSeoInfo';
 
 import './ShopList.less';
+import { isMobile } from '../../../common/helpers/apiHelpers';
 
 const ShopList = ({ userName, path, getShopFeed, isSocial }) => {
   const query = useQuery();
@@ -141,7 +142,10 @@ const ShopList = ({ userName, path, getShopFeed, isSocial }) => {
                   <Link to={getPath(dep.department)} className="ShopList__departments-title">
                     {dep.department} <Icon size={12} type="right" />
                   </Link>
-                  <ObjCardListViewSwitcherForShop isSocial={isSocial} wobjects={dep.wobjects} />
+                  <ObjCardListViewSwitcherForShop
+                    isSocial={isSocial}
+                    wobjects={isMobile() ? dep.wobjects.slice(0, -1) : dep.wobjects}
+                  />
                   {dep.hasMore && (
                     <Link className="ShopList__showMore" to={getPath(dep.department)}>
                       Show more {dep.department}

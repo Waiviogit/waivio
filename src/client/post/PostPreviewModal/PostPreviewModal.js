@@ -14,13 +14,20 @@ import { rewardsValues } from '../../../common/constants/rewards';
 import BBackTop from '../../components/BBackTop';
 import { clearBeneficiariesUsers } from '../../../store/searchStore/searchActions';
 import { setUpdatedEditorData } from '../../../store/editorStore/editorActions';
+import { getConfigurationValues } from '../../../store/appStore/appSelectors';
+import { getObjectName } from '../../../common/helpers/wObjectHelper';
 
 import './PostPreviewModal.less';
 
 const isTopicValid = topic => /^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$/.test(topic);
 
 @injectIntl
-@connect(null, { clearBeneficiariesUsers, setUpdatedEditorData })
+@connect(
+  state => ({
+    defaultHashtag: getObjectName(getConfigurationValues(state)?.defaultHashtag),
+  }),
+  { clearBeneficiariesUsers, setUpdatedEditorData },
+)
 class PostPreviewModal extends Component {
   static findScrollElement() {
     return document.querySelector('.post-preview-modal');
@@ -50,6 +57,7 @@ class PostPreviewModal extends Component {
     isGuest: PropTypes.bool,
     clearBeneficiariesUsers: PropTypes.func.isRequired,
     titleValue: PropTypes.string,
+    defaultHashtag: PropTypes.string,
   };
   static defaultProps = {
     intl: {},
@@ -171,6 +179,7 @@ class PostPreviewModal extends Component {
       topics,
       isGuest,
       titleValue,
+      defaultHashtag,
     } = this.props;
 
     return (
@@ -207,6 +216,7 @@ class PostPreviewModal extends Component {
               tags={topics}
               validator={isTopicValid}
               onChange={this.handleTopicsChange}
+              defaultHashtag={defaultHashtag}
             />
             <div className="hashtag-waivio">
               {intl.formatMessage({
