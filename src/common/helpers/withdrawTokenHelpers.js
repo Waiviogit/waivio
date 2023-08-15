@@ -3,7 +3,7 @@ import _, { isEmpty } from 'lodash';
 import WAValidator from 'multicoin-address-validator';
 import { message } from 'antd';
 
-import { converHiveEngineCoins, getMarketPools, headers } from '../../waivioApi/ApiClient';
+import { converHiveEngineCoins, getMarketPools } from '../../waivioApi/ApiClient';
 import { getSwapOutputNew } from './swapForWithDraw';
 
 const AVAILABLE_TOKEN_WITHDRAW = {
@@ -55,7 +55,10 @@ const validateEthAmount = async amount => {
     let error = null;
     const resp = await fetch('https://ethgw.hive-engine.com/api/utils/withdrawalfee/SWAP.ETH', {
       method: 'GET',
-      headers,
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
     }).then(res => res.json());
     const fee = resp?.data;
 
@@ -87,7 +90,10 @@ const validateBtcAmount = async amount => {
     let error = null;
     const resp = await fetch('https://api.tribaldex.com/settings', {
       method: 'GET',
-      headers,
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
     }).then(res => res.json());
 
     const minimum_withdrawals = resp?.minimum_withdrawals;
