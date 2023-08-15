@@ -21,11 +21,13 @@ import { getGuestAvatarUrl } from '../../waivioApi/ApiClient';
 import { getAvatarURL } from '../components/Avatar';
 import {
   getAuthenticatedUser,
+  getAuthenticatedUserName,
   getIsReloading,
   isGuestUser,
 } from '../../store/authStore/authSelectors';
 
 import './Settings.less';
+import { getUser } from '../../store/usersStore/usersSelectors';
 
 const FormItem = Form.Item;
 
@@ -49,7 +51,10 @@ function mapPropsToFields(props) {
 @injectIntl
 @connect(
   state => ({
-    user: getAuthenticatedUser(state),
+    user: {
+      ...getAuthenticatedUser(state),
+      ...getUser(state, getAuthenticatedUserName(state)),
+    },
     reloading: getIsReloading(state),
     isGuest: isGuestUser(state),
   }),
