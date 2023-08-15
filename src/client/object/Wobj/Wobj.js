@@ -28,7 +28,7 @@ const Wobj = ({
     if (!isWaivio) {
       const objectType = getObjectType(wobject);
 
-      if (!isEmpty(wobject) && supportedObjectTypes.includes(objectType) && window.gtag)
+      if (!isEmpty(wobject) && supportedObjectTypes.includes(objectType) && window?.gtag)
         window.gtag('event', `view_${objectType}`);
     }
   }, [wobject.author_permlink]);
