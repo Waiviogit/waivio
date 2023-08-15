@@ -15,6 +15,7 @@ import BBackTop from '../../components/BBackTop';
 import { clearBeneficiariesUsers } from '../../../store/searchStore/searchActions';
 import { setUpdatedEditorData } from '../../../store/editorStore/editorActions';
 import { getConfigurationValues } from '../../../store/appStore/appSelectors';
+import { getObjectName } from '../../../common/helpers/wObjectHelper';
 
 import './PostPreviewModal.less';
 
@@ -23,7 +24,7 @@ const isTopicValid = topic => /^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$/.test(topic);
 @injectIntl
 @connect(
   state => ({
-    defaultHashtag: getConfigurationValues(state)?.defaultHashtag?.name,
+    defaultHashtag: getObjectName(getConfigurationValues(state)?.defaultHashtag),
   }),
   { clearBeneficiariesUsers, setUpdatedEditorData },
 )

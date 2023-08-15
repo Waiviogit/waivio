@@ -31,6 +31,7 @@ import {
   getWobjectNested,
 } from '../../../store/wObjectStore/wObjectSelectors';
 import { getLocale } from '../../../store/settingsStore/settingsSelectors';
+import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 
 import './ObjectOfTypePage.less';
 
@@ -340,6 +341,7 @@ const mapStateToProps = state => ({
   isLoadingFlag: getLoadingFlag(state),
   nestedWobject: getWobjectNested(state),
   breadcrumb: getBreadCrumbs(state),
+  userName: getAuthenticatedUserName(state),
 });
 const mapDispatchToProps = {
   appendPageContent: appendObject,

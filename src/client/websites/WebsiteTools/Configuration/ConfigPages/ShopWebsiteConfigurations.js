@@ -6,6 +6,7 @@ import { Avatar, Button, Form, Icon, message, Modal } from 'antd';
 import { connect } from 'react-redux';
 import { isEmpty, get } from 'lodash';
 import classNames from 'classnames';
+import { Link } from 'react-router-dom';
 
 import {
   getWebConfiguration,
@@ -26,7 +27,11 @@ import BaseObjSettings from '../BaseObjSettings/BaseObjSettings';
 import ImageSetter from '../../../../components/ImageSetter/ImageSetter';
 import SearchObjectsAutocomplete from '../../../../components/EditorObject/SearchObjectsAutocomplete';
 import ObjectAvatar from '../../../../components/ObjectAvatar';
-import { getObjectName, getObjectType } from '../../../../../common/helpers/wObjectHelper';
+import {
+  getObjectName,
+  getObjectType,
+  getObjectUrlForLink,
+} from '../../../../../common/helpers/wObjectHelper';
 
 import './WebsitesConfigurations.less';
 
@@ -287,10 +292,13 @@ const ShopWebsiteConfigurations = ({
               {!isEmpty(defaultHashtag) ? (
                 <div>
                   <div className="BaseObjSettings__searchCard">
-                    <div className="BaseObjSettings__content">
+                    <Link
+                      to={getObjectUrlForLink(defaultHashtag)}
+                      className="BaseObjSettings__content"
+                    >
                       <ObjectAvatar item={defaultHashtag} size={40} />
                       <span className="BaseObjSettings__name">{getObjectName(defaultHashtag)}</span>
-                    </div>
+                    </Link>
                     <b className="BaseObjSettings__type">{getObjectType(defaultHashtag)} </b>
                     {paramsSaving ? (
                       <Icon type={'loading'} />
