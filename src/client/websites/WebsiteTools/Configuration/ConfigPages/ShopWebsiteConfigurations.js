@@ -299,7 +299,7 @@ const ShopWebsiteConfigurations = ({
                         className="BaseObjSettings__clear"
                         onClick={() => {
                           handleSubmit({
-                            deefaultHashtag: null,
+                            defaultHashtag: null,
                           });
                         }}
                       >
