@@ -78,11 +78,11 @@ export default (state = initialState, action) => {
           ...action.payload,
         },
       };
-    case appTypes.SET_MAIN_OBJ:
+    case appTypes.SET_MAIN_OBJ.SUCCESS:
       return {
         ...state,
         mainObj: {
-          ...action.obj,
+          ...action.payload,
         },
       };
     case appTypes.GET_TRENDING_TOPICS_START:

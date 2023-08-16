@@ -1,5 +1,6 @@
 import { message } from 'antd';
 import { createAction } from 'redux-actions';
+import { get } from 'lodash';
 import { createAsyncActionType } from '../../common/helpers/stateHelpers';
 import * as ApiClient from '../../waivioApi/ApiClient';
 import { setBeneficiaryOwner } from '../searchStore/searchActions';
@@ -9,6 +10,8 @@ import { adaptMarketDataToEngine } from '../../common/helpers/cryptosHelper';
 import { ADAPT_MARKET_TO_ENGINE } from '../walletStore/walletActions';
 import { HBD, HIVE } from '../../common/constants/cryptos';
 import { getMainCurrencyRate } from '../ratesStore/ratesAction';
+import { getObject, getUserAccount } from '../../waivioApi/ApiClient';
+import { getMetadata } from '../../common/helpers/postingMetadata';
 
 export const GET_TRENDING_TOPICS_START = '@app/GET_TRENDING_TOPICS_START';
 export const GET_TRENDING_TOPICS_SUCCESS = '@app/GET_TRENDING_TOPICS_SUCCESS';
@@ -216,11 +219,24 @@ export const setItemsForNavigation = items => ({
   items,
 });
 
-export const SET_MAIN_OBJ = '@app/SET_MAIN_OBJ';
+export const SET_MAIN_OBJ = createAsyncActionType('@app/SET_MAIN_OBJ');
 
-export const setMainObj = obj => ({
-  type: SET_MAIN_OBJ,
-  obj,
+export const setMainObj = shopSettings => ({
+  type: SET_MAIN_OBJ.ACTION,
+  payload: {
+    promise:
+      shopSettings?.type === 'user'
+        ? getUserAccount(shopSettings?.value).then(user => {
+            const metadata = getMetadata(user);
+            const profile = get(metadata, 'profile', {});
+            const description = metadata && get(profile, 'about');
+
+            return {
+              description,
+            };
+          })
+        : getObject(shopSettings?.value),
+  },
 });
 
 export const SET_LOADING_STATUS = '@app/SET_LOADING_STATUS';
