@@ -107,7 +107,13 @@ const Withdraw = ({
     if (walletAddress) {
       walletAddressValidation(walletAddress, CRYPTO_FOR_VALIDATE_WALLET[currentCurrency]);
     }
-  }, [currentCurrency, hiveAmount]);
+  }, [currentCurrency, minAmount]);
+
+  useEffect(() => {
+    if (hiveAmount >= minAmount) {
+      debounceAmountHive(hiveAmount);
+    }
+  }, [hiveAmount]);
 
   const handleCurrencyCountChange = (validateValue, outputSetter, input, output) => {
     if (input === 'hive') setHiveCount(validateValue);
@@ -155,7 +161,6 @@ const Withdraw = ({
 
     setHiveAmount(currentBal);
     setHiveCount(currentBal);
-
     if (currentBal) {
       debounceAmountHive(currentBal);
     } else {
@@ -206,6 +211,12 @@ const Withdraw = ({
         return e;
       });
   };
+  const onAmountChange = e => {
+    setHiveAmount(e.currentTarget.value);
+    if (e.currentTarget.value >= minAmount) {
+      debounceAmountHive(e.currentTarget.value);
+    }
+  };
 
   return (
     <React.Fragment>
@@ -234,10 +245,7 @@ const Withdraw = ({
             <input
               placeholder={0}
               ref={hiveInput}
-              onChange={e => {
-                setHiveAmount(e.currentTarget.value);
-                debounceAmountHive(e.currentTarget.value);
-              }}
+              onChange={onAmountChange}
               type="number"
               className={hiveAmountClassList}
               step="any"
