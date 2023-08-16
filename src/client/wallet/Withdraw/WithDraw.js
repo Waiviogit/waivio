@@ -96,10 +96,6 @@ const Withdraw = ({
   // }, []);
 
   useEffect(() => {
-    // getMinMaxHiveAmount(currentCurrency).then(res => {
-    //   setMinAmount(parseFloat(res.min));
-    //   setMaxAmount(!isNil(res.max) ? parseFloat(res.max) : null);
-    // });
     if (hiveAmount >= minAmount) {
       debounceAmountHive(hiveAmount);
     }
