@@ -20,7 +20,7 @@ const DepartmentList = ({ wobject, departments, isSocialGifts }) => {
   return (
     <>
       {departmentsList?.map((dep, i) => (
-        <>
+        <React.Fragment key={`department-${dep.body}`}>
           <DepartmentItem
             isSocialGifts={isSocialGifts}
             id={dep.body}
@@ -29,7 +29,7 @@ const DepartmentList = ({ wobject, departments, isSocialGifts }) => {
             department={dep}
           />
           {isSocialGifts && !isMobile() && i !== departmentsList.length - 1 && ', '}{' '}
-        </>
+        </React.Fragment>
       ))}
       {hasMore && (
         <button onClick={onShowMoreClick} className="WalletTable__csv-button">

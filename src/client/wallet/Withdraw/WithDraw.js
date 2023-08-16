@@ -62,6 +62,16 @@ const Withdraw = ({
   const isUserCanMakeTransfer =
     Number(currentBalance && currentBalance.replace(' HIVE', '')) >= Number(hiveCount);
 
+  const debounceAmountCurrency = debounce(
+    value => handleCurrencyCountChange(value, setHiveAmount, currentCurrency, 'hive'),
+    800,
+  );
+
+  const debounceAmountHive = debounce(
+    value => handleCurrencyCountChange(value, setCurrencyAmount, 'hive', currentCurrency),
+    800,
+  );
+
   const walletAddressValidation = (address, crypto) => {
     setIsValidate({ valid: false, loading: true });
 
@@ -90,16 +100,20 @@ const Withdraw = ({
       setMinAmount(parseFloat(res.min));
       setMaxAmount(!isNil(res.max) ? parseFloat(res.max) : null);
     });
-    if (hiveAmount && hiveAmount >= minAmount) {
-      getEstimatedHiveAmount(parseFloat(hiveAmount), currentCurrency).then(r => {
-        setCurrencyAmount(r.result);
-      });
+    if (hiveAmount >= minAmount) {
+      debounceAmountHive(hiveAmount);
     }
 
     if (walletAddress) {
       walletAddressValidation(walletAddress, CRYPTO_FOR_VALIDATE_WALLET[currentCurrency]);
     }
-  }, [currentCurrency, hiveAmount]);
+  }, [currentCurrency, minAmount]);
+
+  useEffect(() => {
+    if (hiveAmount >= minAmount) {
+      debounceAmountHive(hiveAmount);
+    }
+  }, [hiveAmount]);
 
   const handleCurrencyCountChange = (validateValue, outputSetter, input, output) => {
     if (input === 'hive') setHiveCount(validateValue);
@@ -112,7 +126,7 @@ const Withdraw = ({
           if (output === 'hive') setHiveCount(r.result);
         })
         .catch(e => message.error(e.message));
-    } else if (output !== 'hive') outputSetter(0);
+    } else outputSetter(0);
   };
 
   const switchButtonClassList = currency =>
@@ -147,25 +161,12 @@ const Withdraw = ({
 
     setHiveAmount(currentBal);
     setHiveCount(currentBal);
-
     if (currentBal) {
-      getEstimatedHiveAmount(parseFloat(currentBal), currentCurrency).then(r => {
-        setCurrencyAmount(r.result);
-      });
+      debounceAmountHive(currentBal);
     } else {
       setCurrencyAmount(0);
     }
   };
-
-  const debounceAmountCurrency = debounce(
-    value => handleCurrencyCountChange(value, setHiveAmount, currentCurrency, 'hive'),
-    800,
-  );
-
-  const debounceAmountHive = debounce(
-    value => handleCurrencyCountChange(value, setCurrencyAmount, 'hive', currentCurrency),
-    800,
-  );
 
   const validatorMessage = validationAddressState.valid
     ? intl.formatMessage({ id: 'address_valid', defaultMessage: 'Address is valid' })
@@ -210,6 +211,12 @@ const Withdraw = ({
         return e;
       });
   };
+  const onAmountChange = e => {
+    setHiveAmount(e.currentTarget.value);
+    if (e.currentTarget.value >= minAmount) {
+      debounceAmountHive(e.currentTarget.value);
+    }
+  };
 
   return (
     <React.Fragment>
@@ -238,10 +245,7 @@ const Withdraw = ({
             <input
               placeholder={0}
               ref={hiveInput}
-              onChange={e => {
-                setHiveAmount(e.currentTarget.value);
-                debounceAmountHive(e.currentTarget.value);
-              }}
+              onChange={onAmountChange}
               type="number"
               className={hiveAmountClassList}
               step="any"

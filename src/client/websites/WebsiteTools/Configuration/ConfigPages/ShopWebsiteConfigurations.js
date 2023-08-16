@@ -2,10 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { withRouter } from 'react-router';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
-import { Avatar, Button, Form, message, Modal } from 'antd';
+import { Avatar, Button, Form, Icon, message, Modal } from 'antd';
 import { connect } from 'react-redux';
 import { isEmpty, get } from 'lodash';
 import classNames from 'classnames';
+import { Link } from 'react-router-dom';
 
 import {
   getWebConfiguration,
@@ -24,6 +25,13 @@ import SelectColorBlock from '../SelectColorModal/SelectColorModal';
 import ConfigHeader from '../ConfigHeader/ConfigHeader';
 import BaseObjSettings from '../BaseObjSettings/BaseObjSettings';
 import ImageSetter from '../../../../components/ImageSetter/ImageSetter';
+import SearchObjectsAutocomplete from '../../../../components/EditorObject/SearchObjectsAutocomplete';
+import ObjectAvatar from '../../../../components/ObjectAvatar';
+import {
+  getObjectName,
+  getObjectType,
+  getObjectUrlForLink,
+} from '../../../../../common/helpers/wObjectHelper';
 
 import './WebsitesConfigurations.less';
 
@@ -39,6 +47,7 @@ const ShopWebsiteConfigurations = ({
   const [modalsState, setModalState] = useState({});
   const [openColorsModal, setOpenColorsModal] = useState('');
   const [openHeaderConfig, setOpenHeaderConfig] = useState('');
+  const defaultHashtag = get(config, 'defaultHashtag', null);
   const [image, setImage] = useState('');
   const [paramsSaving, setParamsSaving] = useState(false);
   const classListHeaderConfig = classNames('WebsitesConfigurations__headers', {
@@ -269,6 +278,60 @@ const ShopWebsiteConfigurations = ({
                 <FormattedMessage
                   id="base_obj_description"
                   defaultMessage="The main menu of the website will be created using the base object."
+                />
+              </p>
+            </Form.Item>
+            <Form.Item>
+              <h3>
+                {intl.formatMessage({
+                  id: 'default_hashtag',
+                  defaultMessage: 'Default hashtag',
+                })}
+                :
+              </h3>
+              {!isEmpty(defaultHashtag) ? (
+                <div>
+                  <div className="BaseObjSettings__searchCard">
+                    <Link
+                      to={getObjectUrlForLink(defaultHashtag)}
+                      className="BaseObjSettings__content"
+                    >
+                      <ObjectAvatar item={defaultHashtag} size={40} />
+                      <span className="BaseObjSettings__name">{getObjectName(defaultHashtag)}</span>
+                    </Link>
+                    <b className="BaseObjSettings__type">{getObjectType(defaultHashtag)} </b>
+                    {paramsSaving ? (
+                      <Icon type={'loading'} />
+                    ) : (
+                      <span
+                        className="BaseObjSettings__clear"
+                        onClick={() => {
+                          handleSubmit({
+                            defaultHashtag: null,
+                          });
+                        }}
+                      >
+                        <Icon type="close-circle" />
+                      </span>
+                    )}
+                  </div>
+                </div>
+              ) : (
+                <SearchObjectsAutocomplete
+                  placeholder={'Find object'}
+                  handleSelect={u => {
+                    handleSubmit({
+                      defaultHashtag: u.author_permlink,
+                    });
+                  }}
+                  objectType={'hashtag'}
+                  autoFocus={false}
+                />
+              )}
+              <p>
+                <FormattedMessage
+                  id="default_tag_description"
+                  defaultMessage="This hashtag will be recommended for all new posts on the website, ensuring that they consistently appear in the website's custom newsfeed."
                 />
               </p>
             </Form.Item>

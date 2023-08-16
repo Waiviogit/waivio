@@ -53,10 +53,9 @@ import { hexToRgb } from '../../common/helpers';
 import { initialColors } from '../websites/constants/colors';
 import { getSwapEnginRates } from '../../store/ratesStore/ratesAction';
 import { setLocale } from '../../store/settingsStore/settingsActions';
-import { getObject, getObjectsByIds, getUserAccount } from '../../waivioApi/ApiClient';
+import { getObject, getObjectsByIds } from '../../waivioApi/ApiClient';
 import { parseJSON } from '../../common/helpers/parseJSON';
 import { getObjectName } from '../../common/helpers/wObjectHelper';
-import { getMetadata } from '../../common/helpers/postingMetadata';
 
 const createLink = i => {
   switch (i.object_type) {
@@ -65,8 +64,8 @@ const createLink = i => {
     case 'list':
       return `/checklist/${i.author_permlink}`;
     case 'page':
-    case 'widget':
-    case 'newsfeed':
+      // case 'widget':
+      // case 'newsfeed':
       return `/object/${i.object_type}/${i.author_permlink}`;
     default:
       return i.linkToWeb || i.defaultShowLink;
@@ -88,7 +87,6 @@ const SocialWrapper = props => {
     if (!isEmpty(configuration?.shopSettings)) {
       if (configuration.shopSettings?.type === 'object') {
         getObject(configuration.shopSettings?.value).then(async wobject => {
-          dispatch(setMainObj(wobject));
           const menuItemLinks = wobject.menuItem?.reduce((acc, item) => {
             const body = parseJSON(item.body);
 
@@ -163,22 +161,8 @@ const SocialWrapper = props => {
             if (props.location.pathname === '/') props.history.push(buttonList[0].link);
           }
         });
-      } else {
-        getUserAccount(configuration.shopSettings?.value).then(res => {
-          const metadata = getMetadata(res);
-          const profile = get(metadata, 'profile', {});
-          const description = metadata && get(profile, 'about');
-
-          dispatch(
-            setMainObj({
-              description,
-            }),
-          );
-        });
-
-        if (props.location.pathname === '/')
-          props.history.push(`/user-shop/${configuration.shopSettings?.value}`);
-      }
+      } else if (props.location.pathname === '/')
+        props.history.push(`/user-shop/${configuration.shopSettings?.value}`);
     }
   };
 
@@ -323,8 +307,11 @@ SocialWrapper.defaultProps = {
   location: {},
 };
 
-SocialWrapper.fetchData = ({ store, req }) => {
+SocialWrapper.fetchData = async ({ store, req }) => {
   const state = store.getState();
+  const config = await store.dispatch(getWebsiteConfigForSSR(req.headers.host));
+  const shopSettings = config.action.payload?.shopSettings;
+
   let activeLocale = getLocale(state);
 
   if (activeLocale === 'auto') {
@@ -332,32 +319,13 @@ SocialWrapper.fetchData = ({ store, req }) => {
   }
   const lang = loadLanguage(activeLocale);
 
-  store.dispatch(getWebsiteConfigForSSR(req.headers.host)).then(res => {
-    const shopSettings = res.action.payload?.shopSettings;
-
-    if (!isEmpty(shopSettings)) {
-      if (shopSettings?.type === 'object') {
-        getObject(shopSettings?.value).then(async wobject => {
-          store.dispatch(setMainObj(wobject));
-        });
-      } else {
-        getUserAccount(shopSettings?.value).then(user => {
-          const metadata = getMetadata(user);
-          const profile = get(metadata, 'profile', {});
-          const description = metadata && get(profile, 'about');
-
-          store.dispatch(
-            setMainObj({
-              description,
-            }),
-          );
-        });
-      }
-    }
-  });
-  store.dispatch(setAppUrl(`https://${req.headers.host}`));
-  store.dispatch(setUsedLocale(lang));
-  store.dispatch(login());
+  return Promise.allSettled([
+    store.dispatch(getWebsiteConfigForSSR(req.headers.host)),
+    store.dispatch(setMainObj(shopSettings)),
+    store.dispatch(setAppUrl(`https://${req.headers.host}`)),
+    store.dispatch(setUsedLocale(lang)),
+    store.dispatch(login()),
+  ]);
 };
 
 export default ErrorBoundary(

@@ -61,9 +61,10 @@ import ObjectFeatures from '../../../object/ObjectFeatures/ObjectFeatures';
 import DepartmentsWobject from '../../../object/ObjectTypeShop/DepartmentsWobject';
 import { setAuthors } from '../../../../store/wObjectStore/wobjActions';
 import MenuItemButtons from '../MenuItemButtons/MenuItemButtons';
-import './ObjectInfo.less';
 import MenuItemButton from '../MenuItemButtons/MenuItemButton';
 import AffiliateSection from './ObjectInfoComponents/AffiliateSection';
+
+import './ObjectInfo.less';
 
 @withRouter
 @connect(
