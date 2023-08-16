@@ -4,7 +4,6 @@ import { uniq } from 'lodash';
 import PropTypes from 'prop-types';
 import { useLocation, useParams } from 'react-router';
 import FeedMasonry from './FeedMasonry';
-import { getObject } from '../../../waivioApi/ApiClient';
 import { getReadLanguages } from '../../../store/settingsStore/settingsSelectors';
 import { getFeed } from '../../../store/feedStore/feedSelectors';
 import {
@@ -16,7 +15,7 @@ import { getMoreObjectPosts, getObjectPosts } from '../../../store/feedStore/fee
 import { getPosts } from '../../../store/postsStore/postsSelectors';
 import { getLastPermlinksFromHash, getObjectName } from '../../../common/helpers/wObjectHelper';
 import { preparationPostList, preparationPreview } from './helpers';
-import Loading from '../../components/Icon/Loading';
+import { getObject } from '../../../store/wObjectStore/wobjectsActions';
 
 const limit = 15;
 
@@ -55,7 +54,7 @@ const ObjectNewsFeed = ({ wobj }) => {
       });
       setNewsPermlink(wobj?.newsFeed?.permlink);
     } else {
-      getObject(objName).then(res => {
+      dispatch(getObject(objName)).then(res => {
         dispatch(
           getObjectPosts({
             object: objName,
@@ -97,15 +96,15 @@ const ObjectNewsFeed = ({ wobj }) => {
     } catch (e) {}
   };
 
-  if (firstLoading && previewLoading) return <Loading margin />;
-
   return (
     <FeedMasonry
-      objName={getObjectName(wobj) || getObjectName(currObj)}
+      objName={getObjectName(wobj) || getObjectName(currObj) || 'News feed'}
+      description={wobj?.description || currObj?.description}
       posts={posts}
       hasMore={hasMore}
       loadMore={loadMore}
       loading={isFetching || previewLoading}
+      firstLoading={firstLoading}
       previews={previews}
     />
   );

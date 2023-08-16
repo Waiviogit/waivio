@@ -26,23 +26,53 @@ const FeedMasonry = ({
   intl,
   writeReview,
   previews,
+  firstLoading,
+  description,
 }) => {
   const favicon = useSelector(getHelmetIcon);
   const siteName = useSelector(getSiteName);
   const title = `${objName} - ${siteName}`;
-  const desc = siteName;
+  const { canonicalUrl, descriptionSite } = useSeoInfo();
+
+  const desc = description || descriptionSite || siteName;
   const image = favicon;
-  const { canonicalUrl } = useSeoInfo();
 
-  if (loading && isEmpty(posts)) return <Loading margin />;
+  const getContent = () => {
+    if (loading && firstLoading) return <Loading margin />;
+    if (isEmpty(posts))
+      return (
+        <div className="FeedMasonry__emptyFeed" onClick={writeReview}>
+          {emptyLable ||
+            intl.formatMessage({ id: 'empty_posts', defaultMessage: 'There are no posts yet' })}
+        </div>
+      );
 
-  if (isEmpty(posts))
     return (
-      <div className="FeedMasonry__emptyFeed" onClick={writeReview}>
-        {emptyLable ||
-          intl.formatMessage({ id: 'empty_posts', defaultMessage: 'There are no posts yet' })}
-      </div>
+      <InfiniteSroll threshold={2000} loader={<Loading />} hasMore={hasMore} loadMore={loadMore}>
+        <Masonry
+          breakpointCols={breakpointColumnsObj(posts?.length)}
+          className="FeedMasonry my-masonry-grid"
+          columnClassName="my-masonry-grid_column"
+        >
+          {posts?.map(post => {
+            const urlPreview = isEmpty(previews)
+              ? ''
+              : previews?.find(i => i.url === post?.embeds[0]?.url)?.urlPreview;
+
+            return (
+              <FeedItem
+                preview={urlPreview}
+                key={`${post.author}/${post?.permlink}`}
+                photoQuantity={2}
+                post={post}
+              />
+            );
+          })}
+        </Masonry>
+        <PostModal />
+      </InfiniteSroll>
     );
+  };
 
   return (
     <React.Fragment>
@@ -67,29 +97,7 @@ const FeedMasonry = ({
         <link rel="image_src" href={image} />
         <link id="favicon" rel="icon" href={favicon} type="image/x-icon" />
       </Helmet>
-      <InfiniteSroll threshold={2000} loader={<Loading />} hasMore={hasMore} loadMore={loadMore}>
-        <Masonry
-          breakpointCols={breakpointColumnsObj(posts?.length)}
-          className="FeedMasonry my-masonry-grid"
-          columnClassName="my-masonry-grid_column"
-        >
-          {posts?.map(post => {
-            const urlPreview = isEmpty(previews)
-              ? ''
-              : previews?.find(i => i.url === post?.embeds[0]?.url)?.urlPreview;
-
-            return (
-              <FeedItem
-                preview={urlPreview}
-                key={`${post.author}/${post?.permlink}`}
-                photoQuantity={2}
-                post={post}
-              />
-            );
-          })}
-        </Masonry>
-        <PostModal />
-      </InfiniteSroll>
+      {getContent()}
     </React.Fragment>
   );
 };
@@ -98,11 +106,13 @@ FeedMasonry.propTypes = {
   loadMore: PropTypes.func,
   writeReview: PropTypes.func,
   hasMore: PropTypes.bool,
+  firstLoading: PropTypes.bool,
   emptyLable: PropTypes.bool,
   posts: PropTypes.arrayOf(PropTypes.shape({})),
   previews: PropTypes.arrayOf(PropTypes.shape({})),
   loading: PropTypes.bool,
   objName: PropTypes.string,
+  description: PropTypes.string,
   intl: PropTypes.shape(),
 };
 
