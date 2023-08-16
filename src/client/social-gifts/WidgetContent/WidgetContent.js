@@ -1,17 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { Helmet } from 'react-helmet/es/Helmet';
 import { useLocation, useParams } from 'react-router';
 import PropTypes from 'prop-types';
+import Helmet from 'react-helmet';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 import { getHelmetIcon, getSiteName, getUsedLocale } from '../../../store/appStore/appSelectors';
-import { getLastPermlinksFromHash, getObjectName } from '../../../common/helpers/wObjectHelper';
+import {
+  getLastPermlinksFromHash,
+  getObjectAvatar,
+  getObjectName,
+} from '../../../common/helpers/wObjectHelper';
 import { getObject } from '../../../waivioApi/ApiClient';
 import Loading from '../../components/Icon/Loading';
 import { useSeoInfo } from '../../../hooks/useSeoInfo';
 
 const WidgetContent = ({ wobj }) => {
-  const [currentWobject, setWobject] = useState();
+  const [currentWobject, setWobject] = useState(wobj);
   const userName = useSelector(getAuthenticatedUserName);
   const locale = useSelector(getUsedLocale);
   const { name } = useParams();
@@ -20,8 +24,8 @@ const WidgetContent = ({ wobj }) => {
   const siteName = useSelector(getSiteName);
   const title = `${getObjectName(currentWobject)} - ${siteName}`;
   const { canonicalUrl, descriptionSite } = useSeoInfo();
-  const desc = wobj?.description || descriptionSite || siteName;
-  const image = favicon;
+  const desc = currentWobject?.description || descriptionSite || siteName;
+  const image = getObjectAvatar(currentWobject) || favicon;
   const objName = location.hash ? getLastPermlinksFromHash(location.hash) : name;
   const widgetForm = currentWobject?.widget && JSON.parse(currentWobject?.widget);
 
@@ -40,20 +44,36 @@ const WidgetContent = ({ wobj }) => {
   const widgetView = () => {
     if (!widgetForm?.content) return <Loading margin />;
 
-    return widgetForm?.content?.includes('<iframe') ? (
-      // eslint-disable-next-line react/no-danger
-      <div className="FormPage__block" dangerouslySetInnerHTML={{ __html: widgetForm.content }} />
-    ) : (
-      <>
+    if (widgetForm.type === 'Widget')
+      return widgetForm?.content?.includes('<iframe') ? (
+        // eslint-disable-next-line react/no-danger
+        <div className="FormPage__block" dangerouslySetInnerHTML={{ __html: widgetForm.content }} />
+      ) : (
+        <>
+          <iframe
+            srcDoc={widgetForm.content}
+            title={widgetForm.title}
+            width="100%"
+            style={{
+              height: '100vh',
+            }}
+          />
+        </>
+      );
+
+    return (
+      <div className="FormPage__block">
         <iframe
-          srcDoc={widgetForm.content}
-          title={widgetForm.title}
+          src={widgetForm.content}
           width="100%"
-          style={{
-            height: '100vh',
-          }}
+          height="100%"
+          allowFullScreen
+          title={widgetForm.title}
+          frameBorder="0"
+          allowTransparency
+          // allowScriptaccess="always"
         />
-      </>
+      </div>
     );
   };
 
@@ -80,24 +100,7 @@ const WidgetContent = ({ wobj }) => {
         <link rel="image_src" href={image} />
         <link id="favicon" rel="icon" href={favicon} type="image/x-icon" />
       </Helmet>
-      <div className="FormPage">
-        {widgetForm.type === 'Widget' ? (
-          widgetView()
-        ) : (
-          <div className="FormPage__block">
-            <iframe
-              src={widgetForm.content}
-              width="100%"
-              height="100%"
-              allowFullScreen
-              title={widgetForm.title}
-              frameBorder="0"
-              allowTransparency
-              // allowScriptaccess="always"
-            />
-          </div>
-        )}
-      </div>
+      <div className="FormPage">{widgetView()}</div>
     </React.Fragment>
   );
 };
