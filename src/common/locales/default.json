@@ -2341,5 +2341,18 @@
   "enter_name": "Enter name",
   "min_amount_error_funds": "Minimum: {minAmount} HIVE",
   "max_amount_error_funds": "Maximum: {maxAmount} HIVE",
-  "destination_address": "Destination address"
+  "destination_address": "Destination address",
+  "departments_bot": "Departments bot",
+  "departments_update_bot": "Departments update bot",
+  "department_requires_auth": "The Departments update bot requires authorization to upvote data updates on your behalf",
+  "departments_pause": "The departments update bot will pause if WAIV voting power on the account drops below the set threshold.",
+  "departments_service": "The Departments update bot service is provided on as-is / as-available basis.",
+  "update_departments": "Update departments",
+  "updated_objects": "Updated objects",
+  "mobnav_departments_bot": "Departments bot",
+  "mobnav_claim_athority": "Claim authority",
+  "stop_update_department": "Stop update department",
+  "stop_update_department_message": "Once stopped, the update department cannot be resumed. To temporarily suspend/resume the update department, please consider using the Active checkbox.",
+"stop_claim_authority": "Stop claim authority",
+  "stop_claim_authority_message": "Once stopped, the claim authority cannot be resumed. To temporarily suspend/resume the claim authority, please consider using the Active checkbox."
 }

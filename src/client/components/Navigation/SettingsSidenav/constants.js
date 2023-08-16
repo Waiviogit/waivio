@@ -77,6 +77,11 @@ export const dataManagementSettings = {
       id: 'claim_athority',
       defaultMessage: 'Claim authority',
     },
+    {
+      to: '/departments-bot',
+      id: 'departments_bot',
+      defaultMessage: 'Departments bot',
+    },
   ],
 };
 export const websiteSettings = {
