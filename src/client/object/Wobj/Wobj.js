@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { isEmpty } from 'lodash';
-import { Helmet } from 'react-helmet/es/Helmet';
+import Helmet from 'react-helmet';
 import { useSelector } from 'react-redux';
 import ScrollToTopOnMount from '../../components/Utils/ScrollToTopOnMount';
 import { getObjectName, getObjectType } from '../../../common/helpers/wObjectHelper';

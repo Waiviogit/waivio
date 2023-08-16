@@ -12,9 +12,9 @@ import Loading from '../../components/Icon/Loading';
 import FeedItem from './FeedItem';
 import PostModal from '../../post/PostModalContainer';
 import { breakpointColumnsObj } from './helpers';
+import { useSeoInfo } from '../../../hooks/useSeoInfo';
 
 import './FeedMasonry.less';
-import { useSeoInfo } from '../../../hooks/useSeoInfo';
 
 const FeedMasonry = ({
   objName,

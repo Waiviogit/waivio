@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
-import { Helmet } from 'react-helmet/es/Helmet';
+import Helmet from 'react-helmet';
 import Masonry from 'react-masonry-css';
 import { isEmpty } from 'lodash';
 
@@ -15,7 +15,7 @@ import { getFeed } from '../../../store/feedStore/feedSelectors';
 import { getPosts } from '../../../store/postsStore/postsSelectors';
 import PostModal from '../../post/PostModalContainer';
 import { breakpointColumnsObj, preparationPostList, preparationPreview } from './helpers';
-import { getHelmetIcon, getSiteName } from '../../../store/appStore/appSelectors';
+import { getHelmetIcon, getMainObj, getSiteName } from '../../../store/appStore/appSelectors';
 import ReduxInfiniteScroll from '../../vendor/ReduxInfiniteScroll';
 import Loading from '../../components/Icon/Loading';
 import FeedItem from './FeedItem';
@@ -24,20 +24,22 @@ import { useSeoInfo } from '../../../hooks/useSeoInfo';
 const limit = 25;
 
 const UserBlogFeed = () => {
+  const [previews, setPreviews] = useState();
+  const [firstLoading, setFirstLoading] = useState(false);
+  const [previewLoading, setPreviewLoading] = useState(false);
+
   const { name } = useParams();
   const feed = useSelector(getFeed);
   const postsList = useSelector(getPosts);
   const dispatch = useDispatch();
   const favicon = useSelector(getHelmetIcon);
   const siteName = useSelector(getSiteName);
-  const [previews, setPreviews] = useState();
-  const [firstLoading, setFirstLoading] = useState(false);
-  const [previewLoading, setPreviewLoading] = useState(true);
+  const mainObj = useSelector(getMainObj);
+
   const title = `Blog - ${siteName}`;
-  const desc = siteName;
+  const desc = mainObj?.description || siteName;
   const image = favicon;
   const { canonicalUrl } = useSeoInfo();
-
   const postsIds = getFeedFromState('blog', name, feed);
   const hasMore = getFeedHasMoreFromState('blog', name, feed);
   const isFetching = getFeedLoadingFromState('blog', name, feed);
@@ -45,6 +47,7 @@ const UserBlogFeed = () => {
 
   useEffect(() => {
     setFirstLoading(true);
+    setPreviewLoading(true);
     dispatch(getUserProfileBlogPosts(name, { limit, initialLoad: true })).then(res => {
       setFirstLoading(false);
       preparationPreview(res.value.posts, setPreviews).then(() => setPreviewLoading(false));
@@ -127,8 +130,7 @@ const UserBlogFeed = () => {
   );
 };
 
-UserBlogFeed.fetchData = ({ store, match }) => {
+UserBlogFeed.fetchData = ({ store, match }) =>
   store.dispatch(getUserProfileBlogPosts(match.params.name, { limit, initialLoad: true }));
-};
 
 export default UserBlogFeed;
