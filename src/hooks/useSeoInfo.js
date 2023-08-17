@@ -1,11 +1,12 @@
 import { useSelector } from 'react-redux';
 import { useLocation } from 'react-router';
 
-import { getAppUrl } from '../store/appStore/appSelectors';
+import { getAppUrl, getMainObj } from '../store/appStore/appSelectors';
 
 export const useSeoInfo = () => {
   const location = useLocation();
   const appUrl = useSelector(getAppUrl);
+  const descriptionSite = useSelector(getMainObj).description;
 
   const prefereCanonical = () => {
     let url = `${appUrl}${location.pathname}`;
@@ -18,6 +19,7 @@ export const useSeoInfo = () => {
 
   return {
     canonicalUrl: prefereCanonical(),
+    descriptionSite,
   };
 };
 

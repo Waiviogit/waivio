@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
-import { Helmet } from 'react-helmet/es/Helmet';
+import Helmet from 'react-helmet';
 import Masonry from 'react-masonry-css';
 import { isEmpty } from 'lodash';
 
@@ -15,7 +15,7 @@ import { getFeed } from '../../../store/feedStore/feedSelectors';
 import { getPosts } from '../../../store/postsStore/postsSelectors';
 import PostModal from '../../post/PostModalContainer';
 import { breakpointColumnsObj, preparationPostList, preparationPreview } from './helpers';
-import { getHelmetIcon, getSiteName } from '../../../store/appStore/appSelectors';
+import { getHelmetIcon, getMainObj, getSiteName } from '../../../store/appStore/appSelectors';
 import ReduxInfiniteScroll from '../../vendor/ReduxInfiniteScroll';
 import Loading from '../../components/Icon/Loading';
 import FeedItem from './FeedItem';
@@ -24,26 +24,30 @@ import { useSeoInfo } from '../../../hooks/useSeoInfo';
 const limit = 25;
 
 const UserBlogFeed = () => {
+  const [previews, setPreviews] = useState();
+  const [firstLoading, setFirstLoading] = useState(false);
+  const [previewLoading, setPreviewLoading] = useState(false);
+
   const { name } = useParams();
   const feed = useSelector(getFeed);
   const postsList = useSelector(getPosts);
   const dispatch = useDispatch();
   const favicon = useSelector(getHelmetIcon);
   const siteName = useSelector(getSiteName);
-  const [previews, setPreviews] = useState();
-  const [firstLoading, setFirstLoading] = useState(true);
-  const [previewLoading, setPreviewLoading] = useState(true);
+  const mainObj = useSelector(getMainObj);
+
   const title = `Blog - ${siteName}`;
-  const desc = siteName;
+  const desc = mainObj?.description || siteName;
   const image = favicon;
   const { canonicalUrl } = useSeoInfo();
-
   const postsIds = getFeedFromState('blog', name, feed);
   const hasMore = getFeedHasMoreFromState('blog', name, feed);
   const isFetching = getFeedLoadingFromState('blog', name, feed);
   const posts = preparationPostList(postsIds, postsList);
 
   useEffect(() => {
+    setFirstLoading(true);
+    setPreviewLoading(true);
     dispatch(getUserProfileBlogPosts(name, { limit, initialLoad: true })).then(res => {
       setFirstLoading(false);
       preparationPreview(res.value.posts, setPreviews).then(() => setPreviewLoading(false));
@@ -63,8 +67,6 @@ const UserBlogFeed = () => {
       ),
     );
   };
-
-  if (firstLoading && previewLoading) return <Loading margin />;
 
   return (
     <React.Fragment>
@@ -89,39 +91,46 @@ const UserBlogFeed = () => {
         <link rel="image_src" href={image} />
         <link id="favicon" rel="icon" href={favicon} type="image/x-icon" />
       </Helmet>
-      <ReduxInfiniteScroll
-        className="Feed"
-        loadMore={loadMore}
-        loader={<Loading />}
-        loadingMore={isFetching || previewLoading}
-        hasMore={hasMore}
-        elementIsScrollable={false}
-        threshold={2500}
-      >
-        <Masonry
-          breakpointCols={breakpointColumnsObj(posts?.length)}
-          className="FeedMasonry my-masonry-grid"
-          columnClassName="my-masonry-grid_column"
+      {firstLoading && previewLoading ? (
+        <Loading margin />
+      ) : (
+        <ReduxInfiniteScroll
+          className="Feed"
+          loadMore={loadMore}
+          loader={<Loading />}
+          loadingMore={isFetching || previewLoading}
+          hasMore={hasMore}
+          elementIsScrollable={false}
+          threshold={2500}
         >
-          {posts?.map(post => {
-            const urlPreview = isEmpty(previews)
-              ? ''
-              : previews?.find(i => i.url === post?.embeds[0]?.url)?.urlPreview;
+          <Masonry
+            breakpointCols={breakpointColumnsObj(posts?.length)}
+            className="FeedMasonry my-masonry-grid"
+            columnClassName="my-masonry-grid_column"
+          >
+            {posts?.map(post => {
+              const urlPreview = isEmpty(previews)
+                ? ''
+                : previews?.find(i => i.url === post?.embeds[0]?.url)?.urlPreview;
 
-            return (
-              <FeedItem
-                key={`${post.author}/${post?.permlink}`}
-                preview={urlPreview}
-                photoQuantity={2}
-                post={post}
-              />
-            );
-          })}
-        </Masonry>
-        <PostModal />
-      </ReduxInfiniteScroll>
+              return (
+                <FeedItem
+                  key={`${post.author}/${post?.permlink}`}
+                  preview={urlPreview}
+                  photoQuantity={2}
+                  post={post}
+                />
+              );
+            })}
+          </Masonry>
+          <PostModal />
+        </ReduxInfiniteScroll>
+      )}
     </React.Fragment>
   );
 };
+
+UserBlogFeed.fetchData = ({ store, match }) =>
+  store.dispatch(getUserProfileBlogPosts(match.params.name, { limit, initialLoad: true }));
 
 export default UserBlogFeed;

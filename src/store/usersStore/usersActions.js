@@ -38,6 +38,7 @@ export const getInfoForSideBar = username => async dispatch => {
       delegated_vesting_shares: acc?.delegated_vesting_shares,
       downvote_manabar: acc?.downvote_manabar,
       voting_manabar: voting_mana,
+      posting_json_metadata: acc.posting_json_metadata,
     };
 
     data.rc_percentage = rc.percentage * 0.01 || 0;

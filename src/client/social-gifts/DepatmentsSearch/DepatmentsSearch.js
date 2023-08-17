@@ -3,7 +3,7 @@ import { useHistory, useParams } from 'react-router';
 import { useSelector } from 'react-redux';
 import InfiniteSroll from 'react-infinite-scroller';
 import { Tag } from 'antd';
-import { Helmet } from 'react-helmet/es/Helmet';
+import Helmet from 'react-helmet';
 import Loading from '../../components/Icon/Loading';
 import ShopObjectCard from '../ShopObjectCard/ShopObjectCard';
 import { getHelmetIcon } from '../../../store/appStore/appSelectors';
