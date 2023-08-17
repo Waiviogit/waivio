@@ -206,4 +206,97 @@ export const getAmazonAsins = uri =>
       return response;
     });
 
+export const getDepartmentsList = (userName, skip, limit) =>
+  fetch(
+    `${config.importApiPrefix}${config.departments}?user=${userName}&skip=${skip}&limit=${limit}`,
+    {
+      headers,
+      method: 'GET',
+    },
+  )
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+
+export const setDepartmentsBotVote = (user, minVotingPower) =>
+  fetch(`${config.importApiPrefix}${config.departments}${config.power}`, {
+    headers: {
+      ...headers,
+      'access-token': Cookie.get('access_token'),
+    },
+    method: 'PUT',
+    body: JSON.stringify({
+      user,
+      minVotingPower,
+    }),
+  })
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+
+export const deleteDepartments = (user, importId) =>
+  fetch(`${config.importApiPrefix}${config.departments}`, {
+    headers: { ...headers, 'access-token': Cookie.get('access_token') },
+    method: 'DELETE',
+    body: JSON.stringify({
+      user,
+      importId,
+    }),
+  })
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+
+export const getHistoryDepartmentsObjects = (userName, skip, limit) =>
+  fetch(
+    `${config.importApiPrefix}${config.departments}${config.history}?user=${userName}&skip=${skip}&limit=${limit}`,
+    {
+      headers,
+      method: 'GET',
+    },
+  )
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+
+export const getDepartmentsVote = userName =>
+  fetch(`${config.importApiPrefix}${config.departments}${config.power}?user=${userName}`, {
+    headers,
+    method: 'GET',
+  })
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+
+export const changeDepartments = (user, status, importId) =>
+  fetch(`${config.importApiPrefix}${config.departments}`, {
+    headers: { ...headers, 'access-token': Cookie.get('access_token') },
+    method: 'PUT',
+    body: JSON.stringify({
+      user,
+      status,
+      importId,
+    }),
+  })
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+
+export const createDepartment = (user, authorPermlink, scanEmbedded) =>
+  fetch(`${config.importApiPrefix}${config.departments}`, {
+    headers: { ...headers, 'access-token': Cookie.get('access_token') },
+    method: 'POST',
+    body: JSON.stringify({
+      user,
+      authorPermlink,
+      scanEmbedded,
+    }),
+  })
+    .then(res => res.json())
+    .then(response => {
+      if (response.message) message.error(response.message);
+
+      return response;
+    });
+
 export default null;

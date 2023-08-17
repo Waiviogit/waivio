@@ -262,6 +262,11 @@ const routes = {
           component: Views.ClaimAthorityBot,
         },
         {
+          path: '/departments-bot',
+          exact: true,
+          component: Views.DepartmentsBot,
+        },
+        {
           path: `/:site/(${URL.WEBSITES.tabs})`,
           pathScope: '/:site',
           exact: true,

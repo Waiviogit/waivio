@@ -131,6 +131,7 @@ export default {
       'ASIN-scanner',
       'chrome-extension',
       'claim-athority',
+      'departments-bot',
     ].join('|'),
   },
   WEBSITES: {
