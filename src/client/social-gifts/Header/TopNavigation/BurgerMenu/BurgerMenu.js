@@ -1,0 +1,61 @@
+import React, { useState } from 'react';
+import { useHistory } from 'react-router';
+import { truncate } from 'lodash';
+import { Link } from 'react-router-dom';
+import { injectIntl } from 'react-intl';
+import PropTypes from 'prop-types';
+import { Drawer } from 'antd';
+
+import './BurgerMenu.less';
+
+const BurgerMenu = ({ items, title, openButtonText, openButtonIcon }) => {
+  const [open, setOpen] = useState(false);
+  const history = useHistory();
+
+  return (
+    <div className={'BurgerMenu'}>
+      <span onClick={() => setOpen(true)}>
+        {openButtonText}
+        {openButtonIcon}
+      </span>
+      {
+        <Drawer
+          className={'BurgerMenu__drawer'}
+          title={title}
+          placement="right"
+          visible={open}
+          onClose={() => setOpen(false)}
+        >
+          {items.map(i => (
+            <Link
+              to={i.link}
+              className={
+                history.location.pathname.includes(i.link)
+                  ? 'BurgerMenu__item--active'
+                  : 'BurgerMenu__item'
+              }
+              key={i.link}
+              onClick={() => setOpen(false)}
+            >
+              <div>
+                {truncate(i.name, {
+                  length: 20,
+                  separator: '...',
+                }).toUpperCase()}
+              </div>
+            </Link>
+          ))}
+        </Drawer>
+      }
+    </div>
+  );
+};
+
+BurgerMenu.propTypes = {
+  items: PropTypes.arrayOf(),
+  title: PropTypes.string,
+  openButtonText: PropTypes.string,
+  openButtonIcon: PropTypes.node,
+};
+
+export default injectIntl(BurgerMenu);

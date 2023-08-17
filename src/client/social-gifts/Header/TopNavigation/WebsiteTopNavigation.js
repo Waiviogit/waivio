@@ -14,6 +14,8 @@ import PopoverMenu, { PopoverMenuItem } from '../../../components/PopoverMenu/Po
 import LinkItem from './LinkItem';
 
 import './WebsiteTopNavigation.less';
+import BurgerMenu from './BurgerMenu/BurgerMenu';
+import { isTabletOrMobile } from '../../SocialProduct/SocialProductHelper';
 
 const userNav = (user, intl) => [
   {
@@ -72,44 +74,55 @@ const WebsiteTopNavigation = ({ shopSettings, intl }) => {
         ))}
         {!isEmpty(lastItems) &&
           (lastItemsLength > 1 ? (
-            <Popover
-              placement="bottom"
-              trigger="click"
-              visible={visible}
-              onVisibleChange={handleMoreMenuVisibleChange}
-              overlayStyle={{ position: 'fixed' }}
-              content={
-                <PopoverMenu
-                  onSelect={(i, type) => {
-                    if (type === 'blank') {
-                      window.location.replace(i);
-                    } else {
-                      setVisible(false);
-                      history.push(i);
-                    }
-                  }}
-                >
-                  {lastItems.map(i => (
-                    <PopoverMenuItem
-                      active={history.location.pathname.includes(i.link)}
-                      key={i.link}
-                      data={i.type}
+            <>
+              {!isTabletOrMobile ? (
+                <Popover
+                  placement="bottom"
+                  trigger="click"
+                  visible={visible}
+                  onVisibleChange={handleMoreMenuVisibleChange}
+                  overlayStyle={{ position: 'fixed' }}
+                  content={
+                    <PopoverMenu
+                      onSelect={(i, type) => {
+                        if (type === 'blank') {
+                          window.location.replace(i);
+                        } else {
+                          setVisible(false);
+                          history.push(i);
+                        }
+                      }}
                     >
-                      {truncate(i.name, {
-                        length: 15,
-                        separator: '...',
-                      }).toUpperCase()}
-                    </PopoverMenuItem>
-                  ))}
-                </PopoverMenu>
-              }
-              overlayClassName="WebsiteTopNavigation__popover"
-            >
-              <span className={'WebsiteTopNavigation__link'}>
-                {intl.formatMessage({ id: 'more', defaultMessage: 'More' })}{' '}
-                <Icon type="caret-down" />
-              </span>
-            </Popover>
+                      {lastItems.map(i => (
+                        <PopoverMenuItem
+                          active={history.location.pathname.includes(i.link)}
+                          key={i.link}
+                          data={i.type}
+                        >
+                          {truncate(i.name, {
+                            length: 15,
+                            separator: '...',
+                          }).toUpperCase()}
+                        </PopoverMenuItem>
+                      ))}
+                    </PopoverMenu>
+                  }
+                  overlayClassName="WebsiteTopNavigation__popover"
+                >
+                  <span className={'WebsiteTopNavigation__link'}>
+                    {intl.formatMessage({ id: 'more', defaultMessage: 'More' })}{' '}
+                    <Icon type="caret-down" />
+                  </span>
+                </Popover>
+              ) : (
+                <BurgerMenu
+                  openButtonText={intl.formatMessage({ id: 'more', defaultMessage: 'More' })}
+                  openButtonIcon={<Icon type="caret-down" />}
+                  title={intl.formatMessage({ id: 'more', defaultMessage: 'More' }).toUpperCase()}
+                  items={lastItems}
+                />
+              )}
+            </>
           ) : (
             <LinkItem link={lastItems[0]} />
           ))}
