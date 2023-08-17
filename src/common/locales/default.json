@@ -2354,5 +2354,6 @@
   "stop_update_department": "Stop update department",
   "stop_update_department_message": "Once stopped, the update department cannot be resumed. To temporarily suspend/resume the update department, please consider using the Active checkbox.",
 "stop_claim_authority": "Stop claim authority",
-  "stop_claim_authority_message": "Once stopped, the claim authority cannot be resumed. To temporarily suspend/resume the claim authority, please consider using the Active checkbox."
+  "stop_claim_authority_message": "Once stopped, the claim authority cannot be resumed. To temporarily suspend/resume the claim authority, please consider using the Active checkbox.",
+  "mobnav_affiliate_codes": "Affiliate codes"
 }
