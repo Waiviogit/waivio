@@ -153,4 +153,5 @@ export default {
   ClaimAthorityBot: loableComponent(
     import('../client/components/ClaimAthorityBot/ClaimAthorityBot'),
   ),
+  DepartmentsBot: loableComponent(import('../client/components/DepartmentsBot/DepartmentsBot')),
 };
