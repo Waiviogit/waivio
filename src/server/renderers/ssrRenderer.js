@@ -22,16 +22,18 @@ export default function renderSsrPage(store, html, assets, template, isWaivio, g
   const production = process.env.NODE_ENV === 'production';
 
   const nightmode = preloadedState && preloadedState.settings && preloadedState.settings.nightmode;
-  const tag = isWaivio ? 'G-WRV0RFTWBX' : googleTag;
+  const tag = 'isWaivio' ? 'G-WRV0RFTWBX' : googleTag;
   let googleAnalytics = '';
   if (tag)
     googleAnalytics = `<script async src="https://www.googletagmanager.com/gtag/js?id=${tag}"></script>
   <script>{
     window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
+    
+    function gtag(){
+        dataLayer.push(arguments);
+    }
     gtag('js', new Date());
-
-    gtag('config', ${tag});}
+    gtag('config', '${tag}');}
   </script>`;
   return template({
     header,
