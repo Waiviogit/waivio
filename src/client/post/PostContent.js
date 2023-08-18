@@ -267,7 +267,7 @@ class PostContent extends React.Component {
       (pendingLikes[content.id].weight < 0 ||
         (pendingLikes[content.id].weight === 0 && postState.isReported));
 
-    const { title, category, created, body, guestInfo } = content;
+    const { title, category, created, body, guestInfo, videoPreview } = content;
     let hashtags = !isEmpty(tags) || !isEmpty(cities) ? [...tags, ...cities] : [];
 
     hashtags = hashtags.map(hashtag => `#${hashtag}`);
@@ -282,6 +282,7 @@ class PostContent extends React.Component {
     })} ${wobjectFacebook} ${authorFacebook}`;
 
     const image =
+      videoPreview ||
       postMetaImage ||
       getAvatarURL(authorName) ||
       'https://waivio.nyc3.digitaloceanspaces.com/1587571702_96367762-1996-4b56-bafe-0793f04a9d79';
