@@ -19,6 +19,7 @@ const AffiliateCodesAutoComplete = ({ affiliateObjects, setSelectedObj, setOpenA
 
   return (
     <SearchObjectsAutocomplete
+      useExtendedSearch
       itemsIdsToOmit={itemsToOmit}
       objectType={'affiliate'}
       handleSelect={handleSelectObject}
