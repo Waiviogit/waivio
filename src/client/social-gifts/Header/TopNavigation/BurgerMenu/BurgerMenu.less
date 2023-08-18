@@ -1,0 +1,38 @@
+@import (reference) '../../../../styles/modules/variables.less';
+@import (reference) '../../../../styles/custom.less';
+.BurgerMenu {
+  display: inline-block;
+  text-transform: uppercase;
+  width: 200px;
+  text-align: center;
+  cursor: pointer;
+  color: var(--website-color);
+
+  &::after {
+    content: '';
+    transition: 0.5s;
+    display: block;
+    width: 0;
+    height: 1px;
+    margin-left: 0;
+
+    @media @small {
+      margin-left: 25px;
+    }
+  }
+  &__item {
+    color: @black-text-basic;
+    padding: 14px 10px;
+
+    &--active {
+      padding: 14px 10px;
+
+      color: var(--website-color);
+    }
+  }
+  &__drawer {
+    .ant-drawer-content .ant-drawer-wrapper-body .ant-drawer-body {
+      padding: 0 24px !important;
+    }
+  }
+}

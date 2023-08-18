@@ -353,6 +353,30 @@ export const searchObjects = (
     .then(handleErrors)
     .then(res => res.json());
 };
+export const extendedSearchObjects = (
+  searchString,
+  objType = '',
+  forParent,
+  limit = 15,
+  locale,
+  body = {},
+  abortController,
+  skip,
+) => {
+  const requestBody = { search_string: searchString, limit, skip, ...body };
+
+  if (objType && typeof objType === 'string') requestBody.object_type = objType;
+  if (forParent && typeof forParent === 'string') requestBody.forParent = forParent;
+
+  return fetch(`${config.apiPrefix}${config.wobjects}${config.searchDefault}`, {
+    headers: { ...headers, locale, follower: body.userName, app: config.appName },
+    method: 'POST',
+    body: JSON.stringify(requestBody),
+    ...(abortController && { signal: abortController.signal }),
+  })
+    .then(handleErrors)
+    .then(res => res.json());
+};
 
 export const searchUsers = (searchString, username, limit = 15, notGuest = false, skip = 0) =>
   fetch(

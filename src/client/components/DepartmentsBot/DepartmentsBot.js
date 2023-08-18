@@ -106,7 +106,7 @@ const DepartmentsBot = ({ intl }) => {
           });
         });
       },
-      okText: intl.formatMessage({ id: 'stop_claim_ok_button', defaultMessage: 'Stop claim' }),
+      okText: intl.formatMessage({ id: 'stop_update_button', defaultMessage: 'Stop update' }),
       cancelText: intl.formatMessage({ id: 'cancel', defaultMessage: 'Cancel' }),
     });
   };

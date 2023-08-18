@@ -116,6 +116,10 @@ const MobileNavigation = ({ location, match }) => {
       pageName = 'tools';
       filterName = 'drafts';
       break;
+    case '/user-affiliate-codes':
+      pageName = 'tools';
+      filterName = 'affiliate_codes';
+      break;
     case '/settings':
       pageName = 'tools';
       filterName = 'settings';

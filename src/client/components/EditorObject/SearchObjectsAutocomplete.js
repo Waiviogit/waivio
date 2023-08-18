@@ -49,6 +49,7 @@ class SearchObjectsAutocomplete extends Component {
     rowIndex: 0,
     ruleIndex: 0,
     disabled: false,
+    useExtendedSearch: false,
     placeholder: '',
     parentPermlink: '',
     autoFocus: true,
@@ -71,6 +72,7 @@ class SearchObjectsAutocomplete extends Component {
     rowIndex: PropTypes.number,
     ruleIndex: PropTypes.number,
     disabled: PropTypes.bool,
+    useExtendedSearch: PropTypes.bool,
     placeholder: PropTypes.string,
     parentPermlink: PropTypes.string,
     dropdownClassName: PropTypes.string,
@@ -99,7 +101,13 @@ class SearchObjectsAutocomplete extends Component {
 
   debouncedSearch = debounce(
     (searchString, objType = '', parent) =>
-      this.props.searchObjects(searchString, objType, parent, this.props.addHashtag),
+      this.props.searchObjects(
+        searchString,
+        objType,
+        parent,
+        this.props.addHashtag,
+        this.props.useExtendedSearch,
+      ),
     300,
   );
 

@@ -104,6 +104,7 @@
   "rewards": "/rewards",
   "search": "/search",
   "searchObjects": "/wobjectSearch",
+  "searchDefault": "/search-default",
   "suitableUsers": "/suitable_users",
   "typeExpertise": "/expertise",
   "user": "/user",
