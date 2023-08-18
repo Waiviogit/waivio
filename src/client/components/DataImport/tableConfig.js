@@ -291,7 +291,7 @@ export const configDepartmentsBotProductTable = [
     },
   },
   {
-    id: 'objectsUpdated',
+    id: 'objectsClaimed',
     intl: {
       id: 'updated_object',
       defaultMessage: 'Updated objects',
@@ -368,7 +368,7 @@ export const configDepartmentsBotHistoryTable = [
     },
   },
   {
-    id: 'objectsUpdated',
+    id: 'objectsClaimed',
     intl: {
       id: 'updated_objects',
       defaultMessage: 'Updated objects',

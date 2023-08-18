@@ -35,8 +35,8 @@ const VoteInfoBlock = ({ intl, info }) => {
         <p>
           <b>
             {intl.formatMessage({
-              id: 'users_up_state',
-              defaultMessage: "User's up-to-date state",
+              id: 'status_of_the_user_account',
+              defaultMessage: 'Status of the user account',
             })}
             :
           </b>{' '}
