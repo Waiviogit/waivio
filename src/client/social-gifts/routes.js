@@ -200,7 +200,7 @@ const routes = host => ({
           component: UserDepartmentsWobjList,
         },
         {
-          path: '/followers',
+          path: '/(followers|following|following-objects)',
           exact: true,
           component: Views.UserFollowers,
         },
@@ -225,7 +225,7 @@ const routes = host => ({
           component: Views.WAIVwalletTable,
         },
         {
-          path: '/expertise',
+          path: '/(expertise-hashtags|expertise-objects)',
           exact: true,
           component: Views.UserExpertise,
         },
