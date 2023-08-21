@@ -273,7 +273,11 @@ const ShopWebsiteConfigurations = ({
                 })}
                 :
               </h3>
-              <BaseObjSettings shopSettings={shopSettings} handleSubmit={handleSubmitObjMain} />
+              <BaseObjSettings
+                hideActions
+                shopSettings={shopSettings}
+                handleSubmit={handleSubmitObjMain}
+              />
               <p>
                 <FormattedMessage
                   id="base_obj_description"
