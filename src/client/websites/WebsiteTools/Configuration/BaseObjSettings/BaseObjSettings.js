@@ -22,7 +22,7 @@ import { getAuthenticatedUserName } from '../../../../../store/authStore/authSel
 
 import './BaseObjSettings.less';
 
-const BaseObjSettings = ({ handleSubmit, intl, shopSettings }) => {
+const BaseObjSettings = ({ handleSubmit, intl, shopSettings, hideActions }) => {
   const dispatch = useDispatch();
   const autoCompleteSearchResults = useSelector(getAutoCompleteSearchResults);
   const loading = useSelector(getIsStartSearchAutoComplete);
@@ -113,7 +113,7 @@ const BaseObjSettings = ({ handleSubmit, intl, shopSettings }) => {
                     className={'BaseObjSettings__resulItem'}
                   >
                     {o.account ? (
-                      <UserSearchItem user={o} withType />
+                      <UserSearchItem user={o} withType hideActions={hideActions} />
                     ) : (
                       <ObjectSearchCard
                         object={o}
@@ -140,6 +140,7 @@ BaseObjSettings.propTypes = {
     type: PropTypes.string,
   }),
   handleSubmit: PropTypes.string,
+  hideActions: PropTypes.bool,
 };
 
 export default injectIntl(BaseObjSettings);

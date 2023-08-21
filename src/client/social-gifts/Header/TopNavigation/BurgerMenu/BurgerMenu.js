@@ -12,6 +12,15 @@ const BurgerMenu = ({ items, title, openButtonText, openButtonIcon }) => {
   const [open, setOpen] = useState(false);
   const history = useHistory();
 
+  const getItemTitle = i => (
+    <div>
+      {truncate(i.name, {
+        length: 20,
+        separator: '...',
+      }).toUpperCase()}
+    </div>
+  );
+
   return (
     <div className={'BurgerMenu'}>
       <span onClick={() => setOpen(true)}>
@@ -26,25 +35,33 @@ const BurgerMenu = ({ items, title, openButtonText, openButtonIcon }) => {
           visible={open}
           onClose={() => setOpen(false)}
         >
-          {items.map(i => (
-            <Link
-              to={i.link}
-              className={
-                history.location.pathname.includes(i.link)
-                  ? 'BurgerMenu__item--active'
-                  : 'BurgerMenu__item'
-              }
-              key={i.link}
-              onClick={() => setOpen(false)}
-            >
-              <div>
-                {truncate(i.name, {
-                  length: 20,
-                  separator: '...',
-                }).toUpperCase()}
-              </div>
-            </Link>
-          ))}
+          {items.map(i =>
+            i.type === 'blank' ? (
+              <a
+                key={i.link}
+                rel="noreferrer"
+                href={i.link}
+                target={'_blank'}
+                className={'BurgerMenu__item'}
+              >
+                {' '}
+                {getItemTitle(i)}
+              </a>
+            ) : (
+              <Link
+                to={i.link}
+                className={
+                  history.location.pathname.includes(i.link)
+                    ? 'BurgerMenu__item--active'
+                    : 'BurgerMenu__item'
+                }
+                key={i.link}
+                onClick={() => setOpen(false)}
+              >
+                {getItemTitle(i)}
+              </Link>
+            ),
+          )}
         </Drawer>
       }
     </div>

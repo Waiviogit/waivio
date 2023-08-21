@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import Avatar from '../../components/Avatar';
 import WeightTag from '../../components/WeightTag';
 
-const UserSearchItem = ({ user, withType }) => {
+const UserSearchItem = ({ user, withType, hideActions }) => {
   if (!user) return null;
   const wrapClassList = classNames({
     Topnav__wrapWithType: withType,
@@ -35,7 +35,7 @@ const UserSearchItem = ({ user, withType }) => {
         )}
       </div>
       <div className="Topnav__search-content-small">
-        {user.youFollows && !user.followsYou && (
+        {!hideActions && user.youFollows && !user.followsYou && (
           <FormattedMessage id="following_user" defaultMessage="following" />
         )}
         {!user.youFollows && user.followsYou && (
@@ -58,6 +58,7 @@ UserSearchItem.propTypes = {
     account: PropTypes.string,
   }).isRequired,
   withType: PropTypes.bool,
+  hideActions: PropTypes.bool,
 };
 
 export default UserSearchItem;
