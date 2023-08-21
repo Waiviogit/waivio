@@ -35,7 +35,7 @@ SteemEmbed.getAll = function(text, options, mediaSize) {
   options.height = options.height || '400';
   options.autoplay = 'autoplay' in options ? options.autoplay : true;
 
-  let urls = this.getUrls(text);
+  let urls = this.getUrls(text.replace('\\', ''));
   urls.forEach(
     function(url) {
       let embed = this.get(url, options, mediaSize);
