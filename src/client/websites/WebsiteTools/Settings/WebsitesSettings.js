@@ -76,7 +76,7 @@ const WebsitesSettings = ({
       if (!err) {
         const percent = (beneficiaryPercent || 3) * 100;
         const account = beneficiaryAccount || 'waivio';
-        const tag = values.googleAnalyticsTag || settings.googleAnalyticsTag || '';
+        const tag = values.googleAnalyticsTag || '';
         const beneficiary = { account, percent };
 
         saveWebSettings(host, tag, beneficiary, values.currency, values.language);
@@ -120,15 +120,14 @@ const WebsitesSettings = ({
         </Form.Item>
         <Form.Item>
           <h3>{intl.formatMessage({ id: 'google_analytic_tag' })}</h3>
-          {getFieldDecorator('googleAnalyticsTag')(
-            <Input.Group>
-              <Input
-                type="text"
-                placeholder={intl.formatMessage({ id: 'paste_tag_here' })}
-                defaultValue={get(settings, 'googleAnalyticsTag')}
-                onChange={e => handleChange(e, 'googleAnalyticsTag')}
-              />
-            </Input.Group>,
+          {getFieldDecorator('googleAnalyticsTag', {
+            initialValue: get(settings, 'googleAnalyticsTag', ''),
+          })(
+            <Input
+              type="text"
+              placeholder={intl.formatMessage({ id: 'paste_tag_here' })}
+              onChange={e => handleChange(e, 'googleAnalyticsTag')}
+            />,
           )}
           <p>{intl.formatMessage({ id: 'website_performance' })}</p>
         </Form.Item>
