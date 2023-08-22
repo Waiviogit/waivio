@@ -2357,6 +2357,8 @@
   "stop_claim_authority_message": "Once stopped, the claim authority cannot be resumed. To temporarily suspend/resume the claim authority, please consider using the Active checkbox.",
   "status_of_the_user_account": "Status of the user account",
 "stop_update_button": "Stop update",
-  "mobnav_affiliate_codes": "Affiliate codes"
+  "mobnav_affiliate_codes": "Affiliate codes",
+  "object_editing_by_users": "Object editing by users",
+  "object_editing_by_users_info": "Do not allow users to make changes to objects on the website. Only updates by approved administrators will be used."
 
 }

@@ -107,7 +107,7 @@ class UserMenu extends React.Component {
               className={this.getItemClasses('expertise')}
               onClick={this.handleClick}
               role="presentation"
-              data-key="expertise"
+              data-key="expertise-hashtags"
             >
               <FormattedMessage id="user_expertise" defaultMessage="Expertise" />
             </li>

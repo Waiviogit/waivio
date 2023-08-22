@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
+import { useHistory } from 'react-router';
 import { Tabs } from 'antd';
 import UserDynamicList from './UserDynamicList';
 import { getFollowersFromAPI, getWobjectFollowing } from '../../waivioApi/ApiClient';
@@ -15,6 +16,7 @@ import { getUser } from '../../store/usersStore/usersSelectors';
 import ObjectDynamicList from '../object/ObjectDynamicList';
 
 const UserFollowers = ({ match, sort, authUser, handleChange, user, locale, intl }) => {
+  const history = useHistory();
   const limit = 50;
   let skip = 0;
   let objSkip = 0;
@@ -39,9 +41,12 @@ const UserFollowers = ({ match, sort, authUser, handleChange, user, locale, intl
 
     return { users, hasMore: response.hasMore };
   };
+  const handleTabChange = key => {
+    history.push(`/@${user.name}/${key}`);
+  };
 
   return (
-    <Tabs className={'UserFollowers'}>
+    <Tabs className={'UserFollowers'} onTabClick={handleTabChange}>
       <Tabs.TabPane
         className="UserFollowing__item"
         tab={`${intl.formatMessage({
@@ -67,7 +72,7 @@ const UserFollowers = ({ match, sort, authUser, handleChange, user, locale, intl
           id: 'objects',
           defaultMessage: 'Objects',
         })} ${objectsFollowingCount}`}
-        key="objects"
+        key="following-objects"
         className="UserFollowing__item"
       >
         <ObjectDynamicList limit={limit} fetcher={getObjects} />

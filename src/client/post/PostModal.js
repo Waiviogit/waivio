@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { get, isEmpty } from 'lodash';
+import { ReactSVG } from 'react-svg';
 import classNames from 'classnames';
 import { Link } from 'react-router-dom';
 import { Modal } from 'antd';
@@ -108,7 +109,7 @@ class PostModal extends React.Component {
   }
 
   handleShare = shareLink => {
-    window.location.assign(shareLink);
+    window.open(shareLink, '_blank').focus();
   };
 
   render() {
@@ -183,7 +184,11 @@ class PostModal extends React.Component {
               this.handleShare(twitterShareURL);
             }}
           >
-            <i className="iconfont icon-twitter PostModal__icon" />
+            <ReactSVG
+              className={'twitter-icon PostModal__icon'}
+              src="/images/icons/twitter-x.svg"
+              wrapper={'span'}
+            />
           </a>
           <a
             role="presentation"
