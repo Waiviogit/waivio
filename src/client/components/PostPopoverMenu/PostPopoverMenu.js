@@ -449,7 +449,11 @@ const PostPopoverMenu = ({
                 handleShare(isTwitter);
               }}
             >
-              <img src={'images/icons/twitter-x.svg'} alt={''} className={'twitter-icon'} />
+              <ReactSVG
+                className={'twitter-icon'}
+                src="/images/icons/twitter-x.svg"
+                wrapper={'span'}
+              />
               <FormattedMessage id="share_x" defaultMessage="Share to X" />
             </a>
           </React.Fragment>

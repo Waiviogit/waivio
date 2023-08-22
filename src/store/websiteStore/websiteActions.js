@@ -410,11 +410,14 @@ export const deleteWebAuthorities = (host, name) => (dispatch, getState, { steem
 
 export const SAVE_WEBSITE_SETTINGS = createAsyncActionType('@website/SAVE_WEBSITE_SETTINGS');
 
-export const saveWebsiteSettings = (host, googleAnalyticsTag, beneficiary, currency, language) => (
-  dispatch,
-  getState,
-  { steemConnectAPI },
-) => {
+export const saveWebsiteSettings = (
+  host,
+  googleAnalyticsTag,
+  beneficiary,
+  currency,
+  language,
+  objectControl,
+) => (dispatch, getState, { steemConnectAPI }) => {
   const state = getState();
   const userName = getAuthenticatedUserName(state);
   const currentWebsite = getOwnWebsites(state).find(web => web.host === host);
@@ -429,6 +432,7 @@ export const saveWebsiteSettings = (host, googleAnalyticsTag, beneficiary, curre
         beneficiary,
         currency,
         language,
+        objectControl,
       ),
     },
   });
