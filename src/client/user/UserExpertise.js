@@ -22,6 +22,7 @@ export default class UserExpertise extends React.Component {
     match: PropTypes.shape().isRequired,
     locale: PropTypes.string.isRequired,
     user: PropTypes.shape().isRequired,
+    history: PropTypes.shape(),
   };
 
   static limit = 30;
@@ -56,10 +57,13 @@ export default class UserExpertise extends React.Component {
 
   render() {
     const { wobjectsExpCount, hashtagsExpCount } = this.state;
+    const handleTabChange = key => {
+      this.props.history.push(`/@${this.props.user.name}/${key}`);
+    };
 
     return (
       <div className="UserExpertise">
-        <Tabs defaultActiveKey="1" className="UserFollowers">
+        <Tabs defaultActiveKey="1" className="UserFollowers" onTabClick={handleTabChange}>
           <TabPane
             tab={
               <React.Fragment>
@@ -69,7 +73,7 @@ export default class UserExpertise extends React.Component {
                 </span>
               </React.Fragment>
             }
-            key="1"
+            key="expertise-hashtags"
           >
             <ObjectDynamicList
               isOnlyHashtags
@@ -87,7 +91,7 @@ export default class UserExpertise extends React.Component {
                 </span>
               </React.Fragment>
             }
-            key="2"
+            key="expertise-objects"
           >
             <ObjectDynamicList limit={UserExpertise.limit} fetcher={this.fetcher} expertize />
           </TabPane>
