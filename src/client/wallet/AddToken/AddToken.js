@@ -19,8 +19,6 @@ const AddToken = props => {
   const [currentAmount, setCurrentAmount] = useState(0);
   const [externalQuantity, setExternalQuantity] = useState(0);
 
-  // eslint-disable-next-line no-console
-  console.log(tokensList, 'tokensList');
   useEffect(() => {
     getTokenListForRebalancing(authUserName).then(res => {
       setTokensList(res);
