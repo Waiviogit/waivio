@@ -8,7 +8,7 @@ import { calculateMana, dHive } from '../../vendor/steemitHelpers';
 import * as ApiClient from '../../../waivioApi/ApiClient';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 
-const VoteInfoBlock = ({ intl }) => {
+const VoteInfoBlock = ({ intl, info }) => {
   const [usersState, setUsersState] = useState(null);
   const authUserName = useSelector(getAuthenticatedUserName);
 
@@ -35,8 +35,8 @@ const VoteInfoBlock = ({ intl }) => {
         <p>
           <b>
             {intl.formatMessage({
-              id: 'users_up_state',
-              defaultMessage: "User's up-to-date state",
+              id: 'status_of_the_user_account',
+              defaultMessage: 'Status of the user account',
             })}
             :
           </b>{' '}
@@ -45,11 +45,7 @@ const VoteInfoBlock = ({ intl }) => {
         </p>
       )}
       <p>
-        <b>{intl.formatMessage({ id: 'disclaimer', defaultMessage: 'Disclaimer' })}:</b>{' '}
-        {intl.formatMessage({
-          id: 'data_import_service',
-          defaultMessage: 'The Data import bot service is provided on as-is / as-available basis.',
-        })}
+        <b>{intl.formatMessage({ id: 'disclaimer', defaultMessage: 'Disclaimer' })}:</b> {info}
       </p>
     </div>
   );
@@ -57,6 +53,7 @@ const VoteInfoBlock = ({ intl }) => {
 
 VoteInfoBlock.propTypes = {
   intl: PropTypes.shape(),
+  info: PropTypes.string,
 };
 
 export default injectIntl(VoteInfoBlock);

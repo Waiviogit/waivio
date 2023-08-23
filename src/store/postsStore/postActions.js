@@ -3,6 +3,8 @@ import { createAsyncActionType, getPostKey } from '../../common/helpers/stateHel
 import * as ApiClient from '../../waivioApi/ApiClient';
 import { getAuthenticatedUserName } from '../authStore/authSelectors';
 import { getLocale } from '../settingsStore/settingsSelectors';
+import { getVideoForPreview } from '../../common/helpers/postHelpers';
+import { parseJSON } from '../../common/helpers/parseJSON';
 
 export const GET_CONTENT = createAsyncActionType('@post/GET_CONTENT');
 export const GET_SOCIAL_INFO_POST = createAsyncActionType('@post/GET_SOCIAL_INFO_POST');
@@ -22,11 +24,49 @@ export const getContent = (author, permlink, afterLike) => (dispatch, getState) 
   return dispatch({
     type: GET_CONTENT.ACTION,
     payload: {
-      promise: ApiClient.getContent(author, permlink, locale, follower).then(res => {
+      promise: ApiClient.getContent(author, permlink, locale, follower).then(async res => {
         if (res.id === 0) throw new Error('There is no such post');
         if (res.message) throw new Error(res.message);
 
-        return res;
+        const embed = getVideoForPreview(res)[0];
+        let videoPreview = embed?.thumbnail;
+
+        if (embed?.provider_name === 'TikTok') {
+          try {
+            let tiktokRes = await fetch(
+              `https://www.tiktok.com/oembed?url=https://www.tiktok.com/${embed.url.replace(
+                /\?.*/,
+                '',
+              )}`,
+            );
+
+            tiktokRes = await tiktokRes.json();
+            videoPreview = tiktokRes?.thumbnail_url;
+          } catch (e) {
+            console.error(e);
+          }
+        }
+
+        if (embed?.provider_name === '3Speak') {
+          try {
+            let speakRes = await fetch('https://hive-api.3speak.tv/', {
+              method: 'POST',
+              body: JSON.stringify({
+                id: 0,
+                jsonrpc: '2.0',
+                method: 'condenser_api.get_content',
+                params: embed?.id.split('/'),
+              }),
+            });
+
+            speakRes = await speakRes.json();
+            videoPreview = parseJSON(speakRes?.result?.json_metadata).image[0];
+          } catch (e) {
+            console.error(e);
+          }
+        }
+
+        return { ...res, videoPreview };
       }),
     },
     meta: {

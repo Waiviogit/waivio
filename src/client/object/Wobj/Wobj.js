@@ -23,8 +23,6 @@ const Wobj = ({
   handleFollowClick,
   appendAlbum,
   nestedWobject,
-  isWaivio,
-  supportedObjectTypes,
   isSocial,
   weightValue,
 }) => {
@@ -32,12 +30,9 @@ const Wobj = ({
   const siteName = useSelector(getSiteName);
 
   useEffect(() => {
-    if (!isWaivio) {
-      const objectType = getObjectType(wobject);
+    const objectType = getObjectType(wobject);
 
-      if (!isEmpty(wobject) && supportedObjectTypes.includes(objectType) && window?.gtag)
-        window.gtag('event', `view_${objectType}`);
-    }
+    if (!isEmpty(wobject) && window?.gtag) window.gtag('event', `view_${objectType}`);
   }, [wobject.author_permlink]);
 
   const getWobjView = useCallback(() => {
@@ -162,9 +157,7 @@ Wobj.propTypes = {
   authenticatedUserName: PropTypes.string.isRequired,
   wobject: PropTypes.shape(),
   nestedWobject: PropTypes.shape(),
-  supportedObjectTypes: PropTypes.arrayOf(PropTypes.string),
   isEditMode: PropTypes.bool.isRequired,
-  isWaivio: PropTypes.bool.isRequired,
   isSocial: PropTypes.bool,
   toggleViewEditMode: PropTypes.func,
   handleFollowClick: PropTypes.func,

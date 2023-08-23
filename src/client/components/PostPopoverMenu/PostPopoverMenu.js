@@ -244,11 +244,11 @@ const PostPopoverMenu = ({
           )}" ${authorTwitter} ${objectTwitter}`;
           const twitterShareURL = getTwitterShareURL(shareTextSocialTwitter, postURL, hashtags);
 
-          window.location.assign(twitterShareURL);
+          window.open(twitterShareURL, '_blank').focus();
         } else {
           const facebookShareURL = getFacebookShareURL(postURL);
 
-          window.location.assign(facebookShareURL);
+          window.open(facebookShareURL, '_blank').focus();
         }
       });
     } else {
@@ -258,11 +258,11 @@ const PostPopoverMenu = ({
         const shareTextSocialTwitter = `"${encodeURIComponent(title)}"`;
         const twitterShareURL = getTwitterShareURL(shareTextSocialTwitter, postURL);
 
-        window.location.assign(twitterShareURL);
+        window.open(twitterShareURL, '_blank').focus();
       } else {
         const facebookShareURL = getFacebookShareURL(postURL);
 
-        window.location.assign(facebookShareURL);
+        window.open(facebookShareURL, '_blank').focus();
       }
     }
   };
@@ -449,8 +449,12 @@ const PostPopoverMenu = ({
                 handleShare(isTwitter);
               }}
             >
-              <i className="iconfont icon-twitter" />
-              <FormattedMessage id="share_twitter" defaultMessage="Share to Twitter" />
+              <ReactSVG
+                className={'twitter-icon'}
+                src="/images/icons/twitter-x.svg"
+                wrapper={'span'}
+              />
+              <FormattedMessage id="share_x" defaultMessage="Share to X" />
             </a>
           </React.Fragment>
         }

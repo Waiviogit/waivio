@@ -109,10 +109,13 @@ export const getFilterForSearch = (type, wobjects, more = false) => {
   };
 };
 
-export const searchObjectsAutoCompete = (searchString, objType, forParent, addHashtag) => (
-  dispatch,
-  getState,
-) => {
+export const searchObjectsAutoCompete = (
+  searchString,
+  objType,
+  forParent,
+  addHashtag,
+  useExtendedSearch,
+) => (dispatch, getState) => {
   const state = getState();
   const usedLocale = getSuitableLanguage(state);
   const locale = getLocale(state);
@@ -123,13 +126,21 @@ export const searchObjectsAutoCompete = (searchString, objType, forParent, addHa
 
   dispatch({
     type: SEARCH_OBJECTS.ACTION,
-    payload: ApiClient.searchObjects(search, objType, forParent, 15, locale, body)
-      .then(result => ({
-        result,
-        search,
-        locale: usedLocale,
-      }))
-      .catch(error => console.error('Object search >', error.message)),
+    payload: useExtendedSearch
+      ? ApiClient.extendedSearchObjects(search, objType, forParent, 15, locale, body)
+          .then(result => ({
+            result,
+            search,
+            locale: usedLocale,
+          }))
+          .catch(error => console.error('Object search >', error.message))
+      : ApiClient.searchObjects(search, objType, forParent, 15, locale, body)
+          .then(result => ({
+            result,
+            search,
+            locale: usedLocale,
+          }))
+          .catch(error => console.error('Object search >', error.message)),
   });
 };
 

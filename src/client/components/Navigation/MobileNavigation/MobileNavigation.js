@@ -116,6 +116,10 @@ const MobileNavigation = ({ location, match }) => {
       pageName = 'tools';
       filterName = 'drafts';
       break;
+    case '/user-affiliate-codes':
+      pageName = 'tools';
+      filterName = 'affiliate_codes';
+      break;
     case '/settings':
       pageName = 'tools';
       filterName = 'settings';
@@ -143,6 +147,14 @@ const MobileNavigation = ({ location, match }) => {
     case '/data-import':
       pageName = 'tools';
       filterName = 'data_import';
+      break;
+    case '/departments-bot':
+      pageName = 'tools';
+      filterName = 'departments_bot';
+      break;
+    case '/claim-athority':
+      pageName = 'tools';
+      filterName = 'claim_athority';
       break;
     case '/chrome-extension':
       pageName = 'tools';

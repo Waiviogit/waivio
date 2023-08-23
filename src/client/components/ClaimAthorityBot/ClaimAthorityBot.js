@@ -57,15 +57,11 @@ const ClaimAthorityBot = ({ intl }) => {
     getAuthorityList(authUserName, 0, limit + 1).then(res => {
       setListAndSetHasMore(res, authorities, false, setAuthorities, setHasMoreAuthorities);
     });
-
-  const updateAuthorityList = () => {
-    getAuthorityList(authUserName, 0, limit + 1).then(res => {
-      setListAndSetHasMore(res, authorities, false, setAuthorities, setHasMoreAuthorities);
-    });
+  const getHistory = () =>
     getHistoryAuthorityObjects(authUserName, 0, limit + 1).then(his => {
       setListAndSetHasMore(his, history, false, setHistoryAuthoritiesObject, setHasMoreHistory);
     });
-  };
+
   const loadMoreAuthorityDate = () =>
     getAuthorityList(authUserName, authorities.length, limit + 1).then(res => {
       setListAndSetHasMore(res, authorities, true, setAuthorities, setHasMoreAuthorities);
@@ -80,14 +76,10 @@ const ClaimAthorityBot = ({ intl }) => {
       if (res.minVotingPower) setVotingValue(res.minVotingPower / 100);
     });
 
-    getAuthorityList(authUserName, 0, limit + 1).then(res => {
-      setListAndSetHasMore(res, authorities, false, setAuthorities, setHasMoreAuthorities);
-    });
-    getHistoryAuthorityObjects(authUserName, 0, limit + 1).then(his => {
-      setListAndSetHasMore(his, history, false, setHistoryAuthoritiesObject, setHasMoreHistory);
-    });
+    getAthList();
+    getHistory();
 
-    dispatch(getImportUpdate(updateAuthorityList));
+    dispatch(getImportUpdate(getAthList));
 
     return () => dispatch(closeImportSoket());
   }, []);
@@ -103,7 +95,7 @@ const ClaimAthorityBot = ({ intl }) => {
       content: intl.formatMessage({
         id: 'stop_claim_authority_message',
         defaultMessage:
-          'Once stopped, the claim authority cannot be resumed. To temporarily suspend/resume the data import, please consider using the Active checkbox.',
+          'Once stopped, the claim authority cannot be resumed. To temporarily suspend/resume the claim authority, please consider using the Active checkbox.',
       }),
       onOk: () => {
         deleteAuthority(authUserName, item?.importId).then(() => {
@@ -168,9 +160,9 @@ const ClaimAthorityBot = ({ intl }) => {
       <p>
         <b>
           {intl.formatMessage({
-            id: 'data_import_requires_auth',
+            id: 'claim_athority_requires_auth',
             defaultMessage:
-              'The Data import bot requires authorization to upvote data updates on your behalf',
+              'The Claim authority bot requires authorization to upvote data updates on your behalf',
           })}
           :{' '}
           <a onClick={handleRedirect}>
@@ -203,12 +195,18 @@ const ClaimAthorityBot = ({ intl }) => {
         )
         <br />
         {intl.formatMessage({
-          id: 'data_import_pause',
+          id: 'claim_authority_pause',
           defaultMessage:
-            'The data import bot will pause if WAIV voting power on the account drops below the set threshold.',
+            'The claim authority bot will pause if WAIV voting power on the account drops below the set threshold.',
         })}
       </p>
-      <VoteInfoBlock />
+      <VoteInfoBlock
+        info={intl.formatMessage({
+          id: 'claim_authority_service',
+          defaultMessage:
+            'The Claim authority bot service is provided on as-is / as-available basis.',
+        })}
+      />
       <hr />
       <Button type="primary" onClick={() => setOpenClaim(true)}>
         {intl.formatMessage({ id: 'claim_authority', defaultMessage: 'Claim authority' })}
