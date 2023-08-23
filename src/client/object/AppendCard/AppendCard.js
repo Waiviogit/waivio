@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { some, find } from 'lodash';
+import { some, find, isEmpty } from 'lodash';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { useRouteMatch } from 'react-router';
@@ -85,9 +85,16 @@ const AppendCard = props => {
     const { user } = props;
     const downVotes = getAppendDownvotes(post.active_votes);
     const isReject = post.isReject || some(downVotes, { voter: user.name });
-    const voteWeight = isReject
-      ? 0
-      : await getMinRejectVote(user.name, post.author, post.permlink, match.params.name);
+    let voteWeight;
+
+    if (isReject) voteWeight = 0;
+    else {
+      voteWeight =
+        isEmpty(upVotes) || (isLiked && upVotes?.length === 1)
+          ? 1
+          : (await getMinRejectVote(user.name, post.author, post.permlink, match.params.name))
+              ?.result;
+    }
 
     props.voteAppends(post.author, post.permlink, voteWeight, '', false, match.params[0]);
   };
