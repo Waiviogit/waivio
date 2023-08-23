@@ -1,36 +1,25 @@
-import redis from '../redis/operations';
-import {
-  SSR_CACHE_KEY,
-  SSR_CACHE_TTL,
-  USER_AGENT,
-  USER_AGENTS_COUNT_KEY,
-  USER_AGENTS_KEY,
-} from '../../common/constants/ssrData';
+import { USER_AGENT } from '../../common/constants/ssrData';
+import { cachePageRepository, botUserAgentRepository, botStatisticsRepository } from '../mongo';
 
 export const isSearchBot = async req => {
   const userAgent = req.get(USER_AGENT);
   if (!userAgent) return false;
-  const { result } = await redis.sismember({ key: USER_AGENTS_KEY, member: userAgent });
-  return !!result;
+  return botUserAgentRepository.userAgentExists({ userAgent });
 };
-const getUrlForRedis = req => `${SSR_CACHE_KEY}${req.hostname}${req.url}`;
+const getUrlForCache = req => `${req.hostname}${req.url}`;
 
-export const getCachedPage = async req => {
-  const { result } = await redis.get({ key: getUrlForRedis(req) });
-  return result;
-};
+export const getCachedPage = async req =>
+  cachePageRepository.findPageByUrl({ url: getUrlForCache(req) });
 
 export const setCachedPage = async ({ page, req }) => {
-  const key = getUrlForRedis(req);
+  const url = getUrlForCache(req);
 
-  const { result: exist } = await redis.keys({ key });
-  if (exist?.length) return;
-
-  await redis.set({ key, data: page });
-  await redis.expire({ key, time: SSR_CACHE_TTL });
+  const exist = await cachePageRepository.findPageByUrl({ url });
+  if (exist) return;
+  await cachePageRepository.createPage({ url, page });
 };
 
 export const updateBotCount = async req => {
-  const member = req.get(USER_AGENT);
-  await redis.zincrby({ key: USER_AGENTS_COUNT_KEY, member, increment: 1 });
+  const userAgent = req.get(USER_AGENT);
+  await botStatisticsRepository.incrementVisit({ userAgent });
 };
