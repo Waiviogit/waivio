@@ -3658,6 +3658,22 @@ export const getEstimatedHiveAmount = (amount, outputCoinType) => {
     .catch(error => error);
 };
 
+export const getMinRejectVote = (userName, author, permlink, authorPermlink) => {
+  return fetch(`${config.apiPrefix}${config.users}${config.minReject}`, {
+    headers,
+    method: 'POST',
+    body: JSON.stringify({
+      userName,
+      author,
+      permlink,
+      authorPermlink,
+    }),
+  })
+    .then(res => res.json())
+    .then(r => r)
+    .catch(error => error);
+};
+
 export const withdrawHiveForGuest = (amount, outputCoinType, userName, address) => {
   const guestToken = getGuestAccessToken();
   return fetch(`${config.apiPrefix}${config.users}${config.guestWallet}${config.hiveWithdraw}`, {
