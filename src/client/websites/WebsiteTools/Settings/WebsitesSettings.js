@@ -122,7 +122,7 @@ const WebsitesSettings = ({
           <p>{intl.formatMessage({ id: 'disclaimer_exchange_rates' })}</p>
         </Form.Item>
         <Form.Item>
-          <h3>{intl.formatMessage({ id: 'object_editing_by_users' })}</h3>
+          <h3>{intl.formatMessage({ id: 'object_editing_by_users' })}:</h3>
           <div className={'WebsitesSettings__obj-editing'}>
             <Checkbox onClick={() => setObjectControl(!objectControl)} checked={objectControl} />
             <p className={'WebsitesSettings__obj-editing-info '}>
