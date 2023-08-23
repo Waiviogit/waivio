@@ -68,11 +68,6 @@ export const dataManagementSettings = {
       defaultMessage: 'Data import',
     },
     {
-      to: '/chrome-extension',
-      id: 'chrome-extension',
-      defaultMessage: 'Chrome extension',
-    },
-    {
       to: '/claim-athority',
       id: 'claim_athority',
       defaultMessage: 'Claim authority',
@@ -81,6 +76,11 @@ export const dataManagementSettings = {
       to: '/departments-bot',
       id: 'departments_bot',
       defaultMessage: 'Departments bot',
+    },
+    {
+      to: '/chrome-extension',
+      id: 'chrome-extension',
+      defaultMessage: 'Chrome extension',
     },
   ],
 };

@@ -2360,6 +2360,8 @@
   "mobnav_affiliate_codes": "Affiliate codes",
   "object_editing_by_users": "Object editing by users",
   "object_editing_by_users_info": "Do not allow users to make changes to objects on the website. Only updates by approved administrators will be used.",
-  "claim_authority_service": "The Claim authority bot service is provided on as-is / as-available basis."
+  "claim_authority_service": "The Claim authority bot service is provided on as-is / as-available basis.",
+  "claim_athority_requires_auth":"The Claim authority bot requires authorization to upvote data updates on your behalf",
+  "claim_authority_pause": "The claim authority bot will pause if WAIV voting power on the account drops below the set threshold."
 
 }
