@@ -226,13 +226,18 @@ export const rejectAuthorReview = proposition => (
   getState,
   { steemConnectAPI, busyAPI },
 ) => {
+  const parent_author = proposition.reservationRootAuthor;
+
   const commentOp = [
     'comment',
     {
-      parent_author: proposition.rootName || proposition.root_author,
+      parent_author,
       parent_permlink: proposition.reservationPermlink,
       author: proposition.guideName,
-      permlink: createCommentPermlink(proposition.userName, proposition.reservationPermlink),
+      permlink: createCommentPermlink(
+        proposition.userName || parent_author,
+        proposition.reservationPermlink,
+      ),
       title: 'Cancelled reservation',
       body: `User <a href="https://www.waivio.com/@${proposition.guideName}">${
         proposition.guideName
