@@ -209,7 +209,12 @@ const DataImport = ({ intl }) => {
             'The data import bot will pause if WAIV voting power on the account drops below the set threshold.',
         })}
       </p>
-      <VoteInfoBlock />
+      <VoteInfoBlock
+        info={intl.formatMessage({
+          id: 'data_import_service',
+          defaultMessage: 'The Data import bot service is provided on as-is / as-available basis.',
+        })}
+      />
       <hr />
       <Button type="primary" onClick={toggleModal}>
         {intl.formatMessage({ id: 'upload_new_file', defaultMessage: 'Upload new file' })}

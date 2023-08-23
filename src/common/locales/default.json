@@ -2359,6 +2359,7 @@
 "stop_update_button": "Stop update",
   "mobnav_affiliate_codes": "Affiliate codes",
   "object_editing_by_users": "Object editing by users",
-  "object_editing_by_users_info": "Do not allow users to make changes to objects on the website. Only updates by approved administrators will be used."
+  "object_editing_by_users_info": "Do not allow users to make changes to objects on the website. Only updates by approved administrators will be used.",
+  "claim_authority_service": "The Claim authority bot service is provided on as-is / as-available basis."
 
 }

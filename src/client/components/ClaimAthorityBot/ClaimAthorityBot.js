@@ -202,8 +202,9 @@ const ClaimAthorityBot = ({ intl }) => {
       </p>
       <VoteInfoBlock
         info={intl.formatMessage({
-          id: 'data_import_service',
-          defaultMessage: 'The Data import bot service is provided on as-is / as-available basis.',
+          id: 'claim_authority_service',
+          defaultMessage:
+            'The Claim authority bot service is provided on as-is / as-available basis.',
         })}
       />
       <hr />
