@@ -428,10 +428,11 @@ export function createPost(postData, beneficiaries, isReview, campaign) {
             if (upvote) {
               steemConnectAPI.vote(authUser.name, authUser.name, permlink, 10000);
             }
-            if (result.status === 200) {
-              dispatch(notify(publicMessage, 'success'));
+
+            setTimeout(() => {
               dispatch(push(`/@${author}`));
-            }
+              dispatch(notify(publicMessage, 'success'));
+            }, 5000);
           } else {
             setTimeout(() => dispatch(push(`/@${author}`)), 3000);
           }
