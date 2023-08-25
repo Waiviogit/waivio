@@ -1706,6 +1706,15 @@ export const getSettingsWebsite = host =>
     .then(res => res)
     .catch(e => e);
 
+export const getSettingsAdsense = host =>
+  fetch(`${config.apiPrefix}${config.sites}${config.adSense}?host=${host}`, {
+    headers: { ...headers, 'access-token': Cookie.get('access_token') },
+    method: 'GET',
+  })
+    .then(res => res.json())
+    .then(res => res)
+    .catch(e => e);
+
 export const getCurrentAppSettings = () =>
   fetch(`${config.apiPrefix}${config.sites}`, {
     headers,

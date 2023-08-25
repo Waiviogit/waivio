@@ -433,6 +433,23 @@ export const saveWebsiteSettings = (host, googleAnalyticsTag, beneficiary, curre
     },
   });
 };
+export const SAVE_ADSENSE_SETTINGS = createAsyncActionType('@website/SAVE_ADSENSE_SETTINGS');
+
+export const saveAdSenseSettings = (host, code, level) => (
+  dispatch,
+  getState,
+  { steemConnectAPI },
+) => {
+  const state = getState();
+  const userName = getAuthenticatedUserName(state);
+
+  dispatch({
+    type: SAVE_ADSENSE_SETTINGS.ACTION,
+    payload: {
+      promise: steemConnectAPI.saveAdSenseSettings(userName, host, code, level),
+    },
+  });
+};
 
 export const GET_WEBSITE_TAGS = createAsyncActionType('@website/GET_WEBSITE_TAGS');
 
@@ -490,6 +507,14 @@ export const getWebsiteSettings = host => ({
   type: GET_WEBSITE_SETTINGS.ACTION,
   payload: {
     promise: ApiClient.getSettingsWebsite(host),
+  },
+});
+
+export const GET_ADSENSE_SETTINGS = createAsyncActionType('@website/GET_ADSENSE_SETTINGS');
+export const getAdsenseSettings = host => ({
+  type: GET_ADSENSE_SETTINGS.ACTION,
+  payload: {
+    promise: ApiClient.getSettingsAdsense(host),
   },
 });
 
