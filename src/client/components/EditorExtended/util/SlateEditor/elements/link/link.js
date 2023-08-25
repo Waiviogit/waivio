@@ -43,7 +43,7 @@ const Link = ({ attributes, element, children }) => {
       {...attributes}
     >
       {children}
-      {(hovered || clicked) && selection.anchor.path[0] === selection.focus.path[0] && (
+      {(hovered || clicked) && selection?.anchor?.path?.[0] === selection?.focus?.path?.[0] && (
         <div
           className="md-editor-toolbar md-editor-toolbar--isopen md-editor-toolbar-edit-link"
           contentEditable={false}

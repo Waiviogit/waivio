@@ -15,15 +15,15 @@ import formatter from '../../../common/helpers/steemitFormatter';
 import { MAXIMUM_UPLOAD_SIZE_HUMAN } from '../../../common/helpers/image';
 import { sortComments } from '../../../common/helpers/sortHelpers';
 import CommentForm from './CommentForm';
-import EmbeddedCommentForm from './EmbeddedCommentForm';
 import QuickCommentEditor from './QuickCommentEditor';
 import Avatar from '../Avatar';
 import BodyContainer from '../../containers/Story/BodyContainer';
 import CommentFooter from '../CommentFooter/CommentFooter';
 import HiddenCommentMessage from './HiddenCommentMessage';
 import WeightTag from '../WeightTag';
-import './Comment.less';
 import { parseJSON } from '../../../common/helpers/parseJSON';
+
+import './Comment.less';
 
 @injectIntl
 class Comment extends React.Component {
@@ -254,11 +254,13 @@ class Comment extends React.Component {
         return <QuickCommentEditor {...props} />;
       }
 
-      return this.state.editOpen ? (
-        <EmbeddedCommentForm {...props} onClose={this.handleEditClick} />
-      ) : (
-        <CommentForm {...props} />
-      );
+      return <CommentForm isEdit {...props} onClose={this.handleEditClick} />;
+
+      // return this.state.editOpen ? (
+      //   <EmbeddedCommentForm {...props} onClose={this.handleEditClick} />
+      // ) : (
+      //   <CommentForm {...props} />
+      // );
     };
 
     if (this.state.editOpen) {
