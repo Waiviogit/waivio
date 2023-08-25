@@ -114,6 +114,7 @@ export default {
   AffiliateCodes: loableComponent(
     import('../client/websites/WebsiteTools/AffiliateCodes/AffiliateCodes'),
   ),
+  AdSenseAds: loableComponent(import('../client/websites/WebsiteTools/AdSenseAds/AdSenseAds')),
   UserAffiliateCodes: loableComponent(
     import('../client/websites/WebsiteTools/AffiliateCodes/UserAffiliateCodes'),
   ),

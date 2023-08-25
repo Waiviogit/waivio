@@ -3,14 +3,13 @@ import PropTypes from 'prop-types';
 import _, { debounce } from 'lodash';
 import { FormattedMessage } from 'react-intl';
 import { Transforms } from 'slate';
-import { Icon } from 'antd';
+import { Button } from 'antd';
 import { connect } from 'react-redux';
 import Scroll from 'react-scroll';
 import withEditor from '../Editor/withEditor';
 import { remarkable } from '../Story/Body';
 import BodyContainer from '../../containers/Story/BodyContainer';
 import Avatar from '../Avatar';
-import './CommentForm.less';
 import EditorSlate from '../EditorExtended/editorSlate';
 import { editorStateToMarkdownSlate } from '../EditorExtended/util/editorStateToMarkdown';
 import { resetEditorState } from '../EditorExtended/util/SlateEditor/utils/SlateUtilityFunctions';
@@ -26,6 +25,8 @@ import { getObjectUrl } from '../../../common/helpers/postHelpers';
 import { insertObject } from '../EditorExtended/util/SlateEditor/utils/common';
 import { getSelection, getSelectionRect } from '../EditorExtended/util';
 import { searchObjectsAutoCompete } from '../../../store/searchStore/searchActions';
+
+import './CommentForm.less';
 
 const Element = Scroll.Element;
 
@@ -43,6 +44,8 @@ class CommentForm extends React.Component {
     editor: PropTypes.shape(),
     setCursorCoordinates: PropTypes.func,
     searchObjects: PropTypes.func,
+    isEdit: PropTypes.bool,
+    onClose: PropTypes.func,
   };
 
   static defaultProps = {
@@ -63,8 +66,8 @@ class CommentForm extends React.Component {
     this.state = {
       body: '',
       bodyHTML: '',
-      isDisabledSubmit: false,
       isShowEditorSearch: false,
+      loading: false,
     };
 
     this.setInput = this.setInput.bind(this);
@@ -137,7 +140,7 @@ class CommentForm extends React.Component {
 
   handleSubmit(e) {
     e.stopPropagation();
-    this.setState({ isDisabledSubmit: true });
+    this.setState({ loading: true });
     if (this.state.body) {
       const formattedBody = this.state.body.replace(/\\(#.)+/g, '$1');
 
@@ -148,6 +151,7 @@ class CommentForm extends React.Component {
 
           resetEditorState(editor);
         }
+        this.setState({ loading: false });
       });
     }
   }
@@ -165,14 +169,29 @@ class CommentForm extends React.Component {
   };
 
   render() {
-    const { username, isSmall, isLoading } = this.props;
-    const { bodyHTML } = this.state;
+    const { username, isSmall, isEdit } = this.props;
+    const { bodyHTML, loading } = this.state;
+    const getButtonText = () => {
+      let text = loading ? (
+        <FormattedMessage id="comment_send_progress" defaultMessage="Commenting" />
+      ) : (
+        <FormattedMessage id="comment_send" defaultMessage="Comment" />
+      );
 
-    const buttonClass = isLoading ? 'CommentForm__button_disabled' : 'CommentForm__button_primary';
+      if (isEdit) {
+        text = loading ? (
+          <FormattedMessage id="comment_update_progress" defaultMessage="Updating" />
+        ) : (
+          <FormattedMessage id="comment_update_send" defaultMessage="Update comment" />
+        );
+      }
+
+      return text;
+    };
 
     return (
       <div className="CommentForm">
-        <Avatar username={username} size={!isSmall ? 40 : 32} />
+        {!this.props.isEdit && <Avatar username={username} size={!isSmall ? 40 : 32} />}
         <div className="CommentForm__text">
           <Element name="commentFormInputScrollerElement">
             <div className="CommentForm__editor">
@@ -184,21 +203,19 @@ class CommentForm extends React.Component {
                 initialPosTopBtn="11.5px"
                 isShowEditorSearch={this.state.isShowEditorSearch}
                 setShowEditorSearch={this.setShowEditorSearch}
+                initialBody={this.props.inputValue}
+                small={this.props.isEdit}
               />
             </div>
           </Element>
-          <button
-            onClick={this.handleSubmit}
-            disabled={isLoading}
-            className={`CommentForm__button ${buttonClass}`}
-          >
-            {isLoading && <Icon type="loading" />}
-            {isLoading ? (
-              <FormattedMessage id="comment_send_progress" defaultMessage="Commenting" />
-            ) : (
-              <FormattedMessage id="comment_send" defaultMessage="Comment" />
-            )}
-          </button>
+          <Button onClick={this.handleSubmit} disabled={loading} loading={loading} type={'primary'}>
+            {getButtonText()}
+          </Button>
+          {isEdit && (
+            <Button type="link" onClick={this.props.onClose}>
+              <FormattedMessage id="close" defaultMessage="Close" />
+            </Button>
+          )}
           {bodyHTML && (
             <div className="CommentForm__preview">
               <span className="Editor__label">
