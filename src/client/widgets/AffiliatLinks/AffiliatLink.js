@@ -12,23 +12,7 @@ const images = {
 
 const AffiliatLink = ({ link }) => {
   const onClick = () => {
-    if (window?.gtag) {
-      if (link?.type) window.gtag('event', `click_${link.type}_com`);
-      else {
-        const extractDomain = url => {
-          const domainRegex = /^(?:https?:\/\/)?(?:[^@\n]+@)?(?:www\.)?([^:/\n]+)/im;
-          const match = url.match(domainRegex);
-
-          if (match && match[1]) {
-            return match[1].split('.')[0];
-          }
-
-          return null;
-        };
-
-        window.gtag('event', `click_${extractDomain(link?.link)}_com`);
-      }
-    }
+    if (window?.gtag) window.gtag('event', 'buy_now');
   };
 
   return (

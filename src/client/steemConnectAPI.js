@@ -515,6 +515,7 @@ function sc2Extended() {
         beneficiary,
         currency,
         language,
+        objectControl,
         cb,
       ) {
         const params = {
@@ -527,6 +528,7 @@ function sc2Extended() {
             beneficiary,
             currency,
             language,
+            objectControl,
           }),
         };
 

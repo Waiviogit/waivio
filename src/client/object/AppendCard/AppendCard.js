@@ -24,12 +24,13 @@ import {
   getVotingPower,
 } from '../../../store/settingsStore/settingsSelectors';
 import { voteAppends } from '../../../store/appendStore/appendActions';
+import { getObjectFieldName } from '../../../common/helpers/wObjectHelper';
+import { getObject } from '../../../store/wObjectStore/wObjectSelectors';
+import { getMinRejectVote } from '../../../waivioApi/ApiClient';
 
 import '../../components/Story/Story.less';
 import '../../components/StoryFooter/StoryFooter.less';
 import '../../components/StoryFooter/Buttons.less';
-import { getObjectFieldName } from '../../../common/helpers/wObjectHelper';
-import { getObject } from '../../../store/wObjectStore/wObjectSelectors';
 
 const AppendCard = props => {
   const [visibleSlider, showSlider] = useState(false);
@@ -80,18 +81,22 @@ const AppendCard = props => {
     setSliderValue(value);
   };
 
-  const handleReportClick = (post, myWeight) => {
+  const handleReportClick = async post => {
     const { user } = props;
     const downVotes = getAppendDownvotes(post.active_votes);
     const isReject = post.isReject || some(downVotes, { voter: user.name });
-    const onlyMyLike = isLiked && post.active_votes.length === 1;
-    const voteWeight = onlyMyLike || isEmpty(post.active_votes) ? 1 : myWeight;
+    let voteWeight;
 
-    if (isReject) {
-      props.voteAppends(post.author, post.permlink, 0, '', false, match.params[0]);
-    } else {
-      props.voteAppends(post.author, post.permlink, voteWeight, '', false, match.params[0]);
+    if (isReject) voteWeight = 0;
+    else {
+      voteWeight =
+        isEmpty(upVotes) || (isLiked && upVotes?.length === 1)
+          ? 1
+          : (await getMinRejectVote(user.name, post.author, post.permlink, match.params.name))
+              ?.result;
     }
+
+    props.voteAppends(post.author, post.permlink, voteWeight, '', false, match.params[0]);
   };
 
   const handleCommentsClick = e => {

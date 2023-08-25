@@ -341,7 +341,7 @@ const routes = {
           component: Views.PostsCommentsActivity,
         },
         {
-          path: '/followers',
+          path: '/(followers|following|following-objects)',
           exact: true,
           component: Views.UserFollowers,
         },
@@ -371,7 +371,7 @@ const routes = {
           component: Views.WAIVwalletTable,
         },
         {
-          path: '/expertise',
+          path: '/(expertise-hashtags|expertise-objects)',
           exact: true,
           component: Views.UserExpertise,
         },

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { withRouter } from 'react-router';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
-import { Button, Form, Input, message, Select } from 'antd';
+import { Button, Checkbox, Form, Input, message, Select } from 'antd';
 import { connect } from 'react-redux';
 import { get } from 'lodash';
 import languages from '../../../../common/translations/languages';
@@ -38,6 +38,7 @@ const WebsitesSettings = ({
   const [beneficiaryPercent, setBeneficiaryPercent] = useState(1);
   const [referralAccount, setReferralAccount] = useState('');
   const [settingsLoading, setSettingsLoading] = useState(false);
+  const [objectControl, setObjectControl] = useState(false);
   const host = match.params.site;
 
   useEffect(() => {
@@ -47,8 +48,10 @@ const WebsitesSettings = ({
         const percent = get(res, ['value', 'beneficiary', 'percent']) / 100;
         const account = get(res, ['value', 'beneficiary', 'account']);
         const referral = get(res, ['value', 'referralCommissionAcc']);
+        const objControl = get(res, ['value', 'objectControl']);
 
         setBeneficiaryPercent(percent);
+        setObjectControl(objControl);
         setBeneficiaryAccount(account);
         setReferralAccount(referral);
         setSettingsLoading(false);
@@ -79,7 +82,7 @@ const WebsitesSettings = ({
         const tag = values.googleAnalyticsTag || '';
         const beneficiary = { account, percent };
 
-        saveWebSettings(host, tag, beneficiary, values.currency, values.language);
+        saveWebSettings(host, tag, beneficiary, values.currency, values.language, objectControl);
         referralUserForWeb(referralAccount, host);
         message.success(intl.formatMessage({ id: 'settings_updated_successfully' }));
       }
@@ -117,6 +120,15 @@ const WebsitesSettings = ({
             </Select>,
           )}
           <p>{intl.formatMessage({ id: 'disclaimer_exchange_rates' })}</p>
+        </Form.Item>
+        <Form.Item>
+          <h3>{intl.formatMessage({ id: 'object_editing_by_users' })}:</h3>
+          <div className={'WebsitesSettings__obj-editing'}>
+            <Checkbox onClick={() => setObjectControl(!objectControl)} checked={objectControl} />
+            <p className={'WebsitesSettings__obj-editing-info '}>
+              {intl.formatMessage({ id: 'object_editing_by_users_info' })}
+            </p>
+          </div>
         </Form.Item>
         <Form.Item>
           <h3>{intl.formatMessage({ id: 'google_analytic_tag' })}</h3>
@@ -213,6 +225,7 @@ WebsitesSettings.propTypes = {
   loading: PropTypes.bool.isRequired,
   settings: PropTypes.shape({
     googleAnalyticsTag: PropTypes.string,
+    objectControl: PropTypes.bool,
   }).isRequired,
   location: PropTypes.shape().isRequired,
   saveWebSettings: PropTypes.func.isRequired,

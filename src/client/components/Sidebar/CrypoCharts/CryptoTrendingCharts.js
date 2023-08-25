@@ -39,7 +39,14 @@ class CryptoTrendingCharts extends React.Component {
 
   componentDidMount() {
     this.props.setIsMobile();
+    this.id = setInterval(this.handleOnClickRefresh, 30000);
   }
+
+  componentWillUnmount() {
+    clearInterval(this.id);
+  }
+
+  id = null;
 
   handleOnClickRefresh() {
     this.setState(

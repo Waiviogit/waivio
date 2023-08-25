@@ -160,9 +160,9 @@ const ClaimAthorityBot = ({ intl }) => {
       <p>
         <b>
           {intl.formatMessage({
-            id: 'data_import_requires_auth',
+            id: 'claim_athority_requires_auth',
             defaultMessage:
-              'The Data import bot requires authorization to upvote data updates on your behalf',
+              'The Claim authority bot requires authorization to upvote data updates on your behalf',
           })}
           :{' '}
           <a onClick={handleRedirect}>
@@ -195,15 +195,16 @@ const ClaimAthorityBot = ({ intl }) => {
         )
         <br />
         {intl.formatMessage({
-          id: 'data_import_pause',
+          id: 'claim_authority_pause',
           defaultMessage:
-            'The data import bot will pause if WAIV voting power on the account drops below the set threshold.',
+            'The claim authority bot will pause if WAIV voting power on the account drops below the set threshold.',
         })}
       </p>
       <VoteInfoBlock
         info={intl.formatMessage({
-          id: 'data_import_service',
-          defaultMessage: 'The Data import bot service is provided on as-is / as-available basis.',
+          id: 'claim_authority_service',
+          defaultMessage:
+            'The Claim authority bot service is provided on as-is / as-available basis.',
         })}
       />
       <hr />

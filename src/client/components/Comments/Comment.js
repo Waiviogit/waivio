@@ -15,15 +15,15 @@ import formatter from '../../../common/helpers/steemitFormatter';
 import { MAXIMUM_UPLOAD_SIZE_HUMAN } from '../../../common/helpers/image';
 import { sortComments } from '../../../common/helpers/sortHelpers';
 import CommentForm from './CommentForm';
-import EmbeddedCommentForm from './EmbeddedCommentForm';
 import QuickCommentEditor from './QuickCommentEditor';
 import Avatar from '../Avatar';
 import BodyContainer from '../../containers/Story/BodyContainer';
 import CommentFooter from '../CommentFooter/CommentFooter';
 import HiddenCommentMessage from './HiddenCommentMessage';
 import WeightTag from '../WeightTag';
-import './Comment.less';
 import { parseJSON } from '../../../common/helpers/parseJSON';
+
+import './Comment.less';
 
 @injectIntl
 class Comment extends React.Component {
@@ -234,8 +234,6 @@ class Comment extends React.Component {
     } = this.props;
     let isGuest = false;
 
-    const formattedComment = comment.body.replace(/#([^\s#]+)/g, ' #$1');
-
     if (comment.json_metadata.includes('"social":')) {
       const jsonMetadata = parseJSON(comment.json_metadata);
 
@@ -256,11 +254,13 @@ class Comment extends React.Component {
         return <QuickCommentEditor {...props} />;
       }
 
-      return this.state.editOpen ? (
-        <EmbeddedCommentForm {...props} onClose={this.handleEditClick} />
-      ) : (
-        <CommentForm {...props} />
-      );
+      return <CommentForm isEdit {...props} onClose={this.handleEditClick} />;
+
+      // return this.state.editOpen ? (
+      //   <EmbeddedCommentForm {...props} onClose={this.handleEditClick} />
+      // ) : (
+      //   <CommentForm {...props} />
+      // );
     };
 
     if (this.state.editOpen) {
@@ -278,7 +278,7 @@ class Comment extends React.Component {
           <FormattedMessage id="comment_collapsed" defaultMessage="Comment collapsed" />
         </div>
       ) : (
-        <BodyContainer body={formattedComment} />
+        <BodyContainer body={comment.body} />
       );
     }
 

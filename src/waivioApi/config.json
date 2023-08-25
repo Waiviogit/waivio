@@ -35,6 +35,7 @@
     "createObject": "/create-object"
   },
   "all": "/all",
+  "minReject": "/min-reject",
   "bots": "/bots",
   "activation": "/validate_activation",
   "auth": "/auth",
