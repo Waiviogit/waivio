@@ -1,13 +1,10 @@
-import { Schema, model } from 'mongoose/browser';
+import mongoose, { Schema } from 'mongoose';
 
-const BotUserAgentSchema = new Schema(
-  {
-    type: { type: String, required: true, unique: true },
-    userAgents: { type: [String], required: true, index: true },
-  },
-  { versionKey: false },
-);
+const BotUserAgentSchema = new Schema({
+  type: { type: String, required: true },
+  userAgents: { type: [String], required: true, index: true },
+});
 
-const BotUserAgentModel = model('BotUserAgent', BotUserAgentSchema, 'bot_user_agent');
+const botUserAgentModel = mongoose.model('botUserAgent', BotUserAgentSchema);
 
-export default BotUserAgentModel;
+export default botUserAgentModel;

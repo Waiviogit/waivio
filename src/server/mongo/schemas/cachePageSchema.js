@@ -1,14 +1,15 @@
-import { Schema, model } from 'mongoose/browser';
+import mongoose, { Schema } from 'mongoose';
 
 const CachePageSchema = new Schema(
   {
     url: { type: String, required: true, index: true },
-    page: { type: String, required: true },
+    html: { type: String, required: true },
   },
-  { timestamps: true, versionKey: false },
+  { _id: false, timestamps: true },
 );
 
-CachePageSchema.index({ createdAt: 1 }, { expireAfterSeconds: 60 * 60 * 24 * 3 });
+CachePageSchema.index({ createdAt: 1 }, { expireAfterSeconds: 60 * 60 * 24 * 7 });
 
-const CachePageModel = model('CachePage', CachePageSchema, 'cache_page');
-export default CachePageModel;
+const cachePageModel = mongoose.model('cachePage', CachePageSchema);
+
+export default cachePageModel;
