@@ -33,7 +33,7 @@ const AdSenseAds = ({ intl, saveAdSense, match, getAdSettings }) => {
   useEffect(() => {
     host &&
       getAdSettings(host).then(res => {
-        setLevel(res.value.level);
+        setLevel(isEmpty(res.value.level) ? adIntensityLevels[0].key : res.value.level);
         setAdSense(res.value.code);
       });
   }, [host]);
@@ -64,9 +64,12 @@ const AdSenseAds = ({ intl, saveAdSense, match, getAdSettings }) => {
         placeholder={'Add your AdSense code'}
         autoSize={{ minRows: 2 }}
       />
-      <p>This code will be displayed within the tags on every page of your site.</p>
+      <p>
+        This code will be displayed within the &lt;head&gt;&lt;/head&gt; tags on every page of your
+        site.
+      </p>
       <h3>Level:</h3>
-      <Select value={level} onSelect={l => setLevel(l)}>
+      <Select defaultValue={adIntensityLevels[0].value} onSelect={l => setLevel(l)}>
         {adIntensityLevels.map(o => (
           <Select.Option key={o.key}>{o.value}</Select.Option>
         ))}
