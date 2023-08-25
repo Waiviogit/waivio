@@ -7,7 +7,7 @@ import { StaticRouter } from 'react-router';
 import { matchRoutes, renderRoutes } from 'react-router-config';
 import hivesigner from 'hivesigner';
 
-import { getSettingsWebsite, waivioAPI } from '../../waivioApi/ApiClient';
+import { getSettingsAdsense, getSettingsWebsite, waivioAPI } from '../../waivioApi/ApiClient';
 import getStore from '../../store/store';
 import renderSsrPage from '../renderers/ssrRenderer';
 import switchRoutes from '../../routes/switchRoutes';
@@ -47,9 +47,11 @@ export default function createSsrHandler(template) {
       const hostname = req.headers.host;
       const isWaivio = hostname.includes('waivio');
       let settings = {};
+      let adsenseSettings = {};
 
       if (!isWaivio) {
         settings = await getSettingsWebsite(hostname);
+        adsenseSettings = await getSettingsAdsense(hostname);
       }
 
       if (req.cookies.access_token) sc2Api.setAccessToken(req.cookies.access_token);
@@ -90,6 +92,7 @@ export default function createSsrHandler(template) {
         template,
         isWaivio,
         get(settings, 'googleAnalyticsTag', ''),
+        get(adsenseSettings, 'code', ''),
       );
 
       // await setCachedPage({ page, req });

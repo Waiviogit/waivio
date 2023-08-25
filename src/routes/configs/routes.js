@@ -298,6 +298,11 @@ const routes = {
               component: Views.AffiliateCodes,
             },
             {
+              path: '/adsense',
+              exact: true,
+              component: Views.AdSenseAds,
+            },
+            {
               path: '/settings',
               exact: true,
               component: Views.WebsitesSettings,

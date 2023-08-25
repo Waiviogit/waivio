@@ -147,6 +147,7 @@ export default {
       'objects',
       'objects-filters',
       'muted-users',
+      'adsense',
     ].join('|'),
   },
   REFERRAL: {

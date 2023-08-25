@@ -140,6 +140,11 @@ export const currentWebsiteSettings = site => {
       id: 'muted_users',
       defaultMessage: 'Muted users',
     },
+    {
+      to: `/${site}/adsense`,
+      id: 'adsense',
+      defaultMessage: 'AdSense ads',
+    },
   ];
 
   if (socialDomens.some(item => site.includes(item))) {

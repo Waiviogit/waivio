@@ -45,6 +45,7 @@ const LINKS = {
   ASIN_SCANER: '/ASIN-scanner',
   CHROME_EXTENSION: '/chrome-extension',
   AFFILIATE_CODES: '/affiliate-codes',
+  ADSENSE: '/adsense',
   USER_AFFILIATE_CODES: '/user-affiliate-codes',
   BLOG: '/user-blog',
   FEED: '/feed',
@@ -88,6 +89,7 @@ const WEBSITE_URLS = [
   LINKS.WEBSITES_OBJECT_FILTERS,
   LINKS.WEBSITES_MUTED_USER,
   LINKS.AFFILIATE_CODES,
+  LINKS.ADSENSE,
   LINKS.WEBSITES_AREAS,
 ];
 
