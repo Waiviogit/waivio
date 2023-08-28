@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { size } from 'lodash';
+import { useHistory } from 'react-router';
+
 import ReduxInfiniteScroll from '../vendor/ReduxInfiniteScroll';
 import StoryContainer from './StoryContainer';
 import StoryLoading from '../components/Story/StoryLoading';
@@ -16,10 +18,11 @@ const Feed = ({
   loadMoreContent,
   showPostModal,
   isGuest,
-  history,
   userComments,
   isOwnProfile,
 }) => {
+  const history = useHistory();
+
   if (
     isGuest &&
     isOwnProfile &&
@@ -59,7 +62,6 @@ Feed.propTypes = {
   hasMore: PropTypes.bool,
   isGuest: PropTypes.bool,
   loadMoreContent: PropTypes.func,
-  history: PropTypes.shape(),
   userComments: PropTypes.bool,
   isOwnProfile: PropTypes.bool,
 };

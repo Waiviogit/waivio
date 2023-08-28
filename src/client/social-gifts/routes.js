@@ -21,6 +21,7 @@ import ObjectNewsFeed from './FeedMasonry/ObjectNewsFeed';
 import NewDiscover from './NewDiscover/NewDiscover';
 import WebsiteFeed from '../websites/WebsiteFeed/WebsiteFeed';
 import DepatmentsSearch from './DepatmentsSearch/DepatmentsSearch';
+import PostsCommentsActivity from '../user/PostsCommentsActivity';
 
 const routes = host => ({
   component: SocialWrapper,
@@ -192,7 +193,7 @@ const routes = host => ({
         {
           path: ['', '/(comments|activity)'],
           exact: true,
-          component: Views.PostsCommentsActivity,
+          component: PostsCommentsActivity,
         },
         {
           path: '/userShop/:department?',
