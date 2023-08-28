@@ -26,9 +26,9 @@ import {
 } from '../../../common/helpers/wObjectHelper';
 import ObjCardListViewSwitcherForShop from '../../social-gifts/ShopObjectCard/ObjCardViewSwitcherForShop';
 import { useSeoInfo } from '../../../hooks/useSeoInfo';
+import { isMobile } from '../../../common/helpers/apiHelpers';
 
 import './ShopList.less';
-import { isMobile } from '../../../common/helpers/apiHelpers';
 
 const ShopList = ({ userName, path, getShopFeed, isSocial }) => {
   const query = useQuery();
@@ -43,8 +43,10 @@ const ShopList = ({ userName, path, getShopFeed, isSocial }) => {
   const departments = useSelector(getShopList);
   const hasMore = useSelector(getShopListHasMore);
   const image = favicon;
-  const title = `${department || 'Shop'} - ${siteName}`;
+  const title = `${match.params.name || ''} ${match.params.name ? 'shop' : 'Shop'} - ${siteName}`;
   const { canonicalUrl } = useSeoInfo();
+  const desc =
+    'Discover a wide selection of quality products at unbeatable prices. Shop with pleasure at Waivio, where finding and buying your favorite items is easy and enjoyable!';
   const pathList = match.params.department
     ? [match.params.department, ...getPermlinksFromHash(location.hash)]
     : [];
@@ -102,11 +104,11 @@ const ShopList = ({ userName, path, getShopFeed, isSocial }) => {
         <title>{title}</title>
         <meta property="og:title" content={title} />
         <link rel="canonical" href={canonicalUrl} />
-        <meta name="description" content={title} />
+        <meta name="description" content={desc} />
         <meta name="twitter:card" content={'summary_large_image'} />
         <meta name="twitter:site" content={'@waivio'} />
         <meta name="twitter:title" content={title} />
-        <meta name="twitter:description" content={title} />
+        <meta name="twitter:description" content={desc} />
         <meta name="twitter:image" content={image} />
         <meta property="og:title" content={title} />
         <meta property="og:type" content="article" />
@@ -114,7 +116,7 @@ const ShopList = ({ userName, path, getShopFeed, isSocial }) => {
         <meta property="og:image" content={image} />
         <meta property="og:image:width" content="600" />
         <meta property="og:image:height" content="600" />
-        <meta property="og:description" content={title} />
+        <meta property="og:description" content={desc} />
         <meta property="og:site_name" content={siteName} />
         <link rel="image_src" href={image} />
         <link id="favicon" rel="icon" href={favicon} type="image/x-icon" />

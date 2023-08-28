@@ -15,6 +15,7 @@ import ShopDepartmentsWobjList from '../../client/Shop/DepartmentsWobjList/ShopD
 import UserDepartmentsWobjList from '../../client/Shop/DepartmentsWobjList/UserDepartmentsWobjList';
 import { isMobile } from '../../common/helpers/apiHelpers';
 import ObjectDepartmentsWobjList from '../../client/object/ObjectTypeShop/ObjectDepartmentsWobjList';
+import ObjectFeed from '../../client/object/ObjectFeed';
 
 const routes = {
   component: Wrapper,
@@ -399,7 +400,7 @@ const routes = {
         {
           path: ['', '/(newsFilter)/:parentName', '/(newsfeed)/:parentName/:itemId?', '/(reviews)'],
           exact: true,
-          component: Views.ObjectPageFeed,
+          component: ObjectFeed,
         },
         {
           path: '/about',
