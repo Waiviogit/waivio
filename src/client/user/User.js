@@ -49,6 +49,8 @@ import { useSeoInfo } from '../../hooks/useSeoInfo';
 import Error404 from '../statics/Error404';
 
 const getDescriptions = username => ({
+  activity: `Track real-time user interactions on our platform, backed by open blockchain technology. Experience unparalleled transparency and authenticity as you witness the vibrant activity of our community members.`,
+  comments: `Explore genuine user feedback! Dive into our collection of authentic comments left by engaged readers under our posts. Discover what our community is saying, share your thoughts, and join the conversation today.`,
   followers: `Explore the growing community of ${username}'s followers. Connect, engage, and discover like-minded individuals following ${username}. Join us today!`,
   following: `Explore the network of users that ${username} is following. Connect with like-minded individuals, discover new content, and expand your community with ${username}.`,
   transfers: `Explore ${username}'s Wallet page to view balances, transactions, and more. Experience the transparency and security of open blockchain technology with ${username}.`,
@@ -59,13 +61,13 @@ const getDescriptions = username => ({
 
 const getTitle = tab => {
   const titles = {
-    transfer: 'wallet',
+    transfers: 'wallet',
     'following-objects': 'objects',
     'expertise-hashtags': 'hashtags expertise',
     'expertise-objects': 'objects expertise',
   };
 
-  return titles[tab] || tab;
+  return titles[tab] || tab || '';
 };
 
 const User = props => {
@@ -110,7 +112,10 @@ const User = props => {
   const metadata = getMetadata(user);
   const profile = get(metadata, 'profile', {});
 
-  const desc = getDescriptions(name)[match.params['0']] || profile?.about || `Posts by ${name}`;
+  const desc =
+    getDescriptions(name)[match.params['0']] ||
+    profile?.about ||
+    "Browse a rich collection of user-generated posts, covering a myriad of topics. Engage with our diverse community's insights, stories, and perspectives. Share, comment, and become part of the conversation.";
   let displayedUsername = name;
   let coverImage = null;
 

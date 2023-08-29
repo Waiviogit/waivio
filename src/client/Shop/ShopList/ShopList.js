@@ -45,8 +45,7 @@ const ShopList = ({ userName, path, getShopFeed, isSocial }) => {
   const image = favicon;
   const title = `${match.params.name || ''} ${match.params.name ? 'shop' : 'Shop'} - ${siteName}`;
   const { canonicalUrl } = useSeoInfo();
-  const desc =
-    'Discover a wide selection of quality products at unbeatable prices. Shop with pleasure at Waivio, where finding and buying your favorite items is easy and enjoyable!';
+  const desc = `Discover a wide selection of quality products at unbeatable prices. Shop with pleasure at ${siteName}, where finding and buying your favorite items is easy and enjoyable!`;
   const pathList = match.params.department
     ? [match.params.department, ...getPermlinksFromHash(location.hash)]
     : [];
