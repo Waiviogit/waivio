@@ -11,7 +11,6 @@ import Shop from '../Shop/Shop';
 import { listOfSocialWebsites } from './listOfSocialWebsites';
 import SocialGiftsLandingPage from '../SocialGiftsLandingPage/SocialGiftsLandingPage';
 import ShopSwitcher from './ShopSwitcher/ShopSwitcher';
-import SocialProduct from './SocialProduct/SocialProduct';
 import ObjectDepartmentsWobjList from '../object/ObjectTypeShop/ObjectDepartmentsWobjList';
 import Checklist from './Checklist/Checklist';
 import UserDepartmentsWobjList from '../Shop/DepartmentsWobjList/UserDepartmentsWobjList';
@@ -85,11 +84,6 @@ const routes = host => ({
       path: '/discover-departments/:name/:department',
       exact: true,
       component: DepatmentsSearch,
-    },
-    {
-      path: '/object/product/:name',
-      exact: true,
-      component: SocialProduct,
     },
     {
       path: '/object/page/:name',
