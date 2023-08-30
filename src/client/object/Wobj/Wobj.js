@@ -36,7 +36,8 @@ const Wobj = ({
   useEffect(() => {
     const objectType = getObjectType(wobject);
 
-    if (!isEmpty(wobject) && window?.gtag) window.gtag('event', `view_${objectType}`);
+    if (!isEmpty(wobject) && window?.gtag)
+      window.gtag('event', `view_${objectType}`, { debug_mode: true });
   }, [wobject.author_permlink]);
 
   const getWobjView = useCallback(() => {

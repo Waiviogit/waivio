@@ -147,7 +147,7 @@ export const currentWebsiteSettings = site => {
     },
   ];
 
-  if (socialDomens.some(item => site.includes(item))) {
+  if (socialDomens.some(item => site?.includes(item))) {
     items.splice(2, 0, {
       to: `/${site}/affiliate-codes`,
       id: 'affiliate_codes',
@@ -155,7 +155,7 @@ export const currentWebsiteSettings = site => {
     });
   }
 
-  if (site.includes('dining')) {
+  if (site?.includes('dining')) {
     items.splice(4, 0, {
       to: `/${site}/objects`,
       id: 'areas',

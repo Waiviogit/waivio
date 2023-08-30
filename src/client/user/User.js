@@ -89,7 +89,7 @@ const User = props => {
   const { 0: tab, name } = useParams();
 
   useEffect(() => {
-    if (window.gtag) window.gtag('event', 'view_user_profile');
+    if (window.gtag) window.gtag('event', 'view_user_profile', { debug_mode: true });
 
     props.getUserAccount(name);
     props.getUserAccountHistory(name);

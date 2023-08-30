@@ -12,7 +12,7 @@ const images = {
 
 const AffiliatLink = ({ link }) => {
   const onClick = () => {
-    if (window?.gtag) window.gtag('event', 'buy_now');
+    if (window?.gtag) window.gtag('event', 'buy_now', { debug_mode: true });
   };
 
   return (

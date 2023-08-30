@@ -70,6 +70,7 @@ const AddButtonSlate = props => {
   const buttonClassList = classNames('md-sb-button-plus md-add-button', {
     'md-open-button': isOpen,
     'md-add-button--comments': props.isComment,
+    'md-add-button--commentsEdit': props.isCommentEdit,
   });
 
   return (
@@ -137,6 +138,7 @@ AddButtonSlate.propTypes = {
   intl: PropTypes.shape().isRequired,
   editorNode: PropTypes.node.isRequired,
   isComment: PropTypes.bool,
+  isCommentEdit: PropTypes.bool,
   initialPosTop: PropTypes.string,
   size: PropTypes.number,
   ADD_BTN_DIF: PropTypes.number,
@@ -148,6 +150,7 @@ AddButtonSlate.defaultProps = {
   withTitleLine: false,
   isClearSearchObjects: false,
   isComment: false,
+  isCommentEdit: false,
   initialPosTop: 0,
   ADD_BTN_DIF: 14,
   size: 30,
