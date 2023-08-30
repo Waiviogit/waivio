@@ -16,8 +16,6 @@ import SortSelector from '../../components/SortSelector/SortSelector';
 import RewardsMap from '../Map';
 import ViewMapButton from '../../widgets/ViewMapButton';
 import {
-  getAllRewardList,
-  getEligibleRewardList,
   getFiltersForAllRewards,
   getFiltersForEligibleRewards,
   getMarkersForAll,
@@ -28,6 +26,12 @@ import { getCoordinates } from '../../../store/userStore/userActions';
 import { getRadius } from '../../components/Maps/mapHelper';
 
 import './RewardLists.less';
+import { getMoreRewardsList, getRewardsList } from '../../../store/newRewards/newRewardsActions';
+import {
+  getRewards,
+  getRewardsHasLoading,
+  getRewardsHasMore,
+} from '../../../store/newRewards/newRewardsSelectors';
 
 const filterConfig = [
   { title: 'Rewards for', type: 'type' },
@@ -44,9 +48,10 @@ const sortConfig = [
 
 const LocalRewardsList = ({ withoutFilters, intl }) => {
   const authUser = useSelector(getAuthenticatedUserName);
-  const [rewards, setRewards] = useState([]);
-  const [hasMore, setHasMore] = useState(true);
-  const [loading, setLoading] = useState(true);
+  const rewards = useSelector(getRewards);
+  const hasMore = useSelector(getRewardsHasMore);
+  const loading = useSelector(getRewardsHasLoading);
+
   const [showMap, setShowMap] = useState(false);
   const [showAll, setShowAll] = useState(false);
   const [location, setLocation] = useState([]);
@@ -81,9 +86,9 @@ const LocalRewardsList = ({ withoutFilters, intl }) => {
       query.set('radius', getRadius(3));
     } else if (!history.location.search) clearMapInfo();
 
-    return showAll
-      ? getAllRewardList(skip, query.toString(), sort, match.params[0])
-      : getEligibleRewardList(authUser, skip, query.toString(), sort, match.params[0]);
+    return skip
+      ? dispatch(getMoreRewardsList(showAll, skip, query.toString(), sort, match.params[0]))
+      : dispatch(getRewardsList(showAll, query.toString(), sort, match.params[0]));
   };
 
   const getFilters = () =>
@@ -121,28 +126,12 @@ const LocalRewardsList = ({ withoutFilters, intl }) => {
   }, [history.location.pathname]);
 
   useEffect(() => {
-    getRewardsMethod(0)
-      .then(res => {
-        setRewards(res.rewards);
-        setHasMore(res.hasMore);
-        setLoading(false);
-      })
-      .catch(() => {
-        setLoading(false);
-      });
+    getRewardsMethod(0);
     clearMapInfo();
   }, [history.location.search, sort, match.params[0], showAll]);
 
   const handleLoadingMoreRewardsList = () => {
-    setLoading(true);
-
-    getRewardsMethod(rewards?.length)
-      .then(res => {
-        setRewards([...rewards, ...res.rewards]);
-        setHasMore(res.hasMore);
-        setLoading(false);
-      })
-      .catch(() => setLoading(false));
+    getRewardsMethod(rewards?.length);
   };
 
   if (loading && isEmpty(rewards)) return <Loading />;
@@ -227,5 +216,8 @@ LocalRewardsList.propTypes = {
   withoutFilters: PropTypes.bool,
   intl: PropTypes.shape(),
 };
+
+LocalRewardsList.fetchData = ({ store, match }) =>
+  store.dispatch(getRewardsList(true, 0, '', 'default', match.params[0]));
 
 export default injectIntl(LocalRewardsList);

@@ -61,8 +61,8 @@ export const getIframeContainerClass = embed =>
 export const getYoutubeSrc = url => {
   const id =
     url && url.includes('shorts')
-      ? url.match(VIDEO_MATCH_URL.YOUTUBE_SHORTS)[1]
-      : url.match(VIDEO_MATCH_URL.YOUTUBE)[1];
+      ? url?.match(VIDEO_MATCH_URL.YOUTUBE_SHORTS)[1]
+      : url?.match(VIDEO_MATCH_URL.YOUTUBE)[1];
 
   return {
     srcID: id,
@@ -72,7 +72,7 @@ export const getYoutubeSrc = url => {
 };
 
 export const getOdyseeLink = async url => {
-  const match = url.replace(/(\?.*=.*)/, '').match(VIDEO_MATCH_URL.ODYSEE);
+  const match = url.replace(/(\?.*=.*)/, '')?.match(VIDEO_MATCH_URL.ODYSEE);
   const name = match && match[1];
 
   try {
@@ -103,7 +103,7 @@ export const getOdyseeSrc = async url => ({
 });
 
 export const getVimeoSrc = url => {
-  const id = url.match(VIDEO_MATCH_URL.VIMEO)[3];
+  const id = url?.match(VIDEO_MATCH_URL.VIMEO)[3];
 
   return {
     srcID: id,
