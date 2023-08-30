@@ -179,7 +179,7 @@ const routes = host => ({
       ],
     },
     {
-      path: [`/@:name/(${URL.USER.tabs})?/(waiv-table|table)?`, `/@:name/userShop/:department?`],
+      path: [`/@:name/(${URL.USER.tabs})?/(waiv-table|table)?`, `/@:name/(userShop)/:department?`],
       component: User,
       exact: true,
       pathScope: '/@:name',
@@ -190,7 +190,7 @@ const routes = host => ({
           component: PostsCommentsActivity,
         },
         {
-          path: '/userShop/:department?',
+          path: '/(userShop)/:department?',
           exact: true,
           component: UserDepartmentsWobjList,
         },

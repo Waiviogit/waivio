@@ -33,7 +33,7 @@ export default function renderSsrPage(store, html, assets, template, isWaivio, g
         dataLayer.push(arguments);
     }
     gtag('js', new Date());
-    gtag('config', '${tag}');}
+    gtag('config', '${tag}', { 'debug_mode':true });}
   </script>`;
   return template({
     header,

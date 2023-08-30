@@ -61,7 +61,7 @@ const Checklist = ({
         const wObject = res.value;
 
         if (wObject?.object_type === 'list' && window.gtag)
-          window.gtag('event', getObjectName(wObject));
+          window.gtag('event', getObjectName(wObject), { debug_mode: true });
         if (history.location.hash) {
           setNestedObject(wObject);
         }
@@ -80,7 +80,7 @@ const Checklist = ({
       });
     } else {
       if (wobject?.object_type === 'list' && window.gtag)
-        window.gtag('event', getObjectName(wobject));
+        window.gtag('event', getObjectName(wobject), { debug_mode: true });
       if (history.location.hash) {
         setNestedObject(wobject);
       }
