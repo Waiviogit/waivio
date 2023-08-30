@@ -7,8 +7,6 @@ import { useLocation, useRouteMatch } from 'react-router';
 import { Icon } from 'antd';
 import classNames from 'classnames';
 import InfiniteSroll from 'react-infinite-scroller';
-import Helmet from 'react-helmet';
-import { getHelmetIcon, getSiteName } from '../../../store/appStore/appSelectors';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 import EmptyCampaing from '../../statics/EmptyCampaing';
 import Loading from '../../components/Icon/Loading';
@@ -25,10 +23,9 @@ import {
   getPermlinksFromHash,
 } from '../../../common/helpers/wObjectHelper';
 import ObjCardListViewSwitcherForShop from '../../social-gifts/ShopObjectCard/ObjCardViewSwitcherForShop';
-import { useSeoInfo } from '../../../hooks/useSeoInfo';
+import { isMobile } from '../../../common/helpers/apiHelpers';
 
 import './ShopList.less';
-import { isMobile } from '../../../common/helpers/apiHelpers';
 
 const ShopList = ({ userName, path, getShopFeed, isSocial }) => {
   const query = useQuery();
@@ -38,13 +35,8 @@ const ShopList = ({ userName, path, getShopFeed, isSocial }) => {
   const authUser = useSelector(getAuthenticatedUserName);
   const excluded = useSelector(getExcludedDepartment);
   const activeCrumb = useSelector(getActiveBreadCrumb);
-  const siteName = useSelector(getSiteName);
-  const favicon = useSelector(getHelmetIcon);
   const departments = useSelector(getShopList);
   const hasMore = useSelector(getShopListHasMore);
-  const image = favicon;
-  const title = `${department || 'Shop'} - ${siteName}`;
-  const { canonicalUrl } = useSeoInfo();
   const pathList = match.params.department
     ? [match.params.department, ...getPermlinksFromHash(location.hash)]
     : [];
@@ -98,27 +90,6 @@ const ShopList = ({ userName, path, getShopFeed, isSocial }) => {
 
   return (
     <div className="ShopList">
-      <Helmet>
-        <title>{title}</title>
-        <meta property="og:title" content={title} />
-        <link rel="canonical" href={canonicalUrl} />
-        <meta name="description" content={title} />
-        <meta name="twitter:card" content={'summary_large_image'} />
-        <meta name="twitter:site" content={'@waivio'} />
-        <meta name="twitter:title" content={title} />
-        <meta name="twitter:description" content={title} />
-        <meta name="twitter:image" content={image} />
-        <meta property="og:title" content={title} />
-        <meta property="og:type" content="article" />
-        <meta property="og:url" content={canonicalUrl} />
-        <meta property="og:image" content={image} />
-        <meta property="og:image:width" content="600" />
-        <meta property="og:image:height" content="600" />
-        <meta property="og:description" content={title} />
-        <meta property="og:site_name" content={siteName} />
-        <link rel="image_src" href={image} />
-        <link id="favicon" rel="icon" href={favicon} type="image/x-icon" />
-      </Helmet>
       {isEmpty(departments) || departments?.every(dep => isEmpty(dep.wobjects)) ? (
         <EmptyCampaing
           emptyMessage={

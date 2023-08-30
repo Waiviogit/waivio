@@ -4,7 +4,11 @@ import { isEmpty } from 'lodash';
 import Helmet from 'react-helmet';
 import { useSelector } from 'react-redux';
 import ScrollToTopOnMount from '../../components/Utils/ScrollToTopOnMount';
-import { getObjectName, getObjectType } from '../../../common/helpers/wObjectHelper';
+import {
+  getObjectAvatar,
+  getObjectName,
+  getObjectType,
+} from '../../../common/helpers/wObjectHelper';
 import SocialProduct from '../../social-gifts/SocialProduct/SocialProduct';
 import WidgetContent from '../../social-gifts/WidgetContent/WidgetContent';
 import ObjectNewsFeed from '../../social-gifts/FeedMasonry/ObjectNewsFeed';
@@ -32,14 +36,15 @@ const Wobj = ({
   useEffect(() => {
     const objectType = getObjectType(wobject);
 
-    if (!isEmpty(wobject) && window?.gtag) window.gtag('event', `view_${objectType}`);
+    if (!isEmpty(wobject) && window?.gtag)
+      window.gtag('event', `view_${objectType}`, { debug_mode: true });
   }, [wobject.author_permlink]);
 
   const getWobjView = useCallback(() => {
     const title = `${getObjectName(wobject)} - ${siteName}`;
     const { canonicalUrl, descriptionSite } = useSeoInfo();
     const desc = wobject?.description || descriptionSite || siteName;
-    const image = favicon;
+    const image = getObjectAvatar(wobject) || favicon;
 
     if (isEmpty(wobject)) {
       return (

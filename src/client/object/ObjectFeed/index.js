@@ -12,18 +12,7 @@ import {
   getObjectFetchingState,
   getWobjectAuthors,
 } from '../../../store/wObjectStore/wObjectSelectors';
-
-const propTypes = {
-  history: PropTypes.shape().isRequired,
-  match: PropTypes.shape().isRequired,
-  wobject: PropTypes.shape().isRequired,
-  userName: PropTypes.string.isRequired,
-  isPageMode: PropTypes.bool,
-};
-
-const defaultProps = {
-  isPageMode: false,
-};
+import { getObjectPosts } from '../../../store/feedStore/feedActions';
 
 const ObjectFeedContainer = ({ history, match, wobject, userName, isPageMode }) => {
   /* redux store */
@@ -61,7 +50,27 @@ const ObjectFeedContainer = ({ history, match, wobject, userName, isPageMode }) 
   );
 };
 
-ObjectFeedContainer.propTypes = propTypes;
-ObjectFeedContainer.defaultProps = defaultProps;
+ObjectFeedContainer.propTypes = {
+  history: PropTypes.shape().isRequired,
+  match: PropTypes.shape().isRequired,
+  wobject: PropTypes.shape().isRequired,
+  userName: PropTypes.string.isRequired,
+  isPageMode: PropTypes.bool,
+};
+
+ObjectFeedContainer.defaultProps = {
+  isPageMode: false,
+};
+
+ObjectFeedContainer.fetchData = ({ store, match }) =>
+  store.dispatch(
+    getObjectPosts({
+      object: match.params.name,
+      username: match.params.name,
+      // readLanguages: readLocales,
+      limit: 10,
+      // newsPermlink: permlink || getNewsPermlink(),
+    }),
+  );
 
 export default ObjectFeedContainer;

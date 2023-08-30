@@ -14,10 +14,7 @@ import {
 import { getUserAccount } from '../../store/usersStore/usersActions';
 import Loading from '../components/Icon/Loading';
 import UserActivityActions from './UserActivityActions';
-import {
-  getAuthenticatedUser,
-  getAuthenticatedUserName,
-} from '../../store/authStore/authSelectors';
+import { getAuthenticatedUserName } from '../../store/authStore/authSelectors';
 import { getUser } from '../../store/usersStore/usersSelectors';
 import {
   getAccountHistoryFilter,
@@ -33,9 +30,7 @@ import {
 @withRouter
 @connect(
   (state, ownProps) => ({
-    user: ownProps.isCurrentUser
-      ? getAuthenticatedUser(state)
-      : getUser(state, ownProps.match.params.name),
+    user: getUser(state, ownProps.match.params.name),
     authenticatedUserName: getAuthenticatedUserName(state),
     totalVestingShares: getTotalVestingShares(state),
     totalVestingFundSteem: getTotalVestingFundSteem(state),

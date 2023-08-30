@@ -11,7 +11,6 @@ import Shop from '../Shop/Shop';
 import { listOfSocialWebsites } from './listOfSocialWebsites';
 import SocialGiftsLandingPage from '../SocialGiftsLandingPage/SocialGiftsLandingPage';
 import ShopSwitcher from './ShopSwitcher/ShopSwitcher';
-import SocialProduct from './SocialProduct/SocialProduct';
 import ObjectDepartmentsWobjList from '../object/ObjectTypeShop/ObjectDepartmentsWobjList';
 import Checklist from './Checklist/Checklist';
 import UserDepartmentsWobjList from '../Shop/DepartmentsWobjList/UserDepartmentsWobjList';
@@ -21,6 +20,7 @@ import ObjectNewsFeed from './FeedMasonry/ObjectNewsFeed';
 import NewDiscover from './NewDiscover/NewDiscover';
 import WebsiteFeed from '../websites/WebsiteFeed/WebsiteFeed';
 import DepatmentsSearch from './DepatmentsSearch/DepatmentsSearch';
+import PostsCommentsActivity from '../user/PostsCommentsActivity';
 
 const routes = host => ({
   component: SocialWrapper,
@@ -84,11 +84,6 @@ const routes = host => ({
       path: '/discover-departments/:name/:department',
       exact: true,
       component: DepatmentsSearch,
-    },
-    {
-      path: '/object/product/:name',
-      exact: true,
-      component: SocialProduct,
     },
     {
       path: '/object/page/:name',
@@ -184,7 +179,7 @@ const routes = host => ({
       ],
     },
     {
-      path: [`/@:name/(${URL.USER.tabs})?/(waiv-table|table)?`, `/@:name/userShop/:department?`],
+      path: [`/@:name/(${URL.USER.tabs})?/(waiv-table|table)?`, `/@:name/(userShop)/:department?`],
       component: User,
       exact: true,
       pathScope: '/@:name',
@@ -192,10 +187,10 @@ const routes = host => ({
         {
           path: ['', '/(comments|activity)'],
           exact: true,
-          component: Views.PostsCommentsActivity,
+          component: PostsCommentsActivity,
         },
         {
-          path: '/userShop/:department?',
+          path: '/(userShop)/:department?',
           exact: true,
           component: UserDepartmentsWobjList,
         },

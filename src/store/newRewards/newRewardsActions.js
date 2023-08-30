@@ -19,6 +19,8 @@ import { createPostMetadata } from '../../common/helpers/postHelpers';
 import { jsonParse } from '../../common/helpers/formatter';
 import { getSelectedDish, getSelectedRestaurant } from '../quickRewards/quickRewardsSelectors';
 import { rewardsPost } from '../../client/newRewards/ManageCampaingsTab/constants';
+import { createAsyncActionType } from '../../common/helpers/stateHelpers';
+import { getAllRewardList, getEligibleRewardList } from '../../waivioApi/ApiClient';
 
 export const reserveProposition = (proposition, username) => async (
   dispatch,
@@ -553,5 +555,25 @@ export const sendCommentForReward = (proposition, body, isUpdating = false, orig
       }),
   );
 };
+
+export const GET_REWARDS_LIST = createAsyncActionType('GET_REWARDS_LIST');
+
+export const getRewardsList = (showAll, query, sort, type) => (dispatch, getState) =>
+  dispatch({
+    type: GET_REWARDS_LIST.ACTION,
+    payload: showAll
+      ? getAllRewardList(0, query, sort, type)
+      : getEligibleRewardList(getAuthenticatedUserName(getState()), 0, query, sort, type),
+  });
+
+export const GET_MORE_REWARDS_LIST = createAsyncActionType('GET_MORE_REWARDS_LIST');
+
+export const getMoreRewardsList = (showAll, skip, query, sort, type) => (dispatch, getState) =>
+  dispatch({
+    type: GET_MORE_REWARDS_LIST.ACTION,
+    payload: showAll
+      ? getAllRewardList(skip, query, sort, type)
+      : getEligibleRewardList(getAuthenticatedUserName(getState()), skip, query, sort, type),
+  });
 
 export default null;

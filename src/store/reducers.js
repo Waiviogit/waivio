@@ -37,6 +37,7 @@ import objectDepartmentsReducer from './objectDepartmentsStore/objectDepartments
 import ratesReducer from './ratesStore/ratesReducer';
 import shopReducer from './shopStore/shopReducer';
 import affiliateCodesReducer from './affiliateCodes/affiliateCodesReducer';
+import newRewardsReducer from './newRewards/newRewardsReducer';
 
 export default history =>
   combineReducers({
@@ -74,6 +75,7 @@ export default history =>
     department: objectDepartmentsReducer,
     rates: ratesReducer,
     shop: shopReducer,
+    newRewards: newRewardsReducer,
   });
 
 // common selectors

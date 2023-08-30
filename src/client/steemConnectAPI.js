@@ -534,6 +534,19 @@ function sc2Extended() {
 
         return this.broadcast([['custom_json', params]], cb);
       },
+      saveAdSenseSettings(username, host, code, level, cb) {
+        const params = {
+          required_posting_auths: [username],
+          id: 'website_adsense',
+          json: JSON.stringify({
+            host,
+            code,
+            level,
+          }),
+        };
+
+        return this.broadcast([['custom_json', params]], cb);
+      },
       hidePost(username, author, permlink, action, cb) {
         const params = {
           required_auths: [],

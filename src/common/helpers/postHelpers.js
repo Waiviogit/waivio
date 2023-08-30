@@ -39,7 +39,7 @@ const appVersion = require('../../../package.json').version;
 const getTagsFromBody = text => {
   const regex = /#\w+/g;
 
-  return text.match(regex);
+  return text?.match(regex);
 };
 
 export const isPostDeleted = post => post.title === 'deleted' && post.body === 'deleted';
@@ -60,7 +60,7 @@ export function dropCategory(url) {
 
 export const replaceBotWithGuestName = (url, guestInfo) => {
   if (url) {
-    if (url.match(botNameRegex)[0] === `@${POST_AUTHOR_FOR_REWARDS_COMMENTS}`) {
+    if (url?.match(botNameRegex)[0] === `@${POST_AUTHOR_FOR_REWARDS_COMMENTS}`) {
       return url;
     }
 
@@ -218,7 +218,7 @@ export const getObjectLink = (obj, match = {}) => {
 const setTitle = (initObjects, props, authors) => {
   if (size(initObjects)) {
     const title = initObjects.reduce((acc, curr) => {
-      const matches = curr.match(/^\[(.+)\]\((\S+)\)/);
+      const matches = curr?.match(/^\[(.+)\]\((\S+)\)/);
 
       if (!isNil(matches) && matches[1]) {
         return initObjects.length > 1 ? `${acc}${matches[1]}, ` : `${acc}${matches[1]}`;
@@ -231,7 +231,7 @@ const setTitle = (initObjects, props, authors) => {
       let authorAcc = title;
 
       authors.forEach((author, i) => {
-        const matchesAuthor = author.match(/^\[(.+)\]\((\S+)\)/);
+        const matchesAuthor = author?.match(/^\[(.+)\]\((\S+)\)/);
         const authorName = matchesAuthor ? matchesAuthor[1] : author;
 
         authorAcc = i === 0 ? `${authorAcc} by ${authorName}` : `${authorAcc}, ${authorName}`;
@@ -250,7 +250,7 @@ const setBody = (initObjects, props, authors) => {
   const body =
     get(props, 'editor.draftContent.body', false) || size(initObjects)
       ? initObjects.reduce((acc, curr) => {
-          const matches = curr.match(/^\[(.+)\]\((\S+)\)/);
+          const matches = curr?.match(/^\[(.+)\]\((\S+)\)/);
 
           if (!isNil(matches) && matches[1] && matches[2]) {
             if (isEmpty(authors)) return `${acc}[${matches[1]}](${getObjectUrl(matches[2])})\n`;
@@ -268,7 +268,7 @@ const setBody = (initObjects, props, authors) => {
     let authorAcc = body;
 
     authors.forEach((author, i) => {
-      const matchesAuthor = author.match(/^\[(.+)\]\((\S+)\)/);
+      const matchesAuthor = author?.match(/^\[(.+)\]\((\S+)\)/);
       const authorLink = matchesAuthor
         ? `[${matchesAuthor[1]}](${getObjectUrl(matchesAuthor[2])})`
         : author;
@@ -441,8 +441,8 @@ export const getVideoForPreview = post => {
     };
   }
 
-  const videoPreviewResult = post.body.match(videoPreviewRegex);
-  const videoPreviewResulYoutube = post.body.match(regexPattern);
+  const videoPreviewResult = post.body?.match(videoPreviewRegex);
+  const videoPreviewResulYoutube = post.body?.match(regexPattern);
 
   if (!embeds[0] && videoPreviewResult) {
     const videoLink = getBodyLink(videoPreviewResult);

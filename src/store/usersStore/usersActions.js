@@ -65,18 +65,20 @@ export const getInfoForSideBar = username => async dispatch => {
 };
 export const GET_ACCOUNT = createAsyncActionType('@users/GET_ACCOUNT');
 
-export const getUserAccount = name => async (dispatch, getState) => {
+export const getUserAccount = name => (dispatch, getState) => {
   const state = getState();
   const authUser = getAuthenticatedUserName(state);
   const isGuest = guestUserRegex.test(name);
 
-  dispatch({
+  return dispatch({
     type: GET_ACCOUNT.ACTION,
-    payload: ApiClient.getUserAccount(name, false, authUser).then(res => res),
+    payload: ApiClient.getUserAccount(name, false, authUser).then(res => {
+      if (!isGuest) dispatch(getInfoForSideBar(name));
+
+      return res;
+    }),
     meta: { username: name },
   });
-
-  if (!isGuest) dispatch(getInfoForSideBar(name));
 };
 
 export const GET_RANDOM_EXPERTS = '@users/GET_RANDOM_EXPERTS';

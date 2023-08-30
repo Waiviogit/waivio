@@ -2,6 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { Helmet } from 'react-helmet';
+import { useParams } from 'react-router';
+import { capitalize } from 'lodash';
 
 import { renderRoutes } from 'react-router-config';
 import Affix from '../components/Utils/Affix';
@@ -16,10 +18,11 @@ import { useSeoInfo } from '../../hooks/useSeoInfo';
 const RewardsMainPage = props => {
   const helmetIcon = useSelector(getHelmetIcon);
   const siteName = useSelector(getWebsiteName);
+  const { 0: type } = useParams();
   const desc = 'Reserve the reward for a few days. Share photos of the dish and get the reward!';
   const img = DEFAULTS.FAVICON;
   const { canonicalUrl } = useSeoInfo();
-  const title = `Rewards - ${siteName}`;
+  const title = `${capitalize(type)} rewards - ${siteName}`;
 
   return (
     <div className="Rewards-new container settings-layout container">

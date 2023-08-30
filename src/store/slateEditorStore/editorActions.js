@@ -323,7 +323,7 @@ export function createPost(postData, beneficiaries, isReview, campaign) {
     }
     const url = getCurrentHost(getState());
     const regex = /^(?:https?:\/\/)?(?:www\.)?([^/]+).*$/;
-    const match = url.match(regex);
+    const match = url?.match(regex);
     const host = match[1];
 
     const {
@@ -436,7 +436,7 @@ export function createPost(postData, beneficiaries, isReview, campaign) {
           } else {
             setTimeout(() => dispatch(push(`/@${author}`)), 3000);
           }
-          if (window?.gtag) window.gtag('event', 'publish_post');
+          if (window?.gtag) window.gtag('event', 'publish_post', { debug_mode: true });
 
           if (result.status === 429) {
             dispatch(notify(`To many comments from ${authUser.name} in queue`, 'error'));

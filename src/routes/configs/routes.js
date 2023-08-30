@@ -15,6 +15,8 @@ import ShopDepartmentsWobjList from '../../client/Shop/DepartmentsWobjList/ShopD
 import UserDepartmentsWobjList from '../../client/Shop/DepartmentsWobjList/UserDepartmentsWobjList';
 import { isMobile } from '../../common/helpers/apiHelpers';
 import ObjectDepartmentsWobjList from '../../client/object/ObjectTypeShop/ObjectDepartmentsWobjList';
+import ObjectFeed from '../../client/object/ObjectFeed';
+import LocalRewardsList from '../../client/newRewards/RewardLists/LocalRewardsList';
 
 const routes = {
   component: Wrapper,
@@ -51,7 +53,7 @@ const routes = {
         {
           path: '/(global|local)',
           exact: true,
-          component: Views.LocalRewardsList,
+          component: LocalRewardsList,
         },
         {
           path: '/(details|duplicate|create)/:campaignId?',
@@ -298,6 +300,11 @@ const routes = {
               component: Views.AffiliateCodes,
             },
             {
+              path: '/adsense',
+              exact: true,
+              component: Views.AdSenseAds,
+            },
+            {
               path: '/settings',
               exact: true,
               component: Views.WebsitesSettings,
@@ -324,7 +331,7 @@ const routes = {
     {
       path: [
         `/@:name/(${URL.USER.tabs})?/(waiv-table|table|:departments)?`,
-        `/@:name/userShop/:department?`,
+        `/@:name/(userShop)/:department?`,
       ],
       component: User,
       exact: true,
@@ -341,7 +348,7 @@ const routes = {
           component: Views.UserFollowers,
         },
         {
-          path: '/userShop/:department?',
+          path: '/(userShop)/:department?',
           exact: true,
           component: UserDepartmentsWobjList,
         },
@@ -394,7 +401,7 @@ const routes = {
         {
           path: ['', '/(newsFilter)/:parentName', '/(newsfeed)/:parentName/:itemId?', '/(reviews)'],
           exact: true,
-          component: Views.ObjectPageFeed,
+          component: ObjectFeed,
         },
         {
           path: '/about',

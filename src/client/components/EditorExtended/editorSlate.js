@@ -330,6 +330,7 @@ const EditorSlate = props => {
             handleObjectSelect={handleObjectSelect}
             editorNode={editorRef.current}
             isComment={isComment}
+            isCommentEdit={props.isCommentEdit}
             size={isComment ? 25 : 30}
             initialPosTop={initialPosTopBtn}
             ADD_BTN_DIF={ADD_BTN_DIF}
@@ -355,6 +356,7 @@ EditorSlate.propTypes = {
   setEditor: PropTypes.func,
   setEditorCb: PropTypes.func,
   isComment: PropTypes.bool,
+  isCommentEdit: PropTypes.bool,
   small: PropTypes.bool,
   minHeight: PropTypes.string,
   initialPosTopBtn: PropTypes.string,

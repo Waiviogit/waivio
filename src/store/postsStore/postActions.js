@@ -167,7 +167,7 @@ export const voteCommentFromRewards = (postId, author, permlink, weight = 10000)
   const voter = auth.user.name;
 
   return steemConnectAPI.vote(voter, author, permlink, weight).then(res => {
-    if (window.gtag) window.gtag('event', 'vote_comment');
+    if (window.gtag) window.gtag('event', 'vote_comment', { debug_mode: true });
 
     // Delay to make sure you get the latest data (unknown issue with API)
     setTimeout(() => dispatch(getContent(author, permlink, true)), 1000);
