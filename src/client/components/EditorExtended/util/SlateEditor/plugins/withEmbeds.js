@@ -60,7 +60,7 @@ const withEmbeds = cb => editor => {
     if (html && !isBlobImage) {
       let _html = html;
 
-      const match = html.match(/<!--StartFragment-->([\s\S]*?)<!--EndFragment-->/g);
+      const match = html?.match(/<!--StartFragment-->([\s\S]*?)<!--EndFragment-->/g);
 
       if (match) {
         /* on Windows browser insert extra breaklines  */

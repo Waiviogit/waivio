@@ -29,10 +29,10 @@ function extract(body, regex) {
 
 export function extractImageTags(body) {
   return extract(body, imgTag).map(image => {
-    const attributes = image.match(attrs);
+    const attributes = image?.match(attrs);
 
     return attributes.reduce((a, b) => {
-      const values = b.match(attrElements);
+      const values = b?.match(attrElements);
 
       if (size(values) === 3) {
         const key = get(values, 1);

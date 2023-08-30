@@ -16,6 +16,7 @@ import UserDepartmentsWobjList from '../../client/Shop/DepartmentsWobjList/UserD
 import { isMobile } from '../../common/helpers/apiHelpers';
 import ObjectDepartmentsWobjList from '../../client/object/ObjectTypeShop/ObjectDepartmentsWobjList';
 import ObjectFeed from '../../client/object/ObjectFeed';
+import LocalRewardsList from '../../client/newRewards/RewardLists/LocalRewardsList';
 
 const routes = {
   component: Wrapper,
@@ -52,7 +53,7 @@ const routes = {
         {
           path: '/(global|local)',
           exact: true,
-          component: Views.LocalRewardsList,
+          component: LocalRewardsList,
         },
         {
           path: '/(details|duplicate|create)/:campaignId?',

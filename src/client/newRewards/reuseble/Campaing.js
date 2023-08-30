@@ -24,11 +24,11 @@ const Campaing = ({ campain, isRejected, onActionInitiated, hovered, intl, handl
   const history = useHistory();
   const query = useQuery();
   let pathname = history.location.pathname.includes('/rewards/')
-    ? `${location.pathname}/eligible`
+    ? `${history.location.pathname}/eligible`
     : `/rewards/${campain.reach?.[0] || 'global'}/all`;
 
   if (query.get('showAll')) {
-    pathname = `${location.pathname}/all`;
+    pathname = `${history.location.pathname}/all`;
   }
 
   const { setRestaurant, openModal } = useQuickRewards();

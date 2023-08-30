@@ -28,7 +28,7 @@ export const isValidImage = (file, maxFileSize = MAXIMUM_UPLOAD_SIZE, allowedFor
     ? new RegExp(`^image/(${allowedFormats.join('|')})$`, 'g')
     : 'image/.*';
 
-  return file.type.match(pattern) && file.size <= maxFileSize;
+  return file.type?.match(pattern) && file.size <= maxFileSize;
 };
 
 export const getImagePath = (album, image, type) =>
