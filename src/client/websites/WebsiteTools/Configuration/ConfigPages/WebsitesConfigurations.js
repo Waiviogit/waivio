@@ -327,7 +327,7 @@ const WebsitesConfigurations = ({
               <div className="WebsitesConfigurations__headers">
                 <b>{header.name}</b> | {header.message}
               </div>
-              {/* <div>Startup page: {header.startup.toUpperCase()}</div> */}
+              <div>Startup page: {header.startup.toUpperCase()}</div>
               <Button type="primary" onClick={() => setOpenHeaderConfig(true)}>
                 Edit
               </Button>
