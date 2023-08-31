@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
-import { useHistory } from 'react-router';
+import { Link } from 'react-router-dom';
 import { Tabs } from 'antd';
 import UserDynamicList from './UserDynamicList';
 import { getFollowersFromAPI, getWobjectFollowing } from '../../waivioApi/ApiClient';
@@ -16,7 +16,8 @@ import { getUser } from '../../store/usersStore/usersSelectors';
 import ObjectDynamicList from '../object/ObjectDynamicList';
 
 const UserFollowers = ({ match, sort, authUser, handleChange, user, locale, intl }) => {
-  const history = useHistory();
+  const { name, 0: tab } = match.params;
+
   const limit = 50;
   let skip = 0;
   let objSkip = 0;
@@ -25,7 +26,7 @@ const UserFollowers = ({ match, sort, authUser, handleChange, user, locale, intl
   const followersCount = user.followers_count || 0;
 
   const getObjects = async () => {
-    const r = await getWobjectFollowing(match.params.name, objSkip, limit, authUser, locale);
+    const r = await getWobjectFollowing(name, objSkip, limit, authUser, locale);
     const objLength = r.length;
 
     objSkip += objLength;
@@ -34,46 +35,58 @@ const UserFollowers = ({ match, sort, authUser, handleChange, user, locale, intl
   };
 
   const fetcher = async () => {
-    const response = await getFollowersFromAPI(match.params.name, limit, skip, sort, authUser);
+    const response = await getFollowersFromAPI(name, limit, skip, sort, authUser);
     const users = response.followers;
 
     skip += limit;
 
     return { users, hasMore: response.hasMore };
   };
-  const handleTabChange = key => {
-    history.push(`/@${user.name}/${key}`);
-  };
 
   return (
-    <Tabs className={'UserFollowers'} onTabClick={handleTabChange}>
+    <Tabs defaultActiveKey={tab} className={'UserFollowers'}>
       <Tabs.TabPane
         className="UserFollowing__item"
-        tab={`${intl.formatMessage({
-          id: 'followers',
-          defaultMessage: 'Followers',
-        })} ${followersCount}`}
+        tab={
+          <Link to={`/@${name}/followers`}>
+            {intl.formatMessage({
+              id: 'followers',
+              defaultMessage: 'Followers',
+            })}{' '}
+            {followersCount}
+          </Link>
+        }
         key="followers"
       >
         <UserDynamicList limit={limit} fetcher={fetcher} handleChange={handleChange} />
       </Tabs.TabPane>
       <Tabs.TabPane
-        tab={`${intl.formatMessage({
-          id: 'following',
-          defaultMessage: 'Following',
-        })} ${usersFollowingCount}`}
+        tab={
+          <Link to={`/@${name}/following`}>
+            {intl.formatMessage({
+              id: 'following',
+              defaultMessage: 'Following',
+            })}{' '}
+            {usersFollowingCount}
+          </Link>
+        }
         key="following"
         className="UserFollowing__item"
       >
         <UserFollowing locale={locale} match={match} user={authUser} handleChange={handleChange} />
       </Tabs.TabPane>
       <Tabs.TabPane
-        tab={`${intl.formatMessage({
-          id: 'objects',
-          defaultMessage: 'Objects',
-        })} ${objectsFollowingCount}`}
-        key="following-objects"
+        tab={
+          <Link to={`/@${name}/following-objects`}>
+            {intl.formatMessage({
+              id: 'objects',
+              defaultMessage: 'Objects',
+            })}{' '}
+            {objectsFollowingCount}
+          </Link>
+        }
         className="UserFollowing__item"
+        key="following-objects"
       >
         <ObjectDynamicList limit={limit} fetcher={getObjects} />
       </Tabs.TabPane>
