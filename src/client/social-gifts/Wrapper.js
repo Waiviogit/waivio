@@ -35,6 +35,7 @@ import Header from './Header/Header';
 import NotificationPopup from './../notifications/NotificationPopup';
 import BBackTop from './../components/BBackTop';
 import ErrorBoundary from './../widgets/ErrorBoundary';
+import Loading from './../components/Icon/Loading';
 import {
   getIsSocialGifts,
   getTranslations,
@@ -42,7 +43,7 @@ import {
   getWebsiteColors,
   getWebsiteConfiguration,
 } from '../../store/appStore/appSelectors';
-import { getAuthenticatedUserName } from '../../store/authStore/authSelectors';
+import { getAuthenticatedUserName, getIsAuthFetching } from '../../store/authStore/authSelectors';
 import { getIsOpenWalletTable } from '../../store/walletStore/walletSelectors';
 import { getLocale, getNightmode } from '../../store/settingsStore/settingsSelectors';
 import QuickRewardsModal from './../rewards/QiuckRewardsModal/QuickRewardsModal';
@@ -231,7 +232,11 @@ const SocialWrapper = props => {
         <Layout data-dir={language && language.rtl ? 'rtl' : 'ltr'}>
           {!signInPage && !isSocialGifts && <Header />}
           <div className={'ShopWebsiteWrapper'}>
-            {renderRoutes(props.route.routes, { isSocial: true })}
+            {props.loadingFetching ? (
+              <Loading />
+            ) : (
+              renderRoutes(props.route.routes, { isSocial: true })
+            )}
             <NotificationPopup />
             <BBackTop
               className={props.isOpenWalletTable ? 'WalletTable__bright' : 'primary-modal'}
@@ -264,6 +269,7 @@ SocialWrapper.propTypes = {
   setLoadingStatus: PropTypes.func,
   getTokenRates: PropTypes.func.isRequired,
   isOpenWalletTable: PropTypes.bool,
+  loadingFetching: PropTypes.bool,
   location: PropTypes.shape({
     search: PropTypes.string,
     pathname: PropTypes.string,
@@ -297,6 +303,7 @@ SocialWrapper.defaultProps = {
   dispatchGetAuthGuestBalance: () => {},
   isOpenWalletTable: false,
   isOpenModal: false,
+  loadingFetching: true,
   location: {},
 };
 
@@ -331,6 +338,7 @@ export default ErrorBoundary(
         locale: getLocale(state),
         nightmode: getNightmode(state),
         isOpenWalletTable: getIsOpenWalletTable(state),
+        loadingFetching: getIsAuthFetching(state),
         isOpenModal: getIsOpenModal(state),
         colors: getWebsiteColors(state),
         config: getWebsiteConfiguration(state),

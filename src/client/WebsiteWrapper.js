@@ -28,8 +28,9 @@ import NotificationPopup from './notifications/NotificationPopup';
 import BBackTop from './components/BBackTop';
 import { guestUserRegex } from '../common/helpers/regexHelpers';
 import ErrorBoundary from './widgets/ErrorBoundary';
+import Loading from './components/Icon/Loading';
 import { getIsDiningGifts, getTranslations, getUsedLocale } from '../store/appStore/appSelectors';
-import { getAuthenticatedUserName } from '../store/authStore/authSelectors';
+import { getAuthenticatedUserName, getIsAuthFetching } from '../store/authStore/authSelectors';
 import { getIsOpenWalletTable } from '../store/walletStore/walletSelectors';
 import { getLocale, getNightmode } from '../store/settingsStore/settingsSelectors';
 import MainPageHeader from './websites/WebsiteLayoutComponents/Header/MainPageHeader';
@@ -52,6 +53,7 @@ export const AppSharedContext = React.createContext({ usedLocale: 'en-US', isGue
     locale: getLocale(state),
     nightmode: getNightmode(state),
     isOpenWalletTable: getIsOpenWalletTable(state),
+    loadingFetching: getIsAuthFetching(state),
     isDiningGifts: getIsDiningGifts(state),
     isOpenModal: getIsOpenModal(state),
   }),
@@ -90,6 +92,7 @@ class WebsiteWrapper extends React.PureComponent {
     dispatchGetAuthGuestBalance: PropTypes.func,
     getTokenRates: PropTypes.func.isRequired,
     isOpenWalletTable: PropTypes.bool,
+    loadingFetching: PropTypes.bool,
     location: PropTypes.shape({
       search: PropTypes.string,
       pathname: PropTypes.string,
@@ -120,6 +123,7 @@ class WebsiteWrapper extends React.PureComponent {
     isOpenWalletTable: false,
     isDiningGifts: false,
     isOpenModal: false,
+    loadingFetching: true,
     location: {},
   };
 
@@ -223,6 +227,7 @@ class WebsiteWrapper extends React.PureComponent {
       translations,
       username,
       isOpenWalletTable,
+      loadingFetching,
       location,
       isDiningGifts,
       isOpenModal,
@@ -256,7 +261,7 @@ class WebsiteWrapper extends React.PureComponent {
                 />
               )}
               <div>
-                {renderRoutes(this.props.route.routes)}
+                {loadingFetching ? <Loading /> : renderRoutes(this.props.route.routes)}
                 <NotificationPopup />
                 <BBackTop className={isOpenWalletTable ? 'WalletTable__bright' : 'primary-modal'} />
               </div>
