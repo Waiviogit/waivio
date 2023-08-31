@@ -20,7 +20,7 @@ import ObjectNewsFeed from './FeedMasonry/ObjectNewsFeed';
 import NewDiscover from './NewDiscover/NewDiscover';
 import WebsiteFeed from '../websites/WebsiteFeed/WebsiteFeed';
 import DepatmentsSearch from './DepatmentsSearch/DepatmentsSearch';
-import PostsCommentsActivity from '../user/PostsCommentsActivity';
+import PostsCommentsActivity from '../user/PostsCommentsActivity/PostsCommentsActivity';
 
 const routes = host => ({
   component: SocialWrapper,

@@ -1,102 +1,78 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Tabs } from 'antd';
-import PropTypes from 'prop-types';
-import { FormattedMessage, FormattedNumber } from 'react-intl';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
+import { useParams } from 'react-router';
+import { Link } from 'react-router-dom';
 
+import { FormattedMessage, FormattedNumber } from 'react-intl';
 import { getExpertiseCounters, getWobjectsWithUserWeight } from '../../waivioApi/ApiClient';
 import ObjectDynamicList from '../object/ObjectDynamicList';
-import { getUser } from '../../store/usersStore/usersSelectors';
 import { getLocale } from '../../store/settingsStore/settingsSelectors';
 
 import './UserExpertise.less';
 
 const TabPane = Tabs.TabPane;
+const limit = 30;
 
-@connect((state, ownProps) => ({
-  locale: getLocale(state),
-  user: getUser(state, ownProps.match.params.name),
-}))
-export default class UserExpertise extends React.Component {
-  static propTypes = {
-    match: PropTypes.shape().isRequired,
-    locale: PropTypes.string.isRequired,
-    user: PropTypes.shape().isRequired,
-    history: PropTypes.shape(),
-  };
+const UserExpertise = () => {
+  const [wobjsExpCount, setWobjectsExpCount] = useState();
+  const [hashsExpCount, setHashtagsExpCount] = useState();
+  const locale = useSelector(getLocale);
+  const { name, 0: tab } = useParams();
 
-  static limit = 30;
+  useEffect(() => {
+    getExpertiseCounters(name).then(({ hashtagsExpCount, wobjectsExpCount }) => {
+      setWobjectsExpCount(wobjectsExpCount);
+      setHashtagsExpCount(hashtagsExpCount);
+    });
+  }, []);
 
-  state = {
-    wobjectsExpCount: 0,
-    hashtagsExpCount: 0,
-  };
-
-  componentDidMount() {
-    getExpertiseCounters(this.props.user.name).then(({ hashtagsExpCount, wobjectsExpCount }) =>
-      this.setState({
-        hashtagsExpCount,
-        wobjectsExpCount,
-      }),
-    );
-  }
-
-  fetcher = (skip, authUser, isOnlyHashtags) => {
-    const { match, locale } = this.props;
-
-    return getWobjectsWithUserWeight(
-      match.params.name,
+  const fetcher = (skip, authUser, isOnlyHashtags) =>
+    getWobjectsWithUserWeight(
+      name,
       skip,
-      UserExpertise.limit,
+      limit,
       authUser,
       isOnlyHashtags ? ['hashtag'] : null,
       !isOnlyHashtags ? ['hashtag'] : null,
       locale,
     );
-  };
 
-  render() {
-    const { wobjectsExpCount, hashtagsExpCount } = this.state;
-    const handleTabChange = key => {
-      this.props.history.push(`/@${this.props.user.name}/${key}`);
-    };
+  return (
+    <div className="UserExpertise">
+      <Tabs defaultActiveKey={tab} className="UserFollowers">
+        <TabPane
+          tab={
+            <Link to={`/@${name}/expertise-hashtags`} className="UserExpertise__item">
+              <FormattedMessage id="hashtag_value_placeholder" defaultMessage="Hashtags" />{' '}
+              {!!hashsExpCount && <FormattedNumber value={hashsExpCount} />}
+            </Link>
+          }
+          key="expertise-hashtags"
+        >
+          <ObjectDynamicList
+            isOnlyHashtags
+            limit={UserExpertise.limit}
+            fetcher={fetcher}
+            expertize
+          />
+        </TabPane>
+        <TabPane
+          tab={
+            <Link to={`/@${name}/expertise-hashtags`} className="UserExpertise__item">
+              <FormattedMessage id="objects" defaultMessage="Objects" />{' '}
+              {!!wobjsExpCount && <FormattedNumber value={wobjsExpCount} />}
+            </Link>
+          }
+          key="expertise-objects"
+        >
+          <ObjectDynamicList limit={UserExpertise.limit} fetcher={fetcher} expertize />
+        </TabPane>
+      </Tabs>
+    </div>
+  );
+};
 
-    return (
-      <div className="UserExpertise">
-        <Tabs defaultActiveKey="1" className="UserFollowers" onTabClick={handleTabChange}>
-          <TabPane
-            tab={
-              <React.Fragment>
-                <span className="UserExpertise__item">
-                  <FormattedMessage id="hashtag_value_placeholder" defaultMessage="Hashtags" />{' '}
-                  {!!hashtagsExpCount && <FormattedNumber value={hashtagsExpCount} />}
-                </span>
-              </React.Fragment>
-            }
-            key="expertise-hashtags"
-          >
-            <ObjectDynamicList
-              isOnlyHashtags
-              limit={UserExpertise.limit}
-              fetcher={this.fetcher}
-              expertize
-            />
-          </TabPane>
-          <TabPane
-            tab={
-              <React.Fragment>
-                <span className="UserExpertise__item">
-                  <FormattedMessage id="objects" defaultMessage="Objects" />{' '}
-                  {!!wobjectsExpCount && <FormattedNumber value={wobjectsExpCount} />}
-                </span>
-              </React.Fragment>
-            }
-            key="expertise-objects"
-          >
-            <ObjectDynamicList limit={UserExpertise.limit} fetcher={this.fetcher} expertize />
-          </TabPane>
-        </Tabs>
-      </div>
-    );
-  }
-}
+UserExpertise.propTypes = {};
+
+export default UserExpertise;

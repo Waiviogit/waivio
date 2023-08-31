@@ -1,9 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Route, Switch, withRouter } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import UserHeader from './UserHeader/UserHeader';
 import UserMenu from '../components/UserMenu';
-import Hero from '../components/Hero';
 import { BXY_GUEST_PREFIX, GUEST_PREFIX } from '../../common/constants/waivio';
 
 const activityFields = [
@@ -56,7 +55,7 @@ const isUserActive = user =>
       5 * 60 * 1000,
   );
 
-const UserHero = ({ authenticated, user, username, isSameUser, coverImage, hasCover, isGuest }) => {
+const UserHero = ({ user, username, isSameUser, coverImage, hasCover, isGuest }) => {
   const objectsFollowingCount = user.objects_following_count || 0;
   const usersFollowingCount = user.users_following_count || 0;
   const followingCount = usersFollowingCount + objectsFollowingCount;
@@ -64,32 +63,21 @@ const UserHero = ({ authenticated, user, username, isSameUser, coverImage, hasCo
 
   return (
     <div>
-      <Switch>
-        <Route
-          path="/@:name"
-          render={() => (
-            <div>
-              <UserHeader
-                user={user}
-                username={username}
-                isSameUser={isSameUser}
-                coverImage={coverImage}
-                hasCover={hasCover}
-                isActive={isUserActive(user)}
-                isGuest={isGuest}
-              />
-              <UserMenuWrapper followers={followersCount} following={followingCount} />
-            </div>
-          )}
-        />
-        <Route render={() => (authenticated ? <Hero /> : <div />)} />
-      </Switch>
+      <UserHeader
+        user={user}
+        username={username}
+        isSameUser={isSameUser}
+        coverImage={coverImage}
+        hasCover={hasCover}
+        isActive={isUserActive(user)}
+        isGuest={isGuest}
+      />
+      <UserMenuWrapper followers={followersCount} following={followingCount} />
     </div>
   );
 };
 
 UserHero.propTypes = {
-  authenticated: PropTypes.bool.isRequired,
   user: PropTypes.shape().isRequired,
   username: PropTypes.string.isRequired,
   isSameUser: PropTypes.bool,

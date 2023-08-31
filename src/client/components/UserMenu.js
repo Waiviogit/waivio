@@ -1,137 +1,85 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import { withRouter } from 'react-router-dom';
-import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { useParams } from 'react-router';
 import { FormattedMessage, FormattedNumber } from 'react-intl';
 import { guestUserRegex } from '../../common/helpers/regexHelpers';
 import { getIsSocial, getIsWaivio } from '../../store/appStore/appSelectors';
 
 import './UserMenu.less';
 
-@connect(state => ({
-  isWaivio: getIsWaivio(state),
-  isSocial: getIsSocial(state),
-}))
-class UserMenu extends React.Component {
-  static propTypes = {
-    onChange: PropTypes.func,
-    defaultKey: PropTypes.string,
-    isWaivio: PropTypes.bool,
-    isSocial: PropTypes.bool,
-    followers: PropTypes.number,
-    match: PropTypes.shape({
-      params: PropTypes.shape({
-        name: PropTypes.string,
-      }),
-    }),
-  };
+const UserMenu = props => {
+  const isWaivio = useSelector(getIsWaivio);
+  const isSocial = useSelector(getIsSocial);
+  const { name, 0: tab = 'posts' } = useParams();
+  const currUserIsGuest = guestUserRegex.test(name);
+  const showUserShop = isWaivio || isSocial;
 
-  static defaultProps = {
-    onChange: () => {},
-    defaultKey: 'discussions',
-    followers: 0,
-    following: 0,
-    isGuest: false,
-  };
+  const getItemClasses = keys =>
+    classNames('UserMenu__item', { 'UserMenu__item--active': keys.includes(tab) });
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      current: props.defaultKey ? props.defaultKey : 'discussions',
-    };
-  }
-
-  componentWillReceiveProps(nextProps) {
-    this.setState({
-      current: nextProps.defaultKey ? nextProps.defaultKey : 'discussions',
-    });
-  }
-
-  getItemClasses = key =>
-    classNames('UserMenu__item', { 'UserMenu__item--active': this.state.current === key });
-
-  handleClick = e => {
-    const key = e.currentTarget.dataset.key;
-
-    this.setState({ current: key }, () => this.props.onChange(key));
-  };
-
-  render() {
-    const { isWaivio, isSocial } = this.props;
-    const currUserIsGuest = guestUserRegex.test(this.props.match.params.name);
-    const showUserShop = isWaivio || isSocial;
-
-    return (
-      <div className="UserMenu">
-        <div className="container menu-layout">
-          <div className="left" />
-          <ul className="UserMenu__menu ">
-            <li
-              className={classNames('UserMenu__item', {
-                'UserMenu__item--active': ['discussions', 'comments', 'activity'].includes(
-                  this.state.current,
-                ),
-              })}
-              onClick={this.handleClick}
-              role="presentation"
-              data-key="discussions"
-            >
+  return (
+    <div className="UserMenu">
+      <div className="container menu-layout">
+        <div className="left" />
+        <ul className="UserMenu__menu ">
+          <li
+            className={getItemClasses(['discussions', 'comments', 'activity', 'posts'])}
+            role="presentation"
+          >
+            <Link to={`/@${name}`}>
               <FormattedMessage id="posts" defaultMessage="Posts" />
-            </li>
-            {!currUserIsGuest && showUserShop && (
-              <li
-                className={classNames('UserMenu__item', {
-                  'UserMenu__item--active': ['userShop'].includes(this.state.current),
-                })}
-                onClick={this.handleClick}
-                role="presentation"
-                data-key="userShop"
-              >
+            </Link>
+          </li>
+          {!currUserIsGuest && showUserShop && (
+            <li className={getItemClasses(['userShop'])} role="presentation">
+              <Link to={`/@${name}/userShop`}>
                 <FormattedMessage id="shop" defaultMessage="Shop" />
-              </li>
-            )}
-            <li
-              className={this.getItemClasses('followers')}
-              onClick={this.handleClick}
-              role="presentation"
-              data-key="followers"
-            >
-              {' '}
-              <span>
-                <FormattedMessage id="followers" defaultMessage="Followers" />{' '}
-                <FormattedNumber value={this.props.followers} />
-              </span>
+              </Link>
             </li>
-            <li
-              className={this.getItemClasses('expertise')}
-              onClick={this.handleClick}
-              role="presentation"
-              data-key="expertise-hashtags"
-            >
+          )}
+          <li
+            className={getItemClasses(['followers', 'following', 'following-objects'])}
+            role="presentation"
+          >
+            <Link to={`/@${name}/followers`}>
+              <FormattedMessage id="followers" defaultMessage="Followers" />{' '}
+              <FormattedNumber value={props.followers} />
+            </Link>
+          </li>
+          <li className={getItemClasses(['expertise-hashtags', 'expertise-objects'])}>
+            <Link to={`/@${name}/expertise-hashtags`}>
               <FormattedMessage id="user_expertise" defaultMessage="Expertise" />
-            </li>
-            <li
-              className={this.getItemClasses('transfers')}
-              onClick={this.handleClick}
-              role="presentation"
-              data-key="transfers?type=WAIV"
-            >
+            </Link>
+          </li>
+          <li className={getItemClasses(['transfers'])}>
+            <Link to={`/@${name}/transfers?type=WAIV`}>
               <FormattedMessage id="wallet" defaultMessage="Wallet" />
-            </li>
-            <li
-              className={this.getItemClasses('about')}
-              onClick={this.handleClick}
-              role="presentation"
-              data-key="about"
-            >
+            </Link>
+          </li>
+          <li className={getItemClasses(['about'])} data-key="about">
+            <Link to={`/@${name}/about`}>
               <FormattedMessage id="about" defaultMessage="About" />
-            </li>
-          </ul>
-        </div>
+            </Link>
+          </li>
+        </ul>
       </div>
-    );
-  }
-}
+    </div>
+  );
+};
 
-export default withRouter(UserMenu);
+UserMenu.propTypes = {
+  followers: PropTypes.number,
+};
+
+UserMenu.defaultProps = {
+  onChange: () => {},
+  defaultKey: 'discussions',
+  followers: 0,
+  following: 0,
+  isGuest: false,
+};
+
+export default UserMenu;

@@ -37,7 +37,7 @@ const UserBlog = props => {
   }, [name, props.tagsCondition]);
 
   const loadMoreContentAction = () =>
-    getUserProfileBlogPosts(name, {
+    props.getUserProfileBlogPosts(name, {
       limit,
       initialLoad: false,
     });

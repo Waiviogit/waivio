@@ -29,14 +29,23 @@
     height: 45px;
     margin-right: 12px;
     cursor: pointer;
-    color: #99aab5;
-    font-size: 16px;
-    font-weight: 500;
-    text-transform: capitalize;
+    transition: 0.5s;
+
+    a {
+      display: inline-block;
+      line-height: 48px;
+      color: #99aab5;
+      font-size: 16px;
+      font-weight: 500;
+      text-transform: capitalize;
+    }
 
     &--active,
     &:hover {
-      color: var(--website-color);
+      a {
+        color: var(--website-color);
+      }
+
       border-bottom: 2px @border-style-base var(--website-color);
     }
   }

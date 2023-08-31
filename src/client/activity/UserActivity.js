@@ -91,7 +91,7 @@ class UserActivity extends React.Component {
     } = this.props;
     const username = isCurrentUser
       ? authenticatedUserName
-      : this.props.location.pathname.match(/@(.*)(.*?)\//)[1];
+      : this.props.location.pathname.match(/@(.*)(.*?)\//)?.[1];
 
     if (isEmpty(totalVestingFundSteem) || isEmpty(totalVestingShares)) {
       this.props.getGlobalProperties();
