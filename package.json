@@ -115,7 +115,6 @@
     "react-transition-group": "^2.8.0",
     "react-visibility-sensor": "^3.10.1",
     "reading-time": "^1.1.0",
-    "redis": "^2.8.0",
     "redux": "^4.0.4",
     "redux-actions": "^0.12.0",
     "redux-mock-store": "^1.5.3",
@@ -149,6 +148,7 @@
     "url-search-params-polyfill": "^2.0.0",
     "uuid": "^3.3.2",
     "wallet-address-validator": "^0.2.4",
+    "ws": "^8.13.0",
     "xmldom": "^0.1.27"
   },
   "devDependencies": {
