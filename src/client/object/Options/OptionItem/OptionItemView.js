@@ -35,11 +35,11 @@ const OptionItemView = ({
   const waivioAvailableOptionsLink = el =>
     `/object/${getAvailableOptionPermlinkAndStyle(el, true)}`;
   const linkToOption = isSocialObject
-    ? `/object/${wobject.object_type}/${wobject.author_permlink}/options/${option[0]}`
+    ? `/object/${wobject.author_permlink}/options/${option[0]}`
     : waivioOptionsLink;
   const linkToAvailableOption = el =>
     isSocialObject
-      ? `/object/${wobject.object_type}/${getAvailableOptionPermlinkAndStyle(el, true)}`
+      ? `/object/${getAvailableOptionPermlinkAndStyle(el, true)}`
       : waivioAvailableOptionsLink(el);
 
   useEffect(() => {
