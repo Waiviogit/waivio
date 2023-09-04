@@ -128,7 +128,7 @@
     "remark-slate": "^1.8.6",
     "remark-slate-transformer": "^0.6.7",
     "remark-stringify": "^9.0.1",
-    "remarkable": "1.7.1",
+    "remarkable": "1.7.2",
     "reselect": "^4.0.0",
     "resize-observer-polyfill": "^1.4.2",
     "sanitize-html": "1.15.0",
