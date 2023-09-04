@@ -34,6 +34,10 @@ const CheckListView = ({ wobject, listItems, loading, intl, hideBreadCrumbs }) =
             to={{
               pathname: `/checklist/${match.params.name}`,
               hash: createNewHash(listItem?.author_permlink, history.location.hash),
+              search:
+                match.params.name === listItem?.author_permlink
+                  ? ''
+                  : `currObj=${listItem?.author_permlink}`,
             }}
           >
             <div
