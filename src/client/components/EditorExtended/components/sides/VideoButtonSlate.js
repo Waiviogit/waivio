@@ -37,6 +37,7 @@ const VideoLinkInput = props => {
 
   return (
     <Input.Search
+      autoFocus
       className={className}
       enterButton="Enter"
       placeholder={props.intl.formatMessage({
