@@ -89,6 +89,14 @@ const Breadcrumbs = ({ inProduct }) => {
                 pathname: inProduct
                   ? `/checklist/${breadcrumbs[0].author_permlink}`
                   : location.pathname,
+                ...(inProduct
+                  ? {}
+                  : {
+                      search:
+                        match.params.name === crumb.author_permlink
+                          ? ''
+                          : `currObj=${crumb.author_permlink}`,
+                    }),
               }}
             >
               {getTruncatedTitle(getObjectName(crumb))}

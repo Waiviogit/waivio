@@ -58,12 +58,14 @@ export default function createSsrHandler(template) {
 
       const store = getStore(sc2Api, waivioAPI, req.url);
       const routes = switchRoutes(hostname);
-      const branch = matchRoutes(routes, req.url.split('?')[0]);
+      const splittedUrl = req.url.split('?');
+      const branch = matchRoutes(routes, splittedUrl[0]);
+      const query = new URLSearchParams(splittedUrl[1] ? `?${splittedUrl[1]}` : '');
       const promises = branch.map(({ route, match }) => {
         const fetchData = route?.component?.fetchData;
 
         if (fetchData instanceof Function) {
-          return fetchData({ store, match, req, res });
+          return fetchData({ store, match, req, res, query });
         }
 
         return Promise.resolve(null);
