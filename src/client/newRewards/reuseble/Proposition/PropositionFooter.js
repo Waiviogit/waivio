@@ -19,7 +19,7 @@ import { getAuthenticatedUserName } from '../../../../store/authStore/authSelect
 import { getPostCommentsFromApi } from '../../../../waivioApi/ApiClient';
 import CommentCard from '../../Comments/CommentCard';
 import config from '../../../../waivioApi/routes';
-import { getIsWaivio } from '../../../../store/appStore/appSelectors';
+import { getIsSocial, getIsWaivio } from '../../../../store/appStore/appSelectors';
 import WebsiteReservedButtons from '../../../rewards/Proposition/WebsiteReservedButtons/WebsiteReservedButtons';
 import { getDaysLeftForNew } from '../../../rewards/rewardsHelper';
 import ReservedButtons from '../../../rewards/Proposition/WebsiteReservedButtons/ReservedButtons';
@@ -30,6 +30,7 @@ const PropositionFooter = ({ type, openDetailsModal, proposition, getProposition
   const dispatch = useDispatch();
   const authUserName = useSelector(getAuthenticatedUserName);
   const isWaivio = useSelector(getIsWaivio);
+  const isSocial = useSelector(getIsSocial);
   const propositionFooterContainerClassList = classnames('Proposition-new__footer-container', {
     'Proposition-new__footer-container--noEligible': proposition.notEligible,
     'Proposition-new__footer-container--reserved': type === 'reserved',
@@ -232,7 +233,7 @@ const PropositionFooter = ({ type, openDetailsModal, proposition, getProposition
         );
 
       default:
-        return isWaivio ? (
+        return isWaivio || isSocial ? (
           <div className="Proposition-new__button-container">
             <ReservedButtons
               handleReserveForPopover={handleReserveForPopup}
