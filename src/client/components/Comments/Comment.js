@@ -255,12 +255,6 @@ class Comment extends React.Component {
       }
 
       return <CommentForm isEdit {...props} onClose={this.handleEditClick} />;
-
-      // return this.state.editOpen ? (
-      //   <EmbeddedCommentForm {...props} onClose={this.handleEditClick} />
-      // ) : (
-      //   <CommentForm {...props} />
-      // );
     };
 
     if (this.state.editOpen) {

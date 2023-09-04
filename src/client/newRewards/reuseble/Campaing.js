@@ -9,7 +9,7 @@ import ObjectCardView from '../../objectCard/ObjectCardView';
 import USDDisplay from '../../components/Utils/USDDisplay';
 import useQuickRewards from '../../../hooks/useQuickRewards';
 import withAuthActions from '../../auth/withAuthActions';
-import { getIsWaivio } from '../../../store/appStore/appSelectors';
+import { getIsSocial, getIsWaivio } from '../../../store/appStore/appSelectors';
 import useQuery from '../../../hooks/useQuery';
 
 import './Campaing.less';
@@ -33,6 +33,7 @@ const Campaing = ({ campain, isRejected, onActionInitiated, hovered, intl, handl
 
   const { setRestaurant, openModal } = useQuickRewards();
   const isWaivio = useSelector(getIsWaivio);
+  const isSocial = useSelector(getIsSocial);
   const handleOpenQuickRewards = () =>
     onActionInitiated(() => {
       openModal(true);
@@ -43,7 +44,7 @@ const Campaing = ({ campain, isRejected, onActionInitiated, hovered, intl, handl
     });
 
   const goToProducts = () => {
-    if (isWaivio) history.push(`${pathname}/${campain?.object?.author_permlink}`);
+    if (isWaivio || isSocial) history.push(`${pathname}/${campain?.object?.author_permlink}`);
     else {
       handleOpenQuickRewards();
     }
