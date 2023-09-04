@@ -1,7 +1,7 @@
 import SocketClient from '../../common/services/wsClient';
-import { CONNECTION_STRING_SEO } from '../../common/constants/ssrData';
+import { CONNECTION_STRING_SEO, SEO_SERVICE_API_KEY } from '../../common/constants/ssrData';
 
-const socketClient = new SocketClient(CONNECTION_STRING_SEO);
+const socketClient = new SocketClient(CONNECTION_STRING_SEO, SEO_SERVICE_API_KEY);
 const getPageByUrl = async ({ url }) => {
   const result = await socketClient.sendMessage({
     name: 'webPage',

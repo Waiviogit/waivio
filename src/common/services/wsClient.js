@@ -14,14 +14,15 @@ const HIVE_SOCKET_ERR = {
 };
 
 class SocketClient {
-  constructor(url) {
+  constructor(url, key = '') {
     this.url = url;
     this.timeoutCount = 0;
+    this.key = key;
   }
 
   async init() {
     return new Promise(resolve => {
-      this.ws = new WebSocket(this.url);
+      this.ws = new WebSocket(this.url, { headers: { 'api-key': this.key } });
 
       this.ws.on('error', () => {
         console.error('error socket closed');
