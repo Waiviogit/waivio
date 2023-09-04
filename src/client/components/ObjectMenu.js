@@ -35,7 +35,7 @@ const ObjectMenu = props => {
   const isNewsfeed = hasType(props.wobject, OBJECT_TYPE.NEWSFEED);
   const isShop = hasType(props.wobject, OBJECT_TYPE.SHOP);
   const isHashtag = hasType(props.wobject, OBJECT_TYPE.HASHTAG);
-  const { name, 0: tab } = useParams();
+  const { name, 0: tab = TAB_NAME.REVIEWS } = useParams();
 
   const getItemClasses = key =>
     classNames('ObjectMenu__item', {

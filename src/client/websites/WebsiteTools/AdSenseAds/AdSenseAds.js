@@ -78,7 +78,6 @@ const AdSenseAds = ({ intl, saveAdSense, match, getAdSettings }) => {
       <Button
         type="primary"
         htmlType="submit"
-        disabled={isEmpty(adSense)}
         // loading={isLoading}
         onClick={handleSaveAdSenseSettings}
       >
