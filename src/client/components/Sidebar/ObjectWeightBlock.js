@@ -69,7 +69,7 @@ class ObjectWeightBlock extends React.Component {
             ))}
           {hasMore && (
             <h4 className="ObjectWeightBlock__more">
-              <Link to={`/@${username}/expertise`}>
+              <Link to={`/@${username}/expertise-objects`}>
                 <FormattedMessage id="show_more" defaultMessage="Show more" />
               </Link>
             </h4>

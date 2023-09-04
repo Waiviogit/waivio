@@ -59,7 +59,7 @@ const UserExpertise = () => {
         </TabPane>
         <TabPane
           tab={
-            <Link to={`/@${name}/expertise-hashtags`} className="UserExpertise__item">
+            <Link to={`/@${name}/expertise-objects`} className="UserExpertise__item">
               <FormattedMessage id="objects" defaultMessage="Objects" />{' '}
               {!!wobjsExpCount && <FormattedNumber value={wobjsExpCount} />}
             </Link>
