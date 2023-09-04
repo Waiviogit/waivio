@@ -29,18 +29,20 @@ const UserBlog = props => {
   const fetched = getFeedFetchedFromState('blog', name, props.feed);
   const hasMore = getFeedHasMoreFromState('blog', name, props.feed);
 
+  const getBlog = (initialLoad, scrollWindow) => {
+    props.getUserProfileBlogPosts(name, { limit, initialLoad });
+    if (scrollWindow) {
+      window.scrollTo(0, 0);
+    }
+  };
+
   useEffect(() => {
-    props.getUserProfileBlogPosts(name, { limit, initialLoad: true });
-    window.scrollTo(0, 0);
+    getBlog(true, true);
+  }, [props?.tagsCondition?.length, name]);
 
-    return () => props.resetProfileFilters();
-  }, [name, props.tagsCondition]);
+  useEffect(() => () => props.resetProfileFilters(), [name]);
 
-  const loadMoreContentAction = () =>
-    props.getUserProfileBlogPosts(name, {
-      limit,
-      initialLoad: false,
-    });
+  const loadMoreContentAction = () => getBlog(false, false);
 
   return (
     <div className="profile">
@@ -63,7 +65,7 @@ UserBlog.propTypes = {
   authenticatedUserName: PropTypes.string,
   feed: PropTypes.shape(),
   isGuest: PropTypes.bool,
-  tagsCondition: PropTypes.shape(),
+  tagsCondition: PropTypes.arrayOf(PropTypes.string),
   getUserProfileBlogPosts: PropTypes.func,
   showPostModal: PropTypes.func,
   resetProfileFilters: PropTypes.func,
