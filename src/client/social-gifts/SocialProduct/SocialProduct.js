@@ -264,9 +264,11 @@ const SocialProduct = ({
     return () => {
       resetWobjGallery();
       setStoreActiveOpt({});
-      resetOptClicked();
     };
   }, [authorPermlink]);
+  useEffect(() => {
+    resetOptClicked();
+  }, []);
 
   useEffect(() => {
     !isEmpty(wobject) && getPublisherManufacturerBrandMerchantObjects();
