@@ -71,6 +71,9 @@ export default {
   Discover: loableComponent(import('../client/discover/Discover')),
   Objects: loableComponent(import('../client/objects/Objects')),
   Notifications: loableComponent(import('../client/notifications/Notifications')),
+  SocialNotifications: loableComponent(
+    import('../client/notifications/SocialNotifications/SocialNotifications'),
+  ),
   Error404: loableComponent(import('../client/statics/Error404')),
   ExitPage: loableComponent(import('../client/statics/ExitPage')),
   ObjectPageFeed: loableComponent(import('../client/object/ObjectFeed')),
