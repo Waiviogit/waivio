@@ -201,7 +201,7 @@ class CommentForm extends React.Component {
                 isCommentEdit={this.props.isEdit}
                 isComment
                 editorEnabled
-                initialPosTopBtn="11.5px"
+                initialPosTopBtn={this.props.isEdit ? '3.5px' : '11.5px'}
                 isShowEditorSearch={this.state.isShowEditorSearch}
                 setShowEditorSearch={this.setShowEditorSearch}
                 initialBody={this.props.inputValue}
