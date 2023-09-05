@@ -45,7 +45,7 @@ const Checklist = ({
   const siteName = useSelector(getSiteName);
   const mainObj = useSelector(getMainObj);
   const title = `${getObjectName(wobject)} - ${siteName}`;
-  const desc = mainObj?.description;
+  const desc = wobject?.description || mainObj?.description;
   const image = getObjectAvatar(wobject) || favicon;
   const { canonicalUrl } = useSeoInfo();
 
@@ -135,6 +135,7 @@ Checklist.propTypes = {
   }).isRequired,
   wobject: PropTypes.shape({
     object_type: PropTypes.string,
+    description: PropTypes.string,
     author_permlink: PropTypes.string,
     background: PropTypes.string,
     sortCustom: PropTypes.shape({
