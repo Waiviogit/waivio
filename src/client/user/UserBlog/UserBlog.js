@@ -37,10 +37,14 @@ const UserBlog = props => {
   };
 
   useEffect(() => {
-    getBlog(true, true);
-  }, [props?.tagsCondition?.length, name]);
+    getBlog(true, false);
+  }, [props?.tagsCondition?.length]);
 
-  useEffect(() => () => props.resetProfileFilters(), [name]);
+  useEffect(() => {
+    getBlog(true, true);
+
+    return () => props.resetProfileFilters();
+  }, [name]);
 
   const loadMoreContentAction = () => getBlog(false, false);
 
