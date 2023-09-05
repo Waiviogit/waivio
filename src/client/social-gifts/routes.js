@@ -76,6 +76,10 @@ const routes = host => ({
       component: WidgetContent,
     },
     {
+      path: '/notifications-list',
+      component: Views.SocialNotifications,
+    },
+    {
       path: '/discover-objects/:type?',
       exact: true,
       component: NewDiscover,
