@@ -158,12 +158,13 @@ Checklist.propTypes = {
   setBreadcrumb: PropTypes.func.isRequired,
 };
 
-Checklist.fetchData = ({ store, match, query }) =>
-  store
+Checklist.fetchData = ({ store, match, query }) => {
+  const objName = query ? query.get('currObj') : match.params.name;
+
+  return store
     .dispatch(login())
-    .then(({ value }) =>
-      store.dispatch(getObject(query.get('currObj') || match.params.name, value?.name)),
-    );
+    .then(({ value }) => store.dispatch(getObject(objName, value?.name)));
+};
 
 const mapStateToProps = state => ({
   locale: getSuitableLanguage(state),
