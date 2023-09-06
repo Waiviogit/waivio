@@ -29,24 +29,18 @@ const UserBlog = props => {
   const fetched = getFeedFetchedFromState('blog', name, props.feed);
   const hasMore = getFeedHasMoreFromState('blog', name, props.feed);
 
-  const getBlog = (initialLoad, scrollWindow) => {
-    props.getUserProfileBlogPosts(name, { limit, initialLoad });
-    if (scrollWindow) {
-      window.scrollTo(0, 0);
-    }
-  };
+  useEffect(() => {
+    props.getUserProfileBlogPosts(name, { limit, initialLoad: true });
+  }, [props?.tagsCondition?.length, name]);
 
   useEffect(() => {
-    getBlog(true, false);
-  }, [props?.tagsCondition?.length]);
-
-  useEffect(() => {
-    getBlog(true, true);
+    window.scrollTo(0, 0);
 
     return () => props.resetProfileFilters();
   }, [name]);
 
-  const loadMoreContentAction = () => getBlog(false, false);
+  const loadMoreContentAction = () =>
+    props.getUserProfileBlogPosts(name, { limit, initialLoad: false });
 
   return (
     <div className="profile">
