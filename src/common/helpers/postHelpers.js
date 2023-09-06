@@ -49,7 +49,7 @@ export const isPostTaggedNSFW = post => {
 
   const postJSONMetaData = attempt(parseJSON, post.json_metadata);
 
-  if (isError(postJSONMetaData)) return false;
+  if (isError(postJSONMetaData) || !postJSONMetaData) return false;
 
   return includes(postJSONMetaData.tags, 'nsfw');
 };
