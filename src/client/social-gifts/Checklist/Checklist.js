@@ -58,7 +58,7 @@ const Checklist = ({
     if (wobject.author_permlink !== pathUrl) {
       setLoading(true);
       getObjectAction(pathUrl, userName, locale).then(res => {
-        const wObject = res.value;
+        const wObject = res?.value;
 
         if (wObject?.object_type === 'list' && window.gtag)
           window.gtag('event', getObjectName(wObject), { debug_mode: true });
@@ -161,9 +161,7 @@ Checklist.propTypes = {
 Checklist.fetchData = ({ store, match, query }) => {
   const objName = query ? query.get('currObj') : match.params.name;
 
-  return store
-    .dispatch(login())
-    .then(({ value }) => store.dispatch(getObject(objName, value?.name)));
+  return store.dispatch(login()).then(res => store.dispatch(getObject(objName, res?.value?.name)));
 };
 
 const mapStateToProps = state => ({
