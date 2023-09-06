@@ -10,7 +10,11 @@ import { useHistory, useRouteMatch } from 'react-router';
 import Breadcrumbs from '../Breadcrumbs/Breadcrumbs';
 import Loading from '../../components/Icon/Loading';
 import { getProxyImageURL } from '../../../common/helpers/image';
-import { createNewHash, getObjectName } from '../../../common/helpers/wObjectHelper';
+import {
+  createNewHash,
+  getObjectName,
+  getTitleForLink,
+} from '../../../common/helpers/wObjectHelper';
 import ShopObjectCard from '../ShopObjectCard/ShopObjectCard';
 import PageContent from '../PageContent/PageContent';
 import WidgetContent from '../WidgetContent/WidgetContent';
@@ -39,6 +43,7 @@ const CheckListView = ({ wobject, listItems, loading, intl, hideBreadCrumbs }) =
                   ? ''
                   : `currObj=${listItem?.author_permlink}`,
             }}
+            title={getTitleForLink(listItem)}
           >
             <div
               className="Checklist__itemsAvatar"

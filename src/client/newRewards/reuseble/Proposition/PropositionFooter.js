@@ -159,7 +159,7 @@ const PropositionFooter = ({ type, openDetailsModal, proposition, getProposition
               ) : (
                 <Button type="primary" onClick={openDetailsModal}>
                   <span className="Proposition-new__yourRewards">
-                    {isWaivio ? (
+                    {isWaivio || isSocial ? (
                       intl.formatMessage({ id: 'submit', defaultMessage: 'Submit' })
                     ) : (
                       <span>

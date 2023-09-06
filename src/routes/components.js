@@ -12,7 +12,6 @@ export default {
   FollowingUserRewards: loableComponent(
     import('../client/newRewards/RewardLists/FollowingUserRewards'),
   ),
-  LocalRewardsList: loableComponent(import('../client/newRewards/RewardLists/LocalRewardsList')),
   ReservedProposition: loableComponent(
     import('../client/newRewards/PropositionLists/ReservedProposition'),
   ),
