@@ -60,7 +60,7 @@ export default function createSsrHandler(template) {
       const routes = switchRoutes(hostname);
       const splittedUrl = req.url.split('?');
       const branch = matchRoutes(routes, splittedUrl[0]);
-      const query = new URLSearchParams(splittedUrl[1] ? `?${splittedUrl[1]}` : '');
+      const query = splittedUrl[1] ? new URLSearchParams(`?${splittedUrl[1]}`) : null;
       const promises = branch.map(({ route, match }) => {
         const fetchData = route?.component?.fetchData;
 
