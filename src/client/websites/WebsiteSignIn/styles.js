@@ -6,6 +6,12 @@ const styles = {
     fontFamily:
       "Whitney, 'Source Sans Pro', 'Helvetica Neue', Helvetica, Arial, 'Lucida Grande', sans-serif",
   },
+  socialMainTitle: {
+    color: '#aaaaaa',
+    fontSize: '24px',
+    fontFamily:
+      "Whitney, 'Source Sans Pro', 'Helvetica Neue', Helvetica, Arial, 'Lucida Grande', sans-serif",
+  },
   formHeader: {
     background: '#eeeeee',
     display: 'flex',
@@ -18,6 +24,10 @@ const styles = {
   },
   resetTitleStyles: {
     margin: 0,
+  },
+  webColor: {
+    color: 'var(--website-color)',
+    fontSize: '28px',
   },
   resetParagraphStyles: {
     margin: 0,
@@ -39,6 +49,32 @@ const styles = {
     fontSize: '20px',
     margin: '10px 0',
     padding: '0 8px',
+  },
+  socialButton: {
+    background: '#ececec',
+    height: '35px',
+    minWidth: '335px',
+    boxShadow: '1px 1px 4px 1px rgba(34, 60, 80, 0.2)',
+    color: ' #000000bd',
+    textAlign: 'center',
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    textDecoration: 'none',
+    fontSize: '20px',
+    margin: '10px 0',
+    padding: '0 8px',
+  },
+
+  socialText: {
+    fontSize: '14px',
+    color: '#aaaaaa',
+  },
+  socialButtonText: {
+    fontSize: '18px',
+    fontWeight: '500',
+    width: '100%',
+    justifyContent: 'center',
   },
 
   mobileButton: {
