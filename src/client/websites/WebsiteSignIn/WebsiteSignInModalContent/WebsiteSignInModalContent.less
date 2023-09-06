@@ -1,0 +1,41 @@
+@import (reference) '../../../styles/modules/variables.less';
+
+.WebsiteSignInModalContent {
+  align-items: flex-start;
+
+  @media @small {
+    align-items: center;
+  }
+
+  h2 {
+    color: var(--website-color);
+  }
+
+  &__or {
+    display: flex;
+    align-items: center;
+    font-size: 24px;
+    color: #b6b6b6;
+    font-weight: 500;
+    text-transform: uppercase;
+    padding: 15px 0;
+
+    &::before,
+    &::after {
+      content: '';
+      width: 45px;
+      height: 1px;
+      background: #ededed;
+      display: inline-block;
+      margin-right: 10px;
+    }
+
+    &::after {
+      margin-left: 10px;
+    }
+  }
+}
+
+.SocialButton {
+  font-weight: 100;
+}
