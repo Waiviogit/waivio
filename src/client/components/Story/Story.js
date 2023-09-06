@@ -113,7 +113,6 @@ class Story extends React.Component {
     const { showHiddenStoryPreview } = this.state;
 
     if (showHiddenStoryPreview) return true;
-
     if (isPostTaggedNSFW(post)) {
       return showNSFWPosts;
     }

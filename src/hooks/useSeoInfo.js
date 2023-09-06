@@ -19,6 +19,7 @@ export const useSeoInfo = () => {
 
   return {
     canonicalUrl: prefereCanonical(),
+    appUrl,
     descriptionSite,
   };
 };

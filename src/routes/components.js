@@ -12,7 +12,6 @@ export default {
   FollowingUserRewards: loableComponent(
     import('../client/newRewards/RewardLists/FollowingUserRewards'),
   ),
-  LocalRewardsList: loableComponent(import('../client/newRewards/RewardLists/LocalRewardsList')),
   ReservedProposition: loableComponent(
     import('../client/newRewards/PropositionLists/ReservedProposition'),
   ),
@@ -57,7 +56,9 @@ export default {
   SettingsMain: loableComponent(import('../client/settings/SettingsMain')),
   Invite: loableComponent(import('../client/invite/Invite')),
   UserProfile: loableComponent(import('../client/user/UserProfile')),
-  PostsCommentsActivity: loableComponent(import('../client/user/PostsCommentsActivity')),
+  PostsCommentsActivity: loableComponent(
+    import('../client/user/PostsCommentsActivity/PostsCommentsActivity'),
+  ),
   UserComments: loableComponent(import('../client/user/UserComments')),
   UserFollowers: loableComponent(import('../client/user/UserFollowers')),
   UserFollowing: loableComponent(import('../client/user/UserFollowing')),
@@ -69,6 +70,9 @@ export default {
   Discover: loableComponent(import('../client/discover/Discover')),
   Objects: loableComponent(import('../client/objects/Objects')),
   Notifications: loableComponent(import('../client/notifications/Notifications')),
+  SocialNotifications: loableComponent(
+    import('../client/notifications/SocialNotifications/SocialNotifications'),
+  ),
   Error404: loableComponent(import('../client/statics/Error404')),
   ExitPage: loableComponent(import('../client/statics/ExitPage')),
   ObjectPageFeed: loableComponent(import('../client/object/ObjectFeed')),

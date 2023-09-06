@@ -6,7 +6,7 @@ import { injectIntl } from 'react-intl';
 import { useHistory, useLocation } from 'react-router';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
-import { getIsWaivio, getUsedLocale } from '../../../store/appStore/appSelectors';
+import { getIsSocial, getIsWaivio, getUsedLocale } from '../../../store/appStore/appSelectors';
 import withAuthActions from '../../auth/withAuthActions';
 import { clearAllSessionProposition } from '../../rewards/rewardsHelper';
 import WebsiteReservedButtons from '../../rewards/Proposition/WebsiteReservedButtons/WebsiteReservedButtons';
@@ -30,7 +30,6 @@ const DetailsModal = ({
   isModalDetailsOpen,
   onActionInitiated,
   intl,
-  isSocialProduct,
 }) => {
   const location = useLocation();
   const history = useHistory();
@@ -50,6 +49,7 @@ const DetailsModal = ({
   const isWidget = new URLSearchParams(history.location.search).get('display');
   const isReserved = new URLSearchParams(location.search).get('toReserved');
   const isWaivio = useSelector(getIsWaivio);
+  const isSocial = useSelector(getIsSocial);
   const locale = useSelector(getUsedLocale);
   const stringRequiredObj =
     typeof proposition.requiredObject === 'string' && !isEmpty(proposition.requiredObject);
@@ -116,7 +116,7 @@ const DetailsModal = ({
   const onClick = () => onActionInitiated(handleClickReserve);
 
   const reserveButton =
-    isWaivio || isSocialProduct ? (
+    isWaivio || isSocial ? (
       <ReservedButtons
         reserved={proposition.reserved}
         handleReserve={onClick}
@@ -196,7 +196,6 @@ DetailsModal.propTypes = {
   toggleModal: PropTypes.func.isRequired,
   isModalDetailsOpen: PropTypes.bool.isRequired,
   proposition: PropTypes.shape().isRequired,
-  isSocialProduct: PropTypes.bool,
   onActionInitiated: PropTypes.func.isRequired,
   intl: PropTypes.shape({
     formatMessage: PropTypes.func,

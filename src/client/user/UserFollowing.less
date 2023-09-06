@@ -2,14 +2,32 @@
 @import (reference) '../styles/custom.less';
 .UserFollowers {
   margin-top: -22px;
-  .ant-tabs-tab {
-    color: #99aab5 !important;
-    font-weight: 500 !important;
 
-    &.ant-tabs-tab-active {
-      color: var(--website-color) !important;
+  .ant-tabs-nav .ant-tabs-tab {
+    height: 48px;
+    line-height: 48px;
+    padding: 0 !important;
+
+    a {
+      width: 100%;
+      color: #99aab5;
+      padding: 12px 16px;
+      font-weight: 500;
+      transition: 0.5ms;
+
+      &:hover {
+        color: var(--website-hover-color);
+      }
     }
   }
+
+  .ant-tabs-tab-active.ant-tabs-tab {
+    a {
+      color: var(--website-color);
+      font-weight: 500;
+    }
+  }
+
   .ant-tabs-nav-scroll {
     overflow-x: auto;
     overflow-y: hidden;
@@ -44,6 +62,7 @@
     transform: translate3d(0px, 0px, 0px) !important;
   }
 }
+
 .UserFollowing {
   .ObjectCard__name-short {
     max-width: calc(100vw - 210px);

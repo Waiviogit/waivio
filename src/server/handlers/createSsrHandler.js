@@ -30,14 +30,14 @@ function createTimeout(timeout, promise) {
 export default function createSsrHandler(template) {
   return async function serverSideResponse(req, res) {
     try {
-      // if (await isSearchBot(req)) {
-      //   await updateBotCount(req);
-      //   const cachedPage = await getCachedPage(req);
-      //   if (cachedPage) {
-      //     console.log('SEND CACHED PAGE');
-      //     return res.send(cachedPage);
-      //   }
-      // }
+      if (await isSearchBot(req)) {
+        await updateBotCount(req);
+        const cachedPage = await getCachedPage(req);
+        if (cachedPage) {
+          console.log('SEND CACHED PAGE');
+          return res.send(cachedPage);
+        }
+      }
 
       const sc2Api = new hivesigner.Client({
         app: process.env.STEEMCONNECT_CLIENT_ID,
@@ -58,12 +58,14 @@ export default function createSsrHandler(template) {
 
       const store = getStore(sc2Api, waivioAPI, req.url);
       const routes = switchRoutes(hostname);
-      const branch = matchRoutes(routes, req.url.split('?')[0]);
+      const splittedUrl = req.url.split('?');
+      const branch = matchRoutes(routes, splittedUrl[0]);
+      const query = new URLSearchParams(splittedUrl[1] ? `?${splittedUrl[1]}` : '');
       const promises = branch.map(({ route, match }) => {
         const fetchData = route?.component?.fetchData;
 
         if (fetchData instanceof Function) {
-          return fetchData({ store, match, req, res });
+          return fetchData({ store, match, req, res, query });
         }
 
         return Promise.resolve(null);
@@ -95,7 +97,7 @@ export default function createSsrHandler(template) {
         get(adsenseSettings, 'code', ''),
       );
 
-      // await setCachedPage({ page, req });
+      await setCachedPage({ page, req });
       return res.send(page);
     } catch (err) {
       console.error('SSR error occured, falling back to bundled application instead', err);

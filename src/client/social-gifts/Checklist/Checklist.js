@@ -45,8 +45,8 @@ const Checklist = ({
   const siteName = useSelector(getSiteName);
   const mainObj = useSelector(getMainObj);
   const title = `${getObjectName(wobject)} - ${siteName}`;
-  const desc = mainObj?.description;
-  const image = getObjectAvatar(wobject);
+  const desc = wobject?.description || mainObj?.description;
+  const image = getObjectAvatar(wobject) || favicon;
   const { canonicalUrl } = useSeoInfo();
 
   useEffect(() => {
@@ -135,6 +135,7 @@ Checklist.propTypes = {
   }).isRequired,
   wobject: PropTypes.shape({
     object_type: PropTypes.string,
+    description: PropTypes.string,
     author_permlink: PropTypes.string,
     background: PropTypes.string,
     sortCustom: PropTypes.shape({
@@ -157,10 +158,13 @@ Checklist.propTypes = {
   setBreadcrumb: PropTypes.func.isRequired,
 };
 
-Checklist.fetchData = ({ store, match }) =>
-  store
+Checklist.fetchData = ({ store, match, query }) => {
+  const objName = query ? query.get('currObj') : match.params.name;
+
+  return store
     .dispatch(login())
-    .then(res => store.dispatch(getObject(match.params.name, res?.value?.name)));
+    .then(({ value }) => store.dispatch(getObject(objName, value?.name)));
+};
 
 const mapStateToProps = state => ({
   locale: getSuitableLanguage(state),

@@ -11,6 +11,7 @@ import WebsiteMainPage from '../../client/websites/WebsiteLayoutComponents/MainP
 import { listOfWebsiteWithMainPage } from '../../common/constants/listOfWebsite';
 import RewardsMainPage from '../../client/newRewards/RewardsMainPage';
 import WebsiteFeed from '../../client/websites/WebsiteFeed/WebsiteFeed';
+import LocalRewardsList from '../../client/newRewards/RewardLists/LocalRewardsList';
 
 const routes = (host, page) => ({
   component: WebsiteWrapper,
@@ -289,7 +290,7 @@ const routes = (host, page) => ({
         {
           path: '/(global|local)',
           exact: true,
-          component: Views.LocalRewardsList,
+          component: LocalRewardsList,
         },
         {
           path: '/(details|duplicate|create)/:campaignId?',

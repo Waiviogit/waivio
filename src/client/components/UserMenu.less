@@ -24,19 +24,24 @@
   }
 
   &__item {
-    display: inline-block;
-    height: 45px;
-    margin-right: 12px;
-    cursor: pointer;
-    color: #99aab5;
-    font-size: 16px;
-    font-weight: 500;
-    text-transform: capitalize;
+    a {
+      display: inline-block;
+      height: 45px;
+      margin-right: 12px;
+      cursor: pointer;
+      color: #99aab5;
+      font-size: 16px;
+      font-weight: 500;
+      text-transform: capitalize;
+      transition: 0.5ms;
+    }
 
     &--active,
     &:hover {
-      color: var(--website-color);
-      border-bottom: 2px @border-style-base var(--website-color);
+      a {
+        color: var(--website-color);
+        border-bottom: 2px @border-style-base var(--website-color);
+      }
     }
   }
 

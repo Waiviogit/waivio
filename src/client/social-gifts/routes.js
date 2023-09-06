@@ -20,7 +20,8 @@ import ObjectNewsFeed from './FeedMasonry/ObjectNewsFeed';
 import NewDiscover from './NewDiscover/NewDiscover';
 import WebsiteFeed from '../websites/WebsiteFeed/WebsiteFeed';
 import DepatmentsSearch from './DepatmentsSearch/DepatmentsSearch';
-import PostsCommentsActivity from '../user/PostsCommentsActivity';
+import PostsCommentsActivity from '../user/PostsCommentsActivity/PostsCommentsActivity';
+import LocalRewardsList from '../newRewards/RewardLists/LocalRewardsList';
 
 const routes = host => ({
   component: SocialWrapper,
@@ -74,6 +75,10 @@ const routes = host => ({
       path: ['/object/widget/:name'],
       exact: true,
       component: WidgetContent,
+    },
+    {
+      path: '/notifications-list',
+      component: Views.SocialNotifications,
     },
     {
       path: '/discover-objects/:type?',
@@ -355,7 +360,7 @@ const routes = host => ({
         {
           path: '/(global|local)',
           exact: true,
-          component: Views.LocalRewardsList,
+          component: LocalRewardsList,
         },
         {
           path: '/(details|duplicate|create)/:campaignId?',

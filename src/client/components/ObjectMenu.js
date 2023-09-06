@@ -1,208 +1,170 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
+import { connect } from 'react-redux';
+import { useParams } from 'react-router';
+import { Link } from 'react-router-dom';
+
 import { FormattedMessage, FormattedNumber } from 'react-intl';
 import OBJECT_TYPE from '../object/const/objectTypes';
 import { hasType } from '../../common/helpers/wObjectHelper';
-import './ObjectMenu.less';
 import { isMobile } from '../../common/helpers/apiHelpers';
+import { getIsWaivio, getUserAdministrator } from '../../store/appStore/appSelectors';
 
-class ObjectMenu extends React.Component {
-  static propTypes = {
-    onChange: PropTypes.func,
-    defaultKey: PropTypes.string,
-    followers: PropTypes.number,
-    accessExtend: PropTypes.bool,
-    wobject: PropTypes.shape(),
-    isWaivio: PropTypes.bool,
-    isAdministrator: PropTypes.bool,
-  };
+import './ObjectMenu.less';
 
-  static defaultProps = {
-    onChange: () => {},
-    defaultKey: 'about',
-    followers: 0,
-    accessExtend: true,
-    isWaivio: true,
-    wobject: {},
-  };
+const TAB_NAME = {
+  ABOUT: 'about',
+  GALLERY: 'gallery',
+  LIST: 'list',
+  PAGE: 'page',
+  WIDGET: 'widget',
+  NEWSFEED: 'newsfeed',
+  SHOP: 'shop',
+  UPDATES: 'updates',
+  REVIEWS: 'reviews',
+  FOLLOWERS: 'followers',
+  EXPERTISE: 'expertise',
+  HIDDEN_TAB: 'hiddenTab',
+};
 
-  static TAB_NAME = {
-    ABOUT: 'about',
-    GALLERY: 'gallery',
-    LIST: 'list',
-    PAGE: 'page',
-    WIDGET: 'widget',
-    NEWSFEED: 'newsfeed',
-    SHOP: 'shop',
-    UPDATES: 'updates',
-    REVIEWS: 'reviews',
-    FOLLOWERS: 'followers',
-    EXPERTISE: 'expertise',
-    HIDDEN_TAB: 'hiddenTab',
-  };
+const ObjectMenu = props => {
+  const isList = hasType(props.wobject, OBJECT_TYPE.LIST);
+  const isPage = hasType(props.wobject, OBJECT_TYPE.PAGE);
+  const isWidget = hasType(props.wobject, OBJECT_TYPE.WIDGET);
+  const isNewsfeed = hasType(props.wobject, OBJECT_TYPE.NEWSFEED);
+  const isShop = hasType(props.wobject, OBJECT_TYPE.SHOP);
+  const isHashtag = hasType(props.wobject, OBJECT_TYPE.HASHTAG);
+  const { name, 0: tab = TAB_NAME.REVIEWS } = useParams();
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      current: props.defaultKey ? props.defaultKey : ObjectMenu.TAB_NAME.ABOUT,
-    };
-  }
-
-  componentWillReceiveProps(nextProps) {
-    this.setState({
-      current: nextProps.defaultKey ? nextProps.defaultKey : ObjectMenu.TAB_NAME.ABOUT,
-    });
-  }
-  getItemClasses = key =>
+  const getItemClasses = key =>
     classNames('ObjectMenu__item', {
-      'ObjectMenu__item--active': key.includes(this.state.current),
+      'ObjectMenu__item--active': key.includes(tab),
     });
+  const createLink = key => `/object/${name}/${key}`;
 
-  handleClick = e => {
-    const key = e.currentTarget.dataset.key;
-
-    this.setState({ current: key }, () => this.props.onChange(key));
-  };
-
-  render() {
-    const isList = hasType(this.props.wobject, OBJECT_TYPE.LIST);
-    const isPage = hasType(this.props.wobject, OBJECT_TYPE.PAGE);
-    const isWidget = hasType(this.props.wobject, OBJECT_TYPE.WIDGET);
-    const isNewsfeed = hasType(this.props.wobject, OBJECT_TYPE.NEWSFEED);
-    const isShop = hasType(this.props.wobject, OBJECT_TYPE.SHOP);
-    const isHashtag = hasType(this.props.wobject, OBJECT_TYPE.HASHTAG);
-
-    return (
-      <div className="ObjectMenu">
-        <div className="container menu-layout">
-          <div className="left" />
-          <ul className="ObjectMenu__menu center">
-            <li
-              className={this.getItemClasses(ObjectMenu.TAB_NAME.ABOUT)}
-              onClick={this.handleClick}
-              role="presentation"
-              data-key={ObjectMenu.TAB_NAME.ABOUT}
-            >
+  return (
+    <div className="ObjectMenu">
+      <div className="container menu-layout">
+        <div className="left" />
+        <ul className="ObjectMenu__menu center">
+          <li className={getItemClasses(TAB_NAME.ABOUT)} data-key={TAB_NAME.ABOUT}>
+            <Link to={createLink(TAB_NAME.ABOUT)}>
               <FormattedMessage id="about" defaultMessage="About" />
-            </li>
-            {isList && (
-              <li
-                className={this.getItemClasses(ObjectMenu.TAB_NAME.LIST)}
-                onClick={this.handleClick}
-                role="presentation"
-                data-key={ObjectMenu.TAB_NAME.LIST}
-              >
+            </Link>
+          </li>
+          {isList && (
+            <li className={getItemClasses(TAB_NAME.LIST)} data-key={TAB_NAME.LIST}>
+              <Link to={createLink(TAB_NAME.LIST)}>
                 <FormattedMessage id="list" defaultMessage="List" />
-              </li>
-            )}
-            {isPage && (
-              <li
-                className={this.getItemClasses(ObjectMenu.TAB_NAME.PAGE)}
-                onClick={this.handleClick}
-                role="presentation"
-                data-key={ObjectMenu.TAB_NAME.PAGE}
-              >
-                <FormattedMessage id="page" defaultMessage="Page" />
-              </li>
-            )}
-            {isWidget && (
-              <li
-                className={this.getItemClasses(ObjectMenu.TAB_NAME.WIDGET)}
-                onClick={this.handleClick}
-                role="presentation"
-                data-key={ObjectMenu.TAB_NAME.WIDGET}
-              >
-                <FormattedMessage id="Widget" defaultMessage="Widget" />
-              </li>
-            )}{' '}
-            {isNewsfeed && (
-              <li
-                className={this.getItemClasses(ObjectMenu.TAB_NAME.NEWSFEED)}
-                onClick={this.handleClick}
-                role="presentation"
-                data-key={ObjectMenu.TAB_NAME.NEWSFEED}
-              >
-                <FormattedMessage id="newsfeed" defaultMessage="Newsfeed" />
-              </li>
-            )}{' '}
-            {isShop && (
-              <li
-                className={this.getItemClasses(ObjectMenu.TAB_NAME.SHOP)}
-                onClick={this.handleClick}
-                role="presentation"
-                data-key={ObjectMenu.TAB_NAME.SHOP}
-              >
-                <FormattedMessage id="shop" defaultMessage="Shop" />
-              </li>
-            )}
-            <li
-              className={this.getItemClasses([
-                ObjectMenu.TAB_NAME.REVIEWS,
-                isMobile() ? '' : ObjectMenu.TAB_NAME.ABOUT,
-                '',
-              ])}
-              onClick={this.handleClick}
-              role="presentation"
-              data-key={ObjectMenu.TAB_NAME.REVIEWS}
-            >
-              <FormattedMessage id="reviews" defaultMessage="Reviews" />
+              </Link>
             </li>
-            {this.props.accessExtend && !isPage && !isHashtag && (
-              <li
-                className={this.getItemClasses(ObjectMenu.TAB_NAME.GALLERY)}
-                onClick={this.handleClick}
-                role="presentation"
-                data-key={ObjectMenu.TAB_NAME.GALLERY}
-              >
+          )}
+          {isPage && (
+            <li className={getItemClasses(TAB_NAME.PAGE)} data-key={TAB_NAME.PAGE}>
+              <Link to={createLink(TAB_NAME.PAGE)}>
+                <FormattedMessage id="page" defaultMessage="Page" />
+              </Link>
+            </li>
+          )}
+          {isWidget && (
+            <li className={getItemClasses(TAB_NAME.WIDGET)} data-key={TAB_NAME.WIDGET}>
+              <Link to={createLink(TAB_NAME.WIDGET)}>
+                <FormattedMessage id="Widget" defaultMessage="Widget" />
+              </Link>
+            </li>
+          )}{' '}
+          {isNewsfeed && (
+            <li className={getItemClasses(TAB_NAME.NEWSFEED)} data-key={TAB_NAME.NEWSFEED}>
+              <Link to={createLink(TAB_NAME.NEWSFEED)}>
+                <FormattedMessage id="newsfeed" defaultMessage="Newsfeed" />
+              </Link>
+            </li>
+          )}{' '}
+          {isShop && (
+            <li className={getItemClasses(TAB_NAME.SHOP)} data-key={TAB_NAME.SHOP}>
+              <Link to={createLink(TAB_NAME.SHOP)}>
+                <FormattedMessage id="shop" defaultMessage="Shop" />
+              </Link>
+            </li>
+          )}
+          <li
+            className={getItemClasses([TAB_NAME.REVIEWS, isMobile() ? '' : TAB_NAME.ABOUT, ''])}
+            data-key={TAB_NAME.REVIEWS}
+          >
+            <Link to={createLink(TAB_NAME.REVIEWS)}>
+              <FormattedMessage id="reviews" defaultMessage="Reviews" />
+            </Link>
+          </li>
+          {props.accessExtend && !isPage && !isHashtag && (
+            <li className={getItemClasses(TAB_NAME.GALLERY)} data-key={TAB_NAME.GALLERY}>
+              <Link to={createLink(TAB_NAME.GALLERY)}>
                 <FormattedMessage id="gallery" defaultMessage="Gallery" />
-              </li>
-            )}
-            {this.props.accessExtend && (this.props.isWaivio || this.props.isAdministrator) && (
-              <li
-                className={this.getItemClasses(ObjectMenu.TAB_NAME.UPDATES)}
-                onClick={this.handleClick}
-                role="presentation"
-                data-key={ObjectMenu.TAB_NAME.UPDATES}
-              >
+              </Link>
+            </li>
+          )}
+          {props.accessExtend && (props.isWaivio || props.isAdministrator) && (
+            <li
+              className={getItemClasses(TAB_NAME.UPDATES)}
+              role="presentation"
+              data-key={TAB_NAME.UPDATES}
+            >
+              <Link to={createLink(TAB_NAME.UPDATES)}>
                 <FormattedMessage id="updates" defaultMessage="Updates" />
                 <span className="ObjectMenu__badge">
-                  <FormattedNumber value={this.props.wobject.updatesCount} />
+                  <FormattedNumber value={props.wobject.updatesCount} />
                 </span>
-              </li>
-            )}
-            <li
-              className={this.getItemClasses(ObjectMenu.TAB_NAME.FOLLOWERS)}
-              onClick={this.handleClick}
-              role="presentation"
-              data-key={ObjectMenu.TAB_NAME.FOLLOWERS}
-            >
+              </Link>
+            </li>
+          )}
+          <li
+            className={getItemClasses(TAB_NAME.FOLLOWERS)}
+            role="presentation"
+            data-key={TAB_NAME.FOLLOWERS}
+          >
+            <Link to={createLink(TAB_NAME.FOLLOWERS)}>
               <FormattedMessage id="followers" defaultMessage="Followers" />
               <span className="ObjectMenu__badge">
-                <FormattedNumber value={this.props.followers} />
-              </span>
-            </li>
-            <li
-              className={this.getItemClasses(ObjectMenu.TAB_NAME.EXPERTISE)}
-              onClick={this.handleClick}
-              role="presentation"
-              data-key={ObjectMenu.TAB_NAME.EXPERTISE}
-            >
+                <FormattedNumber value={props.followers} />
+              </span>{' '}
+            </Link>
+          </li>
+          <li
+            className={getItemClasses(TAB_NAME.EXPERTISE)}
+            role="presentation"
+            data-key={TAB_NAME.EXPERTISE}
+          >
+            <Link to={createLink(TAB_NAME.EXPERTISE)}>
               <FormattedMessage id="experts" defaultMessage="Experts" />
-            </li>
-            <li
-              className={this.getItemClasses(ObjectMenu.TAB_NAME.HIDDEN_TAB)}
-              onClick={this.handleClick}
-              role="presentation"
-              data-key={ObjectMenu.TAB_NAME.HIDDEN_TAB}
-            >
+            </Link>
+          </li>
+          <li className={getItemClasses(TAB_NAME.HIDDEN_TAB)} data-key={TAB_NAME.HIDDEN_TAB}>
+            <Link to={createLink(TAB_NAME.HIDDEN_TAB)}>
               <FormattedMessage id="info" defaultMessage="Info" />
-            </li>
-          </ul>
-        </div>
+            </Link>
+          </li>
+        </ul>
       </div>
-    );
-  }
-}
+    </div>
+  );
+};
 
-export default ObjectMenu;
+ObjectMenu.propTypes = {
+  followers: PropTypes.number,
+  accessExtend: PropTypes.bool,
+  wobject: PropTypes.shape(),
+  isWaivio: PropTypes.bool,
+  isAdministrator: PropTypes.bool,
+};
+
+ObjectMenu.defaultProps = {
+  followers: 0,
+  accessExtend: true,
+  isWaivio: true,
+  wobject: {},
+};
+
+export default connect(state => ({
+  isWaivio: getIsWaivio(state),
+  isAdministrator: getUserAdministrator(state),
+}))(ObjectMenu);

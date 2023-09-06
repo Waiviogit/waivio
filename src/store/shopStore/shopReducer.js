@@ -44,7 +44,7 @@ export default function shopReducer(state = initialState, action) {
         crumbs: [],
         activeCrumb: null,
         exclude: [],
-        isOptionClicked: false,
+        // isOptionClicked: false,
       };
 
     case SET_EXCLUDED:

@@ -31,16 +31,16 @@ const UserBlog = props => {
 
   useEffect(() => {
     props.getUserProfileBlogPosts(name, { limit, initialLoad: true });
+  }, [props?.tagsCondition?.length, name]);
+
+  useEffect(() => {
     window.scrollTo(0, 0);
 
     return () => props.resetProfileFilters();
-  }, [name, props.tagsCondition]);
+  }, [name]);
 
   const loadMoreContentAction = () =>
-    props.getUserProfileBlogPosts(name, {
-      limit,
-      initialLoad: false,
-    });
+    props.getUserProfileBlogPosts(name, { limit, initialLoad: false });
 
   return (
     <div className="profile">
@@ -63,7 +63,7 @@ UserBlog.propTypes = {
   authenticatedUserName: PropTypes.string,
   feed: PropTypes.shape(),
   isGuest: PropTypes.bool,
-  tagsCondition: PropTypes.shape(),
+  tagsCondition: PropTypes.arrayOf(PropTypes.string),
   getUserProfileBlogPosts: PropTypes.func,
   showPostModal: PropTypes.func,
   resetProfileFilters: PropTypes.func,

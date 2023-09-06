@@ -3,6 +3,8 @@ import { Tabs } from 'antd';
 import { injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
+
 import Wallet from '../user/UserWallet';
 import Transfer from './Transfer/Transfer';
 import WAIVwallet from './WAIVwallet/WAIVwallet';
@@ -57,31 +59,41 @@ const Wallets = props => {
     return () => props.resetHiveEngineTokenBalance();
   }, [props.authUserName]);
 
-  const handleOnChange = key => {
-    props.setWalletType(key);
-    props.history.push(`?type=${key}`);
-  };
+  const handleOnChange = key => props.setWalletType(key);
 
   return (
     <React.Fragment>
       <Tabs className="Wallets" defaultActiveKey={walletsType} onChange={handleOnChange}>
-        <Tabs.TabPane tab="WAIV" key="WAIV">
+        <Tabs.TabPane
+          tab={<Link to={`/@${props.match.params.name}/transfers?type=WAIV`}>WAIV</Link>}
+          key="WAIV"
+        >
           {walletsType === 'WAIV' && <WAIVwallet />}
         </Tabs.TabPane>
-        <Tabs.TabPane tab="HIVE" key="HIVE">
+        <Tabs.TabPane
+          tab={<Link to={`/@${props.match.params.name}/transfers?type=HIVE`}>HIVE</Link>}
+          key="HIVE"
+        >
           {walletsType === 'HIVE' && <Wallet />}
         </Tabs.TabPane>
         {!isGuestUser && (
-          <Tabs.TabPane tab="Hive Engine" key="ENGINE">
+          <Tabs.TabPane
+            tab={<Link to={`/@${props.match.params.name}/transfers?type=ENGINE`}>Hive Engine</Link>}
+            key="ENGINE"
+          >
             {walletsType === 'ENGINE' && <HiveEngineWallet />}
           </Tabs.TabPane>
         )}
         {!isGuestUser && isCurrUser && (
           <Tabs.TabPane
-            tab={props.intl.formatMessage({
-              id: 'rebalance_wallet',
-              defaultMessage: 'Rebalancing',
-            })}
+            tab={
+              <Link to={`/@${props.match.params.name}/transfers?type=rebalancing`}>
+                {props.intl.formatMessage({
+                  id: 'rebalance_wallet',
+                  defaultMessage: 'Rebalancing',
+                })}
+              </Link>
+            }
             key="rebalancing"
           >
             {walletsType === 'rebalancing' && <Rebalancing />}
