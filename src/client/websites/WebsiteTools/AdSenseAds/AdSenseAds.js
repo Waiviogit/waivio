@@ -11,6 +11,7 @@ import {
   getAdsenseSettings,
   saveAdSenseSettings,
 } from '../../../../store/websiteStore/websiteActions';
+import Loading from '../../../components/Icon/Loading';
 
 const AdSenseAds = ({ intl, saveAdSense, match, getAdSettings }) => {
   const adIntensityLevels = [
@@ -18,6 +19,7 @@ const AdSenseAds = ({ intl, saveAdSense, match, getAdSettings }) => {
     { value: '2 - Moderate', key: 'moderate' },
     { value: '3 - Intensive', key: 'intensive' },
   ];
+  const [loading, setLoading] = useState(false);
   const [level, setLevel] = useState('');
   const [adSense, setAdSense] = useState('');
   const host = match.params.site;
@@ -31,12 +33,16 @@ const AdSenseAds = ({ intl, saveAdSense, match, getAdSettings }) => {
   };
 
   useEffect(() => {
+    setLoading(true);
     host &&
       getAdSettings(host).then(res => {
         setLevel(isEmpty(res.value.level) ? adIntensityLevels[0].key : res.value.level);
         setAdSense(res.value.code);
+        setLoading(false);
       });
   }, [host]);
+
+  if (loading) return <Loading />;
 
   return (
     <div className="AdSenseAds">
@@ -69,7 +75,10 @@ const AdSenseAds = ({ intl, saveAdSense, match, getAdSettings }) => {
         site.
       </p>
       <h3>Level:</h3>
-      <Select defaultValue={adIntensityLevels[0].value} onSelect={l => setLevel(l)}>
+      <Select
+        defaultValue={adIntensityLevels?.find(l => l.key === level)?.value}
+        onSelect={l => setLevel(l)}
+      >
         {adIntensityLevels.map(o => (
           <Select.Option key={o.key}>{o.value}</Select.Option>
         ))}
