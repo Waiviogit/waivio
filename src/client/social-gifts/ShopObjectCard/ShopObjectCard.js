@@ -8,7 +8,7 @@ import { useLocation, useParams } from 'react-router';
 
 import RatingsWrap from '../../objectCard/RatingsWrap/RatingsWrap';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
-import { getObjectName } from '../../../common/helpers/wObjectHelper';
+import { getObjectName, getTitleForLink } from '../../../common/helpers/wObjectHelper';
 import AffiliatLink from '../../widgets/AffiliatLinks/AffiliatLink';
 import HeartButton from '../../widgets/HeartButton';
 import USDDisplay from '../../components/Utils/USDDisplay';
@@ -92,7 +92,7 @@ const ShopObjectCard = ({ wObject, isChecklist, isSocialProduct }) => {
           />
         </Link>
       </div>
-      <Link to={link} className="ShopObjectCard__name">
+      <Link title={getTitleForLink(wObject)} to={link} className="ShopObjectCard__name">
         {truncate(wobjName, {
           length: isSocialProduct && isMobile() ? 35 : 110,
           separator: '...',
