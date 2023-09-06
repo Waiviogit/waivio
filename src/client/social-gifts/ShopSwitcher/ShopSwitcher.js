@@ -53,7 +53,7 @@ const ShopSwitcher = () => {
         <link rel="image_src" href={favicon} />
         <link id="favicon" rel="icon" href={favicon} type="image/x-icon" />
       </Helmet>
-      {shopSettings.type === 'object' ? (
+      {shopSettings?.type === 'object' ? (
         <ShopMainForWobject wobjPermlink={shopSettings?.value} />
       ) : (
         <Skeleton active />

@@ -47,7 +47,7 @@ const WobjectView = ({
 }) => {
   const image = getObjectAvatar(wobject) || DEFAULTS.AVATAR;
   const objectName = getObjectName(wobject);
-  const { canonicalUrl } = useSeoInfo();
+  const { canonicalUrl, appUrl } = useSeoInfo();
   const isWaivio = useSelector(getIsWaivio);
   const siteName = useSelector(getSiteName);
   const helmetIcon = useSelector(getHelmetIcon);
@@ -98,6 +98,9 @@ const WobjectView = ({
     'center--fullForm': entireColumn,
   });
 
+  const url =
+    match.params[0] === 'reviews' ? `${appUrl}/object/${match.params.name}` : canonicalUrl;
+
   return (
     <React.Fragment>
       <Helmet>
@@ -105,8 +108,8 @@ const WobjectView = ({
         <meta name="description" content={desc} />
         <meta property="og:title" content={titleText} />
         <meta property="og:type" content="article" />
-        <link rel="canonical" href={canonicalUrl} />
-        <meta property="og:url" content={canonicalUrl} />
+        <link rel="canonical" href={url} />
+        <meta property="og:url" content={url} />
         <meta property="og:image" content={image} />
         <meta property="og:image:url" content={image} />
         <meta property="og:image:width" content="600" />
