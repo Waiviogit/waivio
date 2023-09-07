@@ -127,7 +127,8 @@ const SocialSignInModalContent = ({
               defaultMessage: 'By using this service, you agree to our',
             })}{' '}
             <a
-              href={`https://${websiteName}/checklist/ljc-legal#xrj-terms-and-conditions`}
+              title={'Terms & Conditions'}
+              href={`${websiteName}/checklist/ljc-legal#xrj-terms-and-conditions`}
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -135,7 +136,8 @@ const SocialSignInModalContent = ({
             </a>
             , our{' '}
             <a
-              href={`https://${websiteName}/checklist/ljc-legal#poi-privacy-policy`}
+              title={'Privacy Policy'}
+              href={`${websiteName}/checklist/ljc-legal#poi-privacy-policy`}
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -143,7 +145,8 @@ const SocialSignInModalContent = ({
             </a>
             , and our{' '}
             <a
-              href={`https://${websiteName}/checklist/ljc-legal#uid-cookies-policy`}
+              title={'Cookies Policy'}
+              href={`${websiteName}/checklist/ljc-legal#uid-cookies-policy`}
               target="_blank"
               rel="noopener noreferrer"
             >
