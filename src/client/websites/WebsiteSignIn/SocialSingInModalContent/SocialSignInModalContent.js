@@ -126,7 +126,7 @@ const SocialSignInModalContent = ({
               defaultMessage: 'By using this service, you agree to our',
             })}{' '}
             <a
-              href="https://www.waivio.com/object/ylr-waivio/page#oxa-legal/xrj-terms-and-conditions"
+              href="https://wiv.socialgifts.pp.ua/checklist/ljc-legal#xrj-terms-and-conditions"
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -134,7 +134,7 @@ const SocialSignInModalContent = ({
             </a>
             , our{' '}
             <a
-              href="https://www.waivio.com/object/ylr-waivio/page#oxa-legal/poi-privacy-policy"
+              href="https://wiv.socialgifts.pp.ua/checklist/ljc-legal#poi-privacy-policy"
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -142,7 +142,7 @@ const SocialSignInModalContent = ({
             </a>
             , and our{' '}
             <a
-              href="https://www.waivio.com/object/ylr-waivio/page#oxa-legal/uid-cookies-policy"
+              href="https://wiv.socialgifts.pp.ua/checklist/ljc-legal#uid-cookies-policy"
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -156,7 +156,7 @@ const SocialSignInModalContent = ({
               defaultMessage: 'Need a Hive Account?',
             })}{' '}
             <a href="https://signup.hive.io/">
-              {intl.formatMessage({ id: 'sign_up', defaultMessage: 'Sign up' })}.
+              {intl.formatMessage({ id: 'sign_up', defaultMessage: 'Sign up' })}
             </a>
           </p>
         </React.Fragment>
