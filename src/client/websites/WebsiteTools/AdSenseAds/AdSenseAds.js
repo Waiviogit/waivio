@@ -23,6 +23,16 @@ const AdSenseAds = ({ intl, saveAdSense, match, getAdSettings }) => {
   const [level, setLevel] = useState('');
   const [adSense, setAdSense] = useState('');
   const host = match.params.site;
+  const scriptRegex = /<script[^>]*>/g;
+
+  const scriptTags = adSense.match(scriptRegex);
+
+  const showError =
+    !isEmpty(adSense) &&
+    (!adSense.includes('async') ||
+      !adSense.includes('<script') ||
+      !adSense.includes('src="https://pagead2.googlesyndication.com') ||
+      scriptTags.length > 1);
   const handleChangeAdSense = e => {
     setAdSense(e.target.value);
   };
@@ -70,6 +80,12 @@ const AdSenseAds = ({ intl, saveAdSense, match, getAdSettings }) => {
         placeholder={'Add your AdSense code'}
         autoSize={{ minRows: 2 }}
       />
+      {showError && (
+        <div className="AdSenseAds__error">
+          {' '}
+          Invalid AdSense code entered. Please provide a valid script.
+        </div>
+      )}
       <p>
         This code will be displayed within the &lt;head&gt;&lt;/head&gt; tags on every page of your
         site.
@@ -85,6 +101,7 @@ const AdSenseAds = ({ intl, saveAdSense, match, getAdSettings }) => {
       </Select>
       <p>Choose the advertising intensity to balance user experience with revenue generation.</p>
       <Button
+        disabled={showError}
         type="primary"
         htmlType="submit"
         // loading={isLoading}
