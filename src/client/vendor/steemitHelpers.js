@@ -48,14 +48,14 @@ export const createCommentPermlink = (parentAuthor, parentPermlink) => {
  * https://github.com/steemit/steemit.com/blob/47fd0e0846bd8c7c941ee4f95d5f971d3dc3981d/app/utils/ParsersAndFormatters.js
  */
 export function parsePayoutAmount(amount) {
-  return parseFloat(String(amount).replace(/\s[A-Z]*$/, ''));
+  return parseFloat(String(amount).replace(/\s[A-Z]*$/, '')) || 0;
 }
 
 /**
  * Calculates Payout Details Modified as needed
  * https://github.com/steemit/steemit.com/blob/47fd0e0846bd8c7c941ee4f95d5f971d3dc3981d/app/components/elements/Voting.jsx
  */
-export const calculatePayout = (post, rates) => {
+export const calculatePayout = (post, rates, isUpdates) => {
   if (!post) return {};
   const payoutDetails = {};
   const { cashout_time } = post;
@@ -102,7 +102,7 @@ export const calculatePayout = (post, rates) => {
     payoutDetails.promotionCost = promoted;
   }
 
-  if (max_payout === 0) {
+  if (max_payout === 0 && !isUpdates) {
     payoutDetails.isPayoutDeclined = true;
   } else if (max_payout < 1000000) {
     payoutDetails.maxAcceptedPayout = max_payout;

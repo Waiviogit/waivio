@@ -174,7 +174,7 @@ const AppendCard = props => {
       </div>
       <div className="Story__footer">
         <div className="StoryFooter__actions">
-          <Payout post={props.post} />
+          <Payout post={props.post} isUpdates />
           {visibleSlider && !isLiked && (
             <Confirmation onConfirm={handleLikeConfirm} onCancel={() => showSlider(false)} />
           )}
