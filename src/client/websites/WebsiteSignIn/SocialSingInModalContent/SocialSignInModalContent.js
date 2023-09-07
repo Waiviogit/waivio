@@ -16,6 +16,7 @@ const SocialSignInModalContent = ({
   onClickHiveSingerAuthButton,
   responseSocial,
   handleFailure,
+  websiteName,
 }) => (
   <div
     className="SocialSignInModalContent"
@@ -126,7 +127,7 @@ const SocialSignInModalContent = ({
               defaultMessage: 'By using this service, you agree to our',
             })}{' '}
             <a
-              href="https://www.waivio.com/object/ylr-waivio/page#oxa-legal/xrj-terms-and-conditions"
+              href={`https://${websiteName}/checklist/ljc-legal#xrj-terms-and-conditions`}
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -134,7 +135,7 @@ const SocialSignInModalContent = ({
             </a>
             , our{' '}
             <a
-              href="https://www.waivio.com/object/ylr-waivio/page#oxa-legal/poi-privacy-policy"
+              href={`https://${websiteName}/checklist/ljc-legal#poi-privacy-policy`}
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -142,7 +143,7 @@ const SocialSignInModalContent = ({
             </a>
             , and our{' '}
             <a
-              href="https://www.waivio.com/object/ylr-waivio/page#oxa-legal/uid-cookies-policy"
+              href={`https://${websiteName}/checklist/ljc-legal#uid-cookies-policy`}
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -156,7 +157,7 @@ const SocialSignInModalContent = ({
               defaultMessage: 'Need a Hive Account?',
             })}{' '}
             <a href="https://signup.hive.io/">
-              {intl.formatMessage({ id: 'sign_up', defaultMessage: 'Sign up' })}.
+              {intl.formatMessage({ id: 'sign_up', defaultMessage: 'Sign up' })}
             </a>
           </p>
         </React.Fragment>
@@ -173,6 +174,7 @@ SocialSignInModalContent.propTypes = {
   loading: PropTypes.bool.isRequired,
   onClickHiveSingerAuthButton: PropTypes.func.isRequired,
   websiteTitle: PropTypes.string.isRequired,
+  websiteName: PropTypes.string.isRequired,
   handleFailure: PropTypes.func.isRequired,
   responseSocial: PropTypes.func.isRequired,
 };
