@@ -126,7 +126,7 @@ const WebsiteSignIn = props => {
       handleFailure={handleFailure}
       loading={loading}
       hiveSinger={hiveSinger}
-      websiteName={location.hostname}
+      websiteName={currentHost}
       onClickHiveSingerAuthButton={onClickHiveSingerAuthButton}
     />
   ) : (
