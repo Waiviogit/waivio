@@ -2363,6 +2363,10 @@
   "claim_authority_service": "The Claim authority bot service is provided on as-is / as-available basis.",
   "claim_athority_requires_auth":"The Claim authority bot requires authorization to upvote data updates on your behalf",
   "claim_authority_pause": "The claim authority bot will pause if WAIV voting power on the account drops below the set threshold.",
-  "adSense_advertisements_updated_successfully": "AdSense advertisements updated successfully"
-
+  "adSense_advertisements_updated_successfully": "AdSense advertisements updated successfully",
+  "sign_in_for_rewards": "Sign in for rewards!",
+"full_featured_hive_account": "Full-featured Hive account",
+  "continue_with": "Continue with",
+  "sign_up": "Sign up",
+  "guest_account": "Guest account"
 }

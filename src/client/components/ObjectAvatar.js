@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { includes, get } from 'lodash';
+import { get } from 'lodash';
 
 import DEFAULTS from '../object/const/defaultValues';
 import { getProxyImageURL } from '../../common/helpers/image';
@@ -18,8 +18,6 @@ const ObjectAvatar = ({ item, size, className }) => {
 
   if (url) url = getProxyImageURL(url, 'preview');
   else url = DEFAULTS.AVATAR;
-
-  if (includes(url, 'waivio.')) url = `${url}${size < 41 ? '_small' : '_medium'}`;
 
   style = {
     ...style,

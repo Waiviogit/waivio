@@ -16,10 +16,10 @@ import { parseJSON } from '../../../common/helpers/parseJSON';
 
 import './Payout.less';
 
-const Payout = React.memo(({ intl, post }) => {
+const Payout = React.memo(({ intl, post, isUpdates }) => {
   const [visible, setVisible] = useState(false);
   const rates = useSelector(state => getTokenRatesInUSD(state, 'WAIV'));
-  const payout = calculatePayout(post, rates);
+  const payout = calculatePayout(post, rates, isUpdates);
   const currentPayout = isPostCashout(post) ? payout.pastPayouts : payout.potentialPayout;
   const postTags = get(parseJSON(post.json_metadata), 'tags', []);
   const waivEligible = Array.isArray(postTags)
@@ -38,7 +38,7 @@ const Payout = React.memo(({ intl, post }) => {
   return (
     <React.Fragment>
       <span className={payoutClassList} onClick={toggleModal}>
-        <BTooltip title={<PayoutDetail post={post} />}>
+        <BTooltip title={<PayoutDetail post={post} isUpdates={isUpdates} />}>
           <span
             className={classNames({
               'Payout--rejected': payout.isPayoutDeclined,
@@ -74,7 +74,7 @@ const Payout = React.memo(({ intl, post }) => {
       </span>
       {visible && (
         <Modal visible={visible} onCancel={toggleModal} title={modalTitle} footer={null}>
-          <PayoutDetail post={post} isModal />
+          <PayoutDetail isUpdates={isUpdates} post={post} isModal />
         </Modal>
       )}
     </React.Fragment>
@@ -83,6 +83,7 @@ const Payout = React.memo(({ intl, post }) => {
 
 Payout.propTypes = {
   intl: PropTypes.shape().isRequired,
+  isUpdates: PropTypes.bool,
   post: PropTypes.shape({
     percent_hbd: PropTypes.number,
     json_metadata: PropTypes.string,
