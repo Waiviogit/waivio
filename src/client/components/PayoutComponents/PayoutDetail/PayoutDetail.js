@@ -62,7 +62,7 @@ const getBeneficaries = post => {
   return [{ account: post.author, percent: 100 - beneficiariesPercent }, ...postBeneficiaries];
 };
 
-const PayoutDetail = React.memo(({ intl, post, isModal }) => {
+const PayoutDetail = React.memo(({ intl, post, isModal, isUpdates }) => {
   const rates = useSelector(state => getTokenRatesInUSD(state, 'WAIV'));
   const {
     payoutLimitHit,
@@ -75,7 +75,7 @@ const PayoutDetail = React.memo(({ intl, post, isModal }) => {
     HBDPayout,
     WAIVPayout,
     HIVEPayout,
-  } = calculatePayout(post, rates);
+  } = calculatePayout(post, rates, isUpdates);
   const beneficaries = getBeneficaries(post, authorPayouts, isModal);
   const beneficariesClassList = classNames('PayoutDetail__benefisItem', {
     'PayoutDetail__benefisItem--modal': isModal,
@@ -190,10 +190,12 @@ PayoutDetail.propTypes = {
   intl: PropTypes.shape().isRequired,
   post: PropTypes.shape().isRequired,
   isModal: PropTypes.bool,
+  isUpdates: PropTypes.bool,
 };
 
 PayoutDetail.defaultProps = {
   isModal: false,
+  isUpdates: false,
 };
 
 export default injectIntl(PayoutDetail);
