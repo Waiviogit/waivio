@@ -38,6 +38,7 @@ import {
   getWobjectExpertise as getWobjectExpertiseAction,
   setCatalogBreadCrumbs,
   setNestedWobject,
+  setEditMode,
 } from '../../../store/wObjectStore/wobjActions';
 import {
   addAlbumToStore,
@@ -71,7 +72,10 @@ const WobjectContainer = props => {
   const newsFilter =
     props.match.params[1] === 'newsFilter' ? { newsFilter: props.match.params.itemId } : {};
 
-  const toggleViewEditMode = () => setIsEditMode(!isEditMode);
+  const toggleViewEditMode = () => {
+    setIsEditMode(!isEditMode);
+    props.setEditMode(!isEditMode);
+  };
 
   const appendAlbum = () => {
     const formData = {
@@ -110,6 +114,7 @@ const WobjectContainer = props => {
 
         props.getUpdates(props.match.params.name, field, 'createdAt');
       }
+      props.setEditMode(false);
     });
 
     return () => {
@@ -176,6 +181,7 @@ WobjectContainer.propTypes = {
   supportedObjectTypes: PropTypes.arrayOf(PropTypes.string),
   isWaivio: PropTypes.bool.isRequired,
   resetGallery: PropTypes.func.isRequired,
+  setEditMode: PropTypes.func.isRequired,
   wobject: PropTypes.shape(),
   nestedWobject: PropTypes.shape(),
   updates: PropTypes.arrayOf(),
@@ -236,6 +242,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = {
   clearObjectFromStore,
+  setEditMode,
   setCatalogBreadCrumbs,
   setNestedWobject,
   getObject,
