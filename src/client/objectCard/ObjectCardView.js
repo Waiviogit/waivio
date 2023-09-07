@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { includes, truncate, get, isEmpty, uniq, round } from 'lodash';
+import { truncate, get, isEmpty, uniq, round } from 'lodash';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
@@ -74,8 +74,6 @@ const ObjectCardView = ({
 
     if (url) url = getProxyImageURL(url, 'preview');
     else url = DEFAULTS.AVATAR;
-
-    if (includes(url, 'waivio.')) url = `${url}_medium`;
 
     return (
       <div

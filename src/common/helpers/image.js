@@ -10,7 +10,7 @@ export const MAXIMUM_UPLOAD_SIZE = 15728640;
 export const MAXIMUM_UPLOAD_SIZE_HUMAN = filesize(MAXIMUM_UPLOAD_SIZE);
 
 export const getProxyImageURL = (url, type) => {
-  if (url?.includes('sephora.com')) {
+  if (url?.includes('sephora.com') || url?.includes('waivio.nyc3.digitaloceanspaces')) {
     return url;
   }
   if (type === 'preview') {

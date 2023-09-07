@@ -40,7 +40,13 @@ const Checklist = ({
   getObjectAction,
 }) => {
   const [loading, setLoading] = useState(false);
-  const [listItems, setLists] = useState(wobject?.listItems);
+  const [listItems, setLists] = useState(
+    sortListItemsBy(
+      wobject?.listItems,
+      isEmpty(wobject?.sortCustom) ? 'rank' : 'custom',
+      wobject?.sortCustom,
+    ),
+  );
   const favicon = useSelector(getHelmetIcon);
   const siteName = useSelector(getSiteName);
   const mainObj = useSelector(getMainObj);
@@ -52,8 +58,6 @@ const Checklist = ({
   useEffect(() => {
     const pathUrl =
       permlink || getLastPermlinksFromHash(history.location.hash) || match.params.name;
-
-    setLoading(true);
 
     if (wobject.author_permlink !== pathUrl) {
       setLoading(true);
@@ -81,21 +85,17 @@ const Checklist = ({
     } else {
       if (wobject?.object_type === 'list' && window.gtag)
         window.gtag('event', getObjectName(wobject), { debug_mode: true });
-      if (history.location.hash) {
-        setNestedObject(wobject);
-      }
+      if (history.location.hash) setNestedObject(wobject);
+      if (!isSocialProduct) setBreadcrumb(wobject);
 
-      if (!isSocialProduct) {
-        setBreadcrumb(wobject);
-      }
-      setLists(
-        sortListItemsBy(
-          wobject?.listItems,
-          isEmpty(wobject?.sortCustom) ? 'rank' : 'custom',
-          wobject?.sortCustom,
-        ),
-      );
-      setLoading(false);
+      // setLists(
+      //   sortListItemsBy(
+      //     wobject?.listItems,
+      //     isEmpty(wobject?.sortCustom) ? 'rank' : 'custom',
+      //     wobject?.sortCustom,
+      //   ),
+      // );
+      // setLoading(false);
     }
   }, [history.location.hash, match.params.name]);
 
