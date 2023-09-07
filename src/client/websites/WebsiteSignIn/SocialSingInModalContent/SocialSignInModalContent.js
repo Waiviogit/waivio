@@ -126,7 +126,7 @@ const SocialSignInModalContent = ({
               defaultMessage: 'By using this service, you agree to our',
             })}{' '}
             <a
-              href="https://wiv.socialgifts.pp.ua/checklist/ljc-legal#xrj-terms-and-conditions"
+              href={`https://${websiteTitle}/checklist/ljc-legal#xrj-terms-and-conditions`}
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -134,7 +134,7 @@ const SocialSignInModalContent = ({
             </a>
             , our{' '}
             <a
-              href="https://wiv.socialgifts.pp.ua/checklist/ljc-legal#poi-privacy-policy"
+              href={`https://${websiteTitle}/checklist/ljc-legal#poi-privacy-policy`}
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -142,7 +142,7 @@ const SocialSignInModalContent = ({
             </a>
             , and our{' '}
             <a
-              href="https://wiv.socialgifts.pp.ua/checklist/ljc-legal#uid-cookies-policy"
+              href={`https://${websiteTitle}/checklist/ljc-legal#uid-cookies-policy`}
               target="_blank"
               rel="noopener noreferrer"
             >
