@@ -159,7 +159,7 @@ const SocialSignInModalContent = ({
               id: 'need_hive_account',
               defaultMessage: 'Need a Hive Account?',
             })}{' '}
-            <a href="https://signup.hive.io/">
+            <a href="https://signup.hive.io/" target="_blank" rel="noreferrer">
               {intl.formatMessage({ id: 'sign_up', defaultMessage: 'Sign up' })}
             </a>
           </p>
