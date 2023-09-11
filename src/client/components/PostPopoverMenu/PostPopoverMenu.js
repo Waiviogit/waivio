@@ -27,6 +27,7 @@ import { changeBlackAndWhiteLists } from '../../../store/rewardsStore/rewardsAct
 
 import './PostPopoverMenu.less';
 import { getIsSocial, getUsedLocale } from '../../../store/appStore/appSelectors';
+import { getIsEditMode } from '../../../store/wObjectStore/wObjectSelectors';
 
 const propTypes = {
   pendingFlag: PropTypes.bool,
@@ -122,10 +123,12 @@ const PostPopoverMenu = ({
   const history = useHistory();
   const dispatch = useDispatch();
   const match = useRouteMatch();
+  const isEditMode = useSelector(getIsEditMode);
   const wobjAuthorPermlink = match.params.name;
   const hidePinRemove =
     !match.url.includes(`/${wobjAuthorPermlink}`) ||
-    (isSocial && !match.url.includes(`/${wobjAuthorPermlink}`));
+    (isSocial && !match.url.includes(`/${wobjAuthorPermlink}`)) ||
+    (isSocial && !isEditMode);
 
   const { isReported, isSaved } = postState;
   const hasOnlySponsorLike =

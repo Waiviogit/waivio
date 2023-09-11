@@ -284,6 +284,12 @@ export const setBreadcrumbForChecklist = crumb => ({
   crumb,
 });
 
+export const SET_EDIT_MODE = '@objects/SET_EDIT_MODE';
+export const setEditMode = mode => ({
+  type: SET_EDIT_MODE,
+  mode,
+});
+
 export const SET_ALL_BREDCRUMBS_FOR_CHECKLIST = '@wobj/SET_ALL_BREDCRUMBS_FOR_CHECKLIST';
 
 export const setAllBreadcrumbsForChecklist = crumbs => ({
