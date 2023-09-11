@@ -31,6 +31,7 @@ import ProductRewardCard from '../ShopObjectCard/ProductRewardCard/ProductReward
 import {
   getLastPermlinksFromHash,
   getObjectAvatar,
+  getObjectName,
   parseAddress,
   parseWobjectField,
 } from '../../../common/helpers/wObjectHelper';
@@ -300,43 +301,38 @@ const SocialProduct = ({
         <meta property="og:site_name" content={siteName} />
         <link rel="image_src" href={image} />
         <link id="favicon" rel="icon" href={helmetIcon} type="image/x-icon" />
-        <div itemType="https://schema.org/Product" itemScope>
-          <meta itemProp="mpn" content="925872" />
-          <meta itemProp="name" content="Executive Anvil" />
-          <link itemProp="image" href="https://example.com/photos/16x9/photo.jpg" />
-          <link itemProp="image" href="https://example.com/photos/4x3/photo.jpg" />
-          <link itemProp="image" href="https://example.com/photos/1x1/photo.jpg" />
-          <meta
-            itemProp="description"
-            content="Sleeker than ACME's Classic Anvil, the Executive Anvil is perfect for the business traveler looking for something to drop from a height."
-          />
-          <div itemProp="offers" itemType="https://schema.org/Offer" itemScope>
-            <link itemProp="url" href="https://example.com/anvil" />
-            <meta itemProp="availability" content="https://schema.org/InStock" />
-            <meta itemProp="priceCurrency" content="USD" />
-            <meta itemProp="itemCondition" content="https://schema.org/UsedCondition" />
-            <meta itemProp="price" content="119.99" />
-            <meta itemProp="priceValidUntil" content="2020-11-20" />
+      </Helmet>
+      <div itemType="https://schema.org/Product" itemScope>
+        <meta itemProp="mpn" content="925872" />
+        <meta itemProp="name" content={getObjectName(wobj)} />
+        <link itemProp="image" href={image} />
+        <meta itemProp="description" content={desc} />
+        <div itemProp="offers" itemType="https://schema.org/Offer" itemScope>
+          <link itemProp="url" href={canonicalUrl} />
+          <meta itemProp="availability" content="https://schema.org/InStock" />
+          <meta itemProp="priceCurrency" content="USD" />
+          <meta itemProp="itemCondition" content="https://schema.org/UsedCondition" />
+          <meta itemProp="price" content={wobj?.price} />
+          <meta itemProp="priceValidUntil" content="2020-11-20" />
+        </div>
+        <div itemProp="aggregateRating" itemType="https://schema.org/AggregateRating" itemScope>
+          <meta itemProp="reviewCount" content="89" />
+          <meta itemProp="ratingValue" content="4.4" />
+        </div>
+        <div itemProp="review" itemType="https://schema.org/Review" itemScope>
+          <div itemProp="author" itemType="https://schema.org/Person" itemScope>
+            <meta itemProp="name" content="Fred Benson" />
           </div>
-          <div itemProp="aggregateRating" itemType="https://schema.org/AggregateRating" itemScope>
-            <meta itemProp="reviewCount" content="89" />
-            <meta itemProp="ratingValue" content="4.4" />
-          </div>
-          <div itemProp="review" itemType="https://schema.org/Review" itemScope>
-            <div itemProp="author" itemType="https://schema.org/Person" itemScope>
-              <meta itemProp="name" content="Fred Benson" />
-            </div>
-            <div itemProp="reviewRating" itemType="https://schema.org/Rating" itemScope>
-              <meta itemProp="ratingValue" content="4" />
-              <meta itemProp="bestRating" content="5" />
-            </div>
-          </div>
-          <meta itemProp="sku" content="0446310786" />
-          <div itemProp="brand" itemType="https://schema.org/Brand" itemScope>
-            <meta itemProp="name" content="ACME" />
+          <div itemProp="reviewRating" itemType="https://schema.org/Rating" itemScope>
+            <meta itemProp="ratingValue" content="4" />
+            <meta itemProp="bestRating" content="5" />
           </div>
         </div>
-      </Helmet>
+        <meta itemProp="sku" content="0446310786" />
+        <div itemProp="brand" itemType="https://schema.org/Brand" itemScope>
+          <meta itemProp="name" content="ACME" />
+        </div>
+      </div>
       {loading && isEmpty(wobject) ? (
         <Loading margin />
       ) : (
