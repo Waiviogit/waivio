@@ -30,6 +30,7 @@ import { isMobile } from '../../../common/helpers/apiHelpers';
 import ProductRewardCard from '../ShopObjectCard/ProductRewardCard/ProductRewardCard';
 import {
   getLastPermlinksFromHash,
+  getNumbersFromWobjPrice,
   getObjectAvatar,
   getObjectName,
   parseAddress,
@@ -310,9 +311,9 @@ const SocialProduct = ({
         <div itemProp="offers" itemType="https://schema.org/Offer" itemScope>
           <link itemProp="url" href={canonicalUrl} />
           <meta itemProp="availability" content="https://schema.org/InStock" />
-          <meta itemProp="priceCurrency" content="USD" />
+          <meta itemProp="priceCurrency" content={wobj?.price?.includes('С$') ? 'CAD' : 'USD'} />
           <meta itemProp="itemCondition" content="https://schema.org/UsedCondition" />
-          <meta itemProp="price" content={wobj?.price} />
+          <meta itemProp="price" content={getNumbersFromWobjPrice(wobj)} />
           <meta itemProp="priceValidUntil" content="2020-11-20" />
         </div>
         <div itemProp="aggregateRating" itemType="https://schema.org/AggregateRating" itemScope>
@@ -327,10 +328,6 @@ const SocialProduct = ({
             <meta itemProp="ratingValue" content="4" />
             <meta itemProp="bestRating" content="5" />
           </div>
-        </div>
-        <meta itemProp="sku" content="0446310786" />
-        <div itemProp="brand" itemType="https://schema.org/Brand" itemScope>
-          <meta itemProp="name" content="ACME" />
         </div>
       </div>
       {loading && isEmpty(wobject) ? (
