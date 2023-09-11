@@ -1,12 +1,11 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import { Button, Checkbox, Input, Form, Select } from 'antd';
 import { isEmpty } from 'lodash';
+import PropTypes from 'prop-types';
 
+import { Button, Checkbox, Form, Input, Select } from 'antd';
 import validateRules from '../../constants/validateRules';
-import './CreateWebsite.less';
 
-const CreateWebsite = ({
+const CreateCustomWebsite = ({
   intl,
   form,
   template,
@@ -22,8 +21,8 @@ const CreateWebsite = ({
   <div>
     <h1>
       {intl.formatMessage({
-        id: 'create_new_website',
-        defaultMessage: 'Create new website:',
+        id: 'create_new_website_custom',
+        defaultMessage: 'Create a new website with custom domain',
       })}
     </h1>
     <Form className="CreateWebsite" id="CreateWebsite" onSubmit={handleSubmit}>
@@ -32,7 +31,7 @@ const CreateWebsite = ({
           <span className="ant-form-item-required">
             {intl.formatMessage({
               id: 'select_website_template',
-              defaultMessage: 'Select the website template and top-level domain:',
+              defaultMessage: 'Select website template:',
             })}
           </span>
         </h3>
@@ -82,7 +81,6 @@ const CreateWebsite = ({
               onInput={domainStatus}
             />,
           )}
-          {template && <span className="CreateWebsite__domain-name">.{template}</span>}
         </div>
       </Form.Item>
       {!isEmpty(availableStatus) && (
@@ -130,7 +128,7 @@ const CreateWebsite = ({
   </div>
 );
 
-CreateWebsite.propTypes = {
+CreateCustomWebsite.propTypes = {
   intl: PropTypes.shape().isRequired,
   form: PropTypes.shape().isRequired,
   availableStatus: PropTypes.string,
@@ -144,8 +142,8 @@ CreateWebsite.propTypes = {
   onSelect: PropTypes.func,
 };
 
-CreateWebsite.defaultProps = {
+CreateCustomWebsite.defaultProps = {
   availableStatus: '',
 };
 
-export default CreateWebsite;
+export default CreateCustomWebsite;
