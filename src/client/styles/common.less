@@ -411,7 +411,7 @@ a {
 .ant-select-dropdown-menu-item-active:not(.ant-select-dropdown-menu-item-disabled) {
   background: var(--website-light-color) !important;
 }
-.ant-select-open.ant-select-enabled,
+
 .ant-select-focused.ant-select-selection,
 .ant-select-selection,
 .ant-select-selection.ant-select-selection--multiple,
@@ -421,7 +421,6 @@ a {
   }
 
   &:focus,
-  &:visited,
   &:active {
     border-color: var(--website-color) !important;
     box-shadow: 0 0 4px 0 var(--website-color) !important;
@@ -439,6 +438,14 @@ a {
 }
 .ant-select-selection.ant-select-open {
   box-shadow: 0 0 4px 0 var(--website-color) !important;
+}
+
+.ant-select.ant-select-focused.ant-select-enabled {
+  .ant-select-selection.ant-select-selection--single,
+  .ant-select-selection.ant-select-selection--multiple {
+    border-color: var(--website-color) !important;
+    box-shadow: 0 0 4px 0 var(--website-color) !important;
+  }
 }
 
 @import 'common-nightmode';
