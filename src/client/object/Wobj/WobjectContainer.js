@@ -20,6 +20,7 @@ import {
 import { getLocale } from '../../../store/settingsStore/settingsSelectors';
 import {
   getHelmetIcon,
+  getIsSocial,
   getIsWaivio,
   getScreenSize,
   getSiteName,
@@ -95,7 +96,8 @@ const WobjectContainer = props => {
       if (
         (await showDescriptionPage(res.value, props.locale)) &&
         !props.match.params[0] &&
-        props.isWaivio
+        props.isWaivio &&
+        !props.isSocial
       ) {
         props.history.push(`/object/${res.value.author_permlink}/description`);
       }
@@ -175,6 +177,7 @@ WobjectContainer.propTypes = {
   }).isRequired,
   failed: PropTypes.bool,
   isFetching: PropTypes.bool,
+  isSocial: PropTypes.bool,
   getObject: PropTypes.func.isRequired,
   resetBreadCrumb: PropTypes.func.isRequired,
   weightValue: PropTypes.number.isRequired,
@@ -235,6 +238,7 @@ const mapStateToProps = state => ({
   screenSize: getScreenSize(state),
   helmetIcon: getHelmetIcon(state),
   isWaivio: getIsWaivio(state),
+  isSocial: getIsSocial(state),
   supportedObjectTypes: get(getConfiguration(state), 'supported_object_types'),
   weightValue: getWeightValue(state, getObjectState(state).weight),
   siteName: getSiteName(state),
