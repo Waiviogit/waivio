@@ -64,6 +64,7 @@ import Loading from '../../components/Icon/Loading';
 import SocialBookAuthors from './SocialBookAuthors/SocialBookAuthors';
 import Breadcrumbs from '../Breadcrumbs/Breadcrumbs';
 import { useSeoInfo } from '../../../hooks/useSeoInfo';
+import { averageRate, getRatingForSocial } from '../../components/Sidebar/Rate/rateHelper';
 
 const limit = 30;
 
@@ -280,6 +281,8 @@ const SocialProduct = ({
     !isEmpty(wobject) && getAddOnsSimilarRelatedObjects();
   }, [addOnPermlinks.length, wobject.author_permlink]);
 
+  const bestRating = getRatingForSocial(wobject.rating);
+
   return (
     <div>
       <Helmet>
@@ -317,17 +320,8 @@ const SocialProduct = ({
           <meta itemProp="priceValidUntil" content="2020-11-20" />
         </div>
         <div itemProp="aggregateRating" itemType="https://schema.org/AggregateRating" itemScope>
-          <meta itemProp="reviewCount" content="89" />
-          <meta itemProp="ratingValue" content="4.4" />
-        </div>
-        <div itemProp="review" itemType="https://schema.org/Review" itemScope>
-          <div itemProp="author" itemType="https://schema.org/Person" itemScope>
-            <meta itemProp="name" content="Fred Benson" />
-          </div>
-          <div itemProp="reviewRating" itemType="https://schema.org/Rating" itemScope>
-            <meta itemProp="ratingValue" content="4" />
-            <meta itemProp="bestRating" content="5" />
-          </div>
+          <meta itemProp="reviewCount" content={bestRating?.rating_votes?.length} />
+          <meta itemProp="ratingValue" content={averageRate(bestRating)} />
         </div>
       </div>
       {loading && isEmpty(wobject) ? (
