@@ -201,10 +201,12 @@ const GeneralSearch = props => {
     <div
       className={classNames('Header__search', {
         'Header__search--hidden': !props.searchBarActive,
+        'Header__search--long': props.isSocialProduct && props.searchBarActive,
       })}
     >
       <i className={'iconfont icon-search'} />
       <AutoComplete
+        className={'GeneralSearch__wrapper'}
         open={open}
         onChange={handleAutoCompleteSearch}
         onSelect={handleSelectOnAutoCompleteDropdown}
