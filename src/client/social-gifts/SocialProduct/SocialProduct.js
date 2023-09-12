@@ -30,7 +30,9 @@ import { isMobile } from '../../../common/helpers/apiHelpers';
 import ProductRewardCard from '../ShopObjectCard/ProductRewardCard/ProductRewardCard';
 import {
   getLastPermlinksFromHash,
+  getNumbersFromWobjPrice,
   getObjectAvatar,
+  getObjectName,
   parseAddress,
   parseWobjectField,
 } from '../../../common/helpers/wObjectHelper';
@@ -62,6 +64,7 @@ import Loading from '../../components/Icon/Loading';
 import SocialBookAuthors from './SocialBookAuthors/SocialBookAuthors';
 import Breadcrumbs from '../Breadcrumbs/Breadcrumbs';
 import { useSeoInfo } from '../../../hooks/useSeoInfo';
+import { averageRate, getRatingForSocial } from '../../components/Sidebar/Rate/rateHelper';
 
 const limit = 30;
 
@@ -278,6 +281,8 @@ const SocialProduct = ({
     !isEmpty(wobject) && getAddOnsSimilarRelatedObjects();
   }, [addOnPermlinks.length, wobject.author_permlink]);
 
+  const bestRating = getRatingForSocial(wobject.rating);
+
   return (
     <div>
       <Helmet>
@@ -301,6 +306,24 @@ const SocialProduct = ({
         <link rel="image_src" href={image} />
         <link id="favicon" rel="icon" href={helmetIcon} type="image/x-icon" />
       </Helmet>
+      <div itemType="https://schema.org/Product" itemScope>
+        <meta itemProp="mpn" content="925872" />
+        <meta itemProp="name" content={getObjectName(wobj)} />
+        <link itemProp="image" href={image} />
+        <meta itemProp="description" content={desc} />
+        <div itemProp="offers" itemType="https://schema.org/Offer" itemScope>
+          <link itemProp="url" href={canonicalUrl} />
+          <meta itemProp="availability" content="https://schema.org/InStock" />
+          <meta itemProp="priceCurrency" content={wobj?.price?.includes('С$') ? 'CAD' : 'USD'} />
+          <meta itemProp="itemCondition" content="https://schema.org/UsedCondition" />
+          <meta itemProp="price" content={getNumbersFromWobjPrice(wobj)} />
+          <meta itemProp="priceValidUntil" content="2020-11-20" />
+        </div>
+        <div itemProp="aggregateRating" itemType="https://schema.org/AggregateRating" itemScope>
+          <meta itemProp="reviewCount" content={bestRating?.rating_votes?.length} />
+          <meta itemProp="ratingValue" content={averageRate(bestRating)} />
+        </div>
+      </div>
       {loading && isEmpty(wobject) ? (
         <Loading margin />
       ) : (

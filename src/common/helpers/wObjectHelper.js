@@ -11,6 +11,16 @@ export const getObjectName = (wobj = {}) =>
   get(wobj, 'object_name') ||
   '';
 
+export const getNumbersFromWobjPrice = wobj => {
+  const numbers = wobj?.price?.match(/\d+/g);
+
+  if (!numbers) return 0;
+
+  const numberArray = numbers.map(Number);
+
+  return numberArray.join('');
+};
+
 export const getObjectTitle = (wobj = {}) => wobj.title || '';
 
 export const getTitleForLink = (wobj = {}) =>
