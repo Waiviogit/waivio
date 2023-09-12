@@ -208,6 +208,7 @@ div[data-dir='rtl'] {
 
 .ant-select-auto-complete.ant-select .ant-select-selection--single {
   height: 32px !important;
+  box-shadow: none !important;
 }
 
 .ReactModal__Overlay.ReactModal__Overlay--after-open {
@@ -305,7 +306,7 @@ ul {
 
   &:focus {
     border-color: var(--website-hover-color) !important;
-    box-shadow: 0 0 0 5px rgba(248, 112, 7, 0.2) !important;
+    box-shadow: 0 0 5px 0 var(--website-color) !important;
   }
 }
 
@@ -351,12 +352,13 @@ a {
   border-color: var(--website-color);
 }
 
-.ant-radio-checked .ant-radio-inner {
-  border-color: var(--website-color);
+.ant-radio-checked .ant-radio-inner,
+.ant-checkbox-checked::after {
+  border-color: var(--website-color) !important;
 
   &:hover,
   &:focus {
-    border-color: var(--website-color);
+    border-color: var(--website-color) !important;
   }
 }
 
@@ -381,11 +383,19 @@ a {
 
 .ant-select-auto-complete.ant-select .ant-input:focus,
 .ant-select-auto-complete.ant-select .ant-input:hover {
+  border-color: var(--website-color) !important;
+}
+.ant-input:focus {
+  border-color: var(--website-color) !important;
+  box-shadow: none !important;
+}
+.ant-btn:hover {
+  color: var(--website-color);
   border-color: var(--website-color);
 }
 
 .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled) {
-  border-color: var(--website-color);
+  border-color: var(--website-color) !important;
   color: var(--website-color);
   box-shadow: -1px 0 0 0 var(--website-color);
 
@@ -396,7 +406,39 @@ a {
   }
 }
 
-.ant-select-dropdown-menu-item:hover:not(.ant-select-dropdown-menu-item-disabled) {
-  background: var(--website-light-color);
+.ant-dropdown-menu-item:hover,
+.ant-select-dropdown-menu-item:hover:not(.ant-select-dropdown-menu-item-disabled),
+.ant-select-dropdown-menu-item-active:not(.ant-select-dropdown-menu-item-disabled) {
+  background: var(--website-light-color) !important;
 }
+.ant-select-open.ant-select-enabled,
+.ant-select-focused.ant-select-selection,
+.ant-select-selection,
+.ant-select-selection.ant-select-selection--multiple,
+.ant-select-selection.ant-select-selection--single {
+  &:hover {
+    border-color: var(--website-color) !important;
+  }
+
+  &:focus,
+  &:visited,
+  &:active {
+    border-color: var(--website-color) !important;
+    box-shadow: 0 0 4px 0 var(--website-color) !important;
+  }
+}
+.ant-btn:focus {
+  border-color: var(--website-color) !important;
+}
+.ant-select-selection.ant-select-selection--single,
+.ant-select-selection.ant-select-selection--multiple {
+  &:focus,
+  &:active {
+    box-shadow: 0 0 4px 0 transparent !important;
+  }
+}
+.ant-select-selection.ant-select-open {
+  box-shadow: 0 0 4px 0 var(--website-color) !important;
+}
+
 @import 'common-nightmode';
