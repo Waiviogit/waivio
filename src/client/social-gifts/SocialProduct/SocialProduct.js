@@ -319,10 +319,12 @@ const SocialProduct = ({
           <meta itemProp="price" content={getNumbersFromWobjPrice(wobj)} />
           <meta itemProp="priceValidUntil" content="2020-11-20" />
         </div>
-        <div itemProp="aggregateRating" itemType="https://schema.org/AggregateRating" itemScope>
-          <meta itemProp="reviewCount" content={bestRating?.rating_votes?.length} />
-          <meta itemProp="ratingValue" content={averageRate(bestRating)} />
-        </div>
+        {Boolean(bestRating?.rating_votes?.length) && (
+          <div itemProp="aggregateRating" itemType="https://schema.org/AggregateRating" itemScope>
+            <meta itemProp="reviewCount" content={bestRating?.rating_votes?.length} />
+            <meta itemProp="ratingValue" content={averageRate(bestRating)} />
+          </div>
+        )}
       </div>
       {loading && isEmpty(wobject) ? (
         <Loading margin />
