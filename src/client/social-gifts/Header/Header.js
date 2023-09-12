@@ -23,10 +23,12 @@ const Header = () => {
   return (
     <React.Fragment>
       <div className="Header">
-        <Link to={'/'} className={logoClassList}>
-          {logo && <img alt="Social Gifts Logo" src={logo} className="Header__img" />}
-          <span>{header || config.host || currHost}</span>
-        </Link>
+        {!searchBarActive && (
+          <Link to={'/'} className={logoClassList}>
+            {logo && <img alt="Social Gifts Logo" src={logo} className="Header__img" />}
+            <span>{header || config.host || currHost}</span>
+          </Link>
+        )}
         <GeneralSearch searchBarActive={searchBarActive} isSocialProduct />
         <div className={'Header__rightWrap'}>
           <button
