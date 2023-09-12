@@ -32,7 +32,7 @@ const VideoLinkInput = props => {
     }
   };
   const handleKeyPress = e => {
-    if (e.key === 'Enter') {
+    if (e.keyCode === 13) {
       handleAddVideoLink(videoLink);
     }
   };
