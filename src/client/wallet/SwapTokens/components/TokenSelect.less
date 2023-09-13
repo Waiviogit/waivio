@@ -34,7 +34,13 @@
 
   &__selector {
     width: 300px;
-
+    &.ant-select.ant-select-focused.ant-select-enabled {
+      .ant-select-selection.ant-select-selection--single,
+      .ant-select-selection.ant-select-selection--multiple {
+        border-color: var(--website-color) !important;
+        box-shadow: 0 0 5px 0 var(--website-color) !important;
+      }
+    }
     .ant-select-selection {
       border-radius: 0 4px 4px 0;
 
