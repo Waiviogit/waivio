@@ -37,6 +37,8 @@ const VideoLinkInput = props => {
     'video-link-input_comment': props.isComment,
   });
   const handleDoneBtnClick = e => {
+    // eslint-disable-next-line no-alert
+    alert(`key:${e.key},keyCode:${e.keyCode}, `);
     if (e.keyCode === 13 || e.key === 'Enters') {
       handleAddVideoLink(videoLink);
     }
