@@ -52,7 +52,7 @@ const VideoLinkInput = props => {
         defaultMessage: "Paste link (YouTube | DTube | Vimeo | 3Speak) and press 'Enter'",
       })}
       onSearch={handleAddVideoLink}
-      onKeyUp={handleDoneBtnClick}
+      onKeyPress={handleDoneBtnClick}
     />
   );
 };
