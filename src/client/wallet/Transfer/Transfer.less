@@ -10,6 +10,21 @@
 }
 
 .Transfer {
+  .ant-select.ant-select-focused.ant-select-enabled {
+    .ant-select-selection.ant-select-selection--single,
+    .ant-select-selection.ant-select-selection--multiple {
+      border-color: transparent !important;
+      box-shadow: 0 0 4px 0 transparent !important;
+    }
+  }
+  &__currency.ant-select.ant-select-focused.ant-select-enabled {
+    .ant-select-selection.ant-select-selection--single,
+    .ant-select-selection.ant-select-selection--multiple {
+      border-color: var(--website-color) !important;
+      box-shadow: 0 0 4px 0 var(--website-color) !important;
+    }
+  }
+
   #amount {
     padding-right: 60px;
   }

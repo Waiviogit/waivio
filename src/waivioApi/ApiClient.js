@@ -1566,14 +1566,26 @@ export const createWebsite = body =>
     method: 'PUT',
   }).then(res => res.json());
 
-export const checkAvailable = (name, parent) =>
-  fetch(
-    `${config.apiPrefix}${config.sites}${config.checkAvailable}?name=${name}&parentId=${parent}`,
+export const checkAvailable = (name, parent, isHost) => {
+  return fetch(
+    `${config.apiPrefix}${config.sites}${config.checkAvailable}?${
+      isHost ? 'host' : 'name'
+    }=${name}&parentId=${parent}`,
     {
       headers,
       method: 'GET',
     },
   )
+    .then(res => res)
+    .catch(e => e);
+};
+
+export const checkkNs = host =>
+  fetch(`${config.apiPrefix}${config.sites}${config.checkNs}?host=${host}`, {
+    headers,
+    method: 'GET',
+  })
+    .then(res => res.json())
     .then(res => res)
     .catch(e => e);
 
