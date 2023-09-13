@@ -11,7 +11,7 @@ import { isCustomDomain } from './social-gifts/listOfSocialWebsites';
 import './styles/base.less';
 
 const AppHost = ({ history }) => {
-  const [host, setHost] = useState(location.hostname);
+  const [parentHost, setHost] = useState('');
   const [loading, setLoading] = useState(true);
   const page = useSelector(getWebsiteStartPage);
 
@@ -26,7 +26,11 @@ const AppHost = ({ history }) => {
     }
   }, []);
 
-  return <ConnectedRouter history={history}>{loading ? null : routes(page, host)}</ConnectedRouter>;
+  return (
+    <ConnectedRouter history={history}>
+      {loading ? null : routes(page, location.hostname, parentHost)}
+    </ConnectedRouter>
+  );
 };
 
 AppHost.propTypes = {
