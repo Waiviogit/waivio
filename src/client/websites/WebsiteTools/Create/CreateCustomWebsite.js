@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useHistory } from 'react-router';
-import { get, isEmpty } from 'lodash';
+import { isEmpty } from 'lodash';
 
 import { Button, Checkbox, Form, Input, Select } from 'antd';
 import validateRules from '../../constants/validateRules';
@@ -118,30 +118,30 @@ const CreateCustomWebsite = ({
             <Checkbox>
               <span className="ant-form-item-required">
                 {intl.formatMessage({
-                  id: 'website_create_alerts_info',
-                  defaultMessage: 'I have read and agree to the terms and conditions of the',
+                  id: 'please_review_the',
+                  defaultMessage: 'Please review the',
                 })}{' '}
                 <a
-                  href="https://www.waivio.com/object/snn-web-hosting-agreement/page"
+                  href="https://www.waivio.com/object/qym-custom-domain"
                   rel="noopener noreferrer"
                   target="_blank"
                 >
                   {intl.formatMessage({
-                    id: 'web_hosting_service',
-                    defaultMessage: 'Web Hosting Service Agreement',
+                    id: 'domain_settings',
+                    defaultMessage: 'domain settings and instructions',
                   })}
-                </a>
+                </a>{' '}
+                {intl.formatMessage({
+                  id: 'before_proceeding',
+                  defaultMessage: 'before proceeding',
+                })}
+                .
               </span>
             </Checkbox>,
           )}
         </Form.Item>
         <Form.Item>
-          <Button
-            disabled={!get(availableStatus, 'status')}
-            type="primary"
-            htmlType="submit"
-            loading={loading}
-          >
+          <Button type="primary" htmlType="submit" loading={loading}>
             {intl.formatMessage({
               id: 'create_website',
               defaultMessage: 'Create website',

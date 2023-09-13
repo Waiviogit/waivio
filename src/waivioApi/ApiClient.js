@@ -1589,6 +1589,15 @@ export const checkkNs = host =>
     .then(res => res)
     .catch(e => e);
 
+export const getParentHost = host =>
+  fetch(`${config.apiPrefix}${config.sites}${config.parentHost}?host=${host}`, {
+    headers,
+    method: 'GET',
+  })
+    .then(res => res.json())
+    .then(res => res.result)
+    .catch(e => e);
+
 export const getInfoForManagePage = name =>
   fetch(`${config.apiPrefix}${config.sites}${config.managePage}?userName=${name}`, {
     headers: { ...headers, 'access-token': Cookie.get('access_token') },

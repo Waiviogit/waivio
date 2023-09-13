@@ -1,25 +1,32 @@
-import React, { useEffect, useState } from 'react';
+import React, { useLayoutEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { hot } from 'react-hot-loader';
 import { ConnectedRouter } from 'connected-react-router';
 import { useSelector } from 'react-redux';
 import { getWebsiteStartPage } from '../store/appStore/appSelectors';
 import routes from './routes';
-import { getCurrentAppSettings } from '../waivioApi/ApiClient';
+import { getParentHost } from '../waivioApi/ApiClient';
+import { isCustomDomain } from './social-gifts/listOfSocialWebsites';
 
 import './styles/base.less';
 
 const AppHost = ({ history }) => {
-  const [host, setHost] = useState('');
+  const [host, setHost] = useState(location.hostname);
+  const [loading, setLoading] = useState(true);
   const page = useSelector(getWebsiteStartPage);
 
-  useEffect(() => {
-    getCurrentAppSettings().then(res => {
-      setHost(res?.parentHost || '');
-    });
+  useLayoutEffect(() => {
+    if (isCustomDomain(location.hostname)) {
+      getParentHost(location.hostname).then(res => {
+        setHost(res);
+        setLoading(false);
+      });
+    } else {
+      setLoading(false);
+    }
   }, []);
 
-  return <ConnectedRouter history={history}>{routes(page, host)}</ConnectedRouter>;
+  return <ConnectedRouter history={history}>{loading ? null : routes(page, host)}</ConnectedRouter>;
 };
 
 AppHost.propTypes = {

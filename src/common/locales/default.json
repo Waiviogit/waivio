@@ -1513,7 +1513,7 @@
   "campaign_message_reply": "{author} replied on your comment",
   "empty_transaction_list": "You don't have any transactions yet",
   "empty_table_transaction_list": "You did not have any transactions during this period",
-  "create_new_website": "Create new website",
+  "create_new_website": "Create a new website",
   "select_website": "Select the website:",
   "name_website": "Specify name for your website:",
   "info_level_domain_name": "It will be used as a second level domain name.",
