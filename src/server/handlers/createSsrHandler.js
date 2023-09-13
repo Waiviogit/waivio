@@ -7,7 +7,12 @@ import { StaticRouter } from 'react-router';
 import { matchRoutes, renderRoutes } from 'react-router-config';
 import hivesigner from 'hivesigner';
 
-import { getSettingsAdsense, getSettingsWebsite, waivioAPI } from '../../waivioApi/ApiClient';
+import {
+  getCurrentAppSettings,
+  getSettingsAdsense,
+  getSettingsWebsite,
+  waivioAPI,
+} from '../../waivioApi/ApiClient';
 import getStore from '../../store/store';
 import renderSsrPage from '../renderers/ssrRenderer';
 import switchRoutes from '../../routes/switchRoutes';
@@ -47,17 +52,21 @@ export default function createSsrHandler(template) {
       const hostname = req.headers.host;
       const isWaivio = hostname.includes('waivio');
       let settings = {};
+      let config = {
+        parentHost: '',
+      };
       let adsenseSettings = {};
 
       if (!isWaivio) {
         settings = await getSettingsWebsite(hostname);
+        config = await getCurrentAppSettings();
         adsenseSettings = await getSettingsAdsense(hostname);
       }
 
       if (req.cookies.access_token) sc2Api.setAccessToken(req.cookies.access_token);
 
       const store = getStore(sc2Api, waivioAPI, req.url);
-      const routes = switchRoutes(hostname);
+      const routes = switchRoutes(config.parentHost || '');
       const splittedUrl = req.url.split('?');
       const branch = matchRoutes(routes, splittedUrl[0]);
       const query = splittedUrl[1] ? new URLSearchParams(`?${splittedUrl[1]}`) : null;

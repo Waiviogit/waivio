@@ -64,6 +64,18 @@ export default function websiteReducer(state = initialState, action) {
         loadingWebsite: false,
       };
     }
+    case websiteAction.CREATE_NEW_WEBSITE.ERROR: {
+      return {
+        ...state,
+        loadingWebsite: false,
+      };
+    }
+    case websiteAction.RESET_AVAILABLE_STATUS: {
+      return {
+        ...state,
+        domainAvailableStatus: '',
+      };
+    }
     case websiteAction.GET_INFO_FOR_MANAGE_PAGE.SUCCESS: {
       const websites = get(action.payload, 'websites', []).map(website => ({
         ...website,
