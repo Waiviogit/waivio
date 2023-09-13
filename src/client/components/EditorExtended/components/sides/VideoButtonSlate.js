@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useState } from 'react';
 import { startsWith } from 'lodash';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
@@ -10,8 +10,10 @@ import { createEmptyNode, createVideoNode } from '../../util/SlateEditor/utils/e
 
 const VideoLinkInput = props => {
   const editor = useSlate();
+  const [videoLink, setVideoLink] = useState('');
 
   const handleAddVideoLink = link => {
+    setVideoLink(link);
     if (startsWith(link, 'http')) {
       Transforms.insertNodes(editor, createVideoNode({ url: link }));
 
@@ -34,6 +36,11 @@ const VideoLinkInput = props => {
     'video-link-input': true,
     'video-link-input_comment': props.isComment,
   });
+  const handleDoneBtnClick = e => {
+    if (e.keyCode === 13 || e.key === 'Enters') {
+      handleAddVideoLink(videoLink);
+    }
+  };
 
   return (
     <Input.Search
@@ -45,6 +52,7 @@ const VideoLinkInput = props => {
         defaultMessage: "Paste link (YouTube | DTube | Vimeo | 3Speak) and press 'Enter'",
       })}
       onSearch={handleAddVideoLink}
+      onKeyUp={handleDoneBtnClick}
     />
   );
 };
