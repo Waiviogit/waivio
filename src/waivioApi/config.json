@@ -58,6 +58,7 @@
   "authority": "/authority",
   "previewCache": "/preview-cache",
   "deactivate": "/deactivate",
+  "parentHost": "/parent-host",
   "childWobjects": "/child_wobjects",
   "createCampaign": "/create_campaign",
   "createObject": "/create/object",

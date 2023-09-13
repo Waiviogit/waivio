@@ -46,8 +46,10 @@ export const createNewWebsite = (formData, history) => (dispatch, getState, { bu
   dispatch({ type: CREATE_NEW_WEBSITE.START });
 
   ApiClient.createWebsite(body).then(async res => {
-    if (res.message) message.error(res.message);
-    else {
+    if (res.message) {
+      message.error(res.message);
+      dispatch({ type: CREATE_NEW_WEBSITE.ERROR });
+    } else {
       const blockNumber = await getLastBlockNum();
       const creator = getAuthenticatedUserName(state);
 

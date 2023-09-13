@@ -68,7 +68,7 @@ const SettingsSidenav = ({ match }) => {
             configItem={websiteSettings}
             toggleMenuCondition={toggleMenuCondition}
           />
-          {map(ownWebsite, ({ host }) => (
+          {map(ownWebsite, ({ host, parentHost }) => (
             <SettingsItem
               key={host}
               condition={menuCondition[host]}
@@ -78,7 +78,7 @@ const SettingsSidenav = ({ match }) => {
                   id: host,
                   defaultMessage: host,
                 },
-                settings: currentWebsiteSettings(host),
+                settings: currentWebsiteSettings(host, parentHost),
               }}
               toggleMenuCondition={toggleMenuCondition}
             />

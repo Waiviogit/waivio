@@ -36,6 +36,7 @@ const CreatePage = ({
   const history = useHistory();
   const available = get(availableStatus, 'status');
   const [searchString, setSearchString] = useState('');
+  const [tab, setTab] = useState('1');
 
   const domainNamesList = Object.keys(parentDomain);
   const showingParentList = searchString
@@ -83,40 +84,46 @@ const CreatePage = ({
   return (
     <Tabs
       defaultActiveKey="1"
-      onChange={() => {
+      onChange={key => {
         form.resetFields();
         resetStatus();
+        setTab(key);
       }}
+      className="CreateWebsite"
     >
-      <Tabs.TabPane tab="Standart" key="1">
-        <CreateWebsite
-          showingParentList={showingParentList}
-          statusMessageClassList={statusMessageClassList}
-          handleSearchHost={handleSearchHost}
-          onSelect={onSelect}
-          loading={loading}
-          handleSubmit={handleSubmit}
-          intl={intl}
-          parentDomain={parentDomain}
-          form={form}
-          template={template}
-          availableStatus={availableStatus}
-        />
+      <Tabs.TabPane tab="Standard" key="1">
+        {tab === '1' && (
+          <CreateWebsite
+            showingParentList={showingParentList}
+            statusMessageClassList={statusMessageClassList}
+            handleSearchHost={handleSearchHost}
+            onSelect={onSelect}
+            loading={loading}
+            handleSubmit={handleSubmit}
+            intl={intl}
+            parentDomain={parentDomain}
+            form={form}
+            template={template}
+            availableStatus={availableStatus}
+          />
+        )}
       </Tabs.TabPane>
       <Tabs.TabPane tab="Custom domain" key="2">
-        <CreateCustomWebsite
-          showingParentList={showingParentList}
-          statusMessageClassList={statusMessageClassList}
-          handleSearchHost={handleSearchHost}
-          onSelect={onSelect}
-          loading={loading}
-          handleSubmit={handleSubmit}
-          intl={intl}
-          parentDomain={parentDomain}
-          form={form}
-          template={template}
-          availableStatus={availableStatus}
-        />
+        {tab === '2' && (
+          <CreateCustomWebsite
+            showingParentList={showingParentList}
+            statusMessageClassList={statusMessageClassList}
+            handleSearchHost={handleSearchHost}
+            onSelect={onSelect}
+            loading={loading}
+            createWebsite={createWebsite}
+            intl={intl}
+            parentDomain={parentDomain}
+            form={form}
+            template={template}
+            availableStatus={availableStatus}
+          />
+        )}
       </Tabs.TabPane>
     </Tabs>
   );

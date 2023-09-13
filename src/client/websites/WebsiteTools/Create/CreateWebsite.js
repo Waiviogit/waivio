@@ -23,7 +23,7 @@ const CreateWebsite = ({
     <h1>
       {intl.formatMessage({
         id: 'create_new_website',
-        defaultMessage: 'Create new website:',
+        defaultMessage: 'Create a new website:',
       })}
     </h1>
     <Form className="CreateWebsite" id="CreateWebsite" onSubmit={handleSubmit}>
@@ -31,7 +31,7 @@ const CreateWebsite = ({
         <h3>
           <span className="ant-form-item-required">
             {intl.formatMessage({
-              id: 'select_website_template',
+              id: 'select_website_template_top_level',
               defaultMessage: 'Select the website template and top-level domain:',
             })}
           </span>

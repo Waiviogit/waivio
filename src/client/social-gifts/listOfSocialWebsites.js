@@ -8,4 +8,7 @@ export const listOfSocialWebsites = [
 
 export const socialDomens = ['socialgifts', 'social.gifts'];
 
+export const isCustomDomain = hostname =>
+  !(socialDomens.some(item => hostname.includes(item)) || hostname.includes('dining'));
+
 export default null;
