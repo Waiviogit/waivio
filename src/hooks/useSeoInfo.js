@@ -10,8 +10,8 @@ export const useSeoInfo = () => {
 
   const prefereCanonical = () => {
     let url = `${appUrl}${location.pathname}`;
-
     // if (location.search) url += location.search;
+
     if (location.hash) url += location.hash;
 
     return url;

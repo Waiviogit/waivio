@@ -17,6 +17,7 @@ import {
   checkAvailableDomain,
   createNewWebsite,
   getParentDomainList,
+  resetAvailableStatus,
 } from '../../../../store/websiteStore/websiteActions';
 
 const CreatePage = ({
@@ -27,10 +28,11 @@ const CreatePage = ({
   availableStatus,
   createWebsite,
   loading,
+  resetStatus,
 }) => {
   const parentDomain = useSelector(getParentDomain);
   const template = form.getFieldValue('parent');
-  const subDomain = form.getFieldValue('domain');
+  const subDomain = form.getFieldValue('domain') || form.getFieldValue('host');
   const history = useHistory();
   const available = get(availableStatus, 'status');
   const [searchString, setSearchString] = useState('');
@@ -51,17 +53,18 @@ const CreatePage = ({
     debounce(
       () =>
         checkStatusAvailableDomain(
-          form.getFieldValue('domain').toLowerCase(),
+          subDomain.toLowerCase(),
           parentDomain[template],
+          Boolean(form.getFieldValue('host')),
         ),
       300,
     ),
-    [template],
+    [template, subDomain],
   );
 
   useEffect(() => {
     if (subDomain) domainStatus();
-  }, [template]);
+  }, [template, subDomain]);
 
   const handleSubmit = e => {
     e.preventDefault();
@@ -78,7 +81,13 @@ const CreatePage = ({
   };
 
   return (
-    <Tabs defaultActiveKey="1" onChange={() => {}}>
+    <Tabs
+      defaultActiveKey="1"
+      onChange={() => {
+        form.resetFields();
+        resetStatus();
+      }}
+    >
       <Tabs.TabPane tab="Standart" key="1">
         <CreateWebsite
           showingParentList={showingParentList}
@@ -91,20 +100,22 @@ const CreatePage = ({
           parentDomain={parentDomain}
           form={form}
           template={template}
+          availableStatus={availableStatus}
         />
       </Tabs.TabPane>
-      <Tabs.TabPane tab="Custom domain" key="2" disabled>
+      <Tabs.TabPane tab="Custom domain" key="2">
         <CreateCustomWebsite
           showingParentList={showingParentList}
-          onSelect={onSelect}
-          loading={loading}
           statusMessageClassList={statusMessageClassList}
           handleSearchHost={handleSearchHost}
+          onSelect={onSelect}
+          loading={loading}
           handleSubmit={handleSubmit}
           intl={intl}
           parentDomain={parentDomain}
           form={form}
           template={template}
+          availableStatus={availableStatus}
         />
       </Tabs.TabPane>
     </Tabs>
@@ -119,6 +130,7 @@ CreatePage.propTypes = {
   getDomainList: PropTypes.func,
   checkStatusAvailableDomain: PropTypes.func,
   createWebsite: PropTypes.func,
+  resetStatus: PropTypes.func,
 };
 
 export default connect(
@@ -131,5 +143,6 @@ export default connect(
     getDomainList: getParentDomainList,
     checkStatusAvailableDomain: checkAvailableDomain,
     createWebsite: createNewWebsite,
+    resetStatus: resetAvailableStatus,
   },
 )(Form.create()(injectIntl(CreatePage)));

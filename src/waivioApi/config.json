@@ -147,6 +147,7 @@
   "getParents": "/getParents",
   "create": "/create",
   "checkAvailable": "/checkAvailable",
+  "checkNs": "/check-ns",
   "availability": "/availability",
   "available": "/available",
   "managePage": "/manage",
