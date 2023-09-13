@@ -4,6 +4,8 @@ import { Switch } from 'react-router-dom';
 import { renderRoutes } from 'react-router-config';
 import switchRoutes from '../routes/switchRoutes';
 
-export default (page, host) => (
-  <Switch onUpdate={() => window.scrollTo(0, 0)}>{renderRoutes(switchRoutes(host, page))}</Switch>
+export default (page, host, parentHost) => (
+  <Switch onUpdate={() => window.scrollTo(0, 0)}>
+    {renderRoutes(switchRoutes(host, parentHost))}
+  </Switch>
 );
