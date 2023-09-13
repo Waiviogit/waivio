@@ -44,7 +44,9 @@ const Header = () => {
               })}
             />
           </button>
-          <HeaderButton isSocialGifts domain={currHost} searchBarActive={searchBarActive} />
+          {!searchBarActive && (
+            <HeaderButton isSocialGifts domain={currHost} searchBarActive={searchBarActive} />
+          )}
         </div>
       </div>
       {config.mainBanner && (
