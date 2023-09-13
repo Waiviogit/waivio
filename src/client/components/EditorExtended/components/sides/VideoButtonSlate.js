@@ -37,7 +37,7 @@ const VideoLinkInput = props => {
     'video-link-input_comment': props.isComment,
   });
   const handleDoneBtnClick = e => {
-    if (e.keyCode === 13 || e.key === 'Enters') {
+    if (e.keyCode === 13 || e.keyCode === 66 || e.key === 'Enter') {
       handleAddVideoLink(videoLink);
     }
   };
