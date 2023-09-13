@@ -91,7 +91,7 @@ export default {
   SubFeed: loableComponent(import('../client/feed/SubFeed')),
   UserInfo: loableComponent(import('../client/app/Sidebar/UserInfo/UserInfo')),
   ConfirmationModal: loableComponent(import('../client/widgets/ConfirmationModal')),
-  CreateWebsite: loableComponent(import('../client/websites/WebsiteTools/Create/CreateWebsite')),
+  CreateWebsite: loableComponent(import('../client/websites/WebsiteTools/Create/CreatePage')),
   ManageWebsite: loableComponent(import('../client/websites/WebsiteTools/Manage/ManageWebsite')),
   ReportsWebsite: loableComponent(import('../client/websites/WebsiteTools/Reports/ReportsWebsite')),
   SwitchConfigPage: loableComponent(

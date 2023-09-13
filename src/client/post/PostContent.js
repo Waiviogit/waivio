@@ -291,7 +291,6 @@ class PostContent extends React.Component {
       guestInfo,
     )}`;
     const url = `${appUrl}${replaceBotWithGuestName(dropCategory(content.url), guestInfo)}`;
-    const ampUrl = `${url}/amp`;
     const metaTitle = `${title} - ${siteName}`;
 
     return (
@@ -299,7 +298,7 @@ class PostContent extends React.Component {
         <Helmet>
           <title>{title}</title>
           <link rel="canonical" href={canonicalUrl} />
-          <link rel="amphtml" href={ampUrl} />
+          {/* <link rel="amphtml" href={ampUrl} /> */}
           <meta property="fb:app_id" content="754038848413420" />
           <meta property="og:url" content={url} />
           <meta property="og:type" content="article" />

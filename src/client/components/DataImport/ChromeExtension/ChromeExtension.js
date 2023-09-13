@@ -21,7 +21,7 @@ const ChromeExtension = ({ intl }) => {
         {intl.formatMessage({
           id: 'chrome_extension_description',
           defaultMessage:
-            "The Waivio Chrome Extension is a browser extension designed to efficiently scrape Amazon pages and extract crucial information tailored to Waivio's requirements. By effortlessly parsing through a product page, this extension gathers relevant data such as product names, prices, avatars, and more. After processing the collected information, it generates a compatible output file.",
+            "The Waivio Chrome Extension is a browser tool designed to efficiently scrape Amazon, Sephora, and Walmart pages to extract crucial information tailored to Waivio's requirements. By effortlessly parsing through a product page, this extension gathers relevant data such as product names, prices, avatars, and more. After processing the collected information, it generates a compatible output file.",
         })}
       </p>
 
@@ -98,6 +98,60 @@ const ChromeExtension = ({ intl }) => {
           </li>
         </ol>
       </p>
+      <p>
+        <b>{intl.formatMessage({ id: 'chrome_extension_version', defaultMessage: 'Version' })}:</b>
+        <ul>
+          <li>
+            {intl.formatMessage({
+              id: 'chrome_extension_current_version',
+              defaultMessage: 'Current version',
+            })}
+            : <span>{currentVersion}</span>
+          </li>
+          <button className="ant-btn ant-btn-primary mt2 ">
+            <a download="" href={FILE_ZIP}>
+              {intl.formatMessage({
+                id: 'chrome_extension_download_file_button',
+                defaultMessage: 'Download file',
+              })}{' '}
+              .zip
+            </a>
+          </button>
+          <button className="ant-btn ant-btn-primary mt2 ml2">
+            <a download="" href={FILE_RAR}>
+              {intl.formatMessage({
+                id: 'chrome_extension_download_file_button',
+                defaultMessage: 'Download file',
+              })}{' '}
+              .tar
+            </a>
+          </button>
+        </ul>
+      </p>
+      <p>
+        {intl.formatMessage({
+          id: 'chrome_extension_reinstall_note',
+          defaultMessage:
+            'Please note that after each of our updates, you need to reinstall the extension or refresh the file and extension to use the most current version',
+        })}
+        .
+        <div>
+          {' '}
+          {intl.formatMessage({
+            id: 'chrome_extension_repository',
+            defaultMessage: 'The Waivio Chrome Extension original repository',
+          })}
+          <a
+            href="https://github.com/Waiviogit/waivio-import-extension"
+            target="_blank"
+            rel="noreferrer"
+          >
+            {' '}
+            GitHub
+          </a>
+          .
+        </div>
+      </p>
       <b>
         {intl.formatMessage({
           id: 'chrome_extension_features_title',
@@ -114,8 +168,7 @@ const ChromeExtension = ({ intl }) => {
             :{' '}
             {intl.formatMessage({
               id: 'chrome_extension_receive_file',
-              defaultMessage:
-                'users can receive a .json file containing the Amazon page information',
+              defaultMessage: 'users can receive a .json file containing the page information.',
             })}
             .
           </li>
@@ -171,7 +224,7 @@ const ChromeExtension = ({ intl }) => {
             {intl.formatMessage({
               id: 'chrome_extension_about_upload',
               defaultMessage:
-                'tool scans the Amazon URL, generates the required file, and immediately initiates the import to Waivio under the currently logged-in user',
+                'tool scans the URL, generates the required file, and immediately initiates the import to Waivio under the currently logged-in user.',
             })}
             .
           </li>
@@ -190,100 +243,6 @@ const ChromeExtension = ({ intl }) => {
             .
           </li>
         </ul>
-      </p>
-      <b>
-        {intl.formatMessage({
-          id: 'chrome_extension_link_information_title',
-          defaultMessage: 'Link information',
-        })}
-        :
-      </b>
-      <p>
-        {intl.formatMessage({
-          id: 'chrome_extension_link_note',
-          defaultMessage:
-            'Please note that in order for the extension to work correctly, the Amazon page link should look as follows',
-        })}
-        :{' '}
-        <span className="ChromeExtension__link-example">https://www.amazon.com/dp/ASIN_NUMBER</span>
-      </p>
-
-      <p>
-        <div>
-          {intl.formatMessage({
-            id: 'chrome_extension_region_note',
-            defaultMessage:
-              'Here, amazon.com can be replaced with any Amazon regional site as well',
-          })}
-          .
-        </div>
-        <div>
-          {intl.formatMessage({
-            id: 'chrome_extension_remove_note',
-            defaultMessage: 'All unnecessary information must be removed manually from the link',
-          })}
-          .
-        </div>
-        <div>
-          {intl.formatMessage({ id: 'chrome_extension_examples', defaultMessage: 'Examples' })}:
-        </div>
-        <div>https://www.amazon.pl/dp/B01LYYIMIO</div>
-        <div>https://www.amazon.com/dp/B0BPSNYSDC</div>
-      </p>
-
-      <p>
-        <b>{intl.formatMessage({ id: 'chrome_extension_version', defaultMessage: 'Version' })}:</b>
-        <ul>
-          <li>
-            {intl.formatMessage({
-              id: 'chrome_extension_current_version',
-              defaultMessage: 'Current version',
-            })}
-            : <span>{currentVersion}</span>
-          </li>
-          <button className="ant-btn ant-btn-primary mt2 ">
-            <a download="" href={FILE_ZIP}>
-              {intl.formatMessage({
-                id: 'chrome_extension_download_file_button',
-                defaultMessage: 'Download file',
-              })}{' '}
-              .zip
-            </a>
-          </button>
-          <button className="ant-btn ant-btn-primary mt2 ml2">
-            <a download="" href={FILE_RAR}>
-              {intl.formatMessage({
-                id: 'chrome_extension_download_file_button',
-                defaultMessage: 'Download file',
-              })}{' '}
-              .tar
-            </a>
-          </button>
-        </ul>
-      </p>
-      <p>
-        {intl.formatMessage({
-          id: 'chrome_extension_reinstall_note',
-          defaultMessage:
-            'Please note that after each of our updates, you need to reinstall the extension or refresh the file and extension to use the most current version',
-        })}
-        .
-        <div>
-          {' '}
-          {intl.formatMessage({
-            id: 'chrome_extension_repository',
-            defaultMessage: 'The Waivio Chrome Extension original repository',
-          })}
-          <a
-            href="https://github.com/Waiviogit/waivio-import-extension"
-            target="_blank"
-            rel="noreferrer"
-          >
-            {' '}
-            GitHub
-          </a>
-          .
-        </div>
       </p>
     </div>
   );

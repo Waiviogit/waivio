@@ -38,7 +38,7 @@ export const createNewWebsite = (formData, history) => (dispatch, getState, { bu
   const domainList = getParentDomain(state);
   const owner = getAuthenticatedUserName(state);
   const body = {
-    name: formData.domain,
+    ...(formData.domain ? { name: formData.domain } : { host: formData?.host }),
     parentId: domainList[formData.parent],
     owner,
   };
@@ -46,8 +46,10 @@ export const createNewWebsite = (formData, history) => (dispatch, getState, { bu
   dispatch({ type: CREATE_NEW_WEBSITE.START });
 
   ApiClient.createWebsite(body).then(async res => {
-    if (res.message) message.error(res.message);
-    else {
+    if (res.message) {
+      message.error(res.message);
+      dispatch({ type: CREATE_NEW_WEBSITE.ERROR });
+    } else {
       const blockNumber = await getLastBlockNum();
       const creator = getAuthenticatedUserName(state);
 
@@ -55,9 +57,14 @@ export const createNewWebsite = (formData, history) => (dispatch, getState, { bu
       busyAPI.instance.subscribeBlock(subscribeTypes.posts, blockNumber, () => {
         dispatch(getOwnWebsite());
         dispatch({ type: CREATE_NEW_WEBSITE.SUCCESS });
-        message.success(`The website ${formData.domain} has been successfully activated
+        message.success(`The website ${formData?.host ||
+          formData.domain} has been successfully activated
 `);
-        history.push(`/${formData.domain}.${formData.parent}/configuration`);
+        history.push(
+          formData?.host
+            ? `/${formData?.host}/configuration`
+            : `/${formData.domain}.${formData.parent}/configuration`,
+        );
       });
     }
   });
@@ -65,13 +72,19 @@ export const createNewWebsite = (formData, history) => (dispatch, getState, { bu
 
 export const CHECK_AVAILABLE_DOMAIN = createAsyncActionType('@website/CHECK_AVAILABLE_DOMAIN');
 
-export const checkAvailableDomain = (name, parent) => ({
+export const checkAvailableDomain = (name, parent, isHost) => ({
   type: CHECK_AVAILABLE_DOMAIN.ACTION,
   payload: {
-    promise: ApiClient.checkAvailable(name, parent)
+    promise: ApiClient.checkAvailable(name, parent, isHost)
       .then(r => r.status)
       .catch(e => e),
   },
+});
+
+export const RESET_AVAILABLE_STATUS = '@website/RESET_AVAILABLE_STATUS';
+
+export const resetAvailableStatus = () => ({
+  type: RESET_AVAILABLE_STATUS,
 });
 
 export const GET_INFO_FOR_MANAGE_PAGE = createAsyncActionType('@website/GET_INFO_FOR_MANAGE_PAGE');
