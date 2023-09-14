@@ -83,7 +83,16 @@ const WebsitesSettings = ({
         const tag = values.googleAnalyticsTag || '';
         const beneficiary = { account, percent };
 
-        saveWebSettings(host, tag, beneficiary, values.currency, values.language, objectControl);
+        saveWebSettings(
+          host,
+          tag,
+          beneficiary,
+          values.currency,
+          values.language,
+          objectControl,
+          values.facebookAuthId,
+          values.googleAuthId,
+        );
         referralUserForWeb(referralAccount, host);
         message.success(intl.formatMessage({ id: 'settings_updated_successfully' }));
       }

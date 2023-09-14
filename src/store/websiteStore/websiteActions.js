@@ -430,6 +430,8 @@ export const saveWebsiteSettings = (
   currency,
   language,
   objectControl,
+  facebookAuthId,
+  googleAuthId,
 ) => (dispatch, getState, { steemConnectAPI }) => {
   const state = getState();
   const userName = getAuthenticatedUserName(state);
@@ -446,6 +448,8 @@ export const saveWebsiteSettings = (
         currency,
         language,
         objectControl,
+        facebookAuthId,
+        googleAuthId,
       ),
     },
   });
