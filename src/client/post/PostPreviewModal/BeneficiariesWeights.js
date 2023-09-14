@@ -13,6 +13,8 @@ import { getAuthenticatedUser } from '../../../store/authStore/authSelectors';
 import { getBeneficiariesUsers } from '../../../store/searchStore/searchSelectors';
 
 import './AdvanceSettings.less';
+import { getCurrentAppSettings } from '../../../waivioApi/ApiClient';
+import { initialColors } from '../../websites/constants/colors';
 
 class BeneficiariesWeight extends React.PureComponent {
   static propTypes = {
@@ -84,12 +86,16 @@ class BeneficiariesWeight extends React.PureComponent {
 
 const BeneficiariesWeights = ({ intl, isLinkedObjectsValid }) => {
   const [weightBuffer, setWeightBuffer] = useState(100);
+  const [mainColor, setMainColor] = useState('orange');
   const user = useSelector(getAuthenticatedUser);
   const beneficiariesUsers = useSelector(getBeneficiariesUsers);
   const dispatch = useDispatch();
 
   useEffect(() => {
     setWeightBuffer(beneficiariesUsers.reduce((res, curr) => res - curr.weight / 100, 100));
+    getCurrentAppSettings().then(res => {
+      setMainColor(res.configuration.colors?.mapMarkerBody || initialColors.marker);
+    });
   }, [beneficiariesUsers]);
 
   const onBenefPercentChange = (objName, percent) => {
@@ -122,7 +128,7 @@ const BeneficiariesWeights = ({ intl, isLinkedObjectsValid }) => {
             showInfo={false}
             percent={weightBuffer}
             strokeWidth={5}
-            strokeColor="orange"
+            strokeColor={mainColor}
             trailColor="red"
           />
         </div>

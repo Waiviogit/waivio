@@ -21,6 +21,7 @@ import {
   SET_AUTHORS,
   SET_BREDCRUMB_FOR_CHECKLIST,
   SET_ALL_BREDCRUMBS_FOR_CHECKLIST,
+  SET_EDIT_MODE,
 } from './wobjActions';
 import { objectFields } from '../../common/constants/listOfFields';
 import { FOLLOW_USER, UNFOLLOW_USER } from '../usersStore/usersActions';
@@ -44,6 +45,7 @@ export const initialState = {
   isFetching: false,
   isFailed: false,
   breadcrumb: [],
+  isEditMode: false,
   shopBreadcrumbs: [],
   isLoadingFlag: true,
   followers: {
@@ -305,6 +307,12 @@ export default function wobjectReducer(state = initialState, action) {
       return {
         ...state,
         breadcrumb: action.payload,
+      };
+    }
+    case SET_EDIT_MODE: {
+      return {
+        ...state,
+        isEditMode: action.mode,
       };
     }
 

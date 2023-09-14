@@ -1,11 +1,12 @@
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
+import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { setActiveDepartment } from '../../../store/objectDepartmentsStore/objectDepartmentsActions';
 import { getActiveDepartment } from '../../../store/objectDepartmentsStore/objectDepartmentsSelectors';
 
-const DepartmentItem = ({ wobject, history, department, id, isSocialGifts }) => {
+const DepartmentItem = ({ wobject, department, id, isSocialGifts }) => {
   const linkToSearch = dep =>
     isSocialGifts
       ? `/discover-departments/${wobject.author_permlink}/${dep.body}`
@@ -19,28 +20,28 @@ const DepartmentItem = ({ wobject, history, department, id, isSocialGifts }) => 
         element.body === storeActiveDep.name && storeActiveDep.id === id,
     });
 
-  const onNewActiveDep = dep => {
-    history.push(linkToSearch(dep));
-
-    dispatch(setActiveDepartment({ name: dep.body, id }));
-  };
   const onDepartmentClick = dep => {
     if (dep.body === storeActiveDep.name) {
-      history.push(`/object/${wobject.author_permlink}`);
       dispatch(setActiveDepartment({}));
     } else {
-      onNewActiveDep(dep);
+      dispatch(setActiveDepartment({ name: dep.body, id }));
     }
   };
+  const getDepartmentHref = dep =>
+    dep.body === storeActiveDep.name ? `/object/${wobject.author_permlink}` : linkToSearch(dep);
 
   useEffect(() => () => dispatch(setActiveDepartment({})), [wobject.author_permlink]);
 
   return (
     <div className="Department__container">
       <div className="Department__block" key={department.body}>
-        <button className="Department__button" onClick={() => onDepartmentClick(department)}>
+        <Link
+          className="Department__button"
+          to={getDepartmentHref(department)}
+          onClick={() => onDepartmentClick(department)}
+        >
           <span className={getDepartmentsClassNames(department)}>{department.body}</span>{' '}
-        </button>
+        </Link>
       </div>
     </div>
   );
@@ -49,7 +50,6 @@ const DepartmentItem = ({ wobject, history, department, id, isSocialGifts }) => 
 DepartmentItem.propTypes = {
   wobject: PropTypes.shape().isRequired,
   department: PropTypes.arrayOf().isRequired,
-  history: PropTypes.func.isRequired,
   id: PropTypes.string.isRequired,
   isSocialGifts: PropTypes.bool,
 };

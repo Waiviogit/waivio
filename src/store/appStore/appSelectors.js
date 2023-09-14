@@ -119,6 +119,8 @@ export const getWebsiteName = createSelector([appState], state => state.websiteN
 export const getNavigItems = createSelector([appState], state => state.navigItems);
 
 export const getSettingsLoading = createSelector([appState], state => state.settingsLoading);
+export const getFacebookAuthId = createSelector([appState], state => state.facebookAuthId);
+export const getGoogleAuthId = createSelector([appState], state => state.googleAuthId);
 
 export const getWeightValue = createSelector(
   getRate,

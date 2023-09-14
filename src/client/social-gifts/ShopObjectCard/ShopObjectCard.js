@@ -15,9 +15,9 @@ import USDDisplay from '../../components/Utils/USDDisplay';
 import { getProxyImageURL } from '../../../common/helpers/image';
 import DEFAULTS from '../../object/const/defaultValues';
 import { getRatingForSocial } from '../../components/Sidebar/Rate/rateHelper';
+import { isMobile } from '../../../common/helpers/apiHelpers';
 
 import './ShopObjectCard.less';
-import { isMobile } from '../../../common/helpers/apiHelpers';
 
 const ShopObjectCard = ({ wObject, isChecklist, isSocialProduct }) => {
   const username = useSelector(getAuthenticatedUserName);

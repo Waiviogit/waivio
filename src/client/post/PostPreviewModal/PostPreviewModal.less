@@ -28,6 +28,15 @@
   }
 }
 
+.post-preview-topics {
+  .ant-select.ant-select-focused.ant-select-enabled {
+    .ant-select-selection.ant-select-selection--single,
+    .ant-select-selection.ant-select-selection--multiple {
+      border-color: var(--website-color) !important;
+      box-shadow: 0 0 5px 0 var(--website-color) !important;
+    }
+  }
+}
 .post-preview-topics,
 .post-preview-legal-notice {
   margin: 5px 0;
@@ -36,6 +45,20 @@
 .edit-post-controls {
   text-align: center;
   margin-top: 10px;
+
+  &__publish-ready-btn {
+    &:hover {
+      border-color: var(--website-color) !important;
+      color: var(--website-color) !important;
+    }
+    &:disabled,
+    &:disabled:hover {
+      background-color: @white-smoke !important;
+      border-color: @white-gainsboro !important;
+      color: rgba(0, 0, 0, 0.25) !important;
+      cursor: no-drop;
+    }
+  }
 }
 
 .beneficiary-settings {
