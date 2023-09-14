@@ -9,7 +9,11 @@ import { message } from 'antd';
 import { batch, useDispatch, useSelector } from 'react-redux';
 import { setGuestLoginData } from '../../../common/helpers/localStorageHelpers';
 import { isUserRegistered } from '../../../waivioApi/ApiClient';
-import { getCurrentHost } from '../../../store/appStore/appSelectors';
+import {
+  getCurrentHost,
+  getFacebookAuthId,
+  getGoogleAuthId,
+} from '../../../store/appStore/appSelectors';
 import {
   getFollowing,
   getFollowingObjects,
@@ -33,6 +37,8 @@ const WebsiteSignIn = props => {
   const [loading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
   const currentHost = useSelector(getCurrentHost);
+  const facebookId = useSelector(getFacebookAuthId);
+  const googleId = useSelector(getGoogleAuthId);
   const query = new URLSearchParams(props.location.search);
   const websiteName = query.get('websiteName');
   const websiteTitle = websiteName
@@ -130,6 +136,8 @@ const WebsiteSignIn = props => {
       websiteName={url}
       onClickHiveSingerAuthButton={onClickHiveSingerAuthButton}
       isCustom={isCustomDomain(currentHost)}
+      facebookId={facebookId}
+      googleId={googleId}
     />
   ) : (
     <WebsiteSignInModalContent
@@ -138,6 +146,9 @@ const WebsiteSignIn = props => {
       loading={loading}
       hiveSinger={hiveSinger}
       onClickHiveSingerAuthButton={onClickHiveSingerAuthButton}
+      isCustom={isCustomDomain(currentHost)}
+      facebookId={facebookId}
+      googleId={googleId}
     />
   );
 };

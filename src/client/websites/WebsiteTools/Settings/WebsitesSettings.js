@@ -19,9 +19,9 @@ import {
   getWebsiteLoading,
 } from '../../../../store/websiteStore/websiteSelectors';
 import { currencyTypes, defaultCurrency } from '../../constants/currencyTypes';
+import { isCustomDomain } from '../../../social-gifts/listOfSocialWebsites';
 
 import './WebsitesSettings.less';
-import { isCustomDomain } from '../../../social-gifts/listOfSocialWebsites';
 
 const WebsitesSettings = ({
   intl,
