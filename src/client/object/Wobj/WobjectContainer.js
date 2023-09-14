@@ -93,8 +93,6 @@ const WobjectContainer = props => {
 
   useEffect(() => {
     props.getObject(props.match.params.name, props.authenticatedUserName).then(async res => {
-      // eslint-disable-next-line no-console
-      console.log(props.isSocial, '<-isSocial', props.isWaivio, '<-isWaivio');
       if (!props.isSocial) {
         if (
           props.isWaivio &&
