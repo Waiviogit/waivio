@@ -106,10 +106,27 @@ const CreateCustomWebsite = ({
           <span className={statusMessageClassList}>{intl.formatMessage(availableStatus.intl)}</span>
         )}
         <p>
-          {intl.formatMessage({
-            id: 'info_level_domain_name',
-            defaultMessage: 'It will be used as a second level domain name.',
-          })}
+          <span className="ant-form-item-required">
+            {intl.formatMessage({
+              id: 'please_review_the',
+              defaultMessage: 'Please review the',
+            })}{' '}
+            <a
+              href="https://www.waivio.com/object/qym-custom-domain"
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              {intl.formatMessage({
+                id: 'domain_settings',
+                defaultMessage: 'domain settings and instructions',
+              })}
+            </a>{' '}
+            {intl.formatMessage({
+              id: 'before_proceeding',
+              defaultMessage: 'before proceeding',
+            })}
+            .
+          </span>
         </p>
         <Form.Item className="CreateWebsite__checkbox-wrap">
           {form.getFieldDecorator('politics', {
@@ -118,24 +135,19 @@ const CreateCustomWebsite = ({
             <Checkbox>
               <span className="ant-form-item-required">
                 {intl.formatMessage({
-                  id: 'please_review_the',
-                  defaultMessage: 'Please review the',
+                  id: 'website_create_alerts_info',
+                  defaultMessage: 'I have read and agree to the terms and conditions of the',
                 })}{' '}
                 <a
-                  href="https://www.waivio.com/object/qym-custom-domain"
+                  href="https://www.waivio.com/object/snn-web-hosting-agreement/page"
                   rel="noopener noreferrer"
                   target="_blank"
                 >
                   {intl.formatMessage({
-                    id: 'domain_settings',
-                    defaultMessage: 'domain settings and instructions',
+                    id: 'web_hosting_service',
+                    defaultMessage: 'Web Hosting Service Agreement',
                   })}
-                </a>{' '}
-                {intl.formatMessage({
-                  id: 'before_proceeding',
-                  defaultMessage: 'before proceeding',
-                })}
-                .
+                </a>
               </span>
             </Checkbox>,
           )}
