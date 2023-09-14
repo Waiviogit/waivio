@@ -15,7 +15,6 @@ const template = Handlebars.compile(indexHtml);
 // const ampIndexHtml = fs.readFileSync(ampIndexPath, 'utf-8');
 // const ampTemplate = Handlebars.compile(ampIndexHtml);
 const ssrHandler = createSsrHandler(template);
-// const ampHandler = createAmpHandler(ampTemplate);
 
 const CACHE_AGE = 1000 * 60 * 60 * 24 * 7;
 
@@ -24,6 +23,13 @@ const app = express();
 const IS_DEV = process.env.NODE_ENV === 'development';
 
 app.use(cookieParser());
+app.use(express.json());
+
+app.post('/write-txt-to-file', (req, res) => {
+  const { adText } = req.body;
+
+  fs.writeFile('ads.txt', adText, err);
+});
 
 if (IS_DEV) {
   app.use(express.static(paths.publicRuntime(), { index: false }));
