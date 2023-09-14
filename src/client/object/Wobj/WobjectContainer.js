@@ -93,13 +93,16 @@ const WobjectContainer = props => {
 
   useEffect(() => {
     props.getObject(props.match.params.name, props.authenticatedUserName).then(async res => {
-      if (
-        (await showDescriptionPage(res.value, props.locale)) &&
-        !props.match.params[0] &&
-        props.isWaivio &&
-        !props.isSocial
-      ) {
-        props.history.push(`/object/${res.value.author_permlink}/description`);
+      // eslint-disable-next-line no-console
+      console.log(props.isSocial, '<-isSocial', props.isWaivio, '<-isWaivio');
+      if (!props.isSocial) {
+        if (
+          props.isWaivio &&
+          (await showDescriptionPage(res.value, props.locale)) &&
+          !props.match.params[0]
+        ) {
+          props.history.push(`/object/${res.value.author_permlink}/description`);
+        }
       }
       props.getAlbums(props.match.params.name);
       props.getNearbyObjects(props.match.params.name);
