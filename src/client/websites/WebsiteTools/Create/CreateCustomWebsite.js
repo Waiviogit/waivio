@@ -106,27 +106,25 @@ const CreateCustomWebsite = ({
           <span className={statusMessageClassList}>{intl.formatMessage(availableStatus.intl)}</span>
         )}
         <p>
-          <span className="ant-form-item-required">
+          {intl.formatMessage({
+            id: 'please_review_the',
+            defaultMessage: 'Please review the',
+          })}{' '}
+          <a
+            href="https://www.waivio.com/object/qym-custom-domain"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
             {intl.formatMessage({
-              id: 'please_review_the',
-              defaultMessage: 'Please review the',
-            })}{' '}
-            <a
-              href="https://www.waivio.com/object/qym-custom-domain"
-              rel="noopener noreferrer"
-              target="_blank"
-            >
-              {intl.formatMessage({
-                id: 'domain_settings',
-                defaultMessage: 'domain settings and instructions',
-              })}
-            </a>{' '}
-            {intl.formatMessage({
-              id: 'before_proceeding',
-              defaultMessage: 'before proceeding',
+              id: 'domain_settings',
+              defaultMessage: 'domain settings and instructions',
             })}
-            .
-          </span>
+          </a>{' '}
+          {intl.formatMessage({
+            id: 'before_proceeding',
+            defaultMessage: 'before proceeding',
+          })}
+          .
         </p>
         <Form.Item className="CreateWebsite__checkbox-wrap">
           {form.getFieldDecorator('politics', {
