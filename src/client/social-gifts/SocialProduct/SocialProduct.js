@@ -65,6 +65,7 @@ import SocialBookAuthors from './SocialBookAuthors/SocialBookAuthors';
 import Breadcrumbs from '../Breadcrumbs/Breadcrumbs';
 import { useSeoInfo } from '../../../hooks/useSeoInfo';
 import { averageRate, getRatingForSocial } from '../../components/Sidebar/Rate/rateHelper';
+import { setSocialFlag } from '../../../store/appStore/appActions';
 
 const limit = 30;
 
@@ -90,6 +91,7 @@ const SocialProduct = ({
   nestedWobj,
   isEditMode,
   toggleViewEditMode,
+  setIsSocial,
 }) => {
   const authorPermlink = history.location.hash
     ? getLastPermlinksFromHash(history.location.hash)
@@ -249,6 +251,7 @@ const SocialProduct = ({
   };
 
   useEffect(() => {
+    setIsSocial();
     window.scrollTo({ top: scrollHeight, behavior: 'smooth' });
     if (!isEmpty(authorPermlink)) {
       getWobject(authorPermlink, userName);
@@ -567,6 +570,7 @@ SocialProduct.propTypes = {
   resetWobjGallery: PropTypes.func,
   isEditMode: PropTypes.bool,
   toggleViewEditMode: PropTypes.func,
+  setIsSocial: PropTypes.func,
 };
 
 const mapStateToProps = state => ({
@@ -590,6 +594,7 @@ const mapDispatchToProps = dispatch => ({
   getWobject: (obj, name) => dispatch(getObject(obj, name)),
   getWobjAlbums: obj => dispatch(getAlbums(obj)),
   resetWobjGallery: () => dispatch(resetGallery()),
+  setIsSocial: () => dispatch(setSocialFlag()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(SocialProduct));
