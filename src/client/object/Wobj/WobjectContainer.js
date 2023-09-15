@@ -93,7 +93,7 @@ const WobjectContainer = props => {
 
   useEffect(() => {
     props.getObject(props.match.params.name, props.authenticatedUserName).then(async res => {
-      if (location.host.includes('waivio')) {
+      if (location?.host.includes('waivio')) {
         if ((await showDescriptionPage(res.value, props.locale)) && !props.match.params[0]) {
           props.history.push(`/object/${res.value.author_permlink}/description`);
         }
