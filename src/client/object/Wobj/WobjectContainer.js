@@ -93,14 +93,8 @@ const WobjectContainer = props => {
 
   useEffect(() => {
     props.getObject(props.match.params.name, props.authenticatedUserName).then(async res => {
-      // eslint-disable-next-line no-console
-      console.log(location.host.includes('waivio'), location.host);
-      if (!props.isSocial) {
-        if (
-          props.isWaivio &&
-          (await showDescriptionPage(res.value, props.locale)) &&
-          !props.match.params[0]
-        ) {
+      if (location.host.includes('waivio')) {
+        if ((await showDescriptionPage(res.value, props.locale)) && !props.match.params[0]) {
           props.history.push(`/object/${res.value.author_permlink}/description`);
         }
       }
