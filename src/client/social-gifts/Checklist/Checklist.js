@@ -87,15 +87,6 @@ const Checklist = ({
         window.gtag('event', getObjectName(wobject), { debug_mode: true });
       if (history.location.hash) setNestedObject(wobject);
       if (!isSocialProduct) setBreadcrumb(wobject);
-
-      // setLists(
-      //   sortListItemsBy(
-      //     wobject?.listItems,
-      //     isEmpty(wobject?.sortCustom) ? 'rank' : 'custom',
-      //     wobject?.sortCustom,
-      //   ),
-      // );
-      // setLoading(false);
     }
   }, [history.location.hash, match.params.name]);
 

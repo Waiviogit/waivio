@@ -36,10 +36,10 @@ import {
   getWebsiteParentHost,
 } from '../../../../store/appStore/appSelectors';
 import WebsiteSignIn from '../../../websites/WebsiteSignIn/WebsiteSignIn';
+// import { isCustomDomain } from '../../../social-gifts/listOfSocialWebsites';
+import useWebsiteColor from '../../../../hooks/useWebsiteColor';
 
 import './ModalSignIn.less';
-import useWebsiteColor from '../../../../hooks/useWebsiteColor';
-import { isCustomDomain } from '../../../social-gifts/listOfSocialWebsites';
 
 const ModalSignIn = ({
   intl,
@@ -265,7 +265,7 @@ const ModalSignIn = ({
   };
 
   const onSignUpClick = isOpen => {
-    if (!isWaivio && domain && !isCustomDomain(host)) {
+    if (!isWaivio && domain) {
       window.location.href = `https://${domain}/sign-in?host=${host}&color=${colors.background.replace(
         '#',
         '',
