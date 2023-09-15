@@ -48,8 +48,6 @@ const CreatePage = ({
 
   useEffect(() => {
     getDomainList();
-
-    return () => resetStatus();
   }, []);
 
   const domainStatus = useCallback(
