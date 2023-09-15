@@ -19,6 +19,7 @@ import {
 } from '../../../store/wObjectStore/wObjectSelectors';
 import { getLocale } from '../../../store/settingsStore/settingsSelectors';
 import {
+  getCurrentHost,
   getHelmetIcon,
   getIsSocial,
   getIsWaivio,
@@ -93,14 +94,8 @@ const WobjectContainer = props => {
 
   useEffect(() => {
     props.getObject(props.match.params.name, props.authenticatedUserName).then(async res => {
-      // eslint-disable-next-line no-console
-      console.log('isWaivio:', props.isWaivio, 'isSocial:', props.isSocial);
-      if (!props.isSocial) {
-        if (
-          props.isWaivio &&
-          (await showDescriptionPage(res.value, props.locale)) &&
-          !props.match.params[0]
-        ) {
+      if (props.currHost.includes('waivio')) {
+        if ((await showDescriptionPage(res.value, props.locale)) && !props.match.params[0]) {
           props.history.push(`/object/${res.value.author_permlink}/description`);
         }
       }
@@ -195,6 +190,7 @@ WobjectContainer.propTypes = {
   setNestedWobject: PropTypes.func,
   setCatalogBreadCrumbs: PropTypes.func,
   locale: PropTypes.string,
+  currHost: PropTypes.string,
   helmetIcon: PropTypes.string.isRequired,
   siteName: PropTypes.string.isRequired,
   getAlbums: PropTypes.func,
@@ -245,6 +241,7 @@ const mapStateToProps = state => ({
   supportedObjectTypes: get(getConfiguration(state), 'supported_object_types'),
   weightValue: getWeightValue(state, getObjectState(state).weight),
   siteName: getSiteName(state),
+  currHost: getCurrentHost(state),
 });
 
 const mapDispatchToProps = {

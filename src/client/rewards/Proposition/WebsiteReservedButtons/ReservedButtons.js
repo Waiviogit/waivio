@@ -30,11 +30,13 @@ const ReservedButtons = props => {
       }
     });
 
-  const handleClickProposButton = () =>
+  const handleClickProposButton = () => {
+    if (window?.gtag) window.gtag('event', 'click_submit_photos', { debug_mode: true });
     props.onActionInitiated(async () => {
       if (!props.inCard) setLoadingButton(true);
       props.handleReserve();
     });
+  };
 
   return (
     <div className="WebsiteReservedButtons">
