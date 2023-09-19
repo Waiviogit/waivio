@@ -20,12 +20,13 @@ import PageContent from '../PageContent/PageContent';
 import WidgetContent from '../WidgetContent/WidgetContent';
 import ObjectNewsFeed from '../FeedMasonry/ObjectNewsFeed';
 import { getWebsiteDefaultIconList } from '../../../store/appStore/appSelectors';
+import ListDescription from '../ListDescription/ListDescription';
 
 const CheckListView = ({ wobject, listItems, loading, intl, hideBreadCrumbs }) => {
   const defaultListImage = useSelector(getWebsiteDefaultIconList);
   const history = useHistory();
   const match = useRouteMatch();
-
+  const listType = wobject?.object_type === 'list';
   const getListRow = listItem => {
     const isList = listItem.object_type === 'list';
 
@@ -103,7 +104,8 @@ const CheckListView = ({ wobject, listItems, loading, intl, hideBreadCrumbs }) =
   return (
     <div className="Checklist">
       {!hideBreadCrumbs && <Breadcrumbs />}
-      {wobject?.object_type === 'list' && wobject?.background && !loading && (
+      {listType && <ListDescription wobject={wobject} />}
+      {listType && wobject?.background && !loading && (
         <div className="Checklist__banner">
           <img src={wobject?.background} alt={'Promotional list banner'} />
         </div>
