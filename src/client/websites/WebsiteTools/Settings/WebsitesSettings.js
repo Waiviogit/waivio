@@ -19,7 +19,6 @@ import {
   getWebsiteLoading,
 } from '../../../../store/websiteStore/websiteSelectors';
 import { currencyTypes, defaultCurrency } from '../../constants/currencyTypes';
-import { isCustomDomain } from '../../../social-gifts/listOfSocialWebsites';
 
 import './WebsitesSettings.less';
 
@@ -83,16 +82,7 @@ const WebsitesSettings = ({
         const tag = values.googleAnalyticsTag || '';
         const beneficiary = { account, percent };
 
-        saveWebSettings(
-          host,
-          tag,
-          beneficiary,
-          values.currency,
-          values.language,
-          objectControl,
-          values.facebookAuthId,
-          values.googleAuthId,
-        );
+        saveWebSettings(host, tag, beneficiary, values.currency, values.language, objectControl);
         referralUserForWeb(referralAccount, host);
         message.success(intl.formatMessage({ id: 'settings_updated_successfully' }));
       }
@@ -153,36 +143,6 @@ const WebsitesSettings = ({
           )}
           <p>{intl.formatMessage({ id: 'website_performance' })}</p>
         </Form.Item>
-        {isCustomDomain(host) && (
-          <React.Fragment>
-            <Form.Item>
-              <h3>{intl.formatMessage({ id: 'facebook_authorization' })}</h3>
-              {getFieldDecorator('facebookAuthId', {
-                initialValue: get(settings, 'facebookAuthId', ''),
-              })(
-                <Input
-                  type="text"
-                  placeholder={intl.formatMessage({ id: 'paste_facebook_id_here' })}
-                  onChange={e => handleChange(e, 'facebookAuthId')}
-                />,
-              )}
-              <p>{intl.formatMessage({ id: 'provide_your_authorization_facebook_id' })}</p>
-            </Form.Item>
-            <Form.Item>
-              <h3>{intl.formatMessage({ id: 'google_authorization' })}</h3>
-              {getFieldDecorator('googleAuthId', {
-                initialValue: get(settings, 'googleAuthId', ''),
-              })(
-                <Input
-                  type="text"
-                  placeholder={intl.formatMessage({ id: 'paste_google_id_here' })}
-                  onChange={e => handleChange(e, 'googleAuthId')}
-                />,
-              )}
-              <p>{intl.formatMessage({ id: 'provide_your_authorization_google_id' })}</p>
-            </Form.Item>
-          </React.Fragment>
-        )}
         <h3>{intl.formatMessage({ id: 'beneficiary' })}</h3>
         <p>{intl.formatMessage({ id: 'beneficiary_rules' })}</p>
         <div className="WebsitesSettings__benefic-block">
