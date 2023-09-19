@@ -1,6 +1,6 @@
 import React from 'react';
 import GoogleLogin from 'react-google-login';
-import FacebookLogin from 'react-facebook-login';
+import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import Loading from '../../../components/Icon/Loading';
@@ -17,9 +17,6 @@ const SocialSignInModalContent = ({
   responseSocial,
   handleFailure,
   websiteName,
-  // isCustom,
-  // facebookId,
-  // googleId,
 }) => (
   <div
     className="SocialSignInModalContent"
@@ -77,7 +74,6 @@ const SocialSignInModalContent = ({
             onClick={onClickHiveSingerAuthButton}
           />
 
-          {/* {(!isCustom || facebookId || googleId) && ( */}
           <h3
             style={{
               color: '#aaaaaa',
@@ -91,13 +87,7 @@ const SocialSignInModalContent = ({
             </div>
           </h3>
           <div style={{ display: 'flex', flexDirection: 'column' }}>
-            {/* {(!isCustom || (isCustom && googleId)) && ( */}
             <GoogleLogin
-              // clientId={
-              //   isCustom
-              //     ? googleId
-              //     : '623736583769-qlg46kt2o7gc4kjd2l90nscitf38vl5t.apps.googleusercontent.com'
-              // }
               clientId={'623736583769-qlg46kt2o7gc4kjd2l90nscitf38vl5t.apps.googleusercontent.com'}
               onSuccess={response => responseSocial(response, 'google')}
               onFailure={handleFailure}
@@ -110,10 +100,8 @@ const SocialSignInModalContent = ({
                 />
               )}
             />
-            {/* {(!isCustom || (isCustom && facebookId)) && ( */}
             <FacebookLogin
-              // appId={isCustom ? facebookId : '754038848413420'}
-              appId={'754038848413420'}
+              appId="754038848413420"
               autoLoad={false}
               callback={response => responseSocial(response, 'facebook')}
               disableMobileRedirect
@@ -187,13 +175,10 @@ SocialSignInModalContent.propTypes = {
   }).isRequired,
   hiveSinger: PropTypes.shape().isRequired,
   loading: PropTypes.bool.isRequired,
-  // isCustom: PropTypes.bool.isRequired,
   onClickHiveSingerAuthButton: PropTypes.func.isRequired,
   websiteTitle: PropTypes.string.isRequired,
   websiteName: PropTypes.string.isRequired,
   handleFailure: PropTypes.func.isRequired,
   responseSocial: PropTypes.func.isRequired,
-  // facebookId: PropTypes.string,
-  // googleId: PropTypes.string,
 };
 export default injectIntl(SocialSignInModalContent);

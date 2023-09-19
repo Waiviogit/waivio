@@ -516,8 +516,6 @@ function sc2Extended() {
         currency,
         language,
         objectControl,
-        facebookAuthId,
-        googleAuthId,
         cb,
       ) {
         const params = {
@@ -531,8 +529,6 @@ function sc2Extended() {
             currency,
             language,
             objectControl,
-            facebookAuthId,
-            googleAuthId,
           }),
         };
 
