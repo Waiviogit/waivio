@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { useHistory } from 'react-router';
 import { isEmpty } from 'lodash';
 
-import { Button, Checkbox, Form, Input, Select } from 'antd';
+import { Button, Checkbox, Form, Input, message, Select } from 'antd';
 import validateRules from '../../constants/validateRules';
 import { checkkNs } from '../../../../waivioApi/ApiClient';
 
@@ -24,6 +24,7 @@ const CreateCustomWebsite = ({
     e.preventDefault();
     form.validateFieldsAndScroll((err, values) => {
       checkkNs(form.getFieldValue('host')).then(res => {
+        if (res.message) message.error(res.message);
         if (res.result) {
           createWebsite(
             {
