@@ -1,0 +1,110 @@
+@import (reference) '../../styles/custom.less';
+@import (reference) '../../styles/modules/variables.less';
+
+.ListDescription {
+  &__title {
+    text-align: center;
+    font-size: 20px;
+    font-weight: 100;
+    display: flex;
+    justify-content: center;
+    color: @blue-botticelli;
+    @media @small {
+      margin: 10px 0 0;
+    }
+
+    &.margin-bottom {
+      margin: 10px 0 10px;
+    }
+  }
+
+  &__icon {
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+    color: @blue-botticelli;
+    cursor: pointer;
+    &.margin-bottom {
+      margin: 10px 0 10px;
+    }
+  }
+  &__img {
+    svg {
+      width: 26px;
+      height: auto;
+      g path {
+        fill: @blue-botticelli;
+      }
+    }
+  }
+
+  &__description-container {
+    display: flex;
+    flex-direction: column;
+    height: 0;
+    opacity: 0;
+    transition: opacity 0s ease-in;
+    @media @small {
+      justify-content: space-between;
+      flex-direction: row;
+      display: flex;
+    }
+  }
+
+  &__description-container.show {
+    display: flex;
+    height: auto;
+    flex-direction: column;
+    opacity: 1;
+    transition: opacity 0.4s ease-in;
+    margin-bottom: 20px;
+
+    @media @small {
+      justify-content: center;
+      flex-direction: row;
+      display: flex;
+      margin: 20px 0 20px;
+    }
+  }
+
+  &__description-with-image {
+    color: @blue-botticelli;
+    word-break: break-all;
+    font-size: 18px;
+    margin: 10px;
+    @media @small {
+      white-space: break-spaces;
+      width: 50%;
+      word-break: break-word;
+    }
+  }
+
+  &__description-without-image {
+    color: @blue-botticelli;
+    word-break: break-all;
+    font-size: 18px;
+    margin: 10px;
+    @media @small {
+      white-space: break-spaces;
+      width: 100%;
+      word-break: break-word;
+    }
+  }
+
+  &__image-container {
+    @media @small {
+      width: 40%;
+      height: auto;
+    }
+  }
+
+  &__image {
+    width: 100%;
+    @media @small {
+      width: 70%;
+      margin: 0 auto;
+      display: flex;
+      object-fit: contain;
+    }
+  }
+}
