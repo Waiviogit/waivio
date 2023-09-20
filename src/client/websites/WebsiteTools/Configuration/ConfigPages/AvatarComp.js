@@ -1,6 +1,7 @@
 import React from 'react';
 import { Icon } from 'antd';
 import PropTypes from 'prop-types';
+import { getProxyImageURL } from '../../../../../common/helpers/image';
 
 const AvatarComp = ({ link }) => (
   <React.Fragment>
@@ -8,7 +9,7 @@ const AvatarComp = ({ link }) => (
       <div
         className="WebsitesConfigurations__avatar"
         style={{
-          backgroundImage: `url(${link})`,
+          backgroundImage: `url(${getProxyImageURL(link)})`,
           backgroundPosition: 'center',
           backgroundSize: 'contain',
         }}
