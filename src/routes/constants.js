@@ -134,6 +134,7 @@ export default {
       'chrome-extension',
       'claim-athority',
       'departments-bot',
+      'list-duplicator-bot',
     ].join('|'),
   },
   WEBSITES: {

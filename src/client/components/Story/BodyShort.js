@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import ellipsis from 'text-ellipsis';
 import striptags from 'striptags';
 import Remarkable from 'remarkable';
+import { truncate } from 'lodash';
 
 const remarkable = new Remarkable({ html: true });
 
@@ -27,7 +27,7 @@ const BodyShort = props => {
   return (
     <div
       className={props.className}
-      dangerouslySetInnerHTML={{ __html: ellipsis(body, props.length, { ellipsis: '…' }) }}
+      dangerouslySetInnerHTML={{ __html: truncate(body, { length: props.length, separator: '…' }) }}
     />
   );
   /* eslint-enable react/no-danger */

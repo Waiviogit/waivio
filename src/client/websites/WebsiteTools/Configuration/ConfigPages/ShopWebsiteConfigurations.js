@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { withRouter } from 'react-router';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
-import { Avatar, Button, Form, Icon, message, Modal } from 'antd';
+import { Button, Form, Icon, message, Modal } from 'antd';
 import { connect } from 'react-redux';
 import { isEmpty, get } from 'lodash';
 import classNames from 'classnames';
@@ -34,6 +34,7 @@ import {
 } from '../../../../../common/helpers/wObjectHelper';
 
 import './WebsitesConfigurations.less';
+import AvatarComp from './AvatarComp';
 
 const ShopWebsiteConfigurations = ({
   intl,
@@ -161,12 +162,7 @@ const ShopWebsiteConfigurations = ({
                 })}
               </h3>
               <div className="Settings__profile-image">
-                <Avatar
-                  icon="picture"
-                  shape="square"
-                  src={desktopLogo}
-                  className="WebsitesConfigurations__avatar"
-                />
+                <AvatarComp link={desktopLogo} />
                 <Button type="primary" onClick={() => handleModalState('desktopLogo')}>
                   {intl.formatMessage({
                     id: 'website_change_logo',
@@ -189,12 +185,7 @@ const ShopWebsiteConfigurations = ({
                 })}
               </h3>
               <div className="Settings__profile-image">
-                <Avatar
-                  icon="picture"
-                  shape="square"
-                  src={mobileLogo}
-                  className="WebsitesConfigurations__avatar"
-                />
+                <AvatarComp link={mobileLogo} />
                 <Button type="primary" onClick={() => handleModalState('mobileLogo')}>
                   {intl.formatMessage({
                     id: 'website_change_logo',
@@ -217,12 +208,7 @@ const ShopWebsiteConfigurations = ({
                 })}
               </h3>
               <div className="Settings__profile-image">
-                <Avatar
-                  icon="picture"
-                  shape="square"
-                  src={listDefaultImage}
-                  className="WebsitesConfigurations__avatar"
-                />
+                <AvatarComp link={listDefaultImage} />
                 <Button type="primary" onClick={() => handleModalState('defaultListImage')}>
                   {intl.formatMessage({
                     id: 'website_change_image',
@@ -245,12 +231,7 @@ const ShopWebsiteConfigurations = ({
                 })}
               </h3>
               <div className="Settings__profile-image">
-                <Avatar
-                  icon="picture"
-                  shape="square"
-                  src={banner}
-                  className="WebsitesConfigurations__avatar"
-                />
+                <AvatarComp link={banner} />
                 <Button type="primary" onClick={() => handleModalState('mainBanner')}>
                   {intl.formatMessage({
                     id: 'website_change_banner',
