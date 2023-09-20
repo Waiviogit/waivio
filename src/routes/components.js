@@ -152,6 +152,9 @@ export default {
   MatchBotsCurators: loableComponent(import('../client/rewards/MatchBots/MatchBotsCurators')),
   MatchBotsSponsors: loableComponent(import('../client/rewards/MatchBotSponsors')),
   DataImport: loableComponent(import('../client/components/DataImport/DataImport')),
+  DuplicateList: loableComponent(
+    import('../client/components/DataImport/DuplicateList/DuplicateList'),
+  ),
   ProductExtension: loableComponent(
     import('../client/components/DataImport/ChromeExtension/ChromeExtension'),
   ),
