@@ -53,7 +53,7 @@ const Checklist = ({
   const title = `${getObjectName(wobject)} - ${siteName}`;
   const desc = wobject?.description || mainObj?.description;
   const image = getObjectAvatar(wobject) || favicon;
-  const { canonicalUrl } = useSeoInfo();
+  const { canonicalUrl } = useSeoInfo(true);
 
   useEffect(() => {
     const pathUrl =

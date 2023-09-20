@@ -259,6 +259,11 @@ const routes = {
           component: Views.ProductExtension,
         },
         {
+          path: '/list-duplicator-bot',
+          exact: true,
+          component: Views.DuplicateList,
+        },
+        {
           path: '/claim-athority',
           exact: true,
           component: Views.ClaimAthorityBot,

@@ -2,17 +2,24 @@ import { useSelector } from 'react-redux';
 import { useLocation } from 'react-router';
 
 import { getAppUrl, getMainObj } from '../store/appStore/appSelectors';
+import { getLastPermlinksFromHash } from '../common/helpers/wObjectHelper';
 
-export const useSeoInfo = () => {
+export const useSeoInfo = isChecklist => {
   const location = useLocation();
   const appUrl = useSelector(getAppUrl);
   const descriptionSite = useSelector(getMainObj).description;
-
   const prefereCanonical = () => {
     let url = `${appUrl}${location.pathname}`;
-    // if (location.search) url += location.search;
 
-    if (location.hash) url += location.hash;
+    if (location.hash) {
+      if (isChecklist) {
+        const pathArray = location.pathname.split('/');
+
+        pathArray.splice(2, 1, getLastPermlinksFromHash(location.hash));
+
+        url = `${appUrl}${pathArray.join('/')}`;
+      } else url += location.hash;
+    }
 
     return url;
   };

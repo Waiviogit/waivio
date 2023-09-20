@@ -4,15 +4,18 @@ import { useDispatch, useSelector } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 
-import ChangeVotingModal from '../../widgets/ChangeVotingModal/ChangeVotingModal';
-import ImportModal from './ImportModal/ImportModal';
-import DynamicTbl from '../Tools/DynamicTable/DynamicTable';
-import { configHistoryTable, configProductTable } from './tableConfig';
-import { MATCH_BOTS_TYPES, redirectAuthHiveSigner } from '../../../common/helpers/matchBotsHelpers';
+import ChangeVotingModal from '../../../widgets/ChangeVotingModal/ChangeVotingModal';
+import ImportModal from './../ImportModal/ImportModal';
+import DynamicTbl from '../../Tools/DynamicTable/DynamicTable';
+import { configHistoryTable, configProductTable } from '../tableConfig';
+import {
+  MATCH_BOTS_TYPES,
+  redirectAuthHiveSigner,
+} from '../../../../common/helpers/matchBotsHelpers';
 import {
   getAuthenticatedUserName,
   getIsConnectMatchBot,
-} from '../../../store/authStore/authSelectors';
+} from '../../../../store/authStore/authSelectors';
 
 import {
   deleteObjectImport,
@@ -21,15 +24,15 @@ import {
   getImportVote,
   setImportVote,
   setObjectImport,
-} from '../../../waivioApi/importApi';
-import { closeImportSoket, getImportUpdate } from '../../../store/settingsStore/settingsActions';
-import VoteInfoBlock from './VoteInfoBlock';
+} from '../../../../waivioApi/importApi';
+import { closeImportSoket, getImportUpdate } from '../../../../store/settingsStore/settingsActions';
+import VoteInfoBlock from './../VoteInfoBlock';
 
-import './DataImport.less';
+import './../DataImport.less';
 
 const limit = 30;
 
-const DataImport = ({ intl }) => {
+const DuplicateList = ({ intl }) => {
   const isAuthBot = useSelector(state =>
     getIsConnectMatchBot(state, { botType: MATCH_BOTS_TYPES.IMPORT }),
   );
@@ -140,15 +143,18 @@ const DataImport = ({ intl }) => {
     <div className="DataImport">
       <div className="DataImport__title">
         <h2>
-          {intl.formatMessage({ id: 'data_import_title', defaultMessage: 'Data import bot' })}
+          {intl.formatMessage({
+            id: 'list_duplicator_bot_title',
+            defaultMessage: 'List duplicator bot',
+          })}
         </h2>
         <Switch checked={isAuthBot} onChange={handleRedirect} />
       </div>
       <p>
         {intl.formatMessage({
-          id: 'data_import_description1',
+          id: 'list_duplicator_bot_description1',
           defaultMessage:
-            'The data import bot automatically creates or updates objects on the Hive blockchain using the JSON data files generated in accordance with the following data schema. (https://developer.datafiniti.co/docs/product-data-schema). Product, people and business data files downloaded from the Datafiniti.io service are compliant.',
+            'This tool is crafted for users to easily duplicate lists. It meticulously creates a new, identical list, copying all nested lists, objects, and updates from the original. The result is a comprehensive reproduction of the initial list.',
         })}
       </p>
       <p>
@@ -169,9 +175,9 @@ const DataImport = ({ intl }) => {
       <p>
         <b>
           {intl.formatMessage({
-            id: 'data_import_requires_auth',
+            id: 'list_duplicator_bot_requires_auth',
             defaultMessage:
-              'The Data import bot requires authorization to upvote data updates on your behalf',
+              'The List duplicator bot requires authorization to upvote data updates on your behalf',
           })}
           :{' '}
           <a onClick={handleRedirect}>
@@ -211,13 +217,14 @@ const DataImport = ({ intl }) => {
       </p>
       <VoteInfoBlock
         info={intl.formatMessage({
-          id: 'data_import_service',
-          defaultMessage: 'The Data import bot service is provided on as-is / as-available basis.',
+          id: 'list_duplicator_service',
+          defaultMessage:
+            'The List duplicator bot service is provided on as-is / as-available basis.',
         })}
       />
       <hr />
       <Button type="primary" onClick={toggleModal}>
-        {intl.formatMessage({ id: 'upload_new_file', defaultMessage: 'Upload new file' })}
+        {intl.formatMessage({ id: 'add_list', defaultMessage: 'Add list' })}
       </Button>
       <DynamicTbl
         handleShowMore={loadMoreImportDate}
@@ -249,8 +256,8 @@ const DataImport = ({ intl }) => {
   );
 };
 
-DataImport.propTypes = {
+DuplicateList.propTypes = {
   intl: PropTypes.shape().isRequired,
 };
 
-export default injectIntl(DataImport);
+export default injectIntl(DuplicateList);
