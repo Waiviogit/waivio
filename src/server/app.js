@@ -6,6 +6,7 @@ import paths from '../../scripts/paths';
 import createSsrHandler from './handlers/createSsrHandler';
 // import createAmpHandler from './handlers/createAmpHandler';
 import steemAPI from './steemAPI';
+import { getSettingsAdsense } from '../waivioApi/ApiClient';
 
 const indexPath = `${paths.templates}/index.hbs`;
 const indexHtml = fs.readFileSync(indexPath, 'utf-8');
@@ -15,7 +16,6 @@ const template = Handlebars.compile(indexHtml);
 // const ampIndexHtml = fs.readFileSync(ampIndexPath, 'utf-8');
 // const ampTemplate = Handlebars.compile(ampIndexHtml);
 const ssrHandler = createSsrHandler(template);
-// const ampHandler = createAmpHandler(ampTemplate);
 
 const CACHE_AGE = 1000 * 60 * 60 * 24 * 7;
 
@@ -75,6 +75,13 @@ app.get('/i/:parent/@:referral/:permlink', async (req, res) => {
   } catch (err) {
     res.redirect('/');
   }
+});
+
+app.get('/ads.txt', async (req, res) => {
+  const fileContent = (await getSettingsAdsense(req.headers.host)).txtFile;
+
+  res.contentType('text/plain');
+  res.send(fileContent);
 });
 
 app.get('/@:author/:permlink/amp', ssrHandler);
