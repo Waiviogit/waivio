@@ -21,7 +21,7 @@ const AdSenseAds = ({ intl, saveAdSense, match, getAdSettings }) => {
   ];
   const [loading, setLoading] = useState(false);
   const [level, setLevel] = useState('');
-  const [adText, setAdText] = useState('');
+  const [txtFile, setTxtFile] = useState('');
   const [adSense, setAdSense] = useState('');
   const host = match.params.site;
   const scriptRegex = /<script[^>]*>/g;
@@ -38,20 +38,19 @@ const AdSenseAds = ({ intl, saveAdSense, match, getAdSettings }) => {
     setAdSense(e.target.value);
   };
   const handleChangeAdSenseText = e => {
-    setAdText(e.target.value);
+    setTxtFile(e.target.value);
   };
   const showTextError =
-    !isEmpty(adText) &&
-    (adText.includes('<script') ||
-      adText.includes('</script') ||
-      !adText.includes('google.com') ||
-      !adText.includes('pub'));
+    !isEmpty(txtFile) &&
+    (txtFile.includes('<script') ||
+      txtFile.includes('</script') ||
+      !txtFile.includes('google.com') ||
+      !txtFile.includes('pub'));
 
   const disabled = showError && showTextError;
 
   const handleSaveAdSenseSettings = () => {
-    handleWriteTxtFile();
-    saveAdSense(host, adSense, level);
+    saveAdSense(host, adSense, level, txtFile);
     message.success(intl.formatMessage({ id: 'adSense_advertisements_updated_successfully' }));
   };
 
@@ -61,28 +60,10 @@ const AdSenseAds = ({ intl, saveAdSense, match, getAdSettings }) => {
       getAdSettings(host).then(res => {
         setLevel(isEmpty(res.value.level) ? adIntensityLevels[0].key : res.value.level);
         setAdSense(res.value.code);
+        setTxtFile(res.value.txtFile);
         setLoading(false);
       });
   }, [host]);
-
-  const handleWriteTxtFile = () => {
-    fetch('/write-txt-to-file', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ adText }),
-    })
-      .then(response => response.text())
-      // .then(m => {
-      //   console.log(m);
-      //   // Optionally, clear the adText input field
-      //   setAdText('');
-      // })
-      .catch(error => {
-        console.error(error);
-      });
-  };
 
   if (loading) return <Loading />;
 
@@ -124,7 +105,7 @@ const AdSenseAds = ({ intl, saveAdSense, match, getAdSettings }) => {
       </p>
       <h3>Ads.txt:</h3>
       <Input.TextArea
-        value={adText}
+        value={txtFile}
         onChange={e => handleChangeAdSenseText(e)}
         placeholder={'Add your AdSense .txt text'}
         autoSize={{ minRows: 2 }}

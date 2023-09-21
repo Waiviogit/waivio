@@ -6,6 +6,7 @@ import paths from '../../scripts/paths';
 import createSsrHandler from './handlers/createSsrHandler';
 // import createAmpHandler from './handlers/createAmpHandler';
 import steemAPI from './steemAPI';
+import { getSettingsAdsense } from '../waivioApi/ApiClient';
 
 const indexPath = `${paths.templates}/index.hbs`;
 const indexHtml = fs.readFileSync(indexPath, 'utf-8');
@@ -23,13 +24,6 @@ const app = express();
 const IS_DEV = process.env.NODE_ENV === 'development';
 
 app.use(cookieParser());
-app.use(express.json());
-
-app.post('/write-txt-to-file', (req, res) => {
-  const { adText } = req.body;
-
-  fs.writeFile('ads.txt', adText, err);
-});
 
 if (IS_DEV) {
   app.use(express.static(paths.publicRuntime(), { index: false }));
@@ -81,6 +75,13 @@ app.get('/i/:parent/@:referral/:permlink', async (req, res) => {
   } catch (err) {
     res.redirect('/');
   }
+});
+
+app.get('/ads.txt', async (req, res) => {
+  const fileContent = (await getSettingsAdsense(req.headers.host)).txtFile;
+
+  res.contentType('text/plain');
+  res.send(fileContent);
 });
 
 app.get('/@:author/:permlink/amp', ssrHandler);
