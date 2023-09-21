@@ -5,9 +5,8 @@ import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 
 import ChangeVotingModal from '../../../widgets/ChangeVotingModal/ChangeVotingModal';
-import ImportModal from './../ImportModal/ImportModal';
 import DynamicTbl from '../../Tools/DynamicTable/DynamicTable';
-import { configHistoryTable, configProductTable } from '../tableConfig';
+import { configDuplicateListsHistoryTable, configDuplicateListsTable } from '../tableConfig';
 import {
   MATCH_BOTS_TYPES,
   redirectAuthHiveSigner,
@@ -18,15 +17,16 @@ import {
 } from '../../../../store/authStore/authSelectors';
 
 import {
-  deleteObjectImport,
-  getHistoryImportedObjects,
-  getImportedObjects,
-  getImportVote,
-  setImportVote,
-  setObjectImport,
+  deleteDuplicateList,
+  getDuplicatedList,
+  getHistoryDuplicatedList,
+  getDuplicateVote,
+  setDuplicateVote,
+  setDuplicateList,
 } from '../../../../waivioApi/importApi';
 import { closeImportSoket, getImportUpdate } from '../../../../store/settingsStore/settingsActions';
 import VoteInfoBlock from './../VoteInfoBlock';
+import FindListModal from './FindListModal';
 
 import './../DataImport.less';
 
@@ -56,14 +56,9 @@ const DuplicateList = ({ intl }) => {
     }
   };
 
-  const getImportList = () =>
-    getImportedObjects(authUserName, 0, limit + 1).then(res => {
-      setListAndSetHasMore(res, importedObject, false, setImportedObject, setHasMoreImports);
-    });
-
-  const updateImportDate = () => {
-    getImportedObjects(authUserName, 0, limit + 1).then(res => {
-      getHistoryImportedObjects(authUserName, 0, limit + 1).then(his => {
+  const updateDuplicatedListDate = () => {
+    getDuplicatedList(authUserName, 0, limit + 1).then(res => {
+      getHistoryDuplicatedList(authUserName, 0, limit + 1).then(his => {
         setListAndSetHasMore(his, history, false, setHistoryImportedObject, setHasMoreHistory);
       });
       setListAndSetHasMore(res, importedObject, false, setImportedObject, setHasMoreImports);
@@ -71,27 +66,27 @@ const DuplicateList = ({ intl }) => {
   };
 
   const loadMoreImportDate = () =>
-    getImportedObjects(authUserName, importedObject.length, limit + 1).then(res => {
+    getDuplicatedList(authUserName, importedObject.length, limit + 1).then(res => {
       setListAndSetHasMore(res, importedObject, true, setImportedObject, setHasMoreImports);
     });
   const loadMoreHistoryDate = () =>
-    getHistoryImportedObjects(authUserName, history.length, limit + 1).then(his => {
+    getHistoryDuplicatedList(authUserName, history.length, limit + 1).then(his => {
       setListAndSetHasMore(his, history, true, setHistoryImportedObject, setHasMoreHistory);
     });
 
   useEffect(() => {
-    getImportVote(authUserName).then(res => {
+    getDuplicateVote(authUserName).then(res => {
       setVotingValue(res.minVotingPower / 100);
     });
 
-    getImportedObjects(authUserName, 0, limit + 1).then(res => {
+    getDuplicatedList(authUserName, 0, limit + 1).then(res => {
       setListAndSetHasMore(res, importedObject, false, setImportedObject, setHasMoreImports);
     });
-    getHistoryImportedObjects(authUserName, 0, limit + 1).then(his => {
+    getHistoryDuplicatedList(authUserName, 0, limit + 1).then(his => {
       setListAndSetHasMore(his, history, false, setHistoryImportedObject, setHasMoreHistory);
     });
 
-    dispatch(getImportUpdate(updateImportDate));
+    dispatch(getImportUpdate(updateDuplicatedListDate));
 
     return () => dispatch(closeImportSoket());
   }, []);
@@ -101,7 +96,7 @@ const DuplicateList = ({ intl }) => {
   const toggleVotingModal = () => setVisibleVoting(!visibleVoting);
 
   const handleSetMinVotingPower = voting => {
-    setImportVote(authUserName, voting * 100);
+    setDuplicateVote(authUserName, voting * 100);
     setVotingValue(voting);
     toggleVotingModal();
   };
@@ -109,8 +104,8 @@ const DuplicateList = ({ intl }) => {
   const handleChangeStatus = (e, item) => {
     const status = item.status === 'active' ? 'onHold' : 'active';
 
-    setObjectImport(authUserName, status, item.importId).then(() => {
-      getImportedObjects(authUserName, 0, importedObject.length).then(res => {
+    setDuplicateList(authUserName, status, item.importId).then(() => {
+      getDuplicatedList(authUserName, 0, importedObject.length).then(res => {
         setImportedObject(res);
       });
     });
@@ -119,22 +114,22 @@ const DuplicateList = ({ intl }) => {
   const handleDeleteObject = item => {
     Modal.confirm({
       title: intl.formatMessage({
-        id: 'stop_json_title',
-        defaultMessage: 'Stop JSON data file import',
+        id: 'stop_list_duplicator',
+        defaultMessage: 'Stop list duplicator',
       }),
       content: intl.formatMessage({
-        id: 'stop_json_message',
+        id: 'stop_list_duplicator_message',
         defaultMessage:
-          'Once stopped, the import cannot be resumed. To temporarily suspend/resume the data import, please consider using the Active checkbox.',
+          'Once stopped, the list duplicator cannot be resumed. To temporarily suspend/resume the list duplicator, please consider using the Active checkbox.',
       }),
       onOk: () => {
-        deleteObjectImport(authUserName, item.importId).then(() => {
-          getImportedObjects(authUserName, 0, importedObject.length).then(res => {
+        deleteDuplicateList(authUserName, item.importId).then(() => {
+          getDuplicatedList(authUserName, 0, importedObject.length).then(res => {
             setImportedObject(res);
           });
         });
       },
-      okText: intl.formatMessage({ id: 'stop_import_ok_button', defaultMessage: 'Stop import' }),
+      okText: intl.formatMessage({ id: 'stop', defaultMessage: 'Stop' }),
       cancelText: intl.formatMessage({ id: 'cancel', defaultMessage: 'Cancel' }),
     });
   };
@@ -229,7 +224,7 @@ const DuplicateList = ({ intl }) => {
       <DynamicTbl
         handleShowMore={loadMoreImportDate}
         showMore={hasMoreImports}
-        header={configProductTable}
+        header={configDuplicateListsTable}
         bodyConfig={importedObject}
         onChange={handleChangeStatus}
         deleteItem={handleDeleteObject}
@@ -238,11 +233,15 @@ const DuplicateList = ({ intl }) => {
       <DynamicTbl
         handleShowMore={loadMoreHistoryDate}
         showMore={hasMoreHistory}
-        header={configHistoryTable}
+        header={configDuplicateListsHistoryTable}
         bodyConfig={history}
       />
       {visible && (
-        <ImportModal getImportList={getImportList} visible={visible} toggleModal={toggleModal} />
+        <FindListModal
+          visible={visible}
+          onClose={() => setVisible(false)}
+          updateDepartmentsList={updateDuplicatedListDate}
+        />
       )}
       {visibleVoting && (
         <ChangeVotingModal

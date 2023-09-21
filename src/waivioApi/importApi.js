@@ -13,6 +13,15 @@ export const getImportVote = userName =>
     .then(response => response)
     .catch(e => e);
 
+export const getDuplicateVote = userName =>
+  fetch(`${config.importApiPrefix}${config.duplicateList}${config.power}?user=${userName}`, {
+    headers,
+    method: 'GET',
+  })
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+
 export const getAthorityVote = userName =>
   fetch(`${config.importApiPrefix}${config.authority}${config.power}?user=${userName}`, {
     headers,
@@ -36,6 +45,22 @@ export const getAuthorityList = (userName, skip, limit) =>
 
 export const setImportVote = (user, minVotingPower) =>
   fetch(`${config.importApiPrefix}${config.importProduct}${config.power}`, {
+    headers: {
+      ...headers,
+      'access-token': Cookie.get('access_token'),
+    },
+    method: 'PUT',
+    body: JSON.stringify({
+      user,
+      minVotingPower,
+    }),
+  })
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+
+export const setDuplicateVote = (user, minVotingPower) =>
+  fetch(`${config.importApiPrefix}${config.duplicateList}${config.power}`, {
     headers: {
       ...headers,
       'access-token': Cookie.get('access_token'),
@@ -92,6 +117,30 @@ export const getImportedObjects = (userName, skip, limit) =>
 export const getHistoryImportedObjects = (userName, skip, limit) =>
   fetch(
     `${config.importApiPrefix}${config.importProduct}${config.history}?user=${userName}&skip=${skip}&limit=${limit}`,
+    {
+      headers,
+      method: 'GET',
+    },
+  )
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+
+export const getDuplicatedList = (userName, skip, limit) =>
+  fetch(
+    `${config.importApiPrefix}${config.duplicateList}?user=${userName}&skip=${skip}&limit=${limit}`,
+    {
+      headers,
+      method: 'GET',
+    },
+  )
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+
+export const getHistoryDuplicatedList = (userName, skip, limit) =>
+  fetch(
+    `${config.importApiPrefix}${config.duplicateList}${config.history}?user=${userName}&skip=${skip}&limit=${limit}`,
     {
       headers,
       method: 'GET',
@@ -175,8 +224,41 @@ export const setObjectImport = (user, status, importId) =>
     .then(response => response)
     .catch(e => e);
 
+export const setDuplicateList = (user, status, importId) =>
+  fetch(`${config.importApiPrefix}${config.duplicateList}`, {
+    headers: {
+      ...headers,
+      'access-token': Cookie.get('access_token'),
+    },
+    method: 'PUT',
+    body: JSON.stringify({
+      user,
+      status,
+      importId,
+    }),
+  })
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+
 export const deleteObjectImport = (user, importId) =>
   fetch(`${config.importApiPrefix}${config.importProduct}`, {
+    headers: {
+      ...headers,
+      'access-token': Cookie.get('access_token'),
+    },
+    method: 'DELETE',
+    body: JSON.stringify({
+      user,
+      importId,
+    }),
+  })
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+
+export const deleteDuplicateList = (user, importId) =>
+  fetch(`${config.importApiPrefix}${config.duplicateList}`, {
     headers: {
       ...headers,
       'access-token': Cookie.get('access_token'),
@@ -284,6 +366,23 @@ export const changeDepartments = (user, status, importId) =>
 
 export const createDepartment = (user, authorPermlink, scanEmbedded) =>
   fetch(`${config.importApiPrefix}${config.departments}`, {
+    headers: { ...headers, 'access-token': Cookie.get('access_token') },
+    method: 'POST',
+    body: JSON.stringify({
+      user,
+      authorPermlink,
+      scanEmbedded,
+    }),
+  })
+    .then(res => res.json())
+    .then(response => {
+      if (response.message) message.error(response.message);
+
+      return response;
+    });
+
+export const createDuplicateList = (user, authorPermlink, scanEmbedded) =>
+  fetch(`${config.importApiPrefix}${config.duplicateList}`, {
     headers: { ...headers, 'access-token': Cookie.get('access_token') },
     method: 'POST',
     body: JSON.stringify({

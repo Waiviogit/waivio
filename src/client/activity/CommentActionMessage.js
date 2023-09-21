@@ -7,9 +7,7 @@ const CommentActionMessage = ({ actionDetails, currentUsername }) => {
   const isReply = !!actionDetails.parent_author;
 
   const postURL = isReply
-    ? `/@${actionDetails.parent_author}/${actionDetails.parent_permlink}#@${actionDetails.author}/${
-        actionDetails.permlink
-      }`
+    ? `/@${actionDetails.parent_author}/${actionDetails.parent_permlink}#@${actionDetails.author}/${actionDetails.permlink}`
     : `/@${actionDetails.author}/${actionDetails.permlink}`;
 
   const postLink = <Link to={postURL}>{actionDetails.permlink}</Link>;
