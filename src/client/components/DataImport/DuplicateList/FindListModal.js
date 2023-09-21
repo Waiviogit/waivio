@@ -24,7 +24,7 @@ const FindListModal = ({ visible, onClose, updateDepartmentsList }) => {
   return (
     <Modal
       visible={visible}
-      title={'Department update bot'}
+      title={'List duplicator bot'}
       onCancel={onClose}
       onOk={handleSubmit}
       okText={'Submit'}

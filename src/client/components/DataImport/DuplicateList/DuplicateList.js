@@ -154,9 +154,9 @@ const DuplicateList = ({ intl }) => {
       </p>
       <p>
         {intl.formatMessage({
-          id: 'data_import_description2',
+          id: 'list_duplicator_bot_description2',
           defaultMessage:
-            'Each object consists of multiple updates (e.g., title, description, price, address, etc.), which are posted on the Hive blockchain as individual records. Each update must be approved by the user who initiated the data import with an upvote equivalent to $0.001 in WAIV power.',
+            'Each update must be approved on behalf of the user with an upvote equivalent to $0.001 in WAIV power.',
         })}
       </p>
       <p>
@@ -234,7 +234,10 @@ const DuplicateList = ({ intl }) => {
         handleShowMore={loadMoreHistoryDate}
         showMore={hasMoreHistory}
         header={configDuplicateListsHistoryTable}
-        bodyConfig={history}
+        bodyConfig={history.map(item => ({
+          ...item,
+          baseObject: item?.lists?.length,
+        }))}
       />
       {visible && (
         <FindListModal

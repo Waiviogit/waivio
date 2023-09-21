@@ -405,14 +405,14 @@ export const configDuplicateListsTable = [
     id: 'objectsListCount',
     intl: {
       id: 'number_of_list',
-      defaultMessage: 'Number of list',
+      defaultMessage: 'Number of lists',
     },
   },
   {
     id: 'objectsCreated',
     intl: {
       id: 'posted_list',
-      defaultMessage: 'Posted list',
+      defaultMessage: 'Posted lists',
     },
     type: 'openModal',
     modal: {
@@ -465,7 +465,7 @@ export const configDuplicateListsHistoryTable = [
     type: 'date',
   },
   {
-    id: 'objectsCreated',
+    id: 'baseObject',
     intl: {
       id: 'base_list',
       defaultMessage: 'Base object',
@@ -489,7 +489,7 @@ export const configDuplicateListsHistoryTable = [
     id: 'objectsCount',
     intl: {
       id: 'number_of_objects',
-      defaultMessage: 'Number of object',
+      defaultMessage: 'Number of objects',
     },
   },
   {
