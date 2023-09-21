@@ -77,6 +77,11 @@ export const dataManagementSettings = {
       id: 'departments_bot',
       defaultMessage: 'Departments bot',
     },
+    // {
+    //   to: '/list-duplicator-bot',
+    //   id: 'list_duplicator_bot',
+    //   defaultMessage: 'List duplicator bot',
+    // },
     {
       to: '/chrome-extension',
       id: 'chrome-extension',

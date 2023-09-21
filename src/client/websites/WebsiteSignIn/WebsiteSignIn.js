@@ -27,7 +27,6 @@ import { hexToRgb } from '../../../common/helpers';
 
 import SocialSignInModalContent from './SocialSingInModalContent/SocialSignInModalContent';
 import WebsiteSignInModalContent from './WebsiteSignInModalContent/WebsiteSignInModalContent';
-import { isCustomDomain } from '../../social-gifts/listOfSocialWebsites';
 
 const WebsiteSignIn = props => {
   const [loading, setIsLoading] = useState(false);
@@ -129,7 +128,6 @@ const WebsiteSignIn = props => {
       hiveSinger={hiveSinger}
       websiteName={url}
       onClickHiveSingerAuthButton={onClickHiveSingerAuthButton}
-      isCustom={isCustomDomain(currentHost)}
     />
   ) : (
     <WebsiteSignInModalContent

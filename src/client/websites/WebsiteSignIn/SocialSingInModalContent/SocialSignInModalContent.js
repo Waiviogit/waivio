@@ -17,7 +17,6 @@ const SocialSignInModalContent = ({
   responseSocial,
   handleFailure,
   websiteName,
-  isCustom,
 }) => (
   <div
     className="SocialSignInModalContent"
@@ -68,58 +67,53 @@ const SocialSignInModalContent = ({
               defaultMessage: 'Full-featured Hive account',
             })}
           </h3>
-
           <SocialGiftsButton
             socialNetwork={'HiveSinger'}
             size={'28px'}
             href={hiveSinger.getLoginURL()}
             onClick={onClickHiveSingerAuthButton}
           />
-          {!isCustom && (
-            <React.Fragment>
-              <h3
-                style={{
-                  color: '#aaaaaa',
-                  fontSize: '18px',
-                  textAlign: 'center',
-                  ...styles.resetParagraphStyles,
-                }}
-              >
-                <div style={{ marginTop: '15px' }}>
-                  {intl.formatMessage({ id: 'guest_account', defaultMessage: 'Guest account' })}
-                </div>
-              </h3>
-              <div style={{ display: 'flex', flexDirection: 'column' }}>
-                <GoogleLogin
-                  clientId="623736583769-qlg46kt2o7gc4kjd2l90nscitf38vl5t.apps.googleusercontent.com"
-                  onSuccess={response => responseSocial(response, 'google')}
-                  onFailure={handleFailure}
-                  cookiePolicy={'single_host_origin'}
-                  render={renderProps => (
-                    <SocialGiftsButton
-                      socialNetwork={'Google'}
-                      onClick={renderProps.onClick}
-                      size={'25px'}
-                    />
-                  )}
-                />
-                <FacebookLogin
-                  appId="754038848413420"
-                  autoLoad={false}
-                  callback={response => responseSocial(response, 'facebook')}
-                  disableMobileRedirect
-                  render={renderProps => (
-                    <SocialGiftsButton
-                      socialNetwork={'Facebook'}
-                      onClick={renderProps.onClick}
-                      size={'23px'}
-                    />
-                  )}
-                />
-              </div>
-            </React.Fragment>
-          )}
 
+          <h3
+            style={{
+              color: '#aaaaaa',
+              fontSize: '18px',
+              textAlign: 'center',
+              ...styles.resetParagraphStyles,
+            }}
+          >
+            <div style={{ marginTop: '15px' }}>
+              {intl.formatMessage({ id: 'guest_account', defaultMessage: 'Guest account' })}
+            </div>
+          </h3>
+          <div style={{ display: 'flex', flexDirection: 'column' }}>
+            <GoogleLogin
+              clientId={'623736583769-qlg46kt2o7gc4kjd2l90nscitf38vl5t.apps.googleusercontent.com'}
+              onSuccess={response => responseSocial(response, 'google')}
+              onFailure={handleFailure}
+              cookiePolicy={'single_host_origin'}
+              render={renderProps => (
+                <SocialGiftsButton
+                  socialNetwork={'Google'}
+                  onClick={renderProps.onClick}
+                  size={'25px'}
+                />
+              )}
+            />
+            <FacebookLogin
+              appId="754038848413420"
+              autoLoad={false}
+              callback={response => responseSocial(response, 'facebook')}
+              disableMobileRedirect
+              render={renderProps => (
+                <SocialGiftsButton
+                  socialNetwork={'Facebook'}
+                  onClick={renderProps.onClick}
+                  size={'23px'}
+                />
+              )}
+            />
+          </div>
           <p
             style={{
               ...styles.socialText,
@@ -181,7 +175,6 @@ SocialSignInModalContent.propTypes = {
   }).isRequired,
   hiveSinger: PropTypes.shape().isRequired,
   loading: PropTypes.bool.isRequired,
-  isCustom: PropTypes.bool.isRequired,
   onClickHiveSingerAuthButton: PropTypes.func.isRequired,
   websiteTitle: PropTypes.string.isRequired,
   websiteName: PropTypes.string.isRequired,

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { useHistory } from 'react-router';
 import { isEmpty } from 'lodash';
 
-import { Button, Checkbox, Form, Input, Select } from 'antd';
+import { Button, Checkbox, Form, Input, message, Select } from 'antd';
 import validateRules from '../../constants/validateRules';
 import { checkkNs } from '../../../../waivioApi/ApiClient';
 
@@ -24,6 +24,7 @@ const CreateCustomWebsite = ({
     e.preventDefault();
     form.validateFieldsAndScroll((err, values) => {
       checkkNs(form.getFieldValue('host')).then(res => {
+        if (res.message) message.error(res.message);
         if (res.result) {
           createWebsite(
             {
@@ -111,7 +112,7 @@ const CreateCustomWebsite = ({
             defaultMessage: 'Please review the',
           })}{' '}
           <a
-            href="https://www.waivio.com/object/qym-custom-domain"
+            href="https://www.waivio.com/object/qym-custom-domain/page"
             rel="noopener noreferrer"
             target="_blank"
           >
@@ -137,7 +138,7 @@ const CreateCustomWebsite = ({
                   defaultMessage: 'I have read and agree to the terms and conditions of the',
                 })}{' '}
                 <a
-                  href="https://www.waivio.com/object/snn-web-hosting-agreement/page"
+                  href="https://www.waivio.com/object/snn-web-hosting-agreement"
                   rel="noopener noreferrer"
                   target="_blank"
                 >

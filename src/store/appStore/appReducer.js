@@ -165,6 +165,8 @@ export default (state = initialState, action) => {
         beneficiary,
         parentHost,
         administrators,
+        facebookAuthId,
+        googleAuthId,
       } = action.payload;
       const deviceType = mobileUserAgents.test(navigator.userAgent) ? 'mobile' : 'desktop';
       const currMap = configuration?.[`${deviceType}Map`];
@@ -188,6 +190,8 @@ export default (state = initialState, action) => {
         currMap,
         isWaivio: mainPage === 'waivio',
         settingsLoading: false,
+        facebookAuthId,
+        googleAuthId,
       };
     }
 
