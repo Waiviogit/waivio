@@ -101,6 +101,7 @@
   "reservation_v2": "/reservation",
   "reserved": "/reserved",
   "guide": "/guide",
+  "duplicateList":  "/duplicate-list",
   "frauds": "/frauds",
   "tabType": "/tab-type",
   "rewards": "/rewards",
