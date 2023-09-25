@@ -1,12 +1,13 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import { isEmpty } from 'lodash';
 import moment from 'moment';
 import { BXY_GUEST_PREFIX, GUEST_PREFIX } from '../../common/constants/waivio';
 import { getAuthenticatedUser } from '../../store/authStore/authSelectors';
-
+import { parseJSON } from '../../common/helpers/parseJSON';
+import { getUser } from '../../store/usersStore/usersSelectors';
 import './Avatar.less';
 
 export function getAvatarURL(username, size = 100, authenticatedUser) {
@@ -26,7 +27,8 @@ export function getAvatarURL(username, size = 100, authenticatedUser) {
   return size > 64 ? `${url}/${username}/avatar` : `${url}/${username}/avatar/small`;
 }
 
-const Avatar = ({ username, size, authenticatedUser, isSquare, lightbox, avatar }) => {
+const Avatar = ({ username, size, authenticatedUser, isSquare, lightbox }) => {
+  const authUser = useSelector(state => getUser(state, authenticatedUser.name));
   const avatarClassNames = classnames('Avatar', {
     'Avatar-square': isSquare,
     'Avatar-lightbox': lightbox,
@@ -38,7 +40,8 @@ const Avatar = ({ username, size, authenticatedUser, isSquare, lightbox, avatar 
   };
   let url = getAvatarURL(username, size, authenticatedUser);
 
-  if (avatar) url = avatar;
+  if (username === authUser?.name)
+    url = parseJSON(authUser?.posting_json_metadata)?.profile?.profile_image;
 
   if (username) {
     style = {
@@ -52,8 +55,9 @@ const Avatar = ({ username, size, authenticatedUser, isSquare, lightbox, avatar 
 
 Avatar.propTypes = {
   username: PropTypes.string,
-  avatar: PropTypes.string,
-  authenticatedUser: PropTypes.shape({}),
+  authenticatedUser: PropTypes.shape({
+    name: PropTypes.string,
+  }),
   size: PropTypes.number,
   isSquare: PropTypes.bool,
   lightbox: PropTypes.bool,

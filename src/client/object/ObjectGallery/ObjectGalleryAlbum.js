@@ -7,7 +7,6 @@ import { Link, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import Loading from '../../components/Icon/Loading';
 import Album from './Album';
-import withEditor from '../../components/Editor/withEditor';
 import {
   getAlbums,
   getRelatedAlbum,
@@ -26,7 +25,6 @@ import { objectFields } from '../../../common/constants/listOfFields';
 
 import './ObjectGallery.less';
 
-@withEditor
 @withRouter
 @connect(
   state => ({

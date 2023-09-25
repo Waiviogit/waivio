@@ -6,7 +6,6 @@ import { Transforms } from 'slate';
 import { Button } from 'antd';
 import { connect } from 'react-redux';
 import Scroll from 'react-scroll';
-import withEditor from '../Editor/withEditor';
 import { remarkable } from '../Story/Body';
 import BodyContainer from '../../containers/Story/BodyContainer';
 import Avatar from '../Avatar';
@@ -188,8 +187,6 @@ CommentForm.defaultProps = {
   isLoading: false,
   submitted: false,
   inputValue: '',
-  onImageUpload: () => {},
-  onImageInvalid: () => {},
   onSubmit: () => {},
   editor: {},
 };
@@ -203,4 +200,4 @@ const mapDispatchToProps = dispatch => ({
   searchObjects: value => dispatch(searchObjectsAutoCompete(value, '', null, true)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(withEditor(CommentForm));
+export default connect(mapStateToProps, mapDispatchToProps)(CommentForm);
