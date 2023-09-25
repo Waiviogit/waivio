@@ -26,7 +26,7 @@ export function getAvatarURL(username, size = 100, authenticatedUser) {
   return size > 64 ? `${url}/${username}/avatar` : `${url}/${username}/avatar/small`;
 }
 
-const Avatar = ({ username, size, authenticatedUser, isSquare, lightbox }) => {
+const Avatar = ({ username, size, authenticatedUser, isSquare, lightbox, avatar }) => {
   const avatarClassNames = classnames('Avatar', {
     'Avatar-square': isSquare,
     'Avatar-lightbox': lightbox,
@@ -36,7 +36,9 @@ const Avatar = ({ username, size, authenticatedUser, isSquare, lightbox }) => {
     width: `${size}px`,
     height: `${size}px`,
   };
-  const url = getAvatarURL(username, size, authenticatedUser);
+  let url = getAvatarURL(username, size, authenticatedUser);
+
+  if (avatar) url = avatar;
 
   if (username) {
     style = {
@@ -50,6 +52,7 @@ const Avatar = ({ username, size, authenticatedUser, isSquare, lightbox }) => {
 
 Avatar.propTypes = {
   username: PropTypes.string,
+  avatar: PropTypes.string,
   authenticatedUser: PropTypes.shape({}),
   size: PropTypes.number,
   isSquare: PropTypes.bool,
