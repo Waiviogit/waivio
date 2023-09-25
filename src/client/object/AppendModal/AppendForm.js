@@ -88,7 +88,6 @@ import {
   getObjectFieldName,
 } from '../../../common/helpers/wObjectHelper';
 import { appendObject } from '../../../store/appendStore/appendActions';
-import withEditor from '../../components/Editor/withEditor';
 import { getExposedFieldsByObjType } from '../wObjectHelper';
 import { rateObject } from '../../../store/wObjectStore/wobjActions';
 import SortingList from '../../components/DnDList/DnDList';
@@ -160,7 +159,6 @@ import { allContinents, allCountries } from './AppendModalData/affiliateData';
   },
 )
 @Form.create()
-@withEditor
 @withRouter
 @injectIntl
 class AppendForm extends Component {
@@ -200,8 +198,6 @@ class AppendForm extends Component {
     usedLocale: 'en-US',
     currentUsername: '',
     hideModal: () => {},
-    onImageUpload: () => {},
-    onImageInvalid: () => {},
     wObject: {},
     post: {},
     updates: [],

@@ -7,6 +7,7 @@ import { guestUserRegex } from '../../common/helpers/regexHelpers';
 export default class AvatarLightbox extends React.Component {
   static propTypes = {
     username: PropTypes.string,
+    avatar: PropTypes.string,
     size: PropTypes.number,
     isActive: PropTypes.bool,
   };
@@ -26,11 +27,13 @@ export default class AvatarLightbox extends React.Component {
   handleCloseRequest = () => this.setState({ open: false });
 
   render() {
-    const { username, size, isActive } = this.props;
-    const lightboxSrc =
+    const { username, size, isActive, avatar } = this.props;
+    let lightboxSrc =
       username && guestUserRegex.test(username)
         ? `https://waivio.nyc3.digitaloceanspaces.com/avatar/${username}`
         : `https://images.hive.blog/u/${username}/avatar/large`;
+
+    if (avatar) lightboxSrc = avatar;
 
     return (
       <div
@@ -38,7 +41,7 @@ export default class AvatarLightbox extends React.Component {
         role="presentation"
         onClick={this.handleAvatarClick}
       >
-        <Avatar username={username} size={size} />
+        <Avatar avatar={avatar} username={username} size={size} />
         {isActive && (
           <img
             src="/images/icons/online.png"

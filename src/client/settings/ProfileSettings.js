@@ -10,8 +10,6 @@ import { updateProfile, reload } from '../../store/authStore/authActions';
 import { getMetadata } from '../../common/helpers/postingMetadata';
 import { ACCOUNT_UPDATE } from '../../common/constants/accountHistory';
 import socialProfiles from '../../common/helpers/socialProfiles';
-import withEditor from '../components/Editor/withEditor';
-import EditorInput from '../components/Editor/EditorInput';
 import { remarkable } from '../components/Story/Body';
 import BodyContainer from '../containers/Story/BodyContainer';
 import Action from '../components/Button/Action';
@@ -25,9 +23,9 @@ import {
   getIsReloading,
   isGuestUser,
 } from '../../store/authStore/authSelectors';
+import { getUser } from '../../store/usersStore/usersSelectors';
 
 import './Settings.less';
-import { getUser } from '../../store/usersStore/usersSelectors';
 
 const FormItem = Form.Item;
 
@@ -66,14 +64,11 @@ function mapPropsToFields(props) {
 @Form.create({
   mapPropsToFields,
 })
-@withEditor
 export default class ProfileSettings extends React.Component {
   static propTypes = {
     intl: PropTypes.shape().isRequired,
     form: PropTypes.shape().isRequired,
     userName: PropTypes.string,
-    onImageUpload: PropTypes.func,
-    onImageInvalid: PropTypes.func,
     isGuest: PropTypes.bool,
     updateProfile: PropTypes.func,
     user: PropTypes.shape(),
@@ -470,15 +465,7 @@ export default class ProfileSettings extends React.Component {
                 <div className="Settings__section__inputs">
                   {getFieldDecorator('signature', {
                     initialValue: '',
-                  })(
-                    <EditorInput
-                      rows={6}
-                      onChange={this.handleSignatureChange}
-                      onImageUpload={this.props.onImageUpload}
-                      onImageInvalid={this.props.onImageInvalid}
-                      inputId={'profile-inputfile'}
-                    />,
-                  )}
+                  })(<div />)}
                   {bodyHTML && (
                     <Form.Item label={<FormattedMessage id="preview" defaultMessage="Preview" />}>
                       <BodyContainer full body={bodyHTML} />

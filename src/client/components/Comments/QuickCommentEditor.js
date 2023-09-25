@@ -6,7 +6,6 @@ import { debounce } from 'lodash';
 import { Transforms } from 'slate';
 import { injectIntl } from 'react-intl';
 
-import withEditor from '../Editor/withEditor';
 import { getIsAuthenticated } from '../../../store/authStore/authSelectors';
 import EditorSlate from '../EditorExtended/editorSlate';
 import { editorStateToMarkdownSlate } from '../EditorExtended/util/editorStateToMarkdown';
@@ -22,7 +21,6 @@ import { insertObject } from '../EditorExtended/util/SlateEditor/utils/common';
 
 import './QuickCommentEditor.less';
 
-@withEditor
 @connect(state => ({
   isAuth: getIsAuthenticated(state),
 }))
@@ -38,8 +36,6 @@ class QuickCommentEditor extends React.Component {
   static defaultProps = {
     inputValue: '',
     isLoading: false,
-    onImageUpload: () => {},
-    onImageInvalid: () => {},
     onSubmit: () => {},
     isAuth: false,
   };
