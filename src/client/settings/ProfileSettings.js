@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { isEmpty, get, throttle } from 'lodash';
 import { connect } from 'react-redux';
+import { Transforms } from 'slate';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import { Form, Input, Avatar, Button, Modal, message } from 'antd';
 import moment from 'moment';
@@ -24,8 +25,15 @@ import {
   isGuestUser,
 } from '../../store/authStore/authSelectors';
 import { getUser } from '../../store/usersStore/usersSelectors';
-
+import EditorSlate from '../components/EditorExtended/editorSlate';
+import { checkCursorInSearchSlate } from '../../common/helpers/editorHelper';
+import { getObjectName, getObjectType } from '../../common/helpers/wObjectHelper';
+import objectTypes from '../object/const/objectTypes';
+import { getObjectUrl } from '../../common/helpers/postHelpers';
+import { insertObject } from '../components/EditorExtended/util/SlateEditor/utils/common';
+import { getEditorSlate } from '../../store/slateEditorStore/editorSelectors';
 import './Settings.less';
+import { editorStateToMarkdownSlate } from '../components/EditorExtended/util/editorStateToMarkdown';
 
 const FormItem = Form.Item;
 
@@ -55,6 +63,7 @@ function mapPropsToFields(props) {
     },
     reloading: getIsReloading(state),
     isGuest: isGuestUser(state),
+    editor: getEditorSlate(state),
   }),
   {
     updateProfile,
@@ -70,6 +79,7 @@ export default class ProfileSettings extends React.Component {
     form: PropTypes.shape().isRequired,
     userName: PropTypes.string,
     isGuest: PropTypes.bool,
+    editor: PropTypes.shape(),
     updateProfile: PropTypes.func,
     user: PropTypes.shape(),
     history: PropTypes.shape(),
@@ -115,17 +125,21 @@ export default class ProfileSettings extends React.Component {
   }
 
   handleSignatureChange(body) {
-    throttle(this.renderBody, 200, { leading: false, trailing: true })(body);
+    throttle(this.renderBody, 200, { leading: false, trailing: true })(
+      editorStateToMarkdownSlate(body.children),
+    );
   }
 
   setSettingsFields = () => {
     // eslint-disable-next-line no-shadow
     const { form, isGuest, userName, user, updateProfile, intl, reload } = this.props;
-    const { avatarImage, coverImage, profileData } = this.state;
+    const { avatarImage, coverImage, profileData, bodyHTML } = this.state;
     const isChangedAvatar = !!avatarImage.length;
     const isChangedCover = !!coverImage.length;
+    const isChangedSingature = Boolean(bodyHTML);
 
-    if (!form.isFieldsTouched() && !isChangedAvatar && !isChangedCover) return;
+    if (!form.isFieldsTouched() && !isChangedAvatar && !isChangedCover && !isChangedSingature)
+      return;
 
     form.validateFields((err, values) => {
       if (!err) {
@@ -134,12 +148,16 @@ export default class ProfileSettings extends React.Component {
             field =>
               form.isFieldTouched(field) ||
               (field === 'profile_image' && isChangedAvatar) ||
+              (field === 'signature' && isChangedSingature) ||
               (field === 'cover_image' && isChangedCover),
           )
           .reduce(
             (a, b) => ({
               ...a,
-              [b]: values[b] || '',
+              [b]:
+                b === 'signature'
+                  ? editorStateToMarkdownSlate(values[b]?.children)
+                  : values[b] || '',
             }),
             {},
           );
@@ -212,6 +230,18 @@ export default class ProfileSettings extends React.Component {
         .then(() => this.setSettingsFields());
     } else this.setSettingsFields();
   }
+
+  handleObjectSelect = selectedObject => {
+    const { editor } = this.props;
+    const { beforeRange } = checkCursorInSearchSlate(editor);
+    const objectType = getObjectType(selectedObject);
+    const objectName = getObjectName(selectedObject);
+    const textReplace = objectType === objectTypes.HASHTAG ? `#${objectName}` : objectName;
+    const url = getObjectUrl(selectedObject.id || selectedObject.author_permlink);
+
+    Transforms.select(editor, beforeRange);
+    insertObject(editor, url, textReplace, true);
+  };
 
   onOpenChangeAvatarModal = () => {
     this.setState({ isModal: !this.state.isModal, isAvatar: !this.state.isAvatar });
@@ -462,10 +492,15 @@ export default class ProfileSettings extends React.Component {
                 <h3>
                   <FormattedMessage id="profile_signature" defaultMessage="Signature" />
                 </h3>
-                <div className="Settings__section__inputs">
-                  {getFieldDecorator('signature', {
-                    initialValue: '',
-                  })(<div />)}
+                <div className="Settings__editor">
+                  {getFieldDecorator('signature')(
+                    <EditorSlate
+                      onChange={this.handleSignatureChange}
+                      handleObjectSelect={this.handleObjectSelect}
+                      editorEnabled
+                      initialPosTopBtn={'11.5px'}
+                    />,
+                  )}
                   {bodyHTML && (
                     <Form.Item label={<FormattedMessage id="preview" defaultMessage="Preview" />}>
                       <BodyContainer full body={bodyHTML} />
@@ -477,7 +512,9 @@ export default class ProfileSettings extends React.Component {
                 primary
                 big
                 type="submit"
-                disabled={!form.isFieldsTouched() && !avatarImage.length && !coverImage.length}
+                disabled={
+                  !form.isFieldsTouched() && !bodyHTML && !avatarImage.length && !coverImage.length
+                }
                 loading={this.state.isLoading}
               >
                 <FormattedMessage id="save" defaultMessage="Save" />
