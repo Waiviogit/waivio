@@ -131,11 +131,13 @@ import MenuItemForm from './FormComponents/MenuItemForm';
 import RelatedForm from './FormComponents/RelatedForm';
 import AddOnForm from './FormComponents/AddOnForm';
 import SimilarForm from './FormComponents/SimilarForm';
-import './AppendForm.less';
 import AffiliateProductIdTypesForm from './FormComponents/AffiliateProductIdTypesForm';
 import AffiliateGeoAreaForm from './FormComponents/AffiliateGeoAreaForm';
 import AffiliateCodeForm from './FormComponents/AffiliateCodeForm';
 import { allContinents, allCountries } from './AppendModalData/affiliateData';
+import { getAuthenticatedUser } from '../../../store/authStore/authSelectors';
+
+import './AppendForm.less';
 
 @connect(
   state => ({
@@ -150,6 +152,7 @@ import { allContinents, allCountries } from './AppendModalData/affiliateData';
     categories: getObjectTagCategory(state),
     albums: getObjectAlbums(state),
     screenSize: getScreenSize(state),
+    user: getAuthenticatedUser(state),
   }),
   {
     appendObject,
