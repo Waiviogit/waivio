@@ -7,7 +7,7 @@ import { injectIntl, FormattedMessage } from 'react-intl';
 import { Form, Input, Avatar, Button, Modal, message } from 'antd';
 import moment from 'moment';
 import SteemConnectAPI from '../steemConnectAPI';
-import { updateProfile, reload } from '../../store/authStore/authActions';
+import { updateProfile } from '../../store/authStore/authActions';
 import { getMetadata } from '../../common/helpers/postingMetadata';
 import { ACCOUNT_UPDATE } from '../../common/constants/accountHistory';
 import socialProfiles from '../../common/helpers/socialProfiles';
@@ -21,7 +21,6 @@ import { getAvatarURL } from '../components/Avatar';
 import {
   getAuthenticatedUser,
   getAuthenticatedUserName,
-  getIsReloading,
   isGuestUser,
 } from '../../store/authStore/authSelectors';
 import { getUser } from '../../store/usersStore/usersSelectors';
@@ -61,13 +60,11 @@ function mapPropsToFields(props) {
       ...getAuthenticatedUser(state),
       ...getUser(state, getAuthenticatedUserName(state)),
     },
-    reloading: getIsReloading(state),
     isGuest: isGuestUser(state),
     editor: getEditorSlate(state),
   }),
   {
     updateProfile,
-    reload,
   },
 )
 @Form.create({
@@ -83,7 +80,6 @@ export default class ProfileSettings extends React.Component {
     updateProfile: PropTypes.func,
     user: PropTypes.shape(),
     history: PropTypes.shape(),
-    reload: PropTypes.func,
   };
 
   static defaultProps = {
@@ -94,7 +90,6 @@ export default class ProfileSettings extends React.Component {
     history: {},
     isGuest: false,
     updateProfile: () => {},
-    reload: () => {},
   };
 
   constructor(props) {
@@ -132,7 +127,7 @@ export default class ProfileSettings extends React.Component {
 
   setSettingsFields = () => {
     // eslint-disable-next-line no-shadow
-    const { form, isGuest, userName, user, updateProfile, intl, reload } = this.props;
+    const { form, isGuest, userName, user, updateProfile, intl } = this.props;
     const { avatarImage, coverImage, profileData, bodyHTML } = this.state;
     const isChangedAvatar = !!avatarImage.length;
     const isChangedCover = !!coverImage.length;
@@ -192,8 +187,6 @@ export default class ProfileSettings extends React.Component {
 
           SteemConnectAPI.broadcast([profileDateEncoded])
             .then(() => {
-              reload();
-
               setTimeout(() => {
                 message.success(
                   intl.formatMessage({
@@ -495,18 +488,20 @@ export default class ProfileSettings extends React.Component {
                 <div className="Settings__editor">
                   {getFieldDecorator('signature')(
                     <EditorSlate
+                      isComment
                       onChange={this.handleSignatureChange}
                       handleObjectSelect={this.handleObjectSelect}
                       editorEnabled
                       initialPosTopBtn={'11.5px'}
+                      initialBody={form.getFieldValue('signature')}
                     />,
                   )}
-                  {bodyHTML && (
-                    <Form.Item label={<FormattedMessage id="preview" defaultMessage="Preview" />}>
-                      <BodyContainer full body={bodyHTML} />
-                    </Form.Item>
-                  )}
                 </div>
+                {bodyHTML && (
+                  <Form.Item label={<FormattedMessage id="preview" defaultMessage="Preview" />}>
+                    <BodyContainer full body={bodyHTML} />
+                  </Form.Item>
+                )}
               </div>
               <Action
                 primary
