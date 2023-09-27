@@ -24,6 +24,8 @@ import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors
 import { getObjectTypesList } from '../../../store/objectTypesStore/objectTypesSelectors';
 
 import './CreateObject.less';
+import '../../components/Editor/Editor.less';
+import '../../components/Editor/EditorToolbar.less';
 
 @injectIntl
 @withRouter
