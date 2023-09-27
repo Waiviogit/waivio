@@ -103,8 +103,8 @@ const CheckListView = ({ wobject, listItems, loading, intl, hideBreadCrumbs }) =
 
   return (
     <div className="Checklist">
-      {!hideBreadCrumbs && <Breadcrumbs />}
-      {listType && <ListDescription wobject={wobject} />}
+      {!hideBreadCrumbs && !loading && <Breadcrumbs />}
+      {listType && !loading && <ListDescription wobject={wobject} />}
       {listType && wobject?.background && !loading && (
         <div className="Checklist__banner">
           <img src={wobject?.background} alt={'Promotional list banner'} />

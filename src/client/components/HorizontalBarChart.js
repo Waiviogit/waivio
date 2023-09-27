@@ -13,7 +13,7 @@ const HorizontalBarChart = ({ current, total }) => {
         className={classNames('HorizontalBarChart__bar', {
           HorizontalBarChart__bar__selected: i <= current,
         })}
-        style={{ width: `${1 / total * 100}%` }}
+        style={{ width: `${(1 / total) * 100}%` }}
       />,
     );
   }

@@ -1,17 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { isEmpty, get, throttle } from 'lodash';
+import { isEmpty, get, throttle, debounce } from 'lodash';
 import { connect } from 'react-redux';
+import { Transforms } from 'slate';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import { Form, Input, Avatar, Button, Modal, message } from 'antd';
 import moment from 'moment';
 import SteemConnectAPI from '../steemConnectAPI';
-import { updateProfile, reload } from '../../store/authStore/authActions';
+import { updateProfile } from '../../store/authStore/authActions';
 import { getMetadata } from '../../common/helpers/postingMetadata';
 import { ACCOUNT_UPDATE } from '../../common/constants/accountHistory';
 import socialProfiles from '../../common/helpers/socialProfiles';
-import withEditor from '../components/Editor/withEditor';
-import EditorInput from '../components/Editor/EditorInput';
 import { remarkable } from '../components/Story/Body';
 import BodyContainer from '../containers/Story/BodyContainer';
 import Action from '../components/Button/Action';
@@ -22,12 +21,21 @@ import { getAvatarURL } from '../components/Avatar';
 import {
   getAuthenticatedUser,
   getAuthenticatedUserName,
-  getIsReloading,
   isGuestUser,
 } from '../../store/authStore/authSelectors';
+import { getUser } from '../../store/usersStore/usersSelectors';
+import EditorSlate from '../components/EditorExtended/editorSlate';
+import { checkCursorInSearchSlate } from '../../common/helpers/editorHelper';
+import { getObjectName, getObjectType } from '../../common/helpers/wObjectHelper';
+import objectTypes from '../object/const/objectTypes';
+import { getObjectUrl } from '../../common/helpers/postHelpers';
+import { insertObject } from '../components/EditorExtended/util/SlateEditor/utils/common';
+import { editorStateToMarkdownSlate } from '../components/EditorExtended/util/editorStateToMarkdown';
+import { getSelection, getSelectionRect } from '../components/EditorExtended/util';
+import { setCursorCoordinates } from '../../store/slateEditorStore/editorActions';
+import { searchObjectsAutoCompete } from '../../store/searchStore/searchActions';
 
 import './Settings.less';
-import { getUser } from '../../store/usersStore/usersSelectors';
 
 const FormItem = Form.Item;
 
@@ -55,30 +63,28 @@ function mapPropsToFields(props) {
       ...getAuthenticatedUser(state),
       ...getUser(state, getAuthenticatedUserName(state)),
     },
-    reloading: getIsReloading(state),
     isGuest: isGuestUser(state),
   }),
   {
     updateProfile,
-    reload,
+    setCursorCoordinates,
+    searchObjectsAutoCompete,
   },
 )
 @Form.create({
   mapPropsToFields,
 })
-@withEditor
 export default class ProfileSettings extends React.Component {
   static propTypes = {
     intl: PropTypes.shape().isRequired,
     form: PropTypes.shape().isRequired,
     userName: PropTypes.string,
-    onImageUpload: PropTypes.func,
-    onImageInvalid: PropTypes.func,
     isGuest: PropTypes.bool,
     updateProfile: PropTypes.func,
+    setCursorCoordinates: PropTypes.func,
+    searchObjectsAutoCompete: PropTypes.func,
     user: PropTypes.shape(),
     history: PropTypes.shape(),
-    reload: PropTypes.func,
   };
 
   static defaultProps = {
@@ -89,7 +95,6 @@ export default class ProfileSettings extends React.Component {
     history: {},
     isGuest: false,
     updateProfile: () => {},
-    reload: () => {},
   };
 
   constructor(props) {
@@ -119,18 +124,54 @@ export default class ProfileSettings extends React.Component {
     this.renderBody = this.renderBody.bind(this);
   }
 
+  setShowEditorSearch = isShowEditorSearch => {
+    this.setState({ isShowEditorSearch });
+  };
+
+  debouncedSearch = debounce(
+    searchStr => this.props.searchObjectsAutoCompete(searchStr, '', null, true),
+    150,
+  );
+
+  handleContentChangeSlate = debounce(editor => {
+    const searchInfo = checkCursorInSearchSlate(editor);
+
+    if (searchInfo.isNeedOpenSearch) {
+      if (!this.state.isShowEditorSearch) {
+        const nativeSelection = getSelection(window);
+        const selectionBoundary = getSelectionRect(nativeSelection);
+
+        this.props.setCursorCoordinates({
+          selectionBoundary,
+          selectionState: editor.selection,
+          searchString: searchInfo.searchString,
+        });
+        this.setShowEditorSearch(true);
+      }
+      this.debouncedSearch(searchInfo.searchString);
+    } else if (this.state.isShowEditorSearch) {
+      this.setShowEditorSearch(false);
+    }
+  }, 350);
+
   handleSignatureChange(body) {
-    throttle(this.renderBody, 200, { leading: false, trailing: true })(body);
+    throttle(this.renderBody, 200, { leading: false, trailing: true })(
+      editorStateToMarkdownSlate(body.children),
+    );
+
+    this.handleContentChangeSlate(body);
   }
 
   setSettingsFields = () => {
     // eslint-disable-next-line no-shadow
-    const { form, isGuest, userName, user, updateProfile, intl, reload } = this.props;
-    const { avatarImage, coverImage, profileData } = this.state;
+    const { form, isGuest, userName, user, updateProfile, intl } = this.props;
+    const { avatarImage, coverImage, profileData, bodyHTML } = this.state;
     const isChangedAvatar = !!avatarImage.length;
     const isChangedCover = !!coverImage.length;
+    const isChangedSingature = Boolean(bodyHTML);
 
-    if (!form.isFieldsTouched() && !isChangedAvatar && !isChangedCover) return;
+    if (!form.isFieldsTouched() && !isChangedAvatar && !isChangedCover && !isChangedSingature)
+      return;
 
     form.validateFields((err, values) => {
       if (!err) {
@@ -139,12 +180,16 @@ export default class ProfileSettings extends React.Component {
             field =>
               form.isFieldTouched(field) ||
               (field === 'profile_image' && isChangedAvatar) ||
+              (field === 'signature' && isChangedSingature) ||
               (field === 'cover_image' && isChangedCover),
           )
           .reduce(
             (a, b) => ({
               ...a,
-              [b]: values[b] || '',
+              [b]:
+                b === 'signature'
+                  ? editorStateToMarkdownSlate(this.editor?.children)
+                  : values[b] || '',
             }),
             {},
           );
@@ -179,8 +224,6 @@ export default class ProfileSettings extends React.Component {
 
           SteemConnectAPI.broadcast([profileDateEncoded])
             .then(() => {
-              reload();
-
               setTimeout(() => {
                 message.success(
                   intl.formatMessage({
@@ -217,6 +260,22 @@ export default class ProfileSettings extends React.Component {
         .then(() => this.setSettingsFields());
     } else this.setSettingsFields();
   }
+
+  setEditor = editor => {
+    this.editor = editor;
+  };
+
+  handleObjectSelect = selectedObject => {
+    const { beforeRange } = checkCursorInSearchSlate(this.editor);
+    const objectType = getObjectType(selectedObject);
+    const objectName = getObjectName(selectedObject);
+    const textReplace = objectType === objectTypes.HASHTAG ? `#${objectName}` : objectName;
+    const url = getObjectUrl(selectedObject.id || selectedObject.author_permlink);
+
+    Transforms.select(this.editor, beforeRange);
+    insertObject(this.editor, url, textReplace, true);
+    this.handleSignatureChange(this.editor);
+  };
 
   onOpenChangeAvatarModal = () => {
     this.setState({ isModal: !this.state.isModal, isAvatar: !this.state.isAvatar });
@@ -467,30 +526,34 @@ export default class ProfileSettings extends React.Component {
                 <h3>
                   <FormattedMessage id="profile_signature" defaultMessage="Signature" />
                 </h3>
-                <div className="Settings__section__inputs">
-                  {getFieldDecorator('signature', {
-                    initialValue: '',
-                  })(
-                    <EditorInput
-                      rows={6}
+                <div className="Settings__editor">
+                  {getFieldDecorator('signature')(
+                    <EditorSlate
+                      isComment
+                      isShowEditorSearch={this.state.isShowEditorSearch}
                       onChange={this.handleSignatureChange}
-                      onImageUpload={this.props.onImageUpload}
-                      onImageInvalid={this.props.onImageInvalid}
-                      inputId={'profile-inputfile'}
+                      handleObjectSelect={this.handleObjectSelect}
+                      editorEnabled
+                      initialPosTopBtn={'11.5px'}
+                      initialBody={form.getFieldValue('signature')}
+                      setShowEditorSearch={this.setShowEditorSearch}
+                      setEditorCb={this.setEditor}
                     />,
                   )}
-                  {bodyHTML && (
-                    <Form.Item label={<FormattedMessage id="preview" defaultMessage="Preview" />}>
-                      <BodyContainer full body={bodyHTML} />
-                    </Form.Item>
-                  )}
                 </div>
+                {bodyHTML && (
+                  <Form.Item label={<FormattedMessage id="preview" defaultMessage="Preview" />}>
+                    <BodyContainer full body={bodyHTML} />
+                  </Form.Item>
+                )}
               </div>
               <Action
                 primary
                 big
                 type="submit"
-                disabled={!form.isFieldsTouched() && !avatarImage.length && !coverImage.length}
+                disabled={
+                  !form.isFieldsTouched() && !bodyHTML && !avatarImage.length && !coverImage.length
+                }
                 loading={this.state.isLoading}
               >
                 <FormattedMessage id="save" defaultMessage="Save" />

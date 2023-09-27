@@ -1,12 +1,11 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import _, { debounce } from 'lodash';
+import { debounce, get } from 'lodash';
 import { FormattedMessage } from 'react-intl';
 import { Transforms } from 'slate';
 import { Button } from 'antd';
 import { connect } from 'react-redux';
 import Scroll from 'react-scroll';
-import withEditor from '../Editor/withEditor';
 import { remarkable } from '../Story/Body';
 import BodyContainer from '../../containers/Story/BodyContainer';
 import Avatar from '../Avatar';
@@ -14,10 +13,7 @@ import EditorSlate from '../EditorExtended/editorSlate';
 import { editorStateToMarkdownSlate } from '../EditorExtended/util/editorStateToMarkdown';
 import { resetEditorState } from '../EditorExtended/util/SlateEditor/utils/SlateUtilityFunctions';
 import { getEditorSlate } from '../../../store/slateEditorStore/editorSelectors';
-import {
-  setCursorCoordinates,
-  setUpdatedEditorData,
-} from '../../../store/slateEditorStore/editorActions';
+import { setCursorCoordinates } from '../../../store/slateEditorStore/editorActions';
 import { checkCursorInSearchSlate } from '../../../common/helpers/editorHelper';
 import { getObjectName, getObjectType } from '../../../common/helpers/wObjectHelper';
 import objectTypes from '../../object/const/objectTypes';
@@ -30,134 +26,75 @@ import './CommentForm.less';
 
 const Element = Scroll.Element;
 
-@withEditor
-class CommentForm extends React.Component {
-  static propTypes = {
-    parentPost: PropTypes.shape().isRequired,
-    username: PropTypes.string.isRequired,
-    // top: PropTypes.bool,
-    isSmall: PropTypes.bool,
-    isLoading: PropTypes.bool,
-    submitted: PropTypes.bool,
-    inputValue: PropTypes.string.isRequired,
-    onSubmit: PropTypes.func,
-    editor: PropTypes.shape(),
-    setCursorCoordinates: PropTypes.func,
-    searchObjects: PropTypes.func,
-    isEdit: PropTypes.bool,
-    onClose: PropTypes.func,
-  };
+const CommentForm = props => {
+  const [body, setBody] = useState('');
+  const [bodyHTML, setHTML] = useState('');
+  const [isShowEditorSearch, setIsShowEditorSearch] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  static defaultProps = {
-    top: false,
-    isSmall: false,
-    isLoading: false,
-    submitted: false,
-    inputValue: '',
-    onImageUpload: () => {},
-    onImageInvalid: () => {},
-    onSubmit: () => {},
-    editor: {},
-  };
-
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      body: '',
-      bodyHTML: '',
-      isShowEditorSearch: false,
-      loading: false,
-    };
-
-    this.setInput = this.setInput.bind(this);
-    this.setBodyAndRender = this.setBodyAndRender.bind(this);
-    this.handleBodyUpdate = this.handleBodyUpdate.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-  }
-
-  componentWillReceiveProps(nextProps) {
-    if ((!nextProps.isLoading && nextProps.inputValue !== '') || nextProps.submitted) {
-      this.setBodyAndRender(nextProps.inputValue);
+  useEffect(() => {
+    if ((!props.isLoading && props.inputValue !== '') || props.submitted) {
+      setBodyAndRender(props.inputValue);
     }
-  }
+  }, [props.isLoading, props.inputValue, props.submitted]);
 
-  setEditor = editor => {
-    this.setState({ editor });
+  const setBodyAndRender = value => {
+    const markdownBody = value.children ? editorStateToMarkdownSlate(value.children) : value;
+
+    setBody(markdownBody);
+    setHTML(remarkable.render(markdownBody));
   };
 
-  setInput(input) {
-    this.input = input;
-  }
+  const setShowEditorSearch = value => setIsShowEditorSearch(value);
 
-  setBodyAndRender(body) {
-    const markdownBody = body.children ? editorStateToMarkdownSlate(body.children) : body;
+  const debouncedSearch = debounce(searchStr => props.searchObjects(searchStr), 150);
 
-    this.setState(
-      {
-        body: markdownBody,
-        bodyHTML: remarkable.render(markdownBody),
-      },
-      () => {
-        if (this.input) {
-          this.input.value = null;
-        }
-      },
-    );
-  }
-
-  setShowEditorSearch = isShowEditorSearch => {
-    this.setState({ isShowEditorSearch });
-  };
-
-  debouncedSearch = debounce(searchStr => this.props.searchObjects(searchStr), 150);
-
-  handleContentChangeSlate = debounce(editor => {
+  const handleContentChangeSlate = debounce(editor => {
     const searchInfo = checkCursorInSearchSlate(editor);
 
     if (searchInfo.isNeedOpenSearch) {
-      if (!this.state.isShowEditorSearch) {
+      if (!isShowEditorSearch) {
         const nativeSelection = getSelection(window);
         const selectionBoundary = getSelectionRect(nativeSelection);
 
-        this.props.setCursorCoordinates({
+        props.setCursorCoordinates({
           selectionBoundary,
           selectionState: editor.selection,
           searchString: searchInfo.searchString,
         });
-        this.setShowEditorSearch(true);
+        setShowEditorSearch(true);
       }
-      this.debouncedSearch(searchInfo.searchString);
-    } else if (this.state.isShowEditorSearch) {
-      this.setShowEditorSearch(false);
+      debouncedSearch(searchInfo.searchString);
+    } else if (isShowEditorSearch) {
+      setShowEditorSearch(false);
     }
   }, 350);
 
-  handleBodyUpdate(body) {
-    this.setBodyAndRender(body);
-    this.handleContentChangeSlate(body);
-  }
+  const handleBodyUpdate = value => {
+    setBodyAndRender(value);
+    handleContentChangeSlate(value);
+  };
 
-  handleSubmit(e) {
+  const handleSubmit = e => {
     e.stopPropagation();
-    this.setState({ loading: true });
-    if (this.state.body) {
-      const formattedBody = this.state.body.replace(/\\(#.)+/g, '$1');
+    setLoading(true);
+    if (body) {
+      const formattedBody = body.replace(/\\(#.)+/g, '$1');
 
-      this.props.onSubmit(this.props.parentPost, formattedBody).then(response => {
-        if (!_.get(response, 'error', false)) {
-          this.setBodyAndRender('');
-          const { editor } = this.props;
+      props.onSubmit(props.parentPost, formattedBody).then(response => {
+        if (!get(response, 'error', false)) {
+          setBodyAndRender('');
+          const { editor } = props;
 
           resetEditorState(editor);
         }
-        this.setState({ loading: false });
+        setLoading(false);
       });
     }
-  }
+  };
 
-  handleObjectSelect = selectedObject => {
-    const { editor } = this.props;
+  const handleObjectSelect = selectedObject => {
+    const { editor } = props;
     const { beforeRange } = checkCursorInSearchSlate(editor);
     const objectType = getObjectType(selectedObject);
     const objectName = getObjectName(selectedObject);
@@ -168,75 +105,97 @@ class CommentForm extends React.Component {
     insertObject(editor, url, textReplace, true);
   };
 
-  render() {
-    const { username, isSmall, isEdit } = this.props;
-    const { bodyHTML, loading } = this.state;
-    const getButtonText = () => {
-      let text = loading ? (
-        <FormattedMessage id="comment_send_progress" defaultMessage="Commenting" />
-      ) : (
-        <FormattedMessage id="comment_send" defaultMessage="Comment" />
-      );
-
-      if (isEdit) {
-        text = loading ? (
-          <FormattedMessage id="comment_update_progress" defaultMessage="Updating" />
-        ) : (
-          <FormattedMessage id="comment_update_send" defaultMessage="Update comment" />
-        );
-      }
-
-      return text;
-    };
-
-    return (
-      <div className="CommentForm">
-        {!this.props.isEdit && <Avatar username={username} size={!isSmall ? 40 : 32} />}
-        <div className="CommentForm__text">
-          <Element name="commentFormInputScrollerElement">
-            <div className="CommentForm__editor">
-              <EditorSlate
-                onChange={this.handleBodyUpdate}
-                handleObjectSelect={this.handleObjectSelect}
-                isCommentEdit={this.props.isEdit}
-                isComment
-                editorEnabled
-                initialPosTopBtn={this.props.isEdit ? '3.5px' : '11.5px'}
-                isShowEditorSearch={this.state.isShowEditorSearch}
-                setShowEditorSearch={this.setShowEditorSearch}
-                initialBody={this.props.inputValue}
-                small={this.props.isEdit}
-              />
-            </div>
-          </Element>
-          <Button onClick={this.handleSubmit} disabled={loading} loading={loading} type={'primary'}>
-            {getButtonText()}
-          </Button>
-          {isEdit && (
-            <Button type="link" onClick={this.props.onClose}>
-              <FormattedMessage id="close" defaultMessage="Close" />
-            </Button>
-          )}
-          {bodyHTML && (
-            <div className="CommentForm__preview">
-              <span className="Editor__label">
-                <FormattedMessage id="preview" defaultMessage="Preview" />
-              </span>
-              <BodyContainer body={bodyHTML} />
-            </div>
-          )}
-        </div>
-      </div>
+  const { username, isSmall, isEdit } = props;
+  const getButtonText = () => {
+    let text = loading ? (
+      <FormattedMessage id="comment_send_progress" defaultMessage="Commenting" />
+    ) : (
+      <FormattedMessage id="comment_send" defaultMessage="Comment" />
     );
-  }
-}
+
+    if (isEdit) {
+      text = loading ? (
+        <FormattedMessage id="comment_update_progress" defaultMessage="Updating" />
+      ) : (
+        <FormattedMessage id="comment_update_send" defaultMessage="Update comment" />
+      );
+    }
+
+    return text;
+  };
+
+  return (
+    <div className="CommentForm">
+      {!props.isEdit && <Avatar username={username} size={!isSmall ? 40 : 32} />}
+      <div className="CommentForm__text">
+        <Element name="commentFormInputScrollerElement">
+          <div className="CommentForm__editor">
+            <EditorSlate
+              onChange={handleBodyUpdate}
+              handleObjectSelect={handleObjectSelect}
+              isCommentEdit={props.isEdit}
+              isComment
+              editorEnabled
+              initialPosTopBtn={props.isEdit ? '3.5px' : '11.5px'}
+              isShowEditorSearch={isShowEditorSearch}
+              setShowEditorSearch={setShowEditorSearch}
+              initialBody={props.inputValue}
+              small={props.isEdit}
+            />
+          </div>
+        </Element>
+        <Button onClick={handleSubmit} disabled={loading} loading={loading} type={'primary'}>
+          {getButtonText()}
+        </Button>
+        {isEdit && (
+          <Button type="link" onClick={props.onClose}>
+            <FormattedMessage id="close" defaultMessage="Close" />
+          </Button>
+        )}
+        {bodyHTML && (
+          <div className="CommentForm__preview">
+            <span className="Editor__label">
+              <FormattedMessage id="preview" defaultMessage="Preview" />
+            </span>
+            <BodyContainer body={bodyHTML} />
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+CommentForm.propTypes = {
+  parentPost: PropTypes.shape().isRequired,
+  username: PropTypes.string.isRequired,
+  // top: PropTypes.bool,
+  isSmall: PropTypes.bool,
+  isLoading: PropTypes.bool,
+  submitted: PropTypes.bool,
+  inputValue: PropTypes.string.isRequired,
+  onSubmit: PropTypes.func,
+  editor: PropTypes.shape(),
+  setCursorCoordinates: PropTypes.func,
+  searchObjects: PropTypes.func,
+  isEdit: PropTypes.bool,
+  onClose: PropTypes.func,
+};
+
+CommentForm.defaultProps = {
+  top: false,
+  isSmall: false,
+  isLoading: false,
+  submitted: false,
+  inputValue: '',
+  onSubmit: () => {},
+  editor: {},
+};
 
 const mapStateToProps = store => ({
   editor: getEditorSlate(store),
 });
 
 const mapDispatchToProps = dispatch => ({
-  setUpdatedEditorData: data => dispatch(setUpdatedEditorData(data)),
   setCursorCoordinates: data => dispatch(setCursorCoordinates(data)),
   searchObjects: value => dispatch(searchObjectsAutoCompete(value, '', null, true)),
 });

@@ -5,7 +5,6 @@ import { isEqual } from 'lodash';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import { Checkbox, Form, InputNumber, message } from 'antd';
 import { updateProfile, reload } from '../../store/authStore/authActions';
-import withEditor from '../components/Editor/withEditor';
 import Action from '../components/Button/Action';
 import requiresLogin from '../auth/requiresLogin';
 import { saveNotificationsSettings } from '../../common/helpers/metadata';
@@ -31,7 +30,6 @@ import './Settings.less';
     updateUserMetadata,
   },
 )
-@withEditor
 export default class NotificationSettings extends React.Component {
   static propTypes = {
     intl: PropTypes.shape().isRequired,

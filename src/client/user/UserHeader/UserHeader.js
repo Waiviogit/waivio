@@ -124,10 +124,12 @@ const UserHeader = ({
     </div>
   );
 
+  const avatar = parseJSON(user?.posting_json_metadata)?.profile?.profile_image;
+
   return (
     <div className={classNames('UserHeader', { 'UserHeader--cover': hasCover })} style={style}>
       <div className="UserHeader__container">
-        <AvatarLightbox username={user.name} size={100} isActive={isActive} />
+        <AvatarLightbox avatar={avatar} username={user.name} size={100} isActive={isActive} />
         <div className="UserHeader__user">
           <div className="UserHeader__flexWrap">
             <h1 className="UserHeader__name-container">

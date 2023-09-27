@@ -375,3 +375,142 @@ export const configDepartmentsBotHistoryTable = [
     },
   },
 ];
+
+export const configDuplicateListsTable = [
+  {
+    id: 'active',
+    intl: {
+      id: 'active',
+      defaultMessage: 'Active',
+    },
+    type: 'checkbox',
+    getChecked: item => ['active', 'waitingRecover', 'pending'].includes(item.status),
+  },
+  {
+    id: 'createdAt',
+    intl: {
+      id: 'start_date',
+      defaultMessage: 'Start date',
+    },
+    type: 'date',
+  },
+  {
+    id: 'objectsCount',
+    intl: {
+      id: 'number_object',
+      defaultMessage: 'Number of objects',
+    },
+  },
+  {
+    id: 'objectsListCount',
+    intl: {
+      id: 'number_of_list',
+      defaultMessage: 'Number of lists',
+    },
+  },
+  {
+    id: 'objectsCreated',
+    intl: {
+      id: 'posted_list',
+      defaultMessage: 'Posted lists',
+    },
+    type: 'openModal',
+    modal: {
+      body: item => (
+        <ol>
+          {item.lists.map(link => (
+            <li key={link}>
+              <a rel="noopener noreferrer" target="_blank" href={`/object/${link}/list`}>
+                {link}
+              </a>
+            </li>
+          ))}
+        </ol>
+      ),
+    },
+  },
+  {
+    id: 'fieldsVoted',
+    intl: {
+      id: 'voted_updates',
+      defaultMessage: 'Voted updates',
+    },
+  },
+  {
+    id: 'delete',
+    intl: {
+      id: 'actions',
+      defaultMessage: 'Actions',
+    },
+    type: 'delete',
+    name: 'stop',
+  },
+];
+
+export const configDuplicateListsHistoryTable = [
+  {
+    id: 'createdAt',
+    intl: {
+      id: 'start_date',
+      defaultMessage: 'Start date',
+    },
+    type: 'date',
+  },
+  {
+    id: 'finishedAt',
+    intl: {
+      id: 'finish_date',
+      defaultMessage: 'Finish date',
+    },
+    type: 'date',
+  },
+  {
+    id: 'baseObject',
+    intl: {
+      id: 'base_list',
+      defaultMessage: 'Base object',
+    },
+    type: 'openModal',
+    modal: {
+      body: item => (
+        <ol>
+          {item.lists.map(link => (
+            <li key={link}>
+              <a rel="noopener noreferrer" target="_blank" href={`/object/${link}/list`}>
+                {link}
+              </a>
+            </li>
+          ))}
+        </ol>
+      ),
+    },
+  },
+  {
+    id: 'objectsCount',
+    intl: {
+      id: 'number_of_objects',
+      defaultMessage: 'Number of objects',
+    },
+  },
+  {
+    id: 'objectsListCount',
+    intl: {
+      id: 'number_of_list',
+      defaultMessage: 'Number of lists',
+    },
+  },
+  {
+    id: 'objectsCreated',
+    intl: {
+      id: 'posted_lists',
+      defaultMessage: 'Posted lists',
+    },
+  },
+  {
+    id: 'fieldsVoted',
+    intl: {
+      id: 'voted_updates',
+      defaultMessage: 'Voted updates',
+    },
+  },
+];

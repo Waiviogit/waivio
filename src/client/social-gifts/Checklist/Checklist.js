@@ -59,35 +59,24 @@ const Checklist = ({
     const pathUrl =
       permlink || getLastPermlinksFromHash(history.location.hash) || match.params.name;
 
-    if (wobject.author_permlink !== pathUrl) {
-      setLoading(true);
-      getObjectAction(pathUrl, userName, locale).then(res => {
-        const wObject = res?.value;
+    if (wobject?.author_permlink !== pathUrl) setLoading(true);
 
-        if (wObject?.object_type === 'list' && window.gtag)
-          window.gtag('event', getObjectName(wObject), { debug_mode: true });
-        if (history.location.hash) {
-          setNestedObject(wObject);
-        }
+    getObjectAction(pathUrl, userName, locale).then(res => {
+      const wObject = res?.value;
 
-        if (!isSocialProduct) {
-          setBreadcrumb(wObject);
-        }
-        setLists(
-          sortListItemsBy(
-            wObject?.listItems,
-            isEmpty(wObject?.sortCustom) ? 'rank' : 'custom',
-            wObject?.sortCustom,
-          ),
-        );
-        setLoading(false);
-      });
-    } else {
-      if (wobject?.object_type === 'list' && window.gtag)
-        window.gtag('event', getObjectName(wobject), { debug_mode: true });
-      if (history.location.hash) setNestedObject(wobject);
-      if (!isSocialProduct) setBreadcrumb(wobject);
-    }
+      if (wObject?.object_type === 'list' && window.gtag)
+        window.gtag('event', getObjectName(wObject), { debug_mode: true });
+      if (history.location.hash) setNestedObject(wObject);
+      if (!isSocialProduct) setBreadcrumb(wObject);
+      setLists(
+        sortListItemsBy(
+          wObject?.listItems,
+          isEmpty(wObject?.sortCustom) ? 'rank' : 'custom',
+          wObject?.sortCustom,
+        ),
+      );
+      setLoading(false);
+    });
   }, [history.location.hash, match.params.name]);
 
   return (

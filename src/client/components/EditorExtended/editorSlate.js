@@ -316,6 +316,7 @@ const EditorSlate = props => {
             renderLeaf={renderLeaf}
             onKeyDown={handleKeyCommand}
             onDrop={handleDroppedFiles}
+            onFocus={() => props.setEditor(editor)}
             onBlur={() => {
               editor.lastSelection = editor.selection;
             }}

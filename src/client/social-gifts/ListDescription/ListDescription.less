@@ -42,10 +42,10 @@
     display: flex;
     flex-direction: column;
     height: 0;
-    opacity: 0;
-    transition: opacity 0s ease-in;
+    transition: 0.5s;
+    animation: fadeout 0s ease-in 1 forwards;
     @media @small {
-      justify-content: space-between;
+      justify-content: center;
       flex-direction: row;
       display: flex;
     }
@@ -55,8 +55,8 @@
     display: flex;
     height: auto;
     flex-direction: column;
-    opacity: 1;
-    transition: opacity 0.4s ease-in;
+    transition: 0.5s;
+    animation: fadein 0.4s ease-in 1 forwards;
     margin-bottom: 20px;
 
     @media @small {
@@ -69,7 +69,7 @@
 
   &__description-with-image {
     color: @blue-botticelli;
-    word-break: break-all;
+    word-break: break-word;
     font-size: 18px;
     margin: 10px;
     @media @small {
@@ -81,7 +81,7 @@
 
   &__description-without-image {
     color: @blue-botticelli;
-    word-break: break-all;
+    word-break: break-word;
     font-size: 18px;
     margin: 10px;
     @media @small {
@@ -106,5 +106,22 @@
       display: flex;
       object-fit: contain;
     }
+  }
+}
+@keyframes fadeout {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes fadein {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
   }
 }

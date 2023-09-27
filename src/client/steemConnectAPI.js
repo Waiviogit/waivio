@@ -534,7 +534,7 @@ function sc2Extended() {
 
         return this.broadcast([['custom_json', params]], cb);
       },
-      saveAdSenseSettings(username, host, code, level, cb) {
+      saveAdSenseSettings(username, host, code, level, txtFile, cb) {
         const params = {
           required_posting_auths: [username],
           id: 'website_adsense',
@@ -542,6 +542,7 @@ function sc2Extended() {
             host,
             code,
             level,
+            txtFile,
           }),
         };
 

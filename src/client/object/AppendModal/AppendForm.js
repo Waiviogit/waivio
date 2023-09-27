@@ -88,7 +88,6 @@ import {
   getObjectFieldName,
 } from '../../../common/helpers/wObjectHelper';
 import { appendObject } from '../../../store/appendStore/appendActions';
-import withEditor from '../../components/Editor/withEditor';
 import { getExposedFieldsByObjType } from '../wObjectHelper';
 import { rateObject } from '../../../store/wObjectStore/wobjActions';
 import SortingList from '../../components/DnDList/DnDList';
@@ -132,11 +131,13 @@ import MenuItemForm from './FormComponents/MenuItemForm';
 import RelatedForm from './FormComponents/RelatedForm';
 import AddOnForm from './FormComponents/AddOnForm';
 import SimilarForm from './FormComponents/SimilarForm';
-import './AppendForm.less';
 import AffiliateProductIdTypesForm from './FormComponents/AffiliateProductIdTypesForm';
 import AffiliateGeoAreaForm from './FormComponents/AffiliateGeoAreaForm';
 import AffiliateCodeForm from './FormComponents/AffiliateCodeForm';
 import { allContinents, allCountries } from './AppendModalData/affiliateData';
+import { getAuthenticatedUser } from '../../../store/authStore/authSelectors';
+
+import './AppendForm.less';
 
 @connect(
   state => ({
@@ -151,6 +152,7 @@ import { allContinents, allCountries } from './AppendModalData/affiliateData';
     categories: getObjectTagCategory(state),
     albums: getObjectAlbums(state),
     screenSize: getScreenSize(state),
+    user: getAuthenticatedUser(state),
   }),
   {
     appendObject,
@@ -160,7 +162,6 @@ import { allContinents, allCountries } from './AppendModalData/affiliateData';
   },
 )
 @Form.create()
-@withEditor
 @withRouter
 @injectIntl
 class AppendForm extends Component {
@@ -200,8 +201,6 @@ class AppendForm extends Component {
     usedLocale: 'en-US',
     currentUsername: '',
     hideModal: () => {},
-    onImageUpload: () => {},
-    onImageInvalid: () => {},
     wObject: {},
     post: {},
     updates: [],

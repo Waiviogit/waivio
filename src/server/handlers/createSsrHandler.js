@@ -59,6 +59,8 @@ export default function createSsrHandler(template) {
       if (!isWaivio) {
         settings = await getSettingsWebsite(hostname);
         adsenseSettings = await getSettingsAdsense(hostname);
+
+        // write file here
         if (isCustomDomain(hostname)) {
           parentHost = await getParentHost(hostname);
         }

@@ -21,6 +21,7 @@ const AdSenseAds = ({ intl, saveAdSense, match, getAdSettings }) => {
   ];
   const [loading, setLoading] = useState(false);
   const [level, setLevel] = useState('');
+  const [txtFile, setTxtFile] = useState('');
   const [adSense, setAdSense] = useState('');
   const host = match.params.site;
   const scriptRegex = /<script[^>]*>/g;
@@ -36,9 +37,20 @@ const AdSenseAds = ({ intl, saveAdSense, match, getAdSettings }) => {
   const handleChangeAdSense = e => {
     setAdSense(e.target.value);
   };
+  const handleChangeAdSenseText = e => {
+    setTxtFile(e.target.value);
+  };
+  const showTextError =
+    !isEmpty(txtFile) &&
+    (txtFile.includes('<script') ||
+      txtFile.includes('</script') ||
+      !txtFile.includes('google.com') ||
+      !txtFile.includes('pub'));
+
+  const disabled = showError && showTextError;
 
   const handleSaveAdSenseSettings = () => {
-    saveAdSense(host, adSense, level);
+    saveAdSense(host, adSense, level, txtFile);
     message.success(intl.formatMessage({ id: 'adSense_advertisements_updated_successfully' }));
   };
 
@@ -48,6 +60,7 @@ const AdSenseAds = ({ intl, saveAdSense, match, getAdSettings }) => {
       getAdSettings(host).then(res => {
         setLevel(isEmpty(res.value.level) ? adIntensityLevels[0].key : res.value.level);
         setAdSense(res.value.code);
+        setTxtFile(res.value.txtFile);
         setLoading(false);
       });
   }, [host]);
@@ -90,6 +103,20 @@ const AdSenseAds = ({ intl, saveAdSense, match, getAdSettings }) => {
         This code will be displayed within the &lt;head&gt;&lt;/head&gt; tags on every page of your
         site.
       </p>
+      <h3>Ads.txt:</h3>
+      <Input.TextArea
+        value={txtFile}
+        onChange={e => handleChangeAdSenseText(e)}
+        placeholder={'Add your AdSense .txt text'}
+        autoSize={{ minRows: 2 }}
+      />
+      {showTextError && (
+        <div className="AdSenseAds__error">
+          {' '}
+          Invalid AdSense text entered. Please provide a valid text.
+        </div>
+      )}
+      <p>This text will be added to ads.txt to your site.</p>
       <h3>Level:</h3>
       <Select
         defaultValue={adIntensityLevels?.find(l => l.key === level)?.value}
@@ -101,7 +128,7 @@ const AdSenseAds = ({ intl, saveAdSense, match, getAdSettings }) => {
       </Select>
       <p>Choose the advertising intensity to balance user experience with revenue generation.</p>
       <Button
-        disabled={showError}
+        disabled={disabled}
         type="primary"
         htmlType="submit"
         // loading={isLoading}
