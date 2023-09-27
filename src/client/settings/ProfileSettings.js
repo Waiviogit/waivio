@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { isEmpty, get, throttle } from 'lodash';
+import { isEmpty, get, throttle, debounce } from 'lodash';
 import { connect } from 'react-redux';
 import { Transforms } from 'slate';
 import { injectIntl, FormattedMessage } from 'react-intl';
@@ -31,8 +31,12 @@ import objectTypes from '../object/const/objectTypes';
 import { getObjectUrl } from '../../common/helpers/postHelpers';
 import { insertObject } from '../components/EditorExtended/util/SlateEditor/utils/common';
 import { getEditorSlate } from '../../store/slateEditorStore/editorSelectors';
-import './Settings.less';
 import { editorStateToMarkdownSlate } from '../components/EditorExtended/util/editorStateToMarkdown';
+import { getSelection, getSelectionRect } from '../components/EditorExtended/util';
+import { setCursorCoordinates } from '../../store/slateEditorStore/editorActions';
+import { searchObjectsAutoCompete } from '../../store/searchStore/searchActions';
+
+import './Settings.less';
 
 const FormItem = Form.Item;
 
@@ -65,6 +69,8 @@ function mapPropsToFields(props) {
   }),
   {
     updateProfile,
+    setCursorCoordinates,
+    searchObjectsAutoCompete,
   },
 )
 @Form.create({
@@ -78,6 +84,8 @@ export default class ProfileSettings extends React.Component {
     isGuest: PropTypes.bool,
     editor: PropTypes.shape(),
     updateProfile: PropTypes.func,
+    setCursorCoordinates: PropTypes.func,
+    searchObjectsAutoCompete: PropTypes.func,
     user: PropTypes.shape(),
     history: PropTypes.shape(),
   };
@@ -119,10 +127,42 @@ export default class ProfileSettings extends React.Component {
     this.renderBody = this.renderBody.bind(this);
   }
 
+  setShowEditorSearch = isShowEditorSearch => {
+    this.setState({ isShowEditorSearch });
+  };
+
+  debouncedSearch = debounce(
+    searchStr => this.props.searchObjectsAutoCompete(searchStr, '', null, true),
+    150,
+  );
+
+  handleContentChangeSlate = debounce(editor => {
+    const searchInfo = checkCursorInSearchSlate(editor);
+
+    if (searchInfo.isNeedOpenSearch) {
+      if (!this.state.isShowEditorSearch) {
+        const nativeSelection = getSelection(window);
+        const selectionBoundary = getSelectionRect(nativeSelection);
+
+        this.props.setCursorCoordinates({
+          selectionBoundary,
+          selectionState: editor.selection,
+          searchString: searchInfo.searchString,
+        });
+        this.setShowEditorSearch(true);
+      }
+      this.debouncedSearch(searchInfo.searchString);
+    } else if (this.state.isShowEditorSearch) {
+      this.setShowEditorSearch(false);
+    }
+  }, 350);
+
   handleSignatureChange(body) {
     throttle(this.renderBody, 200, { leading: false, trailing: true })(
       editorStateToMarkdownSlate(body.children),
     );
+
+    this.handleContentChangeSlate(body);
   }
 
   setSettingsFields = () => {
@@ -489,11 +529,13 @@ export default class ProfileSettings extends React.Component {
                   {getFieldDecorator('signature')(
                     <EditorSlate
                       isComment
+                      isShowEditorSearch={this.state.isShowEditorSearch}
                       onChange={this.handleSignatureChange}
                       handleObjectSelect={this.handleObjectSelect}
                       editorEnabled
                       initialPosTopBtn={'11.5px'}
                       initialBody={form.getFieldValue('signature')}
+                      setShowEditorSearch={this.setShowEditorSearch}
                     />,
                   )}
                 </div>
