@@ -30,7 +30,6 @@ import { getObjectName, getObjectType } from '../../common/helpers/wObjectHelper
 import objectTypes from '../object/const/objectTypes';
 import { getObjectUrl } from '../../common/helpers/postHelpers';
 import { insertObject } from '../components/EditorExtended/util/SlateEditor/utils/common';
-import { getEditorSlate } from '../../store/slateEditorStore/editorSelectors';
 import { editorStateToMarkdownSlate } from '../components/EditorExtended/util/editorStateToMarkdown';
 import { getSelection, getSelectionRect } from '../components/EditorExtended/util';
 import { setCursorCoordinates } from '../../store/slateEditorStore/editorActions';
@@ -65,7 +64,6 @@ function mapPropsToFields(props) {
       ...getUser(state, getAuthenticatedUserName(state)),
     },
     isGuest: isGuestUser(state),
-    editor: getEditorSlate(state),
   }),
   {
     updateProfile,
@@ -82,7 +80,6 @@ export default class ProfileSettings extends React.Component {
     form: PropTypes.shape().isRequired,
     userName: PropTypes.string,
     isGuest: PropTypes.bool,
-    editor: PropTypes.shape(),
     updateProfile: PropTypes.func,
     setCursorCoordinates: PropTypes.func,
     searchObjectsAutoCompete: PropTypes.func,
@@ -191,7 +188,7 @@ export default class ProfileSettings extends React.Component {
               ...a,
               [b]:
                 b === 'signature'
-                  ? editorStateToMarkdownSlate(values[b]?.children)
+                  ? editorStateToMarkdownSlate(this.editor?.children)
                   : values[b] || '',
             }),
             {},
@@ -264,16 +261,20 @@ export default class ProfileSettings extends React.Component {
     } else this.setSettingsFields();
   }
 
+  setEditor = editor => {
+    this.editor = editor;
+  };
+
   handleObjectSelect = selectedObject => {
-    const { editor } = this.props;
-    const { beforeRange } = checkCursorInSearchSlate(editor);
+    const { beforeRange } = checkCursorInSearchSlate(this.editor);
     const objectType = getObjectType(selectedObject);
     const objectName = getObjectName(selectedObject);
     const textReplace = objectType === objectTypes.HASHTAG ? `#${objectName}` : objectName;
     const url = getObjectUrl(selectedObject.id || selectedObject.author_permlink);
 
-    Transforms.select(editor, beforeRange);
-    insertObject(editor, url, textReplace, true);
+    Transforms.select(this.editor, beforeRange);
+    insertObject(this.editor, url, textReplace, true);
+    this.handleSignatureChange(this.editor);
   };
 
   onOpenChangeAvatarModal = () => {
@@ -536,6 +537,7 @@ export default class ProfileSettings extends React.Component {
                       initialPosTopBtn={'11.5px'}
                       initialBody={form.getFieldValue('signature')}
                       setShowEditorSearch={this.setShowEditorSearch}
+                      setEditorCb={this.setEditor}
                     />,
                   )}
                 </div>
