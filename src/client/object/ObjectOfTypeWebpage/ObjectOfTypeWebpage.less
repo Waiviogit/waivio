@@ -3,7 +3,13 @@
 .ObjectOfTypeWebpage {
   .react-page-controls-mode-toggle-control-group {
     max-height: fit-content !important;
-    padding-right: 50px !important;
+    padding-right: 0 !important;
+    @media @small {
+      padding-right: 0 !important;
+    }
+    @media @medium {
+      padding-right: 100px !important;
+    }
   }
 
   .react-page-controls-trash {

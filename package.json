@@ -52,6 +52,7 @@
     "@react-page/plugins-image": "^5.4.4",
     "@react-page/plugins-slate": "^5.4.4",
     "@react-page/plugins-spacer": "^5.4.4",
+    "@react-page/plugins-video": "^5.4.4",
     "@sentry/react": "^5.24.2",
     "@sentry/tracing": "^5.24.2",
     "@textlint/markdown-to-ast": "^6.1.2",

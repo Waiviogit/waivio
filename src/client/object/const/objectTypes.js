@@ -7,6 +7,7 @@ export default {
   RESTAURANT: 'restaurant',
   DISH: 'dish',
   WIDGET: 'widget',
+  WEBPAGE: 'webpage',
   DRINK: 'drink',
   NEWSFEED: 'newsfeed',
 };

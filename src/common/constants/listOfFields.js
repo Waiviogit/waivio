@@ -67,6 +67,7 @@ export const objectFields = {
   affiliateUrlTemplate: 'affiliateUrlTemplate',
   affiliateCode: 'affiliateCode',
   affiliateContext: 'affiliateContext',
+  webpage: 'webpage',
 };
 
 export const TYPES_OF_MENU_ITEM = {

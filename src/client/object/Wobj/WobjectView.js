@@ -84,7 +84,6 @@ const WobjectView = ({
     currentColumn === formColumnsField.middleRight ||
     (currentWidgetColumn === formColumnsField.middleRight && isWidgetPage);
   const entireColumn =
-    isWebPage ||
     currentColumn === formColumnsField.entire ||
     (currentWidgetColumn === formColumnsField.entire && isWidgetPage);
   const leftSidebarClassList = classNames('leftContainer leftContainer__wobj', {
@@ -92,12 +91,12 @@ const WobjectView = ({
   });
   const rightSidebarClassList = classNames('wobjRightContainer', {
     'wobjRightContainer--right':
-      hasType(wobject, OBJECT_TYPE.PAGE) || middleRightColumn || entireColumn,
+      hasType(wobject, OBJECT_TYPE.PAGE) || isWebPage || middleRightColumn || entireColumn,
   });
   const centerClassList = classNames('center', {
-    'center--page': hasType(wobject, OBJECT_TYPE.PAGE),
+    'center--page': hasType(wobject, OBJECT_TYPE.PAGE) || isWebPage,
     'center--middleForm': middleRightColumn,
-    'center--fullForm': entireColumn || isWebPage,
+    'center--fullForm': entireColumn,
   });
 
   const url =

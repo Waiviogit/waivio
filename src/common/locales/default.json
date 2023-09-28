@@ -2374,5 +2374,7 @@
   "provide_your_authorization_google_id": "If you use a custom domain, please provide your authorization ID for the Google sign-in feature to work.",
   "paste_facebook_id_here": "Paste Facebook authorization ID here",
   "provide_your_authorization_facebook_id": "If you use a custom domain, please provide your authorization ID for the Facebook sign-in feature to work.",
-  "guest_account": "Guest account"
+  "guest_account": "Guest account",
+  "object_field_webpage": "Webpage",
+  "webpage": "Webpage"
 }

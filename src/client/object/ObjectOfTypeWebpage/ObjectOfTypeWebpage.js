@@ -1,5 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
+import { Button } from 'antd';
+import { injectIntl } from 'react-intl';
+import PropTypes from 'prop-types';
+import { useParams } from 'react-router';
+import { has } from 'lodash';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import Editor from '@react-page/editor';
 // eslint-disable-next-line import/no-extraneous-dependencies
@@ -21,12 +26,21 @@ import spacer from '@react-page/plugins-spacer';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import '@react-page/plugins-spacer/lib/index.css';
 // eslint-disable-next-line import/no-extraneous-dependencies
+import video from '@react-page/plugins-video';
+// eslint-disable-next-line import/no-extraneous-dependencies
+import '@react-page/plugins-video/lib/index.css';
+// eslint-disable-next-line import/no-extraneous-dependencies
 import divider from '@react-page/plugins-divider';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import '@react-page/plugins-divider/lib/index.css';
+// eslint-disable-next-line import/no-extraneous-dependencies
+import { getObject } from '../../../waivioApi/ApiClient';
 import { colorPickerPlugin } from './colorPickerPlugin';
 import { getIsEditMode } from '../../../store/wObjectStore/wObjectSelectors';
 import './ObjectOfTypeWebpage.less';
+import AppendModal from '../AppendModal/AppendModal';
+import { objectFields } from '../../../common/constants/listOfFields';
+import { getObjectName } from '../../../common/helpers/wObjectHelper';
 
 const customSlate = slate(config => ({
   ...config,
@@ -38,28 +52,60 @@ const customSlate = slate(config => ({
   },
 }));
 
-const plugins = [customSlate, image, background(), spacer, divider];
+const plugins = [customSlate, image, background(), video, spacer, divider];
 
-const ObjectOfTypeWebpage = () => {
+const ObjectOfTypeWebpage = ({ intl }) => {
+  const [wobject, setWobject] = useState({});
   const [currentValue, setCurrentValue] = useState(null);
-  const str =
-    '{"id":"a2pzgm","version":1,"rows":[{"id":"40idtl","cells":[{"id":"k15jxl","size":12,"plugin":{"id":"ory/editor/core/content/image","version":1},"dataI18n":{"default":{"src":"https://img.freepik.com/free-photo/purple-osteospermum-daisy-flower_1373-16.jpg?w=2000"}},"rows":[],"inline":null}]},{"id":"5co6fg","cells":[{"id":"04ryr2","size":12,"plugin":{"id":"ory/editor/core/content/slate","version":1},"dataI18n":{"default":{"slate":[{"type":"PARAGRAPH/PARAGRAPH","children":[{"text":"lalalallalala"}]}]}},"rows":[],"inline":null}]},{"id":"mlaefp","cells":[{"id":"ecm6hu","size":12,"plugin":{"id":"ory/editor/core/layout/background","version":1},"dataI18n":{"default":{"modeFlag":3}},"rows":[],"inline":null}]}]}';
+  const [showModal, setShowModal] = useState(false);
   const isEditMode = useSelector(getIsEditMode);
+  const { name } = useParams();
   const jsonVal = currentValue ? JSON.stringify(currentValue) : null;
 
-  // eslint-disable-next-line no-console
-  console.log(jsonVal);
+  useEffect(() => {
+    getObject(name).then(res => {
+      setWobject(res);
+      if (has(res, 'webpage')) {
+        setCurrentValue(JSON.parse(res?.webpage));
+      }
+    });
+  }, [name]);
 
   return (
     <div className="ObjectOfTypeWebpage">
       <Editor
-        readOnly={!isEditMode}
+        readOnly={!isEditMode || showModal}
         cellPlugins={plugins}
-        value={JSON.parse(str)}
+        value={currentValue}
         onChange={newValue => setCurrentValue(newValue)}
       />
+      {isEditMode && (
+        <div className="object-of-type-page__row align-center">
+          <Button
+            htmlType="button"
+            // disabled={isNil(currentValue)}
+            onClick={() => setShowModal(true)}
+            size="large"
+          >
+            {intl.formatMessage({ id: 'ready_to_publish', defaultMessage: 'Ready to publish' })}
+          </Button>
+        </div>
+      )}
+      {showModal && (
+        <AppendModal
+          objName={getObjectName(wobject)}
+          showModal={showModal}
+          hideModal={() => setShowModal(false)}
+          fieldBodyContent={jsonVal}
+          field={objectFields.webpage}
+        />
+      )}
     </div>
   );
 };
 
-export default ObjectOfTypeWebpage;
+ObjectOfTypeWebpage.propTypes = {
+  intl: PropTypes.shape(),
+};
+
+export default injectIntl(ObjectOfTypeWebpage);
