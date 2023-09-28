@@ -350,6 +350,8 @@ export const getSwapInfo = async ({ data, onlyAmount }) => {
 
   const params = swapParams[outputSymbol];
 
+  if (!params) return null;
+
   const { swapJson, predictionImpact, amntOut } = await params.getSwapData({
     params,
     quantity,
