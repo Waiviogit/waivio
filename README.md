@@ -17,7 +17,7 @@ yarn dev:dg - dining.gifts  (PORT = 3000)
 yarn dev:sg - social.gifts  (PORT = 4000)
 ```
 
-##Project Structure
+## Project Structure
 
 - `webpack` - webpack configuration
 - `public` - statistic image and fonts
@@ -27,20 +27,20 @@ yarn dev:sg - social.gifts  (PORT = 4000)
 - `src/store` - reducers, actions and selectors
 - `src/client` - UI conponents
 
-##Project tools
+## Project tools
 
 - `react-intl` - translation tool
 
-##Common conversation
+## Common conversation
 
-- Dont use class components.
-- Dont use props dectructuring.
+- Don't use class components.
+- Don't use props dectructuring.
 - Use lodash dectructuring.
 - In your commit you need fix translations and nightmode.
 
-##Code style
+## Code style
 
-Just use prettier and adhere ESLint recomendations.
+Just use prettier and adhere ESLint recommendations.
 
 ## Git conversation
 You need checkout branches and create pull request _only_ for `dev`
@@ -49,8 +49,8 @@ Branch names should be prefixed with `tech/`, `feature/` or `bugfix/` followed b
 dash and a few descriptive words.  
 Example: `feature/WAIV-999-order-creation`
 
-##Commits
-Before commit you need start comand:
+## Commits
+Before commit, you need start command:
 
 ```
 yarn prettier
