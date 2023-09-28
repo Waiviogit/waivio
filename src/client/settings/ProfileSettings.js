@@ -183,16 +183,19 @@ export default class ProfileSettings extends React.Component {
               (field === 'signature' && isChangedSingature) ||
               (field === 'cover_image' && isChangedCover),
           )
-          .reduce(
-            (a, b) => ({
+          .reduce((a, b) => {
+            let value = values[b] || '';
+
+            if (b === 'signature' && isChangedSingature)
+              value = editorStateToMarkdownSlate(this.editor?.children);
+            if (b === 'cover_image' && isChangedCover) value = coverImage[0]?.src;
+            if (b === 'profile_image' && isChangedAvatar) value = avatarImage[0]?.src;
+
+            return {
               ...a,
-              [b]:
-                b === 'signature'
-                  ? editorStateToMarkdownSlate(this.editor?.children)
-                  : values[b] || '',
-            }),
-            {},
-          );
+              [b]: value,
+            };
+          }, {});
 
         if (isGuest) {
           updateProfile(userName, cleanValues)
