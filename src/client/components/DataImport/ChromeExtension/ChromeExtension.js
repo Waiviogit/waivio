@@ -168,7 +168,7 @@ const ChromeExtension = ({ intl }) => {
             :{' '}
             {intl.formatMessage({
               id: 'chrome_extension_receive_file',
-              defaultMessage: 'users can receive a .json file containing the page information.',
+              defaultMessage: 'users can receive a .json file containing the page information',
             })}
             .
           </li>
@@ -224,7 +224,7 @@ const ChromeExtension = ({ intl }) => {
             {intl.formatMessage({
               id: 'chrome_extension_about_upload',
               defaultMessage:
-                'tool scans the URL, generates the required file, and immediately initiates the import to Waivio under the currently logged-in user.',
+                'tool scans the URL, generates the required file, and immediately initiates the import to Waivio under the currently logged-in user',
             })}
             .
           </li>
