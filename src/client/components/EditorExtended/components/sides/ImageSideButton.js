@@ -5,9 +5,7 @@ import { Modal } from 'antd';
 import { addNewBlockAt } from '../../model';
 import { Block } from '../..';
 import ImageSetter from '../../../ImageSetter/ImageSetter';
-import withEditor from '../../../Editor/withEditor';
 
-@withEditor
 @injectIntl
 class ImageSideButton extends React.Component {
   static propTypes = {

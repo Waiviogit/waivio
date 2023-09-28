@@ -113,7 +113,7 @@ const ObjectOfTypePage = props => {
       setContent(newContent);
       if (newContent)
         saveDraftPage(
-          props.userName,
+          userName,
           props.nestedWobject.author_permlink || props.wobject.author_permlink,
           newContent,
         );
