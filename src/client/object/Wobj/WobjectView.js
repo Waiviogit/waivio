@@ -77,6 +77,7 @@ const WobjectView = ({
   const currentWobject = history.location.hash ? nestedWobject : wobject;
   const widgetForm = currentWobject?.widget && JSON.parse(currentWobject?.widget);
   const isWidgetPage = isNil(match.params[0]) && match.params[1] === 'widget';
+  const isWebPage = match.params[0] === 'webpage';
   const currentColumn = get(currentForm, 'column', '');
   const currentWidgetColumn = get(widgetForm, 'column', '');
   const middleRightColumn =
@@ -90,10 +91,10 @@ const WobjectView = ({
   });
   const rightSidebarClassList = classNames('wobjRightContainer', {
     'wobjRightContainer--right':
-      hasType(wobject, OBJECT_TYPE.PAGE) || middleRightColumn || entireColumn,
+      hasType(wobject, OBJECT_TYPE.PAGE) || isWebPage || middleRightColumn || entireColumn,
   });
   const centerClassList = classNames('center', {
-    'center--page': hasType(wobject, OBJECT_TYPE.PAGE),
+    'center--page': hasType(wobject, OBJECT_TYPE.PAGE) || isWebPage,
     'center--middleForm': middleRightColumn,
     'center--fullForm': entireColumn,
   });

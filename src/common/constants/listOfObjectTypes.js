@@ -9,6 +9,7 @@ export default [
   'book',
   'product',
   'shop',
+  'webpage',
   'widget',
   'newsfeed',
   'affiliate',

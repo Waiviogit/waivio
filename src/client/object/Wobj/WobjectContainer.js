@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { connect } from 'react-redux';
+import React, { useEffect } from 'react';
+import { connect, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { get, isEmpty, isNil } from 'lodash';
 import { withRouter } from 'react-router-dom';
@@ -11,6 +11,7 @@ import {
   getIsAuthenticated,
 } from '../../../store/authStore/authSelectors';
 import {
+  getIsEditMode,
   getObject as getObjectState,
   getObjectFetchingState,
   getWobjectIsFailed,
@@ -59,23 +60,21 @@ import {
   showDescriptionPage,
 } from '../../../common/helpers/wObjectHelper';
 import NotFound from '../../statics/NotFound';
-import OBJECT_TYPE from '../const/objectTypes';
-import { objectFields } from '../../../common/constants/listOfFields';
 import { login } from '../../../store/authStore/authActions';
 import { getRate, getRewardFund } from '../../../store/appStore/appActions';
 
 const WobjectContainer = props => {
-  const [isEditMode, setIsEditMode] = useState(
-    props.wobject.type === OBJECT_TYPE.PAGE &&
-      props.authenticated &&
-      !props.wobject[objectFields.pageContent],
-  );
+  // const [isEditMode, setIsEditMode] = useState(
+  //   props.wobject.type === OBJECT_TYPE.PAGE &&
+  //     props.authenticated &&
+  //     !props.wobject[objectFields.pageContent],
+  // );
+  const isEditMode = useSelector(getIsEditMode);
   const objectName = getObjectName(props.wobject);
   const newsFilter =
     props.match.params[1] === 'newsFilter' ? { newsFilter: props.match.params.itemId } : {};
 
   const toggleViewEditMode = () => {
-    setIsEditMode(!isEditMode);
     props.setEditMode(!isEditMode);
   };
 
