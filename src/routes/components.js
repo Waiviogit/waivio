@@ -88,6 +88,9 @@ export default {
   DiscoverObjects: loableComponent(import('../client/discoverObjects/DiscoverObjects')),
   Reports: loableComponent(import('../client/rewards/Reports/Reports')),
   ObjectOfTypePage: loableComponent(import('../client/object/ObjectOfTypePage/ObjectOfTypePage')),
+  ObjectOfTypeWebpage: loableComponent(
+    import('../client/object/ObjectOfTypeWebpage/ObjectOfTypeWebpage'),
+  ),
   SubFeed: loableComponent(import('../client/feed/SubFeed')),
   UserInfo: loableComponent(import('../client/app/Sidebar/UserInfo/UserInfo')),
   ConfirmationModal: loableComponent(import('../client/widgets/ConfirmationModal')),
