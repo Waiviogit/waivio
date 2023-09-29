@@ -180,14 +180,13 @@ export default class ProfileSettings extends React.Component {
             field =>
               form.isFieldTouched(field) ||
               (field === 'profile_image' && isChangedAvatar) ||
-              (field === 'signature' && isChangedSingature) ||
+              field === 'signature' ||
               (field === 'cover_image' && isChangedCover),
           )
           .reduce((a, b) => {
             let value = values[b] || '';
 
-            if (b === 'signature' && isChangedSingature)
-              value = editorStateToMarkdownSlate(this.editor?.children);
+            if (b === 'signature') value = editorStateToMarkdownSlate(this.editor?.children);
             if (b === 'cover_image' && isChangedCover) value = coverImage[0]?.src;
             if (b === 'profile_image' && isChangedAvatar) value = avatarImage[0]?.src;
 

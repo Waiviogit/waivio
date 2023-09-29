@@ -11,6 +11,7 @@ export default {
       'expertise',
       'menu',
       'page',
+      'webpage',
       'list',
       'blog',
       'form',
