@@ -2376,5 +2376,6 @@
   "paste_facebook_id_here": "Paste Facebook authorization ID here",
   "provide_your_authorization_facebook_id": "If you use a custom domain, please provide your authorization ID for the Facebook sign-in feature to work.",
   "object_field_webpage": "Webpage",
-  "webpage": "Webpage"
+  "webpage": "Webpage",
+  "empty_webpage_content":"This webpage has no content. Click Edit to start."
 }
