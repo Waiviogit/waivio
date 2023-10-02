@@ -10,9 +10,11 @@ import {
   allContinents,
   allCountries,
 } from '../../../../object/AppendModal/AppendModalData/affiliateData';
+import AffiliatLink from '../../../../widgets/AffiliatLinks/AffiliatLink';
 
 const AffiliateSection = ({ listItem, isEditMode, wobject, userName }) => {
   const affiliateButton = get(wobject, 'affiliateButton', '');
+  const link = { link: affiliateButton, image: affiliateButton };
   const affiliateProductIdTypes = has(wobject, 'affiliateProductIdTypes')
     ? wobject?.affiliateProductIdTypes
     : [];
@@ -35,7 +37,8 @@ const AffiliateSection = ({ listItem, isEditMode, wobject, userName }) => {
         !isEmpty(affiliateButton) && (
           <div>
             {!isEditMode && <div className="CompanyId__title">Affiliate button:</div>}
-            <img className={'AffiliateSection__affiliate-button'} src={affiliateButton} alt="" />
+            <AffiliatLink link={link} disabled />
+            {/* <img className={'AffiliateSection__affiliate-button'} src={affiliateButton} alt="" /> */}
           </div>
         ),
       )}{' '}
