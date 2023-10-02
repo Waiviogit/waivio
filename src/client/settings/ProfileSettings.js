@@ -43,12 +43,14 @@ function mapPropsToFields(props) {
   const metadata = getMetadata(props.user);
 
   const profile = metadata.profile || {};
+  const getSingatureBody = body =>
+    body?.children ? editorStateToMarkdownSlate(body?.children) : body;
 
   return Object.keys(profile).reduce(
     (a, b) => ({
       ...a,
       [b]: Form.createFormField({
-        value: profile[b],
+        value: b === 'signature' ? getSingatureBody(profile[b]) : profile[b],
       }),
     }),
     {},

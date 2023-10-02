@@ -124,6 +124,7 @@ const WobjectContainer = props => {
       props.setStoreActiveOption({});
       props.resetBreadCrumb();
       props.resetGallery();
+      props.setEditMode(false);
     };
   }, [props.match.params.name, props.locale, props.authenticatedUserName]);
 
