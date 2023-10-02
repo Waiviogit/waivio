@@ -8,8 +8,6 @@ import { has } from 'lodash';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import Editor from '@react-page/editor';
 // eslint-disable-next-line import/no-extraneous-dependencies
-import '@react-page/editor/lib/index.css';
-// eslint-disable-next-line import/no-extraneous-dependencies
 import slate from '@react-page/plugins-slate';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import image from '@react-page/plugins-image';
