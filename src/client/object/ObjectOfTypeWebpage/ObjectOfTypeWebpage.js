@@ -37,10 +37,11 @@ import '@react-page/plugins-divider/lib/index.css';
 import { getObject } from '../../../waivioApi/ApiClient';
 import { colorPickerPlugin } from './colorPickerPlugin';
 import { getIsEditMode } from '../../../store/wObjectStore/wObjectSelectors';
-import './ObjectOfTypeWebpage.less';
 import AppendModal from '../AppendModal/AppendModal';
 import { objectFields } from '../../../common/constants/listOfFields';
 import { getObjectName } from '../../../common/helpers/wObjectHelper';
+
+import './ObjectOfTypeWebpage.less';
 
 const customSlate = slate(config => ({
   ...config,
