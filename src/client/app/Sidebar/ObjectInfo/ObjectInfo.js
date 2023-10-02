@@ -631,6 +631,7 @@ class ObjectInfo extends React.Component {
     const blogsList = getBlogItems(wobject);
     const showMenuSection =
       !hasType(wobject, OBJECT_TYPE.PAGE) &&
+      !hasType(wobject, OBJECT_TYPE.WEBPAGE) &&
       !hasType(wobject, OBJECT_TYPE.SHOP) &&
       !hasType(wobject, OBJECT_TYPE.LIST) &&
       !hasType(wobject, OBJECT_TYPE.DISH) &&
