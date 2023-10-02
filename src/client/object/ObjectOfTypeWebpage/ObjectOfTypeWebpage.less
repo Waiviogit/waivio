@@ -10,6 +10,17 @@
 @import (css) '../../../../node_modules/@react-page/plugins-divider/lib/index.css';
 
 .ObjectOfTypeWebpage {
+  &__empty-placeholder {
+    background: @white;
+    border: 1px solid @white-gainsboro;
+    border-radius: 4px;
+    padding: 16px;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    font-size: 16px;
+    font-weight: 500;
+  }
   .react-page-controls-mode-toggle-control-group {
     max-height: fit-content !important;
     padding-right: 0 !important;
@@ -41,7 +52,9 @@
 }
 
 .css-5ryogn-MuiButtonBase-root-MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track,
-.css-1aquho2-MuiTabs-indicator {
+.css-1aquho2-MuiTabs-indicator,
+.css-9rrh7h-MuiButtonBase-root-MuiFab-root,
+.css-qize55-MuiButtonBase-root-MuiFab-root {
   background-color: var(--website-color) !important;
 }
 
@@ -83,4 +96,7 @@
 
 .colorPickerPlugin-TextColor {
   font-size: 20px;
+}
+li:hover {
+  cursor: pointer;
 }

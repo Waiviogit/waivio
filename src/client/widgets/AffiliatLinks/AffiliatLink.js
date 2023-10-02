@@ -10,7 +10,7 @@ const images = {
   target: '/images/target-logo.svg',
 };
 
-const AffiliatLink = ({ link }) => {
+const AffiliatLink = ({ link, disabled }) => {
   const onClick = () => {
     if (window?.gtag) window.gtag('event', 'buy_now', { debug_mode: true });
   };
@@ -23,6 +23,7 @@ const AffiliatLink = ({ link }) => {
       target="_blank"
       href={link.link}
       className="AffiliatLink"
+      disabled={disabled}
     >
       {link.image ? (
         <img
@@ -46,6 +47,7 @@ AffiliatLink.propTypes = {
     type: PropTypes.string,
     image: PropTypes.string,
   }).isRequired,
+  disabled: PropTypes.bool,
 };
 
 export default AffiliatLink;

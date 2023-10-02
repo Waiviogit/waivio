@@ -4,7 +4,7 @@ import { Button } from 'antd';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { useParams } from 'react-router';
-import { has } from 'lodash';
+import { has, isNil } from 'lodash';
 import Editor from '@react-page/editor';
 import slate from '@react-page/plugins-slate';
 import image from '@react-page/plugins-image';
@@ -48,7 +48,22 @@ const ObjectOfTypeWebpage = ({ intl }) => {
         setCurrentValue(JSON.parse(res?.webpage));
       }
     });
-  }, [name]);
+  }, [name, wobject.webpage]);
+
+  if ((isNil(currentValue) || currentValue?.rows.length < 1) && !isEditMode) {
+    return (
+      <React.Fragment>
+        <div className="ObjectOfTypeWebpage__empty-placeholder">
+          <span>
+            {intl.formatMessage({
+              id: 'empty_webpage_content',
+              defaultMessage: 'This webpage has no content. Click Edit to start.',
+            })}
+          </span>
+        </div>
+      </React.Fragment>
+    );
+  }
 
   return (
     <div className="ObjectOfTypeWebpage">

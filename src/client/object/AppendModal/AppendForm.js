@@ -702,9 +702,9 @@ class AppendForm extends Component {
               : formValues[pinPostFields.postPermlink]
           }`;
         case objectFields.webpage:
-          return `@${author} added ${currentField} (${langReadable}) ${moment(Date.now()).format(
-            'YYYY-MM-DD HH:mm:ss',
-          )}`;
+          return `@${author} added ${currentField} (${langReadable}): Webpage ${moment(
+            Date.now(),
+          ).format('YYYY-MM-DD HH:mm:ss')}`;
         case objectFields.ageRange:
         case objectFields.language:
         case objectFields.affiliateUrlTemplate:
