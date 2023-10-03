@@ -281,24 +281,26 @@ const ObjectOfTypePage = props => {
           )}
         </React.Fragment>
       )}
-      <Modal
-        visible={isEditMode && isNotificaion}
-        title="Page draft"
-        onOk={() => {
-          setCurrentContent(draft);
-          setContent(draft);
-          setNotification(false);
-          setEditorInitialized(true);
-        }}
-        onCancel={() => {
-          setNotification(false);
-          setEditorInitialized(true);
-        }}
-        okText={intl.formatMessage({ defaultMessage: 'Continue', id: 'continue' })}
-        cancelText={intl.formatMessage({ defaultMessage: 'Discard', id: 'discard' })}
-      >
-        You have one draft with unsaved changes. Do you want to continue editing?
-      </Modal>
+      {isEditMode && (
+        <Modal
+          visible={isNotificaion}
+          title="Page draft"
+          onOk={() => {
+            setCurrentContent(draft);
+            setContent(draft);
+            setNotification(false);
+            setEditorInitialized(true);
+          }}
+          onCancel={() => {
+            setNotification(false);
+            setEditorInitialized(true);
+          }}
+          okText={intl.formatMessage({ defaultMessage: 'Continue', id: 'continue' })}
+          cancelText={intl.formatMessage({ defaultMessage: 'Discard', id: 'discard' })}
+        >
+          You have one draft with unsaved changes. Do you want to continue editing?
+        </Modal>
+      )}
     </React.Fragment>
   );
 };

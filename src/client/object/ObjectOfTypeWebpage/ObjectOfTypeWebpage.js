@@ -5,42 +5,21 @@ import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { useParams } from 'react-router';
 import { has, isNil } from 'lodash';
-// eslint-disable-next-line import/no-extraneous-dependencies
 import Editor from '@react-page/editor';
-// eslint-disable-next-line import/no-extraneous-dependencies
-import '@react-page/editor/lib/index.css';
-// eslint-disable-next-line import/no-extraneous-dependencies
 import slate from '@react-page/plugins-slate';
-// eslint-disable-next-line import/no-extraneous-dependencies
 import image from '@react-page/plugins-image';
-// eslint-disable-next-line import/no-extraneous-dependencies
-import '@react-page/plugins-slate/lib/index.css';
-// eslint-disable-next-line import/no-extraneous-dependencies
-import '@react-page/plugins-image/lib/index.css';
-// eslint-disable-next-line import/no-extraneous-dependencies
 import background from '@react-page/plugins-background';
-// eslint-disable-next-line import/no-extraneous-dependencies
-import '@react-page/plugins-background/lib/index.css';
-// eslint-disable-next-line import/no-extraneous-dependencies
 import spacer from '@react-page/plugins-spacer';
-// eslint-disable-next-line import/no-extraneous-dependencies
-import '@react-page/plugins-spacer/lib/index.css';
-// eslint-disable-next-line import/no-extraneous-dependencies
 import video from '@react-page/plugins-video';
-// eslint-disable-next-line import/no-extraneous-dependencies
-import '@react-page/plugins-video/lib/index.css';
-// eslint-disable-next-line import/no-extraneous-dependencies
 import divider from '@react-page/plugins-divider';
-// eslint-disable-next-line import/no-extraneous-dependencies
-import '@react-page/plugins-divider/lib/index.css';
-// eslint-disable-next-line import/no-extraneous-dependencies
 import { getObject } from '../../../waivioApi/ApiClient';
 import { colorPickerPlugin } from './colorPickerPlugin';
 import { getIsEditMode } from '../../../store/wObjectStore/wObjectSelectors';
-import './ObjectOfTypeWebpage.less';
 import AppendModal from '../AppendModal/AppendModal';
 import { objectFields } from '../../../common/constants/listOfFields';
 import { getObjectName } from '../../../common/helpers/wObjectHelper';
+
+import './ObjectOfTypeWebpage.less';
 
 const customSlate = slate(config => ({
   ...config,

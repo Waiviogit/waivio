@@ -202,6 +202,7 @@ const SwapTokens = props => {
       win.focus();
       handleCloseModal();
     } catch (e) {
+      message.error(e);
       console.error(e);
     }
   };
