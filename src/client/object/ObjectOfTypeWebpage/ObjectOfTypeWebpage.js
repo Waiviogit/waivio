@@ -58,6 +58,7 @@ const ObjectOfTypeWebpage = ({ intl }) => {
   const [wobject, setWobject] = useState({});
   const [currentValue, setCurrentValue] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [loading, setLoading] = useState(true);
   const isEditMode = useSelector(getIsEditMode);
   const { name } = useParams();
   const jsonVal = currentValue ? JSON.stringify(currentValue) : null;
@@ -68,10 +69,11 @@ const ObjectOfTypeWebpage = ({ intl }) => {
       if (has(res, 'webpage')) {
         setCurrentValue(JSON.parse(res?.webpage));
       }
+      setLoading(false);
     });
   }, [name, wobject.webpage]);
 
-  if ((isNil(currentValue) || currentValue?.rows.length < 1) && !isEditMode) {
+  if (((isNil(currentValue) && !loading) || currentValue?.rows.length < 1) && !isEditMode) {
     return (
       <React.Fragment>
         <div className="ObjectOfTypeWebpage__empty-placeholder">
