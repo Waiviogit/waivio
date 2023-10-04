@@ -144,6 +144,7 @@ const SwapTokens = props => {
 
       setImpact(amount.priceImpact);
       setToAmount(amount.amountOut || 0);
+      setJson(amount.json);
     }
   };
 
@@ -157,6 +158,7 @@ const SwapTokens = props => {
 
       setImpact(amount.priceImpact);
       setToAmount(amount.amountOut || 0);
+      setJson(amount.json);
     }
   };
 
@@ -170,6 +172,7 @@ const SwapTokens = props => {
 
       setImpact(amount.priceImpact);
       setFromAmount(amount.amountOut);
+      setJson(amount.json);
     }
   };
 
@@ -180,30 +183,18 @@ const SwapTokens = props => {
   const handleClickBalanceTo = value => handleChangeToValue(value);
 
   const handleSwap = async () => {
-    try {
-      let swapInfo = { json };
+    const win = window.open(
+      `https://hivesigner.com/sign/custom_json?authority=active&required_auths=["${
+        props.authUser
+      }"]&required_posting_auths=[]&${createQuery({
+        id: 'ssc-mainnet-hive',
+        json,
+      })}`,
+      '_blank',
+    );
 
-      if (!props.bdPair) {
-        swapInfo = swapToWaiv(props.from, props.to)
-          ? await calculateOutputInfo(fromAmount, props.from, props.to, true)
-          : calculateOutputInfo(fromAmount, props.from, props.to, true);
-      }
-
-      const win = window.open(
-        `https://hivesigner.com/sign/custom_json?authority=active&required_auths=["${
-          props.authUser
-        }"]&required_posting_auths=[]&${createQuery({
-          id: 'ssc-mainnet-hive',
-          json: get(swapInfo, 'json'),
-        })}`,
-        '_blank',
-      );
-
-      win.focus();
-      handleCloseModal();
-    } catch (e) {
-      console.error(e);
-    }
+    win.focus();
+    handleCloseModal();
   };
   const estimateValue = HIVE_ENGINE_DEFAULT_SWAP_LIST.includes(props.from.symbol)
     ? fromAmount * rates[props.from.symbol]

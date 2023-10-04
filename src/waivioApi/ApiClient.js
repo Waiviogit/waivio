@@ -204,8 +204,8 @@ export const getFeedContent = (sortBy, locale, follower, queryData) =>
     .then(posts => posts)
     .catch(error => error);
 
-export const saveDraftPage = (userName, authorPermlink, body) =>
-  fetch(`${config.apiPrefix}${config.user}/${userName}${config.draft}`, {
+export const saveDraftPage = (user, authorPermlink, body) =>
+  fetch(`${config.apiPrefix}${config.draft}${config.object}`, {
     headers: {
       ...headers,
       'access-token': Cookie.get('access_token'),
@@ -213,6 +213,7 @@ export const saveDraftPage = (userName, authorPermlink, body) =>
     method: 'POST',
     body: JSON.stringify({
       authorPermlink,
+      user,
       body,
     }),
   })
@@ -220,10 +221,10 @@ export const saveDraftPage = (userName, authorPermlink, body) =>
     .then(posts => posts)
     .catch(error => error);
 
-export const getDraftPage = (userName, authorPermlink) => {
-  const query = createQuery({ authorPermlink });
+export const getDraftPage = (user, authorPermlink) => {
+  const query = createQuery({ authorPermlink, user });
 
-  return fetch(`${config.apiPrefix}${config.user}/${userName}${config.draft}/?${query}`, {
+  return fetch(`${config.apiPrefix}${config.draft}${config.object}?${query}`, {
     headers: {
       ...headers,
       'access-token': Cookie.get('access_token'),

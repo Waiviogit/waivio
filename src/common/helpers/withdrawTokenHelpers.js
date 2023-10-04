@@ -350,6 +350,8 @@ export const getSwapInfo = async ({ data, onlyAmount }) => {
 
   const params = swapParams[outputSymbol];
 
+  if (!params) return null;
+
   const { swapJson, predictionImpact, amntOut } = await params.getSwapData({
     params,
     quantity,
@@ -358,7 +360,12 @@ export const getSwapInfo = async ({ data, onlyAmount }) => {
 
   const { error: err, predictiveAmount } = await validateAmount({ amount: amntOut, outputSymbol });
 
-  if (onlyAmount) return { priceImpact: predictionImpact, amountOut: predictiveAmount };
+  if (onlyAmount)
+    return {
+      priceImpact: predictionImpact,
+      amountOut: predictiveAmount,
+      json: JSON.stringify([...swapJson]),
+    };
 
   if (err) {
     message.error(err);

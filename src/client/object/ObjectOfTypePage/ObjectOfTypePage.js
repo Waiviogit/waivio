@@ -53,12 +53,23 @@ const ObjectOfTypePage = props => {
       setCurrentContent(currObj.pageContent || '');
       setContent(currObj.pageContent || '');
       setEditorInitialized(false);
+      setDraft(null);
 
       return;
     }
 
     if (draft) {
       setNotification(true);
+    } else if (isEditMode && userName && currObj.object_type === 'page') {
+      getDraftPage(userName, currObj.author_permlink).then(res => {
+        if (res.message || !res.body) {
+          setEditorInitialized(true);
+
+          return;
+        }
+        setDraft(res.body);
+        setEditorInitialized(false);
+      });
     }
   }, [isEditMode, draft]);
 
@@ -113,7 +124,7 @@ const ObjectOfTypePage = props => {
       setContent(newContent);
       if (newContent)
         saveDraftPage(
-          props.userName,
+          userName,
           props.nestedWobject.author_permlink || props.wobject.author_permlink,
           newContent,
         );
@@ -281,24 +292,26 @@ const ObjectOfTypePage = props => {
           )}
         </React.Fragment>
       )}
-      <Modal
-        visible={isEditMode && isNotificaion}
-        title="Page draft"
-        onOk={() => {
-          setCurrentContent(draft);
-          setContent(draft);
-          setNotification(false);
-          setEditorInitialized(true);
-        }}
-        onCancel={() => {
-          setNotification(false);
-          setEditorInitialized(true);
-        }}
-        okText={intl.formatMessage({ defaultMessage: 'Continue', id: 'continue' })}
-        cancelText={intl.formatMessage({ defaultMessage: 'Discard', id: 'discard' })}
-      >
-        You have one draft with unsaved changes. Do you want to continue editing?
-      </Modal>
+      {isEditMode && (
+        <Modal
+          visible={isNotificaion}
+          title="Page draft"
+          onOk={() => {
+            setCurrentContent(draft);
+            setContent(draft);
+            setNotification(false);
+            setEditorInitialized(true);
+          }}
+          onCancel={() => {
+            setNotification(false);
+            setEditorInitialized(true);
+          }}
+          okText={intl.formatMessage({ defaultMessage: 'Continue', id: 'continue' })}
+          cancelText={intl.formatMessage({ defaultMessage: 'Discard', id: 'discard' })}
+        >
+          You have one draft with unsaved changes. Do you want to continue editing?
+        </Modal>
+      )}
     </React.Fragment>
   );
 };
