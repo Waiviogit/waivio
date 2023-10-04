@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { Button } from 'antd';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
-import { useParams } from 'react-router';
+import { useHistory, useParams } from 'react-router';
 import { has, isNil } from 'lodash';
 import Editor from '@react-page/editor';
 import slate from '@react-page/plugins-slate';
@@ -17,7 +17,7 @@ import { colorPickerPlugin } from './colorPickerPlugin';
 import { getIsEditMode } from '../../../store/wObjectStore/wObjectSelectors';
 import AppendModal from '../AppendModal/AppendModal';
 import { objectFields } from '../../../common/constants/listOfFields';
-import { getObjectName } from '../../../common/helpers/wObjectHelper';
+import { getLastPermlinksFromHash, getObjectName } from '../../../common/helpers/wObjectHelper';
 
 import './ObjectOfTypeWebpage.less';
 
@@ -34,23 +34,27 @@ const customSlate = slate(config => ({
 const plugins = [customSlate, image, background(), video, spacer, divider];
 
 const ObjectOfTypeWebpage = ({ intl }) => {
+  const history = useHistory();
+  const { name } = useParams();
+  const authorPermlink = history.location.hash
+    ? getLastPermlinksFromHash(history.location.hash)
+    : name;
   const [wobject, setWobject] = useState({});
   const [currentValue, setCurrentValue] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [loading, setLoading] = useState(true);
   const isEditMode = useSelector(getIsEditMode);
-  const { name } = useParams();
   const jsonVal = currentValue ? JSON.stringify(currentValue) : null;
 
   useEffect(() => {
-    getObject(name).then(res => {
+    getObject(authorPermlink).then(res => {
       setWobject(res);
       if (has(res, 'webpage')) {
         setCurrentValue(JSON.parse(res?.webpage));
       }
       setLoading(false);
     });
-  }, [name, wobject.webpage]);
+  }, [authorPermlink, wobject.webpage]);
 
   if (((isNil(currentValue) && !loading) || currentValue?.rows.length < 1) && !isEditMode) {
     return (
