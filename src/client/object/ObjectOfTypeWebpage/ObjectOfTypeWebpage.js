@@ -86,6 +86,7 @@ const ObjectOfTypeWebpage = ({ intl }) => {
             // disabled={isNil(currentValue)}
             onClick={() => setShowModal(true)}
             size="large"
+            className={'ready-to-publish-btn'}
           >
             {intl.formatMessage({ id: 'ready_to_publish', defaultMessage: 'Ready to publish' })}
           </Button>
