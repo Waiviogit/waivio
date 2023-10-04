@@ -91,10 +91,16 @@
     }
   }
 
-  &__image-container {
+  &__image-container.show {
     @media @small {
       width: 40%;
       height: auto;
+      display: block;
+    }
+  }
+  &__image-container {
+    @media @small {
+      display: none;
     }
   }
 
