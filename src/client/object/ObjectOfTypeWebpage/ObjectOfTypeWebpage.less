@@ -2,6 +2,8 @@
 @import (reference) '../../styles/modules/variables';
 
 @import (css) '../../../../node_modules/@react-page/editor/lib/index.css';
+@import (css) '../../../../node_modules/@react-page/core/lib/index.css';
+@import (css) '../../../../node_modules/@react-page/ui/lib/index.css';
 @import (css) '../../../../node_modules/@react-page/plugins-slate/lib/index.css';
 @import (css) '../../../../node_modules/@react-page/plugins-image/lib/index.css';
 @import (css) '../../../../node_modules/@react-page/plugins-background/lib/index.css';
@@ -10,6 +12,46 @@
 @import (css) '../../../../node_modules/@react-page/plugins-divider/lib/index.css';
 
 .ObjectOfTypeWebpage {
+  blockquote {
+    display: flex !important;
+  }
+  blockquote::before {
+    content: '\201C';
+    font-size: inherit;
+  }
+
+  blockquote::after {
+    content: '\201D';
+    font-size: inherit;
+  }
+  .react-page-editable {
+    min-height: 600px !important;
+  }
+  font-size: 18px !important;
+  h1 {
+    font-size: 32px !important;
+  }
+  h2 {
+    font-size: 28px !important;
+  }
+  h3 {
+    font-size: 24px !important;
+  }
+  h4 {
+    font-size: 22px !important;
+  }
+  h5 {
+    font-size: 20px !important;
+  }
+  h6 {
+    font-size: 18px !important;
+  }
+  ul {
+    list-style: disc !important;
+  }
+  .react-page-cell-inner-leaf {
+    padding: 20px !important;
+  }
   &__empty-placeholder {
     background: @white;
     border: 1px solid @white-gainsboro;
