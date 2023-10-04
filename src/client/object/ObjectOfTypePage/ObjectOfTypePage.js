@@ -53,12 +53,23 @@ const ObjectOfTypePage = props => {
       setCurrentContent(currObj.pageContent || '');
       setContent(currObj.pageContent || '');
       setEditorInitialized(false);
+      setDraft(null);
 
       return;
     }
 
     if (draft) {
       setNotification(true);
+    } else if (isEditMode && userName && currObj.object_type === 'page') {
+      getDraftPage(userName, currObj.author_permlink).then(res => {
+        if (res.message || !res.body) {
+          setEditorInitialized(true);
+
+          return;
+        }
+        setDraft(res.body);
+        setEditorInitialized(false);
+      });
     }
   }, [isEditMode, draft]);
 
