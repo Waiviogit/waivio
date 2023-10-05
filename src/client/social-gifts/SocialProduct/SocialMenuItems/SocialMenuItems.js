@@ -6,7 +6,7 @@ import { getObjectInfo } from '../../../../waivioApi/ApiClient';
 
 import './SocialMenuItems.less';
 
-const SocialMenuItems = React.memo(({ menuItem }) => {
+const SocialMenuItems = ({ menuItem }) => {
   const [menuItems, setMenuItems] = useState([]);
 
   const prepareMenuItems = () => {
@@ -45,7 +45,7 @@ const SocialMenuItems = React.memo(({ menuItem }) => {
       </div>
     </div>
   );
-});
+};
 
 SocialMenuItems.propTypes = {
   menuItem: PropTypes.arrayOf(),
