@@ -39,7 +39,7 @@ const ListDescription = ({ wobject }) => {
                 {wobject.description}
               </div>
               {hasAvatar && (
-                <div className={'ListDescription__image-container'}>
+                <div className={`ListDescription__image-container ${showContent ? 'show' : ''}`}>
                   <img className={'ListDescription__image'} src={wobject.avatar} alt={''} />
                 </div>
               )}
