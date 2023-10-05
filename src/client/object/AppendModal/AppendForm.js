@@ -89,7 +89,7 @@ import {
 } from '../../../common/helpers/wObjectHelper';
 import { appendObject } from '../../../store/appendStore/appendActions';
 import { getExposedFieldsByObjType } from '../wObjectHelper';
-import { rateObject, setEditMode } from '../../../store/wObjectStore/wobjActions';
+import { rateObject } from '../../../store/wObjectStore/wobjActions';
 import SortingList from '../../components/DnDList/DnDList';
 import SearchObjectsAutocomplete from '../../components/EditorObject/SearchObjectsAutocomplete';
 import SearchUsersAutocomplete from '../../components/EditorUser/SearchUsersAutocomplete';
@@ -159,7 +159,6 @@ import './AppendForm.less';
     rateObject,
     addAlbum: addAlbumToStore,
     addImageToAlbum: addImageToAlbumStore,
-    setEditMode,
   },
 )
 @Form.create()
@@ -182,11 +181,9 @@ class AppendForm extends Component {
     usedLocale: PropTypes.string,
     /* passed props */
     chosenLocale: PropTypes.string,
-    fieldBodyContent: PropTypes.string,
     currentField: PropTypes.string,
     locale: PropTypes.string,
     hideModal: PropTypes.func,
-    setEditMode: PropTypes.func,
     intl: PropTypes.shape(),
     post: PropTypes.shape(),
     ratingFields: PropTypes.arrayOf(PropTypes.shape({})),
@@ -456,7 +453,6 @@ class AppendForm extends Component {
       case objectFields.ageRange:
       case objectFields.printLength:
       case objectFields.language:
-      case objectFields.webpage:
       case objectFields.affiliateUrlTemplate:
       case objectFields.affiliateCode:
       case objectFields.pin:
@@ -701,10 +697,6 @@ class AppendForm extends Component {
               ? this.props.post.permlink
               : formValues[pinPostFields.postPermlink]
           }`;
-        case objectFields.webpage:
-          return `@${author} added ${currentField} (${langReadable}): Webpage ${moment(
-            Date.now(),
-          ).format('YYYY-MM-DD HH:mm:ss')}`;
         case objectFields.ageRange:
         case objectFields.language:
         case objectFields.affiliateUrlTemplate:
@@ -838,12 +830,6 @@ class AppendForm extends Component {
         fieldsObject = {
           ...fieldsObject,
           body: formValues[objectFields.affiliateButton],
-        };
-      }
-      if (currentField === objectFields.webpage) {
-        fieldsObject = {
-          ...fieldsObject,
-          body: this.props.fieldBodyContent,
         };
       }
       if (currentField === objectFields.affiliateCode) {
@@ -1428,9 +1414,6 @@ class AppendForm extends Component {
     if (event) event.preventDefault();
     const currentField = this.props.form.getFieldValue('currentField');
 
-    if (objectFields.webpage === currentField) {
-      this.props.setEditMode(false);
-    }
     if (objectFields.galleryItem === currentField) {
       this.handleAddPhotoToAlbum();
     } else if (objectFields.newsFilter === currentField || objectFields.newsFeed === currentField) {
@@ -4059,7 +4042,6 @@ class AppendForm extends Component {
             this.state.typeList.length < 1)
         );
       case objectFields.sorting:
-      case objectFields.webpage:
       case objectFields.shopFilter:
         return false;
 
