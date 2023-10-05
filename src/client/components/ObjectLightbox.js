@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import Lightbox from 'react-image-lightbox';
 import { Link, withRouter } from 'react-router-dom';
 import { Icon } from 'antd';
 import { get, has, isEmpty } from 'lodash';
@@ -10,10 +9,9 @@ import AppendModal from '../object/AppendModal/AppendModal';
 import { objectFields } from '../../common/constants/listOfFields';
 import DEFAULTS from '../object/const/defaultValues';
 import { getProxyImageURL } from '../../common/helpers/image';
-import LightboxHeader from '../widgets/LightboxTools/LightboxHeader';
 import { getObjectAlbums } from '../../store/galleryStore/gallerySelectors';
 import { getRelatedAlbum } from '../../store/galleryStore/galleryActions';
-import LightboxFooter from '../widgets/LightboxTools/LightboxFooter';
+import LightboxWithAppendForm from '../widgets/LightboxTools/LightboxWithAppendForm';
 
 @withRouter
 @connect(state => ({
@@ -60,7 +58,6 @@ export default class ObjectLightbox extends Component {
       !has(wobject, 'avatar') && !isEmpty(parentAvatar)
         ? [parentAvatar, ...get(wobject, 'preview_gallery', []), ...get(relatedAlbum, 'items', [])]
         : [...get(wobject, 'preview_gallery', []), ...get(relatedAlbum, 'items', [])];
-    const creator = album?.items?.find(pic => pic.body === wobject.avatar).creator;
 
     if (currentImage) currentImage = getProxyImageURL(currentImage, 'preview');
     else currentImage = DEFAULTS.AVATAR;
@@ -90,30 +87,20 @@ export default class ObjectLightbox extends Component {
               <ObjectAvatar item={wobject} size={size} />
             </a>
             {this.state.open && (!isEmpty(pics) || !isEmpty(parentAvatar)) && (
-              <Lightbox
-                wrapperClassName="LightboxTools"
-                imageTitle={
-                  <LightboxHeader
-                    objName={wobject.name}
-                    albumName={album?.body}
-                    userName={creator}
-                  />
-                }
-                imageCaption={<LightboxFooter post={pics[photoIndex]} />}
-                mainSrc={pics[photoIndex]?.body}
-                nextSrc={
-                  pics.length <= 1 || photoIndex === pics.length - 1
-                    ? null
-                    : pics[(photoIndex + 1) % pics.length]?.body
-                }
-                prevSrc={pics.length <= 1 ? null : pics[(photoIndex - 1) % pics.length]?.body}
+              <LightboxWithAppendForm
+                isPost
+                onCloseRequest={this.handleCloseRequest}
                 onMovePrevRequest={() =>
                   this.setState({ photoIndex: (photoIndex - 1) % pics.length })
                 }
                 onMoveNextRequest={() =>
                   this.setState({ photoIndex: (photoIndex + 1) % pics.length })
                 }
-                onCloseRequest={this.handleCloseRequest}
+                wobject={wobject}
+                album={album}
+                albums={this.props.albums}
+                pics={pics}
+                photoIndex={photoIndex}
               />
             )}
           </React.Fragment>
