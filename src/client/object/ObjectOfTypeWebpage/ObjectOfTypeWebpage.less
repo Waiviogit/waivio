@@ -15,6 +15,11 @@
   font-size: 18px !important;
   font-family: 'Source Serif Pro', serif;
   color: @black;
+  .ready-to-publish-btn {
+    span {
+      font-family: 'Whitney', sans-serif;
+    }
+  }
   blockquote {
     display: flex !important;
   }
@@ -80,63 +85,34 @@
   .react-page-controls-trash {
     display: none !important;
   }
-
-  .css-1p7a5wk-MuiButtonBase-root-MuiFab-root,
-  .css-1fo2sjy-MuiButtonBase-root-MuiFab-root:not(:disabled) {
-    background-color: var(--website-color) !important;
-  }
 }
 
-.css-1kuq5xv-MuiButtonBase-root-MuiIconButton-root,
-.css-5ryogn-MuiButtonBase-root-MuiSwitch-switchBase.Mui-checked,
-.css-1gws2xf-MuiButtonBase-root-MuiIconButton-root,
-.css-187mznn-MuiSlider-root,
-.css-kw0y8f-MuiSvgIcon-root,
-.css-aym9vq-MuiButtonBase-root-MuiTab-root.Mui-selected {
-  color: var(--website-color) !important;
-}
-
-.css-5ryogn-MuiButtonBase-root-MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track,
-.css-1aquho2-MuiTabs-indicator,
-.css-9rrh7h-MuiButtonBase-root-MuiFab-root,
-.css-qize55-MuiButtonBase-root-MuiFab-root {
+.MuiSwitch-thumb,
+.MuiSwitch-track,
+.MuiTabs-indicator,
+.MuiButton-containedPrimary,
+.MuiFab-primary:not(:disabled),
+.MuiFab-secondary:not(:disabled) {
   background-color: var(--website-color) !important;
 }
 
-.css-sghohy-MuiButtonBase-root-MuiButton-root {
-  background-color: var(--website-color) !important;
-  border-color: var(--website-color) !important;
-  color: var(--website-text-color) !important;
-}
-
-.css-1rwt2y5-MuiButtonBase-root-MuiButton-root {
-  border-color: var(--website-color) !important;
+.MuiSlider-rail,
+.MuiSlider-thumb,
+.MuiSlider-track,
+.Mui-selected,
+.MuiSvgIcon-colorSecondary,
+.MuiIconButton-colorPrimary,
+.MuiButton-outlinedPrimary,
+.MuiIconButton-colorSecondary {
   color: var(--website-color) !important;
 }
 
-.css-1c2i806-MuiFormLabel-root-MuiInputLabel-root.Mui-focused {
-  color: var(--website-color) !important;
-}
-
-.css-v4u5dn-MuiInputBase-root-MuiInput-root:after,
-.css-l4u8b9-MuiInputBase-root-MuiInput-root:after {
-  border-bottom-color: var(--website-color) !important;
-}
-
-.css-12wnr2w-MuiButtonBase-root-MuiCheckbox-root.Mui-checked,
-.css-12wnr2w-MuiButtonBase-root-MuiCheckbox-root.MuiCheckbox-indeterminate {
-  color: var(--website-color) !important;
-}
-
-.css-1e6y48t-MuiButtonBase-root-MuiButton-root {
-  color: var(--website-color) !important;
+.MuiButton-outlinedPrimary {
+  border-color: var(--website-color-hover) !important;
 
   &:hover {
-    background-color: var(--website-light-color) !important;
+    background-color: var(--website-color-hover) !important;
   }
-}
-.css-zcbmsk-MuiButtonBase-root-MuiButton-root {
-  background-color: @red!important;
 }
 
 .colorPickerPlugin-TextColor {
