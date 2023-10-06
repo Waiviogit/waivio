@@ -401,6 +401,7 @@ export const getImageForPreview = (post, isUpdates = false) => {
         objectFields.galleryItem,
         objectFields.background,
         objectFields.affiliateButton,
+        objectFields.webpage,
       ].includes(post.name)
     )
       imagePath = [post.body];
