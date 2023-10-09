@@ -55,7 +55,6 @@ import { initialColors } from './websites/constants/colors';
 import { hexToRgb } from '../common/helpers';
 
 export const AppSharedContext = React.createContext({ usedLocale: 'en-US', isGuestUser: false });
-
 @withRouter
 @connect(
   state => ({

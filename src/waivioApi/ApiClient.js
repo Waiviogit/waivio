@@ -3725,4 +3725,37 @@ export const withdrawHiveForGuest = (amount, outputCoinType, userName, address) 
     .then(r => r)
     .catch(error => error);
 };
+
+export const saveCommentDraft = (user, author, permlink, body) =>
+  fetch(`${config.apiPrefix}${config.draft}${config.comment}`, {
+    headers: {
+      ...headers,
+      'access-token': Cookie.get('access_token'),
+    },
+    method: 'POST',
+    body: JSON.stringify({
+      author,
+      user,
+      body,
+      permlink,
+    }),
+  })
+    .then(res => res.json())
+    .then(posts => posts)
+    .catch(error => error);
+
+export const getCommentDraft = (user, author, permlink) => {
+  const query = createQuery({ user, author, permlink });
+
+  return fetch(`${config.apiPrefix}${config.draft}${config.comment}?${query}`, {
+    headers: {
+      ...headers,
+      'access-token': Cookie.get('access_token'),
+    },
+    method: 'GET',
+  })
+    .then(res => res.json())
+    .then(posts => posts)
+    .catch(error => error);
+};
 export default null;

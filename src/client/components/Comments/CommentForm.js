@@ -1,11 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState, useLayoutEffect } from 'react';
 import PropTypes from 'prop-types';
 import { debounce, get } from 'lodash';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, injectIntl } from 'react-intl';
 import { Transforms } from 'slate';
-import { Button } from 'antd';
+import { Button, Modal } from 'antd';
 import { connect } from 'react-redux';
 import Scroll from 'react-scroll';
+import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 import { remarkable } from '../Story/Body';
 import BodyContainer from '../../containers/Story/BodyContainer';
 import Avatar from '../Avatar';
@@ -21,6 +22,7 @@ import { getObjectUrl } from '../../../common/helpers/postHelpers';
 import { insertObject } from '../EditorExtended/util/SlateEditor/utils/common';
 import { getSelection, getSelectionRect } from '../EditorExtended/util';
 import { searchObjectsAutoCompete } from '../../../store/searchStore/searchActions';
+import { getCommentDraft, saveCommentDraft } from '../../../waivioApi/ApiClient';
 
 import './CommentForm.less';
 
@@ -31,6 +33,49 @@ const CommentForm = props => {
   const [bodyHTML, setHTML] = useState('');
   const [isShowEditorSearch, setIsShowEditorSearch] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [init, setInit] = useState(false);
+  const [draft, setDraft] = useState('');
+  const parent = props.isEdit ? props.currentComment : props.parentPost;
+
+  useLayoutEffect(() => {
+    getCommentDraft(props.username, parent?.author, parent?.permlink).then(res => {
+      if (res.message) {
+        setInit(true);
+        return res;
+      }
+      if (res?.body) {
+        if (props.isEdit) {
+          setInit(false);
+
+          Modal.confirm({
+            title: props.intl.formatMessage({
+              id: 'comment_draft',
+              defaultMessage: 'Comment draft',
+            }),
+            content: props.intl.formatMessage({
+              id: 'comment_draft_message',
+              defaultMessage:
+                'You have one draft with unsaved changes. Do you want to continue editing?',
+            }),
+            onOk: () => {
+              setInit(true);
+              setDraft(res?.body);
+            },
+            onCancel: () => setInit(true),
+            okText: props.intl.formatMessage({ defaultMessage: 'Continue', id: 'continue' }),
+            cancelText: props.intl.formatMessage({ defaultMessage: 'Discard', id: 'discard' }),
+          });
+        } else {
+          setInit(true);
+          setDraft(res?.body);
+        }
+
+        return res;
+      }
+
+      return res;
+    });
+  }, []);
 
   useEffect(() => {
     if ((!props.isLoading && props.inputValue !== '') || props.submitted) {
@@ -43,11 +88,19 @@ const CommentForm = props => {
 
     setBody(markdownBody);
     setHTML(remarkable.render(markdownBody));
+    if (markdownBody) debouncedDraftSave(markdownBody);
   };
 
   const setShowEditorSearch = value => setIsShowEditorSearch(value);
 
   const debouncedSearch = debounce(searchStr => props.searchObjects(searchStr), 150);
+
+  const debouncedDraftSave = useCallback(
+    debounce(markdownBody => {
+      if (init) saveCommentDraft(props.username, parent?.author, parent?.permlink, markdownBody);
+    }, 300),
+    [props.username, props.parentPost, init],
+  );
 
   const handleContentChangeSlate = debounce(editor => {
     const searchInfo = checkCursorInSearchSlate(editor);
@@ -130,18 +183,20 @@ const CommentForm = props => {
       <div className="CommentForm__text">
         <Element name="commentFormInputScrollerElement">
           <div className="CommentForm__editor">
-            <EditorSlate
-              onChange={handleBodyUpdate}
-              handleObjectSelect={handleObjectSelect}
-              isCommentEdit={props.isEdit}
-              isComment
-              editorEnabled
-              initialPosTopBtn={props.isEdit ? '3.5px' : '11.5px'}
-              isShowEditorSearch={isShowEditorSearch}
-              setShowEditorSearch={setShowEditorSearch}
-              initialBody={props.inputValue}
-              small={props.isEdit}
-            />
+            {init && (
+              <EditorSlate
+                onChange={handleBodyUpdate}
+                handleObjectSelect={handleObjectSelect}
+                isCommentEdit={props.isEdit}
+                isComment
+                editorEnabled
+                initialPosTopBtn={props.isEdit ? '3.5px' : '11.5px'}
+                isShowEditorSearch={isShowEditorSearch}
+                setShowEditorSearch={setShowEditorSearch}
+                initialBody={draft || props.inputValue}
+                small={props.isEdit}
+              />
+            )}
           </div>
         </Element>
         <Button onClick={handleSubmit} disabled={loading} loading={loading} type={'primary'}>
@@ -167,6 +222,7 @@ const CommentForm = props => {
 
 CommentForm.propTypes = {
   parentPost: PropTypes.shape().isRequired,
+  currentComment: PropTypes.shape().isRequired,
   username: PropTypes.string.isRequired,
   // top: PropTypes.bool,
   isSmall: PropTypes.bool,
@@ -175,6 +231,9 @@ CommentForm.propTypes = {
   inputValue: PropTypes.string.isRequired,
   onSubmit: PropTypes.func,
   editor: PropTypes.shape(),
+  intl: PropTypes.shape({
+    formatMessage: PropTypes.func,
+  }),
   setCursorCoordinates: PropTypes.func,
   searchObjects: PropTypes.func,
   isEdit: PropTypes.bool,
@@ -193,6 +252,7 @@ CommentForm.defaultProps = {
 
 const mapStateToProps = store => ({
   editor: getEditorSlate(store),
+  username: getAuthenticatedUserName(store),
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -200,4 +260,4 @@ const mapDispatchToProps = dispatch => ({
   searchObjects: value => dispatch(searchObjectsAutoCompete(value, '', null, true)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(CommentForm);
+export default connect(mapStateToProps, mapDispatchToProps)(injectIntl(CommentForm));

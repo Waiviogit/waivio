@@ -9,7 +9,7 @@ import { getSuitableLanguage } from '../../store/reducers';
 import { getContent } from '../../store/postsStore/postActions';
 import Error404 from '../statics/Error404';
 import Comments from '../comments/Comments';
-import Loading from '../components/Icon/Loading';
+// import Loading from '../components/Icon/Loading';
 import PostContent from './PostContent';
 import Affix from '../components/Utils/Affix';
 import HiddenPostMessage from './HiddenPostMessage';
@@ -143,7 +143,7 @@ export default class Post extends React.Component {
   render() {
     const {
       content,
-      fetching,
+      // fetching,
       loaded,
       failed,
       isAuthFetching,
@@ -154,7 +154,7 @@ export default class Post extends React.Component {
     } = this.props;
 
     if (failed) return <Error404 />;
-    if (fetching || !content) return <Loading />;
+    // if (fetching || !content) return <Loading />;
 
     const { showHiddenPost } = this.state;
     const reputation = loaded ? formatter.reputation(content.author_reputation) : 0;
