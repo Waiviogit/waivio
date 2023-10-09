@@ -50,6 +50,18 @@ const addVisit = async ({ userAgent }) => {
   return result.data;
 };
 
+const getSitemap = async ({ host, name }) => {
+  const result = await socketClient.sendMessage({
+    name: 'sitemap',
+    method: 'getSitemap',
+    args: [{ host, name }],
+  });
+  if (result?.error) {
+    return '';
+  }
+  return result.data;
+};
+
 export const webPage = {
   getPageByUrl,
   createPage,
@@ -61,4 +73,8 @@ export const botStatistics = {
 
 export const botAgent = {
   userAgentExists,
+};
+
+export const sitemap = {
+  getSitemap,
 };
