@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import moment from 'moment';
+import { filter } from 'lodash';
 import classNames from 'classnames';
 import AppendFormFooter from '../AppendModal/AppendFormFooter';
 import LANGUAGES from '../../../common/translations/languages';
@@ -15,6 +16,7 @@ import { appendObject } from '../../../store/appendStore/appendActions';
 import { getAppendData, getObjectName } from '../../../common/helpers/wObjectHelper';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 import { objectFields } from '../../../common/constants/listOfFields';
+import { getSuitableLanguage } from '../../../store/reducers';
 
 const AppendWebpageModal = ({
   intl,
@@ -28,7 +30,8 @@ const AppendWebpageModal = ({
   const defaultVotePercent = useSelector(getVotePercent);
   const locale = useSelector(getUsedLocale);
   const userName = useSelector(getAuthenticatedUserName);
-  const [langReadable, setLangReadable] = useState('en-US');
+  const usedLocale = useSelector(getSuitableLanguage);
+  const [currentLocale, setCurrentLocale] = useState(locale);
   const [voteWorth, setVoteWorth] = useState(0);
   const [loading, setLoading] = useState(false);
   const [votePercent, setVotePercent] = useState(defaultVotePercent / 100 || 100);
@@ -49,8 +52,10 @@ const AppendWebpageModal = ({
         const pageContentField = {
           name: objectFields.webpage,
           body: webpageBody,
-          locale: langReadable,
+          locale: currentLocale,
         };
+        const langReadable = filter(LANGUAGES, { id: currentLocale })[0].name;
+
         const bodyMessage = `@${userName} added webpage (${langReadable}): Webpage ${moment(
           Date.now(),
         ).format('YYYY-MM-DD HH:mm:ss')}`;
@@ -136,8 +141,8 @@ const AppendWebpageModal = ({
         </div>
         <Form.Item>
           <Select
-            onChange={val => setLangReadable(val)}
-            defaultValue={locale}
+            onChange={val => setCurrentLocale(val)}
+            defaultValue={locale || usedLocale}
             style={{ width: '100%' }}
             dropdownClassName="AppendForm__drop-down"
           >
