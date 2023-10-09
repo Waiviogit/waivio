@@ -21,6 +21,8 @@ import { setNestedWobject } from '../../../store/wObjectStore/wobjActions';
 import AppendWebpageModal from './AppendWebpageModal';
 
 import './ObjectOfTypeWebpage.less';
+import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
+import { getUsedLocale } from '../../../store/appStore/appSelectors';
 
 const customSlate = slate(config => ({
   ...config,
@@ -38,6 +40,8 @@ const ObjectOfTypeWebpage = ({ intl }) => {
   const history = useHistory();
   const { name } = useParams();
   const dispatch = useDispatch();
+  const user = useSelector(getAuthenticatedUserName);
+  const locale = useSelector(getUsedLocale);
   const authorPermlink = history.location.hash
     ? getLastPermlinksFromHash(history.location.hash)
     : name;
@@ -49,7 +53,7 @@ const ObjectOfTypeWebpage = ({ intl }) => {
   const jsonVal = currentValue ? JSON.stringify(currentValue) : null;
 
   useEffect(() => {
-    getObject(authorPermlink).then(res => {
+    getObject(authorPermlink, user, locale).then(res => {
       setWobject(res);
       if (has(res, 'webpage')) {
         setCurrentValue(JSON.parse(res?.webpage));
