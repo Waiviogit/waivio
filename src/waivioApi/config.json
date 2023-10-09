@@ -123,6 +123,7 @@
   "hasSocialAccount": "/has_social_account",
   "followingUsers": "/following_users",
   "comments": "/comments",
+  "comment": "/comment",
   "postComments": "/post_comments",
   "market": "/marketInfo",
   "transfers_history": "/transfers_history",

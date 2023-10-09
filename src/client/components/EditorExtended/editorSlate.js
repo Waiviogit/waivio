@@ -316,7 +316,10 @@ const EditorSlate = props => {
             renderLeaf={renderLeaf}
             onKeyDown={handleKeyCommand}
             onDrop={handleDroppedFiles}
-            onFocus={() => props.setEditor(editor)}
+            onFocus={() => {
+              props.setEditor(editor);
+              if (props.onFocus) props.onFocus();
+            }}
             onBlur={() => {
               editor.lastSelection = editor.selection;
             }}
@@ -354,6 +357,7 @@ EditorSlate.propTypes = {
   handleHashtag: PropTypes.func.isRequired,
   initialBody: PropTypes.string,
   handlePasteText: PropTypes.func,
+  onFocus: PropTypes.func,
   setEditor: PropTypes.func,
   setEditorCb: PropTypes.func,
   isComment: PropTypes.bool,
