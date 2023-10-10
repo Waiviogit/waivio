@@ -41,6 +41,7 @@ const CommentForm = props => {
     getCommentDraft(props.username, parent?.author, parent?.permlink).then(res => {
       if (res.message) {
         setInit(true);
+
         return res;
       }
       if (res?.body) {
