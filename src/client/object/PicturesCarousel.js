@@ -2,12 +2,10 @@ import React, { useEffect, useRef, useState } from 'react';
 import { map } from 'lodash';
 import PropTypes from 'prop-types';
 import { Carousel, Icon } from 'antd';
-import Lightbox from 'react-image-lightbox';
 import './PicturesCarousel.less';
-import LightboxHeader from '../widgets/LightboxTools/LightboxHeader';
-import LightboxFooter from '../widgets/LightboxTools/LightboxFooter';
+import LightboxWithAppendForm from '../widgets/LightboxTools/LightboxWithAppendForm';
 
-const PicturesCarousel = ({ activePicture, pics, objName, albums, isSocialProduct }) => {
+const PicturesCarousel = ({ activePicture, pics, wobject, albums, isSocialProduct }) => {
   const settings = {
     dots: false,
     arrows: true,
@@ -53,26 +51,15 @@ const PicturesCarousel = ({ activePicture, pics, objName, albums, isSocialProduc
         ))}
       </Carousel>
       {isOpen && (
-        <Lightbox
-          wrapperClassName="LightboxTools"
-          imageTitle={
-            <LightboxHeader
-              objName={objName}
-              albumName={album?.body}
-              userName={pics[photoIndex].creator}
-            />
-          }
-          imageCaption={<LightboxFooter post={pics[photoIndex]} />}
-          mainSrc={pics[photoIndex]?.body}
-          nextSrc={
-            pics.length <= 1 || photoIndex === pics.length - 1
-              ? null
-              : pics[(photoIndex + 1) % pics.length]?.body
-          }
-          prevSrc={pics.length <= 1 ? null : pics[(photoIndex - 1) % pics.length]?.body}
+        <LightboxWithAppendForm
           onCloseRequest={() => setIsOpen(false)}
           onMovePrevRequest={() => setPhotoIndex((photoIndex - 1) % pics.length)}
           onMoveNextRequest={() => setPhotoIndex((photoIndex + 1) % pics.length)}
+          wobject={wobject}
+          album={album}
+          albums={albums}
+          pics={pics}
+          photoIndex={photoIndex}
         />
       )}
     </div>
@@ -84,8 +71,8 @@ const PicturesCarousel = ({ activePicture, pics, objName, albums, isSocialProduc
 PicturesCarousel.propTypes = {
   pics: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   albums: PropTypes.arrayOf(PropTypes.shape()).isRequired,
-  objName: PropTypes.string,
   activePicture: PropTypes.shape(),
+  wobject: PropTypes.shape(),
   isOptionsType: PropTypes.bool,
   isSocialProduct: PropTypes.bool,
   onOptionPicClick: PropTypes.func,

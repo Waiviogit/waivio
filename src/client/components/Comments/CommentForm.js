@@ -41,12 +41,12 @@ const CommentForm = props => {
     getCommentDraft(props.username, parent?.author, parent?.permlink).then(res => {
       if (res.message) {
         setInit(true);
+
         return res;
       }
-      if (res?.body) {
-        if (props.isEdit) {
-          setInit(false);
 
+      if (props.isEdit) {
+        if (res.body) {
           Modal.confirm({
             title: props.intl.formatMessage({
               id: 'comment_draft',
@@ -67,10 +67,10 @@ const CommentForm = props => {
           });
         } else {
           setInit(true);
-          setDraft(res?.body);
         }
-
-        return res;
+      } else {
+        setInit(true);
+        setDraft(res?.body);
       }
 
       return res;
@@ -136,9 +136,11 @@ const CommentForm = props => {
 
       props.onSubmit(props.parentPost, formattedBody).then(response => {
         if (!get(response, 'error', false)) {
-          setBodyAndRender('');
           const { editor } = props;
 
+          debouncedDraftSave('');
+          setBody('');
+          setHTML('');
           resetEditorState(editor);
         }
         setLoading(false);
