@@ -182,6 +182,7 @@ class AppendForm extends Component {
     /* passed props */
     chosenLocale: PropTypes.string,
     currentField: PropTypes.string,
+    fieldBodyContent: PropTypes.string,
     locale: PropTypes.string,
     hideModal: PropTypes.func,
     intl: PropTypes.shape(),
@@ -824,6 +825,7 @@ class AppendForm extends Component {
         fieldsObject = {
           ...fieldsObject,
           id: wObject?.galleryAlbum?.find(album => album.body === 'Photos').id,
+          body: this.props.fieldBodyContent || undefined,
         };
       }
       if (currentField === objectFields.affiliateButton) {
@@ -1333,8 +1335,11 @@ class AppendForm extends Component {
     const { currentImages } = this.state;
 
     const data = this.getWobjectData();
+    const images = this.props.fieldBodyContent
+      ? [{ id: this.props.fieldBodyContent, src: this.props.fieldBodyContent, name: 'image' }]
+      : currentImages;
 
-    currentImages.forEach(async image => {
+    images.forEach(async image => {
       const postData = {
         ...data,
         permlink: `${data.author}-${generatePermlink()}`,
@@ -2138,6 +2143,9 @@ class AppendForm extends Component {
                   onLoadingImage={this.onLoadingImage}
                   isRequired
                   isMultiple={false}
+                  imagesList={[
+                    { src: this.props.fieldBodyContent, id: this.props.fieldBodyContent },
+                  ]}
                 />,
               )}
             </Form.Item>
@@ -3775,6 +3783,11 @@ class AppendForm extends Component {
               })(
                 <div className="clearfix">
                   <ImageSetter
+                    imagesList={
+                      this.props.fieldBodyContent
+                        ? [{ src: this.props.fieldBodyContent, id: this.props.fieldBodyContent }]
+                        : undefined
+                    }
                     autoFocus
                     onImageLoaded={this.getImage}
                     onLoadingImage={this.onLoadingImage}

@@ -1,15 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import Lightbox from 'react-image-lightbox';
 import { isEmpty } from 'lodash';
 import { useParams } from 'react-router';
 import { connect } from 'react-redux';
 import { getObject } from '../../../waivioApi/ApiClient';
 import { isMobile } from '../../../common/helpers/apiHelpers';
-import LightboxFooter from '../../widgets/LightboxTools/LightboxFooter';
-import LightboxHeader from '../../widgets/LightboxTools/LightboxHeader';
 import { getObjectAlbums, getRelatedPhotos } from '../../../store/galleryStore/gallerySelectors';
 import './DescriptionPage.less';
+import LightboxWithAppendForm from '../../widgets/LightboxTools/LightboxWithAppendForm';
 
 const DescriptionPage = ({ relatedAlbum, albums }) => {
   const [wobject, setWobject] = useState({});
@@ -75,23 +73,12 @@ const DescriptionPage = ({ relatedAlbum, albums }) => {
         {remainingPictures}
       </div>
       {isOpen && (
-        <Lightbox
-          wrapperClassName="LightboxTools"
-          imageTitle={
-            <LightboxHeader
-              objName={wobject.name}
-              albumName={album?.body}
-              userName={pics[photoIndex].creator}
-            />
-          }
-          imageCaption={<LightboxFooter post={pics[photoIndex]} />}
-          mainSrc={pictures[photoIndex]?.body}
-          nextSrc={
-            pictures.length <= 1 || photoIndex === pictures.length - 1
-              ? null
-              : pictures[(photoIndex + 1) % pictures.length]?.body
-          }
-          prevSrc={pictures.length <= 1 ? null : pictures[(photoIndex - 1) % pictures.length]?.body}
+        <LightboxWithAppendForm
+          wobject={wobject}
+          album={album}
+          albums={albums}
+          pics={pictures}
+          photoIndex={photoIndex}
           onCloseRequest={() => setIsOpen(false)}
           onMovePrevRequest={() => setPhotoIndex((photoIndex - 1) % pictures.length)}
           onMoveNextRequest={() => setPhotoIndex((photoIndex + 1) % pictures.length)}
