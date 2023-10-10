@@ -56,6 +56,7 @@ import { setLocale } from '../../store/settingsStore/settingsActions';
 import { getObject, getObjectsByIds } from '../../waivioApi/ApiClient';
 import { parseJSON } from '../../common/helpers/parseJSON';
 import { getObjectName } from '../../common/helpers/wObjectHelper';
+import { getObject as getObjectAction } from '../../store/wObjectStore/wobjectsActions';
 
 const createLink = i => {
   switch (i.object_type) {
@@ -97,17 +98,19 @@ const SocialWrapper = props => {
           const customSort = get(wobject, 'sortCustom.include', []);
 
           if (isEmpty(wobject.menuItem)) {
-            if (props.location.pathname === '/')
-              props.history.push(`/object/${configuration.shopSettings?.value}`);
             dispatch(
               setItemsForNavigation([
                 {
                   link: createLink(wobject),
                   name: getObjectName(wobject),
+                  permlink: wobject?.author_permlink,
+                  object_type: wobject?.object_type,
                 },
                 {
                   name: 'Legal',
                   link: '/checklist/ljc-legal',
+                  permlink: 'ljc-legal',
+                  object_type: 'list',
                 },
               ]),
             );
@@ -142,6 +145,8 @@ const SocialWrapper = props => {
               link: createLink(i),
               name: i?.body?.title || getObjectName(i),
               type: i.body.linkToObject ? 'nav' : 'blank',
+              permlink: i.body.linkToObject,
+              object_type: i?.object_type,
             }));
 
             dispatch(
@@ -150,16 +155,15 @@ const SocialWrapper = props => {
                 {
                   name: 'Legal',
                   link: '/checklist/ljc-legal',
+                  permlink: 'ljc-legal',
+                  object_type: 'list',
                 },
               ]),
             );
             props.setLoadingStatus(true);
-
-            if (props.location.pathname === '/') props.history.push(buttonList[0].link);
           }
         });
-      } else if (props.location.pathname === '/')
-        props.history.push(`/user-shop/${configuration.shopSettings?.value}`);
+      }
     }
   };
 
@@ -308,6 +312,26 @@ SocialWrapper.fetchData = async ({ store, req }) => {
   const state = store.getState();
   const config = await store.dispatch(getWebsiteConfigForSSR(req.headers.host));
   const shopSettings = config.action.payload?.shopSettings;
+  const wobject = await getObject(shopSettings?.value);
+  let wobjPermlink = shopSettings?.value;
+
+  if (!isEmpty(wobject?.menuItem)) {
+    const customSort = get(wobject, 'sortCustom.include', []);
+    const menuItemPermlink = wobject?.menuItem.reduce((acc, curr) => {
+      const item = parseJSON(curr?.body);
+
+      return item?.linkToObject ? [...acc, item?.linkToObject] : acc;
+    }, []);
+    const menuItem = !isEmpty(customSort)
+      ? customSort.reduce((acc, curr) => {
+          const findObj = menuItemPermlink.find(permlink => permlink === curr);
+
+          return findObj ? [...acc, findObj] : acc;
+        }, [])
+      : menuItemPermlink;
+
+    wobjPermlink = menuItem[0];
+  }
 
   let activeLocale = getLocale(state);
 
@@ -317,6 +341,7 @@ SocialWrapper.fetchData = async ({ store, req }) => {
   const lang = loadLanguage(activeLocale);
 
   return Promise.allSettled([
+    store.dispatch(getObjectAction(wobjPermlink)),
     store.dispatch(getWebsiteConfigForSSR(req.headers.host)),
     store.dispatch(setMainObj(shopSettings)),
     store.dispatch(setAppUrl(`https://${req.headers.host}`)),

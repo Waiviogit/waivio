@@ -6,7 +6,7 @@ import { useDispatch } from 'react-redux';
 import ShopList from './ShopList';
 import { getUserShopList } from '../../../store/shopStore/shopActions';
 
-const UserShoppingList = ({ isSocial }) => {
+const UserShoppingList = ({ isSocial, name }) => {
   const match = useRouteMatch();
   const dispatch = useDispatch();
   const getShopFeed = (
@@ -38,8 +38,8 @@ const UserShoppingList = ({ isSocial }) => {
 
   return (
     <ShopList
-      userName={match.params.name}
-      path={isSocial ? `/user-shop/${match.params.name}` : match.url}
+      userName={name || match.params.name}
+      path={isSocial ? `/user-shop/${name || match.params.name}` : match.url}
       getShopFeed={getShopFeed}
       isSocial={isSocial}
     />
@@ -48,6 +48,7 @@ const UserShoppingList = ({ isSocial }) => {
 
 UserShoppingList.propTypes = {
   isSocial: PropTypes.bool,
+  name: PropTypes.string,
 };
 
 export default UserShoppingList;

@@ -1,35 +1,24 @@
 import React, { useEffect } from 'react';
 import { connect, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
-import { get, isEmpty, isNil } from 'lodash';
+import { isEmpty, isNil } from 'lodash';
 import { withRouter } from 'react-router-dom';
 import Wobj from './Wobj';
 import { getAppendList } from '../../../store/appendStore/appendSelectors';
-import {
-  getAuthenticatedUser,
-  getAuthenticatedUserName,
-  getIsAuthenticated,
-} from '../../../store/authStore/authSelectors';
+import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 import {
   getIsEditMode,
   getObject as getObjectState,
-  getObjectFetchingState,
   getWobjectIsFailed,
-  getWobjectIsFatching,
-  getWobjectNested,
 } from '../../../store/wObjectStore/wObjectSelectors';
 import { getLocale } from '../../../store/settingsStore/settingsSelectors';
 import {
   getCurrentHost,
-  getHelmetIcon,
   getIsSocial,
-  getIsWaivio,
-  getScreenSize,
-  getSiteName,
   getWeightValue,
+  getNavigItems,
 } from '../../../store/appStore/appSelectors';
 
-import { getConfiguration } from '../../../store/websiteStore/websiteSelectors';
 import {
   clearObjectFromStore,
   getNearbyObjects as getNearbyObjectsAction,
@@ -49,28 +38,18 @@ import {
   getAlbums,
   resetGallery,
 } from '../../../store/galleryStore/galleryActions';
-import { appendObject, getUpdates } from '../../../store/appendStore/appendActions';
+import { getUpdates } from '../../../store/appendStore/appendActions';
 import { setStoreActiveOption } from '../../../store/optionsStore/optionsActions';
 import { resetBreadCrumb } from '../../../store/shopStore/shopActions';
-import {
-  getObjectName,
-  getUpdateFieldName,
-  prepareAlbumData,
-  prepareAlbumToStore,
-  showDescriptionPage,
-} from '../../../common/helpers/wObjectHelper';
+import { getUpdateFieldName, showDescriptionPage } from '../../../common/helpers/wObjectHelper';
 import NotFound from '../../statics/NotFound';
 import { login } from '../../../store/authStore/authActions';
 import { getRate, getRewardFund } from '../../../store/appStore/appActions';
 
 const WobjectContainer = props => {
-  // const [isEditMode, setIsEditMode] = useState(
-  //   props.wobject.type === OBJECT_TYPE.PAGE &&
-  //     props.authenticated &&
-  //     !props.wobject[objectFields.pageContent],
-  // );
   const isEditMode = useSelector(getIsEditMode);
-  const objectName = getObjectName(props.wobject);
+  const link = useSelector(getNavigItems)[1];
+  const name = link?.permlink || props.match.params.name;
   const newsFilter =
     props.match.params[1] === 'newsFilter' ? { newsFilter: props.match.params.itemId } : {};
 
@@ -78,40 +57,27 @@ const WobjectContainer = props => {
     props.setEditMode(!isEditMode);
   };
 
-  const appendAlbum = () => {
-    const formData = {
-      galleryAlbum: 'Photos',
-    };
-
-    const data = prepareAlbumData(formData, props.authenticatedUserName, props.wobject);
-    const album = prepareAlbumToStore(data);
-
-    const { author } = props.appendObject(data);
-
-    props.addAlbumToStore({ ...album, author });
-  };
-
   useEffect(() => {
-    props.getObject(props.match.params.name, props.authenticatedUserName).then(async res => {
+    props.getObject(name, props.authenticatedUserName).then(async res => {
       if (props.currHost.includes('waivio')) {
         if ((await showDescriptionPage(res.value, props.locale)) && !props.match.params[0]) {
           props.history.push(`/object/${res.value.author_permlink}/description`);
         }
       }
-      props.getAlbums(props.match.params.name);
-      props.getNearbyObjects(props.match.params.name);
-      props.getWobjectExpertise(newsFilter, props.match.params.name);
+      props.getAlbums(name);
+      props.getNearbyObjects(name);
+      props.getWobjectExpertise(newsFilter, name);
       props.getObjectFollowers({
-        object: props.match.params.name,
+        object: name,
         skip: 0,
         limit: 5,
         userName: props.authenticatedUserName,
       });
-      props.getRelatedWobjects(props.match.params.name);
+      props.getRelatedWobjects(name);
       if (isEmpty(props.updates) || isNil(props.updates) || isNil(props.match.params[1])) {
         const field = getUpdateFieldName(props.match.params[1]);
 
-        props.getUpdates(props.match.params.name, field, 'createdAt');
+        props.getUpdates(name, field, 'createdAt');
       }
       props.setEditMode(false);
     });
@@ -126,13 +92,13 @@ const WobjectContainer = props => {
       props.resetGallery();
       props.setEditMode(false);
     };
-  }, [props.match.params.name, props.locale, props.authenticatedUserName]);
+  }, [name, props.locale, props.authenticatedUserName]);
 
   if (props.failed)
     return (
       <div className="main-panel">
         <NotFound
-          item={props.match.params.name}
+          item={name}
           title={'there_are_not_object_with_name'}
           titleDefault={'Sorry! There are no object with name {item} on Waivio'}
         />
@@ -143,22 +109,9 @@ const WobjectContainer = props => {
     <Wobj
       route={props.route}
       isSocial={props.route.isSocial}
-      authenticated={props.authenticated}
-      failed={props.failed}
       authenticatedUserName={props.authenticatedUserName}
-      location={props.location}
-      wobject={props.wobject}
-      nestedWobject={props.nestedWobject}
-      isFetching={props.isFetching}
-      history={props.history}
       isEditMode={isEditMode}
       toggleViewEditMode={toggleViewEditMode}
-      objectName={objectName}
-      appendAlbum={appendAlbum}
-      helmetIcon={props.helmetIcon}
-      siteName={props.siteName}
-      isWaivio={props.isWaivio}
-      supportedObjectTypes={props.supportedObjectTypes}
       weightValue={props.weightValue}
     />
   );
@@ -167,36 +120,26 @@ const WobjectContainer = props => {
 WobjectContainer.propTypes = {
   route: PropTypes.shape().isRequired,
   authenticatedUserName: PropTypes.string.isRequired,
-  authenticated: PropTypes.bool.isRequired,
   match: PropTypes.shape().isRequired,
   history: PropTypes.shape().isRequired,
   location: PropTypes.shape({
     hash: PropTypes.string,
   }).isRequired,
   failed: PropTypes.bool,
-  isFetching: PropTypes.bool,
   isSocial: PropTypes.bool,
   getObject: PropTypes.func.isRequired,
   resetBreadCrumb: PropTypes.func.isRequired,
   weightValue: PropTypes.number.isRequired,
-  supportedObjectTypes: PropTypes.arrayOf(PropTypes.string),
-  isWaivio: PropTypes.bool.isRequired,
   resetGallery: PropTypes.func.isRequired,
   setEditMode: PropTypes.func.isRequired,
-  wobject: PropTypes.shape(),
-  nestedWobject: PropTypes.shape(),
   updates: PropTypes.arrayOf(),
   clearObjectFromStore: PropTypes.func,
   setNestedWobject: PropTypes.func,
   setCatalogBreadCrumbs: PropTypes.func,
   locale: PropTypes.string,
   currHost: PropTypes.string,
-  helmetIcon: PropTypes.string.isRequired,
-  siteName: PropTypes.string.isRequired,
   getAlbums: PropTypes.func,
-  appendObject: PropTypes.func,
   getUpdates: PropTypes.func,
-  addAlbumToStore: PropTypes.func,
   clearRelatedPhoto: PropTypes.func,
   getNearbyObjects: PropTypes.func.isRequired,
   getWobjectExpertise: PropTypes.func.isRequired,
@@ -225,22 +168,11 @@ WobjectContainer.fetchData = async ({ store, match }) => {
 
 const mapStateToProps = state => ({
   updates: getAppendList(state),
-  authenticated: getIsAuthenticated(state),
-  authenticatedUser: getAuthenticatedUser(state),
   authenticatedUserName: getAuthenticatedUserName(state),
-  loaded: getWobjectIsFatching(state),
   failed: getWobjectIsFailed(state),
   locale: getLocale(state),
-  wobject: getObjectState(state),
-  nestedWobject: getWobjectNested(state),
-  isFetching: getObjectFetchingState(state),
-  screenSize: getScreenSize(state),
-  helmetIcon: getHelmetIcon(state),
-  isWaivio: getIsWaivio(state),
   isSocial: getIsSocial(state),
-  supportedObjectTypes: get(getConfiguration(state), 'supported_object_types'),
   weightValue: getWeightValue(state, getObjectState(state).weight),
-  siteName: getSiteName(state),
   currHost: getCurrentHost(state),
 });
 
@@ -252,7 +184,6 @@ const mapDispatchToProps = {
   getObject,
   resetGallery,
   getAlbums,
-  appendObject,
   getUpdates,
   addAlbumToStore,
   clearRelatedPhoto,
