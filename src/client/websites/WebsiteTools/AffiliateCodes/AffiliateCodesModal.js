@@ -17,13 +17,13 @@ const AffiliateCodesModal = ({
   loading,
   langReadable,
   user,
-  userUpVotePower,
   form,
   setLoading,
   setOpenAppendModal,
   appendWobject,
 }) => {
   const { setFieldsValue, getFieldValue, validateFieldsAndScroll } = form;
+  const userUpVotePower = 1000;
   const hideModal = () => {
     setFieldsValue({ [objectFields.affiliateCode]: '' });
     setOpenAppendModal(false);
@@ -172,7 +172,6 @@ AffiliateCodesModal.propTypes = {
   context: PropTypes.string,
   appendContext: PropTypes.string,
   langReadable: PropTypes.string,
-  userUpVotePower: PropTypes.number,
 };
 
 export default AffiliateCodesModal;

@@ -127,7 +127,7 @@ export const searchObjectsAutoCompete = (
   dispatch({
     type: SEARCH_OBJECTS.ACTION,
     payload: useExtendedSearch
-      ? ApiClient.extendedSearchObjects(search, objType, forParent, 15, locale, body)
+      ? ApiClient.extendedSearchObjects(search, objType, forParent, 50, locale, body)
           .then(result => ({
             result,
             search,
