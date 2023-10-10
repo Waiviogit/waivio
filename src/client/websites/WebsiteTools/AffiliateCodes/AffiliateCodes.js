@@ -6,7 +6,6 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { isEmpty, isNil } from 'lodash';
 import { getAuthenticatedUser } from '../../../../store/authStore/authSelectors';
-import { getVotePercent } from '../../../../store/settingsStore/settingsSelectors';
 import { affiliateCodeVoteAppend, appendObject } from '../../../../store/appendStore/appendActions';
 import { getUsedLocale } from '../../../../store/appStore/appSelectors';
 import { getAffiliateObjects } from '../../../../store/affiliateCodes/affiliateCodesSelectors';
@@ -30,7 +29,6 @@ export const AffiliateCodes = ({
   resetAffiliateObjs,
   user,
   langReadable,
-  userUpVotePower,
 }) => {
   const [openAppendModal, setOpenAppendModal] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -99,7 +97,6 @@ export const AffiliateCodes = ({
         setOpenAppendModal={setOpenAppendModal}
         setLoading={setLoading}
         langReadable={langReadable}
-        userUpVotePower={userUpVotePower}
         intl={intl}
         loading={loading}
         getFieldDecorator={getFieldDecorator}
@@ -129,7 +126,6 @@ AffiliateCodes.propTypes = {
   setAffiliateObjs: PropTypes.func,
   resetAffiliateObjs: PropTypes.func,
   langReadable: PropTypes.string,
-  userUpVotePower: PropTypes.number,
 };
 
 export default connect(
@@ -137,7 +133,6 @@ export default connect(
     affiliateObjects: getAffiliateObjects(state),
     langReadable: getUsedLocale(state),
     user: getAuthenticatedUser(state),
-    userUpVotePower: getVotePercent(state),
   }),
   {
     rejectCode: affiliateCodeVoteAppend,
