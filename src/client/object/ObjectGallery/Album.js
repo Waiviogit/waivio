@@ -1,21 +1,19 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Card, Row } from 'antd';
-import Lightbox from 'react-image-lightbox';
 import { FormattedMessage } from 'react-intl';
-import { getImagePath } from '../../../common/helpers/image';
-import LightboxHeader from '../../widgets/LightboxTools/LightboxHeader';
 import AlbumFeed from './AlbumFeed';
 
 import './GalleryAlbum.less';
-import LightboxFooter from '../../widgets/LightboxTools/LightboxFooter';
+import LightboxWithAppendForm from '../../widgets/LightboxTools/LightboxWithAppendForm';
 
 class Album extends React.Component {
   static propTypes = {
     album: PropTypes.shape(),
     getMoreRelatedAlbum: PropTypes.func,
     permlink: PropTypes.string.isRequired,
-    objName: PropTypes.string,
+    wobject: PropTypes.shape(),
+    albums: PropTypes.arrayOf(),
   };
   static defaultProps = {
     album: {},
@@ -59,27 +57,12 @@ class Album extends React.Component {
           )}
         </Card>
         {isOpen && (
-          <Lightbox
-            wrapperClassName="LightboxTools"
-            imageTitle={
-              <LightboxHeader
-                objName={this.props.objName}
-                albumName={album.body}
-                userName={pictures[photoIndex].creator}
-              />
-            }
-            imageCaption={<LightboxFooter post={pictures[photoIndex]} />}
-            mainSrc={getImagePath(album, pictures[photoIndex].body, 'preview')}
-            nextSrc={getImagePath(
-              album,
-              pictures[(photoIndex + 1) % pictures.length].body,
-              'preview',
-            )}
-            prevSrc={getImagePath(
-              album,
-              pictures[(photoIndex + pictures.length - 1) % pictures.length].body,
-              'preview',
-            )}
+          <LightboxWithAppendForm
+            wobject={this.props.wobject}
+            album={album}
+            albums={this.props.albums}
+            pics={pictures}
+            photoIndex={photoIndex}
             onCloseRequest={() => this.setState({ isOpen: false })}
             onMovePrevRequest={() =>
               this.setState({

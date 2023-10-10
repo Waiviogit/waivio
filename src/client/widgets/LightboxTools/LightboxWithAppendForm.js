@@ -41,15 +41,15 @@ const LightboxWithAppendForm = ({
           albums={albums}
           wobject={wobject}
           albumName={album?.body}
-          userName={pics[photoIndex].creator}
+          userName={pics[photoIndex]?.creator}
           currentSrc={pics[photoIndex]?.body}
           setField={setField}
           setShowModal={setShowModal}
           setSelectedAlbum={setSelectedAlbum}
         />
       }
-      imageCaption={<LightboxFooter post={pics[photoIndex]} />}
-      mainSrc={pics[photoIndex]?.body}
+      imageCaption={!isPost && <LightboxFooter post={pics[photoIndex]} />}
+      mainSrc={pics[photoIndex]?.body || pics[photoIndex]?.src}
       nextSrc={
         pics.length <= 1 || photoIndex === pics.length - 1
           ? null

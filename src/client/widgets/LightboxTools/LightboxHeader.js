@@ -8,8 +8,9 @@ import Avatar from '../../components/Avatar';
 import ObjectAvatar from '../../components/ObjectAvatar';
 import { isMobile } from '../../../common/helpers/apiHelpers';
 import { getObjectName } from '../../../common/helpers/wObjectHelper';
-import './LightboxTools.less';
 import SearchObjectsAutocomplete from '../../components/EditorObject/SearchObjectsAutocomplete';
+import { objectFields } from '../../../common/constants/listOfFields';
+import './LightboxTools.less';
 
 const LightboxHeader = ({
   userName,
@@ -18,7 +19,6 @@ const LightboxHeader = ({
   relatedPath,
   closeModal,
   wobject,
-
   albums,
   setField,
   setShowModal,
@@ -26,14 +26,14 @@ const LightboxHeader = ({
   isPost,
 }) => {
   const avatarOption = 'Set as avatar picture';
-  const filteredAlbums = albums?.filter(album => album.body !== 'Related');
+  const filteredAlbums = albums?.filter(album => album?.body !== 'Related');
   const options = [...filteredAlbums, { body: avatarOption }];
 
   const onSelectOption = opt => {
     if (opt === avatarOption) {
-      setField('avatar');
+      setField(objectFields.avatar);
     } else {
-      setField('galleryItem');
+      setField(objectFields.galleryItem);
       setSelectedAlbum(albums.find(al => al.body === opt));
     }
     setShowModal(true);
@@ -66,14 +66,21 @@ const LightboxHeader = ({
           'LightboxTools__albumInfo-related-container': relatedWobjs,
         })}
       >
-        {getObjectName(wobject) && albumName && !isMobile() && (
-          <>
+        {isPost ? (
+          <div className={'LightboxTools__search-container'}>
             <span className="LightboxTools__albumInfo-title">
               <FormattedMessage id="album" defaultMessage="Album" />:
             </span>
-            {isPost ? (
-              <SearchObjectsAutocomplete className={'LightboxTools__select'} />
-            ) : (
+            <SearchObjectsAutocomplete className={'LightboxTools__search-objects'} />
+          </div>
+        ) : (
+          getObjectName(wobject) &&
+          albumName &&
+          !isMobile() && (
+            <>
+              <span className="LightboxTools__albumInfo-title">
+                <FormattedMessage id="album" defaultMessage="Album" />:
+              </span>
               <Select
                 defaultValue={albumName}
                 onSelect={onSelectOption}
@@ -86,8 +93,8 @@ const LightboxHeader = ({
                   </Select.Option>
                 ))}
               </Select>
-            )}
-          </>
+            </>
+          )
         )}
         {relatedWobjs && !isMobile() && (
           <>
