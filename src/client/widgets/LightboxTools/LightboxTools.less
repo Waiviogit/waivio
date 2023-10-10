@@ -2,6 +2,52 @@
 @import (reference) '../../styles/custom.less';
 
 .LightboxTools {
+  &__search-container {
+    display: flex;
+    align-items: center;
+  }
+  &__search-objects {
+    border-radius: 4px;
+    padding: 4px 16px;
+    min-width: 300px;
+    line-height: 1;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    opacity: 0.7;
+    border: none;
+    background-color: @grey-nero;
+    .ant-select-combobox.ant-select-search__field__wrap {
+      input.ant-select-auto-complete.ant-select.ant-input {
+        color: @white-smoke !important;
+      }
+    }
+  }
+  &__select {
+    border-radius: 4px;
+    padding: 4px 16px;
+    min-width: 300px;
+    line-height: 1;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    color: @white-smoke;
+    opacity: 0.7;
+    border: 1px solid @normal-grey;
+    background-color: @grey-nero;
+
+    .ant-select-selection-selected-value {
+      color: @white-smoke;
+    }
+    .ant-select-arrow {
+      color: @white-smoke!important;
+    }
+  }
+  &__dropdown {
+    &.ant-select-dropdown.ant-select-dropdown--single.ant-select-dropdown-placement-bottomLeft {
+      z-index: 1400 !important;
+    }
+  }
   .ril-image-current.ril__image {
     background-color: @white !important;
   }
@@ -62,6 +108,7 @@
       max-width: 290px;
     }
     &-title {
+      margin-right: 10px;
       color: @white-smoke;
       opacity: 0.7;
       font-weight: 600;
