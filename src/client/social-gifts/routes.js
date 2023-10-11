@@ -86,6 +86,11 @@ const routes = host => ({
       component: NewDiscover,
     },
     {
+      path: '/discover-users/:user?',
+      exact: true,
+      component: NewDiscover,
+    },
+    {
       path: '/discover-departments/:name/:department',
       exact: true,
       component: DepatmentsSearch,

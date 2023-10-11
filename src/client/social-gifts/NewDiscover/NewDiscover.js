@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
-import { useHistory, useParams } from 'react-router';
+import { useDispatch, useSelector } from 'react-redux';
+import { useHistory, useParams, useRouteMatch } from 'react-router';
 import Helmet from 'react-helmet';
 import InfiniteSroll from 'react-infinite-scroller';
 import { Tag } from 'antd';
@@ -10,27 +10,35 @@ import { getHelmetIcon } from '../../../store/appStore/appSelectors';
 import ShopObjectCard from '../ShopObjectCard/ShopObjectCard';
 import Loading from '../../components/Icon/Loading';
 import useQuery from '../../../hooks/useQuery';
-import { getObjectType } from '../../../waivioApi/ApiClient';
+import { getObjectType, searchUsers } from '../../../waivioApi/ApiClient';
 import { getLocale } from '../../../store/settingsStore/settingsSelectors';
+import { useSeoInfo } from '../../../hooks/useSeoInfo';
+import { getAuthenticatedUserName, isGuestUser } from '../../../store/authStore/authSelectors';
+import UserCard from '../../components/UserCard';
+import WeightTag from '../../components/WeightTag';
+import { followUser, unfollowUser } from '../../../store/usersStore/usersActions';
 
 import './NewDiscover.less';
-import { useSeoInfo } from '../../../hooks/useSeoInfo';
-import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 
 const wobjects_count = 20;
 
 const NewDiscover = () => {
-  const { type } = useParams();
+  const { type, user } = useParams();
   const favicon = useSelector(getHelmetIcon);
   const locale = useSelector(getLocale);
+  const isGuest = useSelector(isGuestUser);
   const userName = useSelector(getAuthenticatedUserName);
+  const dispatch = useDispatch();
+  const match = useRouteMatch();
   const history = useHistory();
   const query = useQuery();
   const [objects, setObjects] = useState([]);
+  const [users, setUsers] = useState([]);
   const [hasMoreObjects, setHasMoreObjects] = useState();
   const [loading, setLoading] = useState(true);
+  const [hasUsers, setHasUsers] = useState(false);
   const search = query.get('search')?.replaceAll('%26%', '&');
-
+  const discoverUsers = match.url.includes('discover-users');
   const desc = 'All objects are located here. Discover new objects!';
   const image =
     'https://images.hive.blog/p/DogN7fF3oJDSFnVMQK19qE7K3somrX2dTE7F3viyR7zVngPPv827QvEAy1h8dJVrY1Pa5KJWZrwXeHPHqzW6dL9AG9fWHRaRVeY8B4YZh4QrcaPRHtAtYLGebHH7zUL9jyKqZ6NyLgCk3FRecMX7daQ96Zpjc86N6DUQrX18jSRqjSKZgaj2wVpnJ82x7nSGm5mmjSih5Xf71?format=match&mode=fit&width=800&height=600';
@@ -39,28 +47,45 @@ const NewDiscover = () => {
 
   useEffect(() => {
     const ac = new AbortController();
-    const requestData = {
-      locale,
-      userName,
-      wobjects_count,
-    };
 
-    setLoading(true);
-
-    if (search)
-      requestData.filter = {
-        searchString: search,
+    if (!discoverUsers) {
+      const requestData = {
+        locale,
+        userName,
+        wobjects_count,
       };
 
-    getObjectType(type, requestData, ac).then(res => {
-      setObjects(uniqBy(res?.related_wobjects, 'author_permlink'));
-      setHasMoreObjects(res?.hasMoreWobjects);
-      setLoading(false);
-    });
+      setLoading(true);
+
+      if (search)
+        requestData.filter = {
+          searchString: search,
+        };
+
+      getObjectType(type, requestData, ac).then(res => {
+        setObjects(uniqBy(res?.related_wobjects, 'author_permlink'));
+        setHasMoreObjects(res?.hasMoreWobjects);
+        setLoading(false);
+      });
+    } else {
+      searchUsers(user, userName, 30, !isGuest, 0).then(res => {
+        setUsers(res.users);
+        setHasUsers(res.hasMore);
+        setLoading(false);
+      });
+    }
 
     return () => ac.abort();
-  }, [search, type]);
+  }, [search, type, user]);
 
+  const loadMoreUsers = () => {
+    hasUsers &&
+      searchUsers(user, userName, 30, !isGuest, users.length).then(res => {
+        setUsers([...users, ...res.users]);
+        setHasUsers(res.hasMore);
+        setLoading(false);
+      });
+  };
   const loadMore = () => {
     const requestData = {
       locale,
@@ -80,11 +105,22 @@ const NewDiscover = () => {
   };
 
   const handleDeleteTag = () => {
-    history.push(`/discover-objects/${type}`);
-    setObjects([]);
-    setHasMoreObjects(false);
-    setLoading(true);
+    if (discoverUsers) {
+      history.push(`/discover-users`);
+      setUsers([]);
+      setHasUsers(false);
+      setLoading(true);
+    } else {
+      history.push(`/discover-objects/${type}`);
+      setObjects([]);
+      setUsers([]);
+      setHasUsers(false);
+      setHasMoreObjects(false);
+      setLoading(true);
+    }
   };
+  const followSearchUser = name => dispatch(followUser(name));
+  const unfollowSearchUser = name => dispatch(unfollowUser(name));
 
   return (
     <div className="NewDiscover">
@@ -109,23 +145,44 @@ const NewDiscover = () => {
         <link id="favicon" rel="icon" href={favicon} type="image/x-icon" />
       </Helmet>
       <div className="NewDiscover__wrap">
-        <h3 className="NewDiscover__type">{type}</h3>
-        {search && (
+        <h3 className="NewDiscover__type">{discoverUsers ? 'Users' : type}</h3>
+        {(discoverUsers ? user : search) && (
           <Tag closable onClose={handleDeleteTag}>
-            {search}
+            {discoverUsers ? user : search}
           </Tag>
         )}
       </div>
       {loading ? (
         <Loading />
       ) : (
-        <InfiniteSroll hasMore={hasMoreObjects} loader={<Loading />} loadMore={loadMore}>
-          <div className="NewDiscover__list" key={'list'}>
-            {objects?.map(obj => (
-              <ShopObjectCard key={obj?.author_permlink} wObject={obj} />
-            ))}{' '}
+        <>
+          <div className="UserDynamicList new-discover-content-margin">
+            <InfiniteSroll hasMore={hasUsers} loader={<Loading />} loadMore={loadMoreUsers}>
+              {users.map(u => {
+                if (u.account !== userName) {
+                  return (
+                    <UserCard
+                      key={u.account}
+                      user={{ ...u, name: u.account }}
+                      unfollow={unfollowSearchUser}
+                      follow={followSearchUser}
+                      alt={<WeightTag weight={u.wobjects_weight || u.weight} />}
+                    />
+                  );
+                }
+
+                return null;
+              })}
+            </InfiniteSroll>
           </div>
-        </InfiniteSroll>
+          <InfiniteSroll hasMore={hasMoreObjects} loader={<Loading />} loadMore={loadMore}>
+            <div className="NewDiscover__list" key={'list'}>
+              {objects?.map(obj => (
+                <ShopObjectCard key={obj?.author_permlink} wObject={obj} />
+              ))}{' '}
+            </div>
+          </InfiniteSroll>
+        </>
       )}
     </div>
   );
