@@ -2,12 +2,20 @@ import React, { useCallback, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { isEmpty } from 'lodash';
 import Helmet from 'react-helmet';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { appendObject } from '../../../store/appendStore/appendActions';
+import { addAlbumToStore } from '../../../store/galleryStore/galleryActions';
+import {
+  getObject as getObjectState,
+  getWobjectNested,
+} from '../../../store/wObjectStore/wObjectSelectors';
 import ScrollToTopOnMount from '../../components/Utils/ScrollToTopOnMount';
 import {
   getObjectAvatar,
   getObjectName,
   getObjectType,
+  prepareAlbumData,
+  prepareAlbumToStore,
 } from '../../../common/helpers/wObjectHelper';
 import SocialProduct from '../../social-gifts/SocialProduct/SocialProduct';
 import WidgetContent from '../../social-gifts/WidgetContent/WidgetContent';
@@ -20,18 +28,30 @@ import { useSeoInfo } from '../../../hooks/useSeoInfo';
 
 const Wobj = ({
   authenticatedUserName: userName,
-  wobject,
   isEditMode,
   toggleViewEditMode,
   route,
   handleFollowClick,
-  appendAlbum,
-  nestedWobject,
   isSocial,
   weightValue,
 }) => {
   const favicon = useSelector(getHelmetIcon);
   const siteName = useSelector(getSiteName);
+  const wobject = useSelector(getObjectState);
+  const nestedWobject = useSelector(getWobjectNested);
+  const dispatch = useDispatch();
+  const appendAlbum = () => {
+    const formData = {
+      galleryAlbum: 'Photos',
+    };
+
+    const data = prepareAlbumData(formData, userName, wobject);
+    const album = prepareAlbumToStore(data);
+
+    const { author } = dispatch(appendObject(data));
+
+    dispatch(addAlbumToStore({ ...album, author }));
+  };
 
   useEffect(() => {
     const objectType = getObjectType(wobject);
@@ -160,22 +180,17 @@ const Wobj = ({
 Wobj.propTypes = {
   route: PropTypes.shape().isRequired,
   authenticatedUserName: PropTypes.string.isRequired,
-  wobject: PropTypes.shape(),
-  nestedWobject: PropTypes.shape(),
   isEditMode: PropTypes.bool.isRequired,
   isSocial: PropTypes.bool,
   toggleViewEditMode: PropTypes.func,
   handleFollowClick: PropTypes.func,
   weightValue: PropTypes.number.isRequired,
-  appendAlbum: PropTypes.func,
 };
 
 Wobj.defaultProps = {
   wobject: {},
   toggleViewEditMode: () => {},
   handleFollowClick: () => {},
-  appendAlbum: () => {},
-  supportedObjectTypes: [],
 };
 
 export default Wobj;

@@ -5,7 +5,7 @@ import { injectIntl } from 'react-intl';
 import { Icon } from 'antd';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import { useHistory, useRouteMatch } from 'react-router';
+import { useHistory } from 'react-router';
 
 import Breadcrumbs from '../Breadcrumbs/Breadcrumbs';
 import Loading from '../../components/Icon/Loading';
@@ -25,7 +25,6 @@ import ListDescription from '../ListDescription/ListDescription';
 const CheckListView = ({ wobject, listItems, loading, intl, hideBreadCrumbs }) => {
   const defaultListImage = useSelector(getWebsiteDefaultIconList);
   const history = useHistory();
-  const match = useRouteMatch();
   const listType = wobject?.object_type === 'list';
   const getListRow = listItem => {
     const isList = listItem.object_type === 'list';
@@ -37,10 +36,10 @@ const CheckListView = ({ wobject, listItems, loading, intl, hideBreadCrumbs }) =
         <div className="Checklist__listItems">
           <Link
             to={{
-              pathname: `/checklist/${match.params.name}`,
+              pathname: `/checklist/${wobject?.author_permlink}`,
               hash: createNewHash(listItem?.author_permlink, history.location.hash),
               search:
-                match.params.name === listItem?.author_permlink
+                wobject?.author_permlink === listItem?.author_permlink
                   ? ''
                   : `currObj=${listItem?.author_permlink}`,
             }}
@@ -127,11 +126,6 @@ CheckListView.propTypes = {
   }).isRequired,
   listItems: PropTypes.arrayOf(),
   intl: PropTypes.shape({ formatMessage: PropTypes.func }).isRequired,
-  match: PropTypes.shape({
-    params: PropTypes.shape({
-      name: PropTypes.string,
-    }),
-  }).isRequired,
   loading: PropTypes.bool,
   hideBreadCrumbs: PropTypes.bool,
 };

@@ -4,7 +4,7 @@ import { NavLink } from 'react-router-dom';
 import { useHistory } from 'react-router';
 import PropTypes from 'prop-types';
 
-const LinkItem = ({ link }) => {
+const LinkItem = ({ link, index }) => {
   const history = useHistory();
 
   return link.type === 'blank' ? (
@@ -23,7 +23,10 @@ const LinkItem = ({ link }) => {
   ) : (
     <NavLink
       className="WebsiteTopNavigation__link"
-      isActive={() => history.location.pathname.includes(link?.link)}
+      isActive={() =>
+        (!index && history.location.pathname === '/') ||
+        history.location.pathname.includes(link?.link)
+      }
       activeClassName={'WebsiteTopNavigation__link--active'}
       key={link.link}
       to={link.link}
@@ -42,6 +45,7 @@ LinkItem.propTypes = {
     name: PropTypes.string,
     type: PropTypes.string,
   }),
+  index: PropTypes.number,
 };
 
 export default LinkItem;
