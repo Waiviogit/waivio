@@ -75,4 +75,16 @@ LightboxWithAppendForm.propTypes = {
   onCloseRequest: PropTypes.func,
 };
 
+LightboxWithAppendForm.defaultProps = {
+  albums: [],
+  pics: [],
+  wobject: {},
+  album: {},
+  photoIndex: 0,
+  onMovePrevRequest: () => {},
+  isPost: false,
+  onMoveNextRequest: () => {},
+  onCloseRequest: () => {},
+};
+
 export default LightboxWithAppendForm;

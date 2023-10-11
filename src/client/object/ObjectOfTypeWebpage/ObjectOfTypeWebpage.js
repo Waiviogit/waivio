@@ -19,10 +19,10 @@ import { objectFields } from '../../../common/constants/listOfFields';
 import { getLastPermlinksFromHash, getObjectName } from '../../../common/helpers/wObjectHelper';
 import { setNestedWobject } from '../../../store/wObjectStore/wobjActions';
 import AppendWebpageModal from './AppendWebpageModal';
-
-import './ObjectOfTypeWebpage.less';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 import { getUsedLocale } from '../../../store/appStore/appSelectors';
+
+import './ObjectOfTypeWebpage.less';
 
 const customSlate = slate(config => ({
   ...config,

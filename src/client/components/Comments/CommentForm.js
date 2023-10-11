@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState, useLayoutEffect } from 'react';
 import PropTypes from 'prop-types';
-import { debounce, get } from 'lodash';
+import { debounce, get, trimEnd } from 'lodash';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { Transforms } from 'slate';
 import { Button, Modal } from 'antd';
@@ -86,9 +86,16 @@ const CommentForm = props => {
   const setBodyAndRender = value => {
     const markdownBody = value.children ? editorStateToMarkdownSlate(value.children) : value;
 
+    if (
+      (props.isEdit &&
+        Boolean(props.inputValue) &&
+        trimEnd(props.inputValue) !== trimEnd(markdownBody)) ||
+      !props.isEdit
+    )
+      debouncedDraftSave(markdownBody);
+
     setBody(markdownBody);
     setHTML(remarkable.render(markdownBody));
-    if (markdownBody) debouncedDraftSave(markdownBody);
   };
 
   const setShowEditorSearch = value => setIsShowEditorSearch(value);

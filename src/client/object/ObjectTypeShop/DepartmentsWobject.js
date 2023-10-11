@@ -6,11 +6,13 @@ import { useDispatch } from 'react-redux';
 import ShopDepartmentsList from '../../Shop/ShopDepartments/ShopDepartmentsList';
 import { getWobjectDepartments } from '../../../store/shopStore/shopActions';
 
-const DepartmentsWobject = ({ shopFilter, onClose }) => {
+const DepartmentsWobject = ({ shopFilter, onClose, name }) => {
   const match = useRouteMatch();
   const dispatch = useDispatch();
+  const wobjName = name || match.params.name;
+
   const getShopDepartments = (department, excluded, path) =>
-    dispatch(getWobjectDepartments(match.params.name, department, excluded, path));
+    dispatch(getWobjectDepartments(wobjName, department, excluded, path));
 
   return (
     <ShopDepartmentsList
@@ -19,7 +21,7 @@ const DepartmentsWobject = ({ shopFilter, onClose }) => {
       onClose={onClose}
       path={
         match.url.includes('object-shop')
-          ? `/object-shop/${match.params.name}`
+          ? `/object-shop/${wobjName}`
           : `/object/${match.params.name}/shop`
       }
     />
@@ -29,6 +31,7 @@ const DepartmentsWobject = ({ shopFilter, onClose }) => {
 DepartmentsWobject.propTypes = {
   onClose: PropTypes.func,
   shopFilter: PropTypes.shape(),
+  name: PropTypes.string,
 };
 
 export default DepartmentsWobject;
