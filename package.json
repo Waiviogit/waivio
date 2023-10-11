@@ -19,7 +19,7 @@
     "dev": "PORT=3002 node --max-old-space-size=8192 ./scripts/start.js",
     "dev:sg": "PORT=4000 node --max-old-space-size=8192 ./scripts/start.js",
     "dev:dg": "PORT=3000 node --max-old-space-size=8192 ./scripts/start.js",
-    "build": "node --max-old-space-size=6144 ./scripts/build.js",
+    "build": "node --max-old-space-size=6144 --openssl-legacy-provider ./scripts/build.js",
     "buildServer": "node --max-old-space-size=6144 ./scripts/buildServer.js",
     "start": "node ./build/server.js",
     "test": "jest --config jest.config.json --coverage",
