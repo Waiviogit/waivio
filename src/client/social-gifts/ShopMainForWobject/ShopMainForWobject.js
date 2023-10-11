@@ -7,6 +7,7 @@ import DepartmentsWobject from '../../object/ObjectTypeShop/DepartmentsWobject';
 import WobjectShopFilter from '../../object/ObjectTypeShop/WobjectShopFilter';
 import WobjectShoppingList from '../../object/ObjectTypeShop/WobjectShoppingList';
 import Wobj from '../../object/Wobj/Wobj';
+import NestedChecklist from '../Checklist/NestedChecklist';
 
 const ShopMainForWobject = () => {
   const obj = useSelector(getObjectState);
@@ -26,6 +27,8 @@ const ShopMainForWobject = () => {
             </div>
           </div>
         );
+      case 'list':
+        return <NestedChecklist permlink={obj?.author_permlink} />;
 
       default:
         return (
