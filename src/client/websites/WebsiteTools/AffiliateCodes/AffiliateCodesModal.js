@@ -23,7 +23,7 @@ const AffiliateCodesModal = ({
   appendWobject,
 }) => {
   const { setFieldsValue, getFieldValue, validateFieldsAndScroll } = form;
-  const userUpVotePower = 1000;
+  const userUpVotePower = 100;
   const hideModal = () => {
     setFieldsValue({ [objectFields.affiliateCode]: '' });
     setOpenAppendModal(false);

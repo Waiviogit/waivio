@@ -134,7 +134,7 @@ export const searchObjectsAutoCompete = (
             locale: usedLocale,
           }))
           .catch(error => console.error('Object search >', error.message))
-      : ApiClient.searchObjects(search, objType, forParent, 15, locale, body)
+      : ApiClient.searchObjects(search, objType, forParent, 50, locale, body)
           .then(result => ({
             result,
             search,
