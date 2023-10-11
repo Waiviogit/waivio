@@ -1,7 +1,8 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
+import React, { useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import Views from '../../../routes/components';
-import { getObject as getObjectState } from '../../../store/wObjectStore/wObjectSelectors';
+import { getNavigItems } from '../../../store/appStore/appSelectors';
+import { getObject } from '../../../store/wObjectStore/wobjectsActions';
 import Affix from '../../components/Utils/Affix';
 import DepartmentsWobject from '../../object/ObjectTypeShop/DepartmentsWobject';
 import WobjectShopFilter from '../../object/ObjectTypeShop/WobjectShopFilter';
@@ -10,7 +11,17 @@ import Wobj from '../../object/Wobj/Wobj';
 import NestedChecklist from '../Checklist/NestedChecklist';
 
 const ShopMainForWobject = () => {
-  const obj = useSelector(getObjectState);
+  const links = useSelector(getNavigItems);
+  const obj = links[0];
+  const dispatch = useDispatch();
+  const authorPermlink = obj?.permlink;
+
+  useEffect(() => {
+    if (!['shop', 'list'].includes(obj?.object_type) && authorPermlink) {
+      dispatch(getObject(authorPermlink));
+    }
+  }, [links]);
+
   const getFirstPage = () => {
     switch (obj?.object_type) {
       case 'shop':
@@ -18,17 +29,17 @@ const ShopMainForWobject = () => {
           <div className="settings-layout">
             <Affix className="leftContainer" stickPosition={77}>
               <div className="left">
-                <DepartmentsWobject name={obj?.author_permlink} />
-                <WobjectShopFilter name={obj?.author_permlink} />
+                <DepartmentsWobject name={authorPermlink} />
+                <WobjectShopFilter name={authorPermlink} />
               </div>
             </Affix>
             <div className="center">
-              <WobjectShoppingList name={obj?.author_permlink} isSocial />
+              <WobjectShoppingList name={authorPermlink} isSocial />
             </div>
           </div>
         );
       case 'list':
-        return <NestedChecklist permlink={obj?.author_permlink} />;
+        return <NestedChecklist permlink={authorPermlink} />;
 
       default:
         return (

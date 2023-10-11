@@ -12,12 +12,7 @@ import {
   getWobjectIsFailed,
 } from '../../../store/wObjectStore/wObjectSelectors';
 import { getLocale } from '../../../store/settingsStore/settingsSelectors';
-import {
-  getCurrentHost,
-  getIsSocial,
-  getWeightValue,
-  getNavigItems,
-} from '../../../store/appStore/appSelectors';
+import { getCurrentHost, getIsSocial, getWeightValue } from '../../../store/appStore/appSelectors';
 
 import {
   clearObjectFromStore,
@@ -48,8 +43,7 @@ import { getRate, getRewardFund } from '../../../store/appStore/appActions';
 
 const WobjectContainer = props => {
   const isEditMode = useSelector(getIsEditMode);
-  const link = useSelector(getNavigItems)[1];
-  const name = link?.permlink || props.match.params.name;
+  const name = props.match.params.name;
   const newsFilter =
     props.match.params[1] === 'newsFilter' ? { newsFilter: props.match.params.itemId } : {};
 
