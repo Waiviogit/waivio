@@ -9,23 +9,23 @@ import DepartmentsWobject from '../../object/ObjectTypeShop/DepartmentsWobject';
 import WobjectShopFilter from '../../object/ObjectTypeShop/WobjectShopFilter';
 import WobjectShoppingList from '../../object/ObjectTypeShop/WobjectShoppingList';
 import Wobj from '../../object/Wobj/Wobj';
-import NestedChecklist from '../Checklist/NestedChecklist';
+import Checklist from '../Checklist/Checklist';
 
 const ShopMainForWobject = () => {
   const links = useSelector(getNavigItems);
   const objState = useSelector(getObjectState);
-  const obj = links[0] || objState;
+  const objType = (links[0] || objState)?.object_type;
   const dispatch = useDispatch();
-  const authorPermlink = obj?.permlink;
+  const authorPermlink = links[0]?.permlink || objState.author_permlink;
 
   useEffect(() => {
-    if (!['shop', 'list', 'page'].includes(obj?.object_type) && authorPermlink) {
+    if (!['shop', 'list', 'page'].includes(objType) && authorPermlink) {
       dispatch(getObject(authorPermlink));
     }
   }, [links]);
 
   const getFirstPage = () => {
-    switch (obj?.object_type) {
+    switch (objType) {
       case 'shop':
         return (
           <div className="shifted">
@@ -44,7 +44,7 @@ const ShopMainForWobject = () => {
         );
       case 'list':
       case 'page':
-        return <NestedChecklist permlink={authorPermlink} />;
+        return <Checklist permlink={authorPermlink} />;
 
       default:
         return (
