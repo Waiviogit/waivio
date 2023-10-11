@@ -88,7 +88,6 @@ export default class ObjectLightbox extends Component {
             </a>
             {this.state.open && (!isEmpty(pics) || !isEmpty(parentAvatar)) && (
               <LightboxWithAppendForm
-                isPost
                 onCloseRequest={this.handleCloseRequest}
                 onMovePrevRequest={() =>
                   this.setState({ photoIndex: (photoIndex - 1) % pics.length })

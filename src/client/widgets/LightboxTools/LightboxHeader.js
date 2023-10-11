@@ -1,5 +1,6 @@
 import React from 'react';
 import { Select } from 'antd';
+import { isEmpty } from 'lodash';
 import * as PropType from 'prop-types';
 import { Link } from 'react-router-dom';
 import classNames from 'classnames';
@@ -8,7 +9,7 @@ import Avatar from '../../components/Avatar';
 import ObjectAvatar from '../../components/ObjectAvatar';
 import { isMobile } from '../../../common/helpers/apiHelpers';
 import { getObjectName } from '../../../common/helpers/wObjectHelper';
-import SearchObjectsAutocomplete from '../../components/EditorObject/SearchObjectsAutocomplete';
+// import SearchObjectsAutocomplete from '../../components/EditorObject/SearchObjectsAutocomplete';
 import { objectFields } from '../../../common/constants/listOfFields';
 import './LightboxTools.less';
 
@@ -62,18 +63,19 @@ const LightboxHeader = ({
 
       <div
         className={classNames({
-          'LightboxTools__albumInfo-container': albumName,
-          'LightboxTools__albumInfo-related-container': relatedWobjs,
+          'LightboxTools__albumInfo-container': !isEmpty(albumName),
+          'LightboxTools__albumInfo-related-container': !isEmpty(relatedWobjs),
         })}
       >
-        {isPost ? (
-          <div className={'LightboxTools__search-container'}>
-            <span className="LightboxTools__albumInfo-title">
-              <FormattedMessage id="album" defaultMessage="Album" />:
-            </span>
-            <SearchObjectsAutocomplete className={'LightboxTools__search-objects'} />
-          </div>
-        ) : (
+        {!isPost &&
+          //   ? (
+          //   <div className={'LightboxTools__search-container'}>
+          //     <span className="LightboxTools__albumInfo-title">
+          //       <FormattedMessage id="album" defaultMessage="Album" />:
+          //     </span>
+          //     <SearchObjectsAutocomplete className={'LightboxTools__search-objects'} />
+          //   </div>
+          // ) :
           getObjectName(wobject) &&
           albumName &&
           !isMobile() && (
@@ -83,6 +85,7 @@ const LightboxHeader = ({
               </span>
               <Select
                 defaultValue={albumName}
+                value={albumName}
                 onSelect={onSelectOption}
                 className={'LightboxTools__select'}
                 dropdownClassName={'LightboxTools__dropdown'}
@@ -94,9 +97,8 @@ const LightboxHeader = ({
                 ))}
               </Select>
             </>
-          )
-        )}
-        {relatedWobjs && !isMobile() && (
+          )}
+        {!isEmpty(relatedWobjs) && !isMobile() && isPost && (
           <>
             <a onClick={closeModal} href={relatedPath} className="LightboxTools__albumInfo-title">
               <FormattedMessage id="related_wobjects" defaultMessage="Related objects" />:
@@ -129,5 +131,19 @@ LightboxHeader.propTypes = {
   relatedWobjs: PropType.arrayOf(),
   albums: PropType.arrayOf(),
   wobject: PropType.shape(),
+};
+
+LightboxHeader.defaultProps = {
+  userName: '',
+  albumName: '',
+  relatedPath: '',
+  isPost: false,
+  relatedWobjs: [],
+  albums: [],
+  wobject: {},
+  closeModal: () => {},
+  setField: () => {},
+  setShowModal: () => {},
+  setSelectedAlbum: () => {},
 };
 export default LightboxHeader;
