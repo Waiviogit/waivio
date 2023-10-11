@@ -41,9 +41,9 @@ const ListSwitcher = props => {
     if (activeCrumb?.subdirectory || !match.params.department) {
       switch (props.type) {
         case 'user':
-          return <UserShoppingList isSocial={props.isSocial} user={props.user} />;
+          return <UserShoppingList isSocial={props.isSocial} name={props.user} />;
         case 'wobject':
-          return <WobjectShoppingList isSocial={props.isSocial} permlink={props.user} />;
+          return <WobjectShoppingList isSocial={props.isSocial} name={props.user} />;
 
         default:
           return <GlobalShopingList />;
@@ -65,10 +65,10 @@ const ListSwitcher = props => {
 
     switch (props.type) {
       case 'user':
-        return <UserFilters userName={props.user} onClose={closeFilter} />;
+        return <UserFilters name={props.user} onClose={closeFilter} />;
 
       case 'wobject':
-        return <WobjectShopFilter onClose={closeFilter} />;
+        return <WobjectShopFilter name={props.user} onClose={closeFilter} />;
 
       default:
         return <GlobalShopFilters onClose={closeFilter} />;
