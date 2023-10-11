@@ -407,6 +407,8 @@ class StoryFull extends React.Component {
             wrapperClassName="LightboxTools"
             imageTitle={
               <LightboxHeader
+                isPost
+                albums={[]}
                 relatedWobjs={post.wobjects}
                 closeModal={() => this.closeLightboxModal(linkedObjects)}
                 relatedPath={!isEmpty(linkedObjects) ? '#allLinkedObjects' : '#allRelatedObjects'}
