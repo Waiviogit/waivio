@@ -654,7 +654,7 @@ class ObjectInfo extends React.Component {
           (pictures.length > 0 || avatar || hasOptionsPics) && (
             <PicturesCarousel
               albums={[...this.props.albums, this.props.relatedAlbum]}
-              objName={wobject.default_name}
+              wobject={wobject}
               activePicture={hoveredOption || activeOption}
               pics={getPictures()}
             />
@@ -977,7 +977,7 @@ class ObjectInfo extends React.Component {
               <PicturesCarousel
                 pics={pictures}
                 albums={[...this.props.albums, this.props.relatedAlbum]}
-                objName={wobject.default_name}
+                wobject={wobject}
               />
             ),
           )}

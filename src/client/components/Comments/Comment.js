@@ -84,7 +84,6 @@ class Comment extends React.Component {
   componentDidMount() {
     const { comment } = this.props;
     const { hash } = window.location;
-
     const anchorLink = `#@${comment.author}/${comment.permlink}`;
 
     if (hash.indexOf(anchorLink) === 0 || (comment.focus && !this.props.isQuickComment)) {
@@ -206,9 +205,8 @@ class Comment extends React.Component {
       });
   }
 
-  handleEditComment = (parentPost, commentValue) => {
+  handleEditComment = (parentPost, commentValue) =>
     this.handleSubmitComment(parentPost, commentValue, true, this.props.comment);
-  };
 
   handleShowHiddenComment = () => {
     this.setState({
@@ -254,7 +252,14 @@ class Comment extends React.Component {
         return <QuickCommentEditor {...props} />;
       }
 
-      return <CommentForm isEdit={this.state.editOpen} {...props} onClose={this.handleEditClick} />;
+      return (
+        <CommentForm
+          isEdit={this.state.editOpen}
+          currentComment={this.props.comment}
+          {...props}
+          onClose={this.handleEditClick}
+        />
+      );
     };
 
     if (this.state.editOpen) {

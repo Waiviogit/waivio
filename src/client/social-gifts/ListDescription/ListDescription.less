@@ -3,13 +3,15 @@
 
 .ListDescription {
   &__title {
-    text-align: center;
     font-size: 20px;
-    font-weight: 100;
+    font-weight: 500;
     display: flex;
     justify-content: center;
-    color: @blue-botticelli;
+    text-align: center;
+    color: var(--website-color);
     @media @small {
+      text-align: left;
+      justify-content: flex-start;
       margin: 10px 0 0;
     }
 
@@ -91,10 +93,16 @@
     }
   }
 
-  &__image-container {
+  &__image-container.show {
     @media @small {
       width: 40%;
       height: auto;
+      display: block;
+    }
+  }
+  &__image-container {
+    @media @small {
+      display: none;
     }
   }
 

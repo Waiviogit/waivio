@@ -1,6 +1,5 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useSelector } from 'react-redux';
-import { useHistory } from 'react-router';
 import { Skeleton } from 'antd';
 import Helmet from 'react-helmet';
 
@@ -10,6 +9,10 @@ import {
   getShopSettings,
   getSiteName,
 } from '../../../store/appStore/appSelectors';
+import Affix from '../../components/Utils/Affix';
+import DepartmentsUser from '../../Shop/ShopDepartments/DepartmentsUser';
+import UserFilters from '../../Shop/ShopFilters/UserFilters';
+import UserShoppingList from '../../Shop/ShopList/UserShoppingList';
 import ShopMainForWobject from '../ShopMainForWobject/ShopMainForWobject';
 import { useSeoInfo } from '../../../hooks/useSeoInfo';
 
@@ -17,7 +20,6 @@ import './ShopSwitcher.less';
 
 const ShopSwitcher = () => {
   const shopSettings = useSelector(getShopSettings);
-  const history = useHistory();
   const favicon = useSelector(getHelmetIcon);
   const siteName = useSelector(getSiteName);
   const mainObj = useSelector(getMainObj);
@@ -25,10 +27,34 @@ const ShopSwitcher = () => {
   const desc = mainObj?.description;
   const { canonicalUrl } = useSeoInfo();
 
-  useEffect(() => {
-    if (shopSettings?.type === 'user' && history.location.pathname === '/')
-      history.push(`/user-shop/${shopSettings?.value}`);
-  }, [history.location.pathname]);
+  const firstPage = () => {
+    switch (shopSettings?.type) {
+      case 'user':
+        return (
+          <div className="shifted">
+            <div className="feed-layout container Shop shifted">
+              <Affix className="leftContainer" stickPosition={77}>
+                <div className="left">
+                  <DepartmentsUser name={shopSettings?.value} isSocial />
+                  <UserFilters name={shopSettings?.value} />
+                </div>
+              </Affix>
+              <div className="center center--withoutRigth">
+                <h3>
+                  <span className={'ListSwitcher__breadCrumbs'}>Departments</span>
+                </h3>
+                <UserShoppingList name={shopSettings?.value} isSocial />
+              </div>
+            </div>
+          </div>
+        );
+      case 'object':
+        return <ShopMainForWobject />;
+
+      default:
+        return <Skeleton active />;
+    }
+  };
 
   return (
     <React.Fragment>
@@ -53,11 +79,7 @@ const ShopSwitcher = () => {
         <link rel="image_src" href={favicon} />
         <link id="favicon" rel="icon" href={favicon} type="image/x-icon" />
       </Helmet>
-      {shopSettings?.type === 'object' ? (
-        <ShopMainForWobject wobjPermlink={shopSettings?.value} />
-      ) : (
-        <Skeleton active />
-      )}
+      {firstPage()}
     </React.Fragment>
   );
 };

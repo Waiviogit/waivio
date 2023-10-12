@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Button } from 'antd';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
@@ -15,9 +15,12 @@ import divider from '@react-page/plugins-divider';
 import { getObject } from '../../../waivioApi/ApiClient';
 import { colorPickerPlugin } from './colorPickerPlugin';
 import { getIsEditMode } from '../../../store/wObjectStore/wObjectSelectors';
-import AppendModal from '../AppendModal/AppendModal';
 import { objectFields } from '../../../common/constants/listOfFields';
 import { getLastPermlinksFromHash, getObjectName } from '../../../common/helpers/wObjectHelper';
+import { setNestedWobject } from '../../../store/wObjectStore/wobjActions';
+import AppendWebpageModal from './AppendWebpageModal';
+import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
+import { getUsedLocale } from '../../../store/appStore/appSelectors';
 
 import './ObjectOfTypeWebpage.less';
 
@@ -36,6 +39,9 @@ const plugins = [customSlate, image, background(), video, spacer, divider];
 const ObjectOfTypeWebpage = ({ intl }) => {
   const history = useHistory();
   const { name } = useParams();
+  const dispatch = useDispatch();
+  const user = useSelector(getAuthenticatedUserName);
+  const locale = useSelector(getUsedLocale);
   const authorPermlink = history.location.hash
     ? getLastPermlinksFromHash(history.location.hash)
     : name;
@@ -47,10 +53,11 @@ const ObjectOfTypeWebpage = ({ intl }) => {
   const jsonVal = currentValue ? JSON.stringify(currentValue) : null;
 
   useEffect(() => {
-    getObject(authorPermlink).then(res => {
+    getObject(authorPermlink, user, locale).then(res => {
       setWobject(res);
       if (has(res, 'webpage')) {
         setCurrentValue(JSON.parse(res?.webpage));
+        dispatch(setNestedWobject(res));
       }
       setLoading(false);
     });
@@ -93,11 +100,12 @@ const ObjectOfTypeWebpage = ({ intl }) => {
         </div>
       )}
       {showModal && (
-        <AppendModal
+        <AppendWebpageModal
           objName={getObjectName(wobject)}
+          wObject={wobject}
           showModal={showModal}
           hideModal={() => setShowModal(false)}
-          fieldBodyContent={jsonVal}
+          webpageBody={jsonVal}
           field={objectFields.webpage}
         />
       )}

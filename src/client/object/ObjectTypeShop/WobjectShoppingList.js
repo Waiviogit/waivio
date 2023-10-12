@@ -7,10 +7,10 @@ import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors
 import ShopList from '../../Shop/ShopList/ShopList';
 import { getWobjectsShopList } from '../../../store/shopStore/shopActions';
 
-const WobjectShoppingList = ({ isSocial }) => {
+const WobjectShoppingList = ({ isSocial, name }) => {
   const authUserName = useSelector(getAuthenticatedUserName);
   const match = useRouteMatch();
-  const authorPermlink = match.params.name;
+  const authorPermlink = name || match.params.name;
   const dispatch = useDispatch();
   const getShopFeed = (
     userName,
@@ -55,6 +55,7 @@ const WobjectShoppingList = ({ isSocial }) => {
 
 WobjectShoppingList.propTypes = {
   isSocial: PropTypes.bool,
+  name: PropTypes.string,
 };
 
 export default WobjectShoppingList;

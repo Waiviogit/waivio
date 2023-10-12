@@ -69,8 +69,8 @@ const WebsiteTopNavigation = ({ shopSettings, intl }) => {
   return (
     <div id={'WebsiteTopNavigationContainer'}>
       <div className="WebsiteTopNavigation" id={'WebsiteTopNavigation'}>
-        {take(linkList, listLength).map(l => (
-          <LinkItem key={l.link} link={l} />
+        {take(linkList, listLength).map((l, i) => (
+          <LinkItem key={l.link} link={l} index={i} />
         ))}
         {!isEmpty(lastItems) &&
           (lastItemsLength > 1 ? (

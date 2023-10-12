@@ -89,7 +89,7 @@ import {
 } from '../../../common/helpers/wObjectHelper';
 import { appendObject } from '../../../store/appendStore/appendActions';
 import { getExposedFieldsByObjType } from '../wObjectHelper';
-import { rateObject, setEditMode } from '../../../store/wObjectStore/wobjActions';
+import { rateObject } from '../../../store/wObjectStore/wobjActions';
 import SortingList from '../../components/DnDList/DnDList';
 import SearchObjectsAutocomplete from '../../components/EditorObject/SearchObjectsAutocomplete';
 import SearchUsersAutocomplete from '../../components/EditorUser/SearchUsersAutocomplete';
@@ -159,7 +159,6 @@ import './AppendForm.less';
     rateObject,
     addAlbum: addAlbumToStore,
     addImageToAlbum: addImageToAlbumStore,
-    setEditMode,
   },
 )
 @Form.create()
@@ -182,11 +181,10 @@ class AppendForm extends Component {
     usedLocale: PropTypes.string,
     /* passed props */
     chosenLocale: PropTypes.string,
-    fieldBodyContent: PropTypes.string,
     currentField: PropTypes.string,
+    fieldBodyContent: PropTypes.string,
     locale: PropTypes.string,
     hideModal: PropTypes.func,
-    setEditMode: PropTypes.func,
     intl: PropTypes.shape(),
     post: PropTypes.shape(),
     ratingFields: PropTypes.arrayOf(PropTypes.shape({})),
@@ -456,7 +454,6 @@ class AppendForm extends Component {
       case objectFields.ageRange:
       case objectFields.printLength:
       case objectFields.language:
-      case objectFields.webpage:
       case objectFields.affiliateUrlTemplate:
       case objectFields.affiliateCode:
       case objectFields.pin:
@@ -701,10 +698,6 @@ class AppendForm extends Component {
               ? this.props.post.permlink
               : formValues[pinPostFields.postPermlink]
           }`;
-        case objectFields.webpage:
-          return `@${author} added ${currentField} (${langReadable}): Webpage ${moment(
-            Date.now(),
-          ).format('YYYY-MM-DD HH:mm:ss')}`;
         case objectFields.ageRange:
         case objectFields.language:
         case objectFields.affiliateUrlTemplate:
@@ -832,18 +825,13 @@ class AppendForm extends Component {
         fieldsObject = {
           ...fieldsObject,
           id: wObject?.galleryAlbum?.find(album => album.body === 'Photos').id,
+          body: this.props.fieldBodyContent || undefined,
         };
       }
       if (currentField === objectFields.affiliateButton) {
         fieldsObject = {
           ...fieldsObject,
           body: formValues[objectFields.affiliateButton],
-        };
-      }
-      if (currentField === objectFields.webpage) {
-        fieldsObject = {
-          ...fieldsObject,
-          body: this.props.fieldBodyContent,
         };
       }
       if (currentField === objectFields.affiliateCode) {
@@ -1347,8 +1335,11 @@ class AppendForm extends Component {
     const { currentImages } = this.state;
 
     const data = this.getWobjectData();
+    const images = this.props.fieldBodyContent
+      ? [{ id: this.props.fieldBodyContent, src: this.props.fieldBodyContent, name: 'image' }]
+      : currentImages;
 
-    currentImages.forEach(async image => {
+    images.forEach(async image => {
       const postData = {
         ...data,
         permlink: `${data.author}-${generatePermlink()}`,
@@ -1428,9 +1419,6 @@ class AppendForm extends Component {
     if (event) event.preventDefault();
     const currentField = this.props.form.getFieldValue('currentField');
 
-    if (objectFields.webpage === currentField) {
-      this.props.setEditMode(false);
-    }
     if (objectFields.galleryItem === currentField) {
       this.handleAddPhotoToAlbum();
     } else if (objectFields.newsFilter === currentField || objectFields.newsFeed === currentField) {
@@ -2155,6 +2143,9 @@ class AppendForm extends Component {
                   onLoadingImage={this.onLoadingImage}
                   isRequired
                   isMultiple={false}
+                  imagesList={[
+                    { src: this.props.fieldBodyContent, id: this.props.fieldBodyContent },
+                  ]}
                 />,
               )}
             </Form.Item>
@@ -3792,6 +3783,11 @@ class AppendForm extends Component {
               })(
                 <div className="clearfix">
                   <ImageSetter
+                    imagesList={
+                      this.props.fieldBodyContent
+                        ? [{ src: this.props.fieldBodyContent, id: this.props.fieldBodyContent }]
+                        : undefined
+                    }
                     autoFocus
                     onImageLoaded={this.getImage}
                     onLoadingImage={this.onLoadingImage}
@@ -4059,7 +4055,6 @@ class AppendForm extends Component {
             this.state.typeList.length < 1)
         );
       case objectFields.sorting:
-      case objectFields.webpage:
       case objectFields.shopFilter:
         return false;
 
