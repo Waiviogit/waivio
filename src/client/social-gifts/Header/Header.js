@@ -3,7 +3,11 @@ import { Link } from 'react-router-dom';
 import classNames from 'classnames';
 import { useSelector } from 'react-redux';
 import HeaderButton from '../../components/HeaderButton/HeaderButton';
-import { getConfigurationValues, getWebsiteLogo } from '../../../store/appStore/appSelectors';
+import {
+  getConfigurationValues,
+  getWebsiteLogo,
+  getNavigItems,
+} from '../../../store/appStore/appSelectors';
 import GeneralSearch from '../../websites/WebsiteLayoutComponents/Header/GeneralSearch/GeneralSearch';
 import WebsiteTopNavigation from './TopNavigation/WebsiteTopNavigation';
 
@@ -12,6 +16,7 @@ import './Header.less';
 const Header = () => {
   const [searchBarActive, setSearchBarActive] = useState(false);
   const config = useSelector(getConfigurationValues);
+  const link = useSelector(getNavigItems)[0];
   const handleMobileSearchButtonClick = () => setSearchBarActive(!searchBarActive);
   const logo = useSelector(getWebsiteLogo);
   const currHost = typeof location !== 'undefined' && location.hostname;
@@ -24,7 +29,14 @@ const Header = () => {
     <React.Fragment>
       <div className="Header">
         {!searchBarActive && (
-          <Link to={'/'} className={logoClassList}>
+          <Link
+            to={
+              config?.shopSettings?.type === 'user'
+                ? `/user-shop/${config?.shopSettings?.value}`
+                : link?.link
+            }
+            className={logoClassList}
+          >
             {logo && <img alt="Social Gifts Logo" src={logo} className="Header__img" />}
             <span>{header || config.host || currHost}</span>
           </Link>
