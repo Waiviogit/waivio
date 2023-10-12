@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useHistory, useParams, useRouteMatch } from 'react-router';
 import Helmet from 'react-helmet';
 import InfiniteSroll from 'react-infinite-scroller';
@@ -14,13 +14,11 @@ import { getObjectType, searchUsers } from '../../../waivioApi/ApiClient';
 import { getLocale } from '../../../store/settingsStore/settingsSelectors';
 import { useSeoInfo } from '../../../hooks/useSeoInfo';
 import { getAuthenticatedUserName, isGuestUser } from '../../../store/authStore/authSelectors';
-import UserCard from '../../components/UserCard';
-import WeightTag from '../../components/WeightTag';
-import { followUser, unfollowUser } from '../../../store/usersStore/usersActions';
-
+import UserDynamicList from '../../user/UserDynamicList';
 import './NewDiscover.less';
 
 const wobjects_count = 20;
+const limit = 30;
 
 const NewDiscover = () => {
   const { type, user } = useParams();
@@ -28,15 +26,12 @@ const NewDiscover = () => {
   const locale = useSelector(getLocale);
   const isGuest = useSelector(isGuestUser);
   const userName = useSelector(getAuthenticatedUserName);
-  const dispatch = useDispatch();
   const match = useRouteMatch();
   const history = useHistory();
   const query = useQuery();
   const [objects, setObjects] = useState([]);
-  const [users, setUsers] = useState([]);
   const [hasMoreObjects, setHasMoreObjects] = useState();
-  const [loading, setLoading] = useState(true);
-  const [hasUsers, setHasUsers] = useState(false);
+  const [loading, setLoading] = useState(false);
   const search = query.get('search')?.replaceAll('%26%', '&');
   const discoverUsers = match.url.includes('discover-users');
   const desc = 'All objects are located here. Discover new objects!';
@@ -67,25 +62,11 @@ const NewDiscover = () => {
         setHasMoreObjects(res?.hasMoreWobjects);
         setLoading(false);
       });
-    } else {
-      searchUsers(user, userName, 30, !isGuest, 0).then(res => {
-        setUsers(res.users);
-        setHasUsers(res.hasMore);
-        setLoading(false);
-      });
     }
 
     return () => ac.abort();
   }, [search, type, user]);
 
-  const loadMoreUsers = () => {
-    hasUsers &&
-      searchUsers(user, userName, 30, !isGuest, users.length).then(res => {
-        setUsers([...users, ...res.users]);
-        setHasUsers(res.hasMore);
-        setLoading(false);
-      });
-  };
   const loadMore = () => {
     const requestData = {
       locale,
@@ -107,20 +88,22 @@ const NewDiscover = () => {
   const handleDeleteTag = () => {
     if (discoverUsers) {
       history.push(`/discover-users`);
-      setUsers([]);
-      setHasUsers(false);
-      setLoading(true);
+      // setLoading(true);
     } else {
       history.push(`/discover-objects/${type}`);
       setObjects([]);
-      setUsers([]);
-      setHasUsers(false);
       setHasMoreObjects(false);
       setLoading(true);
     }
   };
-  const followSearchUser = name => dispatch(followUser(name));
-  const unfollowSearchUser = name => dispatch(unfollowUser(name));
+  const fetcher = async (users, authUser, sort, skip) => {
+    const response = await searchUsers(user, userName, limit, !isGuest, skip);
+    const newUsers = response.users.map(u => ({ ...u, name: u.account }));
+
+    setLoading(false);
+
+    return { users: newUsers, hasMore: response.hasMore };
+  };
 
   return (
     <div className="NewDiscover">
@@ -156,32 +139,19 @@ const NewDiscover = () => {
         <Loading />
       ) : (
         <>
-          <div className="UserDynamicList new-discover-content-margin">
-            <InfiniteSroll hasMore={hasUsers} loader={<Loading />} loadMore={loadMoreUsers}>
-              {users.map(u => {
-                if (u.account !== userName) {
-                  return (
-                    <UserCard
-                      key={u.account}
-                      user={{ ...u, name: u.account }}
-                      unfollow={unfollowSearchUser}
-                      follow={followSearchUser}
-                      alt={<WeightTag weight={u.wobjects_weight || u.weight} />}
-                    />
-                  );
-                }
-
-                return null;
-              })}
-            </InfiniteSroll>
-          </div>
-          <InfiniteSroll hasMore={hasMoreObjects} loader={<Loading />} loadMore={loadMore}>
-            <div className="NewDiscover__list" key={'list'}>
-              {objects?.map(obj => (
-                <ShopObjectCard key={obj?.author_permlink} wObject={obj} />
-              ))}{' '}
+          {discoverUsers ? (
+            <div className=" new-discover-content-margin">
+              <UserDynamicList hideSort limit={limit} fetcher={fetcher} searchLine={user} />
             </div>
-          </InfiniteSroll>
+          ) : (
+            <InfiniteSroll hasMore={hasMoreObjects} loader={<Loading />} loadMore={loadMore}>
+              <div className="NewDiscover__list" key={'list'}>
+                {objects?.map(obj => (
+                  <ShopObjectCard key={obj?.author_permlink} wObject={obj} />
+                ))}{' '}
+              </div>
+            </InfiniteSroll>
+          )}
         </>
       )}
     </div>
