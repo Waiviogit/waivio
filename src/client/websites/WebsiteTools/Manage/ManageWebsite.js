@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { get, isEmpty, round } from 'lodash';
-import { Button, Modal, message } from 'antd';
+import { get, has, isEmpty, round } from 'lodash';
+import { Button, message, Modal } from 'antd';
 import { Link } from 'react-router-dom';
 
 import DynamicTbl from '../../../components/Tools/DynamicTable/DynamicTable';
@@ -26,6 +26,9 @@ import { parseJSON } from '../../../../common/helpers/parseJSON';
 import { getCurrentCurrency } from '../../../../store/appStore/appSelectors';
 
 import './ManageWebsite.less';
+import { setAffiliateObjects } from '../../../../store/affiliateCodes/affiliateCodesActions';
+import { getAffiliateObjects } from '../../../../store/affiliateCodes/affiliateCodesSelectors';
+import { affiliateCodeVoteAppend } from '../../../../store/appendStore/appendActions';
 
 export const ManageWebsite = props => {
   const { prices, accountBalance, websites, dataForPayments } = props.manageInfo;
@@ -34,6 +37,11 @@ export const ManageWebsite = props => {
   useEffect(() => {
     props.getManageInfo(props.userName);
   }, []);
+  useEffect(() => {
+    if (modalState.visible) {
+      props.setAffiliateObjects(props.userName, modalState.hostInfo.host);
+    }
+  }, [modalState.visible]);
 
   const onChangeCheckbox = (e, item) => {
     const appId = get(item, 'host');
@@ -48,6 +56,36 @@ export const ManageWebsite = props => {
     memo = parseJSON(memo);
 
     props.openTransfer(get(dataForPayments, ['user', 'name']), 0, 'WAIV', memo);
+  };
+
+  const rejectAffiliateCodes = () => {
+    if (!isEmpty(props.affiliateObjects)) {
+      props.affiliateObjects.forEach(obj => {
+        if (has(obj, 'affiliateCode')) {
+          const currUpdates = obj.affiliateCodeFields?.reduce((acc, val) => {
+            if (val.name === 'affiliateCode') {
+              if (val.approvePercent > 0) {
+                // eslint-disable-next-line no-param-reassign
+                acc = [...acc, val];
+              }
+            }
+
+            return acc;
+          }, []);
+
+          currUpdates.forEach(update =>
+            props.affiliateCodeVoteAppend(
+              update.author,
+              obj.author_permlink,
+              update.permlink,
+              1,
+              props.userName,
+              modalState.hostInfo.host,
+            ),
+          );
+        }
+      });
+    }
   };
 
   return (
@@ -207,6 +245,7 @@ export const ManageWebsite = props => {
         )}
         onCancel={() => setModalState({})}
         onOk={() => {
+          rejectAffiliateCodes();
           props.deleteWebsite(modalState.hostInfo).then(res => {
             if (res.message)
               message.error(
@@ -251,10 +290,13 @@ ManageWebsite.propTypes = {
       memo: PropTypes.string,
     }),
   }).isRequired,
+  affiliateObjects: PropTypes.arrayOf().isRequired,
   activateWebsite: PropTypes.func.isRequired,
   suspendWebsite: PropTypes.func.isRequired,
   openTransfer: PropTypes.func.isRequired,
   deleteWebsite: PropTypes.func.isRequired,
+  setAffiliateObjects: PropTypes.func.isRequired,
+  affiliateCodeVoteAppend: PropTypes.func.isRequired,
 };
 
 ManageWebsite.defaultProps = {
@@ -267,6 +309,7 @@ export default connect(
     userName: getAuthenticatedUserName(state),
     manageInfo: getManage(state),
     currencyInfo: getCurrentCurrency(state),
+    affiliateObjects: getAffiliateObjects(state),
   }),
   {
     getManageInfo,
@@ -274,5 +317,7 @@ export default connect(
     suspendWebsite,
     openTransfer,
     deleteWebsite,
+    setAffiliateObjects,
+    affiliateCodeVoteAppend,
   },
 )(injectIntl(ManageWebsite));

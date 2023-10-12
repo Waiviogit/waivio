@@ -282,9 +282,9 @@ export const affiliateCodeVoteAppend = (
   });
 
   return steemConnectAPI.appendVote(voter, author, permlink, weight).then(res => {
-    busyAPI.instance.sendAsync(subscribeTypes.subscribeTransactionId, [voter, res.transactionId]);
+    busyAPI.instance.sendAsync(subscribeTypes.subscribeTransactionId, [voter, res.result.id]);
     busyAPI.instance.subscribe((response, mess) => {
-      if (mess?.success && mess?.permlink === res.transactionId) {
+      if (mess?.success && mess?.permlink === res.result.id) {
         dispatch(setAffiliateObjects(userName, host));
       }
     });
