@@ -2142,9 +2142,11 @@ class AppendForm extends Component {
                   onLoadingImage={this.onLoadingImage}
                   isRequired
                   isMultiple={false}
-                  imagesList={[
-                    { src: this.props.fieldBodyContent, id: this.props.fieldBodyContent },
-                  ]}
+                  imagesList={
+                    this.props.fieldBodyContent
+                      ? [{ src: this.props.fieldBodyContent, id: this.props.fieldBodyContent }]
+                      : []
+                  }
                 />,
               )}
             </Form.Item>
