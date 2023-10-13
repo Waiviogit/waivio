@@ -3,15 +3,6 @@
 
 .NewDiscover {
   margin: 5px;
-  .ant-tag {
-    padding: 2px 15px;
-    font-size: 18px;
-    line-height: 28px;
-    font-weight: 500;
-  }
-  i.anticon.anticon-close {
-    font-size: 14px;
-  }
 
   @media @small {
     margin: 20px;
@@ -24,6 +15,15 @@
 
   &__wrap {
     margin-bottom: 10px;
+    .ant-tag {
+      padding: 2px 15px;
+      font-size: 18px;
+      line-height: 28px;
+      font-weight: 500;
+    }
+    i.anticon.anticon-close {
+      font-size: 14px;
+    }
   }
 
   &__type {
@@ -65,4 +65,22 @@
       }
     }
   }
+  .Follow {
+    background: var(--website-color) !important ;
+    border-color: var(--website-color) !important;
+    color: var(--website-text-color) !important;
+  }
+  .Follow--danger {
+    color: @white !important;
+    background: @red !important ;
+    border-color: @red !important;
+  }
+  .ant-btn:hover {
+    border-color: var(--website-hover-color) !important;
+    background: var(--website-hover-color) !important;
+    color: var(--website-text-color) !important;
+  }
+}
+.new-discover-content-margin {
+  margin: 20px 130px;
 }

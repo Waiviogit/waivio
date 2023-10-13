@@ -19,7 +19,9 @@ class UserDynamicList extends React.Component {
   static propTypes = {
     fetcher: PropTypes.func.isRequired,
     showAuthorizedUser: PropTypes.bool,
+    hideSort: PropTypes.bool,
     userName: PropTypes.string,
+    searchLine: PropTypes.string,
     unfollowUser: PropTypes.func.isRequired,
     followUser: PropTypes.func.isRequired,
     authUser: PropTypes.string,
@@ -35,7 +37,9 @@ class UserDynamicList extends React.Component {
   };
   static defaultProps = {
     authUser: '',
+    searchLine: '',
     showAuthorizedUser: false,
+    hideSort: false,
     userName: '',
     sort: 'recency',
   };
@@ -51,11 +55,20 @@ class UserDynamicList extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { fetcher, authUser, sort } = this.props;
+    const { fetcher, authUser, sort, searchLine } = this.props;
     const { users } = this.state;
 
     if (!prevProps.authUser && authUser) {
       fetcher(users, authUser).then(newUsers =>
+        this.setState({
+          loading: false,
+          hasMore: newUsers.hasMore,
+          users: [...newUsers.users],
+        }),
+      );
+    }
+    if (prevProps.searchLine !== searchLine) {
+      fetcher(users, authUser, undefined, 0).then(newUsers =>
         this.setState({
           loading: false,
           hasMore: newUsers.hasMore,
@@ -197,26 +210,28 @@ class UserDynamicList extends React.Component {
   render() {
     const { loading, hasMore, users } = this.state;
     const empty = !hasMore && users.length === 0;
-    const { sort } = this.props;
+    const { sort, hideSort } = this.props;
 
     return (
       <React.Fragment>
-        <div className="sortSelector">
-          <SortSelector sort={sort} onChange={this.handleChangeSorting}>
-            <SortSelector.Item key={SORT_OPTIONS.RANK}>
-              <FormattedMessage id="rank" defaultMessage="Rank" />
-            </SortSelector.Item>
-            <SortSelector.Item key={SORT_OPTIONS.ALPHABET}>
-              <FormattedMessage id="alphabet" defaultMessage="A..Z" />
-            </SortSelector.Item>
-            <SortSelector.Item key={SORT_OPTIONS.FOLLOWERS}>
-              <FormattedMessage id="followers" defaultMessage="Followers" />
-            </SortSelector.Item>
-            <SortSelector.Item key={SORT_OPTIONS.RECENCY}>
-              <FormattedMessage id="recency" defaultMessage="Recency" />
-            </SortSelector.Item>
-          </SortSelector>
-        </div>
+        {!hideSort && (
+          <div className="sortSelector">
+            <SortSelector sort={sort} onChange={this.handleChangeSorting}>
+              <SortSelector.Item key={SORT_OPTIONS.RANK}>
+                <FormattedMessage id="rank" defaultMessage="Rank" />
+              </SortSelector.Item>
+              <SortSelector.Item key={SORT_OPTIONS.ALPHABET}>
+                <FormattedMessage id="alphabet" defaultMessage="A..Z" />
+              </SortSelector.Item>
+              <SortSelector.Item key={SORT_OPTIONS.FOLLOWERS}>
+                <FormattedMessage id="followers" defaultMessage="Followers" />
+              </SortSelector.Item>
+              <SortSelector.Item key={SORT_OPTIONS.RECENCY}>
+                <FormattedMessage id="recency" defaultMessage="Recency" />
+              </SortSelector.Item>
+            </SortSelector>
+          </div>
+        )}
         <div className="UserDynamicList">
           <ReduxInfiniteScroll
             elementIsScrollable={false}

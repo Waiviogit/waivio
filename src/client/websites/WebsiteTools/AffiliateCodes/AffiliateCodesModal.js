@@ -21,6 +21,8 @@ const AffiliateCodesModal = ({
   setLoading,
   setOpenAppendModal,
   appendWobject,
+  voteAppend,
+  affiliateObjects,
 }) => {
   const { setFieldsValue, getFieldValue, validateFieldsAndScroll } = form;
   const userUpVotePower = 100;
@@ -28,7 +30,40 @@ const AffiliateCodesModal = ({
     setFieldsValue({ [objectFields.affiliateCode]: '' });
     setOpenAppendModal(false);
   };
+
+  const addAffilicateCode = (dup, data, formValues) => {
+    if (dup) {
+      return voteAppend(
+        dup.author,
+        selectedObj.author_permlink,
+        dup.permlink,
+        userUpVotePower,
+        user.name,
+        appendContext === 'PERSONAL' ? undefined : context,
+      );
+    }
+
+    return appendWobject(data, {
+      votePercent: data.votePower,
+      follow: formValues.follow,
+      isLike: data.isLike,
+      isObjectPage: false,
+      isUpdatesPage: false,
+      host: appendContext === 'PERSONAL' ? undefined : context,
+    });
+  };
+
   const onSubmit = formValues => {
+    const currObj = affiliateObjects?.find(obj => obj.name === selectedObj.name);
+    // eslint-disable-next-line array-callback-return,consistent-return
+    const duplicate = currObj?.affiliateCodeFields.find(update => {
+      if (update.name === 'affiliateCode') {
+        const affCode = JSON.parse(update?.body)[1];
+
+        return affCode === formValues.affiliateCode;
+      }
+    });
+
     const postData = getNewPostData(
       formValues,
       langReadable,
@@ -43,14 +78,7 @@ const AffiliateCodesModal = ({
       const field = getFieldValue('currentField');
 
       setLoading(true);
-      appendWobject(data, {
-        votePercent: data.votePower,
-        follow: formValues.follow,
-        isLike: data.isLike,
-        isObjectPage: false,
-        isUpdatesPage: false,
-        host: appendContext === 'PERSONAL' ? undefined : context,
-      })
+      addAffilicateCode(duplicate, data, formValues)
         .then(r => {
           setOpenAppendModal(false);
           setLoading(false);
@@ -162,11 +190,13 @@ AffiliateCodesModal.propTypes = {
   selectedObj: PropTypes.shape(),
   form: PropTypes.shape(),
   user: PropTypes.shape(),
+  affiliateObjects: PropTypes.arrayOf(),
   openAppendModal: PropTypes.bool,
   setOpenAppendModal: PropTypes.func,
   setLoading: PropTypes.func,
   getFieldValue: PropTypes.func,
   getFieldDecorator: PropTypes.func,
+  voteAppend: PropTypes.func,
   appendWobject: PropTypes.func,
   loading: PropTypes.bool,
   context: PropTypes.string,

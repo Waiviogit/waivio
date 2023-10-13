@@ -23,7 +23,7 @@ export const AffiliateCodes = ({
   match,
   form,
   appendWobject,
-  rejectCode,
+  voteAppend,
   affiliateObjects,
   setAffiliateObjs,
   resetAffiliateObjs,
@@ -86,10 +86,12 @@ export const AffiliateCodes = ({
       <AffiliateCodesList
         user={user}
         context={site}
-        rejectCode={rejectCode}
+        rejectCode={voteAppend}
         affiliateObjects={affiliateObjects}
       />
       <AffiliateCodesModal
+        voteAppend={voteAppend}
+        affiliateObjects={affiliateObjects}
         appendContext={site}
         user={user}
         form={form}
@@ -122,7 +124,7 @@ AffiliateCodes.propTypes = {
   user: PropTypes.shape(),
   appendWobject: PropTypes.func,
   affiliateObjects: PropTypes.arrayOf(),
-  rejectCode: PropTypes.func,
+  voteAppend: PropTypes.func,
   setAffiliateObjs: PropTypes.func,
   resetAffiliateObjs: PropTypes.func,
   langReadable: PropTypes.string,
@@ -135,7 +137,7 @@ export default connect(
     user: getAuthenticatedUser(state),
   }),
   {
-    rejectCode: affiliateCodeVoteAppend,
+    voteAppend: affiliateCodeVoteAppend,
     appendWobject: appendObject,
     setAffiliateObjs: setAffiliateObjects,
     resetAffiliateObjs: resetAffiliateObjects,
