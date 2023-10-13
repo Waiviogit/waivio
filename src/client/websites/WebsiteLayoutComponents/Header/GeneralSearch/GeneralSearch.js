@@ -120,26 +120,26 @@ const GeneralSearch = props => {
     </AutoComplete.OptGroup>
   );
 
-  // const wobjectTypeSearchLayout = objectTypes => (
-  //   <AutoComplete.OptGroup
-  //     key="typesTitle"
-  //     label={props.intl.formatMessage({
-  //       id: 'wobjectType_search_title',
-  //       defaultMessage: 'Types',
-  //     })}
-  //   >
-  //     {map(objectTypes, option => (
-  //       <AutoComplete.Option
-  //         marker={markers.TYPE}
-  //         key={option.name}
-  //         value={option.name}
-  //         className="Header__item"
-  //       >
-  //         <div>{option.name}</div>
-  //       </AutoComplete.Option>
-  //     ))}
-  //   </AutoComplete.OptGroup>
-  // );
+  const wobjectTypeSearchLayout = objectTypes => (
+    <AutoComplete.OptGroup
+      key="typesTitle"
+      label={props.intl.formatMessage({
+        id: 'wobjectType_search_title',
+        defaultMessage: 'Types',
+      })}
+    >
+      {map(objectTypes, option => (
+        <AutoComplete.Option
+          marker={markers.TYPE}
+          key={option.name}
+          value={option.name}
+          className="Header__item"
+        >
+          <div>{option.name}</div>
+        </AutoComplete.Option>
+      ))}
+    </AutoComplete.OptGroup>
+  );
 
   const prepareOptions = () => {
     const dataSource = [];
@@ -149,8 +149,8 @@ const GeneralSearch = props => {
     if (!isEmpty(searchResults.wobjects))
       dataSource.push(wobjectSearchLayout(searchResults.wobjects.slice(0, 5)));
     if (!isEmpty(searchResults.users)) dataSource.push(usersSearchLayout(searchResults.users));
-    // if (!isEmpty(searchResults.objectTypes))
-    //   dataSource.push(wobjectTypeSearchLayout(searchResults.objectTypes));
+    if (!isEmpty(searchResults.objectTypes))
+      dataSource.push(wobjectTypeSearchLayout(searchResults.objectTypes));
 
     return type ? [searchSelectBar(searchResults)] : dataSource;
   };
@@ -169,7 +169,7 @@ const GeneralSearch = props => {
       case markers.SELECT_BAR: {
         if (value !== 'Types') {
           const isUsers = value === 'Users';
-          const mainLink = isUsers ? '/discover' : `/discover-objects/${value}`;
+          const mainLink = isUsers ? '/discover-users' : `/discover-objects/${value}`;
           let search = searchBarValue ? `?search=${searchBarValue}` : '';
 
           if (isUsers && searchBarValue) {

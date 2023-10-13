@@ -4,11 +4,7 @@ import { AutoComplete, Icon } from 'antd';
 import React from 'react';
 
 export const getTranformSearchCountData = (searchResults, listOfObjectTypes, withAll = false) => {
-  const {
-    objectTypesCount,
-    wobjectsCounts,
-    // usersCount
-  } = searchResults;
+  const { objectTypesCount, wobjectsCounts, usersCount } = searchResults;
 
   const countArr = [];
 
@@ -35,7 +31,7 @@ export const getTranformSearchCountData = (searchResults, listOfObjectTypes, wit
 
   if (objectTypesCount) countArr.push({ name: 'Types', count: objectTypesCount, type: 'type' });
 
-  // if (usersCount) countArr.push({ name: 'Users', count: usersCount, type: 'user' });
+  if (usersCount) countArr.push({ name: 'Users', count: usersCount, type: 'user' });
 
   if (countArr.length && withAll) {
     const calcAllResult = countArr.reduce((acc, curr) => acc + curr.count, 0);
