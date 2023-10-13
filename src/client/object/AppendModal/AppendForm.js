@@ -825,7 +825,6 @@ class AppendForm extends Component {
         fieldsObject = {
           ...fieldsObject,
           id: wObject?.galleryAlbum?.find(album => album.body === 'Photos').id,
-          body: this.props.fieldBodyContent || undefined,
         };
       }
       if (currentField === objectFields.affiliateButton) {
@@ -2143,9 +2142,11 @@ class AppendForm extends Component {
                   onLoadingImage={this.onLoadingImage}
                   isRequired
                   isMultiple={false}
-                  imagesList={[
-                    { src: this.props.fieldBodyContent, id: this.props.fieldBodyContent },
-                  ]}
+                  imagesList={
+                    this.props.fieldBodyContent
+                      ? [{ src: this.props.fieldBodyContent, id: this.props.fieldBodyContent }]
+                      : []
+                  }
                 />,
               )}
             </Form.Item>

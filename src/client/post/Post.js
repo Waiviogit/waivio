@@ -177,20 +177,22 @@ export default class Post extends React.Component {
               </div>
             </Affix>
             {showPost ? (
-              <div className="center" style={{ paddingBottom: '24px' }}>
-                <PostContent
-                  content={content}
-                  signature={signature}
-                  isOriginalPost={match.params.original}
-                />
-                <VisibilitySensor onChange={this.handleCommentsVisibility}>
-                  {!isBannedPost(content) && (
-                    <div id="comments">
-                      <Comments show={this.state.commentsVisible} post={content} />
-                    </div>
-                  )}
-                </VisibilitySensor>
-              </div>
+              content && (
+                <div className="center" style={{ paddingBottom: '24px' }}>
+                  <PostContent
+                    content={content}
+                    signature={signature}
+                    isOriginalPost={match.params.original}
+                  />
+                  <VisibilitySensor onChange={this.handleCommentsVisibility}>
+                    {!isBannedPost(content) && (
+                      <div id="comments">
+                        <Comments show={this.state.commentsVisible} post={content} />
+                      </div>
+                    )}
+                  </VisibilitySensor>
+                </div>
+              )
             ) : (
               <HiddenPostMessage onClick={this.handleShowPost} />
             )}

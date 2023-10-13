@@ -7,6 +7,9 @@ const ListDescription = ({ wobject }) => {
   const hasTitle = has(wobject, 'title');
   const hasAvatar = has(wobject, 'avatar');
   const hasDescription = has(wobject, 'description');
+  const paragraphs = hasDescription ? wobject.description.split('\n\n') : [];
+  const firstTwoParagraphs = paragraphs.slice(0, 2).join('\n\n');
+  const remainingParagraphs = paragraphs.slice(2).join('\n\n');
 
   return (
     (hasTitle || hasDescription) && (
@@ -20,7 +23,7 @@ const ListDescription = ({ wobject }) => {
                 <h1 className={'ListDescription__title margin-bottom'}>
                   {hasTitle ? wobject.title : wobject.name}
                 </h1>
-                {wobject.description}
+                {firstTwoParagraphs}
               </div>
               {hasAvatar && (
                 <div className={'ListDescription__image-container show'}>
@@ -28,6 +31,7 @@ const ListDescription = ({ wobject }) => {
                 </div>
               )}
             </div>
+            <div className={`ListDescription__remaining-description`}>{remainingParagraphs}</div>
           </>
         )}
       </div>
