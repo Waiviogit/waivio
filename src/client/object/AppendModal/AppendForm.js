@@ -825,7 +825,6 @@ class AppendForm extends Component {
         fieldsObject = {
           ...fieldsObject,
           id: wObject?.galleryAlbum?.find(album => album.body === 'Photos').id,
-          body: this.props.fieldBodyContent || undefined,
         };
       }
       if (currentField === objectFields.affiliateButton) {
