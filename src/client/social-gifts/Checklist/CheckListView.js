@@ -5,7 +5,7 @@ import { injectIntl } from 'react-intl';
 import { Icon } from 'antd';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import { useHistory } from 'react-router';
+import { useHistory, useRouteMatch } from 'react-router';
 
 import Breadcrumbs from '../Breadcrumbs/Breadcrumbs';
 import Loading from '../../components/Icon/Loading';
@@ -25,6 +25,7 @@ import ListDescription from '../ListDescription/ListDescription';
 const CheckListView = ({ wobject, listItems, loading, intl, hideBreadCrumbs }) => {
   const defaultListImage = useSelector(getWebsiteDefaultIconList);
   const history = useHistory();
+  const match = useRouteMatch();
   const listType = wobject?.object_type === 'list';
   const getListRow = listItem => {
     const isList = listItem.object_type === 'list';
@@ -36,10 +37,10 @@ const CheckListView = ({ wobject, listItems, loading, intl, hideBreadCrumbs }) =
         <div className="Checklist__listItems">
           <Link
             to={{
-              pathname: `/checklist/${wobject?.author_permlink}`,
+              pathname: `/checklist/${match.params.name}`,
               hash: createNewHash(listItem?.author_permlink, history.location.hash),
               search:
-                wobject?.author_permlink === listItem?.author_permlink
+                match.params.name === listItem?.author_permlink
                   ? ''
                   : `currObj=${listItem?.author_permlink}`,
             }}
