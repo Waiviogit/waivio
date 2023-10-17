@@ -112,5 +112,8 @@ const Breadcrumbs = ({ inProduct }) => {
 Breadcrumbs.propTypes = {
   inProduct: PropTypes.bool,
 };
+Breadcrumbs.defaultProps = {
+  inProduct: false,
+};
 
 export default Breadcrumbs;

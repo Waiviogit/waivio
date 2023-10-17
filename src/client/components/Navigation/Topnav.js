@@ -431,7 +431,7 @@ class Topnav extends React.Component {
       let search = this.state.searchBarValue ? `?search=${this.state.searchBarValue}` : '';
 
       if (isUsers && this.state.searchBarValue) {
-        search = `${this.state.searchBarValue}`;
+        search = `/${this.state.searchBarValue}`;
       }
 
       return `${mainLink}${search}`;
