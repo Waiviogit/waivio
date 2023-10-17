@@ -11,7 +11,8 @@ const ListDescription = ({ wobject }) => {
   const hasDescription = has(wobject, 'description');
   const paragraphs = hasDescription ? wobject.description.split('\n\n') : [];
   const firstTwoParagraphs = paragraphs.slice(0, 2).join('\n\n');
-  const remainingParagraphs = paragraphs.slice(2).join('\n\n');
+  const twoMoreParagraphs = paragraphs.slice(2, 4).join('\n\n');
+  const remainingParagraphs = paragraphs.slice(4).join('\n\n');
 
   return (
     (hasTitle || hasDescription) && (
@@ -32,6 +33,13 @@ const ListDescription = ({ wobject }) => {
                   <img className={'ListDescription__image'} src={wobject.avatar} alt={''} />
                 </div>
               )}
+            </div>
+            <div
+              className={`ListDescription__remaining-description ${
+                !hasAvatar ? 'without-avatar' : ''
+              }`}
+            >
+              {twoMoreParagraphs}
             </div>
             {remainingParagraphs && (
               <div className={'ListDescription__icon'} onClick={() => setShowMore(!showMore)}>
