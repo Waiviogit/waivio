@@ -43,7 +43,13 @@ const ListDescription = ({ wobject }) => {
               </div>
             )}
             {showMore && (
-              <div className={`ListDescription__remaining-description`}>{remainingParagraphs}</div>
+              <div
+                className={`ListDescription__remaining-description ${
+                  !hasAvatar ? 'without-avatar' : ''
+                }`}
+              >
+                {remainingParagraphs}
+              </div>
             )}
           </>
         )}
