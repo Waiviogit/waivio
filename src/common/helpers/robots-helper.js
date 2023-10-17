@@ -1,4 +1,4 @@
-User-agent: Applebot
+export const getRobotsTxtContent = host => ` User-agent: Applebot
 Disallow: /settings/
 Disallow: /bookmarks/
 Disallow: /drafts/
@@ -139,4 +139,6 @@ Disallow: /invite/
 Disallow: /feed/
 Disallow: /editor/
 
-
+Sitemap: https://${host}/sitemap.xml
+`;
+export default null;
