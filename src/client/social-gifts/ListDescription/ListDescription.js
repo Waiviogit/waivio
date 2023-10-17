@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+import { ReactSVG } from 'react-svg';
 import { has } from 'lodash';
 import './ListDescription.less';
 
 const ListDescription = ({ wobject }) => {
+  const [showMore, setShowMore] = useState(false);
   const hasTitle = has(wobject, 'title');
   const hasAvatar = has(wobject, 'avatar');
   const hasDescription = has(wobject, 'description');
@@ -31,7 +33,18 @@ const ListDescription = ({ wobject }) => {
                 </div>
               )}
             </div>
-            <div className={`ListDescription__remaining-description`}>{remainingParagraphs}</div>
+            {remainingParagraphs && (
+              <div className={'ListDescription__icon'} onClick={() => setShowMore(!showMore)}>
+                <ReactSVG
+                  className={'ListDescription__img'}
+                  wrapper="span"
+                  src={showMore ? '/images/icons/up.svg' : '/images/icons/down.svg'}
+                />
+              </div>
+            )}
+            {showMore && (
+              <div className={`ListDescription__remaining-description`}>{remainingParagraphs}</div>
+            )}
           </>
         )}
       </div>
