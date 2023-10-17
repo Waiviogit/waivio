@@ -127,7 +127,7 @@ const NewDiscover = () => {
         <meta property="og:site_name" content="Waivio" />
         <link id="favicon" rel="icon" href={favicon} type="image/x-icon" />
       </Helmet>
-      <div className="NewDiscover__wrap">
+      <div className={`NewDiscover__wrap ${discoverUsers ? ' new-discover-content-margin' : ''}`}>
         <h3 className="NewDiscover__type">{discoverUsers ? 'Users' : type}</h3>
         {(discoverUsers ? user : search) && (
           <Tag closable onClose={handleDeleteTag}>
