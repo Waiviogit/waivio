@@ -1002,6 +1002,19 @@ class Notifications extends React.Component {
                     onClick={this.handleNotificationsClick}
                   />
                 );
+              case notificationConstants.WEBSITE_BALANCE:
+                return (
+                  <NotificationTemplate
+                    url={'/manage'}
+                    key={key}
+                    notification={notification}
+                    read={read}
+                    onClick={this.handleNotificationsClick}
+                    username={currentAuthUsername}
+                    id={notification.message}
+                    defaultMessage={notification.message}
+                  />
+                );
               case notificationConstants.CANCEL_UNSTAKE:
                 return (
                   <NotificationTemplate
