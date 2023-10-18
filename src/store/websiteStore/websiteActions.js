@@ -50,9 +50,7 @@ export const createNewWebsite = (formData, history) => (dispatch, getState, { bu
       message.error(res.message);
       dispatch({ type: CREATE_NEW_WEBSITE.ERROR });
     } else {
-      const creator = getAuthenticatedUserName(state);
-
-      busyAPI.instance.sendAsync(subscribeTypes.subscribeTransactionId, [creator, res.result.id]);
+      busyAPI.instance.sendAsync(subscribeTypes.subscribeTransactionId, [owner, res.result.id]);
       busyAPI.instance.subscribe((response, mess) => {
         if (mess?.success && mess?.permlink === res.result.id) {
           dispatch(getOwnWebsite());
