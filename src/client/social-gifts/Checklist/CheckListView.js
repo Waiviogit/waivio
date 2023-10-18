@@ -27,6 +27,7 @@ const CheckListView = ({ wobject, listItems, loading, intl, hideBreadCrumbs }) =
   const history = useHistory();
   const match = useRouteMatch();
   const listType = wobject?.object_type === 'list';
+  const listPermlink = match.params.name || wobject.author_permlink;
   const getListRow = listItem => {
     const isList = listItem.object_type === 'list';
 
@@ -37,10 +38,10 @@ const CheckListView = ({ wobject, listItems, loading, intl, hideBreadCrumbs }) =
         <div className="Checklist__listItems">
           <Link
             to={{
-              pathname: `/checklist/${match.params.name}`,
+              pathname: `/checklist/${listPermlink}`,
               hash: createNewHash(listItem?.author_permlink, history.location.hash),
               search:
-                match.params.name === listItem?.author_permlink
+                listPermlink === listItem?.author_permlink
                   ? ''
                   : `currObj=${listItem?.author_permlink}`,
             }}
