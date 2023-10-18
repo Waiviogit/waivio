@@ -50,21 +50,22 @@ export const createNewWebsite = (formData, history) => (dispatch, getState, { bu
       message.error(res.message);
       dispatch({ type: CREATE_NEW_WEBSITE.ERROR });
     } else {
-      const blockNumber = await getLastBlockNum();
       const creator = getAuthenticatedUserName(state);
 
-      busyAPI.instance.sendAsync(subscribeMethod, [creator, blockNumber, subscribeTypes.posts]);
-      busyAPI.instance.subscribeBlock(subscribeTypes.posts, blockNumber, () => {
-        dispatch(getOwnWebsite());
-        dispatch({ type: CREATE_NEW_WEBSITE.SUCCESS });
-        message.success(`The website ${formData?.host ||
-          formData.domain} has been successfully activated
+      busyAPI.instance.sendAsync(subscribeTypes.subscribeTransactionId, [creator, res.result.id]);
+      busyAPI.instance.subscribe((response, mess) => {
+        if (mess?.success && mess?.permlink === res.result.id) {
+          dispatch(getOwnWebsite());
+          dispatch({ type: CREATE_NEW_WEBSITE.SUCCESS });
+          message.success(`The website ${formData?.host ||
+            formData.domain} has been successfully activated
 `);
-        history.push(
-          formData?.host
-            ? `/${formData?.host}/configuration`
-            : `/${formData.domain}.${formData.parent}/configuration`,
-        );
+          history.push(
+            formData?.host
+              ? `/${formData?.host}/configuration`
+              : `/${formData.domain}.${formData.parent}/configuration`,
+          );
+        }
       });
     }
   });
