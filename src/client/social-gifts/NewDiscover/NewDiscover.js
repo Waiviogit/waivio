@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { useHistory, useParams } from 'react-router';
+import { useHistory, useParams, useRouteMatch } from 'react-router';
 import Helmet from 'react-helmet';
 import InfiniteSroll from 'react-infinite-scroller';
 import { Tag } from 'antd';
@@ -10,27 +10,30 @@ import { getHelmetIcon } from '../../../store/appStore/appSelectors';
 import ShopObjectCard from '../ShopObjectCard/ShopObjectCard';
 import Loading from '../../components/Icon/Loading';
 import useQuery from '../../../hooks/useQuery';
-import { getObjectType } from '../../../waivioApi/ApiClient';
+import { getObjectType, searchUsers } from '../../../waivioApi/ApiClient';
 import { getLocale } from '../../../store/settingsStore/settingsSelectors';
-
-import './NewDiscover.less';
 import { useSeoInfo } from '../../../hooks/useSeoInfo';
-import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
+import { getAuthenticatedUserName, isGuestUser } from '../../../store/authStore/authSelectors';
+import UserDynamicList from '../../user/UserDynamicList';
+import './NewDiscover.less';
 
 const wobjects_count = 20;
+const limit = 30;
 
 const NewDiscover = () => {
-  const { type } = useParams();
+  const { type, user } = useParams();
   const favicon = useSelector(getHelmetIcon);
   const locale = useSelector(getLocale);
+  const isGuest = useSelector(isGuestUser);
   const userName = useSelector(getAuthenticatedUserName);
+  const match = useRouteMatch();
   const history = useHistory();
   const query = useQuery();
   const [objects, setObjects] = useState([]);
   const [hasMoreObjects, setHasMoreObjects] = useState();
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const search = query.get('search')?.replaceAll('%26%', '&');
-
+  const discoverUsers = match.url.includes('discover-users');
   const desc = 'All objects are located here. Discover new objects!';
   const image =
     'https://images.hive.blog/p/DogN7fF3oJDSFnVMQK19qE7K3somrX2dTE7F3viyR7zVngPPv827QvEAy1h8dJVrY1Pa5KJWZrwXeHPHqzW6dL9AG9fWHRaRVeY8B4YZh4QrcaPRHtAtYLGebHH7zUL9jyKqZ6NyLgCk3FRecMX7daQ96Zpjc86N6DUQrX18jSRqjSKZgaj2wVpnJ82x7nSGm5mmjSih5Xf71?format=match&mode=fit&width=800&height=600';
@@ -39,27 +42,30 @@ const NewDiscover = () => {
 
   useEffect(() => {
     const ac = new AbortController();
-    const requestData = {
-      locale,
-      userName,
-      wobjects_count,
-    };
 
-    setLoading(true);
-
-    if (search)
-      requestData.filter = {
-        searchString: search,
+    if (!discoverUsers) {
+      const requestData = {
+        locale,
+        userName,
+        wobjects_count,
       };
 
-    getObjectType(type, requestData, ac).then(res => {
-      setObjects(uniqBy(res?.related_wobjects, 'author_permlink'));
-      setHasMoreObjects(res?.hasMoreWobjects);
-      setLoading(false);
-    });
+      setLoading(true);
+
+      if (search)
+        requestData.filter = {
+          searchString: search,
+        };
+
+      getObjectType(type, requestData, ac).then(res => {
+        setObjects(uniqBy(res?.related_wobjects, 'author_permlink'));
+        setHasMoreObjects(res?.hasMoreWobjects);
+        setLoading(false);
+      });
+    }
 
     return () => ac.abort();
-  }, [search, type]);
+  }, [search, type, user]);
 
   const loadMore = () => {
     const requestData = {
@@ -80,10 +86,23 @@ const NewDiscover = () => {
   };
 
   const handleDeleteTag = () => {
-    history.push(`/discover-objects/${type}`);
-    setObjects([]);
-    setHasMoreObjects(false);
-    setLoading(true);
+    if (discoverUsers) {
+      history.push(`/discover-users`);
+      // setLoading(true);
+    } else {
+      history.push(`/discover-objects/${type}`);
+      setObjects([]);
+      setHasMoreObjects(false);
+      setLoading(true);
+    }
+  };
+  const fetcher = async (users, authUser, sort, skip) => {
+    const response = await searchUsers(user, userName, limit, !isGuest, skip);
+    const newUsers = response.users.map(u => ({ ...u, name: u.account }));
+
+    setLoading(false);
+
+    return { users: newUsers, hasMore: response.hasMore };
   };
 
   return (
@@ -108,24 +127,32 @@ const NewDiscover = () => {
         <meta property="og:site_name" content="Waivio" />
         <link id="favicon" rel="icon" href={favicon} type="image/x-icon" />
       </Helmet>
-      <div className="NewDiscover__wrap">
-        <h3 className="NewDiscover__type">{type}</h3>
-        {search && (
+      <div className={`NewDiscover__wrap ${discoverUsers ? ' new-discover-content-margin' : ''}`}>
+        <h3 className="NewDiscover__type">{discoverUsers ? 'Users' : type}</h3>
+        {(discoverUsers ? user : search) && (
           <Tag closable onClose={handleDeleteTag}>
-            {search}
+            {discoverUsers ? user : search}
           </Tag>
         )}
       </div>
       {loading ? (
         <Loading />
       ) : (
-        <InfiniteSroll hasMore={hasMoreObjects} loader={<Loading />} loadMore={loadMore}>
-          <div className="NewDiscover__list" key={'list'}>
-            {objects?.map(obj => (
-              <ShopObjectCard key={obj?.author_permlink} wObject={obj} />
-            ))}{' '}
-          </div>
-        </InfiniteSroll>
+        <>
+          {discoverUsers ? (
+            <div className=" new-discover-content-margin">
+              <UserDynamicList hideSort limit={limit} fetcher={fetcher} searchLine={user} />
+            </div>
+          ) : (
+            <InfiniteSroll hasMore={hasMoreObjects} loader={<Loading />} loadMore={loadMore}>
+              <div className="NewDiscover__list" key={'list'}>
+                {objects?.map(obj => (
+                  <ShopObjectCard key={obj?.author_permlink} wObject={obj} />
+                ))}{' '}
+              </div>
+            </InfiniteSroll>
+          )}
+        </>
       )}
     </div>
   );

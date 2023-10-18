@@ -8,6 +8,7 @@ import createSsrHandler from './handlers/createSsrHandler';
 import steemAPI from './steemAPI';
 import { getSettingsAdsense } from '../waivioApi/ApiClient';
 import { sitemap } from './seo-service/seoServiceApi';
+import { getRobotsTxtContent } from '../common/helpers/robots-helper';
 
 const indexPath = `${paths.templates}/index.hbs`;
 const indexHtml = fs.readFileSync(indexPath, 'utf-8');
@@ -101,6 +102,13 @@ app.get('/sitemap:pageNumber.xml', async (req, res) => {
 
 app.get('/ads.txt', async (req, res) => {
   const fileContent = (await getSettingsAdsense(req.headers.host)).txtFile;
+
+  res.contentType('text/plain');
+  res.send(fileContent);
+});
+
+app.get('/robots.txt', (req, res) => {
+  const fileContent = getRobotsTxtContent(req.headers.host);
 
   res.contentType('text/plain');
   res.send(fileContent);
