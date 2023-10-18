@@ -1,4 +1,4 @@
-export const getRobotsTxtContent = host => `User-agent: Applebot
+User-agent: Applebot
 Disallow: /settings/
 Disallow: /bookmarks/
 Disallow: /drafts/
@@ -138,7 +138,3 @@ Disallow: /activity/
 Disallow: /invite/
 Disallow: /feed/
 Disallow: /editor/
-
-Sitemap: https://${host}/sitemap.xml
-`;
-export default null;
