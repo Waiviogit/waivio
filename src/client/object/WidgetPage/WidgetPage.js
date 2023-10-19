@@ -53,7 +53,7 @@ const WidgetPage = props => {
 
   return (
     <div className="FormPage">
-      <CatalogBreadcrumb wobject={wobject} intl={props.intl} />
+      {hash && <CatalogBreadcrumb wobject={wobject} intl={props.intl} />}
       {widgetForm.type === 'Widget' ? (
         widgetView
       ) : (

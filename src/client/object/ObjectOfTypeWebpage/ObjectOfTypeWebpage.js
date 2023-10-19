@@ -81,7 +81,7 @@ const ObjectOfTypeWebpage = ({ intl }) => {
 
   return (
     <div className="ObjectOfTypeWebpage">
-      {!isEditMode && <CatalogBreadcrumb wobject={wobject} intl={intl} />}
+      {!isEditMode && history.location.hash && <CatalogBreadcrumb wobject={wobject} intl={intl} />}
       <Editor
         readOnly={!isEditMode || showModal}
         cellPlugins={plugins}
