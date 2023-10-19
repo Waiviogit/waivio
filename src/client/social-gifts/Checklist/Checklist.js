@@ -57,19 +57,26 @@ const Checklist = ({
 
   useEffect(() => {
     // eslint-disable-next-line no-console
-    console.log('checklist');
+    console.log('hash:', history.location.hash, 'name:', match.params.name);
     const pathUrl =
       permlink || getLastPermlinksFromHash(history.location.hash) || match.params.name;
 
-    if (wobject?.author_permlink !== pathUrl) setLoading(true);
+    if (wobject?.author_permlink !== pathUrl) {
+      setLoading(true);
+    }
 
     getObjectAction(pathUrl, userName, locale).then(res => {
       const wObject = res?.value;
 
-      if (wObject?.object_type === 'list' && window.gtag)
+      if (wObject?.object_type === 'list' && window.gtag) {
         window.gtag('event', getObjectName(wObject), { debug_mode: true });
-      if (history.location.hash) setNestedObject(wObject);
-      if (!isSocialProduct) setBreadcrumb(wObject);
+      }
+      if (history.location.hash) {
+        setNestedObject(wObject);
+      }
+      if (!isSocialProduct) {
+        setBreadcrumb(wObject);
+      }
       setLists(
         sortListItemsBy(
           wObject?.listItems,
