@@ -56,8 +56,6 @@ const Checklist = ({
   const { canonicalUrl } = useSeoInfo(true);
 
   useEffect(() => {
-    // eslint-disable-next-line no-console
-    console.log('hash:', history.location.hash, 'name:', match.params.name);
     const pathUrl =
       permlink || getLastPermlinksFromHash(history.location.hash) || match.params.name;
 
