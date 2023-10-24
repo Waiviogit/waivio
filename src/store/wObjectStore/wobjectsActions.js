@@ -3,7 +3,7 @@ import { createAsyncActionType } from '../../common/helpers/stateHelpers';
 import { getAlbums } from '../galleryStore/galleryActions';
 import { getObjectPermlink } from '../../client/vendor/steemitHelpers';
 import { followObject, voteObject } from './wobjActions';
-import { getCurrentHost, getUsedLocale } from '../appStore/appSelectors';
+import { getCurrentHost } from '../appStore/appSelectors';
 import { getAuthenticatedUserName } from '../authStore/authSelectors';
 import { getLocale } from '../settingsStore/settingsSelectors';
 import { checkExistPermlink } from '../../waivioApi/ApiClient';
@@ -25,7 +25,7 @@ export const getObjectFollowers = ({ object, skip, limit, userName, sort = 'rank
   });
 
 export const getObject = (authorPermlink, user) => (dispatch, getState) => {
-  const usedLocale = getUsedLocale(getState());
+  const usedLocale = getLocale(getState());
 
   return dispatch({
     type: GET_OBJECT,
