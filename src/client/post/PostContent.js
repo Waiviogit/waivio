@@ -298,6 +298,9 @@ class PostContent extends React.Component {
         <Helmet>
           <title>{title}</title>
           <link rel="canonical" href={canonicalUrl} />
+          {/* {content?.active_votes?.map(v => ( */}
+          {/*  <link key={`voter-${v.voter}`} rel={`voter-${v.voter}`} href={`/@${v.voter}`} /> */}
+          {/* ))} */}
           {content?.wobjects?.map(w => (
             <link key={`wobject-${w.name}`} rel={`wobject-${w.name}`} href={w.defaultShowLink} />
           ))}
