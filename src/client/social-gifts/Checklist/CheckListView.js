@@ -47,14 +47,23 @@ const CheckListView = ({ wobject, listItems, loading, intl, hideBreadCrumbs }) =
             }}
             title={getTitleForLink(listItem)}
           >
-            <div
-              className="Checklist__itemsAvatar"
-              style={{
-                backgroundImage: `url(${avatar})`,
-              }}
-            >
-              {!listItem?.avatar && !defaultListImage && <Icon type="shopping" />}
-            </div>
+            {!listItem?.avatar && !defaultListImage ? (
+              <div
+                className="Checklist__itemsAvatar"
+                style={{
+                  backgroundImage: `url(${avatar})`,
+                }}
+              >
+                <Icon type="shopping" />
+              </div>
+            ) : (
+              <img
+                className="Checklist__itemsAvatar"
+                src={avatar}
+                alt={`list item ${getTitleForLink(listItem)} avatar`}
+              />
+            )}
+
             <span className="Checklist__itemsTitle">
               {getObjectName(listItem)}
               {!isNaN(listItem.listItemsCount) ? (
