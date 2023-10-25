@@ -56,20 +56,25 @@ const Checklist = ({
   const { canonicalUrl } = useSeoInfo(true);
 
   useEffect(() => {
-    // eslint-disable-next-line no-console
-    console.log('checklist');
     const pathUrl =
       permlink || getLastPermlinksFromHash(history.location.hash) || match.params.name;
 
-    if (wobject?.author_permlink !== pathUrl) setLoading(true);
+    if (wobject?.author_permlink !== pathUrl) {
+      setLoading(true);
+    }
 
     getObjectAction(pathUrl, userName, locale).then(res => {
       const wObject = res?.value;
 
-      if (wObject?.object_type === 'list' && window.gtag)
+      if (wObject?.object_type === 'list' && window.gtag) {
         window.gtag('event', getObjectName(wObject), { debug_mode: true });
-      if (history.location.hash) setNestedObject(wObject);
-      if (!isSocialProduct) setBreadcrumb(wObject);
+      }
+      if (history.location.hash) {
+        setNestedObject(wObject);
+      }
+      if (!isSocialProduct) {
+        setBreadcrumb(wObject);
+      }
       setLists(
         sortListItemsBy(
           wObject?.listItems,
@@ -91,6 +96,8 @@ const Checklist = ({
         <meta name="twitter:card" content={'summary_large_image'} />
         <meta name="twitter:site" content={'@waivio'} />
         <meta name="twitter:title" content={title} />
+        <meta name="author" content={wobject?.creator} />
+        <meta name="wobject-title" content={wobject?.title} />
         <meta name="twitter:description" content={desc} />
         <meta name="twitter:image" content={image} />
         <meta property="og:title" content={title} />
@@ -118,6 +125,8 @@ Checklist.propTypes = {
   wobject: PropTypes.shape({
     object_type: PropTypes.string,
     description: PropTypes.string,
+    creator: PropTypes.string,
+    title: PropTypes.string,
     author_permlink: PropTypes.string,
     background: PropTypes.string,
     sortCustom: PropTypes.shape({

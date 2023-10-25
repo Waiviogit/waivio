@@ -4,6 +4,7 @@ import { Button, Checkbox, Input, Form, Select } from 'antd';
 import { isEmpty } from 'lodash';
 
 import validateRules from '../../constants/validateRules';
+import WebsitePricing from '../WebsitePricing/WebsitePricing';
 import './CreateWebsite.less';
 
 const CreateWebsite = ({
@@ -127,6 +128,7 @@ const CreateWebsite = ({
         </Button>
       </Form.Item>
     </Form>
+    <WebsitePricing />
   </div>
 );
 

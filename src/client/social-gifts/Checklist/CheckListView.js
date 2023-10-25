@@ -1,5 +1,5 @@
 import React from 'react';
-import { isEmpty, map } from 'lodash';
+import { isEmpty, map, truncate } from 'lodash';
 import { useSelector } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { Icon } from 'antd';
@@ -47,15 +47,30 @@ const CheckListView = ({ wobject, listItems, loading, intl, hideBreadCrumbs }) =
             }}
             title={getTitleForLink(listItem)}
           >
-            <div
-              className="Checklist__itemsAvatar"
-              style={{
-                backgroundImage: `url(${avatar})`,
-              }}
+            {!listItem?.avatar && !defaultListImage ? (
+              <div
+                className="Checklist__itemsAvatar"
+                style={{
+                  backgroundImage: `url(${avatar})`,
+                }}
+              >
+                <Icon type="shopping" />
+              </div>
+            ) : (
+              <img
+                className="Checklist__itemsAvatar"
+                src={avatar}
+                alt={`list item ${getTitleForLink(listItem)} avatar`}
+              />
+            )}
+            <span
+              className="Checklist__itemsTitle"
+              title={
+                listItem?.description
+                  ? truncate(listItem?.description, { length: 200 })
+                  : getObjectName(listItem)
+              }
             >
-              {!listItem?.avatar && !defaultListImage && <Icon type="shopping" />}
-            </div>
-            <span className="Checklist__itemsTitle">
               {getObjectName(listItem)}
               {!isNaN(listItem.listItemsCount) ? (
                 <span className="items-count"> ({listItem.listItemsCount})</span>

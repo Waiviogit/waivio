@@ -1,4 +1,4 @@
-export const getRobotsTxtContent = host => ` User-agent: Applebot
+export const getRobotsTxtContent = host => `User-agent: Applebot
 Disallow: /settings/
 Disallow: /bookmarks/
 Disallow: /drafts/

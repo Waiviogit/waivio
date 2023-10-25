@@ -2378,5 +2378,6 @@
   "object_field_webpage": "Webpage",
   "webpage": "Webpage",
   "empty_webpage_content":"This webpage has no content. Click Edit to start.",
-  "object_type_webpage": "Webpage"
+  "object_type_webpage": "webpage",
+  "website_hosting_pricing": "Website hosting pricing"
 }

@@ -1793,9 +1793,15 @@ class AppendForm extends Component {
         }),
       );
     } else if (obj.author_permlink) {
-      this.props.form.setFieldsValue({
-        [currentField]: obj.author_permlink,
-      });
+      if (currentField === objectFields.status) {
+        this.props.form.setFieldsValue({
+          [statusFields.link]: obj.author_permlink,
+        });
+      } else {
+        this.props.form.setFieldsValue({
+          [currentField]: obj.author_permlink,
+        });
+      }
       this.setState({ selectedObject: obj });
     }
   };
@@ -3200,18 +3206,8 @@ class AppendForm extends Component {
               <Form.Item>
                 {getFieldDecorator(statusFields.link, {
                   rules: this.getFieldRules('buttonFields.link'),
-                })(
-                  <Input
-                    className={classNames('AppendForm__input', {
-                      'validation-error': !this.state.isSomeValue,
-                    })}
-                    disabled={loading}
-                    placeholder={intl.formatMessage({
-                      id: 'link',
-                      defaultMessage: 'Link',
-                    })}
-                  />,
-                )}
+                })(<SearchObjectsAutocomplete handleSelect={this.handleSelectObject} />)}
+                {selectedObject && <ObjectCardView wObject={selectedObject} />}
               </Form.Item>
             ) : null}
           </React.Fragment>
