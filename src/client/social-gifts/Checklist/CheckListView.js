@@ -66,7 +66,7 @@ const CheckListView = ({ wobject, listItems, loading, intl, hideBreadCrumbs }) =
 
             <span
               className="Checklist__itemsTitle"
-              title={truncate(listItem?.description, { length: 200 })}
+              title={listItem?.description ? truncate(listItem?.description, { length: 200 }) : ''}
             >
               {getObjectName(listItem)}
               {!isNaN(listItem.listItemsCount) ? (
