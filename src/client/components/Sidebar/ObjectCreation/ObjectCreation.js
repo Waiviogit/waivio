@@ -11,7 +11,7 @@ import { getObjectTypesList } from '../../../../store/objectTypesStore/objectTyp
 
 import './ObjectCreation.less';
 
-const objTypesLimit = 5;
+const objTypesLimit = 15;
 
 @connect(
   state => ({
