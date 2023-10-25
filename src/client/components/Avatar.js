@@ -41,7 +41,7 @@ const Avatar = ({ username, size, authenticatedUser, isSquare, lightbox }) => {
   let url = getAvatarURL(username, size, authenticatedUser);
 
   if (username === authUser?.name)
-    url = parseJSON(authUser?.posting_json_metadata)?.profile?.profile_image;
+    url = parseJSON(authUser?.posting_json_metadata)?.profile?.profile_image || url;
 
   if (username) {
     style = {
