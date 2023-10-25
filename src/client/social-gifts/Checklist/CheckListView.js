@@ -1,5 +1,5 @@
 import React from 'react';
-import { isEmpty, map } from 'lodash';
+import { isEmpty, map, truncate } from 'lodash';
 import { useSelector } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { Icon } from 'antd';
@@ -64,7 +64,10 @@ const CheckListView = ({ wobject, listItems, loading, intl, hideBreadCrumbs }) =
               />
             )}
 
-            <span className="Checklist__itemsTitle" title={listItem.description}>
+            <span
+              className="Checklist__itemsTitle"
+              title={truncate(listItem.description, { length: 200 })}
+            >
               {getObjectName(listItem)}
               {!isNaN(listItem.listItemsCount) ? (
                 <span className="items-count"> ({listItem.listItemsCount})</span>
