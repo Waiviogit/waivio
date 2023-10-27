@@ -4,14 +4,14 @@ import { connect } from 'react-redux';
 import { Icon } from 'antd';
 import { get, truncate } from 'lodash';
 import {
-  injectIntl,
-  FormattedMessage,
-  FormattedTime,
   FormattedDate,
+  FormattedMessage,
   FormattedRelative,
+  FormattedTime,
+  injectIntl,
 } from 'react-intl';
 import urlParse from 'url-parse';
-import { calculateDownVote, calcReputation } from '../../../vendor/steemitHelpers';
+import { calcReputation, calculateDownVote } from '../../../vendor/steemitHelpers';
 import SocialLinks from '../../../components/SocialLinks';
 import USDDisplay from '../../../components/Utils/USDDisplay';
 import { getMetadata } from '../../../../common/helpers/postingMetadata';
@@ -189,5 +189,11 @@ class UserInfo extends React.Component {
     );
   }
 }
+UserInfo.fetchData = async ({ store, match }) => {
+  const state = store.getState();
+  const user = getUser(state, match.params.name);
+
+  return getMetadata(user);
+};
 
 export default UserInfo;
