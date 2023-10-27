@@ -356,7 +356,7 @@ const ImageSetter = ({
             id="inputfile"
             className="image-upload__file-input"
             type="file"
-            accept="image/*"
+            accept="image/heic, image/*"
             multiple={isMultiple}
             onChange={isEditable ? handleNewImage : handleChangeImage}
             onClick={e => {
