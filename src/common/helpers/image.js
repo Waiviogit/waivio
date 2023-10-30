@@ -6,7 +6,7 @@ const IMG_PROXY_PREVIEW = 'https://images.hive.blog/800x600/';
 const IMG_PROXY_SMALL = 'https://images.hive.blog/p/';
 const IMG_PROXY = 'https://images.hive.blog/0x0/';
 
-export const MAXIMUM_UPLOAD_SIZE = 15728640;
+export const MAXIMUM_UPLOAD_SIZE = 31457280;
 export const MAXIMUM_UPLOAD_SIZE_HUMAN = filesize(MAXIMUM_UPLOAD_SIZE);
 
 export const getProxyImageURL = (url, type) => {
