@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
+import { getAccount } from '../../../../common/helpers/apiHelpers';
 
 import MatchBotsTitle from '../MatchBotsTitle';
 import MatchBotsTable from '../MatchBotsTable';
@@ -18,9 +19,19 @@ const MatchBotsAuthors = ({
   getMatchBots,
   matchBots,
   clearMatchBots,
+  authUserName,
+  reload,
 }) => {
-  React.useEffect(() => {
+  const [isAuthBot, setIsAuth] = useState(isAuthority);
+
+  useEffect(() => {
     getMatchBots();
+    getAccount(authUserName).then(r => {
+      setIsAuth(r?.posting?.account_auths?.some(acc => acc[0] === MATCH_BOTS_TYPES.AUTHORS));
+    });
+    if (isAuthority !== isAuthBot) {
+      reload();
+    }
 
     return () => clearMatchBots();
   }, []);
@@ -28,6 +39,7 @@ const MatchBotsAuthors = ({
   return (
     <div className="MatchBots">
       <MatchBotsTitle
+        isAuthBot={isAuthBot}
         botType={MATCH_BOTS_TYPES.AUTHORS}
         botTitle={intl.formatMessage({
           id: 'matchBot_title_authors',
@@ -39,7 +51,7 @@ const MatchBotsAuthors = ({
       <MatchBotsAuthorsContent isEngLocale={isEngLocale} />
       <MatchBotsService
         botName={MATCH_BOTS_NAMES.AUTHORS}
-        isAuthority={isAuthority}
+        isAuthority={isAuthBot}
         botType={MATCH_BOTS_TYPES.AUTHORS}
       />
       <ModalsAuthors modalType="add" />
@@ -53,9 +65,11 @@ const MatchBotsAuthors = ({
 MatchBotsAuthors.propTypes = {
   intl: PropTypes.shape().isRequired,
   isEngLocale: PropTypes.bool.isRequired,
+  authUserName: PropTypes.string.isRequired,
   isAuthority: PropTypes.bool.isRequired,
   getMatchBots: PropTypes.func.isRequired,
   clearMatchBots: PropTypes.func.isRequired,
+  reload: PropTypes.func.isRequired,
   matchBots: PropTypes.arrayOf(PropTypes.shape()),
 };
 

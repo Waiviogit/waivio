@@ -13,9 +13,11 @@ import getMatchBotMessageData from './matchBotMessageData';
 import { MATCH_BOTS_TYPES, redirectAuthHiveSigner } from '../../../common/helpers/matchBotsHelpers';
 
 import './MatchBotSponsors.less';
+import { getAccount } from '../../../common/helpers/apiHelpers';
 
-const MatchBotSponsors = ({ intl, userName, isAuthority, isEngLocale }) => {
+const MatchBotSponsors = ({ intl, userName, isAuthority, isEngLocale, reload }) => {
   const [editRule, setEditRule] = useState({});
+  const [isAuthBot, setIsAuth] = useState(isAuthority);
   const [isLoading, setLoaded] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [minVotingPower, setMinVotingPower] = useState(0);
@@ -24,7 +26,7 @@ const MatchBotSponsors = ({ intl, userName, isAuthority, isEngLocale }) => {
   const [voteModalVisible, setVoteModalVisible] = useState(false);
   const [isEnabledRule, setIsEnabledRule] = useState(false);
 
-  const handleSwitcher = () => redirectAuthHiveSigner(isAuthority, MATCH_BOTS_TYPES.SPONSORS);
+  const handleSwitcher = () => redirectAuthHiveSigner(isAuthBot, MATCH_BOTS_TYPES.SPONSORS);
   const maxRulesLimit = 25;
   const isOverRules = rules.results.length >= maxRulesLimit;
   const marks = {
@@ -41,6 +43,12 @@ const MatchBotSponsors = ({ intl, userName, isAuthority, isEngLocale }) => {
         setRules(data);
         setMinVotingPower(data.votingPower / 100 || 0);
       });
+    }
+    getAccount(userName).then(r => {
+      setIsAuth(r?.posting?.account_auths?.some(acc => acc[0] === MATCH_BOTS_TYPES.SPONSORS));
+    });
+    if (isAuthority !== isAuthBot) {
+      dispatch(reload());
     }
   }, []);
 
@@ -85,8 +93,8 @@ const MatchBotSponsors = ({ intl, userName, isAuthority, isEngLocale }) => {
           <div className="MatchBotSponsors__title-wrap">
             <div className="MatchBotSponsors__title">{messageData.manageMatchBot}</div>
             <div className="MatchBotSponsors__switcher">
-              <Tooltip title={!isAuthority ? messageData.turnOn : messageData.turnOff}>
-                <Switch checked={isAuthority} onChange={handleSwitcher} />
+              <Tooltip title={!isAuthBot ? messageData.turnOn : messageData.turnOff}>
+                <Switch checked={isAuthBot} onChange={handleSwitcher} />
               </Tooltip>
             </div>
           </div>
@@ -111,7 +119,7 @@ const MatchBotSponsors = ({ intl, userName, isAuthority, isEngLocale }) => {
                       role="presentation"
                     >
                       {' '}
-                      {!isAuthority ? messageData.authorizeNow : messageData.removeAuthorization}
+                      {!isAuthBot ? messageData.authorizeNow : messageData.removeAuthorization}
                     </span>
                   }
                 </p>
@@ -143,7 +151,7 @@ const MatchBotSponsors = ({ intl, userName, isAuthority, isEngLocale }) => {
               handleEditRule={handleEditRule}
               handleSwitcher={handleSwitcher}
               messageData={messageData}
-              isAuthority={isAuthority}
+              isAuthority={isAuthBot}
               rules={rules.results}
               setIsEnabledRule={setIsEnabledRule}
             />
@@ -189,6 +197,7 @@ MatchBotSponsors.propTypes = {
   intl: PropTypes.shape().isRequired,
   userName: PropTypes.string,
   isAuthority: PropTypes.bool,
+  reload: PropTypes.func,
   isEngLocale: PropTypes.bool,
 };
 
