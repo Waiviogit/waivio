@@ -23,6 +23,7 @@ import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors
 import { getUsedLocale } from '../../../store/appStore/appSelectors';
 
 import './ObjectOfTypeWebpage.less';
+import CatalogBreadcrumb from '../Catalog/CatalogBreadcrumb/CatalogBreadcrumb';
 
 const customSlate = slate(config => ({
   ...config,
@@ -80,6 +81,7 @@ const ObjectOfTypeWebpage = ({ intl }) => {
 
   return (
     <div className="ObjectOfTypeWebpage">
+      {!isEditMode && history.location.hash && <CatalogBreadcrumb wobject={wobject} intl={intl} />}
       <Editor
         readOnly={!isEditMode || showModal}
         cellPlugins={plugins}

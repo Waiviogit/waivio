@@ -1,18 +1,22 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useHistory } from 'react-router';
-import { useSelector } from 'react-redux';
+import { injectIntl } from 'react-intl';
+import { useDispatch, useSelector } from 'react-redux';
 import { getLastPermlinksFromHash } from '../../../common/helpers/wObjectHelper';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 import { getUsedLocale } from '../../../store/appStore/appSelectors';
 import Loading from '../../components/Icon/Loading';
 import { getObject } from '../../../waivioApi/ApiClient';
+import { setNestedWobject } from '../../../store/wObjectStore/wobjActions';
+import CatalogBreadcrumb from '../Catalog/CatalogBreadcrumb/CatalogBreadcrumb';
 
 const WidgetPage = props => {
-  const [nestedWobject, setNestedWobject] = useState();
+  const [nestedWobject, setNestedWobj] = useState();
   const { wobject } = props;
   const userName = useSelector(getAuthenticatedUserName);
   const locale = useSelector(getUsedLocale);
+  const dispatch = useDispatch();
   const hash = useHistory().location.hash;
   const nestedObjPermlink = getLastPermlinksFromHash(hash);
   const currentWobject = hash ? nestedWobject : wobject;
@@ -20,7 +24,10 @@ const WidgetPage = props => {
 
   useEffect(() => {
     if (nestedObjPermlink) {
-      getObject(nestedObjPermlink, userName, locale).then(wobj => setNestedWobject(wobj));
+      getObject(nestedObjPermlink, userName, locale).then(wobj => {
+        dispatch(setNestedWobject(wobj));
+        setNestedWobj(wobj);
+      });
     }
   }, [hash]);
 
@@ -46,6 +53,7 @@ const WidgetPage = props => {
 
   return (
     <div className="FormPage">
+      {hash && <CatalogBreadcrumb wobject={wobject} intl={props.intl} />}
       {widgetForm.type === 'Widget' ? (
         widgetView
       ) : (
@@ -68,10 +76,11 @@ const WidgetPage = props => {
 
 WidgetPage.propTypes = {
   wobject: PropTypes.shape(),
+  intl: PropTypes.shape(),
 };
 
 WidgetPage.defaultProps = {
   widgetForm: {},
 };
 
-export default WidgetPage;
+export default injectIntl(WidgetPage);

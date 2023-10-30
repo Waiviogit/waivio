@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 
@@ -10,6 +10,7 @@ import { MATCH_BOTS_NAMES, MATCH_BOTS_TYPES } from '../../../../common/helpers/m
 
 import '../MatchBots.less';
 import MatchBotsTable from '../MatchBotsTable';
+import { getAccount } from '../../../../common/helpers/apiHelpers';
 
 const MatchBotsCurators = ({
   intl,
@@ -17,10 +18,20 @@ const MatchBotsCurators = ({
   isAuthority,
   getMatchBots,
   matchBots,
+  authUserName,
+  reload,
   clearMatchBots,
 }) => {
-  React.useEffect(() => {
+  const [isAuthBot, setIsAuth] = useState(isAuthority);
+
+  useEffect(() => {
     getMatchBots();
+    getAccount(authUserName).then(r => {
+      setIsAuth(r?.posting?.account_auths?.some(acc => acc[0] === MATCH_BOTS_TYPES.AUTHORS));
+    });
+    if (isAuthority !== isAuthBot) {
+      reload();
+    }
 
     return () => {
       clearMatchBots();
@@ -30,6 +41,7 @@ const MatchBotsCurators = ({
   return (
     <div className="MatchBots">
       <MatchBotsTitle
+        isAuthBot={isAuthBot}
         botType={MATCH_BOTS_TYPES.CURATORS}
         botTitle={intl.formatMessage({
           id: 'matchBot_title_curators',
@@ -40,7 +52,7 @@ const MatchBotsCurators = ({
       />
       <MatchBotsCuratorsContent isEngLocale={isEngLocale} />
       <MatchBotsService
-        isAuthority={isAuthority}
+        isAuthority={isAuthBot}
         botName={MATCH_BOTS_NAMES.CURATORS}
         botType={MATCH_BOTS_TYPES.CURATORS}
       />
@@ -54,11 +66,13 @@ const MatchBotsCurators = ({
 
 MatchBotsCurators.propTypes = {
   intl: PropTypes.shape().isRequired,
+  authUserName: PropTypes.string.isRequired,
   isEngLocale: PropTypes.bool.isRequired,
   isAuthority: PropTypes.bool.isRequired,
   matchBots: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   getMatchBots: PropTypes.func.isRequired,
   clearMatchBots: PropTypes.func.isRequired,
+  reload: PropTypes.func.isRequired,
 };
 
 export default injectIntl(MatchBotsCurators);

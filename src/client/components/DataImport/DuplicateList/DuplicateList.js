@@ -29,11 +29,13 @@ import VoteInfoBlock from './../VoteInfoBlock';
 import FindListModal from './FindListModal';
 
 import './../DataImport.less';
+import { getAccount } from '../../../../common/helpers/apiHelpers';
+import { reload } from '../../../../store/authStore/authActions';
 
 const limit = 30;
 
 const DuplicateList = ({ intl }) => {
-  const isAuthBot = useSelector(state =>
+  const isStoreAuthBot = useSelector(state =>
     getIsConnectMatchBot(state, { botType: MATCH_BOTS_TYPES.IMPORT }),
   );
   const authUserName = useSelector(getAuthenticatedUserName);
@@ -46,6 +48,7 @@ const DuplicateList = ({ intl }) => {
   const [hasMoreImports, setHasMoreImports] = useState(false);
   const [hasMoreHistory, setHasMoreHistory] = useState(false);
   const [history, setHistoryImportedObject] = useState([]);
+  const [isAuthBot, setIsAuth] = useState(isStoreAuthBot);
   const setListAndSetHasMore = (res, list, isLoadMore, setObjs, setMoreObjs) => {
     if (res.length > limit) {
       setMoreObjs(true);
@@ -87,6 +90,14 @@ const DuplicateList = ({ intl }) => {
     });
 
     dispatch(getImportUpdate(updateDuplicatedListDate));
+    getAccount(authUserName).then(
+      r =>
+        setIsAuth(r?.posting?.account_auths?.some(acc => acc[0] === MATCH_BOTS_TYPES.IMPORT)) ||
+        isStoreAuthBot,
+    );
+    if (isStoreAuthBot !== isAuthBot) {
+      dispatch(reload());
+    }
 
     return () => dispatch(closeImportSoket());
   }, []);
