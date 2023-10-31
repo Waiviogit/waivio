@@ -20,7 +20,7 @@ const WebsitePricing = ({ intl }) => (
       </h3>
       <div>
         <span className="WebsitePricing__dot">&bull;</span>
-        0.005 USD per day per active user.
+        0.005 USD per day per active user;
       </div>
       <div>
         <span className="WebsitePricing__dot">&bull;</span>
