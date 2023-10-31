@@ -35,7 +35,7 @@ const CheckListView = ({ wobject, listItems, loading, intl, hideBreadCrumbs }) =
       const avatar = getProxyImageURL(listItem?.avatar || defaultListImage, 'preview');
 
       return (
-        <div className="Checklist__listItems">
+        <div className="Checklist__listItems" key={listItem.author_permlink}>
           <Link
             to={{
               pathname: `/checklist/${listPermlink}`,
