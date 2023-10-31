@@ -41,7 +41,7 @@ export default class AvatarLightbox extends React.Component {
         role="presentation"
         onClick={this.handleAvatarClick}
       >
-        <Avatar username={username} size={size} />
+        <Avatar avatar={avatar} username={username} size={size} />
         {isActive && (
           <img
             src="/images/icons/online.png"
