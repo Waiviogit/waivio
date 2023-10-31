@@ -6,10 +6,11 @@ import { shortenDescription } from '../wObjectHelper';
 
 const DescriptionInfo = ({ description, wobjPermlink, showDescriptionBtn }) => {
   const showBtn = (description.length < 300 && showDescriptionBtn) || description.length > 300;
+  const { firstDescrPart } = shortenDescription(description, 300);
 
   return (
     <div className="description-field">
-      {shortenDescription(description)}
+      {firstDescrPart}
       {showBtn && (
         <div className="object-sidebar__menu-item">
           <LinkButton

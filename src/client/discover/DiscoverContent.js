@@ -18,6 +18,7 @@ import {
   searchUsersForDiscoverPage,
   unfollowSearchUser,
 } from '../../store/searchStore/searchActions';
+import { searchUsers } from '../../waivioApi/ApiClient';
 import withAuthActions from '../auth/withAuthActions';
 import { getObjectTypesList } from '../../store/objectTypesStore/objectTypesSelectors';
 import {
@@ -26,13 +27,18 @@ import {
   getTopExpertsLoading,
 } from '../../store/usersStore/usersSelectors';
 import { getSearchUsersResultsForDiscoverPage } from '../../store/searchStore/searchSelectors';
+import UserDynamicList from '../user/UserDynamicList';
+import { getAuthenticatedUserName, isGuestUser } from '../../store/authStore/authSelectors';
 
 const displayLimit = 20;
+const userLimit = 30;
 
 @withAuthActions
 @connect(
   state => ({
     topExperts: getTopExperts(state),
+    userName: getAuthenticatedUserName(state),
+    isGuest: isGuestUser(state),
     topExpertsLoading: getTopExpertsLoading(state),
     hasMoreExperts: getTopExpertsHasMore(state),
     typesList: getObjectTypesList(state),
@@ -65,6 +71,8 @@ class DiscoverContent extends React.Component {
     getObjectTypes: PropTypes.func.isRequired,
     searchUsersForDiscoverPage: PropTypes.func.isRequired,
     searchString: PropTypes.string,
+    isGuest: PropTypes.string,
+    userName: PropTypes.string,
     searchUsersList: PropTypes.shape({
       result: PropTypes.arrayOf(PropTypes.shape()),
       loading: PropTypes.bool,
@@ -128,6 +136,18 @@ class DiscoverContent extends React.Component {
       this.props.onActionInitiated(() => this.props.followTopUser(name, top));
     }
   };
+  userFetcher = async (users, authUser, sort, skip) => {
+    const response = await searchUsers(
+      this.props.searchString,
+      this.props.userName,
+      userLimit,
+      !this.props.isGuest,
+      skip,
+    );
+    const newUsers = response.users.map(u => ({ ...u, name: u.account }));
+
+    return { users: newUsers, hasMore: response.hasMore };
+  };
 
   render() {
     const {
@@ -151,23 +171,21 @@ class DiscoverContent extends React.Component {
       ...user,
     }));
 
-    const searchUsers = size(mapSearchUsersList)
-      ? mapSearchUsersList.map(expert => (
-          <DiscoverUser
-            user={expert}
-            key={expert.name}
-            unfollow={this.unfollowTopUser}
-            follow={this.followTopUser}
-            isReblogged
-          />
-        ))
-      : noUserError;
-    const renderItem = searchUsersList.loading ? <Loading /> : searchUsers;
+    const searchUsersResult = size(mapSearchUsersList) ? (
+      <UserDynamicList
+        hideSort
+        limit={userLimit}
+        fetcher={this.userFetcher}
+        searchLine={searchString}
+      />
+    ) : (
+      noUserError
+    );
 
     return (
       <div>
         {searchString ? (
-          renderItem
+          searchUsersResult
         ) : (
           <ReduxInfiniteScroll
             hasMore={hasMoreExperts}

@@ -68,13 +68,13 @@ class UserDynamicList extends React.Component {
       );
     }
     if (prevProps.searchLine !== searchLine) {
-      fetcher(users, authUser, undefined, 0).then(newUsers =>
+      fetcher(searchLine, authUser, undefined, 0).then(newUsers => {
         this.setState({
+          users: [...newUsers.users],
           loading: false,
           hasMore: newUsers.hasMore,
-          users: [...newUsers.users],
-        }),
-      );
+        });
+      });
     }
     if (!prevProps.sort && sort) {
       fetcher(users, authUser, sort).then(newUsers =>
@@ -95,7 +95,7 @@ class UserDynamicList extends React.Component {
         loading: true,
       },
       () => {
-        fetcher(users, authUser)
+        fetcher(users, authUser, this.props.sort || undefined, users.length)
           .then(newUsers =>
             this.setState(state => ({
               loading: false,
@@ -244,7 +244,7 @@ class UserDynamicList extends React.Component {
               if (!this.props.showAuthorizedUser || user.name !== this.props.userName) {
                 return (
                   <UserCard
-                    key={user.name}
+                    key={`${user.name}-${users[user]}`}
                     user={user}
                     unfollow={this.unFollow}
                     follow={this.follow}

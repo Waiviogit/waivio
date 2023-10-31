@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { ReactSVG } from 'react-svg';
-import { has } from 'lodash';
+import { FormattedMessage } from 'react-intl';
+import { has, isEmpty } from 'lodash';
+import { shortenDescription } from '../../object/wObjectHelper';
 import './ListDescription.less';
 
 const ListDescription = ({ wobject }) => {
@@ -9,10 +10,11 @@ const ListDescription = ({ wobject }) => {
   const hasTitle = has(wobject, 'title');
   const hasAvatar = has(wobject, 'avatar');
   const hasDescription = has(wobject, 'description');
-  const paragraphs = hasDescription ? wobject.description.split('\n\n') : [];
-  const firstTwoParagraphs = paragraphs.slice(0, 2).join('\n\n');
-  const twoMoreParagraphs = paragraphs.slice(2, 4).join('\n\n');
-  const remainingParagraphs = paragraphs.slice(4).join('\n\n');
+  const { firstDescrPart, secondDescrPart } = shortenDescription(wobject?.description, 800);
+  const { firstDescrPart: secondPart, secondDescrPart: thirdPart } = shortenDescription(
+    secondDescrPart,
+    500,
+  );
 
   return (
     (hasTitle || hasDescription) && (
@@ -26,7 +28,7 @@ const ListDescription = ({ wobject }) => {
                 <h1 className={'ListDescription__title margin-bottom'}>
                   {hasTitle ? wobject.title : wobject.name}
                 </h1>
-                {firstTwoParagraphs}
+                {firstDescrPart}
               </div>
               {hasAvatar && (
                 <div className={'ListDescription__image-container show'}>
@@ -35,28 +37,27 @@ const ListDescription = ({ wobject }) => {
               )}
             </div>
             <div
-              className={`ListDescription__remaining-description ${
+              className={`ListDescription__second-description ${
                 !hasAvatar ? 'without-avatar' : ''
               }`}
             >
-              {twoMoreParagraphs}
+              {secondPart}
+              {!isEmpty(thirdPart) && !showMore && (
+                <button
+                  onClick={() => setShowMore(!showMore)}
+                  className="WalletTable__csv-button ml2"
+                >
+                  <FormattedMessage id="show_more" defaultMessage="Show more" />
+                </button>
+              )}
             </div>
-            {remainingParagraphs && (
-              <div className={'ListDescription__icon'} onClick={() => setShowMore(!showMore)}>
-                <ReactSVG
-                  className={'ListDescription__img'}
-                  wrapper="span"
-                  src={showMore ? '/images/icons/up.svg' : '/images/icons/down.svg'}
-                />
-              </div>
-            )}
             {showMore && (
               <div
                 className={`ListDescription__remaining-description ${
                   !hasAvatar ? 'without-avatar' : ''
                 }`}
               >
-                {remainingParagraphs}
+                {thirdPart}
               </div>
             )}
           </>

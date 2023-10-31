@@ -80,7 +80,7 @@ export const dataManagementSettings = {
     {
       to: '/list-duplicator-bot',
       id: 'list_duplicator_bot',
-      defaultMessage: 'List duplicator bot',
+      defaultMessage: 'List duplication',
     },
     {
       to: '/chrome-extension',

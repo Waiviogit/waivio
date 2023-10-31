@@ -141,7 +141,7 @@ export const ManageWebsite = props => {
               {props.intl.formatMessage(
                 {
                   id: 'prices_per_day_usd',
-                  defaultMessage: '{price} {currency} per day;',
+                  defaultMessage: '{price} {currency} per day.',
                 },
                 {
                   price: round(get(prices, 'perSuspended', 0) * props.currencyInfo.rate, 3),
@@ -153,7 +153,7 @@ export const ManageWebsite = props => {
               {props.intl.formatMessage({
                 id: 'manage_website_info_dau',
                 defaultMessage:
-                  '* Daily active users (DAU) is the total number of website visitors that engage with the desktop or mobile version of the site from a single device or a browser. The user who visits the website using multiple devices or browsers will be counted multiple times.',
+                  'Daily Active Users (DAU) refers to the total number of website visitors that interact with either the desktop or mobile version of the site from a single device or browser. Users accessing the website via multiple devices or browsers will be counted multiple times.',
               })}
             </p>
           </div>
