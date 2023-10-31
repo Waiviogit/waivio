@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useRouteMatch } from 'react-router';
-import { isEmpty, takeRight } from 'lodash';
+import { isEmpty, isNil, takeRight } from 'lodash';
 import { Link } from 'react-router-dom';
 import { Icon } from 'antd';
 import PropTypes from 'prop-types';
@@ -57,6 +57,9 @@ const Breadcrumbs = ({ inProduct }) => {
 
   useEffect(() => {
     if (!isEmpty(breadcrumbs)) {
+      if (isNil(linkList[0]) && linkList.length === 1) {
+        linkList = breadcrumbs[0].author_permlink;
+      }
       dispatch(
         setAllBreadcrumbsForChecklist(
           breadcrumbs.filter(item => linkList?.includes(item.author_permlink)),
