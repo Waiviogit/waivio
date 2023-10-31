@@ -51,13 +51,13 @@ const Discover = ({ match, history }) => {
         <meta property="og:site_name" content="Waivio" />
         <link id="favicon" rel="icon" href={favicon} type="image/x-icon" />
       </Helmet>
-      <div className="feed-layout container">
+      <div className="container settings-layout">
         <Affix className="leftContainer" stickPosition={77}>
           <div className="left">
             <LeftSidebar />
           </div>
         </Affix>
-        <div className="Objects center">
+        <div className="center">
           {match.params.search && (
             <div className="Objects__tags">
               <Tag closable onClose={handleDeleteTag}>
@@ -66,7 +66,7 @@ const Discover = ({ match, history }) => {
             </div>
           )}
           <MobileNavigation />
-          <div className="Objects__content">
+          <div className={match.params.search ? '' : 'Objects__content'}>
             <DiscoverContent searchString={match.params.search} />
           </div>
         </div>
