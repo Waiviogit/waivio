@@ -19,26 +19,19 @@ const UserFollowers = ({ match, sort, authUser, handleChange, user, locale, intl
   const { name, 0: tab } = match.params;
 
   const limit = 50;
-  let skip = 0;
-  let objSkip = 0;
   const objectsFollowingCount = user.objects_following_count || 0;
   const usersFollowingCount = user.users_following_count || 0;
   const followersCount = user.followers_count || 0;
 
-  const getObjects = async () => {
-    const r = await getWobjectFollowing(name, objSkip, limit, authUser, locale);
-    const objLength = r.length;
-
-    objSkip += objLength;
+  const getObjects = async skip => {
+    const r = await getWobjectFollowing(name, skip, limit, authUser, locale);
 
     return r;
   };
 
-  const fetcher = async () => {
+  const fetcher = async (usersList, auth, sorting, skip) => {
     const response = await getFollowersFromAPI(name, limit, skip, sort, authUser);
     const users = response.followers;
-
-    skip += limit;
 
     return { users, hasMore: response.hasMore };
   };
@@ -58,7 +51,7 @@ const UserFollowers = ({ match, sort, authUser, handleChange, user, locale, intl
         }
         key="followers"
       >
-        <UserDynamicList limit={limit} fetcher={fetcher} handleChange={handleChange} />
+        <UserDynamicList limit={limit} sort={sort} fetcher={fetcher} handleChange={handleChange} />
       </Tabs.TabPane>
       <Tabs.TabPane
         tab={
