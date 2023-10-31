@@ -12,7 +12,7 @@ export default [
   'widget',
   'webpage',
   'shop',
-  'affiliate program',
+  'affiliate',
   'restaurant',
   'dish',
   'drink',
@@ -30,7 +30,7 @@ export default [
   'hotel',
   'motel',
   'resort',
-  '  b&b',
+  'b&b',
   'car',
   'test',
 ];
