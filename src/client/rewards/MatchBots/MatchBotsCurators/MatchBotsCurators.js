@@ -27,7 +27,7 @@ const MatchBotsCurators = ({
   useEffect(() => {
     getMatchBots();
     getAccount(authUserName).then(r => {
-      setIsAuth(r?.posting?.account_auths?.some(acc => acc[0] === MATCH_BOTS_TYPES.AUTHORS));
+      setIsAuth(r?.posting?.account_auths?.some(acc => acc[0] === MATCH_BOTS_TYPES.CURATORS));
     });
     if (isAuthority !== isAuthBot) {
       reload();
