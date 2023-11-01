@@ -4,10 +4,12 @@ import { isEmpty, get, throttle, debounce } from 'lodash';
 import { connect } from 'react-redux';
 import { Transforms } from 'slate';
 import { injectIntl, FormattedMessage } from 'react-intl';
+import filesize from 'filesize';
 import { Form, Input, Avatar, Button, Modal, message } from 'antd';
 import moment from 'moment';
 import SteemConnectAPI from '../steemConnectAPI';
 import { updateProfile } from '../../store/authStore/authActions';
+import { MAXIMUM_UPLOAD_SIZE } from '../../common/helpers/image';
 import { getMetadata } from '../../common/helpers/postingMetadata';
 import { ACCOUNT_UPDATE } from '../../common/constants/accountHistory';
 import socialProfiles from '../../common/helpers/socialProfiles';
@@ -287,6 +289,21 @@ export default class ProfileSettings extends React.Component {
 
   onOpenChangeCoverModal = () => {
     this.setState({ isModal: !this.state.isModal, isCover: !this.state.isCover });
+  };
+  handleImageInvalid = (maxSize = MAXIMUM_UPLOAD_SIZE, allowedFormats = '') => {
+    const { formatMessage } = this.props.intl;
+
+    message.error(
+      formatMessage(
+        {
+          id: 'notify_uploading_image_invalid',
+          defaultMessage:
+            'This file is invalid. Only image files {formats}with maximum size of {size} are supported',
+        },
+        { size: filesize(maxSize), formats: allowedFormats },
+      ),
+      3,
+    );
   };
 
   onOkAvatarModal = () => {
@@ -591,6 +608,7 @@ export default class ProfileSettings extends React.Component {
               isEditable={!!isAvatar}
               onImageLoaded={isAvatar ? this.getAvatar : this.getCover}
               onLoadingImage={this.onLoadingImage}
+              onImageInvalid={this.handleImageInvalid}
               isRequired
               isMultiple={false}
             />
