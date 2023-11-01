@@ -56,7 +56,11 @@ const WobjHeader = ({
     <div className="ObjectHeader__status-wrap">
       <span className="ObjectHeader__status-unavailable">{statusField.title}</span>&#32;
       {statusField.link && (
-        <a href={statusField.link}>{<i className="iconfont icon-send PostModal__icon" />}</a>
+        <span>
+          <a href={`/object/${statusField.link}`}>
+            {<i className="iconfont icon-send PostModal__icon" />}
+          </a>
+        </span>
       )}
     </div>
   );
