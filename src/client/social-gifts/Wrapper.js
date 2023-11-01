@@ -314,7 +314,7 @@ SocialWrapper.defaultProps = {
   location: {},
 };
 
-SocialWrapper.fetchData = async ({ store, req }) => {
+SocialWrapper.fetchData = async ({ store, req, match, query }) => {
   const state = store.getState();
   const config = await store.dispatch(getWebsiteConfigForSSR(req.headers.host));
   const shopSettings = config.action.payload?.shopSettings;
@@ -333,8 +333,9 @@ SocialWrapper.fetchData = async ({ store, req }) => {
   ];
 
   if (shopSettings?.type === 'object') {
-    let wobj = { linkToObject: shopSettings?.value };
-    const wobject = await getObject(shopSettings?.value);
+    const objName = query ? query.get('currObj') : match.params.name || shopSettings?.value;
+    let wobj = { linkToObject: objName };
+    const wobject = await getObject(objName);
 
     if (!isEmpty(wobject?.menuItem)) {
       const customSort = get(wobject, 'sortCustom.include', []);
