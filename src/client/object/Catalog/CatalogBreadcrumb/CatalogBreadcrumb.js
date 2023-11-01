@@ -33,8 +33,11 @@ const CatalogBreadcrumb = ({
   const breadCrumbSize = size(breadcrumb);
   const currentTitle = get(breadcrumb[breadCrumbSize - 1], 'title', '');
   const permlinks = getPermlinksFromHash(location.hash);
-  const currentObjIsListOrPage = hasType(wobject, 'list') || hasType(wobject, 'page');
-
+  const currentObjIsListOrPage =
+    hasType(wobject, 'list') ||
+    hasType(wobject, 'page') ||
+    hasType(wobject, 'widget') ||
+    hasType(wobject, 'webpage');
   const addParentToBreadCrumbs = crumbs => [compareBreadcrumb(wobject), ...crumbs];
 
   const handleChangeBreadCrumbs = wObject => {

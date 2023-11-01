@@ -28,10 +28,12 @@ import {
 
 import './DepartmentsBot.less';
 import { closeImportSoket, getImportUpdate } from '../../../store/settingsStore/settingsActions';
+import { getAccount } from '../../../common/helpers/apiHelpers';
+import { reload } from '../../../store/authStore/authActions';
 
 const limit = 30;
 const DepartmentsBot = ({ intl }) => {
-  const isDepartmentsBot = useSelector(state =>
+  const isStoreDepartmentsBot = useSelector(state =>
     getIsConnectMatchBot(state, { botType: MATCH_BOTS_TYPES.IMPORT }),
   );
   const authUserName = useSelector(getAuthenticatedUserName);
@@ -43,6 +45,7 @@ const DepartmentsBot = ({ intl }) => {
   const [departments, setDepartments] = useState([]);
   const [hasMoreDepartments, setHasMoreDepartments] = useState(false);
   const [hasMoreHistory, setHasMoreHistory] = useState(false);
+  const [isDepartmentsBot, setIsDepartmentsBot] = useState(isStoreDepartmentsBot);
   const setListAndSetHasMore = (res, list, isLoadMore, setObjs, setMoreObjs) => {
     if (res.length > limit) {
       setMoreObjs(true);
@@ -82,6 +85,15 @@ const DepartmentsBot = ({ intl }) => {
     getHistory();
 
     dispatch(getImportUpdate(getDepsList));
+    getAccount(authUserName).then(
+      r =>
+        setIsDepartmentsBot(
+          r?.posting?.account_auths?.some(acc => acc[0] === MATCH_BOTS_TYPES.IMPORT),
+        ) || isStoreDepartmentsBot,
+    );
+    if (isStoreDepartmentsBot !== isDepartmentsBot) {
+      dispatch(reload());
+    }
 
     return () => dispatch(closeImportSoket());
   }, []);

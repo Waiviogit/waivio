@@ -103,14 +103,14 @@ app.get('/sitemap:pageNumber.xml', async (req, res) => {
 app.get('/ads.txt', async (req, res) => {
   const fileContent = (await getSettingsAdsense(req.headers.host)).txtFile;
 
-  res.contentType('text/plain');
+  res.set('Content-Type', 'text/plain');
   res.send(fileContent);
 });
 
 app.get('/robots.txt', (req, res) => {
   const fileContent = getRobotsTxtContent(req.headers.host);
 
-  res.contentType('text/plain');
+  res.set('Content-Type', 'text/plain');
   res.send(fileContent);
 });
 

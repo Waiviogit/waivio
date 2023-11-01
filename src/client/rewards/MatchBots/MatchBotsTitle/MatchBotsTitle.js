@@ -6,15 +6,15 @@ import { redirectAuthHiveSigner } from '../../../../common/helpers/matchBotsHelp
 
 import './MatchBotsTitle.less';
 
-const MatchBotsTitle = ({ isAuthority, botTitle, turnOffTitle, turnOnTitle, botType }) => {
-  const handleRedirect = () => redirectAuthHiveSigner(isAuthority, botType);
+const MatchBotsTitle = ({ isAuthBot, botTitle, turnOffTitle, turnOnTitle, botType }) => {
+  const handleRedirect = () => redirectAuthHiveSigner(isAuthBot, botType);
 
   return (
     <div className="MatchBots__title-wrap">
       <div className="MatchBots__title">{botTitle}</div>
       <div className="MatchBots__switcher">
-        <Tooltip title={!isAuthority ? turnOnTitle : turnOffTitle}>
-          <Switch checked={isAuthority} onChange={handleRedirect} />
+        <Tooltip title={!isAuthBot ? turnOnTitle : turnOffTitle}>
+          <Switch checked={isAuthBot} onChange={handleRedirect} />
         </Tooltip>
       </div>
     </div>
@@ -22,7 +22,7 @@ const MatchBotsTitle = ({ isAuthority, botTitle, turnOffTitle, turnOnTitle, botT
 };
 
 MatchBotsTitle.propTypes = {
-  isAuthority: PropTypes.bool,
+  isAuthBot: PropTypes.bool,
   botType: PropTypes.string.isRequired,
   botTitle: PropTypes.string.isRequired,
   turnOffTitle: PropTypes.string,

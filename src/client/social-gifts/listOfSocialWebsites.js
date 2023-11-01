@@ -9,6 +9,11 @@ export const listOfSocialWebsites = [
 export const socialDomens = ['socialgifts', 'social.gifts'];
 
 export const isCustomDomain = hostname =>
-  !(socialDomens.some(item => hostname.includes(item)) || hostname.includes('dining'));
+  !(
+    socialDomens.some(item => hostname.includes(item)) ||
+    hostname.includes('dining') ||
+    hostname.includes('waivio') ||
+    hostname.includes('webcache.googleusercontent.com')
+  );
 
 export default null;

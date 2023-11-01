@@ -3,7 +3,7 @@ import { Button, Modal, Switch } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
-
+import { getAccount } from '../../../common/helpers/apiHelpers';
 import ChangeVotingModal from '../../widgets/ChangeVotingModal/ChangeVotingModal';
 import ImportModal from './ImportModal/ImportModal';
 import DynamicTbl from '../Tools/DynamicTable/DynamicTable';
@@ -26,11 +26,12 @@ import { closeImportSoket, getImportUpdate } from '../../../store/settingsStore/
 import VoteInfoBlock from './VoteInfoBlock';
 
 import './DataImport.less';
+import { reload } from '../../../store/authStore/authActions';
 
 const limit = 30;
 
 const DataImport = ({ intl }) => {
-  const isAuthBot = useSelector(state =>
+  const isStoreAuthBot = useSelector(state =>
     getIsConnectMatchBot(state, { botType: MATCH_BOTS_TYPES.IMPORT }),
   );
   const authUserName = useSelector(getAuthenticatedUserName);
@@ -43,6 +44,7 @@ const DataImport = ({ intl }) => {
   const [hasMoreImports, setHasMoreImports] = useState(false);
   const [hasMoreHistory, setHasMoreHistory] = useState(false);
   const [history, setHistoryImportedObject] = useState([]);
+  const [isAuthBot, setIsAuth] = useState(isStoreAuthBot);
   const setListAndSetHasMore = (res, list, isLoadMore, setObjs, setMoreObjs) => {
     if (res.length > limit) {
       setMoreObjs(true);
@@ -89,6 +91,14 @@ const DataImport = ({ intl }) => {
     });
 
     dispatch(getImportUpdate(updateImportDate));
+    getAccount(authUserName).then(
+      r =>
+        setIsAuth(r?.posting?.account_auths?.some(acc => acc[0] === MATCH_BOTS_TYPES.IMPORT)) ||
+        isStoreAuthBot,
+    );
+    if (isStoreAuthBot !== isAuthBot) {
+      dispatch(reload());
+    }
 
     return () => dispatch(closeImportSoket());
   }, []);

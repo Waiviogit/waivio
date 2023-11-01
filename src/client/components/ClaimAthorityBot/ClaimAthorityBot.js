@@ -27,11 +27,13 @@ import VoteInfoBlock from '../DataImport/VoteInfoBlock';
 
 import './ClaimAthorityBot.less';
 import { closeImportSoket, getImportUpdate } from '../../../store/settingsStore/settingsActions';
+import { getAccount } from '../../../common/helpers/apiHelpers';
+import { reload } from '../../../store/authStore/authActions';
 
 const limit = 30;
 
 const ClaimAthorityBot = ({ intl }) => {
-  const isAuthBot = useSelector(state =>
+  const isStoreAuthBot = useSelector(state =>
     getIsConnectMatchBot(state, { botType: MATCH_BOTS_TYPES.IMPORT }),
   );
   const authUserName = useSelector(getAuthenticatedUserName);
@@ -43,6 +45,7 @@ const ClaimAthorityBot = ({ intl }) => {
   const [authorities, setAuthorities] = useState([]);
   const [hasMoreAuthorities, setHasMoreAuthorities] = useState(false);
   const [hasMoreHistory, setHasMoreHistory] = useState(false);
+  const [isAuthBot, setIsAuth] = useState(isStoreAuthBot);
   const setListAndSetHasMore = (res, list, isLoadMore, setObjs, setMoreObjs) => {
     if (res.length > limit) {
       setMoreObjs(true);
@@ -80,6 +83,14 @@ const ClaimAthorityBot = ({ intl }) => {
     getHistory();
 
     dispatch(getImportUpdate(getAthList));
+    getAccount(authUserName).then(
+      r =>
+        setIsAuth(r?.posting?.account_auths?.some(acc => acc[0] === MATCH_BOTS_TYPES.IMPORT)) ||
+        isStoreAuthBot,
+    );
+    if (isStoreAuthBot !== isAuthBot) {
+      dispatch(reload());
+    }
 
     return () => dispatch(closeImportSoket());
   }, []);
