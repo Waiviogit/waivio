@@ -12,6 +12,8 @@ export default {
       'menu',
       'page',
       'webpage',
+      'widget',
+      'newsfeed',
       'list',
       'blog',
       'form',
