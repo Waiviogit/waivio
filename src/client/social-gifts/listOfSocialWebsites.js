@@ -6,13 +6,13 @@ export const listOfSocialWebsites = [
   'social.gifts',
 ];
 
-export const socialDomens = ['socialgifts', 'social.gifts'];
-export const notCustomDomens = ['dining', 'waivio', 'webcache.googleusercontent'];
+export const socialDomains = ['socialgifts', 'social.gifts'];
+export const notCustomDomains = ['dining', 'waivio', 'webcache.googleusercontent'];
 
 export const isCustomDomain = hostname =>
   !(
-    socialDomens.some(item => hostname.includes(item)) ||
-    notCustomDomens.some(item => hostname.includes(item))
+    socialDomains.some(item => hostname.includes(item)) ||
+    notCustomDomains.some(item => hostname.includes(item))
   );
 
 export default null;
