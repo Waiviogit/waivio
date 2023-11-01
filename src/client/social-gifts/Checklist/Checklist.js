@@ -56,6 +56,8 @@ const Checklist = ({
   const { canonicalUrl } = useSeoInfo(true);
 
   useEffect(() => {
+    // eslint-disable-next-line no-console
+    console.log('mount');
     const pathUrl =
       permlink || getLastPermlinksFromHash(history.location.hash) || match.params.name;
 
@@ -151,6 +153,9 @@ Checklist.propTypes = {
 
 Checklist.fetchData = ({ store, match, query }) => {
   const objName = query ? query.get('currObj') : match.params.name;
+
+  // eslint-disable-next-line no-console
+  console.log(objName, 'objname, checklist fetch ');
 
   return store.dispatch(login()).then(res => store.dispatch(getObject(objName, res?.value?.name)));
 };
