@@ -12,7 +12,8 @@ export const isCustomDomain = hostname =>
   !(
     socialDomens.some(item => hostname.includes(item)) ||
     hostname.includes('dining') ||
-    hostname.includes('waivio')
+    hostname.includes('waivio') ||
+    hostname.includes('webcache.googleusercontent.com')
   );
 
 export default null;
