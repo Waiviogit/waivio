@@ -585,9 +585,6 @@ const mapStateToProps = state => ({
   nestedWobj: getWobjectNested(state),
 });
 
-SocialProduct.fetchData = ({ store, match }) => {
-  store.dispatch(getObject(match.params.name));
-};
 const mapDispatchToProps = dispatch => ({
   setStoreActiveOpt: obj => dispatch(setStoreActiveOption(obj)),
   resetOptClicked: opt => dispatch(resetOptionClicked(opt)),
