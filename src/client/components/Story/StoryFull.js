@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router';
-import { forEach, get, isEmpty, map, size } from 'lodash';
+import { forEach, get, isEmpty, map, size, unescape } from 'lodash';
 import readingTime from 'reading-time';
 import {
   FormattedDate,
@@ -245,7 +245,7 @@ class StoryFull extends React.Component {
 
     this.images = extractImageTags(parsedBody).map(image => ({
       ...image,
-      src: getImagePath(image.src),
+      src: getImagePath(unescape(image.src.replace('https://images.hive.blog/0x0/', ''))),
     }));
 
     const body = this.images.reduce(
