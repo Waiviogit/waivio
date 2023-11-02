@@ -142,13 +142,11 @@ WobjectContainer.propTypes = {
   setStoreActiveOption: PropTypes.func.isRequired,
 };
 
-WobjectContainer.fetchData = async ({ store, match, query }) => {
+WobjectContainer.fetchData = async ({ store, match }) => {
   const res = await store.dispatch(login());
 
-  const objName = query ? query.get('currObj') : match.params.name;
-
   return Promise.all([
-    store.dispatch(getObject(objName, res.value.name)),
+    store.dispatch(getObject(match.params.name, res?.value?.name)),
     store.dispatch(getObjectFollowersAction({ object: match.params.name, skip: 0, limit: 5 })),
     store.dispatch(getRate()),
     store.dispatch(getRewardFund()),
