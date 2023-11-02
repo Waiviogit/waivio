@@ -151,19 +151,19 @@ ObjectNewsFeed.propTypes = {
   wobj: PropTypes.shape(),
 };
 
-ObjectNewsFeed.fetchData = ({ store, match, query }) => {
-  const objName = query ? query.get('currObj') : match.params.name;
-
-  store.dispatch(getObject(objName)).then(res => {
-    store.dispatch(
-      getObjectPosts({
-        object: objName,
-        username: objName,
-        limit: 20,
-        newsPermlink: res?.newsFeed?.permlink,
-      }),
-    );
-  });
-};
+// ObjectNewsFeed.fetchData = ({ store, match, query }) => {
+//   const objName = query ? query.get('currObj') : match.params.name;
+//
+//   store.dispatch(getObject(objName)).then(res => {
+//     store.dispatch(
+//       getObjectPosts({
+//         object: objName,
+//         username: objName,
+//         limit: 20,
+//         newsPermlink: res?.newsFeed?.permlink,
+//       }),
+//     );
+//   });
+// };
 
 export default ObjectNewsFeed;
