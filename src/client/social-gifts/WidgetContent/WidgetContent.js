@@ -109,4 +109,10 @@ WidgetContent.propTypes = {
   wobj: PropTypes.shape(),
 };
 
+WidgetContent.fetchData = ({ store, match, query }) => {
+  const objName = query ? query.get('currObj') : match.params.name;
+
+  store.dispatch(getObject(objName));
+};
+
 export default WidgetContent;
