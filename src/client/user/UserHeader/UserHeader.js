@@ -3,7 +3,7 @@ import { connect, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { Link } from 'react-router-dom';
-import { get, isEmpty, includes, round } from 'lodash';
+import { get, isEmpty, includes, round, isNil } from 'lodash';
 import urlParse from 'url-parse';
 
 import { FormattedMessage, injectIntl } from 'react-intl';
@@ -129,7 +129,11 @@ const UserHeader = ({
   return (
     <div className={classNames('UserHeader', { 'UserHeader--cover': hasCover })} style={style}>
       <div className="UserHeader__container">
-        <AvatarLightbox avatar={avatar} username={user.name} size={100} isActive={isActive} />
+        {!isNil(avatarUrl) ? (
+          <AvatarLightbox avatar={avatar} username={user.name} size={100} isActive={isActive} />
+        ) : (
+          <AvatarLightbox username={user.name} size={100} isActive={isActive} />
+        )}
         <div className="UserHeader__user">
           <div className="UserHeader__flexWrap">
             <h1 className="UserHeader__name-container">
