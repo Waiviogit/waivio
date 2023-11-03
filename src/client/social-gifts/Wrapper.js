@@ -314,7 +314,7 @@ SocialWrapper.defaultProps = {
   location: {},
 };
 
-SocialWrapper.fetchData = async ({ store, req }) => {
+SocialWrapper.fetchData = async ({ store, req, match }) => {
   const state = store.getState();
   const config = await store.dispatch(getWebsiteConfigForSSR(req.headers.host));
   const shopSettings = config.action.payload?.shopSettings;
@@ -332,7 +332,7 @@ SocialWrapper.fetchData = async ({ store, req }) => {
     store.dispatch(login()),
   ];
 
-  if (shopSettings?.type === 'object') {
+  if (shopSettings?.type === 'object' && match.path === '/') {
     const objName = shopSettings?.value;
     let wobj = { linkToObject: objName };
     const wobject = await getObject(objName);
