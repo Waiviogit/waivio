@@ -18,7 +18,7 @@ import MuteModal from '../../widgets/MuteModal';
 import UserPopoverMenu from '../../components/UserPopoverMenu';
 import { isMobile } from '../../../common/helpers/apiHelpers';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
-import { getImagePathPost } from '../../../common/helpers/image';
+import { getImagePathPost, getProxyImageURL } from '../../../common/helpers/image';
 import SkeletonRow from '../../components/Skeleton/SkeletonRow';
 import { parseJSON } from '../../../common/helpers/parseJSON';
 import formatter from '../../../common/helpers/steemitFormatter';
@@ -123,8 +123,8 @@ const UserHeader = ({
       )}
     </div>
   );
-
-  const avatar = parseJSON(user?.posting_json_metadata)?.profile?.profile_image;
+  const avatarUrl = parseJSON(user?.posting_json_metadata)?.profile?.profile_image;
+  const avatar = avatarUrl.includes('images.hive.blog') ? avatarUrl : getProxyImageURL(avatarUrl);
 
   return (
     <div className={classNames('UserHeader', { 'UserHeader--cover': hasCover })} style={style}>
