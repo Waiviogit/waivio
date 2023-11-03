@@ -679,9 +679,9 @@ export const getObjectType = (typeName, requestData, abortController) => {
 
 export const getSearchResult = (
   string,
-  userLimit = 3,
+  userLimit = 5,
   wobjectsLimit,
-  objectTypesLimit = 5,
+  objectTypesLimit = 10,
   user,
   locale,
   abortController,
