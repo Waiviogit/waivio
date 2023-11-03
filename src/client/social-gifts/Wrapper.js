@@ -333,7 +333,9 @@ SocialWrapper.fetchData = async ({ store, req, match, query }) => {
   ];
 
   if (shopSettings?.type === 'object') {
-    const objName = query ? query.get('currObj') : match.params.name || shopSettings?.value;
+    const objName = query
+      ? query.get('currObj') || match.params.name
+      : match.params.name || shopSettings?.value;
     let wobj = { linkToObject: objName };
     const wobject = await getObject(objName);
 
