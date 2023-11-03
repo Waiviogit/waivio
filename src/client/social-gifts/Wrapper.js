@@ -326,11 +326,14 @@ SocialWrapper.fetchData = async ({ store, req, match }) => {
   const lang = loadLanguage(activeLocale);
   const promiseArray = [
     store.dispatch(getWebsiteConfigForSSR(req.headers.host)),
-    store.dispatch(setMainObj(shopSettings)),
     store.dispatch(setAppUrl(`https://${req.headers.host}`)),
     store.dispatch(setUsedLocale(lang)),
     store.dispatch(login()),
   ];
+
+  if (match.path === '/') {
+    promiseArray.push(store.dispatch(setMainObj(shopSettings)));
+  }
 
   if (shopSettings?.type === 'object' && match.path === '/') {
     const objName = shopSettings?.value;
