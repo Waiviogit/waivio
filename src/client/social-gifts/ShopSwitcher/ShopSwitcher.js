@@ -2,6 +2,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { Skeleton } from 'antd';
 import Helmet from 'react-helmet';
+import { isEmpty, get } from 'lodash';
 
 import {
   getHelmetIcon,
@@ -17,6 +18,16 @@ import ShopMainForWobject from '../ShopMainForWobject/ShopMainForWobject';
 import { useSeoInfo } from '../../../hooks/useSeoInfo';
 
 import './ShopSwitcher.less';
+import { getWebsiteConfigForSSR, setMainObj } from '../../../store/appStore/appActions';
+import { getObject as getObjectAction } from '../../../store/wObjectStore/wObjectSelectors';
+import { getObject } from '../../../waivioApi/ApiClient';
+import { parseJSON } from '../../../common/helpers/parseJSON';
+import {
+  getUserDepartments,
+  getUserShopList,
+  getWobjectDepartments,
+  getWobjectsShopList,
+} from '../../../store/shopStore/shopActions';
 
 const ShopSwitcher = () => {
   const shopSettings = useSelector(getShopSettings);
@@ -82,6 +93,46 @@ const ShopSwitcher = () => {
       {firstPage()}
     </React.Fragment>
   );
+};
+
+ShopSwitcher.fetchData = async ({ store, req }) => {
+  const config = await store.dispatch(getWebsiteConfigForSSR(req.headers.host));
+  const shopSettings = config.action.payload?.shopSettings;
+  const promiseArray = [store.dispatch(setMainObj(shopSettings))];
+
+  if (shopSettings?.type === 'object') {
+    let wobj = { linkToObject: shopSettings?.value };
+    const wobject = await getObject(shopSettings?.value);
+
+    if (!isEmpty(wobject?.menuItem)) {
+      const customSort = get(wobject, 'sortCustom.include', []);
+      const menuItemPermlink = wobject?.menuItem.reduce((acc, curr) => {
+        const item = parseJSON(curr?.body);
+
+        return item?.linkToObject ? [...acc, item] : acc;
+      }, []);
+      const menuItems = !isEmpty(customSort)
+        ? customSort.reduce((acc, curr) => {
+            const findObj = wobject?.menuItem.find(item => item.permlink === curr);
+            const item = parseJSON(findObj?.body);
+
+            return findObj ? [...acc, item] : acc;
+          }, [])
+        : menuItemPermlink;
+
+      wobj = menuItems[0];
+    }
+    promiseArray.push(store.dispatch(getObjectAction(wobj?.linkToObject)));
+    if (wobj?.objectType) {
+      promiseArray.push(store.dispatch(getWobjectDepartments(wobj?.linkToObject)));
+      promiseArray.push(store.dispatch(getWobjectsShopList(wobj?.linkToObject)));
+    }
+  } else {
+    promiseArray.push(getUserDepartments(shopSettings?.value));
+    promiseArray.push(getUserShopList(shopSettings?.value));
+  }
+
+  return Promise.allSettled(promiseArray);
 };
 
 export default ShopSwitcher;

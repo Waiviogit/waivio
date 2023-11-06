@@ -57,10 +57,10 @@ export const shortenDescription = (description, length) => {
 };
 
 export const removeEmptyLines = string => {
-  const lines = string.split('\n');
-  const nonEmptyLines = lines.filter(line => line.trim() !== '');
+  const lines = string?.split('\n');
+  const nonEmptyLines = lines?.filter(line => line?.trim() !== '');
 
-  return nonEmptyLines.join('\n');
+  return nonEmptyLines?.join('\n');
 };
 
 /**
