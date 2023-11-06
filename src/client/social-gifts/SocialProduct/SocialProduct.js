@@ -173,8 +173,7 @@ const SocialProduct = ({
   const image = getObjectAvatar(wobject) || DEFAULTS.AVATAR;
   const desc = `${wobject.description || ''} ${wobject.name}. ${parseAddress(wobject) ||
     ''} ${tagCategoriesForDescr}`;
-  const { firstDescrPart } = shortenDescription(desc, 200);
-  const description = removeEmptyLines(firstDescrPart);
+  const { firstDescrPart: description } = shortenDescription(removeEmptyLines(desc), 200);
   const title = `${wobject.name} - ${siteName}`;
   const { canonicalUrl } = useSeoInfo();
   const url = canonicalUrl;

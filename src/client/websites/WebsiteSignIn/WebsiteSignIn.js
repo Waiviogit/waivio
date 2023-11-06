@@ -6,10 +6,9 @@ import { isEmpty } from 'lodash';
 import PropTypes from 'prop-types';
 import { message } from 'antd';
 
-import { batch, useDispatch, useSelector } from 'react-redux';
+import { batch, useDispatch } from 'react-redux';
 import { setGuestLoginData } from '../../../common/helpers/localStorageHelpers';
 import { isUserRegistered } from '../../../waivioApi/ApiClient';
-import { getCurrentHost } from '../../../store/appStore/appSelectors';
 import {
   getFollowing,
   getFollowingObjects,
@@ -31,13 +30,12 @@ import WebsiteSignInModalContent from './WebsiteSignInModalContent/WebsiteSignIn
 const WebsiteSignIn = props => {
   const [loading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
-  const currentHost = useSelector(getCurrentHost);
   const query = new URLSearchParams(props.location.search);
   const websiteName = query.get('websiteName');
   const websiteTitle = websiteName
     ? websiteName.replace('http://', '').replace('https://', '')
     : location.hostname;
-  const url = query.get('host') || currentHost + location.pathname;
+  const url = query.get('host') || location.origin;
   const urlObj = new URL(url);
   const hiveSinger = new hivesigner.Client({
     app: process.env.STEEMCONNECT_CLIENT_ID,
