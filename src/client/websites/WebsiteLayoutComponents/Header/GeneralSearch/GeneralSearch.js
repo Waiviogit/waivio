@@ -39,7 +39,7 @@ const GeneralSearch = props => {
 
   const handleAutoCompleteSearchDebounce = useCallback(
     debounce(value => {
-      dispatch(searchAutoComplete(value, 15, 15, undefined, true, ['product', 'book', 'business']));
+      dispatch(searchAutoComplete(value, 5, 15, undefined, true, ['product', 'book', 'business']));
     }, 500),
     [],
   );
@@ -147,7 +147,7 @@ const GeneralSearch = props => {
     if (!isEmpty(searchResults)) dataSource.push(searchSelectBar(searchResults));
 
     if (!isEmpty(searchResults.wobjects))
-      dataSource.push(wobjectSearchLayout(searchResults.wobjects.slice(0, 5)));
+      dataSource.push(wobjectSearchLayout(searchResults.wobjects.slice(0, 15)));
     if (!isEmpty(searchResults.users)) dataSource.push(usersSearchLayout(searchResults.users));
     if (!isEmpty(searchResults.objectTypes))
       dataSource.push(wobjectTypeSearchLayout(searchResults.objectTypes));
