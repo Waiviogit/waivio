@@ -52,8 +52,7 @@ const Checklist = ({
   const mainObj = useSelector(getMainObj);
   const title = `${getObjectName(wobject)} - ${siteName}`;
   const desc = wobject?.description || mainObj?.description;
-  const { firstDescrPart } = shortenDescription(desc, 200);
-  const description = removeEmptyLines(firstDescrPart);
+  const { firstDescrPart: description } = shortenDescription(removeEmptyLines(desc), 350);
   const image = getObjectAvatar(wobject) || favicon;
   const { canonicalUrl } = useSeoInfo(true);
 
