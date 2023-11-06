@@ -403,7 +403,7 @@ class Topnav extends React.Component {
     }
     if (!searchData) {
       if (!isEmpty(searchResults.wobjects))
-        dataSource.push(this.wobjectSearchLayout(searchResults.wobjects.slice(0, 10)));
+        dataSource.push(this.wobjectSearchLayout(searchResults.wobjects.slice(0, 15)));
       if (!isEmpty(searchResults.users))
         dataSource.push(this.usersSearchLayout(searchResults.users));
       if (!isEmpty(searchResults.objectTypes))

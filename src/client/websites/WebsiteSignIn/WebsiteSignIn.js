@@ -35,6 +35,8 @@ const WebsiteSignIn = props => {
   const websiteTitle = websiteName
     ? websiteName.replace('http://', '').replace('https://', '')
     : location.hostname;
+  // eslint-disable-next-line no-console
+  console.log(location);
   const url = query.get('host') || location.origin;
   const urlObj = new URL(url);
   const hiveSinger = new hivesigner.Client({
