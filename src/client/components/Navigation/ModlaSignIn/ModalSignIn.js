@@ -68,7 +68,7 @@ const ModalSignIn = ({
   const colors = useWebsiteColor();
   let host = currHost;
 
-  if (!host && typeof location !== 'undefined') host = location.host;
+  if (!host && typeof location !== 'undefined') host = location.origin;
 
   const hiveSinger = new hivesigner.Client({
     app: process.env.STEEMCONNECT_CLIENT_ID,
