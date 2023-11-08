@@ -11,6 +11,9 @@ export const useSeoInfo = isChecklist => {
   const prefereCanonical = () => {
     let url = `${appUrl}${location.pathname}`;
 
+    if (location.search) {
+      url = `${appUrl}${location.pathname}${location.search}`;
+    }
     if (location.hash) {
       if (isChecklist) {
         const pathArray = location.pathname.split('/');

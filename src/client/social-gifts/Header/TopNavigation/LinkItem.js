@@ -1,10 +1,11 @@
 import React from 'react';
-import { truncate } from 'lodash';
+import { injectIntl } from 'react-intl';
 import { NavLink } from 'react-router-dom';
 import { useHistory } from 'react-router';
 import PropTypes from 'prop-types';
+import { getMenuLinkTitle } from '../../../../common/helpers/headerHelpers';
 
-const LinkItem = ({ link, index }) => {
+const LinkItem = ({ link, index, intl }) => {
   const history = useHistory();
 
   return link.type === 'blank' ? (
@@ -15,10 +16,7 @@ const LinkItem = ({ link, index }) => {
       target={'_blank'}
       href={link.link}
     >
-      {truncate(link.name, {
-        length: 24,
-        separator: '...',
-      })}
+      {getMenuLinkTitle(link, intl, 24)}
     </a>
   ) : (
     <NavLink
@@ -31,15 +29,14 @@ const LinkItem = ({ link, index }) => {
       key={link.link}
       to={link.link}
     >
-      {truncate(link.name, {
-        length: 24,
-        separator: '...',
-      })}
+      {' '}
+      {getMenuLinkTitle(link, intl, 24)}
     </NavLink>
   );
 };
 
 LinkItem.propTypes = {
+  intl: PropTypes.shape(),
   link: PropTypes.shape({
     link: PropTypes.string,
     name: PropTypes.string,
@@ -48,4 +45,4 @@ LinkItem.propTypes = {
   index: PropTypes.number,
 };
 
-export default LinkItem;
+export default injectIntl(LinkItem);
