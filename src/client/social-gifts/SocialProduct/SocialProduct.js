@@ -320,7 +320,6 @@ const SocialProduct = ({
           <meta itemProp="priceCurrency" content={wobj?.price?.includes('С$') ? 'CAD' : 'USD'} />
           <meta itemProp="itemCondition" content="https://schema.org/UsedCondition" />
           <meta itemProp="price" content={getNumbersFromWobjPrice(wobj)} />
-          <meta itemProp="priceValidUntil" content="2020-11-20" />
         </div>
         {Boolean(averageRate(bestRating)) && (
           <div itemProp="aggregateRating" itemType="https://schema.org/AggregateRating" itemScope>
