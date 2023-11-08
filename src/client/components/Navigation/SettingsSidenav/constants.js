@@ -69,7 +69,7 @@ export const dataManagementSettings = {
     },
     {
       to: '/claim-athority',
-      id: 'claim_athority',
+      id: 'claim_authority',
       defaultMessage: 'Claim authority',
     },
     {
