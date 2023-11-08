@@ -152,17 +152,25 @@ const DepartmentsBot = ({ intl }) => {
         <Switch checked={isDepartmentsBot} onChange={handleRedirect} />
       </div>
       <p>
-        This tool designed to automatically categorize products into departments using hierarchical
-        structure of connected lists. This bot uses the names of the lists and sub-lists within them
-        and assigns these names as departments for all products referenced in these lists.
+        {intl.formatMessage({
+          id: 'departments_update_bot_part1',
+          defaultMessage:
+            'This tool designed to automatically categorize products into departments using hierarchical structure of connected lists. This bot uses the names of the lists and sub-lists within them and assigns these names as departments for all products referenced in these lists.',
+        })}
       </p>
       <p>
-        Each update must be approved on behalf of the user with an upvote equivalent to $0.001 in
-        WAIV power.
+        {intl.formatMessage({
+          id: 'departments_update_bot_part2',
+          defaultMessage:
+            'Each update must be approved on behalf of the user with an upvote equivalent to $0.001 in WAIV power.',
+        })}
       </p>
       <p>
-        If the account&apos;s WAIV power drops below $0.001 USD, or if the WAIV power reaches the
-        predetermined threshold, the bot will proceed at a slower speed.
+        {intl.formatMessage({
+          id: 'departments_update_bot_part3',
+          defaultMessage:
+            "If the account's WAIV power drops below $0.001 USD, or if the WAIV power reaches the predetermined threshold, the bot will proceed at a slower speed.",
+        })}
       </p>
       <hr />
       <p>
