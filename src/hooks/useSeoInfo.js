@@ -35,7 +35,6 @@ export const checkAboutCanonicalUrl = link => {
   const pattern = /\/about$/;
 
   if (pattern.test(link)) {
-    // If it does, remove "/about" from the link
     return link.replace(pattern, '');
   }
 

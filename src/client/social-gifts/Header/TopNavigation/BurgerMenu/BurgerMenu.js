@@ -8,18 +8,21 @@ import { Drawer } from 'antd';
 
 import './BurgerMenu.less';
 
-const BurgerMenu = ({ items, title, openButtonText, openButtonIcon }) => {
+const BurgerMenu = ({ items, title, openButtonText, openButtonIcon, intl }) => {
   const [open, setOpen] = useState(false);
   const history = useHistory();
 
-  const getItemTitle = i => (
-    <div>
-      {truncate(i.name, {
-        length: 20,
-        separator: '...',
-      }).toUpperCase()}
-    </div>
-  );
+  const getItemTitle = i =>
+    i.name === 'Legal' ? (
+      <div>{intl.formatMessage({ id: 'legal', defaultMessage: 'Legal' }).toUpperCase()} </div>
+    ) : (
+      <div>
+        {truncate(i.name, {
+          length: 20,
+          separator: '...',
+        }).toUpperCase()}
+      </div>
+    );
 
   return (
     <div className={'BurgerMenu'}>
@@ -45,7 +48,7 @@ const BurgerMenu = ({ items, title, openButtonText, openButtonIcon }) => {
                 className={'BurgerMenu__item'}
               >
                 {' '}
-                {getItemTitle(i)}
+                {getItemTitle(i, intl)}
               </a>
             ) : (
               <Link
@@ -58,7 +61,7 @@ const BurgerMenu = ({ items, title, openButtonText, openButtonIcon }) => {
                 key={i.link}
                 onClick={() => setOpen(false)}
               >
-                {getItemTitle(i)}
+                {getItemTitle(i, intl)}
               </Link>
             ),
           )}
@@ -70,6 +73,7 @@ const BurgerMenu = ({ items, title, openButtonText, openButtonIcon }) => {
 
 BurgerMenu.propTypes = {
   items: PropTypes.arrayOf(),
+  intl: PropTypes.shape(),
   title: PropTypes.string,
   openButtonText: PropTypes.string,
   openButtonIcon: PropTypes.node,

@@ -38,6 +38,17 @@ const WebsiteTopNavigation = ({ shopSettings, intl }) => {
   const loading = useSelector(getSettingsLoading);
   const history = useHistory();
   const [visible, setVisible] = useState(false);
+  const getItemTitle = i =>
+    i.name === 'Legal' ? (
+      <div>{intl.formatMessage({ id: 'legal', defaultMessage: 'Legal' }).toUpperCase()} </div>
+    ) : (
+      <div>
+        {truncate(i.name, {
+          length: 15,
+          separator: '...',
+        }).toUpperCase()}
+      </div>
+    );
 
   useEffect(() => {
     if (typeof document !== 'undefined' && typeof window !== 'undefined') {
@@ -99,10 +110,7 @@ const WebsiteTopNavigation = ({ shopSettings, intl }) => {
                           key={i.link}
                           data={i.type}
                         >
-                          {truncate(i.name, {
-                            length: 15,
-                            separator: '...',
-                          }).toUpperCase()}
+                          {getItemTitle(i)}
                         </PopoverMenuItem>
                       ))}
                     </PopoverMenu>

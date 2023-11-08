@@ -16,6 +16,7 @@ import { getProxyImageURL } from '../../../common/helpers/image';
 import DEFAULTS from '../../object/const/defaultValues';
 import { getRatingForSocial } from '../../components/Sidebar/Rate/rateHelper';
 import { isMobile } from '../../../common/helpers/apiHelpers';
+import { removeEmptyLines, shortenDescription } from '../../object/wObjectHelper';
 
 import './ShopObjectCard.less';
 
@@ -67,6 +68,9 @@ const ShopObjectCard = ({ wObject, isChecklist, isSocialProduct }) => {
 
   const parent = get(wObject, ['parent'], {});
   let url = wObject?.avatar || parent.avatar;
+  const desc = wObject?.description;
+  const { firstDescrPart: description } = shortenDescription(removeEmptyLines(desc), 350);
+  const altText = description || `${wObject.name} image`;
 
   if (url) url = getProxyImageURL(url, 'preview');
   else url = DEFAULTS.AVATAR;
@@ -84,12 +88,7 @@ const ShopObjectCard = ({ wObject, isChecklist, isSocialProduct }) => {
       <div className="ShopObjectCard__topInfoWrap">
         {!withoutHeard && <HeartButton wobject={wObject} size={'20px'} />}
         <Link to={link} className="ShopObjectCard__avatarWrap">
-          <div
-            className="ShopObjectCard__avatarWrap"
-            style={{
-              backgroundImage: `url(${url})`,
-            }}
-          />
+          <img className="ShopObjectCard__avatarWrap" src={url} alt={altText} />
         </Link>
       </div>
       <Link title={getTitleForLink(wObject)} to={link} className="ShopObjectCard__name">
@@ -139,6 +138,8 @@ ShopObjectCard.propTypes = {
   wObject: PropTypes.shape({
     object_type: PropTypes.string,
     avatar: PropTypes.string,
+    description: PropTypes.string,
+    name: PropTypes.string,
     defaultShowLink: PropTypes.string,
     author_permlink: PropTypes.string,
     rating: PropTypes.arrayOf(PropTypes.shape()),
