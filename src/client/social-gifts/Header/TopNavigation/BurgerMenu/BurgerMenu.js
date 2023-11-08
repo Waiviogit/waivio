@@ -1,28 +1,16 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router';
-import { truncate } from 'lodash';
 import { Link } from 'react-router-dom';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { Drawer } from 'antd';
+import { getMenuLinkTitle } from '../../../../../common/helpers/headerHelpers';
 
 import './BurgerMenu.less';
 
 const BurgerMenu = ({ items, title, openButtonText, openButtonIcon, intl }) => {
   const [open, setOpen] = useState(false);
   const history = useHistory();
-
-  const getItemTitle = i =>
-    i.name === 'Legal' ? (
-      <div>{intl.formatMessage({ id: 'legal', defaultMessage: 'Legal' }).toUpperCase()} </div>
-    ) : (
-      <div>
-        {truncate(i.name, {
-          length: 20,
-          separator: '...',
-        }).toUpperCase()}
-      </div>
-    );
 
   return (
     <div className={'BurgerMenu'}>
@@ -48,7 +36,7 @@ const BurgerMenu = ({ items, title, openButtonText, openButtonIcon, intl }) => {
                 className={'BurgerMenu__item'}
               >
                 {' '}
-                {getItemTitle(i, intl)}
+                {getMenuLinkTitle(i, intl, 20)}
               </a>
             ) : (
               <Link
@@ -61,7 +49,7 @@ const BurgerMenu = ({ items, title, openButtonText, openButtonIcon, intl }) => {
                 key={i.link}
                 onClick={() => setOpen(false)}
               >
-                {getItemTitle(i, intl)}
+                {getMenuLinkTitle(i, intl, 20)}
               </Link>
             ),
           )}

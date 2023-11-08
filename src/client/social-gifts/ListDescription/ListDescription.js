@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
 import { has, isEmpty } from 'lodash';
-import { shortenDescription } from '../../object/wObjectHelper';
+import { removeEmptyLines, shortenDescription } from '../../object/wObjectHelper';
 import './ListDescription.less';
 
 const ListDescription = ({ wobject }) => {
@@ -15,6 +15,11 @@ const ListDescription = ({ wobject }) => {
     secondDescrPart,
     500,
   );
+  const { firstDescrPart: description } = shortenDescription(
+    removeEmptyLines(wobject?.description),
+    350,
+  );
+  const altText = description || `${wobject.name} image`;
 
   return (
     (hasTitle || hasDescription) && (
@@ -32,7 +37,7 @@ const ListDescription = ({ wobject }) => {
               </div>
               {hasAvatar && (
                 <div className={'ListDescription__image-container show'}>
-                  <img className={'ListDescription__image'} src={wobject.avatar} alt={''} />
+                  <img className={'ListDescription__image'} src={wobject.avatar} alt={altText} />
                 </div>
               )}
             </div>

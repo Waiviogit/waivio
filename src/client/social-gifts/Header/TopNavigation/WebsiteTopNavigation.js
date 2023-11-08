@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { isEmpty, take, takeRight, truncate } from 'lodash';
+import { isEmpty, take, takeRight } from 'lodash';
 import { useSelector } from 'react-redux';
 import { Icon } from 'antd';
 import { useHistory } from 'react-router';
@@ -16,6 +16,7 @@ import LinkItem from './LinkItem';
 import './WebsiteTopNavigation.less';
 import BurgerMenu from './BurgerMenu/BurgerMenu';
 import { isTabletOrMobile } from '../../SocialProduct/SocialProductHelper';
+import { getMenuLinkTitle } from '../../../../common/helpers/headerHelpers';
 
 const userNav = (user, intl) => [
   {
@@ -38,17 +39,6 @@ const WebsiteTopNavigation = ({ shopSettings, intl }) => {
   const loading = useSelector(getSettingsLoading);
   const history = useHistory();
   const [visible, setVisible] = useState(false);
-  const getItemTitle = i =>
-    i.name === 'Legal' ? (
-      <div>{intl.formatMessage({ id: 'legal', defaultMessage: 'Legal' }).toUpperCase()} </div>
-    ) : (
-      <div>
-        {truncate(i.name, {
-          length: 15,
-          separator: '...',
-        }).toUpperCase()}
-      </div>
-    );
 
   useEffect(() => {
     if (typeof document !== 'undefined' && typeof window !== 'undefined') {
@@ -110,7 +100,7 @@ const WebsiteTopNavigation = ({ shopSettings, intl }) => {
                           key={i.link}
                           data={i.type}
                         >
-                          {getItemTitle(i)}
+                          {getMenuLinkTitle(i, intl, 15)}
                         </PopoverMenuItem>
                       ))}
                     </PopoverMenu>
