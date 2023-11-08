@@ -40,8 +40,14 @@ const VoteInfoBlock = ({ intl, info }) => {
             })}
             :
           </b>{' '}
-          <div>WAIV upvoting mana: {round(usersState.waivPowerMana, 2)}%</div>
-          <div>Resource credits: {round(usersState.resourceCredits, 2)}%</div>
+          <div>
+            {intl.formatMessage({ id: 'waiv_upvoting_mana', defaultMessage: 'WAIV upvoting mana' })}
+            : {round(usersState.waivPowerMana, 2)}%
+          </div>
+          <div>
+            {intl.formatMessage({ id: 'resource_credits', defaultMessage: 'Resource credits' })}:{' '}
+            {round(usersState.resourceCredits, 2)}%
+          </div>
         </p>
       )}
       <p>
