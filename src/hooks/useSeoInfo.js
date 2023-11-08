@@ -2,7 +2,6 @@ import { useSelector } from 'react-redux';
 import { useLocation } from 'react-router';
 
 import { getAppUrl, getMainObj } from '../store/appStore/appSelectors';
-import { getLastPermlinksFromHash } from '../common/helpers/wObjectHelper';
 
 export const useSeoInfo = isChecklist => {
   const location = useLocation();
@@ -11,13 +10,12 @@ export const useSeoInfo = isChecklist => {
   const prefereCanonical = () => {
     let url = `${appUrl}${location.pathname}`;
 
+    if (location.search) {
+      url = `${appUrl}${location.pathname}${location.search}`;
+    }
     if (location.hash) {
       if (isChecklist) {
-        const pathArray = location.pathname.split('/');
-
-        pathArray.splice(2, 1, getLastPermlinksFromHash(location.hash));
-
-        url = `${appUrl}${pathArray.join('/')}`;
+        url = `${appUrl}${location.pathname}${location.search}${location.hash}`;
       } else url += location.hash;
     }
 
@@ -29,6 +27,16 @@ export const useSeoInfo = isChecklist => {
     appUrl,
     descriptionSite,
   };
+};
+
+export const checkAboutCanonicalUrl = link => {
+  const pattern = /\/about$/;
+
+  if (pattern.test(link)) {
+    return link.replace(pattern, '');
+  }
+
+  return link;
 };
 
 export default null;

@@ -17,12 +17,6 @@ import {
   busyLogin,
   getAuthGuestBalance as dispatchGetAuthGuestBalance,
 } from '../../store/authStore/authActions';
-import {
-  getUserDepartments,
-  getUserShopList,
-  getWobjectDepartments,
-  getWobjectsShopList,
-} from '../../store/shopStore/shopActions';
 import { getNotifications } from '../../store/userStore/userActions';
 import {
   getRate,
@@ -35,7 +29,6 @@ import {
   setSocialFlag,
   setItemsForNavigation,
   setLoadingStatus,
-  setMainObj,
 } from '../../store/appStore/appActions';
 import Header from './Header/Header';
 import NotificationPopup from './../notifications/NotificationPopup';
@@ -62,7 +55,6 @@ import { setLocale } from '../../store/settingsStore/settingsActions';
 import { getObject, getObjectsByIds } from '../../waivioApi/ApiClient';
 import { parseJSON } from '../../common/helpers/parseJSON';
 import { getObjectName } from '../../common/helpers/wObjectHelper';
-import { getObject as getObjectAction } from '../../store/wObjectStore/wobjectsActions';
 
 const createLink = i => {
   switch (i.object_type) {
@@ -316,55 +308,19 @@ SocialWrapper.defaultProps = {
 
 SocialWrapper.fetchData = async ({ store, req }) => {
   const state = store.getState();
-  const config = await store.dispatch(getWebsiteConfigForSSR(req.headers.host));
-  const shopSettings = config.action.payload?.shopSettings;
   let activeLocale = getLocale(state);
 
   if (activeLocale === 'auto') {
     activeLocale = req.cookies.language || getRequestLocale(req.get('Accept-Language'));
   }
   const lang = loadLanguage(activeLocale);
-  const promiseArray = [
+
+  return Promise.allSettled([
     store.dispatch(getWebsiteConfigForSSR(req.headers.host)),
-    store.dispatch(setMainObj(shopSettings)),
     store.dispatch(setAppUrl(`https://${req.headers.host}`)),
     store.dispatch(setUsedLocale(lang)),
     store.dispatch(login()),
-  ];
-
-  if (shopSettings?.type === 'object') {
-    let wobj = { linkToObject: shopSettings?.value };
-    const wobject = await getObject(shopSettings?.value);
-
-    if (!isEmpty(wobject?.menuItem)) {
-      const customSort = get(wobject, 'sortCustom.include', []);
-      const menuItemPermlink = wobject?.menuItem.reduce((acc, curr) => {
-        const item = parseJSON(curr?.body);
-
-        return item?.linkToObject ? [...acc, item] : acc;
-      }, []);
-      const menuItems = !isEmpty(customSort)
-        ? customSort.reduce((acc, curr) => {
-            const findObj = wobject?.menuItem.find(item => item.permlink === curr);
-            const item = parseJSON(findObj?.body);
-
-            return findObj ? [...acc, item] : acc;
-          }, [])
-        : menuItemPermlink;
-
-      wobj = menuItems[0];
-    }
-    promiseArray.push(store.dispatch(getObjectAction(wobj?.linkToObject)));
-    if (wobj?.objectType) {
-      promiseArray.push(store.dispatch(getWobjectDepartments(wobj?.linkToObject)));
-      promiseArray.push(store.dispatch(getWobjectsShopList(wobj?.linkToObject)));
-    }
-  } else {
-    promiseArray.push(store.dispatch(getUserDepartments(shopSettings?.value)));
-    promiseArray.push(store.dispatch(getUserShopList(shopSettings?.value)));
-  }
-
-  return Promise.allSettled(promiseArray);
+  ]);
 };
 
 export default ErrorBoundary(

@@ -56,6 +56,13 @@ export const shortenDescription = (description, length) => {
   };
 };
 
+export const removeEmptyLines = string => {
+  const lines = string?.split('\n');
+  const nonEmptyLines = lines?.filter(line => line?.trim() !== '');
+
+  return nonEmptyLines?.join('\n');
+};
+
 /**
  *
  * @param items - array of waivio objects

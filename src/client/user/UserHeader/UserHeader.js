@@ -3,7 +3,7 @@ import { connect, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { Link } from 'react-router-dom';
-import { get, isEmpty, includes, round } from 'lodash';
+import { get, isEmpty, includes, round, isNil } from 'lodash';
 import urlParse from 'url-parse';
 
 import { FormattedMessage, injectIntl } from 'react-intl';
@@ -18,7 +18,7 @@ import MuteModal from '../../widgets/MuteModal';
 import UserPopoverMenu from '../../components/UserPopoverMenu';
 import { isMobile } from '../../../common/helpers/apiHelpers';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
-import { getImagePathPost } from '../../../common/helpers/image';
+import { getImagePathPost, getProxyImageURL } from '../../../common/helpers/image';
 import SkeletonRow from '../../components/Skeleton/SkeletonRow';
 import { parseJSON } from '../../../common/helpers/parseJSON';
 import formatter from '../../../common/helpers/steemitFormatter';
@@ -123,13 +123,17 @@ const UserHeader = ({
       )}
     </div>
   );
-
-  const avatar = parseJSON(user?.posting_json_metadata)?.profile?.profile_image;
+  const avatarUrl = parseJSON(user?.posting_json_metadata)?.profile?.profile_image;
+  const avatar = avatarUrl?.includes('images.hive.blog') ? avatarUrl : getProxyImageURL(avatarUrl);
 
   return (
     <div className={classNames('UserHeader', { 'UserHeader--cover': hasCover })} style={style}>
       <div className="UserHeader__container">
-        <AvatarLightbox avatar={avatar} username={user.name} size={100} isActive={isActive} />
+        {!isNil(avatarUrl) ? (
+          <AvatarLightbox avatar={avatar} username={user.name} size={100} isActive={isActive} />
+        ) : (
+          <AvatarLightbox username={user.name} size={100} isActive={isActive} />
+        )}
         <div className="UserHeader__user">
           <div className="UserHeader__flexWrap">
             <h1 className="UserHeader__name-container">

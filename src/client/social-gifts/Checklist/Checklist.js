@@ -18,7 +18,7 @@ import {
 } from '../../../store/wObjectStore/wobjActions';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 
-import { sortListItemsBy } from '../../object/wObjectHelper';
+import { removeEmptyLines, shortenDescription, sortListItemsBy } from '../../object/wObjectHelper';
 import { getHelmetIcon, getMainObj, getSiteName } from '../../../store/appStore/appSelectors';
 import { login } from '../../../store/authStore/authActions';
 import { getObject as getObjectState } from '../../../store/wObjectStore/wObjectSelectors';
@@ -52,6 +52,7 @@ const Checklist = ({
   const mainObj = useSelector(getMainObj);
   const title = `${getObjectName(wobject)} - ${siteName}`;
   const desc = wobject?.description || mainObj?.description;
+  const { firstDescrPart: description } = shortenDescription(removeEmptyLines(desc), 350);
   const image = getObjectAvatar(wobject) || favicon;
   const { canonicalUrl } = useSeoInfo(true);
 
@@ -92,13 +93,13 @@ const Checklist = ({
         <title>{title}</title>
         <meta property="og:title" content={title} />
         <link rel="canonical" href={canonicalUrl} />
-        <meta name="description" content={desc} />
+        <meta name="description" content={description} />
         <meta name="twitter:card" content={'summary_large_image'} />
         <meta name="twitter:site" content={'@waivio'} />
         <meta name="twitter:title" content={title} />
         <meta name="author" content={wobject?.creator} />
         <meta name="wobject-title" content={wobject?.title} />
-        <meta name="twitter:description" content={desc} />
+        <meta name="twitter:description" content={description} />
         <meta name="twitter:image" content={image} />
         <meta property="og:title" content={title} />
         <meta property="og:type" content="article" />
@@ -106,7 +107,7 @@ const Checklist = ({
         <meta property="og:image" content={image} />
         <meta property="og:image:width" content="600" />
         <meta property="og:image:height" content="600" />
-        <meta property="og:description" content={desc} />
+        <meta property="og:description" content={description} />
         <meta property="og:site_name" content={siteName} />
         <link rel="image_src" href={image} />
         <link id="favicon" rel="icon" href={favicon} type="image/x-icon" />

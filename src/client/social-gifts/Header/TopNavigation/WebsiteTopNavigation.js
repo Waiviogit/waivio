@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { isEmpty, take, takeRight, truncate } from 'lodash';
+import { isEmpty, take, takeRight } from 'lodash';
 import { useSelector } from 'react-redux';
 import { Icon } from 'antd';
 import { useHistory } from 'react-router';
@@ -16,6 +16,7 @@ import LinkItem from './LinkItem';
 import './WebsiteTopNavigation.less';
 import BurgerMenu from './BurgerMenu/BurgerMenu';
 import { isTabletOrMobile } from '../../SocialProduct/SocialProductHelper';
+import { getMenuLinkTitle } from '../../../../common/helpers/headerHelpers';
 
 const userNav = (user, intl) => [
   {
@@ -99,10 +100,7 @@ const WebsiteTopNavigation = ({ shopSettings, intl }) => {
                           key={i.link}
                           data={i.type}
                         >
-                          {truncate(i.name, {
-                            length: 15,
-                            separator: '...',
-                          }).toUpperCase()}
+                          {getMenuLinkTitle(i, intl, 15)}
                         </PopoverMenuItem>
                       ))}
                     </PopoverMenu>

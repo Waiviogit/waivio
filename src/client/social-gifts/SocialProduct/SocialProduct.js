@@ -63,8 +63,9 @@ import { getAlbums, resetGallery } from '../../../store/galleryStore/galleryActi
 import Loading from '../../components/Icon/Loading';
 import SocialBookAuthors from './SocialBookAuthors/SocialBookAuthors';
 import Breadcrumbs from '../Breadcrumbs/Breadcrumbs';
-import { useSeoInfo } from '../../../hooks/useSeoInfo';
+import { checkAboutCanonicalUrl, useSeoInfo } from '../../../hooks/useSeoInfo';
 import { averageRate, getRatingForSocial } from '../../components/Sidebar/Rate/rateHelper';
+import { removeEmptyLines, shortenDescription } from '../../object/wObjectHelper';
 
 const limit = 30;
 
@@ -172,9 +173,11 @@ const SocialProduct = ({
   const image = getObjectAvatar(wobject) || DEFAULTS.AVATAR;
   const desc = `${wobject.description || ''} ${wobject.name}. ${parseAddress(wobject) ||
     ''} ${tagCategoriesForDescr}`;
+  const { firstDescrPart: description } = shortenDescription(removeEmptyLines(desc), 200);
   const title = `${wobject.name} - ${siteName}`;
   const { canonicalUrl } = useSeoInfo();
   const url = canonicalUrl;
+  const productUrl = checkAboutCanonicalUrl(canonicalUrl);
   const bannerEl =
     typeof document !== 'undefined' && document.getElementById('socialGiftsMainBanner');
   const socialHeaderEl = typeof document !== 'undefined' && document.querySelector('.Header');
@@ -287,20 +290,20 @@ const SocialProduct = ({
     <div>
       <Helmet>
         <title>{title}</title>
-        <meta name="description" content={desc} />
+        <meta name="description" content={description} />
         <meta property="og:title" content={title} />
         <meta property="og:type" content="article" />
-        <link rel="canonical" href={canonicalUrl} />
+        <link rel="canonical" href={productUrl} />
         <meta property="og:url" content={url} />
         <meta property="og:image" content={image} />
         <meta property="og:image:url" content={image} />
         <meta property="og:image:width" content="600" />
         <meta property="og:image:height" content="600" />
-        <meta property="og:description" content={desc} />
+        <meta property="og:description" content={description} />
         <meta name="twitter:card" content={image ? 'summary_large_image' : 'summary'} />
         <meta name="twitter:site" content={`@${siteName}`} />
         <meta name="twitter:title" content={title} />
-        <meta name="twitter:description" content={desc} />
+        <meta name="twitter:description" content={description} />
         <meta name="twitter:image" property="twitter:image" content={image} />
         <meta property="og:site_name" content={siteName} />
         <link rel="image_src" href={image} />
@@ -310,14 +313,13 @@ const SocialProduct = ({
         <meta itemProp="mpn" content="925872" />
         <meta itemProp="name" content={getObjectName(wobj)} />
         <link itemProp="image" href={image} />
-        <meta itemProp="description" content={desc} />
+        <meta itemProp="description" content={description} />
         <div itemProp="offers" itemType="https://schema.org/Offer" itemScope>
-          <link itemProp="url" href={canonicalUrl} />
+          <link itemProp="url" href={productUrl} />
           <meta itemProp="availability" content="https://schema.org/InStock" />
           <meta itemProp="priceCurrency" content={wobj?.price?.includes('С$') ? 'CAD' : 'USD'} />
           <meta itemProp="itemCondition" content="https://schema.org/UsedCondition" />
           <meta itemProp="price" content={getNumbersFromWobjPrice(wobj)} />
-          <meta itemProp="priceValidUntil" content="2020-11-20" />
         </div>
         {Boolean(averageRate(bestRating)) && (
           <div itemProp="aggregateRating" itemType="https://schema.org/AggregateRating" itemScope>
@@ -584,6 +586,7 @@ const mapStateToProps = state => ({
   helmetIcon: getHelmetIcon(state),
   nestedWobj: getWobjectNested(state),
 });
+
 const mapDispatchToProps = dispatch => ({
   setStoreActiveOpt: obj => dispatch(setStoreActiveOption(obj)),
   resetOptClicked: opt => dispatch(resetOptionClicked(opt)),

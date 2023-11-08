@@ -28,7 +28,7 @@ const FraudDetection = () => {
         customSortConfig={sortConfig}
         defaultSort={'reservation'}
         disclaimer={
-          ' It is an experimental service with a limited scope and is provided "as is" with no guarantee of applicability for the detection of probable fraud attempts. All submissions must always be manually verified and confirmed by the campaign sponsor'
+          ' It is an experimental service with a limited scope and is provided "as is" with no guarantee of applicability for the detection of probable fraud attempts. All submissions must always be manually verified and confirmed by the campaign sponsor.'
         }
       />
     </div>
