@@ -172,9 +172,9 @@ const DuplicateList = ({ intl }) => {
       </p>
       <p>
         {intl.formatMessage({
-          id: 'data_import_description3',
+          id: 'list_duplicator_bot_description3',
           defaultMessage:
-            'If the WAIV power on the account is insufficient to cast a $0.001 USD vote, or if the WAIV power reaches the specified threshold, the data import process will continue at a slower pace.',
+            'If the WAIV power on the account is insufficient to cast a $0.001 USD vote, or if the WAIV power reaches the specified threshold, the list duplication process will continue at a slower pace.',
         })}
       </p>
       <hr />

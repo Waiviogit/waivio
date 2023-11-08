@@ -235,7 +235,7 @@ export const configAthorityBotProductTable = [
   {
     id: 'objectsClaimed',
     intl: {
-      id: 'claimed_object',
+      id: 'claimed_objects',
       defaultMessage: 'Claimed objects',
     },
     type: 'openModal',
@@ -411,7 +411,7 @@ export const configDuplicateListsTable = [
   {
     id: 'objectsCreated',
     intl: {
-      id: 'posted_list',
+      id: 'posted_lists',
       defaultMessage: 'Posted lists',
     },
     type: 'openModal',
@@ -467,7 +467,7 @@ export const configDuplicateListsHistoryTable = [
   {
     id: 'baseObject',
     intl: {
-      id: 'base_list',
+      id: 'base_object',
       defaultMessage: 'Base object',
     },
     type: 'openModal',
