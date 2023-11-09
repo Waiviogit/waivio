@@ -17,7 +17,7 @@ import {
 
 const limit = 30;
 
-const PicturesSlider = ({ hoveredOption, activeOption, activeCategory, currentWobj }) => {
+const PicturesSlider = ({ hoveredOption, activeOption, activeCategory, currentWobj, altText }) => {
   const [currentImage, setCurrentImage] = useState({});
   const [nextArrowClicked, setNextArrowClicked] = useState(false);
   const [lastSlideToShow, setLastSlideToShow] = useState(null);
@@ -122,7 +122,7 @@ const PicturesSlider = ({ hoveredOption, activeOption, activeCategory, currentWo
           <img
             className="PicturesSlider__previewImage"
             src={getProxyImageURL(currentSrc)}
-            alt={'pic'}
+            alt={altText}
             onClick={() => setIsOpen(true)}
           />
         </div>
@@ -134,7 +134,7 @@ const PicturesSlider = ({ hoveredOption, activeOption, activeCategory, currentWo
                 <img
                   className="PicturesSlider__previewImage"
                   src={getProxyImageURL(pic.body)}
-                  alt={'pic'}
+                  alt={altText}
                   onClick={() => setIsOpen(true)}
                 />
               </div>
@@ -189,6 +189,7 @@ PicturesSlider.propTypes = {
   hoveredOption: PropTypes.shape(),
   activeOption: PropTypes.shape(),
   activeCategory: PropTypes.string,
+  altText: PropTypes.string,
 };
 
 export default PicturesSlider;
