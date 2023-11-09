@@ -2487,5 +2487,8 @@
   "number_of_list": "Número de listas",
   "posted_lists": "Listas publicadas",
   "voted_updates": "Actualizaciones votadas",
-  "base_object": "Objeto base"
+  "base_object": "Objeto base",
+  "two_cent_per_day": "0.2 USD por día",
+  "one_dollar_per_day": "Mínimo 1 USD por día",
+  "005_per_day": "0.005 USD por día por usuario activo"
 }
