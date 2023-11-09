@@ -2486,5 +2486,8 @@
   "number_of_list": "Number of lists",
   "posted_lists": "Posted lists",
   "voted_updates": "Voted updates",
-  "base_object": "Base object"
+  "base_object": "Base object",
+  "two_cent_per_day": "0.2 USD per day",
+  "one_dollar_per_day": "Minimum 1 USD per day",
+  "005_per_day": "0.005 USD per day per active user"
 }
