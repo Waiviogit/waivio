@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { Button, Modal, message, Select, Form } from 'antd';
-import { filter, isEmpty } from 'lodash';
+import { filter, isEmpty, get, isNil } from 'lodash';
 import BigNumber from 'bignumber.js';
 import { getAppendData, getObjectName } from '../../../../common/helpers/wObjectHelper';
 import { getSuitableLanguage } from '../../../../store/reducers';
@@ -63,6 +63,7 @@ class AddItemModal extends Component {
 
     this.state = {
       isModalOpen: false,
+      duplicatedItemLocale: null,
       isLoading: false,
       selectedItem: null,
     };
@@ -71,7 +72,12 @@ class AddItemModal extends Component {
   handleToggleModal = () => this.setState({ isModalOpen: !this.state.isModalOpen });
 
   handleObjectSelect = selectedItem => {
-    this.setState({ selectedItem, isModalOpen: true });
+    const listItems = get(this.props.wobject, 'listItem', []);
+    const duplicatedItemLocale = selectedItem
+      ? listItems?.find(item => item.body === selectedItem.author_permlink)?.locale
+      : null;
+
+    this.setState({ selectedItem, isModalOpen: true, duplicatedItemLocale });
   };
 
   handleVotePercentChange = votePercent => this.setState({ votePercent });
@@ -145,9 +151,16 @@ class AddItemModal extends Component {
   };
 
   render() {
-    const { isModalOpen, isLoading, selectedItem, littleVotePower } = this.state;
+    const {
+      isModalOpen,
+      isLoading,
+      selectedItem,
+      littleVotePower,
+      duplicatedItemLocale,
+    } = this.state;
     const { intl, wobject, itemsIdsToOmit, form, followingList } = this.props;
     const { getFieldDecorator } = form;
+    const isForbiddenLanguage = duplicatedItemLocale === this.props.form.getFieldValue('locale');
     const listName = getObjectName(wobject);
     const itemType = ['list'].includes(selectedItem && selectedItem.type)
       ? intl.formatMessage({
@@ -194,7 +207,9 @@ class AddItemModal extends Component {
                   defaultMessage: 'Add new',
                 })}: ${itemType}`}
               </div>
-              <Form.Item>
+              <Form.Item
+                validateStatus={!isNil(duplicatedItemLocale) && isForbiddenLanguage ? 'error' : ''}
+              >
                 {getFieldDecorator('locale', {
                   initialValue: this.props.locale,
                   rules: [
@@ -218,6 +233,12 @@ class AddItemModal extends Component {
                 )}
               </Form.Item>
               <ObjectCardView wObject={selectedItem} />
+              {!isNil(duplicatedItemLocale) && isForbiddenLanguage && (
+                <div className={'error-duplicate'}>
+                  This item with the specified locale already exists. If you&apos;d like to add the
+                  same item, please select a different locale.
+                </div>
+              )}
               <LikeSection
                 form={form}
                 onVotePercentChange={this.handleVotePercentChange}
@@ -239,7 +260,7 @@ class AddItemModal extends Component {
                   className="modal-content__submit-btn"
                   type="primary"
                   loading={isLoading}
-                  disabled={littleVotePower || isLoading}
+                  disabled={littleVotePower || isLoading || isForbiddenLanguage}
                   onClick={this.handleSubmit}
                 >
                   {intl.formatMessage({

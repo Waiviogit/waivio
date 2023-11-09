@@ -222,7 +222,7 @@ const CatalogWrap = props => {
     return map(listItems, listItem => getListRow(listItem));
   };
 
-  const itemsIdsToOmit = listItems?.map(item => item.author_permlink);
+  const itemsIdsToOmit = [obj.author_permlink];
 
   return (
     <div>
