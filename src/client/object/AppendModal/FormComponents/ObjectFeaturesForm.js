@@ -29,9 +29,7 @@ function ObjectFeaturesForm({ loading, intl, getFieldDecorator, getFieldRules, i
           rules: getFieldRules(featuresFields.featuresValue),
         })(
           <Input
-            className={classNames('AppendForm__input', {
-              'validation-error': !isSomeValue,
-            })}
+            className={classNames('AppendForm__input', {})}
             disabled={loading}
             placeholder={intl.formatMessage({
               id: 'value',
