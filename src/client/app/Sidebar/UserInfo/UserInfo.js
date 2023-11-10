@@ -67,7 +67,6 @@ class UserInfo extends React.Component {
     let email;
 
     const lastActive = !isGuestPage ? user.last_activity : null;
-    console.log(lastActive);
 
     if (user && user.posting_json_metadata && user.posting_json_metadata !== '') {
       metadata = getMetadata(user);

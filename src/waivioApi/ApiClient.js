@@ -3758,4 +3758,19 @@ export const getCommentDraft = (user, author, permlink) => {
     .then(posts => posts)
     .catch(error => error);
 };
+export const getObjectUpdatesLocale = (authorPermlink, permlink) => {
+  return fetch(
+    `${config.apiPrefix}${config.getObjects}/${authorPermlink}${config.listItemLocales}/${permlink}`,
+    {
+      headers: {
+        ...headers,
+        'access-token': Cookie.get('access_token'),
+      },
+      method: 'GET',
+    },
+  )
+    .then(res => res.json())
+    .then(posts => posts)
+    .catch(error => error);
+};
 export default null;
