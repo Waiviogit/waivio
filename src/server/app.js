@@ -9,6 +9,7 @@ import steemAPI from './steemAPI';
 import { getSettingsAdsense } from '../waivioApi/ApiClient';
 import { sitemap } from './seo-service/seoServiceApi';
 import { getRobotsTxtContent } from '../common/helpers/robots-helper';
+import { isEmpty } from 'lodash';
 
 const indexPath = `${paths.templates}/index.hbs`;
 const indexHtml = fs.readFileSync(indexPath, 'utf-8');
@@ -84,7 +85,7 @@ app.get('/sitemap.xml', async (req, res) => {
     host: req.headers.host,
     name: 'sitemap',
   });
-  console.log('sitemapTest', JSON.stringify(fileContent));
+  console.log('sitemapTest', isEmpty(fileContent));
 
   res.set('Content-Type', 'text/xml');
   res.send(fileContent);
