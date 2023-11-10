@@ -20,11 +20,15 @@ const WebsitePricing = ({ intl }) => (
       </h3>
       <div>
         <span className="WebsitePricing__dot">&bull;</span>
-        0.005 USD per day per active user;
+        {intl.formatMessage({
+          id: '005_per_day',
+          defaultMessage: '0.005 USD per day per active user',
+        })}
+        ;
       </div>
       <div>
         <span className="WebsitePricing__dot">&bull;</span>
-        Minimum 1 USD per day.
+        {intl.formatMessage({ id: 'one_dollar_per_day', defaultMessage: 'Minimum 1 USD per day' })}.
       </div>
     </div>
     <div className={'WebsitePricing__padding'}>
@@ -36,13 +40,15 @@ const WebsitePricing = ({ intl }) => (
       </h3>
       <div>
         <span className="WebsitePricing__dot">&bull;</span>
-        0.2 USD per day.
+        {intl.formatMessage({ id: 'two_cent_per_day', defaultMessage: '0.2 USD per day' })}.
       </div>
     </div>
     <p>
-      Daily Active Users (DAU) refers to the total number of website visitors that interact with
-      either the desktop or mobile version of the site from a single device or browser. Users
-      accessing the website via multiple devices or browsers will be counted multiple times.
+      {intl.formatMessage({
+        id: 'manage_website_info_dau',
+        defaultMessage:
+          'Daily Active Users (DAU) refers to the total number of website visitors that interact with either the desktop or mobile version of the site from a single device or browser. Users accessing the website via multiple devices or browsers will be counted multiple times.',
+      })}
     </p>
   </div>
 );

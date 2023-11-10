@@ -118,7 +118,16 @@ const CatalogWrap = props => {
   }, [location.hash, wobject.author_permlink]);
 
   const handleAddItem = listItem => {
-    const currentList = isEmpty(listItems) ? [listItem] : [...listItems, listItem];
+    let currentList;
+
+    if (isEmpty(listItems)) {
+      currentList = [listItem];
+    } else if (listItems.some(item => item.author_permlink === listItem.author_permlink)) {
+      currentList = listItems;
+    } else {
+      currentList = [...listItems, listItem];
+    }
+
     const currentRecencySortList = [listItem.author_permlink, ...recencySortList];
 
     setLists(sortListItemsBy(currentList, 'recency', currentRecencySortList));
