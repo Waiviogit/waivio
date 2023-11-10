@@ -84,6 +84,7 @@ app.get('/sitemap.xml', async (req, res) => {
     host: req.headers.host,
     name: 'sitemap',
   });
+  console.log('sitemapTest', JSON.stringify(fileContent));
 
   res.set('Content-Type', 'text/xml');
   res.send(fileContent);
