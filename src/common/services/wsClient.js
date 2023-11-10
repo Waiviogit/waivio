@@ -69,6 +69,8 @@ class SocketClient {
 
     return new Promise(resolve => {
       if (this.ws.readyState !== 1) {
+        // eslint-disable-next-line no-console
+        console.log('HIVE_SOCKET_ERR.CLOSED');
         resolve({ error: new Error(HIVE_SOCKET_ERR.CLOSED) });
       }
 
@@ -84,6 +86,8 @@ class SocketClient {
 
       setTimeout(() => {
         if (emitter.eventNames().includes(id)) {
+          // eslint-disable-next-line no-console
+          console.log('HIVE_SOCKET_ERR.TIMEOUT');
           this.timeoutCount++;
           emitter.off(id, () => {});
           resolve({ error: new Error(HIVE_SOCKET_ERR.TIMEOUT) });
