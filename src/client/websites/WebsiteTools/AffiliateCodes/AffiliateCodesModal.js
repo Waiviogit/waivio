@@ -56,7 +56,7 @@ const AffiliateCodesModal = ({
   const onSubmit = formValues => {
     const currObj = affiliateObjects?.find(obj => obj.name === selectedObj.name);
     // eslint-disable-next-line array-callback-return,consistent-return
-    const duplicate = currObj?.affiliateCodeFields.find(update => {
+    const duplicate = currObj?.affiliateCodeFields?.find(update => {
       if (update.name === 'affiliateCode') {
         const affCode = JSON.parse(update?.body)[1];
 
