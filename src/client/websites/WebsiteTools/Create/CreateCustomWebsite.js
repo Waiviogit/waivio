@@ -119,7 +119,7 @@ const CreateCustomWebsite = ({
           >
             {intl.formatMessage({
               id: 'domain_settings',
-              defaultMessage: 'domain settings and instructions',
+              defaultMessage: 'Domain settings and instructions',
             })}
           </a>{' '}
           {intl.formatMessage({

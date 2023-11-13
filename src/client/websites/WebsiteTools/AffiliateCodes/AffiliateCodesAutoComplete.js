@@ -1,9 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { injectIntl } from 'react-intl';
 import { has } from 'lodash';
 import SearchObjectsAutocomplete from '../../../components/EditorObject/SearchObjectsAutocomplete';
 
-const AffiliateCodesAutoComplete = ({ affiliateObjects, setSelectedObj, setOpenAppendModal }) => {
+const AffiliateCodesAutoComplete = ({
+  affiliateObjects,
+  setSelectedObj,
+  setOpenAppendModal,
+  intl,
+}) => {
   const handleSelectObject = obj => {
     setSelectedObj(obj);
     setOpenAppendModal(true);
@@ -23,7 +29,10 @@ const AffiliateCodesAutoComplete = ({ affiliateObjects, setSelectedObj, setOpenA
       itemsIdsToOmit={itemsToOmit}
       objectType={'affiliate'}
       handleSelect={handleSelectObject}
-      placeholder={'Find'}
+      placeholder={intl.formatMessage({
+        id: 'find',
+        defaultMessage: 'Find',
+      })}
     />
   );
 };
@@ -32,5 +41,8 @@ AffiliateCodesAutoComplete.propTypes = {
   affiliateObjects: PropTypes.shape(),
   setSelectedObj: PropTypes.func,
   setOpenAppendModal: PropTypes.func,
+  intl: PropTypes.shape({
+    formatMessage: PropTypes.func,
+  }).isRequired,
 };
-export default AffiliateCodesAutoComplete;
+export default injectIntl(AffiliateCodesAutoComplete);
