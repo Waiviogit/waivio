@@ -56,7 +56,6 @@ const getSitemap = async ({ host, name }) => {
     method: 'getSitemap',
     args: [{ host, name }],
   });
-  console.log('sitemapTest', JSON.stringify({ host, name }));
   if (result?.error) {
     return '';
   }
