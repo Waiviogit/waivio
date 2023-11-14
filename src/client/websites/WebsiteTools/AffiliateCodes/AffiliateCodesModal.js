@@ -134,7 +134,13 @@ const AffiliateCodesModal = ({
     >
       <Form className="AppendForm" layout="vertical" onSubmit={handleSubmit}>
         <>
-          <p className={'ant-modal-title'}>Affiliate code:</p>
+          <p className={'ant-modal-title'}>
+            {intl.formatMessage({
+              id: 'affiliate_code_field_name',
+              defaultMessage: 'Affiliate code',
+            })}
+            :
+          </p>
           <Form.Item>
             {getFieldDecorator(objectFields.affiliateCode, {
               rules: [
