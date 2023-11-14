@@ -2532,5 +2532,6 @@
   "adsense_advertisements_invalid_txt": "Invalid AdSense text entered. Please provide a valid text.",
   "adsense_advertisements_txt_note": "This text will be added to ads.txt to your site.",
   "level": "Level",
-  "adsense_advertisements_level_note": "Choose the advertising intensity to balance user experience with revenue generation "
+  "adsense_advertisements_level_note": "Choose the advertising intensity to balance user experience with revenue generation",
+  "blog": "Blog"
 }
