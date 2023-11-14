@@ -24,40 +24,25 @@ class SocketClient {
     return new Promise(resolve => {
       this.ws = new WebSocket(this.url, { headers: { 'api-key': this.key } });
 
-      const onOpen = () => {
-        this.timeoutCount = 0;
-        resolve(this.ws);
-      };
-
-      const onError = () => {
+      this.ws.on('error', () => {
         console.error('error socket closed');
         this.ws.close();
         resolve({ error: new Error(HIVE_SOCKET_ERR.ERROR) });
-      };
-
-      const onClose = () => {
-        this.timeoutCount++;
-        this.ws.removeEventListener('open', onOpen);
-        this.ws.removeEventListener('error', onError);
-        this.ws.removeEventListener('close', onClose);
-
-        setTimeout(() => {
-          this.init().then(resolve);
-        }, 1000); // Wait for 1 second before attempting to reconnect
-      };
-
-      this.ws.addEventListener('open', onOpen);
-      this.ws.addEventListener('error', onError);
-      this.ws.addEventListener('close', onClose);
+      });
 
       this.ws.on('message', message => {
         try {
           const data = JSON.parse(message.toString());
 
           emitter.emit(data.id, { data, error: data.error });
-        } catch (error) {
-          console.error('Error parsing message:', error.message);
-        }
+          // eslint-disable-next-line no-empty
+        } catch (error) {}
+      });
+
+      this.ws.on('open', () => {
+        setTimeout(() => {
+          resolve(this.ws);
+        }, 100);
       });
     });
   }
