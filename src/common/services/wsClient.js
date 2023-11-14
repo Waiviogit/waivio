@@ -56,24 +56,20 @@ class SocketClient {
 
   async sendMessage(message = {}) {
     if (this.timeoutCount >= REQUESTS_TO_DISABLE) {
-      if (this.timeoutCount >= REQUESTS_TO_RENEW) {
+      this.timeoutCount++;
+      if (this.timeoutCount > REQUESTS_TO_RENEW) {
         this.timeoutCount = 0;
       }
 
       return { error: new Error(HIVE_SOCKET_ERR.TIMEOUT) };
     }
-
-    if (!this.ws || this.ws.readyState !== WebSocket.OPEN) {
+    if (this?.ws?.readyState !== 1) {
       await this.init();
     }
 
     return new Promise(resolve => {
-      if (!this.ws || this.ws.readyState !== WebSocket.OPEN) {
-        // eslint-disable-next-line no-console
-        console.log(HIVE_SOCKET_ERR.CLOSED);
+      if (this.ws.readyState !== 1) {
         resolve({ error: new Error(HIVE_SOCKET_ERR.CLOSED) });
-
-        return;
       }
 
       const id = this.getUniqId();
@@ -81,24 +77,15 @@ class SocketClient {
       // eslint-disable-next-line no-param-reassign
       message.id = id;
       this.ws.send(JSON.stringify(message));
-
-      const onMessageReceived = ({ data, error }) => {
-        if (error) {
-          resolve({ error });
-        } else {
-          resolve(data);
-        }
-        emitter.off(id, onMessageReceived);
-      };
-
-      emitter.once(id, onMessageReceived);
+      emitter.once(id, ({ data, error }) => {
+        if (error) resolve({ error });
+        resolve(data);
+      });
 
       setTimeout(() => {
         if (emitter.eventNames().includes(id)) {
-          // eslint-disable-next-line no-console
-          console.log(HIVE_SOCKET_ERR.TIMEOUT);
           this.timeoutCount++;
-          emitter.off(id, onMessageReceived);
+          emitter.off(id, () => {});
           resolve({ error: new Error(HIVE_SOCKET_ERR.TIMEOUT) });
         }
       }, 2 * 1000);
