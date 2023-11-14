@@ -22,10 +22,10 @@ class SocketClient {
 
   async init() {
     return new Promise(resolve => {
-      this.ws = new WebSocket(this.url, { headers: { 'api-key': this.key } });
+      this.ws = new WebSocket(this.url);
 
-      this.ws.on('error', () => {
-        console.error('error socket closed');
+      this.ws.on('error', error => {
+        console.error('error socket closed:', error);
         this.ws.close();
         resolve({ error: new Error(HIVE_SOCKET_ERR.ERROR) });
       });
