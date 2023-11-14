@@ -63,7 +63,7 @@ class SocketClient {
 
       return { error: new Error(HIVE_SOCKET_ERR.TIMEOUT) };
     }
-    if (this?.ws?.readyState !== 1) {
+    if (this?.ws?.readyState !== 1 || !this.ws || this.ws.readyState !== WebSocket.OPEN) {
       await this.init();
     }
 
