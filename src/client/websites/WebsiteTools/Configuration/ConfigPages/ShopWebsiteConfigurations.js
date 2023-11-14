@@ -303,7 +303,10 @@ const ShopWebsiteConfigurations = ({
                 </div>
               ) : (
                 <SearchObjectsAutocomplete
-                  placeholder={'Find object'}
+                  placeholder={intl.formatMessage({
+                    id: 'find_object',
+                    defaultMessage: 'Find object',
+                  })}
                   handleSelect={u => {
                     handleSubmit({
                       defaultHashtag: u.author_permlink,
@@ -329,7 +332,10 @@ const ShopWebsiteConfigurations = ({
               </h3>
               <div className={classListHeaderConfig}>{header.name}</div>
               <Button type="primary" onClick={() => setOpenHeaderConfig(true)}>
-                Edit
+                {intl.formatMessage({
+                  id: 'edit',
+                  defaultMessage: 'Edit',
+                })}
               </Button>
             </Form.Item>
           </Form>

@@ -51,30 +51,44 @@ export const AffiliateCodes = ({
           id: 'affiliate_codes',
           defaultMessage: 'Affiliate codes',
         })}{' '}
-        for {site}
+        {intl.formatMessage({
+          id: 'for',
+          defaultMessage: 'for',
+        })}{' '}
+        {site}
       </h1>
       {/* eslint-disable-next-line react/no-unescaped-entities */}
       <p>
-        Enter your affiliate program codes from various platforms, including Amazon.com,
-        Walmart.com, and others. These codes will be automatically integrated into the &apos;Buy
-        Now&apos; links across your website&apos;s product listings. This ensures you earn affiliate
-        commissions from all sales initiated by your website visitors.
+        {intl.formatMessage({
+          id: 'affiliate_codes_site_enter_code_text_part1',
+          defaultMessage:
+            "Enter your affiliate program codes from various platforms, including Amazon.com, Walmart.com, and others. These codes will be automatically integrated into the 'Buy Now' links across your website's product listings. This ensures you earn affiliate commissions from all sales initiated by your website visitors.",
+        })}
       </p>
 
       <p>
-        Take advantage of the geo-targeting feature by entering affiliate codes for
-        location-specific shops, such as Amazon.ca, Amazon.co.uk, and more. These codes will direct
-        traffic based on the geographical location of your website visitors, thereby maximizing your
-        potential affiliate revenues.
+        {intl.formatMessage({
+          id: 'affiliate_codes_site_enter_code_text_part2',
+          defaultMessage:
+            'Take advantage of the geo-targeting feature by entering affiliate codes for location-specific shops, such as Amazon.ca, Amazon.co.uk, and more. These codes will direct traffic based on the geographical location of your website visitors, thereby maximizing your potential affiliate revenues.',
+        })}
       </p>
 
       <p>
         {' '}
-        For a seamless and uninterrupted user experience, we also recommend checking and confirming
-        the Product IDs on your products.
+        {intl.formatMessage({
+          id: 'affiliate_codes_site_enter_code_text_part3',
+          defaultMessage:
+            'For a seamless and uninterrupted user experience, we also recommend checking and confirming the Product IDs on your products.',
+        })}
       </p>
 
-      <h3>Find affiliate program</h3>
+      <h3>
+        {intl.formatMessage({
+          id: 'find_affiliate_program',
+          defaultMessage: 'Find affiliate program',
+        })}
+      </h3>
       <AffiliateCodesAutoComplete
         setOpenAppendModal={setOpenAppendModal}
         affiliateObjects={affiliateObjects}

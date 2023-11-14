@@ -77,47 +77,83 @@ const AdSenseAds = ({ intl, saveAdSense, match, getAdSettings }) => {
       </h1>
       <p>
         {' '}
-        Google AdSense is a program that allows website owners to earn revenue by displaying
-        targeted advertisements on their site. These ads are chosen based on the content of the site
-        and the interests of the visitors, ensuring relevance to your audience.
+        {intl.formatMessage({
+          id: 'adsense_advertisements_text_part1',
+          defaultMessage:
+            'Google AdSense is a program that allows website owners to earn revenue by displaying targeted advertisements on their site. These ads are chosen based on the content of the site and the interests of the visitors, ensuring relevance to your audience.',
+        })}
       </p>
       <p>
-        When integrating the AdSense code into your website, you can choose the level of ad
-        intensity, allowing you to control how prominently the ads are displayed. Simply add the
-        code from Google AdSense and select the desired intensity level on our platform.
+        {intl.formatMessage({
+          id: 'adsense_advertisements_text_part2',
+          defaultMessage:
+            'When integrating the AdSense code into your website, you can choose the level of ad intensity, allowing you to control how prominently the ads are displayed. Simply add the code from Google AdSense and select the desired intensity level on our platform.',
+        })}
       </p>
-      <h3>AdSense code:</h3>
+      <h3>
+        {intl.formatMessage({
+          id: 'adsense_advertisements_code',
+          defaultMessage: 'AdSense code',
+        })}
+        :
+      </h3>
       <Input.TextArea
         value={adSense}
         onChange={e => handleChangeAdSense(e)}
-        placeholder={'Add your AdSense code'}
+        placeholder={intl.formatMessage({
+          id: 'adsense_advertisements_add_yours',
+          defaultMessage: 'Add your AdSense code',
+        })}
         autoSize={{ minRows: 2 }}
       />
       {showError && (
         <div className="AdSenseAds__error">
           {' '}
-          Invalid AdSense code entered. Please provide a valid script.
+          {intl.formatMessage({
+            id: 'adsense_advertisements_invalid_code',
+            defaultMessage: 'Invalid AdSense code entered. Please provide a valid script.',
+          })}
         </div>
       )}
       <p>
-        This code will be displayed within the &lt;head&gt;&lt;/head&gt; tags on every page of your
-        site.
+        {intl.formatMessage({
+          id: 'adsense_advertisements_adsense_code_note',
+          defaultMessage:
+            'This code will be displayed within the &lt;head&gt;&lt;/head&gt; tags on every page of your site.',
+        })}
       </p>
       <h3>Ads.txt:</h3>
       <Input.TextArea
         value={txtFile}
         onChange={e => handleChangeAdSenseText(e)}
-        placeholder={'Add your AdSense .txt text'}
+        placeholder={intl.formatMessage({
+          id: 'adsense_advertisements_add_txt',
+          defaultMessage: 'Add your AdSense .txt text',
+        })}
         autoSize={{ minRows: 2 }}
       />
       {showTextError && (
         <div className="AdSenseAds__error">
           {' '}
-          Invalid AdSense text entered. Please provide a valid text.
+          {intl.formatMessage({
+            id: 'adsense_advertisements_invalid_txt',
+            defaultMessage: 'Invalid AdSense text entered. Please provide a valid text.',
+          })}
         </div>
       )}
-      <p>This text will be added to ads.txt to your site.</p>
-      <h3>Level:</h3>
+      <p>
+        {intl.formatMessage({
+          id: 'adsense_advertisements_txt_note',
+          defaultMessage: 'This text will be added to ads.txt to your site.',
+        })}
+      </p>
+      <h3>
+        {intl.formatMessage({
+          id: 'level',
+          defaultMessage: 'Level',
+        })}
+        :
+      </h3>
       <Select
         defaultValue={adIntensityLevels?.find(l => l.key === level)?.value}
         onSelect={l => setLevel(l)}
@@ -126,7 +162,14 @@ const AdSenseAds = ({ intl, saveAdSense, match, getAdSettings }) => {
           <Select.Option key={o.key}>{o.value}</Select.Option>
         ))}
       </Select>
-      <p>Choose the advertising intensity to balance user experience with revenue generation.</p>
+      <p>
+        {intl.formatMessage({
+          id: 'adsense_advertisements_level_note',
+          defaultMessage:
+            'Choose the advertising intensity to balance user experience with revenue generation',
+        })}
+        .
+      </p>
       <Button
         disabled={disabled}
         type="primary"

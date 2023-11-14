@@ -3,6 +3,8 @@ import { useSelector } from 'react-redux';
 import { Skeleton } from 'antd';
 import Helmet from 'react-helmet';
 import { isEmpty, get } from 'lodash';
+import { injectIntl } from 'react-intl';
+import PropTypes from 'prop-types';
 
 import {
   getHelmetIcon,
@@ -29,7 +31,7 @@ import {
   getWobjectsShopList,
 } from '../../../store/shopStore/shopActions';
 
-const ShopSwitcher = () => {
+const ShopSwitcher = ({ intl }) => {
   const shopSettings = useSelector(getShopSettings);
   const favicon = useSelector(getHelmetIcon);
   const siteName = useSelector(getSiteName);
@@ -52,7 +54,9 @@ const ShopSwitcher = () => {
               </Affix>
               <div className="center center--withoutRigth">
                 <h3>
-                  <span className={'ListSwitcher__breadCrumbs'}>Departments</span>
+                  <span className={'ListSwitcher__breadCrumbs'}>
+                    {intl.formatMessage({ id: 'departments', defaultMessage: 'Departments' })}
+                  </span>
                 </h3>
                 <UserShoppingList name={shopSettings?.value} isSocial />
               </div>
@@ -135,4 +139,8 @@ ShopSwitcher.fetchData = async ({ store, req }) => {
   return Promise.allSettled(promiseArray);
 };
 
-export default ShopSwitcher;
+ShopSwitcher.propTypes = {
+  intl: PropTypes.shape().isRequired,
+};
+
+export default injectIntl(ShopSwitcher);
