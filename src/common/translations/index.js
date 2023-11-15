@@ -1,7 +1,7 @@
 import { addLocaleData } from 'react-intl';
-import ruRU from 'antd/es/locale/ru_RU';
-import ukUA from 'antd/es/locale/uk_UA';
-import enUS from 'antd/es/locale/en_US';
+import ruRU from 'antd/lib/locale/ru_RU';
+import ukUA from 'antd/lib/locale/uk_UA';
+import enUS from 'antd/lib/locale/en_US';
 
 import LANGUAGES from './languages';
 
