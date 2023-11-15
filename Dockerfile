@@ -9,6 +9,6 @@ COPY ./package.json ./
 
 RUN yarn install
 COPY . .
-RUN yarn run build:client $ENV
+RUN yarn run buildClient $ENV
 
-CMD yarn start:ssr
+CMD yarn startSsr
