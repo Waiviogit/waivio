@@ -97,7 +97,6 @@ const User = props => {
   useEffect(() => {
     if (window.gtag) window.gtag('event', 'view_user_profile', { debug_mode: true });
 
-    props.getUserAccount(name);
     props.getUserAccountHistory(name);
     props.getTokenBalance('WAIV', name);
     props.resetBreadCrumb();
@@ -220,7 +219,6 @@ User.propTypes = {
   user: PropTypes.shape().isRequired,
   loaded: PropTypes.bool,
   failed: PropTypes.bool,
-  getUserAccount: PropTypes.func,
   getTokenBalance: PropTypes.func,
   getUserAccountHistory: PropTypes.func.isRequired,
   resetBreadCrumb: PropTypes.func.isRequired,
