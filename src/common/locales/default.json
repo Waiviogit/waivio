@@ -2462,7 +2462,7 @@
   "affiliate_codes_enter_code_text_part3": "For a seamless and uninterrupted user experience, we also recommend checking and confirming the Product IDs on the referenced products.",
   "find_affiliate_program": "Find affiliate program",
   "user_affiliate_codes": "Affiliate codes",
-  "list_duplicator_bot": "List duplication",
+  "list_duplication": "List duplication",
   "adsense": "AdSense ads",
   "claim_authority_bot": "Claim authority bot",
   "search_functionality_custom": "The search functionality on custom websites is restricted to objects that are claimed by the website owner and trusted authorities (objected added to their profile shops). This tool simplifies the process of claiming administrative ownership over all products, their variations mentioned in the specified list, and all embedded lists.",
@@ -2539,5 +2539,6 @@
   "rejected_by_ownership": "rejected by owner",
   "rejected_by_owner": "rejected by owner",
   "rejected_by_admin": "rejected by admin",
-  "rejected_by_moderator": "rejected by moderator"
+  "rejected_by_moderator": "rejected by moderator",
+  "mobnav_list_duplication": "List duplication"
 }
