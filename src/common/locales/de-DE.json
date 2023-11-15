@@ -2534,5 +2534,12 @@
   "adsense_advertisements_txt_note": "Dieser Text wird zu ads.txt Ihrer Website hinzugefügt.",
   "level": "Stufe",
   "adsense_advertisements_level_note": "Wählen Sie die Werbeintensität, um das Benutzererlebnis mit der Generierung von Einnahmen auszugleichen",
-  "blog": "Blog"
+  "blog": "Blog",
+  "approved_by_ownership": "vom Eigentümer genehmigt",
+  "approved_by_owner": "vom Eigentümer genehmigt",
+  "rejected_by_ownership": "vom Eigentümer abgelehnt",
+  "rejected_by_owner": "vom Eigentümer abgelehnt",
+  "rejected_by_admin": "vom Administrator abgelehnt",
+  "rejected_by_moderator": "vom Moderator abgelehnt",
+  "mobnav_list_duplication": "Listenverdoppelung"
 }

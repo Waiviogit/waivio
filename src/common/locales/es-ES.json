@@ -2534,5 +2534,12 @@
   "adsense_advertisements_txt_note": "Este texto se añadirá a ads.txt en su sitio.",
   "level": "Nivel",
   "adsense_advertisements_level_note": "Elija la intensidad de la publicidad para equilibrar la experiencia del usuario con la generación de ingresos",
-  "blog": "Blog"
+  "blog": "Blog",
+  "approved_by_ownership": "aprobado por el propietario",
+  "approved_by_owner": "aprobado por el propietario",
+  "rejected_by_ownership": "rechazado por el propietario",
+  "rejected_by_owner": "rechazado por el propietario",
+  "rejected_by_admin": "rechazado por el administrador",
+  "rejected_by_moderator": "rechazado por el moderador",
+  "mobnav_list_duplication": "Duplicación de lista"
 }

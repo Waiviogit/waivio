@@ -2534,5 +2534,12 @@
   "adsense_advertisements_txt_note": "Этот текст будет добавлен в файл ads.txt на вашем сайте.",
   "level": "Уровень",
   "adsense_advertisements_level_note": "Выберите интенсивность рекламы, чтобы сбалансировать пользовательский опыт и генерацию доходов.",
-  "blog": "Блог"
+  "blog": "Блог",
+  "approved_by_ownership": "утверждено владельцем",
+  "approved_by_owner": "утверждено владельцем",
+  "rejected_by_ownership": "отклонено владельцем",
+  "rejected_by_owner": "отклонено владельцем",
+  "rejected_by_admin": "отклонено администратором",
+  "rejected_by_moderator": "отклонено модератором",
+  "mobnav_list_duplication": "Дублирование списка"
 }
