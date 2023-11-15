@@ -10,7 +10,6 @@ const webpack = require('webpack');
 const paths = require('./paths');
 
 const createClientConfig = require('../webpack/client');
-const createServerConfig = require('../webpack/server');
 
 function copyPublic() {
   fs.copySync(paths.public, paths.buildPublic, {
@@ -25,11 +24,8 @@ async function main() {
   copyPublic();
 
   const clientCompiler = webpack(createClientConfig('prod'));
-  const serverCompiler = webpack(createServerConfig('prod'));
 
-  clientCompiler.run(() => {
-    serverCompiler.run(() => {});
-  });
+  clientCompiler.run(() => {});
 }
 
 main();

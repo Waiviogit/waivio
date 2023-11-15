@@ -1,5 +1,6 @@
 import getStore  from '../../store/store' ;
 
+import {isSearchBot, updateBotCount, getCachedPage, setCachedPage}  from './cachePageHandler';
 import switchRoutes  from '../../routes/switchRoutes';
 
 const renderSsrPage = require('../renderers/ssrRenderer') ;
@@ -58,16 +59,16 @@ const responseBundledApplication = async ({req, res, template}) => {
  function createSsrHandler(template) {
   return async function serverSideResponse(req, res) {
     try {
-      // if (await isSearchBot(req)) {
-      //   await updateBotCount(req);
-      //   const cachedPage = await getCachedPage(req);
-      //
-      //   if (cachedPage) {
-      //     console.log('SEND CACHED PAGE');
-      //
-      //     return res.send(cachedPage);
-      //   }
-      // }
+      if (await isSearchBot(req)) {
+        await updateBotCount(req);
+        const cachedPage = await getCachedPage(req);
+
+        if (cachedPage) {
+          console.log('SEND CACHED PAGE');
+
+          return res.send(cachedPage);
+        }
+      }
 
       const sc2Api = new hivesigner.Client({
         app: process.env.STEEMCONNECT_CLIENT_ID,
@@ -107,13 +108,8 @@ const responseBundledApplication = async ({req, res, template}) => {
         return Promise.resolve(null);
       });
 
-      console.log()
+      await createTimeout(ssrTimeout, Promise.all(promises));
 
-      // await createTimeout(ssrTimeout, Promise.all(promises));
-
-
-
-      await Promise.all(promises)
       if (res.headersSent) return null;
 
       const context = {};
@@ -138,13 +134,13 @@ const responseBundledApplication = async ({req, res, template}) => {
         get(adsenseSettings, 'code', ''),
       );
 
-      // await setCachedPage({ page, req });
+      await setCachedPage({ page, req });
 
-      console.log()
+
 
       return res.send(page);
     } catch (err) {
-      console.log(err)
+      console.log(err.message)
 
       return responseBundledApplication({req, res, template})
     }

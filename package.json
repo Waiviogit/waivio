@@ -22,11 +22,12 @@
     "build": "node --max-old-space-size=6144 ./scripts/build.js",
     "buildServer": "node --max-old-space-size=6144 ./scripts/buildServer.js",
     "start": "node ./build/server.js",
-    "start:ssr": "node ./src/ssrServer",
     "test": "jest --config jest.config.json --coverage",
     "test-one": "jest --config jest.config.json",
     "test:watch": "jest --config jest.config.json --watch",
-    "eslint-autofix": "eslint --fix \"src/**/*.js\""
+    "eslint-autofix": "eslint --fix \"src/**/*.js\"",
+    "build:client": "node --max-old-space-size=6144 ./scripts/buildClient.js",
+    "start:ssr": "node ./src/ssrServer"
   },
   "husky": {
     "hooks": {
