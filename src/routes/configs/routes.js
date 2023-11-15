@@ -259,12 +259,12 @@ const routes = {
           component: Views.ProductExtension,
         },
         {
-          path: '/list-duplicator-bot',
+          path: '/list-duplication',
           exact: true,
           component: Views.DuplicateList,
         },
         {
-          path: '/claim-athority',
+          path: '/claim-authority',
           exact: true,
           component: Views.ClaimAthorityBot,
         },

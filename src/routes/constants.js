@@ -135,9 +135,9 @@ export default {
       'data-import',
       'ASIN-scanner',
       'chrome-extension',
-      'claim-athority',
+      'claim-authority',
       'departments-bot',
-      'list-duplicator-bot',
+      'list-duplication',
     ].join('|'),
   },
   WEBSITES: {
