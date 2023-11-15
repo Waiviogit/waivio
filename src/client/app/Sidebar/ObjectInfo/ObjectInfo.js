@@ -1421,7 +1421,7 @@ class ObjectInfo extends React.Component {
               )}
             {isOptionsObjectType && galleryPriceOptionsSection}
             {!isHashtag && showMenuSection && menuSection()}
-            {!isHashtag && aboutSection}
+            {aboutSection}
             {isAffiliate && (
               <AffiliateSection
                 userName={userName}

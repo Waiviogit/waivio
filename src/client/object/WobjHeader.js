@@ -121,7 +121,7 @@ const WobjHeader = ({
           </div>
           <div className="ObjectHeader__user__username">
             <div className="ObjectHeader__descriptionShort">
-              {!isHashtag && canEdit && !descriptionShort ? (
+              {canEdit && !descriptionShort ? (
                 <Proposition
                   objectID={wobject.author_permlink}
                   fieldName={objectFields.title}
