@@ -66,7 +66,7 @@ class SocketClient {
 
       return { error: new Error(HIVE_SOCKET_ERR.TIMEOUT) };
     }
-    if (!this.ws || this.ws.readyState === undefined) {
+    if (this.ws.readyState !== 1) {
       console.error('testSitemap line 71', this?.ws?.readyState);
       await this.init();
     }
