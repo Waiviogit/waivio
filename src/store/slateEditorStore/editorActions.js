@@ -324,7 +324,14 @@ export function createPost(postData, beneficiaries, isReview, campaign) {
     const url = getCurrentHost(getState());
     const regex = /^(?:https?:\/\/)?(?:www\.)?([^/]+).*$/;
     const match = url?.match(regex);
-    const host = match[1];
+    const host = match?.[1];
+
+    // eslint-disable-next-line no-console
+    console.log(url, 'url');
+    // eslint-disable-next-line no-console
+    console.log(match, 'match');
+    // eslint-disable-next-line no-console
+    console.log(host, 'host');
 
     const {
       parentAuthor,
