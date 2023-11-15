@@ -97,6 +97,7 @@ const User = props => {
   useEffect(() => {
     if (window.gtag) window.gtag('event', 'view_user_profile', { debug_mode: true });
 
+    props.getUserAccount(name);
     props.getUserAccountHistory(name);
     props.getTokenBalance('WAIV', name);
     props.resetBreadCrumb();
@@ -224,6 +225,7 @@ User.propTypes = {
   resetBreadCrumb: PropTypes.func.isRequired,
   getGlobalProperties: PropTypes.func.isRequired,
   openTransfer: PropTypes.func,
+  getUserAccount: PropTypes.func,
   rate: PropTypes.number.isRequired,
   rewardFund: PropTypes.shape().isRequired,
   isOpenWalletTable: PropTypes.bool,
