@@ -156,6 +156,10 @@ const MobileNavigation = ({ location, match }) => {
       pageName = 'tools';
       filterName = 'claim_authority';
       break;
+    case '/list-duplication':
+      pageName = 'tools';
+      filterName = 'list_duplication';
+      break;
     case '/chrome-extension':
       pageName = 'tools';
       filterName = 'chrome_extension';
