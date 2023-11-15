@@ -5,12 +5,12 @@ const { get } = require('lodash') ;
 // const { StaticRouter } = require ('react-router');
 // const { matchRoutes, renderRoutes } = require('react-router-config');
 // const  hivesigner  =require('hivesigner');
-const {
-  // getParentHost,
-  // getSettingsAdsense,
-  getSettingsWebsite,
-  // waivioAPI,
-} = require('../../waivioApi/ApiClient') ;
+// const {
+//   // getParentHost,
+//   // getSettingsAdsense,
+//   getSettingsWebsite,
+//   // waivioAPI,
+// } = require('../../waivioApi/ApiClient') ;
 // const getStore = require('../../store/store') ;
 // const switchRoutes = require('../../routes/switchRoutes');
 // const { isCustomDomain } = require('../../client/social-gifts/listOfSocialWebsites');
@@ -29,6 +29,28 @@ function createTimeout(timeout, promise) {
     }, timeout);
     promise.then(resolve, reject);
   });
+}
+
+
+const responseBundledApplication = async ({req, res, template}) => {
+  const settings = {};
+  // const isWaivio = req.hostname.includes('waivio');
+  const isWaivio = true
+
+  // if (!isWaivio) {
+  //   settings = await getSettingsWebsite(req.hostname);
+  // }
+
+  return res.send(
+    renderSsrPage(
+      null,
+      null,
+      assets,
+      template,
+      isWaivio,
+      get(settings, 'googleAnalyticsTag', ''),
+    ),
+  );
 }
 
  function createSsrHandler(template) {
@@ -113,27 +135,10 @@ function createTimeout(timeout, promise) {
     //
     //   return res.send(page);
     // } catch (err) {
-    //   console.error('SSR error occured, falling back to bundled application instead', err);
-      const settings = {};
-      // const isWaivio = req.hostname.includes('waivio');
-      const isWaivio = true
-
-      // if (!isWaivio) {
-      //   settings = await getSettingsWebsite(req.hostname);
-      // }
-
-      return res.send(
-        renderSsrPage(
-          null,
-          null,
-          assets,
-          template,
-          isWaivio,
-          get(settings, 'googleAnalyticsTag', ''),
-        ),
-      );
-    }
-  // };
+    console.log()
+    return responseBundledApplication({req, res, template})
+    // };
+  }
 }
 
 module.exports = createSsrHandler;
