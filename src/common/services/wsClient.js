@@ -22,8 +22,7 @@ class SocketClient {
 
   async init() {
     return new Promise(resolve => {
-      this.ws = new WebSocket(this.url);
-
+      this.ws = new WebSocket(this.url, { headers: { 'api-key': this.key } });
       this.ws.on('error', error => {
         console.error('testSitemap line 28', error);
         this.ws.close();
@@ -46,7 +45,7 @@ class SocketClient {
         console.error('testSitemap line 46');
         setTimeout(() => {
           resolve(this.ws);
-        }, 100);
+        }, 5000);
       });
     });
   }
@@ -67,7 +66,7 @@ class SocketClient {
 
       return { error: new Error(HIVE_SOCKET_ERR.TIMEOUT) };
     }
-    if (this?.ws?.readyState !== 1) {
+    if (!this.ws || this.ws.readyState === undefined) {
       console.error('testSitemap line 71', this?.ws?.readyState);
       await this.init();
     }
