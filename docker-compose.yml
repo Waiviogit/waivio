@@ -7,7 +7,6 @@ services:
       context: .
       args:
         ENV: $NODE_ENV
-    command: yarn start $NODE_ENV
     restart: always
     network_mode: host
     logging:
