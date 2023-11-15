@@ -2533,5 +2533,11 @@
   "adsense_advertisements_txt_note": "This text will be added to ads.txt to your site.",
   "level": "Level",
   "adsense_advertisements_level_note": "Choose the advertising intensity to balance user experience with revenue generation",
-  "blog": "Blog"
+  "blog": "Blog",
+  "approved_by_ownership": "approved by owner",
+  "approved_by_owner": "approved by owner",
+  "rejected_by_ownership": "rejected by owner",
+  "rejected_by_owner": "rejected by owner",
+  "rejected_by_admin": "rejected by admin",
+  "rejected_by_moderator": "rejected by moderator"
 }
