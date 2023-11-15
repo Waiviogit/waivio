@@ -2528,7 +2528,7 @@
   "adsense_advertisements_code": "AdSense-Code",
   "adsense_advertisements_add_yours": "Fügen Sie Ihren AdSense-Code hinzu",
   "adsense_advertisements_invalid_code": "Ungültiger AdSense-Code eingegeben. Bitte geben Sie einen gültigen Skript ein.",
-  "adsense_advertisements_adsense_code_note": "Dieser Code wird innerhalb der &lt;head&gt;&lt;/head&gt; Tags auf jeder Seite Ihrer Website angezeigt.",
+  "adsense_advertisements_adsense_code_note": "Dieser Code wird innerhalb der <head></head> Tags auf jeder Seite Ihrer Website angezeigt.",
   "adsense_advertisements_add_txt": "Fügen Sie Ihren AdSense .txt Text hinzu",
   "adsense_advertisements_invalid_txt": "Ungültiger AdSense-Text eingegeben. Bitte geben Sie einen gültigen Text ein.",
   "adsense_advertisements_txt_note": "Dieser Text wird zu ads.txt Ihrer Website hinzugefügt.",
