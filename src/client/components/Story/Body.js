@@ -44,7 +44,14 @@ const getEmbed = link => {
 
 // Should return text(html) if returnType is text
 // Should return Object(React Compatible) if returnType is Object
-export function getHtml(body, jsonMetadata = {}, returnType = 'Object', options = {}, location) {
+export function getHtml(
+  body,
+  jsonMetadata = {},
+  returnType = 'Object',
+  options = {},
+  location,
+  isPage,
+) {
   const parsedJsonMetadata = jsonParse(jsonMetadata) || {};
 
   parsedJsonMetadata.image = parsedJsonMetadata.image ? [...parsedJsonMetadata.image] : [];
@@ -84,6 +91,7 @@ export function getHtml(body, jsonMetadata = {}, returnType = 'Object', options 
       appUrl: options.appUrl,
       secureLinks: options.secureLinks,
       location,
+      isPage,
     }),
   );
 
@@ -164,7 +172,14 @@ const Body = props => {
     rewriteLinks: props.rewriteLinks,
     secureLinks: props.exitPageSetting,
   };
-  const htmlSections = getHtml(props.body, props.jsonMetadata, 'Object', options, location);
+  const htmlSections = getHtml(
+    props.body,
+    props.jsonMetadata,
+    'Object',
+    options,
+    location,
+    props.isPage,
+  );
 
   return <div className={classNames('Body', { 'Body--full': props.full })}>{htmlSections}</div>;
 };
@@ -176,12 +191,14 @@ Body.propTypes = {
   body: PropTypes.string,
   jsonMetadata: PropTypes.string,
   full: PropTypes.bool,
+  isPage: PropTypes.bool,
 };
 
 Body.defaultProps = {
   body: '',
   jsonMetadata: '',
   full: false,
+  isPage: false,
 };
 
 export default Body;

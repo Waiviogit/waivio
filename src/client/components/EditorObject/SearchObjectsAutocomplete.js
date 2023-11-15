@@ -81,7 +81,6 @@ class SearchObjectsAutocomplete extends Component {
     isSearchObject: PropTypes.bool,
     resetIsClearSearchFlag: PropTypes.func,
     parentObject: PropTypes.shape(),
-    addItem: PropTypes.bool,
     addHashtag: PropTypes.bool,
   };
 
@@ -150,28 +149,11 @@ class SearchObjectsAutocomplete extends Component {
     this.setState({ searchString: '' });
   }
 
-  renderSearchObjectsOptions = (searchString, intl) => {
-    const { addItem, searchObjectsResults, itemsIdsToOmit } = this.props;
+  renderSearchObjectsOptions = searchString => {
+    const { searchObjectsResults, itemsIdsToOmit } = this.props;
     let searchObjectsOptions = [];
 
-    if (
-      searchString &&
-      addItem &&
-      searchObjectsResults.map(item => this.searchObjectListed(item.author_permlink)).includes(true)
-    ) {
-      searchObjectsOptions = (
-        <AutoComplete.Option disabled key="all">
-          <div className="pending-status">
-            {intl.formatMessage({
-              id: 'object_listed',
-              defaultMessage: 'This object is already listed',
-            })}
-          </div>
-        </AutoComplete.Option>
-      );
-
-      return [searchObjectsOptions];
-    } else if (searchString) {
+    if (searchString) {
       searchObjectsOptions = searchObjectsResults
         .filter(obj => !itemsIdsToOmit.includes(obj.author_permlink))
         .map(obj => (

@@ -93,7 +93,13 @@ const CreatePage = ({
       }}
       className="CreateWebsite"
     >
-      <Tabs.TabPane tab="Standard" key="1">
+      <Tabs.TabPane
+        tab={intl.formatMessage({
+          id: 'standard_tab',
+          defaultMessage: 'Standard',
+        })}
+        key="1"
+      >
         {tab === '1' && (
           <CreateWebsite
             showingParentList={showingParentList}
@@ -110,7 +116,13 @@ const CreatePage = ({
           />
         )}
       </Tabs.TabPane>
-      <Tabs.TabPane tab="Custom domain" key="2">
+      <Tabs.TabPane
+        tab={intl.formatMessage({
+          id: 'custom_domain_tab',
+          defaultMessage: 'Custom domain',
+        })}
+        key="2"
+      >
         {tab === '2' && (
           <CreateCustomWebsite
             showingParentList={showingParentList}

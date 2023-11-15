@@ -29,7 +29,9 @@ const Breadcrumbs = ({ inProduct }) => {
 
     linkList = breadbrumbsFromQuery ? breadbrumbsFromQuery.split('/') : null;
   }
-
+  if (isNil(linkList[0]) && linkList.length === 1) {
+    linkList = [breadcrumbs[0]?.author_permlink];
+  }
   const getTruncatedTitle = title =>
     title.length < 30
       ? title
@@ -39,7 +41,7 @@ const Breadcrumbs = ({ inProduct }) => {
           .join(' ')}...`;
 
   useEffect(() => {
-    if (linkList)
+    if (linkList && !(isNil(linkList[0]) && linkList.length === 1))
       getObjectInfo(linkList, locale).then(res => {
         dispatch(
           setAllBreadcrumbsForChecklist(

@@ -216,5 +216,6 @@
   "hiveWithdrawRange": "/hive-withdraw-range",
   "hiveWithdraw": "/hive-withdraw",
   "hiveWithdrawEstimates": "/hive-withdraw-estimates",
-"adSense": "/ad-sense"
+"adSense": "/ad-sense",
+  "listItemLocales": "/list-item-locales"
 }

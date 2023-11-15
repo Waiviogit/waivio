@@ -385,6 +385,7 @@ const SocialProduct = ({
               <div className="SocialProduct__row">
                 <div className="SocialProduct__carouselWrapper">
                   <PicturesSlider
+                    altText={description}
                     currentWobj={wobject}
                     hoveredOption={hoveredOption}
                     activeOption={activeOption}

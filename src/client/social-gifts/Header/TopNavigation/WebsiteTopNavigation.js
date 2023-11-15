@@ -20,11 +20,11 @@ import { getMenuLinkTitle } from '../../../../common/helpers/headerHelpers';
 
 const userNav = (user, intl) => [
   {
-    name: 'Shop',
+    name: intl.formatMessage({ id: 'shop', defaultMessage: 'Shop' }),
     link: `/user-shop/${user}`,
   },
   {
-    name: 'Blog',
+    name: intl.formatMessage({ id: 'blog', defaultMessage: 'Blog' }),
     link: `/blog/${user}`,
   },
   {

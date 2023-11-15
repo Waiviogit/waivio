@@ -27,7 +27,7 @@ const PageContent = ({ wobj }) => {
 
   return (
     <div className={'PageContent'}>
-      <BodyContainer full body={content} />
+      <BodyContainer isPage full body={content} />
     </div>
   );
 };

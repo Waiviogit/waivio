@@ -329,7 +329,10 @@ const WebsitesConfigurations = ({
               </div>
               <div>Startup page: {header.startup.toUpperCase()}</div>
               <Button type="primary" onClick={() => setOpenHeaderConfig(true)}>
-                Edit
+                {intl.formatMessage({
+                  id: 'edit',
+                  defaultMessage: 'Edit',
+                })}
               </Button>
             </Form.Item>
             <Form.Item>

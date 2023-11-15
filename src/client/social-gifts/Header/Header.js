@@ -37,7 +37,13 @@ const Header = () => {
             }
             className={logoClassList}
           >
-            {logo && <img alt="Social Gifts Logo" src={logo} className="Header__img" />}
+            {logo && (
+              <img
+                alt={`${header || config.host || currHost} Logo`}
+                src={logo}
+                className="Header__img"
+              />
+            )}
             <span>{header || config.host || currHost}</span>
           </Link>
         )}
@@ -64,7 +70,7 @@ const Header = () => {
       {config.mainBanner && (
         <img
           id="socialGiftsMainBanner"
-          alt={'Promotional banner for Social Gift Site'}
+          alt={`Promotional banner for ${header || config.host || currHost} Site`}
           src={config.mainBanner}
           style={{
             width: '100%',

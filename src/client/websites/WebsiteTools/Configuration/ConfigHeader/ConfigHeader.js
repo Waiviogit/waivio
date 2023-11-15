@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Input, Modal } from 'antd';
 import PropTypes from 'prop-types';
+import { injectIntl } from 'react-intl';
 
 import './ConfigHeader.less';
 
@@ -11,6 +12,7 @@ const ConfigHeader = ({
   handleSubmitConfig,
   loading,
   withioutMessage,
+  intl,
 }) => {
   const [name, setName] = useState(config?.name);
   const [message, setMessage] = useState(config?.message);
@@ -20,8 +22,14 @@ const ConfigHeader = ({
   return (
     <Modal
       visible={visible}
-      title="Edit website header"
-      okText={'Save'}
+      title={intl.formatMessage({
+        id: 'edit_website_header',
+        defaultMessage: 'Edit website header',
+      })}
+      okText={intl.formatMessage({
+        id: 'save',
+        defaultMessage: 'Save',
+      })}
       className="ConfigHeader"
       onOk={handleOk}
       onCancel={onClose}
@@ -33,7 +41,7 @@ const ConfigHeader = ({
       }}
     >
       <div>
-        <h3>Website name:</h3>
+        <h3>{intl.formatMessage({ id: 'website_name', defaultMessage: 'Website name' })}:</h3>
         <Input maxLength={30} value={name} onChange={e => setName(e.target.value)} />
       </div>
       {!withioutMessage && (
@@ -43,7 +51,7 @@ const ConfigHeader = ({
         </div>
       )}
       {/* <div> */}
-      {/*  <h3>Starup page:</h3> */}
+      {/*  <h3>Startup page:</h3> */}
       {/*  <Select */}
       {/*    defaultValue={startup} */}
       {/*    onChange={key => setStartup(key)} */}
@@ -67,6 +75,7 @@ ConfigHeader.propTypes = {
   handleSubmitConfig: PropTypes.func,
   loading: PropTypes.bool,
   withioutMessage: PropTypes.bool,
+  intl: PropTypes.shape().isRequired,
 };
 
-export default ConfigHeader;
+export default injectIntl(ConfigHeader);

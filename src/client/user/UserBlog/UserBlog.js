@@ -19,7 +19,7 @@ import { getBlogFilters, getFeed } from '../../../store/feedStore/feedSelectors'
 import { getUserProfileBlogPosts, resetProfileFilters } from '../../../store/feedStore/feedActions';
 import { showPostModal } from '../../../store/appStore/appActions';
 
-const limit = 15;
+const limit = 10;
 
 const UserBlog = props => {
   const { name } = useParams();
