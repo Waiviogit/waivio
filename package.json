@@ -26,7 +26,7 @@
     "test-one": "jest --config jest.config.json",
     "test:watch": "jest --config jest.config.json --watch",
     "eslint-autofix": "eslint --fix \"src/**/*.js\"",
-    "buildClient": "node --max-old-space-size=6144 ./scripts/buildClient.js",
+    "buildClient": "node --max-old-space-size=6144 --openssl-legacy-provider ./scripts/buildClient.js",
     "startSsr": "node ./src/ssrServer"
   },
   "husky": {
