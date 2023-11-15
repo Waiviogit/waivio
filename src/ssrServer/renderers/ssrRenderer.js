@@ -1,6 +1,6 @@
-import { Helmet } from 'react-helmet';
+const { Helmet }  = require('react-helmet');
 
-export default function renderSsrPage(store, html, assets, template, isWaivio, googleTag, adSense) {
+ function renderSsrPage(store, html, assets, template, isWaivio, googleTag, adSense) {
   const preloadedState = store ? store.getState() : {};
 
   const helmet = Helmet.renderStatic();
@@ -24,6 +24,7 @@ export default function renderSsrPage(store, html, assets, template, isWaivio, g
   const nightmode = preloadedState && preloadedState.settings && preloadedState.settings.nightmode;
   const tag = isWaivio ? 'G-WRV0RFTWBX' : googleTag;
   let googleAnalytics = '';
+
   if (tag)
     googleAnalytics = `<script async src="https://www.googletagmanager.com/gtag/js?id=${tag}"></script>
   <script>{
@@ -35,6 +36,7 @@ export default function renderSsrPage(store, html, assets, template, isWaivio, g
     gtag('js', new Date());
     gtag('config', '${tag}', { 'debug_mode':true });}
   </script>`;
+
   return template({
     header,
     html,
@@ -45,3 +47,5 @@ export default function renderSsrPage(store, html, assets, template, isWaivio, g
     adSense,
   });
 }
+
+module.exports = renderSsrPage
