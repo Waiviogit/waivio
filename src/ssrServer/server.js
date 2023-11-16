@@ -99,7 +99,7 @@ app.get('/:category/@:author/:permlink', (req, res) => {
 
 app.get('/sitemap.xml', async (req, res) => {
   const fileContent = await sitemap.getSitemap({
-    host: 'waiviodev.com',
+    host: req.headers.host,
     name: 'sitemap',
   });
 
