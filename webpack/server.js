@@ -30,9 +30,6 @@ module.exports = function createConfig(env = 'dev') {
     node: {
       __filename: true,
       __dirname: true,
-      net: 'empty',
-      tls: 'empty',
-      dns: 'empty',
     },
     module: {
       rules: [
