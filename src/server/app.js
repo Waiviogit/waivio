@@ -7,9 +7,7 @@ import createSsrHandler from './handlers/createSsrHandler';
 // import createAmpHandler from './handlers/createAmpHandler';
 import steemAPI from './steemAPI';
 import { getSettingsAdsense } from '../waivioApi/ApiClient';
-import { sitemap } from './seo-service/seoServiceApi';
 import { getRobotsTxtContent } from '../common/helpers/robots-helper';
-import { isEmpty } from 'lodash';
 
 const indexPath = `${paths.templates}/index.hbs`;
 const indexHtml = fs.readFileSync(indexPath, 'utf-8');
@@ -78,27 +76,6 @@ app.get('/i/:parent/@:referral/:permlink', async (req, res) => {
   } catch (err) {
     res.redirect('/');
   }
-});
-
-app.get('/sitemap.xml', async (req, res) => {
-  const fileContent = await sitemap.getSitemap({
-    host: req.headers.host,
-    name: 'sitemap',
-  });
-
-  res.set('Content-Type', 'text/xml');
-  res.send(fileContent);
-});
-
-app.get('/sitemap:pageNumber.xml', async (req, res) => {
-  const { pageNumber } = req.params;
-  const fileContent = await sitemap.getSitemap({
-    host: req.headers.host,
-    name: `sitemap${pageNumber}`,
-  });
-
-  res.set('Content-Type', 'text/xml');
-  res.send(fileContent);
 });
 
 app.get('/ads.txt', async (req, res) => {

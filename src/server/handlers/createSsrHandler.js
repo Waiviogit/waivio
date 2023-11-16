@@ -16,7 +16,13 @@ import {
 import getStore from '../../store/store';
 import renderSsrPage from '../renderers/ssrRenderer';
 import switchRoutes from '../../routes/switchRoutes';
-import { getCachedPage, isSearchBot, setCachedPage, updateBotCount } from './cachePageHandler';
+import {
+  getCachedPage,
+  getSitemap,
+  isSearchBot,
+  setCachedPage,
+  updateBotCount,
+} from './cachePageHandler';
 import { isCustomDomain } from '../../client/social-gifts/listOfSocialWebsites';
 
 // eslint-disable-next-line import/no-dynamic-require
@@ -36,6 +42,14 @@ function createTimeout(timeout, promise) {
 export default function createSsrHandler(template) {
   return async function serverSideResponse(req, res) {
     try {
+      if (/(^\/sitemap\.xml$|^\/sitemap.+?\.xml$)/.test(req.url)) {
+        const fileContent = await getSitemap(req);
+
+        res.set('Content-Type', 'text/xml');
+        res.send(fileContent);
+
+        return;
+      }
       if (await isSearchBot(req)) {
         await updateBotCount(req);
         const cachedPage = await getCachedPage(req);
