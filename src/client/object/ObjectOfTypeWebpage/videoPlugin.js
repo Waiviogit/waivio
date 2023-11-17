@@ -41,6 +41,7 @@ const customVideoPlugin = {
         controls
         muted={false}
         playing={false}
+        volume={1}
         loop={props.data ? props.data.loop : undefined}
       />
     </div>
