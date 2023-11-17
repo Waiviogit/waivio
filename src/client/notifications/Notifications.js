@@ -734,7 +734,7 @@ class Notifications extends React.Component {
                       rewardHBD: <span>{notification.rewardHBD}</span>,
                     }}
                     username={notification.account}
-                    url={`/@${notification.account}/transfers`}
+                    url={`/@${notification.account}/transfers?type=HIVE`}
                     key={key}
                     notification={notification}
                     read={read}

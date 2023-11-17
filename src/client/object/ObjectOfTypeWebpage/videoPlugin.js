@@ -28,6 +28,7 @@ const customVideoPlugin = {
         />
       )}
       <ReactPlayer
+        className="ObjectOfTypeWebpage__react-player"
         url={props.data ? props.data.src : undefined}
         height="100%"
         width="100%"
@@ -38,7 +39,7 @@ const customVideoPlugin = {
         }}
         blur={props.data ? props.data.blur : undefined}
         controls
-        muted={props.data ? props.data.muted : undefined}
+        muted={false}
         playing={false}
         loop={props.data ? props.data.loop : undefined}
       />
