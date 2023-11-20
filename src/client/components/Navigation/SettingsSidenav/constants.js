@@ -79,7 +79,7 @@ export const dataManagementSettings = {
     },
     {
       to: '/list-duplication',
-      id: 'list-duplication',
+      id: 'list_duplication',
       defaultMessage: 'List duplication',
     },
     {
