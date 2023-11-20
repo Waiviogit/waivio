@@ -121,7 +121,7 @@ const User = props => {
 
   if (profile) {
     displayedUsername = profile.name || name || '';
-    coverImage = profile.cover_image;
+    coverImage = typeof profile.cover_image === 'string' ? profile.cover_image : '';
   }
 
   const hasCover = !!coverImage;

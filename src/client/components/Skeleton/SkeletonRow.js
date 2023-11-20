@@ -1,14 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const SkeletonRow = props => (
-  <div style={{ display: 'flex', flexDirection: 'column' }}>
-    {[...Array(props.rows)].map(() => (
-      // eslint-disable-next-line react/jsx-key
-      <p className="ant-card-loading-block" />
-    ))}
-  </div>
-);
+const SkeletonRow = ({ rows }) => {
+  const skeletonRows = Array.from({ length: rows }, (_, index) => (
+    <span key={index} className="ant-card-loading-block" />
+  ));
+
+  return <div style={{ display: 'flex', flexDirection: 'column' }}>{skeletonRows}</div>;
+};
 
 SkeletonRow.propTypes = {
   rows: PropTypes.number.isRequired,
