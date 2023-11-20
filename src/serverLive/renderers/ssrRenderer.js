@@ -8,7 +8,7 @@ const { Helmet }  = require('react-helmet');
 
   let header = baseHelmet;
 
-  let scripts = `<script>window.__PRELOADED_STATE__ = ${JSON.stringify(preloadedState)
+  const scripts = `<script>window.__PRELOADED_STATE__ = ${JSON.stringify(preloadedState)
     .replace(/\u2028/g, '\\n')
     .replace(/</g, '\\u003c')}</script>`;
 

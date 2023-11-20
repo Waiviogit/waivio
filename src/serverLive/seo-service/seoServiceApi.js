@@ -8,9 +8,11 @@ const getPageByUrl = async ({ url }) => {
     method: 'getPageByUrl',
     args: [{ url }],
   });
+
   if (result?.error) {
     return '';
   }
+
   return result.data;
 };
 
@@ -20,9 +22,11 @@ const createPage = async ({ url, page }) => {
     method: 'createPage',
     args: [{ url, page }],
   });
+
   if (result?.error) {
     return { error: result.error };
   }
+
   return result.data;
 };
 
@@ -32,9 +36,11 @@ const userAgentExists = async ({ userAgent }) => {
     method: 'userAgentExists',
     args: [{ userAgent }],
   });
+
   if (result?.error) {
     return false;
   }
+
   return result.data;
 };
 
@@ -44,9 +50,11 @@ const addVisit = async ({ userAgent }) => {
     method: 'addVisit',
     args: [{ userAgent }],
   });
+
   if (result?.error) {
     return { error: result.error };
   }
+
   return result.data;
 };
 
@@ -56,9 +64,11 @@ const getSitemap = async ({ host, name }) => {
     method: 'getSitemap',
     args: [{ host, name }],
   });
+
   if (result?.error) {
     return '';
   }
+
   return result.data;
 };
 
