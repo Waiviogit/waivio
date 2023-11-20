@@ -232,13 +232,20 @@ const CatalogWrap = props => {
   };
 
   const itemsIdsToOmit = [obj.author_permlink];
+  const addedItemsPermlinks = listItems?.map(i => i.author_permlink);
 
   return (
     <div>
       <React.Fragment>
         {isEditMode && (
           <div className="CatalogWrap__add-item">
-            <AddItemModal wobject={obj} itemsIdsToOmit={itemsIdsToOmit} onAddItem={handleAddItem} />
+            <AddItemModal
+              addedItemsPermlinks={addedItemsPermlinks}
+              addItem
+              wobject={obj}
+              itemsIdsToOmit={itemsIdsToOmit}
+              onAddItem={handleAddItem}
+            />
           </div>
         )}
         {!isEmpty(reward?.main) && <Campaing campain={reward?.main} />}
