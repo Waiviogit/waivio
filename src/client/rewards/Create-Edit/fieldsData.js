@@ -90,8 +90,8 @@ export default (messageFactory, validators, userName, currency) => ({
       reviews: messageFactory('reviews', 'Reviews'),
     },
     caption: messageFactory(
-      ' All_payment_obligations_calculated',
-      ' All payment obligations will be calculated in that currency based on the exchange rates at the time of the transactions.',
+      'All_payment_obligations_calculated',
+      'All payment obligations will be calculated in that currency based on the exchange rates at the time of the transactions.',
     ),
   },
   budget: {
