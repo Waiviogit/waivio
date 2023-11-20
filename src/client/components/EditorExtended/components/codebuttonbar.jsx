@@ -3,7 +3,7 @@ import React from 'react';
 import { EditorState, Modifier, RichUtils, ContentState, ContentBlock, genKey } from 'draft-js';
 import { List } from 'immutable';
 import { compose } from 'lodash';
-import StyleButton from './stylebutton';
+import Stylebutton from './stylebutton';
 
 export const addEmptyBlock = editorState => {
   const newBlock = new ContentBlock({
@@ -88,7 +88,7 @@ const CodeButton = props => {
         const style = isInlineCode ? 'CODE' : type.style;
 
         return (
-          <StyleButton
+          <Stylebutton
             {...iconLabel}
             key={type.style}
             active={type.style === blockType}

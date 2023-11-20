@@ -17,7 +17,7 @@ import './addbutton.less';
 @connect(state => ({
   isClearSearchObjects: getIsClearSearchObjects(state),
 }))
-class AddButton extends React.Component {
+class Addbutton extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -183,7 +183,7 @@ class AddButton extends React.Component {
   }
 }
 
-AddButton.propTypes = {
+Addbutton.propTypes = {
   getEditorState: PropTypes.func.isRequired,
   setEditorState: PropTypes.func.isRequired,
   handleObjectSelect: PropTypes.func.isRequired,
@@ -195,11 +195,11 @@ AddButton.propTypes = {
   intl: PropTypes.shape().isRequired,
 };
 
-AddButton.defaultProps = {
+Addbutton.defaultProps = {
   focus: () => {},
   sideButtons: [],
   withTitleLine: false,
   isClearSearchObjects: false,
 };
 
-export default AddButton;
+export default Addbutton;

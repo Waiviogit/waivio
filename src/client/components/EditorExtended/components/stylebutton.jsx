@@ -3,7 +3,7 @@ import React from 'react';
 
 import { HYPERLINK } from '../util/constants';
 
-export default class StyleButton extends React.Component {
+export default class Stylebutton extends React.Component {
   constructor(props) {
     super(props);
     this.onToggle = e => {
@@ -36,7 +36,7 @@ export default class StyleButton extends React.Component {
   }
 }
 
-StyleButton.propTypes = {
+Stylebutton.propTypes = {
   onToggle: PropTypes.func,
   style: PropTypes.string,
   active: PropTypes.bool,
@@ -45,7 +45,7 @@ StyleButton.propTypes = {
   description: PropTypes.string,
 };
 
-StyleButton.defaultProps = {
+Stylebutton.defaultProps = {
   onToggle: () => {},
   style: '',
   active: false,

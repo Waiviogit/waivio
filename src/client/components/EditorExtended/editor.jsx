@@ -16,7 +16,7 @@ import { OrderedMap } from 'immutable';
 import { message } from 'antd';
 import classNames from 'classnames';
 
-import AddButton from './components/addbutton';
+import Addbutton from './components/addbutton';
 import Toolbar, { BLOCK_BUTTONS, INLINE_BUTTONS, CODE_BUTTONS } from './components/toolbar';
 import LinkEditComponent from './components/LinkEditComponent';
 
@@ -803,7 +803,7 @@ export default class MediumDraftEditor extends React.Component {
             handlePastedFiles={this.handlePastedFiles}
           />
           {showAddButton && (
-            <AddButton
+            <Addbutton
               editorState={editorState}
               getEditorState={this.getEditorState}
               setEditorState={this.onChange}

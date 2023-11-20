@@ -11,7 +11,7 @@ import { SIDE_BUTTONS_SLATE } from '../model/content';
 
 import './addbutton.less';
 
-const AddButtonSlate = props => {
+const AddbuttonSlate = props => {
   const { editorNode, isComment, initialPosTop, ADD_BTN_DIF } = props;
 
   const [isOpen, setOpen] = useState(false);
@@ -126,7 +126,7 @@ const AddButtonSlate = props => {
   );
 };
 
-AddButtonSlate.propTypes = {
+AddbuttonSlate.propTypes = {
   getEditorState: PropTypes.func.isRequired,
   setEditorState: PropTypes.func.isRequired,
   handleObjectSelect: PropTypes.func.isRequired,
@@ -144,7 +144,7 @@ AddButtonSlate.propTypes = {
   ADD_BTN_DIF: PropTypes.number,
 };
 
-AddButtonSlate.defaultProps = {
+AddbuttonSlate.defaultProps = {
   focus: () => {},
   sideButtons: [],
   withTitleLine: false,
@@ -156,4 +156,4 @@ AddButtonSlate.defaultProps = {
   size: 30,
 };
 
-export default injectIntl(AddButtonSlate);
+export default injectIntl(AddbuttonSlate);

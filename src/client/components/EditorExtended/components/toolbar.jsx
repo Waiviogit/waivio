@@ -6,8 +6,8 @@ import { Input, Button, Icon } from 'antd';
 import { FormattedMessage } from 'react-intl';
 import { ReactSVG } from 'react-svg';
 
-import BlockToolbar from './blocktoolbar';
-import InlineToolbar from './inlinetoolbar';
+import Blocktoolbar from './blocktoolbar';
+import Inlinetoolbar from './inlinetoolbar';
 import CodeButtonbar from './codebuttonbar';
 
 import { getSelection, getSelectionRect } from '../util/index';
@@ -341,7 +341,7 @@ export default class Toolbar extends React.Component {
           />
         )}
         {this.props.blockButtons.length > 0 ? (
-          <BlockToolbar
+          <Blocktoolbar
             editorState={editorState}
             onToggle={this.props.toggleBlockType}
             onToggleInline={this.props.toggleInlineStyle}
@@ -350,7 +350,7 @@ export default class Toolbar extends React.Component {
           />
         ) : null}
         {this.props.inlineButtons.length > 0 ? (
-          <InlineToolbar
+          <Inlinetoolbar
             editorState={editorState}
             onToggle={this.props.toggleInlineStyle}
             buttons={this.props.inlineButtons.filter(i => i.page === currentPage)}
