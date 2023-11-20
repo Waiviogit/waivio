@@ -22,7 +22,7 @@ const LinkItem = ({ link, index, intl }) => {
     <NavLink
       className="WebsiteTopNavigation__link"
       isActive={() =>
-        (!index && history.location.pathname === '/') ||
+        (index === 0 && history.location.pathname === '/') ||
         history.location.pathname.includes(link?.link)
       }
       activeClassName={'WebsiteTopNavigation__link--active'}

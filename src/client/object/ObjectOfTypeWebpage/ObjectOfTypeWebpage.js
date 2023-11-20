@@ -10,7 +10,6 @@ import slate from '@react-page/plugins-slate';
 import image from '@react-page/plugins-image';
 import background from '@react-page/plugins-background';
 import spacer from '@react-page/plugins-spacer';
-import video from '@react-page/plugins-video';
 import divider from '@react-page/plugins-divider';
 import { getObject } from '../../../waivioApi/ApiClient';
 import { colorPickerPlugin } from './colorPickerPlugin';
@@ -21,6 +20,7 @@ import { setNestedWobject } from '../../../store/wObjectStore/wobjActions';
 import AppendWebpageModal from './AppendWebpageModal';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 import { getUsedLocale } from '../../../store/appStore/appSelectors';
+import customVideoPlugin from './videoPlugin';
 
 import './ObjectOfTypeWebpage.less';
 import CatalogBreadcrumb from '../Catalog/CatalogBreadcrumb/CatalogBreadcrumb';
@@ -35,7 +35,7 @@ const customSlate = slate(config => ({
   },
 }));
 
-const plugins = [customSlate, image, background(), video, spacer, divider];
+const plugins = [customSlate, image, background(), customVideoPlugin, spacer, divider];
 
 const ObjectOfTypeWebpage = ({ intl }) => {
   const history = useHistory();

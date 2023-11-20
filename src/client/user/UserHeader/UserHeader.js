@@ -129,7 +129,7 @@ const UserHeader = ({
   return (
     <div className={classNames('UserHeader', { 'UserHeader--cover': hasCover })} style={style}>
       <div className="UserHeader__container">
-        {!isNil(avatarUrl) ? (
+        {!isNil(avatarUrl) && !isEmpty(avatarUrl) ? (
           <AvatarLightbox avatar={avatar} username={user.name} size={100} isActive={isActive} />
         ) : (
           <AvatarLightbox username={user.name} size={100} isActive={isActive} />
