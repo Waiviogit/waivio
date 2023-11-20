@@ -124,7 +124,14 @@ const UserHeader = ({
     </div>
   );
   const avatarUrl = parseJSON(user?.posting_json_metadata)?.profile?.profile_image;
-  const avatar = avatarUrl?.includes('images.hive.blog') ? avatarUrl : getProxyImageURL(avatarUrl);
+
+  let avatar;
+
+  if (typeof avatarUrl === 'string') {
+    avatar = avatarUrl?.includes('images.hive.blog') ? avatarUrl : getProxyImageURL(avatarUrl);
+  } else {
+    avatar = undefined;
+  }
 
   return (
     <div className={classNames('UserHeader', { 'UserHeader--cover': hasCover })} style={style}>
