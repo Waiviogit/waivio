@@ -15,7 +15,7 @@ const { Helmet }  = require('react-helmet');
   Object.keys(assets).forEach(key => {
     if (key) {
       if (assets[key].css) header += `<link rel="stylesheet" href="${assets[key].css}" />`;
-      if (assets[key].js) scripts += `<script src="${assets[key].js}" defer></script>`;
+    //  if (assets[key].js) scripts += `<script src="${assets[key].js}" defer></script>`;
     }
   });
 

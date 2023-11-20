@@ -1,7 +1,8 @@
-const path = require( 'path' );
-
 // ignore `.scss` imports
+
+process.env.NODE_ENV = 'development'
 require( 'ignore-styles' );
+
 
 // transpile imports on the fly
 require('@babel/register')({

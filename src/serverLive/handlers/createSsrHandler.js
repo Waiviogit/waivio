@@ -59,23 +59,12 @@ const responseBundledApplication = async ({req, res, template}) => {
  function createSsrHandler(template) {
   return async function serverSideResponse(req, res) {
     try {
-      if (await isSearchBot(req)) {
-        await updateBotCount(req);
-        const cachedPage = await getCachedPage(req);
-
-        if (cachedPage) {
-          console.log('SEND CACHED PAGE');
-
-          return res.send(cachedPage);
-        }
-      }
-
       const sc2Api = new hivesigner.Client({
         app: process.env.STEEMCONNECT_CLIENT_ID,
         baseURL: process.env.STEEMCONNECT_HOST || 'https://hivesigner.com',
         callbackURL: process.env.STEEMCONNECT_REDIRECT_URL,
       });
-      const hostname = req.headers.host;
+      const hostname = process.argv[2];
       const isWaivio = hostname.includes('waivio');
       let settings = {};
       let parentHost;
@@ -133,10 +122,6 @@ const responseBundledApplication = async ({req, res, template}) => {
         get(settings, 'googleAnalyticsTag', ''),
         get(adsenseSettings, 'code', ''),
       );
-
-      await setCachedPage({ page, req });
-
-
 
       return res.send(page);
     } catch (err) {

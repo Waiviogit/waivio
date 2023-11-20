@@ -1,4 +1,4 @@
-FROM node:18.12.0-alpine
+FROM node:16.13-alpine
 
 RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
@@ -9,6 +9,6 @@ COPY ./package.json ./
 
 RUN yarn install
 COPY . .
-RUN yarn run buildClient $ENV
+RUN yarn run build $ENV
 
-CMD yarn startSsr
+CMD yarn start
