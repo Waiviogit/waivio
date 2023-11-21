@@ -725,7 +725,10 @@ class AppendForm extends Component {
           }`;
         }
         case objectFields.categoryItem: {
-          return `@${author} added #tag ${this.state.selectedObject.name} (${langReadable}) into ${this.state.selectedCategory.body} category`;
+          return `@${author} added #tag ${this.state.selectedObject.name ||
+            this.state.selectedObject.default_name} (${langReadable}) into ${
+            this.state.selectedCategory.body
+          } category`;
         }
         case objectFields.newsFilter:
         case objectFields.newsFeed: {
