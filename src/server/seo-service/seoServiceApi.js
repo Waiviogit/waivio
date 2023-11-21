@@ -2,8 +2,8 @@ import axios from 'axios';
 
 const BASE_URL =
   process.env.NODE_ENV === 'production'
-    ? 'wss://www.waivio.com/seo-service'
-    : 'wss://waiviodev.com/seo-service';
+    ? 'https://www.waivio.com/seo-service'
+    : 'https://waiviodev.com/seo-service';
 
 const devEnv = ['production', 'staging'].includes(process.env.NODE_ENV);
 
