@@ -32,7 +32,7 @@ export default function renderSsrPage(
 
   const nightmode = preloadedState && preloadedState.settings && preloadedState.settings.nightmode;
   let googleGSCTag = isWaivio
-    ? `<meta name="google-site-verification" content="lalala" />`
+    ? `<meta name="google-site-verification" content="JVVPBT1TEtH6a-w94_PZ2OcilaYPMOCexi7N1jq0tnk" />`
     : googleGSC;
   const tag = isWaivio ? 'G-WRV0RFTWBX' : googleTag;
   let googleAnalytics = '';

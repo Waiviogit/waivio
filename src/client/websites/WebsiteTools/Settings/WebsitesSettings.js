@@ -148,7 +148,7 @@ const WebsitesSettings = ({
           </div>
         </Form.Item>
         <Form.Item>
-          <h3>{intl.formatMessage({ id: 'google_analytic_tag' })}</h3>
+          <h3>{intl.formatMessage({ id: 'google_analytic_tag' })}:</h3>
           {getFieldDecorator('googleAnalyticsTag', {
             initialValue: get(settings, 'googleAnalyticsTag', ''),
           })(
