@@ -42,14 +42,6 @@ function createTimeout(timeout, promise) {
 export default function createSsrHandler(template) {
   return async function serverSideResponse(req, res) {
     try {
-      if (/(^\/sitemap\.xml$|^\/sitemap.+?\.xml$)/.test(req.url)) {
-        const fileContent = await getSitemap(req);
-
-        res.set('Content-Type', 'text/xml');
-        res.send(fileContent);
-
-        return;
-      }
       if (await isSearchBot(req)) {
         await updateBotCount(req);
         const cachedPage = await getCachedPage(req);
