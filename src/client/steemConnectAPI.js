@@ -512,6 +512,7 @@ function sc2Extended() {
         username,
         appId,
         googleAnalyticsTag,
+        googleGSCTag,
         beneficiary,
         currency,
         language,
@@ -525,6 +526,7 @@ function sc2Extended() {
           json: JSON.stringify({
             appId,
             googleAnalyticsTag,
+            googleGSCTag,
             beneficiary,
             currency,
             language,

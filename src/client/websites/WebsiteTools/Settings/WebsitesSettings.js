@@ -21,6 +21,7 @@ import {
 import { currencyTypes, defaultCurrency } from '../../constants/currencyTypes';
 
 import './WebsitesSettings.less';
+import { showGoogleGSCTagError } from '../../helper';
 
 const WebsitesSettings = ({
   intl,
@@ -39,6 +40,7 @@ const WebsitesSettings = ({
   const [referralAccount, setReferralAccount] = useState('');
   const [settingsLoading, setSettingsLoading] = useState(false);
   const [objectControl, setObjectControl] = useState(false);
+  const [googleGSC, setGoogleGSC] = useState('');
   const host = match.params.site;
 
   useEffect(() => {
@@ -47,10 +49,12 @@ const WebsitesSettings = ({
       .then(res => {
         const percent = get(res, ['value', 'beneficiary', 'percent']) / 100;
         const account = get(res, ['value', 'beneficiary', 'account']);
+        const googleGscTag = get(res, ['value', 'googleGSCTag']);
         const referral = get(res, ['value', 'referralCommissionAcc']);
         const objControl = get(res, ['value', 'objectControl']);
 
         setBeneficiaryPercent(percent);
+        setGoogleGSC(googleGscTag);
         setObjectControl(objControl);
         setBeneficiaryAccount(account);
         setReferralAccount(referral);
@@ -61,6 +65,10 @@ const WebsitesSettings = ({
 
   const handleChange = (e, fieldsName) =>
     form.setFieldsValue({ [fieldsName]: e.currentTarget.value });
+  const handleChangeGoogleGSCTag = e => {
+    form.setFieldsValue({ googleGSCTag: e.currentTarget.value });
+    setGoogleGSC(e.currentTarget.value);
+  };
 
   const resetBeneficiaryUser = () => {
     setBeneficiaryAccount('');
@@ -80,9 +88,18 @@ const WebsitesSettings = ({
         const percent = (beneficiaryPercent || 3) * 100;
         const account = beneficiaryAccount || 'waivio';
         const tag = values.googleAnalyticsTag || '';
+        const gscTag = values.googleGSCTag || '';
         const beneficiary = { account, percent };
 
-        saveWebSettings(host, tag, beneficiary, values.currency, values.language, objectControl);
+        saveWebSettings(
+          host,
+          tag,
+          gscTag,
+          beneficiary,
+          values.currency,
+          values.language,
+          objectControl,
+        );
         referralUserForWeb(referralAccount, host);
         message.success(intl.formatMessage({ id: 'settings_updated_successfully' }));
       }
@@ -142,6 +159,31 @@ const WebsitesSettings = ({
             />,
           )}
           <p>{intl.formatMessage({ id: 'website_performance' })}</p>
+        </Form.Item>
+        <Form.Item
+          validateStatus={showGoogleGSCTagError(googleGSC) ? 'error' : ''}
+          help={
+            showGoogleGSCTagError(googleGSC)
+              ? 'Invalid HTML meta tag entered. Please provide a valid tag.'
+              : null
+          }
+        >
+          <h3>
+            {intl.formatMessage({
+              id: 'google_search_console_html_verification_tag',
+              defaultMessage: 'Google Search Console HTML verification tag',
+            })}
+          </h3>
+          {getFieldDecorator('googleGSCTag', {
+            initialValue: get(settings, 'googleGSCTag', ''),
+          })(
+            <Input
+              type="text"
+              placeholder={intl.formatMessage({ id: 'paste_your_meta_tag_here' })}
+              onChange={e => handleChangeGoogleGSCTag(e)}
+            />,
+          )}
+          <p>{intl.formatMessage({ id: 'gsc_tag_description_info' })}</p>
         </Form.Item>
         <h3>{intl.formatMessage({ id: 'beneficiary' })}</h3>
         <p>{intl.formatMessage({ id: 'beneficiary_rules' })}</p>
@@ -211,7 +253,12 @@ const WebsitesSettings = ({
         <p className="WebsitesSettings__referral-terms">
           {intl.formatMessage({ id: 'referral_terms' })}
         </p>
-        <Button type="primary" htmlType="submit" loading={loading}>
+        <Button
+          type="primary"
+          htmlType="submit"
+          loading={loading}
+          disabled={showGoogleGSCTagError(googleGSC)}
+        >
           {intl.formatMessage({ id: 'save' })}
         </Button>
       </Form>
