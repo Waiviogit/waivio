@@ -2110,6 +2110,7 @@ class AppendForm extends Component {
                 rules: this.getFieldRules(objectFields.categoryItem),
               })(
                 <SearchObjectsAutocomplete
+                  useExtendedSearch
                   handleSelect={this.handleSelectObject}
                   objectType="hashtag"
                 />,

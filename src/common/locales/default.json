@@ -2539,5 +2539,8 @@
   "rejected_by_owner": "rejected by owner",
   "rejected_by_admin": "rejected by admin",
   "rejected_by_moderator": "rejected by moderator",
-  "mobnav_list_duplication": "List duplication"
+  "mobnav_list_duplication": "List duplication",
+  "google_search_console_html_verification_tag": "Google Search Console HTML verification tag",
+  "paste_your_meta_tag_here": "Paste your meta tag here",
+  "gsc_tag_description_info": "Obtain an HTML verification tag from GSC and enter it here to verify site ownership with Google Search Console. This tag will be added to your site's header."
 }
