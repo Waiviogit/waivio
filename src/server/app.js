@@ -8,6 +8,7 @@ import createSsrHandler from './handlers/createSsrHandler';
 import steemAPI from './steemAPI';
 import { getSettingsAdsense } from '../waivioApi/ApiClient';
 import { getRobotsTxtContent } from '../common/helpers/robots-helper';
+import { webPage, sitemap } from './seo-service/seoServiceApi';
 
 const indexPath = `${paths.templates}/index.hbs`;
 const indexHtml = fs.readFileSync(indexPath, 'utf-8');
@@ -79,9 +80,32 @@ app.get('/i/:parent/@:referral/:permlink', async (req, res) => {
 });
 
 app.get('/ads.txt', async (req, res) => {
-  const fileContent = (await getSettingsAdsense(req.headers.host)).txtFile;
+  const fileContent = await webPage.getAddsByHost({
+    host: req.headers.host,
+  });
 
   res.set('Content-Type', 'text/plain');
+  res.send(fileContent);
+});
+
+app.get('/sitemap.xml', async (req, res) => {
+  const fileContent = await sitemap.getSitemap({
+    host: req.headers.host,
+    name: 'sitemap',
+  });
+
+  res.set('Content-Type', 'text/xml');
+  res.send(fileContent);
+});
+
+app.get('/sitemap:pageNumber.xml', async (req, res) => {
+  const { pageNumber } = req.params;
+  const fileContent = await sitemap.getSitemap({
+    host: req.headers.host,
+    name: `sitemap${pageNumber}`,
+  });
+
+  res.set('Content-Type', 'text/xml');
   res.send(fileContent);
 });
 
