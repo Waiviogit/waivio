@@ -7,7 +7,7 @@ export default function renderSsrPage(
   template,
   isWaivio,
   googleTag,
-  googleGSCTag,
+  googleGSC,
   adSense,
 ) {
   const preloadedState = store ? store.getState() : {};
@@ -31,6 +31,9 @@ export default function renderSsrPage(
   const production = process.env.NODE_ENV === 'production';
 
   const nightmode = preloadedState && preloadedState.settings && preloadedState.settings.nightmode;
+  let googleGSCTag = isWaivio
+    ? `<meta name="google-site-verification" content="lalala" />`
+    : googleGSC;
   const tag = isWaivio ? 'G-WRV0RFTWBX' : googleTag;
   let googleAnalytics = '';
   if (tag)
