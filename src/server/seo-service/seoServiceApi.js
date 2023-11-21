@@ -1,70 +1,111 @@
-import SocketClient from '../../common/services/wsClient';
-import { CONNECTION_STRING_SEO, SEO_SERVICE_API_KEY } from '../../common/constants/ssrData';
+import axios from 'axios';
 
-const socketClient = new SocketClient(CONNECTION_STRING_SEO, SEO_SERVICE_API_KEY);
+const BASE_URL =
+  process.env.NODE_ENV === 'production'
+    ? 'wss://www.waivio.com/seo-service'
+    : 'wss://waiviodev.com/seo-service';
+
+const devEnv = ['production', 'staging'].includes(process.env.NODE_ENV);
+
+const reqTimeout = 5000;
+
 const getPageByUrl = async ({ url }) => {
-  const result = await socketClient.sendMessage({
-    name: 'webPage',
-    method: 'getPageByUrl',
-    args: [{ url }],
-  });
-  if (result?.error) {
+  if (devEnv) return;
+  try {
+    const response = await axios.get(`${BASE_URL}/cache-page`, {
+      params: { url },
+      timeout: reqTimeout,
+    });
+
+    return response?.data ?? '';
+  } catch (error) {
     return '';
   }
-  return result.data;
 };
 
 const createPage = async ({ url, page }) => {
-  const result = await socketClient.sendMessage({
-    name: 'webPage',
-    method: 'createPage',
-    args: [{ url, page }],
-  });
-  if (result?.error) {
-    return { error: result.error };
+  if (devEnv) return;
+  try {
+    const response = await axios.post(
+      `${BASE_URL}/cache-page`,
+      {
+        url,
+        page,
+      },
+      {
+        timeout: reqTimeout,
+      },
+    );
+
+    return response?.data ?? '';
+  } catch (error) {
+    return '';
   }
-  return result.data;
 };
 
 const userAgentExists = async ({ userAgent }) => {
-  const result = await socketClient.sendMessage({
-    name: 'botAgent',
-    method: 'userAgentExists',
-    args: [{ userAgent }],
-  });
-  if (result?.error) {
+  if (devEnv) return;
+  try {
+    const response = await axios.get(`${BASE_URL}/user-agent`, {
+      params: { userAgent },
+      timeout: reqTimeout,
+    });
+
+    return response?.data?.result ?? false;
+  } catch (error) {
     return false;
   }
-  return result.data;
 };
 
 const addVisit = async ({ userAgent }) => {
-  const result = await socketClient.sendMessage({
-    name: 'botStatistics',
-    method: 'addVisit',
-    args: [{ userAgent }],
-  });
-  if (result?.error) {
-    return { error: result.error };
+  if (devEnv) return;
+  try {
+    const response = await axios.post(
+      `${BASE_URL}/bot-statistics`,
+      {
+        userAgent,
+      },
+      { timeout: reqTimeout },
+    );
+
+    return response?.data?.result ?? false;
+  } catch (error) {
+    return false;
   }
-  return result.data;
 };
 
 const getSitemap = async ({ host, name }) => {
-  const result = await socketClient.sendMessage({
-    name: 'sitemap',
-    method: 'getSitemap',
-    args: [{ host, name }],
-  });
-  if (result?.error) {
+  if (devEnv) return;
+  try {
+    const response = await axios.get(`${BASE_URL}/sitemap`, {
+      params: { host, name },
+      timeout: reqTimeout,
+    });
+
+    return response?.data ?? '';
+  } catch (error) {
     return '';
   }
-  return result.data;
+};
+
+const getAddsByHost = async ({ host }) => {
+  if (devEnv) return;
+  try {
+    const response = await axios.get(`${BASE_URL}/cache-page/ads`, {
+      params: { host },
+      timeout: reqTimeout,
+    });
+
+    return response?.data ?? '';
+  } catch (error) {
+    return '';
+  }
 };
 
 export const webPage = {
   getPageByUrl,
   createPage,
+  getAddsByHost,
 };
 
 export const botStatistics = {
