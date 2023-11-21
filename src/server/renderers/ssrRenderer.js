@@ -52,6 +52,6 @@ export default function renderSsrPage(
     nightmode,
     googleAnalytics,
     googleGSCTag,
-    tagadSense,
+    adSense,
   });
 }
