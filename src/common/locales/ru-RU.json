@@ -23,7 +23,7 @@
   "delete_selected": "Удалить выбранные",
   "notify_uploading_image": "Загрузка изображения",
   "notify_uploading_image_error": "Не удалось загрузить изображение",
-  "notify_uploading_image_invalid": "Этот файл является недопустимым. Поддерживаются только файлы изображений {formats}с максимальным размером {size}",
+  "notify_uploading_image_invalid": "Этот файл является недопустимым. Поддерживаются только файлы изображений {formats} с максимальным размером {size}",
   "notify_add_list_item": "Элемент списка успешно добавлен",
   "notify_add_list_item_error": "Не удалось добавить элемент списка",
   "signup": "Регистрация",
