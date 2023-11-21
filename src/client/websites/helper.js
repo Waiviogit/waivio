@@ -94,7 +94,7 @@ export const getFirstOffsetNumber = wobjName => {
 
 export const showGoogleGSCTagError = tag => {
   const metaRegex = /<meta[^>]*>/g;
-  const metaTags = tag.match(metaRegex);
+  const metaTags = tag?.match(metaRegex);
 
   return (
     !isEmpty(tag) &&
