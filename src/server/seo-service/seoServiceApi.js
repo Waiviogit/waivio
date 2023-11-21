@@ -5,7 +5,7 @@ const BASE_URL =
     ? 'https://www.waivio.com/seo-service'
     : 'https://waiviodev.com/seo-service';
 
-const devEnv = ['production', 'staging'].includes(process.env.NODE_ENV);
+const devEnv = !['production', 'staging'].includes(process.env.NODE_ENV);
 
 const reqTimeout = 5000;
 
