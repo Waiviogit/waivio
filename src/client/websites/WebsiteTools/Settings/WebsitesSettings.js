@@ -148,7 +148,7 @@ const WebsitesSettings = ({
           </div>
         </Form.Item>
         <Form.Item>
-          <h3>{intl.formatMessage({ id: 'google_analytic_tag' })}:</h3>
+          <h3>{intl.formatMessage({ id: 'google_analytic_tag' })}</h3>
           {getFieldDecorator('googleAnalyticsTag', {
             initialValue: get(settings, 'googleAnalyticsTag', ''),
           })(
@@ -160,18 +160,11 @@ const WebsitesSettings = ({
           )}
           <p>{intl.formatMessage({ id: 'website_performance' })}</p>
         </Form.Item>
-        <Form.Item
-          validateStatus={showGoogleGSCTagError(googleGSC) ? 'error' : ''}
-          help={
-            showGoogleGSCTagError(googleGSC)
-              ? 'Invalid HTML meta tag entered. Please provide a valid tag.'
-              : null
-          }
-        >
+        <Form.Item validateStatus={showGoogleGSCTagError(googleGSC) ? 'error' : ''}>
           <h3>
             {intl.formatMessage({
               id: 'google_search_console_html_verification_tag',
-              defaultMessage: 'Google Search Console HTML verification tag',
+              defaultMessage: 'Google Search Console HTML verification tag:',
             })}
           </h3>
           {getFieldDecorator('googleGSCTag', {
@@ -182,6 +175,11 @@ const WebsitesSettings = ({
               placeholder={intl.formatMessage({ id: 'paste_your_meta_tag_here' })}
               onChange={e => handleChangeGoogleGSCTag(e)}
             />,
+          )}
+          {showGoogleGSCTagError(googleGSC) && (
+            <span className={'error-duplicate'}>
+              Invalid HTML meta tag entered. Please provide a valid tag.
+            </span>
           )}
           <p>{intl.formatMessage({ id: 'gsc_tag_description_info' })}</p>
         </Form.Item>
