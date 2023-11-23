@@ -31,6 +31,7 @@ import {
   addAlbumToStore,
   clearRelatedPhoto,
   getAlbums,
+  getRelatedAlbum,
   resetGallery,
 } from '../../../store/galleryStore/galleryActions';
 import { getUpdates } from '../../../store/appendStore/appendActions';
@@ -59,6 +60,7 @@ const WobjectContainer = props => {
         }
       }
       props.getAlbums(name);
+      props.getRelatedAlbum(name);
       props.getNearbyObjects(name);
       props.getWobjectExpertise(newsFilter, name);
       props.getObjectFollowers({
@@ -133,6 +135,7 @@ WobjectContainer.propTypes = {
   locale: PropTypes.string,
   currHost: PropTypes.string,
   getAlbums: PropTypes.func,
+  getRelatedAlbum: PropTypes.func,
   getUpdates: PropTypes.func,
   clearRelatedPhoto: PropTypes.func,
   getNearbyObjects: PropTypes.func.isRequired,
@@ -178,6 +181,7 @@ const mapDispatchToProps = {
   getObject,
   resetGallery,
   getAlbums,
+  getRelatedAlbum,
   getUpdates,
   addAlbumToStore,
   clearRelatedPhoto,

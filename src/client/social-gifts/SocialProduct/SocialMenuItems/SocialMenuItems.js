@@ -32,7 +32,7 @@ const SocialMenuItems = ({ menuItem }) => {
 
   useEffect(() => {
     prepareMenuItems();
-  }, [menuItem]);
+  }, [menuItem.length]);
 
   if (isEmpty(menuItems)) return null;
 
