@@ -2393,7 +2393,6 @@
   "deposit_instructions_part2": " all'indirizzo seguente e riceverai un importo equivalente di",
   "Profile": "Profilo",
   "notification_campaign_released_reservation": "{author} ha rilasciato una prenotazione per {campaignName}",
-  "rewards_from_sponsors_you_are_following:": "Ricompense dagli sponsor che stai seguendo",
   "select_the_crypto_token_first": "Seleziona prima il token cripto.",
   "swaptokens_info": "Le transazioni di grandi dimensioni possono avere un impatto sul tasso di cambio. Se questo impatto è maggiore del valore impostato, la transazione verrà annullata.",
   "select_the_crypto_token_to_deposit": "Seleziona il token cripto da depositare",

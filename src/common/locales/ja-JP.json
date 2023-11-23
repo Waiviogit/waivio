@@ -2392,7 +2392,6 @@
   "deposit_instructions_part2": "次のアドレスに送金してください。",
   "Profile": "プロフィール",
   "notification_campaign_released_reservation": "{author}さんが{withdraw_route}の予約を解除しました",
-  "rewards_from_sponsors_you_are_following:": "フォローしているスポンサーからの報酬",
   "select_the_crypto_token_first": "まず、暗号トークンを選択してください。",
   "swaptokens_info": "大きな取引は為替レートに影響を与える場合があります。この影響が設定値よりも大きい場合、取引はキャンセルされます。",
   "select_the_crypto_token_to_deposit": "預金する暗号トークンを選択",
