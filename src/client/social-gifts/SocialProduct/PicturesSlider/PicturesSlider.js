@@ -4,16 +4,13 @@ import { useHistory, useRouteMatch } from 'react-router';
 import Lightbox from 'react-image-lightbox';
 import { get, indexOf, isEmpty, map } from 'lodash';
 import PropTypes from 'prop-types';
-import './PicturesSlider.less';
-import { getRelatedPhotos } from '../../../../waivioApi/ApiClient';
 import { isMobile } from '../../../../common/helpers/apiHelpers';
 import { getProxyImageURL } from '../../../../common/helpers/image';
 import {
   getLastPermlinksFromHash,
   getObjectAvatar,
 } from '../../../../common/helpers/wObjectHelper';
-
-const limit = 30;
+import './PicturesSlider.less';
 
 const PicturesSlider = ({
   hoveredOption,
@@ -22,6 +19,7 @@ const PicturesSlider = ({
   currentWobj,
   altText,
   albums,
+  relatedAlbum,
 }) => {
   const [currentImage, setCurrentImage] = useState({});
   const [nextArrowClicked, setNextArrowClicked] = useState(false);
@@ -61,7 +59,6 @@ const PicturesSlider = ({
 
   useEffect(() => {
     const fetchData = async () => {
-      const relatedAlbum = await getRelatedPhotos(authorPermlink, limit, 0);
       const allPhotos = albums
         ?.flatMap(alb => alb?.items)
         ?.sort((a, b) => (b.name === 'avatar') - (a.name === 'avatar'));
@@ -195,6 +192,7 @@ PicturesSlider.propTypes = {
   currentWobj: PropTypes.shape(),
   hoveredOption: PropTypes.shape(),
   activeOption: PropTypes.shape(),
+  relatedAlbum: PropTypes.shape(),
   activeCategory: PropTypes.string,
   altText: PropTypes.string,
 };

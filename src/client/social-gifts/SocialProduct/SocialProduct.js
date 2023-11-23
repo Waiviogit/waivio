@@ -58,7 +58,7 @@ import {
   getWobjectNested,
 } from '../../../store/wObjectStore/wObjectSelectors';
 import './SocialProduct.less';
-import { getObjectAlbums } from '../../../store/galleryStore/gallerySelectors';
+import { getObjectAlbums, getRelatedPhotos } from '../../../store/galleryStore/gallerySelectors';
 import { getAlbums, resetGallery } from '../../../store/galleryStore/galleryActions';
 import Loading from '../../components/Icon/Loading';
 import SocialBookAuthors from './SocialBookAuthors/SocialBookAuthors';
@@ -85,6 +85,7 @@ const SocialProduct = ({
   setStoreActiveOpt,
   resetOptClicked,
   albums,
+  relatedAlbum,
   appUrl,
   resetWobjGallery,
   nestedWobj,
@@ -383,6 +384,7 @@ const SocialProduct = ({
               <div className="SocialProduct__row">
                 <div className="SocialProduct__carouselWrapper">
                   <PicturesSlider
+                    relatedAlbum={relatedAlbum}
                     albums={albums}
                     altText={description}
                     currentWobj={wobject}
@@ -560,6 +562,7 @@ SocialProduct.propTypes = {
   authenticated: PropTypes.bool,
   authors: PropTypes.arrayOf(),
   albums: PropTypes.arrayOf(),
+  relatedAlbum: PropTypes.shape(),
   optionClicked: PropTypes.bool,
   helmetIcon: PropTypes.string,
   appUrl: PropTypes.string,
@@ -580,6 +583,7 @@ const mapStateToProps = state => ({
   authors: getWobjectAuthors(state),
   appUrl: getAppUrl(state),
   albums: getObjectAlbums(state),
+  relatedAlbum: getRelatedPhotos(state),
   authenticated: getIsAuthenticated(state),
   optionClicked: getIsOptionClicked(state),
   helmetIcon: getHelmetIcon(state),
