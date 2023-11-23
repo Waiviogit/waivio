@@ -47,7 +47,7 @@ const Avatar = ({ avatar, username, size, authenticatedUser, isSquare, lightbox 
 
   if (username === authUser?.name) {
     const profileImage = parseJSON(authUser?.posting_json_metadata)?.profile?.profile_image;
-    const proxyProfileImage = profileImage.includes('images.hive.blog')
+    const proxyProfileImage = profileImage?.includes('images.hive.blog')
       ? profileImage
       : getProxyImageURL(profileImage);
 
