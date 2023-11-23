@@ -12,6 +12,10 @@ import { getGuestAccessToken } from '../common/helpers/localStorageHelpers';
 import { isMobileDevice } from '../common/helpers/apiHelpers';
 import { createQuery, parseQuery } from './helpers';
 import { TRANSACTION_TYPES } from '../client/wallet/WalletHelper';
+import {
+  excludeHashtagObjType,
+  recommendedObjectTypes,
+} from '../common/constants/listOfObjectTypes';
 
 export const headers = {
   Accept: 'application/json',
@@ -55,19 +59,7 @@ export const getRecommendedObjects = (locale = 'en-US') =>
       userLimit: 5,
       locale,
       limit: 6,
-      exclude_object_types: [
-        'list',
-        'crypto',
-        'indices',
-        'stocks',
-        'currencies',
-        'commodity',
-        'car',
-        'test',
-        'car',
-        'page',
-        'hashtag',
-      ],
+      object_types: recommendedObjectTypes,
       sample: true,
     }),
   })
@@ -84,7 +76,7 @@ export const getObjects = ({
   const reqData = { limit, locale, skip };
 
   if (isOnlyHashtags) reqData.object_types = ['hashtag'];
-  else reqData.exclude_object_types = ['hashtag'];
+  else reqData.object_types = excludeHashtagObjType;
 
   return fetch(`${config.apiPrefix}${config.getObjects}`, {
     headers: {
