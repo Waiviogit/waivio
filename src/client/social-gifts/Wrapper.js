@@ -206,7 +206,7 @@ const SocialWrapper = props => {
         }
       });
 
-      // createWebsiteMenu(res.configuration);
+      createWebsiteMenu(res.configuration);
     });
   }, []);
 
