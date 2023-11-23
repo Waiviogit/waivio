@@ -177,9 +177,10 @@ const SocialProduct = ({
   const { firstDescrPart: description } = shortenDescription(removeEmptyLines(desc), 200);
   const title = `${wobject.name} - ${siteName}`;
   const { canonicalUrl } = useSeoInfo();
-  const url =
-    wobject.object_type === 'book' ? `${appUrl}/object/${match.params.name}` : canonicalUrl;
-  const productUrl = checkAboutCanonicalUrl(canonicalUrl);
+  const url = ['book', 'product'].includes(wobject.object_type)
+    ? `${appUrl}/object/${match.params.name}`
+    : canonicalUrl;
+  const productUrl = checkAboutCanonicalUrl(url);
   const bannerEl =
     typeof document !== 'undefined' && document.getElementById('socialGiftsMainBanner');
   const socialHeaderEl = typeof document !== 'undefined' && document.querySelector('.Header');
