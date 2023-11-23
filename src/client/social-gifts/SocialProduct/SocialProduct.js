@@ -87,6 +87,7 @@ const SocialProduct = ({
   getWobject,
   getWobjAlbums,
   albums,
+  appUrl,
   resetWobjGallery,
   nestedWobj,
   isEditMode,
@@ -176,8 +177,10 @@ const SocialProduct = ({
   const { firstDescrPart: description } = shortenDescription(removeEmptyLines(desc), 200);
   const title = `${wobject.name} - ${siteName}`;
   const { canonicalUrl } = useSeoInfo();
-  const url = canonicalUrl;
-  const productUrl = checkAboutCanonicalUrl(canonicalUrl);
+  const url = ['book', 'product'].includes(wobject.object_type)
+    ? `${appUrl}/object/${match.params.name}`
+    : canonicalUrl;
+  const productUrl = checkAboutCanonicalUrl(url);
   const bannerEl =
     typeof document !== 'undefined' && document.getElementById('socialGiftsMainBanner');
   const socialHeaderEl = typeof document !== 'undefined' && document.querySelector('.Header');
@@ -563,6 +566,7 @@ SocialProduct.propTypes = {
   albums: PropTypes.arrayOf(),
   optionClicked: PropTypes.bool,
   helmetIcon: PropTypes.string,
+  appUrl: PropTypes.string,
   setStoreActiveOpt: PropTypes.func,
   resetOptClicked: PropTypes.func,
   getWobject: PropTypes.func,

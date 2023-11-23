@@ -124,12 +124,19 @@ const UserHeader = ({
     </div>
   );
   const avatarUrl = parseJSON(user?.posting_json_metadata)?.profile?.profile_image;
-  const avatar = avatarUrl?.includes('images.hive.blog') ? avatarUrl : getProxyImageURL(avatarUrl);
+
+  let avatar;
+
+  if (typeof avatarUrl === 'string') {
+    avatar = avatarUrl?.includes('images.hive.blog') ? avatarUrl : getProxyImageURL(avatarUrl);
+  } else {
+    avatar = undefined;
+  }
 
   return (
     <div className={classNames('UserHeader', { 'UserHeader--cover': hasCover })} style={style}>
       <div className="UserHeader__container">
-        {!isNil(avatarUrl) ? (
+        {!isNil(avatarUrl) && !isEmpty(avatarUrl) ? (
           <AvatarLightbox avatar={avatar} username={user.name} size={100} isActive={isActive} />
         ) : (
           <AvatarLightbox username={user.name} size={100} isActive={isActive} />

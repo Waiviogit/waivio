@@ -9,7 +9,7 @@ import { getProxyImageURL } from '../../../common/helpers/image';
 import './ObjectSearchCard.less';
 
 const ObjectSearchCard = props => {
-  const { object, type, parentElement, isNeedType } = props;
+  const { object, type, parentElement, isNeedType, isInList } = props;
   const parent = get(object, objectFields.parent);
   const parentString = getObjectName(parent);
   const titleSrting = get(object, objectFields.title, '');
@@ -21,17 +21,30 @@ const ObjectSearchCard = props => {
   return (
     <div className="object-search-card">
       {has(object, 'avatar') ? (
-        <img className="object-search-card__content-avatar" src={avatar} alt={titleSrting} />
+        <img
+          className={`object-search-card__content-avatar ${isInList ? 'disabled-avatar' : ''}`}
+          src={avatar}
+          alt={titleSrting}
+        />
       ) : (
         <ObjectAvatar item={object} size={40} />
       )}
       <div className="object-search-card__content-info">
         <div className="object-search-card__content-name">{getObjectName(object)}</div>
-        <div className={`object-search-card__content-text${parentElement ? '-nav' : ''}`}>
+        <div
+          className={`object-search-card__content-text${parentElement ? '-nav' : ''} ${
+            isInList ? 'disabled-text' : ''
+          }`}
+        >
           {parentString || titleSrting || description || ''}
         </div>
       </div>
-      {!isNeedType && <div className="object-search-card__content-type">{type}</div>}
+
+      {isInList ? (
+        <div className={`object-search-card__content-text--red`}>already added</div>
+      ) : (
+        !isNeedType && <div className="object-search-card__content-type">{type}</div>
+      )}
     </div>
   );
 };
@@ -41,6 +54,7 @@ ObjectSearchCard.propTypes = {
   type: PropTypes.string,
   parentElement: PropTypes.string,
   isNeedType: PropTypes.bool,
+  isInList: PropTypes.bool,
 };
 
 ObjectSearchCard.defaultProps = {

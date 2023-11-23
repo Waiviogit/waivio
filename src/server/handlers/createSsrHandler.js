@@ -16,7 +16,13 @@ import {
 import getStore from '../../store/store';
 import renderSsrPage from '../renderers/ssrRenderer';
 import switchRoutes from '../../routes/switchRoutes';
-import { getCachedPage, isSearchBot, setCachedPage, updateBotCount } from './cachePageHandler';
+import {
+  getCachedPage,
+  getSitemap,
+  isSearchBot,
+  setCachedPage,
+  updateBotCount,
+} from './cachePageHandler';
 import { isCustomDomain } from '../../client/social-gifts/listOfSocialWebsites';
 
 // eslint-disable-next-line import/no-dynamic-require
@@ -106,6 +112,7 @@ export default function createSsrHandler(template) {
         template,
         isWaivio,
         get(settings, 'googleAnalyticsTag', ''),
+        get(settings, 'googleGSCTag', ''),
         get(adsenseSettings, 'code', ''),
       );
 
@@ -127,6 +134,7 @@ export default function createSsrHandler(template) {
           template,
           isWaivio,
           get(settings, 'googleAnalyticsTag', ''),
+          get(settings, 'googleGSCTag', ''),
         ),
       );
     }

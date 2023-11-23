@@ -230,8 +230,8 @@ const ShopWebsiteConfigurations = ({
                   defaultMessage: 'Main banner',
                 })}
               </h3>
-              <div className="Settings__profile-image">
-                <AvatarComp link={banner} />
+              <div className={!banner ? 'Settings__profile-image' : ''}>
+                <AvatarComp link={banner} isBanner />
                 <Button type="primary" onClick={() => handleModalState('mainBanner')}>
                   {intl.formatMessage({
                     id: 'website_change_banner',

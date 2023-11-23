@@ -1,6 +1,15 @@
 import { Helmet } from 'react-helmet';
 
-export default function renderSsrPage(store, html, assets, template, isWaivio, googleTag, adSense) {
+export default function renderSsrPage(
+  store,
+  html,
+  assets,
+  template,
+  isWaivio,
+  googleTag,
+  googleGSC,
+  adSense,
+) {
   const preloadedState = store ? store.getState() : {};
 
   const helmet = Helmet.renderStatic();
@@ -22,6 +31,9 @@ export default function renderSsrPage(store, html, assets, template, isWaivio, g
   const production = process.env.NODE_ENV === 'production';
 
   const nightmode = preloadedState && preloadedState.settings && preloadedState.settings.nightmode;
+  let googleGSCTag = isWaivio
+    ? `<meta name="google-site-verification" content="JVVPBT1TEtH6a-w94_PZ2OcilaYPMOCexi7N1jq0tnk" />`
+    : googleGSC;
   const tag = isWaivio ? 'G-WRV0RFTWBX' : googleTag;
   let googleAnalytics = '';
   if (tag)
@@ -42,6 +54,7 @@ export default function renderSsrPage(store, html, assets, template, isWaivio, g
     production,
     nightmode,
     googleAnalytics,
+    googleGSCTag,
     adSense,
   });
 }

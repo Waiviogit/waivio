@@ -20,7 +20,6 @@ import { getAuthenticatedUserName } from '../../../../store/authStore/authSelect
 import { getFollowingObjectsList } from '../../../../store/userStore/userSelectors';
 
 import './AddItemModal.less';
-import { getObjectUpdatesLocale } from '../../../../waivioApi/ApiClient';
 
 @connect(
   state => ({
@@ -42,6 +41,7 @@ class AddItemModal extends Component {
     wobject: {},
     followingList: [],
     itemsIdsToOmit: [],
+    addedItemsPermlinks: [],
     onAddItem: () => {},
   };
 
@@ -54,6 +54,7 @@ class AddItemModal extends Component {
     currentUserName: PropTypes.string,
     locale: PropTypes.string,
     followingList: PropTypes.arrayOf(PropTypes.string),
+    addedItemsPermlinks: PropTypes.arrayOf(PropTypes.string),
     appendObject: PropTypes.func.isRequired,
   };
 
@@ -62,7 +63,6 @@ class AddItemModal extends Component {
 
     this.state = {
       isModalOpen: false,
-      duplicatedItemLocales: [],
       isLoading: false,
       selectedItem: null,
     };
@@ -70,13 +70,8 @@ class AddItemModal extends Component {
 
   handleToggleModal = () => this.setState({ isModalOpen: !this.state.isModalOpen });
 
-  handleObjectSelect = async selectedItem => {
-    const duplicatedItemLocales = await getObjectUpdatesLocale(
-      this.props.wobject.author_permlink,
-      selectedItem.author_permlink,
-    );
-
-    this.setState({ selectedItem, isModalOpen: true, duplicatedItemLocales });
+  handleObjectSelect = selectedItem => {
+    this.setState({ selectedItem, isModalOpen: true });
   };
 
   handleVotePercentChange = votePercent => this.setState({ votePercent });
@@ -150,18 +145,9 @@ class AddItemModal extends Component {
   };
 
   render() {
-    const {
-      isModalOpen,
-      isLoading,
-      selectedItem,
-      littleVotePower,
-      duplicatedItemLocales,
-    } = this.state;
-    const { intl, wobject, itemsIdsToOmit, form, followingList } = this.props;
+    const { isModalOpen, isLoading, selectedItem, littleVotePower } = this.state;
+    const { intl, wobject, itemsIdsToOmit, form, followingList, addedItemsPermlinks } = this.props;
     const { getFieldDecorator } = form;
-    const isForbiddenLanguage = duplicatedItemLocales.includes(
-      this.props.form.getFieldValue('locale'),
-    );
     const listName = getObjectName(wobject);
     const itemType = ['list'].includes(selectedItem && selectedItem.type)
       ? intl.formatMessage({
@@ -208,11 +194,7 @@ class AddItemModal extends Component {
                   defaultMessage: 'Add new',
                 })}: ${itemType}`}
               </div>
-              <Form.Item
-                validateStatus={
-                  !isEmpty(duplicatedItemLocales) && isForbiddenLanguage ? 'error' : ''
-                }
-              >
+              <Form.Item>
                 {getFieldDecorator('locale', {
                   initialValue: this.props.locale,
                   rules: [
@@ -236,12 +218,6 @@ class AddItemModal extends Component {
                 )}
               </Form.Item>
               <ObjectCardView wObject={selectedItem} />
-              {!isEmpty(duplicatedItemLocales) && isForbiddenLanguage && (
-                <div className={'error-duplicate'}>
-                  This item with the specified locale already exists. If you&apos;d like to add the
-                  same item, please select a different locale.
-                </div>
-              )}
               <LikeSection
                 form={form}
                 onVotePercentChange={this.handleVotePercentChange}
@@ -263,7 +239,7 @@ class AddItemModal extends Component {
                   className="modal-content__submit-btn"
                   type="primary"
                   loading={isLoading}
-                  disabled={littleVotePower || isLoading || isForbiddenLanguage}
+                  disabled={littleVotePower || isLoading}
                   onClick={this.handleSubmit}
                 >
                   {intl.formatMessage({
@@ -279,6 +255,7 @@ class AddItemModal extends Component {
           {intl.formatMessage({ id: 'add_object', defaultMessage: 'Add object' })}
         </div>
         <SearchObjectsAutocomplete
+          addedItemsPermlinks={addedItemsPermlinks}
           handleSelect={this.handleObjectSelect}
           itemsIdsToOmit={itemsIdsToOmit}
           parentObject={wobject}

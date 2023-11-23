@@ -7,9 +7,8 @@ import createSsrHandler from './handlers/createSsrHandler';
 // import createAmpHandler from './handlers/createAmpHandler';
 import steemAPI from './steemAPI';
 import { getSettingsAdsense } from '../waivioApi/ApiClient';
-import { sitemap } from './seo-service/seoServiceApi';
 import { getRobotsTxtContent } from '../common/helpers/robots-helper';
-import { isEmpty } from 'lodash';
+import { webPage, sitemap } from './seo-service/seoServiceApi';
 
 const indexPath = `${paths.templates}/index.hbs`;
 const indexHtml = fs.readFileSync(indexPath, 'utf-8');
@@ -80,6 +79,15 @@ app.get('/i/:parent/@:referral/:permlink', async (req, res) => {
   }
 });
 
+app.get('/ads.txt', async (req, res) => {
+  const fileContent = await webPage.getAddsByHost({
+    host: req.headers.host,
+  });
+
+  res.set('Content-Type', 'text/plain');
+  res.send(fileContent);
+});
+
 app.get('/sitemap.xml', async (req, res) => {
   const fileContent = await sitemap.getSitemap({
     host: req.headers.host,
@@ -98,13 +106,6 @@ app.get('/sitemap:pageNumber.xml', async (req, res) => {
   });
 
   res.set('Content-Type', 'text/xml');
-  res.send(fileContent);
-});
-
-app.get('/ads.txt', async (req, res) => {
-  const fileContent = (await getSettingsAdsense(req.headers.host)).txtFile;
-
-  res.set('Content-Type', 'text/plain');
   res.send(fileContent);
 });
 

@@ -1,16 +1,15 @@
 import React from 'react';
 import { Icon } from 'antd';
 import PropTypes from 'prop-types';
-import { getProxyImageURL } from '../../../../../common/helpers/image';
 
-const AvatarComp = ({ link }) => (
+const AvatarComp = ({ link, isBanner }) => (
   <React.Fragment>
     {link ? (
       <div
-        className="WebsitesConfigurations__avatar"
+        className={`WebsitesConfigurations__${isBanner ? 'banner' : 'avatar'}`}
         style={{
-          backgroundImage: `url(${getProxyImageURL(link)})`,
-          backgroundPosition: 'center',
+          backgroundImage: `url(${link})`,
+          backgroundPosition: `${isBanner ? 'left' : 'center'}`,
           backgroundSize: 'contain',
         }}
       />
@@ -33,6 +32,7 @@ const AvatarComp = ({ link }) => (
 
 AvatarComp.propTypes = {
   link: PropTypes.string,
+  isBanner: PropTypes.bool,
 };
 
 export default AvatarComp;

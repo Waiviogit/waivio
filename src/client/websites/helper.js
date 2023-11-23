@@ -1,4 +1,4 @@
-import { get, isArray, size } from 'lodash';
+import { get, isArray, isEmpty, size } from 'lodash';
 import { message } from 'antd';
 
 import { getLastBlockNum } from '../vendor/steemitHelpers';
@@ -90,6 +90,18 @@ export const getFirstOffsetNumber = wobjName => {
   if (lengthMoreThanOrSame(35)) return 180;
 
   return 170;
+};
+
+export const showGoogleGSCTagError = tag => {
+  const metaRegex = /<meta[^>]*>/g;
+  const metaTags = tag?.match(metaRegex);
+
+  return (
+    !isEmpty(tag) &&
+    (!tag.includes('<meta name="google-site-verification"') ||
+      !tag.includes('content="') ||
+      metaTags.length > 1)
+  );
 };
 
 export default null;

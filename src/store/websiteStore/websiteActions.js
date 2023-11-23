@@ -425,6 +425,7 @@ export const SAVE_WEBSITE_SETTINGS = createAsyncActionType('@website/SAVE_WEBSIT
 export const saveWebsiteSettings = (
   host,
   googleAnalyticsTag,
+  googleGSCTag,
   beneficiary,
   currency,
   language,
@@ -441,6 +442,7 @@ export const saveWebsiteSettings = (
         userName,
         get(currentWebsite, 'id'),
         googleAnalyticsTag,
+        googleGSCTag,
         beneficiary,
         currency,
         language,
