@@ -2,12 +2,10 @@ import React, { useEffect, useState, useRef } from 'react';
 import { Carousel, Icon } from 'antd';
 import { useHistory, useRouteMatch } from 'react-router';
 import Lightbox from 'react-image-lightbox';
-import { useSelector } from 'react-redux';
 import { get, indexOf, isEmpty, map } from 'lodash';
 import PropTypes from 'prop-types';
 import './PicturesSlider.less';
-import { getRelatedPhotos, getWobjectGallery } from '../../../../waivioApi/ApiClient';
-import { getUsedLocale } from '../../../../store/appStore/appSelectors';
+import { getRelatedPhotos } from '../../../../waivioApi/ApiClient';
 import { isMobile } from '../../../../common/helpers/apiHelpers';
 import { getProxyImageURL } from '../../../../common/helpers/image';
 import {
@@ -17,7 +15,14 @@ import {
 
 const limit = 30;
 
-const PicturesSlider = ({ hoveredOption, activeOption, activeCategory, currentWobj, altText }) => {
+const PicturesSlider = ({
+  hoveredOption,
+  activeOption,
+  activeCategory,
+  currentWobj,
+  altText,
+  albums,
+}) => {
   const [currentImage, setCurrentImage] = useState({});
   const [nextArrowClicked, setNextArrowClicked] = useState(false);
   const [lastSlideToShow, setLastSlideToShow] = useState(null);
@@ -28,7 +33,6 @@ const PicturesSlider = ({ hoveredOption, activeOption, activeCategory, currentWo
   const slider = useRef();
   const history = useHistory();
   const match = useRouteMatch();
-  const locale = useSelector(getUsedLocale);
   const authorPermlink = history.location.hash
     ? getLastPermlinksFromHash(history.location.hash)
     : match.params.name;
@@ -56,7 +60,7 @@ const PicturesSlider = ({ hoveredOption, activeOption, activeCategory, currentWo
   };
 
   useEffect(() => {
-    getWobjectGallery(authorPermlink, locale).then(async albums => {
+    const fetchData = async () => {
       const relatedAlbum = await getRelatedPhotos(authorPermlink, limit, 0);
       const allPhotos = albums
         ?.flatMap(alb => alb?.items)
@@ -67,8 +71,10 @@ const PicturesSlider = ({ hoveredOption, activeOption, activeCategory, currentWo
       setPictures(photos);
       setCurrentImage(isEmpty(avatar) ? photos[0] : { body: avatar });
       setPhotoIndex(0);
-    });
-  }, [authorPermlink, currentWobj.author_permlink]);
+    };
+
+    fetchData();
+  }, [authorPermlink, currentWobj.author_permlink, albums.length]);
 
   useEffect(() => {
     if (photoIndex === 0) {
@@ -185,6 +191,7 @@ const PicturesSlider = ({ hoveredOption, activeOption, activeCategory, currentWo
 };
 
 PicturesSlider.propTypes = {
+  albums: PropTypes.arrayOf(),
   currentWobj: PropTypes.shape(),
   hoveredOption: PropTypes.shape(),
   activeOption: PropTypes.shape(),

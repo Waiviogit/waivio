@@ -84,8 +84,6 @@ const SocialProduct = ({
   history,
   setStoreActiveOpt,
   resetOptClicked,
-  getWobject,
-  getWobjAlbums,
   albums,
   appUrl,
   resetWobjGallery,
@@ -257,10 +255,7 @@ const SocialProduct = ({
   useEffect(() => {
     window.scrollTo({ top: scrollHeight, behavior: 'smooth' });
     if (!isEmpty(authorPermlink)) {
-      getWobject(authorPermlink, userName);
-
       getObjectsRewards(authorPermlink, userName).then(res => setReward(res));
-      getWobjAlbums(authorPermlink);
       referenceWobjType &&
         getReferenceObjectsList({
           authorPermlink,
@@ -388,6 +383,7 @@ const SocialProduct = ({
               <div className="SocialProduct__row">
                 <div className="SocialProduct__carouselWrapper">
                   <PicturesSlider
+                    albums={albums}
                     altText={description}
                     currentWobj={wobject}
                     hoveredOption={hoveredOption}
@@ -569,8 +565,6 @@ SocialProduct.propTypes = {
   appUrl: PropTypes.string,
   setStoreActiveOpt: PropTypes.func,
   resetOptClicked: PropTypes.func,
-  getWobject: PropTypes.func,
-  getWobjAlbums: PropTypes.func,
   resetWobjGallery: PropTypes.func,
   isEditMode: PropTypes.bool,
   toggleViewEditMode: PropTypes.func,
