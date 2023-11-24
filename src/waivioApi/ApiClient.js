@@ -92,6 +92,31 @@ export const getObjects = ({
     .catch(error => error);
 };
 
+export const getObjectsByIds = ({
+  authorPermlinks = [],
+  authUserName = '',
+  locale = 'en-US',
+  limit = 30,
+  skip,
+}) =>
+  fetch(`${config.apiPrefix}${config.getObjects}`, {
+    headers: {
+      ...headers,
+      app: config.appName,
+      follower: authUserName,
+      locale,
+    },
+    method: 'POST',
+    body: JSON.stringify({
+      author_permlinks: authorPermlinks,
+      limit,
+      skip,
+      locale,
+    }),
+  })
+    .then(res => res.json())
+    .catch(error => error);
+
 export const getObject = (authorPermlink, user, locale) => {
   const queryString = user ? `?user=${user}` : '';
 
