@@ -1,6 +1,23 @@
 export const listObjectTypeOfDining = ['restaurant', 'dish'];
 
-export default [
+export const recommendedObjectTypes = [
+  'product',
+  'book',
+  'business',
+  'restaurant',
+  'dish',
+  'drink',
+  'service',
+  'place',
+  'company',
+  'organization',
+  'currency',
+  'hotel',
+  'motel',
+  'resort',
+  'b&b',
+];
+const listOfObjectTypes = [
   'list',
   'page',
   'product',
@@ -34,3 +51,7 @@ export default [
   'car',
   'test',
 ];
+
+export const excludeHashtagObjType = listOfObjectTypes.filter(type => type !== 'hashtag');
+
+export default listOfObjectTypes;

@@ -9,6 +9,7 @@ import { getAuthenticatedUser } from '../../store/authStore/authSelectors';
 import { parseJSON } from '../../common/helpers/parseJSON';
 import { getUser } from '../../store/usersStore/usersSelectors';
 import './Avatar.less';
+import { getProxyImageURL } from '../../common/helpers/image';
 
 export function getAvatarURL(username, size = 100, authenticatedUser) {
   const url = 'https://images.hive.blog/u';
@@ -44,8 +45,14 @@ const Avatar = ({ avatar, username, size, authenticatedUser, isSquare, lightbox 
     url = avatar;
   }
 
-  if (username === authUser?.name)
-    url = parseJSON(authUser?.posting_json_metadata)?.profile?.profile_image || url;
+  if (username === authUser?.name) {
+    const profileImage = parseJSON(authUser?.posting_json_metadata)?.profile?.profile_image;
+    const proxyProfileImage = profileImage?.includes('images.hive.blog')
+      ? profileImage
+      : getProxyImageURL(profileImage);
+
+    url = proxyProfileImage || url;
+  }
 
   if (username) {
     style = {
