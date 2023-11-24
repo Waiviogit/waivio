@@ -205,20 +205,15 @@ const SocialWrapper = props => {
           props.history.push(`${props.location.pathname}${queryString}`);
         }
       });
-
+      loadLocale(props.locale);
       createWebsiteMenu(res.configuration);
     });
-  }, []);
+  }, [props.locale]);
 
   useEffect(() => {
     if (props.nightmode) document.body.classList.add('nightmode');
     else document.body.classList.remove('nightmode');
   }, [props.nightmode]);
-
-  useEffect(() => {
-    loadLocale(props.locale);
-    createWebsiteMenu(props.config);
-  }, [props.locale]);
 
   return (
     <IntlProvider
