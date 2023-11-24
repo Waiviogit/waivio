@@ -51,7 +51,7 @@ const Avatar = ({ avatar, username, size, authenticatedUser, isSquare, lightbox 
       ? profileImage
       : getProxyImageURL(profileImage);
 
-    url = proxyProfileImage || url;
+    url = profileImage ? proxyProfileImage : url;
   }
 
   if (username) {
