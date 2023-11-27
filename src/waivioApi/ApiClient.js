@@ -2042,29 +2042,13 @@ export const getPostsForMap = params =>
     .then(res => res.json())
     .catch(e => e);
 
-const hiveEngineContract = params =>
-  fetch('https://ha.herpc.dtools.dev/contracts', {
-    headers,
-    body: JSON.stringify({
-      jsonrpc: '2.0',
-      id: 10,
-      method: 'find',
-      params,
-    }),
-    method: 'POST',
-  })
-    .then(handleErrors)
-    .then(res => res.json())
-    .then(response => response.result)
-    .catch(e => e);
-
 const engineProxy = params => {
   const nodes = [
     // 'https://api.hive-engine.com/rpc', // Germany
     // 'https://api2.hive-engine.com/rpc', // Finland
     'https://herpc.dtools.dev', // Miami
-    'https://us.engine.rishipanthee.com', // Finland
-    'https://engine.deathwing.me',
+    // 'https://us.engine.rishipanthee.com', // Finland
+    'https://engine.deathwing.me', //
     'https://api.primersion.com',
     'https://herpc.kanibot.com',
     'https://he.sourov.dev',
@@ -2088,6 +2072,8 @@ const engineProxy = params => {
 
   return callBack(nodes[0], 0, nodes);
 };
+
+const hiveEngineContract = async params => engineProxy(params);
 
 export const getMarketPools = async ({ query }) =>
   engineProxy({
