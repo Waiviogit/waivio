@@ -2542,5 +2542,11 @@
   "mobnav_list_duplication": "List duplication",
   "google_search_console_html_verification_tag": "Google Search Console HTML verification tag:",
   "paste_your_meta_tag_here": "Paste your meta tag here",
-  "gsc_tag_description_info": "Obtain an HTML verification tag from Google Search Console and enter it here to verify site ownership. This tag will be added to your site's header."
+  "gsc_tag_description_info": "Obtain an HTML verification tag from Google Search Console and enter it here to verify site ownership. This tag will be added to your site's header.",
+  "mobnav_descriptions_bot": "Descriptions bot",
+  "descriptions_bot": "Descriptions bot",
+  "rewrite_descriptions": "Rewrite descriptions",
+  "stop_rewrite_description": "Stop rewrite description",
+  "stop_rewrite_description_message": "Once stopped, the description bot cannot be resumed. To temporarily suspend/resume the rewrite description, please consider using the Active checkbox.",
+  "stop_rewrite_button": "Stop rewrite"
 }

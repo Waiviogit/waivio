@@ -152,6 +152,10 @@ const MobileNavigation = ({ location, match }) => {
       pageName = 'tools';
       filterName = 'departments_bot';
       break;
+    case '/descriptions-bot':
+      pageName = 'tools';
+      filterName = 'descriptions_bot';
+      break;
     case '/claim-authority':
       pageName = 'tools';
       filterName = 'claim_authority';

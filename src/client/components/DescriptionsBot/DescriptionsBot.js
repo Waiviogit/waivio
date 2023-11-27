@@ -10,29 +10,28 @@ import {
   getIsConnectMatchBot,
 } from '../../../store/authStore/authSelectors';
 import { MATCH_BOTS_TYPES, redirectAuthHiveSigner } from '../../../common/helpers/matchBotsHelpers';
-import FindDepartmentsModal from './FindDepartmentsModal';
 import {
   configDepartmentsBotHistoryTable,
   configDepartmentsBotProductTable,
 } from '../DataImport/tableConfig';
 import ChangeVotingModal from '../../widgets/ChangeVotingModal/ChangeVotingModal';
 import {
-  changeDepartments,
-  deleteDepartments,
-  getDepartmentsList,
-  getDepartmentsVote,
-  getHistoryDepartmentsObjects,
-  setDepartmentsBotVote,
+  changeDescriptions,
+  deleteDescriptions,
+  getDescriptionsList,
+  getDescriptionsVote,
+  getHistoryDescriptionsObjects,
+  setDescriptionsBotVote,
 } from '../../../waivioApi/importApi';
-
-import './DepartmentsBot.less';
 import { closeImportSoket, getImportUpdate } from '../../../store/settingsStore/settingsActions';
 import { getAccount } from '../../../common/helpers/apiHelpers';
 import { reload } from '../../../store/authStore/authActions';
+import './DescriptionsBot.less';
+import FindDescriptionsModal from './FindDescriptionsModal';
 
 const limit = 30;
-const DepartmentsBot = ({ intl }) => {
-  const isStoreDepartmentsBot = useSelector(state =>
+const DescrioptionsBot = ({ intl }) => {
+  const isStoreDescriptionsBot = useSelector(state =>
     getIsConnectMatchBot(state, { botType: MATCH_BOTS_TYPES.IMPORT }),
   );
   const authUserName = useSelector(getAuthenticatedUserName);
@@ -40,11 +39,11 @@ const DepartmentsBot = ({ intl }) => {
   const [votingValue, setVotingValue] = useState(100);
   const [visibleVoting, setVisibleVoting] = useState(false);
   const [openDepModal, setOpenDepModal] = useState(false);
-  const [history, setHistoryDepartmentsObject] = useState([]);
-  const [departments, setDepartments] = useState([]);
-  const [hasMoreDepartments, setHasMoreDepartments] = useState(false);
+  const [history, setHistoryDescriptionsObject] = useState([]);
+  const [descriptions, setDescriptions] = useState([]);
+  const [hasMoreDescriptions, setHasMoreDescriptions] = useState(false);
   const [hasMoreHistory, setHasMoreHistory] = useState(false);
-  const [isDepartmentsBot, setIsDepartmentsBot] = useState(isStoreDepartmentsBot);
+  const [isDescriptionsBot, setIsDescriptionsBot] = useState(isStoreDescriptionsBot);
   const setListAndSetHasMore = (res, list, isLoadMore, setObjs, setMoreObjs) => {
     if (res.length > limit) {
       setMoreObjs(true);
@@ -55,65 +54,65 @@ const DepartmentsBot = ({ intl }) => {
     }
   };
 
-  const getDepsList = () =>
-    getDepartmentsList(authUserName, 0, limit + 1).then(res => {
-      setListAndSetHasMore(res, departments, false, setDepartments, setHasMoreDepartments);
+  const getDescrsList = () =>
+    getDescriptionsList(authUserName, 0, limit + 1).then(res => {
+      setListAndSetHasMore(res, descriptions, false, setDescriptions, setHasMoreDescriptions);
     });
 
   const getHistory = () =>
-    getHistoryDepartmentsObjects(authUserName, 0, limit + 1).then(his => {
-      setListAndSetHasMore(his, history, false, setHistoryDepartmentsObject, setHasMoreHistory);
+    getHistoryDescriptionsObjects(authUserName, 0, limit + 1).then(his => {
+      setListAndSetHasMore(his, history, false, setHistoryDescriptionsObject, setHasMoreHistory);
     });
 
-  const loadMoreDepartmentsData = () =>
-    getDepartmentsList(authUserName, departments.length, limit + 1).then(res => {
-      setListAndSetHasMore(res, departments, true, setDepartments, setHasMoreDepartments);
+  const loadMoreDescriptionsData = () =>
+    getDescriptionsList(authUserName, descriptions.length, limit + 1).then(res => {
+      setListAndSetHasMore(res, descriptions, true, setDescriptions, setHasMoreDescriptions);
     });
 
   const loadMoreHistoryData = () =>
-    getHistoryDepartmentsObjects(authUserName, history.length, limit + 1).then(his => {
-      setListAndSetHasMore(his, history, true, setHistoryDepartmentsObject, setHasMoreHistory);
+    getHistoryDescriptionsObjects(authUserName, history.length, limit + 1).then(his => {
+      setListAndSetHasMore(his, history, true, setHistoryDescriptionsObject, setHasMoreHistory);
     });
 
   useEffect(() => {
-    getDepartmentsVote(authUserName).then(res => {
+    getDescriptionsVote(authUserName).then(res => {
       if (res.minVotingPower) setVotingValue(res.minVotingPower / 100);
     });
 
-    getDepsList();
+    getDescrsList();
     getHistory();
 
-    dispatch(getImportUpdate(getDepsList));
+    dispatch(getImportUpdate(getDescrsList));
     getAccount(authUserName).then(
       r =>
-        setIsDepartmentsBot(
+        setIsDescriptionsBot(
           r?.posting?.account_auths?.some(acc => acc[0] === MATCH_BOTS_TYPES.IMPORT),
-        ) || isStoreDepartmentsBot,
+        ) || isStoreDescriptionsBot,
     );
-    if (isStoreDepartmentsBot !== isDepartmentsBot) {
+    if (isStoreDescriptionsBot !== isDescriptionsBot) {
       dispatch(reload());
     }
 
     return () => dispatch(closeImportSoket());
   }, []);
 
-  const handleRedirect = () => redirectAuthHiveSigner(isDepartmentsBot, 'waivio.import');
+  const handleRedirect = () => redirectAuthHiveSigner(isDescriptionsBot, 'waivio.import');
 
-  const handleDeleteDepartment = item => {
+  const handleDeleteDescription = item => {
     Modal.confirm({
       title: intl.formatMessage({
-        id: 'stop_update_department',
-        defaultMessage: 'Stop update department',
+        id: 'stop_rewrite_description',
+        defaultMessage: 'Stop rewrite description',
       }),
       content: intl.formatMessage({
-        id: 'stop_update_department_message',
+        id: 'stop_rewrite_description_message',
         defaultMessage:
-          'Once stopped, the update department cannot be resumed. To temporarily suspend/resume the update department, please consider using the Active checkbox.',
+          'Once stopped, the description bot cannot be resumed. To temporarily suspend/resume the rewrite description, please consider using the Active checkbox.',
       }),
       onOk: () => {
-        deleteDepartments(authUserName, item?.importId).then(() => {
-          getDepartmentsList(authUserName, 0, departments.length).then(res => {
-            setDepartments(res);
+        deleteDescriptions(authUserName, item?.importId).then(() => {
+          getDescriptionsList(authUserName, 0, descriptions.length).then(res => {
+            setDescriptions(res);
           });
         });
       },
@@ -121,12 +120,12 @@ const DepartmentsBot = ({ intl }) => {
       cancelText: intl.formatMessage({ id: 'cancel', defaultMessage: 'Cancel' }),
     });
   };
-  const handleChangeStatusDepartments = (e, item) => {
+  const handleChangeStatusDescriptions = (e, item) => {
     const status = item.status === 'active' ? 'onHold' : 'active';
 
-    changeDepartments(authUserName, status, item.importId).then(() => {
-      getDepartmentsList(authUserName, 0, departments.length).then(res => {
-        setDepartments(res);
+    changeDescriptions(authUserName, status, item.importId).then(() => {
+      getDescriptionsList(authUserName, 0, descriptions.length).then(res => {
+        setDescriptions(res);
       });
     });
   };
@@ -134,28 +133,26 @@ const DepartmentsBot = ({ intl }) => {
   const toggleVotingModal = () => setVisibleVoting(!visibleVoting);
 
   const handleSetMinVotingPower = voting => {
-    setDepartmentsBotVote(authUserName, voting * 100);
+    setDescriptionsBotVote(authUserName, voting * 100);
     setVotingValue(voting);
     toggleVotingModal();
   };
 
   return (
-    <div className="DepartmentsBot">
-      <div className="DepartmentsBot__title">
+    <div className="DescriptionsBot">
+      <div className="DescriptionsBot__title">
         <h2>
           {intl.formatMessage({
-            id: 'departments_update_bot',
-            defaultMessage: 'Departments update bot',
+            id: 'descriptions_bot',
+            defaultMessage: 'Descriptions bot',
           })}
         </h2>
-        <Switch checked={isDepartmentsBot} onChange={handleRedirect} />
+        <Switch checked={isDescriptionsBot} onChange={handleRedirect} />
       </div>
       <p>
-        {intl.formatMessage({
-          id: 'departments_update_bot_part1',
-          defaultMessage:
-            'This tool designed to automatically categorize products into departments using hierarchical structure of connected lists. This bot uses the names of the lists and sub-lists within them and assigns these names as departments for all products referenced in these lists.',
-        })}
+        This bot utilizes ChatGPT to rewrite titles and descriptions for all embedded lists, as well
+        as names and descriptions for all objects linked from these lists. If the same user repeats
+        this process, it will only be completed for lists and objects added since the last session.
       </p>
       <p>
         {intl.formatMessage({
@@ -174,14 +171,9 @@ const DepartmentsBot = ({ intl }) => {
       <hr />
       <p>
         <b>
-          {intl.formatMessage({
-            id: 'department_requires_auth',
-            defaultMessage:
-              'The Departments update bot requires authorization to upvote data updates on your behalf',
-          })}
-          :{' '}
+          The Descriptions bot requires authorization to upvote data updates on your behalf:{' '}
           <a onClick={handleRedirect}>
-            {isDepartmentsBot
+            {isDescriptionsBot
               ? intl.formatMessage({
                   id: 'match_bots_unauth_link',
                   defaultMessage: 'Remove authorization',
@@ -209,30 +201,23 @@ const DepartmentsBot = ({ intl }) => {
         </a>
         )
         <br />
-        {intl.formatMessage({
-          id: 'departments_pause',
-          defaultMessage:
-            'The departments update bot will pause if WAIV voting power on the account drops below the set threshold.',
-        })}
+        The descriptions bot will pause if WAIV voting power on the account drops below the set
+        threshold.
       </p>
       <VoteInfoBlock
-        info={intl.formatMessage({
-          id: 'departments_service',
-          defaultMessage:
-            'The Departments update bot service is provided on as-is / as-available basis.',
-        })}
+        info={'The Descriptions bot service is provided on as-is / as-available basis.'}
       />
       <hr />
       <Button type="primary" onClick={() => setOpenDepModal(true)}>
-        {intl.formatMessage({ id: 'update_departments', defaultMessage: 'Update departments' })}
+        {intl.formatMessage({ id: 'rewrite_descriptions', defaultMessage: 'Rewrite descriptions' })}
       </Button>
       <DynamicTbl
-        handleShowMore={loadMoreDepartmentsData}
-        showMore={hasMoreDepartments}
+        handleShowMore={loadMoreDescriptionsData}
+        showMore={hasMoreDescriptions}
         header={configDepartmentsBotProductTable}
-        bodyConfig={departments}
-        deleteItem={handleDeleteDepartment}
-        onChange={handleChangeStatusDepartments}
+        bodyConfig={descriptions}
+        deleteItem={handleDeleteDescription}
+        onChange={handleChangeStatusDescriptions}
       />
       <h3>
         {intl.formatMessage({
@@ -255,8 +240,8 @@ const DepartmentsBot = ({ intl }) => {
         />
       )}
       {openDepModal && (
-        <FindDepartmentsModal
-          updateDepartmentsList={getDepsList}
+        <FindDescriptionsModal
+          updateDescriptionsList={getDescrsList}
           visible={openDepModal}
           onClose={() => setOpenDepModal(false)}
         />
@@ -265,8 +250,8 @@ const DepartmentsBot = ({ intl }) => {
   );
 };
 
-DepartmentsBot.propTypes = {
+DescrioptionsBot.propTypes = {
   intl: PropTypes.shape(),
 };
 
-export default injectIntl(DepartmentsBot);
+export default injectIntl(DescrioptionsBot);
