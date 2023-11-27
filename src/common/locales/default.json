@@ -2547,5 +2547,6 @@
   "rewrite_descriptions": "Rewrite descriptions",
   "stop_rewrite_description": "Stop rewrite description",
   "stop_rewrite_description_message": "Once stopped, the description bot cannot be resumed. To temporarily suspend/resume the rewrite description, please consider using the Active checkbox.",
-  "stop_rewrite_button": "Stop rewrite"
+  "stop_rewrite_button": "Stop rewrite",
+  "primary_canonical": "Primary canonical"
 }

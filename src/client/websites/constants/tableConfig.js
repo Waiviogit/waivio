@@ -75,6 +75,14 @@ export const configUsersWebsitesTableHeader = [
     },
   },
   {
+    id: 'website_canonical',
+    type: 'radio',
+    intl: {
+      id: 'primary_canonical',
+      defaultMessage: 'Primary canonical',
+    },
+  },
+  {
     id: 'delete',
     intl: {
       id: 'actions',
