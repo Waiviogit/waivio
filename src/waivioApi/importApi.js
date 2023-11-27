@@ -398,4 +398,97 @@ export const createDuplicateList = (user, authorPermlink, scanEmbedded) =>
       return response;
     });
 
+export const createDescription = (user, authorPermlink, scanEmbedded) =>
+  fetch(`${config.importApiPrefix}${config.descriptionsBot}`, {
+    headers: { ...headers, 'access-token': Cookie.get('access_token') },
+    method: 'POST',
+    body: JSON.stringify({
+      user,
+      authorPermlink,
+      scanEmbedded,
+    }),
+  })
+    .then(res => res.json())
+    .then(response => {
+      if (response.message) message.error(response.message);
+
+      return response;
+    });
+
+export const getDescriptionsList = (userName, skip, limit) =>
+  fetch(
+    `${config.importApiPrefix}${config.descriptionsBot}?user=${userName}&skip=${skip}&limit=${limit}`,
+    {
+      headers,
+      method: 'GET',
+    },
+  )
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+
+export const changeDescriptions = (user, status, importId) =>
+  fetch(`${config.importApiPrefix}${config.descriptionsBot}`, {
+    headers: { ...headers, 'access-token': Cookie.get('access_token') },
+    method: 'PUT',
+    body: JSON.stringify({
+      user,
+      status,
+      importId,
+    }),
+  })
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+
+export const deleteDescriptions = (user, importId) =>
+  fetch(`${config.importApiPrefix}${config.descriptionsBot}`, {
+    headers: { ...headers, 'access-token': Cookie.get('access_token') },
+    method: 'DELETE',
+    body: JSON.stringify({
+      user,
+      importId,
+    }),
+  })
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+
+export const getHistoryDescriptionsObjects = (userName, skip, limit) =>
+  fetch(
+    `${config.importApiPrefix}${config.descriptionsBot}${config.history}?user=${userName}&skip=${skip}&limit=${limit}`,
+    {
+      headers,
+      method: 'GET',
+    },
+  )
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+
+export const getDescriptionsVote = userName =>
+  fetch(`${config.importApiPrefix}${config.descriptionsBot}${config.power}?user=${userName}`, {
+    headers,
+    method: 'GET',
+  })
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+
+export const setDescriptionsBotVote = (user, minVotingPower) =>
+  fetch(`${config.importApiPrefix}${config.descriptionsBot}${config.power}`, {
+    headers: {
+      ...headers,
+      'access-token': Cookie.get('access_token'),
+    },
+    method: 'PUT',
+    body: JSON.stringify({
+      user,
+      minVotingPower,
+    }),
+  })
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+
 export default null;

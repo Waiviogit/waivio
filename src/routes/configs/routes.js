@@ -274,6 +274,11 @@ const routes = {
           component: Views.DepartmentsBot,
         },
         {
+          path: '/descriptions-bot',
+          exact: true,
+          component: Views.DescriptionsBot,
+        },
+        {
           path: `/:site/(${URL.WEBSITES.tabs})`,
           pathScope: '/:site',
           exact: true,
