@@ -2392,7 +2392,6 @@
   "deposit_instructions_part2": " на наступну адресу, і ви отримаєте рівну суму",
   "Profile": "Профіль",
   "notification_campaign_released_reservation": "{author} звільнив резервування для {campaignName}",
-  "rewards_from_sponsors_you_are_following:": "Винагороди від спонсорів, яких ви слідкуєте",
   "select_the_crypto_token_first": "Спочатку оберіть криптовалютний токен.",
   "swaptokens_info": "Великі транзакції можуть впливати на обмінний курс. Якщо цей вплив більший, ніж встановлене значення, транзакція буде скасована.",
   "select_the_crypto_token_to_deposit": "Виберіть криптовалютний токен для внесення",
