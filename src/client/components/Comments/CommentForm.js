@@ -6,7 +6,10 @@ import { Transforms } from 'slate';
 import { Button, Modal } from 'antd';
 import { connect } from 'react-redux';
 import Scroll from 'react-scroll';
-import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
+import {
+  getAuthenticatedUser,
+  getAuthenticatedUserName,
+} from '../../../store/authStore/authSelectors';
 import { remarkable } from '../Story/Body';
 import BodyContainer from '../../containers/Story/BodyContainer';
 import Avatar from '../Avatar';
@@ -25,6 +28,7 @@ import { searchObjectsAutoCompete } from '../../../store/searchStore/searchActio
 import { getCommentDraft, saveCommentDraft } from '../../../waivioApi/ApiClient';
 
 import './CommentForm.less';
+import { getMetadata } from '../../../common/helpers/postingMetadata';
 
 const Element = Scroll.Element;
 
@@ -36,6 +40,8 @@ const CommentForm = props => {
   const [init, setInit] = useState(false);
   const [draft, setDraft] = useState('');
   const parent = props.isEdit ? props.currentComment : props.parentPost;
+  const metadata = getMetadata(props.user);
+  const signature = metadata?.profile?.signature || '';
 
   useLayoutEffect(() => {
     getCommentDraft(props.username, parent?.author, parent?.permlink).then(res => {
@@ -85,6 +91,7 @@ const CommentForm = props => {
 
   const setBodyAndRender = value => {
     const markdownBody = value.children ? editorStateToMarkdownSlate(value.children) : value;
+    const bodyWithSignature = `${markdownBody}${signature}`;
 
     if (
       (props.isEdit &&
@@ -94,8 +101,8 @@ const CommentForm = props => {
     )
       debouncedDraftSave(markdownBody);
 
-    setBody(markdownBody);
-    setHTML(remarkable.render(markdownBody));
+    setBody(bodyWithSignature);
+    setHTML(remarkable.render(bodyWithSignature));
   };
 
   const setShowEditorSearch = value => setIsShowEditorSearch(value);
@@ -240,6 +247,7 @@ CommentForm.propTypes = {
   inputValue: PropTypes.string.isRequired,
   onSubmit: PropTypes.func,
   editor: PropTypes.shape(),
+  user: PropTypes.shape(),
   intl: PropTypes.shape({
     formatMessage: PropTypes.func,
   }),
@@ -262,6 +270,7 @@ CommentForm.defaultProps = {
 const mapStateToProps = store => ({
   editor: getEditorSlate(store),
   username: getAuthenticatedUserName(store),
+  user: getAuthenticatedUser(store),
 });
 
 const mapDispatchToProps = dispatch => ({
