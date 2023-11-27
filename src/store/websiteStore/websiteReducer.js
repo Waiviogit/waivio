@@ -116,6 +116,23 @@ export default function websiteReducer(state = initialState, action) {
         },
       };
     }
+    case websiteAction.CHANGE_CANONICAL_WEBSITE: {
+      const websites = [...state.manage.websites];
+      const changedIndex = websites.findIndex(web => web.host === action.id);
+
+      websites.splice(changedIndex, 1, {
+        ...websites[changedIndex],
+        pending: [...websites[changedIndex].pending, 'radio'],
+      });
+
+      return {
+        ...state,
+        manage: {
+          ...state.manage,
+          websites,
+        },
+      };
+    }
     case websiteAction.DELETE_WEBSITE: {
       const websites = [...state.manage.websites];
       const changedIndex = websites.findIndex(web => web.host === action.id);

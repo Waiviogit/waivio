@@ -175,6 +175,20 @@ function sc2Extended() {
       },
     },
     {
+      setWebsiteCanonical(userName, host, subscribe, cb) {
+        const params = {
+          required_auths: [],
+          required_posting_auths: [userName],
+          id: 'website_canonical',
+          json: JSON.stringify({
+            host,
+          }),
+        };
+
+        return this.broadcast([['custom_json', params]], cb);
+      },
+    },
+    {
       suspendWebsite(userName, host, subscribe, cb) {
         const params = {
           required_auths: [],
