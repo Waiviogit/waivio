@@ -399,7 +399,7 @@ export const createDuplicateList = (user, authorPermlink, scanEmbedded) =>
     });
 
 export const createDescription = (user, authorPermlink, scanEmbedded) =>
-  fetch(`${config.importApiPrefix}${config.descriptionsBot}`, {
+  fetch(`${config.importApiPrefix}${config.descriptionBot}`, {
     headers: { ...headers, 'access-token': Cookie.get('access_token') },
     method: 'POST',
     body: JSON.stringify({
@@ -417,7 +417,7 @@ export const createDescription = (user, authorPermlink, scanEmbedded) =>
 
 export const getDescriptionsList = (userName, skip, limit) =>
   fetch(
-    `${config.importApiPrefix}${config.descriptionsBot}?user=${userName}&skip=${skip}&limit=${limit}`,
+    `${config.importApiPrefix}${config.descriptionBot}?user=${userName}&skip=${skip}&limit=${limit}`,
     {
       headers,
       method: 'GET',
@@ -428,7 +428,7 @@ export const getDescriptionsList = (userName, skip, limit) =>
     .catch(e => e);
 
 export const changeDescriptions = (user, status, importId) =>
-  fetch(`${config.importApiPrefix}${config.descriptionsBot}`, {
+  fetch(`${config.importApiPrefix}${config.descriptionBot}`, {
     headers: { ...headers, 'access-token': Cookie.get('access_token') },
     method: 'PUT',
     body: JSON.stringify({
@@ -442,7 +442,7 @@ export const changeDescriptions = (user, status, importId) =>
     .catch(e => e);
 
 export const deleteDescriptions = (user, importId) =>
-  fetch(`${config.importApiPrefix}${config.descriptionsBot}`, {
+  fetch(`${config.importApiPrefix}${config.descriptionBot}`, {
     headers: { ...headers, 'access-token': Cookie.get('access_token') },
     method: 'DELETE',
     body: JSON.stringify({
@@ -456,7 +456,7 @@ export const deleteDescriptions = (user, importId) =>
 
 export const getHistoryDescriptionsObjects = (userName, skip, limit) =>
   fetch(
-    `${config.importApiPrefix}${config.descriptionsBot}${config.history}?user=${userName}&skip=${skip}&limit=${limit}`,
+    `${config.importApiPrefix}${config.descriptionBot}${config.history}?user=${userName}&skip=${skip}&limit=${limit}`,
     {
       headers,
       method: 'GET',
@@ -467,7 +467,7 @@ export const getHistoryDescriptionsObjects = (userName, skip, limit) =>
     .catch(e => e);
 
 export const getDescriptionsVote = userName =>
-  fetch(`${config.importApiPrefix}${config.descriptionsBot}${config.power}?user=${userName}`, {
+  fetch(`${config.importApiPrefix}${config.descriptionBot}${config.power}?user=${userName}`, {
     headers,
     method: 'GET',
   })
@@ -476,7 +476,7 @@ export const getDescriptionsVote = userName =>
     .catch(e => e);
 
 export const setDescriptionsBotVote = (user, minVotingPower) =>
-  fetch(`${config.importApiPrefix}${config.descriptionsBot}${config.power}`, {
+  fetch(`${config.importApiPrefix}${config.descriptionBot}${config.power}`, {
     headers: {
       ...headers,
       'access-token': Cookie.get('access_token'),
