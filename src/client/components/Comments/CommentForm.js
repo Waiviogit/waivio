@@ -91,12 +91,12 @@ const CommentForm = props => {
 
   const setBodyAndRender = value => {
     const markdownBody = value.children ? editorStateToMarkdownSlate(value.children) : value;
-    const bodyWithSignature = `${markdownBody}${signature}`;
+    const bodyWithSignature = props.isEdit ? markdownBody : `${markdownBody}${signature}`;
 
     if (
       (props.isEdit &&
         Boolean(props.inputValue) &&
-        trimEnd(props.inputValue) !== trimEnd(markdownBody)) ||
+        trimEnd(props.inputValue) !== trimEnd(bodyWithSignature)) ||
       !props.isEdit
     )
       debouncedDraftSave(markdownBody);

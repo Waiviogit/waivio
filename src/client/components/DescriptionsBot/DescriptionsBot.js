@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Modal, Switch } from 'antd';
 import { injectIntl } from 'react-intl';
+import { isEmpty } from 'lodash';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import VoteInfoBlock from '../DataImport/VoteInfoBlock';
@@ -25,9 +26,9 @@ import {
 } from '../../../waivioApi/importApi';
 import { closeImportSoket, getImportUpdate } from '../../../store/settingsStore/settingsActions';
 import { getAccount } from '../../../common/helpers/apiHelpers';
+import FindDescriptionsModal from './FindDescriptionsModal';
 import { reload } from '../../../store/authStore/authActions';
 import './DescriptionsBot.less';
-import FindDescriptionsModal from './FindDescriptionsModal';
 
 const limit = 30;
 const DescrioptionsBot = ({ intl }) => {
@@ -215,7 +216,9 @@ const DescrioptionsBot = ({ intl }) => {
         handleShowMore={loadMoreDescriptionsData}
         showMore={hasMoreDescriptions}
         header={configDepartmentsBotProductTable}
-        bodyConfig={descriptions}
+        bodyConfig={
+          !isEmpty(descriptions) ? descriptions.map(d => ({ objectsClaimed: 0, ...d })) : []
+        }
         deleteItem={handleDeleteDescription}
         onChange={handleChangeStatusDescriptions}
       />
@@ -229,7 +232,9 @@ const DescrioptionsBot = ({ intl }) => {
         handleShowMore={loadMoreHistoryData}
         showMore={hasMoreHistory}
         header={configDepartmentsBotHistoryTable}
-        bodyConfig={history}
+        bodyConfig={
+          !isEmpty(history) ? history?.map(item => ({ ...item, lists: [item?.baseList] })) : []
+        }
       />
       {visibleVoting && (
         <ChangeVotingModal

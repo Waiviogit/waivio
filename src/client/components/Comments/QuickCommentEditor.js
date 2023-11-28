@@ -6,7 +6,7 @@ import { debounce } from 'lodash';
 import { Transforms } from 'slate';
 import { injectIntl } from 'react-intl';
 
-import { getIsAuthenticated } from '../../../store/authStore/authSelectors';
+import { getAuthenticatedUser, getIsAuthenticated } from '../../../store/authStore/authSelectors';
 import EditorSlate from '../EditorExtended/editorSlate';
 import { editorStateToMarkdownSlate } from '../EditorExtended/util/editorStateToMarkdown';
 import { checkCursorInSearchSlate } from '../../../common/helpers/editorHelper';
@@ -20,14 +20,18 @@ import { searchObjectsAutoCompete } from '../../../store/searchStore/searchActio
 import { insertObject } from '../EditorExtended/util/SlateEditor/utils/common';
 
 import './QuickCommentEditor.less';
+import { getMetadata } from '../../../common/helpers/postingMetadata';
 
 @connect(state => ({
   isAuth: getIsAuthenticated(state),
+  user: getAuthenticatedUser(state),
 }))
 class QuickCommentEditor extends React.Component {
   static propTypes = {
     parentPost: PropTypes.shape().isRequired,
+    user: PropTypes.shape(),
     isLoading: PropTypes.bool,
+    isEdit: PropTypes.bool,
     inputValue: PropTypes.string.isRequired,
     onSubmit: PropTypes.func,
     isAuth: PropTypes.bool,
@@ -66,6 +70,9 @@ class QuickCommentEditor extends React.Component {
   handleSubmit = e => {
     e.preventDefault();
     e.stopPropagation();
+    const metadata = getMetadata(this.props.user);
+    const signature = metadata?.profile?.signature || '';
+
     if (e.shiftKey) {
       this.setState(prevState => ({ commentMsg: `${prevState.commentMsg}\n` }));
     } else {
@@ -74,7 +81,9 @@ class QuickCommentEditor extends React.Component {
       this.setState({ isDisabledSubmit: true });
 
       if (commentMsg) {
-        this.props.onSubmit(this.props.parentPost, commentMsg.trim()).then(() => {
+        const bodyWithSignature = this.props.isEdit ? commentMsg : `${commentMsg}${signature}`;
+
+        this.props.onSubmit(this.props.parentPost, bodyWithSignature).then(() => {
           this.setState({ commentMsg: '', currentImage: [] });
           resetEditorState(this.editor);
         });
@@ -139,7 +148,7 @@ class QuickCommentEditor extends React.Component {
   };
 
   render() {
-    const { isLoading, isAuth, intl } = this.props;
+    const { isLoading, isAuth, intl, inputValue } = this.props;
 
     return (
       <div className="QuickComment">
@@ -160,7 +169,7 @@ class QuickCommentEditor extends React.Component {
               handleObjectSelect={this.handleObjectSelect}
               setEditorCb={this.setEditor}
               ADD_BTN_DIF={24}
-              initialBody={this.props.inputValue}
+              initialBody={inputValue}
               isShowEditorSearch={this.state.isShowEditorSearch}
               setShowEditorSearch={this.setShowEditorSearch}
             />
