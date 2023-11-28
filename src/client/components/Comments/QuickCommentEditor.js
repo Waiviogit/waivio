@@ -31,6 +31,7 @@ class QuickCommentEditor extends React.Component {
     parentPost: PropTypes.shape().isRequired,
     user: PropTypes.shape(),
     isLoading: PropTypes.bool,
+    isEdit: PropTypes.bool,
     inputValue: PropTypes.string.isRequired,
     onSubmit: PropTypes.func,
     isAuth: PropTypes.bool,
@@ -80,7 +81,9 @@ class QuickCommentEditor extends React.Component {
       this.setState({ isDisabledSubmit: true });
 
       if (commentMsg) {
-        this.props.onSubmit(this.props.parentPost, `${commentMsg}${signature}`).then(() => {
+        const bodyWithSignature = this.props.isEdit ? commentMsg : `${commentMsg}${signature}`;
+
+        this.props.onSubmit(this.props.parentPost, bodyWithSignature).then(() => {
           this.setState({ commentMsg: '', currentImage: [] });
           resetEditorState(this.editor);
         });
@@ -113,15 +116,8 @@ class QuickCommentEditor extends React.Component {
 
   handleMsgChange = body => {
     const commentMsg = body.children ? editorStateToMarkdownSlate(body.children) : body;
-    const metadata = getMetadata(this.props.user);
-    const signature = metadata?.profile?.signature || '';
-    const trimmedMessage = commentMsg?.trim();
-    const trimmedSignature = signature?.trim();
-    const commentMessage = trimmedMessage?.includes(trimmedSignature)
-      ? trimmedMessage?.replace(trimmedSignature, '')
-      : commentMsg;
 
-    this.setState({ commentMsg: commentMessage });
+    this.setState({ commentMsg });
     this.handleContentChangeSlate(body);
   };
 
@@ -153,13 +149,6 @@ class QuickCommentEditor extends React.Component {
 
   render() {
     const { isLoading, isAuth, intl, inputValue } = this.props;
-    const metadata = getMetadata(this.props.user);
-    const signature = metadata?.profile?.signature || '';
-    const trimmedVal = inputValue?.trim();
-    const trimmedSignature = signature?.trim();
-    const value = trimmedVal?.includes(trimmedSignature)
-      ? trimmedVal?.replace(trimmedSignature, '')
-      : inputValue;
 
     return (
       <div className="QuickComment">
@@ -180,8 +169,7 @@ class QuickCommentEditor extends React.Component {
               handleObjectSelect={this.handleObjectSelect}
               setEditorCb={this.setEditor}
               ADD_BTN_DIF={24}
-              initialBody={value}
-              signature={signature}
+              initialBody={inputValue}
               isShowEditorSearch={this.state.isShowEditorSearch}
               setShowEditorSearch={this.setShowEditorSearch}
             />

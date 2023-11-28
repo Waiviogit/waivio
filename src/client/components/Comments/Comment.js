@@ -264,6 +264,7 @@ class Comment extends React.Component {
 
     if (this.state.editOpen) {
       content = commentEditor({
+        isEdit: this.state.editOpen,
         parentPost: parent,
         username: '',
         inputValue: comment.body,
@@ -357,6 +358,7 @@ class Comment extends React.Component {
           {this.state.replyOpen &&
             user.name &&
             commentEditor({
+              isEdit: this.state.editOpen,
               username: user.name,
               parentPost: comment,
               isSmall: comment.depth !== 1,
