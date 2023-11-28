@@ -91,15 +91,18 @@ const CommentForm = props => {
 
   const setBodyAndRender = value => {
     const markdownBody = value.children ? editorStateToMarkdownSlate(value.children) : value;
+    const bodyWithoutSignature = markdownBody?.includes(signature)
+      ? markdownBody.replace(signature, '')
+      : markdownBody;
     const bodyWithSignature = `${markdownBody}${signature}`;
 
     if (
       (props.isEdit &&
         Boolean(props.inputValue) &&
-        trimEnd(props.inputValue) !== trimEnd(markdownBody)) ||
+        trimEnd(props.inputValue) !== trimEnd(bodyWithoutSignature)) ||
       !props.isEdit
     )
-      debouncedDraftSave(markdownBody);
+      debouncedDraftSave(bodyWithoutSignature);
 
     setBody(bodyWithSignature);
     setHTML(remarkable.render(bodyWithSignature));
