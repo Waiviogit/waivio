@@ -2392,7 +2392,6 @@
   "deposit_instructions_part2": "à l'adresse suivante et vous recevrez un montant égal de",
   "Profile": "Profil",
   "notification_campaign_released_reservation": "{author} a libéré une réservation pour {campaignName}",
-  "rewards_from_sponsors_you_are_following:": "Récompenses des sponsors que vous suivez",
   "select_the_crypto_token_first": "Veuillez d'abord sélectionner le jeton de chiffrement.",
   "swaptokens_info": "Les transactions importantes peuvent avoir un impact sur le taux de change. Si cet impact est supérieur à la valeur définie, la transaction sera annulée.",
   "select_the_crypto_token_to_deposit": "Sélectionnez le jeton crypto à déposer",

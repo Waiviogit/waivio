@@ -11,6 +11,7 @@ import {
   activateWebsite,
   deleteWebsite,
   getManageInfo,
+  setWebsiteCanonical,
   suspendWebsite,
 } from '../../../../store/websiteStore/websiteActions';
 import {
@@ -48,6 +49,11 @@ export const ManageWebsite = props => {
 
     if (e.target.checked) props.activateWebsite(appId);
     else props.suspendWebsite(appId);
+  };
+  const onChangeRadio = (e, item) => {
+    const appId = get(item, 'host');
+
+    props.setWebsiteCanonical(appId);
   };
 
   const handleClickPayNow = () => {
@@ -214,6 +220,7 @@ export const ManageWebsite = props => {
               header={configUsersWebsitesTableHeader}
               bodyConfig={websites}
               onChange={onChangeCheckbox}
+              onChangeRadio={onChangeRadio}
               deleteItem={hostInfo => setModalState({ visible: true, hostInfo })}
               emptyTitle={props.intl.formatMessage({
                 id: 'manage_website_empty_table',
@@ -292,6 +299,7 @@ ManageWebsite.propTypes = {
   }).isRequired,
   affiliateObjects: PropTypes.arrayOf().isRequired,
   activateWebsite: PropTypes.func.isRequired,
+  setWebsiteCanonical: PropTypes.func.isRequired,
   suspendWebsite: PropTypes.func.isRequired,
   openTransfer: PropTypes.func.isRequired,
   deleteWebsite: PropTypes.func.isRequired,
@@ -314,6 +322,7 @@ export default connect(
   {
     getManageInfo,
     activateWebsite,
+    setWebsiteCanonical,
     suspendWebsite,
     openTransfer,
     deleteWebsite,

@@ -2392,7 +2392,6 @@
   "deposit_instructions_part2": " an die folgende Adresse senden, und Sie erhalten einen gleichen Betrag von",
   "Profile": "Profil",
   "notification_campaign_released_reservation": "{author} hat eine Reservierung für {withdraw_route} freigegeben",
-  "rewards_from_sponsors_you_are_following:": "Belohnungen von den Sponsoren, denen Sie folgen",
   "select_the_crypto_token_first": "Bitte wählen Sie zuerst das Kryptotoken aus.",
   "swaptokens_info": "Große Transaktionen können sich auf den Wechselkurs auswirken. Wenn dieser Einfluss größer ist als der festgelegte Wert, wird die Transaktion abgebrochen.",
   "select_the_crypto_token_to_deposit": "Wählen Sie das Kryptotoken für die Einzahlung aus",

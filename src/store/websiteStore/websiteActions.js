@@ -98,6 +98,24 @@ export const getManageInfo = name => ({
   },
 });
 
+export const CHANGE_CANONICAL_WEBSITE = '@website/CHANGE_CANONICAL_WEBSITE';
+
+export const setWebsiteCanonical = id => (dispatch, getState, { steemConnectAPI, busyAPI }) => {
+  const name = getAuthenticatedUserName(getState());
+
+  dispatch({ type: CHANGE_CANONICAL_WEBSITE, id });
+  steemConnectAPI.setWebsiteCanonical(name, id).then(async () => {
+    const blockNumber = await getLastBlockNum();
+
+    busyAPI.instance.sendAsync(subscribeMethod, [name, blockNumber, subscribeTypes.posts]);
+    busyAPI.instance.subscribe((response, mess) => {
+      if (subscribeTypes.posts === mess.type && mess.notification.blockParsed === blockNumber) {
+        dispatch(getManageInfo(name));
+      }
+    });
+  });
+};
+
 export const CHANGE_STATUS_WEBSITE = '@website/CHANGE_STATUS_WEBSITE';
 
 export const activateWebsite = id => (dispatch, getState, { steemConnectAPI, busyAPI }) => {

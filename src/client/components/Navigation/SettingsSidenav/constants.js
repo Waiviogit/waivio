@@ -78,6 +78,11 @@ export const dataManagementSettings = {
       defaultMessage: 'Departments bot',
     },
     {
+      to: '/descriptions-bot',
+      id: 'descriptions_bot',
+      defaultMessage: 'Descriptions bot',
+    },
+    {
       to: '/list-duplication',
       id: 'list_duplication',
       defaultMessage: 'List duplication',

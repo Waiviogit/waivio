@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import moment from 'moment';
 import { injectIntl } from 'react-intl';
 import { get, isEmpty, size, isNil, round } from 'lodash';
-import { Checkbox, Modal } from 'antd';
+import { Checkbox, Modal, Radio } from 'antd';
 import Loading from '../../Icon/Loading';
 import USDDisplay from '../../Utils/USDDisplay';
 import { isMobile } from '../../../../common/helpers/apiHelpers';
@@ -16,6 +16,7 @@ export const DynamicTable = ({
   bodyConfig,
   intl,
   onChange,
+  onChangeRadio,
   deleteItem,
   emptyTitle,
   buttons,
@@ -38,6 +39,16 @@ export const DynamicTable = ({
             className="DynamicTable__checkbox"
             onChange={e => onChange(e, item)}
             {...(!isNil(get(item, 'checked')) || head.getChecked ? getChecked : {})}
+          />
+        );
+
+      case 'radio':
+        const getCanonicalChecked = { checked: item.useForCanonical };
+
+        return (
+          <Radio
+            onChange={e => onChangeRadio(e, item)}
+            {...(!isNil(get(item, 'useForCanonical')) ? getCanonicalChecked : {})}
           />
         );
 
@@ -182,6 +193,7 @@ DynamicTable.propTypes = {
   header: PropTypes.arrayOf(PropTypes.shape()),
   bodyConfig: PropTypes.arrayOf(PropTypes.shape()),
   onChange: PropTypes.func,
+  onChangeRadio: PropTypes.func,
   deleteItem: PropTypes.func,
   handleShowMore: PropTypes.func,
   emptyTitle: PropTypes.string,
@@ -194,6 +206,7 @@ DynamicTable.defaultProps = {
   header: [],
   bodyConfig: [],
   onChange: () => {},
+  onChangeRadio: () => {},
   handleShowMore: () => {},
   deleteItem: () => {},
   emptyTitle: '',

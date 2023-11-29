@@ -137,6 +137,7 @@ export default {
       'chrome-extension',
       'claim-authority',
       'departments-bot',
+      'descriptions-bot',
       'list-duplication',
     ].join('|'),
   },
