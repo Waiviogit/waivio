@@ -12,8 +12,8 @@ import {
 } from '../../../store/authStore/authSelectors';
 import { MATCH_BOTS_TYPES, redirectAuthHiveSigner } from '../../../common/helpers/matchBotsHelpers';
 import {
-  configDepartmentsBotHistoryTable,
-  configDepartmentsBotProductTable,
+  configDescriptionsBotHistoryTable,
+  configDescriptionsBotProductTable,
 } from '../DataImport/tableConfig';
 import ChangeVotingModal from '../../widgets/ChangeVotingModal/ChangeVotingModal';
 import {
@@ -215,10 +215,8 @@ const DescrioptionsBot = ({ intl }) => {
       <DynamicTbl
         handleShowMore={loadMoreDescriptionsData}
         showMore={hasMoreDescriptions}
-        header={configDepartmentsBotProductTable}
-        bodyConfig={
-          !isEmpty(descriptions) ? descriptions.map(d => ({ objectsClaimed: 0, ...d })) : []
-        }
+        header={configDescriptionsBotProductTable}
+        bodyConfig={descriptions}
         deleteItem={handleDeleteDescription}
         onChange={handleChangeStatusDescriptions}
       />
@@ -231,7 +229,7 @@ const DescrioptionsBot = ({ intl }) => {
       <DynamicTbl
         handleShowMore={loadMoreHistoryData}
         showMore={hasMoreHistory}
-        header={configDepartmentsBotHistoryTable}
+        header={configDescriptionsBotHistoryTable}
         bodyConfig={
           !isEmpty(history) ? history?.map(item => ({ ...item, lists: [item?.baseList] })) : []
         }
