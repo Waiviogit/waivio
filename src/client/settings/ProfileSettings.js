@@ -7,8 +7,7 @@ import { injectIntl, FormattedMessage } from 'react-intl';
 import filesize from 'filesize';
 import { Form, Input, Avatar, Button, Modal, message } from 'antd';
 import moment from 'moment';
-import SteemConnectAPI from '../steemConnectAPI';
-import { updateProfile } from '../../store/authStore/authActions';
+import { updateAuthProfile, updateProfile } from '../../store/authStore/authActions';
 import { MAXIMUM_UPLOAD_SIZE } from '../../common/helpers/image';
 import { getMetadata } from '../../common/helpers/postingMetadata';
 import { ACCOUNT_UPDATE } from '../../common/constants/accountHistory';
@@ -71,6 +70,7 @@ function mapPropsToFields(props) {
   }),
   {
     updateProfile,
+    updateAuthProfile,
     setCursorCoordinates,
     searchObjectsAutoCompete,
   },
@@ -85,6 +85,7 @@ export default class ProfileSettings extends React.Component {
     userName: PropTypes.string,
     isGuest: PropTypes.bool,
     updateProfile: PropTypes.func,
+    updateAuthProfile: PropTypes.func,
     setCursorCoordinates: PropTypes.func,
     searchObjectsAutoCompete: PropTypes.func,
     user: PropTypes.shape(),
@@ -99,6 +100,7 @@ export default class ProfileSettings extends React.Component {
     history: {},
     isGuest: false,
     updateProfile: () => {},
+    updateAuthProfile: () => {},
   };
 
   constructor(props) {
@@ -168,7 +170,7 @@ export default class ProfileSettings extends React.Component {
 
   setSettingsFields = () => {
     // eslint-disable-next-line no-shadow
-    const { form, isGuest, userName, user, updateProfile, intl } = this.props;
+    const { form, isGuest, userName, user, updateProfile, updateAuthProfile, intl } = this.props;
     const { avatarImage, coverImage, profileData, bodyHTML } = this.state;
     const isChangedAvatar = !!avatarImage.length;
     const isChangedCover = !!coverImage.length;
@@ -228,22 +230,7 @@ export default class ProfileSettings extends React.Component {
             },
           ];
 
-          SteemConnectAPI.broadcast([profileDateEncoded])
-            .then(() => {
-              setTimeout(() => {
-                message.success(
-                  intl.formatMessage({
-                    id: 'profile_updated',
-                    defaultMessage: 'Profile updated',
-                  }),
-                );
-                this.props.history.push(`/@${user.name}`);
-              }, 2000);
-            })
-            .catch(e => {
-              this.setState({ isLoading: false });
-              message.error(e.message);
-            });
+          updateAuthProfile(userName, profileDateEncoded, this.props.history, intl);
         }
       }
     });

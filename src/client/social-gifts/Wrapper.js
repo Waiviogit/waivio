@@ -59,10 +59,10 @@ import { getObjectName } from '../../common/helpers/wObjectHelper';
 const createLink = i => {
   switch (i.object_type) {
     case 'shop':
-      return `/object-shop/${i.author_permlink}`;
+      return `/object-shop/${i?.author_permlink}`;
     case 'list':
     case 'page':
-      return `/checklist/${i.author_permlink}`;
+      return `/checklist/${i?.author_permlink}`;
     default:
       return i.linkToWeb || i.defaultShowLink;
   }
@@ -122,7 +122,7 @@ const SocialWrapper = props => {
             const compareList = wobject?.menuItem?.map(wobjItem => {
               const body = parseJSON(wobjItem.body);
               const currItem = body?.linkToObject
-                ? listItems.wobjects.find(wobj => wobj.author_permlink === body?.linkToObject)
+                ? listItems.wobjects.find(wobj => wobj?.author_permlink === body?.linkToObject)
                 : body;
 
               return {

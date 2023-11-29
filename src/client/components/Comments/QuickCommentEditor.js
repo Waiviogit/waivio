@@ -4,9 +4,10 @@ import { connect } from 'react-redux';
 import { Icon } from 'antd';
 import { debounce } from 'lodash';
 import { Transforms } from 'slate';
+import { withRouter } from 'react-router-dom';
 import { injectIntl } from 'react-intl';
 
-import { getAuthenticatedUser, getIsAuthenticated } from '../../../store/authStore/authSelectors';
+import { getIsAuthenticated } from '../../../store/authStore/authSelectors';
 import EditorSlate from '../EditorExtended/editorSlate';
 import { editorStateToMarkdownSlate } from '../EditorExtended/util/editorStateToMarkdown';
 import { checkCursorInSearchSlate } from '../../../common/helpers/editorHelper';
@@ -21,10 +22,12 @@ import { insertObject } from '../EditorExtended/util/SlateEditor/utils/common';
 
 import './QuickCommentEditor.less';
 import { getMetadata } from '../../../common/helpers/postingMetadata';
+import { getUser } from '../../../store/usersStore/usersSelectors';
 
-@connect(state => ({
+@withRouter
+@connect((state, ownProps) => ({
   isAuth: getIsAuthenticated(state),
-  user: getAuthenticatedUser(state),
+  user: getUser(state, ownProps.match.params.name),
 }))
 class QuickCommentEditor extends React.Component {
   static propTypes = {
