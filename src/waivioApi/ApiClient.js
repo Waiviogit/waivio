@@ -2046,13 +2046,13 @@ const engineProxy = params => {
   const nodes = [
     // 'https://api.hive-engine.com/rpc', // Germany
     // 'https://api2.hive-engine.com/rpc', // Finland
-    'https://herpc.dtools.dev', // Miami
     // 'https://us.engine.rishipanthee.com', // Finland
+    'https://ha.herpc.dtools.dev', // New Jersey
+    'https://herpc.dtools.dev', // Miami
     'https://engine.deathwing.me', //
     'https://api.primersion.com',
     'https://herpc.kanibot.com',
     'https://he.sourov.dev',
-    // 'https://ha.herpc.dtools.dev', // New Jersey
   ];
 
   const callBack = (url, i, arr) =>
