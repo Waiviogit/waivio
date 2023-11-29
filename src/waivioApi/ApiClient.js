@@ -1,5 +1,5 @@
 /* eslint-disable */
-import { isEmpty, omit, ceil, includes } from 'lodash';
+import { isEmpty, omit, ceil, includes, has, sample } from 'lodash';
 import fetch from 'isomorphic-fetch';
 import Cookie from 'js-cookie';
 import { message } from 'antd';
@@ -24,6 +24,18 @@ export const headers = {
 };
 
 const WAIVIdPool = 13;
+const REQUEST_TIMEOUT = 15000;
+const HIVE_ENGINE_NODES = [
+  // 'https://api.hive-engine.com/rpc', // Germany
+  // 'https://api2.hive-engine.com/rpc', // Finland
+  // 'https://us.engine.rishipanthee.com', // Finland
+  'https://ha.herpc.dtools.dev', // New Jersey !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  'https://engine.deathwing.me', //
+  'https://herpc.dtools.dev', // Miami
+  'https://api.primersion.com',
+  'https://herpc.kanibot.com',
+  'https://he.sourov.dev',
+];
 
 export function handleErrors(response) {
   if (!response.ok) {
@@ -2042,35 +2054,46 @@ export const getPostsForMap = params =>
     .then(res => res.json())
     .catch(e => e);
 
-const engineProxy = params => {
-  const nodes = [
-    // 'https://api.hive-engine.com/rpc', // Germany
-    // 'https://api2.hive-engine.com/rpc', // Finland
-    'https://herpc.dtools.dev', // Miami
-    // 'https://us.engine.rishipanthee.com', // Finland
-    'https://engine.deathwing.me', //
-    'https://api.primersion.com',
-    'https://herpc.kanibot.com',
-    'https://he.sourov.dev',
-    // 'https://ha.herpc.dtools.dev', // New Jersey
-  ];
+const getNewNodeUrl = hostUrl => {
+  const index = hostUrl ? HIVE_ENGINE_NODES.indexOf(hostUrl) : 0;
 
-  const callBack = (url, i, arr) =>
-    fetch(`${url}/contracts`, {
+  return index === HIVE_ENGINE_NODES.length - 1
+    ? HIVE_ENGINE_NODES[0]
+    : HIVE_ENGINE_NODES[index + 1];
+};
+
+export const engineQuery = async ({ hostUrl, params, endpoint = '/contracts' }) =>
+  fetch(
+    `${hostUrl}${endpoint}`,
+    {
       headers,
       body: JSON.stringify({
         jsonrpc: '2.0',
-        id: 10,
+        id: 'ssc-mainnet-hive',
         method: 'find',
         params,
       }),
       method: 'POST',
-    })
-      .then(res => res.json())
-      .then(response => response.result)
-      .catch(() => callBack(arr[i + 1], i + 1, arr));
+    },
+    {
+      timeout: REQUEST_TIMEOUT,
+    },
+  )
+    .then(res => res.json())
+    .then(response => response.result)
+    .catch(error => ({ error }));
 
-  return callBack(nodes[0], 0, nodes);
+export const engineProxy = async (params, attempts = 5, hostUrl = sample(HIVE_ENGINE_NODES)) => {
+  const response = await engineQuery({
+    params,
+    hostUrl,
+  });
+  if (has(response, 'error')) {
+    if (attempts <= 0) return response;
+    const newUrl = getNewNodeUrl(hostUrl);
+    return engineProxy(params, attempts - 1, newUrl);
+  }
+  return response;
 };
 
 const hiveEngineContract = async params => engineProxy(params);
