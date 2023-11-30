@@ -27,7 +27,7 @@ const CheckListView = ({ wobject, listItems, loading, intl, hideBreadCrumbs }) =
   const history = useHistory();
   const match = useRouteMatch();
   const listType = wobject?.object_type === 'list';
-  const listPermlink = match.params.name || wobject.author_permlink;
+  const listPermlink = match.params.name || wobject?.author_permlink;
   const getListRow = listItem => {
     const isList = listItem.object_type === 'list';
 

@@ -17,6 +17,7 @@ const initialState = {
   isGuestUser: false,
   tabType: 'global',
   sort: 'recency',
+  signature: '',
 };
 
 export default (state = initialState, action) => {
@@ -147,6 +148,12 @@ export default (state = initialState, action) => {
       return {
         ...state,
         sort: action.payload,
+      };
+    }
+    case types.SET_SIGNATURE: {
+      return {
+        ...state,
+        signature: action.payload,
       };
     }
 

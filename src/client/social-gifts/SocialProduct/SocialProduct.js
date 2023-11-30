@@ -29,7 +29,6 @@ import AffiliatLink from '../../widgets/AffiliatLinks/AffiliatLink';
 import { isMobile } from '../../../common/helpers/apiHelpers';
 import ProductRewardCard from '../ShopObjectCard/ProductRewardCard/ProductRewardCard';
 import {
-  getLastPermlinksFromHash,
   getNumbersFromWobjPrice,
   getObjectAvatar,
   getObjectName,
@@ -92,9 +91,6 @@ const SocialProduct = ({
   isEditMode,
   toggleViewEditMode,
 }) => {
-  const authorPermlink = history.location.hash
-    ? getLastPermlinksFromHash(history.location.hash)
-    : match.params.name;
   const wobject =
     history.location.hash && history.location.hash !== `#${wobj.author_permlink}`
       ? nestedWobj
@@ -255,11 +251,11 @@ const SocialProduct = ({
 
   useEffect(() => {
     window.scrollTo({ top: scrollHeight, behavior: 'smooth' });
-    if (!isEmpty(authorPermlink)) {
-      getObjectsRewards(authorPermlink, userName).then(res => setReward(res));
+    if (!isEmpty(wobject.author_permlink)) {
+      getObjectsRewards(wobject.author_permlink, userName).then(res => setReward(res));
       referenceWobjType &&
         getReferenceObjectsList({
-          authorPermlink,
+          authorPermlink: wobject.author_permlink,
           userName,
           locale,
         }).then(res => setReferences(Object.entries(res)));
@@ -270,7 +266,7 @@ const SocialProduct = ({
       resetWobjGallery();
       setStoreActiveOpt({});
     };
-  }, [authorPermlink]);
+  }, [wobject.author_permlink]);
   useEffect(() => {
     resetOptClicked();
   }, []);
