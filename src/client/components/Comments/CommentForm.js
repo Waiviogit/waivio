@@ -7,7 +7,10 @@ import { Transforms } from 'slate';
 import { Button, Modal } from 'antd';
 import { connect } from 'react-redux';
 import Scroll from 'react-scroll';
-import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
+import {
+  getAuthenticatedUserName,
+  getAuthUserSignature,
+} from '../../../store/authStore/authSelectors';
 import { remarkable } from '../Story/Body';
 import BodyContainer from '../../containers/Story/BodyContainer';
 import Avatar from '../Avatar';
@@ -26,8 +29,6 @@ import { searchObjectsAutoCompete } from '../../../store/searchStore/searchActio
 import { getCommentDraft, saveCommentDraft } from '../../../waivioApi/ApiClient';
 
 import './CommentForm.less';
-import { getMetadata } from '../../../common/helpers/postingMetadata';
-import { getUser } from '../../../store/usersStore/usersSelectors';
 
 const Element = Scroll.Element;
 
@@ -39,8 +40,6 @@ const CommentForm = props => {
   const [init, setInit] = useState(false);
   const [draft, setDraft] = useState('');
   const parent = props.isEdit ? props.currentComment : props.parentPost;
-  const metadata = getMetadata(props.user);
-  const signature = metadata?.profile?.signature || '';
 
   useLayoutEffect(() => {
     getCommentDraft(props.username, parent?.author, parent?.permlink).then(res => {
@@ -90,7 +89,7 @@ const CommentForm = props => {
 
   const setBodyAndRender = value => {
     const markdownBody = value.children ? editorStateToMarkdownSlate(value.children) : value;
-    const bodyWithSignature = props.isEdit ? markdownBody : `${markdownBody}${signature}`;
+    const bodyWithSignature = props.isEdit ? markdownBody : `${markdownBody}${props.signature}`;
 
     if (
       (props.isEdit &&
@@ -246,7 +245,7 @@ CommentForm.propTypes = {
   inputValue: PropTypes.string.isRequired,
   onSubmit: PropTypes.func,
   editor: PropTypes.shape(),
-  user: PropTypes.shape(),
+  signature: PropTypes.string,
   intl: PropTypes.shape({
     formatMessage: PropTypes.func,
   }),
@@ -266,10 +265,10 @@ CommentForm.defaultProps = {
   editor: {},
 };
 
-const mapStateToProps = (store, ownProps) => ({
+const mapStateToProps = store => ({
   editor: getEditorSlate(store),
   username: getAuthenticatedUserName(store),
-  user: getUser(store, ownProps.username),
+  signature: getAuthUserSignature(store),
 });
 
 const mapDispatchToProps = dispatch => ({

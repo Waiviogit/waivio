@@ -47,6 +47,7 @@ export const RELOAD_SUCCESS = '@auth/RELOAD_SUCCESS';
 export const RELOAD_ERROR = '@auth/RELOAD_ERROR';
 
 export const LOGOUT = '@auth/LOGOUT';
+export const SET_SIGNATURE = '@auth/SET_SIGNATURE';
 
 export const CHANGE_SORTING_FOLLOW = '@auth/CHANGE_SORTING';
 
@@ -163,6 +164,7 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
         const { WAIV } = isGuest ? await getGuestWaivBalance(scUserData.name) : {};
 
         dispatch(changeAdminStatus(scUserData.name));
+        dispatch(setSignature(scUserData?.user_metadata?.profile?.signature || ''));
         dispatch(getCurrentCurrencyRate(userMetaData.settings.currency));
 
         resolve({
@@ -280,11 +282,23 @@ export const updateProfile = (username, values) => (dispatch, getState) => {
     meta: JSON.stringify(json_metadata),
   });
 };
+
+export const setSignature = signature => dispatch =>
+  dispatch({
+    type: SET_SIGNATURE,
+    payload: signature,
+  });
+
 export const updateAuthProfile = (userName, profileDate, his, intl) => (
   dispatch,
   getState,
   { steemConnectAPI, busyAPI },
 ) => {
+  const metadata = JSON.parse(profileDate?.[1]?.posting_json_metadata);
+  const signature = metadata?.profile?.signature;
+
+  dispatch(setSignature(signature));
+
   steemConnectAPI
     .broadcast([profileDate])
     .then(res => {
