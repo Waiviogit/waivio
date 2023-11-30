@@ -65,6 +65,11 @@ const DescrioptionsBot = ({ intl }) => {
       setListAndSetHasMore(his, history, false, setHistoryDescriptionsObject, setHasMoreHistory);
     });
 
+  const getAllDataUpdated = () => {
+    getDescrsList();
+    getHistory();
+  };
+
   const loadMoreDescriptionsData = () =>
     getDescriptionsList(authUserName, descriptions.length, limit + 1).then(res => {
       setListAndSetHasMore(res, descriptions, true, setDescriptions, setHasMoreDescriptions);
@@ -80,10 +85,9 @@ const DescrioptionsBot = ({ intl }) => {
       if (res.minVotingPower) setVotingValue(res.minVotingPower / 100);
     });
 
-    getDescrsList();
-    getHistory();
+    getAllDataUpdated();
 
-    dispatch(getImportUpdate(getDescrsList));
+    dispatch(getImportUpdate(getAllDataUpdated));
     getAccount(authUserName).then(
       r =>
         setIsDescriptionsBot(

@@ -4,10 +4,9 @@ import { connect } from 'react-redux';
 import { Icon } from 'antd';
 import { debounce } from 'lodash';
 import { Transforms } from 'slate';
-import { withRouter } from 'react-router-dom';
 import { injectIntl } from 'react-intl';
 
-import { getIsAuthenticated } from '../../../store/authStore/authSelectors';
+import { getAuthUserSignature, getIsAuthenticated } from '../../../store/authStore/authSelectors';
 import EditorSlate from '../EditorExtended/editorSlate';
 import { editorStateToMarkdownSlate } from '../EditorExtended/util/editorStateToMarkdown';
 import { checkCursorInSearchSlate } from '../../../common/helpers/editorHelper';
@@ -21,18 +20,15 @@ import { searchObjectsAutoCompete } from '../../../store/searchStore/searchActio
 import { insertObject } from '../EditorExtended/util/SlateEditor/utils/common';
 
 import './QuickCommentEditor.less';
-import { getMetadata } from '../../../common/helpers/postingMetadata';
-import { getUser } from '../../../store/usersStore/usersSelectors';
 
-@withRouter
-@connect((state, ownProps) => ({
+@connect(state => ({
   isAuth: getIsAuthenticated(state),
-  user: getUser(state, ownProps.match.params.name),
+  signature: getAuthUserSignature(state),
 }))
 class QuickCommentEditor extends React.Component {
   static propTypes = {
     parentPost: PropTypes.shape().isRequired,
-    user: PropTypes.shape(),
+    signature: PropTypes.string,
     isLoading: PropTypes.bool,
     isEdit: PropTypes.bool,
     inputValue: PropTypes.string.isRequired,
@@ -73,8 +69,7 @@ class QuickCommentEditor extends React.Component {
   handleSubmit = e => {
     e.preventDefault();
     e.stopPropagation();
-    const metadata = getMetadata(this.props.user);
-    const signature = metadata?.profile?.signature || '';
+    const { signature } = this.props;
 
     if (e.shiftKey) {
       this.setState(prevState => ({ commentMsg: `${prevState.commentMsg}\n` }));

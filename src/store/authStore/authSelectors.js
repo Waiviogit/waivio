@@ -8,6 +8,7 @@ const authState = state => state.auth;
 
 // reselect functions
 export const getIsAuthenticated = createSelector([authState], state => state.isAuthenticated);
+export const getAuthUserSignature = createSelector([authState], state => state.signature);
 
 export const getIsAuthFetching = createSelector([authState], state => state.isFetching);
 
