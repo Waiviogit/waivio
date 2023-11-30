@@ -63,6 +63,10 @@ const createLink = i => {
     case 'list':
     case 'page':
       return `/checklist/${i?.author_permlink}`;
+    case 'business':
+    case 'product':
+    case 'book':
+      return `/object/${i?.author_permlink}`;
     default:
       return i.linkToWeb || i.defaultShowLink;
   }
@@ -122,7 +126,7 @@ const SocialWrapper = props => {
             const compareList = wobject?.menuItem?.map(wobjItem => {
               const body = parseJSON(wobjItem.body);
               const currItem = body?.linkToObject
-                ? listItems.wobjects.find(wobj => wobj?.author_permlink === body?.linkToObject)
+                ? listItems.wobjects.find(wobj => wobj.author_permlink === body?.linkToObject)
                 : body;
 
               return {

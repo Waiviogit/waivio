@@ -10,6 +10,7 @@ import WobjectShopFilter from '../../object/ObjectTypeShop/WobjectShopFilter';
 import WobjectShoppingList from '../../object/ObjectTypeShop/WobjectShoppingList';
 import Wobj from '../../object/Wobj/Wobj';
 import Checklist from '../Checklist/Checklist';
+import { getAlbums } from '../../../store/galleryStore/galleryActions';
 
 const ShopMainForWobject = () => {
   const links = useSelector(getNavigItems);
@@ -21,6 +22,7 @@ const ShopMainForWobject = () => {
   useEffect(() => {
     if (!['shop', 'list', 'page'].includes(objType) && authorPermlink) {
       dispatch(getObject(authorPermlink));
+      dispatch(getAlbums(authorPermlink));
     }
   }, [links]);
 
