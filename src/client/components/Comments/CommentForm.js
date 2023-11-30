@@ -1,15 +1,13 @@
 import React, { useCallback, useEffect, useState, useLayoutEffect } from 'react';
 import PropTypes from 'prop-types';
 import { debounce, get, trimEnd } from 'lodash';
+import { withRouter } from 'react-router-dom';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { Transforms } from 'slate';
 import { Button, Modal } from 'antd';
 import { connect } from 'react-redux';
 import Scroll from 'react-scroll';
-import {
-  getAuthenticatedUser,
-  getAuthenticatedUserName,
-} from '../../../store/authStore/authSelectors';
+import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 import { remarkable } from '../Story/Body';
 import BodyContainer from '../../containers/Story/BodyContainer';
 import Avatar from '../Avatar';
@@ -29,6 +27,7 @@ import { getCommentDraft, saveCommentDraft } from '../../../waivioApi/ApiClient'
 
 import './CommentForm.less';
 import { getMetadata } from '../../../common/helpers/postingMetadata';
+import { getUser } from '../../../store/usersStore/usersSelectors';
 
 const Element = Scroll.Element;
 
@@ -267,10 +266,10 @@ CommentForm.defaultProps = {
   editor: {},
 };
 
-const mapStateToProps = store => ({
+const mapStateToProps = (store, ownProps) => ({
   editor: getEditorSlate(store),
   username: getAuthenticatedUserName(store),
-  user: getAuthenticatedUser(store),
+  user: getUser(store, ownProps.username),
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -278,4 +277,4 @@ const mapDispatchToProps = dispatch => ({
   searchObjects: value => dispatch(searchObjectsAutoCompete(value, '', null, true)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(injectIntl(CommentForm));
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(injectIntl(CommentForm)));
