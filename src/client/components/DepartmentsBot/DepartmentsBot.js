@@ -64,6 +64,10 @@ const DepartmentsBot = ({ intl }) => {
     getHistoryDepartmentsObjects(authUserName, 0, limit + 1).then(his => {
       setListAndSetHasMore(his, history, false, setHistoryDepartmentsObject, setHasMoreHistory);
     });
+  const getAllDataUpdated = () => {
+    getDepsList();
+    getHistory();
+  };
 
   const loadMoreDepartmentsData = () =>
     getDepartmentsList(authUserName, departments.length, limit + 1).then(res => {
@@ -80,10 +84,9 @@ const DepartmentsBot = ({ intl }) => {
       if (res.minVotingPower) setVotingValue(res.minVotingPower / 100);
     });
 
-    getDepsList();
-    getHistory();
+    getAllDataUpdated();
 
-    dispatch(getImportUpdate(getDepsList));
+    dispatch(getImportUpdate(getAllDataUpdated));
     getAccount(authUserName).then(
       r =>
         setIsDepartmentsBot(
