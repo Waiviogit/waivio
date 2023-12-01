@@ -21,7 +21,7 @@ import {
 } from '../../../common/helpers/wObjectHelper';
 import { preparationPostList, preparationPreview } from './helpers';
 import { getObject } from '../../../store/wObjectStore/wobjectsActions';
-import { useSeoInfo } from '../../../hooks/useSeoInfo';
+import { useSeoInfoWithAppUrl } from '../../../hooks/useSeoInfo';
 import { getHelmetIcon, getSiteName } from '../../../store/appStore/appSelectors';
 
 const limit = 15;
@@ -41,7 +41,7 @@ const ObjectNewsFeed = ({ wobj }) => {
   const { name } = useParams();
   const location = useLocation();
   const title = `${getObjectName(wobj)} - ${siteName}`;
-  const { canonicalUrl, descriptionSite } = useSeoInfo();
+  const { canonicalUrl, descriptionSite } = useSeoInfoWithAppUrl(`https://${wobj.canonical}`);
   const desc = wobj?.description || descriptionSite || siteName;
   const image = getObjectAvatar(wobj) || favicon;
   const objName = wobj?.author_permlink || getLastPermlinksFromHash(location.hash) || name;
