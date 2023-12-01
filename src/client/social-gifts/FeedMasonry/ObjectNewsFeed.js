@@ -41,7 +41,7 @@ const ObjectNewsFeed = ({ wobj }) => {
   const { name } = useParams();
   const location = useLocation();
   const title = `${getObjectName(wobj)} - ${siteName}`;
-  const { canonicalUrl, descriptionSite } = useSeoInfoWithAppUrl(`https://${wobj.canonical}`);
+  const { canonicalUrl, descriptionSite } = useSeoInfoWithAppUrl(wobj.canonical);
   const desc = wobj?.description || descriptionSite || siteName;
   const image = getObjectAvatar(wobj) || favicon;
   const objName = wobj?.author_permlink || getLastPermlinksFromHash(location.hash) || name;
