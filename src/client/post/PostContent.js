@@ -41,6 +41,7 @@ import { getFollowingList } from '../../store/userStore/userSelectors';
 import { getBookmarks, getPendingBookmarks } from '../../store/bookmarksStore/bookmarksSelectors';
 import { getPendingReblogs, getRebloggedList } from '../../store/reblogStore/reblogSelectors';
 import { getVotePercent, getVotingPower } from '../../store/settingsStore/settingsSelectors';
+import { getCanonicalHostForPost } from '../../hooks/useSeoInfo';
 
 @injectIntl
 @connect(
@@ -286,7 +287,8 @@ class PostContent extends React.Component {
       postMetaImage ||
       getAvatarURL(authorName) ||
       'https://waivio.nyc3.digitaloceanspaces.com/1587571702_96367762-1996-4b56-bafe-0793f04a9d79';
-    const canonicalUrl = `${appUrl}${replaceBotWithGuestName(
+    const canonicalHost = getCanonicalHostForPost(postMetaData.host);
+    const canonicalUrl = `https://${canonicalHost}${replaceBotWithGuestName(
       dropCategory(content.url),
       guestInfo,
     )}`;
