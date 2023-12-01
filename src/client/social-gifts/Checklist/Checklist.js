@@ -5,7 +5,7 @@ import { isEmpty } from 'lodash';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import Helmet from 'react-helmet';
-import { useSeoInfo } from '../../../hooks/useSeoInfo';
+import { useSeoInfoWithAppUrl } from '../../../hooks/useSeoInfo';
 import { getSuitableLanguage } from '../../../store/reducers';
 import {
   getLastPermlinksFromHash,
@@ -54,7 +54,7 @@ const Checklist = ({
   const desc = wobject?.description || mainObj?.description;
   const { firstDescrPart: description } = shortenDescription(removeEmptyLines(desc), 350);
   const image = getObjectAvatar(wobject) || favicon;
-  const { canonicalUrl } = useSeoInfo(true);
+  const { canonicalUrl } = useSeoInfoWithAppUrl(`https://${wobject.canonical}`, true);
 
   useEffect(() => {
     const pathUrl =
@@ -127,6 +127,7 @@ Checklist.propTypes = {
     object_type: PropTypes.string,
     description: PropTypes.string,
     creator: PropTypes.string,
+    canonical: PropTypes.string,
     title: PropTypes.string,
     author_permlink: PropTypes.string,
     background: PropTypes.string,
