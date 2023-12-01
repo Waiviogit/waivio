@@ -62,7 +62,7 @@ const Wobj = ({
 
   const getWobjView = useCallback(() => {
     const title = `${getObjectName(wobject)} - ${siteName}`;
-    const { canonicalUrl, descriptionSite } = useSeoInfoWithAppUrl(`https://${wobject.canonical}`);
+    const { canonicalUrl, descriptionSite } = useSeoInfoWithAppUrl(wobject.canonical);
     const desc = wobject?.description || descriptionSite || siteName;
     const image = getObjectAvatar(wobject) || favicon;
 

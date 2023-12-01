@@ -1,5 +1,6 @@
 import { useSelector } from 'react-redux';
 import { useLocation } from 'react-router';
+import { isNil } from 'lodash';
 
 import { getAppUrl, getMainObj } from '../store/appStore/appSelectors';
 import { getLastPermlinksFromHash } from '../common/helpers/wObjectHelper';
@@ -34,8 +35,11 @@ export const useSeoInfo = isChecklist => {
     descriptionSite,
   };
 };
-export const useSeoInfoWithAppUrl = (appUrl, isChecklist) => {
+export const useSeoInfoWithAppUrl = (appHost, isChecklist) => {
+  const loc = useLocation();
   const descriptionSite = useSelector(getMainObj).description;
+  const host = appHost === 'www.waivio.com' && loc.pathname === '/' ? location.hostname : appHost;
+  const appUrl = `https://${host}`;
 
   return {
     canonicalUrl: prefereCanonical(appUrl, isChecklist),
@@ -47,7 +51,7 @@ export const getCanonicalHostForPost = metadataHost => {
   const waivioHosts = ['waivio.com', 'waiviodev.com'];
   const originalWaivioHost = 'www.waivio.com';
 
-  if (waivioHosts.includes(metadataHost)) {
+  if (isNil(metadataHost) || waivioHosts.includes(metadataHost)) {
     return originalWaivioHost;
   }
 

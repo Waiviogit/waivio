@@ -54,7 +54,7 @@ const Checklist = ({
   const desc = wobject?.description || mainObj?.description;
   const { firstDescrPart: description } = shortenDescription(removeEmptyLines(desc), 350);
   const image = getObjectAvatar(wobject) || favicon;
-  const { canonicalUrl } = useSeoInfoWithAppUrl(`https://${wobject.canonical}`, true);
+  const { canonicalUrl } = useSeoInfoWithAppUrl(wobject.canonical, true);
 
   useEffect(() => {
     const pathUrl =

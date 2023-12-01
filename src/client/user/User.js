@@ -126,7 +126,7 @@ const User = props => {
 
   const hasCover = !!coverImage;
   const image = getAvatarURL(name) || DEFAULTS.AVATAR;
-  const { canonicalUrl } = useSeoInfoWithAppUrl(`https://${user?.canonical}`);
+  const { canonicalUrl } = useSeoInfoWithAppUrl(user?.canonical);
   const title = `${displayedUsername} ${getTitle(tab)} - ${siteName}`;
   const isSameUser = authenticated && authenticatedUser.name === name;
   const isAboutPage = match.params['0'] === 'about';
