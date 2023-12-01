@@ -284,15 +284,6 @@ export const calculatePendingWithdrawalSP = (user, totalVestingShares, totalVest
   );
 };
 
-export const calculateVotingPower = user => {
-  if (user.last_vote_time && user.voting_power) {
-    const secondsago =
-      (new Date().getTime() - new Date(user.last_vote_time + 'Z').getTime()) / 1000;
-    return Math.min(10000, user.voting_power + (10000 * secondsago) / 432000) / 10000;
-  }
-  return 0;
-};
-
 export const calculateEstAccountValue = (
   user,
   totalVestingShares,

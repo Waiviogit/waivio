@@ -43,6 +43,9 @@ export const getInfoForSideBar = (username, lastActiv) => async dispatch => {
       downvote_manabar: acc?.downvote_manabar,
       voting_manabar: voting_mana,
       posting_json_metadata: acc.posting_json_metadata,
+      vesting_withdraw_rate: acc.vesting_withdraw_rate,
+      to_withdraw: acc.to_withdraw,
+      withdrawn: acc.withdrawn,
     };
 
     data.rc_percentage = rc.percentage * 0.01 || 0;
