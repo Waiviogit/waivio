@@ -8,6 +8,9 @@ export const websiteState = state => state.website;
 export const getParentDomain = createSelector([websiteState], state =>
   get(state, 'parentDomain', []),
 );
+export const getAdSenseCode = createSelector([websiteState], state =>
+  get(state, 'adSenseCode', null),
+);
 
 export const getDomainAvailableStatus = createSelector([websiteState], state =>
   get(state, 'domainAvailableStatus', []),
