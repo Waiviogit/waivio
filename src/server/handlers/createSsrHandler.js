@@ -1,7 +1,7 @@
 import { setTimeout } from 'timers';
 import React from 'react';
 import { Provider } from 'react-redux';
-import { get } from 'lodash';
+import { get, isNil } from 'lodash';
 import { renderToString } from 'react-dom/server';
 import { StaticRouter } from 'react-router';
 import { matchRoutes, renderRoutes } from 'react-router-config';
@@ -18,6 +18,8 @@ import renderSsrPage from '../renderers/ssrRenderer';
 import switchRoutes from '../../routes/switchRoutes';
 import { getCachedPage, isSearchBot, setCachedPage, updateBotCount } from './cachePageHandler';
 import { isCustomDomain } from '../../client/social-gifts/listOfSocialWebsites';
+import { getAdSenseCode } from '../../store/websiteStore/websiteSelectors';
+import { getAdsenseSettings } from '../../store/websiteStore/websiteActions';
 
 // eslint-disable-next-line import/no-dynamic-require
 const assets = require(process.env.MANIFEST_PATH);
@@ -55,20 +57,21 @@ export default function createSsrHandler(template) {
       let settings = {};
       let parentHost;
       let adsenseSettings = {};
+      const store = getStore(sc2Api, waivioAPI, req.url);
+      const adSenseCode = getAdSenseCode(store.getState());
 
       if (!isWaivio) {
         settings = await getSettingsWebsite(hostname);
-        adsenseSettings = await getSettingsAdsense(hostname);
+        adsenseSettings = !isNil(adSenseCode)
+          ? { code: adSenseCode }
+          : await getSettingsAdsense(hostname);
 
         if (isCustomDomain(hostname)) {
           parentHost = await getParentHost(hostname);
         }
       }
-      // console.log(adsenseSettings, 'adsenseSettings');
 
       if (req.cookies.access_token) sc2Api.setAccessToken(req.cookies.access_token);
-
-      const store = getStore(sc2Api, waivioAPI, req.url);
       const routes = switchRoutes(hostname, parentHost);
       const splittedUrl = req.url.split('?');
       const branch = matchRoutes(routes, splittedUrl[0]);
@@ -113,7 +116,6 @@ export default function createSsrHandler(template) {
       await setCachedPage({ page, req });
       return res.send(page);
     } catch (err) {
-      console.log(err)
       console.error('SSR error occured, falling back to bundled application instead', err);
       let settings = {};
       const isWaivio = req.hostname.includes('waivio');

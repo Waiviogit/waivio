@@ -4,6 +4,7 @@ import * as websiteAction from './websiteActions';
 import { getAvailableStatus } from '../../client/websites/helper';
 
 const initialState = {
+  adSenseCode: null,
   parentDomain: [],
   domainAvailableStatus: '',
   manage: {},
@@ -62,6 +63,18 @@ export default function websiteReducer(state = initialState, action) {
       return {
         ...state,
         loadingWebsite: false,
+      };
+    }
+    case websiteAction.GET_ADSENSE_SETTINGS.SUCCESS: {
+      return {
+        ...state,
+        adSenseCode: action.payload.code,
+      };
+    }
+    case websiteAction.SAVE_ADSENSE_SETTINGS: {
+      return {
+        ...state,
+        adSenseCode: action.payload.code,
       };
     }
     case websiteAction.CREATE_NEW_WEBSITE.ERROR: {
