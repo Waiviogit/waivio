@@ -128,7 +128,7 @@ const parseGuestActions = actions => {
     DEMO_DEBT: 'demo_debt',
   };
 
-  return actions.map((action, index) => {
+  return actions?.map((action, index) => {
     const transferDirection = Object.values(guestActionType).includes(action.type)
       ? { from: action.sponsor, to: action.userName }
       : { from: action.userName, to: action.sponsor || 'mock' };
@@ -587,7 +587,7 @@ export const getUserTokensBalanceList = (
   dispatch({
     type: type.ACTION,
     payload: ApiClient.getTokenBalance(name, symbol).then(async res => {
-      const tokensList = res.map(item => item.symbol);
+      const tokensList = res?.map(item => item.symbol);
       const rates = await ApiClient.getTokensRate(isEmpty(tokensList) ? [symbol] : tokensList);
       const infos = await ApiClient.getTokensInformation(tokensList);
 
@@ -595,7 +595,7 @@ export const getUserTokensBalanceList = (
         dispatch(getAllRates(rates));
       }
       if (!isEmpty(rates)) {
-        const listTokensWithRates = res.map(token => {
+        const listTokensWithRates = res?.map(token => {
           const info = infos.find(r => r.symbol === token.symbol);
 
           return {
@@ -639,7 +639,7 @@ export const getCurrUserTokensBalanceSwap = name => ({
     const userBalances = await ApiClient.getTokenBalance(name, {
       $in: HIVE_ENGINE_DEFAULT_SWAP_LIST,
     });
-    const swapList = res.map(swap => {
+    const swapList = res?.map(swap => {
       const userBalance = userBalances.find(r => r.symbol === swap.symbol);
 
       return {

@@ -139,10 +139,10 @@ export const createQuickPost = (userBody, topics, images, reservationPermlink) =
 
   const isReview = Boolean(dish.propositions || dish.reward);
   const campaignId = isReview ? get(dish, 'propositions[0]._id') : null;
-  const imagesLink = images.map(img => `\n<center>![image]( ${img.src})</center>`).join('');
+  const imagesLink = images?.map(img => `\n<center>![image]( ${img.src})</center>`).join('');
   const withDish = dish.author_permlink !== restaurant.author_permlink;
   const topicsLink = topics
-    .map(tag => `\n[#${tag}](https://www.waivio.com/object/${tag})`)
+    ?.map(tag => `\n[#${tag}](https://www.waivio.com/object/${tag})`)
     .join('');
   const title = withDish
     ? `Review: ${getObjectName(restaurant)}, ${getObjectName(dish)}`

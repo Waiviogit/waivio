@@ -101,7 +101,7 @@ export const GET_FILTER_FOR_SEARCH_MORE = createAsyncActionType(
 );
 
 export const getFilterForSearch = (type, wobjects, more = false) => {
-  const links = wobjects.map(wobj => wobj.author_permlink);
+  const links = wobjects?.map(wobj => wobj.author_permlink);
 
   return {
     type: more ? GET_FILTER_FOR_SEARCH_MORE.ACTION : GET_FILTER_FOR_SEARCH.ACTION,
@@ -476,7 +476,7 @@ export const searchExpertsForMap = search => (dispatch, getState) => {
     search
       ? ApiClient.searchUsers(search, user).then(res => ({
           ...res,
-          users: res.users.map(usr => ({
+          users: res.users?.map(usr => ({
             ...usr,
             name: usr.account,
           })),
@@ -508,7 +508,7 @@ export const searchExpertsForMapLoadingMore = (search, skip) => (dispatch, getSt
     search
       ? ApiClient.searchUsers(search, user, 15, false, skip).then(res => ({
           ...res,
-          users: res.users.map(usr => ({
+          users: res.users?.map(usr => ({
             ...usr,
             name: usr.account,
           })),

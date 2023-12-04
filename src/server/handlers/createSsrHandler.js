@@ -64,7 +64,7 @@ export default function createSsrHandler(template) {
           parentHost = await getParentHost(hostname);
         }
       }
-      console.log(adsenseSettings, 'adsenseSettings');
+      // console.log(adsenseSettings, 'adsenseSettings');
 
       if (req.cookies.access_token) sc2Api.setAccessToken(req.cookies.access_token);
 
@@ -113,6 +113,7 @@ export default function createSsrHandler(template) {
       await setCachedPage({ page, req });
       return res.send(page);
     } catch (err) {
+      console.log(err)
       console.error('SSR error occured, falling back to bundled application instead', err);
       let settings = {};
       const isWaivio = req.hostname.includes('waivio');

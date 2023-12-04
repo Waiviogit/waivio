@@ -104,7 +104,7 @@ const getRootCommentsList = apiRes => {
 
   return Object.keys(apiRes.content)
     .filter(commentKey => apiRes.content[commentKey].depth === 1)
-    .map(commentKey => getPostKey(apiRes.content[commentKey]));
+    ?.map(commentKey => getPostKey(apiRes.content[commentKey]));
 };
 
 const getCommentsChildrenLists = apiRes => {

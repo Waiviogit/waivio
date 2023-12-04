@@ -47,7 +47,7 @@ const AffiliateSection = ({ listItem, isEditMode, wobject, userName }) => {
         !isEmpty(affiliateProductIdTypes) && (
           <div>
             {!isEditMode && <div className="CompanyId__title">Product ID type:</div>}
-            {affiliateProductIdTypes.map(id => (
+            {affiliateProductIdTypes?.map(id => (
               <div key={id} className={'AffiliateSection__affiliate-ids'}>
                 {id}
               </div>
@@ -60,7 +60,7 @@ const AffiliateSection = ({ listItem, isEditMode, wobject, userName }) => {
         !isEmpty(affiliateGeoAreas) && (
           <div>
             {!isEditMode && <div className="CompanyId__title">GEO area:</div>}
-            {affiliateGeoAreas.map(area => (
+            {affiliateGeoAreas?.map(area => (
               <div key={area} className={'AffiliateSection__affiliate-ids'}>
                 {{ ...allCountries, ...allContinents }[area]}
               </div>
