@@ -16,13 +16,7 @@ import {
 import getStore from '../../store/store';
 import renderSsrPage from '../renderers/ssrRenderer';
 import switchRoutes from '../../routes/switchRoutes';
-import {
-  getCachedPage,
-  getSitemap,
-  isSearchBot,
-  setCachedPage,
-  updateBotCount,
-} from './cachePageHandler';
+import { getCachedPage, isSearchBot, setCachedPage, updateBotCount } from './cachePageHandler';
 import { isCustomDomain } from '../../client/social-gifts/listOfSocialWebsites';
 
 // eslint-disable-next-line import/no-dynamic-require
@@ -66,11 +60,11 @@ export default function createSsrHandler(template) {
         settings = await getSettingsWebsite(hostname);
         adsenseSettings = await getSettingsAdsense(hostname);
 
-        // write file here
         if (isCustomDomain(hostname)) {
           parentHost = await getParentHost(hostname);
         }
       }
+      console.log(adsenseSettings, 'adsenseSettings');
 
       if (req.cookies.access_token) sc2Api.setAccessToken(req.cookies.access_token);
 
