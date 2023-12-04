@@ -2,12 +2,18 @@
 @import (reference) '../../styles/modules/variables.less';
 
 .ShopDepartmentsList {
-  font-weight: 500;
   padding-bottom: 30px;
 
-  &__mobile {
+  &__mobileCrumbs {
     display: block;
-    font-weight: 600;
+
+    b {
+      font-weight: 700;
+    }
+
+    span {
+      color: var(--website-color);
+    }
 
     .anticon {
       font-size: 12px;
