@@ -50,7 +50,8 @@ export default function createSsrHandler(template) {
         baseURL: process.env.STEEMCONNECT_HOST || 'https://hivesigner.com',
         callbackURL: process.env.STEEMCONNECT_REDIRECT_URL,
       });
-      const hostname = req.headers.host;
+      // const hostname = req.headers.host;
+      const hostname = req.hostname;
       const isWaivio = hostname.includes('waivio');
       let settings = {};
       let parentHost;
@@ -64,7 +65,6 @@ export default function createSsrHandler(template) {
           parentHost = await getParentHost(hostname);
         }
       }
-      console.log(adsenseSettings, 'adsenseSettings');
 
       if (req.cookies.access_token) sc2Api.setAccessToken(req.cookies.access_token);
 
@@ -113,6 +113,7 @@ export default function createSsrHandler(template) {
       await setCachedPage({ page, req });
       return res.send(page);
     } catch (err) {
+      console.log('here');
       console.error('SSR error occured, falling back to bundled application instead', err);
       let settings = {};
       const isWaivio = req.hostname.includes('waivio');
