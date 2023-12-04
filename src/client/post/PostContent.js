@@ -7,7 +7,6 @@ import { find, truncate, isEmpty } from 'lodash';
 import { Helmet } from 'react-helmet';
 import sanitize from 'sanitize-html';
 import {
-  dropCategory,
   isBannedPost,
   replaceBotWithGuestName,
   getAuthorName,
@@ -287,12 +286,12 @@ class PostContent extends React.Component {
       postMetaImage ||
       getAvatarURL(authorName) ||
       'https://waivio.nyc3.digitaloceanspaces.com/1587571702_96367762-1996-4b56-bafe-0793f04a9d79';
-    const canonicalHost = getCanonicalHostForPost(postMetaData.host);
+    const canonicalHost = getCanonicalHostForPost(postMetaData?.host);
     const canonicalUrl = `https://${canonicalHost}${replaceBotWithGuestName(
-      dropCategory(content.url),
+      content.url,
       guestInfo,
     )}`;
-    const url = `${appUrl}${replaceBotWithGuestName(dropCategory(content.url), guestInfo)}`;
+    const url = `${appUrl}${replaceBotWithGuestName(content.url, guestInfo)}`;
     const metaTitle = `${title} - ${siteName}`;
 
     return (
