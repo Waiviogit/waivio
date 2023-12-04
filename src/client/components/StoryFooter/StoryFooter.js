@@ -92,17 +92,19 @@ class StoryFooter extends React.Component {
     };
   }
 
-  componentWillMount() {
+  componentDidMount() {
     const { user, post, defaultVotePercent } = this.props;
 
     if (user) {
       const userVote = find(post.active_votes, { voter: user.name }) || {};
 
       if (userVote.percent && userVote.percent > 0) {
+        // eslint-disable-next-line react/no-did-mount-set-state
         this.setState({
           sliderValue: userVote.percent / 100,
         });
       } else {
+        // eslint-disable-next-line react/no-did-mount-set-state
         this.setState({
           sliderValue: defaultVotePercent / 100,
         });

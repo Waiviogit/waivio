@@ -69,7 +69,7 @@ export default (state = defaultState, action) => {
       };
     }
     case galleryActions.ADD_IMAGE: {
-      const albums = state.albums.map(album =>
+      const albums = state.albums?.map(album =>
         album.id === action.payload.id
           ? {
               ...album,

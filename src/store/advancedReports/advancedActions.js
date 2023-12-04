@@ -39,7 +39,7 @@ export const getUserTableTransactions = ({ filterAccounts, startDate, endDate, c
 ) => {
   const state = getState();
   const user = getAuthenticatedUserName(state);
-  const accounts = filterAccounts.map(acc => {
+  const accounts = filterAccounts?.map(acc => {
     const guest = guestUserRegex.test(acc);
 
     return {
@@ -71,7 +71,7 @@ export const getUserTableTransactions = ({ filterAccounts, startDate, endDate, c
         return {
           data: {
             ...data,
-            wallet: data.wallet && data.wallet.map(parseTransactionData),
+            wallet: data.wallet && data.wallet?.map(parseTransactionData),
             withdrawals: getCurrentValues(data.withdrawals),
             deposits: getCurrentValues(data.deposits),
           },
@@ -111,7 +111,7 @@ export const getMoreTableUserTransactionHistory = ({
       ).then(data => ({
         data: {
           ...data,
-          wallet: data.wallet && data.wallet.map(parseTransactionData),
+          wallet: data.wallet && data.wallet?.map(parseTransactionData),
           withdrawals: getCurrentValues(data.withdrawals),
           deposits: getCurrentValues(data.deposits),
         },

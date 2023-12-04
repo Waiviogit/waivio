@@ -4,6 +4,7 @@ import * as websiteAction from './websiteActions';
 import { getAvailableStatus } from '../../client/websites/helper';
 
 const initialState = {
+  adSenseCode: null,
   parentDomain: [],
   domainAvailableStatus: '',
   manage: {},
@@ -64,6 +65,18 @@ export default function websiteReducer(state = initialState, action) {
         loadingWebsite: false,
       };
     }
+    case websiteAction.GET_ADSENSE_SETTINGS.SUCCESS: {
+      return {
+        ...state,
+        adSenseCode: action.payload.code,
+      };
+    }
+    case websiteAction.SAVE_ADSENSE_SETTINGS: {
+      return {
+        ...state,
+        adSenseCode: action.payload.code,
+      };
+    }
     case websiteAction.CREATE_NEW_WEBSITE.ERROR: {
       return {
         ...state,
@@ -77,7 +90,7 @@ export default function websiteReducer(state = initialState, action) {
       };
     }
     case websiteAction.GET_INFO_FOR_MANAGE_PAGE.SUCCESS: {
-      const websites = get(action.payload, 'websites', []).map(website => ({
+      const websites = get(action.payload, 'websites', [])?.map(website => ({
         ...website,
         checked: website.status === 'active',
         pending: [],
@@ -155,7 +168,7 @@ export default function websiteReducer(state = initialState, action) {
         ...state,
         reports: {
           ...action.payload,
-          payments: action.payload.payments.map(payment => ({
+          payments: action.payload.payments?.map(payment => ({
             ...payment,
             createdAt: moment(payment.createdAt).format('DD-MMM-YYYY'),
           })),
@@ -402,7 +415,7 @@ export default function websiteReducer(state = initialState, action) {
       };
     }
     case websiteAction.DELETE_WEBSITE_ERROR: {
-      const websites = get(state, ['manage', 'websites'], []).map(website => ({
+      const websites = get(state, ['manage', 'websites'], [])?.map(website => ({
         ...website,
         checked: website.status === 'active',
         pending: [],

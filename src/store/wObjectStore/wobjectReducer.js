@@ -384,7 +384,7 @@ export default function wobjectReducer(state = initialState, action) {
         ...state,
         followers: {
           ...state.followers,
-          users: action.payload.wobjectFollowers.map(user => ({ ...user, isLoading: false })),
+          users: action.payload.wobjectFollowers?.map(user => ({ ...user, isLoading: false })),
           hasMore: action.payload.hasMore,
         },
       };
@@ -395,7 +395,7 @@ export default function wobjectReducer(state = initialState, action) {
         ...state,
         followers: {
           ...state.followers,
-          users: state.followers.users.map(user =>
+          users: state.followers.users?.map(user =>
             action.meta.username === user.name ? { ...user, pending: !user.pending } : user,
           ),
         },
@@ -408,7 +408,7 @@ export default function wobjectReducer(state = initialState, action) {
         followers: {
           ...state.followers,
           isLoading: false,
-          users: state.followers.users.map(user =>
+          users: state.followers.users?.map(user =>
             action.meta.username === user.name
               ? { ...user, pending: !user.pending, youFollows: !user.youFollows }
               : user,
@@ -448,7 +448,7 @@ export default function wobjectReducer(state = initialState, action) {
       return {
         ...state,
         objectExpertise: {
-          users: action.payload.users.map(userExpert => ({ ...userExpert, pending: false })),
+          users: action.payload.users?.map(userExpert => ({ ...userExpert, pending: false })),
           isLoading: false,
         },
       };
@@ -468,7 +468,7 @@ export default function wobjectReducer(state = initialState, action) {
         ...state,
         objectExpertise: {
           ...state.objectExpertise,
-          users: state.objectExpertise.users.map(item =>
+          users: state.objectExpertise.users?.map(item =>
             item.name === action.meta.userExpert ? { ...item, pending: !item.pending } : item,
           ),
         },
@@ -479,7 +479,7 @@ export default function wobjectReducer(state = initialState, action) {
         ...state,
         objectExpertise: {
           ...state.objectExpertise,
-          users: state.objectExpertise.users.map(item =>
+          users: state.objectExpertise.users?.map(item =>
             item.name === action.meta.userExpert
               ? { ...item, youFollows: !item.youFollows, pending: !item.pending }
               : item,
@@ -497,7 +497,7 @@ export default function wobjectReducer(state = initialState, action) {
       };
     }
     case GET_RELATED_WOBJECT.SUCCESS: {
-      const objects = action.payload.map(obj => ({ ...obj, parent: action.meta.wobject }));
+      const objects = action.payload?.map(obj => ({ ...obj, parent: action.meta.wobject }));
 
       return {
         ...state,

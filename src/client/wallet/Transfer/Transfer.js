@@ -1,4 +1,4 @@
-import React from 'react';
+ import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { connect } from 'react-redux';
@@ -243,7 +243,7 @@ export default class Transfer extends React.Component {
   getFraction = currency => {
     const currToken = this.props.tokensList.find(token => token.symbol === currency);
 
-    if (currToken?.balance < 0.001) return 3;
+    // if (currToken?.balance < 0.001) return 3;
 
     return currToken?.precision ?? 3;
   };
@@ -480,7 +480,10 @@ export default class Transfer extends React.Component {
 
   validateBalance = (rule, value, callback) => {
     const { intl, authenticated } = this.props;
-    const currentValue = parseFloat(value);
+    const currentValue = fixedNumber(
+      parseFloat(value),
+      this.getFraction(this.state.currency),
+    )
 
     if (value <= 0) {
       callback([

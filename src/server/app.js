@@ -6,7 +6,6 @@ import paths from '../../scripts/paths';
 import createSsrHandler from './handlers/createSsrHandler';
 // import createAmpHandler from './handlers/createAmpHandler';
 import steemAPI from './steemAPI';
-import { getSettingsAdsense } from '../waivioApi/ApiClient';
 import { getRobotsTxtContent } from '../common/helpers/robots-helper';
 import { webPage, sitemap } from './seo-service/seoServiceApi';
 

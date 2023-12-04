@@ -57,7 +57,7 @@ const objectType = (state = initialState, action) => {
         filtersList,
         tagsForFilter: tagsForFilterList,
         activeFilters,
-        map: Boolean((filters && !isEmpty(filters.map)) || hasMap),
+        map: Boolean((filters && !isEmpty(filters?.map)) || hasMap),
         filteredObjects,
         hasMoreRelatedObjects: Boolean(hasMoreWobjects),
         fetching: false,

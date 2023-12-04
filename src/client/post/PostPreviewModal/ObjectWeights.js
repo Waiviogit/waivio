@@ -103,7 +103,7 @@ const ObjectWeights = ({
           />
         </div>
       )}
-      {linkedObjects.map(obj => (
+      {linkedObjects?.map(obj => (
         <ObjectWeight
           key={obj._id}
           objId={obj._id}

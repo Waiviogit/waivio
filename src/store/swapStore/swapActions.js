@@ -26,8 +26,8 @@ export const getSwapList = () => (dispatch, getState) => {
         'SWAP.ETH': [...res['SWAP.ETH'], { symbol: 'WAIV', pair: 'SWAP.ETH:WAIV' }],
       };
       const fromSymbolList = Object.keys(swapList);
-      const toSymbolList = swapList[from.symbol].map(i => i.symbol);
-      const toSymbolChildList = swapList[toFromState.symbol || toSymbolList[0]].map(i => i.symbol);
+      const toSymbolList = swapList[from.symbol]?.map(i => i.symbol);
+      const toSymbolChildList = swapList[toFromState.symbol || toSymbolList[0]]?.map(i => i.symbol);
       const allSymbolList = await compareTokensList(
         name,
         uniq([...fromSymbolList, ...toSymbolList, ...toSymbolChildList]),

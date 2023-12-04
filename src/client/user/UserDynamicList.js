@@ -240,7 +240,7 @@ class UserDynamicList extends React.Component {
             loader={<Loading />}
             loadMore={this.handleLoadMore}
           >
-            {users.map(user => {
+            {users?.map(user => {
               if (!this.props.showAuthorizedUser || user.name !== this.props.userName) {
                 return (
                   <UserCard
