@@ -1,4 +1,4 @@
- import React from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { connect } from 'react-redux';
@@ -480,10 +480,7 @@ export default class Transfer extends React.Component {
 
   validateBalance = (rule, value, callback) => {
     const { intl, authenticated } = this.props;
-    const currentValue = fixedNumber(
-      parseFloat(value),
-      this.getFraction(this.state.currency),
-    )
+    const currentValue = fixedNumber(parseFloat(value), this.getFraction(this.state.currency));
 
     if (value <= 0) {
       callback([
