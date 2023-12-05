@@ -45,7 +45,7 @@ const ShopSwitcher = ({ intl }) => {
   const { canonicalUrl } = useSeoInfo();
 
   const firstPage = () => {
-    switch ('user') {
+    switch (shopSettings?.type) {
       case 'user':
         return (
           <div className="shifted">
@@ -72,7 +72,7 @@ const ShopSwitcher = ({ intl }) => {
                   type={shopSettings?.type}
                   user={shopSettings?.value}
                 />
-                <UserShoppingList name={'wiv01'} isSocial />
+                <UserShoppingList name={shopSettings?.value} isSocial />
               </div>
             </div>
           </div>
