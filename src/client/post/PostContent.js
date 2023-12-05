@@ -10,6 +10,7 @@ import {
   isBannedPost,
   replaceBotWithGuestName,
   getAuthorName,
+  dropCategory,
 } from '../../common/helpers/postHelpers';
 import { editPost } from '../../store/editorStore/editorActions';
 import {
@@ -287,11 +288,9 @@ class PostContent extends React.Component {
       getAvatarURL(authorName) ||
       'https://waivio.nyc3.digitaloceanspaces.com/1587571702_96367762-1996-4b56-bafe-0793f04a9d79';
     const canonicalHost = getCanonicalHostForPost(postMetaData?.host);
-    const canonicalUrl = `https://${canonicalHost}${replaceBotWithGuestName(
-      content.url,
-      guestInfo,
-    )}`;
-    const url = `${appUrl}${replaceBotWithGuestName(content.url, guestInfo)}`;
+    const baseUrl = content?.title ? dropCategory(content.url) : content.url;
+    const canonicalUrl = `https://${canonicalHost}${replaceBotWithGuestName(baseUrl, guestInfo)}`;
+    const url = `${appUrl}${replaceBotWithGuestName(baseUrl, guestInfo)}`;
     const metaTitle = `${title} - ${siteName}`;
 
     return (
