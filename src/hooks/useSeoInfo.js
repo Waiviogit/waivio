@@ -38,7 +38,7 @@ export const useSeoInfo = isChecklist => {
 export const useSeoInfoWithAppUrl = (appHost, isChecklist) => {
   const loc = useLocation();
   const descriptionSite = useSelector(getMainObj).description;
-  const host = appHost === 'www.waivio.com' && loc.pathname === '/' ? location.hostname : appHost;
+  const host = loc.pathname === '/' ? location.hostname : appHost;
   const appUrl = `https://${host}`;
 
   return {
