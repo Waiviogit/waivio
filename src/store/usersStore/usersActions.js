@@ -46,6 +46,7 @@ export const getInfoForSideBar = (username, lastActiv) => async dispatch => {
       vesting_withdraw_rate: acc.vesting_withdraw_rate,
       to_withdraw: acc.to_withdraw,
       withdrawn: acc.withdrawn,
+      next_vesting_withdrawal: acc.next_vesting_withdrawal,
     };
 
     data.rc_percentage = rc.percentage * 0.01 || 0;

@@ -115,7 +115,7 @@ const ShopList = ({ userName, path, getShopFeed, isSocial }) => {
                   </Link>
                   <ObjCardListViewSwitcherForShop
                     isSocial={isSocial}
-                    wobjects={isMobile() ? take(dep.wobjects, 3): dep.wobjects}
+                    wobjects={isMobile() ? take(dep.wobjects, 4) : dep.wobjects}
                   />
                   {dep.hasMore && (
                     <Link className="ShopList__showMore" to={getPath(dep.department)}>

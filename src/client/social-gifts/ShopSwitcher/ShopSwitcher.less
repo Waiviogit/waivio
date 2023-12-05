@@ -1,3 +1,19 @@
+@import (reference) '../../styles/modules/variables.less';
+
 .ShopSwitcher {
   margin-top: 20px;
+
+  &__breadCrumbs {
+    display: none;
+
+    @media @small {
+      display: block;
+    }
+  }
+
+  .ShopDepartmentsList__mobileCrumbs,
+  .RewardLists__filterButton {
+    padding: 0 10px;
+    color: black;
+  }
 }

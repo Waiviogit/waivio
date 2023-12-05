@@ -28,8 +28,8 @@ const DepartmentsMobile = ({ type, setVisible, visible, isSocial }) => {
 
   return (
     <React.Fragment>
-      <div className="ShopDepartmentsList__mobileCrumbs">
-        <b>Departments</b> (<span onClick={() => setVisible(true)}>Select</span>)
+      <div className="ShopDepartmentsList__mobileCrumbs" onClick={() => setVisible(true)}>
+        <b>Departments</b> (<span className="ShopDepartmentsList__select">Select</span>)
         {match.params.department && (
           <span>
             <Icon type="right" />{' '}

@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import classNames from 'classnames';
 import { useHistory, useRouteMatch } from 'react-router';
 import PropTypes from 'prop-types';
-import { Icon, Modal } from 'antd';
+import { Icon } from 'antd';
 import { injectIntl } from 'react-intl';
 
 import { getActiveBreadCrumb } from '../../../store/shopStore/shopSelectors';
@@ -20,9 +20,6 @@ import {
 } from '../../../common/helpers/wObjectHelper';
 import DepartmentsMobile from '../ShopDepartments/DepartmentsMobile';
 import FiltersForMobile from '../../newRewards/Filters/FiltersForMobile';
-import UserFilters from '../ShopFilters/UserFilters';
-import WobjectShopFilter from '../../object/ObjectTypeShop/WobjectShopFilter';
-import GlobalShopFilters from '../ShopFilters/GlobalShopFilters';
 import Loading from '../../components/Icon/Loading';
 
 import './ListSwitch.less';
@@ -59,21 +56,6 @@ const ListSwitcher = props => {
       />
     );
   }, [props.type, props.user, activeCrumb, match.params.name, match.params.department]);
-
-  const filter = useMemo(() => {
-    const closeFilter = () => setVisibleFilter(false);
-
-    switch (props.type) {
-      case 'user':
-        return <UserFilters name={props.user} onClose={closeFilter} />;
-
-      case 'wobject':
-        return <WobjectShopFilter name={props.user} onClose={closeFilter} />;
-
-      default:
-        return <GlobalShopFilters onClose={closeFilter} />;
-    }
-  }, [props.type, activeCrumb, match.params.name, match.params.department]);
 
   return (
     <div className={'ListSwitcher'}>
@@ -120,15 +102,8 @@ const ListSwitcher = props => {
           setVisible={vis => setVisibleNavig(vis)}
           isSocial={props.isSocial}
         />
-        <FiltersForMobile setVisible={() => setVisibleFilter(true)} />
+        <FiltersForMobile visible={visibleFilter} setVisible={vis => setVisibleFilter(vis)} />
       </div>
-      <Modal
-        visible={visibleFilter}
-        onCancel={() => setVisibleFilter(false)}
-        onOk={() => setVisibleFilter(false)}
-      >
-        {filter}
-      </Modal>
       {list}
     </div>
   );

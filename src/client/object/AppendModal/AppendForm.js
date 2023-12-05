@@ -2980,6 +2980,7 @@ class AppendForm extends Component {
             onCreateObject={this.handleCreateObject}
             handleSelectObject={this.handleSelectObject}
             menuItemButtonType={this.state.menuItemButtonType}
+            parentObject={wObject}
           />
         );
       }
