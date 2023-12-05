@@ -7,6 +7,7 @@ import { Icon } from 'antd';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { getProxyImageURL } from '../../../common/helpers/image';
+import CustomImage from '../../components/Image/Image';
 import PostFeedEmbed from '../../components/Story/PostFeedEmbed';
 import Avatar from '../../components/Avatar';
 import { showPostModal } from '../../../store/appStore/appActions';
@@ -75,7 +76,7 @@ const FeedItem = ({ post, photoQuantity, preview }) => {
       {isEmpty(embeds) ? (
         <div className="FeedMasonry__imgWrap">
           {take(imagePath, photoQuantity)?.map((image, index) => (
-            <img
+            <CustomImage
               className={classNames('FeedMasonry__img', {
                 'FeedMasonry__img--bottom':
                   lastIndex && (index === photoQuantity - 1 || index === lastIndex),
@@ -83,7 +84,7 @@ const FeedItem = ({ post, photoQuantity, preview }) => {
                 'FeedMasonry__img--only': !lastIndex,
               })}
               onClick={handleShowPostModal}
-              src={getProxyImageURL(image)}
+              src={image}
               alt={''}
               key={post?.title}
             />
