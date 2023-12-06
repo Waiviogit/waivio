@@ -5,9 +5,15 @@ import { isNil } from 'lodash';
 import { getAppUrl, getMainObj } from '../store/appStore/appSelectors';
 import { getLastPermlinksFromHash } from '../common/helpers/wObjectHelper';
 
-const prefereCanonical = (appUrl, isChecklist) => {
+const originalWaivioHost = 'www.waivio.com';
+
+const prefereCanonical = (appUrl, isChecklist, objectType) => {
   const location = useLocation();
   let url = `${appUrl}${location.pathname}`;
+
+  if (['list', 'page'].includes(objectType) && appUrl?.includes(originalWaivioHost)) {
+    url = `${appUrl}${location.pathname?.replace('checklist', 'object')}/${objectType}`;
+  }
 
   if (location.search) {
     url = `${appUrl}${location.pathname}${location.search}`;
@@ -18,7 +24,7 @@ const prefereCanonical = (appUrl, isChecklist) => {
 
       pathArray.splice(2, 1, getLastPermlinksFromHash(location.hash));
 
-      url = `${appUrl}${pathArray.join('/')}`;
+      url = `${appUrl}${pathArray.join('/').replace('checklist', 'object')}`;
     } else url += location.hash;
   }
 
@@ -35,21 +41,20 @@ export const useSeoInfo = isChecklist => {
     descriptionSite,
   };
 };
-export const useSeoInfoWithAppUrl = (appHost, isChecklist) => {
+export const useSeoInfoWithAppUrl = (appHost, isChecklist, objectType) => {
   const loc = useLocation();
   const descriptionSite = useSelector(getMainObj).description;
   const host = loc.pathname === '/' ? location.hostname : appHost;
   const appUrl = `https://${host}`;
 
   return {
-    canonicalUrl: prefereCanonical(appUrl, isChecklist),
+    canonicalUrl: prefereCanonical(appUrl, isChecklist, objectType),
     descriptionSite,
   };
 };
 
 export const getCanonicalHostForPost = metadataHost => {
   const waivioHosts = ['waivio.com', 'waiviodev.com'];
-  const originalWaivioHost = 'www.waivio.com';
 
   if (isNil(metadataHost) || waivioHosts.includes(metadataHost)) {
     return originalWaivioHost;
