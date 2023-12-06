@@ -173,10 +173,16 @@ function proxifyImages(doc) {
   if (!doc) return;
   Array.from(doc.getElementsByTagName('img')).forEach(node => {
     const url = node.getAttribute('src');
-    const img = new Image();
-    img.src = getProxyImageURL(url);
-    img.onerror = () => node.setAttribute('src', url);
-    img.onload = () => node.setAttribute('src', getImagePathPost(url));
+    // const img = new Image();
+    // img.src = getProxyImageURL(url);
+    // img.onerror = () => {
+    //   console.log('err')
+    //  setTimeout(() => node.setAttribute('src', url))
+    // };
+    // img.onload = () => {
+    //   setTimeout(() => node.setAttribute('src', getProxyImageURL(url)))
+    // }
+    node.setAttribute('src', getProxyImageURL(url));
   });
 }
 

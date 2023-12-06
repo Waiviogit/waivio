@@ -64,6 +64,7 @@ const ShopSwitcher = ({ intl }) => {
                   type={shopSettings?.type}
                   visible={visible}
                   setVisible={vis => setVisible(vis)}
+                  name={shopSettings?.value}
                   isSocial
                 />
                 <FiltersForMobile
