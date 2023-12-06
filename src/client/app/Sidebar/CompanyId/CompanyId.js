@@ -23,7 +23,7 @@ function CompanyId({ companyIdBody }) {
       </button>
       <div className="CompanyId__block">
         {showMore &&
-          companyIdBody.map(obj => (
+          companyIdBody?.map(obj => (
             // eslint-disable-next-line react/jsx-key
             <div className="CompanyId__block-item">
               <p className="CompanyId__p">{obj.companyIdType}</p>

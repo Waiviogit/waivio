@@ -28,7 +28,7 @@ import { isMobile } from '../../../common/helpers/apiHelpers';
 import { formColumnsField } from '../../../common/constants/listOfFields';
 import OBJECT_TYPE from '../const/objectTypes';
 import DEFAULTS from '../const/defaultValues';
-import { useSeoInfo } from '../../../hooks/useSeoInfo';
+import { useSeoInfoWithAppUrl } from '../../../hooks/useSeoInfo';
 import { compareObjectTitle } from '../../../common/helpers/seoHelpes';
 import { getHelmetIcon, getIsWaivio, getSiteName } from '../../../store/appStore/appSelectors';
 
@@ -47,7 +47,7 @@ const WobjectView = ({
 }) => {
   const image = getObjectAvatar(wobject) || DEFAULTS.AVATAR;
   const objectName = getObjectName(wobject);
-  const { canonicalUrl, appUrl } = useSeoInfo();
+  const { canonicalUrl } = useSeoInfoWithAppUrl(wobject.canonical);
   const isWaivio = useSelector(getIsWaivio);
   const siteName = useSelector(getSiteName);
   const helmetIcon = useSelector(getHelmetIcon);
@@ -100,7 +100,9 @@ const WobjectView = ({
   });
 
   const url =
-    match.params[0] === 'reviews' ? `${appUrl}/object/${match.params.name}` : canonicalUrl;
+    match.params[0] === 'reviews'
+      ? `https://${wobject.canonical}/object/${match.params.name}`
+      : canonicalUrl;
 
   return (
     <React.Fragment>

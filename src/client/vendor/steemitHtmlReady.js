@@ -173,9 +173,16 @@ function proxifyImages(doc) {
   if (!doc) return;
   Array.from(doc.getElementsByTagName('img')).forEach(node => {
     const url = node.getAttribute('src');
-    if (!linksRe.local.test(url)) {
-      node.setAttribute('src', getImagePathPost(url));
-    }
+    // const img = new Image();
+    // img.src = getProxyImageURL(url);
+    // img.onerror = () => {
+    //   console.log('err')
+    //  setTimeout(() => node.setAttribute('src', url))
+    // };
+    // img.onload = () => {
+    //   setTimeout(() => node.setAttribute('src', getProxyImageURL(url)))
+    // }
+    node.setAttribute('src', getProxyImageURL(url));
   });
 }
 

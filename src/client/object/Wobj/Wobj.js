@@ -24,7 +24,7 @@ import Checklist from '../../social-gifts/Checklist/Checklist';
 import Loading from '../../components/Icon/Loading';
 import WobjectView from './WobjectView';
 import { getHelmetIcon, getSiteName } from '../../../store/appStore/appSelectors';
-import { useSeoInfo } from '../../../hooks/useSeoInfo';
+import { useSeoInfoWithAppUrl } from '../../../hooks/useSeoInfo';
 
 const Wobj = ({
   authenticatedUserName: userName,
@@ -62,7 +62,7 @@ const Wobj = ({
 
   const getWobjView = useCallback(() => {
     const title = `${getObjectName(wobject)} - ${siteName}`;
-    const { canonicalUrl, descriptionSite } = useSeoInfo();
+    const { canonicalUrl, descriptionSite } = useSeoInfoWithAppUrl(wobject.canonical);
     const desc = wobject?.description || descriptionSite || siteName;
     const image = getObjectAvatar(wobject) || favicon;
 

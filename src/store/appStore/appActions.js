@@ -85,8 +85,8 @@ export const getCryptoPriceHistory = (refresh = false) => dispatch => {
           const usdPriceHistory = { usd, usd_24h_change: usdChange };
           const btcPriceHistory = { btc, btc_24h_change: btcChange };
           const priceDetails = response.weekly
-            .map(elem => ({ usd: elem[key].usd, createdAt: elem.createdAt }))
-            .reverse();
+            ?.map(elem => ({ usd: elem[key].usd, createdAt: elem.createdAt }))
+            ?.reverse();
 
           storeObject[key] = {
             usdPriceHistory,

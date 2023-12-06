@@ -45,7 +45,7 @@ import {
 } from '../../store/usersStore/usersSelectors';
 import { getIsOpenWalletTable } from '../../store/walletStore/walletSelectors';
 import { resetBreadCrumb } from '../../store/shopStore/shopActions';
-import { useSeoInfo } from '../../hooks/useSeoInfo';
+import { useSeoInfoWithAppUrl } from '../../hooks/useSeoInfo';
 import Error404 from '../statics/Error404';
 
 const getDescriptions = (username, siteName) => ({
@@ -126,7 +126,7 @@ const User = props => {
 
   const hasCover = !!coverImage;
   const image = getAvatarURL(name) || DEFAULTS.AVATAR;
-  const { canonicalUrl } = useSeoInfo();
+  const { canonicalUrl } = useSeoInfoWithAppUrl(user?.canonical);
   const title = `${displayedUsername} ${getTitle(tab)} - ${siteName}`;
   const isSameUser = authenticated && authenticatedUser.name === name;
   const isAboutPage = match.params['0'] === 'about';

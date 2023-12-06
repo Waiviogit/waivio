@@ -1,7 +1,7 @@
 import { setTimeout } from 'timers';
 import React from 'react';
 import { Provider } from 'react-redux';
-import { get } from 'lodash';
+import { get, isNil } from 'lodash';
 import { renderToString } from 'react-dom/server';
 import { StaticRouter } from 'react-router';
 import { matchRoutes, renderRoutes } from 'react-router-config';
@@ -16,13 +16,7 @@ import {
 import getStore from '../../store/store';
 import renderSsrPage from '../renderers/ssrRenderer';
 import switchRoutes from '../../routes/switchRoutes';
-import {
-  getCachedPage,
-  getSitemap,
-  isSearchBot,
-  setCachedPage,
-  updateBotCount,
-} from './cachePageHandler';
+import { getCachedPage, isSearchBot, setCachedPage, updateBotCount } from './cachePageHandler';
 import { isCustomDomain } from '../../client/social-gifts/listOfSocialWebsites';
 
 // eslint-disable-next-line import/no-dynamic-require
@@ -56,7 +50,8 @@ export default function createSsrHandler(template) {
         baseURL: process.env.STEEMCONNECT_HOST || 'https://hivesigner.com',
         callbackURL: process.env.STEEMCONNECT_REDIRECT_URL,
       });
-      const hostname = req.headers.host;
+      // const hostname = req.headers.host;
+      const hostname = req.hostname;
       const isWaivio = hostname.includes('waivio');
       let settings = {};
       let parentHost;
@@ -66,7 +61,6 @@ export default function createSsrHandler(template) {
         settings = await getSettingsWebsite(hostname);
         adsenseSettings = await getSettingsAdsense(hostname);
 
-        // write file here
         if (isCustomDomain(hostname)) {
           parentHost = await getParentHost(hostname);
         }
@@ -119,12 +113,15 @@ export default function createSsrHandler(template) {
       await setCachedPage({ page, req });
       return res.send(page);
     } catch (err) {
+      console.log('here');
       console.error('SSR error occured, falling back to bundled application instead', err);
       let settings = {};
+      let adsenseSettings = {};
       const isWaivio = req.hostname.includes('waivio');
 
       if (!isWaivio) {
         settings = await getSettingsWebsite(req.hostname);
+        adsenseSettings = await getSettingsAdsense(req.hostname);
       }
       return res.send(
         renderSsrPage(
@@ -135,6 +132,7 @@ export default function createSsrHandler(template) {
           isWaivio,
           get(settings, 'googleAnalyticsTag', ''),
           get(settings, 'googleGSCTag', ''),
+          get(adsenseSettings, 'code', ''),
         ),
       );
     }

@@ -62,7 +62,7 @@ import { getAlbums, resetGallery } from '../../../store/galleryStore/galleryActi
 import Loading from '../../components/Icon/Loading';
 import SocialBookAuthors from './SocialBookAuthors/SocialBookAuthors';
 import Breadcrumbs from '../Breadcrumbs/Breadcrumbs';
-import { checkAboutCanonicalUrl, useSeoInfo } from '../../../hooks/useSeoInfo';
+import { checkAboutCanonicalUrl, useSeoInfoWithAppUrl } from '../../../hooks/useSeoInfo';
 import { averageRate, getRatingForSocial } from '../../components/Sidebar/Rate/rateHelper';
 import { removeEmptyLines, shortenDescription } from '../../object/wObjectHelper';
 
@@ -171,7 +171,7 @@ const SocialProduct = ({
     ''} ${tagCategoriesForDescr}`;
   const { firstDescrPart: description } = shortenDescription(removeEmptyLines(desc), 200);
   const title = `${wobject.name} - ${siteName}`;
-  const { canonicalUrl } = useSeoInfo();
+  const { canonicalUrl } = useSeoInfoWithAppUrl(wobject.canonical);
   const url = ['book', 'product'].includes(wobject.object_type)
     ? `${appUrl}/object/${match.params.name}`
     : canonicalUrl;

@@ -40,9 +40,14 @@ const CommentForm = props => {
   const [init, setInit] = useState(false);
   const [draft, setDraft] = useState('');
   const parent = props.isEdit ? props.currentComment : props.parentPost;
+  const getPermlink = () => {
+    if (props.isReply) return `${parent?.permlink}-reply`;
+
+    return props.isEdit ? `${parent?.permlink}-edit` : parent?.permlink;
+  };
 
   useLayoutEffect(() => {
-    getCommentDraft(props.username, parent?.author, parent?.permlink).then(res => {
+    getCommentDraft(props.username, parent?.author, getPermlink()).then(res => {
       if (res.message) {
         setInit(true);
 
@@ -109,7 +114,7 @@ const CommentForm = props => {
 
   const debouncedDraftSave = useCallback(
     debounce(markdownBody => {
-      if (init) saveCommentDraft(props.username, parent?.author, parent?.permlink, markdownBody);
+      if (init) saveCommentDraft(props.username, parent?.author, getPermlink(), markdownBody);
     }, 300),
     [props.username, props.parentPost, init],
   );
@@ -240,6 +245,7 @@ CommentForm.propTypes = {
   username: PropTypes.string.isRequired,
   // top: PropTypes.bool,
   isSmall: PropTypes.bool,
+  isReply: PropTypes.bool,
   isLoading: PropTypes.bool,
   submitted: PropTypes.bool,
   inputValue: PropTypes.string.isRequired,
@@ -259,6 +265,7 @@ CommentForm.defaultProps = {
   top: false,
   isSmall: false,
   isLoading: false,
+  isReply: false,
   submitted: false,
   inputValue: '',
   onSubmit: () => {},

@@ -60,7 +60,7 @@ export function dropCategory(url) {
 
 export const replaceBotWithGuestName = (url, guestInfo) => {
   if (url) {
-    if (url?.match(botNameRegex)[0] === `@${POST_AUTHOR_FOR_REWARDS_COMMENTS}`) {
+    if (url?.match(botNameRegex)?.[0] === `@${POST_AUTHOR_FOR_REWARDS_COMMENTS}`) {
       return url;
     }
 

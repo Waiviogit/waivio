@@ -118,7 +118,7 @@ export const getObjectTypeByStateFilters = (
   const sort = getObjectTypeSorting(state);
 
   // if use sort by proximity, require to use map filter
-  if (sort === 'proximity' && !activeFilters.map) {
+  if (sort === 'proximity' && !activeFilters?.map) {
     const userLocation = getUserLocation(state);
 
     activeFilters.map = {

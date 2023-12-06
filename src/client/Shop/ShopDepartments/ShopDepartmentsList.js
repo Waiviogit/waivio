@@ -41,7 +41,7 @@ const ShopDepartmentsList = ({ shopFilter, onClose, getShopDepartments, path, in
           {intl.formatMessage({ id: 'departments', defaultMessage: 'Departments' })}
         </NavLink>
         <div>
-          {renderDep.map(dep => (
+          {renderDep?.map(dep => (
             <DepartmentItem
               key={dep.name}
               match={match}
