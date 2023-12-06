@@ -7,7 +7,7 @@ import { getLastPermlinksFromHash } from '../common/helpers/wObjectHelper';
 
 const prefereCanonical = (appUrl, isChecklist) => {
   const location = useLocation();
-  let url = `${appUrl}${location.pathname}`;
+  let url = `${appUrl}${location.pathname?.replace('checklist', 'object')}`;
 
   if (location.search) {
     url = `${appUrl}${location.pathname}${location.search}`;
