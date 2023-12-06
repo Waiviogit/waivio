@@ -10,16 +10,20 @@ import DepartmentsUser from './DepartmentsUser';
 
 import './ShopDepartments.less';
 
-const DepartmentsMobile = ({ type, setVisible, visible, isSocial }) => {
+const DepartmentsMobile = ({ type, setVisible, visible, isSocial, name }) => {
   const match = useRouteMatch();
   const location = useLocation();
 
   const modalBody = () => {
     switch (type) {
       case 'user':
-        return <DepartmentsUser isSocial={isSocial} onClose={() => setVisible(false)} />;
+        return (
+          <DepartmentsUser isSocial={isSocial} name={name} onClose={() => setVisible(false)} />
+        );
       case 'wobject':
-        return <DepartmentsWobject isSocial={isSocial} onClose={() => setVisible(false)} />;
+        return (
+          <DepartmentsWobject isSocial={isSocial} name={name} onClose={() => setVisible(false)} />
+        );
 
       default:
         return <GlobalShopDepartments isSocial={isSocial} onClose={() => setVisible(false)} />;
@@ -47,6 +51,7 @@ const DepartmentsMobile = ({ type, setVisible, visible, isSocial }) => {
 DepartmentsMobile.propTypes = {
   setVisible: PropTypes.func,
   type: PropTypes.string,
+  name: PropTypes.string,
   visible: PropTypes.bool,
   isSocial: PropTypes.bool,
 };
