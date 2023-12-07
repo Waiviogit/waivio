@@ -172,7 +172,7 @@ const SocialProduct = ({
   const title = `${wobject.name} - ${siteName}`;
   const { canonicalUrl } = useSeoInfoWithAppUrl(wobject.canonical);
   const url = ['book', 'product'].includes(wobject.object_type)
-    ? `${wobject.canonical}/object/${match.params.name}`
+    ? `https://${wobject.canonical}/object/${match.params.name}`
     : canonicalUrl;
   const productUrl = checkAboutCanonicalUrl(url);
   const bannerEl =
