@@ -409,9 +409,14 @@ const routes = {
       pathScope: '/object/:name',
       routes: [
         {
-          path: ['', '/(newsFilter)/:parentName', '/(newsfeed)/:parentName/:itemId?', '/(reviews)'],
+          path: ['/(newsFilter)/:parentName', '/(newsfeed)/:parentName/:itemId?'],
           exact: true,
           component: ObjectFeed,
+        },
+        {
+          path: ['', '/(reviews|threads)'],
+          exact: true,
+          component: Views.ObjectReviewsAndThreads,
         },
         {
           path: '/about',

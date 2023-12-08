@@ -44,6 +44,7 @@ class Story extends React.Component {
     defaultVotePercent: PropTypes.number.isRequired,
     showNSFWPosts: PropTypes.bool.isRequired,
     pendingLike: PropTypes.bool,
+    isThread: PropTypes.bool,
     pendingFollow: PropTypes.bool,
     pendingBookmark: PropTypes.bool,
     saving: PropTypes.bool,
@@ -299,6 +300,7 @@ class Story extends React.Component {
       defaultVotePercent,
       location,
       userComments,
+      isThread,
     } = this.props;
     const rebloggedUser = get(post, ['reblogged_users'], []);
     const isRebloggedPost = rebloggedUser.includes(user.name);
@@ -340,7 +342,11 @@ class Story extends React.Component {
 
     return (
       post.depth >= 0 && (
-        <div className="Story" id={`${author}-${post.permlink}`}>
+        <div
+          className="Story"
+          id={`${author}-${post.permlink}`}
+          onClick={isThread ? this.handlePostModalDisplay : undefined}
+        >
           <div>
             {rebloggedUI}
             {post.pin && (
@@ -372,13 +378,13 @@ class Story extends React.Component {
                   <BTooltip
                     title={
                       <span>
-                        <FormattedDate value={`${post.created}Z`} />{' '}
-                        <FormattedTime value={`${post.created}Z`} />
+                        <FormattedDate value={isThread ? post.createdAt : `${post.created}Z`} />{' '}
+                        <FormattedTime value={isThread ? post.createdAt : `${post.created}Z`} />
                       </span>
                     }
                   >
                     <span className="Story__date">
-                      <FormattedRelative value={`${post.created}Z`} />
+                      <FormattedRelative value={isThread ? post.createdAt : `${post.created}Z`} />
                     </span>
                   </BTooltip>
                   <PostedFrom post={post} />
@@ -394,16 +400,22 @@ class Story extends React.Component {
             </div>
             <div className="Story__content">
               <a
-                href={replaceBotWithGuestName(dropCategory(post.url), post.guestInfo)}
+                href={
+                  isThread
+                    ? `/@${post.author}/${post.permlink}`
+                    : replaceBotWithGuestName(dropCategory(post.url), post.guestInfo)
+                }
                 rel="noopener noreferrer"
                 target="_blank"
                 onClick={this.handlePostModalDisplay}
                 className="Story__content__title"
               >
-                <h2>
-                  {post.depth !== 0 && <Tag color="#4f545c">RE</Tag>}
-                  {post.title || post.root_title}
-                </h2>
+                {!isThread && (
+                  <h2>
+                    {post.depth !== 0 && <Tag color="#4f545c">RE</Tag>}
+                    {post.title || post.root_title}
+                  </h2>
+                )}
               </a>
               {this.renderStoryPreview()}
             </div>

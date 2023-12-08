@@ -20,6 +20,7 @@ const Feed = ({
   isGuest,
   userComments,
   isOwnProfile,
+  isThread,
 }) => {
   const history = useHistory();
 
@@ -44,6 +45,7 @@ const Feed = ({
     >
       {content.map(id => (
         <StoryContainer
+          isThread={isThread}
           key={id}
           id={id}
           showPostModal={showPostModal}
@@ -63,6 +65,7 @@ Feed.propTypes = {
   isGuest: PropTypes.bool,
   loadMoreContent: PropTypes.func,
   userComments: PropTypes.bool,
+  isThread: PropTypes.bool,
   isOwnProfile: PropTypes.bool,
 };
 

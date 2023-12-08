@@ -3778,4 +3778,40 @@ export const getObjectUpdatesLocale = (authorPermlink, permlink) => {
     .then(posts => posts)
     .catch(error => error);
 };
+export const getThreadsByHashtag = (permlink, skip = 0, limit = 10, sort = 'latest') => {
+  return fetch(
+    `${config.apiPrefix}${config.thread}${config.hashtag}?hashtag=${permlink}&skip=${skip}&limit=${limit}&sort=${sort}`,
+    {
+      headers: headers,
+      method: 'GET',
+    },
+  )
+    .then(res => res.json())
+    .then(posts => posts)
+    .catch(error => error);
+};
+export const getThreadsByUser = (userName, skip = 0, limit = 10, sort = 'latest') => {
+  return fetch(
+    `${config.apiPrefix}${config.thread}${config.user}?user=${userName}&skip=${skip}&limit=${limit}&sort=${sort}`,
+    {
+      headers: headers,
+      method: 'GET',
+    },
+  )
+    .then(res => res.json())
+    .then(posts => posts)
+    .catch(error => error);
+};
+export const getThreadsCountByHashtag = (permlink, skip = 0, limit = 10) => {
+  return fetch(
+    `${config.apiPrefix}${config.thread}${config.hashtag}${config.count}?skip=${skip}&limit=${limit}`,
+    {
+      headers: headers,
+      method: 'GET',
+    },
+  )
+    .then(res => res.json())
+    .then(posts => posts)
+    .catch(error => error);
+};
 export default null;
