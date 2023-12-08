@@ -85,7 +85,6 @@ const SocialProduct = ({
   resetOptClicked,
   albums,
   relatedAlbum,
-  appUrl,
   resetWobjGallery,
   nestedWobj,
   isEditMode,
@@ -173,7 +172,7 @@ const SocialProduct = ({
   const title = `${wobject.name} - ${siteName}`;
   const { canonicalUrl } = useSeoInfoWithAppUrl(wobject.canonical);
   const url = ['book', 'product'].includes(wobject.object_type)
-    ? `${appUrl}/object/${match.params.name}`
+    ? `https://${wobject.canonical}/object/${match.params.name}`
     : canonicalUrl;
   const productUrl = checkAboutCanonicalUrl(url);
   const bannerEl =
@@ -561,7 +560,6 @@ SocialProduct.propTypes = {
   relatedAlbum: PropTypes.shape(),
   optionClicked: PropTypes.bool,
   helmetIcon: PropTypes.string,
-  appUrl: PropTypes.string,
   setStoreActiveOpt: PropTypes.func,
   resetOptClicked: PropTypes.func,
   resetWobjGallery: PropTypes.func,

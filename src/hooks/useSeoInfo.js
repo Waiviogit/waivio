@@ -24,7 +24,9 @@ const prefereCanonical = (appUrl, isChecklist, objectType) => {
 
       pathArray.splice(2, 1, getLastPermlinksFromHash(location.hash));
 
-      url = `${appUrl}${pathArray.join('/').replace('checklist', 'object')}`;
+      url = appUrl?.includes(originalWaivioHost)
+        ? `${appUrl}${pathArray.join('/').replace('checklist', 'object')}/${objectType}`
+        : `${appUrl}${pathArray.join('/')}`;
     } else url += location.hash;
   }
 
