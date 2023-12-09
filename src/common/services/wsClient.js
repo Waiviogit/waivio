@@ -42,7 +42,7 @@ class SocketClient {
       this.ws.on('open', () => {
         setTimeout(() => {
           resolve(this.ws);
-        }, 100);
+        }, 5000);
       });
     });
   }
