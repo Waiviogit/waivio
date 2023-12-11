@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { connect, batch, useSelector, useDispatch } from 'react-redux';
+import { connect, batch, useSelector } from 'react-redux';
 import { IntlProvider } from 'react-intl';
 import { withRouter } from 'react-router-dom';
 import { renderRoutes } from 'react-router-config';
@@ -74,7 +74,7 @@ const createLink = i => {
 
 const SocialWrapper = props => {
   const isSocialGifts = useSelector(getIsSocialGifts);
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
   const language = findLanguage(props.usedLocale);
   const antdLocale = getAntdLocale(language);
   const signInPage = props.location.pathname.includes('sign-in');
@@ -83,91 +83,91 @@ const SocialWrapper = props => {
 
     props.setUsedLocale(lang);
   };
-  const createWebsiteMenu = configuration => {
-    if (!isEmpty(configuration?.shopSettings)) {
-      if (configuration.shopSettings?.type === 'object') {
-        getObject(configuration.shopSettings?.value).then(async wobject => {
-          const menuItemLinks = wobject.menuItem?.reduce((acc, item) => {
-            const body = parseJSON(item.body);
-
-            if (body?.linkToObject) {
-              return [...acc, body?.linkToObject];
-            }
-
-            return acc;
-          }, []);
-
-          const customSort = get(wobject, 'sortCustom.include', []);
-
-          if (isEmpty(wobject.menuItem)) {
-            dispatch(
-              setItemsForNavigation([
-                {
-                  link: createLink(wobject),
-                  name: getObjectName(wobject),
-                  permlink: wobject?.author_permlink,
-                  object_type: wobject?.object_type,
-                },
-                {
-                  name: 'Legal',
-                  link: '/checklist/ljc-legal',
-                  permlink: 'ljc-legal',
-                  object_type: 'list',
-                },
-              ]),
-            );
-
-            props.setLoadingStatus(true);
-          } else {
-            const listItems = isEmpty(menuItemLinks)
-              ? []
-              : await getObjectsByIds({ authorPermlinks: menuItemLinks, locale: props.locale });
-
-            const compareList = wobject?.menuItem?.map(wobjItem => {
-              const body = parseJSON(wobjItem.body);
-              const currItem = body?.linkToObject
-                ? listItems.wobjects.find(wobj => wobj.author_permlink === body?.linkToObject)
-                : body;
-
-              return {
-                ...wobjItem,
-                ...currItem,
-                body,
-              };
-            });
-            const sortingButton = customSort.reduce((acc, curr) => {
-              const findObj = compareList.find(wobj => wobj.permlink === curr);
-
-              return findObj ? [...acc, findObj] : acc;
-            }, []);
-            const buttonList = [
-              ...sortingButton,
-              ...compareList?.filter(i => !customSort.includes(i.permlink)),
-            ].map(i => ({
-              link: createLink(i),
-              name: i?.body?.title || getObjectName(i),
-              type: i.body.linkToObject ? 'nav' : 'blank',
-              permlink: i.body.linkToObject,
-              object_type: i?.object_type,
-            }));
-
-            dispatch(
-              setItemsForNavigation([
-                ...buttonList,
-                {
-                  name: 'Legal',
-                  link: '/checklist/ljc-legal',
-                  permlink: 'ljc-legal',
-                  object_type: 'list',
-                },
-              ]),
-            );
-            props.setLoadingStatus(true);
-          }
-        });
-      }
-    }
-  };
+  // const createWebsiteMenu = configuration => {
+  //   if (!isEmpty(configuration?.shopSettings)) {
+  //     if (configuration.shopSettings?.type === 'object') {
+  //       getObject(configuration.shopSettings?.value).then(async wobject => {
+  //         const menuItemLinks = wobject.menuItem?.reduce((acc, item) => {
+  //           const body = parseJSON(item.body);
+  //
+  //           if (body?.linkToObject) {
+  //             return [...acc, body?.linkToObject];
+  //           }
+  //
+  //           return acc;
+  //         }, []);
+  //
+  //         const customSort = get(wobject, 'sortCustom.include', []);
+  //
+  //         if (isEmpty(wobject.menuItem)) {
+  //           dispatch(
+  //             setItemsForNavigation([
+  //               {
+  //                 link: createLink(wobject),
+  //                 name: getObjectName(wobject),
+  //                 permlink: wobject?.author_permlink,
+  //                 object_type: wobject?.object_type,
+  //               },
+  //               {
+  //                 name: 'Legal',
+  //                 link: '/checklist/ljc-legal',
+  //                 permlink: 'ljc-legal',
+  //                 object_type: 'list',
+  //               },
+  //             ]),
+  //           );
+  //
+  //           props.setLoadingStatus(true);
+  //         } else {
+  //           const listItems = isEmpty(menuItemLinks)
+  //             ? []
+  //             : await getObjectsByIds({ authorPermlinks: menuItemLinks, locale: props.locale });
+  //
+  //           const compareList = wobject?.menuItem?.map(wobjItem => {
+  //             const body = parseJSON(wobjItem.body);
+  //             const currItem = body?.linkToObject
+  //               ? listItems.wobjects.find(wobj => wobj.author_permlink === body?.linkToObject)
+  //               : body;
+  //
+  //             return {
+  //               ...wobjItem,
+  //               ...currItem,
+  //               body,
+  //             };
+  //           });
+  //           const sortingButton = customSort.reduce((acc, curr) => {
+  //             const findObj = compareList.find(wobj => wobj.permlink === curr);
+  //
+  //             return findObj ? [...acc, findObj] : acc;
+  //           }, []);
+  //           const buttonList = [
+  //             ...sortingButton,
+  //             ...compareList?.filter(i => !customSort.includes(i.permlink)),
+  //           ].map(i => ({
+  //             link: createLink(i),
+  //             name: i?.body?.title || getObjectName(i),
+  //             type: i.body.linkToObject ? 'nav' : 'blank',
+  //             permlink: i.body.linkToObject,
+  //             object_type: i?.object_type,
+  //           }));
+  //
+  //           dispatch(
+  //             setItemsForNavigation([
+  //               ...buttonList,
+  //               {
+  //                 name: 'Legal',
+  //                 link: '/checklist/ljc-legal',
+  //                 permlink: 'ljc-legal',
+  //                 object_type: 'list',
+  //               },
+  //             ]),
+  //           );
+  //           props.setLoadingStatus(true);
+  //         }
+  //       });
+  //     }
+  //   }
+  // };
 
   useEffect(() => {
     const query = new URLSearchParams(props.location.search);
@@ -210,7 +210,7 @@ const SocialWrapper = props => {
         }
       });
       loadLocale(props.locale);
-      createWebsiteMenu(res.configuration);
+      // createWebsiteMenu(res.configuration);
     });
   }, [props.locale]);
 
@@ -264,7 +264,7 @@ SocialWrapper.propTypes = {
   isOpenModal: PropTypes.bool,
   dispatchGetAuthGuestBalance: PropTypes.func,
   setSocialFlag: PropTypes.func,
-  setLoadingStatus: PropTypes.func,
+  // setLoadingStatus: PropTypes.func,
   getTokenRates: PropTypes.func.isRequired,
   isOpenWalletTable: PropTypes.bool,
   loadingFetching: PropTypes.bool,
@@ -308,11 +308,94 @@ SocialWrapper.defaultProps = {
 SocialWrapper.fetchData = async ({ store, req }) => {
   const state = store.getState();
   let activeLocale = getLocale(state);
+  const configuration = (await store.dispatch(getWebsiteConfigForSSR(req.headers.host))).value;
 
   if (activeLocale === 'auto') {
     activeLocale = req.cookies.language || getRequestLocale(req.get('Accept-Language'));
   }
   const lang = loadLanguage(activeLocale);
+
+  if (!isEmpty(configuration?.shopSettings)) {
+    if (configuration.shopSettings?.type === 'object') {
+      getObject(configuration.shopSettings?.value).then(async wobject => {
+        const menuItemLinks = wobject.menuItem?.reduce((acc, item) => {
+          const body = parseJSON(item.body);
+
+          if (body?.linkToObject) {
+            return [...acc, body?.linkToObject];
+          }
+
+          return acc;
+        }, []);
+
+        const customSort = get(wobject, 'sortCustom.include', []);
+
+        if (isEmpty(wobject.menuItem)) {
+          store.dispatch(
+            setItemsForNavigation([
+              {
+                link: createLink(wobject),
+                name: getObjectName(wobject),
+                permlink: wobject?.author_permlink,
+                object_type: wobject?.object_type,
+              },
+              {
+                name: 'Legal',
+                link: '/checklist/ljc-legal',
+                permlink: 'ljc-legal',
+                object_type: 'list',
+              },
+            ]),
+          );
+        } else {
+          const listItems = isEmpty(menuItemLinks)
+            ? []
+            : await getObjectsByIds({ authorPermlinks: menuItemLinks, locale: activeLocale });
+
+          const compareList = wobject?.menuItem?.map(wobjItem => {
+            const body = parseJSON(wobjItem.body);
+            const currItem = body?.linkToObject
+              ? listItems.wobjects.find(wobj => wobj.author_permlink === body?.linkToObject)
+              : body;
+
+            return {
+              ...wobjItem,
+              ...currItem,
+              body,
+            };
+          });
+          const sortingButton = customSort.reduce((acc, curr) => {
+            const findObj = compareList.find(wobj => wobj.permlink === curr);
+
+            return findObj ? [...acc, findObj] : acc;
+          }, []);
+          const buttonList = [
+            ...sortingButton,
+            ...compareList?.filter(i => !customSort.includes(i.permlink)),
+          ].map(i => ({
+            link: createLink(i),
+            name: i?.body?.title || getObjectName(i),
+            type: i.body.linkToObject ? 'nav' : 'blank',
+            permlink: i.body.linkToObject,
+            object_type: i?.object_type,
+          }));
+
+          store.dispatch(
+            setItemsForNavigation([
+              ...buttonList,
+              {
+                name: 'Legal',
+                link: '/checklist/ljc-legal',
+                permlink: 'ljc-legal',
+                object_type: 'list',
+              },
+            ]),
+          );
+        }
+      });
+    }
+  }
+
 
   return Promise.allSettled([
     store.dispatch(getWebsiteConfigForSSR(req.headers.host)),
