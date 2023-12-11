@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import ReactDOMServer from 'react-dom/server';
 import PropTypes from 'prop-types';
 import { isUndefined, filter, isEmpty } from 'lodash';
@@ -166,6 +166,16 @@ export function getHtml(
 }
 
 const Body = props => {
+  useEffect(() => {
+    Array.from(document.body.getElementsByTagName('img')).forEach(imgNode => {
+      // eslint-disable-next-line no-param-reassign
+      imgNode.onerror = () => {
+        // eslint-disable-next-line no-param-reassign
+        imgNode.src = imgNode.alt;
+      };
+    });
+  }, []);
+
   const location = useLocation();
   const options = {
     appUrl: props.appUrl.replace('http://', 'https://'),

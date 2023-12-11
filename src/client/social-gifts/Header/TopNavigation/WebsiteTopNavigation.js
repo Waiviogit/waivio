@@ -8,8 +8,7 @@ import { injectIntl } from 'react-intl';
 
 import Popover from '../../../components/Popover';
 import { isMobile } from '../../../../common/helpers/apiHelpers';
-import { getNavigItems, getSettingsLoading } from '../../../../store/appStore/appSelectors';
-import SkeletonRow from '../../../components/Skeleton/SkeletonRow';
+import { getNavigItems } from '../../../../store/appStore/appSelectors';
 import PopoverMenu, { PopoverMenuItem } from '../../../components/PopoverMenu/PopoverMenu';
 import LinkItem from './LinkItem';
 
@@ -36,7 +35,6 @@ const userNav = (user, intl) => [
 const WebsiteTopNavigation = ({ shopSettings, intl }) => {
   const listItem = useSelector(getNavigItems);
   const linkList = shopSettings?.type === 'user' ? userNav(shopSettings?.value, intl) : listItem;
-  const loading = useSelector(getSettingsLoading);
   const history = useHistory();
   const [visible, setVisible] = useState(false);
 
@@ -62,7 +60,6 @@ const WebsiteTopNavigation = ({ shopSettings, intl }) => {
 
   const handleMoreMenuVisibleChange = vis => setVisible(vis);
 
-  if (loading) return <SkeletonRow rows={1} />;
   if (isEmpty(shopSettings) || isEmpty(linkList)) return null;
   const lastItemsLength = linkList.length - listLength;
   const lastItems = takeRight(linkList, lastItemsLength);
