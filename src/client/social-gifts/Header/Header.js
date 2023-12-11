@@ -6,7 +6,7 @@ import HeaderButton from '../../components/HeaderButton/HeaderButton';
 import {
   getConfigurationValues,
   getWebsiteLogo,
-  getNavigItems, getWebsiteParentHost,
+  getNavigItems,
 } from '../../../store/appStore/appSelectors';
 import GeneralSearch from '../../websites/WebsiteLayoutComponents/Header/GeneralSearch/GeneralSearch';
 import WebsiteTopNavigation from './TopNavigation/WebsiteTopNavigation';
@@ -19,7 +19,6 @@ const Header = () => {
   const link = useSelector(getNavigItems)[0];
   const handleMobileSearchButtonClick = () => setSearchBarActive(!searchBarActive);
   const logo = useSelector(getWebsiteLogo);
-  const parentHost = useSelector(getWebsiteParentHost);
   const currHost = typeof location !== 'undefined' && location.hostname;
   const header = config?.header?.name;
   const logoClassList = classNames('Header__logo', {
@@ -37,11 +36,11 @@ const Header = () => {
                 : link?.link
             }
             className={logoClassList}
-            title={config.aboutObject?.title || 'logo'}
+            title={`Social Gifts - ${config.aboutObject?.title || currHost}`}
           >
             {logo && (
               <img
-                alt={`${parentHost ? `${parentHost} - ` : ''}${header || config.host || currHost}`}
+                alt={`Social Gifts - ${header || config.host || currHost}`}
                 src={logo}
                 className="Header__img"
               />
@@ -49,9 +48,9 @@ const Header = () => {
             <span>{header || config.host || currHost}</span>
           </Link>
         )}
-        {typeof window !== 'undefined' &&
+        {typeof window !== 'undefined' && (
           <React.Fragment>
-            <GeneralSearch searchBarActive={searchBarActive} isSocialProduct/>
+            <GeneralSearch searchBarActive={searchBarActive} isSocialProduct />
             <div className={'Header__rightWrap'}>
               <button
                 className={classNames('Header__mobile-search', {
@@ -71,7 +70,7 @@ const Header = () => {
               )}
             </div>
           </React.Fragment>
-          }
+        )}
       </div>
       {config.mainBanner && (
         <img
