@@ -69,15 +69,19 @@ const ListSwitcher = props => {
         >
           {props.intl.formatMessage({ id: 'departments', defaultMessage: 'Departments' })}
         </span>{' '}
-        {match.params.department && <Icon type="right" />}{' '}
-        <Link
-          className={classNames('ListSwitcher__breadCrumbs', {
-            'ListSwitcher__breadCrumbs--active': !history.location.hash,
-          })}
-          to={`${props.path}/${match.params.department}`}
-        >
-          {match.params.department}
-        </Link>{' '}
+        {match.params.department && (
+          <React.Fragment>
+            <Icon type="right" />{' '}
+            <Link
+              className={classNames('ListSwitcher__breadCrumbs', {
+                'ListSwitcher__breadCrumbs--active': !history.location.hash,
+              })}
+              to={`${props.path}/${match.params.department}`}
+            >
+              {match.params.department}
+            </Link>{' '}
+          </React.Fragment>
+        )}
         {getPermlinksFromHash(history.location.hash).map(crumb => (
           <span key={crumb}>
             {' '}
