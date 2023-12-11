@@ -60,7 +60,7 @@ const CheckListView = ({ wobject, listItems, loading, intl, hideBreadCrumbs }) =
               <img
                 className="Checklist__itemsAvatar"
                 src={avatar}
-                alt={`${getObjectName(listItem)} - ${getTitleForLink(listItem)} `}
+                alt={`${getObjectName(wobject)} - ${getTitleForLink(listItem)} `}
               />
             )}
             <span
