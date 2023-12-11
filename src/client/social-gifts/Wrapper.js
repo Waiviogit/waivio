@@ -308,96 +308,98 @@ SocialWrapper.defaultProps = {
 SocialWrapper.fetchData = async ({ store, req }) => {
   const state = store.getState();
   let activeLocale = getLocale(state);
-  const configuration = (await store.dispatch(getWebsiteConfigForSSR(req.headers.host))).value;
 
   if (activeLocale === 'auto') {
     activeLocale = req.cookies.language || getRequestLocale(req.get('Accept-Language'));
   }
   const lang = loadLanguage(activeLocale);
 
-  if (!isEmpty(configuration?.shopSettings)) {
-    if (configuration.shopSettings?.type === 'object') {
-      getObject(configuration.shopSettings?.value).then(async wobject => {
-        const menuItemLinks = wobject.menuItem?.reduce((acc, item) => {
-          const body = parseJSON(item.body);
-
-          if (body?.linkToObject) {
-            return [...acc, body?.linkToObject];
-          }
-
-          return acc;
-        }, []);
-
-        const customSort = get(wobject, 'sortCustom.include', []);
-
-        if (isEmpty(wobject.menuItem)) {
-          store.dispatch(
-            setItemsForNavigation([
-              {
-                link: createLink(wobject),
-                name: getObjectName(wobject),
-                permlink: wobject?.author_permlink,
-                object_type: wobject?.object_type,
-              },
-              {
-                name: 'Legal',
-                link: '/checklist/ljc-legal',
-                permlink: 'ljc-legal',
-                object_type: 'list',
-              },
-            ]),
-          );
-        } else {
-          const listItems = isEmpty(menuItemLinks)
-            ? []
-            : await getObjectsByIds({ authorPermlinks: menuItemLinks, locale: activeLocale });
-
-          const compareList = wobject?.menuItem?.map(wobjItem => {
-            const body = parseJSON(wobjItem.body);
-            const currItem = body?.linkToObject
-              ? listItems.wobjects.find(wobj => wobj.author_permlink === body?.linkToObject)
-              : body;
-
-            return {
-              ...wobjItem,
-              ...currItem,
-              body,
-            };
-          });
-          const sortingButton = customSort.reduce((acc, curr) => {
-            const findObj = compareList.find(wobj => wobj.permlink === curr);
-
-            return findObj ? [...acc, findObj] : acc;
-          }, []);
-          const buttonList = [
-            ...sortingButton,
-            ...compareList?.filter(i => !customSort.includes(i.permlink)),
-          ].map(i => ({
-            link: createLink(i),
-            name: i?.body?.title || getObjectName(i),
-            type: i.body.linkToObject ? 'nav' : 'blank',
-            permlink: i.body.linkToObject,
-            object_type: i?.object_type,
-          }));
-
-          store.dispatch(
-            setItemsForNavigation([
-              ...buttonList,
-              {
-                name: 'Legal',
-                link: '/checklist/ljc-legal',
-                permlink: 'ljc-legal',
-                object_type: 'list',
-              },
-            ]),
-          );
-        }
-      });
-    }
-  }
-
   return Promise.allSettled([
-    store.dispatch(getWebsiteConfigForSSR(req.headers.host)),
+    store.dispatch(getWebsiteConfigForSSR(req.headers.host)).then(res => {
+      const configuration = res.value;
+
+      if (!isEmpty(configuration?.shopSettings)) {
+        if (configuration.shopSettings?.type === 'object') {
+          return getObject(configuration.shopSettings?.value).then(async wobject => {
+            const menuItemLinks = wobject.menuItem?.reduce((acc, item) => {
+              const body = parseJSON(item.body);
+
+              if (body?.linkToObject) {
+                return [...acc, body?.linkToObject];
+              }
+
+              return acc;
+            }, []);
+
+            const customSort = get(wobject, 'sortCustom.include', []);
+
+            if (isEmpty(wobject.menuItem)) {
+              return store.dispatch(
+                setItemsForNavigation([
+                  {
+                    link: createLink(wobject),
+                    name: getObjectName(wobject),
+                    permlink: wobject?.author_permlink,
+                    object_type: wobject?.object_type,
+                  },
+                  {
+                    name: 'Legal',
+                    link: '/checklist/ljc-legal',
+                    permlink: 'ljc-legal',
+                    object_type: 'list',
+                  },
+                ]),
+              );
+            }
+            const listItems = isEmpty(menuItemLinks)
+              ? []
+              : await getObjectsByIds({ authorPermlinks: menuItemLinks, locale: activeLocale });
+
+            const compareList = wobject?.menuItem?.map(wobjItem => {
+              const body = parseJSON(wobjItem.body);
+              const currItem = body?.linkToObject
+                ? listItems.wobjects.find(wobj => wobj.author_permlink === body?.linkToObject)
+                : body;
+
+              return {
+                ...wobjItem,
+                ...currItem,
+                body,
+              };
+            });
+            const sortingButton = customSort.reduce((acc, curr) => {
+              const findObj = compareList.find(wobj => wobj.permlink === curr);
+
+              return findObj ? [...acc, findObj] : acc;
+            }, []);
+            const buttonList = [
+              ...sortingButton,
+              ...compareList?.filter(i => !customSort.includes(i.permlink)),
+            ].map(i => ({
+              link: createLink(i),
+              name: i?.body?.title || getObjectName(i),
+              type: i.body.linkToObject ? 'nav' : 'blank',
+              permlink: i.body.linkToObject,
+              object_type: i?.object_type,
+            }));
+
+            return store.dispatch(
+              setItemsForNavigation([
+                ...buttonList,
+                {
+                  name: 'Legal',
+                  link: '/checklist/ljc-legal',
+                  permlink: 'ljc-legal',
+                  object_type: 'list',
+                },
+              ]),
+            );
+          });
+        }
+      }
+
+      return res;
+    }),
     store.dispatch(setAppUrl(`https://${req.headers.host}`)),
     store.dispatch(setUsedLocale(lang)),
     store.dispatch(login()),

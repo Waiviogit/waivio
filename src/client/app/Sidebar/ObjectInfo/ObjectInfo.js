@@ -8,6 +8,7 @@ import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
 import moment from 'moment';
 import classNames from 'classnames';
+import { isMobile } from '../../../../common/helpers/apiHelpers';
 import {
   accessTypesArr,
   getBlogItems,
@@ -1436,7 +1437,7 @@ class ObjectInfo extends React.Component {
             {showFeedSection && reviewsSection}
             {accessExtend && settingsSection}
             {this.props.children}
-            <ObjectInfoExperts wobject={wobject} />
+            {isMobile() && <ObjectInfoExperts wobject={wobject} />}
           </div>
         )}
       </div>
