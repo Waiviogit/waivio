@@ -20,6 +20,8 @@ import {
   getNearbyObjects as getNearbyObjectsAction,
   getObject,
   getObjectFollowers as getObjectFollowersAction,
+  getAddOns,
+  getSimilarObjects,
 } from '../../../store/wObjectStore/wobjectsActions';
 import {
   getRelatedWobjects,
@@ -151,14 +153,18 @@ WobjectContainer.fetchData = async ({ store, match }) => {
 
   return Promise.all([
     store.dispatch(getObject(match.params.name, res?.value?.name)).then(response =>
-      store.dispatch(
-        getObjectPosts({
-          object: match.params.name,
-          username: match.params.name,
-          limit: 20,
-          newsPermlink: response?.newsFeed?.permlink,
-        }),
-      ),
+      Promise.allSettled([
+        store.dispatch(
+          getObjectPosts({
+            object: match.params.name,
+            username: match.params.name,
+            limit: 20,
+            newsPermlink: response?.newsFeed?.permlink,
+          }),
+        ),
+        store.dispatch(getAddOns(response?.addOn?.map(obj => obj.body))),
+        store.dispatch(getSimilarObjects(match.params.name)),
+      ]),
     ),
     store.dispatch(getObjectFollowersAction({ object: match.params.name, skip: 0, limit: 5 })),
     store.dispatch(getRate()),
