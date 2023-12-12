@@ -146,11 +146,6 @@ const ObjectMenu = props => {
               <FormattedMessage id="experts" defaultMessage="Experts" />
             </Link>
           </li>
-          <li className={getItemClasses(TAB_NAME.HIDDEN_TAB)} data-key={TAB_NAME.HIDDEN_TAB}>
-            <Link to={createLink(TAB_NAME.HIDDEN_TAB)}>
-              <FormattedMessage id="info" defaultMessage="Info" />
-            </Link>
-          </li>
         </ul>
       </div>
     </div>
