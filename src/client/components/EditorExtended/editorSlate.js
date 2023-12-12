@@ -77,6 +77,7 @@ const EditorSlate = props => {
     initialPosTopBtn,
     clearEditor,
     ADD_BTN_DIF,
+    isThread,
   } = props;
 
   const params = useParams();
@@ -278,7 +279,7 @@ const EditorSlate = props => {
     if (!isComment) setTimeout(() => focusEditorToEnd(editor), 200);
     setInitiallized(true);
     setTimeout(() => setInitiallized(false), 1500);
-  }, [params]);
+  }, [params, initialBody]);
 
   useEffect(() => {
     if ((body || initialBody) && initiallized) {
@@ -290,13 +291,13 @@ const EditorSlate = props => {
       const lastBlock = editor.children?.[editor.children.length - 1];
 
       /* add an empty space if it doesn't exist in the end  */
-      if (!(lastBlock?.type === 'paragraph' && lastBlock?.children?.[0].text === '')) {
+      if (!(lastBlock?.type === 'paragraph' && lastBlock?.children?.[0].text === '') && !isThread) {
         Transforms.insertNodes(editor, createEmptyNode());
       }
       Transforms.deselect(editor);
       if (!isComment) focusEditorToEnd(editor);
     }
-  }, [body, initiallized]);
+  }, [body, initiallized, initialBody]);
 
   return (
     <Slate editor={editor} value={value} onChange={handleChange}>
@@ -322,6 +323,7 @@ const EditorSlate = props => {
             }}
             onBlur={() => {
               editor.lastSelection = editor.selection;
+              if (props.onBlur) props.onBlur();
             }}
             spellCheck={false}
             onPaste={handlePastedFiles}
@@ -358,11 +360,13 @@ EditorSlate.propTypes = {
   initialBody: PropTypes.string,
   handlePasteText: PropTypes.func,
   onFocus: PropTypes.func,
+  onBlur: PropTypes.func,
   setEditor: PropTypes.func,
   setEditorCb: PropTypes.func,
   isComment: PropTypes.bool,
   isCommentEdit: PropTypes.bool,
   small: PropTypes.bool,
+  isThread: PropTypes.bool,
   minHeight: PropTypes.string,
   initialPosTopBtn: PropTypes.string,
   clearEditor: PropTypes.func,

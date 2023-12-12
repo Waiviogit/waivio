@@ -218,5 +218,7 @@
   "hiveWithdrawEstimates": "/hive-withdraw-estimates",
 "adSense": "/ad-sense",
   "listItemLocales": "/list-item-locales",
-  "descriptionBot": "/description-bot"
+  "descriptionBot": "/description-bot",
+  "thread": "/thread",
+  "hashtag": "/hashtag"
 }
