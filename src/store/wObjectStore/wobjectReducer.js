@@ -1,4 +1,5 @@
 import { uniqBy } from 'lodash';
+import { GET_ADD_ONS, GET_SIMILAR_OBJECTS, GET_RELATED_OBJECTS } from './wobjectsActions';
 
 import * as actions from './wobjectsActions';
 import {
@@ -53,6 +54,8 @@ export const initialState = {
     hasMore: false,
     isLoading: false,
   },
+  addOn: [],
+  similarObjects: [],
 };
 
 export default function wobjectReducer(state = initialState, action) {
@@ -542,6 +545,24 @@ export default function wobjectReducer(state = initialState, action) {
       return {
         ...state,
         shopBreadcrumbs: action.crumbs,
+      };
+
+    case GET_ADD_ONS.SUCCESS:
+      return {
+        ...state,
+        addOn: action.payload.wobjects,
+      };
+
+    case GET_SIMILAR_OBJECTS.SUCCESS:
+      return {
+        ...state,
+        similarObjects: action.payload.wobjects,
+      };
+
+    case GET_RELATED_OBJECTS.SUCCESS:
+      return {
+        ...state,
+        relatedObjects: action.payload.wobjects,
       };
 
     default: {
