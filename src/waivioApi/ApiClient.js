@@ -26,10 +26,8 @@ export const headers = {
 const WAIVIdPool = 13;
 const REQUEST_TIMEOUT = 15000;
 const HIVE_ENGINE_NODES = [
-  // 'https://api.hive-engine.com/rpc', // Germany
-  // 'https://api2.hive-engine.com/rpc', // Finland
-  // 'https://us.engine.rishipanthee.com', // Finland
-  'https://ha.herpc.dtools.dev', // New Jersey !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  'https://engine.waivio.com',
+  'https://ha.herpc.dtools.dev', // New Jersey
   'https://engine.deathwing.me', //
   'https://herpc.dtools.dev', // Miami
   'https://api.primersion.com',
