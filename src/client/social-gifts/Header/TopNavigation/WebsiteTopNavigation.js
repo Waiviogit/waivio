@@ -60,7 +60,7 @@ const WebsiteTopNavigation = ({ shopSettings, intl }) => {
 
   const handleMoreMenuVisibleChange = vis => setVisible(vis);
 
-  if (isEmpty(shopSettings) || isEmpty(linkList)) return null;
+  // if (isEmpty(shopSettings) || isEmpty(linkList)) return null;
   const lastItemsLength = linkList.length - listLength;
   const lastItems = takeRight(linkList, lastItemsLength);
 

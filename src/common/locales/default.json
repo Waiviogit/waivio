@@ -2558,5 +2558,6 @@
   "optimize_description_with_ChatGPT": "Optimize description with ChatGPT",
   "claim_administrative_authority": "Claim administrative authority",
   "department_update_bot": "Department update bot",
-  "list_duplication_bot": "List duplication bot"
+  "list_duplication_bot": "List duplication bot",
+  "empty_threads": "Be the first to write a thread"
 }

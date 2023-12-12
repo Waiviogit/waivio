@@ -23,7 +23,7 @@ import { useSeoInfo } from '../../../hooks/useSeoInfo';
 
 import './ShopSwitcher.less';
 import { getWebsiteConfigForSSR, setMainObj } from '../../../store/appStore/appActions';
-import { getObject as getObjectAction } from '../../../store/wObjectStore/wObjectSelectors';
+import { getObject as getObjectAction } from '../../../store/wObjectStore/wobjectsActions';
 import { getObject } from '../../../waivioApi/ApiClient';
 import { parseJSON } from '../../../common/helpers/parseJSON';
 import {
@@ -147,8 +147,8 @@ ShopSwitcher.fetchData = async ({ store, req }) => {
       promiseArray.push(store.dispatch(getWobjectsShopList(wobj?.linkToObject)));
     }
   } else {
-    promiseArray.push(getUserDepartments(shopSettings?.value));
-    promiseArray.push(getUserShopList(shopSettings?.value));
+    promiseArray.push(store.dispatch(getUserDepartments(shopSettings?.value)));
+    promiseArray.push(store.dispatch(getUserShopList(shopSettings?.value)));
   }
 
   return Promise.allSettled(promiseArray);

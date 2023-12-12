@@ -164,10 +164,10 @@ export const getComments = postId => (dispatch, getState) => {
   }
 };
 
-export const sendComment = (parentPost, newBody, isUpdating = false, originalComment) => (
+export const sendComment = (parentPost, newBody, isUpdating = false, originalComment, callback) => (
   dispatch,
   getState,
-  { steemConnectAPI },
+  { steemConnectAPI, busyAPI },
 ) => {
   const { category, permlink: parentPermlink } = parentPost;
   let parentAuthor = parentPost.author;
@@ -222,7 +222,16 @@ export const sendComment = (parentPost, newBody, isUpdating = false, originalCom
       jsonMetadata,
       parentPost.root_author,
     )
-    .then(() => {
+    .then(res => {
+      busyAPI.instance.sendAsync(subscribeTypes.subscribeTransactionId, [
+        parentAuthor,
+        res.result.id,
+      ]);
+      busyAPI.instance.subscribe((response, mess) => {
+        if (mess?.success && mess?.permlink === res.result.id) {
+          callback();
+        }
+      });
       dispatch(
         getFakeSingleComment(
           guestParentAuthor || parentAuthor,
