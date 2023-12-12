@@ -198,16 +198,18 @@ export const getUserComments = ({ username, limit = 10, skip = 0, start_permlink
   });
 };
 
-export const getThreadsContent = (hashtag, skip, limit) => dispatch =>
+export const getThreadsContent = (hashtag, skip, limit, isUser) => dispatch =>
   dispatch({
     type: GET_THREADS_CONTENT.ACTION,
     payload: {
-      promise: ApiClient.getThreadsByHashtag(hashtag, skip, limit).then(res => res.result),
+      promise: isUser
+        ? ApiClient.getThreadsByUser(hashtag, skip, limit).then(res => res.result)
+        : ApiClient.getThreadsByHashtag(hashtag, skip, limit).then(res => res.result),
     },
     meta: { sortBy: 'threads', category: hashtag, limit },
   });
 
-export const getMoreThreadsContent = (hashtag, limit) => (dispatch, getState) => {
+export const getMoreThreadsContent = (hashtag, limit, isUser) => (dispatch, getState) => {
   const state = getState();
   const feed = getFeed(state);
   const feedContent = getFeedFromState('threads', hashtag, feed);
@@ -220,7 +222,9 @@ export const getMoreThreadsContent = (hashtag, limit) => (dispatch, getState) =>
   return dispatch({
     type: GET_MORE_THREADS_CONTENT.ACTION,
     payload: {
-      promise: ApiClient.getThreadsByHashtag(hashtag, skip, limit).then(res => res.result),
+      promise: isUser
+        ? ApiClient.getThreadsByUser(hashtag, skip, limit).then(res => res.result)
+        : ApiClient.getThreadsByHashtag(hashtag, skip, limit).then(res => res.result),
     },
     meta: { sortBy: 'threads', category: hashtag, limit },
   });

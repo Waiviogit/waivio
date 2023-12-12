@@ -5,36 +5,39 @@ import { debounce } from 'lodash';
 import { Transforms } from 'slate';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
-import { setCursorCoordinates } from '../../../../store/editorStore/editorActions';
-import { searchObjectsAutoCompete } from '../../../../store/searchStore/searchActions';
-import { getSelectionRect } from '../../../components/EditorExtended/util';
-import { checkCursorInSearchSlate } from '../../../../common/helpers/editorHelper';
-import { resetEditorState } from '../../../components/EditorExtended/util/SlateEditor/utils/SlateUtilityFunctions';
-import { editorStateToMarkdownSlate } from '../../../components/EditorExtended/util/editorStateToMarkdown';
-import { getObjectName, getObjectType } from '../../../../common/helpers/wObjectHelper';
-import objectTypes from '../../const/objectTypes';
-import { getObjectUrl } from '../../../../common/helpers/postHelpers';
-import { insertObject } from '../../../components/EditorExtended/util/SlateEditor/utils/common';
-import EditorSlate from '../../../components/EditorExtended/editorSlate';
-import { getIsAuthenticated } from '../../../../store/authStore/authSelectors';
+import { setCursorCoordinates } from '../../../store/editorStore/editorActions';
+import { searchObjectsAutoCompete } from '../../../store/searchStore/searchActions';
+import { getSelectionRect } from '../../components/EditorExtended/util';
+import { checkCursorInSearchSlate } from '../../../common/helpers/editorHelper';
+import { resetEditorState } from '../../components/EditorExtended/util/SlateEditor/utils/SlateUtilityFunctions';
+import { editorStateToMarkdownSlate } from '../../components/EditorExtended/util/editorStateToMarkdown';
+import { getObjectName, getObjectType } from '../../../common/helpers/wObjectHelper';
+import objectTypes from '../../object/const/objectTypes';
+import { getObjectUrl } from '../../../common/helpers/postHelpers';
+import { insertObject } from '../../components/EditorExtended/util/SlateEditor/utils/common';
+import EditorSlate from '../../components/EditorExtended/editorSlate';
+import { getIsAuthenticated } from '../../../store/authStore/authSelectors';
 
 import './ThreadsEditor.less';
 
 const ThreadsEditor = ({
   parentPost,
-  signature,
+  // signature,
   isLoading,
-  isEdit,
+  // isEdit,
   inputValue,
   onSubmit,
   isAuth,
   intl,
   setCursorCoordin,
   searchObjects,
+  callback,
+  mainThreadHashtag,
 }) => {
   const [editor, setEditor] = useState(null);
   const [isShowEditorSearch, setShowEditorSearch] = useState(false);
   const [commentMsg, setCommentMsg] = useState(inputValue || '');
+  const [focused, setFocused] = useState(false);
 
   const handleSubmit = e => {
     e.preventDefault();
@@ -43,12 +46,14 @@ const ThreadsEditor = ({
     if (e.shiftKey) {
       setCommentMsg(prevCommentMsg => `${prevCommentMsg}\n`);
     } else if (commentMsg) {
-      const bodyWithSignature = isEdit ? commentMsg : `${commentMsg}${signature}`;
+      // const bodyWithSignature = isEdit ? commentMsg : `${commentMsg}${signature}`;
+      const bodyWithSignature = `${commentMsg}`;
 
-      onSubmit(parentPost, bodyWithSignature).then(() => {
+      onSubmit(parentPost, bodyWithSignature, false, parentPost, callback).then(() => {
         setCommentMsg('');
 
         resetEditorState(editor);
+        setFocused(false);
       });
     }
   };
@@ -90,8 +95,11 @@ const ThreadsEditor = ({
     const { beforeRange } = checkCursorInSearchSlate(editor);
     const objectType = getObjectType(selectedObject);
     const objectName = getObjectName(selectedObject);
-    const textReplace = objectType === objectTypes.HASHTAG ? `#${objectName}` : objectName;
-    const url = getObjectUrl(selectedObject.id || selectedObject.author_permlink);
+    const textReplace =
+      objectType === objectTypes.HASHTAG || mainThreadHashtag === selectedObject.author_permlink
+        ? `#${selectedObject.author_permlink}`
+        : objectName;
+    const url = getObjectUrl(selectedObject?.id || selectedObject?.author_permlink);
 
     Transforms.select(editor, beforeRange);
     insertObject(editor, url, textReplace, true);
@@ -110,6 +118,7 @@ const ThreadsEditor = ({
             <EditorSlate
               small
               isComment
+              isThread
               isQuickComment
               editorEnabled
               onChange={handleMsgChange}
@@ -122,7 +131,9 @@ const ThreadsEditor = ({
               handleObjectSelect={handleObjectSelect}
               setEditorCb={setEditor}
               ADD_BTN_DIF={24}
-              initialBody={inputValue}
+              initialBody={focused ? inputValue : ''}
+              onFocus={() => setFocused(true)}
+              // onBlur={()=>setFocused(false)}
               isShowEditorSearch={isShowEditorSearch}
               setShowEditorSearch={setShowEditorSearch}
             />
@@ -149,9 +160,10 @@ const ThreadsEditor = ({
 
 ThreadsEditor.propTypes = {
   parentPost: PropTypes.shape().isRequired,
-  signature: PropTypes.string,
+  // signature: PropTypes.string,
+  mainThreadHashtag: PropTypes.string,
   isLoading: PropTypes.bool,
-  isEdit: PropTypes.bool,
+  // isEdit: PropTypes.bool,
   inputValue: PropTypes.string.isRequired,
   onSubmit: PropTypes.func,
   isAuth: PropTypes.bool,
@@ -159,6 +171,7 @@ ThreadsEditor.propTypes = {
     formatMessage: PropTypes.func,
   }).isRequired,
   setCursorCoordin: PropTypes.func,
+  callback: PropTypes.func,
   searchObjects: PropTypes.func,
 };
 

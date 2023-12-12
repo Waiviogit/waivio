@@ -273,7 +273,11 @@ class Story extends React.Component {
         href={replaceBotWithGuestName(`/@${post.id}`, post.guestInfo)}
         rel="noopener noreferrer"
         target="_blank"
-        onClick={this.handlePreviewClickPostModalDisplay}
+        onClick={
+          this.props.isThread
+            ? this.handlePostModalDisplay
+            : this.handlePreviewClickPostModalDisplay
+        }
         className="Story__content__preview"
       >
         <StoryPreview post={post} isVimeo={isVimeo} />
@@ -342,11 +346,7 @@ class Story extends React.Component {
 
     return (
       post.depth >= 0 && (
-        <div
-          className="Story"
-          id={`${author}-${post.permlink}`}
-          onClick={isThread ? this.handlePostModalDisplay : undefined}
-        >
+        <div className="Story" id={`${author}-${post.permlink}`}>
           <div>
             {rebloggedUI}
             {post.pin && (

@@ -6,8 +6,8 @@ import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { injectIntl } from 'react-intl';
 import ObjectFeed from '../ObjectFeed';
-import ObjectThreads from '../ObjectThreads/ObjectThreads';
 import { getObject } from '../../../store/wObjectStore/wObjectSelectors';
+import Threads from '../../Threads/Threads';
 
 const ObjectReviewsAndThreads = ({ intl, match }) => {
   const wobject = useSelector(getObject);
@@ -41,7 +41,7 @@ const ObjectReviewsAndThreads = ({ intl, match }) => {
         key="threads"
         className="UserFollowing__item"
       >
-        {tabName === 'threads' && <ObjectThreads />}
+        {tabName === 'threads' && <Threads isUser={false} />}
       </Tabs.TabPane>
     </Tabs>
   );

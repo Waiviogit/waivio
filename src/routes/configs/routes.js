@@ -348,7 +348,7 @@ const routes = {
       pathScope: '/@:name',
       routes: [
         {
-          path: ['', '/(comments|activity)'],
+          path: ['', '/(threads|comments|activity)'],
           exact: true,
           component: Views.PostsCommentsActivity,
         },
