@@ -24,6 +24,7 @@ const TAB_NAME = {
   SHOP: 'shop',
   UPDATES: 'updates',
   REVIEWS: 'reviews',
+  THREADS: 'threads',
   FOLLOWERS: 'followers',
   EXPERTISE: 'expertise',
 };
@@ -97,7 +98,12 @@ const ObjectMenu = props => {
             </li>
           )}
           <li
-            className={getItemClasses([TAB_NAME.REVIEWS, isMobile() ? '' : TAB_NAME.ABOUT, ''])}
+            className={getItemClasses([
+              TAB_NAME.REVIEWS,
+              TAB_NAME.THREADS,
+              isMobile() ? '' : TAB_NAME.ABOUT,
+              '',
+            ])}
             data-key={TAB_NAME.REVIEWS}
           >
             <Link to={createLink(TAB_NAME.REVIEWS)}>

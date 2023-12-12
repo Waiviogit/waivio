@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
+import { injectIntl } from 'react-intl';
 import { Checkbox, Modal } from 'antd';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 import { createDepartment } from '../../../waivioApi/importApi';
 import ObjectCardView from '../../objectCard/ObjectCardView';
 import SearchObjectsAutocomplete from '../EditorObject/SearchObjectsAutocomplete';
 
-const FindDepartmentsModal = ({ visible, onClose, updateDepartmentsList }) => {
+const FindDepartmentsModal = ({ visible, onClose, updateDepartmentsList, intl }) => {
   const userName = useSelector(getAuthenticatedUserName);
   const [selectedObj, setSelectedObj] = useState(null);
   const [includeObjects, setIncludeObjects] = useState(true);
@@ -24,10 +25,16 @@ const FindDepartmentsModal = ({ visible, onClose, updateDepartmentsList }) => {
   return (
     <Modal
       visible={visible}
-      title={'Department update bot'}
+      title={intl.formatMessage({
+        id: 'department_update_bot',
+        defaultMessage: 'Department update bot',
+      })}
       onCancel={onClose}
       onOk={handleSubmit}
-      okText={'Submit'}
+      okText={intl.formatMessage({
+        id: 'submit',
+        defaultMessage: 'Submit',
+      })}
       okButtonProps={{
         disabled: loading || !selectedObj,
         loading,
@@ -37,7 +44,13 @@ const FindDepartmentsModal = ({ visible, onClose, updateDepartmentsList }) => {
         <ObjectCardView closeButton wObject={selectedObj} onDelete={() => setSelectedObj(null)} />
       ) : (
         <React.Fragment>
-          <h4 className="DepartmentsBot__margin">Select list:</h4>
+          <h4 className="DepartmentsBot__margin">
+            {intl.formatMessage({
+              id: 'select_list',
+              defaultMessage: 'Select list',
+            })}
+            :
+          </h4>
           <SearchObjectsAutocomplete handleSelect={setSelectedObj} objectType={'list'} />
         </React.Fragment>
       )}
@@ -46,7 +59,10 @@ const FindDepartmentsModal = ({ visible, onClose, updateDepartmentsList }) => {
         checked={includeObjects}
         onChange={e => setIncludeObjects(e.target.checked)}
       />{' '}
-      Process embedded lists
+      {intl.formatMessage({
+        id: 'process_lists',
+        defaultMessage: 'Process embedded lists',
+      })}
     </Modal>
   );
 };
@@ -55,6 +71,7 @@ FindDepartmentsModal.propTypes = {
   visible: PropTypes.bool,
   onClose: PropTypes.func,
   updateDepartmentsList: PropTypes.func,
+  intl: PropTypes.shape(),
 };
 
-export default FindDepartmentsModal;
+export default injectIntl(FindDepartmentsModal);

@@ -155,9 +155,11 @@ const DescrioptionsBot = ({ intl }) => {
         <Switch checked={isDescriptionsBot} onChange={handleRedirect} />
       </div>
       <p>
-        This bot utilizes ChatGPT to rewrite titles and descriptions for all embedded lists, as well
-        as names and descriptions for all objects linked from these lists. If the same user repeats
-        this process, it will only be completed for lists and objects added since the last session.
+        {intl.formatMessage({
+          id: 'descriptions_bot_main_text',
+          defaultMessage:
+            'This bot utilizes ChatGPT to rewrite titles and descriptions for all embedded lists, as well as names and descriptions for all objects linked from these lists. If the same user repeats this process, it will only be completed for lists and objects added since the last session.',
+        })}
       </p>
       <p>
         {intl.formatMessage({
@@ -176,7 +178,12 @@ const DescrioptionsBot = ({ intl }) => {
       <hr />
       <p>
         <b>
-          The Descriptions bot requires authorization to upvote data updates on your behalf:{' '}
+          {intl.formatMessage({
+            id: 'descriptions_bot_authorization',
+            defaultMessage:
+              'The Descriptions bot requires authorization to upvote data updates on your behalf',
+          })}
+          :{' '}
           <a onClick={handleRedirect}>
             {isDescriptionsBot
               ? intl.formatMessage({
@@ -206,11 +213,17 @@ const DescrioptionsBot = ({ intl }) => {
         </a>
         )
         <br />
-        The descriptions bot will pause if WAIV voting power on the account drops below the set
-        threshold.
+        {intl.formatMessage({
+          id: 'descriptions_bot_voting_text',
+          defaultMessage:
+            'The descriptions bot will pause if WAIV voting power on the account drops below the set threshold.',
+        })}
       </p>
       <VoteInfoBlock
-        info={'The Descriptions bot service is provided on as-is / as-available basis.'}
+        info={intl.formatMessage({
+          id: 'descriptions_bot_service_provided',
+          defaultMessage: 'The Descriptions bot service is provided on as-is / as-available basis.',
+        })}
       />
       <hr />
       <Button type="primary" onClick={() => setOpenDepModal(true)}>
