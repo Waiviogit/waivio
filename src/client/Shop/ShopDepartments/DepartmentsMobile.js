@@ -10,16 +10,20 @@ import DepartmentsUser from './DepartmentsUser';
 
 import './ShopDepartments.less';
 
-const DepartmentsMobile = ({ type, setVisible, visible, isSocial }) => {
+const DepartmentsMobile = ({ type, setVisible, visible, isSocial, name }) => {
   const match = useRouteMatch();
   const location = useLocation();
 
   const modalBody = () => {
     switch (type) {
       case 'user':
-        return <DepartmentsUser isSocial={isSocial} onClose={() => setVisible(false)} />;
+        return (
+          <DepartmentsUser isSocial={isSocial} name={name} onClose={() => setVisible(false)} />
+        );
       case 'wobject':
-        return <DepartmentsWobject isSocial={isSocial} onClose={() => setVisible(false)} />;
+        return (
+          <DepartmentsWobject isSocial={isSocial} name={name} onClose={() => setVisible(false)} />
+        );
 
       default:
         return <GlobalShopDepartments isSocial={isSocial} onClose={() => setVisible(false)} />;
@@ -28,8 +32,8 @@ const DepartmentsMobile = ({ type, setVisible, visible, isSocial }) => {
 
   return (
     <React.Fragment>
-      <div className="ShopDepartmentsList__mobileCrumbs">
-        <b>Departments</b> (<span onClick={() => setVisible(true)}>Select</span>)
+      <div className="ShopDepartmentsList__mobileCrumbs" onClick={() => setVisible(true)}>
+        <b>Departments</b> (<span className="ShopDepartmentsList__select">Select</span>)
         {match.params.department && (
           <span>
             <Icon type="right" />{' '}
@@ -47,6 +51,7 @@ const DepartmentsMobile = ({ type, setVisible, visible, isSocial }) => {
 DepartmentsMobile.propTypes = {
   setVisible: PropTypes.func,
   type: PropTypes.string,
+  name: PropTypes.string,
   visible: PropTypes.bool,
   isSocial: PropTypes.bool,
 };

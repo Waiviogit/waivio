@@ -23,9 +23,7 @@ const WidgetContent = ({ wobj }) => {
   const favicon = useSelector(getHelmetIcon);
   const siteName = useSelector(getSiteName);
   const title = `${getObjectName(currentWobject)} - ${siteName}`;
-  const { canonicalUrl, descriptionSite } = useSeoInfoWithAppUrl(
-    `https://${currentWobject.canonical}`,
-  );
+  const { canonicalUrl, descriptionSite } = useSeoInfoWithAppUrl(currentWobject.canonical);
   const desc = currentWobject?.description || descriptionSite || siteName;
   const image = getObjectAvatar(currentWobject) || favicon;
   const objName = location.hash ? getLastPermlinksFromHash(location.hash) : name;

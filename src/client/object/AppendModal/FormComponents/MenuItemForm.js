@@ -20,6 +20,7 @@ const MenuItemForm = ({
   onObjectCardDelete,
   onCreateObject,
   menuItemButtonType,
+  parentObject,
 }) => {
   const link = 'link';
   const [linkType, setLinkType] = useState(link);
@@ -135,7 +136,7 @@ const MenuItemForm = ({
                 })}
                 currentField={menuItemFields.linkToObject}
                 onCreateObject={onCreateObject}
-                parentObject={{}}
+                parentObject={parentObject}
               />
             </div>{' '}
           </Form.Item>
@@ -173,6 +174,7 @@ MenuItemForm.propTypes = {
   loading: PropTypes.bool.isRequired,
   menuItemButtonType: PropTypes.string.isRequired,
   intl: PropTypes.shape().isRequired,
+  parentObject: PropTypes.shape().isRequired,
   selectedObject: PropTypes.shape().isRequired,
 };
 export default injectIntl(MenuItemForm);

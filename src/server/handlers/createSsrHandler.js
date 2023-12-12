@@ -116,10 +116,12 @@ export default function createSsrHandler(template) {
       console.log('here');
       console.error('SSR error occured, falling back to bundled application instead', err);
       let settings = {};
+      let adsenseSettings = {};
       const isWaivio = req.hostname.includes('waivio');
 
       if (!isWaivio) {
         settings = await getSettingsWebsite(req.hostname);
+        adsenseSettings = await getSettingsAdsense(req.hostname);
       }
       return res.send(
         renderSsrPage(
@@ -130,6 +132,7 @@ export default function createSsrHandler(template) {
           isWaivio,
           get(settings, 'googleAnalyticsTag', ''),
           get(settings, 'googleGSCTag', ''),
+          get(adsenseSettings, 'code', ''),
         ),
       );
     }

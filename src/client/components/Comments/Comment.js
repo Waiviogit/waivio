@@ -255,6 +255,7 @@ class Comment extends React.Component {
       return (
         <CommentForm
           isEdit={this.state.editOpen}
+          isReply={this.state.replyOpen}
           currentComment={this.props.comment}
           {...props}
           onClose={this.handleEditClick}

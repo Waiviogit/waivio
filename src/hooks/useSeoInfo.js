@@ -5,9 +5,15 @@ import { isNil } from 'lodash';
 import { getAppUrl, getMainObj } from '../store/appStore/appSelectors';
 import { getLastPermlinksFromHash } from '../common/helpers/wObjectHelper';
 
-const prefereCanonical = (appUrl, isChecklist) => {
+const originalWaivioHost = 'www.waivio.com';
+
+const prefereCanonical = (appUrl, isChecklist, objectType) => {
   const location = useLocation();
   let url = `${appUrl}${location.pathname}`;
+
+  if (['list', 'page'].includes(objectType) && appUrl?.includes(originalWaivioHost)) {
+    url = `${appUrl}${location.pathname?.replace('checklist', 'object')}/${objectType}`;
+  }
 
   if (location.search) {
     url = `${appUrl}${location.pathname}${location.search}`;
@@ -18,7 +24,9 @@ const prefereCanonical = (appUrl, isChecklist) => {
 
       pathArray.splice(2, 1, getLastPermlinksFromHash(location.hash));
 
-      url = `${appUrl}${pathArray.join('/')}`;
+      url = appUrl?.includes(originalWaivioHost)
+        ? `${appUrl}${pathArray.join('/').replace('checklist', 'object')}/${objectType}`
+        : `${appUrl}${pathArray.join('/')}`;
     } else url += location.hash;
   }
 
@@ -35,21 +43,20 @@ export const useSeoInfo = isChecklist => {
     descriptionSite,
   };
 };
-export const useSeoInfoWithAppUrl = (appHost, isChecklist) => {
+export const useSeoInfoWithAppUrl = (appHost, isChecklist, objectType) => {
   const loc = useLocation();
+  const app = useSelector(getAppUrl);
   const descriptionSite = useSelector(getMainObj).description;
-  const host = appHost === 'www.waivio.com' && loc.pathname === '/' ? location.hostname : appHost;
-  const appUrl = `https://${host}`;
+  const host = loc.pathname === '/' ? app : `https://${appHost}`;
 
   return {
-    canonicalUrl: prefereCanonical(appUrl, isChecklist),
+    canonicalUrl: prefereCanonical(host, isChecklist, objectType),
     descriptionSite,
   };
 };
 
 export const getCanonicalHostForPost = metadataHost => {
   const waivioHosts = ['waivio.com', 'waiviodev.com'];
-  const originalWaivioHost = 'www.waivio.com';
 
   if (isNil(metadataHost) || waivioHosts.includes(metadataHost)) {
     return originalWaivioHost;
