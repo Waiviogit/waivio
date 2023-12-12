@@ -3,6 +3,7 @@ import { connect, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { isEmpty, isNil } from 'lodash';
 import { withRouter } from 'react-router-dom';
+import { getObjectPosts } from '../../../store/feedStore/feedActions';
 import Wobj from './Wobj';
 import { getAppendList } from '../../../store/appendStore/appendSelectors';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
@@ -149,7 +150,16 @@ WobjectContainer.fetchData = async ({ store, match }) => {
   const res = await store.dispatch(login());
 
   return Promise.all([
-    store.dispatch(getObject(match.params.name, res?.value?.name)),
+    store.dispatch(getObject(match.params.name, res?.value?.name)).then(response =>
+      store.dispatch(
+        getObjectPosts({
+          object: match.params.name,
+          username: match.params.name,
+          limit: 20,
+          newsPermlink: response?.newsFeed?.permlink,
+        }),
+      ),
+    ),
     store.dispatch(getObjectFollowersAction({ object: match.params.name, skip: 0, limit: 5 })),
     store.dispatch(getRate()),
     store.dispatch(getRewardFund()),

@@ -36,7 +36,7 @@ const Header = () => {
                 : link?.link
             }
             className={logoClassList}
-            title={`Social Gifts - ${config.aboutObject?.title || currHost}`}
+            title={config.aboutObject?.title || config.aboutObject?.description || currHost}
           >
             {logo && (
               <img

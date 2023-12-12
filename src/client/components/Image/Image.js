@@ -3,14 +3,11 @@ import React, { useState } from 'react';
 import { getProxyImageURL } from '../../../common/helpers/image';
 
 const CustomImage = ({ src, className, onClick }) => {
-  const [url, setUrl] = useState();
-  const img = new Image();
+  const [url, setUrl] = useState(getProxyImageURL(src));
 
-  img.src = getProxyImageURL(src);
-  img.onerror = () => setUrl(src);
-  img.onload = () => setUrl(getProxyImageURL(src));
-
-  return url ? <img className={className} onClick={onClick} alt="" src={url} /> : null;
+  return (
+    <img className={className} onError={() => setUrl(src)} onClick={onClick} alt="" src={url} />
+  );
 };
 
 CustomImage.propTypes = {

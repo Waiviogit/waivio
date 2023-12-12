@@ -33,16 +33,16 @@ const ObjectFeedContainer = ({ history, match, wobject, userName, isPageMode, in
   };
 
   useEffect(() => {
-    if (match.params.parentName && match.params.name) {
-      getObject(match.params.parentName, authUserName, locale).then(res => setNestedWobj(res));
+    if (match?.params?.parentName && match?.params?.name) {
+      getObject(match?.params?.parentName, authUserName, locale).then(res => setNestedWobj(res));
     }
-  }, [match.params.parentName, match.params.name]);
+  }, [match?.params?.parentName, match?.params?.name]);
 
   return (
     <React.Fragment>
       {isAuthenticated && !isPageMode && (
         <>
-          {match.params.parentName ? (
+          {match?.params?.parentName ? (
             <CatalogBreadcrumb wobject={nestedWobj} intl={intl} />
           ) : (
             <div className="object-feed__row justify-end">

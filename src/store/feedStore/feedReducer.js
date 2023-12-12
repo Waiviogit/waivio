@@ -12,6 +12,7 @@ const initialState = {
   trending: {},
   comments: {},
   objectPosts: {},
+  threads: {},
   blog: {},
   bookmarks: {},
   replies: {},
@@ -30,6 +31,7 @@ const feedIdsList = (state = [], action) => {
 
   switch (action.type) {
     case feedTypes.GET_FEED_CONTENT.START:
+    case feedTypes.GET_THREADS_CONTENT.START:
     case feedTypes.GET_USER_FEED_CONTENT.START:
     case feedTypes.GET_FEED_CONTENT_BY_BLOG.START:
     case feedTypes.GET_USER_COMMENTS.START:
@@ -44,6 +46,7 @@ const feedIdsList = (state = [], action) => {
 
       return [];
     case feedTypes.GET_FEED_CONTENT.SUCCESS:
+    case feedTypes.GET_THREADS_CONTENT.SUCCESS:
     case feedTypes.GET_USER_COMMENTS.SUCCESS:
     case feedTypes.GET_REPLIES.SUCCESS:
     case feedTypes.GET_BOOKMARKS.SUCCESS:
@@ -62,6 +65,7 @@ const feedIdsList = (state = [], action) => {
     case feedTypes.GET_MORE_USER_FEED_CONTENT.SUCCESS:
       return [...state, ...mapPostsKeys(action.payload)];
     case feedTypes.GET_MORE_FEED_CONTENT.SUCCESS:
+    case feedTypes.GET_MORE_THREADS_CONTENT.SUCCESS:
     case feedTypes.GET_MORE_USER_COMMENTS.SUCCESS:
     case feedTypes.GET_MORE_REPLIES.SUCCESS:
     case feedTypes.GET_MORE_OBJECT_POSTS.SUCCESS:
@@ -76,8 +80,10 @@ const feedIdsList = (state = [], action) => {
 const feedCategory = (state = {}, action) => {
   switch (action.type) {
     case feedTypes.GET_FEED_CONTENT.START:
+    case feedTypes.GET_THREADS_CONTENT.START:
     case feedTypes.GET_USER_FEED_CONTENT.START:
     case feedTypes.GET_MORE_FEED_CONTENT.START:
+    case feedTypes.GET_MORE_THREADS_CONTENT.START:
     case feedTypes.GET_MORE_USER_FEED_CONTENT.START:
     case feedTypes.GET_USER_COMMENTS.START:
     case feedTypes.GET_MORE_USER_COMMENTS.START:
@@ -126,7 +132,9 @@ const feedCategory = (state = {}, action) => {
         list: feedIdsList(state.list, action),
       };
     case feedTypes.GET_FEED_CONTENT.SUCCESS:
+    case feedTypes.GET_THREADS_CONTENT.SUCCESS:
     case feedTypes.GET_MORE_FEED_CONTENT.SUCCESS:
+    case feedTypes.GET_MORE_THREADS_CONTENT.SUCCESS:
     case feedTypes.GET_USER_COMMENTS.SUCCESS:
     case feedTypes.GET_MORE_USER_COMMENTS.SUCCESS:
     case feedTypes.GET_MORE_OBJECT_POSTS.SUCCESS:
@@ -143,8 +151,10 @@ const feedCategory = (state = {}, action) => {
         list: feedIdsList(state.list, action),
       };
     case feedTypes.GET_FEED_CONTENT.ERROR:
+    case feedTypes.GET_THREADS_CONTENT.ERROR:
     case feedTypes.GET_USER_FEED_CONTENT.ERROR:
     case feedTypes.GET_MORE_FEED_CONTENT.ERROR:
+    case feedTypes.GET_MORE_THREADS_CONTENT.ERROR:
     case feedTypes.GET_MORE_USER_FEED_CONTENT.ERROR:
     case feedTypes.GET_USER_COMMENTS.ERROR:
     case feedTypes.GET_MORE_USER_COMMENTS.ERROR:
@@ -184,9 +194,15 @@ const feedSortBy = (state = {}, action) => {
     case feedTypes.GET_FEED_CONTENT.START:
     case feedTypes.GET_FEED_CONTENT.SUCCESS:
     case feedTypes.GET_FEED_CONTENT.ERROR:
+    case feedTypes.GET_THREADS_CONTENT.START:
+    case feedTypes.GET_THREADS_CONTENT.SUCCESS:
+    case feedTypes.GET_THREADS_CONTENT.ERROR:
     case feedTypes.GET_MORE_FEED_CONTENT.START:
     case feedTypes.GET_MORE_FEED_CONTENT.SUCCESS:
     case feedTypes.GET_MORE_FEED_CONTENT.ERROR:
+    case feedTypes.GET_MORE_THREADS_CONTENT.START:
+    case feedTypes.GET_MORE_THREADS_CONTENT.SUCCESS:
+    case feedTypes.GET_MORE_THREADS_CONTENT.ERROR:
     case feedTypes.GET_USER_COMMENTS.START:
     case feedTypes.GET_USER_COMMENTS.SUCCESS:
     case feedTypes.GET_USER_COMMENTS.ERROR:
@@ -233,12 +249,18 @@ const feed = (state = initialState, action) => {
     case feedTypes.GET_FEED_CONTENT.START:
     case feedTypes.GET_FEED_CONTENT.SUCCESS:
     case feedTypes.GET_FEED_CONTENT.ERROR:
+    case feedTypes.GET_THREADS_CONTENT.START:
+    case feedTypes.GET_THREADS_CONTENT.SUCCESS:
+    case feedTypes.GET_THREADS_CONTENT.ERROR:
     case feedTypes.GET_FEED_CONTENT_BY_BLOG.START:
     case feedTypes.GET_FEED_CONTENT_BY_BLOG.SUCCESS:
     case feedTypes.GET_FEED_CONTENT_BY_BLOG.ERROR:
     case feedTypes.GET_MORE_FEED_CONTENT.START:
     case feedTypes.GET_MORE_FEED_CONTENT.SUCCESS:
     case feedTypes.GET_MORE_FEED_CONTENT.ERROR:
+    case feedTypes.GET_MORE_THREADS_CONTENT.START:
+    case feedTypes.GET_MORE_THREADS_CONTENT.SUCCESS:
+    case feedTypes.GET_MORE_THREADS_CONTENT.ERROR:
     case feedTypes.GET_MORE_FEED_CONTENT_BY_BLOG.START:
     case feedTypes.GET_MORE_FEED_CONTENT_BY_BLOG.SUCCESS:
     case feedTypes.GET_MORE_FEED_CONTENT_BY_BLOG.ERROR:

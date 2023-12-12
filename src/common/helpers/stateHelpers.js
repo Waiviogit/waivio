@@ -11,6 +11,7 @@ export const getFeedFromState = (sortBy, category = 'all', state) => {
     case 'bookmarks':
     case 'replies':
     case 'promoted':
+    case 'threads':
     case 'objectPosts':
       return state[sortBy][category] ? state[sortBy][category].list : [];
     default:
@@ -29,6 +30,7 @@ export const getFeedLoadingFromState = (sortBy, category = 'all', feedState) => 
     case 'bookmarks':
     case 'replies':
     case 'promoted':
+    case 'threads':
     case 'objectPosts':
       return (feedState[sortBy][category] && feedState[sortBy][category].isFetching) || false;
     default:
@@ -47,6 +49,7 @@ export const getFeedFetchedFromState = (sortBy, category = 'all', feedState) => 
     case 'bookmarks':
     case 'replies':
     case 'promoted':
+    case 'threads':
     case 'objectPosts':
       return (feedState[sortBy][category] && feedState[sortBy][category].isLoaded) || false;
     default:
@@ -66,6 +69,7 @@ export const getFeedHasMoreFromState = (sortBy, listName = 'all', feedState) => 
     case 'bookmarks':
     case 'replies':
     case 'promoted':
+    case 'threads':
     case 'objectPosts':
       return (feedState[sortBy][listName] && feedState[sortBy][listName].hasMore) || false;
     default:
@@ -85,6 +89,7 @@ export const getFeedTagsFilterFromState = (sortBy, listName = 'all', feedState) 
     case 'bookmarks':
     case 'replies':
     case 'promoted':
+    case 'threads':
     case 'objectPosts':
       return (feedState[sortBy][listName] && feedState[sortBy][listName].tags) || [];
     default:
@@ -104,6 +109,7 @@ export const getFeedFailedFromState = (sortBy, listName = 'all', feedState) => {
     case 'bookmarks':
     case 'replies':
     case 'promoted':
+    case 'threads':
     case 'objectPosts':
       return (feedState[sortBy][listName] && feedState[sortBy][listName].failed) || false;
     default:

@@ -26,10 +26,8 @@ export const headers = {
 const WAIVIdPool = 13;
 const REQUEST_TIMEOUT = 15000;
 const HIVE_ENGINE_NODES = [
-  // 'https://api.hive-engine.com/rpc', // Germany
-  // 'https://api2.hive-engine.com/rpc', // Finland
-  // 'https://us.engine.rishipanthee.com', // Finland
-  'https://ha.herpc.dtools.dev', // New Jersey !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  'https://engine.waivio.com',
+  'https://ha.herpc.dtools.dev', // New Jersey
   'https://engine.deathwing.me', //
   'https://herpc.dtools.dev', // Miami
   'https://api.primersion.com',
@@ -3771,6 +3769,42 @@ export const getObjectUpdatesLocale = (authorPermlink, permlink) => {
         ...headers,
         'access-token': Cookie.get('access_token'),
       },
+      method: 'GET',
+    },
+  )
+    .then(res => res.json())
+    .then(posts => posts)
+    .catch(error => error);
+};
+export const getThreadsByHashtag = (permlink, skip = 0, limit = 10, sort = 'latest') => {
+  return fetch(
+    `${config.apiPrefix}${config.thread}${config.hashtag}?hashtag=${permlink}&skip=${skip}&limit=${limit}&sort=${sort}`,
+    {
+      headers: headers,
+      method: 'GET',
+    },
+  )
+    .then(res => res.json())
+    .then(posts => posts)
+    .catch(error => error);
+};
+export const getThreadsByUser = (userName, skip = 0, limit = 10, sort = 'latest') => {
+  return fetch(
+    `${config.apiPrefix}${config.thread}${config.user}?user=${userName}&skip=${skip}&limit=${limit}&sort=${sort}`,
+    {
+      headers: headers,
+      method: 'GET',
+    },
+  )
+    .then(res => res.json())
+    .then(posts => posts)
+    .catch(error => error);
+};
+export const getThreadsCountByHashtag = (permlink, skip = 0, limit = 10) => {
+  return fetch(
+    `${config.apiPrefix}${config.thread}${config.hashtag}${config.count}?skip=${skip}&limit=${limit}`,
+    {
+      headers: headers,
       method: 'GET',
     },
   )
