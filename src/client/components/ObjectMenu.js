@@ -26,7 +26,6 @@ const TAB_NAME = {
   REVIEWS: 'reviews',
   FOLLOWERS: 'followers',
   EXPERTISE: 'expertise',
-  HIDDEN_TAB: 'hiddenTab',
 };
 
 const ObjectMenu = props => {

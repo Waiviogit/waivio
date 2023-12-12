@@ -12,6 +12,7 @@ import {
   getShopSettings,
   getSiteName,
 } from '../../../store/appStore/appSelectors';
+import { getObjectPosts } from '../../../store/feedStore/feedActions';
 import Affix from '../../components/Utils/Affix';
 import FiltersForMobile from '../../newRewards/Filters/FiltersForMobile';
 import DepartmentsMobile from '../../Shop/ShopDepartments/DepartmentsMobile';
@@ -141,7 +142,18 @@ ShopSwitcher.fetchData = async ({ store, req }) => {
 
       wobj = menuItems[0];
     }
-    promiseArray.push(store.dispatch(getObjectAction(wobj?.linkToObject)));
+    promiseArray.push(
+      store.dispatch(getObjectAction(wobj?.linkToObject)).then(response =>
+        store.dispatch(
+          getObjectPosts({
+            object: wobj?.linkToObject,
+            username: wobj?.linkToObject,
+            limit: 20,
+            newsPermlink: response?.newsFeed?.permlink,
+          }),
+        ),
+      ),
+    );
     if (wobj?.objectType) {
       promiseArray.push(store.dispatch(getWobjectDepartments(wobj?.linkToObject)));
       promiseArray.push(store.dispatch(getWobjectsShopList(wobj?.linkToObject)));
