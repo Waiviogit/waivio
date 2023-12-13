@@ -2559,5 +2559,6 @@
   "claim_administrative_authority": "Claim administrative authority",
   "department_update_bot": "Department update bot",
   "list_duplication_bot": "List duplication bot",
-  "empty_threads": "Be the first to write a thread"
+  "empty_threads": "Be the first to write a thread",
+  "threads_beta": "Threads (BETA)"
 }
