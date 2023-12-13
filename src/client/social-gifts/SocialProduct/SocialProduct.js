@@ -8,11 +8,8 @@ import moment from 'moment';
 import { get, has, isEmpty, isNil, reduce } from 'lodash';
 import {
   getObjectInfo,
-  getObjectsByIds,
   getObjectsRewards,
   getReferenceObjectsList,
-  getRelatedObjectsFromDepartments,
-  getSimilarObjectsFromDepartments,
 } from '../../../waivioApi/ApiClient';
 import {
   getAuthenticatedUserName,
@@ -50,11 +47,19 @@ import { resetOptionClicked } from '../../../store/shopStore/shopActions';
 import { setStoreActiveOption } from '../../../store/optionsStore/optionsActions';
 import SocialProductReviews from './SocialProductReviews/SocialProductReviews';
 import SocialProductDescription from './SocialProductDescription/SocialProductDescription';
-import { getObject } from '../../../store/wObjectStore/wobjectsActions';
+import {
+  getObject,
+  getAddOns,
+  getSimilarObjects,
+  getRelatedObjects,
+} from '../../../store/wObjectStore/wobjectsActions';
 import {
   getObject as getObjectState,
   getWobjectAuthors,
   getWobjectNested,
+  getAddOnFromState,
+  getSimilarObjectsFromState,
+  getRelatedObjectsFromState,
 } from '../../../store/wObjectStore/wObjectSelectors';
 import './SocialProduct.less';
 import { getObjectAlbums, getRelatedPhotos } from '../../../store/galleryStore/gallerySelectors';
@@ -89,6 +94,12 @@ const SocialProduct = ({
   nestedWobj,
   isEditMode,
   toggleViewEditMode,
+  addOns,
+  getAddOnsAction,
+  getSimilarObjectsAction,
+  similarObjects,
+  relatedObjects,
+  getRelatedObjectsAction,
 }) => {
   const wobject =
     history.location.hash && history.location.hash !== `#${wobj.author_permlink}`
@@ -96,10 +107,7 @@ const SocialProduct = ({
       : wobj;
   const [reward, setReward] = useState([]);
   const [hoveredOption, setHoveredOption] = useState({});
-  const [addOns, setAddOns] = useState([]);
-  const [similarObjects, setSimilarObjects] = useState([]);
   const [references, setReferences] = useState([]);
-  const [relatedObjects, setRelatedObjects] = useState([]);
   const [loading, setIsLoading] = useState(true);
   const [fields, setFields] = useState({
     brandObject: {},
@@ -202,30 +210,13 @@ const SocialProduct = ({
     !isEmpty(ageRange);
 
   const getAddOnsSimilarRelatedObjects = () => {
-    if (!isEmpty(addOnPermlinks) && !isNil(addOnPermlinks)) {
-      getObjectsByIds({
-        authorPermlinks: addOnPermlinks,
-        authUserName: userName,
-        limit,
-        skip: 0,
-      }).then(res => {
-        setAddOns(res.wobjects);
-      });
+    if (!isEmpty(addOnPermlinks) && isEmpty(addOns)) {
+      getAddOnsAction(addOnPermlinks, userName, limit);
     }
-    getRelatedObjectsFromDepartments(
-      wobject.author_permlink,
-      userName,
-      locale,
-      0,
-      limit,
-    ).then(res => setRelatedObjects(res.wobjects || []));
-    getSimilarObjectsFromDepartments(
-      wobject.author_permlink,
-      userName,
-      locale,
-      0,
-      limit,
-    ).then(res => setSimilarObjects(res.wobjects || []));
+    if (isEmpty(relatedObjects))
+      getRelatedObjectsAction(wobject.author_permlink, userName, locale, 0, limit);
+    if (isEmpty(similarObjects))
+      getSimilarObjectsAction(wobject.author_permlink, userName, locale, 0, limit);
   };
 
   const getPublisherManufacturerBrandMerchantObjects = () => {
@@ -557,8 +548,14 @@ SocialProduct.propTypes = {
   authenticated: PropTypes.bool,
   authors: PropTypes.arrayOf(),
   albums: PropTypes.arrayOf(),
+  addOns: PropTypes.arrayOf(),
   relatedAlbum: PropTypes.shape(),
   optionClicked: PropTypes.bool,
+  getAddOnsAction: PropTypes.func,
+  getSimilarObjectsAction: PropTypes.func,
+  similarObjects: PropTypes.arrayOf(),
+  relatedObjects: PropTypes.arrayOf(),
+  getRelatedObjectsAction: PropTypes.func,
   helmetIcon: PropTypes.string,
   setStoreActiveOpt: PropTypes.func,
   resetOptClicked: PropTypes.func,
@@ -582,6 +579,9 @@ const mapStateToProps = state => ({
   optionClicked: getIsOptionClicked(state),
   helmetIcon: getHelmetIcon(state),
   nestedWobj: getWobjectNested(state),
+  addOns: getAddOnFromState(state),
+  similarObjects: getSimilarObjectsFromState(state),
+  relatedObjects: getRelatedObjectsFromState(state),
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -590,6 +590,9 @@ const mapDispatchToProps = dispatch => ({
   getWobject: (obj, name) => dispatch(getObject(obj, name)),
   getWobjAlbums: obj => dispatch(getAlbums(obj)),
   resetWobjGallery: () => dispatch(resetGallery()),
+  getAddOnsAction: getAddOns,
+  getSimilarObjectsAction: getSimilarObjects,
+  getRelatedObjectsAction: getRelatedObjects,
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(SocialProduct));

@@ -28,6 +28,16 @@ export const getBreadCrumbs = createSelector([objectState], state => state.bread
 export const getIsEditMode = createSelector([objectState], state => state.isEditMode);
 
 export const getShopBreadCrumbs = createSelector([objectState], state => state.shopBreadcrumbs);
+export const getAddOnFromState = createSelector([objectState], state => state.addOn || []);
+
+export const getSimilarObjectsFromState = createSelector(
+  [objectState],
+  state => state.similarObjects || [],
+);
+export const getRelatedObjectsFromState = createSelector(
+  [objectState],
+  state => state.relatedObjects || [],
+);
 
 export const getWobjectNested = createSelector([objectState], state => state.nestedWobject);
 

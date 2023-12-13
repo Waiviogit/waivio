@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { uniq } from 'lodash';
+import { uniq, isEmpty } from 'lodash';
 import PropTypes from 'prop-types';
 import Helmet from 'react-helmet';
 import { useLocation, useParams } from 'react-router';
@@ -85,7 +85,7 @@ const ObjectNewsFeed = ({ wobj }) => {
   };
 
   useEffect(() => {
-    getPostsList();
+    if (isEmpty(posts)) getPostsList();
     if (window.gtag)
       window.gtag('event', getObjectName(getObjectName(wobj) || getObjectName(currObj)), {
         debug_mode: true,
@@ -149,21 +149,6 @@ const ObjectNewsFeed = ({ wobj }) => {
 
 ObjectNewsFeed.propTypes = {
   wobj: PropTypes.shape(),
-};
-
-ObjectNewsFeed.fetchData = ({ store, match, query }) => {
-  const objName = query ? query.get('currObj') : match.params.name;
-
-  store.dispatch(getObject(objName)).then(res => {
-    store.dispatch(
-      getObjectPosts({
-        object: objName,
-        username: objName,
-        limit: 20,
-        newsPermlink: res?.newsFeed?.permlink,
-      }),
-    );
-  });
 };
 
 export default ObjectNewsFeed;

@@ -27,7 +27,6 @@ const TAB_NAME = {
   THREADS: 'threads',
   FOLLOWERS: 'followers',
   EXPERTISE: 'expertise',
-  HIDDEN_TAB: 'hiddenTab',
 };
 
 const ObjectMenu = props => {
@@ -151,11 +150,6 @@ const ObjectMenu = props => {
           >
             <Link to={createLink(TAB_NAME.EXPERTISE)}>
               <FormattedMessage id="experts" defaultMessage="Experts" />
-            </Link>
-          </li>
-          <li className={getItemClasses(TAB_NAME.HIDDEN_TAB)} data-key={TAB_NAME.HIDDEN_TAB}>
-            <Link to={createLink(TAB_NAME.HIDDEN_TAB)}>
-              <FormattedMessage id="info" defaultMessage="Info" />
             </Link>
           </li>
         </ul>
