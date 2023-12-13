@@ -14,11 +14,16 @@ import {
   getFeedLoadingFromState,
 } from '../../common/helpers/stateHelpers';
 import { getMoreThreadsContent, getThreadsContent } from '../../store/feedStore/feedActions';
-import { getAuthenticatedUserName, isGuestUser } from '../../store/authStore/authSelectors';
+import {
+  getAuthenticatedUserName,
+  getIsAuthenticated,
+  isGuestUser,
+} from '../../store/authStore/authSelectors';
 import Feed from '../feed/Feed';
 import { getUserProfileBlog } from '../../waivioApi/ApiClient';
 import * as commentsActions from '../../store/commentsStore/commentsActions';
 import './Threads.less';
+import Loading from '../components/Icon/Loading';
 
 const limit = 10;
 
@@ -30,7 +35,7 @@ const Threads = props => {
   const objectFeed = getFeedFromState('threads', name, props.feed);
   const hasMore = getFeedHasMoreFromState('threads', name, props.feed);
   const threads = uniq(objectFeed);
-  const initialInputValue = `${props.isUser ? '@' : '#'}${name}`;
+  const initialInputValue = `${props.isUser ? '@' : '#'}${name} `;
 
   const loadMoreThreads = () => {
     props.getMoreThreadsContent(name, limit, props.isUser);
@@ -48,29 +53,40 @@ const Threads = props => {
 
   return (
     <div className={'Threads'}>
-      <ThreadsEditor
-        mainThreadHashtag={props.isUser ? undefined : name}
-        parentPost={parentPost}
-        inputValue={initialInputValue}
-        onSubmit={props.sendComment}
-        callback={() => props.getThreadsContent(name, 0, limit, props.isUser)}
-      />
-      {isEmpty(threads) ? (
-        <div role="presentation" className="Threads__row justify-center">
-          <FormattedMessage id="empty_threads" defaultMessage="Be the first to write a thread" />
-        </div>
+      {props.isAuth && (
+        <ThreadsEditor
+          mainThreadHashtag={props.isUser ? undefined : name}
+          parentPost={parentPost}
+          inputValue={initialInputValue}
+          onSubmit={props.sendComment}
+          callback={() => props.getThreadsContent(name, 0, limit, props.isUser)}
+        />
+      )}
+      {isFetching ? (
+        <Loading />
       ) : (
         <div>
-          <Feed
-            isThread
-            content={threads}
-            isFetching={isFetching}
-            hasMore={hasMore}
-            loadMoreContent={loadMoreThreads}
-            showPostModal={post => props.showPostModal(post)}
-            isGuest={props.isGuest}
-          />
-          <PostModal />
+          {isEmpty(threads) ? (
+            <div role="presentation" className="Threads__row justify-center">
+              <FormattedMessage
+                id="empty_threads"
+                defaultMessage="Be the first to write a thread"
+              />
+            </div>
+          ) : (
+            <div className={'profile'}>
+              <Feed
+                isThread
+                content={threads}
+                isFetching={isFetching}
+                hasMore={hasMore}
+                loadMoreContent={loadMoreThreads}
+                showPostModal={post => props.showPostModal(post)}
+                isGuest={props.isGuest}
+              />
+              <PostModal />
+            </div>
+          )}
         </div>
       )}
     </div>
@@ -84,6 +100,7 @@ Threads.propTypes = {
   showPostModal: PropTypes.func,
   sendComment: PropTypes.func,
   isGuest: PropTypes.bool,
+  isAuth: PropTypes.bool,
   isUser: PropTypes.bool,
   authUserName: PropTypes.string,
 };
@@ -92,6 +109,7 @@ export default connect(
   state => ({
     feed: getFeed(state),
     isGuest: isGuestUser(state),
+    isAuth: getIsAuthenticated(state),
     authUserName: getAuthenticatedUserName(state),
   }),
   {
