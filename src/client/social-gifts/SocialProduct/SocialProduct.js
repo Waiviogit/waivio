@@ -99,7 +99,7 @@ const SocialProduct = ({
   getSimilarObjectsAction,
   similarObjects,
   relatedObjects,
-  getRelatedObjectsAction,
+  getRelatedAction,
 }) => {
   const wobject =
     history.location.hash && history.location.hash !== `#${wobj.author_permlink}`
@@ -214,7 +214,8 @@ const SocialProduct = ({
       getAddOnsAction(addOnPermlinks, userName, limit);
     }
     if (isEmpty(relatedObjects))
-      getRelatedObjectsAction(wobject.author_permlink, userName, locale, 0, limit);
+      getRelatedAction(wobject.author_permlink, userName, locale, 0, limit);
+
     if (isEmpty(similarObjects))
       getSimilarObjectsAction(wobject.author_permlink, userName, locale, 0, limit);
   };
@@ -555,7 +556,7 @@ SocialProduct.propTypes = {
   getSimilarObjectsAction: PropTypes.func,
   similarObjects: PropTypes.arrayOf(),
   relatedObjects: PropTypes.arrayOf(),
-  getRelatedObjectsAction: PropTypes.func,
+  getRelatedAction: PropTypes.func,
   helmetIcon: PropTypes.string,
   setStoreActiveOpt: PropTypes.func,
   resetOptClicked: PropTypes.func,
@@ -590,9 +591,9 @@ const mapDispatchToProps = dispatch => ({
   getWobject: (obj, name) => dispatch(getObject(obj, name)),
   getWobjAlbums: obj => dispatch(getAlbums(obj)),
   resetWobjGallery: () => dispatch(resetGallery()),
+  getRelatedAction: obj => dispatch(getRelatedObjects(obj)),
   getAddOnsAction: getAddOns,
   getSimilarObjectsAction: getSimilarObjects,
-  getRelatedObjectsAction: getRelatedObjects,
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(SocialProduct));
