@@ -6,12 +6,7 @@ import { followObject, voteObject } from './wobjActions';
 import { getCurrentHost } from '../appStore/appSelectors';
 import { getAuthenticatedUserName } from '../authStore/authSelectors';
 import { getLocale } from '../settingsStore/settingsSelectors';
-import {
-  checkExistPermlink,
-  getObjectsByIds,
-  getSimilarObjectsFromDepartments,
-  getRelatedObjectsFromDepartments,
-} from '../../waivioApi/ApiClient';
+import { checkExistPermlink } from '../../waivioApi/ApiClient';
 
 export const GET_OBJECT = '@objects/GET_OBJECT';
 export const GET_OBJECT_START = '@objects/GET_OBJECT_START';
@@ -158,28 +153,44 @@ export const addListItem = item => dispatch =>
 
 export const GET_ADD_ONS = createAsyncActionType('@wobj/GET_ADD_ONS');
 
-export const getAddOns = (addOnPermlinks, userName, limit = 30) => dispatch =>
-  dispatch({
-    type: GET_ADD_ONS.ACTION,
-    payload: getObjectsByIds({
-      authorPermlinks: addOnPermlinks,
-      authUserName: userName,
-      limit,
-      skip: 0,
-    }),
-  });
+export const getAddOns = (addOnPermlinks, userName, limit = 30) => dispatch => {
+  if (addOnPermlinks)
+    return dispatch({
+      type: GET_ADD_ONS.ACTION,
+      payload: ApiClient.getObjectsByIds({
+        authorPermlinks: addOnPermlinks,
+        authUserName: userName,
+        limit,
+        skip: 0,
+      }),
+    });
+
+  return Promise.resolve();
+};
 
 export const GET_SIMILAR_OBJECTS = createAsyncActionType('@wobj/GET_SIMILAR_OBJECTS');
 
 export const getSimilarObjects = (author_permlink, userName, locale, limit = 30) => dispatch =>
   dispatch({
     type: GET_SIMILAR_OBJECTS.ACTION,
-    payload: getSimilarObjectsFromDepartments(author_permlink, userName, locale, 0, limit),
+    payload: ApiClient.getSimilarObjectsFromDepartments(
+      author_permlink,
+      userName,
+      locale,
+      0,
+      limit,
+    ),
   });
 export const GET_RELATED_OBJECTS = createAsyncActionType('@wobj/GET_RELATED_OBJECTS');
 
 export const getRelatedObjects = (author_permlink, userName, locale, limit = 30) => dispatch =>
   dispatch({
     type: GET_RELATED_OBJECTS.ACTION,
-    payload: getRelatedObjectsFromDepartments(author_permlink, userName, locale, 0, limit),
+    payload: ApiClient.getRelatedObjectsFromDepartments(
+      author_permlink,
+      userName,
+      locale,
+      0,
+      limit,
+    ),
   });

@@ -22,6 +22,7 @@ import {
   getObjectFollowers as getObjectFollowersAction,
   getAddOns,
   getSimilarObjects,
+  getRelatedObjects,
 } from '../../../store/wObjectStore/wobjectsActions';
 import {
   getRelatedWobjects,
@@ -159,11 +160,12 @@ WobjectContainer.fetchData = async ({ store, match }) => {
             object: match.params.name,
             username: match.params.name,
             limit: 20,
-            newsPermlink: response?.newsFeed?.permlink,
+            newsPermlink: response.value?.newsFeed?.permlink,
           }),
         ),
-        store.dispatch(getAddOns(response?.addOn?.map(obj => obj.body))),
+        store.dispatch(getAddOns(response.value.addOn?.map(obj => obj.body))),
         store.dispatch(getSimilarObjects(match.params.name)),
+        store.dispatch(getRelatedObjects(match.params.name)),
       ]),
     ),
     store.dispatch(getObjectFollowersAction({ object: match.params.name, skip: 0, limit: 5 })),
