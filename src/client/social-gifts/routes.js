@@ -195,7 +195,7 @@ const routes = host => ({
       pathScope: '/@:name',
       routes: [
         {
-          path: ['', '/(comments|activity)'],
+          path: ['', '/(threads|comments|activity)'],
           exact: true,
           component: PostsCommentsActivity,
         },
@@ -256,9 +256,14 @@ const routes = host => ({
       isSocial: true,
       routes: [
         {
-          path: ['', '/newsFilter/:parentName/:itemId?', '/reviews/:itemId', '/(reviews)'],
+          path: ['/newsFilter/:parentName/:itemId?', '/reviews/:itemId', '/(reviews)'],
           exact: true,
           component: Views.ObjectPageFeed,
+        },
+        {
+          path: ['', '/(reviews|threads)'],
+          exact: true,
+          component: Views.ObjectReviewsAndThreads,
         },
         {
           path: '/about',
