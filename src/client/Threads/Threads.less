@@ -1,0 +1,19 @@
+@import (reference) '../styles/custom.less';
+@import (reference) '../styles/modules/variables.less';
+
+.Threads {
+  min-height: 400px;
+  &__row {
+    display: flex;
+    background: @white;
+    border: @base-border;
+    padding: 16px;
+    margin-bottom: 12px;
+    width: 100%;
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--website-color);
+    transition: 0.3s;
+    cursor: initial;
+  }
+}

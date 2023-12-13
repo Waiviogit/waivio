@@ -6,20 +6,18 @@ import './SocialProductDescription.less';
 const SocialProductDescription = ({ description, pictures, authorPermlink }) => {
   const [open, setOpen] = useState(false);
   const [photoIndex, setPhotoIndex] = useState(0);
-  const [dividedParagraphs, setDividedParagraphs] = useState([]);
+  const [dividedParagraphs, setDividedParagraphs] = useState(description?.split('\n\n'));
   const photos = pictures?.length > 15 ? pictures.slice(0, 15) : pictures;
-
   const onPicClick = (e, pic) => {
     setOpen(true);
     setPhotoIndex(photos.indexOf(pic));
   };
 
   useEffect(() => {
-    const paragraphs = description && description.split('\n\n');
-    const newParagraphs = paragraphs?.reduce((acc, paragraph, index) => {
+    const newParagraphs = dividedParagraphs?.reduce((acc, paragraph, index) => {
       if (index % 2 === 0) {
         const paragraph1 = paragraph;
-        const paragraph2 = paragraphs[index + 1];
+        const paragraph2 = dividedParagraphs[index + 1];
         const combinedParagraphs = [paragraph1, paragraph2].filter(Boolean).join('\n\n');
 
         acc.push(combinedParagraphs);

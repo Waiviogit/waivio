@@ -150,3 +150,47 @@ export const addListItem = item => dispatch =>
     type: ADD_ITEM_TO_LIST,
     payload: item,
   });
+
+export const GET_ADD_ONS = createAsyncActionType('@wobj/GET_ADD_ONS');
+
+export const getAddOns = (addOnPermlinks, userName, limit = 30) => dispatch => {
+  if (addOnPermlinks)
+    return dispatch({
+      type: GET_ADD_ONS.ACTION,
+      payload: ApiClient.getObjectsByIds({
+        authorPermlinks: addOnPermlinks,
+        authUserName: userName,
+        limit,
+        skip: 0,
+      }),
+    });
+
+  return Promise.resolve();
+};
+
+export const GET_SIMILAR_OBJECTS = createAsyncActionType('@wobj/GET_SIMILAR_OBJECTS');
+
+export const getSimilarObjects = (author_permlink, userName, locale, limit = 30) => dispatch =>
+  dispatch({
+    type: GET_SIMILAR_OBJECTS.ACTION,
+    payload: ApiClient.getSimilarObjectsFromDepartments(
+      author_permlink,
+      userName,
+      locale,
+      0,
+      limit,
+    ),
+  });
+export const GET_RELATED_OBJECTS = createAsyncActionType('@wobj/GET_RELATED_OBJECTS');
+
+export const getRelatedObjects = (author_permlink, userName, locale, limit = 30) => dispatch =>
+  dispatch({
+    type: GET_RELATED_OBJECTS.ACTION,
+    payload: ApiClient.getRelatedObjectsFromDepartments(
+      author_permlink,
+      userName,
+      locale,
+      0,
+      limit,
+    ),
+  });

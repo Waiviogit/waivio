@@ -36,10 +36,11 @@ const Header = () => {
                 : link?.link
             }
             className={logoClassList}
+            title={config.aboutObject?.title || config.aboutObject?.description || currHost}
           >
             {logo && (
               <img
-                alt={`${header || config.host || currHost} Logo`}
+                alt={`Social Gifts - ${header || config.host || currHost}`}
                 src={logo}
                 className="Header__img"
               />
@@ -47,25 +48,29 @@ const Header = () => {
             <span>{header || config.host || currHost}</span>
           </Link>
         )}
-        <GeneralSearch searchBarActive={searchBarActive} isSocialProduct />
-        <div className={'Header__rightWrap'}>
-          <button
-            className={classNames('Header__mobile-search', {
-              'Header__mobile-search-close': searchBarActive,
-            })}
-            onClick={handleMobileSearchButtonClick}
-          >
-            <i
-              className={classNames('iconfont', {
-                'icon-close': searchBarActive,
-                'icon-search': !searchBarActive,
-              })}
-            />
-          </button>
-          {!searchBarActive && (
-            <HeaderButton isSocialGifts domain={currHost} searchBarActive={searchBarActive} />
-          )}
-        </div>
+        {typeof window !== 'undefined' && (
+          <React.Fragment>
+            <GeneralSearch searchBarActive={searchBarActive} isSocialProduct />
+            <div className={'Header__rightWrap'}>
+              <button
+                className={classNames('Header__mobile-search', {
+                  'Header__mobile-search-close': searchBarActive,
+                })}
+                onClick={handleMobileSearchButtonClick}
+              >
+                <i
+                  className={classNames('iconfont', {
+                    'icon-close': searchBarActive,
+                    'icon-search': !searchBarActive,
+                  })}
+                />
+              </button>
+              {!searchBarActive && typeof window !== 'undefined' && (
+                <HeaderButton isSocialGifts domain={currHost} searchBarActive={searchBarActive} />
+              )}
+            </div>
+          </React.Fragment>
+        )}
       </div>
       {config.mainBanner && (
         <img

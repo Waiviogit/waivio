@@ -24,9 +24,9 @@ const TAB_NAME = {
   SHOP: 'shop',
   UPDATES: 'updates',
   REVIEWS: 'reviews',
+  THREADS: 'threads',
   FOLLOWERS: 'followers',
   EXPERTISE: 'expertise',
-  HIDDEN_TAB: 'hiddenTab',
 };
 
 const ObjectMenu = props => {
@@ -98,7 +98,12 @@ const ObjectMenu = props => {
             </li>
           )}
           <li
-            className={getItemClasses([TAB_NAME.REVIEWS, isMobile() ? '' : TAB_NAME.ABOUT, ''])}
+            className={getItemClasses([
+              TAB_NAME.REVIEWS,
+              TAB_NAME.THREADS,
+              isMobile() ? '' : TAB_NAME.ABOUT,
+              '',
+            ])}
             data-key={TAB_NAME.REVIEWS}
           >
             <Link to={createLink(TAB_NAME.REVIEWS)}>
@@ -145,11 +150,6 @@ const ObjectMenu = props => {
           >
             <Link to={createLink(TAB_NAME.EXPERTISE)}>
               <FormattedMessage id="experts" defaultMessage="Experts" />
-            </Link>
-          </li>
-          <li className={getItemClasses(TAB_NAME.HIDDEN_TAB)} data-key={TAB_NAME.HIDDEN_TAB}>
-            <Link to={createLink(TAB_NAME.HIDDEN_TAB)}>
-              <FormattedMessage id="info" defaultMessage="Info" />
             </Link>
           </li>
         </ul>

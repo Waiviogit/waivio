@@ -2548,5 +2548,16 @@
   "stop_rewrite_description": "Stop rewrite description",
   "stop_rewrite_description_message": "Once stopped, the description bot cannot be resumed. To temporarily suspend/resume the rewrite description, please consider using the Active checkbox.",
   "stop_rewrite_button": "Stop rewrite",
-  "primary_canonical": "Primary canonical"
+  "primary_canonical": "Primary canonical",
+  "descriptions_bot_main_text": "This bot utilizes ChatGPT to rewrite titles and descriptions for all embedded lists, as well as names and descriptions for all objects linked from these lists. If the same user repeats this process, it will only be completed for lists and objects added since the last session.",
+  "descriptions_bot_authorization": "The Descriptions bot requires authorization to upvote data updates on your behalf",
+  "descriptions_bot_voting_text": "The descriptions bot will pause if WAIV voting power on the account drops below the set threshold.",
+  "descriptions_bot_service_provided": "The Descriptions bot service is provided on as-is / as-available basis.",
+  "select_list": "Select list",
+  "process_lists": "Process embedded lists",
+  "optimize_description_with_ChatGPT": "Optimize description with ChatGPT",
+  "claim_administrative_authority": "Claim administrative authority",
+  "department_update_bot": "Department update bot",
+  "list_duplication_bot": "List duplication bot",
+  "empty_threads": "Be the first to write a thread"
 }

@@ -3,6 +3,7 @@ import { connect, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { isEmpty, isNil } from 'lodash';
 import { withRouter } from 'react-router-dom';
+import { getObjectPosts } from '../../../store/feedStore/feedActions';
 import Wobj from './Wobj';
 import { getAppendList } from '../../../store/appendStore/appendSelectors';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
@@ -19,6 +20,9 @@ import {
   getNearbyObjects as getNearbyObjectsAction,
   getObject,
   getObjectFollowers as getObjectFollowersAction,
+  getAddOns,
+  getSimilarObjects,
+  getRelatedObjects,
 } from '../../../store/wObjectStore/wobjectsActions';
 import {
   getRelatedWobjects,
@@ -149,7 +153,21 @@ WobjectContainer.fetchData = async ({ store, match }) => {
   const res = await store.dispatch(login());
 
   return Promise.all([
-    store.dispatch(getObject(match.params.name, res?.value?.name)),
+    store.dispatch(getObject(match.params.name, res?.value?.name)).then(response =>
+      Promise.allSettled([
+        store.dispatch(
+          getObjectPosts({
+            object: match.params.name,
+            username: match.params.name,
+            limit: 20,
+            newsPermlink: response.value?.newsFeed?.permlink,
+          }),
+        ),
+        store.dispatch(getAddOns(response.value.addOn?.map(obj => obj.body))),
+        store.dispatch(getSimilarObjects(match.params.name)),
+        store.dispatch(getRelatedObjects(match.params.name)),
+      ]),
+    ),
     store.dispatch(getObjectFollowersAction({ object: match.params.name, skip: 0, limit: 5 })),
     store.dispatch(getRate()),
     store.dispatch(getRewardFund()),

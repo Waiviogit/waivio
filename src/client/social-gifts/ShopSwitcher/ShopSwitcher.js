@@ -12,6 +12,7 @@ import {
   getShopSettings,
   getSiteName,
 } from '../../../store/appStore/appSelectors';
+import { getObjectPosts } from '../../../store/feedStore/feedActions';
 import Affix from '../../components/Utils/Affix';
 import FiltersForMobile from '../../newRewards/Filters/FiltersForMobile';
 import DepartmentsMobile from '../../Shop/ShopDepartments/DepartmentsMobile';
@@ -23,7 +24,7 @@ import { useSeoInfo } from '../../../hooks/useSeoInfo';
 
 import './ShopSwitcher.less';
 import { getWebsiteConfigForSSR, setMainObj } from '../../../store/appStore/appActions';
-import { getObject as getObjectAction } from '../../../store/wObjectStore/wObjectSelectors';
+import { getObject as getObjectAction } from '../../../store/wObjectStore/wobjectsActions';
 import { getObject } from '../../../waivioApi/ApiClient';
 import { parseJSON } from '../../../common/helpers/parseJSON';
 import {
@@ -141,14 +142,25 @@ ShopSwitcher.fetchData = async ({ store, req }) => {
 
       wobj = menuItems[0];
     }
-    promiseArray.push(store.dispatch(getObjectAction(wobj?.linkToObject)));
+    promiseArray.push(
+      store.dispatch(getObjectAction(wobj?.linkToObject)).then(response =>
+        store.dispatch(
+          getObjectPosts({
+            object: wobj?.linkToObject,
+            username: wobj?.linkToObject,
+            limit: 20,
+            newsPermlink: response?.newsFeed?.permlink,
+          }),
+        ),
+      ),
+    );
     if (wobj?.objectType) {
       promiseArray.push(store.dispatch(getWobjectDepartments(wobj?.linkToObject)));
       promiseArray.push(store.dispatch(getWobjectsShopList(wobj?.linkToObject)));
     }
   } else {
-    promiseArray.push(getUserDepartments(shopSettings?.value));
-    promiseArray.push(getUserShopList(shopSettings?.value));
+    promiseArray.push(store.dispatch(getUserDepartments(shopSettings?.value)));
+    promiseArray.push(store.dispatch(getUserShopList(shopSettings?.value)));
   }
 
   return Promise.allSettled(promiseArray);

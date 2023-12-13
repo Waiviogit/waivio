@@ -1,5 +1,5 @@
 /* eslint-disable camelcase */
-import { isEmpty, get } from 'lodash';
+import { get, isEmpty } from 'lodash';
 import {
   createAsyncActionType,
   getFeedFromState,
@@ -14,6 +14,8 @@ import { getBookmarks as getBookmarksSelector } from '../bookmarksStore/bookmark
 import { getLocale, getReadLanguages } from '../settingsStore/settingsSelectors';
 
 export const GET_FEED_CONTENT = createAsyncActionType('@feed/GET_FEED_CONTENT');
+export const GET_THREADS_CONTENT = createAsyncActionType('@feed/GET_THREADS_CONTENT');
+export const GET_MORE_THREADS_CONTENT = createAsyncActionType('@feed/GET_MORE_THREADS_CONTENT');
 export const GET_MORE_FEED_CONTENT = createAsyncActionType('@feed/GET_MORE_FEED_CONTENT');
 
 export const GET_FEED_CONTENT_BY_BLOG = createAsyncActionType('@feed/GET_FEED_CONTENT_BY_BLOG');
@@ -193,6 +195,92 @@ export const getUserComments = ({ username, limit = 10, skip = 0, start_permlink
     type: GET_USER_COMMENTS.ACTION,
     payload: ApiClient.getUserCommentsFromApi(username, skip, limit, start_permlink, follower),
     meta: { sortBy: 'comments', category: username, limit },
+  });
+};
+
+export const getThreadsContent = (hashtag, skip, limit, isUser) => (dispatch, getState) => {
+  const state = getState();
+  const locale = getLocale(state);
+  const userName = getAuthenticatedUserName(state);
+
+  const getThreadsMethod = () =>
+    isUser
+      ? ApiClient.getThreadsByUser(hashtag, skip, limit).then(res => res.result)
+      : ApiClient.getThreadsByHashtag(hashtag, skip, limit).then(res => res.result);
+
+  return dispatch({
+    type: GET_THREADS_CONTENT.ACTION,
+    payload: {
+      promise: getThreadsMethod().then(r =>
+        r.reduce(async (acc, thread) => {
+          const accum = await acc;
+
+          if (thread?.stats?.total_votes > 0) {
+            const newThread = (
+              await ApiClient.getPostCommentsFromApi({
+                category: thread.hashtags[0],
+                author: thread.author,
+                permlink: thread.permlink,
+                locale,
+                userName,
+              })
+            ).content[`${thread.author}/${thread.permlink}`];
+
+            return [...accum, { ...thread, ...newThread }];
+          }
+
+          return [...accum, { ...thread, active_votes: [], max_accepted_payout: 1 }];
+        }, []),
+      ),
+    },
+    meta: { sortBy: 'threads', category: hashtag, limit },
+  });
+};
+
+export const getMoreThreadsContent = (hashtag, limit, isUser) => (dispatch, getState) => {
+  const state = getState();
+  const feed = getFeed(state);
+  const locale = getLocale(state);
+  const userName = getAuthenticatedUserName(state);
+
+  const getThreadsMethod = () =>
+    isUser
+      ? ApiClient.getThreadsByUser(hashtag, skip, limit).then(res => res.result)
+      : ApiClient.getThreadsByHashtag(hashtag, skip, limit).then(res => res.result);
+
+  const feedContent = getFeedFromState('threads', hashtag, feed);
+
+  if (!feedContent.length || !feed || !feed.threads || !feed.threads[hashtag])
+    return Promise.resolve(null);
+
+  const skip = feed.threads[hashtag].list.length;
+
+  return dispatch({
+    type: GET_MORE_THREADS_CONTENT.ACTION,
+    payload: {
+      promise: getThreadsMethod().then(r =>
+        r.reduce(async (acc, thread) => {
+          const accum = await acc;
+
+          if (thread?.stats?.total_votes > 0) {
+            const newThread = (
+              await ApiClient.getPostCommentsFromApi({
+                category: thread.hashtags[0],
+                author: thread.author,
+                permlink: thread.permlink,
+                locale,
+                userName,
+              })
+            ).content[`${thread.author}/${thread.permlink}`];
+
+            return [...accum, { ...thread, ...newThread }];
+          }
+
+          return [...accum, { ...thread, active_votes: [], max_accepted_payout: 1 }];
+        }, []),
+      ),
+    },
+    meta: { sortBy: 'threads', category: hashtag, limit },
   });
 };
 

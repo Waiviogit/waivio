@@ -26,7 +26,7 @@ const UserMenu = props => {
         <div className="left" />
         <ul className="UserMenu__menu ">
           <li
-            className={getItemClasses(['discussions', 'comments', 'activity', 'posts'])}
+            className={getItemClasses(['discussions', 'comments', 'activity', 'posts', 'threads'])}
             role="presentation"
           >
             <Link to={`/@${name}`}>

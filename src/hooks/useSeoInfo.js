@@ -45,12 +45,12 @@ export const useSeoInfo = isChecklist => {
 };
 export const useSeoInfoWithAppUrl = (appHost, isChecklist, objectType) => {
   const loc = useLocation();
+  const app = useSelector(getAppUrl);
   const descriptionSite = useSelector(getMainObj).description;
-  const host = loc.pathname === '/' ? location.hostname : appHost;
-  const appUrl = `https://${host}`;
+  const host = loc.pathname === '/' ? app : `https://${appHost}`;
 
   return {
-    canonicalUrl: prefereCanonical(appUrl, isChecklist, objectType),
+    canonicalUrl: prefereCanonical(host, isChecklist, objectType),
     descriptionSite,
   };
 };
