@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Icon } from 'antd';
 import { connect } from 'react-redux';
 import { debounce } from 'lodash';
@@ -7,7 +7,7 @@ import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { setCursorCoordinates } from '../../../store/editorStore/editorActions';
 import { searchObjectsAutoCompete } from '../../../store/searchStore/searchActions';
-import { getSelectionRect } from '../../components/EditorExtended/util';
+import { getSelection, getSelectionRect } from '../../components/EditorExtended/util';
 import { checkCursorInSearchSlate } from '../../../common/helpers/editorHelper';
 import { resetEditorState } from '../../components/EditorExtended/util/SlateEditor/utils/SlateUtilityFunctions';
 import { editorStateToMarkdownSlate } from '../../components/EditorExtended/util/editorStateToMarkdown';
@@ -28,7 +28,6 @@ const ThreadsEditor = ({
   inputValue,
   onSubmit,
   isAuth,
-  intl,
   setCursorCoordin,
   searchObjects,
   callback,
@@ -60,29 +59,26 @@ const ThreadsEditor = ({
 
   const debouncedSearch = debounce(searchStr => searchObjects(searchStr), 150);
 
-  const handleContentChangeSlate = useCallback(
-    debounce(ed => {
-      const searchInfo = checkCursorInSearchSlate(ed);
+  const handleContentChangeSlate = ed => {
+    const searchInfo = checkCursorInSearchSlate(ed);
 
-      if (searchInfo.isNeedOpenSearch) {
-        if (!isShowEditorSearch) {
-          const nativeSelection = getSelection(window);
-          const selectionBoundary = getSelectionRect(nativeSelection);
+    if (searchInfo.isNeedOpenSearch) {
+      if (!isShowEditorSearch) {
+        const nativeSelection = getSelection(window);
+        const selectionBoundary = getSelectionRect(nativeSelection);
 
-          setCursorCoordin({
-            selectionBoundary,
-            selectionState: ed.selection,
-            searchString: searchInfo.searchString,
-          });
-          setShowEditorSearch(true);
-        }
-        debouncedSearch(searchInfo.searchString);
-      } else if (isShowEditorSearch) {
-        setShowEditorSearch(false);
+        setCursorCoordin({
+          selectionBoundary,
+          selectionState: ed.selection,
+          searchString: searchInfo.searchString,
+        });
+        setShowEditorSearch(true);
       }
-    }, 350),
-    [isShowEditorSearch],
-  );
+      debouncedSearch(searchInfo.searchString);
+    } else if (isShowEditorSearch) {
+      setShowEditorSearch(false);
+    }
+  };
 
   const handleMsgChange = body => {
     const updatedCommentMsg = body.children ? editorStateToMarkdownSlate(body.children) : body;
@@ -124,18 +120,15 @@ const ThreadsEditor = ({
               onChange={handleMsgChange}
               minHeight="auto"
               initialPosTopBtn="-14px"
-              placeholder={intl.formatMessage({
-                id: 'write_thread',
-                defaultMessage: 'Write your thread...',
-              })}
+              placeholder={`${inputValue}...`}
               handleObjectSelect={handleObjectSelect}
               setEditorCb={setEditor}
               ADD_BTN_DIF={24}
-              initialBody={focused ? inputValue : ''}
+              initialBody={focused ? `${inputValue} ` : ''}
               onFocus={() => setFocused(true)}
               // onBlur={()=>setFocused(false)}
               isShowEditorSearch={isShowEditorSearch}
-              setShowEditorSearch={setShowEditorSearch}
+              setShowEditorSearch={() => setShowEditorSearch(!isShowEditorSearch)}
             />
             {isLoading ? (
               <Icon
@@ -167,9 +160,6 @@ ThreadsEditor.propTypes = {
   inputValue: PropTypes.string.isRequired,
   onSubmit: PropTypes.func,
   isAuth: PropTypes.bool,
-  intl: PropTypes.shape({
-    formatMessage: PropTypes.func,
-  }).isRequired,
   setCursorCoordin: PropTypes.func,
   callback: PropTypes.func,
   searchObjects: PropTypes.func,
@@ -186,7 +176,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  setCursorCoordinates: data => dispatch(setCursorCoordinates(data)),
+  setCursorCoordin: data => dispatch(setCursorCoordinates(data)),
   searchObjects: value => dispatch(searchObjectsAutoCompete(value, '', null, true)),
 });
 
