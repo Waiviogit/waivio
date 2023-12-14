@@ -61,7 +61,6 @@ import {
   getSimilarObjectsFromState,
   getRelatedObjectsFromState,
 } from '../../../store/wObjectStore/wObjectSelectors';
-import './SocialProduct.less';
 import { getObjectAlbums, getRelatedPhotos } from '../../../store/galleryStore/gallerySelectors';
 import { getAlbums, resetGallery } from '../../../store/galleryStore/galleryActions';
 import Loading from '../../components/Icon/Loading';
@@ -70,6 +69,7 @@ import Breadcrumbs from '../Breadcrumbs/Breadcrumbs';
 import { checkAboutCanonicalUrl, useSeoInfoWithAppUrl } from '../../../hooks/useSeoInfo';
 import { averageRate, getRatingForSocial } from '../../components/Sidebar/Rate/rateHelper';
 import { removeEmptyLines, shortenDescription } from '../../object/wObjectHelper';
+import './SocialProduct.less';
 
 const limit = 30;
 

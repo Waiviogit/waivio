@@ -166,6 +166,8 @@ WobjectContainer.fetchData = async ({ store, match }) => {
         store.dispatch(getAddOns(response.value.addOn?.map(obj => obj.body))),
         store.dispatch(getSimilarObjects(match.params.name)),
         store.dispatch(getRelatedObjects(match.params.name)),
+        store.dispatch(getAlbums(match.params.name)),
+        store.dispatch(getRelatedAlbum(match.params.name)),
       ]),
     ),
     store.dispatch(getObjectFollowersAction({ object: match.params.name, skip: 0, limit: 5 })),

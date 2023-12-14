@@ -2562,5 +2562,6 @@
   "empty_threads": "Be the first to write a thread",
   "threads_beta": "Threads (BETA)",
   "the_user_must_be_mentioned": "The user must be mentioned in the text (e.g., @username)",
-  "the_object_must_be_mentioned": "The object must be mentioned in the text (e.g., #object-permlink)"
+  "the_object_must_be_mentioned": "The object must be mentioned in the text (e.g., #object-permlink)",
+  "notification_object_bell_thread": "{author} published thread to {objectName}"
 }
