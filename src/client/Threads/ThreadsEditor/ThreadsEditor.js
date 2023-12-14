@@ -25,6 +25,7 @@ const ThreadsEditor = ({
   // signature,
   isLoading,
   // isEdit,
+  intl,
   inputValue,
   onSubmit,
   isAuth,
@@ -32,16 +33,25 @@ const ThreadsEditor = ({
   searchObjects,
   callback,
   mainThreadHashtag,
+  isUser,
+  name,
 }) => {
   const [editor, setEditor] = useState(null);
   const [isShowEditorSearch, setShowEditorSearch] = useState(false);
   const [commentMsg, setCommentMsg] = useState(inputValue || '');
   const [focused, setFocused] = useState(false);
+  const [showError, setShowError] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = e => {
     e.preventDefault();
     e.stopPropagation();
+    if (!commentMsg.includes(`${isUser ? '@' : '#'}${name}`)) {
+      setShowError(true);
+      // setLoading(false);
+
+      return;
+    }
     setLoading(true);
     if (e.shiftKey) {
       setCommentMsg(prevCommentMsg => `${prevCommentMsg}\n`);
@@ -109,47 +119,55 @@ const ThreadsEditor = ({
   }, [isAuth]);
 
   return (
-    <div className="ThreadsEditor">
-      <div className="QuickComment">
-        {isAuth && (
-          <>
-            <EditorSlate
-              small
-              isComment
-              isThread
-              isQuickComment
-              editorEnabled
-              onChange={handleMsgChange}
-              minHeight="auto"
-              initialPosTopBtn="-14px"
-              placeholder={`${inputValue}...`}
-              handleObjectSelect={handleObjectSelect}
-              setEditorCb={setEditor}
-              ADD_BTN_DIF={24}
-              initialBody={focused ? `${inputValue} ` : ''}
-              onFocus={() => setFocused(true)}
-              // onBlur={()=>setFocused(false)}
-              isShowEditorSearch={isShowEditorSearch}
-              setShowEditorSearch={() => setShowEditorSearch(!isShowEditorSearch)}
-            />
-            {isLoading || loading ? (
-              <Icon
-                type="loading"
-                className="QuickComment__send-comment QuickComment__send-comment--loader"
+    <>
+      <div className="ThreadsEditor">
+        <div className="QuickComment">
+          {isAuth && (
+            <>
+              <EditorSlate
+                small
+                isComment
+                isThread
+                isQuickComment
+                editorEnabled
+                onChange={handleMsgChange}
+                minHeight="auto"
+                initialPosTopBtn="-14px"
+                placeholder={`${inputValue}...`}
+                handleObjectSelect={handleObjectSelect}
+                setEditorCb={setEditor}
+                ADD_BTN_DIF={24}
+                initialBody={focused ? `${inputValue} ` : ''}
+                onFocus={() => setFocused(true)}
+                // onBlur={()=>setFocused(false)}
+                isShowEditorSearch={isShowEditorSearch}
+                setShowEditorSearch={() => setShowEditorSearch(!isShowEditorSearch)}
               />
-            ) : (
-              <span
-                role="presentation"
-                onClick={handleSubmit}
-                className="QuickComment__send-comment"
-              >
-                <img src={'/images/icons/send.svg'} alt="send" />
-              </span>
-            )}
-          </>
-        )}
+              {isLoading || loading ? (
+                <Icon
+                  type="loading"
+                  className="QuickComment__send-comment QuickComment__send-comment--loader"
+                />
+              ) : (
+                <span
+                  disabled={showError}
+                  role="presentation"
+                  onClick={handleSubmit}
+                  className="QuickComment__send-comment"
+                >
+                  <img src={'/images/icons/send.svg'} alt="send" />
+                </span>
+              )}
+            </>
+          )}
+        </div>
       </div>
-    </div>
+      {showError && (
+        <div className={'error-text'}>
+          {intl.formatMessage({ id: `the_${isUser ? 'user' : 'object'}_must_be_mentioned` })}
+        </div>
+      )}
+    </>
   );
 };
 
@@ -157,6 +175,9 @@ ThreadsEditor.propTypes = {
   parentPost: PropTypes.shape().isRequired,
   // signature: PropTypes.string,
   mainThreadHashtag: PropTypes.string,
+  name: PropTypes.string,
+  isUser: PropTypes.bool,
+  intl: PropTypes.shape,
   isLoading: PropTypes.bool,
   // isEdit: PropTypes.bool,
   inputValue: PropTypes.string.isRequired,
