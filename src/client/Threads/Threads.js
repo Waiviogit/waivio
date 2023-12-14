@@ -35,7 +35,7 @@ const Threads = props => {
   const objectFeed = getFeedFromState('threads', name, props.feed);
   const hasMore = getFeedHasMoreFromState('threads', name, props.feed);
   const threads = uniq(objectFeed);
-  const initialInputValue = `${props.isUser ? '@' : '#'}${name} `;
+  const initialInputValue = `${props.isUser ? '@' : '#'}${name}`;
 
   const loadMoreThreads = () => {
     props.getMoreThreadsContent(name, limit, props.isUser);
@@ -55,6 +55,8 @@ const Threads = props => {
     <div className={'Threads'}>
       {props.isAuth && (
         <ThreadsEditor
+          isUser={props.isUser}
+          name={name}
           mainThreadHashtag={props.isUser ? undefined : name}
           parentPost={parentPost}
           inputValue={initialInputValue}
