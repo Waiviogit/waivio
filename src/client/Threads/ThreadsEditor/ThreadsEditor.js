@@ -37,11 +37,12 @@ const ThreadsEditor = ({
   const [isShowEditorSearch, setShowEditorSearch] = useState(false);
   const [commentMsg, setCommentMsg] = useState(inputValue || '');
   const [focused, setFocused] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = e => {
     e.preventDefault();
     e.stopPropagation();
-
+    setLoading(true);
     if (e.shiftKey) {
       setCommentMsg(prevCommentMsg => `${prevCommentMsg}\n`);
     } else if (commentMsg) {
@@ -53,6 +54,7 @@ const ThreadsEditor = ({
 
         resetEditorState(editor);
         setFocused(false);
+        setLoading(false);
       });
     }
   };
@@ -130,7 +132,7 @@ const ThreadsEditor = ({
               isShowEditorSearch={isShowEditorSearch}
               setShowEditorSearch={() => setShowEditorSearch(!isShowEditorSearch)}
             />
-            {isLoading ? (
+            {isLoading || loading ? (
               <Icon
                 type="loading"
                 className="QuickComment__send-comment QuickComment__send-comment--loader"

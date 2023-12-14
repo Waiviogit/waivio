@@ -215,21 +215,25 @@ export const getThreadsContent = (hashtag, skip, limit, isUser) => (dispatch, ge
         r.reduce(async (acc, thread) => {
           const accum = await acc;
 
-          if (thread?.stats?.total_votes > 0) {
-            const newThread = (
-              await ApiClient.getPostCommentsFromApi({
-                category: thread.hashtags[0],
-                author: thread.author,
-                permlink: thread.permlink,
-                locale,
-                userName,
-              })
-            ).content[`${thread.author}/${thread.permlink}`];
+          try {
+            if (!thread.deleted) {
+              const newThread = (
+                await ApiClient.getPostCommentsFromApi({
+                  category: thread.hashtags[0],
+                  author: thread.author,
+                  permlink: thread.permlink,
+                  locale,
+                  userName,
+                })
+              ).content[`${thread.author}/${thread.permlink}`];
 
-            return [...accum, { ...thread, ...newThread }];
+              return [...accum, { ...thread, ...newThread }];
+            }
+
+            return [...accum, thread];
+          } catch (error) {
+            return [...accum, thread];
           }
-
-          return [...accum, { ...thread, active_votes: [], max_accepted_payout: 1 }];
         }, []),
       ),
     },
@@ -262,21 +266,25 @@ export const getMoreThreadsContent = (hashtag, limit, isUser) => (dispatch, getS
         r.reduce(async (acc, thread) => {
           const accum = await acc;
 
-          if (thread?.stats?.total_votes > 0) {
-            const newThread = (
-              await ApiClient.getPostCommentsFromApi({
-                category: thread.hashtags[0],
-                author: thread.author,
-                permlink: thread.permlink,
-                locale,
-                userName,
-              })
-            ).content[`${thread.author}/${thread.permlink}`];
+          try {
+            if (!thread.deleted) {
+              const newThread = (
+                await ApiClient.getPostCommentsFromApi({
+                  category: thread.hashtags[0],
+                  author: thread.author,
+                  permlink: thread.permlink,
+                  locale,
+                  userName,
+                })
+              ).content[`${thread.author}/${thread.permlink}`];
 
-            return [...accum, { ...thread, ...newThread }];
+              return [...accum, { ...thread, ...newThread }];
+            }
+
+            return [...accum, thread];
+          } catch (error) {
+            return [...accum, thread];
           }
-
-          return [...accum, { ...thread, active_votes: [], max_accepted_payout: 1 }];
         }, []),
       ),
     },

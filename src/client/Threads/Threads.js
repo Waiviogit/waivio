@@ -25,7 +25,7 @@ import * as commentsActions from '../../store/commentsStore/commentsActions';
 import './Threads.less';
 import Loading from '../components/Icon/Loading';
 
-const limit = 10;
+const limit = 5;
 
 const Threads = props => {
   const { name } = useParams();
@@ -62,7 +62,7 @@ const Threads = props => {
           callback={() => props.getThreadsContent(name, 0, limit, props.isUser)}
         />
       )}
-      {isFetching ? (
+      {isFetching && threads.length < limit ? (
         <Loading />
       ) : (
         <div>
