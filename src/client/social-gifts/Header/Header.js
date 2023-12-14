@@ -7,6 +7,7 @@ import {
   getConfigurationValues,
   getWebsiteLogo,
   getNavigItems,
+  getMainObj,
 } from '../../../store/appStore/appSelectors';
 import GeneralSearch from '../../websites/WebsiteLayoutComponents/Header/GeneralSearch/GeneralSearch';
 import WebsiteTopNavigation from './TopNavigation/WebsiteTopNavigation';
@@ -17,6 +18,7 @@ const Header = () => {
   const [searchBarActive, setSearchBarActive] = useState(false);
   const config = useSelector(getConfigurationValues);
   const link = useSelector(getNavigItems)[0];
+  const mainObj = useSelector(getMainObj);
   const handleMobileSearchButtonClick = () => setSearchBarActive(!searchBarActive);
   const logo = useSelector(getWebsiteLogo);
   const currHost = typeof location !== 'undefined' && location.hostname;
@@ -36,7 +38,7 @@ const Header = () => {
                 : link?.link
             }
             className={logoClassList}
-            title={config.aboutObject?.title || config.aboutObject?.description || currHost}
+            title={mainObj?.title || mainObj?.description || currHost}
           >
             {logo && (
               <img
