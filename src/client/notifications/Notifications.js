@@ -47,12 +47,13 @@ class Notifications extends React.Component {
   componentDidMount() {
     const { userMetaData, notifications, currentAuthUsername } = this.props;
 
-    notifications.forEach(notification =>
-      this.getObjectInfoAsync(notification).then(r =>
-        this.setState({ objNames: { ...this.state.objNames, [notification.authorPermlink]: r } }),
-      ),
-    );
-
+    if (!_.isEmpty(notifications)) {
+      this.props.notifications.forEach(notification =>
+        this.getObjectInfoAsync(notification).then(r =>
+          this.setState({ objNames: { ...this.state.objNames, [notification.authorPermlink]: r } }),
+        ),
+      );
+    }
     if (_.isEmpty(userMetaData)) {
       this.props.getUpdatedUserMetadata();
     }
@@ -61,6 +62,20 @@ class Notifications extends React.Component {
       this.props.getNotifications(currentAuthUsername);
     }
   }
+  componentDidUpdate(prevProps) {
+    if (prevProps.notifications !== this.props.notifications) {
+      if (!_.isEmpty(this.props.notifications) && _.isEmpty(this.state.objNames)) {
+        this.props.notifications.forEach(notification =>
+          this.getObjectInfoAsync(notification).then(r =>
+            this.setState({
+              objNames: { ...this.state.objNames, [notification.authorPermlink]: r },
+            }),
+          ),
+        );
+      }
+    }
+  }
+
   // eslint-disable-next-line consistent-return
   getObjectInfoAsync = async notif => {
     if (notif.type === notificationConstants.BELL_THREAD) {
