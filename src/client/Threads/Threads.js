@@ -76,6 +76,7 @@ const Threads = props => {
           ) : (
             <div className={'profile'}>
               <Feed
+                userComments
                 isThread
                 content={threads}
                 isFetching={isFetching}
