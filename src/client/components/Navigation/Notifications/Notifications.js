@@ -8,6 +8,7 @@ import { saveNotificationsLastTimestamp } from '../../../../common/helpers/metad
 import NotificationTemplate from './NotificationTemplate';
 import Loading from '../../Icon/Loading';
 import { getWalletType, isEmptyAmount } from '../../../../common/helpers/notificationsHelper';
+import { getObjectInfo } from '../../../../waivioApi/ApiClient';
 
 import './Notification.less';
 import './Notifications.less';
@@ -37,6 +38,7 @@ class Notifications extends React.Component {
     super(props);
 
     this.state = {
+      objNames: {},
       displayedNotifications: slice(props.notifications, 0, displayLimit),
     };
 
@@ -49,6 +51,12 @@ class Notifications extends React.Component {
 
   componentDidMount() {
     const { notifications, lastSeenTimestamp, currentAuthUsername } = this.props;
+
+    notifications.forEach(notification =>
+      this.getObjectInfoAsync(notification).then(r =>
+        this.setState({ objNames: { ...this.state.objNames, [notification.authorPermlink]: r } }),
+      ),
+    );
     const latestNotification = get(notifications, 0);
     const timestamp = get(latestNotification, 'timestamp');
 
@@ -121,6 +129,20 @@ class Notifications extends React.Component {
       this.props.onNotificationClick();
     }
   }
+  // eslint-disable-next-line consistent-return
+  getObjectInfoAsync = async notif => {
+    if (notif.type === notificationConstants.BELL_THREAD) {
+      try {
+        const result = await getObjectInfo([notif.authorPermlink]);
+
+        return result.wobjects?.[0]?.name || result.wobjects?.[0]?.default_name;
+      } catch (error) {
+        console.error(error);
+
+        return '';
+      }
+    }
+  };
 
   render() {
     const {
@@ -182,6 +204,27 @@ class Notifications extends React.Component {
                     defaultMessage="{username} started following you"
                     values={{
                       username: <span className="username">{notification.follower}</span>,
+                    }}
+                    key={key}
+                    notification={notification}
+                    read={read}
+                    onClick={this.handleNotificationsClick}
+                  />
+                );
+              case notificationConstants.BELL_THREAD:
+                return (
+                  <NotificationTemplate
+                    url={`/object/${notification.authorPermlink}`}
+                    username={notification.author}
+                    id="notification_object_bell_thread"
+                    defaultMessage="{author} published thread to {objectName}"
+                    values={{
+                      author: <span className="username">{notification.author}</span>,
+                      objectName: (
+                        <span className="username">
+                          {this.state.objNames[notification.authorPermlink]}
+                        </span>
+                      ),
                     }}
                     key={key}
                     notification={notification}
