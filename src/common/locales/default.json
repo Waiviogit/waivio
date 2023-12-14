@@ -2560,5 +2560,6 @@
   "department_update_bot": "Department update bot",
   "list_duplication_bot": "List duplication bot",
   "empty_threads": "Be the first to write a thread",
-  "threads_beta": "Threads (BETA)"
+  "threads_beta": "Threads (BETA)",
+  "notification_object_bell_thread": "{author} published thread to {objectName}"
 }
