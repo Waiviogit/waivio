@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom';
 import { injectIntl } from 'react-intl';
 import ObjectFeed from '../ObjectFeed';
 import { getObject } from '../../../store/wObjectStore/wObjectSelectors';
-import Threads from '../../Threads/Threads';
+// import Threads from '../../Threads/Threads';
 
 const ObjectReviewsAndThreads = ({ intl, match }) => {
   const wobject = useSelector(getObject);
@@ -29,17 +29,17 @@ const ObjectReviewsAndThreads = ({ intl, match }) => {
       >
         <ObjectFeed />
       </Tabs.TabPane>
-      <Tabs.TabPane
-        tab={
-          <Link to={`/object/${wobject.author_permlink}/threads`}>
-            {intl.formatMessage({ id: 'threads_beta', defaultMessage: 'Threads (BETA)' })}
-          </Link>
-        }
-        key="threads"
-        className="UserFollowing__item"
-      >
-        {tabName === 'threads' && <Threads isUser={false} />}
-      </Tabs.TabPane>
+      {/* <Tabs.TabPane */}
+      {/*   tab={ */}
+      {/*     <Link to={`/object/${wobject.author_permlink}/threads`}> */}
+      {/*       {intl.formatMessage({ id: 'threads_beta', defaultMessage: 'Threads (BETA)' })} */}
+      {/*     </Link> */}
+      {/*   } */}
+      {/*   key="threads" */}
+      {/*   className="UserFollowing__item" */}
+      {/* > */}
+      {/*   {tabName === 'threads' && <Threads isUser={false} />} */}
+      {/* </Tabs.TabPane> */}
     </Tabs>
   );
 };

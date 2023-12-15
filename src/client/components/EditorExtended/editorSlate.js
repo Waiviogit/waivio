@@ -279,7 +279,7 @@ const EditorSlate = props => {
     if (!isComment) setTimeout(() => focusEditorToEnd(editor), 200);
     setInitiallized(true);
     setTimeout(() => setInitiallized(false), 1500);
-  }, [params, initialBody]);
+  }, [params]);
 
   useEffect(() => {
     if ((body || initialBody) && initiallized) {
