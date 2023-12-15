@@ -136,17 +136,6 @@ const SocialProduct = ({
   const groupId = wobject.groupId;
   const customSort = get(wobject, 'sortCustom.include', []);
   const menuItems = get(wobject, 'menuItem', []);
-  const sortedItems = customSort.reduce((acc, curr) => {
-    const currentLink = wobject?.menuItem?.find(
-      btn =>
-        btn.body === curr ||
-        btn.author_permlink === curr ||
-        btn.permlink === curr ||
-        btn.id === curr,
-    );
-
-    return currentLink ? [...acc, currentLink] : acc;
-  }, []);
 
   const features = wobject.features
     ? wobject.features?.map(el => parseWobjectField(el, 'body', []))
@@ -156,7 +145,19 @@ const SocialProduct = ({
     : [];
   const merchant = parseWobjectField(wobject, 'merchant');
   const productWeight = parseWobjectField(wobject, 'productWeight');
-  const menuItem = isEmpty(customSort) ? menuItems : sortedItems;
+  const menuItem = isEmpty(customSort)
+    ? menuItems
+    : customSort.reduce((acc, curr) => {
+        const currentLink = wobject?.menuItem?.find(
+          btn =>
+            btn.body === curr ||
+            btn.author_permlink === curr ||
+            btn.permlink === curr ||
+            btn.id === curr,
+        );
+
+        return currentLink ? [...acc, currentLink] : acc;
+      }, []);
   const tagCategories = get(wobject, 'tagCategory', []);
   const tagCategoriesList = tagCategories.filter(item => !isEmpty(item.items));
   const addOnPermlinks = wobject.addOn ? wobject?.addOn?.map(obj => obj.body) : [];

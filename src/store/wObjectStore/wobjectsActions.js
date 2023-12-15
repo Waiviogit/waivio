@@ -194,3 +194,12 @@ export const getRelatedObjects = (author_permlink, userName, locale, limit = 30)
       limit,
     ),
   });
+
+export const GET_MENU_ITEM_CONTENT = createAsyncActionType('@wobj/GET_MENU_ITEM_CONTENT');
+
+export const getMenuItemContent = (author_permlink, userName, locale) => dispatch =>
+  dispatch({
+    type: GET_MENU_ITEM_CONTENT.ACTION,
+    payload: ApiClient.getObject(author_permlink, userName, locale),
+    meta: author_permlink,
+  });
