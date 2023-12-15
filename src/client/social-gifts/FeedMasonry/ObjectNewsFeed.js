@@ -85,7 +85,12 @@ const ObjectNewsFeed = ({ wobj }) => {
   };
 
   useEffect(() => {
-    if (isEmpty(posts)) getPostsList();
+    if (isEmpty(posts)) {
+      getPostsList();
+    } else {
+      setPreviewLoading(false);
+    }
+
     if (window.gtag)
       window.gtag('event', getObjectName(getObjectName(wobj) || getObjectName(currObj)), {
         debug_mode: true,
