@@ -6,7 +6,7 @@ import { getObjectInfo } from '../../../../waivioApi/ApiClient';
 
 import './SocialMenuItems.less';
 
-const prepareMenuItems = menuItem => {
+export const prepareMenuItems = menuItem => {
   const menuItemList = [];
 
   menuItem?.forEach(async curr => {

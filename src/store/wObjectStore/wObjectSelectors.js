@@ -15,6 +15,8 @@ export const getObjectModerators = createSelector([getObject], state =>
   get(state, 'moderators', []),
 );
 
+export const getMenuItemsFromState = state => get(state, ['object', 'menuItems'], null);
+
 export const getRatingFields = createSelector([getObject], state => get(state, 'rating', []));
 
 export const getObjectTagCategory = createSelector([getObject], state => state.tagCategory);

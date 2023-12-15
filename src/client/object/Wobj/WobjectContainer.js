@@ -3,7 +3,9 @@ import { connect, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { isEmpty, isNil } from 'lodash';
 import { withRouter } from 'react-router-dom';
+import { parseJSON } from '../../../common/helpers/parseJSON';
 import { getObjectPosts } from '../../../store/feedStore/feedActions';
+import { prepareMenuItems } from '../../social-gifts/SocialProduct/SocialMenuItems/SocialMenuItems';
 import Wobj from './Wobj';
 import { getAppendList } from '../../../store/appendStore/appendSelectors';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
@@ -23,6 +25,7 @@ import {
   getAddOns,
   getSimilarObjects,
   getRelatedObjects,
+  getMenuItemContent,
 } from '../../../store/wObjectStore/wobjectsActions';
 import {
   getRelatedWobjects,
@@ -153,8 +156,8 @@ WobjectContainer.fetchData = async ({ store, match }) => {
   const res = await store.dispatch(login());
 
   return Promise.all([
-    store.dispatch(getObject(match.params.name, res?.value?.name)).then(response =>
-      Promise.allSettled([
+    store.dispatch(getObject(match.params.name, res?.value?.name)).then(response => {
+      let promises = [
         store.dispatch(
           getObjectPosts({
             object: match.params.name,
@@ -163,13 +166,25 @@ WobjectContainer.fetchData = async ({ store, match }) => {
             newsPermlink: response.value?.newsFeed?.permlink,
           }),
         ),
-        store.dispatch(getAddOns(response.value.addOn?.map(obj => obj.body))),
-        store.dispatch(getSimilarObjects(match.params.name)),
-        store.dispatch(getRelatedObjects(match.params.name)),
+
         store.dispatch(getAlbums(match.params.name)),
         store.dispatch(getRelatedAlbum(match.params.name)),
-      ]),
-    ),
+      ];
+
+      if (response.value.object_type === 'product') {
+        const items = prepareMenuItems(response.value.menuItem)[0];
+
+        promises = [
+          ...promises,
+          store.dispatch(getAddOns(response.value.addOn?.map(obj => obj.body))),
+          store.dispatch(getSimilarObjects(match.params.name)),
+          store.dispatch(getRelatedObjects(match.params.name)),
+          store.dispatch(getMenuItemContent(parseJSON(items.body).linkToObject)),
+        ];
+      }
+
+      return Promise.allSettled(promises);
+    }),
     store.dispatch(getObjectFollowersAction({ object: match.params.name, skip: 0, limit: 5 })),
     store.dispatch(getRate()),
     store.dispatch(getRewardFund()),
