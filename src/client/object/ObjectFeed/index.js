@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 import { Icon } from 'antd';
+import { withRouter } from 'react-router-dom';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import ObjectFeed from './ObjectFeed';
@@ -12,6 +13,7 @@ import {
   getIsAuthenticated,
 } from '../../../store/authStore/authSelectors';
 import {
+  getObject as getObjectState,
   getObjectFetchingState,
   getWobjectAuthors,
 } from '../../../store/wObjectStore/wObjectSelectors';
@@ -84,6 +86,9 @@ ObjectFeedContainer.propTypes = {
 ObjectFeedContainer.defaultProps = {
   isPageMode: false,
 };
+const mapStateToProps = state => ({
+  wobject: getObjectState(state),
+});
 
 ObjectFeedContainer.fetchData = ({ store, match }) =>
   store.dispatch(
@@ -96,4 +101,4 @@ ObjectFeedContainer.fetchData = ({ store, match }) =>
     }),
   );
 
-export default injectIntl(ObjectFeedContainer);
+export default connect(mapStateToProps, null)(withRouter(injectIntl(ObjectFeedContainer)));
