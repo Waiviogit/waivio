@@ -4,6 +4,7 @@ import {
   GET_SIMILAR_OBJECTS,
   GET_RELATED_OBJECTS,
   GET_MENU_ITEM_CONTENT,
+  GET_PRODUCT_INFO,
 } from './wobjectsActions';
 
 import * as actions from './wobjectsActions';
@@ -62,6 +63,9 @@ export const initialState = {
   addOn: [],
   similarObjects: [],
   menuItems: {},
+  brandObject: {},
+  manufacturerObject: {},
+  merchantObject: {},
 };
 
 export default function wobjectReducer(state = initialState, action) {
@@ -578,6 +582,11 @@ export default function wobjectReducer(state = initialState, action) {
           ...state.menuItems,
           [action.meta]: action.payload,
         },
+      };
+    case GET_PRODUCT_INFO.SUCCESS:
+      return {
+        ...state,
+        ...action.payload,
       };
 
     default: {
