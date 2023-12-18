@@ -214,7 +214,7 @@ class Notifications extends React.Component {
               case notificationConstants.BELL_THREAD:
                 return (
                   <NotificationTemplate
-                    url={`/object/${notification.authorPermlink}`}
+                    url={`/object/${notification.authorPermlink}/threads`}
                     username={notification.author}
                     id="notification_object_bell_thread"
                     defaultMessage="{author} published thread to {objectName}"
