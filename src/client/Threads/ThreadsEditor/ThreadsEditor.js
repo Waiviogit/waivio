@@ -133,13 +133,12 @@ const ThreadsEditor = ({
                 onChange={handleMsgChange}
                 minHeight="auto"
                 initialPosTopBtn="-14px"
-                placeholder={`${inputValue}...`}
+                placeholder={`${isUser ? '@' : '#'}${name}...`}
                 handleObjectSelect={handleObjectSelect}
                 setEditorCb={setEditor}
                 ADD_BTN_DIF={24}
                 initialBody={focused ? `${inputValue} ` : ''}
                 onFocus={() => setFocused(true)}
-                // onBlur={()=>setFocused(false)}
                 isShowEditorSearch={isShowEditorSearch}
                 setShowEditorSearch={() => setShowEditorSearch(!isShowEditorSearch)}
               />

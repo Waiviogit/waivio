@@ -112,7 +112,7 @@ export const deserializeToSlate = (body, isThread) => {
     const blocks = processor.processSync(i).result;
 
     postParsed = isThread
-      ? [...postParsed, ...blocks]
+      ? [...postParsed, ...blocks, { text: ' ' }]
       : [...postParsed, ...blocks, { type: 'paragraph', children: [{ text: '' }] }];
     const isItemList = blocks[blocks.length - 1]?.type !== 'itemList';
 
