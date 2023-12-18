@@ -30,6 +30,7 @@ const limit = 5;
 const Threads = props => {
   const { name } = useParams();
   const [parentPost, setParentPost] = useState({});
+  const [loading, setLoading] = useState(false);
   const leothreads = 'leothreads';
   const isFetching = getFeedLoadingFromState('threads', name, props.feed);
   const objectFeed = getFeedFromState('threads', name, props.feed);
@@ -39,6 +40,10 @@ const Threads = props => {
 
   const loadMoreThreads = () => {
     props.getMoreThreadsContent(name, limit, props.isUser);
+  };
+  const callback = () => {
+    props.getThreadsContent(name, 0, limit, props.isUser);
+    setLoading(false);
   };
 
   useEffect(() => {
@@ -57,14 +62,16 @@ const Threads = props => {
         <ThreadsEditor
           isUser={props.isUser}
           name={name}
+          loading={loading}
+          setLoading={setLoading}
           mainThreadHashtag={props.isUser ? undefined : name}
           parentPost={parentPost}
           inputValue={initialInputValue}
           onSubmit={props.sendComment}
-          callback={() => props.getThreadsContent(name, 0, limit, props.isUser)}
+          callback={callback}
         />
       )}
-      {isFetching && threads.length < limit ? (
+      {(isFetching && threads.length < limit) || loading ? (
         <Loading />
       ) : (
         <div>
@@ -78,7 +85,7 @@ const Threads = props => {
           ) : (
             <div className={'profile'}>
               <Feed
-                userComments
+                // userComments
                 isThread
                 content={threads}
                 isFetching={isFetching}

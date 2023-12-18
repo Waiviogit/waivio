@@ -15,16 +15,16 @@ import { getObjectName, getObjectType } from '../../../common/helpers/wObjectHel
 import objectTypes from '../../object/const/objectTypes';
 import { getObjectUrl } from '../../../common/helpers/postHelpers';
 import { insertObject } from '../../components/EditorExtended/util/SlateEditor/utils/common';
-import EditorSlate from '../../components/EditorExtended/editorSlate';
-import { getIsAuthenticated } from '../../../store/authStore/authSelectors';
+import ThreadsEditorSlate from '../../components/EditorExtended/ThreadsEditorSlate';
+import { getAuthUserSignature, getIsAuthenticated } from '../../../store/authStore/authSelectors';
 
 import './ThreadsEditor.less';
 
 const ThreadsEditor = ({
   parentPost,
-  // signature,
+  signature,
   isLoading,
-  // isEdit,
+  isEdit,
   intl,
   inputValue,
   onSubmit,
@@ -35,36 +35,36 @@ const ThreadsEditor = ({
   mainThreadHashtag,
   isUser,
   name,
+  loading,
+  setLoading,
 }) => {
   const [editor, setEditor] = useState(null);
   const [isShowEditorSearch, setShowEditorSearch] = useState(false);
   const [commentMsg, setCommentMsg] = useState(inputValue || '');
   const [focused, setFocused] = useState(false);
   const [showError, setShowError] = useState(false);
-  const [loading, setLoading] = useState(false);
 
   const handleSubmit = e => {
     e.preventDefault();
     e.stopPropagation();
     if (!commentMsg.includes(`${isUser ? '@' : '#'}${name}`)) {
       setShowError(true);
-      // setLoading(false);
 
       return;
     }
+    setShowError(false);
     setLoading(true);
     if (e.shiftKey) {
       setCommentMsg(prevCommentMsg => `${prevCommentMsg}\n`);
     } else if (commentMsg) {
-      // const bodyWithSignature = isEdit ? commentMsg : `${commentMsg}${signature}`;
-      const bodyWithSignature = `${commentMsg}`;
+      const bodyWithSignature = isEdit ? commentMsg : `${commentMsg}${signature}`;
 
       onSubmit(parentPost, bodyWithSignature, false, parentPost, callback).then(() => {
         setCommentMsg('');
 
         resetEditorState(editor);
         setFocused(false);
-        setLoading(false);
+        // setLoading(false);
       });
     }
   };
@@ -124,7 +124,7 @@ const ThreadsEditor = ({
         <div className="QuickComment">
           {isAuth && (
             <>
-              <EditorSlate
+              <ThreadsEditorSlate
                 small
                 isComment
                 isThread
@@ -173,16 +173,18 @@ const ThreadsEditor = ({
 
 ThreadsEditor.propTypes = {
   parentPost: PropTypes.shape().isRequired,
-  // signature: PropTypes.string,
+  signature: PropTypes.string,
   mainThreadHashtag: PropTypes.string,
   name: PropTypes.string,
   isUser: PropTypes.bool,
   intl: PropTypes.shape,
   isLoading: PropTypes.bool,
-  // isEdit: PropTypes.bool,
+  isEdit: PropTypes.bool,
   inputValue: PropTypes.string.isRequired,
   onSubmit: PropTypes.func,
   isAuth: PropTypes.bool,
+  setLoading: PropTypes.func,
+  loading: PropTypes.bool,
   setCursorCoordin: PropTypes.func,
   callback: PropTypes.func,
   searchObjects: PropTypes.func,
@@ -196,6 +198,7 @@ ThreadsEditor.defaultProps = {
 
 const mapStateToProps = state => ({
   isAuth: getIsAuthenticated(state),
+  signature: getAuthUserSignature(state),
 });
 
 const mapDispatchToProps = dispatch => ({

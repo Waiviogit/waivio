@@ -58,6 +58,7 @@ class StoryFooter extends React.Component {
     toggleBookmark: PropTypes.func.isRequired,
     handleHidePost: PropTypes.func.isRequired,
     userComments: PropTypes.bool,
+    isThread: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -77,6 +78,7 @@ class StoryFooter extends React.Component {
     userName: '',
     getSocialInfoPostAction: () => {},
     userComments: false,
+    isThread: false,
   };
 
   constructor(props) {
@@ -213,6 +215,7 @@ class StoryFooter extends React.Component {
       singlePostVew,
       getSocialInfoPostAction,
       userComments,
+      isThread,
     } = this.props;
 
     return (
@@ -245,6 +248,7 @@ class StoryFooter extends React.Component {
               getSocialInfoPost={getSocialInfoPostAction}
               isGuest={this.props.isGuest}
               userComments={userComments}
+              isThread={isThread}
             />
           )}
         </div>

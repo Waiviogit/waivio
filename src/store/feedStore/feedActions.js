@@ -205,8 +205,8 @@ export const getThreadsContent = (hashtag, skip, limit, isUser) => (dispatch, ge
 
   const getThreadsMethod = () =>
     isUser
-      ? ApiClient.getThreadsByUser(hashtag, skip, limit).then(res => res.result)
-      : ApiClient.getThreadsByHashtag(hashtag, skip, limit).then(res => res.result);
+      ? ApiClient.getThreadsByUser(userName, hashtag, skip, limit).then(res => res.result)
+      : ApiClient.getThreadsByHashtag(userName, hashtag, skip, limit).then(res => res.result);
 
   return dispatch({
     type: GET_THREADS_CONTENT.ACTION,
@@ -219,7 +219,7 @@ export const getThreadsContent = (hashtag, skip, limit, isUser) => (dispatch, ge
             if (!thread.deleted) {
               const newThread = (
                 await ApiClient.getPostCommentsFromApi({
-                  category: thread.hashtags[0],
+                  category: thread.hashtags[0] || thread.author,
                   author: thread.author,
                   permlink: thread.permlink,
                   locale,
@@ -230,9 +230,9 @@ export const getThreadsContent = (hashtag, skip, limit, isUser) => (dispatch, ge
               return [...accum, { ...thread, ...newThread }];
             }
 
-            return [...accum, thread];
+            return [...accum, { ...thread, active_votes: [] }];
           } catch (error) {
-            return [...accum, thread];
+            return [...accum, { ...thread, active_votes: [] }];
           }
         }, []),
       ),
@@ -249,8 +249,8 @@ export const getMoreThreadsContent = (hashtag, limit, isUser) => (dispatch, getS
 
   const getThreadsMethod = () =>
     isUser
-      ? ApiClient.getThreadsByUser(hashtag, skip, limit).then(res => res.result)
-      : ApiClient.getThreadsByHashtag(hashtag, skip, limit).then(res => res.result);
+      ? ApiClient.getThreadsByUser(userName, hashtag, skip, limit).then(res => res.result)
+      : ApiClient.getThreadsByHashtag(userName, hashtag, skip, limit).then(res => res.result);
 
   const feedContent = getFeedFromState('threads', hashtag, feed);
 
@@ -270,7 +270,7 @@ export const getMoreThreadsContent = (hashtag, limit, isUser) => (dispatch, getS
             if (!thread.deleted) {
               const newThread = (
                 await ApiClient.getPostCommentsFromApi({
-                  category: thread.hashtags[0],
+                  category: thread.hashtags[0] || thread.author,
                   author: thread.author,
                   permlink: thread.permlink,
                   locale,
@@ -281,9 +281,9 @@ export const getMoreThreadsContent = (hashtag, limit, isUser) => (dispatch, getS
               return [...accum, { ...thread, ...newThread }];
             }
 
-            return [...accum, thread];
+            return [...accum, { ...thread, active_votes: [] }];
           } catch (error) {
-            return [...accum, thread];
+            return [...accum, { ...thread, active_votes: [] }];
           }
         }, []),
       ),
