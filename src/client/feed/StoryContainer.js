@@ -26,14 +26,17 @@ import {
 import { addPayoutForActiveVotes } from '../../common/helpers';
 import { getTokenRatesInUSD } from '../../store/walletStore/walletSelectors';
 
-const mapStateToProps = (state, { id }) => {
+const mapStateToProps = (state, { id, isThread }) => {
   const user = getAuthenticatedUser(state);
   const currPost = getPosts(state)[id];
   const waivRates = getTokenRatesInUSD(state, 'WAIV');
-  const post = {
-    ...currPost,
-    active_votes: addPayoutForActiveVotes(currPost, waivRates),
-  };
+  const post =
+    isThread && currPost.deleted
+      ? {}
+      : {
+          ...currPost,
+          active_votes: addPayoutForActiveVotes(currPost, waivRates),
+        };
   const isLiked = getUpvotes(post.active_votes).some(
     vote => vote.voter === user.name && !vote.fake,
   );

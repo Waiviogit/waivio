@@ -58,6 +58,7 @@ class StoryFooter extends React.Component {
     toggleBookmark: PropTypes.func.isRequired,
     handleHidePost: PropTypes.func.isRequired,
     userComments: PropTypes.bool,
+    isThread: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -77,6 +78,7 @@ class StoryFooter extends React.Component {
     userName: '',
     getSocialInfoPostAction: () => {},
     userComments: false,
+    isThread: false,
   };
 
   constructor(props) {
@@ -213,12 +215,13 @@ class StoryFooter extends React.Component {
       singlePostVew,
       getSocialInfoPostAction,
       userComments,
+      isThread,
     } = this.props;
 
     return (
       <div className="StoryFooter">
         <div className="StoryFooter__actions">
-          <Payout post={post} />
+          <Payout post={post} isUpdates={isThread} />
           {this.state.sliderVisible && (!postState.isLiked || !postState.isReported) && (
             <Confirmation
               onConfirm={this.handleClickConfirm}
@@ -245,6 +248,7 @@ class StoryFooter extends React.Component {
               getSocialInfoPost={getSocialInfoPostAction}
               isGuest={this.props.isGuest}
               userComments={userComments}
+              isThread={isThread}
             />
           )}
         </div>

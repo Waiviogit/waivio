@@ -3776,11 +3776,14 @@ export const getObjectUpdatesLocale = (authorPermlink, permlink) => {
     .then(posts => posts)
     .catch(error => error);
 };
-export const getThreadsByHashtag = (permlink, skip = 0, limit = 10, sort = 'latest') => {
+export const getThreadsByHashtag = (follower, permlink, skip = 0, limit = 10, sort = 'latest') => {
   return fetch(
     `${config.apiPrefix}${config.thread}${config.hashtag}?hashtag=${permlink}&skip=${skip}&limit=${limit}&sort=${sort}`,
     {
-      headers: headers,
+      headers: {
+        ...headers,
+        follower,
+      },
       method: 'GET',
     },
   )
@@ -3788,11 +3791,14 @@ export const getThreadsByHashtag = (permlink, skip = 0, limit = 10, sort = 'late
     .then(posts => posts)
     .catch(error => error);
 };
-export const getThreadsByUser = (userName, skip = 0, limit = 10, sort = 'latest') => {
+export const getThreadsByUser = (follower, userName, skip = 0, limit = 10, sort = 'latest') => {
   return fetch(
     `${config.apiPrefix}${config.thread}${config.user}?user=${userName}&skip=${skip}&limit=${limit}&sort=${sort}`,
     {
-      headers: headers,
+      headers: {
+        ...headers,
+        follower,
+      },
       method: 'GET',
     },
   )

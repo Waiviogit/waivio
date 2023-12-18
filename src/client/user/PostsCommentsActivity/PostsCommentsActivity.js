@@ -21,7 +21,7 @@ const PostsCommentsActivity = props => {
     return <EmptyMutedUserProfile user={user} authName={authenticatedUserName} />;
 
   return (
-    <Tabs defaultActiveKey={tab} className={'UserFollowers'}>
+    <Tabs defaultActiveKey={tab} className={'UserFollowers'} activeKey={tab}>
       <Tabs.TabPane
         tab={
           <Link to={`/@${name}`}>
