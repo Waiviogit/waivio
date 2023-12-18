@@ -45,6 +45,7 @@ const propTypes = {
       userId: PropTypes.string,
     }),
     author: PropTypes.string,
+    body: PropTypes.string,
     guideName: PropTypes.string,
     root_author: PropTypes.string,
     isHide: PropTypes.bool,
@@ -83,6 +84,7 @@ const propTypes = {
   userName: PropTypes.string.isRequired,
   getSocialInfoPost: PropTypes.func,
   userComments: PropTypes.bool,
+  isThread: PropTypes.bool,
 };
 
 const defaultProps = {
@@ -93,6 +95,7 @@ const defaultProps = {
   handlePostPopoverMenuClick: () => {},
   getSocialInfoPost: () => {},
   userComments: false,
+  isThread: false,
 };
 
 const PostPopoverMenu = ({
@@ -111,6 +114,7 @@ const PostPopoverMenu = ({
   userComments,
   disableRemove,
   isSocial,
+  isThread,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isPin, setIsPin] = useState(false);
@@ -126,6 +130,7 @@ const PostPopoverMenu = ({
   const isEditMode = useSelector(getIsEditMode);
   const wobjAuthorPermlink = match.params.name;
   const hidePinRemove =
+    match.url.includes(`/threads`) ||
     !match.url.includes(`/${wobjAuthorPermlink}`) ||
     (isSocial && !match.url.includes(`/${wobjAuthorPermlink}`)) ||
     (isSocial && !isEditMode);
@@ -223,7 +228,7 @@ const PostPopoverMenu = ({
     const authorPost = get(post, ['guestInfo', 'userId'], '') || post.author;
     const permlink = get(post, 'permlink', '');
 
-    if (!userComments) {
+    if (!userComments && !isThread) {
       getSocialInfoPost(authorPost, permlink).then(res => {
         const socialInfoPost = res.value;
         const hashtags = !isEmpty(socialInfoPost)
@@ -255,10 +260,14 @@ const PostPopoverMenu = ({
         }
       });
     } else {
-      const postURL = `${baseURL}${replaceBotWithGuestName(dropCategory(url), guestInfo)}`;
+      const postURL = isThread
+        ? `${baseURL}/@${author}/${permlink}`
+        : `${baseURL}${replaceBotWithGuestName(dropCategory(url), guestInfo)}`;
 
       if (isTwitter) {
-        const shareTextSocialTwitter = `"${encodeURIComponent(title)}"`;
+        const shareTextSocialTwitter = `"${
+          isThread ? encodeURIComponent(post.body) : encodeURIComponent(title)
+        }"`;
         const twitterShareURL = getTwitterShareURL(shareTextSocialTwitter, postURL);
 
         window.open(twitterShareURL, '_blank').focus();

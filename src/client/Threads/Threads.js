@@ -24,21 +24,29 @@ import { getUserProfileBlog } from '../../waivioApi/ApiClient';
 import * as commentsActions from '../../store/commentsStore/commentsActions';
 import './Threads.less';
 import Loading from '../components/Icon/Loading';
+import { getAppUrl } from '../../store/appStore/appSelectors';
 
 const limit = 5;
 
 const Threads = props => {
   const { name } = useParams();
   const [parentPost, setParentPost] = useState({});
+  const [loading, setLoading] = useState(false);
   const leothreads = 'leothreads';
   const isFetching = getFeedLoadingFromState('threads', name, props.feed);
   const objectFeed = getFeedFromState('threads', name, props.feed);
   const hasMore = getFeedHasMoreFromState('threads', name, props.feed);
   const threads = uniq(objectFeed);
-  const initialInputValue = `${props.isUser ? '@' : '#'}${name}`;
+  const initialInputValue = `${
+    props.isUser ? `@${name}` : `[#${name}](https://${props.appUrl}/object/${name}) `
+  }`;
 
   const loadMoreThreads = () => {
     props.getMoreThreadsContent(name, limit, props.isUser);
+  };
+  const callback = () => {
+    props.getThreadsContent(name, 0, limit, props.isUser);
+    setLoading(false);
   };
 
   useEffect(() => {
@@ -57,14 +65,16 @@ const Threads = props => {
         <ThreadsEditor
           isUser={props.isUser}
           name={name}
+          loading={loading}
+          setLoading={setLoading}
           mainThreadHashtag={props.isUser ? undefined : name}
           parentPost={parentPost}
           inputValue={initialInputValue}
           onSubmit={props.sendComment}
-          callback={() => props.getThreadsContent(name, 0, limit, props.isUser)}
+          callback={callback}
         />
       )}
-      {isFetching && threads.length < limit ? (
+      {(isFetching && threads.length < limit) || loading ? (
         <Loading />
       ) : (
         <div>
@@ -78,7 +88,7 @@ const Threads = props => {
           ) : (
             <div className={'profile'}>
               <Feed
-                userComments
+                // userComments
                 isThread
                 content={threads}
                 isFetching={isFetching}
@@ -106,11 +116,13 @@ Threads.propTypes = {
   isAuth: PropTypes.bool,
   isUser: PropTypes.bool,
   authUserName: PropTypes.string,
+  appUrl: PropTypes.string,
 };
 
 export default connect(
   state => ({
     feed: getFeed(state),
+    appUrl: getAppUrl(state),
     isGuest: isGuestUser(state),
     isAuth: getIsAuthenticated(state),
     authUserName: getAuthenticatedUserName(state),
