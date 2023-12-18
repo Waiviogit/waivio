@@ -441,6 +441,7 @@ class Story extends React.Component {
                 toggleBookmark={this.props.toggleBookmark}
                 handleEditClick={this.handleEditClick}
                 userComments={userComments}
+                isThread={isThread}
               />
             </div>
           </div>

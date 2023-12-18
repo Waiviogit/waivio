@@ -26,6 +26,7 @@ import {
   getSimilarObjects,
   getRelatedObjects,
   getMenuItemContent,
+  getProductInfo,
 } from '../../../store/wObjectStore/wobjectsActions';
 import {
   getRelatedWobjects,
@@ -180,6 +181,7 @@ WobjectContainer.fetchData = async ({ store, match }) => {
           store.dispatch(getSimilarObjects(match.params.name)),
           store.dispatch(getRelatedObjects(match.params.name)),
           store.dispatch(getMenuItemContent(parseJSON(items.body).linkToObject)),
+          store.dispatch(getProductInfo(response.value)),
         ];
       }
 

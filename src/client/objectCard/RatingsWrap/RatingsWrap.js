@@ -62,6 +62,7 @@ const RatingsWrap = React.memo(({ ratings, wobjId, username, overlay, isSocialPr
         <div
           className={isSocialProduct ? 'RatingsWrap__socialStars' : 'RatingsWrap__stars'}
           role="presentation"
+          title={defaultValue}
         >
           <Rate
             allowHalf

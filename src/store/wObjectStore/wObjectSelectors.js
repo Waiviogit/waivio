@@ -15,6 +15,16 @@ export const getObjectModerators = createSelector([getObject], state =>
   get(state, 'moderators', []),
 );
 
+export const getBrandObject = createSelector([objectState], state =>
+  get(state, 'brandObject', null),
+);
+export const getManufacturerObject = createSelector([objectState], state =>
+  get(state, 'manufacturerObject', null),
+);
+export const getMerchantObject = createSelector([objectState], state =>
+  get(state, 'merchantObject', null),
+);
+
 export const getMenuItemsFromState = state => get(state, ['object', 'menuItems'], null);
 
 export const getRatingFields = createSelector([getObject], state => get(state, 'rating', []));

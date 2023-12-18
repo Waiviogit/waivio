@@ -1,14 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useLayoutEffect } from 'react';
 import { Icon } from 'antd';
 import PropTypes from 'prop-types';
 import GroupIdContent from './GroupIdContent';
 
 const ProductId = ({ productIdBody, groupId, authorPermlink, isSocialGifts }) => {
-  const [showMore, setShowMore] = useState(false);
-
+  const [showMore, setShowMore] = useState(true);
   const toggleShowMoreState = () => {
     setShowMore(!showMore);
   };
+
+  useLayoutEffect(() => {
+    toggleShowMoreState();
+  }, []);
 
   return (
     (groupId || Boolean(productIdBody.length)) && (

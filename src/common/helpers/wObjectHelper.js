@@ -16,7 +16,7 @@ export const getNumbersFromWobjPrice = wobj => {
 
   if (!numbers) return 0;
 
-  const numberArray = numbers.map(Number);
+  const numberArray = numbers.map(item => Number(item).toFixed(0));
 
   return numberArray.join('');
 };

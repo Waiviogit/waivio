@@ -200,42 +200,17 @@ export const getUserComments = ({ username, limit = 10, skip = 0, start_permlink
 
 export const getThreadsContent = (hashtag, skip, limit, isUser) => (dispatch, getState) => {
   const state = getState();
-  const locale = getLocale(state);
   const userName = getAuthenticatedUserName(state);
 
   const getThreadsMethod = () =>
     isUser
-      ? ApiClient.getThreadsByUser(hashtag, skip, limit).then(res => res.result)
-      : ApiClient.getThreadsByHashtag(hashtag, skip, limit).then(res => res.result);
+      ? ApiClient.getThreadsByUser(userName, hashtag, skip, limit).then(res => res.result)
+      : ApiClient.getThreadsByHashtag(userName, hashtag, skip, limit).then(res => res.result);
 
   return dispatch({
     type: GET_THREADS_CONTENT.ACTION,
     payload: {
-      promise: getThreadsMethod().then(r =>
-        r.reduce(async (acc, thread) => {
-          const accum = await acc;
-
-          try {
-            if (!thread.deleted) {
-              const newThread = (
-                await ApiClient.getPostCommentsFromApi({
-                  category: thread.hashtags[0],
-                  author: thread.author,
-                  permlink: thread.permlink,
-                  locale,
-                  userName,
-                })
-              ).content[`${thread.author}/${thread.permlink}`];
-
-              return [...accum, { ...thread, ...newThread }];
-            }
-
-            return [...accum, thread];
-          } catch (error) {
-            return [...accum, thread];
-          }
-        }, []),
-      ),
+      promise: getThreadsMethod(),
     },
     meta: { sortBy: 'threads', category: hashtag, limit },
   });
@@ -244,13 +219,12 @@ export const getThreadsContent = (hashtag, skip, limit, isUser) => (dispatch, ge
 export const getMoreThreadsContent = (hashtag, limit, isUser) => (dispatch, getState) => {
   const state = getState();
   const feed = getFeed(state);
-  const locale = getLocale(state);
   const userName = getAuthenticatedUserName(state);
 
   const getThreadsMethod = () =>
     isUser
-      ? ApiClient.getThreadsByUser(hashtag, skip, limit).then(res => res.result)
-      : ApiClient.getThreadsByHashtag(hashtag, skip, limit).then(res => res.result);
+      ? ApiClient.getThreadsByUser(userName, hashtag, skip, limit).then(res => res.result)
+      : ApiClient.getThreadsByHashtag(userName, hashtag, skip, limit).then(res => res.result);
 
   const feedContent = getFeedFromState('threads', hashtag, feed);
 
@@ -262,31 +236,7 @@ export const getMoreThreadsContent = (hashtag, limit, isUser) => (dispatch, getS
   return dispatch({
     type: GET_MORE_THREADS_CONTENT.ACTION,
     payload: {
-      promise: getThreadsMethod().then(r =>
-        r.reduce(async (acc, thread) => {
-          const accum = await acc;
-
-          try {
-            if (!thread.deleted) {
-              const newThread = (
-                await ApiClient.getPostCommentsFromApi({
-                  category: thread.hashtags[0],
-                  author: thread.author,
-                  permlink: thread.permlink,
-                  locale,
-                  userName,
-                })
-              ).content[`${thread.author}/${thread.permlink}`];
-
-              return [...accum, { ...thread, ...newThread }];
-            }
-
-            return [...accum, thread];
-          } catch (error) {
-            return [...accum, thread];
-          }
-        }, []),
-      ),
+      promise: getThreadsMethod(),
     },
     meta: { sortBy: 'threads', category: hashtag, limit },
   });
