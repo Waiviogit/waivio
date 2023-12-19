@@ -97,7 +97,7 @@ const Threads = props => {
                 showPostModal={post => props.showPostModal(post)}
                 isGuest={props.isGuest}
               />
-              <PostModal />
+              <PostModal isThread />
             </div>
           )}
         </div>

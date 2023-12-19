@@ -77,7 +77,7 @@ export const getContent = (author, permlink, afterLike) => (dispatch, getState) 
   }).catch(() => {});
 };
 
-export const votePost = (postId, author, permlink, weight = 10000) => (
+export const votePost = (postId, author, permlink, weight = 10000, isThread = false) => (
   dispatch,
   getState,
   { steemConnectAPI },
@@ -94,10 +94,13 @@ export const votePost = (postId, author, permlink, weight = 10000) => (
     payload: {
       promise: steemConnectAPI
         .vote(voter, author, post.permlink, weight)
+        // eslint-disable-next-line consistent-return
         .then(data => {
-          if (data.status !== 200 && isGuest) throw new Error(data.message);
+          if (!isThread) {
+            if (data.status !== 200 && isGuest) throw new Error(data.message);
 
-          return ApiClient.likePost({ voter, author, permlink: post.permlink, weight });
+            return ApiClient.likePost({ voter, author, permlink: post.permlink, weight });
+          }
         })
         .catch(() => {
           message.error('Something went wrong');
