@@ -18,7 +18,7 @@ export const getNumbersFromWobjPrice = wobj => {
 
   const numberArray = numbers.map(item => Number(item).toFixed(0));
 
-  return numberArray.join('');
+  return numberArray.join('.');
 };
 
 export const getObjectTitle = (wobj = {}) => wobj.title || '';
