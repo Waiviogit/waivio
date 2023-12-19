@@ -32,7 +32,7 @@ const ObjectReviewsAndThreads = ({ intl, match }) => {
       <Tabs.TabPane
         tab={
           <Link to={`/object/${wobject.author_permlink}/threads`}>
-            {intl.formatMessage({ id: 'threads_beta', defaultMessage: 'Threads (BETA)' })}
+            {intl.formatMessage({ id: 'threads', defaultMessage: 'Threads' })}
           </Link>
         }
         key="threads"

@@ -53,18 +53,16 @@ const ThreadsEditor = ({
       return;
     }
     setShowError(false);
-    setLoading(true);
     if (e.shiftKey) {
       setCommentMsg(prevCommentMsg => `${prevCommentMsg}\n`);
     } else if (commentMsg) {
       const bodyWithSignature = isEdit ? commentMsg : `${commentMsg}${signature}`;
 
+      setCommentMsg('');
+      setLoading(true);
+      resetEditorState(editor);
       onSubmit(parentPost, bodyWithSignature, false, parentPost, callback).then(() => {
-        setCommentMsg('');
-
-        resetEditorState(editor);
         setFocused(false);
-        // setLoading(false);
       });
     }
   };
