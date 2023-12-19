@@ -316,7 +316,9 @@ class Notifications extends React.Component {
                   <NotificationTemplate
                     url={`/@${notification.author}/${notification.permlink}`}
                     username={notification.author}
-                    id="notification_mention_username_post"
+                    id={`notification_mention_username_${
+                      notification.is_root_post ? 'post' : 'comment'
+                    }`}
                     defaultMessage={defaultMentionMessage}
                     values={{
                       username: <span className="username">{notification.author}</span>,
