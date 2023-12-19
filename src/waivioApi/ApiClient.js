@@ -547,13 +547,11 @@ export const getWobjectsWithUserWeight = (
   limit = 30,
   authUser,
   objectTypes,
-  excludeObjectTypes,
   locale,
 ) => {
   const reqData = { skip, limit };
 
   if (objectTypes) reqData.object_types = objectTypes;
-  if (excludeObjectTypes) reqData.exclude_object_types = excludeObjectTypes;
 
   return fetch(`${config.apiPrefix}${config.user}/${userName}${config.wobjectsWithUserWeight}`, {
     headers: {

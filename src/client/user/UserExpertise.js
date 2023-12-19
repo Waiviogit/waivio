@@ -10,6 +10,7 @@ import ObjectDynamicList from '../object/ObjectDynamicList';
 import { getLocale } from '../../store/settingsStore/settingsSelectors';
 
 import './UserExpertise.less';
+import { excludeHashtagObjType } from '../../common/constants/listOfObjectTypes';
 
 const TabPane = Tabs.TabPane;
 const limit = 30;
@@ -33,8 +34,7 @@ const UserExpertise = () => {
       skip,
       limit,
       authUser,
-      isOnlyHashtags ? ['hashtag'] : null,
-      !isOnlyHashtags ? ['hashtag'] : null,
+      isOnlyHashtags ? ['hashtag'] : excludeHashtagObjType,
       locale,
     );
 
