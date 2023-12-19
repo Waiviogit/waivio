@@ -51,7 +51,7 @@ export const getNotificationsMessage = (notification, intl, displayUsername) => 
           )
         : intl.formatMessage(
             {
-              id: 'notification_mention_username_post',
+              id: 'notification_mention_username_comment',
               defaultMessage: '{username} mentioned you in a comment',
             },
             { username: displayUsername ? notification.author : '' },

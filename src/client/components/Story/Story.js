@@ -163,16 +163,16 @@ class Story extends React.Component {
   };
 
   handleClickVote(post, postState, weight, type) {
-    const { sliderMode, defaultVotePercent, votePost } = this.props;
+    const { sliderMode, defaultVotePercent, votePost, isThread } = this.props;
     const author = guestUserRegex.test(post.author) ? post.root_author : post.author;
     const charter = type === 'isReported' ? -1 : 1;
 
     if (sliderMode && !postState[type]) {
-      votePost(post.id, author, post.permlink, Number(weight));
+      votePost(post.id, author, post.permlink, Number(weight), isThread);
     } else if (postState[type]) {
-      votePost(post.id, author, post.permlink, 0);
+      votePost(post.id, author, post.permlink, 0, isThread);
     } else {
-      votePost(post.id, author, post.permlink, defaultVotePercent * charter);
+      votePost(post.id, author, post.permlink, defaultVotePercent * charter, isThread);
     }
   }
 
@@ -387,7 +387,7 @@ class Story extends React.Component {
                       <FormattedRelative value={isThread ? post.createdAt : `${post.created}Z`} />
                     </span>
                   </BTooltip>
-                  <PostedFrom post={post} />
+                  <PostedFrom post={post} isThread={isThread} />
                 </span>
               </div>
               <div className="Story__topics">

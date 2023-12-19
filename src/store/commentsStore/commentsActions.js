@@ -1,4 +1,5 @@
 import { get } from 'lodash';
+import { message } from 'antd';
 import {
   createCommentPermlink,
   getBodyPatchIfSmaller,
@@ -224,11 +225,12 @@ export const sendComment = (parentPost, newBody, isUpdating = false, originalCom
     )
     .then(res => {
       busyAPI.instance.sendAsync(subscribeTypes.subscribeTransactionId, [
-        parentAuthor,
+        auth.user.name,
         res.result.id,
       ]);
       busyAPI.instance.subscribe((response, mess) => {
         if (mess?.success && mess?.permlink === res.result.id) {
+          message.success('Please wait, we are processing your thread');
           callback();
         }
       });
