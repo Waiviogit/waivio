@@ -35,7 +35,7 @@ const PostsCommentsActivity = props => {
       <Tabs.TabPane
         tab={
           <Link to={`/@${name}/threads`}>
-            {intl.formatMessage({ id: 'threads_beta', defaultMessage: 'Threads (BETA)' })}
+            {intl.formatMessage({ id: 'threads', defaultMessage: 'Threads' })}
           </Link>
         }
         key="threads"
