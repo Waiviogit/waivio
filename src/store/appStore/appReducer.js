@@ -31,6 +31,7 @@ const initialState = {
   currPage: '',
   currMap: { center: [], zoom: 6 },
   configuration: {},
+  currency: '',
   currencyInfo: {
     type: 'USD',
     rate: 1,
@@ -254,6 +255,7 @@ export default (state = initialState, action) => {
     case appTypes.GET_CURRENCY_RATE.SUCCESS:
       return {
         ...state,
+        currency: action.meta,
         currencyInfo: {
           type: action.meta,
           rate: action.payload[action.meta],

@@ -10,7 +10,6 @@ import { getLocale } from '../settingsStore/settingsSelectors';
 import { getSearchFiltersTagCategory, getWebsiteSearchType } from '../searchStore/searchSelectors';
 import { getOwnWebsites, getParentDomain } from './websiteSelectors';
 import { getLastBlockNum } from '../../client/vendor/steemitHelpers';
-import { getCurrentCurrency } from '../appStore/appSelectors';
 
 export const GET_PARENT_DOMAIN = createAsyncActionType('@website/GET_PARENT_DOMAIN');
 
@@ -187,12 +186,11 @@ export const GET_REPORTS_PAGE = createAsyncActionType('@website/GET_REPORTS_PAGE
 
 export const getReportsWebsiteInfo = (formData = {}) => (dispatch, getState) => {
   const userName = getAuthenticatedUserName(getState());
-  const currency = getCurrentCurrency(getState()).type;
 
   dispatch({
     type: GET_REPORTS_PAGE.ACTION,
     payload: {
-      promise: ApiClient.getWebsitesReports({ userName, currency, ...formData }),
+      promise: ApiClient.getWebsitesReports({ userName, ...formData }),
     },
   });
 };
