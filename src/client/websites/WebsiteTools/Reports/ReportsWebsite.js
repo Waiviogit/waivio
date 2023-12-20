@@ -39,8 +39,8 @@ const ReportsWebsite = ({ intl, form, getReportsInfo, reportsInfo, locale, curre
 
     return {
       ...payment,
-      balance: ceil(payment.balance * currencyInfo.rate, 3),
-      amount: ceil(payment.amount * currencyInfo.rate, 3),
+      balance: ceil(payment.balance * payment.currencyRate, 3),
+      amount: ceil(payment.amount * payment.currencyRate, 3),
       message,
     };
   });

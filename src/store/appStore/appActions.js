@@ -207,7 +207,7 @@ export const getCurrentCurrencyRate = currency => (dispatch, getState) => {
 
   return dispatch({
     type: GET_CURRENCY_RATE.ACTION,
-    payload: ApiClient.getCurrentCurrencyRate(currency),
+    // payload: ApiClient.getCurrentCurrencyRate(currency),
     meta: currency,
   });
 };

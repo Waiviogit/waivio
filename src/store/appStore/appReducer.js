@@ -256,7 +256,7 @@ export default (state = initialState, action) => {
         ...state,
         currencyInfo: {
           type: action.meta,
-          rate: action.payload[action.meta],
+          // rate: action.payload[action.meta],
         },
       };
 
