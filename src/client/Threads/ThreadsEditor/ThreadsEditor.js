@@ -102,8 +102,8 @@ const ThreadsEditor = ({
     const objectType = getObjectType(selectedObject);
     const objectName = getObjectName(selectedObject);
     const textReplace =
-      objectType === objectTypes.HASHTAG || mainThreadHashtag === selectedObject.author_permlink
-        ? `#${selectedObject.author_permlink}`
+      objectType === objectTypes.HASHTAG || mainThreadHashtag === selectedObject?.author_permlink
+        ? `#${selectedObject?.author_permlink}`
         : objectName;
     const url = getObjectUrl(selectedObject?.id || selectedObject?.author_permlink);
 

@@ -19,6 +19,8 @@ import './ObjectDynamicList.less';
 class ObjectDynamicList extends React.Component {
   static propTypes = {
     fetcher: PropTypes.func.isRequired,
+    authUser: PropTypes.shape(),
+    isOnlyHashtags: PropTypes.bool,
     expertize: PropTypes.bool,
     unfollowWobj: PropTypes.func,
     followWobj: PropTypes.func,
@@ -50,7 +52,7 @@ class ObjectDynamicList extends React.Component {
   };
 
   handleLoadMore = () => {
-    const { fetcher, limit } = this.props;
+    const { fetcher, limit, authUser, isOnlyHashtags } = this.props;
     const { wobjects } = this.state;
 
     this.setState(
@@ -58,7 +60,7 @@ class ObjectDynamicList extends React.Component {
         loading: true,
       },
       () => {
-        fetcher(wobjects.length).then(newWobjects => {
+        fetcher(wobjects.length, authUser, isOnlyHashtags).then(newWobjects => {
           const wobjs = get(newWobjects, 'wobjects') || newWobjects;
 
           this.setState(state => ({

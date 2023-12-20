@@ -34,7 +34,6 @@ class ObjectWeightBlock extends React.Component {
       5,
       this.props.authUser,
       null,
-      null,
       this.props.locale,
     )
       .then(response => {

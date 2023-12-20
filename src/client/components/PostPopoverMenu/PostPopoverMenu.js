@@ -130,7 +130,7 @@ const PostPopoverMenu = ({
   const isEditMode = useSelector(getIsEditMode);
   const wobjAuthorPermlink = match.params.name;
   const hidePinRemove =
-    match.url.includes(`/threads`) ||
+    isThread ||
     !match.url.includes(`/${wobjAuthorPermlink}`) ||
     (isSocial && !match.url.includes(`/${wobjAuthorPermlink}`)) ||
     (isSocial && !isEditMode);
@@ -302,7 +302,10 @@ const PostPopoverMenu = ({
       ...popoverMenu,
       <PopoverMenuItem key="edit">
         {saving ? <Icon type="loading" /> : <i className="iconfont icon-write" />}
-        <FormattedMessage id="edit_post" defaultMessage="Edit post" />
+        <FormattedMessage
+          id={isThread ? 'edit_thread' : 'edit_post'}
+          defaultMessage={isThread ? 'Edit thread' : 'Edit post'}
+        />
       </PopoverMenuItem>,
       <PopoverMenuItem key="pin" disabled={loading} invisible={hidePinRemove}>
         <Icon className="hide-button popoverIcon ml1px" type="pushpin" />
@@ -324,7 +327,10 @@ const PostPopoverMenu = ({
       ...popoverMenu,
       <PopoverMenuItem key="delete">
         <Icon type="delete" />
-        <FormattedMessage id="delete_post" defaultMessage="Delete post" />
+        <FormattedMessage
+          id={isThread ? 'delete_thread' : 'delete_post'}
+          defaultMessage={isThread ? 'Delete thread' : 'Delete post'}
+        />
       </PopoverMenuItem>,
     ];
   }
@@ -332,7 +338,7 @@ const PostPopoverMenu = ({
   if (!ownPost) {
     popoverMenu = [
       ...popoverMenu,
-      <PopoverMenuItem key="follow" disabled={loading}>
+      <PopoverMenuItem key="follow" disabled={loading} invisible={isThread}>
         {loading ? <Icon type="loading" /> : <i className="iconfont icon-people" />}
         {followText}
       </PopoverMenuItem>,
@@ -348,7 +354,7 @@ const PostPopoverMenu = ({
           <FormattedMessage id="object_field_remove" defaultMessage="Remove" />
         </span>
       </PopoverMenuItem>,
-      <PopoverMenuItem key="hide" disabled={loading}>
+      <PopoverMenuItem key="hide" disabled={loading} invisible={isThread}>
         {post.loadingHide ? (
           <Icon type="loading" />
         ) : (
@@ -402,9 +408,15 @@ const PostPopoverMenu = ({
           <i className={`iconfont icon-flag${isReported ? '_fill' : ''}`} />
         )}
         {isReported ? (
-          <FormattedMessage id="unflag_post" defaultMessage="Unflag post" />
+          <FormattedMessage
+            id={isThread ? 'unflag_thread' : 'unflag_post'}
+            defaultMessage={isThread ? 'Unflag thread' : 'Unflag post'}
+          />
         ) : (
-          <FormattedMessage id="flag_post" defaultMessage="Flag post" />
+          <FormattedMessage
+            id={isThread ? 'flag_thread' : 'flag_post'}
+            defaultMessage={isThread ? 'Flag thread' : 'Flag post'}
+          />
         )}
       </PopoverMenuItem>,
     );

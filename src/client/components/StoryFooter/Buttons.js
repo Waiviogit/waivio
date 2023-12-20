@@ -355,7 +355,7 @@ export default class Buttons extends React.Component {
           {post.children > 0 && <FormattedNumber value={post.children} />}
         </span>
         <React.Fragment>
-          {showReblogLink && (
+          {showReblogLink && !isThread && (
             <BTooltip
               title={intl.formatMessage({
                 id: postState.reblogged ? 'reblog_reblogged' : 'reblog',
@@ -367,7 +367,7 @@ export default class Buttons extends React.Component {
               </a>
             </BTooltip>
           )}
-          {!showReblogLink && (
+          {!showReblogLink && !isThread && (
             <BTooltip
               title={intl.formatMessage({
                 id: postState.reblogged ? 'reblog_reblogged' : 'reblog',
