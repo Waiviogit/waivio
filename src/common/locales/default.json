@@ -2563,5 +2563,9 @@
   "threads_beta": "Threads (BETA)",
   "the_user_must_be_mentioned": "The user must be mentioned in the text (e.g., @username)",
   "the_object_must_be_mentioned": "The object must be mentioned in the text (e.g., #object-permlink)",
-  "notification_object_bell_thread": "{author} published thread to {objectName}"
+  "notification_object_bell_thread": "{author} published thread to {objectName}",
+  "edit_thread": "Edit thread",
+  "delete_thread": "Delete thread",
+  "unflag_thread": "Unflag thread",
+  "flag_thread": "Flag thread"
 }
