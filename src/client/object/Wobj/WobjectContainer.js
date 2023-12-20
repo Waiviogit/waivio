@@ -67,22 +67,30 @@ const WobjectContainer = props => {
           props.history.push(`/object/${res.value.author_permlink}/description`);
         }
       }
-      props.getAlbums(name);
-      props.getRelatedAlbum(name);
-      props.getNearbyObjects(name);
-      props.getWobjectExpertise(newsFilter, name);
-      props.getObjectFollowers({
-        object: name,
-        skip: 0,
-        limit: 5,
-        userName: props.authenticatedUserName,
-      });
-      props.getRelatedWobjects(name);
-      if (isEmpty(props.updates) || isNil(props.updates) || isNil(props.match.params[1])) {
-        const field = getUpdateFieldName(props.match.params[1]);
 
-        props.getUpdates(name, field, 'createdAt');
+      if (
+        (props.isSocial &&
+          !['page', 'newsfeed', 'widget', 'product'].includes(res.value.object_type)) ||
+        !props.isSocial
+      ) {
+        props.getAlbums(name);
+        props.getRelatedAlbum(name);
+        props.getNearbyObjects(name);
+        props.getWobjectExpertise(newsFilter, name);
+        props.getObjectFollowers({
+          object: name,
+          skip: 0,
+          limit: 5,
+          userName: props.authenticatedUserName,
+        });
+        props.getRelatedWobjects(name);
+        if (isEmpty(props.updates) || isNil(props.updates) || isNil(props.match.params[1])) {
+          const field = getUpdateFieldName(props.match.params[1]);
+
+          props.getUpdates(name, field, 'createdAt');
+        }
       }
+
       props.setEditMode(false);
     });
 
