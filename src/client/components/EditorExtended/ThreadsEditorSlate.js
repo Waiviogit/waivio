@@ -3,6 +3,7 @@ import 'draft-js/dist/Draft.css';
 import uuidv4 from 'uuid/v4';
 import isSoftNewlineEvent from 'draft-js/lib/isSoftNewlineEvent';
 import { message } from 'antd';
+import { isEmpty } from 'lodash';
 import classNames from 'classnames';
 import { Slate, Editable, withReact } from 'slate-react';
 import { createEditor, Transforms, Node, Range } from 'slate';
@@ -77,7 +78,6 @@ const ThreadsEditorSlate = props => {
     initialPosTopBtn,
     clearEditor,
     ADD_BTN_DIF,
-    isThread,
   } = props;
 
   const params = useParams();
@@ -290,8 +290,10 @@ const ThreadsEditorSlate = props => {
       Transforms.insertFragment(editor, postParsed, { at: [0, 0] });
       const lastBlock = editor.children?.[editor.children.length - 1];
 
-      /* add an empty space if it doesn't exist in the end  */
-      if (!(lastBlock?.type === 'paragraph' && lastBlock?.children?.[0].text === '') && !isThread) {
+      if (
+        !(lastBlock?.type === 'paragraph' && lastBlock?.children?.[0].text === '') &&
+        isEmpty(initialBody)
+      ) {
         Transforms.insertNodes(editor, createEmptyNode());
       }
       Transforms.deselect(editor);

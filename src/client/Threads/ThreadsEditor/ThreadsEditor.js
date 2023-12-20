@@ -125,7 +125,6 @@ const ThreadsEditor = ({
               <ThreadsEditorSlate
                 small
                 isComment
-                isThread
                 isQuickComment
                 editorEnabled
                 onChange={handleMsgChange}
