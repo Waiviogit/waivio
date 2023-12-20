@@ -171,12 +171,12 @@ class Notifications extends React.Component {
 
             switch (notification.type) {
               case notificationConstants.REPLY:
-                let id = 'replied_to_your_comment';
-                let defaultMessage = '{username} has replied to your comment';
+                let id = 'notification_reply_username_post';
+                let defaultMessage = '{username} commented on your post';
 
                 if (notification.reply) {
-                  id = 'notification_reply_username_post';
-                  defaultMessage = '{username} commented on your post';
+                  id = 'replied_to_your_comment';
+                  defaultMessage = '{username} has replied to your comment';
                 }
 
                 return (
