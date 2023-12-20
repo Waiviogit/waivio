@@ -73,8 +73,6 @@ const WobjectContainer = props => {
           !['page', 'newsfeed', 'widget', 'product'].includes(res.value.object_type)) ||
         !props.isSocial
       ) {
-        props.getAlbums(name);
-        props.getRelatedAlbum(name);
         props.getNearbyObjects(name);
         props.getWobjectExpertise(newsFilter, name);
         props.getObjectFollowers({
@@ -90,8 +88,13 @@ const WobjectContainer = props => {
           props.getUpdates(name, field, 'createdAt');
         }
       }
-
-      props.setEditMode(false);
+      if (
+        (props.isSocial && !['page', 'newsfeed', 'widget'].includes(res.value.object_type)) ||
+        !props.isSocial
+      ) {
+        props.getAlbums(name);
+        props.getRelatedAlbum(name);
+      }
     });
 
     return () => {
@@ -185,10 +188,10 @@ WobjectContainer.fetchData = async ({ store, match }) => {
 
         promises = [
           ...promises,
-          store.dispatch(getAddOns(response.value.addOn?.map(obj => obj.body))),
+          store.dispatch(getAddOns(response.value.addOn?.map(obj => obj?.body))),
           store.dispatch(getSimilarObjects(match.params.name)),
           store.dispatch(getRelatedObjects(match.params.name)),
-          store.dispatch(getMenuItemContent(parseJSON(items.body).linkToObject)),
+          store.dispatch(getMenuItemContent(parseJSON(items?.body)?.linkToObject)),
           store.dispatch(getProductInfo(response.value)),
         ];
       }
