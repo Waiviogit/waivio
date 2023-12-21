@@ -299,7 +299,19 @@ const ThreadsEditorSlate = props => {
       Transforms.deselect(editor);
       if (!isComment) focusEditorToEnd(editor);
     }
-  }, [body, initiallized, initialBody]);
+  }, [body, initiallized]);
+  useEffect(() => {
+    if ((body || initialBody) && initiallized) {
+      setInitiallized(false);
+      const postParsed = deserializeToSlate(body || initialBody, true);
+
+      resetEditorState(editor);
+      Transforms.insertFragment(editor, postParsed, { at: [0, 0] });
+
+      Transforms.deselect(editor);
+      if (!isComment) focusEditorToEnd(editor);
+    }
+  }, [initialBody]);
 
   return (
     <Slate editor={editor} value={value} onChange={handleChange}>
