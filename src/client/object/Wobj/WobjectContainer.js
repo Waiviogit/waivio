@@ -45,7 +45,11 @@ import {
 import { getUpdates } from '../../../store/appendStore/appendActions';
 import { setStoreActiveOption } from '../../../store/optionsStore/optionsActions';
 import { resetBreadCrumb } from '../../../store/shopStore/shopActions';
-import { getUpdateFieldName, showDescriptionPage } from '../../../common/helpers/wObjectHelper';
+import {
+  getUpdateFieldName,
+  showDescriptionPage,
+  getLastPermlinksFromHash,
+} from '../../../common/helpers/wObjectHelper';
 import NotFound from '../../statics/NotFound';
 import { login } from '../../../store/authStore/authActions';
 import { getRate, getRewardFund } from '../../../store/appStore/appActions';
@@ -164,33 +168,34 @@ WobjectContainer.propTypes = {
   setStoreActiveOption: PropTypes.func.isRequired,
 };
 
-WobjectContainer.fetchData = async ({ store, match }) => {
+WobjectContainer.fetchData = async ({ store, match, query }) => {
   const res = await store.dispatch(login());
+  const objName = query ? getLastPermlinksFromHash(query.get('breadbrumbs')) : match.params.name;
 
   return Promise.all([
-    store.dispatch(getObject(match.params.name, res?.value?.name)).then(response => {
+    store.dispatch(getObject(objName, res?.value?.name)).then(response => {
       let promises = [
         store.dispatch(
           getObjectPosts({
-            object: match.params.name,
-            username: match.params.name,
+            object: objName,
+            username: objName,
             limit: 20,
             newsPermlink: response.value?.newsFeed?.permlink,
           }),
         ),
 
-        store.dispatch(getAlbums(match.params.name)),
-        store.dispatch(getRelatedAlbum(match.params.name)),
+        store.dispatch(getAlbums(objName)),
+        store.dispatch(getRelatedAlbum(objName)),
       ];
 
-      if (response.value.object_type === 'product') {
+      if (['product', 'book', 'person', 'business'].includes(response.value.object_type)) {
         const items = prepareMenuItems(response.value.menuItem)[0];
 
         promises = [
           ...promises,
           store.dispatch(getAddOns(response.value.addOn?.map(obj => obj?.body))),
-          store.dispatch(getSimilarObjects(match.params.name)),
-          store.dispatch(getRelatedObjects(match.params.name)),
+          store.dispatch(getSimilarObjects(objName)),
+          store.dispatch(getRelatedObjects(objName)),
           store.dispatch(getMenuItemContent(parseJSON(items?.body)?.linkToObject)),
           store.dispatch(getProductInfo(response.value)),
         ];
@@ -198,14 +203,14 @@ WobjectContainer.fetchData = async ({ store, match }) => {
 
       return Promise.allSettled(promises);
     }),
-    store.dispatch(getObjectFollowersAction({ object: match.params.name, skip: 0, limit: 5 })),
+    store.dispatch(getObjectFollowersAction({ object: objName, skip: 0, limit: 5 })),
     store.dispatch(getRate()),
     store.dispatch(getRewardFund()),
-    store.dispatch(getNearbyObjectsAction(match.params.name)),
+    store.dispatch(getNearbyObjectsAction(objName)),
     store.dispatch(
       getWobjectExpertiseAction(
         match.params[1] === 'newsFilter' ? { newsFilter: match.params.itemId } : {},
-        match.params.name,
+        objName,
       ),
     ),
   ]);

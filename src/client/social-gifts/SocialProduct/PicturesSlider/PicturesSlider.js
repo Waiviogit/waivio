@@ -1,15 +1,11 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { Carousel, Icon } from 'antd';
-import { useHistory, useRouteMatch } from 'react-router';
 import Lightbox from 'react-image-lightbox';
 import { get, indexOf, isEmpty, map } from 'lodash';
 import PropTypes from 'prop-types';
 import { isMobile } from '../../../../common/helpers/apiHelpers';
 import { getProxyImageURL } from '../../../../common/helpers/image';
-import {
-  getLastPermlinksFromHash,
-  getObjectAvatar,
-} from '../../../../common/helpers/wObjectHelper';
+import { getObjectAvatar } from '../../../../common/helpers/wObjectHelper';
 import './PicturesSlider.less';
 
 const PicturesSlider = ({
@@ -21,19 +17,20 @@ const PicturesSlider = ({
   albums,
   relatedAlbum,
 }) => {
-  const [currentImage, setCurrentImage] = useState({});
+  const allPhotos = albums
+    ?.flatMap(alb => alb?.items)
+    ?.sort((a, b) => (b.name === 'avatar') - (a.name === 'avatar'));
+  const pictures = [...allPhotos, ...get(relatedAlbum, 'items', [])];
+  const avatar = getObjectAvatar(currentWobj);
+  const [currentImage, setCurrentImage] = useState(
+    isEmpty(avatar) ? pictures[0] : { body: avatar },
+  );
   const [nextArrowClicked, setNextArrowClicked] = useState(false);
   const [lastSlideToShow, setLastSlideToShow] = useState(null);
   const [hoveredPic, setHoveredPic] = useState({});
-  const [pictures, setPictures] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const [photoIndex, setPhotoIndex] = useState(0);
   const slider = useRef();
-  const history = useHistory();
-  const match = useRouteMatch();
-  const authorPermlink = history.location.hash
-    ? getLastPermlinksFromHash(history.location.hash)
-    : match.params.name;
   let currentSrc = hoveredPic.body || currentImage?.body;
 
   if (hoveredOption?.avatar || activeOption[activeCategory]?.avatar) {
@@ -56,22 +53,6 @@ const PicturesSlider = ({
     setPhotoIndex(next);
     setCurrentImage(pictures[next]);
   };
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const allPhotos = albums
-        ?.flatMap(alb => alb?.items)
-        ?.sort((a, b) => (b.name === 'avatar') - (a.name === 'avatar'));
-      const photos = [...allPhotos, ...get(relatedAlbum, 'items', [])];
-      const avatar = getObjectAvatar(currentWobj);
-
-      setPictures(photos);
-      setCurrentImage(isEmpty(avatar) ? photos[0] : { body: avatar });
-      setPhotoIndex(0);
-    };
-
-    fetchData();
-  }, [authorPermlink, currentWobj.author_permlink, albums.length]);
 
   useEffect(() => {
     if (photoIndex === 0) {
