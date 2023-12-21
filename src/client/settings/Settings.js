@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import { Select, Radio, Checkbox } from 'antd';
 import { getCurrencyForSettings, saveSettings } from '../../store/settingsStore/settingsActions';
+import { getCurrentCurrencyRate } from '../../store/appStore/appActions';
 import { reload } from '../../store/authStore/authActions';
 import { notify } from '../app/Notification/notificationActions';
 import Action from '../components/Button/Action';
@@ -59,7 +60,7 @@ import './Settings.less';
     isGuest: isGuestUser(state),
     currencyList: getCurrencyList(state),
   }),
-  { reload, saveSettings, notify, getCurrencyForSettings },
+  { reload, saveSettings, notify, getCurrencyForSettings, getCurrentCurrencyRate },
 )
 export default class Settings extends React.Component {
   static propTypes = {
@@ -78,6 +79,7 @@ export default class Settings extends React.Component {
     reload: PropTypes.func,
     saveSettings: PropTypes.func,
     notify: PropTypes.func,
+    getCurrentCurrencyRate: PropTypes.func,
     getCurrencyForSettings: PropTypes.func.isRequired,
     upvoteSetting: PropTypes.bool,
     exitPageSetting: PropTypes.bool,
@@ -191,6 +193,7 @@ export default class Settings extends React.Component {
   }
 
   handleSave = () => {
+    this.props.getCurrentCurrencyRate(this.state.currency);
     this.props
       .saveSettings({
         locale: this.state.locale,

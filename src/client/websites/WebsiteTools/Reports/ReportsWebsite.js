@@ -4,7 +4,7 @@ import moment from 'moment';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { Form, AutoComplete, DatePicker, Button } from 'antd';
 import { connect } from 'react-redux';
-import { isEmpty, map, ceil, debounce, isNil } from 'lodash';
+import { isEmpty, map, ceil, debounce } from 'lodash';
 import classNames from 'classnames';
 
 import DynamicTbl from '../../../components/Tools/DynamicTable/DynamicTable';
@@ -14,9 +14,9 @@ import { configReportsWebsitesTableHeader } from '../../constants/tableConfig';
 import { getReportsWebsiteInfo } from '../../../../store/websiteStore/websiteActions';
 import { getLocale } from '../../../../store/settingsStore/settingsSelectors';
 import { getReports } from '../../../../store/websiteStore/websiteSelectors';
-import { getCurrency } from '../../../../store/appStore/appSelectors';
 
 import './ReportsWebsite.less';
+import { getCurrentCurrency } from '../../../../store/appStore/appSelectors';
 
 const ReportsWebsite = ({ intl, form, getReportsInfo, reportsInfo, locale, currency }) => {
   const [searchString, setSearchString] = useState('');
@@ -46,7 +46,7 @@ const ReportsWebsite = ({ intl, form, getReportsInfo, reportsInfo, locale, curre
   });
 
   useEffect(() => {
-    if (!isEmpty(currency) && !isNil(currency)) getReportsInfo({ currency });
+    if (!isEmpty(currency.type)) getReportsInfo({ currency: currency.type });
   }, [currency]);
 
   const disabledDate = current => current > moment().endOf('day');
@@ -65,7 +65,7 @@ const ReportsWebsite = ({ intl, form, getReportsInfo, reportsInfo, locale, curre
               }
             : {}),
           ...(values.endDate ? { endDate: moment(values.endDate).unix() } : {}),
-          currency,
+          currency: currency.type,
         };
 
         getReportsInfo(formData);
@@ -165,7 +165,7 @@ const ReportsWebsite = ({ intl, form, getReportsInfo, reportsInfo, locale, curre
             </Form.Item>
           </Form>
           <DynamicTbl
-            header={configReportsWebsitesTableHeader(currency)}
+            header={configReportsWebsitesTableHeader(currency.type)}
             bodyConfig={mappedPayments}
           />
         </React.Fragment>
@@ -194,7 +194,7 @@ export default connect(
   state => ({
     reportsInfo: getReports(state),
     locale: getLocale(state),
-    currency: getCurrency(state),
+    currency: getCurrentCurrency(state),
   }),
   {
     getReportsInfo: getReportsWebsiteInfo,

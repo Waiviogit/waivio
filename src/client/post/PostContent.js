@@ -107,6 +107,7 @@ class PostContent extends React.Component {
     followingPostAuthor: PropTypes.func.isRequired,
     errorFollowingPostAuthor: PropTypes.func.isRequired,
     isModal: PropTypes.bool,
+    isThread: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -241,6 +242,7 @@ class PostContent extends React.Component {
       isOriginalPost,
       isModal,
       siteName,
+      isThread,
     } = this.props;
     const { tags, cities, wobjectsFacebook, userFacebook } = content;
 
@@ -334,6 +336,7 @@ class PostContent extends React.Component {
           post={content}
           postState={postState}
           signature={signature}
+          isThread={isThread}
           commentCount={content.children}
           pendingLike={pendingLike}
           pendingFlag={pendingFlag}

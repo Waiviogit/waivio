@@ -63,6 +63,7 @@ class StoryFull extends React.Component {
     pendingFlag: PropTypes.bool,
     pendingFollow: PropTypes.bool,
     pendingBookmark: PropTypes.bool,
+    isThread: PropTypes.bool,
     commentCount: PropTypes.number,
     saving: PropTypes.bool,
     ownPost: PropTypes.bool,
@@ -229,6 +230,7 @@ class StoryFull extends React.Component {
       onEditClick,
       isOriginalPost,
       isModal,
+      isThread,
     } = this.props;
     const taggedObjects = [];
     const linkedObjects = [];
@@ -389,6 +391,7 @@ class StoryFull extends React.Component {
               )}
             </div>
             <PostPopoverMenu
+              isThread={isThread}
               pendingFlag={pendingFlag}
               pendingFollow={pendingFollow}
               pendingBookmark={pendingBookmark}
@@ -509,6 +512,7 @@ class StoryFull extends React.Component {
           )}
         </Collapse>
         <StoryFooter
+          isThread={isThread}
           user={user}
           post={post}
           postState={postState}

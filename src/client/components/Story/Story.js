@@ -207,14 +207,17 @@ class Story extends React.Component {
   }
 
   handleEditClick = post => {
-    const { intl } = this.props;
+    const { intl, isThread } = this.props;
+    const threadEditUrl = `/@${post.parent_author}/${post.parent_permlink}#@${post.author}/${post.permlink}`;
 
     if (post.depth === 0)
       return this.props
         .editPost(post, intl)
-        .then(() => this.props.push(`/editor?draft=${post.id}`));
+        .then(() =>
+          this.props.push(isThread ? `${threadEditUrl}-edit` : `/editor?draft=${post.id}`),
+        );
 
-    return this.props.push(`${post.url}-edit`);
+    return this.props.push(`${isThread ? threadEditUrl : post.url}-edit`);
   };
 
   handleShowStoryPreview() {

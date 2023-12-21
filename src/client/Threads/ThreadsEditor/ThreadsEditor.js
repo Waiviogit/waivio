@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Icon } from 'antd';
 import { connect } from 'react-redux';
 import { debounce } from 'lodash';
@@ -112,10 +112,6 @@ const ThreadsEditor = ({
     handleMsgChange(editor);
   };
 
-  useEffect(() => {
-    setShowEditorSearch(isAuth);
-  }, [isAuth]);
-
   return (
     <>
       <div className="ThreadsEditor">
@@ -125,7 +121,6 @@ const ThreadsEditor = ({
               <ThreadsEditorSlate
                 small
                 isComment
-                isThread
                 isQuickComment
                 editorEnabled
                 onChange={handleMsgChange}

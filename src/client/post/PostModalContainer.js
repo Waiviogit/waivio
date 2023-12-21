@@ -39,6 +39,7 @@ const PostModalContainer = ({
   return (
     showPostModal && (
       <PostModal
+        isThread={isThread}
         showPostModal={showPostModal}
         currentShownPost={currentShownPost}
         hidePostModal={hidePostModal}
