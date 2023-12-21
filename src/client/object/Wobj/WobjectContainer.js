@@ -48,7 +48,6 @@ import { resetBreadCrumb } from '../../../store/shopStore/shopActions';
 import {
   getUpdateFieldName,
   showDescriptionPage,
-  getLastPermlinksFromHash,
 } from '../../../common/helpers/wObjectHelper';
 import NotFound from '../../statics/NotFound';
 import { login } from '../../../store/authStore/authActions';
@@ -168,9 +167,9 @@ WobjectContainer.propTypes = {
   setStoreActiveOption: PropTypes.func.isRequired,
 };
 
-WobjectContainer.fetchData = async ({ store, match, query }) => {
+WobjectContainer.fetchData = async ({ store, match }) => {
   const res = await store.dispatch(login());
-  const objName = query ? getLastPermlinksFromHash(query.get('breadbrumbs')) : match.params.name;
+  const objName = match.params.name;
 
   return Promise.all([
     store.dispatch(getObject(objName, res?.value?.name)).then(response => {

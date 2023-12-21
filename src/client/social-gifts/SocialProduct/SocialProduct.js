@@ -210,14 +210,11 @@ const SocialProduct = ({
     !isEmpty(ageRange);
 
   const getAddOnsSimilarRelatedObjects = () => {
-    if (!isEmpty(addOnPermlinks) && isEmpty(addOns)) {
+    if (!isEmpty(addOnPermlinks)) {
       getAddOnsAction(addOnPermlinks, userName, limit);
     }
-    if (isEmpty(relatedObjects))
-      getRelatedAction(wobject.author_permlink, userName, locale, 0, limit);
-
-    if (isEmpty(similarObjects))
-      getSimilarObjectsAction(wobject.author_permlink, userName, locale, 0, limit);
+    getRelatedAction(wobject.author_permlink, userName, locale, limit);
+    getSimilarObjectsAction(wobject.author_permlink, userName, locale, limit);
   };
 
   const getPublisherManufacturerBrandMerchantObjects = () => {
@@ -247,11 +244,11 @@ const SocialProduct = ({
   }, []);
 
   useEffect(() => {
-    !isEmpty(wobject) && getPublisherManufacturerBrandMerchantObjects();
-  }, [wobject.brand, wobject.manufacturer, wobject.merchant]);
+    getPublisherManufacturerBrandMerchantObjects();
+  }, [wobject.brand, wobject.manufacturer, wobject.merchant, wobject.author_permlink]);
 
   useEffect(() => {
-    !isEmpty(wobject) && getAddOnsSimilarRelatedObjects();
+    getAddOnsSimilarRelatedObjects();
   }, [addOnPermlinks.length, wobject.author_permlink]);
 
   const bestRating = getRatingForSocial(wobject.rating);
@@ -582,10 +579,12 @@ const mapDispatchToProps = dispatch => ({
   getWobject: (obj, name) => dispatch(getObject(obj, name)),
   getWobjAlbums: obj => dispatch(getAlbums(obj)),
   resetWobjGallery: () => dispatch(resetGallery()),
-  getRelatedAction: obj => dispatch(getRelatedObjects(obj)),
-  getAddOnsAction: getAddOns,
-  getSimilarObjectsAction: getSimilarObjects,
-  getProductInfoAction: getProductInfo,
+  getAddOnsAction: (addOnPermlinks, userName) => dispatch(getAddOns(addOnPermlinks, userName)),
+  getSimilarObjectsAction: (author_permlink, userName, locale, lim = 30) =>
+    dispatch(getSimilarObjects(author_permlink, userName, locale, lim)),
+  getProductInfoAction: obj => dispatch(getProductInfo(obj)),
+  getRelatedAction: (author_permlink, userName, locale, lim = 30) =>
+    dispatch(getRelatedObjects(author_permlink, userName, locale, lim)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(SocialProduct));
