@@ -904,7 +904,9 @@ class ObjectInfo extends React.Component {
                   {this.authorFieldAuthorPermlink(a) ? (
                     <Link to={`/object/${this.authorFieldAuthorPermlink(a)}`}>{a.name}</Link>
                   ) : (
-                    <span>{a.name}</span>
+                    <Link to={`/discover-objects/${wobject.object_type}?search=${a.name}`}>
+                      {a.name}
+                    </Link>
                   )}
                   <>
                     {i !== this.state.authorsArray.length - 1 && ','}
@@ -927,7 +929,12 @@ class ObjectInfo extends React.Component {
               ) : (
                 <div className="flex ObjectCard__links ">
                   <ObjectAvatar item={publisher} size={34} />{' '}
-                  <span className="ObjectCard__name-grey">{publisher.name}</span>
+                  <Link
+                    className="ObjectCard__name"
+                    to={`/discover-objects/${wobject.object_type}?search=${publisher.name}`}
+                  >
+                    {publisher.name}
+                  </Link>
                 </div>
               )),
           )}
@@ -1385,7 +1392,9 @@ class ObjectInfo extends React.Component {
                 {this.authorFieldAuthorPermlink(a) ? (
                   <Link to={`/object/${this.authorFieldAuthorPermlink(a)}`}>{a.name}</Link>
                 ) : (
-                  <span>{a.name}</span>
+                  <Link to={`/discover-objects/${wobject.object_type}?search=${a.name}`}>
+                    {a.name}
+                  </Link>
                 )}
                 <>
                   {i !== this.state.authorsArray.length - 1 && ','}
@@ -1416,7 +1425,12 @@ class ObjectInfo extends React.Component {
                   ) : (
                     <div className="flex ObjectCard__links">
                       <ObjectAvatar item={publisher} size={34} />{' '}
-                      <span className="ObjectCard__name-grey">{publisher.name}</span>
+                      <Link
+                        className="ObjectCard__name"
+                        to={`/discover-objects/${wobject.object_type}?search=${publisher.name}`}
+                      >
+                        {publisher.name}
+                      </Link>
                     </div>
                   )),
               )}
