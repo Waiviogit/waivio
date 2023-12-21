@@ -27,6 +27,7 @@ class PostModal extends React.Component {
     shownPostContents: PropTypes.shape(),
     author: PropTypes.shape(),
     isGuest: PropTypes.bool.isRequired,
+    isThread: PropTypes.bool,
     username: PropTypes.string.isRequired,
     getSocialInfoPost: PropTypes.func,
   };
@@ -120,6 +121,7 @@ class PostModal extends React.Component {
       shownPostContents,
       isGuest,
       username,
+      isThread,
     } = this.props;
     const { permlink, title, url } = currentShownPost;
     const { tags, cities, userTwitter, wobjectsTwitter } = shownPostContents;
@@ -204,7 +206,12 @@ class PostModal extends React.Component {
             <i className="iconfont icon-facebook PostModal__icon" />
           </a>
         </div>
-        <PostContent content={shownPostContents} signature={signature} isModal={isModal} />
+        <PostContent
+          isThread={isThread}
+          content={shownPostContents}
+          signature={signature}
+          isModal={isModal}
+        />
         <VisibilitySensor onChange={this.handleCommentsVisibility}>
           {!isBannedPost(shownPostContents) && (
             <div id="comments">
