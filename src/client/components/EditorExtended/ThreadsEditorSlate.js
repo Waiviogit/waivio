@@ -3,7 +3,6 @@ import 'draft-js/dist/Draft.css';
 import uuidv4 from 'uuid/v4';
 import isSoftNewlineEvent from 'draft-js/lib/isSoftNewlineEvent';
 import { message } from 'antd';
-import { isEmpty } from 'lodash';
 import classNames from 'classnames';
 import { Slate, Editable, withReact } from 'slate-react';
 import { createEditor, Transforms, Node, Range } from 'slate';
@@ -290,28 +289,13 @@ const ThreadsEditorSlate = props => {
       Transforms.insertFragment(editor, postParsed, { at: [0, 0] });
       const lastBlock = editor.children?.[editor.children.length - 1];
 
-      if (
-        !(lastBlock?.type === 'paragraph' && lastBlock?.children?.[0].text === '') &&
-        isEmpty(initialBody)
-      ) {
+      if (!(lastBlock?.type === 'paragraph' && lastBlock?.children?.[0].text === '')) {
         Transforms.insertNodes(editor, createEmptyNode());
       }
       Transforms.deselect(editor);
       if (!isComment) focusEditorToEnd(editor);
     }
-  }, [body, initiallized]);
-  useEffect(() => {
-    if ((body || initialBody) && initiallized) {
-      setInitiallized(false);
-      const postParsed = deserializeToSlate(body || initialBody, true);
-
-      resetEditorState(editor);
-      Transforms.insertFragment(editor, postParsed, { at: [0, 0] });
-
-      Transforms.deselect(editor);
-      if (!isComment) focusEditorToEnd(editor);
-    }
-  }, [initialBody]);
+  }, [body, initiallized, initialBody]);
 
   return (
     <Slate editor={editor} value={value} onChange={handleChange}>
