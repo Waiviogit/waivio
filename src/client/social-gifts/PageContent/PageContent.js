@@ -8,7 +8,7 @@ import './PageContent.less';
 import { getLastPermlinksFromHash, getObjectName } from '../../../common/helpers/wObjectHelper';
 
 const PageContent = ({ wobj }) => {
-  const [content, setContent] = useState('');
+  const [content, setContent] = useState(wobj.pageContent || '');
   const { name } = useParams();
   const location = useLocation();
   const objName = location.hash ? getLastPermlinksFromHash(location.hash) : name;

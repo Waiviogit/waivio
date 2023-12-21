@@ -1,3 +1,4 @@
+import { parseWobjectField } from '../../common/helpers/wObjectHelper';
 import * as ApiClient from '../../waivioApi/ApiClient';
 import { createAsyncActionType } from '../../common/helpers/stateHelpers';
 import { getAlbums } from '../galleryStore/galleryActions';
@@ -194,3 +195,41 @@ export const getRelatedObjects = (author_permlink, userName, locale, limit = 30)
       limit,
     ),
   });
+
+export const GET_MENU_ITEM_CONTENT = createAsyncActionType('@wobj/GET_MENU_ITEM_CONTENT');
+
+export const getMenuItemContent = (author_permlink, userName, locale) => dispatch =>
+  dispatch({
+    type: GET_MENU_ITEM_CONTENT.ACTION,
+    payload: ApiClient.getObject(author_permlink, userName, locale),
+    meta: author_permlink,
+  });
+
+export const GET_PRODUCT_INFO = createAsyncActionType('@wobj/GET_PRODUCT_INFO');
+
+export const getProductInfo = (wobject, locale) => dispatch => {
+  const manufacturer = parseWobjectField(wobject, 'manufacturer');
+  const brand = parseWobjectField(wobject, 'brand');
+  const merchant = parseWobjectField(wobject, 'merchant');
+
+  const permlinks = [
+    manufacturer?.authorPermlink,
+    brand?.authorPermlink,
+    merchant?.authorPermlink,
+  ].filter(permlink => permlink);
+
+  return dispatch({
+    type: GET_PRODUCT_INFO.ACTION,
+    payload: ApiClient.getObjectInfo(permlinks, locale).then(res => {
+      const brandObject =
+        res.wobjects.find(obj => obj.author_permlink === brand?.authorPermlink) || brand;
+      const manufacturerObject =
+        res.wobjects.find(obj => obj.author_permlink === manufacturer?.authorPermlink) ||
+        manufacturer;
+      const merchantObject =
+        res.wobjects.find(obj => obj.author_permlink === merchant?.authorPermlink) || merchant;
+
+      return { brandObject, manufacturerObject, merchantObject };
+    }),
+  });
+};

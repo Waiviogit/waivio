@@ -31,8 +31,8 @@ const ObjectNewsFeed = ({ wobj }) => {
   const [newsPermlink, setNewsPermlink] = useState();
   const [currObj, setCurrObj] = useState();
   const [previews, setPreviews] = useState();
-  const [firstLoading, setFirstLoading] = useState(true);
-  const [previewLoading, setPreviewLoading] = useState(true);
+  const [firstLoading, setFirstLoading] = useState(false);
+  const [previewLoading, setPreviewLoading] = useState(false);
   const feed = useSelector(getFeed);
   const postsList = useSelector(getPosts);
   const favicon = useSelector(getHelmetIcon);
@@ -86,11 +86,11 @@ const ObjectNewsFeed = ({ wobj }) => {
 
   useEffect(() => {
     if (isEmpty(posts)) {
+      setFirstLoading(true);
       getPostsList();
     } else {
       setPreviewLoading(false);
     }
-
     if (window.gtag)
       window.gtag('event', getObjectName(getObjectName(wobj) || getObjectName(currObj)), {
         debug_mode: true,

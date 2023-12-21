@@ -547,13 +547,11 @@ export const getWobjectsWithUserWeight = (
   limit = 30,
   authUser,
   objectTypes,
-  excludeObjectTypes,
   locale,
 ) => {
   const reqData = { skip, limit };
 
   if (objectTypes) reqData.object_types = objectTypes;
-  if (excludeObjectTypes) reqData.exclude_object_types = excludeObjectTypes;
 
   return fetch(`${config.apiPrefix}${config.user}/${userName}${config.wobjectsWithUserWeight}`, {
     headers: {
@@ -3595,7 +3593,13 @@ export const getReferenceObjectsListByType = ({
     .then(r => r)
     .catch(error => error);
 
-export const getRelatedObjectsFromDepartments = (authorPermlink, userName, locale, skip, limit) =>
+export const getRelatedObjectsFromDepartments = (
+  authorPermlink,
+  userName,
+  locale,
+  skip,
+  limit = 30,
+) =>
   fetch(`${config.apiPrefix}${config.shop}${config.getObjects}${config.related}`, {
     headers: { ...headers, follower: userName, locale },
     method: 'POST',
@@ -3609,7 +3613,13 @@ export const getRelatedObjectsFromDepartments = (authorPermlink, userName, local
     .then(r => r)
     .catch(error => error);
 
-export const getSimilarObjectsFromDepartments = (authorPermlink, userName, locale, skip, limit) =>
+export const getSimilarObjectsFromDepartments = (
+  authorPermlink,
+  userName,
+  locale,
+  skip,
+  limit = 30,
+) =>
   fetch(`${config.apiPrefix}${config.shop}${config.getObjects}${config.similar}`, {
     headers: { ...headers, follower: userName, locale },
     method: 'POST',
@@ -3776,11 +3786,14 @@ export const getObjectUpdatesLocale = (authorPermlink, permlink) => {
     .then(posts => posts)
     .catch(error => error);
 };
-export const getThreadsByHashtag = (permlink, skip = 0, limit = 10, sort = 'latest') => {
+export const getThreadsByHashtag = (follower, permlink, skip = 0, limit = 10, sort = 'latest') => {
   return fetch(
     `${config.apiPrefix}${config.thread}${config.hashtag}?hashtag=${permlink}&skip=${skip}&limit=${limit}&sort=${sort}`,
     {
-      headers: headers,
+      headers: {
+        ...headers,
+        follower,
+      },
       method: 'GET',
     },
   )
@@ -3788,11 +3801,14 @@ export const getThreadsByHashtag = (permlink, skip = 0, limit = 10, sort = 'late
     .then(posts => posts)
     .catch(error => error);
 };
-export const getThreadsByUser = (userName, skip = 0, limit = 10, sort = 'latest') => {
+export const getThreadsByUser = (follower, userName, skip = 0, limit = 10, sort = 'latest') => {
   return fetch(
     `${config.apiPrefix}${config.thread}${config.user}?user=${userName}&skip=${skip}&limit=${limit}&sort=${sort}`,
     {
-      headers: headers,
+      headers: {
+        ...headers,
+        follower,
+      },
       method: 'GET',
     },
   )

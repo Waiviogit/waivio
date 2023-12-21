@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
-import { get } from 'lodash';
+import { get, isNil } from 'lodash';
 import * as PropTypes from 'prop-types';
 import {
   getContent as getContentAction,
@@ -26,14 +26,20 @@ const PostModalContainer = ({
   userName,
   isFeedMasonry,
   getContent,
+  isThread,
 }) => {
   useEffect(() => {
-    getContent(currentShownPost.author, currentShownPost.permlink);
+    getContent(currentShownPost.author, currentShownPost.permlink)?.then(r => {
+      if (isThread && isNil(r)) {
+        setTimeout(() => getContent(currentShownPost.author, currentShownPost.permlink), 2000);
+      }
+    });
   }, [currentShownPost.author, currentShownPost.permlink]);
 
   return (
     showPostModal && (
       <PostModal
+        isThread={isThread}
         showPostModal={showPostModal}
         currentShownPost={currentShownPost}
         hidePostModal={hidePostModal}
@@ -58,6 +64,7 @@ PostModalContainer.propTypes = {
   shownPostContents: PropTypes.shape(),
   getSocialInfoPost: PropTypes.func.isRequired,
   isGuest: PropTypes.bool,
+  isThread: PropTypes.bool,
   userName: PropTypes.string,
 };
 
@@ -68,6 +75,7 @@ PostModalContainer.defaultProps = {
   shownPostContents: {},
   isGuest: false,
   userName: '',
+  isThread: false,
 };
 
 export default connect(

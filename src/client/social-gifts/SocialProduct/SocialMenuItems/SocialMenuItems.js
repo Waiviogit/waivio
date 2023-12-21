@@ -6,32 +6,32 @@ import { getObjectInfo } from '../../../../waivioApi/ApiClient';
 
 import './SocialMenuItems.less';
 
+export const prepareMenuItems = menuItem => {
+  const menuItemList = [];
+
+  menuItem?.forEach(async curr => {
+    const itemBody = JSON.parse(curr.body);
+
+    if (itemBody.linkToObject && !has(itemBody, 'title')) {
+      const res = await getObjectInfo([itemBody.linkToObject]);
+
+      menuItemList.push({
+        ...curr,
+        body: JSON.stringify({ ...itemBody, title: res.wobjects[0].name }),
+      });
+    } else {
+      menuItemList.push(curr);
+    }
+  });
+
+  return menuItemList;
+};
+
 const SocialMenuItems = ({ menuItem }) => {
-  const [menuItems, setMenuItems] = useState([]);
-
-  const prepareMenuItems = () => {
-    const menuItemList = [];
-
-    menuItem?.forEach(async curr => {
-      const itemBody = JSON.parse(curr.body);
-
-      if (itemBody.linkToObject && !has(itemBody, 'title')) {
-        const res = await getObjectInfo([itemBody.linkToObject]);
-
-        menuItemList.push({
-          ...curr,
-          body: JSON.stringify({ ...itemBody, title: res.wobjects[0].name }),
-        });
-      } else {
-        menuItemList.push(curr);
-      }
-    });
-
-    setMenuItems(menuItemList);
-  };
+  const [menuItems, setMenuItems] = useState(prepareMenuItems(menuItem));
 
   useEffect(() => {
-    prepareMenuItems();
+    setMenuItems(prepareMenuItems(menuItem));
   }, [menuItem.length]);
 
   if (isEmpty(menuItems)) return null;

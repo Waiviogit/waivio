@@ -3,7 +3,9 @@ import { connect, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { isEmpty, isNil } from 'lodash';
 import { withRouter } from 'react-router-dom';
+import { parseJSON } from '../../../common/helpers/parseJSON';
 import { getObjectPosts } from '../../../store/feedStore/feedActions';
+import { prepareMenuItems } from '../../social-gifts/SocialProduct/SocialMenuItems/SocialMenuItems';
 import Wobj from './Wobj';
 import { getAppendList } from '../../../store/appendStore/appendSelectors';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
@@ -23,6 +25,8 @@ import {
   getAddOns,
   getSimilarObjects,
   getRelatedObjects,
+  getMenuItemContent,
+  getProductInfo,
 } from '../../../store/wObjectStore/wobjectsActions';
 import {
   getRelatedWobjects,
@@ -41,7 +45,10 @@ import {
 import { getUpdates } from '../../../store/appendStore/appendActions';
 import { setStoreActiveOption } from '../../../store/optionsStore/optionsActions';
 import { resetBreadCrumb } from '../../../store/shopStore/shopActions';
-import { getUpdateFieldName, showDescriptionPage } from '../../../common/helpers/wObjectHelper';
+import {
+  getUpdateFieldName,
+  showDescriptionPage,
+} from '../../../common/helpers/wObjectHelper';
 import NotFound from '../../statics/NotFound';
 import { login } from '../../../store/authStore/authActions';
 import { getRate, getRewardFund } from '../../../store/appStore/appActions';
@@ -63,23 +70,34 @@ const WobjectContainer = props => {
           props.history.push(`/object/${res.value.author_permlink}/description`);
         }
       }
-      props.getAlbums(name);
-      props.getRelatedAlbum(name);
-      props.getNearbyObjects(name);
-      props.getWobjectExpertise(newsFilter, name);
-      props.getObjectFollowers({
-        object: name,
-        skip: 0,
-        limit: 5,
-        userName: props.authenticatedUserName,
-      });
-      props.getRelatedWobjects(name);
-      if (isEmpty(props.updates) || isNil(props.updates) || isNil(props.match.params[1])) {
-        const field = getUpdateFieldName(props.match.params[1]);
 
-        props.getUpdates(name, field, 'createdAt');
+      if (
+        (props.isSocial &&
+          !['page', 'newsfeed', 'widget', 'product'].includes(res.value.object_type)) ||
+        !props.isSocial
+      ) {
+        props.getNearbyObjects(name);
+        props.getWobjectExpertise(newsFilter, name);
+        props.getObjectFollowers({
+          object: name,
+          skip: 0,
+          limit: 5,
+          userName: props.authenticatedUserName,
+        });
+        props.getRelatedWobjects(name);
+        if (isEmpty(props.updates) || isNil(props.updates) || isNil(props.match.params[1])) {
+          const field = getUpdateFieldName(props.match.params[1]);
+
+          props.getUpdates(name, field, 'createdAt');
+        }
       }
-      props.setEditMode(false);
+      if (
+        (props.isSocial && !['page', 'newsfeed', 'widget'].includes(res.value.object_type)) ||
+        !props.isSocial
+      ) {
+        props.getAlbums(name);
+        props.getRelatedAlbum(name);
+      }
     });
 
     return () => {
@@ -151,31 +169,47 @@ WobjectContainer.propTypes = {
 
 WobjectContainer.fetchData = async ({ store, match }) => {
   const res = await store.dispatch(login());
+  const objName = match.params.name;
 
   return Promise.all([
-    store.dispatch(getObject(match.params.name, res?.value?.name)).then(response =>
-      Promise.allSettled([
+    store.dispatch(getObject(objName, res?.value?.name)).then(response => {
+      let promises = [
         store.dispatch(
           getObjectPosts({
-            object: match.params.name,
-            username: match.params.name,
+            object: objName,
+            username: objName,
             limit: 20,
             newsPermlink: response.value?.newsFeed?.permlink,
           }),
         ),
-        store.dispatch(getAddOns(response.value.addOn?.map(obj => obj.body))),
-        store.dispatch(getSimilarObjects(match.params.name)),
-        store.dispatch(getRelatedObjects(match.params.name)),
-      ]),
-    ),
-    store.dispatch(getObjectFollowersAction({ object: match.params.name, skip: 0, limit: 5 })),
+
+        store.dispatch(getAlbums(objName)),
+        store.dispatch(getRelatedAlbum(objName)),
+      ];
+
+      if (['product', 'book', 'person', 'business'].includes(response.value.object_type)) {
+        const items = prepareMenuItems(response.value.menuItem)[0];
+
+        promises = [
+          ...promises,
+          store.dispatch(getAddOns(response.value.addOn?.map(obj => obj?.body))),
+          store.dispatch(getSimilarObjects(objName)),
+          store.dispatch(getRelatedObjects(objName)),
+          store.dispatch(getMenuItemContent(parseJSON(items?.body)?.linkToObject)),
+          store.dispatch(getProductInfo(response.value)),
+        ];
+      }
+
+      return Promise.allSettled(promises);
+    }),
+    store.dispatch(getObjectFollowersAction({ object: objName, skip: 0, limit: 5 })),
     store.dispatch(getRate()),
     store.dispatch(getRewardFund()),
-    store.dispatch(getNearbyObjectsAction(match.params.name)),
+    store.dispatch(getNearbyObjectsAction(objName)),
     store.dispatch(
       getWobjectExpertiseAction(
         match.params[1] === 'newsFilter' ? { newsFilter: match.params.itemId } : {},
-        match.params.name,
+        objName,
       ),
     ),
   ]);

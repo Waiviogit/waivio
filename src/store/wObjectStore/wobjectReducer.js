@@ -1,5 +1,11 @@
 import { uniqBy } from 'lodash';
-import { GET_ADD_ONS, GET_SIMILAR_OBJECTS, GET_RELATED_OBJECTS } from './wobjectsActions';
+import {
+  GET_ADD_ONS,
+  GET_SIMILAR_OBJECTS,
+  GET_RELATED_OBJECTS,
+  GET_MENU_ITEM_CONTENT,
+  GET_PRODUCT_INFO,
+} from './wobjectsActions';
 
 import * as actions from './wobjectsActions';
 import {
@@ -56,6 +62,10 @@ export const initialState = {
   },
   addOn: [],
   similarObjects: [],
+  menuItems: {},
+  brandObject: {},
+  manufacturerObject: {},
+  merchantObject: {},
 };
 
 export default function wobjectReducer(state = initialState, action) {
@@ -563,6 +573,20 @@ export default function wobjectReducer(state = initialState, action) {
       return {
         ...state,
         relatedObjects: action.payload.wobjects,
+      };
+
+    case GET_MENU_ITEM_CONTENT.SUCCESS:
+      return {
+        ...state,
+        menuItems: {
+          ...state.menuItems,
+          [action.meta]: action.payload,
+        },
+      };
+    case GET_PRODUCT_INFO.SUCCESS:
+      return {
+        ...state,
+        ...action.payload,
       };
 
     default: {

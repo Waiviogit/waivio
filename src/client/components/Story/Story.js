@@ -163,16 +163,16 @@ class Story extends React.Component {
   };
 
   handleClickVote(post, postState, weight, type) {
-    const { sliderMode, defaultVotePercent, votePost } = this.props;
+    const { sliderMode, defaultVotePercent, votePost, isThread } = this.props;
     const author = guestUserRegex.test(post.author) ? post.root_author : post.author;
     const charter = type === 'isReported' ? -1 : 1;
 
     if (sliderMode && !postState[type]) {
-      votePost(post.id, author, post.permlink, Number(weight));
+      votePost(post.id, author, post.permlink, Number(weight), isThread);
     } else if (postState[type]) {
-      votePost(post.id, author, post.permlink, 0);
+      votePost(post.id, author, post.permlink, 0, isThread);
     } else {
-      votePost(post.id, author, post.permlink, defaultVotePercent * charter);
+      votePost(post.id, author, post.permlink, defaultVotePercent * charter, isThread);
     }
   }
 
@@ -207,14 +207,17 @@ class Story extends React.Component {
   }
 
   handleEditClick = post => {
-    const { intl } = this.props;
+    const { intl, isThread } = this.props;
+    const threadEditUrl = `/@${post.parent_author}/${post.parent_permlink}#@${post.author}/${post.permlink}`;
 
     if (post.depth === 0)
       return this.props
         .editPost(post, intl)
-        .then(() => this.props.push(`/editor?draft=${post.id}`));
+        .then(() =>
+          this.props.push(isThread ? `${threadEditUrl}-edit` : `/editor?draft=${post.id}`),
+        );
 
-    return this.props.push(`${post.url}-edit`);
+    return this.props.push(`${isThread ? threadEditUrl : post.url}-edit`);
   };
 
   handleShowStoryPreview() {
@@ -387,7 +390,7 @@ class Story extends React.Component {
                       <FormattedRelative value={isThread ? post.createdAt : `${post.created}Z`} />
                     </span>
                   </BTooltip>
-                  <PostedFrom post={post} />
+                  <PostedFrom post={post} isThread={isThread} />
                 </span>
               </div>
               <div className="Story__topics">
@@ -441,6 +444,7 @@ class Story extends React.Component {
                 toggleBookmark={this.props.toggleBookmark}
                 handleEditClick={this.handleEditClick}
                 userComments={userComments}
+                isThread={isThread}
               />
             </div>
           </div>

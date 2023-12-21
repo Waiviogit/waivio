@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Col, Rate, Row } from 'antd';
 import { sortBy } from 'lodash';
 import PropTypes from 'prop-types';
@@ -11,19 +11,17 @@ import { getIsAuthenticated } from '../../../store/authStore/authSelectors';
 
 import './RatingsWrap.less';
 
-const RatingsWrap = React.memo(({ ratings, wobjId, username, overlay, isSocialProduct }) => {
-  const [sortedRatings, setSortingRatings] = useState([]);
+const prepereRatings = (ratings, overlay) => {
   const mappedRatings = ratings.map(d => ({ ...d, rating: averageRate(d) }));
+
+  return overlay
+    ? [mappedRatings.sort((a, b) => b.rating - a.rating)[0]]
+    : sortBy(mappedRatings, ['body']);
+};
+
+const RatingsWrap = React.memo(({ ratings, wobjId, username, overlay, isSocialProduct }) => {
+  const [sortedRatings, setSortingRatings] = useState(prepereRatings(ratings, overlay));
   const isAuth = useSelector(getIsAuthenticated);
-
-  useEffect(() => {
-    const ratingList = overlay
-      ? [mappedRatings.sort((a, b) => b.rating - a.rating)[0]]
-      : sortBy(mappedRatings, ['body']);
-
-    setSortingRatings(ratingList);
-  }, []);
-
   const ratingTitleClassList = classNames('RatingsWrap__rate-title', {
     'RatingsWrap__rate-title-black': isSocialProduct,
   });
@@ -64,6 +62,7 @@ const RatingsWrap = React.memo(({ ratings, wobjId, username, overlay, isSocialPr
         <div
           className={isSocialProduct ? 'RatingsWrap__socialStars' : 'RatingsWrap__stars'}
           role="presentation"
+          title={defaultValue}
         >
           <Rate
             allowHalf

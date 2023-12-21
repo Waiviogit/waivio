@@ -224,7 +224,7 @@ export const sendComment = (parentPost, newBody, isUpdating = false, originalCom
     )
     .then(res => {
       busyAPI.instance.sendAsync(subscribeTypes.subscribeTransactionId, [
-        parentAuthor,
+        auth.user.name,
         res.result.id,
       ]);
       busyAPI.instance.subscribe((response, mess) => {

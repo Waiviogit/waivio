@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import 'draft-js/dist/Draft.css';
 import uuidv4 from 'uuid/v4';
+import { isEmpty } from 'lodash';
 import isSoftNewlineEvent from 'draft-js/lib/isSoftNewlineEvent';
 import { message } from 'antd';
 import classNames from 'classnames';
@@ -61,7 +62,7 @@ const useEditor = props => {
   return editor;
 };
 
-const EditorSlate = props => {
+const ThreadsEditorSlate = props => {
   const {
     editorEnabled,
     isShowEditorSearch,
@@ -278,25 +279,27 @@ const EditorSlate = props => {
     if (!isComment) setTimeout(() => focusEditorToEnd(editor), 200);
     setInitiallized(true);
     setTimeout(() => setInitiallized(false), 1500);
-  }, [params]);
+  }, [params, initialBody]);
 
   useEffect(() => {
     if ((body || initialBody) && initiallized) {
       setInitiallized(false);
-      const postParsed = deserializeToSlate(body || initialBody, false);
+      const postParsed = deserializeToSlate(body || initialBody, true);
 
       resetEditorState(editor);
       Transforms.insertFragment(editor, postParsed, { at: [0, 0] });
       const lastBlock = editor.children?.[editor.children.length - 1];
 
-      /* add an empty space if it doesn't exist in the end  */
-      if (!(lastBlock?.type === 'paragraph' && lastBlock?.children?.[0].text === '')) {
+      if (
+        !(lastBlock?.type === 'paragraph' && lastBlock?.children?.[0].text === '') &&
+        isEmpty(initialBody)
+      ) {
         Transforms.insertNodes(editor, createEmptyNode());
       }
       Transforms.deselect(editor);
       if (!isComment) focusEditorToEnd(editor);
     }
-  }, [body, initiallized]);
+  }, [body, initiallized, initialBody]);
 
   return (
     <Slate editor={editor} value={value} onChange={handleChange}>
@@ -322,6 +325,7 @@ const EditorSlate = props => {
             }}
             onBlur={() => {
               editor.lastSelection = editor.selection;
+              if (props.onBlur) props.onBlur();
             }}
             spellCheck={false}
             onPaste={handlePastedFiles}
@@ -345,7 +349,7 @@ const EditorSlate = props => {
   );
 };
 
-EditorSlate.propTypes = {
+ThreadsEditorSlate.propTypes = {
   editorEnabled: PropTypes.bool,
   isShowEditorSearch: PropTypes.bool,
   isVimeo: PropTypes.bool,
@@ -358,18 +362,20 @@ EditorSlate.propTypes = {
   initialBody: PropTypes.string,
   handlePasteText: PropTypes.func,
   onFocus: PropTypes.func,
+  onBlur: PropTypes.func,
   setEditor: PropTypes.func,
   setEditorCb: PropTypes.func,
   isComment: PropTypes.bool,
   isCommentEdit: PropTypes.bool,
   small: PropTypes.bool,
+  isThread: PropTypes.bool,
   minHeight: PropTypes.string,
   initialPosTopBtn: PropTypes.string,
   clearEditor: PropTypes.func,
   ADD_BTN_DIF: PropTypes.number,
 };
 
-EditorSlate.defaultProps = {
+ThreadsEditorSlate.defaultProps = {
   editorEnabled: false,
   isShowEditorSearch: false,
   isVimeo: false,
@@ -396,4 +402,4 @@ const mapDispatchToProps = dispatch => ({
   clearEditor: () => dispatch(setClearState()),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(injectIntl(EditorSlate));
+export default connect(mapStateToProps, mapDispatchToProps)(injectIntl(ThreadsEditorSlate));

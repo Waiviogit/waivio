@@ -25,20 +25,28 @@ import * as commentsActions from '../../store/commentsStore/commentsActions';
 import './Threads.less';
 import Loading from '../components/Icon/Loading';
 
-const limit = 10;
+const limit = 5;
 
 const Threads = props => {
   const { name } = useParams();
   const [parentPost, setParentPost] = useState({});
+  const [loading, setLoading] = useState(false);
   const leothreads = 'leothreads';
   const isFetching = getFeedLoadingFromState('threads', name, props.feed);
   const objectFeed = getFeedFromState('threads', name, props.feed);
   const hasMore = getFeedHasMoreFromState('threads', name, props.feed);
   const threads = uniq(objectFeed);
-  const initialInputValue = `${props.isUser ? '@' : '#'}${name} `;
+  const currHost = typeof location !== 'undefined' && location.hostname;
+  const initialInputValue = `${
+    props.isUser ? `@${name}` : `[#${name}](https://${currHost}/object/${name}) `
+  }`;
 
   const loadMoreThreads = () => {
     props.getMoreThreadsContent(name, limit, props.isUser);
+  };
+  const callback = () => {
+    props.getThreadsContent(name, 0, limit, props.isUser);
+    setLoading(false);
   };
 
   useEffect(() => {
@@ -55,14 +63,18 @@ const Threads = props => {
     <div className={'Threads'}>
       {props.isAuth && (
         <ThreadsEditor
+          isUser={props.isUser}
+          name={name}
+          loading={loading}
+          setLoading={setLoading}
           mainThreadHashtag={props.isUser ? undefined : name}
           parentPost={parentPost}
           inputValue={initialInputValue}
           onSubmit={props.sendComment}
-          callback={() => props.getThreadsContent(name, 0, limit, props.isUser)}
+          callback={callback}
         />
       )}
-      {isFetching ? (
+      {(isFetching && threads.length < limit) || loading ? (
         <Loading />
       ) : (
         <div>
@@ -76,6 +88,7 @@ const Threads = props => {
           ) : (
             <div className={'profile'}>
               <Feed
+                // userComments
                 isThread
                 content={threads}
                 isFetching={isFetching}
@@ -84,7 +97,7 @@ const Threads = props => {
                 showPostModal={post => props.showPostModal(post)}
                 isGuest={props.isGuest}
               />
-              <PostModal />
+              <PostModal isThread />
             </div>
           )}
         </div>

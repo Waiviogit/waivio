@@ -11,7 +11,7 @@ import { getUser } from '../../../store/usersStore/usersSelectors';
 import UserProfilePosts from '../UserComments';
 import UserActivity from '../../activity/UserActivity';
 import UserBlog from '../UserBlog/UserBlog';
-// import Threads from '../../Threads/Threads';
+import Threads from '../../Threads/Threads';
 
 const PostsCommentsActivity = props => {
   const { match, authenticatedUserName, user, intl } = props;
@@ -21,7 +21,7 @@ const PostsCommentsActivity = props => {
     return <EmptyMutedUserProfile user={user} authName={authenticatedUserName} />;
 
   return (
-    <Tabs defaultActiveKey={tab} className={'UserFollowers'}>
+    <Tabs defaultActiveKey={tab} className={'UserFollowers'} activeKey={tab}>
       <Tabs.TabPane
         tab={
           <Link to={`/@${name}`}>
@@ -32,16 +32,16 @@ const PostsCommentsActivity = props => {
       >
         {tab === 'posts' && <UserBlog />}
       </Tabs.TabPane>
-      {/* <Tabs.TabPane */}
-      {/*   tab={ */}
-      {/*     <Link to={`/@${name}/threads`}> */}
-      {/*       {intl.formatMessage({ id: 'threads_beta', defaultMessage: 'Threads (BETA)' })} */}
-      {/*     </Link> */}
-      {/*   } */}
-      {/*   key="threads" */}
-      {/* > */}
-      {/*   {tab === 'threads' && <Threads isUser />} */}
-      {/* </Tabs.TabPane> */}
+      <Tabs.TabPane
+        tab={
+          <Link to={`/@${name}/threads`}>
+            {intl.formatMessage({ id: 'threads', defaultMessage: 'Threads' })}
+          </Link>
+        }
+        key="threads"
+      >
+        {tab === 'threads' && <Threads isUser />}
+      </Tabs.TabPane>
       <Tabs.TabPane
         tab={
           <Link to={`/@${name}/comments`}>

@@ -5,10 +5,10 @@ import BTooltip from '../BTooltip';
 import { getAppData } from '../../../common/helpers/postHelpers';
 import './PostedFrom.less';
 
-const PostedFrom = ({ post }) => {
+const PostedFrom = ({ post, isThread }) => {
   const { appName, version } = getAppData(post);
 
-  if (!appName) {
+  if (!appName || isThread) {
     return null;
   }
 
@@ -36,6 +36,7 @@ const PostedFrom = ({ post }) => {
 
 PostedFrom.propTypes = {
   post: PropTypes.shape().isRequired,
+  isThread: PropTypes.bool,
 };
 
 export default PostedFrom;
