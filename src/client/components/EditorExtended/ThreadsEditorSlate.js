@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import 'draft-js/dist/Draft.css';
 import uuidv4 from 'uuid/v4';
+import { isEmpty } from 'lodash';
 import isSoftNewlineEvent from 'draft-js/lib/isSoftNewlineEvent';
 import { message } from 'antd';
 import classNames from 'classnames';
@@ -289,7 +290,10 @@ const ThreadsEditorSlate = props => {
       Transforms.insertFragment(editor, postParsed, { at: [0, 0] });
       const lastBlock = editor.children?.[editor.children.length - 1];
 
-      if (!(lastBlock?.type === 'paragraph' && lastBlock?.children?.[0].text === '')) {
+      if (
+        !(lastBlock?.type === 'paragraph' && lastBlock?.children?.[0].text === '') &&
+        isEmpty(initialBody)
+      ) {
         Transforms.insertNodes(editor, createEmptyNode());
       }
       Transforms.deselect(editor);
