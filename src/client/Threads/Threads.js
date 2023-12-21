@@ -24,7 +24,6 @@ import { getUserProfileBlog } from '../../waivioApi/ApiClient';
 import * as commentsActions from '../../store/commentsStore/commentsActions';
 import './Threads.less';
 import Loading from '../components/Icon/Loading';
-import { getAppUrl } from '../../store/appStore/appSelectors';
 
 const limit = 5;
 
@@ -37,8 +36,9 @@ const Threads = props => {
   const objectFeed = getFeedFromState('threads', name, props.feed);
   const hasMore = getFeedHasMoreFromState('threads', name, props.feed);
   const threads = uniq(objectFeed);
+  const currHost = typeof location !== 'undefined' && location.hostname;
   const initialInputValue = `${
-    props.isUser ? `@${name}` : `[#${name}](https://${props.appUrl}/object/${name}) `
+    props.isUser ? `@${name}` : `[#${name}](https://${currHost}/object/${name}) `
   }`;
 
   const loadMoreThreads = () => {
@@ -116,13 +116,11 @@ Threads.propTypes = {
   isAuth: PropTypes.bool,
   isUser: PropTypes.bool,
   authUserName: PropTypes.string,
-  appUrl: PropTypes.string,
 };
 
 export default connect(
   state => ({
     feed: getFeed(state),
-    appUrl: getAppUrl(state),
     isGuest: isGuestUser(state),
     isAuth: getIsAuthenticated(state),
     authUserName: getAuthenticatedUserName(state),
