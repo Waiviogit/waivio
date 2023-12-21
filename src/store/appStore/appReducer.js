@@ -33,7 +33,7 @@ const initialState = {
   configuration: {},
   currency: '',
   currencyInfo: {
-    type: 'USD',
+    type: '',
     rate: 1,
   },
   isWaivio: true,
