@@ -210,9 +210,7 @@ const SocialProduct = ({
     !isEmpty(ageRange);
 
   const getAddOnsSimilarRelatedObjects = () => {
-    if (!isEmpty(addOnPermlinks)) {
-      getAddOnsAction(addOnPermlinks, userName, limit);
-    }
+    getAddOnsAction(addOnPermlinks, userName, limit);
     getRelatedAction(wobject.author_permlink, userName, locale, limit);
     getSimilarObjectsAction(wobject.author_permlink, userName, locale, limit);
   };
