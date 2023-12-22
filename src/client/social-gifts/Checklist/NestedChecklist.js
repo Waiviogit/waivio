@@ -21,7 +21,9 @@ const NestedChecklist = ({ permlink }) => {
   useEffect(() => {
     if (permlink && isEmpty(wobject)) {
       setLoading(true);
-      dispatch(getMenuItemContent(permlink, userName, locale)).then(wObject => {
+      dispatch(getMenuItemContent(permlink, userName, locale)).then(res => {
+        const wObject = res.value;
+
         setLists(
           sortListItemsBy(
             wObject?.listItems,

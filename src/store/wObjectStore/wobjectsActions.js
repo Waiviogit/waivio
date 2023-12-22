@@ -1,3 +1,4 @@
+import { isEmpty } from 'lodash';
 import { parseWobjectField } from '../../common/helpers/wObjectHelper';
 import * as ApiClient from '../../waivioApi/ApiClient';
 import { createAsyncActionType } from '../../common/helpers/stateHelpers';
@@ -155,7 +156,7 @@ export const addListItem = item => dispatch =>
 export const GET_ADD_ONS = createAsyncActionType('@wobj/GET_ADD_ONS');
 
 export const getAddOns = (addOnPermlinks, userName, limit = 30) => dispatch => {
-  if (addOnPermlinks)
+  if (!isEmpty(addOnPermlinks))
     return dispatch({
       type: GET_ADD_ONS.ACTION,
       payload: ApiClient.getObjectsByIds({
@@ -166,7 +167,12 @@ export const getAddOns = (addOnPermlinks, userName, limit = 30) => dispatch => {
       }),
     });
 
-  return Promise.resolve();
+  return dispatch({
+    type: GET_ADD_ONS.SUCCESS,
+    payload: {
+      wobjects: [],
+    },
+  });
 };
 
 export const GET_SIMILAR_OBJECTS = createAsyncActionType('@wobj/GET_SIMILAR_OBJECTS');
