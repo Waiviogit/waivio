@@ -73,6 +73,12 @@ export default function wobjectReducer(state = initialState, action) {
     case actions.GET_OBJECT_START:
       return {
         ...state,
+        addOn: [],
+        similarObjects: [],
+        menuItems: {},
+        brandObject: {},
+        manufacturerObject: {},
+        merchantObject: {},
         isFetching: true,
       };
     case actions.GET_OBJECT_ERROR:
