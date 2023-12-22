@@ -36,10 +36,17 @@ const SocialMenuItems = ({ menuItem }) => {
 
   if (isEmpty(menuItems)) return null;
 
+  const sortByOrder = (a, b) => {
+    const aIndex = menuItem.indexOf(a);
+    const bIndex = menuItem.indexOf(b);
+
+    return aIndex - bIndex;
+  };
+
   return (
     <div className="SocialMenuItems">
       <div>
-        {menuItems?.map((item, index) => (
+        {menuItems?.sort(sortByOrder)?.map((item, index) => (
           <SocialMenuItem key={item._id} item={item} isOpen={index === 0} />
         ))}
       </div>

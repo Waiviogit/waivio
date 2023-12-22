@@ -45,10 +45,7 @@ import {
 import { getUpdates } from '../../../store/appendStore/appendActions';
 import { setStoreActiveOption } from '../../../store/optionsStore/optionsActions';
 import { resetBreadCrumb } from '../../../store/shopStore/shopActions';
-import {
-  getUpdateFieldName,
-  showDescriptionPage,
-} from '../../../common/helpers/wObjectHelper';
+import { getUpdateFieldName, showDescriptionPage } from '../../../common/helpers/wObjectHelper';
 import NotFound from '../../statics/NotFound';
 import { login } from '../../../store/authStore/authActions';
 import { getRate, getRewardFund } from '../../../store/appStore/appActions';
