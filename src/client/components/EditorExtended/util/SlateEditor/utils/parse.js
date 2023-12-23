@@ -111,6 +111,11 @@ export const deserializeToSlate = (body, isThread) => {
   _body.split('\n\n\n').forEach(i => {
     const blocks = processor.processSync(i).result;
 
+    // eslint-disable-next-line no-console
+    console.log('blocks:', blocks);
+    // eslint-disable-next-line no-console
+    console.log('isThread', isThread);
+
     postParsed = isThread
       ? [...postParsed, ...blocks, { text: ' ' }]
       : [...postParsed, ...blocks, { type: 'paragraph', children: [{ text: '' }] }];
@@ -120,6 +125,9 @@ export const deserializeToSlate = (body, isThread) => {
       postParsed.push({ type: 'paragraph', children: [{ text: '' }] });
     }
   });
+
+  // eslint-disable-next-line no-console
+  console.log('postParsed:', postParsed);
 
   return postParsed;
 };
