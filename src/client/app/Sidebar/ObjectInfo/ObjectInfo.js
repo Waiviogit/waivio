@@ -499,7 +499,7 @@ class ObjectInfo extends React.Component {
     const ageRange = wobject.ageRange;
     const language = wobject.language;
     const groupId = wobject.groupId;
-    const publicationDate = moment(parseInt(wobject.publicationDate, 10)).format('MMMM DD, YYYY');
+    const publicationDate = moment(wobject.publicationDate).format('MMMM DD, YYYY');
     const printLength = wobject.printLength;
     const publisher = parseWobjectField(wobject, 'publisher');
     const manufacturer = parseWobjectField(wobject, 'manufacturer');
