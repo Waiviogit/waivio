@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { connect, batch, useSelector, useDispatch } from 'react-redux';
+import { connect, batch, useSelector } from 'react-redux';
 import { IntlProvider } from 'react-intl';
 import { withRouter } from 'react-router-dom';
 import { renderRoutes } from 'react-router-config';
@@ -17,6 +17,14 @@ import {
   busyLogin,
   getAuthGuestBalance as dispatchGetAuthGuestBalance,
 } from '../../store/authStore/authActions';
+import { getObjectPosts } from '../../store/feedStore/feedActions';
+import { getObject as getObjectAction } from '../../store/wObjectStore/wobjectsActions';
+import {
+  getUserDepartments,
+  getUserShopList,
+  getWobjectDepartments,
+  getWobjectsShopList,
+} from '../../store/shopStore/shopActions';
 import { getNotifications } from '../../store/userStore/userActions';
 import {
   getRate,
@@ -29,6 +37,7 @@ import {
   setSocialFlag,
   setItemsForNavigation,
   setLoadingStatus,
+  setMainObj,
 } from '../../store/appStore/appActions';
 import Header from './Header/Header';
 import NotificationPopup from './../notifications/NotificationPopup';
@@ -74,7 +83,7 @@ const createLink = i => {
 
 const SocialWrapper = props => {
   const isSocialGifts = useSelector(getIsSocialGifts);
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
   const language = findLanguage(props.usedLocale);
   const antdLocale = getAntdLocale(language);
   const signInPage = props.location.pathname.includes('sign-in');
@@ -83,91 +92,91 @@ const SocialWrapper = props => {
 
     props.setUsedLocale(lang);
   };
-  const createWebsiteMenu = configuration => {
-    if (!isEmpty(configuration?.shopSettings)) {
-      if (configuration.shopSettings?.type === 'object') {
-        getObject(configuration.shopSettings?.value).then(async wobject => {
-          const menuItemLinks = wobject.menuItem?.reduce((acc, item) => {
-            const body = parseJSON(item.body);
-
-            if (body?.linkToObject) {
-              return [...acc, body?.linkToObject];
-            }
-
-            return acc;
-          }, []);
-
-          const customSort = get(wobject, 'sortCustom.include', []);
-
-          if (isEmpty(wobject.menuItem)) {
-            dispatch(
-              setItemsForNavigation([
-                {
-                  link: createLink(wobject),
-                  name: getObjectName(wobject),
-                  permlink: wobject?.author_permlink,
-                  object_type: wobject?.object_type,
-                },
-                {
-                  name: 'Legal',
-                  link: '/checklist/ljc-legal',
-                  permlink: 'ljc-legal',
-                  object_type: 'list',
-                },
-              ]),
-            );
-
-            props.setLoadingStatus(true);
-          } else {
-            const listItems = isEmpty(menuItemLinks)
-              ? []
-              : await getObjectsByIds({ authorPermlinks: menuItemLinks, locale: props.locale });
-
-            const compareList = wobject?.menuItem?.map(wobjItem => {
-              const body = parseJSON(wobjItem.body);
-              const currItem = body?.linkToObject
-                ? listItems.wobjects.find(wobj => wobj.author_permlink === body?.linkToObject)
-                : body;
-
-              return {
-                ...wobjItem,
-                ...currItem,
-                body,
-              };
-            });
-            const sortingButton = customSort.reduce((acc, curr) => {
-              const findObj = compareList.find(wobj => wobj.permlink === curr);
-
-              return findObj ? [...acc, findObj] : acc;
-            }, []);
-            const buttonList = [
-              ...sortingButton,
-              ...compareList?.filter(i => !customSort.includes(i.permlink)),
-            ].map(i => ({
-              link: createLink(i),
-              name: i?.body?.title || getObjectName(i),
-              type: i.body.linkToObject ? 'nav' : 'blank',
-              permlink: i.body.linkToObject,
-              object_type: i?.object_type,
-            }));
-
-            dispatch(
-              setItemsForNavigation([
-                ...buttonList,
-                {
-                  name: 'Legal',
-                  link: '/checklist/ljc-legal',
-                  permlink: 'ljc-legal',
-                  object_type: 'list',
-                },
-              ]),
-            );
-            props.setLoadingStatus(true);
-          }
-        });
-      }
-    }
-  };
+  // const createWebsiteMenu = configuration => {
+  //   if (!isEmpty(configuration?.shopSettings)) {
+  //     if (configuration.shopSettings?.type === 'object') {
+  //       getObject(configuration.shopSettings?.value).then(async wobject => {
+  //         const menuItemLinks = wobject.menuItem?.reduce((acc, item) => {
+  //           const body = parseJSON(item.body);
+  //
+  //           if (body?.linkToObject) {
+  //             return [...acc, body?.linkToObject];
+  //           }
+  //
+  //           return acc;
+  //         }, []);
+  //
+  //         const customSort = get(wobject, 'sortCustom.include', []);
+  //
+  //         if (isEmpty(wobject.menuItem)) {
+  //           dispatch(
+  //             setItemsForNavigation([
+  //               {
+  //                 link: createLink(wobject),
+  //                 name: getObjectName(wobject),
+  //                 permlink: wobject?.author_permlink,
+  //                 object_type: wobject?.object_type,
+  //               },
+  //               {
+  //                 name: 'Legal',
+  //                 link: '/checklist/ljc-legal',
+  //                 permlink: 'ljc-legal',
+  //                 object_type: 'list',
+  //               },
+  //             ]),
+  //           );
+  //
+  //           props.setLoadingStatus(true);
+  //         } else {
+  //           const listItems = isEmpty(menuItemLinks)
+  //             ? []
+  //             : await getObjectsByIds({ authorPermlinks: menuItemLinks, locale: props.locale });
+  //
+  //           const compareList = wobject?.menuItem?.map(wobjItem => {
+  //             const body = parseJSON(wobjItem.body);
+  //             const currItem = body?.linkToObject
+  //               ? listItems.wobjects.find(wobj => wobj.author_permlink === body?.linkToObject)
+  //               : body;
+  //
+  //             return {
+  //               ...wobjItem,
+  //               ...currItem,
+  //               body,
+  //             };
+  //           });
+  //           const sortingButton = customSort.reduce((acc, curr) => {
+  //             const findObj = compareList.find(wobj => wobj.permlink === curr);
+  //
+  //             return findObj ? [...acc, findObj] : acc;
+  //           }, []);
+  //           const buttonList = [
+  //             ...sortingButton,
+  //             ...compareList?.filter(i => !customSort.includes(i.permlink)),
+  //           ].map(i => ({
+  //             link: createLink(i),
+  //             name: i?.body?.title || getObjectName(i),
+  //             type: i.body.linkToObject ? 'nav' : 'blank',
+  //             permlink: i.body.linkToObject,
+  //             object_type: i?.object_type,
+  //           }));
+  //
+  //           dispatch(
+  //             setItemsForNavigation([
+  //               ...buttonList,
+  //               {
+  //                 name: 'Legal',
+  //                 link: '/checklist/ljc-legal',
+  //                 permlink: 'ljc-legal',
+  //                 object_type: 'list',
+  //               },
+  //             ]),
+  //           );
+  //           props.setLoadingStatus(true);
+  //         }
+  //       });
+  //     }
+  //   }
+  // };
 
   useEffect(() => {
     const query = new URLSearchParams(props.location.search);
@@ -210,7 +219,7 @@ const SocialWrapper = props => {
         }
       });
       loadLocale(props.locale);
-      createWebsiteMenu(res.configuration);
+      // createWebsiteMenu(res.configuration);
     });
   }, [props.locale]);
 
@@ -264,7 +273,7 @@ SocialWrapper.propTypes = {
   isOpenModal: PropTypes.bool,
   dispatchGetAuthGuestBalance: PropTypes.func,
   setSocialFlag: PropTypes.func,
-  setLoadingStatus: PropTypes.func,
+  // setLoadingStatus: PropTypes.func,
   getTokenRates: PropTypes.func.isRequired,
   isOpenWalletTable: PropTypes.bool,
   loadingFetching: PropTypes.bool,
@@ -316,7 +325,13 @@ SocialWrapper.fetchData = async ({ store, req }) => {
 
   return Promise.allSettled([
     store.dispatch(getWebsiteConfigForSSR(req.headers.host)).then(res => {
-      const configuration = res.value;
+      const configuration = {
+        shopSettings: {
+          type: 'object',
+          value: '3urenj-coffee-shop',
+        },
+      };
+      const promises = [store.dispatch(setMainObj(configuration.shopSettings))];
 
       if (!isEmpty(configuration?.shopSettings)) {
         if (configuration.shopSettings?.type === 'object') {
@@ -330,7 +345,6 @@ SocialWrapper.fetchData = async ({ store, req }) => {
 
               return acc;
             }, []);
-
             const customSort = get(wobject, 'sortCustom.include', []);
 
             if (isEmpty(wobject.menuItem)) {
@@ -381,21 +395,49 @@ SocialWrapper.fetchData = async ({ store, req }) => {
               type: i.body.linkToObject ? 'nav' : 'blank',
               permlink: i.body.linkToObject,
               object_type: i?.object_type,
+              newsfeed: i.newsFeed?.permlink,
             }));
 
-            return store.dispatch(
-              setItemsForNavigation([
-                ...buttonList,
-                {
-                  name: 'Legal',
-                  link: '/checklist/ljc-legal',
-                  permlink: 'ljc-legal',
-                  object_type: 'list',
-                },
-              ]),
-            );
+            if (buttonList[0]?.object_type === 'newsfeed') {
+              promises.push(
+                store.dispatch(
+                  getObjectPosts({
+                    object: buttonList[0]?.permlink,
+                    username: buttonList[0]?.permlink,
+                    limit: 20,
+                    newsPermlink: buttonList[0].newsfeed,
+                  }),
+                ),
+              );
+            }
+
+            if (buttonList[0]?.object_type === 'shop') {
+              promises.push(store.dispatch(getWobjectDepartments(buttonList[0]?.permlink)));
+              promises.push(store.dispatch(getWobjectsShopList(buttonList[0]?.permlink)));
+            }
+
+            return Promise.allSettled([
+              ...promises,
+              store.dispatch(getObjectAction(buttonList[0]?.permlink)),
+              store.dispatch(
+                setItemsForNavigation([
+                  ...buttonList,
+                  {
+                    name: 'Legal',
+                    link: '/checklist/ljc-legal',
+                    permlink: 'ljc-legal',
+                    object_type: 'list',
+                  },
+                ]),
+              ),
+            ]);
           });
         }
+
+        return Promise.allSettled([
+          store.dispatch(getUserDepartments(configuration.shopSettings?.value)),
+          store.dispatch(getUserShopList(configuration.shopSettings?.value)),
+        ]);
       }
 
       return res;

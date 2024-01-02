@@ -49,7 +49,6 @@ const ObjectNewsFeed = ({ wobj }) => {
   const hasMore = getFeedHasMoreFromState('objectPosts', objName, feed);
   const isFetching = getFeedLoadingFromState('objectPosts', objName, feed);
   const posts = preparationPostList(postsIds, postsList);
-
   const getPostsList = () => {
     if (wobj) {
       dispatch(

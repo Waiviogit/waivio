@@ -222,6 +222,8 @@ const SocialProduct = ({
   useEffect(() => {
     window.scrollTo({ top: scrollHeight, behavior: 'smooth' });
     if (!isEmpty(wobject.author_permlink)) {
+      getAddOnsSimilarRelatedObjects();
+      getPublisherManufacturerBrandMerchantObjects();
       getObjectsRewards(wobject.author_permlink, userName).then(res => setReward(res));
       referenceWobjType &&
         getReferenceObjectsList({
@@ -240,14 +242,6 @@ const SocialProduct = ({
   useEffect(() => {
     resetOptClicked();
   }, []);
-
-  useEffect(() => {
-    getPublisherManufacturerBrandMerchantObjects();
-  }, [wobject.brand, wobject.manufacturer, wobject.merchant, wobject.author_permlink]);
-
-  useEffect(() => {
-    getAddOnsSimilarRelatedObjects();
-  }, [addOnPermlinks.length, wobject.author_permlink]);
 
   const bestRating = getRatingForSocial(wobject.rating);
 
