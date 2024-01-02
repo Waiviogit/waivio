@@ -34,7 +34,13 @@ const FeedMasonry = ({
       );
 
     return (
-      <InfiniteSroll threshold={2000} loader={<Loading />} hasMore={hasMore} loadMore={loadMore}>
+      <InfiniteSroll
+        initialLoad={false}
+        threshold={2000}
+        loader={'<Loading />'}
+        hasMore={hasMore}
+        loadMore={loadMore}
+      >
         <Masonry
           breakpointCols={breakpointColumnsObj(posts?.length)}
           className="FeedMasonry my-masonry-grid"
