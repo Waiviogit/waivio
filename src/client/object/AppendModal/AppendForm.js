@@ -460,9 +460,9 @@ class AppendForm extends Component {
       case objectFields.remove:
       case objectFields.departments:
       case objectFields.groupId:
-      case objectFields.publicationDate:
       case objectFields.dimensions:
       case objectFields.features:
+      case objectFields.publicationDate:
       case objectFields.options: {
         fieldBody.push(rest[currentField]);
         break;
@@ -814,7 +814,7 @@ class AppendForm extends Component {
       data.title = '';
       let fieldsObject = {
         name: includes(TYPES_OF_MENU_ITEM, currentField) ? objectFields.listItem : currentField,
-        body: trimEnd(bodyField),
+        body: currentField === objectFields.publicationDate ? bodyField : trimEnd(bodyField),
         locale: currentLocale,
       };
 
