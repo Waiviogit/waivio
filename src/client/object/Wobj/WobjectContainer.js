@@ -13,6 +13,7 @@ import {
   getIsEditMode,
   getObject as getObjectState,
   getWobjectIsFailed,
+  getObjectPermlinkFromState,
 } from '../../../store/wObjectStore/wObjectSelectors';
 import { getLocale } from '../../../store/settingsStore/settingsSelectors';
 import { getCurrentHost, getIsSocial, getWeightValue } from '../../../store/appStore/appSelectors';
@@ -61,41 +62,43 @@ const WobjectContainer = props => {
   };
 
   useEffect(() => {
-    props.getObject(name, props.authenticatedUserName).then(async res => {
-      if (props.currHost.includes('waivio')) {
-        if ((await showDescriptionPage(res.value, props.locale)) && !props.match.params[0]) {
-          props.history.push(`/object/${res.value.author_permlink}/description`);
+    if (name !== props.wobjPermlink || props.locale !== 'en-US') {
+      props.getObject(name, props.authenticatedUserName).then(async res => {
+        if (props.currHost.includes('waivio')) {
+          if ((await showDescriptionPage(res.value, props.locale)) && !props.match.params[0]) {
+            props.history.push(`/object/${res.value.author_permlink}/description`);
+          }
         }
-      }
 
-      if (
-        (props.isSocial &&
-          !['page', 'newsfeed', 'widget', 'product'].includes(res.value.object_type)) ||
-        !props.isSocial
-      ) {
-        props.getNearbyObjects(name);
-        props.getWobjectExpertise(newsFilter, name);
-        props.getObjectFollowers({
-          object: name,
-          skip: 0,
-          limit: 5,
-          userName: props.authenticatedUserName,
-        });
-        props.getRelatedWobjects(name);
-        if (isEmpty(props.updates) || isNil(props.updates) || isNil(props.match.params[1])) {
-          const field = getUpdateFieldName(props.match.params[1]);
+        if (
+          (props.isSocial &&
+            !['page', 'newsfeed', 'widget', 'product'].includes(res.value.object_type)) ||
+          !props.isSocial
+        ) {
+          props.getNearbyObjects(name);
+          props.getWobjectExpertise(newsFilter, name);
+          props.getObjectFollowers({
+            object: name,
+            skip: 0,
+            limit: 5,
+            userName: props.authenticatedUserName,
+          });
+          props.getRelatedWobjects(name);
+          if (isEmpty(props.updates) || isNil(props.updates) || isNil(props.match.params[1])) {
+            const field = getUpdateFieldName(props.match.params[1]);
 
-          props.getUpdates(name, field, 'createdAt');
+            props.getUpdates(name, field, 'createdAt');
+          }
         }
-      }
-      if (
-        (props.isSocial && !['page', 'newsfeed', 'widget'].includes(res.value.object_type)) ||
-        !props.isSocial
-      ) {
-        props.getAlbums(name);
-        props.getRelatedAlbum(name);
-      }
-    });
+        if (
+          (props.isSocial && !['page', 'newsfeed', 'widget'].includes(res.value.object_type)) ||
+          !props.isSocial
+        ) {
+          props.getAlbums(name);
+          props.getRelatedAlbum(name);
+        }
+      });
+    }
 
     return () => {
       props.clearObjectFromStore();
@@ -152,6 +155,7 @@ WobjectContainer.propTypes = {
   setNestedWobject: PropTypes.func,
   setCatalogBreadCrumbs: PropTypes.func,
   locale: PropTypes.string,
+  wobjPermlink: PropTypes.string,
   currHost: PropTypes.string,
   getAlbums: PropTypes.func,
   getRelatedAlbum: PropTypes.func,
@@ -215,6 +219,7 @@ WobjectContainer.fetchData = async ({ store, match }) => {
 const mapStateToProps = state => ({
   updates: getAppendList(state),
   authenticatedUserName: getAuthenticatedUserName(state),
+  wobjPermlink: getObjectPermlinkFromState(state),
   failed: getWobjectIsFailed(state),
   locale: getLocale(state),
   isSocial: getIsSocial(state),
