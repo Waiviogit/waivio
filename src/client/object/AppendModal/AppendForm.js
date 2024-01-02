@@ -460,7 +460,6 @@ class AppendForm extends Component {
       case objectFields.remove:
       case objectFields.departments:
       case objectFields.groupId:
-      case objectFields.publicationDate:
       case objectFields.dimensions:
       case objectFields.features:
       case objectFields.options: {
@@ -500,6 +499,10 @@ class AppendForm extends Component {
       }
       case objectFields.rating: {
         fieldBody.push(rest[objectFields.rating]);
+        break;
+      }
+      case objectFields.publicationDate: {
+        fieldBody.push(rest[objectFields.publicationDate]);
         break;
       }
       case objectFields.tagCategory: {
