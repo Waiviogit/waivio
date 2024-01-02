@@ -814,7 +814,7 @@ class AppendForm extends Component {
       data.title = '';
       let fieldsObject = {
         name: includes(TYPES_OF_MENU_ITEM, currentField) ? objectFields.listItem : currentField,
-        body: trimEnd(bodyField),
+        body: currentField === objectFields.publicationDate ? bodyField : trimEnd(bodyField),
         locale: currentLocale,
       };
 
@@ -1448,8 +1448,6 @@ class AppendForm extends Component {
       }
     } else if (currentField !== objectFields.newsFilter || currentField !== objectFields.newsFeed) {
       this.props.form.validateFieldsAndScroll((err, values) => {
-        // eslint-disable-next-line no-console
-        console.log(values, ' values');
         const identicalNameFields = this.props.ratingFields.reduce((acc, field) => {
           if (field.body === values.rating) {
             return field.locale === values.currentLocale ? [...acc, field] : acc;

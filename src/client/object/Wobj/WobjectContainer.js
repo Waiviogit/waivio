@@ -185,13 +185,7 @@ WobjectContainer.fetchData = async ({ store, match }) => {
       ];
 
       if (['product', 'book', 'person', 'business'].includes(response.value.object_type)) {
-        const sortByOrder = (a, b) => {
-          const aIndex = response.value.menuItem.indexOf(a);
-          const bIndex = response.value.menuItem.indexOf(b);
-
-          return aIndex - bIndex;
-        };
-        const items = prepareMenuItems(response.value.menuItem)[0]?.sort(sortByOrder);
+        const items = prepareMenuItems(response.value.menuItem)[0];
 
         promises = [
           ...promises,
