@@ -462,6 +462,7 @@ class AppendForm extends Component {
       case objectFields.groupId:
       case objectFields.dimensions:
       case objectFields.features:
+      case objectFields.publicationDate:
       case objectFields.options: {
         fieldBody.push(rest[currentField]);
         break;
@@ -499,10 +500,6 @@ class AppendForm extends Component {
       }
       case objectFields.rating: {
         fieldBody.push(rest[objectFields.rating]);
-        break;
-      }
-      case objectFields.publicationDate: {
-        fieldBody.push(rest[objectFields.publicationDate]);
         break;
       }
       case objectFields.tagCategory: {
@@ -1451,6 +1448,8 @@ class AppendForm extends Component {
       }
     } else if (currentField !== objectFields.newsFilter || currentField !== objectFields.newsFeed) {
       this.props.form.validateFieldsAndScroll((err, values) => {
+        // eslint-disable-next-line no-console
+        console.log(values, ' values');
         const identicalNameFields = this.props.ratingFields.reduce((acc, field) => {
           if (field.body === values.rating) {
             return field.locale === values.currentLocale ? [...acc, field] : acc;

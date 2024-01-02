@@ -191,7 +191,7 @@ WobjectContainer.fetchData = async ({ store, match }) => {
 
           return aIndex - bIndex;
         };
-        const items = prepareMenuItems(response.value.menuItem)[0].sort(sortByOrder);
+        const items = prepareMenuItems(response.value.menuItem)[0]?.sort(sortByOrder);
 
         promises = [
           ...promises,

@@ -113,7 +113,6 @@ export default function createSsrHandler(template) {
       await setCachedPage({ page, req });
       return res.send(page);
     } catch (err) {
-      console.log('here');
       console.error('SSR error occured, falling back to bundled application instead', err);
       let settings = {};
       let adsenseSettings = {};
