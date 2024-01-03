@@ -77,7 +77,7 @@ export default function createSsrHandler(template) {
         const fetchData = route?.component?.fetchData;
 
         if (fetchData instanceof Function) {
-          return fetchData({ store, match, req, res, query });
+          return fetchData({ store, match, req, res, query, url: req.url });
         }
 
         return Promise.resolve(null);
@@ -113,7 +113,6 @@ export default function createSsrHandler(template) {
       await setCachedPage({ page, req });
       return res.send(page);
     } catch (err) {
-      console.log('here');
       console.error('SSR error occured, falling back to bundled application instead', err);
       let settings = {};
       let adsenseSettings = {};

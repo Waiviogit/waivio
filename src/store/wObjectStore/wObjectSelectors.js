@@ -29,6 +29,10 @@ export const getMenuItemsFromState = state => get(state, ['object', 'menuItems']
 
 export const getRatingFields = createSelector([getObject], state => get(state, 'rating', []));
 
+export const getObjectPermlinkFromState = createSelector([getObject], state =>
+  get(state, 'author_permlink', ''),
+);
+
 export const getObjectTagCategory = createSelector([getObject], state => state.tagCategory);
 
 export const getWobjectIsFailed = createSelector([getObject], state => state.isFailed);

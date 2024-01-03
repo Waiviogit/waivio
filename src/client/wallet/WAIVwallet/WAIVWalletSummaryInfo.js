@@ -88,11 +88,11 @@ const WAIVWalletSummaryInfo = props => {
   const [unstakesTokenInfo, setUnstakesTokenInfo] = useState([]);
   const [undeligatedList, setUndeligatedList] = useState([]);
   const [visible, setVisible] = useState(false);
-  const balance = +get(props.currencyInfo, 'balance');
-  const stake = +get(props.currencyInfo, 'stake');
-  const unstake = +get(props.currencyInfo, 'pendingUnstake');
-  const delegationsIn = +get(props.currencyInfo, 'delegationsIn');
-  const delegationsOut = +get(props.currencyInfo, 'delegationsOut');
+  const balance = Number(get(props.currencyInfo, 'balance', null));
+  const stake = Number(get(props.currencyInfo, 'stake', null));
+  const unstake = Number(get(props.currencyInfo, 'pendingUnstake', null));
+  const delegationsIn = Number(get(props.currencyInfo, 'delegationsIn', null));
+  const delegationsOut = Number(get(props.currencyInfo, 'delegationsOut', null));
   const delegation = delegationsIn - delegationsOut;
   const estAccValue =
     props.rates.WAIV *

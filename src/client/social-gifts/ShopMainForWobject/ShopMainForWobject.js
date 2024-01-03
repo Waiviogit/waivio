@@ -46,6 +46,7 @@ const ShopMainForWobject = () => {
         );
       case 'list':
       case 'page':
+      case 'newsfeed':
         return <Checklist permlink={authorPermlink} />;
 
       default:
