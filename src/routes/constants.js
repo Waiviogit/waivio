@@ -6,6 +6,7 @@ export default {
       'about',
       'gallery',
       'updates',
+      'description',
       'reviews',
       'threads',
       'followers',
