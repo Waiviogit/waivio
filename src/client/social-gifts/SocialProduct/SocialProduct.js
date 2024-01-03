@@ -47,13 +47,12 @@ import {
   getObject,
   getAddOns,
   getSimilarObjects,
-  getRelatedObjects,
   getProductInfo,
+  getRelatedObjectsAction,
 } from '../../../store/wObjectStore/wobjectsActions';
 import {
   getObject as getObjectState,
   getWobjectAuthors,
-  getWobjectNested,
   getAddOnFromState,
   getSimilarObjectsFromState,
   getRelatedObjectsFromState,
@@ -80,7 +79,7 @@ const SocialProduct = ({
   authors,
   activeCategory,
   siteName,
-  wobj,
+  wobject,
   authenticated,
   optionClicked,
   helmetIcon,
@@ -91,7 +90,6 @@ const SocialProduct = ({
   albums,
   relatedAlbum,
   resetWobjGallery,
-  nestedWobj,
   isEditMode,
   toggleViewEditMode,
   addOns,
@@ -105,10 +103,6 @@ const SocialProduct = ({
   merchantObject,
   getProductInfoAction,
 }) => {
-  const wobject =
-    history.location.hash && history.location.hash !== `#${wobj.author_permlink}`
-      ? nestedWobj
-      : wobj;
   const [reward, setReward] = useState([]);
   const [hoveredOption, setHoveredOption] = useState({});
   const [references, setReferences] = useState([]);
@@ -270,15 +264,15 @@ const SocialProduct = ({
       </Helmet>
       <div itemType="https://schema.org/Product" itemScope>
         <meta itemProp="mpn" content="925872" />
-        <meta itemProp="name" content={getObjectName(wobj)} />
+        <meta itemProp="name" content={getObjectName(wobject)} />
         <link itemProp="image" href={image} />
         <meta itemProp="description" content={description} />
         <div itemProp="offers" itemType="https://schema.org/Offer" itemScope>
           <link itemProp="url" href={productUrl} />
           <meta itemProp="availability" content="https://schema.org/InStock" />
-          <meta itemProp="priceCurrency" content={wobj?.price?.includes('С$') ? 'CAD' : 'USD'} />
+          <meta itemProp="priceCurrency" content={wobject?.price?.includes('С$') ? 'CAD' : 'USD'} />
           <meta itemProp="itemCondition" content="https://schema.org/UsedCondition" />
-          <meta itemProp="price" content={getNumbersFromWobjPrice(wobj)} />
+          <meta itemProp="price" content={getNumbersFromWobjPrice(wobject)} />
         </div>
         {Boolean(averageRate(bestRating)) && (
           <div itemProp="aggregateRating" itemType="https://schema.org/AggregateRating" itemScope>
@@ -513,10 +507,9 @@ SocialProduct.propTypes = {
   userName: PropTypes.string,
   locale: PropTypes.string,
   activeOption: PropTypes.shape(),
-  wobj: PropTypes.shape(),
+  wobject: PropTypes.shape(),
   history: PropTypes.shape(),
   match: PropTypes.shape(),
-  nestedWobj: PropTypes.shape(),
   activeCategory: PropTypes.string,
   siteName: PropTypes.string,
   authenticated: PropTypes.bool,
@@ -548,7 +541,7 @@ const mapStateToProps = state => ({
   activeOption: getActiveOption(state),
   activeCategory: getActiveCategory(state),
   siteName: getSiteName(state),
-  wobj: getObjectState(state),
+  wobject: getObjectState(state),
   authors: getWobjectAuthors(state),
   appUrl: getAppUrl(state),
   albums: getObjectAlbums(state),
@@ -556,7 +549,6 @@ const mapStateToProps = state => ({
   authenticated: getIsAuthenticated(state),
   optionClicked: getIsOptionClicked(state),
   helmetIcon: getHelmetIcon(state),
-  nestedWobj: getWobjectNested(state),
   addOns: getAddOnFromState(state),
   similarObjects: getSimilarObjectsFromState(state),
   relatedObjects: getRelatedObjectsFromState(state),
@@ -576,7 +568,7 @@ const mapDispatchToProps = dispatch => ({
     dispatch(getSimilarObjects(author_permlink, userName, locale, lim)),
   getProductInfoAction: obj => dispatch(getProductInfo(obj)),
   getRelatedAction: (author_permlink, userName, locale, lim = 30) =>
-    dispatch(getRelatedObjects(author_permlink, userName, locale, lim)),
+    dispatch(getRelatedObjectsAction(author_permlink, userName, locale, lim)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(SocialProduct));

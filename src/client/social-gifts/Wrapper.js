@@ -314,7 +314,7 @@ SocialWrapper.defaultProps = {
   location: {},
 };
 
-SocialWrapper.fetchData = async ({ store, req }) => {
+SocialWrapper.fetchData = async ({ store, req, url }) => {
   const state = store.getState();
   let activeLocale = getLocale(state);
 
@@ -325,12 +325,7 @@ SocialWrapper.fetchData = async ({ store, req }) => {
 
   return Promise.allSettled([
     store.dispatch(getWebsiteConfigForSSR(req.headers.host)).then(res => {
-      const configuration = {
-        shopSettings: {
-          type: 'object',
-          value: '3urenj-coffee-shop',
-        },
-      };
+      const configuration = res.value;
       const promises = [store.dispatch(setMainObj(configuration.shopSettings))];
 
       if (!isEmpty(configuration?.shopSettings)) {
@@ -415,10 +410,11 @@ SocialWrapper.fetchData = async ({ store, req }) => {
               promises.push(store.dispatch(getWobjectDepartments(buttonList[0]?.permlink)));
               promises.push(store.dispatch(getWobjectsShopList(buttonList[0]?.permlink)));
             }
+            if (url === '/')
+              promises.push(store.dispatch(getObjectAction(buttonList[0]?.permlink)));
 
             return Promise.allSettled([
               ...promises,
-              store.dispatch(getObjectAction(buttonList[0]?.permlink)),
               store.dispatch(
                 setItemsForNavigation([
                   ...buttonList,
