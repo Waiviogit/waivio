@@ -25,9 +25,9 @@ import {
   getObjectFollowers as getObjectFollowersAction,
   getAddOns,
   getSimilarObjects,
-  getRelatedObjects,
   getMenuItemContent,
   getProductInfo,
+  getRelatedObjectsAction,
 } from '../../../store/wObjectStore/wobjectsActions';
 import {
   getRelatedWobjects,
@@ -172,7 +172,7 @@ WobjectContainer.fetchData = async ({ store, match }) => {
   const res = await store.dispatch(login());
   const objName = match.params.name;
 
-  return Promise.all([
+  return Promise.allSettled([
     store.dispatch(getObject(objName, res?.value?.name)).then(response => {
       let promises = [
         store.dispatch(
@@ -201,7 +201,7 @@ WobjectContainer.fetchData = async ({ store, match }) => {
           ...promises,
           store.dispatch(getAddOns(response.value.addOn?.map(obj => obj?.body))),
           store.dispatch(getSimilarObjects(objName)),
-          store.dispatch(getRelatedObjects(objName)),
+          store.dispatch(getRelatedObjectsAction(objName)),
           store.dispatch(getMenuItemContent(parseJSON(items?.body)?.linkToObject)),
           store.dispatch(getProductInfo(response.value)),
         ];

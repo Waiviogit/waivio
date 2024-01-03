@@ -190,7 +190,12 @@ export const getSimilarObjects = (author_permlink, userName, locale, limit = 30)
   });
 export const GET_RELATED_OBJECTS = createAsyncActionType('@wobj/GET_RELATED_OBJECTS');
 
-export const getRelatedObjects = (author_permlink, userName, locale, limit = 30) => dispatch =>
+export const getRelatedObjectsAction = (
+  author_permlink,
+  userName,
+  locale,
+  limit = 30,
+) => dispatch =>
   dispatch({
     type: GET_RELATED_OBJECTS.ACTION,
     payload: ApiClient.getRelatedObjectsFromDepartments(
