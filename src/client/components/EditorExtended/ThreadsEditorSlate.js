@@ -284,7 +284,7 @@ const ThreadsEditorSlate = props => {
   useEffect(() => {
     if ((body || initialBody) && initiallized) {
       setInitiallized(false);
-      const postParsed = deserializeToSlate(body || initialBody, true);
+      const postParsed = deserializeToSlate(body || initialBody, true, false);
 
       resetEditorState(editor);
       Transforms.insertFragment(editor, postParsed, { at: [0, 0] });

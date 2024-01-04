@@ -29,6 +29,7 @@ import createParagraph, { wrapWithParagraph } from './util/SlateEditor/utils/par
 import withLists from './util/SlateEditor/plugins/withLists';
 import {
   focusEditorToEnd,
+  focusEditorToStart,
   removeAllInlineFormats,
   resetEditorState,
 } from './util/SlateEditor/utils/SlateUtilityFunctions';
@@ -77,6 +78,7 @@ const EditorSlate = props => {
     initialPosTopBtn,
     clearEditor,
     ADD_BTN_DIF,
+    isNewReview,
   } = props;
 
   const params = useParams();
@@ -275,7 +277,7 @@ const EditorSlate = props => {
     window.slateEditor = editor;
     props.setEditor(editor);
     if (props.setEditorCb) props.setEditorCb(editor);
-    if (!isComment) setTimeout(() => focusEditorToEnd(editor), 200);
+    if (!isComment && !isNewReview) setTimeout(() => focusEditorToEnd(editor), 200);
     setInitiallized(true);
     setTimeout(() => setInitiallized(false), 1500);
   }, [params]);
@@ -283,7 +285,7 @@ const EditorSlate = props => {
   useEffect(() => {
     if ((body || initialBody) && initiallized) {
       setInitiallized(false);
-      const postParsed = deserializeToSlate(body || initialBody, false);
+      const postParsed = deserializeToSlate(body || initialBody, false, isNewReview);
 
       resetEditorState(editor);
       Transforms.insertFragment(editor, postParsed, { at: [0, 0] });
@@ -294,7 +296,8 @@ const EditorSlate = props => {
         Transforms.insertNodes(editor, createEmptyNode());
       }
       Transforms.deselect(editor);
-      if (!isComment) focusEditorToEnd(editor);
+      if (!isComment && !isNewReview) focusEditorToEnd(editor);
+      if (isNewReview) focusEditorToStart(editor);
     }
   }, [body, initiallized]);
 
@@ -363,6 +366,7 @@ EditorSlate.propTypes = {
   isComment: PropTypes.bool,
   isCommentEdit: PropTypes.bool,
   small: PropTypes.bool,
+  isNewReview: PropTypes.bool,
   minHeight: PropTypes.string,
   initialPosTopBtn: PropTypes.string,
   clearEditor: PropTypes.func,
@@ -372,6 +376,7 @@ EditorSlate.propTypes = {
 EditorSlate.defaultProps = {
   editorEnabled: false,
   isShowEditorSearch: false,
+  isNewReview: false,
   isVimeo: false,
   placeholder: '',
   initialBody: '',
