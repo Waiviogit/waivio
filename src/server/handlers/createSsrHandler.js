@@ -107,6 +107,7 @@ export default function createSsrHandler(template) {
         isWaivio,
         get(settings, 'googleAnalyticsTag', ''),
         get(settings, 'googleGSCTag', ''),
+        get(settings, 'googleEventSnippet', ''),
         get(adsenseSettings, 'code', ''),
       );
 
@@ -131,6 +132,7 @@ export default function createSsrHandler(template) {
           isWaivio,
           get(settings, 'googleAnalyticsTag', ''),
           get(settings, 'googleGSCTag', ''),
+          get(settings, 'googleEventSnippet', ''),
           get(adsenseSettings, 'code', ''),
         ),
       );

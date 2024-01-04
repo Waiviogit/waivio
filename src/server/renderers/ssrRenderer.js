@@ -8,6 +8,7 @@ export default function renderSsrPage(
   isWaivio,
   googleTag,
   googleGSC,
+  googleEventSnippet,
   adSense,
 ) {
   const preloadedState = store ? store.getState() : {};
@@ -55,6 +56,7 @@ export default function renderSsrPage(
     nightmode,
     googleAnalytics,
     googleGSCTag,
+    googleEventSnippet,
     adSense,
   });
 }
