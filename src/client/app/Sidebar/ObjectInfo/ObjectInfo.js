@@ -616,6 +616,7 @@ class ObjectInfo extends React.Component {
     const phones = get(wobject, 'phone', []);
     const isHashtag = hasType(wobject, OBJECT_TYPE.HASHTAG);
     const isAffiliate = hasType(wobject, OBJECT_TYPE.AFFILIATE);
+    const isDescriptionPage = this.props.match.params[0] === 'description';
     const shopType = wobject.object_type === 'shop';
     const showFeedSection = wobject?.exposedFields?.some(f => ['pin', 'remove'].includes(f.name));
     const showConnectSection = wobject?.exposedFields?.some(f =>
@@ -876,6 +877,7 @@ class ObjectInfo extends React.Component {
             objectFields.description,
             description && (
               <DescriptionInfo
+                isDescriptionPage={isDescriptionPage}
                 description={description}
                 wobjPermlink={wobject.author_permlink}
                 showDescriptionBtn={showDescriptionButton}
@@ -945,6 +947,7 @@ class ObjectInfo extends React.Component {
             objectFields.description,
             description && (
               <DescriptionInfo
+                isDescriptionPage={isDescriptionPage}
                 description={description}
                 wobjPermlink={wobject.author_permlink}
                 showDescriptionBtn={showDescriptionButton}
@@ -957,6 +960,7 @@ class ObjectInfo extends React.Component {
             objectFields.description,
             description && (
               <DescriptionInfo
+                isDescriptionPage={isDescriptionPage}
                 description={description}
                 wobjPermlink={wobject.author_permlink}
                 showDescriptionBtn={showDescriptionButton}
