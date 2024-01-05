@@ -279,6 +279,9 @@ const EditorSlate = props => {
     if (props.setEditorCb) props.setEditorCb(editor);
     if (!isComment && !isNewReview) setTimeout(() => focusEditorToEnd(editor), 200);
     setInitiallized(true);
+    if (isNewReview) {
+      focusEditorToStart(editor);
+    }
     setTimeout(() => setInitiallized(false), 1500);
   }, [params]);
 
