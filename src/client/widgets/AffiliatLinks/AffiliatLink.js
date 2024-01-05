@@ -1,7 +1,9 @@
 import React from 'react';
+import { isEmpty } from 'lodash';
 import PropTypes from 'prop-types';
 import { ReactSVG } from 'react-svg';
-
+import { useSelector } from 'react-redux';
+import { getSettingsSite } from '../../../store/websiteStore/websiteSelectors';
 import './AffiliatLink.less';
 
 const images = {
@@ -11,10 +13,13 @@ const images = {
 };
 
 const AffiliatLink = ({ link, disabled }) => {
+  const settings = useSelector(getSettingsSite);
+
   const onClick = () => {
     if (window?.gtag) {
       window.gtag('event', 'buy_now', { debug_mode: true });
-      window.gtag('event', 'gtag_report_conversion', { debug_mode: true });
+      if (!isEmpty(settings.googleEventSnippet))
+        window.gtag('event', 'gtag_report_conversion', { debug_mode: true });
     }
   };
 
