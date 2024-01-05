@@ -3,7 +3,7 @@ Disallow: /settings/
 Disallow: /bookmarks/
 Disallow: /drafts/
 Disallow: /edit-profile/
-Disallow: /*/activity$
+Disallow: /activity/
 Disallow: /editor/
 
 Sitemap: https://${host}/sitemap.xml
