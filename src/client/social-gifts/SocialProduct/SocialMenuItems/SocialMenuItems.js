@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { has, isEmpty } from 'lodash';
+import { sortListItems } from '../../../../common/helpers/wObjectHelper';
 import SocialMenuItem from './SocialMenuItem';
 import { getObjectInfo } from '../../../../waivioApi/ApiClient';
 
@@ -36,17 +37,13 @@ const SocialMenuItems = ({ menuItem }) => {
 
   if (isEmpty(menuItems)) return null;
 
-  const sortByOrder = (a, b) => {
-    const aIndex = menuItem.indexOf(a);
-    const bIndex = menuItem.indexOf(b);
-
-    return aIndex - bIndex;
-  };
-
   return (
     <div className="SocialMenuItems">
       <div>
-        {menuItems?.sort(sortByOrder)?.map((item, index) => (
+        {sortListItems(
+          menuItems,
+          menuItem.map(i => i.permlink),
+        ).map((item, index) => (
           <SocialMenuItem key={item._id} item={item} isOpen={index === 0} />
         ))}
       </div>

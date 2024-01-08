@@ -18,6 +18,8 @@ const initialState = {
   replies: {},
   promoted: {},
   tags: [],
+  tiktokPreview: [],
+  previewLoading: false,
 };
 
 const feedIdsList = (state = [], action) => {
@@ -326,6 +328,22 @@ const feed = (state = initialState, action) => {
       return {
         ...state,
         tags: action.payload,
+      };
+    case feedTypes.GET_TIKTOK_PRIVIEW.START:
+      return {
+        ...state,
+        previewLoading: true,
+      };
+    case feedTypes.GET_TIKTOK_PRIVIEW.ERROR:
+      return {
+        ...state,
+        previewLoading: false,
+      };
+    case feedTypes.GET_TIKTOK_PRIVIEW.SUCCESS:
+      return {
+        ...state,
+        previewLoading: false,
+        tiktokPreview: [...state.tiktokPreview, ...action.payload],
       };
     default:
       return state;
