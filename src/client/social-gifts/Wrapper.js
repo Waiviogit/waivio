@@ -64,6 +64,7 @@ import { setLocale } from '../../store/settingsStore/settingsActions';
 import { getObject, getObjectsByIds } from '../../waivioApi/ApiClient';
 import { parseJSON } from '../../common/helpers/parseJSON';
 import { getObjectName } from '../../common/helpers/wObjectHelper';
+import { getWebsiteSettings } from '../../store/websiteStore/websiteActions';
 
 const createLink = i => {
   switch (i.object_type) {
@@ -440,6 +441,7 @@ SocialWrapper.fetchData = async ({ store, req, url }) => {
       return res;
     }),
     store.dispatch(setAppUrl(`https://${req.headers.host}`)),
+    store.dispatch(getWebsiteSettings(req.headers.host)),
     store.dispatch(setUsedLocale(lang)),
     store.dispatch(login()),
   ]);
