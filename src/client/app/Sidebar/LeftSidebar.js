@@ -13,6 +13,7 @@ import { getIsSocial } from '../../../store/appStore/appSelectors';
 import DepartmentsWobject from '../../object/ObjectTypeShop/DepartmentsWobject';
 import WobjectShopFilter from '../../object/ObjectTypeShop/WobjectShopFilter';
 import UserFilters from '../../Shop/ShopFilters/UserFilters';
+import FavoritesSideNav from '../../components/Favorites/FavoritesSideNav';
 
 const LeftSidebar = () => {
   const isWidget =
@@ -23,6 +24,7 @@ const LeftSidebar = () => {
     !isWidget && (
       <Switch>
         <Route path={'/shop/:department?'} component={GlobalShopDepartments} />
+        <Route path={'/@:name/favorites/:objectType?'} component={FavoritesSideNav} />
         <Route
           path={'/object-shop/:name/:department?'}
           render={() => (

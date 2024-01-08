@@ -3828,4 +3828,29 @@ export const getThreadsCountByHashtag = (permlink, skip = 0, limit = 10) => {
     .then(posts => posts)
     .catch(error => error);
 };
+export const getUserFavoritesObjectTypesList = userName => {
+  return fetch(`${config.apiPrefix}${config.user}/${userName}${config.favorites}${config.list}`, {
+    headers: headers,
+    method: 'GET',
+  })
+    .then(res => res.json())
+    .then(posts => posts)
+    .catch(error => error);
+};
+
+export const getUserFavoriteObjects = (authUserName, user, objectType, skip, limit = 10) => {
+  return fetch(`${config.apiPrefix}${config.user}/${user}${config.favorites}`, {
+    headers: { ...headers, follower: authUserName },
+    method: 'POST',
+    body: JSON.stringify({
+      objectType,
+      skip,
+      limit,
+    }),
+  })
+    .then(res => res.json())
+    .then(r => r)
+    .catch(error => error);
+};
+
 export default null;

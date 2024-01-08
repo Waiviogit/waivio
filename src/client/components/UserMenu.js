@@ -39,6 +39,13 @@ const UserMenu = props => {
                 <FormattedMessage id="shop" defaultMessage="Shop" />
               </Link>
             </li>
+          )}{' '}
+          {!currUserIsGuest && showUserShop && (
+            <li className={getItemClasses(['favorites'])} role="presentation">
+              <Link to={`/@${name}/favorites`}>
+                <FormattedMessage id="favorites" defaultMessage="Favorites" />
+              </Link>
+            </li>
           )}
           <li
             className={getItemClasses(['followers', 'following', 'following-objects'])}

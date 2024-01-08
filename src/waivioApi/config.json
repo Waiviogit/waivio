@@ -220,5 +220,7 @@
   "listItemLocales": "/list-item-locales",
   "descriptionBot": "/description-bot",
   "thread": "/thread",
-  "hashtag": "/hashtag"
+  "hashtag": "/hashtag",
+  "list": "/list",
+  "favorites": "/favorites"
 }

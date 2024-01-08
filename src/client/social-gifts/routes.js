@@ -22,6 +22,7 @@ import WebsiteFeed from '../websites/WebsiteFeed/WebsiteFeed';
 import DepatmentsSearch from './DepatmentsSearch/DepatmentsSearch';
 import PostsCommentsActivity from '../user/PostsCommentsActivity/PostsCommentsActivity';
 import LocalRewardsList from '../newRewards/RewardLists/LocalRewardsList';
+import UserFavorites from '../components/Favorites/UserFavorites';
 
 const routes = host => ({
   component: SocialWrapper,
@@ -189,7 +190,11 @@ const routes = host => ({
       ],
     },
     {
-      path: [`/@:name/(${URL.USER.tabs})?/(waiv-table|table)?`, `/@:name/(userShop)/:department?`],
+      path: [
+        `/@:name/(${URL.USER.tabs})?/(waiv-table|table)?`,
+        `/@:name/(userShop)/:department?`,
+        `/@:name/(favorites)/:objectType?`,
+      ],
       component: User,
       exact: true,
       pathScope: '/@:name',
@@ -203,6 +208,11 @@ const routes = host => ({
           path: '/(userShop)/:department?',
           exact: true,
           component: UserDepartmentsWobjList,
+        },
+        {
+          path: '/(favorites)/:objectType?',
+          exact: true,
+          component: UserFavorites,
         },
         {
           path: '/(followers|following|following-objects)',
