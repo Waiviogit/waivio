@@ -255,7 +255,7 @@ const WebsiteMainPage = props => {
           <p>
             {props.intl.formatMessage({
               id: 'its_2022',
-              defaultMessage: 'It’s 2022. Rewards should be easy!',
+              defaultMessage: 'It’s 2024. Rewards should be easy!',
             })}
           </p>
         </div>
