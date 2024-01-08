@@ -114,7 +114,12 @@ export const deserializeToSlate = (body, isThread, isNewReview) => {
     if (isThread) {
       postParsed = [...postParsed, ...blocks, { text: ' ' }];
     } else if (isNewReview) {
-      postParsed = [{ type: 'paragraph', children: [{ text: '' }] }, ...postParsed, ...blocks];
+      postParsed = [
+        { type: 'paragraph', children: [{ text: '' }] },
+        ...postParsed,
+        ...blocks,
+        { type: 'paragraph', children: [{ text: '' }] },
+      ];
     } else {
       postParsed = [...postParsed, ...blocks, { type: 'paragraph', children: [{ text: '' }] }];
     }

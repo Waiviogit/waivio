@@ -469,3 +469,12 @@ export const getObjectFieldName = (field, object, intl) => {
   }
 };
 export const getUpdateFieldName = field => (field && field === 'menuList' ? 'listItem' : field);
+
+export const sortListItems = (menuItems, sortList) =>
+  sortList?.reduce((acc, curr) => {
+    const item = menuItems?.find(i => i.permlink === curr);
+
+    if (item) return [...acc, item];
+
+    return acc;
+  }, []);

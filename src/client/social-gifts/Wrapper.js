@@ -64,6 +64,7 @@ import { setLocale } from '../../store/settingsStore/settingsActions';
 import { getObject, getObjectsByIds } from '../../waivioApi/ApiClient';
 import { parseJSON } from '../../common/helpers/parseJSON';
 import { getObjectName } from '../../common/helpers/wObjectHelper';
+import { getWebsiteSettings } from '../../store/websiteStore/websiteActions';
 
 const createLink = i => {
   switch (i.object_type) {
@@ -393,25 +394,26 @@ SocialWrapper.fetchData = async ({ store, req, url }) => {
               newsfeed: i.newsFeed?.permlink,
             }));
 
-            if (buttonList[0]?.object_type === 'newsfeed') {
-              promises.push(
-                store.dispatch(
-                  getObjectPosts({
-                    object: buttonList[0]?.permlink,
-                    username: buttonList[0]?.permlink,
-                    limit: 20,
-                    newsPermlink: buttonList[0].newsfeed,
-                  }),
-                ),
-              );
-            }
-
-            if (buttonList[0]?.object_type === 'shop') {
-              promises.push(store.dispatch(getWobjectDepartments(buttonList[0]?.permlink)));
-              promises.push(store.dispatch(getWobjectsShopList(buttonList[0]?.permlink)));
-            }
-            if (url === '/')
+            if (url === '/') {
               promises.push(store.dispatch(getObjectAction(buttonList[0]?.permlink)));
+              if (buttonList[0]?.object_type === 'newsfeed') {
+                promises.push(
+                  store.dispatch(
+                    getObjectPosts({
+                      object: buttonList[0]?.permlink,
+                      username: buttonList[0]?.permlink,
+                      limit: 30,
+                      newsPermlink: buttonList[0].newsfeed,
+                    }),
+                  ),
+                );
+              }
+
+              if (buttonList[0]?.object_type === 'shop') {
+                promises.push(store.dispatch(getWobjectDepartments(buttonList[0]?.permlink)));
+                promises.push(store.dispatch(getWobjectsShopList(buttonList[0]?.permlink)));
+              }
+            }
 
             return Promise.allSettled([
               ...promises,
@@ -439,6 +441,7 @@ SocialWrapper.fetchData = async ({ store, req, url }) => {
       return res;
     }),
     store.dispatch(setAppUrl(`https://${req.headers.host}`)),
+    store.dispatch(getWebsiteSettings(req.headers.host)),
     store.dispatch(setUsedLocale(lang)),
     store.dispatch(login()),
   ]);
