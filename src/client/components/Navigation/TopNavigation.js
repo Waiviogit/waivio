@@ -26,7 +26,7 @@ const LINKS = {
   TOOLS_SETTINGS: '/settings',
   TOOLS_SETTINGS_GUESTS: '/guests-settings',
   TOOLS_SETTINGS_NOTIFICATIONS: '/notification-settings',
-  ABOUT: '/object/ylr-waivio/page#oal-about-waivio',
+  ABOUT: '/object/ylr-waivio/page#mim-transform-your-passion-into-profit-with-waivio',
   WEBSITE_CREATE: '/create',
   WEBSITES_MANAGE: '/manage',
   WEBSITES_PAYMENTS: '/payments',

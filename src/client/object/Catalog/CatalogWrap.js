@@ -24,6 +24,7 @@ import {
 } from '../../../store/wObjectStore/wobjActions';
 import * as ApiClient from '../../../waivioApi/ApiClient';
 import {
+  getLoadingFlag,
   getObject,
   getObjectLists,
   getWobjectNested,
@@ -80,6 +81,7 @@ const CatalogWrap = props => {
             ),
           );
           setRecencySortList(recencySortOrder(getListItem(wobjectNested)));
+          setLoadedNestedWobject(false);
         } else {
           setLoadingNestedWobject(true);
 
@@ -306,6 +308,7 @@ CatalogWrap.defaultProps = {
 const mapStateToProps = state => ({
   listItems: getObjectLists(state),
   wobjectNested: getWobjectNested(state),
+  isLoadingFlag: getLoadingFlag(state),
   wobject: getObject(state),
   locale: getSuitableLanguage(state),
   userName: getAuthenticatedUserName(state),
