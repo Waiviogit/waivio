@@ -216,9 +216,9 @@ const DuplicateList = ({ intl }) => {
         )
         <br />
         {intl.formatMessage({
-          id: 'data_import_pause',
+          id: 'list_duplication_pause',
           defaultMessage:
-            'The data import bot will pause if WAIV voting power on the account drops below the set threshold.',
+            'The list duplication bot will pause if WAIV voting power on the account drops below the set threshold.',
         })}
       </p>
       <VoteInfoBlock
