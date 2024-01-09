@@ -8,6 +8,7 @@ import {
   getWebsiteLogo,
   getNavigItems,
   getMainObj,
+  getHostAddress,
 } from '../../../store/appStore/appSelectors';
 import GeneralSearch from '../../websites/WebsiteLayoutComponents/Header/GeneralSearch/GeneralSearch';
 import WebsiteTopNavigation from './TopNavigation/WebsiteTopNavigation';
@@ -21,7 +22,8 @@ const Header = () => {
   const mainObj = useSelector(getMainObj);
   const handleMobileSearchButtonClick = () => setSearchBarActive(!searchBarActive);
   const logo = useSelector(getWebsiteLogo);
-  const currHost = typeof location !== 'undefined' && location.hostname;
+  const host = useSelector(getHostAddress);
+  const currHost = (typeof location !== 'undefined' && location.hostname) || host;
   const header = config?.header?.name;
   const logoClassList = classNames('Header__logo', {
     'Header__logo--upperCase': !header,

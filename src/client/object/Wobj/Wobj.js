@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { isEmpty } from 'lodash';
 import Helmet from 'react-helmet';
 import { useSelector, useDispatch } from 'react-redux';
+import { useParams } from 'react-router';
 import { appendObject } from '../../../store/appendStore/appendActions';
 import { addAlbumToStore } from '../../../store/galleryStore/galleryActions';
 import {
@@ -40,6 +41,7 @@ const Wobj = ({
   const wobject = useSelector(getObjectState);
   const nestedWobject = useSelector(getWobjectNested);
   const dispatch = useDispatch();
+  const params = useParams();
   const appendAlbum = () => {
     const formData = {
       galleryAlbum: 'Photos',
@@ -66,7 +68,7 @@ const Wobj = ({
     const desc = wobject?.description || descriptionSite || siteName;
     const image = getObjectAvatar(wobject) || favicon;
 
-    if (isEmpty(wobject)) {
+    if (isEmpty(wobject) || wobject?.author_permlink !== params.name) {
       return (
         <React.Fragment>
           <Helmet>

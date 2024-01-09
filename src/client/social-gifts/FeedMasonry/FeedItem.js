@@ -150,6 +150,9 @@ const FeedItem = ({ post, photoQuantity, preview }) => {
               <i className="iconfont icon-share1" /> <span>{post?.reblogged_users?.length}</span>
             </span>
           )}
+          <Link className="FeedMasonry__icon" to={`/@${post?.author}/${post?.permlink}`}>
+            <span className={'iconfont icon-send'} />
+          </Link>
         </div>
         <Payout post={post} />
       </div>
