@@ -48,6 +48,7 @@ import { resetBreadCrumb } from '../../store/shopStore/shopActions';
 import { useSeoInfoWithAppUrl } from '../../hooks/useSeoInfo';
 import Error404 from '../statics/Error404';
 import {
+  resetFavorites,
   setFavoriteObjects,
   setFavoriteObjectTypes,
 } from '../../store/favoritesStore/favoritesActions';
@@ -105,6 +106,8 @@ const User = props => {
     props.getUserAccountHistory(name);
     props.getTokenBalance('WAIV', name);
     props.resetBreadCrumb();
+
+    return () => props.resetFavorites();
   }, [name, props.authenticatedUserName]);
 
   const handleTransferClick = () => {
@@ -229,6 +232,7 @@ User.propTypes = {
   resetBreadCrumb: PropTypes.func.isRequired,
   getGlobalProperties: PropTypes.func.isRequired,
   openTransfer: PropTypes.func,
+  resetFavorites: PropTypes.func,
   getUserAccount: PropTypes.func,
   rate: PropTypes.number.isRequired,
   rewardFund: PropTypes.shape().isRequired,
@@ -286,5 +290,9 @@ export default connect(
     getTokenBalance,
     getGlobalProperties,
     resetBreadCrumb,
+    setFavoriteObjects,
+    setFavoriteObjectTypes,
+    resetFavorites,
+    setFavObjects: setFavoriteObjects,
   },
 )(User);
