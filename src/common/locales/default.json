@@ -2570,5 +2570,8 @@
   "flag_thread": "Flag thread",
   "google_ads_outbound_click_event_snippet":"Google Ads Outbound Click Event Snippet:",
   "paste_your_event_snippet_for_outbound_click_here":"Paste your Event Snippet for Outbound Click here",
-  "google_event_snippet_description_info": "To find the event snippet in Google Ads, navigate to Tools > Conversions > Outbound Click > Tag Setup > Install Tag Yourself > Event Snippet > Click."
+  "google_event_snippet_description_info": "To find the event snippet in Google Ads, navigate to Tools > Conversions > Outbound Click > Tag Setup > Install Tag Yourself > Event Snippet > Click.",
+  "favorites": "Favorites",
+  "empty_favorites": "This user doesn't have any favorites.",
+  "list_duplication_pause": "The list duplication bot will pause if WAIV voting power on the account drops below the set threshold."
 }
