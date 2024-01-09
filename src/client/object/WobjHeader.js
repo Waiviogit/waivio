@@ -49,7 +49,6 @@ const WobjHeader = ({
   const status = parseWobjectField(wobject, 'status');
   const name = getObjectName(wobject);
   const isHashtag = wobject.object_type === 'hashtag';
-  const heartObjTypes = ['book', 'product', 'service'].includes(wobject.object_type);
   const isGuest = guestUserRegex.test(username);
 
   const getStatusLayout = statusField => (
@@ -107,9 +106,7 @@ const WobjHeader = ({
                     {wobject.youFollows && <BellButton wobj={wobject} />}
                   </React.Fragment>
                 )}
-                {heartObjTypes && authenticated && !isGuest && (
-                  <HeartButton wobject={wobject} size={'28px'} />
-                )}
+                {authenticated && !isGuest && <HeartButton wobject={wobject} size={'28px'} />}
               </div>
             </div>
           </div>

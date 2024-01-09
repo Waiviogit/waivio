@@ -25,7 +25,6 @@ const SocialProductActions = ({
   isAdministrator,
 }) => {
   const accessExtend = haveAccess(wobject, username, accessTypesArr[0]);
-  const heartObjTypes = ['book', 'product', 'service'].includes(wobject.object_type);
   const isGuest = guestUserRegex.test(username);
 
   return (
@@ -47,9 +46,7 @@ const SocialProductActions = ({
           {wobject.youFollows && <BellButton wobj={wobject} />}
         </React.Fragment>
       )}
-      {heartObjTypes && authenticated && !isGuest && (
-        <HeartButton wobject={wobject} size={'28px'} />
-      )}
+      {authenticated && !isGuest && <HeartButton wobject={wobject} size={'28px'} />}
     </div>
   );
 };

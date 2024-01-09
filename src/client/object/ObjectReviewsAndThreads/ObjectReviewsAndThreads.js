@@ -20,8 +20,8 @@ const ObjectReviewsAndThreads = ({ intl, match }) => {
         tab={
           <Link to={`/object/${wobject.author_permlink}/reviews`}>
             {intl.formatMessage({
-              id: 'reviews',
-              defaultMessage: 'Reviews',
+              id: 'posts',
+              defaultMessage: 'Posts',
             })}{' '}
           </Link>
         }

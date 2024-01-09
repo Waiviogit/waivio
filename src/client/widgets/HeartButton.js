@@ -31,10 +31,17 @@ const HeartButton = ({ wobject, size }) => {
   const activeHeart = authorityList[wobject.author_permlink];
   const isObjectPage = match.params.name === wobject.author_permlink;
   const adminAuthority = 'administrative';
+  const shopObjTypes = ['book', 'product', 'service'].includes(wobject.object_type);
   const tooltipTitle = activeHeart ? (
-    <FormattedMessage id="remove_from_my_shop" defaultMessage="Remove from my shop" />
+    <FormattedMessage
+      id={`remove_from_${shopObjTypes ? 'my_shop' : 'favorites'}`}
+      defaultMessage={`Remove from ${shopObjTypes ? 'my shop' : 'favorites'}`}
+    />
   ) : (
-    <FormattedMessage id="add_to_my_shop" defaultMessage="Add to my shop" />
+    <FormattedMessage
+      id={`add_to_${shopObjTypes ? 'my_shop' : 'favorites'}`}
+      defaultMessage={`Add to ${shopObjTypes ? 'my shop' : 'favorites'}`}
+    />
   );
 
   useEffect(() => {
