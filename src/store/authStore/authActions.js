@@ -176,6 +176,7 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
           isGuestUser: isGuest,
         });
       } catch (e) {
+        message.error('Authorization was not successful. Please try again later.');
         reject(e);
       }
     });
