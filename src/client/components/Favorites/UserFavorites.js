@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { isEmpty, isNil } from 'lodash';
 import InfiniteScroll from 'react-infinite-scroller';
@@ -16,8 +16,10 @@ import {
   setFavoriteObjects,
   setMoreFavoriteObjects,
 } from '../../../store/favoritesStore/favoritesActions';
+import FavoritesMobileSidenav from './FavoritesMobileSidenav/FavoritesMobileSidenav';
 
 const UserFavorites = () => {
+  const [visible, setVisible] = useState(false);
   const favoriteObjects = useSelector(getFavoriteObjects);
   const isLoading = useSelector(getLoadingFavoriteObjects);
   const hasMore = useSelector(hasMoreFavoriteObjects);
@@ -31,13 +33,20 @@ const UserFavorites = () => {
   }, [objectType, name]);
 
   const loadMoreObjects = () => {
-    dispatch(setMoreFavoriteObjects(name, objectType));
+    if (hasMore && !isLoading) dispatch(setMoreFavoriteObjects(name, objectType));
   };
 
   return isLoading && favoriteObjects?.[objectType]?.length < 10 ? (
     <Loading />
   ) : (
     <>
+      <div className={'ListSwitcher__navInfo'}>
+        <FavoritesMobileSidenav
+          objectTypes={objectTypes}
+          visible={visible}
+          setVisible={setVisible}
+        />
+      </div>
       {isEmpty(favoriteObjects?.[objectType]) &&
       !isNil(favoriteObjects?.[objectType]) &&
       !isLoading ? (

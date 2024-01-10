@@ -1,0 +1,59 @@
+@import (reference) '../../../styles/custom.less';
+@import (reference) '../../../styles/modules/variables.less';
+
+.FavoritesMobileSidenav {
+  padding-bottom: 30px;
+  font-weight: 500;
+
+  &__select {
+    font-weight: 500;
+    color: var(--website-color);
+  }
+
+  &__mobileCrumbs {
+    display: block;
+    font-weight: 700;
+
+    b {
+      font-weight: 700;
+    }
+
+    .anticon {
+      font-size: 12px;
+    }
+
+    @media @small {
+      display: none;
+    }
+  }
+
+  &__maindepName {
+    display: inline-block;
+    color: @black !important;
+    margin-bottom: 10px;
+  }
+
+  &__depName {
+    color: @blue-gullGray !important;
+    padding-left: 10px;
+    margin-bottom: 10px;
+    transition: 0.5s;
+
+    &--open {
+      padding-left: 10px;
+      margin-bottom: 10px;
+      transition: 0.5s;
+      background: white;
+      border: 1px solid @white-gainsboro !important;
+      border-radius: 4px;
+      line-height: 2.3em;
+    }
+    &--active {
+      color: var(--website-hover-color) !important;
+    }
+
+    &:hover {
+      color: var(--website-color);
+    }
+  }
+}
