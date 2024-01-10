@@ -252,17 +252,17 @@ User.defaultProps = {
 User.fetchData = async ({ store, match }) => {
   const promises = [store.dispatch(getUserAccount(match.params.name))];
 
-  if (match.params[0] === 'favorites') {
-    promises.push(
-      store
-        .dispatch(setFavoriteObjectTypes(match.params.name))
-        .then(types =>
-          Promise.allSettled([
-            store.dispatch(setFavoriteObjects(match.params.name, types.value[0])),
-          ]),
-        ),
-    );
-  }
+  // if (match.params[0] === 'favorites') {
+  //   promises.push(
+  //     store
+  //       .dispatch(setFavoriteObjectTypes(match.params.name))
+  //       .then(types =>
+  //         Promise.allSettled([
+  //           store.dispatch(setFavoriteObjects(match.params.name, types.value[0])),
+  //         ]),
+  //       ),
+  //   );
+  // }
 
   return Promise.allSettled([...promises]);
 };

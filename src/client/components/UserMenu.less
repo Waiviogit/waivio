@@ -14,12 +14,15 @@
     overflow-x: auto;
     overflow-y: hidden;
     display: flex;
-    justify-content: center;
+    margin-left: 10px;
 
     @media @small, @medium {
+      margin-left: 0;
       overflow-x: visible;
       overflow-y: hidden;
       min-width: 740px;
+      display: flex;
+      justify-content: center;
     }
   }
 
