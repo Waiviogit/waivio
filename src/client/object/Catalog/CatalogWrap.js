@@ -70,6 +70,7 @@ const CatalogWrap = props => {
     });
     if (!isEmpty(wobject)) {
       if (location.hash) {
+        setLoadingNestedWobject(false);
         const pathUrl = getLastPermlinksFromHash(location.hash);
 
         if (!isEmpty(wobjectNested) && wobjectNested.author_permlink === pathUrl) {
@@ -81,7 +82,6 @@ const CatalogWrap = props => {
             ),
           );
           setRecencySortList(recencySortOrder(getListItem(wobjectNested)));
-          setLoadedNestedWobject(false);
         } else {
           setLoadingNestedWobject(true);
 
@@ -252,13 +252,13 @@ const CatalogWrap = props => {
         )}
         {!isEmpty(reward?.main) && <Campaing campain={reward?.main} />}
         <React.Fragment>
+          <div className="CatalogWrap__breadcrumb">
+            <CatalogBreadcrumb intl={intl} wobject={wobject} />
+          </div>
           {isLoadingFlag ? (
             <Loading />
           ) : (
             <React.Fragment>
-              <div className="CatalogWrap__breadcrumb">
-                <CatalogBreadcrumb intl={intl} wobject={wobject} />
-              </div>
               <div className="CatalogWrap__sort">
                 <CatalogSorting
                   sort={sortBy}
