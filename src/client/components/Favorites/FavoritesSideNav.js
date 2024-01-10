@@ -1,20 +1,21 @@
 import React, { useEffect, useState } from 'react';
-import { isEmpty } from 'lodash';
+import { isEmpty, size } from 'lodash';
 import { NavLink } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { useParams } from 'react-router';
-import { injectIntl } from 'react-intl';
+import { FormattedMessage, injectIntl } from 'react-intl';
 import SkeletonCustom from '../Skeleton/SkeletonCustom';
-import listOfObjectTypes from '../../../common/constants/listOfObjectTypes';
 import {
   getFavoriteObjectTypes,
   getLoadingFavoriteObjectTypes,
 } from '../../../store/favoritesStore/favoritesSelectors';
 import { setFavoriteObjectTypes } from '../../../store/favoritesStore/favoritesActions';
 
+const typesLimit = 5;
 const FavoritesSideNav = ({ intl }) => {
   const [visible, setVisible] = useState(true);
+  const [displayedTypesCount, setTypesCount] = useState(typesLimit);
   const objectTypes = useSelector(getFavoriteObjectTypes);
   const isLoading = useSelector(getLoadingFavoriteObjectTypes);
   const { objectType = objectTypes?.[0], name } = useParams();
@@ -49,12 +50,12 @@ const FavoritesSideNav = ({ intl }) => {
                   className="sidenav-discover-objects__loading"
                   isLoading={isLoading}
                   randomWidth
-                  rows={listOfObjectTypes.length + 1}
+                  rows={typesLimit.length + 1}
                   width={170}
                 />
               ) : (
                 <React.Fragment>
-                  {objectTypes?.map(type => (
+                  {objectTypes?.slice(0, displayedTypesCount)?.map(type => (
                     <li key={`${type}`} className="ttc">
                       <NavLink
                         to={`/@${name}/favorites/${type}`}
@@ -69,6 +70,15 @@ const FavoritesSideNav = ({ intl }) => {
                       </NavLink>
                     </li>
                   ))}
+                  {displayedTypesCount < size(objectTypes) ? (
+                    <div
+                      className="sidenav-discover-objects__show-more"
+                      role="presentation"
+                      onClick={() => setTypesCount(displayedTypesCount + typesLimit)}
+                    >
+                      <FormattedMessage id="show_more" defaultMessage="show more" />
+                    </div>
+                  ) : null}
                 </React.Fragment>
               )}
             </ul>
