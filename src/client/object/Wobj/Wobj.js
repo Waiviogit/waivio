@@ -68,7 +68,7 @@ const Wobj = ({
     const desc = wobject?.description || descriptionSite || siteName;
     const image = getObjectAvatar(wobject) || favicon;
 
-    if (isEmpty(wobject) || wobject?.author_permlink !== params.name) {
+    if (isEmpty(wobject) || (params.name && wobject?.author_permlink !== params.name)) {
       return (
         <React.Fragment>
           <Helmet>
