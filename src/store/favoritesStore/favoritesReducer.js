@@ -5,8 +5,8 @@ const initialState = {
   users: [],
   favoriteObjectTypes: [],
   favoriteObjects: {},
-  loadingObjects: false,
-  loadingObjectTypes: false,
+  loadingObjects: true,
+  loadingObjectTypes: true,
   hasMore: false,
 };
 
@@ -101,6 +101,15 @@ const favorites = (state = initialState, action) => {
         ...state,
         loadingObjects: false,
         hasMore: false,
+      };
+    }
+    case favoriteActions.RESET_FAVORITES: {
+      return {
+        ...state,
+        favoriteObjectTypes: null,
+        favoriteObjects: null,
+        loadingObjects: false,
+        loadingObjectTypes: false,
       };
     }
     default:

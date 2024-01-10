@@ -1,11 +1,11 @@
 import React, { useEffect } from 'react';
 import { FormattedMessage } from 'react-intl';
-import { isEmpty } from 'lodash';
+import { isEmpty, isNil } from 'lodash';
 import InfiniteScroll from 'react-infinite-scroller';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router';
 import Loading from '../Icon/Loading';
-import ObjectCardView from '../../objectCard/ObjectCardView';
+import ObjectCardSwitcher from '../../objectCard/ObjectCardSwitcher';
 import {
   getFavoriteObjects,
   getFavoriteObjectTypes,
@@ -27,18 +27,20 @@ const UserFavorites = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (isEmpty(favoriteObjects[objectType])) dispatch(setFavoriteObjects(name, objectType));
+    if (isEmpty(favoriteObjects?.[objectType])) dispatch(setFavoriteObjects(name, objectType));
   }, [objectType, name]);
 
   const loadMoreObjects = () => {
     dispatch(setMoreFavoriteObjects(name, objectType));
   };
 
-  return isLoading && favoriteObjects[objectType]?.length < 10 ? (
+  return isLoading && favoriteObjects?.[objectType]?.length < 10 ? (
     <Loading />
   ) : (
     <>
-      {isEmpty(favoriteObjects[objectType]) && !isLoading ? (
+      {isEmpty(favoriteObjects?.[objectType]) &&
+      !isNil(favoriteObjects?.[objectType]) &&
+      !isLoading ? (
         <div className="feed_empty">
           <h3>
             <FormattedMessage
@@ -55,8 +57,8 @@ const UserFavorites = () => {
           initialLoad={false}
           hasMore={hasMore}
         >
-          {favoriteObjects[objectType]?.map(wObj => (
-            <ObjectCardView key={wObj._id} wObject={wObj} passedParent={wObj.parent} />
+          {favoriteObjects?.[objectType]?.map(wObj => (
+            <ObjectCardSwitcher key={wObj._id} wObj={wObj} />
           ))}
         </InfiniteScroll>
       )}{' '}

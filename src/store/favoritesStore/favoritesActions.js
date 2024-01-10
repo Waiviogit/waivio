@@ -13,6 +13,7 @@ export const REMOVE_CATEGORY_FAVORITE = '@favorites/REMOVE_CATEGORY_FAVORITE';
 export const SET_FAVORITE_OBJECT_TYPES = createAsyncActionType(
   '@favorites/SET_FAVORITE_OBJECT_TYPES',
 );
+export const RESET_FAVORITES = '@favorites/RESET_FAVORITES';
 export const SET_FAVORITE_OBJECTS = createAsyncActionType('@favorites/SET_FAVORITE_OBJECTS');
 export const SET_MORE_FAVORITE_OBJECTS = createAsyncActionType(
   '@favorites/SET_MORE_FAVORITE_OBJECTS',
@@ -30,6 +31,10 @@ export const setFavoriteObjectTypes = userName => dispatch =>
     payload: {
       promise: getUserFavoritesObjectTypesList(userName),
     },
+  });
+export const resetFavorites = () => dispatch =>
+  dispatch({
+    type: RESET_FAVORITES,
   });
 
 export const setFavoriteObjects = (name, objectType) => (dispatch, getState) => {
