@@ -295,7 +295,7 @@ export const getMoreObjectPosts = ({
       lastId,
       locale,
       newsPermlink,
-    }).then(res => dispatch(getTiktokPreviewAction(res))),
+    }),
     meta: { sortBy: 'objectPosts', category: username, limit },
   });
 };
