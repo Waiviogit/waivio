@@ -27,15 +27,6 @@
     }
   }
 
-  .ShopDepartmentsList__item {
-    cursor: pointer;
-    margin-bottom: 10px;
-
-    &--active {
-      color: var(--website-hover-color);
-    }
-  }
-
   &__maindepName {
     display: inline-block;
     color: @black !important;
@@ -52,34 +43,17 @@
       padding-left: 10px;
       margin-bottom: 10px;
       transition: 0.5s;
+      background: white;
+      border: 1px solid @white-gainsboro !important;
+      border-radius: 4px;
+      line-height: 2.3em;
+    }
+    &--active {
       color: var(--website-hover-color) !important;
     }
 
     &:hover {
       color: var(--website-color);
-    }
-  }
-
-  &__mobile {
-    display: block;
-    font-weight: 600;
-
-    .anticon {
-      font-size: 12px;
-    }
-
-    @media @small {
-      display: none;
-    }
-  }
-
-  &__list {
-    display: none;
-    padding: 0 10px;
-
-    &--show {
-      display: block;
-      padding: 0;
     }
   }
 }
