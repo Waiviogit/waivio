@@ -23,8 +23,12 @@ export const getNumbersFromWobjPrice = wobj => {
 
 export const getObjectTitle = (wobj = {}) => wobj.title || '';
 
-export const getTitleForLink = (wobj = {}, parent = {}) =>
-  `${getObjectTitle(parent)} - ${wobj?.title || wobj?.description || getObjectName(wobj)}`;
+export const getTitleForLink = (wobj = {}) => {
+  if (!wobj?.title) return getObjectName(wobj);
+  if (wobj?.title.includes(`${getObjectName(wobj)} - `)) return wobj?.title;
+
+  return `${getObjectName(wobj)} - ${wobj?.title || wobj?.description}`;
+};
 
 export const getObjectUrlForLink = (wobj = {}) =>
   get(wobj, 'defaultShowLink') || `/object/${wobj.author_permlink || wobj.permlink || wobj.id}`;
