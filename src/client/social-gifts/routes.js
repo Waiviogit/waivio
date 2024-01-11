@@ -8,8 +8,6 @@ import RewardsMainPage from '../../client/newRewards/RewardsMainPage';
 import createNestedRouts from '../../routes/helper';
 import SocialWrapper from './Wrapper';
 import Shop from '../Shop/Shop';
-import { listOfSocialWebsites } from './listOfSocialWebsites';
-import SocialGiftsLandingPage from '../SocialGiftsLandingPage/SocialGiftsLandingPage';
 import ShopSwitcher from './ShopSwitcher/ShopSwitcher';
 import ObjectDepartmentsWobjList from '../object/ObjectTypeShop/ObjectDepartmentsWobjList';
 import Checklist from './Checklist/Checklist';
@@ -24,15 +22,13 @@ import PostsCommentsActivity from '../user/PostsCommentsActivity/PostsCommentsAc
 import LocalRewardsList from '../newRewards/RewardLists/LocalRewardsList';
 import UserFavorites from '../components/Favorites/UserFavorites';
 
-const routes = host => ({
+const routes = () => ({
   component: SocialWrapper,
   routes: [
     {
       path: ['/'],
       exact: true,
-      component: listOfSocialWebsites.some(site => site === host)
-        ? SocialGiftsLandingPage
-        : ShopSwitcher,
+      component: ShopSwitcher,
     },
     {
       path: ['/(object-shop)/:name/:department?'],
