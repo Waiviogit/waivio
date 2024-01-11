@@ -281,7 +281,7 @@ export const getMoreObjectPosts = ({
   const feedContent = getFeedFromState('objectPosts', username, feed);
   const isLoading = getFeedLoadingFromState('objectPosts', username, feed);
 
-  if (!feedContent.length || isLoading || skip % 5) {
+  if (!feedContent.length || isLoading) {
     return dispatch({
       type: GET_MORE_OBJECT_POSTS.SUCCESS,
       payload: [],
