@@ -146,6 +146,13 @@ export const focusEditorToEnd = editor => {
   Transforms.move(editor, { distance: 1, unit: 'line' });
   ReactEditor.focus(editor);
 };
+export const focusEditorToStart = editor => {
+  const path = [0, 0];
+
+  Transforms.select(editor, Editor.range(editor, path));
+  Transforms.collapse(editor, { edge: 'start' });
+  ReactEditor.focus(editor);
+};
 
 export const resetEditorState = editor => {
   Transforms.delete(editor, {

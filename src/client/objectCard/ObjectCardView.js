@@ -55,7 +55,6 @@ const ObjectCardView = ({
   const objName = getObjectName(wObject);
   const parentName = getObjectName(parent);
   const prise = withRewards ? null : wObject.price;
-  const heartObjTypes = ['book', 'product', 'service'].includes(wObject.object_type);
   const objectCardClassList = classNames('ObjectCardView', {
     'ObjectCardView--hovered': hovered,
   });
@@ -207,7 +206,7 @@ const ObjectCardView = ({
               </div>
             )}
           </div>
-          {heartObjTypes && username && showHeart && !isGuest && (
+          {username && showHeart && !isGuest && (
             <div className="avatar-heart">
               <HeartButton wobject={wObject} size={'20px'} />
             </div>

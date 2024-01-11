@@ -24,6 +24,7 @@ import {
 } from '../../../store/wObjectStore/wobjActions';
 import * as ApiClient from '../../../waivioApi/ApiClient';
 import {
+  getLoadingFlag,
   getObject,
   getObjectLists,
   getWobjectNested,
@@ -69,6 +70,7 @@ const CatalogWrap = props => {
     });
     if (!isEmpty(wobject)) {
       if (location.hash) {
+        setLoadingNestedWobject(false);
         const pathUrl = getLastPermlinksFromHash(location.hash);
 
         if (!isEmpty(wobjectNested) && wobjectNested.author_permlink === pathUrl) {
@@ -250,13 +252,13 @@ const CatalogWrap = props => {
         )}
         {!isEmpty(reward?.main) && <Campaing campain={reward?.main} />}
         <React.Fragment>
+          <div className="CatalogWrap__breadcrumb">
+            <CatalogBreadcrumb intl={intl} wobject={wobject} />
+          </div>
           {isLoadingFlag ? (
             <Loading />
           ) : (
             <React.Fragment>
-              <div className="CatalogWrap__breadcrumb">
-                <CatalogBreadcrumb intl={intl} wobject={wobject} />
-              </div>
               <div className="CatalogWrap__sort">
                 <CatalogSorting
                   sort={sortBy}
@@ -306,6 +308,7 @@ CatalogWrap.defaultProps = {
 const mapStateToProps = state => ({
   listItems: getObjectLists(state),
   wobjectNested: getWobjectNested(state),
+  isLoadingFlag: getLoadingFlag(state),
   wobject: getObject(state),
   locale: getSuitableLanguage(state),
   userName: getAuthenticatedUserName(state),

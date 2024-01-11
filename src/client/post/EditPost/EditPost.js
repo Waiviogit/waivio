@@ -200,6 +200,7 @@ const EditPost = props => {
       <div className="post-layout container container-edit-post">
         <div className="center">
           <Editor
+            isNewReview={!props.draftPosts.some(d => d.draftId === props.draftId)}
             enabled={!props.imageLoading}
             initialContent={draftContent}
             locale={props.locale}

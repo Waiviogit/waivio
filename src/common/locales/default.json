@@ -2005,7 +2005,7 @@
   "convert_rewards": "convert rewards you earn into major cryptos, such as",
   "three_currency": "Bitcoin, Ethereum, Litecoin",
   "directly_cash": "or directly into cash using any Bitcoin ATM.",
-  "its_2022": "It’s 2023. Rewards should be easy!",
+  "its_2022": "It’s 2024. Rewards should be easy!",
   "map_header": "map",
   "partners": "partners",
   "submit_dish_photos": "Submit dish photos",
@@ -2567,5 +2567,12 @@
   "edit_thread": "Edit thread",
   "delete_thread": "Delete thread",
   "unflag_thread": "Unflag thread",
-  "flag_thread": "Flag thread"
+  "flag_thread": "Flag thread",
+  "google_ads_outbound_click_event_snippet":"Google Ads Outbound Click Event Snippet:",
+  "paste_your_event_snippet_for_outbound_click_here":"Paste your Event Snippet for Outbound Click here",
+  "google_event_snippet_description_info": "To find the event snippet in Google Ads, navigate to Tools > Conversions > Outbound Click > Tag Setup > Install Tag Yourself > Event Snippet > Click.",
+  "favorites": "Favorites",
+  "empty_favorites": "This user doesn't have any favorites.",
+  "list_duplication_pause": "The list duplication bot will pause if WAIV voting power on the account drops below the set threshold.",
+  "auth_error_message": "Authorization was not successful. Please try again later."
 }

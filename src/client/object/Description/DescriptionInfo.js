@@ -4,7 +4,7 @@ import { FormattedMessage } from 'react-intl';
 import LinkButton from '../../components/LinkButton/LinkButton';
 import { shortenDescription } from '../wObjectHelper';
 
-const DescriptionInfo = ({ description, wobjPermlink, showDescriptionBtn }) => {
+const DescriptionInfo = ({ description, wobjPermlink, showDescriptionBtn, isDescriptionPage }) => {
   const showBtn = (description.length < 300 && showDescriptionBtn) || description.length > 300;
   const { firstDescrPart } = shortenDescription(description, 300);
 
@@ -14,7 +14,9 @@ const DescriptionInfo = ({ description, wobjPermlink, showDescriptionBtn }) => {
       {showBtn && (
         <div className="object-sidebar__menu-item">
           <LinkButton
-            className="LinkButton menu-button mt2"
+            className={
+              isDescriptionPage ? 'LinkButton active menu-button mt2' : 'LinkButton menu-button mt2'
+            }
             to={`/object/${wobjPermlink}/description`}
           >
             <div>
@@ -31,6 +33,7 @@ DescriptionInfo.propTypes = {
   description: PropTypes.string.isRequired,
   wobjPermlink: PropTypes.string.isRequired,
   showDescriptionBtn: PropTypes.bool,
+  isDescriptionPage: PropTypes.bool,
 };
 
 export default DescriptionInfo;
