@@ -282,7 +282,11 @@ export const getMoreObjectPosts = ({
   const isLoading = getFeedLoadingFromState('objectPosts', username, feed);
 
   if (!feedContent.length || isLoading) {
-    return null;
+    return dispatch({
+      type: GET_MORE_OBJECT_POSTS.SUCCESS,
+      payload: [],
+      meta: { sortBy: 'objectPosts', category: username, limit },
+    });
   }
 
   return dispatch({
