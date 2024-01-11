@@ -1,5 +1,6 @@
 /* eslint-disable camelcase */
 import { get, isEmpty } from 'lodash';
+import { preparationPreview } from '../../client/social-gifts/FeedMasonry/helpers';
 import {
   createAsyncActionType,
   getFeedFromState,
@@ -281,7 +282,11 @@ export const getMoreObjectPosts = ({
   const isLoading = getFeedLoadingFromState('objectPosts', username, feed);
 
   if (!feedContent.length || isLoading) {
-    return null;
+    return dispatch({
+      type: GET_MORE_OBJECT_POSTS.SUCCESS,
+      payload: [],
+      meta: { sortBy: 'objectPosts', category: username, limit },
+    });
   }
 
   return dispatch({
@@ -426,3 +431,11 @@ export const RESET_PROFILE_FILTERS = '@feed/RESET_PROFILE_FILTERS';
 export const resetProfileFilters = () => ({
   type: RESET_PROFILE_FILTERS,
 });
+
+export const GET_TIKTOK_PRIVIEW = createAsyncActionType('@feed/GET_TIKTOK_PRIVIEW');
+
+export const getTiktokPreviewAction = post => dispatch =>
+  dispatch({
+    type: GET_TIKTOK_PRIVIEW.ACTION,
+    payload: preparationPreview(post),
+  });

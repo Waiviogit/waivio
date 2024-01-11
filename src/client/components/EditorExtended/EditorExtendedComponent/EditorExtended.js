@@ -102,6 +102,7 @@ const Editor = props => {
         {isMounted && (
           <MediumDraftEditor
             initialPosTopBtn="11.5px"
+            isNewReview={props.isNewReview}
             intl={props.intl}
             isVimeo={isVimeo}
             editorState={editorState}
@@ -135,6 +136,7 @@ const propTypes = {
   onChange: PropTypes.func,
   draftId: PropTypes.string,
   displayTitle: PropTypes.bool,
+  isNewReview: PropTypes.bool,
   handleHashtag: PropTypes.func,
   handlePasteText: PropTypes.func,
   getRestoreObjects: PropTypes.func,
@@ -152,6 +154,7 @@ const propTypes = {
 const defaultProps = {
   intl: {},
   isWaivio: false,
+  isNewReview: false,
   onChange: () => {},
   handleHashtag: () => {},
   handlePasteText: () => {},

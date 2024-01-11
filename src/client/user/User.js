@@ -47,6 +47,11 @@ import { getIsOpenWalletTable } from '../../store/walletStore/walletSelectors';
 import { resetBreadCrumb } from '../../store/shopStore/shopActions';
 import { useSeoInfoWithAppUrl } from '../../hooks/useSeoInfo';
 import Error404 from '../statics/Error404';
+import {
+  resetFavorites,
+  setFavoriteObjects,
+  setFavoriteObjectTypes,
+} from '../../store/favoritesStore/favoritesActions';
 
 const getDescriptions = (username, siteName) => ({
   activity: `Track real-time user interactions on our platform, backed by open blockchain technology. Experience unparalleled transparency and authenticity as you witness the vibrant activity of our community members.`,
@@ -101,6 +106,8 @@ const User = props => {
     props.getUserAccountHistory(name);
     props.getTokenBalance('WAIV', name);
     props.resetBreadCrumb();
+
+    return () => props.resetFavorites();
   }, [name, props.authenticatedUserName]);
 
   const handleTransferClick = () => {
@@ -225,6 +232,7 @@ User.propTypes = {
   resetBreadCrumb: PropTypes.func.isRequired,
   getGlobalProperties: PropTypes.func.isRequired,
   openTransfer: PropTypes.func,
+  resetFavorites: PropTypes.func,
   getUserAccount: PropTypes.func,
   rate: PropTypes.number.isRequired,
   rewardFund: PropTypes.shape().isRequired,
@@ -241,7 +249,23 @@ User.defaultProps = {
   isOpenWalletTable: false,
 };
 
-User.fetchData = async ({ store, match }) => store.dispatch(getUserAccount(match.params.name));
+User.fetchData = async ({ store, match }) => {
+  const promises = [store.dispatch(getUserAccount(match.params.name))];
+
+  // if (match.params[0] === 'favorites') {
+  //   promises.push(
+  //     store
+  //       .dispatch(setFavoriteObjectTypes(match.params.name))
+  //       .then(types =>
+  //         Promise.allSettled([
+  //           store.dispatch(setFavoriteObjects(match.params.name, types.value[0])),
+  //         ]),
+  //       ),
+  //   );
+  // }
+
+  return Promise.allSettled([...promises]);
+};
 
 export default connect(
   (state, ownProps) => ({
@@ -266,5 +290,9 @@ export default connect(
     getTokenBalance,
     getGlobalProperties,
     resetBreadCrumb,
+    setFavoriteObjects,
+    setFavoriteObjectTypes,
+    resetFavorites,
+    setFavObjects: setFavoriteObjects,
   },
 )(User);

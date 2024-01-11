@@ -21,7 +21,7 @@ import {
 import { currencyTypes, defaultCurrency } from '../../constants/currencyTypes';
 
 import './WebsitesSettings.less';
-import { showGoogleGSCTagError } from '../../helper';
+import { showGoogleEventSnippetError, showGoogleGSCTagError } from '../../helper';
 
 const WebsitesSettings = ({
   intl,
@@ -40,7 +40,8 @@ const WebsitesSettings = ({
   const [referralAccount, setReferralAccount] = useState('');
   const [settingsLoading, setSettingsLoading] = useState(false);
   const [objectControl, setObjectControl] = useState(false);
-  const [googleGSC, setGoogleGSC] = useState('');
+  const [googleGSCState, setGoogleGSCState] = useState('');
+  const [googleEventSnippetState, setGoogleEventSnippetState] = useState('');
   const host = match.params.site;
 
   useEffect(() => {
@@ -50,11 +51,13 @@ const WebsitesSettings = ({
         const percent = get(res, ['value', 'beneficiary', 'percent']) / 100;
         const account = get(res, ['value', 'beneficiary', 'account']);
         const googleGscTag = get(res, ['value', 'googleGSCTag']);
+        const googleEventSnippet = get(res, ['value', 'googleEventSnippet']);
         const referral = get(res, ['value', 'referralCommissionAcc']);
         const objControl = get(res, ['value', 'objectControl']);
 
         setBeneficiaryPercent(percent);
-        setGoogleGSC(googleGscTag);
+        setGoogleGSCState(googleGscTag);
+        setGoogleEventSnippetState(googleEventSnippet);
         setObjectControl(objControl);
         setBeneficiaryAccount(account);
         setReferralAccount(referral);
@@ -65,9 +68,9 @@ const WebsitesSettings = ({
 
   const handleChange = (e, fieldsName) =>
     form.setFieldsValue({ [fieldsName]: e.currentTarget.value });
-  const handleChangeGoogleGSCTag = e => {
-    form.setFieldsValue({ googleGSCTag: e.currentTarget.value });
-    setGoogleGSC(e.currentTarget.value);
+  const handleChangeAndCheckField = (e, field, setFunction) => {
+    form.setFieldsValue({ [field]: e.currentTarget.value });
+    setFunction(e.currentTarget.value);
   };
 
   const resetBeneficiaryUser = () => {
@@ -89,12 +92,14 @@ const WebsitesSettings = ({
         const account = beneficiaryAccount || 'waivio';
         const tag = values.googleAnalyticsTag || '';
         const gscTag = values.googleGSCTag || '';
+        const googleEventSnippetTag = values.googleEventSnippet || '';
         const beneficiary = { account, percent };
 
         saveWebSettings(
           host,
           tag,
           gscTag,
+          googleEventSnippetTag,
           beneficiary,
           values.currency,
           values.language,
@@ -160,7 +165,7 @@ const WebsitesSettings = ({
           )}
           <p>{intl.formatMessage({ id: 'website_performance' })}</p>
         </Form.Item>
-        <Form.Item validateStatus={showGoogleGSCTagError(googleGSC) ? 'error' : ''}>
+        <Form.Item validateStatus={showGoogleGSCTagError(googleGSCState) ? 'error' : ''}>
           <h3>
             {intl.formatMessage({
               id: 'google_search_console_html_verification_tag',
@@ -173,15 +178,44 @@ const WebsitesSettings = ({
             <Input
               type="text"
               placeholder={intl.formatMessage({ id: 'paste_your_meta_tag_here' })}
-              onChange={e => handleChangeGoogleGSCTag(e)}
+              onChange={e => handleChangeAndCheckField(e, 'googleGSCTag', setGoogleGSCState())}
             />,
           )}
-          {showGoogleGSCTagError(googleGSC) && (
+          {showGoogleGSCTagError(googleGSCState) && (
             <span className={'error-duplicate'}>
               Invalid HTML meta tag entered. Please provide a valid tag.
             </span>
           )}
           <p>{intl.formatMessage({ id: 'gsc_tag_description_info' })}</p>
+        </Form.Item>{' '}
+        <Form.Item
+          validateStatus={showGoogleEventSnippetError(googleEventSnippetState) ? 'error' : ''}
+        >
+          <h3>
+            {intl.formatMessage({
+              id: 'google_ads_outbound_click_event_snippet',
+              defaultMessage: 'Google Ads Outbound Click Event Snippet:',
+            })}
+          </h3>
+          {getFieldDecorator('googleEventSnippet', {
+            initialValue: get(settings, 'googleEventSnippet', ''),
+          })(
+            <Input.TextArea
+              autoSize={{ minRows: 4, maxRows: 8 }}
+              placeholder={intl.formatMessage({
+                id: 'paste_your_event_snippet_for_outbound_click_here',
+              })}
+              onChange={e =>
+                handleChangeAndCheckField(e, 'googleEventSnippet', setGoogleEventSnippetState)
+              }
+            />,
+          )}
+          {showGoogleEventSnippetError(googleEventSnippetState) && (
+            <span className={'error-duplicate'}>
+              Invalid snippet entered. Please provide a valid event snippet.
+            </span>
+          )}
+          <p>{intl.formatMessage({ id: 'google_event_snippet_description_info' })}</p>
         </Form.Item>
         <h3>{intl.formatMessage({ id: 'beneficiary' })}</h3>
         <p>{intl.formatMessage({ id: 'beneficiary_rules' })}</p>
@@ -255,7 +289,10 @@ const WebsitesSettings = ({
           type="primary"
           htmlType="submit"
           loading={loading}
-          disabled={showGoogleGSCTagError(googleGSC)}
+          disabled={
+            showGoogleGSCTagError(googleGSCState) ||
+            showGoogleEventSnippetError(googleEventSnippetState)
+          }
         >
           {intl.formatMessage({ id: 'save' })}
         </Button>

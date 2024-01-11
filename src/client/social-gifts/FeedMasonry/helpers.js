@@ -9,7 +9,7 @@ export const breakpointColumnsObj = length => ({
   650: length < 2 ? length : 2,
 });
 
-export const preparationPreview = (postItems, setPreviews, previousRes = []) => {
+export const preparationPreview = postItems => {
   const urls = postItems
     .map(p => {
       const embed = getVideoForPreview(p)[0];
@@ -20,12 +20,9 @@ export const preparationPreview = (postItems, setPreviews, previousRes = []) => 
     })
     .filter(i => i);
 
-  if (!isEmpty(urls))
-    return getVideoPostsPriview(urls).then(res => {
-      setPreviews([...res, ...previousRes]);
-    });
+  if (!isEmpty(urls)) return getVideoPostsPriview(urls);
 
-  return Promise.resolve('Done');
+  return Promise.resolve([]);
 };
 
 export const preparationPostList = (postsIds, postsList) =>

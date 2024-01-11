@@ -89,7 +89,7 @@ const CheckListView = ({ wobject, listItems, loading, intl, hideBreadCrumbs }) =
     if (wobject?.object_type === 'widget') return <WidgetContent wobj={wobject} />;
     if (wobject?.object_type === 'newsfeed') return <ObjectNewsFeed wobj={wobject} />;
 
-    if (isEmpty(listItems)) {
+    if (isEmpty(listItems) && !loading) {
       return (
         <div className={'Checklist__empty'}>
           {intl.formatMessage({

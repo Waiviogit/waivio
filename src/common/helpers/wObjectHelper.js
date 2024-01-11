@@ -23,8 +23,12 @@ export const getNumbersFromWobjPrice = wobj => {
 
 export const getObjectTitle = (wobj = {}) => wobj.title || '';
 
-export const getTitleForLink = (wobj = {}) =>
-  wobj?.title || wobj?.description || getObjectName(wobj);
+export const getTitleForLink = (wobj = {}) => {
+  if (!wobj?.title) return getObjectName(wobj);
+  if (wobj?.title.includes(`${getObjectName(wobj)} - `)) return wobj?.title;
+
+  return `${getObjectName(wobj)} - ${wobj?.title || wobj?.description}`;
+};
 
 export const getObjectUrlForLink = (wobj = {}) =>
   get(wobj, 'defaultShowLink') || `/object/${wobj.author_permlink || wobj.permlink || wobj.id}`;
@@ -469,3 +473,12 @@ export const getObjectFieldName = (field, object, intl) => {
   }
 };
 export const getUpdateFieldName = field => (field && field === 'menuList' ? 'listItem' : field);
+
+export const sortListItems = (menuItems, sortList) =>
+  sortList?.reduce((acc, curr) => {
+    const item = menuItems?.find(i => i.permlink === curr);
+
+    if (item) return [...acc, item];
+
+    return acc;
+  }, []);

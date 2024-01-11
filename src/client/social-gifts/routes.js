@@ -8,8 +8,6 @@ import RewardsMainPage from '../../client/newRewards/RewardsMainPage';
 import createNestedRouts from '../../routes/helper';
 import SocialWrapper from './Wrapper';
 import Shop from '../Shop/Shop';
-import { listOfSocialWebsites } from './listOfSocialWebsites';
-import SocialGiftsLandingPage from '../SocialGiftsLandingPage/SocialGiftsLandingPage';
 import ShopSwitcher from './ShopSwitcher/ShopSwitcher';
 import ObjectDepartmentsWobjList from '../object/ObjectTypeShop/ObjectDepartmentsWobjList';
 import Checklist from './Checklist/Checklist';
@@ -22,16 +20,15 @@ import WebsiteFeed from '../websites/WebsiteFeed/WebsiteFeed';
 import DepatmentsSearch from './DepatmentsSearch/DepatmentsSearch';
 import PostsCommentsActivity from '../user/PostsCommentsActivity/PostsCommentsActivity';
 import LocalRewardsList from '../newRewards/RewardLists/LocalRewardsList';
+import UserFavorites from '../components/Favorites/UserFavorites';
 
-const routes = host => ({
+const routes = () => ({
   component: SocialWrapper,
   routes: [
     {
       path: ['/'],
       exact: true,
-      component: listOfSocialWebsites.some(site => site === host)
-        ? SocialGiftsLandingPage
-        : ShopSwitcher,
+      component: ShopSwitcher,
     },
     {
       path: ['/(object-shop)/:name/:department?'],
@@ -189,7 +186,11 @@ const routes = host => ({
       ],
     },
     {
-      path: [`/@:name/(${URL.USER.tabs})?/(waiv-table|table)?`, `/@:name/(userShop)/:department?`],
+      path: [
+        `/@:name/(${URL.USER.tabs})?/(waiv-table|table)?`,
+        `/@:name/(userShop)/:department?`,
+        `/@:name/(favorites)/:objectType?`,
+      ],
       component: User,
       exact: true,
       pathScope: '/@:name',
@@ -203,6 +204,11 @@ const routes = host => ({
           path: '/(userShop)/:department?',
           exact: true,
           component: UserDepartmentsWobjList,
+        },
+        {
+          path: '/(favorites)/:objectType?',
+          exact: true,
+          component: UserFavorites,
         },
         {
           path: '/(followers|following|following-objects)',

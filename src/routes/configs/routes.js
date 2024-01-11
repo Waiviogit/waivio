@@ -17,6 +17,7 @@ import { isMobile } from '../../common/helpers/apiHelpers';
 import ObjectDepartmentsWobjList from '../../client/object/ObjectTypeShop/ObjectDepartmentsWobjList';
 import ObjectFeed from '../../client/object/ObjectFeed';
 import LocalRewardsList from '../../client/newRewards/RewardLists/LocalRewardsList';
+import UserFavorites from '../../client/components/Favorites/UserFavorites';
 
 const routes = {
   component: Wrapper,
@@ -342,6 +343,7 @@ const routes = {
       path: [
         `/@:name/(${URL.USER.tabs})?/(waiv-table|table|:departments)?`,
         `/@:name/(userShop)/:department?`,
+        `/@:name/(favorites)/:objectType?`,
       ],
       component: User,
       exact: true,
@@ -361,6 +363,11 @@ const routes = {
           path: '/(userShop)/:department?',
           exact: true,
           component: UserDepartmentsWobjList,
+        },
+        {
+          path: '/(favorites)/:objectType?',
+          exact: true,
+          component: UserFavorites,
         },
         {
           path: '/reblogs',

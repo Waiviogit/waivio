@@ -7,6 +7,7 @@ import { Icon } from 'antd';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { getProxyImageURL } from '../../../common/helpers/image';
+import { getPreviewLoadingFromState } from '../../../store/feedStore/feedSelectors';
 import CustomImage from '../../components/Image/Image';
 import PostFeedEmbed from '../../components/Story/PostFeedEmbed';
 import Avatar from '../../components/Avatar';
@@ -28,6 +29,7 @@ const FeedItem = ({ post, photoQuantity, preview }) => {
   const dispatch = useDispatch();
   const defaultVotePersent = useSelector(getVotePercent);
   const authUserName = useSelector(getAuthenticatedUserName);
+  const previewLoading = useSelector(getPreviewLoadingFromState);
   const pendingVote = useSelector(getPendingLikes)[post.id];
   const isLiked = getUpvotes(post.active_votes).some(
     vote => vote.voter === authUserName && !vote.fake,
@@ -45,7 +47,7 @@ const FeedItem = ({ post, photoQuantity, preview }) => {
   };
 
   useEffect(() => {
-    if (isTiktok) {
+    if (isTiktok && !previewLoading) {
       if (!preview) {
         fetch(
           `https://www.tiktok.com/oembed?url=https://www.tiktok.com/${embeds[0].url.replace(
@@ -148,6 +150,9 @@ const FeedItem = ({ post, photoQuantity, preview }) => {
               <i className="iconfont icon-share1" /> <span>{post?.reblogged_users?.length}</span>
             </span>
           )}
+          <Link className="FeedMasonry__icon" to={`/@${post?.author}/${post?.permlink}`}>
+            <span className={'iconfont icon-send'} />
+          </Link>
         </div>
         <Payout post={post} />
       </div>

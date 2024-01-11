@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { isEmpty, isNil } from 'lodash';
 import { withRouter } from 'react-router-dom';
 import { parseJSON } from '../../../common/helpers/parseJSON';
-import { getObjectPosts } from '../../../store/feedStore/feedActions';
+import { getObjectPosts, getTiktokPreviewAction } from '../../../store/feedStore/feedActions';
 import { prepareMenuItems } from '../../social-gifts/SocialProduct/SocialMenuItems/SocialMenuItems';
 import Wobj from './Wobj';
 import { getAppendList } from '../../../store/appendStore/appendSelectors';
@@ -46,7 +46,11 @@ import {
 import { getUpdates } from '../../../store/appendStore/appendActions';
 import { setStoreActiveOption } from '../../../store/optionsStore/optionsActions';
 import { resetBreadCrumb } from '../../../store/shopStore/shopActions';
-import { getUpdateFieldName, showDescriptionPage } from '../../../common/helpers/wObjectHelper';
+import {
+  getUpdateFieldName,
+  showDescriptionPage,
+  sortListItems,
+} from '../../../common/helpers/wObjectHelper';
 import NotFound from '../../statics/NotFound';
 import { login } from '../../../store/authStore/authActions';
 import { getRate, getRewardFund } from '../../../store/appStore/appActions';
@@ -56,7 +60,6 @@ const WobjectContainer = props => {
   const name = props.match.params.name;
   const newsFilter =
     props.match.params[1] === 'newsFilter' ? { newsFilter: props.match.params.itemId } : {};
-
   const toggleViewEditMode = () => {
     props.setEditMode(!isEditMode);
   };
@@ -175,27 +178,26 @@ WobjectContainer.fetchData = async ({ store, match }) => {
   return Promise.allSettled([
     store.dispatch(getObject(objName, res?.value?.name)).then(response => {
       let promises = [
-        store.dispatch(
-          getObjectPosts({
-            object: objName,
-            username: objName,
-            limit: 20,
-            newsPermlink: response.value?.newsFeed?.permlink,
-          }),
-        ),
+        store
+          .dispatch(
+            getObjectPosts({
+              object: objName,
+              username: objName,
+              limit: 30,
+              newsPermlink: response.value?.newsFeed?.permlink,
+            }),
+          )
+          .then(resp => store.dispatch(getTiktokPreviewAction(resp.value))),
 
         store.dispatch(getAlbums(objName)),
         store.dispatch(getRelatedAlbum(objName)),
       ];
 
       if (['product', 'book', 'person', 'business'].includes(response.value.object_type)) {
-        const sortByOrder = (a, b) => {
-          const aIndex = response.value.menuItem.indexOf(a);
-          const bIndex = response.value.menuItem.indexOf(b);
-
-          return aIndex - bIndex;
-        };
-        const items = prepareMenuItems(response.value.menuItem).sort(sortByOrder)[0];
+        const customSort = isEmpty(response.value?.sortCustom?.include)
+          ? response.value.menuItem.map(i => i.permlink)
+          : response.value?.sortCustom?.include;
+        const items = sortListItems(prepareMenuItems(response.value.menuItem), customSort)[0];
 
         promises = [
           ...promises,
