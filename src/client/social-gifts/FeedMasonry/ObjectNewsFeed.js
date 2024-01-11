@@ -38,7 +38,7 @@ const ObjectNewsFeed = ({ wobj }) => {
   const readLanguages = useSelector(getReadLanguages);
   const previews = useSelector(getTiktokPreviewFromState);
   const previewLoading = useSelector(getPreviewLoadingFromState);
-  const [newsPermlink, setNewsPermlink] = useState();
+  const [newsPermlink, setNewsPermlink] = useState(wobj?.newsFeed?.permlink);
   const [currObj, setCurrObj] = useState();
   const [firstLoading, setFirstLoading] = useState(false);
   const feed = useSelector(getFeed);
@@ -70,7 +70,6 @@ const ObjectNewsFeed = ({ wobj }) => {
       ).then(res => {
         dispatch(getTiktokPreviewAction(res.value)).then(() => setFirstLoading(false));
       });
-      setNewsPermlink(wobj?.newsFeed?.permlink);
     } else {
       dispatch(getObject(objName)).then(res => {
         dispatch(
