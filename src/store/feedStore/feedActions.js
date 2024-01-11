@@ -281,8 +281,12 @@ export const getMoreObjectPosts = ({
   const feedContent = getFeedFromState('objectPosts', username, feed);
   const isLoading = getFeedLoadingFromState('objectPosts', username, feed);
 
-  if (!feedContent.length || isLoading) {
-    return null;
+  if (!feedContent.length || isLoading || skip % 5) {
+    return dispatch({
+      type: GET_MORE_OBJECT_POSTS.SUCCESS,
+      payload: [],
+      meta: { sortBy: 'objectPosts', category: username, limit },
+    });
   }
 
   return dispatch({

@@ -402,7 +402,7 @@ SocialWrapper.fetchData = async ({ store, req, url }) => {
                     getObjectPosts({
                       object: buttonList[0]?.permlink,
                       username: buttonList[0]?.permlink,
-                      limit: 30,
+                      limit: 20,
                       newsPermlink: buttonList[0].newsfeed,
                     }),
                   ),
@@ -443,7 +443,6 @@ SocialWrapper.fetchData = async ({ store, req, url }) => {
     store.dispatch(setAppUrl(`https://${req.headers.host}`)),
     store.dispatch(getWebsiteSettings(req.headers.host)),
     store.dispatch(setUsedLocale(lang)),
-    store.dispatch(login()),
   ]);
 };
 
