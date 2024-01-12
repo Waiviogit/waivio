@@ -89,7 +89,16 @@ export const parseLink = (appUrl, location, isPage) => (tagName, attribs) => {
     linkUrl.pathname !== '/'
   ) {
     if (isPage) {
-      href = linkUrl.hash && location?.pathname ? location.pathname : linkUrl.pathname;
+      console.log(linkUrl, 'linkUrl');
+      console.log(location, 'location');
+      if (appUrl.includes('waivio') || appUrl.includes('dining')) {
+        href = linkUrl.hash && location?.pathname !== '/' ? location.pathname : linkUrl.pathname;
+      } else {
+        href =
+          linkUrl.hash && location?.pathname !== '/'
+            ? location.pathname
+            : linkUrl.pathname.replace('/object/', '/checklist/');
+      }
 
       if (location?.hash) {
         href = href + location.hash;
