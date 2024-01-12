@@ -21,6 +21,7 @@ import { getRate, getRewardFund } from '../../../../store/appStore/appActions';
 import { getRebloggedList } from '../../../../store/reblogStore/reblogActions';
 import GuestSignUpForm from '../GuestSignUpForm/GuestSignUpForm';
 import Spinner from '../../Icon/Loading';
+import HiveAuth from '../SocialButtons/HiveAuth/HiveAuth';
 import SocialButtons from '../SocialButtons/SocialButtons';
 import SignUpButton from '../SignUpButton/SignUpButton';
 import {
@@ -61,6 +62,7 @@ const ModalSignIn = ({
 }) => {
   const dispatch = useDispatch();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [showQR, setShowQr] = useState(false);
   const [userData, setUserData] = useState({});
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -169,47 +171,53 @@ const ModalSignIn = ({
             <Spinner />
           ) : (
             <React.Fragment>
-              <p className="ModalSignIn__rules">
-                {intl.formatMessage({
-                  id: 'sing_in_modal_message',
-                  defaultMessage: 'Waivio is powered by the Hive open social blockchain',
-                })}
-              </p>
-              <p className="ModalSignIn__title ModalSignIn__title--lined">
+              {
+                showQR ? <span>qr</span> : <React.Fragment>
+                  <p className="ModalSignIn__rules">
+                    {intl.formatMessage({
+                      id: 'sing_in_modal_message',
+                      defaultMessage: 'Waivio is powered by the Hive open social blockchain',
+                    })}
+                  </p>
+                  <p className="ModalSignIn__title ModalSignIn__title--lined">
                 <span>
                   {intl.formatMessage({
                     id: 'steem_accounts',
                     defaultMessage: 'HIVE ACCOUNTS',
                   })}
                 </span>
-              </p>
-              <a role="button" href={hiveSinger.getLoginURL()} className="ModalSignIn__signin">
-                <img
-                  src="/images/icons/logo-hive.svg"
-                  alt="hive"
-                  className="ModalSignIn__icon-steemit"
-                />
-                {intl.formatMessage({
-                  id: 'signin_with_steemIt',
-                  defaultMessage: 'HiveSinger',
-                })}
-              </a>
-              <p className="ModalSignIn__title ModalSignIn__title--lined">
+                  </p>
+                  <a role="button" href={hiveSinger.getLoginURL()} className="ModalSignIn__signin">
+                    <img
+                      src="/images/icons/logo-hive.svg"
+                      alt="hive"
+                      className="ModalSignIn__icon-steemit"
+                    />
+                    {intl.formatMessage({
+                      id: 'signin_with_steemIt',
+                      defaultMessage: 'HiveSinger',
+                    })}
+                  </a>
+                  <HiveAuth setQRcodeForAuth={() => setShowQr(true)} />
+                  <p className="ModalSignIn__title ModalSignIn__title--lined">
                 <span>
                   {intl.formatMessage({
                     id: 'guestAccounts',
                     defaultMessage: 'GUEST ACCOUNTS',
                   })}
                 </span>
-              </p>
-              <div onClick={handleClickLoading} role="presentation">
-                <SocialButtons
-                  className="ModalSignIn__social"
-                  responseSocial={responseSocial}
-                  lastError={lastError}
-                  setLastError={setLastError}
-                />
-              </div>
+                  </p>
+                  <div onClick={handleClickLoading} role="presentation">
+                    <SocialButtons
+                      className="ModalSignIn__social"
+                      responseSocial={responseSocial}
+                      lastError={lastError}
+                      setLastError={setLastError}
+                    />
+                  </div>
+                </React.Fragment>
+              }
+
               <p className="ModalSignIn__rules">
                 {intl.formatMessage({
                   id: 'sing_in_modal_rules',
