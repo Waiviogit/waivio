@@ -241,7 +241,7 @@ const SocialWrapper = props => {
           {!signInPage && !isSocialGifts && <Header />}
           <div className={'ShopWebsiteWrapper'}>
             {props.loadingFetching ? (
-              <Loading />
+              <Loading margin />
             ) : (
               renderRoutes(props.route.routes, { isSocial: true })
             )}
