@@ -24,6 +24,7 @@ import customVideoPlugin from './videoPlugin';
 
 import './ObjectOfTypeWebpage.less';
 import CatalogBreadcrumb from '../Catalog/CatalogBreadcrumb/CatalogBreadcrumb';
+import Loading from '../../components/Icon/Loading';
 
 const customSlate = slate(config => ({
   ...config,
@@ -82,12 +83,16 @@ const ObjectOfTypeWebpage = ({ intl }) => {
   return (
     <div className="ObjectOfTypeWebpage">
       {!isEditMode && history.location.hash && <CatalogBreadcrumb wobject={wobject} intl={intl} />}
-      <Editor
-        readOnly={!isEditMode || showModal}
-        cellPlugins={plugins}
-        value={currentValue}
-        onChange={newValue => setCurrentValue(newValue)}
-      />
+      {loading ? (
+        <Loading />
+      ) : (
+        <Editor
+          readOnly={!isEditMode || showModal}
+          cellPlugins={plugins}
+          value={currentValue}
+          onChange={newValue => setCurrentValue(newValue)}
+        />
+      )}
       {isEditMode && (
         <div className="object-of-type-page__row align-center">
           <Button
