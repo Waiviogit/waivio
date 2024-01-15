@@ -11,7 +11,7 @@ const FavoritesMobileSidenav = ({ objectTypes, setVisible, visible, intl }) => {
 
   const modalBody = () => (
     <div className={'FavoritesMobileSidenav'}>
-      <b className="FavoritesMobileSidenav__maindepName">Objects</b>
+      <b className="FavoritesMobileSidenav__maindepName">Favorites</b>
       {objectTypes?.map(type => (
         <div
           key={type}
@@ -37,7 +37,7 @@ const FavoritesMobileSidenav = ({ objectTypes, setVisible, visible, intl }) => {
   return (
     <React.Fragment>
       <div className="FavoritesMobileSidenav__mobileCrumbs" onClick={() => setVisible(true)}>
-        <b>Objects</b> (<span className="FavoritesMobileSidenav__select">Select</span>)
+        <b>Favorites</b> (<span className="FavoritesMobileSidenav__select">Select</span>)
         {objectType && (
           <span>
             <Icon type="right" /> <span className={'ttc'}>{objectType}</span>

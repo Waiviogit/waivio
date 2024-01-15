@@ -1,29 +1,24 @@
-import React, { useEffect, useState } from 'react';
-import { isEmpty, size } from 'lodash';
+import React, { useEffect } from 'react';
+import { isEmpty } from 'lodash';
 import { NavLink } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { useParams } from 'react-router';
-import { FormattedMessage, injectIntl } from 'react-intl';
+import { injectIntl } from 'react-intl';
 import SkeletonCustom from '../Skeleton/SkeletonCustom';
 import {
   getFavoriteObjectTypes,
   getLoadingFavoriteObjectTypes,
 } from '../../../store/favoritesStore/favoritesSelectors';
 import { setFavoriteObjectTypes } from '../../../store/favoritesStore/favoritesActions';
+import listOfObjectTypes from '../../../common/constants/listOfObjectTypes';
 
-const typesLimit = 5;
+const typesLimit = listOfObjectTypes.length;
 const FavoritesSideNav = ({ intl }) => {
-  const [visible, setVisible] = useState(true);
-  const [displayedTypesCount, setTypesCount] = useState(typesLimit);
   const objectTypes = useSelector(getFavoriteObjectTypes);
   const isLoading = useSelector(getLoadingFavoriteObjectTypes);
   const { objectType = objectTypes?.[0], name } = useParams();
   const dispatch = useDispatch();
-
-  const toggleBlock = () => {
-    setVisible(!visible);
-  };
 
   useEffect(() => {
     if (isEmpty(objectTypes)) dispatch(setFavoriteObjectTypes(name));
@@ -33,17 +28,10 @@ const FavoritesSideNav = ({ intl }) => {
     !isEmpty(objectTypes) && (
       <React.Fragment>
         <div className={'collapsible-block SidebarContentBlock__content mb4'}>
-          <div className="collapsible-block__title" role="presentation" onClick={toggleBlock}>
-            <span className="collapsible-block__title-text">Objects:</span>
-            <span className="collapsible-block__title-icon">
-              {visible ? (
-                <i className="iconfont icon-offline" />
-              ) : (
-                <i className="iconfont icon-addition" />
-              )}
-            </span>
+          <div>
+            <span className="ShopDepartmentsList__maindepName fw5">Favorites:</span>
           </div>
-          {visible && (
+          {
             <ul className="sidenav-discover-objects Sidenav">
               {isLoading ? (
                 <SkeletonCustom
@@ -55,7 +43,7 @@ const FavoritesSideNav = ({ intl }) => {
                 />
               ) : (
                 <React.Fragment>
-                  {objectTypes?.slice(0, displayedTypesCount)?.map(type => (
+                  {objectTypes?.map(type => (
                     <li key={`${type}`} className="ttc">
                       <NavLink
                         to={`/@${name}/favorites/${type}`}
@@ -70,19 +58,10 @@ const FavoritesSideNav = ({ intl }) => {
                       </NavLink>
                     </li>
                   ))}
-                  {displayedTypesCount < size(objectTypes) ? (
-                    <div
-                      className="sidenav-discover-objects__show-more"
-                      role="presentation"
-                      onClick={() => setTypesCount(displayedTypesCount + typesLimit)}
-                    >
-                      <FormattedMessage id="show_more" defaultMessage="show more" />
-                    </div>
-                  ) : null}
                 </React.Fragment>
               )}
             </ul>
-          )}
+          }
         </div>
       </React.Fragment>
     )
