@@ -8,7 +8,7 @@ import {
 
 const initialState = {
   isAuthenticated: false,
-  isFetching: true,
+  isFetching: false,
   isReloading: false,
   loaded: false,
   user: {},
