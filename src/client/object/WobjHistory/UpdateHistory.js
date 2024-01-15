@@ -70,11 +70,8 @@ const UpdateHistory = () => {
           ))}
         </ReduxInfiniteScroll>
       ) : (
-        <div className="object-feed__row justify-center">
-          <FormattedMessage
-            id="empty_object_profile"
-            defaultMessage="Be the first to write a review"
-          />
+        <div className="object-feed__row object-feed__row--grey justify-center ">
+          <FormattedMessage id="empty_updates" defaultMessage="No updates found" />
         </div>
       )}
     </React.Fragment>
