@@ -52,8 +52,8 @@ export const setMoreFavoriteObjects = (name, objectType) => (dispatch, getState)
   const authUserName = getAuthenticatedUserName(getState());
   const favorites = getFavoriteObjects(getState());
 
-  if (!favorites[objectType].length) return Promise.resolve(null);
-  const skip = favorites[objectType].length;
+  if (!favorites[objectType]?.length) return Promise.resolve(null);
+  const skip = favorites[objectType]?.length;
 
   return dispatch({
     type: SET_MORE_FAVORITE_OBJECTS.ACTION,
