@@ -12,7 +12,11 @@ import {
   getObjectName,
   haveAccess,
 } from '../../../common/helpers/wObjectHelper';
-import { getObject, getShopBreadCrumbs } from '../../../store/wObjectStore/wObjectSelectors';
+import {
+  getIsEditMode,
+  getObject,
+  getShopBreadCrumbs,
+} from '../../../store/wObjectStore/wObjectSelectors';
 import { getUsedLocale, getUserAdministrator } from '../../../store/appStore/appSelectors';
 import { getObjectInfo } from '../../../waivioApi/ApiClient';
 import {
@@ -30,6 +34,7 @@ import './Breadcrumbs.less';
 const Breadcrumbs = ({ inProduct, intl }) => {
   const breadcrumbs = useSelector(getShopBreadCrumbs);
   const locale = useSelector(getUsedLocale);
+  const isEditMode = useSelector(getIsEditMode);
   const authenticated = useSelector(getIsAuthenticated);
   const wobject = useSelector(getObject);
   const username = useSelector(getAuthenticatedUserName);
@@ -43,6 +48,7 @@ const Breadcrumbs = ({ inProduct, intl }) => {
   const permlinks = location.hash.replace('#', '').split('/');
   const listObjType = wobject?.object_type === 'list';
   let linkList = location.hash ? [match.params.name, ...permlinks] : [match.params.name];
+  const viewUrl = query.get('viewUrl');
 
   if (inProduct) {
     const breadbrumbsFromQuery = query.get('breadbrumbs');
@@ -62,10 +68,16 @@ const Breadcrumbs = ({ inProduct, intl }) => {
 
   const editListClick = () => {
     const lastItemPermlink = breadcrumbs[breadcrumbs?.length - 1]?.author_permlink;
+    const backUrl = encodeURIComponent(`${location.pathname}${location.search}${location.hash}`);
 
     dispatch(setEditMode(true));
-    history.push(`/object/${lastItemPermlink}`);
+
+    history.push(`/object/${lastItemPermlink}?viewUrl=${backUrl}`);
   };
+
+  useEffect(() => {
+    if (viewUrl) history.push(viewUrl);
+  }, [isEditMode]);
 
   useEffect(() => {
     if (linkList && !(isNil(linkList[0]) && linkList.length === 1))
