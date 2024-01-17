@@ -21,7 +21,7 @@ import { getRate, getRewardFund } from '../../../../store/appStore/appActions';
 import { getRebloggedList } from '../../../../store/reblogStore/reblogActions';
 import GuestSignUpForm from '../GuestSignUpForm/GuestSignUpForm';
 import Spinner from '../../Icon/Loading';
-import HiveAuth from '../SocialButtons/HiveAuth/HiveAuth';
+import HiveAuth from '../../../HiveAuth/HiveAuth';
 import SocialButtons from '../SocialButtons/SocialButtons';
 import SignUpButton from '../SignUpButton/SignUpButton';
 import {
@@ -171,8 +171,10 @@ const ModalSignIn = ({
             <Spinner />
           ) : (
             <React.Fragment>
-              {
-                showQR ? <span>qr</span> : <React.Fragment>
+              {showQR ? (
+                <span>qr</span>
+              ) : (
+                <React.Fragment>
                   <p className="ModalSignIn__rules">
                     {intl.formatMessage({
                       id: 'sing_in_modal_message',
@@ -180,12 +182,12 @@ const ModalSignIn = ({
                     })}
                   </p>
                   <p className="ModalSignIn__title ModalSignIn__title--lined">
-                <span>
-                  {intl.formatMessage({
-                    id: 'steem_accounts',
-                    defaultMessage: 'HIVE ACCOUNTS',
-                  })}
-                </span>
+                    <span>
+                      {intl.formatMessage({
+                        id: 'steem_accounts',
+                        defaultMessage: 'HIVE ACCOUNTS',
+                      })}
+                    </span>
                   </p>
                   <a role="button" href={hiveSinger.getLoginURL()} className="ModalSignIn__signin">
                     <img
@@ -200,12 +202,12 @@ const ModalSignIn = ({
                   </a>
                   <HiveAuth setQRcodeForAuth={() => setShowQr(true)} />
                   <p className="ModalSignIn__title ModalSignIn__title--lined">
-                <span>
-                  {intl.formatMessage({
-                    id: 'guestAccounts',
-                    defaultMessage: 'GUEST ACCOUNTS',
-                  })}
-                </span>
+                    <span>
+                      {intl.formatMessage({
+                        id: 'guestAccounts',
+                        defaultMessage: 'GUEST ACCOUNTS',
+                      })}
+                    </span>
                   </p>
                   <div onClick={handleClickLoading} role="presentation">
                     <SocialButtons
@@ -216,7 +218,7 @@ const ModalSignIn = ({
                     />
                   </div>
                 </React.Fragment>
-              }
+              )}
 
               <p className="ModalSignIn__rules">
                 {intl.formatMessage({
