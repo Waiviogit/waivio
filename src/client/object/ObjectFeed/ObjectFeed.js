@@ -117,7 +117,7 @@ const ObjectFeed = ({ limit, handleCreatePost, userName, wobject }) => {
 
   return (
     <div className="object-feed">
-      {loadingPropositions ? (
+      {loadingPropositions || isFetching ? (
         <Loading />
       ) : (
         <React.Fragment>
@@ -126,7 +126,7 @@ const ObjectFeed = ({ limit, handleCreatePost, userName, wobject }) => {
             reward?.secondary?.map((proposition, i) => (
               <Proposition key={getPropositionsKey(proposition, i)} proposition={proposition} />
             ))}
-          {!isEmpty(content) || isFetching ? (
+          {!isEmpty(content) && !isFetching ? (
             <Feed
               content={content}
               isFetching={isFetching}

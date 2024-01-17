@@ -2574,5 +2574,6 @@
   "favorites": "Favorites",
   "empty_favorites": "This user doesn't have any favorites.",
   "list_duplication_pause": "The list duplication bot will pause if WAIV voting power on the account drops below the set threshold.",
-  "auth_error_message": "Authorization was not successful. Please try again later."
+  "auth_error_message": "Authorization was not successful. Please try again later.",
+  "empty_updates": "No updates found"
 }

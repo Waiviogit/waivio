@@ -74,6 +74,7 @@ const CatalogWrap = props => {
         const pathUrl = getLastPermlinksFromHash(location.hash);
 
         if (!isEmpty(wobjectNested) && wobjectNested.author_permlink === pathUrl) {
+          setLoadedNestedWobject(true);
           setLists(
             sortListItemsBy(
               getListItems(wobjectNested),
@@ -82,6 +83,7 @@ const CatalogWrap = props => {
             ),
           );
           setRecencySortList(recencySortOrder(getListItem(wobjectNested)));
+          setLoadingNestedWobject(false);
         } else {
           setLoadingNestedWobject(true);
 

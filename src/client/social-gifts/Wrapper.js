@@ -241,7 +241,7 @@ const SocialWrapper = props => {
           {!signInPage && !isSocialGifts && <Header />}
           <div className={'ShopWebsiteWrapper'}>
             {props.loadingFetching ? (
-              <Loading />
+              <Loading margin />
             ) : (
               renderRoutes(props.route.routes, { isSocial: true })
             )}
@@ -344,22 +344,48 @@ SocialWrapper.fetchData = async ({ store, req, url }) => {
             const customSort = get(wobject, 'sortCustom.include', []);
 
             if (isEmpty(wobject.menuItem)) {
-              return store.dispatch(
-                setItemsForNavigation([
-                  {
-                    link: createLink(wobject),
-                    name: getObjectName(wobject),
-                    permlink: wobject?.author_permlink,
-                    object_type: wobject?.object_type,
-                  },
-                  {
-                    name: 'Legal',
-                    link: '/checklist/ljc-legal',
-                    permlink: 'ljc-legal',
-                    object_type: 'list',
-                  },
-                ]),
+              promises.push(
+                store.dispatch(
+                  setItemsForNavigation([
+                    {
+                      link: createLink(wobject),
+                      name: getObjectName(wobject),
+                      permlink: wobject?.author_permlink,
+                      object_type: wobject?.object_type,
+                    },
+                    {
+                      name: 'Legal',
+                      link: '/checklist/ljc-legal',
+                      permlink: 'ljc-legal',
+                      object_type: 'list',
+                    },
+                  ]),
+                ),
               );
+
+              if (url === '/') {
+                if (wobject.object_type === 'newsfeed') {
+                  promises.push(
+                    store.dispatch(
+                      getObjectPosts({
+                        object: buttonList[0]?.permlink,
+                        username: buttonList[0]?.permlink,
+                        limit: 20,
+                        newsPermlink: buttonList[0].newsfeed,
+                      }),
+                    ),
+                  );
+                }
+                if (wobject.object_type === 'shop') {
+                  promises.push(store.dispatch(getWobjectDepartments(buttonList[0]?.permlink)));
+                  promises.push(store.dispatch(getWobjectsShopList(buttonList[0]?.permlink)));
+                }
+                if (['page', 'widget', 'newsfeed', 'list'].includes(wobject.object_type)) {
+                  promises.push(store.dispatch(getObjectAction(wobject.author_permlink)));
+                }
+              }
+
+              return Promise.allSettled(promises);
             }
             const listItems = isEmpty(menuItemLinks)
               ? []
@@ -395,7 +421,6 @@ SocialWrapper.fetchData = async ({ store, req, url }) => {
             }));
 
             if (url === '/') {
-              promises.push(store.dispatch(getObjectAction(buttonList[0]?.permlink)));
               if (buttonList[0]?.object_type === 'newsfeed') {
                 promises.push(
                   store.dispatch(
@@ -408,10 +433,12 @@ SocialWrapper.fetchData = async ({ store, req, url }) => {
                   ),
                 );
               }
-
               if (buttonList[0]?.object_type === 'shop') {
                 promises.push(store.dispatch(getWobjectDepartments(buttonList[0]?.permlink)));
                 promises.push(store.dispatch(getWobjectsShopList(buttonList[0]?.permlink)));
+              }
+              if (['page', 'widget', 'newsfeed', 'list'].includes(buttonList[0]?.object_type)) {
+                promises.push(store.dispatch(getObjectAction(buttonList[0]?.permlink)));
               }
             }
 

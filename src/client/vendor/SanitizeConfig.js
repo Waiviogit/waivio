@@ -1,5 +1,6 @@
 import sanitizeHtml from 'sanitize-html';
 import url from 'url';
+import { endsWith } from 'lodash';
 import { knownDomains } from '../../common/helpers/constants';
 import { getLastPermlinksFromHash } from '../../common/helpers/wObjectHelper';
 
@@ -89,7 +90,16 @@ export const parseLink = (appUrl, location, isPage) => (tagName, attribs) => {
     linkUrl.pathname !== '/'
   ) {
     if (isPage) {
-      href = linkUrl.hash && location?.pathname ? location.pathname : linkUrl.pathname;
+      if (appUrl.includes('waivio') || appUrl.includes('dining')) {
+        href = linkUrl.hash && location?.pathname !== '/' ? location.pathname : linkUrl.pathname;
+      } else {
+        const modifiedUrl =
+          linkUrl.pathname.endsWith('/page') || linkUrl.pathname.endsWith('/list')
+            ? linkUrl.pathname.slice(0, -5).replace('/object/', '/checklist/')
+            : linkUrl.pathname.replace('/object/', '/checklist/');
+
+        href = linkUrl.hash && location?.pathname !== '/' ? location.pathname : modifiedUrl;
+      }
 
       if (location?.hash) {
         href = href + location.hash;
