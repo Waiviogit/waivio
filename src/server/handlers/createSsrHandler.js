@@ -36,7 +36,8 @@ function createTimeout(timeout, promise) {
 export default function createSsrHandler(template) {
   return async function serverSideResponse(req, res) {
     try {
-      if (await isSearchBot(req)) {
+      const searchBot = await isSearchBot(req);
+      if (searchBot) {
         await updateBotCount(req);
         const cachedPage = await getCachedPage(req);
         if (cachedPage) {
@@ -111,7 +112,8 @@ export default function createSsrHandler(template) {
         get(adsenseSettings, 'code', ''),
       );
 
-      await setCachedPage({ page, req });
+      if (searchBot) await setCachedPage({ page, req });
+
       return res.send(page);
     } catch (err) {
       console.error('SSR error occured, falling back to bundled application instead', err);

@@ -70,7 +70,7 @@ const UpdateHistory = () => {
           ))}
         </ReduxInfiniteScroll>
       ) : (
-        <div className="object-feed__row object-feed__row--grey justify-center ">
+        <div className=" object-feed__row--grey justify-center ">
           <FormattedMessage id="empty_updates" defaultMessage="No updates found" />
         </div>
       )}
