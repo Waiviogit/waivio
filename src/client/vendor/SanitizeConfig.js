@@ -93,10 +93,13 @@ export const parseLink = (appUrl, location, isPage) => (tagName, attribs) => {
       if (appUrl.includes('waivio') || appUrl.includes('dining')) {
         href = linkUrl.hash && location?.pathname !== '/' ? location.pathname : linkUrl.pathname;
       } else {
-        const modifiedUrl =
+        let modifiedUrl =
           linkUrl.pathname.endsWith('/page') || linkUrl.pathname.endsWith('/list')
             ? linkUrl.pathname.slice(0, -5).replace('/object/', '/checklist/')
             : linkUrl.pathname.replace('/object/', '/checklist/');
+        if (linkUrl.pathname.endsWith('/webpage')) {
+          modifiedUrl = linkUrl.pathname;
+        }
 
         href = linkUrl.hash && location?.pathname !== '/' ? location.pathname : modifiedUrl;
       }
