@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { v4 as uuidv4 } from 'uuid';
 import CryptoJS from 'crypto-js';
 import assert from 'assert';
@@ -46,11 +47,11 @@ function getMessage(type, uuid = undefined) {
   // Clean expired requests
   messages = messages.filter(o => !o.expire || o.expire >= Date.now());
   // Search for first matching request
-  const req = messages.find(o => o.cmd == type && (uuid ? o.uuid == uuid : true));
+  const req = messages.find(o => o.cmd === type && (uuid ? o.uuid === uuid : true));
 
   // If any found, remove it from the array
   if (req) {
-    messages = messages.filter(o => !(o.cmd == type && (uuid ? o.uuid == req.uuid : true)));
+    messages = messages.filter(o => !(o.cmd === type && (uuid ? o.uuid === req.uuid : true)));
   }
 
   return req;
@@ -160,7 +161,7 @@ async function checkConnection(uuid = undefined) {
       // connection not completed yet, wait till ready
       do {
         await sleep(DELAY_CHECK_WEBSOCKET);
-      } while (wsHAS && wsHAS.readyState == 0); // 0 = Connecting
+      } while (wsHAS && wsHAS.readyState === 0); // 0 = Connecting
     }
     if (HAS_connected && uuid) {
       // WebSocket reconnected, try to attach pending request if any
@@ -174,9 +175,9 @@ async function checkConnection(uuid = undefined) {
 
     return HAS_connected;
   }
- 
+
     return false;
-  
+
 }
 
 export class Auth {
@@ -192,7 +193,7 @@ export default {
     assert(options.host === undefined || options.host.match('^((ws|wss)?://)'), 'invalid host URL');
     assert(
       options.auth_key_secret === undefined ||
-        (typeof options.auth_key_secret === 'string' && options.auth_key_secret != ''),
+        (typeof options.auth_key_secret === 'string' && options.auth_key_secret !== ''),
       'invalid auth_key_secret',
     );
     if (options.host) {
@@ -338,7 +339,7 @@ export default {
               } else if (req_nack) {
                 // validate uuid
                 if (
-                  uuid == CryptoJS.AES.decrypt(req_nack.data, auth_key).toString(CryptoJS.enc.Utf8)
+                  uuid === CryptoJS.AES.decrypt(req_nack.data, auth_key).toString(CryptoJS.enc.Utf8)
                 ) {
                   // authentication rejected
                   clearInterval(wait);
