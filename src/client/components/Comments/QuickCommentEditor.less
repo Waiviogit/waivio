@@ -10,8 +10,11 @@
   margin-left: 20px;
 
   span[data-slate-placeholder='true'] {
-    color: #99aab5;
+    color: @blue-botticelli;
     opacity: 1 !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .md-block-paragraph:first-child {
