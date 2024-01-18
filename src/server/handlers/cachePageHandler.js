@@ -1,5 +1,4 @@
 import { USER_AGENT } from '../../common/constants/ssrData';
-
 import { webPage, botStatistics, botAgent, sitemap } from '../seo-service/seoServiceApi';
 
 export const isSearchBot = async req => {

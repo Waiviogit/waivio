@@ -20,7 +20,7 @@ import {
 import { getHtml } from './Body';
 import { getImagePathPost, getProxyImageURL } from '../../../common/helpers/image';
 import { getBodyLink } from '../EditorExtended/util/videoHelper';
-import { videoPreviewRegex } from '../../../common/helpers/regexHelpers';
+import { videoPreviewRegex, videoPreviewRegex2 } from '../../../common/helpers/regexHelpers';
 
 const regexPattern = /(?:https?:\/\/)?(?:www\.)?youtu(?:be\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=)|\.be\/)([\w-]+)(?:\S+)?/g;
 
@@ -49,7 +49,8 @@ const StoryPreview = ({ post, isUpdates, isVimeo }) => {
     };
   }
 
-  const videoPreviewResult = post.body.match(videoPreviewRegex);
+  const videoPreviewResult =
+    post.body.match(videoPreviewRegex2) || post.body.match(videoPreviewRegex);
   const videoPreviewResulYoutube = post.body.match(regexPattern);
 
   if (!embeds[0] && videoPreviewResult) {

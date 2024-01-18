@@ -9,7 +9,12 @@ import Remarkable from 'remarkable';
 import steemEmbed from '../../vendor/embedMedia';
 import { jsonParse } from '../../../common/helpers/formatter';
 import sanitizeConfig from '../../vendor/SanitizeConfig';
-import { imageRegex, rewriteRegex, videoPreviewRegex } from '../../../common/helpers/regexHelpers';
+import {
+  imageRegex,
+  rewriteRegex,
+  videoPreviewRegex,
+  videoPreviewRegex2,
+} from '../../../common/helpers/regexHelpers';
 import htmlReady from '../../vendor/steemitHtmlReady';
 import improve from '../../../common/helpers/improve';
 import { extractLinks } from '../../../common/helpers/parser';
@@ -65,7 +70,9 @@ export function getHtml(
       parsedJsonMetadata.image.push(img);
     }
   });
-  const videoPreviewResult = parsedBody.match(videoPreviewRegex);
+
+  const videoPreviewResult =
+    parsedBody.match(videoPreviewRegex2) || parsedBody.match(videoPreviewRegex);
 
   if (videoPreviewResult) {
     const videoLink = getBodyLink(videoPreviewResult);

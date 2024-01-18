@@ -29,14 +29,16 @@ const UserFavorites = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (isEmpty(favoriteObjects?.[objectType])) dispatch(setFavoriteObjects(name, objectType));
+    if (isEmpty(favoriteObjects?.[objectType]) && !isEmpty(objectTypes))
+      dispatch(setFavoriteObjects(name, objectType));
   }, [objectType, name]);
 
   const loadMoreObjects = () => {
     if (hasMore && !isLoading) dispatch(setMoreFavoriteObjects(name, objectType));
   };
 
-  return isLoading && favoriteObjects?.[objectType]?.length < 10 ? (
+  return (isNil(favoriteObjects?.[objectType]) && isLoading) ||
+    (isLoading && favoriteObjects?.[objectType]?.length < 10) ? (
     <Loading />
   ) : (
     <>
