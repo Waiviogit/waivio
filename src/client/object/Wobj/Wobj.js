@@ -26,6 +26,7 @@ import Loading from '../../components/Icon/Loading';
 import WobjectView from './WobjectView';
 import { getHelmetIcon, getSiteName } from '../../../store/appStore/appSelectors';
 import { useSeoInfoWithAppUrl } from '../../../hooks/useSeoInfo';
+import { getWobjectExpertise } from '../../../store/wObjectStore/wobjActions';
 
 const Wobj = ({
   authenticatedUserName: userName,
@@ -57,6 +58,9 @@ const Wobj = ({
 
   useEffect(() => {
     const objectType = getObjectType(wobject);
+    const newsFilter = params[1] === 'newsFilter' ? { newsFilter: params.itemId } : {};
+
+    dispatch(getWobjectExpertise(newsFilter, params.name));
 
     if (!isEmpty(wobject) && window?.gtag)
       window.gtag('event', `view_${objectType}`, { debug_mode: true });

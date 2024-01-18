@@ -37,7 +37,8 @@ const UserFavorites = () => {
     if (hasMore && !isLoading) dispatch(setMoreFavoriteObjects(name, objectType));
   };
 
-  return isLoading && favoriteObjects?.[objectType]?.length < 10 ? (
+  return (isNil(favoriteObjects?.[objectType]) && isLoading) ||
+    (isLoading && favoriteObjects?.[objectType]?.length < 10) ? (
     <Loading />
   ) : (
     <>

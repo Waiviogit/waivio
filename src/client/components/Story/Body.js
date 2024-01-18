@@ -9,10 +9,16 @@ import Remarkable from 'remarkable';
 import steemEmbed from '../../vendor/embedMedia';
 import { jsonParse } from '../../../common/helpers/formatter';
 import sanitizeConfig from '../../vendor/SanitizeConfig';
-import { imageRegex, rewriteRegex } from '../../../common/helpers/regexHelpers';
+import {
+  imageRegex,
+  rewriteRegex,
+  videoPreviewRegex,
+  videoPreviewRegex2,
+} from '../../../common/helpers/regexHelpers';
 import htmlReady from '../../vendor/steemitHtmlReady';
 import improve from '../../../common/helpers/improve';
 import { extractLinks } from '../../../common/helpers/parser';
+import { getBodyLink } from '../EditorExtended/util/videoHelper';
 import PostFeedEmbed from './PostFeedEmbed';
 import AsyncVideo from '../../vendor/asyncVideo';
 import { addBreakLines, addPeakdImage, addSpaces } from '../../../common/helpers/editorHelper';
@@ -58,11 +64,21 @@ export function getHtml(
   let parsedBody = body.replace(/<!--([\s\S]+?)(-->|$)/g, '(html comment removed: $1)');
 
   parsedBody = addPeakdImage(parsedBody);
+
   parsedBody.replace(imageRegex, img => {
     if (filter(parsedJsonMetadata.image, i => i.indexOf(img) !== -1).length === 0) {
       parsedJsonMetadata.image.push(img);
     }
   });
+
+  const videoPreviewResult =
+    parsedBody.match(videoPreviewRegex2) || parsedBody.match(videoPreviewRegex);
+
+  if (videoPreviewResult) {
+    const videoLink = getBodyLink(videoPreviewResult);
+
+    if (videoLink) parsedBody = parsedBody.replace(videoPreviewResult[0], videoLink);
+  }
 
   parsedBody = improve(parsedBody);
   parsedBody = addSpaces(parsedBody);

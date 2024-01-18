@@ -20,6 +20,10 @@ export const getHideLinkedObjects = createSelector([settingsState], state =>
   get(state, 'shop.hideLinkedObjects', false),
 );
 
+export const getHideFavoriteObjects = createSelector([settingsState], state =>
+  get(state, 'hideFavoriteObjects', false),
+);
+
 export const getNightmode = createSelector([settingsState], state => state.nightmode);
 
 export const getCurrency = createSelector([settingsState], state => state.currency);
