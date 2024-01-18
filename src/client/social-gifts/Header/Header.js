@@ -44,7 +44,7 @@ const Header = () => {
           >
             {logo && (
               <img
-                alt={`Social Gifts - ${header || config.host || currHost}`}
+                alt={`Social Gifts - ${header || config.host || currHost} `}
                 src={logo}
                 className="Header__img"
               />
