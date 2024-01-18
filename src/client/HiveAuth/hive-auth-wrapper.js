@@ -1,8 +1,6 @@
-/* eslint-disable camelcase */
-const uuidv4 = require('uuid').v4;
-const CryptoJS = require('crypto-js');
-const WebSocket = require('ws');
-const assert = require('assert');
+import { v4 as uuidv4 } from 'uuid';
+import CryptoJS from 'crypto-js';
+import assert from 'assert';
 
 const CMD = {
   CONNECTED: 'connected',
@@ -29,7 +27,7 @@ const CMD = {
 
 const DELAY_CHECK_WEBSOCKET = 250; // Delay between checking WebSocket connection (in milliseconds)
 const DELAY_CHECK_REQUESTS = 250; // Delay between checking HAS events (in milliseconds)
-const HAS_SERVER = 'wss://hive-auth.arcange.eu'; // Default HAS infrastructure host
+const HAS_SERVER = 'wss://hive-auth.arcange.eu/'; // Default HAS infrastructure host
 
 const HAS_PROTOCOLS = [0.8, 1]; // Supported protocols
 const HAS_options = {
@@ -46,27 +44,30 @@ let trace = false;
 
 function getMessage(type, uuid = undefined) {
   // Clean expired requests
-  messages = messages.filter((o) => !o.expire || o.expire >= Date.now());
+  messages = messages.filter(o => !o.expire || o.expire >= Date.now());
   // Search for first matching request
-  const req = messages.find((o) => o.cmd == type && (uuid ? o.uuid == uuid : true));
+  const req = messages.find(o => o.cmd == type && (uuid ? o.uuid == uuid : true));
+
   // If any found, remove it from the array
   if (req) {
-    messages = messages.filter((o) => !(o.cmd == type && (uuid ? o.uuid == req.uuid : true)));
+    messages = messages.filter(o => !(o.cmd == type && (uuid ? o.uuid == req.uuid : true)));
   }
+
   return req;
 }
 
 // HAS client
 function startWebsocket() {
   wsHAS = new WebSocket(HAS_options.host);
-  wsHAS.onopen = function () {
+  wsHAS.onopen = function() {
     // Web Socket is connected
     HAS_connected = true;
     if (trace) console.log('WebSocket connected');
   };
-  wsHAS.onmessage = function (event) {
+  wsHAS.onmessage = function(event) {
     if (trace) console.log(`[RECV] ${event.data}`);
-    const message = typeof (event.data) === 'string' ? JSON.parse(event.data) : event.data;
+    const message = typeof event.data === 'string' ? JSON.parse(event.data) : event.data;
+
     // Process HAS <-> App messages
     if (message.cmd) {
       switch (message.cmd) {
@@ -96,7 +97,7 @@ function startWebsocket() {
       }
     }
   };
-  wsHAS.onclose = function (event) {
+  wsHAS.onclose = function(event) {
     // connection closed, discard old websocket
     wsHAS = undefined;
     HAS_connected = false;
@@ -110,14 +111,15 @@ function send(message) {
 }
 
 function sleep(ms) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
+  return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 async function attach(uuid) {
   return new Promise(async (resolve, reject) => {
-    assert(uuid && typeof (uuid) === 'string', 'missing or invalid uuid');
+    assert(uuid && typeof uuid === 'string', 'missing or invalid uuid');
     // Send the attach request to the HAS
     const payload = { cmd: CMD.ATTACH_REQ, uuid };
+
     send(JSON.stringify(payload));
     const expire = Date.now() + HAS_timeout;
     // Wait for the reply from the HAS
@@ -125,6 +127,7 @@ async function attach(uuid) {
       // Confirmation received, check if we got a request result
       const req_ack = getMessage(CMD.ATTACH_ACK, uuid);
       const req_nack = getMessage(CMD.ATTACH_NACK, uuid);
+
       if (req_ack) {
         // attach success
         clearInterval(wait);
@@ -145,31 +148,38 @@ async function attach(uuid) {
 }
 
 async function checkConnection(uuid = undefined) {
-  if (HAS_connected) {
-    return true;
-  }
-  if (!wsHAS) {
-    startWebsocket();
-  }
-  if (!HAS_connected) {
-    // connection not completed yet, wait till ready
-    do {
-      await sleep(DELAY_CHECK_WEBSOCKET);
-    } while (wsHAS && wsHAS.readyState == 0); // 0 = Connecting
-  }
-  if (HAS_connected && uuid) {
-    // WebSocket reconnected, try to attach pending request if any
-    try {
-      await attach(uuid);
-      if (trace) console.log(`Request attached ${uuid}`);
-    } catch (e) {
-      return false;
+  if ('WebSocket' in window) {
+    // The browser support Websocket
+    if (HAS_connected) {
+      return true;
     }
+    if (!wsHAS) {
+      startWebsocket();
+    }
+    if (!HAS_connected) {
+      // connection not completed yet, wait till ready
+      do {
+        await sleep(DELAY_CHECK_WEBSOCKET);
+      } while (wsHAS && wsHAS.readyState == 0); // 0 = Connecting
+    }
+    if (HAS_connected && uuid) {
+      // WebSocket reconnected, try to attach pending request if any
+      try {
+        await attach(uuid);
+        if (trace) console.log(`Request attached ${uuid}`);
+      } catch (e) {
+        return false;
+      }
+    }
+
+    return HAS_connected;
   }
-  return HAS_connected;
+ 
+    return false;
+  
 }
 
-class Auth {
+export class Auth {
   constructor(username, expire = undefined, key = undefined) {
     this.username = username;
     this.expire = expire;
@@ -177,16 +187,21 @@ class Auth {
   }
 }
 
-module.exports = {
-  Auth,
+export default {
   setOptions(options) {
-    assert(options.host === undefined || options.host.match('^((ws|wss)?:\/\/)'), 'invalid host URL');
-    assert(options.auth_key_secret === undefined || (typeof (options.auth_key_secret) === 'string' && options.auth_key_secret != ''), 'invalid auth_key_secret');
+    assert(options.host === undefined || options.host.match('^((ws|wss)?://)'), 'invalid host URL');
+    assert(
+      options.auth_key_secret === undefined ||
+        (typeof options.auth_key_secret === 'string' && options.auth_key_secret != ''),
+      'invalid auth_key_secret',
+    );
     if (options.host) {
       HAS_options.host = options.host;
     }
     if (options.auth_key_secret) {
-      console.warn('Warning: do not enable SendAuthKey unless you run your own PKSA in service mode!');
+      console.warn(
+        'Warning: do not enable SendAuthKey unless you run your own PKSA in service mode!',
+      );
       HAS_options.auth_key_secret = options.auth_key_secret;
     }
   },
@@ -203,46 +218,67 @@ module.exports = {
   },
 
   async connect() {
-    return (await checkConnection());
+    return await checkConnection();
   },
 
   /**
-     * Sends an authentication request to the server
-     * @param {Object} auth
-     * @param {string} auth.username
-     * TODO - Remove "token" when protocol v0 is deprecated
-     * @param {string=} auth.token - DEPRECATED since protocol v1
-     * TODO -
-     * @param {number=} auth.expire
-     * @param {string=} auth.key
-     * @param {Object} app_data
-     * @param {string} app_data.name - Application name
-     * @param {string} app_data.description - Application description
-     * @param {string} app_data.icon - URL of application icon
-     * @param {Object} challenge_data - (optional)
-     * @param {string} challenge_data.key_type - key type required to sign the challenge (posting, acive, memo)
-     * @param {string} challenge_data.challenge - a string to be signed
-     * @param {Object} cbWait - (optional) callback method to notify the app about pending request
-     */
+   * Sends an authentication request to the server
+   * @param {Object} auth
+   * @param {string} auth.username
+   * TODO - Remove "token" when protocol v0 is deprecated
+   * @param {string=} auth.token - DEPRECATED since protocol v1
+   * TODO -
+   * @param {number=} auth.expire
+   * @param {string=} auth.key
+   * @param {Object} app_data
+   * @param {string} app_data.name - Application name
+   * @param {string} app_data.description - Application description
+   * @param {string} app_data.icon - URL of application icon
+   * @param {Object} challenge_data - (optional)
+   * @param {string} challenge_data.key_type - key type required to sign the challenge (posting, acive, memo)
+   * @param {string} challenge_data.challenge - a string to be signed
+   * @param {Object} cbWait - (optional) callback method to notify the app about pending request
+   */
   authenticate(auth, app_data, challenge_data = undefined, cbWait = undefined) {
     return new Promise(async (resolve, reject) => {
       try {
-        assert(auth && auth.username && typeof (auth.username) === 'string', 'missing or invalid auth.username');
-        assert(app_data && app_data.name && typeof (app_data.name) === 'string', 'missing or invalid app_data.name');
-        assert(!challenge_data || (challenge_data.key_type && typeof (challenge_data.key_type) === 'string'), 'missing or invalid challenge_data.key_type');
-        assert(!challenge_data || (challenge_data.challenge && typeof (challenge_data.challenge) === 'string'), 'missing or invalid challenge_data.challenge');
-        assert((await checkConnection()), `Failed to connect to HiveAuth server ${trace ? HAS_options.host : ''}`);
+        assert(
+          auth && auth.username && typeof auth.username === 'string',
+          'missing or invalid auth.username',
+        );
+        assert(
+          app_data && app_data.name && typeof app_data.name === 'string',
+          'missing or invalid app_data.name',
+        );
+        assert(
+          !challenge_data ||
+            (challenge_data.key_type && typeof challenge_data.key_type === 'string'),
+          'missing or invalid challenge_data.key_type',
+        );
+        assert(
+          !challenge_data ||
+            (challenge_data.challenge && typeof challenge_data.challenge === 'string'),
+          'missing or invalid challenge_data.challenge',
+        );
+        assert(
+          await checkConnection(),
+          `Failed to connect to HiveAuth server ${trace ? HAS_options.host : ''}`,
+        );
 
         // initialize key to encrypt communication with PKSA
         const auth_key = auth.key || uuidv4();
-        const data = CryptoJS.AES.encrypt(JSON.stringify({
-          app: app_data,
-          challenge: challenge_data,
-          // TODO - Remove "token" when protocol v0 is deprecated
-          token: auth.token, // DEPRECATED since protocol v1
-          // TODO
-        }), auth_key).toString();
+        const data = CryptoJS.AES.encrypt(
+          JSON.stringify({
+            app: app_data,
+            challenge: challenge_data,
+            // TODO - Remove "token" when protocol v0 is deprecated
+            token: auth.token, // DEPRECATED since protocol v1
+            // TODO
+          }),
+          auth_key,
+        ).toString();
         const payload = { cmd: CMD.AUTH_REQ, account: auth.username, data };
+
         // NOTE:    If the PKSA runs in "service" mode, we can pass the encryption key with the auth_req
         //          When the PKSA will process the "auth_req", it will bypass the offline reading of the encryption key
         if (HAS_options.auth_key_secret) {
@@ -260,6 +296,7 @@ module.exports = {
             if (!uuid) {
               const req = getMessage(CMD.AUTH_WAIT);
               const err = getMessage(CMD.ERROR);
+
               if (req) {
                 if (trace) console.log(`auth_wait found: ${JSON.stringify(req)}`);
                 uuid = req.uuid;
@@ -278,10 +315,13 @@ module.exports = {
               const req_ack = getMessage(CMD.AUTH_ACK, uuid);
               const req_nack = getMessage(CMD.AUTH_NACK, uuid);
               const req_err = getMessage(CMD.AUTH_ERR, uuid);
+
               if (req_ack) {
                 try {
                   // Try to decrypt and parse payload data
-                  req_ack.data = JSON.parse(CryptoJS.AES.decrypt(req_ack.data, auth_key).toString(CryptoJS.enc.Utf8));
+                  req_ack.data = JSON.parse(
+                    CryptoJS.AES.decrypt(req_ack.data, auth_key).toString(CryptoJS.enc.Utf8),
+                  );
                   // authentication approved
                   clearInterval(wait);
                   if (trace) console.log(`auth_ack found: ${JSON.stringify(req_ack)}`);
@@ -297,7 +337,9 @@ module.exports = {
                 }
               } else if (req_nack) {
                 // validate uuid
-                if (uuid == CryptoJS.AES.decrypt(req_nack.data, auth_key).toString(CryptoJS.enc.Utf8)) {
+                if (
+                  uuid == CryptoJS.AES.decrypt(req_nack.data, auth_key).toString(CryptoJS.enc.Utf8)
+                ) {
                   // authentication rejected
                   clearInterval(wait);
                   reject(req_nack);
@@ -323,30 +365,31 @@ module.exports = {
   },
 
   /**
-     * Sends a broadcast request to the server
-     * @param {Object} auth
-     * @param {string} auth.username
-     * TODO - Remove "token" when protocol v0 is deprecated
-     * @param {string=} auth.token - DEPRECATED since protocol v1
-     * TODO -
-     * @param {number=} auth.expire
-     * @param {string=} auth.key
-     * @param {string} key_type
-     * @param {Array} ops
-     * @param {Object} cbWait - (optional) callback method to notify the app about pending request
-     */
+   * Sends a broadcast request to the server
+   * @param {Object} auth
+   * @param {string} auth.username
+   * TODO - Remove "token" when protocol v0 is deprecated
+   * @param {string=} auth.token - DEPRECATED since protocol v1
+   * TODO -
+   * @param {number=} auth.expire
+   * @param {string=} auth.key
+   * @param {string} key_type
+   * @param {Array} ops
+   * @param {Object} cbWait - (optional) callback method to notify the app about pending request
+   */
   broadcast(auth, key_type, ops, cbWait = undefined) {
     return new Promise(async (resolve, reject) => {
       assert(auth, 'missing auth');
-      assert(auth.username && typeof (auth.username) === 'string', 'missing or invalid username');
-      assert(auth.key && typeof (auth.key) === 'string', 'missing or invalid encryption key');
+      assert(auth.username && typeof auth.username === 'string', 'missing or invalid username');
+      assert(auth.key && typeof auth.key === 'string', 'missing or invalid encryption key');
       assert(ops && Array.isArray(ops) && ops.length > 0, 'missing or invalid ops');
-      assert((await checkConnection()), 'not connected to server');
+      assert(await checkConnection(), 'not connected to server');
 
       // Encrypt the ops with the key we provided to the PKSA
-      const data = CryptoJS.AES.encrypt(JSON.stringify({
-        key_type, ops, broadcast: true, nonce: Date.now(),
-      }), auth.key).toString();
+      const data = CryptoJS.AES.encrypt(
+        JSON.stringify({ key_type, ops, broadcast: true, nonce: Date.now() }),
+        auth.key,
+      ).toString();
       // Send the sign request to the HAS
       const payload = {
         cmd: CMD.SIGN_REQ,
@@ -356,6 +399,7 @@ module.exports = {
         token: auth.token, // - DEPRECATED since protocol v1
         // TODO
       };
+
       send(JSON.stringify(payload));
       let expire = Date.now() + HAS_timeout;
       let uuid;
@@ -369,6 +413,7 @@ module.exports = {
             // check if we got one
             const req = getMessage(CMD.SIGN_WAIT);
             const err = getMessage(CMD.ERROR);
+
             if (req) {
               // confirmation received
               if (trace) console.log(`sign_wait found: ${JSON.stringify(req)}`);
@@ -387,6 +432,7 @@ module.exports = {
             const req_ack = getMessage(CMD.SIGN_ACK, uuid);
             const req_nack = getMessage(CMD.SIGN_NACK, uuid);
             const req_err = getMessage(CMD.SIGN_ERR, uuid);
+
             if (req_ack) {
               // request approved
               if (trace) console.log(`sign_ack found: ${JSON.stringify(req_ack)}`);
@@ -400,7 +446,10 @@ module.exports = {
               // request error
               clearInterval(wait);
               // Decrypt received error message
-              const error = CryptoJS.AES.decrypt(req_err.error, auth.key).toString(CryptoJS.enc.Utf8);
+              const error = CryptoJS.AES.decrypt(req_err.error, auth.key).toString(
+                CryptoJS.enc.Utf8,
+              );
+
               reject(new Error(error));
             }
           }
@@ -415,27 +464,33 @@ module.exports = {
     });
   },
   /**
-     * Sends a challenge request to the server
-     * @param {Object} auth
-     * @param {string} auth.username
-     * TODO - Remove "token" when protocol v0 is deprecated
-     * @param {string=} auth.token - DEPRECATED since protocol v1
-     * TODO -
-     * @param {number=} auth.expire
-     * @param {string=} auth.key
-     * @param {Object} challenge_data
-     * @param {string} challenge_data.key_type - key type required to sign the challenge (posting, acive, memo)
-     * @param {string} challenge_data.challenge - a string to be signed
-     * @param {Object} cbWait - (optional) callback method to notify the app about pending request
-     */
+   * Sends a challenge request to the server
+   * @param {Object} auth
+   * @param {string} auth.username
+   * TODO - Remove "token" when protocol v0 is deprecated
+   * @param {string=} auth.token - DEPRECATED since protocol v1
+   * TODO -
+   * @param {number=} auth.expire
+   * @param {string=} auth.key
+   * @param {Object} challenge_data
+   * @param {string} challenge_data.key_type - key type required to sign the challenge (posting, acive, memo)
+   * @param {string} challenge_data.challenge - a string to be signed
+   * @param {Object} cbWait - (optional) callback method to notify the app about pending request
+   */
   challenge(auth, challenge_data, cbWait = undefined) {
     return new Promise(async (resolve, reject) => {
       assert(auth, 'missing auth');
-      assert(auth.username && typeof (auth.username) === 'string', 'missing or invalid username');
-      assert(auth.key && typeof (auth.key) === 'string', 'missing or invalid encryption key');
-      assert(challenge_data && challenge_data.key_type && typeof (challenge_data.key_type) === 'string', 'missing or invalid challenge_data.key_type');
-      assert(challenge_data && challenge_data.challenge && typeof (challenge_data.challenge) === 'string', 'missing or invalid challenge_data.challenge');
-      assert((await checkConnection()), 'not connected to server');
+      assert(auth.username && typeof auth.username === 'string', 'missing or invalid username');
+      assert(auth.key && typeof auth.key === 'string', 'missing or invalid encryption key');
+      assert(
+        challenge_data && challenge_data.key_type && typeof challenge_data.key_type === 'string',
+        'missing or invalid challenge_data.key_type',
+      );
+      assert(
+        challenge_data && challenge_data.challenge && typeof challenge_data.challenge === 'string',
+        'missing or invalid challenge_data.challenge',
+      );
+      assert(await checkConnection(), 'not connected to server');
       // Encrypt the challenge data with the key we provided to the PKSA
       const data = CryptoJS.AES.encrypt(JSON.stringify(challenge_data), auth.key).toString();
       // Send the challenge request to the HAS
@@ -447,6 +502,7 @@ module.exports = {
         token: auth.token, // - DEPRECATED since protocol v1
         // TODO
       };
+
       send(JSON.stringify(payload));
       let expire = Date.now() + HAS_timeout;
       let uuid;
@@ -460,6 +516,7 @@ module.exports = {
             // check if we got one
             const req = getMessage(CMD.CHALLENGE_WAIT);
             const err = getMessage(CMD.ERROR);
+
             if (req) {
               // confirmation received
               if (trace) console.log(`challenge_wait found: ${JSON.stringify(req)}`);
@@ -478,11 +535,14 @@ module.exports = {
             const req_ack = getMessage(CMD.CHALLENGE_ACK, uuid);
             const req_nack = getMessage(CMD.CHALLENGE_NACK, uuid);
             const req_err = getMessage(CMD.CHALLENGE_ERR, uuid);
+
             if (req_ack) {
               // request approved
               try {
                 // Try to decrypt and parse payload data
-                req_ack.data = JSON.parse(CryptoJS.AES.decrypt(req_ack.data, auth.key).toString(CryptoJS.enc.Utf8));
+                req_ack.data = JSON.parse(
+                  CryptoJS.AES.decrypt(req_ack.data, auth.key).toString(CryptoJS.enc.Utf8),
+                );
                 // challenge approved
                 clearInterval(wait);
                 if (trace) console.log(`challenge_ack found: ${JSON.stringify(req_ack)}`);
@@ -498,7 +558,10 @@ module.exports = {
               // request error
               clearInterval(wait);
               // Decrypt received error message
-              const error = CryptoJS.AES.decrypt(req_err.error, auth.key).toString(CryptoJS.enc.Utf8);
+              const error = CryptoJS.AES.decrypt(req_err.error, auth.key).toString(
+                CryptoJS.enc.Utf8,
+              );
+
               reject(new Error(error));
             }
           }

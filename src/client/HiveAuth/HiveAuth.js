@@ -1,7 +1,7 @@
 import { Input, Button } from 'antd';
-import PropTypes from "prop-types";
+import PropTypes from 'prop-types';
 import React, { useState } from 'react';
-import HAS from './hive-auth-wrapper'
+import HAS from './hive-auth-wrapper';
 
 import './HiveAuth.less';
 
@@ -14,10 +14,13 @@ const APP_META = {
 
 const HiveAuth = ({ setQRcodeForAuth }) => {
   const [showInput, setShowInput] = useState();
-  const generateQrCode = (evt) => {
+  const generateQrCode = evt => {
     const { account, uuid, key } = evt;
     const json = JSON.stringify({
-      account, uuid, key, host: HAS_SERVER,
+      account,
+      uuid,
+      key,
+      host: HAS_SERVER,
     });
 
     // const URI = `has://auth_req/${btoa(json)}`;
@@ -33,6 +36,7 @@ const HiveAuth = ({ setQRcodeForAuth }) => {
         return { result: auth };
       }
       const authResp = await HAS.authenticate(auth, APP_META, challenge, cbWait);
+
       // do we need authResp?
       return { result: auth };
     } catch (error) {
@@ -51,18 +55,22 @@ const HiveAuth = ({ setQRcodeForAuth }) => {
       {showInput ? (
         <React.Fragment>
           <Input placeholder={'Enter username'} />
-          <Button onClick={() => {
-            (async () => {
-  const auth = new HAS.Auth('flowmaster');
+          <Button
+            onClick={() => {
+              (async () => {
+                const auth = new HAS.Auth('flowmaster');
 
-  const { result, error } = await authorizeUserHAS({
-    auth, cbWait: generateQrCode,
-  });
+                const { result, error } = await authorizeUserHAS({
+                  auth,
+                  cbWait: generateQrCode,
+                });
 
-  console.log();
-})()
-            setQRcodeForAuth()
-          }} className="HiveAuth__signIn">
+                console.log();
+              })();
+              setQRcodeForAuth();
+            }}
+            className="HiveAuth__signIn"
+          >
             Sing in
           </Button>
         </React.Fragment>
@@ -74,7 +82,7 @@ const HiveAuth = ({ setQRcodeForAuth }) => {
 };
 
 HiveAuth.propTypes = {
-  setQRcodeForAuth: PropTypes.func
-}
+  setQRcodeForAuth: PropTypes.func,
+};
 
 export default HiveAuth;
