@@ -2575,5 +2575,8 @@
   "empty_favorites": "This user doesn't have any favorites.",
   "list_duplication_pause": "The list duplication bot will pause if WAIV voting power on the account drops below the set threshold.",
   "auth_error_message": "Authorization was not successful. Please try again later.",
-  "empty_updates": "No updates found"
+  "empty_updates": "No updates found",
+  "manage_your_public_shopping_favorites": "You can manage your public favorites list in the profile.",
+"followed_user_threads": "Followed user threads",
+"notification_thread_author_follower": "{author} published thread about {names}"
 }
