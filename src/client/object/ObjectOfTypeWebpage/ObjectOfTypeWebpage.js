@@ -55,6 +55,7 @@ const ObjectOfTypeWebpage = ({ intl }) => {
   const jsonVal = currentValue ? JSON.stringify(currentValue) : null;
 
   useEffect(() => {
+    setLoading(true);
     getObject(authorPermlink, user, locale).then(res => {
       setWobject(res);
       if (has(res, 'webpage')) {
