@@ -101,6 +101,31 @@ class Notifications extends React.Component {
     }
   }
 
+  componentDidUpdate(prevProps) {
+    const { notifications } = this.props;
+
+    if (prevProps.notifications !== notifications) {
+      notifications.forEach(notification =>
+        this.getObjectInfoAsync(notification).then(r => {
+          if (notification.type === notificationConstants.THREAD_AUTHOR_FOLLOWER) {
+            r?.forEach(obj =>
+              this.setState({
+                objNames: {
+                  ...this.state.objNames,
+                  [obj.author_permlink]: obj.name || obj.default_name,
+                },
+              }),
+            );
+          } else {
+            this.setState({
+              objNames: { ...this.state.objNames, [notification.authorPermlink]: r },
+            });
+          }
+        }),
+      );
+    }
+  }
+
   onScroll() {
     const { notifications } = this.props;
     const { displayedNotifications } = this.state;
