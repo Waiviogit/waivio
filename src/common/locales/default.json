@@ -2578,5 +2578,8 @@
   "empty_updates": "No updates found",
   "manage_your_public_shopping_favorites": "You can manage your public favorites list in the profile.",
 "followed_user_threads": "Followed user threads",
-"notification_thread_author_follower": "{author} published thread about {names}"
+"notification_thread_author_follower": "{author} published thread about {names}",
+  "google_ads_config_command": "Google Ads 'config' command:",
+  "paste_your_config_here": "Paste your config here",
+  "google_ads_config_description_info": "Enter your Google Ads 'config' command for Outbound Click tracking, typically in the format gtag('config', 'AW-XXXXX')."
 }

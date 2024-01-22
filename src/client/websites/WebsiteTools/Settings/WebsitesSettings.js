@@ -21,7 +21,11 @@ import {
 import { currencyTypes, defaultCurrency } from '../../constants/currencyTypes';
 
 import './WebsitesSettings.less';
-import { showGoogleEventSnippetError, showGoogleGSCTagError } from '../../helper';
+import {
+  showGoogleEventSnippetError,
+  showGoogleGSCTagError,
+  showGoogleAdsConfigError,
+} from '../../helper';
 
 const WebsitesSettings = ({
   intl,
@@ -42,6 +46,7 @@ const WebsitesSettings = ({
   const [objectControl, setObjectControl] = useState(false);
   const [googleGSCState, setGoogleGSCState] = useState('');
   const [googleEventSnippetState, setGoogleEventSnippetState] = useState('');
+  const [googleAdsConfigState, setGoogleAdsConfigState] = useState('');
   const host = match.params.site;
 
   useEffect(() => {
@@ -52,12 +57,14 @@ const WebsitesSettings = ({
         const account = get(res, ['value', 'beneficiary', 'account']);
         const googleGscTag = get(res, ['value', 'googleGSCTag']);
         const googleEventSnippet = get(res, ['value', 'googleEventSnippet']);
+        const googleAdsConfig = get(res, ['value', 'googleAdsConfig']);
         const referral = get(res, ['value', 'referralCommissionAcc']);
         const objControl = get(res, ['value', 'objectControl']);
 
         setBeneficiaryPercent(percent);
         setGoogleGSCState(googleGscTag);
         setGoogleEventSnippetState(googleEventSnippet);
+        setGoogleAdsConfigState(googleAdsConfig);
         setObjectControl(objControl);
         setBeneficiaryAccount(account);
         setReferralAccount(referral);
@@ -93,6 +100,7 @@ const WebsitesSettings = ({
         const tag = values.googleAnalyticsTag || '';
         const gscTag = values.googleGSCTag || '';
         const googleEventSnippetTag = values.googleEventSnippet || '';
+        const googleAdsConfigTag = values.googleAdsConfig || '';
         const beneficiary = { account, percent };
 
         saveWebSettings(
@@ -100,6 +108,7 @@ const WebsitesSettings = ({
           tag,
           gscTag,
           googleEventSnippetTag,
+          googleAdsConfigTag,
           beneficiary,
           values.currency,
           values.language,
@@ -188,6 +197,33 @@ const WebsitesSettings = ({
           )}
           <p>{intl.formatMessage({ id: 'gsc_tag_description_info' })}</p>
         </Form.Item>{' '}
+        <Form.Item validateStatus={showGoogleAdsConfigError(googleAdsConfigState) ? 'error' : ''}>
+          <h3>
+            {intl.formatMessage({
+              id: 'google_ads_config_command',
+              defaultMessage: 'Google Ads Outbound Click Event Snippet:',
+            })}
+          </h3>
+          {getFieldDecorator('googleAdsConfig', {
+            initialValue: get(settings, 'googleAdsConfig', ''),
+          })(
+            <Input
+              type="text"
+              placeholder={intl.formatMessage({
+                id: 'paste_your_config_here',
+              })}
+              onChange={e =>
+                handleChangeAndCheckField(e, 'googleAdsConfig', setGoogleAdsConfigState)
+              }
+            />,
+          )}
+          {showGoogleAdsConfigError(googleAdsConfigState) && (
+            <span className={'error-duplicate'}>
+              Invalid config entered. Please provide a valid config.
+            </span>
+          )}
+          <p>{intl.formatMessage({ id: 'google_ads_config_description_info' })}</p>
+        </Form.Item>
         <Form.Item
           validateStatus={showGoogleEventSnippetError(googleEventSnippetState) ? 'error' : ''}
         >
