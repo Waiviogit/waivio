@@ -104,9 +104,9 @@ export const parseLink = (appUrl, location, isPage) => (tagName, attribs) => {
         href = linkUrl.hash && location?.pathname !== '/' ? location.pathname : modifiedUrl;
       }
 
-      if (location?.hash) {
-        href = href + location.hash;
-      }
+      // if (location?.hash) {
+      //   href = href + location.hash;
+      // }
 
       if (linkUrl.hash)
         href = href.includes('#')
