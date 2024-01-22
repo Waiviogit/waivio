@@ -22,7 +22,7 @@ const RewardsMainPage = props => {
   const desc = 'Reserve the reward for a few days. Share photos of the dish and get the reward!';
   const img = DEFAULTS.FAVICON;
   const { canonicalUrl } = useSeoInfo();
-  const title = `${capitalize(type)} rewards - ${siteName}`;
+  const title = `${capitalize(type)} rewards`;
 
   return (
     <div className="Rewards-new container settings-layout container">
