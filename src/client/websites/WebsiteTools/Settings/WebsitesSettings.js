@@ -327,7 +327,8 @@ const WebsitesSettings = ({
           loading={loading}
           disabled={
             showGoogleGSCTagError(googleGSCState) ||
-            showGoogleEventSnippetError(googleEventSnippetState)
+            showGoogleEventSnippetError(googleEventSnippetState) ||
+            showGoogleAdsConfigError(googleAdsConfigState)
           }
         >
           {intl.formatMessage({ id: 'save' })}
