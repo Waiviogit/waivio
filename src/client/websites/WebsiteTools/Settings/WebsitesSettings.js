@@ -219,7 +219,7 @@ const WebsitesSettings = ({
           )}
           {showGoogleAdsConfigError(googleAdsConfigState) && (
             <span className={'error-duplicate'}>
-              Invalid config entered. Please provide a valid config.
+              Invalid config entered. Please provide a valid config .
             </span>
           )}
           <p>{intl.formatMessage({ id: 'google_ads_config_description_info' })}</p>
@@ -327,7 +327,8 @@ const WebsitesSettings = ({
           loading={loading}
           disabled={
             showGoogleGSCTagError(googleGSCState) ||
-            showGoogleEventSnippetError(googleEventSnippetState)
+            showGoogleEventSnippetError(googleEventSnippetState) ||
+            showGoogleAdsConfigError(googleAdsConfigState)
           }
         >
           {intl.formatMessage({ id: 'save' })}

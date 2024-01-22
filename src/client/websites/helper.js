@@ -104,7 +104,7 @@ export const showGoogleGSCTagError = tag => {
   );
 };
 export const showGoogleAdsConfigError = str =>
-  !isEmpty(str) && (!str.includes('gtag') || !str.includes('config') || !str.includes('AW-'));
+  !isEmpty(str) && (!str.includes('gtag') || !str.includes('config'));
 export const showGoogleEventSnippetError = tag => {
   const openingScriptRegex = /<script[^>]*>/g;
   const closingScriptRegex = /<\/script>/g;
