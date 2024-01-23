@@ -8,7 +8,7 @@ export default function renderSsrPage(
   isWaivio,
   googleTag,
   googleGSC,
-  googleEventSnippet,
+  googleEventSnippetTag,
   googleAdsConfig,
   adSense,
 ) {
@@ -52,6 +52,10 @@ export default function renderSsrPage(
   }
  
   </script>`;
+  const googleEventSnippet = googleEventSnippetTag.replace(
+    "if (typeof(url) != 'undefined') { window.location = url; }",
+    '',
+  );
   return template({
     header,
     html,
