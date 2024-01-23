@@ -178,7 +178,7 @@ const WebsitesSettings = ({
           <h3>
             {intl.formatMessage({
               id: 'google_search_console_html_verification_tag',
-              defaultMessage: 'Google Search Console HTML verification tag:',
+              defaultMessage: 'Google Search Console HTML Verification Tag:',
             })}
           </h3>
           {getFieldDecorator('googleGSCTag', {
@@ -201,7 +201,7 @@ const WebsitesSettings = ({
           <h3>
             {intl.formatMessage({
               id: 'google_ads_config_command',
-              defaultMessage: 'Google Ads Outbound Click Event Snippet:',
+              defaultMessage: 'Google Ads Outbound Click Config Command:',
             })}
           </h3>
           {getFieldDecorator('googleAdsConfig', {
@@ -219,7 +219,7 @@ const WebsitesSettings = ({
           )}
           {showGoogleAdsConfigError(googleAdsConfigState) && (
             <span className={'error-duplicate'}>
-              Invalid config entered. Please provide a valid config .
+              Invalid config entered. Please provide a valid config.
             </span>
           )}
           <p>{intl.formatMessage({ id: 'google_ads_config_description_info' })}</p>
