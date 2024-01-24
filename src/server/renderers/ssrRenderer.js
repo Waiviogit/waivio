@@ -52,10 +52,7 @@ export default function renderSsrPage(
   }
  
   </script>`;
-  const googleEventSnippet = googleEventSnippetTag.replace(
-    "if (typeof(url) != 'undefined') { window.location = url; }",
-    '',
-  );
+  const googleEventSnippet = googleEventSnippetTag.replace('window.location = url', '');
   return template({
     header,
     html,
