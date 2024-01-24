@@ -47,7 +47,7 @@ export default function renderSsrPage(
         dataLayer.push(arguments);
     }
     gtag('js', new Date());
-    gtag('config', '${tag}', { 'debug_mode':true });
+    gtag('config', '${tag}', { 'debug_mode':false });
     ${googleAdsConfig}
   }
  
