@@ -8,7 +8,8 @@ export default function renderSsrPage(
   isWaivio,
   googleTag,
   googleGSC,
-  googleEventSnippet,
+  googleEventSnippetTag,
+  googleAdsConfig,
   adSense,
 ) {
   const preloadedState = store ? store.getState() : {};
@@ -46,8 +47,12 @@ export default function renderSsrPage(
         dataLayer.push(arguments);
     }
     gtag('js', new Date());
-    gtag('config', '${tag}', { 'debug_mode':true });}
+    gtag('config', '${tag}', { 'debug_mode':true });
+    ${googleAdsConfig}
+  }
+ 
   </script>`;
+  const googleEventSnippet = googleEventSnippetTag.replace('window.location = url', '');
   return template({
     header,
     html,

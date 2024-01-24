@@ -104,7 +104,7 @@ export const parseLink = (appUrl, location, isPage) => (tagName, attribs) => {
         href = linkUrl.hash && location?.pathname !== '/' ? location.pathname : modifiedUrl;
       }
 
-      if (location?.hash) {
+      if (location?.hash && !linkUrl.pathname.endsWith('/webpage')) {
         href = href + location.hash;
       }
 

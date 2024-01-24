@@ -67,7 +67,7 @@ const Wobj = ({
   }, [wobject.author_permlink]);
 
   const getWobjView = useCallback(() => {
-    const title = `${getObjectName(wobject)} - ${siteName}`;
+    const title = `${getObjectName(wobject)}`;
     const { canonicalUrl, descriptionSite } = useSeoInfoWithAppUrl(wobject.canonical);
     const desc = wobject?.description || descriptionSite || siteName;
     const image = getObjectAvatar(wobject) || favicon;

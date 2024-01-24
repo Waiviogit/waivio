@@ -1,11 +1,11 @@
 export const compareObjectTitle = (isWaivio, objectName, address, siteName) => {
   if (!objectName) return siteName;
 
-  let titleText = `${objectName} - `;
+  let titleText = `${objectName} `;
 
-  if (address) titleText += `${address} - `;
+  if (address) titleText += ` - ${address} `;
 
-  return titleText + siteName;
+  return titleText;
 };
 
 export default null;

@@ -109,6 +109,7 @@ export default function createSsrHandler(template) {
         get(settings, 'googleAnalyticsTag', ''),
         get(settings, 'googleGSCTag', ''),
         get(settings, 'googleEventSnippet', ''),
+        get(settings, 'googleAdsConfig', ''),
         get(adsenseSettings, 'code', ''),
       );
 
@@ -135,6 +136,7 @@ export default function createSsrHandler(template) {
           get(settings, 'googleAnalyticsTag', ''),
           get(settings, 'googleGSCTag', ''),
           get(settings, 'googleEventSnippet', ''),
+          get(settings, 'googleAdsConfig', ''),
           get(adsenseSettings, 'code', ''),
         ),
       );

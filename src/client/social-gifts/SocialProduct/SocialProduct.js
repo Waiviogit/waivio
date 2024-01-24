@@ -171,7 +171,7 @@ const SocialProduct = ({
   const desc = `${wobject.description || ''} ${wobject.name}. ${parseAddress(wobject) ||
     ''} ${tagCategoriesForDescr}`;
   const { firstDescrPart: description } = shortenDescription(removeEmptyLines(desc), 200);
-  const title = `${wobject.name} - ${siteName}`;
+  const title = `${wobject.name}`;
   const { canonicalUrl } = useSeoInfoWithAppUrl(wobject.canonical);
   const url = ['book', 'product'].includes(wobject.object_type)
     ? `https://${wobject.canonical}/object/${match.params.name}`

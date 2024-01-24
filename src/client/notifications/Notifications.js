@@ -48,24 +48,7 @@ class Notifications extends React.Component {
     const { userMetaData, notifications, currentAuthUsername } = this.props;
 
     if (!_.isEmpty(notifications)) {
-      notifications.forEach(notification =>
-        this.getObjectInfoAsync(notification).then(r => {
-          if (notification.type === notificationConstants.THREAD_AUTHOR_FOLLOWER) {
-            r?.forEach(obj =>
-              this.setState({
-                objNames: {
-                  ...this.state.objNames,
-                  [obj.author_permlink]: obj.name || obj.default_name,
-                },
-              }),
-            );
-          } else {
-            this.setState({
-              objNames: { ...this.state.objNames, [notification.authorPermlink]: r },
-            });
-          }
-        }),
-      );
+      this.getNotificationsObjectNames(notifications);
     }
     if (_.isEmpty(userMetaData)) {
       this.props.getUpdatedUserMetadata();
@@ -76,31 +59,49 @@ class Notifications extends React.Component {
     }
   }
   componentDidUpdate(prevProps) {
-    if (prevProps.notifications !== this.props.notifications) {
-      if (!_.isEmpty(this.props.notifications) && _.isEmpty(this.state.objNames)) {
-        this.props.notifications.forEach(notification =>
-          this.getObjectInfoAsync(notification).then(r => {
-            if (notification.type === notificationConstants.THREAD_AUTHOR_FOLLOWER) {
-              r?.forEach(obj =>
-                this.setState({
-                  objNames: {
-                    ...this.state.objNames,
-                    [obj.author_permlink]: obj.name || obj.default_name,
-                  },
-                }),
-              );
-            } else {
-              this.setState({
-                objNames: { ...this.state.objNames, [notification.authorPermlink]: r },
-              });
-            }
-          }),
-        );
+    const { notifications } = this.props;
+
+    if (prevProps.notifications.length !== notifications.length) {
+      if (!_.isEmpty(notifications) && _.isEmpty(this.state.objNames)) {
+        this.getNotificationsObjectNames(notifications);
       }
     }
   }
 
-  // eslint-disable-next-line consistent-return
+  getNotificationsObjectNames = notifications => {
+    const searchArr = [];
+
+    notifications.forEach(notification => {
+      if (notification.type === notificationConstants.THREAD_AUTHOR_FOLLOWER) {
+        notification?.hashtags?.forEach(h => {
+          if (!searchArr.includes(h)) {
+            searchArr.push(h);
+          }
+        });
+      } else if (notification.type === notificationConstants.BELL_THREAD) {
+        if (!searchArr.includes(notification.authorPermlink)) {
+          searchArr.push(notification.authorPermlink);
+          this.getObjectInfoAsync(notification).then(r => {
+            this.setState({
+              objNames: { ...this.state.objNames, [notification.authorPermlink]: r },
+            });
+          });
+        }
+      }
+    });
+
+    if (!_.isEmpty(searchArr))
+      this.getObjectInfoAsync(searchArr).then(r => {
+        r?.forEach(obj =>
+          this.setState({
+            objNames: {
+              ...this.state.objNames,
+              [obj.author_permlink]: obj.name || obj.default_name,
+            },
+          }),
+        );
+      });
+  };
   getObjectInfoAsync = async notif => {
     if (notif.type === notificationConstants.BELL_THREAD) {
       try {
@@ -112,10 +113,9 @@ class Notifications extends React.Component {
 
         return '';
       }
-    }
-    if (notif.type === notificationConstants.THREAD_AUTHOR_FOLLOWER && !isEmpty(notif?.hashtags)) {
+    } else {
       try {
-        const result = await getObjectInfo(notif.hashtags);
+        const result = await getObjectInfo(notif);
 
         return result.wobjects;
       } catch (error) {
