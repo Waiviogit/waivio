@@ -188,11 +188,20 @@ function linkifyNode(child, state) {
     if (tag === 'a') return;
 
     if (imageRegex.test(child?.nodeValue)) {
-      const value = child?.nodeValue.match(imageRegex)[0];
-      const src = value.includes('waivio.') ? value : getProxyImageURL(value);
-      const newChild = DOMParser.parseFromString(`<img alt="" src="${src}"/>`);
-      child?.parentNode.replaceChild(newChild, child);
-      return newChild;
+      const value = child?.nodeValue;
+      const src = value.match(imageRegex)[0].includes('waivio.')
+        ? value.match(imageRegex)[0]
+        : getProxyImageURL(value.match(imageRegex)[0]);
+      const imgElement = document.createElement('img');
+      imgElement.setAttribute('alt', '');
+      imgElement.setAttribute('src', src);
+      const textNode = document.createTextNode(value);
+      const container = document.createElement('span');
+      container.appendChild(textNode);
+      container.appendChild(imgElement);
+      child?.parentNode.replaceChild(container, child);
+
+      return container;
     }
 
     const { mutate } = state;
