@@ -27,3 +27,12 @@ export const getAsync = async ({ key }) => {
     return { error };
   }
 };
+
+export const sismember = async ({ key, member }) => {
+  try {
+    const result = await redisClient.SISMEMBER(key, member);
+    return !!result;
+  } catch (error) {
+    return false;
+  }
+};
