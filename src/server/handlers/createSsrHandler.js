@@ -18,11 +18,17 @@ import renderSsrPage from '../renderers/ssrRenderer';
 import switchRoutes from '../../routes/switchRoutes';
 import { getCachedPage, isSearchBot, setCachedPage, updateBotCount } from './cachePageHandler';
 import { isCustomDomain } from '../../client/social-gifts/listOfSocialWebsites';
+import { REDIS_KEYS } from '../../common/constants/ssrData';
+import { sismember } from '../redis/redisClient';
+import NOT_FOUND_PAGE from '../pages/notFoundPage';
 
 // eslint-disable-next-line import/no-dynamic-require
 const assets = require(process.env.MANIFEST_PATH);
 
 const ssrTimeout = 5000;
+
+const isInheritedHost = host =>
+  !['waivio.com', 'www.waivio.com', 'waiviodev.com', 'social.gifts', 'dining.gifts'].includes(host);
 
 function createTimeout(timeout, promise) {
   return new Promise((resolve, reject) => {
@@ -33,10 +39,23 @@ function createTimeout(timeout, promise) {
   });
 }
 
+const isPageExistSitemap = async ({ url, host }) => {
+  const key = `${REDIS_KEYS.SSR_SITEMAP_SET}:${host}`;
+  const member = `https://${host}${url}`;
+  return sismember({ key, member });
+};
+
 export default function createSsrHandler(template) {
   return async function serverSideResponse(req, res) {
     try {
+      const hostname = req.hostname;
       const searchBot = await isSearchBot(req);
+      const inheritedHost = isInheritedHost(hostname);
+      if (inheritedHost && searchBot) {
+        const pageExist = await isPageExistSitemap({ host: hostname, url: req.url });
+        if (!pageExist) return res.send(404).send(NOT_FOUND_PAGE);
+      }
+
       if (searchBot) {
         await updateBotCount(req);
         const cachedPage = await getCachedPage(req);
@@ -52,7 +71,7 @@ export default function createSsrHandler(template) {
         callbackURL: process.env.STEEMCONNECT_REDIRECT_URL,
       });
       // const hostname = req.headers.host;
-      const hostname = req.hostname;
+
       const isWaivio = hostname.includes('waivio');
       let settings = {};
       let parentHost;

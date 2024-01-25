@@ -1,8 +1,9 @@
 export const USER_AGENT = 'User-Agent';
 
-export const CONNECTION_STRING_SEO =
-  process.env.NODE_ENV === 'production'
-    ? 'wss://www.waivio.com/seo-service'
-    : 'wss://waiviodev.com/seo-service';
+export const REDIS_KEYS = {
+  SSR_RATE_LIMIT_BOTS: 'ssr_rate_limit_bots',
+  SSR_RATE_LIMIT_COUNTER: 'ssr_rate_limit_counter',
+  SSR_SITEMAP_SET: 'sitemap_set',
+};
 
-export const SEO_SERVICE_API_KEY = process.env.SEO_SERVICE_API_KEY || '';
+export const REDIS_CLIENT_DB = 2;
