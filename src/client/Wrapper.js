@@ -144,8 +144,6 @@ class Wrapper extends React.PureComponent {
     }
     const lang = loadLanguage(activeLocale);
 
-    store.dispatch(login());
-
     return Promise.all([
       store.dispatch(setAppUrl(`https://${req.headers.host}`)),
       store.dispatch(setUsedLocale(lang)),

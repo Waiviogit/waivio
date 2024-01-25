@@ -1,6 +1,10 @@
-import { Input, Button } from 'antd';
+import { Input, Button, message } from 'antd';
+import Cookie from 'js-cookie';
 import PropTypes from 'prop-types';
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
+import { useDispatch } from 'react-redux';
+import { parseJSON } from '../../common/helpers/parseJSON';
+import { login } from '../../store/authStore/authActions';
 import HAS from './hive-auth-wrapper';
 
 import './HiveAuth.less';
@@ -12,8 +16,10 @@ const APP_META = {
   icon: undefined,
 };
 
-const HiveAuth = ({ setQRcodeForAuth }) => {
+const HiveAuth = ({ setQRcodeForAuth, onCloseSingIn }) => {
   const [showInput, setShowInput] = useState();
+  const input = useRef();
+  const dispatch = useDispatch();
   const generateQrCode = evt => {
     const { account, uuid, key } = evt;
     const json = JSON.stringify({
@@ -23,25 +29,22 @@ const HiveAuth = ({ setQRcodeForAuth }) => {
       host: HAS_SERVER,
     });
 
-    // const URI = `has://auth_req/${btoa(json)}`;
     const URI = `has://auth_req/${Buffer.from(json).toString('base64')}`;
     const url = `https://api.qrserver.com/v1/create-qr-code/?size=1000x1000&data=${URI}`;
 
-    // todo frontend show QR CODE
-    return url;
+    setQRcodeForAuth(url);
   };
-  const authorizeUserHAS = async ({ auth, challenge, cbWait }) => {
-    try {
-      if (auth.expire > Date.now()) {
-        return { result: auth };
-      }
-      const authResp = await HAS.authenticate(auth, APP_META, challenge, cbWait);
 
-      // do we need authResp?
-      return { result: auth };
+  const authorizeUserHAS = ({ auth, challenge, cbWait }) => {
+    try {
+      HAS.authenticate(auth, APP_META, challenge, cbWait).then(res => {
+        if (res.cmd === 'auth_ack') {
+          dispatch(login());
+          onCloseSingIn(false);
+        }
+      });
     } catch (error) {
-      // if error  handle timeout authorization
-      return { error };
+      message.error(error);
     }
   };
 
@@ -54,20 +57,15 @@ const HiveAuth = ({ setQRcodeForAuth }) => {
       />
       {showInput ? (
         <React.Fragment>
-          <Input placeholder={'Enter username'} />
+          <Input ref={input} placeholder={'Enter username'} />
           <Button
             onClick={() => {
-              (async () => {
-                const auth = new HAS.Auth('flowmaster');
+              const auth = parseJSON(Cookie.get('auth')) || { username: input.current.input.value };
 
-                const { result, error } = await authorizeUserHAS({
-                  auth,
-                  cbWait: generateQrCode,
-                });
-
-                console.log();
-              })();
-              setQRcodeForAuth();
+              authorizeUserHAS({
+                auth,
+                cbWait: generateQrCode,
+              });
             }}
             className="HiveAuth__signIn"
           >
@@ -83,6 +81,7 @@ const HiveAuth = ({ setQRcodeForAuth }) => {
 
 HiveAuth.propTypes = {
   setQRcodeForAuth: PropTypes.func,
+  onCloseSingIn: PropTypes.func,
 };
 
 export default HiveAuth;

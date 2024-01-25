@@ -16,6 +16,11 @@ import {
   excludeHashtagObjType,
   recommendedObjectTypes,
 } from '../common/constants/listOfObjectTypes';
+// getGuestAccessToken() ||
+const getAuthHeaders = () => ({
+  'access-token': Cookie.get('access_token'),
+  'hive-auth': Boolean(Cookie.get('auth')),
+});
 
 export const headers = {
   Accept: 'application/json',
@@ -210,7 +215,7 @@ export const saveDraftPage = (user, authorPermlink, body) =>
   fetch(`${config.apiPrefix}${config.draft}${config.object}`, {
     headers: {
       ...headers,
-      'access-token': Cookie.get('access_token'),
+      ...getAuthHeaders(),
     },
     method: 'POST',
     body: JSON.stringify({
@@ -229,7 +234,7 @@ export const getDraftPage = (user, authorPermlink) => {
   return fetch(`${config.apiPrefix}${config.draft}${config.object}?${query}`, {
     headers: {
       ...headers,
-      'access-token': Cookie.get('access_token'),
+      ...getAuthHeaders(),
     },
     method: 'GET',
   })
@@ -859,9 +864,7 @@ export const updateUserMetadata = async (userName, data) => {
   return fetch(`${config.apiPrefix}${config.user}/${userName}${config.userMetadata}`, {
     headers: {
       ...headers,
-      ...(isGuest
-        ? { 'access-token': token.token, 'waivio-auth': true }
-        : { 'access-token': Cookie.get('access_token') }),
+      ...(isGuest ? { 'access-token': token.token, 'waivio-auth': true } : { ...getAuthHeaders() }),
     },
     method: 'PUT',
     body: JSON.stringify({ user_metadata: data }),
@@ -1562,7 +1565,7 @@ export const getDomainList = () =>
 
 export const createWebsite = body =>
   fetch(`${config.apiPrefix}${config.sites}${config.create}`, {
-    headers: { ...headers, 'access-token': Cookie.get('access_token') },
+    headers: { ...headers, ...getAuthHeaders() },
     body: JSON.stringify(body),
     method: 'PUT',
   }).then(res => res.json());
@@ -1601,7 +1604,7 @@ export const getParentHost = host =>
 
 export const getInfoForManagePage = name =>
   fetch(`${config.apiPrefix}${config.sites}${config.managePage}?userName=${name}`, {
-    headers: { ...headers, 'access-token': Cookie.get('access_token') },
+    headers: { ...headers, ...getAuthHeaders() },
     method: 'GET',
   })
     .then(res => res)
@@ -1609,7 +1612,7 @@ export const getInfoForManagePage = name =>
 
 export const deleteSite = (userName, host) =>
   fetch(`${config.apiPrefix}${config.sites}`, {
-    headers: { ...headers, 'access-token': Cookie.get('access_token') },
+    headers: { ...headers, ...getAuthHeaders() },
     body: JSON.stringify({ userName, host }),
     method: 'DELETE',
   })
@@ -1624,7 +1627,7 @@ export const getWebsitesReports = formData => {
   );
 
   return fetch(`${config.apiPrefix}${config.sites}${config.report}?${queryString}`, {
-    headers: { ...headers, 'access-token': Cookie.get('access_token') },
+    headers: { ...headers, ...getAuthHeaders() },
     method: 'GET',
   })
     .then(res => res.json())
@@ -1634,7 +1637,7 @@ export const getWebsitesReports = formData => {
 
 export const getWebsites = userName =>
   fetch(`${config.apiPrefix}${config.sites}?userName=${userName}`, {
-    headers: { ...headers, 'access-token': Cookie.get('access_token') },
+    headers: { ...headers, ...getAuthHeaders() },
     method: 'GET',
   })
     .then(res => res.json())
@@ -1643,7 +1646,7 @@ export const getWebsites = userName =>
 
 export const getWebsitesConfiguration = host =>
   fetch(`${config.apiPrefix}${config.sites}${config.configuration}?host=${host}`, {
-    headers: { ...headers, 'access-token': Cookie.get('access_token') },
+    headers: { ...headers, ...getAuthHeaders() },
     method: 'GET',
   })
     .then(res => res.json())
@@ -1652,7 +1655,7 @@ export const getWebsitesConfiguration = host =>
 
 export const saveWebsitesConfiguration = body =>
   fetch(`${config.apiPrefix}${config.sites}${config.configuration}`, {
-    headers: { ...headers, 'access-token': Cookie.get('access_token') },
+    headers: { ...headers, ...getAuthHeaders() },
     body: JSON.stringify({ ...body }),
     method: 'POST',
   })
@@ -1664,7 +1667,7 @@ export const getWebsiteAdministrators = (host, userName) =>
   fetch(
     `${config.apiPrefix}${config.sites}${config.administrators}?host=${host}&userName=${userName}`,
     {
-      headers: { ...headers, 'access-token': Cookie.get('access_token') },
+      headers: { ...headers, ...getAuthHeaders() },
       method: 'GET',
     },
   )
@@ -1676,7 +1679,7 @@ export const getWebsiteModerators = (host, userName) =>
   fetch(
     `${config.apiPrefix}${config.sites}${config.moderators}?host=${host}&userName=${userName}`,
     {
-      headers: { ...headers, 'access-token': Cookie.get('access_token') },
+      headers: { ...headers, ...getAuthHeaders() },
       method: 'GET',
     },
   )
@@ -1688,7 +1691,7 @@ export const getWebsiteAuthorities = (host, userName) =>
   fetch(
     `${config.apiPrefix}${config.sites}${config.authorities}?host=${host}&userName=${userName}`,
     {
-      headers: { ...headers, 'access-token': Cookie.get('access_token') },
+      headers: { ...headers, ...getAuthHeaders() },
       method: 'GET',
     },
   )
@@ -1698,7 +1701,7 @@ export const getWebsiteAuthorities = (host, userName) =>
 
 export const getTagCategoryForSite = (host, userName) =>
   fetch(`${config.apiPrefix}${config.sites}${config.filters}?host=${host}&userName=${userName}`, {
-    headers: { ...headers, 'access-token': Cookie.get('access_token') },
+    headers: { ...headers, ...getAuthHeaders() },
     method: 'GET',
   })
     .then(res => res.json())
@@ -1707,7 +1710,7 @@ export const getTagCategoryForSite = (host, userName) =>
 
 export const saveTagCategoryForSite = (host, userName, objectsFilter) =>
   fetch(`${config.apiPrefix}${config.sites}${config.filters}`, {
-    headers: { ...headers, 'access-token': Cookie.get('access_token') },
+    headers: { ...headers, ...getAuthHeaders() },
     method: 'POST',
     body: JSON.stringify({
       host,
@@ -1721,7 +1724,7 @@ export const saveTagCategoryForSite = (host, userName, objectsFilter) =>
 
 export const getSettingsWebsite = host =>
   fetch(`${config.apiPrefix}${config.sites}${config.settings}?host=${host}`, {
-    headers: { ...headers, 'access-token': Cookie.get('access_token') },
+    headers: { ...headers, ...getAuthHeaders() },
     method: 'GET',
   })
     .then(res => res.json())
@@ -1730,7 +1733,7 @@ export const getSettingsWebsite = host =>
 
 export const getSettingsAdsense = host =>
   fetch(`${config.apiPrefix}${config.sites}${config.adSense}?host=${host}`, {
-    headers: { ...headers, 'access-token': Cookie.get('access_token') },
+    headers: { ...headers, ...getAuthHeaders() },
     method: 'GET',
   })
     .then(res => res.json())
@@ -1761,7 +1764,7 @@ export const getObjectTypeFilters = (objectType, wobjectLinks) =>
 
 export const setWebsiteObjCoordinates = (params = {}) =>
   fetch(`${config.apiPrefix}${config.sites}/map`, {
-    headers: { ...headers, 'access-token': Cookie.get('access_token') },
+    headers: { ...headers, ...getAuthHeaders() },
     method: 'PUT',
     body: JSON.stringify(params),
   })
@@ -1784,7 +1787,7 @@ export const getRestrictionsInfo = (host, userName) =>
     {
       headers: {
         ...headers,
-        'access-token': Cookie.get('access_token'),
+        ...getAuthHeaders(),
       },
       method: 'GET',
     },
@@ -1860,6 +1863,7 @@ export const getVipTicketsInfo = (queryData, isGuest) => {
       ...headers,
       'access-token': isGuest ? getGuestAccessToken() : Cookie.get('access_token'),
       ...(isGuest ? { 'waivio-auth': true } : {}),
+      'hive-auth': Boolean(Cookie.get('auth')),
     },
     method: 'GET',
   })
@@ -1873,7 +1877,7 @@ export const addNoteInVipTicket = (body, isGuest) =>
     headers: {
       ...headers,
       'access-token': isGuest ? getGuestAccessToken() : Cookie.get('access_token'),
-      ...(isGuest ? { 'waivio-auth': true } : {}),
+      ...(isGuest ? { 'waivio-auth': true } : { 'hive-auth': Boolean(Cookie.get('auth')) }),
     },
     body: JSON.stringify(body),
     method: 'PATCH',
@@ -1935,7 +1939,7 @@ export const excludeAdvancedReports = (body, isGuest) =>
     headers: {
       ...headers,
       'access-token': isGuest ? getGuestAccessToken() : Cookie.get('access_token'),
-      ...(isGuest ? { 'waivio-auth': true } : {}),
+      ...(isGuest ? { 'waivio-auth': true } : { 'hive-auth': Boolean(Cookie.get('auth')) }),
     },
     body: JSON.stringify(body),
     method: 'POST',
@@ -2178,19 +2182,22 @@ export const getEngineTransactionHistory = body =>
 export const likePost = body => {
   const guestToken = getGuestAccessToken();
 
-  return fetch(`${config.apiPrefix}${config.post}${config.likePost}`, {
-    headers: {
-      ...headers,
-      'access-token': guestToken || Cookie.get('access_token'),
-      'waivio-auth': Boolean(guestToken),
-    },
-    method: 'POST',
-    body: JSON.stringify(body),
-  })
-    .then(handleErrors)
-    .then(res => res.json())
-    .then(response => response)
-    .catch(e => e);
+  return (
+    fetch(`${config.apiPrefix}${config.post}${config.likePost}`, {
+      headers: {
+        ...headers,
+        'access-token': guestToken || Cookie.get('access_token'),
+        'waivio-auth': Boolean(guestToken),
+        'hive-auth': Boolean(Cookie.get('auth')),
+      },
+      method: 'POST',
+      body: JSON.stringify(body),
+    })
+      // .then(handleErrors)
+      .then(res => res.json())
+      .then(response => response)
+      .catch(e => e)
+  );
 };
 
 export const getHiveDelegate = username =>
@@ -2402,7 +2409,7 @@ export const createNewCampaing = (data, account) =>
     headers: {
       ...headers,
       account,
-      'access-token': Cookie.get('access_token'),
+      ...getAuthHeaders(),
     },
     method: 'POST',
     body: JSON.stringify(data),
@@ -2430,7 +2437,7 @@ export const updateCampaing = (data, account) =>
     headers: {
       ...headers,
       account,
-      'access-token': Cookie.get('access_token'),
+      ...getAuthHeaders(),
     },
     method: 'PATCH',
     body: JSON.stringify(data),
@@ -2919,7 +2926,7 @@ export const addTokenReport = (account, data) =>
   fetch(`${config.arbitrageApiPrefix}${config.profit}${config.report}/${account}`, {
     headers: {
       ...headers,
-      'access-token': Cookie.get('access_token'),
+      ...getAuthHeaders(),
     },
     method: 'POST',
     body: JSON.stringify(data),
@@ -2933,7 +2940,7 @@ export const editTokenProfit = (account, data) =>
   fetch(`${config.arbitrageApiPrefix}${config.profit}${config.report}/${account}`, {
     headers: {
       ...headers,
-      'access-token': Cookie.get('access_token'),
+      ...getAuthHeaders(),
     },
     method: 'PATCH',
     body: JSON.stringify(data),
@@ -2947,7 +2954,7 @@ export const deleteTokenProfit = (account, data) =>
   fetch(`${config.arbitrageApiPrefix}${config.profit}${config.report}/${account}`, {
     headers: {
       ...headers,
-      'access-token': Cookie.get('access_token'),
+      ...getAuthHeaders(),
     },
     method: 'DELETE',
     body: JSON.stringify(data),
@@ -2961,7 +2968,7 @@ export const setRebalancingTableItem = (account, body) =>
   fetch(`${config.arbitrageApiPrefix}${config.rebalancing}/${account}`, {
     headers: {
       ...headers,
-      'access-token': Cookie.get('access_token'),
+      ...getAuthHeaders(),
     },
     method: 'PATCH',
     body: JSON.stringify(body),
@@ -2975,7 +2982,7 @@ export const getSwapInfoForRebalance = (account, pair) =>
   fetch(`${config.arbitrageApiPrefix}${config.rebalancing}/${account}`, {
     headers: {
       ...headers,
-      'access-token': Cookie.get('access_token'),
+      ...getAuthHeaders(),
     },
     method: 'POST',
     body: JSON.stringify({
@@ -3521,7 +3528,7 @@ export const getAffiliateCodesForWebsite = (userName, host) =>
   fetch(`${config.apiPrefix}${config.sites}${config.affiliate}?userName=${userName}&host=${host}`, {
     headers: {
       ...headers,
-      'access-token': Cookie.get('access_token'),
+      ...getAuthHeaders(),
     },
     method: 'GET',
   })
@@ -3533,7 +3540,7 @@ export const getAffiliateObjectForWebsite = (userName, host) =>
   fetch(`${config.apiPrefix}${config.user}/${userName}${config.affiliate}`, {
     headers: {
       ...headers,
-      'access-token': Cookie.get('access_token'),
+      ...getAuthHeaders(),
     },
     body: JSON.stringify({ host }),
     method: 'POST',
@@ -3546,7 +3553,7 @@ export const safeAffiliateCodesForWebsite = (userName, host, links) =>
   fetch(`${config.apiPrefix}${config.sites}${config.affiliate}`, {
     headers: {
       ...headers,
-      'access-token': Cookie.get('access_token'),
+      ...getAuthHeaders(),
     },
     method: 'PUT',
     body: JSON.stringify({
@@ -3725,6 +3732,7 @@ export const withdrawHiveForGuest = (amount, outputCoinType, userName, address) 
       ...headers,
       'access-token': guestToken || Cookie.get('access_token'),
       'waivio-auth': Boolean(guestToken),
+      'hive-auth': Boolean(Cookie.get('auth')),
     },
     method: 'POST',
     body: JSON.stringify({
@@ -3743,7 +3751,7 @@ export const saveCommentDraft = (user, author, permlink, body) =>
   fetch(`${config.apiPrefix}${config.draft}${config.comment}`, {
     headers: {
       ...headers,
-      'access-token': Cookie.get('access_token'),
+      ...getAuthHeaders(),
     },
     method: 'POST',
     body: JSON.stringify({
@@ -3763,7 +3771,7 @@ export const getCommentDraft = (user, author, permlink) => {
   return fetch(`${config.apiPrefix}${config.draft}${config.comment}?${query}`, {
     headers: {
       ...headers,
-      'access-token': Cookie.get('access_token'),
+      ...getAuthHeaders(),
     },
     method: 'GET',
   })
@@ -3777,7 +3785,7 @@ export const getObjectUpdatesLocale = (authorPermlink, permlink) => {
     {
       headers: {
         ...headers,
-        'access-token': Cookie.get('access_token'),
+        ...getAuthHeaders(),
       },
       method: 'GET',
     },

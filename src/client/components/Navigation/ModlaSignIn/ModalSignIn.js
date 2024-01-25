@@ -62,7 +62,7 @@ const ModalSignIn = ({
 }) => {
   const dispatch = useDispatch();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [showQR, setShowQr] = useState(false);
+  const [showQR, setShowQr] = useState('');
   const [userData, setUserData] = useState({});
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -172,7 +172,7 @@ const ModalSignIn = ({
           ) : (
             <React.Fragment>
               {showQR ? (
-                <span>qr</span>
+                <img className="ModalSignIn__qr" src={showQR} alt={'qr'} />
               ) : (
                 <React.Fragment>
                   <p className="ModalSignIn__rules">
@@ -200,7 +200,10 @@ const ModalSignIn = ({
                       defaultMessage: 'HiveSinger',
                     })}
                   </a>
-                  <HiveAuth setQRcodeForAuth={() => setShowQr(true)} />
+                  <HiveAuth
+                    onCloseSingIn={setIsModalOpen}
+                    setQRcodeForAuth={url => setShowQr(url)}
+                  />
                   <p className="ModalSignIn__title ModalSignIn__title--lined">
                     <span>
                       {intl.formatMessage({
@@ -272,6 +275,7 @@ const ModalSignIn = ({
     setIsShowSignInModal(false);
     setIsFormVisible(false);
     handleLoginModalCancel();
+    setShowQr('');
   };
 
   const onSignUpClick = isOpen => {

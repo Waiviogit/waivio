@@ -1,7 +1,10 @@
 /* eslint-disable */
+import Cookie from 'js-cookie';
 import { v4 as uuidv4 } from 'uuid';
 import CryptoJS from 'crypto-js';
 import assert from 'assert';
+
+import { message } from 'antd';
 
 const CMD = {
   CONNECTED: 'connected',
@@ -56,6 +59,19 @@ function getMessage(type, uuid = undefined) {
 
   return req;
 }
+
+const makeHiveAuthHeader = auth => {
+  try {
+    const { username, expire } = auth;
+    const authString = JSON.stringify({ username, expire });
+    const secretKey = process.env.HIVE_AUTH;
+    const encrypted = CryptoJS.AES.encrypt(authString, secretKey);
+
+    Cookie.set('access_token', encrypted.toString());
+  } catch (error) {
+    console.error(error);
+  }
+};
 
 // HAS client
 function startWebsocket() {
@@ -176,8 +192,7 @@ async function checkConnection(uuid = undefined) {
     return HAS_connected;
   }
 
-    return false;
-
+  return false;
 }
 
 export class Auth {
@@ -265,7 +280,7 @@ export default {
           await checkConnection(),
           `Failed to connect to HiveAuth server ${trace ? HAS_options.host : ''}`,
         );
-
+        message.info('Please confirm pending transactions in your device!');
         // initialize key to encrypt communication with PKSA
         const auth_key = auth.key || uuidv4();
         const data = CryptoJS.AES.encrypt(
@@ -332,7 +347,11 @@ export default {
                   // TODO
                   auth.expire = req_ack.data.expire;
                   auth.key = auth_key;
+                  Cookie.set('auth', JSON.stringify(auth));
+                  makeHiveAuthHeader(auth);
+
                   resolve(req_ack);
+                  messages.success('Auth successfull!');
                 } catch (e) {
                   // Decryption failed - ignore message
                 }
@@ -378,14 +397,13 @@ export default {
    * @param {Array} ops
    * @param {Object} cbWait - (optional) callback method to notify the app about pending request
    */
-  broadcast(auth, key_type, ops, cbWait = undefined) {
+  broadcast(auth, key_type = 'posting', ops, cbWait = undefined) {
     return new Promise(async (resolve, reject) => {
       assert(auth, 'missing auth');
       assert(auth.username && typeof auth.username === 'string', 'missing or invalid username');
       assert(auth.key && typeof auth.key === 'string', 'missing or invalid encryption key');
       assert(ops && Array.isArray(ops) && ops.length > 0, 'missing or invalid ops');
       assert(await checkConnection(), 'not connected to server');
-
       // Encrypt the ops with the key we provided to the PKSA
       const data = CryptoJS.AES.encrypt(
         JSON.stringify({ key_type, ops, broadcast: true, nonce: Date.now() }),
@@ -406,6 +424,7 @@ export default {
       let uuid;
       let busy = false;
       // Wait for the confirmation by the HAS
+      message.info('Please confirm pending transactions in your device!');
       const wait = setInterval(async () => {
         if (!busy) {
           busy = true;
@@ -439,9 +458,11 @@ export default {
               if (trace) console.log(`sign_ack found: ${JSON.stringify(req_ack)}`);
               clearInterval(wait);
               resolve(req_ack);
+              message.success('Transaction successfull!');
             } else if (req_nack) {
               // request rejected
               clearInterval(wait);
+              message.error('Transaction was rejected!');
               reject(req_nack);
             } else if (req_err) {
               // request error
@@ -450,7 +471,7 @@ export default {
               const error = CryptoJS.AES.decrypt(req_err.error, auth.key).toString(
                 CryptoJS.enc.Utf8,
               );
-
+              messages.error(error);
               reject(new Error(error));
             }
           }

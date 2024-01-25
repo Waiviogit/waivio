@@ -197,7 +197,6 @@ export const voteAppends = (
         if (!authorityField) {
           message.success('Please wait, we are processing your update');
         }
-
         dispatch(
           getChangedWobjectField(
             wobj.author_permlink,
