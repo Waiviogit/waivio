@@ -1,5 +1,5 @@
 import { message } from 'antd';
-
+import { isEmpty, isNil } from 'lodash';
 import { createAsyncActionType } from '../../common/helpers/stateHelpers';
 import * as ApiClient from '../../waivioApi/ApiClient';
 import { getUser } from './usersSelectors';
@@ -15,19 +15,23 @@ import { guestUserRegex } from '../../common/helpers/regexHelpers';
 
 export const GET_INFO_FOR_SIDEBAR = createAsyncActionType('@users/GET_INFO_FOR_SIDEBAR');
 
-export const getInfoForSideBar = username => async dispatch => {
+export const getInfoForSideBar = (username, lastActiv) => async dispatch => {
   dispatch({
     type: GET_INFO_FOR_SIDEBAR.START,
     meta: { username },
   });
   try {
+    let lastActivity = lastActiv;
     const [acc] = await dHive.database.getAccounts([username]);
     const rc = await dHive.rc.getRCMana(username, acc);
     const voting_mana = await dHive.rc.calculateVPMana(acc);
     const waivVotingMana = await ApiClient.getWaivVoteMana(username, acc);
     const userVoteValue = await ApiClient.getUserVoteValueInfo(username, acc);
-    const lastActivity = await ApiClient.getUserLastActivity(username, acc);
     const waivPowerMana = waivVotingMana ? calculateMana(waivVotingMana) : null;
+
+    if (isEmpty(lastActiv) || isNil(lastActiv)) {
+      lastActivity = await ApiClient.getUserLastActivity(username, acc);
+    }
     const data = {
       balance: acc?.balance,
       hbd_balance: acc?.hbd_balance,
@@ -39,6 +43,10 @@ export const getInfoForSideBar = username => async dispatch => {
       downvote_manabar: acc?.downvote_manabar,
       voting_manabar: voting_mana,
       posting_json_metadata: acc.posting_json_metadata,
+      vesting_withdraw_rate: acc.vesting_withdraw_rate,
+      to_withdraw: acc.to_withdraw,
+      withdrawn: acc.withdrawn,
+      next_vesting_withdrawal: acc.next_vesting_withdrawal,
     };
 
     data.rc_percentage = rc.percentage * 0.01 || 0;
@@ -47,7 +55,7 @@ export const getInfoForSideBar = username => async dispatch => {
     data.waivDownvotingPower = waivVotingMana ? waivPowerMana.downvotingPower : 100;
     data.waivVotingPowerPrice = userVoteValue.estimatedWAIV;
     data.hiveVotingPowerPrice = userVoteValue.estimatedHIVE;
-    data.last_activity = lastActivity ? `${lastActivity}Z` : acc.created || acc.createdAt;
+    data.last_activity = lastActivity || acc.created || acc.createdAt;
     data.totalVotingPowerPrice = userVoteValue.estimatedHIVE + userVoteValue.estimatedWAIV;
 
     return dispatch({
@@ -73,7 +81,7 @@ export const getUserAccount = name => (dispatch, getState) => {
   return dispatch({
     type: GET_ACCOUNT.ACTION,
     payload: ApiClient.getUserAccount(name, false, authUser).then(res => {
-      if (!isGuest) dispatch(getInfoForSideBar(name));
+      if (!isGuest) dispatch(getInfoForSideBar(name, res?.lastActivity));
 
       return res;
     }),

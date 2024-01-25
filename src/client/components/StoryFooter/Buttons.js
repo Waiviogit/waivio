@@ -37,6 +37,7 @@ export default class Buttons extends React.Component {
     handlePostPopoverMenuClick: PropTypes.func,
     username: PropTypes.string,
     userComments: PropTypes.bool,
+    isThread: PropTypes.bool,
   };
 
   static defaultProps = {
@@ -52,6 +53,7 @@ export default class Buttons extends React.Component {
     handlePostPopoverMenuClick: () => {},
     username: '',
     userComments: false,
+    isThread: false,
   };
 
   constructor(props) {
@@ -197,6 +199,7 @@ export default class Buttons extends React.Component {
       saving,
       handlePostPopoverMenuClick,
       userComments,
+      isThread,
     } = this.props;
     const upVotes = this.state.upVotes.sort(sortVotes);
     const downVotes = this.state.downVotes.sort(sortVotes).reverse();
@@ -352,7 +355,7 @@ export default class Buttons extends React.Component {
           {post.children > 0 && <FormattedNumber value={post.children} />}
         </span>
         <React.Fragment>
-          {showReblogLink && (
+          {showReblogLink && !isThread && (
             <BTooltip
               title={intl.formatMessage({
                 id: postState.reblogged ? 'reblog_reblogged' : 'reblog',
@@ -364,7 +367,7 @@ export default class Buttons extends React.Component {
               </a>
             </BTooltip>
           )}
-          {!showReblogLink && (
+          {!showReblogLink && !isThread && (
             <BTooltip
               title={intl.formatMessage({
                 id: postState.reblogged ? 'reblog_reblogged' : 'reblog',
@@ -402,6 +405,7 @@ export default class Buttons extends React.Component {
           handlePostPopoverMenuClick={handlePostPopoverMenuClick}
           ownPost={ownPost}
           userComments={userComments}
+          isThread={isThread}
         >
           <i className="Buttons__post-menu iconfont icon-more" />
         </PostPopoverMenu>

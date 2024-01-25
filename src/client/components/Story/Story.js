@@ -44,6 +44,7 @@ class Story extends React.Component {
     defaultVotePercent: PropTypes.number.isRequired,
     showNSFWPosts: PropTypes.bool.isRequired,
     pendingLike: PropTypes.bool,
+    isThread: PropTypes.bool,
     pendingFollow: PropTypes.bool,
     pendingBookmark: PropTypes.bool,
     saving: PropTypes.bool,
@@ -162,16 +163,16 @@ class Story extends React.Component {
   };
 
   handleClickVote(post, postState, weight, type) {
-    const { sliderMode, defaultVotePercent, votePost } = this.props;
+    const { sliderMode, defaultVotePercent, votePost, isThread } = this.props;
     const author = guestUserRegex.test(post.author) ? post.root_author : post.author;
     const charter = type === 'isReported' ? -1 : 1;
 
     if (sliderMode && !postState[type]) {
-      votePost(post.id, author, post.permlink, Number(weight));
+      votePost(post.id, author, post.permlink, Number(weight), isThread);
     } else if (postState[type]) {
-      votePost(post.id, author, post.permlink, 0);
+      votePost(post.id, author, post.permlink, 0, isThread);
     } else {
-      votePost(post.id, author, post.permlink, defaultVotePercent * charter);
+      votePost(post.id, author, post.permlink, defaultVotePercent * charter, isThread);
     }
   }
 
@@ -206,14 +207,17 @@ class Story extends React.Component {
   }
 
   handleEditClick = post => {
-    const { intl } = this.props;
+    const { intl, isThread } = this.props;
+    const threadEditUrl = `/@${post.parent_author}/${post.parent_permlink}#@${post.author}/${post.permlink}`;
 
     if (post.depth === 0)
       return this.props
         .editPost(post, intl)
-        .then(() => this.props.push(`/editor?draft=${post.id}`));
+        .then(() =>
+          this.props.push(isThread ? `${threadEditUrl}-edit` : `/editor?draft=${post.id}`),
+        );
 
-    return this.props.push(`${post.url}-edit`);
+    return this.props.push(`${isThread ? threadEditUrl : post.url}-edit`);
   };
 
   handleShowStoryPreview() {
@@ -272,7 +276,11 @@ class Story extends React.Component {
         href={replaceBotWithGuestName(`/@${post.id}`, post.guestInfo)}
         rel="noopener noreferrer"
         target="_blank"
-        onClick={this.handlePreviewClickPostModalDisplay}
+        onClick={
+          this.props.isThread
+            ? this.handlePostModalDisplay
+            : this.handlePreviewClickPostModalDisplay
+        }
         className="Story__content__preview"
       >
         <StoryPreview post={post} isVimeo={isVimeo} />
@@ -299,6 +307,7 @@ class Story extends React.Component {
       defaultVotePercent,
       location,
       userComments,
+      isThread,
     } = this.props;
     const rebloggedUser = get(post, ['reblogged_users'], []);
     const isRebloggedPost = rebloggedUser.includes(user.name);
@@ -372,16 +381,16 @@ class Story extends React.Component {
                   <BTooltip
                     title={
                       <span>
-                        <FormattedDate value={`${post.created}Z`} />{' '}
-                        <FormattedTime value={`${post.created}Z`} />
+                        <FormattedDate value={isThread ? post.createdAt : `${post.created}Z`} />{' '}
+                        <FormattedTime value={isThread ? post.createdAt : `${post.created}Z`} />
                       </span>
                     }
                   >
                     <span className="Story__date">
-                      <FormattedRelative value={`${post.created}Z`} />
+                      <FormattedRelative value={isThread ? post.createdAt : `${post.created}Z`} />
                     </span>
                   </BTooltip>
-                  <PostedFrom post={post} />
+                  <PostedFrom post={post} isThread={isThread} />
                 </span>
               </div>
               <div className="Story__topics">
@@ -394,16 +403,22 @@ class Story extends React.Component {
             </div>
             <div className="Story__content">
               <a
-                href={replaceBotWithGuestName(dropCategory(post.url), post.guestInfo)}
+                href={
+                  isThread
+                    ? `/@${post.author}/${post.permlink}`
+                    : replaceBotWithGuestName(dropCategory(post.url), post.guestInfo)
+                }
                 rel="noopener noreferrer"
                 target="_blank"
                 onClick={this.handlePostModalDisplay}
                 className="Story__content__title"
               >
-                <h2>
-                  {post.depth !== 0 && <Tag color="#4f545c">RE</Tag>}
-                  {post.title || post.root_title}
-                </h2>
+                {!isThread && (
+                  <h2>
+                    {post.depth !== 0 && <Tag color="#4f545c">RE</Tag>}
+                    {post.title || post.root_title}
+                  </h2>
+                )}
               </a>
               {this.renderStoryPreview()}
             </div>
@@ -429,6 +444,7 @@ class Story extends React.Component {
                 toggleBookmark={this.props.toggleBookmark}
                 handleEditClick={this.handleEditClick}
                 userComments={userComments}
+                isThread={isThread}
               />
             </div>
           </div>

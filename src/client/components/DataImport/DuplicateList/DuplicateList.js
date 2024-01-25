@@ -29,11 +29,13 @@ import VoteInfoBlock from './../VoteInfoBlock';
 import FindListModal from './FindListModal';
 
 import './../DataImport.less';
+import { getAccount } from '../../../../common/helpers/apiHelpers';
+import { reload } from '../../../../store/authStore/authActions';
 
 const limit = 30;
 
 const DuplicateList = ({ intl }) => {
-  const isAuthBot = useSelector(state =>
+  const isStoreAuthBot = useSelector(state =>
     getIsConnectMatchBot(state, { botType: MATCH_BOTS_TYPES.IMPORT }),
   );
   const authUserName = useSelector(getAuthenticatedUserName);
@@ -46,6 +48,7 @@ const DuplicateList = ({ intl }) => {
   const [hasMoreImports, setHasMoreImports] = useState(false);
   const [hasMoreHistory, setHasMoreHistory] = useState(false);
   const [history, setHistoryImportedObject] = useState([]);
+  const [isAuthBot, setIsAuth] = useState(isStoreAuthBot);
   const setListAndSetHasMore = (res, list, isLoadMore, setObjs, setMoreObjs) => {
     if (res.length > limit) {
       setMoreObjs(true);
@@ -87,6 +90,14 @@ const DuplicateList = ({ intl }) => {
     });
 
     dispatch(getImportUpdate(updateDuplicatedListDate));
+    getAccount(authUserName).then(
+      r =>
+        setIsAuth(r?.posting?.account_auths?.some(acc => acc[0] === MATCH_BOTS_TYPES.IMPORT)) ||
+        isStoreAuthBot,
+    );
+    if (isStoreAuthBot !== isAuthBot) {
+      dispatch(reload());
+    }
 
     return () => dispatch(closeImportSoket());
   }, []);
@@ -115,12 +126,12 @@ const DuplicateList = ({ intl }) => {
     Modal.confirm({
       title: intl.formatMessage({
         id: 'stop_list_duplicator',
-        defaultMessage: 'Stop list duplicator',
+        defaultMessage: 'Stop list duplication',
       }),
       content: intl.formatMessage({
         id: 'stop_list_duplicator_message',
         defaultMessage:
-          'Once stopped, the list duplicator cannot be resumed. To temporarily suspend/resume the list duplicator, please consider using the Active checkbox.',
+          'Once stopped, the list duplication cannot be resumed. To temporarily suspend/resume the list duplication, please consider using the Active checkbox.',
       }),
       onOk: () => {
         deleteDuplicateList(authUserName, item.importId).then(() => {
@@ -140,7 +151,7 @@ const DuplicateList = ({ intl }) => {
         <h2>
           {intl.formatMessage({
             id: 'list_duplicator_bot_title',
-            defaultMessage: 'List duplicator bot',
+            defaultMessage: 'List duplication bot',
           })}
         </h2>
         <Switch checked={isAuthBot} onChange={handleRedirect} />
@@ -149,7 +160,7 @@ const DuplicateList = ({ intl }) => {
         {intl.formatMessage({
           id: 'list_duplicator_bot_description1',
           defaultMessage:
-            'This tool is crafted for users to easily duplicate lists. It meticulously creates a new, identical list, copying all nested lists, objects, and updates from the original. The result is a comprehensive reproduction of the initial list.',
+            'This bot creates copies of lists, including all embedded lists, and links to products or other objects. It uses ChatGPT to rewrite titles and descriptions for all lists.',
         })}
       </p>
       <p>
@@ -161,9 +172,9 @@ const DuplicateList = ({ intl }) => {
       </p>
       <p>
         {intl.formatMessage({
-          id: 'data_import_description3',
+          id: 'list_duplicator_bot_description3',
           defaultMessage:
-            'If the WAIV power on the account is insufficient to cast a $0.001 USD vote, or if the WAIV power reaches the specified threshold, the data import process will continue at a slower pace.',
+            'If the WAIV power on the account is insufficient to cast a $0.001 USD vote, or if the WAIV power reaches the specified threshold, the list duplication process will continue at a slower pace.',
         })}
       </p>
       <hr />
@@ -172,7 +183,7 @@ const DuplicateList = ({ intl }) => {
           {intl.formatMessage({
             id: 'list_duplicator_bot_requires_auth',
             defaultMessage:
-              'The List duplicator bot requires authorization to upvote data updates on your behalf',
+              'The List duplication bot requires authorization to upvote data updates on your behalf',
           })}
           :{' '}
           <a onClick={handleRedirect}>
@@ -205,16 +216,16 @@ const DuplicateList = ({ intl }) => {
         )
         <br />
         {intl.formatMessage({
-          id: 'data_import_pause',
+          id: 'list_duplication_pause',
           defaultMessage:
-            'The data import bot will pause if WAIV voting power on the account drops below the set threshold.',
+            'The list duplication bot will pause if WAIV voting power on the account drops below the set threshold.',
         })}
       </p>
       <VoteInfoBlock
         info={intl.formatMessage({
           id: 'list_duplicator_service',
           defaultMessage:
-            'The List duplicator bot service is provided on as-is / as-available basis.',
+            'The List duplication bot service is provided on as-is / as-available basis.',
         })}
       />
       <hr />

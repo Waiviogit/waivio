@@ -1,7 +1,7 @@
 import { setTimeout } from 'timers';
 import React from 'react';
 import { Provider } from 'react-redux';
-import { get } from 'lodash';
+import { get, isNil } from 'lodash';
 import { renderToString } from 'react-dom/server';
 import { StaticRouter } from 'react-router';
 import { matchRoutes, renderRoutes } from 'react-router-config';
@@ -18,11 +18,17 @@ import renderSsrPage from '../renderers/ssrRenderer';
 import switchRoutes from '../../routes/switchRoutes';
 import { getCachedPage, isSearchBot, setCachedPage, updateBotCount } from './cachePageHandler';
 import { isCustomDomain } from '../../client/social-gifts/listOfSocialWebsites';
+import { REDIS_KEYS } from '../../common/constants/ssrData';
+import { sismember } from '../redis/redisClient';
+import NOT_FOUND_PAGE from '../pages/notFoundPage';
 
 // eslint-disable-next-line import/no-dynamic-require
 const assets = require(process.env.MANIFEST_PATH);
 
 const ssrTimeout = 5000;
+
+const isInheritedHost = host =>
+  !['waivio.com', 'www.waivio.com', 'waiviodev.com', 'social.gifts', 'dining.gifts'].includes(host);
 
 function createTimeout(timeout, promise) {
   return new Promise((resolve, reject) => {
@@ -33,10 +39,24 @@ function createTimeout(timeout, promise) {
   });
 }
 
+const isPageExistSitemap = async ({ url, host }) => {
+  const key = `${REDIS_KEYS.SSR_SITEMAP_SET}:${host}`;
+  const member = `https://${host}${url}`;
+  return sismember({ key, member });
+};
+
 export default function createSsrHandler(template) {
   return async function serverSideResponse(req, res) {
     try {
-      if (await isSearchBot(req)) {
+      const hostname = req.hostname;
+      const searchBot = await isSearchBot(req);
+      const inheritedHost = isInheritedHost(hostname);
+      if (inheritedHost && searchBot) {
+        const pageExist = await isPageExistSitemap({ host: hostname, url: req.url });
+        if (!pageExist) return res.send(404).send(NOT_FOUND_PAGE);
+      }
+
+      if (searchBot) {
         await updateBotCount(req);
         const cachedPage = await getCachedPage(req);
         if (cachedPage) {
@@ -50,7 +70,8 @@ export default function createSsrHandler(template) {
         baseURL: process.env.STEEMCONNECT_HOST || 'https://hivesigner.com',
         callbackURL: process.env.STEEMCONNECT_REDIRECT_URL,
       });
-      const hostname = req.headers.host;
+      // const hostname = req.headers.host;
+
       const isWaivio = hostname.includes('waivio');
       let settings = {};
       let parentHost;
@@ -60,7 +81,6 @@ export default function createSsrHandler(template) {
         settings = await getSettingsWebsite(hostname);
         adsenseSettings = await getSettingsAdsense(hostname);
 
-        // write file here
         if (isCustomDomain(hostname)) {
           parentHost = await getParentHost(hostname);
         }
@@ -77,7 +97,7 @@ export default function createSsrHandler(template) {
         const fetchData = route?.component?.fetchData;
 
         if (fetchData instanceof Function) {
-          return fetchData({ store, match, req, res, query });
+          return fetchData({ store, match, req, res, query, url: req.url });
         }
 
         return Promise.resolve(null);
@@ -106,18 +126,24 @@ export default function createSsrHandler(template) {
         template,
         isWaivio,
         get(settings, 'googleAnalyticsTag', ''),
+        get(settings, 'googleGSCTag', ''),
+        get(settings, 'googleEventSnippet', ''),
+        get(settings, 'googleAdsConfig', ''),
         get(adsenseSettings, 'code', ''),
       );
 
-      await setCachedPage({ page, req });
+      if (searchBot) await setCachedPage({ page, req });
+
       return res.send(page);
     } catch (err) {
       console.error('SSR error occured, falling back to bundled application instead', err);
       let settings = {};
+      let adsenseSettings = {};
       const isWaivio = req.hostname.includes('waivio');
 
       if (!isWaivio) {
         settings = await getSettingsWebsite(req.hostname);
+        adsenseSettings = await getSettingsAdsense(req.hostname);
       }
       return res.send(
         renderSsrPage(
@@ -127,6 +153,10 @@ export default function createSsrHandler(template) {
           template,
           isWaivio,
           get(settings, 'googleAnalyticsTag', ''),
+          get(settings, 'googleGSCTag', ''),
+          get(settings, 'googleEventSnippet', ''),
+          get(settings, 'googleAdsConfig', ''),
+          get(adsenseSettings, 'code', ''),
         ),
       );
     }

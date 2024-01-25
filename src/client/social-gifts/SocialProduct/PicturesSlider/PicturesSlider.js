@@ -1,37 +1,36 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { Carousel, Icon } from 'antd';
-import { useHistory, useRouteMatch } from 'react-router';
 import Lightbox from 'react-image-lightbox';
-import { useSelector } from 'react-redux';
 import { get, indexOf, isEmpty, map } from 'lodash';
 import PropTypes from 'prop-types';
-import './PicturesSlider.less';
-import { getRelatedPhotos, getWobjectGallery } from '../../../../waivioApi/ApiClient';
-import { getUsedLocale } from '../../../../store/appStore/appSelectors';
 import { isMobile } from '../../../../common/helpers/apiHelpers';
 import { getProxyImageURL } from '../../../../common/helpers/image';
-import {
-  getLastPermlinksFromHash,
-  getObjectAvatar,
-} from '../../../../common/helpers/wObjectHelper';
+import { getObjectAvatar } from '../../../../common/helpers/wObjectHelper';
+import './PicturesSlider.less';
 
-const limit = 30;
-
-const PicturesSlider = ({ hoveredOption, activeOption, activeCategory, currentWobj }) => {
-  const [currentImage, setCurrentImage] = useState({});
+const PicturesSlider = ({
+  hoveredOption,
+  activeOption,
+  activeCategory,
+  currentWobj,
+  altText,
+  albums,
+  relatedAlbum,
+}) => {
+  const allPhotos = albums
+    ?.flatMap(alb => alb?.items)
+    ?.sort((a, b) => (b.name === 'avatar') - (a.name === 'avatar'));
+  const pictures = [...allPhotos, ...get(relatedAlbum, 'items', [])];
+  const avatar = getObjectAvatar(currentWobj);
+  const [currentImage, setCurrentImage] = useState(
+    isEmpty(avatar) ? pictures[0] : { body: avatar },
+  );
   const [nextArrowClicked, setNextArrowClicked] = useState(false);
   const [lastSlideToShow, setLastSlideToShow] = useState(null);
   const [hoveredPic, setHoveredPic] = useState({});
-  const [pictures, setPictures] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const [photoIndex, setPhotoIndex] = useState(0);
   const slider = useRef();
-  const history = useHistory();
-  const match = useRouteMatch();
-  const locale = useSelector(getUsedLocale);
-  const authorPermlink = history.location.hash
-    ? getLastPermlinksFromHash(history.location.hash)
-    : match.params.name;
   let currentSrc = hoveredPic.body || currentImage?.body;
 
   if (hoveredOption?.avatar || activeOption[activeCategory]?.avatar) {
@@ -54,21 +53,6 @@ const PicturesSlider = ({ hoveredOption, activeOption, activeCategory, currentWo
     setPhotoIndex(next);
     setCurrentImage(pictures[next]);
   };
-
-  useEffect(() => {
-    getWobjectGallery(authorPermlink, locale).then(async albums => {
-      const relatedAlbum = await getRelatedPhotos(authorPermlink, limit, 0);
-      const allPhotos = albums
-        ?.flatMap(alb => alb?.items)
-        ?.sort((a, b) => (b.name === 'avatar') - (a.name === 'avatar'));
-      const photos = [...allPhotos, ...get(relatedAlbum, 'items', [])];
-      const avatar = getObjectAvatar(currentWobj);
-
-      setPictures(photos);
-      setCurrentImage(isEmpty(avatar) ? photos[0] : { body: avatar });
-      setPhotoIndex(0);
-    });
-  }, [authorPermlink, currentWobj.author_permlink]);
 
   useEffect(() => {
     if (photoIndex === 0) {
@@ -122,7 +106,7 @@ const PicturesSlider = ({ hoveredOption, activeOption, activeCategory, currentWo
           <img
             className="PicturesSlider__previewImage"
             src={getProxyImageURL(currentSrc)}
-            alt={'pic'}
+            alt={altText}
             onClick={() => setIsOpen(true)}
           />
         </div>
@@ -134,7 +118,7 @@ const PicturesSlider = ({ hoveredOption, activeOption, activeCategory, currentWo
                 <img
                   className="PicturesSlider__previewImage"
                   src={getProxyImageURL(pic.body)}
-                  alt={'pic'}
+                  alt={altText}
                   onClick={() => setIsOpen(true)}
                 />
               </div>
@@ -185,10 +169,13 @@ const PicturesSlider = ({ hoveredOption, activeOption, activeCategory, currentWo
 };
 
 PicturesSlider.propTypes = {
+  albums: PropTypes.arrayOf(),
   currentWobj: PropTypes.shape(),
   hoveredOption: PropTypes.shape(),
   activeOption: PropTypes.shape(),
+  relatedAlbum: PropTypes.shape(),
   activeCategory: PropTypes.string,
+  altText: PropTypes.string,
 };
 
 export default PicturesSlider;

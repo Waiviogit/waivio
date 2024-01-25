@@ -1,5 +1,5 @@
 /* eslint-disable */
-import { isEmpty, omit, ceil, includes } from 'lodash';
+import { isEmpty, omit, ceil, includes, has, sample } from 'lodash';
 import fetch from 'isomorphic-fetch';
 import Cookie from 'js-cookie';
 import { message } from 'antd';
@@ -12,6 +12,10 @@ import { getGuestAccessToken } from '../common/helpers/localStorageHelpers';
 import { isMobileDevice } from '../common/helpers/apiHelpers';
 import { createQuery, parseQuery } from './helpers';
 import { TRANSACTION_TYPES } from '../client/wallet/WalletHelper';
+import {
+  excludeHashtagObjType,
+  recommendedObjectTypes,
+} from '../common/constants/listOfObjectTypes';
 
 export const headers = {
   Accept: 'application/json',
@@ -20,6 +24,16 @@ export const headers = {
 };
 
 const WAIVIdPool = 13;
+const REQUEST_TIMEOUT = 15000;
+const HIVE_ENGINE_NODES = [
+  'https://engine.waivio.com',
+  'https://ha.herpc.dtools.dev', // New Jersey
+  'https://engine.deathwing.me', //
+  'https://herpc.dtools.dev', // Miami
+  'https://api.primersion.com',
+  'https://herpc.kanibot.com',
+  'https://he.sourov.dev',
+];
 
 export function handleErrors(response) {
   if (!response.ok) {
@@ -55,19 +69,7 @@ export const getRecommendedObjects = (locale = 'en-US') =>
       userLimit: 5,
       locale,
       limit: 6,
-      exclude_object_types: [
-        'list',
-        'crypto',
-        'indices',
-        'stocks',
-        'currencies',
-        'commodity',
-        'car',
-        'test',
-        'car',
-        'page',
-        'hashtag',
-      ],
+      object_types: recommendedObjectTypes,
       sample: true,
     }),
   })
@@ -84,7 +86,7 @@ export const getObjects = ({
   const reqData = { limit, locale, skip };
 
   if (isOnlyHashtags) reqData.object_types = ['hashtag'];
-  else reqData.exclude_object_types = ['hashtag'];
+  else reqData.object_types = excludeHashtagObjType;
 
   return fetch(`${config.apiPrefix}${config.getObjects}`, {
     headers: {
@@ -545,13 +547,11 @@ export const getWobjectsWithUserWeight = (
   limit = 30,
   authUser,
   objectTypes,
-  excludeObjectTypes,
   locale,
 ) => {
   const reqData = { skip, limit };
 
   if (objectTypes) reqData.object_types = objectTypes;
-  if (excludeObjectTypes) reqData.exclude_object_types = excludeObjectTypes;
 
   return fetch(`${config.apiPrefix}${config.user}/${userName}${config.wobjectsWithUserWeight}`, {
     headers: {
@@ -2050,48 +2050,49 @@ export const getPostsForMap = params =>
     .then(res => res.json())
     .catch(e => e);
 
-const hiveEngineContract = params =>
-  fetch('https://ha.herpc.dtools.dev/contracts', {
-    headers,
-    body: JSON.stringify({
-      jsonrpc: '2.0',
-      id: 10,
-      method: 'find',
-      params,
-    }),
-    method: 'POST',
-  })
-    .then(handleErrors)
-    .then(res => res.json())
-    .then(response => response.result)
-    .catch(e => e);
+const getNewNodeUrl = hostUrl => {
+  const index = hostUrl ? HIVE_ENGINE_NODES.indexOf(hostUrl) : 0;
 
-const engineProxy = params => {
-  const nodes = [
-    // 'https://api.hive-engine.com/rpc', // Germany
-    // 'https://api2.hive-engine.com/rpc', // Finland
-    'https://herpc.dtools.dev', // Miami
-    'https://us.engine.rishipanthee.com', // Finland
-    'https://ha.herpc.dtools.dev', // New Jersey
-  ];
+  return index === HIVE_ENGINE_NODES.length - 1
+    ? HIVE_ENGINE_NODES[0]
+    : HIVE_ENGINE_NODES[index + 1];
+};
 
-  const callBack = (url, i, arr) =>
-    fetch(`${url}/contracts`, {
+export const engineQuery = async ({ hostUrl, params, endpoint = '/contracts' }) =>
+  fetch(
+    `${hostUrl}${endpoint}`,
+    {
       headers,
       body: JSON.stringify({
         jsonrpc: '2.0',
-        id: 10,
+        id: 'ssc-mainnet-hive',
         method: 'find',
         params,
       }),
       method: 'POST',
-    })
-      .then(res => res.json())
-      .then(response => response.result)
-      .catch(() => callBack(arr[i + 1], i + 1, arr));
+    },
+    {
+      timeout: REQUEST_TIMEOUT,
+    },
+  )
+    .then(res => res.json())
+    .then(response => response.result)
+    .catch(error => ({ error }));
 
-  return callBack(nodes[0], 0, nodes);
+export const engineProxy = async (params, attempts = 5, hostUrl = sample(HIVE_ENGINE_NODES)) => {
+  const response = await engineQuery({
+    params,
+    hostUrl,
+  });
+  if (has(response, 'error')) {
+    if (attempts <= 0) return response;
+    const newUrl = getNewNodeUrl(hostUrl);
+    return engineProxy(params, attempts - 1, newUrl);
+  }
+  return response;
 };
+
+const hiveEngineContract = async params => engineProxy(params);
 
 export const getMarketPools = async ({ query }) =>
   engineProxy({
@@ -3592,7 +3593,13 @@ export const getReferenceObjectsListByType = ({
     .then(r => r)
     .catch(error => error);
 
-export const getRelatedObjectsFromDepartments = (authorPermlink, userName, locale, skip, limit) =>
+export const getRelatedObjectsFromDepartments = (
+  authorPermlink,
+  userName,
+  locale,
+  skip,
+  limit = 30,
+) =>
   fetch(`${config.apiPrefix}${config.shop}${config.getObjects}${config.related}`, {
     headers: { ...headers, follower: userName, locale },
     method: 'POST',
@@ -3606,7 +3613,13 @@ export const getRelatedObjectsFromDepartments = (authorPermlink, userName, local
     .then(r => r)
     .catch(error => error);
 
-export const getSimilarObjectsFromDepartments = (authorPermlink, userName, locale, skip, limit) =>
+export const getSimilarObjectsFromDepartments = (
+  authorPermlink,
+  userName,
+  locale,
+  skip,
+  limit = 30,
+) =>
   fetch(`${config.apiPrefix}${config.shop}${config.getObjects}${config.similar}`, {
     headers: { ...headers, follower: userName, locale },
     method: 'POST',
@@ -3758,4 +3771,86 @@ export const getCommentDraft = (user, author, permlink) => {
     .then(posts => posts)
     .catch(error => error);
 };
+export const getObjectUpdatesLocale = (authorPermlink, permlink) => {
+  return fetch(
+    `${config.apiPrefix}${config.getObjects}/${authorPermlink}${config.listItemLocales}/${permlink}`,
+    {
+      headers: {
+        ...headers,
+        'access-token': Cookie.get('access_token'),
+      },
+      method: 'GET',
+    },
+  )
+    .then(res => res.json())
+    .then(posts => posts)
+    .catch(error => error);
+};
+export const getThreadsByHashtag = (follower, permlink, skip = 0, limit = 10, sort = 'latest') => {
+  return fetch(
+    `${config.apiPrefix}${config.thread}${config.hashtag}?hashtag=${permlink}&skip=${skip}&limit=${limit}&sort=${sort}`,
+    {
+      headers: {
+        ...headers,
+        follower,
+      },
+      method: 'GET',
+    },
+  )
+    .then(res => res.json())
+    .then(posts => posts)
+    .catch(error => error);
+};
+export const getThreadsByUser = (follower, userName, skip = 0, limit = 10, sort = 'latest') => {
+  return fetch(
+    `${config.apiPrefix}${config.thread}${config.user}?user=${userName}&skip=${skip}&limit=${limit}&sort=${sort}`,
+    {
+      headers: {
+        ...headers,
+        follower,
+      },
+      method: 'GET',
+    },
+  )
+    .then(res => res.json())
+    .then(posts => posts)
+    .catch(error => error);
+};
+export const getThreadsCountByHashtag = (permlink, skip = 0, limit = 10) => {
+  return fetch(
+    `${config.apiPrefix}${config.thread}${config.hashtag}${config.count}?skip=${skip}&limit=${limit}`,
+    {
+      headers: headers,
+      method: 'GET',
+    },
+  )
+    .then(res => res.json())
+    .then(posts => posts)
+    .catch(error => error);
+};
+export const getUserFavoritesObjectTypesList = userName => {
+  return fetch(`${config.apiPrefix}${config.user}/${userName}${config.favorites}${config.list}`, {
+    headers: headers,
+    method: 'GET',
+  })
+    .then(res => res.json())
+    .then(posts => posts)
+    .catch(error => error);
+};
+
+export const getUserFavoriteObjects = (authUserName, user, objectType, skip, limit = 10) => {
+  return fetch(`${config.apiPrefix}${config.user}/${user}${config.favorites}`, {
+    headers: { ...headers, follower: authUserName },
+    method: 'POST',
+    body: JSON.stringify({
+      objectType,
+      skip,
+      limit,
+    }),
+  })
+    .then(res => res.json())
+    .then(r => r)
+    .catch(error => error);
+};
+
 export default null;

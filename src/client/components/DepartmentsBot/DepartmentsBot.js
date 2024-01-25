@@ -19,7 +19,6 @@ import ChangeVotingModal from '../../widgets/ChangeVotingModal/ChangeVotingModal
 import {
   changeDepartments,
   deleteDepartments,
-  getAuthorityList,
   getDepartmentsList,
   getDepartmentsVote,
   getHistoryDepartmentsObjects,
@@ -28,10 +27,12 @@ import {
 
 import './DepartmentsBot.less';
 import { closeImportSoket, getImportUpdate } from '../../../store/settingsStore/settingsActions';
+import { getAccount } from '../../../common/helpers/apiHelpers';
+import { reload } from '../../../store/authStore/authActions';
 
 const limit = 30;
 const DepartmentsBot = ({ intl }) => {
-  const isDepartmentsBot = useSelector(state =>
+  const isStoreDepartmentsBot = useSelector(state =>
     getIsConnectMatchBot(state, { botType: MATCH_BOTS_TYPES.IMPORT }),
   );
   const authUserName = useSelector(getAuthenticatedUserName);
@@ -43,6 +44,7 @@ const DepartmentsBot = ({ intl }) => {
   const [departments, setDepartments] = useState([]);
   const [hasMoreDepartments, setHasMoreDepartments] = useState(false);
   const [hasMoreHistory, setHasMoreHistory] = useState(false);
+  const [isDepartmentsBot, setIsDepartmentsBot] = useState(isStoreDepartmentsBot);
   const setListAndSetHasMore = (res, list, isLoadMore, setObjs, setMoreObjs) => {
     if (res.length > limit) {
       setMoreObjs(true);
@@ -62,9 +64,13 @@ const DepartmentsBot = ({ intl }) => {
     getHistoryDepartmentsObjects(authUserName, 0, limit + 1).then(his => {
       setListAndSetHasMore(his, history, false, setHistoryDepartmentsObject, setHasMoreHistory);
     });
+  const getAllDataUpdated = () => {
+    getDepsList();
+    getHistory();
+  };
 
   const loadMoreDepartmentsData = () =>
-    getAuthorityList(authUserName, departments.length, limit + 1).then(res => {
+    getDepartmentsList(authUserName, departments.length, limit + 1).then(res => {
       setListAndSetHasMore(res, departments, true, setDepartments, setHasMoreDepartments);
     });
 
@@ -78,10 +84,18 @@ const DepartmentsBot = ({ intl }) => {
       if (res.minVotingPower) setVotingValue(res.minVotingPower / 100);
     });
 
-    getDepsList();
-    getHistory();
+    getAllDataUpdated();
 
-    dispatch(getImportUpdate(getDepsList));
+    dispatch(getImportUpdate(getAllDataUpdated));
+    getAccount(authUserName).then(
+      r =>
+        setIsDepartmentsBot(
+          r?.posting?.account_auths?.some(acc => acc[0] === MATCH_BOTS_TYPES.IMPORT),
+        ) || isStoreDepartmentsBot,
+    );
+    if (isStoreDepartmentsBot !== isDepartmentsBot) {
+      dispatch(reload());
+    }
 
     return () => dispatch(closeImportSoket());
   }, []);
@@ -140,17 +154,25 @@ const DepartmentsBot = ({ intl }) => {
         <Switch checked={isDepartmentsBot} onChange={handleRedirect} />
       </div>
       <p>
-        This tool designed to automatically categorize products into departments using hierarchical
-        structure of connected lists. This bot uses the names of the lists and sub-lists within them
-        and assigns these names as departments for all products referenced in these lists.
+        {intl.formatMessage({
+          id: 'departments_update_bot_part1',
+          defaultMessage:
+            'This tool designed to automatically categorize products into departments using hierarchical structure of connected lists. This bot uses the names of the lists and sub-lists within them and assigns these names as departments for all products referenced in these lists.',
+        })}
       </p>
       <p>
-        Each update must be approved on behalf of the user with an upvote equivalent to $0.001 in
-        WAIV power.
+        {intl.formatMessage({
+          id: 'departments_update_bot_part2',
+          defaultMessage:
+            'Each update must be approved on behalf of the user with an upvote equivalent to $0.001 in WAIV power.',
+        })}
       </p>
       <p>
-        If the account&apos;s WAIV power drops below $0.001 USD, or if the WAIV power reaches the
-        predetermined threshold, the bot will proceed at a slower speed.
+        {intl.formatMessage({
+          id: 'departments_update_bot_part3',
+          defaultMessage:
+            "If the account's WAIV power drops below $0.001 USD, or if the WAIV power reaches the predetermined threshold, the bot will proceed at a slower speed.",
+        })}
       </p>
       <hr />
       <p>

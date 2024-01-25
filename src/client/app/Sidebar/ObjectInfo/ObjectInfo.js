@@ -8,6 +8,7 @@ import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
 import moment from 'moment';
 import classNames from 'classnames';
+import { isMobile } from '../../../../common/helpers/apiHelpers';
 import {
   accessTypesArr,
   getBlogItems,
@@ -182,7 +183,7 @@ class ObjectInfo extends React.Component {
     const brand = parseWobjectField(wobject, 'brand');
     const merchant = parseWobjectField(wobject, 'merchant');
     const authors = wobject.authors
-      ? wobject.authors.map(el => parseWobjectField(el, 'body', []))
+      ? wobject.authors?.map(el => parseWobjectField(el, 'body', []))
       : [];
 
     const authorsArray = await authors.reduce(async (acc, curr) => {
@@ -330,7 +331,7 @@ class ObjectInfo extends React.Component {
 
     return (
       <div>
-        {tagArray.map(item => (
+        {tagArray?.map(item => (
           <Tag key={`${category}/${item.body}`} color="orange">
             <Link to={`/discover-objects/${type}?${category}=${item.body}`}>{item.body}</Link>
           </Tag>
@@ -356,7 +357,7 @@ class ObjectInfo extends React.Component {
   };
 
   renderTagCategories = tagCategories =>
-    tagCategories.map(item => (
+    tagCategories?.map(item => (
       <div key={item.id}>
         {`${item.body}:`}
         <br />
@@ -450,7 +451,7 @@ class ObjectInfo extends React.Component {
   };
 
   validatedAlbums = albums =>
-    albums.map(album => {
+    albums?.map(album => {
       if (!has(album, 'active_votes') && !has(album, 'weight')) {
         setWith(album, '[active_votes]', []);
         setWith(album, '[weight]', 0);
@@ -490,10 +491,10 @@ class ObjectInfo extends React.Component {
     const linkField = parseWobjectField(wobject, 'link');
     const customSort = get(wobject, 'sortCustom.include', []);
     const companyIdBody = wobject.companyId
-      ? wobject.companyId.map(el => parseWobjectField(el, 'body', []))
+      ? wobject.companyId?.map(el => parseWobjectField(el, 'body', []))
       : [];
     const productIdBody = wobject.productId
-      ? wobject?.productId.map(el => parseWobjectField(el, 'body', []))
+      ? wobject?.productId?.map(el => parseWobjectField(el, 'body', []))
       : [];
     const ageRange = wobject.ageRange;
     const language = wobject.language;
@@ -538,10 +539,10 @@ class ObjectInfo extends React.Component {
       const activeOptionPicture = uniqBy([...pictures], 'body');
       const optionsPictures = wobject?.options
         ? Object.entries(wobject?.options)
-            .map(option => Object.values(option))
+            ?.map(option => Object.values(option))
             .flatMap(el => el[1])
             // .filter(el => el.body.image)
-            .map(o => ({
+            ?.map(o => ({
               body: o?.avatar,
               id:
                 o.author_permlink === wobject.author_permlink && wobject.galleryAlbum
@@ -615,6 +616,7 @@ class ObjectInfo extends React.Component {
     const phones = get(wobject, 'phone', []);
     const isHashtag = hasType(wobject, OBJECT_TYPE.HASHTAG);
     const isAffiliate = hasType(wobject, OBJECT_TYPE.AFFILIATE);
+    const isDescriptionPage = this.props.match.params[0] === 'description';
     const shopType = wobject.object_type === 'shop';
     const showFeedSection = wobject?.exposedFields?.some(f => ['pin', 'remove'].includes(f.name));
     const showConnectSection = wobject?.exposedFields?.some(f =>
@@ -672,7 +674,7 @@ class ObjectInfo extends React.Component {
         {!isEmpty(affiliateLinks) && !isEditMode && (
           <div className="object-sidebar__affLinks">
             <p>Buy it on:</p>
-            {affiliateLinks.map(link => (
+            {affiliateLinks?.map(link => (
               <AffiliatLink key={link.link} link={link} />
             ))}
           </div>
@@ -782,31 +784,31 @@ class ObjectInfo extends React.Component {
               <React.Fragment>
                 {this.listItem(
                   TYPES_OF_MENU_ITEM.LIST,
-                  !isEmpty(menuLinks) && menuLinks.map(item => this.getMenuSectionLink(item)),
+                  !isEmpty(menuLinks) && menuLinks?.map(item => this.getMenuSectionLink(item)),
                 )}
                 {this.listItem(
                   TYPES_OF_MENU_ITEM.PAGE,
                   !isEmpty(menuPages) &&
-                    menuPages.map(page =>
+                    menuPages?.map(page =>
                       this.getMenuSectionLink({ id: TYPES_OF_MENU_ITEM.PAGE, ...page }),
                     ),
                 )}
                 {this.listItem(
                   objectFields.button,
                   !isEmpty(button) &&
-                    button.map(btn => this.getMenuSectionLink({ id: btn.name, ...btn })),
+                    button?.map(btn => this.getMenuSectionLink({ id: btn.name, ...btn })),
                 )}
                 {this.listItem(
                   objectFields.newsFilter,
                   !isEmpty(newsFilters) &&
-                    newsFilters.map(filter =>
+                    newsFilters?.map(filter =>
                       this.getMenuSectionLink({ id: filter.id || filter.name, ...filter }),
                     ),
                 )}
                 {this.listItem(
                   objectFields.blog,
                   !isEmpty(blogsList) &&
-                    blogsList.map(blog =>
+                    blogsList?.map(blog =>
                       this.getMenuSectionLink({ id: TYPES_OF_MENU_ITEM.BLOG, ...blog }),
                     ),
                 )}
@@ -875,6 +877,7 @@ class ObjectInfo extends React.Component {
             objectFields.description,
             description && (
               <DescriptionInfo
+                isDescriptionPage={isDescriptionPage}
                 description={description}
                 wobjPermlink={wobject.author_permlink}
                 showDescriptionBtn={showDescriptionButton}
@@ -900,11 +903,15 @@ class ObjectInfo extends React.Component {
             <div>
               {this.state.authorsArray?.map((a, i) => (
                 <span key={this.authorFieldAuthorPermlink(a)}>
-                  {this.authorFieldAuthorPermlink(a) ? (
-                    <Link to={`/object/${this.authorFieldAuthorPermlink(a)}`}>{a.name}</Link>
-                  ) : (
-                    <span>{a.name}</span>
-                  )}
+                  <Link
+                    to={
+                      this.authorFieldAuthorPermlink(a)
+                        ? `/object/${this.authorFieldAuthorPermlink(a)}`
+                        : `/discover-objects/${wobject.object_type}?search=${a.name}`
+                    }
+                  >
+                    {a.name}
+                  </Link>
                   <>
                     {i !== this.state.authorsArray.length - 1 && ','}
                     {'  '}
@@ -926,7 +933,12 @@ class ObjectInfo extends React.Component {
               ) : (
                 <div className="flex ObjectCard__links ">
                   <ObjectAvatar item={publisher} size={34} />{' '}
-                  <span className="ObjectCard__name-grey">{publisher.name}</span>
+                  <Link
+                    className="ObjectCard__name"
+                    to={`/discover-objects/${wobject.object_type}?search=${publisher.name}`}
+                  >
+                    {publisher.name}
+                  </Link>
                 </div>
               )),
           )}
@@ -935,6 +947,7 @@ class ObjectInfo extends React.Component {
             objectFields.description,
             description && (
               <DescriptionInfo
+                isDescriptionPage={isDescriptionPage}
                 description={description}
                 wobjPermlink={wobject.author_permlink}
                 showDescriptionBtn={showDescriptionButton}
@@ -947,6 +960,7 @@ class ObjectInfo extends React.Component {
             objectFields.description,
             description && (
               <DescriptionInfo
+                isDescriptionPage={isDescriptionPage}
                 description={description}
                 wobjPermlink={wobject.author_permlink}
                 showDescriptionBtn={showDescriptionButton}
@@ -1381,11 +1395,16 @@ class ObjectInfo extends React.Component {
             By{' '}
             {this.state.authorsArray?.map((a, i) => (
               <span key={this.authorFieldAuthorPermlink(a)}>
-                {this.authorFieldAuthorPermlink(a) ? (
-                  <Link to={`/object/${this.authorFieldAuthorPermlink(a)}`}>{a.name}</Link>
-                ) : (
-                  <span>{a.name}</span>
-                )}
+                <Link
+                  to={
+                    this.authorFieldAuthorPermlink(a)
+                      ? `/object/${this.authorFieldAuthorPermlink(a)}`
+                      : `/discover-objects/${wobject.object_type}?search=${a.name}`
+                  }
+                >
+                  {a.name}
+                </Link>
+
                 <>
                   {i !== this.state.authorsArray.length - 1 && ','}
                   {'  '}
@@ -1415,13 +1434,18 @@ class ObjectInfo extends React.Component {
                   ) : (
                     <div className="flex ObjectCard__links">
                       <ObjectAvatar item={publisher} size={34} />{' '}
-                      <span className="ObjectCard__name-grey">{publisher.name}</span>
+                      <Link
+                        className="ObjectCard__name"
+                        to={`/discover-objects/${wobject.object_type}?search=${publisher.name}`}
+                      >
+                        {publisher.name}
+                      </Link>
                     </div>
                   )),
               )}
             {isOptionsObjectType && galleryPriceOptionsSection}
             {!isHashtag && showMenuSection && menuSection()}
-            {!isHashtag && aboutSection}
+            {aboutSection}
             {isAffiliate && (
               <AffiliateSection
                 userName={userName}
@@ -1436,7 +1460,7 @@ class ObjectInfo extends React.Component {
             {showFeedSection && reviewsSection}
             {accessExtend && settingsSection}
             {this.props.children}
-            <ObjectInfoExperts wobject={wobject} />
+            {isMobile() && <ObjectInfoExperts wobject={wobject} />}
           </div>
         )}
       </div>

@@ -26,7 +26,7 @@ const LINKS = {
   TOOLS_SETTINGS: '/settings',
   TOOLS_SETTINGS_GUESTS: '/guests-settings',
   TOOLS_SETTINGS_NOTIFICATIONS: '/notification-settings',
-  ABOUT: '/object/ylr-waivio/page#oal-about-waivio',
+  ABOUT: '/object/ylr-waivio/page#mim-transform-your-passion-into-profit-with-waivio',
   WEBSITE_CREATE: '/create',
   WEBSITES_MANAGE: '/manage',
   WEBSITES_PAYMENTS: '/payments',
@@ -40,9 +40,10 @@ const LINKS = {
   NOTIFICATIONS: '/notifications-list',
   NEW_ACCOUNT: '/new-accounts',
   DATA_IMPORT: '/data-import',
-  LIST_DUPLICATOR: '/list-duplicator-bot',
-  CLAIM_AUTHORITY_BOT: '/claim-athority',
+  LIST_DUPLICATOR: '/list-duplication',
+  CLAIM_AUTHORITY_BOT: '/claim-authority',
   DEPARTMENTS_BOT: '/departments-bot',
+  DESCRIPTIONS_BOT: '/descriptions-bot',
   ASIN_SCANER: '/ASIN-scanner',
   CHROME_EXTENSION: '/chrome-extension',
   AFFILIATE_CODES: '/affiliate-codes',
@@ -76,6 +77,7 @@ const TOOLS_URLS = [
   LINKS.LIST_DUPLICATOR,
   LINKS.CLAIM_AUTHORITY_BOT,
   LINKS.DEPARTMENTS_BOT,
+  LINKS.DESCRIPTIONS_BOT,
   LINKS.ASIN_SCANER,
   LINKS.CHROME_EXTENSION,
   LINKS.USER_AFFILIATE_CODES,
@@ -100,7 +102,12 @@ const TopNavigation = ({ location: { pathname } }) => {
   const rewardsTab = useSelector(getRewardsTab);
   const isRouteMathed =
     pathname === '/' ||
-    Object.values(LINKS).some(url => pathname.includes(url) && !pathname.includes(`/object/`));
+    Object.values(LINKS).some(
+      url =>
+        pathname.includes(url) &&
+        !pathname.includes(`/object/`) &&
+        !pathname.includes(`/favorites/`),
+    );
 
   return isRouteMathed ? (
     <div className="TopNavigation">

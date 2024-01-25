@@ -192,7 +192,7 @@ const ObjectOfTypePage = props => {
     }
 
     if (content) {
-      return <BodyContainer full body={content} />;
+      return <BodyContainer isPage full body={content} />;
     }
 
     return (
@@ -236,7 +236,7 @@ const ObjectOfTypePage = props => {
                     </div>
                     {
                       <React.Fragment>
-                        <BodyContainer full body={content} />
+                        <BodyContainer isPage full body={content} />
                         <div className="object-page-preview__options">
                           <LikeSection
                             form={form}

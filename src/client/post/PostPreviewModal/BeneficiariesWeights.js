@@ -141,7 +141,7 @@ const BeneficiariesWeights = ({ intl, isLinkedObjectsValid }) => {
           />
         </div>
       )}
-      {beneficiariesUsers.map((obj, index) => (
+      {beneficiariesUsers?.map((obj, index) => (
         <BeneficiariesWeight
           key={obj.account}
           index={index}

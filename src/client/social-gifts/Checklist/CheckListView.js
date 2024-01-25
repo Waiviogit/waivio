@@ -1,11 +1,11 @@
 import React from 'react';
-import { isEmpty, map } from 'lodash';
+import { isEmpty, map, truncate } from 'lodash';
 import { useSelector } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { Icon } from 'antd';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import { useHistory } from 'react-router';
+import { useHistory, useRouteMatch } from 'react-router';
 
 import Breadcrumbs from '../Breadcrumbs/Breadcrumbs';
 import Loading from '../../components/Icon/Loading';
@@ -25,7 +25,9 @@ import ListDescription from '../ListDescription/ListDescription';
 const CheckListView = ({ wobject, listItems, loading, intl, hideBreadCrumbs }) => {
   const defaultListImage = useSelector(getWebsiteDefaultIconList);
   const history = useHistory();
+  const match = useRouteMatch();
   const listType = wobject?.object_type === 'list';
+  const listPermlink = match.params.name || wobject?.author_permlink;
   const getListRow = listItem => {
     const isList = listItem.object_type === 'list';
 
@@ -33,27 +35,42 @@ const CheckListView = ({ wobject, listItems, loading, intl, hideBreadCrumbs }) =
       const avatar = getProxyImageURL(listItem?.avatar || defaultListImage, 'preview');
 
       return (
-        <div className="Checklist__listItems">
+        <div className="Checklist__listItems" key={listItem.author_permlink}>
           <Link
             to={{
-              pathname: `/checklist/${wobject?.author_permlink}`,
+              pathname: `/checklist/${listPermlink}`,
               hash: createNewHash(listItem?.author_permlink, history.location.hash),
               search:
-                wobject?.author_permlink === listItem?.author_permlink
+                listPermlink === listItem?.author_permlink
                   ? ''
                   : `currObj=${listItem?.author_permlink}`,
             }}
             title={getTitleForLink(listItem)}
           >
-            <div
-              className="Checklist__itemsAvatar"
-              style={{
-                backgroundImage: `url(${avatar})`,
-              }}
+            {!listItem?.avatar && !defaultListImage ? (
+              <div
+                className="Checklist__itemsAvatar"
+                style={{
+                  backgroundImage: `url(${avatar})`,
+                }}
+              >
+                <Icon type="shopping" />
+              </div>
+            ) : (
+              <img
+                className="Checklist__itemsAvatar"
+                src={avatar}
+                alt={`${getTitleForLink(listItem)} `}
+              />
+            )}
+            <span
+              className="Checklist__itemsTitle"
+              title={
+                listItem?.description
+                  ? truncate(listItem?.description, { length: 200 })
+                  : getObjectName(listItem)
+              }
             >
-              {!listItem?.avatar && !defaultListImage && <Icon type="shopping" />}
-            </div>
-            <span className="Checklist__itemsTitle">
               {getObjectName(listItem)}
               {!isNaN(listItem.listItemsCount) ? (
                 <span className="items-count"> ({listItem.listItemsCount})</span>
@@ -72,7 +89,7 @@ const CheckListView = ({ wobject, listItems, loading, intl, hideBreadCrumbs }) =
     if (wobject?.object_type === 'widget') return <WidgetContent wobj={wobject} />;
     if (wobject?.object_type === 'newsfeed') return <ObjectNewsFeed wobj={wobject} />;
 
-    if (isEmpty(listItems)) {
+    if (isEmpty(listItems) && !loading) {
       return (
         <div className={'Checklist__empty'}>
           {intl.formatMessage({
@@ -102,7 +119,7 @@ const CheckListView = ({ wobject, listItems, loading, intl, hideBreadCrumbs }) =
 
   return (
     <div className="Checklist">
-      {!hideBreadCrumbs && !loading && <Breadcrumbs />}
+      {!hideBreadCrumbs && !loading && wobject?.object_type !== 'newsfeed' && <Breadcrumbs />}
       {listType && wobject?.background && !loading && (
         <div className="Checklist__banner">
           <img src={wobject?.background} alt={'Promotional list banner'} />

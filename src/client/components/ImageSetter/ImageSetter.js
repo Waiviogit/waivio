@@ -65,8 +65,14 @@ const ImageSetter = ({
   const colors = useWebsiteColor();
 
   const handleNewImage = async e => {
-    await setState({ ...initialState, image: e.target.files[0] });
-    setIsOpen(true);
+    if (
+      !isValidImage(e.target.files[0], MAX_IMG_SIZE[objectFields.background], ALLOWED_IMG_FORMATS)
+    ) {
+      onImageInvalid(MAX_IMG_SIZE[objectFields.background], `(${ALLOWED_IMG_FORMATS.join(', ')}) `);
+    } else {
+      await setState({ ...initialState, image: e.target.files[0] });
+      setIsOpen(true);
+    }
   };
 
   useEffect(() => {
@@ -356,7 +362,7 @@ const ImageSetter = ({
             id="inputfile"
             className="image-upload__file-input"
             type="file"
-            accept="image/*"
+            accept="image/heic, image/*"
             multiple={isMultiple}
             onChange={isEditable ? handleNewImage : handleChangeImage}
             onClick={e => {

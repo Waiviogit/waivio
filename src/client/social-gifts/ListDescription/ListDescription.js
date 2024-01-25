@@ -1,12 +1,25 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { has } from 'lodash';
+import { FormattedMessage } from 'react-intl';
+import { has, isEmpty } from 'lodash';
+import { removeEmptyLines, shortenDescription } from '../../object/wObjectHelper';
 import './ListDescription.less';
 
 const ListDescription = ({ wobject }) => {
+  const [showMore, setShowMore] = useState(false);
   const hasTitle = has(wobject, 'title');
   const hasAvatar = has(wobject, 'avatar');
   const hasDescription = has(wobject, 'description');
+  const { firstDescrPart, secondDescrPart } = shortenDescription(wobject?.description, 800);
+  const { firstDescrPart: secondPart, secondDescrPart: thirdPart } = shortenDescription(
+    secondDescrPart,
+    500,
+  );
+  const { firstDescrPart: description } = shortenDescription(
+    removeEmptyLines(wobject?.description),
+    350,
+  );
+  const altText = description || `${wobject.name} image`;
 
   return (
     (hasTitle || hasDescription) && (
@@ -20,14 +33,38 @@ const ListDescription = ({ wobject }) => {
                 <h1 className={'ListDescription__title margin-bottom'}>
                   {hasTitle ? wobject.title : wobject.name}
                 </h1>
-                {wobject.description}
+                {firstDescrPart}
               </div>
               {hasAvatar && (
                 <div className={'ListDescription__image-container show'}>
-                  <img className={'ListDescription__image'} src={wobject.avatar} alt={''} />
+                  <img className={'ListDescription__image'} src={wobject.avatar} alt={altText} />
                 </div>
               )}
             </div>
+            <div
+              className={`ListDescription__second-description ${
+                !hasAvatar ? 'without-avatar' : ''
+              }`}
+            >
+              {secondPart}
+              {!isEmpty(thirdPart) && !showMore && (
+                <button
+                  onClick={() => setShowMore(!showMore)}
+                  className="WalletTable__csv-button ml2"
+                >
+                  <FormattedMessage id="show_more" defaultMessage="Show more" />
+                </button>
+              )}
+            </div>
+            {showMore && (
+              <div
+                className={`ListDescription__remaining-description ${
+                  !hasAvatar ? 'without-avatar' : ''
+                }`}
+              >
+                {thirdPart}
+              </div>
+            )}
           </>
         )}
       </div>

@@ -119,7 +119,7 @@ class Topnav extends React.Component {
     }
   }
 
-  debouncedSearch = debounce(value => this.props.searchAutoComplete(value, 3, 15, null, true), 300);
+  debouncedSearch = debounce(value => this.props.searchAutoComplete(value, 5, 15, null, true), 300);
 
   debouncedSearchByObject = debounce(
     (searchString, objType) => this.props.searchObjectsAutoCompete(searchString, objType),
@@ -403,7 +403,7 @@ class Topnav extends React.Component {
     }
     if (!searchData) {
       if (!isEmpty(searchResults.wobjects))
-        dataSource.push(this.wobjectSearchLayout(searchResults.wobjects.slice(0, 5)));
+        dataSource.push(this.wobjectSearchLayout(searchResults.wobjects.slice(0, 15)));
       if (!isEmpty(searchResults.users))
         dataSource.push(this.usersSearchLayout(searchResults.users));
       if (!isEmpty(searchResults.objectTypes))
@@ -431,7 +431,7 @@ class Topnav extends React.Component {
       let search = this.state.searchBarValue ? `?search=${this.state.searchBarValue}` : '';
 
       if (isUsers && this.state.searchBarValue) {
-        search = `${this.state.searchBarValue}`;
+        search = `/${this.state.searchBarValue}`;
       }
 
       return `${mainLink}${search}`;

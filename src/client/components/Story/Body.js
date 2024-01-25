@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import ReactDOMServer from 'react-dom/server';
 import PropTypes from 'prop-types';
 import { isUndefined, filter, isEmpty } from 'lodash';
@@ -44,7 +44,14 @@ const getEmbed = link => {
 
 // Should return text(html) if returnType is text
 // Should return Object(React Compatible) if returnType is Object
-export function getHtml(body, jsonMetadata = {}, returnType = 'Object', options = {}, location) {
+export function getHtml(
+  body,
+  jsonMetadata = {},
+  returnType = 'Object',
+  options = {},
+  location,
+  isPage,
+) {
   const parsedJsonMetadata = jsonParse(jsonMetadata) || {};
 
   parsedJsonMetadata.image = parsedJsonMetadata.image ? [...parsedJsonMetadata.image] : [];
@@ -58,6 +65,7 @@ export function getHtml(body, jsonMetadata = {}, returnType = 'Object', options 
       parsedJsonMetadata.image.push(img);
     }
   });
+
   const videoPreviewResult = parsedBody.match(videoPreviewRegex);
 
   if (videoPreviewResult) {
@@ -84,6 +92,7 @@ export function getHtml(body, jsonMetadata = {}, returnType = 'Object', options 
       appUrl: options.appUrl,
       secureLinks: options.secureLinks,
       location,
+      isPage,
     }),
   );
 
@@ -158,13 +167,30 @@ export function getHtml(body, jsonMetadata = {}, returnType = 'Object', options 
 }
 
 const Body = props => {
+  useEffect(() => {
+    Array.from(document.body.getElementsByTagName('img')).forEach(imgNode => {
+      // eslint-disable-next-line no-param-reassign
+      imgNode.onerror = () => {
+        // eslint-disable-next-line no-param-reassign
+        imgNode.src = imgNode.alt;
+      };
+    });
+  }, []);
+
   const location = useLocation();
   const options = {
     appUrl: props.appUrl.replace('http://', 'https://'),
     rewriteLinks: props.rewriteLinks,
     secureLinks: props.exitPageSetting,
   };
-  const htmlSections = getHtml(props.body, props.jsonMetadata, 'Object', options, location);
+  const htmlSections = getHtml(
+    props.body,
+    props.jsonMetadata,
+    'Object',
+    options,
+    location,
+    props.isPage,
+  );
 
   return <div className={classNames('Body', { 'Body--full': props.full })}>{htmlSections}</div>;
 };
@@ -176,12 +202,14 @@ Body.propTypes = {
   body: PropTypes.string,
   jsonMetadata: PropTypes.string,
   full: PropTypes.bool,
+  isPage: PropTypes.bool,
 };
 
 Body.defaultProps = {
   body: '',
   jsonMetadata: '',
   full: false,
+  isPage: false,
 };
 
 export default Body;

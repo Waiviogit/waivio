@@ -22,7 +22,7 @@ export const UserAffiliateCodes = ({
   intl,
   form,
   appendWobject,
-  rejectCode,
+  voteAppend,
   affiliateObjects,
   setAffiliateObjs,
   resetAffiliateObjs,
@@ -53,26 +53,38 @@ export const UserAffiliateCodes = ({
       </h1>
       {/* eslint-disable-next-line react/no-unescaped-entities */}
       <p>
-        Enter your affiliate program codes from various platforms, including Amazon.com,
-        Walmart.com, and others. These codes will be automatically integrated into the &apos;Buy
-        Now&apos; links across your profile, posts and comments. This ensures you earn affiliate
-        commissions from sales initiated by your readers and followers.
-      </p>
-
-      <p>
-        Take advantage of the geo-targeting feature by entering affiliate codes for
-        location-specific shops, such as Amazon.ca, Amazon.co.uk, and more. These codes will direct
-        users based on their geographical location, thereby maximizing your potential affiliate
-        revenues.
+        {' '}
+        {intl.formatMessage({
+          id: 'affiliate_codes_enter_code_text_part1',
+          defaultMessage:
+            "Enter your affiliate program codes from various platforms, including Amazon.com, Walmart.com, and others. These codes will be automatically integrated into the 'Buy Now' links across your profile, posts and comments. This ensures you earn affiliate commissions from sales initiated by your readers and followers.",
+        })}
       </p>
 
       <p>
         {' '}
-        For a seamless and uninterrupted user experience, we also recommend checking and confirming
-        the Product IDs on the referenced products.
+        {intl.formatMessage({
+          id: 'affiliate_codes_enter_code_text_part2',
+          defaultMessage:
+            'Take advantage of the geo-targeting feature by entering affiliate codes for location-specific shops, such as Amazon.ca, Amazon.co.uk, and more. These codes will direct users based on their geographical location, thereby maximizing your potential affiliate revenues.',
+        })}
       </p>
 
-      <h3>Find affiliate program</h3>
+      <p>
+        {' '}
+        {intl.formatMessage({
+          id: 'affiliate_codes_enter_code_text_part3',
+          defaultMessage:
+            'For a seamless and uninterrupted user experience, we also recommend checking and confirming the Product IDs on the referenced products.',
+        })}
+      </p>
+
+      <h3>
+        {intl.formatMessage({
+          id: 'find_affiliate_program',
+          defaultMessage: 'Find affiliate program',
+        })}
+      </h3>
       <AffiliateCodesAutoComplete
         setOpenAppendModal={setOpenAppendModal}
         affiliateObjects={affiliateObjects}
@@ -84,10 +96,12 @@ export const UserAffiliateCodes = ({
       <AffiliateCodesList
         user={user}
         affiliateObjects={affiliateObjects}
-        rejectCode={rejectCode}
+        rejectCode={voteAppend}
         context={undefined}
       />
       <AffiliateCodesModal
+        affiliateObjects={affiliateObjects}
+        voteAppend={voteAppend}
         user={user}
         form={form}
         appendWobject={appendWobject}
@@ -115,7 +129,7 @@ UserAffiliateCodes.propTypes = {
   user: PropTypes.shape(),
   appendWobject: PropTypes.func,
   affiliateObjects: PropTypes.arrayOf(),
-  rejectCode: PropTypes.func,
+  voteAppend: PropTypes.func,
   setAffiliateObjs: PropTypes.func,
   resetAffiliateObjs: PropTypes.func,
   langReadable: PropTypes.string,
@@ -128,7 +142,7 @@ export default connect(
     user: getAuthenticatedUser(state),
   }),
   {
-    rejectCode: affiliateCodeVoteAppend,
+    voteAppend: affiliateCodeVoteAppend,
     appendWobject: appendObject,
     setAffiliateObjs: setAffiliateObjects,
     resetAffiliateObjs: resetAffiliateObjects,

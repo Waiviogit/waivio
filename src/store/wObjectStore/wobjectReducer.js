@@ -1,4 +1,11 @@
 import { uniqBy } from 'lodash';
+import {
+  GET_ADD_ONS,
+  GET_SIMILAR_OBJECTS,
+  GET_RELATED_OBJECTS,
+  GET_MENU_ITEM_CONTENT,
+  GET_PRODUCT_INFO,
+} from './wobjectsActions';
 
 import * as actions from './wobjectsActions';
 import {
@@ -53,6 +60,12 @@ export const initialState = {
     hasMore: false,
     isLoading: false,
   },
+  addOn: [],
+  similarObjects: [],
+  menuItems: {},
+  brandObject: {},
+  manufacturerObject: {},
+  merchantObject: {},
 };
 
 export default function wobjectReducer(state = initialState, action) {
@@ -60,6 +73,12 @@ export default function wobjectReducer(state = initialState, action) {
     case actions.GET_OBJECT_START:
       return {
         ...state,
+        addOn: [],
+        similarObjects: [],
+        menuItems: {},
+        brandObject: {},
+        manufacturerObject: {},
+        merchantObject: {},
         isFetching: true,
       };
     case actions.GET_OBJECT_ERROR:
@@ -384,7 +403,7 @@ export default function wobjectReducer(state = initialState, action) {
         ...state,
         followers: {
           ...state.followers,
-          users: action.payload.wobjectFollowers.map(user => ({ ...user, isLoading: false })),
+          users: action.payload.wobjectFollowers?.map(user => ({ ...user, isLoading: false })),
           hasMore: action.payload.hasMore,
         },
       };
@@ -395,7 +414,7 @@ export default function wobjectReducer(state = initialState, action) {
         ...state,
         followers: {
           ...state.followers,
-          users: state.followers.users.map(user =>
+          users: state.followers.users?.map(user =>
             action.meta.username === user.name ? { ...user, pending: !user.pending } : user,
           ),
         },
@@ -408,7 +427,7 @@ export default function wobjectReducer(state = initialState, action) {
         followers: {
           ...state.followers,
           isLoading: false,
-          users: state.followers.users.map(user =>
+          users: state.followers.users?.map(user =>
             action.meta.username === user.name
               ? { ...user, pending: !user.pending, youFollows: !user.youFollows }
               : user,
@@ -448,7 +467,7 @@ export default function wobjectReducer(state = initialState, action) {
       return {
         ...state,
         objectExpertise: {
-          users: action.payload.users.map(userExpert => ({ ...userExpert, pending: false })),
+          users: action.payload.users?.map(userExpert => ({ ...userExpert, pending: false })),
           isLoading: false,
         },
       };
@@ -468,7 +487,7 @@ export default function wobjectReducer(state = initialState, action) {
         ...state,
         objectExpertise: {
           ...state.objectExpertise,
-          users: state.objectExpertise.users.map(item =>
+          users: state.objectExpertise.users?.map(item =>
             item.name === action.meta.userExpert ? { ...item, pending: !item.pending } : item,
           ),
         },
@@ -479,7 +498,7 @@ export default function wobjectReducer(state = initialState, action) {
         ...state,
         objectExpertise: {
           ...state.objectExpertise,
-          users: state.objectExpertise.users.map(item =>
+          users: state.objectExpertise.users?.map(item =>
             item.name === action.meta.userExpert
               ? { ...item, youFollows: !item.youFollows, pending: !item.pending }
               : item,
@@ -497,7 +516,7 @@ export default function wobjectReducer(state = initialState, action) {
       };
     }
     case GET_RELATED_WOBJECT.SUCCESS: {
-      const objects = action.payload.map(obj => ({ ...obj, parent: action.meta.wobject }));
+      const objects = action.payload?.map(obj => ({ ...obj, parent: action.meta.wobject }));
 
       return {
         ...state,
@@ -542,6 +561,38 @@ export default function wobjectReducer(state = initialState, action) {
       return {
         ...state,
         shopBreadcrumbs: action.crumbs,
+      };
+
+    case GET_ADD_ONS.SUCCESS:
+      return {
+        ...state,
+        addOn: action.payload.wobjects,
+      };
+
+    case GET_SIMILAR_OBJECTS.SUCCESS:
+      return {
+        ...state,
+        similarObjects: action.payload.wobjects,
+      };
+
+    case GET_RELATED_OBJECTS.SUCCESS:
+      return {
+        ...state,
+        relatedObjects: action.payload.wobjects,
+      };
+
+    case GET_MENU_ITEM_CONTENT.SUCCESS:
+      return {
+        ...state,
+        menuItems: {
+          ...state.menuItems,
+          [action.meta]: action.payload,
+        },
+      };
+    case GET_PRODUCT_INFO.SUCCESS:
+      return {
+        ...state,
+        ...action.payload,
       };
 
     default: {

@@ -21,7 +21,7 @@ import { isMobile } from '../../../common/helpers/apiHelpers';
 import { epochToUTC } from '../../../common/helpers/formatter';
 
 const getFormattedTotalDelegated = delegate => {
-  if (delegate !== 0) {
+  if (delegate !== 0 && !isNil(delegate) && !isNaN(delegate)) {
     return (
       <BTooltip
         title={
@@ -55,7 +55,7 @@ const getFormattedTotalDelegated = delegate => {
   return null;
 };
 const getFormattedPendingWithdrawal = (pendingWithdrawal, unstakesTokenInfo = {}) => {
-  if (pendingWithdrawal !== 0) {
+  if (pendingWithdrawal !== 0 && !isNil(pendingWithdrawal) && !isNaN(pendingWithdrawal)) {
     const timestamp = epochToUTC(unstakesTokenInfo.nextTransactionTimestamp / 1000);
 
     return (
@@ -88,11 +88,11 @@ const WAIVWalletSummaryInfo = props => {
   const [unstakesTokenInfo, setUnstakesTokenInfo] = useState([]);
   const [undeligatedList, setUndeligatedList] = useState([]);
   const [visible, setVisible] = useState(false);
-  const balance = +get(props.currencyInfo, 'balance', 0);
-  const stake = +get(props.currencyInfo, 'stake', 0);
-  const unstake = +get(props.currencyInfo, 'pendingUnstake', 0);
-  const delegationsIn = +get(props.currencyInfo, 'delegationsIn', 0);
-  const delegationsOut = +get(props.currencyInfo, 'delegationsOut', 0);
+  const balance = Number(get(props.currencyInfo, 'balance', null));
+  const stake = Number(get(props.currencyInfo, 'stake', null));
+  const unstake = Number(get(props.currencyInfo, 'pendingUnstake', null));
+  const delegationsIn = Number(get(props.currencyInfo, 'delegationsIn', null));
+  const delegationsOut = Number(get(props.currencyInfo, 'delegationsOut', null));
   const delegation = delegationsIn - delegationsOut;
   const estAccValue =
     props.rates.WAIV *
@@ -122,7 +122,7 @@ const WAIVWalletSummaryInfo = props => {
   }, []);
 
   const formattedNumber = num => {
-    if (isNil(num)) return <Loading />;
+    if (isNil(num) || isNaN(num)) return <Loading />;
 
     return <FormattedNumber value={round(num, 3)} />;
   };
@@ -137,7 +137,9 @@ const WAIVWalletSummaryInfo = props => {
             alt="hive"
           />
           <div className="WalletSummaryInfo__label">WAIV</div>
-          <div className="WalletSummaryInfo__value">{formattedNumber(balance)} WAIV</div>
+          <div className="WalletSummaryInfo__value">
+            {formattedNumber(balance)} {isNil(balance) || isNaN(balance) ? '' : 'WAIV'}
+          </div>
         </div>
         <div className="WalletSummaryInfo__actions">
           <p className="WalletSummaryInfo__description">
@@ -166,7 +168,8 @@ const WAIVWalletSummaryInfo = props => {
             >
               {formattedNumber(stake + delegationsOut)}
               {getFormattedPendingWithdrawal(unstake, unstakesTokenInfo)}
-              {getFormattedTotalDelegated(delegation)} WP
+              {getFormattedTotalDelegated(delegation)}{' '}
+              {isNil(delegation) || isNaN(delegation) ? '' : 'WP'}
             </div>
           </div>
           <div className="WalletSummaryInfo__actions">

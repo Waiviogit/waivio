@@ -228,7 +228,7 @@ export const rejectAuthorReview = proposition => (
   getState,
   { steemConnectAPI, busyAPI },
 ) => {
-  const parent_author = proposition.reservationRootAuthor;
+  const parent_author = proposition.reservationRootAuthor || proposition.rootName;
 
   const commentOp = [
     'comment',

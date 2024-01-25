@@ -1,29 +1,29 @@
 import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { isEmpty } from 'lodash';
 import PropTypes from 'prop-types';
+import { getMenuItemContent } from '../../../store/wObjectStore/wobjectsActions';
+import { getMenuItemsFromState } from '../../../store/wObjectStore/wObjectSelectors';
 
 import { sortListItemsBy } from '../../object/wObjectHelper';
 import CheckListView from './CheckListView';
-import { getObject } from '../../../waivioApi/ApiClient';
 import { getSuitableLanguage } from '../../../store/reducers';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 
 const NestedChecklist = ({ permlink }) => {
-  const [loading, setLoading] = useState(false);
-  const [listItems, setLists] = useState([]);
-  const [wobject, setWobject] = useState(null);
-
   const locale = useSelector(getSuitableLanguage);
   const userName = useSelector(getAuthenticatedUserName);
+  const wobject = useSelector(getMenuItemsFromState)[permlink];
+  const dispatch = useDispatch();
+  const [loading, setLoading] = useState(false);
+  const [listItems, setLists] = useState(wobject?.listItems);
 
   useEffect(() => {
-    setLoading(true);
-
-    if (permlink) {
+    if (permlink && isEmpty(wobject)) {
       setLoading(true);
-      getObject(permlink, userName, locale).then(wObject => {
-        setWobject(wObject);
+      dispatch(getMenuItemContent(permlink, userName, locale)).then(res => {
+        const wObject = res.value;
+
         setLists(
           sortListItemsBy(
             wObject?.listItems,

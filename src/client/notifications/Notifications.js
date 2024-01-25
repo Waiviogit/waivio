@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import _ from 'lodash';
+import _, { has, isEmpty } from 'lodash';
 import { FormattedMessage } from 'react-intl';
 import { connect } from 'react-redux';
 import * as notificationConstants from '../../common/constants/notifications';
@@ -17,6 +17,7 @@ import {
 import * as userSelectors from '../../store/userStore/userSelectors';
 import { getWalletType, isEmptyAmount } from '../../common/helpers/notificationsHelper';
 import { parseJSON } from '../../common/helpers/parseJSON';
+import { getObjectInfo } from '../../waivioApi/ApiClient';
 
 import './Notifications.less';
 
@@ -35,10 +36,20 @@ class Notifications extends React.Component {
     currentAuthUsername: '',
     userMetaData: {},
   };
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      objNames: {},
+    };
+  }
 
   componentDidMount() {
     const { userMetaData, notifications, currentAuthUsername } = this.props;
 
+    if (!_.isEmpty(notifications)) {
+      this.getNotificationsObjectNames(notifications);
+    }
     if (_.isEmpty(userMetaData)) {
       this.props.getUpdatedUserMetadata();
     }
@@ -47,9 +58,76 @@ class Notifications extends React.Component {
       this.props.getNotifications(currentAuthUsername);
     }
   }
+  componentDidUpdate(prevProps) {
+    const { notifications } = this.props;
 
+    if (prevProps.notifications.length !== notifications.length) {
+      if (!_.isEmpty(notifications) && _.isEmpty(this.state.objNames)) {
+        this.getNotificationsObjectNames(notifications);
+      }
+    }
+  }
+
+  getNotificationsObjectNames = notifications => {
+    const searchArr = [];
+
+    notifications.forEach(notification => {
+      if (notification.type === notificationConstants.THREAD_AUTHOR_FOLLOWER) {
+        notification?.hashtags?.forEach(h => {
+          if (!searchArr.includes(h)) {
+            searchArr.push(h);
+          }
+        });
+      } else if (notification.type === notificationConstants.BELL_THREAD) {
+        if (!searchArr.includes(notification.authorPermlink)) {
+          searchArr.push(notification.authorPermlink);
+          this.getObjectInfoAsync(notification).then(r => {
+            this.setState({
+              objNames: { ...this.state.objNames, [notification.authorPermlink]: r },
+            });
+          });
+        }
+      }
+    });
+
+    if (!_.isEmpty(searchArr))
+      this.getObjectInfoAsync(searchArr).then(r => {
+        r?.forEach(obj =>
+          this.setState({
+            objNames: {
+              ...this.state.objNames,
+              [obj.author_permlink]: obj.name || obj.default_name,
+            },
+          }),
+        );
+      });
+  };
+  getObjectInfoAsync = async notif => {
+    if (notif.type === notificationConstants.BELL_THREAD) {
+      try {
+        const result = await getObjectInfo([notif.authorPermlink]);
+
+        return result.wobjects?.[0]?.name || result.wobjects?.[0]?.default_name;
+      } catch (error) {
+        console.error(error);
+
+        return '';
+      }
+    } else {
+      try {
+        const result = await getObjectInfo(notif);
+
+        return result.wobjects;
+      } catch (error) {
+        console.error(error);
+
+        return '';
+      }
+    }
+  };
   render() {
     const { notifications, currentAuthUsername, userMetaData, loadingNotifications } = this.props;
+    const { objNames } = this.state;
     const lastSeenTimestamp = _.get(userMetaData, 'notifications_last_timestamp');
 
     return (
@@ -101,12 +179,12 @@ class Notifications extends React.Component {
 
             switch (notification.type) {
               case notificationConstants.REPLY:
-                let id = 'replied_to_your_comment';
-                let defaultMessage = '{username} has replied to your comment';
+                let id = 'notification_reply_username_post';
+                let defaultMessage = '{username} commented on your post';
 
                 if (notification.reply) {
-                  id = 'notification_reply_username_post';
-                  defaultMessage = '{username} commented on your post';
+                  id = 'replied_to_your_comment';
+                  defaultMessage = '{username} has replied to your comment';
                 }
 
                 return (
@@ -144,6 +222,50 @@ class Notifications extends React.Component {
                         </span>
                       ),
                       objectName: <span className="username">{notification.objectName}</span>,
+                    }}
+                    key={key}
+                    notification={notification}
+                    read={read}
+                    onClick={this.handleNotificationsClick}
+                  />
+                );
+              case notificationConstants.BELL_THREAD:
+                return (
+                  <NotificationTemplate
+                    url={`/object/${notification.authorPermlink}/threads`}
+                    username={notification.author}
+                    id="notification_object_bell_thread"
+                    defaultMessage="{author} published thread to {objectName}"
+                    values={{
+                      author: <span className="username">{notification.author}</span>,
+                      objectName: (
+                        <span className="username">
+                          {this.state.objNames[notification.authorPermlink]}
+                        </span>
+                      ),
+                    }}
+                    key={key}
+                    notification={notification}
+                    read={read}
+                    onClick={this.handleNotificationsClick}
+                  />
+                );
+              case notificationConstants.THREAD_AUTHOR_FOLLOWER:
+                const hashtagsArr = !isEmpty(notification?.hashtags)
+                  ? notification?.hashtags?.map(h => objNames[h])
+                  : [];
+                const mentionsArr = has(notification, 'mentions') ? notification?.mentions : [];
+                const namesArray = [...mentionsArr, ...hashtagsArr];
+
+                return (
+                  <NotificationTemplate
+                    url={`/@${notification.author}/threads`}
+                    username={notification.author}
+                    id="notification_thread_author_follower"
+                    defaultMessage="{author} published thread about {names}"
+                    values={{
+                      author: <span className="username">{notification.author}</span>,
+                      names: <span className="username">{namesArray.join(', ')}</span>,
                     }}
                     key={key}
                     notification={notification}
@@ -253,7 +375,9 @@ class Notifications extends React.Component {
                   <NotificationTemplate
                     url={`/@${notification.author}/${notification.permlink}`}
                     username={notification.author}
-                    id="notification_mention_username_post"
+                    id={`notification_mention_username_${
+                      notification.is_root_post ? 'post' : 'comment'
+                    }`}
                     defaultMessage={defaultMentionMessage}
                     values={{
                       username: <span className="username">{notification.author}</span>,
@@ -734,7 +858,7 @@ class Notifications extends React.Component {
                       rewardHBD: <span>{notification.rewardHBD}</span>,
                     }}
                     username={notification.account}
-                    url={`/@${notification.account}/transfers`}
+                    url={`/@${notification.account}/transfers?type=HIVE`}
                     key={key}
                     notification={notification}
                     read={read}
@@ -1000,6 +1124,19 @@ class Notifications extends React.Component {
                     notification={notification}
                     read={read}
                     onClick={this.handleNotificationsClick}
+                  />
+                );
+              case notificationConstants.WEBSITE_BALANCE:
+                return (
+                  <NotificationTemplate
+                    url={'/manage'}
+                    key={key}
+                    notification={notification}
+                    read={read}
+                    onClick={this.handleNotificationsClick}
+                    username={currentAuthUsername}
+                    id={notification.message}
+                    defaultMessage={notification.message}
                   />
                 );
               case notificationConstants.CANCEL_UNSTAKE:

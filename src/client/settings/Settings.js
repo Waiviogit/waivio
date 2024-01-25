@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import { Select, Radio, Checkbox } from 'antd';
 import { getCurrencyForSettings, saveSettings } from '../../store/settingsStore/settingsActions';
+import { getCurrentCurrencyRate } from '../../store/appStore/appActions';
 import { reload } from '../../store/authStore/authActions';
 import { notify } from '../app/Notification/notificationActions';
 import Action from '../components/Button/Action';
@@ -22,6 +23,7 @@ import {
   getCurrencyList,
   getExitPageSetting,
   getHideLinkedObjects,
+  getHideFavoriteObjects,
   getIsSettingsLoading,
   getLocale,
   getNightmode,
@@ -49,6 +51,7 @@ import './Settings.less';
     votePercent: getVotePercent(state),
     showNSFWPosts: getShowNSFWPosts(state),
     hideLinkedObjects: getHideLinkedObjects(state),
+    hideFavoriteObjects: getHideFavoriteObjects(state),
     nightmode: getNightmode(state),
     currency: getCurrency(state),
     isWaivio: getIsWaivio(state),
@@ -59,7 +62,7 @@ import './Settings.less';
     isGuest: isGuestUser(state),
     currencyList: getCurrencyList(state),
   }),
-  { reload, saveSettings, notify, getCurrencyForSettings },
+  { reload, saveSettings, notify, getCurrencyForSettings, getCurrentCurrencyRate },
 )
 export default class Settings extends React.Component {
   static propTypes = {
@@ -73,11 +76,13 @@ export default class Settings extends React.Component {
     loading: PropTypes.bool,
     showNSFWPosts: PropTypes.bool,
     hideLinkedObjects: PropTypes.bool,
+    hideFavoriteObjects: PropTypes.bool,
     nightmode: PropTypes.bool,
     rewriteLinks: PropTypes.bool,
     reload: PropTypes.func,
     saveSettings: PropTypes.func,
     notify: PropTypes.func,
+    getCurrentCurrencyRate: PropTypes.func,
     getCurrencyForSettings: PropTypes.func.isRequired,
     upvoteSetting: PropTypes.bool,
     exitPageSetting: PropTypes.bool,
@@ -90,6 +95,7 @@ export default class Settings extends React.Component {
   static defaultProps = {
     reloading: false,
     hideLinkedObjects: false,
+    hideFavoriteObjects: false,
     locale: 'auto',
     readLanguages: [],
     votingPower: false,
@@ -122,6 +128,7 @@ export default class Settings extends React.Component {
       votePercent: props.votePercent,
       showNSFWPosts: props.showNSFWPosts,
       hideLinkedObjects: props.hideLinkedObjects,
+      hideFavoriteObjects: props.hideLinkedObjects,
       nightmode: props.nightmode,
       rewriteLinks: props.rewriteLinks,
       exitPageSetting: props.upvoteSetting,
@@ -140,6 +147,7 @@ export default class Settings extends React.Component {
       votePercent: this.props.votePercent / 100,
       showNSFWPosts: this.props.showNSFWPosts,
       hideLinkedObjects: this.props.hideLinkedObjects,
+      hideFavoriteObjects: this.props.hideFavoriteObjects,
       nightmode: this.props.nightmode,
       rewriteLinks: this.props.rewriteLinks,
       upvoteSetting: this.props.upvoteSetting,
@@ -191,6 +199,7 @@ export default class Settings extends React.Component {
   }
 
   handleSave = () => {
+    this.props.getCurrentCurrencyRate(this.state.currency);
     this.props
       .saveSettings({
         locale: this.state.locale,
@@ -203,6 +212,7 @@ export default class Settings extends React.Component {
         postLocales: this.state.readLanguages,
         votePercent: this.state.votePercent * 100,
         currency: this.state.currency,
+        hideFavoriteObjects: this.state.hideFavoriteObjects,
         shop: {
           hideLinkedObjects: this.state.hideLinkedObjects,
         },
@@ -226,6 +236,7 @@ export default class Settings extends React.Component {
   handleVotePercentChange = value => this.setState({ votePercent: value });
   handleShowNSFWPosts = event => this.setState({ showNSFWPosts: event.target.checked });
   handleHideLinkedObjects = event => this.setState({ hideLinkedObjects: event.target.checked });
+  handleHideFavoriteObjects = event => this.setState({ hideFavoriteObjects: event.target.checked });
   handleNightmode = event => this.setState({ nightmode: event.target.checked });
   handleRewriteLinksChange = event => this.setState({ rewriteLinks: event.target.checked });
   handleExitPageSettingChange = event => this.setState({ exitPageSetting: event.target.checked });
@@ -239,6 +250,7 @@ export default class Settings extends React.Component {
       votingPower: initialVotingPower,
       showNSFWPosts: initialShowNSFWPosts,
       hideLinkedObjects: initialHideLinkedObjects,
+      hideFavoriteObjects: initialHideFavoriteObjects,
       nightmode: initialNightmode,
       loading,
       isGuest,
@@ -248,6 +260,7 @@ export default class Settings extends React.Component {
       locale,
       showNSFWPosts,
       hideLinkedObjects,
+      hideFavoriteObjects,
       nightmode,
       upvoteSetting,
       exitPageSetting,
@@ -428,6 +441,30 @@ export default class Settings extends React.Component {
                   defaultChecked={initialHideLinkedObjects}
                   checked={hideLinkedObjects}
                   onChange={this.handleHideLinkedObjects}
+                >
+                  <FormattedMessage
+                    id="not_show_objects_linked"
+                    defaultMessage="Do not show objects linked in posts"
+                  />
+                </Checkbox>
+              </div>
+            </div>{' '}
+            <div className="Settings__section">
+              <h3>
+                <FormattedMessage id="favorites" defaultMessage="Favorites" />
+              </h3>
+              <p>
+                <FormattedMessage
+                  id="manage_your_public_shopping_favorites"
+                  defaultMessage="You can manage your public favorites list in the profile."
+                />
+              </p>
+              <div className="Settings__section__checkbox">
+                <Checkbox
+                  name="hideLinkedObjects"
+                  defaultChecked={initialHideFavoriteObjects}
+                  checked={hideFavoriteObjects}
+                  onChange={this.handleHideFavoriteObjects}
                 >
                   <FormattedMessage
                     id="not_show_objects_linked"

@@ -3,6 +3,7 @@
 <head>
   <!-- Global site tag (gtag.js) - Google Analytics -->
   {{#if googleAnalytics}} {{{googleAnalytics}}}{{/if}}
+  {{#if googleEventSnippet}} {{{googleEventSnippet}}}{{/if}}
   {{#if adSense}} {{{adSense}}}{{/if}}
     <meta charset="UTF-8">
   <meta http-equiv="x-ua-compatible" content="IE=edge">
@@ -11,7 +12,7 @@
   <title>Waivio</title>
   <meta name="description" content="Waivio is a decentralized social network based on Steem blockchain"> {{/if}}
   <link rel="manifest" href="/manifest.json" />
-  <meta name="google-site-verification" content="JVVPBT1TEtH6a-w94_PZ2OcilaYPMOCexi7N1jq0tnk" />
+  {{#if googleGSCTag}} {{{googleGSCTag}}}{{/if}}
 </head>
 
 <body{{#if nightmode}} class="nightmode"{{/if}}>

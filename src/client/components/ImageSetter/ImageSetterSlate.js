@@ -305,7 +305,7 @@ const ImageSetter = ({
             id="inputfile"
             className="image-upload__file-input"
             type="file"
-            accept="image/*"
+            accept="image/heic, image/*"
             multiple={isMultiple}
             onChange={handleChangeImage}
             onClick={e => {

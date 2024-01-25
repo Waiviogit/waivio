@@ -20,7 +20,7 @@ const ManageCampaingsTab = ({ intl }) => {
       <GuideBalance guideName={guideName} />
       <Manage guideName={guideName} intl={intl} setHistoryLoading={setHistoryLoading} />
       <Link className={'ManageCampaingsTab__create'} to={'/rewards/create'}>
-        Create new campaing
+        Create new campaign
       </Link>
       <HistoryCampaing
         guideName={guideName}

@@ -82,6 +82,9 @@ export default {
   ObjectGalleryAlbum: loableComponent(import('../client/object/ObjectGallery/ObjectGalleryAlbum')),
   WobjHistory: loableComponent(import('../client/object/WobjHistory/UpdateHistory')),
   ObjectAbout: loableComponent(import('../client/object/ObjectAbout')),
+  ObjectReviewsAndThreads: loableComponent(
+    import('../client/object/ObjectReviewsAndThreads/ObjectReviewsAndThreads'),
+  ),
   CatalogWrap: loableComponent(import('../client/object/Catalog/CatalogWrap')),
   WobjExpertise: loableComponent(import('../client/object/WobjExpertise')),
   UserExpertise: loableComponent(import('../client/user/UserExpertise')),
@@ -165,4 +168,5 @@ export default {
     import('../client/components/ClaimAthorityBot/ClaimAthorityBot'),
   ),
   DepartmentsBot: loableComponent(import('../client/components/DepartmentsBot/DepartmentsBot')),
+  DescriptionsBot: loableComponent(import('../client/components/DescriptionsBot/DescriptionsBot')),
 };

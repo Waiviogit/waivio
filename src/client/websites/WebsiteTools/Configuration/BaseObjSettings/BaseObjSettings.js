@@ -38,7 +38,7 @@ const BaseObjSettings = ({ handleSubmit, intl, shopSettings, hideActions }) => {
   const handleAutoCompleteSearch = useCallback(
     debounce(
       value =>
-        dispatch(searchAutoComplete(value, 3, 15, null, true, ['business', 'book', 'product'])),
+        dispatch(searchAutoComplete(value, 3, 50, null, true, ['business', 'book', 'product'])),
       300,
     ),
     [],
@@ -94,7 +94,10 @@ const BaseObjSettings = ({ handleSubmit, intl, shopSettings, hideActions }) => {
       ) : (
         <AutoComplete
           onSearch={handleAutoCompleteSearch}
-          placeholder={'Find object'}
+          placeholder={intl.formatMessage({
+            id: 'find_object',
+            defaultMessage: 'Find object',
+          })}
           dropdownClassName={'BaseObjSettings__resultList'}
           allowClear
           dataSource={
@@ -127,14 +130,16 @@ const BaseObjSettings = ({ handleSubmit, intl, shopSettings, hideActions }) => {
         />
       )}
       <Button type={'primary'} onClick={() => setEdit(!edit)}>
-        {edit ? 'View' : 'Edit'}
+        {edit
+          ? intl.formatMessage({ id: 'view', defaultMessage: 'View' })
+          : intl.formatMessage({ id: 'edit', defaultMessage: 'Edit' })}
       </Button>
     </div>
   );
 };
 
 BaseObjSettings.propTypes = {
-  intl: PropTypes.shape({}),
+  intl: PropTypes.shape().isRequired,
   shopSettings: PropTypes.shape({
     value: PropTypes.string,
     type: PropTypes.string,

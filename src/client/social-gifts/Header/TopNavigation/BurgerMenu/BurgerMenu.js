@@ -1,25 +1,16 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router';
-import { truncate } from 'lodash';
 import { Link } from 'react-router-dom';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { Drawer } from 'antd';
+import { getMenuLinkTitle } from '../../../../../common/helpers/headerHelpers';
 
 import './BurgerMenu.less';
 
-const BurgerMenu = ({ items, title, openButtonText, openButtonIcon }) => {
+const BurgerMenu = ({ items, title, openButtonText, openButtonIcon, intl }) => {
   const [open, setOpen] = useState(false);
   const history = useHistory();
-
-  const getItemTitle = i => (
-    <div>
-      {truncate(i.name, {
-        length: 20,
-        separator: '...',
-      }).toUpperCase()}
-    </div>
-  );
 
   return (
     <div className={'BurgerMenu'}>
@@ -45,7 +36,7 @@ const BurgerMenu = ({ items, title, openButtonText, openButtonIcon }) => {
                 className={'BurgerMenu__item'}
               >
                 {' '}
-                {getItemTitle(i)}
+                {getMenuLinkTitle(i, intl, 20)}
               </a>
             ) : (
               <Link
@@ -58,7 +49,7 @@ const BurgerMenu = ({ items, title, openButtonText, openButtonIcon }) => {
                 key={i.link}
                 onClick={() => setOpen(false)}
               >
-                {getItemTitle(i)}
+                {getMenuLinkTitle(i, intl, 20)}
               </Link>
             ),
           )}
@@ -70,6 +61,7 @@ const BurgerMenu = ({ items, title, openButtonText, openButtonIcon }) => {
 
 BurgerMenu.propTypes = {
   items: PropTypes.arrayOf(),
+  intl: PropTypes.shape(),
   title: PropTypes.string,
   openButtonText: PropTypes.string,
   openButtonIcon: PropTypes.node,

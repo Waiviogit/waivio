@@ -26,7 +26,7 @@ export const getActiveFilters = createSelector([objectTypeState], state => state
 
 export const getTypeName = createSelector([getObjectTypeState], data => get(data, 'name', ''));
 
-export const getHasMap = createSelector([objectTypeState], state => state.map);
+export const getHasMap = createSelector([objectTypeState], state => state?.map);
 
 export const getObjectTypeSorting = createSelector([objectTypeState], state => state.sort);
 

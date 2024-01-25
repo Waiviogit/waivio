@@ -1,38 +1,46 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { uniq } from 'lodash';
+import { uniq, isEmpty } from 'lodash';
 import PropTypes from 'prop-types';
 import Helmet from 'react-helmet';
 import { useLocation, useParams } from 'react-router';
 import FeedMasonry from './FeedMasonry';
 import { getReadLanguages } from '../../../store/settingsStore/settingsSelectors';
-import { getFeed } from '../../../store/feedStore/feedSelectors';
+import {
+  getFeed,
+  getTiktokPreviewFromState,
+  getPreviewLoadingFromState,
+} from '../../../store/feedStore/feedSelectors';
 import {
   getFeedFromState,
   getFeedHasMoreFromState,
   getFeedLoadingFromState,
 } from '../../../common/helpers/stateHelpers';
-import { getMoreObjectPosts, getObjectPosts } from '../../../store/feedStore/feedActions';
+import {
+  getMoreObjectPosts,
+  getObjectPosts,
+  getTiktokPreviewAction,
+} from '../../../store/feedStore/feedActions';
 import { getPosts } from '../../../store/postsStore/postsSelectors';
 import {
   getLastPermlinksFromHash,
   getObjectAvatar,
   getObjectName,
 } from '../../../common/helpers/wObjectHelper';
-import { preparationPostList, preparationPreview } from './helpers';
+import { preparationPostList } from './helpers';
 import { getObject } from '../../../store/wObjectStore/wobjectsActions';
-import { useSeoInfo } from '../../../hooks/useSeoInfo';
+import { useSeoInfoWithAppUrl } from '../../../hooks/useSeoInfo';
 import { getHelmetIcon, getSiteName } from '../../../store/appStore/appSelectors';
 
 const limit = 15;
 
 const ObjectNewsFeed = ({ wobj }) => {
   const readLanguages = useSelector(getReadLanguages);
-  const [newsPermlink, setNewsPermlink] = useState();
+  const previews = useSelector(getTiktokPreviewFromState);
+  const previewLoading = useSelector(getPreviewLoadingFromState);
+  const [newsPermlink, setNewsPermlink] = useState(wobj?.newsFeed?.permlink);
   const [currObj, setCurrObj] = useState();
-  const [previews, setPreviews] = useState();
-  const [firstLoading, setFirstLoading] = useState(true);
-  const [previewLoading, setPreviewLoading] = useState(true);
+  const [firstLoading, setFirstLoading] = useState(false);
   const feed = useSelector(getFeed);
   const postsList = useSelector(getPosts);
   const favicon = useSelector(getHelmetIcon);
@@ -40,8 +48,8 @@ const ObjectNewsFeed = ({ wobj }) => {
   const dispatch = useDispatch();
   const { name } = useParams();
   const location = useLocation();
-  const title = `${getObjectName(wobj)} - ${siteName}`;
-  const { canonicalUrl, descriptionSite } = useSeoInfo();
+  const title = `${getObjectName(wobj)}`;
+  const { canonicalUrl, descriptionSite } = useSeoInfoWithAppUrl(wobj.canonical);
   const desc = wobj?.description || descriptionSite || siteName;
   const image = getObjectAvatar(wobj) || favicon;
   const objName = wobj?.author_permlink || getLastPermlinksFromHash(location.hash) || name;
@@ -49,7 +57,6 @@ const ObjectNewsFeed = ({ wobj }) => {
   const hasMore = getFeedHasMoreFromState('objectPosts', objName, feed);
   const isFetching = getFeedLoadingFromState('objectPosts', objName, feed);
   const posts = preparationPostList(postsIds, postsList);
-
   const getPostsList = () => {
     if (wobj) {
       dispatch(
@@ -61,10 +68,8 @@ const ObjectNewsFeed = ({ wobj }) => {
           newsPermlink: wobj?.newsFeed?.permlink,
         }),
       ).then(res => {
-        setFirstLoading(false);
-        preparationPreview(res.value?.posts, setPreviews).then(() => setPreviewLoading(false));
+        dispatch(getTiktokPreviewAction(res.value)).then(() => setFirstLoading(false));
       });
-      setNewsPermlink(wobj?.newsFeed?.permlink);
     } else {
       dispatch(getObject(objName)).then(res => {
         dispatch(
@@ -74,9 +79,8 @@ const ObjectNewsFeed = ({ wobj }) => {
             limit: 20,
             newsPermlink: res?.newsFeed?.permlink,
           }),
-        ).then(result => {
-          setFirstLoading(false);
-          preparationPreview(result.value, setPreviews).then(() => setPreviewLoading(false));
+        ).then(() => {
+          dispatch(getTiktokPreviewAction(res.value)).then(() => setFirstLoading(false));
         });
         setNewsPermlink(res?.newsFeed?.permlink);
         setCurrObj(res);
@@ -85,7 +89,11 @@ const ObjectNewsFeed = ({ wobj }) => {
   };
 
   useEffect(() => {
-    getPostsList();
+    if (isEmpty(posts)) {
+      setFirstLoading(true);
+      getPostsList();
+    }
+
     if (window.gtag)
       window.gtag('event', getObjectName(getObjectName(wobj) || getObjectName(currObj)), {
         debug_mode: true,
@@ -94,7 +102,6 @@ const ObjectNewsFeed = ({ wobj }) => {
 
   const loadMore = () => {
     try {
-      setPreviewLoading(true);
       dispatch(
         getMoreObjectPosts({
           username: objName,
@@ -103,9 +110,7 @@ const ObjectNewsFeed = ({ wobj }) => {
           skip: posts?.length,
           newsPermlink,
         }),
-      ).then(res => {
-        preparationPreview(res.value, setPreviews, previews).then(() => setPreviewLoading(false));
-      });
+      ).then(res => dispatch(getTiktokPreviewAction(res.value)));
       // eslint-disable-next-line no-empty
     } catch (e) {}
   };

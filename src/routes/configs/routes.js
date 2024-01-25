@@ -17,6 +17,7 @@ import { isMobile } from '../../common/helpers/apiHelpers';
 import ObjectDepartmentsWobjList from '../../client/object/ObjectTypeShop/ObjectDepartmentsWobjList';
 import ObjectFeed from '../../client/object/ObjectFeed';
 import LocalRewardsList from '../../client/newRewards/RewardLists/LocalRewardsList';
+import UserFavorites from '../../client/components/Favorites/UserFavorites';
 
 const routes = {
   component: Wrapper,
@@ -259,12 +260,12 @@ const routes = {
           component: Views.ProductExtension,
         },
         {
-          path: '/list-duplicator-bot',
+          path: '/list-duplication',
           exact: true,
           component: Views.DuplicateList,
         },
         {
-          path: '/claim-athority',
+          path: '/claim-authority',
           exact: true,
           component: Views.ClaimAthorityBot,
         },
@@ -272,6 +273,11 @@ const routes = {
           path: '/departments-bot',
           exact: true,
           component: Views.DepartmentsBot,
+        },
+        {
+          path: '/descriptions-bot',
+          exact: true,
+          component: Views.DescriptionsBot,
         },
         {
           path: `/:site/(${URL.WEBSITES.tabs})`,
@@ -337,13 +343,14 @@ const routes = {
       path: [
         `/@:name/(${URL.USER.tabs})?/(waiv-table|table|:departments)?`,
         `/@:name/(userShop)/:department?`,
+        `/@:name/(favorites)/:objectType?`,
       ],
       component: User,
       exact: true,
       pathScope: '/@:name',
       routes: [
         {
-          path: ['', '/(comments|activity)'],
+          path: ['', '/(threads|comments|activity)'],
           exact: true,
           component: Views.PostsCommentsActivity,
         },
@@ -356,6 +363,11 @@ const routes = {
           path: '/(userShop)/:department?',
           exact: true,
           component: UserDepartmentsWobjList,
+        },
+        {
+          path: '/(favorites)/:objectType?',
+          exact: true,
+          component: UserFavorites,
         },
         {
           path: '/reblogs',
@@ -404,9 +416,14 @@ const routes = {
       pathScope: '/object/:name',
       routes: [
         {
-          path: ['', '/(newsFilter)/:parentName', '/(newsfeed)/:parentName/:itemId?', '/(reviews)'],
+          path: ['/(newsFilter)/:parentName', '/(newsfeed)/:parentName/:itemId?'],
           exact: true,
           component: ObjectFeed,
+        },
+        {
+          path: ['', '/(reviews|threads)'],
+          exact: true,
+          component: Views.ObjectReviewsAndThreads,
         },
         {
           path: '/about',

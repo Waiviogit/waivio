@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { isEmpty, take, takeRight, truncate } from 'lodash';
+import { isEmpty, take, takeRight } from 'lodash';
 import { useSelector } from 'react-redux';
 import { Icon } from 'antd';
 import { useHistory } from 'react-router';
@@ -8,22 +8,22 @@ import { injectIntl } from 'react-intl';
 
 import Popover from '../../../components/Popover';
 import { isMobile } from '../../../../common/helpers/apiHelpers';
-import { getNavigItems, getSettingsLoading } from '../../../../store/appStore/appSelectors';
-import SkeletonRow from '../../../components/Skeleton/SkeletonRow';
+import { getNavigItems } from '../../../../store/appStore/appSelectors';
 import PopoverMenu, { PopoverMenuItem } from '../../../components/PopoverMenu/PopoverMenu';
 import LinkItem from './LinkItem';
 
 import './WebsiteTopNavigation.less';
 import BurgerMenu from './BurgerMenu/BurgerMenu';
 import { isTabletOrMobile } from '../../SocialProduct/SocialProductHelper';
+import { getMenuLinkTitle } from '../../../../common/helpers/headerHelpers';
 
 const userNav = (user, intl) => [
   {
-    name: 'Shop',
+    name: intl.formatMessage({ id: 'shop', defaultMessage: 'Shop' }),
     link: `/user-shop/${user}`,
   },
   {
-    name: 'Blog',
+    name: intl.formatMessage({ id: 'blog', defaultMessage: 'Blog' }),
     link: `/blog/${user}`,
   },
   {
@@ -35,7 +35,6 @@ const userNav = (user, intl) => [
 const WebsiteTopNavigation = ({ shopSettings, intl }) => {
   const listItem = useSelector(getNavigItems);
   const linkList = shopSettings?.type === 'user' ? userNav(shopSettings?.value, intl) : listItem;
-  const loading = useSelector(getSettingsLoading);
   const history = useHistory();
   const [visible, setVisible] = useState(false);
 
@@ -61,8 +60,7 @@ const WebsiteTopNavigation = ({ shopSettings, intl }) => {
 
   const handleMoreMenuVisibleChange = vis => setVisible(vis);
 
-  if (loading) return <SkeletonRow rows={1} />;
-  if (isEmpty(shopSettings) || isEmpty(linkList)) return null;
+  // if (isEmpty(shopSettings) || isEmpty(linkList)) return null;
   const lastItemsLength = linkList.length - listLength;
   const lastItems = takeRight(linkList, lastItemsLength);
 
@@ -99,10 +97,7 @@ const WebsiteTopNavigation = ({ shopSettings, intl }) => {
                           key={i.link}
                           data={i.type}
                         >
-                          {truncate(i.name, {
-                            length: 15,
-                            separator: '...',
-                          }).toUpperCase()}
+                          {getMenuLinkTitle(i, intl, 15)}
                         </PopoverMenuItem>
                       ))}
                     </PopoverMenu>

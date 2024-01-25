@@ -22,10 +22,10 @@ export const regOrigin = new RegExp(/(https:\/\/|http:\/\/|www\.)/g);
 
 export const regReferer = new RegExp(/(https:\/\/|http:\/\/|www\.|\/.+$|\/)/g);
 
-export const ALLOWED_IMG_FORMATS = ['jpg', 'jpeg', 'png', 'gif'];
+export const ALLOWED_IMG_FORMATS = ['jpg', 'jpeg', 'png', 'gif', 'heic'];
 export const MAX_IMG_SIZE = {
   [objectFields.avatar]: 2097152,
-  [objectFields.background]: 15728640,
+  [objectFields.background]: 31457280,
 };
 
 export default null;

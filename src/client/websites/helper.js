@@ -1,4 +1,4 @@
-import { get, isArray, size } from 'lodash';
+import { get, isArray, isEmpty, isNil, size } from 'lodash';
 import { message } from 'antd';
 
 import { getLastBlockNum } from '../vendor/steemitHelpers';
@@ -90,6 +90,35 @@ export const getFirstOffsetNumber = wobjName => {
   if (lengthMoreThanOrSame(35)) return 180;
 
   return 170;
+};
+
+export const showGoogleGSCTagError = tag => {
+  const metaRegex = /<meta[^>]*>/g;
+  const metaTags = tag?.match(metaRegex);
+
+  return (
+    !isEmpty(tag) &&
+    (!tag.includes('<meta name="google-site-verification"') ||
+      !tag.includes('content="') ||
+      metaTags.length > 1)
+  );
+};
+export const showGoogleAdsConfigError = str =>
+  !isEmpty(str) && (!str.includes('gtag') || !str.includes('config'));
+export const showGoogleEventSnippetError = tag => {
+  const openingScriptRegex = /<script[^>]*>/g;
+  const closingScriptRegex = /<\/script>/g;
+  const openingTangs = tag?.match(openingScriptRegex);
+  const closingTangs = tag?.match(closingScriptRegex);
+
+  return (
+    !isEmpty(tag) &&
+    (!tag.includes('gtag_report_conversion') ||
+      isNil(openingTangs) ||
+      isNil(closingTangs) ||
+      openingTangs?.length > 1 ||
+      closingTangs?.length > 1)
+  );
 };
 
 export default null;

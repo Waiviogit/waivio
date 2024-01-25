@@ -3,6 +3,11 @@ import * as favoriteActions from './favoritesActions';
 const initialState = {
   categories: [],
   users: [],
+  favoriteObjectTypes: [],
+  favoriteObjects: {},
+  loadingObjects: true,
+  loadingObjectTypes: true,
+  hasMore: false,
 };
 
 const favoriteItem = (state = [], action) => {
@@ -32,6 +37,81 @@ const favorites = (state = initialState, action) => {
         ...state,
         users: favoriteItem(state.users, action),
       };
+    case favoriteActions.SET_FAVORITE_OBJECT_TYPES.START: {
+      return {
+        ...state,
+        loadingObjectTypes: true,
+      };
+    }
+    case favoriteActions.SET_FAVORITE_OBJECT_TYPES.SUCCESS: {
+      return {
+        ...state,
+        favoriteObjectTypes: action.payload,
+        loadingObjectTypes: false,
+      };
+    }
+    case favoriteActions.SET_FAVORITE_OBJECT_TYPES.ERROR: {
+      return {
+        ...state,
+        favoriteObjectTypes: [],
+        loadingObjectTypes: false,
+      };
+    }
+    case favoriteActions.SET_FAVORITE_OBJECTS.START: {
+      return {
+        ...state,
+        loadingObjects: true,
+      };
+    }
+    case favoriteActions.SET_FAVORITE_OBJECTS.SUCCESS: {
+      return {
+        ...state,
+        favoriteObjects: { [action.meta]: action.payload.result },
+        hasMore: action.payload.hasMore,
+        loadingObjects: false,
+      };
+    }
+    case favoriteActions.SET_FAVORITE_OBJECTS.ERROR: {
+      return {
+        ...state,
+        favoriteObjects: {},
+        loadingObjects: false,
+        hasMore: false,
+      };
+    }
+    case favoriteActions.SET_MORE_FAVORITE_OBJECTS.START: {
+      return {
+        ...state,
+        loadingObjects: true,
+      };
+    }
+    case favoriteActions.SET_MORE_FAVORITE_OBJECTS.SUCCESS: {
+      return {
+        ...state,
+        favoriteObjects: {
+          ...state.favoriteObjects,
+          [action.meta]: [...state.favoriteObjects[action.meta], ...action.payload.result],
+        },
+        hasMore: action.payload.hasMore,
+        loadingObjects: false,
+      };
+    }
+    case favoriteActions.SET_MORE_FAVORITE_OBJECTS.ERROR: {
+      return {
+        ...state,
+        loadingObjects: false,
+        hasMore: false,
+      };
+    }
+    case favoriteActions.RESET_FAVORITES: {
+      return {
+        ...state,
+        favoriteObjectTypes: null,
+        favoriteObjects: null,
+        loadingObjects: false,
+        loadingObjectTypes: false,
+      };
+    }
     default:
       return state;
   }

@@ -6,14 +6,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { get, has, isEmpty, isNil, reduce } from 'lodash';
-import {
-  getObjectInfo,
-  getObjectsByIds,
-  getObjectsRewards,
-  getReferenceObjectsList,
-  getRelatedObjectsFromDepartments,
-  getSimilarObjectsFromDepartments,
-} from '../../../waivioApi/ApiClient';
+import { getObjectsRewards, getReferenceObjectsList } from '../../../waivioApi/ApiClient';
 import {
   getAuthenticatedUserName,
   getIsAuthenticated,
@@ -29,7 +22,6 @@ import AffiliatLink from '../../widgets/AffiliatLinks/AffiliatLink';
 import { isMobile } from '../../../common/helpers/apiHelpers';
 import ProductRewardCard from '../ShopObjectCard/ProductRewardCard/ProductRewardCard';
 import {
-  getLastPermlinksFromHash,
   getNumbersFromWobjPrice,
   getObjectAvatar,
   getObjectName,
@@ -51,20 +43,32 @@ import { resetOptionClicked } from '../../../store/shopStore/shopActions';
 import { setStoreActiveOption } from '../../../store/optionsStore/optionsActions';
 import SocialProductReviews from './SocialProductReviews/SocialProductReviews';
 import SocialProductDescription from './SocialProductDescription/SocialProductDescription';
-import { getObject } from '../../../store/wObjectStore/wobjectsActions';
+import {
+  getObject,
+  getAddOns,
+  getSimilarObjects,
+  getProductInfo,
+  getRelatedObjectsAction,
+} from '../../../store/wObjectStore/wobjectsActions';
 import {
   getObject as getObjectState,
   getWobjectAuthors,
-  getWobjectNested,
+  getAddOnFromState,
+  getSimilarObjectsFromState,
+  getRelatedObjectsFromState,
+  getBrandObject,
+  getManufacturerObject,
+  getMerchantObject,
 } from '../../../store/wObjectStore/wObjectSelectors';
-import './SocialProduct.less';
-import { getObjectAlbums } from '../../../store/galleryStore/gallerySelectors';
+import { getObjectAlbums, getRelatedPhotos } from '../../../store/galleryStore/gallerySelectors';
 import { getAlbums, resetGallery } from '../../../store/galleryStore/galleryActions';
 import Loading from '../../components/Icon/Loading';
 import SocialBookAuthors from './SocialBookAuthors/SocialBookAuthors';
 import Breadcrumbs from '../Breadcrumbs/Breadcrumbs';
-import { useSeoInfo } from '../../../hooks/useSeoInfo';
+import { checkAboutCanonicalUrl, useSeoInfoWithAppUrl } from '../../../hooks/useSeoInfo';
 import { averageRate, getRatingForSocial } from '../../components/Sidebar/Rate/rateHelper';
+import { removeEmptyLines, shortenDescription } from '../../object/wObjectHelper';
+import './SocialProduct.less';
 
 const limit = 30;
 
@@ -75,7 +79,7 @@ const SocialProduct = ({
   authors,
   activeCategory,
   siteName,
-  wobj,
+  wobject,
   authenticated,
   optionClicked,
   helmetIcon,
@@ -83,33 +87,26 @@ const SocialProduct = ({
   history,
   setStoreActiveOpt,
   resetOptClicked,
-  getWobject,
-  getWobjAlbums,
   albums,
+  relatedAlbum,
   resetWobjGallery,
-  nestedWobj,
   isEditMode,
   toggleViewEditMode,
+  addOns,
+  getAddOnsAction,
+  getSimilarObjectsAction,
+  similarObjects,
+  relatedObjects,
+  getRelatedAction,
+  brandObject,
+  manufacturerObject,
+  merchantObject,
+  getProductInfoAction,
 }) => {
-  const authorPermlink = history.location.hash
-    ? getLastPermlinksFromHash(history.location.hash)
-    : match.params.name;
-  const wobject =
-    history.location.hash && history.location.hash !== `#${wobj.author_permlink}`
-      ? nestedWobj
-      : wobj;
   const [reward, setReward] = useState([]);
   const [hoveredOption, setHoveredOption] = useState({});
-  const [addOns, setAddOns] = useState([]);
-  const [similarObjects, setSimilarObjects] = useState([]);
   const [references, setReferences] = useState([]);
-  const [relatedObjects, setRelatedObjects] = useState([]);
   const [loading, setIsLoading] = useState(true);
-  const [fields, setFields] = useState({
-    brandObject: {},
-    manufacturerObject: {},
-    merchantObject: {},
-  });
   const affiliateLinks = wobject?.affiliateLinks || [];
   const referenceWobjType = ['business', 'person'].includes(wobject.object_type);
   const price = hoveredOption.price || get(wobject, 'price');
@@ -132,17 +129,6 @@ const SocialProduct = ({
   const groupId = wobject.groupId;
   const customSort = get(wobject, 'sortCustom.include', []);
   const menuItems = get(wobject, 'menuItem', []);
-  const sortedItems = customSort.reduce((acc, curr) => {
-    const currentLink = wobject?.menuItem?.find(
-      btn =>
-        btn.body === curr ||
-        btn.author_permlink === curr ||
-        btn.permlink === curr ||
-        btn.id === curr,
-    );
-
-    return currentLink ? [...acc, currentLink] : acc;
-  }, []);
 
   const features = wobject.features
     ? wobject.features?.map(el => parseWobjectField(el, 'body', []))
@@ -152,7 +138,19 @@ const SocialProduct = ({
     : [];
   const merchant = parseWobjectField(wobject, 'merchant');
   const productWeight = parseWobjectField(wobject, 'productWeight');
-  const menuItem = isEmpty(customSort) ? menuItems : sortedItems;
+  const menuItem = isEmpty(customSort)
+    ? menuItems
+    : customSort.reduce((acc, curr) => {
+        const currentLink = wobject?.menuItem?.find(
+          btn =>
+            btn.body === curr ||
+            btn.author_permlink === curr ||
+            btn.permlink === curr ||
+            btn.id === curr,
+        );
+
+        return currentLink ? [...acc, currentLink] : acc;
+      }, []);
   const tagCategories = get(wobject, 'tagCategory', []);
   const tagCategoriesList = tagCategories.filter(item => !isEmpty(item.items));
   const addOnPermlinks = wobject.addOn ? wobject?.addOn?.map(obj => obj.body) : [];
@@ -172,9 +170,13 @@ const SocialProduct = ({
   const image = getObjectAvatar(wobject) || DEFAULTS.AVATAR;
   const desc = `${wobject.description || ''} ${wobject.name}. ${parseAddress(wobject) ||
     ''} ${tagCategoriesForDescr}`;
-  const title = `${wobject.name} - ${siteName}`;
-  const { canonicalUrl } = useSeoInfo();
-  const url = canonicalUrl;
+  const { firstDescrPart: description } = shortenDescription(removeEmptyLines(desc), 200);
+  const title = `${wobject.name}`;
+  const { canonicalUrl } = useSeoInfoWithAppUrl(wobject.canonical);
+  const url = ['book', 'product'].includes(wobject.object_type)
+    ? `https://${wobject.canonical}/object/${match.params.name}`
+    : canonicalUrl;
+  const productUrl = checkAboutCanonicalUrl(url);
   const bannerEl =
     typeof document !== 'undefined' && document.getElementById('socialGiftsMainBanner');
   const socialHeaderEl = typeof document !== 'undefined' && document.querySelector('.Header');
@@ -202,62 +204,24 @@ const SocialProduct = ({
     !isEmpty(ageRange);
 
   const getAddOnsSimilarRelatedObjects = () => {
-    if (!isEmpty(addOnPermlinks) && !isNil(addOnPermlinks)) {
-      getObjectsByIds({
-        authorPermlinks: addOnPermlinks,
-        authUserName: userName,
-        limit,
-        skip: 0,
-      }).then(res => {
-        setAddOns(res.wobjects);
-      });
-    }
-    getRelatedObjectsFromDepartments(
-      wobject.author_permlink,
-      userName,
-      locale,
-      0,
-      limit,
-    ).then(res => setRelatedObjects(res.wobjects || []));
-    getSimilarObjectsFromDepartments(
-      wobject.author_permlink,
-      userName,
-      locale,
-      0,
-      limit,
-    ).then(res => setSimilarObjects(res.wobjects || []));
+    getAddOnsAction(addOnPermlinks, userName, limit);
+    getRelatedAction(wobject.author_permlink, userName, locale, limit);
+    getSimilarObjectsAction(wobject.author_permlink, userName, locale, limit);
   };
 
   const getPublisherManufacturerBrandMerchantObjects = () => {
-    const authorPermlinks = [
-      manufacturer?.authorPermlink,
-      brand?.authorPermlink,
-      merchant?.authorPermlink,
-    ].filter(permlink => permlink);
-
-    getObjectInfo(authorPermlinks, locale).then(res => {
-      const brandObject =
-        res.wobjects.find(obj => obj.author_permlink === brand?.authorPermlink) || brand;
-      const manufacturerObject =
-        res.wobjects.find(obj => obj.author_permlink === manufacturer?.authorPermlink) ||
-        manufacturer;
-      const merchantObject =
-        res.wobjects.find(obj => obj.author_permlink === merchant?.authorPermlink) || merchant;
-
-      setFields({ brandObject, manufacturerObject, merchantObject });
-    });
+    getProductInfoAction(wobject);
   };
 
   useEffect(() => {
     window.scrollTo({ top: scrollHeight, behavior: 'smooth' });
-    if (!isEmpty(authorPermlink)) {
-      getWobject(authorPermlink, userName);
-
-      getObjectsRewards(authorPermlink, userName).then(res => setReward(res));
-      getWobjAlbums(authorPermlink);
+    if (!isEmpty(wobject.author_permlink)) {
+      getAddOnsSimilarRelatedObjects();
+      getPublisherManufacturerBrandMerchantObjects();
+      getObjectsRewards(wobject.author_permlink, userName).then(res => setReward(res));
       referenceWobjType &&
         getReferenceObjectsList({
-          authorPermlink,
+          authorPermlink: wobject.author_permlink,
           userName,
           locale,
         }).then(res => setReferences(Object.entries(res)));
@@ -268,18 +232,10 @@ const SocialProduct = ({
       resetWobjGallery();
       setStoreActiveOpt({});
     };
-  }, [authorPermlink]);
+  }, [wobject.author_permlink]);
   useEffect(() => {
     resetOptClicked();
   }, []);
-
-  useEffect(() => {
-    !isEmpty(wobject) && getPublisherManufacturerBrandMerchantObjects();
-  }, [wobject.brand, wobject.manufacturer, wobject.merchant]);
-
-  useEffect(() => {
-    !isEmpty(wobject) && getAddOnsSimilarRelatedObjects();
-  }, [addOnPermlinks.length, wobject.author_permlink]);
 
   const bestRating = getRatingForSocial(wobject.rating);
 
@@ -287,20 +243,20 @@ const SocialProduct = ({
     <div>
       <Helmet>
         <title>{title}</title>
-        <meta name="description" content={desc} />
+        <meta name="description" content={description} />
         <meta property="og:title" content={title} />
         <meta property="og:type" content="article" />
-        <link rel="canonical" href={canonicalUrl} />
+        <link rel="canonical" href={productUrl} />
         <meta property="og:url" content={url} />
         <meta property="og:image" content={image} />
         <meta property="og:image:url" content={image} />
         <meta property="og:image:width" content="600" />
         <meta property="og:image:height" content="600" />
-        <meta property="og:description" content={desc} />
+        <meta property="og:description" content={description} />
         <meta name="twitter:card" content={image ? 'summary_large_image' : 'summary'} />
         <meta name="twitter:site" content={`@${siteName}`} />
         <meta name="twitter:title" content={title} />
-        <meta name="twitter:description" content={desc} />
+        <meta name="twitter:description" content={description} />
         <meta name="twitter:image" property="twitter:image" content={image} />
         <meta property="og:site_name" content={siteName} />
         <link rel="image_src" href={image} />
@@ -308,16 +264,15 @@ const SocialProduct = ({
       </Helmet>
       <div itemType="https://schema.org/Product" itemScope>
         <meta itemProp="mpn" content="925872" />
-        <meta itemProp="name" content={getObjectName(wobj)} />
+        <meta itemProp="name" content={getObjectName(wobject)} />
         <link itemProp="image" href={image} />
-        <meta itemProp="description" content={desc} />
+        <meta itemProp="description" content={description} />
         <div itemProp="offers" itemType="https://schema.org/Offer" itemScope>
-          <link itemProp="url" href={canonicalUrl} />
+          <link itemProp="url" href={productUrl} />
           <meta itemProp="availability" content="https://schema.org/InStock" />
-          <meta itemProp="priceCurrency" content={wobj?.price?.includes('С$') ? 'CAD' : 'USD'} />
+          <meta itemProp="priceCurrency" content={wobject?.price?.includes('С$') ? 'CAD' : 'USD'} />
           <meta itemProp="itemCondition" content="https://schema.org/UsedCondition" />
-          <meta itemProp="price" content={getNumbersFromWobjPrice(wobj)} />
-          <meta itemProp="priceValidUntil" content="2020-11-20" />
+          <meta itemProp="price" content={getNumbersFromWobjPrice(wobject)} />
         </div>
         {Boolean(averageRate(bestRating)) && (
           <div itemProp="aggregateRating" itemType="https://schema.org/AggregateRating" itemScope>
@@ -383,6 +338,9 @@ const SocialProduct = ({
               <div className="SocialProduct__row">
                 <div className="SocialProduct__carouselWrapper">
                   <PicturesSlider
+                    relatedAlbum={relatedAlbum}
+                    albums={albums}
+                    altText={description}
                     currentWobj={wobject}
                     hoveredOption={hoveredOption}
                     activeOption={activeOption}
@@ -505,7 +463,7 @@ const SocialProduct = ({
                 dimensions={dimensions}
                 productIdBody={productIdBody}
                 departments={departments}
-                fields={fields}
+                fields={{ brandObject, manufacturerObject, merchantObject }}
                 parent={parent}
               />
             )}
@@ -549,24 +507,32 @@ SocialProduct.propTypes = {
   userName: PropTypes.string,
   locale: PropTypes.string,
   activeOption: PropTypes.shape(),
-  wobj: PropTypes.shape(),
+  wobject: PropTypes.shape(),
   history: PropTypes.shape(),
   match: PropTypes.shape(),
-  nestedWobj: PropTypes.shape(),
   activeCategory: PropTypes.string,
   siteName: PropTypes.string,
   authenticated: PropTypes.bool,
   authors: PropTypes.arrayOf(),
   albums: PropTypes.arrayOf(),
+  addOns: PropTypes.arrayOf(),
+  relatedAlbum: PropTypes.shape(),
   optionClicked: PropTypes.bool,
+  getAddOnsAction: PropTypes.func,
+  getSimilarObjectsAction: PropTypes.func,
+  similarObjects: PropTypes.arrayOf(),
+  relatedObjects: PropTypes.arrayOf(),
+  getRelatedAction: PropTypes.func,
   helmetIcon: PropTypes.string,
   setStoreActiveOpt: PropTypes.func,
   resetOptClicked: PropTypes.func,
-  getWobject: PropTypes.func,
-  getWobjAlbums: PropTypes.func,
   resetWobjGallery: PropTypes.func,
   isEditMode: PropTypes.bool,
   toggleViewEditMode: PropTypes.func,
+  brandObject: PropTypes.shape({}),
+  manufacturerObject: PropTypes.shape({}),
+  merchantObject: PropTypes.shape({}),
+  getProductInfoAction: PropTypes.func,
 };
 
 const mapStateToProps = state => ({
@@ -575,21 +541,34 @@ const mapStateToProps = state => ({
   activeOption: getActiveOption(state),
   activeCategory: getActiveCategory(state),
   siteName: getSiteName(state),
-  wobj: getObjectState(state),
+  wobject: getObjectState(state),
   authors: getWobjectAuthors(state),
   appUrl: getAppUrl(state),
   albums: getObjectAlbums(state),
+  relatedAlbum: getRelatedPhotos(state),
   authenticated: getIsAuthenticated(state),
   optionClicked: getIsOptionClicked(state),
   helmetIcon: getHelmetIcon(state),
-  nestedWobj: getWobjectNested(state),
+  addOns: getAddOnFromState(state),
+  similarObjects: getSimilarObjectsFromState(state),
+  relatedObjects: getRelatedObjectsFromState(state),
+  brandObject: getBrandObject(state),
+  manufacturerObject: getManufacturerObject(state),
+  merchantObject: getMerchantObject(state),
 });
+
 const mapDispatchToProps = dispatch => ({
   setStoreActiveOpt: obj => dispatch(setStoreActiveOption(obj)),
   resetOptClicked: opt => dispatch(resetOptionClicked(opt)),
   getWobject: (obj, name) => dispatch(getObject(obj, name)),
   getWobjAlbums: obj => dispatch(getAlbums(obj)),
   resetWobjGallery: () => dispatch(resetGallery()),
+  getAddOnsAction: (addOnPermlinks, userName) => dispatch(getAddOns(addOnPermlinks, userName)),
+  getSimilarObjectsAction: (author_permlink, userName, locale, lim = 30) =>
+    dispatch(getSimilarObjects(author_permlink, userName, locale, lim)),
+  getProductInfoAction: obj => dispatch(getProductInfo(obj)),
+  getRelatedAction: (author_permlink, userName, locale, lim = 30) =>
+    dispatch(getRelatedObjectsAction(author_permlink, userName, locale, lim)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(SocialProduct));

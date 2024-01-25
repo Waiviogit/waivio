@@ -26,7 +26,7 @@ const UserMenu = props => {
         <div className="left" />
         <ul className="UserMenu__menu ">
           <li
-            className={getItemClasses(['discussions', 'comments', 'activity', 'posts'])}
+            className={getItemClasses(['discussions', 'comments', 'activity', 'posts', 'threads'])}
             role="presentation"
           >
             <Link to={`/@${name}`}>
@@ -37,6 +37,13 @@ const UserMenu = props => {
             <li className={getItemClasses(['userShop'])} role="presentation">
               <Link to={`/@${name}/userShop`}>
                 <FormattedMessage id="shop" defaultMessage="Shop" />
+              </Link>
+            </li>
+          )}{' '}
+          {!currUserIsGuest && showUserShop && (
+            <li className={getItemClasses(['favorites'])} role="presentation">
+              <Link to={`/@${name}/favorites`}>
+                <FormattedMessage id="favorites" defaultMessage="Favorites" />
               </Link>
             </li>
           )}

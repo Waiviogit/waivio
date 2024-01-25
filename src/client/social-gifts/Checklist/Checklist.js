@@ -5,7 +5,7 @@ import { isEmpty } from 'lodash';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import Helmet from 'react-helmet';
-import { useSeoInfo } from '../../../hooks/useSeoInfo';
+import { useSeoInfoWithAppUrl } from '../../../hooks/useSeoInfo';
 import { getSuitableLanguage } from '../../../store/reducers';
 import {
   getLastPermlinksFromHash,
@@ -18,7 +18,7 @@ import {
 } from '../../../store/wObjectStore/wobjActions';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 
-import { sortListItemsBy } from '../../object/wObjectHelper';
+import { removeEmptyLines, shortenDescription, sortListItemsBy } from '../../object/wObjectHelper';
 import { getHelmetIcon, getMainObj, getSiteName } from '../../../store/appStore/appSelectors';
 import { login } from '../../../store/authStore/authActions';
 import { getObject as getObjectState } from '../../../store/wObjectStore/wObjectSelectors';
@@ -50,24 +50,32 @@ const Checklist = ({
   const favicon = useSelector(getHelmetIcon);
   const siteName = useSelector(getSiteName);
   const mainObj = useSelector(getMainObj);
-  const title = `${getObjectName(wobject)} - ${siteName}`;
+  const title = `${getObjectName(wobject)}`;
   const desc = wobject?.description || mainObj?.description;
+  const { firstDescrPart: description } = shortenDescription(removeEmptyLines(desc), 350);
   const image = getObjectAvatar(wobject) || favicon;
-  const { canonicalUrl } = useSeoInfo(true);
+  const { canonicalUrl } = useSeoInfoWithAppUrl(wobject.canonical, true, wobject.object_type);
 
   useEffect(() => {
     const pathUrl =
       permlink || getLastPermlinksFromHash(history.location.hash) || match.params.name;
 
-    if (wobject?.author_permlink !== pathUrl) setLoading(true);
+    if (wobject?.author_permlink !== pathUrl) {
+      setLoading(true);
+    }
 
     getObjectAction(pathUrl, userName, locale).then(res => {
       const wObject = res?.value;
 
-      if (wObject?.object_type === 'list' && window.gtag)
+      if (wObject?.object_type === 'list' && window.gtag) {
         window.gtag('event', getObjectName(wObject), { debug_mode: true });
-      if (history.location.hash) setNestedObject(wObject);
-      if (!isSocialProduct) setBreadcrumb(wObject);
+      }
+      if (history.location.hash) {
+        setNestedObject(wObject);
+      }
+      if (!isSocialProduct) {
+        setBreadcrumb(wObject);
+      }
       setLists(
         sortListItemsBy(
           wObject?.listItems,
@@ -85,11 +93,13 @@ const Checklist = ({
         <title>{title}</title>
         <meta property="og:title" content={title} />
         <link rel="canonical" href={canonicalUrl} />
-        <meta name="description" content={desc} />
+        <meta name="description" content={description} />
         <meta name="twitter:card" content={'summary_large_image'} />
         <meta name="twitter:site" content={'@waivio'} />
         <meta name="twitter:title" content={title} />
-        <meta name="twitter:description" content={desc} />
+        <meta name="author" content={wobject?.creator} />
+        <meta name="wobject-title" content={wobject?.title} />
+        <meta name="twitter:description" content={description} />
         <meta name="twitter:image" content={image} />
         <meta property="og:title" content={title} />
         <meta property="og:type" content="article" />
@@ -97,7 +107,7 @@ const Checklist = ({
         <meta property="og:image" content={image} />
         <meta property="og:image:width" content="600" />
         <meta property="og:image:height" content="600" />
-        <meta property="og:description" content={desc} />
+        <meta property="og:description" content={description} />
         <meta property="og:site_name" content={siteName} />
         <link rel="image_src" href={image} />
         <link id="favicon" rel="icon" href={favicon} type="image/x-icon" />
@@ -116,6 +126,9 @@ Checklist.propTypes = {
   wobject: PropTypes.shape({
     object_type: PropTypes.string,
     description: PropTypes.string,
+    creator: PropTypes.string,
+    canonical: PropTypes.string,
+    title: PropTypes.string,
     author_permlink: PropTypes.string,
     background: PropTypes.string,
     sortCustom: PropTypes.shape({

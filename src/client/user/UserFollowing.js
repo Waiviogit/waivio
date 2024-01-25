@@ -49,23 +49,21 @@ export default class UserFollowing extends React.Component {
 
     this.fetcher = this.fetcher.bind(this);
   }
-  skip = 0;
+
   limit = 100;
 
-  async fetcher() {
+  fetcher = async (usersList, auth, sorting, skip) => {
     const response = await getFollowingsFromAPI(
       this.props.match.params.name,
       this.limit,
-      this.skip,
+      skip,
       this.props.authUser,
       this.props.sort,
     );
     const users = response.users;
 
-    UserFollowing.skip += UserFollowing.limit;
-
     return { users, hasMore: response.hasMore };
-  }
+  };
 
   objectFetcher = skip => {
     const { match, authUser, locale } = this.props;

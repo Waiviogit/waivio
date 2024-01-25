@@ -19,13 +19,13 @@ import './ObjectDynamicList.less';
 class ObjectDynamicList extends React.Component {
   static propTypes = {
     fetcher: PropTypes.func.isRequired,
+    authUser: PropTypes.shape(),
     isOnlyHashtags: PropTypes.bool,
     expertize: PropTypes.bool,
     unfollowWobj: PropTypes.func,
     followWobj: PropTypes.func,
     changeCounterFollow: PropTypes.func,
     isGuest: PropTypes.bool,
-    authUser: PropTypes.string,
     limit: PropTypes.number,
     match: PropTypes.shape({
       params: PropTypes.shape({
@@ -52,7 +52,7 @@ class ObjectDynamicList extends React.Component {
   };
 
   handleLoadMore = () => {
-    const { fetcher, isOnlyHashtags, authUser, limit } = this.props;
+    const { fetcher, limit, authUser, isOnlyHashtags } = this.props;
     const { wobjects } = this.state;
 
     this.setState(

@@ -173,9 +173,9 @@ function proxifyImages(doc) {
   if (!doc) return;
   Array.from(doc.getElementsByTagName('img')).forEach(node => {
     const url = node.getAttribute('src');
-    if (!linksRe.local.test(url)) {
-      node.setAttribute('src', getImagePathPost(url));
-    }
+
+    node.setAttribute('src', getProxyImageURL(url));
+    node.setAttribute('alt', url);
   });
 }
 
@@ -190,9 +190,12 @@ function linkifyNode(child, state) {
     if (imageRegex.test(child?.nodeValue)) {
       const value = child?.nodeValue.match(imageRegex)[0];
       const src = value.includes('waivio.') ? value : getProxyImageURL(value);
-      const newChild = DOMParser.parseFromString(`<img alt="" src="${src}"/>`);
-      child?.parentNode.replaceChild(newChild, child);
-      return newChild;
+      const newChild = document.createElement('img');
+      newChild.alt = '';
+      newChild.src = src;
+      const textNode = child.splitText(child.nodeValue.indexOf(value));
+
+      child.parentNode.insertBefore(newChild, textNode);
     }
 
     const { mutate } = state;

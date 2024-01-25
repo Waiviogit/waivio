@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router';
-import { forEach, get, isEmpty, map, size } from 'lodash';
+import { forEach, get, isEmpty, map, size, unescape } from 'lodash';
 import readingTime from 'reading-time';
 import {
   FormattedDate,
@@ -63,6 +63,7 @@ class StoryFull extends React.Component {
     pendingFlag: PropTypes.bool,
     pendingFollow: PropTypes.bool,
     pendingBookmark: PropTypes.bool,
+    isThread: PropTypes.bool,
     commentCount: PropTypes.number,
     saving: PropTypes.bool,
     ownPost: PropTypes.bool,
@@ -229,6 +230,7 @@ class StoryFull extends React.Component {
       onEditClick,
       isOriginalPost,
       isModal,
+      isThread,
     } = this.props;
     const taggedObjects = [];
     const linkedObjects = [];
@@ -245,15 +247,15 @@ class StoryFull extends React.Component {
 
     this.images = extractImageTags(parsedBody).map(image => ({
       ...image,
-      src: getImagePath(image.src),
+      src: getImagePath(unescape(image.src.replace('https://images.hive.blog/0x0/', ''))),
     }));
 
     const body = this.images.reduce(
       (acc, item) => acc.replace(`<center>${item.alt}</center>`, ''),
-      post.body,
+      post?.body,
     );
 
-    let signedBody = body.replaceAll('http://', 'https://');
+    let signedBody = body?.replaceAll('http://', 'https://');
 
     if (signature) signedBody = `${body}<hr>${signature}`;
 
@@ -338,69 +340,72 @@ class StoryFull extends React.Component {
             </a>
           </h3>
         )}
-        <div className="StoryFull__header">
-          <Link to={`/@${authorName}`}>
-            <Avatar username={authorName} size={60} />
-          </Link>
-          <div className="StoryFull__header__text">
+        {post && (
+          <div className="StoryFull__header">
             <Link to={`/@${authorName}`}>
-              <span className="username">{authorName}</span>
-              <WeightTag weight={post.author_wobjects_weight} />
+              <Avatar username={authorName} size={60} />
             </Link>
-            <BTooltip
-              title={
-                <span>
-                  <FormattedDate value={`${post.created}Z`} />{' '}
-                  <FormattedTime value={`${post.created}Z`} />
+            <div className="StoryFull__header__text">
+              <Link to={`/@${authorName}`}>
+                <span className="username">{authorName}</span>
+                <WeightTag weight={post.author_wobjects_weight} />
+              </Link>
+              <BTooltip
+                title={
+                  <span>
+                    <FormattedDate value={`${post.created}Z`} />{' '}
+                    <FormattedTime value={`${post.created}Z`} />
+                  </span>
+                }
+              >
+                <span className="StoryFull__header__text__date">
+                  <FormattedRelative value={`${post.created}Z`} />
                 </span>
-              }
-            >
-              <span className="StoryFull__header__text__date">
-                <FormattedRelative value={`${post.created}Z`} />
+              </BTooltip>
+              <span className="StoryFull__posted_from">
+                <PostedFrom post={post} />
               </span>
-            </BTooltip>
-            <span className="StoryFull__posted_from">
-              <PostedFrom post={post} />
-            </span>
-            {Math.ceil(readingTime(post.body).minutes) > 1 && (
-              <span>
-                <span className="StoryFull__bullet" />
-                <BTooltip
-                  title={
-                    <span>
+              {post?.body && Math.ceil(readingTime(post?.body).minutes) > 1 && (
+                <span>
+                  <span className="StoryFull__bullet" />
+                  <BTooltip
+                    title={
+                      <span>
+                        <FormattedMessage
+                          id="words_tooltip"
+                          defaultMessage={'{words} words'}
+                          values={{ words: readingTime(post?.body).words }}
+                        />
+                      </span>
+                    }
+                  >
+                    <span className="StoryFull__header__reading__time">
                       <FormattedMessage
-                        id="words_tooltip"
-                        defaultMessage={'{words} words'}
-                        values={{ words: readingTime(post.body).words }}
+                        id="reading_time_post"
+                        defaultMessage={'{min} min read'}
+                        values={{ min: Math.ceil(readingTime(post?.body).minutes) }}
                       />
                     </span>
-                  }
-                >
-                  <span className="StoryFull__header__reading__time">
-                    <FormattedMessage
-                      id="reading_time_post"
-                      defaultMessage={'{min} min read'}
-                      values={{ min: Math.ceil(readingTime(post.body).minutes) }}
-                    />
-                  </span>
-                </BTooltip>
-              </span>
-            )}
+                  </BTooltip>
+                </span>
+              )}
+            </div>
+            <PostPopoverMenu
+              isThread={isThread}
+              pendingFlag={pendingFlag}
+              pendingFollow={pendingFollow}
+              pendingBookmark={pendingBookmark}
+              saving={saving}
+              postState={postState}
+              intl={intl}
+              post={post}
+              handlePostPopoverMenuClick={this.handleClick}
+              ownPost={ownPost}
+            >
+              <i className="StoryFull__header__more iconfont icon-more" />
+            </PostPopoverMenu>
           </div>
-          <PostPopoverMenu
-            pendingFlag={pendingFlag}
-            pendingFollow={pendingFollow}
-            pendingBookmark={pendingBookmark}
-            saving={saving}
-            postState={postState}
-            intl={intl}
-            post={post}
-            handlePostPopoverMenuClick={this.handleClick}
-            ownPost={ownPost}
-          >
-            <i className="StoryFull__header__more iconfont icon-more" />
-          </PostPopoverMenu>
-        </div>
+        )}
         <div className="StoryFull__content">{content}</div>
         {open && (
           <Lightbox
@@ -507,6 +512,7 @@ class StoryFull extends React.Component {
           )}
         </Collapse>
         <StoryFooter
+          isThread={isThread}
           user={user}
           post={post}
           postState={postState}

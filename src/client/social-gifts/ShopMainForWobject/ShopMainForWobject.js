@@ -1,34 +1,53 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
+import React, { useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import Views from '../../../routes/components';
+import { getNavigItems } from '../../../store/appStore/appSelectors';
+import { getObject } from '../../../store/wObjectStore/wobjectsActions';
 import { getObject as getObjectState } from '../../../store/wObjectStore/wObjectSelectors';
 import Affix from '../../components/Utils/Affix';
 import DepartmentsWobject from '../../object/ObjectTypeShop/DepartmentsWobject';
 import WobjectShopFilter from '../../object/ObjectTypeShop/WobjectShopFilter';
 import WobjectShoppingList from '../../object/ObjectTypeShop/WobjectShoppingList';
 import Wobj from '../../object/Wobj/Wobj';
-import NestedChecklist from '../Checklist/NestedChecklist';
+import Checklist from '../Checklist/Checklist';
+import { getAlbums } from '../../../store/galleryStore/galleryActions';
 
 const ShopMainForWobject = () => {
-  const obj = useSelector(getObjectState);
+  const links = useSelector(getNavigItems);
+  const objState = useSelector(getObjectState);
+  const objType = (links[0] || objState)?.object_type;
+  const dispatch = useDispatch();
+  const authorPermlink = links[0]?.permlink || objState.author_permlink;
+
+  useEffect(() => {
+    if (!['shop', 'list', 'page'].includes(objType) && authorPermlink) {
+      dispatch(getObject(authorPermlink));
+      dispatch(getAlbums(authorPermlink));
+    }
+  }, [links]);
+
   const getFirstPage = () => {
-    switch (obj?.object_type) {
+    switch (objType) {
       case 'shop':
         return (
-          <div className="settings-layout">
-            <Affix className="leftContainer" stickPosition={77}>
-              <div className="left">
-                <DepartmentsWobject name={obj?.author_permlink} />
-                <WobjectShopFilter name={obj?.author_permlink} />
+          <div className="shifted">
+            <div className="feed-layout container Shop shifted">
+              <Affix className="leftContainer" stickPosition={77}>
+                <div className="left">
+                  <DepartmentsWobject name={authorPermlink} />
+                  <WobjectShopFilter name={authorPermlink} />
+                </div>
+              </Affix>
+              <div className="center">
+                <WobjectShoppingList name={authorPermlink} isSocial />
               </div>
-            </Affix>
-            <div className="center">
-              <WobjectShoppingList name={obj?.author_permlink} isSocial />
             </div>
           </div>
         );
       case 'list':
-        return <NestedChecklist permlink={obj?.author_permlink} />;
+      case 'page':
+      case 'newsfeed':
+        return <Checklist permlink={authorPermlink} />;
 
       default:
         return (

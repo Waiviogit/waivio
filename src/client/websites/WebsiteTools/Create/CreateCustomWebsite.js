@@ -6,6 +6,7 @@ import { isEmpty } from 'lodash';
 import { Button, Checkbox, Form, Input, message, Select } from 'antd';
 import validateRules from '../../constants/validateRules';
 import { checkkNs } from '../../../../waivioApi/ApiClient';
+import WebsitePricing from '../WebsitePricing/WebsitePricing';
 
 const CreateCustomWebsite = ({
   intl,
@@ -118,7 +119,7 @@ const CreateCustomWebsite = ({
           >
             {intl.formatMessage({
               id: 'domain_settings',
-              defaultMessage: 'domain settings and instructions',
+              defaultMessage: 'Domain settings and instructions',
             })}
           </a>{' '}
           {intl.formatMessage({
@@ -160,6 +161,7 @@ const CreateCustomWebsite = ({
           </Button>
         </Form.Item>
       </Form>
+      <WebsitePricing />
     </div>
   );
 };

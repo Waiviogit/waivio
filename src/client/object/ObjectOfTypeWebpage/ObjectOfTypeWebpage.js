@@ -10,7 +10,6 @@ import slate from '@react-page/plugins-slate';
 import image from '@react-page/plugins-image';
 import background from '@react-page/plugins-background';
 import spacer from '@react-page/plugins-spacer';
-import video from '@react-page/plugins-video';
 import divider from '@react-page/plugins-divider';
 import { getObject } from '../../../waivioApi/ApiClient';
 import { colorPickerPlugin } from './colorPickerPlugin';
@@ -21,8 +20,11 @@ import { setNestedWobject } from '../../../store/wObjectStore/wobjActions';
 import AppendWebpageModal from './AppendWebpageModal';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 import { getUsedLocale } from '../../../store/appStore/appSelectors';
+import customVideoPlugin from './videoPlugin';
 
 import './ObjectOfTypeWebpage.less';
+import CatalogBreadcrumb from '../Catalog/CatalogBreadcrumb/CatalogBreadcrumb';
+import Loading from '../../components/Icon/Loading';
 
 const customSlate = slate(config => ({
   ...config,
@@ -34,7 +36,7 @@ const customSlate = slate(config => ({
   },
 }));
 
-const plugins = [customSlate, image, background(), video, spacer, divider];
+const plugins = [customSlate, image, background(), customVideoPlugin, spacer, divider];
 
 const ObjectOfTypeWebpage = ({ intl }) => {
   const history = useHistory();
@@ -53,6 +55,7 @@ const ObjectOfTypeWebpage = ({ intl }) => {
   const jsonVal = currentValue ? JSON.stringify(currentValue) : null;
 
   useEffect(() => {
+    setLoading(true);
     getObject(authorPermlink, user, locale).then(res => {
       setWobject(res);
       if (has(res, 'webpage')) {
@@ -80,12 +83,17 @@ const ObjectOfTypeWebpage = ({ intl }) => {
 
   return (
     <div className="ObjectOfTypeWebpage">
-      <Editor
-        readOnly={!isEditMode || showModal}
-        cellPlugins={plugins}
-        value={currentValue}
-        onChange={newValue => setCurrentValue(newValue)}
-      />
+      {!isEditMode && history.location.hash && <CatalogBreadcrumb wobject={wobject} intl={intl} />}
+      {loading ? (
+        <Loading />
+      ) : (
+        <Editor
+          readOnly={!isEditMode || showModal}
+          cellPlugins={plugins}
+          value={currentValue}
+          onChange={newValue => setCurrentValue(newValue)}
+        />
+      )}
       {isEditMode && (
         <div className="object-of-type-page__row align-center">
           <Button

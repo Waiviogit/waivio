@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { isEmpty } from 'lodash';
+import { isEmpty, take } from 'lodash';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
@@ -115,7 +115,7 @@ const ShopList = ({ userName, path, getShopFeed, isSocial }) => {
                   </Link>
                   <ObjCardListViewSwitcherForShop
                     isSocial={isSocial}
-                    wobjects={isMobile() ? dep.wobjects.slice(0, -1) : dep.wobjects}
+                    wobjects={isMobile() ? take(dep.wobjects, 4) : dep.wobjects}
                   />
                   {dep.hasMore && (
                     <Link className="ShopList__showMore" to={getPath(dep.department)}>

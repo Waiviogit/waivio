@@ -45,8 +45,13 @@ import {
 } from '../../store/usersStore/usersSelectors';
 import { getIsOpenWalletTable } from '../../store/walletStore/walletSelectors';
 import { resetBreadCrumb } from '../../store/shopStore/shopActions';
-import { useSeoInfo } from '../../hooks/useSeoInfo';
+import { useSeoInfoWithAppUrl } from '../../hooks/useSeoInfo';
 import Error404 from '../statics/Error404';
+import {
+  resetFavorites,
+  setFavoriteObjects,
+  setFavoriteObjectTypes,
+} from '../../store/favoritesStore/favoritesActions';
 
 const getDescriptions = (username, siteName) => ({
   activity: `Track real-time user interactions on our platform, backed by open blockchain technology. Experience unparalleled transparency and authenticity as you witness the vibrant activity of our community members.`,
@@ -101,6 +106,8 @@ const User = props => {
     props.getUserAccountHistory(name);
     props.getTokenBalance('WAIV', name);
     props.resetBreadCrumb();
+
+    return () => props.resetFavorites();
   }, [name, props.authenticatedUserName]);
 
   const handleTransferClick = () => {
@@ -121,13 +128,13 @@ const User = props => {
 
   if (profile) {
     displayedUsername = profile.name || name || '';
-    coverImage = profile.cover_image;
+    coverImage = typeof profile.cover_image === 'string' ? profile.cover_image : '';
   }
 
   const hasCover = !!coverImage;
   const image = getAvatarURL(name) || DEFAULTS.AVATAR;
-  const { canonicalUrl } = useSeoInfo();
-  const title = `${displayedUsername} ${getTitle(tab)} - ${siteName}`;
+  const { canonicalUrl } = useSeoInfoWithAppUrl(user?.canonical);
+  const title = `${displayedUsername} ${getTitle(tab)}`;
   const isSameUser = authenticated && authenticatedUser.name === name;
   const isAboutPage = match.params['0'] === 'about';
   const isGuest = name.startsWith(GUEST_PREFIX) || name.startsWith(BXY_GUEST_PREFIX);
@@ -220,12 +227,13 @@ User.propTypes = {
   user: PropTypes.shape().isRequired,
   loaded: PropTypes.bool,
   failed: PropTypes.bool,
-  getUserAccount: PropTypes.func,
   getTokenBalance: PropTypes.func,
   getUserAccountHistory: PropTypes.func.isRequired,
   resetBreadCrumb: PropTypes.func.isRequired,
   getGlobalProperties: PropTypes.func.isRequired,
   openTransfer: PropTypes.func,
+  resetFavorites: PropTypes.func,
+  getUserAccount: PropTypes.func,
   rate: PropTypes.number.isRequired,
   rewardFund: PropTypes.shape().isRequired,
   isOpenWalletTable: PropTypes.bool,
@@ -241,7 +249,23 @@ User.defaultProps = {
   isOpenWalletTable: false,
 };
 
-User.fetchData = async ({ store, match }) => store.dispatch(getUserAccount(match.params.name));
+User.fetchData = async ({ store, match }) => {
+  const promises = [store.dispatch(getUserAccount(match.params.name))];
+
+  // if (match.params[0] === 'favorites') {
+  //   promises.push(
+  //     store
+  //       .dispatch(setFavoriteObjectTypes(match.params.name))
+  //       .then(types =>
+  //         Promise.allSettled([
+  //           store.dispatch(setFavoriteObjects(match.params.name, types.value[0])),
+  //         ]),
+  //       ),
+  //   );
+  // }
+
+  return Promise.allSettled([...promises]);
+};
 
 export default connect(
   (state, ownProps) => ({
@@ -266,5 +290,9 @@ export default connect(
     getTokenBalance,
     getGlobalProperties,
     resetBreadCrumb,
+    setFavoriteObjects,
+    setFavoriteObjectTypes,
+    resetFavorites,
+    setFavObjects: setFavoriteObjects,
   },
 )(User);

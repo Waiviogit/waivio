@@ -39,14 +39,28 @@ export const getFieldsCount = (wObject, fieldName) => {
 
 export const truncate = str => (str && str.length > 255 ? str.substring(0, 255) : str);
 
-export const shortenDescription = description => {
-  if (description.length <= 300) {
-    return description;
+export const shortenDescription = (description, length) => {
+  if (isEmpty(description)) return '';
+  if (description.length <= length) {
+    return {
+      firstDescrPart: description,
+      secondDescrPart: '',
+    };
   }
-  const shortened = description.substr(0, 300);
+  const shortened = description.substr(0, length);
   const lastPeriod = shortened.lastIndexOf('.');
 
-  return shortened.substr(0, lastPeriod + 1);
+  return {
+    firstDescrPart: shortened.substr(0, lastPeriod + 1),
+    secondDescrPart: description.substring(lastPeriod + 1),
+  };
+};
+
+export const removeEmptyLines = string => {
+  const lines = string?.split('\n');
+  const nonEmptyLines = lines?.filter(line => line?.trim() !== '');
+
+  return nonEmptyLines?.join('\n');
 };
 
 /**

@@ -1,10 +1,11 @@
 import sanitizeHtml from 'sanitize-html';
 import url from 'url';
+import { endsWith } from 'lodash';
 import { knownDomains } from '../../common/helpers/constants';
 import { getLastPermlinksFromHash } from '../../common/helpers/wObjectHelper';
 
 /**
-This function is extracted from steemit.com source code and does the same tasks with some slight-
+ This function is extracted from steemit.com source code and does the same tasks with some slight-
  * adjustments to meet our needs. Refer to the main one in case of future problems:
  * https://raw.githubusercontent.com/steemit/steemit.com/354c08a10cf88e0828a70dbf7ed9082698aea20d/app/utils/SanitizeConfig.js
  *
@@ -69,7 +70,7 @@ export const allowedTags = `
   .trim()
   .split(/,\s*/);
 
-export const parseLink = (appUrl, location) => (tagName, attribs) => {
+export const parseLink = (appUrl, location, isPage) => (tagName, attribs) => {
   let { href } = attribs;
   if (!href) href = '#';
   href = href.trim();
@@ -84,17 +85,40 @@ export const parseLink = (appUrl, location) => (tagName, attribs) => {
   const internalLink = href.indexOf('/') === 0;
 
   if (!internalLink) attys.target = '_blank';
-  if (linkWebsiteUrl.includes('waivio') || linkWebsiteUrl.includes('dining')) {
-    href = linkUrl.hash && location?.pathname ? location.pathname : linkUrl.pathname;
+  if (
+    (linkWebsiteUrl.includes('waivio') || linkWebsiteUrl.includes('dining')) &&
+    linkUrl.pathname !== '/'
+  ) {
+    if (isPage) {
+      if (appUrl.includes('waivio') || appUrl.includes('dining')) {
+        href = linkUrl.hash && location?.pathname !== '/' ? location.pathname : linkUrl.pathname;
+      } else {
+        let modifiedUrl =
+          linkUrl.pathname.endsWith('/page') || linkUrl.pathname.endsWith('/list')
+            ? linkUrl.pathname.slice(0, -5).replace('/object/', '/checklist/')
+            : linkUrl.pathname.replace('/object/', '/checklist/');
+        if (linkUrl.pathname.endsWith('/webpage')) {
+          modifiedUrl = linkUrl.pathname;
+        }
 
-    if (location?.hash) {
-      href = href + location.hash;
+        href = linkUrl.hash && location?.pathname !== '/' ? location.pathname : modifiedUrl;
+      }
+
+      if (location?.hash && !linkUrl.pathname.endsWith('/webpage')) {
+        href = href + location.hash;
+      }
+
+      if (linkUrl.hash)
+        href = href.includes('#')
+          ? href + `/${getLastPermlinksFromHash(linkUrl.hash)}`
+          : href + linkUrl.hash;
+    } else {
+      href = appUrl + linkUrl.pathname;
+      if (linkUrl.hash)
+        href = href.includes('#')
+          ? href + `/${getLastPermlinksFromHash(linkUrl.hash)}`
+          : href + linkUrl.hash;
     }
-
-    if (linkUrl.hash)
-      href = href.includes('#')
-        ? href + `/${getLastPermlinksFromHash(linkUrl.hash)}`
-        : href + linkUrl.hash;
 
     attys.target = '';
   }
@@ -115,6 +139,7 @@ export default ({
   appUrl,
   secureLinks = false,
   location,
+  isPage,
 }) => ({
   allowedTags,
   // figure, figcaption,
@@ -214,6 +239,6 @@ export default ({
         attribs: attys,
       };
     },
-    a: parseLink(appUrl, location),
+    a: parseLink(appUrl, location, isPage),
   },
 });

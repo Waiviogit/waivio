@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { isEmpty } from 'lodash';
 import Helmet from 'react-helmet';
 import { useSelector, useDispatch } from 'react-redux';
+import { useParams } from 'react-router';
 import { appendObject } from '../../../store/appendStore/appendActions';
 import { addAlbumToStore } from '../../../store/galleryStore/galleryActions';
 import {
@@ -24,7 +25,8 @@ import Checklist from '../../social-gifts/Checklist/Checklist';
 import Loading from '../../components/Icon/Loading';
 import WobjectView from './WobjectView';
 import { getHelmetIcon, getSiteName } from '../../../store/appStore/appSelectors';
-import { useSeoInfo } from '../../../hooks/useSeoInfo';
+import { useSeoInfoWithAppUrl } from '../../../hooks/useSeoInfo';
+import { getWobjectExpertise } from '../../../store/wObjectStore/wobjActions';
 
 const Wobj = ({
   authenticatedUserName: userName,
@@ -40,6 +42,7 @@ const Wobj = ({
   const wobject = useSelector(getObjectState);
   const nestedWobject = useSelector(getWobjectNested);
   const dispatch = useDispatch();
+  const params = useParams();
   const appendAlbum = () => {
     const formData = {
       galleryAlbum: 'Photos',
@@ -55,18 +58,21 @@ const Wobj = ({
 
   useEffect(() => {
     const objectType = getObjectType(wobject);
+    const newsFilter = params[1] === 'newsFilter' ? { newsFilter: params.itemId } : {};
+
+    dispatch(getWobjectExpertise(newsFilter, params.name));
 
     if (!isEmpty(wobject) && window?.gtag)
       window.gtag('event', `view_${objectType}`, { debug_mode: true });
   }, [wobject.author_permlink]);
 
   const getWobjView = useCallback(() => {
-    const title = `${getObjectName(wobject)} - ${siteName}`;
-    const { canonicalUrl, descriptionSite } = useSeoInfo();
+    const title = `${getObjectName(wobject)}`;
+    const { canonicalUrl, descriptionSite } = useSeoInfoWithAppUrl(wobject.canonical);
     const desc = wobject?.description || descriptionSite || siteName;
     const image = getObjectAvatar(wobject) || favicon;
 
-    if (isEmpty(wobject)) {
+    if (isEmpty(wobject) || (params.name && wobject?.author_permlink !== params.name)) {
       return (
         <React.Fragment>
           <Helmet>
@@ -97,7 +103,7 @@ const Wobj = ({
 
     if (
       !isSocial ||
-      !['book', 'product', 'person', 'business', 'widget', 'page', 'list', 'newsfeed'].includes(
+      !['book', 'product', 'person', 'widget', 'page', 'list', 'newsfeed'].includes(
         wobject.object_type,
       ) ||
       (isSocial && isEditMode)
@@ -120,7 +126,6 @@ const Wobj = ({
       case 'book':
       case 'product':
       case 'person':
-      case 'business':
         return <SocialProduct toggleViewEditMode={toggleViewEditMode} />;
       case 'widget':
         return <WidgetContent wobj={wobject} />;

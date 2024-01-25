@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useHistory } from 'react-router';
 import { has } from 'lodash';
@@ -28,6 +28,11 @@ const SocialMenuItem = ({ item, isOpen }) => {
       setOpen(!open);
     }
   };
+
+  useEffect(() => {
+    setOpen(isOpen);
+  }, [isOpen]);
+
   const getimagesLayout = () => {
     switch (itemBody.style) {
       case 'icon':

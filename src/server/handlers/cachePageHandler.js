@@ -1,6 +1,5 @@
 import { USER_AGENT } from '../../common/constants/ssrData';
-
-import { webPage, botStatistics, botAgent } from '../seo-service/seoServiceApi';
+import { webPage, botStatistics, botAgent, sitemap } from '../seo-service/seoServiceApi';
 
 export const isSearchBot = async req => {
   const userAgent = req.get(USER_AGENT);
@@ -26,4 +25,12 @@ export const updateBotCount = async req => {
   const userAgent = req.get(USER_AGENT);
 
   await botStatistics.addVisit({ userAgent });
+};
+export const getSitemap = async req => {
+  const name = req.url.replace('/', '').replace(/\.xml/, '');
+
+  return sitemap.getSitemap({
+    host: req.headers.host,
+    name,
+  });
 };

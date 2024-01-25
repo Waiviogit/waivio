@@ -1,12 +1,16 @@
 import React, { useCallback, useEffect, useState, useLayoutEffect } from 'react';
 import PropTypes from 'prop-types';
-import { debounce, get } from 'lodash';
+import { debounce, get, trimEnd } from 'lodash';
+import { withRouter } from 'react-router-dom';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { Transforms } from 'slate';
 import { Button, Modal } from 'antd';
 import { connect } from 'react-redux';
 import Scroll from 'react-scroll';
-import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
+import {
+  getAuthenticatedUserName,
+  getAuthUserSignature,
+} from '../../../store/authStore/authSelectors';
 import { remarkable } from '../Story/Body';
 import BodyContainer from '../../containers/Story/BodyContainer';
 import Avatar from '../Avatar';
@@ -36,9 +40,14 @@ const CommentForm = props => {
   const [init, setInit] = useState(false);
   const [draft, setDraft] = useState('');
   const parent = props.isEdit ? props.currentComment : props.parentPost;
+  const getPermlink = () => {
+    if (props.isReply) return `${parent?.permlink}-reply`;
+
+    return props.isEdit ? `${parent?.permlink}-edit` : parent?.permlink;
+  };
 
   useLayoutEffect(() => {
-    getCommentDraft(props.username, parent?.author, parent?.permlink).then(res => {
+    getCommentDraft(props.username, parent?.author, getPermlink()).then(res => {
       if (res.message) {
         setInit(true);
 
@@ -85,10 +94,18 @@ const CommentForm = props => {
 
   const setBodyAndRender = value => {
     const markdownBody = value.children ? editorStateToMarkdownSlate(value.children) : value;
+    const bodyWithSignature = props.isEdit ? markdownBody : `${markdownBody}${props.signature}`;
 
-    setBody(markdownBody);
-    setHTML(remarkable.render(markdownBody));
-    if (markdownBody) debouncedDraftSave(markdownBody);
+    if (
+      (props.isEdit &&
+        Boolean(props.inputValue) &&
+        trimEnd(props.inputValue) !== trimEnd(bodyWithSignature)) ||
+      !props.isEdit
+    )
+      debouncedDraftSave(markdownBody);
+
+    setBody(bodyWithSignature);
+    setHTML(remarkable.render(bodyWithSignature));
   };
 
   const setShowEditorSearch = value => setIsShowEditorSearch(value);
@@ -97,7 +114,7 @@ const CommentForm = props => {
 
   const debouncedDraftSave = useCallback(
     debounce(markdownBody => {
-      if (init) saveCommentDraft(props.username, parent?.author, parent?.permlink, markdownBody);
+      if (init) saveCommentDraft(props.username, parent?.author, getPermlink(), markdownBody);
     }, 300),
     [props.username, props.parentPost, init],
   );
@@ -228,11 +245,13 @@ CommentForm.propTypes = {
   username: PropTypes.string.isRequired,
   // top: PropTypes.bool,
   isSmall: PropTypes.bool,
+  isReply: PropTypes.bool,
   isLoading: PropTypes.bool,
   submitted: PropTypes.bool,
   inputValue: PropTypes.string.isRequired,
   onSubmit: PropTypes.func,
   editor: PropTypes.shape(),
+  signature: PropTypes.string,
   intl: PropTypes.shape({
     formatMessage: PropTypes.func,
   }),
@@ -246,6 +265,7 @@ CommentForm.defaultProps = {
   top: false,
   isSmall: false,
   isLoading: false,
+  isReply: false,
   submitted: false,
   inputValue: '',
   onSubmit: () => {},
@@ -255,6 +275,7 @@ CommentForm.defaultProps = {
 const mapStateToProps = store => ({
   editor: getEditorSlate(store),
   username: getAuthenticatedUserName(store),
+  signature: getAuthUserSignature(store),
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -262,4 +283,4 @@ const mapDispatchToProps = dispatch => ({
   searchObjects: value => dispatch(searchObjectsAutoCompete(value, '', null, true)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(injectIntl(CommentForm));
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(injectIntl(CommentForm)));

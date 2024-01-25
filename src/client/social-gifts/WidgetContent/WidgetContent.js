@@ -12,7 +12,7 @@ import {
 } from '../../../common/helpers/wObjectHelper';
 import { getObject } from '../../../waivioApi/ApiClient';
 import Loading from '../../components/Icon/Loading';
-import { useSeoInfo } from '../../../hooks/useSeoInfo';
+import { useSeoInfoWithAppUrl } from '../../../hooks/useSeoInfo';
 
 const WidgetContent = ({ wobj }) => {
   const [currentWobject, setWobject] = useState(wobj);
@@ -22,8 +22,8 @@ const WidgetContent = ({ wobj }) => {
   const location = useLocation();
   const favicon = useSelector(getHelmetIcon);
   const siteName = useSelector(getSiteName);
-  const title = `${getObjectName(currentWobject)} - ${siteName}`;
-  const { canonicalUrl, descriptionSite } = useSeoInfo();
+  const title = `${getObjectName(currentWobject)}`;
+  const { canonicalUrl, descriptionSite } = useSeoInfoWithAppUrl(currentWobject.canonical);
   const desc = currentWobject?.description || descriptionSite || siteName;
   const image = getObjectAvatar(currentWobject) || favicon;
   const objName = location.hash ? getLastPermlinksFromHash(location.hash) : name;

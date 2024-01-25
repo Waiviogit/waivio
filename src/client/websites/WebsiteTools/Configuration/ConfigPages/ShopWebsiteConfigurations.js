@@ -230,8 +230,8 @@ const ShopWebsiteConfigurations = ({
                   defaultMessage: 'Main banner',
                 })}
               </h3>
-              <div className="Settings__profile-image">
-                <AvatarComp link={banner} />
+              <div className={!banner ? 'Settings__profile-image' : ''}>
+                <AvatarComp link={banner} isBanner />
                 <Button type="primary" onClick={() => handleModalState('mainBanner')}>
                   {intl.formatMessage({
                     id: 'website_change_banner',
@@ -303,7 +303,10 @@ const ShopWebsiteConfigurations = ({
                 </div>
               ) : (
                 <SearchObjectsAutocomplete
-                  placeholder={'Find object'}
+                  placeholder={intl.formatMessage({
+                    id: 'find_object',
+                    defaultMessage: 'Find object',
+                  })}
                   handleSelect={u => {
                     handleSubmit({
                       defaultHashtag: u.author_permlink,
@@ -329,7 +332,10 @@ const ShopWebsiteConfigurations = ({
               </h3>
               <div className={classListHeaderConfig}>{header.name}</div>
               <Button type="primary" onClick={() => setOpenHeaderConfig(true)}>
-                Edit
+                {intl.formatMessage({
+                  id: 'edit',
+                  defaultMessage: 'Edit',
+                })}
               </Button>
             </Form.Item>
           </Form>

@@ -1,16 +1,36 @@
-import React from 'react';
-import { Tag } from 'antd';
-import { useHistory } from 'react-router';
+import React, { useMemo } from 'react';
+import { Tag, Modal } from 'antd';
+import { useHistory, useRouteMatch } from 'react-router';
 import PropTypes from 'prop-types';
 import { isEmpty } from 'lodash';
 import { createQuery, parseQuery } from '../../../waivioApi/helpers';
+import WobjectShopFilter from '../../object/ObjectTypeShop/WobjectShopFilter';
+import GlobalShopFilters from '../../Shop/ShopFilters/GlobalShopFilters';
+import UserFilters from '../../Shop/ShopFilters/UserFilters';
 
-const FiltersForMobile = ({ setVisible }) => {
+const FiltersForMobile = ({ type, setVisible, user, visible }) => {
   const history = useHistory();
+  const match = useRouteMatch();
+
   const filterList = Object.values(parseQuery(history.location.search)).reduce(
     (acc, curr) => [...acc, ...curr],
     [],
   );
+
+  const filter = useMemo(() => {
+    const closeFilter = () => setVisible(false);
+
+    switch (type) {
+      case 'user':
+        return <UserFilters name={user} onClose={closeFilter} />;
+
+      case 'wobject':
+        return <WobjectShopFilter name={user} onClose={closeFilter} />;
+
+      default:
+        return <GlobalShopFilters onClose={closeFilter} />;
+    }
+  }, [type, match.params.name, match.params.department]);
 
   const deleteFilters = fil => {
     const h = Object.entries(parseQuery(history.location.search)).reduce((acc, curr) => {
@@ -41,12 +61,18 @@ const FiltersForMobile = ({ setVisible }) => {
       <span className={'RewardLists__filterButton--withUnderline'} onClick={() => setVisible(true)}>
         add
       </span>
+      <Modal visible={visible} onCancel={() => setVisible(false)} onOk={() => setVisible(false)}>
+        {filter}
+      </Modal>
     </div>
   );
 };
 
 FiltersForMobile.propTypes = {
   setVisible: PropTypes.func.isRequired,
+  type: PropTypes.string,
+  user: PropTypes.string,
+  visible: PropTypes.bool,
 };
 
 export default FiltersForMobile;

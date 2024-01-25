@@ -1,0 +1,32 @@
+@import (reference) '../../../styles/custom.less';
+@import (reference) '../../../styles/modules/variables.less';
+
+.WebsitePricing {
+  margin-bottom: 15px;
+  @media @small {
+    margin-bottom: 0;
+  }
+  h1 {
+    margin-top: 40px;
+  }
+
+  p {
+    color: @blue-gullGray;
+    margin: 10px 0 0 0;
+  }
+  &__padding {
+    margin-bottom: 10px;
+  }
+  &__title {
+    padding: 0 0 10px;
+
+    .ant-btn.ant-btn-primary {
+      height: 25px;
+      margin-left: 10px;
+    }
+  }
+
+  &__dot {
+    margin: 0 30px;
+  }
+}

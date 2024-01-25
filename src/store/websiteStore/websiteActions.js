@@ -50,21 +50,20 @@ export const createNewWebsite = (formData, history) => (dispatch, getState, { bu
       message.error(res.message);
       dispatch({ type: CREATE_NEW_WEBSITE.ERROR });
     } else {
-      const blockNumber = await getLastBlockNum();
-      const creator = getAuthenticatedUserName(state);
-
-      busyAPI.instance.sendAsync(subscribeMethod, [creator, blockNumber, subscribeTypes.posts]);
-      busyAPI.instance.subscribeBlock(subscribeTypes.posts, blockNumber, () => {
-        dispatch(getOwnWebsite());
-        dispatch({ type: CREATE_NEW_WEBSITE.SUCCESS });
-        message.success(`The website ${formData?.host ||
-          formData.domain} has been successfully activated
+      busyAPI.instance.sendAsync(subscribeTypes.subscribeTransactionId, [owner, res.result.id]);
+      busyAPI.instance.subscribe((response, mess) => {
+        if (mess?.success && mess?.permlink === res.result.id) {
+          dispatch(getOwnWebsite());
+          dispatch({ type: CREATE_NEW_WEBSITE.SUCCESS });
+          message.success(`The website ${formData?.host ||
+            formData.domain} has been successfully activated
 `);
-        history.push(
-          formData?.host
-            ? `/${formData?.host}/configuration`
-            : `/${formData.domain}.${formData.parent}/configuration`,
-        );
+          history.push(
+            formData?.host
+              ? `/${formData?.host}/configuration`
+              : `/${formData.domain}.${formData.parent}/configuration`,
+          );
+        }
       });
     }
   });
@@ -98,6 +97,24 @@ export const getManageInfo = name => ({
       .catch(e => message.error(e.message)),
   },
 });
+
+export const CHANGE_CANONICAL_WEBSITE = '@website/CHANGE_CANONICAL_WEBSITE';
+
+export const setWebsiteCanonical = id => (dispatch, getState, { steemConnectAPI, busyAPI }) => {
+  const name = getAuthenticatedUserName(getState());
+
+  dispatch({ type: CHANGE_CANONICAL_WEBSITE, id });
+  steemConnectAPI.setWebsiteCanonical(name, id).then(async () => {
+    const blockNumber = await getLastBlockNum();
+
+    busyAPI.instance.sendAsync(subscribeMethod, [name, blockNumber, subscribeTypes.posts]);
+    busyAPI.instance.subscribe((response, mess) => {
+      if (subscribeTypes.posts === mess.type && mess.notification.blockParsed === blockNumber) {
+        dispatch(getManageInfo(name));
+      }
+    });
+  });
+};
 
 export const CHANGE_STATUS_WEBSITE = '@website/CHANGE_STATUS_WEBSITE';
 
@@ -426,6 +443,9 @@ export const SAVE_WEBSITE_SETTINGS = createAsyncActionType('@website/SAVE_WEBSIT
 export const saveWebsiteSettings = (
   host,
   googleAnalyticsTag,
+  googleGSCTag,
+  googleEventSnippetTag,
+  googleAdsConfigTag,
   beneficiary,
   currency,
   language,
@@ -442,6 +462,9 @@ export const saveWebsiteSettings = (
         userName,
         get(currentWebsite, 'id'),
         googleAnalyticsTag,
+        googleGSCTag,
+        googleEventSnippetTag,
+        googleAdsConfigTag,
         beneficiary,
         currency,
         language,

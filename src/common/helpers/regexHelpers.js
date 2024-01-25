@@ -39,7 +39,9 @@ export const linkRegex = /((?:(http|https|Http|Https|rtsp|Rtsp):\/\/(?:(?:[a-zA-
 export const mobileUserAgents = /Android|webOS|iPhone|iPod|BlackBerry|BB|PlayBook|IEMobile|Windows Phone|Kindle|Silk|Opera Mini/i;
 export const appleDevice = /iPhone|iPod|Windows Phone/i;
 
-export const videoPreviewRegex = /<center>[\s\S]+<\/center>/g;
+export const videoPreviewRegex = /<center>([\s\S]*?)<\/center>/gim;
+
+export const videoPreviewRegex2 = /<center>(.*?)<\/center>/;
 
 export const guestUserRegex = /(waivio_|bxy_)([\w-.]+)/;
 

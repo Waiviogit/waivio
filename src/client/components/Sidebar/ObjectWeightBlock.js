@@ -34,7 +34,6 @@ class ObjectWeightBlock extends React.Component {
       5,
       this.props.authUser,
       null,
-      null,
       this.props.locale,
     )
       .then(response => {
@@ -56,7 +55,7 @@ class ObjectWeightBlock extends React.Component {
 
     if (loading) return <RightSidebarLoading />;
 
-    return wObjects.length ? (
+    return wObjects?.length ? (
       <div className="ObjectWeightBlock SidebarContentBlock">
         <h4 className="SidebarContentBlock__title title">
           <Icon type="codepen" className="ObjectWeightBlock__icon" />{' '}
@@ -64,7 +63,7 @@ class ObjectWeightBlock extends React.Component {
         </h4>
         <div className="SidebarContentBlock__content">
           {wObjects &&
-            wObjects.map(wobject => (
+            wObjects?.map(wobject => (
               <ObjectCard key={wobject.author_permlink} wobject={wobject} showFollow={false} />
             ))}
           {hasMore && (

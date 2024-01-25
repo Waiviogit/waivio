@@ -15,7 +15,23 @@ export const getObjectModerators = createSelector([getObject], state =>
   get(state, 'moderators', []),
 );
 
+export const getBrandObject = createSelector([objectState], state =>
+  get(state, 'brandObject', null),
+);
+export const getManufacturerObject = createSelector([objectState], state =>
+  get(state, 'manufacturerObject', null),
+);
+export const getMerchantObject = createSelector([objectState], state =>
+  get(state, 'merchantObject', null),
+);
+
+export const getMenuItemsFromState = state => get(state, ['object', 'menuItems'], null);
+
 export const getRatingFields = createSelector([getObject], state => get(state, 'rating', []));
+
+export const getObjectPermlinkFromState = createSelector([getObject], state =>
+  get(state, 'author_permlink', ''),
+);
 
 export const getObjectTagCategory = createSelector([getObject], state => state.tagCategory);
 
@@ -28,6 +44,16 @@ export const getBreadCrumbs = createSelector([objectState], state => state.bread
 export const getIsEditMode = createSelector([objectState], state => state.isEditMode);
 
 export const getShopBreadCrumbs = createSelector([objectState], state => state.shopBreadcrumbs);
+export const getAddOnFromState = createSelector([objectState], state => state.addOn || []);
+
+export const getSimilarObjectsFromState = createSelector(
+  [objectState],
+  state => state.similarObjects || [],
+);
+export const getRelatedObjectsFromState = createSelector(
+  [objectState],
+  state => state.relatedObjects || [],
+);
 
 export const getWobjectNested = createSelector([objectState], state => state.nestedWobject);
 

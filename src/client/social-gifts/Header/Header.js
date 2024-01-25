@@ -3,7 +3,13 @@ import { Link } from 'react-router-dom';
 import classNames from 'classnames';
 import { useSelector } from 'react-redux';
 import HeaderButton from '../../components/HeaderButton/HeaderButton';
-import { getConfigurationValues, getWebsiteLogo } from '../../../store/appStore/appSelectors';
+import {
+  getConfigurationValues,
+  getWebsiteLogo,
+  getNavigItems,
+  getMainObj,
+  getHostAddress,
+} from '../../../store/appStore/appSelectors';
 import GeneralSearch from '../../websites/WebsiteLayoutComponents/Header/GeneralSearch/GeneralSearch';
 import WebsiteTopNavigation from './TopNavigation/WebsiteTopNavigation';
 
@@ -12,9 +18,12 @@ import './Header.less';
 const Header = () => {
   const [searchBarActive, setSearchBarActive] = useState(false);
   const config = useSelector(getConfigurationValues);
+  const link = useSelector(getNavigItems)[0];
+  const mainObj = useSelector(getMainObj);
   const handleMobileSearchButtonClick = () => setSearchBarActive(!searchBarActive);
   const logo = useSelector(getWebsiteLogo);
-  const currHost = typeof location !== 'undefined' && location.hostname;
+  const host = useSelector(getHostAddress);
+  const currHost = (typeof location !== 'undefined' && location.hostname) || host;
   const header = config?.header?.name;
   const logoClassList = classNames('Header__logo', {
     'Header__logo--upperCase': !header,
@@ -24,35 +33,53 @@ const Header = () => {
     <React.Fragment>
       <div className="Header">
         {!searchBarActive && (
-          <Link to={'/'} className={logoClassList}>
-            {logo && <img alt="Social Gifts Logo" src={logo} className="Header__img" />}
+          <Link
+            to={
+              config?.shopSettings?.type === 'user'
+                ? `/user-shop/${config?.shopSettings?.value}`
+                : link?.link
+            }
+            className={logoClassList}
+            title={mainObj?.title || mainObj?.description || currHost}
+          >
+            {logo && (
+              <img
+                alt={`Social Gifts - ${header || config.host || currHost} `}
+                src={logo}
+                className="Header__img"
+              />
+            )}
             <span>{header || config.host || currHost}</span>
           </Link>
         )}
-        <GeneralSearch searchBarActive={searchBarActive} isSocialProduct />
-        <div className={'Header__rightWrap'}>
-          <button
-            className={classNames('Header__mobile-search', {
-              'Header__mobile-search-close': searchBarActive,
-            })}
-            onClick={handleMobileSearchButtonClick}
-          >
-            <i
-              className={classNames('iconfont', {
-                'icon-close': searchBarActive,
-                'icon-search': !searchBarActive,
-              })}
-            />
-          </button>
-          {!searchBarActive && (
-            <HeaderButton isSocialGifts domain={currHost} searchBarActive={searchBarActive} />
-          )}
-        </div>
+        {typeof window !== 'undefined' && (
+          <React.Fragment>
+            <GeneralSearch searchBarActive={searchBarActive} isSocialProduct />
+            <div className={'Header__rightWrap'}>
+              <button
+                className={classNames('Header__mobile-search', {
+                  'Header__mobile-search-close': searchBarActive,
+                })}
+                onClick={handleMobileSearchButtonClick}
+              >
+                <i
+                  className={classNames('iconfont', {
+                    'icon-close': searchBarActive,
+                    'icon-search': !searchBarActive,
+                  })}
+                />
+              </button>
+              {!searchBarActive && typeof window !== 'undefined' && (
+                <HeaderButton isSocialGifts domain={currHost} searchBarActive={searchBarActive} />
+              )}
+            </div>
+          </React.Fragment>
+        )}
       </div>
       {config.mainBanner && (
         <img
           id="socialGiftsMainBanner"
-          alt={'Promotional banner for Social Gift Site'}
+          alt={`Promotional banner for ${header || config.host || currHost} Site`}
           src={config.mainBanner}
           style={{
             width: '100%',

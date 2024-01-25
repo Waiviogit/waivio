@@ -26,7 +26,11 @@ class TagsSelector extends Component {
 
   constructor(props) {
     super(props);
+    this.state = {
+      deletedTags: [],
+    };
     this.handleTopicsChange = this.handleTopicsChange.bind(this);
+    this.deleteTopic = this.deleteTopic.bind(this);
   }
 
   handleTopicsChange(tags) {
@@ -35,14 +39,32 @@ class TagsSelector extends Component {
 
     this.props.onChange(updatedTopics);
   }
+  deleteTopic(tag) {
+    const updatedTopics = this.props.tags.filter(t => t !== tag);
+    const isTagDeleted = this.state.deletedTags.includes(tag);
+
+    this.setState(prevState => ({
+      deletedTags: isTagDeleted ? prevState.deletedTags : [...prevState.deletedTags, tag],
+    }));
+    this.props.onChange(updatedTopics);
+  }
 
   render() {
     const { label, placeholder, tags, defaultHashtag, className, disabled } = this.props;
+    const { deletedTags } = this.state;
     const currentURL = window.location.href.includes('objects-filters');
 
     if (!currentURL) {
-      if (!tags.includes(defaultHashtag) && defaultHashtag) tags.unshift(defaultHashtag);
-      if (!tags.includes('waivio')) tags.unshift('waivio');
+      if (
+        !tags.includes(defaultHashtag) &&
+        defaultHashtag &&
+        !deletedTags.includes(defaultHashtag)
+      ) {
+        tags.unshift(defaultHashtag);
+      }
+      if (!tags.includes('waivio') && !deletedTags.includes('waivio')) {
+        tags.unshift('waivio');
+      }
     }
 
     return (
@@ -57,6 +79,7 @@ class TagsSelector extends Component {
           tokenSeparators={[' ', ',']}
           value={tags}
           onChange={this.handleTopicsChange}
+          onDeselect={this.deleteTopic}
         >
           {tags.map(tag => (
             <Select.Option key={tag}>{tag}</Select.Option>

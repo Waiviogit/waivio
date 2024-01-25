@@ -14,11 +14,11 @@ import { configReportsWebsitesTableHeader } from '../../constants/tableConfig';
 import { getReportsWebsiteInfo } from '../../../../store/websiteStore/websiteActions';
 import { getLocale } from '../../../../store/settingsStore/settingsSelectors';
 import { getReports } from '../../../../store/websiteStore/websiteSelectors';
-import { getCurrentCurrency } from '../../../../store/appStore/appSelectors';
 
 import './ReportsWebsite.less';
+import { getCurrentCurrency } from '../../../../store/appStore/appSelectors';
 
-const ReportsWebsite = ({ intl, form, getReportsInfo, reportsInfo, locale, currencyInfo }) => {
+const ReportsWebsite = ({ intl, form, getReportsInfo, reportsInfo, locale, currency }) => {
   const [searchString, setSearchString] = useState('');
   const handleSearchHost = useCallback(
     debounce(value => setSearchString(value), 300),
@@ -39,15 +39,15 @@ const ReportsWebsite = ({ intl, form, getReportsInfo, reportsInfo, locale, curre
 
     return {
       ...payment,
-      balance: ceil(payment.balance * currencyInfo.rate, 3),
-      amount: ceil(payment.amount * currencyInfo.rate, 3),
+      balance: ceil(payment.balance * payment.currencyRate, 3),
+      amount: ceil(payment.amount * payment.currencyRate, 3),
       message,
     };
   });
 
   useEffect(() => {
-    getReportsInfo();
-  }, []);
+    if (!isEmpty(currency.type)) getReportsInfo({ currency: currency.type });
+  }, [currency]);
 
   const disabledDate = current => current > moment().endOf('day');
 
@@ -65,6 +65,7 @@ const ReportsWebsite = ({ intl, form, getReportsInfo, reportsInfo, locale, curre
               }
             : {}),
           ...(values.endDate ? { endDate: moment(values.endDate).unix() } : {}),
+          currency: currency.type,
         };
 
         getReportsInfo(formData);
@@ -164,7 +165,7 @@ const ReportsWebsite = ({ intl, form, getReportsInfo, reportsInfo, locale, curre
             </Form.Item>
           </Form>
           <DynamicTbl
-            header={configReportsWebsitesTableHeader(currencyInfo.type)}
+            header={configReportsWebsitesTableHeader(currency.type)}
             bodyConfig={mappedPayments}
           />
         </React.Fragment>
@@ -175,10 +176,7 @@ const ReportsWebsite = ({ intl, form, getReportsInfo, reportsInfo, locale, curre
 
 ReportsWebsite.propTypes = {
   intl: PropTypes.shape().isRequired,
-  currencyInfo: PropTypes.shape({
-    type: PropTypes.string,
-    rate: PropTypes.number,
-  }).isRequired,
+  currency: PropTypes.string,
   form: PropTypes.shape({
     getFieldDecorator: PropTypes.func,
     validateFields: PropTypes.func,
@@ -196,7 +194,7 @@ export default connect(
   state => ({
     reportsInfo: getReports(state),
     locale: getLocale(state),
-    currencyInfo: getCurrentCurrency(state),
+    currency: getCurrentCurrency(state),
   }),
   {
     getReportsInfo: getReportsWebsiteInfo,

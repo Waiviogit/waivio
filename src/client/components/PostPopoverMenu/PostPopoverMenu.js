@@ -45,6 +45,7 @@ const propTypes = {
       userId: PropTypes.string,
     }),
     author: PropTypes.string,
+    body: PropTypes.string,
     guideName: PropTypes.string,
     root_author: PropTypes.string,
     isHide: PropTypes.bool,
@@ -83,6 +84,7 @@ const propTypes = {
   userName: PropTypes.string.isRequired,
   getSocialInfoPost: PropTypes.func,
   userComments: PropTypes.bool,
+  isThread: PropTypes.bool,
 };
 
 const defaultProps = {
@@ -93,6 +95,7 @@ const defaultProps = {
   handlePostPopoverMenuClick: () => {},
   getSocialInfoPost: () => {},
   userComments: false,
+  isThread: false,
 };
 
 const PostPopoverMenu = ({
@@ -111,6 +114,7 @@ const PostPopoverMenu = ({
   userComments,
   disableRemove,
   isSocial,
+  isThread,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isPin, setIsPin] = useState(false);
@@ -126,6 +130,7 @@ const PostPopoverMenu = ({
   const isEditMode = useSelector(getIsEditMode);
   const wobjAuthorPermlink = match.params.name;
   const hidePinRemove =
+    isThread ||
     !match.url.includes(`/${wobjAuthorPermlink}`) ||
     (isSocial && !match.url.includes(`/${wobjAuthorPermlink}`)) ||
     (isSocial && !isEditMode);
@@ -223,7 +228,7 @@ const PostPopoverMenu = ({
     const authorPost = get(post, ['guestInfo', 'userId'], '') || post.author;
     const permlink = get(post, 'permlink', '');
 
-    if (!userComments) {
+    if (!userComments && !isThread) {
       getSocialInfoPost(authorPost, permlink).then(res => {
         const socialInfoPost = res.value;
         const hashtags = !isEmpty(socialInfoPost)
@@ -255,10 +260,14 @@ const PostPopoverMenu = ({
         }
       });
     } else {
-      const postURL = `${baseURL}${replaceBotWithGuestName(dropCategory(url), guestInfo)}`;
+      const postURL = isThread
+        ? `${baseURL}/@${author}/${permlink}`
+        : `${baseURL}${replaceBotWithGuestName(dropCategory(url), guestInfo)}`;
 
       if (isTwitter) {
-        const shareTextSocialTwitter = `"${encodeURIComponent(title)}"`;
+        const shareTextSocialTwitter = `"${
+          isThread ? encodeURIComponent(post.body) : encodeURIComponent(title)
+        }"`;
         const twitterShareURL = getTwitterShareURL(shareTextSocialTwitter, postURL);
 
         window.open(twitterShareURL, '_blank').focus();
@@ -293,7 +302,10 @@ const PostPopoverMenu = ({
       ...popoverMenu,
       <PopoverMenuItem key="edit">
         {saving ? <Icon type="loading" /> : <i className="iconfont icon-write" />}
-        <FormattedMessage id="edit_post" defaultMessage="Edit post" />
+        <FormattedMessage
+          id={isThread ? 'edit_thread' : 'edit_post'}
+          defaultMessage={isThread ? 'Edit thread' : 'Edit post'}
+        />
       </PopoverMenuItem>,
       <PopoverMenuItem key="pin" disabled={loading} invisible={hidePinRemove}>
         <Icon className="hide-button popoverIcon ml1px" type="pushpin" />
@@ -315,7 +327,10 @@ const PostPopoverMenu = ({
       ...popoverMenu,
       <PopoverMenuItem key="delete">
         <Icon type="delete" />
-        <FormattedMessage id="delete_post" defaultMessage="Delete post" />
+        <FormattedMessage
+          id={isThread ? 'delete_thread' : 'delete_post'}
+          defaultMessage={isThread ? 'Delete thread' : 'Delete post'}
+        />
       </PopoverMenuItem>,
     ];
   }
@@ -323,7 +338,7 @@ const PostPopoverMenu = ({
   if (!ownPost) {
     popoverMenu = [
       ...popoverMenu,
-      <PopoverMenuItem key="follow" disabled={loading}>
+      <PopoverMenuItem key="follow" disabled={loading} invisible={isThread}>
         {loading ? <Icon type="loading" /> : <i className="iconfont icon-people" />}
         {followText}
       </PopoverMenuItem>,
@@ -339,7 +354,7 @@ const PostPopoverMenu = ({
           <FormattedMessage id="object_field_remove" defaultMessage="Remove" />
         </span>
       </PopoverMenuItem>,
-      <PopoverMenuItem key="hide" disabled={loading}>
+      <PopoverMenuItem key="hide" disabled={loading} invisible={isThread}>
         {post.loadingHide ? (
           <Icon type="loading" />
         ) : (
@@ -393,9 +408,15 @@ const PostPopoverMenu = ({
           <i className={`iconfont icon-flag${isReported ? '_fill' : ''}`} />
         )}
         {isReported ? (
-          <FormattedMessage id="unflag_post" defaultMessage="Unflag post" />
+          <FormattedMessage
+            id={isThread ? 'unflag_thread' : 'unflag_post'}
+            defaultMessage={isThread ? 'Unflag thread' : 'Unflag post'}
+          />
         ) : (
-          <FormattedMessage id="flag_post" defaultMessage="Flag post" />
+          <FormattedMessage
+            id={isThread ? 'flag_thread' : 'flag_post'}
+            defaultMessage={isThread ? 'Flag thread' : 'Flag post'}
+          />
         )}
       </PopoverMenuItem>,
     );

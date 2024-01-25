@@ -521,7 +521,7 @@ export const buildPost = (draftId, data = {}, isEditPost) => (dispatch, getState
   const waivioData = {
     wobjects: (linkedObjects || [])
       .filter(obj => get(objPercentage, `[${obj._id}].percent`, 0) > 0)
-      .map(obj => ({
+      ?.map(obj => ({
         object_type: obj.object_type,
         objectName: getObjectName(obj),
         author_permlink: obj.author_permlink,
@@ -639,7 +639,7 @@ export const getObjectIds = (rawContent, newObject, draftId) => (dispatch, getSt
   return (
     Object.values(rawContent.entityMap)
       // eslint-disable-next-line array-callback-return,consistent-return
-      .map(entity => {
+      ?.map(entity => {
         if (entity.type === Entity.OBJECT) {
           return get(entity, 'data.object.id', '');
         }
@@ -777,7 +777,7 @@ export const firstParseLinkedObjects = (draft, objName, cursorPosition) => async
 
 export const handlePasteText = html => async (dispatch, getState) => {
   const links = extractLinks(html);
-  const objectIds = links.map(item => {
+  const objectIds = links?.map(item => {
     const itemArray = item.split('/');
 
     return itemArray[itemArray.length - 1];
@@ -864,7 +864,7 @@ export const selectObjectFromSearch = selectedObject => (dispatch, getState) => 
     };
 
     const newEditorBody = {
-      blocks: blocks.map(block =>
+      blocks: blocks?.map(block =>
         block.key === anchorKey
           ? addEntityRange(block, startPositionOfWord, textReplace, Object.values(entityMap).length)
           : block,

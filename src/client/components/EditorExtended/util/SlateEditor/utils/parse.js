@@ -33,7 +33,7 @@ export const defaultNodeTypes = {
   object: 'object',
 };
 
-export const deserializeToSlate = body => {
+export const deserializeToSlate = (body, isThread, isNewReview) => {
   const processor = unified()
     .use(markdown)
     .use(remarkGfm)
@@ -111,7 +111,19 @@ export const deserializeToSlate = body => {
   _body.split('\n\n\n').forEach(i => {
     const blocks = processor.processSync(i).result;
 
-    postParsed = [...postParsed, ...blocks, { type: 'paragraph', children: [{ text: '' }] }];
+    if (isThread) {
+      postParsed = [...postParsed, ...blocks, { text: ' ' }];
+    } else if (isNewReview) {
+      postParsed = [
+        { type: 'paragraph', children: [{ text: '' }] },
+        ...postParsed,
+        ...blocks,
+        { type: 'paragraph', children: [{ text: '' }] },
+      ];
+    } else {
+      postParsed = [...postParsed, ...blocks, { type: 'paragraph', children: [{ text: '' }] }];
+    }
+
     const isItemList = blocks[blocks.length - 1]?.type !== 'itemList';
 
     if (!isItemList) {

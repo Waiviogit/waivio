@@ -41,20 +41,20 @@ class AddItemModal extends Component {
     wobject: {},
     followingList: [],
     itemsIdsToOmit: [],
+    addedItemsPermlinks: [],
     onAddItem: () => {},
   };
 
   static propTypes = {
     intl: PropTypes.shape().isRequired,
     form: PropTypes.shape().isRequired,
-    // passed props
     wobject: PropTypes.shape().isRequired,
     itemsIdsToOmit: PropTypes.arrayOf(PropTypes.string),
     onAddItem: PropTypes.func,
-    // from connect
     currentUserName: PropTypes.string,
     locale: PropTypes.string,
     followingList: PropTypes.arrayOf(PropTypes.string),
+    addedItemsPermlinks: PropTypes.arrayOf(PropTypes.string),
     appendObject: PropTypes.func.isRequired,
   };
 
@@ -146,7 +146,7 @@ class AddItemModal extends Component {
 
   render() {
     const { isModalOpen, isLoading, selectedItem, littleVotePower } = this.state;
-    const { intl, wobject, itemsIdsToOmit, form, followingList } = this.props;
+    const { intl, wobject, itemsIdsToOmit, form, followingList, addedItemsPermlinks } = this.props;
     const { getFieldDecorator } = form;
     const listName = getObjectName(wobject);
     const itemType = ['list'].includes(selectedItem && selectedItem.type)
@@ -255,10 +255,10 @@ class AddItemModal extends Component {
           {intl.formatMessage({ id: 'add_object', defaultMessage: 'Add object' })}
         </div>
         <SearchObjectsAutocomplete
+          addedItemsPermlinks={addedItemsPermlinks}
           handleSelect={this.handleObjectSelect}
           itemsIdsToOmit={itemsIdsToOmit}
           parentObject={wobject}
-          addItem
         />
         <CreateObject
           onCreateObject={this.handleCreateObject}

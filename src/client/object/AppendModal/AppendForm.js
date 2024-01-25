@@ -460,9 +460,9 @@ class AppendForm extends Component {
       case objectFields.remove:
       case objectFields.departments:
       case objectFields.groupId:
-      case objectFields.publicationDate:
       case objectFields.dimensions:
       case objectFields.features:
+      case objectFields.publicationDate:
       case objectFields.options: {
         fieldBody.push(rest[currentField]);
         break;
@@ -725,7 +725,10 @@ class AppendForm extends Component {
           }`;
         }
         case objectFields.categoryItem: {
-          return `@${author} added #tag ${this.state.selectedObject.name} (${langReadable}) into ${this.state.selectedCategory.body} category`;
+          return `@${author} added #tag ${this.state.selectedObject.name ||
+            this.state.selectedObject.default_name} (${langReadable}) into ${
+            this.state.selectedCategory.body
+          } category`;
         }
         case objectFields.newsFilter:
         case objectFields.newsFeed: {
@@ -811,7 +814,7 @@ class AppendForm extends Component {
       data.title = '';
       let fieldsObject = {
         name: includes(TYPES_OF_MENU_ITEM, currentField) ? objectFields.listItem : currentField,
-        body: trimEnd(bodyField),
+        body: currentField === objectFields.publicationDate ? bodyField : trimEnd(bodyField),
         locale: currentLocale,
       };
 
@@ -825,7 +828,6 @@ class AppendForm extends Component {
         fieldsObject = {
           ...fieldsObject,
           id: wObject?.galleryAlbum?.find(album => album.body === 'Photos').id,
-          body: this.props.fieldBodyContent || undefined,
         };
       }
       if (currentField === objectFields.affiliateButton) {
@@ -1794,9 +1796,15 @@ class AppendForm extends Component {
         }),
       );
     } else if (obj.author_permlink) {
-      this.props.form.setFieldsValue({
-        [currentField]: obj.author_permlink,
-      });
+      if (currentField === objectFields.status) {
+        this.props.form.setFieldsValue({
+          [statusFields.link]: obj.author_permlink,
+        });
+      } else {
+        this.props.form.setFieldsValue({
+          [currentField]: obj.author_permlink,
+        });
+      }
       this.setState({ selectedObject: obj });
     }
   };
@@ -2105,6 +2113,7 @@ class AppendForm extends Component {
                 rules: this.getFieldRules(objectFields.categoryItem),
               })(
                 <SearchObjectsAutocomplete
+                  useExtendedSearch
                   handleSelect={this.handleSelectObject}
                   objectType="hashtag"
                 />,
@@ -2143,9 +2152,11 @@ class AppendForm extends Component {
                   onLoadingImage={this.onLoadingImage}
                   isRequired
                   isMultiple={false}
-                  imagesList={[
-                    { src: this.props.fieldBodyContent, id: this.props.fieldBodyContent },
-                  ]}
+                  imagesList={
+                    this.props.fieldBodyContent
+                      ? [{ src: this.props.fieldBodyContent, id: this.props.fieldBodyContent }]
+                      : []
+                  }
                 />,
               )}
             </Form.Item>
@@ -2969,6 +2980,7 @@ class AppendForm extends Component {
             onCreateObject={this.handleCreateObject}
             handleSelectObject={this.handleSelectObject}
             menuItemButtonType={this.state.menuItemButtonType}
+            parentObject={wObject}
           />
         );
       }
@@ -3199,18 +3211,8 @@ class AppendForm extends Component {
               <Form.Item>
                 {getFieldDecorator(statusFields.link, {
                   rules: this.getFieldRules('buttonFields.link'),
-                })(
-                  <Input
-                    className={classNames('AppendForm__input', {
-                      'validation-error': !this.state.isSomeValue,
-                    })}
-                    disabled={loading}
-                    placeholder={intl.formatMessage({
-                      id: 'link',
-                      defaultMessage: 'Link',
-                    })}
-                  />,
-                )}
+                })(<SearchObjectsAutocomplete handleSelect={this.handleSelectObject} />)}
+                {selectedObject && <ObjectCardView wObject={selectedObject} />}
               </Form.Item>
             ) : null}
           </React.Fragment>

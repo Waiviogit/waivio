@@ -33,8 +33,11 @@ const CatalogBreadcrumb = ({
   const breadCrumbSize = size(breadcrumb);
   const currentTitle = get(breadcrumb[breadCrumbSize - 1], 'title', '');
   const permlinks = getPermlinksFromHash(location.hash);
-  const currentObjIsListOrPage = hasType(wobject, 'list') || hasType(wobject, 'page');
-
+  const currentObjIsListOrPage =
+    hasType(wobject, 'list') ||
+    hasType(wobject, 'page') ||
+    hasType(wobject, 'widget') ||
+    hasType(wobject, 'webpage');
   const addParentToBreadCrumbs = crumbs => [compareBreadcrumb(wobject), ...crumbs];
 
   const handleChangeBreadCrumbs = wObject => {
@@ -43,7 +46,7 @@ const CatalogBreadcrumb = ({
 
     if (currentObjIsListOrPage) currentBreadCrumbs = addParentToBreadCrumbs(currentBreadCrumbs);
 
-    const findWobj = crumb => crumb.id === wObject.author_permlink;
+    const findWobj = crumb => crumb?.id === wObject.author_permlink;
     const findBreadCrumbs = currentBreadCrumbs.some(findWobj);
 
     if (findBreadCrumbs) {
@@ -79,7 +82,7 @@ const CatalogBreadcrumb = ({
     <div className="CustomBreadCrumbs">
       <Breadcrumb separator={'>'}>
         {map(breadcrumb, (crumb, index) => (
-          <Breadcrumb.Item key={`crumb-${crumb.id}`}>
+          <Breadcrumb.Item key={`crumb-${crumb?.id}`}>
             {index === breadCrumbSize - 1 ? (
               <React.Fragment>
                 <span className="CustomBreadCrumbs__link">{crumb.name}</span>

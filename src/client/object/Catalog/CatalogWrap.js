@@ -24,6 +24,7 @@ import {
 } from '../../../store/wObjectStore/wobjActions';
 import * as ApiClient from '../../../waivioApi/ApiClient';
 import {
+  getLoadingFlag,
   getObject,
   getObjectLists,
   getWobjectNested,
@@ -69,9 +70,11 @@ const CatalogWrap = props => {
     });
     if (!isEmpty(wobject)) {
       if (location.hash) {
+        setLoadingNestedWobject(false);
         const pathUrl = getLastPermlinksFromHash(location.hash);
 
         if (!isEmpty(wobjectNested) && wobjectNested.author_permlink === pathUrl) {
+          setLoadedNestedWobject(true);
           setLists(
             sortListItemsBy(
               getListItems(wobjectNested),
@@ -80,6 +83,7 @@ const CatalogWrap = props => {
             ),
           );
           setRecencySortList(recencySortOrder(getListItem(wobjectNested)));
+          setLoadingNestedWobject(false);
         } else {
           setLoadingNestedWobject(true);
 
@@ -118,7 +122,16 @@ const CatalogWrap = props => {
   }, [location.hash, wobject.author_permlink]);
 
   const handleAddItem = listItem => {
-    const currentList = isEmpty(listItems) ? [listItem] : [...listItems, listItem];
+    let currentList;
+
+    if (isEmpty(listItems)) {
+      currentList = [listItem];
+    } else if (listItems.some(item => item.author_permlink === listItem.author_permlink)) {
+      currentList = listItems;
+    } else {
+      currentList = [...listItems, listItem];
+    }
+
     const currentRecencySortList = [listItem.author_permlink, ...recencySortList];
 
     setLists(sortListItemsBy(currentList, 'recency', currentRecencySortList));
@@ -222,25 +235,32 @@ const CatalogWrap = props => {
     return map(listItems, listItem => getListRow(listItem));
   };
 
-  const itemsIdsToOmit = listItems?.map(item => item.author_permlink);
+  const itemsIdsToOmit = [obj.author_permlink];
+  const addedItemsPermlinks = listItems?.map(i => i.author_permlink);
 
   return (
     <div>
       <React.Fragment>
         {isEditMode && (
           <div className="CatalogWrap__add-item">
-            <AddItemModal wobject={obj} itemsIdsToOmit={itemsIdsToOmit} onAddItem={handleAddItem} />
+            <AddItemModal
+              addedItemsPermlinks={addedItemsPermlinks}
+              addItem
+              wobject={obj}
+              itemsIdsToOmit={itemsIdsToOmit}
+              onAddItem={handleAddItem}
+            />
           </div>
         )}
         {!isEmpty(reward?.main) && <Campaing campain={reward?.main} />}
         <React.Fragment>
+          <div className="CatalogWrap__breadcrumb">
+            <CatalogBreadcrumb intl={intl} wobject={wobject} />
+          </div>
           {isLoadingFlag ? (
             <Loading />
           ) : (
             <React.Fragment>
-              <div className="CatalogWrap__breadcrumb">
-                <CatalogBreadcrumb intl={intl} wobject={wobject} />
-              </div>
               <div className="CatalogWrap__sort">
                 <CatalogSorting
                   sort={sortBy}
@@ -290,6 +310,7 @@ CatalogWrap.defaultProps = {
 const mapStateToProps = state => ({
   listItems: getObjectLists(state),
   wobjectNested: getWobjectNested(state),
+  isLoadingFlag: getLoadingFlag(state),
   wobject: getObject(state),
   locale: getSuitableLanguage(state),
   userName: getAuthenticatedUserName(state),

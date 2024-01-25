@@ -7,7 +7,7 @@ import { searchDepartments } from '../../../waivioApi/ApiClient';
 import DepartmentSearchCard from './DepartmentSearchCard';
 import { pendingSearch } from '../../search/helpers';
 
-const depLimit = 15;
+const depLimit = 50;
 
 const SearchDepartmentAutocomplete = ({
   allowClear,

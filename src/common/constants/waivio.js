@@ -98,6 +98,11 @@ export const notificationType = {
       defaultMessage: 'Group ID control',
       name: 'objectGroupId',
     },
+    {
+      id: 'followed_user_threads',
+      defaultMessage: 'Followed user threads',
+      name: 'threadAuthorFollower',
+    },
   ],
   walletTransactions: [
     {

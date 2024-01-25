@@ -68,8 +68,8 @@ export const dataManagementSettings = {
       defaultMessage: 'Data import',
     },
     {
-      to: '/claim-athority',
-      id: 'claim_athority',
+      to: '/claim-authority',
+      id: 'claim_authority',
       defaultMessage: 'Claim authority',
     },
     {
@@ -78,9 +78,14 @@ export const dataManagementSettings = {
       defaultMessage: 'Departments bot',
     },
     {
-      to: '/list-duplicator-bot',
-      id: 'list_duplicator_bot',
-      defaultMessage: 'List duplicator bot',
+      to: '/descriptions-bot',
+      id: 'descriptions_bot',
+      defaultMessage: 'Descriptions bot',
+    },
+    {
+      to: '/list-duplication',
+      id: 'list_duplication',
+      defaultMessage: 'List duplication',
     },
     {
       to: '/chrome-extension',

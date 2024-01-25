@@ -1,5 +1,6 @@
 /* eslint-disable camelcase */
-import { isEmpty, get } from 'lodash';
+import { get, isEmpty } from 'lodash';
+import { preparationPreview } from '../../client/social-gifts/FeedMasonry/helpers';
 import {
   createAsyncActionType,
   getFeedFromState,
@@ -14,6 +15,8 @@ import { getBookmarks as getBookmarksSelector } from '../bookmarksStore/bookmark
 import { getLocale, getReadLanguages } from '../settingsStore/settingsSelectors';
 
 export const GET_FEED_CONTENT = createAsyncActionType('@feed/GET_FEED_CONTENT');
+export const GET_THREADS_CONTENT = createAsyncActionType('@feed/GET_THREADS_CONTENT');
+export const GET_MORE_THREADS_CONTENT = createAsyncActionType('@feed/GET_MORE_THREADS_CONTENT');
 export const GET_MORE_FEED_CONTENT = createAsyncActionType('@feed/GET_MORE_FEED_CONTENT');
 
 export const GET_FEED_CONTENT_BY_BLOG = createAsyncActionType('@feed/GET_FEED_CONTENT_BY_BLOG');
@@ -196,6 +199,50 @@ export const getUserComments = ({ username, limit = 10, skip = 0, start_permlink
   });
 };
 
+export const getThreadsContent = (hashtag, skip, limit, isUser) => (dispatch, getState) => {
+  const state = getState();
+  const userName = getAuthenticatedUserName(state);
+
+  const getThreadsMethod = () =>
+    isUser
+      ? ApiClient.getThreadsByUser(userName, hashtag, skip, limit).then(res => res.result)
+      : ApiClient.getThreadsByHashtag(userName, hashtag, skip, limit).then(res => res.result);
+
+  return dispatch({
+    type: GET_THREADS_CONTENT.ACTION,
+    payload: {
+      promise: getThreadsMethod(),
+    },
+    meta: { sortBy: 'threads', category: hashtag, limit },
+  });
+};
+
+export const getMoreThreadsContent = (hashtag, limit, isUser) => (dispatch, getState) => {
+  const state = getState();
+  const feed = getFeed(state);
+  const userName = getAuthenticatedUserName(state);
+
+  const getThreadsMethod = () =>
+    isUser
+      ? ApiClient.getThreadsByUser(userName, hashtag, skip, limit).then(res => res.result)
+      : ApiClient.getThreadsByHashtag(userName, hashtag, skip, limit).then(res => res.result);
+
+  const feedContent = getFeedFromState('threads', hashtag, feed);
+
+  if (!feedContent.length || !feed || !feed.threads || !feed.threads[hashtag])
+    return Promise.resolve(null);
+
+  const skip = feed.threads[hashtag].list.length;
+
+  return dispatch({
+    type: GET_MORE_THREADS_CONTENT.ACTION,
+    payload: {
+      promise: getThreadsMethod(),
+    },
+    meta: { sortBy: 'threads', category: hashtag, limit },
+  });
+};
+
 export const getObjectPosts = ({ username, object, limit = 10, newsPermlink }) => (
   dispatch,
   getState,
@@ -235,7 +282,11 @@ export const getMoreObjectPosts = ({
   const isLoading = getFeedLoadingFromState('objectPosts', username, feed);
 
   if (!feedContent.length || isLoading) {
-    return null;
+    return dispatch({
+      type: GET_MORE_OBJECT_POSTS.SUCCESS,
+      payload: [],
+      meta: { sortBy: 'objectPosts', category: username, limit },
+    });
   }
 
   return dispatch({
@@ -380,3 +431,11 @@ export const RESET_PROFILE_FILTERS = '@feed/RESET_PROFILE_FILTERS';
 export const resetProfileFilters = () => ({
   type: RESET_PROFILE_FILTERS,
 });
+
+export const GET_TIKTOK_PRIVIEW = createAsyncActionType('@feed/GET_TIKTOK_PRIVIEW');
+
+export const getTiktokPreviewAction = post => dispatch =>
+  dispatch({
+    type: GET_TIKTOK_PRIVIEW.ACTION,
+    payload: preparationPreview(post),
+  });

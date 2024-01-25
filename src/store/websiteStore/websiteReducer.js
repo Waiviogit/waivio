@@ -77,7 +77,7 @@ export default function websiteReducer(state = initialState, action) {
       };
     }
     case websiteAction.GET_INFO_FOR_MANAGE_PAGE.SUCCESS: {
-      const websites = get(action.payload, 'websites', []).map(website => ({
+      const websites = get(action.payload, 'websites', [])?.map(website => ({
         ...website,
         checked: website.status === 'active',
         pending: [],
@@ -116,6 +116,23 @@ export default function websiteReducer(state = initialState, action) {
         },
       };
     }
+    case websiteAction.CHANGE_CANONICAL_WEBSITE: {
+      const websites = [...state.manage.websites];
+      const changedIndex = websites.findIndex(web => web.host === action.id);
+
+      websites.splice(changedIndex, 1, {
+        ...websites[changedIndex],
+        pending: [...websites[changedIndex].pending, 'radio'],
+      });
+
+      return {
+        ...state,
+        manage: {
+          ...state.manage,
+          websites,
+        },
+      };
+    }
     case websiteAction.DELETE_WEBSITE: {
       const websites = [...state.manage.websites];
       const changedIndex = websites.findIndex(web => web.host === action.id);
@@ -138,7 +155,7 @@ export default function websiteReducer(state = initialState, action) {
         ...state,
         reports: {
           ...action.payload,
-          payments: action.payload.payments.map(payment => ({
+          payments: action.payload.payments?.map(payment => ({
             ...payment,
             createdAt: moment(payment.createdAt).format('DD-MMM-YYYY'),
           })),
@@ -385,7 +402,7 @@ export default function websiteReducer(state = initialState, action) {
       };
     }
     case websiteAction.DELETE_WEBSITE_ERROR: {
-      const websites = get(state, ['manage', 'websites'], []).map(website => ({
+      const websites = get(state, ['manage', 'websites'], [])?.map(website => ({
         ...website,
         checked: website.status === 'active',
         pending: [],
