@@ -6,7 +6,7 @@ import TOO_MANY_REQ_PAGE from '../pages/tooManyrequestsPage';
 
 const { NODE_ENV } = process.env;
 
-const DAILY_LIMIT = 500;
+const DAILY_LIMIT = 2500;
 
 const googleList = ['(?<! (?:channel/|google/))google(?!(app|/google| pixel))'];
 const isGoogleBot = createIsbotFromList(googleList);

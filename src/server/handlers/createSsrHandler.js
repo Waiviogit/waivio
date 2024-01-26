@@ -52,12 +52,14 @@ export default function createSsrHandler(template) {
     try {
       const hostname = req.hostname;
       const searchBot = isbot(req.get('User-Agent'));
-      const inheritedHost = isInheritedHost(hostname);
 
-      if (inheritedHost && searchBot) {
-        const pageExist = await isPageExistSitemap({ host: hostname, url: req.url });
-        if (!pageExist) return res.status(404).send(NOT_FOUND_PAGE);
-      }
+      // think about permanent redirect (301) to waivio
+
+      // const inheritedHost = isInheritedHost(hostname);
+      // if (inheritedHost && searchBot) {
+      //   const pageExist = await isPageExistSitemap({ host: hostname, url: req.url });
+      //   if (!pageExist) return res.status(404).send(NOT_FOUND_PAGE);
+      // }
 
       if (searchBot) {
         await updateBotCount(req);
