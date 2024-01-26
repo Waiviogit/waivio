@@ -22,7 +22,7 @@ const DescriptionPage = ({ relatedAlbum, albums }) => {
   );
 
   useEffect(() => {
-    const objectHeaderEl = document.getElementById('ObjectHeaderId');
+    const objectHeaderEl = document && document.getElementById('ObjectHeaderId');
 
     if (isMobile()) {
       window.scrollTo({

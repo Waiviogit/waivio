@@ -77,9 +77,11 @@ export default class LinkEditComponent extends React.Component {
       return;
     }
     const relativeParent = getRelativeParent(this.toolbar.parentElement);
+
     const relativeRect = relativeParent
       ? relativeParent.getBoundingClientRect()
-      : window.document.body.getBoundingClientRect();
+      : typeof document !== 'undefined' && window.document.body.getBoundingClientRect();
+
     const selectionRect = getVisibleSelectionRect(window);
 
     if (!selectionRect) {

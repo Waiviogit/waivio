@@ -50,9 +50,11 @@ const DepartmentsWobjList = ({ getDepartmentsFeed, user, isSocial }) => {
 
   useEffect(() => {
     if (list.current && isMobile() && !loading) {
-      const listRef = document.querySelector('.UserHeader');
+      if (typeof document !== 'undefined') {
+        const listRef = document.querySelector('.UserHeader');
 
-      window.scrollTo({ top: listRef?.offsetHeight || 0, behavior: 'smooth' });
+        window.scrollTo({ top: listRef?.offsetHeight || 0, behavior: 'smooth' });
+      }
     }
   }, [list.current, loading, department]);
 

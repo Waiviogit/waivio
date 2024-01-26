@@ -72,7 +72,7 @@ const render = async Component => {
     <Provider store={store}>
       <Component history={history} />
     </Provider>,
-    document.getElementById('app'),
+    document && document.getElementById('app'),
   );
 };
 
