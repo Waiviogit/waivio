@@ -122,7 +122,7 @@ export default class Post extends React.Component {
 
   componentWillUnmount() {
     if (typeof window !== 'undefined') {
-      window.document.title = 'Waivio';
+      if (typeof document !== 'undefined') window.document.title = 'Waivio';
     }
   }
 

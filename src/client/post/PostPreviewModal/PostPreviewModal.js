@@ -29,8 +29,11 @@ const isTopicValid = topic => /^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$/.test(topic);
   { clearBeneficiariesUsers, setUpdatedEditorData },
 )
 class PostPreviewModal extends Component {
+  // eslint-disable-next-line consistent-return
   static findScrollElement() {
-    return document.querySelector('.post-preview-modal');
+    if (typeof document !== 'undefined') {
+      return document.querySelector('.post-preview-modal');
+    }
   }
 
   static propTypes = {

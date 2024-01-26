@@ -195,7 +195,7 @@ const GeneralSearch = props => {
       history.push(redirectUrl);
       setSeachValue('');
       setOpen(false);
-      document.activeElement.blur();
+      if (typeof document !== 'undefined') document.activeElement.blur();
     }
   };
 

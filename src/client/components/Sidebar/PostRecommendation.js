@@ -112,7 +112,7 @@ class PostRecommendation extends Component {
   };
 
   navigateToPostComments = () => {
-    document.getElementById('comments').scrollIntoView();
+    if (typeof document !== 'undefined') document.getElementById('comments').scrollIntoView();
     this.forceUpdate();
   };
 

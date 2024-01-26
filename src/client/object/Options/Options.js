@@ -14,7 +14,7 @@ const Options = ({ wobject, isEditMode, setHoveredOption, isSocialProduct }) => 
   const optionsDiv = useRef();
 
   useEffect(() => {
-    const objectHeaderEl = document.getElementById('ObjectHeaderId');
+    const objectHeaderEl = document && document.getElementById('ObjectHeaderId');
 
     if (activeStoreOption && isMobile() && !isSocialProduct) {
       window.scrollTo({
