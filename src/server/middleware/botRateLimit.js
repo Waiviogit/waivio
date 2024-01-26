@@ -29,13 +29,16 @@ const botRateLimit = async (req, res, next) => {
   let { result: limit } = await getAsync({ key: REDIS_KEYS.SSR_RATE_LIMIT_BOTS });
   if (!limit) limit = DAILY_LIMIT;
 
+  const ttlTime = 60 * 60 * 24;
+
   if (+limitCounter >= +limit) {
+    res.set('Retry-After', ttlTime);
     return res.status(429).send(TOO_MANY_REQ_PAGE);
   }
 
   await incrExpire({
     key,
-    ttl: 60 * 60 * 24,
+    ttl: ttlTime,
   });
 
   next();
