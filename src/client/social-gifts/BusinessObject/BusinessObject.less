@@ -1,0 +1,29 @@
+@import (reference) '../../styles/custom.less';
+@import (reference) '../../styles/modules/variables.less';
+
+.BusinessObject {
+  .text-icon {
+    font-size: 20px !important;
+  }
+  &__margin-b {
+    margin-bottom: 15px;
+  }
+  &__website {
+    font-size: 18px;
+    .field-website__title {
+      .text-icon.link {
+        font-size: 15px !important;
+      }
+    }
+  }
+  &__phone-number {
+    font-size: 18px;
+    display: flex;
+    flex-direction: column;
+    .phone {
+      .text-icon.tel {
+        font-size: 15px !important;
+      }
+    }
+  }
+}

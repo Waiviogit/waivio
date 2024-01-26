@@ -1,0 +1,48 @@
+@import (reference) '../../../styles/custom.less';
+@import (reference) '../../../styles/modules/variables.less';
+
+.AddressHoursDetails {
+  display: flex;
+  justify-content: space-between;
+  align-items: stretch;
+
+  &__block {
+    font-size: 18px;
+    padding: 16px;
+    display: flex;
+    min-height: 200px;
+    flex-direction: column;
+    align-items: center;
+    width: -webkit-fill-available;
+    &--with-map {
+      font-size: 18px;
+      padding: 16px;
+      display: flex;
+      min-height: 350px;
+      flex-direction: column;
+      align-items: center;
+      width: -webkit-fill-available;
+    }
+    &-title {
+      line-height: 3;
+      display: flex;
+      justify-content: center;
+      padding-bottom: 8px;
+      text-transform: uppercase;
+      font-weight: 600;
+      font-size: 18px;
+      color: @black;
+    }
+    &-content {
+      text-align: center;
+    }
+  }
+  &__block-map {
+    font-size: 18px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    min-height: 270px;
+    width: -webkit-fill-available;
+  }
+}

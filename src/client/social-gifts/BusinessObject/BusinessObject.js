@@ -1,12 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { Helmet } from 'react-helmet';
-import { withRouter } from 'react-router-dom';
-import { FormattedMessage } from 'react-intl';
-import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import moment from 'moment';
+import PropTypes from 'prop-types';
+import { withRouter } from 'react-router-dom';
 import { get, has, isEmpty, isNil, reduce } from 'lodash';
-import { getObjectsRewards, getReferenceObjectsList } from '../../../waivioApi/ApiClient';
+import { Helmet } from 'react-helmet';
 import {
   getAuthenticatedUserName,
   getIsAuthenticated,
@@ -18,9 +15,16 @@ import {
   getUsedLocale,
 } from '../../../store/appStore/appSelectors';
 import { getActiveCategory, getActiveOption } from '../../../store/optionsStore/optionsSelectors';
-import AffiliatLink from '../../widgets/AffiliatLinks/AffiliatLink';
-import { isMobile } from '../../../common/helpers/apiHelpers';
-import ProductRewardCard from '../ShopObjectCard/ProductRewardCard/ProductRewardCard';
+import {
+  getObject as getObjectState,
+  getWobjectAuthors,
+} from '../../../store/wObjectStore/wObjectSelectors';
+import { getObjectAlbums, getRelatedPhotos } from '../../../store/galleryStore/gallerySelectors';
+import { getIsOptionClicked } from '../../../store/shopStore/shopSelectors';
+import { setStoreActiveOption } from '../../../store/optionsStore/optionsActions';
+import { resetOptionClicked } from '../../../store/shopStore/shopActions';
+import { getObject } from '../../../store/wObjectStore/wobjectsActions';
+import { getAlbums, resetGallery } from '../../../store/galleryStore/galleryActions';
 import {
   getNumbersFromWobjPrice,
   getObjectAvatar,
@@ -28,51 +32,28 @@ import {
   parseAddress,
   parseWobjectField,
 } from '../../../common/helpers/wObjectHelper';
-import Options from '../../object/Options/Options';
-import ObjectFeatures from '../../object/ObjectFeatures/ObjectFeatures';
-import RatingsWrap from '../../objectCard/RatingsWrap/RatingsWrap';
-import PicturesSlider from './PicturesSlider/PicturesSlider';
-import DEFAULTS from '../../object/const/defaultValues';
-import ProductDetails from './ProductDetails/ProductDetails';
-import SocialTagCategories from './SocialTagCategories/SocialTagCategories';
-import ObjectsSlider from './ObjectsSlider/ObjectsSlider';
-import SocialMenuItems from './SocialMenuItems/SocialMenuItems';
-import { getIsOptionClicked } from '../../../store/shopStore/shopSelectors';
-import SocialProductActions from './SocialProductActions/SocialProductActions';
-import { resetOptionClicked } from '../../../store/shopStore/shopActions';
-import { setStoreActiveOption } from '../../../store/optionsStore/optionsActions';
-import SocialProductReviews from './SocialProductReviews/SocialProductReviews';
-import SocialProductDescription from './SocialProductDescription/SocialProductDescription';
-import {
-  getObject,
-  getAddOns,
-  getSimilarObjects,
-  getProductInfo,
-  getRelatedObjectsAction,
-} from '../../../store/wObjectStore/wobjectsActions';
-import {
-  getObject as getObjectState,
-  getWobjectAuthors,
-  getAddOnFromState,
-  getSimilarObjectsFromState,
-  getRelatedObjectsFromState,
-  getBrandObject,
-  getManufacturerObject,
-  getMerchantObject,
-} from '../../../store/wObjectStore/wObjectSelectors';
-import { getObjectAlbums, getRelatedPhotos } from '../../../store/galleryStore/gallerySelectors';
-import { getAlbums, resetGallery } from '../../../store/galleryStore/galleryActions';
-import Loading from '../../components/Icon/Loading';
-import SocialBookAuthors from './SocialBookAuthors/SocialBookAuthors';
-import Breadcrumbs from '../Breadcrumbs/Breadcrumbs';
-import { checkAboutCanonicalUrl, useSeoInfoWithAppUrl } from '../../../hooks/useSeoInfo';
 import { averageRate, getRatingForSocial } from '../../components/Sidebar/Rate/rateHelper';
+import Loading from '../../components/Icon/Loading';
+import { isMobile } from '../../../common/helpers/apiHelpers';
+import RatingsWrap from '../../objectCard/RatingsWrap/RatingsWrap';
+import SocialProductActions from '../SocialProduct/SocialProductActions/SocialProductActions';
+import PicturesSlider from '../SocialProduct/PicturesSlider/PicturesSlider';
+import ProductRewardCard from '../ShopObjectCard/ProductRewardCard/ProductRewardCard';
+import SocialProductDescription from '../SocialProduct/SocialProductDescription/SocialProductDescription';
+import SocialMenuItems from '../SocialProduct/SocialMenuItems/SocialMenuItems';
+import ObjectsSlider from '../SocialProduct/ObjectsSlider/ObjectsSlider';
+import SocialTagCategories from '../SocialProduct/SocialTagCategories/SocialTagCategories';
+import SocialProductReviews from '../SocialProduct/SocialProductReviews/SocialProductReviews';
 import { removeEmptyLines, shortenDescription } from '../../object/wObjectHelper';
-import './SocialProduct.less';
+import { checkAboutCanonicalUrl, useSeoInfoWithAppUrl } from '../../../hooks/useSeoInfo';
+import DEFAULTS from '../../object/const/defaultValues';
+import { getObjectsRewards, getReferenceObjectsList } from '../../../waivioApi/ApiClient';
+import BusinessDetails from './BusinessDetails/BusinessDetails';
+import './BusinessObject.less';
+import AddressHoursDetails from './AddressHoursDetails/AddressHoursDetails';
+import Breadcrumbs from '../Breadcrumbs/Breadcrumbs';
 
-const limit = 30;
-
-const SocialProduct = ({
+const BusinessObject = ({
   userName,
   locale,
   activeOption,
@@ -84,60 +65,29 @@ const SocialProduct = ({
   optionClicked,
   helmetIcon,
   match,
-  history,
   setStoreActiveOpt,
   resetOptClicked,
   albums,
   relatedAlbum,
+  history,
   resetWobjGallery,
   isEditMode,
   toggleViewEditMode,
-  addOns,
-  getAddOnsAction,
-  getSimilarObjectsAction,
-  similarObjects,
-  relatedObjects,
-  getRelatedAction,
-  brandObject,
-  manufacturerObject,
-  merchantObject,
-  getProductInfoAction,
 }) => {
   const [reward, setReward] = useState([]);
-  const [hoveredOption, setHoveredOption] = useState({});
   const [references, setReferences] = useState([]);
   const [loading, setIsLoading] = useState(true);
-  const affiliateLinks = wobject?.affiliateLinks || [];
   const referenceWobjType = ['business', 'person'].includes(wobject.object_type);
-  const price = hoveredOption.price || get(wobject, 'price');
+  const price = get(wobject, 'price');
   const website = parseWobjectField(wobject, 'website');
-  const manufacturer = parseWobjectField(wobject, 'manufacturer');
+  const linkField = parseWobjectField(wobject, 'link');
   const parent = get(wobject, 'parent');
-  const ageRange = get(wobject, 'ageRange');
-  const language = get(wobject, 'language');
   const wobjTitle = get(wobject, 'title');
-  const publicationDate = moment(wobject.publicationDate).format('MMMM DD, YYYY');
-  const printLength = wobject.printLength;
-  const publisher = parseWobjectField(wobject, 'publisher');
-  const productAuthors = wobject.authors
-    ? wobject.authors.map(el => parseWobjectField(el, 'body', []))
-    : [];
-  const departments = get(wobject, 'departments');
-  const dimensions = parseWobjectField(wobject, 'dimensions');
-  const brand = parseWobjectField(wobject, 'brand');
   const photosAlbum = !isEmpty(albums) ? albums?.find(alb => alb.body === 'Photos') : [];
-  const groupId = wobject.groupId;
   const customSort = get(wobject, 'sortCustom.include', []);
   const menuItems = get(wobject, 'menuItem', []);
-
-  const features = wobject.features
-    ? wobject.features?.map(el => parseWobjectField(el, 'body', []))
-    : [];
-  const productIdBody = wobject.productId
-    ? wobject?.productId.map(el => parseWobjectField(el, 'body', []))
-    : [];
-  const merchant = parseWobjectField(wobject, 'merchant');
-  const productWeight = parseWobjectField(wobject, 'productWeight');
+  const phones = get(wobject, 'phone', []);
+  const email = get(wobject, 'email');
   const menuItem = isEmpty(customSort)
     ? menuItems
     : customSort.reduce((acc, curr) => {
@@ -152,8 +102,13 @@ const SocialProduct = ({
         return currentLink ? [...acc, currentLink] : acc;
       }, []);
   const tagCategories = get(wobject, 'tagCategory', []);
+  const companyIdBody = wobject.companyId
+    ? wobject.companyId?.map(el => parseWobjectField(el, 'body', []))
+    : [];
+  const address = parseAddress(wobject);
+  const map = parseWobjectField(wobject, 'map');
+  const workTime = get(wobject, 'workTime');
   const tagCategoriesList = tagCategories.filter(item => !isEmpty(item.items));
-  const addOnPermlinks = wobject.addOn ? wobject?.addOn?.map(obj => obj.body) : [];
   const showGallery =
     !isEmpty(wobject.preview_gallery) || (!isEmpty(parent) && has(parent, 'avatar'));
   const tagCategoriesForDescr = reduce(
@@ -173,7 +128,7 @@ const SocialProduct = ({
   const { firstDescrPart: description } = shortenDescription(removeEmptyLines(desc), 200);
   const title = `${wobject.name}`;
   const { canonicalUrl } = useSeoInfoWithAppUrl(wobject.canonical);
-  const url = ['book', 'product'].includes(wobject.object_type)
+  const url = ['business'].includes(wobject.object_type)
     ? `https://${wobject.canonical}/object/${match.params.name}`
     : canonicalUrl;
   const productUrl = checkAboutCanonicalUrl(url);
@@ -185,39 +140,20 @@ const SocialProduct = ({
     : socialHeaderEl?.offsetHeight;
   const scrollHeight =
     (typeof window !== 'undefined' && window.scrollY > 0) || optionClicked ? socialScrollHeight : 0;
+  const bestRating = getRatingForSocial(wobject.rating);
+  const showBusinessDetails =
+    !isEmpty(phones) ||
+    !isNil(website) ||
+    !isNil(email) ||
+    !isNil(linkField) ||
+    !isEmpty(companyIdBody) ||
+    !isNil(parent);
 
-  const showProductDetails =
-    !isEmpty(brand) ||
-    !isEmpty(manufacturer) ||
-    !isEmpty(merchant) ||
-    !isEmpty(parent) ||
-    !isEmpty(productWeight) ||
-    !isEmpty(dimensions) ||
-    !isEmpty(departments) ||
-    !isEmpty(groupId) ||
-    !isEmpty(productIdBody) ||
-    !isEmpty(language) ||
-    !isEmpty(wobject.publicationDate) ||
-    !isEmpty(printLength) ||
-    !isEmpty(publisher) ||
-    !isEmpty(website) ||
-    !isEmpty(ageRange);
-
-  const getAddOnsSimilarRelatedObjects = () => {
-    getAddOnsAction(addOnPermlinks, userName, limit);
-    getRelatedAction(wobject.author_permlink, userName, locale, limit);
-    getSimilarObjectsAction(wobject.author_permlink, userName, locale, limit);
-  };
-
-  const getPublisherManufacturerBrandMerchantObjects = () => {
-    getProductInfoAction(wobject);
-  };
+  const showAddressHoursBlock = !isNil(address) || !isNil(map) || !isNil(workTime);
 
   useEffect(() => {
     window.scrollTo({ top: scrollHeight, behavior: 'smooth' });
     if (!isEmpty(wobject.author_permlink)) {
-      getAddOnsSimilarRelatedObjects();
-      getPublisherManufacturerBrandMerchantObjects();
       getObjectsRewards(wobject.author_permlink, userName).then(res => setReward(res));
       referenceWobjType &&
         getReferenceObjectsList({
@@ -236,8 +172,6 @@ const SocialProduct = ({
   useEffect(() => {
     resetOptClicked();
   }, []);
-
-  const bestRating = getRatingForSocial(wobject.rating);
 
   return (
     <div>
@@ -294,9 +228,7 @@ const SocialProduct = ({
             {isMobile() && (
               <h1
                 className={
-                  isEmpty(productAuthors) && isEmpty(wobjTitle)
-                    ? 'SocialProduct__wobjName'
-                    : 'SocialProduct__bookWobjName'
+                  isEmpty(wobjTitle) ? 'SocialProduct__wobjName' : 'SocialProduct__bookWobjName'
                 }
               >
                 {wobject.name}
@@ -304,9 +236,6 @@ const SocialProduct = ({
             )}
             {isMobile() && !isEmpty(wobjTitle) && (
               <div className="SocialProduct__title">{wobjTitle}</div>
-            )}
-            {isMobile() && !isEmpty(productAuthors) && (
-              <SocialBookAuthors authors={productAuthors} />
             )}
             {isMobile() && (
               <div className="SocialProduct__ratings">
@@ -334,15 +263,15 @@ const SocialProduct = ({
                 />
               </div>
             )}
-            {showGallery && (
-              <div className="SocialProduct__row">
+            {isMobile() && showGallery && (
+              <div className="SocialProduct__row SocialProduct__right-row">
                 <div className="SocialProduct__carouselWrapper">
                   <PicturesSlider
                     relatedAlbum={relatedAlbum}
                     albums={albums}
                     altText={description}
                     currentWobj={wobject}
-                    hoveredOption={hoveredOption}
+                    // hoveredOption={hoveredOption}
                     activeOption={activeOption}
                     activeCategory={activeCategory}
                   />
@@ -352,13 +281,11 @@ const SocialProduct = ({
                 </div>
               </div>
             )}
-            <div className="SocialProduct__row SocialProduct__right-row">
+            <div className="SocialProduct__row ">
               {!isMobile() && (
                 <h1
                   className={
-                    isEmpty(productAuthors) && isEmpty(wobjTitle)
-                      ? 'SocialProduct__wobjName'
-                      : 'SocialProduct__bookWobjName'
+                    isEmpty(wobjTitle) ? 'SocialProduct__wobjName' : 'SocialProduct__bookWobjName'
                   }
                 >
                   {wobject.name}
@@ -367,9 +294,7 @@ const SocialProduct = ({
               {!isMobile() && !isEmpty(wobjTitle) && (
                 <div className="SocialProduct__title">{wobjTitle}</div>
               )}
-              {!isMobile() && !isEmpty(productAuthors) && (
-                <SocialBookAuthors authors={productAuthors} />
-              )}
+
               {!isMobile() && authenticated && !isEmpty(wobject) && (
                 <div className="SocialProduct__socialActions">
                   <SocialProductActions
@@ -406,36 +331,52 @@ const SocialProduct = ({
               >
                 {price}
               </div>
-              {!isEmpty(wobject?.options) && (
-                <div className="SocialProduct__paddingBottom">
-                  <Options
-                    isSocialProduct
-                    setHoveredOption={option => setHoveredOption(option)}
-                    isEditMode={false}
-                    wobject={wobject}
-                  />
-                </div>
+              {showBusinessDetails && (
+                <BusinessDetails
+                  isEditMode={isEditMode}
+                  companyIdBody={companyIdBody}
+                  wobject={wobject}
+                  phones={phones}
+                  username={userName}
+                  linkField={linkField}
+                  website={website}
+                  parent={parent}
+                />
               )}
-              {!isEmpty(affiliateLinks) && (
-                <div className="SocialProduct__paddingBottom">
-                  <div className="SocialProduct__subtitle">
-                    <FormattedMessage id="buy_it_on" defaultMessage="Buy it on" />:
-                  </div>
-                  <div className="SocialProduct__affLinks">
-                    {affiliateLinks.map(link => (
-                      <div key={link.link} className="SocialProduct__links">
-                        <AffiliatLink link={link} />
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
+
               {isEmpty(wobject.preview_gallery) && (
                 <ProductRewardCard isSocialProduct reward={reward} />
               )}
             </div>
+            {!isMobile() && showGallery && (
+              <div className="SocialProduct__row SocialProduct__right-row">
+                <div className="SocialProduct__carouselWrapper">
+                  <PicturesSlider
+                    relatedAlbum={relatedAlbum}
+                    albums={albums}
+                    altText={description}
+                    currentWobj={wobject}
+                    // hoveredOption={hoveredOption}
+                    activeOption={activeOption}
+                    activeCategory={activeCategory}
+                  />
+                </div>
+                <div>
+                  <ProductRewardCard isSocialProduct reward={reward} />
+                </div>
+              </div>
+            )}
           </div>
           <div className="SocialProduct__column">
+            {showAddressHoursBlock && (
+              <AddressHoursDetails
+                history={history}
+                address={address}
+                map={map}
+                workTime={workTime}
+                wobject={wobject}
+              />
+            )}
             {!isEmpty(wobject.description) && (
               <div className="SocialProduct__aboutItem">
                 <div className="SocialProduct__heading"> About this item</div>
@@ -447,42 +388,6 @@ const SocialProduct = ({
               </div>
             )}
             {!isEmpty(menuItem) && <SocialMenuItems menuItem={menuItem} />}
-            {showProductDetails && (
-              <ProductDetails
-                website={website}
-                locale={locale}
-                publisher={publisher}
-                printLength={printLength}
-                publicationDate={publicationDate}
-                language={language}
-                ageRange={ageRange}
-                wobject={wobject}
-                groupId={groupId}
-                history={history}
-                productWeight={productWeight}
-                dimensions={dimensions}
-                productIdBody={productIdBody}
-                departments={departments}
-                fields={{ brandObject, manufacturerObject, merchantObject }}
-                parent={parent}
-              />
-            )}
-            <ObjectsSlider objects={addOns} title={'Bought together / Add-ons'} name={'addOn'} />
-            {!isEmpty(features) && (
-              <div className="SocialProduct__featuresContainer">
-                <div className="SocialProduct__heading">Features</div>
-                <div className="SocialProduct__centralContent">
-                  <ObjectFeatures
-                    isSocialGifts
-                    features={features}
-                    isEditMode={false}
-                    wobjPermlink={wobject.author_permlink}
-                  />
-                </div>
-              </div>
-            )}
-            <ObjectsSlider objects={similarObjects} title={'Similar'} name={'similar'} />
-            <ObjectsSlider objects={relatedObjects} title={'Related items'} name={'related'} />
             {!isEmpty(references) &&
               references?.map(ref => (
                 <ObjectsSlider key={ref[0]} objects={ref[1]} title={`${ref[0]}s`} name={ref[0]} />
@@ -503,26 +408,20 @@ const SocialProduct = ({
   );
 };
 
-SocialProduct.propTypes = {
+BusinessObject.propTypes = {
   userName: PropTypes.string,
   locale: PropTypes.string,
   activeOption: PropTypes.shape(),
   wobject: PropTypes.shape(),
-  history: PropTypes.shape(),
   match: PropTypes.shape(),
+  history: PropTypes.shape(),
   activeCategory: PropTypes.string,
   siteName: PropTypes.string,
   authenticated: PropTypes.bool,
   authors: PropTypes.arrayOf(),
   albums: PropTypes.arrayOf(),
-  addOns: PropTypes.arrayOf(),
   relatedAlbum: PropTypes.shape(),
   optionClicked: PropTypes.bool,
-  getAddOnsAction: PropTypes.func,
-  getSimilarObjectsAction: PropTypes.func,
-  similarObjects: PropTypes.arrayOf(),
-  relatedObjects: PropTypes.arrayOf(),
-  getRelatedAction: PropTypes.func,
   helmetIcon: PropTypes.string,
   setStoreActiveOpt: PropTypes.func,
   resetOptClicked: PropTypes.func,
@@ -532,7 +431,6 @@ SocialProduct.propTypes = {
   brandObject: PropTypes.shape({}),
   manufacturerObject: PropTypes.shape({}),
   merchantObject: PropTypes.shape({}),
-  getProductInfoAction: PropTypes.func,
 };
 
 const mapStateToProps = state => ({
@@ -549,12 +447,6 @@ const mapStateToProps = state => ({
   authenticated: getIsAuthenticated(state),
   optionClicked: getIsOptionClicked(state),
   helmetIcon: getHelmetIcon(state),
-  addOns: getAddOnFromState(state),
-  similarObjects: getSimilarObjectsFromState(state),
-  relatedObjects: getRelatedObjectsFromState(state),
-  brandObject: getBrandObject(state),
-  manufacturerObject: getManufacturerObject(state),
-  merchantObject: getMerchantObject(state),
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -563,12 +455,6 @@ const mapDispatchToProps = dispatch => ({
   getWobject: (obj, name) => dispatch(getObject(obj, name)),
   getWobjAlbums: obj => dispatch(getAlbums(obj)),
   resetWobjGallery: () => dispatch(resetGallery()),
-  getAddOnsAction: (addOnPermlinks, userName) => dispatch(getAddOns(addOnPermlinks, userName)),
-  getSimilarObjectsAction: (author_permlink, userName, locale, lim = 30) =>
-    dispatch(getSimilarObjects(author_permlink, userName, locale, lim)),
-  getProductInfoAction: obj => dispatch(getProductInfo(obj)),
-  getRelatedAction: (author_permlink, userName, locale, lim = 30) =>
-    dispatch(getRelatedObjectsAction(author_permlink, userName, locale, lim)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(withRouter(SocialProduct));
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(BusinessObject));
