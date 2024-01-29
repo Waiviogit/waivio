@@ -46,8 +46,10 @@ const WebsiteSignIn = props => {
     if (query.get('color')) {
       const color = `#${query.get('color')}`;
 
-      document.body.style.setProperty('--website-color', color);
-      document.body.style.setProperty('--website-hover-color', hexToRgb(color, 8));
+      if (typeof document !== 'undefined') {
+        document.body.style.setProperty('--website-color', color);
+        document.body.style.setProperty('--website-hover-color', hexToRgb(color, 8));
+      }
     }
   }, []);
 

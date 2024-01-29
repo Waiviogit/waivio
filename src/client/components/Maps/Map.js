@@ -75,7 +75,7 @@ class MapOS extends React.Component {
 
     if (match.params.filterKey !== IS_RESERVED)
       setMapArea({ radius, coordinates: center, isMap: true, firstMapLoad: true });
-    document.addEventListener('click', this.handleClick);
+    if (typeof document !== 'undefined') document.addEventListener('click', this.handleClick);
   }
 
   componentWillReceiveProps(nextProps) {

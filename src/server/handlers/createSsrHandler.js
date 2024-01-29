@@ -6,6 +6,7 @@ import { renderToString } from 'react-dom/server';
 import { StaticRouter } from 'react-router';
 import { matchRoutes, renderRoutes } from 'react-router-config';
 import hivesigner from 'hivesigner';
+import { isbot } from 'isbot';
 
 import {
   getParentHost,
@@ -40,6 +41,7 @@ function createTimeout(timeout, promise) {
 }
 
 const isPageExistSitemap = async ({ url, host }) => {
+  if (url === '/') return true;
   const key = `${REDIS_KEYS.SSR_SITEMAP_SET}:${host}`;
   const member = `https://${host}${url}`;
   return sismember({ key, member });
@@ -49,12 +51,15 @@ export default function createSsrHandler(template) {
   return async function serverSideResponse(req, res) {
     try {
       const hostname = req.hostname;
-      const searchBot = await isSearchBot(req);
-      const inheritedHost = isInheritedHost(hostname);
-      if (inheritedHost && searchBot) {
-        const pageExist = await isPageExistSitemap({ host: hostname, url: req.url });
-        if (!pageExist) return res.send(404).send(NOT_FOUND_PAGE);
-      }
+      const searchBot = isbot(req.get('User-Agent'));
+
+      // think about permanent redirect (301) to waivio
+
+      // const inheritedHost = isInheritedHost(hostname);
+      // if (inheritedHost && searchBot) {
+      //   const pageExist = await isPageExistSitemap({ host: hostname, url: req.url });
+      //   if (!pageExist) return res.status(404).send(NOT_FOUND_PAGE);
+      // }
 
       if (searchBot) {
         await updateBotCount(req);
@@ -74,7 +79,7 @@ export default function createSsrHandler(template) {
 
       const isWaivio = hostname.includes('waivio');
       let settings = {};
-      let parentHost;
+      let parentHost = '';
       let adsenseSettings = {};
 
       if (!isWaivio) {

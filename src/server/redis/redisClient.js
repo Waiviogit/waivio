@@ -2,10 +2,15 @@ import { createClient } from 'redis';
 import { REDIS_CLIENT_DB } from '../../common/constants/ssrData';
 
 const redisClient = createClient();
+redisClient.on('error', e => console.log(e));
 
 export const setupRedisConnections = async () => {
-  await redisClient.connect();
-  await redisClient.select(REDIS_CLIENT_DB);
+  try {
+    await redisClient.connect();
+    await redisClient.select(REDIS_CLIENT_DB);
+  } catch (error) {
+    console.log(error.message);
+  }
 };
 
 export const incrExpire = async ({ key, ttl }) => {

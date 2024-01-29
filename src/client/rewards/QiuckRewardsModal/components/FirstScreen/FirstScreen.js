@@ -124,7 +124,7 @@ const ModalFirstScreen = props => {
 
   const handleDishFocus = () => {
     if (isMobile()) {
-      const modalWrap = document.querySelector('.ant-modal-wrap');
+      const modalWrap = document && document.querySelector('.ant-modal-wrap');
 
       if (isAppleDevice()) {
         setTimeout(() => {
