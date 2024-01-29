@@ -179,7 +179,13 @@ const ModalSignIn = ({
                       ? 'Click on the QR Code to open your Hive Keychain Mobile (Hive Authentication app) and approve the request'
                       : 'Open your Hive Keychain Mobile (Hive Authentication app) to scan the QR Code and approve the request'}
                   </p>
-                  <img className="ModalSignIn__qr" src={showQR} alt={'qr'} />
+                  {isMobile() ? (
+                    <a href={showQR}>
+                      <img className="ModalSignIn__qr" src={showQR} alt={'qr'} />
+                    </a>
+                  ) : (
+                    <img className="ModalSignIn__qr" src={showQR} alt={'qr'} />
+                  )}
                 </React.Fragment>
               ) : (
                 <React.Fragment>
