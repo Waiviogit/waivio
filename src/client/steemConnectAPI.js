@@ -72,7 +72,7 @@ function sc2Extended() {
     !!localStorage.getItem('accessToken') &&
     !!localStorage.getItem('guestName');
 
-  const isHiveAuth = Cookie.get('auth');
+  const isHiveAuth = () => Boolean(Cookie.get('auth'));
 
   const sc2api = new hivesigner.Client({
     app: process.env.STEEMCONNECT_CLIENT_ID,
@@ -86,13 +86,13 @@ function sc2Extended() {
 
   sc2Proto.broadcast = (operations, cb, keyType) => {
     if (isGuest()) return broadcast(operations, cb);
-    if (isHiveAuth) return hasBrodcast(operations, keyType, cb);
+    if (isHiveAuth()) return hasBrodcast(operations, keyType, cb);
 
     return sc2Proto.broadcastOp(operations);
   };
 
   sc2Proto.me = () => {
-    if (isGuest() || isHiveAuth) return getUserAccount();
+    if (isGuest() || isHiveAuth()) return getUserAccount();
 
     return sc2Proto.meOp();
   };

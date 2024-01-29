@@ -16,7 +16,7 @@ const APP_META = {
   icon: undefined,
 };
 
-const HiveAuth = ({ setQRcodeForAuth, onCloseSingIn }) => {
+const HiveAuth = ({ setQRcodeForAuth, onCloseSingIn, text }) => {
   const [showInput, setShowInput] = useState();
   const input = useRef();
   const dispatch = useDispatch();
@@ -73,7 +73,7 @@ const HiveAuth = ({ setQRcodeForAuth, onCloseSingIn }) => {
           </Button>
         </React.Fragment>
       ) : (
-        <span onClick={() => setShowInput(true)}>Continue with HiveAuth</span>
+        <span onClick={() => setShowInput(true)}>{text}</span>
       )}
     </div>
   );
@@ -82,6 +82,11 @@ const HiveAuth = ({ setQRcodeForAuth, onCloseSingIn }) => {
 HiveAuth.propTypes = {
   setQRcodeForAuth: PropTypes.func,
   onCloseSingIn: PropTypes.func,
+  text: PropTypes.string,
+};
+
+HiveAuth.defaultProps = {
+  text: 'Continue with HiveAuth',
 };
 
 export default HiveAuth;

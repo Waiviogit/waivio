@@ -1,3 +1,4 @@
+import Cookie from 'js-cookie';
 import React, { useEffect, useState } from 'react';
 import { Checkbox, Modal } from 'antd';
 import { useSelector } from 'react-redux';
@@ -12,9 +13,11 @@ import routes from '../../../waivioApi/routes';
 import { fixedNumber } from '../../../common/helpers/parser';
 import { createQuery } from '../../../common/helpers/apiHelpers';
 import { getUserCurrencyBalance } from '../../../store/walletStore/walletSelectors';
+import api from '../../steemConnectAPI';
 
 const PayAllModal = ({ showModal, renderData, setShowModal, currentUSDPrice, authUserName }) => {
   const [payable, setPayable] = useState(0);
+  const [loading, setLoading] = useState(0);
   const [payblesList, setPayblesList] = useState([]);
   const balance = useSelector(state => getUserCurrencyBalance(state, 'WAIV')?.balance);
   const filteredData = take(
@@ -54,17 +57,45 @@ const PayAllModal = ({ showModal, renderData, setShowModal, currentUSDPrice, aut
       return [...acc, json];
     }, []);
 
-    window.open(
-      `https://hivesigner.com/sign/custom_json?authority=active&required_auths=["${authUserName}"]&required_posting_auths=[]&${createQuery(
-        {
-          id: 'ssc-mainnet-hive',
-          json: JSON.stringify(jsons),
-        },
-      )}`,
-      '_blank',
-    );
+    const hiveAuth = Cookie.get('auth');
 
-    setShowModal(false);
+    if (hiveAuth) {
+      setLoading(true);
+
+      api
+        .broadcast(
+          [
+            [
+              'custom_json',
+              {
+                required_auths: [authUserName],
+                required_posting_auths: [],
+                id: 'ssc-mainnet-hive',
+                json: JSON.stringify(jsons),
+              },
+            ],
+          ],
+          null,
+          'active',
+        )
+        .then(res => {
+          setLoading(false);
+
+          if (!res.error) setShowModal(false);
+        });
+    } else {
+      window.open(
+        `https://hivesigner.com/sign/custom_json?authority=active&required_auths=["${authUserName}"]&required_posting_auths=[]&${createQuery(
+          {
+            id: 'ssc-mainnet-hive',
+            json: JSON.stringify(jsons),
+          },
+        )}`,
+        '_blank',
+      );
+
+      setShowModal(false);
+    }
   };
 
   const handleCheck = (e, item) => {
@@ -89,6 +120,7 @@ const PayAllModal = ({ showModal, renderData, setShowModal, currentUSDPrice, aut
       onCancel={() => setShowModal(false)}
       okButtonProps={{
         disabled: balance < payable || !payable,
+        loading,
       }}
     >
       <b>Payable list:</b>

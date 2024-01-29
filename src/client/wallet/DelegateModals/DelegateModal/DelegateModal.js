@@ -1,3 +1,4 @@
+import Cookie from 'js-cookie';
 import React, { useState } from 'react';
 import { Form, Modal } from 'antd';
 import PropsType from 'prop-types';
@@ -5,6 +6,7 @@ import { useSelector } from 'react-redux';
 import { round } from 'lodash';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import SearchUsersAutocomplete from '../../../components/EditorUser/SearchUsersAutocomplete';
+import api from '../../../steemConnectAPI';
 import PowerSwitcher from '../../PowerUpOrDown/PowerSwitcher/PowerSwitcher';
 import SelectUserForAutocomplete from '../../../widgets/SelectUserForAutocomplete';
 import formatter from '../../../../common/helpers/steemitFormatter';
@@ -19,6 +21,7 @@ import './DelegateModal.less';
 
 const DelegateModal = props => {
   const [selectUser, setUser] = useState(null);
+  const [loading, setLoading] = useState(null);
   const totalVestingShares = useSelector(getTotalVestingShares);
   const totalVestingFundSteem = useSelector(getTotalVestingFundSteem);
   const authUserName = useSelector(getAuthenticatedUserName);
@@ -36,31 +39,63 @@ const DelegateModal = props => {
           vesting_shares: `${vests} VESTS`,
         };
 
-        const win = ['HP'].includes(values.currency)
-          ? window.open(
-              `https://hivesigner.com/sign/delegate_vesting_shares?${createQuery(transferQuery)}`,
-              '_blank',
-            )
-          : window.open(
-              `https://hivesigner.com/sign/custom_json?authority=active&required_auths=["${authUserName}"]&required_posting_auths=[]&${createQuery(
-                {
-                  id: 'ssc-mainnet-hive',
-                  json: JSON.stringify({
-                    contractName: 'tokens',
-                    contractAction: 'delegate',
-                    contractPayload: {
-                      symbol: values.currency === 'WP' ? 'WAIV' : values.currency,
-                      to: selectUser,
-                      quantity: parseFloat(values.amount).toString(),
-                    },
-                  }),
-                },
-              )}`,
-              '_blank',
-            );
+        const isHiveAuth = Cookie.get('auth');
+        const isHp = values.currency === 'HP';
+        const json = JSON.stringify({
+          contractName: 'tokens',
+          contractAction: 'delegate',
+          contractPayload: {
+            symbol: values.currency === 'WP' ? 'WAIV' : values.currency,
+            to: selectUser,
+            quantity: parseFloat(values.amount).toString(),
+          },
+        });
 
-        win.focus();
-        props.onCancel();
+        if (isHiveAuth) {
+          const brodc = () =>
+            isHp
+              ? api.broadcast([['delegate_vesting_shares', { ...transferQuery }]], null, 'active')
+              : api.broadcast(
+                  [
+                    [
+                      'custom_json',
+                      {
+                        required_auths: [authUserName],
+                        required_posting_auths: [],
+                        id: 'ssc-mainnet-hive',
+                        json,
+                      },
+                    ],
+                  ],
+                  null,
+                  'active',
+                );
+
+          setLoading(true);
+
+          brodc().then(() => {
+            setLoading(false);
+            props.onCancel();
+          });
+        } else {
+          const win = isHp
+            ? window.open(
+                `https://hivesigner.com/sign/delegate_vesting_shares?${createQuery(transferQuery)}`,
+                '_blank',
+              )
+            : window.open(
+                `https://hivesigner.com/sign/custom_json?authority=active&required_auths=["${authUserName}"]&required_posting_auths=[]&${createQuery(
+                  {
+                    id: 'ssc-mainnet-hive',
+                    json,
+                  },
+                )}`,
+                '_blank',
+              );
+
+          win.focus();
+          props.onCancel();
+        }
       }
     });
   };
@@ -76,6 +111,7 @@ const DelegateModal = props => {
       okText={props.intl.formatMessage({ id: 'delegate', defaultMessage: 'Delegate' })}
       okButtonProps={{
         disabled: !selectUser || !props.form.getFieldValue('amount'),
+        loading,
       }}
     >
       <p>

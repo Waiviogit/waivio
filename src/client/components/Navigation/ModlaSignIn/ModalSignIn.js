@@ -5,6 +5,7 @@ import hivesigner from 'hivesigner';
 import { batch, connect, useDispatch } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { isEmpty } from 'lodash';
+import { isMobile } from '../../../../common/helpers/apiHelpers';
 import {
   login,
   busyLogin,
@@ -172,7 +173,14 @@ const ModalSignIn = ({
           ) : (
             <React.Fragment>
               {showQR ? (
-                <img className="ModalSignIn__qr" src={showQR} alt={'qr'} />
+                <React.Fragment>
+                  <p>
+                    {isMobile()
+                      ? 'Click on the QR Code to open your Hive Keychain Mobile (Hive Authentication app) and approve the request'
+                      : 'Open your Hive Keychain Mobile (Hive Authentication app) to scan the QR Code and approve the request'}
+                  </p>
+                  <img className="ModalSignIn__qr" src={showQR} alt={'qr'} />
+                </React.Fragment>
               ) : (
                 <React.Fragment>
                   <p className="ModalSignIn__rules">
@@ -203,6 +211,7 @@ const ModalSignIn = ({
                   <HiveAuth
                     onCloseSingIn={setIsModalOpen}
                     setQRcodeForAuth={url => setShowQr(url)}
+                    text={'HiveAuth'}
                   />
                   <p className="ModalSignIn__title ModalSignIn__title--lined">
                     <span>

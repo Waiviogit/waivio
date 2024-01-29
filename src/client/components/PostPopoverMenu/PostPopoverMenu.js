@@ -1,3 +1,4 @@
+import Cookie from 'js-cookie';
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { connect, useDispatch, useSelector } from 'react-redux';
@@ -6,6 +7,7 @@ import { FormattedMessage } from 'react-intl';
 import { get, isEmpty, isNil } from 'lodash';
 import { ReactSVG } from 'react-svg';
 import { useHistory, useRouteMatch } from 'react-router';
+import { api } from 'steem';
 import Popover from '../Popover';
 import PopoverMenu, { PopoverMenuItem } from '../PopoverMenu/PopoverMenu';
 import { dropCategory, replaceBotWithGuestName } from '../../../common/helpers/postHelpers';
@@ -212,7 +214,17 @@ const PostPopoverMenu = ({
   };
 
   const handleDeletePost = () => {
-    if (isGuest) {
+    if (Cookie.get('auth')) {
+      api.broadcast([
+        [
+          'delete_comment',
+          {
+            author,
+            permlink: post.permlink,
+          },
+        ],
+      ]);
+    } else if (isGuest) {
       deletePost({ root_author: post.root_author, permlink: post.permlink, userName });
     } else {
       window.open(

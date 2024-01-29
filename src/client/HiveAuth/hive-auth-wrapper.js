@@ -424,7 +424,7 @@ export default {
       let uuid;
       let busy = false;
       // Wait for the confirmation by the HAS
-      message.info('Please confirm pending transactions in your device!');
+      message.info('Please confirm the pending transactions on your device!');
       const wait = setInterval(async () => {
         if (!busy) {
           busy = true;
@@ -458,7 +458,7 @@ export default {
               if (trace) console.log(`sign_ack found: ${JSON.stringify(req_ack)}`);
               clearInterval(wait);
               resolve(req_ack);
-              message.success('Transaction successfull!');
+              message.success('Transaction successful!');
             } else if (req_nack) {
               // request rejected
               clearInterval(wait);
