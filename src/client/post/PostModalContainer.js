@@ -15,44 +15,46 @@ import { addPayoutForActiveVotes } from '../../common/helpers';
 import { getTokenRatesInUSD } from '../../store/walletStore/walletSelectors';
 import { getPostContent } from '../../store/postsStore/postsSelectors';
 
-const PostModalContainer = ({
-  showPostModal,
-  currentShownPost,
-  hidePostModal,
-  author,
-  shownPostContents,
-  getSocialInfoPost,
-  isGuest,
-  userName,
-  isFeedMasonry,
-  getContent,
-  isThread,
-}) => {
-  useEffect(() => {
-    getContent(currentShownPost.author, currentShownPost.permlink)?.then(r => {
-      if (isThread && isNil(r)) {
-        setTimeout(() => getContent(currentShownPost.author, currentShownPost.permlink), 2000);
-      }
-    });
-  }, [currentShownPost.author, currentShownPost.permlink]);
+const PostModalContainer = React.memo(
+  ({
+    showPostModal,
+    currentShownPost,
+    hidePostModal,
+    author,
+    shownPostContents,
+    getSocialInfoPost,
+    isGuest,
+    userName,
+    isFeedMasonry,
+    getContent,
+    isThread,
+  }) => {
+    useEffect(() => {
+      getContent(currentShownPost.author, currentShownPost.permlink)?.then(r => {
+        if (isThread && isNil(r)) {
+          setTimeout(() => getContent(currentShownPost.author, currentShownPost.permlink), 2000);
+        }
+      });
+    }, [currentShownPost.author, currentShownPost.permlink]);
 
-  return (
-    showPostModal && (
-      <PostModal
-        isThread={isThread}
-        showPostModal={showPostModal}
-        currentShownPost={currentShownPost}
-        hidePostModal={hidePostModal}
-        author={author}
-        shownPostContents={shownPostContents}
-        getSocialInfoPost={getSocialInfoPost}
-        isGuest={isGuest}
-        username={userName}
-        isFeedMasonry={isFeedMasonry}
-      />
-    )
-  );
-};
+    return (
+      showPostModal && (
+        <PostModal
+          isThread={isThread}
+          showPostModal={showPostModal}
+          currentShownPost={currentShownPost}
+          hidePostModal={hidePostModal}
+          author={author}
+          shownPostContents={shownPostContents}
+          getSocialInfoPost={getSocialInfoPost}
+          isGuest={isGuest}
+          username={userName}
+          isFeedMasonry={isFeedMasonry}
+        />
+      )
+    );
+  },
+);
 
 PostModalContainer.propTypes = {
   hidePostModal: PropTypes.func.isRequired,

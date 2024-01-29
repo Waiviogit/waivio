@@ -33,7 +33,7 @@ class Affix extends React.Component {
     this.lastScroll =
       window.pageYOffset ||
       (document && document.documentElement.scrollTop) ||
-      document.body.scrollTop;
+      (document && document.body.scrollTop);
 
     this.top = 0;
     this.bindedBottom = false;
@@ -69,7 +69,7 @@ class Affix extends React.Component {
     const scrollTop =
       window.pageYOffset ||
       (document && document.documentElement.scrollTop) ||
-      document.body.scrollTop;
+      (document && document.body.scrollTop);
 
     const scrollBottom = scrollTop + windowHeight;
     const scrollDiff = scrollTop - this.lastScroll;

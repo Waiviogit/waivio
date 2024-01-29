@@ -77,7 +77,7 @@ export default function createSsrHandler(template) {
 
       const isWaivio = hostname.includes('waivio');
       let settings = {};
-      let parentHost;
+      let parentHost = '';
       let adsenseSettings = {};
 
       if (!isWaivio) {
