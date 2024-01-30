@@ -4,16 +4,12 @@ import { REDIS_KEYS } from '../../common/constants/ssrData';
 import { getAsync, incrExpire } from '../redis/redisClient';
 import TOO_MANY_REQ_PAGE from '../pages/tooManyrequestsPage';
 
-const { NODE_ENV } = process.env;
-
 const DAILY_LIMIT = 2500;
 
 const googleList = ['(?<! (?:channel/|google/))google(?!(app|/google| pixel))'];
 const isGoogleBot = createIsbotFromList(googleList);
 
 const botRateLimit = async (req, res, next) => {
-  if (NODE_ENV === 'production') return next();
-
   const userAgent = req.get('User-Agent');
   const bot = isbot(userAgent);
   const googleBot = isGoogleBot(userAgent);
