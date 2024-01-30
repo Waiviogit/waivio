@@ -127,22 +127,23 @@ export default class PowerUpOrDown extends React.Component {
 
         const operatin = down ? 'withdraw-vesting' : 'transfer-to-vesting';
         const json = JSON.stringify({
-          id: 'ssc-mainnet-hive',
-          json: JSON.stringify({
-            contractName: 'tokens',
-            contractAction: down ? 'unstake' : 'stake',
-            contractPayload: {
-              symbol: values.currency === 'WP' ? 'WAIV' : values.currency,
-              to: user.name,
-              quantity: parseFloat(values.amount).toString(),
-            },
-          }),
+          contractName: 'tokens',
+          contractAction: down ? 'unstake' : 'stake',
+          contractPayload: {
+            symbol: values.currency === 'WP' ? 'WAIV' : values.currency,
+            to: user.name,
+            quantity: parseFloat(values.amount).toString(),
+          },
         });
 
         if (hiveAuth) {
           const brodc = () =>
             isHiveCurrency
-              ? api.broadcast([[operatin, { ...transferQuery }]], null, 'active')
+              ? api.broadcast(
+                  [[down ? 'withdraw_vesting' : 'transfer_to_vesting', { ...transferQuery }]],
+                  null,
+                  'active',
+                )
               : api.broadcast(
                   [
                     [

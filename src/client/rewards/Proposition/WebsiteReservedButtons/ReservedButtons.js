@@ -23,10 +23,13 @@ const ReservedButtons = props => {
         default:
           setLoading(true);
 
-          return props.handleReserveForPopover().then(() => {
-            history.push('/rewards/reserved');
-            setLoading(false);
-          });
+          return props
+            .handleReserveForPopover()
+            .then(() => {
+              history.push('/rewards/reserved');
+              setLoading(false);
+            })
+            .catch(() => setLoading(false));
       }
     });
 
@@ -34,7 +37,7 @@ const ReservedButtons = props => {
     if (window?.gtag) window.gtag('event', 'click_submit_photos', { debug_mode: true });
     props.onActionInitiated(async () => {
       if (!props.inCard) setLoadingButton(true);
-      props.handleReserve();
+      props.handleReserve(setLoadingButton);
     });
   };
 

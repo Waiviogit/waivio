@@ -1,3 +1,4 @@
+import Cookie from 'js-cookie';
 import React, { useCallback, useEffect, useState } from 'react';
 import { Button, Input, message, Modal } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
@@ -6,6 +7,7 @@ import { FormattedMessage, injectIntl } from 'react-intl';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import WAValidator from 'multicoin-address-validator';
+import api from '../../steemConnectAPI';
 
 import TokensSelect from '../SwapTokens/components/TokensSelect';
 import {
@@ -146,7 +148,10 @@ const WithdrawModal = props => {
     }
   };
 
+  // eslint-disable-next-line consistent-return
   const handleWithdraw = async () => {
+    let json = null;
+
     if (pair.symbol === 'WAIV') {
       const data = {
         quantity: String(fromAmount),
@@ -156,39 +161,22 @@ const WithdrawModal = props => {
       };
 
       if (isGuest) {
-        withdrawGuest({ account: userName, data });
-      } else {
-        const { customJsonPayload } = await getWithdrawInfo({ account: userName, data });
-
-        if (!customJsonPayload) return null;
-        window.open(
-          `https://hivesigner.com/sign/custom_json?authority=active&required_auths=["${userName}"]&required_posting_auths=[]&${createQuery(
-            {
-              id: 'ssc-mainnet-hive',
-              json: JSON.stringify(customJsonPayload),
-            },
-          )}`,
-          '_blank',
-        );
+        return withdrawGuest({ account: userName, data });
       }
+      const { customJsonPayload } = await getWithdrawInfo({ account: userName, data });
+
+      if (!customJsonPayload) return null;
+      json = JSON.stringify(customJsonPayload);
     } else {
       // eslint-disable-next-line no-lonely-if
       if (pair.to_coin_symbol === 'HIVE') {
-        window.open(
-          `https://hivesigner.com/sign/custom_json?authority=active&required_auths=["${userName}"]&required_posting_auths=[]&${createQuery(
-            {
-              id: 'ssc-mainnet-hive',
-              json: JSON.stringify({
-                contractName: 'hivepegged',
-                contractAction: 'withdraw',
-                contractPayload: {
-                  quantity: fromAmount.toString(),
-                },
-              }),
-            },
-          )}`,
-          '_blank',
-        );
+        json = JSON.stringify({
+          contractName: 'hivepegged',
+          contractAction: 'withdraw',
+          contractPayload: {
+            quantity: fromAmount.toString(),
+          },
+        });
       } else {
         try {
           const data = await converHiveEngineCoins({
@@ -197,31 +185,49 @@ const WithdrawModal = props => {
             to_coin: pair.to_coin_symbol,
           });
 
-          window.open(
-            `https://hivesigner.com/sign/custom_json?authority=active&required_auths=["${userName}"]&required_posting_auths=[]&${createQuery(
-              {
-                id: 'ssc-mainnet-hive',
-                json: JSON.stringify({
-                  contractName: 'tokens',
-                  contractAction: 'transfer',
-                  contractPayload: {
-                    symbol: pair.from_coin_symbol,
-                    to: pair.from_coin_symbol === 'SWAP.ETH' ? 'swap-eth' : data.account,
-                    quantity: fromAmount.toString(),
-                    memo: pair.from_coin_symbol === 'SWAP.ETH' ? walletAddress : data.memo,
-                  },
-                }),
-              },
-            )}`,
-            '_blank',
-          );
+          json = JSON.stringify({
+            contractName: 'tokens',
+            contractAction: 'transfer',
+            contractPayload: {
+              symbol: pair.from_coin_symbol,
+              to: pair.from_coin_symbol === 'SWAP.ETH' ? 'swap-eth' : data.account,
+              quantity: fromAmount.toString(),
+              memo: pair.from_coin_symbol === 'SWAP.ETH' ? walletAddress : data.memo,
+            },
+          });
         } catch (e) {
           return message.error('Something went wrong!');
         }
       }
     }
+    if (Cookie.get('auth')) {
+      api.broadcast(
+        [
+          [
+            'custom_json',
+            {
+              id: 'ssc-mainnet-hive',
+              required_auths: [userName],
+              json,
+            },
+          ],
+        ],
+        null,
+        'active',
+      );
+    } else {
+      window.open(
+        `https://hivesigner.com/sign/custom_json?authority=active&required_auths=["${userName}"]&required_posting_auths=[]&${createQuery(
+          {
+            id: 'ssc-mainnet-hive',
+            json,
+          },
+        )}`,
+        '_blank',
+      );
 
-    return handleCloseModal();
+      return handleCloseModal();
+    }
   };
 
   const handleToAmoundChange = e => {

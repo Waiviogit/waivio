@@ -7,7 +7,7 @@ import { FormattedMessage } from 'react-intl';
 import { get, isEmpty, isNil } from 'lodash';
 import { ReactSVG } from 'react-svg';
 import { useHistory, useRouteMatch } from 'react-router';
-import { api } from 'steem';
+import api from '../../steemConnectAPI';
 import Popover from '../Popover';
 import PopoverMenu, { PopoverMenuItem } from '../PopoverMenu/PopoverMenu';
 import { dropCategory, replaceBotWithGuestName } from '../../../common/helpers/postHelpers';
@@ -122,6 +122,7 @@ const PostPopoverMenu = ({
   const [isPin, setIsPin] = useState(false);
   const [isRemove, setIsRemove] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
+  const [loadingTras, setLoading] = useState(false);
   const [wobjName, setWobjName] = useState('');
   const [inBlackList, setInBlackList] = useState(post.blacklisted);
   const [loadingType, setLoadingType] = useState('');
@@ -215,25 +216,33 @@ const PostPopoverMenu = ({
 
   const handleDeletePost = () => {
     if (Cookie.get('auth')) {
-      api.broadcast([
-        [
-          'delete_comment',
-          {
-            author,
-            permlink: post.permlink,
-          },
-        ],
-      ]);
-    } else if (isGuest) {
-      deletePost({ root_author: post.root_author, permlink: post.permlink, userName });
+      setLoading(true);
+      api
+        .broadcast([
+          [
+            'delete_comment',
+            {
+              author,
+              permlink: post.permlink,
+            },
+          ],
+        ])
+        .then(() => {
+          setIsOpen(false);
+          setLoading(false);
+        });
     } else {
-      window.open(
-        `https://hivesigner.com/sign/delete_comment?author=${author}&permlink=${post.permlink}`,
-        '_blank',
-      );
-    }
+      if (isGuest) {
+        deletePost({ root_author: post.root_author, permlink: post.permlink, userName });
+      } else {
+        window.open(
+          `https://hivesigner.com/sign/delete_comment?author=${author}&permlink=${post.permlink}`,
+          '_blank',
+        );
+      }
 
-    setIsOpen(false);
+      setIsOpen(false);
+    }
   };
 
   const handleShare = isTwitter => {
@@ -504,6 +513,9 @@ const PostPopoverMenu = ({
         onCancel={() => setIsOpen(false)}
         onOk={handleDeletePost}
         wrapClassName={'Popover__modal'}
+        okButtonProps={{
+          loading: loadingTras,
+        }}
       >
         Would you like permanently delete your post?
       </Modal>
