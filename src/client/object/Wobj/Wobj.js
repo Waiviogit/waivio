@@ -27,6 +27,7 @@ import WobjectView from './WobjectView';
 import { getHelmetIcon, getSiteName } from '../../../store/appStore/appSelectors';
 import { useSeoInfoWithAppUrl } from '../../../hooks/useSeoInfo';
 import { getWobjectExpertise } from '../../../store/wObjectStore/wobjActions';
+import BusinessObject from '../../social-gifts/BusinessObject/BusinessObject';
 
 const Wobj = ({
   authenticatedUserName: userName,
@@ -103,7 +104,7 @@ const Wobj = ({
 
     if (
       !isSocial ||
-      !['book', 'product', 'person', 'widget', 'page', 'list', 'newsfeed'].includes(
+      !['book', 'product', 'business', 'person', 'widget', 'page', 'list', 'newsfeed'].includes(
         wobject.object_type,
       ) ||
       (isSocial && isEditMode)
@@ -127,6 +128,8 @@ const Wobj = ({
       case 'product':
       case 'person':
         return <SocialProduct toggleViewEditMode={toggleViewEditMode} />;
+      case 'business':
+        return <BusinessObject toggleViewEditMode={toggleViewEditMode} />;
       case 'widget':
         return <WidgetContent wobj={wobject} />;
       case 'page':
