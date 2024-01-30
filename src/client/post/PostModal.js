@@ -113,7 +113,7 @@ class PostModal extends React.Component {
   }
 
   handleShare = shareLink => {
-    window.open(shareLink, '_blank').focus();
+    if (typeof window !== 'undefined') window.open(shareLink, '_blank').focus();
   };
 
   render() {

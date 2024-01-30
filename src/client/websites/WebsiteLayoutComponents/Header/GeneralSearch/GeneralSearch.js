@@ -156,7 +156,8 @@ const GeneralSearch = props => {
   };
 
   const handleSelectOnAutoCompleteDropdown = (value, data) => {
-    if (window?.gtag) window.gtag('event', 'use_search', { debug_mode: true });
+    if (typeof window !== 'undefined' && window?.gtag)
+      window.gtag('event', 'use_search', { debug_mode: true });
     let redirectUrl = '';
 
     switch (data.props.marker) {

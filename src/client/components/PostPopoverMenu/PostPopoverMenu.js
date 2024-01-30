@@ -234,12 +234,11 @@ const PostPopoverMenu = ({
     } else {
       if (isGuest) {
         deletePost({ root_author: post.root_author, permlink: post.permlink, userName });
-      } else {
+      } else if (typeof window !== 'undefined')
         window.open(
           `https://hivesigner.com/sign/delete_comment?author=${author}&permlink=${post.permlink}`,
           '_blank',
         );
-      }
 
       setIsOpen(false);
     }
@@ -273,11 +272,11 @@ const PostPopoverMenu = ({
           )}" ${authorTwitter} ${objectTwitter}`;
           const twitterShareURL = getTwitterShareURL(shareTextSocialTwitter, postURL, hashtags);
 
-          window.open(twitterShareURL, '_blank').focus();
+          if (typeof window !== 'undefined') window.open(twitterShareURL, '_blank').focus();
         } else {
           const facebookShareURL = getFacebookShareURL(postURL);
 
-          window.open(facebookShareURL, '_blank').focus();
+          if (typeof window !== 'undefined') window.open(facebookShareURL, '_blank').focus();
         }
       });
     } else {
@@ -291,11 +290,11 @@ const PostPopoverMenu = ({
         }"`;
         const twitterShareURL = getTwitterShareURL(shareTextSocialTwitter, postURL);
 
-        window.open(twitterShareURL, '_blank').focus();
+        if (typeof window !== 'undefined') window.open(twitterShareURL, '_blank').focus();
       } else {
         const facebookShareURL = getFacebookShareURL(postURL);
 
-        window.open(facebookShareURL, '_blank').focus();
+        if (typeof window !== 'undefined') window.open(facebookShareURL, '_blank').focus();
       }
     }
   };

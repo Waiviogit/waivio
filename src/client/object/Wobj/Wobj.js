@@ -63,7 +63,7 @@ const Wobj = ({
 
     dispatch(getWobjectExpertise(newsFilter, params.name));
 
-    if (!isEmpty(wobject) && window?.gtag)
+    if (!isEmpty(wobject) && typeof window !== 'undefined' && window?.gtag)
       window.gtag('event', `view_${objectType}`, { debug_mode: true });
   }, [wobject.author_permlink]);
 

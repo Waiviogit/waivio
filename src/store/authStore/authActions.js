@@ -92,7 +92,7 @@ export const logout = () => (dispatch, getState, { busyAPI, steemConnectAPI }) =
         });
       }
 
-      if (window.gapi && window.gapi.auth2) {
+      if (typeof window !== 'undefined' && window.gapi && window.gapi.auth2) {
         const authInstance = window.gapi.auth2.getAuthInstance();
 
         if (authInstance.isSignedIn && authInstance.isSignedIn.get()) authInstance.signOut();

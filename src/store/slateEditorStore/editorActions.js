@@ -436,7 +436,8 @@ export function createPost(postData, beneficiaries, isReview, campaign) {
           } else {
             setTimeout(() => dispatch(push(`/@${author}`)), 3000);
           }
-          if (window?.gtag) window.gtag('event', 'publish_post', { debug_mode: true });
+          if (typeof window !== 'undefined' && window?.gtag)
+            window.gtag('event', 'publish_post', { debug_mode: true });
 
           if (result.status === 429) {
             dispatch(notify(`To many comments from ${authUser.name} in queue`, 'error'));
