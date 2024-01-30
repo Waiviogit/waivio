@@ -40,7 +40,7 @@ import SocialProductActions from '../SocialProduct/SocialProductActions/SocialPr
 import PicturesSlider from '../SocialProduct/PicturesSlider/PicturesSlider';
 import ProductRewardCard from '../ShopObjectCard/ProductRewardCard/ProductRewardCard';
 import SocialProductDescription from '../SocialProduct/SocialProductDescription/SocialProductDescription';
-import SocialMenuItems from '../SocialProduct/SocialMenuItems/SocialMenuItems';
+import BusinessMenuItemsList from './BusinessMenuItems/BusinessMenuItemsList';
 import ObjectsSlider from '../SocialProduct/ObjectsSlider/ObjectsSlider';
 import SocialTagCategories from '../SocialProduct/SocialTagCategories/SocialTagCategories';
 import SocialProductReviews from '../SocialProduct/SocialProductReviews/SocialProductReviews';
@@ -377,6 +377,7 @@ const BusinessObject = ({
                 wobject={wobject}
               />
             )}
+            {!isEmpty(menuItem) && <BusinessMenuItemsList menuItem={menuItem} />}
             {!isEmpty(wobject.description) && (
               <div className="SocialProduct__aboutItem">
                 <div className="SocialProduct__heading"> About this item</div>
@@ -387,7 +388,6 @@ const BusinessObject = ({
                 />
               </div>
             )}
-            {!isEmpty(menuItem) && <SocialMenuItems menuItem={menuItem} />}
             {!isEmpty(references) &&
               references?.map(ref => (
                 <ObjectsSlider key={ref[0]} objects={ref[1]} title={`${ref[0]}s`} name={ref[0]} />

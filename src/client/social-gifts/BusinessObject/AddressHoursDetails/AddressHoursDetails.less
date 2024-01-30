@@ -3,46 +3,73 @@
 
 .AddressHoursDetails {
   display: flex;
-  justify-content: space-between;
-  align-items: stretch;
+  flex-direction: column;
+  margin-bottom: 15px;
+
+  @media @small {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: stretch;
+  }
 
   &__block {
     font-size: 18px;
-    padding: 16px;
+    padding: 16px 16px 16px 0;
     display: flex;
-    min-height: 200px;
+    min-height: fit-content;
     flex-direction: column;
-    align-items: center;
+    align-items: start;
     width: -webkit-fill-available;
-    &--with-map {
-      font-size: 18px;
-      padding: 16px;
-      display: flex;
-      min-height: 350px;
-      flex-direction: column;
+    @media @small {
       align-items: center;
+      min-height: 200px;
+      padding: 16px 16px 16px 16px;
+    }
+    &--with-map {
+      min-height: fit-content;
+      font-size: 18px;
+      padding: 16px 16px 16px 0;
+      display: flex;
+      flex-direction: column;
+      align-items: start;
       width: -webkit-fill-available;
+      @media @small {
+        align-items: center;
+        min-height: 350px;
+        padding: 16px 16px 16px 16px;
+      }
     }
     &-title {
       line-height: 3;
       display: flex;
-      justify-content: center;
+      justify-content: start;
       padding-bottom: 8px;
       text-transform: uppercase;
       font-weight: 600;
       font-size: 18px;
       color: @black;
+      @media @small {
+        justify-content: center;
+      }
     }
     &-content {
-      text-align: center;
+      text-align: start;
+      @media @small {
+        text-align: center;
+      }
     }
   }
   &__block-map {
     font-size: 18px;
-    padding: 16px;
     display: flex;
+    padding: 16px 16px 16px 0;
     flex-direction: column;
     min-height: 270px;
     width: -webkit-fill-available;
+    @media @small {
+      min-height: 350px;
+      padding: 16px 16px 16px 16px;
+    }
   }
 }

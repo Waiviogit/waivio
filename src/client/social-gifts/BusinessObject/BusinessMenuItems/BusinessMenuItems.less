@@ -1,0 +1,63 @@
+@import (reference) '../../../styles/custom.less';
+@import (reference) '../../../styles/modules/variables.less';
+.BusinessMenuItems {
+  display: flex;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  padding: 10px;
+  flex-direction: column;
+  background: #fafbfc;
+  //box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.12);
+  border-top: solid 1px @white-gainsboro;
+  border-bottom: solid 1px @white-gainsboro;
+  width: 100%;
+  margin-bottom: 15px;
+  @media @small {
+    display: flex;
+    flex-direction: row;
+  }
+  &__popover-item {
+    width: 280px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    font-size: 18px;
+  }
+  &__popover {
+    .ant-popover-inner {
+      overflow: scroll;
+    }
+    .PopoverMenuItem {
+      text-transform: uppercase;
+      height: 40px;
+      color: var(--website-color);
+      padding: 0;
+      width: 280px;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+  }
+
+  &__item {
+    display: inline-block;
+    text-transform: uppercase;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 350px;
+    text-align: center;
+    cursor: pointer;
+    color: var(--website-color);
+    padding: 10px;
+    font-size: 18px;
+    font-weight: 500;
+
+    @media @small {
+      font-size: 20px;
+      width: 280px;
+      padding: 20px 10px;
+    }
+  }
+}
