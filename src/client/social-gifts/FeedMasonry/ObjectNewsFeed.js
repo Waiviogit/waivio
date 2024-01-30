@@ -94,7 +94,7 @@ const ObjectNewsFeed = ({ wobj }) => {
       getPostsList();
     }
 
-    if (window.gtag)
+    if (typeof window !== 'undefined' && window.gtag)
       window.gtag('event', getObjectName(getObjectName(wobj) || getObjectName(currObj)), {
         debug_mode: true,
       });

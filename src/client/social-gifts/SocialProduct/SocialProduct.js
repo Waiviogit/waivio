@@ -214,7 +214,7 @@ const SocialProduct = ({
   };
 
   useEffect(() => {
-    window.scrollTo({ top: scrollHeight, behavior: 'smooth' });
+    if (typeof window !== 'undefined') window.scrollTo({ top: scrollHeight, behavior: 'smooth' });
     if (!isEmpty(wobject.author_permlink)) {
       getAddOnsSimilarRelatedObjects();
       getPublisherManufacturerBrandMerchantObjects();

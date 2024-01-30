@@ -67,7 +67,7 @@ const Checklist = ({
     getObjectAction(pathUrl, userName, locale).then(res => {
       const wObject = res?.value;
 
-      if (wObject?.object_type === 'list' && window.gtag) {
+      if (wObject?.object_type === 'list' && typeof window !== 'undefined' && window.gtag) {
         window.gtag('event', getObjectName(wObject), { debug_mode: true });
       }
       if (history.location.hash) {

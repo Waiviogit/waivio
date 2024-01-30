@@ -45,7 +45,8 @@ const DepartmentsWobjList = ({ getDepartmentsFeed, user, isSocial }) => {
       },
     );
 
-    if (!isMobile()) window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (!isMobile() && typeof window !== 'undefined')
+      window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [match.params.department, match.params.name, user, query.toString(), location.hash]);
 
   useEffect(() => {
@@ -53,7 +54,8 @@ const DepartmentsWobjList = ({ getDepartmentsFeed, user, isSocial }) => {
       if (typeof document !== 'undefined') {
         const listRef = document.querySelector('.UserHeader');
 
-        window.scrollTo({ top: listRef?.offsetHeight || 0, behavior: 'smooth' });
+        if (typeof window !== 'undefined')
+          window.scrollTo({ top: listRef?.offsetHeight || 0, behavior: 'smooth' });
       }
     }
   }, [list.current, loading, department]);
