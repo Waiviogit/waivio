@@ -1,3 +1,4 @@
+import Cookie from 'js-cookie';
 import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
@@ -58,6 +59,7 @@ import { fixedNumber } from '../../../common/helpers/parser';
 import { sendGuestTransferWAIV } from '../../../waivioApi/walletApi';
 import { getRatesList } from '../../../store/ratesStore/ratesSelector';
 import { getUser } from '../../../store/usersStore/usersSelectors';
+import api from '../../steemConnectAPI';
 
 import './Transfer.less';
 
@@ -158,6 +160,7 @@ export default class Transfer extends React.Component {
     sendTo: '',
     title: '',
     permlink: '',
+    waiting: false,
   };
 
   static minAccountLength = 3;
@@ -332,11 +335,12 @@ export default class Transfer extends React.Component {
     const transactionId = uuidv4();
     const userName = to;
     const overpaymentRefund = includes(memo, 'overpayment_refund');
+    const hiveAuth = Cookie.get('auth');
 
     form.validateFields({ force: true }, (errors, values) => {
       if (!errors) {
         const transferQuery = {
-          amount: `${fixedNumber(parseFloat(values.amount))} ${values.currency}`,
+          amount: `${fixedNumber(parseFloat(values.amount), 3)} ${values.currency}`,
           memo,
         };
 
@@ -355,70 +359,100 @@ export default class Transfer extends React.Component {
         if (app && overpaymentRefund && isGuest) transferQuery.app = app;
         if (isTip) transferQuery.memo = memo;
         if (!isString(transferQuery.memo)) transferQuery.memo = JSON.stringify(transferQuery.memo);
+        const isHiveCurrency = Object.keys(Transfer.CURRENCIES).includes(this.state.currency);
+        const json = JSON.stringify({
+          contractName: 'tokens',
+          contractAction: 'transfer',
+          contractPayload: {
+            symbol: this.state.currency,
+            to: transferQuery.to,
+            memo: transferQuery.memo,
+            quantity: fixedNumber(
+              parseFloat(values.amount),
+              this.getFraction(this.state.currency),
+            ).toString(),
+          },
+        });
 
-        if (isGuest) {
-          const isHive = Object.keys(Transfer.CURRENCIES).includes(this.state.currency);
-          const transferMethod = isHive ? sendGuestTransfer : sendGuestTransferWAIV;
+        if (hiveAuth) {
+          const brodc = () =>
+            isHiveCurrency
+              ? api.broadcast([['transfer', { ...transferQuery, from: user.name }]], null, 'active')
+              : api.broadcast(
+                  [
+                    [
+                      'custom_json',
+                      {
+                        required_auths: [user.name],
+                        required_posting_auths: [],
+                        id: 'ssc-mainnet-hive',
+                        json,
+                      },
+                    ],
+                  ],
+                  null,
+                  'active',
+                );
 
-          transferMethod({
-            ...transferQuery,
-            amount: isHive ? transferQuery.amount : +values.amount,
-            account: sponsor,
-          }).then(res => {
-            if (res.result || res.id) {
-              this.props.notify(
-                this.props.intl.formatMessage({
-                  id: 'transaction_message_for_user',
-                  defaultMessage: 'Your transaction is on the way!',
-                }),
-                'success',
-              );
-            } else {
-              this.props.notify(
-                this.props.intl.formatMessage({
-                  id: 'transaction_error_message_for_user',
-                  defaultMessage: 'Transaction failed',
-                }),
-                'error',
-              );
-            }
+          this.setState({ waiting: true });
+
+          brodc().then(() => {
+            this.setState({ waiting: false });
+            this.props.closeTransfer();
           });
         } else {
-          const transferMethod = Object.keys(Transfer.CURRENCIES).includes(this.state.currency)
-            ? window.open(
-                `https://hivesigner.com/sign/transfer?${createQuery(transferQuery)}`,
-                '_blank',
-              )
-            : window.open(
-                `https://hivesigner.com/sign/custom_json?authority=active&required_auths=["${
-                  user.name
-                }"]&required_posting_auths=[]&${createQuery({
-                  id: 'ssc-mainnet-hive',
-                  json: JSON.stringify({
-                    contractName: 'tokens',
-                    contractAction: 'transfer',
-                    contractPayload: {
-                      symbol: this.state.currency,
-                      to: transferQuery.to,
-                      memo: transferQuery.memo,
-                      quantity: fixedNumber(
-                        parseFloat(values.amount),
-                        this.getFraction(this.state.currency),
-                      ).toString(),
-                    },
+          if (isGuest) {
+            const isHive = Object.keys(Transfer.CURRENCIES).includes(this.state.currency);
+            const transferMethod = isHive ? sendGuestTransfer : sendGuestTransferWAIV;
+
+            transferMethod({
+              ...transferQuery,
+              amount: isHive ? transferQuery.amount : +values.amount,
+              account: sponsor,
+            }).then(res => {
+              if (res.result || res.id) {
+                this.props.notify(
+                  this.props.intl.formatMessage({
+                    id: 'transaction_message_for_user',
+                    defaultMessage: 'Your transaction is on the way!',
                   }),
-                })}`,
-                '_blank',
-              );
+                  'success',
+                );
+              } else {
+                this.props.notify(
+                  this.props.intl.formatMessage({
+                    id: 'transaction_error_message_for_user',
+                    defaultMessage: 'Transaction failed',
+                  }),
+                  'error',
+                );
+              }
+            });
+          } else {
+            const transferMethod = isHiveCurrency
+              ? window.open(
+                  `https://hivesigner.com/sign/transfer?${createQuery(transferQuery)}`,
+                  '_blank',
+                )
+              : window.open(
+                  `https://hivesigner.com/sign/custom_json?authority=active&required_auths=["${
+                    user.name
+                  }"]&required_posting_auths=[]&${createQuery({
+                    id: 'ssc-mainnet-hive',
+                    json,
+                  })}`,
+                  '_blank',
+                );
 
-          transferMethod.focus();
-        }
+            transferMethod.focus();
+          }
 
-        if (includes(params, matchPath)) {
-          sendPendingTransferAction({ sponsor, userName, amount, transactionId, memo });
-          setTimeout(() => getPayables(), 1000);
+          if (includes(params, matchPath)) {
+            sendPendingTransferAction({ sponsor, userName, amount, transactionId, memo });
+            setTimeout(() => getPayables(), 1000);
+          }
+          this.props.closeTransfer();
         }
-        this.props.closeTransfer();
       }
     });
   };
@@ -663,6 +697,9 @@ export default class Transfer extends React.Component {
         title={intl.formatMessage({ id: 'transfer_modal_title', defaultMessage: 'Transfer funds' })}
         okText={intl.formatMessage({ id: 'continue', defaultMessage: 'Continue' })}
         cancelText={intl.formatMessage({ id: 'cancel', defaultMessage: 'Cancel' })}
+        okButtonProps={{
+          loading: this.state.waiting,
+        }}
         onOk={this.handleContinueClick}
         onCancel={this.handleCancelClick}
         wrapClassName="Transfer__wrapper"

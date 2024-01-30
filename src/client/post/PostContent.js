@@ -163,7 +163,7 @@ class PostContent extends React.Component {
           `/@${content.guestInfo.userId}/${content.permlink}${window.location.hash}`,
         );
 
-      const el = document.getElementById('comments');
+      const el = document && document.getElementById('comments');
 
       if (el) el.scrollIntoView({ block: 'start' });
     }

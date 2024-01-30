@@ -169,7 +169,7 @@ ThreadsEditor.propTypes = {
   mainThreadHashtag: PropTypes.string,
   name: PropTypes.string,
   isUser: PropTypes.bool,
-  intl: PropTypes.shape,
+  intl: PropTypes.shape(),
   isLoading: PropTypes.bool,
   isEdit: PropTypes.bool,
   inputValue: PropTypes.string.isRequired,

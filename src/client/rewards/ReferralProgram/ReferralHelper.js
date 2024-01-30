@@ -60,13 +60,15 @@ export const widget = username =>
   `<iframe src="https://www.waivio.com/rewards/all/?display=widget!ref=${username}" height="400" width="350" style="border: none;">Can't load Rewards widget.</iframe>`;
 
 export const getCopyTextButtonResult = (setIsCopyButton, username) => {
-  const reservoir = document.createElement('textarea');
+  const reservoir = document && document.createElement('textarea');
 
-  reservoir.value = widget(username);
-  document.body.appendChild(reservoir);
-  reservoir.select();
-  document.execCommand('copy');
-  document.body.removeChild(reservoir);
+  if (typeof document !== 'undefined') {
+    reservoir.value = widget(username);
+    document.body.appendChild(reservoir);
+    reservoir.select();
+    document.execCommand('copy');
+    document.body.removeChild(reservoir);
+  }
 
   return setIsCopyButton(true);
 };

@@ -39,9 +39,12 @@ const BlacklistContentNew = ({
         ids.add,
         users.map(usr => usr.account),
       ),
-    ).then(() => {
-      setMainList([...userList, ...users.map(usr => ({ ...usr, name: usr.account }))]);
-      setUsers([]);
+    ).then(res => {
+      if (!res.value.error) {
+        setMainList([...userList, ...users.map(usr => ({ ...usr, name: usr.account }))]);
+        setUsers([]);
+      }
+
       setLoading(false);
     });
   };

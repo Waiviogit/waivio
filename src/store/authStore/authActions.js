@@ -80,6 +80,7 @@ export const getAuthGuestBalance = () => (dispatch, getState) => {
 export const logout = () => (dispatch, getState, { busyAPI, steemConnectAPI }) => {
   const state = getState();
   let accessToken = Cookie.get('access_token');
+  const hiveAuth = Cookie.get('auth');
 
   if (state.auth.isGuestUser) {
     accessToken = getGuestAccessToken();
@@ -97,6 +98,9 @@ export const logout = () => (dispatch, getState, { busyAPI, steemConnectAPI }) =
         if (authInstance.isSignedIn && authInstance.isSignedIn.get()) authInstance.signOut();
       }
     }
+  } else if (hiveAuth) {
+    Cookie.remove('access_token');
+    Cookie.remove('auth');
   } else {
     steemConnectAPI.revokeToken();
     Cookie.remove('access_token');
@@ -118,8 +122,32 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
   let promise = Promise.resolve(null);
   const guestAccessToken = getGuestAccessToken();
   const isGuest = Boolean(guestAccessToken);
+  const hiveAuthData = parseJSON(Cookie.get('auth'));
 
-  if (isUserLoaded(state)) {
+  if (hiveAuthData) {
+    if (hiveAuthData.expire < Date.now()) {
+      Cookie.remove('auth');
+      Cookie.remove('access_token');
+    } else {
+      promise = new Promise(async resolve => {
+        const account = await waivioAPI.getUserAccount(hiveAuthData.username);
+        const userMetaData = await waivioAPI.getAuthenticatedUserMetadata(hiveAuthData.username);
+        const privateEmail = await getPrivateEmail(hiveAuthData.username);
+        const rewardsTab = await getRewardTab(hiveAuthData.username);
+
+        dispatch(changeAdminStatus(hiveAuthData.username));
+        dispatch(setSignature(userMetaData?.profile?.signature || ''));
+        dispatch(getCurrentCurrencyRate(userMetaData.settings.currency));
+
+        resolve({
+          account,
+          ...rewardsTab,
+          userMetaData,
+          privateEmail,
+        });
+      });
+    }
+  } else if (isUserLoaded(state)) {
     const userMetaData = getAuthenticatedUserMetaData(state);
     const authenticatedUserName = getAuthenticatedUserName(state);
 
@@ -300,7 +328,6 @@ export const updateAuthProfile = (userName, profileDate, his, intl) => (
   const signature = metadata?.profile?.signature;
 
   dispatch(setSignature(signature));
-
   steemConnectAPI
     .broadcast([profileDate])
     .then(res => {

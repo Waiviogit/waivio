@@ -1,3 +1,4 @@
+import Cookie from 'js-cookie';
 import React, { useLayoutEffect, useState } from 'react';
 import { connect, useSelector } from 'react-redux';
 import { FormattedMessage, injectIntl } from 'react-intl';
@@ -5,7 +6,7 @@ import { Form, Icon, Modal, Radio, message } from 'antd';
 import { isEmpty, get } from 'lodash';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-
+import api from '../../steemConnectAPI';
 import {
   changetTokens,
   getSwapList,
@@ -55,6 +56,7 @@ const SwapTokens = props => {
   const [param, setParams] = useState(0);
   const [json, setJson] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [waiting, setWaiting] = useState(false);
   const disable = Boolean(props.bdPair);
   const arrowButtonClassList = classNames('SwapTokens__arrow', {
     'SwapTokens__arrow--disabled': disable,
@@ -183,18 +185,41 @@ const SwapTokens = props => {
   const handleClickBalanceTo = value => handleChangeToValue(value);
 
   const handleSwap = async () => {
-    const win = window.open(
-      `https://hivesigner.com/sign/custom_json?authority=active&required_auths=["${
-        props.authUser
-      }"]&required_posting_auths=[]&${createQuery({
-        id: 'ssc-mainnet-hive',
-        json,
-      })}`,
-      '_blank',
-    );
+    if (Cookie.get('auth')) {
+      setWaiting(true);
+      api
+        .broadcast(
+          [
+            [
+              'custom_json',
+              {
+                id: 'ssc-mainnet-hive',
+                required_auths: [props.authUser],
+                json,
+              },
+            ],
+          ],
+          null,
+          'active',
+        )
+        .then(() => {
+          handleCloseModal();
+          setWaiting(false);
+        });
+    } else {
+      const win = window.open(
+        `https://hivesigner.com/sign/custom_json?authority=active&required_auths=["${
+          props.authUser
+        }"]&required_posting_auths=[]&${createQuery({
+          id: 'ssc-mainnet-hive',
+          json,
+        })}`,
+        '_blank',
+      );
 
-    win.focus();
-    handleCloseModal();
+      win.focus();
+      handleCloseModal();
+    }
   };
   const estimateValue = HIVE_ENGINE_DEFAULT_SWAP_LIST.includes(props.from.symbol)
     ? fromAmount * rates[props.from.symbol]
@@ -206,7 +231,10 @@ const SwapTokens = props => {
       visible={props.visible}
       onOk={handleSwap}
       onCancel={handleCloseModal}
-      okButtonProps={{ disabled: !fromAmount || !toAmount || insufficientFunds(fromAmount) }}
+      okButtonProps={{
+        disabled: !fromAmount || !toAmount || insufficientFunds(fromAmount),
+        loading: waiting,
+      }}
       okText={props.intl.formatMessage({ id: 'submit', defaultMessage: 'Submit' })}
       wrapClassName="SwapTokens__wrapper"
     >

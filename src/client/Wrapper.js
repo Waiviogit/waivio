@@ -144,8 +144,6 @@ class Wrapper extends React.PureComponent {
     }
     const lang = loadLanguage(activeLocale);
 
-    store.dispatch(login());
-
     return Promise.all([
       store.dispatch(setAppUrl(`https://${req.headers.host}`)),
       store.dispatch(setUsedLocale(lang)),
@@ -182,11 +180,13 @@ class Wrapper extends React.PureComponent {
       this.setState({ prevtLocationPath: location.pathname });
       setSessionData('isWidget', isWidget);
     }
-    document.body.style.setProperty('--website-color', initialColors.marker);
-    document.body.style.setProperty('--website-hover-color', hexToRgb(initialColors.marker, 8));
-    document.body.style.setProperty('--website-text-color', initialColors.text);
-    document.body.style.setProperty('--website-light-color', hexToRgb(initialColors.marker, 1));
 
+    if (typeof document !== 'undefined') {
+      document.body.style.setProperty('--website-color', initialColors.marker);
+      document.body.style.setProperty('--website-hover-color', hexToRgb(initialColors.marker, 8));
+      document.body.style.setProperty('--website-text-color', initialColors.text);
+      document.body.style.setProperty('--website-light-color', hexToRgb(initialColors.marker, 1));
+    }
     this.props.login().then(() => {
       batch(() => {
         this.props.getNotifications();
@@ -227,8 +227,10 @@ class Wrapper extends React.PureComponent {
     const userName = getSessionData('userName');
     const refName = getSessionData('refUser');
 
-    if (this.props.nightmode) document.body.classList.add('nightmode');
-    else document.body.classList.remove('nightmode');
+    if (typeof document !== 'undefined') {
+      if (this.props.nightmode) document.body.classList.add('nightmode');
+      else document.body.classList.remove('nightmode');
+    }
 
     if (this.props.isAuthenticated && refName) {
       const currentRefName = handleRefName(refName);

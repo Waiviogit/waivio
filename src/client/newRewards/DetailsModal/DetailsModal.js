@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { withRouter } from 'react-router-dom';
 import { isEmpty } from 'lodash';
-import { Button, message, Modal } from 'antd';
+import { Button, Modal } from 'antd';
 import { injectIntl } from 'react-intl';
 import { useHistory, useLocation } from 'react-router';
 import PropTypes from 'prop-types';
@@ -80,7 +80,7 @@ const DetailsModal = ({
     }
   }, [proposition?.activationPermlink, userName]);
 
-  const handleClickReserve = () => {
+  const handleClickReserve = cb => {
     let search = `?object=[${getObjectName(requiredObject)}](${requiredObject?.author_permlink})`;
 
     if (!withoutSecondary) {
@@ -92,7 +92,7 @@ const DetailsModal = ({
     search += `&campaign=${proposition._id}`;
 
     if (!proposition?.reserved) {
-      dispatch(reserveProposition(proposition, userName))
+      return dispatch(reserveProposition(proposition, userName))
         .then(() => {
           const urlConfig = {
             pathname: '/editor',
@@ -101,19 +101,18 @@ const DetailsModal = ({
 
           history.push(urlConfig);
         })
-        .catch(e => {
-          message.error(e.error_description);
+        .catch(() => {
+          if (cb) cb(false);
         });
-    } else {
-      const urlConfig = {
-        pathname: '/editor',
-        search,
-      };
-
-      history.push(urlConfig);
     }
+    const urlConfig = {
+      pathname: '/editor',
+      search,
+    };
+
+    return history.push(urlConfig);
   };
-  const onClick = () => onActionInitiated(handleClickReserve);
+  const onClick = cb => onActionInitiated(() => handleClickReserve(cb));
 
   const reserveButton =
     isWaivio || isSocial ? (
@@ -123,8 +122,8 @@ const DetailsModal = ({
         disable={disable}
         reservedDays={proposition?.countReservationDays}
         handleReserveForPopover={() =>
-          dispatch(reserveProposition(proposition, userName)).then(() => {
-            toggleModal();
+          dispatch(reserveProposition(proposition, userName)).then(res => {
+            if (!res.value.error) toggleModal();
 
             return Promise.resolve();
           })

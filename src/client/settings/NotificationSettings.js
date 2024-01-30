@@ -65,6 +65,7 @@ export default class NotificationSettings extends React.Component {
         powerUp: props.settingsNotifications.powerUp,
         objectUpdates: props.settingsNotifications.objectUpdates,
         objectGroupId: props.settingsNotifications.objectGroupId,
+        threadAuthorFollower: props.settingsNotifications.threadAuthorFollower,
       },
 
       isLoading: false,

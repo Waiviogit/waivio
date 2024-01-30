@@ -100,7 +100,7 @@ class Comment extends React.Component {
   focus = () => {
     if (this.self && window) {
       this.self.scrollIntoView(true);
-      document.body.scrollTop -= 54 * 2; // twice the height of Topnav
+      if (typeof document !== 'undefined') document.body.scrollTop -= 54 * 2; // twice the height of Topnav
       this.self.classList.add('Comment--focus');
     }
   };

@@ -41,6 +41,7 @@ export const OBJECT_UPDATES_REJECT = 'objectUpdatesReject';
 export const GROUP_ID_UPDATES = 'groupIdUpdates';
 export const GROUP_ID_UPDATES_REJECT = 'groupIdUpdatesReject';
 export const BELL_THREAD = 'bellThread';
+export const THREAD_AUTHOR_FOLLOWER = 'threadAuthorFollower';
 
 export const PARSED_NOTIFICATIONS = [
   REPLY,
@@ -84,6 +85,7 @@ export const PARSED_NOTIFICATIONS = [
   GROUP_ID_UPDATES,
   GROUP_ID_UPDATES_REJECT,
   BELL_THREAD,
+  THREAD_AUTHOR_FOLLOWER,
 ];
 
 export const BUSY_API_TYPES = {

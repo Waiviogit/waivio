@@ -1612,7 +1612,7 @@
   "mobile_map_description": "Select the initial map focus for the mobile site.",
   "website_colors": "Website colors",
   "select_colors": "Select colors",
-  "google_analytic_tag": "Google Analytics 4 property ID:",
+  "google_analytic_tag": "Google Analytics 4 Property ID:",
   "paste_tag_here": "Paste Measurement ID here",
   "website_performance": "You can monitor website performance using Google Analytics. Please note, that Google Measurement ID should look like G-XXXXXXX.",
   "beneficiary": "Beneficiary",
@@ -2539,7 +2539,7 @@
   "rejected_by_admin": "rejected by admin",
   "rejected_by_moderator": "rejected by moderator",
   "mobnav_list_duplication": "List duplication",
-  "google_search_console_html_verification_tag": "Google Search Console HTML verification tag:",
+  "google_search_console_html_verification_tag": "Google Search Console HTML Verification Tag:",
   "paste_your_meta_tag_here": "Paste your meta tag here",
   "gsc_tag_description_info": "Obtain an HTML verification tag from Google Search Console and enter it here to verify site ownership. This tag will be added to your site's header.",
   "mobnav_descriptions_bot": "Descriptions bot",
@@ -2575,5 +2575,11 @@
   "empty_favorites": "This user doesn't have any favorites.",
   "list_duplication_pause": "The list duplication bot will pause if WAIV voting power on the account drops below the set threshold.",
   "auth_error_message": "Authorization was not successful. Please try again later.",
-  "empty_updates": "No updates found"
+  "empty_updates": "No updates found",
+  "manage_your_public_shopping_favorites": "You can manage your public favorites list in the profile.",
+"followed_user_threads": "Followed user threads",
+"notification_thread_author_follower": "{author} published thread about {names}",
+  "google_ads_config_command": "Google Ads Outbound Click Config Command:",
+  "paste_your_config_here": "Paste your Config Command here (e.g., gtag('config', 'AW-XXXXX');)",
+  "google_ads_config_description_info": "To find the 'config' command in Google Ads, navigate to Tools > Conversions > Outbound Click > Tag Setup > Install Tag Yourself > Google Tag > The Google tag is already installed on all pages..."
 }

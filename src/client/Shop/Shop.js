@@ -26,7 +26,7 @@ const Shop = ({ route }) => {
   const siteName = useSelector(getSiteName);
   const mainObj = useSelector(getMainObj);
   const dispatch = useDispatch();
-  const title = `Shop - ${siteName}`;
+  const title = `Shop`;
   const desc = route.isSocial ? mainObj?.description : 'Find and buy easily. Shop with pleasure!';
   const { canonicalUrl } = useSeoInfo();
 

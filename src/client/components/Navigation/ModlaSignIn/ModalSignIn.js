@@ -5,6 +5,7 @@ import hivesigner from 'hivesigner';
 import { batch, connect, useDispatch } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { isEmpty } from 'lodash';
+import { isMobile } from '../../../../common/helpers/apiHelpers';
 import {
   login,
   busyLogin,
@@ -21,6 +22,7 @@ import { getRate, getRewardFund } from '../../../../store/appStore/appActions';
 import { getRebloggedList } from '../../../../store/reblogStore/reblogActions';
 import GuestSignUpForm from '../GuestSignUpForm/GuestSignUpForm';
 import Spinner from '../../Icon/Loading';
+import HiveAuth from '../../../HiveAuth/HiveAuth';
 import SocialButtons from '../SocialButtons/SocialButtons';
 import SignUpButton from '../SignUpButton/SignUpButton';
 import {
@@ -61,6 +63,7 @@ const ModalSignIn = ({
 }) => {
   const dispatch = useDispatch();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [showQR, setShowQr] = useState('');
   const [userData, setUserData] = useState({});
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -169,47 +172,72 @@ const ModalSignIn = ({
             <Spinner />
           ) : (
             <React.Fragment>
-              <p className="ModalSignIn__rules">
-                {intl.formatMessage({
-                  id: 'sing_in_modal_message',
-                  defaultMessage: 'Waivio is powered by the Hive open social blockchain',
-                })}
-              </p>
-              <p className="ModalSignIn__title ModalSignIn__title--lined">
-                <span>
-                  {intl.formatMessage({
-                    id: 'steem_accounts',
-                    defaultMessage: 'HIVE ACCOUNTS',
-                  })}
-                </span>
-              </p>
-              <a role="button" href={hiveSinger.getLoginURL()} className="ModalSignIn__signin">
-                <img
-                  src="/images/icons/logo-hive.svg"
-                  alt="hive"
-                  className="ModalSignIn__icon-steemit"
-                />
-                {intl.formatMessage({
-                  id: 'signin_with_steemIt',
-                  defaultMessage: 'HiveSinger',
-                })}
-              </a>
-              <p className="ModalSignIn__title ModalSignIn__title--lined">
-                <span>
-                  {intl.formatMessage({
-                    id: 'guestAccounts',
-                    defaultMessage: 'GUEST ACCOUNTS',
-                  })}
-                </span>
-              </p>
-              <div onClick={handleClickLoading} role="presentation">
-                <SocialButtons
-                  className="ModalSignIn__social"
-                  responseSocial={responseSocial}
-                  lastError={lastError}
-                  setLastError={setLastError}
-                />
-              </div>
+              {showQR ? (
+                <React.Fragment>
+                  <p className="ModalSignIn__rules">
+                    {isMobile()
+                      ? 'Click on the QR Code to open your Hive Keychain Mobile (Hive Authentication app) and approve the request'
+                      : 'Open your Hive Keychain Mobile (Hive Authentication app) to scan the QR Code and approve the request'}
+                  </p>
+                  {isMobile() ? (
+                    <a href={new URLSearchParams(showQR).get('data')}>
+                      <img className="ModalSignIn__qr" src={showQR} alt={'qr'} />
+                    </a>
+                  ) : (
+                    <img className="ModalSignIn__qr" src={showQR} alt={'qr'} />
+                  )}
+                </React.Fragment>
+              ) : (
+                <React.Fragment>
+                  <p className="ModalSignIn__rules">
+                    {intl.formatMessage({
+                      id: 'sing_in_modal_message',
+                      defaultMessage: 'Waivio is powered by the Hive open social blockchain',
+                    })}
+                  </p>
+                  <p className="ModalSignIn__title ModalSignIn__title--lined">
+                    <span>
+                      {intl.formatMessage({
+                        id: 'steem_accounts',
+                        defaultMessage: 'HIVE ACCOUNTS',
+                      })}
+                    </span>
+                  </p>
+                  <a role="button" href={hiveSinger.getLoginURL()} className="ModalSignIn__signin">
+                    <img
+                      src="/images/icons/logo-hive.svg"
+                      alt="hive"
+                      className="ModalSignIn__icon-steemit"
+                    />
+                    {intl.formatMessage({
+                      id: 'signin_with_steemIt',
+                      defaultMessage: 'HiveSinger',
+                    })}
+                  </a>
+                  <HiveAuth
+                    onCloseSingIn={setIsModalOpen}
+                    setQRcodeForAuth={url => setShowQr(url)}
+                    text={'HiveAuth'}
+                  />
+                  <p className="ModalSignIn__title ModalSignIn__title--lined">
+                    <span>
+                      {intl.formatMessage({
+                        id: 'guestAccounts',
+                        defaultMessage: 'GUEST ACCOUNTS',
+                      })}
+                    </span>
+                  </p>
+                  <div onClick={handleClickLoading} role="presentation">
+                    <SocialButtons
+                      className="ModalSignIn__social"
+                      responseSocial={responseSocial}
+                      lastError={lastError}
+                      setLastError={setLastError}
+                    />
+                  </div>
+                </React.Fragment>
+              )}
+
               <p className="ModalSignIn__rules">
                 {intl.formatMessage({
                   id: 'sing_in_modal_rules',
@@ -262,6 +290,7 @@ const ModalSignIn = ({
     setIsShowSignInModal(false);
     setIsFormVisible(false);
     handleLoginModalCancel();
+    setShowQr('');
   };
 
   const onSignUpClick = isOpen => {

@@ -68,7 +68,9 @@ export const reserveProposition = (proposition, username) => async (
   return new Promise((resolve, reject) => {
     steemConnectAPI
       .broadcast([commentOp])
-      .then(async () => {
+      .then(async res => {
+        if (res.error) reject();
+
         if (isGuest) {
           setTimeout(() => {
             dispatch(changeRewardsTab(username));

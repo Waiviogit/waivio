@@ -43,11 +43,11 @@ class MapObjectInfo extends React.Component {
   }
 
   componentDidMount() {
-    document.addEventListener('click', this.handleClick);
+    if (typeof document !== 'undefined') document.addEventListener('click', this.handleClick);
   }
 
   componentWillUnmount() {
-    document.removeEventListener('click', this.handleClick);
+    if (typeof document !== 'undefined') document.removeEventListener('click', this.handleClick);
   }
 
   handleClick = () => {

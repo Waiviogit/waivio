@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import _ from 'lodash';
+import _, { has, isEmpty } from 'lodash';
 import { FormattedMessage } from 'react-intl';
 import { connect } from 'react-redux';
 import * as notificationConstants from '../../common/constants/notifications';
@@ -48,11 +48,7 @@ class Notifications extends React.Component {
     const { userMetaData, notifications, currentAuthUsername } = this.props;
 
     if (!_.isEmpty(notifications)) {
-      this.props.notifications.forEach(notification =>
-        this.getObjectInfoAsync(notification).then(r =>
-          this.setState({ objNames: { ...this.state.objNames, [notification.authorPermlink]: r } }),
-        ),
-      );
+      this.getNotificationsObjectNames(notifications);
     }
     if (_.isEmpty(userMetaData)) {
       this.props.getUpdatedUserMetadata();
@@ -63,20 +59,49 @@ class Notifications extends React.Component {
     }
   }
   componentDidUpdate(prevProps) {
-    if (prevProps.notifications !== this.props.notifications) {
-      if (!_.isEmpty(this.props.notifications) && _.isEmpty(this.state.objNames)) {
-        this.props.notifications.forEach(notification =>
-          this.getObjectInfoAsync(notification).then(r =>
-            this.setState({
-              objNames: { ...this.state.objNames, [notification.authorPermlink]: r },
-            }),
-          ),
-        );
+    const { notifications } = this.props;
+
+    if (prevProps.notifications.length !== notifications.length) {
+      if (!_.isEmpty(notifications) && _.isEmpty(this.state.objNames)) {
+        this.getNotificationsObjectNames(notifications);
       }
     }
   }
 
-  // eslint-disable-next-line consistent-return
+  getNotificationsObjectNames = notifications => {
+    const searchArr = [];
+
+    notifications.forEach(notification => {
+      if (notification.type === notificationConstants.THREAD_AUTHOR_FOLLOWER) {
+        notification?.hashtags?.forEach(h => {
+          if (!searchArr.includes(h)) {
+            searchArr.push(h);
+          }
+        });
+      } else if (notification.type === notificationConstants.BELL_THREAD) {
+        if (!searchArr.includes(notification.authorPermlink)) {
+          searchArr.push(notification.authorPermlink);
+          this.getObjectInfoAsync(notification).then(r => {
+            this.setState({
+              objNames: { ...this.state.objNames, [notification.authorPermlink]: r },
+            });
+          });
+        }
+      }
+    });
+
+    if (!_.isEmpty(searchArr))
+      this.getObjectInfoAsync(searchArr).then(r => {
+        r?.forEach(obj =>
+          this.setState({
+            objNames: {
+              ...this.state.objNames,
+              [obj.author_permlink]: obj.name || obj.default_name,
+            },
+          }),
+        );
+      });
+  };
   getObjectInfoAsync = async notif => {
     if (notif.type === notificationConstants.BELL_THREAD) {
       try {
@@ -88,10 +113,21 @@ class Notifications extends React.Component {
 
         return '';
       }
+    } else {
+      try {
+        const result = await getObjectInfo(notif);
+
+        return result.wobjects;
+      } catch (error) {
+        console.error(error);
+
+        return '';
+      }
     }
   };
   render() {
     const { notifications, currentAuthUsername, userMetaData, loadingNotifications } = this.props;
+    const { objNames } = this.state;
     const lastSeenTimestamp = _.get(userMetaData, 'notifications_last_timestamp');
 
     return (
@@ -207,6 +243,29 @@ class Notifications extends React.Component {
                           {this.state.objNames[notification.authorPermlink]}
                         </span>
                       ),
+                    }}
+                    key={key}
+                    notification={notification}
+                    read={read}
+                    onClick={this.handleNotificationsClick}
+                  />
+                );
+              case notificationConstants.THREAD_AUTHOR_FOLLOWER:
+                const hashtagsArr = !isEmpty(notification?.hashtags)
+                  ? notification?.hashtags?.map(h => objNames[h])
+                  : [];
+                const mentionsArr = has(notification, 'mentions') ? notification?.mentions : [];
+                const namesArray = [...mentionsArr, ...hashtagsArr];
+
+                return (
+                  <NotificationTemplate
+                    url={`/@${notification.author}/threads`}
+                    username={notification.author}
+                    id="notification_thread_author_follower"
+                    defaultMessage="{author} published thread about {names}"
+                    values={{
+                      author: <span className="username">{notification.author}</span>,
+                      names: <span className="username">{namesArray.join(', ')}</span>,
                     }}
                     key={key}
                     notification={notification}

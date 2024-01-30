@@ -48,7 +48,7 @@ const ObjectNewsFeed = ({ wobj }) => {
   const dispatch = useDispatch();
   const { name } = useParams();
   const location = useLocation();
-  const title = `${getObjectName(wobj)} - ${siteName}`;
+  const title = `${getObjectName(wobj)}`;
   const { canonicalUrl, descriptionSite } = useSeoInfoWithAppUrl(wobj.canonical);
   const desc = wobj?.description || descriptionSite || siteName;
   const image = getObjectAvatar(wobj) || favicon;

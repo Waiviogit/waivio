@@ -103,6 +103,8 @@ export const showGoogleGSCTagError = tag => {
       metaTags.length > 1)
   );
 };
+export const showGoogleAdsConfigError = str =>
+  !isEmpty(str) && (!str.includes('gtag') || !str.includes('config'));
 export const showGoogleEventSnippetError = tag => {
   const openingScriptRegex = /<script[^>]*>/g;
   const closingScriptRegex = /<\/script>/g;

@@ -69,7 +69,8 @@ export default class ReduxInfiniteScroll extends React.Component {
       let windowScrollLeft =
         window.pageXOffset !== undefined
           ? window.pageXOffset
-          : (document.documentElement || document.body?.parentNode || document.body).scrollLeft;
+          : document &&
+            (document.documentElement || document.body?.parentNode || document.body).scrollLeft;
       let elTotalWidth = leftPosition(el) + el.offsetWidth;
 
       return elTotalWidth - windowScrollLeft - window.innerWidth;
@@ -78,7 +79,8 @@ export default class ReduxInfiniteScroll extends React.Component {
     let windowScrollTop =
       window.pageYOffset !== undefined
         ? window.pageYOffset
-        : (document.documentElement || document.body?.parentNode || document.body).scrollTop;
+        : document &&
+          (document.documentElement || document.body?.parentNode || document.body).scrollTop;
     let elTotalHeight = topPosition(el) + el.offsetHeight;
 
     return elTotalHeight - windowScrollTop - window.innerHeight;

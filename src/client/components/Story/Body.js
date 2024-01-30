@@ -65,6 +65,7 @@ export function getHtml(
       parsedJsonMetadata.image.push(img);
     }
   });
+
   const videoPreviewResult = parsedBody.match(videoPreviewRegex);
 
   if (videoPreviewResult) {
@@ -167,13 +168,15 @@ export function getHtml(
 
 const Body = props => {
   useEffect(() => {
-    Array.from(document.body.getElementsByTagName('img')).forEach(imgNode => {
-      // eslint-disable-next-line no-param-reassign
-      imgNode.onerror = () => {
+    if (typeof document !== 'undefined') {
+      Array.from(document.body.getElementsByTagName('img')).forEach(imgNode => {
         // eslint-disable-next-line no-param-reassign
-        imgNode.src = imgNode.alt;
-      };
-    });
+        imgNode.onerror = () => {
+          // eslint-disable-next-line no-param-reassign
+          imgNode.src = imgNode.alt;
+        };
+      });
+    }
   }, []);
 
   const location = useLocation();
