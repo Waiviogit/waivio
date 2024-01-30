@@ -2,21 +2,25 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { has } from 'lodash';
+import { useHistory } from 'react-router';
 
 const BusinessMenuItem = ({ item, className }) => {
   const itemBody = JSON.parse(item.body);
-  const pageType = ['list', 'page', 'webpage'].includes(itemBody.objectType)
-    ? 'checklist'
-    : 'object';
-  const linkHref = has(itemBody, 'linkToObject')
-    ? `/${pageType}/${itemBody.linkToObject}`
-    : itemBody.linkToWeb;
+  const history = useHistory();
+  // eslint-disable-next-line consistent-return
+  const getLink = i => {
+    const pageType = ['list', 'page', 'webpage'].includes(i.objectType) ? 'checklist' : 'object';
+
+    if (has(i, 'linkToWeb')) {
+      window.open(i.linkToWeb);
+    } else {
+      return history.push(`/${pageType}/${i.linkToObject}`);
+    }
+  };
 
   return (
     <div className={className || 'BusinessMenuItems__item'}>
-      <Link target={'_blank'} to={linkHref}>
-        {itemBody.title}
-      </Link>
+      <Link onClick={() => getLink(itemBody)}>{itemBody.title}</Link>
     </div>
   );
 };

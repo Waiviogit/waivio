@@ -17,6 +17,7 @@ import {
 import { getActiveCategory, getActiveOption } from '../../../store/optionsStore/optionsSelectors';
 import {
   getObject as getObjectState,
+  getObjectExpertiseUsers,
   getWobjectAuthors,
 } from '../../../store/wObjectStore/wObjectSelectors';
 import { getObjectAlbums, getRelatedPhotos } from '../../../store/galleryStore/gallerySelectors';
@@ -52,6 +53,7 @@ import BusinessDetails from './BusinessDetails/BusinessDetails';
 import './BusinessObject.less';
 import AddressHoursDetails from './AddressHoursDetails/AddressHoursDetails';
 import Breadcrumbs from '../Breadcrumbs/Breadcrumbs';
+import Experts from './Experts/Experts';
 
 const BusinessObject = ({
   userName,
@@ -73,6 +75,7 @@ const BusinessObject = ({
   resetWobjGallery,
   isEditMode,
   toggleViewEditMode,
+  experts,
 }) => {
   const [reward, setReward] = useState([]);
   const [references, setReferences] = useState([]);
@@ -392,6 +395,9 @@ const BusinessObject = ({
               references?.map(ref => (
                 <ObjectsSlider key={ref[0]} objects={ref[1]} title={`${ref[0]}s`} name={ref[0]} />
               ))}
+            {!isEmpty(experts) && (
+              <Experts key={'experts'} experts={experts} title={`experts`} name={'experts'} />
+            )}
             {!isEmpty(tagCategoriesList) && (
               <div className="SocialProduct__featuresContainer">
                 <div className="SocialProduct__heading">Tags</div>
@@ -420,6 +426,7 @@ BusinessObject.propTypes = {
   authenticated: PropTypes.bool,
   authors: PropTypes.arrayOf(),
   albums: PropTypes.arrayOf(),
+  experts: PropTypes.arrayOf(),
   relatedAlbum: PropTypes.shape(),
   optionClicked: PropTypes.bool,
   helmetIcon: PropTypes.string,
@@ -447,6 +454,7 @@ const mapStateToProps = state => ({
   authenticated: getIsAuthenticated(state),
   optionClicked: getIsOptionClicked(state),
   helmetIcon: getHelmetIcon(state),
+  experts: getObjectExpertiseUsers(state),
 });
 
 const mapDispatchToProps = dispatch => ({

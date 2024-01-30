@@ -79,7 +79,7 @@ const WobjectContainer = props => {
           !props.isSocial
         ) {
           props.getNearbyObjects(name);
-          props.getWobjectExpertise(newsFilter, name);
+          props.getWobjectExpertise(newsFilter, name, true);
           props.getObjectFollowers({
             object: name,
             skip: 0,
@@ -219,6 +219,7 @@ WobjectContainer.fetchData = async ({ store, match }) => {
       getWobjectExpertiseAction(
         match.params[1] === 'newsFilter' ? { newsFilter: match.params.itemId } : {},
         objName,
+        true,
       ),
     ),
   ]);

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { isEmpty, take, takeRight } from 'lodash';
+import { has, isEmpty, take, takeRight } from 'lodash';
 import { Icon } from 'antd';
+import { useHistory } from 'react-router';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import BusinessMenuItem from './BusinessMenuItem';
@@ -21,6 +22,7 @@ const BusinessMenuItemsList = ({ menuItem, intl }) => {
     menuItems,
     menuItem.map(i => i.permlink),
   );
+  const history = useHistory();
   const lastItemsLength = linkList.length - listLength;
   const lastItems = takeRight(linkList, lastItemsLength);
   const handleMoreMenuVisibleChange = vis => setVisible(vis);
@@ -48,12 +50,19 @@ const BusinessMenuItemsList = ({ menuItem, intl }) => {
                 overlayStyle={{ position: 'fixed' }}
                 content={
                   <PopoverMenu
-                    onSelect={(i, type) => {
-                      if (type === 'blank') {
-                        window.location.replace(i);
+                    onSelect={(i, itemBody) => {
+                      const pageType = ['list', 'page', 'webpage'].includes(itemBody.objectType)
+                        ? 'checklist'
+                        : 'object';
+                      const linkHref = has(itemBody, 'linkToObject')
+                        ? `/${pageType}/${itemBody.linkToObject}`
+                        : itemBody.linkToWeb;
+
+                      if (has(itemBody, 'linkToWeb')) {
+                        window.open(itemBody.linkToWeb);
                       } else {
                         setVisible(false);
-                        history.push(i);
+                        history.push(linkHref);
                       }
                     }}
                   >
@@ -61,7 +70,7 @@ const BusinessMenuItemsList = ({ menuItem, intl }) => {
                       const itemBody = JSON.parse(i.body);
 
                       return (
-                        <PopoverMenuItem key={itemBody.permlink} data={itemBody.title}>
+                        <PopoverMenuItem key={itemBody.permlink} data={itemBody}>
                           <BusinessMenuItem
                             className={'BusinessMenuItems__popover-item'}
                             item={i}
