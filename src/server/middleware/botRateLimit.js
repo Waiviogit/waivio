@@ -4,17 +4,26 @@ import { REDIS_KEYS } from '../../common/constants/ssrData';
 import { getAsync, incrExpire } from '../redis/redisClient';
 import TOO_MANY_REQ_PAGE from '../pages/tooManyrequestsPage';
 
+const { NODE_ENV } = process.env;
+
 const DAILY_LIMIT = 2500;
 
 const googleList = ['(?<! (?:channel/|google/))google(?!(app|/google| pixel))'];
 const isGoogleBot = createIsbotFromList(googleList);
 
 const botRateLimit = async (req, res, next) => {
+  const ttlTime = 60 * 60 * 24;
   const userAgent = req.get('User-Agent');
   const bot = isbot(userAgent);
   const googleBot = isGoogleBot(userAgent);
 
   if (!bot) return next();
+
+  if (bot && NODE_ENV === 'staging') {
+    res.set('Retry-After', ttlTime);
+    return res.status(429).send(TOO_MANY_REQ_PAGE);
+  }
+
   if (googleBot) return next();
 
   const hostname = req.hostname;
@@ -24,8 +33,6 @@ const botRateLimit = async (req, res, next) => {
   if (!limitCounter) limitCounter = 0;
   let { result: limit } = await getAsync({ key: REDIS_KEYS.SSR_RATE_LIMIT_BOTS });
   if (!limit) limit = DAILY_LIMIT;
-
-  const ttlTime = 60 * 60 * 24;
 
   if (+limitCounter >= +limit) {
     res.set('Retry-After', ttlTime);
