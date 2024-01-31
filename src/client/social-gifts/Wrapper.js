@@ -114,7 +114,7 @@ const SocialWrapper = props => {
               setItemsForNavigation([
                 {
                   link: createLink(wobject),
-                  name: getObjectName(wobject),
+                  name: 'Home',
                   permlink: wobject?.author_permlink,
                   object_type: wobject?.object_type,
                 },
@@ -353,7 +353,7 @@ SocialWrapper.fetchData = async ({ store, req, url }) => {
                   setItemsForNavigation([
                     {
                       link: createLink(wobject),
-                      name: getObjectName(wobject),
+                      name: 'Home',
                       permlink: wobject?.author_permlink,
                       object_type: wobject?.object_type,
                     },
