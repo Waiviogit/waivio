@@ -37,9 +37,8 @@ const BusinessDetails = ({
     switch (fieldName) {
       case objectFields.phone:
         return (
-          <div className={'phone'}>
-            <Icon type="phone" className="text-icon tel" />
-            {Boolean(params.body) && body}{' '}
+          <div className={'phone mb5px'}>
+            <Icon type="phone" className="text-icon tel" /> {Boolean(params.body) && body}{' '}
             <a href={`tel:${params.number}`} className={body ? 'phone-number' : ''}>
               {params.number}
             </a>
@@ -63,13 +62,13 @@ const BusinessDetails = ({
           </div>
         )}
         {email && (
-          <div>
+          <div className={'BusinessObject__email mb5px'}>
             <Icon type="mail" className="text-icon email" />
             <span>{accessExtend ? email : <a href={`mailto:${email}`}> {email}</a>}</span>
           </div>
         )}
         {website && (
-          <div className="BusinessObject__website field-website ">
+          <div className="BusinessObject__website field-website mb5px ">
             <span className="field-website__title">
               <i className="iconfont icon-link text-icon link" />
               <a target="_blank" rel="noopener noreferrer" href={getLink(website.link)}>
@@ -80,7 +79,7 @@ const BusinessDetails = ({
         )}
         {has(wobject, 'link') && (
           <div className={'BusinessObject__links BusinessObject__margin-b'}>
-            <SocialLinks profile={pickBy(profile, identity)} />
+            <SocialLinks isSocial profile={pickBy(profile, identity)} />
           </div>
         )}
         {!isEmpty(companyIdBody) && (
