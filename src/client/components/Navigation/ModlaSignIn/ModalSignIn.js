@@ -74,7 +74,7 @@ const ModalSignIn = ({
 
   if (!host && typeof location !== 'undefined') host = location.origin;
 
-  const hiveSinger = new hivesigner.Client({
+  const hiveSigner = new hivesigner.Client({
     app: process.env.STEEMCONNECT_CLIENT_ID,
     callbackURL: `${host}/callback`,
   });
@@ -208,7 +208,7 @@ const ModalSignIn = ({
                       })}
                     </span>
                   </p>
-                  <a role="button" href={hiveSinger.getLoginURL()} className="ModalSignIn__signin">
+                  <a role="button" href={hiveSigner.getLoginURL()} className="ModalSignIn__signin">
                     <img
                       src="/images/icons/logo-hive.svg"
                       alt="hive"
@@ -216,7 +216,7 @@ const ModalSignIn = ({
                     />
                     {intl.formatMessage({
                       id: 'signin_with_steemIt',
-                      defaultMessage: 'HiveSinger',
+                      defaultMessage: 'HiveSigner',
                     })}
                   </a>
                   <HiveAuth

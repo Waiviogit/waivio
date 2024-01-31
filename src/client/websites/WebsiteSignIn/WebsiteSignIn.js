@@ -37,7 +37,7 @@ const WebsiteSignIn = props => {
     : location.hostname;
   const url = query.get('host') || location.origin;
   const urlObj = new URL(url);
-  const hiveSinger = new hivesigner.Client({
+  const hiveSigner = new hivesigner.Client({
     app: process.env.STEEMCONNECT_CLIENT_ID,
     callbackURL: `${urlObj.origin}/callback`,
   });
@@ -53,7 +53,7 @@ const WebsiteSignIn = props => {
     }
   }, []);
 
-  const onClickHiveSingerAuthButton = () => {
+  const onClickHiveSignerAuthButton = () => {
     if (window.gtag) window.gtag('event', 'login_hive_singer', { debug_mode: true });
   };
 
@@ -125,17 +125,17 @@ const WebsiteSignIn = props => {
       responseSocial={responseSocial}
       handleFailure={handleFailure}
       loading={loading}
-      hiveSinger={hiveSinger}
+      hiveSigner={hiveSigner}
       websiteName={url}
-      onClickHiveSingerAuthButton={onClickHiveSingerAuthButton}
+      onClickHiveSignerAuthButton={onClickHiveSignerAuthButton}
     />
   ) : (
     <WebsiteSignInModalContent
       responseSocial={responseSocial}
       handleFailure={handleFailure}
       loading={loading}
-      hiveSinger={hiveSinger}
-      onClickHiveSingerAuthButton={onClickHiveSingerAuthButton}
+      hiveSigner={hiveSigner}
+      onClickHiveSignerAuthButton={onClickHiveSignerAuthButton}
     />
   );
 };

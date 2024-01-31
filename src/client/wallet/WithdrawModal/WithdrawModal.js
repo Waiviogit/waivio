@@ -436,7 +436,7 @@ const WithdrawModal = props => {
         <p>
           <FormattedMessage
             id="withdraw_info_part3"
-            defaultMessage="Click the button below to be redirected to HiveSinger to complete your transaction."
+            defaultMessage="Click the button below to be redirected to HiveSigner to complete your transaction."
           />
         </p>
         {isShowScanner && (

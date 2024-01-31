@@ -322,7 +322,7 @@ const SwapTokens = props => {
         <p className="SwapTokens__hiveEngineInfo">
           <FormattedMessage
             id="SwapTokens__hiveEngineInfo"
-            defaultMessage="Click the button below to be redirected to HiveSinger to complete your transaction."
+            defaultMessage="Click the button below to be redirected to HiveSigner to complete your transaction."
           />
         </p>
       </Form>
