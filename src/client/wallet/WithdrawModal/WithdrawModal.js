@@ -7,6 +7,7 @@ import { FormattedMessage, injectIntl } from 'react-intl';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import WAValidator from 'multicoin-address-validator';
+import { fixedNumber } from '../../../common/helpers/parser';
 import api from '../../steemConnectAPI';
 
 import TokensSelect from '../SwapTokens/components/TokensSelect';
@@ -57,6 +58,7 @@ const WithdrawModal = props => {
   const [walletAddress, setWalletAddress] = useState('');
   const [invalidAddress, setInvalidAddress] = useState();
   const [showLinkToHive, setShowLinkToHive] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [delay, setDelay] = useState(0);
   const isError = +pair?.balance < fromAmount;
   const isSwapHiveToHive =
@@ -174,7 +176,7 @@ const WithdrawModal = props => {
           contractName: 'hivepegged',
           contractAction: 'withdraw',
           contractPayload: {
-            quantity: fromAmount.toString(),
+            quantity: fixedNumber(fromAmount, 3).toString(),
           },
         });
       } else {
@@ -201,20 +203,27 @@ const WithdrawModal = props => {
       }
     }
     if (Cookie.get('auth')) {
-      api.broadcast(
-        [
+      setLoading(true);
+      api
+        .broadcast(
           [
-            'custom_json',
-            {
-              id: 'ssc-mainnet-hive',
-              required_auths: [userName],
-              json,
-            },
+            [
+              'custom_json',
+              {
+                id: 'ssc-mainnet-hive',
+                required_auths: [userName],
+                required_posting_auths: [],
+                json,
+              },
+            ],
           ],
-        ],
-        null,
-        'active',
-      );
+          null,
+          'active',
+        )
+        .then(() => {
+          setLoading(false);
+          handleCloseModal();
+        });
     } else {
       window.open(
         `https://hivesigner.com/sign/custom_json?authority=active&required_auths=["${userName}"]&required_posting_auths=[]&${createQuery(
@@ -287,6 +296,7 @@ const WithdrawModal = props => {
             key="Withdraw"
             type="primary"
             onClick={handleWithdraw}
+            loading={loading}
             disabled={
               !fromAmount ||
               !toAmount ||

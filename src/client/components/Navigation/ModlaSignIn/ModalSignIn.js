@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { Modal } from 'antd';
+import { Modal, message } from 'antd';
 import hivesigner from 'hivesigner';
 import { batch, connect, useDispatch } from 'react-redux';
 import { injectIntl } from 'react-intl';
@@ -70,6 +70,7 @@ const ModalSignIn = ({
   const [lastError, setLastError] = React.useState('');
   const colors = useWebsiteColor();
   let host = currHost;
+  let timeOutId;
 
   if (!host && typeof location !== 'undefined') host = location.origin;
 
@@ -180,9 +181,13 @@ const ModalSignIn = ({
                       : 'Open your Hive Keychain Mobile (Hive Authentication app) to scan the QR Code and approve the request'}
                   </p>
                   {isMobile() ? (
-                    <a href={new URLSearchParams(showQR).get('data')}>
-                      <img className="ModalSignIn__qr" src={showQR} alt={'qr'} />
-                    </a>
+                    <center>
+                      <a href={new URLSearchParams(showQR).get('data')}>
+                        <img className="ModalSignIn__qr" src={showQR} alt={'qr'} />
+                      </a>
+                      <p className="ModalSignIn__rules">or</p>
+                      <a href={new URLSearchParams(showQR).get('data')}>Click here</a>
+                    </center>
                   ) : (
                     <img className="ModalSignIn__qr" src={showQR} alt={'qr'} />
                   )}
@@ -215,8 +220,17 @@ const ModalSignIn = ({
                     })}
                   </a>
                   <HiveAuth
-                    onCloseSingIn={setIsModalOpen}
-                    setQRcodeForAuth={url => setShowQr(url)}
+                    onCloseSingIn={open => {
+                      setIsModalOpen(open);
+                      clearTimeout(timeOutId);
+                    }}
+                    setQRcodeForAuth={url => {
+                      setShowQr(url);
+                      timeOutId = setTimeout(() => {
+                        setShowQr('');
+                        message.error('Your qrcode was expired!');
+                      }, 60000);
+                    }}
                     text={'HiveAuth'}
                   />
                   <p className="ModalSignIn__title ModalSignIn__title--lined">
