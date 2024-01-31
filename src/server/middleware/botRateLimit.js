@@ -11,11 +11,26 @@ const DAILY_LIMIT = 2500;
 const googleList = ['(?<! (?:channel/|google/))google(?!(app|/google| pixel))'];
 const isGoogleBot = createIsbotFromList(googleList);
 
+const getIpFromHeaders = req =>
+  process.env.NODE_ENV === 'production'
+    ? req.headers['x-forwarded-for'] || req.headers['x-real-ip']
+    : req.headers['x-real-ip'];
+
 const botRateLimit = async (req, res, next) => {
+  const hostname = req.hostname;
   const ttlTime = 60 * 60 * 24;
   const userAgent = req.get('User-Agent');
   const bot = isbot(userAgent);
   const googleBot = isGoogleBot(userAgent);
+  const ip = getIpFromHeaders(req);
+
+  const statisticsKey = `${REDIS_KEYS.SSR_RATE_STATISTIC_COUNTER}:${hostname}:${
+    bot ? 'bot' : 'user'
+  }:${userAgent}:${ip}`;
+  await incrExpire({
+    key: statisticsKey,
+    ttl: ttlTime,
+  });
 
   if (!bot) return next();
 
@@ -25,8 +40,6 @@ const botRateLimit = async (req, res, next) => {
   }
 
   if (googleBot) return next();
-
-  const hostname = req.hostname;
 
   const key = `${REDIS_KEYS.SSR_RATE_LIMIT_COUNTER}:${hostname}:${userAgent}`;
   let { result: limitCounter } = await getAsync({ key });
