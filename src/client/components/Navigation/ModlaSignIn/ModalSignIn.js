@@ -211,7 +211,7 @@ const ModalSignIn = ({
                     />
                     {intl.formatMessage({
                       id: 'signin_with_steemIt',
-                      defaultMessage: 'HiveSinger',
+                      defaultMessage: 'HiveSigner',
                     })}
                   </a>
                   <HiveAuth
