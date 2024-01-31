@@ -11,8 +11,7 @@ const DAILY_LIMIT = 2500;
 const googleList = ['(?<! (?:channel/|google/))google(?!(app|/google| pixel))'];
 const isGoogleBot = createIsbotFromList(googleList);
 
-const getIpFromHeaders = req =>
-  req.headers['x-forwarded-for'] || req.headers['x-real-ip'] || req.socket.remoteAddress;
+const getIpFromHeaders = req => req.headers['x-forwarded-for'] || req.headers['x-real-ip'];
 
 const botRateLimit = async (req, res, next) => {
   const hostname = req.hostname;
@@ -28,7 +27,7 @@ const botRateLimit = async (req, res, next) => {
 
   await incrExpire({
     key: statisticsKey,
-    ttl: ttlTime,
+    ttl: 60 * 60,
   });
 
   if (!bot) return next();
