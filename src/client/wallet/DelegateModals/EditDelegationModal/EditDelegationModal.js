@@ -131,7 +131,7 @@ const EditDelegationModal = props => {
           Please note that delegations are instant, but it will take {props.token === 'HP' ? 5 : 7}{' '}
           days for the amount to be returned to your account after undelegation.
         </p>
-        <p>Click the button below to be redirected to HiveSinger to complete your transaction.</p>
+        <p>Click the button below to be redirected to HiveSigner to complete your transaction.</p>
       </div>
       <div className="EditDelegationModal__buttons-wrap">
         <Button onClick={props.onCancel} className="EditDelegationModal__cancel-button">

@@ -165,7 +165,7 @@ const DelegateModal = props => {
         <p>
           <FormattedMessage
             id="delegate_modal_info_part4"
-            defaultMessage="Click the button below to be redirected to HiveSinger to complete your transaction."
+            defaultMessage="Click the button below to be redirected to HiveSigner to complete your transaction."
           />
         </p>
       </div>
