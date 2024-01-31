@@ -57,15 +57,15 @@ const BusinessDetails = ({
       <React.Fragment>
         {phones.length > 0 && (
           <div>
-            {phones.map(({ body, number }) => getFieldLayout(objectFields.phone, { body, number }))}{' '}
+            {phones?.map(({ body, number }) =>
+              getFieldLayout(objectFields.phone, { body, number }),
+            )}{' '}
           </div>
         )}
         {email && (
-          <div className="email">
+          <div>
             <Icon type="mail" className="text-icon email" />
-            <span className={'ml2'}>
-              {accessExtend ? email : <a href={`mailto:${email}`}> {email}</a>}
-            </span>
+            <span>{accessExtend ? email : <a href={`mailto:${email}`}> {email}</a>}</span>
           </div>
         )}
         {website && (
