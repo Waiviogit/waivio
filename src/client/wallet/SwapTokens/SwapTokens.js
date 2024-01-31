@@ -195,6 +195,7 @@ const SwapTokens = props => {
               {
                 id: 'ssc-mainnet-hive',
                 required_auths: [props.authUser],
+                required_posting_auths: [],
                 json,
               },
             ],
