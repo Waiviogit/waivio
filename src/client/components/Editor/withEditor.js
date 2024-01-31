@@ -67,7 +67,7 @@ export default function withEditor(WrappedComponent) {
 
       formData.append(currentMethod, blob);
 
-      const currentLocation = window.location.hostname;
+      const currentLocation = window && window.location.hostname;
 
       let url;
 

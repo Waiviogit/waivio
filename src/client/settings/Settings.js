@@ -223,11 +223,13 @@ export default class Settings extends React.Component {
           'success',
         ),
       )
-      .then(() =>
-        window.setTimeout(() => {
-          this.props.history.push(`/@${this.props.user.name}`);
-        }, 1000),
-      );
+      .then(() => {
+        if (typeof window !== 'undefined') {
+          window.setTimeout(() => {
+            this.props.history.push(`/@${this.props.user.name}`);
+          }, 1000);
+        }
+      });
   };
 
   handleLocaleChange = locale => this.setState({ locale });

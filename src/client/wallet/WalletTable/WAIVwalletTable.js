@@ -291,7 +291,7 @@ const WAIVwalletTable = props => {
     const csvContent = `data:text/csv;charset=utf-8,${rows.map(e => e.join(',')).join('\n')}`;
     const encodedUri = encodeURI(csvContent);
 
-    window.open(encodedUri);
+    if (typeof window !== 'undefined') window.open(encodedUri);
   };
 
   return (

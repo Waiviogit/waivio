@@ -63,7 +63,7 @@ const AuthUserBar = props => {
   }
 
   const handleScrollToTop = () => {
-    if (window) {
+    if (typeof window !== 'undefined') {
       window.scrollTo(0, 0);
     }
   };

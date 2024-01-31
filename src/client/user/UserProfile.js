@@ -91,7 +91,7 @@ export default class UserProfile extends React.Component {
           initialLoad: true,
         });
       }
-      window.scrollTo(0, 0);
+      if (typeof window !== 'undefined') window.scrollTo(0, 0);
     }
   }
 

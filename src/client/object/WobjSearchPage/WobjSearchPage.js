@@ -21,7 +21,7 @@ const WobjSearchPage = () => {
   const searchStr = match.params.searchStr;
 
   useEffect(() => {
-    window.scrollTo(0, 0);
+    if (typeof window !== 'undefined') window.scrollTo(0, 0);
 
     searchObjects(searchStr, objType, false, limit, locale, { userName }, null, 0).then(res => {
       setHasMore(res.hasMore);

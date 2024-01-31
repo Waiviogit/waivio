@@ -12,7 +12,7 @@ const BusinessMenuItem = ({ item, className }) => {
     const pageType = ['list', 'page', 'webpage'].includes(i.objectType) ? 'checklist' : 'object';
 
     if (has(i, 'linkToWeb')) {
-      window.open(i.linkToWeb);
+      if (typeof window !== 'undefined') window.open(i.linkToWeb);
     } else {
       return history.push(`/${pageType}/${i.linkToObject}`);
     }

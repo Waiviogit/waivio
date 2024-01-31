@@ -34,7 +34,7 @@ const WebsiteSearch = props => {
 
   const handleSearchAutocomplete = useCallback(
     debounce(value => {
-      if (window.gtag)
+      if (typeof window !== 'undefined' && window.gtag)
         window.gtag('event', `search_${props.searchType.toLowerCase()}`, { debug_mode: true });
 
       props.setWebsiteSearchString(value);

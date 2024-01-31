@@ -47,7 +47,7 @@ const Editor = props => {
     const searchInfo = checkCursorInSearchSlate(editor);
 
     if (searchInfo.isNeedOpenSearch) {
-      if (!props.isShowEditorSearch) {
+      if (typeof window !== 'undefined' && !props.isShowEditorSearch) {
         const nativeSelection = getSelection(window);
         const selectionBoundary = getSelectionRect(nativeSelection);
 
@@ -73,7 +73,7 @@ const Editor = props => {
     const updatedTitleValue = event.target.value;
 
     props.setUpdatedEditorExtendedData({ titleValue: updatedTitleValue });
-    props.onChange(window.slateEditor, updatedTitleValue);
+    if (typeof window !== 'undefined') props.onChange(window.slateEditor, updatedTitleValue);
     if (size(updatedTitleValue) === MAX_LENGTH) {
       message.error(
         props.intl.formatMessage({

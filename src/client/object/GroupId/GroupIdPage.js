@@ -16,7 +16,7 @@ const GroupIdPage = () => {
   const userName = useSelector(getAuthenticatedUserName);
 
   useEffect(() => {
-    window.scrollTo(0, 0);
+    if (typeof window !== 'undefined') window.scrollTo(0, 0);
     getObjectsByGroupId(userName, groupId, 0).then(res => {
       setWobjects(res.wobjects);
       setHasMore(res.hasMore);

@@ -430,11 +430,13 @@ export default class Transfer extends React.Component {
             });
           } else {
             const transferMethod = isHiveCurrency
-              ? window.open(
+              ? window &&
+                window.open(
                   `https://hivesigner.com/sign/transfer?${createQuery(transferQuery)}`,
                   '_blank',
                 )
-              : window.open(
+              : window &&
+                window.open(
                   `https://hivesigner.com/sign/custom_json?authority=active&required_auths=["${
                     user.name
                   }"]&required_posting_auths=[]&${createQuery({
