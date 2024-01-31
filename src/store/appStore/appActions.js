@@ -131,7 +131,7 @@ export const getCurrentAppSettings = () => (dispatch, getState) => {
     .then(res => {
       if (res.redirect) {
         if (typeof window !== 'undefined') {
-          window.location.replace(res.redirect);
+          window.location?.replace(res.redirect);
         }
 
         return null;
