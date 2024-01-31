@@ -12,8 +12,8 @@ const SocialSignInModalContent = ({
   websiteTitle,
   intl,
   loading,
-  hiveSinger,
-  onClickHiveSingerAuthButton,
+  hiveSigner,
+  onClickHiveSignerAuthButton,
   responseSocial,
   handleFailure,
   websiteName,
@@ -68,10 +68,10 @@ const SocialSignInModalContent = ({
             })}
           </h3>
           <SocialGiftsButton
-            socialNetwork={'HiveSinger'}
+            socialNetwork={'HiveSigner'}
             size={'28px'}
-            href={hiveSinger.getLoginURL()}
-            onClick={onClickHiveSingerAuthButton}
+            href={hiveSigner.getLoginURL()}
+            onClick={onClickHiveSignerAuthButton}
           />
 
           <h3
@@ -173,9 +173,9 @@ SocialSignInModalContent.propTypes = {
   intl: PropTypes.shape({
     formatMessage: PropTypes.func,
   }).isRequired,
-  hiveSinger: PropTypes.shape().isRequired,
+  hiveSigner: PropTypes.shape().isRequired,
   loading: PropTypes.bool.isRequired,
-  onClickHiveSingerAuthButton: PropTypes.func.isRequired,
+  onClickHiveSignerAuthButton: PropTypes.func.isRequired,
   websiteTitle: PropTypes.string.isRequired,
   websiteName: PropTypes.string.isRequired,
   handleFailure: PropTypes.func.isRequired,

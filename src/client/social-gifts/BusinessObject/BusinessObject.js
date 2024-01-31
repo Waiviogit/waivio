@@ -336,6 +336,7 @@ const BusinessObject = ({
               </div>
               {showBusinessDetails && (
                 <BusinessDetails
+                  email={email}
                   isEditMode={isEditMode}
                   companyIdBody={companyIdBody}
                   wobject={wobject}

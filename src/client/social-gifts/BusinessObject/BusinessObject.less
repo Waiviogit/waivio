@@ -2,14 +2,18 @@
 @import (reference) '../../styles/modules/variables.less';
 
 .BusinessObject {
-  .twitter-icon {
-    display: inline-block;
-    width: 25px;
-    margin: 6px 4px 0 -4px;
+  &__links {
+    .twitter-icon {
+      display: inline-block;
+      width: 25px;
+      margin: 6px 4px 0 -4px;
+    }
+    .text-icon {
+      font-size: 20px !important;
+      vertical-align: 0 !important;
+    }
   }
-  .text-icon {
-    font-size: 20px !important;
-  }
+
   &__margin-b {
     margin-bottom: 15px;
   }

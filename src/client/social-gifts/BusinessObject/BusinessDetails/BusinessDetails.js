@@ -19,6 +19,7 @@ const BusinessDetails = ({
   website,
   linkField,
   companyIdBody,
+  email,
 }) => {
   const profile = linkField
     ? {
@@ -29,7 +30,7 @@ const BusinessDetails = ({
         github: linkField[linkFields.linkGitHub] || '',
       }
     : {};
-  const accessExtend = haveAccess(wobject, username, accessTypesArr[0]);
+  const accessExtend = haveAccess(wobject, username, accessTypesArr[0]) && isEditMode;
   const getFieldLayout = (fieldName, params) => {
     const { body } = params;
 
@@ -53,46 +54,52 @@ const BusinessDetails = ({
 
   return (
     <div className={'BusinessObject__phone-number'}>
-      {phones.length > 0 && (
-        <React.Fragment>
-          {accessExtend && (
-            <div className={'BusinessObject__margin-b'}>
-              {phones.map(({ body, number }) =>
-                getFieldLayout(objectFields.phone, { body, number }),
-              )}{' '}
-            </div>
-          )}
-          {website && website.title && website.link && (
-            <div className="BusinessObject__website BusinessObject__margin-b field-website ">
-              <span className="field-website__title">
-                <i className="iconfont icon-link text-icon link" />
-                <a target="_blank" rel="noopener noreferrer" href={getLink(website.link)}>
-                  {website.title}
-                </a>
-              </span>
-            </div>
-          )}
-          {has(wobject, 'link') && (
-            <div className={'BusinessObject__margin-b'}>
-              <SocialLinks profile={pickBy(profile, identity)} />
-            </div>
-          )}
-          {!isEmpty(companyIdBody) && (
-            <div className={'BusinessObject__margin-b'}>
-              {!isEditMode
-                ? companyIdBody.length > 0 && <CompanyId companyIdBody={companyIdBody} isSocial />
-                : companyIdBody?.map(obj => (
-                    // eslint-disable-next-line react/jsx-key
-                    <div className="CompanyId__block-item">
-                      <p className="CompanyId__p">{obj.companyIdType}</p>
-                      <p className="CompanyId__p">{obj.companyId}</p>
-                    </div>
-                  ))}
-            </div>
-          )}
-          {!isNil(parent) && <SocialListItem fieldName={objectFields.parent} field={parent} />}
-        </React.Fragment>
-      )}
+      <React.Fragment>
+        {phones.length > 0 && (
+          <div>
+            {phones.map(({ body, number }) => getFieldLayout(objectFields.phone, { body, number }))}{' '}
+          </div>
+        )}
+        {email && (
+          <div className="email">
+            <Icon type="mail" className="text-icon email" />
+            <span className={'ml2'}>
+              {accessExtend ? email : <a href={`mailto:${email}`}> {email}</a>}
+            </span>
+          </div>
+        )}
+        {website && (
+          <div className="BusinessObject__website field-website ">
+            <span className="field-website__title">
+              <i className="iconfont icon-link text-icon link" />
+              <a target="_blank" rel="noopener noreferrer" href={getLink(website.link)}>
+                {website.title}
+              </a>
+            </span>
+          </div>
+        )}
+        {has(wobject, 'link') && (
+          <div className={'BusinessObject__links BusinessObject__margin-b'}>
+            <SocialLinks profile={pickBy(profile, identity)} />
+          </div>
+        )}
+        {!isEmpty(companyIdBody) && (
+          <div className={'BusinessObject__margin-b'}>
+            {!isEditMode
+              ? companyIdBody.length > 0 && <CompanyId companyIdBody={companyIdBody} isSocial />
+              : companyIdBody?.map(obj => (
+                  // eslint-disable-next-line react/jsx-key
+                  <div className="CompanyId__block-item">
+                    <p className="CompanyId__p">{obj.companyIdType}</p>
+                    <p className="CompanyId__p">{obj.companyId}</p>
+                  </div>
+                ))}
+          </div>
+        )}
+        {!isNil(parent) && !isEmpty(parent) && (
+          <SocialListItem fieldName={objectFields.parent} field={parent} />
+        )}
+      </React.Fragment>
     </div>
   );
 };
@@ -105,6 +112,7 @@ BusinessDetails.propTypes = {
   linkField: PropTypes.shape(),
   parent: PropTypes.shape(),
   isEditMode: PropTypes.bool,
+  email: PropTypes.string,
   username: PropTypes.string.isRequired,
 };
 
