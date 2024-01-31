@@ -12,9 +12,7 @@ const googleList = ['(?<! (?:channel/|google/))google(?!(app|/google| pixel))'];
 const isGoogleBot = createIsbotFromList(googleList);
 
 const getIpFromHeaders = req =>
-  process.env.NODE_ENV === 'production'
-    ? req.headers['x-forwarded-for'] || req.headers['x-real-ip']
-    : req.headers['x-real-ip'];
+  req.headers['x-forwarded-for'] || req.headers['x-real-ip'] || req.socket.remoteAddress;
 
 const botRateLimit = async (req, res, next) => {
   const hostname = req.hostname;
@@ -27,6 +25,7 @@ const botRateLimit = async (req, res, next) => {
   const statisticsKey = `${REDIS_KEYS.SSR_RATE_STATISTIC_COUNTER}:${hostname}:${
     bot ? 'bot' : 'user'
   }:${userAgent}:${ip}`;
+
   await incrExpire({
     key: statisticsKey,
     ttl: ttlTime,
