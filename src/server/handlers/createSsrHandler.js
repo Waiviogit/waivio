@@ -28,8 +28,10 @@ const assets = require(process.env.MANIFEST_PATH);
 
 const ssrTimeout = 5000;
 
-const isInheritedHost = host =>
-  !['waivio.com', 'www.waivio.com', 'waiviodev.com', 'social.gifts', 'dining.gifts'].includes(host);
+// const isInheritedHost = host =>
+//   !['waivio.com', 'www.waivio.com', 'waiviodev.com', 'social.gifts', 'dining.gifts'].includes(host);
+
+const isInheritedHost = host => ['shopper-paradise.com'].includes(host);
 
 function createTimeout(timeout, promise) {
   return new Promise((resolve, reject) => {
@@ -53,13 +55,11 @@ export default function createSsrHandler(template) {
       const hostname = req.hostname;
       const searchBot = isbot(req.get('User-Agent'));
 
-      // think about permanent redirect (301) to waivio
-
-      // const inheritedHost = isInheritedHost(hostname);
-      // if (inheritedHost && searchBot) {
-      //   const pageExist = await isPageExistSitemap({ host: hostname, url: req.url });
-      //   if (!pageExist) return res.status(404).send(NOT_FOUND_PAGE);
-      // }
+      const inheritedHost = isInheritedHost(hostname);
+      if (inheritedHost && searchBot) {
+        const pageExist = await isPageExistSitemap({ host: hostname, url: req.url });
+        if (!pageExist) return res.redirect(302, `https://waivio.com${req.url}`);
+      }
 
       if (searchBot) {
         await updateBotCount(req);
