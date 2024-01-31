@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { intersection } from 'lodash';
 import socialProfiles, { transform } from '../../common/helpers/socialProfiles';
 
-const SocialLinks = ({ profile }) => {
+const SocialLinks = ({ profile, isSocial }) => {
   const union = intersection(
     socialProfiles.map(socialProfile => socialProfile.id),
     Object.keys(profile),
@@ -18,7 +18,10 @@ const SocialLinks = ({ profile }) => {
     <div>
       {availableProfiles.map(socialProfile =>
         socialProfile.id === 'twitter' ? (
-          <div key={socialProfile.id} className={'twitter-icon-container'}>
+          <div
+            key={socialProfile.id}
+            className={`${isSocial ? 'mb5px' : ''} twitter-icon-container`}
+          >
             <ReactSVG
               className={'twitter-icon'}
               src="/images/icons/twitter-x.svg"
@@ -33,7 +36,7 @@ const SocialLinks = ({ profile }) => {
             </a>
           </div>
         ) : (
-          <div key={socialProfile.id}>
+          <div key={socialProfile.id} className={isSocial ? 'mb5px' : ''}>
             <i
               className={`iconfont text-icon icon-${socialProfile.icon}`}
               style={{
@@ -56,6 +59,11 @@ const SocialLinks = ({ profile }) => {
 
 SocialLinks.propTypes = {
   profile: PropTypes.shape().isRequired,
+  isSocial: PropTypes.bool,
+};
+
+SocialLinks.defaultProps = {
+  isSocial: false,
 };
 
 export default SocialLinks;
