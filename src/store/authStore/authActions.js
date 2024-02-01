@@ -193,6 +193,7 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
         const privateEmail = await getPrivateEmail(scUserData.name);
         const rewardsTab = await getRewardTab(scUserData.name);
         const { WAIV } = isGuest ? await getGuestWaivBalance(scUserData.name) : {};
+
         dispatch(changeAdminStatus(scUserData.name));
         dispatch(setSignature(scUserData?.user_metadata?.profile?.signature || ''));
         dispatch(getCurrentCurrencyRate(userMetaData.settings.currency));
@@ -358,6 +359,8 @@ export const toggleBots = (bot, isAuthority) => (dispatch, getState, { steemConn
   const user = getAuthenticatedUser(state);
   const bots = getUserAccountsAuth(state);
   const account_auths = isAuthority ? bots.filter(i => i[0] !== bot) : [...bots, [bot, 1]];
+
+  // eslint-disable-next-line no-console
   console.log(user);
   steemConnectAPI.broadcast(
     [

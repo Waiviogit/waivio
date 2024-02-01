@@ -13,6 +13,8 @@ const BusinessMenuItem = ({ item, className }) => {
 
     if (has(i, 'linkToWeb')) {
       if (typeof window !== 'undefined') window.open(i.linkToWeb);
+    } else if (itemBody.objectType === 'shop') {
+      return history.push(`/object-shop/${i.linkToObject}`);
     } else {
       return history.push(`/${pageType}/${i.linkToObject}`);
     }

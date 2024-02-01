@@ -72,7 +72,6 @@ const BusinessObject = ({
   albums,
   relatedAlbum,
   history,
-  resetWobjGallery,
   isEditMode,
   toggleViewEditMode,
   experts,
@@ -168,7 +167,6 @@ const BusinessObject = ({
     setIsLoading(false);
 
     return () => {
-      resetWobjGallery();
       setStoreActiveOpt({});
     };
   }, [wobject.author_permlink]);
@@ -433,7 +431,6 @@ BusinessObject.propTypes = {
   helmetIcon: PropTypes.string,
   setStoreActiveOpt: PropTypes.func,
   resetOptClicked: PropTypes.func,
-  resetWobjGallery: PropTypes.func,
   isEditMode: PropTypes.bool,
   toggleViewEditMode: PropTypes.func,
   brandObject: PropTypes.shape({}),
