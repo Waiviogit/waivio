@@ -1,6 +1,6 @@
 import React from 'react';
 import GoogleLogin from 'react-google-login';
-import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props';
+// import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import Loading from '../../../components/Icon/Loading';
@@ -100,19 +100,19 @@ const SocialSignInModalContent = ({
                 />
               )}
             />
-            <FacebookLogin
-              appId="754038848413420"
-              autoLoad={false}
-              callback={response => responseSocial(response, 'facebook')}
-              disableMobileRedirect
-              render={renderProps => (
-                <SocialGiftsButton
-                  socialNetwork={'Facebook'}
-                  onClick={renderProps.onClick}
-                  size={'23px'}
-                />
-              )}
-            />
+            {/* <FacebookLogin */}
+            {/*  appId="754038848413420" */}
+            {/*  autoLoad={false} */}
+            {/*  callback={response => responseSocial(response, 'facebook')} */}
+            {/*  disableMobileRedirect */}
+            {/*  render={renderProps => ( */}
+            {/*    <SocialGiftsButton */}
+            {/*      socialNetwork={'Facebook'} */}
+            {/*      onClick={renderProps.onClick} */}
+            {/*      size={'23px'} */}
+            {/*    /> */}
+            {/*  )} */}
+            {/* /> */}
           </div>
           <p
             style={{
