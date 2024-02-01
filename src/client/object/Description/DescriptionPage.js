@@ -30,9 +30,7 @@ const DescriptionPage = ({ relatedAlbum, albums }) => {
           top: objectHeaderEl?.offsetHeight,
           behavior: 'smooth',
         });
-    } else {
-      if (typeof window !== 'undefined') window.scrollTo(0, 0);
-    }
+    } else if (typeof window !== 'undefined') window.scrollTo(0, 0);
 
     getObject(name).then(res => setWobject(res));
   }, [name]);
