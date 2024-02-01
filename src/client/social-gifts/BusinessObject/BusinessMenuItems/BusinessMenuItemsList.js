@@ -59,7 +59,7 @@ const BusinessMenuItemsList = ({ menuItem, intl }) => {
                         : itemBody.linkToWeb;
 
                       if (has(itemBody, 'linkToWeb')) {
-                        window.open(itemBody.linkToWeb);
+                        if (typeof window !== 'undefined') window.open(itemBody.linkToWeb);
                       } else {
                         setVisible(false);
                         history.push(linkHref);

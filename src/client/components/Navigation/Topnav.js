@@ -89,7 +89,7 @@ class Topnav extends React.Component {
   };
 
   static handleScrollToTop() {
-    if (window) {
+    if (typeof window !== 'undefined') {
       window.scrollTo(0, 0);
     }
   }

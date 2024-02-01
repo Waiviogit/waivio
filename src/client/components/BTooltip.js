@@ -26,7 +26,7 @@ class BTooltip extends React.Component {
   updatePosition() {
     if (!this.titleRef) return;
 
-    const ratio = this.titleRef.getBoundingClientRect().top / window.innerHeight;
+    const ratio = this.titleRef.getBoundingClientRect().top / window && window.innerHeight;
 
     this.setState({
       bottom: ratio < 0.45,

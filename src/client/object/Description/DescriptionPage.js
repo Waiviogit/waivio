@@ -25,12 +25,13 @@ const DescriptionPage = ({ relatedAlbum, albums }) => {
     const objectHeaderEl = document && document.getElementById('ObjectHeaderId');
 
     if (isMobile()) {
-      window.scrollTo({
-        top: objectHeaderEl?.offsetHeight,
-        behavior: 'smooth',
-      });
+      if (typeof window !== 'undefined')
+        window.scrollTo({
+          top: objectHeaderEl?.offsetHeight,
+          behavior: 'smooth',
+        });
     } else {
-      window.scrollTo(0, 0);
+      if (typeof window !== 'undefined') window.scrollTo(0, 0);
     }
 
     getObject(name).then(res => setWobject(res));

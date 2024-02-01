@@ -18,7 +18,7 @@ const WebsiteMainPage = props => {
   const helmetImg = '/images/dining.gifts.png';
 
   useLayoutEffect(() => {
-    if (window) {
+    if (typeof window !== 'undefined') {
       window.scrollTo(0, 0);
     }
   }, []);
@@ -26,7 +26,8 @@ const WebsiteMainPage = props => {
   const onClickButtonFindRewards = () => {
     const findRewardsLink = isMobile() ? 'type=restaurant' : 'showPanel=true&type=restaurant';
 
-    if (window.gtag) window.gtag('event', 'click_button_find_rewards', { debug_mode: true });
+    if (typeof window !== 'undefined' && window.gtag)
+      window.gtag('event', 'click_button_find_rewards', { debug_mode: true });
 
     props.history.push(`/map?${findRewardsLink}`);
   };

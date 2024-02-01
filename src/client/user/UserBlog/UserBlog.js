@@ -34,7 +34,7 @@ const UserBlog = props => {
   }, [props?.tagsCondition?.length, name]);
 
   useEffect(() => {
-    window.scrollTo(0, 0);
+    if (typeof window !== 'undefined') window.scrollTo(0, 0);
 
     return () => props.resetProfileFilters();
   }, [name]);

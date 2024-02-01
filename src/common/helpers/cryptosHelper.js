@@ -26,7 +26,7 @@ export const getCurrentDaysOfTheWeek = currentLocale => {
 
   date.setDate(date.getDate() - 7);
   const daysOfTheWeek = [];
-  const locale = currentLocale === 'auto' ? window.navigator.language : currentLocale;
+  const locale = currentLocale === 'auto' ? window && window.navigator.language : currentLocale;
 
   for (let i = 0; i < 7; i += 1) {
     date.setDate(date.getDate() + 1);

@@ -15,9 +15,12 @@ const Link = ({ attributes, element, children }) => {
   useEffect(() => {
     const handleClickOutside = () => setClicked(false);
 
-    window.addEventListener('mousedown', handleClickOutside);
+    if (typeof window !== 'undefined') window.addEventListener('mousedown', handleClickOutside);
 
-    return () => window.removeEventListener('mousedown', handleClickOutside);
+    return () => {
+      if (typeof window !== 'undefined')
+        window.removeEventListener('mousedown', handleClickOutside);
+    };
   });
 
   const [hovered, setHovered] = useState(false);

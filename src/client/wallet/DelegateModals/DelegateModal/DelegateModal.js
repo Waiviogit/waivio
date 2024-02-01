@@ -79,11 +79,13 @@ const DelegateModal = props => {
           });
         } else {
           const win = isHp
-            ? window.open(
+            ? window &&
+              window.open(
                 `https://hivesigner.com/sign/delegate_vesting_shares?${createQuery(transferQuery)}`,
                 '_blank',
               )
-            : window.open(
+            : window &&
+              window.open(
                 `https://hivesigner.com/sign/custom_json?authority=active&required_auths=["${authUserName}"]&required_posting_auths=[]&${createQuery(
                   {
                     id: 'ssc-mainnet-hive',

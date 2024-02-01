@@ -16,7 +16,7 @@ const AffiliatLink = ({ link, disabled }) => {
   const settings = useSelector(getSettingsSite);
 
   const onClick = () => {
-    if (window?.gtag) {
+    if (typeof window !== 'undefined' && window?.gtag) {
       window.gtag('event', 'buy_now', { debug_mode: true });
       if (!isEmpty(settings.googleEventSnippet)) {
         window.gtag('event', 'gtag_report_conversion', { debug_mode: true });

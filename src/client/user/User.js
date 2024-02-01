@@ -100,7 +100,8 @@ const User = props => {
   }, []);
 
   useEffect(() => {
-    if (window.gtag) window.gtag('event', 'view_user_profile', { debug_mode: true });
+    if (typeof window !== 'undefined' && window.gtag)
+      window.gtag('event', 'view_user_profile', { debug_mode: true });
 
     props.getUserAccount(name);
     props.getUserAccountHistory(name);

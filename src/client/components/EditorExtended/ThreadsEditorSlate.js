@@ -91,7 +91,7 @@ const ThreadsEditorSlate = props => {
 
     const uploadedImages = [];
 
-    const dT = event.clipboardData || window.clipboardData;
+    const dT = event.clipboardData || (window && window.clipboardData);
 
     if (dT.files === 0) {
       console.error('no image found');
@@ -273,7 +273,7 @@ const ThreadsEditorSlate = props => {
   );
 
   useEffect(() => {
-    window.slateEditor = editor;
+    if (typeof window !== 'undefined') window.slateEditor = editor;
     props.setEditor(editor);
     if (props.setEditorCb) props.setEditorCb(editor);
     if (!isComment) setTimeout(() => focusEditorToEnd(editor), 200);

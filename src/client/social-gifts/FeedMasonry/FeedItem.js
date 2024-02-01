@@ -68,7 +68,8 @@ const FeedItem = ({ post, photoQuantity, preview }) => {
   if (isTiktok && !(thumbnail || preview)) return null;
 
   const handleShowPostModal = () => {
-    if (window?.gtag) window.gtag('event', 'view_post', { debug_mode: true });
+    if (typeof window !== 'undefined' && window?.gtag)
+      window.gtag('event', 'view_post', { debug_mode: true });
     dispatch(showPostModal(post));
   };
   const likesCount = getUpvotes(post.active_votes).length;

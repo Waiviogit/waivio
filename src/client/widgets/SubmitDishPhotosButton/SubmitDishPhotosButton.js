@@ -9,7 +9,8 @@ import withAuthActions from '../../auth/withAuthActions';
 const SubmitDishPhotosButton = props => {
   const openModal = () => {
     props.toggleModal(true);
-    if (window.gtag) window.gtag('event', 'on_click_submit_dish_photos', { debug_mode: true });
+    if (typeof window !== 'undefined' && window.gtag)
+      window.gtag('event', 'on_click_submit_dish_photos', { debug_mode: true });
   };
 
   const onClick = () => props.onActionInitiated(openModal);

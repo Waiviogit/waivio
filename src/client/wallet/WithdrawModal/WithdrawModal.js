@@ -225,15 +225,16 @@ const WithdrawModal = props => {
           handleCloseModal();
         });
     } else {
-      window.open(
-        `https://hivesigner.com/sign/custom_json?authority=active&required_auths=["${userName}"]&required_posting_auths=[]&${createQuery(
-          {
-            id: 'ssc-mainnet-hive',
-            json,
-          },
-        )}`,
-        '_blank',
-      );
+      window &&
+        window.open(
+          `https://hivesigner.com/sign/custom_json?authority=active&required_auths=["${userName}"]&required_posting_auths=[]&${createQuery(
+            {
+              id: 'ssc-mainnet-hive',
+              json,
+            },
+          )}`,
+          '_blank',
+        );
 
       return handleCloseModal();
     }

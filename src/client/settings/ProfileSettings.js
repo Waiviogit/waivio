@@ -143,16 +143,18 @@ export default class ProfileSettings extends React.Component {
     const searchInfo = checkCursorInSearchSlate(editor);
 
     if (searchInfo.isNeedOpenSearch) {
-      if (!this.state.isShowEditorSearch) {
-        const nativeSelection = getSelection(window);
-        const selectionBoundary = getSelectionRect(nativeSelection);
+      if (typeof window !== 'undefined') {
+        if (!this.state.isShowEditorSearch) {
+          const nativeSelection = getSelection(window);
+          const selectionBoundary = getSelectionRect(nativeSelection);
 
-        this.props.setCursorCoordinates({
-          selectionBoundary,
-          selectionState: editor.selection,
-          searchString: searchInfo.searchString,
-        });
-        this.setShowEditorSearch(true);
+          this.props.setCursorCoordinates({
+            selectionBoundary,
+            selectionState: editor.selection,
+            searchString: searchInfo.searchString,
+          });
+          this.setShowEditorSearch(true);
+        }
       }
       this.debouncedSearch(searchInfo.searchString);
     } else if (this.state.isShowEditorSearch) {
