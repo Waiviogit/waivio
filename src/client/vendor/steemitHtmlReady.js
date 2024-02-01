@@ -190,12 +190,14 @@ function linkifyNode(child, state) {
     if (imageRegex.test(child?.nodeValue)) {
       const value = child?.nodeValue.match(imageRegex)[0];
       const src = value.includes('waivio.') ? value : getProxyImageURL(value);
-      const newChild = document && document.createElement('img');
-      newChild.alt = '';
-      newChild.src = src;
-      const textNode = child.splitText(child.nodeValue.indexOf(value));
+      if(typeof document !== 'undefined') {
+        const newChild = document.createElement('img');
+        newChild.alt = '';
+        newChild.src = src;
+        const textNode = child.splitText(child.nodeValue.indexOf(value));
 
-      child.parentNode.insertBefore(newChild, textNode);
+        child.parentNode.insertBefore(newChild, textNode);
+      }
     }
 
     const { mutate } = state;

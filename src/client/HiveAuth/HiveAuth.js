@@ -73,7 +73,7 @@ const HiveAuth = ({ setQRcodeForAuth, onCloseSingIn, text }) => {
           </Button>
         </React.Fragment>
       ) : (
-        <span onClick={() => setShowInput(true)}>{text}</span>
+        <span onClick={() => setShowInput(true)}>{text} (Beta)</span>
       )}
     </div>
   );
