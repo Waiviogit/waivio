@@ -45,7 +45,7 @@ const Breadcrumbs = ({ inProduct, intl }) => {
   const dispatch = useDispatch();
   const query = useQuery();
   const accessExtend = haveAccess(wobject, username, accessTypesArr[0]);
-  const permlinks = location.hash.replace('#', '').split('/');
+  const permlinks = location.hash?.replace('#', '').split('/');
   const listObjType = wobject?.object_type === 'list';
   let linkList = location.hash ? [match.params.name, ...permlinks] : [match.params.name];
   const viewUrl = query.get('viewUrl');

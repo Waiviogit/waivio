@@ -22,8 +22,8 @@ const AffiliateSection = ({ listItem, isEditMode, wobject, userName }) => {
   const affiliateCode = has(wobject, 'affiliateCode') ? JSON.parse(wobject?.affiliateCode) : [];
   const [affiliateSite, affCode] = affiliateCode;
   const affiliateUrlTemplate = get(wobject, 'affiliateUrlTemplate', '')
-    .replace('$productId', 'PRODUCTID')
-    .replace('$affiliateCode', 'AFFILIATECODE');
+    ?.replace('$productId', 'PRODUCTID')
+    ?.replace('$affiliateCode', 'AFFILIATECODE');
 
   return (
     <>

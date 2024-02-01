@@ -84,7 +84,7 @@ const WebsiteTopNavigation = ({ shopSettings, intl }) => {
                     <PopoverMenu
                       onSelect={(i, type) => {
                         if (type === 'blank') {
-                          if (typeof window !== 'undefined') window.location.replace(i);
+                          if (typeof window !== 'undefined') window.location?.replace(i);
                         } else {
                           setVisible(false);
                           history.push(i);
