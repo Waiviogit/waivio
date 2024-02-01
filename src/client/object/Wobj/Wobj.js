@@ -104,7 +104,7 @@ const Wobj = ({
 
     if (
       !isSocial ||
-      !['book', 'product', 'business', 'person', 'widget', 'page', 'list', 'newsfeed'].includes(
+      !['book', 'product', 'business', 'person', 'widget', 'page', 'list', 'newsfeed']?.includes(
         wobject.object_type,
       ) ||
       (isSocial && isEditMode)

@@ -87,7 +87,7 @@ const SocialWrapper = props => {
   const dispatch = useDispatch();
   const language = findLanguage(props.usedLocale);
   const antdLocale = getAntdLocale(language);
-  const signInPage = props.location.pathname.includes('sign-in');
+  const signInPage = props?.location.pathname?.includes('sign-in');
   const loadLocale = async locale => {
     const lang = await loadLanguage(locale);
 
@@ -152,7 +152,7 @@ const SocialWrapper = props => {
             }, []);
             const buttonList = [
               ...sortingButton,
-              ...compareList?.filter(i => !customSort.includes(i.permlink)),
+              ...compareList?.filter(i => !customSort?.includes(i.permlink)),
             ].map(i => ({
               link: createLink(i),
               name: i?.body?.title || getObjectName(i),
@@ -180,7 +180,7 @@ const SocialWrapper = props => {
   };
 
   useEffect(() => {
-    const query = new URLSearchParams(props.location.search);
+    const query = new URLSearchParams(props?.location.search);
     const token = query.get('access_token');
     const provider = query.get('socialProvider');
     const locale = query.get('usedLocale');
@@ -218,7 +218,7 @@ const SocialWrapper = props => {
 
           if (queryString) queryString = `/?${queryString}`;
 
-          props.history.push(`${props.location.pathname}${queryString}`);
+          props.history.push(`${props?.location.pathname}${queryString}`);
         }
       });
       loadLocale(props.locale);
@@ -384,7 +384,7 @@ SocialWrapper.fetchData = async ({ store, req, url }) => {
                   promises.push(store.dispatch(getWobjectDepartments(buttonList[0]?.permlink)));
                   promises.push(store.dispatch(getWobjectsShopList(buttonList[0]?.permlink)));
                 }
-                if (['page', 'widget', 'newsfeed', 'list'].includes(wobject.object_type)) {
+                if (['page', 'widget', 'newsfeed', 'list']?.includes(wobject.object_type)) {
                   promises.push(store.dispatch(getObjectAction(wobject.author_permlink)));
                 }
               }
@@ -414,7 +414,7 @@ SocialWrapper.fetchData = async ({ store, req, url }) => {
             }, []);
             const buttonList = [
               ...sortingButton,
-              ...compareList?.filter(i => !customSort.includes(i.permlink)),
+              ...compareList?.filter(i => !customSort?.includes(i.permlink)),
             ].map(i => ({
               link: createLink(i),
               name: i?.body?.title || getObjectName(i),
@@ -441,7 +441,7 @@ SocialWrapper.fetchData = async ({ store, req, url }) => {
                 promises.push(store.dispatch(getWobjectDepartments(buttonList[0]?.permlink)));
                 promises.push(store.dispatch(getWobjectsShopList(buttonList[0]?.permlink)));
               }
-              if (['page', 'widget', 'newsfeed', 'list'].includes(buttonList[0]?.object_type)) {
+              if (['page', 'widget', 'newsfeed', 'list']?.includes(buttonList[0]?.object_type)) {
                 promises.push(store.dispatch(getObjectAction(buttonList[0]?.permlink)));
               }
             }
