@@ -123,18 +123,21 @@ const MainMap = React.memo(props => {
     }
   }, [props.searchMap, props.showReloadButton, mapData.center]);
 
+  // eslint-disable-next-line consistent-return
   useEffect(() => {
-    const handleResize = () => setHeight(window.innerHeight);
+    if (typeof window !== 'undefined') {
+      const handleResize = () => setHeight(window.innerHeight);
 
-    setHeight(window.innerHeight);
+      setHeight(window.innerHeight);
 
-    getCoordinatesForMap();
+      getCoordinatesForMap();
 
-    window.addEventListener('resize', handleResize);
+      window.addEventListener('resize', handleResize);
 
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
+      return () => {
+        window.removeEventListener('resize', handleResize);
+      };
+    }
   }, []);
 
   useEffect(() => {

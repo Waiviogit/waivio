@@ -131,15 +131,17 @@ class StoryFull extends React.Component {
       if (wobj.object_type === 'hashtag') taggedObjects.push(wobj);
       else linkedObjects.push(wobj);
     });
-    if (window.location.hash) {
-      setTimeout(() => {
-        const relElement = document.getElementById(
-          !isEmpty(linkedObjects) ? 'allLinkedObjects' : 'allRelatedObjects',
-        );
+    if (typeof window !== 'undefined' && window.location.hash) {
+      if (typeof document !== 'undefined') {
+        setTimeout(() => {
+          const relElement = document.getElementById(
+            !isEmpty(linkedObjects) ? 'allLinkedObjects' : 'allRelatedObjects',
+          );
 
-        window.scrollTo({ top: relElement.offsetTop });
-        this.setState({ activeKey: !isEmpty(linkedObjects) ? 1 : 2 });
-      }, 300);
+          window.scrollTo({ top: relElement.offsetTop });
+          this.setState({ activeKey: !isEmpty(linkedObjects) ? 1 : 2 });
+        }, 300);
+      }
     }
   }
 
@@ -151,7 +153,7 @@ class StoryFull extends React.Component {
         replaceBotWithGuestName(dropCategory(post.url), post.guestInfo);
 
     if (hideWhiteBG) {
-      document.body.classList.remove('white-bg');
+      if (typeof document !== 'undefined') document.body.classList.remove('white-bg');
     }
   }
 

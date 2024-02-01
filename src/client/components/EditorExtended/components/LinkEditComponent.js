@@ -8,7 +8,7 @@ const getRelativeParent = element => {
     return null;
   }
 
-  const position = window.getComputedStyle(element).getPropertyValue('position');
+  const position = window && window.getComputedStyle(element).getPropertyValue('position');
 
   if (position !== 'static') {
     return element;
@@ -76,22 +76,26 @@ export default class LinkEditComponent extends React.Component {
     if (!this.toolbar) {
       return;
     }
-    const relativeParent = getRelativeParent(this.toolbar.parentElement);
-    const relativeRect = relativeParent
-      ? relativeParent.getBoundingClientRect()
-      : window.document.body.getBoundingClientRect();
-    const selectionRect = getVisibleSelectionRect(window);
+    if (typeof window !== 'undefined') {
+      const relativeParent = getRelativeParent(this.toolbar.parentElement);
 
-    if (!selectionRect) {
-      return;
+      const relativeRect = relativeParent
+        ? relativeParent.getBoundingClientRect()
+        : typeof document !== 'undefined' && window.document.body.getBoundingClientRect();
+
+      const selectionRect = getVisibleSelectionRect(window);
+
+      if (!selectionRect) {
+        return;
+      }
+      const position = {
+        top: selectionRect.top - relativeRect.top + 30,
+        left: selectionRect.left - relativeRect.left + selectionRect.width / 2,
+        transform: 'translate(-50%) scale(1)',
+      };
+
+      this.setState({ position });
     }
-    const position = {
-      top: selectionRect.top - relativeRect.top + 30,
-      left: selectionRect.left - relativeRect.left + selectionRect.width / 2,
-      transform: 'translate(-50%) scale(1)',
-    };
-
-    this.setState({ position });
   };
 
   removeLink = e => {

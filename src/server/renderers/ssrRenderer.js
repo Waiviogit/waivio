@@ -52,7 +52,9 @@ export default function renderSsrPage(
   }
  
   </script>`;
-  const googleEventSnippet = googleEventSnippetTag.replace('window.location = url', '');
+  const googleEventSnippet = googleEventSnippetTag
+    ? googleEventSnippetTag?.replace('window.location = url', '')
+    : '';
   return template({
     header,
     html,

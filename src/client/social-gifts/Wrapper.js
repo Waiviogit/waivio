@@ -114,7 +114,7 @@ const SocialWrapper = props => {
               setItemsForNavigation([
                 {
                   link: createLink(wobject),
-                  name: getObjectName(wobject),
+                  name: 'Home',
                   permlink: wobject?.author_permlink,
                   object_type: wobject?.object_type,
                 },
@@ -196,10 +196,12 @@ const SocialWrapper = props => {
       const mainColor = res.configuration.colors?.mapMarkerBody || initialColors.marker;
       const textColor = res.configuration.colors?.mapMarkerText || initialColors.text;
 
-      document.body.style.setProperty('--website-color', mainColor);
-      document.body.style.setProperty('--website-hover-color', hexToRgb(mainColor, 6));
-      document.body.style.setProperty('--website-text-color', textColor);
-      document.body.style.setProperty('--website-light-color', hexToRgb(mainColor, 1));
+      if (typeof document !== 'undefined') {
+        document.body.style.setProperty('--website-color', mainColor);
+        document.body.style.setProperty('--website-hover-color', hexToRgb(mainColor, 6));
+        document.body.style.setProperty('--website-text-color', textColor);
+        document.body.style.setProperty('--website-light-color', hexToRgb(mainColor, 1));
+      }
 
       props.login(token, provider).then(() => {
         batch(() => {
@@ -225,8 +227,10 @@ const SocialWrapper = props => {
   }, [props.locale]);
 
   useEffect(() => {
-    if (props.nightmode) document.body.classList.add('nightmode');
-    else document.body.classList.remove('nightmode');
+    if (typeof document !== 'undefined') {
+      if (props.nightmode) document.body.classList.add('nightmode');
+      else document.body.classList.remove('nightmode');
+    }
   }, [props.nightmode]);
 
   return (
@@ -349,7 +353,7 @@ SocialWrapper.fetchData = async ({ store, req, url }) => {
                   setItemsForNavigation([
                     {
                       link: createLink(wobject),
-                      name: getObjectName(wobject),
+                      name: 'Home',
                       permlink: wobject?.author_permlink,
                       object_type: wobject?.object_type,
                     },

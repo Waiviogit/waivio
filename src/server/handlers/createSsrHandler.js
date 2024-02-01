@@ -6,6 +6,7 @@ import { renderToString } from 'react-dom/server';
 import { StaticRouter } from 'react-router';
 import { matchRoutes, renderRoutes } from 'react-router-config';
 import hivesigner from 'hivesigner';
+import { isbot } from 'isbot';
 
 import {
   getParentHost,
@@ -18,11 +19,19 @@ import renderSsrPage from '../renderers/ssrRenderer';
 import switchRoutes from '../../routes/switchRoutes';
 import { getCachedPage, isSearchBot, setCachedPage, updateBotCount } from './cachePageHandler';
 import { isCustomDomain } from '../../client/social-gifts/listOfSocialWebsites';
+import { REDIS_KEYS } from '../../common/constants/ssrData';
+import { sismember } from '../redis/redisClient';
+import NOT_FOUND_PAGE from '../pages/notFoundPage';
 
 // eslint-disable-next-line import/no-dynamic-require
 const assets = require(process.env.MANIFEST_PATH);
 
 const ssrTimeout = 5000;
+
+// const isInheritedHost = host =>
+//   !['waivio.com', 'www.waivio.com', 'waiviodev.com', 'social.gifts', 'dining.gifts'].includes(host);
+
+const isInheritedHost = host => ['shopper-paradise.com'].includes(host);
 
 function createTimeout(timeout, promise) {
   return new Promise((resolve, reject) => {
@@ -33,10 +42,25 @@ function createTimeout(timeout, promise) {
   });
 }
 
+const isPageExistSitemap = async ({ url, host }) => {
+  if (url === '/') return true;
+  const key = `${REDIS_KEYS.SSR_SITEMAP_SET}:${host}`;
+  const member = `https://${host}${url}`;
+  return sismember({ key, member });
+};
+
 export default function createSsrHandler(template) {
   return async function serverSideResponse(req, res) {
     try {
-      const searchBot = await isSearchBot(req);
+      const hostname = req.hostname;
+      const searchBot = isbot(req.get('User-Agent'));
+
+      const inheritedHost = isInheritedHost(hostname);
+      if (inheritedHost && searchBot) {
+        const pageExist = await isPageExistSitemap({ host: hostname, url: req.url });
+        if (!pageExist) return res.redirect(302, `https://waivio.com${req.url}`);
+      }
+
       if (searchBot) {
         await updateBotCount(req);
         const cachedPage = await getCachedPage(req);
@@ -52,10 +76,10 @@ export default function createSsrHandler(template) {
         callbackURL: process.env.STEEMCONNECT_REDIRECT_URL,
       });
       // const hostname = req.headers.host;
-      const hostname = req.hostname;
+
       const isWaivio = hostname.includes('waivio');
       let settings = {};
-      let parentHost;
+      let parentHost = '';
       let adsenseSettings = {};
 
       if (!isWaivio) {

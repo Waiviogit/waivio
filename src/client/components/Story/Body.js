@@ -56,11 +56,11 @@ export function getHtml(
 
   parsedJsonMetadata.image = parsedJsonMetadata.image ? [...parsedJsonMetadata.image] : [];
   if (!body) return '';
-  let parsedBody = body.replace(/<!--([\s\S]+?)(-->|$)/g, '(html comment removed: $1)');
+  let parsedBody = body?.replace(/<!--([\s\S]+?)(-->|$)/g, '(html comment removed: $1)');
 
   parsedBody = addPeakdImage(parsedBody);
 
-  parsedBody.replace(imageRegex, img => {
+  parsedBody?.replace(imageRegex, img => {
     if (filter(parsedJsonMetadata.image, i => i.indexOf(img) !== -1).length === 0) {
       parsedJsonMetadata.image.push(img);
     }
@@ -71,7 +71,7 @@ export function getHtml(
   if (videoPreviewResult) {
     const videoLink = getBodyLink(videoPreviewResult);
 
-    if (videoLink) parsedBody = parsedBody.replace(videoPreviewResult[0], videoLink);
+    if (videoLink) parsedBody = parsedBody?.replace(videoPreviewResult[0], videoLink);
   }
 
   parsedBody = improve(parsedBody);
@@ -168,13 +168,15 @@ export function getHtml(
 
 const Body = props => {
   useEffect(() => {
-    Array.from(document.body.getElementsByTagName('img')).forEach(imgNode => {
-      // eslint-disable-next-line no-param-reassign
-      imgNode.onerror = () => {
+    if (typeof document !== 'undefined') {
+      Array.from(document.body.getElementsByTagName('img')).forEach(imgNode => {
         // eslint-disable-next-line no-param-reassign
-        imgNode.src = imgNode.alt;
-      };
-    });
+        imgNode.onerror = () => {
+          // eslint-disable-next-line no-param-reassign
+          imgNode.src = imgNode.alt;
+        };
+      });
+    }
   }, []);
 
   const location = useLocation();

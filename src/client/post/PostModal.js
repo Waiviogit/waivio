@@ -40,11 +40,14 @@ class PostModal extends React.Component {
   };
 
   static pushURLState(title, url) {
-    if (window) window.history.pushState({}, title, url);
+    if (typeof window !== 'undefined') window.history.pushState({}, title, url);
   }
 
+  // eslint-disable-next-line consistent-return
   static findScrollElement() {
-    return document.querySelector('.PostModal');
+    if (typeof document !== 'undefined') {
+      return document.querySelector('.PostModal');
+    }
   }
 
   constructor(props) {
@@ -70,7 +73,7 @@ class PostModal extends React.Component {
         modalContentElement.scrollTop = 0;
       }
 
-      document.body.classList.add('post-modal');
+      if (typeof document !== 'undefined') document.body.classList.add('post-modal');
     }
     const { currentShownPost } = this.props;
     const { title, author, guestInfo } = currentShownPost;
@@ -110,7 +113,7 @@ class PostModal extends React.Component {
   }
 
   handleShare = shareLink => {
-    window.open(shareLink, '_blank').focus();
+    if (typeof window !== 'undefined') window.open(shareLink, '_blank').focus();
   };
 
   render() {

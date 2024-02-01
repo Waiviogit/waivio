@@ -26,12 +26,16 @@ const EditorSearchObjects = ({
   const [coordinates, setCoordinates] = React.useState({ top: 0, left: 0 });
 
   React.useEffect(() => {
-    window.addEventListener('keydown', handleKeyDown, { capture: true });
-    window.addEventListener('keydown', handleKeyEnter, { capture: false });
+    if (typeof window !== 'undefined') {
+      window.addEventListener('keydown', handleKeyDown, { capture: true });
+      window.addEventListener('keydown', handleKeyEnter, { capture: false });
+    }
 
     return () => {
-      window.removeEventListener('keydown', handleKeyDown, { capture: true });
-      window.removeEventListener('keydown', handleKeyEnter, { capture: false });
+      if (typeof window !== 'undefined') {
+        window.removeEventListener('keydown', handleKeyDown, { capture: true });
+        window.removeEventListener('keydown', handleKeyEnter, { capture: false });
+      }
     };
   }, []);
 
@@ -112,7 +116,7 @@ const EditorSearchObjects = ({
 
     if (screenLeft < 0) left = -parentBoundary.left;
     if (wordForCountWidth) left -= fakeLeftPositionBlock.current.offsetWidth;
-    if (left + searchBlockWidth + 35 >= window.innerWidth) {
+    if (typeof window !== 'undefined' && left + searchBlockWidth + 35 >= window.innerWidth) {
       left = window.innerWidth - (searchBlockWidth + 50);
     }
     setCoordinates({ top, left: left + 15 });

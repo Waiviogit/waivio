@@ -1,0 +1,49 @@
+.HiveAuth {
+  background-color: #ffffff;
+  display: inline-flex;
+  align-items: center;
+  color: rgba(0, 0, 0, 0.54);
+  -webkit-box-shadow: rgba(0, 0, 0, 0.24) 0 2px 2px 0, rgba(0, 0, 0, 0.24) 0 0 1px 0;
+  box-shadow: rgba(0, 0, 0, 0.24) 0 2px 2px 0, rgba(0, 0, 0, 0.24) 0 0 1px 0;
+  padding: 10px 10px 10px 8px;
+  margin-bottom: 10px;
+  border-radius: 2px;
+  border: 1px solid transparent;
+  font-size: 14px;
+  font-weight: 500;
+  font-family: Roboto, sans-serif;
+  width: 270px;
+  height: 46px;
+  cursor: pointer;
+  transition: 0.3s;
+
+  &:hover {
+    color: var(--website-color);
+  }
+
+  &__icon {
+    width: 22px;
+    margin-right: 20px;
+  }
+
+  &__signIn.ant-btn {
+    padding: 0 5px;
+    color: white;
+    background-color: #e21438;
+    border-color: #e21438;
+    border-radius: 0 4px 4px 0;
+
+    &:hover,
+    &:focus {
+      color: white !important;
+      background-color: #e21438;
+      border-color: #e21438;
+      border-radius: 0 4px 4px 0;
+    }
+  }
+
+  .ant-input {
+    border-radius: 4px 0 0 4px;
+    height: 30px;
+  }
+}

@@ -102,7 +102,7 @@ class PostRecommendation extends Component {
   };
 
   navigateToPost = author => {
-    window.scrollTo(0, 0);
+    if (typeof window !== 'undefined') window.scrollTo(0, 0);
 
     if (author !== this.state.currentAuthor) {
       this.getPostsByAuthor(author);
@@ -112,7 +112,7 @@ class PostRecommendation extends Component {
   };
 
   navigateToPostComments = () => {
-    document.getElementById('comments').scrollIntoView();
+    if (typeof document !== 'undefined') document.getElementById('comments').scrollIntoView();
     this.forceUpdate();
   };
 

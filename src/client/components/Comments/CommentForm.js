@@ -123,7 +123,7 @@ const CommentForm = props => {
     const searchInfo = checkCursorInSearchSlate(editor);
 
     if (searchInfo.isNeedOpenSearch) {
-      if (!isShowEditorSearch) {
+      if (!isShowEditorSearch && window !== 'undefined') {
         const nativeSelection = getSelection(window);
         const selectionBoundary = getSelectionRect(nativeSelection);
 

@@ -2,6 +2,7 @@ import Cookie from 'js-cookie';
 import { get } from 'lodash';
 import { message } from 'antd';
 import { createAction } from 'redux-actions';
+import { getAccount } from '../../common/helpers/apiHelpers';
 import { createAsyncActionType } from '../../common/helpers/stateHelpers';
 import {
   addNewNotification,
@@ -26,6 +27,8 @@ import {
   getIsAuthenticated,
   getIsLoaded,
   isGuestUser,
+  getUserAccountsAuth,
+  getAuthenticatedUser,
 } from './authSelectors';
 import { parseJSON } from '../../common/helpers/parseJSON';
 import { getGuestWaivBalance } from '../../waivioApi/walletApi';
@@ -80,6 +83,7 @@ export const getAuthGuestBalance = () => (dispatch, getState) => {
 export const logout = () => (dispatch, getState, { busyAPI, steemConnectAPI }) => {
   const state = getState();
   let accessToken = Cookie.get('access_token');
+  const hiveAuth = Cookie.get('auth');
 
   if (state.auth.isGuestUser) {
     accessToken = getGuestAccessToken();
@@ -91,12 +95,15 @@ export const logout = () => (dispatch, getState, { busyAPI, steemConnectAPI }) =
         });
       }
 
-      if (window.gapi && window.gapi.auth2) {
+      if (typeof window !== 'undefined' && window.gapi && window.gapi.auth2) {
         const authInstance = window.gapi.auth2.getAuthInstance();
 
         if (authInstance.isSignedIn && authInstance.isSignedIn.get()) authInstance.signOut();
       }
     }
+  } else if (hiveAuth) {
+    Cookie.remove('access_token');
+    Cookie.remove('auth');
   } else {
     steemConnectAPI.revokeToken();
     Cookie.remove('access_token');
@@ -118,8 +125,32 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
   let promise = Promise.resolve(null);
   const guestAccessToken = getGuestAccessToken();
   const isGuest = Boolean(guestAccessToken);
+  const hiveAuthData = parseJSON(Cookie.get('auth'));
 
-  if (isUserLoaded(state)) {
+  if (hiveAuthData) {
+    if (hiveAuthData.expire < Date.now()) {
+      Cookie.remove('auth');
+      Cookie.remove('access_token');
+    } else {
+      promise = new Promise(async resolve => {
+        const account = await getAccount(hiveAuthData.username);
+        const userMetaData = await waivioAPI.getAuthenticatedUserMetadata(hiveAuthData.username);
+        const privateEmail = await getPrivateEmail(hiveAuthData.username);
+        const rewardsTab = await getRewardTab(hiveAuthData.username);
+
+        dispatch(changeAdminStatus(hiveAuthData.username));
+        dispatch(setSignature(userMetaData?.profile?.signature || ''));
+        dispatch(getCurrentCurrencyRate(userMetaData.settings.currency));
+
+        resolve({
+          account,
+          ...rewardsTab,
+          userMetaData,
+          privateEmail,
+        });
+      });
+    }
+  } else if (isUserLoaded(state)) {
     const userMetaData = getAuthenticatedUserMetaData(state);
     const authenticatedUserName = getAuthenticatedUserName(state);
 
@@ -300,7 +331,6 @@ export const updateAuthProfile = (userName, profileDate, his, intl) => (
   const signature = metadata?.profile?.signature;
 
   dispatch(setSignature(signature));
-
   steemConnectAPI
     .broadcast([profileDate])
     .then(res => {
@@ -322,4 +352,34 @@ export const updateAuthProfile = (userName, profileDate, his, intl) => (
       this.setState({ isLoading: false });
       message.error(e.message);
     });
+};
+
+export const toggleBots = (bot, isAuthority) => (dispatch, getState, { steemConnectAPI }) => {
+  const state = getState();
+  const user = getAuthenticatedUser(state);
+  const bots = getUserAccountsAuth(state);
+  const account_auths = isAuthority ? bots.filter(i => i[0] !== bot) : [...bots, [bot, 1]];
+
+  // eslint-disable-next-line no-console
+  console.log(user);
+  steemConnectAPI.broadcast(
+    [
+      [
+        'account_update',
+        {
+          account: user.name,
+          active: user.active,
+          posting: {
+            weight_threshold: 1,
+            account_auths,
+            key_auths: user.posting.key_auths,
+          },
+          memo_key: user.memo_key,
+          json_metadata: user.json_metadata || user.posting_json_metadata,
+        },
+      ],
+    ],
+    null,
+    'active',
+  );
 };

@@ -107,7 +107,7 @@ const ModalFirstScreen = props => {
 
   const handleSearchRestaurant = useCallback(
     debounce(search => {
-      if (window.gtag)
+      if (typeof window !== 'undefined' && window.gtag)
         window.gtag('event', 'search_restaurant_in_quick_rewards_modal', { debug_mode: true });
       props.getEligibleRewardsList(search);
     }, 300),
@@ -116,7 +116,7 @@ const ModalFirstScreen = props => {
 
   const handleSearchDish = useCallback(
     debounce(() => {
-      if (window.gtag)
+      if (typeof window !== 'undefined' && window.gtag)
         window.gtag('event', 'search_dish_in_quick_rewards_modal', { debug_mode: true });
     }, 300),
     [props.selectedRestaurant],
@@ -124,7 +124,7 @@ const ModalFirstScreen = props => {
 
   const handleDishFocus = () => {
     if (isMobile()) {
-      const modalWrap = document.querySelector('.ant-modal-wrap');
+      const modalWrap = document && document.querySelector('.ant-modal-wrap');
 
       if (isAppleDevice()) {
         setTimeout(() => {

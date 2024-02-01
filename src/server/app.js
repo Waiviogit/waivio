@@ -8,6 +8,7 @@ import createSsrHandler from './handlers/createSsrHandler';
 import steemAPI from './steemAPI';
 import { getRobotsTxtContent } from '../common/helpers/robots-helper';
 import { webPage, sitemap } from './seo-service/seoServiceApi';
+import botRateLimit from './middleware/botRateLimit';
 
 const indexPath = `${paths.templates}/index.hbs`;
 const indexHtml = fs.readFileSync(indexPath, 'utf-8');
@@ -30,6 +31,7 @@ if (IS_DEV) {
   app.use(express.static(paths.publicRuntime(), { index: false }));
 } else {
   app.use(express.static(paths.buildPublicRuntime(), { maxAge: CACHE_AGE, index: false }));
+  app.use(botRateLimit);
 }
 
 app.get('/callback', (req, res) => {

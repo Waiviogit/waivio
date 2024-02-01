@@ -52,7 +52,7 @@ class TagsSelector extends Component {
   render() {
     const { label, placeholder, tags, defaultHashtag, className, disabled } = this.props;
     const { deletedTags } = this.state;
-    const currentURL = window.location.href.includes('objects-filters');
+    const currentURL = window && window.location.href?.includes('objects-filters');
 
     if (!currentURL) {
       if (

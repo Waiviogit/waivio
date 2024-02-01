@@ -14,6 +14,7 @@ import {
   size,
   debounce,
 } from 'lodash';
+import { ReactSVG } from 'react-svg';
 import uuidv4 from 'uuid/v4';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
@@ -3395,15 +3396,23 @@ class AppendForm extends Component {
                     })}
                     size="large"
                     prefix={
-                      <i
-                        className={`Settings__prefix-icon iconfont icon-${profile.icon}`}
-                        style={{
-                          color: profile.color,
-                        }}
-                      />
+                      profile.id === 'twitter' ? (
+                        <ReactSVG
+                          className={'twitter-icon'}
+                          src="/images/icons/twitter-x.svg"
+                          wrapper={'span'}
+                        />
+                      ) : (
+                        <i
+                          className={`Settings__prefix-icon iconfont icon-${profile.icon}`}
+                          style={{
+                            color: profile.color,
+                          }}
+                        />
+                      )
                     }
                     disabled={loading}
-                    placeholder={profile.name}
+                    placeholder={profile.id === 'twitter' ? 'X' : profile.name}
                   />,
                 )}
               </Form.Item>

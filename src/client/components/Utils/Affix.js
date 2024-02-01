@@ -31,7 +31,9 @@ class Affix extends React.Component {
 
   componentDidMount() {
     this.lastScroll =
-      window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop;
+      (window && window.pageYOffset) ||
+      (document && document.documentElement.scrollTop) ||
+      (document && document.body.scrollTop);
 
     this.top = 0;
     this.bindedBottom = false;
@@ -46,12 +48,12 @@ class Affix extends React.Component {
       });
     });
 
-    document.addEventListener('scroll', this.handleScroll);
+    if (typeof document !== 'undefined') document.addEventListener('scroll', this.handleScroll);
     this.ro.observe(this.affixContainer);
   }
 
   componentWillUnmount() {
-    document.removeEventListener('scroll', this.handleScroll);
+    if (typeof document !== 'undefined') document.removeEventListener('scroll', this.handleScroll);
     if (this.ro) this.ro.unobserve(this.affixContainer);
   }
 
@@ -62,10 +64,12 @@ class Affix extends React.Component {
 
     const { stickPosition } = this.props;
 
-    const windowHeight = window.innerHeight;
+    const windowHeight = window && window.innerHeight;
     const sidebarHeight = this.affixContainer.clientHeight;
     const scrollTop =
-      window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop;
+      (window && window.pageYOffset) ||
+      (document && document.documentElement.scrollTop) ||
+      (document && document.body.scrollTop);
 
     const scrollBottom = scrollTop + windowHeight;
     const scrollDiff = scrollTop - this.lastScroll;

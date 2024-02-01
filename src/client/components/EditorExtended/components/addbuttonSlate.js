@@ -26,26 +26,28 @@ const AddButtonSlate = props => {
   useEffect(() => {
     if (!editorNode) return;
     setTimeout(() => {
-      const nativeSelection = getSelection(window);
+      if (typeof window !== 'undefined') {
+        const nativeSelection = getSelection(window);
 
-      if (nativeSelection?.rangeCount < 1) return;
+        if (nativeSelection?.rangeCount < 1) return;
 
-      const range = nativeSelection.getRangeAt(0);
-      const bound = range.getBoundingClientRect();
-      const parentBoundary = editorNode.getBoundingClientRect();
-      const nodeStyle = nodeRef.current?.style;
+        const range = nativeSelection.getRangeAt(0);
+        const bound = range.getBoundingClientRect();
+        const parentBoundary = editorNode.getBoundingClientRect();
+        const nodeStyle = nodeRef.current?.style;
 
-      if (!firstRender.current && initialPosTop) {
-        firstRender.current = true;
-        nodeStyle.top = initialPosTop;
+        if (!firstRender.current && initialPosTop) {
+          firstRender.current = true;
+          nodeStyle.top = initialPosTop;
 
-        return;
+          return;
+        }
+        if (bound.top > 0) {
+          nodeStyle.top = `${bound.top - parentBoundary.top - ADD_BTN_DIF}px`;
+        } else if (bound.top <= 0) nodeStyle.top = initialPosOfBtn?.current?.top || '-14px';
+        if (initialPosOfBtn.current && !initialPosOfBtn?.current?.top)
+          initialPosOfBtn.current.top = nodeStyle.top;
       }
-      if (bound.top > 0) {
-        nodeStyle.top = `${bound.top - parentBoundary.top - ADD_BTN_DIF}px`;
-      } else if (bound.top <= 0) nodeStyle.top = initialPosOfBtn?.current?.top || '-14px';
-      if (initialPosOfBtn.current && !initialPosOfBtn?.current?.top)
-        initialPosOfBtn.current.top = nodeStyle.top;
     }, 50);
   }, [selection, editor]);
 

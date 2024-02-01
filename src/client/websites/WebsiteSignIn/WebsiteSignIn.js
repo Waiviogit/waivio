@@ -37,7 +37,7 @@ const WebsiteSignIn = props => {
     : location.hostname;
   const url = query.get('host') || location.origin;
   const urlObj = new URL(url);
-  const hiveSinger = new hivesigner.Client({
+  const hiveSigner = new hivesigner.Client({
     app: process.env.STEEMCONNECT_CLIENT_ID,
     callbackURL: `${urlObj.origin}/callback`,
   });
@@ -46,13 +46,16 @@ const WebsiteSignIn = props => {
     if (query.get('color')) {
       const color = `#${query.get('color')}`;
 
-      document.body.style.setProperty('--website-color', color);
-      document.body.style.setProperty('--website-hover-color', hexToRgb(color, 8));
+      if (typeof document !== 'undefined') {
+        document.body.style.setProperty('--website-color', color);
+        document.body.style.setProperty('--website-hover-color', hexToRgb(color, 8));
+      }
     }
   }, []);
 
-  const onClickHiveSingerAuthButton = () => {
-    if (window.gtag) window.gtag('event', 'login_hive_singer', { debug_mode: true });
+  const onClickHiveSignerAuthButton = () => {
+    if (typeof window !== 'undefined' && window.gtag)
+      window.gtag('event', 'login_hive_singer', { debug_mode: true });
   };
 
   const responseSocial = async (response, socialNetwork) => {
@@ -67,9 +70,11 @@ const WebsiteSignIn = props => {
       if (res) {
         setGuestLoginData(response.accessToken, socialNetwork, id);
         if (query.get('host')) {
-          window.location.href = `${url}/?access_token=${response.accessToken}&socialProvider=${socialNetwork}`;
+          if (typeof window !== 'undefined')
+            window.location.href = `${url}/?access_token=${response.accessToken}&socialProvider=${socialNetwork}`;
         } else {
-          if (window.gtag) window.gtag('event', `login_${socialNetwork}`, { debug_mode: true });
+          if (typeof window !== 'undefined' && window.gtag)
+            window.gtag('event', `login_${socialNetwork}`, { debug_mode: true });
           dispatch(login(response.accessToken, socialNetwork)).then(() => {
             setIsLoading(false);
             batch(() => {
@@ -123,17 +128,17 @@ const WebsiteSignIn = props => {
       responseSocial={responseSocial}
       handleFailure={handleFailure}
       loading={loading}
-      hiveSinger={hiveSinger}
+      hiveSigner={hiveSigner}
       websiteName={url}
-      onClickHiveSingerAuthButton={onClickHiveSingerAuthButton}
+      onClickHiveSignerAuthButton={onClickHiveSignerAuthButton}
     />
   ) : (
     <WebsiteSignInModalContent
       responseSocial={responseSocial}
       handleFailure={handleFailure}
       loading={loading}
-      hiveSinger={hiveSinger}
-      onClickHiveSingerAuthButton={onClickHiveSingerAuthButton}
+      hiveSigner={hiveSigner}
+      onClickHiveSignerAuthButton={onClickHiveSignerAuthButton}
     />
   );
 };

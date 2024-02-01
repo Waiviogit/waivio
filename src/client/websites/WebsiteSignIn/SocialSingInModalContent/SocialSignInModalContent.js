@@ -1,6 +1,6 @@
 import React from 'react';
 import GoogleLogin from 'react-google-login';
-import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props';
+// import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import Loading from '../../../components/Icon/Loading';
@@ -12,8 +12,8 @@ const SocialSignInModalContent = ({
   websiteTitle,
   intl,
   loading,
-  hiveSinger,
-  onClickHiveSingerAuthButton,
+  hiveSigner,
+  onClickHiveSignerAuthButton,
   responseSocial,
   handleFailure,
   websiteName,
@@ -68,10 +68,10 @@ const SocialSignInModalContent = ({
             })}
           </h3>
           <SocialGiftsButton
-            socialNetwork={'HiveSinger'}
+            socialNetwork={'HiveSigner'}
             size={'28px'}
-            href={hiveSinger.getLoginURL()}
-            onClick={onClickHiveSingerAuthButton}
+            href={hiveSigner.getLoginURL()}
+            onClick={onClickHiveSignerAuthButton}
           />
 
           <h3
@@ -100,19 +100,19 @@ const SocialSignInModalContent = ({
                 />
               )}
             />
-            <FacebookLogin
-              appId="754038848413420"
-              autoLoad={false}
-              callback={response => responseSocial(response, 'facebook')}
-              disableMobileRedirect
-              render={renderProps => (
-                <SocialGiftsButton
-                  socialNetwork={'Facebook'}
-                  onClick={renderProps.onClick}
-                  size={'23px'}
-                />
-              )}
-            />
+            {/* <FacebookLogin */}
+            {/*  appId="754038848413420" */}
+            {/*  autoLoad={false} */}
+            {/*  callback={response => responseSocial(response, 'facebook')} */}
+            {/*  disableMobileRedirect */}
+            {/*  render={renderProps => ( */}
+            {/*    <SocialGiftsButton */}
+            {/*      socialNetwork={'Facebook'} */}
+            {/*      onClick={renderProps.onClick} */}
+            {/*      size={'23px'} */}
+            {/*    /> */}
+            {/*  )} */}
+            {/* /> */}
           </div>
           <p
             style={{
@@ -173,9 +173,9 @@ SocialSignInModalContent.propTypes = {
   intl: PropTypes.shape({
     formatMessage: PropTypes.func,
   }).isRequired,
-  hiveSinger: PropTypes.shape().isRequired,
+  hiveSigner: PropTypes.shape().isRequired,
   loading: PropTypes.bool.isRequired,
-  onClickHiveSingerAuthButton: PropTypes.func.isRequired,
+  onClickHiveSignerAuthButton: PropTypes.func.isRequired,
   websiteTitle: PropTypes.string.isRequired,
   websiteName: PropTypes.string.isRequired,
   handleFailure: PropTypes.func.isRequired,

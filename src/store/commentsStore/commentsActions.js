@@ -253,7 +253,8 @@ export const sendComment = (parentPost, newBody, isUpdating = false, originalCom
         );
       }
 
-      if (window.gtag) window.gtag('event', 'publish_comment', { debug_mode: true });
+      if (typeof window !== 'undefined' && window.gtag)
+        window.gtag('event', 'publish_comment', { debug_mode: true });
     })
     .catch(err => {
       dispatch(notify(err.error.message || err.error_description, 'error'));

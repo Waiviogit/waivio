@@ -40,7 +40,7 @@ const UpdateHistory = () => {
   }, [name]);
 
   useEffect(() => {
-    if (isPinnedOrRemovedPost) window.scrollTo(0, 0);
+    if (typeof window !== 'undefined' && isPinnedOrRemovedPost) window.scrollTo(0, 0);
   }, [field]);
 
   useEffect(() => {

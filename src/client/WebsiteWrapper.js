@@ -169,11 +169,12 @@ class WebsiteWrapper extends React.PureComponent {
       const mainColor = res.configuration?.colors?.mapMarkerBody || initialColors.marker;
       const textColor = res.configuration?.colors?.mapMarkerText || initialColors.text;
 
-      document.body.style.setProperty('--website-color', mainColor);
-      document.body.style.setProperty('--website-hover-color', hexToRgb(mainColor, 6));
-      document.body.style.setProperty('--website-light-color', hexToRgb(mainColor, 1));
-      document.body.style.setProperty('--website-text-color', textColor);
-
+      if (typeof document !== 'undefined') {
+        document.body.style.setProperty('--website-color', mainColor);
+        document.body.style.setProperty('--website-hover-color', hexToRgb(mainColor, 6));
+        document.body.style.setProperty('--website-light-color', hexToRgb(mainColor, 1));
+        document.body.style.setProperty('--website-text-color', textColor);
+      }
       this.props.login(token, provider).then(() => {
         batch(() => {
           this.props.getNotifications();
@@ -200,8 +201,10 @@ class WebsiteWrapper extends React.PureComponent {
   }
 
   componentDidUpdate() {
-    if (this.props.nightmode) document.body.classList.add('nightmode');
-    else document.body.classList.remove('nightmode');
+    if (typeof document !== 'undefined') {
+      if (this.props.nightmode) document.body.classList.add('nightmode');
+      else document.body.classList.remove('nightmode');
+    }
   }
 
   async loadLocale(locale) {

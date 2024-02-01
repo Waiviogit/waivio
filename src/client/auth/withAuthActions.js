@@ -75,13 +75,15 @@ export default function withAuthActions(WrappedComponent) {
       } else if (this.props.isWaivio || !this.props.domain) {
         this.displayLoginModal();
       } else {
-        const path = window.location.pathname === '/' ? '' : window.location.pathname;
-        const color = this.props.colors.mapMarkerBody.replace('#', '');
+        const path =
+          window && window.location.pathname === '/' ? '' : window && window.location.pathname;
+        const color = this.props.colors.mapMarkerBody?.replace('#', '');
 
-        window.location.href = `https://${this.props.domain}/sign-in?host=${
-          this.props.host
-        }${path}&color=${color}&usedLocale=${this.props.usedLocale}&websiteName=${this.props
-          .websiteName || this.props.host}`;
+        if (typeof window !== 'undefined')
+          window.location.href = `https://${this.props.domain}/sign-in?host=${
+            this.props.host
+          }${path}&color=${color}&usedLocale=${this.props.usedLocale}&websiteName=${this.props
+            .websiteName || this.props.host}`;
       }
     }
 

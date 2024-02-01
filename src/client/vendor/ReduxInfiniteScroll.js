@@ -31,7 +31,8 @@ export default class ReduxInfiniteScroll extends React.Component {
   }
 
   _findElement() {
-    return this.props.elementIsScrollable ? ReactDOM.findDOMNode(this) : window;
+    if (typeof window !== 'undefined')
+      return this.props.elementIsScrollable ? ReactDOM.findDOMNode(this) : window;
   }
 
   attachScrollListener() {
@@ -63,25 +64,29 @@ export default class ReduxInfiniteScroll extends React.Component {
   }
 
   _windowScrollListener() {
-    let el = ReactDOM.findDOMNode(this);
+    if (typeof window !== 'undefined') {
+      let el = ReactDOM.findDOMNode(this);
 
-    if (this.props.horizontal) {
-      let windowScrollLeft =
-        window.pageXOffset !== undefined
-          ? window.pageXOffset
-          : (document.documentElement || document.body?.parentNode || document.body).scrollLeft;
-      let elTotalWidth = leftPosition(el) + el.offsetWidth;
+      if (this.props.horizontal) {
+        let windowScrollLeft =
+          window.pageXOffset !== undefined
+            ? window.pageXOffset
+            : document &&
+              (document.documentElement || document.body?.parentNode || document.body).scrollLeft;
+        let elTotalWidth = leftPosition(el) + el.offsetWidth;
 
-      return elTotalWidth - windowScrollLeft - window.innerWidth;
+        return elTotalWidth - windowScrollLeft - window.innerWidth;
+      }
+
+      let windowScrollTop =
+        window.pageYOffset !== undefined
+          ? window.pageYOffset
+          : document &&
+            (document.documentElement || document.body?.parentNode || document.body).scrollTop;
+      let elTotalHeight = topPosition(el) + el.offsetHeight;
+
+      return elTotalHeight - windowScrollTop - window.innerHeight;
     }
-
-    let windowScrollTop =
-      window.pageYOffset !== undefined
-        ? window.pageYOffset
-        : (document.documentElement || document.body?.parentNode || document.body).scrollTop;
-    let elTotalHeight = topPosition(el) + el.offsetHeight;
-
-    return elTotalHeight - windowScrollTop - window.innerHeight;
   }
 
   scrollListener() {

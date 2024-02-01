@@ -29,8 +29,11 @@ const isTopicValid = topic => /^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$/.test(topic);
   { clearBeneficiariesUsers, setUpdatedEditorData },
 )
 class PostPreviewModal extends Component {
+  // eslint-disable-next-line consistent-return
   static findScrollElement() {
-    return document.querySelector('.post-preview-modal');
+    if (typeof document !== 'undefined') {
+      return document.querySelector('.post-preview-modal');
+    }
   }
 
   static propTypes = {
@@ -152,7 +155,8 @@ class PostPreviewModal extends Component {
   };
 
   handleReviewSubmit = () => {
-    if (window.gtag) window.gtag('event', 'posted_review', { debug_mode: true });
+    if (typeof window !== 'undefined' && window.gtag)
+      window.gtag('event', 'posted_review', { debug_mode: true });
 
     this.setState({ isCheckReviewModalOpen: false }, this.props.onSubmit);
   };

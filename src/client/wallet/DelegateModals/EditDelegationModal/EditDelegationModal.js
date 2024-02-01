@@ -36,11 +36,13 @@ const EditDelegationModal = props => {
 
         const win =
           values.currency === 'HP'
-            ? window.open(
+            ? window &&
+              window.open(
                 `https://hivesigner.com/sign/delegate_vesting_shares?${createQuery(transferQuery)}`,
                 '_blank',
               )
-            : window.open(
+            : window &&
+              window.open(
                 `https://hivesigner.com/sign/custom_json?authority=active&required_auths=["${authUserName}"]&required_posting_auths=[]&${createQuery(
                   {
                     id: 'ssc-mainnet-hive',
@@ -69,7 +71,8 @@ const EditDelegationModal = props => {
       if (!errors) {
         const win =
           values.currency === 'HP'
-            ? window.open(
+            ? window &&
+              window.open(
                 `https://hivesigner.com/sign/delegate_vesting_shares?${createQuery({
                   delegator: authUserName,
                   delegatee: props.requiredUser.name,
@@ -77,7 +80,8 @@ const EditDelegationModal = props => {
                 })}`,
                 '_blank',
               )
-            : window.open(
+            : window &&
+              window.open(
                 `https://hivesigner.com/sign/custom_json?authority=active&required_auths=["${authUserName}"]&required_posting_auths=[]&${createQuery(
                   {
                     id: 'ssc-mainnet-hive',
@@ -131,7 +135,7 @@ const EditDelegationModal = props => {
           Please note that delegations are instant, but it will take {props.token === 'HP' ? 5 : 7}{' '}
           days for the amount to be returned to your account after undelegation.
         </p>
-        <p>Click the button below to be redirected to HiveSinger to complete your transaction.</p>
+        <p>Click the button below to be redirected to HiveSigner to complete your transaction.</p>
       </div>
       <div className="EditDelegationModal__buttons-wrap">
         <Button onClick={props.onCancel} className="EditDelegationModal__cancel-button">

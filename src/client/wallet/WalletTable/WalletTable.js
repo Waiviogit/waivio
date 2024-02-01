@@ -315,7 +315,8 @@ class WalletTable extends React.Component {
 
       const csvContent = rows.map(e => e.join(',')).join('\n');
 
-      window.open(`data:text/csv;charset=utf-8,${encodeURIComponent(csvContent)}`);
+      if (typeof window !== 'undefined')
+        window.open(`data:text/csv;charset=utf-8,${encodeURIComponent(csvContent)}`);
     };
 
     return (

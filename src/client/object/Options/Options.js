@@ -14,13 +14,14 @@ const Options = ({ wobject, isEditMode, setHoveredOption, isSocialProduct }) => 
   const optionsDiv = useRef();
 
   useEffect(() => {
-    const objectHeaderEl = document.getElementById('ObjectHeaderId');
+    const objectHeaderEl = document && document.getElementById('ObjectHeaderId');
 
     if (activeStoreOption && isMobile() && !isSocialProduct) {
-      window.scrollTo({
-        top: objectHeaderEl?.offsetHeight,
-        behavior: 'smooth',
-      });
+      if (typeof window !== 'undefined')
+        window.scrollTo({
+          top: objectHeaderEl?.offsetHeight,
+          behavior: 'smooth',
+        });
     }
   }, [wobject]);
 

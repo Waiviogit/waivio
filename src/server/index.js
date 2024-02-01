@@ -1,33 +1,42 @@
 import http from 'http';
 import app from './app';
 import dotenv from 'dotenv';
+import { setupRedisConnections } from './redis/redisClient';
 dotenv.config({ path: `./env/${process.env.NODE_ENV}.env` });
 
 const server = http.createServer(app);
 
 let currentApp = app;
 
-server.listen(process.env.PORT || 3000, () =>
-  console.log(`SSR started on http://localhost:${process.env.PORT || 3000}`),
-);
+const IS_DEV = process.env.NODE_ENV === 'development';
 
-if (module.hot) {
-  console.log('✅  Server-side HMR Enabled!');
+const startServer = async () => {
+  if (!IS_DEV) await setupRedisConnections();
 
-  module.hot.accept('./app', () => {
-    try {
-      console.log('🔁  HMR Reloading `./app`...');
-      server.removeListener('request', currentApp);
-      const newApp = require('./app').default;
+  server.listen(process.env.PORT || 3000, () =>
+    console.log(`SSR started on http://localhost:${process.env.PORT || 3000}`),
+  );
 
-      server.on('request', newApp);
-      currentApp = newApp;
-    } catch (err) {
-      console.log('HMR :: ', err);
-    }
-  });
-  module.hot.accept();
-  module.hot.dispose(() => {
-    server.close();
-  });
-}
+  if (module.hot) {
+    console.log('✅  Server-side HMR Enabled!');
+
+    module.hot.accept('./app', () => {
+      try {
+        console.log('🔁  HMR Reloading `./app`...');
+        server.removeListener('request', currentApp);
+        const newApp = require('./app').default;
+
+        server.on('request', newApp);
+        currentApp = newApp;
+      } catch (err) {
+        console.log('HMR :: ', err);
+      }
+    });
+    module.hot.accept();
+    module.hot.dispose(() => {
+      server.close();
+    });
+  }
+};
+
+startServer();

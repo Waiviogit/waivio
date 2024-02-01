@@ -89,29 +89,47 @@ export const votePost = (postId, author, permlink, weight = 10000, isThread = fa
 
   if (!auth.isAuthenticated) return null;
 
-  return dispatch({
-    type: LIKE_POST.ACTION,
-    payload: {
-      promise: steemConnectAPI
-        .vote(voter, author, post.permlink, weight)
-        // eslint-disable-next-line consistent-return
-        .then(data => {
-          if (!isThread) {
-            if (data.status !== 200 && isGuest) throw new Error(data.message);
-
-            return ApiClient.likePost({ voter, author, permlink: post.permlink, weight });
-          }
-        })
-        .catch(() => {
-          message.error('Something went wrong');
-          dispatch({
-            type: LIKE_POST.ERROR,
-            meta: getPostKey(post),
-          });
-        }),
-    },
+  dispatch({
+    type: LIKE_POST.START,
     meta: { postId, voter, weight },
   });
+
+  return (
+    steemConnectAPI
+      .vote(voter, author, post.permlink, weight)
+      // eslint-disable-next-line consistent-return
+      .then(data => {
+        if (!isThread) {
+          if (data.status !== 200 && isGuest) throw new Error(data.message);
+
+          return ApiClient.likePost({ voter, author, permlink: post.permlink, weight }).then(
+            res => {
+              if (res.message) {
+                message.error(res.message);
+
+                return dispatch({
+                  type: LIKE_POST.ERROR,
+                  meta: getPostKey(post),
+                });
+              }
+
+              return dispatch({
+                type: LIKE_POST.SUCCESS,
+                payload: res,
+                meta: { postId, voter, weight },
+              });
+            },
+          );
+        }
+      })
+      .catch(() => {
+        message.error('Something went wrong');
+        dispatch({
+          type: LIKE_POST.ERROR,
+          meta: getPostKey(post),
+        });
+      })
+  );
 };
 
 export const voteHistoryPost = (currentPost, author, permlink, weight) => (
@@ -170,7 +188,8 @@ export const voteCommentFromRewards = (postId, author, permlink, weight = 10000)
   const voter = auth.user.name;
 
   return steemConnectAPI.vote(voter, author, permlink, weight).then(res => {
-    if (window.gtag) window.gtag('event', 'vote_comment', { debug_mode: true });
+    if (typeof window !== 'undefined' && window.gtag)
+      window.gtag('event', 'vote_comment', { debug_mode: true });
 
     // Delay to make sure you get the latest data (unknown issue with API)
     setTimeout(() => dispatch(getContent(author, permlink, true)), 1000);

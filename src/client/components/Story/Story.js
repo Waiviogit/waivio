@@ -245,11 +245,12 @@ class Story extends React.Component {
     const openInNewTab = get(e, 'metaKey', false) || get(e, 'ctrlKey', false);
     const postURL = replaceBotWithGuestName(`/@${post.id}`, post.guestInfo);
 
-    if (window.gtag) window.gtag('event', 'view_post', { debug_mode: true });
+    if (typeof window !== 'undefined' && window.gtag)
+      window.gtag('event', 'view_post', { debug_mode: true });
     if (isReplyPreview) {
       history.push(postURL);
     } else if (openInNewTab && showPostModal) {
-      if (window) {
+      if (typeof window !== 'undefined') {
         const url = `${window.location.origin}${postURL}`;
 
         window.open(url);

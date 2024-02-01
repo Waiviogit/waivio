@@ -1,7 +1,7 @@
 import React from 'react';
 import { injectIntl } from 'react-intl';
 import GoogleLogin from 'react-google-login';
-import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props';
+// import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props';
 import PropTypes from 'prop-types';
 import Loading from '../../../components/Icon/Loading';
 import SocialButton from '../SocialButton';
@@ -11,8 +11,8 @@ import { isMobile } from '../../../../common/helpers/apiHelpers';
 const WebsiteSignInModalContent = ({
   intl,
   loading,
-  hiveSinger,
-  onClickHiveSingerAuthButton,
+  hiveSigner,
+  onClickHiveSignerAuthButton,
   responseSocial,
   handleFailure,
 }) => (
@@ -73,10 +73,10 @@ const WebsiteSignInModalContent = ({
             {intl.formatMessage({ id: 'account', defaultMessage: 'account' })}
           </h3>
           <SocialButton
-            socialNetwork={'HiveSinger'}
+            socialNetwork={'HiveSigner'}
             size={'28px'}
-            href={hiveSinger.getLoginURL()}
-            onClick={onClickHiveSingerAuthButton}
+            href={hiveSigner.getLoginURL()}
+            onClick={onClickHiveSignerAuthButton}
           />
           <p>
             {intl.formatMessage({
@@ -123,19 +123,19 @@ const WebsiteSignInModalContent = ({
                 />
               )}
             />
-            <FacebookLogin
-              appId="754038848413420"
-              autoLoad={false}
-              callback={response => responseSocial(response, 'facebook')}
-              disableMobileRedirect
-              render={renderProps => (
-                <SocialButton
-                  socialNetwork={'Facebook'}
-                  onClick={renderProps.onClick}
-                  size={'30px'}
-                />
-              )}
-            />
+            {/* <FacebookLogin */}
+            {/*  appId="754038848413420" */}
+            {/*  autoLoad={false} */}
+            {/*  callback={response => responseSocial(response, 'facebook')} */}
+            {/*  disableMobileRedirect */}
+            {/*  render={renderProps => ( */}
+            {/*    <SocialButton */}
+            {/*      socialNetwork={'Facebook'} */}
+            {/*      onClick={renderProps.onClick} */}
+            {/*      size={'30px'} */}
+            {/*    /> */}
+            {/*  )} */}
+            {/* /> */}
           </div>
           <p
             style={{
@@ -183,9 +183,9 @@ WebsiteSignInModalContent.propTypes = {
   intl: PropTypes.shape({
     formatMessage: PropTypes.func,
   }).isRequired,
-  hiveSinger: PropTypes.shape().isRequired,
+  hiveSigner: PropTypes.shape().isRequired,
   loading: PropTypes.bool.isRequired,
-  onClickHiveSingerAuthButton: PropTypes.func.isRequired,
+  onClickHiveSignerAuthButton: PropTypes.func.isRequired,
   handleFailure: PropTypes.func.isRequired,
   responseSocial: PropTypes.func.isRequired,
 };

@@ -24,7 +24,7 @@ const DepartmentsPage = () => {
 
   useEffect(() => {
     setOptionsList([]);
-    window.scrollTo(0, 0);
+    if (typeof window !== 'undefined') window.scrollTo(0, 0);
 
     if (!isEmpty(activeDepartment)) {
       getObjectsByDepartment(userName, [activeDepartment.name], 0, limit).then(r => {

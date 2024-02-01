@@ -73,7 +73,7 @@ const ThreadsEditor = ({
     const searchInfo = checkCursorInSearchSlate(ed);
 
     if (searchInfo.isNeedOpenSearch) {
-      if (!isShowEditorSearch) {
+      if (typeof window !== 'undefined' && !isShowEditorSearch) {
         const nativeSelection = getSelection(window);
         const selectionBoundary = getSelectionRect(nativeSelection);
 
@@ -169,7 +169,7 @@ ThreadsEditor.propTypes = {
   mainThreadHashtag: PropTypes.string,
   name: PropTypes.string,
   isUser: PropTypes.bool,
-  intl: PropTypes.shape,
+  intl: PropTypes.shape(),
   isLoading: PropTypes.bool,
   isEdit: PropTypes.bool,
   inputValue: PropTypes.string.isRequired,

@@ -92,7 +92,7 @@ const EditorSlate = props => {
 
     const uploadedImages = [];
 
-    const dT = event.clipboardData || window.clipboardData;
+    const dT = event.clipboardData || (window && window.clipboardData);
 
     if (dT.files === 0) {
       console.error('no image found');
@@ -274,7 +274,7 @@ const EditorSlate = props => {
   );
 
   useEffect(() => {
-    window.slateEditor = editor;
+    if (typeof window !== 'undefined') window.slateEditor = editor;
     props.setEditor(editor);
     if (props.setEditorCb) props.setEditorCb(editor);
     if (!isComment && !isNewReview) setTimeout(() => focusEditorToEnd(editor), 200);
@@ -299,8 +299,8 @@ const EditorSlate = props => {
         Transforms.insertNodes(editor, createEmptyNode());
       }
       Transforms.deselect(editor);
-      if (!isComment && !isNewReview) focusEditorToEnd(editor);
-      if (isNewReview) focusEditorToStart(editor);
+      // if (!isComment && !isNewReview) focusEditorToEnd(editor);
+      // if (isNewReview) focusEditorToStart(editor);
     }
   }, [body, initiallized]);
 

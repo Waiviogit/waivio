@@ -4,7 +4,11 @@
 .ModalSignIn {
   display: flex;
   flex-direction: column;
-  padding: 0 65px 25px;
+  padding: 0 0 25px;
+
+  @media @small {
+    padding: 0 65px 25px;
+  }
 
   &__social-btn {
     width: 100%;
@@ -196,6 +200,11 @@
     &:last-child {
       margin: 30px 0 0;
     }
+  }
+
+  &__qr {
+    width: 300px;
+    margin-top: 30px;
   }
 }
 

@@ -1,7 +1,7 @@
 import React from 'react';
 import { GoogleLogin } from 'react-google-login';
-import FacebookLogin from 'react-facebook-login';
-import { Icon, message } from 'antd';
+// import FacebookLogin from 'react-facebook-login';
+import { message } from 'antd';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 
@@ -33,16 +33,16 @@ const SocialButtons = ({ responseSocial, className, intl, lastError, setLastErro
         cookiePolicy={'single_host_origin'}
         className="ModalSignIn__social-btn"
       />
-      <FacebookLogin
-        appId="754038848413420"
-        autoLoad={false}
-        fields="name,email,picture"
-        callback={response => responseSocial(response, 'facebook')}
-        textButton="Facebook"
-        cssClass="ModalSignIn__social-btn ModalSignIn__social-btn--fb"
-        icon={<Icon type="facebook" className="ModalSignIn__icon-fb" />}
-        disableMobileRedirect
-      />
+      {/* <FacebookLogin */}
+      {/*  appId="754038848413420" */}
+      {/*  autoLoad={false} */}
+      {/*  fields="name,email,picture" */}
+      {/*  callback={response => responseSocial(response, 'facebook')} */}
+      {/*  textButton="Facebook" */}
+      {/*  cssClass="ModalSignIn__social-btn ModalSignIn__social-btn--fb" */}
+      {/*  icon={<Icon type="facebook" className="ModalSignIn__icon-fb" />} */}
+      {/*  disableMobileRedirect */}
+      {/* /> */}
     </div>
   );
 };

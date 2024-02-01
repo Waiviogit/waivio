@@ -156,7 +156,8 @@ const GeneralSearch = props => {
   };
 
   const handleSelectOnAutoCompleteDropdown = (value, data) => {
-    if (window?.gtag) window.gtag('event', 'use_search', { debug_mode: true });
+    if (typeof window !== 'undefined' && window?.gtag)
+      window.gtag('event', 'use_search', { debug_mode: true });
     let redirectUrl = '';
 
     switch (data.props.marker) {
@@ -195,7 +196,7 @@ const GeneralSearch = props => {
       history.push(redirectUrl);
       setSeachValue('');
       setOpen(false);
-      document.activeElement.blur();
+      if (typeof document !== 'undefined') document.activeElement.blur();
     }
   };
 

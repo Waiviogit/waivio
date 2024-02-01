@@ -36,7 +36,7 @@ const UserBlogFeed = () => {
   const siteName = useSelector(getSiteName);
   const mainObj = useSelector(getMainObj);
 
-  const title = `Blog - ${siteName}`;
+  const title = `Blog`;
   const desc = mainObj?.description || siteName;
   const image = favicon;
   const { canonicalUrl } = useSeoInfo();

@@ -1,9 +1,11 @@
+import Cookie from 'js-cookie';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import { Form, Modal } from 'antd';
 import { round } from 'lodash';
+import { fixedNumber } from '../../../common/helpers/parser';
 import { closePowerUpOrDown } from '../../../store/walletStore/walletActions';
 import formatter from '../../../common/helpers/steemitFormatter';
 import { createQuery } from '../../../common/helpers/apiHelpers';
@@ -21,6 +23,7 @@ import {
   getTotalVestingShares,
   getUserCurrencyBalance,
 } from '../../../store/walletStore/walletSelectors';
+import api from '../../steemConnectAPI';
 import PowerSwitcher from './PowerSwitcher/PowerSwitcher';
 
 import './PowerUpOrDown.less';
@@ -103,6 +106,8 @@ export default class PowerUpOrDown extends React.Component {
     const { form, user, down, totalVestingShares, totalVestingFundSteem } = this.props;
 
     form.validateFields({ force: true }, (errors, values) => {
+      const hiveAuth = Cookie.get('auth');
+      const isHiveCurrency = ['HIVE', 'HP'].includes(values.currency);
       const vests = round(
         values.amount / formatter.vestToSteem(1, totalVestingShares, totalVestingFundSteem),
         6,
@@ -111,40 +116,77 @@ export default class PowerUpOrDown extends React.Component {
       if (!errors) {
         const transferQuery = down
           ? {
+              account: user.name,
               vesting_shares: `${vests} VESTS`,
             }
           : {
-              amount: `${parseFloat(values.amount)} HIVE`,
+              amount: `${fixedNumber(parseFloat(values.amount), 3)} HIVE`,
               to: user.name,
+              from: user.name,
             };
 
-        const win = ['HIVE', 'HP'].includes(values.currency)
-          ? window.open(
-              `https://hivesigner.com/sign/${
-                down ? 'withdraw-vesting' : 'transfer-to-vesting'
-              }?${createQuery(transferQuery)}`,
-              '_blank',
-            )
-          : window.open(
-              `https://hivesigner.com/sign/custom_json?authority=active&required_auths=["${
-                user.name
-              }"]&required_posting_auths=[]&${createQuery({
-                id: 'ssc-mainnet-hive',
-                json: JSON.stringify({
-                  contractName: 'tokens',
-                  contractAction: down ? 'unstake' : 'stake',
-                  contractPayload: {
-                    symbol: values.currency === 'WP' ? 'WAIV' : values.currency,
-                    to: user.name,
-                    quantity: parseFloat(values.amount).toString(),
-                  },
-                }),
-              })}`,
-              '_blank',
-            );
+        const operatin = down ? 'withdraw-vesting' : 'transfer-to-vesting';
+        const json = JSON.stringify({
+          contractName: 'tokens',
+          contractAction: down ? 'unstake' : 'stake',
+          contractPayload: {
+            symbol: values.currency === 'WP' ? 'WAIV' : values.currency,
+            to: user.name,
+            quantity: parseFloat(values.amount).toString(),
+          },
+        });
 
-        win.focus();
-        this.props.closePowerUpOrDown();
+        if (hiveAuth) {
+          const brodc = () =>
+            isHiveCurrency
+              ? api.broadcast(
+                  [[down ? 'withdraw_vesting' : 'transfer_to_vesting', { ...transferQuery }]],
+                  null,
+                  'active',
+                )
+              : api.broadcast(
+                  [
+                    [
+                      'custom_json',
+                      {
+                        required_auths: [user.name],
+                        required_posting_auths: [],
+                        id: 'ssc-mainnet-hive',
+                        json,
+                      },
+                    ],
+                  ],
+                  null,
+                  'active',
+                );
+
+          this.setState({ waiting: true });
+
+          brodc().then(() => {
+            this.setState({ waiting: false });
+            this.props.closePowerUpOrDown();
+          });
+        } else {
+          const win = isHiveCurrency
+            ? window &&
+              window.open(
+                `https://hivesigner.com/sign/${operatin}?${createQuery(transferQuery)}`,
+                '_blank',
+              )
+            : window &&
+              window.open(
+                `https://hivesigner.com/sign/custom_json?authority=active&required_auths=["${
+                  user.name
+                }"]&required_posting_auths=[]&${createQuery({
+                  id: 'ssc-mainnet-hive',
+                  json,
+                })}`,
+                '_blank',
+              );
+
+          win.focus();
+          this.props.closePowerUpOrDown();
+        }
       }
     });
   };
@@ -221,6 +263,7 @@ export default class PowerUpOrDown extends React.Component {
         onCancel={this.handleCancelClick}
         okButtonProps={{
           disabled: this.state.disabled,
+          loading: this.state.waiting,
         }}
         wrapClassName="PowerSwitcher__wrapper"
       >

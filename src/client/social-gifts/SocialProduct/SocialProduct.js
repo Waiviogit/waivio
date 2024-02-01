@@ -89,7 +89,6 @@ const SocialProduct = ({
   resetOptClicked,
   albums,
   relatedAlbum,
-  resetWobjGallery,
   isEditMode,
   toggleViewEditMode,
   addOns,
@@ -214,7 +213,7 @@ const SocialProduct = ({
   };
 
   useEffect(() => {
-    window.scrollTo({ top: scrollHeight, behavior: 'smooth' });
+    if (typeof window !== 'undefined') window.scrollTo({ top: scrollHeight, behavior: 'smooth' });
     if (!isEmpty(wobject.author_permlink)) {
       getAddOnsSimilarRelatedObjects();
       getPublisherManufacturerBrandMerchantObjects();
@@ -229,7 +228,6 @@ const SocialProduct = ({
     setIsLoading(false);
 
     return () => {
-      resetWobjGallery();
       setStoreActiveOpt({});
     };
   }, [wobject.author_permlink]);
@@ -526,7 +524,6 @@ SocialProduct.propTypes = {
   helmetIcon: PropTypes.string,
   setStoreActiveOpt: PropTypes.func,
   resetOptClicked: PropTypes.func,
-  resetWobjGallery: PropTypes.func,
   isEditMode: PropTypes.bool,
   toggleViewEditMode: PropTypes.func,
   brandObject: PropTypes.shape({}),

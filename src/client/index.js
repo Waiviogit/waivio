@@ -62,17 +62,19 @@ const render = async Component => {
   };
 
   store.dispatch(setUsedLocale(lang));
-  store.dispatch(setScreenSize(screenSize(window.screen.width)));
-  window.addEventListener('resize', () =>
-    store.dispatch(setScreenSize(screenSize(window.screen.width))),
-  );
+  if (typeof window !== 'undefined') {
+    store.dispatch(setScreenSize(screenSize(window.screen.width)));
+    window.addEventListener('resize', () =>
+      store.dispatch(setScreenSize(screenSize(window.screen.width))),
+    );
+  }
   const renderMethod = module.hot ? ReactDOM.render : ReactDOM.hydrate;
 
   renderMethod(
     <Provider store={store}>
       <Component history={history} />
     </Provider>,
-    document.getElementById('app'),
+    document && document.getElementById('app'),
   );
 };
 

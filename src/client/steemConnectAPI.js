@@ -1,8 +1,10 @@
 /* eslint-disable no-param-reassign */
 import hivesigner from 'hivesigner';
+import Cookie from 'js-cookie';
 import { waivioAPI } from '../waivioApi/ApiClient';
 import { getValidTokenData } from '../common/helpers/getToken';
 import { parseJSON } from '../common/helpers/parseJSON';
+import HAS from './HiveAuth/hive-auth-wrapper';
 
 function broadcast(operations, isReview, actionAuthor) {
   let operation;
@@ -40,9 +42,26 @@ function broadcast(operations, isReview, actionAuthor) {
   return waivioAPI.broadcastGuestOperation(operation, operations);
 }
 
+async function hasBrodcast(opts, keyType, cb) {
+  try {
+    const auth = parseJSON(Cookie.get('auth'));
+    const res = await HAS.broadcast(auth, keyType, opts, cb);
+
+    return {
+      result: {
+        id: res.data,
+      },
+    };
+  } catch (error) {
+    // if error  handle timeout broadcast
+    return { error };
+  }
+}
+
 async function getUserAccount() {
-  const userData = await getValidTokenData();
-  const account = await waivioAPI.getUserAccount(userData.userData.name, true);
+  const username =
+    parseJSON(Cookie.get('auth'))?.username || (await getValidTokenData()).userData.name;
+  const account = await waivioAPI.getUserAccount(username, true);
 
   return { account, name: account.name };
 }
@@ -52,6 +71,8 @@ function sc2Extended() {
     typeof localStorage !== 'undefined' &&
     !!localStorage.getItem('accessToken') &&
     !!localStorage.getItem('guestName');
+
+  const isHiveAuth = () => Boolean(Cookie.get('auth'));
 
   const sc2api = new hivesigner.Client({
     app: process.env.STEEMCONNECT_CLIENT_ID,
@@ -63,14 +84,15 @@ function sc2Extended() {
   sc2Proto.broadcastOp = sc2Proto.broadcast;
   sc2Proto.meOp = sc2Proto.me;
 
-  sc2Proto.broadcast = (operations, cb) => {
+  sc2Proto.broadcast = (operations, cb, keyType) => {
     if (isGuest()) return broadcast(operations, cb);
+    if (isHiveAuth()) return hasBrodcast(operations, keyType, cb);
 
     return sc2Proto.broadcastOp(operations);
   };
 
   sc2Proto.me = () => {
-    if (isGuest()) return getUserAccount();
+    if (isGuest() || isHiveAuth()) return getUserAccount();
 
     return sc2Proto.meOp();
   };
