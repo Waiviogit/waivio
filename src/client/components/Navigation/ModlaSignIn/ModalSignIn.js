@@ -228,7 +228,7 @@ const ModalSignIn = ({
                       setShowQr(url);
                       timeOutId = setTimeout(() => {
                         setShowQr('');
-                        message.error('Your qrcode was expired!');
+                        message.error('Your QR code was expired!');
                       }, 60000);
                     }}
                     text={'HiveAuth'}

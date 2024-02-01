@@ -2,6 +2,7 @@ import Cookie from 'js-cookie';
 import { get } from 'lodash';
 import { message } from 'antd';
 import { createAction } from 'redux-actions';
+import { getAccount } from '../../common/helpers/apiHelpers';
 import { createAsyncActionType } from '../../common/helpers/stateHelpers';
 import {
   addNewNotification,
@@ -26,6 +27,8 @@ import {
   getIsAuthenticated,
   getIsLoaded,
   isGuestUser,
+  getUserAccountsAuth,
+  getAuthenticatedUser,
 } from './authSelectors';
 import { parseJSON } from '../../common/helpers/parseJSON';
 import { getGuestWaivBalance } from '../../waivioApi/walletApi';
@@ -130,7 +133,7 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
       Cookie.remove('access_token');
     } else {
       promise = new Promise(async resolve => {
-        const account = await waivioAPI.getUserAccount(hiveAuthData.username);
+        const account = await getAccount(hiveAuthData.username);
         const userMetaData = await waivioAPI.getAuthenticatedUserMetadata(hiveAuthData.username);
         const privateEmail = await getPrivateEmail(hiveAuthData.username);
         const rewardsTab = await getRewardTab(hiveAuthData.username);
@@ -190,7 +193,6 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
         const privateEmail = await getPrivateEmail(scUserData.name);
         const rewardsTab = await getRewardTab(scUserData.name);
         const { WAIV } = isGuest ? await getGuestWaivBalance(scUserData.name) : {};
-
         dispatch(changeAdminStatus(scUserData.name));
         dispatch(setSignature(scUserData?.user_metadata?.profile?.signature || ''));
         dispatch(getCurrentCurrencyRate(userMetaData.settings.currency));
@@ -349,4 +351,32 @@ export const updateAuthProfile = (userName, profileDate, his, intl) => (
       this.setState({ isLoading: false });
       message.error(e.message);
     });
+};
+
+export const toggleBots = (bot, isAuthority) => (dispatch, getState, { steemConnectAPI }) => {
+  const state = getState();
+  const user = getAuthenticatedUser(state);
+  const bots = getUserAccountsAuth(state);
+  const account_auths = isAuthority ? bots.filter(i => i[0] !== bot) : [...bots, [bot, 1]];
+  console.log(user);
+  steemConnectAPI.broadcast(
+    [
+      [
+        'account_update',
+        {
+          account: user.name,
+          active: user.active,
+          posting: {
+            weight_threshold: 1,
+            account_auths,
+            key_auths: user.posting.key_auths,
+          },
+          memo_key: user.memo_key,
+          json_metadata: user.json_metadata || user.posting_json_metadata,
+        },
+      ],
+    ],
+    null,
+    'active',
+  );
 };

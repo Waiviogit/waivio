@@ -178,8 +178,6 @@ export default class PowerUpOrDown extends React.Component {
                 `https://hivesigner.com/sign/custom_json?authority=active&required_auths=["${
                   user.name
                 }"]&required_posting_auths=[]&${createQuery({
-                  required_auths: [user.name],
-                  required_posting_auths: [],
                   id: 'ssc-mainnet-hive',
                   json,
                 })}`,
