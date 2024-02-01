@@ -69,7 +69,7 @@ const HiveAuth = ({ setQRcodeForAuth, onCloseSingIn, text }) => {
             }}
             className="HiveAuth__signIn"
           >
-            Sing in
+            Sign in
           </Button>
         </React.Fragment>
       ) : (
