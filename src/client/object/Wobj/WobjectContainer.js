@@ -52,7 +52,6 @@ import {
   sortListItems,
 } from '../../../common/helpers/wObjectHelper';
 import NotFound from '../../statics/NotFound';
-import { login } from '../../../store/authStore/authActions';
 import { getRate, getRewardFund } from '../../../store/appStore/appActions';
 
 const WobjectContainer = props => {
@@ -172,11 +171,10 @@ WobjectContainer.propTypes = {
 };
 
 WobjectContainer.fetchData = async ({ store, match }) => {
-  const res = await store.dispatch(login());
   const objName = match.params.name;
 
   return Promise.allSettled([
-    store.dispatch(getObject(objName, res?.value?.name)).then(response => {
+    store.dispatch(getObject(objName)).then(response => {
       let promises = [
         store
           .dispatch(
