@@ -457,7 +457,7 @@ export default class MediumDraftEditor extends React.Component {
       this.onChange(newES);
       const newESSelectionState = newES.getSelection();
 
-      if (blockText[start - 1] === ' ') {
+      if (typeof window !== 'undefined' && blockText[start - 1] === ' ') {
         const nativeSelection = getSelection(window);
         const selectionBoundary = getSelectionRect(nativeSelection);
 

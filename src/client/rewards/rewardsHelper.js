@@ -376,11 +376,13 @@ export const getSort = (
 };
 
 export const openNewTab = url => {
-  const newWindow = window.open();
+  if (typeof window !== 'undefined') {
+    const newWindow = window.open();
 
-  newWindow.opener = null;
-  newWindow.location = url;
-  newWindow.target = '_blank';
+    newWindow.opener = null;
+    newWindow.location = url;
+    newWindow.target = '_blank';
+  }
 };
 
 export const getProposOrWobjId = item => get(item, ['_id'], '');

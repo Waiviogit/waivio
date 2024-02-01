@@ -51,27 +51,32 @@ const Toolbar = props => {
 
   useEffect(() => {
     if (!isOpen) return;
-    const nativeSelection = getSelection(window);
-    const selectionBoundary = getSelectionRect(nativeSelection);
+    if (typeof window !== 'undefined') {
+      const nativeSelection = getSelection(window);
+      const selectionBoundary = getSelectionRect(nativeSelection);
 
-    if (!refToolbar.current || !editorNode) return;
+      if (!refToolbar.current || !editorNode) return;
 
-    const toolbarNode = refToolbar.current;
+      const toolbarNode = refToolbar.current;
 
-    const parentBoundary = editorNode.getBoundingClientRect();
-    const toolbarBoundary = toolbarNode.getBoundingClientRect();
+      const parentBoundary = editorNode.getBoundingClientRect();
+      const toolbarBoundary = toolbarNode.getBoundingClientRect();
 
-    toolbarNode.style.top = `${selectionBoundary.bottom - verticalPos - parentBoundary.top - 5}px`;
+      toolbarNode.style.top = `${selectionBoundary.bottom -
+        verticalPos -
+        parentBoundary.top -
+        5}px`;
 
-    const selectionCenter =
-      selectionBoundary.left - parentBoundary.left + selectionBoundary.width / 2; //
-    let left = selectionCenter - toolbarBoundary.width / 2;
-    const screenLeft = parentBoundary.left;
+      const selectionCenter =
+        selectionBoundary.left - parentBoundary.left + selectionBoundary.width / 2; //
+      let left = selectionCenter - toolbarBoundary.width / 2;
+      const screenLeft = parentBoundary.left;
 
-    if (screenLeft < 20) {
-      left = -parentBoundary.left;
+      if (screenLeft < 20) {
+        left = -parentBoundary.left;
+      }
+      toolbarNode.style.left = `${left}px`;
     }
-    toolbarNode.style.left = `${left}px`;
   }, [isOpen]);
 
   const handleLinkInput = e => {

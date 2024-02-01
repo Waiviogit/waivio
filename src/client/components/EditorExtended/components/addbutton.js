@@ -80,44 +80,48 @@ class AddButton extends React.Component {
         isControlElem: false,
       },
       () => {
-        // callback function
-        // save page state
-        const x = window.scrollX;
-        const y = window.scrollY;
+        if (typeof window !== 'undefined') {
+          // callback function
+          // save page state
+          const x = window.scrollX;
+          const y = window.scrollY;
 
-        // do focus
-        this.props.focus();
-        // back previous window state
-        window.scrollTo(x, y);
+          // do focus
+          this.props.focus();
+          // back previous window state
+          window.scrollTo(x, y);
+        }
       },
     );
   }
 
   findNode() {
-    // eslint-disable-next-line no-undef
-    const node = getSelectedBlockNode(window);
+    if (typeof window !== 'undefined') {
+      // eslint-disable-next-line no-undef
+      const node = getSelectedBlockNode(window);
 
-    if (node === this.node) {
-      return;
-    }
-    if (!node) {
-      // console.log('no node');
+      if (node === this.node) {
+        return;
+      }
+      if (!node) {
+        // console.log('no node');
+        this.setState({
+          visible: false,
+          isOpen: false,
+          isControlElem: false,
+        });
+
+        return;
+      }
+      // const rect = node.getBoundingClientRect();
+      this.node = node;
       this.setState({
-        visible: false,
-        isOpen: false,
-        isControlElem: false,
+        visible: true,
+        style: {
+          top: node.offsetTop - 3,
+        },
       });
-
-      return;
     }
-    // const rect = node.getBoundingClientRect();
-    this.node = node;
-    this.setState({
-      visible: true,
-      style: {
-        top: node.offsetTop - 3,
-      },
-    });
   }
 
   renderControlElem(control) {

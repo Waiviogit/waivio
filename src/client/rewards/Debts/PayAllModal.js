@@ -84,15 +84,16 @@ const PayAllModal = ({ showModal, renderData, setShowModal, currentUSDPrice, aut
           if (!res.error) setShowModal(false);
         });
     } else {
-      window.open(
-        `https://hivesigner.com/sign/custom_json?authority=active&required_auths=["${authUserName}"]&required_posting_auths=[]&${createQuery(
-          {
-            id: 'ssc-mainnet-hive',
-            json: JSON.stringify(jsons),
-          },
-        )}`,
-        '_blank',
-      );
+      if (typeof window !== 'undefined')
+        window.open(
+          `https://hivesigner.com/sign/custom_json?authority=active&required_auths=["${authUserName}"]&required_posting_auths=[]&${createQuery(
+            {
+              id: 'ssc-mainnet-hive',
+              json: JSON.stringify(jsons),
+            },
+          )}`,
+          '_blank',
+        );
 
       setShowModal(false);
     }

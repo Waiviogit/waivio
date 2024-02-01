@@ -83,7 +83,7 @@ class Comment extends React.Component {
 
   componentDidMount() {
     const { comment } = this.props;
-    const { hash } = window.location;
+    const { hash } = window && window.location;
     const anchorLink = `#@${comment.author}/${comment.permlink}`;
 
     if (hash.indexOf(anchorLink) === 0 || (comment.focus && !this.props.isQuickComment)) {

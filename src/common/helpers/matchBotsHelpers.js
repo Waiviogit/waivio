@@ -36,9 +36,9 @@ export const INITIAL_INPUTS_VALUE_CURATOR = {
 };
 
 export const redirectAuthHiveSigner = (isAuthority, botType) => {
-  const path = window.location.href;
+  const path = window && window.location.href;
 
-  !isAuthority
+  !isAuthority && typeof window !== 'undefined'
     ? (window.location = `https://hivesigner.com/authorize/${botType}?redirect_uri=${path}&callback`)
     : (window.location = `https://hivesigner.com/revoke/${botType}?redirect_uri=${path}&callback`);
 };

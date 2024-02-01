@@ -208,15 +208,17 @@ const SwapTokens = props => {
           setWaiting(false);
         });
     } else {
-      const win = window.open(
-        `https://hivesigner.com/sign/custom_json?authority=active&required_auths=["${
-          props.authUser
-        }"]&required_posting_auths=[]&${createQuery({
-          id: 'ssc-mainnet-hive',
-          json,
-        })}`,
-        '_blank',
-      );
+      const win =
+        window &&
+        window.open(
+          `https://hivesigner.com/sign/custom_json?authority=active&required_auths=["${
+            props.authUser
+          }"]&required_posting_auths=[]&${createQuery({
+            id: 'ssc-mainnet-hive',
+            json,
+          })}`,
+          '_blank',
+        );
 
       win.focus();
       handleCloseModal();

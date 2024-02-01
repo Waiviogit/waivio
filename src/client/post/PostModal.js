@@ -40,7 +40,7 @@ class PostModal extends React.Component {
   };
 
   static pushURLState(title, url) {
-    if (window) window.history.pushState({}, title, url);
+    if (typeof window !== 'undefined') window.history.pushState({}, title, url);
   }
 
   // eslint-disable-next-line consistent-return

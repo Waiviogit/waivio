@@ -131,7 +131,7 @@ class StoryFull extends React.Component {
       if (wobj.object_type === 'hashtag') taggedObjects.push(wobj);
       else linkedObjects.push(wobj);
     });
-    if (window.location.hash) {
+    if (typeof window !== 'undefined' && window.location.hash) {
       if (typeof document !== 'undefined') {
         setTimeout(() => {
           const relElement = document.getElementById(

@@ -101,7 +101,7 @@ const GuestSignUpForm = ({ form, userData, isModalOpen, url }) => {
         dispatch(login(userData.accessToken, userData.socialNetwork, regData)).then(() => {
           setIsLoading(false);
 
-          if (!isWaivio && url) {
+          if (typeof window !== 'undefined' && !isWaivio && url) {
             window.location.href = `https://${url.host}/?access_token=${userData.accessToken}&socialProvider=${userData.socialNetwork}`;
           }
         });

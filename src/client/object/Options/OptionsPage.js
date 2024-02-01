@@ -20,7 +20,7 @@ const OptionsPage = () => {
 
   useEffect(() => {
     setFilteredOptions([]);
-    window.scrollTo(0, 0);
+    if (typeof window !== 'undefined') window.scrollTo(0, 0);
 
     getObject(match.params.name).then(res => {
       setWobject(res);
@@ -32,7 +32,7 @@ const OptionsPage = () => {
   }, []);
 
   useEffect(() => {
-    window.scrollTo(0, 0);
+    if (typeof window !== 'undefined') window.scrollTo(0, 0);
 
     !isEmpty(wobject) &&
       getObjectOptions(authUser, wobject?.author_permlink, category, 0, limit).then(r => {

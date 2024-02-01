@@ -95,7 +95,7 @@ class QuickCommentEditor extends React.Component {
     const searchInfo = checkCursorInSearchSlate(editor);
 
     if (searchInfo.isNeedOpenSearch) {
-      if (!this.state.isShowEditorSearch) {
+      if (typeof window !== 'undefined' && !this.state.isShowEditorSearch) {
         const nativeSelection = getSelection(window);
         const selectionBoundary = getSelectionRect(nativeSelection);
 

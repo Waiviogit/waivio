@@ -77,7 +77,7 @@ export default function withAuthActions(WrappedComponent) {
       } else {
         const path =
           window && window.location.pathname === '/' ? '' : window && window.location.pathname;
-        const color = this.props.colors.mapMarkerBody.replace('#', '');
+        const color = this.props.colors.mapMarkerBody?.replace('#', '');
 
         if (typeof window !== 'undefined')
           window.location.href = `https://${this.props.domain}/sign-in?host=${

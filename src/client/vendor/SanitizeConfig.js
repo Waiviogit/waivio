@@ -95,8 +95,8 @@ export const parseLink = (appUrl, location, isPage) => (tagName, attribs) => {
       } else {
         let modifiedUrl =
           linkUrl.pathname.endsWith('/page') || linkUrl.pathname.endsWith('/list')
-            ? linkUrl.pathname.slice(0, -5).replace('/object/', '/checklist/')
-            : linkUrl.pathname.replace('/object/', '/checklist/');
+            ? linkUrl.pathname.slice(0, -5)?.replace('/object/', '/checklist/')
+            : linkUrl.pathname?.replace('/object/', '/checklist/');
         if (linkUrl.pathname.endsWith('/webpage')) {
           modifiedUrl = linkUrl.pathname;
         }
@@ -203,7 +203,7 @@ export default ({
       }
 
       // replace http:// with // to force https when needed
-      src = src.replace(/^http:\/\//i, '//');
+      src = src?.replace(/^http:\/\//i, '//');
 
       const atts = { src };
       if (alt && alt !== '') atts.alt = alt;

@@ -75,7 +75,7 @@ const ObjectOfTypePage = props => {
 
   useEffect(() => {
     if (!wobject.author_permlink) return;
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (typeof window !== 'undefined') window.scrollTo({ top: 0, behavior: 'smooth' });
     if (userName && currObj.object_type === 'page') {
       getDraftPage(userName, currObj.author_permlink).then(res => {
         if (res.message || !res.body) {

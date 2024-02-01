@@ -201,21 +201,24 @@ const WebsitesConfigurations = ({
 
   const markersLayout = getMarkers(wobjects);
 
+  // eslint-disable-next-line consistent-return
   const getCurrentScreenSize = () => {
-    const screenWidth = window.screen.width;
-    const screenHeight = window.screen.height;
+    if (typeof window !== 'undefined') {
+      const screenWidth = window.screen.width;
+      const screenHeight = window.screen.height;
 
-    if (isDesktopModalShow) return 'calc(100vh - 110px)';
+      if (isDesktopModalShow) return 'calc(100vh - 110px)';
 
-    if (screenWidth === 375 && screenHeight === 812) {
-      return 665;
-    } else if (screenWidth === 414 && screenHeight === 736) {
-      return 590;
-    } else if (screenWidth === 375 && screenHeight === 667) {
-      return 520;
+      if (screenWidth === 375 && screenHeight === 812) {
+        return 665;
+      } else if (screenWidth === 414 && screenHeight === 736) {
+        return 590;
+      } else if (screenWidth === 375 && screenHeight === 667) {
+        return 520;
+      }
+
+      return 600;
     }
-
-    return 600;
   };
 
   return (

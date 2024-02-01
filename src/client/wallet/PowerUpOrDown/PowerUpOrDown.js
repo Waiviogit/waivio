@@ -168,11 +168,13 @@ export default class PowerUpOrDown extends React.Component {
           });
         } else {
           const win = isHiveCurrency
-            ? window.open(
+            ? window &&
+              window.open(
                 `https://hivesigner.com/sign/${operatin}?${createQuery(transferQuery)}`,
                 '_blank',
               )
-            : window.open(
+            : window &&
+              window.open(
                 `https://hivesigner.com/sign/custom_json?authority=active&required_auths=["${
                   user.name
                 }"]&required_posting_auths=[]&${createQuery({

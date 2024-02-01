@@ -111,7 +111,7 @@ const HeaderButtons = props => {
   const notificationsCountDisplay = notificationsCount > 99 ? '99+' : notificationsCount;
 
   const handleScrollToTop = () => {
-    if (window) {
+    if (typeof window !== 'undefined') {
       window.scrollTo(0, 0);
     }
   };
@@ -123,7 +123,7 @@ const HeaderButtons = props => {
   const handleNotificationsPopoverVisibleChange = visible =>
     setNotificationsPopoverVisible(visible);
 
-  const handleEditor = () => window.slateEditor && ReactEditor.focus(window.slateEditor);
+  const handleEditor = () => window && window.slateEditor && ReactEditor.focus(window.slateEditor);
 
   const handleMenuItemClick = key => {
     switch (key) {

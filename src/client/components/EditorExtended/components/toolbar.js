@@ -94,51 +94,53 @@ export default class Toolbar extends React.Component {
   // }
 
   componentDidUpdate(prevProps, prevState) {
-    if (!this.props.editorEnabled || this.state.showURLInput) {
-      return;
-    }
-    const selectionState = this.props.editorState.getSelection();
-
-    if (prevState.currentPage !== this.state.currentPage) return;
-    if (selectionState.isCollapsed()) {
-      return;
-    }
-    // eslint-disable-next-line no-undef
-    const nativeSelection = getSelection(window);
-
-    if (!nativeSelection.rangeCount) {
-      return;
-    }
-    const selectionBoundary = getSelectionRect(nativeSelection);
-
-    // eslint-disable-next-line react/no-find-dom-node
-    const toolbarNode = ReactDOM.findDOMNode(this);
-    const toolbarBoundary = toolbarNode.getBoundingClientRect();
-
-    // eslint-disable-next-line react/no-find-dom-node
-    const parent = ReactDOM.findDOMNode(this.props.editorNode);
-    const parentBoundary = parent.getBoundingClientRect();
-
-    /*
-     * Main logic for setting the toolbar position.
-     */
-    toolbarNode.style.top = `${selectionBoundary.bottom - parentBoundary.top + 4}px`;
-
-    // The left side of the tooltip should be:
-    // center of selection relative to parent - half width of toolbar
-    const selectionCenter =
-      selectionBoundary.left + selectionBoundary.width / 2 - parentBoundary.left;
-    let left = selectionCenter - toolbarBoundary.width / 2;
-    const screenLeft = parentBoundary.left + left;
-
-    if (screenLeft < 0) {
-      if (typeof document !== 'undefined') {
-        // If the toolbar would be off-screen
-        // move it as far left as it can without going off-screen
-        left = -parentBoundary.left + (document.body.clientWidth < 1024 ? 20 : 0);
+    if (typeof window !== 'undefined') {
+      if (!this.props.editorEnabled || this.state.showURLInput) {
+        return;
       }
+      const selectionState = this.props.editorState.getSelection();
+
+      if (prevState.currentPage !== this.state.currentPage) return;
+      if (selectionState.isCollapsed()) {
+        return;
+      }
+      // eslint-disable-next-line no-undef
+      const nativeSelection = getSelection(window);
+
+      if (!nativeSelection.rangeCount) {
+        return;
+      }
+      const selectionBoundary = getSelectionRect(nativeSelection);
+
+      // eslint-disable-next-line react/no-find-dom-node
+      const toolbarNode = ReactDOM.findDOMNode(this);
+      const toolbarBoundary = toolbarNode.getBoundingClientRect();
+
+      // eslint-disable-next-line react/no-find-dom-node
+      const parent = ReactDOM.findDOMNode(this.props.editorNode);
+      const parentBoundary = parent.getBoundingClientRect();
+
+      /*
+       * Main logic for setting the toolbar position.
+       */
+      toolbarNode.style.top = `${selectionBoundary.bottom - parentBoundary.top + 4}px`;
+
+      // The left side of the tooltip should be:
+      // center of selection relative to parent - half width of toolbar
+      const selectionCenter =
+        selectionBoundary.left + selectionBoundary.width / 2 - parentBoundary.left;
+      let left = selectionCenter - toolbarBoundary.width / 2;
+      const screenLeft = parentBoundary.left + left;
+
+      if (screenLeft < 0) {
+        if (typeof document !== 'undefined') {
+          // If the toolbar would be off-screen
+          // move it as far left as it can without going off-screen
+          left = -parentBoundary.left + (document.body.clientWidth < 1024 ? 20 : 0);
+        }
+      }
+      toolbarNode.style.left = `${left}px`;
     }
-    toolbarNode.style.left = `${left}px`;
   }
 
   onKeyDown(e) {

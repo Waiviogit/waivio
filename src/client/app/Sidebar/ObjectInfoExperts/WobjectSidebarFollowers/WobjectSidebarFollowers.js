@@ -22,7 +22,7 @@ const WobjectSidebarFollowers = ({
   hasMore,
 }) => {
   const handleRedirectToFollowers = () => {
-    if (isCenterContent) history.push(`${match.url.replace(/\/[^/]+$/, '')}/followers`);
+    if (isCenterContent) history.push(`${match.url?.replace(/\/[^/]+$/, '')}/followers`);
   };
 
   const follow = user => followUser(user);

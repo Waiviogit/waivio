@@ -89,7 +89,7 @@ class Topnav extends React.Component {
   };
 
   static handleScrollToTop() {
-    if (window) {
+    if (typeof window !== 'undefined') {
       window.scrollTo(0, 0);
     }
   }
@@ -272,10 +272,10 @@ class Topnav extends React.Component {
 
     switch (data.props.marker) {
       case Topnav.markers.USER:
-        redirectUrl = `/@${value.replace('user', '')}`;
+        redirectUrl = `/@${value?.replace('user', '')}`;
         break;
       case Topnav.markers.WOBJ:
-        redirectUrl = value.replace('wobj', '');
+        redirectUrl = value?.replace('wobj', '');
         break;
       default:
         redirectUrl = `/discover-objects/${value.replace('type', '')}`;

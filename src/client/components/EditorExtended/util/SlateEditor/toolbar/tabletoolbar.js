@@ -11,19 +11,21 @@ const TableToolbar = props => {
 
   useEffect(() => {
     if (!tableToolbarRef.current || !editorNode) return;
-    const toolbarNode = tableToolbarRef.current;
-    const nativeSelection = getSelection(window);
-    const nodeFocused = nativeSelection.focusNode;
-    const table = nodeFocused?.parentNode.closest('table');
+    if (typeof window !== 'undefined') {
+      const toolbarNode = tableToolbarRef.current;
+      const nativeSelection = getSelection(window);
+      const nodeFocused = nativeSelection.focusNode;
+      const table = nodeFocused?.parentNode.closest('table');
 
-    if (!table) return;
-    const tableBoundary = table.getBoundingClientRect();
-    const parentBoundary = editorNode.getBoundingClientRect();
-    const left = tableBoundary.left - parentBoundary.left;
+      if (!table) return;
+      const tableBoundary = table.getBoundingClientRect();
+      const parentBoundary = editorNode.getBoundingClientRect();
+      const left = tableBoundary.left - parentBoundary.left;
 
-    toolbarNode.style.top = `${tableBoundary.top - parentBoundary.top - 55}px`;
-    toolbarNode.style.left = left;
-    toolbarNode.style.position = 'absolute';
+      toolbarNode.style.top = `${tableBoundary.top - parentBoundary.top - 55}px`;
+      toolbarNode.style.left = left;
+      toolbarNode.style.position = 'absolute';
+    }
   }, [editor, selection]);
 
   const handleRemoveTable = () => {
