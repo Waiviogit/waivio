@@ -190,7 +190,7 @@ function linkifyNode(child, state) {
     if (imageRegex.test(child?.nodeValue)) {
       const value = child?.nodeValue.match(imageRegex)[0];
       const src = value.includes('waivio.') ? value : getProxyImageURL(value);
-      if(typeof document !== 'undefined') {
+      if (typeof document !== 'undefined') {
         const newChild = document.createElement('img');
         newChild.alt = '';
         newChild.src = src;

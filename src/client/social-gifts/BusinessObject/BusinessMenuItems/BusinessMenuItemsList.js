@@ -16,7 +16,7 @@ import PopoverMenu, { PopoverMenuItem } from '../../../components/PopoverMenu/Po
 const listLength = 3;
 
 const BusinessMenuItemsList = ({ menuItem, intl }) => {
-  const [menuItems, setMenuItems] = useState(prepareMenuItems(menuItem));
+  const [menuItems, setMenuItems] = useState([]);
   const [visible, setVisible] = useState(false);
   const linkList = sortListItems(
     menuItems,
