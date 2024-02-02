@@ -18,6 +18,7 @@ import { getActiveCategory, getActiveOption } from '../../../store/optionsStore/
 import {
   getObject as getObjectState,
   getObjectExpertiseUsers,
+  getObjectsNearby,
   getWobjectAuthors,
 } from '../../../store/wObjectStore/wObjectSelectors';
 import { getObjectAlbums, getRelatedPhotos } from '../../../store/galleryStore/gallerySelectors';
@@ -75,6 +76,7 @@ const BusinessObject = ({
   isEditMode,
   toggleViewEditMode,
   experts,
+  nearbyObjects,
 }) => {
   const [reward, setReward] = useState([]);
   const [references, setReferences] = useState([]);
@@ -397,6 +399,7 @@ const BusinessObject = ({
             {!isEmpty(experts) && (
               <Experts key={'experts'} experts={experts} title={`experts`} name={'experts'} />
             )}
+            {<ObjectsSlider objects={nearbyObjects?.objects} title={'nearby'} name={'nearby'} />}
             {!isEmpty(tagCategoriesList) && (
               <div className="SocialProduct__featuresContainer">
                 <div className="SocialProduct__heading">Tags</div>
@@ -434,6 +437,7 @@ BusinessObject.propTypes = {
   isEditMode: PropTypes.bool,
   toggleViewEditMode: PropTypes.func,
   brandObject: PropTypes.shape({}),
+  nearbyObjects: PropTypes.shape(),
   manufacturerObject: PropTypes.shape({}),
   merchantObject: PropTypes.shape({}),
 };
@@ -453,6 +457,7 @@ const mapStateToProps = state => ({
   optionClicked: getIsOptionClicked(state),
   helmetIcon: getHelmetIcon(state),
   experts: getObjectExpertiseUsers(state),
+  nearbyObjects: getObjectsNearby(state),
 });
 
 const mapDispatchToProps = dispatch => ({

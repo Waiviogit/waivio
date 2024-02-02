@@ -16,8 +16,8 @@ const AppHost = ({ history }) => {
   const page = useSelector(getWebsiteStartPage);
 
   useLayoutEffect(() => {
-    if (isCustomDomain(location.hostname)) {
-      getParentHost(location.hostname).then(res => {
+    if (isCustomDomain(location?.hostname)) {
+      getParentHost(location?.hostname).then(res => {
         setHost(res);
         setLoading(false);
       });
@@ -28,7 +28,7 @@ const AppHost = ({ history }) => {
 
   return (
     <ConnectedRouter history={history}>
-      {loading ? null : routes(page, location.hostname, parentHost)}
+      {loading ? null : routes(page, location?.hostname, parentHost)}
     </ConnectedRouter>
   );
 };
