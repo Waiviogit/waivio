@@ -86,12 +86,12 @@ export const parseLink = (appUrl, location, isPage) => (tagName, attribs) => {
 
   if (!internalLink) attys.target = '_blank';
   if (
-    (linkWebsiteUrl.includes('waivio') || linkWebsiteUrl.includes('dining')) &&
+    (linkWebsiteUrl?.includes('waivio') || linkWebsiteUrl?.includes('dining')) &&
     linkUrl.pathname !== '/'
   ) {
     if (isPage) {
-      if (appUrl.includes('waivio') || appUrl.includes('dining')) {
-        href = linkUrl.hash && location?.pathname !== '/' ? location.pathname : linkUrl.pathname;
+      if (appUrl?.includes('waivio') || appUrl?.includes('dining')) {
+        href = linkUrl.hash && location?.pathname !== '/' ? location?.pathname : linkUrl.pathname;
       } else {
         let modifiedUrl =
           linkUrl.pathname.endsWith('/page') || linkUrl.pathname.endsWith('/list')
@@ -101,21 +101,21 @@ export const parseLink = (appUrl, location, isPage) => (tagName, attribs) => {
           modifiedUrl = linkUrl.pathname;
         }
 
-        href = linkUrl.hash && location?.pathname !== '/' ? location.pathname : modifiedUrl;
+        href = linkUrl.hash && location?.pathname !== '/' ? location?.pathname : modifiedUrl;
       }
 
       if (location?.hash && !linkUrl.pathname.endsWith('/webpage')) {
-        href = href + location.hash;
+        href = href + location?.hash;
       }
 
       if (linkUrl.hash)
-        href = href.includes('#')
+        href = href?.includes('#')
           ? href + `/${getLastPermlinksFromHash(linkUrl.hash)}`
           : href + linkUrl.hash;
     } else {
       href = appUrl + linkUrl.pathname;
       if (linkUrl.hash)
-        href = href.includes('#')
+        href = href?.includes('#')
           ? href + `/${getLastPermlinksFromHash(linkUrl.hash)}`
           : href + linkUrl.hash;
     }
