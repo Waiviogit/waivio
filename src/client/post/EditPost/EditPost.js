@@ -78,6 +78,7 @@ const EditPost = props => {
     intl,
   } = props;
   const [currDraft, setCurrDraft] = React.useState();
+  const [isNewReview, setIsNewReview] = React.useState(false);
 
   React.useEffect(() => {
     props.history.replace({
@@ -107,6 +108,7 @@ const EditPost = props => {
   }, []);
 
   React.useEffect(() => {
+    setIsNewReview(!props.draftPosts.some(d => d.draftId === props.draftId));
     const hideLinkedObjectsSession = parseJSON(localStorage.getItem(props.draftId)) || [];
 
     setDraftId(hideLinkedObjectsSession);
@@ -200,7 +202,7 @@ const EditPost = props => {
       <div className="post-layout container container-edit-post">
         <div className="center">
           <Editor
-            isNewReview={!props.draftPosts.some(d => d.draftId === props.draftId)}
+            isNewReview={isNewReview}
             enabled={!props.imageLoading}
             initialContent={draftContent}
             locale={props.locale}
