@@ -190,7 +190,7 @@ class WebsiteWrapper extends React.PureComponent {
 
           if (queryString) queryString = `/?${queryString}`;
 
-          this.props.history.push(`${this.props.location.pathname}${queryString}`);
+          this.props.history.push(`${this.props?.location.pathname}${queryString}`);
         }
       });
     });
@@ -237,7 +237,7 @@ class WebsiteWrapper extends React.PureComponent {
     } = this.props;
     const language = findLanguage(usedLocale);
     const antdLocale = this.getAntdLocale(language);
-    const signInPage = location.pathname.includes('sign-in');
+    const signInPage = location?.pathname?.includes('sign-in');
 
     return (
       <IntlProvider
@@ -258,8 +258,8 @@ class WebsiteWrapper extends React.PureComponent {
                 <MainPageHeader
                   withMap={
                     isDiningGifts
-                      ? location.pathname === '/map'
-                      : ['/map', '/'].includes(location.pathname)
+                      ? location?.pathname === '/map'
+                      : ['/map', '/'].includes(location?.pathname)
                   }
                 />
               )}
