@@ -65,6 +65,7 @@ export const initialState = {
   menuItems: {},
   brandObject: {},
   manufacturerObject: {},
+  publisherObject: {},
   merchantObject: {},
 };
 
@@ -79,6 +80,7 @@ export default function wobjectReducer(state = initialState, action) {
         brandObject: {},
         manufacturerObject: {},
         merchantObject: {},
+        publisherObject: {},
         isFetching: true,
       };
     case actions.GET_OBJECT_ERROR:
