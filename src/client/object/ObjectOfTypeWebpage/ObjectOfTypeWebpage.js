@@ -19,7 +19,7 @@ import { getLastPermlinksFromHash, getObjectName } from '../../../common/helpers
 import { setNestedWobject } from '../../../store/wObjectStore/wobjActions';
 import AppendWebpageModal from './AppendWebpageModal';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
-import { getUsedLocale } from '../../../store/appStore/appSelectors';
+import { getIsSocial, getUsedLocale } from '../../../store/appStore/appSelectors';
 import customVideoPlugin from './videoPlugin';
 
 import './ObjectOfTypeWebpage.less';
@@ -53,13 +53,19 @@ const ObjectOfTypeWebpage = ({ intl }) => {
   const [loading, setLoading] = useState(true);
   const isEditMode = useSelector(getIsEditMode);
   const jsonVal = currentValue ? JSON.stringify(currentValue) : null;
+  const siteLink = location && `${location.origin}/`;
+  const isSocial = useSelector(getIsSocial);
 
   useEffect(() => {
     setLoading(true);
     getObject(authorPermlink, user, locale).then(res => {
       setWobject(res);
       if (has(res, 'webpage')) {
-        setCurrentValue(JSON.parse(res?.webpage));
+        const jsonString = isSocial
+          ? res.webpage?.replace(/https:\/\/www\.waivio\.com\//g, siteLink)
+          : res.webpage;
+
+        setCurrentValue(JSON.parse(jsonString));
         dispatch(setNestedWobject(res));
       }
       setLoading(false);
