@@ -5,7 +5,6 @@ import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { useParams } from 'react-router';
 import { FormattedMessage, FormattedNumber } from 'react-intl';
-import { guestUserRegex } from '../../common/helpers/regexHelpers';
 import { getIsSocial, getIsWaivio } from '../../store/appStore/appSelectors';
 
 import './UserMenu.less';
@@ -14,7 +13,6 @@ const UserMenu = props => {
   const isWaivio = useSelector(getIsWaivio);
   const isSocial = useSelector(getIsSocial);
   const { name, 0: tab = 'posts' } = useParams();
-  const currUserIsGuest = guestUserRegex.test(name);
   const showUserShop = isWaivio || isSocial;
 
   const getItemClasses = keys =>
@@ -33,14 +31,14 @@ const UserMenu = props => {
               <FormattedMessage id="posts" defaultMessage="Posts" />
             </Link>
           </li>
-          {!currUserIsGuest && showUserShop && (
+          {showUserShop && (
             <li className={getItemClasses(['userShop'])} role="presentation">
               <Link to={`/@${name}/userShop`}>
                 <FormattedMessage id="shop" defaultMessage="Shop" />
               </Link>
             </li>
           )}{' '}
-          {!currUserIsGuest && showUserShop && (
+          {showUserShop && (
             <li className={getItemClasses(['favorites'])} role="presentation">
               <Link to={`/@${name}/favorites`}>
                 <FormattedMessage id="favorites" defaultMessage="Favorites" />

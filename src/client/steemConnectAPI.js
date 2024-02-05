@@ -451,17 +451,24 @@ function sc2Extended() {
     },
     {
       appendVote(voter, isGuestUser, author, permlink, weight, cb) {
-        const params = {
-          required_auths: [],
-          required_posting_auths: [voter],
-          id: isGuestUser ? 'vote' : 'vote_append_object',
-          json: JSON.stringify({
-            author,
-            permlink,
-            weight,
-            voter,
-          }),
-        };
+        const params = isGuestUser
+          ? {
+              author,
+              permlink,
+              weight,
+              voter,
+            }
+          : {
+              required_auths: [],
+              required_posting_auths: [voter],
+              id: 'vote_append_object',
+              json: JSON.stringify({
+                author,
+                permlink,
+                weight,
+                voter,
+              }),
+            };
 
         return this.broadcast([[isGuestUser ? 'vote' : 'custom_json', params]], cb);
       },
