@@ -154,6 +154,7 @@ export const voteAppends = (
 ) => (dispatch, getState, { steemConnectAPI }) => {
   const state = getState();
   const fields = getAppendList(state);
+  const isGuest = isGuestUser(state);
   const post = fields.find(field => field.permlink === permlink) || null;
   const wobj = get(state, ['object', 'wobject'], {});
   const voter = getAuthenticatedUserName(state);
@@ -193,7 +194,7 @@ export const voteAppends = (
         );
     })
     .catch(() =>
-      steemConnectAPI.appendVote(voter, author, permlink, weight).then(res => {
+      steemConnectAPI.appendVote(voter, isGuest, author, permlink, weight).then(res => {
         if (!authorityField) {
           message.success('Please wait, we are processing your update');
         }
@@ -222,6 +223,7 @@ export const authorityVoteAppend = (author, authorPermlink, permlink, weight, is
 ) => {
   const state = getState();
   const voter = getAuthenticatedUserName(state);
+  const isGuest = isGuestUser(state);
 
   if (!getIsAuthenticated(state)) return null;
 
@@ -232,7 +234,7 @@ export const authorityVoteAppend = (author, authorPermlink, permlink, weight, is
     },
   });
 
-  return steemConnectAPI.appendVote(voter, author, permlink, weight).then(res => {
+  return steemConnectAPI.appendVote(voter, isGuest, author, permlink, weight).then(res => {
     if (isObjectPage)
       dispatch(
         getChangedWobjectField(
@@ -263,6 +265,7 @@ export const affiliateCodeVoteAppend = (
 ) => (dispatch, getState, { steemConnectAPI, busyAPI }) => {
   const state = getState();
   const voter = getAuthenticatedUserName(state);
+  const isGuest = isGuestUser(state);
 
   if (!getIsAuthenticated(state)) return null;
 
@@ -280,7 +283,7 @@ export const affiliateCodeVoteAppend = (
     },
   });
 
-  return steemConnectAPI.appendVote(voter, author, permlink, weight).then(res => {
+  return steemConnectAPI.appendVote(voter, isGuest, author, permlink, weight).then(res => {
     busyAPI.instance.sendAsync(subscribeTypes.subscribeTransactionId, [voter, res.result.id]);
     busyAPI.instance.subscribe((response, mess) => {
       if (mess?.success && mess?.permlink === res.result.id) {
