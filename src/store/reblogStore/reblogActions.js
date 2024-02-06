@@ -34,7 +34,7 @@ export const reblog = postId => (dispatch, getState, { steemConnectAPI }) => {
         dispatch(reblogPost(postId, auth.user.name));
 
         if (typeof window !== 'undefined' && window?.gtag)
-          window.gtag('event', 'reblog', { debug_mode: true });
+          window.gtag('event', 'reblog', { debug_mode: false });
 
         return result;
       }),

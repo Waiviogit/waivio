@@ -1,5 +1,5 @@
 import React from 'react';
-import { isEmpty } from 'lodash';
+import { isEmpty, isNil } from 'lodash';
 import PropTypes from 'prop-types';
 import { ReactSVG } from 'react-svg';
 import { useSelector } from 'react-redux';
@@ -18,7 +18,7 @@ const AffiliatLink = ({ link, disabled }) => {
   const onClick = () => {
     if (typeof window !== 'undefined' && window?.gtag) {
       window.gtag('event', 'buy_now', { debug_mode: true });
-      if (!isEmpty(settings.googleEventSnippet)) {
+      if (!isEmpty(settings.googleEventSnippet) && !isNil(link.link)) {
         window.gtag('event', 'gtag_report_conversion', { debug_mode: true });
         window.gtag_report_conversion(link.link);
       }

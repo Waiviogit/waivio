@@ -27,7 +27,7 @@ const WebsiteMainPage = props => {
     const findRewardsLink = isMobile() ? 'type=restaurant' : 'showPanel=true&type=restaurant';
 
     if (typeof window !== 'undefined' && window.gtag)
-      window.gtag('event', 'click_button_find_rewards', { debug_mode: true });
+      window.gtag('event', 'click_button_find_rewards', { debug_mode: false });
 
     props.history.push(`/map?${findRewardsLink}`);
   };

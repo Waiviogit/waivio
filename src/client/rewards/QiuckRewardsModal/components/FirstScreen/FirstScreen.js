@@ -108,7 +108,7 @@ const ModalFirstScreen = props => {
   const handleSearchRestaurant = useCallback(
     debounce(search => {
       if (typeof window !== 'undefined' && window.gtag)
-        window.gtag('event', 'search_restaurant_in_quick_rewards_modal', { debug_mode: true });
+        window.gtag('event', 'search_restaurant_in_quick_rewards_modal', { debug_mode: false });
       props.getEligibleRewardsList(search);
     }, 300),
     [],
@@ -117,7 +117,7 @@ const ModalFirstScreen = props => {
   const handleSearchDish = useCallback(
     debounce(() => {
       if (typeof window !== 'undefined' && window.gtag)
-        window.gtag('event', 'search_dish_in_quick_rewards_modal', { debug_mode: true });
+        window.gtag('event', 'search_dish_in_quick_rewards_modal', { debug_mode: false });
     }, 300),
     [props.selectedRestaurant],
   );
