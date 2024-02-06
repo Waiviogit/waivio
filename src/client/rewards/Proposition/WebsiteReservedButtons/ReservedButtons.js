@@ -35,7 +35,7 @@ const ReservedButtons = props => {
 
   const handleClickProposButton = () => {
     if (typeof window !== 'undefined' && window?.gtag)
-      window.gtag('event', 'click_submit_photos', { debug_mode: true });
+      window.gtag('event', 'click_submit_photos', { debug_mode: false });
     props.onActionInitiated(async () => {
       if (!props.inCard) setLoadingButton(true);
       props.handleReserve(setLoadingButton);

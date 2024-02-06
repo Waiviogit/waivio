@@ -68,7 +68,7 @@ const Checklist = ({
       const wObject = res?.value;
 
       if (wObject?.object_type === 'list' && typeof window !== 'undefined' && window.gtag) {
-        window.gtag('event', getObjectName(wObject), { debug_mode: true });
+        window.gtag('event', getObjectName(wObject), { debug_mode: false });
       }
       if (history.location.hash) {
         setNestedObject(wObject);

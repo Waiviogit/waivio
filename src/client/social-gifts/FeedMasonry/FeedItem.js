@@ -69,7 +69,7 @@ const FeedItem = ({ post, photoQuantity, preview }) => {
 
   const handleShowPostModal = () => {
     if (typeof window !== 'undefined' && window?.gtag)
-      window.gtag('event', 'view_post', { debug_mode: true });
+      window.gtag('event', 'view_post', { debug_mode: false });
     dispatch(showPostModal(post));
   };
   const likesCount = getUpvotes(post.active_votes).length;

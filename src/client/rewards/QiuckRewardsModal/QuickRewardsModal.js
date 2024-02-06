@@ -103,7 +103,7 @@ const QuickRewardsModal = props => {
     if (isPropositionObj) {
       if (!props?.selectedDish?.reserved) {
         if (typeof window !== 'undefined' && window.gtag)
-          window.gtag('event', 'reserve_proposition_in_quick_rewards_modal', { debug_mode: true });
+          window.gtag('event', 'reserve_proposition_in_quick_rewards_modal', { debug_mode: false });
         const permlink = `reserve-${generatePermlink()}`;
 
         props
@@ -130,7 +130,7 @@ const QuickRewardsModal = props => {
     setLoading(true);
 
     if (typeof window !== 'undefined' && window.gtag)
-      window.gtag('event', 'create_post_in_quick_rewards_modal', { debug_mode: true });
+      window.gtag('event', 'create_post_in_quick_rewards_modal', { debug_mode: false });
     props.createQuickPost(body, topics, images, reservationPermlink).then(() => setLoading(false));
   };
 

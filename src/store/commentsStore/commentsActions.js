@@ -259,7 +259,7 @@ export const sendComment = (
       }
 
       if (typeof window !== 'undefined' && window.gtag)
-        window.gtag('event', 'publish_comment', { debug_mode: true });
+        window.gtag('event', 'publish_comment', { debug_mode: false });
     })
     .catch(err => {
       dispatch(notify(err.error.message || err.error_description, 'error'));

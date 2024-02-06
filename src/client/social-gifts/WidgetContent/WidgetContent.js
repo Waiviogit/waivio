@@ -33,12 +33,12 @@ const WidgetContent = ({ wobj }) => {
     if (wobj) {
       setWobject(wobj);
       if (typeof window !== 'undefined' && window.gtag)
-        window.gtag('event', getObjectName(wobj), { debug_mode: true });
+        window.gtag('event', getObjectName(wobj), { debug_mode: false });
     } else {
       getObject(objName, userName, locale).then(obj => {
         setWobject(obj);
         if (typeof window !== 'undefined' && window.gtag)
-          window.gtag('event', getObjectName(obj), { debug_mode: true });
+          window.gtag('event', getObjectName(obj), { debug_mode: false });
       });
     }
   }, [objName]);
