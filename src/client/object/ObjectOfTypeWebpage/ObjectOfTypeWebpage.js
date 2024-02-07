@@ -70,7 +70,7 @@ const ObjectOfTypeWebpage = ({ intl }) => {
       }
       setLoading(false);
     });
-  }, [authorPermlink, wobject.webpage]);
+  }, [authorPermlink]);
 
   if (((isNil(currentValue) && !loading) || currentValue?.rows.length < 1) && !isEditMode) {
     return (

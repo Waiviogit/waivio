@@ -24,6 +24,11 @@ const UserFavorites = () => {
   const isLoading = useSelector(getLoadingFavoriteObjects);
   const hasMore = useSelector(hasMoreFavoriteObjects);
   const objectTypes = useSelector(getFavoriteObjectTypes);
+  const emptyFavorites =
+    (isEmpty(favoriteObjects?.[objectType]) &&
+      !isNil(favoriteObjects?.[objectType]) &&
+      !isLoading) ||
+    (isEmpty(objectTypes) && !isNil(objectTypes) && !isLoading);
 
   const { objectType = objectTypes?.[0], name } = useParams();
   const dispatch = useDispatch();
@@ -49,9 +54,7 @@ const UserFavorites = () => {
           setVisible={setVisible}
         />
       </div>
-      {isEmpty(favoriteObjects?.[objectType]) &&
-      !isNil(favoriteObjects?.[objectType]) &&
-      !isLoading ? (
+      {emptyFavorites ? (
         <div className="feed_empty">
           <h3>
             <FormattedMessage

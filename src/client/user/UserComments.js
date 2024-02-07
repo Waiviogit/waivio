@@ -16,6 +16,7 @@ import EmptyMutedUserProfile from '../statics/MutedContent';
 import { getAuthenticatedUserName, isGuestUser } from '../../store/authStore/authSelectors';
 import { getFeed } from '../../store/feedStore/feedSelectors';
 import { getUser } from '../../store/usersStore/usersSelectors';
+import Loading from '../components/Icon/Loading';
 
 @connect(
   (state, ownProps) => ({
@@ -74,7 +75,7 @@ export default class UserProfilePosts extends React.Component {
     if (!isEmpty(user.mutedBy) || user.muted)
       return <EmptyMutedUserProfile user={user} authName={authenticatedUserName} />;
 
-    if (isEmpty(content)) {
+    if (isEmpty(content) && !isFetching) {
       return (
         <div role="presentation" className="Threads__row justify-center">
           <FormattedMessage id="empty_comments" defaultMessage="There are no comments yet" />
@@ -82,7 +83,9 @@ export default class UserProfilePosts extends React.Component {
       );
     }
 
-    return (
+    return isFetching && content?.length < limit ? (
+      <Loading />
+    ) : (
       <React.Fragment>
         <Feed
           content={content}

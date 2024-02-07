@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Modal, Switch } from 'antd';
+import { Button, Modal } from 'antd';
 import { injectIntl } from 'react-intl';
 import { isEmpty } from 'lodash';
 import PropTypes from 'prop-types';

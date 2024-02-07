@@ -19,6 +19,16 @@ const AddressHoursDetails = ({ address, map, workTime, wobject, history }) => {
               {address}
             </span>
           </div>
+          {isRenderMap && (
+            <a
+              href={`https://www.google.com/maps/search/?api=1&query=${map.latitude},${map.longitude}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="address-link flex items-center"
+            >
+              Directions <i className="iconfont icon-send PostModal__icon" />
+            </a>
+          )}
         </div>
       )}
       {isRenderMap && (

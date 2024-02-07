@@ -284,73 +284,75 @@ const BusinessObject = ({
                 </div>
               </div>
             )}
-            <div className="SocialProduct__row ">
-              {!isMobile() && (
-                <h1
+            <div className="BusinessObject__row ">
+              <div className="BusinessObject__row--center ">
+                {!isMobile() && (
+                  <h1
+                    className={
+                      isEmpty(wobjTitle) ? 'SocialProduct__wobjName' : 'SocialProduct__bookWobjName'
+                    }
+                  >
+                    {wobject.name}
+                  </h1>
+                )}
+                {!isMobile() && !isEmpty(wobjTitle) && (
+                  <div className="SocialProduct__title">{wobjTitle}</div>
+                )}
+
+                {!isMobile() && authenticated && !isEmpty(wobject) && (
+                  <div className="SocialProduct__socialActions">
+                    <SocialProductActions
+                      currentWobj={wobject}
+                      toggleViewEditMode={toggleViewEditMode}
+                      isEditMode={isEditMode}
+                      authenticated={authenticated}
+                    />
+                  </div>
+                )}
+                {!isMobile() && (
+                  <div className="SocialProduct__ratings">
+                    {' '}
+                    {!isEmpty(wobject.rating) &&
+                      wobject.rating.map(rating => (
+                        <div key={rating.permlink} className="SocialProduct__ratings-item">
+                          <RatingsWrap
+                            isSocialProduct
+                            ratings={[rating]}
+                            username={userName}
+                            wobjId={wobject.author_permlink}
+                            wobjName={wobject.name}
+                          />
+                        </div>
+                      ))}
+                  </div>
+                )}
+                <div
                   className={
-                    isEmpty(wobjTitle) ? 'SocialProduct__wobjName' : 'SocialProduct__bookWobjName'
+                    isNil(price) && !isEmpty(wobject?.options)
+                      ? 'SocialProduct__price-no'
+                      : 'SocialProduct__price'
                   }
                 >
-                  {wobject.name}
-                </h1>
-              )}
-              {!isMobile() && !isEmpty(wobjTitle) && (
-                <div className="SocialProduct__title">{wobjTitle}</div>
-              )}
-
-              {!isMobile() && authenticated && !isEmpty(wobject) && (
-                <div className="SocialProduct__socialActions">
-                  <SocialProductActions
-                    currentWobj={wobject}
-                    toggleViewEditMode={toggleViewEditMode}
+                  {price}
+                </div>
+                {showBusinessDetails && (
+                  <BusinessDetails
+                    email={email}
                     isEditMode={isEditMode}
-                    authenticated={authenticated}
+                    companyIdBody={companyIdBody}
+                    wobject={wobject}
+                    phones={phones}
+                    username={userName}
+                    linkField={linkField}
+                    website={website}
+                    parent={parent}
                   />
-                </div>
-              )}
-              {!isMobile() && (
-                <div className="SocialProduct__ratings">
-                  {' '}
-                  {!isEmpty(wobject.rating) &&
-                    wobject.rating.map(rating => (
-                      <div key={rating.permlink} className="SocialProduct__ratings-item">
-                        <RatingsWrap
-                          isSocialProduct
-                          ratings={[rating]}
-                          username={userName}
-                          wobjId={wobject.author_permlink}
-                          wobjName={wobject.name}
-                        />
-                      </div>
-                    ))}
-                </div>
-              )}
-              <div
-                className={
-                  isNil(price) && !isEmpty(wobject?.options)
-                    ? 'SocialProduct__price-no'
-                    : 'SocialProduct__price'
-                }
-              >
-                {price}
-              </div>
-              {showBusinessDetails && (
-                <BusinessDetails
-                  email={email}
-                  isEditMode={isEditMode}
-                  companyIdBody={companyIdBody}
-                  wobject={wobject}
-                  phones={phones}
-                  username={userName}
-                  linkField={linkField}
-                  website={website}
-                  parent={parent}
-                />
-              )}
+                )}
 
-              {isEmpty(wobject.preview_gallery) && (
-                <ProductRewardCard isSocialProduct reward={reward} />
-              )}
+                {isEmpty(wobject.preview_gallery) && (
+                  <ProductRewardCard isSocialProduct reward={reward} />
+                )}
+              </div>
             </div>
             {!isMobile() && showGallery && (
               <div className="SocialProduct__row SocialProduct__right-row">
@@ -384,7 +386,7 @@ const BusinessObject = ({
             {!isEmpty(menuItem) && <BusinessMenuItemsList menuItem={menuItem} />}
             {!isEmpty(wobject.description) && (
               <div className="SocialProduct__aboutItem">
-                <div className="SocialProduct__heading"> About this item</div>
+                <div className="SocialProduct__heading"> About</div>
                 <SocialProductDescription
                   description={wobject.description}
                   pictures={photosAlbum.items}
@@ -399,7 +401,9 @@ const BusinessObject = ({
             {!isEmpty(experts) && (
               <Experts key={'experts'} experts={experts} title={`experts`} name={'experts'} />
             )}
-            {<ObjectsSlider objects={nearbyObjects?.objects} title={'nearby'} name={'nearby'} />}
+            {!isEmpty(nearbyObjects?.objects) && (
+              <ObjectsSlider objects={nearbyObjects?.objects} title={'nearby'} name={'nearby'} />
+            )}
             {!isEmpty(tagCategoriesList) && (
               <div className="SocialProduct__featuresContainer">
                 <div className="SocialProduct__heading">Tags</div>
