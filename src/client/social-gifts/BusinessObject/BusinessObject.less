@@ -2,9 +2,24 @@
 @import (reference) '../../styles/modules/variables.less';
 
 .BusinessObject {
+  &__row {
+    padding: 0;
+    min-height: fit-content;
+
+    @media @small {
+      justify-self: end;
+      text-align: start;
+      padding: 35px 16px 16px 16px;
+      max-width: 600px;
+      display: flex;
+      align-items: flex-end;
+      flex-direction: column;
+    }
+  }
+
   &__links {
     .mb5px {
-      margin-bottom: 5px;
+      margin-bottom: 10px;
     }
     .twitter-icon {
       display: inline-block;
@@ -25,7 +40,7 @@
   }
   &__website {
     .mb5px {
-      margin-bottom: 5px;
+      margin-bottom: 10px;
     }
     margin-left: 4px;
     font-size: 18px;
@@ -35,12 +50,19 @@
       }
     }
   }
-  &__phone-number {
+  &__contact-details {
     font-size: 18px;
     display: flex;
     flex-direction: column;
-    .mb5px {
+
+    @media @small {
+      display: block;
+      columns: 2;
+      column-gap: 50px;
       margin-bottom: 5px;
+    }
+    .mb5px {
+      margin-bottom: 10px;
     }
     .phone {
       margin-left: 4px;
