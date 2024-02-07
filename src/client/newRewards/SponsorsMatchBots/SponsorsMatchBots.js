@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
-import { Button, message, Switch, Tooltip } from 'antd';
+import { Button, message } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import { isEmpty } from 'lodash';
 
 import { MATCH_BOTS_TYPES, redirectAuthHiveSigner } from '../../../common/helpers/matchBotsHelpers';
 import { getSponsorsMatchBots } from '../../../waivioApi/ApiClient';
+import MatchBotsService from '../../rewards/MatchBots/MatchBotsService';
+import MatchBotsTitle from '../../rewards/MatchBots/MatchBotsTitle/MatchBotsTitle';
 import getMatchBotMessageData from '../../rewards/MatchBotSponsors/matchBotMessageData';
 import MatchBotTable from '../../rewards/MatchBotSponsors/MatchBotTable/MatchBotTable';
 import CreateRule from '../../rewards/MatchBotSponsors/CreateRule/CreateRule';
@@ -83,14 +85,13 @@ const SponsorsMatchBots = ({ intl, isEngLocale }) => {
     <div className="MatchBotSponsors">
       {userName ? (
         <React.Fragment>
-          <div className="MatchBotSponsors__title-wrap">
-            <div className="MatchBotSponsors__title">{messageData.manageMatchBot}</div>
-            <div className="MatchBotSponsors__switcher">
-              <Tooltip title={!isAuthority ? messageData.turnOn : messageData.turnOff}>
-                <Switch checked={isAuthority} onChange={handleSwitcher} />
-              </Tooltip>
-            </div>
-          </div>
+          <MatchBotsTitle
+            botType={MATCH_BOTS_TYPES.SPONSORS}
+            botTitle={messageData.manageMatchBot}
+            // isAuthority={messageData.manageMatchBot}
+            turnOffTitle={messageData.turnOff}
+            turnOnTitle={messageData.turnOn}
+          />
           <div className="MatchBotSponsors__text-content">
             <p className="mb3">
               {isEngLocale && <span>The</span>}
@@ -101,23 +102,13 @@ const SponsorsMatchBots = ({ intl, isEngLocale }) => {
             <p className="MatchBotSponsors__text fw6 mt3">
               {messageData.thirdPartyCampaignSponsors}
             </p>
-            <div className="MatchBotSponsors__highlighted-block">
-              <div className="MatchBotSponsors__text mb3 fw6">
-                <p>
-                  {messageData.matchBotRequiresAuthorization}:
-                  {
-                    <span
-                      className="MatchBotSponsors__text-link"
-                      onClick={handleSwitcher}
-                      role="presentation"
-                    >
-                      {' '}
-                      {!isAuthority ? messageData.authorizeNow : messageData.removeAuthorization}
-                    </span>
-                  }
-                </p>
-                <p>{messageData.authorizationCompletedSteemconnect}</p>
-              </div>
+            <MatchBotsService
+              onlyAuth
+              botType={MATCH_BOTS_TYPES.SPONSORS}
+              isAuthority={isAuthority}
+              botName={MATCH_BOTS_TYPES.SPONSORS}
+            />
+            <div>
               <p>
                 <span>
                   {messageData.minimumVotingPower}:{` ${minVotingPower}% `}

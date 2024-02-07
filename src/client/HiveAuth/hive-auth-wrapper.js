@@ -347,7 +347,7 @@ export default {
                   // TODO
                   auth.expire = req_ack.data.expire;
                   auth.key = auth_key;
-                  Cookie.set('auth', JSON.stringify(auth));
+                  Cookie.set('auth', auth);
                   makeHiveAuthHeader(auth);
 
                   resolve(req_ack);

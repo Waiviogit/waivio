@@ -4,13 +4,12 @@ import { injectIntl } from 'react-intl';
 import { isEmpty } from 'lodash';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
+import { MATCH_BOTS_TYPES } from '../../../common/helpers/matchBotsHelpers';
+import MatchBotsService from '../../rewards/MatchBots/MatchBotsService';
+import MatchBotsTitle from '../../rewards/MatchBots/MatchBotsTitle';
 import VoteInfoBlock from '../DataImport/VoteInfoBlock';
 import DynamicTbl from '../Tools/DynamicTable/DynamicTable';
-import {
-  getAuthenticatedUserName,
-  getIsConnectMatchBot,
-} from '../../../store/authStore/authSelectors';
-import { MATCH_BOTS_TYPES, redirectAuthHiveSigner } from '../../../common/helpers/matchBotsHelpers';
+import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 import {
   configDescriptionsBotHistoryTable,
   configDescriptionsBotProductTable,
@@ -25,16 +24,11 @@ import {
   setDescriptionsBotVote,
 } from '../../../waivioApi/importApi';
 import { closeImportSoket, getImportUpdate } from '../../../store/settingsStore/settingsActions';
-import { getAccount } from '../../../common/helpers/apiHelpers';
 import FindDescriptionsModal from './FindDescriptionsModal';
-import { reload } from '../../../store/authStore/authActions';
 import './DescriptionsBot.less';
 
 const limit = 30;
 const DescrioptionsBot = ({ intl }) => {
-  const isStoreDescriptionsBot = useSelector(state =>
-    getIsConnectMatchBot(state, { botType: MATCH_BOTS_TYPES.IMPORT }),
-  );
   const authUserName = useSelector(getAuthenticatedUserName);
   const dispatch = useDispatch();
   const [votingValue, setVotingValue] = useState(100);
@@ -44,7 +38,6 @@ const DescrioptionsBot = ({ intl }) => {
   const [descriptions, setDescriptions] = useState([]);
   const [hasMoreDescriptions, setHasMoreDescriptions] = useState(false);
   const [hasMoreHistory, setHasMoreHistory] = useState(false);
-  const [isDescriptionsBot, setIsDescriptionsBot] = useState(isStoreDescriptionsBot);
   const setListAndSetHasMore = (res, list, isLoadMore, setObjs, setMoreObjs) => {
     if (res.length > limit) {
       setMoreObjs(true);
@@ -88,20 +81,9 @@ const DescrioptionsBot = ({ intl }) => {
     getAllDataUpdated();
 
     dispatch(getImportUpdate(getAllDataUpdated));
-    getAccount(authUserName).then(
-      r =>
-        setIsDescriptionsBot(
-          r?.posting?.account_auths?.some(acc => acc[0] === MATCH_BOTS_TYPES.IMPORT),
-        ) || isStoreDescriptionsBot,
-    );
-    if (isStoreDescriptionsBot !== isDescriptionsBot) {
-      dispatch(reload());
-    }
 
     return () => dispatch(closeImportSoket());
   }, []);
-
-  const handleRedirect = () => redirectAuthHiveSigner(isDescriptionsBot, 'waivio.import');
 
   const handleDeleteDescription = item => {
     Modal.confirm({
@@ -145,15 +127,13 @@ const DescrioptionsBot = ({ intl }) => {
 
   return (
     <div className="DescriptionsBot">
-      <div className="DescriptionsBot__title">
-        <h2>
-          {intl.formatMessage({
-            id: 'descriptions_bot',
-            defaultMessage: 'Descriptions bot',
-          })}
-        </h2>
-        <Switch checked={isDescriptionsBot} onChange={handleRedirect} />
-      </div>
+      <MatchBotsTitle
+        botTitle={intl.formatMessage({
+          id: 'descriptions_bot',
+          defaultMessage: 'Descriptions bot',
+        })}
+        botType={MATCH_BOTS_TYPES.IMPORT}
+      />
       <p>
         {intl.formatMessage({
           id: 'descriptions_bot_main_text',
@@ -175,33 +155,7 @@ const DescrioptionsBot = ({ intl }) => {
             "If the account's WAIV power drops below $0.001 USD, or if the WAIV power reaches the predetermined threshold, the bot will proceed at a slower speed.",
         })}
       </p>
-      <hr />
-      <p>
-        <b>
-          {intl.formatMessage({
-            id: 'descriptions_bot_authorization',
-            defaultMessage:
-              'The Descriptions bot requires authorization to upvote data updates on your behalf',
-          })}
-          :{' '}
-          <a onClick={handleRedirect}>
-            {isDescriptionsBot
-              ? intl.formatMessage({
-                  id: 'match_bots_unauth_link',
-                  defaultMessage: 'Remove authorization',
-                })
-              : intl.formatMessage({ id: 'match_bots_auth_link', defaultMessage: 'Authorize now' })}
-          </a>
-        </b>
-        <br />
-        <b>
-          {intl.formatMessage({
-            id: 'matchBot_authorization_completed_steemconnect_can_revoked_any_time',
-            defaultMessage:
-              'The authorization is completed via HiveSigner and can be revoked at any time.',
-          })}
-        </b>
-      </p>
+      <MatchBotsService botName={'descriptions'} botType={MATCH_BOTS_TYPES.IMPORT} />
       <p>
         {intl.formatMessage({
           id: 'waiv_voting_power_threshold',

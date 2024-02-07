@@ -82,6 +82,18 @@ export default (state = initialState, action) => {
           ...action.payload.account,
         },
       };
+    case types.UPDATE_AUTHORITY:
+      return {
+        ...state,
+        isReloading: false,
+        user: {
+          ...state.user,
+          posting: {
+            ...state.user.posting,
+            account_auths: action.payload,
+          },
+        },
+      };
 
     case types.RELOAD_ERROR:
       return {
