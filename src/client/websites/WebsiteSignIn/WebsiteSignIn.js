@@ -55,7 +55,7 @@ const WebsiteSignIn = props => {
 
   const onClickHiveSignerAuthButton = () => {
     if (typeof window !== 'undefined' && window.gtag)
-      window.gtag('event', 'login_hive_singer', { debug_mode: true });
+      window.gtag('event', 'login_hive_singer', { debug_mode: false });
   };
 
   const responseSocial = async (response, socialNetwork) => {
@@ -74,7 +74,7 @@ const WebsiteSignIn = props => {
             window.location.href = `${url}/?access_token=${response.accessToken}&socialProvider=${socialNetwork}`;
         } else {
           if (typeof window !== 'undefined' && window.gtag)
-            window.gtag('event', `login_${socialNetwork}`, { debug_mode: true });
+            window.gtag('event', `login_${socialNetwork}`, { debug_mode: false });
           dispatch(login(response.accessToken, socialNetwork)).then(() => {
             setIsLoading(false);
             batch(() => {

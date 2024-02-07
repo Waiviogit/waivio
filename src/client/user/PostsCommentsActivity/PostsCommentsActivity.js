@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { isEmpty } from 'lodash';
 import { injectIntl } from 'react-intl';
-import { connect } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 import { Link, withRouter } from 'react-router-dom';
 import { Tabs } from 'antd';
 import EmptyMutedUserProfile from '../../statics/MutedContent';
@@ -16,6 +16,7 @@ import Threads from '../../Threads/Threads';
 const PostsCommentsActivity = props => {
   const { match, authenticatedUserName, user, intl } = props;
   const { name, 0: tab = 'posts' } = match.params;
+  const isGuest = useSelector(isGuestUser);
 
   if (!isEmpty(user.mutedBy) || user.muted)
     return <EmptyMutedUserProfile user={user} authName={authenticatedUserName} />;
@@ -32,16 +33,18 @@ const PostsCommentsActivity = props => {
       >
         {tab === 'posts' && <UserBlog />}
       </Tabs.TabPane>
-      <Tabs.TabPane
-        tab={
-          <Link to={`/@${name}/threads`}>
-            {intl.formatMessage({ id: 'threads', defaultMessage: 'Threads' })}
-          </Link>
-        }
-        key="threads"
-      >
-        {tab === 'threads' && <Threads isUser />}
-      </Tabs.TabPane>
+      {!isGuest && (
+        <Tabs.TabPane
+          tab={
+            <Link to={`/@${name}/threads`}>
+              {intl.formatMessage({ id: 'threads', defaultMessage: 'Threads' })}
+            </Link>
+          }
+          key="threads"
+        >
+          {tab === 'threads' && <Threads isUser />}
+        </Tabs.TabPane>
+      )}
       <Tabs.TabPane
         tab={
           <Link to={`/@${name}/comments`}>

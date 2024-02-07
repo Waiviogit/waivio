@@ -222,25 +222,31 @@ export const getProductInfo = (wobject, locale) => dispatch => {
   const manufacturer = parseWobjectField(wobject, 'manufacturer');
   const brand = parseWobjectField(wobject, 'brand');
   const merchant = parseWobjectField(wobject, 'merchant');
+  const publisher = parseWobjectField(wobject, 'publisher');
 
   const permlinks = [
     manufacturer?.authorPermlink,
     brand?.authorPermlink,
     merchant?.authorPermlink,
+    publisher?.authorPermlink,
   ].filter(permlink => permlink);
 
   return dispatch({
     type: GET_PRODUCT_INFO.ACTION,
-    payload: ApiClient.getObjectInfo(permlinks, locale).then(res => {
-      const brandObject =
-        res.wobjects.find(obj => obj.author_permlink === brand?.authorPermlink) || brand;
-      const manufacturerObject =
-        res.wobjects.find(obj => obj.author_permlink === manufacturer?.authorPermlink) ||
-        manufacturer;
-      const merchantObject =
-        res.wobjects.find(obj => obj.author_permlink === merchant?.authorPermlink) || merchant;
+    payload:
+      !isEmpty(permlinks) &&
+      ApiClient.getObjectInfo(permlinks, locale).then(res => {
+        const brandObject =
+          res.wobjects.find(obj => obj.author_permlink === brand?.authorPermlink) || brand;
+        const manufacturerObject =
+          res.wobjects.find(obj => obj.author_permlink === manufacturer?.authorPermlink) ||
+          manufacturer;
+        const publisherObject =
+          res.wobjects.find(obj => obj.author_permlink === publisher?.authorPermlink) || publisher;
+        const merchantObject =
+          res.wobjects.find(obj => obj.author_permlink === merchant?.authorPermlink) || merchant;
 
-      return { brandObject, manufacturerObject, merchantObject };
-    }),
+        return { brandObject, manufacturerObject, merchantObject, publisherObject };
+      }),
   });
 };

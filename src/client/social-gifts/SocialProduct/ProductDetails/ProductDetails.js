@@ -1,11 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { isEmpty } from 'lodash';
 import { objectFields } from '../../../../common/constants/listOfFields';
 import Department from '../../../object/Department/Department';
 import ProductId from '../../../app/Sidebar/ProductId';
 import SocialListItem from '../SocialListItem/SocialListItem';
-import { getObjectInfo } from '../../../../waivioApi/ApiClient';
 
 const ProductDetails = ({
   website,
@@ -23,25 +22,15 @@ const ProductDetails = ({
   publicationDate,
   printLength,
   publisher,
-  locale,
+  publisherObject,
 }) => {
-  const [publisherObject, setPublisherObject] = useState({});
-
   const newPublisher = { ...publisherObject, name: publisher?.name || publisherObject?.name };
-
-  useEffect(() => {
-    if (publisher?.author_permlink || publisher?.authorPermlink) {
-      getObjectInfo([publisher?.author_permlink || publisher?.authorPermlink], locale).then(res =>
-        setPublisherObject(res.wobjects[0]),
-      );
-    }
-  }, [publisher]);
 
   return (
     <div className="SocialProduct__productDetails">
       <div className="SocialProduct__heading">Product details</div>
       <div className="SocialProduct__productDetails-content SocialProduct__contentPaddingLeft">
-        {!isEmpty(publisher) && (
+        {!isEmpty(publisherObject) && (
           <SocialListItem fieldName={objectFields.publisher} field={newPublisher} />
         )}
         {!isEmpty(fields.brandObject) && (
@@ -108,7 +97,7 @@ ProductDetails.propTypes = {
   publisher: PropTypes.shape(),
   departments: PropTypes.arrayOf(),
   groupId: PropTypes.arrayOf(),
-  locale: PropTypes.string,
+  publisherObject: PropTypes.shape(),
   ageRange: PropTypes.string,
   language: PropTypes.string,
   publicationDate: PropTypes.string,

@@ -64,7 +64,7 @@ const Wobj = ({
     dispatch(getWobjectExpertise(newsFilter, params.name));
 
     if (!isEmpty(wobject) && typeof window !== 'undefined' && window?.gtag)
-      window.gtag('event', `view_${objectType}`, { debug_mode: true });
+      window.gtag('event', `view_${objectType}`, { debug_mode: false });
   }, [wobject.author_permlink]);
 
   const getWobjView = useCallback(() => {
