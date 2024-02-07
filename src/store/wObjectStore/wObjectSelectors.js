@@ -24,6 +24,9 @@ export const getManufacturerObject = createSelector([objectState], state =>
 export const getMerchantObject = createSelector([objectState], state =>
   get(state, 'merchantObject', null),
 );
+export const getPublisherObject = createSelector([objectState], state =>
+  get(state, 'publisherObject', null),
+);
 
 export const getMenuItemsFromState = state => get(state, ['object', 'menuItems'], null);
 

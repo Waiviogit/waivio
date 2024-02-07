@@ -8,9 +8,11 @@ import { injectIntl } from 'react-intl';
 import ObjectFeed from '../ObjectFeed';
 import { getObject } from '../../../store/wObjectStore/wObjectSelectors';
 import Threads from '../../Threads/Threads';
+import { isGuestUser } from '../../../store/authStore/authSelectors';
 
 const ObjectReviewsAndThreads = ({ intl, match }) => {
   const wobject = useSelector(getObject);
+  const isGuest = useSelector(isGuestUser);
   const tabName = match.params?.[0];
 
   return (
@@ -29,17 +31,19 @@ const ObjectReviewsAndThreads = ({ intl, match }) => {
       >
         <ObjectFeed />
       </Tabs.TabPane>
-      <Tabs.TabPane
-        tab={
-          <Link to={`/object/${wobject.author_permlink}/threads`}>
-            {intl.formatMessage({ id: 'threads', defaultMessage: 'Threads' })}
-          </Link>
-        }
-        key="threads"
-        className="UserFollowing__item"
-      >
-        {tabName === 'threads' && <Threads isUser={false} />}
-      </Tabs.TabPane>
+      {!isGuest && (
+        <Tabs.TabPane
+          tab={
+            <Link to={`/object/${wobject.author_permlink}/threads`}>
+              {intl.formatMessage({ id: 'threads', defaultMessage: 'Threads' })}
+            </Link>
+          }
+          key="threads"
+          className="UserFollowing__item"
+        >
+          {tabName === 'threads' && <Threads isUser={false} />}
+        </Tabs.TabPane>
+      )}
     </Tabs>
   );
 };

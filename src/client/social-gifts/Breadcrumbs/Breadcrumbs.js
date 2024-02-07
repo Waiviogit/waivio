@@ -38,7 +38,7 @@ const Breadcrumbs = ({ inProduct, intl }) => {
   const authenticated = useSelector(getIsAuthenticated);
   const wobject = useSelector(getObject);
   const username = useSelector(getAuthenticatedUserName);
-  const isAdministrator = getUserAdministrator;
+  const isAdministrator = useSelector(getUserAdministrator);
   const match = useRouteMatch();
   const history = useHistory();
   const location = useLocation();

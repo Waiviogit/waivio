@@ -53,22 +53,22 @@ const SocialProductDescription = ({ description, pictures, authorPermlink }) => 
       )}
     </div>
   ));
-  const remainingPictures = photos
-    ?.slice(dividedParagraphs?.length)
-    ?.map(picture => (
-      <img
-        className="SocialProductDescription__image"
-        onClick={e => onPicClick(e, picture)}
-        key={picture.body}
-        src={picture.body}
-        alt=""
-      />
-    ));
+  // const remainingPictures = photos
+  //   ?.slice(dividedParagraphs?.length)
+  //   ?.map(picture => (
+  //     <img
+  //       className="SocialProductDescription__image"
+  //       onClick={e => onPicClick(e, picture)}
+  //       key={picture.body}
+  //       src={picture.body}
+  //       alt=""
+  //     />
+  //   ));
 
   return (
     <div className="SocialProduct__contentPaddingLeft SocialProduct__description">
       {renderedParagraphs}
-      <div className={'SocialProductDescription__images-container'}>{remainingPictures}</div>
+      {/* <div className={'SocialProductDescription__images-container'}>{remainingPictures}</div> */}
       {open && (
         <Lightbox
           wrapperClassName="LightboxTools"

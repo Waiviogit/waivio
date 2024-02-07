@@ -10,7 +10,7 @@ const SubmitDishPhotosButton = props => {
   const openModal = () => {
     props.toggleModal(true);
     if (typeof window !== 'undefined' && window.gtag)
-      window.gtag('event', 'on_click_submit_dish_photos', { debug_mode: true });
+      window.gtag('event', 'on_click_submit_dish_photos', { debug_mode: false });
   };
 
   const onClick = () => props.onActionInitiated(openModal);

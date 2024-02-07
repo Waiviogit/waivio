@@ -90,7 +90,7 @@ function startWebsocket() {
       switch (message.cmd) {
         case CMD.CONNECTED:
           HAS_timeout = message.timeout * 1000;
-          if (!HAS_PROTOCOLS.includes(message.protocol)) {
+          if (!HAS_PROTOCOLS?.includes(message.protocol)) {
             console.error('unsupported HAS protocol');
           }
           break;

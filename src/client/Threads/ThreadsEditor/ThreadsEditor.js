@@ -61,7 +61,7 @@ const ThreadsEditor = ({
       setCommentMsg('');
       setLoading(true);
       resetEditorState(editor);
-      onSubmit(parentPost, bodyWithSignature, false, parentPost, callback).then(() => {
+      onSubmit(parentPost, bodyWithSignature, false, parentPost, true, callback).then(() => {
         setFocused(false);
       });
     }

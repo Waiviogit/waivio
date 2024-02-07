@@ -299,8 +299,8 @@ const EditorSlate = props => {
         Transforms.insertNodes(editor, createEmptyNode());
       }
       Transforms.deselect(editor);
-      // if (!isComment && !isNewReview) focusEditorToEnd(editor);
-      // if (isNewReview) focusEditorToStart(editor);
+      if (!isComment && !isNewReview) focusEditorToEnd(editor);
+      if (isNewReview) focusEditorToStart(editor);
     }
   }, [body, initiallized]);
 
