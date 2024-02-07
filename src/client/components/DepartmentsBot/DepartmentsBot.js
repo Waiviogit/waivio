@@ -1,15 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Modal, Switch } from 'antd';
+import { Button, Modal } from 'antd';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
+import MatchBotsService from '../../rewards/MatchBots/MatchBotsService';
+import MatchBotsTitle from '../../rewards/MatchBots/MatchBotsTitle';
 import VoteInfoBlock from '../DataImport/VoteInfoBlock';
 import DynamicTbl from '../Tools/DynamicTable/DynamicTable';
-import {
-  getAuthenticatedUserName,
-  getIsConnectMatchBot,
-} from '../../../store/authStore/authSelectors';
-import { MATCH_BOTS_TYPES, redirectAuthHiveSigner } from '../../../common/helpers/matchBotsHelpers';
+import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
+import { MATCH_BOTS_TYPES } from '../../../common/helpers/matchBotsHelpers';
 import FindDepartmentsModal from './FindDepartmentsModal';
 import {
   configDepartmentsBotHistoryTable,
@@ -24,17 +23,12 @@ import {
   getHistoryDepartmentsObjects,
   setDepartmentsBotVote,
 } from '../../../waivioApi/importApi';
+import { closeImportSoket, getImportUpdate } from '../../../store/settingsStore/settingsActions';
 
 import './DepartmentsBot.less';
-import { closeImportSoket, getImportUpdate } from '../../../store/settingsStore/settingsActions';
-import { getAccount } from '../../../common/helpers/apiHelpers';
-import { reload } from '../../../store/authStore/authActions';
 
 const limit = 30;
 const DepartmentsBot = ({ intl }) => {
-  const isStoreDepartmentsBot = useSelector(state =>
-    getIsConnectMatchBot(state, { botType: MATCH_BOTS_TYPES.IMPORT }),
-  );
   const authUserName = useSelector(getAuthenticatedUserName);
   const dispatch = useDispatch();
   const [votingValue, setVotingValue] = useState(100);
@@ -44,7 +38,6 @@ const DepartmentsBot = ({ intl }) => {
   const [departments, setDepartments] = useState([]);
   const [hasMoreDepartments, setHasMoreDepartments] = useState(false);
   const [hasMoreHistory, setHasMoreHistory] = useState(false);
-  const [isDepartmentsBot, setIsDepartmentsBot] = useState(isStoreDepartmentsBot);
   const setListAndSetHasMore = (res, list, isLoadMore, setObjs, setMoreObjs) => {
     if (res.length > limit) {
       setMoreObjs(true);
@@ -87,20 +80,9 @@ const DepartmentsBot = ({ intl }) => {
     getAllDataUpdated();
 
     dispatch(getImportUpdate(getAllDataUpdated));
-    getAccount(authUserName).then(
-      r =>
-        setIsDepartmentsBot(
-          r?.posting?.account_auths?.some(acc => acc[0] === MATCH_BOTS_TYPES.IMPORT),
-        ) || isStoreDepartmentsBot,
-    );
-    if (isStoreDepartmentsBot !== isDepartmentsBot) {
-      dispatch(reload());
-    }
 
     return () => dispatch(closeImportSoket());
   }, []);
-
-  const handleRedirect = () => redirectAuthHiveSigner(isDepartmentsBot, 'waivio.import');
 
   const handleDeleteDepartment = item => {
     Modal.confirm({
@@ -144,15 +126,13 @@ const DepartmentsBot = ({ intl }) => {
 
   return (
     <div className="DepartmentsBot">
-      <div className="DepartmentsBot__title">
-        <h2>
-          {intl.formatMessage({
-            id: 'departments_update_bot',
-            defaultMessage: 'Departments update bot',
-          })}
-        </h2>
-        <Switch checked={isDepartmentsBot} onChange={handleRedirect} />
-      </div>
+      <MatchBotsTitle
+        botType={MATCH_BOTS_TYPES.IMPORT}
+        botTitle={intl.formatMessage({
+          id: 'departments_update_bot',
+          defaultMessage: 'Departments update bot',
+        })}
+      />
       <p>
         {intl.formatMessage({
           id: 'departments_update_bot_part1',
@@ -174,33 +154,7 @@ const DepartmentsBot = ({ intl }) => {
             "If the account's WAIV power drops below $0.001 USD, or if the WAIV power reaches the predetermined threshold, the bot will proceed at a slower speed.",
         })}
       </p>
-      <hr />
-      <p>
-        <b>
-          {intl.formatMessage({
-            id: 'department_requires_auth',
-            defaultMessage:
-              'The Departments update bot requires authorization to upvote data updates on your behalf',
-          })}
-          :{' '}
-          <a onClick={handleRedirect}>
-            {isDepartmentsBot
-              ? intl.formatMessage({
-                  id: 'match_bots_unauth_link',
-                  defaultMessage: 'Remove authorization',
-                })
-              : intl.formatMessage({ id: 'match_bots_auth_link', defaultMessage: 'Authorize now' })}
-          </a>
-        </b>
-        <br />
-        <b>
-          {intl.formatMessage({
-            id: 'matchBot_authorization_completed_steemconnect_can_revoked_any_time',
-            defaultMessage:
-              'The authorization is completed via HiveSigner and can be revoked at any time.',
-          })}
-        </b>
-      </p>
+      <MatchBotsService botType={MATCH_BOTS_TYPES.IMPORT} botName={'departments'} onlyAuth />
       <p>
         {intl.formatMessage({
           id: 'waiv_voting_power_threshold',

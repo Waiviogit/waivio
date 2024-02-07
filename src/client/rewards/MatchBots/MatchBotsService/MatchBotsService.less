@@ -12,6 +12,11 @@
       color: var(--website-color);
       cursor: pointer;
     }
+
+    &--withoutBorder {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
   }
 
   &__text-content {
@@ -21,5 +26,10 @@
   &__text-link {
     color: var(--website-color);
     cursor: pointer;
+
+    &--disabled {
+      cursor: wait;
+      color: #99aab5;
+    }
   }
 }
