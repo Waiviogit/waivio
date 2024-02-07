@@ -3,6 +3,8 @@ import { Button, Modal, Switch } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
+import MatchBotsService from '../../../rewards/MatchBots/MatchBotsService';
+import MatchBotsTitle from '../../../rewards/MatchBots/MatchBotsTitle';
 
 import ChangeVotingModal from '../../../widgets/ChangeVotingModal/ChangeVotingModal';
 import DynamicTbl from '../../Tools/DynamicTable/DynamicTable';
@@ -147,15 +149,13 @@ const DuplicateList = ({ intl }) => {
 
   return (
     <div className="DataImport">
-      <div className="DataImport__title">
-        <h2>
-          {intl.formatMessage({
-            id: 'list_duplicator_bot_title',
-            defaultMessage: 'List duplication bot',
-          })}
-        </h2>
-        <Switch checked={isAuthBot} onChange={handleRedirect} />
-      </div>
+      <MatchBotsTitle
+        botTitle={intl.formatMessage({
+          id: 'list_duplicator_bot_title',
+          defaultMessage: 'List duplication bot',
+        })}
+        botType={MATCH_BOTS_TYPES.IMPORT}
+      />
       <p>
         {intl.formatMessage({
           id: 'list_duplicator_bot_description1',
@@ -177,33 +177,7 @@ const DuplicateList = ({ intl }) => {
             'If the WAIV power on the account is insufficient to cast a $0.001 USD vote, or if the WAIV power reaches the specified threshold, the list duplication process will continue at a slower pace.',
         })}
       </p>
-      <hr />
-      <p>
-        <b>
-          {intl.formatMessage({
-            id: 'list_duplicator_bot_requires_auth',
-            defaultMessage:
-              'The List duplication bot requires authorization to upvote data updates on your behalf',
-          })}
-          :{' '}
-          <a onClick={handleRedirect}>
-            {isAuthBot
-              ? intl.formatMessage({
-                  id: 'match_bots_unauth_link',
-                  defaultMessage: 'Remove authorization',
-                })
-              : intl.formatMessage({ id: 'match_bots_auth_link', defaultMessage: 'Authorize now' })}
-          </a>
-        </b>
-        <br />
-        <b>
-          {intl.formatMessage({
-            id: 'matchBot_authorization_completed_steemconnect_can_revoked_any_time',
-            defaultMessage:
-              'The authorization is completed via HiveSigner and can be revoked at any time.',
-          })}
-        </b>
-      </p>
+      <MatchBotsService botType={MATCH_BOTS_TYPES.IMPORT} botName={'list_duplicator'} onlyAuth />
       <p>
         {intl.formatMessage({
           id: 'waiv_voting_power_threshold',

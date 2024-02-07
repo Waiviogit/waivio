@@ -7,6 +7,7 @@ import TOO_MANY_REQ_PAGE from '../pages/tooManyrequestsPage';
 const { NODE_ENV } = process.env;
 
 const DAILY_LIMIT = 2500;
+const DAILY_LIMIT_SITE = 500;
 
 const googleList = ['(?<! (?:channel/|google/))google(?!(app|/google| pixel))'];
 const isGoogleBot = createIsbotFromList(googleList);
@@ -39,21 +40,26 @@ const botRateLimit = async (req, res, next) => {
 
   if (googleBot) return next();
 
-  const key = `${REDIS_KEYS.SSR_RATE_LIMIT_COUNTER}:${hostname}:${userAgent}`;
-  let { result: limitCounter } = await getAsync({ key });
-  if (!limitCounter) limitCounter = 0;
-  let { result: limit } = await getAsync({ key: REDIS_KEYS.SSR_RATE_LIMIT_BOTS });
-  if (!limit) limit = DAILY_LIMIT;
+  const siteLimitKey = `${REDIS_KEYS.SSR_RATE_LIMIT_COUNTER}:${userAgent}:${hostname}`;
+  const severLimitKey = `${REDIS_KEYS.SSR_RATE_LIMIT_COUNTER}:${userAgent}`;
 
-  if (+limitCounter >= +limit) {
+  let { result: serverLimitCounter } = await getAsync({ key: severLimitKey });
+  if (!serverLimitCounter) serverLimitCounter = 0;
+  let { result: limitCounter } = await getAsync({ key: siteLimitKey });
+  if (!limitCounter) limitCounter = 0;
+
+  if (+serverLimitCounter >= DAILY_LIMIT) {
     res.set('Retry-After', ttlTime);
     return res.status(429).send(TOO_MANY_REQ_PAGE);
   }
 
-  await incrExpire({
-    key,
-    ttl: ttlTime,
-  });
+  if (+limitCounter >= DAILY_LIMIT_SITE) {
+    res.set('Retry-After', ttlTime);
+    return res.status(429).send(TOO_MANY_REQ_PAGE);
+  }
+
+  await incrExpire({ key: siteLimitKey, ttl: ttlTime });
+  await incrExpire({ key: severLimitKey, ttl: ttlTime });
 
   next();
 };
