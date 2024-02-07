@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
-import { Button, Modal, Switch } from 'antd';
+import { Button, Modal } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import { MATCH_BOTS_TYPES, redirectAuthHiveSigner } from '../../../common/helpers/matchBotsHelpers';
 import {
   getAuthenticatedUserName,
   getIsConnectMatchBot,
 } from '../../../store/authStore/authSelectors';
+import MatchBotsService from '../../rewards/MatchBots/MatchBotsService';
+import MatchBotsTitle from '../../rewards/MatchBots/MatchBotsTitle';
 import ChangeVotingModal from '../../widgets/ChangeVotingModal/ChangeVotingModal';
 import {
   changeAuthority,
@@ -24,11 +26,9 @@ import {
 } from '../DataImport/tableConfig';
 import FindClaimAthorityModal from './FindClaimAthorityModal';
 import VoteInfoBlock from '../DataImport/VoteInfoBlock';
+import { closeImportSoket, getImportUpdate } from '../../../store/settingsStore/settingsActions';
 
 import './ClaimAthorityBot.less';
-import { closeImportSoket, getImportUpdate } from '../../../store/settingsStore/settingsActions';
-import { getAccount } from '../../../common/helpers/apiHelpers';
-import { reload } from '../../../store/authStore/authActions';
 
 const limit = 30;
 
@@ -45,7 +45,6 @@ const ClaimAthorityBot = ({ intl }) => {
   const [authorities, setAuthorities] = useState([]);
   const [hasMoreAuthorities, setHasMoreAuthorities] = useState(false);
   const [hasMoreHistory, setHasMoreHistory] = useState(false);
-  const [isAuthBot, setIsAuth] = useState(isStoreAuthBot);
   const setListAndSetHasMore = (res, list, isLoadMore, setObjs, setMoreObjs) => {
     if (res.length > limit) {
       setMoreObjs(true);
@@ -83,19 +82,13 @@ const ClaimAthorityBot = ({ intl }) => {
     getHistory();
 
     dispatch(getImportUpdate(getAthList));
-    getAccount(authUserName).then(
-      r =>
-        setIsAuth(r?.posting?.account_auths?.some(acc => acc[0] === MATCH_BOTS_TYPES.IMPORT)) ||
-        isStoreAuthBot,
-    );
-    if (isStoreAuthBot !== isAuthBot) {
-      dispatch(reload());
-    }
 
     return () => dispatch(closeImportSoket());
   }, []);
 
-  const handleRedirect = () => redirectAuthHiveSigner(isAuthBot, 'waivio.import');
+  const handleRedirect = () => {
+    redirectAuthHiveSigner(isStoreAuthBot, 'waivio.import');
+  };
 
   const handleDeleteAuthority = item => {
     Modal.confirm({
@@ -140,12 +133,13 @@ const ClaimAthorityBot = ({ intl }) => {
 
   return (
     <div className="ClaimAthorityBot">
-      <div className="ClaimAthorityBot__title">
-        <h2>
-          {intl.formatMessage({ id: 'claim_authority_bot', defaultMessage: 'Claim authority bot' })}
-        </h2>
-        <Switch checked={isAuthBot} onChange={handleRedirect} />
-      </div>
+      <MatchBotsTitle
+        botType={MATCH_BOTS_TYPES.IMPORT}
+        botTitle={intl.formatMessage({
+          id: 'claim_authority_bot',
+          defaultMessage: 'Claim authority bot',
+        })}
+      />
       <p>
         {intl.formatMessage({
           id: 'search_functionality_custom',
@@ -167,33 +161,11 @@ const ClaimAthorityBot = ({ intl }) => {
             "If the account's WAIV power drops below $0.001 USD, or if the WAIV power reaches the predetermined threshold, the authority claiming process will proceed at a slower speed.",
         })}
       </p>
-      <hr />
-      <p>
-        <b>
-          {intl.formatMessage({
-            id: 'claim_athority_requires_auth',
-            defaultMessage:
-              'The Claim authority bot requires authorization to upvote data updates on your behalf',
-          })}
-          :{' '}
-          <a onClick={handleRedirect}>
-            {isAuthBot
-              ? intl.formatMessage({
-                  id: 'match_bots_unauth_link',
-                  defaultMessage: 'Remove authorization',
-                })
-              : intl.formatMessage({ id: 'match_bots_auth_link', defaultMessage: 'Authorize now' })}
-          </a>
-        </b>
-        <br />
-        <b>
-          {intl.formatMessage({
-            id: 'matchBot_authorization_completed_steemconnect_can_revoked_any_time',
-            defaultMessage:
-              'The authorization is completed via HiveSigner and can be revoked at any time.',
-          })}
-        </b>
-      </p>
+      <MatchBotsService
+        botType={MATCH_BOTS_TYPES.IMPORT}
+        botName={MATCH_BOTS_TYPES.IMPORT}
+        onlyAuth
+      />
       <p>
         {intl.formatMessage({
           id: 'waiv_voting_power_threshold',
