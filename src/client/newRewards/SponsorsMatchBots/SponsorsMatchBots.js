@@ -8,7 +8,7 @@ import { isEmpty } from 'lodash';
 import { MATCH_BOTS_TYPES, redirectAuthHiveSigner } from '../../../common/helpers/matchBotsHelpers';
 import { getSponsorsMatchBots } from '../../../waivioApi/ApiClient';
 import MatchBotsService from '../../rewards/MatchBots/MatchBotsService';
-import MatchBotsTitle from '../../rewards/MatchBots/MatchBotsTitle/MatchBotsTitle';
+import MatchBotsTitle from '../../rewards/MatchBots/MatchBotsTitle';
 import getMatchBotMessageData from '../../rewards/MatchBotSponsors/matchBotMessageData';
 import MatchBotTable from '../../rewards/MatchBotSponsors/MatchBotTable/MatchBotTable';
 import CreateRule from '../../rewards/MatchBotSponsors/CreateRule/CreateRule';
@@ -88,7 +88,6 @@ const SponsorsMatchBots = ({ intl, isEngLocale }) => {
           <MatchBotsTitle
             botType={MATCH_BOTS_TYPES.SPONSORS}
             botTitle={messageData.manageMatchBot}
-            // isAuthority={messageData.manageMatchBot}
             turnOffTitle={messageData.turnOff}
             turnOnTitle={messageData.turnOn}
           />
@@ -105,7 +104,6 @@ const SponsorsMatchBots = ({ intl, isEngLocale }) => {
             <MatchBotsService
               onlyAuth
               botType={MATCH_BOTS_TYPES.SPONSORS}
-              isAuthority={isAuthority}
               botName={MATCH_BOTS_TYPES.SPONSORS}
             />
             <div>

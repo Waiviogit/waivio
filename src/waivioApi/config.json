@@ -56,6 +56,7 @@
   "amazonAsins":  "/amazon-asins",
   "power": "/power",
   "authority": "/authority",
+  "existHive": "/hive-exist",
   "previewCache": "/preview-cache",
   "deactivate": "/deactivate",
   "parentHost": "/parent-host",
