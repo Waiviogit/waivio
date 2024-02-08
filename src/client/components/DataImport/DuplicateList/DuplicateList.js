@@ -9,10 +9,7 @@ import MatchBotsTitle from '../../../rewards/MatchBots/MatchBotsTitle';
 import ChangeVotingModal from '../../../widgets/ChangeVotingModal/ChangeVotingModal';
 import DynamicTbl from '../../Tools/DynamicTable/DynamicTable';
 import { configDuplicateListsHistoryTable, configDuplicateListsTable } from '../tableConfig';
-import {
-  MATCH_BOTS_TYPES,
-  // redirectAuthHiveSigner,
-} from '../../../../common/helpers/matchBotsHelpers';
+import { MATCH_BOTS_TYPES } from '../../../../common/helpers/matchBotsHelpers';
 import {
   getAuthenticatedUserName,
   getIsConnectMatchBot,
@@ -42,7 +39,6 @@ const DuplicateList = ({ intl }) => {
   );
   const authUserName = useSelector(getAuthenticatedUserName);
   const dispatch = useDispatch();
-  // const handleRedirect = () => redirectAuthHiveSigner(isAuthBot, 'waivio.import');
   const [visible, setVisible] = useState(false);
   const [visibleVoting, setVisibleVoting] = useState(false);
   const [votingValue, setVotingValue] = useState(100);

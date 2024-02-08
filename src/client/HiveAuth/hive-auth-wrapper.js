@@ -280,7 +280,6 @@ export default {
           await checkConnection(),
           `Failed to connect to HiveAuth server ${trace ? HAS_options.host : ''}`,
         );
-        message.info('Please confirm pending transactions in your device!');
         // initialize key to encrypt communication with PKSA
         const auth_key = auth.key || uuidv4();
         const data = CryptoJS.AES.encrypt(
@@ -424,7 +423,7 @@ export default {
       let uuid;
       let busy = false;
       // Wait for the confirmation by the HAS
-      message.info('Please confirm the pending transactions on your device!');
+      message.info('Please open the app and confirm the transaction.');
       const wait = setInterval(async () => {
         if (!busy) {
           busy = true;
