@@ -189,6 +189,7 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
     promise = new Promise(async (resolve, reject) => {
       try {
         const scUserData = await steemConnectAPI.me();
+        const account = await getAccount(scUserData.name);
         const userMetaData = await waivioAPI.getAuthenticatedUserMetadata(scUserData.name);
         const privateEmail = await getPrivateEmail(scUserData.name);
         const rewardsTab = await getRewardTab(scUserData.name);
@@ -201,6 +202,7 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
         resolve({
           ...scUserData,
           ...rewardsTab,
+          account,
           userMetaData,
           privateEmail,
           waivBalance: WAIV,
@@ -354,32 +356,46 @@ export const updateAuthProfile = (userName, profileDate, his, intl) => (
     });
 };
 
+export const UPDATE_AUTHORITY = '@auth/UPDATE_AUTHORITY';
+
 export const toggleBots = (bot, isAuthority) => (dispatch, getState, { steemConnectAPI }) => {
   const state = getState();
   const user = getAuthenticatedUser(state);
   const bots = getUserAccountsAuth(state);
-  const account_auths = isAuthority ? bots.filter(i => i[0] !== bot) : [...bots, [bot, 1]];
+  const account_auths = isAuthority
+    ? bots.filter(i => i[0] !== bot)
+    : [...bots, [bot, 1]].sort((a, b) => {
+        if (a[0] < b[0]) {
+          return -1;
+        }
+        if (a[0] > b[0]) {
+          return 1;
+        }
 
-  // eslint-disable-next-line no-console
-  console.log(user);
-  steemConnectAPI.broadcast(
-    [
+        return 0;
+      });
+
+  return steemConnectAPI
+    .broadcast(
       [
-        'account_update',
-        {
-          account: user.name,
-          active: user.active,
-          posting: {
-            weight_threshold: 1,
-            account_auths,
-            key_auths: user.posting.key_auths,
+        [
+          'account_update',
+          {
+            account: user.name,
+            posting: {
+              weight_threshold: 1,
+              account_auths,
+              key_auths: user.posting.key_auths,
+            },
+            memo_key: user.memo_key,
+            json_metadata: user.json_metadata,
           },
-          memo_key: user.memo_key,
-          json_metadata: user.json_metadata || user.posting_json_metadata,
-        },
+        ],
       ],
-    ],
-    null,
-    'active',
-  );
+      null,
+      'active',
+    )
+    .then(res => {
+      if (!res.error) dispatch({ type: UPDATE_AUTHORITY, payload: account_auths });
+    });
 };

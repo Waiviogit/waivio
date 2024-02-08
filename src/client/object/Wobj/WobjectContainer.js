@@ -66,7 +66,7 @@ const WobjectContainer = props => {
   useEffect(() => {
     if (name !== props.wobjPermlink || props.locale !== 'en-US') {
       props.getObject(name, props.authenticatedUserName).then(async res => {
-        if (props.currHost.includes('waivio')) {
+        if (props.currHost?.includes('waivio')) {
           if ((await showDescriptionPage(res.value, props.locale)) && !props.match.params[0]) {
             props.history.push(`/object/${res.value.author_permlink}/description`);
           }
@@ -74,7 +74,7 @@ const WobjectContainer = props => {
 
         if (
           (props.isSocial &&
-            !['page', 'newsfeed', 'widget', 'product'].includes(res.value.object_type)) ||
+            !['page', 'newsfeed', 'widget', 'product']?.includes(res.value.object_type)) ||
           !props.isSocial
         ) {
           props.getNearbyObjects(name);
@@ -93,7 +93,7 @@ const WobjectContainer = props => {
           }
         }
         if (
-          (props.isSocial && !['page', 'newsfeed', 'widget'].includes(res.value.object_type)) ||
+          (props.isSocial && !['page', 'newsfeed', 'widget']?.includes(res.value.object_type)) ||
           !props.isSocial
         ) {
           props.getAlbums(name);
@@ -186,12 +186,9 @@ WobjectContainer.fetchData = async ({ store, match }) => {
             }),
           )
           .then(resp => store.dispatch(getTiktokPreviewAction(resp.value))),
-
-        store.dispatch(getAlbums(objName)),
-        store.dispatch(getRelatedAlbum(objName)),
       ];
 
-      if (['product', 'book', 'person', 'business'].includes(response.value.object_type)) {
+      if (['product', 'book', 'person', 'business']?.includes(response.value.object_type)) {
         const customSort = isEmpty(response.value?.sortCustom?.include)
           ? response.value.menuItem.map(i => i.permlink)
           : response.value?.sortCustom?.include;
@@ -213,6 +210,8 @@ WobjectContainer.fetchData = async ({ store, match }) => {
     store.dispatch(getRate()),
     store.dispatch(getRewardFund()),
     store.dispatch(getNearbyObjectsAction(objName)),
+    store.dispatch(getAlbums(objName)),
+    store.dispatch(getRelatedAlbum(objName)),
     store.dispatch(
       getWobjectExpertiseAction(
         match.params[1] === 'newsFilter' ? { newsFilter: match.params.itemId } : {},

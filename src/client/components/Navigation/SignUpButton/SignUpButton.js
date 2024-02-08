@@ -17,7 +17,7 @@ const SignUpButton = ({ isButton, setIsModalOpen, className, text, intl }) => {
     const evenName = text ? text.replace(' ', '_').toLowerCase() : 'sign_in';
 
     if (typeof window !== 'undefined' && window.gtag)
-      window.gtag('event', evenName, { debug_mode: true });
+      window.gtag('event', evenName, { debug_mode: false });
     setIsModalOpen(true);
   };
 

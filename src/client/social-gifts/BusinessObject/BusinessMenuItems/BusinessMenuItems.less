@@ -3,20 +3,21 @@
 
 .BusinessMenuItems {
   display: flex;
-  -webkit-box-pack: center;
-  -ms-flex-pack: center;
   justify-content: center;
   padding: 10px;
   flex-direction: column;
+  //columns: 4;
   background: #fafbfc;
-  //box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.12);
   border-top: solid 1px @white-gainsboro;
   border-bottom: solid 1px @white-gainsboro;
   width: 100%;
   margin-bottom: 15px;
   @media @small {
-    display: flex;
-    flex-direction: row;
+    columns: 4;
+    display: block;
+    //display: flex;
+    //flex-direction: row;
+    margin-bottom: 25px;
   }
   &__popover-item {
     width: 280px;

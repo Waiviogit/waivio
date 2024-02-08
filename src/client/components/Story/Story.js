@@ -246,7 +246,7 @@ class Story extends React.Component {
     const postURL = replaceBotWithGuestName(`/@${post.id}`, post.guestInfo);
 
     if (typeof window !== 'undefined' && window.gtag)
-      window.gtag('event', 'view_post', { debug_mode: true });
+      window.gtag('event', 'view_post', { debug_mode: false });
     if (isReplyPreview) {
       history.push(postURL);
     } else if (openInNewTab && showPostModal) {

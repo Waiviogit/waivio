@@ -162,7 +162,7 @@ class Wrapper extends React.PureComponent {
 
   componentDidMount() {
     const { location } = this.props;
-    const querySelectorSearchParams = new URLSearchParams(location.search);
+    const querySelectorSearchParams = new URLSearchParams(location?.search);
     const ref = querySelectorSearchParams.get('ref');
     const isWidget = querySelectorSearchParams.get('display');
     const userName = querySelectorSearchParams.get('userName');
@@ -177,7 +177,7 @@ class Wrapper extends React.PureComponent {
         the page, when switching to a new tab, should not remain a widget
       */
       // eslint-disable-next-line react/no-did-mount-set-state
-      this.setState({ prevtLocationPath: location.pathname });
+      this.setState({ prevtLocationPath: location?.pathname });
       setSessionData('isWidget', isWidget);
     }
 
@@ -208,10 +208,10 @@ class Wrapper extends React.PureComponent {
 
     // eslint-disable-next-line consistent-return
     this.setState(() => {
-      if (widgetLink && !isEqual(prevtLocationPath, location.pathname)) {
-        const newUrl = widgetUrlConstructor(widgetLink, userName, ref, location.pathname);
+      if (widgetLink && !isEqual(prevtLocationPath, location?.pathname)) {
+        const newUrl = widgetUrlConstructor(widgetLink, userName, ref, location?.pathname);
 
-        if (prevtLocationPath && location.pathname !== '/') {
+        if (prevtLocationPath && location?.pathname !== '/') {
           return history.pushState('', '', newUrl);
         }
       }
@@ -273,7 +273,7 @@ class Wrapper extends React.PureComponent {
     } = this.props;
     const language = findLanguage(usedLocale);
     const antdLocale = this.getAntdLocale(language);
-    const isWidget = new URLSearchParams(this.props.location.search).get('display');
+    const isWidget = new URLSearchParams(this.props.location?.search).get('display');
 
     return (
       <IntlProvider
@@ -303,7 +303,7 @@ class Wrapper extends React.PureComponent {
                   <TopNavigation
                     authenticated={isAuthenticated}
                     userName={username}
-                    location={history.location}
+                    location={history?.location}
                   />
                 )}
                 {loadingFetching ? <Loading /> : renderRoutes(this.props.route.routes)}
@@ -313,7 +313,7 @@ class Wrapper extends React.PureComponent {
                     <BBackTop
                       className={isOpenWalletTable ? 'WalletTable__bright' : 'primary-modal'}
                     />
-                    {isNewUser && <WelcomeModal location={history.location.pathname} />}
+                    {isNewUser && <WelcomeModal location={history?.location.pathname} />}
                   </React.Fragment>
                 )}
               </div>

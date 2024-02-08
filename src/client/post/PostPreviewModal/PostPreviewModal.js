@@ -156,7 +156,7 @@ class PostPreviewModal extends Component {
 
   handleReviewSubmit = () => {
     if (typeof window !== 'undefined' && window.gtag)
-      window.gtag('event', 'posted_review', { debug_mode: true });
+      window.gtag('event', 'posted_review', { debug_mode: false });
 
     this.setState({ isCheckReviewModalOpen: false }, this.props.onSubmit);
   };

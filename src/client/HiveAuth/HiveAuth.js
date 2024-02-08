@@ -1,14 +1,18 @@
-import { Input, Button, message } from 'antd';
+import { Button, message, Select, Input } from 'antd';
 import Cookie from 'js-cookie';
+import { debounce } from 'lodash';
 import PropTypes from 'prop-types';
-import React, { useState, useRef } from 'react';
+import React, { useState, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import { parseJSON } from '../../common/helpers/parseJSON';
 import { login } from '../../store/authStore/authActions';
+import { chechExistUser } from '../../waivioApi/ApiClient';
+import Avatar from '../components/Avatar';
 import HAS from './hive-auth-wrapper';
 
 import './HiveAuth.less';
 
+const CLEAR_OPTION = 'clear';
 const HAS_SERVER = 'wss://hive-auth.arcange.eu';
 const APP_META = {
   name: 'waivio',
@@ -18,7 +22,7 @@ const APP_META = {
 
 const HiveAuth = ({ setQRcodeForAuth, onCloseSingIn, text }) => {
   const [showInput, setShowInput] = useState();
-  const input = useRef();
+  const [user, setUser] = useState('');
   const dispatch = useDispatch();
   const generateQrCode = evt => {
     const { account, uuid, key } = evt;
@@ -48,6 +52,42 @@ const HiveAuth = ({ setQRcodeForAuth, onCloseSingIn, text }) => {
     }
   };
 
+  const savedAcc = parseJSON(localStorage.getItem('accounts'));
+  const changeUser = useCallback(
+    debounce(e => {
+      setUser(e);
+    }, 300),
+    [],
+  );
+
+  const handleAuth = () => {
+    const auth = parseJSON(Cookie.get('auth'));
+
+    if (auth) {
+      authorizeUserHAS({
+        auth,
+        cbWait: generateQrCode,
+      });
+    } else {
+      const username = user.toLowerCase().trim();
+
+      chechExistUser(username).then(result => {
+        if (result) {
+          const accounts = parseJSON(localStorage.getItem('accounts')) || [];
+
+          if (!accounts.includes(username))
+            localStorage.setItem('accounts', JSON.stringify([username, ...accounts]));
+          authorizeUserHAS({
+            auth: { username },
+            cbWait: generateQrCode,
+          });
+        } else {
+          message.error('Account name not found');
+        }
+      });
+    }
+  };
+
   return (
     <div className="HiveAuth">
       <img
@@ -57,18 +97,51 @@ const HiveAuth = ({ setQRcodeForAuth, onCloseSingIn, text }) => {
       />
       {showInput ? (
         <React.Fragment>
-          <Input ref={input} placeholder={'Enter username'} />
-          <Button
-            onClick={() => {
-              const auth = parseJSON(Cookie.get('auth')) || { username: input.current.input.value };
-
-              authorizeUserHAS({
-                auth,
-                cbWait: generateQrCode,
-              });
-            }}
-            className="HiveAuth__signIn"
-          >
+          {!savedAcc ? (
+            <Input
+              onChange={e => changeUser(e.currentTarget.value)}
+              placeholder={'Enter username'}
+            />
+          ) : (
+            <Select
+              showSearch
+              onSearch={value => changeUser(value)}
+              name={'account'}
+              placeholder={'Enter username'}
+              defaultActiveFirstOption={false}
+              showArrow={false}
+              onSelect={value => {
+                if (value === CLEAR_OPTION) localStorage.removeItem('accounts');
+                else setUser(value);
+              }}
+              filterOption={false}
+              style={{ width: '100%' }}
+            >
+              {savedAcc?.map(i => (
+                <Select.Option value={i} key={i}>
+                  <div
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                    }}
+                  >
+                    <Avatar username={i} size={25} />{' '}
+                    <b
+                      style={{
+                        display: 'inline-block',
+                        marginLeft: '10px',
+                      }}
+                    >
+                      {i}
+                    </b>
+                  </div>
+                </Select.Option>
+              ))}
+              <Select.Option value={'clear'}>Clear history</Select.Option>
+            </Select>
+          )}
+          <Button disabled={!user} onClick={handleAuth} className="HiveAuth__signIn">
             Sign in
           </Button>
         </React.Fragment>

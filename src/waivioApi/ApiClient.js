@@ -17,7 +17,7 @@ import {
   recommendedObjectTypes,
 } from '../common/constants/listOfObjectTypes';
 // getGuestAccessToken() ||
-const getAuthHeaders = () => ({
+export const getAuthHeaders = () => ({
   'access-token': Cookie.get('access_token'),
   'hive-auth': Boolean(Cookie.get('auth')),
 });
@@ -275,6 +275,14 @@ export const getUserLastActivity = userName =>
   })
     .then(res => res.json())
     .then(res => res.lastActivity)
+    .catch(error => error);
+export const chechExistUser = userName =>
+  fetch(`${config.apiPrefix}${config.user}/${userName}${config.existHive}`, {
+    headers,
+    method: 'GET',
+  })
+    .then(res => res.json())
+    .then(res => res.result)
     .catch(error => error);
 
 export const getUserFeedContent = (feedUserName, limit = 10, user_languages, locale) =>
@@ -3747,11 +3755,17 @@ export const withdrawHiveForGuest = (amount, outputCoinType, userName, address) 
     .catch(error => error);
 };
 
-export const saveCommentDraft = (user, author, permlink, body) =>
-  fetch(`${config.apiPrefix}${config.draft}${config.comment}`, {
+export const saveCommentDraft = async (user, author, permlink, body) => {
+  let isGuest;
+  let token = getGuestAccessToken();
+
+  isGuest = token === 'null' ? false : Boolean(token);
+
+  if (isGuest) token = await getValidTokenData();
+  return fetch(`${config.apiPrefix}${config.draft}${config.comment}`, {
     headers: {
       ...headers,
-      ...getAuthHeaders(),
+      ...(isGuest ? { 'access-token': token.token, 'waivio-auth': true } : { ...getAuthHeaders() }),
     },
     method: 'POST',
     body: JSON.stringify({
@@ -3764,14 +3778,21 @@ export const saveCommentDraft = (user, author, permlink, body) =>
     .then(res => res.json())
     .then(posts => posts)
     .catch(error => error);
+};
 
-export const getCommentDraft = (user, author, permlink) => {
+export const getCommentDraft = async (user, author, permlink) => {
   const query = createQuery({ user, author, permlink });
+  let isGuest;
+  let token = getGuestAccessToken();
+
+  isGuest = token === 'null' ? false : Boolean(token);
+
+  if (isGuest) token = await getValidTokenData();
 
   return fetch(`${config.apiPrefix}${config.draft}${config.comment}?${query}`, {
     headers: {
       ...headers,
-      ...getAuthHeaders(),
+      ...(isGuest ? { 'access-token': token.token, 'waivio-auth': true } : { ...getAuthHeaders() }),
     },
     method: 'GET',
   })

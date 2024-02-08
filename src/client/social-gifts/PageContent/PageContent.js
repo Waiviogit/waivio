@@ -17,12 +17,12 @@ const PageContent = ({ wobj }) => {
     if (wobj) {
       setContent(wobj.pageContent);
       if (typeof window !== 'undefined' && window.gtag)
-        window.gtag('event', getObjectName(wobj), { debug_mode: true });
+        window.gtag('event', getObjectName(wobj), { debug_mode: false });
     } else {
       getObject(objName).then(res => {
         setContent(res.pageContent);
         if (typeof window !== 'undefined' && window.gtag)
-          window.gtag('event', getObjectName(res), { debug_mode: true });
+          window.gtag('event', getObjectName(res), { debug_mode: false });
       });
     }
   }, [objName]);

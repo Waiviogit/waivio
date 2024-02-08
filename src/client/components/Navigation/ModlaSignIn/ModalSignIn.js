@@ -178,7 +178,7 @@ const ModalSignIn = ({
                   <p className="ModalSignIn__rules">
                     {isMobile()
                       ? 'Click on the QR Code to open your Hive Keychain Mobile (Hive Authentication app) and approve the request'
-                      : 'Open your Hive Keychain Mobile (Hive Authentication app) to scan the QR Code and approve the request'}
+                      : 'Scan this QR code with a Hive Keychain or Hive Authentication app and approve the request.'}
                   </p>
                   {isMobile() ? (
                     <center>
@@ -228,7 +228,7 @@ const ModalSignIn = ({
                       setShowQr(url);
                       timeOutId = setTimeout(() => {
                         setShowQr('');
-                        message.error('Your QR code was expired!');
+                        message.error('QR code has expired');
                       }, 60000);
                     }}
                     text={'HiveAuth'}

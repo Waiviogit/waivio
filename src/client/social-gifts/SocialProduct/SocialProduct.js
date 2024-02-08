@@ -59,6 +59,7 @@ import {
   getBrandObject,
   getManufacturerObject,
   getMerchantObject,
+  getPublisherObject,
 } from '../../../store/wObjectStore/wObjectSelectors';
 import { getObjectAlbums, getRelatedPhotos } from '../../../store/galleryStore/gallerySelectors';
 import { getAlbums, resetGallery } from '../../../store/galleryStore/galleryActions';
@@ -101,6 +102,7 @@ const SocialProduct = ({
   manufacturerObject,
   merchantObject,
   getProductInfoAction,
+  publisherObject,
 }) => {
   const [reward, setReward] = useState([]);
   const [hoveredOption, setHoveredOption] = useState({});
@@ -450,6 +452,7 @@ const SocialProduct = ({
                 website={website}
                 locale={locale}
                 publisher={publisher}
+                publisherObject={publisherObject}
                 printLength={printLength}
                 publicationDate={publicationDate}
                 language={language}
@@ -529,6 +532,7 @@ SocialProduct.propTypes = {
   brandObject: PropTypes.shape({}),
   manufacturerObject: PropTypes.shape({}),
   merchantObject: PropTypes.shape({}),
+  publisherObject: PropTypes.shape({}),
   getProductInfoAction: PropTypes.func,
 };
 
@@ -552,6 +556,7 @@ const mapStateToProps = state => ({
   brandObject: getBrandObject(state),
   manufacturerObject: getManufacturerObject(state),
   merchantObject: getMerchantObject(state),
+  publisherObject: getPublisherObject(state),
 });
 
 const mapDispatchToProps = dispatch => ({

@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { isEmpty } from 'lodash';
+import { FormattedMessage } from 'react-intl';
 import Feed from '../feed/Feed';
 import PostModal from '../post/PostModalContainer';
 import {
@@ -15,6 +16,7 @@ import EmptyMutedUserProfile from '../statics/MutedContent';
 import { getAuthenticatedUserName, isGuestUser } from '../../store/authStore/authSelectors';
 import { getFeed } from '../../store/feedStore/feedSelectors';
 import { getUser } from '../../store/usersStore/usersSelectors';
+import Loading from '../components/Icon/Loading';
 
 @connect(
   (state, ownProps) => ({
@@ -73,7 +75,17 @@ export default class UserProfilePosts extends React.Component {
     if (!isEmpty(user.mutedBy) || user.muted)
       return <EmptyMutedUserProfile user={user} authName={authenticatedUserName} />;
 
-    return (
+    if (isEmpty(content) && !isFetching) {
+      return (
+        <div role="presentation" className="Threads__row justify-center">
+          <FormattedMessage id="empty_comments" defaultMessage="There are no comments yet" />
+        </div>
+      );
+    }
+
+    return isFetching && content?.length < limit ? (
+      <Loading />
+    ) : (
       <React.Fragment>
         <Feed
           content={content}

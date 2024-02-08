@@ -128,8 +128,8 @@ export default connect(
   {
     getThreadsContent,
     getMoreThreadsContent,
-    sendComment: (parentPost, body, isUpdating, originalPost, cb) =>
-      commentsActions.sendComment(parentPost, body, isUpdating, originalPost, cb),
+    sendComment: (parentPost, body, isUpdating, originalPost, isThread, cb) =>
+      commentsActions.sendComment(parentPost, body, isUpdating, originalPost, isThread, cb),
     showPostModal,
   },
 )(Threads);

@@ -164,11 +164,14 @@ export const getComments = postId => (dispatch, getState) => {
   }
 };
 
-export const sendComment = (parentPost, newBody, isUpdating = false, originalComment, callback) => (
-  dispatch,
-  getState,
-  { steemConnectAPI, busyAPI },
-) => {
+export const sendComment = (
+  parentPost,
+  newBody,
+  isUpdating = false,
+  originalComment,
+  isThread = false,
+  callback,
+) => (dispatch, getState, { steemConnectAPI, busyAPI }) => {
   const { category, permlink: parentPermlink } = parentPost;
   let parentAuthor = parentPost.author;
 
@@ -223,15 +226,17 @@ export const sendComment = (parentPost, newBody, isUpdating = false, originalCom
       parentPost.root_author,
     )
     .then(res => {
-      busyAPI.instance.sendAsync(subscribeTypes.subscribeTransactionId, [
-        auth.user.name,
-        res.result.id,
-      ]);
-      busyAPI.instance.subscribe((response, mess) => {
-        if (mess?.success && mess?.permlink === res.result.id) {
-          callback();
-        }
-      });
+      if (isThread) {
+        busyAPI.instance.sendAsync(subscribeTypes.subscribeTransactionId, [
+          auth.user.name,
+          res.result.id,
+        ]);
+        busyAPI.instance.subscribe((response, mess) => {
+          if (mess?.success && mess?.permlink === res.result.id) {
+            callback();
+          }
+        });
+      }
       dispatch(
         getFakeSingleComment(
           guestParentAuthor || parentAuthor,
@@ -254,7 +259,7 @@ export const sendComment = (parentPost, newBody, isUpdating = false, originalCom
       }
 
       if (typeof window !== 'undefined' && window.gtag)
-        window.gtag('event', 'publish_comment', { debug_mode: true });
+        window.gtag('event', 'publish_comment', { debug_mode: false });
     })
     .catch(err => {
       dispatch(notify(err.error.message || err.error_description, 'error'));

@@ -90,7 +90,7 @@ function startWebsocket() {
       switch (message.cmd) {
         case CMD.CONNECTED:
           HAS_timeout = message.timeout * 1000;
-          if (!HAS_PROTOCOLS.includes(message.protocol)) {
+          if (!HAS_PROTOCOLS?.includes(message.protocol)) {
             console.error('unsupported HAS protocol');
           }
           break;
@@ -280,7 +280,6 @@ export default {
           await checkConnection(),
           `Failed to connect to HiveAuth server ${trace ? HAS_options.host : ''}`,
         );
-        message.info('Please confirm pending transactions in your device!');
         // initialize key to encrypt communication with PKSA
         const auth_key = auth.key || uuidv4();
         const data = CryptoJS.AES.encrypt(
@@ -347,7 +346,7 @@ export default {
                   // TODO
                   auth.expire = req_ack.data.expire;
                   auth.key = auth_key;
-                  Cookie.set('auth', JSON.stringify(auth));
+                  Cookie.set('auth', auth);
                   makeHiveAuthHeader(auth);
 
                   resolve(req_ack);
@@ -424,7 +423,7 @@ export default {
       let uuid;
       let busy = false;
       // Wait for the confirmation by the HAS
-      message.info('Please confirm the pending transactions on your device!');
+      message.info('Please open the app and confirm the transaction.');
       const wait = setInterval(async () => {
         if (!busy) {
           busy = true;

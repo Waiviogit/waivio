@@ -21,7 +21,6 @@ import USDDisplay from '../components/Utils/USDDisplay';
 import { defaultCurrency } from '../websites/constants/currencyTypes';
 import AffiliatLink from '../widgets/AffiliatLinks/AffiliatLink';
 import HeartButton from '../widgets/HeartButton';
-import { guestUserRegex } from '../../common/helpers/regexHelpers';
 
 import './ObjectCardView.less';
 
@@ -45,7 +44,6 @@ const ObjectCardView = ({
   isRejected,
 }) => {
   const username = useSelector(getAuthenticatedUserName);
-  const isGuest = guestUserRegex.test(username);
   const [tags, setTags] = useState([]);
   const [rejected, setRejected] = useState(isRejected);
   const [rejectedLoading, setRejectedLoading] = useState(isRejected);
@@ -206,7 +204,7 @@ const ObjectCardView = ({
               </div>
             )}
           </div>
-          {username && showHeart && !isGuest && (
+          {username && showHeart && (
             <div className="avatar-heart">
               <HeartButton wobject={wObject} size={'20px'} />
             </div>
