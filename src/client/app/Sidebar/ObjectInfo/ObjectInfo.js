@@ -1020,7 +1020,23 @@ class ObjectInfo extends React.Component {
             <React.Fragment>
               <span>
                 <Icon type="environment-o" className="text-icon coordinates" />
-                {address}
+                {!isRenderMap ? (
+                  <div>
+                    {' '}
+                    {address}
+                    <a
+                      href={`https://www.google.com/maps/search/?api=1&query=${address}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="address-link"
+                    >
+                      {' '}
+                      <i className="iconfont icon-send PostModal__icon" />
+                    </a>
+                  </div>
+                ) : (
+                  address
+                )}
                 {isRenderMap && (
                   <a
                     href={`https://www.google.com/maps/search/?api=1&query=${map.latitude},${map.longitude}`}

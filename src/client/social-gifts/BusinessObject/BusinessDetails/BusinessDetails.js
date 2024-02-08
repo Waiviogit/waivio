@@ -9,6 +9,7 @@ import { getLink } from '../../../object/wObjectHelper';
 import SocialLinks from '../../../components/SocialLinks';
 import CompanyId from '../../../app/Sidebar/CompanyId';
 import SocialListItem from '../../SocialProduct/SocialListItem/SocialListItem';
+import { isMobile } from '../../../../common/helpers/apiHelpers';
 
 const BusinessDetails = ({
   isEditMode,
@@ -52,7 +53,7 @@ const BusinessDetails = ({
   };
 
   return (
-    <React.Fragment>
+    <div className={'BusinessDetails__margin-b'}>
       <div className={'BusinessObject__contact-details'}>
         <React.Fragment>
           {phones.length > 0 && (
@@ -79,7 +80,9 @@ const BusinessDetails = ({
             </div>
           )}
           {has(wobject, 'link') && (
-            <div className={'BusinessObject__links BusinessObject__margin-b'}>
+            <div
+              className={`BusinessObject__links ${!isMobile() ? 'BusinessObject__margin-b' : ''}`}
+            >
               <SocialLinks isSocial profile={pickBy(profile, identity)} />
             </div>
           )}
@@ -101,7 +104,7 @@ const BusinessDetails = ({
       {!isNil(parent) && !isEmpty(parent) && (
         <SocialListItem fieldName={objectFields.parent} field={parent} />
       )}
-    </React.Fragment>
+    </div>
   );
 };
 

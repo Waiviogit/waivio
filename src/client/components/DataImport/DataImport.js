@@ -1,18 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Modal, Switch } from 'antd';
+import { Button, Modal } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
-import { getAccount } from '../../../common/helpers/apiHelpers';
+import MatchBotsService from '../../rewards/MatchBots/MatchBotsService';
+import MatchBotsTitle from '../../rewards/MatchBots/MatchBotsTitle';
 import ChangeVotingModal from '../../widgets/ChangeVotingModal/ChangeVotingModal';
 import ImportModal from './ImportModal/ImportModal';
 import DynamicTbl from '../Tools/DynamicTable/DynamicTable';
 import { configHistoryTable, configProductTable } from './tableConfig';
-import { MATCH_BOTS_TYPES, redirectAuthHiveSigner } from '../../../common/helpers/matchBotsHelpers';
-import {
-  getAuthenticatedUserName,
-  getIsConnectMatchBot,
-} from '../../../store/authStore/authSelectors';
+import { MATCH_BOTS_TYPES } from '../../../common/helpers/matchBotsHelpers';
+import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 
 import {
   deleteObjectImport,
@@ -26,17 +24,12 @@ import { closeImportSoket, getImportUpdate } from '../../../store/settingsStore/
 import VoteInfoBlock from './VoteInfoBlock';
 
 import './DataImport.less';
-import { reload } from '../../../store/authStore/authActions';
 
 const limit = 30;
 
 const DataImport = ({ intl }) => {
-  const isStoreAuthBot = useSelector(state =>
-    getIsConnectMatchBot(state, { botType: MATCH_BOTS_TYPES.IMPORT }),
-  );
   const authUserName = useSelector(getAuthenticatedUserName);
   const dispatch = useDispatch();
-  const handleRedirect = () => redirectAuthHiveSigner(isAuthBot, 'waivio.import');
   const [visible, setVisible] = useState(false);
   const [visibleVoting, setVisibleVoting] = useState(false);
   const [votingValue, setVotingValue] = useState(100);
@@ -44,7 +37,6 @@ const DataImport = ({ intl }) => {
   const [hasMoreImports, setHasMoreImports] = useState(false);
   const [hasMoreHistory, setHasMoreHistory] = useState(false);
   const [history, setHistoryImportedObject] = useState([]);
-  const [isAuthBot, setIsAuth] = useState(isStoreAuthBot);
   const setListAndSetHasMore = (res, list, isLoadMore, setObjs, setMoreObjs) => {
     if (res.length > limit) {
       setMoreObjs(true);
@@ -91,14 +83,6 @@ const DataImport = ({ intl }) => {
     });
 
     dispatch(getImportUpdate(updateImportDate));
-    getAccount(authUserName).then(
-      r =>
-        setIsAuth(r?.posting?.account_auths?.some(acc => acc[0] === MATCH_BOTS_TYPES.IMPORT)) ||
-        isStoreAuthBot,
-    );
-    if (isStoreAuthBot !== isAuthBot) {
-      dispatch(reload());
-    }
 
     return () => dispatch(closeImportSoket());
   }, []);
@@ -114,7 +98,9 @@ const DataImport = ({ intl }) => {
   };
 
   const handleChangeStatus = (e, item) => {
-    const status = item.status === 'active' ? 'onHold' : 'active';
+    const status = ['active', 'waitingRecover', 'pending'].includes(item.status)
+      ? 'onHold'
+      : 'active';
 
     setObjectImport(authUserName, status, item.importId).then(() => {
       getImportedObjects(authUserName, 0, importedObject.length).then(res => {
@@ -148,12 +134,13 @@ const DataImport = ({ intl }) => {
 
   return (
     <div className="DataImport">
-      <div className="DataImport__title">
-        <h2>
-          {intl.formatMessage({ id: 'data_import_title', defaultMessage: 'Data import bot' })}
-        </h2>
-        <Switch checked={isAuthBot} onChange={handleRedirect} />
-      </div>
+      <MatchBotsTitle
+        botType={MATCH_BOTS_TYPES.IMPORT}
+        botTitle={intl.formatMessage({
+          id: 'data_import_title',
+          defaultMessage: 'Data import bot',
+        })}
+      />
       <p>
         {intl.formatMessage({
           id: 'data_import_description1',
@@ -175,33 +162,7 @@ const DataImport = ({ intl }) => {
             'If the WAIV power on the account is insufficient to cast a $0.001 USD vote, or if the WAIV power reaches the specified threshold, the data import process will continue at a slower pace.',
         })}
       </p>
-      <hr />
-      <p>
-        <b>
-          {intl.formatMessage({
-            id: 'data_import_requires_auth',
-            defaultMessage:
-              'The Data import bot requires authorization to upvote data updates on your behalf',
-          })}
-          :{' '}
-          <a onClick={handleRedirect}>
-            {isAuthBot
-              ? intl.formatMessage({
-                  id: 'match_bots_unauth_link',
-                  defaultMessage: 'Remove authorization',
-                })
-              : intl.formatMessage({ id: 'match_bots_auth_link', defaultMessage: 'Authorize now' })}
-          </a>
-        </b>
-        <br />
-        <b>
-          {intl.formatMessage({
-            id: 'matchBot_authorization_completed_steemconnect_can_revoked_any_time',
-            defaultMessage:
-              'The authorization is completed via HiveSigner and can be revoked at any time.',
-          })}
-        </b>
-      </p>
+      <MatchBotsService botType={MATCH_BOTS_TYPES.IMPORT} botName={'dataimport'} onlyAuth />
       <p>
         {intl.formatMessage({
           id: 'waiv_voting_power_threshold',

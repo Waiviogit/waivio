@@ -17,7 +17,7 @@ import {
   recommendedObjectTypes,
 } from '../common/constants/listOfObjectTypes';
 // getGuestAccessToken() ||
-const getAuthHeaders = () => ({
+export const getAuthHeaders = () => ({
   'access-token': Cookie.get('access_token'),
   'hive-auth': Boolean(Cookie.get('auth')),
 });
@@ -275,6 +275,14 @@ export const getUserLastActivity = userName =>
   })
     .then(res => res.json())
     .then(res => res.lastActivity)
+    .catch(error => error);
+export const chechExistUser = userName =>
+  fetch(`${config.apiPrefix}${config.user}/${userName}${config.existHive}`, {
+    headers,
+    method: 'GET',
+  })
+    .then(res => res.json())
+    .then(res => res.result)
     .catch(error => error);
 
 export const getUserFeedContent = (feedUserName, limit = 10, user_languages, locale) =>

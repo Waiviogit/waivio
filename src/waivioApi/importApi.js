@@ -2,7 +2,7 @@ import Cookie from 'js-cookie';
 import { message } from 'antd';
 
 import config from './routes';
-import { headers } from './ApiClient';
+import { headers, getAuthHeaders } from './ApiClient';
 
 export const getImportVote = userName =>
   fetch(`${config.importApiPrefix}${config.importProduct}${config.power}?user=${userName}`, {
@@ -47,7 +47,7 @@ export const setImportVote = (user, minVotingPower) =>
   fetch(`${config.importApiPrefix}${config.importProduct}${config.power}`, {
     headers: {
       ...headers,
-      'access-token': Cookie.get('access_token'),
+      ...getAuthHeaders(),
     },
     method: 'PUT',
     body: JSON.stringify({
@@ -63,7 +63,7 @@ export const setDuplicateVote = (user, minVotingPower) =>
   fetch(`${config.importApiPrefix}${config.duplicateList}${config.power}`, {
     headers: {
       ...headers,
-      'access-token': Cookie.get('access_token'),
+      ...getAuthHeaders(),
     },
     method: 'PUT',
     body: JSON.stringify({
@@ -79,7 +79,7 @@ export const setClaimAuthorityVote = (user, minVotingPower) =>
   fetch(`${config.importApiPrefix}${config.authority}${config.power}`, {
     headers: {
       ...headers,
-      'access-token': Cookie.get('access_token'),
+      ...getAuthHeaders(),
     },
     method: 'PUT',
     body: JSON.stringify({
@@ -94,7 +94,7 @@ export const setClaimAuthorityVote = (user, minVotingPower) =>
 export const uploadObject = data =>
   fetch(`${config.importApiPrefix}${config.importProduct}`, {
     headers: {
-      'access-token': Cookie.get('access_token'),
+      ...getAuthHeaders(),
     },
     method: 'POST',
     body: data,
@@ -164,7 +164,7 @@ export const getHistoryAuthorityObjects = (userName, skip, limit) =>
 
 export const createAuthority = (user, authorPermlink, scanEmbedded, authority = 'administrative') =>
   fetch(`${config.importApiPrefix}${config.authority}`, {
-    headers: { ...headers, 'access-token': Cookie.get('access_token') },
+    headers: { ...headers, ...getAuthHeaders() },
     method: 'POST',
     body: JSON.stringify({
       user,
@@ -182,7 +182,7 @@ export const createAuthority = (user, authorPermlink, scanEmbedded, authority = 
 
 export const deleteAuthority = (user, importId) =>
   fetch(`${config.importApiPrefix}${config.authority}`, {
-    headers: { ...headers, 'access-token': Cookie.get('access_token') },
+    headers: { ...headers, ...getAuthHeaders() },
     method: 'DELETE',
     body: JSON.stringify({
       user,
@@ -195,7 +195,7 @@ export const deleteAuthority = (user, importId) =>
 
 export const changeAuthority = (user, status, importId) =>
   fetch(`${config.importApiPrefix}${config.authority}`, {
-    headers: { ...headers, 'access-token': Cookie.get('access_token') },
+    headers: { ...headers, ...getAuthHeaders() },
     method: 'PUT',
     body: JSON.stringify({
       user,
@@ -211,7 +211,7 @@ export const setObjectImport = (user, status, importId) =>
   fetch(`${config.importApiPrefix}${config.importProduct}`, {
     headers: {
       ...headers,
-      'access-token': Cookie.get('access_token'),
+      ...getAuthHeaders(),
     },
     method: 'PUT',
     body: JSON.stringify({
@@ -228,7 +228,7 @@ export const setDuplicateList = (user, status, importId) =>
   fetch(`${config.importApiPrefix}${config.duplicateList}`, {
     headers: {
       ...headers,
-      'access-token': Cookie.get('access_token'),
+      ...getAuthHeaders(),
     },
     method: 'PUT',
     body: JSON.stringify({
@@ -245,7 +245,7 @@ export const deleteObjectImport = (user, importId) =>
   fetch(`${config.importApiPrefix}${config.importProduct}`, {
     headers: {
       ...headers,
-      'access-token': Cookie.get('access_token'),
+      ...getAuthHeaders(),
     },
     method: 'DELETE',
     body: JSON.stringify({
@@ -261,7 +261,7 @@ export const deleteDuplicateList = (user, importId) =>
   fetch(`${config.importApiPrefix}${config.duplicateList}`, {
     headers: {
       ...headers,
-      'access-token': Cookie.get('access_token'),
+      ...getAuthHeaders(),
     },
     method: 'DELETE',
     body: JSON.stringify({
@@ -304,7 +304,7 @@ export const setDepartmentsBotVote = (user, minVotingPower) =>
   fetch(`${config.importApiPrefix}${config.departments}${config.power}`, {
     headers: {
       ...headers,
-      'access-token': Cookie.get('access_token'),
+      ...getAuthHeaders(),
     },
     method: 'PUT',
     body: JSON.stringify({
@@ -318,7 +318,7 @@ export const setDepartmentsBotVote = (user, minVotingPower) =>
 
 export const deleteDepartments = (user, importId) =>
   fetch(`${config.importApiPrefix}${config.departments}`, {
-    headers: { ...headers, 'access-token': Cookie.get('access_token') },
+    headers: { ...headers, ...getAuthHeaders() },
     method: 'DELETE',
     body: JSON.stringify({
       user,
@@ -352,7 +352,7 @@ export const getDepartmentsVote = userName =>
 
 export const changeDepartments = (user, status, importId) =>
   fetch(`${config.importApiPrefix}${config.departments}`, {
-    headers: { ...headers, 'access-token': Cookie.get('access_token') },
+    headers: { ...headers, ...getAuthHeaders() },
     method: 'PUT',
     body: JSON.stringify({
       user,
@@ -366,7 +366,7 @@ export const changeDepartments = (user, status, importId) =>
 
 export const createDepartment = (user, authorPermlink, scanEmbedded) =>
   fetch(`${config.importApiPrefix}${config.departments}`, {
-    headers: { ...headers, 'access-token': Cookie.get('access_token') },
+    headers: { ...headers, ...getAuthHeaders() },
     method: 'POST',
     body: JSON.stringify({
       user,
@@ -383,7 +383,7 @@ export const createDepartment = (user, authorPermlink, scanEmbedded) =>
 
 export const createDuplicateList = (user, authorPermlink, scanEmbedded) =>
   fetch(`${config.importApiPrefix}${config.duplicateList}`, {
-    headers: { ...headers, 'access-token': Cookie.get('access_token') },
+    headers: { ...headers, ...getAuthHeaders() },
     method: 'POST',
     body: JSON.stringify({
       user,
@@ -400,7 +400,7 @@ export const createDuplicateList = (user, authorPermlink, scanEmbedded) =>
 
 export const createDescription = (user, authorPermlink, scanEmbedded) =>
   fetch(`${config.importApiPrefix}${config.descriptionBot}`, {
-    headers: { ...headers, 'access-token': Cookie.get('access_token') },
+    headers: { ...headers, ...getAuthHeaders() },
     method: 'POST',
     body: JSON.stringify({
       user,
@@ -429,7 +429,7 @@ export const getDescriptionsList = (userName, skip, limit) =>
 
 export const changeDescriptions = (user, status, importId) =>
   fetch(`${config.importApiPrefix}${config.descriptionBot}`, {
-    headers: { ...headers, 'access-token': Cookie.get('access_token') },
+    headers: { ...headers, ...getAuthHeaders() },
     method: 'PUT',
     body: JSON.stringify({
       user,
@@ -443,7 +443,7 @@ export const changeDescriptions = (user, status, importId) =>
 
 export const deleteDescriptions = (user, importId) =>
   fetch(`${config.importApiPrefix}${config.descriptionBot}`, {
-    headers: { ...headers, 'access-token': Cookie.get('access_token') },
+    headers: { ...headers, ...getAuthHeaders() },
     method: 'DELETE',
     body: JSON.stringify({
       user,
@@ -479,7 +479,7 @@ export const setDescriptionsBotVote = (user, minVotingPower) =>
   fetch(`${config.importApiPrefix}${config.descriptionBot}${config.power}`, {
     headers: {
       ...headers,
-      'access-token': Cookie.get('access_token'),
+      ...getAuthHeaders(),
     },
     method: 'PUT',
     body: JSON.stringify({
