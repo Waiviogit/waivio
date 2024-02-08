@@ -26,7 +26,7 @@ const AddressHoursDetails = ({ address, map, workTime, wobject, history }) => {
               rel="noopener noreferrer"
               className="address-link flex items-center"
             >
-              Directions <i className="iconfont icon-send PostModal__icon" />
+              Directions
             </a>
           )}
         </div>
