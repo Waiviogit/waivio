@@ -5,15 +5,19 @@
   &__row {
     padding: 0;
     min-height: fit-content;
-
-    @media @small {
-      justify-self: end;
+    .SocialCampaignCard__card {
+      margin: 15px 80px 0 0;
+    }
+    @media @medium {
+      margin-left: 5%;
       text-align: start;
       padding: 35px 16px 16px 16px;
-      max-width: 600px;
+      width: 100%;
       display: flex;
-      align-items: flex-end;
       flex-direction: column;
+    }
+    @media @large {
+      margin-left: 15%;
     }
   }
 
@@ -57,6 +61,11 @@
 
     @media @small {
       display: block;
+      columns: 1;
+      column-gap: 10px;
+      margin-bottom: 5px;
+    }
+    @media @large {
       columns: 2;
       column-gap: 50px;
       margin-bottom: 5px;
