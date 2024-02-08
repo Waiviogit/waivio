@@ -348,10 +348,7 @@ const BusinessObject = ({
                     parent={parent}
                   />
                 )}
-
-                {isEmpty(wobject.preview_gallery) && (
-                  <ProductRewardCard isSocialProduct reward={reward} />
-                )}
+                <ProductRewardCard isSocialProduct reward={reward} />
               </div>
             </div>
             {!isMobile() && showGallery && (
@@ -367,9 +364,7 @@ const BusinessObject = ({
                     activeCategory={activeCategory}
                   />
                 </div>
-                <div>
-                  <ProductRewardCard isSocialProduct reward={reward} />
-                </div>
+                <div>{/*  <ProductRewardCard isSocialProduct reward={reward} /> */}</div>
               </div>
             )}
           </div>
