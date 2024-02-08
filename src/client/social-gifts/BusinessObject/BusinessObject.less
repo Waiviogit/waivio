@@ -2,9 +2,28 @@
 @import (reference) '../../styles/modules/variables.less';
 
 .BusinessObject {
+  &__row {
+    padding: 0;
+    min-height: fit-content;
+    .SocialCampaignCard__card {
+      margin: 15px 80px 0 0;
+    }
+    @media @medium {
+      margin-left: 5%;
+      text-align: start;
+      padding: 35px 16px 16px 16px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+    @media @large {
+      margin-left: 15%;
+    }
+  }
+
   &__links {
     .mb5px {
-      margin-bottom: 5px;
+      margin-bottom: 10px;
     }
     .twitter-icon {
       display: inline-block;
@@ -25,7 +44,7 @@
   }
   &__website {
     .mb5px {
-      margin-bottom: 5px;
+      margin-bottom: 10px;
     }
     margin-left: 4px;
     font-size: 18px;
@@ -35,12 +54,24 @@
       }
     }
   }
-  &__phone-number {
+  &__contact-details {
     font-size: 18px;
     display: flex;
     flex-direction: column;
-    .mb5px {
+
+    @media @small {
+      display: block;
+      columns: 1;
+      column-gap: 10px;
       margin-bottom: 5px;
+    }
+    @media @large {
+      columns: 2;
+      column-gap: 50px;
+      margin-bottom: 5px;
+    }
+    .mb5px {
+      margin-bottom: 10px;
     }
     .phone {
       margin-left: 4px;

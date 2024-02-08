@@ -3,11 +3,8 @@ import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { Button, Modal } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
-import { MATCH_BOTS_TYPES, redirectAuthHiveSigner } from '../../../common/helpers/matchBotsHelpers';
-import {
-  getAuthenticatedUserName,
-  getIsConnectMatchBot,
-} from '../../../store/authStore/authSelectors';
+import { MATCH_BOTS_TYPES } from '../../../common/helpers/matchBotsHelpers';
+import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 import MatchBotsService from '../../rewards/MatchBots/MatchBotsService';
 import MatchBotsTitle from '../../rewards/MatchBots/MatchBotsTitle';
 import ChangeVotingModal from '../../widgets/ChangeVotingModal/ChangeVotingModal';
@@ -33,9 +30,9 @@ import './ClaimAthorityBot.less';
 const limit = 30;
 
 const ClaimAthorityBot = ({ intl }) => {
-  const isStoreAuthBot = useSelector(state =>
-    getIsConnectMatchBot(state, { botType: MATCH_BOTS_TYPES.IMPORT }),
-  );
+  // const isStoreAuthBot = useSelector(state =>
+  //   getIsConnectMatchBot(state, { botType: MATCH_BOTS_TYPES.IMPORT }),
+  // );
   const authUserName = useSelector(getAuthenticatedUserName);
   const dispatch = useDispatch();
   const [votingValue, setVotingValue] = useState(100);
@@ -86,9 +83,9 @@ const ClaimAthorityBot = ({ intl }) => {
     return () => dispatch(closeImportSoket());
   }, []);
 
-  const handleRedirect = () => {
-    redirectAuthHiveSigner(isStoreAuthBot, 'waivio.import');
-  };
+  // const handleRedirect = () => {
+  //   redirectAuthHiveSigner(isStoreAuthBot, 'waivio.import');
+  // };
 
   const handleDeleteAuthority = item => {
     Modal.confirm({
