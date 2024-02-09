@@ -299,7 +299,7 @@ class Comments extends React.Component {
         )}
         {loading && isParentPostFetching && <Loading />}
         {(loaded || !isParentPostFetching) &&
-          show &&
+          // show &&
           comments &&
           commentsToRender.map(comment => (
             <Comment
