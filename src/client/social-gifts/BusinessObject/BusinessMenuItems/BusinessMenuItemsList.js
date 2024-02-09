@@ -1,39 +1,54 @@
 import React, { useEffect, useState } from 'react';
-import {
-  // has,
-  isEmpty,
-  // take,
-  // takeRight
-} from 'lodash';
-// import { Icon } from 'antd';
-// import { useHistory } from 'react-router';
+import { Carousel, Icon } from 'antd';
+import { isEmpty } from 'lodash';
+
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import BusinessMenuItem from './BusinessMenuItem';
 import { sortListItems } from '../../../../common/helpers/wObjectHelper';
 import { prepareMenuItems } from '../../SocialProduct/SocialMenuItems/SocialMenuItems';
 import './BusinessMenuItems.less';
-
-// import { isTabletOrMobile } from '../../SocialProduct/SocialProductHelper';
-// import Popover from '../../../components/Popover';
-// import PopoverMenu, { PopoverMenuItem } from '../../../components/PopoverMenu/PopoverMenu';
-
-// const listLength = 3;
+import { isTablet, isTabletOrMobile } from '../../SocialProduct/SocialProductHelper';
+import { isMobile } from '../../../../common/helpers/apiHelpers';
 
 const BusinessMenuItemsList = ({
   menuItem,
   // intl
 }) => {
   const [menuItems, setMenuItems] = useState([]);
-  // const [visible, setVisible] = useState(false);
+  const [currentSlide, setCurrentSlide] = useState(0);
+  // const slideWidth = 240;
+  let slidesToShow = 4;
   const linkList = sortListItems(
     menuItems,
     menuItem.map(i => i.permlink),
   );
-  // const history = useHistory();
-  // const lastItemsLength = linkList.length - listLength;
-  // const lastItems = takeRight(linkList, lastItemsLength);
-  // const handleMoreMenuVisibleChange = vis => setVisible(vis);
+
+  if (isTablet) {
+    slidesToShow = 3;
+  }
+  if (isTabletOrMobile) {
+    slidesToShow = 2;
+  }
+
+  const carouselSettings = {
+    dots: false,
+    dotPosition: 'bottom',
+    dotNumber: 5,
+    arrows: !isTabletOrMobile,
+    lazyLoad: false,
+    rows: 1,
+    nextArrow: currentSlide >= linkList.length - slidesToShow ? null : <Icon type="caret-right" />,
+    prevArrow: currentSlide === 0 ? null : <Icon type="caret-left" />,
+    slidesToScroll: !isTabletOrMobile ? slidesToShow : 1,
+    swipeToSlide: isTabletOrMobile,
+    infinite: false,
+    slidesToShow: isTabletOrMobile ? 2 : slidesToShow,
+  };
+
+  const onSlideChange = (curr, next) => {
+    setCurrentSlide(next);
+  };
 
   useEffect(() => {
     setMenuItems(prepareMenuItems(menuItem));
@@ -41,74 +56,31 @@ const BusinessMenuItemsList = ({
 
   if (isEmpty(menuItems)) return null;
 
-  return (
-    <div className="BusinessMenuItems">
+  return !isEmpty(linkList) && isMobile() ? (
+    <div className={'BusinessMenuItems'}>
       {linkList.map(item => (
         <BusinessMenuItem key={item._id} item={item} />
       ))}
-      {/* {!isEmpty(lastItems) && */}
-      {/*  (lastItemsLength > 1 ? ( */}
-      {/*    <> */}
-      {/*      {!isTabletOrMobile ? ( */}
-      {/*        <Popover */}
-      {/*          placement="bottom" */}
-      {/*          trigger="click" */}
-      {/*          visible={visible} */}
-      {/*          onVisibleChange={handleMoreMenuVisibleChange} */}
-      {/*          overlayStyle={{ position: 'fixed' }} */}
-      {/*          content={ */}
-      {/*            <PopoverMenu */}
-      {/*              onSelect={(i, itemBody) => { */}
-      {/*                const pageType = ['list', 'page', 'webpage'].includes(itemBody.objectType) */}
-      {/*                  ? 'checklist' */}
-      {/*                  : 'object'; */}
-      {/*                const linkHref = has(itemBody, 'linkToObject') */}
-      {/*                  ? `/${pageType}/${itemBody.linkToObject}` */}
-      {/*                  : itemBody.linkToWeb; */}
-
-      {/*                if (has(itemBody, 'linkToWeb')) { */}
-      {/*                  if (typeof window !== 'undefined') window.open(itemBody.linkToWeb); */}
-      {/*                } else { */}
-      {/*                  setVisible(false); */}
-      {/*                  history.push(linkHref); */}
-      {/*                } */}
-      {/*              }} */}
-      {/*            > */}
-      {/*              {lastItems.map(i => { */}
-      {/*                const itemBody = JSON.parse(i.body); */}
-
-      {/*                return ( */}
-      {/*                  <PopoverMenuItem key={itemBody.permlink} data={itemBody}> */}
-      {/*                    <BusinessMenuItem */}
-      {/*                      className={'BusinessMenuItems__popover-item'} */}
-      {/*                      item={i} */}
-      {/*                    /> */}
-      {/*                  </PopoverMenuItem> */}
-      {/*                ); */}
-      {/*              })} */}
-      {/*            </PopoverMenu> */}
-      {/*          } */}
-      {/*          overlayClassName="BusinessMenuItems__popover" */}
-      {/*        > */}
-      {/*          <span className={'BusinessMenuItems__item'}> */}
-      {/*            {intl.formatMessage({ id: 'more', defaultMessage: 'More' })}{' '} */}
-      {/*            <Icon type="caret-down" /> */}
-      {/*          </span> */}
-      {/*        </Popover> */}
-      {/*      ) : ( */}
-      {/*        lastItems.map(item => <BusinessMenuItem key={item._id} item={item} />) */}
-      {/*      )} */}
-      {/*    </> */}
-      {/*  ) : ( */}
-      {/*    <BusinessMenuItem item={lastItems[0]} /> */}
-      {/*  ))} */}
+    </div>
+  ) : (
+    <div className="SocialProduct__addOn-section">
+      <div className={`Slider__wrapper-menuItems`}>
+        <Carousel {...carouselSettings} beforeChange={onSlideChange}>
+          {linkList.map((item, index) => (
+            <BusinessMenuItem
+              className={index === 0 ? 'BusinessMenuItems__item-first' : 'BusinessMenuItems__item'}
+              key={item._id}
+              item={item}
+            />
+          ))}
+        </Carousel>
+      </div>
     </div>
   );
 };
 
 BusinessMenuItemsList.propTypes = {
   menuItem: PropTypes.arrayOf().isRequired,
-  // intl: PropTypes.shape(),
 };
 
 export default injectIntl(BusinessMenuItemsList);

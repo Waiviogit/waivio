@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation, useParams } from 'react-router';
 import { useSelector } from 'react-redux';
+import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import BodyContainer from '../../containers/Story/BodyContainer';
 import { getObject } from '../../../waivioApi/ApiClient';
@@ -31,7 +32,7 @@ const PageContent = ({ wobj }) => {
   }, [objName]);
 
   return (
-    <div className={`PageContent ${isSocial ? 'social' : ''}`}>
+    <div className={classnames('PageContent', { social: isSocial })}>
       <BodyContainer isPage full body={content} />
     </div>
   );
