@@ -21,7 +21,7 @@ const BusinessMenuItem = ({ item, className }) => {
   };
 
   return (
-    <div className={className || 'BusinessMenuItems__item'}>
+    <div className={className || 'BusinessMenuItems__menu-item'}>
       <Link onClick={() => getLink(itemBody)}>{itemBody.title}</Link>
     </div>
   );

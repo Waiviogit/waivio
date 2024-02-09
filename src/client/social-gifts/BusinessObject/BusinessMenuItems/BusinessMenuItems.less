@@ -12,13 +12,13 @@
   border-bottom: solid 1px @white-gainsboro;
   width: 100%;
   margin-bottom: 15px;
-  @media @small {
-    columns: 4;
-    display: block;
-    //display: flex;
-    //flex-direction: row;
-    margin-bottom: 25px;
-  }
+  //@media @small {
+  //  columns: 4;
+  //  display: block;
+  //  //display: flex;
+  //  //flex-direction: row;
+  //  margin-bottom: 25px;
+  //}
   &__popover-item {
     width: 280px;
     white-space: nowrap;
@@ -43,12 +43,74 @@
   }
 
   &__item {
+    position: relative;
     display: inline-block;
     text-transform: uppercase;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 350px;
+    text-align: start;
+    cursor: pointer;
+    color: var(--website-color);
+    padding: 10px;
+    font-size: 18px;
+    font-weight: 500;
+    a:after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      right: -4px;
+      transform: translate(50%, -50%);
+      width: 10px;
+      height: 10px;
+      background-color: var(--website-color);
+      border-radius: 50%;
+    }
+
+    @media @small {
+      text-align: center;
+      font-size: 24px;
+      padding: 20px 10px;
+    }
+  }
+  &__item-first {
+    position: relative;
+    display: inline-block;
+    text-transform: uppercase;
+    text-align: start;
+    cursor: pointer;
+    color: var(--website-color);
+    padding: 10px;
+    font-size: 18px;
+    font-weight: 500;
+
+    a:after,
+    a:before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      width: 10px;
+      height: 10px;
+      background-color: var(--website-color);
+      border-radius: 50%;
+    }
+
+    a:after {
+      right: -4px;
+      transform: translate(50%, -50%);
+    }
+
+    a:before {
+      left: -4px;
+      transform: translate(10%, -50%);
+    }
+
+    @media @small {
+      text-align: center;
+      font-size: 24px;
+      padding: 20px 10px;
+    }
+  }
+  &__menu-item {
+    display: inline-block;
+    text-transform: uppercase;
     text-align: start;
     cursor: pointer;
     color: var(--website-color);
@@ -58,8 +120,7 @@
 
     @media @small {
       text-align: center;
-      font-size: 20px;
-      width: 280px;
+      font-size: 24px;
       padding: 20px 10px;
     }
   }
