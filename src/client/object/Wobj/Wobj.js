@@ -28,6 +28,7 @@ import { getHelmetIcon, getSiteName } from '../../../store/appStore/appSelectors
 import { useSeoInfoWithAppUrl } from '../../../hooks/useSeoInfo';
 import { getWobjectExpertise } from '../../../store/wObjectStore/wobjActions';
 import BusinessObject from '../../social-gifts/BusinessObject/BusinessObject';
+import SitesWebpage from '../ObjectOfTypeWebpage/SitesWebpage';
 
 const Wobj = ({
   authenticatedUserName: userName,
@@ -104,9 +105,17 @@ const Wobj = ({
 
     if (
       !isSocial ||
-      !['book', 'product', 'business', 'person', 'widget', 'page', 'list', 'newsfeed']?.includes(
-        wobject.object_type,
-      ) ||
+      ![
+        'book',
+        'product',
+        'business',
+        'person',
+        'widget',
+        'page',
+        'list',
+        'newsfeed',
+        'webpage',
+      ]?.includes(wobject.object_type) ||
       (isSocial && isEditMode)
     )
       return (
@@ -135,6 +144,9 @@ const Wobj = ({
       case 'page':
       case 'list':
         return <Checklist />;
+      case 'webpage':
+        return <SitesWebpage />;
+
       case 'newsfeed':
         return <ObjectNewsFeed wobj={wobject} />;
 
