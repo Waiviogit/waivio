@@ -8,12 +8,25 @@
   border-radius: 4px;
   border: 1px solid @white-gainsboro;
 
+  .Body.Body--full {
+    .PostFeedEmbed__container iframe {
+      padding: 2px;
+    }
+    .PostFeedEmbed__container.PostFeedEmbed__container-vimeo {
+      border: 1px solid @white-gainsboro !important;
+    }
+  }
+
+  img {
+    border: 1px solid @white-gainsboro;
+  }
+
   @media @small {
     margin: 20px 130px;
   }
 }
 &.social {
-  img {
-    border: 1px solid @white-gainsboro;
+  @media @small {
+    margin: 20px 200px;
   }
 }
