@@ -43,7 +43,7 @@ const BusinessMenuItemsList = ({
     slidesToScroll: !isTabletOrMobile ? slidesToShow : 1,
     swipeToSlide: isTabletOrMobile,
     infinite: false,
-    slidesToShow: isTabletOrMobile ? 2 : slidesToShow,
+    slidesToShow,
   };
 
   const onSlideChange = (curr, next) => {
