@@ -103,6 +103,13 @@ class Comments extends React.Component {
     this.detectSort(nextProps.comments);
   }
 
+  componentWillUpdate(prevProps) {
+    if (prevProps.show !== this.props.show && !this.props.show) {
+      // eslint-disable-next-line react/no-will-update-set-state
+      this.setState({ commentSubmitted: false });
+    }
+  }
+
   setSort(sort) {
     this.setState({
       sort,
@@ -239,7 +246,7 @@ class Comments extends React.Component {
       handleHideComment,
       defaultVotePercent,
     } = this.props;
-    const { sort } = this.state;
+    const { sort, commentSubmitted } = this.state;
     const linkedComment = getLinkedComment(comments);
     const rootLinkedComment = findTopComment(parentPost, comments, linkedComment);
     const commentsToRender = this.commentsToRender(rootLevelComments, rootLinkedComment);
@@ -299,7 +306,7 @@ class Comments extends React.Component {
         )}
         {loading && isParentPostFetching && <Loading />}
         {(loaded || !isParentPostFetching) &&
-          // show &&
+          (show || commentSubmitted) &&
           comments &&
           commentsToRender.map(comment => (
             <Comment

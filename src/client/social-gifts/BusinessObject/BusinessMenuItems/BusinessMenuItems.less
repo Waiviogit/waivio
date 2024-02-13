@@ -43,16 +43,16 @@
     padding: 10px;
     font-size: 18px;
     font-weight: 500;
-    a:after {
+    a:before {
       content: '';
       position: absolute;
-      top: 50%;
       right: -4px;
       transform: translate(50%, -50%);
-      width: 10px;
-      height: 10px;
+      top: 50%;
+      width: 2px;
+      height: 25px;
       background-color: var(--website-color);
-      border-radius: 50%;
+      //border-radius: 50%;
     }
 
     @media @small {
@@ -77,10 +77,10 @@
       content: '';
       position: absolute;
       top: 50%;
-      width: 10px;
-      height: 10px;
+      width: 2px;
+      height: 25px;
       background-color: var(--website-color);
-      border-radius: 50%;
+      //border-radius: 50%;
     }
 
     a:after {
@@ -89,7 +89,7 @@
     }
 
     a:before {
-      left: -4px;
+      left: -2px;
       transform: translate(10%, -50%);
     }
 
