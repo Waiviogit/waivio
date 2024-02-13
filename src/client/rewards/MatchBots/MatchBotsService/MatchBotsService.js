@@ -58,17 +58,6 @@ const MatchBotsService = ({ intl, isAuthority, botType, botName, onlyAuth }) => 
               })}
             </b>
           </div>
-          {/*{!onlyAuth && (*/}
-          {/*  <p>*/}
-          {/*    <p className="fw6">*/}
-          {/*      {intl.formatMessage({*/}
-          {/*        id: 'matchBot_sponsors_disclaimer',*/}
-          {/*        defaultMessage: 'Disclaimer:',*/}
-          {/*      })}*/}
-          {/*    </p>*/}
-          {/*    <span>{intl.formatMessage({ id: `matchBot_${botName}_provided` })}</span>*/}
-          {/*  </p>*/}
-          {/*)}*/}
         </div>
       </div>
     </div>
