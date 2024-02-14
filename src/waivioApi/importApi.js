@@ -1,4 +1,4 @@
-import Cookie from 'js-cookie';
+// import Cookie from 'js-cookie';
 import { message } from 'antd';
 
 import config from './routes';

@@ -307,6 +307,7 @@
   .Slider__wrapper-product,
   .Slider__wrapper-book,
   .Slider__wrapper-experts,
+  .Slider__wrapper-menuItems,
   .Slider__wrapper-related {
     .ant-carousel .slick-dots li button {
       background: @normal-grey;
@@ -396,6 +397,12 @@
       @media @small {
         display: flex !important;
       }
+    }
+  }
+  .Slider__wrapper-menuItems {
+    .slick-prev,
+    .slick-next {
+      color: var(--website-color) !important ;
     }
   }
   &__carouselWrapper {

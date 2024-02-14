@@ -1,8 +1,9 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import { has } from 'lodash';
+import { has, truncate } from 'lodash';
 import { useHistory } from 'react-router';
+import { isMobile } from '../../../../common/helpers/apiHelpers';
 
 const BusinessMenuItem = ({ item, className }) => {
   const itemBody = JSON.parse(item.body);
@@ -21,8 +22,10 @@ const BusinessMenuItem = ({ item, className }) => {
   };
 
   return (
-    <div className={className || 'BusinessMenuItems__item'}>
-      <Link onClick={() => getLink(itemBody)}>{itemBody.title}</Link>
+    <div className={className || 'BusinessMenuItems__menu-item'}>
+      <Link onClick={() => getLink(itemBody)}>
+        {truncate(itemBody.title, { length: isMobile() ? 35 : 20, separator: '…' })}
+      </Link>
     </div>
   );
 };

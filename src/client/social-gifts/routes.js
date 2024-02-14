@@ -309,7 +309,7 @@ const routes = () => ({
         {
           path: '/webpage',
           exact: true,
-          component: Views.ObjectOfTypeWebpage,
+          component: Views.SitesWebpage,
         },
         {
           path: `/updates/(${URL.WOBJ.filters})?`,

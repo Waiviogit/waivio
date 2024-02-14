@@ -44,8 +44,8 @@ const ObjectOfTypeWebpage = ({ intl }) => {
   const dispatch = useDispatch();
   const user = useSelector(getAuthenticatedUserName);
   const locale = useSelector(getUsedLocale);
-  const authorPermlink = history.location.hash
-    ? getLastPermlinksFromHash(history.location.hash)
+  const authorPermlink = history?.location.hash
+    ? getLastPermlinksFromHash(history?.location.hash)
     : name;
   const [wobject, setWobject] = useState({});
   const [currentValue, setCurrentValue] = useState(null);
@@ -53,7 +53,7 @@ const ObjectOfTypeWebpage = ({ intl }) => {
   const [loading, setLoading] = useState(true);
   const isEditMode = useSelector(getIsEditMode);
   const jsonVal = currentValue ? JSON.stringify(currentValue) : null;
-  const siteLink = location && `${location.origin}/`;
+  const siteLink = location && `${location?.origin}/`;
   const isSocial = useSelector(getIsSocial);
 
   useEffect(() => {
@@ -89,7 +89,7 @@ const ObjectOfTypeWebpage = ({ intl }) => {
 
   return (
     <div className="ObjectOfTypeWebpage">
-      {!isEditMode && history.location.hash && <CatalogBreadcrumb wobject={wobject} intl={intl} />}
+      {!isEditMode && history?.location.hash && <CatalogBreadcrumb wobject={wobject} intl={intl} />}
       {loading ? (
         <Loading />
       ) : (
