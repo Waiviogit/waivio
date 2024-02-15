@@ -305,6 +305,7 @@ const ModalSignIn = ({
     setIsFormVisible(false);
     handleLoginModalCancel();
     setShowQr('');
+    if(timeOutId)clearTimeout(timeOutId);
   };
 
   const onSignUpClick = isOpen => {
