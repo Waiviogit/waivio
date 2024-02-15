@@ -101,6 +101,9 @@ const HiveAuth = ({ setQRcodeForAuth, onCloseSingIn, text }) => {
             <Input
               onChange={e => changeUser(e.currentTarget.value)}
               placeholder={'Enter username'}
+              name={'account'}
+              autoCapitalize="off"
+              autoCorrect="off"
             />
           ) : (
             <Select
@@ -110,6 +113,7 @@ const HiveAuth = ({ setQRcodeForAuth, onCloseSingIn, text }) => {
               placeholder={'Enter username'}
               defaultActiveFirstOption={false}
               showArrow={false}
+              dropdownClassName={'HiveAuth__accList'}
               onSelect={value => {
                 if (value === CLEAR_OPTION) localStorage.removeItem('accounts');
                 else setUser(value);
@@ -138,7 +142,7 @@ const HiveAuth = ({ setQRcodeForAuth, onCloseSingIn, text }) => {
                   </div>
                 </Select.Option>
               ))}
-              <Select.Option value={'clear'}>Clear history</Select.Option>
+              <Select.Option value={'clear'}><b style={{ display: 'flex', justifyContent: 'center' }}>Clear history</b></Select.Option>
             </Select>
           )}
           <Button disabled={!user} onClick={handleAuth} className="HiveAuth__signIn">
