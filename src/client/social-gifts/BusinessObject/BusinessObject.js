@@ -348,7 +348,7 @@ const BusinessObject = ({
                     parent={parent}
                   />
                 )}
-                <ProductRewardCard isSocialProduct reward={reward} />
+                {!isMobile() && <ProductRewardCard isSocialProduct reward={reward} />}
               </div>
             </div>
             {!isMobile() && showGallery && (

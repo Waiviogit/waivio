@@ -12,7 +12,11 @@
   border-top: solid 1px #e9e7e7;
   width: 100%;
   z-index: 99;
-
+  &__popover {
+    .ant-popover-inner-content {
+      overflow: auto;
+    }
+  }
   &__link {
     display: inline-block;
     text-transform: uppercase;
