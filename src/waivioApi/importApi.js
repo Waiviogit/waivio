@@ -92,6 +92,7 @@ export const setImportVote = async (user, minVotingPower) => {
   return fetch(`${config.importApiPrefix}${config.importProduct}${config.power}`, {
     headers: {
       ...headers,
+      ...getAuthHeaders(),
       ...(isGuest ? { 'access-token': token.token, 'waivio-auth': true } : { ...getAuthHeaders() }),
     },
     method: 'PUT',
@@ -114,6 +115,7 @@ export const setDuplicateVote = async (user, minVotingPower) => {
   return fetch(`${config.importApiPrefix}${config.duplicateList}${config.power}`, {
     headers: {
       ...headers,
+      ...getAuthHeaders(),
       ...(isGuest ? { 'access-token': token.token, 'waivio-auth': true } : { ...getAuthHeaders() }),
     },
     method: 'PUT',
@@ -136,6 +138,7 @@ export const setClaimAuthorityVote = async (user, minVotingPower) => {
   return fetch(`${config.importApiPrefix}${config.authority}${config.power}`, {
     headers: {
       ...headers,
+      ...getAuthHeaders(),
       ...(isGuest ? { 'access-token': token.token, 'waivio-auth': true } : { ...getAuthHeaders() }),
     },
     method: 'PUT',
@@ -157,7 +160,7 @@ export const uploadObject = async data => {
 
   return fetch(`${config.importApiPrefix}${config.importProduct}`, {
     headers: {
-      ...headers,
+      ...getAuthHeaders(),
       ...(isGuest ? { 'access-token': token.token, 'waivio-auth': true } : { ...getAuthHeaders() }),
     },
     method: 'POST',
@@ -296,6 +299,7 @@ export const createAuthority = async (
   return fetch(`${config.importApiPrefix}${config.authority}`, {
     headers: {
       ...headers,
+      ...getAuthHeaders(),
       ...(isGuest ? { 'access-token': token.token, 'waivio-auth': true } : { ...getAuthHeaders() }),
     },
     method: 'POST',
@@ -323,6 +327,7 @@ export const deleteAuthority = async (user, importId) => {
   return fetch(`${config.importApiPrefix}${config.authority}`, {
     headers: {
       ...headers,
+      ...getAuthHeaders(),
       ...(isGuest ? { 'access-token': token.token, 'waivio-auth': true } : { ...getAuthHeaders() }),
     },
     method: 'DELETE',
@@ -345,6 +350,7 @@ export const changeAuthority = async (user, status, importId) => {
   return fetch(`${config.importApiPrefix}${config.authority}`, {
     headers: {
       ...headers,
+      ...getAuthHeaders(),
       ...(isGuest ? { 'access-token': token.token, 'waivio-auth': true } : { ...getAuthHeaders() }),
     },
     method: 'PUT',
@@ -368,6 +374,7 @@ export const setObjectImport = async (user, status, importId) => {
   return fetch(`${config.importApiPrefix}${config.importProduct}`, {
     headers: {
       ...headers,
+      ...getAuthHeaders(),
       ...(isGuest ? { 'access-token': token.token, 'waivio-auth': true } : { ...getAuthHeaders() }),
     },
     method: 'PUT',
@@ -391,6 +398,7 @@ export const setDuplicateList = async (user, status, importId) => {
   return fetch(`${config.importApiPrefix}${config.duplicateList}`, {
     headers: {
       ...headers,
+      ...getAuthHeaders(),
       ...(isGuest ? { 'access-token': token.token, 'waivio-auth': true } : { ...getAuthHeaders() }),
     },
     method: 'PUT',
@@ -414,6 +422,7 @@ export const deleteObjectImport = async (user, importId) => {
   return fetch(`${config.importApiPrefix}${config.importProduct}`, {
     headers: {
       ...headers,
+      ...getAuthHeaders(),
       ...(isGuest ? { 'access-token': token.token, 'waivio-auth': true } : { ...getAuthHeaders() }),
     },
     method: 'DELETE',
@@ -436,6 +445,7 @@ export const deleteDuplicateList = async (user, importId) => {
   return fetch(`${config.importApiPrefix}${config.duplicateList}`, {
     headers: {
       ...headers,
+      ...getAuthHeaders(),
       ...(isGuest ? { 'access-token': token.token, 'waivio-auth': true } : { ...getAuthHeaders() }),
     },
     method: 'DELETE',
@@ -505,6 +515,7 @@ export const setDepartmentsBotVote = async (user, minVotingPower) => {
   return fetch(`${config.importApiPrefix}${config.departments}${config.power}`, {
     headers: {
       ...headers,
+      ...getAuthHeaders(),
       ...(isGuest ? { 'access-token': token.token, 'waivio-auth': true } : { ...getAuthHeaders() }),
     },
     method: 'PUT',
@@ -527,6 +538,7 @@ export const deleteDepartments = async (user, importId) => {
   return fetch(`${config.importApiPrefix}${config.departments}`, {
     headers: {
       ...headers,
+      ...getAuthHeaders(),
       ...(isGuest ? { 'access-token': token.token, 'waivio-auth': true } : { ...getAuthHeaders() }),
     },
     method: 'DELETE',
@@ -590,6 +602,7 @@ export const changeDepartments = async (user, status, importId) => {
   return fetch(`${config.importApiPrefix}${config.departments}`, {
     headers: {
       ...headers,
+      ...getAuthHeaders(),
       ...(isGuest ? { 'access-token': token.token, 'waivio-auth': true } : { ...getAuthHeaders() }),
     },
     method: 'PUT',
@@ -613,6 +626,7 @@ export const createDepartment = async (user, authorPermlink, scanEmbedded) => {
   return fetch(`${config.importApiPrefix}${config.departments}`, {
     headers: {
       ...headers,
+      ...getAuthHeaders(),
       ...(isGuest ? { 'access-token': token.token, 'waivio-auth': true } : { ...getAuthHeaders() }),
     },
     method: 'POST',
@@ -639,6 +653,7 @@ export const createDuplicateList = async (user, authorPermlink, scanEmbedded) =>
   return fetch(`${config.importApiPrefix}${config.duplicateList}`, {
     headers: {
       ...headers,
+      ...getAuthHeaders(),
       ...(isGuest ? { 'access-token': token.token, 'waivio-auth': true } : { ...getAuthHeaders() }),
     },
     method: 'POST',
@@ -665,6 +680,7 @@ export const createDescription = async (user, authorPermlink, scanEmbedded) => {
   return fetch(`${config.importApiPrefix}${config.descriptionBot}`, {
     headers: {
       ...headers,
+      ...getAuthHeaders(),
       ...(isGuest ? { 'access-token': token.token, 'waivio-auth': true } : { ...getAuthHeaders() }),
     },
     method: 'POST',
@@ -714,6 +730,7 @@ export const changeDescriptions = async (user, status, importId) => {
   return fetch(`${config.importApiPrefix}${config.descriptionBot}`, {
     headers: {
       ...headers,
+      ...getAuthHeaders(),
       ...(isGuest ? { 'access-token': token.token, 'waivio-auth': true } : { ...getAuthHeaders() }),
     },
     method: 'PUT',
@@ -737,6 +754,7 @@ export const deleteDescriptions = async (user, importId) => {
   return fetch(`${config.importApiPrefix}${config.descriptionBot}`, {
     headers: {
       ...headers,
+      ...getAuthHeaders(),
       ...(isGuest ? { 'access-token': token.token, 'waivio-auth': true } : { ...getAuthHeaders() }),
     },
     method: 'DELETE',
@@ -804,6 +822,7 @@ export const setDescriptionsBotVote = async (user, minVotingPower) => {
   return fetch(`${config.importApiPrefix}${config.descriptionBot}${config.power}`, {
     headers: {
       ...headers,
+      ...getAuthHeaders(),
       ...(isGuest ? { 'access-token': token.token, 'waivio-auth': true } : { ...getAuthHeaders() }),
     },
     method: 'PUT',
