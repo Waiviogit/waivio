@@ -201,7 +201,7 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
         const privateEmail = await getPrivateEmail(scUserData.name);
         const rewardsTab = await getRewardTab(scUserData.name);
         const { WAIV } = isGuest ? await getGuestWaivBalance(scUserData.name) : {};
-        const guestAuthorityInfo = await getGuestImportStatus(scUserData.name);
+        const guestAuthorityInfo = isGuest ? await getGuestImportStatus(scUserData.name) : {};
         const guestAuthority = guestAuthorityInfo?.importAuthorization
           ? guestAuthorityInfo
           : { account: '', importAuthorization: false };
