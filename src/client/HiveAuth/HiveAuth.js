@@ -142,7 +142,9 @@ const HiveAuth = ({ setQRcodeForAuth, onCloseSingIn, text }) => {
                   </div>
                 </Select.Option>
               ))}
-              <Select.Option value={'clear'}><b style={{ display: 'flex', justifyContent: 'center' }}>Clear history</b></Select.Option>
+              <Select.Option value={'clear'}>
+                <b style={{ display: 'flex', justifyContent: 'center' }}>Clear history</b>
+              </Select.Option>
             </Select>
           )}
           <Button disabled={!user} onClick={handleAuth} className="HiveAuth__signIn">

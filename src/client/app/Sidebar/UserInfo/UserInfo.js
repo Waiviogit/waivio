@@ -182,6 +182,12 @@ class UserInfo extends React.Component {
                   />
                 </React.Fragment>
               )}
+              {isGuestPage && (
+                <React.Fragment>
+                  <i className="iconfont icon-flashlight text-icon" />
+                  Guest mana: {user.guestMana}%
+                </React.Fragment>
+              )}
             </div>
           </div>
         )}

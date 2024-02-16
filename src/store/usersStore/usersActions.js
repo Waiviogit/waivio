@@ -73,17 +73,19 @@ export const getInfoForSideBar = (username, lastActiv) => async dispatch => {
 };
 export const GET_ACCOUNT = createAsyncActionType('@users/GET_ACCOUNT');
 
-export const getUserAccount = name => (dispatch, getState) => {
+export const getUserAccount = name => async (dispatch, getState) => {
   const state = getState();
   const authUser = getAuthenticatedUserName(state);
+  const guestManaRes = await ApiClient.getGuestUserMana(name);
   const isGuest = guestUserRegex.test(name);
+  const guestMana = isGuest ? { guestMana: guestManaRes.result } : {};
 
   return dispatch({
     type: GET_ACCOUNT.ACTION,
     payload: ApiClient.getUserAccount(name, false, authUser).then(res => {
-      if (!isGuest) dispatch(getInfoForSideBar(name, res?.lastActivity));
+      dispatch(getInfoForSideBar(name, res?.lastActivity));
 
-      return res;
+      return { ...res, ...guestMana };
     }),
     meta: { username: name },
   });

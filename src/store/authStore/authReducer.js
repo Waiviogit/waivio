@@ -18,6 +18,10 @@ const initialState = {
   tabType: 'global',
   sort: 'recency',
   signature: '',
+  guestAuthority: {
+    account: '',
+    importAuthorization: false,
+  },
 };
 
 export default (state = initialState, action) => {
@@ -46,6 +50,7 @@ export default (state = initialState, action) => {
           ...(action.payload.isGuestUser ? { waivBalance: action.payload.waivBalance } : {}),
         },
         userMetaData: action.payload.userMetaData,
+        guestAuthority: action.payload.guestAuthority,
         privateEmail: action.payload.privateEmail,
         isGuestUser: action.payload.isGuestUser,
         tabType: action.payload.tabType,
@@ -93,6 +98,11 @@ export default (state = initialState, action) => {
             account_auths: action.payload,
           },
         },
+      };
+    case types.UPDATE_GUEST_AUTHORITY:
+      return {
+        ...state,
+        guestAuthority: action.payload,
       };
 
     case types.RELOAD_ERROR:
