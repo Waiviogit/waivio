@@ -46,6 +46,9 @@ export const getAuthorizationUserFollowSort = createSelector([authState], state 
 export const getRewardsTab = createSelector([authState], state => state.tabType);
 
 export const getUserPosting = createSelector(getAuthenticatedUser, state => state.posting);
+export const getGuestAuthority = createSelector([authState], state =>
+  get(state.guestAuthority, 'importAuthorization'),
+);
 
 export const getUserAccountsAuth = createSelector(getUserPosting, state =>
   get(state, 'account_auths', []),

@@ -1,10 +1,19 @@
 import { connect } from 'react-redux';
 
 import MatchBotsTitle from './MatchBotsTitle';
-import { getIsConnectMatchBot } from '../../../../store/authStore/authSelectors';
+import {
+  getGuestAuthority,
+  getIsConnectMatchBot,
+  isGuestUser,
+} from '../../../../store/authStore/authSelectors';
 
-const mapStateToProps = (state, props) => ({
-  isAuthority: getIsConnectMatchBot(state, props),
-});
+const mapStateToProps = (state, props) => {
+  const isGuest = isGuestUser(state);
+
+  return {
+    isAuthority: isGuest ? getGuestAuthority(state) : getIsConnectMatchBot(state, props),
+    isGuest: isGuestUser(state),
+  };
+};
 
 export default connect(mapStateToProps)(MatchBotsTitle);
