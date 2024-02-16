@@ -6,23 +6,30 @@ import PropTypes from 'prop-types';
 
 import { calculateMana, dHive } from '../../vendor/steemitHelpers';
 import * as ApiClient from '../../../waivioApi/ApiClient';
-import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
+import { getAuthenticatedUserName, isGuestUser } from '../../../store/authStore/authSelectors';
 
 const VoteInfoBlock = ({ intl, info }) => {
   const [usersState, setUsersState] = useState(null);
   const authUserName = useSelector(getAuthenticatedUserName);
+  const isGuest = useSelector(isGuestUser);
 
   const getVotingInfo = async () => {
-    const [acc] = await dHive.database.getAccounts([authUserName]);
-    const rc = await dHive.rc.getRCMana(authUserName, acc);
-    const waivVotingMana = await ApiClient.getWaivVoteMana(authUserName, acc);
-    const waivPowerBar = waivVotingMana ? calculateMana(waivVotingMana) : null;
-    const resourceCredits = rc.percentage * 0.01 || 0;
+    if (isGuest) {
+      const guestUserMana = await ApiClient.getGuestUserMana(authUserName);
 
-    setUsersState({
-      waivPowerMana: waivPowerBar?.votingPower ? waivPowerBar.votingPower : 100,
-      resourceCredits,
-    });
+      setUsersState({ guestMana: guestUserMana.result });
+    } else {
+      const [acc] = await dHive.database.getAccounts([authUserName]);
+      const rc = await dHive.rc.getRCMana(authUserName, acc);
+      const waivVotingMana = await ApiClient.getWaivVoteMana(authUserName, acc);
+      const waivPowerBar = waivVotingMana ? calculateMana(waivVotingMana) : null;
+      const resourceCredits = rc.percentage * 0.01 || 0;
+
+      setUsersState({
+        waivPowerMana: waivPowerBar?.votingPower ? waivPowerBar.votingPower : 100,
+        resourceCredits,
+      });
+    }
   };
 
   useEffect(() => {
@@ -31,7 +38,8 @@ const VoteInfoBlock = ({ intl, info }) => {
 
   return (
     <div>
-      {usersState && (
+      {isGuest && usersState && <p>Guest mana: {usersState.guestMana}%</p>}
+      {usersState && !isGuest && (
         <p>
           <b>
             {intl.formatMessage({

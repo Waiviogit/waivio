@@ -9,7 +9,7 @@ import { toggleBots } from '../../../../store/authStore/authActions';
 
 import './MatchBotsTitle.less';
 
-const MatchBotsTitle = ({ isAuthority, botTitle, turnOffTitle, turnOnTitle, botType }) => {
+const MatchBotsTitle = ({ isAuthority, botTitle, turnOffTitle, turnOnTitle, botType, isGuest }) => {
   const [waiting, setWaiting] = useState(false);
   const dispatch = useDispatch();
   const handleRedirect = () => {
@@ -18,6 +18,11 @@ const MatchBotsTitle = ({ isAuthority, botTitle, turnOffTitle, turnOnTitle, botT
       dispatch(toggleBots(botType, isAuthority)).then(() => {
         setWaiting(false);
       });
+    } else if (isGuest) {
+      setWaiting(true);
+      dispatch(toggleBots(botType, isAuthority))
+        .then(() => setWaiting(false))
+        .catch(() => setWaiting(false));
     } else {
       redirectAuthHiveSigner(isAuthority, botType);
     }
@@ -37,6 +42,7 @@ const MatchBotsTitle = ({ isAuthority, botTitle, turnOffTitle, turnOnTitle, botT
 
 MatchBotsTitle.propTypes = {
   isAuthority: PropTypes.bool,
+  isGuest: PropTypes.bool,
   botType: PropTypes.string.isRequired,
   botTitle: PropTypes.string.isRequired,
   turnOffTitle: PropTypes.string,
