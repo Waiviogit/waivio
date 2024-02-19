@@ -3883,5 +3883,13 @@ export const getUserFavoriteObjects = (authUserName, user, objectType, skip, lim
     .then(r => r)
     .catch(error => error);
 };
+export const getGuestUserMana = guestName =>
+  fetch(`${config.apiPrefix}${config.user}/${guestName}${config.guestMana}`, {
+    headers,
+    method: 'GET',
+  })
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
 
 export default null;
