@@ -9,7 +9,7 @@ import MatchBotsService from '../../rewards/MatchBots/MatchBotsService';
 import MatchBotsTitle from '../../rewards/MatchBots/MatchBotsTitle';
 import VoteInfoBlock from '../DataImport/VoteInfoBlock';
 import DynamicTbl from '../Tools/DynamicTable/DynamicTable';
-import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
+import { getAuthenticatedUserName, isGuestUser } from '../../../store/authStore/authSelectors';
 import {
   configDescriptionsBotHistoryTable,
   configDescriptionsBotProductTable,
@@ -30,6 +30,7 @@ import './DescriptionsBot.less';
 const limit = 30;
 const DescrioptionsBot = ({ intl }) => {
   const authUserName = useSelector(getAuthenticatedUserName);
+  const isGuest = useSelector(isGuestUser);
   const dispatch = useDispatch();
   const [votingValue, setVotingValue] = useState(100);
   const [visibleVoting, setVisibleVoting] = useState(false);
@@ -158,8 +159,8 @@ const DescrioptionsBot = ({ intl }) => {
       <MatchBotsService botName={'descriptions'} botType={MATCH_BOTS_TYPES.IMPORT} />
       <p>
         {intl.formatMessage({
-          id: 'waiv_voting_power_threshold',
-          defaultMessage: 'WAIV voting power threshold',
+          id: isGuest ? 'guest_mana_threshold' : 'waiv_voting_power_threshold',
+          defaultMessage: isGuest ? 'Guest mana threshold' : 'WAIV voting power threshold',
         })}
         : {votingValue}% (
         <a onClick={toggleVotingModal}>
@@ -168,9 +169,10 @@ const DescrioptionsBot = ({ intl }) => {
         )
         <br />
         {intl.formatMessage({
-          id: 'descriptions_bot_voting_text',
-          defaultMessage:
-            'The descriptions bot will pause if WAIV voting power on the account drops below the set threshold.',
+          id: isGuest ? 'guest_descriptions_bot_voting_text' : 'descriptions_bot_voting_text',
+          defaultMessage: `The descriptions bot will pause if ${
+            isGuest ? 'guest mana' : 'WAIV voting power'
+          } on the account drops below the set threshold.`,
         })}
       </p>
       <VoteInfoBlock

@@ -7,7 +7,7 @@ import MatchBotsService from '../../rewards/MatchBots/MatchBotsService';
 import MatchBotsTitle from '../../rewards/MatchBots/MatchBotsTitle';
 import VoteInfoBlock from '../DataImport/VoteInfoBlock';
 import DynamicTbl from '../Tools/DynamicTable/DynamicTable';
-import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
+import { getAuthenticatedUserName, isGuestUser } from '../../../store/authStore/authSelectors';
 import { MATCH_BOTS_TYPES } from '../../../common/helpers/matchBotsHelpers';
 import FindDepartmentsModal from './FindDepartmentsModal';
 import {
@@ -30,6 +30,7 @@ import './DepartmentsBot.less';
 const limit = 30;
 const DepartmentsBot = ({ intl }) => {
   const authUserName = useSelector(getAuthenticatedUserName);
+  const isGuest = useSelector(isGuestUser);
   const dispatch = useDispatch();
   const [votingValue, setVotingValue] = useState(100);
   const [visibleVoting, setVisibleVoting] = useState(false);
@@ -157,8 +158,8 @@ const DepartmentsBot = ({ intl }) => {
       <MatchBotsService botType={MATCH_BOTS_TYPES.IMPORT} botName={'departments'} onlyAuth />
       <p>
         {intl.formatMessage({
-          id: 'waiv_voting_power_threshold',
-          defaultMessage: 'WAIV voting power threshold',
+          id: isGuest ? 'guest_mana_threshold' : 'waiv_voting_power_threshold',
+          defaultMessage: isGuest ? 'Guest mana threshold' : 'WAIV voting power threshold',
         })}
         : {votingValue}% (
         <a onClick={toggleVotingModal}>
@@ -167,9 +168,10 @@ const DepartmentsBot = ({ intl }) => {
         )
         <br />
         {intl.formatMessage({
-          id: 'departments_pause',
-          defaultMessage:
-            'The departments update bot will pause if WAIV voting power on the account drops below the set threshold.',
+          id: isGuest ? 'guest_departments_pause' : 'departments_pause',
+          defaultMessage: `The departments update bot will pause if ${
+            isGuest ? 'guest mana' : 'WAIV voting power'
+          } on the account drops below the set threshold.`,
         })}
       </p>
       <VoteInfoBlock
