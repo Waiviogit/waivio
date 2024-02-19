@@ -986,13 +986,15 @@ export const broadcastGuestOperation = async (operationId, data) => {
       };
     }
 
-    return fetch(`${config.baseUrl}${config.auth}${config.guestOperations}`, {
-      method: 'POST',
-      headers: { ...headers, 'access-token': userData.token },
-      body: JSON.stringify(body),
-    })
-      // .then(res => res.json())
-      .then(res => res);
+    return (
+      fetch(`${config.baseUrl}${config.auth}${config.guestOperations}`, {
+        method: 'POST',
+        headers: { ...headers, 'access-token': userData.token },
+        body: JSON.stringify(body),
+      })
+        // .then(res => res.json())
+        .then(res => res)
+    );
   }
 };
 // endregion
