@@ -20,7 +20,6 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   clearMatchBots: () => dispatch(clearMatchBots()),
-  reload: () => dispatch(reload()),
   getMatchBots: () => dispatch(getMatchBots(MATCH_BOTS_NAMES.AUTHORS)),
 });
 

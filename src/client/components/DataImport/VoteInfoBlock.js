@@ -38,7 +38,19 @@ const VoteInfoBlock = ({ intl, info }) => {
 
   return (
     <div>
-      {isGuest && usersState && <p>Guest mana: {usersState.guestMana}%</p>}
+      {isGuest && usersState && (
+        <p>
+          {' '}
+          <b>
+            {intl.formatMessage({
+              id: 'status_of_the_user_account',
+              defaultMessage: 'Status of the user account',
+            })}
+            :
+          </b>{' '}
+          <p>Guest mana: {usersState.guestMana}%</p>
+        </p>
+      )}
       {usersState && !isGuest && (
         <p>
           <b>

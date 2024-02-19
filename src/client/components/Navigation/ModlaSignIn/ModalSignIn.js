@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { Modal, message } from 'antd';
+import { Modal, message, Alert } from 'antd';
 import hivesigner from 'hivesigner';
 import { batch, connect, useDispatch } from 'react-redux';
 import { injectIntl } from 'react-intl';
@@ -68,9 +68,9 @@ const ModalSignIn = ({
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [lastError, setLastError] = React.useState('');
+  const [timeOutId, setTimeoutId] = React.useState('');
   const colors = useWebsiteColor();
   let host = currHost;
-  let timeOutId;
 
   if (!host && typeof location !== 'undefined') host = location.origin;
 
@@ -83,6 +83,13 @@ const ModalSignIn = ({
   useEffect(() => {
     if (showModal) setIsModalOpen(true);
   }, [showModal]);
+
+  useEffect(() => {
+    if (!isModalOpen && timeOutId) {
+      clearTimeout(timeOutId);
+      setTimeoutId('');
+    }
+  }, [isModalOpen]);
 
   const responseSocial = async (response, socialNetwork) => {
     setIsLoading(true);
@@ -174,7 +181,19 @@ const ModalSignIn = ({
           ) : (
             <React.Fragment>
               {showQR ? (
-                <React.Fragment>
+                <div
+                  style={{
+                    marginTop: '20px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                  }}
+                >
+                  <Alert
+                    message=""
+                    description="We're unable to log you in without a posting key. Please provide your posting key to proceed."
+                    type="warning"
+                  />
                   <p className="ModalSignIn__rules">
                     {isMobile()
                       ? 'Click on the QR Code to open your Hive Keychain Mobile (Hive Authentication app) and approve the request'
@@ -191,7 +210,7 @@ const ModalSignIn = ({
                   ) : (
                     <img className="ModalSignIn__qr" src={showQR} alt={'qr'} />
                   )}
-                </React.Fragment>
+                </div>
               ) : (
                 <React.Fragment>
                   <p className="ModalSignIn__rules">
@@ -226,10 +245,12 @@ const ModalSignIn = ({
                     }}
                     setQRcodeForAuth={url => {
                       setShowQr(url);
-                      timeOutId = setTimeout(() => {
+                      const id = setTimeout(() => {
                         setShowQr('');
                         message.error('QR code has expired');
                       }, 60000);
+
+                      setTimeoutId(id);
                     }}
                     text={'HiveAuth'}
                   />
@@ -305,6 +326,7 @@ const ModalSignIn = ({
     setIsFormVisible(false);
     handleLoginModalCancel();
     setShowQr('');
+
     if (timeOutId) clearTimeout(timeOutId);
   };
 
@@ -327,7 +349,7 @@ const ModalSignIn = ({
     }
 
     onModalClose();
-  }, []);
+  }, [timeOutId]);
 
   return (
     <React.Fragment>
