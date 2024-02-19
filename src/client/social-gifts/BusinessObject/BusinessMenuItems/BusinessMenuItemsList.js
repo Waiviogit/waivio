@@ -58,7 +58,7 @@ const BusinessMenuItemsList = ({
 
   return !isEmpty(linkList) && isMobile() ? (
     <div className={'BusinessMenuItems'}>
-      {linkList.map(item => (
+      {linkList?.map(item => (
         <BusinessMenuItem key={item._id} item={item} />
       ))}
     </div>
@@ -66,7 +66,7 @@ const BusinessMenuItemsList = ({
     <div className="SocialProduct__addOn-section">
       <div className={`Slider__wrapper-menuItems`}>
         <Carousel {...carouselSettings} beforeChange={onSlideChange}>
-          {linkList.map((item, index) => (
+          {linkList?.map((item, index) => (
             <BusinessMenuItem
               className={index === 0 ? 'BusinessMenuItems__item-first' : 'BusinessMenuItems__item'}
               key={item._id}

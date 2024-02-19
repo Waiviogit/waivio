@@ -39,9 +39,20 @@ const HiveAuth = ({ setQRcodeForAuth, onCloseSingIn, text }) => {
     setQRcodeForAuth(url);
   };
 
-  const authorizeUserHAS = ({ auth, challenge, cbWait }) => {
+  const authorizeUserHAS = ({ auth, cbWait }) => {
     try {
-      HAS.authenticate(auth, APP_META, challenge, cbWait).then(res => {
+      HAS.authenticate(
+        auth,
+        APP_META,
+        {
+          key_type: 'posting',
+          challenge: JSON.stringify({
+            login: auth.username,
+            ts: Date.now(),
+          }),
+        },
+        cbWait,
+      ).then(res => {
         if (res.cmd === 'auth_ack') {
           dispatch(login());
           onCloseSingIn(false);
