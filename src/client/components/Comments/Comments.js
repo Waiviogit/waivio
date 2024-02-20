@@ -39,6 +39,8 @@ class Comments extends React.Component {
     sliderMode: PropTypes.bool,
     show: PropTypes.bool,
     isQuickComments: PropTypes.bool,
+    isGuest: PropTypes.bool,
+    guestMana: PropTypes.number,
     notify: PropTypes.func,
     onLikeClick: PropTypes.func,
     onDislikeClick: PropTypes.func,
@@ -170,7 +172,7 @@ class Comments extends React.Component {
   };
 
   handleSubmitComment(parentP, commentValue) {
-    const { intl } = this.props;
+    const { intl, isGuest, guestMana } = this.props;
     const parentPost = parentP;
 
     if (parentPost.author_original) parentPost.author = parentPost.author_original;
@@ -180,13 +182,21 @@ class Comments extends React.Component {
     return this.props
       .onSendComment(parentPost, commentValue)
       .then(res => {
-        message.success(
-          intl.formatMessage({
-            id: 'notify_comment_sent',
-            defaultMessage: 'Comment submitted',
-          }),
-        );
-
+        if (isGuest && !res.ok && guestMana < 2.5) {
+          message.error(
+            intl.formatMessage({
+              id: 'low_guest_mana',
+              defaultMessage: 'Guest mana is too low. Please wait for recovery.',
+            }),
+          );
+        } else {
+          message.success(
+            intl.formatMessage({
+              id: 'notify_comment_sent',
+              defaultMessage: 'Comment submitted',
+            }),
+          );
+        }
         this.setState({
           showCommentFormLoading: false,
           commentFormText: '',

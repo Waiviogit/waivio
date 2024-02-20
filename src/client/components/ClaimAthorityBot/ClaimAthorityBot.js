@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { Button, Modal } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import { MATCH_BOTS_TYPES } from '../../../common/helpers/matchBotsHelpers';
-import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
+import { getAuthenticatedUserName, isGuestUser } from '../../../store/authStore/authSelectors';
 import MatchBotsService from '../../rewards/MatchBots/MatchBotsService';
 import MatchBotsTitle from '../../rewards/MatchBots/MatchBotsTitle';
 import ChangeVotingModal from '../../widgets/ChangeVotingModal/ChangeVotingModal';
@@ -34,6 +34,7 @@ const ClaimAthorityBot = ({ intl }) => {
   //   getIsConnectMatchBot(state, { botType: MATCH_BOTS_TYPES.IMPORT }),
   // );
   const authUserName = useSelector(getAuthenticatedUserName);
+  const isGuest = useSelector(isGuestUser);
   const dispatch = useDispatch();
   const [votingValue, setVotingValue] = useState(100);
   const [visibleVoting, setVisibleVoting] = useState(false);
@@ -165,8 +166,8 @@ const ClaimAthorityBot = ({ intl }) => {
       />
       <p>
         {intl.formatMessage({
-          id: 'waiv_voting_power_threshold',
-          defaultMessage: 'WAIV voting power threshold',
+          id: isGuest ? 'guest_mana_threshold' : 'waiv_voting_power_threshold',
+          defaultMessage: isGuest ? 'Guest mana threshold' : 'WAIV voting power threshold',
         })}
         : {votingValue}% (
         <a onClick={toggleVotingModal}>
@@ -175,9 +176,10 @@ const ClaimAthorityBot = ({ intl }) => {
         )
         <br />
         {intl.formatMessage({
-          id: 'claim_authority_pause',
-          defaultMessage:
-            'The claim authority bot will pause if WAIV voting power on the account drops below the set threshold.',
+          id: isGuest ? 'guest_claim_authority_pause' : 'claim_authority_pause',
+          defaultMessage: `The claim authority bot will pause if ${
+            isGuest ? 'guest mana' : 'WAIV voting power'
+          } on the account drops below the set threshold.`,
         })}
       </p>
       <VoteInfoBlock

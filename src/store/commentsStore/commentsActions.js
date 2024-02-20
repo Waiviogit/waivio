@@ -226,40 +226,44 @@ export const sendComment = (
       parentPost.root_author,
     )
     .then(res => {
-      if (isThread) {
-        busyAPI.instance.sendAsync(subscribeTypes.subscribeTransactionId, [
-          auth.user.name,
-          res.result.id,
-        ]);
-        busyAPI.instance.subscribe((response, mess) => {
-          if (mess?.success && mess?.permlink === res.result.id) {
-            callback();
-          }
-        });
-      }
-      dispatch(
-        getFakeSingleComment(
-          guestParentAuthor || parentAuthor,
-          parentPermlink,
-          author,
-          permlink,
-          newBody,
-          jsonMetadata,
-          !isUpdating,
-        ),
-      );
-
-      if (parentPost.name) {
-        dispatch(updateCounter(parentPost));
-      } else {
-        setTimeout(
-          () => dispatch(getSingleComment(parentPost.author, parentPost.permlink, !isUpdating)),
-          auth.isGuestUser ? 6000 : 2000,
+      if (res.ok) {
+        if (isThread) {
+          busyAPI.instance.sendAsync(subscribeTypes.subscribeTransactionId, [
+            auth.user.name,
+            res.result.id,
+          ]);
+          busyAPI.instance.subscribe((response, mess) => {
+            if (mess?.success && mess?.permlink === res.result.id) {
+              callback();
+            }
+          });
+        }
+        dispatch(
+          getFakeSingleComment(
+            guestParentAuthor || parentAuthor,
+            parentPermlink,
+            author,
+            permlink,
+            newBody,
+            jsonMetadata,
+            !isUpdating,
+          ),
         );
+
+        if (parentPost.name) {
+          dispatch(updateCounter(parentPost));
+        } else {
+          setTimeout(
+            () => dispatch(getSingleComment(parentPost.author, parentPost.permlink, !isUpdating)),
+            auth.isGuestUser ? 6000 : 2000,
+          );
+        }
+
+        if (typeof window !== 'undefined' && window.gtag)
+          window.gtag('event', 'publish_comment', { debug_mode: false });
       }
 
-      if (typeof window !== 'undefined' && window.gtag)
-        window.gtag('event', 'publish_comment', { debug_mode: false });
+      return res;
     })
     .catch(err => {
       dispatch(notify(err.error.message || err.error_description, 'error'));
