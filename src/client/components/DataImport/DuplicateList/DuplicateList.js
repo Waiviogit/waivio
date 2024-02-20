@@ -13,6 +13,7 @@ import { MATCH_BOTS_TYPES } from '../../../../common/helpers/matchBotsHelpers';
 import {
   getAuthenticatedUserName,
   getIsConnectMatchBot,
+  isGuestUser,
 } from '../../../../store/authStore/authSelectors';
 
 import {
@@ -38,6 +39,7 @@ const DuplicateList = ({ intl }) => {
     getIsConnectMatchBot(state, { botType: MATCH_BOTS_TYPES.IMPORT }),
   );
   const authUserName = useSelector(getAuthenticatedUserName);
+  const isGuest = useSelector(isGuestUser);
   const dispatch = useDispatch();
   const [visible, setVisible] = useState(false);
   const [visibleVoting, setVisibleVoting] = useState(false);
@@ -176,8 +178,8 @@ const DuplicateList = ({ intl }) => {
       <MatchBotsService botType={MATCH_BOTS_TYPES.IMPORT} botName={'list_duplicator'} onlyAuth />
       <p>
         {intl.formatMessage({
-          id: 'waiv_voting_power_threshold',
-          defaultMessage: 'WAIV voting power threshold',
+          id: isGuest ? 'guest_mana_threshold' : 'waiv_voting_power_threshold',
+          defaultMessage: isGuest ? 'Guest mana threshold' : 'WAIV voting power threshold',
         })}
         : {votingValue}% (
         <a onClick={toggleVotingModal}>
@@ -186,9 +188,10 @@ const DuplicateList = ({ intl }) => {
         )
         <br />
         {intl.formatMessage({
-          id: 'list_duplication_pause',
-          defaultMessage:
-            'The list duplication bot will pause if WAIV voting power on the account drops below the set threshold.',
+          id: isGuest ? 'guest_list_duplication_pause' : 'list_duplication_pause',
+          defaultMessage: `The list duplication bot will pause if ${
+            isGuest ? 'guest mana' : 'WAIV voting power'
+          } on the account drops below the set threshold.`,
         })}
       </p>
       <VoteInfoBlock

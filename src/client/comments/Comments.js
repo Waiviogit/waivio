@@ -13,6 +13,7 @@ import {
   getAuthenticatedUser,
   getAuthenticatedUserName,
   getIsAuthenticated,
+  isGuestUser,
 } from '../../store/authStore/authSelectors';
 import {
   getComments,
@@ -20,6 +21,7 @@ import {
   getCommentsPendingVotes,
 } from '../../store/commentsStore/commentsSelectors';
 import { getVotePercent, getVotingPower } from '../../store/settingsStore/settingsSelectors';
+import { getUser } from '../../store/usersStore/usersSelectors';
 
 const Comments = props => {
   useEffect(() => {
@@ -105,6 +107,8 @@ const Comments = props => {
     rootLevelComments && (
       <CommentsList
         user={user}
+        isGuest={props.isGuest}
+        guestMana={props.userInfo?.guestMana}
         parentPost={post}
         comments={comments.comments}
         rootLevelComments={rootLevelComments}
@@ -154,6 +158,8 @@ Comments.propTypes = {
   sendComment: PropTypes.func,
   handleHideComment: PropTypes.func,
   isUpdating: PropTypes.bool,
+  isGuest: PropTypes.bool,
+  userInfo: PropTypes.shape(),
 };
 
 Comments.defaultProps = {
@@ -175,17 +181,23 @@ Comments.defaultProps = {
 };
 
 export default connect(
-  state => ({
-    user: getAuthenticatedUser(state),
-    comments: getComments(state),
-    commentsList: getCommentsList(state),
-    pendingVotes: getCommentsPendingVotes(state),
-    authenticated: getIsAuthenticated(state),
-    username: getAuthenticatedUserName(state),
-    sliderMode: getVotingPower(state),
-    rewardFund: getRewardFund(state),
-    defaultVotePercent: getVotePercent(state),
-  }),
+  state => {
+    const username = getAuthenticatedUserName(state);
+
+    return {
+      user: getAuthenticatedUser(state),
+      comments: getComments(state),
+      commentsList: getCommentsList(state),
+      pendingVotes: getCommentsPendingVotes(state),
+      authenticated: getIsAuthenticated(state),
+      username,
+      sliderMode: getVotingPower(state),
+      rewardFund: getRewardFund(state),
+      defaultVotePercent: getVotePercent(state),
+      isGuest: isGuestUser(state),
+      userInfo: getUser(state, username),
+    };
+  },
   dispatch =>
     bindActionCreators(
       {
