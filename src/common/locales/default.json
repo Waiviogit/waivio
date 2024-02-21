@@ -2588,5 +2588,12 @@
 "notification_thread_author_follower": "{author} published thread about {names}",
   "google_ads_config_command": "Google Ads Outbound Click Config Command:",
   "paste_your_config_here": "Paste your Config Command here (e.g., gtag('config', 'AW-XXXXX');)",
-  "google_ads_config_description_info": "To find the 'config' command in Google Ads, navigate to Tools > Conversions > Outbound Click > Tag Setup > Install Tag Yourself > Google Tag > The Google tag is already installed on all pages..."
+  "google_ads_config_description_info": "To find the 'config' command in Google Ads, navigate to Tools > Conversions > Outbound Click > Tag Setup > Install Tag Yourself > Google Tag > The Google tag is already installed on all pages...",
+  "low_guest_mana": "Guest mana is too low. Please wait for recovery.",
+  "guest_mana_threshold": "Guest mana threshold",
+  "guest_data_import_pause": "The data import bot will pause if guest mana on the account drops below the set threshold.",
+  "guest_claim_authority_pause": "The claim authority bot will pause if guest mana on the account drops below the set threshold.",
+  "guest_departments_pause": "The departments update bot will pause if guest mana on the account drops below the set threshold.",
+  "guest_descriptions_bot_voting_text": "The descriptions bot will pause if guest mana on the account drops below the set threshold.",
+  "guest_list_duplication_pause": "The list duplication bot will pause if guest mana on the account drops below the set threshold."
 }

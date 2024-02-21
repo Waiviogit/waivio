@@ -40,7 +40,11 @@ const DepartmentItem = ({ wobject, department, id, isSocialGifts }) => {
           to={getDepartmentHref(department)}
           onClick={() => onDepartmentClick(department)}
         >
-          <span className={getDepartmentsClassNames(department)}>{department.body}</span>{' '}
+          {isSocialGifts ? (
+            <span className={getDepartmentsClassNames(department)}>{department.body}</span>
+          ) : (
+            <div className={getDepartmentsClassNames(department)}>{department.body}</div>
+          )}{' '}
         </Link>
       </div>
     </div>

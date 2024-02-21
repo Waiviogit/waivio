@@ -10,7 +10,7 @@ import ImportModal from './ImportModal/ImportModal';
 import DynamicTbl from '../Tools/DynamicTable/DynamicTable';
 import { configHistoryTable, configProductTable } from './tableConfig';
 import { MATCH_BOTS_TYPES } from '../../../common/helpers/matchBotsHelpers';
-import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
+import { getAuthenticatedUserName, isGuestUser } from '../../../store/authStore/authSelectors';
 
 import {
   deleteObjectImport,
@@ -29,6 +29,7 @@ const limit = 30;
 
 const DataImport = ({ intl }) => {
   const authUserName = useSelector(getAuthenticatedUserName);
+  const isGuest = useSelector(isGuestUser);
   const dispatch = useDispatch();
   const [visible, setVisible] = useState(false);
   const [visibleVoting, setVisibleVoting] = useState(false);
@@ -165,8 +166,8 @@ const DataImport = ({ intl }) => {
       <MatchBotsService botType={MATCH_BOTS_TYPES.IMPORT} botName={'dataimport'} onlyAuth />
       <p>
         {intl.formatMessage({
-          id: 'waiv_voting_power_threshold',
-          defaultMessage: 'WAIV voting power threshold',
+          id: isGuest ? 'guest_mana_threshold' : 'waiv_voting_power_threshold',
+          defaultMessage: isGuest ? 'Guest mana threshold' : 'WAIV voting power threshold',
         })}
         : {votingValue}% (
         <a onClick={toggleVotingModal}>
@@ -175,9 +176,10 @@ const DataImport = ({ intl }) => {
         )
         <br />
         {intl.formatMessage({
-          id: 'data_import_pause',
-          defaultMessage:
-            'The data import bot will pause if WAIV voting power on the account drops below the set threshold.',
+          id: isGuest ? 'guest_data_import_pause' : 'data_import_pause',
+          defaultMessage: `The data import bot will pause if ${
+            isGuest ? 'guest mana' : 'WAIV voting power'
+          } on the account drops below the set threshold.`,
         })}
       </p>
       <VoteInfoBlock

@@ -17,8 +17,12 @@
   }
   margin: 5px;
 
-  @media @small {
-    margin: 20px 100px;
+  @media @medium-max {
+    margin: 20px;
+  }
+  @media @medium {
+    max-width: @medium-bp;
+    margin: 20px auto;
   }
 }
 .ObjectOfTypeWebpage {
