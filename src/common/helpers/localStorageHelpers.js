@@ -1,4 +1,4 @@
-import Cookie from "js-cookie";
+import Cookie from 'js-cookie';
 import store from 'store';
 import { has } from 'lodash';
 
@@ -81,5 +81,5 @@ export const clearGuestAuthData = () => {
   store.remove('accessTokenExpiration');
   store.remove('socialName');
   store.remove('guestName');
-  Cookie.remove('guestName')
+  Cookie.remove('guestName');
 };

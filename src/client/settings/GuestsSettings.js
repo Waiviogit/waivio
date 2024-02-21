@@ -159,7 +159,7 @@ export default class GuestsSettings extends React.Component {
 
   render() {
     const { reloading } = this.props;
-    const { hiveBeneficiaryAccount, showModal, privateEmail, showModalPrivate } = this.state;
+    const { hiveBeneficiaryAccount, showModal, showModalPrivate } = this.state;
 
     return (
       <div className="shifted">
@@ -198,36 +198,6 @@ export default class GuestsSettings extends React.Component {
                       id="linked_you_hive_account"
                       defaultMessage="Link your Hive account"
                     />
-                  </a>
-                )}
-              </div>
-              <div className="Settings__section">
-                <h3>
-                  <FormattedMessage
-                    id="withdrawal_confirmations"
-                    defaultMessage="Withdrawal confirmations"
-                  />
-                </h3>
-                <p>
-                  <FormattedMessage
-                    id="email_link_details"
-                    defaultMessage="All withdrawal requests must be confirmed by e-mail."
-                  />
-                </p>
-                {privateEmail ? (
-                  <div>
-                    <span>{privateEmail}</span>(
-                    <a
-                      role="presentation"
-                      onClick={() => this.setState({ showModalPrivate: true })}
-                    >
-                      <FormattedMessage id="change" defaultMessage="change" />
-                    </a>
-                    )
-                  </div>
-                ) : (
-                  <a role="presentation" onClick={() => this.setState({ showModalPrivate: true })}>
-                    <FormattedMessage id="register_email" defaultMessage="Register email" />
                   </a>
                 )}
               </div>
