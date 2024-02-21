@@ -55,16 +55,18 @@ const PostsCommentsActivity = props => {
       >
         {tab === 'comments' && <UserProfilePosts match={match} />}
       </Tabs.TabPane>
-      <Tabs.TabPane
-        tab={
-          <Link to={`/@${name}/activity`}>
-            {intl.formatMessage({ id: 'activity', defaultMessage: 'Activity' })}
-          </Link>
-        }
-        key="activity"
-      >
-        {tab === 'activity' && !props.isGuest && <UserActivity />}
-      </Tabs.TabPane>
+      {!isGuest && (
+        <Tabs.TabPane
+          tab={
+            <Link to={`/@${name}/activity`}>
+              {intl.formatMessage({ id: 'activity', defaultMessage: 'Activity' })}
+            </Link>
+          }
+          key="activity"
+        >
+          {tab === 'activity' && !props.isGuest && <UserActivity />}
+        </Tabs.TabPane>
+      )}
     </Tabs>
   );
 };
