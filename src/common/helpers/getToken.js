@@ -1,4 +1,4 @@
-import Cookie from "js-cookie";
+import Cookie from 'js-cookie';
 import store from 'store';
 import { getAccessToken, refreshToken as refreshTokenRequest } from '../../waivioApi/ApiClient';
 import { clearGuestAuthData, getGuestAccessToken, setGuestAuthData } from './localStorageHelpers';

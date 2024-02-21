@@ -155,6 +155,7 @@ const ModalSignIn = ({
           isSocial={isSocialGifts}
           setUserData={setUserData}
           setIsFormVisible={setIsFormVisible}
+          setIsModalOpen={setIsModalOpen}
         />
       );
 
@@ -191,7 +192,7 @@ const ModalSignIn = ({
                 >
                   <Alert
                     message=""
-                    description="We're unable to log you in without a posting key. Please provide your posting key to proceed."
+                    description="Make sure you have both an active key and a posting key to take advantage of the full range of functionality."
                     type="warning"
                   />
                   <p className="ModalSignIn__rules">
@@ -331,6 +332,8 @@ const ModalSignIn = ({
   };
 
   const onSignUpClick = isOpen => {
+    console.log(isWaivio);
+    console.log(domain);
     if (typeof window !== 'undefined' && !isWaivio && domain) {
       window.location.href = `https://${domain}/sign-in?host=${host}&color=${colors.background.replace(
         '#',
@@ -398,7 +401,7 @@ ModalSignIn.propTypes = {
 
 ModalSignIn.defaultProps = {
   buttonClassName: '',
-  domain: '',
+  domain: 'localhost:4000',
   text: '',
   showModal: false,
   handleLoginModalCancel: () => {},

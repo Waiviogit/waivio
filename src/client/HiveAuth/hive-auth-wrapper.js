@@ -60,14 +60,17 @@ function getMessage(type, uuid = undefined) {
   return req;
 }
 
-const makeHiveAuthHeader = auth => {
+export const makeHiveAuthHeader = auth => {
   try {
     const { username, expire } = auth;
     const authString = JSON.stringify({ username, expire });
     const secretKey = process.env.HIVE_AUTH;
     const encrypted = CryptoJS.AES.encrypt(authString, secretKey);
+    const access_token = encrypted.toString();
 
-    Cookie.set('access_token', encrypted.toString());
+    Cookie.set('access_token', access_token);
+
+    return access_token;
   } catch (error) {
     console.error(error);
   }
