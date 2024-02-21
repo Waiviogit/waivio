@@ -1,14 +1,16 @@
 import { Button, message, Select, Input } from 'antd';
 import Cookie from 'js-cookie';
+import store from 'store';
 import { debounce } from 'lodash';
 import PropTypes from 'prop-types';
 import React, { useState, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
+import { useHistory } from 'react-router';
 import { parseJSON } from '../../common/helpers/parseJSON';
 import { login } from '../../store/authStore/authActions';
 import { chechExistUser } from '../../waivioApi/ApiClient';
 import Avatar from '../components/Avatar';
-import HAS from './hive-auth-wrapper';
+import HAS, { makeHiveAuthHeader } from './hive-auth-wrapper';
 
 import './HiveAuth.less';
 
@@ -20,9 +22,11 @@ const APP_META = {
   icon: undefined,
 };
 
-const HiveAuth = ({ setQRcodeForAuth, onCloseSingIn, text }) => {
+const HiveAuth = ({ setQRcodeForAuth, onCloseSingIn, text, style, buttonStyle }) => {
   const [showInput, setShowInput] = useState();
   const [user, setUser] = useState('');
+  const { location } = useHistory();
+
   const dispatch = useDispatch();
   const generateQrCode = evt => {
     const { account, uuid, key } = evt;
@@ -54,6 +58,13 @@ const HiveAuth = ({ setQRcodeForAuth, onCloseSingIn, text }) => {
         cbWait,
       ).then(res => {
         if (res.cmd === 'auth_ack') {
+          const query = new URLSearchParams(location.search);
+          const url = query.get('host') || location.origin;
+
+          window.location.href = `${url}/?access_token=${makeHiveAuthHeader(
+            auth,
+          )}&socialProvider=hiveAuth&auth=${JSON.stringify(auth)}`;
+
           dispatch(login());
           onCloseSingIn(false);
         }
@@ -63,7 +74,7 @@ const HiveAuth = ({ setQRcodeForAuth, onCloseSingIn, text }) => {
     }
   };
 
-  const savedAcc = parseJSON(localStorage.getItem('accounts'));
+  const savedAcc = parseJSON(store.get('accounts'));
   const changeUser = useCallback(
     debounce(e => {
       setUser(e);
@@ -100,7 +111,7 @@ const HiveAuth = ({ setQRcodeForAuth, onCloseSingIn, text }) => {
   };
 
   return (
-    <div className="HiveAuth">
+    <div className="HiveAuth" style={style}>
       <img
         alt={'Hive auth'}
         className={'HiveAuth__icon'}
@@ -126,7 +137,8 @@ const HiveAuth = ({ setQRcodeForAuth, onCloseSingIn, text }) => {
               showArrow={false}
               dropdownClassName={'HiveAuth__accList'}
               onSelect={value => {
-                if (value === CLEAR_OPTION) localStorage.removeItem('accounts');
+                if (value === CLEAR_OPTION && typeof localStorage !== 'undefined')
+                  localStorage.removeItem('accounts');
                 else setUser(value);
               }}
               filterOption={false}
@@ -163,7 +175,9 @@ const HiveAuth = ({ setQRcodeForAuth, onCloseSingIn, text }) => {
           </Button>
         </React.Fragment>
       ) : (
-        <span onClick={() => setShowInput(true)}>{text} (Beta)</span>
+        <span style={buttonStyle} onClick={() => setShowInput(true)}>
+          {text}
+        </span>
       )}
     </div>
   );
@@ -173,10 +187,14 @@ HiveAuth.propTypes = {
   setQRcodeForAuth: PropTypes.func,
   onCloseSingIn: PropTypes.func,
   text: PropTypes.string,
+  style: PropTypes.shape({}),
+  buttonStyle: PropTypes.shape({}),
 };
 
 HiveAuth.defaultProps = {
   text: 'Continue with HiveAuth',
+  style: {},
+  buttonStyle: {},
 };
 
 export default HiveAuth;

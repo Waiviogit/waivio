@@ -183,6 +183,7 @@ const SocialWrapper = props => {
     const query = new URLSearchParams(props?.location.search);
     const token = query.get('access_token');
     const provider = query.get('socialProvider');
+    const auth = query.get('auth');
     const locale = query.get('usedLocale');
 
     props.setSocialFlag();
@@ -203,7 +204,7 @@ const SocialWrapper = props => {
         document.body.style.setProperty('--website-light-color', hexToRgb(mainColor, 1));
       }
 
-      props.login(token, provider).then(() => {
+      props.login(token, provider, auth).then(() => {
         batch(() => {
           props.getNotifications();
           props.busyLogin();
@@ -214,6 +215,7 @@ const SocialWrapper = props => {
         if (token && provider) {
           query.delete('access_token');
           query.delete('socialProvider');
+          query.delete('auth');
           let queryString = query.toString();
 
           if (queryString) queryString = `/?${queryString}`;
