@@ -61,9 +61,10 @@ const HiveAuth = ({ setQRcodeForAuth, onCloseSingIn, text, style, buttonStyle })
           const query = new URLSearchParams(location.search);
           const url = query.get('host') || location.origin;
 
-          window.location.href = `${url}/?access_token=${makeHiveAuthHeader(
-            auth,
-          )}&socialProvider=hiveAuth&auth=${JSON.stringify(auth)}`;
+          if (query.get('host'))
+            window.location.href = `${url}/?access_token=${makeHiveAuthHeader(
+              auth,
+            )}&socialProvider=hiveAuth&auth=${JSON.stringify(auth)}`;
 
           dispatch(login());
           onCloseSingIn(false);
