@@ -74,7 +74,7 @@ const HiveAuth = ({ setQRcodeForAuth, onCloseSingIn, text, style, buttonStyle })
     }
   };
 
-  const savedAcc = parseJSON(store.get('accounts'));
+  const savedAcc = store.get('accounts');
   const changeUser = useCallback(
     debounce(e => {
       setUser(e);
@@ -95,10 +95,10 @@ const HiveAuth = ({ setQRcodeForAuth, onCloseSingIn, text, style, buttonStyle })
 
       chechExistUser(username).then(result => {
         if (result) {
-          const accounts = parseJSON(localStorage.getItem('accounts')) || [];
+          const accounts = store.get('accounts') || [];
 
           if (!accounts.includes(username))
-            localStorage.setItem('accounts', JSON.stringify([username, ...accounts]));
+            store.set('accounts', JSON.stringify([username, ...accounts]));
           authorizeUserHAS({
             auth: { username },
             cbWait: generateQrCode,
@@ -137,8 +137,7 @@ const HiveAuth = ({ setQRcodeForAuth, onCloseSingIn, text, style, buttonStyle })
               showArrow={false}
               dropdownClassName={'HiveAuth__accList'}
               onSelect={value => {
-                if (value === CLEAR_OPTION && typeof localStorage !== 'undefined')
-                  localStorage.removeItem('accounts');
+                if (value === CLEAR_OPTION) store.remove('accounts');
                 else setUser(value);
               }}
               filterOption={false}

@@ -4,7 +4,6 @@ import GoogleLogin from 'react-google-login';
 // import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
-import { useHistory } from 'react-router';
 import Loading from '../../../components/Icon/Loading';
 import HiveAuth from '../../../HiveAuth/HiveAuth';
 import styles from '../styles';
@@ -73,7 +72,7 @@ const SocialSignInModalContent = ({
               >
                 <Alert
                   message=""
-                  description="Make sure you have both an active key and a posting key to take advantage of the full range of functionality."
+                  description="Ensure you have both an active and a posting key for full functionality."
                   type="warning"
                 />
                 <p className="ModalSignIn__rules">
@@ -116,13 +115,8 @@ const SocialSignInModalContent = ({
                 />
                 <HiveAuth
                   onCloseSingIn={open => {
-                    if (query.get('host')) {
-                      if (typeof window !== 'undefined')
-                        window.location.href = `${url}/?access_token=${response.accessToken}&socialProvider=${socialNetwork}`;
-                    } else {
-                      setIsModalOpen(open);
-                      clearTimeout(timeOutId);
-                    }
+                    setIsModalOpen(open);
+                    clearTimeout(timeOutId);
                   }}
                   style={isMobile() ? styles.mobileButton : styles.socialButton}
                   buttonStyle={{ ...styles.socialButtonText, marginRight: '38px' }}
