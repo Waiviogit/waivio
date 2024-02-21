@@ -77,6 +77,7 @@ const styles = {
     fontSize: '18px',
     fontWeight: '500',
     width: '100%',
+    justifyContent: 'center',
   },
 
   mobileButton: {

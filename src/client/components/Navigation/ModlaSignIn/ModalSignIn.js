@@ -192,7 +192,7 @@ const ModalSignIn = ({
                 >
                   <Alert
                     message=""
-                    description="Make sure you have both an active key and a posting key to take advantage of the full range of functionality."
+                    description="Ensure you have both an active and a posting key for full functionality."
                     type="warning"
                   />
                   <p className="ModalSignIn__rules">

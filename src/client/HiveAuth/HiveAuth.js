@@ -75,7 +75,7 @@ const HiveAuth = ({ setQRcodeForAuth, onCloseSingIn, text, style, buttonStyle })
     }
   };
 
-  const savedAcc = store.get('accounts');
+  const savedAcc = parseJSON(store.get('accounts'));
   const changeUser = useCallback(
     debounce(e => {
       setUser(e);
@@ -98,8 +98,7 @@ const HiveAuth = ({ setQRcodeForAuth, onCloseSingIn, text, style, buttonStyle })
         if (result) {
           const accounts = store.get('accounts') || [];
 
-          if (!accounts.includes(username))
-            store.set('accounts', JSON.stringify([username, ...accounts]));
+          if (!accounts.includes(username)) store.set('accounts', [username, ...accounts]);
           authorizeUserHAS({
             auth: { username },
             cbWait: generateQrCode,
