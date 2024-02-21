@@ -127,6 +127,7 @@ const WebsiteSignIn = props => {
       websiteTitle={websiteTitle}
       responseSocial={responseSocial}
       handleFailure={handleFailure}
+      setIsModalOpen={props.setIsModalOpen}
       loading={loading}
       hiveSigner={hiveSigner}
       websiteName={url}
@@ -153,6 +154,7 @@ WebsiteSignIn.propTypes = {
   setUserData: PropTypes.func.isRequired,
   isSocial: PropTypes.bool,
   setIsFormVisible: PropTypes.func.isRequired,
+  setIsModalOpen: PropTypes.func.isRequired,
 };
 
 export default withRouter(injectIntl(WebsiteSignIn));
