@@ -2,6 +2,7 @@ import { get } from 'lodash';
 import * as actions from './usersActions';
 import { GET_USER_ACCOUNT_HISTORY } from '../walletStore/walletActions';
 import { BELL_USER_NOTIFICATION } from '../userStore/userActions';
+import { SET_GUEST_MANA } from './usersActions';
 
 const initialState = {
   users: {},
@@ -36,6 +37,18 @@ export default function usersReducer(state = initialState, action) {
           },
         },
       };
+    case SET_GUEST_MANA: {
+      return {
+        ...state,
+        users: {
+          ...state.users,
+          [action.meta.username]: {
+            ...state.users[action.meta.username],
+            guestMana: action.payload,
+          },
+        },
+      };
+    }
     case actions.GET_ACCOUNT.SUCCESS: {
       return {
         ...state,

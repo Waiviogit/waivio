@@ -22,6 +22,7 @@ import {
 } from '../../store/commentsStore/commentsSelectors';
 import { getVotePercent, getVotingPower } from '../../store/settingsStore/settingsSelectors';
 import { getUser } from '../../store/usersStore/usersSelectors';
+import { setGuestMana } from '../../store/usersStore/usersActions';
 
 const Comments = props => {
   useEffect(() => {
@@ -108,7 +109,7 @@ const Comments = props => {
       <CommentsList
         user={user}
         isGuest={props.isGuest}
-        guestMana={props.userInfo?.guestMana}
+        setGuestMana={props.setGuestMana}
         parentPost={post}
         comments={comments.comments}
         rootLevelComments={rootLevelComments}
@@ -159,7 +160,7 @@ Comments.propTypes = {
   handleHideComment: PropTypes.func,
   isUpdating: PropTypes.bool,
   isGuest: PropTypes.bool,
-  userInfo: PropTypes.shape(),
+  setGuestMana: PropTypes.func,
 };
 
 Comments.defaultProps = {
@@ -207,6 +208,7 @@ export default connect(
           commentsActions.sendComment(parentPost, body, isUpdating, originalPost),
         notify,
         handleHideComment: commentsActions.handleHideComment,
+        setGuestMana: user => setGuestMana(user),
       },
       dispatch,
     ),
