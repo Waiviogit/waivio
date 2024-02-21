@@ -71,6 +71,18 @@ export const getInfoForSideBar = (username, lastActiv) => async dispatch => {
     });
   }
 };
+
+export const SET_GUEST_MANA = '@users/SET_GUEST_MANA';
+export const setGuestMana = name => async dispatch => {
+  const guestManaRes = await ApiClient.getGuestUserMana(name);
+
+  return dispatch({
+    type: SET_GUEST_MANA,
+    payload: guestManaRes.result,
+    meta: { username: name },
+  });
+};
+
 export const GET_ACCOUNT = createAsyncActionType('@users/GET_ACCOUNT');
 
 export const getUserAccount = name => async (dispatch, getState) => {
@@ -157,6 +169,13 @@ export const unfollowUser = (username, top = false) => (
       promise: steemConnectAPI
         .unfollow(authUser, username)
         .then(async data => {
+          if (isGuest && !data.ok) {
+            const guestMana = await dispatch(setGuestMana(authUser));
+
+            if (guestMana.payload < 0.1) {
+              message.error('Guest mana is too low. Please wait for recovery.');
+            }
+          }
           const res = isGuest ? await data.json() : data.result;
           const blockNumber = await getLastBlockNum();
 
@@ -205,6 +224,13 @@ export const followUser = (username, top = false) => (
       promise: steemConnectAPI
         .follow(authUser, username)
         .then(async data => {
+          if (isGuest && !data.ok) {
+            const guestMana = await dispatch(setGuestMana(authUser));
+
+            if (guestMana.payload < 0.1) {
+              message.error('Guest mana is too low. Please wait for recovery.');
+            }
+          }
           const res = isGuest ? await data.json() : data.result;
           const blockNumber = await getLastBlockNum();
 

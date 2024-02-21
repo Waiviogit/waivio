@@ -40,8 +40,8 @@ class Comments extends React.Component {
     show: PropTypes.bool,
     isQuickComments: PropTypes.bool,
     isGuest: PropTypes.bool,
-    guestMana: PropTypes.number,
     notify: PropTypes.func,
+    setGuestMana: PropTypes.func,
     onLikeClick: PropTypes.func,
     onDislikeClick: PropTypes.func,
     onSendComment: PropTypes.func,
@@ -172,7 +172,7 @@ class Comments extends React.Component {
   };
 
   handleSubmitComment(parentP, commentValue) {
-    const { intl, isGuest, guestMana } = this.props;
+    const { intl, isGuest, setGuestMana, user } = this.props;
     const parentPost = parentP;
 
     if (parentPost.author_original) parentPost.author = parentPost.author_original;
@@ -182,13 +182,16 @@ class Comments extends React.Component {
     return this.props
       .onSendComment(parentPost, commentValue)
       .then(res => {
-        if (isGuest && !res.ok && guestMana < 2.5) {
-          message.error(
-            intl.formatMessage({
-              id: 'low_guest_mana',
-              defaultMessage: 'Guest mana is too low. Please wait for recovery.',
-            }),
-          );
+        if (isGuest) {
+          setGuestMana(user.name).then(r => {
+            if (isGuest && !res.ok && r.payload < 2.5)
+              message.error(
+                intl.formatMessage({
+                  id: 'low_guest_mana',
+                  defaultMessage: 'Guest mana is too low. Please wait for recovery.',
+                }),
+              );
+          });
         } else {
           message.success(
             intl.formatMessage({
