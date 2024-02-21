@@ -107,9 +107,13 @@ export const votePost = (postId, author, permlink, weight = 10000, isThread = fa
 
             if (guestMana.payload < 0.1) {
               message.error('Guest mana is too low. Please wait for recovery.');
-            } else {
-              throw new Error(data.message);
+
+              return dispatch({
+                type: LIKE_POST.ERROR,
+                meta: getPostKey(post),
+              });
             }
+            throw new Error(data.message);
           }
 
           return ApiClient.likePost({ voter, author, permlink: post.permlink, weight }).then(
