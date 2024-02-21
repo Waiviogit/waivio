@@ -332,8 +332,6 @@ const ModalSignIn = ({
   };
 
   const onSignUpClick = isOpen => {
-    console.log(isWaivio);
-    console.log(domain);
     if (typeof window !== 'undefined' && !isWaivio && domain) {
       window.location.href = `https://${domain}/sign-in?host=${host}&color=${colors.background.replace(
         '#',
@@ -401,7 +399,7 @@ ModalSignIn.propTypes = {
 
 ModalSignIn.defaultProps = {
   buttonClassName: '',
-  domain: 'localhost:4000',
+  domain: '',
   text: '',
   showModal: false,
   handleLoginModalCancel: () => {},

@@ -127,10 +127,13 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
   let promise = Promise.resolve(null);
   const guestAccessToken = getGuestAccessToken();
   const isGuest = Boolean(guestAccessToken);
-  const hiveAuthData =
-    socialNetwork === 'hiveAuth'
-      ? parseJSON(regData)
-      : parseJSON(Cookie.get('auth'));
+  let hiveAuthData = parseJSON(Cookie.get('auth'));
+
+  if (socialNetwork === 'hiveAuth') {
+    hiveAuthData = parseJSON(regData);
+    Cookie.set('auth', hiveAuthData);
+    Cookie.set('access_token', accessToken);
+  }
 
   if (hiveAuthData) {
     if (hiveAuthData.expire < Date.now()) {
