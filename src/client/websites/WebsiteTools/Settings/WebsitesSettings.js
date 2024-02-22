@@ -345,7 +345,6 @@ const WebsitesSettings = ({
 WebsitesSettings.propTypes = {
   intl: PropTypes.shape().isRequired,
   form: PropTypes.shape().isRequired,
-  loading: PropTypes.bool.isRequired,
   settings: PropTypes.shape({
     googleAnalyticsTag: PropTypes.string,
     objectControl: PropTypes.bool,
