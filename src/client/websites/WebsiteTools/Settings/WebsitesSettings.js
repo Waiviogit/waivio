@@ -30,7 +30,6 @@ import {
 const WebsitesSettings = ({
   intl,
   form,
-  loading,
   saveWebSettings,
   match,
   getWebSettings,
@@ -47,6 +46,7 @@ const WebsitesSettings = ({
   const [googleGSCState, setGoogleGSCState] = useState('');
   const [googleEventSnippetState, setGoogleEventSnippetState] = useState('');
   const [googleAdsConfigState, setGoogleAdsConfigState] = useState('');
+  const [buttonLoading, setButtonLoading] = useState(false);
   const host = match.params.site;
 
   useEffect(() => {
@@ -103,6 +103,7 @@ const WebsitesSettings = ({
         const googleAdsConfigTag = values.googleAdsConfig || '';
         const beneficiary = { account, percent };
 
+        setButtonLoading(true);
         saveWebSettings(
           host,
           tag,
@@ -113,9 +114,12 @@ const WebsitesSettings = ({
           values.currency,
           values.language,
           objectControl,
-        );
+        ).then(res => {
+          setButtonLoading(false);
+          if (!res.value.error)
+            message.success(intl.formatMessage({ id: 'settings_updated_successfully' }));
+        });
         referralUserForWeb(referralAccount, host);
-        message.success(intl.formatMessage({ id: 'settings_updated_successfully' }));
       }
     });
   };
@@ -324,7 +328,7 @@ const WebsitesSettings = ({
         <Button
           type="primary"
           htmlType="submit"
-          loading={loading}
+          loading={buttonLoading}
           disabled={
             showGoogleGSCTagError(googleGSCState) ||
             showGoogleEventSnippetError(googleEventSnippetState) ||

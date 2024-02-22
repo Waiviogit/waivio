@@ -20,6 +20,7 @@ const AdSenseAds = ({ intl, saveAdSense, match, getAdSettings }) => {
     { value: '3 - Intensive', key: 'intensive' },
   ];
   const [loading, setLoading] = useState(false);
+  const [buttonLoading, setButtonLoading] = useState(false);
   const [level, setLevel] = useState('');
   const [txtFile, setTxtFile] = useState('');
   const [adSense, setAdSense] = useState('');
@@ -50,8 +51,12 @@ const AdSenseAds = ({ intl, saveAdSense, match, getAdSettings }) => {
   const disabled = showError && showTextError;
 
   const handleSaveAdSenseSettings = () => {
-    saveAdSense(host, adSense, level, txtFile);
-    message.success(intl.formatMessage({ id: 'adSense_advertisements_updated_successfully' }));
+    setButtonLoading(true);
+    saveAdSense(host, adSense, level, txtFile).then(res => {
+      setButtonLoading(false);
+      if (!res.value.error)
+        message.success(intl.formatMessage({ id: 'adSense_advertisements_updated_successfully' }));
+    });
   };
 
   useEffect(() => {
@@ -174,7 +179,7 @@ const AdSenseAds = ({ intl, saveAdSense, match, getAdSettings }) => {
         disabled={disabled}
         type="primary"
         htmlType="submit"
-        // loading={isLoading}
+        loading={buttonLoading}
         onClick={handleSaveAdSenseSettings}
       >
         <FormattedMessage id="save" defaultMessage="Save" />
