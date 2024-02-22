@@ -226,7 +226,7 @@ export const sendComment = (
       parentPost.root_author,
     )
     .then(res => {
-      if (res.ok) {
+      if (res.ok || res.result) {
         if (isThread) {
           busyAPI.instance.sendAsync(subscribeTypes.subscribeTransactionId, [
             auth.user.name,
