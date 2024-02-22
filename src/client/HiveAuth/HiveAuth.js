@@ -21,6 +21,11 @@ const APP_META = {
   description: 'waivio application',
   icon: undefined,
 };
+const getSavedAcc = () => {
+  const accounts = store.get('accounts');
+
+  return Array.isArray(accounts) ? accounts : parseJSON(accounts);
+};
 
 const HiveAuth = ({ setQRcodeForAuth, onCloseSingIn, text, style, buttonStyle }) => {
   const [showInput, setShowInput] = useState();
@@ -42,7 +47,6 @@ const HiveAuth = ({ setQRcodeForAuth, onCloseSingIn, text, style, buttonStyle })
 
     setQRcodeForAuth(url);
   };
-
   const authorizeUserHAS = ({ auth, cbWait }) => {
     try {
       HAS.authenticate(
@@ -75,7 +79,7 @@ const HiveAuth = ({ setQRcodeForAuth, onCloseSingIn, text, style, buttonStyle })
     }
   };
 
-  const savedAcc = parseJSON(store.get('accounts'));
+  const savedAcc = getSavedAcc();
   const changeUser = useCallback(
     debounce(e => {
       setUser(e);
