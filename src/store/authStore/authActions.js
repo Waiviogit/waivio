@@ -2,6 +2,7 @@ import Cookie from 'js-cookie';
 import { get } from 'lodash';
 import { message } from 'antd';
 import { createAction } from 'redux-actions';
+import { makeHiveAuthHeader } from '../../client/HiveAuth/hive-auth-wrapper';
 import { getAccount } from '../../common/helpers/apiHelpers';
 import { createAsyncActionType } from '../../common/helpers/stateHelpers';
 import {
@@ -132,7 +133,7 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
   if (socialNetwork === 'hiveAuth') {
     hiveAuthData = parseJSON(regData);
     Cookie.set('auth', hiveAuthData);
-    Cookie.set('access_token', accessToken);
+    makeHiveAuthHeader(hiveAuthData);
   }
 
   if (hiveAuthData) {

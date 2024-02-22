@@ -74,6 +74,9 @@ const SocialSignInModalContent = ({
                   message=""
                   description="Ensure you have both an active and a posting key for full functionality."
                   type="warning"
+                  style={{
+                    textAlign: 'center',
+                  }}
                 />
                 <p className="ModalSignIn__rules">
                   {isMobile()
