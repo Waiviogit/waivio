@@ -455,7 +455,7 @@ export const saveWebsiteSettings = (
   const userName = getAuthenticatedUserName(state);
   const currentWebsite = getOwnWebsites(state).find(web => web.host === host);
 
-  dispatch({
+  return dispatch({
     type: SAVE_WEBSITE_SETTINGS.ACTION,
     payload: {
       promise: steemConnectAPI.saveWebsiteSettings(
@@ -483,7 +483,7 @@ export const saveAdSenseSettings = (host, code, level, txtFile) => (
   const state = getState();
   const userName = getAuthenticatedUserName(state);
 
-  dispatch({
+  return dispatch({
     type: SAVE_ADSENSE_SETTINGS.ACTION,
     payload: {
       promise: steemConnectAPI.saveAdSenseSettings(userName, host, code, level, txtFile),
