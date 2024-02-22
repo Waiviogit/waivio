@@ -226,7 +226,8 @@ export const sendComment = (
       parentPost.root_author,
     )
     .then(res => {
-      if (res.ok) {
+      if (res.error) throw new Error();
+      if (res.ok || res.result) {
         if (isThread) {
           busyAPI.instance.sendAsync(subscribeTypes.subscribeTransactionId, [
             auth.user.name,
@@ -266,7 +267,7 @@ export const sendComment = (
       return res;
     })
     .catch(err => {
-      dispatch(notify(err.error.message || err.error_description, 'error'));
+      if (err) dispatch(notify(err.error.message || err.error_description, 'error'));
       dispatch(SEND_COMMENT_ERROR);
     });
 };

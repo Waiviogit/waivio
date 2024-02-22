@@ -15,6 +15,7 @@ export const setToken = async (socialToken, social, regData) => {
     store.set('socialName', social);
     store.set('guestName', userData.name);
     Cookie.set('guestName', userData.name);
+    Cookie.set('access_token', accessToken);
 
     return userData;
   } catch (err) {

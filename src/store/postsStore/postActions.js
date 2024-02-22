@@ -101,6 +101,7 @@ export const votePost = (postId, author, permlink, weight = 10000, isThread = fa
       .vote(voter, author, post.permlink, weight)
       // eslint-disable-next-line consistent-return
       .then(async data => {
+        if (data.error) throw new Error();
         if (!isThread) {
           if (isGuest && !data.ok) {
             const guestMana = await dispatch(setGuestMana(authUser));
@@ -137,7 +138,6 @@ export const votePost = (postId, author, permlink, weight = 10000, isThread = fa
         }
       })
       .catch(() => {
-        message.error('Something went wrong');
         dispatch({
           type: LIKE_POST.ERROR,
           meta: getPostKey(post),
