@@ -10,9 +10,13 @@ import { redirectAuthHiveSigner } from '../../../../common/helpers/matchBotsHelp
 
 import './MatchBotsService.less';
 import { toggleBots } from '../../../../store/authStore/authActions';
-import { getIsConnectMatchBot } from '../../../../store/authStore/authSelectors';
+import {
+  getGuestAuthority,
+  getIsConnectMatchBot,
+  isGuestUser,
+} from '../../../../store/authStore/authSelectors';
 
-const MatchBotsService = ({ intl, isAuthority, botType, botName, onlyAuth }) => {
+const MatchBotsService = ({ intl, isAuthority, botType, botName, onlyAuth, isGuest }) => {
   const dispatch = useDispatch();
   const [waiting, setWaiting] = useState(false);
   const handleAuthHiveSigner = () => {
@@ -21,6 +25,11 @@ const MatchBotsService = ({ intl, isAuthority, botType, botName, onlyAuth }) => 
     if (Cookie.get('auth')) {
       setWaiting(true);
       dispatch(toggleBots(botType, isAuthority)).then(() => setWaiting(false));
+    } else if (isGuest) {
+      setWaiting(true);
+      dispatch(toggleBots(botType, isAuthority))
+        .then(() => setWaiting(false))
+        .catch(() => setWaiting(false));
     } else {
       redirectAuthHiveSigner(isAuthority, botType);
     }
@@ -70,14 +79,20 @@ MatchBotsService.propTypes = {
   botType: PropTypes.string.isRequired,
   isAuthority: PropTypes.bool.isRequired,
   onlyAuth: PropTypes.bool,
+  isGuest: PropTypes.bool,
 };
 
 MatchBotsService.defaultProps = {
   onlyAuth: false,
 };
 
-const mapStateToProps = (state, props) => ({
-  isAuthority: getIsConnectMatchBot(state, props),
-});
+const mapStateToProps = (state, props) => {
+  const isGuest = isGuestUser(state);
+
+  return {
+    isAuthority: isGuest ? getGuestAuthority(state) : getIsConnectMatchBot(state, props),
+    isGuest: isGuestUser(state),
+  };
+};
 
 export default injectIntl(connect(mapStateToProps)(MatchBotsService));

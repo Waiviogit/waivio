@@ -9,7 +9,6 @@ import {
 import { getMatchBotsSelector } from '../../../../store/rewardsStore/rewardsSelectors';
 import { MATCH_BOTS_NAMES, MATCH_BOTS_TYPES } from '../../../../common/helpers/matchBotsHelpers';
 import { clearMatchBots, getMatchBots } from '../../../../store/rewardsStore/rewardsActions';
-import { reload } from '../../../../store/authStore/authActions';
 
 const mapStateToProps = state => ({
   isEngLocale: getIsEngLocale(state),
@@ -20,7 +19,6 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   clearMatchBots: () => dispatch(clearMatchBots()),
-  reload: () => dispatch(reload()),
   getMatchBots: () => dispatch(getMatchBots(MATCH_BOTS_NAMES.AUTHORS)),
 });
 

@@ -3,51 +3,97 @@ import { message } from 'antd';
 
 import config from './routes';
 import { headers, getAuthHeaders } from './ApiClient';
+import { getGuestAccessToken } from '../common/helpers/localStorageHelpers';
+import { getValidTokenData } from '../common/helpers/getToken';
 
-export const getImportVote = userName =>
-  fetch(`${config.importApiPrefix}${config.importProduct}${config.power}?user=${userName}`, {
-    headers,
+export const getImportVote = async userName => {
+  let token = getGuestAccessToken();
+  const isGuest = token === 'null' ? false : Boolean(token);
+
+  if (isGuest) token = await getValidTokenData();
+
+  return fetch(`${config.importApiPrefix}${config.importProduct}${config.power}?user=${userName}`, {
+    headers: {
+      ...headers,
+      ...(isGuest ? { 'access-token': token.token, 'waivio-auth': true } : { ...getAuthHeaders() }),
+    },
     method: 'GET',
   })
     .then(res => res.json())
     .then(response => response)
     .catch(e => e);
+};
 
-export const getDuplicateVote = userName =>
-  fetch(`${config.importApiPrefix}${config.duplicateList}${config.power}?user=${userName}`, {
-    headers,
+export const getDuplicateVote = async userName => {
+  let token = getGuestAccessToken();
+  const isGuest = token === 'null' ? false : Boolean(token);
+
+  if (isGuest) token = await getValidTokenData();
+
+  return fetch(`${config.importApiPrefix}${config.duplicateList}${config.power}?user=${userName}`, {
+    headers: {
+      ...headers,
+      ...(isGuest ? { 'access-token': token.token, 'waivio-auth': true } : { ...getAuthHeaders() }),
+    },
     method: 'GET',
   })
     .then(res => res.json())
     .then(response => response)
     .catch(e => e);
+};
 
-export const getAthorityVote = userName =>
-  fetch(`${config.importApiPrefix}${config.authority}${config.power}?user=${userName}`, {
-    headers,
+export const getAthorityVote = async userName => {
+  let token = getGuestAccessToken();
+  const isGuest = token === 'null' ? false : Boolean(token);
+
+  if (isGuest) token = await getValidTokenData();
+
+  return fetch(`${config.importApiPrefix}${config.authority}${config.power}?user=${userName}`, {
+    headers: {
+      ...headers,
+      ...(isGuest ? { 'access-token': token.token, 'waivio-auth': true } : { ...getAuthHeaders() }),
+    },
     method: 'GET',
   })
     .then(res => res.json())
     .then(response => response)
     .catch(e => e);
+};
 
-export const getAuthorityList = (userName, skip, limit) =>
-  fetch(
+export const getAuthorityList = async (userName, skip, limit) => {
+  let token = getGuestAccessToken();
+  const isGuest = token === 'null' ? false : Boolean(token);
+
+  if (isGuest) token = await getValidTokenData();
+
+  return fetch(
     `${config.importApiPrefix}${config.authority}?user=${userName}&skip=${skip}&limit=${limit}`,
     {
-      headers,
+      headers: {
+        ...headers,
+        ...(isGuest
+          ? { 'access-token': token.token, 'waivio-auth': true }
+          : { ...getAuthHeaders() }),
+      },
       method: 'GET',
     },
   )
     .then(res => res.json())
     .then(response => response)
     .catch(e => e);
+};
 
-export const setImportVote = (user, minVotingPower) =>
-  fetch(`${config.importApiPrefix}${config.importProduct}${config.power}`, {
+export const setImportVote = async (user, minVotingPower) => {
+  let token = getGuestAccessToken();
+  const isGuest = token === 'null' ? false : Boolean(token);
+
+  if (isGuest) token = await getValidTokenData();
+
+  return fetch(`${config.importApiPrefix}${config.importProduct}${config.power}`, {
     headers: {
       ...headers,
       ...getAuthHeaders(),
+      ...(isGuest ? { 'access-token': token.token, 'waivio-auth': true } : { ...getAuthHeaders() }),
     },
     method: 'PUT',
     body: JSON.stringify({
@@ -58,12 +104,19 @@ export const setImportVote = (user, minVotingPower) =>
     .then(res => res.json())
     .then(response => response)
     .catch(e => e);
+};
 
-export const setDuplicateVote = (user, minVotingPower) =>
-  fetch(`${config.importApiPrefix}${config.duplicateList}${config.power}`, {
+export const setDuplicateVote = async (user, minVotingPower) => {
+  let token = getGuestAccessToken();
+  const isGuest = token === 'null' ? false : Boolean(token);
+
+  if (isGuest) token = await getValidTokenData();
+
+  return fetch(`${config.importApiPrefix}${config.duplicateList}${config.power}`, {
     headers: {
       ...headers,
       ...getAuthHeaders(),
+      ...(isGuest ? { 'access-token': token.token, 'waivio-auth': true } : { ...getAuthHeaders() }),
     },
     method: 'PUT',
     body: JSON.stringify({
@@ -74,12 +127,19 @@ export const setDuplicateVote = (user, minVotingPower) =>
     .then(res => res.json())
     .then(response => response)
     .catch(e => e);
+};
 
-export const setClaimAuthorityVote = (user, minVotingPower) =>
-  fetch(`${config.importApiPrefix}${config.authority}${config.power}`, {
+export const setClaimAuthorityVote = async (user, minVotingPower) => {
+  let token = getGuestAccessToken();
+  const isGuest = token === 'null' ? false : Boolean(token);
+
+  if (isGuest) token = await getValidTokenData();
+
+  return fetch(`${config.importApiPrefix}${config.authority}${config.power}`, {
     headers: {
       ...headers,
       ...getAuthHeaders(),
+      ...(isGuest ? { 'access-token': token.token, 'waivio-auth': true } : { ...getAuthHeaders() }),
     },
     method: 'PUT',
     body: JSON.stringify({
@@ -90,81 +150,158 @@ export const setClaimAuthorityVote = (user, minVotingPower) =>
     .then(res => res.json())
     .then(response => response)
     .catch(e => e);
+};
 
-export const uploadObject = data =>
-  fetch(`${config.importApiPrefix}${config.importProduct}`, {
+export const uploadObject = async data => {
+  let token = getGuestAccessToken();
+  const isGuest = token === 'null' ? false : Boolean(token);
+
+  if (isGuest) token = await getValidTokenData();
+
+  return fetch(`${config.importApiPrefix}${config.importProduct}`, {
     headers: {
       ...getAuthHeaders(),
+      ...(isGuest ? { 'access-token': token.token, 'waivio-auth': true } : { ...getAuthHeaders() }),
     },
     method: 'POST',
     body: data,
   })
     .then(response => response)
     .catch(e => e);
+};
 
-export const getImportedObjects = (userName, skip, limit) =>
-  fetch(
+export const getImportedObjects = async (userName, skip, limit) => {
+  let token = getGuestAccessToken();
+  const isGuest = token === 'null' ? false : Boolean(token);
+
+  if (isGuest) token = await getValidTokenData();
+
+  return fetch(
     `${config.importApiPrefix}${config.importProduct}?user=${userName}&skip=${skip}&limit=${limit}`,
     {
-      headers,
+      headers: {
+        ...headers,
+        ...(isGuest
+          ? { 'access-token': token.token, 'waivio-auth': true }
+          : { ...getAuthHeaders() }),
+      },
       method: 'GET',
     },
   )
     .then(res => res.json())
     .then(response => response)
     .catch(e => e);
+};
 
-export const getHistoryImportedObjects = (userName, skip, limit) =>
-  fetch(
+export const getHistoryImportedObjects = async (userName, skip, limit) => {
+  let token = getGuestAccessToken();
+  const isGuest = token === 'null' ? false : Boolean(token);
+
+  if (isGuest) token = await getValidTokenData();
+
+  return fetch(
     `${config.importApiPrefix}${config.importProduct}${config.history}?user=${userName}&skip=${skip}&limit=${limit}`,
     {
-      headers,
+      headers: {
+        ...headers,
+        ...(isGuest
+          ? { 'access-token': token.token, 'waivio-auth': true }
+          : { ...getAuthHeaders() }),
+      },
       method: 'GET',
     },
   )
     .then(res => res.json())
     .then(response => response)
     .catch(e => e);
+};
 
-export const getDuplicatedList = (userName, skip, limit) =>
-  fetch(
+export const getDuplicatedList = async (userName, skip, limit) => {
+  let token = getGuestAccessToken();
+  const isGuest = token === 'null' ? false : Boolean(token);
+
+  if (isGuest) token = await getValidTokenData();
+
+  return fetch(
     `${config.importApiPrefix}${config.duplicateList}?user=${userName}&skip=${skip}&limit=${limit}`,
     {
-      headers,
+      headers: {
+        ...headers,
+        ...(isGuest
+          ? { 'access-token': token.token, 'waivio-auth': true }
+          : { ...getAuthHeaders() }),
+      },
       method: 'GET',
     },
   )
     .then(res => res.json())
     .then(response => response)
     .catch(e => e);
+};
 
-export const getHistoryDuplicatedList = (userName, skip, limit) =>
-  fetch(
+export const getHistoryDuplicatedList = async (userName, skip, limit) => {
+  let token = getGuestAccessToken();
+  const isGuest = token === 'null' ? false : Boolean(token);
+
+  if (isGuest) token = await getValidTokenData();
+
+  return fetch(
     `${config.importApiPrefix}${config.duplicateList}${config.history}?user=${userName}&skip=${skip}&limit=${limit}`,
     {
-      headers,
+      headers: {
+        ...headers,
+        ...(isGuest
+          ? { 'access-token': token.token, 'waivio-auth': true }
+          : { ...getAuthHeaders() }),
+      },
       method: 'GET',
     },
   )
     .then(res => res.json())
     .then(response => response)
     .catch(e => e);
+};
 
-export const getHistoryAuthorityObjects = (userName, skip, limit) =>
-  fetch(
+export const getHistoryAuthorityObjects = async (userName, skip, limit) => {
+  let token = getGuestAccessToken();
+  const isGuest = token === 'null' ? false : Boolean(token);
+
+  if (isGuest) token = await getValidTokenData();
+
+  return fetch(
     `${config.importApiPrefix}${config.authority}${config.history}?user=${userName}&skip=${skip}&limit=${limit}`,
     {
-      headers,
+      headers: {
+        ...headers,
+        ...(isGuest
+          ? { 'access-token': token.token, 'waivio-auth': true }
+          : { ...getAuthHeaders() }),
+      },
       method: 'GET',
     },
   )
     .then(res => res.json())
     .then(response => response)
     .catch(e => e);
+};
 
-export const createAuthority = (user, authorPermlink, scanEmbedded, authority = 'administrative') =>
-  fetch(`${config.importApiPrefix}${config.authority}`, {
-    headers: { ...headers, ...getAuthHeaders() },
+export const createAuthority = async (
+  user,
+  authorPermlink,
+  scanEmbedded,
+  authority = 'administrative',
+) => {
+  let token = getGuestAccessToken();
+  const isGuest = token === 'null' ? false : Boolean(token);
+
+  if (isGuest) token = await getValidTokenData();
+
+  return fetch(`${config.importApiPrefix}${config.authority}`, {
+    headers: {
+      ...headers,
+      ...getAuthHeaders(),
+      ...(isGuest ? { 'access-token': token.token, 'waivio-auth': true } : { ...getAuthHeaders() }),
+    },
     method: 'POST',
     body: JSON.stringify({
       user,
@@ -179,10 +316,20 @@ export const createAuthority = (user, authorPermlink, scanEmbedded, authority = 
 
       return response;
     });
+};
 
-export const deleteAuthority = (user, importId) =>
-  fetch(`${config.importApiPrefix}${config.authority}`, {
-    headers: { ...headers, ...getAuthHeaders() },
+export const deleteAuthority = async (user, importId) => {
+  let token = getGuestAccessToken();
+  const isGuest = token === 'null' ? false : Boolean(token);
+
+  if (isGuest) token = await getValidTokenData();
+
+  return fetch(`${config.importApiPrefix}${config.authority}`, {
+    headers: {
+      ...headers,
+      ...getAuthHeaders(),
+      ...(isGuest ? { 'access-token': token.token, 'waivio-auth': true } : { ...getAuthHeaders() }),
+    },
     method: 'DELETE',
     body: JSON.stringify({
       user,
@@ -192,43 +339,19 @@ export const deleteAuthority = (user, importId) =>
     .then(res => res.json())
     .then(response => response)
     .catch(e => e);
+};
 
-export const changeAuthority = (user, status, importId) =>
-  fetch(`${config.importApiPrefix}${config.authority}`, {
-    headers: { ...headers, ...getAuthHeaders() },
-    method: 'PUT',
-    body: JSON.stringify({
-      user,
-      status,
-      importId,
-    }),
-  })
-    .then(res => res.json())
-    .then(response => response)
-    .catch(e => e);
+export const changeAuthority = async (user, status, importId) => {
+  let token = getGuestAccessToken();
+  const isGuest = token === 'null' ? false : Boolean(token);
 
-export const setObjectImport = (user, status, importId) =>
-  fetch(`${config.importApiPrefix}${config.importProduct}`, {
+  if (isGuest) token = await getValidTokenData();
+
+  return fetch(`${config.importApiPrefix}${config.authority}`, {
     headers: {
       ...headers,
       ...getAuthHeaders(),
-    },
-    method: 'PUT',
-    body: JSON.stringify({
-      user,
-      status,
-      importId,
-    }),
-  })
-    .then(res => res.json())
-    .then(response => response)
-    .catch(e => e);
-
-export const setDuplicateList = (user, status, importId) =>
-  fetch(`${config.importApiPrefix}${config.duplicateList}`, {
-    headers: {
-      ...headers,
-      ...getAuthHeaders(),
+      ...(isGuest ? { 'access-token': token.token, 'waivio-auth': true } : { ...getAuthHeaders() }),
     },
     method: 'PUT',
     body: JSON.stringify({
@@ -240,12 +363,67 @@ export const setDuplicateList = (user, status, importId) =>
     .then(res => res.json())
     .then(response => response)
     .catch(e => e);
+};
 
-export const deleteObjectImport = (user, importId) =>
-  fetch(`${config.importApiPrefix}${config.importProduct}`, {
+export const setObjectImport = async (user, status, importId) => {
+  let token = getGuestAccessToken();
+  const isGuest = token === 'null' ? false : Boolean(token);
+
+  if (isGuest) token = await getValidTokenData();
+
+  return fetch(`${config.importApiPrefix}${config.importProduct}`, {
     headers: {
       ...headers,
       ...getAuthHeaders(),
+      ...(isGuest ? { 'access-token': token.token, 'waivio-auth': true } : { ...getAuthHeaders() }),
+    },
+    method: 'PUT',
+    body: JSON.stringify({
+      user,
+      status,
+      importId,
+    }),
+  })
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+};
+
+export const setDuplicateList = async (user, status, importId) => {
+  let token = getGuestAccessToken();
+  const isGuest = token === 'null' ? false : Boolean(token);
+
+  if (isGuest) token = await getValidTokenData();
+
+  return fetch(`${config.importApiPrefix}${config.duplicateList}`, {
+    headers: {
+      ...headers,
+      ...getAuthHeaders(),
+      ...(isGuest ? { 'access-token': token.token, 'waivio-auth': true } : { ...getAuthHeaders() }),
+    },
+    method: 'PUT',
+    body: JSON.stringify({
+      user,
+      status,
+      importId,
+    }),
+  })
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+};
+
+export const deleteObjectImport = async (user, importId) => {
+  let token = getGuestAccessToken();
+  const isGuest = token === 'null' ? false : Boolean(token);
+
+  if (isGuest) token = await getValidTokenData();
+
+  return fetch(`${config.importApiPrefix}${config.importProduct}`, {
+    headers: {
+      ...headers,
+      ...getAuthHeaders(),
+      ...(isGuest ? { 'access-token': token.token, 'waivio-auth': true } : { ...getAuthHeaders() }),
     },
     method: 'DELETE',
     body: JSON.stringify({
@@ -256,12 +434,19 @@ export const deleteObjectImport = (user, importId) =>
     .then(res => res.json())
     .then(response => response)
     .catch(e => e);
+};
 
-export const deleteDuplicateList = (user, importId) =>
-  fetch(`${config.importApiPrefix}${config.duplicateList}`, {
+export const deleteDuplicateList = async (user, importId) => {
+  let token = getGuestAccessToken();
+  const isGuest = token === 'null' ? false : Boolean(token);
+
+  if (isGuest) token = await getValidTokenData();
+
+  return fetch(`${config.importApiPrefix}${config.duplicateList}`, {
     headers: {
       ...headers,
       ...getAuthHeaders(),
+      ...(isGuest ? { 'access-token': token.token, 'waivio-auth': true } : { ...getAuthHeaders() }),
     },
     method: 'DELETE',
     body: JSON.stringify({
@@ -272,10 +457,19 @@ export const deleteDuplicateList = (user, importId) =>
     .then(res => res.json())
     .then(response => response)
     .catch(e => e);
+};
 
-export const getAmazonAsins = uri =>
-  fetch(`${config.importApiPrefix}${config.amazonAsins}`, {
-    headers,
+export const getAmazonAsins = async uri => {
+  let token = getGuestAccessToken();
+  const isGuest = token === 'null' ? false : Boolean(token);
+
+  if (isGuest) token = await getValidTokenData();
+
+  return fetch(`${config.importApiPrefix}${config.amazonAsins}`, {
+    headers: {
+      ...headers,
+      ...(isGuest ? { 'access-token': token.token, 'waivio-auth': true } : { ...getAuthHeaders() }),
+    },
     method: 'POST',
     body: JSON.stringify({
       uri,
@@ -287,24 +481,42 @@ export const getAmazonAsins = uri =>
 
       return response;
     });
+};
 
-export const getDepartmentsList = (userName, skip, limit) =>
-  fetch(
+export const getDepartmentsList = async (userName, skip, limit) => {
+  let token = getGuestAccessToken();
+  const isGuest = token === 'null' ? false : Boolean(token);
+
+  if (isGuest) token = await getValidTokenData();
+
+  return fetch(
     `${config.importApiPrefix}${config.departments}?user=${userName}&skip=${skip}&limit=${limit}`,
     {
-      headers,
+      headers: {
+        ...headers,
+        ...(isGuest
+          ? { 'access-token': token.token, 'waivio-auth': true }
+          : { ...getAuthHeaders() }),
+      },
       method: 'GET',
     },
   )
     .then(res => res.json())
     .then(response => response)
     .catch(e => e);
+};
 
-export const setDepartmentsBotVote = (user, minVotingPower) =>
-  fetch(`${config.importApiPrefix}${config.departments}${config.power}`, {
+export const setDepartmentsBotVote = async (user, minVotingPower) => {
+  let token = getGuestAccessToken();
+  const isGuest = token === 'null' ? false : Boolean(token);
+
+  if (isGuest) token = await getValidTokenData();
+
+  return fetch(`${config.importApiPrefix}${config.departments}${config.power}`, {
     headers: {
       ...headers,
       ...getAuthHeaders(),
+      ...(isGuest ? { 'access-token': token.token, 'waivio-auth': true } : { ...getAuthHeaders() }),
     },
     method: 'PUT',
     body: JSON.stringify({
@@ -315,10 +527,20 @@ export const setDepartmentsBotVote = (user, minVotingPower) =>
     .then(res => res.json())
     .then(response => response)
     .catch(e => e);
+};
 
-export const deleteDepartments = (user, importId) =>
-  fetch(`${config.importApiPrefix}${config.departments}`, {
-    headers: { ...headers, ...getAuthHeaders() },
+export const deleteDepartments = async (user, importId) => {
+  let token = getGuestAccessToken();
+  const isGuest = token === 'null' ? false : Boolean(token);
+
+  if (isGuest) token = await getValidTokenData();
+
+  return fetch(`${config.importApiPrefix}${config.departments}`, {
+    headers: {
+      ...headers,
+      ...getAuthHeaders(),
+      ...(isGuest ? { 'access-token': token.token, 'waivio-auth': true } : { ...getAuthHeaders() }),
+    },
     method: 'DELETE',
     body: JSON.stringify({
       user,
@@ -328,31 +550,61 @@ export const deleteDepartments = (user, importId) =>
     .then(res => res.json())
     .then(response => response)
     .catch(e => e);
+};
 
-export const getHistoryDepartmentsObjects = (userName, skip, limit) =>
-  fetch(
+export const getHistoryDepartmentsObjects = async (userName, skip, limit) => {
+  let token = getGuestAccessToken();
+  const isGuest = token === 'null' ? false : Boolean(token);
+
+  if (isGuest) token = await getValidTokenData();
+
+  return fetch(
     `${config.importApiPrefix}${config.departments}${config.history}?user=${userName}&skip=${skip}&limit=${limit}`,
     {
-      headers,
+      headers: {
+        ...headers,
+        ...(isGuest
+          ? { 'access-token': token.token, 'waivio-auth': true }
+          : { ...getAuthHeaders() }),
+      },
       method: 'GET',
     },
   )
     .then(res => res.json())
     .then(response => response)
     .catch(e => e);
+};
 
-export const getDepartmentsVote = userName =>
-  fetch(`${config.importApiPrefix}${config.departments}${config.power}?user=${userName}`, {
-    headers,
+export const getDepartmentsVote = async userName => {
+  let token = getGuestAccessToken();
+  const isGuest = token === 'null' ? false : Boolean(token);
+
+  if (isGuest) token = await getValidTokenData();
+
+  return fetch(`${config.importApiPrefix}${config.departments}${config.power}?user=${userName}`, {
+    headers: {
+      ...headers,
+      ...(isGuest ? { 'access-token': token.token, 'waivio-auth': true } : { ...getAuthHeaders() }),
+    },
     method: 'GET',
   })
     .then(res => res.json())
     .then(response => response)
     .catch(e => e);
+};
 
-export const changeDepartments = (user, status, importId) =>
-  fetch(`${config.importApiPrefix}${config.departments}`, {
-    headers: { ...headers, ...getAuthHeaders() },
+export const changeDepartments = async (user, status, importId) => {
+  let token = getGuestAccessToken();
+  const isGuest = token === 'null' ? false : Boolean(token);
+
+  if (isGuest) token = await getValidTokenData();
+
+  return fetch(`${config.importApiPrefix}${config.departments}`, {
+    headers: {
+      ...headers,
+      ...getAuthHeaders(),
+      ...(isGuest ? { 'access-token': token.token, 'waivio-auth': true } : { ...getAuthHeaders() }),
+    },
     method: 'PUT',
     body: JSON.stringify({
       user,
@@ -363,10 +615,20 @@ export const changeDepartments = (user, status, importId) =>
     .then(res => res.json())
     .then(response => response)
     .catch(e => e);
+};
 
-export const createDepartment = (user, authorPermlink, scanEmbedded) =>
-  fetch(`${config.importApiPrefix}${config.departments}`, {
-    headers: { ...headers, ...getAuthHeaders() },
+export const createDepartment = async (user, authorPermlink, scanEmbedded) => {
+  let token = getGuestAccessToken();
+  const isGuest = token === 'null' ? false : Boolean(token);
+
+  if (isGuest) token = await getValidTokenData();
+
+  return fetch(`${config.importApiPrefix}${config.departments}`, {
+    headers: {
+      ...headers,
+      ...getAuthHeaders(),
+      ...(isGuest ? { 'access-token': token.token, 'waivio-auth': true } : { ...getAuthHeaders() }),
+    },
     method: 'POST',
     body: JSON.stringify({
       user,
@@ -380,10 +642,20 @@ export const createDepartment = (user, authorPermlink, scanEmbedded) =>
 
       return response;
     });
+};
 
-export const createDuplicateList = (user, authorPermlink, scanEmbedded) =>
-  fetch(`${config.importApiPrefix}${config.duplicateList}`, {
-    headers: { ...headers, ...getAuthHeaders() },
+export const createDuplicateList = async (user, authorPermlink, scanEmbedded) => {
+  let token = getGuestAccessToken();
+  const isGuest = token === 'null' ? false : Boolean(token);
+
+  if (isGuest) token = await getValidTokenData();
+
+  return fetch(`${config.importApiPrefix}${config.duplicateList}`, {
+    headers: {
+      ...headers,
+      ...getAuthHeaders(),
+      ...(isGuest ? { 'access-token': token.token, 'waivio-auth': true } : { ...getAuthHeaders() }),
+    },
     method: 'POST',
     body: JSON.stringify({
       user,
@@ -397,10 +669,20 @@ export const createDuplicateList = (user, authorPermlink, scanEmbedded) =>
 
       return response;
     });
+};
 
-export const createDescription = (user, authorPermlink, scanEmbedded) =>
-  fetch(`${config.importApiPrefix}${config.descriptionBot}`, {
-    headers: { ...headers, ...getAuthHeaders() },
+export const createDescription = async (user, authorPermlink, scanEmbedded) => {
+  let token = getGuestAccessToken();
+  const isGuest = token === 'null' ? false : Boolean(token);
+
+  if (isGuest) token = await getValidTokenData();
+
+  return fetch(`${config.importApiPrefix}${config.descriptionBot}`, {
+    headers: {
+      ...headers,
+      ...getAuthHeaders(),
+      ...(isGuest ? { 'access-token': token.token, 'waivio-auth': true } : { ...getAuthHeaders() }),
+    },
     method: 'POST',
     body: JSON.stringify({
       user,
@@ -414,22 +696,43 @@ export const createDescription = (user, authorPermlink, scanEmbedded) =>
 
       return response;
     });
+};
 
-export const getDescriptionsList = (userName, skip, limit) =>
-  fetch(
+export const getDescriptionsList = async (userName, skip, limit) => {
+  let token = getGuestAccessToken();
+  const isGuest = token === 'null' ? false : Boolean(token);
+
+  if (isGuest) token = await getValidTokenData();
+
+  return fetch(
     `${config.importApiPrefix}${config.descriptionBot}?user=${userName}&skip=${skip}&limit=${limit}`,
     {
-      headers,
+      headers: {
+        ...headers,
+        ...(isGuest
+          ? { 'access-token': token.token, 'waivio-auth': true }
+          : { ...getAuthHeaders() }),
+      },
       method: 'GET',
     },
   )
     .then(res => res.json())
     .then(response => response)
     .catch(e => e);
+};
 
-export const changeDescriptions = (user, status, importId) =>
-  fetch(`${config.importApiPrefix}${config.descriptionBot}`, {
-    headers: { ...headers, ...getAuthHeaders() },
+export const changeDescriptions = async (user, status, importId) => {
+  let token = getGuestAccessToken();
+  const isGuest = token === 'null' ? false : Boolean(token);
+
+  if (isGuest) token = await getValidTokenData();
+
+  return fetch(`${config.importApiPrefix}${config.descriptionBot}`, {
+    headers: {
+      ...headers,
+      ...getAuthHeaders(),
+      ...(isGuest ? { 'access-token': token.token, 'waivio-auth': true } : { ...getAuthHeaders() }),
+    },
     method: 'PUT',
     body: JSON.stringify({
       user,
@@ -440,10 +743,20 @@ export const changeDescriptions = (user, status, importId) =>
     .then(res => res.json())
     .then(response => response)
     .catch(e => e);
+};
 
-export const deleteDescriptions = (user, importId) =>
-  fetch(`${config.importApiPrefix}${config.descriptionBot}`, {
-    headers: { ...headers, ...getAuthHeaders() },
+export const deleteDescriptions = async (user, importId) => {
+  let token = getGuestAccessToken();
+  const isGuest = token === 'null' ? false : Boolean(token);
+
+  if (isGuest) token = await getValidTokenData();
+
+  return fetch(`${config.importApiPrefix}${config.descriptionBot}`, {
+    headers: {
+      ...headers,
+      ...getAuthHeaders(),
+      ...(isGuest ? { 'access-token': token.token, 'waivio-auth': true } : { ...getAuthHeaders() }),
+    },
     method: 'DELETE',
     body: JSON.stringify({
       user,
@@ -453,33 +766,64 @@ export const deleteDescriptions = (user, importId) =>
     .then(res => res.json())
     .then(response => response)
     .catch(e => e);
+};
 
-export const getHistoryDescriptionsObjects = (userName, skip, limit) =>
-  fetch(
+export const getHistoryDescriptionsObjects = async (userName, skip, limit) => {
+  let token = getGuestAccessToken();
+  const isGuest = token === 'null' ? false : Boolean(token);
+
+  if (isGuest) token = await getValidTokenData();
+
+  return fetch(
     `${config.importApiPrefix}${config.descriptionBot}${config.history}?user=${userName}&skip=${skip}&limit=${limit}`,
     {
-      headers,
+      headers: {
+        ...headers,
+        ...(isGuest
+          ? { 'access-token': token.token, 'waivio-auth': true }
+          : { ...getAuthHeaders() }),
+      },
       method: 'GET',
     },
   )
     .then(res => res.json())
     .then(response => response)
     .catch(e => e);
+};
 
-export const getDescriptionsVote = userName =>
-  fetch(`${config.importApiPrefix}${config.descriptionBot}${config.power}?user=${userName}`, {
-    headers,
-    method: 'GET',
-  })
+export const getDescriptionsVote = async userName => {
+  let token = getGuestAccessToken();
+  const isGuest = token === 'null' ? false : Boolean(token);
+
+  if (isGuest) token = await getValidTokenData();
+
+  return fetch(
+    `${config.importApiPrefix}${config.descriptionBot}${config.power}?user=${userName}`,
+    {
+      headers: {
+        ...headers,
+        ...(isGuest
+          ? { 'access-token': token.token, 'waivio-auth': true }
+          : { ...getAuthHeaders() }),
+      },
+      method: 'GET',
+    },
+  )
     .then(res => res.json())
     .then(response => response)
     .catch(e => e);
+};
+export const setDescriptionsBotVote = async (user, minVotingPower) => {
+  let token = getGuestAccessToken();
+  const isGuest = token === 'null' ? false : Boolean(token);
 
-export const setDescriptionsBotVote = (user, minVotingPower) =>
-  fetch(`${config.importApiPrefix}${config.descriptionBot}${config.power}`, {
+  if (isGuest) token = await getValidTokenData();
+
+  return fetch(`${config.importApiPrefix}${config.descriptionBot}${config.power}`, {
     headers: {
       ...headers,
       ...getAuthHeaders(),
+      ...(isGuest ? { 'access-token': token.token, 'waivio-auth': true } : { ...getAuthHeaders() }),
     },
     method: 'PUT',
     body: JSON.stringify({
@@ -490,5 +834,55 @@ export const setDescriptionsBotVote = (user, minVotingPower) =>
     .then(res => res.json())
     .then(response => response)
     .catch(e => e);
+};
+
+export const getGuestImportStatus = async userName => {
+  let token = getGuestAccessToken();
+  const isGuest = token === 'null' ? false : Boolean(token);
+
+  if (isGuest) token = await getValidTokenData();
+
+  return fetch(
+    `${config.importApiPrefix}${config.guest}${config.authorizeImport}?account=${userName}`,
+    {
+      headers: {
+        ...headers,
+        ...(isGuest
+          ? { 'access-token': token.token, 'waivio-auth': true }
+          : { ...getAuthHeaders() }),
+      },
+      method: 'GET',
+    },
+  )
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+};
+export const setGuestImportStatus = async (userName, importAuthorization) => {
+  let token = getGuestAccessToken();
+  const isGuest = token === 'null' ? false : Boolean(token);
+
+  if (isGuest) token = await getValidTokenData();
+
+  return fetch(
+    `${config.importApiPrefix}${config.guest}${config.authorizeImport}?account=${userName}`,
+    {
+      headers: {
+        ...headers,
+        ...(isGuest
+          ? { 'access-token': token.token, 'waivio-auth': true }
+          : { ...getAuthHeaders() }),
+      },
+      body: JSON.stringify({
+        account: userName,
+        importAuthorization,
+      }),
+      method: 'POST',
+    },
+  )
+    .then(res => res.json())
+    .then(response => response)
+    .catch(e => e);
+};
 
 export default null;

@@ -15,10 +15,16 @@
   img {
     border: 1px solid @white-gainsboro;
   }
-  margin: 5px;
 
+  @media @xsmall, @medium-max {
+    margin: 5px;
+  }
   @media @small {
-    margin: 20px 100px;
+    margin: 20px;
+  }
+  @media @medium {
+    max-width: @medium-bp;
+    margin: 20px auto;
   }
 }
 .ObjectOfTypeWebpage {

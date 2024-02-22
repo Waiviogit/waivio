@@ -46,7 +46,7 @@ const styles = {
     alignItems: 'center',
     justifyContent: 'center',
     textDecoration: 'none',
-    fontSize: '20px',
+    fontSize: '18px',
     margin: '10px 0',
     padding: '0 8px',
   },
@@ -61,9 +61,12 @@ const styles = {
     justifyContent: 'space-between',
     alignItems: 'center',
     textDecoration: 'none',
-    fontSize: '20px',
+    fontSize: '18px',
     margin: '10px 0',
     padding: '0 8px',
+    fontWeight: 500,
+    fontFamily:
+      'Whitney, Source Sans Pro, Helvetica Neue, Helvetica, Arial, Lucida Grande, sans-serif',
   },
 
   socialText: {
@@ -88,9 +91,10 @@ const styles = {
     alignItems: 'center',
     justifyContent: 'center',
     textDecoration: 'none',
-    fontSize: '20px',
+    fontSize: '18px',
     margin: '10px 0',
     padding: '0 8px',
+    fontWeight: 500,
   },
 };
 

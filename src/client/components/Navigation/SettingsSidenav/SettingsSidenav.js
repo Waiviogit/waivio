@@ -54,7 +54,7 @@ const SettingsSidenav = ({ match }) => {
         configItem={personalSettings}
         toggleMenuCondition={toggleMenuCondition}
       />
-      {!isGuest && isWaivio && (
+      {isWaivio && (
         <SettingsItem
           condition={menuCondition.dataManagement}
           configItem={dataManagementSettings}

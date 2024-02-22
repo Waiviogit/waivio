@@ -10,6 +10,12 @@
     padding: 10px 20px 4px;
   }
 
+  .SocialCampaignCard__card {
+    margin: 0;
+    @media @small {
+      margin: 15px 80px 0 0;
+    }
+  }
   &__centralContent {
     @media @small {
       margin-left: calc(2% + 100px);
@@ -305,10 +311,14 @@
   .Slider__wrapper-addOn,
   .Slider__wrapper-similar,
   .Slider__wrapper-product,
+  .Slider__wrapper-nearby,
   .Slider__wrapper-book,
   .Slider__wrapper-experts,
   .Slider__wrapper-menuItems,
   .Slider__wrapper-related {
+    .ant-carousel .slick-list .slick-slide {
+      pointer-events: all;
+    }
     .ant-carousel .slick-dots li button {
       background: @normal-grey;
       opacity: 0.4;

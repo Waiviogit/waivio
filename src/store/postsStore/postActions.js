@@ -5,6 +5,7 @@ import { getAuthenticatedUserName } from '../authStore/authSelectors';
 import { getLocale } from '../settingsStore/settingsSelectors';
 import { getVideoForPreview } from '../../common/helpers/postHelpers';
 import { parseJSON } from '../../common/helpers/parseJSON';
+import { setGuestMana } from '../usersStore/usersActions';
 
 export const GET_CONTENT = createAsyncActionType('@post/GET_CONTENT');
 export const GET_SOCIAL_INFO_POST = createAsyncActionType('@post/GET_SOCIAL_INFO_POST');
@@ -84,6 +85,7 @@ export const votePost = (postId, author, permlink, weight = 10000, isThread = fa
 ) => {
   const { auth, posts } = getState();
   const isGuest = auth.isGuestUser;
+  const authUser = getAuthenticatedUserName(getState());
   const post = posts.list[postId];
   const voter = auth.user.name;
 
@@ -98,9 +100,21 @@ export const votePost = (postId, author, permlink, weight = 10000, isThread = fa
     steemConnectAPI
       .vote(voter, author, post.permlink, weight)
       // eslint-disable-next-line consistent-return
-      .then(data => {
+      .then(async data => {
         if (!isThread) {
-          if (data.status !== 200 && isGuest) throw new Error(data.message);
+          if (isGuest && !data.ok) {
+            const guestMana = await dispatch(setGuestMana(authUser));
+
+            if (guestMana.payload < 0.1) {
+              message.error('Guest mana is too low. Please wait for recovery.');
+
+              return dispatch({
+                type: LIKE_POST.ERROR,
+                meta: getPostKey(post),
+              });
+            }
+            throw new Error(data.message);
+          }
 
           return ApiClient.likePost({ voter, author, permlink: post.permlink, weight }).then(
             res => {

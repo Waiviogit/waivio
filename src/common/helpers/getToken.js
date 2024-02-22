@@ -1,3 +1,4 @@
+import Cookie from 'js-cookie';
 import store from 'store';
 import { getAccessToken, refreshToken as refreshTokenRequest } from '../../waivioApi/ApiClient';
 import { clearGuestAuthData, getGuestAccessToken, setGuestAuthData } from './localStorageHelpers';
@@ -13,6 +14,7 @@ export const setToken = async (socialToken, social, regData) => {
     setGuestAuthData(accessToken, refreshToken, expiration);
     store.set('socialName', social);
     store.set('guestName', userData.name);
+    Cookie.set('guestName', userData.name);
 
     return userData;
   } catch (err) {

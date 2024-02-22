@@ -2,6 +2,7 @@ import Cookie from 'js-cookie';
 import { get } from 'lodash';
 import { message } from 'antd';
 import { createAction } from 'redux-actions';
+import { makeHiveAuthHeader } from '../../client/HiveAuth/hive-auth-wrapper';
 import { getAccount } from '../../common/helpers/apiHelpers';
 import { createAsyncActionType } from '../../common/helpers/stateHelpers';
 import {
@@ -33,6 +34,7 @@ import {
 import { parseJSON } from '../../common/helpers/parseJSON';
 import { getGuestWaivBalance } from '../../waivioApi/walletApi';
 import { subscribeTypes } from '../../common/constants/blockTypes';
+import { getGuestImportStatus, setGuestImportStatus } from '../../waivioApi/importApi';
 
 export const LOGIN = '@auth/LOGIN';
 export const LOGIN_START = '@auth/LOGIN_START';
@@ -57,6 +59,7 @@ export const CHANGE_SORTING_FOLLOW = '@auth/CHANGE_SORTING';
 export const BUSY_LOGIN = createAsyncActionType('@auth/BUSY_LOGIN');
 
 export const UPDATE_GUEST_BALANCE = createAsyncActionType('@auth/UPDATE_GUEST_BALANCE');
+export const UPDATE_GUEST_AUTHORITY = '@auth/UPDATE_GUEST_AUTHORITY';
 
 export const SET_TAB_REWARDS = createAsyncActionType('@auth/SET_TAB_REWARDS');
 
@@ -125,7 +128,13 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
   let promise = Promise.resolve(null);
   const guestAccessToken = getGuestAccessToken();
   const isGuest = Boolean(guestAccessToken);
-  const hiveAuthData = parseJSON(Cookie.get('auth'));
+  let hiveAuthData = parseJSON(Cookie.get('auth'));
+
+  if (socialNetwork === 'hiveAuth') {
+    hiveAuthData = parseJSON(regData);
+    Cookie.set('auth', hiveAuthData);
+    makeHiveAuthHeader(hiveAuthData);
+  }
 
   if (hiveAuthData) {
     if (hiveAuthData.expire < Date.now()) {
@@ -165,6 +174,10 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
         const privateEmail = await getPrivateEmail(userData.name);
         const rewardsTab = await getRewardTab(userData.name);
         const { WAIV } = await getGuestWaivBalance(userData.name);
+        const guestAuthorityInfo = await getGuestImportStatus(userData.name);
+        const guestAuthority = guestAuthorityInfo?.importAuthorization
+          ? guestAuthorityInfo
+          : { account: '', importAuthorization: false };
 
         dispatch(getCurrentCurrencyRate(userMetaData.settings.currency));
         dispatch(changeAdminStatus(userData.name));
@@ -176,6 +189,7 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
           socialNetwork,
           isGuestUser: true,
           waivBalance: WAIV,
+          guestAuthority,
           ...rewardsTab,
         });
       } catch (e) {
@@ -194,6 +208,10 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
         const privateEmail = await getPrivateEmail(scUserData.name);
         const rewardsTab = await getRewardTab(scUserData.name);
         const { WAIV } = isGuest ? await getGuestWaivBalance(scUserData.name) : {};
+        const guestAuthorityInfo = isGuest ? await getGuestImportStatus(scUserData.name) : {};
+        const guestAuthority = guestAuthorityInfo?.importAuthorization
+          ? guestAuthorityInfo
+          : { account: '', importAuthorization: false };
 
         dispatch(changeAdminStatus(scUserData.name));
         dispatch(setSignature(scUserData?.user_metadata?.profile?.signature || ''));
@@ -207,6 +225,7 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
           privateEmail,
           waivBalance: WAIV,
           isGuestUser: isGuest,
+          guestAuthority,
         });
       } catch (e) {
         reject(e);
@@ -375,27 +394,42 @@ export const toggleBots = (bot, isAuthority) => (dispatch, getState, { steemConn
         return 0;
       });
 
-  return steemConnectAPI
-    .broadcast(
-      [
-        [
-          'account_update',
-          {
-            account: user.name,
-            posting: {
-              weight_threshold: 1,
-              account_auths,
-              key_auths: user.posting.key_auths,
-            },
-            memo_key: user.memo_key,
-            json_metadata: user.json_metadata,
-          },
-        ],
-      ],
-      null,
-      'active',
-    )
-    .then(res => {
-      if (!res.error) dispatch({ type: UPDATE_AUTHORITY, payload: account_auths });
-    });
+  const isGuest = isGuestUser(state);
+  const method = () =>
+    isGuest
+      ? setGuestImportStatus(user.name, !isAuthority).then(res => {
+          if (!res.error) {
+            try {
+              dispatch({ type: UPDATE_GUEST_AUTHORITY, payload: res });
+            } catch (e) {
+              console.error(e);
+            }
+          }
+        })
+      : steemConnectAPI
+          .broadcast(
+            [
+              [
+                'account_update',
+                {
+                  account: user.name,
+                  posting: {
+                    weight_threshold: 1,
+                    account_auths,
+                    key_auths: user.posting.key_auths,
+                  },
+                  memo_key: user.memo_key,
+                  json_metadata: user.json_metadata,
+                },
+              ],
+            ],
+            null,
+            'active',
+          )
+          .then(res => {
+            if (!res.error && !isGuest)
+              dispatch({ type: UPDATE_AUTHORITY, payload: account_auths });
+          });
+
+  return method();
 };

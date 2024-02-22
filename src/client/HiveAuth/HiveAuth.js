@@ -1,14 +1,16 @@
 import { Button, message, Select, Input } from 'antd';
 import Cookie from 'js-cookie';
+import store from 'store';
 import { debounce } from 'lodash';
 import PropTypes from 'prop-types';
 import React, { useState, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
+import { useHistory } from 'react-router';
 import { parseJSON } from '../../common/helpers/parseJSON';
 import { login } from '../../store/authStore/authActions';
 import { chechExistUser } from '../../waivioApi/ApiClient';
 import Avatar from '../components/Avatar';
-import HAS from './hive-auth-wrapper';
+import HAS, { makeHiveAuthHeader } from './hive-auth-wrapper';
 
 import './HiveAuth.less';
 
@@ -19,10 +21,17 @@ const APP_META = {
   description: 'waivio application',
   icon: undefined,
 };
+const getSavedAcc = () => {
+  const accounts = store.get('accounts');
 
-const HiveAuth = ({ setQRcodeForAuth, onCloseSingIn, text }) => {
+  return Array.isArray(accounts) ? accounts : parseJSON(accounts);
+};
+
+const HiveAuth = ({ setQRcodeForAuth, onCloseSingIn, text, style, buttonStyle }) => {
   const [showInput, setShowInput] = useState();
   const [user, setUser] = useState('');
+  const { location } = useHistory();
+
   const dispatch = useDispatch();
   const generateQrCode = evt => {
     const { account, uuid, key } = evt;
@@ -38,11 +47,29 @@ const HiveAuth = ({ setQRcodeForAuth, onCloseSingIn, text }) => {
 
     setQRcodeForAuth(url);
   };
-
-  const authorizeUserHAS = ({ auth, challenge, cbWait }) => {
+  const authorizeUserHAS = ({ auth, cbWait }) => {
     try {
-      HAS.authenticate(auth, APP_META, challenge, cbWait).then(res => {
+      HAS.authenticate(
+        auth,
+        APP_META,
+        {
+          key_type: 'posting',
+          challenge: JSON.stringify({
+            login: auth.username,
+            ts: Date.now(),
+          }),
+        },
+        cbWait,
+      ).then(res => {
         if (res.cmd === 'auth_ack') {
+          const query = new URLSearchParams(location.search);
+          const url = query.get('host') || location.origin;
+
+          if (query.get('host'))
+            window.location.href = `${url}/?access_token=${makeHiveAuthHeader(
+              auth,
+            )}&socialProvider=hiveAuth&auth=${JSON.stringify(auth)}`;
+
           dispatch(login());
           onCloseSingIn(false);
         }
@@ -52,7 +79,7 @@ const HiveAuth = ({ setQRcodeForAuth, onCloseSingIn, text }) => {
     }
   };
 
-  const savedAcc = parseJSON(localStorage.getItem('accounts'));
+  const savedAcc = getSavedAcc();
   const changeUser = useCallback(
     debounce(e => {
       setUser(e);
@@ -73,10 +100,9 @@ const HiveAuth = ({ setQRcodeForAuth, onCloseSingIn, text }) => {
 
       chechExistUser(username).then(result => {
         if (result) {
-          const accounts = parseJSON(localStorage.getItem('accounts')) || [];
+          const accounts = store.get('accounts') || [];
 
-          if (!accounts.includes(username))
-            localStorage.setItem('accounts', JSON.stringify([username, ...accounts]));
+          if (!accounts.includes(username)) store.set('accounts', [username, ...accounts]);
           authorizeUserHAS({
             auth: { username },
             cbWait: generateQrCode,
@@ -89,7 +115,7 @@ const HiveAuth = ({ setQRcodeForAuth, onCloseSingIn, text }) => {
   };
 
   return (
-    <div className="HiveAuth">
+    <div className="HiveAuth" style={style}>
       <img
         alt={'Hive auth'}
         className={'HiveAuth__icon'}
@@ -115,7 +141,7 @@ const HiveAuth = ({ setQRcodeForAuth, onCloseSingIn, text }) => {
               showArrow={false}
               dropdownClassName={'HiveAuth__accList'}
               onSelect={value => {
-                if (value === CLEAR_OPTION) localStorage.removeItem('accounts');
+                if (value === CLEAR_OPTION) store.remove('accounts');
                 else setUser(value);
               }}
               filterOption={false}
@@ -142,7 +168,9 @@ const HiveAuth = ({ setQRcodeForAuth, onCloseSingIn, text }) => {
                   </div>
                 </Select.Option>
               ))}
-              <Select.Option value={'clear'}><b style={{ display: 'flex', justifyContent: 'center' }}>Clear history</b></Select.Option>
+              <Select.Option value={'clear'}>
+                <b style={{ display: 'flex', justifyContent: 'center' }}>Clear history</b>
+              </Select.Option>
             </Select>
           )}
           <Button disabled={!user} onClick={handleAuth} className="HiveAuth__signIn">
@@ -150,7 +178,9 @@ const HiveAuth = ({ setQRcodeForAuth, onCloseSingIn, text }) => {
           </Button>
         </React.Fragment>
       ) : (
-        <span onClick={() => setShowInput(true)}>{text} (Beta)</span>
+        <span style={buttonStyle} onClick={() => setShowInput(true)}>
+          {text}
+        </span>
       )}
     </div>
   );
@@ -160,10 +190,14 @@ HiveAuth.propTypes = {
   setQRcodeForAuth: PropTypes.func,
   onCloseSingIn: PropTypes.func,
   text: PropTypes.string,
+  style: PropTypes.shape({}),
+  buttonStyle: PropTypes.shape({}),
 };
 
 HiveAuth.defaultProps = {
   text: 'Continue with HiveAuth',
+  style: {},
+  buttonStyle: {},
 };
 
 export default HiveAuth;
