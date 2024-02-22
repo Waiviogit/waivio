@@ -2,21 +2,22 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { isEmpty } from 'lodash';
 import { injectIntl } from 'react-intl';
-import { connect, useSelector } from 'react-redux';
+import { connect } from 'react-redux';
 import { Link, withRouter } from 'react-router-dom';
 import { Tabs } from 'antd';
 import EmptyMutedUserProfile from '../../statics/MutedContent';
-import { getAuthenticatedUserName, isGuestUser } from '../../../store/authStore/authSelectors';
+import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 import { getUser } from '../../../store/usersStore/usersSelectors';
 import UserProfilePosts from '../UserComments';
 import UserActivity from '../../activity/UserActivity';
 import UserBlog from '../UserBlog/UserBlog';
 import Threads from '../../Threads/Threads';
+import { guestUserRegex } from '../../../common/helpers/regexHelpers';
 
 const PostsCommentsActivity = props => {
   const { match, authenticatedUserName, user, intl } = props;
   const { name, 0: tab = 'posts' } = match.params;
-  const isGuest = useSelector(isGuestUser);
+  const isGuest = guestUserRegex.test(name);
 
   if (!isEmpty(user.mutedBy) || user.muted)
     return <EmptyMutedUserProfile user={user} authName={authenticatedUserName} />;
@@ -64,7 +65,7 @@ const PostsCommentsActivity = props => {
           }
           key="activity"
         >
-          {tab === 'activity' && !props.isGuest && <UserActivity />}
+          {tab === 'activity' && <UserActivity />}
         </Tabs.TabPane>
       )}
     </Tabs>
@@ -74,7 +75,6 @@ const PostsCommentsActivity = props => {
 PostsCommentsActivity.propTypes = {
   match: PropTypes.shape().isRequired,
   intl: PropTypes.shape().isRequired,
-  isGuest: PropTypes.bool,
   authenticatedUserName: PropTypes.string,
   user: PropTypes.shape(),
 };
@@ -87,6 +87,5 @@ PostsCommentsActivity.defaultProps = {
 
 export default connect((state, ownProps) => ({
   authenticatedUserName: getAuthenticatedUserName(state),
-  isGuest: isGuestUser(state),
   user: getUser(state, ownProps.match.params.name),
 }))(injectIntl(withRouter(PostsCommentsActivity)));

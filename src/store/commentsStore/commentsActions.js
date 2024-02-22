@@ -227,7 +227,7 @@ export const sendComment = (
     )
     .then(res => {
       if (res.error) throw new Error();
-      if (res.ok) {
+      if (res.ok || res.result) {
         if (isThread) {
           busyAPI.instance.sendAsync(subscribeTypes.subscribeTransactionId, [
             auth.user.name,
