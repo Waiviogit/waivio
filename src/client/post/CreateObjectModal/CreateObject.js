@@ -86,6 +86,7 @@ class CreateObject extends React.Component {
 
     this.state = {
       isModalOpen: false,
+      votePercent: 100,
       loading: false,
     };
   }
