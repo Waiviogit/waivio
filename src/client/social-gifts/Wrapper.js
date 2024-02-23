@@ -212,8 +212,7 @@ const SocialWrapper = props => {
           props.dispatchGetAuthGuestBalance();
         });
 
-        if (token && provider) {
-          query.delete('access_token');
+        if (auth && provider) {
           query.delete('socialProvider');
           query.delete('auth');
           let queryString = query.toString();

@@ -10,7 +10,7 @@ import { parseJSON } from '../../common/helpers/parseJSON';
 import { login } from '../../store/authStore/authActions';
 import { chechExistUser } from '../../waivioApi/ApiClient';
 import Avatar from '../components/Avatar';
-import HAS, { makeHiveAuthHeader } from './hive-auth-wrapper';
+import HAS from './hive-auth-wrapper';
 
 import './HiveAuth.less';
 
@@ -30,6 +30,7 @@ const getSavedAcc = () => {
 const HiveAuth = ({ setQRcodeForAuth, onCloseSingIn, text, style, buttonStyle }) => {
   const [showInput, setShowInput] = useState();
   const [user, setUser] = useState('');
+  const [savedAcc, setSavedAcc] = useState(getSavedAcc());
   const { location } = useHistory();
 
   const dispatch = useDispatch();
@@ -66,9 +67,7 @@ const HiveAuth = ({ setQRcodeForAuth, onCloseSingIn, text, style, buttonStyle })
           const url = query.get('host') || location.origin;
 
           if (query.get('host'))
-            window.location.href = `${url}/?access_token=${makeHiveAuthHeader(
-              auth,
-            )}&socialProvider=hiveAuth&auth=${JSON.stringify(auth)}`;
+            window.location.href = `${url}/?socialProvider=hiveAuth&auth=${JSON.stringify(auth)}`;
 
           dispatch(login());
           onCloseSingIn(false);
@@ -79,7 +78,6 @@ const HiveAuth = ({ setQRcodeForAuth, onCloseSingIn, text, style, buttonStyle })
     }
   };
 
-  const savedAcc = getSavedAcc();
   const changeUser = useCallback(
     debounce(e => {
       setUser(e);
@@ -141,11 +139,13 @@ const HiveAuth = ({ setQRcodeForAuth, onCloseSingIn, text, style, buttonStyle })
               showArrow={false}
               dropdownClassName={'HiveAuth__accList'}
               onSelect={value => {
-                if (value === CLEAR_OPTION) store.remove('accounts');
-                else setUser(value);
+                if (value === CLEAR_OPTION) {
+                  store.remove('accounts');
+                  setSavedAcc(null);
+                } else setUser(value);
               }}
               filterOption={false}
-              style={{ width: '100%' }}
+              style={{ width: '100%', backgroundColor: 'white' }}
             >
               {savedAcc?.map(i => (
                 <Select.Option value={i} key={i}>

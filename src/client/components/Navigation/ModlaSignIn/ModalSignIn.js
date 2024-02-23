@@ -1,3 +1,4 @@
+import Cookie from 'js-cookie';
 import React, { useState, useCallback, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Modal, message, Alert } from 'antd';
@@ -81,6 +82,7 @@ const ModalSignIn = ({
   const isWidget = getSessionData('isWidget');
 
   useEffect(() => {
+    Cookie.remove('auth');
     if (showModal) setIsModalOpen(true);
   }, [showModal]);
 
