@@ -79,7 +79,7 @@ const editor = (state = defaultState, action) => {
     case editorActions.CREATE_POST_ERROR:
       return {
         ...state,
-        error: action.payload.result,
+        error: action.payload?.result || null,
         loading: false,
         success: false,
       };

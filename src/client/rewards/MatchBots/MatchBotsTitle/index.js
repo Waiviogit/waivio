@@ -2,6 +2,7 @@ import { connect } from 'react-redux';
 
 import MatchBotsTitle from './MatchBotsTitle';
 import {
+  getAuthenticatedUserName,
   getGuestAuthority,
   getIsConnectMatchBot,
   isGuestUser,
@@ -13,6 +14,7 @@ const mapStateToProps = (state, props) => {
   return {
     isAuthority: isGuest ? getGuestAuthority(state) : getIsConnectMatchBot(state, props),
     isGuest: isGuestUser(state),
+    authUserName: getAuthenticatedUserName(state),
   };
 };
 

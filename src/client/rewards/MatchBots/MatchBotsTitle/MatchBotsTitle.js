@@ -1,15 +1,24 @@
 import Cookie from 'js-cookie';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { isNil } from 'lodash';
 import PropTypes from 'prop-types';
 import { Switch, Tooltip } from 'antd';
 import { useDispatch } from 'react-redux';
 
 import { redirectAuthHiveSigner } from '../../../../common/helpers/matchBotsHelpers';
-import { toggleBots } from '../../../../store/authStore/authActions';
+import { getGuestAuthorityStatus, toggleBots } from '../../../../store/authStore/authActions';
 
 import './MatchBotsTitle.less';
 
-const MatchBotsTitle = ({ isAuthority, botTitle, turnOffTitle, turnOnTitle, botType, isGuest }) => {
+const MatchBotsTitle = ({
+  isAuthority,
+  botTitle,
+  turnOffTitle,
+  turnOnTitle,
+  botType,
+  isGuest,
+  authUserName,
+}) => {
   const [waiting, setWaiting] = useState(false);
   const dispatch = useDispatch();
   const handleRedirect = () => {
@@ -27,6 +36,12 @@ const MatchBotsTitle = ({ isAuthority, botTitle, turnOffTitle, turnOnTitle, botT
       redirectAuthHiveSigner(isAuthority, botType);
     }
   };
+
+  useEffect(() => {
+    if (isNil(isAuthority) && isGuest) {
+      dispatch(getGuestAuthorityStatus(authUserName));
+    }
+  }, []);
 
   return (
     <div className="MatchBots__title-wrap">
@@ -47,6 +62,7 @@ MatchBotsTitle.propTypes = {
   botTitle: PropTypes.string.isRequired,
   turnOffTitle: PropTypes.string,
   turnOnTitle: PropTypes.string,
+  authUserName: PropTypes.string,
 };
 
 MatchBotsTitle.defaultProps = {

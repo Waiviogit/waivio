@@ -82,4 +82,5 @@ export const clearGuestAuthData = () => {
   store.remove('socialName');
   store.remove('guestName');
   Cookie.remove('guestName');
+  Cookie.remove('access_token');
 };

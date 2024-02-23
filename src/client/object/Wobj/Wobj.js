@@ -109,6 +109,7 @@ const Wobj = ({
         'book',
         'product',
         'business',
+        'restaurant',
         'person',
         'widget',
         'page',
@@ -138,6 +139,7 @@ const Wobj = ({
       case 'person':
         return <SocialProduct toggleViewEditMode={toggleViewEditMode} />;
       case 'business':
+      case 'restaurant':
         return <BusinessObject toggleViewEditMode={toggleViewEditMode} />;
       case 'widget':
         return <WidgetContent wobj={wobject} />;

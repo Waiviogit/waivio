@@ -425,7 +425,7 @@ export function createPost(postData, beneficiaries, isReview, campaign) {
 
             setTimeout(() => {
               dispatch(push(`/@${author}`));
-              dispatch(notify(publicMessage, 'success'));
+              if (result.ok) dispatch(notify(publicMessage, 'success'));
             }, 5000);
           } else {
             setTimeout(() => dispatch(push(`/@${author}`)), 3000);
