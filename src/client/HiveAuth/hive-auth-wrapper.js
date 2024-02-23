@@ -64,11 +64,13 @@ export const makeHiveAuthHeader = auth => {
   try {
     const { username, expire } = auth;
     const authString = JSON.stringify({ username, expire });
+    console.log('authString', authString);
     const secretKey = process.env.HIVE_AUTH;
     const encrypted = CryptoJS.AES.encrypt(authString, secretKey);
     const access_token = encrypted.toString();
 
     Cookie.set('access_token', access_token);
+    console.log('access_token', access_token);
 
     return access_token;
   } catch (error) {
