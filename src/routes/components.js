@@ -94,7 +94,6 @@ export default {
   ObjectOfTypeWebpage: loableComponent(
     import('../client/object/ObjectOfTypeWebpage/ObjectOfTypeWebpage'),
   ),
-  SitesWebpage: loableComponent(import('../client/object/ObjectOfTypeWebpage/SitesWebpage')),
   SubFeed: loableComponent(import('../client/feed/SubFeed')),
   UserInfo: loableComponent(import('../client/app/Sidebar/UserInfo/UserInfo')),
   ConfirmationModal: loableComponent(import('../client/widgets/ConfirmationModal')),
