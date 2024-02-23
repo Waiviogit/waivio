@@ -28,7 +28,7 @@ import { getHelmetIcon, getSiteName } from '../../../store/appStore/appSelectors
 import { useSeoInfoWithAppUrl } from '../../../hooks/useSeoInfo';
 import { getWobjectExpertise } from '../../../store/wObjectStore/wobjActions';
 import BusinessObject from '../../social-gifts/BusinessObject/BusinessObject';
-import SitesWebpage from '../ObjectOfTypeWebpage/SitesWebpage';
+import ObjectOfTypeWebpage from '../ObjectOfTypeWebpage/ObjectOfTypeWebpage';
 
 const Wobj = ({
   authenticatedUserName: userName,
@@ -147,7 +147,7 @@ const Wobj = ({
       case 'list':
         return <Checklist />;
       case 'webpage':
-        return <SitesWebpage />;
+        return <ObjectOfTypeWebpage />;
 
       case 'newsfeed':
         return <ObjectNewsFeed wobj={wobject} />;
