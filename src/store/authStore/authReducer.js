@@ -20,7 +20,7 @@ const initialState = {
   signature: '',
   guestAuthority: {
     account: '',
-    importAuthorization: false,
+    importAuthorization: null,
   },
 };
 
@@ -50,7 +50,6 @@ export default (state = initialState, action) => {
           ...(action.payload.isGuestUser ? { waivBalance: action.payload.waivBalance } : {}),
         },
         userMetaData: action.payload.userMetaData,
-        guestAuthority: action.payload.guestAuthority,
         privateEmail: action.payload.privateEmail,
         isGuestUser: action.payload.isGuestUser,
         tabType: action.payload.tabType,
