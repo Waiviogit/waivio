@@ -68,7 +68,7 @@ const ObjectOfTypeWebpage = ({ intl }) => {
   const siteLink = location && `${location?.origin}/`;
   const isSocial = useSelector(getIsSocial);
   const title = `${wobject.name}`;
-  const description = `${wobject.description || ''} ${wobject.name}}`;
+  const description = `${wobject.description || ''} ${wobject.name}`;
   const { canonicalUrl } = useSeoInfoWithAppUrl(wobject.canonical);
   const siteImage = getObjectAvatar(wobject) || DEFAULTS.AVATAR;
   const siteName = useSelector(getSiteName);
