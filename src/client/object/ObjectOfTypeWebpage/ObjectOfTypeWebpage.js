@@ -68,7 +68,7 @@ const ObjectOfTypeWebpage = ({ intl }) => {
   const siteLink = location && `${location?.origin}/`;
   const isSocial = useSelector(getIsSocial);
   const title = `${wobject.name}`;
-  const description = `${wobject.description || ''} ${wobject.name}}`;
+  const description = `${wobject.description || ''} ${wobject.name}`;
   const { canonicalUrl } = useSeoInfoWithAppUrl(wobject.canonical);
   const siteImage = getObjectAvatar(wobject) || DEFAULTS.AVATAR;
   const siteName = useSelector(getSiteName);
@@ -128,43 +128,45 @@ const ObjectOfTypeWebpage = ({ intl }) => {
         <link rel="image_src" href={siteImage} />
         <link id="favicon" rel="icon" href={helmetIcon} type="image/x-icon" />
       </Helmet>
-      <div className="ObjectOfTypeWebpage">
-        {!isEditMode && history?.location.hash && (
-          <CatalogBreadcrumb wobject={wobject} intl={intl} />
-        )}
-        {loading ? (
-          <Loading />
-        ) : (
-          <Editor
-            readOnly={!isEditMode || showModal}
-            cellPlugins={plugins}
-            value={currentValue}
-            onChange={newValue => setCurrentValue(newValue)}
-          />
-        )}
-        {isEditMode && (
-          <div className="object-of-type-page__row align-center">
-            <Button
-              htmlType="button"
-              // disabled={isNil(currentValue)}
-              onClick={() => setShowModal(true)}
-              size="large"
-              className={'ready-to-publish-btn'}
-            >
-              {intl.formatMessage({ id: 'ready_to_publish', defaultMessage: 'Ready to publish' })}
-            </Button>
-          </div>
-        )}
-        {showModal && (
-          <AppendWebpageModal
-            objName={getObjectName(wobject)}
-            wObject={wobject}
-            showModal={showModal}
-            hideModal={() => setShowModal(false)}
-            webpageBody={jsonVal}
-            field={objectFields.webpage}
-          />
-        )}
+      <div className={isSocial ? 'SitesWebpage' : ''}>
+        <div className="ObjectOfTypeWebpage">
+          {!isEditMode && history?.location.hash && (
+            <CatalogBreadcrumb wobject={wobject} intl={intl} />
+          )}
+          {loading ? (
+            <Loading />
+          ) : (
+            <Editor
+              readOnly={!isEditMode || showModal}
+              cellPlugins={plugins}
+              value={currentValue}
+              onChange={newValue => setCurrentValue(newValue)}
+            />
+          )}
+          {isEditMode && (
+            <div className="object-of-type-page__row align-center">
+              <Button
+                htmlType="button"
+                // disabled={isNil(currentValue)}
+                onClick={() => setShowModal(true)}
+                size="large"
+                className={'ready-to-publish-btn'}
+              >
+                {intl.formatMessage({ id: 'ready_to_publish', defaultMessage: 'Ready to publish' })}
+              </Button>
+            </div>
+          )}
+          {showModal && (
+            <AppendWebpageModal
+              objName={getObjectName(wobject)}
+              wObject={wobject}
+              showModal={showModal}
+              hideModal={() => setShowModal(false)}
+              webpageBody={jsonVal}
+              field={objectFields.webpage}
+            />
+          )}
+        </div>
       </div>
     </>
   );
