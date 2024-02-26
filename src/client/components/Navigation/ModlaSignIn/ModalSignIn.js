@@ -83,6 +83,8 @@ const ModalSignIn = ({
 
   useEffect(() => {
     Cookie.remove('auth');
+    Cookie.remove('access_token');
+    Cookie.remove('guestName');
     if (showModal) setIsModalOpen(true);
   }, [showModal]);
 
