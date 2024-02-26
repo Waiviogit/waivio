@@ -188,7 +188,7 @@ const SocialWrapper = props => {
     const auth = query.get('auth');
     const locale = query.get('usedLocale');
 
-    if (signInPage) {
+    if (signInPage || isSocialGifts) {
       clearGuestAuthData();
       Cookie.remove('auth');
     } else {
