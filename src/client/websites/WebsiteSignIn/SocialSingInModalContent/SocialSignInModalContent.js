@@ -1,6 +1,7 @@
-import { Alert, message } from 'antd';
+import { Alert, Icon, message } from 'antd';
 import React, { useState } from 'react';
 import GoogleLogin from 'react-google-login';
+import { useHistory, useRouteMatch } from 'react-router';
 // import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
@@ -23,6 +24,13 @@ const SocialSignInModalContent = ({
 }) => {
   const [showQR, setShowQr] = useState('');
   const [timeOutId, setTimeoutId] = useState('');
+  const history = useHistory();
+  const match = useRouteMatch();
+  const showCloseIcon = match.path !== '/';
+
+  const handleCloseModal = () => {
+    history.push('/');
+  };
 
   return (
     <div
@@ -34,12 +42,22 @@ const SocialSignInModalContent = ({
       }}
     >
       <div style={styles.formHeader}>
-        <h1 style={{ ...styles.socialMainTitle, ...styles.resetTitleStyles }}>
-          {intl.formatMessage({
-            id: 'sign_in_for_rewards',
-            defaultMessage: 'Sign in for rewards!',
-          })}
-        </h1>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <h1 style={{ ...styles.socialMainTitle, ...styles.resetTitleStyles }}>
+            {intl.formatMessage({
+              id: 'sign_in_for_rewards',
+              defaultMessage: 'Sign in for rewards!',
+            })}
+          </h1>
+          {showCloseIcon && (
+            <div
+              style={isMobile() ? styles.closeButtonMobile : styles.closeButton}
+              onClick={handleCloseModal}
+            >
+              <Icon type={'close'} />
+            </div>
+          )}
+        </div>
         <h2
           style={{
             ...styles.resetTitleStyles,
