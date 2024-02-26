@@ -1,3 +1,4 @@
+import Cookie from 'js-cookie';
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { connect, batch, useSelector, useDispatch } from 'react-redux';
@@ -6,6 +7,7 @@ import { withRouter } from 'react-router-dom';
 import { renderRoutes } from 'react-router-config';
 import { get, isEmpty } from 'lodash';
 import { ConfigProvider, Layout } from 'antd';
+import { clearGuestAuthData } from '../../common/helpers/localStorageHelpers';
 import {
   findLanguage,
   getAntdLocale,
@@ -186,45 +188,43 @@ const SocialWrapper = props => {
     const auth = query.get('auth');
     const locale = query.get('usedLocale');
 
-    props.setSocialFlag();
-    props.getCurrentAppSettings().then(res => {
-      props.getRate();
-      props.getTokenRates('WAIV');
-      props.getCryptoPriceHistory();
-      props.getSwapEnginRates();
-      if (!props.username) props.setLocale(locale || res.language);
+    if (signInPage || isSocialGifts) {
+      clearGuestAuthData();
+      Cookie.remove('auth');
+    } else {
+      props.setSocialFlag();
+      props.getCurrentAppSettings().then(res => {
+        props.getRate();
+        props.getTokenRates('WAIV');
+        props.getCryptoPriceHistory();
+        props.getSwapEnginRates();
+        if (!props.username) props.setLocale(locale || res.language);
 
-      const mainColor = res.configuration.colors?.mapMarkerBody || initialColors.marker;
-      const textColor = res.configuration.colors?.mapMarkerText || initialColors.text;
+        const mainColor = res.configuration.colors?.mapMarkerBody || initialColors.marker;
+        const textColor = res.configuration.colors?.mapMarkerText || initialColors.text;
 
-      if (typeof document !== 'undefined') {
-        document.body.style.setProperty('--website-color', mainColor);
-        document.body.style.setProperty('--website-hover-color', hexToRgb(mainColor, 6));
-        document.body.style.setProperty('--website-text-color', textColor);
-        document.body.style.setProperty('--website-light-color', hexToRgb(mainColor, 1));
-      }
-
-      props.login(token, provider, auth).then(() => {
-        batch(() => {
-          props.getNotifications();
-          props.busyLogin();
-          props.getRewardFund();
-          props.dispatchGetAuthGuestBalance();
-        });
-
-        if (auth && provider) {
-          query.delete('socialProvider');
-          query.delete('auth');
-          let queryString = query.toString();
-
-          if (queryString) queryString = `/?${queryString}`;
-
-          props.history.push(`${props?.location.pathname}${queryString}`);
+        if (typeof document !== 'undefined') {
+          document.body.style.setProperty('--website-color', mainColor);
+          document.body.style.setProperty('--website-hover-color', hexToRgb(mainColor, 6));
+          document.body.style.setProperty('--website-text-color', textColor);
+          document.body.style.setProperty('--website-light-color', hexToRgb(mainColor, 1));
         }
+
+        props.login(token, provider, auth).then(() => {
+          batch(() => {
+            props.getNotifications();
+            props.busyLogin();
+            props.getRewardFund();
+            props.dispatchGetAuthGuestBalance();
+          });
+          if ((token && provider) || (auth && provider)) {
+            props.history.push('/');
+          }
+        });
+        loadLocale(props.locale);
+        createWebsiteMenu(res.configuration);
       });
-      loadLocale(props.locale);
-      createWebsiteMenu(res.configuration);
-    });
+    }
   }, [props.locale]);
 
   useEffect(() => {
