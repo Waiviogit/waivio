@@ -406,7 +406,7 @@ export function createPost(postData, beneficiaries, isReview, campaign) {
         .then(result => {
           if (draftId) {
             batch(() => {
-              dispatch(deleteDraft(draftId));
+              if (result.ok) dispatch(deleteDraft(draftId));
               dispatch(addEditedPost(permlink));
             });
           }
