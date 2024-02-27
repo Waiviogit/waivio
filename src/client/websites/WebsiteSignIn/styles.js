@@ -102,6 +102,7 @@ const styles = {
     left: '100px',
     bottom: '14px',
     fontSize: '16px',
+    color: 'rgba(0, 0, 0, 0.45)',
   },
   closeButtonMobile: {
     cursor: 'pointer',
@@ -109,6 +110,7 @@ const styles = {
     left: '70px',
     bottom: '14px',
     fontSize: '16px',
+    color: 'rgba(0, 0, 0, 0.45)',
   },
 };
 
