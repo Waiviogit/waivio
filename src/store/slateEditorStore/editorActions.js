@@ -351,16 +351,11 @@ export function createPost(postData, beneficiaries, isReview, campaign) {
       ? Promise.resolve(postData.permlink)
       : createPermlink(title, author, parentAuthor, parentPermlink, locale, follower);
 
-    // const account = hiveBeneficiaryAccount || 'waivio.hpower';
-    // let weight = 9700;
-    // let secondBeneficiary = { account: 'waivio', weight: 300 };
-    //
-    // if (!isWaivio) {
-    //   secondBeneficiary = getWebsiteBeneficiary(state);
-    //   weight = 10000 - secondBeneficiary.weight;
-    // }
-    // const guestBeneficiary = [{ account, weight }, secondBeneficiary];
-    // const currentBeneficiaries = isGuest ? guestBeneficiary : beneficiaries;
+    const account = hiveBeneficiaryAccount || 'waivio.hpower';
+    const weight = 10000 - beneficiaries.reduce((acc, val) => acc + val.weight, 0);
+
+    const guestBeneficiary = [{ account, weight }, ...beneficiaries];
+    const currentBeneficiaries = isGuest ? guestBeneficiary : beneficiaries;
 
     dispatch(saveSettings({ upvoteSetting: upvote, rewardSetting: reward }));
 
@@ -403,7 +398,7 @@ export function createPost(postData, beneficiaries, isReview, campaign) {
         permlink,
         referral,
         authUser.name,
-        orderBy(beneficiaries, ['account'], ['asc']),
+        orderBy(currentBeneficiaries, ['account'], ['asc']),
         isReview,
         isGuest,
         hiveBeneficiaryAccount,
