@@ -142,7 +142,7 @@ const PostPopoverMenu = ({
   const hasOnlySponsorLike =
     post.active_votes.length === 1 && post.active_votes.some(vote => vote.sponsor);
   const withoutLike = (!post.net_rshares_WAIV && !post.net_rshares) || hasOnlySponsorLike;
-  const canDeletePost = ownPost && withoutLike && !post.children;
+  const canDeletePost = ownPost && withoutLike && !post.children && !isGuest;
 
   const {
     guestInfo,
@@ -374,7 +374,7 @@ const PostPopoverMenu = ({
           <FormattedMessage id="object_field_remove" defaultMessage="Remove" />
         </span>
       </PopoverMenuItem>,
-      <PopoverMenuItem key="hide" disabled={loading} invisible={isThread}>
+      <PopoverMenuItem key="hide" disabled={loading} invisible={isThread || isGuest}>
         {post.loadingHide ? (
           <Icon type="loading" />
         ) : (
