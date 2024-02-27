@@ -132,6 +132,7 @@ const SocialSignInModalContent = ({
                   onClick={onClickHiveSignerAuthButton}
                 />
                 <HiveAuth
+                  isSite
                   onCloseSingIn={open => {
                     setIsModalOpen(open);
                     clearTimeout(timeOutId);

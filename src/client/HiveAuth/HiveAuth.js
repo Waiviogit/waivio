@@ -1,4 +1,5 @@
 import { Button, message, Select, Input } from 'antd';
+import classNames from "classnames";
 import Cookie from 'js-cookie';
 import store from 'store';
 import { debounce } from 'lodash';
@@ -28,7 +29,7 @@ const getSavedAcc = () => {
   return Array.isArray(accounts) ? accounts : parseJSON(accounts);
 };
 
-const HiveAuth = ({ setQRcodeForAuth, onCloseSingIn, text, style, buttonStyle }) => {
+const HiveAuth = ({ setQRcodeForAuth, onCloseSingIn, text, style, buttonStyle, isSite }) => {
   const [showInput, setShowInput] = useState();
   const [user, setUser] = useState('');
   const [savedAcc, setSavedAcc] = useState(getSavedAcc());
@@ -141,7 +142,9 @@ const HiveAuth = ({ setQRcodeForAuth, onCloseSingIn, text, style, buttonStyle })
               placeholder={'Enter username'}
               defaultActiveFirstOption={false}
               showArrow={false}
-              dropdownClassName={'HiveAuth__accList'}
+              dropdownClassName={classNames('HiveAuth__accList', {
+                'HiveAuth__accList--site': isSite
+              })}
               onSelect={value => {
                 if (value === CLEAR_OPTION) {
                   store.remove('accounts');
@@ -193,6 +196,7 @@ const HiveAuth = ({ setQRcodeForAuth, onCloseSingIn, text, style, buttonStyle })
 HiveAuth.propTypes = {
   setQRcodeForAuth: PropTypes.func,
   onCloseSingIn: PropTypes.func,
+  isSite: PropTypes.bool,
   text: PropTypes.string,
   style: PropTypes.shape({}),
   buttonStyle: PropTypes.shape({}),
@@ -202,6 +206,7 @@ HiveAuth.defaultProps = {
   text: 'Continue with HiveAuth',
   style: {},
   buttonStyle: {},
+  isSite: false
 };
 
 export default HiveAuth;
