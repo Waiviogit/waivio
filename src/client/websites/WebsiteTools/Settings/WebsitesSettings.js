@@ -119,7 +119,7 @@ const WebsitesSettings = ({
             setButtonLoading(false);
             if (!res.value.error)
               message.success(intl.formatMessage({ id: 'settings_updated_successfully' }));
-          })
+          });
         });
       }
     });
