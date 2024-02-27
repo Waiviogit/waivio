@@ -2,6 +2,7 @@ import Cookie from 'js-cookie';
 import { get } from 'lodash';
 import { message } from 'antd';
 import { createAction } from 'redux-actions';
+import { makeHiveAuthHeader } from '../../client/HiveAuth/hive-auth-wrapper';
 import { getAccount } from '../../common/helpers/apiHelpers';
 import { createAsyncActionType } from '../../common/helpers/stateHelpers';
 import {
@@ -127,8 +128,13 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
   let promise = Promise.resolve(null);
   const guestAccessToken = getGuestAccessToken();
   const isGuest = Boolean(guestAccessToken);
-  const hiveAuthData =
-    socialNetwork === 'hiveAuth' ? parseJSON(regData) : parseJSON(Cookie.get('auth'));
+  let hiveAuthData = parseJSON(Cookie.get('auth'));
+
+  if (socialNetwork === 'hiveAuth') {
+    hiveAuthData = parseJSON(regData);
+    Cookie.set('auth', hiveAuthData);
+    makeHiveAuthHeader(hiveAuthData);
+  }
 
   if (hiveAuthData) {
     if (hiveAuthData.expire < Date.now()) {
