@@ -97,7 +97,7 @@ const SocialProductReviews = ({ wobject, authors, intl }) => {
       />
       <ModalSignIn
         isSocialGifts
-        domain={currHost}
+        currHost={currHost}
         hideLink
         isButton={false}
         handleLoginModalCancel={() => setShowSignIn(false)}
