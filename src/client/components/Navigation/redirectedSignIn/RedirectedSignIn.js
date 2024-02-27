@@ -26,6 +26,7 @@ const RedirectedSignIn = props => {
           }}
         >
           <WebsiteSignIn
+            showCloseIcon
             isSocial={props.isSocial}
             setUserData={setUserData}
             setIsFormVisible={setIsFormVisible}
