@@ -73,6 +73,7 @@ import { extractLinks } from '../../common/helpers/parser';
 import objectTypes from '../../client/object/const/objectTypes';
 import { editorStateToMarkdownSlate } from '../../client/components/EditorExtended/util/editorStateToMarkdown';
 import { insertObject } from '../../client/components/EditorExtended/util/SlateEditor/utils/common';
+import { setGuestMana } from '../usersStore/usersActions';
 
 export const CREATE_POST = '@editor/CREATE_POST';
 export const CREATE_POST_START = '@editor/CREATE_POST_START';
@@ -403,7 +404,7 @@ export function createPost(postData, beneficiaries, isReview, campaign) {
         isGuest,
         hiveBeneficiaryAccount,
       )
-        .then(result => {
+        .then(async result => {
           if (draftId) {
             batch(() => {
               if (result.ok) dispatch(deleteDraft(draftId));
@@ -429,7 +430,15 @@ export function createPost(postData, beneficiaries, isReview, campaign) {
             window.gtag('event', 'publish_post', { debug_mode: false });
 
           if (result.status === 429) {
-            dispatch(notify(`To many comments from ${authUser.name} in queue`, 'error'));
+            if (isGuest) {
+              const guestMana = await dispatch(setGuestMana(authUser.name));
+
+              guestMana.payload < 10
+                ? message.error('Guest mana is too low. Please wait for recovery.')
+                : dispatch(notify(`To many comments from ${authUser.name} in queue`, 'error'));
+            } else {
+              dispatch(notify(`To many comments from ${authUser.name} in queue`, 'error'));
+            }
             dispatch({
               type: CREATE_POST_ERROR,
             });
