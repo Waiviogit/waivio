@@ -7,7 +7,8 @@ import React, { useState, useCallback } from 'react';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router';
 import { parseJSON } from '../../common/helpers/parseJSON';
-import { login } from '../../store/authStore/authActions';
+import { login, busyLogin } from '../../store/authStore/authActions';
+import { getNotifications } from '../../store/userStore/userActions';
 import { chechExistUser } from '../../waivioApi/ApiClient';
 import Avatar from '../components/Avatar';
 import HAS from './hive-auth-wrapper';
@@ -69,7 +70,10 @@ const HiveAuth = ({ setQRcodeForAuth, onCloseSingIn, text, style, buttonStyle })
           if (query.get('host'))
             window.location.href = `${url}/?socialProvider=hiveAuth&auth=${JSON.stringify(auth)}`;
 
-          dispatch(login());
+          dispatch(login()).then(() => {
+            dispatch(busyLogin());
+            dispatch(getNotifications(auth.username));
+          });
           onCloseSingIn(false);
         }
       });
