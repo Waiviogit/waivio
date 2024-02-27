@@ -1,7 +1,6 @@
 import { Alert, Icon, message } from 'antd';
 import React, { useState } from 'react';
 import GoogleLogin from 'react-google-login';
-import { useHistory, useRouteMatch } from 'react-router';
 // import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
@@ -10,6 +9,7 @@ import HiveAuth from '../../../HiveAuth/HiveAuth';
 import styles from '../styles';
 import SocialGiftsButton from '../SocialGiftsButton';
 import { isMobile } from '../../../../common/helpers/apiHelpers';
+import useQuery from '../../../../hooks/useQuery';
 
 const SocialSignInModalContent = ({
   websiteTitle,
@@ -21,15 +21,15 @@ const SocialSignInModalContent = ({
   handleFailure,
   setIsModalOpen,
   websiteName,
+  showCloseIcon,
 }) => {
   const [showQR, setShowQr] = useState('');
   const [timeOutId, setTimeoutId] = useState('');
-  const history = useHistory();
-  const match = useRouteMatch();
-  const showCloseIcon = match.path !== '/';
+  const query = useQuery();
+  const host = query.get('host');
 
   const handleCloseModal = () => {
-    history.push('/');
+    if (typeof window !== 'undefined' && host) window.location?.replace(host);
   };
 
   return (
@@ -254,6 +254,7 @@ SocialSignInModalContent.propTypes = {
   }).isRequired,
   hiveSigner: PropTypes.shape().isRequired,
   loading: PropTypes.bool.isRequired,
+  showCloseIcon: PropTypes.bool,
   onClickHiveSignerAuthButton: PropTypes.func.isRequired,
   websiteTitle: PropTypes.string.isRequired,
   websiteName: PropTypes.string.isRequired,
