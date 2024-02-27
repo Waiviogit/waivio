@@ -28,10 +28,8 @@ const assets = require(process.env.MANIFEST_PATH);
 
 const ssrTimeout = 5000;
 
-// const isInheritedHost = host =>
-//   !['waivio.com', 'www.waivio.com', 'waiviodev.com', 'social.gifts', 'dining.gifts'].includes(host);
-
-const isInheritedHost = host => ['shopper-paradise.com'].includes(host);
+const isInheritedHost = host =>
+  !['waivio.com', 'www.waivio.com', 'waiviodev.com', 'social.gifts', 'dining.gifts'].includes(host);
 
 function createTimeout(timeout, promise) {
   return new Promise((resolve, reject) => {
