@@ -279,7 +279,6 @@ export const busyLogin = () => (dispatch, getState, { busyAPI }) => {
     const type = mess && mess.type;
 
     if (type === BUSY_API_TYPES.notification && mess.notification) {
-      console.log(mess);
       dispatch(addNewNotification(mess.notification));
     }
   });
