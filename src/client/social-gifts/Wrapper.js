@@ -188,28 +188,28 @@ const SocialWrapper = props => {
     const auth = query.get('auth');
     const locale = query.get('usedLocale');
 
-    if (signInPage || isSocialGifts) {
-      clearGuestAuthData();
-      Cookie.remove('auth');
-    } else {
-      props.setSocialFlag();
-      props.getCurrentAppSettings().then(res => {
-        props.getRate();
-        props.getTokenRates('WAIV');
-        props.getCryptoPriceHistory();
-        props.getSwapEnginRates();
-        if (!props.username) props.setLocale(locale || res.language);
+    props.setSocialFlag();
+    props.getCurrentAppSettings().then(res => {
+      props.getRate();
+      props.getTokenRates('WAIV');
+      props.getCryptoPriceHistory();
+      props.getSwapEnginRates();
+      if (!props.username) props.setLocale(locale || res.language);
 
-        const mainColor = res.configuration.colors?.mapMarkerBody || initialColors.marker;
-        const textColor = res.configuration.colors?.mapMarkerText || initialColors.text;
+      const mainColor = res.configuration.colors?.mapMarkerBody || initialColors.marker;
+      const textColor = res.configuration.colors?.mapMarkerText || initialColors.text;
 
-        if (typeof document !== 'undefined') {
-          document.body.style.setProperty('--website-color', mainColor);
-          document.body.style.setProperty('--website-hover-color', hexToRgb(mainColor, 6));
-          document.body.style.setProperty('--website-text-color', textColor);
-          document.body.style.setProperty('--website-light-color', hexToRgb(mainColor, 1));
-        }
+      if (typeof document !== 'undefined') {
+        document.body.style.setProperty('--website-color', mainColor);
+        document.body.style.setProperty('--website-hover-color', hexToRgb(mainColor, 6));
+        document.body.style.setProperty('--website-text-color', textColor);
+        document.body.style.setProperty('--website-light-color', hexToRgb(mainColor, 1));
+      }
 
+      if (signInPage || isSocialGifts) {
+        clearGuestAuthData();
+        Cookie.remove('auth');
+      } else {
         props.login(token, provider, auth).then(() => {
           batch(() => {
             props.getNotifications();
@@ -221,10 +221,11 @@ const SocialWrapper = props => {
             props.history.push('/');
           }
         });
-        loadLocale(props.locale);
-        createWebsiteMenu(res.configuration);
-      });
-    }
+      }
+
+      loadLocale(props.locale);
+      createWebsiteMenu(res.configuration);
+    });
   }, [props.locale]);
 
   useEffect(() => {
