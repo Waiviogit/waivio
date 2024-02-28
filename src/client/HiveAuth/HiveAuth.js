@@ -1,5 +1,5 @@
 import { Button, message, Select, Input } from 'antd';
-import classNames from "classnames";
+import classNames from 'classnames';
 import Cookie from 'js-cookie';
 import store from 'store';
 import { debounce } from 'lodash';
@@ -143,7 +143,7 @@ const HiveAuth = ({ setQRcodeForAuth, onCloseSingIn, text, style, buttonStyle, i
               defaultActiveFirstOption={false}
               showArrow={false}
               dropdownClassName={classNames('HiveAuth__accList', {
-                'HiveAuth__accList--site': isSite
+                'HiveAuth__accList--site': isSite,
               })}
               onSelect={value => {
                 if (value === CLEAR_OPTION) {
@@ -206,7 +206,7 @@ HiveAuth.defaultProps = {
   text: 'Continue with HiveAuth',
   style: {},
   buttonStyle: {},
-  isSite: false
+  isSite: false,
 };
 
 export default HiveAuth;
