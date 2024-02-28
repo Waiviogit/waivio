@@ -174,10 +174,6 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
         const privateEmail = await getPrivateEmail(userData.name);
         const rewardsTab = await getRewardTab(userData.name);
         const { WAIV } = await getGuestWaivBalance(userData.name);
-        const guestAuthorityInfo = await getGuestImportStatus(userData.name);
-        const guestAuthority = guestAuthorityInfo?.importAuthorization
-          ? guestAuthorityInfo
-          : { account: '', importAuthorization: false };
 
         dispatch(getCurrentCurrencyRate(userMetaData.settings.currency));
         dispatch(changeAdminStatus(userData.name));
@@ -189,7 +185,6 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
           socialNetwork,
           isGuestUser: true,
           waivBalance: WAIV,
-          guestAuthority,
           ...rewardsTab,
         });
       } catch (e) {
@@ -208,10 +203,6 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
         const privateEmail = await getPrivateEmail(scUserData.name);
         const rewardsTab = await getRewardTab(scUserData.name);
         const { WAIV } = isGuest ? await getGuestWaivBalance(scUserData.name) : {};
-        const guestAuthorityInfo = isGuest ? await getGuestImportStatus(scUserData.name) : {};
-        const guestAuthority = guestAuthorityInfo?.importAuthorization
-          ? guestAuthorityInfo
-          : { account: '', importAuthorization: false };
 
         dispatch(changeAdminStatus(scUserData.name));
         dispatch(setSignature(scUserData?.user_metadata?.profile?.signature || ''));
@@ -225,7 +216,6 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
           privateEmail,
           waivBalance: WAIV,
           isGuestUser: isGuest,
-          guestAuthority,
         });
       } catch (e) {
         reject(e);
@@ -275,6 +265,10 @@ export const busyLogin = () => (dispatch, getState, { busyAPI }) => {
       method = 'guest_login';
       accessToken = guestAccessToken;
     }
+  }
+
+  if (Cookie.get('auth')) {
+    method = 'hive_auth_login';
   }
 
   if (!getIsAuthenticated(state)) {
@@ -376,6 +370,17 @@ export const updateAuthProfile = (userName, profileDate, his, intl) => (
 };
 
 export const UPDATE_AUTHORITY = '@auth/UPDATE_AUTHORITY';
+
+export const getGuestAuthorityStatus = username => dispatch =>
+  getGuestImportStatus(username).then(res => {
+    if (!res.error) {
+      try {
+        dispatch({ type: UPDATE_GUEST_AUTHORITY, payload: res });
+      } catch (e) {
+        console.error(e);
+      }
+    }
+  });
 
 export const toggleBots = (bot, isAuthority) => (dispatch, getState, { steemConnectAPI }) => {
   const state = getState();

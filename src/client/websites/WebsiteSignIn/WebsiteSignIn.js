@@ -131,6 +131,7 @@ const WebsiteSignIn = props => {
       loading={loading}
       hiveSigner={hiveSigner}
       websiteName={url}
+      showCloseIcon={props.showCloseIcon}
       onClickHiveSignerAuthButton={onClickHiveSignerAuthButton}
     />
   ) : (
@@ -153,8 +154,13 @@ WebsiteSignIn.propTypes = {
   }).isRequired,
   setUserData: PropTypes.func.isRequired,
   isSocial: PropTypes.bool,
+  showCloseIcon: PropTypes.bool,
   setIsFormVisible: PropTypes.func.isRequired,
   setIsModalOpen: PropTypes.func.isRequired,
+};
+
+WebsiteSignIn.defaultProps = {
+  showCloseIcon: false,
 };
 
 export default withRouter(injectIntl(WebsiteSignIn));

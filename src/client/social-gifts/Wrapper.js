@@ -1,3 +1,4 @@
+import Cookie from 'js-cookie';
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { connect, batch, useSelector, useDispatch } from 'react-redux';
@@ -6,6 +7,7 @@ import { withRouter } from 'react-router-dom';
 import { renderRoutes } from 'react-router-config';
 import { get, isEmpty } from 'lodash';
 import { ConfigProvider, Layout } from 'antd';
+import { clearGuestAuthData } from '../../common/helpers/localStorageHelpers';
 import {
   findLanguage,
   getAntdLocale,
@@ -204,25 +206,23 @@ const SocialWrapper = props => {
         document.body.style.setProperty('--website-light-color', hexToRgb(mainColor, 1));
       }
 
-      props.login(token, provider, auth).then(() => {
-        batch(() => {
-          props.getNotifications();
-          props.busyLogin();
-          props.getRewardFund();
-          props.dispatchGetAuthGuestBalance();
+      if (signInPage || isSocialGifts) {
+        clearGuestAuthData();
+        Cookie.remove('auth');
+      } else {
+        props.login(token, provider, auth).then(() => {
+          batch(() => {
+            props.getNotifications();
+            props.busyLogin();
+            props.getRewardFund();
+            props.dispatchGetAuthGuestBalance();
+          });
+          if ((token && provider) || (auth && provider)) {
+            props.history.push('/');
+          }
         });
+      }
 
-        if (token && provider) {
-          query.delete('access_token');
-          query.delete('socialProvider');
-          query.delete('auth');
-          let queryString = query.toString();
-
-          if (queryString) queryString = `/?${queryString}`;
-
-          props.history.push(`${props?.location.pathname}${queryString}`);
-        }
-      });
       loadLocale(props.locale);
       createWebsiteMenu(res.configuration);
     });

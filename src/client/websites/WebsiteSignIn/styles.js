@@ -96,6 +96,22 @@ const styles = {
     padding: '0 8px',
     fontWeight: 500,
   },
+  closeButton: {
+    cursor: 'pointer',
+    position: 'relative',
+    left: '100px',
+    bottom: '14px',
+    fontSize: '16px',
+    color: 'rgba(0, 0, 0, 0.45)',
+  },
+  closeButtonMobile: {
+    cursor: 'pointer',
+    position: 'relative',
+    left: '70px',
+    bottom: '14px',
+    fontSize: '16px',
+    color: 'rgba(0, 0, 0, 0.45)',
+  },
 };
 
 export default styles;

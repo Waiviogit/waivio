@@ -1,4 +1,4 @@
-import { Alert, message } from 'antd';
+import { Alert, Icon, message } from 'antd';
 import React, { useState } from 'react';
 import GoogleLogin from 'react-google-login';
 // import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props';
@@ -9,6 +9,7 @@ import HiveAuth from '../../../HiveAuth/HiveAuth';
 import styles from '../styles';
 import SocialGiftsButton from '../SocialGiftsButton';
 import { isMobile } from '../../../../common/helpers/apiHelpers';
+import useQuery from '../../../../hooks/useQuery';
 
 const SocialSignInModalContent = ({
   websiteTitle,
@@ -20,9 +21,16 @@ const SocialSignInModalContent = ({
   handleFailure,
   setIsModalOpen,
   websiteName,
+  showCloseIcon,
 }) => {
   const [showQR, setShowQr] = useState('');
   const [timeOutId, setTimeoutId] = useState('');
+  const query = useQuery();
+  const host = query.get('host');
+
+  const handleCloseModal = () => {
+    if (typeof window !== 'undefined' && host) window.location?.replace(host);
+  };
 
   return (
     <div
@@ -34,12 +42,22 @@ const SocialSignInModalContent = ({
       }}
     >
       <div style={styles.formHeader}>
-        <h1 style={{ ...styles.socialMainTitle, ...styles.resetTitleStyles }}>
-          {intl.formatMessage({
-            id: 'sign_in_for_rewards',
-            defaultMessage: 'Sign in for rewards!',
-          })}
-        </h1>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <h1 style={{ ...styles.socialMainTitle, ...styles.resetTitleStyles }}>
+            {intl.formatMessage({
+              id: 'sign_in_for_rewards',
+              defaultMessage: 'Sign in for rewards!',
+            })}
+          </h1>
+          {showCloseIcon && (
+            <div
+              style={isMobile() ? styles.closeButtonMobile : styles.closeButton}
+              onClick={handleCloseModal}
+            >
+              <Icon type={'close'} />
+            </div>
+          )}
+        </div>
         <h2
           style={{
             ...styles.resetTitleStyles,
@@ -74,9 +92,6 @@ const SocialSignInModalContent = ({
                   message=""
                   description="Ensure you have both an active and a posting key for full functionality."
                   type="warning"
-                  style={{
-                    textAlign: 'center',
-                  }}
                 />
                 <p className="ModalSignIn__rules">
                   {isMobile()
@@ -117,6 +132,7 @@ const SocialSignInModalContent = ({
                   onClick={onClickHiveSignerAuthButton}
                 />
                 <HiveAuth
+                  isSite
                   onCloseSingIn={open => {
                     setIsModalOpen(open);
                     clearTimeout(timeOutId);
@@ -239,6 +255,7 @@ SocialSignInModalContent.propTypes = {
   }).isRequired,
   hiveSigner: PropTypes.shape().isRequired,
   loading: PropTypes.bool.isRequired,
+  showCloseIcon: PropTypes.bool,
   onClickHiveSignerAuthButton: PropTypes.func.isRequired,
   websiteTitle: PropTypes.string.isRequired,
   websiteName: PropTypes.string.isRequired,

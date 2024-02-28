@@ -88,8 +88,8 @@ export const GET_ACCOUNT = createAsyncActionType('@users/GET_ACCOUNT');
 export const getUserAccount = name => async (dispatch, getState) => {
   const state = getState();
   const authUser = getAuthenticatedUserName(state);
-  const guestManaRes = await ApiClient.getGuestUserMana(name);
   const isGuest = guestUserRegex.test(name);
+  const guestManaRes = isGuest ? await ApiClient.getGuestUserMana(name) : {};
   const guestMana = isGuest ? { guestMana: guestManaRes.result } : {};
 
   return dispatch({

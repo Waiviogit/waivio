@@ -39,6 +39,7 @@ const SocialProductReviews = ({ wobject, authors, intl }) => {
   const hasMore = getFeedHasMoreFromState('objectPosts', objName, feed);
   const isFetching = getFeedLoadingFromState('objectPosts', objName, feed);
   const posts = preparationPostList(postsIds, postsList);
+  const next = history.location.pathname.length > 1 ? location.pathname : '';
   const handleWriteReviewClick = () => {
     if (!isAuthUser) {
       setShowSignIn(true);
@@ -96,6 +97,7 @@ const SocialProductReviews = ({ wobject, authors, intl }) => {
         writeReview={handleWriteReviewClick}
       />
       <ModalSignIn
+        next={next}
         isSocialGifts
         domain={currHost}
         hideLink

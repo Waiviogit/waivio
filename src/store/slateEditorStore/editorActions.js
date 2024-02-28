@@ -35,12 +35,7 @@ import { createPermlink, getBodyPatchIfSmaller } from '../../client/vendor/steem
 import { saveSettings } from '../settingsStore/settingsActions';
 import { notify } from '../../client/app/Notification/notificationActions';
 import { clearBeneficiariesUsers } from '../searchStore/searchActions';
-import {
-  getCurrentHost,
-  getIsWaivio,
-  getTranslationByKey,
-  getWebsiteBeneficiary,
-} from '../appStore/appSelectors';
+import { getCurrentHost, getTranslationByKey } from '../appStore/appSelectors';
 import { getAuthenticatedUser, getAuthenticatedUserName } from '../authStore/authSelectors';
 import { getHiveBeneficiaryAccount, getLocale } from '../settingsStore/settingsSelectors';
 import { getCampaign, getObjectsByIds } from '../../waivioApi/ApiClient';
@@ -78,6 +73,7 @@ import { extractLinks } from '../../common/helpers/parser';
 import objectTypes from '../../client/object/const/objectTypes';
 import { editorStateToMarkdownSlate } from '../../client/components/EditorExtended/util/editorStateToMarkdown';
 import { insertObject } from '../../client/components/EditorExtended/util/SlateEditor/utils/common';
+import { setGuestMana } from '../usersStore/usersActions';
 
 export const CREATE_POST = '@editor/CREATE_POST';
 export const CREATE_POST_START = '@editor/CREATE_POST_START';
@@ -346,7 +342,7 @@ export function createPost(postData, beneficiaries, isReview, campaign) {
     const hiveBeneficiaryAccount = getHiveBeneficiaryAccount(state);
     const locale = getLocale(state);
     const follower = getAuthenticatedUserName(state);
-    const isWaivio = getIsWaivio(state);
+    // const isWaivio = getIsWaivio(state);
     const newBody =
       isUpdating && !isGuest && !isReview
         ? getBodyPatchIfSmaller(postData.originalBody, body)
@@ -357,15 +353,9 @@ export function createPost(postData, beneficiaries, isReview, campaign) {
       : createPermlink(title, author, parentAuthor, parentPermlink, locale, follower);
 
     const account = hiveBeneficiaryAccount || 'waivio.hpower';
-    let weight = 9700;
-    let secondBeneficiary = { account: 'waivio', weight: 300 };
+    const weight = 10000 - beneficiaries.reduce((acc, val) => acc + val.weight, 0);
 
-    if (!isWaivio) {
-      secondBeneficiary = getWebsiteBeneficiary(state);
-      weight = 10000 - secondBeneficiary.weight;
-    }
-
-    const guestBeneficiary = [{ account, weight }, secondBeneficiary];
+    const guestBeneficiary = [{ account, weight }, ...beneficiaries];
     const currentBeneficiaries = isGuest ? guestBeneficiary : beneficiaries;
 
     dispatch(saveSettings({ upvoteSetting: upvote, rewardSetting: reward }));
@@ -414,10 +404,10 @@ export function createPost(postData, beneficiaries, isReview, campaign) {
         isGuest,
         hiveBeneficiaryAccount,
       )
-        .then(result => {
+        .then(async result => {
           if (draftId) {
             batch(() => {
-              dispatch(deleteDraft(draftId));
+              if (result.ok) dispatch(deleteDraft(draftId));
               dispatch(addEditedPost(permlink));
             });
           }
@@ -431,7 +421,7 @@ export function createPost(postData, beneficiaries, isReview, campaign) {
 
             setTimeout(() => {
               dispatch(push(`/@${author}`));
-              dispatch(notify(publicMessage, 'success'));
+              if (result.ok) dispatch(notify(publicMessage, 'success'));
             }, 5000);
           } else {
             setTimeout(() => dispatch(push(`/@${author}`)), 3000);
@@ -440,7 +430,15 @@ export function createPost(postData, beneficiaries, isReview, campaign) {
             window.gtag('event', 'publish_post', { debug_mode: false });
 
           if (result.status === 429) {
-            dispatch(notify(`To many comments from ${authUser.name} in queue`, 'error'));
+            if (isGuest) {
+              const guestMana = await dispatch(setGuestMana(authUser.name));
+
+              guestMana.payload < 10
+                ? message.error('Guest mana is too low. Please wait for recovery.')
+                : dispatch(notify(`To many comments from ${authUser.name} in queue`, 'error'));
+            } else {
+              dispatch(notify(`To many comments from ${authUser.name} in queue`, 'error'));
+            }
             dispatch({
               type: CREATE_POST_ERROR,
             });

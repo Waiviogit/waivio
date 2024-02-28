@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { Checkbox, Collapse, Select } from 'antd';
 import { injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
-import { BENEFICIARY_PERCENT } from '../../../common/helpers/constants';
 import { rewardsValues } from '../../../common/constants/rewards';
 import ObjectWeights from './ObjectWeights';
 import {
@@ -12,7 +11,6 @@ import {
   searchUsersAutoCompete,
 } from '../../../store/searchStore/searchActions';
 import BeneficiariesWeights from './BeneficiariesWeights';
-import { getHiveBeneficiaryAccount } from '../../../store/settingsStore/settingsSelectors';
 import { getAutoCompleteSearchResults } from '../../../store/searchStore/searchSelectors';
 
 import './AdvanceSettings.less';
@@ -21,7 +19,6 @@ import './AdvanceSettings.less';
 @connect(
   state => ({
     autoCompleteSearchResults: getAutoCompleteSearchResults(state),
-    hiveBeneficiaryAccount: getHiveBeneficiaryAccount(state),
   }),
   {
     searchAutoComplete,
@@ -43,7 +40,6 @@ class AdvanceSettings extends Component {
     onSettingsChange: PropTypes.func.isRequired,
     onPercentChange: PropTypes.func.isRequired,
     isGuest: PropTypes.bool,
-    hiveBeneficiaryAccount: PropTypes.string.isRequired,
   };
   static defaultProps = {
     intl: {},
@@ -71,7 +67,6 @@ class AdvanceSettings extends Component {
       objPercentage,
       settings: { reward, upvote },
       isGuest,
-      hiveBeneficiaryAccount,
     } = this.props;
 
     return (
@@ -135,34 +130,11 @@ class AdvanceSettings extends Component {
                   defaultMessage: '100% Hive Power',
                 })}
               </div>
-              <div className="rewards-settings__guest">
-                <span>
-                  {intl.formatMessage({
-                    id: 'beneficiaries-weights',
-                    defaultMessage: 'Beneficiaries',
-                  })}
-                  :
-                </span>{' '}
-                {intl.formatMessage(
-                  {
-                    id: 'add_waivio_beneficiary',
-                    defaultMessage: 'Share {share}% of this post rewards with Waivio',
-                  },
-                  { share: BENEFICIARY_PERCENT / 100 },
-                )}{' '}
-                {hiveBeneficiaryAccount &&
-                  `${intl.formatMessage({
-                    id: 'and',
-                    defaultMessage: 'and',
-                  })}  97% ${hiveBeneficiaryAccount}`}
-              </div>
-              <div className="rewards-settings__guest">
-                <span>{intl.formatMessage({ id: 'note', defaultMessage: 'Note' })}:</span>{' '}
-                {intl.formatMessage({
-                  id: 'guest_accounts',
-                  defaultMessage: 'Guest accounts can not change these settings',
-                })}
-              </div>
+              {!isUpdating && (
+                <div className="beneficiary-settings">
+                  <BeneficiariesWeights intl={intl} isGuest={isGuest} />
+                </div>
+              )}
             </div>
           )}
           <ObjectWeights

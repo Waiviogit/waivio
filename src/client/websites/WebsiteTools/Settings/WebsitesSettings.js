@@ -115,11 +115,12 @@ const WebsitesSettings = ({
           values.language,
           objectControl,
         ).then(res => {
-          setButtonLoading(false);
-          if (!res.value.error)
-            message.success(intl.formatMessage({ id: 'settings_updated_successfully' }));
+          referralUserForWeb(referralAccount, host).then(() => {
+            setButtonLoading(false);
+            if (!res.value.error)
+              message.success(intl.formatMessage({ id: 'settings_updated_successfully' }));
+          });
         });
-        referralUserForWeb(referralAccount, host);
       }
     });
   };

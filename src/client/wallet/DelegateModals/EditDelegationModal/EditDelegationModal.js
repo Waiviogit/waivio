@@ -1,4 +1,5 @@
-import React from 'react';
+import Cookie from 'js-cookie';
+import React, { useState } from 'react';
 import { Button, Form, Modal } from 'antd';
 import PropsType from 'prop-types';
 import { round } from 'lodash';
@@ -10,6 +11,7 @@ import {
 } from '../../../../store/walletStore/walletSelectors';
 import formatter from '../../../../common/helpers/steemitFormatter';
 import { createQuery } from '../../../../common/helpers/apiHelpers';
+import api from '../../../steemConnectAPI';
 import PowerSwitcher from '../../PowerUpOrDown/PowerSwitcher/PowerSwitcher';
 import SelectUserForAutocomplete from '../../../widgets/SelectUserForAutocomplete';
 import { getAuthenticatedUserName } from '../../../../store/authStore/authSelectors';
@@ -20,6 +22,9 @@ const EditDelegationModal = props => {
   const totalVestingShares = useSelector(getTotalVestingShares);
   const totalVestingFundSteem = useSelector(getTotalVestingFundSteem);
   const authUserName = useSelector(getAuthenticatedUserName);
+  const [loading, setLoading] = useState(false);
+  const [undeligateLoading, setUndeligateLoading] = useState(false);
+  const isHiveAuth = Cookie.get('auth');
 
   const handleEditDelegate = () => {
     props.form.validateFields({ force: true }, (errors, values) => {
@@ -34,8 +39,45 @@ const EditDelegationModal = props => {
           vesting_shares: `${vests} VESTS`,
         };
 
-        const win =
-          values.currency === 'HP'
+        const json = JSON.stringify({
+          contractName: 'tokens',
+          contractAction: 'delegate',
+          contractPayload: {
+            symbol: values.currency === 'WP' ? 'WAIV' : values.currency,
+            to: props.requiredUser.name,
+            quantity: round(values.amount, 5).toString(),
+          },
+        });
+        const isHp = values.currency === 'HP';
+
+        if (isHiveAuth) {
+          const brodc = () =>
+            isHp
+              ? api.broadcast([['delegate_vesting_shares', { ...transferQuery }]], null, 'active')
+              : api.broadcast(
+                  [
+                    [
+                      'custom_json',
+                      {
+                        required_auths: [authUserName],
+                        required_posting_auths: [],
+                        id: 'ssc-mainnet-hive',
+                        json,
+                      },
+                    ],
+                  ],
+                  null,
+                  'active',
+                );
+
+          setLoading(true);
+
+          brodc().then(() => {
+            setLoading(false);
+            props.onCancel();
+          });
+        } else {
+          const win = isHp
             ? window &&
               window.open(
                 `https://hivesigner.com/sign/delegate_vesting_shares?${createQuery(transferQuery)}`,
@@ -46,22 +88,15 @@ const EditDelegationModal = props => {
                 `https://hivesigner.com/sign/custom_json?authority=active&required_auths=["${authUserName}"]&required_posting_auths=[]&${createQuery(
                   {
                     id: 'ssc-mainnet-hive',
-                    json: JSON.stringify({
-                      contractName: 'tokens',
-                      contractAction: 'delegate',
-                      contractPayload: {
-                        symbol: values.currency === 'WP' ? 'WAIV' : values.currency,
-                        to: props.requiredUser.name,
-                        quantity: round(values.amount, 5).toString(),
-                      },
-                    }),
+                    json,
                   },
                 )}`,
                 '_blank',
               );
 
-        win.focus();
-        props.onCancel();
+          win.focus();
+          props.onCancel();
+        }
       }
     });
   };
@@ -69,15 +104,53 @@ const EditDelegationModal = props => {
     e.preventDefault();
     props.form.validateFields({ force: true }, (errors, values) => {
       if (!errors) {
-        const win =
-          values.currency === 'HP'
+        const transferQuery = {
+          delegator: authUserName,
+          delegatee: props.requiredUser.name,
+          vesting_shares: `0 VESTS`,
+        };
+        const json = JSON.stringify({
+          contractName: 'tokens',
+          contractAction: 'undelegate',
+          contractPayload: {
+            symbol: values.currency === 'WP' ? 'WAIV' : values.currency,
+            from: props.requiredUser.name,
+            quantity: props.requiredUser.quantity,
+          },
+        });
+        const isHp = values.currency === 'HP';
+
+        if (isHiveAuth) {
+          const brodc = () =>
+            isHp
+              ? api.broadcast([['delegate_vesting_shares', { ...transferQuery }]], null, 'active')
+              : api.broadcast(
+                  [
+                    [
+                      'custom_json',
+                      {
+                        required_auths: [authUserName],
+                        required_posting_auths: [],
+                        id: 'ssc-mainnet-hive',
+                        json,
+                      },
+                    ],
+                  ],
+                  null,
+                  'active',
+                );
+
+          setUndeligateLoading(true);
+
+          brodc().then(() => {
+            setUndeligateLoading(false);
+            props.onCancel();
+          });
+        } else {
+          const win = isHp
             ? window &&
               window.open(
-                `https://hivesigner.com/sign/delegate_vesting_shares?${createQuery({
-                  delegator: authUserName,
-                  delegatee: props.requiredUser.name,
-                  vesting_shares: `0 VESTS`,
-                })}`,
+                `https://hivesigner.com/sign/delegate_vesting_shares?${createQuery(transferQuery)}`,
                 '_blank',
               )
             : window &&
@@ -85,22 +158,15 @@ const EditDelegationModal = props => {
                 `https://hivesigner.com/sign/custom_json?authority=active&required_auths=["${authUserName}"]&required_posting_auths=[]&${createQuery(
                   {
                     id: 'ssc-mainnet-hive',
-                    json: JSON.stringify({
-                      contractName: 'tokens',
-                      contractAction: 'undelegate',
-                      contractPayload: {
-                        symbol: values.currency === 'WP' ? 'WAIV' : values.currency,
-                        from: props.requiredUser.name,
-                        quantity: props.requiredUser.quantity,
-                      },
-                    }),
+                    json,
                   },
                 )}`,
                 '_blank',
               );
 
-        win.focus();
-        props.onCancel();
+          win.focus();
+          props.onCancel();
+        }
       }
     });
   };
@@ -143,8 +209,9 @@ const EditDelegationModal = props => {
         </Button>
         <Button
           type={'primary'}
-          disabled={!props.form.getFieldValue('amount')}
+          disabled={!props.form.getFieldValue('amount') || undeligateLoading}
           onClick={() => handleEditDelegate()}
+          loading={loading}
         >
           Submit
         </Button>
@@ -155,6 +222,8 @@ const EditDelegationModal = props => {
           type={'danger'}
           className="EditDelegationModal__undelegate"
           onClick={handleUndelegate}
+          loading={undeligateLoading}
+          disabled={loading}
         >
           Undelegate
         </Button>
