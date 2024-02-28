@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Form, message, Modal, Select } from 'antd';
 import PropTypes from 'prop-types';
+import BigNumber from 'bignumber.js';
 import { useDispatch, useSelector } from 'react-redux';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import moment from 'moment';
@@ -64,7 +65,11 @@ const AppendWebpageModal = ({
         dispatch(
           appendObject(postData, {
             follow,
-            votePercent: votePercent * 100,
+            votePercent: Number(
+              BigNumber(votePercent)
+                .multipliedBy(100)
+                .toFixed(0),
+            ),
             isLike: true,
             isObjectPage: true,
           }),
