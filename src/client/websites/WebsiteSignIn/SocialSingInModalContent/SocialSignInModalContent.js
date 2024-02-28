@@ -27,9 +27,16 @@ const SocialSignInModalContent = ({
   const [timeOutId, setTimeoutId] = useState('');
   const query = useQuery();
   const host = query.get('host');
+  const backUrl = query.get('backUrl');
 
   const handleCloseModal = () => {
-    if (typeof window !== 'undefined' && host) window.location?.replace(host);
+    if (typeof window !== 'undefined' && (backUrl || host)) {
+      if (backUrl) {
+        window.location?.replace(backUrl);
+      } else {
+        window.location?.replace(host);
+      }
+    }
   };
 
   return (
