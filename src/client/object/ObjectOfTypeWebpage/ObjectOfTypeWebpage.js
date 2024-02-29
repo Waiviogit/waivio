@@ -129,7 +129,7 @@ const ObjectOfTypeWebpage = ({ intl }) => {
         <link id="favicon" rel="icon" href={helmetIcon} type="image/x-icon" />
       </Helmet>
       <div className={isSocial ? 'SitesWebpage' : ''}>
-        <div className="ObjectOfTypeWebpage">
+        <div className={isEditMode ? 'ObjectOfTypeWebpage margin' : 'ObjectOfTypeWebpage'}>
           {!isEditMode && history?.location.hash && (
             <CatalogBreadcrumb wobject={wobject} intl={intl} />
           )}
