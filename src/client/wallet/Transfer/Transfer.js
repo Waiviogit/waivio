@@ -109,6 +109,7 @@ export default class Transfer extends React.Component {
   static propTypes = {
     intl: PropTypes.shape().isRequired,
     visible: PropTypes.bool,
+    manageWebsites: PropTypes.bool,
     to: PropTypes.string,
     rates: PropTypes.number,
     authenticated: PropTypes.bool.isRequired,
@@ -409,6 +410,7 @@ export default class Transfer extends React.Component {
               ...transferQuery,
               amount: isHive ? transferQuery.amount : +values.amount,
               account: sponsor,
+              id: this.props.manageWebsites ? 'websitesPaymentGuest' : 'transferFromGuest',
             }).then(res => {
               if (res.result || res.id) {
                 this.props.notify(

@@ -21,7 +21,7 @@ import {
 import Loading from '../../../components/Icon/Loading';
 import { openTransfer } from '../../../../store/walletStore/walletActions';
 import Transfer from '../../../wallet/Transfer/Transfer';
-import { getAuthenticatedUserName } from '../../../../store/authStore/authSelectors';
+import { getAuthenticatedUserName, isGuestUser } from '../../../../store/authStore/authSelectors';
 import { getManage, getWebsiteLoading } from '../../../../store/websiteStore/websiteSelectors';
 import { parseJSON } from '../../../../common/helpers/parseJSON';
 import { getCurrentCurrency } from '../../../../store/appStore/appSelectors';
@@ -57,9 +57,9 @@ export const ManageWebsite = props => {
   };
 
   const handleClickPayNow = () => {
-    let memo = get(dataForPayments, 'memo');
+    let memo = props.isGuest ? get(dataForPayments, 'guestMemo') : get(dataForPayments, 'memo');
 
-    memo = parseJSON(memo);
+    memo = props.isGuest ? '' : parseJSON(memo);
 
     props.openTransfer(get(dataForPayments, ['user', 'name']), 0, 'WAIV', memo);
   };
@@ -238,7 +238,7 @@ export const ManageWebsite = props => {
           </div>
         </div>
       )}
-      <Transfer />
+      <Transfer manageWebsites />
       <Modal
         visible={modalState.visible}
         title={props.intl.formatMessage(
@@ -305,6 +305,7 @@ ManageWebsite.propTypes = {
   deleteWebsite: PropTypes.func.isRequired,
   setAffiliateObjects: PropTypes.func.isRequired,
   affiliateCodeVoteAppend: PropTypes.func.isRequired,
+  isGuest: PropTypes.bool.isRequired,
 };
 
 ManageWebsite.defaultProps = {
@@ -316,6 +317,7 @@ export default connect(
     loading: getWebsiteLoading(state),
     userName: getAuthenticatedUserName(state),
     manageInfo: getManage(state),
+    isGuest: isGuestUser(state),
     currencyInfo: getCurrentCurrency(state),
     affiliateObjects: getAffiliateObjects(state),
   }),
