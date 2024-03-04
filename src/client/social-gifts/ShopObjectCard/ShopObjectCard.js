@@ -46,6 +46,7 @@ const ShopObjectCard = ({ wObject, isChecklist, isSocialProduct }) => {
   switch (wObject.object_type) {
     case 'product':
     case 'business':
+    case 'restaurant':
     case 'book': {
       const query = location.hash
         ? `${location.hash.replace('#', '')}/${wObject?.author_permlink}`
