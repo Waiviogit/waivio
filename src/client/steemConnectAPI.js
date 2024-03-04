@@ -35,6 +35,8 @@ function broadcast(operations, isReview, actionAuthor) {
       operations[0][1].author = jsonMetadata.comment.userId;
     }
     operation = `waivio_guest_${operations[0][0]}`;
+  } else if (operations[0][0] === 'website_guest') {
+    operation = 'website_guest';
   } else {
     operation = `waivio_guest_${operations[0][0]}`;
   }
@@ -183,45 +185,66 @@ function sc2Extended() {
       },
     },
     {
-      activateWebsite(userName, host, subscribe, cb) {
-        const params = {
-          required_auths: [],
-          required_posting_auths: [userName],
-          id: 'active_custom_website',
-          json: JSON.stringify({
-            host,
-          }),
-        };
+      activateWebsite(userName, isGuestUser, host, subscribe, cb) {
+        const params = isGuestUser
+          ? {
+              id: 'active_custom_website',
+              json: {
+                host,
+              },
+            }
+          : {
+              required_auths: [],
+              required_posting_auths: [userName],
+              id: 'active_custom_website',
+              json: JSON.stringify({
+                host,
+              }),
+            };
 
-        return this.broadcast([['custom_json', params]], cb);
+        return this.broadcast([[isGuestUser ? 'website_guest' : 'custom_json', params]], cb);
       },
     },
     {
-      setWebsiteCanonical(userName, host, subscribe, cb) {
-        const params = {
-          required_auths: [],
-          required_posting_auths: [userName],
-          id: 'website_canonical',
-          json: JSON.stringify({
-            host,
-          }),
-        };
+      setWebsiteCanonical(userName, isGuestUser, host, subscribe, cb) {
+        const params = isGuestUser
+          ? {
+              id: 'website_canonical',
+              json: {
+                host,
+              },
+            }
+          : {
+              required_auths: [],
+              required_posting_auths: [userName],
+              id: 'website_canonical',
+              json: JSON.stringify({
+                host,
+              }),
+            };
 
-        return this.broadcast([['custom_json', params]], cb);
+        return this.broadcast([[isGuestUser ? 'website_guest' : 'custom_json', params]], cb);
       },
     },
     {
-      suspendWebsite(userName, host, subscribe, cb) {
-        const params = {
-          required_auths: [],
-          required_posting_auths: [userName],
-          id: 'suspend_custom_website',
-          json: JSON.stringify({
-            host,
-          }),
-        };
+      suspendWebsite(userName, isGuestUser, host, subscribe, cb) {
+        const params = isGuestUser
+          ? {
+              id: 'suspend_custom_website',
+              json: {
+                host,
+              },
+            }
+          : {
+              required_auths: [],
+              required_posting_auths: [userName],
+              id: 'suspend_custom_website',
+              json: JSON.stringify({
+                host,
+              }),
+            };
 
-        return this.broadcast([['custom_json', params]], cb);
+        return this.broadcast([[isGuestUser ? 'website_guest' : 'custom_json', params]], cb);
       },
     },
     {
@@ -279,75 +302,105 @@ function sc2Extended() {
       },
     },
     {
-      addWebsiteAdministrators(username, host, names, cb) {
-        const params = {
-          required_auths: [],
-          required_posting_auths: [username],
-          id: 'website_add_administrators',
-          json: JSON.stringify({ host, names }),
-        };
+      addWebsiteAdministrators(username, isGuestUser, host, names, cb) {
+        const params = isGuestUser
+          ? {
+              id: 'website_add_administrators',
+              json: { host, names },
+            }
+          : {
+              required_auths: [],
+              required_posting_auths: [username],
+              id: 'website_add_administrators',
+              json: JSON.stringify({ host, names }),
+            };
 
-        return this.broadcast([['custom_json', params]], cb);
+        return this.broadcast([[isGuestUser ? 'website_guest' : 'custom_json', params]], cb);
       },
     },
     {
-      deleteWebsiteAdministrators(username, host, names, cb) {
-        const params = {
-          required_auths: [],
-          required_posting_auths: [username],
-          id: 'website_remove_administrators',
-          json: JSON.stringify({ host, names }),
-        };
+      deleteWebsiteAdministrators(username, isGuestUser, host, names, cb) {
+        const params = isGuestUser
+          ? {
+              id: 'website_remove_administrators',
+              json: { host, names },
+            }
+          : {
+              required_auths: [],
+              required_posting_auths: [username],
+              id: 'website_remove_administrators',
+              json: JSON.stringify({ host, names }),
+            };
 
-        return this.broadcast([['custom_json', params]], cb);
+        return this.broadcast([[isGuestUser ? 'website_guest' : 'custom_json', params]], cb);
       },
     },
     {
-      addWebsiteModerators(username, host, names, cb) {
-        const params = {
-          required_auths: [],
-          required_posting_auths: [username],
-          id: 'website_add_moderators',
-          json: JSON.stringify({ host, names }),
-        };
+      addWebsiteModerators(username, isGuestUser, host, names, cb) {
+        const params = isGuestUser
+          ? {
+              id: 'website_add_moderators',
+              json: { host, names },
+            }
+          : {
+              required_auths: [],
+              required_posting_auths: [username],
+              id: 'website_add_moderators',
+              json: JSON.stringify({ host, names }),
+            };
 
-        return this.broadcast([['custom_json', params]], cb);
+        return this.broadcast([[isGuestUser ? 'website_guest' : 'custom_json', params]], cb);
       },
     },
     {
-      deleteWebsiteModerators(username, host, names, cb) {
-        const params = {
-          required_auths: [],
-          required_posting_auths: [username],
-          id: 'website_remove_moderators',
-          json: JSON.stringify({ host, names }),
-        };
+      deleteWebsiteModerators(username, isGuestUser, host, names, cb) {
+        const params = isGuestUser
+          ? {
+              id: 'website_remove_moderators',
+              json: { host, names },
+            }
+          : {
+              required_auths: [],
+              required_posting_auths: [username],
+              id: 'website_remove_moderators',
+              json: JSON.stringify({ host, names }),
+            };
 
-        return this.broadcast([['custom_json', params]], cb);
+        return this.broadcast([[isGuestUser ? 'website_guest' : 'custom_json', params]], cb);
       },
     },
     {
-      addWebsiteAuthorities(username, host, names, cb) {
-        const params = {
-          required_auths: [],
-          required_posting_auths: [username],
-          id: 'website_add_authorities',
-          json: JSON.stringify({ host, names }),
-        };
+      addWebsiteAuthorities(username, isGuestUser, host, names, cb) {
+        const params = isGuestUser
+          ? {
+              id: 'website_add_authorities',
+              json: { host, names },
+            }
+          : {
+              required_auths: [],
+              required_posting_auths: [username],
+              id: 'website_add_authorities',
+              json: JSON.stringify({ host, names }),
+            };
 
-        return this.broadcast([['custom_json', params]], cb);
+        return this.broadcast([[isGuestUser ? 'website_guest' : 'custom_json', params]], cb);
       },
     },
     {
-      deleteWebsiteAuthorities(username, host, names, cb) {
-        const params = {
-          required_auths: [],
-          required_posting_auths: [username],
-          id: 'website_remove_authorities',
-          json: JSON.stringify({ host, names }),
-        };
+      deleteWebsiteAuthorities(username, isGuestUser, host, names, cb) {
+        const params = isGuestUser
+          ? {
+              id: 'website_remove_authorities',
+              json: { host, names },
+            }
+          : {
+              required_auths: [],
+              required_posting_auths: [username],
+              id: 'website_remove_authorities',
+              json: JSON.stringify({ host, names }),
+            };
 
-        return this.broadcast([['custom_json', params]], cb);
+        return this.broadcast([[isGuestUser ? 'website_guest' : 'custom_json', params]], cb);
       },
     },
     {
@@ -503,18 +556,26 @@ function sc2Extended() {
       },
     },
     {
-      websitesReferral(account, host, owner, cb) {
-        const params = {
-          required_auths: [],
-          required_posting_auths: [owner],
-          id: 'website_referral_payments',
-          json: JSON.stringify({
-            account,
-            host,
-          }),
-        };
+      websitesReferral(account, isGuestUser, host, owner, cb) {
+        const params = isGuestUser
+          ? {
+              id: 'website_referral_payments',
+              json: {
+                account,
+                host,
+              },
+            }
+          : {
+              required_auths: [],
+              required_posting_auths: [owner],
+              id: 'website_referral_payments',
+              json: JSON.stringify({
+                account,
+                host,
+              }),
+            };
 
-        return this.broadcast([['custom_json', params]], cb);
+        return this.broadcast([[isGuestUser ? 'website_guest' : 'custom_json', params]], cb);
       },
     },
     {
@@ -553,6 +614,7 @@ function sc2Extended() {
       },
       saveWebsiteSettings(
         username,
+        isGuestUser,
         appId,
         googleAnalyticsTag,
         googleGSCTag,
@@ -564,38 +626,63 @@ function sc2Extended() {
         objectControl,
         cb,
       ) {
-        const params = {
-          required_auths: [],
-          required_posting_auths: [username],
-          id: 'custom_website_settings',
-          json: JSON.stringify({
-            appId,
-            googleAnalyticsTag,
-            googleGSCTag,
-            googleEventSnippet,
-            googleAdsConfig,
-            beneficiary,
-            currency,
-            language,
-            objectControl,
-          }),
-        };
+        const params = isGuestUser
+          ? {
+              id: 'custom_website_settings',
+              json: {
+                appId,
+                googleAnalyticsTag,
+                googleGSCTag,
+                googleEventSnippet,
+                googleAdsConfig,
+                beneficiary,
+                currency,
+                language,
+                objectControl,
+              },
+            }
+          : {
+              required_auths: [],
+              required_posting_auths: [username],
+              id: 'custom_website_settings',
+              json: JSON.stringify({
+                appId,
+                googleAnalyticsTag,
+                googleGSCTag,
+                googleEventSnippet,
+                googleAdsConfig,
+                beneficiary,
+                currency,
+                language,
+                objectControl,
+              }),
+            };
 
-        return this.broadcast([['custom_json', params]], cb);
+        return this.broadcast([[isGuestUser ? 'website_guest' : 'custom_json', params]], cb);
       },
-      saveAdSenseSettings(username, host, code, level, txtFile, cb) {
-        const params = {
-          required_posting_auths: [username],
-          id: 'website_adsense',
-          json: JSON.stringify({
-            host,
-            code,
-            level,
-            txtFile,
-          }),
-        };
+      saveAdSenseSettings(username, isGuestUser, host, code, level, txtFile, cb) {
+        const params = isGuestUser
+          ? {
+              id: 'website_adsense',
+              json: {
+                host,
+                code,
+                level,
+                txtFile,
+              },
+            }
+          : {
+              required_posting_auths: [username],
+              id: 'website_adsense',
+              json: JSON.stringify({
+                host,
+                code,
+                level,
+                txtFile,
+              }),
+            };
 
-        return this.broadcast([['custom_json', params]], cb);
+        return this.broadcast([[isGuestUser ? 'website_guest' : 'custom_json', params]], cb);
       },
       hidePost(username, author, permlink, action, cb) {
         const params = {
