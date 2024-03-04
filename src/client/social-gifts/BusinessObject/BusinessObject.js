@@ -132,7 +132,7 @@ const BusinessObject = ({
   const { firstDescrPart: description } = shortenDescription(removeEmptyLines(desc), 200);
   const title = `${wobject.name}`;
   const { canonicalUrl } = useSeoInfoWithAppUrl(wobject.canonical);
-  const url = ['business'].includes(wobject.object_type)
+  const url = ['business', 'restaurant'].includes(wobject.object_type)
     ? `https://${wobject.canonical}/object/${match.params.name}`
     : canonicalUrl;
   const productUrl = checkAboutCanonicalUrl(url);
