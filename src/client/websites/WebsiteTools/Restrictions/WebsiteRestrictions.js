@@ -45,7 +45,7 @@ export const WebsiteRestrictions = ({
   }, [host]);
 
   const handleClickMute = () => {
-    handleMuteUser(authUser, [mutedUser], ['ignore'], host);
+    handleMuteUser(authUser, mutedUser, ['ignore'], host);
     setMutedUser('');
   };
 
@@ -58,7 +58,7 @@ export const WebsiteRestrictions = ({
             {user.blockedBy.includes(authUser) && !withoutButton ? (
               <Action
                 primary
-                onClick={() => handleMuteUser(authUser, [user.name], [], host)}
+                onClick={() => handleMuteUser(authUser, user.name, [], host)}
                 loading={unmutedUsers.includes(user.name)}
               >
                 {intl.formatMessage({ id: 'unmute', defaultMessage: 'Unmute' })}

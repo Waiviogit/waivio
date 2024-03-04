@@ -61,7 +61,7 @@ const SettingsSidenav = ({ match }) => {
           toggleMenuCondition={toggleMenuCondition}
         />
       )}
-      {!isGuest && isWaivio && (
+      {isWaivio && (
         <React.Fragment>
           <SettingsItem
             condition={menuCondition.websites}

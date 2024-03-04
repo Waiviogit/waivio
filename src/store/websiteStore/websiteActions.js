@@ -5,7 +5,7 @@ import { createAsyncActionType } from '../../common/helpers/stateHelpers';
 import { subscribeMethod, subscribeTypes } from '../../common/constants/blockTypes';
 import { getChangesInAccessOption } from '../../client/websites/helper';
 import * as ApiClient from '../../waivioApi/ApiClient';
-import { getAuthenticatedUserName } from '../authStore/authSelectors';
+import { getAuthenticatedUserName, isGuestUser } from '../authStore/authSelectors';
 import { getLocale } from '../settingsStore/settingsSelectors';
 import { getSearchFiltersTagCategory, getWebsiteSearchType } from '../searchStore/searchSelectors';
 import { getOwnWebsites, getParentDomain } from './websiteSelectors';
@@ -102,9 +102,10 @@ export const CHANGE_CANONICAL_WEBSITE = '@website/CHANGE_CANONICAL_WEBSITE';
 
 export const setWebsiteCanonical = id => (dispatch, getState, { steemConnectAPI, busyAPI }) => {
   const name = getAuthenticatedUserName(getState());
+  const isGuest = isGuestUser(getState());
 
   dispatch({ type: CHANGE_CANONICAL_WEBSITE, id });
-  steemConnectAPI.setWebsiteCanonical(name, id).then(async () => {
+  steemConnectAPI.setWebsiteCanonical(name, isGuest, id).then(async () => {
     const blockNumber = await getLastBlockNum();
 
     busyAPI.instance.sendAsync(subscribeMethod, [name, blockNumber, subscribeTypes.posts]);
@@ -120,9 +121,10 @@ export const CHANGE_STATUS_WEBSITE = '@website/CHANGE_STATUS_WEBSITE';
 
 export const activateWebsite = id => (dispatch, getState, { steemConnectAPI, busyAPI }) => {
   const name = getAuthenticatedUserName(getState());
+  const isGuest = isGuestUser(getState());
 
   dispatch({ type: CHANGE_STATUS_WEBSITE, id });
-  steemConnectAPI.activateWebsite(name, id).then(async () => {
+  steemConnectAPI.activateWebsite(name, isGuest, id).then(async () => {
     const blockNumber = await getLastBlockNum();
 
     busyAPI.instance.sendAsync(subscribeMethod, [name, blockNumber, subscribeTypes.posts]);
@@ -136,9 +138,10 @@ export const activateWebsite = id => (dispatch, getState, { steemConnectAPI, bus
 
 export const suspendWebsite = id => (dispatch, getState, { steemConnectAPI, busyAPI }) => {
   const name = getAuthenticatedUserName(getState());
+  const isGuest = isGuestUser(getState());
 
   dispatch({ type: CHANGE_STATUS_WEBSITE, id });
-  steemConnectAPI.suspendWebsite(name, id).then(async () => {
+  steemConnectAPI.suspendWebsite(name, isGuest, id).then(async () => {
     const blockNumber = await getLastBlockNum();
 
     busyAPI.instance.sendAsync(subscribeMethod, [name, blockNumber, subscribeTypes.posts]);
@@ -247,6 +250,7 @@ export const ADD_WEBSITE_ADMINISTRATOR = createAsyncActionType(
 
 export const addWebAdministrator = (host, account) => (dispatch, getState, { steemConnectAPI }) => {
   const userName = getAuthenticatedUserName(getState());
+  const isGuest = isGuestUser(getState());
 
   dispatch({
     type: ADD_WEBSITE_ADMINISTRATOR.START,
@@ -254,7 +258,7 @@ export const addWebAdministrator = (host, account) => (dispatch, getState, { ste
   });
 
   steemConnectAPI
-    .addWebsiteAdministrators(userName, host, [account.name])
+    .addWebsiteAdministrators(userName, isGuest, host, [account.name])
     .then(async res => {
       if (!res.message) {
         return dispatch(
@@ -284,13 +288,14 @@ export const DELETE_WEBSITE_ADMINISTRATOR = createAsyncActionType(
 
 export const deleteWebAdministrator = (host, name) => (dispatch, getState, { steemConnectAPI }) => {
   const userName = getAuthenticatedUserName(getState());
+  const isGuest = isGuestUser(getState());
 
   dispatch({
     type: DELETE_WEBSITE_ADMINISTRATOR.START,
     payload: name,
   });
 
-  steemConnectAPI.deleteWebsiteAdministrators(userName, host, [name]).then(() =>
+  steemConnectAPI.deleteWebsiteAdministrators(userName, isGuest, host, [name]).then(() =>
     dispatch({
       type: DELETE_WEBSITE_ADMINISTRATOR.SUCCESS,
       payload: name,
@@ -319,6 +324,7 @@ export const addWebsiteModerators = (host, account) => (
   { steemConnectAPI },
 ) => {
   const userName = getAuthenticatedUserName(getState());
+  const isGuest = isGuestUser(getState());
 
   dispatch({
     type: ADD_WEBSITE_MODERATORS.START,
@@ -326,7 +332,7 @@ export const addWebsiteModerators = (host, account) => (
   });
 
   steemConnectAPI
-    .addWebsiteModerators(userName, host, [account.name])
+    .addWebsiteModerators(userName, isGuest, host, [account.name])
     .then(async res => {
       if (!res.message) {
         return dispatch(
@@ -356,13 +362,14 @@ export const DELETE_WEBSITE_MODERATORS = createAsyncActionType(
 
 export const deleteWebModerators = (host, name) => (dispatch, getState, { steemConnectAPI }) => {
   const userName = getAuthenticatedUserName(getState());
+  const isGuest = isGuestUser(getState());
 
   dispatch({
     type: DELETE_WEBSITE_MODERATORS.START,
     payload: name,
   });
 
-  steemConnectAPI.deleteWebsiteModerators(userName, host, [name]).then(() =>
+  steemConnectAPI.deleteWebsiteModerators(userName, isGuest, host, [name]).then(() =>
     dispatch({
       type: DELETE_WEBSITE_MODERATORS.SUCCESS,
       payload: name,
@@ -387,6 +394,7 @@ export const ADD_WEBSITE_AUTHORITIES = createAsyncActionType('@website/ADD_WEBSI
 
 export const addWebAuthorities = (host, account) => (dispatch, getState, { steemConnectAPI }) => {
   const userName = getAuthenticatedUserName(getState());
+  const isGuest = isGuestUser(getState());
 
   dispatch({
     type: ADD_WEBSITE_AUTHORITIES.START,
@@ -394,7 +402,7 @@ export const addWebAuthorities = (host, account) => (dispatch, getState, { steem
   });
 
   steemConnectAPI
-    .addWebsiteAuthorities(userName, host, [account.name])
+    .addWebsiteAuthorities(userName, isGuest, host, [account.name])
     .then(async res => {
       if (!res.message) {
         return dispatch(
@@ -424,13 +432,14 @@ export const DELETE_WEBSITE_AUTHORITIES = createAsyncActionType(
 
 export const deleteWebAuthorities = (host, name) => (dispatch, getState, { steemConnectAPI }) => {
   const userName = getAuthenticatedUserName(getState());
+  const isGuest = isGuestUser(getState());
 
   dispatch({
     type: DELETE_WEBSITE_AUTHORITIES.START,
     payload: name,
   });
 
-  steemConnectAPI.deleteWebsiteAuthorities(userName, host, [name]).then(() =>
+  steemConnectAPI.deleteWebsiteAuthorities(userName, isGuest, host, [name]).then(() =>
     dispatch({
       type: DELETE_WEBSITE_AUTHORITIES.SUCCESS,
       payload: name,
@@ -453,6 +462,7 @@ export const saveWebsiteSettings = (
 ) => (dispatch, getState, { steemConnectAPI }) => {
   const state = getState();
   const userName = getAuthenticatedUserName(state);
+  const isGuest = isGuestUser(state);
   const currentWebsite = getOwnWebsites(state).find(web => web.host === host);
 
   return dispatch({
@@ -460,6 +470,7 @@ export const saveWebsiteSettings = (
     payload: {
       promise: steemConnectAPI.saveWebsiteSettings(
         userName,
+        isGuest,
         get(currentWebsite, 'id'),
         googleAnalyticsTag,
         googleGSCTag,
@@ -482,11 +493,12 @@ export const saveAdSenseSettings = (host, code, level, txtFile) => (
 ) => {
   const state = getState();
   const userName = getAuthenticatedUserName(state);
+  const isGuest = isGuestUser(state);
 
   return dispatch({
     type: SAVE_ADSENSE_SETTINGS.ACTION,
     payload: {
-      promise: steemConnectAPI.saveAdSenseSettings(userName, host, code, level, txtFile),
+      promise: steemConnectAPI.saveAdSenseSettings(userName, isGuest, host, code, level, txtFile),
     },
   });
 };
@@ -677,8 +689,9 @@ export const referralUserForWebsite = (account, host) => (
   { steemConnectAPI },
 ) => {
   const owner = getAuthenticatedUserName(getState());
+  const isGuest = isGuestUser(getState());
 
-  return steemConnectAPI.websitesReferral(account, host, owner);
+  return steemConnectAPI.websitesReferral(account, isGuest, host, owner);
 };
 
 export const SET_SHOW_RELOAD = '@website/SET_SHOW_RELOAD';
