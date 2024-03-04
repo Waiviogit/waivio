@@ -173,7 +173,6 @@ export const voteAppends = (
 
   return steemConnectAPI
     .vote(voter, author, permlink, weight)
-    .then(r => r.json())
     .then(res => {
       if (!authorityField) {
         message.success('Please wait, we are processing your update');
