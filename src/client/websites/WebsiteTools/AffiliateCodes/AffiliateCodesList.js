@@ -1,13 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
+import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Button } from 'antd';
 import classNames from 'classnames';
 import { has } from 'lodash';
 import ObjectAvatar from '../../../components/ObjectAvatar';
+import { isGuestUser } from '../../../../store/authStore/authSelectors';
 
 const AffiliateCodesList = ({ affiliateObjects, rejectCode, user, context }) => {
+  const isGuest = useSelector(isGuestUser);
   const emptyCodes = affiliateObjects?.every(obj => !has(obj, 'affiliateCode'));
   const codesClassList = classNames('AffiliateCodes__object-table', {
     'AffiliateCodes__table-empty': emptyCodes,
@@ -22,7 +25,14 @@ const AffiliateCodesList = ({ affiliateObjects, rejectCode, user, context }) => 
       }
     });
 
-    rejectCode(currUpdate.author, obj.author_permlink, currUpdate.permlink, 1, user.name, context);
+    rejectCode(
+      currUpdate.author,
+      obj.author_permlink,
+      currUpdate.permlink,
+      isGuest ? 9999 : 1,
+      user.name,
+      context,
+    );
   };
 
   return (

@@ -965,7 +965,6 @@ export const isUserRegistered = (id, socialNetwork) =>
     .then(data => data.result);
 
 export const broadcastGuestOperation = async (operationId, data) => {
-  console.log(data);
   const userData = await getValidTokenData();
   const isReview = includes(data[0][1].title, 'Review');
 
@@ -1822,18 +1821,43 @@ export const getWebsiteAuthorities = async (host, userName) => {
     .catch(e => e);
 };
 
-export const getTagCategoryForSite = (host, userName) =>
-  fetch(`${config.apiPrefix}${config.sites}${config.filters}?host=${host}&userName=${userName}`, {
-    headers: { ...headers, ...getAuthHeaders() },
-    method: 'GET',
-  })
+export const getTagCategoryForSite = async (host, userName) => {
+  let isGuest;
+  let token = getGuestAccessToken();
+
+  isGuest = token === 'null' ? false : Boolean(token);
+
+  if (isGuest) token = await getValidTokenData();
+
+  return fetch(
+    `${config.apiPrefix}${config.sites}${config.filters}?host=${host}&userName=${userName}`,
+    {
+      headers: {
+        ...headers,
+        ...(isGuest
+          ? { 'access-token': token.token, 'waivio-auth': true }
+          : { ...getAuthHeaders() }),
+      },
+      method: 'GET',
+    },
+  )
     .then(res => res.json())
     .then(res => res)
     .catch(e => e);
+};
 
-export const saveTagCategoryForSite = (host, userName, objectsFilter) =>
-  fetch(`${config.apiPrefix}${config.sites}${config.filters}`, {
-    headers: { ...headers, ...getAuthHeaders() },
+export const saveTagCategoryForSite = async (host, userName, objectsFilter) => {
+  let isGuest;
+  let token = getGuestAccessToken();
+
+  isGuest = token === 'null' ? false : Boolean(token);
+
+  if (isGuest) token = await getValidTokenData();
+  return fetch(`${config.apiPrefix}${config.sites}${config.filters}`, {
+    headers: {
+      ...headers,
+      ...(isGuest ? { 'access-token': token.token, 'waivio-auth': true } : { ...getAuthHeaders() }),
+    },
     method: 'POST',
     body: JSON.stringify({
       host,
@@ -1844,6 +1868,7 @@ export const saveTagCategoryForSite = (host, userName, objectsFilter) =>
     .then(res => res.json())
     .then(res => res)
     .catch(e => e);
+};
 
 export const getSettingsWebsite = host =>
   fetch(`${config.apiPrefix}${config.sites}${config.settings}?host=${host}`, {
