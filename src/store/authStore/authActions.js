@@ -220,7 +220,8 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
       } catch (e) {
         reject(e);
         message.error('Authorization was not successful. Please try again later.');
-        dispatch(logout());
+        clearGuestAuthData();
+        Cookie.remove('auth');
       }
     });
   }
