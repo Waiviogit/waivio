@@ -38,7 +38,10 @@ const SocialProductReviews = ({ wobject, authors, intl }) => {
   const dispatch = useDispatch();
   const history = useHistory();
   const { name } = useParams();
-  const objName = history.location.hash ? getLastPermlinksFromHash(history.location.hash) : name;
+  const objName =
+    history.location.hash && wobject.object_type !== 'restaurant'
+      ? getLastPermlinksFromHash(history.location.hash)
+      : name;
   const postsIds = uniq(getFeedFromState('objectPosts', objName, feed));
   const hasMore = getFeedHasMoreFromState('objectPosts', objName, feed);
   const isFetching = getFeedLoadingFromState('objectPosts', objName, feed);

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { injectIntl } from 'react-intl';
-import { connect } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 import { get, size } from 'lodash';
 import PropTypes from 'prop-types';
 import { Tabs } from 'antd';
@@ -14,7 +14,7 @@ import { SORT_OPTIONS_WOBJ } from '../../../../common/constants/waivioFiltres';
 import UserCard from '../../../components/UserCard';
 import WeightTag from '../../../components/WeightTag';
 import SelectUserForAutocomplete from '../../../widgets/SelectUserForAutocomplete';
-import { getAuthenticatedUserName } from '../../../../store/authStore/authSelectors';
+import { getAuthenticatedUserName, isGuestUser } from '../../../../store/authStore/authSelectors';
 import {
   getMuteLoading,
   getRestrictions,
@@ -37,6 +37,7 @@ export const WebsiteRestrictions = ({
   const [sort, setSort] = useState(SORT_OPTIONS_WOBJ.WEIGHT);
   const [mutedUser, setMutedUser] = useState('');
   const host = match.params.site;
+  const isGuest = useSelector(isGuestUser);
   const mutedUsers = get(restrictions, 'mutedUsers', []);
   const blacklistUsers = get(restrictions, 'blacklistUsers', []);
 
@@ -148,30 +149,32 @@ export const WebsiteRestrictions = ({
           </SortSelector>
           {tableUsers(mutedUsers)}
         </Tabs.TabPane>
-        <Tabs.TabPane
-          tab={`${intl.formatMessage({
-            id: 'blacklisted',
-            defaultMessage: 'Blacklisted',
-          })} ${get(restrictions, 'blacklistedCount', 0)}`}
-          key="2"
-        >
-          <p>
-            {intl.formatMessage({
-              id: 'website_black_list',
-              defaultMessage:
-                'Website administrators can add users to blacklists. All object updates and votes on updates from' +
-                'blacklisted users are ignored. The website owner can also add users to their blacklist. They can' +
-                'also add users to their whitelist to override any other blacklist.',
-            })}
-          </p>
-          <Link to="/rewards/blacklist" className="WebsiteRestrictions__link">
-            {intl.formatMessage({
-              id: 'website_manage_black_list',
-              defaultMessage: 'Manage blacklist/whitelist',
-            })}
-          </Link>
-          {tableUsers(blacklistUsers, true)}
-        </Tabs.TabPane>
+        {!isGuest && (
+          <Tabs.TabPane
+            tab={`${intl.formatMessage({
+              id: 'blacklisted',
+              defaultMessage: 'Blacklisted',
+            })} ${get(restrictions, 'blacklistedCount', 0)}`}
+            key="2"
+          >
+            <p>
+              {intl.formatMessage({
+                id: 'website_black_list',
+                defaultMessage:
+                  'Website administrators can add users to blacklists. All object updates and votes on updates from' +
+                  'blacklisted users are ignored. The website owner can also add users to their blacklist. They can' +
+                  'also add users to their whitelist to override any other blacklist.',
+              })}
+            </p>
+            <Link to="/rewards/black-list" className="WebsiteRestrictions__link">
+              {intl.formatMessage({
+                id: 'website_manage_black_list',
+                defaultMessage: 'Manage blacklist/whitelist',
+              })}
+            </Link>
+            {tableUsers(blacklistUsers, true)}
+          </Tabs.TabPane>
+        )}
       </Tabs>
     </div>
   );

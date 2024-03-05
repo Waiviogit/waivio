@@ -173,7 +173,6 @@ export const voteAppends = (
 
   return steemConnectAPI
     .vote(voter, author, permlink, weight)
-    .then(r => r.json())
     .then(res => {
       if (!authorityField) {
         message.success('Please wait, we are processing your update');
@@ -285,7 +284,10 @@ export const affiliateCodeVoteAppend = (
   });
 
   return steemConnectAPI.appendVote(voter, isGuest, author, permlink, weight).then(res => {
-    busyAPI.instance.sendAsync(subscribeTypes.subscribeTransactionId, [voter, res.result.id]);
+    busyAPI.instance.sendAsync(subscribeTypes.subscribeTransactionId, [
+      voter,
+      res?.result?.id || res?.id,
+    ]);
     busyAPI.instance.subscribe((response, mess) => {
       if (mess?.success && mess?.permlink === res.result.id) {
         dispatch(setAffiliateObjects(userName, host));
