@@ -79,6 +79,8 @@ const createLink = i => {
     case 'product':
     case 'book':
       return `/object/${i?.author_permlink}`;
+    case 'newsfeed':
+      return `/object/${i?.author_permlink}/newsfeed`;
     default:
       return i.linkToWeb || i.defaultShowLink;
   }
@@ -134,7 +136,7 @@ const SocialWrapper = props => {
             const listItems = isEmpty(menuItemLinks)
               ? []
               : await getObjectsByIds({ authorPermlinks: menuItemLinks, locale: props.locale });
-
+            console.log(listItems);
             const compareList = wobject?.menuItem?.map(wobjItem => {
               const body = parseJSON(wobjItem.body);
               const currItem = body?.linkToObject
