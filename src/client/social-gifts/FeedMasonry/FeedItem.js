@@ -26,7 +26,7 @@ const FeedItem = ({ post, photoQuantity, preview }) => {
   const embeds = post?.embeds;
   const lastIndex = imagePath?.length - 1;
   const is3speak = embeds[0]?.provider_name === '3Speak';
-  const withoutImage = is3speak ? imagePath.length === 1 :  isEmpty(imagePath);
+  const withoutImage = is3speak ? imagePath.length === 1 : isEmpty(imagePath);
   const dispatch = useDispatch();
   const defaultVotePersent = useSelector(getVotePercent);
   const authUserName = useSelector(getAuthenticatedUserName);
@@ -76,12 +76,12 @@ const FeedItem = ({ post, photoQuantity, preview }) => {
   const likesCount = getUpvotes(post.active_votes).length;
   let embed = embeds[0];
 
-  if(isTiktok) {
-    embed = { ...embeds[0], thumbnail: preview || thumbnail }
+  if (isTiktok) {
+    embed = { ...embeds[0], thumbnail: preview || thumbnail };
   }
 
   if (is3speak) {
-    embed = { ...embeds[0], thumbnail: imagePath[0] }
+    embed = { ...embeds[0], thumbnail: imagePath[0] };
   }
 
   return (
@@ -110,11 +110,7 @@ const FeedItem = ({ post, photoQuantity, preview }) => {
             'FeedMasonry__videoContainer--tiktok': isTiktok,
           })}
         >
-          <PostFeedEmbed
-            key="embed"
-            isSocial
-            embed={embed}
-          />
+          <PostFeedEmbed key="embed" isSocial embed={embed} />
           {!withoutImage && (
             <img
               className={classNames('FeedMasonry__img', 'FeedMasonry__img--bottom')}
