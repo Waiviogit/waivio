@@ -219,6 +219,8 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
         });
       } catch (e) {
         reject(e);
+        // eslint-disable-next-line no-console
+        console.trace(e)
         message.error('Authorization was not successful. Please try again later.');
         clearGuestAuthData();
         Cookie.remove('auth');
@@ -238,6 +240,8 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
     },
   }).catch(e => {
     console.warn(e);
+    // eslint-disable-next-line no-console
+    console.trace(e)
     dispatch(loginError());
 
     return e;
