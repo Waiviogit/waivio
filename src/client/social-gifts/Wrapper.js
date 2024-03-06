@@ -136,7 +136,7 @@ const SocialWrapper = props => {
             const listItems = isEmpty(menuItemLinks)
               ? []
               : await getObjectsByIds({ authorPermlinks: menuItemLinks, locale: props.locale });
-            console.log(listItems);
+
             const compareList = wobject?.menuItem?.map(wobjItem => {
               const body = parseJSON(wobjItem.body);
               const currItem = body?.linkToObject

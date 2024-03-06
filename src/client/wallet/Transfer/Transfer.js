@@ -800,7 +800,7 @@ export default class Transfer extends React.Component {
                 <Select
                   className="Transfer__currency"
                   onChange={this.handleCurrencyChange}
-                  disabled={isChangesDisabledToken}
+                  disabled={isChangesDisabledToken || (this.props.manageWebsites && isGuest)}
                   dropdownClassName={'Transfer__currency-list'}
                 >
                   {userBalances.map(token => (
@@ -868,7 +868,7 @@ export default class Transfer extends React.Component {
                 rules: [{ validator: this.validateMemo }],
               })(
                 <Input.TextArea
-                  disabled={sendTo || isChangesDisabled}
+                  disabled={sendTo || isChangesDisabled || (this.props.manageWebsites && isGuest)}
                   autoSize={{ minRows: 2, maxRows: 6 }}
                   placeHolder={memoPlaceHolder}
                 />,
