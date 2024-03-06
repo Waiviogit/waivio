@@ -166,7 +166,7 @@ export const getSwapOutput = ({ symbol, amountIn, pool, slippage, from, params, 
     minAmountOut: minAmountOutToFixed,
     tokenPair,
     tokenSymbol,
-    tokenAmount,
+    tokenAmount: tokenAmount.toFixed(precision, BigNumber.ROUND_DOWN),
   });
 
   return {
