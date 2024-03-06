@@ -11,9 +11,13 @@ const ListDescription = ({ wobject }) => {
   const hasAvatar = has(wobject, 'avatar');
   const hasDescription = has(wobject, 'description');
   const { firstDescrPart, secondDescrPart } = shortenDescription(wobject?.description, 800);
-  const { firstDescrPart: secondPart, secondDescrPart: thirdPart } = shortenDescription(
+  const { firstDescrPart: secondPart, secondDescrPart: thirdPartDescr } = shortenDescription(
     secondDescrPart,
-    500,
+    750,
+  );
+  const { firstDescrPart: thirdPart, secondDescrPart: fourthPart } = shortenDescription(
+    thirdPartDescr,
+    750,
   );
   const { firstDescrPart: description } = shortenDescription(
     removeEmptyLines(wobject?.description),
@@ -47,7 +51,14 @@ const ListDescription = ({ wobject }) => {
               }`}
             >
               {secondPart}
-              {!isEmpty(thirdPart) && !showMore && (
+            </div>
+            <div
+              className={`ListDescription__second-description ${
+                !hasAvatar ? 'without-avatar' : ''
+              }`}
+            >
+              {thirdPart}
+              {!isEmpty(fourthPart) && !showMore && (
                 <button
                   onClick={() => setShowMore(!showMore)}
                   className="WalletTable__csv-button ml2"
@@ -62,7 +73,7 @@ const ListDescription = ({ wobject }) => {
                   !hasAvatar ? 'without-avatar' : ''
                 }`}
               >
-                {thirdPart}
+                {fourthPart}
               </div>
             )}
           </>

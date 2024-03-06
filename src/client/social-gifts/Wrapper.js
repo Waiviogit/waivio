@@ -79,6 +79,8 @@ const createLink = i => {
     case 'product':
     case 'book':
       return `/object/${i?.author_permlink}`;
+    case 'newsfeed':
+      return `/object/${i?.author_permlink}/newsfeed`;
     default:
       return i.linkToWeb || i.defaultShowLink;
   }

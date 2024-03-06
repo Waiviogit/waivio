@@ -109,6 +109,7 @@ export default class Transfer extends React.Component {
   static propTypes = {
     intl: PropTypes.shape().isRequired,
     visible: PropTypes.bool,
+    manageWebsites: PropTypes.bool,
     to: PropTypes.string,
     rates: PropTypes.number,
     authenticated: PropTypes.bool.isRequired,
@@ -409,6 +410,7 @@ export default class Transfer extends React.Component {
               ...transferQuery,
               amount: isHive ? transferQuery.amount : +values.amount,
               account: sponsor,
+              id: this.props.manageWebsites ? 'websitesPaymentGuest' : 'transferFromGuest',
             }).then(res => {
               if (res.result || res.id) {
                 this.props.notify(
@@ -798,7 +800,7 @@ export default class Transfer extends React.Component {
                 <Select
                   className="Transfer__currency"
                   onChange={this.handleCurrencyChange}
-                  disabled={isChangesDisabledToken}
+                  disabled={isChangesDisabledToken || (this.props.manageWebsites && isGuest)}
                   dropdownClassName={'Transfer__currency-list'}
                 >
                   {userBalances.map(token => (
@@ -866,7 +868,7 @@ export default class Transfer extends React.Component {
                 rules: [{ validator: this.validateMemo }],
               })(
                 <Input.TextArea
-                  disabled={sendTo || isChangesDisabled}
+                  disabled={sendTo || isChangesDisabled || (this.props.manageWebsites && isGuest)}
                   autoSize={{ minRows: 2, maxRows: 6 }}
                   placeHolder={memoPlaceHolder}
                 />,

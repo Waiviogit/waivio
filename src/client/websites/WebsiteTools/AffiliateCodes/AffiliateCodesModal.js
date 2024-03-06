@@ -1,11 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { useSelector } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
 import { get, isEmpty } from 'lodash';
 import { Button, Form, Input, message, Modal } from 'antd';
 import { objectFields } from '../../../../common/constants/listOfFields';
 import { getNewPostData } from './affiliateCodesHelper';
 import { getObjectName } from '../../../../common/helpers/wObjectHelper';
+import { isGuestUser } from '../../../../store/authStore/authSelectors';
+
+const guestUpVotingPower = 10000;
 
 const AffiliateCodesModal = ({
   intl,
@@ -25,6 +29,7 @@ const AffiliateCodesModal = ({
   affiliateObjects,
 }) => {
   const { setFieldsValue, getFieldValue, validateFieldsAndScroll } = form;
+  const isGuest = useSelector(isGuestUser);
   const userUpVotePower = 100;
   const hideModal = () => {
     setFieldsValue({ [objectFields.affiliateCode]: '' });
@@ -37,14 +42,14 @@ const AffiliateCodesModal = ({
         dup.author,
         selectedObj.author_permlink,
         dup.permlink,
-        userUpVotePower,
+        isGuest ? guestUpVotingPower : userUpVotePower,
         user.name,
         appendContext === 'PERSONAL' ? undefined : context,
       );
     }
 
     return appendWobject(data, {
-      votePercent: data.votePower,
+      votePercent: isGuest ? guestUpVotingPower : data.votePower,
       follow: formValues.follow,
       isLike: data.isLike,
       isObjectPage: false,
@@ -70,7 +75,7 @@ const AffiliateCodesModal = ({
       user,
       selectedObj,
       appendContext,
-      userUpVotePower,
+      isGuest ? guestUpVotingPower : userUpVotePower,
     );
 
     // eslint-disable-next-line no-restricted-syntax

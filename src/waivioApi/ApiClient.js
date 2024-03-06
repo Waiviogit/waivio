@@ -978,6 +978,12 @@ export const broadcastGuestOperation = async (operationId, data) => {
         userName: userData.userData.name,
         guestReview: true,
       };
+    } else if (operationId === 'website_guest') {
+      body = {
+        id: operationId,
+        data: data[0][1],
+        userName: userData.userData.name,
+      };
     } else {
       body = {
         id: operationId,
@@ -1573,12 +1579,22 @@ export const getDomainList = () =>
     .then(r => r.json())
     .catch(err => err);
 
-export const createWebsite = body =>
+export const createWebsite = async body => {
+  let isGuest;
+  let token = getGuestAccessToken();
+
+  isGuest = token === 'null' ? false : Boolean(token);
+
+  if (isGuest) token = await getValidTokenData();
   fetch(`${config.apiPrefix}${config.sites}${config.create}`, {
-    headers: { ...headers, ...getAuthHeaders() },
+    headers: {
+      ...headers,
+      ...(isGuest ? { 'access-token': token.token, 'waivio-auth': true } : { ...getAuthHeaders() }),
+    },
     body: JSON.stringify(body),
     method: 'PUT',
   }).then(res => res.json());
+};
 
 export const checkAvailable = (name, parent, isHost) => {
   return fetch(
@@ -1612,32 +1628,62 @@ export const getParentHost = host =>
     .then(res => res.result)
     .catch(e => e);
 
-export const getInfoForManagePage = name =>
-  fetch(`${config.apiPrefix}${config.sites}${config.managePage}?userName=${name}`, {
-    headers: { ...headers, ...getAuthHeaders() },
+export const getInfoForManagePage = async name => {
+  let isGuest;
+  let token = getGuestAccessToken();
+
+  isGuest = token === 'null' ? false : Boolean(token);
+
+  if (isGuest) token = await getValidTokenData();
+
+  return fetch(`${config.apiPrefix}${config.sites}${config.managePage}?userName=${name}`, {
+    headers: {
+      ...headers,
+      ...(isGuest ? { 'access-token': token.token, 'waivio-auth': true } : { ...getAuthHeaders() }),
+    },
     method: 'GET',
   })
     .then(res => res)
     .catch(e => e);
+};
 
-export const deleteSite = (userName, host) =>
-  fetch(`${config.apiPrefix}${config.sites}`, {
-    headers: { ...headers, ...getAuthHeaders() },
+export const deleteSite = async (userName, host) => {
+  let isGuest;
+  let token = getGuestAccessToken();
+
+  isGuest = token === 'null' ? false : Boolean(token);
+
+  if (isGuest) token = await getValidTokenData();
+  return fetch(`${config.apiPrefix}${config.sites}`, {
+    headers: {
+      ...headers,
+      ...(isGuest ? { 'access-token': token.token, 'waivio-auth': true } : { ...getAuthHeaders() }),
+    },
     body: JSON.stringify({ userName, host }),
     method: 'DELETE',
   })
     .then(res => res.json())
     .then(res => res)
     .catch(e => e);
+};
 
-export const getWebsitesReports = formData => {
+export const getWebsitesReports = async formData => {
+  let isGuest;
+  let token = getGuestAccessToken();
+
+  isGuest = token === 'null' ? false : Boolean(token);
+
+  if (isGuest) token = await getValidTokenData();
   const queryString = Object.keys(formData).reduce(
     (acc, value) => (acc ? `${acc}&${value}=${formData[value]}` : `${value}=${formData[value]}`),
     '',
   );
 
   return fetch(`${config.apiPrefix}${config.sites}${config.report}?${queryString}`, {
-    headers: { ...headers, ...getAuthHeaders() },
+    headers: {
+      ...headers,
+      ...(isGuest ? { 'access-token': token.token, 'waivio-auth': true } : { ...getAuthHeaders() }),
+    },
     method: 'GET',
   })
     .then(res => res.json())
@@ -1645,82 +1691,173 @@ export const getWebsitesReports = formData => {
     .catch(e => e);
 };
 
-export const getWebsites = userName =>
-  fetch(`${config.apiPrefix}${config.sites}?userName=${userName}`, {
-    headers: { ...headers, ...getAuthHeaders() },
+export const getWebsites = async userName => {
+  let isGuest;
+  let token = getGuestAccessToken();
+
+  isGuest = token === 'null' ? false : Boolean(token);
+
+  if (isGuest) token = await getValidTokenData();
+
+  return fetch(`${config.apiPrefix}${config.sites}?userName=${userName}`, {
+    headers: {
+      ...headers,
+      ...(isGuest ? { 'access-token': token.token, 'waivio-auth': true } : { ...getAuthHeaders() }),
+    },
     method: 'GET',
   })
     .then(res => res.json())
     .then(res => res)
     .catch(e => e);
+};
 
-export const getWebsitesConfiguration = host =>
-  fetch(`${config.apiPrefix}${config.sites}${config.configuration}?host=${host}`, {
-    headers: { ...headers, ...getAuthHeaders() },
+export const getWebsitesConfiguration = async host => {
+  let isGuest;
+  let token = getGuestAccessToken();
+
+  isGuest = token === 'null' ? false : Boolean(token);
+
+  if (isGuest) token = await getValidTokenData();
+  return fetch(`${config.apiPrefix}${config.sites}${config.configuration}?host=${host}`, {
+    headers: {
+      ...headers,
+      ...(isGuest ? { 'access-token': token.token, 'waivio-auth': true } : { ...getAuthHeaders() }),
+    },
     method: 'GET',
   })
     .then(res => res.json())
     .then(res => res)
     .catch(e => e);
+};
 
-export const saveWebsitesConfiguration = body =>
-  fetch(`${config.apiPrefix}${config.sites}${config.configuration}`, {
-    headers: { ...headers, ...getAuthHeaders() },
+export const saveWebsitesConfiguration = async body => {
+  let isGuest;
+  let token = getGuestAccessToken();
+
+  isGuest = token === 'null' ? false : Boolean(token);
+
+  if (isGuest) token = await getValidTokenData();
+  return fetch(`${config.apiPrefix}${config.sites}${config.configuration}`, {
+    headers: {
+      ...headers,
+      ...(isGuest ? { 'access-token': token.token, 'waivio-auth': true } : { ...getAuthHeaders() }),
+    },
     body: JSON.stringify({ ...body }),
     method: 'POST',
   })
     .then(res => res.json())
     .then(res => res)
     .catch(e => e);
+};
 
-export const getWebsiteAdministrators = (host, userName) =>
-  fetch(
+export const getWebsiteAdministrators = async (host, userName) => {
+  let isGuest;
+  let token = getGuestAccessToken();
+
+  isGuest = token === 'null' ? false : Boolean(token);
+
+  if (isGuest) token = await getValidTokenData();
+  return fetch(
     `${config.apiPrefix}${config.sites}${config.administrators}?host=${host}&userName=${userName}`,
     {
-      headers: { ...headers, ...getAuthHeaders() },
+      headers: {
+        ...headers,
+        ...(isGuest
+          ? { 'access-token': token.token, 'waivio-auth': true }
+          : { ...getAuthHeaders() }),
+      },
       method: 'GET',
     },
   )
     .then(res => res.json())
     .then(res => res)
     .catch(e => e);
+};
 
-export const getWebsiteModerators = (host, userName) =>
-  fetch(
+export const getWebsiteModerators = async (host, userName) => {
+  let isGuest;
+  let token = getGuestAccessToken();
+
+  isGuest = token === 'null' ? false : Boolean(token);
+
+  if (isGuest) token = await getValidTokenData();
+  return fetch(
     `${config.apiPrefix}${config.sites}${config.moderators}?host=${host}&userName=${userName}`,
     {
-      headers: { ...headers, ...getAuthHeaders() },
+      headers: {
+        ...headers,
+        ...(isGuest
+          ? { 'access-token': token.token, 'waivio-auth': true }
+          : { ...getAuthHeaders() }),
+      },
       method: 'GET',
     },
   )
     .then(res => res.json())
     .then(res => res)
     .catch(e => e);
+};
+export const getWebsiteAuthorities = async (host, userName) => {
+  let isGuest;
+  let token = getGuestAccessToken();
 
-export const getWebsiteAuthorities = (host, userName) =>
-  fetch(
+  isGuest = token === 'null' ? false : Boolean(token);
+
+  if (isGuest) token = await getValidTokenData();
+  return fetch(
     `${config.apiPrefix}${config.sites}${config.authorities}?host=${host}&userName=${userName}`,
     {
-      headers: { ...headers, ...getAuthHeaders() },
+      headers: {
+        ...headers,
+        ...(isGuest
+          ? { 'access-token': token.token, 'waivio-auth': true }
+          : { ...getAuthHeaders() }),
+      },
       method: 'GET',
     },
   )
     .then(res => res.json())
     .then(res => res)
     .catch(e => e);
+};
 
-export const getTagCategoryForSite = (host, userName) =>
-  fetch(`${config.apiPrefix}${config.sites}${config.filters}?host=${host}&userName=${userName}`, {
-    headers: { ...headers, ...getAuthHeaders() },
-    method: 'GET',
-  })
+export const getTagCategoryForSite = async (host, userName) => {
+  let isGuest;
+  let token = getGuestAccessToken();
+
+  isGuest = token === 'null' ? false : Boolean(token);
+
+  if (isGuest) token = await getValidTokenData();
+
+  return fetch(
+    `${config.apiPrefix}${config.sites}${config.filters}?host=${host}&userName=${userName}`,
+    {
+      headers: {
+        ...headers,
+        ...(isGuest
+          ? { 'access-token': token.token, 'waivio-auth': true }
+          : { ...getAuthHeaders() }),
+      },
+      method: 'GET',
+    },
+  )
     .then(res => res.json())
     .then(res => res)
     .catch(e => e);
+};
 
-export const saveTagCategoryForSite = (host, userName, objectsFilter) =>
-  fetch(`${config.apiPrefix}${config.sites}${config.filters}`, {
-    headers: { ...headers, ...getAuthHeaders() },
+export const saveTagCategoryForSite = async (host, userName, objectsFilter) => {
+  let isGuest;
+  let token = getGuestAccessToken();
+
+  isGuest = token === 'null' ? false : Boolean(token);
+
+  if (isGuest) token = await getValidTokenData();
+  return fetch(`${config.apiPrefix}${config.sites}${config.filters}`, {
+    headers: {
+      ...headers,
+      ...(isGuest ? { 'access-token': token.token, 'waivio-auth': true } : { ...getAuthHeaders() }),
+    },
     method: 'POST',
     body: JSON.stringify({
       host,
@@ -1731,6 +1868,7 @@ export const saveTagCategoryForSite = (host, userName, objectsFilter) =>
     .then(res => res.json())
     .then(res => res)
     .catch(e => e);
+};
 
 export const getSettingsWebsite = host =>
   fetch(`${config.apiPrefix}${config.sites}${config.settings}?host=${host}`, {
@@ -1791,13 +1929,21 @@ export const getWebsiteObjCoordinates = host =>
     .then(res => res)
     .catch(e => e);
 
-export const getRestrictionsInfo = (host, userName) =>
-  fetch(
+export const getRestrictionsInfo = async (host, userName) => {
+  let isGuest;
+  let token = getGuestAccessToken();
+
+  isGuest = token === 'null' ? false : Boolean(token);
+
+  if (isGuest) token = await getValidTokenData();
+  return fetch(
     `${config.apiPrefix}${config.sites}${config.restrictions}?host=${host}&userName=${userName}`,
     {
       headers: {
         ...headers,
-        ...getAuthHeaders(),
+        ...(isGuest
+          ? { 'access-token': token.token, 'waivio-auth': true }
+          : { ...getAuthHeaders() }),
       },
       method: 'GET',
     },
@@ -1805,6 +1951,7 @@ export const getRestrictionsInfo = (host, userName) =>
     .then(res => res.json())
     .then(res => res)
     .catch(e => e);
+};
 
 export const getWebsiteObjectsWithCoordinates = (params = {}, accessToken) =>
   fetch(`${config.apiPrefix}${config.sites}${config.map}`, {

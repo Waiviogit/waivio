@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { isEmpty, uniq } from 'lodash';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, useParams } from 'react-router';
@@ -23,26 +23,39 @@ import {
 } from '../../../../common/helpers/wObjectHelper';
 import './SocialProductReviews.less';
 import { getIsAuthenticated } from '../../../../store/authStore/authSelectors';
-import ModalSignIn from '../../../components/Navigation/ModlaSignIn/ModalSignIn';
+import {
+  getCurrentHost,
+  getUsedLocale,
+  getWebsiteColors,
+  getWebsiteName,
+} from '../../../../store/appStore/appSelectors';
+import { initialColors } from '../../../websites/constants/colors';
 
 const SocialProductReviews = ({ wobject, authors, intl }) => {
-  const [showSignIn, setShowSignIn] = useState(false);
   const feed = useSelector(getFeed);
   const postsList = useSelector(getPosts);
   const isAuthUser = useSelector(getIsAuthenticated);
   const dispatch = useDispatch();
   const history = useHistory();
   const { name } = useParams();
-  const currHost = typeof location !== 'undefined' && location.hostname;
-  const objName = history.location.hash ? getLastPermlinksFromHash(history.location.hash) : name;
+  const objName =
+    history.location.hash && wobject.object_type !== 'restaurant'
+      ? getLastPermlinksFromHash(history.location.hash)
+      : name;
   const postsIds = uniq(getFeedFromState('objectPosts', objName, feed));
   const hasMore = getFeedHasMoreFromState('objectPosts', objName, feed);
   const isFetching = getFeedLoadingFromState('objectPosts', objName, feed);
   const posts = preparationPostList(postsIds, postsList);
-  const next = history.location.pathname.length > 1 ? location.pathname : '';
+  const host = useSelector(getCurrentHost);
+  const colors = useSelector(getWebsiteColors);
+  const websiteName = useSelector(getWebsiteName);
+  const color = colors?.mapMarkerBody || initialColors.marker;
+  const usedLocale = useSelector(getUsedLocale);
   const handleWriteReviewClick = () => {
     if (!isAuthUser) {
-      setShowSignIn(true);
+      history.push(
+        `/sign-in?host=${host}&backUrl=${host}/object/${wobject.author_permlink}&color=${color}&usedLocale=${usedLocale}&websiteName=${websiteName}`,
+      );
     } else {
       handleCreatePost(wobject, authors, history);
     }
@@ -95,15 +108,6 @@ const SocialProductReviews = ({ wobject, authors, intl }) => {
         loadMore={loadMore}
         loading={isFetching}
         writeReview={handleWriteReviewClick}
-      />
-      <ModalSignIn
-        next={next}
-        isSocialGifts
-        domain={currHost}
-        hideLink
-        isButton={false}
-        handleLoginModalCancel={() => setShowSignIn(false)}
-        showModal={showSignIn}
       />
     </div>
   );

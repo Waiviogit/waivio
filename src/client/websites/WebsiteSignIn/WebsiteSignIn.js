@@ -51,7 +51,7 @@ const WebsiteSignIn = props => {
         document.body.style.setProperty('--website-hover-color', hexToRgb(color, 8));
       }
     }
-  }, []);
+  }, [query]);
 
   const onClickHiveSignerAuthButton = () => {
     if (typeof window !== 'undefined' && window.gtag)

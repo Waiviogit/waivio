@@ -11,13 +11,11 @@ import {
 } from './constants';
 import SettingsItem from './SettingsItem';
 import { getIsWaivio } from '../../../../store/appStore/appSelectors';
-import { isGuestUser } from '../../../../store/authStore/authSelectors';
 import { getOwnWebsites } from '../../../../store/websiteStore/websiteSelectors';
 
 import '../Sidenav.less';
 
 const SettingsSidenav = ({ match }) => {
-  const isGuest = useSelector(isGuestUser);
   const ownWebsite = useSelector(getOwnWebsites);
   const isWaivio = useSelector(getIsWaivio);
   const [menuCondition, setMenuCondition] = useState({
@@ -37,7 +35,7 @@ const SettingsSidenav = ({ match }) => {
   };
 
   useEffect(() => {
-    if (!isGuest && isWaivio) createWebsiteConditions(ownWebsite);
+    if (isWaivio) createWebsiteConditions(ownWebsite);
   }, [ownWebsite]);
 
   const toggleMenuCondition = menuItem => {
@@ -61,7 +59,7 @@ const SettingsSidenav = ({ match }) => {
           toggleMenuCondition={toggleMenuCondition}
         />
       )}
-      {!isGuest && isWaivio && (
+      {isWaivio && (
         <React.Fragment>
           <SettingsItem
             condition={menuCondition.websites}

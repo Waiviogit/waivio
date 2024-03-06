@@ -29,11 +29,10 @@ const SettingsMain = props => {
   });
 
   useEffect(() => {
-    if (!props.auth || (host && (props.isGuest || !props.isWaivio))) props.history.push('/');
-    else if (!props.isGuest)
-      props.getOwnWebsites().then(({ value }) => {
-        if (host && !some(value, website => website.host === host)) props.history.push('/');
-      });
+    if (!props.auth || (host && !props.isWaivio)) props.history.push('/');
+    props.getOwnWebsites().then(({ value }) => {
+      if (host && !some(value, website => website.host === host)) props.history.push('/');
+    });
   }, [props.auth]);
 
   return (
@@ -83,7 +82,6 @@ SettingsMain.propTypes = {
     push: PropTypes.func,
   }).isRequired,
   auth: PropTypes.bool.isRequired,
-  isGuest: PropTypes.bool.isRequired,
   isWaivio: PropTypes.bool.isRequired,
   getOwnWebsites: PropTypes.func.isRequired,
 };
