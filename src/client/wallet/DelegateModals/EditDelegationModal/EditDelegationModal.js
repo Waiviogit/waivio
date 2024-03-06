@@ -107,7 +107,7 @@ const EditDelegationModal = props => {
         const transferQuery = {
           delegator: authUserName,
           delegatee: props.requiredUser.name,
-          vesting_shares: `0 VESTS`,
+          vesting_shares: `0.000000 VESTS`,
         };
         const json = JSON.stringify({
           contractName: 'tokens',
