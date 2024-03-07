@@ -7,6 +7,7 @@ import { Icon } from 'antd';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { getProxyImageURL } from '../../../common/helpers/image';
+import { parseJSON } from '../../../common/helpers/parseJSON';
 import { getPreviewLoadingFromState } from '../../../store/feedStore/feedSelectors';
 import CustomImage from '../../components/Image/Image';
 import PostFeedEmbed from '../../components/Story/PostFeedEmbed';
@@ -26,7 +27,7 @@ const FeedItem = ({ post, photoQuantity, preview }) => {
   const embeds = post?.embeds;
   const lastIndex = imagePath?.length - 1;
   const is3speak = embeds[0]?.provider_name === '3Speak';
-  const withoutImage = is3speak ? imagePath.length === 1 : isEmpty(imagePath);
+  const withoutImage = is3speak ? imagePath.length === 1 || isEmpty(imagePath) : isEmpty(imagePath);
   const dispatch = useDispatch();
   const defaultVotePersent = useSelector(getVotePercent);
   const authUserName = useSelector(getAuthenticatedUserName);
@@ -81,7 +82,9 @@ const FeedItem = ({ post, photoQuantity, preview }) => {
   }
 
   if (is3speak) {
-    embed = { ...embeds[0], thumbnail: imagePath[0] };
+    const jsonMetadata = parseJSON(post.json_metadata);
+    console.log(imagePath);
+    embed = { ...embeds[0], thumbnail: jsonMetadata?.video?.info?.sourceMap?.[1]?.url };
   }
 
   return (
@@ -170,6 +173,7 @@ const FeedItem = ({ post, photoQuantity, preview }) => {
 FeedItem.propTypes = {
   post: PropTypes.shape({
     author: PropTypes.string,
+    json_metadata: PropTypes.string,
     permlink: PropTypes.string,
     title: PropTypes.string,
     active_votes: PropTypes.arrayOf(),
