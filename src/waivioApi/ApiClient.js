@@ -1586,7 +1586,7 @@ export const createWebsite = async body => {
   isGuest = token === 'null' ? false : Boolean(token);
 
   if (isGuest) token = await getValidTokenData();
-  fetch(`${config.apiPrefix}${config.sites}${config.create}`, {
+  return fetch(`${config.apiPrefix}${config.sites}${config.create}`, {
     headers: {
       ...headers,
       ...(isGuest ? { 'access-token': token.token, 'waivio-auth': true } : { ...getAuthHeaders() }),
