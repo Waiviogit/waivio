@@ -34,7 +34,6 @@ const Checklist = ({
   match,
   setBreadcrumb,
   permlink,
-  isSocialProduct,
   setNestedObject,
   wobject,
   getObjectAction,
@@ -73,7 +72,7 @@ const Checklist = ({
       if (history.location.hash) {
         setNestedObject(wObject);
       }
-      if (!isSocialProduct) {
+      if (history.location.pathname === '/') {
         setBreadcrumb(wObject);
       }
       setLists(
@@ -121,6 +120,7 @@ Checklist.propTypes = {
   history: PropTypes.shape({
     location: PropTypes.shape({
       hash: PropTypes.string,
+      pathname: PropTypes.string,
     }),
   }).isRequired,
   wobject: PropTypes.shape({
@@ -147,7 +147,6 @@ Checklist.propTypes = {
       name: PropTypes.string,
     }),
   }).isRequired,
-  isSocialProduct: PropTypes.bool,
   setBreadcrumb: PropTypes.func.isRequired,
 };
 
