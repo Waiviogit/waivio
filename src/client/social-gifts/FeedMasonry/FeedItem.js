@@ -83,8 +83,8 @@ const FeedItem = ({ post, photoQuantity, preview }) => {
 
   if (is3speak) {
     const jsonMetadata = parseJSON(post.json_metadata);
-    console.log(imagePath);
-    embed = { ...embeds[0], thumbnail: jsonMetadata?.video?.info?.sourceMap?.[1]?.url };
+
+    embed = { ...embeds[0], thumbnail: imagePath[0] || jsonMetadata?.video?.info?.sourceMap?.[1]?.url };
   }
 
   return (
