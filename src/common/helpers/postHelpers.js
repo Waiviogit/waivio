@@ -374,7 +374,7 @@ export function getPostHashtags(items) {
   const sortedItems = items.sort((a, b) => b.weight - a.weight);
   const postItems = sortedItems.slice(0, 3);
 
-  return postItems.map(item => getObjectName(item));
+  return postItems?.map(item => getObjectName(item));
 }
 
 export const getAuthorName = post =>

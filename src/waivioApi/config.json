@@ -226,5 +226,6 @@
   "thread": "/thread",
   "hashtag": "/hashtag",
   "list": "/list",
-  "favorites": "/favorites"
+  "favorites": "/favorites",
+  "pin": "/pin"
 }

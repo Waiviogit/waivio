@@ -173,6 +173,20 @@ export const getFeedContentByObject = (
     .then(posts => posts)
     .catch(error => error);
 
+export const getPinnedPostsByObject = (name, locale, follower) =>
+  fetch(`${config.apiPrefix}${config.getObjects}/${name}${config.pin}`, {
+    headers: {
+      ...headers,
+      app: config.appName,
+      locale,
+      follower,
+    },
+    method: 'GET',
+  })
+    .then(res => res.json())
+    .then(posts => posts)
+    .catch(error => error);
+
 // eslint-disable-next-line camelcase
 export const getMoreFeedContentByObject = ({
   authorPermlink,
