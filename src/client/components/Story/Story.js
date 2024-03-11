@@ -1,4 +1,4 @@
-import { map, isEmpty, get, toLower } from 'lodash';
+import { map, isEmpty, get, toLower, has } from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
 import {
@@ -30,6 +30,7 @@ import { getObjectName } from '../../../common/helpers/wObjectHelper';
 import { guestUserRegex } from '../../../common/helpers/regexHelpers';
 
 import './Story.less';
+import { initialColors } from '../../websites/constants/colors';
 
 @injectIntl
 @withRouter
@@ -52,6 +53,7 @@ class Story extends React.Component {
     singlePostVew: PropTypes.bool,
     sliderMode: PropTypes.bool,
     history: PropTypes.shape(),
+    colors: PropTypes.shape(),
     showPostModal: PropTypes.func,
     votePost: PropTypes.func,
     toggleBookmark: PropTypes.func,
@@ -309,11 +311,13 @@ class Story extends React.Component {
       location,
       userComments,
       isThread,
+      colors,
     } = this.props;
     const rebloggedUser = get(post, ['reblogged_users'], []);
     const isRebloggedPost = rebloggedUser.includes(user.name);
     const author = post.guestInfo ? post.guestInfo.userId : post.author;
     let rebloggedUI = null;
+    const color = colors?.mapMarkerBody || initialColors.marker;
 
     if (isPostDeleted(post)) return <div />;
 
@@ -351,19 +355,7 @@ class Story extends React.Component {
     return (
       post.depth >= 0 && (
         <div className="Story" id={`${author}-${post.permlink}`}>
-          <div>
-            {rebloggedUI}
-            {post.pin && (
-              <div className="Story__pin">
-                <Icon
-                  type="pushpin"
-                  theme="filled"
-                  style={{ fontSize: '13px', marginTop: '-1px' }}
-                />
-                <FormattedMessage id="pinned" defaultMessage="Pinned" />
-              </div>
-            )}
-          </div>
+          <div>{rebloggedUI}</div>
           <div className="Story__content">
             <div className="Story__header">
               <Link to={`/@${author}`}>
@@ -397,7 +389,18 @@ class Story extends React.Component {
               <div className="Story__topics">
                 <div className="Story__published">
                   <div className="PostWobject__wrap">
-                    {post.wobjects && this.getWobjects(post.wobjects.slice(0, 4))}
+                    {has(post, 'currentUserPin') ? (
+                      <Icon
+                        type="pushpin"
+                        theme="filled"
+                        style={{
+                          color: post?.currentUserPin ? color : '#99aab5',
+                          fontSize: '23px',
+                        }}
+                      />
+                    ) : (
+                      post.wobjects && this.getWobjects(post.wobjects.slice(0, 4))
+                    )}
                   </div>
                 </div>
               </div>

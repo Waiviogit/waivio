@@ -12,7 +12,7 @@ import { editPost } from '../../store/editorStore/editorActions';
 import { reblog } from '../../store/reblogStore/reblogActions';
 import { unfollowUser, followUser } from '../../store/usersStore/usersActions';
 import { getDownvotes, getUpvotes } from '../../common/helpers/voteHelpers';
-import { getRewardFund } from '../../store/appStore/appSelectors';
+import { getRewardFund, getWebsiteColors } from '../../store/appStore/appSelectors';
 import { getAuthenticatedUser } from '../../store/authStore/authSelectors';
 import { getIsEditorSaving } from '../../store/editorStore/editorSelectors';
 import { getPendingLikes, getPosts } from '../../store/postsStore/postsSelectors';
@@ -73,6 +73,7 @@ const mapStateToProps = (state, { id, isThread }) => {
     rewardFund: getRewardFund(state),
     defaultVotePercent: getVotePercent(state),
     showNSFWPosts: getShowNSFWPosts(state),
+    colors: getWebsiteColors(state),
   };
 };
 

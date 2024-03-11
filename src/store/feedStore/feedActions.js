@@ -252,18 +252,29 @@ export const getObjectPosts = ({ username, object, limit = 10, newsPermlink }) =
   const locale = getLocale(state);
   const follower = getAuthenticatedUserName(state);
 
-  return dispatch({
-    type: GET_OBJECT_POSTS.ACTION,
-    payload: ApiClient.getFeedContentByObject(
-      object,
-      limit,
-      readLanguages,
-      locale,
-      follower,
-      newsPermlink,
-    ),
-    meta: { sortBy: 'objectPosts', category: username, limit },
-  });
+  const apiCall1 = ApiClient.getPinnedPostsByObject(object, locale, follower);
+  const apiCall2 = ApiClient.getFeedContentByObject(
+    object,
+    limit,
+    readLanguages,
+    locale,
+    follower,
+    newsPermlink,
+  );
+
+  return Promise.all([apiCall1, apiCall2])
+    .then(([pinnedPosts, feedContent]) => {
+      const allPosts = [...pinnedPosts, ...feedContent];
+
+      return dispatch({
+        type: GET_OBJECT_POSTS.SUCCESS,
+        payload: allPosts,
+        meta: { sortBy: 'objectPosts', category: username, limit },
+      });
+    })
+    .catch(error => {
+      console.error('Error:', error);
+    });
 };
 
 export const getMoreObjectPosts = ({
