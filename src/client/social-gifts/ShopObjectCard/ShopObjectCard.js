@@ -4,7 +4,7 @@ import { get, isEmpty, truncate, uniq } from 'lodash';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { Link } from 'react-router-dom';
-import { useLocation, useParams } from 'react-router';
+import { useLocation } from 'react-router';
 
 import RatingsWrap from '../../objectCard/RatingsWrap/RatingsWrap';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
@@ -19,12 +19,13 @@ import { isMobile } from '../../../common/helpers/apiHelpers';
 import { removeEmptyLines, shortenDescription } from '../../object/wObjectHelper';
 
 import './ShopObjectCard.less';
+import { getObject } from '../../../store/wObjectStore/wObjectSelectors';
 
 const ShopObjectCard = ({ wObject, isChecklist, isSocialProduct }) => {
   const username = useSelector(getAuthenticatedUserName);
+  const mainObj = useSelector(getObject);
   const [tags, setTags] = useState([]);
   const wobjName = getObjectName(wObject);
-  const { name } = useParams();
   const location = useLocation();
   const withRewards = !isEmpty(wObject.propositions);
   const proposition = withRewards ? wObject.propositions[0] : null;
@@ -53,14 +54,16 @@ const ShopObjectCard = ({ wObject, isChecklist, isSocialProduct }) => {
         : wObject?.author_permlink;
 
       link = isChecklist
-        ? `${wObject?.defaultShowLink}?breadbrumbs=${name}/${query}`
+        ? `${wObject?.defaultShowLink}?breadbrumbs=${mainObj.author_permlink}/${query}`
         : wObject?.defaultShowLink;
       break;
     }
     case 'page':
     case 'widget':
     case 'newsfeed':
-      link = isChecklist ? `/checklist/${name}${hash}` : wObject?.defaultShowLink;
+      link = isChecklist
+        ? `/checklist/${mainObj.author_permlink}${hash}`
+        : wObject?.defaultShowLink;
       break;
 
     default:

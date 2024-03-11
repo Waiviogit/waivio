@@ -188,7 +188,11 @@ WobjectContainer.fetchData = async ({ store, match }) => {
           .then(resp => store.dispatch(getTiktokPreviewAction(resp.value))),
       ];
 
-      if (['product', 'book', 'person', 'business']?.includes(response.value.object_type)) {
+      if (
+        ['product', 'book', 'person', 'business', 'restaurant']?.includes(
+          response.value.object_type,
+        )
+      ) {
         const customSort = isEmpty(response.value?.sortCustom?.include)
           ? response.value.menuItem.map(i => i.permlink)
           : response.value?.sortCustom?.include;
