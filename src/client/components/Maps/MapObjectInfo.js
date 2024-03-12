@@ -174,7 +174,7 @@ class MapObjectInfo extends React.Component {
     </div>
   );
   render() {
-    const { mapHeigth, isFullscreenMode, wobject } = this.props;
+    const { mapHeigth, isFullscreenMode, wobject, isSocial } = this.props;
     const { center, infoboxData, zoom } = this.state;
     const markersLayout = this.getMarkers(wobject);
 
@@ -186,7 +186,13 @@ class MapObjectInfo extends React.Component {
         </Map>
         {this.zoomButtonsLayout()}
         <div role="presentation" className="MapOS__locateGPS" onClick={this.setCoordinates}>
-          <img src="/images/icons/aim.png" alt="aim" className="MapOS__locateGPS-button" />
+          <div className={isSocial ? 'MapOS__locateGPS-button-container' : ''}>
+            <img
+              src={isSocial ? '/images/focus.svg' : '/images/icons/aim.png'}
+              alt="aim"
+              className="MapOS__locateGPS-button"
+            />
+          </div>
         </div>
         <div role="presentation" className="MapOS__fullScreen" onClick={this.openModal}>
           <Icon type="fullscreen" style={{ fontSize: '25px', color: '#000000' }} />
@@ -214,7 +220,11 @@ class MapObjectInfo extends React.Component {
                 onClick={this.setCoordinates}
                 title="find me"
               >
-                <img src="/images/icons/aim.png" alt="aim" className="MapOS__locateGPS-button" />
+                <img
+                  src={isSocial ? '/images/focus.svg' : '/images/icons/aim.png'}
+                  alt="aim"
+                  className="MapOS__locateGPS-button"
+                />
               </div>
               <div role="presentation" className="MapOS__fullScreen" onClick={this.openModal}>
                 <Icon type="fullscreen-exit" style={{ fontSize: '25px', color: '#000000' }} />
@@ -244,6 +254,7 @@ MapObjectInfo.propTypes = {
   mapHeigth: PropTypes.number,
   center: PropTypes.arrayOf(PropTypes.number),
   isFullscreenMode: PropTypes.bool,
+  isSocial: PropTypes.bool,
   isWaivio: PropTypes.bool,
   setMapFullscreenMode: PropTypes.func,
   // eslint-disable-next-line react/forbid-prop-types

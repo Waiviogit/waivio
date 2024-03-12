@@ -269,7 +269,12 @@ export const getObjectPosts = ({ username, object, limit = 10, newsPermlink }) =
       return dispatch({
         type: GET_OBJECT_POSTS.SUCCESS,
         payload: allPosts,
-        meta: { sortBy: 'objectPosts', category: username, limit },
+        meta: {
+          sortBy: 'objectPosts',
+          category: username,
+          limit,
+          limitToCompare: feedContent.length,
+        },
       });
     })
     .catch(error => {

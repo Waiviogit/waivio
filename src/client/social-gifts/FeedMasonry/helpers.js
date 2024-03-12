@@ -10,10 +10,11 @@ export const breakpointColumnsObj = length => ({
 });
 
 export const preparationPreview = postItems => {
-  if (isEmpty(postItems)) return Promise.resolve([]);
-
+  if (!postItems || !Array.isArray(postItems)) {
+    return Promise.resolve([]);
+  }
   const urls = postItems
-    .map(p => {
+    ?.map(p => {
       const embed = getVideoForPreview(p)[0];
 
       if (embed?.provider_name === 'TikTok') return embed?.url;
