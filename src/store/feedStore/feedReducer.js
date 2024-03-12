@@ -143,13 +143,21 @@ const feedCategory = (state = {}, action) => {
     case feedTypes.GET_REPLIES.SUCCESS:
     case feedTypes.GET_MORE_REPLIES.SUCCESS:
     case feedTypes.GET_BOOKMARKS.SUCCESS:
-    case feedTypes.GET_OBJECT_POSTS.SUCCESS:
       return {
         ...state,
         isFetching: false,
         isLoaded: true,
         failed: false,
         hasMore: Boolean(action.payload.length >= action.meta.limit),
+        list: feedIdsList(state.list, action),
+      };
+    case feedTypes.GET_OBJECT_POSTS.SUCCESS:
+      return {
+        ...state,
+        isFetching: false,
+        isLoaded: true,
+        failed: false,
+        hasMore: Boolean(action.meta.limitToCompare >= action.meta.limit),
         list: feedIdsList(state.list, action),
       };
     case feedTypes.GET_FEED_CONTENT.ERROR:
