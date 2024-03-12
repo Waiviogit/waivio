@@ -105,7 +105,7 @@ const FeedItem = ({ post, photoQuantity, preview }) => {
               onClick={handleShowPostModal}
               src={image}
               alt={''}
-              key={post?.title}
+              key={image}
             />
           ))}
         </div>
@@ -122,7 +122,7 @@ const FeedItem = ({ post, photoQuantity, preview }) => {
               className={classNames('FeedMasonry__img', 'FeedMasonry__img--bottom')}
               src={getProxyImageURL(imagePath[0])}
               alt={''}
-              key={post?.title}
+              key={imagePath[0]}
               onClick={handleShowPostModal}
             />
           )}
@@ -179,11 +179,11 @@ FeedItem.propTypes = {
     json_metadata: PropTypes.string,
     permlink: PropTypes.string,
     title: PropTypes.string,
-    active_votes: PropTypes.arrayOf(),
+    active_votes: PropTypes.arrayOf(PropTypes.shape({})),
     reblogged_users: PropTypes.arrayOf(PropTypes.string),
     children: PropTypes.number,
-    imagePath: PropTypes.arrayOf(),
-    embeds: PropTypes.arrayOf(),
+    imagePath: PropTypes.arrayOf(PropTypes.string),
+    embeds: PropTypes.arrayOf(PropTypes.shape({})),
     guestInfo: PropTypes.shape({}),
     root_author: PropTypes.string,
     id: PropTypes.string,

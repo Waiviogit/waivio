@@ -46,6 +46,7 @@ const AddressHoursDetails = ({ address, map, workTime, wobject, history }) => {
         <div className={'AddressHoursDetails__block-map'}>
           <div className={'AddressHoursDetails__block-title'}>Map</div>
           <MapObjectInfo
+            isSocial
             mapHeigth={250}
             center={[Number(map.latitude), Number(map.longitude)]}
             width={250}

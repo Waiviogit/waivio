@@ -62,12 +62,11 @@ const ManageDelegate = ({ intl }) => {
             : {
                 HIVE: hiveDelegeted.delegated.map(item => ({
                   to: item.delegatee,
-                  quantity:
-                    formatter.vestToSteem(
-                      item.vesting_shares,
-                      totalVestingShares,
-                      totalVestingFundSteem,
-                    ) / 1000000,
+                  quantity: formatter.vestToSteem(
+                    item.vesting_shares,
+                    totalVestingShares,
+                    totalVestingFundSteem,
+                  ),
                 })),
               }),
         },

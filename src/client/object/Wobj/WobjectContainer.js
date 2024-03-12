@@ -139,7 +139,7 @@ const WobjectContainer = props => {
 
 WobjectContainer.propTypes = {
   route: PropTypes.shape().isRequired,
-  authenticatedUserName: PropTypes.string.isRequired,
+  authenticatedUserName: PropTypes.string,
   match: PropTypes.shape().isRequired,
   history: PropTypes.shape().isRequired,
   location: PropTypes.shape({
