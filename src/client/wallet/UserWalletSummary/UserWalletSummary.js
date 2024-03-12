@@ -124,16 +124,20 @@ const UserWalletSummary = ({
     }));
     const delegateMapList = lists.delegated.map(item => ({
       to: item.delegatee,
-      quantity:
-        formatter.vestToSteem(item.vesting_shares, totalVestingShares, totalVestingFundSteem) /
-        1000000,
+      quantity: formatter.vestToSteem(
+        item.vesting_shares,
+        totalVestingShares,
+        totalVestingFundSteem,
+      ),
     }));
 
     const undelegateMapList = lists.expirations.map(item => ({
       to: item.delegator,
-      quantity:
-        formatter.vestToSteem(item.vesting_shares, totalVestingShares, totalVestingFundSteem) /
-        1000000,
+      quantity: formatter.vestToSteem(
+        item.vesting_shares,
+        totalVestingShares,
+        totalVestingFundSteem,
+      ),
     }));
 
     setDeligateList(delegateMapList);
