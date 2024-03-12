@@ -10,6 +10,8 @@ export const breakpointColumnsObj = length => ({
 });
 
 export const preparationPreview = postItems => {
+  if (isEmpty(postItems)) return Promise.resolve([]);
+
   const urls = postItems
     .map(p => {
       const embed = getVideoForPreview(p)[0];

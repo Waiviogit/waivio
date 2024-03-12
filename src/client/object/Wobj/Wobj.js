@@ -201,7 +201,7 @@ const Wobj = ({
 
 Wobj.propTypes = {
   route: PropTypes.shape().isRequired,
-  authenticatedUserName: PropTypes.string.isRequired,
+  authenticatedUserName: PropTypes.string,
   isEditMode: PropTypes.bool.isRequired,
   isSocial: PropTypes.bool,
   toggleViewEditMode: PropTypes.func,
