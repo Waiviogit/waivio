@@ -102,15 +102,16 @@ const ObjectFeed = ({ limit, handleCreatePost, userName, wobject }) => {
   }, [parentName]);
 
   const loadMoreContentAction = () => {
-    dispatch(
-      getMoreObjectPosts({
-        username: name,
-        authorPermlink: isNewsfeedObjectPosts ? parentName : name,
-        limit,
-        skip,
-        newsPermlink: isNewsfeedCategoryType ? newsPermlink : getNewsPermlink(),
-      }),
-    );
+    hasMore &&
+      dispatch(
+        getMoreObjectPosts({
+          username: name,
+          authorPermlink: isNewsfeedObjectPosts ? parentName : name,
+          limit,
+          skip,
+          newsPermlink: isNewsfeedCategoryType ? newsPermlink : getNewsPermlink(),
+        }),
+      );
   };
 
   const handleShowPostModal = post => dispatch(showPostModal(post));

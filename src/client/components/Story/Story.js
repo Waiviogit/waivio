@@ -1,6 +1,7 @@
 import { map, isEmpty, get, toLower, has } from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
+import { ReactSVG } from 'react-svg';
 import {
   injectIntl,
   FormattedMessage,
@@ -9,7 +10,7 @@ import {
   FormattedTime,
 } from 'react-intl';
 import { Link, withRouter } from 'react-router-dom';
-import { Icon, Tag } from 'antd';
+import { Tag } from 'antd';
 import {
   isPostDeleted,
   isPostTaggedNSFW,
@@ -30,7 +31,6 @@ import { getObjectName } from '../../../common/helpers/wObjectHelper';
 import { guestUserRegex } from '../../../common/helpers/regexHelpers';
 
 import './Story.less';
-import { initialColors } from '../../websites/constants/colors';
 
 @injectIntl
 @withRouter
@@ -53,7 +53,6 @@ class Story extends React.Component {
     singlePostVew: PropTypes.bool,
     sliderMode: PropTypes.bool,
     history: PropTypes.shape(),
-    colors: PropTypes.shape(),
     showPostModal: PropTypes.func,
     votePost: PropTypes.func,
     toggleBookmark: PropTypes.func,
@@ -311,13 +310,11 @@ class Story extends React.Component {
       location,
       userComments,
       isThread,
-      colors,
     } = this.props;
     const rebloggedUser = get(post, ['reblogged_users'], []);
     const isRebloggedPost = rebloggedUser.includes(user.name);
     const author = post.guestInfo ? post.guestInfo.userId : post.author;
     let rebloggedUI = null;
-    const color = colors?.mapMarkerBody || initialColors.marker;
 
     if (isPostDeleted(post)) return <div />;
 
@@ -390,13 +387,10 @@ class Story extends React.Component {
                 <div className="Story__published">
                   <div className="PostWobject__wrap">
                     {has(post, 'currentUserPin') ? (
-                      <Icon
-                        type="pushpin"
-                        theme="filled"
-                        style={{
-                          color: post?.currentUserPin ? color : '#99aab5',
-                          fontSize: '23px',
-                        }}
+                      <ReactSVG
+                        className={post.currentUserPin ? 'pin-website-color' : 'pin-grey'}
+                        wrapper="span"
+                        src="/images/icons/pin.svg"
                       />
                     ) : (
                       post.wobjects && this.getWobjects(post.wobjects.slice(0, 4))
