@@ -134,7 +134,7 @@ Checklist.propTypes = {
     sortCustom: PropTypes.shape({
       include: PropTypes.arrayOf(PropTypes.string),
     }),
-    listItems: PropTypes.arrayOf(),
+    listItems: PropTypes.arrayOf(PropTypes.shape({})),
   }).isRequired,
   userName: PropTypes.string,
   permlink: PropTypes.string,

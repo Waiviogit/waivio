@@ -84,7 +84,12 @@ const ListDescription = ({ wobject }) => {
 };
 
 ListDescription.propTypes = {
-  wobject: PropTypes.shape.isRequired,
+  wobject: PropTypes.shape({
+    description: PropTypes.string,
+    title: PropTypes.string,
+    name: PropTypes.string,
+    avatar: PropTypes.string,
+  }).isRequired,
 };
 
 export default ListDescription;
