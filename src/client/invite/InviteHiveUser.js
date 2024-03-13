@@ -91,7 +91,7 @@ InviteHiveUser.propTypes = {
 
 InviteHiveUser.defaultProps = {
   intl: {},
-  buttonLabel: <FormattedMessage />,
+  buttonLabel: '',
   inviteURL: '',
   handleCopyClick: () => {},
   authenticatedUserName: '',

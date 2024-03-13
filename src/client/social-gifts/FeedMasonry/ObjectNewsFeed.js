@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useLayoutEffect, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { uniq, isEmpty } from 'lodash';
 import PropTypes from 'prop-types';
@@ -10,6 +10,7 @@ import {
   getFeed,
   getTiktokPreviewFromState,
   getPreviewLoadingFromState,
+  getFirstLoadingFromState,
 } from '../../../store/feedStore/feedSelectors';
 import {
   getFeedFromState,
@@ -20,6 +21,7 @@ import {
   getMoreObjectPosts,
   getObjectPosts,
   getTiktokPreviewAction,
+  setFirstLoading,
 } from '../../../store/feedStore/feedActions';
 import { getPosts } from '../../../store/postsStore/postsSelectors';
 import {
@@ -38,9 +40,9 @@ const ObjectNewsFeed = ({ wobj }) => {
   const readLanguages = useSelector(getReadLanguages);
   const previews = useSelector(getTiktokPreviewFromState);
   const previewLoading = useSelector(getPreviewLoadingFromState);
+  const firstLoading = useSelector(getFirstLoadingFromState);
   const [newsPermlink, setNewsPermlink] = useState(wobj?.newsFeed?.permlink);
   const [currObj, setCurrObj] = useState();
-  const [firstLoading, setFirstLoading] = useState(false);
   const feed = useSelector(getFeed);
   const postsList = useSelector(getPosts);
   const favicon = useSelector(getHelmetIcon);
@@ -68,7 +70,7 @@ const ObjectNewsFeed = ({ wobj }) => {
           newsPermlink: wobj?.newsFeed?.permlink,
         }),
       ).then(res => {
-        dispatch(getTiktokPreviewAction(res.value)).then(() => setFirstLoading(false));
+        dispatch(getTiktokPreviewAction(res.value)).then(() => dispatch(setFirstLoading(false)));
       });
     } else {
       dispatch(getObject(objName)).then(res => {
@@ -80,7 +82,7 @@ const ObjectNewsFeed = ({ wobj }) => {
             newsPermlink: res?.newsFeed?.permlink,
           }),
         ).then(() => {
-          dispatch(getTiktokPreviewAction(res.value)).then(() => setFirstLoading(false));
+          dispatch(getTiktokPreviewAction(res.value)).then(() => dispatch(setFirstLoading(false)));
         });
         setNewsPermlink(res?.newsFeed?.permlink);
         setCurrObj(res);
@@ -88,10 +90,11 @@ const ObjectNewsFeed = ({ wobj }) => {
     }
   };
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (isEmpty(posts)) {
-      setFirstLoading(true);
       getPostsList();
+    } else {
+      dispatch(setFirstLoading(false));
     }
 
     if (typeof window !== 'undefined' && window.gtag)
@@ -99,6 +102,8 @@ const ObjectNewsFeed = ({ wobj }) => {
         debug_mode: false,
       });
   }, [objName]);
+
+  useEffect(() => () => dispatch(setFirstLoading(true)), []);
 
   const loadMore = () => {
     try {

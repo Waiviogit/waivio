@@ -455,3 +455,10 @@ export const getTiktokPreviewAction = post => dispatch =>
     type: GET_TIKTOK_PRIVIEW.ACTION,
     payload: preparationPreview(post),
   });
+
+export const SET_FIRST_LOADING = '@feed/SET_FIRST_LOADING';
+
+export const setFirstLoading = payload => ({
+  type: SET_FIRST_LOADING,
+  payload,
+});

@@ -4,7 +4,11 @@ import PropTypes from 'prop-types';
 import { isEmpty, isNil } from 'lodash';
 import { withRouter } from 'react-router-dom';
 import { parseJSON } from '../../../common/helpers/parseJSON';
-import { getObjectPosts, getTiktokPreviewAction } from '../../../store/feedStore/feedActions';
+import {
+  getObjectPosts,
+  getTiktokPreviewAction,
+  setFirstLoading,
+} from '../../../store/feedStore/feedActions';
 import { prepareMenuItems } from '../../social-gifts/SocialProduct/SocialMenuItems/SocialMenuItems';
 import Wobj from './Wobj';
 import { getAppendList } from '../../../store/appendStore/appendSelectors';
@@ -152,7 +156,7 @@ WobjectContainer.propTypes = {
   weightValue: PropTypes.number.isRequired,
   resetGallery: PropTypes.func.isRequired,
   setEditMode: PropTypes.func.isRequired,
-  updates: PropTypes.arrayOf(),
+  updates: PropTypes.arrayOf(PropTypes.shape({})),
   clearObjectFromStore: PropTypes.func,
   setNestedWobject: PropTypes.func,
   setCatalogBreadCrumbs: PropTypes.func,
@@ -185,7 +189,12 @@ WobjectContainer.fetchData = async ({ store, match }) => {
               newsPermlink: response.value?.newsFeed?.permlink,
             }),
           )
-          .then(resp => store.dispatch(getTiktokPreviewAction(resp.value))),
+          .then(resp =>
+            Promise.all([
+              store.dispatch(getTiktokPreviewAction(resp.value)),
+              store.dispatch(setFirstLoading(false)),
+            ]),
+          ),
       ];
 
       if (

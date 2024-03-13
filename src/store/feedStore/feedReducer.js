@@ -1,4 +1,5 @@
 import { uniq, get } from 'lodash';
+import { SET_FIRST_LOADING } from './feedActions';
 import * as feedTypes from './feedActions';
 import { TOGGLE_BOOKMARK } from '../bookmarksStore/bookmarksActions';
 import { getPostKey, setFilterTagsForUsersProfile } from '../../common/helpers/stateHelpers';
@@ -20,6 +21,7 @@ const initialState = {
   tags: [],
   tiktokPreview: [],
   previewLoading: false,
+  firstLoading: true,
 };
 
 const feedIdsList = (state = [], action) => {
@@ -352,6 +354,11 @@ const feed = (state = initialState, action) => {
         ...state,
         previewLoading: false,
         tiktokPreview: [...state.tiktokPreview, ...action.payload],
+      };
+    case feedTypes.SET_FIRST_LOADING:
+      return {
+        ...state,
+        firstLoading: action.payload,
       };
     default:
       return state;

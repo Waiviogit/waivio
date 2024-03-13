@@ -83,7 +83,7 @@ const propTypes = {
   disableRemove: PropTypes.bool,
   children: PropTypes.node.isRequired,
   isGuest: PropTypes.bool.isRequired,
-  userName: PropTypes.string.isRequired,
+  userName: PropTypes.string,
   getSocialInfoPost: PropTypes.func,
   userComments: PropTypes.bool,
   isThread: PropTypes.bool,

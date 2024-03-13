@@ -16,7 +16,6 @@ const FeedMasonry = ({
   loadMore,
   hasMore,
   posts,
-  loading,
   emptyLable,
   intl,
   writeReview,
@@ -24,7 +23,7 @@ const FeedMasonry = ({
   firstLoading,
 }) => {
   const getContent = () => {
-    if (loading && firstLoading) return <Loading margin />;
+    if (firstLoading) return <Loading margin />;
     if (isEmpty(posts))
       return (
         <div className="FeedMasonry__emptyFeed" onClick={writeReview}>
@@ -45,6 +44,7 @@ const FeedMasonry = ({
           breakpointCols={breakpointColumnsObj(posts?.length)}
           className="FeedMasonry my-masonry-grid"
           columnClassName="my-masonry-grid_column"
+          key={'my-masonry-grid_column'}
         >
           {posts?.map(post => {
             const urlPreview = isEmpty(previews)
@@ -74,7 +74,7 @@ FeedMasonry.propTypes = {
   writeReview: PropTypes.func,
   hasMore: PropTypes.bool,
   firstLoading: PropTypes.bool,
-  emptyLable: PropTypes.bool,
+  emptyLable: PropTypes.string,
   posts: PropTypes.arrayOf(PropTypes.shape({})),
   previews: PropTypes.arrayOf(PropTypes.shape({})),
   loading: PropTypes.bool,

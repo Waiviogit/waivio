@@ -14,7 +14,9 @@ const ExpertCard = ({ expert }) => (
 );
 
 ExpertCard.propTypes = {
-  expert: PropTypes.string,
+  expert: PropTypes.shape({
+    name: PropTypes.string,
+  }),
 };
 
 export default ExpertCard;

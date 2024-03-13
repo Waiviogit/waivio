@@ -146,7 +146,7 @@ DepartmentItem.propTypes = {
   match: PropTypes.shape({
     url: PropTypes.string,
     params: PropTypes.shape({
-      department: PropTypes.string
+      department: PropTypes.string,
     }),
   }),
   excludedMain: PropTypes.arrayOf(PropTypes.string),
