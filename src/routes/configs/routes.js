@@ -1,3 +1,4 @@
+import UserExpertise from '../../client/user/UserExpertise';
 import Views from '../components';
 import Post from '../../client/post/Post';
 import Wrapper from '../../client/Wrapper';
@@ -392,7 +393,7 @@ const routes = {
         {
           path: '/(expertise-hashtags|expertise-objects)',
           exact: true,
-          component: Views.UserExpertise,
+          component: UserExpertise,
         },
         {
           path: '/about',
