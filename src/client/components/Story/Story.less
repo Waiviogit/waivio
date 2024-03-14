@@ -131,15 +131,26 @@
       display: flex;
     }
   }
-
+  .PostWobject__related-objects {
+    margin-right: 40px;
+    display: flex;
+  }
   .PostWobject__wrap {
+    .pin-outlined > span > svg {
+      width: 53px;
+      height: 55px;
+      position: absolute;
+      right: 5px;
+      top: 6px;
+    }
     .pin-website-color > span > svg {
       width: 53px;
       height: 55px;
       position: absolute;
       right: 5px;
-      top: 7px;
+      top: 6px;
       path {
+        stroke-width: 0;
         fill: var(--website-color);
       }
     }
@@ -149,7 +160,7 @@
       height: 55px;
       position: absolute;
       right: 5px;
-      top: 7px;
+      top: 6px;
       path {
         fill: @blue-botticelli;
       }

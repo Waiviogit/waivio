@@ -1,4 +1,4 @@
-import { map, isEmpty, get, toLower, has } from 'lodash';
+import { map, isEmpty, get, toLower, has, some } from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { ReactSVG } from 'react-svg';
@@ -27,10 +27,13 @@ import DMCARemovedMessage from './DMCARemovedMessage';
 import ObjectAvatar from '../ObjectAvatar';
 import PostedFrom from './PostedFrom';
 import WeightTag from '../WeightTag';
-import { getObjectName } from '../../../common/helpers/wObjectHelper';
+import { getAppendData, getObjectName } from '../../../common/helpers/wObjectHelper';
 import { guestUserRegex } from '../../../common/helpers/regexHelpers';
 
 import './Story.less';
+import { getAppendDownvotes, getAppendUpvotes } from '../../../common/helpers/voteHelpers';
+import { getMinRejectVote, getUpdateByBody } from '../../../waivioApi/ApiClient';
+import { objectFields } from '../../../common/constants/listOfFields';
 
 @injectIntl
 @withRouter
@@ -53,6 +56,8 @@ class Story extends React.Component {
     singlePostVew: PropTypes.bool,
     sliderMode: PropTypes.bool,
     history: PropTypes.shape(),
+    wobject: PropTypes.shape(),
+    locale: PropTypes.string,
     showPostModal: PropTypes.func,
     votePost: PropTypes.func,
     toggleBookmark: PropTypes.func,
@@ -60,6 +65,11 @@ class Story extends React.Component {
     editPost: PropTypes.func,
     followUser: PropTypes.func,
     unfollowUser: PropTypes.func,
+    appendObject: PropTypes.func,
+    userVotingPower: PropTypes.number,
+    voteAppends: PropTypes.func,
+    setPinnedPostsUrls: PropTypes.func,
+    pinnedPostsUrls: PropTypes.arrayOf(),
     push: PropTypes.func,
     pendingFlag: PropTypes.bool,
     location: PropTypes.shape().isRequired,
@@ -291,6 +301,77 @@ class Story extends React.Component {
       hiddenStoryPreviewMessage
     );
   }
+  handlePinPost = async () => {
+    const {
+      post,
+      voteAppends,
+      pinnedPostsUrls,
+      setPinnedPostsUrls,
+      user,
+      match,
+      wobject,
+      userVotingPower,
+      locale,
+      appendObject,
+    } = this.props;
+    const currUpdate = await getUpdateByBody(
+      wobject.author_permlink,
+      'pin',
+      'en-US',
+      `${post.author}/${post.permlink}`,
+    );
+    const upVotes = currUpdate?.active_votes && getAppendUpvotes(currUpdate?.active_votes);
+    const isLiked = currUpdate?.isLiked || some(upVotes, { voter: user.name });
+    const downVotes = getAppendDownvotes(currUpdate?.active_votes);
+    const isReject = currUpdate?.isReject || some(downVotes, { voter: user.name });
+    let voteWeight;
+
+    if (pinnedPostsUrls.includes(post.url)) {
+      setPinnedPostsUrls(pinnedPostsUrls.filter(p => p !== post.url));
+      if (post?.currentUserPin) {
+        if (isReject) voteWeight = 0;
+        else {
+          voteWeight =
+            isEmpty(upVotes) || (isLiked && upVotes?.length === 1)
+              ? 1
+              : (
+                  await getMinRejectVote(
+                    user.name,
+                    currUpdate?.author,
+                    currUpdate?.permlink,
+                    match.params.name,
+                  )
+                )?.result;
+        }
+        voteAppends(currUpdate?.author, currUpdate?.permlink, voteWeight, 'pin', false, 'pin');
+      }
+    } else if (currUpdate.message) {
+      setPinnedPostsUrls([...pinnedPostsUrls, post.url]);
+      const pageContentField = {
+        name: objectFields.pin,
+        body: `${post.author}/${post.permlink}`,
+        locale,
+      };
+
+      const bodyMessage = `@${user.name} pinned post: author: ${post.author}, permlink: ${post.permlink}`;
+      const postData = getAppendData(user.name, wobject, bodyMessage, pageContentField);
+
+      appendObject(postData, { votePercent: userVotingPower, isLike: true, isObjectPage: true });
+    } else {
+      setPinnedPostsUrls([...pinnedPostsUrls, post.url]);
+      voteAppends(
+        currUpdate.author,
+        currUpdate.permlink,
+        userVotingPower,
+        'pin',
+        false,
+        'pin',
+        null,
+        false,
+        true,
+      );
+    }
+  };
 
   render() {
     const {
@@ -310,7 +391,13 @@ class Story extends React.Component {
       location,
       userComments,
       isThread,
+      pinnedPostsUrls,
+      match,
+      wobject,
     } = this.props;
+    const isObjectPage = match.params.name === wobject.author_permlink;
+    const currentUserPin = pinnedPostsUrls.includes(post.url);
+    const pinClassName = post?.pin ? 'pin-grey' : 'pin-outlined';
     const rebloggedUser = get(post, ['reblogged_users'], []);
     const isRebloggedPost = rebloggedUser.includes(user.name);
     const author = post.guestInfo ? post.guestInfo.userId : post.author;
@@ -386,14 +473,28 @@ class Story extends React.Component {
               <div className="Story__topics">
                 <div className="Story__published">
                   <div className="PostWobject__wrap">
-                    {has(post, 'currentUserPin') ? (
-                      <ReactSVG
-                        className={post.currentUserPin ? 'pin-website-color' : 'pin-grey'}
-                        wrapper="span"
-                        src="/images/icons/pin.svg"
-                      />
-                    ) : (
-                      post.wobjects && this.getWobjects(post.wobjects.slice(0, 4))
+                    <div className={isObjectPage ? 'PostWobject__related-objects' : ''}>
+                      {' '}
+                      {post.wobjects && this.getWobjects(post.wobjects.slice(0, 4))}
+                    </div>
+                    {isObjectPage && (
+                      <>
+                        {has(post, 'currentUserPin') ? (
+                          <ReactSVG
+                            className={currentUserPin ? 'pin-website-color' : 'pin-grey'}
+                            wrapper="span"
+                            src="/images/icons/pin.svg"
+                            onClick={this.handlePinPost}
+                          />
+                        ) : (
+                          <ReactSVG
+                            onClick={this.handlePinPost}
+                            className={currentUserPin ? 'pin-website-color' : pinClassName}
+                            wrapper="span"
+                            src="/images/icons/pin-outlined.svg"
+                          />
+                        )}
+                      </>
                     )}
                   </div>
                 </div>

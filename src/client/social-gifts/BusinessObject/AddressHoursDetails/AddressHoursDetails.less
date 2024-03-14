@@ -76,7 +76,7 @@
         border: 1px solid @white-gainsboro;
       }
       &-button {
-        margin-bottom: 8px;
+        vertical-align: inherit;
         border: none;
         width: 13px;
         height: 15px;
@@ -84,17 +84,48 @@
     }
     .MapOS__fullScreen {
       border: 1px solid @white-gainsboro;
-      .anticon.anticon-fullscreen {
+      .anticon.anticon-fullscreen,
+      .anticon.anticon-fullscreen-exit {
         color: @text-color !important;
-        font-size: 13px !important;
+        font-size: 14px !important;
         display: flex;
-        padding-top: 6px;
-        padding-left: 5px;
+        justify-content: center;
+        height: inherit;
+        align-items: center;
       }
     }
     @media @small {
       min-height: 350px;
       padding: 16px 16px 16px 16px;
+    }
+  }
+}
+.MapModalSocial {
+  .MapOS__locateGPS {
+    &-button-container {
+      width: 25px;
+      height: 25px;
+      text-align: center;
+      background-color: #fff;
+      border: 1px solid @white-gainsboro;
+    }
+    &-button {
+      vertical-align: inherit;
+      border: none;
+      width: 13px;
+      height: 13px;
+    }
+  }
+  .MapOS__fullScreen {
+    border: 1px solid @white-gainsboro;
+    .anticon.anticon-fullscreen,
+    .anticon.anticon-fullscreen-exit {
+      color: @text-color !important;
+      font-size: 14px !important;
+      display: flex;
+      justify-content: center;
+      height: inherit;
+      align-items: center;
     }
   }
 }

@@ -205,7 +205,7 @@ class MapObjectInfo extends React.Component {
             onCancel={this.closeModal}
             style={{ top: 0 }}
             width={'100%'}
-            wrapClassName={classNames('MapModal')}
+            wrapClassName={classNames('MapModal', { MapModalSocial: isSocial })}
             destroyOnClose
           >
             <div className="MapOS__fullscreenContent">
@@ -220,11 +220,13 @@ class MapObjectInfo extends React.Component {
                 onClick={this.setCoordinates}
                 title="find me"
               >
-                <img
-                  src={isSocial ? '/images/focus.svg' : '/images/icons/aim.png'}
-                  alt="aim"
-                  className="MapOS__locateGPS-button"
-                />
+                <div className={isSocial ? 'MapOS__locateGPS-button-container' : ''}>
+                  <img
+                    src={isSocial ? '/images/focus.svg' : '/images/icons/aim.png'}
+                    alt="aim"
+                    className="MapOS__locateGPS-button"
+                  />
+                </div>
               </div>
               <div role="presentation" className="MapOS__fullScreen" onClick={this.openModal}>
                 <Icon type="fullscreen-exit" style={{ fontSize: '25px', color: '#000000' }} />

@@ -77,7 +77,6 @@ FeedMasonry.propTypes = {
   emptyLable: PropTypes.string,
   posts: PropTypes.arrayOf(PropTypes.shape({})),
   previews: PropTypes.arrayOf(PropTypes.shape({})),
-  loading: PropTypes.bool,
   intl: PropTypes.shape(),
 };
 

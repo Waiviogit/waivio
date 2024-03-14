@@ -227,5 +227,6 @@
   "hashtag": "/hashtag",
   "list": "/list",
   "favorites": "/favorites",
-  "pin": "/pin"
+  "pin": "/pin",
+  "rawField": "/raw-field"
 }
