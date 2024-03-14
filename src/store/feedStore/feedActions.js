@@ -35,6 +35,7 @@ export const GET_MORE_REPLIES = createAsyncActionType('@user/GET_MORE_REPLIES');
 
 export const GET_BOOKMARKS = createAsyncActionType('@bookmarks/GET_BOOKMARKS');
 
+export const SET_PINNED_POSTS = '@object/SET_PINNED_POSTS';
 export const GET_OBJECT_POSTS = createAsyncActionType('@object/GET_OBJECT_POSTS');
 export const GET_MORE_OBJECT_POSTS = createAsyncActionType('@object/GET_MORE_OBJECT_POSTS');
 
@@ -242,6 +243,12 @@ export const getMoreThreadsContent = (hashtag, limit, isUser) => (dispatch, getS
     meta: { sortBy: 'threads', category: hashtag, limit },
   });
 };
+export const setPinnedPostsUrls = posts => dispatch => {
+  dispatch({
+    type: SET_PINNED_POSTS,
+    payload: posts,
+  });
+};
 
 export const getObjectPosts = ({ username, object, limit = 10, newsPermlink }) => (
   dispatch,
@@ -265,6 +272,17 @@ export const getObjectPosts = ({ username, object, limit = 10, newsPermlink }) =
   return Promise.all([apiCall1, apiCall2])
     .then(([pinnedPosts, feedContent]) => {
       const allPosts = [...pinnedPosts, ...feedContent];
+
+      dispatch({
+        type: SET_PINNED_POSTS,
+        payload: pinnedPosts.reduce((acc, post) => {
+          if (post.currentUserPin) {
+            acc.push(post.url);
+          }
+
+          return acc;
+        }, []),
+      });
 
       return dispatch({
         type: GET_OBJECT_POSTS.SUCCESS,

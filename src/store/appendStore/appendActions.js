@@ -159,7 +159,7 @@ export const voteAppends = (
   const wobj = get(state, ['object', 'wobject'], {});
   const voter = getAuthenticatedUserName(state);
   const fieldName = name || post.name;
-  const authorityField = fieldName === 'authority';
+  const hideMessageFields = ['authority', 'pin'].includes(fieldName);
 
   if (!getIsAuthenticated(state)) return null;
 
@@ -174,7 +174,7 @@ export const voteAppends = (
   return steemConnectAPI
     .vote(voter, author, permlink, weight)
     .then(res => {
-      if (!authorityField) {
+      if (!hideMessageFields) {
         message.success('Please wait, we are processing your update');
       }
 
@@ -195,7 +195,7 @@ export const voteAppends = (
     })
     .catch(() =>
       steemConnectAPI.appendVote(voter, isGuest, author, permlink, weight).then(res => {
-        if (!authorityField) {
+        if (!hideMessageFields) {
           message.success('Please wait, we are processing your update');
         }
         dispatch(

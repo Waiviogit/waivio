@@ -816,7 +816,7 @@ class AppendForm extends Component {
       let fieldsObject = {
         name: includes(TYPES_OF_MENU_ITEM, currentField) ? objectFields.listItem : currentField,
         body: currentField === objectFields.publicationDate ? bodyField : trimEnd(bodyField),
-        locale: currentLocale,
+        locale: currentField === objectFields.pin ? 'en-US' : currentLocale,
       };
 
       if (currentField === objectFields.newsFilter) {

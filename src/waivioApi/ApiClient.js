@@ -1410,6 +1410,21 @@ export const getChangedField = (authorPermlink, fieldName, author, permlink, loc
     .then(res => res.json())
     .catch(error => error);
 
+export const getUpdateByBody = (authorPermlink, name, locale, body) =>
+  fetch(`${config.apiPrefix}${config.getObjects}/${authorPermlink}${config.rawField}`, {
+    headers: {
+      ...headers,
+      locale,
+    },
+    body: JSON.stringify({
+      name,
+      body,
+    }),
+    method: 'POST',
+  })
+    .then(res => res.json())
+    .catch(error => error);
+
 export const getFollowingSponsorsRewards = ({ userName, skip }) => {
   const query = skip ? `/?skip=${skip}` : '';
 
