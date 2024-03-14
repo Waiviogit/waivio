@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { connect, useDispatch, useSelector } from 'react-redux';
 import { Icon, Modal } from 'antd';
 import { FormattedMessage } from 'react-intl';
-import { get, isEmpty, isNil } from 'lodash';
+import { get, isEmpty, isNil, has } from 'lodash';
 import { ReactSVG } from 'react-svg';
 import { useHistory, useRouteMatch } from 'react-router';
 import api from '../../steemConnectAPI';
@@ -519,7 +519,7 @@ const PostPopoverMenu = ({
         Would you like permanently delete your post?
       </Modal>
       {isPin &&
-        (post.pin || post.hasPinUpdate ? (
+        (post.pin || post.hasPinUpdate || has(post, 'currentUserPin') ? (
           history.push(`/object/${wobjAuthorPermlink}/updates/pin?search=${post.id}`)
         ) : (
           <AppendModal

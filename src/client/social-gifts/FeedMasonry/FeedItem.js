@@ -7,7 +7,6 @@ import { Icon } from 'antd';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { getProxyImageURL } from '../../../common/helpers/image';
-import { parseJSON } from '../../../common/helpers/parseJSON';
 import { getPreviewLoadingFromState } from '../../../store/feedStore/feedSelectors';
 import CustomImage from '../../components/Image/Image';
 import PostFeedEmbed from '../../components/Story/PostFeedEmbed';
