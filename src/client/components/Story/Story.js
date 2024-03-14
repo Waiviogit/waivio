@@ -59,6 +59,7 @@ class Story extends React.Component {
     ownPost: PropTypes.bool,
     singlePostVew: PropTypes.bool,
     sliderMode: PropTypes.bool,
+    isAuthUser: PropTypes.bool,
     history: PropTypes.shape(),
     wobject: PropTypes.shape(),
     locale: PropTypes.string,
@@ -398,8 +399,9 @@ class Story extends React.Component {
       pinnedPostsUrls,
       match,
       wobject,
+      isAuthUser,
     } = this.props;
-    const isObjectPage = isObjectReviewTab(wobject, match);
+    const isObjectPage = isObjectReviewTab(wobject, match) && isAuthUser;
     const currentUserPin = pinnedPostsUrls.includes(post.url);
     const tooltipTitle = (
       <FormattedMessage

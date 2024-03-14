@@ -13,7 +13,7 @@ import { reblog } from '../../store/reblogStore/reblogActions';
 import { unfollowUser, followUser } from '../../store/usersStore/usersActions';
 import { getDownvotes, getUpvotes } from '../../common/helpers/voteHelpers';
 import { getRewardFund } from '../../store/appStore/appSelectors';
-import { getAuthenticatedUser } from '../../store/authStore/authSelectors';
+import { getAuthenticatedUser, getIsAuthenticated } from '../../store/authStore/authSelectors';
 import { getIsEditorSaving } from '../../store/editorStore/editorSelectors';
 import { getPendingLikes, getPosts } from '../../store/postsStore/postsSelectors';
 import { getBookmarks, getPendingBookmarks } from '../../store/bookmarksStore/bookmarksSelectors';
@@ -82,6 +82,7 @@ const mapStateToProps = (state, { id, isThread }) => {
     wobject: getObject(state),
     pinnedPostsUrls: getPinnedPostsUrls(state),
     locale: getLocale(state),
+    isAuthUser: getIsAuthenticated(state),
   };
 };
 
