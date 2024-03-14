@@ -1,4 +1,4 @@
-import { get, some, filter, isEmpty, compact, isEqual, has } from 'lodash';
+import { get, some, filter, isEmpty, compact, isEqual, has, isNil } from 'lodash';
 import { addressFieldsForFormatting, TYPES_OF_MENU_ITEM } from '../constants/listOfFields';
 import LANGUAGES from '../translations/languages';
 import { parseJSON } from './parseJSON';
@@ -482,3 +482,19 @@ export const sortListItems = (menuItems, sortList) =>
 
     return acc;
   }, []);
+
+export const isObjectReviewTab = (wobject, match) => {
+  if (
+    !isNil(match.params.name) &&
+    !isNil(wobject.author_permlink) &&
+    match.params.name === wobject.author_permlink
+  ) {
+    return (
+      match.url.endsWith('/about') ||
+      match.url.endsWith('/reviews') ||
+      match.url === `/object/${wobject.author_permlink}`
+    );
+  }
+
+  return false;
+};

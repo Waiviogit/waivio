@@ -126,14 +126,17 @@
 
   &__topics {
     margin-left: auto;
-    display: none;
+    //display: none;
     @media @large, @medium, @small {
       display: flex;
     }
   }
   .PostWobject__related-objects {
-    margin-right: 40px;
-    display: flex;
+    display: none;
+    @media @large, @medium, @small {
+      display: flex;
+      margin-right: 40px;
+    }
   }
   .PostWobject__wrap {
     .pin-outlined > span > svg {

@@ -10,7 +10,7 @@ import {
   FormattedTime,
 } from 'react-intl';
 import { Link, withRouter } from 'react-router-dom';
-import { Tag } from 'antd';
+import { Tag, Tooltip } from 'antd';
 import {
   isPostDeleted,
   isPostTaggedNSFW,
@@ -27,7 +27,11 @@ import DMCARemovedMessage from './DMCARemovedMessage';
 import ObjectAvatar from '../ObjectAvatar';
 import PostedFrom from './PostedFrom';
 import WeightTag from '../WeightTag';
-import { getAppendData, getObjectName } from '../../../common/helpers/wObjectHelper';
+import {
+  getAppendData,
+  getObjectName,
+  isObjectReviewTab,
+} from '../../../common/helpers/wObjectHelper';
 import { guestUserRegex } from '../../../common/helpers/regexHelpers';
 
 import './Story.less';
@@ -395,9 +399,18 @@ class Story extends React.Component {
       match,
       wobject,
     } = this.props;
-    const isObjectPage = match.params.name === wobject.author_permlink;
+    const isObjectPage = isObjectReviewTab(wobject, match);
     const currentUserPin = pinnedPostsUrls.includes(post.url);
-    const pinClassName = post?.pin ? 'pin-grey' : 'pin-outlined';
+    const tooltipTitle = (
+      <FormattedMessage
+        id={currentUserPin ? 'unpin' : 'pin'}
+        defaultMessage={currentUserPin ? 'Unpin' : 'Pin'}
+      />
+    );
+    const pinClassName =
+      post?.pin || (has(post, 'currentUserPin') && !post.currentUserPin)
+        ? 'pin-grey'
+        : 'pin-outlined';
     const rebloggedUser = get(post, ['reblogged_users'], []);
     const isRebloggedPost = rebloggedUser.includes(user.name);
     const author = post.guestInfo ? post.guestInfo.userId : post.author;
@@ -473,28 +486,24 @@ class Story extends React.Component {
               <div className="Story__topics">
                 <div className="Story__published">
                   <div className="PostWobject__wrap">
-                    <div className={isObjectPage ? 'PostWobject__related-objects' : ''}>
+                    <div className={isObjectPage ? 'PostWobject__related-objects' : 'flex'}>
                       {' '}
                       {post.wobjects && this.getWobjects(post.wobjects.slice(0, 4))}
                     </div>
                     {isObjectPage && (
-                      <>
-                        {has(post, 'currentUserPin') ? (
-                          <ReactSVG
-                            className={currentUserPin ? 'pin-website-color' : 'pin-grey'}
-                            wrapper="span"
-                            src="/images/icons/pin.svg"
-                            onClick={this.handlePinPost}
-                          />
-                        ) : (
-                          <ReactSVG
-                            onClick={this.handlePinPost}
-                            className={currentUserPin ? 'pin-website-color' : pinClassName}
-                            wrapper="span"
-                            src="/images/icons/pin-outlined.svg"
-                          />
-                        )}
-                      </>
+                      <Tooltip
+                        placement="topLeft"
+                        title={tooltipTitle}
+                        overlayClassName="HeartButtonContainer"
+                        overlayStyle={{ top: '10px' }}
+                      >
+                        <ReactSVG
+                          className={currentUserPin ? 'pin-website-color' : pinClassName}
+                          wrapper="span"
+                          src="/images/icons/pin-outlined.svg"
+                          onClick={this.handlePinPost}
+                        />
+                      </Tooltip>
                     )}
                   </div>
                 </div>
