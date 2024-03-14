@@ -1910,6 +1910,15 @@ export const getSettingsWebsite = host =>
 
 export const getSettingsAdsense = host =>
   fetch(`${config.apiPrefix}${config.sites}${config.adSense}?host=${host}`, {
+    headers,
+    method: 'GET',
+  })
+    .then(res => res.json())
+    .then(res => res)
+    .catch(e => e);
+
+export const getSiteStatusInfo = host =>
+  fetch(`${config.apiPrefix}${config.sites}${config.info}?host=${host}`, {
     headers: { ...headers, ...getAuthHeaders() },
     method: 'GET',
   })

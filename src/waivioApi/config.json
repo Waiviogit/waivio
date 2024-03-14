@@ -228,5 +228,6 @@
   "list": "/list",
   "favorites": "/favorites",
   "pin": "/pin",
-  "rawField": "/raw-field"
+  "rawField": "/raw-field",
+  "info": "/info"
 }
