@@ -262,6 +262,15 @@ export const getObjectPosts = ({ username, object, limit = 10, newsPermlink }) =
     newsPermlink,
   );
 
+  dispatch({
+    type: GET_OBJECT_POSTS.START,
+    meta: {
+      sortBy: 'objectPosts',
+      category: username,
+      limit,
+    },
+  });
+
   return Promise.all([apiCall1, apiCall2])
     .then(([pinnedPosts, feedContent]) => {
       const allPosts = [...pinnedPosts, ...feedContent];
