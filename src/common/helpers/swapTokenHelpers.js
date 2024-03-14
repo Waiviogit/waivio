@@ -122,7 +122,9 @@ export const getSwapOutput = ({ symbol, amountIn, pool, slippage, from, params, 
     liquidityOut = pool.baseQuantity;
   }
 
-  const tokenAmount = from ? BigNumber(amountIn).toFixed() : amountOut;
+  const tokenAmount = from
+    ? BigNumber(amountIn).toFixed(precision, BigNumber.ROUND_DOWN)
+    : amountOut;
 
   const slippageAmount = from ? amountOut.times(slippage) : BigNumber(amountIn).times(slippage);
 

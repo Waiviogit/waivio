@@ -60,7 +60,7 @@ export default class PostFeedEmbed extends React.Component {
     if (embed?.url?.includes('odysee.com/')) {
       return <AsyncVideo url={embed.url} />;
     }
-    if (isPostVideo(embed.provider_name, shouldRenderThumb, isSocial)) {
+    if (isPostVideo(embed.provider_name, shouldRenderThumb, isSocial) && embed.thumbnail) {
       return this.renderThumbFirst(embed.thumbnail);
     } else if (embed.embed) {
       return this.renderWithIframe(embed.embed);

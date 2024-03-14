@@ -387,7 +387,7 @@ export default class ProfileSettings extends React.Component {
           <h1>
             <FormattedMessage id="edit_profile" defaultMessage="Edit Profile" />
           </h1>
-          <Form onSubmit={this.handleSubmit}>
+          <Form>
             <div className="Settings">
               <div className="Settings__section">
                 <h3>
@@ -560,7 +560,7 @@ export default class ProfileSettings extends React.Component {
               <Action
                 primary
                 big
-                type="submit"
+                onClick={this.handleSubmit}
                 disabled={
                   !form.isFieldsTouched() && !bodyHTML && !avatarImage.length && !coverImage.length
                 }

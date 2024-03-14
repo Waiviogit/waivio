@@ -71,7 +71,7 @@ ObjectCard.propTypes = {
     defaultShowLink: PropTypes.string,
     author_permlink: PropTypes.string,
     youFollows: PropTypes.bool,
-    parent: PropTypes.shape(),
+    parent: PropTypes.string,
     count_posts: PropTypes.number,
     menuItems: PropTypes.arrayOf(),
     menuItem: PropTypes.arrayOf(),

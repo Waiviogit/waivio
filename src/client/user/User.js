@@ -13,7 +13,7 @@ import {
   getUserAccountHistory,
   openTransfer,
 } from '../../store/walletStore/walletActions';
-import { getUserAccount } from '../../store/usersStore/usersActions';
+import { getUserAccount, getInfoForSideBar } from '../../store/usersStore/usersActions';
 import { getAvatarURL } from '../components/Avatar';
 import UserHero from './UserHero';
 import LeftSidebar from '../app/Sidebar/LeftSidebar';
@@ -103,7 +103,7 @@ const User = props => {
     if (typeof window !== 'undefined' && window.gtag)
       window.gtag('event', 'view_user_profile', { debug_mode: false });
 
-    props.getUserAccount(name);
+    props.getUserAccount(name).then(res => props.getInfoForSideBar(name, res.las));
     props.getUserAccountHistory(name);
     props.getTokenBalance('WAIV', name);
     props.resetBreadCrumb();
@@ -235,6 +235,7 @@ User.propTypes = {
   openTransfer: PropTypes.func,
   resetFavorites: PropTypes.func,
   getUserAccount: PropTypes.func,
+  getInfoForSideBar: PropTypes.func,
   rate: PropTypes.number.isRequired,
   rewardFund: PropTypes.shape().isRequired,
   isOpenWalletTable: PropTypes.bool,
@@ -251,7 +252,11 @@ User.defaultProps = {
 };
 
 User.fetchData = async ({ store, match }) => {
-  const promises = [store.dispatch(getUserAccount(match.params.name))];
+  const promises = [
+    store
+      .dispatch(getUserAccount(match.params.name))
+      .then(res => store.dispatch(getInfoForSideBar(match.params.name, res?.lastActivity))),
+  ];
 
   // if (match.params[0] === 'favorites') {
   //   promises.push(
@@ -288,6 +293,7 @@ export default connect(
     getUserAccount,
     openTransfer,
     getUserAccountHistory,
+    getInfoForSideBar,
     getTokenBalance,
     getGlobalProperties,
     resetBreadCrumb,

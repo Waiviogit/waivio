@@ -114,8 +114,13 @@ const SocialProductReviews = ({ wobject, authors, intl }) => {
 };
 
 SocialProductReviews.propTypes = {
-  wobject: PropTypes.shape().isRequired,
-  authors: PropTypes.arrayOf().isRequired,
-  intl: PropTypes.shape(),
+  wobject: PropTypes.shape({
+    object_type: PropTypes.string,
+    author_permlink: PropTypes.string,
+  }).isRequired,
+  authors: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
+  intl: PropTypes.shape({
+    formatMessage: PropTypes.func,
+  }),
 };
 export default injectIntl(SocialProductReviews);

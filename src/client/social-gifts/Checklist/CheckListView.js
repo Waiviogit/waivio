@@ -81,7 +81,7 @@ const CheckListView = ({ wobject, listItems, loading, intl, hideBreadCrumbs }) =
       );
     }
 
-    return <ShopObjectCard isChecklist wObject={listItem} />;
+    return <ShopObjectCard key={listItem.author_permlink} isChecklist wObject={listItem} />;
   };
 
   const getMenuList = () => {
@@ -141,7 +141,7 @@ CheckListView.propTypes = {
     }),
     listItems: PropTypes.arrayOf(),
   }).isRequired,
-  listItems: PropTypes.arrayOf(),
+  listItems: PropTypes.arrayOf(PropTypes.shape({})),
   intl: PropTypes.shape({ formatMessage: PropTypes.func }).isRequired,
   loading: PropTypes.bool,
   hideBreadCrumbs: PropTypes.bool,

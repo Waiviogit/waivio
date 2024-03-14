@@ -96,14 +96,13 @@ export default function createSsrHandler(template) {
       const splittedUrl = req.url.split('?');
       const branch = matchRoutes(routes, splittedUrl[0]);
       const query = splittedUrl[1] ? new URLSearchParams(`?${splittedUrl[1]}`) : null;
-      const promises = branch.map(({ route, match }) => {
+      const promises = [];
+
+      branch.forEach(({ route, match }) => {
         const fetchData = route?.component?.fetchData;
-
         if (fetchData instanceof Function) {
-          return fetchData({ store, match, req, res, query, url: req.url });
+          promises.push(fetchData({ store, match, req, res, query, url: req.url }));
         }
-
-        return Promise.resolve(null);
       });
 
       await createTimeout(ssrTimeout, Promise.all(promises));

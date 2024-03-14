@@ -76,7 +76,7 @@ InviteGuestUser.propTypes = {
 
 InviteGuestUser.defaultProps = {
   intl: {},
-  buttonLabel: <FormattedMessage />,
+  buttonLabel: '',
   inviteURL: '',
   handleCopyClick: () => {},
 };

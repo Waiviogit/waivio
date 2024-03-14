@@ -173,6 +173,20 @@ export const getFeedContentByObject = (
     .then(posts => posts)
     .catch(error => error);
 
+export const getPinnedPostsByObject = (name, locale, follower) =>
+  fetch(`${config.apiPrefix}${config.getObjects}/${name}${config.pin}`, {
+    headers: {
+      ...headers,
+      app: config.appName,
+      locale,
+      follower,
+    },
+    method: 'GET',
+  })
+    .then(res => res.json())
+    .then(posts => posts)
+    .catch(error => error);
+
 // eslint-disable-next-line camelcase
 export const getMoreFeedContentByObject = ({
   authorPermlink,
@@ -1396,6 +1410,21 @@ export const getChangedField = (authorPermlink, fieldName, author, permlink, loc
     .then(res => res.json())
     .catch(error => error);
 
+export const getUpdateByBody = (authorPermlink, name, locale, body) =>
+  fetch(`${config.apiPrefix}${config.getObjects}/${authorPermlink}${config.rawField}`, {
+    headers: {
+      ...headers,
+      locale,
+    },
+    body: JSON.stringify({
+      name,
+      body,
+    }),
+    method: 'POST',
+  })
+    .then(res => res.json())
+    .catch(error => error);
+
 export const getFollowingSponsorsRewards = ({ userName, skip }) => {
   const query = skip ? `/?skip=${skip}` : '';
 
@@ -1586,7 +1615,7 @@ export const createWebsite = async body => {
   isGuest = token === 'null' ? false : Boolean(token);
 
   if (isGuest) token = await getValidTokenData();
-  fetch(`${config.apiPrefix}${config.sites}${config.create}`, {
+  return fetch(`${config.apiPrefix}${config.sites}${config.create}`, {
     headers: {
       ...headers,
       ...(isGuest ? { 'access-token': token.token, 'waivio-auth': true } : { ...getAuthHeaders() }),

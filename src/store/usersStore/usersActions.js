@@ -32,6 +32,7 @@ export const getInfoForSideBar = (username, lastActiv) => async dispatch => {
     if (isEmpty(lastActiv) || isNil(lastActiv)) {
       lastActivity = await ApiClient.getUserLastActivity(username, acc);
     }
+
     const data = {
       balance: acc?.balance,
       hbd_balance: acc?.hbd_balance,
@@ -94,11 +95,10 @@ export const getUserAccount = name => async (dispatch, getState) => {
 
   return dispatch({
     type: GET_ACCOUNT.ACTION,
-    payload: ApiClient.getUserAccount(name, false, authUser).then(res => {
-      dispatch(getInfoForSideBar(name, res?.lastActivity));
-
-      return { ...res, ...guestMana };
-    }),
+    payload: ApiClient.getUserAccount(name, false, authUser).then(res => ({
+      ...res,
+      ...guestMana,
+    })),
     meta: { username: name },
   });
 };

@@ -20,6 +20,8 @@ const initialState = {
   tags: [],
   tiktokPreview: [],
   previewLoading: false,
+  pinnedPosts: [],
+  firstLoading: true,
 };
 
 const feedIdsList = (state = [], action) => {
@@ -143,13 +145,21 @@ const feedCategory = (state = {}, action) => {
     case feedTypes.GET_REPLIES.SUCCESS:
     case feedTypes.GET_MORE_REPLIES.SUCCESS:
     case feedTypes.GET_BOOKMARKS.SUCCESS:
-    case feedTypes.GET_OBJECT_POSTS.SUCCESS:
       return {
         ...state,
         isFetching: false,
         isLoaded: true,
         failed: false,
         hasMore: Boolean(action.payload.length >= action.meta.limit),
+        list: feedIdsList(state.list, action),
+      };
+    case feedTypes.GET_OBJECT_POSTS.SUCCESS:
+      return {
+        ...state,
+        isFetching: false,
+        isLoaded: true,
+        failed: false,
+        hasMore: Boolean(action.meta.limitToCompare >= action.meta.limit),
         list: feedIdsList(state.list, action),
       };
     case feedTypes.GET_FEED_CONTENT.ERROR:
@@ -344,6 +354,16 @@ const feed = (state = initialState, action) => {
         ...state,
         previewLoading: false,
         tiktokPreview: [...state.tiktokPreview, ...action.payload],
+      };
+    case feedTypes.SET_PINNED_POSTS:
+      return {
+        ...state,
+        pinnedPosts: action.payload,
+      };
+    case feedTypes.SET_FIRST_LOADING:
+      return {
+        ...state,
+        firstLoading: action.payload,
       };
     default:
       return state;

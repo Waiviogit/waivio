@@ -8,7 +8,6 @@ import HeartButton from '../../../widgets/HeartButton';
 import { accessTypesArr, haveAccess } from '../../../../common/helpers/wObjectHelper';
 import { getAuthenticatedUserName } from '../../../../store/authStore/authSelectors';
 import FollowButton from '../../../widgets/FollowButton';
-import { guestUserRegex } from '../../../../common/helpers/regexHelpers';
 import { followWobject, unfollowWobject } from '../../../../store/wObjectStore/wobjActions';
 import { getObject } from '../../../../store/wObjectStore/wObjectSelectors';
 import { getUserAdministrator } from '../../../../store/appStore/appSelectors';
@@ -25,7 +24,6 @@ const SocialProductActions = ({
   isAdministrator,
 }) => {
   const accessExtend = haveAccess(wobject, username, accessTypesArr[0]);
-  const isGuest = guestUserRegex.test(username);
 
   return (
     <div className="ObjectHeader__controls">
@@ -46,7 +44,7 @@ const SocialProductActions = ({
           {wobject.youFollows && <BellButton wobj={wobject} />}
         </React.Fragment>
       )}
-      {authenticated && !isGuest && <HeartButton wobject={wobject} size={'28px'} />}
+      {authenticated && <HeartButton wobject={wobject} size={'28px'} />}
     </div>
   );
 };

@@ -4,7 +4,11 @@ import PropTypes from 'prop-types';
 import { isEmpty, isNil } from 'lodash';
 import { withRouter } from 'react-router-dom';
 import { parseJSON } from '../../../common/helpers/parseJSON';
-import { getObjectPosts, getTiktokPreviewAction } from '../../../store/feedStore/feedActions';
+import {
+  getObjectPosts,
+  getTiktokPreviewAction,
+  setFirstLoading,
+} from '../../../store/feedStore/feedActions';
 import { prepareMenuItems } from '../../social-gifts/SocialProduct/SocialMenuItems/SocialMenuItems';
 import Wobj from './Wobj';
 import { getAppendList } from '../../../store/appendStore/appendSelectors';
@@ -139,7 +143,7 @@ const WobjectContainer = props => {
 
 WobjectContainer.propTypes = {
   route: PropTypes.shape().isRequired,
-  authenticatedUserName: PropTypes.string.isRequired,
+  authenticatedUserName: PropTypes.string,
   match: PropTypes.shape().isRequired,
   history: PropTypes.shape().isRequired,
   location: PropTypes.shape({
@@ -152,7 +156,7 @@ WobjectContainer.propTypes = {
   weightValue: PropTypes.number.isRequired,
   resetGallery: PropTypes.func.isRequired,
   setEditMode: PropTypes.func.isRequired,
-  updates: PropTypes.arrayOf(),
+  updates: PropTypes.arrayOf(PropTypes.shape({})),
   clearObjectFromStore: PropTypes.func,
   setNestedWobject: PropTypes.func,
   setCatalogBreadCrumbs: PropTypes.func,
@@ -185,10 +189,19 @@ WobjectContainer.fetchData = async ({ store, match }) => {
               newsPermlink: response.value?.newsFeed?.permlink,
             }),
           )
-          .then(resp => store.dispatch(getTiktokPreviewAction(resp.value))),
+          .then(resp =>
+            Promise.all([
+              store.dispatch(getTiktokPreviewAction(resp.value)),
+              store.dispatch(setFirstLoading(false)),
+            ]),
+          ),
       ];
 
-      if (['product', 'book', 'person', 'business']?.includes(response.value.object_type)) {
+      if (
+        ['product', 'book', 'person', 'business', 'restaurant']?.includes(
+          response.value.object_type,
+        )
+      ) {
         const customSort = isEmpty(response.value?.sortCustom?.include)
           ? response.value.menuItem.map(i => i.permlink)
           : response.value?.sortCustom?.include;

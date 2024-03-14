@@ -33,7 +33,12 @@ function CompanyId({ companyIdBody, isSocial }) {
 }
 CompanyId.propTypes = {
   isSocial: PropTypes.bool,
-  companyIdBody: PropTypes.string.isRequired,
+  companyIdBody: PropTypes.arrayOf(
+    PropTypes.shape({
+      companyIdType: PropTypes.string,
+      companyId: PropTypes.string,
+    }),
+  ).isRequired,
 };
 
 CompanyId.defaultProps = {

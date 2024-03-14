@@ -16,7 +16,7 @@ import Notifications from '../Navigation/Notifications/Notifications';
 import Avatar from '../Avatar';
 import PopoverMenu, { PopoverMenuItem } from '../PopoverMenu/PopoverMenu';
 import { PARSED_NOTIFICATIONS } from '../../../common/constants/notifications';
-import { getUserAccount, getUserMetadata } from '../../../store/usersStore/usersActions';
+import { getUserMetadata } from '../../../store/usersStore/usersActions';
 import { logout } from '../../../store/authStore/authActions';
 import ModalSignIn from '../Navigation/ModlaSignIn/ModalSignIn';
 import LanguageSettings from '../Navigation/LanguageSettings';
@@ -31,7 +31,6 @@ import {
   getIsLoadingNotifications,
   getNotifications,
 } from '../../../store/userStore/userSelectors';
-import { getTokenBalance } from '../../../store/walletStore/walletActions';
 import { getObjectUrlForLink } from '../../../common/helpers/wObjectHelper';
 import { isMobile } from '../../../common/helpers/apiHelpers';
 
@@ -379,7 +378,5 @@ export default connect(
     getUserMetadata,
     logout,
     setCurrentPage,
-    getUserAccount,
-    getTokenBalance,
   },
 )(withRouter(injectIntl(HeaderButtons)));

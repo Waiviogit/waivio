@@ -6,6 +6,7 @@ import WobjectContainer from '../../client/object/Wobj/WobjectContainer';
 import RedirectedSignIn from '../../client/components/Navigation/redirectedSignIn/RedirectedSignIn';
 import RewardsMainPage from '../../client/newRewards/RewardsMainPage';
 import createNestedRouts from '../../routes/helper';
+import UserExpertise from '../user/UserExpertise';
 import SocialWrapper from './Wrapper';
 import Shop from '../Shop/Shop';
 import ShopSwitcher from './ShopSwitcher/ShopSwitcher';
@@ -238,7 +239,7 @@ const routes = () => ({
         {
           path: '/(expertise-hashtags|expertise-objects)',
           exact: true,
-          component: Views.UserExpertise,
+          component: UserExpertise,
         },
         {
           path: '/about',
