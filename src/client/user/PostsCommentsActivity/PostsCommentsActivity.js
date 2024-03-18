@@ -5,6 +5,12 @@ import { injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { Link, withRouter } from 'react-router-dom';
 import { Tabs } from 'antd';
+import { getUserProfileBlogPosts, getUserComments } from '../../../store/feedStore/feedActions';
+import {
+  updateAccountHistoryFilter,
+  getUserAccountHistory,
+  setInitialCurrentDisplayedActions,
+} from '../../../store/walletStore/walletActions';
 import EmptyMutedUserProfile from '../../statics/MutedContent';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 import { getUser } from '../../../store/usersStore/usersSelectors';
@@ -83,6 +89,27 @@ PostsCommentsActivity.defaultProps = {
   limit: 10,
   isGuest: false,
   user: {},
+};
+
+PostsCommentsActivity.fetchData = ({ store, match }) => {
+  const { name, 0: tab = 'posts' } = match.params;
+
+  if (tab === 'posts')
+    return store.dispatch(getUserProfileBlogPosts(name, { limit: 10, initialLoad: true }));
+  if (tab === 'comments') return store.dispatch(getUserComments({ username: name }));
+  if (tab === 'activity')
+    return Promise.allSettled([
+      store.dispatch(getUserAccountHistory(name)),
+      store.dispatch(
+        updateAccountHistoryFilter({
+          username: name,
+          accountHistoryFilter: [],
+        }),
+      ),
+      store.dispatch(setInitialCurrentDisplayedActions(name)),
+    ]);
+
+  return Promise.resolve();
 };
 
 export default connect((state, ownProps) => ({
