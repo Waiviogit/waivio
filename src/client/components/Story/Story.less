@@ -126,29 +126,37 @@
 
   &__topics {
     margin-left: auto;
-    display: none;
+    //display: none;
     @media @large, @medium, @small {
       display: flex;
     }
   }
   .PostWobject__related-objects {
-    margin-right: 40px;
-    display: flex;
+    display: none;
+    @media @large, @medium, @small {
+      display: flex;
+      margin-right: -13px;
+    }
   }
   .PostWobject__wrap {
+    .pin-outlined,
+    .pin-grey,
+    .pin-website-color {
+      height: 0;
+    }
     .pin-outlined > span > svg {
       width: 53px;
       height: 55px;
-      position: absolute;
-      right: 5px;
-      top: 6px;
+      position: relative;
+      right: -13px;
+      top: -10px;
     }
     .pin-website-color > span > svg {
       width: 53px;
       height: 55px;
-      position: absolute;
-      right: 5px;
-      top: 6px;
+      position: relative;
+      right: -13px;
+      top: -10px;
       path {
         stroke-width: 0;
         fill: var(--website-color);
@@ -158,9 +166,10 @@
     .pin-grey > span > svg {
       width: 53px;
       height: 55px;
-      position: absolute;
-      right: 5px;
-      top: 6px;
+      position: relative;
+      right: -13px;
+      top: -10px;
+
       path {
         fill: @blue-botticelli;
       }
@@ -282,6 +291,9 @@ div[data-dir='rtl'] .Story {
       }
     }
   }
+}
+.HeartButtonContainer {
+  padding-left: 24px !important;
 }
 
 @import 'Story-nightmode';

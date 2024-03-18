@@ -74,6 +74,10 @@
         text-align: center;
         background-color: #fff;
         border: 1px solid @white-gainsboro;
+        &:hover,
+        &:hover .MapOS__locateGPS-button {
+          background-color: @white-gainsboro;
+        }
       }
       &-button {
         vertical-align: inherit;
@@ -108,12 +112,17 @@
       text-align: center;
       background-color: #fff;
       border: 1px solid @white-gainsboro;
+      &:hover,
+      &:hover .MapOS__locateGPS-button {
+        background-color: @white-gainsboro;
+      }
     }
     &-button {
       vertical-align: inherit;
       border: none;
       width: 13px;
       height: 13px;
+      margin-top: 5px;
     }
   }
   .MapOS__fullScreen {

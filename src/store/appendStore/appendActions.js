@@ -12,7 +12,6 @@ import {
 
 import { getLocale } from '../settingsStore/settingsSelectors';
 import { getAppendList } from './appendSelectors';
-import { getObjectPosts } from '../feedStore/feedActions';
 import {
   SET_AFFILIATE_OBJECTS,
   setAffiliateObjects,
@@ -78,7 +77,7 @@ export const getChangedWobjectField = (
   const locale = getLocale(state);
   const voter = getAuthenticatedUserName(state);
   const isGuest = isGuestUser(state);
-  const updatePosts = ['pin'].includes(fieldName);
+  // const updatePosts = ['pin'].includes(fieldName);
   const fieldType = isNew ? fieldName : type;
 
   const subscribeCallback = () =>
@@ -104,36 +103,28 @@ export const getChangedWobjectField = (
       },
       meta: { isNew },
     });
-  const updatePostCallback = () => {
-    dispatch(
-      getObjectPosts({
-        username: authorPermlink,
-        object: authorPermlink,
-      }),
-    ).then(() => subscribeCallback());
-
-    if (typeof window !== 'undefined') window.scrollTo(0, 0);
-  };
+  // const updatePostCallback = () => {
+  //   dispatch(
+  //     getObjectPosts({
+  //       username: authorPermlink,
+  //       object: authorPermlink,
+  //     }),
+  //   ).then(() => subscribeCallback());
+  //
+  //   if (typeof window !== 'undefined') window.scrollTo(0, 0);
+  // };
 
   if (isGuest) {
     setTimeout(() => {
-      if (appendObj && updatePosts && !isUpdatesPage) {
-        updatePostCallback();
-      } else {
-        if (isNew) dispatch(getUpdates(authorPermlink, fieldType, 'createdAt', locale));
-        subscribeCallback();
-      }
+      if (isNew) dispatch(getUpdates(authorPermlink, fieldType, 'createdAt', locale));
+      subscribeCallback();
     }, 10000);
   } else {
     busyAPI.instance.sendAsync(subscribeTypes.subscribeTransactionId, [voter, id]);
     busyAPI.instance.subscribe((datad, j) => {
       if (j?.success && j?.permlink === id) {
-        if (appendObj && updatePosts && !isUpdatesPage) {
-          updatePostCallback();
-        } else {
-          if (isNew) dispatch(getUpdates(authorPermlink, fieldType, 'createdAt', locale));
-          subscribeCallback();
-        }
+        if (isNew) dispatch(getUpdates(authorPermlink, fieldType, 'createdAt', locale));
+        subscribeCallback();
       }
     });
   }
@@ -189,7 +180,7 @@ export const voteAppends = (
             type,
             appendObj,
             isUpdatesPage,
-            res.id || res.result.id,
+            res.id || res?.result?.id,
           ),
         );
     })
