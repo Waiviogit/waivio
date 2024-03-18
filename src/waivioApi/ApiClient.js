@@ -1917,6 +1917,15 @@ export const getSettingsAdsense = host =>
     .then(res => res)
     .catch(e => e);
 
+export const getSiteStatusInfo = host =>
+  fetch(`${config.apiPrefix}${config.sites}${config.info}?host=${host}`, {
+    headers,
+    method: 'GET',
+  })
+    .then(res => res.json())
+    .then(res => res)
+    .catch(e => e);
+
 export const getCurrentAppSettings = () =>
   fetch(`${config.apiPrefix}${config.sites}`, {
     headers,
