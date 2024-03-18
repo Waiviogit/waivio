@@ -12,7 +12,6 @@ import {
   getParentHost,
   getSettingsAdsense,
   getSettingsWebsite,
-  getSiteStatusInfo,
   waivioAPI,
 } from '../../waivioApi/ApiClient';
 import getStore from '../../store/store';
@@ -22,28 +21,12 @@ import { getCachedPage, setCachedPage, updateBotCount } from './cachePageHandler
 import { isCustomDomain } from '../../client/social-gifts/listOfSocialWebsites';
 import { REDIS_KEYS } from '../../common/constants/ssrData';
 import { sismember } from '../redis/redisClient';
-import config from '../../waivioApi/routes';
+import { checkAppStatus, isInheritedHost } from '../../common/helpers/redirectHelper';
 
 // eslint-disable-next-line import/no-dynamic-require
 const assets = require(process.env.MANIFEST_PATH);
 
 const ssrTimeout = 5000;
-
-const isInheritedHost = host =>
-  !['waivio.com', 'www.waivio.com', 'waiviodev.com', 'social.gifts', 'dining.gifts'].includes(host);
-
-const checkAppStatus = async host => {
-  if (process.env.NODE_ENV === 'development') return { redirect: false };
-  const statusInfo = await getSiteStatusInfo(host);
-  if (!statusInfo.status) {
-    return { redirect: true, redirectPath: config.baseUrl };
-  }
-  if (statusInfo.status !== 'active') {
-    return { redirect: true, redirectPath: `https://${statusInfo.parentHost}` };
-  }
-
-  return { redirect: false };
-};
 
 function createTimeout(timeout, promise) {
   return new Promise((resolve, reject) => {
