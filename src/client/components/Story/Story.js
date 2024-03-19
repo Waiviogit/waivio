@@ -490,7 +490,8 @@ class Story extends React.Component {
                   <div className="PostWobject__wrap">
                     <div className={isObjectPage ? 'PostWobject__related-objects' : 'flex'}>
                       {' '}
-                      {post.wobjects && this.getWobjects(post.wobjects.slice(0, 4))}
+                      {post.wobjects &&
+                        this.getWobjects(post.wobjects.slice(0, isObjectPage ? 3 : 4))}
                     </div>
                     {isObjectPage && (
                       <Tooltip
