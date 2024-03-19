@@ -27,6 +27,7 @@ const notFoundRedirectPath = (host = '') => {
 };
 
 export const checkAppStatus = async host => {
+  if (process.env.NODE_ENV === 'development') return { redirect: false };
   const statusInfo = await getSiteStatusInfo(host);
 
   if (!statusInfo.status) {
