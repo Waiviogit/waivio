@@ -1,3 +1,4 @@
+import PostsCommentsActivity from '../../client/user/PostsCommentsActivity/PostsCommentsActivity';
 import UserExpertise from '../../client/user/UserExpertise';
 import Views from '../components';
 import Post from '../../client/post/Post';
@@ -353,7 +354,7 @@ const routes = {
         {
           path: ['', '/(threads|comments|activity)'],
           exact: true,
-          component: Views.PostsCommentsActivity,
+          component: PostsCommentsActivity,
         },
         {
           path: '/(followers|following|following-objects)',

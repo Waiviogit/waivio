@@ -180,7 +180,7 @@ export const voteAppends = (
             type,
             appendObj,
             isUpdatesPage,
-            res.id || res.result.id,
+            res.id || res?.result?.id,
           ),
         );
     })

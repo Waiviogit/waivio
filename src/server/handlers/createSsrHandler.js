@@ -1,7 +1,7 @@
 import { setTimeout } from 'timers';
 import React from 'react';
 import { Provider } from 'react-redux';
-import { get, isNil } from 'lodash';
+import { get } from 'lodash';
 import { renderToString } from 'react-dom/server';
 import { StaticRouter } from 'react-router';
 import { matchRoutes, renderRoutes } from 'react-router-config';
@@ -17,19 +17,16 @@ import {
 import getStore from '../../store/store';
 import renderSsrPage from '../renderers/ssrRenderer';
 import switchRoutes from '../../routes/switchRoutes';
-import { getCachedPage, isSearchBot, setCachedPage, updateBotCount } from './cachePageHandler';
+import { getCachedPage, setCachedPage, updateBotCount } from './cachePageHandler';
 import { isCustomDomain } from '../../client/social-gifts/listOfSocialWebsites';
 import { REDIS_KEYS } from '../../common/constants/ssrData';
 import { sismember } from '../redis/redisClient';
-import NOT_FOUND_PAGE from '../pages/notFoundPage';
+import { checkAppStatus, isInheritedHost } from '../../common/helpers/redirectHelper';
 
 // eslint-disable-next-line import/no-dynamic-require
 const assets = require(process.env.MANIFEST_PATH);
 
 const ssrTimeout = 5000;
-
-const isInheritedHost = host =>
-  !['waivio.com', 'www.waivio.com', 'waiviodev.com', 'social.gifts', 'dining.gifts'].includes(host);
 
 function createTimeout(timeout, promise) {
   return new Promise((resolve, reject) => {
@@ -54,9 +51,13 @@ export default function createSsrHandler(template) {
       const searchBot = isbot(req.get('User-Agent'));
 
       const inheritedHost = isInheritedHost(hostname);
+      if (inheritedHost) {
+        const { redirect, redirectPath } = await checkAppStatus(hostname);
+        if (redirect) return res.redirect(302, redirectPath);
+      }
       if (inheritedHost && searchBot) {
         const pageExist = await isPageExistSitemap({ host: hostname, url: req.url });
-        if (!pageExist) return res.redirect(302, `https://waivio.com${req.url}`);
+        if (!pageExist) return res.redirect(302, `https://www.waivio.com${req.url}`);
       }
 
       if (searchBot) {
