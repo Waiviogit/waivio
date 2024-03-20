@@ -28,6 +28,7 @@ const listOfObjectTypes = [
   'newsfeed',
   'widget',
   'webpage',
+  'map',
   'shop',
   'affiliate',
   'restaurant',

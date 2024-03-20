@@ -25,6 +25,7 @@ import SocialLinks from '../../../components/SocialLinks';
 import { getExposedFieldsByObjType, getFieldsCount, getLink } from '../../../object/wObjectHelper';
 import {
   linkFields,
+  mapObjectTypeFields,
   objectFields,
   TYPES_OF_MENU_ITEM,
 } from '../../../../common/constants/listOfFields';
@@ -64,7 +65,7 @@ import { setAuthors } from '../../../../store/wObjectStore/wobjActions';
 import MenuItemButtons from '../MenuItemButtons/MenuItemButtons';
 import MenuItemButton from '../MenuItemButtons/MenuItemButton';
 import AffiliateSection from './ObjectInfoComponents/AffiliateSection';
-
+import { getCoordinates } from '../../../../store/userStore/userActions';
 import './ObjectInfo.less';
 
 @withRouter
@@ -79,7 +80,7 @@ import './ObjectInfo.less';
     activeCategory: getActiveCategory(state),
     storeGroupId: getGroupId(state),
   }),
-  { getRelatedAlbum, setStoreGroupId, setStoreActiveOption, setAuthors },
+  { getRelatedAlbum, setStoreGroupId, setStoreActiveOption, setAuthors, getCoordinates },
 )
 class ObjectInfo extends React.Component {
   static propTypes = {
@@ -95,13 +96,14 @@ class ObjectInfo extends React.Component {
     isWaivio: PropTypes.bool,
     history: PropTypes.shape().isRequired,
     appendAlbum: PropTypes.func.isRequired,
-    albums: PropTypes.shape(),
+    albums: PropTypes.arrayOf(),
     relatedAlbum: PropTypes.shape().isRequired,
     getRelatedAlbum: PropTypes.func.isRequired,
     setStoreGroupId: PropTypes.func.isRequired,
     setAuthors: PropTypes.func.isRequired,
     children: PropTypes.node.isRequired,
     setStoreActiveOption: PropTypes.func.isRequired,
+    getCoordinates: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -129,6 +131,7 @@ class ObjectInfo extends React.Component {
     manufacturerObject: {},
     brandObject: {},
     merchantObject: {},
+    mapObjectsListObject: {},
     authorsArray: [],
     menuItemsArray: [],
     showMenuLegacy: false,
@@ -138,6 +141,7 @@ class ObjectInfo extends React.Component {
     const { wobject } = this.props;
 
     this.getPublisherManufacturerBrandMerchantObjects();
+    this.props.getCoordinates();
 
     this.props.getRelatedAlbum(this.props.match.params.name, 10);
 
@@ -155,6 +159,7 @@ class ObjectInfo extends React.Component {
       merchant,
       groupId,
       menuItem,
+      mapObjectsList,
     } = this.props.wobject;
 
     if (
@@ -164,7 +169,8 @@ class ObjectInfo extends React.Component {
       manufacturer !== prevProps.wobject.manufacturer ||
       brand !== prevProps.wobject.brand ||
       merchant !== prevProps.wobject.merchant ||
-      menuItem !== prevProps.wobject.menuItem
+      menuItem !== prevProps.wobject.menuItem ||
+      mapObjectsList !== prevProps.wobject.mapObjectsList
     ) {
       this.getPublisherManufacturerBrandMerchantObjects();
     }
@@ -182,6 +188,7 @@ class ObjectInfo extends React.Component {
     const manufacturer = parseWobjectField(wobject, 'manufacturer');
     const brand = parseWobjectField(wobject, 'brand');
     const merchant = parseWobjectField(wobject, 'merchant');
+    const mapObjectsList = get(wobject, 'mapObjectsList');
     const authors = wobject.authors
       ? wobject.authors?.map(el => parseWobjectField(el, 'body', []))
       : [];
@@ -225,6 +232,7 @@ class ObjectInfo extends React.Component {
       manufacturer?.authorPermlink,
       brand?.authorPermlink,
       merchant?.authorPermlink,
+      mapObjectsList,
     ].filter(permlink => permlink);
 
     getObjectInfo(backObjects, this.props.locale).then(res => {
@@ -237,8 +245,16 @@ class ObjectInfo extends React.Component {
         res.wobjects.find(wobj => wobj.author_permlink === publisher?.authorPermlink) || publisher;
       const merchantObject =
         res.wobjects.find(wobj => wobj.author_permlink === merchant?.authorPermlink) || merchant;
+      const mapObjectsListObject =
+        res.wobjects.find(wobj => wobj.author_permlink === mapObjectsList) || {};
 
-      this.setState({ brandObject, manufacturerObject, publisherObject, merchantObject });
+      this.setState({
+        brandObject,
+        manufacturerObject,
+        publisherObject,
+        merchantObject,
+        mapObjectsListObject,
+      });
     });
   }
   authorFieldAuthorPermlink = author => author.authorPermlink || author.author_permlink;
@@ -614,6 +630,7 @@ class ObjectInfo extends React.Component {
         }
       : {};
     const phones = get(wobject, 'phone', []);
+    const mapObjectsList = get(wobject, 'mapObjectsList', '');
     const isHashtag = hasType(wobject, OBJECT_TYPE.HASHTAG);
     const isAffiliate = hasType(wobject, OBJECT_TYPE.AFFILIATE);
     const isDescriptionPage = this.props.match.params[0] === 'description';
@@ -633,12 +650,14 @@ class ObjectInfo extends React.Component {
     const blogsList = getBlogItems(wobject);
     const showMenuSection =
       !hasType(wobject, OBJECT_TYPE.PAGE) &&
+      !hasType(wobject, OBJECT_TYPE.MAP) &&
       !hasType(wobject, OBJECT_TYPE.WEBPAGE) &&
       !hasType(wobject, OBJECT_TYPE.SHOP) &&
       !hasType(wobject, OBJECT_TYPE.LIST) &&
       !hasType(wobject, OBJECT_TYPE.DISH) &&
       !hasType(wobject, OBJECT_TYPE.AFFILIATE) &&
       !hasType(wobject, OBJECT_TYPE.DRINK);
+    const showMapSection = hasType(wobject, OBJECT_TYPE.MAP);
     const formsList = getFormItems(wobject)?.map(item => ({
       ...item,
       id: objectFields.form,
@@ -704,7 +723,36 @@ class ObjectInfo extends React.Component {
           )}
       </>
     );
+    const mapSection = () => {
+      const { mapObjectsListObject } = this.state;
 
+      return (
+        <React.Fragment>
+          {isEditMode && (
+            <div className="object-sidebar__section-title">
+              <FormattedMessage id="map" defaultMessage="Map" />
+            </div>
+          )}
+          {this.listItem(
+            mapObjectTypeFields.mapObjectsList,
+            mapObjectsList && (
+              <div className={'mt1'}>
+                <ObjectCard
+                  key={mapObjectsListObject.authorPermlink}
+                  wobject={mapObjectsListObject}
+                  showFollow={false}
+                />
+              </div>
+            ),
+          )}
+          {this.listItem(mapObjectTypeFields.mapDesktopView, null)}
+          {this.listItem(mapObjectTypeFields.mapMobileView, null)}
+          {this.listItem(mapObjectTypeFields.mapObjectTypes, null)}
+          {this.listItem(mapObjectTypeFields.mapObjectTags, null)}
+          {this.listItem(mapObjectTypeFields.mapRectangles, null)}
+        </React.Fragment>
+      );
+    };
     const menuSection = () => {
       if (!isEditMode && !isEmpty(customSort) && !hasType(wobject, OBJECT_TYPE.LIST)) {
         const buttonArray = [
@@ -1461,6 +1509,7 @@ class ObjectInfo extends React.Component {
               )}
             {isOptionsObjectType && galleryPriceOptionsSection}
             {!isHashtag && showMenuSection && menuSection()}
+            {showMapSection && mapSection()}
             {aboutSection}
             {isAffiliate && (
               <AffiliateSection
