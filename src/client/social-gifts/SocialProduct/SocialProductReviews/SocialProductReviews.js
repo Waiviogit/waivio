@@ -98,6 +98,7 @@ const SocialProductReviews = ({ wobject, authors, intl }) => {
         </button>
       </div>
       <FeedMasonry
+        isReviewsPage
         objName={getObjectName(wobject)}
         emptyLable={intl.formatMessage({
           id: 'empty_object_profile',

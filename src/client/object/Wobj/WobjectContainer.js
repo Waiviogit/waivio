@@ -77,6 +77,16 @@ const WobjectContainer = props => {
         }
 
         if (
+          props.isSocial &&
+          ['restaurant', 'book', 'business', 'product']?.includes(res.value.object_type)
+        ) {
+          if (isEmpty(props.updates) || isNil(props.updates) || isNil(props.match.params[1])) {
+            const field = getUpdateFieldName(props.match.params[1]);
+
+            props.getUpdates(name, field, 'createdAt');
+          }
+        }
+        if (
           (props.isSocial &&
             !['page', 'newsfeed', 'widget', 'product']?.includes(res.value.object_type)) ||
           !props.isSocial
