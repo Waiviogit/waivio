@@ -1,9 +1,45 @@
 @import (reference) '../../styles/modules/variables.less';
+@import (reference) '../../styles/custom.less';
 
 .FeedMasonry {
   &__item {
     max-width: 300px;
     margin-bottom: 20px;
+    position: relative;
+    .pin-outlined,
+    .pin-grey,
+    .pin-website-color {
+      cursor: pointer;
+      left: 84%;
+      bottom: -11px;
+      display: flex;
+      position: relative;
+    }
+    .pin-outlined > span > svg {
+      width: 42px;
+      height: 42px;
+      bottom: -10px;
+    }
+    .pin-website-color > span > svg {
+      width: 42px;
+      height: 42px;
+      bottom: -10px;
+
+      path {
+        stroke-width: 0;
+        fill: var(--website-color);
+      }
+    }
+
+    .pin-grey > span > svg {
+      width: 42px;
+      height: 42px;
+      bottom: -10px;
+
+      path {
+        fill: @blue-botticelli;
+      }
+    }
   }
 
   &__emptyFeed {
@@ -237,5 +273,19 @@
 
   @media @small {
     padding-right: 10px;
+  }
+}
+.PinContainer {
+  &.ant-tooltip.ant-tooltip-placement-topLeft {
+    padding-bottom: 0 !important;
+  }
+
+  & .ant-tooltip-inner {
+    color: @black-text-basic;
+    background: @white;
+  }
+
+  & .ant-tooltip-arrow::before {
+    background: transparent;
   }
 }

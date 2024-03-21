@@ -21,6 +21,7 @@ const FeedMasonry = ({
   writeReview,
   previews,
   firstLoading,
+  isReviewsPage,
 }) => {
   const getContent = () => {
     if (firstLoading) return <Loading margin />;
@@ -53,6 +54,7 @@ const FeedMasonry = ({
 
             return (
               <FeedItem
+                isReviewsPage={isReviewsPage}
                 preview={urlPreview}
                 key={`${post.author}/${post?.permlink}`}
                 photoQuantity={2}
@@ -73,6 +75,7 @@ FeedMasonry.propTypes = {
   loadMore: PropTypes.func,
   writeReview: PropTypes.func,
   hasMore: PropTypes.bool,
+  isReviewsPage: PropTypes.bool,
   firstLoading: PropTypes.bool,
   emptyLable: PropTypes.string,
   posts: PropTypes.arrayOf(PropTypes.shape({})),
