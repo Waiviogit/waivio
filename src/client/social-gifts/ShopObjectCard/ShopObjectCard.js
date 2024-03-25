@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { get, isEmpty, truncate, uniq } from 'lodash';
 import PropTypes from 'prop-types';
+import { FormattedMessage, injectIntl } from 'react-intl';
 import classNames from 'classnames';
 import { Link } from 'react-router-dom';
 import { useLocation, useParams } from 'react-router';
@@ -87,7 +88,11 @@ const ShopObjectCard = ({ wObject, isChecklist, isSocialProduct }) => {
     <div className={shopObjectCardClassList}>
       {withRewards && (
         <h3 className="ShopObjectCard__rewardTitle">
-          Share {proposition.requirements.minPhotos} photos & earn{' '}
+          <FormattedMessage
+            id={`share_photos`}
+            defaultMessage="Share {minPhotos} photos & earn"
+            values={{ minPhotos: proposition.requirements.minPhotos }}
+          />{' '}
           <USDDisplay value={proposition.rewardInUSD} currencyDisplay={'symbol'} />
         </h3>
       )}
@@ -164,4 +169,4 @@ ShopObjectCard.propTypes = {
   }),
 };
 
-export default ShopObjectCard;
+export default injectIntl(ShopObjectCard);

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { withRouter } from 'react-router-dom';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import moment from 'moment';
@@ -103,6 +103,7 @@ const SocialProduct = ({
   merchantObject,
   getProductInfoAction,
   publisherObject,
+  intl,
 }) => {
   const [reward, setReward] = useState([]);
   const [hoveredOption, setHoveredOption] = useState({});
@@ -438,7 +439,9 @@ const SocialProduct = ({
           <div className="SocialProduct__column">
             {!isEmpty(wobject.description) && (
               <div className="SocialProduct__aboutItem">
-                <div className="SocialProduct__heading"> About this item</div>
+                <div className="SocialProduct__heading">
+                  {intl.formatMessage({ id: 'about_this_item', defaultMessage: 'About this item' })}
+                </div>
                 <SocialProductDescription
                   description={wobject.description}
                   pictures={photosAlbum.items}
@@ -468,10 +471,19 @@ const SocialProduct = ({
                 parent={parent}
               />
             )}
-            <ObjectsSlider objects={addOns} title={'Bought together / Add-ons'} name={'addOn'} />
+            <ObjectsSlider
+              objects={addOns}
+              title={intl.formatMessage({
+                id: 'bought_together',
+                defaultMessage: 'Bought together / Add-on',
+              })}
+              name={'addOn'}
+            />
             {!isEmpty(features) && (
               <div className="SocialProduct__featuresContainer">
-                <div className="SocialProduct__heading">Features</div>
+                <div className="SocialProduct__heading">
+                  {intl.formatMessage({ id: 'features', defaultMessage: 'Features' })}
+                </div>
                 <div className="SocialProduct__centralContent">
                   <ObjectFeatures
                     isSocialGifts
@@ -482,15 +494,25 @@ const SocialProduct = ({
                 </div>
               </div>
             )}
-            <ObjectsSlider objects={similarObjects} title={'Similar'} name={'similar'} />
-            <ObjectsSlider objects={relatedObjects} title={'Related items'} name={'related'} />
+            <ObjectsSlider
+              objects={similarObjects}
+              title={intl.formatMessage({ id: 'object_field_similar', defaultMessage: 'Similar' })}
+              name={'similar'}
+            />
+            <ObjectsSlider
+              objects={relatedObjects}
+              title={intl.formatMessage({ id: 'related_items', defaultMessage: 'Related items' })}
+              name={'related'}
+            />
             {!isEmpty(references) &&
               references?.map(ref => (
                 <ObjectsSlider key={ref[0]} objects={ref[1]} title={`${ref[0]}s`} name={ref[0]} />
               ))}
             {!isEmpty(tagCategoriesList) && (
               <div className="SocialProduct__featuresContainer">
-                <div className="SocialProduct__heading">Tags</div>
+                <div className="SocialProduct__heading">
+                  {intl.formatMessage({ id: 'tags', defaultMessage: 'Tags' })}
+                </div>
                 <div className="SocialProduct__centralContent">
                   <SocialTagCategories tagCategoriesList={tagCategoriesList} wobject={wobject} />
                 </div>
@@ -534,6 +556,7 @@ SocialProduct.propTypes = {
   merchantObject: PropTypes.shape({}),
   publisherObject: PropTypes.shape({}),
   getProductInfoAction: PropTypes.func,
+  intl: PropTypes.shape().isRequired,
 };
 
 const mapStateToProps = state => ({
@@ -573,4 +596,4 @@ const mapDispatchToProps = dispatch => ({
     dispatch(getRelatedObjectsAction(author_permlink, userName, locale, lim)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(withRouter(SocialProduct));
+export default injectIntl(connect(mapStateToProps, mapDispatchToProps)(withRouter(SocialProduct)));

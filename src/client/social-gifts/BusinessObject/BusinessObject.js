@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import { injectIntl } from 'react-intl';
 import { withRouter } from 'react-router-dom';
 import { get, has, isEmpty, isNil, reduce } from 'lodash';
 import { Helmet } from 'react-helmet';
@@ -77,6 +78,7 @@ const BusinessObject = ({
   toggleViewEditMode,
   experts,
   nearbyObjects,
+  intl,
 }) => {
   const [reward, setReward] = useState([]);
   const [references, setReferences] = useState([]);
@@ -381,7 +383,9 @@ const BusinessObject = ({
             {!isEmpty(menuItem) && <BusinessMenuItemsList menuItem={menuItem} />}
             {!isEmpty(wobject.description) && (
               <div className="SocialProduct__aboutItem">
-                <div className="SocialProduct__heading"> About</div>
+                <div className="SocialProduct__heading">
+                  {intl.formatMessage({ id: 'about', defaultMessage: 'About' })}
+                </div>
                 <SocialProductDescription
                   description={wobject.description}
                   pictures={photosAlbum.items}
@@ -394,14 +398,25 @@ const BusinessObject = ({
                 <ObjectsSlider key={ref[0]} objects={ref[1]} title={`${ref[0]}s`} name={ref[0]} />
               ))}
             {!isEmpty(experts) && (
-              <Experts key={'experts'} experts={experts} title={`experts`} name={'experts'} />
+              <Experts
+                key={'experts'}
+                experts={experts}
+                title={intl.formatMessage({ id: 'experts', defaultMessage: 'Experts' })}
+                name={'experts'}
+              />
             )}
             {!isEmpty(nearbyObjects?.objects) && (
-              <ObjectsSlider objects={nearbyObjects?.objects} title={'nearby'} name={'nearby'} />
+              <ObjectsSlider
+                objects={nearbyObjects?.objects}
+                title={intl.formatMessage({ id: 'nearby_to_object', defaultMessage: 'Nearby' })}
+                name={'nearby'}
+              />
             )}
             {!isEmpty(tagCategoriesList) && (
               <div className="SocialProduct__featuresContainer">
-                <div className="SocialProduct__heading">Tags</div>
+                <div className="SocialProduct__heading">
+                  {intl.formatMessage({ id: 'tags', defaultMessage: 'Tags' })}
+                </div>
                 <div className="SocialProduct__centralContent">
                   <SocialTagCategories tagCategoriesList={tagCategoriesList} wobject={wobject} />
                 </div>
@@ -439,6 +454,7 @@ BusinessObject.propTypes = {
   nearbyObjects: PropTypes.shape(),
   manufacturerObject: PropTypes.shape({}),
   merchantObject: PropTypes.shape({}),
+  intl: PropTypes.shape().isRequired,
 };
 
 const mapStateToProps = state => ({
@@ -467,4 +483,4 @@ const mapDispatchToProps = dispatch => ({
   resetWobjGallery: () => dispatch(resetGallery()),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(withRouter(BusinessObject));
+export default injectIntl(connect(mapStateToProps, mapDispatchToProps)(withRouter(BusinessObject)));
