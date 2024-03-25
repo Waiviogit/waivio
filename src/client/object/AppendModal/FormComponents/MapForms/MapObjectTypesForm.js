@@ -18,27 +18,27 @@ const MapObjectTypesForm = props => {
   return (
     <div className={'MapForms'}>
       <div className="NewsFiltersRule__line">
-        <div className="NewsFiltersRule__card-wrap">
-          {map(props.typeList, (item, index) => (
-            <React.Fragment key={`ignoreList${item}`}>
-              {andLayout(index)}
-              <div className="NewsFiltersRule__line-card NewsFiltersRule__line-card--types">
-                <span>{item}</span>
-                <div className="NewsFiltersRule__line-close">
-                  <Icon
-                    type="close-circle"
-                    onClick={() => props.handleRemoveObjectFromTypeList(item)}
-                  />
-                </div>
-              </div>
-            </React.Fragment>
-          ))}
-        </div>
         {props.typeList.length < 20 && (
           <React.Fragment>
             <div className="NewsFiltersRule__line-search">
               <div className={classNames('ant-form-item-label AppendForm__appendTitles')}>
                 <FormattedMessage id="object_field_mapObjectTypes" defaultMessage="Object types" />
+              </div>
+              <div className="NewsFiltersRule__card-wrap mb2">
+                {map(props.typeList, (item, index) => (
+                  <React.Fragment key={`ignoreList${item}`}>
+                    {andLayout(index)}
+                    <div className="NewsFiltersRule__line-card NewsFiltersRule__line-card--types">
+                      <span>{item}</span>
+                      <div className="NewsFiltersRule__line-close">
+                        <Icon
+                          type="close-circle"
+                          onClick={() => props.handleRemoveObjectFromTypeList(item)}
+                        />
+                      </div>
+                    </div>
+                  </React.Fragment>
+                ))}
               </div>
               <AutoComplete
                 onSelect={handleSelect}
@@ -61,6 +61,7 @@ const MapObjectTypesForm = props => {
                   </AutoComplete.Option>
                 ))}
               </AutoComplete>
+              <p>Filter objects by type to display only selected ones on the map.</p>
             </div>
           </React.Fragment>
         )}

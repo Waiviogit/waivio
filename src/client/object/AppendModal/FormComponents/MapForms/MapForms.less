@@ -1,4 +1,15 @@
+@import (reference) '../../../../styles/custom.less';
+@import (reference) '../../../../styles/modules/variables.less';
+
 .MapForms {
+  .NewsFiltersRule__line-card {
+    .ObjectCard {
+      .ObjectCard__name {
+        width: auto;
+        max-width: 183px;
+      }
+    }
+  }
   &__desktop-map,
   &__mobile-map {
     display: flex;
@@ -20,5 +31,92 @@
   }
   .ant-select-auto-complete.ant-select .ant-select-search--inline {
     margin-top: 0;
+  }
+}
+.MapObjWrap {
+  .WebsiteObjectsControl__zoom__button {
+    &:hover {
+      background-color: @white-gainsboro;
+    }
+  }
+  .MapOS__locateGPS {
+    &-button-container {
+      width: 25px;
+      height: 25px;
+      text-align: center;
+      background-color: #fff;
+      border: 1px solid @white-gainsboro;
+      &:hover,
+      &:hover .MapOS__locateGPS-button {
+        background-color: @white-gainsboro;
+      }
+    }
+    &-button {
+      vertical-align: inherit;
+      border: none;
+      width: 13px;
+      height: 15px;
+    }
+  }
+  .MapConfigurationControl__zoom__button {
+    font-size: 20px;
+  }
+  position: relative;
+
+  &__rect {
+    border: 2px solid @red-danger;
+    margin-left: -270px;
+    margin-top: -200px;
+  }
+
+  &__cancel {
+    color: #f5222d;
+    float: right;
+    margin: -11px -9px;
+    cursor: pointer;
+    font-size: 20px;
+    font-weight: 600;
+  }
+
+  &__new-aria-btn {
+    position: absolute;
+    z-index: 100;
+    top: 85%;
+    cursor: pointer;
+    left: 15px;
+
+    & i {
+      font-size: 35px;
+      color: var(--website-color);
+      background: @white;
+      border-radius: 50%;
+    }
+  }
+
+  &__agree-areas {
+    position: absolute;
+    z-index: 100;
+    top: 85%;
+    left: 55px;
+    cursor: pointer;
+
+    & i {
+      font-size: 35px;
+      color: var(--website-color);
+      background: @white;
+      border-radius: 50%;
+    }
+  }
+
+  &__loading {
+    position: absolute;
+    z-index: 100;
+    top: 85%;
+    left: 55px;
+
+    & i {
+      font-size: 35px;
+      color: var(--website-color);
+    }
   }
 }

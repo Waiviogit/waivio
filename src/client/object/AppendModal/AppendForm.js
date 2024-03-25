@@ -591,16 +591,17 @@ class AppendForm extends Component {
         case mapObjectTypeFields.mapObjectsList:
           return `@${author} added ${currentField} (${langReadable}):\n ${this.state.selectedObject.author_permlink}`;
         case mapObjectTypeFields.mapDesktopView:
-          const mapDesktopViewText = `top point: ${this.state.map.desktopMap.topPoint}, bottom point: ${this.state.map.desktopMap.bottomPoint}, center: ${this.state.map.desktopMap.center}, zoom: ${this.state.map.desktopMap.zoom}, `;
+          const mapDesktopViewText = `\n top point: ${this.state.map.desktopMap.topPoint}, \n bottom point: ${this.state.map.desktopMap.bottomPoint}, \n center: ${this.state.map.desktopMap.center}, \n zoom: ${this.state.map.desktopMap.zoom}, `;
 
           return `@${author} added ${currentField} (${langReadable}): ${mapDesktopViewText}`;
         case mapObjectTypeFields.mapMobileView:
-          const mapViewText = `top point: ${this.state.map.mobileMap.topPoint}, bottom point: ${this.state.map.mobileMap.bottomPoint}, center: ${this.state.map.mobileMap.center}, zoom: ${this.state.map.mobileMap.zoom}, `;
+          const mapViewText = `\n top point: ${this.state.map.mobileMap.topPoint}, \n bottom point: ${this.state.map.mobileMap.bottomPoint}, \n center: ${this.state.map.mobileMap.center}, \n zoom: ${this.state.map.mobileMap.zoom}, `;
 
           return `@${author} added ${currentField} (${langReadable}): ${mapViewText}`;
         case mapObjectTypeFields.mapRectangles:
           const mapRectanglesInfo = this.state.map.mapCoordinates.map(
-            rectangle => `top point: ${rectangle.topPoint}, bottom point: ${rectangle.bottomPoint}`,
+            rectangle =>
+              `\n top point: ${rectangle.topPoint},\n bottom point: ${rectangle.bottomPoint}`,
           );
 
           return `@${author} added ${currentField} (${langReadable}): ${mapRectanglesInfo.join(
@@ -3741,6 +3742,7 @@ class AppendForm extends Component {
       case mapObjectTypeFields.mapObjectsList:
         return (
           <MapObjectsListForm
+            onObjectCardDelete={this.onObjectCardDelete}
             selectedObject={this.state.selectedObject}
             handleSelectObject={this.handleSelectObject}
             getFieldRules={this.getFieldRules}

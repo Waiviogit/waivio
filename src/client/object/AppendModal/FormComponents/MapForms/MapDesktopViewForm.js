@@ -202,7 +202,7 @@ const MapDesktopViewForm = props => {
         }}
       >
         {showMap && (
-          <div className="MapWrap">
+          <div className="MapObjWrap">
             <MapControllers
               decrementZoom={decrementZoom}
               incrementZoom={incrementZoom}

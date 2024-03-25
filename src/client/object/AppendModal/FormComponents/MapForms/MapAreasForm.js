@@ -385,7 +385,7 @@ const MapAreasForm = props => {
         additionallyLeftTopQuarterBottom,
         additionallyLeftTopQuarterTop,
         id: uuidv4(),
-        removeAreaID: center?.[0],
+        removeAreaID: center[0],
       };
 
       arrData.push({ ...data, zoom });
@@ -405,7 +405,9 @@ const MapAreasForm = props => {
     <div className="WebsiteObjectsControl">
       <div className="WebsiteObjectsControl__gps">
         <div role="presentation" className="WebsiteObjectsControl__locateGPS" onClick={setPosition}>
-          <img src="/images/icons/aim.png" alt="aim" className="MapOS__locateGPS-button" />
+          <div className={'MapOS__locateGPS-button-container'}>
+            <img src="/images/focus.svg" alt="aim" className="MapOS__locateGPS-button" />
+          </div>
         </div>
       </div>
       <div className="WebsiteObjectsControl__zoom">
@@ -427,9 +429,9 @@ const MapAreasForm = props => {
     </div>
   );
 
-  const saveCurrentAreas = data => {
+  const saveCurrentAreas = (data, dataForFields) => {
     const params = {
-      mapCoordinates: data,
+      mapCoordinates: dataForFields,
     };
 
     setMapData(data);
@@ -439,13 +441,14 @@ const MapAreasForm = props => {
     //   zoom,
     //   bounds: { topPoint: [], bottomPoint: [] },
     // });
+    setCurrAreaData(data);
   };
 
   const removeArea = id => {
     const filteredAreas = mapData.filter(currArea => !isEqual(+id, currArea.center[0]));
 
     setMapData(filteredAreas);
-    saveCurrentAreas(filteredAreas);
+    saveCurrentAreas(filteredAreas, filteredAreas);
   };
 
   const addArea = () => {
@@ -454,12 +457,19 @@ const MapAreasForm = props => {
       {
         topPoint: area.bounds.topPoint,
         bottomPoint: area.bounds.bottomPoint,
-        // center: area.center,
-        // zoom: area.zoom,
+        center: area.center,
+        zoom: area.zoom,
+      },
+    ];
+    const dataForFields = [
+      ...mapData,
+      {
+        topPoint: area.bounds.topPoint,
+        bottomPoint: area.bounds.bottomPoint,
       },
     ];
 
-    saveCurrentAreas(data);
+    saveCurrentAreas(data, dataForFields);
   };
 
   const getArea = (item, block, key) =>
@@ -489,7 +499,7 @@ const MapAreasForm = props => {
       <div className={classNames('ant-form-item-label AppendForm__appendTitles  map-title')}>
         <FormattedMessage id="object_field_mapRectangles" defaultMessage="Map areas" />
       </div>
-      <div className="MapWrap">
+      <div className="MapObjWrap">
         <div role="presentation" className="MapWrap__new-aria-btn" onClick={addArea}>
           <Icon type="plus-circle" theme="filled" />
         </div>
@@ -537,6 +547,7 @@ const MapAreasForm = props => {
           }}
         />
       </p>
+      <p> All objects within the specified areas on the map will be displayed.</p>
     </div>
   );
 };

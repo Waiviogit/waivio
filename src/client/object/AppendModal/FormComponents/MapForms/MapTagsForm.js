@@ -8,21 +8,21 @@ import ObjectCard from '../../../../components/Sidebar/ObjectCard';
 import SearchObjectsAutocomplete from '../../../../components/EditorObject/SearchObjectsAutocomplete';
 
 const MapTagsForm = props => (
-  <React.Fragment>
+  <div className={'MapForms'}>
     {map(props.allowList, (items, rowIndex) => {
       let ruleIndex = 0;
       const itemsIdsToOmit = [props.currObjId];
 
       return (
         <React.Fragment key={`allowWrap${rowIndex}`}>
-          <div className="NewsFiltersRule-title AppendForm__appendTitles">
-            {props.intl.formatMessage({
-              id: 'object_field_mapObjectTags',
-              defaultMessage: 'Map tags',
-            })}
-          </div>
           <div className="NewsFiltersRule__line">
-            <div className="NewsFiltersRule__card-wrap">
+            <div className="NewsFiltersRule-title AppendForm__appendTitles">
+              {props.intl.formatMessage({
+                id: 'object_field_mapObjectTags',
+                defaultMessage: 'Map tags',
+              })}
+            </div>
+            <div className="NewsFiltersRule__card-wrap mb2">
               {map(items, (item, index) => {
                 ruleIndex = index + 1;
                 itemsIdsToOmit.push(item.author_permlink);
@@ -61,13 +61,17 @@ const MapTagsForm = props => (
                   })}
                   handleSelect={props.handleAddObjectToRule}
                 />
+                <p>
+                  By selecting the main list, all objects, including embedded ones, will be
+                  displayed on the map.
+                </p>
               </div>
             )}
           </div>
         </React.Fragment>
       );
     })}
-  </React.Fragment>
+  </div>
 );
 
 MapTagsForm.propTypes = {

@@ -67,6 +67,8 @@ import MenuItemButton from '../MenuItemButtons/MenuItemButton';
 import AffiliateSection from './ObjectInfoComponents/AffiliateSection';
 import { getCoordinates } from '../../../../store/userStore/userActions';
 import './ObjectInfo.less';
+import MapObjectTypes from './ObjectInfoComponents/MapObjectTypes';
+import MapObjectTags from './ObjectInfoComponents/MapObjectTags';
 
 @withRouter
 @connect(
@@ -493,6 +495,8 @@ class ObjectInfo extends React.Component {
     const wobjName = getObjectName(wobject);
     const tagCategories = get(wobject, 'tagCategory', []);
     const map = parseWobjectField(wobject, 'map');
+    const mapObjectTypes = parseWobjectField(wobject, 'mapObjectTypes');
+    const mapObjectTags = parseWobjectField(wobject, 'mapObjectTags');
     const parent = get(wobject, 'parent');
     const status = parseWobjectField(wobject, 'status');
     const address = parseAddress(wobject);
@@ -745,11 +749,14 @@ class ObjectInfo extends React.Component {
               </div>
             ),
           )}
+          {this.listItem(mapObjectTypeFields.mapRectangles, null)}
           {this.listItem(mapObjectTypeFields.mapDesktopView, null)}
           {this.listItem(mapObjectTypeFields.mapMobileView, null)}
-          {this.listItem(mapObjectTypeFields.mapObjectTypes, null)}
-          {this.listItem(mapObjectTypeFields.mapObjectTags, null)}
-          {this.listItem(mapObjectTypeFields.mapRectangles, null)}
+          {this.listItem(
+            mapObjectTypeFields.mapObjectTypes,
+            <MapObjectTypes types={mapObjectTypes} />,
+          )}
+          {this.listItem(mapObjectTypeFields.mapObjectTags, <MapObjectTags tags={mapObjectTags} />)}
         </React.Fragment>
       );
     };

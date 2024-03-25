@@ -10,13 +10,29 @@ import ObjectCardView from '../../../../objectCard/ObjectCardView';
 const MapObjectsListForm = props => (
   <div className={'MapForms'}>
     <div className={classNames('ant-form-item-label AppendForm__appendTitles mb2')}>
-      <FormattedMessage id="object_field_mapObjectTypes" defaultMessage="Object types" />
+      <FormattedMessage id="list_uppercase" defaultMessage="List" />
     </div>
     <div>
       {props.getFieldDecorator(mapObjectTypeFields.mapObjectsList, {
         rules: props.getFieldRules(objectFields.parent),
-      })(<SearchObjectsAutocomplete objectType={'list'} handleSelect={props.handleSelectObject} />)}
-      {props.selectedObject && <ObjectCardView wObject={props.selectedObject} />}
+      })(
+        <SearchObjectsAutocomplete
+          placeholder={props.intl.formatMessage({
+            id: 'find_a_list',
+            defaultMessage: 'Find a list',
+          })}
+          objectType={'list'}
+          handleSelect={props.handleSelectObject}
+        />,
+      )}
+      {props.selectedObject && (
+        <ObjectCardView
+          onDelete={props.onObjectCardDelete}
+          showHeart={false}
+          closeButton
+          wObject={props.selectedObject}
+        />
+      )}
     </div>
   </div>
 );
@@ -29,5 +45,6 @@ MapObjectsListForm.propTypes = {
   handleSelectObject: PropTypes.func.isRequired,
   getFieldDecorator: PropTypes.func.isRequired,
   getFieldRules: PropTypes.func.isRequired,
+  onObjectCardDelete: PropTypes.func.isRequired,
 };
 export default injectIntl(MapObjectsListForm);
