@@ -483,4 +483,4 @@ const mapDispatchToProps = dispatch => ({
   resetWobjGallery: () => dispatch(resetGallery()),
 });
 
-export default injectIntl(connect(mapStateToProps, mapDispatchToProps)(withRouter(BusinessObject)));
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(injectIntl(BusinessObject)));

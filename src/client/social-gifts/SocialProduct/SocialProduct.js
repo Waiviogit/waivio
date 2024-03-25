@@ -596,4 +596,4 @@ const mapDispatchToProps = dispatch => ({
     dispatch(getRelatedObjectsAction(author_permlink, userName, locale, lim)),
 });
 
-export default injectIntl(connect(mapStateToProps, mapDispatchToProps)(withRouter(SocialProduct)));
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(injectIntl(SocialProduct)));
