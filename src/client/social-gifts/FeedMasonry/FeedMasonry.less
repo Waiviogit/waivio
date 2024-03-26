@@ -2,18 +2,22 @@
 @import (reference) '../../styles/custom.less';
 
 .FeedMasonry {
-  &__item {
+  &__item-with-pin {
     max-width: 300px;
     margin-bottom: 20px;
+    margin-top: -40px;
     position: relative;
     .pin-outlined,
     .pin-grey,
     .pin-website-color {
       cursor: pointer;
-      left: 84%;
+      left: 82%;
       bottom: -11px;
       display: flex;
       position: relative;
+      @media @small {
+        left: 84%;
+      }
       @media @large {
         left: 90%;
       }
@@ -43,6 +47,11 @@
         fill: @blue-botticelli;
       }
     }
+  }
+  &__item {
+    max-width: 300px;
+    margin-bottom: 20px;
+    position: relative;
   }
 
   &__emptyFeed {
