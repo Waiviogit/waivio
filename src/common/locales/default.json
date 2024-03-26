@@ -2596,7 +2596,7 @@
   "guest_departments_pause": "The departments update bot will pause if guest mana on the account drops below the set threshold.",
   "guest_descriptions_bot_voting_text": "The descriptions bot will pause if guest mana on the account drops below the set threshold.",
   "share_photo_and_earn": "Share {minPhotos} photo & earn",
-  "share_photos_and_earn": "Share {minPhotos} photos & earn"
+  "share_photos_and_earn": "Share {minPhotos} photos & earn",
   "guest_list_duplication_pause": "The list duplication bot will pause if guest mana on the account drops below the set threshold.",
   "ratings": "Ratings",
   "share_photos": "Share {minPhotos} photos & earn",
