@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, injectIntl } from 'react-intl';
 import { isEmpty } from 'lodash';
 import { Checkbox, Rate } from 'antd';
 import { useHistory, useRouteMatch } from 'react-router';
@@ -11,7 +11,7 @@ import { getPermlinksFromHash } from '../../../common/helpers/wObjectHelper';
 
 import './ShopFilters.less';
 
-const ShopFilters = ({ getDepartmentsFilters, showMoreTagsForFilters }) => {
+const ShopFilters = ({ getDepartmentsFilters, showMoreTagsForFilters, intl }) => {
   const [filters, setFilters] = useState();
   const [activeFilter, setActiveFilter] = useState({});
   const query = useQuery();
@@ -86,7 +86,9 @@ const ShopFilters = ({ getDepartmentsFilters, showMoreTagsForFilters }) => {
         <FormattedMessage id="filters" defaultMessage="Filters" />
       </div>
       <div className="ShopFilters__block">
-        <span className="ShopFilters__subtitle">Ratings:</span>
+        <span className="ShopFilters__subtitle">
+          {intl.formatMessage({ id: 'ratings', defaultMessage: 'Ratings' })}:
+        </span>
         {filters?.rating?.map(rate => (
           <div key={rate}>
             <Checkbox
@@ -119,7 +121,7 @@ const ShopFilters = ({ getDepartmentsFilters, showMoreTagsForFilters }) => {
               role="presentation"
               onClick={() => getMoreTags(category.tagCategory, category?.tags?.length)}
             >
-              show more
+              {intl.formatMessage({ id: 'show_more', defaultMessage: 'Show more' })}
             </span>
           )}
         </div>
@@ -131,6 +133,7 @@ const ShopFilters = ({ getDepartmentsFilters, showMoreTagsForFilters }) => {
 ShopFilters.propTypes = {
   getDepartmentsFilters: PropTypes.func,
   showMoreTagsForFilters: PropTypes.func,
+  intl: PropTypes.shape().isRequired,
 };
 
-export default ShopFilters;
+export default injectIntl(ShopFilters);

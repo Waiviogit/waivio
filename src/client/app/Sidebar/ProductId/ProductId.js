@@ -1,9 +1,10 @@
 import React, { useState, useLayoutEffect } from 'react';
 import { Icon } from 'antd';
 import PropTypes from 'prop-types';
+import { injectIntl } from 'react-intl';
 import GroupIdContent from './GroupIdContent';
 
-const ProductId = ({ productIdBody, groupId, authorPermlink, isSocialGifts }) => {
+const ProductId = ({ productIdBody, groupId, authorPermlink, isSocialGifts, intl }) => {
   const [showMore, setShowMore] = useState(true);
   const toggleShowMoreState = () => {
     setShowMore(!showMore);
@@ -17,9 +18,13 @@ const ProductId = ({ productIdBody, groupId, authorPermlink, isSocialGifts }) =>
     (groupId || Boolean(productIdBody.length)) && (
       <div className="CompanyId__container">
         <button className="CompanyId__button CompanyId__title" onClick={toggleShowMoreState}>
-          Product IDs:{' '}
+          {intl.formatMessage({ id: 'productIds', defaultMessage: 'Product IDs' })}:{' '}
           {isSocialGifts ? (
-            <span className="CompanyId__websiteColor">{!showMore ? '(show)' : '(hide)'}</span>
+            <span className="CompanyId__websiteColor">
+              {!showMore
+                ? intl.formatMessage({ id: 'show', defaultMessage: '(show)' })
+                : intl.formatMessage({ id: 'hide', defaultMessage: '(hide)' })}
+            </span>
           ) : (
             <>
               {!showMore ? (
@@ -77,10 +82,11 @@ ProductId.propTypes = {
   isSocialGifts: PropTypes.bool,
   authorPermlink: PropTypes.string.isRequired,
   groupId: PropTypes.arrayOf(),
+  intl: PropTypes.shape().isRequired,
 };
 
 ProductId.defaultProps = {
   productIdBody: '',
   isSocialGifts: false,
 };
-export default ProductId;
+export default injectIntl(ProductId);

@@ -140,7 +140,6 @@ UserFollowers.fetchData = ({ match, store }) => {
   }
 
   if (match.params[0] === 'following') {
-    console.log('following');
     return Promise.allSettled([
       store.dispatch(getUsersList(fetcherFollowing, 30, 0, match.params[0])),
     ]);

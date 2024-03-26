@@ -101,7 +101,7 @@ class UserDynamicList extends React.Component {
     const { hasMore, users } = this.props.dynamicListInfo;
     const empty = !hasMore && users?.length === 0;
     const { sort, hideSort } = this.props;
-    console.log(users);
+
     return (
       <React.Fragment>
         {!hideSort && (
