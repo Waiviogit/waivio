@@ -2609,5 +2609,7 @@
   "bought_together": "Bought together / Add-on",
   "productIds": "Product IDs",
   "productID": "Product ID",
-  "show_all": "Show all"
+  "show_all": "Show all",
+  "by_only": "By",
+  "groupIds": "Group IDs"
 }

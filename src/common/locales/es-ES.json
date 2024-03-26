@@ -2602,5 +2602,7 @@
   "bought_together": "Comprado junto / Adicional",
   "productIds": "IDs de producto",
   "productID": "ID de producto",
-  "show_all": "Mostrar todo"
+  "show_all": "Mostrar todo",
+  "by_only": "Por",
+  "groupIds": "IDs de grupo"
 }
