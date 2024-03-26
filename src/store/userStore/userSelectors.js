@@ -7,6 +7,8 @@ export const userState = state => state.user;
 // reselect function
 export const getFollowingObject = createSelector([userState], state => state.following);
 
+export const getExpCounters = createSelector([userState], state => state.expCounters);
+
 export const getFollowingObjectsObject = createSelector(
   [userState],
   state => state.followingObjects,

@@ -3,8 +3,11 @@ import { isEmpty } from 'lodash';
 import PropTypes from 'prop-types';
 
 import './EmptyFeed.less';
+import { useSelector } from 'react-redux';
+import { getAuthenticatedUserName } from '../../store/authStore/authSelectors';
 
-const EmptyMutedUserProfile = ({ user, authName }) => {
+const EmptyMutedUserProfile = ({ user }) => {
+  const authName = useSelector(getAuthenticatedUserName);
   let message = '';
 
   if ((user.muted && isEmpty(user.mutedBy)) || user.mutedBy.includes(authName))
@@ -19,7 +22,6 @@ EmptyMutedUserProfile.propTypes = {
     mutedBy: PropTypes.arrayOf(PropTypes.string),
     muted: PropTypes.arrayOf(PropTypes.string),
   }).isRequired,
-  authName: PropTypes.string.isRequired,
 };
 
 export default EmptyMutedUserProfile;

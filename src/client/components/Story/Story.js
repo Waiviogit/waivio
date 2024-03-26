@@ -74,7 +74,7 @@ class Story extends React.Component {
     userVotingPower: PropTypes.number,
     voteAppends: PropTypes.func,
     setPinnedPostsUrls: PropTypes.func,
-    pinnedPostsUrls: PropTypes.arrayOf(),
+    pinnedPostsUrls: PropTypes.arrayOf(PropTypes.string),
     push: PropTypes.func,
     pendingFlag: PropTypes.bool,
     location: PropTypes.shape().isRequired,
