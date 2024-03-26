@@ -29,9 +29,7 @@ class UserDynamicList extends React.Component {
     sort: SORT_OPTIONS.RECENCY,
   };
   componentDidMount() {
-    const { users } = this.props.dynamicListInfo;
-
-    this.getList(users);
+    this.getList([]);
   }
 
   componentDidUpdate(prevProps) {
@@ -171,7 +169,7 @@ UserDynamicList.propTypes = {
   getUsersList: PropTypes.func.isRequired,
   authUser: PropTypes.string,
   sort: PropTypes.string,
-  handleChange: PropTypes.func.isRequired,
+  handleChange: PropTypes.func,
   match: PropTypes.shape({
     params: PropTypes.shape({
       name: PropTypes.string,
