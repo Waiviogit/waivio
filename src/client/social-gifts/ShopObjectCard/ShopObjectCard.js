@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { FormattedMessage } from 'react-intl';
 import { get, isEmpty, truncate, uniq } from 'lodash';
 import PropTypes from 'prop-types';
-import { FormattedMessage, injectIntl } from 'react-intl';
 import classNames from 'classnames';
 import { Link } from 'react-router-dom';
 import { useLocation, useParams } from 'react-router';
@@ -18,9 +18,8 @@ import DEFAULTS from '../../object/const/defaultValues';
 import { getRatingForSocial } from '../../components/Sidebar/Rate/rateHelper';
 import { isMobile } from '../../../common/helpers/apiHelpers';
 import { removeEmptyLines, shortenDescription } from '../../object/wObjectHelper';
-
-import './ShopObjectCard.less';
 import { getObject } from '../../../store/wObjectStore/wObjectSelectors';
+import './ShopObjectCard.less';
 
 const ShopObjectCard = ({ wObject, isChecklist, isSocialProduct }) => {
   const username = useSelector(getAuthenticatedUserName);
@@ -89,10 +88,12 @@ const ShopObjectCard = ({ wObject, isChecklist, isSocialProduct }) => {
       {withRewards && (
         <h3 className="ShopObjectCard__rewardTitle">
           <FormattedMessage
-            id={`share_photos`}
-            defaultMessage="Share {minPhotos} photos & earn"
-            values={{ minPhotos: proposition.requirements.minPhotos }}
-          />{' '}
+            id={`share_photo${proposition?.requirements?.minPhotos === 1 ? '' : 's'}_and_earn`}
+            defaultMessage={`Share {minPhotos} photo${
+              proposition?.requirements?.minPhotos === 1 ? '' : 's'
+            } & earn`}
+            values={{ minPhotos: proposition?.requirements?.minPhotos }}
+          />
           <USDDisplay value={proposition.rewardInUSD} currencyDisplay={'symbol'} />
         </h3>
       )}
@@ -169,4 +170,4 @@ ShopObjectCard.propTypes = {
   }),
 };
 
-export default injectIntl(ShopObjectCard);
+export default ShopObjectCard;

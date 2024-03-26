@@ -13,25 +13,11 @@ import {
 import { showPostModal } from '../../store/appStore/appActions';
 import { getUserComments, getMoreUserComments } from '../../store/feedStore/feedActions';
 import EmptyMutedUserProfile from '../statics/MutedContent';
-import { getAuthenticatedUserName, isGuestUser } from '../../store/authStore/authSelectors';
 import { getFeed } from '../../store/feedStore/feedSelectors';
 import { getUser } from '../../store/usersStore/usersSelectors';
 import Loading from '../components/Icon/Loading';
 
-@connect(
-  (state, ownProps) => ({
-    feed: getFeed(state),
-    isGuest: isGuestUser(state),
-    authenticatedUserName: getAuthenticatedUserName(state),
-    user: getUser(state, ownProps.match.params.name),
-  }),
-  {
-    getUserComments,
-    getMoreUserComments,
-    showPostModal,
-  },
-)
-export default class UserProfilePosts extends React.Component {
+class UserProfilePosts extends React.Component {
   static propTypes = {
     feed: PropTypes.shape().isRequired,
     match: PropTypes.shape().isRequired,
@@ -40,14 +26,12 @@ export default class UserProfilePosts extends React.Component {
     limit: PropTypes.number,
     getUserComments: PropTypes.func,
     getMoreUserComments: PropTypes.func,
-    authenticatedUserName: PropTypes.string,
   };
 
   static defaultProps = {
     limit: 10,
     getUserComments: () => {},
     getMoreUserComments: () => {},
-    isGuest: false,
     authenticatedUserName: '',
     user: {},
   };
@@ -62,7 +46,7 @@ export default class UserProfilePosts extends React.Component {
   }
 
   render() {
-    const { feed, match, limit, authenticatedUserName, user } = this.props;
+    const { feed, match, limit, user } = this.props;
     const username = match.params.name;
     const content = getFeedFromState('comments', username, feed);
     const isFetching = getFeedLoadingFromState('comments', username, feed);
@@ -72,8 +56,7 @@ export default class UserProfilePosts extends React.Component {
       UserProfilePosts.skip += this.props.limit;
     };
 
-    if (!isEmpty(user.mutedBy) || user.muted)
-      return <EmptyMutedUserProfile user={user} authName={authenticatedUserName} />;
+    if (!isEmpty(user.mutedBy) || user.muted) return <EmptyMutedUserProfile user={user} />;
 
     if (isEmpty(content) && !isFetching) {
       return (
@@ -100,3 +83,15 @@ export default class UserProfilePosts extends React.Component {
     );
   }
 }
+
+export default connect(
+  (state, ownProps) => ({
+    feed: getFeed(state),
+    user: getUser(state, ownProps.match.params.name),
+  }),
+  {
+    getUserComments,
+    getMoreUserComments,
+    showPostModal,
+  },
+)(UserProfilePosts);

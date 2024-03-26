@@ -27,7 +27,7 @@ import {
   getAppendUpvotes,
   getUpvotes,
 } from '../../../common/helpers/voteHelpers';
-import { getAuthenticatedUser } from '../../../store/authStore/authSelectors';
+import { getAuthenticatedUser, getIsAuthenticated } from '../../../store/authStore/authSelectors';
 import { getPendingLikes } from '../../../store/postsStore/postsSelectors';
 import { getMinRejectVote, getUpdateByBody, sendTiktokPriview } from '../../../waivioApi/ApiClient';
 import { objectFields } from '../../../common/constants/listOfFields';
@@ -46,6 +46,7 @@ const FeedItem = ({ post, photoQuantity, preview, isReviewsPage }) => {
   const dispatch = useDispatch();
   const { name } = useParams();
   const user = useSelector(getAuthenticatedUser);
+  const isAuthUser = useSelector(getIsAuthenticated);
   const defaultVotePersent = useSelector(getVotePercent);
   const wobject = useSelector(getObject);
   const locale = useSelector(getUsedLocale);
@@ -180,7 +181,7 @@ const FeedItem = ({ post, photoQuantity, preview, isReviewsPage }) => {
 
   return (
     <div className="FeedMasonry__item">
-      {isReviewsPage && (
+      {isReviewsPage && isAuthUser && (
         <Tooltip
           placement="topLeft"
           title={tooltipTitle}

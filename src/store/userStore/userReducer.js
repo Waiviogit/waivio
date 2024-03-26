@@ -34,6 +34,10 @@ const initialState = {
   loadingNotifications: false,
   fetchFollowListError: false,
   pendingUpdate: false,
+  expCounters: {
+    wobjectsExpCount: 0,
+    hashtagsExpCount: 0,
+  },
 };
 
 const filterRecommendedObjects = (objects, count = 5) => {
@@ -312,6 +316,12 @@ export default function userReducer(state = initialState, action) {
           ...state.following,
           pendingFollows: [...state.following.pendingFollows, action.meta.username],
         },
+      };
+
+    case userActions.GET_EXPERTISE_COUNTERS.SUCCESS:
+      return {
+        ...state,
+        expCounters: action.payload,
       };
     case userActions.FOLLOW_USER_SUCCESS:
       return {
