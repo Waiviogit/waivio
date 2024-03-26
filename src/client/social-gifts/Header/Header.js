@@ -79,7 +79,7 @@ const Header = () => {
       {config.mainBanner && (
         <img
           id="socialGiftsMainBanner"
-          alt={`Promotional banner for ${header || config.host || currHost} Site`}
+          alt={`Promotional banner for ${header || config.host || currHost}`}
           src={config.mainBanner}
           style={{
             width: '100%',
