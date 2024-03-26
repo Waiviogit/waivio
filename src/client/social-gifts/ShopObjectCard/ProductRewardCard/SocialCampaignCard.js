@@ -24,7 +24,13 @@ const SocialCampaignCard = ({
     <div className="SocialCampaignCard__card">
       <div className="SocialCampaignCard__content">
         <h3>
-          Share 2 photos and earn
+          <FormattedMessage
+            id={`share_photo${proposition?.requirements?.minPhotos === 1 ? '' : 's'}_and_earn`}
+            defaultMessage={`Share {minPhotos} photo${
+              proposition?.requirements?.minPhotos === 1 ? '' : 's'
+            } and earn`}
+            values={{ minPhotos: proposition?.requirements?.minPhotos }}
+          />
           <span className="SocialCampaignCard__earn">
             {' '}
             <USDDisplay currencyDisplay={'symbol'} value={maxReward} />

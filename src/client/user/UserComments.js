@@ -51,7 +51,6 @@ class UserProfilePosts extends React.Component {
     const content = getFeedFromState('comments', username, feed);
     const isFetching = getFeedLoadingFromState('comments', username, feed);
     const hasMore = getFeedHasMoreFromState('comments', username, feed);
-    console.log('tututu');
     const loadMoreContentAction = () => {
       this.props.getMoreUserComments({ username, skip: UserProfilePosts.skip, limit });
       UserProfilePosts.skip += this.props.limit;

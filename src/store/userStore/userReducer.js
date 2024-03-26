@@ -1,6 +1,5 @@
 import { keyBy, orderBy, slice } from 'lodash';
 import * as authActions from '../authStore/authActions';
-import { GET_EXPERTISE_COUNTERS } from './userActions';
 import * as userActions from './userActions';
 import * as wobjActions from '../wObjectStore/wobjActions';
 import * as appTypes from '../appStore/appActions';

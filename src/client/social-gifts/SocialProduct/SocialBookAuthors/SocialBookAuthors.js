@@ -2,11 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
+import { injectIntl } from 'react-intl';
 import { has } from 'lodash';
 import { getObjectInfo } from '../../../../waivioApi/ApiClient';
 import { getUsedLocale } from '../../../../store/appStore/appSelectors';
 
-const SocialBookAuthors = ({ authors }) => {
+const SocialBookAuthors = ({ authors, intl }) => {
   const [newAuthors, setNewAuthors] = useState([]);
   const locale = useSelector(getUsedLocale);
 
@@ -35,7 +36,7 @@ const SocialBookAuthors = ({ authors }) => {
 
   return (
     <div className="SocialProduct__authors">
-      <span>By</span>
+      <span>{intl.formatMessage({ id: 'by_only', defaultMessage: 'By' })}</span>
       {newAuthors.map((a, i) => (
         <>
           <span className={'ml1'}>
@@ -59,5 +60,6 @@ const SocialBookAuthors = ({ authors }) => {
 
 SocialBookAuthors.propTypes = {
   authors: PropTypes.arrayOf(),
+  intl: PropTypes.shape().isRequired,
 };
-export default SocialBookAuthors;
+export default injectIntl(SocialBookAuthors);

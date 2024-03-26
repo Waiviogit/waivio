@@ -1,10 +1,10 @@
 import React from 'react';
 import { isEmpty } from 'lodash';
 import PropTypes from 'prop-types';
-
-import './EmptyFeed.less';
 import { useSelector } from 'react-redux';
 import { getAuthenticatedUserName } from '../../store/authStore/authSelectors';
+
+import './EmptyFeed.less';
 
 const EmptyMutedUserProfile = ({ user }) => {
   const authName = useSelector(getAuthenticatedUserName);

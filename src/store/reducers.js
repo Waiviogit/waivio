@@ -6,7 +6,6 @@ import appReducer from './appStore/appReducer';
 import authReducer from './authStore/authReducer';
 import commentsReducer from './commentsStore/commentsReducer';
 import dynamicListReducer from './dynamicList/dynamicListReducer';
-import dynamicList from './dynamicList/dynamicListReducer';
 import feedReducer from './feedStore/feedReducer';
 import postsReducer from './postsStore/postsReducer';
 import userReducer from './userStore/userReducer';
