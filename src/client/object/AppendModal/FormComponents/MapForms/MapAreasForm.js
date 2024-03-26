@@ -22,6 +22,7 @@ import mapProvider from '../../../../../common/helpers/mapProvider';
 const MapAreasForm = props => {
   const [mapData, setMapData] = useState([]);
   const [currAreaData, setCurrAreaData] = useState([]);
+  const [dataToSend, setDataToSend] = useState([]);
   const [area, setArea] = useState({
     center: [],
     zoom: 8,
@@ -42,26 +43,8 @@ const MapAreasForm = props => {
     return [elem1, elem2];
   };
 
-  // useEffect(() => {
-  //   if (!isEqual(props.usersSelectedAreas, mapData)) setMapData(props.usersSelectedAreas);
-  // }, [props.usersSelectedAreas]);
-
   useEffect(() => {
     if (isEmpty(props.userLocation)) props.getCoordinates();
-
-    // props
-    //   .getWebsiteObjectsCoordinates(props.match.params.site)
-    //   .then(res => {
-    //     const { coordinates, center, zoom } = res.value;
-    //
-    //     setMapData(coordinates);
-    //     setArea({
-    //       center,
-    //       zoom,
-    //       bounds: { topPoint: [], bottomPoint: [] },
-    //     });
-    //   })
-    //   .catch(err => console.error('Error: ', err));
   }, [props.match.params.site]);
 
   useEffect(() => {
@@ -73,7 +56,6 @@ const MapAreasForm = props => {
       const bottomPoint = currValue.bottomPoint;
       const center = currValue.center;
       const zoom = currValue.zoom;
-      // Main points
       const topLeftPoint = calculatePointCoords(false, false, false, topPoint[1], bottomPoint[0]);
       const topMiddlePoint = calculatePointCoords(
         true,
@@ -198,8 +180,6 @@ const MapAreasForm = props => {
         bottomRightPoint[1],
       );
 
-      // Additionally points between additionally points
-      // Top points
       const additionallyTopLeftQuarterLeft = calculatePointCoords(
         true,
         true,
@@ -410,17 +390,18 @@ const MapAreasForm = props => {
           </div>
         </div>
       </div>
-      <div className="WebsiteObjectsControl__zoom">
+
+      <div className={'MapConfigurationControl__zoom'}>
         <div
           role="presentation"
-          className="WebsiteObjectsControl__zoom__button"
+          className="MapConfigurationControl__zoom__button"
           onClick={incrementZoom}
         >
           +
         </div>
         <div
           role="presentation"
-          className="WebsiteObjectsControl__zoom__button"
+          className="MapConfigurationControl__zoom__button"
           onClick={decrementZoom}
         >
           -
@@ -435,12 +416,8 @@ const MapAreasForm = props => {
     };
 
     setMapData(data);
+    setDataToSend(dataForFields);
     props.setMapCoordinates(params);
-    // setArea({
-    //   center,
-    //   zoom,
-    //   bounds: { topPoint: [], bottomPoint: [] },
-    // });
     setCurrAreaData(data);
   };
 
@@ -448,6 +425,7 @@ const MapAreasForm = props => {
     const filteredAreas = mapData.filter(currArea => !isEqual(+id, currArea.center[0]));
 
     setMapData(filteredAreas);
+    setDataToSend(filteredAreas);
     saveCurrentAreas(filteredAreas, filteredAreas);
   };
 
@@ -462,7 +440,7 @@ const MapAreasForm = props => {
       },
     ];
     const dataForFields = [
-      ...mapData,
+      ...dataToSend,
       {
         topPoint: area.bounds.topPoint,
         bottomPoint: area.bounds.bottomPoint,

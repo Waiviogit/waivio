@@ -16,13 +16,13 @@ const MapTagsForm = props => (
       return (
         <React.Fragment key={`allowWrap${rowIndex}`}>
           <div className="NewsFiltersRule__line">
-            <div className="NewsFiltersRule-title AppendForm__appendTitles">
-              {props.intl.formatMessage({
-                id: 'object_field_mapObjectTags',
-                defaultMessage: 'Map tags',
-              })}
-            </div>
-            <div className="NewsFiltersRule__card-wrap mb2">
+            <div className="NewsFiltersRule__card-wrap">
+              <div className="NewsFiltersRule-title AppendForm__appendTitles">
+                {props.intl.formatMessage({
+                  id: 'object_field_mapObjectTags',
+                  defaultMessage: 'Map tags',
+                })}
+              </div>
               {map(items, (item, index) => {
                 ruleIndex = index + 1;
                 itemsIdsToOmit.push(item.author_permlink);
@@ -61,10 +61,7 @@ const MapTagsForm = props => (
                   })}
                   handleSelect={props.handleAddObjectToRule}
                 />
-                <p>
-                  By selecting the main list, all objects, including embedded ones, will be
-                  displayed on the map.
-                </p>
+                <p>Narrow down map content by selecting tags.</p>
               </div>
             )}
           </div>

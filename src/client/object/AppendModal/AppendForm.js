@@ -591,11 +591,11 @@ class AppendForm extends Component {
         case mapObjectTypeFields.mapObjectsList:
           return `@${author} added ${currentField} (${langReadable}):\n ${this.state.selectedObject.author_permlink}`;
         case mapObjectTypeFields.mapDesktopView:
-          const mapDesktopViewText = `\n top point: ${this.state.map.desktopMap.topPoint}, \n bottom point: ${this.state.map.desktopMap.bottomPoint}, \n center: ${this.state.map.desktopMap.center}, \n zoom: ${this.state.map.desktopMap.zoom}, `;
+          const mapDesktopViewText = `\n top point: ${this.state.map.desktopMap.topPoint}, \n bottom point: ${this.state.map.desktopMap.bottomPoint}, \n center: ${this.state.map.desktopMap.center}, \n zoom: ${this.state.map.desktopMap.zoom}`;
 
           return `@${author} added ${currentField} (${langReadable}): ${mapDesktopViewText}`;
         case mapObjectTypeFields.mapMobileView:
-          const mapViewText = `\n top point: ${this.state.map.mobileMap.topPoint}, \n bottom point: ${this.state.map.mobileMap.bottomPoint}, \n center: ${this.state.map.mobileMap.center}, \n zoom: ${this.state.map.mobileMap.zoom}, `;
+          const mapViewText = `\n top point: ${this.state.map.mobileMap.topPoint}, \n bottom point: ${this.state.map.mobileMap.bottomPoint}, \n center: ${this.state.map.mobileMap.center}, \n zoom: ${this.state.map.mobileMap.zoom}`;
 
           return `@${author} added ${currentField} (${langReadable}): ${mapViewText}`;
         case mapObjectTypeFields.mapRectangles:
@@ -605,7 +605,7 @@ class AppendForm extends Component {
           );
 
           return `@${author} added ${currentField} (${langReadable}): ${mapRectanglesInfo.join(
-            ', ',
+            '; ',
           )}`;
         case objectFields.related:
         case objectFields.similar:

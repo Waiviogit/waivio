@@ -10,7 +10,7 @@ import ObjectCardView from '../../../../objectCard/ObjectCardView';
 const MapObjectsListForm = props => (
   <div className={'MapForms'}>
     <div className={classNames('ant-form-item-label AppendForm__appendTitles mb2')}>
-      <FormattedMessage id="list_uppercase" defaultMessage="List" />
+      <FormattedMessage id="map_list" defaultMessage="Map list" />
     </div>
     <div>
       {props.getFieldDecorator(mapObjectTypeFields.mapObjectsList, {
@@ -34,6 +34,10 @@ const MapObjectsListForm = props => (
         />
       )}
     </div>
+    <p>
+      By selecting the main list, all objects, including embedded ones, will be displayed on the
+      map.
+    </p>
   </div>
 );
 
