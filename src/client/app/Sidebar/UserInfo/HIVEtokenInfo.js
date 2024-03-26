@@ -44,7 +44,7 @@ const HIVEtokenInfo = props => (
 );
 
 HIVEtokenInfo.propTypes = {
-  reputation: PropTypes.number.isRequired,
+  reputation: PropTypes.number,
   votingMana: PropTypes.number.isRequired,
   downVotingMana: PropTypes.string.isRequired,
   rc: PropTypes.number.isRequired,

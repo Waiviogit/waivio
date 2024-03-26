@@ -2,6 +2,7 @@ import moment from 'moment';
 import { get } from 'lodash';
 import { message } from 'antd';
 import { createAsyncActionType } from '../../common/helpers/stateHelpers';
+import { getExpertiseCounters } from '../../waivioApi/ApiClient';
 import * as ApiClient from '../../waivioApi/ApiClient';
 import { getDetailsBody, rewardPostContainerData } from '../../client/rewards/rewardsHelper';
 import { createCommentPermlink } from '../../client/vendor/steemitHelpers';
@@ -617,3 +618,13 @@ export const bellNotifications = (follower, following) => (
       });
     });
 };
+
+export const GET_EXPERTISE_COUNTERS = createAsyncActionType('@user/GET_EXPERTISE_COUNTERS');
+
+export const getUrerExpertiseCounters = username => dispatch =>
+  dispatch({
+    type: GET_EXPERTISE_COUNTERS.ACTION,
+    payload: {
+      promise: ApiClient.getExpertiseCounters(username),
+    },
+  });
