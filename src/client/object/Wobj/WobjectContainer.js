@@ -57,6 +57,7 @@ import {
 } from '../../../common/helpers/wObjectHelper';
 import NotFound from '../../statics/NotFound';
 import { getRate, getRewardFund } from '../../../store/appStore/appActions';
+import { listOfSocialObjectTypes } from '../../../common/constants/listOfObjectTypes';
 
 const WobjectContainer = props => {
   const isEditMode = useSelector(getIsEditMode);
@@ -76,6 +77,13 @@ const WobjectContainer = props => {
           }
         }
 
+        if (props.isSocial && listOfSocialObjectTypes?.includes(res.value.object_type)) {
+          if (isEmpty(props.updates) || isNil(props.updates) || isNil(props.match.params[1])) {
+            const field = getUpdateFieldName(props.match.params[1]);
+
+            props.getUpdates(name, field, 'createdAt');
+          }
+        }
         if (
           (props.isSocial &&
             !['page', 'newsfeed', 'widget', 'product']?.includes(res.value.object_type)) ||
@@ -197,11 +205,7 @@ WobjectContainer.fetchData = async ({ store, match }) => {
           ),
       ];
 
-      if (
-        ['product', 'book', 'person', 'business', 'restaurant']?.includes(
-          response.value.object_type,
-        )
-      ) {
+      if (listOfSocialObjectTypes?.includes(response.value.object_type)) {
         const customSort = isEmpty(response.value?.sortCustom?.include)
           ? response.value.menuItem.map(i => i.permlink)
           : response.value?.sortCustom?.include;

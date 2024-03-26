@@ -1,13 +1,19 @@
 import React, { useEffect, useState } from 'react';
-import { isEmpty, take, truncate } from 'lodash';
+import { has, isEmpty, some, take, truncate } from 'lodash';
 import classNames from 'classnames';
+import { ReactSVG } from 'react-svg';
+import { useParams } from 'react-router';
+import { FormattedMessage } from 'react-intl';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import { Icon } from 'antd';
+import { Icon, Tooltip } from 'antd';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { getProxyImageURL } from '../../../common/helpers/image';
-import { getPreviewLoadingFromState } from '../../../store/feedStore/feedSelectors';
+import {
+  getPinnedPostsUrls,
+  getPreviewLoadingFromState,
+} from '../../../store/feedStore/feedSelectors';
 import CustomImage from '../../components/Image/Image';
 import PostFeedEmbed from '../../components/Story/PostFeedEmbed';
 import Avatar from '../../components/Avatar';
@@ -16,24 +22,51 @@ import Payout from '../../components/StoryFooter/Payout';
 import { isMobile } from '../../../common/helpers/apiHelpers';
 import { votePost } from '../../../store/postsStore/postActions';
 import { getVotePercent } from '../../../store/settingsStore/settingsSelectors';
-import { getUpvotes } from '../../../common/helpers/voteHelpers';
-import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
+import {
+  getAppendDownvotes,
+  getAppendUpvotes,
+  getUpvotes,
+} from '../../../common/helpers/voteHelpers';
+import { getAuthenticatedUser, getIsAuthenticated } from '../../../store/authStore/authSelectors';
 import { getPendingLikes } from '../../../store/postsStore/postsSelectors';
-import { sendTiktokPriview } from '../../../waivioApi/ApiClient';
+import { getMinRejectVote, getUpdateByBody, sendTiktokPriview } from '../../../waivioApi/ApiClient';
+import { objectFields } from '../../../common/constants/listOfFields';
+import { getAppendData } from '../../../common/helpers/wObjectHelper';
+import { getObject } from '../../../store/wObjectStore/wObjectSelectors';
+import { getUsedLocale } from '../../../store/appStore/appSelectors';
+import { setPinnedPostsUrls } from '../../../store/feedStore/feedActions';
+import { appendObject, voteAppends } from '../../../store/appendStore/appendActions';
 
-const FeedItem = ({ post, photoQuantity, preview }) => {
+const FeedItem = ({ post, photoQuantity, preview, isReviewsPage }) => {
   const imagePath = post?.imagePath;
   const embeds = post?.embeds;
   const lastIndex = imagePath?.length - 1;
   const is3speak = embeds[0]?.provider_name === '3Speak';
   const withoutImage = is3speak ? imagePath.length === 1 || isEmpty(imagePath) : isEmpty(imagePath);
   const dispatch = useDispatch();
+  const { name } = useParams();
+  const user = useSelector(getAuthenticatedUser);
+  const isAuthUser = useSelector(getIsAuthenticated);
   const defaultVotePersent = useSelector(getVotePercent);
-  const authUserName = useSelector(getAuthenticatedUserName);
+  const wobject = useSelector(getObject);
+  const locale = useSelector(getUsedLocale);
+  const userVotingPower = useSelector(getVotePercent);
+  const pinnedPostsUrls = useSelector(getPinnedPostsUrls);
   const previewLoading = useSelector(getPreviewLoadingFromState);
   const pendingVote = useSelector(getPendingLikes)[post.id];
+  const currentUserPin = pinnedPostsUrls.includes(post.url);
+  const tooltipTitle = (
+    <FormattedMessage
+      id={currentUserPin ? 'unpin' : 'pin'}
+      defaultMessage={currentUserPin ? 'Unpin' : 'Pin'}
+    />
+  );
+  const pinClassName =
+    post?.pin || (has(post, 'currentUserPin') && !post.currentUserPin)
+      ? 'pin-grey'
+      : 'pin-outlined';
   const isLiked = getUpvotes(post.active_votes).some(
-    vote => vote.voter === authUserName && !vote.fake,
+    vote => vote.voter === user.name && !vote.fake,
   );
   const pendingLike =
     pendingVote && (pendingVote.weight > 0 || (pendingVote.weight === 0 && isLiked));
@@ -45,6 +78,65 @@ const FeedItem = ({ post, photoQuantity, preview }) => {
     const authorName = post.guestInfo ? post.root_author : post.author;
 
     dispatch(votePost(post.id, authorName, post.permlink, isLiked ? 0 : defaultVotePersent));
+  };
+  const handlePinPost = async () => {
+    const currUpdate = await getUpdateByBody(
+      wobject.author_permlink,
+      'pin',
+      'en-US',
+      `${post.author}/${post.permlink}`,
+    );
+    const upVotes = currUpdate?.active_votes && getAppendUpvotes(currUpdate?.active_votes);
+    const isLikedUpdate = currUpdate?.isLiked || some(upVotes, { voter: user.name });
+    const downVotes = getAppendDownvotes(currUpdate?.active_votes);
+    const isReject = currUpdate?.isReject || some(downVotes, { voter: user.name });
+    let voteWeight;
+
+    if (pinnedPostsUrls.includes(post.url)) {
+      dispatch(setPinnedPostsUrls(pinnedPostsUrls.filter(p => p !== post.url)));
+      if (post?.currentUserPin) {
+        if (isReject) voteWeight = 0;
+        else {
+          voteWeight =
+            isEmpty(upVotes) || (isLikedUpdate && upVotes?.length === 1)
+              ? 1
+              : (await getMinRejectVote(user.name, currUpdate?.author, currUpdate?.permlink, name))
+                  ?.result;
+        }
+        dispatch(
+          voteAppends(currUpdate?.author, currUpdate?.permlink, voteWeight, 'pin', false, 'pin'),
+        );
+      }
+    } else if (currUpdate.message) {
+      dispatch(setPinnedPostsUrls([...pinnedPostsUrls, post.url]));
+      const pageContentField = {
+        name: objectFields.pin,
+        body: `${post.author}/${post.permlink}`,
+        locale,
+      };
+
+      const bodyMessage = `@${user.name} pinned post: author: ${post.author}, permlink: ${post.permlink}`;
+      const postData = getAppendData(user.name, wobject, bodyMessage, pageContentField);
+
+      dispatch(
+        appendObject(postData, { votePercent: userVotingPower, isLike: true, isObjectPage: true }),
+      );
+    } else {
+      dispatch(setPinnedPostsUrls([...pinnedPostsUrls, post.url]));
+      dispatch(
+        voteAppends(
+          currUpdate.author,
+          currUpdate.permlink,
+          userVotingPower,
+          'pin',
+          false,
+          'pin',
+          null,
+          false,
+          true,
+        ),
+      );
+    }
   };
 
   useEffect(() => {
@@ -89,6 +181,21 @@ const FeedItem = ({ post, photoQuantity, preview }) => {
 
   return (
     <div className="FeedMasonry__item">
+      {isReviewsPage && isAuthUser && (
+        <Tooltip
+          placement="topLeft"
+          title={tooltipTitle}
+          overlayClassName="PinContainer"
+          overlayStyle={{ top: '10px' }}
+        >
+          <ReactSVG
+            className={currentUserPin ? 'pin-website-color' : pinClassName}
+            wrapper="span"
+            src="/images/icons/pin-outlined.svg"
+            onClick={handlePinPost}
+          />
+        </Tooltip>
+      )}
       {isEmpty(embeds) ? (
         <div className="FeedMasonry__imgWrap">
           {take(imagePath, photoQuantity)?.map((image, index) => (
@@ -173,6 +280,9 @@ const FeedItem = ({ post, photoQuantity, preview }) => {
 FeedItem.propTypes = {
   post: PropTypes.shape({
     author: PropTypes.string,
+    url: PropTypes.string,
+    currentUserPin: PropTypes.bool,
+    pin: PropTypes.bool,
     json_metadata: PropTypes.string,
     permlink: PropTypes.string,
     title: PropTypes.string,
@@ -187,6 +297,7 @@ FeedItem.propTypes = {
   }),
   photoQuantity: PropTypes.number,
   preview: PropTypes.string,
+  isReviewsPage: PropTypes.bool,
 };
 
 export default FeedItem;

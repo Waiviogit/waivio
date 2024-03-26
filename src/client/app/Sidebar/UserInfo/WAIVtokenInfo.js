@@ -11,17 +11,17 @@ const WAIVtokenInfo = ({ votingPower, downVotingPower, votePrice }) => (
     <h4>
       <FormattedMessage id="waiv_token" defaultMessage="WAIV token" />
     </h4>
-    <div>
+    <div className="CurrencyInfo__line">
       <i className="iconfont icon-praise text-icon" />
       <FormattedMessage id="upvoting_mana" defaultMessage="Upvoting mana" />:{' '}
       <span>{round(votingPower, 2)}%</span>
     </div>
-    <div>
+    <div className="CurrencyInfo__line">
       <i className="iconfont icon-praise Comment__icon_dislike text-icon" />
       <FormattedMessage id="downvoting_mana" defaultMessage="Downvoting mana" />:{' '}
       <span>{round(downVotingPower, 2)}%</span>
     </div>
-    <div>
+    <div className="CurrencyInfo__line">
       <i className="iconfont icon-dollar text-icon" />
       <FormattedMessage id="waiv_vote" defaultMessage="WAIV vote" />:{' '}
       <USDDisplay value={votePrice} />

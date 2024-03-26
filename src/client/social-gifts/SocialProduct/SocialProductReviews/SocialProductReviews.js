@@ -41,7 +41,7 @@ const SocialProductReviews = ({ wobject, authors, intl }) => {
   const objName =
     history.location.hash && wobject.object_type !== 'restaurant'
       ? getLastPermlinksFromHash(history.location.hash)
-      : name;
+      : name || wobject.author_permlink;
   const postsIds = uniq(getFeedFromState('objectPosts', objName, feed));
   const hasMore = getFeedHasMoreFromState('objectPosts', objName, feed);
   const isFetching = getFeedLoadingFromState('objectPosts', objName, feed);
@@ -98,6 +98,7 @@ const SocialProductReviews = ({ wobject, authors, intl }) => {
         </button>
       </div>
       <FeedMasonry
+        isReviewsPage
         objName={getObjectName(wobject)}
         emptyLable={intl.formatMessage({
           id: 'empty_object_profile',
