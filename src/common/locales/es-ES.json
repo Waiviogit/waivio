@@ -2604,5 +2604,7 @@
   "productID": "ID de producto",
   "show_all": "Mostrar todo",
   "by_only": "Por",
-  "groupIds": "IDs de grupo"
+  "groupIds": "IDs de grupo",
+  "share_photo_and_earn": "Comparte {minPhotos} foto y gana",
+  "share_photos_and_earn": "Comparte {minPhotos} fotos y gana"
 }
