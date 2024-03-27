@@ -483,6 +483,23 @@ export const sortListItems = (menuItems, sortList) =>
     return acc;
   }, []);
 
+export function sortByExpertOrder(expertsArr, experts) {
+  const expertIndexMap = {};
+
+  experts.forEach((expert, index) => {
+    expertIndexMap[expert.name] = index;
+  });
+
+  expertsArr.sort((a, b) => {
+    const indexA = expertIndexMap[a.name];
+    const indexB = expertIndexMap[b.name];
+
+    return indexA - indexB;
+  });
+
+  return expertsArr;
+}
+
 export const isObjectReviewTab = (wobject, match) => {
   if (
     !isNil(match.params.name) &&
