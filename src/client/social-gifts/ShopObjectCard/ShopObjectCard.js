@@ -93,7 +93,7 @@ const ShopObjectCard = ({ wObject, isChecklist, isSocialProduct }) => {
               proposition?.requirements?.minPhotos === 1 ? '' : 's'
             } & earn`}
             values={{ minPhotos: proposition?.requirements?.minPhotos }}
-          />
+          />{' '}
           <USDDisplay value={proposition.rewardInUSD} currencyDisplay={'symbol'} />
         </h3>
       )}
