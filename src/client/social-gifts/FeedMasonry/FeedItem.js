@@ -180,7 +180,9 @@ const FeedItem = ({ post, photoQuantity, preview, isReviewsPage }) => {
   }
 
   return (
-    <div className="FeedMasonry__item">
+    <div
+      className={isReviewsPage && isAuthUser ? 'FeedMasonry__item-with-pin' : 'FeedMasonry__item'}
+    >
       {isReviewsPage && isAuthUser && (
         <Tooltip
           placement="topLeft"

@@ -2,7 +2,6 @@ import moment from 'moment';
 import { get } from 'lodash';
 import { message } from 'antd';
 import { createAsyncActionType } from '../../common/helpers/stateHelpers';
-import { getExpertiseCounters } from '../../waivioApi/ApiClient';
 import * as ApiClient from '../../waivioApi/ApiClient';
 import { getDetailsBody, rewardPostContainerData } from '../../client/rewards/rewardsHelper';
 import { createCommentPermlink } from '../../client/vendor/steemitHelpers';
