@@ -41,7 +41,7 @@ export const REFRESH_CRYPTO_PRICE_HISTORY = '@app/REFRESH_CRYPTO_PRICE_HISTORY';
 export const refreshCryptoPriceHistory = createAction(REFRESH_CRYPTO_PRICE_HISTORY);
 
 export const getRate = () => dispatch => {
-  dispatch({
+  return dispatch({
     type: RATE_REQUEST.ACTION,
     payload: {
       promise: ApiClient.getCurrentMedianHistory().then(

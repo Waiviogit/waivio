@@ -26,6 +26,26 @@ export const getObjectsList = (fetcher, limit, skip, type, isOnlyHashtags) => (
     }),
   );
 };
+export const GET_OBJECT_MORE_LIST = createAsyncActionType('@dynamicList/GET_OBJECT_MORE_LIST');
+
+export const getObjectsMoreList = (fetcher, limit, skip, type, isOnlyHashtags) => (
+  dispatch,
+  getState,
+) => {
+  const authName = getAuthenticatedUserName(getState());
+
+  dispatch({
+    type: GET_OBJECT_MORE_LIST.START,
+  });
+
+  return fetcher(skip, authName, isOnlyHashtags).then(res =>
+    dispatch({
+      type: GET_OBJECT_MORE_LIST.SUCCESS,
+      payload: res,
+      meta: type,
+    }),
+  );
+};
 export const UNFOLLOW_OBLECT_IN_LIST = createAsyncActionType(
   '@dynamicList/UNFOLLOW_OBLECT_IN_LIST',
 );
@@ -139,6 +159,27 @@ export const getUsersList = (fetcher, limit, skip, type, usersList, sorting) => 
     }),
   );
 };
+export const GET_USERS_LIST_MORE = createAsyncActionType('@dynamicList/GET_USERS_LIST_MORE');
+
+export const getUsersMoreList = (fetcher, limit, skip, type, usersList, sorting) => (
+  dispatch,
+  getState,
+) => {
+  const authName = getAuthenticatedUserName(getState());
+
+  dispatch({
+    type: GET_USERS_LIST_MORE.START,
+  });
+
+  return fetcher(usersList, authName, sorting).then(res =>
+    dispatch({
+      type: GET_USERS_LIST_MORE.SUCCESS,
+      payload: res,
+      meta: type,
+      sorting,
+    }),
+  );
+};
 
 export const UNFOLLOW_USER_IN_LIST = createAsyncActionType('@dynamicList/UNFOLLOW_USER_IN_LIST');
 
@@ -229,3 +270,7 @@ export const followUserInList = (permlink, username, type) => (dispatch, getStat
     });
   });
 };
+
+export const RESET_LISTS = '@dynamicList/RESET_LISTS';
+
+export const resetLists = () => ({ type: RESET_LISTS });

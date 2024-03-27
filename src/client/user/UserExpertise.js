@@ -14,6 +14,7 @@ import { getLocale } from '../../store/settingsStore/settingsSelectors';
 import { excludeHashtagObjType } from '../../common/constants/listOfObjectTypes';
 
 import './UserExpertise.less';
+import './UserFollowing.less';
 
 const TabPane = Tabs.TabPane;
 const limit = 30;
@@ -88,13 +89,7 @@ UserExpertise.fetchData = ({ match, store }) => {
   return Promise.allSettled([
     store.dispatch(getUrerExpertiseCounters(match.params.name)),
     store.dispatch(
-      getObjectsList(
-        fetcher,
-        limit,
-        0,
-        match.params[0],
-        match.params.name[0] === 'expertise-hashtags' ? ['hashtag'] : excludeHashtagObjType,
-      ),
+      getObjectsList(fetcher, limit, 0, match.params[0], match.params[0] === 'expertise-hashtags'),
     ),
   ]);
 };
