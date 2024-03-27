@@ -77,7 +77,7 @@ const ObjectDynamicList = props => {
           />
         ))}
       </ReduxInfiniteScroll>
-      {empty && (
+      {empty && !loading && (
         <div className="ObjectDynamicList__empty">
           <FormattedMessage id="list_empty" defaultMessage="Nothing is there" />
         </div>
