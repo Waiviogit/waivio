@@ -3,9 +3,10 @@ import PropTypes from 'prop-types';
 import { isEmpty } from 'lodash';
 import { Carousel, Icon } from 'antd';
 import ExpertCard from './ExpertCard';
-import './Experts.less';
 import { isTabletOrMobile } from '../../SocialProduct/SocialProductHelper';
 import { getUsersAvatar } from '../../../../waivioApi/ApiClient';
+import { sortByExpertOrder } from '../../../../common/helpers/wObjectHelper';
+import './Experts.less';
 
 const Experts = ({ title, experts, name }) => {
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -36,6 +37,7 @@ const Experts = ({ title, experts, name }) => {
   useEffect(() => {
     getUsersAvatar(expertsNames).then(r => setExpertsArr(r));
   }, [name]);
+  const sortedExperts = sortByExpertOrder(expertsArr, experts);
 
   return (
     !isEmpty(experts) && (
@@ -43,7 +45,7 @@ const Experts = ({ title, experts, name }) => {
         <div className="SocialProduct__heading">{title}</div>
         <div className={`Slider__wrapper-${name}`}>
           <Carousel {...carouselSettings} beforeChange={onSlideChange}>
-            {expertsArr?.map(expert => (
+            {sortedExperts?.map(expert => (
               <ExpertCard key={expert.name} expert={expert} />
             ))}
           </Carousel>
