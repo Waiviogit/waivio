@@ -229,5 +229,6 @@
   "favorites": "/favorites",
   "pin": "/pin",
   "rawField": "/raw-field",
-  "info": "/info"
+  "info": "/info",
+  "avatar": "/avatar"
 }

@@ -1,15 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { isEmpty } from 'lodash';
 import { Carousel, Icon } from 'antd';
 import ExpertCard from './ExpertCard';
 import './Experts.less';
 import { isTabletOrMobile } from '../../SocialProduct/SocialProductHelper';
+import { getUsersAvatar } from '../../../../waivioApi/ApiClient';
 
 const Experts = ({ title, experts, name }) => {
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [expertsArr, setExpertsArr] = useState([]);
   const slideWidth = 240;
   const slidesToShow = Math.floor(typeof window !== 'undefined' && window.innerWidth / slideWidth);
+  const expertsNames = !isEmpty(experts) ? experts?.map(e => e.name) : [];
 
   const carouselSettings = {
     dots: false,
@@ -30,14 +33,18 @@ const Experts = ({ title, experts, name }) => {
     setCurrentSlide(next);
   };
 
+  useEffect(() => {
+    getUsersAvatar(expertsNames).then(r => setExpertsArr(r));
+  }, [name]);
+
   return (
     !isEmpty(experts) && (
       <div className="SocialProduct__addOn-section">
         <div className="SocialProduct__heading">{title}</div>
         <div className={`Slider__wrapper-${name}`}>
           <Carousel {...carouselSettings} beforeChange={onSlideChange}>
-            {experts?.map(expert => (
-              <ExpertCard key={expert._id} expert={expert} />
+            {expertsArr?.map(expert => (
+              <ExpertCard key={expert.name} expert={expert} />
             ))}
           </Carousel>
         </div>
