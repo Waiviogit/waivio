@@ -1,4 +1,4 @@
-import { union } from 'lodash';
+import { union, uniqBy } from 'lodash';
 import {
   GET_OBJECT_LIST,
   UNFOLLOW_OBLECT_IN_LIST,
@@ -6,6 +6,8 @@ import {
   GET_USERS_LIST,
   UNFOLLOW_USER_IN_LIST,
   FOLLOW_USER_IN_LIST,
+  GET_USERS_LIST_MORE,
+  GET_OBJECT_MORE_LIST,
 } from './dynamicListActions';
 
 const initialState = {
@@ -28,27 +30,26 @@ const dynamicListReducer = (state = initialState, action) => {
         ...state,
         [action.meta]: {
           ...state[action.meta],
-          wobjects: [...action.payload],
+          list: [...action.payload],
         },
       };
 
     case GET_OBJECT_LIST.SUCCESS:
-      if (state[action.meta]) {
-        return {
-          ...state,
-          [action.meta]: {
-            wobjects: union(state[action.meta].wobjects, action.payload.wobjects),
-            hasMore: action.payload.hasMore,
-          },
-          loading: false,
-        };
-      }
-
       return {
         ...state,
-        [action.meta]: action.payload,
+        [action.meta]: { list: action.payload.wobjects, hasMore: action.payload.hasMore },
         loading: false,
       };
+    case GET_OBJECT_MORE_LIST.SUCCESS:
+      return {
+        ...state,
+        [action.meta]: {
+          list: union(state[action.meta].list, action.payload.wobjects),
+          hasMore: action.payload.hasMore,
+        },
+        loading: false,
+      };
+
     case GET_USERS_LIST.START:
       return {
         ...state,
@@ -63,32 +64,33 @@ const dynamicListReducer = (state = initialState, action) => {
         ...state,
         [action.meta]: {
           ...state[action.meta],
-          users: [...action.users],
+          list: [...action.users],
         },
       };
 
     case GET_USERS_LIST.SUCCESS:
-      if (state[action.meta] && action.sorting === state[action.meta].sort) {
-        return {
-          ...state,
-          [action.meta]: {
-            users: union(state[action.meta].users, action.payload.users),
-            hasMore: action.payload.hasMore,
-            sort: action.sorting,
-          },
-          loading: false,
-        };
-      }
-
       return {
         ...state,
         [action.meta]: {
-          users: action.payload.users,
+          list: action.payload.users,
           hasMore: action.payload.hasMore,
           sort: action.sorting,
         },
         loading: false,
       };
+
+    case GET_USERS_LIST_MORE.SUCCESS:
+      return {
+        ...state,
+        [action.meta]: {
+          list: union(state[action.meta].list, action.payload.users),
+          hasMore: action.payload.hasMore,
+          sort: action.sorting,
+        },
+        loading: false,
+      };
+    case '@dynamicList/RESET_LISTS':
+      return initialState;
 
     default:
       return state;

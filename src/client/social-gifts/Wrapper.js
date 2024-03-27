@@ -58,7 +58,7 @@ import { getIsOpenWalletTable } from '../../store/walletStore/walletSelectors';
 import { getLocale, getNightmode } from '../../store/settingsStore/settingsSelectors';
 import QuickRewardsModal from './../rewards/QiuckRewardsModal/QuickRewardsModal';
 import { getIsOpenModal } from '../../store/quickRewards/quickRewardsSelectors';
-import { getTokenRates } from '../../store/walletStore/walletActions';
+import { getTokenRates, getGlobalProperties } from '../../store/walletStore/walletActions';
 import { hexToRgb } from '../../common/helpers';
 import { initialColors } from '../websites/constants/colors';
 import { getSwapEnginRates } from '../../store/ratesStore/ratesAction';
@@ -478,6 +478,9 @@ SocialWrapper.fetchData = async ({ store, req, url }) => {
     store.dispatch(setAppUrl(`https://${req.headers.host}`)),
     store.dispatch(getWebsiteSettings(req.headers.host)),
     store.dispatch(setUsedLocale(lang)),
+    store.dispatch(getRate()),
+    store.dispatch(getRewardFund()),
+    store.dispatch(getGlobalProperties()),
   ]);
 };
 

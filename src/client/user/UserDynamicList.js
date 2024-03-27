@@ -8,6 +8,8 @@ import {
   followUserInList,
   unfollowUserInList,
   getUsersList,
+  getUsersMoreList,
+  resetLists,
 } from '../../store/dynamicList/dynamicListActions';
 import {
   getDynamicList,
@@ -33,18 +35,19 @@ class UserDynamicList extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { authUser, sort, searchLine } = this.props;
-    const { users } = this.props.dynamicListInfo;
+    const { authUser, searchLine } = this.props;
+    const { list } = this.props.dynamicListInfo;
 
     if (!prevProps.authUser && authUser) {
-      this.getList(users);
+      this.getList(list);
     }
     if (prevProps.searchLine !== searchLine) {
       this.getList(searchLine, undefined);
     }
-    if (!prevProps.sort && sort) {
-      this.getList(users, sort);
-    }
+  }
+
+  componentWillUnmount() {
+    this.props.resetLists();
   }
 
   getList = (usersList, sorting, skip) =>
@@ -54,12 +57,22 @@ class UserDynamicList extends React.Component {
       skip,
       this.props.match.params[0],
       usersList,
+      sorting || this.state.sort,
+    );
+
+  getListMore = (usersList, sorting, skip) =>
+    this.props.getUsersMoreList(
+      this.props.fetcher,
+      30,
+      skip,
+      this.props.match.params[0],
+      usersList,
       this.state.sort,
     );
   handleLoadMore = () => {
-    const { users } = this.props.dynamicListInfo;
+    const { list } = this.props.dynamicListInfo;
 
-    this.getList(users, this.props.sort || undefined, users?.length);
+    this.getListMore(list, this.props.sort || undefined, list?.length);
   };
 
   unFollow = name => {
@@ -89,7 +102,7 @@ class UserDynamicList extends React.Component {
         sort: sorting,
       },
       () => {
-        this.getList([]).catch(err => {
+        this.getList([], sorting, 0).catch(err => {
           message.error(err.message);
         });
       },
@@ -98,10 +111,10 @@ class UserDynamicList extends React.Component {
 
   render() {
     const { loading } = this.props;
-    const { hasMore, users } = this.props.dynamicListInfo;
-    const empty = !hasMore && users?.length === 0;
+    const { hasMore, list } = this.props.dynamicListInfo;
+    const empty = !hasMore && list?.length === 0;
     const { sort, hideSort } = this.props;
-    console.log(users);
+
     return (
       <React.Fragment>
         {!hideSort && (
@@ -129,8 +142,9 @@ class UserDynamicList extends React.Component {
             hasMore={hasMore}
             loader={<Loading />}
             loadMore={this.handleLoadMore}
+            threshold={500}
           >
-            {users?.map(user => {
+            {list?.map(user => {
               if (!this.props.showAuthorizedUser || user.name !== this.props.userName) {
                 return (
                   <UserCard
@@ -167,6 +181,8 @@ UserDynamicList.propTypes = {
   unfollowUser: PropTypes.func.isRequired,
   followUser: PropTypes.func.isRequired,
   getUsersList: PropTypes.func.isRequired,
+  getUsersMoreList: PropTypes.func.isRequired,
+  resetLists: PropTypes.func.isRequired,
   authUser: PropTypes.string,
   sort: PropTypes.string,
   handleChange: PropTypes.func,
@@ -176,7 +192,7 @@ UserDynamicList.propTypes = {
     }),
   }).isRequired,
   dynamicListInfo: PropTypes.shape({
-    users: PropTypes.arrayOf(PropTypes.shape({})),
+    list: PropTypes.arrayOf(PropTypes.shape({})),
     hasMore: PropTypes.bool,
   }),
 };
@@ -202,6 +218,8 @@ export default withRouter(
       followUser: followUserInList,
       changeCounterFollow,
       getUsersList,
+      getUsersMoreList,
+      resetLists,
     },
   )(UserDynamicList),
 );

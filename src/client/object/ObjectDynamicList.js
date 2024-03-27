@@ -8,6 +8,8 @@ import {
   getObjectsList,
   unfollowObjectInList,
   followObjectInList,
+  getObjectsMoreList,
+  resetLists,
 } from '../../store/dynamicList/dynamicListActions';
 import {
   getDynamicList,
@@ -25,21 +27,23 @@ import './ObjectDynamicList.less';
 
 const ObjectDynamicList = props => {
   const { fetcher, isOnlyHashtags, match, loading } = props;
-  const { wobjects, hasMore } = props.dynamicListInfo;
+  const { list, hasMore } = props.dynamicListInfo;
   const { name, 0: type } = props.match.params;
 
   useEffect(() => {
     props.getObjectsList(
       props.fetcher,
       props.limit,
-      wobjects?.length,
+      0,
       props.match.params[0],
       props.isOnlyHashtags,
     );
+
+    return () => props.resetLists();
   }, []);
 
   const handleLoadMore = () => {
-    props.getObjectsList(fetcher, props.limit, wobjects?.length, match.params[0], isOnlyHashtags);
+    props.getObjectsMoreList(fetcher, props.limit, list?.length, match.params[0], isOnlyHashtags);
   };
 
   const unFollow = permlink => {
@@ -50,7 +54,7 @@ const ObjectDynamicList = props => {
     props.followWobj(permlink, name, type);
   };
 
-  const empty = !hasMore && wobjects?.length === 0;
+  const empty = !hasMore && list?.length === 0;
   const getWeight = wo => (props.expertize ? wo.user_weight : wo.weight);
 
   return (
@@ -61,8 +65,9 @@ const ObjectDynamicList = props => {
         hasMore={hasMore}
         loader={<Loading />}
         loadMore={handleLoadMore}
+        threshold={500}
       >
-        {map(wobjects, wo => (
+        {map(list, wo => (
           <ObjectCard
             key={wo.author_permlink}
             wobject={wo}
@@ -87,6 +92,8 @@ ObjectDynamicList.propTypes = {
   expertize: PropTypes.bool,
   loading: PropTypes.bool,
   getObjectsList: PropTypes.func,
+  getObjectsMoreList: PropTypes.func,
+  resetLists: PropTypes.func,
   unfollowWobj: PropTypes.func,
   followWobj: PropTypes.func,
   limit: PropTypes.number,
@@ -97,7 +104,7 @@ ObjectDynamicList.propTypes = {
     }),
   }).isRequired,
   dynamicListInfo: PropTypes.shape({
-    wobjects: PropTypes.arrayOf(PropTypes.shape({})),
+    list: PropTypes.arrayOf(PropTypes.shape({})),
     hasMore: PropTypes.bool,
   }),
 };
@@ -122,6 +129,8 @@ export default withRouter(
       unfollowWobj: unfollowObjectInList,
       changeCounterFollow,
       getObjectsList,
+      getObjectsMoreList,
+      resetLists,
     },
   )(ObjectDynamicList),
 );

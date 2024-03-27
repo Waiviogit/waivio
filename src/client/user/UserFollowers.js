@@ -61,7 +61,14 @@ const UserFollowers = ({ match, sort, authUser, handleChange, user, locale, intl
         }
         key="followers"
       >
-        <UserDynamicList limit={limit} sort={sort} fetcher={fetcher} handleChange={handleChange} />
+        {tab === 'followers' && (
+          <UserDynamicList
+            limit={limit}
+            sort={sort}
+            fetcher={fetcher}
+            handleChange={handleChange}
+          />
+        )}
       </Tabs.TabPane>
       <Tabs.TabPane
         tab={
@@ -77,12 +84,14 @@ const UserFollowers = ({ match, sort, authUser, handleChange, user, locale, intl
         className="UserFollowing__item"
       >
         <div className="UserFollowing">
-          <UserDynamicList
-            limit={limit}
-            fetcher={fetcherFollowing}
-            handleChange={handleChange}
-            sort={sort}
-          />
+          {tab === 'following' && (
+            <UserDynamicList
+              limit={limit}
+              fetcher={fetcherFollowing}
+              handleChange={handleChange}
+              sort={sort}
+            />
+          )}
         </div>
       </Tabs.TabPane>
       <Tabs.TabPane
@@ -98,7 +107,7 @@ const UserFollowers = ({ match, sort, authUser, handleChange, user, locale, intl
         className="UserFollowing__item"
         key="following-objects"
       >
-        <ObjectDynamicList limit={limit} fetcher={getObjects} />
+        {tab === 'following-objects' && <ObjectDynamicList limit={limit} fetcher={getObjects} />}
       </Tabs.TabPane>
     </Tabs>
   );
@@ -140,7 +149,6 @@ UserFollowers.fetchData = ({ match, store }) => {
   }
 
   if (match.params[0] === 'following') {
-    console.log('following');
     return Promise.allSettled([
       store.dispatch(getUsersList(fetcherFollowing, 30, 0, match.params[0])),
     ]);
