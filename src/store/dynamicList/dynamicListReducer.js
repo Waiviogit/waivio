@@ -1,4 +1,4 @@
-import { union, uniqBy } from 'lodash';
+import { union } from 'lodash';
 import {
   GET_OBJECT_LIST,
   UNFOLLOW_OBLECT_IN_LIST,
