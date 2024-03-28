@@ -36,7 +36,7 @@ import { getLocale, getNightmode } from '../store/settingsStore/settingsSelector
 import MainPageHeader from './websites/WebsiteLayoutComponents/Header/MainPageHeader';
 import QuickRewardsModal from './rewards/QiuckRewardsModal/QuickRewardsModal';
 import { getIsOpenModal } from '../store/quickRewards/quickRewardsSelectors';
-import { getTokenRates } from '../store/walletStore/walletActions';
+import { getTokenRates, getGlobalProperties } from '../store/walletStore/walletActions';
 import { hexToRgb } from '../common/helpers';
 import { initialColors } from './websites/constants/colors';
 import { getSwapEnginRates } from '../store/ratesStore/ratesAction';
@@ -141,6 +141,9 @@ class WebsiteWrapper extends React.PureComponent {
       store.dispatch(setUsedLocale(lang)),
       store.dispatch(login()),
       store.dispatch(getWebsiteConfigForSSR(req.hostname)),
+      store.dispatch(getRate()),
+      store.dispatch(getRewardFund()),
+      store.dispatch(getGlobalProperties()),
     ]);
   }
 

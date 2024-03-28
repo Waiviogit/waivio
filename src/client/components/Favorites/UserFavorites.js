@@ -15,6 +15,7 @@ import {
 import {
   setFavoriteObjects,
   setMoreFavoriteObjects,
+  setFavoriteObjectTypes,
 } from '../../../store/favoritesStore/favoritesActions';
 import FavoritesMobileSidenav from './FavoritesMobileSidenav/FavoritesMobileSidenav';
 
@@ -79,5 +80,10 @@ const UserFavorites = () => {
     </>
   );
 };
+
+UserFavorites.fetchData = ({ match, store }) =>
+  store
+    .dispatch(setFavoriteObjectTypes(match.params.name))
+    .then(types => store.dispatch(setFavoriteObjects(match.params.name, types.value[0])));
 
 export default UserFavorites;

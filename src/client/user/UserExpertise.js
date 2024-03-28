@@ -1,31 +1,32 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Tabs } from 'antd';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { useParams } from 'react-router';
 import { Link } from 'react-router-dom';
 
 import { FormattedMessage, FormattedNumber } from 'react-intl';
-import { getExpertiseCounters, getWobjectsWithUserWeight } from '../../waivioApi/ApiClient';
+import { getObjectsList } from '../../store/dynamicList/dynamicListActions';
+import { getUrerExpertiseCounters } from '../../store/userStore/userActions';
+import { getExpCounters } from '../../store/userStore/userSelectors';
+import { getWobjectsWithUserWeight } from '../../waivioApi/ApiClient';
 import ObjectDynamicList from '../object/ObjectDynamicList';
 import { getLocale } from '../../store/settingsStore/settingsSelectors';
+import { excludeHashtagObjType } from '../../common/constants/listOfObjectTypes';
 
 import './UserExpertise.less';
-import { excludeHashtagObjType } from '../../common/constants/listOfObjectTypes';
+import './UserFollowing.less';
 
 const TabPane = Tabs.TabPane;
 const limit = 30;
 
 const UserExpertise = () => {
-  const [wobjsExpCount, setWobjectsExpCount] = useState();
-  const [hashsExpCount, setHashtagsExpCount] = useState();
   const locale = useSelector(getLocale);
+  const dispatch = useDispatch();
+  const { wobjectsExpCount, hashtagsExpCount } = useSelector(getExpCounters);
   const { name, 0: tab } = useParams();
 
   useEffect(() => {
-    getExpertiseCounters(name).then(({ hashtagsExpCount, wobjectsExpCount }) => {
-      setWobjectsExpCount(wobjectsExpCount);
-      setHashtagsExpCount(hashtagsExpCount);
-    });
+    dispatch(getUrerExpertiseCounters(name));
   }, []);
 
   const fetcher = (skip, authUser, isOnlyHashtags) =>
@@ -45,7 +46,7 @@ const UserExpertise = () => {
           tab={
             <Link to={`/@${name}/expertise-hashtags`} className="UserExpertise__item">
               <FormattedMessage id="hashtag_value_placeholder" defaultMessage="Hashtags" />{' '}
-              {!!hashsExpCount && <FormattedNumber value={hashsExpCount} />}
+              {!!hashtagsExpCount && <FormattedNumber value={hashtagsExpCount} />}
             </Link>
           }
           key="expertise-hashtags"
@@ -61,7 +62,7 @@ const UserExpertise = () => {
           tab={
             <Link to={`/@${name}/expertise-objects`} className="UserExpertise__item">
               <FormattedMessage id="objects" defaultMessage="Objects" />{' '}
-              {!!wobjsExpCount && <FormattedNumber value={wobjsExpCount} />}
+              {!!wobjectsExpCount && <FormattedNumber value={wobjectsExpCount} />}
             </Link>
           }
           key="expertise-objects"
@@ -74,5 +75,23 @@ const UserExpertise = () => {
 };
 
 UserExpertise.propTypes = {};
+
+UserExpertise.fetchData = ({ match, store }) => {
+  const fetcher = (skip, authUser, isOnlyHashtags) =>
+    getWobjectsWithUserWeight(
+      match.params.name,
+      skip,
+      limit,
+      authUser,
+      isOnlyHashtags ? ['hashtag'] : excludeHashtagObjType,
+    );
+
+  return Promise.allSettled([
+    store.dispatch(getUrerExpertiseCounters(match.params.name)),
+    store.dispatch(
+      getObjectsList(fetcher, limit, 0, match.params[0], match.params[0] === 'expertise-hashtags'),
+    ),
+  ]);
+};
 
 export default UserExpertise;

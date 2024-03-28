@@ -1,13 +1,22 @@
 import React, { useState } from 'react';
 import { Icon } from 'antd';
 import PropTypes from 'prop-types';
+import { injectIntl } from 'react-intl';
 
 import './CompanyId.less';
 
-function CompanyId({ companyIdBody, isSocial }) {
+function CompanyId({ companyIdBody, isSocial, intl }) {
   const [showMore, setShowMore] = useState(false);
-  const showMoreBtn = isSocial ? <a>(show)</a> : <Icon type="down" className="CompanyId__icon" />;
-  const showLessBtn = isSocial ? <a>(hide)</a> : <Icon type="up" className="CompanyId__icon" />;
+  const showMoreBtn = isSocial ? (
+    <a>{intl.formatMessage({ id: 'show', defaultMessage: '(show)' })}</a>
+  ) : (
+    <Icon type="down" className="CompanyId__icon" />
+  );
+  const showLessBtn = isSocial ? (
+    <a>{intl.formatMessage({ id: 'hide', defaultMessage: '(hide)' })}</a>
+  ) : (
+    <Icon type="up" className="CompanyId__icon" />
+  );
   const toggleShowMoreState = () => {
     setShowMore(!showMore);
   };
@@ -15,7 +24,11 @@ function CompanyId({ companyIdBody, isSocial }) {
   return (
     <div className="CompanyId__container">
       <button className="CompanyId__button" onClick={toggleShowMoreState}>
-        {isSocial ? <b>Company IDs: </b> : <span>Company ID </span>}
+        {isSocial ? (
+          <b>{intl.formatMessage({ id: 'companyIds', defaultMessage: 'Company IDs' })}: </b>
+        ) : (
+          <span>{intl.formatMessage({ id: 'companyId', defaultMessage: 'Company ID' })} </span>
+        )}
         {!showMore ? showMoreBtn : showLessBtn}
       </button>
       <div className="CompanyId__block">
@@ -39,10 +52,11 @@ CompanyId.propTypes = {
       companyId: PropTypes.string,
     }),
   ).isRequired,
+  intl: PropTypes.shape().isRequired,
 };
 
 CompanyId.defaultProps = {
   isSocial: false,
 };
 
-export default CompanyId;
+export default injectIntl(CompanyId);

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { isEmpty, take } from 'lodash';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import { injectIntl } from 'react-intl';
 import { useSelector } from 'react-redux';
 import { useLocation, useRouteMatch } from 'react-router';
 import { Icon } from 'antd';
@@ -27,7 +28,7 @@ import { isMobile } from '../../../common/helpers/apiHelpers';
 
 import './ShopList.less';
 
-const ShopList = ({ userName, path, getShopFeed, isSocial }) => {
+const ShopList = ({ userName, path, getShopFeed, isSocial, intl }) => {
   const query = useQuery();
   const location = useLocation();
   const [loading, setLoading] = useState(false);
@@ -119,7 +120,8 @@ const ShopList = ({ userName, path, getShopFeed, isSocial }) => {
                   />
                   {dep.hasMore && (
                     <Link className="ShopList__showMore" to={getPath(dep.department)}>
-                      Show more {dep.department}
+                      {intl.formatMessage({ id: 'show_more', defaultMessage: 'Show more' })}{' '}
+                      {dep.department}
                     </Link>
                   )}
                 </div>
@@ -137,6 +139,7 @@ ShopList.propTypes = {
   path: PropTypes.string,
   getShopFeed: PropTypes.func,
   isSocial: PropTypes.bool,
+  intl: PropTypes.shape().isRequired,
 };
 
-export default ShopList;
+export default injectIntl(ShopList);

@@ -10,7 +10,9 @@ import UserSearchItem from '../../../../search/SearchItems/UserSearchItem';
 import { getObjectName } from '../../../../../common/helpers/wObjectHelper';
 import ObjectSearchItem from '../../../../search/SearchItems/ObjectSearchItem';
 import { getTranformSearchCountData, pendingSearch } from '../../../../search/helpers';
-import listOfObjectTypes from '../../../../../common/constants/listOfObjectTypes';
+import listOfObjectTypes, {
+  listOfSocialObjectTypes,
+} from '../../../../../common/constants/listOfObjectTypes';
 import {
   getAutoCompleteSearchResults,
   getIsStartSearchAutoComplete,
@@ -35,12 +37,18 @@ const GeneralSearch = props => {
   const dispatch = useDispatch();
   const history = useHistory();
   const isSocialWobj = wobj =>
-    props.isSocialProduct &&
-    ['product', 'book', 'person', 'business', 'restaurant'].includes(wobj.object_type);
+    props.isSocialProduct && listOfSocialObjectTypes.includes(wobj.object_type);
 
   const handleAutoCompleteSearchDebounce = useCallback(
     debounce(value => {
-      dispatch(searchAutoComplete(value, 5, 15, undefined, true, ['product', 'book', 'business']));
+      dispatch(
+        searchAutoComplete(value, 5, 15, undefined, true, [
+          'product',
+          'book',
+          'business',
+          'restaurant',
+        ]),
+      );
     }, 500),
     [],
   );

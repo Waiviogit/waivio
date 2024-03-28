@@ -77,7 +77,7 @@ ObjectCard.propTypes = {
     menuItem: PropTypes.arrayOf(),
   }),
   showFollow: PropTypes.bool,
-  alt: PropTypes.string,
+  alt: PropTypes.oneOfType([PropTypes.string, PropTypes.node]),
   isModal: PropTypes.bool,
   isNewWindow: PropTypes.bool,
   unfollow: PropTypes.func,

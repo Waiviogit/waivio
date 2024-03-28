@@ -49,7 +49,7 @@ import {
 } from '../store/authStore/authSelectors';
 import { getIsOpenWalletTable } from '../store/walletStore/walletSelectors';
 import { getLocale, getNightmode } from '../store/settingsStore/settingsSelectors';
-import { getTokenRates } from '../store/walletStore/walletActions';
+import { getTokenRates, getGlobalProperties } from '../store/walletStore/walletActions';
 import { getSwapEnginRates } from '../store/ratesStore/ratesAction';
 import { initialColors } from './websites/constants/colors';
 import { hexToRgb } from '../common/helpers';
@@ -147,6 +147,9 @@ class Wrapper extends React.PureComponent {
     return Promise.all([
       store.dispatch(setAppUrl(`https://${req.headers.host}`)),
       store.dispatch(setUsedLocale(lang)),
+      store.dispatch(getRate()),
+      store.dispatch(getRewardFund()),
+      store.dispatch(getGlobalProperties()),
     ]);
   }
 

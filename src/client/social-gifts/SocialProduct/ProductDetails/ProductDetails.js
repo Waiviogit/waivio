@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { injectIntl } from 'react-intl';
 import { isEmpty } from 'lodash';
 import { objectFields } from '../../../../common/constants/listOfFields';
 import Department from '../../../object/Department/Department';
@@ -23,12 +24,15 @@ const ProductDetails = ({
   printLength,
   publisher,
   publisherObject,
+  intl,
 }) => {
   const newPublisher = { ...publisherObject, name: publisher?.name || publisherObject?.name };
 
   return (
     <div className="SocialProduct__productDetails">
-      <div className="SocialProduct__heading">Product details</div>
+      <div className="SocialProduct__heading">
+        {intl.formatMessage({ id: 'product_details', defaultMessage: 'Product details' })}
+      </div>
       <div className="SocialProduct__productDetails-content SocialProduct__contentPaddingLeft">
         {!isEmpty(publisherObject) && (
           <SocialListItem fieldName={objectFields.publisher} field={newPublisher} />
@@ -102,6 +106,7 @@ ProductDetails.propTypes = {
   language: PropTypes.string,
   publicationDate: PropTypes.string,
   printLength: PropTypes.string,
+  intl: PropTypes.shape().isRequired,
 };
 
-export default ProductDetails;
+export default injectIntl(ProductDetails);

@@ -1,182 +1,136 @@
-import React from 'react';
-import { message } from 'antd';
+import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
 import { withRouter } from 'react-router';
-import { union, map, get } from 'lodash';
+import { map } from 'lodash';
+import {
+  getObjectsList,
+  unfollowObjectInList,
+  followObjectInList,
+  getObjectsMoreList,
+  resetLists,
+} from '../../store/dynamicList/dynamicListActions';
+import {
+  getDynamicList,
+  getDynamicListLoading,
+} from '../../store/dynamicList/dynamicListSelectors';
 
 import ReduxInfiniteScroll from '../vendor/ReduxInfiniteScroll';
 import ObjectCard from '../components/Sidebar/ObjectCard';
 import Loading from '../components/Icon/Loading';
 import WeightTag from '../components/WeightTag';
-import { followWobject, unfollowWobject } from '../../store/wObjectStore/wobjActions';
 import { changeCounterFollow } from '../../store/usersStore/usersActions';
-import { getAuthenticatedUserName, isGuestUser } from '../../store/authStore/authSelectors';
+import { isGuestUser } from '../../store/authStore/authSelectors';
 
 import './ObjectDynamicList.less';
 
-class ObjectDynamicList extends React.Component {
-  static propTypes = {
-    fetcher: PropTypes.func.isRequired,
-    authUser: PropTypes.shape(),
-    isOnlyHashtags: PropTypes.bool,
-    expertize: PropTypes.bool,
-    unfollowWobj: PropTypes.func,
-    followWobj: PropTypes.func,
-    changeCounterFollow: PropTypes.func,
-    isGuest: PropTypes.bool,
-    limit: PropTypes.number,
-    match: PropTypes.shape({
-      params: PropTypes.shape({
-        name: PropTypes.string,
-      }),
-    }).isRequired,
-  };
+const ObjectDynamicList = props => {
+  const { fetcher, isOnlyHashtags, match, loading } = props;
+  const { list, hasMore } = props.dynamicListInfo;
+  const { name, 0: type } = props.match.params;
 
-  static defaultProps = {
-    isOnlyHashtags: false,
-    expertize: false,
-    unfollowWobj: () => {},
-    followWobj: () => {},
-    changeCounterFollow: () => {},
-    isGuest: false,
-    authUser: '',
-    limit: 15,
-  };
-
-  state = {
-    loading: false,
-    hasMore: true,
-    wobjects: [],
-  };
-
-  handleLoadMore = () => {
-    const { fetcher, limit, authUser, isOnlyHashtags } = this.props;
-    const { wobjects } = this.state;
-
-    this.setState(
-      {
-        loading: true,
-      },
-      () => {
-        fetcher(wobjects.length, authUser, isOnlyHashtags).then(newWobjects => {
-          const wobjs = get(newWobjects, 'wobjects') || newWobjects;
-
-          this.setState(state => ({
-            loading: false,
-            hasMore: newWobjects.hasMore || newWobjects.length === limit,
-            wobjects: union(state.wobjects, wobjs),
-          }));
-        });
-      },
+  useEffect(() => {
+    props.getObjectsList(
+      props.fetcher,
+      props.limit,
+      0,
+      props.match.params[0],
+      props.isOnlyHashtags,
     );
+
+    return () => props.resetLists();
+  }, []);
+
+  const handleLoadMore = () => {
+    props.getObjectsMoreList(fetcher, props.limit, list?.length, match.params[0], isOnlyHashtags);
   };
 
-  unFollow = permlink => {
-    const matchWobjIndex = this.state.wobjects.findIndex(wobj => wobj.author_permlink === permlink);
-    const wobjectsArray = [...this.state.wobjects];
-
-    wobjectsArray.splice(matchWobjIndex, 1, {
-      ...wobjectsArray[matchWobjIndex],
-      pending: true,
-    });
-
-    this.setState({ wobjects: [...wobjectsArray] });
-    this.props.unfollowWobj(permlink).then(res => {
-      if ((res.value.ok && this.props.isGuest) || !res.message) {
-        wobjectsArray.splice(matchWobjIndex, 1, {
-          ...wobjectsArray[matchWobjIndex],
-          youFollows: false,
-          pending: false,
-        });
-      } else {
-        message.error(res.value.statusText);
-        wobjectsArray.splice(matchWobjIndex, 1, {
-          ...wobjectsArray[matchWobjIndex],
-          pending: false,
-        });
-      }
-      this.props.changeCounterFollow(this.props.match.params.name, 'object');
-      this.setState({ wobjects: [...wobjectsArray] });
-    });
+  const unFollow = permlink => {
+    props.unfollowWobj(permlink, name, type);
   };
 
-  follow = permlink => {
-    const matchWobjectIndex = this.state.wobjects.findIndex(
-      wobj => wobj.author_permlink === permlink,
-    );
-    const wobjectsArray = [...this.state.wobjects];
-
-    wobjectsArray.splice(matchWobjectIndex, 1, {
-      ...wobjectsArray[matchWobjectIndex],
-      pending: true,
-    });
-
-    this.setState({ wobjects: [...wobjectsArray] });
-    this.props.followWobj(permlink).then(res => {
-      if ((this.props.isGuest && res.value.ok) || !res.message) {
-        wobjectsArray.splice(matchWobjectIndex, 1, {
-          ...wobjectsArray[matchWobjectIndex],
-          youFollows: true,
-          pending: false,
-        });
-      } else {
-        message.error(res.value.statusText);
-        wobjectsArray.splice(matchWobjectIndex, 1, {
-          ...wobjectsArray[matchWobjectIndex],
-          pending: false,
-        });
-      }
-      this.props.changeCounterFollow(this.props.match.params.name, 'object', true);
-      this.setState({ wobjects: [...wobjectsArray] });
-    });
+  const follow = permlink => {
+    props.followWobj(permlink, name, type);
   };
 
-  render() {
-    const { loading, hasMore, wobjects } = this.state;
-    const empty = !hasMore && wobjects.length === 0;
-    const getWeight = wo => (this.props.expertize ? wo.user_weight : wo.weight);
+  const empty = !hasMore && list?.length === 0;
+  const getWeight = wo => (props.expertize ? wo.user_weight : wo.weight);
 
-    return (
-      <div className="ObjectDynamicList">
-        <ReduxInfiniteScroll
-          elementIsScrollable={false}
-          loadingMore={loading}
-          hasMore={hasMore}
-          loader={<Loading />}
-          loadMore={this.handleLoadMore}
-        >
-          {map(wobjects, wo => (
-            <ObjectCard
-              key={wo.author_permlink}
-              wobject={wo}
-              alt={<WeightTag weight={getWeight(wo)} />}
-              unfollow={this.unFollow}
-              follow={this.follow}
-            />
-          ))}
-        </ReduxInfiniteScroll>
-        {empty && (
-          <div className="ObjectDynamicList__empty">
-            <FormattedMessage id="list_empty" defaultMessage="Nothing is there" />
-          </div>
-        )}
-      </div>
-    );
-  }
-}
+  return (
+    <div className="ObjectDynamicList">
+      <ReduxInfiniteScroll
+        elementIsScrollable={false}
+        loadingMore={loading}
+        hasMore={hasMore}
+        loader={<Loading />}
+        loadMore={handleLoadMore}
+        threshold={500}
+      >
+        {map(list, wo => (
+          <ObjectCard
+            key={wo.author_permlink}
+            wobject={wo}
+            alt={<WeightTag weight={getWeight(wo)} />}
+            unfollow={unFollow}
+            follow={follow}
+          />
+        ))}
+      </ReduxInfiniteScroll>
+      {empty && !loading && (
+        <div className="ObjectDynamicList__empty">
+          <FormattedMessage id="list_empty" defaultMessage="Nothing is there" />
+        </div>
+      )}
+    </div>
+  );
+};
+
+ObjectDynamicList.propTypes = {
+  fetcher: PropTypes.func.isRequired,
+  isOnlyHashtags: PropTypes.bool,
+  expertize: PropTypes.bool,
+  loading: PropTypes.bool,
+  getObjectsList: PropTypes.func,
+  getObjectsMoreList: PropTypes.func,
+  resetLists: PropTypes.func,
+  unfollowWobj: PropTypes.func,
+  followWobj: PropTypes.func,
+  limit: PropTypes.number,
+  match: PropTypes.shape({
+    params: PropTypes.shape({
+      name: PropTypes.string,
+      0: PropTypes.string,
+    }),
+  }).isRequired,
+  dynamicListInfo: PropTypes.shape({
+    list: PropTypes.arrayOf(PropTypes.shape({})),
+    hasMore: PropTypes.bool,
+  }),
+};
+
+ObjectDynamicList.defaultProps = {
+  isOnlyHashtags: false,
+  expertize: false,
+  unfollowWobj: () => {},
+  followWobj: () => {},
+  limit: 15,
+};
 
 export default withRouter(
   connect(
-    state => ({
+    (state, ownProps) => ({
       isGuest: isGuestUser(state),
-      authUser: getAuthenticatedUserName(state),
+      dynamicListInfo: getDynamicList(state, ownProps.match.params[0]),
+      loading: getDynamicListLoading(state),
     }),
     {
-      followWobj: followWobject,
-      unfollowWobj: unfollowWobject,
+      followWobj: followObjectInList,
+      unfollowWobj: unfollowObjectInList,
       changeCounterFollow,
+      getObjectsList,
+      getObjectsMoreList,
+      resetLists,
     },
   )(ObjectDynamicList),
 );

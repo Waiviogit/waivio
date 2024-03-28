@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { FormattedMessage } from 'react-intl';
 import { get, isEmpty, truncate, uniq } from 'lodash';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
@@ -17,9 +18,9 @@ import DEFAULTS from '../../object/const/defaultValues';
 import { getRatingForSocial } from '../../components/Sidebar/Rate/rateHelper';
 import { isMobile } from '../../../common/helpers/apiHelpers';
 import { removeEmptyLines, shortenDescription } from '../../object/wObjectHelper';
-
-import './ShopObjectCard.less';
 import { getObject } from '../../../store/wObjectStore/wObjectSelectors';
+import './ShopObjectCard.less';
+import { getUsedLocale } from '../../../store/appStore/appSelectors';
 
 const ShopObjectCard = ({ wObject, isChecklist, isSocialProduct }) => {
   const username = useSelector(getAuthenticatedUserName);
@@ -82,13 +83,32 @@ const ShopObjectCard = ({ wObject, isChecklist, isSocialProduct }) => {
   else url = DEFAULTS.AVATAR;
   const rating = getRatingForSocial(wObject.rating);
   const withoutHeard = ['page'].includes(wObject?.object_type);
+  const locale = useSelector(getUsedLocale);
+  const isEnLocale = locale === 'en-US';
 
   return (
     <div className={shopObjectCardClassList}>
       {withRewards && (
-        <h3 className="ShopObjectCard__rewardTitle">
-          Share {proposition.requirements.minPhotos} photos & earn{' '}
-          <USDDisplay value={proposition.rewardInUSD} currencyDisplay={'symbol'} />
+        <h3
+          className={
+            isEnLocale ? 'ShopObjectCard__rewardTitle' : 'ShopObjectCard__rewardTitle--small'
+          }
+        >
+          <FormattedMessage
+            id={`share_photo${proposition?.requirements?.minPhotos === 1 ? '' : 's'}_and_earn`}
+            defaultMessage={`Share {minPhotos} photo${
+              proposition?.requirements?.minPhotos === 1 ? '' : 's'
+            } & earn`}
+            values={{ minPhotos: proposition?.requirements?.minPhotos }}
+          />{' '}
+          {isEnLocale ? (
+            <USDDisplay value={proposition.rewardInUSD} currencyDisplay={'symbol'} />
+          ) : (
+            <div>
+              {' '}
+              <USDDisplay value={proposition.rewardInUSD} currencyDisplay={'symbol'} />
+            </div>
+          )}
         </h3>
       )}
       <div className="ShopObjectCard__topInfoWrap">

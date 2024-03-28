@@ -1,3 +1,6 @@
+import UserInfo from '../../client/app/Sidebar/UserInfo/UserInfo';
+import PostsCommentsActivity from '../../client/user/PostsCommentsActivity/PostsCommentsActivity';
+import UserFollowers from '../../client/user/UserFollowers';
 import Views from '../components';
 import Post from '../../client/post/Post';
 import URL from '../constants';
@@ -111,12 +114,12 @@ const routes = (host, page) => ({
         {
           path: ['', '/(comments|activity)'],
           exact: true,
-          component: Views.PostsCommentsActivity,
+          component: PostsCommentsActivity,
         },
         {
           path: '/(followers|following|following-objects)',
           exact: true,
-          component: Views.UserFollowers,
+          component: UserFollowers,
         },
         {
           path: '/reblogs',
@@ -146,7 +149,7 @@ const routes = (host, page) => ({
         {
           path: '/about',
           exact: true,
-          component: Views.UserInfo,
+          component: UserInfo,
         },
       ],
     },

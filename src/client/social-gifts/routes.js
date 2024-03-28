@@ -7,6 +7,7 @@ import RedirectedSignIn from '../../client/components/Navigation/redirectedSignI
 import RewardsMainPage from '../../client/newRewards/RewardsMainPage';
 import createNestedRouts from '../../routes/helper';
 import UserExpertise from '../user/UserExpertise';
+import UserFollowers from '../user/UserFollowers';
 import SocialWrapper from './Wrapper';
 import Shop from '../Shop/Shop';
 import ShopSwitcher from './ShopSwitcher/ShopSwitcher';
@@ -214,7 +215,7 @@ const routes = () => ({
         {
           path: '/(followers|following|following-objects)',
           exact: true,
-          component: Views.UserFollowers,
+          component: UserFollowers,
         },
         {
           path: '/reblogs',

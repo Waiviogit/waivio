@@ -41,6 +41,12 @@ const ObjectFeed = ({ limit, handleCreatePost, userName, wobject }) => {
   const query = new URLSearchParams(history.location.search);
   const isNewsfeedCategoryType = query.get('category') === 'newsfeed';
   const isNewsfeedObjectPosts = match.params[0] === 'newsfeed' && parentName;
+  const loadingCondition =
+    wobject.object_type === 'newsfeed'
+      ? !isNil(newsPermlink) &&
+        ((loadingPropositions && content?.length < limit) ||
+          (isFetching && content?.length < limit))
+      : (loadingPropositions && content?.length < limit) || (isFetching && content?.length < limit);
   let newsPerml;
 
   const getFeedPosts = permlink => {
@@ -118,8 +124,7 @@ const ObjectFeed = ({ limit, handleCreatePost, userName, wobject }) => {
 
   return (
     <div className="object-feed">
-      {(loadingPropositions && content?.length < limit) ||
-      (isFetching && content?.length < limit) ? (
+      {loadingCondition ? (
         <Loading />
       ) : (
         <React.Fragment>
