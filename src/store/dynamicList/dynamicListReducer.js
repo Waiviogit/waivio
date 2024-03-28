@@ -26,6 +26,10 @@ const dynamicListReducer = (state = initialState, action) => {
     case UNFOLLOW_OBLECT_IN_LIST.SUCCESS:
     case FOLLOW_OBLECT_IN_LIST.START:
     case FOLLOW_OBLECT_IN_LIST.SUCCESS:
+    case UNFOLLOW_USER_IN_LIST.START:
+    case UNFOLLOW_USER_IN_LIST.SUCCESS:
+    case FOLLOW_USER_IN_LIST.START:
+    case FOLLOW_USER_IN_LIST.SUCCESS:
       return {
         ...state,
         [action.meta]: {
@@ -56,23 +60,11 @@ const dynamicListReducer = (state = initialState, action) => {
         loading: true,
       };
 
-    case UNFOLLOW_USER_IN_LIST.START:
-    case UNFOLLOW_USER_IN_LIST.SUCCESS:
-    case FOLLOW_USER_IN_LIST.START:
-    case FOLLOW_USER_IN_LIST.SUCCESS:
-      return {
-        ...state,
-        [action.meta]: {
-          ...state[action.meta],
-          list: [...action.users],
-        },
-      };
-
     case GET_USERS_LIST.SUCCESS:
       return {
         ...state,
         [action.meta]: {
-          list: action.payload.users,
+          list: [...action.payload.users],
           hasMore: action.payload.hasMore,
           sort: action.sorting,
         },

@@ -76,11 +76,11 @@ class UserDynamicList extends React.Component {
   };
 
   unFollow = name => {
-    this.props.unfollowUser(name);
+    this.props.unfollowUser(name, this.props.match.params.name, this.props.match.params[0]);
   };
 
   follow = name => {
-    this.props.followUser(name);
+    this.props.followUser(name, this.props.match.params.name, this.props.match.params[0]);
   };
 
   handleChangeSorting = sorting => {
