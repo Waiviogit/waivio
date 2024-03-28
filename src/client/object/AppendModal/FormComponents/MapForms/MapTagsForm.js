@@ -8,21 +8,21 @@ import ObjectCard from '../../../../components/Sidebar/ObjectCard';
 import SearchObjectsAutocomplete from '../../../../components/EditorObject/SearchObjectsAutocomplete';
 
 const MapTagsForm = props => (
-  <div className={'MapForms'}>
+  <div className={'MapTagsForm'}>
     {map(props.allowList, (items, rowIndex) => {
       let ruleIndex = 0;
       const itemsIdsToOmit = [props.currObjId];
 
       return (
         <React.Fragment key={`allowWrap${rowIndex}`}>
+          <div className="NewsFiltersRule-title AppendForm__appendTitles">
+            {props.intl.formatMessage({
+              id: 'object_field_mapObjectTags',
+              defaultMessage: 'Map tags',
+            })}
+          </div>
           <div className="NewsFiltersRule__line">
             <div className="NewsFiltersRule__card-wrap">
-              <div className="NewsFiltersRule-title AppendForm__appendTitles">
-                {props.intl.formatMessage({
-                  id: 'object_field_mapObjectTags',
-                  defaultMessage: 'Map tags',
-                })}
-              </div>
               {map(items, (item, index) => {
                 ruleIndex = index + 1;
                 itemsIdsToOmit.push(item.author_permlink);
@@ -47,23 +47,21 @@ const MapTagsForm = props => (
                 );
               })}
             </div>
-            {items.length < 5 && (
-              <div className="NewsFiltersRule__line-search">
-                <SearchObjectsAutocomplete
-                  objectType={'hashtag'}
-                  allowClear={false}
-                  itemsIdsToOmit={itemsIdsToOmit}
-                  rowIndex={rowIndex}
-                  ruleIndex={ruleIndex}
-                  placeholder={props.intl.formatMessage({
-                    id: 'select_a_tag',
-                    defaultMessage: 'Select a tag',
-                  })}
-                  handleSelect={props.handleAddObjectToRule}
-                />
-                <p>Narrow down map content by selecting tags.</p>
-              </div>
-            )}
+            <div className="NewsFiltersRule__line-search">
+              <SearchObjectsAutocomplete
+                objectType={'hashtag'}
+                allowClear={false}
+                itemsIdsToOmit={itemsIdsToOmit}
+                rowIndex={rowIndex}
+                ruleIndex={ruleIndex}
+                placeholder={props.intl.formatMessage({
+                  id: 'select_a_tag',
+                  defaultMessage: 'Select a tag',
+                })}
+                handleSelect={props.handleAddObjectToRule}
+              />
+              <p>Narrow down map content by selecting tags.</p>
+            </div>
           </div>
         </React.Fragment>
       );
