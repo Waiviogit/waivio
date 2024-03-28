@@ -21,6 +21,7 @@ import {
   SET_LOADING_NESTED_WOBJECT,
   BELL_WOBJECT_NOTIFICATION,
   GET_WOBJECT_EXPERTISE,
+  RESET_WOBJECT_EXPERTISE,
   GET_RELATED_WOBJECT,
   CLEAR_RELATED_OBJECTS,
   FOLLOW_UNFOLLOW_USER_WOBJECT_EXPERTISE,
@@ -480,6 +481,15 @@ export default function wobjectReducer(state = initialState, action) {
         objectExpertise: {
           users: [],
           isLoading: true,
+        },
+      };
+    }
+    case RESET_WOBJECT_EXPERTISE: {
+      return {
+        ...state,
+        objectExpertise: {
+          users: [],
+          isLoading: false,
         },
       };
     }
