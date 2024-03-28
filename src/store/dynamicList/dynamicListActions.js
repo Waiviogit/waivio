@@ -54,9 +54,9 @@ export const unfollowObjectInList = (permlink, username, type) => (dispatch, get
   const state = getState();
   const isGuest = isGuestUser(state);
 
-  const { wobjects } = getDynamicList(state, type);
-  const matchWobjIndex = wobjects.findIndex(wobj => wobj.author_permlink === permlink);
-  const wobjectsArray = [...wobjects];
+  const { list } = getDynamicList(state, type);
+  const matchWobjIndex = list.findIndex(wobj => wobj.author_permlink === permlink);
+  const wobjectsArray = [...list];
 
   wobjectsArray.splice(matchWobjIndex, 1, {
     ...wobjectsArray[matchWobjIndex],
@@ -98,10 +98,10 @@ export const FOLLOW_OBLECT_IN_LIST = createAsyncActionType('@dynamicList/FOLLOW_
 export const followObjectInList = (permlink, username, type) => (dispatch, getState) => {
   const state = getState();
   const isGuest = isGuestUser(state);
-  const { wobjects } = getDynamicList(state, type);
+  const { list } = getDynamicList(state, type);
 
-  const matchWobjIndex = wobjects.findIndex(wobj => wobj.author_permlink === permlink);
-  const wobjectsArray = [...wobjects];
+  const matchWobjIndex = list.findIndex(wobj => wobj.author_permlink === permlink);
+  const wobjectsArray = [...list];
 
   wobjectsArray.splice(matchWobjIndex, 1, {
     ...wobjectsArray[matchWobjIndex],
@@ -171,7 +171,7 @@ export const getUsersMoreList = (fetcher, limit, skip, type, usersList, sorting)
     type: GET_USERS_LIST_MORE.START,
   });
 
-  return fetcher(usersList, authName, sorting).then(res =>
+  return fetcher(usersList, authName, sorting, skip).then(res =>
     dispatch({
       type: GET_USERS_LIST_MORE.SUCCESS,
       payload: res,
@@ -187,9 +187,9 @@ export const unfollowUserInList = (permlink, username, type) => (dispatch, getSt
   const state = getState();
   const isGuest = isGuestUser(state);
 
-  const { users } = getDynamicList(state, type);
-  const matchWobjIndex = users.findIndex(wobj => wobj.author_permlink === permlink);
-  const usersArray = [...users];
+  const { list } = getDynamicList(state, type);
+  const matchWobjIndex = list.findIndex(wobj => wobj.name === permlink);
+  const usersArray = [...list];
 
   usersArray.splice(matchWobjIndex, 1, {
     ...usersArray[matchWobjIndex],
@@ -231,10 +231,9 @@ export const FOLLOW_USER_IN_LIST = createAsyncActionType('@dynamicList/FOLLOW_US
 export const followUserInList = (permlink, username, type) => (dispatch, getState) => {
   const state = getState();
   const isGuest = isGuestUser(state);
-  const { users } = getDynamicList(state, type);
-
-  const matchWobjIndex = users.findIndex(wobj => wobj.author_permlink === permlink);
-  const usersArray = [...users];
+  const { list } = getDynamicList(state, type);
+  const matchWobjIndex = list.findIndex(wobj => wobj.name === permlink);
+  const usersArray = [...list];
 
   usersArray.splice(matchWobjIndex, 1, {
     ...usersArray[matchWobjIndex],
