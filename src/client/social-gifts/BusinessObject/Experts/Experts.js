@@ -13,7 +13,6 @@ const Experts = ({ title, experts, name }) => {
   const [expertsArr, setExpertsArr] = useState([]);
   const slideWidth = 240;
   const slidesToShow = Math.floor(typeof window !== 'undefined' && window.innerWidth / slideWidth);
-  const expertsNames = !isEmpty(experts) ? experts?.map(e => e.name) : [];
 
   const carouselSettings = {
     dots: false,
@@ -35,9 +34,14 @@ const Experts = ({ title, experts, name }) => {
   };
 
   useEffect(() => {
-    getUsersAvatar(expertsNames).then(r => setExpertsArr(r));
-  }, [name]);
-  const sortedExperts = sortByExpertOrder(expertsArr, experts);
+    if (!isEmpty(experts)) {
+      const expertsNames = experts.map(e => e.name);
+
+      getUsersAvatar(expertsNames).then(r => {
+        setExpertsArr(sortByExpertOrder(r, experts));
+      });
+    }
+  }, [name, experts]);
 
   return (
     !isEmpty(experts) && (
@@ -45,7 +49,7 @@ const Experts = ({ title, experts, name }) => {
         <div className="SocialProduct__heading">{title}</div>
         <div className={`Slider__wrapper-${name}`}>
           <Carousel {...carouselSettings} beforeChange={onSlideChange}>
-            {sortedExperts?.map(expert => (
+            {expertsArr?.map(expert => (
               <ExpertCard key={expert.name} expert={expert} />
             ))}
           </Carousel>
