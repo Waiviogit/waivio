@@ -23,6 +23,7 @@ export const FOLLOW_WOBJECT_START = '@wobj/FOLLOW_WOBJECT_START';
 export const FOLLOW_WOBJECT_SUCCESS = '@wobj/FOLLOW_WOBJECT_SUCCESS';
 export const FOLLOW_WOBJECT_ERROR = '@wobj/FOLLOW_WOBJECT_ERROR';
 export const CLEAR_RELATED_OBJECTS = '@wobj/CLEAR_RELATED_OBJECTS';
+export const RESET_WOBJECT_EXPERTISE = '@wobj/RESET_WOBJECT_EXPERTISE';
 export const GET_WOBJECT_EXPERTISE = createAsyncActionType('@wobj/GET_WOBJECT_EXPERTISE');
 export const GET_RELATED_WOBJECT = createAsyncActionType('@wobj/GET_RELATED_WOBJECT');
 export const FOLLOW_UNFOLLOW_USER_WOBJECT_EXPERTISE = createAsyncActionType(
@@ -351,6 +352,10 @@ export const getWobjectExpertise = (newsFilter = {}, authorPermlink, isSocial = 
     },
   });
 };
+export const resetWobjectExpertise = () => dispatch =>
+  dispatch({
+    type: RESET_WOBJECT_EXPERTISE,
+  });
 
 export const followUserWObjectExpertise = userExpert => dispatch =>
   dispatch({

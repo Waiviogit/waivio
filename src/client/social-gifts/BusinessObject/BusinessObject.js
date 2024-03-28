@@ -56,6 +56,7 @@ import './BusinessObject.less';
 import AddressHoursDetails from './AddressHoursDetails/AddressHoursDetails';
 import Breadcrumbs from '../Breadcrumbs/Breadcrumbs';
 import Experts from './Experts/Experts';
+import { resetWobjectExpertise } from '../../../store/wObjectStore/wobjActions';
 
 const BusinessObject = ({
   userName,
@@ -79,6 +80,7 @@ const BusinessObject = ({
   experts,
   nearbyObjects,
   intl,
+  resetWobjExpertise,
 }) => {
   const [reward, setReward] = useState([]);
   const [references, setReferences] = useState([]);
@@ -176,6 +178,7 @@ const BusinessObject = ({
   }, [wobject.author_permlink]);
   useEffect(() => {
     resetOptClicked();
+    resetWobjExpertise();
   }, []);
 
   return (
@@ -397,14 +400,14 @@ const BusinessObject = ({
               references?.map(ref => (
                 <ObjectsSlider key={ref[0]} objects={ref[1]} title={`${ref[0]}s`} name={ref[0]} />
               ))}
-            {!isEmpty(experts) && (
+            {
               <Experts
                 key={'experts'}
                 experts={experts}
                 title={intl.formatMessage({ id: 'experts', defaultMessage: 'Experts' })}
                 name={'experts'}
               />
-            )}
+            }
             {!isEmpty(nearbyObjects?.objects) && (
               <ObjectsSlider
                 objects={nearbyObjects?.objects}
@@ -450,6 +453,7 @@ BusinessObject.propTypes = {
   resetOptClicked: PropTypes.func,
   isEditMode: PropTypes.bool,
   toggleViewEditMode: PropTypes.func,
+  resetWobjExpertise: PropTypes.func,
   brandObject: PropTypes.shape({}),
   nearbyObjects: PropTypes.shape(),
   manufacturerObject: PropTypes.shape({}),
@@ -481,6 +485,7 @@ const mapDispatchToProps = dispatch => ({
   getWobject: (obj, name) => dispatch(getObject(obj, name)),
   getWobjAlbums: obj => dispatch(getAlbums(obj)),
   resetWobjGallery: () => dispatch(resetGallery()),
+  resetWobjExpertise: () => dispatch(resetWobjectExpertise()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(injectIntl(BusinessObject)));

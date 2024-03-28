@@ -39,6 +39,7 @@ import {
   setCatalogBreadCrumbs,
   setNestedWobject,
   setEditMode,
+  resetWobjectExpertise,
 } from '../../../store/wObjectStore/wobjActions';
 import {
   addAlbumToStore,
@@ -122,6 +123,7 @@ const WobjectContainer = props => {
       props.setStoreActiveOption({});
       props.resetBreadCrumb();
       props.resetGallery();
+      props.resetWobjectExpertise();
       props.setEditMode(false);
     };
   }, [name, props.locale, props.authenticatedUserName]);
@@ -161,6 +163,7 @@ WobjectContainer.propTypes = {
   isSocial: PropTypes.bool,
   getObject: PropTypes.func.isRequired,
   resetBreadCrumb: PropTypes.func.isRequired,
+  resetWobjectExpertise: PropTypes.func.isRequired,
   weightValue: PropTypes.number.isRequired,
   resetGallery: PropTypes.func.isRequired,
   setEditMode: PropTypes.func.isRequired,
@@ -268,6 +271,7 @@ const mapDispatchToProps = {
   getRelatedWobjects,
   setStoreActiveOption,
   resetBreadCrumb,
+  resetWobjectExpertise,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(WobjectContainer));
