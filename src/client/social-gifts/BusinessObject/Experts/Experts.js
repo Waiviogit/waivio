@@ -3,16 +3,16 @@ import PropTypes from 'prop-types';
 import { isEmpty } from 'lodash';
 import { Carousel, Icon } from 'antd';
 import ExpertCard from './ExpertCard';
-import './Experts.less';
 import { isTabletOrMobile } from '../../SocialProduct/SocialProductHelper';
 import { getUsersAvatar } from '../../../../waivioApi/ApiClient';
+import { sortByExpertOrder } from '../../../../common/helpers/wObjectHelper';
+import './Experts.less';
 
 const Experts = ({ title, experts, name }) => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [expertsArr, setExpertsArr] = useState([]);
   const slideWidth = 240;
   const slidesToShow = Math.floor(typeof window !== 'undefined' && window.innerWidth / slideWidth);
-  const expertsNames = !isEmpty(experts) ? experts?.map(e => e.name) : [];
 
   const carouselSettings = {
     dots: false,
@@ -34,8 +34,17 @@ const Experts = ({ title, experts, name }) => {
   };
 
   useEffect(() => {
-    getUsersAvatar(expertsNames).then(r => setExpertsArr(r));
-  }, [name]);
+    setExpertsArr([]);
+    if (!isEmpty(experts)) {
+      const expertsNames = experts.map(e => e.name);
+
+      getUsersAvatar(expertsNames).then(r => {
+        setExpertsArr(sortByExpertOrder(r, experts));
+      });
+    }
+
+    return () => setExpertsArr([]);
+  }, [name, experts]);
 
   return (
     !isEmpty(experts) && (
