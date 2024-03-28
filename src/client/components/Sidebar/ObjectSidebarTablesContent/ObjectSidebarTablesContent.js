@@ -57,7 +57,7 @@ const ObjectsSidebarTablesContent = ({
 };
 
 ObjectsSidebarTablesContent.propTypes = {
-  isCenterContent: PropTypes.bool.isRequired,
+  isCenterContent: PropTypes.bool,
   linkTo: PropTypes.string.isRequired,
   title: PropTypes.oneOfType([PropTypes.string, PropTypes.element, PropTypes.object]),
   objects: PropTypes.arrayOf(PropTypes.shape()),

@@ -60,6 +60,7 @@ import {
   pinPostFields,
   removePostFields,
   menuItemFields,
+  mapObjectTypeFields,
 } from '../../../common/constants/listOfFields';
 import OBJECT_TYPE from '../const/objectTypes';
 import { getSuitableLanguage } from '../../../store/reducers';
@@ -137,8 +138,13 @@ import AffiliateGeoAreaForm from './FormComponents/AffiliateGeoAreaForm';
 import AffiliateCodeForm from './FormComponents/AffiliateCodeForm';
 import { allContinents, allCountries } from './AppendModalData/affiliateData';
 import { getAuthenticatedUser } from '../../../store/authStore/authSelectors';
+import MapObjectsListForm from './FormComponents/MapForms/MapObjectsListForm';
+import MapDesktopViewForm from './FormComponents/MapForms/MapDesktopViewForm';
+import MapObjectTypesForm from './FormComponents/MapForms/MapObjectTypesForm';
 
 import './AppendForm.less';
+import MapTagsForm from './FormComponents/MapForms/MapTagsForm';
+import MapAreasForm from './FormComponents/MapForms/MapAreasForm';
 
 @connect(
   state => ({
@@ -256,6 +262,7 @@ class AppendForm extends Component {
     itemsInSortingList: null,
     newsFilterTitle: null,
     menuItemButtonType: 'standard',
+    map: {},
   };
 
   componentDidMount = () => {
@@ -438,6 +445,12 @@ class AppendForm extends Component {
       case objectFields.price:
       case objectFields.categoryItem:
       case objectFields.parent:
+      case mapObjectTypeFields.mapObjectsList:
+      case mapObjectTypeFields.mapDesktopView:
+      case mapObjectTypeFields.mapMobileView:
+      case mapObjectTypeFields.mapObjectTypes:
+      case mapObjectTypeFields.mapObjectTags:
+      case mapObjectTypeFields.mapRectangles:
       case objectFields.publisher:
       case objectFields.related:
       case objectFields.similar:
@@ -547,7 +560,15 @@ class AppendForm extends Component {
           return `@${author} added ${currentField} (${langReadable}): ${optionsFields.category}: ${
             formValues[optionsFields.category]
           }, ${optionsFields.value}: ${formValues[optionsFields.value]}${position}${image}`;
-
+        case mapObjectTypeFields.mapObjectTypes:
+          return `@${author} added ${currentField} (${langReadable}): ${this.state.typeList
+            .flat()
+            .join(', ')}`;
+        case mapObjectTypeFields.mapObjectTags:
+          return `@${author} added ${currentField} (${langReadable}): ${this.state.allowList
+            .map(o => o.map(item => item.author_permlink))
+            .flat(2)
+            .join(', ')}`;
         case objectFields.shopFilter: {
           const { typeList, tags, authoritiesList, departmentsArray } = this.state;
           const typeInfo = !isEmpty(typeList) ? `Type: ${typeList.flat()}` : '';
@@ -567,6 +588,25 @@ class AppendForm extends Component {
 
           return `@${author} added ${currentField} (${langReadable}): ${typeInfo}${departmentsInfo}${tagsInfo}${authoritiesInfo}`;
         }
+        case mapObjectTypeFields.mapObjectsList:
+          return `@${author} added ${currentField} (${langReadable}):\n ${this.state.selectedObject.author_permlink}`;
+        case mapObjectTypeFields.mapDesktopView:
+          const mapDesktopViewText = `\n top point: ${this.state.map.desktopMap.topPoint}, \n bottom point: ${this.state.map.desktopMap.bottomPoint}, \n center: ${this.state.map.desktopMap.center}, \n zoom: ${this.state.map.desktopMap.zoom}`;
+
+          return `@${author} added ${currentField} (${langReadable}): ${mapDesktopViewText}`;
+        case mapObjectTypeFields.mapMobileView:
+          const mapViewText = `\n top point: ${this.state.map.mobileMap.topPoint}, \n bottom point: ${this.state.map.mobileMap.bottomPoint}, \n center: ${this.state.map.mobileMap.center}, \n zoom: ${this.state.map.mobileMap.zoom}`;
+
+          return `@${author} added ${currentField} (${langReadable}): ${mapViewText}`;
+        case mapObjectTypeFields.mapRectangles:
+          const mapRectanglesInfo = this.state.map.mapCoordinates.map(
+            rectangle =>
+              `\n top point: ${rectangle.topPoint},\n bottom point: ${rectangle.bottomPoint}`,
+          );
+
+          return `@${author} added ${currentField} (${langReadable}): ${mapRectanglesInfo.join(
+            '; ',
+          )}`;
         case objectFields.related:
         case objectFields.similar:
         case objectFields.addOn:
@@ -823,6 +863,66 @@ class AppendForm extends Component {
         fieldsObject = {
           ...fieldsObject,
           title: this.getNewsFilterTitle(this.state.newsFilterTitle)?.trim(),
+        };
+      }
+      if (currentField === mapObjectTypeFields.mapObjectsList) {
+        fieldsObject = {
+          ...fieldsObject,
+          body: this.state.selectedObject.author_permlink,
+        };
+      }
+      if (currentField === mapObjectTypeFields.mapObjectTypes) {
+        const mapObjectTypesBody = JSON.stringify(this.state.typeList);
+
+        fieldsObject = {
+          ...fieldsObject,
+          body: mapObjectTypesBody,
+        };
+      }
+      if (currentField === mapObjectTypeFields.mapObjectTags) {
+        const mapObjectTagsBody = JSON.stringify(
+          this.state.allowList.map(o => o.map(item => item.author_permlink)).flat(),
+        );
+
+        fieldsObject = {
+          ...fieldsObject,
+          body: mapObjectTagsBody,
+        };
+      }
+      if (currentField === mapObjectTypeFields.mapRectangles) {
+        const mapAreasBody = JSON.stringify(this.state.map.mapCoordinates);
+
+        fieldsObject = {
+          ...fieldsObject,
+          body: mapAreasBody,
+        };
+      }
+      if (currentField === mapObjectTypeFields.mapDesktopView) {
+        const { topPoint, bottomPoint, center, zoom } = this.state.map.desktopMap;
+        const mapDesktopViewBody = JSON.stringify({
+          topPoint,
+          bottomPoint,
+          center,
+          zoom,
+        });
+
+        fieldsObject = {
+          ...fieldsObject,
+          body: mapDesktopViewBody,
+        };
+      }
+      if (currentField === mapObjectTypeFields.mapMobileView) {
+        const { topPoint, bottomPoint, center, zoom } = this.state.map.mobileMap;
+        const mapMobileViewBody = JSON.stringify({
+          topPoint,
+          bottomPoint,
+          center,
+          zoom,
+        });
+
+        fieldsObject = {
+          ...fieldsObject,
+          body: mapMobileViewBody,
         };
       }
       if (currentField === objectFields.avatar) {
@@ -3639,6 +3739,41 @@ class AppendForm extends Component {
             handleRemoveObjectFromIgnoreList={this.handleRemoveObjectFromIgnoreList}
           />
         );
+      case mapObjectTypeFields.mapObjectsList:
+        return (
+          <MapObjectsListForm
+            onObjectCardDelete={this.onObjectCardDelete}
+            selectedObject={this.state.selectedObject}
+            handleSelectObject={this.handleSelectObject}
+            getFieldRules={this.getFieldRules}
+            getFieldDecorator={getFieldDecorator}
+          />
+        );
+      case mapObjectTypeFields.mapDesktopView:
+        return <MapDesktopViewForm setMap={mapParams => this.setState({ map: mapParams })} />;
+      case mapObjectTypeFields.mapMobileView:
+        return (
+          <MapDesktopViewForm mobileMap setMap={mapParams => this.setState({ map: mapParams })} />
+        );
+      case mapObjectTypeFields.mapObjectTypes:
+        return (
+          <MapObjectTypesForm
+            handleAddTypeTypeList={this.handleAddTypeToIgnoreTypeList}
+            handleRemoveObjectFromTypeList={this.handleRemoveObjectFromIgnoreTypeList}
+            typeList={this.state.typeList}
+          />
+        );
+      case mapObjectTypeFields.mapObjectTags:
+        return (
+          <MapTagsForm
+            allowList={this.state.allowList}
+            currObjId={get(this.props.wObject, 'author_permlink', '')}
+            deleteRuleItem={this.deleteRuleItem}
+            handleAddObjectToRule={this.handleAddObjectToRule}
+          />
+        );
+      case mapObjectTypeFields.mapRectangles:
+        return <MapAreasForm setMapCoordinates={mapParams => this.setState({ map: mapParams })} />;
       case objectFields.newsFeed:
         return (
           <ExtendedNewsFilterForm
@@ -3916,6 +4051,16 @@ class AppendForm extends Component {
         );
       case objectFields.authors:
         return isEmpty(getFieldValue(authorsFields.name)) && !this.state.selectedObject;
+      case mapObjectTypeFields.mapObjectsList:
+        return isEmpty(this.state.selectedObject);
+      case mapObjectTypeFields.mapDesktopView:
+      case mapObjectTypeFields.mapRectangles:
+      case mapObjectTypeFields.mapMobileView:
+        return isEmpty(this.state.map);
+      case mapObjectTypeFields.mapObjectTypes:
+        return isEmpty(this.state.typeList);
+      case mapObjectTypeFields.mapObjectTags:
+        return isEmpty(this.state.allowList);
       case objectFields.productWeight:
         return (
           isEmpty(getFieldValue(weightFields.weight)) ||
