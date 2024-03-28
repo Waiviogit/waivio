@@ -34,6 +34,7 @@ const Experts = ({ title, experts, name }) => {
   };
 
   useEffect(() => {
+    setExpertsArr([]);
     if (!isEmpty(experts)) {
       const expertsNames = experts.map(e => e.name);
 
@@ -41,6 +42,8 @@ const Experts = ({ title, experts, name }) => {
         setExpertsArr(sortByExpertOrder(r, experts));
       });
     }
+
+    return () => setExpertsArr([]);
   }, [name, experts]);
 
   return (
