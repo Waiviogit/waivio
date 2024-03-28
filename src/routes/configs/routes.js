@@ -1,5 +1,6 @@
 import PostsCommentsActivity from '../../client/user/PostsCommentsActivity/PostsCommentsActivity';
 import UserExpertise from '../../client/user/UserExpertise';
+import UserFollowers from '../../client/user/UserFollowers';
 import Views from '../components';
 import Post from '../../client/post/Post';
 import Wrapper from '../../client/Wrapper';
@@ -359,7 +360,7 @@ const routes = {
         {
           path: '/(followers|following|following-objects)',
           exact: true,
-          component: Views.UserFollowers,
+          component: UserFollowers,
         },
         {
           path: '/(userShop)/:department?',

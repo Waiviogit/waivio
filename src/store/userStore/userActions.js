@@ -617,3 +617,13 @@ export const bellNotifications = (follower, following) => (
       });
     });
 };
+
+export const GET_EXPERTISE_COUNTERS = createAsyncActionType('@user/GET_EXPERTISE_COUNTERS');
+
+export const getUrerExpertiseCounters = username => dispatch =>
+  dispatch({
+    type: GET_EXPERTISE_COUNTERS.ACTION,
+    payload: {
+      promise: ApiClient.getExpertiseCounters(username),
+    },
+  });

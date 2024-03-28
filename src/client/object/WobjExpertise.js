@@ -29,12 +29,12 @@ export default class WobjExpertise extends React.Component {
       const data = await getWobjectsExpertise(
         user,
         match.params.name,
-        skip.length,
+        skip?.length || 0,
         WobjExpertise.limit,
         this.state.sort,
       );
 
-      resolve({ users: data.users, hasMore: data.users.length === WobjExpertise.limit });
+      return resolve({ users: data.users, hasMore: data.users.length === WobjExpertise.limit });
     });
   };
 

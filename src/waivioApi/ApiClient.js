@@ -4068,6 +4068,20 @@ export const getUserFavoriteObjects = (authUserName, user, objectType, skip, lim
     .then(r => r)
     .catch(error => error);
 };
+
+export const getUsersAvatar = names => {
+  return fetch(`${config.apiPrefix}${config.users}${config.avatar}`, {
+    headers,
+    method: 'POST',
+    body: JSON.stringify({
+      names,
+    }),
+  })
+    .then(res => res.json())
+    .then(r => r)
+    .catch(error => error);
+};
+
 export const getGuestUserMana = guestName =>
   fetch(`${config.apiPrefix}${config.user}/${guestName}${config.guestMana}`, {
     headers,

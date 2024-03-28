@@ -4,170 +4,83 @@ import PropTypes from 'prop-types';
 import { message } from 'antd';
 import { FormattedMessage } from 'react-intl';
 import { withRouter } from 'react-router';
+import {
+  followUserInList,
+  unfollowUserInList,
+  getUsersList,
+  getUsersMoreList,
+  resetLists,
+} from '../../store/dynamicList/dynamicListActions';
+import {
+  getDynamicList,
+  getDynamicListLoading,
+} from '../../store/dynamicList/dynamicListSelectors';
 import ReduxInfiniteScroll from '../vendor/ReduxInfiniteScroll';
 import SortSelector from '../components/SortSelector/SortSelector';
 import UserCard from '../components/UserCard';
 import Loading from '../components/Icon/Loading';
 import WeightTag from '../components/WeightTag';
-import { changeCounterFollow, followUser, unfollowUser } from '../../store/usersStore/usersActions';
+import { changeCounterFollow } from '../../store/usersStore/usersActions';
 import { SORT_OPTIONS } from '../../common/constants/waivioFiltres';
 import { getAuthenticatedUserName, isGuestUser } from '../../store/authStore/authSelectors';
 
 import './UserDynamicList.less';
 
 class UserDynamicList extends React.Component {
-  static propTypes = {
-    fetcher: PropTypes.func.isRequired,
-    showAuthorizedUser: PropTypes.bool,
-    hideSort: PropTypes.bool,
-    userName: PropTypes.string,
-    searchLine: PropTypes.string,
-    unfollowUser: PropTypes.func.isRequired,
-    followUser: PropTypes.func.isRequired,
-    authUser: PropTypes.string,
-    isGuest: PropTypes.bool.isRequired,
-    changeCounterFollow: PropTypes.func.isRequired,
-    sort: PropTypes.string,
-    handleChange: PropTypes.func.isRequired,
-    match: PropTypes.shape({
-      params: PropTypes.shape({
-        name: PropTypes.string,
-      }),
-    }).isRequired,
+  state = {
+    sort: SORT_OPTIONS.RECENCY,
   };
-  static defaultProps = {
-    authUser: '',
-    searchLine: '',
-    showAuthorizedUser: false,
-    hideSort: false,
-    userName: '',
-    sort: 'recency',
-  };
-  constructor(props) {
-    super(props);
-    this.state = {
-      loading: false,
-      hasMore: true,
-      users: [],
-    };
-
-    this.handleLoadMore = this.handleLoadMore.bind(this);
+  componentDidMount() {
+    this.getList([]);
   }
 
   componentDidUpdate(prevProps) {
-    const { fetcher, authUser, sort, searchLine } = this.props;
-    const { users } = this.state;
+    const { authUser, searchLine } = this.props;
+    const { list } = this.props.dynamicListInfo;
 
     if (!prevProps.authUser && authUser) {
-      fetcher(users, authUser).then(newUsers =>
-        this.setState({
-          loading: false,
-          hasMore: newUsers.hasMore,
-          users: [...newUsers.users],
-        }),
-      );
+      this.getList(list);
     }
     if (prevProps.searchLine !== searchLine) {
-      fetcher(searchLine, authUser, undefined, 0).then(newUsers => {
-        this.setState({
-          users: [...newUsers.users],
-          loading: false,
-          hasMore: newUsers.hasMore,
-        });
-      });
-    }
-    if (!prevProps.sort && sort) {
-      fetcher(users, authUser, sort).then(newUsers =>
-        this.setState({
-          loading: false,
-          users: [...newUsers.users],
-        }),
-      );
+      this.getList(searchLine, undefined);
     }
   }
 
-  handleLoadMore() {
-    const { fetcher, authUser } = this.props;
-    const { users } = this.state;
+  componentWillUnmount() {
+    this.props.resetLists();
+  }
 
-    this.setState(
-      {
-        loading: true,
-      },
-      () => {
-        fetcher(users, authUser, this.props.sort || undefined, users.length)
-          .then(newUsers =>
-            this.setState(state => ({
-              loading: false,
-              hasMore: newUsers.hasMore,
-              users: [...state.users, ...newUsers.users],
-            })),
-          )
-          .catch(err => {
-            message.error(err.message);
-          });
-      },
+  getList = (usersList, sorting, skip) =>
+    this.props.getUsersList(
+      this.props.fetcher,
+      30,
+      skip,
+      this.props.match.params[0],
+      usersList,
+      sorting || this.state.sort,
     );
-  }
+
+  getListMore = (usersList, sorting, skip) =>
+    this.props.getUsersMoreList(
+      this.props.fetcher,
+      30,
+      skip,
+      this.props.match.params[0],
+      usersList,
+      this.state.sort,
+    );
+  handleLoadMore = () => {
+    const { list } = this.props.dynamicListInfo;
+
+    this.getListMore(list, this.props.sort || undefined, list?.length);
+  };
 
   unFollow = name => {
-    const matchUserIndex = this.state.users.findIndex(user => user.name === name);
-    const usersArray = [...this.state.users];
-
-    usersArray.splice(matchUserIndex, 1, {
-      ...usersArray[matchUserIndex],
-      pending: true,
-    });
-
-    this.setState({ users: [...usersArray] });
-    this.props.unfollowUser(name).then(res => {
-      if ((res.value.ok && this.props.isGuest) || !res.message) {
-        usersArray.splice(matchUserIndex, 1, {
-          ...usersArray[matchUserIndex],
-          youFollows: false,
-          pending: false,
-        });
-      } else {
-        message.error(res.value.statusText);
-        usersArray.splice(matchUserIndex, 1, {
-          ...usersArray[matchUserIndex],
-          pending: false,
-        });
-      }
-
-      this.props.changeCounterFollow(this.props.match.params.name, 'user');
-      this.setState({ users: [...usersArray] });
-    });
+    this.props.unfollowUser(name);
   };
 
   follow = name => {
-    const matchUserIndex = this.state.users.findIndex(user => user.name === name);
-    const usersArray = [...this.state.users];
-
-    usersArray.splice(matchUserIndex, 1, {
-      ...usersArray[matchUserIndex],
-      pending: true,
-    });
-
-    this.setState({ users: [...usersArray] });
-    this.props.followUser(name).then(res => {
-      if ((this.props.isGuest && res.value.ok) || !res.message) {
-        usersArray.splice(matchUserIndex, 1, {
-          ...usersArray[matchUserIndex],
-          youFollows: true,
-          pending: false,
-        });
-      } else {
-        message.error(res.value.statusText);
-        usersArray.splice(matchUserIndex, 1, {
-          ...usersArray[matchUserIndex],
-          pending: false,
-        });
-      }
-
-      this.props.changeCounterFollow(this.props.match.params.name, 'user', true);
-      this.setState({ users: [...usersArray] });
-    });
+    this.props.followUser(name);
   };
 
   handleChangeSorting = sorting => {
@@ -184,32 +97,22 @@ class UserDynamicList extends React.Component {
   };
 
   handleSorting(sorting) {
-    const { fetcher, authUser } = this.props;
-
     this.setState(
       {
-        loading: true,
         sort: sorting,
       },
       () => {
-        fetcher([], authUser)
-          .then(newUsers =>
-            this.setState({
-              loading: false,
-              hasMore: newUsers.hasMore,
-              users: [...newUsers.users],
-            }),
-          )
-          .catch(err => {
-            message.error(err.message);
-          });
+        this.getList([], sorting, 0).catch(err => {
+          message.error(err.message);
+        });
       },
     );
   }
 
   render() {
-    const { loading, hasMore, users } = this.state;
-    const empty = !hasMore && users.length === 0;
+    const { loading } = this.props;
+    const { hasMore, list } = this.props.dynamicListInfo;
+    const empty = !hasMore && list?.length === 0;
     const { sort, hideSort } = this.props;
 
     return (
@@ -239,12 +142,13 @@ class UserDynamicList extends React.Component {
             hasMore={hasMore}
             loader={<Loading />}
             loadMore={this.handleLoadMore}
+            threshold={500}
           >
-            {users?.map(user => {
+            {list?.map(user => {
               if (!this.props.showAuthorizedUser || user.name !== this.props.userName) {
                 return (
                   <UserCard
-                    key={`${user.name}-${users[user]}`}
+                    key={`${user.name}-${user._id}`}
                     user={user}
                     unfollow={this.unFollow}
                     follow={this.follow}
@@ -256,7 +160,7 @@ class UserDynamicList extends React.Component {
               return null;
             })}
           </ReduxInfiniteScroll>
-          {empty && (
+          {empty && !loading && (
             <div className="UserDynamicList__empty">
               <FormattedMessage id="empty_follow_list" defaultMessage="This list is empty" />
             </div>
@@ -267,16 +171,55 @@ class UserDynamicList extends React.Component {
   }
 }
 
+UserDynamicList.propTypes = {
+  fetcher: PropTypes.func.isRequired,
+  showAuthorizedUser: PropTypes.bool,
+  hideSort: PropTypes.bool,
+  loading: PropTypes.bool,
+  userName: PropTypes.string,
+  searchLine: PropTypes.string,
+  unfollowUser: PropTypes.func.isRequired,
+  followUser: PropTypes.func.isRequired,
+  getUsersList: PropTypes.func.isRequired,
+  getUsersMoreList: PropTypes.func.isRequired,
+  resetLists: PropTypes.func.isRequired,
+  authUser: PropTypes.string,
+  sort: PropTypes.string,
+  handleChange: PropTypes.func,
+  match: PropTypes.shape({
+    params: PropTypes.shape({
+      name: PropTypes.string,
+    }),
+  }).isRequired,
+  dynamicListInfo: PropTypes.shape({
+    list: PropTypes.arrayOf(PropTypes.shape({})),
+    hasMore: PropTypes.bool,
+  }),
+};
+UserDynamicList.defaultProps = {
+  authUser: '',
+  searchLine: '',
+  showAuthorizedUser: false,
+  hideSort: false,
+  userName: '',
+  sort: 'recency',
+};
+
 export default withRouter(
   connect(
-    state => ({
+    (state, ownProps) => ({
       isGuest: isGuestUser(state),
       authUser: getAuthenticatedUserName(state),
+      dynamicListInfo: getDynamicList(state, ownProps.match.params[0]),
+      loading: getDynamicListLoading(state),
     }),
     {
-      unfollowUser,
-      followUser,
+      unfollowUser: unfollowUserInList,
+      followUser: followUserInList,
       changeCounterFollow,
+      getUsersList,
+      getUsersMoreList,
+      resetLists,
     },
   )(UserDynamicList),
 );
