@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useRouteMatch } from 'react-router';
+import { getUserShopList } from '../../../store/shopStore/shopActions';
 import { getDepartmentsFeed } from '../../../waivioApi/ApiClient';
 import ListSwitcher from '../ListSwitch/ListSwitcher';
 
@@ -21,5 +22,8 @@ const UserDepartmentsWobjList = ({ isSocial }) => {
 UserDepartmentsWobjList.propTypes = {
   isSocial: PropTypes.bool,
 };
+
+UserDepartmentsWobjList.fetchData = ({ store, match }) =>
+  store.dispatch(getUserShopList(match.params.name, match.params.name, {tagCategory: []}, [], match.params.department, 0, []));
 
 export default UserDepartmentsWobjList;

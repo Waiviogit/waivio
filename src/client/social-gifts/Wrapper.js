@@ -196,7 +196,7 @@ const SocialWrapper = props => {
       props.getTokenRates('WAIV');
       props.getCryptoPriceHistory();
       props.getSwapEnginRates();
-      if (!props.username) props.setLocale(locale || res.language);
+      if (!props.username && locale) props.setLocale(locale || res.language);
 
       const mainColor = res.configuration.colors?.mapMarkerBody || initialColors.marker;
       const textColor = res.configuration.colors?.mapMarkerText || initialColors.text;
