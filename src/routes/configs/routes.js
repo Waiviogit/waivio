@@ -468,6 +468,11 @@ const routes = {
           exact: true,
           component: Views.ObjectOfTypePage,
         },
+        {
+          path: '/map',
+          exact: true,
+          component: Views.ObjectOfTypeMap,
+        },
         { path: '/webpage', exact: true, component: Views.ObjectOfTypeWebpage },
         {
           path: '/blog/@:name',

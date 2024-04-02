@@ -11,7 +11,7 @@ import classNames from 'classnames';
 import { DEFAULT_RADIUS, DEFAULT_ZOOM } from '../../../common/constants/map';
 import { IS_RESERVED } from '../../../common/constants/rewards';
 import Loading from '../Icon/Loading';
-import { getRadius, getParsedMap, getDistanceBetweenTwoPoints, getZoom } from './mapHelper';
+import { getRadius, getParsedMap, getDistanceBetweenTwoPoints, getZoom } from './mapHelpers';
 import { getSuitableLanguage } from '../../../store/reducers';
 import { setMapFullscreenMode, resetUpdatedFlag } from '../../../store/mapStore/mapActions';
 import mapProvider from '../../../common/helpers/mapProvider';

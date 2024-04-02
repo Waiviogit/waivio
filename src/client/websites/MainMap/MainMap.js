@@ -14,7 +14,7 @@ import {
   setShowSearchResult,
 } from '../../../store/searchStore/searchActions';
 import mapProvider from '../../../common/helpers/mapProvider';
-import { getParsedMap } from '../../components/Maps/mapHelper';
+import { getParsedMap } from '../../components/Maps/mapHelpers';
 import CustomMarker from '../../components/Maps/CustomMarker';
 import { getObjectName } from '../../../common/helpers/wObjectHelper';
 import { handleAddMapCoordinates } from '../../rewards/rewardsHelper';

@@ -10,7 +10,7 @@ import PropTypes from 'prop-types';
 import mapProvider from '../../../../../common/helpers/mapProvider';
 import { getConfiguration } from '../../../../../store/websiteStore/websiteSelectors';
 import { getObjectsMap } from '../../../../../store/mapStore/mapSelectors';
-import { getParsedMap } from '../../../../components/Maps/mapHelper';
+import { getCurrentScreenSize, getParsedMap } from '../../../../components/Maps/mapHelpers';
 import CustomMarker from '../../../../components/Maps/CustomMarker';
 import MapControllers from '../../../../widgets/MapControllers/MapControllers';
 import { getCoordinates } from '../../../../../store/userStore/userActions';
@@ -96,29 +96,9 @@ const MapDesktopViewForm = props => {
   const onBoundsChanged = state =>
     setSettingMap({
       ...state,
-      topPoint: state.bounds.ne,
-      bottomPoint: state.bounds.sw,
+      topPoint: [state.bounds.ne[1], state.bounds.ne[0]],
+      bottomPoint: [state.bounds.sw[1], state.bounds.sw[0]],
     });
-
-  // eslint-disable-next-line consistent-return
-  const getCurrentScreenSize = () => {
-    if (typeof window !== 'undefined') {
-      const screenWidth = window.screen.width;
-      const screenHeight = window.screen.height;
-
-      if (isDesktopModalShow) return 'calc(100vh - 110px)';
-
-      if (screenWidth === 375 && screenHeight === 812) {
-        return 665;
-      } else if (screenWidth === 414 && screenHeight === 736) {
-        return 590;
-      } else if (screenWidth === 375 && screenHeight === 667) {
-        return 520;
-      }
-
-      return 600;
-    }
-  };
 
   useEffect(() => {
     props.getCurrentUserCoordinates();
@@ -211,7 +191,7 @@ const MapDesktopViewForm = props => {
             <Map
               center={get(settingMap, 'center') || get(mapState, [showMap, 'center'], [+lat, +lon])}
               zoom={get(settingMap, 'zoom', 0) || get(mapState, [showMap, 'zoom'], 8)}
-              height={getCurrentScreenSize()}
+              height={getCurrentScreenSize(isDesktopModalShow)}
               provider={mapProvider}
               onBoundsChanged={state => onBoundsChanged(state, showMap)}
             >

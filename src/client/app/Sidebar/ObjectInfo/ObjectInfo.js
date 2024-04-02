@@ -31,7 +31,7 @@ import {
 } from '../../../../common/constants/listOfFields';
 import OBJECT_TYPE from '../../../object/const/objectTypes';
 import Proposition from '../../../components/Proposition/Proposition';
-import { isCoordinatesValid } from '../../../components/Maps/mapHelper';
+import { isCoordinatesValid } from '../../../components/Maps/mapHelpers';
 import PicturesCarousel from '../../../object/PicturesCarousel';
 import DescriptionInfo from '../../../object/Description/DescriptionInfo';
 import RateInfo from '../../../components/Sidebar/Rate/RateInfo';
@@ -754,9 +754,12 @@ class ObjectInfo extends React.Component {
           {this.listItem(mapObjectTypeFields.mapMobileView, null)}
           {this.listItem(
             mapObjectTypeFields.mapObjectTypes,
-            <MapObjectTypes types={mapObjectTypes} />,
+            !isEmpty(mapObjectTypes) && <MapObjectTypes types={mapObjectTypes} />,
           )}
-          {this.listItem(mapObjectTypeFields.mapObjectTags, <MapObjectTags tags={mapObjectTags} />)}
+          {this.listItem(
+            mapObjectTypeFields.mapObjectTags,
+            !isEmpty(mapObjectTags) && <MapObjectTags tags={mapObjectTags} />,
+          )}
         </React.Fragment>
       );
     };

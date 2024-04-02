@@ -19,6 +19,7 @@ const TAB_NAME = {
   LIST: 'list',
   PAGE: 'page',
   WIDGET: 'widget',
+  MAP: 'map',
   WEBPAGE: 'webpage',
   NEWSFEED: 'newsfeed',
   SHOP: 'shop',
@@ -33,6 +34,7 @@ const ObjectMenu = props => {
   const isList = hasType(props.wobject, OBJECT_TYPE.LIST);
   const isPage = hasType(props.wobject, OBJECT_TYPE.PAGE);
   const isWidget = hasType(props.wobject, OBJECT_TYPE.WIDGET);
+  const isMap = hasType(props.wobject, OBJECT_TYPE.MAP);
   const isWebpage = hasType(props.wobject, OBJECT_TYPE.WEBPAGE);
   const isNewsfeed = hasType(props.wobject, OBJECT_TYPE.NEWSFEED);
   const isShop = hasType(props.wobject, OBJECT_TYPE.SHOP);
@@ -73,6 +75,13 @@ const ObjectMenu = props => {
             <li className={getItemClasses(TAB_NAME.WIDGET)} data-key={TAB_NAME.WIDGET}>
               <Link to={createLink(TAB_NAME.WIDGET)}>
                 <FormattedMessage id="Widget" defaultMessage="Widget" />
+              </Link>
+            </li>
+          )}{' '}
+          {isMap && (
+            <li className={getItemClasses(TAB_NAME.MAP)} data-key={TAB_NAME.MAP}>
+              <Link to={createLink(TAB_NAME.MAP)}>
+                <FormattedMessage id="map" defaultMessage="MAP" />
               </Link>
             </li>
           )}{' '}

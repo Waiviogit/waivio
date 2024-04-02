@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom';
 const MapObjectTags = ({ tags }) => {
   const [showMore, setShowMore] = useState(false);
 
-  const visibleTags = showMore ? tags : tags.slice(0, 5);
+  const visibleTags = showMore ? tags : tags?.slice(0, 5);
 
   return (
     <React.Fragment>

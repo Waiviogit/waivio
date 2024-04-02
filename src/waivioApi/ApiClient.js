@@ -4091,4 +4091,24 @@ export const getGuestUserMana = guestName =>
     .then(response => response)
     .catch(e => e);
 
+export const getObjectsForMapObjectType = (
+  name,
+
+  body,
+  locale,
+  follower,
+) =>
+  fetch(`${config.apiPrefix}${config.getObjects}/${name}${config.map}`, {
+    headers: {
+      ...headers,
+      locale,
+      follower,
+    },
+    method: 'POST',
+    body: JSON.stringify(body),
+  })
+    .then(res => res.json())
+    .then(objects => objects)
+    .catch(error => error);
+
 export default null;

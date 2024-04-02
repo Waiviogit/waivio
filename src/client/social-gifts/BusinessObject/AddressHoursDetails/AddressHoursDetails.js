@@ -3,7 +3,7 @@ import { Icon } from 'antd';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import MapObjectInfo from '../../../components/Maps/MapObjectInfo';
-import { isCoordinatesValid } from '../../../components/Maps/mapHelper';
+import { isCoordinatesValid } from '../../../components/Maps/mapHelpers';
 import './AddressHoursDetails.less';
 
 const AddressHoursDetails = ({ address, map, workTime, wobject, history, intl }) => {
