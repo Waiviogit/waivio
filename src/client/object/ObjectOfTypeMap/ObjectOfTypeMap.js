@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Map } from 'pigeon-maps';
-import { get, isEmpty, map } from 'lodash';
+import { get, isEmpty, map, has } from 'lodash';
 import { withRouter } from 'react-router-dom';
-import { injectIntl } from 'react-intl';
-import { connect } from 'react-redux';
+import { FormattedMessage, injectIntl } from 'react-intl';
+import { connect, useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
+import { Icon, Modal } from 'antd';
 import { useHistory } from 'react-router';
 import Overlay from 'pigeon-overlay';
 
@@ -22,16 +23,29 @@ import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors
 import './ObjectOfTypeMap.less';
 import ObjectOverlayCard from '../../components/Maps/Overlays/ObjectOverlayCard/ObjectOverlayCard';
 import { isMobile } from '../../../common/helpers/apiHelpers';
+import { getIsMapModalOpen } from '../../../store/mapStore/mapSelectors';
+import { setMapFullscreenMode } from '../../../store/mapStore/mapActions';
 
 const ObjectOfTypeMap = props => {
   const [showMap, setShowMap] = useState('desktopMap');
   const [settingMap, setSettingMap] = useState({});
   const [objects, setObjects] = useState([]);
   const [infoboxData, setInfoboxData] = useState(false);
+  const isFullscreenMode = useSelector(getIsMapModalOpen);
+  const dispatch = useDispatch();
   const history = useHistory();
+  const mapRef = useRef();
   const mapState = {
     desktopMap: get(props.config, 'desktopMap'),
   };
+
+  const emptyMapObject =
+    !has(props.wobject, 'mapObjectsList') &&
+    !has(props.wobject, 'mapRectangles') &&
+    !has(props.wobject, 'mapDesktopView') &&
+    !has(props.wobject, 'mapMobileView') &&
+    !has(props.wobject, 'mapObjectTypes') &&
+    !has(props.wobject, 'mapObjectTags');
   const { lat, lon } = props.userLocation;
   let defaultCenter = [+lat, +lon];
   let defaultZoom = 8;
@@ -47,7 +61,7 @@ const ObjectOfTypeMap = props => {
     defaultCenter = mapMobileView?.center || defaultCenter;
     defaultZoom = mapMobileView?.zoom || defaultZoom;
   } else {
-    defaultCenter = mapDesktopView.center || defaultCenter;
+    defaultCenter = mapDesktopView?.center || defaultCenter;
     defaultZoom = mapDesktopView?.zoom || defaultZoom;
   }
 
@@ -67,7 +81,7 @@ const ObjectOfTypeMap = props => {
       });
     }
   };
-  const setCoord = position => {
+  const successCallback = position => {
     setSettingMap({
       ...position.coords,
       center: [position.coords.latitude, position.coords.longitude],
@@ -77,7 +91,7 @@ const ObjectOfTypeMap = props => {
   const setCoordinates = () =>
     setSettingMap({
       ...settingMap,
-      center: defaultCenter,
+      center: [+lat, +lon],
       zoom: settingMap.zoom,
     });
 
@@ -111,11 +125,11 @@ const ObjectOfTypeMap = props => {
       </Overlay>
     );
   };
-  const handleMarkerClick = ({ payload, anchor }) => {
-    if (props.isWaivio) {
-      setInfoboxData({ wobject: payload, coordinates: anchor });
-    }
-  };
+  // const handleMarkerClick = ({ payload, anchor }) => {
+  //   if (props.isWaivio) {
+  //     setInfoboxData({ wobject: payload, coordinates: anchor });
+  //   }
+  // };
   const closeInfobox = () => {
     setInfoboxData(null);
   };
@@ -135,7 +149,9 @@ const ObjectOfTypeMap = props => {
           isMarked={isMarked}
           anchor={[+latitude, +longitude]}
           payload={wobject}
-          onClick={handleMarkerClick}
+          onClick={({ payload, anchor }) =>
+            setInfoboxData({ wobject: payload, coordinates: anchor })
+          }
           onDoubleClick={closeInfobox}
         />
       ) : null;
@@ -158,7 +174,7 @@ const ObjectOfTypeMap = props => {
       limit: 50,
     };
 
-    if (!isEmpty(settingMap) && !isEmpty(body.box)) {
+    if (!isEmpty(settingMap.topPoint) && !isEmpty(settingMap.bottomPoint)) {
       getObjectsForMapObjectType(
         props.wobject.author_permlink,
         body,
@@ -168,16 +184,41 @@ const ObjectOfTypeMap = props => {
     }
   }, [props.wobject.author_permlink, settingMap]);
 
-  const setPosition = () => setCoordinates();
   const markersLayout = getMarkers(objects);
+  const closeModal = () => {
+    if (isFullscreenMode) dispatch(setMapFullscreenMode(!isFullscreenMode));
+  };
+
+  const openModal = () => {
+    dispatch(setMapFullscreenMode(!isFullscreenMode));
+  };
+
+  const zoomButtonsLayout = () => (
+    <div className="MapOS__zoom">
+      <div role="presentation" className="MapOS__zoom-button" onClick={incrementZoom}>
+        +
+      </div>
+      <div role="presentation" className="MapOS__zoom-button" onClick={decrementZoom}>
+        -
+      </div>
+    </div>
+  );
+
+  if (emptyMapObject)
+    return (
+      <div role="presentation" className="Threads__row justify-center">
+        <FormattedMessage id="this_map_is_empty" defaultMessage="This map is empty" />
+      </div>
+    );
 
   return (
     <div className="MapObjTypeWrap">
       <MapControllers
+        isMapObjType
         decrementZoom={decrementZoom}
         incrementZoom={incrementZoom}
-        setPosition={setPosition}
-        successCallback={setCoord}
+        setPosition={setCoordinates}
+        successCallback={successCallback}
         rejectCallback={e => console.error(`Map error:${e}`)}
       />
       <Map
@@ -186,10 +227,68 @@ const ObjectOfTypeMap = props => {
         height={getCurrentScreenSize()}
         provider={mapProvider}
         onBoundsChanged={state => onBoundsChanged(state, showMap)}
+        onClick={({ event }) => {
+          event.stopPropagation();
+          if (
+            ['ObjectOverlayCard__name-truncated', 'avatar-image'].includes(
+              event.target.classList.value,
+            )
+          ) {
+            history.push(infoboxData.wobject.defaultShowLink);
+          } else if (event.target.classList.value === 'pigeon-overlays') setInfoboxData(null);
+        }}
       >
         {markersLayout}
         {infoboxData && getOverlayLayout()}
       </Map>
+      <div role="presentation" className="MapOS__fullScreen" onClick={openModal}>
+        <Icon type="fullscreen" style={{ fontSize: '25px', color: '#000000' }} />
+      </div>
+      {isFullscreenMode && (
+        <Modal
+          title={null}
+          footer={null}
+          visible={isFullscreenMode}
+          onCancel={closeModal}
+          style={{ top: 0 }}
+          width={'100%'}
+          wrapClassName={'MapObjectModal'}
+          destroyOnClose
+        >
+          <div className="MapOS__fullscreenContent">
+            <Map
+              ref={mapRef}
+              center={
+                get(settingMap, 'center') || get(mapState, [showMap, 'center'], defaultCenter)
+              }
+              zoom={get(settingMap, 'zoom', 0) || get(mapState, [showMap, 'zoom'], defaultZoom)}
+              provider={mapProvider}
+              animate
+            >
+              {markersLayout}
+              {infoboxData && getOverlayLayout()}
+            </Map>
+            {zoomButtonsLayout()}
+
+            <div className={'MapConfigurationControl__gps'}>
+              <div
+                role="presentation"
+                className="MapConfigurationControl__locateGPS"
+                onClick={setCoordinates}
+              >
+                <img
+                  src="/images/focus.svg"
+                  alt="aim"
+                  className="MapConfigurationControl__locateGPS-button"
+                />
+              </div>
+            </div>
+            <div role="presentation" className="MapOS__fullScreen" onClick={openModal}>
+              <Icon type="fullscreen-exit" style={{ fontSize: '25px', color: '#000000' }} />
+            </div>
+          </div>
+        </Modal>
+      )}
     </div>
   );
 };
@@ -201,7 +300,6 @@ ObjectOfTypeMap.propTypes = {
   wobject: PropTypes.shape(),
   userLocation: PropTypes.shape(),
   locale: PropTypes.string,
-  isWaivio: PropTypes.bool,
   authUserName: PropTypes.string,
   getCurrentUserCoordinates: PropTypes.func,
 };
@@ -209,7 +307,6 @@ ObjectOfTypeMap.propTypes = {
 export default connect(
   state => ({
     wobject: getObject(state),
-    // wobjects: getObjectsMap(state),
     userLocation: getUserLocation(state),
     config: getConfiguration(state),
     locale: getUsedLocale(state),

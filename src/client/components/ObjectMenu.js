@@ -81,7 +81,7 @@ const ObjectMenu = props => {
           {isMap && (
             <li className={getItemClasses(TAB_NAME.MAP)} data-key={TAB_NAME.MAP}>
               <Link to={createLink(TAB_NAME.MAP)}>
-                <FormattedMessage id="map" defaultMessage="MAP" />
+                <FormattedMessage id="map" defaultMessage="Map" />
               </Link>
             </li>
           )}{' '}

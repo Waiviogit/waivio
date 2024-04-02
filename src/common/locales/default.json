@@ -2626,5 +2626,6 @@
 "list_uppercase": "List",
 "map_items_types": "Types of map items",
 "map_items_tags": "Tags of map items",
-"map_list": "Map list"
+"map_list": "Map list",
+  "this_map_is_empty": "This map is empty"
 }

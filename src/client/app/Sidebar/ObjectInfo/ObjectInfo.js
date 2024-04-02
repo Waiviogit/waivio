@@ -197,7 +197,7 @@ class ObjectInfo extends React.Component {
     const authors = wobject.authors
       ? wobject.authors?.map(el => parseWobjectField(el, 'body', []))
       : [];
-    const mapObjectTags = parseWobjectField(wobject, 'mapObjectTags');
+    const mapObjectTags = wobject.mapObjectTags ? parseWobjectField(wobject, 'mapObjectTags') : [];
 
     const authorsArray = await authors.reduce(async (acc, curr) => {
       const res = await acc;
@@ -241,30 +241,35 @@ class ObjectInfo extends React.Component {
       mapObjectsList,
     ].filter(permlink => permlink);
 
-    getObjectInfo(mapObjectTags, this.props.locale).then(res => {
-      this.setState({ mapObjectTagsArr: res.wobjects });
-    });
-    getObjectInfo(backObjects, this.props.locale).then(res => {
-      const brandObject =
-        res.wobjects.find(wobj => wobj.author_permlink === brand?.authorPermlink) || brand;
-      const manufacturerObject =
-        res.wobjects.find(wobj => wobj.author_permlink === manufacturer?.authorPermlink) ||
-        manufacturer;
-      const publisherObject =
-        res.wobjects.find(wobj => wobj.author_permlink === publisher?.authorPermlink) || publisher;
-      const merchantObject =
-        res.wobjects.find(wobj => wobj.author_permlink === merchant?.authorPermlink) || merchant;
-      const mapObjectsListObject =
-        res.wobjects.find(wobj => wobj.author_permlink === mapObjectsList) || {};
-
-      this.setState({
-        brandObject,
-        manufacturerObject,
-        publisherObject,
-        merchantObject,
-        mapObjectsListObject,
+    if (!isEmpty(mapObjectTags)) {
+      getObjectInfo(mapObjectTags, this.props.locale).then(res => {
+        this.setState({ mapObjectTagsArr: res.wobjects });
       });
-    });
+    }
+    if (!isEmpty(backObjects)) {
+      getObjectInfo(backObjects, this.props.locale).then(res => {
+        const brandObject =
+          res.wobjects.find(wobj => wobj.author_permlink === brand?.authorPermlink) || brand;
+        const manufacturerObject =
+          res.wobjects.find(wobj => wobj.author_permlink === manufacturer?.authorPermlink) ||
+          manufacturer;
+        const publisherObject =
+          res.wobjects.find(wobj => wobj.author_permlink === publisher?.authorPermlink) ||
+          publisher;
+        const merchantObject =
+          res.wobjects.find(wobj => wobj.author_permlink === merchant?.authorPermlink) || merchant;
+        const mapObjectsListObject =
+          res.wobjects.find(wobj => wobj.author_permlink === mapObjectsList) || {};
+
+        this.setState({
+          brandObject,
+          manufacturerObject,
+          publisherObject,
+          merchantObject,
+          mapObjectsListObject,
+        });
+      });
+    }
   }
   authorFieldAuthorPermlink = author => author.authorPermlink || author.author_permlink;
 

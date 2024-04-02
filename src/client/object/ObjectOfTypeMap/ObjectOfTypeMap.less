@@ -6,8 +6,8 @@
 
   .MapConfigurationControl__zoom {
     position: relative;
-    top: 60px;
-    left: 93%;
+    top: 8px;
+    left: 92%;
   }
   .MapConfigurationControl__gps {
     bottom: 10px;
@@ -15,5 +15,35 @@
   }
   .MapConfigurationControl {
     height: 0;
+  }
+  .MapOS__fullScreen {
+    .anticon.anticon-fullscreen {
+      color: @black-text !important;
+      font-size: 14px !important;
+      display: flex;
+      justify-content: center;
+      height: inherit;
+      align-items: center;
+    }
+  }
+}
+.MapObjectModal {
+  .MapOS__fullscreenContent {
+    .MapConfigurationControl__gps {
+      left: 10px;
+      bottom: 10px;
+    }
+    .MapConfigurationControl__zoom {
+      right: 10px;
+      top: 10px;
+    }
+  }
+  .MapOS__fullScreen .anticon.anticon-fullscreen-exit {
+    color: @black-text !important;
+    font-size: 14px !important;
+    display: flex;
+    justify-content: center;
+    height: inherit;
+    align-items: center;
   }
 }
