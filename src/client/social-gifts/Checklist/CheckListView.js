@@ -57,11 +57,18 @@ const CheckListView = ({ wobject, listItems, loading, intl, hideBreadCrumbs }) =
                 <Icon type="shopping" />
               </div>
             ) : (
-              <img
+              <div
                 className="Checklist__itemsAvatar"
+                style={{
+                  backgroundImage: `url(${avatar})`,
+                }}
+              >
+              <img
+                className="Checklist__itemsAvatarImg"
                 src={avatar}
                 alt={`${getTitleForLink(listItem)} `}
               />
+              </div>
             )}
             <span
               className="Checklist__itemsTitle"
