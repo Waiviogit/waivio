@@ -122,6 +122,27 @@
       }
     }
 
+    .Checklist__itemsAvatarImg {
+      width: 100%;
+      position: fixed;
+
+      @media (min-width: 1201px) {
+        height: calc((100vw - 40px) / 5);
+      }
+
+      @media (max-width: 1200px) and (min-width: 999px) {
+        height: calc((100vw - 30px) / 4);
+      }
+
+      @media (max-width: 998px) and (min-width: 481px) {
+        height: calc((100vw - 20px) / 3);
+      }
+
+      @media (max-width: 480px) {
+        height: calc((100vw - 10px) / 2);
+      }
+    }
+
     .anticon.anticon-shopping {
       font-size: 60px;
       color: @silver-gray;
