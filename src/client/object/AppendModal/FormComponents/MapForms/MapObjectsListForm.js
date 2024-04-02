@@ -26,12 +26,14 @@ const MapObjectsListForm = props => (
         />,
       )}
       {props.selectedObject && (
-        <ObjectCardView
-          onDelete={props.onObjectCardDelete}
-          showHeart={false}
-          closeButton
-          wObject={props.selectedObject}
-        />
+        <div className={'mb2'}>
+          <ObjectCardView
+            onDelete={props.onObjectCardDelete}
+            showHeart={false}
+            closeButton
+            wObject={props.selectedObject}
+          />
+        </div>
       )}
     </div>
     <p>
