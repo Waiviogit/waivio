@@ -1,6 +1,6 @@
 import React from 'react';
 import { Icon } from 'antd';
-import { has, identity, isEmpty, isNil, pickBy } from 'lodash';
+import { has, identity, isEmpty, pickBy } from 'lodash';
 import PropTypes from 'prop-types';
 import { linkFields, objectFields } from '../../../../common/constants/listOfFields';
 import { accessTypesArr, haveAccess } from '../../../../common/helpers/wObjectHelper';
@@ -8,12 +8,10 @@ import { getLink } from '../../../object/wObjectHelper';
 
 import SocialLinks from '../../../components/SocialLinks';
 import CompanyId from '../../../app/Sidebar/CompanyId';
-import SocialListItem from '../../SocialProduct/SocialListItem/SocialListItem';
 import { isMobile } from '../../../../common/helpers/apiHelpers';
 
 const BusinessDetails = ({
   isEditMode,
-  parent,
   phones,
   wobject,
   username,
@@ -101,9 +99,6 @@ const BusinessDetails = ({
               ))}
         </div>
       )}
-      {!isNil(parent) && !isEmpty(parent) && (
-        <SocialListItem fieldName={objectFields.parent} field={parent} />
-      )}
     </div>
   );
 };
@@ -114,7 +109,6 @@ BusinessDetails.propTypes = {
   wobject: PropTypes.shape().isRequired,
   website: PropTypes.shape(),
   linkField: PropTypes.shape(),
-  parent: PropTypes.shape(),
   isEditMode: PropTypes.bool,
   email: PropTypes.string,
   username: PropTypes.string.isRequired,
