@@ -24,6 +24,16 @@ UserDepartmentsWobjList.propTypes = {
 };
 
 UserDepartmentsWobjList.fetchData = ({ store, match }) =>
-  store.dispatch(getUserShopList(match.params.name, match.params.name, {tagCategory: []}, [], match.params.department, 0, []));
+  store.dispatch(
+    getUserShopList(
+      match.params.name,
+      match.params.name,
+      { tagCategory: [] },
+      [],
+      match.params.department,
+      0,
+      [],
+    ),
+  );
 
 export default UserDepartmentsWobjList;
