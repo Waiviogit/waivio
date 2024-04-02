@@ -134,6 +134,7 @@ class ObjectInfo extends React.Component {
     brandObject: {},
     merchantObject: {},
     mapObjectsListObject: {},
+    mapObjectTagsArr: [],
     authorsArray: [],
     menuItemsArray: [],
     showMenuLegacy: false,
@@ -142,7 +143,7 @@ class ObjectInfo extends React.Component {
   componentDidMount() {
     const { wobject } = this.props;
 
-    this.getPublisherManufacturerBrandMerchantObjects();
+    this.getNewFieldsData();
     this.props.getCoordinates();
 
     this.props.getRelatedAlbum(this.props.match.params.name, 10);
@@ -162,6 +163,7 @@ class ObjectInfo extends React.Component {
       groupId,
       menuItem,
       mapObjectsList,
+      mapObjectTags,
     } = this.props.wobject;
 
     if (
@@ -172,9 +174,10 @@ class ObjectInfo extends React.Component {
       brand !== prevProps.wobject.brand ||
       merchant !== prevProps.wobject.merchant ||
       menuItem !== prevProps.wobject.menuItem ||
-      mapObjectsList !== prevProps.wobject.mapObjectsList
+      mapObjectsList !== prevProps.wobject.mapObjectsList ||
+      mapObjectTags !== prevProps.wobject.mapObjectTags
     ) {
-      this.getPublisherManufacturerBrandMerchantObjects();
+      this.getNewFieldsData();
     }
     if (groupId !== prevProps.wobject.groupId) {
       this.props.setStoreActiveOption({});
@@ -183,7 +186,7 @@ class ObjectInfo extends React.Component {
 
   incrementPhoneCount = 3;
 
-  async getPublisherManufacturerBrandMerchantObjects() {
+  async getNewFieldsData() {
     const { wobject } = this.props;
 
     const publisher = parseWobjectField(wobject, 'publisher');
@@ -194,6 +197,7 @@ class ObjectInfo extends React.Component {
     const authors = wobject.authors
       ? wobject.authors?.map(el => parseWobjectField(el, 'body', []))
       : [];
+    const mapObjectTags = parseWobjectField(wobject, 'mapObjectTags');
 
     const authorsArray = await authors.reduce(async (acc, curr) => {
       const res = await acc;
@@ -237,6 +241,9 @@ class ObjectInfo extends React.Component {
       mapObjectsList,
     ].filter(permlink => permlink);
 
+    getObjectInfo(mapObjectTags, this.props.locale).then(res => {
+      this.setState({ mapObjectTagsArr: res.wobjects });
+    });
     getObjectInfo(backObjects, this.props.locale).then(res => {
       const brandObject =
         res.wobjects.find(wobj => wobj.author_permlink === brand?.authorPermlink) || brand;
@@ -496,7 +503,6 @@ class ObjectInfo extends React.Component {
     const tagCategories = get(wobject, 'tagCategory', []);
     const map = parseWobjectField(wobject, 'map');
     const mapObjectTypes = parseWobjectField(wobject, 'mapObjectTypes');
-    const mapObjectTags = parseWobjectField(wobject, 'mapObjectTags');
     const parent = get(wobject, 'parent');
     const status = parseWobjectField(wobject, 'status');
     const address = parseAddress(wobject);
@@ -728,7 +734,7 @@ class ObjectInfo extends React.Component {
       </>
     );
     const mapSection = () => {
-      const { mapObjectsListObject } = this.state;
+      const { mapObjectsListObject, mapObjectTagsArr } = this.state;
 
       return (
         <React.Fragment>
@@ -758,7 +764,7 @@ class ObjectInfo extends React.Component {
           )}
           {this.listItem(
             mapObjectTypeFields.mapObjectTags,
-            !isEmpty(mapObjectTags) && <MapObjectTags tags={mapObjectTags} />,
+            !isEmpty(mapObjectTagsArr) && <MapObjectTags tags={mapObjectTagsArr} />,
           )}
         </React.Fragment>
       );
