@@ -9,7 +9,7 @@ import classNames from 'classnames';
 import { useHistory } from 'react-router';
 import { injectIntl } from 'react-intl';
 
-import { getRadius } from '../../components/Maps/mapHelper';
+import { getRadius } from '../../components/Maps/mapHelpers';
 import mapProvider from '../../../common/helpers/mapProvider';
 import { getCoordinates } from '../../../store/userStore/userActions';
 import useQuery from '../../../hooks/useQuery';

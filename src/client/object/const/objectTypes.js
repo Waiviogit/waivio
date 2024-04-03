@@ -10,4 +10,5 @@ export default {
   WEBPAGE: 'webpage',
   DRINK: 'drink',
   NEWSFEED: 'newsfeed',
+  MAP: 'map',
 };

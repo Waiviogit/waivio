@@ -23,7 +23,7 @@ import {
 } from '../../../waivioApi/ApiClient';
 import useQuery from '../../../hooks/useQuery';
 import { getCoordinates } from '../../../store/userStore/userActions';
-import { getRadius } from '../../components/Maps/mapHelper';
+import { getRadius } from '../../components/Maps/mapHelpers';
 
 import './RewardLists.less';
 import { getMoreRewardsList, getRewardsList } from '../../../store/newRewards/newRewardsActions';

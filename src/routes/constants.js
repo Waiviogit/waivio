@@ -16,6 +16,7 @@ export default {
       'webpage',
       'widget',
       'newsfeed',
+      'map',
       'list',
       'blog',
       'form',
