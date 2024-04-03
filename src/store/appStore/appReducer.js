@@ -263,7 +263,6 @@ export default (state = initialState, action) => {
       };
 
     case appTypes.SET_ITEMS_FOR_NAVIGATION:
-      console.log(action.items);
       return {
         ...state,
         navigItems: action.items,
