@@ -158,6 +158,9 @@ const ObjectOfTypeMap = props => {
     });
 
   useEffect(() => {}, [lat, lon, mapDesktopView, mapMobileView]);
+  useEffect(() => {
+    dispatch(setMapFullscreenMode(false));
+  }, [props.wobject.author_permlink]);
 
   useEffect(() => {
     props.getCurrentUserCoordinates();
@@ -264,6 +267,17 @@ const ObjectOfTypeMap = props => {
               zoom={get(settingMap, 'zoom', 0) || get(mapState, [showMap, 'zoom'], defaultZoom)}
               provider={mapProvider}
               animate
+              onBoundsChanged={state => onBoundsChanged(state, showMap)}
+              onClick={({ event }) => {
+                event.stopPropagation();
+                if (
+                  ['ObjectOverlayCard__name-truncated', 'avatar-image'].includes(
+                    event.target.classList.value,
+                  )
+                ) {
+                  history.push(infoboxData.wobject.defaultShowLink);
+                } else if (event.target.classList.value === 'pigeon-overlays') setInfoboxData(null);
+              }}
             >
               {markersLayout}
               {infoboxData && getOverlayLayout()}
