@@ -18,7 +18,10 @@ const ObjectsSimilar = ({ wobject, isCenterContent }) => {
   const icon = <Icon type="block" className="iconfont icon-link SidebarContentBlock__icon" />;
 
   useEffect(() => {
-    if (!isEmpty(wobject.author_permlink)) {
+    if (
+      !isEmpty(wobject.author_permlink) &&
+      ['product, book', 'service'].includes(wobject.author_permlink)
+    ) {
       getSimilarObjectsFromDepartments(wobject.author_permlink, userName, locale, 0, 5).then(res =>
         setSimilarObjects(res.wobjects || []),
       );

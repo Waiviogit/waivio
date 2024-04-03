@@ -100,7 +100,7 @@ class ObjectInfo extends React.Component {
     appendAlbum: PropTypes.func.isRequired,
     albums: PropTypes.arrayOf(),
     relatedAlbum: PropTypes.shape().isRequired,
-    getRelatedAlbum: PropTypes.func.isRequired,
+    // getRelatedAlbum: PropTypes.func.isRequired,
     setStoreGroupId: PropTypes.func.isRequired,
     setAuthors: PropTypes.func.isRequired,
     children: PropTypes.node.isRequired,
@@ -146,7 +146,7 @@ class ObjectInfo extends React.Component {
     this.getNewFieldsData();
     this.props.getCoordinates();
 
-    this.props.getRelatedAlbum(this.props.match.params.name, 10);
+    // this.props.getRelatedAlbum(this.props.match.params.name, 10);
 
     if (wobject.groupId) {
       this.props.setStoreGroupId(wobject.groupId);
