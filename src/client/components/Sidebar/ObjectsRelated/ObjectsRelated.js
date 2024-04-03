@@ -25,7 +25,10 @@ const ObjectsRelated = ({
   const icon = <i className="iconfont icon-link SidebarContentBlock__icon" />;
 
   useEffect(() => {
-    if (!isEmpty(currWobject.author_permlink)) {
+    if (
+      !isEmpty(currWobject.author_permlink) &&
+      ['product, book', 'service'].includes(currWobject.author_permlink)
+    ) {
       getRelatedObjectsFromDepartments(
         currWobject.author_permlink,
         userName,

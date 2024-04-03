@@ -19,7 +19,7 @@ import {
 } from '../../../../../store/websiteStore/websiteActions';
 import Loading from '../../../../components/Icon/Loading';
 import { getCoordinates } from '../../../../../store/userStore/userActions';
-import { getParsedMap } from '../../../../components/Maps/mapHelper';
+import { getParsedMap } from '../../../../components/Maps/mapHelpers';
 import CustomMarker from '../../../../components/Maps/CustomMarker';
 import { getPropositionsForMap } from '../../../../../store/mapStore/mapActions';
 import MapControllers from '../../../../widgets/MapControllers/MapControllers';

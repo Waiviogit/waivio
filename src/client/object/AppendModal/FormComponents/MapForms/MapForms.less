@@ -1,0 +1,154 @@
+@import (reference) '../../../../styles/custom.less';
+@import (reference) '../../../../styles/modules/variables.less';
+.MapTagsForm {
+  .NewsFiltersRule__line-search {
+    padding: 2px 0 10px 0;
+  }
+  .NewsFiltersRule__line-card {
+    .ObjectCard {
+      .ObjectCard__name {
+        width: auto;
+        max-width: 183px;
+      }
+    }
+  }
+}
+.MapForms {
+  &__desktop-map,
+  &__mobile-map {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    .ant-form-item-label.AppendForm__appendTitles.map-title {
+      margin-bottom: 20px;
+      display: flex;
+      width: 100%;
+    }
+  }
+  &__map-button {
+    margin: 20px 0;
+  }
+
+  .NewsFiltersRule__line-search {
+    padding: 0;
+  }
+  .ant-select-auto-complete.ant-select .ant-select-search--inline {
+    margin-top: 0;
+  }
+}
+.MapObjWrap,
+.MapDesktopMobileWrap {
+  .MapConfigurationControl__zoom {
+    right: 0;
+    top: 28px;
+  }
+  .MapConfigurationControl__gps {
+    left: 5px;
+    bottom: 5px;
+  }
+  .WebsiteObjectsControl__zoom__button {
+    &:hover {
+      background-color: @white-gainsboro;
+    }
+  }
+  .MapOS__locateGPS,
+  .MapDesktopMobileWrap {
+    &-button-container {
+      width: 25px;
+      height: 25px;
+      text-align: center;
+      background-color: #fff;
+      border: 1px solid @white-gainsboro;
+      &:hover,
+      &:hover .MapOS__locateGPS-button {
+        background-color: @white-gainsboro;
+      }
+    }
+    &-button {
+      vertical-align: inherit;
+      border: none;
+      width: 13px;
+      height: 15px;
+    }
+  }
+  .MapConfigurationControl__zoom__button {
+    font-size: 20px;
+  }
+  position: relative;
+
+  &__rect {
+    border: 2px solid @red-danger;
+    margin-left: -270px;
+    margin-top: -200px;
+  }
+
+  &__cancel {
+    color: #f5222d;
+    float: right;
+    margin: -11px -9px;
+    cursor: pointer;
+    font-size: 20px;
+    font-weight: 600;
+  }
+
+  &__new-aria-btn {
+    position: absolute;
+    z-index: 100;
+    top: 85%;
+    cursor: pointer;
+    left: 15px;
+
+    & i {
+      font-size: 35px;
+      color: var(--website-color);
+      background: @white;
+      border-radius: 50%;
+    }
+  }
+
+  &__agree-areas {
+    position: absolute;
+    z-index: 100;
+    top: 85%;
+    left: 55px;
+    cursor: pointer;
+
+    & i {
+      font-size: 35px;
+      color: var(--website-color);
+      background: @white;
+      border-radius: 50%;
+    }
+  }
+
+  &__loading {
+    position: absolute;
+    z-index: 100;
+    top: 85%;
+    left: 55px;
+
+    & i {
+      font-size: 35px;
+      color: var(--website-color);
+    }
+  }
+}
+.WebsitesConfigurations__modal--desktop {
+  .ant-modal-body {
+    padding: 0 24px !important;
+    font-size: 16px;
+    line-height: 1.5;
+    word-wrap: break-word;
+  }
+}
+.MapDesktopMobileWrap {
+  .MapConfigurationControl__gps {
+    left: 10px;
+    bottom: 15px;
+  }
+  .MapConfigurationControl__zoom {
+    right: 10px;
+    top: 10px;
+  }
+}

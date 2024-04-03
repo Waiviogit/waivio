@@ -6,7 +6,7 @@ import classNames from 'classnames';
 import { connect } from 'react-redux';
 import Overlay from 'pigeon-overlay';
 import { isEmpty } from 'lodash';
-import { getRadius, getParsedMap } from './mapHelper';
+import { getRadius, getParsedMap } from './mapHelpers';
 import Loading from '../Icon/Loading';
 import { getCoordinates } from '../../../store/userStore/userActions';
 import mapProvider from '../../../common/helpers/mapProvider';

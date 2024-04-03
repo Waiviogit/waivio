@@ -2613,5 +2613,19 @@
   "productID": "Product ID",
   "show_all": "Show all",
   "by_only": "By",
-  "groupIds": "Group IDs"
+  "groupIds": "Group IDs",
+  "object_field_mapObjectsList": "Map list",
+  "object_field_mapDesktopView": "Desktop view",
+  "object_field_mapMobileView": "Mobile view",
+  "object_field_mapObjectTypes": "Object types",
+  "object_field_mapObjectTags": "Map tags",
+  "select_a_type": "Select a type",
+  "select_a_tag": "Select a tag",
+  "object_field_mapRectangles": "Map areas",
+"find_a_list": "Find a list",
+"list_uppercase": "List",
+"map_items_types": "Types of map items",
+"map_items_tags": "Tags of map items",
+"map_list": "Map list",
+  "this_map_is_empty": "This map is empty"
 }

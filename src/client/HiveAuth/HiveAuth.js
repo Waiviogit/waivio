@@ -1,5 +1,6 @@
 import { Button, message, Select, Input } from 'antd';
 import classNames from 'classnames';
+import { injectIntl } from 'react-intl';
 import Cookie from 'js-cookie';
 import store from 'store';
 import { debounce } from 'lodash';
@@ -29,7 +30,7 @@ const getSavedAcc = () => {
   return Array.isArray(accounts) ? accounts : parseJSON(accounts);
 };
 
-const HiveAuth = ({ setQRcodeForAuth, onCloseSingIn, text, style, buttonStyle, isSite }) => {
+const HiveAuth = ({ setQRcodeForAuth, onCloseSingIn, style, buttonStyle, isSite, intl }) => {
   const [showInput, setShowInput] = useState();
   const [user, setUser] = useState('');
   const [savedAcc, setSavedAcc] = useState(getSavedAcc());
@@ -186,7 +187,8 @@ const HiveAuth = ({ setQRcodeForAuth, onCloseSingIn, text, style, buttonStyle, i
         </React.Fragment>
       ) : (
         <span style={buttonStyle} onClick={() => setShowInput(true)}>
-          {text}
+          {isSite && intl.formatMessage({ id: 'continue_with', defaultMessage: 'Continue with' })}{' '}
+          HiveAuth
         </span>
       )}
     </div>
@@ -197,16 +199,15 @@ HiveAuth.propTypes = {
   setQRcodeForAuth: PropTypes.func,
   onCloseSingIn: PropTypes.func,
   isSite: PropTypes.bool,
-  text: PropTypes.string,
+  intl: PropTypes.shape(),
   style: PropTypes.shape({}),
   buttonStyle: PropTypes.shape({}),
 };
 
 HiveAuth.defaultProps = {
-  text: 'Continue with HiveAuth',
   style: {},
   buttonStyle: {},
   isSite: false,
 };
 
-export default HiveAuth;
+export default injectIntl(HiveAuth);

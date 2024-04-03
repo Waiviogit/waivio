@@ -20,7 +20,7 @@ import {
   objectURLValidationRegExp,
   phoneNameValidationRegExp,
 } from '../../../common/constants/validation';
-import { regexCoordsLatitude, regexCoordsLongitude } from '../../components/Maps/mapHelper';
+import { regexCoordsLatitude, regexCoordsLongitude } from '../../components/Maps/mapHelpers';
 import { validateAffiliateUrl } from '../AppendModal/appendFormHelper';
 
 export const fieldsRules = {

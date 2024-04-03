@@ -68,8 +68,21 @@ export const objectFields = {
   affiliateCode: 'affiliateCode',
   affiliateContext: 'affiliateContext',
   webpage: 'webpage',
+  mapObjectsList: 'mapObjectsList',
+  mapDesktopView: 'mapDesktopView',
+  mapMobileView: 'mapMobileView',
+  mapObjectTypes: 'mapObjectTypes',
+  mapObjectTags: 'mapObjectTags',
+  mapRectangles: 'mapRectangles',
 };
-
+export const mapObjectTypeFields = {
+  mapObjectsList: 'mapObjectsList',
+  mapDesktopView: 'mapDesktopView',
+  mapMobileView: 'mapMobileView',
+  mapObjectTypes: 'mapObjectTypes',
+  mapObjectTags: 'mapObjectTags',
+  mapRectangles: 'mapRectangles',
+};
 export const TYPES_OF_MENU_ITEM = {
   LIST: 'menuList',
   PAGE: 'menuPage',
