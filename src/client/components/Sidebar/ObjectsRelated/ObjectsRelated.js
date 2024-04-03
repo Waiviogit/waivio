@@ -27,7 +27,7 @@ const ObjectsRelated = ({
   useEffect(() => {
     if (
       !isEmpty(currWobject.author_permlink) &&
-      ['product, book', 'service'].includes(currWobject.author_permlink)
+      ['product', 'book', 'service'].includes(currWobject.object_type)
     ) {
       getRelatedObjectsFromDepartments(
         currWobject.author_permlink,
