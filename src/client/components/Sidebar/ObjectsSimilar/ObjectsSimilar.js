@@ -20,7 +20,7 @@ const ObjectsSimilar = ({ wobject, isCenterContent }) => {
   useEffect(() => {
     if (
       !isEmpty(wobject.author_permlink) &&
-      ['product, book', 'service'].includes(wobject.author_permlink)
+      ['product', 'book', 'service'].includes(wobject.object_type)
     ) {
       getSimilarObjectsFromDepartments(wobject.author_permlink, userName, locale, 0, 5).then(res =>
         setSimilarObjects(res.wobjects || []),
