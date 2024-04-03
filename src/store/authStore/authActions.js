@@ -193,9 +193,11 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
       }
     });
   } else if (!steemConnectAPI.accessToken && !isGuest) {
+    // eslint-disable-next-line no-console
+    console.log('tut');
     promise = Promise.reject();
   } else if (isGuest || steemConnectAPI.accessToken) {
-    promise = new Promise(async (resolve, reject) => {
+    promise = new Promise(async resolve => {
       try {
         const scUserData = await steemConnectAPI.me();
         const account = isGuest ? scUserData?.account : await getAccount(scUserData.name);
@@ -218,10 +220,7 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
           isGuestUser: isGuest,
         });
       } catch (e) {
-        reject(e);
-        // eslint-disable-next-line no-console
-        console.trace(e);
-        message.error('Authorization was not successful. Please try again later.');
+        if (e) message.error('Authorization was not successful. Please try again later.');
         clearGuestAuthData();
         Cookie.remove('auth');
       }

@@ -31,6 +31,7 @@ import DEFAULTS from '../const/defaultValues';
 import { useSeoInfoWithAppUrl } from '../../../hooks/useSeoInfo';
 import { compareObjectTitle } from '../../../common/helpers/seoHelpes';
 import { getHelmetIcon, getIsWaivio, getSiteName } from '../../../store/appStore/appSelectors';
+import { getIsAuthenticated } from '../../../store/authStore/authSelectors';
 
 const WobjectView = ({
   authenticatedUserName,
@@ -49,6 +50,7 @@ const WobjectView = ({
   const objectName = getObjectName(wobject);
   const { canonicalUrl } = useSeoInfoWithAppUrl(wobject.canonical);
   const isWaivio = useSelector(getIsWaivio);
+  const authenticated = useSelector(getIsAuthenticated);
   const siteName = useSelector(getSiteName);
   const helmetIcon = useSelector(getHelmetIcon);
 
@@ -129,7 +131,7 @@ const WobjectView = ({
       </Helmet>
       <WobjHero
         isEditMode={isEditMode}
-        authenticated={authenticatedUserName}
+        authenticated={authenticated}
         isFetching={isEmpty(wobject)}
         wobject={wobject}
         onFollowClick={handleFollowClick}
@@ -195,7 +197,7 @@ WobjectView.propTypes = {
   route: PropTypes.shape(),
   handleFollowClick: PropTypes.func,
   appendAlbum: PropTypes.func,
-  nestedWobject: PropTypes.string,
+  nestedWobject: PropTypes.shape(),
   weightValue: PropTypes.number,
 };
 

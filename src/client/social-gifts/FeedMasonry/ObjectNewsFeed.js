@@ -1,4 +1,4 @@
-import React, { useState, useLayoutEffect, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { uniq, isEmpty } from 'lodash';
 import PropTypes from 'prop-types';
@@ -90,7 +90,7 @@ const ObjectNewsFeed = ({ wobj }) => {
     }
   };
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (isEmpty(posts)) {
       getPostsList();
     } else {

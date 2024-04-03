@@ -160,7 +160,9 @@ const FeedItem = ({ post, photoQuantity, preview, isReviewsPage }) => {
   if (withoutImage && isEmpty(embeds)) return null;
   if (isTiktok && !(thumbnail || preview)) return null;
 
-  const handleShowPostModal = () => {
+  const handleShowPostModal = e => {
+    e.preventDefault();
+
     if (typeof window !== 'undefined' && window?.gtag)
       window.gtag('event', 'view_post', { debug_mode: false });
     dispatch(showPostModal(post));
@@ -235,11 +237,19 @@ const FeedItem = ({ post, photoQuantity, preview, isReviewsPage }) => {
         </div>
       )}
       <div className={'FeedMasonry__postInfo'}>
-        <div className="FeedMasonry__title" onClick={handleShowPostModal}>
-          {truncate(post?.title, {
-            length: isMobile() ? 70 : 80,
-            separator: '...',
-          })}
+        <div className="FeedMasonry__titleWrap">
+          <a
+            className="FeedMasonry__title"
+            href={`/@${post?.author}/${post?.permlink}`}
+            onClick={handleShowPostModal}
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            {truncate(post?.title, {
+              length: isMobile() ? 70 : 80,
+              separator: '...',
+            })}{' '}
+          </a>
         </div>
         <Link to={`/@${post?.author}`} className="FeedMasonry__authorInfo">
           <Avatar username={post?.author} size={25} /> {post?.author}
@@ -269,9 +279,6 @@ const FeedItem = ({ post, photoQuantity, preview, isReviewsPage }) => {
               <i className="iconfont icon-share1" /> <span>{post?.reblogged_users?.length}</span>
             </span>
           )}
-          <Link className="FeedMasonry__icon" to={`/@${post?.author}/${post?.permlink}`}>
-            <span className={'iconfont icon-send'} />
-          </Link>
         </div>
         <Payout post={post} />
       </div>

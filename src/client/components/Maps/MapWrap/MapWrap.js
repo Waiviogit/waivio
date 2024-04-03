@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { Icon } from 'antd';
 import { isEmpty } from 'lodash';
 import MapOS from '../Map';
-import { getRadius } from '../mapHelper';
+import { getRadius } from '../mapHelpers';
 import Loading from '../../Icon/Loading';
 import './MapWrap.less';
 

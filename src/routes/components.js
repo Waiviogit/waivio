@@ -90,6 +90,7 @@ export default {
   DiscoverObjects: loableComponent(import('../client/discoverObjects/DiscoverObjects')),
   Reports: loableComponent(import('../client/rewards/Reports/Reports')),
   ObjectOfTypePage: loableComponent(import('../client/object/ObjectOfTypePage/ObjectOfTypePage')),
+  ObjectOfTypeMap: loableComponent(import('../client/object/ObjectOfTypeMap/ObjectOfTypeMap')),
   ObjectOfTypeWebpage: loableComponent(
     import('../client/object/ObjectOfTypeWebpage/ObjectOfTypeWebpage'),
   ),

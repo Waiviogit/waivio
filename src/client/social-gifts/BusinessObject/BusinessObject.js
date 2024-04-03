@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { withRouter } from 'react-router-dom';
-import { get, has, isEmpty, isNil, reduce } from 'lodash';
+import { get, isEmpty, isNil, reduce } from 'lodash';
 import { Helmet } from 'react-helmet';
 import {
   getAuthenticatedUserName,
@@ -89,7 +89,6 @@ const BusinessObject = ({
   const price = get(wobject, 'price');
   const website = parseWobjectField(wobject, 'website');
   const linkField = parseWobjectField(wobject, 'link');
-  const parent = get(wobject, 'parent');
   const wobjTitle = get(wobject, 'title');
   const photosAlbum = !isEmpty(albums) ? albums?.find(alb => alb.body === 'Photos') : [];
   const customSort = get(wobject, 'sortCustom.include', []);
@@ -117,8 +116,7 @@ const BusinessObject = ({
   const map = parseWobjectField(wobject, 'map');
   const workTime = get(wobject, 'workTime');
   const tagCategoriesList = tagCategories.filter(item => !isEmpty(item.items));
-  const showGallery =
-    !isEmpty(wobject.preview_gallery) || (!isEmpty(parent) && has(parent, 'avatar'));
+  const showGallery = !isEmpty(wobject.preview_gallery);
   const tagCategoriesForDescr = reduce(
     wobject.tagCategory,
     (acc, curr) => {
@@ -154,8 +152,7 @@ const BusinessObject = ({
     !isNil(website) ||
     !isNil(email) ||
     !isNil(linkField) ||
-    !isEmpty(companyIdBody) ||
-    !isNil(parent);
+    !isEmpty(companyIdBody);
 
   const showAddressHoursBlock = !isNil(address) || !isNil(map) || !isNil(workTime);
 
@@ -350,7 +347,6 @@ const BusinessObject = ({
                     username={userName}
                     linkField={linkField}
                     website={website}
-                    parent={parent}
                   />
                 )}
                 {!isMobile() && <ProductRewardCard isSocialProduct reward={reward} />}

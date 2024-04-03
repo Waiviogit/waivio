@@ -19,7 +19,7 @@ import {
   busyLogin,
   getAuthGuestBalance as dispatchGetAuthGuestBalance,
 } from '../../store/authStore/authActions';
-import { getObjectPosts } from '../../store/feedStore/feedActions';
+import { getObjectPosts, setFirstLoading } from '../../store/feedStore/feedActions';
 import { getObject as getObjectAction } from '../../store/wObjectStore/wobjectsActions';
 import {
   getUserDepartments,
@@ -376,17 +376,18 @@ SocialWrapper.fetchData = async ({ store, req, url }) => {
                   promises.push(
                     store.dispatch(
                       getObjectPosts({
-                        object: buttonList[0]?.permlink,
-                        username: buttonList[0]?.permlink,
+                        object: wobject.author_permlink,
+                        username: wobject.author_permlink,
                         limit: 20,
-                        newsPermlink: buttonList[0].newsfeed,
+                        newsPermlink: wobject.newsfeed,
                       }),
                     ),
                   );
+                  promises.push(store.dispatch(setFirstLoading(false)));
                 }
                 if (wobject.object_type === 'shop') {
-                  promises.push(store.dispatch(getWobjectDepartments(buttonList[0]?.permlink)));
-                  promises.push(store.dispatch(getWobjectsShopList(buttonList[0]?.permlink)));
+                  promises.push(store.dispatch(getWobjectDepartments(wobject.author_permlink)));
+                  promises.push(store.dispatch(getWobjectsShopList(wobject.author_permlink)));
                 }
                 if (['page', 'widget', 'newsfeed', 'list']?.includes(wobject.object_type)) {
                   promises.push(store.dispatch(getObjectAction(wobject.author_permlink)));
@@ -440,6 +441,7 @@ SocialWrapper.fetchData = async ({ store, req, url }) => {
                     }),
                   ),
                 );
+                promises.push(store.dispatch(setFirstLoading(false)));
               }
               if (buttonList[0]?.object_type === 'shop') {
                 promises.push(store.dispatch(getWobjectDepartments(buttonList[0]?.permlink)));

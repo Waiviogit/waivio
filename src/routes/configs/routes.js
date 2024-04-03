@@ -1,3 +1,4 @@
+import UserInfo from '../../client/app/Sidebar/UserInfo/UserInfo';
 import PostsCommentsActivity from '../../client/user/PostsCommentsActivity/PostsCommentsActivity';
 import UserExpertise from '../../client/user/UserExpertise';
 import UserFollowers from '../../client/user/UserFollowers';
@@ -400,7 +401,7 @@ const routes = {
         {
           path: '/about',
           exact: true,
-          component: Views.UserInfo,
+          component: UserInfo,
         },
       ],
     },
@@ -467,6 +468,11 @@ const routes = {
           path: '/page',
           exact: true,
           component: Views.ObjectOfTypePage,
+        },
+        {
+          path: '/map',
+          exact: true,
+          component: Views.ObjectOfTypeMap,
         },
         { path: '/webpage', exact: true, component: Views.ObjectOfTypeWebpage },
         {
