@@ -47,6 +47,7 @@ const GeneralSearch = props => {
           'book',
           'business',
           'restaurant',
+          'list',
         ]),
       );
     }, 500),
