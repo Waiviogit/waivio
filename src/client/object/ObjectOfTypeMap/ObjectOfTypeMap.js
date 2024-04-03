@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Map } from 'pigeon-maps';
-import { get, isEmpty, map, has } from 'lodash';
+import { get, isEmpty, map, has, debounce } from 'lodash';
 import { withRouter } from 'react-router-dom';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { connect, useDispatch, useSelector } from 'react-redux';
@@ -28,6 +28,8 @@ import { setMapFullscreenMode } from '../../../store/mapStore/mapActions';
 
 const ObjectOfTypeMap = props => {
   const [showMap, setShowMap] = useState('desktopMap');
+  const [init, setInit] = useState(false);
+  const requestPending = useRef(false);
   const [settingMap, setSettingMap] = useState({});
   const [objects, setObjects] = useState([]);
   const [infoboxData, setInfoboxData] = useState(false);
@@ -156,6 +158,22 @@ const ObjectOfTypeMap = props => {
         />
       ) : null;
     });
+  const debouncedGetObjectsForMapObjectType = useCallback(
+    debounce((authorPermlink, body, locale, authUserName) => {
+      if (init && !requestPending.current) {
+        requestPending.current = true;
+        getObjectsForMapObjectType(authorPermlink, body, locale, authUserName)
+          .then(r => {
+            setInit(false);
+            setObjects(r.result);
+          })
+          .finally(() => {
+            requestPending.current = false;
+          });
+      }
+    }, 300),
+    [init],
+  );
 
   useEffect(() => {}, [lat, lon, mapDesktopView, mapMobileView]);
   useEffect(() => {
@@ -178,12 +196,13 @@ const ObjectOfTypeMap = props => {
     };
 
     if (!isEmpty(settingMap.topPoint) && !isEmpty(settingMap.bottomPoint)) {
-      getObjectsForMapObjectType(
+      setInit(true);
+      debouncedGetObjectsForMapObjectType(
         props.wobject.author_permlink,
         body,
         props.locale,
         props.authUserName,
-      ).then(r => setObjects(r.result));
+      );
     }
   }, [props.wobject.author_permlink, settingMap]);
 
