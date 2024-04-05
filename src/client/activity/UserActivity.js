@@ -4,7 +4,6 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { isEmpty, get } from 'lodash';
 import {
-  getUserAccountHistory,
   getMoreUserAccountHistory,
   updateAccountHistoryFilter,
   setInitialCurrentDisplayedActions,
@@ -30,10 +29,6 @@ const UserActivity = props => {
   useEffect(() => {
     const username = match.params.name;
 
-    if (isEmpty(usersAccountHistory[username])) {
-      props.getUserAccountHistory(username);
-    }
-
     if (isEmpty(currentDisplayedActions)) {
       props.setInitialCurrentDisplayedActions(username);
     }
@@ -57,7 +52,6 @@ const UserActivity = props => {
 
 UserActivity.propTypes = {
   usersAccountHistoryLoading: PropTypes.bool.isRequired,
-  getUserAccountHistory: PropTypes.func.isRequired,
   updateAccountHistoryFilter: PropTypes.func.isRequired,
   setInitialCurrentDisplayedActions: PropTypes.func.isRequired,
   match: PropTypes.shape().isRequired,
@@ -79,7 +73,6 @@ export default withRouter(
       currentDisplayedActions: getCurrentDisplayedActions(state),
     }),
     {
-      getUserAccountHistory,
       getMoreUserAccountHistory,
       updateAccountHistoryFilter,
       setInitialCurrentDisplayedActions,

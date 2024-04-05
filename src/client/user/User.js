@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useLayoutEffect } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { renderRoutes } from 'react-router-config';
@@ -99,13 +99,16 @@ const User = props => {
     return () => props.resetBreadCrumb();
   }, []);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (typeof window !== 'undefined' && window.gtag)
       window.gtag('event', 'view_user_profile', { debug_mode: false });
 
-    props.getUserAccount(name).then(res => props.getInfoForSideBar(name, res.las));
-    props.getUserAccountHistory(name);
-    props.getTokenBalance('WAIV', name);
+    props.getUserAccount(name).then(res => {
+      props.getInfoForSideBar(name, res.las);
+      props.getUserAccountHistory(name);
+      props.getTokenBalance('WAIV', name);
+    });
+
     props.resetBreadCrumb();
 
     return () => props.resetFavorites();

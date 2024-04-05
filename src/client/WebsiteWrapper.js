@@ -139,7 +139,6 @@ class WebsiteWrapper extends React.PureComponent {
     return Promise.all([
       store.dispatch(setAppUrl(`https://${req.headers.host}`)),
       store.dispatch(setUsedLocale(lang)),
-      store.dispatch(login()),
       store.dispatch(getWebsiteConfigForSSR(req.hostname)),
       store.dispatch(getRate()),
       store.dispatch(getRewardFund()),

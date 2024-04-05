@@ -12,7 +12,6 @@ import {
   getMoreUserAccountHistory,
   getUserTransactionHistory,
   getMoreUserTransactionHistory,
-  getUserAccountHistory,
   clearTransactionsHistory,
 } from '../../store/walletStore/walletActions';
 import { guestUserRegex } from '../../common/helpers/regexHelpers';
@@ -59,7 +58,6 @@ class Wallet extends Component {
     getMoreUserTransactionHistory: PropTypes.func,
     hasMore: PropTypes.bool,
     usersTransactions: PropTypes.shape().isRequired,
-    getUserAccountHistory: PropTypes.func.isRequired,
     usersAccountHistory: PropTypes.shape().isRequired,
     isErrorLoading: PropTypes.bool,
     operationNum: PropTypes.number,
@@ -96,8 +94,6 @@ class Wallet extends Component {
     if (!isGuest && isEmpty(transactionsHistory[username])) {
       this.props.getUserTransactionHistory(username);
     }
-
-    this.props.getUserAccountHistory(username);
   }
 
   componentWillUnmount() {
@@ -256,7 +252,6 @@ export default injectIntl(
         getMoreUserAccountHistory,
         getUserTransactionHistory,
         getMoreUserTransactionHistory,
-        getUserAccountHistory,
         clearTransactionsHistory,
       },
     )(Wallet),
