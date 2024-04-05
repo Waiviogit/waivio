@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Map } from 'pigeon-maps';
 import { get, isEmpty, map, has, debounce } from 'lodash';
 import { withRouter } from 'react-router-dom';
@@ -28,7 +28,6 @@ import { setMapFullscreenMode } from '../../../store/mapStore/mapActions';
 
 const ObjectOfTypeMap = props => {
   const [showMap, setShowMap] = useState('desktopMap');
-  const [init, setInit] = useState(false);
   const requestPending = useRef(false);
   const [settingMap, setSettingMap] = useState({});
   const [objects, setObjects] = useState([]);
@@ -158,27 +157,21 @@ const ObjectOfTypeMap = props => {
         />
       ) : null;
     });
-  const debouncedGetObjectsForMapObjectType = useCallback(
-    debounce((authorPermlink, body, locale, authUserName) => {
-      if (init && !requestPending.current) {
+  const debouncedGetObjectsForMapObjectType = debounce(
+    (authorPermlink, body, locale, authUserName) => {
+      if (!requestPending.current) {
         requestPending.current = true;
-        getObjectsForMapObjectType(authorPermlink, body, locale, authUserName)
-          .then(r => {
-            setInit(false);
-            setObjects(r.result);
-          })
-          .finally(() => {
-            requestPending.current = false;
-          });
+        getObjectsForMapObjectType(authorPermlink, body, locale, authUserName).then(r => {
+          // setInit(false);
+          setObjects(r.result);
+          requestPending.current = false;
+        });
       }
-    }, 300),
-    [init],
+    },
+    300,
   );
 
   useEffect(() => {}, [lat, lon, mapDesktopView, mapMobileView]);
-  useEffect(() => {
-    dispatch(setMapFullscreenMode(false));
-  }, [props.wobject.author_permlink]);
 
   useEffect(() => {
     props.getCurrentUserCoordinates();
@@ -196,7 +189,6 @@ const ObjectOfTypeMap = props => {
     };
 
     if (!isEmpty(settingMap.topPoint) && !isEmpty(settingMap.bottomPoint)) {
-      setInit(true);
       debouncedGetObjectsForMapObjectType(
         props.wobject.author_permlink,
         body,
@@ -204,15 +196,15 @@ const ObjectOfTypeMap = props => {
         props.authUserName,
       );
     }
-  }, [props.wobject.author_permlink, settingMap]);
+  }, [props.wobject.author_permlink, settingMap, settingMap.zoom]);
 
   const markersLayout = getMarkers(objects);
   const closeModal = () => {
-    if (isFullscreenMode) dispatch(setMapFullscreenMode(!isFullscreenMode));
+    if (isFullscreenMode) dispatch(setMapFullscreenMode(false));
   };
 
   const openModal = () => {
-    dispatch(setMapFullscreenMode(!isFullscreenMode));
+    dispatch(setMapFullscreenMode(true));
   };
 
   const zoomButtonsLayout = () => (
@@ -294,6 +286,7 @@ const ObjectOfTypeMap = props => {
                     event.target.classList.value,
                   )
                 ) {
+                  dispatch(setMapFullscreenMode(false));
                   history.push(infoboxData.wobject.defaultShowLink);
                 } else if (event.target.classList.value === 'pigeon-overlays') setInfoboxData(null);
               }}
