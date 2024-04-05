@@ -66,11 +66,13 @@ export const setGuestAuthData = (accessToken, refreshToken, expiration) => {
   store.set('accessToken', accessToken);
   store.set('accessTokenExpiration', expiration);
   store.set('refreshToken', refreshToken);
+  Cookie.set('access_token', accessToken);
 };
 
 export const setGuestLoginData = (accessToken, provider) => {
   store.set('accessToken', accessToken);
   store.set('provider', provider);
+  Cookie.set('access_token', accessToken);
 };
 
 export const getGuestAccessToken = () => store.get('accessToken');

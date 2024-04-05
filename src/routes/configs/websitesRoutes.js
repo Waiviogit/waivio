@@ -23,7 +23,7 @@ const routes = (host, page) => ({
       path: '/',
       exact: true,
       component:
-        listOfWebsiteWithMainPage.some(site => site === host) || page === 'about'
+        !listOfWebsiteWithMainPage.some(site => site === host) || page === 'about'
           ? WebsiteMainPage
           : WebsiteBody,
     },
