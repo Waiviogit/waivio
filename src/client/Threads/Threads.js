@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import Helmet from 'react-helmet';
 import { useParams } from 'react-router';
 import { isEmpty, uniq } from 'lodash';
 import { FormattedMessage } from 'react-intl';
@@ -58,9 +59,16 @@ const Threads = props => {
       setParentPost(r.posts[0]);
     });
   }, [name]);
+  const description = `Create vibrant conversations and build connections on ${name}'s Threads page! Join the dialogue, share insights, and spark discussions with fellow users. Dive into a diverse array of topics and engage with a community passionate about exchanging ideas. Start your thread today and unleash the power of collaborative dialogue!`;
 
   return (
     <div className={'Threads'}>
+      <Helmet>
+        <meta name="description" content={description} />
+        <meta name="twitter:description" content={description} />
+        <meta property="og:type" content="article" />
+        <meta property="og:description" content={description} />
+      </Helmet>
       {props.isAuth && (
         <ThreadsEditor
           isUser={props.isUser}

@@ -4,6 +4,7 @@ import { uniq, isEmpty } from 'lodash';
 import PropTypes from 'prop-types';
 import Helmet from 'react-helmet';
 import { useLocation, useParams } from 'react-router';
+import { shortenDescription, removeEmptyLines } from '../../object/wObjectHelper';
 import FeedMasonry from './FeedMasonry';
 import { getReadLanguages } from '../../../store/settingsStore/settingsSelectors';
 import {
@@ -52,7 +53,11 @@ const ObjectNewsFeed = ({ wobj }) => {
   const location = useLocation();
   const title = `${getObjectName(wobj)}`;
   const { canonicalUrl, descriptionSite } = useSeoInfoWithAppUrl(wobj.canonical);
-  const desc = wobj?.description || descriptionSite || siteName;
+  const { firstDescrPart: description } = shortenDescription(
+    removeEmptyLines(wobj?.description || descriptionSite),
+    200,
+  );
+  const desc = description || descriptionSite || siteName;
   const image = getObjectAvatar(wobj) || favicon;
   const objName = wobj?.author_permlink || getLastPermlinksFromHash(location.hash) || name;
   const postsIds = uniq(getFeedFromState('objectPosts', objName, feed));

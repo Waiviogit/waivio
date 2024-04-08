@@ -212,7 +212,7 @@ const FeedItem = ({ post, photoQuantity, preview, isReviewsPage }) => {
               })}
               onClick={handleShowPostModal}
               src={image}
-              alt={''}
+              alt={post.title}
               key={image}
             />
           ))}
@@ -229,7 +229,7 @@ const FeedItem = ({ post, photoQuantity, preview, isReviewsPage }) => {
             <img
               className={classNames('FeedMasonry__img', 'FeedMasonry__img--bottom')}
               src={getProxyImageURL(imagePath[0])}
-              alt={''}
+              alt={post.title}
               key={imagePath[0]}
               onClick={handleShowPostModal}
             />
