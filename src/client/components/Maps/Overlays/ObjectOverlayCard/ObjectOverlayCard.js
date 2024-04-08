@@ -26,6 +26,7 @@ const ObjectOverlayCard = ({
   path,
   passedParent,
   showParent,
+  isMapObj,
 }) => {
   const screenSize = useSelector(getScreenSize);
   const username = useSelector(getAuthenticatedUserName);
@@ -51,7 +52,7 @@ const ObjectOverlayCard = ({
     if (url) url = getProxyImageURL(url, 'preview');
     else url = DEFAULTS.AVATAR;
 
-    if (includes(url, 'waivio.')) url = `${url}_medium`;
+    if (includes(url, 'waivio.') && !isMapObj) url = `${url}_medium`;
 
     return (
       <div
@@ -145,6 +146,7 @@ ObjectOverlayCard.propTypes = {
   passedParent: PropTypes.shape(),
   path: PropTypes.string,
   showParent: PropTypes.bool,
+  isMapObj: PropTypes.bool,
   options: PropTypes.shape({
     mobileView: PropTypes.oneOf(['compact', 'full']),
     ownRatesOnly: PropTypes.bool,
@@ -158,5 +160,6 @@ ObjectOverlayCard.defaultProps = {
   path: '',
   passedParent: {},
   showParent: false,
+  isMapObj: false,
 };
 export default injectIntl(ObjectOverlayCard);
