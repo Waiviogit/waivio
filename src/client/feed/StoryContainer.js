@@ -4,6 +4,7 @@ import Story from '../components/Story/Story';
 import {
   errorFollowingPostAuthor,
   followingPostAuthor,
+  handlePinPost,
   pendingFollowingPostAuthor,
   votePost,
 } from '../../store/postsStore/postActions';
@@ -26,9 +27,7 @@ import {
 } from '../../store/settingsStore/settingsSelectors';
 import { addPayoutForActiveVotes } from '../../common/helpers';
 import { getTokenRatesInUSD } from '../../store/walletStore/walletSelectors';
-import { appendObject, voteAppends } from '../../store/appendStore/appendActions';
 import { getPinnedPostsUrls } from '../../store/feedStore/feedSelectors';
-import { setPinnedPostsUrls } from '../../store/feedStore/feedActions';
 import { getObject } from '../../store/wObjectStore/wObjectSelectors';
 
 const mapStateToProps = (state, { id, isThread }) => {
@@ -97,7 +96,5 @@ export default connect(mapStateToProps, {
   followingPostAuthor,
   pendingFollowingPostAuthor,
   errorFollowingPostAuthor,
-  voteAppends,
-  appendObject,
-  setPinnedPostsUrls,
+  handlePinPost,
 })(Story);
