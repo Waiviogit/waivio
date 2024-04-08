@@ -1,4 +1,5 @@
 import { message } from 'antd';
+import { isEmpty, some } from 'lodash';
 import { createAsyncActionType, getPostKey } from '../../common/helpers/stateHelpers';
 import * as ApiClient from '../../waivioApi/ApiClient';
 import { getAuthenticatedUserName } from '../authStore/authSelectors';
@@ -6,6 +7,13 @@ import { getLocale } from '../settingsStore/settingsSelectors';
 import { getVideoForPreview } from '../../common/helpers/postHelpers';
 import { parseJSON } from '../../common/helpers/parseJSON';
 import { setGuestMana } from '../usersStore/usersActions';
+import { getMinRejectVote, getUpdateByBody } from '../../waivioApi/ApiClient';
+import { getAppendDownvotes, getAppendUpvotes } from '../../common/helpers/voteHelpers';
+import { objectFields } from '../../common/constants/listOfFields';
+import { getAppendData } from '../../common/helpers/wObjectHelper';
+import { getUsedLocale } from '../appStore/appSelectors';
+import { setPinnedPostsUrls } from '../feedStore/feedActions';
+import { appendObject, voteAppends } from '../appendStore/appendActions';
 
 export const GET_CONTENT = createAsyncActionType('@post/GET_CONTENT');
 export const GET_SOCIAL_INFO_POST = createAsyncActionType('@post/GET_SOCIAL_INFO_POST');
@@ -213,6 +221,80 @@ export const voteCommentFromRewards = (postId, author, permlink, weight = 10000)
 };
 
 export const FOLLOWING_POST_AUTHOR = createAsyncActionType('FOLLOWING_POST_AUTHOR');
+
+export const handlePinPost = (
+  post,
+  pinnedPostsUrls,
+  user,
+  match,
+  wobject,
+  userVotingPower,
+) => async (dispatch, getState) => {
+  const locale = getUsedLocale(getState());
+  const currUpdate = await getUpdateByBody(
+    wobject.author_permlink,
+    'pin',
+    'en-US',
+    `${post.author}/${post.permlink}`,
+  );
+  const upVotes = currUpdate?.active_votes && getAppendUpvotes(currUpdate?.active_votes);
+  const isLiked = currUpdate?.isLiked || some(upVotes, { voter: user.name });
+  const downVotes = getAppendDownvotes(currUpdate?.active_votes);
+  const isReject = currUpdate?.isReject || some(downVotes, { voter: user.name });
+  let voteWeight;
+
+  if (pinnedPostsUrls.includes(post.url)) {
+    dispatch(setPinnedPostsUrls(pinnedPostsUrls.filter(p => p !== post.url)));
+    if (post?.currentUserPin) {
+      if (isReject) voteWeight = 0;
+      else {
+        voteWeight =
+          isEmpty(upVotes) || (isLiked && upVotes?.length === 1)
+            ? 1
+            : (
+                await getMinRejectVote(
+                  user.name,
+                  currUpdate?.author,
+                  currUpdate?.permlink,
+                  match.params.name,
+                )
+              )?.result;
+      }
+      dispatch(
+        voteAppends(currUpdate?.author, currUpdate?.permlink, voteWeight, 'pin', false, 'pin'),
+      );
+    }
+  } else if (currUpdate.message) {
+    dispatch(setPinnedPostsUrls([...pinnedPostsUrls, post.url]));
+    const pageContentField = {
+      name: objectFields.pin,
+      body: `${post.author}/${post.permlink}`,
+      locale,
+    };
+
+    const bodyMessage = `@${user.name} pinned post: author: ${post.author}, permlink: ${post.permlink}`;
+    const postData = getAppendData(user.name, wobject, bodyMessage, pageContentField);
+
+    dispatch(
+      appendObject(postData, { votePercent: userVotingPower, isLike: true, isObjectPage: true }),
+    );
+  } else {
+    dispatch(setPinnedPostsUrls([...pinnedPostsUrls, post.url]));
+    dispatch(
+      voteAppends(
+        currUpdate.author,
+        currUpdate.permlink,
+        userVotingPower,
+        'pin',
+        false,
+        'pin',
+        null,
+        false,
+        true,
+      ),
+    );
+  }
+};
 
 export const followingPostAuthor = postId => dispatch =>
   dispatch({
