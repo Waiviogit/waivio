@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
 import { Icon } from 'antd';
 import { get, truncate } from 'lodash';
@@ -39,6 +40,7 @@ import SkeletonRow from '../../../components/Skeleton/SkeletonRow';
 class UserInfo extends React.Component {
   static propTypes = {
     intl: PropTypes.shape().isRequired,
+    match: PropTypes.shape().isRequired,
     user: PropTypes.shape(),
     weightValue: PropTypes.number,
     sideBarLoading: PropTypes.bool,
@@ -54,7 +56,7 @@ class UserInfo extends React.Component {
   };
 
   render() {
-    const { intl, user, sideBarLoading } = this.props;
+    const { intl, user, sideBarLoading, match } = this.props;
 
     if (sideBarLoading) return <SkeletonRow rows={8} />;
 
@@ -86,9 +88,16 @@ class UserInfo extends React.Component {
     if (hostWithoutWWW.indexOf('www.') === 0) {
       hostWithoutWWW = hostWithoutWWW.slice(4);
     }
+    const description = `Discover the dynamic profile of ${match.params.name}, a valued member of our community. Dive into their expertise, activity, and engagement, and explore their involvement with various tokens. Uncover insights into their contributions and participation within our platform. Get to know ${match.params.name} better today!`;
 
     return (
       <div className="UserInfo">
+        <Helmet>
+          <meta name="description" content={description} />
+          <meta name="twitter:description" content={description} />
+          <meta property="og:type" content="article" />
+          <meta property="og:description" content={description} />
+        </Helmet>
         {user.name && (
           <div style={{ wordBreak: 'break-word' }}>
             {about && <div style={{ fontSize: '18px' }}>{about}</div>}

@@ -51,7 +51,7 @@ export const shortenDescription = (description, length) => {
   const lastPeriod = shortened.lastIndexOf('.');
 
   return {
-    firstDescrPart: shortened.substr(0, lastPeriod + 1),
+    firstDescrPart: shortened,
     secondDescrPart: description.substring(lastPeriod + 1),
   };
 };

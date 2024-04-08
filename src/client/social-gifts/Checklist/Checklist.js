@@ -11,6 +11,7 @@ import {
   getLastPermlinksFromHash,
   getObjectAvatar,
   getObjectName,
+  getTitleForLink,
 } from '../../../common/helpers/wObjectHelper';
 import {
   setBreadcrumbForChecklist,
@@ -20,7 +21,6 @@ import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors
 
 import { removeEmptyLines, shortenDescription, sortListItemsBy } from '../../object/wObjectHelper';
 import { getHelmetIcon, getMainObj, getSiteName } from '../../../store/appStore/appSelectors';
-import { login } from '../../../store/authStore/authActions';
 import { getObject as getObjectState } from '../../../store/wObjectStore/wObjectSelectors';
 import { getObject } from '../../../store/wObjectStore/wobjectsActions';
 import CheckListView from './CheckListView';
@@ -49,12 +49,12 @@ const Checklist = ({
   const favicon = useSelector(getHelmetIcon);
   const siteName = useSelector(getSiteName);
   const mainObj = useSelector(getMainObj);
-  const title = `${getObjectName(wobject)}`;
+  const title = getTitleForLink(wobject);
   const desc = wobject?.description || mainObj?.description;
   const { firstDescrPart: description } = shortenDescription(removeEmptyLines(desc), 350);
   const image = getObjectAvatar(wobject) || favicon;
   const { canonicalUrl } = useSeoInfoWithAppUrl(wobject.canonical, true, wobject.object_type);
-
+  console.log(title);
   useEffect(() => {
     const pathUrl =
       permlink || getLastPermlinksFromHash(history.location.hash) || match.params.name;
@@ -153,7 +153,7 @@ Checklist.propTypes = {
 Checklist.fetchData = ({ store, match, query }) => {
   const objName = query ? query.get('currObj') : match.params.name;
 
-  return store.dispatch(login()).then(res => store.dispatch(getObject(objName, res?.value?.name)));
+  return store.dispatch(getObject(objName));
 };
 
 const mapStateToProps = state => ({
