@@ -146,7 +146,7 @@ export const voteAppends = (
   const state = getState();
   const fields = getAppendList(state);
   const isGuest = isGuestUser(state);
-  const post = fields.find(field => field.permlink === permlink) || null;
+  const post = fields?.find(field => field.permlink === permlink) || null;
   const wobj = get(state, ['object', 'wobject'], {});
   const voter = getAuthenticatedUserName(state);
   const fieldName = name || post.name;
