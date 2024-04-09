@@ -9,6 +9,7 @@ import {
   getLastPermlinksFromHash,
   getObjectAvatar,
   getObjectName,
+  getTitleForLink,
 } from '../../../common/helpers/wObjectHelper';
 import { getObject } from '../../../waivioApi/ApiClient';
 import Loading from '../../components/Icon/Loading';
@@ -22,7 +23,7 @@ const WidgetContent = ({ wobj }) => {
   const location = useLocation();
   const favicon = useSelector(getHelmetIcon);
   const siteName = useSelector(getSiteName);
-  const title = `${getObjectName(currentWobject)}`;
+  const title = getTitleForLink(currentWobject);
   const { canonicalUrl, descriptionSite } = useSeoInfoWithAppUrl(currentWobject.canonical);
   const desc = currentWobject?.description || descriptionSite || siteName;
   const image = getObjectAvatar(currentWobject) || favicon;

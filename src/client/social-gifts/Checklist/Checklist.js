@@ -54,7 +54,7 @@ const Checklist = ({
   const { firstDescrPart: description } = shortenDescription(removeEmptyLines(desc), 350);
   const image = getObjectAvatar(wobject) || favicon;
   const { canonicalUrl } = useSeoInfoWithAppUrl(wobject.canonical, true, wobject.object_type);
-  console.log(title);
+
   useEffect(() => {
     const pathUrl =
       permlink || getLastPermlinksFromHash(history.location.hash) || match.params.name;

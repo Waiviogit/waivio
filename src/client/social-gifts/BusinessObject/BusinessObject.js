@@ -34,6 +34,7 @@ import {
   getObjectName,
   parseAddress,
   parseWobjectField,
+  getTitleForLink,
 } from '../../../common/helpers/wObjectHelper';
 import { averageRate, getRatingForSocial } from '../../components/Sidebar/Rate/rateHelper';
 import Loading from '../../components/Icon/Loading';
@@ -132,7 +133,7 @@ const BusinessObject = ({
   const desc = `${wobject.description || ''} ${wobject.name}. ${parseAddress(wobject) ||
     ''} ${tagCategoriesForDescr}`;
   const { firstDescrPart: description } = shortenDescription(removeEmptyLines(desc), 200);
-  const title = `${wobject.name}`;
+  const title = getTitleForLink(wobject);
   const { canonicalUrl } = useSeoInfoWithAppUrl(wobject.canonical);
   const url = ['business', 'restaurant'].includes(wobject.object_type)
     ? `https://${wobject.canonical}/object/${match.params.name}`

@@ -29,6 +29,7 @@ import {
   getLastPermlinksFromHash,
   getObjectAvatar,
   getObjectName,
+  getTitleForLink,
 } from '../../../common/helpers/wObjectHelper';
 import { preparationPostList } from './helpers';
 import { getObject } from '../../../store/wObjectStore/wobjectsActions';
@@ -51,7 +52,7 @@ const ObjectNewsFeed = ({ wobj }) => {
   const dispatch = useDispatch();
   const { name } = useParams();
   const location = useLocation();
-  const title = `${getObjectName(wobj)}`;
+  const title = getTitleForLink(wobj);
   const { canonicalUrl, descriptionSite } = useSeoInfoWithAppUrl(wobj.canonical);
   const { firstDescrPart: description } = shortenDescription(
     removeEmptyLines(wobj?.description || descriptionSite),
