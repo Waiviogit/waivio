@@ -27,6 +27,7 @@ import {
   getObjectName,
   parseAddress,
   parseWobjectField,
+  getTitleForLink,
 } from '../../../common/helpers/wObjectHelper';
 import Options from '../../object/Options/Options';
 import ObjectFeatures from '../../object/ObjectFeatures/ObjectFeatures';
@@ -173,7 +174,7 @@ const SocialProduct = ({
   const desc = `${wobject.description || ''} ${wobject.name}. ${parseAddress(wobject) ||
     ''} ${tagCategoriesForDescr}`;
   const { firstDescrPart: description } = shortenDescription(removeEmptyLines(desc), 200);
-  const title = `${wobject.name}`;
+  const title = getTitleForLink(wobject);
   const { canonicalUrl } = useSeoInfoWithAppUrl(wobject.canonical);
   const url = ['book', 'product'].includes(wobject.object_type)
     ? `https://${wobject.canonical}/object/${match.params.name}`

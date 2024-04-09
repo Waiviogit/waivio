@@ -44,7 +44,12 @@ const ProductId = ({ productIdBody, groupId, authorPermlink, isSocialGifts, intl
                     <div key={obj.id}>
                       {obj.productIdType}: {obj.productId}
                       <div className="field-avatar CompanyId__p CompanyId__image">
-                        {obj.productIdImage && <img src={obj.productIdImage} alt="pic" />}
+                        {obj.productIdImage && (
+                          <img
+                            src={obj.productIdImage}
+                            alt={`${obj.productIdType}: ${obj.productId}`}
+                          />
+                        )}
                       </div>
                     </div>
                   ) : (
@@ -52,7 +57,12 @@ const ProductId = ({ productIdBody, groupId, authorPermlink, isSocialGifts, intl
                       <p className="CompanyId__p">{obj.productIdType}</p>
                       <p className="CompanyId__p">{obj.productId}</p>
                       <div className="field-avatar CompanyId__p CompanyId__image">
-                        {obj.productIdImage && <img src={obj.productIdImage} alt="pic" />}
+                        {obj.productIdImage && (
+                          <img
+                            src={obj.productIdImage}
+                            alt={`${obj.productIdType}: ${obj.productId}`}
+                          />
+                        )}
                       </div>
                     </div>
                   ),

@@ -1406,7 +1406,13 @@ class ObjectInfo extends React.Component {
                 <p className="CompanyId__p">{obj.productIdType}</p>
                 <p className="CompanyId__p">{obj.productId}</p>
                 <div className="field-avatar CompanyId__p CompanyId__image">
-                  {obj.productIdImage && <img src={obj.productIdImage} alt="pic" />}
+                  {obj.productIdImage && (
+                    <img
+                      src={obj.productIdImage}
+                      alt={`${obj.productIdType}: 
+${obj.productId}`}
+                    />
+                  )}
                 </div>
               </div>
             )),
@@ -1436,7 +1442,7 @@ class ObjectInfo extends React.Component {
           objectFields.avatar,
           avatar && (
             <div className="field-avatar">
-              <img src={avatar} alt="pic" />
+              <img src={avatar} alt="avatar" />
             </div>
           ),
         )}
@@ -1445,7 +1451,7 @@ class ObjectInfo extends React.Component {
           objectFields.background,
           background && (
             <div className="field-background">
-              <img src={background} alt="pic" />
+              <img src={background} alt="background" />
             </div>
           ),
         )}
