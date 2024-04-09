@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Map } from 'pigeon-maps';
 import { get, isEmpty, map, has, debounce } from 'lodash';
 import { withRouter } from 'react-router-dom';
@@ -26,6 +26,7 @@ import { isMobile } from '../../../common/helpers/apiHelpers';
 import { getIsMapModalOpen } from '../../../store/mapStore/mapSelectors';
 import { setMapFullscreenMode } from '../../../store/mapStore/mapActions';
 import useQuery from '../../../hooks/useQuery';
+import Loading from '../../components/Icon/Loading';
 
 const ObjectOfTypeMap = props => {
   const [showMap, setShowMap] = useState('desktopMap');
@@ -119,7 +120,7 @@ const ObjectOfTypeMap = props => {
   };
 
   const onMarkerClick = permlink => history.push(`/object/${permlink}`);
-  const getOverlayLayout = () => {
+  const getOverlayLayout = useCallback(() => {
     const wobjPermlink = get(infoboxData, ['wobject', 'author_permlink']);
 
     return (
@@ -137,8 +138,13 @@ const ObjectOfTypeMap = props => {
         </div>
       </Overlay>
     );
-  };
+  }, [infoboxData]);
   const closeInfobox = () => {
+    const url = `center=${settingMap.center.join(',')}&zoom=${
+      settingMap.zoom
+    }&topPoint=${settingMap.topPoint.join(',')}&bottomPoint=${settingMap.bottomPoint.join(',')}`;
+
+    history.push(`/object/${props.wobject.author_permlink}/map?${url}`);
     setInfoboxData(null);
   };
 
@@ -149,9 +155,6 @@ const ObjectOfTypeMap = props => {
       ',',
     )}&permlink=${permlink}`;
 
-    if (isFullscreenMode) {
-      dispatch(setMapFullscreenMode(false));
-    }
     history.push(`/object/${props.wobject.author_permlink}/map?${url}`);
   };
 
@@ -211,6 +214,17 @@ const ObjectOfTypeMap = props => {
   }, []);
 
   useEffect(() => {
+    if (!isEmpty(objects) && query?.get('permlink')) {
+      const initialInfoboxData = {
+        wobject: objects.find(o => o.author_permlink === query.get('permlink')),
+        coordinates: center || defaultCenter,
+      };
+
+      setInfoboxData(initialInfoboxData);
+    }
+  }, [query.get('permlink'), objects]);
+
+  useEffect(() => {
     setShowMap({ desktopMap: settingMap });
     const body = {
       box: {
@@ -260,100 +274,108 @@ const ObjectOfTypeMap = props => {
 
   return (
     <div className="MapObjTypeWrap">
-      <MapControllers
-        isMapObjType
-        decrementZoom={decrementZoom}
-        incrementZoom={incrementZoom}
-        setPosition={setCoordinates}
-        successCallback={successCallback}
-        rejectCallback={e => console.error(`Map error:${e}`)}
-      />
-      <Map
-        center={get(settingMap, 'center') || get(mapState, [showMap, 'center'], defaultCenter)}
-        zoom={get(settingMap, 'zoom', 0) || get(mapState, [showMap, 'zoom'], defaultZoom)}
-        height={getCurrentScreenSize()}
-        provider={mapProvider}
-        onBoundsChanged={state => onBoundsChanged(state, showMap)}
-        onClick={({ event }) => {
-          event.stopPropagation();
-          if (
-            ['ObjectOverlayCard__name-truncated', 'avatar-image'].includes(
-              event.target.classList.value,
-            )
-          ) {
-            history.push(infoboxData.wobject.defaultShowLink);
-          } else if (event.target.classList.value === 'pigeon-overlays') setInfoboxData(null);
-        }}
-      >
-        {markersLayout}
-        {infoboxData && getOverlayLayout()}
-      </Map>
-      <div role="presentation" className="MapOS__fullScreen" onClick={openModal}>
-        <Icon type="fullscreen" style={{ fontSize: '25px', color: '#000000' }} />
-      </div>
-      {isFullscreenMode && (
-        <Modal
-          title={null}
-          footer={null}
-          visible={isFullscreenMode}
-          onCancel={closeModal}
-          style={{ top: 0 }}
-          width={'100%'}
-          wrapClassName={'MapObjectModal'}
-          destroyOnClose
-        >
-          <div className="MapOS__fullscreenContent">
-            <Map
-              ref={mapRef}
-              center={
-                get(settingMap, 'center') || get(mapState, [showMap, 'center'], defaultCenter)
+      {isEmpty(settingMap) || isEmpty(props.wobject) ? (
+        <Loading />
+      ) : (
+        <>
+          <MapControllers
+            isMapObjType
+            decrementZoom={decrementZoom}
+            incrementZoom={incrementZoom}
+            setPosition={setCoordinates}
+            successCallback={successCallback}
+            rejectCallback={e => console.error(`Map error:${e}`)}
+          />
+          <Map
+            center={get(settingMap, 'center') || get(mapState, [showMap, 'center'], defaultCenter)}
+            zoom={get(settingMap, 'zoom', 0) || get(mapState, [showMap, 'zoom'], defaultZoom)}
+            height={getCurrentScreenSize()}
+            provider={mapProvider}
+            onBoundsChanged={state => onBoundsChanged(state, showMap)}
+            onClick={({ event }) => {
+              event.stopPropagation();
+              if (
+                ['ObjectOverlayCard__name-truncated', 'avatar-image'].includes(
+                  event.target.classList.value,
+                )
+              ) {
+                history.push(infoboxData.wobject.defaultShowLink);
+              } else if (event.target.classList.value === 'pigeon-overlays') {
+                closeInfobox();
               }
-              zoom={get(settingMap, 'zoom', 0) || get(mapState, [showMap, 'zoom'], defaultZoom)}
-              provider={mapProvider}
-              animate
-              onBoundsChanged={state => onBoundsChanged(state, showMap)}
-              onClick={({ event }) => {
-                event.stopPropagation();
-                if (
-                  ['ObjectOverlayCard__name-truncated', 'avatar-image'].includes(
-                    event.target.classList.value,
-                  )
-                ) {
-                  dispatch(setMapFullscreenMode(false));
-                  history.push(infoboxData.wobject.defaultShowLink);
-                } else if (event.target.classList.value === 'pigeon-overlays') setInfoboxData(null);
-              }}
-            >
-              {markersLayout}
-              {infoboxData && getOverlayLayout()}
-            </Map>
-            {zoomButtonsLayout()}
-
-            <div className={'MapConfigurationControl__gps'}>
-              <div
-                role="presentation"
-                className="MapConfigurationControl__locateGPS"
-                onClick={setCoordinates}
-              >
-                <img
-                  src="/images/focus.svg"
-                  alt="aim"
-                  className="MapConfigurationControl__locateGPS-button"
-                />
-              </div>
-            </div>
-            <div role="presentation" className="MapOS__fullScreen" onClick={openModal}>
-              <Icon type="fullscreen-exit" style={{ fontSize: '25px', color: '#000000' }} />
-            </div>
+            }}
+          >
+            {markersLayout}
+            {infoboxData && getOverlayLayout()}
+          </Map>
+          <div role="presentation" className="MapOS__fullScreen" onClick={openModal}>
+            <Icon type="fullscreen" style={{ fontSize: '25px', color: '#000000' }} />
           </div>
-        </Modal>
+          {isFullscreenMode && (
+            <Modal
+              title={null}
+              footer={null}
+              visible={isFullscreenMode}
+              onCancel={closeModal}
+              style={{ top: 0 }}
+              width={'100%'}
+              wrapClassName={'MapObjectModal'}
+              destroyOnClose
+            >
+              <div className="MapOS__fullscreenContent">
+                <Map
+                  ref={mapRef}
+                  center={
+                    get(settingMap, 'center') || get(mapState, [showMap, 'center'], defaultCenter)
+                  }
+                  zoom={get(settingMap, 'zoom', 0) || get(mapState, [showMap, 'zoom'], defaultZoom)}
+                  provider={mapProvider}
+                  animate
+                  onBoundsChanged={state => onBoundsChanged(state, showMap)}
+                  onClick={({ event }) => {
+                    event.stopPropagation();
+                    if (
+                      ['ObjectOverlayCard__name-truncated', 'avatar-image'].includes(
+                        event.target.classList.value,
+                      )
+                    ) {
+                      dispatch(setMapFullscreenMode(false));
+                      history.push(infoboxData.wobject.defaultShowLink);
+                    } else if (event.target.classList.value === 'pigeon-overlays')
+                      setInfoboxData(null);
+                  }}
+                >
+                  {markersLayout}
+                  {infoboxData && getOverlayLayout()}
+                </Map>
+                {zoomButtonsLayout()}
+
+                <div className={'MapConfigurationControl__gps'}>
+                  <div
+                    role="presentation"
+                    className="MapConfigurationControl__locateGPS"
+                    onClick={setCoordinates}
+                  >
+                    <img
+                      src="/images/focus.svg"
+                      alt="aim"
+                      className="MapConfigurationControl__locateGPS-button"
+                    />
+                  </div>
+                </div>
+                <div role="presentation" className="MapOS__fullScreen" onClick={openModal}>
+                  <Icon type="fullscreen-exit" style={{ fontSize: '25px', color: '#000000' }} />
+                </div>
+              </div>
+            </Modal>
+          )}
+        </>
       )}
     </div>
   );
 };
 
 ObjectOfTypeMap.propTypes = {
-  // wobjects: PropTypes.arrayOf(),
   match: PropTypes.shape(),
   config: PropTypes.shape(),
   wobject: PropTypes.shape(),
