@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Map } from 'pigeon-maps';
 import { get, isEmpty, map, has, debounce } from 'lodash';
 import { withRouter } from 'react-router-dom';
@@ -20,16 +20,17 @@ import { getObject } from '../../../store/wObjectStore/wObjectSelectors';
 import { getObjectsForMapObjectType } from '../../../waivioApi/ApiClient';
 import { getIsWaivio, getUsedLocale } from '../../../store/appStore/appSelectors';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
-import './ObjectOfTypeMap.less';
 import ObjectOverlayCard from '../../components/Maps/Overlays/ObjectOverlayCard/ObjectOverlayCard';
 import { isMobile } from '../../../common/helpers/apiHelpers';
 import { getIsMapModalOpen } from '../../../store/mapStore/mapSelectors';
 import { setMapFullscreenMode } from '../../../store/mapStore/mapActions';
 import useQuery from '../../../hooks/useQuery';
 import Loading from '../../components/Icon/Loading';
+import './ObjectOfTypeMap.less';
 
 const ObjectOfTypeMap = props => {
   const [showMap, setShowMap] = useState('desktopMap');
+  const [selectedObject, setSelectedObject] = useState({});
   const requestPending = useRef(false);
   const query = useQuery();
   const history = useHistory();
@@ -46,6 +47,7 @@ const ObjectOfTypeMap = props => {
     .get('bottomPoint')
     ?.split(',')
     .map(parseFloat);
+  const permlink = query?.get('permlink');
   const [settingMap, setSettingMap] = useState({ center, zoom, topPoint, bottomPoint });
   const [objects, setObjects] = useState([]);
   const [infoboxData, setInfoboxData] = useState(false);
@@ -119,8 +121,8 @@ const ObjectOfTypeMap = props => {
     });
   };
 
-  const onMarkerClick = permlink => history.push(`/object/${permlink}`);
-  const getOverlayLayout = useCallback(() => {
+  const onMarkerClick = link => history.push(`/object/${link}`);
+  const getOverlayLayout = () => {
     const wobjPermlink = get(infoboxData, ['wobject', 'author_permlink']);
 
     return (
@@ -138,7 +140,7 @@ const ObjectOfTypeMap = props => {
         </div>
       </Overlay>
     );
-  }, [infoboxData]);
+  };
   const closeInfobox = () => {
     const url = `center=${settingMap.center.join(',')}&zoom=${
       settingMap.zoom
@@ -148,12 +150,12 @@ const ObjectOfTypeMap = props => {
     setInfoboxData(null);
   };
 
-  const setQueryInUrl = (anchor, permlink) => {
-    const url = `center=${settingMap.center.join(',')}&zoom=${
+  const setQueryInUrl = (anchor, link) => {
+    const url = `center=${anchor.join(',')}&zoom=${
       settingMap.zoom
     }&topPoint=${settingMap.topPoint.join(',')}&bottomPoint=${settingMap.bottomPoint.join(
       ',',
-    )}&permlink=${permlink}`;
+    )}&permlink=${link}`;
 
     history.push(`/object/${props.wobject.author_permlink}/map?${url}`);
   };
@@ -175,8 +177,9 @@ const ObjectOfTypeMap = props => {
           anchor={[+latitude, +longitude]}
           payload={wobject}
           onClick={({ payload, anchor }) => {
-            setQueryInUrl(anchor, payload.author_permlink);
+            setSelectedObject(payload);
             setInfoboxData({ wobject: payload, coordinates: anchor });
+            setQueryInUrl(anchor, payload.author_permlink);
           }}
           onDoubleClick={closeInfobox}
         />
@@ -197,32 +200,27 @@ const ObjectOfTypeMap = props => {
   );
 
   useEffect(() => {}, [lat, lon, mapDesktopView, mapMobileView]);
-  useEffect(() => {
-    const initialInfoboxData =
-      !isEmpty(objects) && query?.get('permlink')
-        ? {
-            wobject: objects?.find(o => o.author_permlink === query?.get('permlink')),
-            anchor: center,
-          }
-        : null;
-
-    setInfoboxData(initialInfoboxData);
-  }, [objects]);
 
   useEffect(() => {
     props.getCurrentUserCoordinates();
   }, []);
+  useEffect(() => {
+    const wobject = objects?.find(o => o.author_permlink === permlink);
+
+    setSelectedObject(wobject);
+  }, []);
 
   useEffect(() => {
-    if (!isEmpty(objects) && query?.get('permlink')) {
-      const initialInfoboxData = {
-        wobject: objects.find(o => o.author_permlink === query.get('permlink')),
-        coordinates: center || defaultCenter,
-      };
+    const initialInfoboxData =
+      !isEmpty(objects) && permlink && selectedObject
+        ? {
+            wobject: selectedObject,
+            coordinates: center || defaultCenter,
+          }
+        : null;
 
-      setInfoboxData(initialInfoboxData);
-    }
-  }, [query.get('permlink'), objects]);
+    setInfoboxData(initialInfoboxData);
+  }, [objects, permlink]);
 
   useEffect(() => {
     setShowMap({ desktopMap: settingMap });
@@ -232,7 +230,7 @@ const ObjectOfTypeMap = props => {
         bottomPoint: settingMap.bottomPoint,
       },
       skip: 0,
-      limit: 50,
+      limit: 100,
     };
 
     if (!isEmpty(settingMap.topPoint) && !isEmpty(settingMap.bottomPoint)) {
