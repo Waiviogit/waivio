@@ -13,7 +13,6 @@ import mapProvider from '../../../common/helpers/mapProvider';
 import MapControllers from '../../widgets/MapControllers/MapControllers';
 import { getUserLocation } from '../../../store/userStore/userSelectors';
 import { getConfiguration } from '../../../store/websiteStore/websiteSelectors';
-import { getCoordinates } from '../../../store/userStore/userActions';
 import { getCurrentScreenSize, getParsedMap } from '../../components/Maps/mapHelpers';
 import CustomMarker from '../../components/Maps/CustomMarker';
 import { getObject } from '../../../store/wObjectStore/wObjectSelectors';
@@ -193,7 +192,6 @@ const ObjectOfTypeMap = props => {
       if (!requestPending.current) {
         requestPending.current = true;
         getObjectsForMapObjectType(authorPermlink, body, locale, authUserName).then(r => {
-          // setInit(false);
           setObjects(r.result);
           setIsMapReady(true);
           requestPending.current = false;
@@ -202,12 +200,6 @@ const ObjectOfTypeMap = props => {
     },
     300,
   );
-
-  // useEffect(() => {}, [lat, lon, mapDesktopView, mapMobileView]);
-
-  useEffect(() => {
-    props.getCurrentUserCoordinates();
-  }, []);
 
   useEffect(() => {
     const wobject = objects?.find(o => o.author_permlink === permlink);
@@ -242,6 +234,8 @@ const ObjectOfTypeMap = props => {
         props.locale,
         props.authUserName,
       );
+    } else {
+      setIsMapReady(true);
     }
   }, [props.wobject.author_permlink, settingMap, settingMap.zoom]);
 
@@ -272,7 +266,7 @@ const ObjectOfTypeMap = props => {
       </div>
     );
 
-  return isEmpty(settingMap) || isEmpty(props.wobject) ? (
+  return !isMapReady ? (
     <Loading />
   ) : (
     <div className="MapObjTypeWrap">
@@ -385,7 +379,6 @@ ObjectOfTypeMap.propTypes = {
   userLocation: PropTypes.shape(),
   locale: PropTypes.string,
   authUserName: PropTypes.string,
-  getCurrentUserCoordinates: PropTypes.func,
 };
 
 export default connect(
@@ -397,5 +390,5 @@ export default connect(
     authUserName: getAuthenticatedUserName(state),
     isWaivio: getIsWaivio(state),
   }),
-  { getCurrentUserCoordinates: getCoordinates },
+  {},
 )(withRouter(injectIntl(ObjectOfTypeMap)));
