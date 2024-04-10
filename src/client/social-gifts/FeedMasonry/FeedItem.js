@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { has, isEmpty, some, take, truncate } from 'lodash';
+import { has, isEmpty, take, truncate } from 'lodash';
 import classNames from 'classnames';
 import { ReactSVG } from 'react-svg';
-import { useParams } from 'react-router';
+import { useRouteMatch } from 'react-router';
 import { FormattedMessage } from 'react-intl';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
@@ -20,22 +20,13 @@ import Avatar from '../../components/Avatar';
 import { showPostModal } from '../../../store/appStore/appActions';
 import Payout from '../../components/StoryFooter/Payout';
 import { isMobile } from '../../../common/helpers/apiHelpers';
-import { votePost } from '../../../store/postsStore/postActions';
+import { handlePinPost, votePost } from '../../../store/postsStore/postActions';
 import { getVotePercent } from '../../../store/settingsStore/settingsSelectors';
-import {
-  getAppendDownvotes,
-  getAppendUpvotes,
-  getUpvotes,
-} from '../../../common/helpers/voteHelpers';
+import { getUpvotes } from '../../../common/helpers/voteHelpers';
 import { getAuthenticatedUser, getIsAuthenticated } from '../../../store/authStore/authSelectors';
 import { getPendingLikes } from '../../../store/postsStore/postsSelectors';
-import { getMinRejectVote, getUpdateByBody, sendTiktokPriview } from '../../../waivioApi/ApiClient';
-import { objectFields } from '../../../common/constants/listOfFields';
-import { getAppendData } from '../../../common/helpers/wObjectHelper';
+import { sendTiktokPriview } from '../../../waivioApi/ApiClient';
 import { getObject } from '../../../store/wObjectStore/wObjectSelectors';
-import { getUsedLocale } from '../../../store/appStore/appSelectors';
-import { setPinnedPostsUrls } from '../../../store/feedStore/feedActions';
-import { appendObject, voteAppends } from '../../../store/appendStore/appendActions';
 
 const FeedItem = ({ post, photoQuantity, preview, isReviewsPage }) => {
   const imagePath = post?.imagePath;
@@ -44,12 +35,11 @@ const FeedItem = ({ post, photoQuantity, preview, isReviewsPage }) => {
   const is3speak = embeds[0]?.provider_name === '3Speak';
   const withoutImage = is3speak ? imagePath.length === 1 || isEmpty(imagePath) : isEmpty(imagePath);
   const dispatch = useDispatch();
-  const { name } = useParams();
+  const match = useRouteMatch();
   const user = useSelector(getAuthenticatedUser);
   const isAuthUser = useSelector(getIsAuthenticated);
   const defaultVotePersent = useSelector(getVotePercent);
   const wobject = useSelector(getObject);
-  const locale = useSelector(getUsedLocale);
   const userVotingPower = useSelector(getVotePercent);
   const pinnedPostsUrls = useSelector(getPinnedPostsUrls);
   const previewLoading = useSelector(getPreviewLoadingFromState);
@@ -78,65 +68,6 @@ const FeedItem = ({ post, photoQuantity, preview, isReviewsPage }) => {
     const authorName = post.guestInfo ? post.root_author : post.author;
 
     dispatch(votePost(post.id, authorName, post.permlink, isLiked ? 0 : defaultVotePersent));
-  };
-  const handlePinPost = async () => {
-    const currUpdate = await getUpdateByBody(
-      wobject.author_permlink,
-      'pin',
-      'en-US',
-      `${post.author}/${post.permlink}`,
-    );
-    const upVotes = currUpdate?.active_votes && getAppendUpvotes(currUpdate?.active_votes);
-    const isLikedUpdate = currUpdate?.isLiked || some(upVotes, { voter: user.name });
-    const downVotes = getAppendDownvotes(currUpdate?.active_votes);
-    const isReject = currUpdate?.isReject || some(downVotes, { voter: user.name });
-    let voteWeight;
-
-    if (pinnedPostsUrls.includes(post.url)) {
-      dispatch(setPinnedPostsUrls(pinnedPostsUrls.filter(p => p !== post.url)));
-      if (post?.currentUserPin) {
-        if (isReject) voteWeight = 0;
-        else {
-          voteWeight =
-            isEmpty(upVotes) || (isLikedUpdate && upVotes?.length === 1)
-              ? 1
-              : (await getMinRejectVote(user.name, currUpdate?.author, currUpdate?.permlink, name))
-                  ?.result;
-        }
-        dispatch(
-          voteAppends(currUpdate?.author, currUpdate?.permlink, voteWeight, 'pin', false, 'pin'),
-        );
-      }
-    } else if (currUpdate.message) {
-      dispatch(setPinnedPostsUrls([...pinnedPostsUrls, post.url]));
-      const pageContentField = {
-        name: objectFields.pin,
-        body: `${post.author}/${post.permlink}`,
-        locale,
-      };
-
-      const bodyMessage = `@${user.name} pinned post: author: ${post.author}, permlink: ${post.permlink}`;
-      const postData = getAppendData(user.name, wobject, bodyMessage, pageContentField);
-
-      dispatch(
-        appendObject(postData, { votePercent: userVotingPower, isLike: true, isObjectPage: true }),
-      );
-    } else {
-      dispatch(setPinnedPostsUrls([...pinnedPostsUrls, post.url]));
-      dispatch(
-        voteAppends(
-          currUpdate.author,
-          currUpdate.permlink,
-          userVotingPower,
-          'pin',
-          false,
-          'pin',
-          null,
-          false,
-          true,
-        ),
-      );
-    }
   };
 
   useEffect(() => {
@@ -196,7 +127,9 @@ const FeedItem = ({ post, photoQuantity, preview, isReviewsPage }) => {
             className={currentUserPin ? 'pin-website-color' : pinClassName}
             wrapper="span"
             src="/images/icons/pin-outlined.svg"
-            onClick={handlePinPost}
+            onClick={() =>
+              dispatch(handlePinPost(post, pinnedPostsUrls, user, match, wobject, userVotingPower))
+            }
           />
         </Tooltip>
       )}
@@ -212,7 +145,7 @@ const FeedItem = ({ post, photoQuantity, preview, isReviewsPage }) => {
               })}
               onClick={handleShowPostModal}
               src={image}
-              alt={''}
+              alt={post.title}
               key={image}
             />
           ))}
@@ -229,7 +162,7 @@ const FeedItem = ({ post, photoQuantity, preview, isReviewsPage }) => {
             <img
               className={classNames('FeedMasonry__img', 'FeedMasonry__img--bottom')}
               src={getProxyImageURL(imagePath[0])}
-              alt={''}
+              alt={post.title}
               key={imagePath[0]}
               onClick={handleShowPostModal}
             />

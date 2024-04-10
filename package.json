@@ -12,6 +12,7 @@
     "lint": "node ./scripts/eslint/index.js all",
     "linc": "node ./scripts/eslint/index.js",
     "prettier": "node ./scripts/prettier/tasks/formatFiles.js",
+    "check": "npm run eslint-autofix && npm run prettier-check",
     "prettier-all": "node ./scripts/prettier/tasks/formatFiles.js all",
     "prettier-check": "node ./scripts/prettier/tasks/checkFiles.js",
     "prettier-check-all": "node ./scripts/prettier/tasks/checkFiles.js all",

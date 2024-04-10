@@ -10,9 +10,7 @@ import UserSearchItem from '../../../../search/SearchItems/UserSearchItem';
 import { getObjectName } from '../../../../../common/helpers/wObjectHelper';
 import ObjectSearchItem from '../../../../search/SearchItems/ObjectSearchItem';
 import { getTranformSearchCountData, pendingSearch } from '../../../../search/helpers';
-import listOfObjectTypes, {
-  listOfSocialObjectTypes,
-} from '../../../../../common/constants/listOfObjectTypes';
+import listOfObjectTypes from '../../../../../common/constants/listOfObjectTypes';
 import {
   getAutoCompleteSearchResults,
   getIsStartSearchAutoComplete,
@@ -36,8 +34,13 @@ const GeneralSearch = props => {
   const loading = useSelector(getIsStartSearchAutoComplete);
   const dispatch = useDispatch();
   const history = useHistory();
+  const getSocialLink = obj =>
+    ['list'].includes(obj.object_type)
+      ? `/checklist/${obj.author_permlink}`
+      : `/object/${obj.author_permlink}`;
   const isSocialWobj = wobj =>
-    props.isSocialProduct && listOfSocialObjectTypes.includes(wobj.object_type);
+    props.isSocialProduct &&
+    ['product', 'book', 'person', 'business', 'restaurant', 'list'].includes(wobj.object_type);
 
   const handleAutoCompleteSearchDebounce = useCallback(
     debounce(value => {
@@ -47,6 +50,7 @@ const GeneralSearch = props => {
           'book',
           'business',
           'restaurant',
+          'list',
         ]),
       );
     }, 500),
@@ -118,9 +122,7 @@ const GeneralSearch = props => {
         <AutoComplete.Option
           marker={markers.WOBJ}
           key={getObjectName(option)}
-          value={
-            isSocialWobj(option) ? `/object/${option.author_permlink}` : option.defaultShowLink
-          }
+          value={isSocialWobj(option) ? getSocialLink(option) : option.defaultShowLink}
           className="Topnav__search-autocomplete"
         >
           <ObjectSearchItem wobj={option} />

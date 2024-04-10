@@ -41,7 +41,7 @@ const MenuItemButton = ({ item }) => {
         return webLink ? (
           <div>
             <a target={linkTarget} href={url} className="MenuItemButtons__link ">
-              <img src={itemBody.image} className="MenuItemButtons__icon" alt="pic" />
+              <img src={itemBody.image} className="MenuItemButtons__icon" alt={itemBody.title} />
             </a>
             <a target={linkTarget} href={url} className="MenuItemButtons__link">
               {' '}
@@ -51,7 +51,7 @@ const MenuItemButton = ({ item }) => {
         ) : (
           <div>
             <Link target={linkTarget} to={url} className="MenuItemButtons__link ">
-              <img src={itemBody.image} className="MenuItemButtons__icon" alt="pic" />
+              <img src={itemBody.image} className="MenuItemButtons__icon" alt={itemBody.title} />
             </Link>
             <Link target={linkTarget} to={url} className="MenuItemButtons__link">
               {' '}
@@ -63,13 +63,13 @@ const MenuItemButton = ({ item }) => {
         return webLink ? (
           <div>
             <a href={url} target={linkTarget}>
-              <img src={itemBody.image} className="MenuItemButtons__image" alt="pic" />
+              <img src={itemBody.image} className="MenuItemButtons__image" alt={linkTarget} />
             </a>
           </div>
         ) : (
           <div>
             <Link to={url} target={linkTarget}>
-              <img src={itemBody.image} className="MenuItemButtons__image" alt="pic" />
+              <img src={itemBody.image} className="MenuItemButtons__image" alt={linkTarget} />
             </Link>
           </div>
         );

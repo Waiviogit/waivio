@@ -3,6 +3,7 @@ import { map } from 'lodash';
 import PropTypes from 'prop-types';
 import { Carousel, Icon } from 'antd';
 import './PicturesCarousel.less';
+import { getObjectName } from '../../common/helpers/wObjectHelper';
 import LightboxWithAppendForm from '../widgets/LightboxTools/LightboxWithAppendForm';
 
 const PicturesCarousel = ({ activePicture, pics, wobject, albums, isSocialProduct }) => {
@@ -32,7 +33,7 @@ const PicturesCarousel = ({ activePicture, pics, wobject, albums, isSocialProduc
   return pics ? (
     <div className={isSocialProduct ? 'SocialPicturesCarousel' : 'PicturesCarousel'}>
       <Carousel {...settings} ref={slider} afterChange={i => setPhotoIndex(i)}>
-        {map(pics, pic => (
+        {map(pics, (pic, i) => (
           <div
             key={pic.id}
             className={
@@ -42,7 +43,7 @@ const PicturesCarousel = ({ activePicture, pics, wobject, albums, isSocialProduc
             <img
               onClick={e => onImgClick(e, pic)}
               src={pic.body}
-              alt="pic"
+              alt={`${i + 1} ${getObjectName(wobject)}`}
               className={
                 isSocialProduct ? 'SocialPicturesCarousel__image' : 'PicturesCarousel__image'
               }

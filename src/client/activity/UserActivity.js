@@ -1,10 +1,10 @@
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
+import Helmet from 'react-helmet';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { isEmpty, get } from 'lodash';
 import {
-  getUserAccountHistory,
   getMoreUserAccountHistory,
   updateAccountHistoryFilter,
   setInitialCurrentDisplayedActions,
@@ -26,14 +26,9 @@ const UserActivity = props => {
     match,
   } = props;
   const actions = get(usersAccountHistory, match.params.name, []);
+  const username = match.params.name;
 
   useEffect(() => {
-    const username = match.params.name;
-
-    if (isEmpty(usersAccountHistory[username])) {
-      props.getUserAccountHistory(username);
-    }
-
     if (isEmpty(currentDisplayedActions)) {
       props.setInitialCurrentDisplayedActions(username);
     }
@@ -43,9 +38,16 @@ const UserActivity = props => {
       accountHistoryFilter: [],
     });
   }, []);
+  const description = `Track real-time ${username} interactions on our platform, powered by revolutionary open blockchain technology. Experience unparalleled transparency and authenticity as you witness the vibrant activity of our esteemed community members.`;
 
   return (
     <div>
+      <Helmet>
+        <meta name="description" content={description} />
+        <meta name="twitter:description" content={description} />
+        <meta property="og:type" content="article" />
+        <meta property="og:description" content={description} />
+      </Helmet>
       {actions.length === 0 || usersAccountHistoryLoading ? (
         <Loading style={{ marginTop: '20px' }} />
       ) : (
@@ -57,7 +59,6 @@ const UserActivity = props => {
 
 UserActivity.propTypes = {
   usersAccountHistoryLoading: PropTypes.bool.isRequired,
-  getUserAccountHistory: PropTypes.func.isRequired,
   updateAccountHistoryFilter: PropTypes.func.isRequired,
   setInitialCurrentDisplayedActions: PropTypes.func.isRequired,
   match: PropTypes.shape().isRequired,
@@ -79,7 +80,6 @@ export default withRouter(
       currentDisplayedActions: getCurrentDisplayedActions(state),
     }),
     {
-      getUserAccountHistory,
       getMoreUserAccountHistory,
       updateAccountHistoryFilter,
       setInitialCurrentDisplayedActions,

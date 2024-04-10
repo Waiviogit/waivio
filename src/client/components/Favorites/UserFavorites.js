@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import Helmet from 'react-helmet';
 import { FormattedMessage } from 'react-intl';
 import { isEmpty, isNil } from 'lodash';
 import InfiniteScroll from 'react-infinite-scroller';
@@ -43,41 +44,53 @@ const UserFavorites = () => {
     if (hasMore && !isLoading) dispatch(setMoreFavoriteObjects(name, objectType));
   };
 
-  return (isNil(favoriteObjects?.[objectType]) && isLoading) ||
-    (isLoading && favoriteObjects?.[objectType]?.length < 10) ? (
-    <Loading />
-  ) : (
-    <>
-      <div className={'ListSwitcher__navInfo'}>
-        <FavoritesMobileSidenav
-          objectTypes={objectTypes}
-          visible={visible}
-          setVisible={setVisible}
-        />
-      </div>
-      {emptyFavorites ? (
-        <div className="feed_empty">
-          <h3>
-            <FormattedMessage
-              id="empty_favorites"
-              defaultMessage="This user doesn't have any favorites."
-            />
-          </h3>
-        </div>
+  const description = `Discover the curated collection of favorites handpicked by ${name}. Explore a personalized selection of must-have items tailored to your interests. Find inspiration and elevate your experience with ${name}'s top picks on our Favorites page.`;
+
+  return (
+    <React.Fragment>
+      <Helmet>
+        <meta name="description" content={description} />
+        <meta name="twitter:description" content={description} />
+        <meta property="og:type" content="article" />
+        <meta property="og:description" content={description} />
+      </Helmet>
+      {(isNil(favoriteObjects?.[objectType]) && isLoading) ||
+      (isLoading && favoriteObjects?.[objectType]?.length < 10) ? (
+        <Loading />
       ) : (
-        <InfiniteScroll
-          className="Feed"
-          loadMore={loadMoreObjects}
-          loader={<Loading />}
-          initialLoad={false}
-          hasMore={hasMore}
-        >
-          {favoriteObjects?.[objectType]?.map(wObj => (
-            <ObjectCardSwitcher key={wObj._id} wObj={wObj} />
-          ))}
-        </InfiniteScroll>
-      )}{' '}
-    </>
+        <>
+          <div className={'ListSwitcher__navInfo'}>
+            <FavoritesMobileSidenav
+              objectTypes={objectTypes}
+              visible={visible}
+              setVisible={setVisible}
+            />
+          </div>
+          {emptyFavorites ? (
+            <div className="feed_empty">
+              <h3>
+                <FormattedMessage
+                  id="empty_favorites"
+                  defaultMessage="This user doesn't have any favorites."
+                />
+              </h3>
+            </div>
+          ) : (
+            <InfiniteScroll
+              className="Feed"
+              loadMore={loadMoreObjects}
+              loader={<Loading />}
+              initialLoad={false}
+              hasMore={hasMore}
+            >
+              {favoriteObjects?.[objectType]?.map(wObj => (
+                <ObjectCardSwitcher key={wObj._id} wObj={wObj} />
+              ))}
+            </InfiniteScroll>
+          )}{' '}
+        </>
+      )}
+    </React.Fragment>
   );
 };
 

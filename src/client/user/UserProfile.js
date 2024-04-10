@@ -10,7 +10,6 @@ import {
   getFeedHasMoreFromState,
   getFeedFromState,
 } from '../../common/helpers/stateHelpers';
-import { getUserAccountHistory } from '../../store/walletStore/walletActions';
 import { getUserProfileBlogPosts, resetProfileFilters } from '../../store/feedStore/feedActions';
 import { showPostModal } from '../../store/appStore/appActions';
 import EmptyUserProfile from '../statics/EmptyUserProfile';
@@ -40,7 +39,6 @@ import { getUsersAccountHistory } from '../../store/walletStore/walletSelectors'
   {
     getUserProfileBlogPosts,
     showPostModal,
-    getUserAccountHistory,
     resetProfileFilters,
   },
 )

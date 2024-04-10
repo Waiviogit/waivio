@@ -20,6 +20,7 @@ import {
   getLastPermlinksFromHash,
   getObjectAvatar,
   getObjectName,
+  getTitleForLink,
 } from '../../../common/helpers/wObjectHelper';
 import { setNestedWobject } from '../../../store/wObjectStore/wobjActions';
 import AppendWebpageModal from './AppendWebpageModal';
@@ -67,7 +68,7 @@ const ObjectOfTypeWebpage = ({ intl }) => {
   const jsonVal = currentValue ? JSON.stringify(currentValue) : null;
   const siteLink = location && `${location?.origin}/`;
   const isSocial = useSelector(getIsSocial);
-  const title = `${wobject.name}`;
+  const title = getTitleForLink(wobject);
   const description = `${wobject.description || ''} ${wobject.name}`;
   const { canonicalUrl } = useSeoInfoWithAppUrl(wobject.canonical);
   const siteImage = getObjectAvatar(wobject) || DEFAULTS.AVATAR;

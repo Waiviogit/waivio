@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
 import { isEmpty } from 'lodash';
 import { FormattedMessage } from 'react-intl';
@@ -65,20 +66,31 @@ class UserProfilePosts extends React.Component {
         </div>
       );
     }
+    const description = `Explore genuine ${username} feedback! Dive into our collection of authentic comments left by engaged readers under our posts. Discover what our community is saying, share your thoughts, and join the conversation today.`;
 
-    return isFetching && content?.length < limit ? (
-      <Loading />
-    ) : (
+    return (
       <React.Fragment>
-        <Feed
-          content={content}
-          isFetching={isFetching}
-          hasMore={hasMore}
-          loadMoreContent={loadMoreContentAction}
-          showPostModal={this.props.showPostModal}
-          userComments
-        />
-        <PostModal />
+        <Helmet>
+          <meta name="description" content={description} />
+          <meta name="twitter:description" content={description} />
+          <meta property="og:type" content="article" />
+          <meta property="og:description" content={description} />
+        </Helmet>
+        {isFetching && content?.length < limit ? (
+          <Loading />
+        ) : (
+          <React.Fragment>
+            <Feed
+              content={content}
+              isFetching={isFetching}
+              hasMore={hasMore}
+              loadMoreContent={loadMoreContentAction}
+              showPostModal={this.props.showPostModal}
+              userComments
+            />
+            <PostModal />
+          </React.Fragment>
+        )}
       </React.Fragment>
     );
   }

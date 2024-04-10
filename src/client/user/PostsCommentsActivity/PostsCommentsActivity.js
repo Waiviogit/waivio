@@ -5,7 +5,11 @@ import { injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { Link, withRouter } from 'react-router-dom';
 import { Tabs } from 'antd';
-import { getUserProfileBlogPosts, getUserComments } from '../../../store/feedStore/feedActions';
+import {
+  getUserProfileBlogPosts,
+  getUserComments,
+  getThreadsContent,
+} from '../../../store/feedStore/feedActions';
 import EmptyMutedUserProfile from '../../statics/MutedContent';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 import { getUser } from '../../../store/usersStore/usersSelectors';
@@ -92,6 +96,7 @@ PostsCommentsActivity.fetchData = ({ store, match }) => {
   if (tab === 'posts')
     return store.dispatch(getUserProfileBlogPosts(name, { limit: 10, initialLoad: true }));
   if (tab === 'comments') return store.dispatch(getUserComments({ username: name }));
+  if (tab === 'threads') return store.dispatch(getThreadsContent(name, 0, 20, true));
 
   return Promise.resolve();
 };

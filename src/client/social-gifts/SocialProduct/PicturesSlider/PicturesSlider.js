@@ -5,7 +5,7 @@ import { get, indexOf, isEmpty, map } from 'lodash';
 import PropTypes from 'prop-types';
 import { isMobile } from '../../../../common/helpers/apiHelpers';
 import { getProxyImageURL } from '../../../../common/helpers/image';
-import { getObjectAvatar } from '../../../../common/helpers/wObjectHelper';
+import { getObjectAvatar, getObjectName } from '../../../../common/helpers/wObjectHelper';
 import './PicturesSlider.less';
 
 const PicturesSlider = ({
@@ -128,7 +128,7 @@ const PicturesSlider = ({
       )}
       <br />
       <Carousel {...carouselSettings(pictures)}>
-        {map(pictures, pic => (
+        {map(pictures, (pic, i) => (
           <div key={pic.id}>
             <img
               onClick={e => onImgClick(e, pic)}
@@ -144,7 +144,7 @@ const PicturesSlider = ({
                   ? 'PicturesSlider__thumbnail--active'
                   : 'PicturesSlider__thumbnail'
               }
-              alt="pic"
+              alt={`${i} ${getObjectName(currentWobj)}`}
             />
           </div>
         ))}

@@ -47,7 +47,7 @@ const SocialProductDescription = ({ description, pictures, authorPermlink }) => 
             className="SocialProductDescription__image"
             onClick={e => onPicClick(e, photos[index])}
             src={photos[index]?.body}
-            alt=" "
+            alt={paragraph}
           />
         </div>
       )}

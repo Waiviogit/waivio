@@ -13,10 +13,10 @@ import {
 import ScrollToTopOnMount from '../../components/Utils/ScrollToTopOnMount';
 import {
   getObjectAvatar,
-  getObjectName,
   getObjectType,
   prepareAlbumData,
   prepareAlbumToStore,
+  getTitleForLink,
 } from '../../../common/helpers/wObjectHelper';
 import SocialProduct from '../../social-gifts/SocialProduct/SocialProduct';
 import WidgetContent from '../../social-gifts/WidgetContent/WidgetContent';
@@ -70,7 +70,7 @@ const Wobj = ({
   }, [wobject.author_permlink]);
 
   const getWobjView = useCallback(() => {
-    const title = `${getObjectName(wobject)}`;
+    const title = getTitleForLink(wobject);
     const { canonicalUrl, descriptionSite } = useSeoInfoWithAppUrl(wobject.canonical);
     const desc = wobject?.description || descriptionSite || siteName;
     const image = getObjectAvatar(wobject) || favicon;
