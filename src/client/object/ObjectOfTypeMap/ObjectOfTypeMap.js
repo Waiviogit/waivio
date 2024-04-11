@@ -361,7 +361,7 @@ const ObjectOfTypeMap = props => {
                   />
                 </div>
               </div>
-              <div role="presentation" className="MapOS__fullScreen" onClick={openModal}>
+              <div role="presentation" className="MapOS__fullScreen" onClick={closeModal}>
                 <Icon type="fullscreen-exit" style={{ fontSize: '25px', color: '#000000' }} />
               </div>
             </div>

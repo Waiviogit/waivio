@@ -140,7 +140,7 @@ const SocialWrapper = props => {
             const compareList = wobject?.menuItem?.map(wobjItem => {
               const body = parseJSON(wobjItem.body);
               const currItem = body?.linkToObject
-                ? listItems.wobjects.find(wobj => wobj.author_permlink === body?.linkToObject)
+                ? listItems?.wobjects?.find(wobj => wobj.author_permlink === body?.linkToObject)
                 : body;
 
               return {
@@ -403,7 +403,7 @@ SocialWrapper.fetchData = async ({ store, req, url }) => {
             const compareList = wobject?.menuItem?.map(wobjItem => {
               const body = parseJSON(wobjItem.body);
               const currItem = body?.linkToObject
-                ? listItems.wobjects.find(wobj => wobj.author_permlink === body?.linkToObject)
+                ? listItems?.wobjects?.find(wobj => wobj.author_permlink === body?.linkToObject)
                 : body;
 
               return {

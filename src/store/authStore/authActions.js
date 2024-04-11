@@ -193,8 +193,6 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
       }
     });
   } else if (!steemConnectAPI.accessToken && !isGuest) {
-    // eslint-disable-next-line no-console
-    console.log('tut');
     promise = Promise.reject();
   } else if (isGuest || steemConnectAPI.accessToken) {
     promise = new Promise(async resolve => {
@@ -238,9 +236,6 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
       refresh: isUserLoaded(state),
     },
   }).catch(e => {
-    console.warn(e);
-    // eslint-disable-next-line no-console
-    console.trace(e);
     dispatch(loginError());
 
     return e;
