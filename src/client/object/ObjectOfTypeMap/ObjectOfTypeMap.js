@@ -13,22 +13,21 @@ import mapProvider from '../../../common/helpers/mapProvider';
 import MapControllers from '../../widgets/MapControllers/MapControllers';
 import { getUserLocation } from '../../../store/userStore/userSelectors';
 import { getConfiguration } from '../../../store/websiteStore/websiteSelectors';
-import { getCoordinates } from '../../../store/userStore/userActions';
 import { getCurrentScreenSize, getParsedMap } from '../../components/Maps/mapHelpers';
 import CustomMarker from '../../components/Maps/CustomMarker';
 import { getObject } from '../../../store/wObjectStore/wObjectSelectors';
 import { getObjectsForMapObjectType } from '../../../waivioApi/ApiClient';
 import { getIsWaivio, getUsedLocale } from '../../../store/appStore/appSelectors';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
-import './ObjectOfTypeMap.less';
 import ObjectOverlayCard from '../../components/Maps/Overlays/ObjectOverlayCard/ObjectOverlayCard';
 import { isMobile } from '../../../common/helpers/apiHelpers';
 import { getIsMapModalOpen } from '../../../store/mapStore/mapSelectors';
 import { setMapFullscreenMode } from '../../../store/mapStore/mapActions';
 import useQuery from '../../../hooks/useQuery';
+import Loading from '../../components/Icon/Loading';
+import './ObjectOfTypeMap.less';
 
 const ObjectOfTypeMap = props => {
-  const [showMap, setShowMap] = useState('desktopMap');
   const requestPending = useRef(false);
   const query = useQuery();
   const history = useHistory();
@@ -45,8 +44,14 @@ const ObjectOfTypeMap = props => {
     .get('bottomPoint')
     ?.split(',')
     .map(parseFloat);
+  const permlink = query?.get('permlink');
   const [settingMap, setSettingMap] = useState({ center, zoom, topPoint, bottomPoint });
+  const [isMapReady, setIsMapReady] = useState(false);
   const [objects, setObjects] = useState([]);
+  const [showMap, setShowMap] = useState('desktopMap');
+  const [selectedObject, setSelectedObject] = useState(
+    objects?.find(o => o.author_permlink === permlink),
+  );
   const [infoboxData, setInfoboxData] = useState(false);
   const isFullscreenMode = useSelector(getIsMapModalOpen);
   const dispatch = useDispatch();
@@ -118,7 +123,7 @@ const ObjectOfTypeMap = props => {
     });
   };
 
-  const onMarkerClick = permlink => history.push(`/object/${permlink}`);
+  const onMarkerClick = link => history.push(`/object/${link}`);
   const getOverlayLayout = () => {
     const wobjPermlink = get(infoboxData, ['wobject', 'author_permlink']);
 
@@ -139,19 +144,21 @@ const ObjectOfTypeMap = props => {
     );
   };
   const closeInfobox = () => {
+    const url = `center=${settingMap.center.join(',')}&zoom=${
+      settingMap.zoom
+    }&topPoint=${settingMap.topPoint.join(',')}&bottomPoint=${settingMap.bottomPoint.join(',')}`;
+
+    history.push(`/object/${props.wobject.author_permlink}/map?${url}`);
     setInfoboxData(null);
   };
 
-  const setQueryInUrl = (anchor, permlink) => {
-    const url = `center=${settingMap.center.join(',')}&zoom=${
+  const setQueryInUrl = (anchor, link) => {
+    const url = `center=${anchor.join(',')}&zoom=${
       settingMap.zoom
     }&topPoint=${settingMap.topPoint.join(',')}&bottomPoint=${settingMap.bottomPoint.join(
       ',',
-    )}&permlink=${permlink}`;
+    )}&permlink=${link}`;
 
-    if (isFullscreenMode) {
-      dispatch(setMapFullscreenMode(false));
-    }
     history.push(`/object/${props.wobject.author_permlink}/map?${url}`);
   };
 
@@ -172,8 +179,9 @@ const ObjectOfTypeMap = props => {
           anchor={[+latitude, +longitude]}
           payload={wobject}
           onClick={({ payload, anchor }) => {
-            setQueryInUrl(anchor, payload.author_permlink);
+            setSelectedObject(payload);
             setInfoboxData({ wobject: payload, coordinates: anchor });
+            setQueryInUrl(anchor, payload.author_permlink);
           }}
           onDoubleClick={closeInfobox}
         />
@@ -184,8 +192,8 @@ const ObjectOfTypeMap = props => {
       if (!requestPending.current) {
         requestPending.current = true;
         getObjectsForMapObjectType(authorPermlink, body, locale, authUserName).then(r => {
-          // setInit(false);
           setObjects(r.result);
+          setIsMapReady(true);
           requestPending.current = false;
         });
       }
@@ -193,22 +201,20 @@ const ObjectOfTypeMap = props => {
     300,
   );
 
-  useEffect(() => {}, [lat, lon, mapDesktopView, mapMobileView]);
   useEffect(() => {
+    const wobject = objects?.find(o => o.author_permlink === permlink);
+
+    setSelectedObject(wobject);
     const initialInfoboxData =
-      !isEmpty(objects) && query?.get('permlink')
+      !isEmpty(objects) && permlink && (wobject || selectedObject)
         ? {
-            wobject: objects?.find(o => o.author_permlink === query?.get('permlink')),
-            anchor: center,
+            wobject: wobject || selectedObject,
+            coordinates: center || defaultCenter,
           }
         : null;
 
     setInfoboxData(initialInfoboxData);
-  }, [objects]);
-
-  useEffect(() => {
-    props.getCurrentUserCoordinates();
-  }, []);
+  }, [objects, permlink]);
 
   useEffect(() => {
     setShowMap({ desktopMap: settingMap });
@@ -218,7 +224,7 @@ const ObjectOfTypeMap = props => {
         bottomPoint: settingMap.bottomPoint,
       },
       skip: 0,
-      limit: 50,
+      limit: 100,
     };
 
     if (!isEmpty(settingMap.topPoint) && !isEmpty(settingMap.bottomPoint)) {
@@ -228,6 +234,8 @@ const ObjectOfTypeMap = props => {
         props.locale,
         props.authUserName,
       );
+    } else {
+      setIsMapReady(true);
     }
   }, [props.wobject.author_permlink, settingMap, settingMap.zoom]);
 
@@ -258,109 +266,119 @@ const ObjectOfTypeMap = props => {
       </div>
     );
 
-  return (
+  return !isMapReady ? (
+    <Loading />
+  ) : (
     <div className="MapObjTypeWrap">
-      <MapControllers
-        isMapObjType
-        decrementZoom={decrementZoom}
-        incrementZoom={incrementZoom}
-        setPosition={setCoordinates}
-        successCallback={successCallback}
-        rejectCallback={e => console.error(`Map error:${e}`)}
-      />
-      <Map
-        center={get(settingMap, 'center') || get(mapState, [showMap, 'center'], defaultCenter)}
-        zoom={get(settingMap, 'zoom', 0) || get(mapState, [showMap, 'zoom'], defaultZoom)}
-        height={getCurrentScreenSize()}
-        provider={mapProvider}
-        onBoundsChanged={state => onBoundsChanged(state, showMap)}
-        onClick={({ event }) => {
-          event.stopPropagation();
-          if (
-            ['ObjectOverlayCard__name-truncated', 'avatar-image'].includes(
-              event.target.classList.value,
-            )
-          ) {
-            history.push(infoboxData.wobject.defaultShowLink);
-          } else if (event.target.classList.value === 'pigeon-overlays') setInfoboxData(null);
-        }}
-      >
-        {markersLayout}
-        {infoboxData && getOverlayLayout()}
-      </Map>
-      <div role="presentation" className="MapOS__fullScreen" onClick={openModal}>
-        <Icon type="fullscreen" style={{ fontSize: '25px', color: '#000000' }} />
-      </div>
-      {isFullscreenMode && (
-        <Modal
-          title={null}
-          footer={null}
-          visible={isFullscreenMode}
-          onCancel={closeModal}
-          style={{ top: 0 }}
-          width={'100%'}
-          wrapClassName={'MapObjectModal'}
-          destroyOnClose
+      <>
+        {isMapReady && (
+          <MapControllers
+            isMapObjType
+            decrementZoom={decrementZoom}
+            incrementZoom={incrementZoom}
+            setPosition={setCoordinates}
+            successCallback={successCallback}
+            rejectCallback={e => console.error(`Map error:${e}`)}
+          />
+        )}
+        <Map
+          center={get(settingMap, 'center') || get(mapState, [showMap, 'center'], defaultCenter)}
+          zoom={get(settingMap, 'zoom', 0) || get(mapState, [showMap, 'zoom'], defaultZoom)}
+          height={getCurrentScreenSize()}
+          provider={mapProvider}
+          onBoundsChanged={state => onBoundsChanged(state, showMap)}
+          onClick={({ event }) => {
+            event.stopPropagation();
+            if (
+              ['ObjectOverlayCard__name-truncated', 'avatar-image'].includes(
+                event.target.classList.value,
+              )
+            ) {
+              history.push(infoboxData.wobject.defaultShowLink);
+            } else if (event.target.classList.value === 'pigeon-overlays') {
+              closeInfobox();
+            }
+          }}
         >
-          <div className="MapOS__fullscreenContent">
-            <Map
-              ref={mapRef}
-              center={
-                get(settingMap, 'center') || get(mapState, [showMap, 'center'], defaultCenter)
-              }
-              zoom={get(settingMap, 'zoom', 0) || get(mapState, [showMap, 'zoom'], defaultZoom)}
-              provider={mapProvider}
-              animate
-              onBoundsChanged={state => onBoundsChanged(state, showMap)}
-              onClick={({ event }) => {
-                event.stopPropagation();
-                if (
-                  ['ObjectOverlayCard__name-truncated', 'avatar-image'].includes(
-                    event.target.classList.value,
-                  )
-                ) {
-                  dispatch(setMapFullscreenMode(false));
-                  history.push(infoboxData.wobject.defaultShowLink);
-                } else if (event.target.classList.value === 'pigeon-overlays') setInfoboxData(null);
-              }}
-            >
-              {markersLayout}
-              {infoboxData && getOverlayLayout()}
-            </Map>
-            {zoomButtonsLayout()}
-
-            <div className={'MapConfigurationControl__gps'}>
-              <div
-                role="presentation"
-                className="MapConfigurationControl__locateGPS"
-                onClick={setCoordinates}
+          {markersLayout}
+          {infoboxData && getOverlayLayout()}
+        </Map>
+        {isMapReady && (
+          <div role="presentation" className="MapOS__fullScreen" onClick={openModal}>
+            <Icon type="fullscreen" style={{ fontSize: '25px', color: '#000000' }} />
+          </div>
+        )}
+        {isFullscreenMode && (
+          <Modal
+            title={null}
+            footer={null}
+            visible={isFullscreenMode}
+            onCancel={closeModal}
+            style={{ top: 0 }}
+            width={'100%'}
+            wrapClassName={'MapObjectModal'}
+            destroyOnClose
+          >
+            <div className="MapOS__fullscreenContent">
+              <Map
+                ref={mapRef}
+                center={
+                  get(settingMap, 'center') || get(mapState, [showMap, 'center'], defaultCenter)
+                }
+                zoom={get(settingMap, 'zoom', 0) || get(mapState, [showMap, 'zoom'], defaultZoom)}
+                provider={mapProvider}
+                animate
+                onBoundsChanged={state => onBoundsChanged(state, showMap)}
+                onClick={({ event }) => {
+                  event.stopPropagation();
+                  if (
+                    ['ObjectOverlayCard__name-truncated', 'avatar-image'].includes(
+                      event.target.classList.value,
+                    )
+                  ) {
+                    dispatch(setMapFullscreenMode(false));
+                    history.push(infoboxData.wobject.defaultShowLink);
+                  } else if (event.target.classList.value === 'pigeon-overlays') {
+                    closeInfobox();
+                  }
+                }}
               >
-                <img
-                  src="/images/focus.svg"
-                  alt="aim"
-                  className="MapConfigurationControl__locateGPS-button"
-                />
+                {markersLayout}
+                {infoboxData && getOverlayLayout()}
+              </Map>
+              {zoomButtonsLayout()}
+
+              <div className={'MapConfigurationControl__gps'}>
+                <div
+                  role="presentation"
+                  className="MapConfigurationControl__locateGPS"
+                  onClick={setCoordinates}
+                >
+                  <img
+                    src="/images/focus.svg"
+                    alt="aim"
+                    className="MapConfigurationControl__locateGPS-button"
+                  />
+                </div>
+              </div>
+              <div role="presentation" className="MapOS__fullScreen" onClick={closeModal}>
+                <Icon type="fullscreen-exit" style={{ fontSize: '25px', color: '#000000' }} />
               </div>
             </div>
-            <div role="presentation" className="MapOS__fullScreen" onClick={openModal}>
-              <Icon type="fullscreen-exit" style={{ fontSize: '25px', color: '#000000' }} />
-            </div>
-          </div>
-        </Modal>
-      )}
+          </Modal>
+        )}
+      </>
     </div>
   );
 };
 
 ObjectOfTypeMap.propTypes = {
-  // wobjects: PropTypes.arrayOf(),
   match: PropTypes.shape(),
   config: PropTypes.shape(),
   wobject: PropTypes.shape(),
   userLocation: PropTypes.shape(),
   locale: PropTypes.string,
   authUserName: PropTypes.string,
-  getCurrentUserCoordinates: PropTypes.func,
 };
 
 export default connect(
@@ -372,5 +390,5 @@ export default connect(
     authUserName: getAuthenticatedUserName(state),
     isWaivio: getIsWaivio(state),
   }),
-  { getCurrentUserCoordinates: getCoordinates },
+  {},
 )(withRouter(injectIntl(ObjectOfTypeMap)));

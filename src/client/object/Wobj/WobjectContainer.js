@@ -88,9 +88,11 @@ const WobjectContainer = props => {
         if (
           (props.isSocial &&
             !['page', 'newsfeed', 'widget', 'product']?.includes(res.value.object_type)) ||
-          (!props.isSocial && res.value.map)
+          !props.isSocial
         ) {
-          props.getNearbyObjects(name);
+          if (res.value.map) {
+            props.getNearbyObjects(name);
+          }
           props.getWobjectExpertise(newsFilter, name, true);
           props.getObjectFollowers({
             object: name,

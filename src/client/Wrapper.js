@@ -15,7 +15,7 @@ import {
   busyLogin,
   getAuthGuestBalance as dispatchGetAuthGuestBalance,
 } from '../store/authStore/authActions';
-import { getNotifications } from '../store/userStore/userActions';
+import { getCoordinates, getNotifications } from '../store/userStore/userActions';
 import {
   getRate,
   getRewardFund,
@@ -82,6 +82,7 @@ export const AppSharedContext = React.createContext({ usedLocale: 'en-US', isGue
     getTokenRates,
     getCryptoPriceHistory,
     getSwapEnginRates,
+    getCoordinates,
   },
 )
 class Wrapper extends React.PureComponent {
@@ -110,6 +111,7 @@ class Wrapper extends React.PureComponent {
     loadingFetching: PropTypes.bool,
     location: PropTypes.shape(),
     handleRefAuthUser: PropTypes.func,
+    getCoordinates: PropTypes.func,
     isGuest: PropTypes.bool,
   };
 
@@ -197,6 +199,7 @@ class Wrapper extends React.PureComponent {
         this.props.getRewardFund();
         this.props.dispatchGetAuthGuestBalance();
         this.props.getRate();
+        this.props.getCoordinates();
       });
     });
   }
