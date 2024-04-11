@@ -27,7 +27,7 @@ import {
   getWobjectDepartments,
   getWobjectsShopList,
 } from '../../store/shopStore/shopActions';
-import { getNotifications } from '../../store/userStore/userActions';
+import { getCoordinates, getNotifications } from '../../store/userStore/userActions';
 import {
   getRate,
   getRewardFund,
@@ -218,6 +218,7 @@ const SocialWrapper = props => {
             props.busyLogin();
             props.getRewardFund();
             props.dispatchGetAuthGuestBalance();
+            props.getCoordinates();
           });
           if ((token && provider) || (auth && provider)) {
             props.history.push('/');
@@ -278,6 +279,7 @@ SocialWrapper.propTypes = {
   setUsedLocale: PropTypes.func,
   busyLogin: PropTypes.func,
   getCurrentAppSettings: PropTypes.func,
+  getCoordinates: PropTypes.func,
   nightmode: PropTypes.bool,
   isOpenModal: PropTypes.bool,
   dispatchGetAuthGuestBalance: PropTypes.func,
@@ -516,6 +518,7 @@ export default ErrorBoundary(
         getSwapEnginRates,
         setSocialFlag,
         setLoadingStatus,
+        getCoordinates,
       },
     )(SocialWrapper),
   ),

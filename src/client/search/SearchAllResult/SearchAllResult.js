@@ -30,7 +30,7 @@ import SearchMapFilters from './components/SearchMapFilters';
 import UsersList from './components/UsersList';
 import WobjectsList from './components/WobjectsList';
 import ReloadButton from './components/ReloadButton';
-
+import { getIsSocial } from '../../../store/appStore/appSelectors';
 import './SearchAllResult.less';
 
 const SearchAllResult = props => {
@@ -152,7 +152,7 @@ const SearchAllResult = props => {
         <Icon type={props.isShowResult ? 'left' : 'right'} />
       </div>
       <div className="SearchAllResult__main-wrap" ref={resultList} onScroll={getEndScroll}>
-        {!isUsersSearch && <SearchMapFilters />}
+        {!isUsersSearch && !props.isSocial && <SearchMapFilters />}
         {props.showReload && (
           <ReloadButton
             className="SearchAllResult__reload"
@@ -188,6 +188,7 @@ SearchAllResult.propTypes = {
   usersCounter: PropTypes.number.isRequired,
   hasMore: PropTypes.bool,
   hasMoreUsers: PropTypes.bool,
+  isSocial: PropTypes.bool,
   loadingMore: PropTypes.bool.isRequired,
   isShowResult: PropTypes.bool.isRequired,
   setShowSearchResult: PropTypes.func.isRequired,
@@ -221,6 +222,7 @@ export default connect(
     usersCounter: getSearchUsersResultsQuantity(state),
     activeFilters: getSearchFiltersTagCategory(state),
     searchMap: getWebsiteMap(state),
+    isSocial: getIsSocial(state),
   }),
   {
     searchExpertsForMapLoadingMore,

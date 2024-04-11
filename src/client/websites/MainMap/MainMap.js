@@ -26,7 +26,7 @@ import {
 } from '../../../store/websiteStore/websiteActions';
 import { distanceInMBetweenEarthCoordinates, getFirstOffsetNumber } from '../helper';
 import ObjectOverlayCard from '../../components/Maps/Overlays/ObjectOverlayCard/ObjectOverlayCard';
-import { getScreenSize } from '../../../store/appStore/appSelectors';
+import { getIsSocial, getScreenSize } from '../../../store/appStore/appSelectors';
 import { getUserLocation } from '../../../store/userStore/userSelectors';
 import {
   getShowSearchResult,
@@ -185,10 +185,12 @@ const MainMap = React.memo(props => {
     if (!isEmpty(topPoint) && !isEmpty(bottomPoint)) {
       // if (abortController.current) abortController.current.abort();
       // abortController.current = new AbortController();
+      const searchString = props.isSocial ? props.match.params.name : props.searchString;
 
       props
         .getWebsiteObjWithCoordinates(
-          props.searchString,
+          props.isSocial,
+          searchString,
           { topPoint, bottomPoint },
           80,
           // abortController.current,
@@ -365,6 +367,7 @@ const MainMap = React.memo(props => {
           )}
         </Map>
         <MapControllers
+          isMapObjType
           className={'WebsiteBodyControl'}
           decrementZoom={decrementZoom}
           incrementZoom={incrementZoom}
@@ -377,6 +380,7 @@ const MainMap = React.memo(props => {
 });
 
 MainMap.propTypes = {
+  match: PropTypes.shape(),
   location: PropTypes.shape({
     pathname: PropTypes.string,
     search: PropTypes.string,
@@ -404,6 +408,7 @@ MainMap.propTypes = {
   searchType: PropTypes.string.isRequired,
   hoveredCardPermlink: PropTypes.string.isRequired,
   showReloadButton: PropTypes.bool,
+  isSocial: PropTypes.bool,
   searchMap: PropTypes.shape({
     coordinates: PropTypes.arrayOf(PropTypes.number),
   }).isRequired,
@@ -430,6 +435,7 @@ export default connect(
     searchMap: getWebsiteMap(state),
     showReloadButton: getShowReloadButton(state),
     searchType: getWebsiteSearchType(state),
+    isSocial: getIsSocial(state),
   }),
   {
     getCoordinates,
