@@ -597,6 +597,7 @@ export const GET_WEBSITE_OBJECTS_WITH_COORDINATES = createAsyncActionType(
 );
 
 export const getWebsiteObjWithCoordinates = (
+  isSocial = false,
   searchString,
   box = {},
   limit = 70,
@@ -616,6 +617,18 @@ export const getWebsiteObjWithCoordinates = (
   };
 
   if (!searchString) body.mapMarkers = true;
+  const getObjects = () =>
+    isSocial
+      ? ApiClient.getObjectsForMapObjectType(
+          searchString,
+          {
+            box,
+            limit,
+          },
+          locale,
+          userName,
+        ).then(r => ({ wobjects: r.result }))
+      : ApiClient.searchObjects(searchString, objType, false, limit, locale, body, abortController);
 
   if (userType) {
     return dispatch({
@@ -629,15 +642,7 @@ export const getWebsiteObjWithCoordinates = (
 
   return dispatch({
     type: GET_WEBSITE_OBJECTS_WITH_COORDINATES.ACTION,
-    payload: ApiClient.searchObjects(
-      searchString,
-      objType,
-      false,
-      limit,
-      locale,
-      body,
-      abortController,
-    ),
+    payload: getObjects(),
     meta: Boolean(searchString || !isEmpty(tagsFilter)),
   });
 };
