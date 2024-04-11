@@ -10,10 +10,9 @@ import './Experts.less';
 
 const Experts = ({ title, experts, name }) => {
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [expertsArr, setExpertsArr] = useState([]);
+  const [expertsArr, setExpertsArr] = useState(experts);
   const slideWidth = 240;
   const slidesToShow = Math.floor(typeof window !== 'undefined' && window.innerWidth / slideWidth);
-
   const carouselSettings = {
     dots: false,
     dotPosition: 'bottom',

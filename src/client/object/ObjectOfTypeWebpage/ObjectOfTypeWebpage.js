@@ -5,16 +5,21 @@ import { injectIntl } from 'react-intl';
 import { Helmet } from 'react-helmet';
 import PropTypes from 'prop-types';
 import { useHistory, useParams } from 'react-router';
-import { has, isNil } from 'lodash';
+import { has, isNil, isEmpty } from 'lodash';
 import Editor from '@react-page/editor';
 import slate from '@react-page/plugins-slate';
 import image from '@react-page/plugins-image';
 import background from '@react-page/plugins-background';
 import spacer from '@react-page/plugins-spacer';
 import divider from '@react-page/plugins-divider';
+import { parseJSON } from '../../../common/helpers/parseJSON';
 import { getObject } from '../../../waivioApi/ApiClient';
 import { colorPickerPlugin } from './colorPickerPlugin';
-import { getIsEditMode } from '../../../store/wObjectStore/wObjectSelectors';
+import {
+  getIsEditMode,
+  getWobjectNested,
+  getObject as getObjectState,
+} from '../../../store/wObjectStore/wObjectSelectors';
 import { objectFields } from '../../../common/constants/listOfFields';
 import {
   getLastPermlinksFromHash,
@@ -51,47 +56,52 @@ const customSlate = slate(config => ({
 
 const plugins = [customSlate, image, background(), customVideoPlugin, spacer, divider];
 
+const getWebpageJson = (obj, isSocial) => {
+  const siteLink = typeof location !== 'undefined' && `${location?.origin}/`;
+
+  return parseJSON(
+    isSocial ? obj.webpage?.replace(/https:\/\/www\.waivio\.com\//g, siteLink) : obj.webpage,
+  );
+};
 const ObjectOfTypeWebpage = ({ intl }) => {
   const history = useHistory();
   const { name } = useParams();
   const dispatch = useDispatch();
   const user = useSelector(getAuthenticatedUserName);
-  const locale = useSelector(getUsedLocale);
-  const authorPermlink = history?.location.hash
-    ? getLastPermlinksFromHash(history?.location.hash)
-    : name;
-  const [wobject, setWobject] = useState({});
-  const [currentValue, setCurrentValue] = useState(null);
-  const [showModal, setShowModal] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const nestedWobject = useSelector(getWobjectNested);
+  const wobject = useSelector(getObjectState);
   const isEditMode = useSelector(getIsEditMode);
-  const jsonVal = currentValue ? JSON.stringify(currentValue) : null;
-  const siteLink = location && `${location?.origin}/`;
   const isSocial = useSelector(getIsSocial);
-  const title = getTitleForLink(wobject);
-  const description = `${wobject.description || ''} ${wobject.name}`;
-  const { canonicalUrl } = useSeoInfoWithAppUrl(wobject.canonical);
-  const siteImage = getObjectAvatar(wobject) || DEFAULTS.AVATAR;
   const siteName = useSelector(getSiteName);
   const helmetIcon = useSelector(getHelmetIcon);
+  const locale = useSelector(getUsedLocale);
+  const currObj = isEmpty(nestedWobject) ? wobject : nestedWobject;
+  const [currentValue, setCurrentValue] = useState(getWebpageJson(currObj, isSocial));
+  const [showModal, setShowModal] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const jsonVal = currentValue ? JSON.stringify(currentValue) : null;
+  const title = getTitleForLink(currObj);
+  const description = `${currObj.description || ''} ${currObj.name}`;
+  const { canonicalUrl } = useSeoInfoWithAppUrl(currObj.canonical);
+  const siteImage = getObjectAvatar(currObj) || DEFAULTS.AVATAR;
 
   useEffect(() => {
-    setLoading(true);
-    getObject(authorPermlink, user, locale).then(res => {
-      setWobject(res);
-      if (has(res, 'webpage')) {
-        const jsonString = isSocial
-          ? res.webpage?.replace(/https:\/\/www\.waivio\.com\//g, siteLink)
-          : res.webpage;
+    if (history?.location.hash) {
+      const pathUrl = getLastPermlinksFromHash(history?.location.hash);
 
-        setCurrentValue(JSON.parse(jsonString));
-        dispatch(setNestedWobject(res));
-      }
-      setLoading(false);
-    });
-  }, [authorPermlink]);
+      setLoading(true);
+      getObject(pathUrl, user, locale).then(res => {
+        if (has(res, 'webpage')) {
+          setCurrentValue(getWebpageJson(res, isSocial));
+          dispatch(setNestedWobject(res));
+        }
+        setLoading(false);
+      });
+    }
+  }, [history.location.hash, name]);
 
-  if (((isNil(currentValue) && !loading) || currentValue?.rows.length < 1) && !isEditMode) {
+  if (((isNil(currentValue) && !loading) || currentValue?.rows?.length < 1) && !isEditMode) {
     return (
       <React.Fragment>
         <div className="ObjectOfTypeWebpage__empty-placeholder">
@@ -132,7 +142,7 @@ const ObjectOfTypeWebpage = ({ intl }) => {
       <div className={isSocial ? 'SitesWebpage' : ''}>
         <div className={isEditMode ? 'ObjectOfTypeWebpage margin' : 'ObjectOfTypeWebpage'}>
           {!isEditMode && history?.location.hash && (
-            <CatalogBreadcrumb wobject={wobject} intl={intl} />
+            <CatalogBreadcrumb wobject={currObj} intl={intl} />
           )}
           {loading ? (
             <Loading />
@@ -159,8 +169,8 @@ const ObjectOfTypeWebpage = ({ intl }) => {
           )}
           {showModal && (
             <AppendWebpageModal
-              objName={getObjectName(wobject)}
-              wObject={wobject}
+              objName={getObjectName(currObj)}
+              wObject={currObj}
               showModal={showModal}
               hideModal={() => setShowModal(false)}
               webpageBody={jsonVal}

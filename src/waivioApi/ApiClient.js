@@ -20,6 +20,7 @@ import {
 export const getAuthHeaders = () => ({
   'access-token': Cookie.get('access_token'),
   'hive-auth': Boolean(Cookie.get('auth')),
+  'waivio-auth': Boolean(store.get('accessToken')),
 });
 
 export const headers = {
@@ -130,7 +131,7 @@ export const getObjectsByIds = ({
     }),
   })
     .then(res => res.json())
-    .catch(error => error);
+    .catch(error => []);
 
 export const getObject = (authorPermlink, user, locale) => {
   const queryString = user ? `?user=${user}` : '';

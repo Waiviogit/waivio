@@ -209,19 +209,24 @@ WobjectContainer.fetchData = async ({ store, match }) => {
       ];
 
       if (listOfSocialObjectTypes?.includes(response.value.object_type)) {
-        const customSort = isEmpty(response.value?.sortCustom?.include)
-          ? response.value.menuItem.map(i => i.permlink)
-          : response.value?.sortCustom?.include;
-        const items = sortListItems(prepareMenuItems(response.value.menuItem), customSort)[0];
-
         promises = [
           ...promises,
           store.dispatch(getAddOns(response.value.addOn?.map(obj => obj?.body))),
           store.dispatch(getSimilarObjects(objName)),
           store.dispatch(getRelatedObjectsAction(objName)),
-          store.dispatch(getMenuItemContent(parseJSON(items?.body)?.linkToObject)),
           store.dispatch(getProductInfo(response.value)),
         ];
+
+        if (response.value?.sortCustom?.include || response.value.menuItem) {
+          const customSort = isEmpty(response.value?.sortCustom?.include)
+            ? response.value.menuItem.map(i => i.permlink)
+            : response.value?.sortCustom?.include;
+          const items = sortListItems(prepareMenuItems(response.value.menuItem), customSort)[0];
+
+          promises.push(store.dispatch(getMenuItemContent(parseJSON(items?.body)?.linkToObject)));
+        }
+
+        return Promise.allSettled(promises);
       }
 
       return Promise.allSettled(promises);
