@@ -10,14 +10,17 @@ import {
   getWebsiteSearchResultLoading,
 } from '../../../../store/searchStore/searchSelectors';
 import Loading from '../../../components/Icon/Loading';
-import { getWobjectsPoint } from '../../../../store/websiteStore/websiteSelectors';
+import {
+  getSocialSearchResult,
+  getSocialSearchResultLoading,
+} from '../../../../store/websiteStore/websiteSelectors';
 import { getIsSocial } from '../../../../store/appStore/appSelectors';
 
 const WobjectsList = React.memo(props => {
   const objects = props.isSocial ? props.socialWobjects : props.searchResult;
+  const loading = props.isSocial ? props.socialLoading : props.websiteLoading;
 
-  if (props.loading) return <Loading />;
-  if (isEmpty(objects)) {
+  if (isEmpty(objects) && !loading) {
     return (
       <div className="SearchAllResult__empty">
         <FormattedMessage id="search_no_result" />
@@ -25,29 +28,34 @@ const WobjectsList = React.memo(props => {
     );
   }
 
-  return map(uniqBy(objects, '_id'), obj => {
-    const onMouseOver = () => props.handleHoveredCard(obj.author_permlink);
-    const onMouseOut = () => props.handleHoveredCard('');
-    const onClick = () => props.handleItemClick(obj);
+  return loading ? (
+    <Loading />
+  ) : (
+    map(uniqBy(objects, '_id'), obj => {
+      const onMouseOver = () => props.handleHoveredCard(obj.author_permlink);
+      const onMouseOut = () => props.handleHoveredCard('');
+      const onClick = () => props.handleItemClick(obj);
 
-    return (
-      <div
-        role="presentation"
-        key={obj._id}
-        onMouseOver={onMouseOver}
-        onMouseOut={onMouseOut}
-        onClick={onClick}
-      >
-        <WobjCardSwitcher obj={obj} />
-      </div>
-    );
-  });
+      return (
+        <div
+          role="presentation"
+          key={obj._id}
+          onMouseOver={onMouseOver}
+          onMouseOut={onMouseOut}
+          onClick={onClick}
+        >
+          <WobjCardSwitcher obj={obj} />
+        </div>
+      );
+    })
+  );
 });
 
 WobjectsList.propTypes = {
   searchResult: PropTypes.arrayOf(PropTypes.shape()).isRequired,
   socialWobjects: PropTypes.arrayOf(PropTypes.shape()),
-  loading: PropTypes.bool.isRequired,
+  websiteLoading: PropTypes.bool,
+  socialLoading: PropTypes.bool,
   isSocial: PropTypes.bool.isRequired,
   handleHoveredCard: PropTypes.func.isRequired,
   handleItemClick: PropTypes.func.isRequired,
@@ -56,6 +64,7 @@ WobjectsList.propTypes = {
 export default connect(state => ({
   searchResult: getWebsiteSearchResult(state),
   isSocial: getIsSocial(state),
-  socialWobjects: getWobjectsPoint(state),
-  loading: getWebsiteSearchResultLoading(state),
+  socialWobjects: getSocialSearchResult(state),
+  websiteLoading: getWebsiteSearchResultLoading(state),
+  socialLoading: getSocialSearchResultLoading(state),
 }))(WobjectsList);

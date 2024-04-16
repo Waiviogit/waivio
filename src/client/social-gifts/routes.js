@@ -34,11 +34,6 @@ const routes = () => ({
       component: ShopSwitcher,
     },
     {
-      path: ['/object/:name/map'],
-      exact: true,
-      component: WebsiteBody,
-    },
-    {
       path: ['/(object-shop)/:name/:department?'],
       exact: true,
       component: Shop,
@@ -75,6 +70,11 @@ const routes = () => ({
       path: ['/checklist/:name'],
       exact: true,
       component: Checklist,
+    },
+    {
+      path: ['/object/:name/map'],
+      exact: true,
+      component: WebsiteBody,
     },
     {
       path: ['/object/widget/:name'],

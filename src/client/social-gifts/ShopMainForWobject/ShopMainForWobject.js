@@ -11,6 +11,7 @@ import WobjectShoppingList from '../../object/ObjectTypeShop/WobjectShoppingList
 import Wobj from '../../object/Wobj/Wobj';
 import Checklist from '../Checklist/Checklist';
 import { getAlbums } from '../../../store/galleryStore/galleryActions';
+import WebsiteBody from '../../websites/WebsiteLayoutComponents/Body/WebsiteBody';
 
 const ShopMainForWobject = () => {
   const links = useSelector(getNavigItems);
@@ -20,7 +21,7 @@ const ShopMainForWobject = () => {
   const authorPermlink = links[0]?.permlink || objState.author_permlink;
 
   useEffect(() => {
-    if (!['shop', 'list', 'page'].includes(objType) && authorPermlink) {
+    if (!['shop', 'list', 'page', 'map'].includes(objType) && authorPermlink) {
       dispatch(getObject(authorPermlink));
       dispatch(getAlbums(authorPermlink));
     }
@@ -48,6 +49,8 @@ const ShopMainForWobject = () => {
       case 'page':
       case 'newsfeed':
         return <Checklist permlink={authorPermlink} />;
+      case 'map':
+        return <WebsiteBody permlink={authorPermlink} />;
 
       default:
         return (
