@@ -1,82 +1,53 @@
-import React from 'react';
-import { Icon, message } from 'antd';
-import PropTypes from 'prop-types';
+import { take } from 'lodash';
+import React, { useEffect } from 'react';
+import { Icon } from 'antd';
 import { FormattedMessage } from 'react-intl';
+import { useSelector, useDispatch } from 'react-redux';
+import { useParams } from 'react-router';
 import { Link } from 'react-router-dom';
-import RightSidebarLoading from '../../../client/app/Sidebar/RightSidebarLoading';
+import { excludeHashtagObjType } from '../../../common/constants/listOfObjectTypes';
+import { getObjectsList } from '../../../store/dynamicList/dynamicListActions';
+import { getDynamicList } from '../../../store/dynamicList/dynamicListSelectors';
 import { getWobjectsWithUserWeight } from '../../../waivioApi/ApiClient';
 import ObjectCard from './ObjectCard';
 
 import './ObjectWeightBlock.less';
 
-class ObjectWeightBlock extends React.Component {
-  static propTypes = {
-    username: PropTypes.string.isRequired,
-    authUser: PropTypes.string,
-    locale: PropTypes.string,
-  };
+const ObjectWeightBlock = () => {
+  const params = useParams();
+  const { list, hasMore } = useSelector(state => getDynamicList(state, params[0]));
+  const dispatch = useDispatch();
 
-  static defaultProps = {
-    authUser: '',
-    locale: 'en-US',
-  };
+  const fetcher = skip =>
+    getWobjectsWithUserWeight(params.name, skip, 5, params.name, excludeHashtagObjType);
 
-  state = {
-    wObjects: [],
-    wObjectsCount: 0,
-    loading: true,
-  };
+  useEffect(() => {
+    dispatch(getObjectsList(fetcher, 5, 0, params[0], false));
+  }, [params.name]);
 
-  componentDidMount() {
-    getWobjectsWithUserWeight(
-      this.props.username,
-      0,
-      5,
-      this.props.authUser,
-      null,
-      this.props.locale,
-    )
-      .then(response => {
-        this.setState({
-          wObjects: response.wobjects,
-          hasMore: response.hasMore,
-          loading: false,
-        });
-      })
-      .catch(error => {
-        this.setState({ wObjects: [], loading: false });
-        message.error(error);
-      });
-  }
+  const wObjects = take(list, 5);
 
-  render() {
-    const { username } = this.props;
-    const { wObjects, loading, hasMore } = this.state;
-
-    if (loading) return <RightSidebarLoading />;
-
-    return wObjects?.length ? (
-      <div className="ObjectWeightBlock SidebarContentBlock">
-        <h4 className="SidebarContentBlock__title title">
-          <Icon type="codepen" className="ObjectWeightBlock__icon" />{' '}
-          <FormattedMessage id="user_expertise" defaultMessage="Expertise" />
-        </h4>
-        <div className="SidebarContentBlock__content">
-          {wObjects &&
-            wObjects?.map(wobject => (
-              <ObjectCard key={wobject.author_permlink} wobject={wobject} showFollow={false} />
-            ))}
-          {hasMore && (
-            <h4 className="ObjectWeightBlock__more">
-              <Link to={`/@${username}/expertise-objects`}>
-                <FormattedMessage id="show_more" defaultMessage="Show more" />
-              </Link>
-            </h4>
-          )}
-        </div>
+  return wObjects?.length ? (
+    <div className="ObjectWeightBlock SidebarContentBlock">
+      <h4 className="SidebarContentBlock__title title">
+        <Icon type="codepen" className="ObjectWeightBlock__icon" />{' '}
+        <FormattedMessage id="user_expertise" defaultMessage="Expertise" />
+      </h4>
+      <div className="SidebarContentBlock__content">
+        {wObjects &&
+          wObjects?.map(wobject => (
+            <ObjectCard key={wobject.author_permlink} wobject={wobject} showFollow={false} />
+          ))}
+        {hasMore && (
+          <h4 className="ObjectWeightBlock__more">
+            <Link to={`/@${params.name}/expertise-objects`}>
+              <FormattedMessage id="show_more" defaultMessage="Show more" />
+            </Link>
+          </h4>
+        )}
       </div>
-    ) : null;
-  }
-}
+    </div>
+  ) : null;
+};
 
 export default ObjectWeightBlock;

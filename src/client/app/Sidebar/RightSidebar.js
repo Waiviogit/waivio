@@ -6,7 +6,6 @@ import InterestingPeople from '../../components/Sidebar/InterestingPeople';
 import InterestingObjects from '../../components/Sidebar/InterestingObjects';
 import SignUp from '../../components/Sidebar/SignUp';
 import PostRecommendation from '../../components/Sidebar/PostRecommendation';
-import Loading from '../../components/Icon/Loading';
 import UserActivitySearch from '../../activity/UserActivitySearch';
 import FeedSidebar from '../../components/Sidebar/FeedSidebar';
 import ObjectExpertiseByType from '../../components/Sidebar/ObjectExpertiseByType/ObjectExpertiseByType';
@@ -82,10 +81,6 @@ export default class RightSidebar extends React.Component {
     } = this.props;
 
     const content = getFeedFromState('blog', authUserName, feed);
-
-    if (isAuthFetching) {
-      return <Loading />;
-    }
 
     return (
       <div>

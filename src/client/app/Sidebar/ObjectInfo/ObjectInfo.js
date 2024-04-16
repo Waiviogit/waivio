@@ -21,6 +21,7 @@ import {
   parseButtonsField,
   parseWobjectField,
 } from '../../../../common/helpers/wObjectHelper';
+import { getWobjectAuthors } from '../../../../store/wObjectStore/wObjectSelectors';
 import SocialLinks from '../../../components/SocialLinks';
 import { getExposedFieldsByObjType, getFieldsCount, getLink } from '../../../object/wObjectHelper';
 import {
@@ -74,6 +75,7 @@ import MapObjectTags from './ObjectInfoComponents/MapObjectTags';
 @connect(
   state => ({
     albums: getObjectAlbums(state),
+    authorsArray: getWobjectAuthors(state),
     isAuthenticated: getIsAuthenticated(state),
     locale: getUsedLocale(state),
     isWaivio: getIsWaivio(state),
@@ -99,6 +101,7 @@ class ObjectInfo extends React.Component {
     history: PropTypes.shape().isRequired,
     appendAlbum: PropTypes.func.isRequired,
     albums: PropTypes.arrayOf(),
+    authorsArray: PropTypes.arrayOf(),
     relatedAlbum: PropTypes.shape().isRequired,
     // getRelatedAlbum: PropTypes.func.isRequired,
     setStoreGroupId: PropTypes.func.isRequired,
@@ -212,7 +215,6 @@ class ObjectInfo extends React.Component {
       return [...res, curr];
     }, []);
 
-    this.setState({ authorsArray });
     this.props.setAuthors(authorsArray);
 
     const menuItemsArray = await wobject.menuItem?.reduce(async (acc, curr) => {
@@ -970,7 +972,7 @@ class ObjectInfo extends React.Component {
           this.listItem(
             objectFields.authors,
             <div>
-              {this.state.authorsArray?.map((a, i) => (
+              {this.props.authorsArray?.map((a, i) => (
                 <span key={this.authorFieldAuthorPermlink(a)}>
                   <Link
                     to={
@@ -982,7 +984,7 @@ class ObjectInfo extends React.Component {
                     {a.name}
                   </Link>
                   <>
-                    {i !== this.state.authorsArray.length - 1 && ','}
+                    {i !== this.props.authorsArray.length - 1 && ','}
                     {'  '}
                   </>
                 </span>
@@ -1484,7 +1486,7 @@ ${obj.productId}`}
         {!isEditMode && wobject.authors && (
           <div className="mb3 wordBreak">
             By{' '}
-            {this.state.authorsArray?.map((a, i) => (
+            {this.props.authorsArray?.map((a, i) => (
               <span key={this.authorFieldAuthorPermlink(a)}>
                 <Link
                   to={
@@ -1497,7 +1499,7 @@ ${obj.productId}`}
                 </Link>
 
                 <>
-                  {i !== this.state.authorsArray.length - 1 && ','}
+                  {i !== this.props.authorsArray.length - 1 && ','}
                   {'  '}
                 </>
               </span>
