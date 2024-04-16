@@ -1,8 +1,11 @@
 import React, { useEffect } from 'react';
-import { useParams } from 'react-router';
-import { isEmpty } from 'lodash';
-import { connect } from 'react-redux';
+import Helmet from 'react-helmet';
+import { useParams, withRouter } from 'react-router';
+import { isEmpty, get } from 'lodash';
+import { connect, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
+import { getMetadata } from '../../../common/helpers/postingMetadata';
+import { getUser } from '../../../store/usersStore/usersSelectors';
 
 import Feed from '../../feed/Feed';
 import EmptyUserOwnProfile from '../../statics/EmptyUserOwnProfile';
@@ -23,11 +26,17 @@ const limit = 10;
 
 const UserBlog = props => {
   const { name } = useParams();
+  const user = useSelector(state => getUser(state, name));
   const isOwnProfile = name === props.authenticatedUserName;
   const content = getFeedFromState('blog', name, props.feed);
   const isFetching = getFeedLoadingFromState('blog', name, props.feed);
   const fetched = getFeedFetchedFromState('blog', name, props.feed);
   const hasMore = getFeedHasMoreFromState('blog', name, props.feed);
+  const metadata = getMetadata(user);
+  const profile = get(metadata, 'profile', {});
+  const description =
+    (metadata && get(profile, 'about')) ||
+    "Browse a rich collection of user-generated posts, covering a myriad of topics. Engage with our diverse community's insights, stories, and perspectives.";
 
   useEffect(() => {
     props.getUserProfileBlogPosts(name, { limit, initialLoad: true });
@@ -44,6 +53,11 @@ const UserBlog = props => {
 
   return (
     <div className="profile">
+      <Helmet>
+        <meta name="description" content={description} />
+        <meta name="twitter:description" content={description} />
+        <meta property="og:description" content={description} />
+      </Helmet>
       <Feed
         content={content}
         isFetching={isFetching}
@@ -69,16 +83,18 @@ UserBlog.propTypes = {
   resetProfileFilters: PropTypes.func,
 };
 
-export default connect(
-  state => ({
-    authenticatedUserName: getAuthenticatedUserName(state),
-    feed: getFeed(state),
-    isGuest: isGuestUser(state),
-    tagsCondition: getBlogFilters(state),
-  }),
-  {
-    getUserProfileBlogPosts,
-    showPostModal,
-    resetProfileFilters,
-  },
-)(UserBlog);
+export default withRouter(
+  connect(
+    state => ({
+      authenticatedUserName: getAuthenticatedUserName(state),
+      feed: getFeed(state),
+      isGuest: isGuestUser(state),
+      tagsCondition: getBlogFilters(state),
+    }),
+    {
+      getUserProfileBlogPosts,
+      showPostModal,
+      resetProfileFilters,
+    },
+  )(UserBlog),
+);

@@ -15,11 +15,7 @@ const UserSidebar = ({ authenticated, isGuest, content, authUserName, match, loc
     );
   }
 
-  return (
-    authenticated && (
-      <ObjectWeightBlock username={match.params.name} authUser={authUserName} locale={locale} />
-    )
-  );
+  return <ObjectWeightBlock username={match.params.name} authUser={authUserName} locale={locale} />;
 };
 
 UserSidebar.propTypes = {

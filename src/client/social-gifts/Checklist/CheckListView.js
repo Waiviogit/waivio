@@ -3,7 +3,6 @@ import { isEmpty, map, truncate } from 'lodash';
 import { useSelector } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { Icon } from 'antd';
-import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { useHistory, useRouteMatch } from 'react-router';
 
@@ -35,17 +34,23 @@ const CheckListView = ({ wobject, listItems, loading, intl, hideBreadCrumbs }) =
       const avatar = getProxyImageURL(listItem?.avatar || defaultListImage, 'preview');
 
       return (
-        <div className="Checklist__listItems" key={listItem.author_permlink}>
-          <Link
-            to={{
-              pathname: `/checklist/${listPermlink}`,
-              hash: createNewHash(listItem?.author_permlink, history.location.hash),
-              search:
-                listPermlink === listItem?.author_permlink
-                  ? ''
-                  : `currObj=${listItem?.author_permlink}`,
-            }}
+        <div
+          className="Checklist__listItems"
+          onClick={() => {
+            const hash = createNewHash(listItem?.author_permlink, history.location.hash);
+            const query =
+              listPermlink === listItem?.author_permlink
+                ? ''
+                : `currObj=${listItem?.author_permlink}`;
+
+            history.push(`/checklist/${listPermlink}?${query}#${hash}`);
+          }}
+          key={listItem.author_permlink}
+        >
+          <a
+            href={`/checklist/${listPermlink}`}
             title={getTitleForLink(listItem)}
+            onClick={e => e.preventDefault()}
           >
             {!listItem?.avatar && !defaultListImage ? (
               <div
@@ -83,7 +88,7 @@ const CheckListView = ({ wobject, listItems, loading, intl, hideBreadCrumbs }) =
                 <span className="items-count"> ({listItem.listItemsCount})</span>
               ) : null}
             </span>
-          </Link>
+          </a>
         </div>
       );
     }
