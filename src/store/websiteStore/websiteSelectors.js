@@ -60,6 +60,14 @@ export const getUnmutedUsers = createSelector([websiteState], state =>
 );
 
 export const getWobjectsPoint = createSelector([websiteState], state => state.wobjectsPoint);
+export const getSocialSearchResult = createSelector(
+  [websiteState],
+  state => state.socialSearchResult,
+);
+export const getSocialSearchResultLoading = createSelector(
+  [websiteState],
+  state => state.socialSearchResultLoading,
+);
 
 export const getIsUsersAreas = createSelector([websiteState], state => state.areas);
 

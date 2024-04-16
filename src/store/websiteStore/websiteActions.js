@@ -8,7 +8,7 @@ import * as ApiClient from '../../waivioApi/ApiClient';
 import { getAuthenticatedUserName, isGuestUser } from '../authStore/authSelectors';
 import { getLocale } from '../settingsStore/settingsSelectors';
 import { getSearchFiltersTagCategory, getWebsiteSearchType } from '../searchStore/searchSelectors';
-import { getOwnWebsites, getParentDomain } from './websiteSelectors';
+import { getOwnWebsites, getParentDomain, getSocialSearchResult } from './websiteSelectors';
 import { getLastBlockNum } from '../../client/vendor/steemitHelpers';
 
 export const GET_PARENT_DOMAIN = createAsyncActionType('@website/GET_PARENT_DOMAIN');
@@ -596,6 +596,30 @@ export const GET_WEBSITE_OBJECTS_WITH_COORDINATES = createAsyncActionType(
   '@website/GET_WEBSITE_OBJECTS_WITH_COORDINATES',
 );
 
+export const SET_SOCIAL_SEARCH_RESULT = createAsyncActionType('@website/SET_SOCIAL_SEARCH_RESULT');
+
+export const setSocialSearchResults = (searchString, box = {}, limit = 100) => (
+  dispatch,
+  getState,
+) => {
+  const state = getState();
+  const locale = getLocale(state);
+  const userName = getAuthenticatedUserName(state);
+
+  return dispatch({
+    type: SET_SOCIAL_SEARCH_RESULT.ACTION,
+    payload: ApiClient.getObjectsForMapObjectType(
+      searchString,
+      {
+        box,
+        limit,
+      },
+      locale,
+      userName,
+    ),
+  });
+};
+
 export const getWebsiteObjWithCoordinates = (
   isSocial = false,
   searchString,
@@ -608,6 +632,7 @@ export const getWebsiteObjWithCoordinates = (
   const objType = getWebsiteSearchType(state);
   const userName = getAuthenticatedUserName(state);
   const tagsFilter = getSearchFiltersTagCategory(state);
+  const socialWobjects = getSocialSearchResult(state);
   const tagCategory = isEmpty(tagsFilter) ? {} : { tagCategory: tagsFilter };
   const userType = objType === 'Users';
   const body = {
@@ -615,6 +640,10 @@ export const getWebsiteObjWithCoordinates = (
     ...tagCategory,
     box,
   };
+
+  if (isEmpty(socialWobjects)) {
+    dispatch(setSocialSearchResults(searchString, box, 100));
+  }
 
   if (!searchString) body.mapMarkers = true;
   const getObjects = () =>
@@ -627,7 +656,13 @@ export const getWebsiteObjWithCoordinates = (
           },
           locale,
           userName,
-        ).then(r => ({ wobjects: r.result }))
+        ).then(r => {
+          if (!r.message) {
+            return { wobjects: r.result };
+          }
+
+          return { wobjects: [] };
+        })
       : ApiClient.searchObjects(searchString, objType, false, limit, locale, body, abortController);
 
   if (userType) {
@@ -643,7 +678,7 @@ export const getWebsiteObjWithCoordinates = (
   return dispatch({
     type: GET_WEBSITE_OBJECTS_WITH_COORDINATES.ACTION,
     payload: getObjects(),
-    meta: Boolean(searchString || !isEmpty(tagsFilter)),
+    meta: Boolean((searchString && !isSocial) || !isEmpty(tagsFilter)),
   });
 };
 
