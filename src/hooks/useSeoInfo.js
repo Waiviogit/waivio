@@ -1,5 +1,5 @@
 import { useSelector } from 'react-redux';
-import { useLocation } from 'react-router';
+import {useLocation, useParams} from 'react-router';
 import { isNil } from 'lodash';
 
 import { getAppUrl, getMainObj } from '../store/appStore/appSelectors';
@@ -9,11 +9,12 @@ const originalWaivioHost = 'www.waivio.com';
 
 const prefereCanonical = (appUrl, isChecklist, objectType) => {
   const location = useLocation();
+  const {name} = useParams();
   const query = useQuery();
   let url = `${appUrl}${location.pathname}`;
 
   if (['list', 'page'].includes(objectType) && appUrl?.includes(originalWaivioHost)) {
-    url = `${appUrl}${location.pathname}/${objectType}`;
+    url = `${appUrl}/object/${name}/${objectType}`;
   }
 
   if (query.get('currObj')) {
