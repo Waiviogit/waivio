@@ -5,6 +5,7 @@ import { isEmpty } from 'lodash';
 import { injectIntl } from 'react-intl';
 import PropTypes from 'prop-types';
 import Helmet from 'react-helmet';
+import useQuery from '../../../hooks/useQuery';
 import { useSeoInfoWithAppUrl } from '../../../hooks/useSeoInfo';
 import { getSuitableLanguage } from '../../../store/reducers';
 import {
@@ -49,6 +50,7 @@ const Checklist = ({
   const favicon = useSelector(getHelmetIcon);
   const siteName = useSelector(getSiteName);
   const mainObj = useSelector(getMainObj);
+  const query = useQuery();
   const title = getTitleForLink(wobject);
   const desc = wobject?.description || mainObj?.description;
   const { firstDescrPart: description } = shortenDescription(removeEmptyLines(desc), 350);
@@ -57,7 +59,10 @@ const Checklist = ({
 
   useEffect(() => {
     const pathUrl =
-      permlink || getLastPermlinksFromHash(history.location.hash) || match.params.name;
+      permlink ||
+      getLastPermlinksFromHash(history.location.hash) ||
+      query.get('currObj') ||
+      match.params.name;
 
     if (wobject?.author_permlink !== pathUrl) {
       setLoading(true);
@@ -69,10 +74,10 @@ const Checklist = ({
       if (wObject?.object_type === 'list' && typeof window !== 'undefined' && window.gtag) {
         window.gtag('event', getObjectName(wObject), { debug_mode: false });
       }
-      if (history.location.hash) {
+      if (history.location.hash || query.get('currObj')) {
         setNestedObject(wObject);
       }
-      if (history.location.pathname === '/') {
+      if (history.location.pathname === '/' || query.get('currObj')) {
         setBreadcrumb(wObject);
       }
       setLists(

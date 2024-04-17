@@ -6,6 +6,7 @@ export const postsState = state => state.posts;
 
 // reselect function
 export const getPosts = createSelector([postsState], state => state.list);
+export const getRecommendedPosts = createSelector([postsState], state => state.recommendedPosts);
 
 export const getPostContent = (permlink, author) =>
   createSelector(getPosts, posts =>

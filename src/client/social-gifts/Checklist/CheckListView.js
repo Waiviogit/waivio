@@ -48,7 +48,7 @@ const CheckListView = ({ wobject, listItems, loading, intl, hideBreadCrumbs }) =
           key={listItem.author_permlink}
         >
           <a
-            href={`/checklist/${listPermlink}`}
+            href={`/checklist/${listItem.author_permlink}`}
             title={getTitleForLink(listItem)}
             onClick={e => e.preventDefault()}
           >

@@ -5,7 +5,6 @@ import { Route, Switch, withRouter } from 'react-router-dom';
 import InterestingPeople from '../../components/Sidebar/InterestingPeople';
 import InterestingObjects from '../../components/Sidebar/InterestingObjects';
 import SignUp from '../../components/Sidebar/SignUp';
-import PostRecommendation from '../../components/Sidebar/PostRecommendation';
 import UserActivitySearch from '../../activity/UserActivitySearch';
 import FeedSidebar from '../../components/Sidebar/FeedSidebar';
 import ObjectExpertiseByType from '../../components/Sidebar/ObjectExpertiseByType/ObjectExpertiseByType';
@@ -46,9 +45,7 @@ import WobjectShopFilter from '../../object/ObjectTypeShop/WobjectShopFilter';
 export default class RightSidebar extends React.Component {
   static propTypes = {
     authenticated: PropTypes.bool,
-    isAuthFetching: PropTypes.bool,
     isSocial: PropTypes.bool,
-    showPostRecommendation: PropTypes.bool,
     match: PropTypes.shape(),
     authUserName: PropTypes.string,
     locale: PropTypes.string,
@@ -58,7 +55,6 @@ export default class RightSidebar extends React.Component {
   };
 
   static defaultProps = {
-    showPostRecommendation: false,
     match: {},
     authUserName: '',
     locale: 'en-US',
@@ -68,17 +64,7 @@ export default class RightSidebar extends React.Component {
   };
 
   render() {
-    const {
-      authenticated,
-      showPostRecommendation,
-      isAuthFetching,
-      match,
-      authUserName,
-      locale,
-      isGuest,
-      feed,
-      isSocial,
-    } = this.props;
+    const { authenticated, match, authUserName, locale, isGuest, feed, isSocial } = this.props;
 
     const content = getFeedFromState('blog', authUserName, feed);
 
@@ -138,8 +124,6 @@ export default class RightSidebar extends React.Component {
             )}
           />
         </Switch>
-
-        {showPostRecommendation && <PostRecommendation isAuthFetching={isAuthFetching} />}
       </div>
     );
   }
