@@ -78,9 +78,10 @@ const createLink = i => {
     case 'business':
     case 'product':
     case 'book':
-      return `/object/${i?.author_permlink}`;
     case 'newsfeed':
       return `/object/${i?.author_permlink}/newsfeed`;
+    case 'map':
+      return `/object/${i?.author_permlink}/map`;
     default:
       return i.linkToWeb || i.defaultShowLink;
   }
@@ -337,6 +338,7 @@ SocialWrapper.fetchData = async ({ store, req, url }) => {
   return Promise.allSettled([
     store.dispatch(getWebsiteConfigForSSR(req.headers.host)).then(res => {
       const configuration = res.value;
+
       const promises = [store.dispatch(setMainObj(configuration.shopSettings))];
 
       if (!isEmpty(configuration?.shopSettings)) {
@@ -391,7 +393,7 @@ SocialWrapper.fetchData = async ({ store, req, url }) => {
                   promises.push(store.dispatch(getWobjectDepartments(wobject.author_permlink)));
                   promises.push(store.dispatch(getWobjectsShopList(wobject.author_permlink)));
                 }
-                if (['page', 'widget', 'newsfeed', 'list']?.includes(wobject.object_type)) {
+                if (['page', 'widget', 'newsfeed', 'list', 'map']?.includes(wobject.object_type)) {
                   promises.push(store.dispatch(getObjectAction(wobject.author_permlink)));
                 }
               }
@@ -449,7 +451,9 @@ SocialWrapper.fetchData = async ({ store, req, url }) => {
                 promises.push(store.dispatch(getWobjectDepartments(buttonList[0]?.permlink)));
                 promises.push(store.dispatch(getWobjectsShopList(buttonList[0]?.permlink)));
               }
-              if (['page', 'widget', 'newsfeed', 'list']?.includes(buttonList[0]?.object_type)) {
+              if (
+                ['page', 'widget', 'newsfeed', 'list', 'map']?.includes(buttonList[0]?.object_type)
+              ) {
                 promises.push(store.dispatch(getObjectAction(buttonList[0]?.permlink)));
               }
             }

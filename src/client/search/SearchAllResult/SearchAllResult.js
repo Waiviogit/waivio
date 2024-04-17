@@ -32,6 +32,9 @@ import WobjectsList from './components/WobjectsList';
 import ReloadButton from './components/ReloadButton';
 import { getIsSocial } from '../../../store/appStore/appSelectors';
 import './SearchAllResult.less';
+import { isMobile } from '../../../common/helpers/apiHelpers';
+import { setSocialSearchResults } from '../../../store/websiteStore/websiteActions';
+import { getObject } from '../../../store/wObjectStore/wObjectSelectors';
 
 const SearchAllResult = props => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -67,15 +70,22 @@ const SearchAllResult = props => {
     }
   };
 
+  // eslint-disable-next-line consistent-return
   const currentSearchMethod = value => {
     localStorage.removeItem('scrollTop');
     props.reloadSearchList();
-
-    switch (props.searchType) {
-      case 'Users':
-        return props.searchExpertsForMap(value);
-      default:
-        return props.searchWebsiteObjectsAutoCompete(value);
+    if (props.isSocial) {
+      props.setSocialSearchResults(props.currObj.author_permlink, {
+        topPoint: props.searchMap.topPoint,
+        bottomPoint: props.searchMap.bottomPoint,
+      });
+    } else {
+      switch (props.searchType) {
+        case 'Users':
+          return props.searchExpertsForMap(value);
+        default:
+          return props.searchWebsiteObjectsAutoCompete(value);
+      }
     }
   };
 
@@ -91,6 +101,9 @@ const SearchAllResult = props => {
   }, [props.activeFilters, props.searchMap, props.searchString]);
 
   useEffect(() => {
+    if (props.isSocial && !isMobile()) {
+      props.setShowSearchResult(true);
+    }
     if (props.wobjectsCounter && localStorage.getItem('scrollTop')) {
       resultList.current.scrollTo(0, +localStorage.getItem('scrollTop'));
     }
@@ -196,9 +209,11 @@ SearchAllResult.propTypes = {
   setQueryFromSearchList: PropTypes.func.isRequired,
   showReload: PropTypes.bool,
   handleHoveredCard: PropTypes.func,
+  setSocialSearchResults: PropTypes.func,
   searchWebsiteObjectsAutoCompete: PropTypes.func.isRequired,
   searchExpertsForMap: PropTypes.func.isRequired,
   searchMap: PropTypes.shape().isRequired,
+  currObj: PropTypes.shape(),
   activeFilters: PropTypes.arrayOf(PropTypes.shape()).isRequired,
 };
 
@@ -223,6 +238,7 @@ export default connect(
     activeFilters: getSearchFiltersTagCategory(state),
     searchMap: getWebsiteMap(state),
     isSocial: getIsSocial(state),
+    currObj: getObject(state),
   }),
   {
     searchExpertsForMapLoadingMore,
@@ -230,5 +246,6 @@ export default connect(
     setShowSearchResult,
     searchWebsiteObjectsAutoCompete,
     searchExpertsForMap,
+    setSocialSearchResults,
   },
 )(injectIntl(SearchAllResult));

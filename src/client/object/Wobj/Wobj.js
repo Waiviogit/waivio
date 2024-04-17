@@ -117,6 +117,7 @@ const Wobj = ({
         'list',
         'newsfeed',
         'webpage',
+        // 'map',
       ]?.includes(wobject.object_type) ||
       (isSocial && isEditMode)
     )
@@ -149,7 +150,8 @@ const Wobj = ({
         return <Checklist />;
       case 'webpage':
         return <ObjectOfTypeWebpage />;
-
+      // case 'map':
+      //   return <WebsiteBody />;
       case 'newsfeed':
         return <ObjectNewsFeed wobj={wobject} />;
 

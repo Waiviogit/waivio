@@ -14,19 +14,28 @@ import {
 } from '../../../../store/searchStore/searchActions';
 import SearchAllResult from '../../../search/SearchAllResult/SearchAllResult';
 import {
+  getLastPermlinksFromHash,
   getObjectAvatar,
   getObjectMapInArray,
   getObjectName,
 } from '../../../../common/helpers/wObjectHelper';
 import { getReservedCounter } from '../../../../store/appStore/appActions';
-import { setShowReload } from '../../../../store/websiteStore/websiteActions';
+import {
+  getWebsiteObjWithCoordinates,
+  setShowReload,
+} from '../../../../store/websiteStore/websiteActions';
 import {
   getConfigurationValues,
   getHostAddress,
+  getIsSocial,
   getReserveCounter,
+  getUsedLocale,
   getWebsiteLogo,
 } from '../../../../store/appStore/appSelectors';
-import { getIsAuthenticated } from '../../../../store/authStore/authSelectors';
+import {
+  getAuthenticatedUserName,
+  getIsAuthenticated,
+} from '../../../../store/authStore/authSelectors';
 import {
   getShowSearchResult,
   getWebsiteSearchString,
@@ -39,9 +48,15 @@ import MainMap from '../../MainMap/MainMap';
 import { useSeoInfo } from '../../../../hooks/useSeoInfo';
 
 import './WebsiteBody.less';
+import { getObject } from '../../../../store/wObjectStore/wObjectSelectors';
+import { getObject as getObjectAction } from '../../../../store/wObjectStore/wobjectsActions';
 
 const WebsiteBody = props => {
   const [hoveredCardPermlink, setHoveredCardPermlink] = useState('');
+  const pathUrl =
+    getLastPermlinksFromHash(props.history.location.hash) ||
+    props.match.params.name ||
+    props.currObj.author_permlink;
   const { canonicalUrl } = useSeoInfo();
   const reservedButtonClassList = classNames('WebsiteBody__reserved', {
     'WebsiteBody__reserved--withMobileFilters': props.isActiveFilters,
@@ -68,6 +83,17 @@ const WebsiteBody = props => {
       props.setShowSearchResult(false);
     };
   }, []);
+
+  useEffect(() => {
+    if (props.isSocial && props.currObj) {
+      props.getWebsiteObjWithCoordinates(props.isSocial, pathUrl, {
+        topPoint: [],
+        bottomPoint: [],
+      });
+
+      props.getObjectAction(pathUrl, props.authUserName, props.locale);
+    }
+  }, [props.currObj.author_permlink]);
 
   const aboutObject = get(props, ['configuration', 'aboutObject'], {});
   const currentLogo = props.logo || getObjectAvatar(aboutObject);
@@ -152,9 +178,11 @@ WebsiteBody.propTypes = {
   }).isRequired,
   match: PropTypes.shape({
     site: PropTypes.string,
+    params: PropTypes.shape(),
   }).isRequired,
   history: PropTypes.shape({
     push: PropTypes.func,
+    location: PropTypes.shape(),
   }).isRequired,
   isShowResult: PropTypes.bool.isRequired,
   configuration: PropTypes.shape().isRequired,
@@ -168,8 +196,14 @@ WebsiteBody.propTypes = {
   counter: PropTypes.number.isRequired,
   searchType: PropTypes.string.isRequired,
   logo: PropTypes.string,
+  locale: PropTypes.string,
+  authUserName: PropTypes.string,
+  currObj: PropTypes.shape(),
+  getObjectAction: PropTypes.func,
+  getWebsiteObjWithCoordinates: PropTypes.func,
   isActiveFilters: PropTypes.bool.isRequired,
   showReloadButton: PropTypes.bool,
+  isSocial: PropTypes.bool,
   isAuth: PropTypes.bool,
   query: PropTypes.shape({
     get: PropTypes.func,
@@ -191,13 +225,17 @@ export default connect(
     configuration: getConfigurationValues(state),
     counter: getReserveCounter(state),
     isAuth: getIsAuthenticated(state),
-    query: new URLSearchParams(ownProps.location.search),
+    query: new URLSearchParams(ownProps.location?.search),
     searchString: getWebsiteSearchString(state),
     showReloadButton: getShowReloadButton(state),
     searchType: getWebsiteSearchType(state),
     host: getHostAddress(state),
     isActiveFilters: tagsCategoryIsEmpty(state),
     logo: getWebsiteLogo(state),
+    authUserName: getAuthenticatedUserName(state),
+    locale: getUsedLocale(state),
+    currObj: getObject(state),
+    isSocial: getIsSocial(state),
   }),
   {
     setWebsiteSearchType,
@@ -206,5 +244,7 @@ export default connect(
     setFilterFromQuery,
     resetWebsiteFilters,
     setShowSearchResult,
+    getObjectAction,
+    getWebsiteObjWithCoordinates,
   },
 )(withRouter(WebsiteBody));
