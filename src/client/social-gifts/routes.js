@@ -23,6 +23,7 @@ import DepatmentsSearch from './DepatmentsSearch/DepatmentsSearch';
 import PostsCommentsActivity from '../user/PostsCommentsActivity/PostsCommentsActivity';
 import LocalRewardsList from '../newRewards/RewardLists/LocalRewardsList';
 import UserFavorites from '../components/Favorites/UserFavorites';
+import WebsiteBody from '../websites/WebsiteLayoutComponents/Body/WebsiteBody';
 
 const routes = () => ({
   component: SocialWrapper,
@@ -69,6 +70,11 @@ const routes = () => ({
       path: ['/checklist/:name'],
       exact: true,
       component: Checklist,
+    },
+    {
+      path: ['/object/:name/map'],
+      exact: true,
+      component: WebsiteBody,
     },
     {
       path: ['/object/widget/:name'],

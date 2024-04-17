@@ -1,4 +1,4 @@
-import { get, uniqBy } from 'lodash';
+import { get, isEmpty, uniqBy } from 'lodash';
 import moment from 'moment';
 import * as websiteAction from './websiteActions';
 import { getAvailableStatus } from '../../client/websites/helper';
@@ -23,6 +23,8 @@ const initialState = {
   muteLoading: false,
   unmuteUsers: [],
   wobjectsPoint: [],
+  socialSearchResult: [],
+  socialSearchResultLoading: true,
   wobjectsPointHasMore: false,
   districts: null,
 };
@@ -331,6 +333,9 @@ export default function websiteReducer(state = initialState, action) {
 
       return {
         ...state,
+        socialSearchResult: isEmpty(state.socialSearchResult)
+          ? action.payload.wobjects
+          : state.socialSearchResult,
         wobjectsPoint: action.meta
           ? action.payload.wobjects
           : uniqBy(state.wobjectsPoint.concat(action.payload.wobjects), '_id'),
@@ -349,6 +354,34 @@ export default function websiteReducer(state = initialState, action) {
         ...state,
         wobjectsPoint: [],
         wobjectsPointHasMore: false,
+      };
+    }
+    case websiteAction.RESET_SOCIAL_SEARCH_RESULT: {
+      return {
+        ...state,
+        socialSearchResultLoading: false,
+        socialSearchResult: [],
+      };
+    }
+    case websiteAction.SET_SOCIAL_SEARCH_RESULT.START: {
+      return {
+        ...state,
+        socialSearchResultLoading: true,
+        socialSearchResult: [],
+      };
+    }
+    case websiteAction.SET_SOCIAL_SEARCH_RESULT.SUCCESS: {
+      return {
+        ...state,
+        socialSearchResultLoading: false,
+        socialSearchResult: action.payload.result,
+      };
+    }
+    case websiteAction.SET_SOCIAL_SEARCH_RESULT.ERROR: {
+      return {
+        ...state,
+        socialSearchResultLoading: false,
+        socialSearchResult: [],
       };
     }
     case websiteAction.GET_WEBSITE_RESTRICTIONS.SUCCESS: {

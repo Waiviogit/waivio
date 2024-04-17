@@ -23,10 +23,11 @@ import {
   getWebsiteObjWithCoordinates,
   resetWebsiteObjectsCoordinates,
   setShowReload,
+  setSocialSearchResults,
 } from '../../../store/websiteStore/websiteActions';
 import { distanceInMBetweenEarthCoordinates, getFirstOffsetNumber } from '../helper';
 import ObjectOverlayCard from '../../components/Maps/Overlays/ObjectOverlayCard/ObjectOverlayCard';
-import { getScreenSize } from '../../../store/appStore/appSelectors';
+import { getIsSocial, getScreenSize } from '../../../store/appStore/appSelectors';
 import { getUserLocation } from '../../../store/userStore/userSelectors';
 import {
   getShowSearchResult,
@@ -36,6 +37,7 @@ import {
 } from '../../../store/searchStore/searchSelectors';
 import {
   getShowReloadButton,
+  getSocialSearchResultLoading,
   getWobjectsPoint,
 } from '../../../store/websiteStore/websiteSelectors';
 import MapControllers from '../../widgets/MapControllers/MapControllers';
@@ -43,6 +45,7 @@ import TagFilters from '../TagFilters/TagFilters';
 import PostOverlayCard from '../../components/Maps/Overlays/PostOverlayCard/PostOverlayCard';
 
 import '../WebsiteLayoutComponents/Body/WebsiteBody.less';
+import { getObject } from '../../../store/wObjectStore/wObjectSelectors';
 
 const MainMap = React.memo(props => {
   const [boundsParams, setBoundsParams] = useState({
@@ -64,7 +67,7 @@ const MainMap = React.memo(props => {
   // const abortController = useRef(null);
 
   if (queryCenter) queryCenter = queryCenter.split(',').map(item => Number(item));
-  if (isMobile) mapHeight = `${height - 205}px`;
+  if (isMobile) mapHeight = props.isSocial ? `${height - 100}px` : `${height - 205}px`;
 
   const getCurrentConfig = config =>
     isMobile ? get(config, 'mobileMap', {}) : get(config, 'desktopMap', {});
@@ -90,6 +93,16 @@ const MainMap = React.memo(props => {
         ? [get(currLocation, ['value', 'latitude']), get(currLocation, ['value', 'longitude'])]
         : center;
     }
+    const mapDesktopView = !isEmpty(props.wobject?.mapDesktopView)
+      ? JSON.parse(props.wobject?.mapDesktopView)
+      : undefined;
+    const mapMobileView = !isEmpty(props.wobject?.mapMobileView)
+      ? JSON.parse(props.wobject?.mapMobileView)
+      : undefined;
+    const mapView = isMobile ? mapMobileView : mapDesktopView;
+
+    center = query.size > 0 ? center : mapView?.center;
+    zoom = query.size > 0 ? zoom : mapView?.zoom;
 
     setCurrMapConfig(center, zoom);
   };
@@ -111,6 +124,17 @@ const MainMap = React.memo(props => {
     localStorage.setItem('query', query.toString());
   };
 
+  const dataToChange = [props.searchMap, props.showReloadButton, mapData.center];
+
+  if (props.isSocial) {
+    dataToChange.push(
+      ...[
+        mapData.zoom,
+        // props.searchMap.topPoint,props.searchMap.bottomPoint
+      ],
+    );
+  }
+
   const checkDistanceAndSetReload = useCallback(() => {
     if (!isEmpty(props.searchMap)) {
       const distance = distanceInMBetweenEarthCoordinates(
@@ -118,34 +142,38 @@ const MainMap = React.memo(props => {
         mapData.center,
       );
 
-      if (distance > 20 && !props.showReloadButton) props.setShowReload(true);
-      if (!distance) props.setShowReload(false);
+      if ((distance > 20 && !props.showReloadButton) || (props.isSocial && !props.socialLoading))
+        props.setShowReload(true);
+      if (!distance || (props.isSocial && props.socialLoading)) props.setShowReload(false);
     }
-  }, [props.searchMap, props.showReloadButton, mapData.center]);
+  }, [dataToChange]);
 
-  // eslint-disable-next-line consistent-return
+  useEffect(
+    // eslint-disable-next-line consistent-return
+    () => {
+      if (typeof window !== 'undefined') {
+        const handleResize = () => setHeight(window.innerHeight);
+
+        setHeight(window.innerHeight);
+
+        getCoordinatesForMap();
+
+        window.addEventListener('resize', handleResize);
+
+        return () => {
+          window.removeEventListener('resize', handleResize);
+        };
+      }
+    },
+    props.isSocial ? [props.wobject.author_permlink] : [],
+  );
+
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const handleResize = () => setHeight(window.innerHeight);
-
-      setHeight(window.innerHeight);
-
-      getCoordinatesForMap();
-
-      window.addEventListener('resize', handleResize);
-
-      return () => {
-        window.removeEventListener('resize', handleResize);
-      };
-    }
-  }, []);
-
-  useEffect(() => {
-    if (mapRef.current && query.get('showPanel')) {
+    if ((mapRef.current && query.get('showPanel')) || (props.isSocial && mapRef.current)) {
       const bounce = mapRef.current.getBounds();
 
       if (bounce.ne[0] && bounce.sw[0]) {
-        props.setShowSearchResult(true);
+        if ((!isMobile && props.isSocial) || !props.isSocial) props.setShowSearchResult(true);
         setBoundsParams({
           topPoint: [bounce.ne[1], bounce.ne[0]],
           bottomPoint: [bounce.sw[1], bounce.sw[0]],
@@ -155,13 +183,15 @@ const MainMap = React.memo(props => {
   }, [mapRef.current]);
 
   useEffect(() => {
-    if (props.isShowResult) {
-      handleSetMapForSearch();
-    } else {
-      props.setMapForSearch({});
-      props.setShowReload(false);
-      props.setSearchInBox(true);
-      props.history.push(`?${query.toString()}`);
+    if (!props.isSocial) {
+      if (props.isShowResult) {
+        handleSetMapForSearch();
+      } else {
+        props.setMapForSearch({});
+        props.setShowReload(false);
+        props.setSearchInBox(true);
+        props.history.push(`?${query.toString()}`);
+      }
     }
   }, [props.isShowResult]);
 
@@ -185,10 +215,14 @@ const MainMap = React.memo(props => {
     if (!isEmpty(topPoint) && !isEmpty(bottomPoint)) {
       // if (abortController.current) abortController.current.abort();
       // abortController.current = new AbortController();
+      const searchString = props.isSocial
+        ? props.match.params.name || props.wobject.author_permlink
+        : props.searchString;
 
       props
         .getWebsiteObjWithCoordinates(
-          props.searchString,
+          props.isSocial,
+          searchString,
           { topPoint, bottomPoint },
           80,
           // abortController.current,
@@ -212,7 +246,7 @@ const MainMap = React.memo(props => {
           }
         });
     }
-  }, [props.userLocation, boundsParams, props.searchType]);
+  }, [props.userLocation, boundsParams, !props.isSocial ? props.searchType : undefined]);
 
   const handleOnBoundsChanged = useCallback(
     debounce(bounds => {
@@ -299,7 +333,11 @@ const MainMap = React.memo(props => {
           {usersType ? (
             <PostOverlayCard wObject={wobject} />
           ) : (
-            <ObjectOverlayCard wObject={wobject} showParent={props.searchType !== 'restaurant'} />
+            <ObjectOverlayCard
+              isMapObj
+              wObject={wobject}
+              showParent={props.searchType !== 'restaurant'}
+            />
           )}
         </div>
       </Overlay>
@@ -365,7 +403,8 @@ const MainMap = React.memo(props => {
           )}
         </Map>
         <MapControllers
-          className={'WebsiteBodyControl'}
+          isMapObjType
+          className={props.isSocial ? 'WebsiteBodyControl--social' : 'WebsiteBodyControl'}
           decrementZoom={decrementZoom}
           incrementZoom={incrementZoom}
           successCallback={setLocationFromNavigator}
@@ -377,6 +416,8 @@ const MainMap = React.memo(props => {
 });
 
 MainMap.propTypes = {
+  match: PropTypes.shape(),
+  wobject: PropTypes.shape(),
   location: PropTypes.shape({
     pathname: PropTypes.string,
     search: PropTypes.string,
@@ -404,6 +445,8 @@ MainMap.propTypes = {
   searchType: PropTypes.string.isRequired,
   hoveredCardPermlink: PropTypes.string.isRequired,
   showReloadButton: PropTypes.bool,
+  isSocial: PropTypes.bool,
+  socialLoading: PropTypes.bool,
   searchMap: PropTypes.shape({
     coordinates: PropTypes.arrayOf(PropTypes.number),
   }).isRequired,
@@ -430,6 +473,9 @@ export default connect(
     searchMap: getWebsiteMap(state),
     showReloadButton: getShowReloadButton(state),
     searchType: getWebsiteSearchType(state),
+    isSocial: getIsSocial(state),
+    wobject: getObject(state),
+    socialLoading: getSocialSearchResultLoading(state),
   }),
   {
     getCoordinates,
@@ -441,5 +487,6 @@ export default connect(
     setShowReload,
     setSearchInBox,
     setShowSearchResult,
+    setSocialSearchResults,
   },
 )(withRouter(MainMap));

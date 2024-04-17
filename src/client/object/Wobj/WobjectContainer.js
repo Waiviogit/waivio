@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { connect, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
-import { isEmpty, isNil } from 'lodash';
+import { isEmpty, isNil, has } from 'lodash';
 import { withRouter } from 'react-router-dom';
 import { parseJSON } from '../../../common/helpers/parseJSON';
 import {
@@ -9,6 +9,7 @@ import {
   getTiktokPreviewAction,
   setFirstLoading,
 } from '../../../store/feedStore/feedActions';
+import { getObjectInfo } from '../../../waivioApi/ApiClient';
 import { prepareMenuItems } from '../../social-gifts/SocialProduct/SocialMenuItems/SocialMenuItems';
 import Wobj from './Wobj';
 import { getAppendList } from '../../../store/appendStore/appendSelectors';
@@ -40,6 +41,7 @@ import {
   setNestedWobject,
   setEditMode,
   resetWobjectExpertise,
+  setAuthors,
 } from '../../../store/wObjectStore/wobjActions';
 import {
   addAlbumToStore,
@@ -55,6 +57,7 @@ import {
   getUpdateFieldName,
   showDescriptionPage,
   sortListItems,
+  parseWobjectField,
 } from '../../../common/helpers/wObjectHelper';
 import NotFound from '../../statics/NotFound';
 import { getRate, getRewardFund } from '../../../store/appStore/appActions';
@@ -191,8 +194,26 @@ WobjectContainer.fetchData = async ({ store, match }) => {
   const objName = match.params.name;
 
   return Promise.allSettled([
-    store.dispatch(getObject(objName)).then(response => {
+    store.dispatch(getObject(objName)).then(async response => {
+      const authors = response.value.authors
+        ? response.value.authors?.map(el => parseWobjectField(el, 'body', []))
+        : [];
+
+      const authorsArray = await authors.reduce(async (acc, curr) => {
+        const res = await acc;
+        const permlink = curr.authorPermlink || curr.author_permlink;
+
+        if (permlink && !has(curr, 'name')) {
+          const newObj = await getObjectInfo([permlink]);
+
+          return [...res, newObj.wobjects[0]];
+        }
+
+        return [...res, curr];
+      }, []);
+
       let promises = [
+        store.dispatch(setAuthors(authorsArray)),
         store
           .dispatch(
             getObjectPosts({
@@ -211,19 +232,24 @@ WobjectContainer.fetchData = async ({ store, match }) => {
       ];
 
       if (listOfSocialObjectTypes?.includes(response.value.object_type)) {
-        const customSort = isEmpty(response.value?.sortCustom?.include)
-          ? response.value.menuItem.map(i => i.permlink)
-          : response.value?.sortCustom?.include;
-        const items = sortListItems(prepareMenuItems(response.value.menuItem), customSort)[0];
-
         promises = [
           ...promises,
           store.dispatch(getAddOns(response.value.addOn?.map(obj => obj?.body))),
           store.dispatch(getSimilarObjects(objName)),
           store.dispatch(getRelatedObjectsAction(objName)),
-          store.dispatch(getMenuItemContent(parseJSON(items?.body)?.linkToObject)),
           store.dispatch(getProductInfo(response.value)),
         ];
+
+        if (response.value?.sortCustom?.include || response.value.menuItem) {
+          const customSort = isEmpty(response.value?.sortCustom?.include)
+            ? response.value.menuItem.map(i => i.permlink)
+            : response.value?.sortCustom?.include;
+          const items = sortListItems(prepareMenuItems(response.value.menuItem), customSort)[0];
+
+          promises.push(store.dispatch(getMenuItemContent(parseJSON(items?.body)?.linkToObject)));
+        }
+
+        return Promise.allSettled(promises);
       }
 
       return Promise.allSettled(promises);

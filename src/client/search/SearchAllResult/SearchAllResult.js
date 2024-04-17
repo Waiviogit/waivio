@@ -30,13 +30,18 @@ import SearchMapFilters from './components/SearchMapFilters';
 import UsersList from './components/UsersList';
 import WobjectsList from './components/WobjectsList';
 import ReloadButton from './components/ReloadButton';
-
+import { getIsSocial } from '../../../store/appStore/appSelectors';
 import './SearchAllResult.less';
+import { isMobile } from '../../../common/helpers/apiHelpers';
+import { setSocialSearchResults } from '../../../store/websiteStore/websiteActions';
+import { getObject } from '../../../store/wObjectStore/wObjectSelectors';
+import { getSocialSearchResultLoading } from '../../../store/websiteStore/websiteSelectors';
 
 const SearchAllResult = props => {
   const [isScrolled, setIsScrolled] = useState(false);
   const isUsersSearch = props.searchType === 'Users';
   const resultList = useRef();
+  const showReload = props.isSocial ? props.showReload && !props.socialLoading : props.showReload;
   const searchResultClassList = classNames('SearchAllResult SearchAllResult__dining', {
     SearchAllResult__show: props.isShowResult,
   });
@@ -67,15 +72,22 @@ const SearchAllResult = props => {
     }
   };
 
+  // eslint-disable-next-line consistent-return
   const currentSearchMethod = value => {
     localStorage.removeItem('scrollTop');
     props.reloadSearchList();
-
-    switch (props.searchType) {
-      case 'Users':
-        return props.searchExpertsForMap(value);
-      default:
-        return props.searchWebsiteObjectsAutoCompete(value);
+    if (props.isSocial) {
+      props.setSocialSearchResults(props.currObj.author_permlink, {
+        topPoint: props.searchMap.topPoint,
+        bottomPoint: props.searchMap.bottomPoint,
+      });
+    } else {
+      switch (props.searchType) {
+        case 'Users':
+          return props.searchExpertsForMap(value);
+        default:
+          return props.searchWebsiteObjectsAutoCompete(value);
+      }
     }
   };
 
@@ -91,6 +103,9 @@ const SearchAllResult = props => {
   }, [props.activeFilters, props.searchMap, props.searchString]);
 
   useEffect(() => {
+    if (props.isSocial && !isMobile()) {
+      props.setShowSearchResult(true);
+    }
     if (props.wobjectsCounter && localStorage.getItem('scrollTop')) {
       resultList.current.scrollTo(0, +localStorage.getItem('scrollTop'));
     }
@@ -152,8 +167,8 @@ const SearchAllResult = props => {
         <Icon type={props.isShowResult ? 'left' : 'right'} />
       </div>
       <div className="SearchAllResult__main-wrap" ref={resultList} onScroll={getEndScroll}>
-        {!isUsersSearch && <SearchMapFilters />}
-        {props.showReload && (
+        {!isUsersSearch && !props.isSocial && <SearchMapFilters />}
+        {showReload && (
           <ReloadButton
             className="SearchAllResult__reload"
             reloadSearchList={props.reloadSearchList}
@@ -161,7 +176,7 @@ const SearchAllResult = props => {
         )}
         <ViewMapButton handleClick={setCloseResult} />
         {currRenderListState.loading ? <Loading /> : currentList}
-        {props.showReload ? (
+        {showReload ? (
           <ReloadButton
             className="SearchAllResult__listReload"
             reloadSearchList={props.reloadSearchList}
@@ -188,16 +203,20 @@ SearchAllResult.propTypes = {
   usersCounter: PropTypes.number.isRequired,
   hasMore: PropTypes.bool,
   hasMoreUsers: PropTypes.bool,
+  isSocial: PropTypes.bool,
   loadingMore: PropTypes.bool.isRequired,
   isShowResult: PropTypes.bool.isRequired,
   setShowSearchResult: PropTypes.func.isRequired,
   reloadSearchList: PropTypes.func.isRequired,
   setQueryFromSearchList: PropTypes.func.isRequired,
   showReload: PropTypes.bool,
+  socialLoading: PropTypes.bool,
   handleHoveredCard: PropTypes.func,
+  setSocialSearchResults: PropTypes.func,
   searchWebsiteObjectsAutoCompete: PropTypes.func.isRequired,
   searchExpertsForMap: PropTypes.func.isRequired,
   searchMap: PropTypes.shape().isRequired,
+  currObj: PropTypes.shape(),
   activeFilters: PropTypes.arrayOf(PropTypes.shape()).isRequired,
 };
 
@@ -221,6 +240,9 @@ export default connect(
     usersCounter: getSearchUsersResultsQuantity(state),
     activeFilters: getSearchFiltersTagCategory(state),
     searchMap: getWebsiteMap(state),
+    isSocial: getIsSocial(state),
+    currObj: getObject(state),
+    socialLoading: getSocialSearchResultLoading(state),
   }),
   {
     searchExpertsForMapLoadingMore,
@@ -228,5 +250,6 @@ export default connect(
     setShowSearchResult,
     searchWebsiteObjectsAutoCompete,
     searchExpertsForMap,
+    setSocialSearchResults,
   },
 )(injectIntl(SearchAllResult));

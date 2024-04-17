@@ -6,6 +6,8 @@ import { Helmet } from 'react-helmet';
 import { get, isEmpty } from 'lodash';
 import classNames from 'classnames';
 import { useParams } from 'react-router';
+import { excludeHashtagObjType } from '../../common/constants/listOfObjectTypes';
+import { getObjectsList } from '../../store/dynamicList/dynamicListActions';
 
 import {
   getGlobalProperties,
@@ -14,6 +16,7 @@ import {
   openTransfer,
 } from '../../store/walletStore/walletActions';
 import { getUserAccount, getInfoForSideBar } from '../../store/usersStore/usersActions';
+import { getWobjectsWithUserWeight } from '../../waivioApi/ApiClient';
 import { getAvatarURL } from '../components/Avatar';
 import UserHero from './UserHero';
 import LeftSidebar from '../app/Sidebar/LeftSidebar';
@@ -255,10 +258,13 @@ User.defaultProps = {
 };
 
 User.fetchData = async ({ store, match }) => {
+  const fetcher = (skip, authUser) =>
+    getWobjectsWithUserWeight(match.params.name, skip, 5, authUser, excludeHashtagObjType);
   const promises = [
     store
       .dispatch(getUserAccount(match.params.name))
       .then(res => store.dispatch(getInfoForSideBar(match.params.name, res?.lastActivity))),
+    store.dispatch(getObjectsList(fetcher, 5, 0, match.params[0], false)),
   ];
 
   return Promise.allSettled([...promises]);

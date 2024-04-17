@@ -27,7 +27,7 @@ import {
   getWobjectDepartments,
   getWobjectsShopList,
 } from '../../store/shopStore/shopActions';
-import { getNotifications } from '../../store/userStore/userActions';
+import { getCoordinates, getNotifications } from '../../store/userStore/userActions';
 import {
   getRate,
   getRewardFund,
@@ -78,9 +78,10 @@ const createLink = i => {
     case 'business':
     case 'product':
     case 'book':
-      return `/object/${i?.author_permlink}`;
     case 'newsfeed':
       return `/object/${i?.author_permlink}/newsfeed`;
+    case 'map':
+      return `/object/${i?.author_permlink}/map`;
     default:
       return i.linkToWeb || i.defaultShowLink;
   }
@@ -140,7 +141,7 @@ const SocialWrapper = props => {
             const compareList = wobject?.menuItem?.map(wobjItem => {
               const body = parseJSON(wobjItem.body);
               const currItem = body?.linkToObject
-                ? listItems.wobjects.find(wobj => wobj.author_permlink === body?.linkToObject)
+                ? listItems?.wobjects?.find(wobj => wobj.author_permlink === body?.linkToObject)
                 : body;
 
               return {
@@ -218,6 +219,7 @@ const SocialWrapper = props => {
             props.busyLogin();
             props.getRewardFund();
             props.dispatchGetAuthGuestBalance();
+            props.getCoordinates();
           });
           if ((token && provider) || (auth && provider)) {
             props.history.push('/');
@@ -278,6 +280,7 @@ SocialWrapper.propTypes = {
   setUsedLocale: PropTypes.func,
   busyLogin: PropTypes.func,
   getCurrentAppSettings: PropTypes.func,
+  getCoordinates: PropTypes.func,
   nightmode: PropTypes.bool,
   isOpenModal: PropTypes.bool,
   dispatchGetAuthGuestBalance: PropTypes.func,
@@ -335,6 +338,7 @@ SocialWrapper.fetchData = async ({ store, req, url }) => {
   return Promise.allSettled([
     store.dispatch(getWebsiteConfigForSSR(req.headers.host)).then(res => {
       const configuration = res.value;
+
       const promises = [store.dispatch(setMainObj(configuration.shopSettings))];
 
       if (!isEmpty(configuration?.shopSettings)) {
@@ -389,7 +393,7 @@ SocialWrapper.fetchData = async ({ store, req, url }) => {
                   promises.push(store.dispatch(getWobjectDepartments(wobject.author_permlink)));
                   promises.push(store.dispatch(getWobjectsShopList(wobject.author_permlink)));
                 }
-                if (['page', 'widget', 'newsfeed', 'list']?.includes(wobject.object_type)) {
+                if (['page', 'widget', 'newsfeed', 'list', 'map']?.includes(wobject.object_type)) {
                   promises.push(store.dispatch(getObjectAction(wobject.author_permlink)));
                 }
               }
@@ -403,7 +407,7 @@ SocialWrapper.fetchData = async ({ store, req, url }) => {
             const compareList = wobject?.menuItem?.map(wobjItem => {
               const body = parseJSON(wobjItem.body);
               const currItem = body?.linkToObject
-                ? listItems.wobjects.find(wobj => wobj.author_permlink === body?.linkToObject)
+                ? listItems?.wobjects?.find(wobj => wobj.author_permlink === body?.linkToObject)
                 : body;
 
               return {
@@ -447,7 +451,9 @@ SocialWrapper.fetchData = async ({ store, req, url }) => {
                 promises.push(store.dispatch(getWobjectDepartments(buttonList[0]?.permlink)));
                 promises.push(store.dispatch(getWobjectsShopList(buttonList[0]?.permlink)));
               }
-              if (['page', 'widget', 'newsfeed', 'list']?.includes(buttonList[0]?.object_type)) {
+              if (
+                ['page', 'widget', 'newsfeed', 'list', 'map']?.includes(buttonList[0]?.object_type)
+              ) {
                 promises.push(store.dispatch(getObjectAction(buttonList[0]?.permlink)));
               }
             }
@@ -516,6 +522,7 @@ export default ErrorBoundary(
         getSwapEnginRates,
         setSocialFlag,
         setLoadingStatus,
+        getCoordinates,
       },
     )(SocialWrapper),
   ),

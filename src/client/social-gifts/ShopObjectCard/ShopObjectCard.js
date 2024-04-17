@@ -4,8 +4,7 @@ import { FormattedMessage } from 'react-intl';
 import { get, isEmpty, truncate, uniq } from 'lodash';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import { Link } from 'react-router-dom';
-import { useLocation, useParams } from 'react-router';
+import { useLocation, useParams, useHistory } from 'react-router';
 
 import RatingsWrap from '../../objectCard/RatingsWrap/RatingsWrap';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
@@ -19,8 +18,9 @@ import { getRatingForSocial } from '../../components/Sidebar/Rate/rateHelper';
 import { isMobile } from '../../../common/helpers/apiHelpers';
 import { removeEmptyLines, shortenDescription } from '../../object/wObjectHelper';
 import { getObject } from '../../../store/wObjectStore/wObjectSelectors';
-import './ShopObjectCard.less';
 import { getUsedLocale } from '../../../store/appStore/appSelectors';
+
+import './ShopObjectCard.less';
 
 const ShopObjectCard = ({ wObject, isChecklist, isSocialProduct }) => {
   const username = useSelector(getAuthenticatedUserName);
@@ -28,6 +28,7 @@ const ShopObjectCard = ({ wObject, isChecklist, isSocialProduct }) => {
   const [tags, setTags] = useState([]);
   const wobjName = getObjectName(wObject);
   const { name } = useParams();
+  const history = useHistory();
   const location = useLocation();
   const withRewards = !isEmpty(wObject.propositions);
   const proposition = withRewards ? wObject.propositions[0] : null;
@@ -85,9 +86,13 @@ const ShopObjectCard = ({ wObject, isChecklist, isSocialProduct }) => {
   const withoutHeard = ['page'].includes(wObject?.object_type);
   const locale = useSelector(getUsedLocale);
   const isEnLocale = locale === 'en-US';
+  const objLink =
+    wObject.object_type === 'list'
+      ? `/checklist/${wObject.author_permlink}`
+      : wObject.defaultShowLink;
 
   return (
-    <div className={shopObjectCardClassList}>
+    <div onClick={() => history.push(link)} className={shopObjectCardClassList}>
       {withRewards && (
         <h3
           className={
@@ -113,24 +118,25 @@ const ShopObjectCard = ({ wObject, isChecklist, isSocialProduct }) => {
       )}
       <div className="ShopObjectCard__topInfoWrap">
         {!withoutHeard && <HeartButton wobject={wObject} size={'20px'} />}
-        <Link to={link} className="ShopObjectCard__avatarWrap">
+        <a href={objLink} onClick={e => e.preventDefault()} className="ShopObjectCard__avatarWrap">
           <img className="ShopObjectCard__avatarWrap" src={url} alt={altText} />
-        </Link>
+        </a>
       </div>
-      <Link
+      <a
+        href={objLink}
+        onClick={e => e.preventDefault()}
         title={
           wObject?.description
             ? truncate(wObject?.description, { length: 200 })
             : getObjectName(wObject)
         }
-        to={link}
         className="ShopObjectCard__name"
       >
         {truncate(wobjName, {
           length: isSocialProduct && isMobile() ? 35 : 110,
           separator: '...',
         })}
-      </Link>
+      </a>
       {!isEmpty(rating) && (
         <RatingsWrap
           ratings={[rating]}

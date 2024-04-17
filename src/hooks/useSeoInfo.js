@@ -1,33 +1,26 @@
 import { useSelector } from 'react-redux';
-import { useLocation } from 'react-router';
+import { useLocation, useParams } from 'react-router';
 import { isNil } from 'lodash';
 
 import { getAppUrl, getMainObj } from '../store/appStore/appSelectors';
-import { getLastPermlinksFromHash } from '../common/helpers/wObjectHelper';
+import useQuery from './useQuery';
 
 const originalWaivioHost = 'www.waivio.com';
 
 const prefereCanonical = (appUrl, isChecklist, objectType) => {
   const location = useLocation();
+  const { name } = useParams();
+  const query = useQuery();
   let url = `${appUrl}${location.pathname}`;
 
   if (['list', 'page'].includes(objectType) && appUrl?.includes(originalWaivioHost)) {
-    url = `${appUrl}${location.pathname?.replace('checklist', 'object')}/${objectType}`;
+    url = `${appUrl}/object/${name}/${objectType}`;
   }
 
-  if (location.search) {
-    url = `${appUrl}${location.pathname}${location.search}`;
-  }
-  if (location.hash) {
-    if (isChecklist) {
-      const pathArray = location.pathname.split('/');
-
-      pathArray.splice(2, 1, getLastPermlinksFromHash(location.hash));
-
-      url = appUrl?.includes(originalWaivioHost)
-        ? `${appUrl}${pathArray.join('/')?.replace('checklist', 'object')}/${objectType}`
-        : `${appUrl}${pathArray.join('/')}`;
-    } else url += location.hash;
+  if (query.get('currObj')) {
+    url = `${appUrl}${
+      objectType === 'list' && !appUrl?.includes(originalWaivioHost) ? '/checklist' : '/object'
+    }/${query.get('currObj')}`;
   }
 
   return url;

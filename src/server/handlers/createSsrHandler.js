@@ -1,3 +1,4 @@
+import Cookie from 'js-cookie';
 import { setTimeout } from 'timers';
 import React from 'react';
 import { Provider } from 'react-redux';
@@ -59,7 +60,7 @@ export default function createSsrHandler(template) {
         const pageExist = await isPageExistSitemap({ host: hostname, url: req.url });
         if (!pageExist) return res.redirect(302, `https://www.waivio.com${req.url}`);
       }
-
+      // console.log(req.cookies);
       if (searchBot) {
         await updateBotCount(req);
         const cachedPage = await getCachedPage(req);
