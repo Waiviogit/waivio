@@ -22,6 +22,7 @@ import {
 import { getReservedCounter } from '../../../../store/appStore/appActions';
 import {
   getWebsiteObjWithCoordinates,
+  resetSocialSearchResult,
   setShowReload,
 } from '../../../../store/websiteStore/websiteActions';
 import {
@@ -46,10 +47,9 @@ import { getShowReloadButton } from '../../../../store/websiteStore/websiteSelec
 import { createFilterBody, parseTagsFilters } from '../../../discoverObjects/helper';
 import MainMap from '../../MainMap/MainMap';
 import { useSeoInfo } from '../../../../hooks/useSeoInfo';
-
-import './WebsiteBody.less';
 import { getObject } from '../../../../store/wObjectStore/wObjectSelectors';
 import { getObject as getObjectAction } from '../../../../store/wObjectStore/wobjectsActions';
+import './WebsiteBody.less';
 
 const WebsiteBody = props => {
   const [hoveredCardPermlink, setHoveredCardPermlink] = useState('');
@@ -93,6 +93,10 @@ const WebsiteBody = props => {
 
       props.getObjectAction(pathUrl, props.authUserName, props.locale);
     }
+
+    return () => {
+      props.resetSocialSearchResult();
+    };
   }, [props.currObj.author_permlink]);
 
   const aboutObject = get(props, ['configuration', 'aboutObject'], {});
@@ -200,6 +204,7 @@ WebsiteBody.propTypes = {
   authUserName: PropTypes.string,
   currObj: PropTypes.shape(),
   getObjectAction: PropTypes.func,
+  resetSocialSearchResult: PropTypes.func,
   getWebsiteObjWithCoordinates: PropTypes.func,
   isActiveFilters: PropTypes.bool.isRequired,
   showReloadButton: PropTypes.bool,
@@ -246,5 +251,6 @@ export default connect(
     setShowSearchResult,
     getObjectAction,
     getWebsiteObjWithCoordinates,
+    resetSocialSearchResult,
   },
 )(withRouter(WebsiteBody));

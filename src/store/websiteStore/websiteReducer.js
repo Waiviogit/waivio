@@ -356,6 +356,13 @@ export default function websiteReducer(state = initialState, action) {
         wobjectsPointHasMore: false,
       };
     }
+    case websiteAction.RESET_SOCIAL_SEARCH_RESULT: {
+      return {
+        ...state,
+        socialSearchResultLoading: false,
+        socialSearchResult: [],
+      };
+    }
     case websiteAction.SET_SOCIAL_SEARCH_RESULT.START: {
       return {
         ...state,
