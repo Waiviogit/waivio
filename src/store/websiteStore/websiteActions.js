@@ -86,6 +86,12 @@ export const resetAvailableStatus = () => ({
   type: RESET_AVAILABLE_STATUS,
 });
 
+export const RESET_SOCIAL_SEARCH_RESULT = '@website/RESET_SOCIAL_SEARCH_RESULT';
+
+export const resetSocialSearchResult = () => ({
+  type: RESET_SOCIAL_SEARCH_RESULT,
+});
+
 export const GET_INFO_FOR_MANAGE_PAGE = createAsyncActionType('@website/GET_INFO_FOR_MANAGE_PAGE');
 
 export const getManageInfo = name => ({
