@@ -7,7 +7,7 @@ import { getLocale } from '../settingsStore/settingsSelectors';
 import { getVideoForPreview } from '../../common/helpers/postHelpers';
 import { parseJSON } from '../../common/helpers/parseJSON';
 import { setGuestMana } from '../usersStore/usersActions';
-import { getMinRejectVote, getUpdateByBody } from '../../waivioApi/ApiClient';
+import { getMinRejectVote, getUpdateByBody, getUserProfileBlog } from '../../waivioApi/ApiClient';
 import { getAppendDownvotes, getAppendUpvotes } from '../../common/helpers/voteHelpers';
 import { objectFields } from '../../common/constants/listOfFields';
 import { getAppendData } from '../../common/helpers/wObjectHelper';
@@ -374,3 +374,24 @@ export const muteAuthorPost = post => (dispatch, getState, { steemConnectAPI }) 
     },
   });
 };
+
+export const RECOMMENTED_POSTS = createAsyncActionType('RECOMMENTED_POSTS');
+
+export const getPostsByAuthor = author => (dispatch, getState) => {
+  const state = getState();
+  const userName = getAuthenticatedUserName(state);
+  const locale = getUsedLocale(state);
+
+  return dispatch({
+    type: RECOMMENTED_POSTS.ACTION,
+    payload: {
+      promise: getUserProfileBlog(author, userName, { limit: 4 }, locale),
+    },
+  });
+};
+
+export const RESET_RECOMMENTED_POSTS = '@posts/RESET_RECOMMENTED_POSTS';
+
+export const resetRecommendetPosts = () => ({
+  type: RESET_RECOMMENTED_POSTS,
+});

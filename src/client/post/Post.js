@@ -3,10 +3,11 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { get } from 'lodash';
 import VisibilitySensor from 'react-visibility-sensor';
+import { isMobile } from '../../common/helpers/apiHelpers';
 import formatter from '../../common/helpers/steemitFormatter';
 import { isBannedPost } from '../../common/helpers/postHelpers';
 import { getSuitableLanguage } from '../../store/reducers';
-import { getContent } from '../../store/postsStore/postActions';
+import { getContent, getPostsByAuthor } from '../../store/postsStore/postActions';
 import Error404 from '../statics/Error404';
 import Comments from '../comments/Comments';
 // import Loading from '../components/Icon/Loading';
@@ -84,7 +85,9 @@ export default class Post extends React.Component {
   static fetchData({ store, match }) {
     const { author, permlink } = match.params;
 
-    return Promise.all([store.dispatch(getContent(author, permlink))]);
+    return Promise.all([
+      store.dispatch(getContent(author, permlink), store.dispatch(getPostsByAuthor(author))),
+    ]);
   }
 
   state = {
@@ -191,6 +194,7 @@ export default class Post extends React.Component {
                       </div>
                     )}
                   </VisibilitySensor>
+                  {isMobile() && <PostRecommendation />}
                 </div>
               )
             ) : (

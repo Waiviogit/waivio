@@ -467,6 +467,18 @@ const posts = (state = initialState, action) => {
         },
       };
     }
+    case postsActions.RECOMMENTED_POSTS.SUCCESS: {
+      return {
+        ...state,
+        recommendedPosts: [...action.payload.posts],
+      };
+    }
+    case postsActions.RESET_RECOMMENTED_POSTS: {
+      return {
+        ...state,
+        recommendedPosts: [],
+      };
+    }
 
     default:
       return state;

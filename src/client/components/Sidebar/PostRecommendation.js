@@ -1,98 +1,38 @@
-import React, { Component } from 'react';
+import { isEmpty } from 'lodash';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
 import { connect } from 'react-redux';
-import { usernameURLRegex } from '../../../common/helpers/regexHelpers';
 import { getPostKey } from '../../../common/helpers/stateHelpers';
 import formatter from '../../../common/helpers/steemitFormatter';
-import Loading from '../../components/Icon/Loading';
+import { getPostsByAuthor, resetRecommendetPosts } from '../../../store/postsStore/postActions';
+import { getRecommendedPosts } from '../../../store/postsStore/postsSelectors';
 import PostRecommendationLink from './PostRecommendationLink';
-import { getUserProfileBlog } from '../../../waivioApi/ApiClient';
-import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 
 import './PostRecommendation.less';
 import './SidebarContentBlock.less';
 
-@withRouter
-@connect(state => ({
-  follower: getAuthenticatedUserName(state),
-}))
-class PostRecommendation extends Component {
-  static propTypes = {
-    location: PropTypes.shape().isRequired,
-    match: PropTypes.shape().isRequired,
-    isAuthFetching: PropTypes.bool.isRequired,
-    locale: PropTypes.string.isRequired,
-    follower: PropTypes.string,
-  };
-  static defaultProps = {
-    follower: '',
-  };
+const PostRecommendation = props => {
+  const { recommendedPosts, match } = props;
+  const { author } = match.params;
 
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      recommendedPosts: {},
-      loading: false,
-      currentAuthor: '',
-    };
-
-    this.getRecommendations = this.getRecommendations.bind(this);
-  }
-
-  componentWillMount() {
-    const { location, isAuthFetching } = this.props;
-
-    if (!isAuthFetching && location.pathname !== '/') {
-      this.getRecommendations();
+  useEffect(() => {
+    if (isEmpty(recommendedPosts)) {
+      props.getPostsByAuthor(author);
     }
-  }
 
-  componentWillReceiveProps(nextProps) {
-    if (this.props.isAuthFetching !== nextProps.isAuthFetching) {
-      this.getRecommendations();
-    }
-  }
+    return () => props.resetRecommendetPosts();
+  }, []);
 
-  getRecommendations() {
-    const { location } = this.props;
+  useEffect(() => {
+    props.getPostsByAuthor(author);
+  }, [author]);
 
-    const author = location.pathname.match(usernameURLRegex)[1];
+  const getFilteredPosts = () => {
+    if (!Array.isArray(recommendedPosts)) return [];
 
-    this.setState({
-      loading: true,
-    });
-    this.getPostsByAuthor(author);
-  }
-
-  getPostsByAuthor = author => {
-    const { follower } = this.props;
-
-    getUserProfileBlog(author, follower, { limit: 4 }, this.props.locale)
-      .then(result => {
-        const recommendedPosts = result || {};
-
-        this.setState({
-          recommendedPosts,
-          loading: false,
-          currentAuthor: author,
-        });
-      })
-      .catch(() => {
-        this.setState({
-          loading: false,
-        });
-      });
-  };
-
-  getFilteredPosts = () => {
-    const { match } = this.props;
-
-    if (!Array.isArray(this.state.recommendedPosts.posts)) return [];
-
-    return this.state.recommendedPosts.posts
+    return recommendedPosts
       .filter(
         post =>
           formatter.reputation(post.author_reputation) > -1 &&
@@ -101,56 +41,48 @@ class PostRecommendation extends Component {
       .slice(0, 3);
   };
 
-  navigateToPost = author => {
+  const navigateToPost = () => {
     if (typeof window !== 'undefined') window.scrollTo(0, 0);
-
-    if (author !== this.state.currentAuthor) {
-      this.getPostsByAuthor(author);
-    } else {
-      this.forceUpdate();
-    }
   };
 
-  navigateToPostComments = () => {
+  const navigateToPostComments = () => {
     if (typeof document !== 'undefined') document.getElementById('comments').scrollIntoView();
-    this.forceUpdate();
   };
 
-  renderPosts = () => {
-    const filteredRecommendedPosts = this.getFilteredPosts();
+  const filteredRecommendedPosts = getFilteredPosts();
 
-    return filteredRecommendedPosts.map(post => (
-      <PostRecommendationLink
-        key={getPostKey(post)}
-        post={post}
-        navigateToPost={this.navigateToPost}
-        navigateToPostComments={this.navigateToPostComments}
-      />
-    ));
-  };
-
-  render() {
-    const { loading } = this.state;
-    const filteredRecommendedPosts = this.getFilteredPosts();
-
-    if (loading) {
-      return <Loading />;
-    }
-
-    if (filteredRecommendedPosts.length === 0) {
-      return <div />;
-    }
-
-    return (
-      <div className="SidebarContentBlock">
-        <h4 className="SidebarContentBlock__title">
-          <i className="iconfont icon-headlines SidebarContentBlock__icon" />{' '}
-          <FormattedMessage id="recommended_posts" defaultMessage="Recommended Posts" />
-        </h4>
-        <div className="SidebarContentBlock__content">{this.renderPosts()}</div>
+  return (
+    <div className="SidebarContentBlock">
+      <h4 className="SidebarContentBlock__title">
+        <i className="iconfont icon-headlines SidebarContentBlock__icon" />{' '}
+        <FormattedMessage id="recommended_posts" defaultMessage="Recommended Posts" />
+      </h4>
+      <div className="SidebarContentBlock__content">
+        {filteredRecommendedPosts.map(post => (
+          <PostRecommendationLink
+            key={getPostKey(post)}
+            post={post}
+            navigateToPost={navigateToPost}
+            navigateToPostComments={navigateToPostComments}
+          />
+        ))}
       </div>
-    );
-  }
-}
+    </div>
+  );
+};
 
-export default PostRecommendation;
+PostRecommendation.propTypes = {
+  match: PropTypes.shape().isRequired,
+  getPostsByAuthor: PropTypes.func.isRequired,
+  resetRecommendetPosts: PropTypes.func.isRequired,
+  recommendedPosts: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
+};
+
+export default withRouter(
+  connect(
+    state => ({
+      recommendedPosts: getRecommendedPosts(state),
+    }),
+    { getPostsByAuthor, resetRecommendetPosts },
+  )(PostRecommendation),
+);

@@ -108,6 +108,7 @@ class StoryFull extends React.Component {
 
     this.state = {
       activeKey: 1,
+      activeKeys: ['1', '2'],
       showObjects: false,
       lightbox: {
         open: false,
@@ -139,7 +140,7 @@ class StoryFull extends React.Component {
           );
 
           window.scrollTo({ top: relElement.offsetTop });
-          this.setState({ activeKey: !isEmpty(linkedObjects) ? 1 : 2 });
+          this.setState({ activeKeys: !isEmpty(linkedObjects) ? ['1'] : ['2'] });
         }, 300);
       }
     }
@@ -455,7 +456,7 @@ class StoryFull extends React.Component {
           />
         )}
 
-        <Collapse defaultActiveKey={['1']}>
+        <Collapse defaultActiveKey={typeof document !== 'undefined' ? ['1'] : ['1', '2']}>
           {!isEmpty(linkedObjects) && (
             <Collapse.Panel
               id="allLinkedObjects"
