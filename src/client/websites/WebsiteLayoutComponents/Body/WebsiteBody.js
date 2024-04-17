@@ -93,7 +93,7 @@ const WebsiteBody = props => {
 
       props.getObjectAction(pathUrl, props.authUserName, props.locale);
     }
-  }, [props.match.params.name, props.currObj.author_permlink]);
+  }, [props.currObj.author_permlink]);
 
   const aboutObject = get(props, ['configuration', 'aboutObject'], {});
   const currentLogo = props.logo || getObjectAvatar(aboutObject);

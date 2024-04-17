@@ -100,8 +100,8 @@ const MainMap = React.memo(props => {
       : undefined;
     const mapView = isMobile ? mapMobileView : mapDesktopView;
 
-    center = mapView?.center || center;
-    zoom = mapView?.zoom || zoom;
+    center = query ? center : mapView?.center;
+    zoom = query ? zoom : mapView?.zoom;
 
     setCurrMapConfig(center, zoom);
   };
@@ -133,7 +133,12 @@ const MainMap = React.memo(props => {
       if (distance > 20 && !props.showReloadButton) props.setShowReload(true);
       if (!distance) props.setShowReload(false);
     }
-  }, [props.searchMap, props.showReloadButton, mapData.center]);
+  }, [
+    props.searchMap,
+    props.showReloadButton,
+    mapData.center,
+    props.isSocial ? mapData.zoom : undefined,
+  ]);
 
   useEffect(
     // eslint-disable-next-line consistent-return
@@ -160,7 +165,7 @@ const MainMap = React.memo(props => {
       const bounce = mapRef.current.getBounds();
 
       if (bounce.ne[0] && bounce.sw[0]) {
-        props.setShowSearchResult(true);
+        if ((!isMobile && props.isSocial) || !props.isSocial) props.setShowSearchResult(true);
         setBoundsParams({
           topPoint: [bounce.ne[1], bounce.ne[0]],
           bottomPoint: [bounce.sw[1], bounce.sw[0]],
@@ -170,13 +175,15 @@ const MainMap = React.memo(props => {
   }, [mapRef.current]);
 
   useEffect(() => {
-    if (props.isShowResult) {
-      handleSetMapForSearch();
-    } else {
-      props.setMapForSearch({});
-      props.setShowReload(false);
-      props.setSearchInBox(true);
-      props.history.push(`?${query.toString()}`);
+    if (!props.isSocial) {
+      if (props.isShowResult) {
+        handleSetMapForSearch();
+      } else {
+        props.setMapForSearch({});
+        props.setShowReload(false);
+        props.setSearchInBox(true);
+        props.history.push(`?${query.toString()}`);
+      }
     }
   }, [props.isShowResult]);
 
@@ -231,7 +238,7 @@ const MainMap = React.memo(props => {
           }
         });
     }
-  }, [props.userLocation, boundsParams, props.searchType]);
+  }, [props.userLocation, boundsParams, !props.isSocial ? props.searchType : undefined]);
 
   const handleOnBoundsChanged = useCallback(
     debounce(bounds => {
@@ -319,7 +326,7 @@ const MainMap = React.memo(props => {
             <PostOverlayCard wObject={wobject} />
           ) : (
             <ObjectOverlayCard
-              isMapObj={props.isSocial}
+              isMapObj
               wObject={wobject}
               showParent={props.searchType !== 'restaurant'}
             />
@@ -389,7 +396,7 @@ const MainMap = React.memo(props => {
         </Map>
         <MapControllers
           isMapObjType
-          className={'WebsiteBodyControl'}
+          className={props.isSocial ? 'WebsiteBodyControl--social' : 'WebsiteBodyControl'}
           decrementZoom={decrementZoom}
           incrementZoom={incrementZoom}
           successCallback={setLocationFromNavigator}

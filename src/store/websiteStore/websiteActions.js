@@ -641,7 +641,7 @@ export const getWebsiteObjWithCoordinates = (
     box,
   };
 
-  if (isEmpty(socialWobjects)) {
+  if (isEmpty(socialWobjects) && isSocial) {
     dispatch(setSocialSearchResults(searchString, box, 100));
   }
 

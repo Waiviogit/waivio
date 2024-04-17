@@ -101,7 +101,8 @@
   }
 }
 
-.WebsiteBodyControl {
+.WebsiteBodyControl,
+.WebsiteBodyControl--social {
   position: absolute;
   z-index: 200;
   display: flex;
@@ -111,7 +112,20 @@
   top: 82.5%;
   left: 85%;
 
+  .MapConfigurationControl__gps:hover {
+    background-color: @white-gainsboro;
+  }
+
   @media @small {
     left: 94%;
+  }
+}
+.WebsiteBodyControl {
+  .MapOS__zoom {
+    right: 0;
+    top: 0;
+  }
+  .MapConfigurationControl__gps {
+    bottom: 0;
   }
 }
