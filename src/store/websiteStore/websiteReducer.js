@@ -2,6 +2,7 @@ import { get, isEmpty, uniqBy } from 'lodash';
 import moment from 'moment';
 import * as websiteAction from './websiteActions';
 import { getAvailableStatus } from '../../client/websites/helper';
+import { SET_MAP_INITIALISED } from './websiteActions';
 
 const initialState = {
   parentDomain: [],
@@ -25,6 +26,7 @@ const initialState = {
   wobjectsPoint: [],
   socialSearchResult: [],
   socialSearchResultLoading: true,
+  isMapInitialised: true,
   wobjectsPointHasMore: false,
   districts: null,
 };
@@ -354,6 +356,12 @@ export default function websiteReducer(state = initialState, action) {
         ...state,
         wobjectsPoint: [],
         wobjectsPointHasMore: false,
+      };
+    }
+    case SET_MAP_INITIALISED: {
+      return {
+        ...state,
+        isMapInitialised: action.payload,
       };
     }
     case websiteAction.RESET_SOCIAL_SEARCH_RESULT: {
