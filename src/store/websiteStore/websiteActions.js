@@ -91,6 +91,12 @@ export const RESET_SOCIAL_SEARCH_RESULT = '@website/RESET_SOCIAL_SEARCH_RESULT';
 export const resetSocialSearchResult = () => ({
   type: RESET_SOCIAL_SEARCH_RESULT,
 });
+export const SET_MAP_INITIALISED = '@website/SET_MAP_INITIALISED';
+
+export const setMapInitialised = isInitialised => ({
+  type: SET_MAP_INITIALISED,
+  payload: isInitialised,
+});
 
 export const GET_INFO_FOR_MANAGE_PAGE = createAsyncActionType('@website/GET_INFO_FOR_MANAGE_PAGE');
 
