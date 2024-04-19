@@ -10,7 +10,7 @@ import { adaptMarketDataToEngine } from '../../common/helpers/cryptosHelper';
 import { ADAPT_MARKET_TO_ENGINE } from '../walletStore/walletActions';
 import { HBD, HIVE } from '../../common/constants/cryptos';
 import { getMainCurrencyRate } from '../ratesStore/ratesAction';
-import { getObject, getUserAccount } from '../../waivioApi/ApiClient';
+import { getObject, getUserAccount, getParentHost } from '../../waivioApi/ApiClient';
 import { getMetadata } from '../../common/helpers/postingMetadata';
 
 export const GET_TRENDING_TOPICS_START = '@app/GET_TRENDING_TOPICS_START';
@@ -243,4 +243,11 @@ export const SET_LOADING_STATUS = '@app/SET_LOADING_STATUS';
 export const setLoadingStatus = status => ({
   type: SET_LOADING_STATUS,
   status,
+});
+
+export const SET_PARENT_HOST = createAsyncActionType('@app/SET_PARENT_HOST');
+
+export const setParentHost = host => ({
+  type: SET_PARENT_HOST.ACTION,
+  payload: getParentHost(host),
 });

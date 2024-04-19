@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect } from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { renderRoutes } from 'react-router-config';
@@ -102,7 +102,7 @@ const User = props => {
     return () => props.resetBreadCrumb();
   }, []);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (typeof window !== 'undefined' && window.gtag)
       window.gtag('event', 'view_user_profile', { debug_mode: false });
 
@@ -264,7 +264,7 @@ User.fetchData = async ({ store, match }) => {
     store
       .dispatch(getUserAccount(match.params.name))
       .then(res => store.dispatch(getInfoForSideBar(match.params.name, res?.lastActivity))),
-    store.dispatch(getObjectsList(fetcher, 5, 0, match.params[0], false)),
+    store.dispatch(getObjectsList(fetcher, 5, 0, 'expertise-block', false)),
   ];
 
   return Promise.allSettled([...promises]);

@@ -96,11 +96,6 @@ class Wrapper extends React.PureComponent {
     translations: PropTypes.shape(),
     username: PropTypes.string,
     login: PropTypes.func,
-    getRewardFund: PropTypes.func,
-    getRate: PropTypes.func,
-    getTokenRates: PropTypes.func.isRequired,
-    getCryptoPriceHistory: PropTypes.func.isRequired,
-    getSwapEnginRates: PropTypes.func.isRequired,
     getNotifications: PropTypes.func,
     setUsedLocale: PropTypes.func,
     busyLogin: PropTypes.func,
@@ -152,6 +147,9 @@ class Wrapper extends React.PureComponent {
       store.dispatch(getRate()),
       store.dispatch(getRewardFund()),
       store.dispatch(getGlobalProperties()),
+      store.dispatch(getTokenRates('WAIV')),
+      store.dispatch(getCryptoPriceHistory()),
+      store.dispatch(getSwapEnginRates()),
     ]);
   }
 
@@ -172,9 +170,6 @@ class Wrapper extends React.PureComponent {
     const isWidget = querySelectorSearchParams.get('display');
     const userName = querySelectorSearchParams.get('userName');
 
-    this.props.getTokenRates('WAIV');
-    this.props.getCryptoPriceHistory();
-    this.props.getSwapEnginRates();
     if (ref) setSessionData('refUser', ref);
     if (userName) setSessionData('userName', userName);
     if (isWidget) {
@@ -196,9 +191,9 @@ class Wrapper extends React.PureComponent {
       batch(() => {
         this.props.getNotifications();
         this.props.busyLogin();
-        this.props.getRewardFund();
+        // this.props.getRewardFund();
         this.props.dispatchGetAuthGuestBalance();
-        this.props.getRate();
+        // this.props.getRate();
         this.props.getCoordinates();
       });
     });

@@ -18,6 +18,7 @@ import {
   getPrivateEmail,
   getRewardTab,
   updateGuestProfile,
+  waivioAPI,
 } from '../../waivioApi/ApiClient';
 import { notify } from '../../client/app/Notification/notificationActions';
 import history from '../../client/history';
@@ -122,7 +123,7 @@ export const logout = () => (dispatch, getState, { busyAPI, steemConnectAPI }) =
 export const login = (accessToken = '', socialNetwork = '', regData = '') => async (
   dispatch,
   getState,
-  { steemConnectAPI, waivioAPI },
+  { steemConnectAPI },
 ) => {
   const state = getState();
   let promise = Promise.resolve(null);
@@ -234,6 +235,76 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
     },
     meta: {
       refresh: isUserLoaded(state),
+    },
+  }).catch(e => {
+    dispatch(loginError());
+
+    return e;
+  });
+};
+export const loginFromServer = cookie => async (dispatch, getState, { steemConnectAPI }) => {
+  let promise = Promise.resolve(null);
+  const isGuest = Boolean(cookie.guestName);
+  const hiveAuthData = parseJSON(cookie.auth);
+
+  if (hiveAuthData) {
+    if (hiveAuthData.expire < Date.now()) {
+      Promise.resolve();
+    } else {
+      promise = new Promise(async resolve => {
+        const account = await getAccount(hiveAuthData.username);
+        const userMetaData = await waivioAPI.getAuthenticatedUserMetadata(hiveAuthData.username);
+        const privateEmail = await getPrivateEmail(hiveAuthData.username);
+        const rewardsTab = await getRewardTab(hiveAuthData.username);
+
+        dispatch(changeAdminStatus(hiveAuthData.username));
+        dispatch(setSignature(userMetaData?.profile?.signature || ''));
+        dispatch(getCurrentCurrencyRate(userMetaData.settings.currency));
+
+        resolve({
+          account,
+          ...rewardsTab,
+          userMetaData,
+          privateEmail,
+        });
+      });
+    }
+  } else if (isGuest || cookie.access_token) {
+    promise = new Promise(async resolve => {
+      const scUserData = isGuest
+        ? await waivioAPI.getUserAccount(cookie.guestName, true)
+        : await steemConnectAPI.me();
+      const account = isGuest ? scUserData : await getAccount(scUserData.name);
+      const userMetaData = await waivioAPI.getAuthenticatedUserMetadata(scUserData.name);
+      const privateEmail = await getPrivateEmail(scUserData.name);
+      const rewardsTab = await getRewardTab(scUserData.name);
+      const { WAIV } = isGuest ? await getGuestWaivBalance(scUserData.name) : {};
+
+      dispatch(changeAdminStatus(scUserData.name));
+      dispatch(setSignature(scUserData?.user_metadata?.profile?.signature || ''));
+      dispatch(getCurrentCurrencyRate(userMetaData.settings.currency));
+
+      resolve({
+        ...scUserData,
+        ...rewardsTab,
+        account,
+        userMetaData,
+        privateEmail,
+        waivBalance: WAIV,
+        isGuestUser: isGuest,
+      });
+    });
+  }
+
+  // if (typeof window !== 'undefined' && window.gtag) window.gtag('event', 'login');
+
+  return dispatch({
+    type: LOGIN,
+    payload: {
+      promise,
+    },
+    meta: {
+      refresh: false,
     },
   }).catch(e => {
     dispatch(loginError());

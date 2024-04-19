@@ -164,7 +164,6 @@ export default (state = initialState, action) => {
         host,
         configuration,
         beneficiary,
-        parentHost,
         administrators,
         facebookAuthId,
         googleAuthId,
@@ -181,7 +180,6 @@ export default (state = initialState, action) => {
         mainPage,
         host,
         configuration,
-        parentHost,
         websiteBeneficiary: {
           account: beneficiary.account,
           weight: beneficiary.percent,
@@ -272,7 +270,13 @@ export default (state = initialState, action) => {
     case appTypes.SET_LOADING_STATUS:
       return {
         ...state,
-        infoLoaded: action.status,
+        // infoLoaded: action.status,
+      };
+
+    case appTypes.SET_PARENT_HOST.SUCCESS:
+      return {
+        ...state,
+        parentHost: action.payload,
       };
 
     default:

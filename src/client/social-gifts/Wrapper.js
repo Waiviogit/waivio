@@ -45,7 +45,6 @@ import Header from './Header/Header';
 import NotificationPopup from './../notifications/NotificationPopup';
 import BBackTop from './../components/BBackTop';
 import ErrorBoundary from './../widgets/ErrorBoundary';
-import Loading from './../components/Icon/Loading';
 import {
   getIsSocialGifts,
   getTranslations,
@@ -93,11 +92,6 @@ const SocialWrapper = props => {
   const language = findLanguage(props.usedLocale);
   const antdLocale = getAntdLocale(language);
   const signInPage = props?.location.pathname?.includes('sign-in');
-  const loadLocale = async locale => {
-    const lang = await loadLanguage(locale);
-
-    props.setUsedLocale(lang);
-  };
   const createWebsiteMenu = configuration => {
     if (!isEmpty(configuration?.shopSettings)) {
       if (configuration.shopSettings?.type === 'object') {
@@ -193,12 +187,7 @@ const SocialWrapper = props => {
 
     props.setSocialFlag();
     props.getCurrentAppSettings().then(res => {
-      props.getRate();
-      props.getTokenRates('WAIV');
-      props.getCryptoPriceHistory();
-      props.getSwapEnginRates();
       if (!props.username) props.setLocale(locale || res.language);
-
       const mainColor = res.configuration.colors?.mapMarkerBody || initialColors.marker;
       const textColor = res.configuration.colors?.mapMarkerText || initialColors.text;
 
@@ -217,7 +206,6 @@ const SocialWrapper = props => {
           batch(() => {
             props.getNotifications();
             props.busyLogin();
-            props.getRewardFund();
             props.dispatchGetAuthGuestBalance();
             props.getCoordinates();
           });
@@ -226,8 +214,6 @@ const SocialWrapper = props => {
           }
         });
       }
-
-      loadLocale(props.locale);
       createWebsiteMenu(res.configuration);
     });
   }, [props.locale]);
@@ -250,11 +236,7 @@ const SocialWrapper = props => {
         <Layout data-dir={language && language.rtl ? 'rtl' : 'ltr'}>
           {!signInPage && !isSocialGifts && <Header />}
           <div className={'ShopWebsiteWrapper'}>
-            {props.loadingFetching ? (
-              <Loading margin />
-            ) : (
-              renderRoutes(props.route.routes, { isSocial: true })
-            )}
+            {renderRoutes(props.route.routes, { isSocial: true })}
             <NotificationPopup />
             <BBackTop
               className={props.isOpenWalletTable ? 'WalletTable__bright' : 'primary-modal'}
@@ -274,10 +256,7 @@ SocialWrapper.propTypes = {
   translations: PropTypes.shape(),
   username: PropTypes.string,
   login: PropTypes.func,
-  getRewardFund: PropTypes.func,
-  getRate: PropTypes.func,
   getNotifications: PropTypes.func,
-  setUsedLocale: PropTypes.func,
   busyLogin: PropTypes.func,
   getCurrentAppSettings: PropTypes.func,
   getCoordinates: PropTypes.func,
@@ -286,9 +265,8 @@ SocialWrapper.propTypes = {
   dispatchGetAuthGuestBalance: PropTypes.func,
   setSocialFlag: PropTypes.func,
   setLoadingStatus: PropTypes.func,
-  getTokenRates: PropTypes.func.isRequired,
   isOpenWalletTable: PropTypes.bool,
-  loadingFetching: PropTypes.bool,
+  // loadingFetching: PropTypes.bool,
   location: PropTypes.shape({
     search: PropTypes.string,
     pathname: PropTypes.string,
@@ -300,9 +278,7 @@ SocialWrapper.propTypes = {
   history: PropTypes.shape({
     push: PropTypes.func,
   }).isRequired,
-  getCryptoPriceHistory: PropTypes.func.isRequired,
   setLocale: PropTypes.func.isRequired,
-  getSwapEnginRates: PropTypes.func.isRequired,
 };
 
 SocialWrapper.defaultProps = {
@@ -310,13 +286,8 @@ SocialWrapper.defaultProps = {
   translations: {},
   username: '',
   login: () => {},
-  logout: () => {},
-  getRewardFund: () => {},
   getCurrentAppSettings: () => {},
-  getRate: () => {},
-  getTrendingTopics: () => {},
   getNotifications: () => {},
-  setUsedLocale: () => {},
   busyLogin: () => {},
   nightmode: false,
   dispatchGetAuthGuestBalance: () => {},
@@ -490,6 +461,9 @@ SocialWrapper.fetchData = async ({ store, req, url }) => {
     store.dispatch(setUsedLocale(lang)),
     store.dispatch(getRate()),
     store.dispatch(getRewardFund()),
+    store.dispatch(getTokenRates('WAIV')()),
+    store.dispatch(getCryptoPriceHistory()),
+    store.dispatch(getSwapEnginRates()),
     store.dispatch(getGlobalProperties()),
   ]);
 };
@@ -512,16 +486,11 @@ export default ErrorBoundary(
       {
         login,
         getNotifications,
-        getRate,
-        getRewardFund,
         busyLogin,
         setUsedLocale,
         dispatchGetAuthGuestBalance,
         getCurrentAppSettings,
         setLocale,
-        getTokenRates,
-        getCryptoPriceHistory,
-        getSwapEnginRates,
         setSocialFlag,
         setLoadingStatus,
         getCoordinates,
