@@ -461,7 +461,7 @@ SocialWrapper.fetchData = async ({ store, req, url }) => {
     store.dispatch(setUsedLocale(lang)),
     store.dispatch(getRate()),
     store.dispatch(getRewardFund()),
-    store.dispatch(getTokenRates('WAIV')()),
+    store.dispatch(getTokenRates('WAIV')),
     store.dispatch(getCryptoPriceHistory()),
     store.dispatch(getSwapEnginRates()),
     store.dispatch(getGlobalProperties()),
