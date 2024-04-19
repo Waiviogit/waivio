@@ -15,14 +15,14 @@ import './ObjectWeightBlock.less';
 
 const ObjectWeightBlock = () => {
   const params = useParams();
-  const { list, hasMore } = useSelector(state => getDynamicList(state, params[0]));
+  const { list, hasMore } = useSelector(state => getDynamicList(state, 'expertise-block'));
   const dispatch = useDispatch();
 
   const fetcher = skip =>
     getWobjectsWithUserWeight(params.name, skip, 5, params.name, excludeHashtagObjType);
 
   useEffect(() => {
-    dispatch(getObjectsList(fetcher, 5, 0, params[0], false));
+    dispatch(getObjectsList(fetcher, 5, 0, 'expertise-block', false));
   }, [params.name]);
 
   const wObjects = take(list, 5);

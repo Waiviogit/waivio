@@ -80,8 +80,8 @@ class WebsiteWrapper extends React.PureComponent {
     translations: PropTypes.shape(),
     username: PropTypes.string,
     login: PropTypes.func,
-    getRewardFund: PropTypes.func,
-    getRate: PropTypes.func,
+    // getRewardFund: PropTypes.func,
+    // getRate: PropTypes.func,
     getNotifications: PropTypes.func,
     setUsedLocale: PropTypes.func,
     busyLogin: PropTypes.func,
@@ -90,7 +90,7 @@ class WebsiteWrapper extends React.PureComponent {
     isOpenModal: PropTypes.bool,
     isDiningGifts: PropTypes.bool,
     dispatchGetAuthGuestBalance: PropTypes.func,
-    getTokenRates: PropTypes.func.isRequired,
+    // getTokenRates: PropTypes.func.isRequired,
     isOpenWalletTable: PropTypes.bool,
     loadingFetching: PropTypes.bool,
     location: PropTypes.shape({
@@ -100,9 +100,9 @@ class WebsiteWrapper extends React.PureComponent {
     history: PropTypes.shape({
       push: PropTypes.func,
     }).isRequired,
-    getCryptoPriceHistory: PropTypes.func.isRequired,
+    // getCryptoPriceHistory: PropTypes.func.isRequired,
     setLocale: PropTypes.func.isRequired,
-    getSwapEnginRates: PropTypes.func.isRequired,
+    // getSwapEnginRates: PropTypes.func.isRequired,
   };
 
   static defaultProps = {
@@ -142,19 +142,12 @@ class WebsiteWrapper extends React.PureComponent {
       store.dispatch(getWebsiteConfigForSSR(req.hostname)),
       store.dispatch(getRate()),
       store.dispatch(getRewardFund()),
+      store.dispatch(getSwapEnginRates()),
+      store.dispatch(getCryptoPriceHistory()),
+      store.dispatch(getTokenRates('WAIV')),
       store.dispatch(getGlobalProperties()),
     ]);
   }
-
-  constructor(props) {
-    super(props);
-
-    this.loadLocale = this.loadLocale.bind(this);
-  }
-
-  state = {
-    prevtLocationPath: '',
-  };
 
   componentDidMount() {
     const query = new URLSearchParams(this.props.location.search);
@@ -163,10 +156,9 @@ class WebsiteWrapper extends React.PureComponent {
     const locale = query.get('usedLocale');
 
     this.props.getCurrentAppSettings().then(res => {
-      this.props.getRate();
-      this.props.getTokenRates('WAIV');
-      this.props.getCryptoPriceHistory();
-      this.props.getSwapEnginRates();
+      // this.props.getTokenRates('WAIV');
+      // this.props.getCryptoPriceHistory();
+      // this.props.getSwapEnginRates();
       if (!this.props.username) this.props.setLocale(locale || res.language);
       const mainColor = res.configuration?.colors?.mapMarkerBody || initialColors.marker;
       const textColor = res.configuration?.colors?.mapMarkerText || initialColors.text;
@@ -181,7 +173,6 @@ class WebsiteWrapper extends React.PureComponent {
         batch(() => {
           this.props.getNotifications();
           this.props.busyLogin();
-          this.props.getRewardFund();
           this.props.dispatchGetAuthGuestBalance();
         });
 
@@ -209,11 +200,11 @@ class WebsiteWrapper extends React.PureComponent {
     }
   }
 
-  async loadLocale(locale) {
+  loadLocale = async locale => {
     const lang = await loadLanguage(locale);
 
     this.props.setUsedLocale(lang);
-  }
+  };
 
   getAntdLocale = language => {
     switch (language.id) {

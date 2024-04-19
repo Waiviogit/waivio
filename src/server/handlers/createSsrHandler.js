@@ -8,6 +8,9 @@ import { StaticRouter } from 'react-router';
 import { matchRoutes, renderRoutes } from 'react-router-config';
 import hivesigner from 'hivesigner';
 import { isbot } from 'isbot';
+import { setParentHost } from '../../store/appStore/appActions';
+import { getWebsiteParentHost } from '../../store/appStore/appSelectors';
+import { loginFromServer } from '../../store/authStore/authActions';
 
 import {
   getParentHost,
@@ -81,19 +84,21 @@ export default function createSsrHandler(template) {
       let settings = {};
       let parentHost = '';
       let adsenseSettings = {};
+      const store = getStore(sc2Api, waivioAPI, req.url);
+
+      if (req.cookies.access_token) {
+        sc2Api.setAccessToken(req.cookies.access_token);
+        await store.dispatch(loginFromServer(req.cookies));
+      }
 
       if (!isWaivio) {
         settings = await getSettingsWebsite(hostname);
         adsenseSettings = await getSettingsAdsense(hostname);
 
         if (isCustomDomain(hostname)) {
-          parentHost = await getParentHost(hostname);
+          parentHost = (await store.dispatch(setParentHost(hostname))).value;
         }
       }
-
-      if (req.cookies.access_token) sc2Api.setAccessToken(req.cookies.access_token);
-
-      const store = getStore(sc2Api, waivioAPI, req.url);
       const routes = switchRoutes(hostname, parentHost);
       const splittedUrl = req.url.split('?');
       const branch = matchRoutes(routes, splittedUrl[0]);
