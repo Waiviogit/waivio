@@ -33,13 +33,21 @@ import ReloadButton from './components/ReloadButton';
 import { getIsSocial } from '../../../store/appStore/appSelectors';
 import './SearchAllResult.less';
 import { isMobile } from '../../../common/helpers/apiHelpers';
-import { setSocialSearchResults } from '../../../store/websiteStore/websiteActions';
+import {
+  setSocialSearchResults,
+  setMapInitialised,
+} from '../../../store/websiteStore/websiteActions';
 import { getObject } from '../../../store/wObjectStore/wObjectSelectors';
+import {
+  getIsMapInitialised,
+  getSocialSearchResultLoading,
+} from '../../../store/websiteStore/websiteSelectors';
 
 const SearchAllResult = props => {
   const [isScrolled, setIsScrolled] = useState(false);
   const isUsersSearch = props.searchType === 'Users';
   const resultList = useRef();
+  const showReload = props.isSocial ? props.showReload && !props.socialLoading : props.showReload;
   const searchResultClassList = classNames('SearchAllResult SearchAllResult__dining', {
     SearchAllResult__show: props.isShowResult,
   });
@@ -75,10 +83,14 @@ const SearchAllResult = props => {
     localStorage.removeItem('scrollTop');
     props.reloadSearchList();
     if (props.isSocial) {
-      props.setSocialSearchResults(props.currObj.author_permlink, {
-        topPoint: props.searchMap.topPoint,
-        bottomPoint: props.searchMap.bottomPoint,
-      });
+      if (props.isMapInitialised) {
+        props.setMapInitialised(false);
+      } else {
+        props.setSocialSearchResults(props.currObj.author_permlink, {
+          topPoint: props.searchMap.topPoint,
+          bottomPoint: props.searchMap.bottomPoint,
+        });
+      }
     } else {
       switch (props.searchType) {
         case 'Users':
@@ -166,7 +178,7 @@ const SearchAllResult = props => {
       </div>
       <div className="SearchAllResult__main-wrap" ref={resultList} onScroll={getEndScroll}>
         {!isUsersSearch && !props.isSocial && <SearchMapFilters />}
-        {props.showReload && (
+        {showReload && (
           <ReloadButton
             className="SearchAllResult__reload"
             reloadSearchList={props.reloadSearchList}
@@ -174,7 +186,7 @@ const SearchAllResult = props => {
         )}
         <ViewMapButton handleClick={setCloseResult} />
         {currRenderListState.loading ? <Loading /> : currentList}
-        {props.showReload ? (
+        {showReload ? (
           <ReloadButton
             className="SearchAllResult__listReload"
             reloadSearchList={props.reloadSearchList}
@@ -208,10 +220,13 @@ SearchAllResult.propTypes = {
   reloadSearchList: PropTypes.func.isRequired,
   setQueryFromSearchList: PropTypes.func.isRequired,
   showReload: PropTypes.bool,
+  socialLoading: PropTypes.bool,
   handleHoveredCard: PropTypes.func,
   setSocialSearchResults: PropTypes.func,
   searchWebsiteObjectsAutoCompete: PropTypes.func.isRequired,
   searchExpertsForMap: PropTypes.func.isRequired,
+  setMapInitialised: PropTypes.func.isRequired,
+  isMapInitialised: PropTypes.bool,
   searchMap: PropTypes.shape().isRequired,
   currObj: PropTypes.shape(),
   activeFilters: PropTypes.arrayOf(PropTypes.shape()).isRequired,
@@ -239,6 +254,8 @@ export default connect(
     searchMap: getWebsiteMap(state),
     isSocial: getIsSocial(state),
     currObj: getObject(state),
+    isMapInitialised: getIsMapInitialised(state),
+    socialLoading: getSocialSearchResultLoading(state),
   }),
   {
     searchExpertsForMapLoadingMore,
@@ -247,5 +264,6 @@ export default connect(
     searchWebsiteObjectsAutoCompete,
     searchExpertsForMap,
     setSocialSearchResults,
+    setMapInitialised,
   },
 )(injectIntl(SearchAllResult));

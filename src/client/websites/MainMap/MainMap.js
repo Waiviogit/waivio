@@ -22,6 +22,7 @@ import { getCurrentAppSettings, putUserCoordinates } from '../../../store/appSto
 import {
   getWebsiteObjWithCoordinates,
   resetWebsiteObjectsCoordinates,
+  setMapInitialised,
   setShowReload,
   setSocialSearchResults,
 } from '../../../store/websiteStore/websiteActions';
@@ -37,6 +38,7 @@ import {
 } from '../../../store/searchStore/searchSelectors';
 import {
   getShowReloadButton,
+  getSocialSearchResultLoading,
   getWobjectsPoint,
 } from '../../../store/websiteStore/websiteSelectors';
 import MapControllers from '../../widgets/MapControllers/MapControllers';
@@ -66,7 +68,7 @@ const MainMap = React.memo(props => {
   // const abortController = useRef(null);
 
   if (queryCenter) queryCenter = queryCenter.split(',').map(item => Number(item));
-  if (isMobile) mapHeight = `${height - 205}px`;
+  if (isMobile) mapHeight = props.isSocial ? `${height - 100}px` : `${height - 205}px`;
 
   const getCurrentConfig = config =>
     isMobile ? get(config, 'mobileMap', {}) : get(config, 'desktopMap', {});
@@ -100,8 +102,8 @@ const MainMap = React.memo(props => {
       : undefined;
     const mapView = isMobile ? mapMobileView : mapDesktopView;
 
-    center = query ? center : mapView?.center;
-    zoom = query ? zoom : mapView?.zoom;
+    center = query.size > 0 ? center : mapView?.center;
+    zoom = query.size > 0 ? zoom : mapView?.zoom;
 
     setCurrMapConfig(center, zoom);
   };
@@ -123,6 +125,17 @@ const MainMap = React.memo(props => {
     localStorage.setItem('query', query.toString());
   };
 
+  const dataToChange = [props.searchMap, props.showReloadButton, mapData.center];
+
+  if (props.isSocial) {
+    dataToChange.push(
+      ...[
+        mapData.zoom,
+        // props.searchMap.topPoint,props.searchMap.bottomPoint
+      ],
+    );
+  }
+
   const checkDistanceAndSetReload = useCallback(() => {
     if (!isEmpty(props.searchMap)) {
       const distance = distanceInMBetweenEarthCoordinates(
@@ -130,15 +143,11 @@ const MainMap = React.memo(props => {
         mapData.center,
       );
 
-      if (distance > 20 && !props.showReloadButton) props.setShowReload(true);
-      if (!distance) props.setShowReload(false);
+      if ((distance > 20 && !props.showReloadButton) || (props.isSocial && !props.socialLoading))
+        props.setShowReload(true);
+      if (!distance || (props.isSocial && props.socialLoading)) props.setShowReload(false);
     }
-  }, [
-    props.searchMap,
-    props.showReloadButton,
-    mapData.center,
-    props.isSocial ? mapData.zoom : undefined,
-  ]);
+  }, [dataToChange]);
 
   useEffect(
     // eslint-disable-next-line consistent-return
@@ -153,6 +162,9 @@ const MainMap = React.memo(props => {
         window.addEventListener('resize', handleResize);
 
         return () => {
+          if (props.isSocial) {
+            props.setMapInitialised(true);
+          }
           window.removeEventListener('resize', handleResize);
         };
       }
@@ -433,11 +445,13 @@ MainMap.propTypes = {
   resetWebsiteObjectsCoordinates: PropTypes.func.isRequired,
   getCurrentAppSettings: PropTypes.func.isRequired,
   setShowSearchResult: PropTypes.func.isRequired,
+  setMapInitialised: PropTypes.func.isRequired,
   wobjectsPoint: PropTypes.arrayOf(PropTypes.shape({})),
   searchType: PropTypes.string.isRequired,
   hoveredCardPermlink: PropTypes.string.isRequired,
   showReloadButton: PropTypes.bool,
   isSocial: PropTypes.bool,
+  socialLoading: PropTypes.bool,
   searchMap: PropTypes.shape({
     coordinates: PropTypes.arrayOf(PropTypes.number),
   }).isRequired,
@@ -466,6 +480,7 @@ export default connect(
     searchType: getWebsiteSearchType(state),
     isSocial: getIsSocial(state),
     wobject: getObject(state),
+    socialLoading: getSocialSearchResultLoading(state),
   }),
   {
     getCoordinates,
@@ -478,5 +493,6 @@ export default connect(
     setSearchInBox,
     setShowSearchResult,
     setSocialSearchResults,
+    setMapInitialised,
   },
 )(withRouter(MainMap));
