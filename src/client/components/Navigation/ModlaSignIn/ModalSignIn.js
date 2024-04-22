@@ -332,7 +332,11 @@ const ModalSignIn = ({
   };
 
   const onSignUpClick = isOpen => {
-    if (typeof window !== 'undefined' && !isWaivio && domain) {
+    // eslint-disable-next-line no-console
+    console.log(isWaivio);
+    // eslint-disable-next-line no-console
+    console.log(domain);
+    if (!isWaivio && domain) {
       window.location.href = `https://${domain}/sign-in?host=${host}&color=${colors.background.replace(
         '#',
         '',

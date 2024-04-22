@@ -303,11 +303,8 @@ export const loginFromServer = cookie => async (dispatch, getState, { steemConne
     payload: {
       promise,
     },
-    meta: {
-      refresh: false,
-    },
   }).catch(e => {
-    dispatch(loginError());
+    console.log(e);
 
     return e;
   });

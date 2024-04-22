@@ -297,6 +297,12 @@ export const changeCounterFollow = (username, type, follow = false) => (dispatch
   });
 };
 
+export const RESET_USERS = '@users/RESET_USERS';
+
+export const resetUsers = () => ({
+  type: RESET_USERS,
+});
+
 export const UPDATE_USER_METADATA = '@auth/UPDATE_USER_METADATA';
 
 export const updateUserMetadata = metadata => dispatch =>

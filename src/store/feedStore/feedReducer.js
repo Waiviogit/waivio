@@ -319,7 +319,6 @@ const feed = (state = initialState, action) => {
       return {
         ...state,
         blog: {
-          ...state.blog,
           tagConditions: isHas
             ? tagConditions.filter(tag => tag !== action.payload)
             : [...tagConditions, action.payload],
@@ -330,7 +329,6 @@ const feed = (state = initialState, action) => {
       return {
         ...state,
         blog: {
-          ...state.blog,
           tagConditions: [],
         },
       };

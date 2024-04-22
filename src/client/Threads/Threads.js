@@ -51,13 +51,15 @@ const Threads = props => {
   };
 
   useEffect(() => {
-    props.getThreadsContent(name, 0, limit, props.isUser);
-    getUserProfileBlog(leothreads, props.authUserName, {
-      limit: 1,
-      skip: 0,
-    }).then(r => {
-      setParentPost(r.posts[0]);
-    });
+    if (isEmpty(threads)) {
+      props.getThreadsContent(name, 0, limit, props.isUser);
+      getUserProfileBlog(leothreads, props.authUserName, {
+        limit: 1,
+        skip: 0,
+      }).then(r => {
+        setParentPost(r.posts[0]);
+      });
+    }
   }, [name]);
   const description = `Create vibrant conversations and build connections on ${name}'s Threads page! Join the dialogue, share insights, and spark discussions with fellow users. Dive into a diverse array of topics and engage with a community passionate about exchanging ideas. Start your thread today and unleash the power of collaborative dialogue!`;
 
