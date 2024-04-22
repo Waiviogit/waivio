@@ -137,7 +137,7 @@ const WebsiteBody = props => {
         <link rel="image_src" href={currentLogo} />
         <link id="favicon" rel="icon" href={currentLogo} type="image/x-icon" />
       </Helmet>
-      {props.isSocial && !loading && (
+      {((props.isSocial && !loading) || !props.isSocial) && (
         <SearchAllResult
           showReload={props.showReloadButton}
           reloadSearchList={reloadSearchList}
