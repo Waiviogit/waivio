@@ -14,7 +14,6 @@ import {
 } from '../../../../store/searchStore/searchActions';
 import SearchAllResult from '../../../search/SearchAllResult/SearchAllResult';
 import {
-  getLastPermlinksFromHash,
   getObjectAvatar,
   getObjectMapInArray,
   getObjectName,
@@ -52,11 +51,8 @@ import { getObject as getObjectAction } from '../../../../store/wObjectStore/wob
 import './WebsiteBody.less';
 
 const WebsiteBody = props => {
+  const [loading, setLoading] = useState(true);
   const [hoveredCardPermlink, setHoveredCardPermlink] = useState('');
-  const pathUrl =
-    getLastPermlinksFromHash(props.history.location.hash) ||
-    props.match.params.name ||
-    props.currObj.author_permlink;
   const { canonicalUrl } = useSeoInfo();
   const reservedButtonClassList = classNames('WebsiteBody__reserved', {
     'WebsiteBody__reserved--withMobileFilters': props.isActiveFilters,
@@ -84,20 +80,12 @@ const WebsiteBody = props => {
     };
   }, []);
 
-  useEffect(() => {
-    if (props.isSocial && props.currObj) {
-      props.getWebsiteObjWithCoordinates(props.isSocial, pathUrl, {
-        topPoint: [],
-        bottomPoint: [],
-      });
-
-      props.getObjectAction(pathUrl, props.authUserName, props.locale);
-    }
-
-    return () => {
+  useEffect(
+    () => () => {
       props.resetSocialSearchResult();
-    };
-  }, [props.currObj.author_permlink]);
+    },
+    [props.currObj.author_permlink],
+  );
 
   const aboutObject = get(props, ['configuration', 'aboutObject'], {});
   const currentLogo = props.logo || getObjectAvatar(aboutObject);
@@ -149,25 +137,34 @@ const WebsiteBody = props => {
         <link rel="image_src" href={currentLogo} />
         <link id="favicon" rel="icon" href={currentLogo} type="image/x-icon" />
       </Helmet>
-      <SearchAllResult
-        showReload={props.showReloadButton}
-        reloadSearchList={reloadSearchList}
-        searchType={props.searchType}
-        handleHoveredCard={handleHoveredCard}
-        setQueryInLocalStorage={setQueryInLocalStorage}
-        setQueryFromSearchList={setQueryFromSearchList}
-        deleteShowPanel={deleteShowPanel}
-      />
+      {props.isSocial && !loading && (
+        <SearchAllResult
+          showReload={props.showReloadButton}
+          reloadSearchList={reloadSearchList}
+          searchType={props.searchType}
+          handleHoveredCard={handleHoveredCard}
+          setQueryInLocalStorage={setQueryInLocalStorage}
+          setQueryFromSearchList={setQueryFromSearchList}
+          deleteShowPanel={deleteShowPanel}
+        />
+      )}
       <div className={mapClassList}>
         {!isEmpty(props.configuration) && (
           <React.Fragment>
-            {Boolean(props.counter) && props.isAuth && (
-              <Link to="/rewards/reserved" className={reservedButtonClassList}>
-                <FormattedMessage id="reserved" defaultMessage="Reserved" />
-                :&nbsp;&nbsp;&nbsp;&nbsp;{props.counter}
-              </Link>
-            )}
-            <MainMap query={props.query} hoveredCardPermlink={hoveredCardPermlink} />
+            {Boolean(props.counter) &&
+              props.isAuth &&
+              (!props.isSocial || (props.isSocial && !loading)) && (
+                <Link to="/rewards/reserved" className={reservedButtonClassList}>
+                  <FormattedMessage id="reserved" defaultMessage="Reserved" />
+                  :&nbsp;&nbsp;&nbsp;&nbsp;{props.counter}
+                </Link>
+              )}
+            <MainMap
+              loading={loading}
+              setLoading={setLoading}
+              query={props.query}
+              hoveredCardPermlink={hoveredCardPermlink}
+            />
           </React.Fragment>
         )}
       </div>
@@ -200,12 +197,8 @@ WebsiteBody.propTypes = {
   counter: PropTypes.number.isRequired,
   searchType: PropTypes.string.isRequired,
   logo: PropTypes.string,
-  locale: PropTypes.string,
-  authUserName: PropTypes.string,
   currObj: PropTypes.shape(),
-  getObjectAction: PropTypes.func,
   resetSocialSearchResult: PropTypes.func,
-  getWebsiteObjWithCoordinates: PropTypes.func,
   isActiveFilters: PropTypes.bool.isRequired,
   showReloadButton: PropTypes.bool,
   isSocial: PropTypes.bool,

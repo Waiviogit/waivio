@@ -44,9 +44,10 @@ import {
 import MapControllers from '../../widgets/MapControllers/MapControllers';
 import TagFilters from '../TagFilters/TagFilters';
 import PostOverlayCard from '../../components/Maps/Overlays/PostOverlayCard/PostOverlayCard';
-
-import '../WebsiteLayoutComponents/Body/WebsiteBody.less';
 import { getObject } from '../../../store/wObjectStore/wObjectSelectors';
+import { getObject as getObjectAction } from '../../../store/wObjectStore/wobjectsActions';
+import Loading from '../../components/Icon/Loading';
+import '../WebsiteLayoutComponents/Body/WebsiteBody.less';
 
 const MainMap = React.memo(props => {
   const [boundsParams, setBoundsParams] = useState({
@@ -105,6 +106,7 @@ const MainMap = React.memo(props => {
     center = query.size > 0 ? center : mapView?.center;
     zoom = query.size > 0 ? zoom : mapView?.zoom;
 
+    props.setLoading(false);
     setCurrMapConfig(center, zoom);
   };
 
@@ -169,7 +171,7 @@ const MainMap = React.memo(props => {
         };
       }
     },
-    props.isSocial ? [props.wobject.author_permlink] : [],
+    [props.wobject.author_permlink],
   );
 
   useEffect(() => {
@@ -213,24 +215,57 @@ const MainMap = React.memo(props => {
     }
   }, [props.showReloadButton]);
 
-  useEffect(() => {
+  //   useEffect(() => {
+  //     const { topPoint, bottomPoint } = boundsParams;
+  //
+  // if(props.isSocial && props.match.params.name){
+  //   props.getObjectAction(props.match.params.name)
+  // }
+  //     if (!isEmpty(topPoint) && !isEmpty(bottomPoint)) {
+  //       // if (abortController.current) abortController.current.abort();
+  //       // abortController.current = new AbortController();
+  //       const searchString = props.isSocial
+  //         ? props.match.params.name || props.wobject.author_permlink
+  //         : props.searchString;
+  //
+  //       props
+  //         .getWebsiteObjWithCoordinates(
+  //           props.isSocial,
+  //           searchString,
+  //           { topPoint, bottomPoint },
+  //           80,
+  //           // abortController.current,
+  //         )
+  //         .then(res => {
+  //           checkDistanceAndSetReload();
+  //           if (!isEmpty(queryCenter)) {
+  //             const { wobjects } = res.value;
+  //             const queryPermlink = props.query.get('permlink');
+  //             const currentPoint =
+  //               get(infoboxData, ['wobject', 'author_permlink']) !== queryPermlink
+  //                 ? wobjects.find(wobj => wobj.author_permlink === queryPermlink)
+  //                 : null;
+  //
+  //             if (currentPoint && !infoboxData) {
+  //               setInfoboxData({
+  //                 wobject: currentPoint,
+  //                 coordinates: queryCenter,
+  //               });
+  //             }
+  //           }
+  //         });
+  //     }
+  //   }, [props.userLocation, boundsParams, props.searchType ]);
+  const fetchData = () => {
     const { topPoint, bottomPoint } = boundsParams;
 
     if (!isEmpty(topPoint) && !isEmpty(bottomPoint)) {
-      // if (abortController.current) abortController.current.abort();
-      // abortController.current = new AbortController();
       const searchString = props.isSocial
         ? props.match.params.name || props.wobject.author_permlink
         : props.searchString;
 
       props
-        .getWebsiteObjWithCoordinates(
-          props.isSocial,
-          searchString,
-          { topPoint, bottomPoint },
-          80,
-          // abortController.current,
-        )
+        .getWebsiteObjWithCoordinates(props.isSocial, searchString, { topPoint, bottomPoint }, 80)
         .then(res => {
           checkDistanceAndSetReload();
           if (!isEmpty(queryCenter)) {
@@ -250,7 +285,24 @@ const MainMap = React.memo(props => {
           }
         });
     }
-  }, [props.userLocation, boundsParams, !props.isSocial ? props.searchType : undefined]);
+  };
+
+  useEffect(() => {
+    if (!props.isSocial) fetchData();
+  }, [props.userLocation, boundsParams, props.searchType]);
+
+  useEffect(() => {
+    if (
+      props.match.params.name &&
+      (isEmpty(props.wobject) || props.wobject.object_type !== 'map')
+    ) {
+      props.getObjectAction(props.match.params.name);
+    }
+
+    if (props.isSocial) {
+      fetchData();
+    }
+  }, [boundsParams, props.match.params.name]);
 
   const handleOnBoundsChanged = useCallback(
     debounce(bounds => {
@@ -386,6 +438,10 @@ const MainMap = React.memo(props => {
     props.hoveredCardPermlink,
   ]);
 
+  if (props.loading) {
+    return <Loading />;
+  }
+
   return (
     !isEmpty(mapData.center) &&
     mapData.zoom && (
@@ -444,6 +500,8 @@ MainMap.propTypes = {
   setSearchInBox: PropTypes.func.isRequired,
   resetWebsiteObjectsCoordinates: PropTypes.func.isRequired,
   getCurrentAppSettings: PropTypes.func.isRequired,
+  setLoading: PropTypes.func.isRequired,
+  getObjectAction: PropTypes.func.isRequired,
   setShowSearchResult: PropTypes.func.isRequired,
   setMapInitialised: PropTypes.func.isRequired,
   wobjectsPoint: PropTypes.arrayOf(PropTypes.shape({})),
@@ -451,6 +509,7 @@ MainMap.propTypes = {
   hoveredCardPermlink: PropTypes.string.isRequired,
   showReloadButton: PropTypes.bool,
   isSocial: PropTypes.bool,
+  loading: PropTypes.bool,
   socialLoading: PropTypes.bool,
   searchMap: PropTypes.shape({
     coordinates: PropTypes.arrayOf(PropTypes.number),
@@ -494,5 +553,6 @@ export default connect(
     setShowSearchResult,
     setSocialSearchResults,
     setMapInitialised,
+    getObjectAction,
   },
 )(withRouter(MainMap));
