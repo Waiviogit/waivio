@@ -304,6 +304,7 @@ export const loginFromServer = cookie => async (dispatch, getState, { steemConne
       promise,
     },
   }).catch(e => {
+    // eslint-disable-next-line no-console
     console.log(e);
 
     return e;
