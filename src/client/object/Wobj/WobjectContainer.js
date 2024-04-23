@@ -9,6 +9,7 @@ import {
   getTiktokPreviewAction,
   setFirstLoading,
 } from '../../../store/feedStore/feedActions';
+import { getCoordinates } from '../../../store/userStore/userActions';
 import { getObjectInfo } from '../../../waivioApi/ApiClient';
 import { prepareMenuItems } from '../../social-gifts/SocialProduct/SocialMenuItems/SocialMenuItems';
 import Wobj from './Wobj';
@@ -95,6 +96,7 @@ const WobjectContainer = props => {
         ) {
           if (res.value.map) {
             props.getNearbyObjects(name);
+            props.getCoordinates();
           }
           props.getWobjectExpertise(newsFilter, name, true);
           props.getObjectFollowers({
@@ -176,6 +178,7 @@ WobjectContainer.propTypes = {
   clearObjectFromStore: PropTypes.func,
   setNestedWobject: PropTypes.func,
   setCatalogBreadCrumbs: PropTypes.func,
+  getCoordinates: PropTypes.func,
   locale: PropTypes.string,
   wobjPermlink: PropTypes.string,
   currHost: PropTypes.string,
@@ -300,6 +303,7 @@ const mapDispatchToProps = {
   setStoreActiveOption,
   resetBreadCrumb,
   resetWobjectExpertise,
+  getCoordinates,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(WobjectContainer));

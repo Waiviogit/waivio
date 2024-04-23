@@ -240,7 +240,6 @@ User.propTypes = {
   getTokenBalance: PropTypes.func,
   getUserAccountHistory: PropTypes.func.isRequired,
   resetBreadCrumb: PropTypes.func.isRequired,
-  getGlobalProperties: PropTypes.func.isRequired,
   openTransfer: PropTypes.func,
   resetFavorites: PropTypes.func,
   getUserAccount: PropTypes.func,

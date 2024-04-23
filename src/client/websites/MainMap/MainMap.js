@@ -293,10 +293,14 @@ const MainMap = React.memo(props => {
       query.set('center', anchor);
       query.set('zoom', mapData.zoom);
       query.set('permlink', payload.author_permlink);
-      props.history.push(`?${query.toString()}`);
+      if (props.isSocial && props.location.pathname === '/') {
+        props.history.push(`/object/${props.wobject.author_permlink}/map?${query.toString()}`);
+      } else {
+        props.history.push(`?${query.toString()}`);
+      }
       setInfoboxData({ wobject: payload, coordinates: anchor });
     },
-    [mapData.zoom, props.location.search],
+    [mapData.zoom, props.location.search, props.isSocial],
   );
 
   const resetInfoBox = () => setInfoboxData(null);
@@ -331,7 +335,7 @@ const MainMap = React.memo(props => {
         );
       });
     },
-    [props.wobjectsPoint, props.hoveredCardPermlink],
+    [props.wobjectsPoint, props.hoveredCardPermlink, props.location.search],
   );
 
   const getOverlayLayout = useCallback(() => {

@@ -50,6 +50,7 @@ const SearchAllResult = props => {
   const showReload = props.isSocial ? props.showReload && !props.socialLoading : props.showReload;
   const searchResultClassList = classNames('SearchAllResult SearchAllResult__dining', {
     SearchAllResult__show: props.isShowResult,
+    'SearchAllResult--social': props.isSocial,
   });
 
   const handleItemClick = wobj => {

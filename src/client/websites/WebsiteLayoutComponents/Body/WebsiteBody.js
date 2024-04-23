@@ -49,6 +49,7 @@ import { useSeoInfo } from '../../../../hooks/useSeoInfo';
 import { getObject } from '../../../../store/wObjectStore/wObjectSelectors';
 import { getObject as getObjectAction } from '../../../../store/wObjectStore/wobjectsActions';
 import './WebsiteBody.less';
+import { getCoordinates } from '../../../../store/userStore/userActions';
 
 const WebsiteBody = props => {
   const [loading, setLoading] = useState(true);
@@ -80,12 +81,13 @@ const WebsiteBody = props => {
     };
   }, []);
 
-  useEffect(
-    () => () => {
+  useEffect(() => {
+    props.getCoordinates();
+
+    return () => {
       props.resetSocialSearchResult();
-    },
-    [props.currObj.author_permlink],
-  );
+    };
+  }, [props.currObj.author_permlink]);
 
   const aboutObject = get(props, ['configuration', 'aboutObject'], {});
   const currentLogo = props.logo || getObjectAvatar(aboutObject);
@@ -192,6 +194,7 @@ WebsiteBody.propTypes = {
   setShowReload: PropTypes.func.isRequired,
   resetWebsiteFilters: PropTypes.func.isRequired,
   setShowSearchResult: PropTypes.func.isRequired,
+  getCoordinates: PropTypes.func,
   setFilterFromQuery: PropTypes.func.isRequired,
   setWebsiteSearchType: PropTypes.func.isRequired,
   counter: PropTypes.number.isRequired,
@@ -245,5 +248,6 @@ export default connect(
     getObjectAction,
     getWebsiteObjWithCoordinates,
     resetSocialSearchResult,
+    getCoordinates,
   },
 )(withRouter(WebsiteBody));
