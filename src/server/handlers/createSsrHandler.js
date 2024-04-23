@@ -94,11 +94,9 @@ export default function createSsrHandler(template) {
       if (!isWaivio) {
         settings = await getSettingsWebsite(hostname);
         adsenseSettings = await getSettingsAdsense(hostname);
-
-        if (isCustomDomain(hostname)) {
-          parentHost = (await store.dispatch(setParentHost(hostname))).value;
-        }
+        parentHost = (await store.dispatch(setParentHost(hostname))).value;
       }
+
       const routes = switchRoutes(hostname, parentHost);
       const splittedUrl = req.url.split('?');
       const branch = matchRoutes(routes, splittedUrl[0]);

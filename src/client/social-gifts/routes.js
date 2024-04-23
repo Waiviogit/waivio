@@ -6,6 +6,7 @@ import WobjectContainer from '../../client/object/Wobj/WobjectContainer';
 import RedirectedSignIn from '../../client/components/Navigation/redirectedSignIn/RedirectedSignIn';
 import RewardsMainPage from '../../client/newRewards/RewardsMainPage';
 import createNestedRouts from '../../routes/helper';
+import ObjectFeed from '../object/ObjectFeed';
 import UserExpertise from '../user/UserExpertise';
 import UserFollowers from '../user/UserFollowers';
 import SocialWrapper from './Wrapper';
@@ -331,7 +332,7 @@ const routes = () => ({
         },
         {
           path: '/(newsfeed)',
-          component: Views.ObjectFeed,
+          component: ObjectFeed,
         },
         {
           path: '/form/:permlink',

@@ -303,11 +303,7 @@ export const loginFromServer = cookie => async (dispatch, getState, { steemConne
     payload: {
       promise,
     },
-  }).catch(e => {
-    console.log(e);
-
-    return e;
-  });
+  }).catch(e => e);
 };
 
 export const getCurrentUserFollowing = () => dispatch => dispatch(getFollowing());
