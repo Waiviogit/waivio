@@ -39,7 +39,7 @@ const UserBlog = props => {
     "Browse a rich collection of user-generated posts, covering a myriad of topics. Engage with our diverse community's insights, stories, and perspectives.";
 
   useEffect(() => {
-    props.getUserProfileBlogPosts(name, { limit, initialLoad: true });
+    if (isEmpty(content)) props.getUserProfileBlogPosts(name, { limit, initialLoad: true });
   }, [props?.tagsCondition?.length, name]);
 
   useEffect(() => {

@@ -475,6 +475,9 @@ export default function usersReducer(state = initialState, action) {
         },
       };
     }
+    case actions.RESET_USERS: {
+      return initialState;
+    }
 
     default: {
       return state;

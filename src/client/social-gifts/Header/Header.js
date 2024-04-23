@@ -23,7 +23,7 @@ const Header = () => {
   const handleMobileSearchButtonClick = () => setSearchBarActive(!searchBarActive);
   const logo = useSelector(getWebsiteLogo);
   const host = useSelector(getHostAddress);
-  const currHost = (typeof location !== 'undefined' && location.hostname) || host;
+  const currHost = host || (typeof location !== 'undefined' && location.hostname);
   const header = config?.header?.name;
   const logoClassList = classNames('Header__logo', {
     'Header__logo--upperCase': !header,
