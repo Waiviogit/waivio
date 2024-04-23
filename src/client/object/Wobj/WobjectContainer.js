@@ -74,7 +74,7 @@ const WobjectContainer = props => {
   };
 
   useEffect(() => {
-    if (name !== props.wobjPermlink || props.locale !== 'en-US') {
+    if (name !== props.wobjPermlink) {
       props.getObject(name, props.authenticatedUserName).then(async res => {
         if (props.currHost?.includes('waivio')) {
           if ((await showDescriptionPage(res.value, props.locale)) && !props.match.params[0]) {
@@ -121,8 +121,9 @@ const WobjectContainer = props => {
         }
       });
     }
+  }, [name, props.locale, props.authenticatedUserName]);
 
-    return () => {
+  useEffect(() => () => {
       props.clearObjectFromStore();
       props.setCatalogBreadCrumbs([]);
       props.setNestedWobject({});
@@ -132,8 +133,7 @@ const WobjectContainer = props => {
       props.resetGallery();
       props.resetWobjectExpertise();
       props.setEditMode(false);
-    };
-  }, [name, props.locale, props.authenticatedUserName]);
+    }, [])
 
   if (props.failed)
     return (

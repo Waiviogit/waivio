@@ -13,7 +13,7 @@ const initialState = {
   usersTransactions: {},
   usersAccountHistory: {},
   usersEstAccountsValues: {},
-  usersAccountHistoryLoading: true,
+  // usersAccountHistoryLoading: true,
   loadingEstAccountValue: true,
   loadingGlobalProperties: true,
   loadingMoreUsersAccountHistory: false,
