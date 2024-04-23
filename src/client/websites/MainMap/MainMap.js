@@ -95,16 +95,18 @@ const MainMap = React.memo(props => {
         ? [get(currLocation, ['value', 'latitude']), get(currLocation, ['value', 'longitude'])]
         : center;
     }
-    const mapDesktopView = !isEmpty(props.wobject?.mapDesktopView)
-      ? JSON.parse(props.wobject?.mapDesktopView)
-      : undefined;
-    const mapMobileView = !isEmpty(props.wobject?.mapMobileView)
-      ? JSON.parse(props.wobject?.mapMobileView)
-      : undefined;
-    const mapView = isMobile ? mapMobileView : mapDesktopView;
+    if (props.isSocial) {
+      const mapDesktopView = !isEmpty(props.wobject?.mapDesktopView)
+        ? JSON.parse(props.wobject?.mapDesktopView)
+        : undefined;
+      const mapMobileView = !isEmpty(props.wobject?.mapMobileView)
+        ? JSON.parse(props.wobject?.mapMobileView)
+        : undefined;
+      const mapView = isMobile ? mapMobileView : mapDesktopView;
 
-    center = query.size > 0 ? center : mapView?.center;
-    zoom = query.size > 0 ? zoom : mapView?.zoom;
+      center = query.size > 0 ? center : mapView?.center;
+      zoom = query.size > 0 ? zoom : mapView?.zoom;
+    }
 
     props.setLoading(false);
     setCurrMapConfig(center, zoom);
@@ -215,47 +217,6 @@ const MainMap = React.memo(props => {
     }
   }, [props.showReloadButton]);
 
-  //   useEffect(() => {
-  //     const { topPoint, bottomPoint } = boundsParams;
-  //
-  // if(props.isSocial && props.match.params.name){
-  //   props.getObjectAction(props.match.params.name)
-  // }
-  //     if (!isEmpty(topPoint) && !isEmpty(bottomPoint)) {
-  //       // if (abortController.current) abortController.current.abort();
-  //       // abortController.current = new AbortController();
-  //       const searchString = props.isSocial
-  //         ? props.match.params.name || props.wobject.author_permlink
-  //         : props.searchString;
-  //
-  //       props
-  //         .getWebsiteObjWithCoordinates(
-  //           props.isSocial,
-  //           searchString,
-  //           { topPoint, bottomPoint },
-  //           80,
-  //           // abortController.current,
-  //         )
-  //         .then(res => {
-  //           checkDistanceAndSetReload();
-  //           if (!isEmpty(queryCenter)) {
-  //             const { wobjects } = res.value;
-  //             const queryPermlink = props.query.get('permlink');
-  //             const currentPoint =
-  //               get(infoboxData, ['wobject', 'author_permlink']) !== queryPermlink
-  //                 ? wobjects.find(wobj => wobj.author_permlink === queryPermlink)
-  //                 : null;
-  //
-  //             if (currentPoint && !infoboxData) {
-  //               setInfoboxData({
-  //                 wobject: currentPoint,
-  //                 coordinates: queryCenter,
-  //               });
-  //             }
-  //           }
-  //         });
-  //     }
-  //   }, [props.userLocation, boundsParams, props.searchType ]);
   const fetchData = () => {
     const { topPoint, bottomPoint } = boundsParams;
 
@@ -332,10 +293,14 @@ const MainMap = React.memo(props => {
       query.set('center', anchor);
       query.set('zoom', mapData.zoom);
       query.set('permlink', payload.author_permlink);
-      props.history.push(`?${query.toString()}`);
+      if (props.isSocial && props.location.pathname === '/') {
+        props.history.push(`/object/${props.wobject.author_permlink}/map?${query.toString()}`);
+      } else {
+        props.history.push(`?${query.toString()}`);
+      }
       setInfoboxData({ wobject: payload, coordinates: anchor });
     },
-    [mapData.zoom, props.location.search],
+    [mapData.zoom, props.location.search, props.isSocial],
   );
 
   const resetInfoBox = () => setInfoboxData(null);
@@ -370,7 +335,7 @@ const MainMap = React.memo(props => {
         );
       });
     },
-    [props.wobjectsPoint, props.hoveredCardPermlink],
+    [props.wobjectsPoint, props.hoveredCardPermlink, props.location.search],
   );
 
   const getOverlayLayout = useCallback(() => {
@@ -438,7 +403,7 @@ const MainMap = React.memo(props => {
     props.hoveredCardPermlink,
   ]);
 
-  if (props.loading) {
+  if (props.loading && props.isSocial) {
     return <Loading />;
   }
 

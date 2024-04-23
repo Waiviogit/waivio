@@ -208,7 +208,7 @@ const SocialWrapper = props => {
             props.getNotifications();
             props.busyLogin();
             props.dispatchGetAuthGuestBalance();
-            props.getCoordinates();
+            // props.getCoordinates();
           });
           if ((token && provider) || (auth && provider)) {
             props.history.push('/');
@@ -260,7 +260,6 @@ SocialWrapper.propTypes = {
   getNotifications: PropTypes.func,
   busyLogin: PropTypes.func,
   getCurrentAppSettings: PropTypes.func,
-  getCoordinates: PropTypes.func,
   nightmode: PropTypes.bool,
   isOpenModal: PropTypes.bool,
   dispatchGetAuthGuestBalance: PropTypes.func,

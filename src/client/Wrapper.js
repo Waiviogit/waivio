@@ -104,7 +104,6 @@ class Wrapper extends React.PureComponent {
     isOpenWalletTable: PropTypes.bool,
     location: PropTypes.shape(),
     handleRefAuthUser: PropTypes.func,
-    getCoordinates: PropTypes.func,
     isGuest: PropTypes.bool,
   };
 
@@ -192,7 +191,7 @@ class Wrapper extends React.PureComponent {
         // this.props.getRewardFund();
         this.props.dispatchGetAuthGuestBalance();
         // this.props.getRate();
-        this.props.getCoordinates();
+        // this.props.getCoordinates();
       });
     });
   }
