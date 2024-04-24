@@ -123,7 +123,8 @@ const WobjectContainer = props => {
     }
   }, [name, props.locale, props.authenticatedUserName]);
 
-  useEffect(() => () => {
+  useEffect(
+    () => () => {
       props.clearObjectFromStore();
       props.setCatalogBreadCrumbs([]);
       props.setNestedWobject({});
@@ -133,7 +134,9 @@ const WobjectContainer = props => {
       props.resetGallery();
       props.resetWobjectExpertise();
       props.setEditMode(false);
-    }, [])
+    },
+    [],
+  );
 
   if (props.failed)
     return (

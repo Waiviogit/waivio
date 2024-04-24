@@ -8,11 +8,7 @@ import { renderRoutes } from 'react-router-config';
 import { get, isEmpty } from 'lodash';
 import { ConfigProvider, Layout } from 'antd';
 import { clearGuestAuthData } from '../../common/helpers/localStorageHelpers';
-import {
-  findLanguage,
-  getAntdLocale,
-  getRequestLocale,
-} from '../../common/translations';
+import { findLanguage, getAntdLocale } from '../../common/translations';
 import {
   login,
   busyLogin,
@@ -184,11 +180,9 @@ const SocialWrapper = props => {
     const token = query.get('access_token');
     const provider = query.get('socialProvider');
     const auth = query.get('auth');
-    const locale = query.get('usedLocale');
 
     props.setSocialFlag();
     props.getCurrentAppSettings().then(res => {
-      if (!props.username) props.setLocale(locale || props.locale || res.language);
       const mainColor = res.configuration.colors?.mapMarkerBody || initialColors.marker;
       const textColor = res.configuration.colors?.mapMarkerText || initialColors.text;
 
@@ -208,15 +202,17 @@ const SocialWrapper = props => {
             props.getNotifications();
             props.busyLogin();
             props.dispatchGetAuthGuestBalance();
-            // props.getCoordinates();
           });
           if ((token && provider) || (auth && provider)) {
             props.history.push('/');
           }
         });
       }
-      createWebsiteMenu(res.configuration);
     });
+  }, []);
+
+  useEffect(() => {
+    createWebsiteMenu(props.config);
   }, [props.locale]);
 
   useEffect(() => {
@@ -278,7 +274,6 @@ SocialWrapper.propTypes = {
   history: PropTypes.shape({
     push: PropTypes.func,
   }).isRequired,
-  setLocale: PropTypes.func.isRequired,
 };
 
 SocialWrapper.defaultProps = {
@@ -299,12 +294,8 @@ SocialWrapper.defaultProps = {
 
 SocialWrapper.fetchData = async ({ store, req, url }) => {
   const state = store.getState();
-  let activeLocale = getLocale(state);
+  const activeLocale = getLocale(state);
   const username = getAuthenticatedUserName(state);
-
-  if (activeLocale === 'auto') {
-    activeLocale = req.cookies.language || getRequestLocale(req.get('Accept-Language'));
-  }
 
   return Promise.allSettled([
     store.dispatch(getWebsiteConfigForSSR(req.headers.host)).then(res => {
