@@ -72,11 +72,10 @@ const createLink = i => {
     case 'business':
     case 'product':
     case 'book':
+    case 'map':
       return `/object/${i?.author_permlink}`;
     case 'newsfeed':
       return `/object/${i?.author_permlink}/newsfeed`;
-    case 'map':
-      return `/object/${i?.author_permlink}/map`;
     default:
       return i.linkToWeb || i.defaultShowLink;
   }
