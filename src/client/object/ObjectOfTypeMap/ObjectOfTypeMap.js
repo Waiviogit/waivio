@@ -283,7 +283,7 @@ const ObjectOfTypeMap = props => {
         )}
         <Map
           center={get(settingMap, 'center') || get(mapState, [showMap, 'center'], defaultCenter)}
-          zoom={get(settingMap, 'zoom', 0) || get(mapState, [showMap, 'zoom'], defaultZoom)}
+          zoom={get(settingMap, 'zoom', 0) || get(mapState, [showMap, 'zoom'], defaultZoom) - 1}
           height={getCurrentScreenSize()}
           provider={mapProvider}
           onBoundsChanged={state => onBoundsChanged(state, showMap)}
