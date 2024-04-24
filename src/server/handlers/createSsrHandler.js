@@ -87,29 +87,32 @@ export default function createSsrHandler(template) {
       let adsenseSettings = {};
       const store = getStore(sc2Api, waivioAPI, req.url);
 
-      if (req.cookies.access_token) {
-        sc2Api.setAccessToken(req.cookies.access_token);
-        await store.dispatch(loginFromServer(req.cookies));
-      }
+      const loc =
+        query?.get('usedLocale') ||
+        settings?.language ||
+        req.cookies.language ||
+        getRequestLocale(req.get('Accept-Language'));
 
       if (!isWaivio) {
         settings = await getSettingsWebsite(hostname);
         adsenseSettings = await getSettingsAdsense(hostname);
         parentHost = (await store.dispatch(setParentHost(hostname))).value;
       }
-
+      if (req.cookies.access_token) {
+        sc2Api.setAccessToken(req.cookies.access_token);
+        await store.dispatch(loginFromServer(req.cookies)).then(async res => {
+          const language = res?.value?.userMetaData?.settings.locale;
+          store.dispatch(setLocale(language));
+          store.dispatch(setUsedLocale(await loadLanguage(language)));
+        });
+      }
       const routes = switchRoutes(hostname, parentHost);
       const splittedUrl = req.url.split('?');
       const branch = matchRoutes(routes, splittedUrl[0]);
       const query = splittedUrl[1] ? new URLSearchParams(`?${splittedUrl[1]}`) : null;
       const promises = [];
 
-      if (!isWaivio) {
-        const loc =
-          query?.get('usedLocale') ||
-          settings?.language ||
-          req.cookies.language ||
-          getRequestLocale(req.get('Accept-Language'));
+      if (!isWaivio && !req.cookies.access_token) {
         store.dispatch(setLocale(loc));
         store.dispatch(setUsedLocale(await loadLanguage(loc)));
       }
