@@ -93,7 +93,7 @@ export default function createSsrHandler(template) {
       }
 
       if (!isWaivio) {
-        settings = await getSettingsWebsite('localhost:4000');
+        settings = await getSettingsWebsite(hostname);
         adsenseSettings = await getSettingsAdsense(hostname);
         parentHost = (await store.dispatch(setParentHost(hostname))).value;
       }
