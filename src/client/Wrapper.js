@@ -29,7 +29,6 @@ import TopNavigation from './components/Navigation/TopNavigation';
 import { guestUserRegex } from '../common/helpers/regexHelpers';
 import WelcomeModal from './components/WelcomeModal/WelcomeModal';
 import ErrorBoundary from './widgets/ErrorBoundary';
-import Loading from './components/Icon/Loading';
 import { handleRefAuthUser } from '../store/referralStore/ReferralActions';
 import { handleRefName } from './rewards/ReferralProgram/ReferralHelper';
 import {
@@ -103,7 +102,6 @@ class Wrapper extends React.PureComponent {
     isNewUser: PropTypes.bool,
     dispatchGetAuthGuestBalance: PropTypes.func,
     isOpenWalletTable: PropTypes.bool,
-    loadingFetching: PropTypes.bool,
     location: PropTypes.shape(),
     handleRefAuthUser: PropTypes.func,
     isGuest: PropTypes.bool,
@@ -269,7 +267,6 @@ class Wrapper extends React.PureComponent {
       username,
       isNewUser,
       isOpenWalletTable,
-      loadingFetching,
     } = this.props;
     const language = findLanguage(usedLocale);
     const antdLocale = this.getAntdLocale(language);
@@ -306,7 +303,7 @@ class Wrapper extends React.PureComponent {
                     location={history?.location}
                   />
                 )}
-                {loadingFetching ? <Loading /> : renderRoutes(this.props.route.routes)}
+                {renderRoutes(this.props.route.routes)}
                 {!isWidget && (
                   <React.Fragment>
                     <NotificationPopup />

@@ -88,8 +88,9 @@ class SubFeed extends React.Component {
       // eslint-disable-next-line react/no-did-mount-set-state
       this.setState({ isAuthHomeFeed: true });
       const fetched = getUserFeedFetchedFromState(user.name, feed);
+      const content = getUserFeedFromState(user.name, feed);
 
-      if (fetched) return;
+      if (fetched || !isEmpty(content)) return;
       this.props.getUserFeedContent(user.name).then(res => {
         if (res.value.message && history.action !== 'PUSH') {
           history.push('/trending');

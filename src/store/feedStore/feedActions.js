@@ -59,7 +59,7 @@ export const getFeedContent = ({ sortBy, category, limit = 20 }) => (dispatch, g
   const locale = getLocale(state);
   const follower = getAuthenticatedUserName(state);
 
-  dispatch({
+  return dispatch({
     type: GET_FEED_CONTENT.ACTION,
     payload: ApiClient.getFeedContent(sortBy, locale, follower, {
       category: sortBy,
