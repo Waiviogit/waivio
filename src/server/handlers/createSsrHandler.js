@@ -8,8 +8,8 @@ import { StaticRouter } from 'react-router';
 import { matchRoutes, renderRoutes } from 'react-router-config';
 import hivesigner from 'hivesigner';
 import { isbot } from 'isbot';
-import { getRequestLocale } from '../../common/translations';
-import { setParentHost } from '../../store/appStore/appActions';
+import { getRequestLocale, findLanguage, loadLanguage } from '../../common/translations';
+import { setParentHost, setUsedLocale } from '../../store/appStore/appActions';
 import { loginFromServer } from '../../store/authStore/authActions';
 import { setLocale } from '../../store/settingsStore/settingsActions';
 
@@ -104,15 +104,15 @@ export default function createSsrHandler(template) {
       const query = splittedUrl[1] ? new URLSearchParams(`?${splittedUrl[1]}`) : null;
       const promises = [];
 
-      if (!isWaivio)
-        store.dispatch(
-          setLocale(
-            query?.get('usedLocale') ||
-              settings?.language ||
-              req.cookies.language ||
-              getRequestLocale(req.get('Accept-Language')),
-          ),
-        );
+      if (!isWaivio) {
+        const loc =
+          query?.get('usedLocale') ||
+          settings?.language ||
+          req.cookies.language ||
+          getRequestLocale(req.get('Accept-Language'));
+        store.dispatch(setLocale(loc));
+        store.dispatch(setUsedLocale(await loadLanguage(loc)));
+      }
 
       branch.forEach(({ route, match }) => {
         const fetchData = route?.component?.fetchData;

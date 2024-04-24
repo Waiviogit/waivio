@@ -8,7 +8,7 @@ import { renderRoutes } from 'react-router-config';
 import { get, isEmpty } from 'lodash';
 import { ConfigProvider, Layout } from 'antd';
 import { clearGuestAuthData } from '../../common/helpers/localStorageHelpers';
-import { findLanguage, getAntdLocale } from '../../common/translations';
+import { findLanguage, getAntdLocale, loadLanguage } from '../../common/translations';
 import {
   login,
   busyLogin,
@@ -214,6 +214,7 @@ const SocialWrapper = props => {
 
   useEffect(() => {
     createWebsiteMenu(props.config);
+    loadLanguage(props.locale);
   }, [props.locale]);
 
   useEffect(() => {
