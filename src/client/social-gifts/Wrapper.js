@@ -426,8 +426,6 @@ SocialWrapper.fetchData = async ({ store, req, url }) => {
                     buttonList[0]?.object_type,
                   )
                 ) {
-                  // eslint-disable-next-line no-console
-                  console.log(buttonList[0]?.permlink, 'buttonList-[0]-permlink');
                   promises.push(store.dispatch(getObjectAction(buttonList[0]?.permlink)));
                 }
               }
