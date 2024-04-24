@@ -78,6 +78,7 @@ const MainMap = React.memo(props => {
   const getZoom = config => get(getCurrentConfig(config), 'zoom');
   const setCurrMapConfig = (center, zoom) => {
     setMapData({ center, zoom });
+    props.setLoading(false);
   };
 
   const getCoordinatesForMap = async () => {
@@ -108,7 +109,6 @@ const MainMap = React.memo(props => {
       zoom = query.size > 0 ? zoom : mapView?.zoom;
     }
 
-    props.setLoading(false);
     setCurrMapConfig(center, zoom);
   };
 
@@ -160,7 +160,6 @@ const MainMap = React.memo(props => {
         const handleResize = () => setHeight(window.innerHeight);
 
         setHeight(window.innerHeight);
-
         getCoordinatesForMap();
 
         window.addEventListener('resize', handleResize);
@@ -173,11 +172,15 @@ const MainMap = React.memo(props => {
         };
       }
     },
-    [props.wobject.author_permlink],
+    [props.isSocial],
   );
 
   useEffect(() => {
-    if ((mapRef.current && query.get('showPanel')) || (props.isSocial && mapRef.current)) {
+    if (
+      (mapRef.current && query.get('showPanel')) ||
+      (props.isSocial && mapRef.current) ||
+      (mapRef.current && !props.isSocial && props.history.location.pathname === '/')
+    ) {
       const bounce = mapRef.current.getBounds();
 
       if (bounce.ne[0] && bounce.sw[0]) {
@@ -222,7 +225,7 @@ const MainMap = React.memo(props => {
 
     if (!isEmpty(topPoint) && !isEmpty(bottomPoint)) {
       const searchString = props.isSocial
-        ? props.match.params.name || props.wobject.author_permlink
+        ? props.match.params.name || props.wobject.author_permlink || query.get('currObj')
         : props.searchString;
 
       props
@@ -231,7 +234,9 @@ const MainMap = React.memo(props => {
           checkDistanceAndSetReload();
           if (!isEmpty(queryCenter)) {
             const { wobjects } = res.value;
-            const queryPermlink = props.query.get('permlink');
+            const queryPermlink = props.isSocial
+              ? query.get('permlink')
+              : props.query.get('permlink');
             const currentPoint =
               get(infoboxData, ['wobject', 'author_permlink']) !== queryPermlink
                 ? wobjects.find(wobj => wobj.author_permlink === queryPermlink)
@@ -253,11 +258,10 @@ const MainMap = React.memo(props => {
   }, [props.userLocation, boundsParams, props.searchType]);
 
   useEffect(() => {
-    if (
-      props.match.params.name &&
-      (isEmpty(props.wobject) || props.wobject.object_type !== 'map')
-    ) {
-      props.getObjectAction(props.match.params.name);
+    const permlink = query.get('currObj') || props.match.params.name;
+
+    if (permlink && (isEmpty(props.wobject) || props.wobject.object_type !== 'map')) {
+      props.getObjectAction(permlink);
     }
 
     if (props.isSocial) {
@@ -294,13 +298,12 @@ const MainMap = React.memo(props => {
       query.set('zoom', mapData.zoom);
       query.set('permlink', payload.author_permlink);
       if (props.isSocial && props.location.pathname === '/') {
-        props.history.push(`/object/${props.wobject.author_permlink}/map?${query.toString()}`);
-      } else {
-        props.history.push(`?${query.toString()}`);
+        query.set('currObj', props.wobject.author_permlink);
       }
+      props.history.push(`?${query.toString()}`);
       setInfoboxData({ wobject: payload, coordinates: anchor });
     },
-    [mapData.zoom, props.location.search, props.isSocial],
+    [mapData.zoom, props.location.search, props.isSocial, props.wobject],
   );
 
   const resetInfoBox = () => setInfoboxData(null);
@@ -392,6 +395,7 @@ const MainMap = React.memo(props => {
       query.delete('center');
       query.delete('zoom');
       query.delete('permlink');
+      query.delete('currObj');
       props.history.push(`?${query.toString()}`);
     }
   };
@@ -449,6 +453,7 @@ MainMap.propTypes = {
   }).isRequired,
   history: PropTypes.shape({
     push: PropTypes.func,
+    location: PropTypes.shape(),
   }).isRequired,
   getCoordinates: PropTypes.func.isRequired,
   userLocation: PropTypes.shape({
