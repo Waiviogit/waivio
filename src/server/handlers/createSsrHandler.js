@@ -8,9 +8,10 @@ import { StaticRouter } from 'react-router';
 import { matchRoutes, renderRoutes } from 'react-router-config';
 import hivesigner from 'hivesigner';
 import { isbot } from 'isbot';
+import { getRequestLocale } from '../../common/translations';
 import { setParentHost } from '../../store/appStore/appActions';
-import { getWebsiteParentHost } from '../../store/appStore/appSelectors';
 import { loginFromServer } from '../../store/authStore/authActions';
+import { setLocale } from '../../store/settingsStore/settingsActions';
 
 import {
   getParentHost,
@@ -92,7 +93,7 @@ export default function createSsrHandler(template) {
       }
 
       if (!isWaivio) {
-        settings = await getSettingsWebsite(hostname);
+        settings = await getSettingsWebsite('localhost:4000');
         adsenseSettings = await getSettingsAdsense(hostname);
         parentHost = (await store.dispatch(setParentHost(hostname))).value;
       }
@@ -102,6 +103,16 @@ export default function createSsrHandler(template) {
       const branch = matchRoutes(routes, splittedUrl[0]);
       const query = splittedUrl[1] ? new URLSearchParams(`?${splittedUrl[1]}`) : null;
       const promises = [];
+
+      if (!isWaivio)
+        store.dispatch(
+          setLocale(
+            query?.get('usedLocale') ||
+              settings?.language ||
+              req.cookies.language ||
+              getRequestLocale(req.get('Accept-Language')),
+          ),
+        );
 
       branch.forEach(({ route, match }) => {
         const fetchData = route?.component?.fetchData;
