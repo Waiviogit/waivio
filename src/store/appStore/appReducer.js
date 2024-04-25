@@ -167,6 +167,7 @@ export default (state = initialState, action) => {
         administrators,
         facebookAuthId,
         googleAuthId,
+        language,
       } = action.payload;
       const deviceType = mobileUserAgents.test(navigator.userAgent) ? 'mobile' : 'desktop';
       const currMap = configuration?.[`${deviceType}Map`];
@@ -180,6 +181,7 @@ export default (state = initialState, action) => {
         mainPage,
         host,
         configuration,
+        websiteLanguage: language,
         websiteBeneficiary: {
           account: beneficiary.account,
           weight: beneficiary.percent,

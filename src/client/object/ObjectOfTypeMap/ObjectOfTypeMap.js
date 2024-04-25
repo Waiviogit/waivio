@@ -15,8 +15,8 @@ import { getUserLocation } from '../../../store/userStore/userSelectors';
 import { getConfiguration } from '../../../store/websiteStore/websiteSelectors';
 import { getCurrentScreenSize, getParsedMap } from '../../components/Maps/mapHelpers';
 import CustomMarker from '../../components/Maps/CustomMarker';
-import { getObject } from '../../../store/wObjectStore/wObjectSelectors';
-import { getObjectsForMapObjectType } from '../../../waivioApi/ApiClient';
+import { getObject, getWobjectNested } from '../../../store/wObjectStore/wObjectSelectors';
+import { getObjectsForMapObjectType, getObject as fetchObject } from '../../../waivioApi/ApiClient';
 import { getIsWaivio, getUsedLocale } from '../../../store/appStore/appSelectors';
 import { getAuthenticatedUserName } from '../../../store/authStore/authSelectors';
 import ObjectOverlayCard from '../../components/Maps/Overlays/ObjectOverlayCard/ObjectOverlayCard';
@@ -26,8 +26,12 @@ import { setMapFullscreenMode } from '../../../store/mapStore/mapActions';
 import useQuery from '../../../hooks/useQuery';
 import Loading from '../../components/Icon/Loading';
 import './ObjectOfTypeMap.less';
+import { getLastPermlinksFromHash } from '../../../common/helpers/wObjectHelper';
+import { setNestedWobject } from '../../../store/wObjectStore/wobjActions';
+import CatalogBreadcrumb from '../Catalog/CatalogBreadcrumb/CatalogBreadcrumb';
 
 const ObjectOfTypeMap = props => {
+  const [nestedWobj, setNestedWobj] = useState({});
   const requestPending = useRef(false);
   const query = useQuery();
   const history = useHistory();
@@ -59,25 +63,27 @@ const ObjectOfTypeMap = props => {
   const mapState = {
     desktopMap: get(props.config, 'desktopMap'),
   };
+  const hash = history.location.hash;
+  const nestedObjPermlink = getLastPermlinksFromHash(hash);
+  const currentWobject = hash ? nestedWobj : props.wobject;
 
   const emptyMapObject =
-    !has(props.wobject, 'mapObjectsList') &&
-    !has(props.wobject, 'mapRectangles') &&
-    !has(props.wobject, 'mapDesktopView') &&
-    !has(props.wobject, 'mapMobileView') &&
-    !has(props.wobject, 'mapObjectTypes') &&
-    !has(props.wobject, 'mapObjectTags');
+    !has(currentWobject, 'mapObjectsList') &&
+    !has(currentWobject, 'mapRectangles') &&
+    !has(currentWobject, 'mapDesktopView') &&
+    !has(currentWobject, 'mapMobileView') &&
+    !has(currentWobject, 'mapObjectTypes') &&
+    !has(currentWobject, 'mapObjectTags');
   const { lat, lon } = props.userLocation;
   let defaultCenter = [+lat, +lon];
   let defaultZoom = 8;
 
-  const mapDesktopView = !isEmpty(props.wobject?.mapDesktopView)
-    ? JSON.parse(props.wobject?.mapDesktopView)
+  const mapDesktopView = !isEmpty(currentWobject?.mapDesktopView)
+    ? JSON.parse(currentWobject?.mapDesktopView)
     : undefined;
   const mapMobileView = !isEmpty(props.wobject?.mapMobileView)
-    ? JSON.parse(props.wobject?.mapMobileView)
+    ? JSON.parse(currentWobject?.mapMobileView)
     : undefined;
-
   const mapView = isMobile() ? mapMobileView : mapDesktopView;
 
   defaultCenter = mapView?.center || defaultCenter;
@@ -148,7 +154,7 @@ const ObjectOfTypeMap = props => {
       settingMap.zoom
     }&topPoint=${settingMap.topPoint.join(',')}&bottomPoint=${settingMap.bottomPoint.join(',')}`;
 
-    history.push(`/object/${props.wobject.author_permlink}/map?${url}`);
+    history.push(`/object/${currentWobject.author_permlink}/map?${url}`);
     setInfoboxData(null);
   };
 
@@ -159,7 +165,7 @@ const ObjectOfTypeMap = props => {
       ',',
     )}&permlink=${link}`;
 
-    history.push(`/object/${props.wobject.author_permlink}/map?${url}`);
+    history.push(`/object/${currentWobject.author_permlink}/map?${url}`);
   };
 
   const getMarkers = wObjects =>
@@ -229,7 +235,7 @@ const ObjectOfTypeMap = props => {
 
     if (!isEmpty(settingMap.topPoint) && !isEmpty(settingMap.bottomPoint)) {
       debouncedGetObjectsForMapObjectType(
-        props.wobject.author_permlink,
+        currentWobject.author_permlink,
         body,
         props.locale,
         props.authUserName,
@@ -237,7 +243,7 @@ const ObjectOfTypeMap = props => {
     } else {
       setIsMapReady(true);
     }
-  }, [props.wobject.author_permlink, settingMap, settingMap.zoom]);
+  }, [currentWobject.author_permlink, settingMap, settingMap.zoom]);
 
   const markersLayout = getMarkers(objects);
   const closeModal = () => {
@@ -249,7 +255,7 @@ const ObjectOfTypeMap = props => {
   };
 
   const zoomButtonsLayout = () => (
-    <div className="MapOS__zoom">
+    <div className={hash ? 'MapOS__zoom MapOS__zoom--nested' : 'MapOS__zoom'}>
       <div role="presentation" className="MapOS__zoom-button" onClick={incrementZoom}>
         +
       </div>
@@ -259,116 +265,136 @@ const ObjectOfTypeMap = props => {
     </div>
   );
 
-  if (emptyMapObject)
+  useEffect(() => {
+    if (nestedObjPermlink) {
+      setIsMapReady(false);
+      fetchObject(nestedObjPermlink, props.authUserName, props.locale).then(wobj => {
+        dispatch(setNestedWobject(wobj));
+        setNestedWobj(wobj);
+        setIsMapReady(true);
+      });
+    }
+  }, [nestedObjPermlink, hash]);
+
+  if (emptyMapObject && isMapReady)
     return (
       <div role="presentation" className="Threads__row justify-center">
         <FormattedMessage id="this_map_is_empty" defaultMessage="This map is empty" />
       </div>
     );
 
-  return !isMapReady ? (
-    <Loading />
-  ) : (
-    <div className="MapObjTypeWrap">
-      <>
-        {isMapReady && (
-          <MapControllers
-            isMapObjType
-            decrementZoom={decrementZoom}
-            incrementZoom={incrementZoom}
-            setPosition={setCoordinates}
-            successCallback={successCallback}
-            rejectCallback={e => console.error(`Map error:${e}`)}
-          />
-        )}
-        <Map
-          center={get(settingMap, 'center') || get(mapState, [showMap, 'center'], defaultCenter)}
-          zoom={get(settingMap, 'zoom', 0) || get(mapState, [showMap, 'zoom'], defaultZoom) - 1}
-          height={getCurrentScreenSize()}
-          provider={mapProvider}
-          onBoundsChanged={state => onBoundsChanged(state, showMap)}
-          onClick={({ event }) => {
-            event.stopPropagation();
-            if (
-              ['ObjectOverlayCard__name-truncated', 'avatar-image'].includes(
-                event.target.classList.value,
-              )
-            ) {
-              history.push(infoboxData.wobject.defaultShowLink);
-            } else if (event.target.classList.value === 'pigeon-overlays') {
-              closeInfobox();
-            }
-          }}
-        >
-          {markersLayout}
-          {infoboxData && getOverlayLayout()}
-        </Map>
-        {isMapReady && (
-          <div role="presentation" className="MapOS__fullScreen" onClick={openModal}>
-            <Icon type="fullscreen" style={{ fontSize: '25px', color: '#000000' }} />
-          </div>
-        )}
-        {isFullscreenMode && (
-          <Modal
-            title={null}
-            footer={null}
-            visible={isFullscreenMode}
-            onCancel={closeModal}
-            style={{ top: 0 }}
-            width={'100%'}
-            wrapClassName={'MapObjectModal'}
-            destroyOnClose
-          >
-            <div className="MapOS__fullscreenContent">
-              <Map
-                ref={mapRef}
-                center={
-                  get(settingMap, 'center') || get(mapState, [showMap, 'center'], defaultCenter)
+  return (
+    <>
+      {hash && <CatalogBreadcrumb wobject={currentWobject} intl={props.intl} />}
+      {!isMapReady ? (
+        <Loading />
+      ) : (
+        <div className="MapObjTypeWrap">
+          <>
+            {isMapReady && (
+              <MapControllers
+                isMapObjType
+                decrementZoom={decrementZoom}
+                incrementZoom={incrementZoom}
+                setPosition={setCoordinates}
+                successCallback={successCallback}
+                rejectCallback={e => console.error(`Map error:${e}`)}
+              />
+            )}
+            <Map
+              center={
+                get(settingMap, 'center') || get(mapState, [showMap, 'center'], defaultCenter)
+              }
+              zoom={get(settingMap, 'zoom', 0) || get(mapState, [showMap, 'zoom'], defaultZoom) - 1}
+              height={getCurrentScreenSize()}
+              provider={mapProvider}
+              onBoundsChanged={state => onBoundsChanged(state, showMap)}
+              onClick={({ event }) => {
+                event.stopPropagation();
+                if (
+                  ['ObjectOverlayCard__name-truncated', 'avatar-image'].includes(
+                    event.target.classList.value,
+                  )
+                ) {
+                  history.push(infoboxData.wobject.defaultShowLink);
+                } else if (event.target.classList.value === 'pigeon-overlays') {
+                  closeInfobox();
                 }
-                zoom={get(settingMap, 'zoom', 0) || get(mapState, [showMap, 'zoom'], defaultZoom)}
-                provider={mapProvider}
-                animate
-                onBoundsChanged={state => onBoundsChanged(state, showMap)}
-                onClick={({ event }) => {
-                  event.stopPropagation();
-                  if (
-                    ['ObjectOverlayCard__name-truncated', 'avatar-image'].includes(
-                      event.target.classList.value,
-                    )
-                  ) {
-                    dispatch(setMapFullscreenMode(false));
-                    history.push(infoboxData.wobject.defaultShowLink);
-                  } else if (event.target.classList.value === 'pigeon-overlays') {
-                    closeInfobox();
-                  }
-                }}
+              }}
+            >
+              {markersLayout}
+              {infoboxData && getOverlayLayout()}
+            </Map>
+            {isMapReady && (
+              <div role="presentation" className="MapOS__fullScreen" onClick={openModal}>
+                <Icon type="fullscreen" style={{ fontSize: '25px', color: '#000000' }} />
+              </div>
+            )}
+            {isFullscreenMode && (
+              <Modal
+                title={null}
+                footer={null}
+                visible={isFullscreenMode}
+                onCancel={closeModal}
+                style={{ top: 0 }}
+                width={'100%'}
+                wrapClassName={'MapObjectModal'}
+                destroyOnClose
               >
-                {markersLayout}
-                {infoboxData && getOverlayLayout()}
-              </Map>
-              {zoomButtonsLayout()}
+                <div className="MapOS__fullscreenContent">
+                  <Map
+                    ref={mapRef}
+                    center={
+                      get(settingMap, 'center') || get(mapState, [showMap, 'center'], defaultCenter)
+                    }
+                    zoom={
+                      get(settingMap, 'zoom', 0) || get(mapState, [showMap, 'zoom'], defaultZoom)
+                    }
+                    provider={mapProvider}
+                    animate
+                    onBoundsChanged={state => onBoundsChanged(state, showMap)}
+                    onClick={({ event }) => {
+                      event.stopPropagation();
+                      if (
+                        ['ObjectOverlayCard__name-truncated', 'avatar-image'].includes(
+                          event.target.classList.value,
+                        )
+                      ) {
+                        dispatch(setMapFullscreenMode(false));
+                        history.push(infoboxData.wobject.defaultShowLink);
+                      } else if (event.target.classList.value === 'pigeon-overlays') {
+                        closeInfobox();
+                      }
+                    }}
+                  >
+                    {markersLayout}
+                    {infoboxData && getOverlayLayout()}
+                  </Map>
+                  {zoomButtonsLayout()}
 
-              <div className={'MapConfigurationControl__gps'}>
-                <div
-                  role="presentation"
-                  className="MapConfigurationControl__locateGPS"
-                  onClick={setCoordinates}
-                >
-                  <img
-                    src="/images/focus.svg"
-                    alt="aim"
-                    className="MapConfigurationControl__locateGPS-button"
-                  />
+                  <div className={'MapConfigurationControl__gps'}>
+                    <div
+                      role="presentation"
+                      className="MapConfigurationControl__locateGPS"
+                      onClick={setCoordinates}
+                    >
+                      <img
+                        src="/images/focus.svg"
+                        alt="aim"
+                        className="MapConfigurationControl__locateGPS-button"
+                      />
+                    </div>
+                  </div>
+                  <div role="presentation" className="MapOS__fullScreen" onClick={closeModal}>
+                    <Icon type="fullscreen-exit" style={{ fontSize: '25px', color: '#000000' }} />
+                  </div>
                 </div>
-              </div>
-              <div role="presentation" className="MapOS__fullScreen" onClick={closeModal}>
-                <Icon type="fullscreen-exit" style={{ fontSize: '25px', color: '#000000' }} />
-              </div>
-            </div>
-          </Modal>
-        )}
-      </>
-    </div>
+              </Modal>
+            )}
+          </>
+        </div>
+      )}
+    </>
   );
 };
 
@@ -377,6 +403,7 @@ ObjectOfTypeMap.propTypes = {
   config: PropTypes.shape(),
   wobject: PropTypes.shape(),
   userLocation: PropTypes.shape(),
+  intl: PropTypes.shape(),
   locale: PropTypes.string,
   authUserName: PropTypes.string,
 };
@@ -384,6 +411,7 @@ ObjectOfTypeMap.propTypes = {
 export default connect(
   state => ({
     wobject: getObject(state),
+    nestedWobject: getWobjectNested(state),
     userLocation: getUserLocation(state),
     config: getConfiguration(state),
     locale: getUsedLocale(state),

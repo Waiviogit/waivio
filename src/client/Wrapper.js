@@ -188,10 +188,7 @@ class Wrapper extends React.PureComponent {
       batch(() => {
         this.props.getNotifications();
         this.props.busyLogin();
-        // this.props.getRewardFund();
         this.props.dispatchGetAuthGuestBalance();
-        // this.props.getRate();
-        // this.props.getCoordinates();
       });
     });
   }
