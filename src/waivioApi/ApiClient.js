@@ -34,7 +34,6 @@ const REQUEST_TIMEOUT = 15000;
 const HIVE_ENGINE_NODES = [
   'https://engine.waivio.com',
   'https://ha.herpc.dtools.dev', // New Jersey
-  'https://engine.deathwing.me', //
   'https://herpc.dtools.dev', // Miami
   'https://api.primersion.com',
   'https://herpc.kanibot.com',
