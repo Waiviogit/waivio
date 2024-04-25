@@ -130,7 +130,10 @@ const settings = (state = initialState, action) => {
       };
 
     case authTypes.LOGOUT:
-      return initialState;
+      return {
+        ...initialState,
+        locale: action.meta || initialState.locale,
+      };
 
     default:
       return state;

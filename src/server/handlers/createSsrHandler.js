@@ -23,7 +23,6 @@ import getStore from '../../store/store';
 import renderSsrPage from '../renderers/ssrRenderer';
 import switchRoutes from '../../routes/switchRoutes';
 import { getCachedPage, setCachedPage, updateBotCount } from './cachePageHandler';
-import { isCustomDomain } from '../../client/social-gifts/listOfSocialWebsites';
 import { REDIS_KEYS } from '../../common/constants/ssrData';
 import { sismember } from '../redis/redisClient';
 import { checkAppStatus, isInheritedHost } from '../../common/helpers/redirectHelper';
@@ -87,12 +86,6 @@ export default function createSsrHandler(template) {
       let adsenseSettings = {};
       const store = getStore(sc2Api, waivioAPI, req.url);
 
-      const loc =
-        query?.get('usedLocale') ||
-        settings?.language ||
-        req.cookies.language ||
-        getRequestLocale(req.get('Accept-Language'));
-
       if (!isWaivio) {
         settings = await getSettingsWebsite(hostname);
         adsenseSettings = await getSettingsAdsense(hostname);
@@ -111,7 +104,11 @@ export default function createSsrHandler(template) {
       const branch = matchRoutes(routes, splittedUrl[0]);
       const query = splittedUrl[1] ? new URLSearchParams(`?${splittedUrl[1]}`) : null;
       const promises = [];
-
+      const loc =
+        query?.get('usedLocale') ||
+        settings?.language ||
+        req.cookies.language ||
+        getRequestLocale(req.get('Accept-Language'));
       if (!isWaivio && !req.cookies.access_token) {
         store.dispatch(setLocale(loc));
         store.dispatch(setUsedLocale(await loadLanguage(loc)));

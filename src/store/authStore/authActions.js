@@ -5,11 +5,14 @@ import { createAction } from 'redux-actions';
 import { makeHiveAuthHeader } from '../../client/HiveAuth/hive-auth-wrapper';
 import { getAccount } from '../../common/helpers/apiHelpers';
 import { createAsyncActionType } from '../../common/helpers/stateHelpers';
+import { loadLanguage } from '../../common/translations';
 import {
   addNewNotification,
   changeAdminStatus,
   getCurrentCurrencyRate,
+  setUsedLocale,
 } from '../appStore/appActions';
+import { getWebsiteLanguage } from '../appStore/appSelectors';
 import { getFollowing } from '../userStore/userActions';
 import { BUSY_API_TYPES } from '../../common/constants/notifications';
 import { setToken } from '../../common/helpers/getToken';
@@ -88,6 +91,7 @@ export const logout = () => (dispatch, getState, { busyAPI, steemConnectAPI }) =
   const state = getState();
   let accessToken = Cookie.get('access_token');
   const hiveAuth = Cookie.get('auth');
+  const language = getWebsiteLanguage(state);
 
   if (state.auth.isGuestUser) {
     accessToken = getGuestAccessToken();
@@ -117,6 +121,7 @@ export const logout = () => (dispatch, getState, { busyAPI, steemConnectAPI }) =
 
   dispatch({
     type: LOGOUT,
+    meta: language,
   });
 };
 
@@ -151,6 +156,7 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
         dispatch(changeAdminStatus(hiveAuthData.username));
         dispatch(setSignature(userMetaData?.profile?.signature || ''));
         dispatch(getCurrentCurrencyRate(userMetaData.settings.currency));
+        dispatch(setUsedLocale(await loadLanguage(userMetaData.settings.locale)));
 
         resolve({
           account,
@@ -176,6 +182,7 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
         const rewardsTab = await getRewardTab(userData.name);
         const { WAIV } = await getGuestWaivBalance(userData.name);
 
+        dispatch(setUsedLocale(await loadLanguage(userMetaData.settings.locale)));
         dispatch(getCurrentCurrencyRate(userMetaData.settings.currency));
         dispatch(changeAdminStatus(userData.name));
 
@@ -208,6 +215,7 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
         dispatch(changeAdminStatus(scUserData.name));
         dispatch(setSignature(scUserData?.user_metadata?.profile?.signature || ''));
         dispatch(getCurrentCurrencyRate(userMetaData.settings.currency));
+        dispatch(setUsedLocale(await loadLanguage(userMetaData.settings.locale)));
 
         resolve({
           ...scUserData,
