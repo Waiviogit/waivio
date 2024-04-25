@@ -27,7 +27,6 @@ import {
 import {
   getConfigurationValues,
   getHostAddress,
-  getIsSocial,
   getReserveCounter,
   getUsedLocale,
   getWebsiteLogo,
@@ -162,6 +161,7 @@ const WebsiteBody = props => {
                 </Link>
               )}
             <MainMap
+              isSocial={props.isSocial}
               loading={loading}
               setLoading={setLoading}
               query={props.query}
@@ -236,7 +236,6 @@ export default connect(
     authUserName: getAuthenticatedUserName(state),
     locale: getUsedLocale(state),
     currObj: getObject(state),
-    isSocial: getIsSocial(state),
   }),
   {
     setWebsiteSearchType,
