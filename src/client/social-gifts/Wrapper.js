@@ -175,6 +175,12 @@ const SocialWrapper = props => {
     }
   };
 
+  const loadLocale = async locale => {
+    const lang = await loadLanguage(locale);
+
+    props.setUsedLocale(lang);
+  };
+
   useEffect(() => {
     const query = new URLSearchParams(props?.location.search);
     const token = query.get('access_token');
@@ -213,7 +219,7 @@ const SocialWrapper = props => {
 
   useEffect(() => {
     createWebsiteMenu(props.config);
-    loadLanguage(props.locale);
+    loadLocale(props.locale);
   }, [props.locale]);
 
   useEffect(() => {
@@ -260,6 +266,7 @@ SocialWrapper.propTypes = {
   nightmode: PropTypes.bool,
   isOpenModal: PropTypes.bool,
   dispatchGetAuthGuestBalance: PropTypes.func,
+  setUsedLocale: PropTypes.func,
   setSocialFlag: PropTypes.func,
   setLoadingStatus: PropTypes.func,
   isOpenWalletTable: PropTypes.bool,
@@ -426,8 +433,6 @@ SocialWrapper.fetchData = async ({ store, req, url }) => {
                     buttonList[0]?.object_type,
                   )
                 ) {
-                  // eslint-disable-next-line no-console
-                  console.log(buttonList[0]?.permlink, 'buttonList-[0]-permlink');
                   promises.push(store.dispatch(getObjectAction(buttonList[0]?.permlink)));
                 }
               }
