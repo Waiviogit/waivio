@@ -1,4 +1,5 @@
 import UserInfo from '../../client/app/Sidebar/UserInfo/UserInfo';
+import SubFeed from '../../client/feed/SubFeed';
 import PostsCommentsActivity from '../../client/user/PostsCommentsActivity/PostsCommentsActivity';
 import UserExpertise from '../../client/user/UserExpertise';
 import UserFollowers from '../../client/user/UserFollowers';
@@ -482,7 +483,7 @@ const routes = {
         },
         {
           path: '/(newsfeed)',
-          component: Views.ObjectFeed,
+          component: ObjectFeed,
         },
         {
           path: '/shop/:department?',
@@ -617,7 +618,7 @@ const routes = {
         },
         {
           path: '/feed/:name',
-          component: Views.ObjectFeed,
+          component: ObjectFeed,
         },
         {
           path: '/user-blog/@:name',
@@ -625,7 +626,7 @@ const routes = {
         },
         {
           path: '/:sortBy(trending|created|hot)?/:category?',
-          component: Views.SubFeed,
+          component: SubFeed,
         },
       ],
     },

@@ -60,11 +60,13 @@ export const getMapForMainPage = createSelector([appState], state => state.currM
 
 export const getWebsiteConfiguration = createSelector([appState], state => state?.configuration);
 
+export const getWebsiteLanguage = createSelector([appState], state => state?.websiteLanguage);
+
 export const getConfigurationValues = createSelector([appState], state => state.configuration);
 
 export const getWebsiteLogo = createSelector([appState], state => state.logo);
 
-export const getInfoLoaded = createSelector([appState], state => state.infoLoaded);
+// export const getInfoLoaded = createSelector([appState], state => state.infoLoaded);
 
 export const getShopSettings = createSelector(
   [appState],

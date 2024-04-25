@@ -38,7 +38,14 @@ const BaseObjSettings = ({ handleSubmit, intl, shopSettings, hideActions }) => {
   const handleAutoCompleteSearch = useCallback(
     debounce(
       value =>
-        dispatch(searchAutoComplete(value, 3, 50, null, true, ['business', 'book', 'product'])),
+        dispatch(
+          searchAutoComplete(value, 3, 50, null, true, [
+            'business',
+            'book',
+            'product',
+            'restaurant',
+          ]),
+        ),
       300,
     ),
     [],

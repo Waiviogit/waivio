@@ -9,6 +9,7 @@ import {
   getTiktokPreviewAction,
   setFirstLoading,
 } from '../../../store/feedStore/feedActions';
+import { getCoordinates } from '../../../store/userStore/userActions';
 import { getObjectInfo } from '../../../waivioApi/ApiClient';
 import { prepareMenuItems } from '../../social-gifts/SocialProduct/SocialMenuItems/SocialMenuItems';
 import Wobj from './Wobj';
@@ -73,7 +74,7 @@ const WobjectContainer = props => {
   };
 
   useEffect(() => {
-    if (name !== props.wobjPermlink || props.locale !== 'en-US') {
+    if (name !== props.wobjPermlink) {
       props.getObject(name, props.authenticatedUserName).then(async res => {
         if (props.currHost?.includes('waivio')) {
           if ((await showDescriptionPage(res.value, props.locale)) && !props.match.params[0]) {
@@ -95,6 +96,7 @@ const WobjectContainer = props => {
         ) {
           if (res.value.map) {
             props.getNearbyObjects(name);
+            props.getCoordinates();
           }
           props.getWobjectExpertise(newsFilter, name, true);
           props.getObjectFollowers({
@@ -119,8 +121,10 @@ const WobjectContainer = props => {
         }
       });
     }
+  }, [name, props.locale, props.authenticatedUserName]);
 
-    return () => {
+  useEffect(
+    () => () => {
       props.clearObjectFromStore();
       props.setCatalogBreadCrumbs([]);
       props.setNestedWobject({});
@@ -130,8 +134,9 @@ const WobjectContainer = props => {
       props.resetGallery();
       props.resetWobjectExpertise();
       props.setEditMode(false);
-    };
-  }, [name, props.locale, props.authenticatedUserName]);
+    },
+    [],
+  );
 
   if (props.failed)
     return (
@@ -176,6 +181,7 @@ WobjectContainer.propTypes = {
   clearObjectFromStore: PropTypes.func,
   setNestedWobject: PropTypes.func,
   setCatalogBreadCrumbs: PropTypes.func,
+  getCoordinates: PropTypes.func,
   locale: PropTypes.string,
   wobjPermlink: PropTypes.string,
   currHost: PropTypes.string,
@@ -300,6 +306,7 @@ const mapDispatchToProps = {
   setStoreActiveOption,
   resetBreadCrumb,
   resetWobjectExpertise,
+  getCoordinates,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(WobjectContainer));

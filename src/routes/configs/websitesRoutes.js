@@ -1,4 +1,5 @@
 import UserInfo from '../../client/app/Sidebar/UserInfo/UserInfo';
+import ObjectFeed from '../../client/object/ObjectFeed';
 import PostsCommentsActivity from '../../client/user/PostsCommentsActivity/PostsCommentsActivity';
 import UserFollowers from '../../client/user/UserFollowers';
 import Views from '../components';
@@ -210,7 +211,7 @@ const routes = (host, page) => ({
         },
         {
           path: '/newsfeed',
-          component: Views.ObjectFeed,
+          component: ObjectFeed,
         },
         {
           path: '/form/:permlink',

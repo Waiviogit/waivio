@@ -31,11 +31,7 @@ const WidgetContent = ({ wobj }) => {
   const widgetForm = currentWobject?.widget && JSON.parse(currentWobject?.widget);
 
   useEffect(() => {
-    if (wobj) {
-      setWobject(wobj);
-      if (typeof window !== 'undefined' && window.gtag)
-        window.gtag('event', getObjectName(wobj), { debug_mode: false });
-    } else {
+    if (!wobj && wobj.author_permlink !== objName) {
       getObject(objName, userName, locale).then(obj => {
         setWobject(obj);
         if (typeof window !== 'undefined' && window.gtag)

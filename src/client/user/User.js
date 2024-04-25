@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect } from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { renderRoutes } from 'react-router-config';
@@ -15,7 +15,7 @@ import {
   getUserAccountHistory,
   openTransfer,
 } from '../../store/walletStore/walletActions';
-import { getUserAccount, getInfoForSideBar } from '../../store/usersStore/usersActions';
+import { getUserAccount, getInfoForSideBar, resetUsers } from '../../store/usersStore/usersActions';
 import { getWobjectsWithUserWeight } from '../../waivioApi/ApiClient';
 import { getAvatarURL } from '../components/Avatar';
 import UserHero from './UserHero';
@@ -96,22 +96,26 @@ const User = props => {
   } = props;
   const { 0: tab, name } = useParams();
 
+  useEffect(
+    () => () => () => {
+      props.resetBreadCrumb();
+      props.resetUsers();
+    },
+    [],
+  );
+
   useEffect(() => {
-    props.getGlobalProperties();
-
-    return () => props.resetBreadCrumb();
-  }, []);
-
-  useLayoutEffect(() => {
     if (typeof window !== 'undefined' && window.gtag)
       window.gtag('event', 'view_user_profile', { debug_mode: false });
 
-    props.getUserAccount(name).then(res => {
-      props.getInfoForSideBar(name, res.las);
-      props.getUserAccountHistory(name);
-      props.getTokenBalance('WAIV', name);
-    });
+    if (user.name !== name) {
+      props.getUserAccount(name).then(res => {
+        props.getInfoForSideBar(name, res.las);
+        props.getTokenBalance('WAIV', name);
+      });
+    }
 
+    props.getUserAccountHistory(name);
     props.resetBreadCrumb();
 
     return () => props.resetFavorites();
@@ -237,11 +241,11 @@ User.propTypes = {
   getTokenBalance: PropTypes.func,
   getUserAccountHistory: PropTypes.func.isRequired,
   resetBreadCrumb: PropTypes.func.isRequired,
-  getGlobalProperties: PropTypes.func.isRequired,
   openTransfer: PropTypes.func,
   resetFavorites: PropTypes.func,
   getUserAccount: PropTypes.func,
   getInfoForSideBar: PropTypes.func,
+  resetUsers: PropTypes.func,
   rate: PropTypes.number.isRequired,
   rewardFund: PropTypes.shape().isRequired,
   isOpenWalletTable: PropTypes.bool,
@@ -264,7 +268,7 @@ User.fetchData = async ({ store, match }) => {
     store
       .dispatch(getUserAccount(match.params.name))
       .then(res => store.dispatch(getInfoForSideBar(match.params.name, res?.lastActivity))),
-    store.dispatch(getObjectsList(fetcher, 5, 0, match.params[0], false)),
+    store.dispatch(getObjectsList(fetcher, 5, 0, 'expertise-block', false)),
   ];
 
   return Promise.allSettled([...promises]);
@@ -297,6 +301,7 @@ export default connect(
     setFavoriteObjects,
     setFavoriteObjectTypes,
     resetFavorites,
+    resetUsers,
     setFavObjects: setFavoriteObjects,
   },
 )(User);

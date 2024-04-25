@@ -5,11 +5,14 @@ import { createAction } from 'redux-actions';
 import { makeHiveAuthHeader } from '../../client/HiveAuth/hive-auth-wrapper';
 import { getAccount } from '../../common/helpers/apiHelpers';
 import { createAsyncActionType } from '../../common/helpers/stateHelpers';
+import { loadLanguage } from '../../common/translations';
 import {
   addNewNotification,
   changeAdminStatus,
   getCurrentCurrencyRate,
+  setUsedLocale,
 } from '../appStore/appActions';
+import { getWebsiteLanguage } from '../appStore/appSelectors';
 import { getFollowing } from '../userStore/userActions';
 import { BUSY_API_TYPES } from '../../common/constants/notifications';
 import { setToken } from '../../common/helpers/getToken';
@@ -18,6 +21,7 @@ import {
   getPrivateEmail,
   getRewardTab,
   updateGuestProfile,
+  waivioAPI,
 } from '../../waivioApi/ApiClient';
 import { notify } from '../../client/app/Notification/notificationActions';
 import history from '../../client/history';
@@ -87,6 +91,7 @@ export const logout = () => (dispatch, getState, { busyAPI, steemConnectAPI }) =
   const state = getState();
   let accessToken = Cookie.get('access_token');
   const hiveAuth = Cookie.get('auth');
+  const language = getWebsiteLanguage(state);
 
   if (state.auth.isGuestUser) {
     accessToken = getGuestAccessToken();
@@ -116,13 +121,14 @@ export const logout = () => (dispatch, getState, { busyAPI, steemConnectAPI }) =
 
   dispatch({
     type: LOGOUT,
+    meta: language,
   });
 };
 
 export const login = (accessToken = '', socialNetwork = '', regData = '') => async (
   dispatch,
   getState,
-  { steemConnectAPI, waivioAPI },
+  { steemConnectAPI },
 ) => {
   const state = getState();
   let promise = Promise.resolve(null);
@@ -150,6 +156,7 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
         dispatch(changeAdminStatus(hiveAuthData.username));
         dispatch(setSignature(userMetaData?.profile?.signature || ''));
         dispatch(getCurrentCurrencyRate(userMetaData.settings.currency));
+        dispatch(setUsedLocale(await loadLanguage(userMetaData.settings.locale)));
 
         resolve({
           account,
@@ -175,6 +182,7 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
         const rewardsTab = await getRewardTab(userData.name);
         const { WAIV } = await getGuestWaivBalance(userData.name);
 
+        dispatch(setUsedLocale(await loadLanguage(userMetaData.settings.locale)));
         dispatch(getCurrentCurrencyRate(userMetaData.settings.currency));
         dispatch(changeAdminStatus(userData.name));
 
@@ -207,6 +215,7 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
         dispatch(changeAdminStatus(scUserData.name));
         dispatch(setSignature(scUserData?.user_metadata?.profile?.signature || ''));
         dispatch(getCurrentCurrencyRate(userMetaData.settings.currency));
+        dispatch(setUsedLocale(await loadLanguage(userMetaData.settings.locale)));
 
         resolve({
           ...scUserData,
@@ -240,6 +249,69 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
 
     return e;
   });
+};
+export const loginFromServer = cookie => async (dispatch, getState, { steemConnectAPI }) => {
+  let promise = Promise.resolve(null);
+  const isGuest = Boolean(cookie.guestName);
+  const hiveAuthData = parseJSON(cookie.auth);
+
+  if (hiveAuthData) {
+    if (hiveAuthData.expire < Date.now()) {
+      Promise.resolve();
+    } else {
+      promise = new Promise(async resolve => {
+        const account = await getAccount(hiveAuthData.username);
+        const userMetaData = await waivioAPI.getAuthenticatedUserMetadata(hiveAuthData.username);
+        const privateEmail = await getPrivateEmail(hiveAuthData.username);
+        const rewardsTab = await getRewardTab(hiveAuthData.username);
+
+        dispatch(changeAdminStatus(hiveAuthData.username));
+        dispatch(setSignature(userMetaData?.profile?.signature || ''));
+        dispatch(getCurrentCurrencyRate(userMetaData.settings.currency));
+
+        resolve({
+          account,
+          ...rewardsTab,
+          userMetaData,
+          privateEmail,
+        });
+      });
+    }
+  } else if (isGuest || cookie.access_token) {
+    promise = new Promise(async resolve => {
+      const scUserData = isGuest
+        ? await waivioAPI.getUserAccount(cookie.guestName, true)
+        : await steemConnectAPI.me();
+      const account = isGuest ? scUserData : await getAccount(scUserData.name);
+      const userMetaData = await waivioAPI.getAuthenticatedUserMetadata(scUserData.name);
+      const privateEmail = await getPrivateEmail(scUserData.name);
+      const rewardsTab = await getRewardTab(scUserData.name);
+      const { WAIV } = isGuest ? await getGuestWaivBalance(scUserData.name) : {};
+
+      dispatch(changeAdminStatus(scUserData.name));
+      dispatch(setSignature(scUserData?.user_metadata?.profile?.signature || ''));
+      dispatch(getCurrentCurrencyRate(userMetaData.settings.currency));
+
+      resolve({
+        ...scUserData,
+        ...rewardsTab,
+        account,
+        userMetaData,
+        privateEmail,
+        waivBalance: WAIV,
+        isGuestUser: isGuest,
+      });
+    });
+  }
+
+  // if (typeof window !== 'undefined' && window.gtag) window.gtag('event', 'login');
+
+  return dispatch({
+    type: LOGIN,
+    payload: {
+      promise,
+    },
+  }).catch(e => e);
 };
 
 export const getCurrentUserFollowing = () => dispatch => dispatch(getFollowing());

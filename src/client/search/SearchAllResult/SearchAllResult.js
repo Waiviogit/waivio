@@ -33,9 +33,15 @@ import ReloadButton from './components/ReloadButton';
 import { getIsSocial } from '../../../store/appStore/appSelectors';
 import './SearchAllResult.less';
 import { isMobile } from '../../../common/helpers/apiHelpers';
-import { setSocialSearchResults } from '../../../store/websiteStore/websiteActions';
+import {
+  setSocialSearchResults,
+  setMapInitialised,
+} from '../../../store/websiteStore/websiteActions';
 import { getObject } from '../../../store/wObjectStore/wObjectSelectors';
-import { getSocialSearchResultLoading } from '../../../store/websiteStore/websiteSelectors';
+import {
+  getIsMapInitialised,
+  getSocialSearchResultLoading,
+} from '../../../store/websiteStore/websiteSelectors';
 
 const SearchAllResult = props => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -44,6 +50,7 @@ const SearchAllResult = props => {
   const showReload = props.isSocial ? props.showReload && !props.socialLoading : props.showReload;
   const searchResultClassList = classNames('SearchAllResult SearchAllResult__dining', {
     SearchAllResult__show: props.isShowResult,
+    'SearchAllResult--social': props.isSocial,
   });
 
   const handleItemClick = wobj => {
@@ -77,10 +84,14 @@ const SearchAllResult = props => {
     localStorage.removeItem('scrollTop');
     props.reloadSearchList();
     if (props.isSocial) {
-      props.setSocialSearchResults(props.currObj.author_permlink, {
-        topPoint: props.searchMap.topPoint,
-        bottomPoint: props.searchMap.bottomPoint,
-      });
+      if (props.isMapInitialised) {
+        props.setMapInitialised(false);
+      } else {
+        props.setSocialSearchResults(props.currObj.author_permlink, {
+          topPoint: props.searchMap.topPoint,
+          bottomPoint: props.searchMap.bottomPoint,
+        });
+      }
     } else {
       switch (props.searchType) {
         case 'Users':
@@ -215,6 +226,8 @@ SearchAllResult.propTypes = {
   setSocialSearchResults: PropTypes.func,
   searchWebsiteObjectsAutoCompete: PropTypes.func.isRequired,
   searchExpertsForMap: PropTypes.func.isRequired,
+  setMapInitialised: PropTypes.func.isRequired,
+  isMapInitialised: PropTypes.bool,
   searchMap: PropTypes.shape().isRequired,
   currObj: PropTypes.shape(),
   activeFilters: PropTypes.arrayOf(PropTypes.shape()).isRequired,
@@ -242,6 +255,7 @@ export default connect(
     searchMap: getWebsiteMap(state),
     isSocial: getIsSocial(state),
     currObj: getObject(state),
+    isMapInitialised: getIsMapInitialised(state),
     socialLoading: getSocialSearchResultLoading(state),
   }),
   {
@@ -251,5 +265,6 @@ export default connect(
     searchWebsiteObjectsAutoCompete,
     searchExpertsForMap,
     setSocialSearchResults,
+    setMapInitialised,
   },
 )(injectIntl(SearchAllResult));

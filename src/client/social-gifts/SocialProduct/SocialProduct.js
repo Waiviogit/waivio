@@ -109,7 +109,7 @@ const SocialProduct = ({
   const [reward, setReward] = useState([]);
   const [hoveredOption, setHoveredOption] = useState({});
   const [references, setReferences] = useState([]);
-  const [loading, setIsLoading] = useState(true);
+  const [loading, setIsLoading] = useState(false);
   const affiliateLinks = wobject?.affiliateLinks || [];
   const referenceWobjType = ['business', 'person'].includes(wobject.object_type);
   const price = hoveredOption.price || get(wobject, 'price');
@@ -235,6 +235,7 @@ const SocialProduct = ({
       setStoreActiveOpt({});
     };
   }, [wobject.author_permlink]);
+
   useEffect(() => {
     resetOptClicked();
   }, []);

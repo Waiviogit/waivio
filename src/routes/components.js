@@ -60,7 +60,6 @@ export default {
     import('../client/user/PostsCommentsActivity/PostsCommentsActivity'),
   ),
   UserComments: loableComponent(import('../client/user/UserComments')),
-  UserFollowers: loableComponent(import('../client/user/UserFollowers')),
   UserReblogs: loableComponent(import('../client/user/UserReblogs')),
   UserWallet: loableComponent(import('../client/wallet/Wallets')),
   WalletTable: loableComponent(import('../client/wallet/WalletTable/WalletTable')),

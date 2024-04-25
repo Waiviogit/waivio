@@ -68,6 +68,7 @@ export const getSocialSearchResultLoading = createSelector(
   [websiteState],
   state => state.socialSearchResultLoading,
 );
+export const getIsMapInitialised = createSelector([websiteState], state => state.isMapInitialised);
 
 export const getIsUsersAreas = createSelector([websiteState], state => state.areas);
 

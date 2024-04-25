@@ -2,7 +2,8 @@
 @import (reference) '../../styles/modules/variables.less';
 @import (reference) '../../styles/mixins.less';
 
-.SearchAllResult {
+.SearchAllResult,
+.SearchAllResult--social {
   position: absolute;
   width: 60%;
   height: 94%;
@@ -233,6 +234,37 @@
     .SearchAllResult__filters-button--active {
       background: @scorpion;
       color: @white;
+    }
+  }
+}
+.SearchAllResult--social {
+  .RatingsWrap {
+    .RatingsWrap__rate-title {
+      overflow: visible;
+    }
+    &__rate.ant-col.ant-col-12 {
+      &:first-child {
+        width: 55%;
+        display: none;
+        border-left: none;
+        margin-left: 0;
+        padding-left: 0;
+
+        @media (min-width: 1550px) {
+          display: flex;
+          //border-right: @base-border;
+          margin-right: 15px;
+          //padding-right: 15px;
+        }
+      }
+
+      &:last-child {
+        width: 100%;
+
+        @media @large {
+          width: 45%;
+        }
+      }
     }
   }
 }

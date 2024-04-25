@@ -66,7 +66,7 @@ const ObjectNewsFeed = ({ wobj }) => {
   const isFetching = getFeedLoadingFromState('objectPosts', objName, feed);
   const posts = preparationPostList(postsIds, postsList);
   const getPostsList = () => {
-    if (wobj) {
+    if (wobj && wobj.author_permlink === name) {
       dispatch(
         getObjectPosts({
           object: wobj.author_permlink,

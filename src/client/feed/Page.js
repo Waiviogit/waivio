@@ -5,7 +5,7 @@ import { withRouter } from 'react-router';
 import { renderRoutes } from 'react-router-config';
 import { Helmet } from 'react-helmet';
 import { injectIntl } from 'react-intl';
-import { getFeedContent } from '../../store/feedStore/feedActions';
+import { getFeedContent, getUserFeedContent } from '../../store/feedStore/feedActions';
 import LeftSidebar from '../app/Sidebar/LeftSidebar';
 import RightSidebar from '../app/Sidebar/RightSidebar';
 import Affix from '../components/Utils/Affix';
@@ -13,7 +13,11 @@ import ScrollToTop from '../components/Utils/ScrollToTop';
 import ScrollToTopOnMount from '../components/Utils/ScrollToTopOnMount';
 import QuickPostEditor from '../components/QuickPostEditor/QuickPostEditor';
 import MobileNavigation from '../components/Navigation/MobileNavigation/MobileNavigation';
-import { getIsAuthenticated, getIsLoaded } from '../../store/authStore/authSelectors';
+import {
+  getIsAuthenticated,
+  getIsLoaded,
+  getAuthenticatedUserName,
+} from '../../store/authStore/authSelectors';
 import { getObject as getObjectState } from '../../store/wObjectStore/wObjectSelectors';
 import { getAppUrl, getHelmetIcon } from '../../store/appStore/appSelectors';
 
@@ -29,8 +33,11 @@ import { getAppUrl, getHelmetIcon } from '../../store/appStore/appSelectors';
 class Page extends React.Component {
   static fetchData({ store, match }) {
     const { sortBy, category } = match.params;
+    const userName = getAuthenticatedUserName(store.getState());
 
-    return store.dispatch(getFeedContent({ sortBy, category, limit: 10 }));
+    if (userName && !sortBy) return store.dispatch(getUserFeedContent({ userName, limit: 20 }));
+
+    return store.dispatch(getFeedContent({ sortBy: sortBy || 'trending', category, limit: 10 }));
   }
 
   static propTypes = {
@@ -59,8 +66,6 @@ class Page extends React.Component {
       this.props.history.push(`/${key}`);
     }
   };
-
-  handleTopicClose = () => this.props.history.push('/trending');
 
   render() {
     const { authenticated, history, wobject, match, appUrl } = this.props;

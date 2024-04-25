@@ -8,12 +8,7 @@ import { renderRoutes } from 'react-router-config';
 import { get, isEmpty } from 'lodash';
 import { ConfigProvider, Layout } from 'antd';
 import { clearGuestAuthData } from '../../common/helpers/localStorageHelpers';
-import {
-  findLanguage,
-  getAntdLocale,
-  getRequestLocale,
-  loadLanguage,
-} from '../../common/translations';
+import { findLanguage, getAntdLocale, loadLanguage } from '../../common/translations';
 import {
   login,
   busyLogin,
@@ -45,7 +40,6 @@ import Header from './Header/Header';
 import NotificationPopup from './../notifications/NotificationPopup';
 import BBackTop from './../components/BBackTop';
 import ErrorBoundary from './../widgets/ErrorBoundary';
-import Loading from './../components/Icon/Loading';
 import {
   getIsSocialGifts,
   getTranslations,
@@ -78,10 +72,10 @@ const createLink = i => {
     case 'business':
     case 'product':
     case 'book':
+    case 'map':
+      return `/object/${i?.author_permlink}`;
     case 'newsfeed':
       return `/object/${i?.author_permlink}/newsfeed`;
-    case 'map':
-      return `/object/${i?.author_permlink}/map`;
     default:
       return i.linkToWeb || i.defaultShowLink;
   }
@@ -93,95 +87,98 @@ const SocialWrapper = props => {
   const language = findLanguage(props.usedLocale);
   const antdLocale = getAntdLocale(language);
   const signInPage = props?.location.pathname?.includes('sign-in');
+  const createWebsiteMenu = configuration => {
+    if (!isEmpty(configuration?.shopSettings)) {
+      if (configuration.shopSettings?.type === 'object') {
+        getObject(configuration.shopSettings?.value, props.username, props.locale).then(
+          async wobject => {
+            const menuItemLinks = wobject.menuItem?.reduce((acc, item) => {
+              const body = parseJSON(item.body);
+
+              if (body?.linkToObject) {
+                return [...acc, body?.linkToObject];
+              }
+
+              return acc;
+            }, []);
+
+            const customSort = get(wobject, 'sortCustom.include', []);
+
+            if (isEmpty(wobject.menuItem) || wobject.object_type === 'restaurant') {
+              dispatch(
+                setItemsForNavigation([
+                  {
+                    link: createLink(wobject),
+                    name: 'Home',
+                    permlink: wobject?.author_permlink,
+                    object_type: wobject?.object_type,
+                  },
+                  {
+                    name: 'Legal',
+                    link: '/checklist/ljc-legal',
+                    permlink: 'ljc-legal',
+                    object_type: 'list',
+                  },
+                ]),
+              );
+
+              props.setLoadingStatus(true);
+            } else {
+              const listItems = isEmpty(menuItemLinks)
+                ? []
+                : await getObjectsByIds({ authorPermlinks: menuItemLinks, locale: props.locale });
+
+              const compareList = wobject?.menuItem?.map(wobjItem => {
+                const body = parseJSON(wobjItem.body);
+                const currItem = body?.linkToObject
+                  ? listItems?.wobjects?.find(wobj => wobj.author_permlink === body?.linkToObject)
+                  : body;
+
+                return {
+                  ...wobjItem,
+                  ...currItem,
+                  body,
+                };
+              });
+              const sortingButton = customSort.reduce((acc, curr) => {
+                const findObj = compareList.find(wobj => wobj.permlink === curr);
+
+                return findObj ? [...acc, findObj] : acc;
+              }, []);
+              const buttonList = [
+                ...sortingButton,
+                ...compareList?.filter(i => !customSort?.includes(i.permlink)),
+              ].map(i => ({
+                link: createLink(i),
+                name: i?.body?.title || getObjectName(i),
+                type: i.body.linkToObject ? 'nav' : 'blank',
+                permlink: i.body.linkToObject,
+                object_type: i?.object_type,
+              }));
+
+              dispatch(
+                setItemsForNavigation([
+                  ...buttonList,
+                  {
+                    name: 'Legal',
+                    link: '/checklist/ljc-legal',
+                    permlink: 'ljc-legal',
+                    object_type: 'list',
+                  },
+                ]),
+              );
+              props.setLoadingStatus(true);
+            }
+          },
+        );
+      }
+    }
+  };
+
   const loadLocale = async locale => {
     const lang = await loadLanguage(locale);
 
     props.setUsedLocale(lang);
-  };
-  const createWebsiteMenu = configuration => {
-    if (!isEmpty(configuration?.shopSettings)) {
-      if (configuration.shopSettings?.type === 'object') {
-        getObject(configuration.shopSettings?.value).then(async wobject => {
-          const menuItemLinks = wobject.menuItem?.reduce((acc, item) => {
-            const body = parseJSON(item.body);
-
-            if (body?.linkToObject) {
-              return [...acc, body?.linkToObject];
-            }
-
-            return acc;
-          }, []);
-
-          const customSort = get(wobject, 'sortCustom.include', []);
-
-          if (isEmpty(wobject.menuItem)) {
-            dispatch(
-              setItemsForNavigation([
-                {
-                  link: createLink(wobject),
-                  name: 'Home',
-                  permlink: wobject?.author_permlink,
-                  object_type: wobject?.object_type,
-                },
-                {
-                  name: 'Legal',
-                  link: '/checklist/ljc-legal',
-                  permlink: 'ljc-legal',
-                  object_type: 'list',
-                },
-              ]),
-            );
-
-            props.setLoadingStatus(true);
-          } else {
-            const listItems = isEmpty(menuItemLinks)
-              ? []
-              : await getObjectsByIds({ authorPermlinks: menuItemLinks, locale: props.locale });
-
-            const compareList = wobject?.menuItem?.map(wobjItem => {
-              const body = parseJSON(wobjItem.body);
-              const currItem = body?.linkToObject
-                ? listItems?.wobjects?.find(wobj => wobj.author_permlink === body?.linkToObject)
-                : body;
-
-              return {
-                ...wobjItem,
-                ...currItem,
-                body,
-              };
-            });
-            const sortingButton = customSort.reduce((acc, curr) => {
-              const findObj = compareList.find(wobj => wobj.permlink === curr);
-
-              return findObj ? [...acc, findObj] : acc;
-            }, []);
-            const buttonList = [
-              ...sortingButton,
-              ...compareList?.filter(i => !customSort?.includes(i.permlink)),
-            ].map(i => ({
-              link: createLink(i),
-              name: i?.body?.title || getObjectName(i),
-              type: i.body.linkToObject ? 'nav' : 'blank',
-              permlink: i.body.linkToObject,
-              object_type: i?.object_type,
-            }));
-
-            dispatch(
-              setItemsForNavigation([
-                ...buttonList,
-                {
-                  name: 'Legal',
-                  link: '/checklist/ljc-legal',
-                  permlink: 'ljc-legal',
-                  object_type: 'list',
-                },
-              ]),
-            );
-            props.setLoadingStatus(true);
-          }
-        });
-      }
-    }
   };
 
   useEffect(() => {
@@ -189,16 +186,9 @@ const SocialWrapper = props => {
     const token = query.get('access_token');
     const provider = query.get('socialProvider');
     const auth = query.get('auth');
-    const locale = query.get('usedLocale');
 
     props.setSocialFlag();
     props.getCurrentAppSettings().then(res => {
-      props.getRate();
-      props.getTokenRates('WAIV');
-      props.getCryptoPriceHistory();
-      props.getSwapEnginRates();
-      if (!props.username) props.setLocale(locale || res.language);
-
       const mainColor = res.configuration.colors?.mapMarkerBody || initialColors.marker;
       const textColor = res.configuration.colors?.mapMarkerText || initialColors.text;
 
@@ -217,19 +207,19 @@ const SocialWrapper = props => {
           batch(() => {
             props.getNotifications();
             props.busyLogin();
-            props.getRewardFund();
             props.dispatchGetAuthGuestBalance();
-            props.getCoordinates();
           });
           if ((token && provider) || (auth && provider)) {
             props.history.push('/');
           }
         });
       }
-
-      loadLocale(props.locale);
-      createWebsiteMenu(res.configuration);
     });
+  }, []);
+
+  useEffect(() => {
+    createWebsiteMenu(props.config);
+    loadLocale(props.locale);
   }, [props.locale]);
 
   useEffect(() => {
@@ -250,11 +240,7 @@ const SocialWrapper = props => {
         <Layout data-dir={language && language.rtl ? 'rtl' : 'ltr'}>
           {!signInPage && !isSocialGifts && <Header />}
           <div className={'ShopWebsiteWrapper'}>
-            {props.loadingFetching ? (
-              <Loading margin />
-            ) : (
-              renderRoutes(props.route.routes, { isSocial: true })
-            )}
+            {renderRoutes(props.route.routes, { isSocial: true })}
             <NotificationPopup />
             <BBackTop
               className={props.isOpenWalletTable ? 'WalletTable__bright' : 'primary-modal'}
@@ -274,21 +260,17 @@ SocialWrapper.propTypes = {
   translations: PropTypes.shape(),
   username: PropTypes.string,
   login: PropTypes.func,
-  getRewardFund: PropTypes.func,
-  getRate: PropTypes.func,
   getNotifications: PropTypes.func,
-  setUsedLocale: PropTypes.func,
   busyLogin: PropTypes.func,
   getCurrentAppSettings: PropTypes.func,
-  getCoordinates: PropTypes.func,
   nightmode: PropTypes.bool,
   isOpenModal: PropTypes.bool,
   dispatchGetAuthGuestBalance: PropTypes.func,
+  setUsedLocale: PropTypes.func,
   setSocialFlag: PropTypes.func,
   setLoadingStatus: PropTypes.func,
-  getTokenRates: PropTypes.func.isRequired,
   isOpenWalletTable: PropTypes.bool,
-  loadingFetching: PropTypes.bool,
+  // loadingFetching: PropTypes.bool,
   location: PropTypes.shape({
     search: PropTypes.string,
     pathname: PropTypes.string,
@@ -300,9 +282,6 @@ SocialWrapper.propTypes = {
   history: PropTypes.shape({
     push: PropTypes.func,
   }).isRequired,
-  getCryptoPriceHistory: PropTypes.func.isRequired,
-  setLocale: PropTypes.func.isRequired,
-  getSwapEnginRates: PropTypes.func.isRequired,
 };
 
 SocialWrapper.defaultProps = {
@@ -310,13 +289,8 @@ SocialWrapper.defaultProps = {
   translations: {},
   username: '',
   login: () => {},
-  logout: () => {},
-  getRewardFund: () => {},
   getCurrentAppSettings: () => {},
-  getRate: () => {},
-  getTrendingTopics: () => {},
   getNotifications: () => {},
-  setUsedLocale: () => {},
   busyLogin: () => {},
   nightmode: false,
   dispatchGetAuthGuestBalance: () => {},
@@ -328,12 +302,8 @@ SocialWrapper.defaultProps = {
 
 SocialWrapper.fetchData = async ({ store, req, url }) => {
   const state = store.getState();
-  let activeLocale = getLocale(state);
-
-  if (activeLocale === 'auto') {
-    activeLocale = req.cookies.language || getRequestLocale(req.get('Accept-Language'));
-  }
-  const lang = loadLanguage(activeLocale);
+  const activeLocale = getLocale(state);
+  const username = getAuthenticatedUserName(state);
 
   return Promise.allSettled([
     store.dispatch(getWebsiteConfigForSSR(req.headers.host)).then(res => {
@@ -343,28 +313,135 @@ SocialWrapper.fetchData = async ({ store, req, url }) => {
 
       if (!isEmpty(configuration?.shopSettings)) {
         if (configuration.shopSettings?.type === 'object') {
-          return getObject(configuration.shopSettings?.value).then(async wobject => {
-            const menuItemLinks = wobject.menuItem?.reduce((acc, item) => {
-              const body = parseJSON(item.body);
+          return getObject(configuration.shopSettings?.value, username, activeLocale).then(
+            async wobject => {
+              const menuItemLinks = wobject.menuItem?.reduce((acc, item) => {
+                const body = parseJSON(item.body);
 
-              if (body?.linkToObject) {
-                return [...acc, body?.linkToObject];
+                if (body?.linkToObject) {
+                  return [...acc, body?.linkToObject];
+                }
+
+                return acc;
+              }, []);
+              const customSort = get(wobject, 'sortCustom.include', []);
+
+              if (isEmpty(wobject.menuItem) || wobject.object_type === 'restaurant') {
+                promises.push(
+                  store.dispatch(
+                    setItemsForNavigation([
+                      {
+                        link: createLink(wobject),
+                        name: 'Home',
+                        permlink: wobject?.author_permlink,
+                        object_type: wobject?.object_type,
+                      },
+                      {
+                        name: 'Legal',
+                        link: '/checklist/ljc-legal',
+                        permlink: 'ljc-legal',
+                        object_type: 'list',
+                      },
+                    ]),
+                  ),
+                );
+
+                if (url === '/') {
+                  if (wobject.object_type === 'newsfeed') {
+                    promises.push(
+                      store.dispatch(
+                        getObjectPosts({
+                          object: wobject.author_permlink,
+                          username: wobject.author_permlink,
+                          limit: 20,
+                          newsPermlink: wobject.newsfeed,
+                        }),
+                      ),
+                    );
+                    promises.push(store.dispatch(setFirstLoading(false)));
+                  }
+                  if (wobject.object_type === 'shop') {
+                    promises.push(store.dispatch(getWobjectDepartments(wobject.author_permlink)));
+                    promises.push(store.dispatch(getWobjectsShopList(wobject.author_permlink)));
+                  }
+                  if (
+                    ['page', 'widget', 'newsfeed', 'list', 'map']?.includes(wobject.object_type)
+                  ) {
+                    promises.push(store.dispatch(getObjectAction(wobject.author_permlink)));
+                  }
+                }
+
+                return Promise.allSettled(promises);
+              }
+              const listItems = isEmpty(menuItemLinks)
+                ? []
+                : await getObjectsByIds({
+                    authorPermlinks: menuItemLinks,
+                    locale: activeLocale,
+                    authUserName: username,
+                  });
+
+              const compareList = wobject?.menuItem?.map(wobjItem => {
+                const body = parseJSON(wobjItem.body);
+                const currItem = body?.linkToObject
+                  ? listItems?.wobjects?.find(wobj => wobj.author_permlink === body?.linkToObject)
+                  : body;
+
+                return {
+                  ...wobjItem,
+                  ...currItem,
+                  body,
+                };
+              });
+              const sortingButton = customSort.reduce((acc, curr) => {
+                const findObj = compareList.find(wobj => wobj.permlink === curr);
+
+                return findObj ? [...acc, findObj] : acc;
+              }, []);
+              const buttonList = [
+                ...sortingButton,
+                ...compareList?.filter(i => !customSort?.includes(i.permlink)),
+              ].map(i => ({
+                link: createLink(i),
+                name: i?.body?.title || getObjectName(i),
+                type: i.body.linkToObject ? 'nav' : 'blank',
+                permlink: i.body.linkToObject,
+                object_type: i?.object_type,
+                newsfeed: i.newsFeed?.permlink,
+              }));
+
+              if (url === '/') {
+                if (buttonList[0]?.object_type === 'newsfeed') {
+                  promises.push(
+                    store.dispatch(
+                      getObjectPosts({
+                        object: buttonList[0]?.permlink,
+                        username: buttonList[0]?.permlink,
+                        limit: 20,
+                        newsPermlink: buttonList[0].newsfeed,
+                      }),
+                    ),
+                  );
+                  promises.push(store.dispatch(setFirstLoading(false)));
+                }
+                if (buttonList[0]?.object_type === 'shop') {
+                  promises.push(store.dispatch(getWobjectDepartments(buttonList[0]?.permlink)));
+                  promises.push(store.dispatch(getWobjectsShopList(buttonList[0]?.permlink)));
+                }
+                if (
+                  ['page', 'widget', 'newsfeed', 'list', 'map']?.includes(
+                    buttonList[0]?.object_type,
+                  )
+                ) {
+                  promises.push(store.dispatch(getObjectAction(buttonList[0]?.permlink)));
+                }
               }
 
-              return acc;
-            }, []);
-            const customSort = get(wobject, 'sortCustom.include', []);
-
-            if (isEmpty(wobject.menuItem)) {
-              promises.push(
+              return Promise.allSettled([
+                ...promises,
                 store.dispatch(
                   setItemsForNavigation([
-                    {
-                      link: createLink(wobject),
-                      name: 'Home',
-                      permlink: wobject?.author_permlink,
-                      object_type: wobject?.object_type,
-                    },
+                    ...buttonList,
                     {
                       name: 'Legal',
                       link: '/checklist/ljc-legal',
@@ -373,106 +450,9 @@ SocialWrapper.fetchData = async ({ store, req, url }) => {
                     },
                   ]),
                 ),
-              );
-
-              if (url === '/') {
-                if (wobject.object_type === 'newsfeed') {
-                  promises.push(
-                    store.dispatch(
-                      getObjectPosts({
-                        object: wobject.author_permlink,
-                        username: wobject.author_permlink,
-                        limit: 20,
-                        newsPermlink: wobject.newsfeed,
-                      }),
-                    ),
-                  );
-                  promises.push(store.dispatch(setFirstLoading(false)));
-                }
-                if (wobject.object_type === 'shop') {
-                  promises.push(store.dispatch(getWobjectDepartments(wobject.author_permlink)));
-                  promises.push(store.dispatch(getWobjectsShopList(wobject.author_permlink)));
-                }
-                if (['page', 'widget', 'newsfeed', 'list', 'map']?.includes(wobject.object_type)) {
-                  promises.push(store.dispatch(getObjectAction(wobject.author_permlink)));
-                }
-              }
-
-              return Promise.allSettled(promises);
-            }
-            const listItems = isEmpty(menuItemLinks)
-              ? []
-              : await getObjectsByIds({ authorPermlinks: menuItemLinks, locale: activeLocale });
-
-            const compareList = wobject?.menuItem?.map(wobjItem => {
-              const body = parseJSON(wobjItem.body);
-              const currItem = body?.linkToObject
-                ? listItems?.wobjects?.find(wobj => wobj.author_permlink === body?.linkToObject)
-                : body;
-
-              return {
-                ...wobjItem,
-                ...currItem,
-                body,
-              };
-            });
-            const sortingButton = customSort.reduce((acc, curr) => {
-              const findObj = compareList.find(wobj => wobj.permlink === curr);
-
-              return findObj ? [...acc, findObj] : acc;
-            }, []);
-            const buttonList = [
-              ...sortingButton,
-              ...compareList?.filter(i => !customSort?.includes(i.permlink)),
-            ].map(i => ({
-              link: createLink(i),
-              name: i?.body?.title || getObjectName(i),
-              type: i.body.linkToObject ? 'nav' : 'blank',
-              permlink: i.body.linkToObject,
-              object_type: i?.object_type,
-              newsfeed: i.newsFeed?.permlink,
-            }));
-
-            if (url === '/') {
-              if (buttonList[0]?.object_type === 'newsfeed') {
-                promises.push(
-                  store.dispatch(
-                    getObjectPosts({
-                      object: buttonList[0]?.permlink,
-                      username: buttonList[0]?.permlink,
-                      limit: 20,
-                      newsPermlink: buttonList[0].newsfeed,
-                    }),
-                  ),
-                );
-                promises.push(store.dispatch(setFirstLoading(false)));
-              }
-              if (buttonList[0]?.object_type === 'shop') {
-                promises.push(store.dispatch(getWobjectDepartments(buttonList[0]?.permlink)));
-                promises.push(store.dispatch(getWobjectsShopList(buttonList[0]?.permlink)));
-              }
-              if (
-                ['page', 'widget', 'newsfeed', 'list', 'map']?.includes(buttonList[0]?.object_type)
-              ) {
-                promises.push(store.dispatch(getObjectAction(buttonList[0]?.permlink)));
-              }
-            }
-
-            return Promise.allSettled([
-              ...promises,
-              store.dispatch(
-                setItemsForNavigation([
-                  ...buttonList,
-                  {
-                    name: 'Legal',
-                    link: '/checklist/ljc-legal',
-                    permlink: 'ljc-legal',
-                    object_type: 'list',
-                  },
-                ]),
-              ),
-            ]);
-          });
+              ]);
+            },
+          );
         }
 
         return Promise.allSettled([
@@ -485,9 +465,12 @@ SocialWrapper.fetchData = async ({ store, req, url }) => {
     }),
     store.dispatch(setAppUrl(`https://${req.headers.host}`)),
     store.dispatch(getWebsiteSettings(req.headers.host)),
-    store.dispatch(setUsedLocale(lang)),
     store.dispatch(getRate()),
     store.dispatch(getRewardFund()),
+    store.dispatch(getTokenRates('WAIV')),
+    store.dispatch(getCryptoPriceHistory()),
+    store.dispatch(getGlobalProperties()),
+    store.dispatch(getSwapEnginRates()),
     store.dispatch(getGlobalProperties()),
   ]);
 };
@@ -510,16 +493,11 @@ export default ErrorBoundary(
       {
         login,
         getNotifications,
-        getRate,
-        getRewardFund,
         busyLogin,
         setUsedLocale,
         dispatchGetAuthGuestBalance,
         getCurrentAppSettings,
         setLocale,
-        getTokenRates,
-        getCryptoPriceHistory,
-        getSwapEnginRates,
         setSocialFlag,
         setLoadingStatus,
         getCoordinates,

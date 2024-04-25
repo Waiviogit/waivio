@@ -27,6 +27,8 @@ const MenuItemButton = ({ item }) => {
           return setUrl(`/object/${authorPermlink}/newsfeed/${itemBody.linkToObject}`);
         case 'widget':
           return setUrl(`/object/${authorPermlink}/widget#${itemBody.linkToObject}`);
+        case 'map':
+          return setUrl(`/object/${authorPermlink}/map#${itemBody.linkToObject}`);
         default:
           return setUrl(`/object/${itemBody.linkToObject}`);
       }

@@ -93,8 +93,8 @@ function sc2Extended() {
     return sc2Proto.broadcastOp(operations);
   };
 
-  sc2Proto.me = () => {
-    if (isGuest() || isHiveAuth()) return getUserAccount();
+  sc2Proto.me = name => {
+    if (isGuest() || isHiveAuth()) return getUserAccount(name);
 
     return sc2Proto.meOp();
   };

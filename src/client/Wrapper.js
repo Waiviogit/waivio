@@ -29,7 +29,6 @@ import TopNavigation from './components/Navigation/TopNavigation';
 import { guestUserRegex } from '../common/helpers/regexHelpers';
 import WelcomeModal from './components/WelcomeModal/WelcomeModal';
 import ErrorBoundary from './widgets/ErrorBoundary';
-import Loading from './components/Icon/Loading';
 import { handleRefAuthUser } from '../store/referralStore/ReferralActions';
 import { handleRefName } from './rewards/ReferralProgram/ReferralHelper';
 import {
@@ -96,11 +95,6 @@ class Wrapper extends React.PureComponent {
     translations: PropTypes.shape(),
     username: PropTypes.string,
     login: PropTypes.func,
-    getRewardFund: PropTypes.func,
-    getRate: PropTypes.func,
-    getTokenRates: PropTypes.func.isRequired,
-    getCryptoPriceHistory: PropTypes.func.isRequired,
-    getSwapEnginRates: PropTypes.func.isRequired,
     getNotifications: PropTypes.func,
     setUsedLocale: PropTypes.func,
     busyLogin: PropTypes.func,
@@ -108,10 +102,8 @@ class Wrapper extends React.PureComponent {
     isNewUser: PropTypes.bool,
     dispatchGetAuthGuestBalance: PropTypes.func,
     isOpenWalletTable: PropTypes.bool,
-    loadingFetching: PropTypes.bool,
     location: PropTypes.shape(),
     handleRefAuthUser: PropTypes.func,
-    getCoordinates: PropTypes.func,
     isGuest: PropTypes.bool,
   };
 
@@ -152,6 +144,9 @@ class Wrapper extends React.PureComponent {
       store.dispatch(getRate()),
       store.dispatch(getRewardFund()),
       store.dispatch(getGlobalProperties()),
+      store.dispatch(getTokenRates('WAIV')),
+      store.dispatch(getCryptoPriceHistory()),
+      store.dispatch(getSwapEnginRates()),
     ]);
   }
 
@@ -172,9 +167,6 @@ class Wrapper extends React.PureComponent {
     const isWidget = querySelectorSearchParams.get('display');
     const userName = querySelectorSearchParams.get('userName');
 
-    this.props.getTokenRates('WAIV');
-    this.props.getCryptoPriceHistory();
-    this.props.getSwapEnginRates();
     if (ref) setSessionData('refUser', ref);
     if (userName) setSessionData('userName', userName);
     if (isWidget) {
@@ -196,10 +188,7 @@ class Wrapper extends React.PureComponent {
       batch(() => {
         this.props.getNotifications();
         this.props.busyLogin();
-        this.props.getRewardFund();
         this.props.dispatchGetAuthGuestBalance();
-        this.props.getRate();
-        this.props.getCoordinates();
       });
     });
   }
@@ -275,7 +264,6 @@ class Wrapper extends React.PureComponent {
       username,
       isNewUser,
       isOpenWalletTable,
-      loadingFetching,
     } = this.props;
     const language = findLanguage(usedLocale);
     const antdLocale = this.getAntdLocale(language);
@@ -312,7 +300,7 @@ class Wrapper extends React.PureComponent {
                     location={history?.location}
                   />
                 )}
-                {loadingFetching ? <Loading /> : renderRoutes(this.props.route.routes)}
+                {renderRoutes(this.props.route.routes)}
                 {!isWidget && (
                   <React.Fragment>
                     <NotificationPopup />

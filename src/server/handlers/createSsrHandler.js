@@ -8,6 +8,10 @@ import { StaticRouter } from 'react-router';
 import { matchRoutes, renderRoutes } from 'react-router-config';
 import hivesigner from 'hivesigner';
 import { isbot } from 'isbot';
+import { getRequestLocale, findLanguage, loadLanguage } from '../../common/translations';
+import { setParentHost, setUsedLocale } from '../../store/appStore/appActions';
+import { loginFromServer } from '../../store/authStore/authActions';
+import { setLocale } from '../../store/settingsStore/settingsActions';
 
 import {
   getParentHost,
@@ -19,7 +23,6 @@ import getStore from '../../store/store';
 import renderSsrPage from '../renderers/ssrRenderer';
 import switchRoutes from '../../routes/switchRoutes';
 import { getCachedPage, setCachedPage, updateBotCount } from './cachePageHandler';
-import { isCustomDomain } from '../../client/social-gifts/listOfSocialWebsites';
 import { REDIS_KEYS } from '../../common/constants/ssrData';
 import { sismember } from '../redis/redisClient';
 import { checkAppStatus, isInheritedHost } from '../../common/helpers/redirectHelper';
@@ -81,24 +84,35 @@ export default function createSsrHandler(template) {
       let settings = {};
       let parentHost = '';
       let adsenseSettings = {};
+      const store = getStore(sc2Api, waivioAPI, req.url);
 
       if (!isWaivio) {
         settings = await getSettingsWebsite(hostname);
         adsenseSettings = await getSettingsAdsense(hostname);
-
-        if (isCustomDomain(hostname)) {
-          parentHost = await getParentHost(hostname);
-        }
+        parentHost = (await store.dispatch(setParentHost(hostname))).value;
       }
-
-      if (req.cookies.access_token) sc2Api.setAccessToken(req.cookies.access_token);
-
-      const store = getStore(sc2Api, waivioAPI, req.url);
+      if (req.cookies.access_token) {
+        sc2Api.setAccessToken(req.cookies.access_token);
+        await store.dispatch(loginFromServer(req.cookies)).then(async res => {
+          const language = res?.value?.userMetaData?.settings.locale;
+          store.dispatch(setLocale(language));
+          store.dispatch(setUsedLocale(await loadLanguage(language)));
+        });
+      }
       const routes = switchRoutes(hostname, parentHost);
       const splittedUrl = req.url.split('?');
       const branch = matchRoutes(routes, splittedUrl[0]);
       const query = splittedUrl[1] ? new URLSearchParams(`?${splittedUrl[1]}`) : null;
       const promises = [];
+      const loc =
+        query?.get('usedLocale') ||
+        settings?.language ||
+        req.cookies.language ||
+        getRequestLocale(req.get('Accept-Language'));
+      if (!isWaivio && !req.cookies.access_token) {
+        store.dispatch(setLocale(loc));
+        store.dispatch(setUsedLocale(await loadLanguage(loc)));
+      }
 
       branch.forEach(({ route, match }) => {
         const fetchData = route?.component?.fetchData;

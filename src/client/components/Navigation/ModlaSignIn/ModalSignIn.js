@@ -332,7 +332,7 @@ const ModalSignIn = ({
   };
 
   const onSignUpClick = isOpen => {
-    if (typeof window !== 'undefined' && !isWaivio && domain) {
+    if (!isWaivio && domain) {
       window.location.href = `https://${domain}/sign-in?host=${host}&color=${colors.background.replace(
         '#',
         '',
