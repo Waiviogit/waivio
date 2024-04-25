@@ -152,7 +152,7 @@ const Wobj = ({
       case 'webpage':
         return <ObjectOfTypeWebpage />;
       case 'map':
-        return <WebsiteBody />;
+        return <WebsiteBody isSocial={isSocial} />;
       case 'newsfeed':
         return <ObjectNewsFeed wobj={wobject} />;
 
