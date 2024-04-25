@@ -104,7 +104,7 @@ const SocialWrapper = props => {
 
             const customSort = get(wobject, 'sortCustom.include', []);
 
-            if (isEmpty(wobject.menuItem)) {
+            if (isEmpty(wobject.menuItem) || wobject.object_type === 'restaurant') {
               dispatch(
                 setItemsForNavigation([
                   {
@@ -319,7 +319,7 @@ SocialWrapper.fetchData = async ({ store, req, url }) => {
               }, []);
               const customSort = get(wobject, 'sortCustom.include', []);
 
-              if (isEmpty(wobject.menuItem)) {
+              if (isEmpty(wobject.menuItem) || wobject.object_type === 'restaurant') {
                 promises.push(
                   store.dispatch(
                     setItemsForNavigation([
