@@ -7,7 +7,11 @@ import { getDetailsBody, rewardPostContainerData } from '../../client/rewards/re
 import { createCommentPermlink } from '../../client/vendor/steemitHelpers';
 import { getObjectName } from '../../common/helpers/wObjectHelper';
 import { getRate, getRewardFund } from '../appStore/appSelectors';
-import { getAuthenticatedUserName, getIsAuthenticated } from '../authStore/authSelectors';
+import {
+  getAuthenticatedUserName,
+  getIsAuthenticated,
+  getShowSettings,
+} from '../authStore/authSelectors';
 import {
   getFollowingObjectsUpdatesByType,
   getFollowingUpdatesFetched,
@@ -227,7 +231,7 @@ export const getNotifications = username => (dispatch, getState, { busyAPI }) =>
 
   dispatch({ type: GET_NOTIFICATIONS.START });
 
-  if (!username && !getIsAuthenticated(state)) {
+  if (!username && !getIsAuthenticated(state) && !getShowSettings(state)) {
     return dispatch({ type: GET_NOTIFICATIONS.ERROR });
   }
 

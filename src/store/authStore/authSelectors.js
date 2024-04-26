@@ -11,6 +11,7 @@ export const getIsAuthenticated = createSelector([authState], state => state.isA
 export const getAuthUserSignature = createSelector([authState], state => state.signature);
 
 export const getIsAuthFetching = createSelector([authState], state => state.isFetching);
+export const getShowSettings = createSelector([authState], state => state.showSettings);
 
 export const getIsLoaded = createSelector([authState], state => state.loaded);
 

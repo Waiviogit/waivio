@@ -1,5 +1,6 @@
 import UserInfo from '../../client/app/Sidebar/UserInfo/UserInfo';
 import SubFeed from '../../client/feed/SubFeed';
+import SettingsMain from '../../client/settings/SettingsMain';
 import PostsCommentsActivity from '../../client/user/PostsCommentsActivity/PostsCommentsActivity';
 import UserExpertise from '../../client/user/UserExpertise';
 import UserFollowers from '../../client/user/UserFollowers';
@@ -176,7 +177,7 @@ const routes = {
     {
       path: [`/:site/(${URL.WEBSITES.tabs})`, `/(${URL.SETTINGS.tabs})`],
       exact: true,
-      component: Views.SettingsMain,
+      component: SettingsMain,
       pathScope: '',
       routes: [
         {

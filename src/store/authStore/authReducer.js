@@ -8,7 +8,8 @@ import {
 
 const initialState = {
   isAuthenticated: false,
-  isFetching: false,
+  isFetching: true,
+  showSettings: false,
   isReloading: false,
   loaded: false,
   user: {},
@@ -35,6 +36,7 @@ export default (state = initialState, action) => {
         isAuthenticated: false,
         loaded: false,
         user: {},
+        showSettings: false,
       };
 
     case types.LOGIN_SUCCESS:
@@ -69,6 +71,13 @@ export default (state = initialState, action) => {
         isFetching: false,
         isAuthenticated: false,
         loaded: false,
+        showSettings: false,
+      };
+
+    case types.SHOW_SETTINGS:
+      return {
+        ...state,
+        showSettings: true,
       };
 
     case types.RELOAD_START:
