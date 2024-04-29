@@ -1,11 +1,12 @@
 import React, { useEffect } from 'react';
 import Helmet from 'react-helmet';
-import { connect } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 import { renderRoutes } from 'react-router-config';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
 import { some } from 'lodash';
 import classNames from 'classnames';
+import Loading from '../components/Icon/Loading';
 
 import Affix from '../components/Utils/Affix';
 import LeftSidebar from '../app/Sidebar/LeftSidebar';
@@ -14,12 +15,17 @@ import { getSettingsTitle } from './common/helpers';
 import RightSidebar from '../app/Sidebar/RightSidebar';
 import * as websiteAction from '../../store/websiteStore/websiteActions';
 import { getIsWaivio } from '../../store/appStore/appSelectors';
-import { getIsAuthenticated, isGuestUser } from '../../store/authStore/authSelectors';
+import {
+  getIsAuthenticated,
+  isGuestUser,
+  getShowSettings,
+} from '../../store/authStore/authSelectors';
 import { getOwnWebsites } from '../../store/websiteStore/websiteSelectors';
 
 import './Settings.less';
 
 const SettingsMain = props => {
+  const showSettings = useSelector(getShowSettings);
   const host = props.match.params.site;
   const title = host ? `- ${host} ` : '';
   const isBookmark = props.match.url.includes('bookmarks');
@@ -34,6 +40,8 @@ const SettingsMain = props => {
       if (host && !some(value, website => website.host === host)) props.history.push('/');
     });
   }, [props.auth]);
+
+  if (!showSettings) return <Loading />;
 
   return (
     <div className="shifted">

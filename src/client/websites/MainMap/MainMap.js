@@ -105,8 +105,8 @@ const MainMap = React.memo(props => {
         : undefined;
       const mapView = isMobile ? mapMobileView : mapDesktopView;
 
-      center = query.size > 0 ? center : mapView?.center;
-      zoom = query.size > 0 ? zoom : mapView?.zoom;
+      center = query.size > 0 ? center : mapView?.center || center;
+      zoom = query.size > 0 ? zoom : mapView?.zoom || zoom;
     }
 
     setCurrMapConfig(center, zoom);

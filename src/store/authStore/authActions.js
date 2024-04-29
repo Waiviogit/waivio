@@ -41,6 +41,7 @@ import { subscribeTypes } from '../../common/constants/blockTypes';
 import { getGuestImportStatus, setGuestImportStatus } from '../../waivioApi/importApi';
 
 export const LOGIN = '@auth/LOGIN';
+export const SHOW_SETTINGS = '@auth/SHOW_SETTINGS';
 export const LOGIN_START = '@auth/LOGIN_START';
 export const LOGIN_SUCCESS = '@auth/LOGIN_SUCCESS';
 export const LOGIN_ERROR = '@auth/LOGIN_ERROR';
@@ -244,11 +245,13 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
     meta: {
       refresh: isUserLoaded(state),
     },
-  }).catch(e => {
-    dispatch(loginError());
+  })
+    .then(() => dispatch({ type: SHOW_SETTINGS }))
+    .catch(e => {
+      dispatch(loginError());
 
-    return e;
-  });
+      return e;
+    });
 };
 export const loginFromServer = cookie => async (dispatch, getState, { steemConnectAPI }) => {
   let promise = Promise.resolve(null);

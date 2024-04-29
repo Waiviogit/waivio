@@ -92,7 +92,10 @@ const WebsiteBody = props => {
   const currentLogo = props.logo || getObjectAvatar(aboutObject);
   const description = get(aboutObject, 'description', '');
   const objName = getObjectName(aboutObject);
-  const title = get(aboutObject, 'title', '') || objName;
+  const title = props.isSocial
+    ? getObjectName(props.currObj)
+    : get(aboutObject, 'title', '') || objName;
+  const websiteTitle = title ? `${objName} - ${title}` : objName;
 
   const reloadSearchList = () => props.setShowReload(false);
 
@@ -118,7 +121,7 @@ const WebsiteBody = props => {
   return (
     <div className={bodyClassList}>
       <Helmet>
-        <title>{title ? `${objName} - ${title}` : objName}</title>
+        <title>{props.isSocial ? title : websiteTitle}</title>
         <link rel="canonical" href={canonicalUrl} />
         <meta name="description" content={description} />
         <meta property="og:title" content={title} />
