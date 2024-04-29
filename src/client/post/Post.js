@@ -99,7 +99,10 @@ export default class Post extends React.Component {
     const { match, content } = this.props;
     const { author, permlink } = match.params;
 
-    if (content.author !== author || content.permlink !== permlink)
+    if (
+      (content?.author && content?.permlink && content?.author !== author) ||
+      content?.permlink !== permlink
+    )
       this.props.getContent(author, permlink, false);
 
     if (!!content && match.params.category && typeof window !== 'undefined') {

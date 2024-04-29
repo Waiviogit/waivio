@@ -27,7 +27,6 @@ import {
 import {
   getConfigurationValues,
   getHostAddress,
-  getIsSocial,
   getReserveCounter,
   getUsedLocale,
   getWebsiteLogo,
@@ -93,7 +92,10 @@ const WebsiteBody = props => {
   const currentLogo = props.logo || getObjectAvatar(aboutObject);
   const description = get(aboutObject, 'description', '');
   const objName = getObjectName(aboutObject);
-  const title = get(aboutObject, 'title', '') || objName;
+  const title = props.isSocial
+    ? getObjectName(props.currObj)
+    : get(aboutObject, 'title', '') || objName;
+  const websiteTitle = title ? `${objName} - ${title}` : objName;
 
   const reloadSearchList = () => props.setShowReload(false);
 
@@ -119,7 +121,7 @@ const WebsiteBody = props => {
   return (
     <div className={bodyClassList}>
       <Helmet>
-        <title>{title ? `${objName} - ${title}` : objName}</title>
+        <title>{props.isSocial ? title : websiteTitle}</title>
         <link rel="canonical" href={canonicalUrl} />
         <meta name="description" content={description} />
         <meta property="og:title" content={title} />
@@ -162,6 +164,7 @@ const WebsiteBody = props => {
                 </Link>
               )}
             <MainMap
+              isSocial={props.isSocial}
               loading={loading}
               setLoading={setLoading}
               query={props.query}
@@ -236,7 +239,6 @@ export default connect(
     authUserName: getAuthenticatedUserName(state),
     locale: getUsedLocale(state),
     currObj: getObject(state),
-    isSocial: getIsSocial(state),
   }),
   {
     setWebsiteSearchType,

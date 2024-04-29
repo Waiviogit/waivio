@@ -185,13 +185,17 @@ class Wrapper extends React.PureComponent {
       document.body.style.setProperty('--website-light-color', hexToRgb(initialColors.marker, 1));
     }
 
-    setTimeout(() => this.props.login().then(() => {
-      batch(() => {
-        this.props.getNotifications();
-        this.props.busyLogin();
-        this.props.dispatchGetAuthGuestBalance();
-      });
-    }), 1000);
+    setTimeout(
+      () =>
+        this.props.login().then(() => {
+          batch(() => {
+            this.props.getNotifications();
+            this.props.busyLogin();
+            this.props.dispatchGetAuthGuestBalance();
+          });
+        }),
+      1000,
+    );
   }
 
   componentWillReceiveProps(nextProps) {

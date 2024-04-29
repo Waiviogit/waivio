@@ -28,7 +28,7 @@ import {
 } from '../../../store/websiteStore/websiteActions';
 import { distanceInMBetweenEarthCoordinates, getFirstOffsetNumber } from '../helper';
 import ObjectOverlayCard from '../../components/Maps/Overlays/ObjectOverlayCard/ObjectOverlayCard';
-import { getIsSocial, getScreenSize } from '../../../store/appStore/appSelectors';
+import { getScreenSize } from '../../../store/appStore/appSelectors';
 import { getUserLocation } from '../../../store/userStore/userSelectors';
 import {
   getShowSearchResult,
@@ -105,8 +105,8 @@ const MainMap = React.memo(props => {
         : undefined;
       const mapView = isMobile ? mapMobileView : mapDesktopView;
 
-      center = query.size > 0 ? center : mapView?.center;
-      zoom = query.size > 0 ? zoom : mapView?.zoom;
+      center = query.size > 0 ? center : mapView?.center || center;
+      zoom = query.size > 0 ? zoom : mapView?.zoom || zoom;
     }
 
     setCurrMapConfig(center, zoom);
@@ -507,7 +507,6 @@ export default connect(
     searchMap: getWebsiteMap(state),
     showReloadButton: getShowReloadButton(state),
     searchType: getWebsiteSearchType(state),
-    isSocial: getIsSocial(state),
     wobject: getObject(state),
     socialLoading: getSocialSearchResultLoading(state),
   }),
