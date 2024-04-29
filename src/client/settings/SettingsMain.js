@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import Helmet from 'react-helmet';
-import { connect } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 import { renderRoutes } from 'react-router-config';
 import PropTypes from 'prop-types';
 import { injectIntl } from 'react-intl';
