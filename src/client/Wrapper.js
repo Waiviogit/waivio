@@ -305,7 +305,7 @@ class Wrapper extends React.PureComponent {
                     location={history?.location}
                   />
                 )}
-                {renderRoutes(this.props.route.routes)}
+                {renderRoutes(this.props.route.routes, { isSocial: false })}
                 {!isWidget && (
                   <React.Fragment>
                     <NotificationPopup />
