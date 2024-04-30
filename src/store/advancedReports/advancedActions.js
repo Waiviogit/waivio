@@ -154,11 +154,13 @@ export const calculateTotalChanges = (item, checked, currency, typeTable) => dis
     payload: { amount: item[currency], type: item.withdrawDeposit, decrement: checked },
   });
   dispatch(
-    excludeTransfer({
-      ...item,
-      checked,
+    excludeTransfer(
+      {
+        ...item,
+        checked,
+      },
       typeTable,
-    }),
+    ),
   );
 };
 
