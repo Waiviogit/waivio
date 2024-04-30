@@ -106,6 +106,9 @@ const WobjectView = ({
       ? `https://${wobject.canonical}/object/${match.params.name}`
       : canonicalUrl;
 
+  // eslint-disable-next-line no-console
+  console.log('wobject:', wobject);
+
   return (
     <React.Fragment>
       <Helmet>

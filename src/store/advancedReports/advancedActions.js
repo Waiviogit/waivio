@@ -157,7 +157,7 @@ export const calculateTotalChanges = (item, checked, currency, typeTable) => dis
     excludeTransfer({
       ...item,
       checked,
-      typeTable
+      typeTable,
     }),
   );
 };
@@ -179,18 +179,20 @@ export const excludeTransfer = (body, typeTable) => (dispatch, getState) => {
   return dispatch({
     type: EXCLUDE_TRANSFER.ACTION,
     payload: ApiClient.excludeAdvancedReports(
-      typeTable === 'HIVE' ? {
-        userName: authUserName,
-        userWithExemptions: body.userName,
-        checked: body.checked,
-        [getKey('recordId')]: body._id,
-      } : {
-        userName: authUserName,
-        recordId: body._id,
-        userWithExemptions: body.account,
-        checked: body.checked,
-        symbol: 'WAIV',
-      },
+      typeTable === 'HIVE'
+        ? {
+            userName: authUserName,
+            userWithExemptions: body.userName,
+            checked: body.checked,
+            [getKey('recordId')]: body._id,
+          }
+        : {
+            userName: authUserName,
+            recordId: body._id,
+            userWithExemptions: body.account,
+            checked: body.checked,
+            symbol: 'WAIV',
+          },
       isGuest,
     ),
     meta: {
