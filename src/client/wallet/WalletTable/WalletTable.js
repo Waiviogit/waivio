@@ -235,14 +235,19 @@ class WalletTable extends React.Component {
       moment()
         .startOf('day')
         .unix();
-    const endDate = isToday ? moment() : date.endOf('day');
+    const endDate = isToday ? date : date.endOf('day');
 
     return endDate.unix();
   };
 
   handleOnChange = (e, item) => {
     this.props.user &&
-      this.props.calculateTotalChanges(item, e.target.checked, this.state.currentCurrency, this.state.tableType);
+      this.props.calculateTotalChanges(
+        item,
+        e.target.checked,
+        this.state.currentCurrency,
+        this.state.tableType,
+      );
   };
 
   render() {
@@ -338,7 +343,10 @@ class WalletTable extends React.Component {
 
     return (
       <div className="WalletTable">
-        <Link to={`/@${match.params.name}/transfers?type=HIVE`} className="WalletTable__back-btn">
+        <Link
+          to={`/@${match.params.name}/transfers?type=${this.state.tableType}`}
+          className="WalletTable__back-btn"
+        >
           {intl.formatMessage({
             id: 'table_back',
             defaultMessage: 'Back',
