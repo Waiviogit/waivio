@@ -242,7 +242,12 @@ class WalletTable extends React.Component {
 
   handleOnChange = (e, item) => {
     this.props.user &&
-      this.props.calculateTotalChanges(item, e.target.checked, this.state.currentCurrency, this.state.tableType);
+      this.props.calculateTotalChanges(
+        item,
+        e.target.checked,
+        this.state.currentCurrency,
+        this.state.tableType,
+      );
   };
 
   render() {

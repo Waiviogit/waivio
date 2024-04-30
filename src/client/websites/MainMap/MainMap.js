@@ -77,8 +77,8 @@ const MainMap = React.memo(props => {
   const getCenter = config => get(getCurrentConfig(config), 'center');
   const getZoom = config => get(getCurrentConfig(config), 'zoom');
   const setCurrMapConfig = (center, zoom) => {
-    setMapData({ center, zoom });
     props.setLoading(false);
+    setMapData({ center, zoom });
   };
 
   const getCoordinatesForMap = async () => {
@@ -172,7 +172,7 @@ const MainMap = React.memo(props => {
         };
       }
     },
-    [props.isSocial],
+    [props.isSocial, props.locale],
   );
 
   useEffect(() => {
@@ -267,7 +267,7 @@ const MainMap = React.memo(props => {
     if (props.isSocial) {
       fetchData();
     }
-  }, [boundsParams, props.match.params.name]);
+  }, [boundsParams, props.match.params.name, props.locale]);
 
   const handleOnBoundsChanged = useCallback(
     debounce(bounds => {
@@ -462,6 +462,7 @@ MainMap.propTypes = {
   }).isRequired,
   isShowResult: PropTypes.bool.isRequired,
   screenSize: PropTypes.string.isRequired,
+  locale: PropTypes.string,
   getWebsiteObjWithCoordinates: PropTypes.func.isRequired,
   searchString: PropTypes.string.isRequired,
   putUserCoordinates: PropTypes.func.isRequired,
