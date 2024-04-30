@@ -164,6 +164,7 @@ const WebsiteBody = props => {
                 </Link>
               )}
             <MainMap
+              locale={props.locale}
               isSocial={props.isSocial}
               loading={loading}
               setLoading={setLoading}
@@ -203,6 +204,7 @@ WebsiteBody.propTypes = {
   counter: PropTypes.number.isRequired,
   searchType: PropTypes.string.isRequired,
   logo: PropTypes.string,
+  locale: PropTypes.string,
   currObj: PropTypes.shape(),
   resetSocialSearchResult: PropTypes.func,
   isActiveFilters: PropTypes.bool.isRequired,
