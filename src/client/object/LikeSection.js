@@ -55,7 +55,7 @@ const LikeSection = props => {
     if (isEmpty(selectedType)) return;
 
     const voteValue = await getUserVoteValueInWaiv(user.name, value);
-    const roundVoteWorth = fixedNumber(voteValue, voteValue >= 0.0001 ? 3 : 6);
+    const roundVoteWorth = fixedNumber(voteValue, voteValue >= 0.0001 ? 4 : 6);
 
     setVoteWorth(roundVoteWorth);
     onVotePercentChange(value, roundVoteWorth);
