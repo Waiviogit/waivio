@@ -28,7 +28,7 @@ const LikeSection = props => {
   const defaultPercent = useSelector(getVotePercent);
   const isGuest = useSelector(isGuestUser);
   const { form, intl, disabled } = props;
-  const littleVotePower = inWhiteList ? false : voteWorth < 0.001;
+  const littleVotePower = inWhiteList ? false : voteWorth < 0.0001;
 
   useEffect(() => {
     if (!isGuest) {
@@ -55,11 +55,11 @@ const LikeSection = props => {
     if (isEmpty(selectedType)) return;
 
     const voteValue = await getUserVoteValueInWaiv(user.name, value);
-    const roundVoteWorth = fixedNumber(voteValue, voteValue >= 0.001 ? 3 : 6);
+    const roundVoteWorth = fixedNumber(voteValue, voteValue >= 0.0001 ? 3 : 6);
 
     setVoteWorth(roundVoteWorth);
     onVotePercentChange(value, roundVoteWorth);
-    if (!isGuest) props.setLittleVotePower(inWhiteList ? false : voteValue < 0.001);
+    if (!isGuest) props.setLittleVotePower(inWhiteList ? false : voteValue < 0.0001);
   };
 
   const changeVotePercent = useCallback(
@@ -82,7 +82,7 @@ const LikeSection = props => {
     </div>
   );
 
-  const likePrice = Number(voteWorth) || '0.001';
+  const likePrice = Number(voteWorth) || '0.0001';
 
   return (
     <div className="LikeSection">
@@ -133,7 +133,7 @@ const LikeSection = props => {
       <div className="warning-wrapper">
         <FormattedMessage
           id="warning_message"
-          defaultMessage="Object updates are posted by Waivio Bots in order to avoid technical posts in user feeds and spending limited resource credits on multiple posts by users, authors are required to upvote updates with voting power that should generate an equivalent of at least $0.001 to ensure validity of the posted content. Users receive 70% of author rewards in addition to standard curation rewards."
+          defaultMessage="Object updates are posted by Waivio Bots in order to avoid technical posts in user feeds and spending limited resource credits on multiple posts by users, authors are required to upvote updates with voting power that should generate an equivalent of at least $0.0001 to ensure validity of the posted content. Users receive 70% of author rewards in addition to standard curation rewards."
         />
       </div>
       {littleVotePower && !isGuest && (
@@ -146,7 +146,7 @@ const LikeSection = props => {
         >
           {intl.formatMessage({
             id: 'error_vote_less',
-            defaultMessage: 'Your vote is less than $0.001 in WAIV token.',
+            defaultMessage: 'Your vote is less than $0.0001 in WAIV token.',
           })}
         </div>
       )}
