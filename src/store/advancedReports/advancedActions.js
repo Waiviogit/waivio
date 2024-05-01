@@ -1,4 +1,5 @@
 import moment from 'moment';
+import { getWaivAdvancedReports } from '../../waivioApi/ApiClient';
 import * as ApiClient from '../../waivioApi/ApiClient';
 import { createAsyncActionType } from '../../common/helpers/stateHelpers';
 import { guestUserRegex } from '../../common/helpers/regexHelpers';
@@ -33,39 +34,46 @@ export const GET_TRANSACTIONS_FOR_TABLE = createAsyncActionType(
   '@advanced/GET_TRANSACTIONS_FOR_TABLE',
 );
 
-export const getUserTableTransactions = ({ filterAccounts, startDate, endDate, currency }) => (
-  dispatch,
-  getState,
-) => {
+export const getUserTableTransactions = ({
+  filterAccounts,
+  startDate,
+  endDate,
+  currency,
+  type,
+}) => (dispatch, getState) => {
   const state = getState();
   const user = getAuthenticatedUserName(state);
-  const accounts = filterAccounts?.map(acc => {
-    const guest = guestUserRegex.test(acc);
+  const isHive = type === 'HIVE';
+  const accounts = isHive
+    ? filterAccounts?.map(acc => {
+        const guest = guestUserRegex.test(acc);
 
-    return {
-      name: acc,
-      guest,
-      ...(guest ? { skip: 0 } : { operationNum: -1 }),
-    };
-  });
+        return {
+          name: acc,
+          guest,
+          ...(guest ? { skip: 0 } : { operationNum: -1 }),
+        };
+      })
+    : filterAccounts.map(acc => ({ name: acc }));
+
+  const body = {
+    startDate:
+      startDate ||
+      moment()
+        .subtract(10, 'year')
+        .unix(),
+    endDate: endDate || moment().unix(),
+    filterAccounts,
+    accounts,
+    currency,
+  };
+
+  const method = type === 'HIVE' ? ApiClient.getAdvancedReports : getWaivAdvancedReports;
 
   return dispatch({
     type: GET_TRANSACTIONS_FOR_TABLE.ACTION,
     payload: {
-      promise: ApiClient.getAdvancedReports(
-        {
-          startDate:
-            startDate ||
-            moment()
-              .subtract(10, 'year')
-              .unix(),
-          endDate: endDate || moment().unix(),
-          filterAccounts,
-          accounts,
-          currency,
-        },
-        user,
-      ).then(data => {
+      promise: method(body, user).then(data => {
         const getCurrentValues = value => (startDate && endDate ? value : 0);
 
         return {
@@ -90,16 +98,18 @@ export const getMoreTableUserTransactionHistory = ({
   startDate,
   endDate,
   currency,
+  type,
 }) => (dispatch, getState) => {
   const state = getState();
   const user = getAuthenticatedUserName(state);
   const accounts = getTransfersAccounts(state);
   const getCurrentValues = value => (startDate && endDate ? value : 0);
+  const method = type === 'HIVE' ? ApiClient.getAdvancedReports : getWaivAdvancedReports;
 
   return dispatch({
     type: GET_MORE_TRANSACTIONS_FOR_TABLE.ACTION,
     payload: {
-      promise: ApiClient.getAdvancedReports(
+      promise: method(
         {
           startDate,
           endDate,
@@ -138,16 +148,19 @@ export const deleteUsersTransactionDate = name => ({
 
 export const CALCULATE_TOTAL_CHANGES = '@advanced/CALCULATE_TOTAL_CHANGES';
 
-export const calculateTotalChanges = (item, checked, currency) => dispatch => {
+export const calculateTotalChanges = (item, checked, currency, typeTable) => dispatch => {
   dispatch({
     type: CALCULATE_TOTAL_CHANGES,
     payload: { amount: item[currency], type: item.withdrawDeposit, decrement: checked },
   });
   dispatch(
-    excludeTransfer({
-      ...item,
-      checked,
-    }),
+    excludeTransfer(
+      {
+        ...item,
+        checked,
+      },
+      typeTable,
+    ),
   );
 };
 
@@ -159,7 +172,7 @@ export const resetReportsData = () => ({
 
 export const EXCLUDE_TRANSFER = createAsyncActionType('@advanced/EXCLUDE_TRANSFER');
 
-export const excludeTransfer = body => (dispatch, getState) => {
+export const excludeTransfer = (body, typeTable) => (dispatch, getState) => {
   const state = getState();
   const isGuest = isGuestUser(state);
   const authUserName = getAuthenticatedUserName(state);
@@ -168,12 +181,20 @@ export const excludeTransfer = body => (dispatch, getState) => {
   return dispatch({
     type: EXCLUDE_TRANSFER.ACTION,
     payload: ApiClient.excludeAdvancedReports(
-      {
-        userName: authUserName,
-        userWithExemptions: body.userName,
-        checked: body.checked,
-        [getKey('recordId')]: body._id,
-      },
+      typeTable === 'HIVE'
+        ? {
+            userName: authUserName,
+            userWithExemptions: body.userName,
+            checked: body.checked,
+            [getKey('recordId')]: body._id,
+          }
+        : {
+            userName: authUserName,
+            recordId: body._id,
+            userWithExemptions: body.account,
+            checked: body.checked,
+            symbol: 'WAIV',
+          },
       isGuest,
     ),
     meta: {

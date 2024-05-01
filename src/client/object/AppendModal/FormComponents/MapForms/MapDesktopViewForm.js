@@ -146,7 +146,7 @@ const MapDesktopViewForm = props => {
             </div>
             <Map
               center={get(mapState, ['desktopMap', 'center'], [+lat, +lon])}
-              zoom={get(mapState, ['desktopMap', 'zoom'], 10) - 1}
+              zoom={get(mapState, ['desktopMap', 'zoom'], 10)}
               minZoom={get(mapState, ['desktopMap', 'zoom'], 0)}
               maxZoom={get(mapState, ['desktopMap', 'zoom'], 0)}
               provider={mapProvider}

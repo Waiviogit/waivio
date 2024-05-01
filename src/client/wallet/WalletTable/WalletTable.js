@@ -12,6 +12,7 @@ import {
   closeWalletTable,
   getGlobalProperties,
 } from '../../../store/walletStore/walletActions';
+import { configWaivReportsWebsitesTableHeader } from './common/waivTableConfig';
 import TableFilter from './TableFilter';
 import {
   getTotalVestingFundSteem,
@@ -129,15 +130,20 @@ class WalletTable extends React.Component {
     filterAccounts: [this.props.match.params.name],
     dateEstablished: false,
     currentCurrency: this.props.currencyInfo.type,
+    tableType: this.props.match.params[0] === 'table' ? 'HIVE' : 'WAIV',
   };
 
   componentDidMount() {
-    const { filterAccounts } = this.state;
+    const { filterAccounts, tableType } = this.state;
     const { totalVestingShares, totalVestingFundSteem } = this.props;
 
     this.props.openTable();
     this.props.form.setFieldsValue({ filterAccounts });
-    this.props.getUserTableTransactions({ filterAccounts, currency: this.props.currencyInfo.type });
+    this.props.getUserTableTransactions({
+      filterAccounts,
+      currency: this.props.currencyInfo.type,
+      type: tableType,
+    });
     this.props.getUsersTransactionDate(this.props.match.params.name);
 
     if (!totalVestingShares && !totalVestingFundSteem) this.props.getGlobalProperties();
@@ -170,6 +176,7 @@ class WalletTable extends React.Component {
         startDate: this.handleChangeStartDate(from),
         endDate: this.handleChangeEndDate(end),
         currency,
+        type: this.state.tableType,
       });
     }
   };
@@ -211,6 +218,7 @@ class WalletTable extends React.Component {
     return this.props.getMoreTableUserTransactionHistory({
       filterAccounts: this.state.filterAccounts,
       currency: this.state.currentCurrency,
+      type: this.state.tableType,
       ...(this.state.dateEstablished
         ? {
             startDate: this.handleChangeStartDate(from),
@@ -227,22 +235,27 @@ class WalletTable extends React.Component {
       moment()
         .startOf('day')
         .unix();
-    const endDate = isToday ? moment() : date.endOf('day');
+    const endDate = isToday ? value || date : date.endOf('day');
 
     return endDate.unix();
   };
 
   handleOnChange = (e, item) => {
     this.props.user &&
-      this.props.calculateTotalChanges(item, e.target.checked, this.state.currentCurrency);
+      this.props.calculateTotalChanges(
+        item,
+        e.target.checked,
+        this.state.currentCurrency,
+        this.state.tableType,
+      );
   };
 
   render() {
     const { match, intl, form, transactionsList, currencyInfo } = this.props;
     const currencyType = this.state.currentCurrency || currencyInfo.type;
-    const walletType = 'HIVE';
+    const walletType = this.state.tableType;
     const { from, end } = this.props.form.getFieldsValue();
-
+    const isHive = walletType === 'HIVE';
     const loadingBar = this.props.isLoadingAllData ? 'Loading...' : 'Completed';
     /* eslint-disable react/style-prop-object */
     const handleChangeTotalValue = value =>
@@ -263,19 +276,31 @@ class WalletTable extends React.Component {
       ),
     );
     const exportCsv = () => {
-      const template = {
-        checked: 0,
-        dateForTable: 1,
-        fieldHIVE: 2,
-        fieldHP: 3,
-        fieldHBD: 4,
-        hiveCurrentCurrency: 5,
-        hbdCurrentCurrency: 6,
-        withdrawDeposit: 7,
-        userName: 8,
-        fieldDescriptionForTable: 9,
-        fieldMemo: 10,
-      };
+      const template = isHive
+        ? {
+            checked: 0,
+            dateForTable: 1,
+            fieldHIVE: 2,
+            fieldHP: 3,
+            fieldHBD: 4,
+            hiveCurrentCurrency: 5,
+            hbdCurrentCurrency: 6,
+            withdrawDeposit: 7,
+            userName: 8,
+            fieldDescriptionForTable: 9,
+            fieldMemo: 10,
+          }
+        : {
+            checked: 0,
+            dateForTable: 1,
+            fieldWAIV: 2,
+            fieldWP: 3,
+            waivCurrentCurrency: 4,
+            withdrawDeposit: 5,
+            account: 6,
+            fieldDescriptionForTable: 7,
+            fieldMemo: 8,
+          };
 
       const csvHiveArray = mappedList.map(transaction => {
         const newArr = [];
@@ -295,21 +320,18 @@ class WalletTable extends React.Component {
 
         return newArr;
       });
+      const currArr = isHive
+        ? [
+            'HIVE',
+            'HP',
+            'HBD',
+            `HIVE/${this.state.currentCurrency}`,
+            `HBD/${this.state.currentCurrency}`,
+          ]
+        : ['WAIV', 'WP', `WAIV/${this.state.currentCurrency}`];
 
       const rows = [
-        [
-          'X',
-          'Date',
-          'HIVE',
-          'HP',
-          'HBD',
-          `HIVE/${this.state.currentCurrency}`,
-          `HBD/${this.state.currentCurrency}`,
-          '±',
-          'Account',
-          'Description',
-          'Memo',
-        ],
+        ['X', 'Date', ...currArr, '±', 'Account', 'Description', 'Memo'],
         ...csvHiveArray,
       ];
 
@@ -321,7 +343,10 @@ class WalletTable extends React.Component {
 
     return (
       <div className="WalletTable">
-        <Link to={`/@${match.params.name}/transfers?type=HIVE`} className="WalletTable__back-btn">
+        <Link
+          to={`/@${match.params.name}/transfers?type=${this.state.tableType}`}
+          className="WalletTable__back-btn"
+        >
           {intl.formatMessage({
             id: 'table_back',
             defaultMessage: 'Back',
@@ -410,7 +435,11 @@ class WalletTable extends React.Component {
         ) : (
           <DynamicTbl
             infinity
-            header={configReportsWebsitesTableHeader(this.state.currentCurrency)}
+            header={
+              isHive
+                ? configReportsWebsitesTableHeader(this.state.currentCurrency)
+                : configWaivReportsWebsitesTableHeader(this.state.currentCurrency)
+            }
             bodyConfig={mappedList}
             emptyTitle={intl.formatMessage({
               id: 'empty_table_transaction_list',

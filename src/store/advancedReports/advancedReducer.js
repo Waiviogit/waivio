@@ -92,7 +92,8 @@ export default function advancedReducer(state = initialState, action) {
     case EXCLUDE_TRANSFER.START: {
       const transferList = [...state.wallet];
       const transferIndex = transferList.findIndex(
-        transaction => transaction[action.meta.key] === action.meta.id,
+        transaction =>
+          transaction[action.meta.key] === action.meta.id || transaction._id === action.meta.id,
       );
       const transfer = transferList[transferIndex];
 

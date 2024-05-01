@@ -3,7 +3,7 @@ import { map } from 'lodash';
 import PropTypes from 'prop-types';
 import { Icon } from 'antd';
 import { injectIntl } from 'react-intl';
-import { andLayout } from '../../../../../common/helpers/AppendFormHelper';
+import { orLayout } from '../../../../../common/helpers/AppendFormHelper';
 import ObjectCard from '../../../../components/Sidebar/ObjectCard';
 import SearchObjectsAutocomplete from '../../../../components/EditorObject/SearchObjectsAutocomplete';
 
@@ -29,7 +29,7 @@ const MapTagsForm = props => (
 
                 return (
                   <React.Fragment key={`allowList${ruleIndex}${item.author_permlink}`}>
-                    {andLayout(index)}
+                    {orLayout(index)}
                     <div className="NewsFiltersRule__line-card">
                       <ObjectCard
                         wobject={{ ...item, author_permlink: item.author_permlink }}
@@ -60,7 +60,7 @@ const MapTagsForm = props => (
                 })}
                 handleSelect={props.handleAddObjectToRule}
               />
-              <p>Narrow down map content by selecting tags.</p>
+              <p>Choose the tags for displaying objects on the map.</p>
             </div>
           </div>
         </React.Fragment>
