@@ -53,7 +53,7 @@ export default function createSsrHandler(template) {
     try {
       const hostname = req.hostname;
       const searchBot = isbot(req.get('User-Agent'));
-
+      process.env.APP_HOST = hostname;
       const inheritedHost = isInheritedHost(hostname);
       if (inheritedHost) {
         const { redirect, redirectPath } = await checkAppStatus(hostname);
