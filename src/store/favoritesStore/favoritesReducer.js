@@ -1,3 +1,4 @@
+import { isEmpty } from 'lodash';
 import * as favoriteActions from './favoritesActions';
 
 const initialState = {
@@ -41,6 +42,7 @@ const favorites = (state = initialState, action) => {
       return {
         ...state,
         loadingObjectTypes: true,
+        // loadingObjects:  true,
       };
     }
     case favoriteActions.SET_FAVORITE_OBJECT_TYPES.SUCCESS: {
@@ -48,6 +50,7 @@ const favorites = (state = initialState, action) => {
         ...state,
         favoriteObjectTypes: action.payload,
         loadingObjectTypes: false,
+        loadingObjects: !isEmpty(action.payload),
       };
     }
     case favoriteActions.SET_FAVORITE_OBJECT_TYPES.ERROR: {
@@ -55,6 +58,7 @@ const favorites = (state = initialState, action) => {
         ...state,
         favoriteObjectTypes: [],
         loadingObjectTypes: false,
+        loadingObjects: false,
       };
     }
     case favoriteActions.SET_FAVORITE_OBJECTS.START: {
@@ -112,6 +116,11 @@ const favorites = (state = initialState, action) => {
         loadingObjectTypes: false,
       };
     }
+    // case favoriteActions.SET_LOADING_FAVORITES:{
+    //   return {
+    //     ...state,
+    //     loadingObjects: action.payload,
+    // }}
     default:
       return state;
   }
