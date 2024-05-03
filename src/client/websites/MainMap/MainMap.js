@@ -54,6 +54,7 @@ import {
   setHeight,
   setInfoboxData,
   setMapData,
+  setMapLoading,
   setShowLocation,
 } from '../../../store/mapStore/mapActions';
 import {
@@ -84,7 +85,7 @@ const MainMap = React.memo(props => {
   const getCenter = config => get(getCurrentConfig(config), 'center');
   const getZoom = config => get(getCurrentConfig(config), 'zoom');
   const setCurrMapConfig = (center, zoom) => {
-    props.setLoading(false);
+    props.setMapLoading(false);
     props.setMapData({ center, zoom });
   };
 
@@ -232,31 +233,35 @@ const MainMap = React.memo(props => {
 
     if (!isEmpty(topPoint) && !isEmpty(bottomPoint)) {
       const searchString = props.isSocial
-        ? props.match.params.name || props.wobject.author_permlink || query.get('currObj')
+        ? props.permlink ||
+          props.match.params.name ||
+          props.wobject.author_permlink ||
+          query.get('currObj')
         : props.searchString;
 
-      props
-        .getWebsiteObjWithCoordinates(props.isSocial, searchString, { topPoint, bottomPoint }, 80)
-        .then(res => {
-          checkDistanceAndSetReload();
-          if (!isEmpty(queryCenter)) {
-            const { wobjects } = res.value;
-            const queryPermlink = props.isSocial
-              ? query.get('permlink')
-              : props.query.get('permlink');
-            const currentPoint =
-              get(props.infoboxData, ['wobject', 'author_permlink']) !== queryPermlink
-                ? wobjects.find(wobj => wobj.author_permlink === queryPermlink)
-                : null;
+      searchString &&
+        props
+          .getWebsiteObjWithCoordinates(props.isSocial, searchString, { topPoint, bottomPoint }, 80)
+          .then(res => {
+            checkDistanceAndSetReload();
+            if (!isEmpty(queryCenter)) {
+              const { wobjects } = res.value;
+              const queryPermlink = props.isSocial
+                ? query.get('permlink')
+                : props.query.get('permlink');
+              const currentPoint =
+                get(props.infoboxData, ['wobject', 'author_permlink']) !== queryPermlink
+                  ? wobjects.find(wobj => wobj.author_permlink === queryPermlink)
+                  : null;
 
-            if (currentPoint && !props.infoboxData) {
-              props.setInfoboxData({
-                wobject: currentPoint,
-                coordinates: queryCenter,
-              });
+              if (currentPoint && !props.infoboxData) {
+                props.setInfoboxData({
+                  wobject: currentPoint,
+                  coordinates: queryCenter,
+                });
+              }
             }
-          }
-        });
+          });
     }
   };
 
@@ -265,15 +270,23 @@ const MainMap = React.memo(props => {
   }, [props.userLocation, props.boundsParams, props.searchType]);
 
   useEffect(() => {
-    const permlink = query.get('currObj') || props.match.params.name;
+    let mount = true;
+    const permlink = query.get('currObj') || props.permlink || props.match.params.name;
 
-    if (permlink && (isEmpty(props.wobject) || props.wobject.object_type !== 'map')) {
+    if ((permlink && (isEmpty(props.wobject) || props.wobject.object_type !== 'map')) || mount) {
       props.getObjectAction(permlink);
     }
 
-    if (props.isSocial) {
+    if (props.isSocial && mount) {
       fetchData();
     }
+
+    return () => {
+      mount = false;
+      if (props.isSocial) {
+        props.setMapInitialised(true);
+      }
+    };
   }, [props.boundsParams, props.match.params.name, props.locale]);
 
   const handleOnBoundsChanged = useCallback(
@@ -487,7 +500,7 @@ MainMap.propTypes = {
   setSearchInBox: PropTypes.func.isRequired,
   resetWebsiteObjectsCoordinates: PropTypes.func.isRequired,
   getCurrentAppSettings: PropTypes.func.isRequired,
-  setLoading: PropTypes.func.isRequired,
+  setMapLoading: PropTypes.func.isRequired,
   getObjectAction: PropTypes.func.isRequired,
   setShowSearchResult: PropTypes.func.isRequired,
   setMapInitialised: PropTypes.func.isRequired,
@@ -501,6 +514,7 @@ MainMap.propTypes = {
   mapData: PropTypes.shape(),
   setMapData: PropTypes.func.isRequired,
   height: PropTypes.string,
+  permlink: PropTypes.string,
   setHeight: PropTypes.func.isRequired,
   boundsParams: PropTypes.shape().isRequired,
   setBoundsParams: PropTypes.func.isRequired,
@@ -564,5 +578,6 @@ export default connect(
     setInfoboxData,
     setShowLocation,
     setArea,
+    setMapLoading,
   },
 )(withRouter(MainMap));

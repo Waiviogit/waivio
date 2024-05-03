@@ -152,7 +152,7 @@ const WobjectView = ({
               />
             </div>
           </Affix>
-          {wobject.author_permlink && !isMobile() && (
+          {wobject.author_permlink && (
             <Affix className={rightSidebarClassList} stickPosition={72}>
               {match.url.includes('/shop') ? (
                 <WobjectShopFilter />

@@ -63,9 +63,10 @@ const Wobj = ({
     const objectType = getObjectType(wobject);
     const newsFilter = params[1] === 'newsFilter' ? { newsFilter: params.itemId } : {};
 
-    wobject.author_permlink &&
-      dispatch(getWobjectExpertise(newsFilter, wobject.author_permlink, isSocial));
-
+    if ((wobject.object_type !== 'map' && isSocial) || !isSocial) {
+      wobject.author_permlink &&
+        dispatch(getWobjectExpertise(newsFilter, wobject.author_permlink, isSocial));
+    }
     if (!isEmpty(wobject) && typeof window !== 'undefined' && window?.gtag)
       window.gtag('event', `view_${objectType}`, { debug_mode: false });
   }, [wobject.author_permlink]);
