@@ -87,10 +87,13 @@ const SearchAllResult = props => {
       if (props.isMapInitialised) {
         props.setMapInitialised(false);
       } else {
-        props.setSocialSearchResults(props.currObj.author_permlink, {
-          topPoint: props.searchMap.topPoint,
-          bottomPoint: props.searchMap.bottomPoint,
-        });
+        const perml = props.permlink || props.currObj.author_permlink;
+
+        perml &&
+          props.setSocialSearchResults(perml, {
+            topPoint: props.searchMap.topPoint,
+            bottomPoint: props.searchMap.bottomPoint,
+          });
       }
     } else {
       switch (props.searchType) {
@@ -228,6 +231,7 @@ SearchAllResult.propTypes = {
   searchExpertsForMap: PropTypes.func.isRequired,
   setMapInitialised: PropTypes.func.isRequired,
   isMapInitialised: PropTypes.bool,
+  permlink: PropTypes.string,
   searchMap: PropTypes.shape().isRequired,
   currObj: PropTypes.shape(),
   activeFilters: PropTypes.arrayOf(PropTypes.shape()).isRequired,

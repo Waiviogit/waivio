@@ -47,11 +47,11 @@ import MainMap from '../../MainMap/MainMap';
 import { useSeoInfo } from '../../../../hooks/useSeoInfo';
 import { getObject } from '../../../../store/wObjectStore/wObjectSelectors';
 import { getObject as getObjectAction } from '../../../../store/wObjectStore/wobjectsActions';
-import './WebsiteBody.less';
 import { getCoordinates } from '../../../../store/userStore/userActions';
+import { getMapLoading } from '../../../../store/mapStore/mapSelectors';
+import './WebsiteBody.less';
 
 const WebsiteBody = props => {
-  const [loading, setLoading] = useState(true);
   const [hoveredCardPermlink, setHoveredCardPermlink] = useState('');
   const { canonicalUrl } = useSeoInfo();
   const reservedButtonClassList = classNames('WebsiteBody__reserved', {
@@ -81,7 +81,9 @@ const WebsiteBody = props => {
   }, []);
 
   useEffect(() => {
-    props.getCoordinates();
+    if (!isEmpty(props.currObj)) {
+      props.getCoordinates();
+    }
 
     return () => {
       props.resetSocialSearchResult();
@@ -141,8 +143,9 @@ const WebsiteBody = props => {
         <link rel="image_src" href={currentLogo} />
         <link id="favicon" rel="icon" href={currentLogo} type="image/x-icon" />
       </Helmet>
-      {((props.isSocial && !loading) || !props.isSocial) && (
+      {((props.isSocial && !props.loading) || !props.isSocial) && (
         <SearchAllResult
+          permlink={props.permlink}
           showReload={props.showReloadButton}
           reloadSearchList={reloadSearchList}
           searchType={props.searchType}
@@ -157,17 +160,17 @@ const WebsiteBody = props => {
           <React.Fragment>
             {Boolean(props.counter) &&
               props.isAuth &&
-              (!props.isSocial || (props.isSocial && !loading)) && (
+              (!props.isSocial || (props.isSocial && !props.loading)) && (
                 <Link to="/rewards/reserved" className={reservedButtonClassList}>
                   <FormattedMessage id="reserved" defaultMessage="Reserved" />
                   :&nbsp;&nbsp;&nbsp;&nbsp;{props.counter}
                 </Link>
               )}
             <MainMap
+              permlink={props.permlink}
               locale={props.locale}
               isSocial={props.isSocial}
-              loading={loading}
-              setLoading={setLoading}
+              loading={props.loading}
               query={props.query}
               hoveredCardPermlink={hoveredCardPermlink}
             />
@@ -205,12 +208,14 @@ WebsiteBody.propTypes = {
   searchType: PropTypes.string.isRequired,
   logo: PropTypes.string,
   locale: PropTypes.string,
+  permlink: PropTypes.string,
   currObj: PropTypes.shape(),
   resetSocialSearchResult: PropTypes.func,
   isActiveFilters: PropTypes.bool.isRequired,
   showReloadButton: PropTypes.bool,
   isSocial: PropTypes.bool,
   isAuth: PropTypes.bool,
+  loading: PropTypes.bool,
   query: PropTypes.shape({
     get: PropTypes.func,
     set: PropTypes.func,
@@ -241,6 +246,7 @@ export default connect(
     authUserName: getAuthenticatedUserName(state),
     locale: getUsedLocale(state),
     currObj: getObject(state),
+    loading: getMapLoading(state),
   }),
   {
     setWebsiteSearchType,

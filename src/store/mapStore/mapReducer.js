@@ -9,6 +9,7 @@ import {
   SET_INFOBOX_DATA,
   SET_SHOW_LOCATION,
   SET_AREA,
+  SET_LOADING,
 } from './mapActions';
 
 const initialState = {
@@ -21,6 +22,7 @@ const initialState = {
   showLocation: false,
   area: [],
   mapData: { center: [], zoom: 6 },
+  loading: true,
 };
 
 const mapReducer = (state = initialState, action) => {
@@ -34,6 +36,11 @@ const mapReducer = (state = initialState, action) => {
       return {
         ...state,
         mapData: action.payload,
+      };
+    case SET_LOADING:
+      return {
+        ...state,
+        loading: action.payload,
       };
     case SET_HEIGHT:
       return {
