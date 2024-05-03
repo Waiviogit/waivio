@@ -155,16 +155,16 @@ const WobjectView = ({
           {wobject.author_permlink && (
             <Affix className={rightSidebarClassList} stickPosition={72}>
               {match.url.includes('/shop') ? (
-                <WobjectShopFilter />
+                !isMobile() && <WobjectShopFilter />
               ) : (
                 <React.Fragment>
-                  <ObjectsRelated />
-                  <ObjectsAddOn wobject={wobject} />
-                  <ObjectsSimilar wobject={wobject} />
-                  {referenceWobjType && <ObjectReference wobject={wobject} />}
-                  <ObjectExpertise wobject={wobject} />
-                  {wobject.map && <WobjectNearby wobject={wobject} />}
-                  <WobjectSidebarFollowers wobject={wobject} />
+                  {!isMobile() && <ObjectsRelated />}
+                  {!isMobile() && <ObjectsAddOn wobject={wobject} />}
+                  {!isMobile() && <ObjectsSimilar wobject={wobject} />}
+                  {referenceWobjType && !isMobile() && <ObjectReference wobject={wobject} />}
+                  {!isMobile() && <ObjectExpertise wobject={wobject} />}
+                  {wobject.map && !isMobile() && <WobjectNearby wobject={wobject} />}
+                  {!isMobile() && <WobjectSidebarFollowers wobject={wobject} />}
                 </React.Fragment>
               )}
             </Affix>
