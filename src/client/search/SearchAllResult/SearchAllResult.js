@@ -38,10 +38,7 @@ import {
   setMapInitialised,
 } from '../../../store/websiteStore/websiteActions';
 import { getObject } from '../../../store/wObjectStore/wObjectSelectors';
-import {
-  getIsMapInitialised,
-  getSocialSearchResultLoading,
-} from '../../../store/websiteStore/websiteSelectors';
+import { getSocialSearchResultLoading } from '../../../store/websiteStore/websiteSelectors';
 
 const SearchAllResult = props => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -84,17 +81,17 @@ const SearchAllResult = props => {
     localStorage.removeItem('scrollTop');
     props.reloadSearchList();
     if (props.isSocial) {
-      if (props.isMapInitialised) {
-        props.setMapInitialised(false);
-      } else {
-        const perml = props.permlink || props.currObj.author_permlink;
+      // if (props.isMapInitialised) {
+      //   props.setMapInitialised(false);
+      // } else {
+      const perml = props.permlink || props.currObj.author_permlink;
 
-        perml &&
-          props.setSocialSearchResults(perml, {
-            topPoint: props.searchMap.topPoint,
-            bottomPoint: props.searchMap.bottomPoint,
-          });
-      }
+      perml &&
+        props.setSocialSearchResults(perml, {
+          topPoint: props.searchMap.topPoint,
+          bottomPoint: props.searchMap.bottomPoint,
+        });
+      // }
     } else {
       switch (props.searchType) {
         case 'Users':
@@ -229,8 +226,6 @@ SearchAllResult.propTypes = {
   setSocialSearchResults: PropTypes.func,
   searchWebsiteObjectsAutoCompete: PropTypes.func.isRequired,
   searchExpertsForMap: PropTypes.func.isRequired,
-  setMapInitialised: PropTypes.func.isRequired,
-  isMapInitialised: PropTypes.bool,
   permlink: PropTypes.string,
   searchMap: PropTypes.shape().isRequired,
   currObj: PropTypes.shape(),
@@ -258,7 +253,7 @@ export default connect(
     activeFilters: getSearchFiltersTagCategory(state),
     searchMap: getWebsiteMap(state),
     currObj: getObject(state),
-    isMapInitialised: getIsMapInitialised(state),
+    // isMapInitialised: getIsMapInitialised(state),
     socialLoading: getSocialSearchResultLoading(state),
   }),
   {

@@ -22,6 +22,7 @@ import { getReservedCounter } from '../../../../store/appStore/appActions';
 import {
   getWebsiteObjWithCoordinates,
   resetSocialSearchResult,
+  setMapInitialised,
   setShowReload,
 } from '../../../../store/websiteStore/websiteActions';
 import {
@@ -63,15 +64,17 @@ const WebsiteBody = props => {
   const bodyClassList = classNames('WebsiteBody WebsiteBody__isDining');
 
   useEffect(() => {
-    const query = props.location.search;
+    if (!props.isSocial) {
+      const query = props.location.search;
 
-    if (props.isAuth) props.getReservedCounter();
-    if (query) {
-      const filterBody = createFilterBody(parseTagsFilters(query));
-      const type = props.query.get('type');
+      if (props.isAuth) props.getReservedCounter();
+      if (query) {
+        const filterBody = createFilterBody(parseTagsFilters(query));
+        const type = props.query.get('type');
 
-      if (type) props.setWebsiteSearchType(type);
-      if (!isEmpty(filterBody)) props.setFilterFromQuery(filterBody);
+        if (type) props.setWebsiteSearchType(type);
+        if (!isEmpty(filterBody)) props.setFilterFromQuery(filterBody);
+      }
     }
 
     return () => {
@@ -81,7 +84,7 @@ const WebsiteBody = props => {
   }, []);
 
   useEffect(() => {
-    if (!isEmpty(props.currObj)) {
+    if (!isEmpty(props.currObj) && props.isSocial) {
       props.getCoordinates();
     }
 
@@ -260,5 +263,6 @@ export default connect(
     getWebsiteObjWithCoordinates,
     resetSocialSearchResult,
     getCoordinates,
+    setMapInitialised,
   },
 )(withRouter(WebsiteBody));
