@@ -8,11 +8,17 @@ export const SET_BOUNDS_PARAMS = '@map/SET_BOUNDS_PARAMS';
 export const SET_INFOBOX_DATA = '@map/SET_INFOBOX_DATA';
 export const SET_SHOW_LOCATION = '@map/SET_SHOW_LOCATION';
 export const SET_AREA = '@map/SET_AREA';
+export const SET_LOADING = '@map/SET_LOADING';
 
 export const setMapFullscreenMode = mode => dispatch =>
   dispatch({
     type: CHANGE_MAP_MODAL_MODE,
     payload: mode,
+  });
+export const setMapLoading = loading => dispatch =>
+  dispatch({
+    type: SET_LOADING,
+    payload: loading,
   });
 
 export const setMapData = data => dispatch =>

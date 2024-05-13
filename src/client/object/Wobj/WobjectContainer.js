@@ -98,22 +98,29 @@ const WobjectContainer = props => {
             props.getNearbyObjects(name);
             props.getCoordinates();
           }
-          props.getWobjectExpertise(newsFilter, name, true);
-          props.getObjectFollowers({
-            object: name,
-            skip: 0,
-            limit: 5,
-            userName: props.authenticatedUserName,
-          });
-          props.getRelatedWobjects(name);
-          if (isEmpty(props.updates) || isNil(props.updates) || isNil(props.match.params[1])) {
+
+          if ((res.value.object_type !== 'map' && props.isSocial) || !props.isSocial) {
+            props.getWobjectExpertise(newsFilter, name, true);
+            props.getObjectFollowers({
+              object: name,
+              skip: 0,
+              limit: 5,
+              userName: props.authenticatedUserName,
+            });
+            props.getRelatedWobjects(name);
+          }
+          if (
+            ((res.value.object_type !== 'map' && props.isSocial) || !props.isSocial) &&
+            (isEmpty(props.updates) || isNil(props.updates) || isNil(props.match.params[1]))
+          ) {
             const field = getUpdateFieldName(props.match.params[1]);
 
             props.getUpdates(name, field, 'createdAt');
           }
         }
         if (
-          (props.isSocial && !['page', 'newsfeed', 'widget']?.includes(res.value.object_type)) ||
+          (props.isSocial &&
+            !['page', 'newsfeed', 'widget', 'map']?.includes(res.value.object_type)) ||
           !props.isSocial
         ) {
           props.getAlbums(name);
