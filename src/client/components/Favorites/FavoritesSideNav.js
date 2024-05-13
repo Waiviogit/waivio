@@ -29,7 +29,13 @@ const FavoritesSideNav = ({ intl }) => {
       <React.Fragment>
         <div className={'collapsible-block SidebarContentBlock__content mb4'}>
           <div>
-            <span className="ShopDepartmentsList__maindepName fw5">Favorites:</span>
+            <span className="ShopDepartmentsList__maindepName fw5">
+              {intl.formatMessage({
+                id: 'favorites',
+                defaultMessage: 'Favorites',
+              })}
+              :
+            </span>
           </div>
           {
             <ul className="sidenav-discover-objects Sidenav">

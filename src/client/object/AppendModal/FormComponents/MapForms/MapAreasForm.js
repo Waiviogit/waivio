@@ -525,7 +525,12 @@ const MapAreasForm = props => {
           }}
         />
       </p>
-      <p> All objects within the specified areas on the map will be displayed.</p>
+      <p>
+        {props.intl.formatMessage({
+          id: 'map_area_note',
+          defaultMessage: 'All objects within the specified areas on the map will be displayed.',
+        })}
+      </p>
     </div>
   );
 };
