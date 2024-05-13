@@ -86,19 +86,26 @@ export default function createSsrHandler(template) {
       let adsenseSettings = {};
       const store = getStore(sc2Api, waivioAPI, req.url);
 
+      store.disabled(setAppHost(req.hostname))
       if (!isWaivio) {
         settings = await getSettingsWebsite(hostname);
         adsenseSettings = await getSettingsAdsense(hostname);
         parentHost = (await store.dispatch(setParentHost(hostname))).value;
       }
-      if (req.cookies.access_token) {
+      if (req.cookies && ! req.url?.includes('sign-in')) {
         sc2Api.setAccessToken(req.cookies.access_token);
-        await store.dispatch(loginFromServer(req.cookies)).then(async res => {
-          const language = res?.value?.userMetaData?.settings.locale;
-          store.dispatch(setLocale(language));
-          store.dispatch(setUsedLocale(await loadLanguage(language)));
+        store.dispatch(loginFromServer(req.cookies))
+          .then(async res => {
+          try {
+            const language = res?.value?.userMetaData?.settings.locale;
+            store.dispatch(setLocale(language));
+            store.dispatch(setUsedLocale(await loadLanguage(language)));
+          } catch (e) {
+            console.log(e, 'e');
+          }
         });
       }
+
       const routes = switchRoutes(hostname, parentHost);
       const splittedUrl = req.url.split('?');
       const branch = matchRoutes(routes, splittedUrl[0]);
