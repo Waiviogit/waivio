@@ -30,7 +30,7 @@ import SearchMapFilters from './components/SearchMapFilters';
 import UsersList from './components/UsersList';
 import WobjectsList from './components/WobjectsList';
 import ReloadButton from './components/ReloadButton';
-import { getIsSocial } from '../../../store/appStore/appSelectors';
+
 import './SearchAllResult.less';
 import { isMobile } from '../../../common/helpers/apiHelpers';
 import {
@@ -257,7 +257,6 @@ export default connect(
     usersCounter: getSearchUsersResultsQuantity(state),
     activeFilters: getSearchFiltersTagCategory(state),
     searchMap: getWebsiteMap(state),
-    isSocial: getIsSocial(state),
     currObj: getObject(state),
     isMapInitialised: getIsMapInitialised(state),
     socialLoading: getSocialSearchResultLoading(state),

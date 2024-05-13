@@ -119,7 +119,8 @@ const WobjectContainer = props => {
           }
         }
         if (
-          (props.isSocial && !['page', 'newsfeed', 'widget']?.includes(res.value.object_type)) ||
+          (props.isSocial &&
+            !['page', 'newsfeed', 'widget', 'map']?.includes(res.value.object_type)) ||
           !props.isSocial
         ) {
           props.getAlbums(name);

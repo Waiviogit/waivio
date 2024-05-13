@@ -155,9 +155,10 @@ const MainMap = React.memo(props => {
         props.mapData.center,
       );
 
+      if (props.isSocial && props.socialLoading) props.setShowReload(false);
       if ((distance > 20 && !props.showReloadButton) || (props.isSocial && !props.socialLoading))
         props.setShowReload(true);
-      if (!distance || (props.isSocial && props.socialLoading)) props.setShowReload(false);
+      if (!distance && !props.isSocial) props.setShowReload(false);
     }
   }, [dataToChange]);
 
@@ -168,7 +169,7 @@ const MainMap = React.memo(props => {
         const handleResize = () => props.setHeight(window.innerHeight);
 
         props.setHeight(window.innerHeight);
-        getCoordinatesForMap();
+        props.locale && getCoordinatesForMap();
 
         window.addEventListener('resize', handleResize);
 
@@ -180,7 +181,7 @@ const MainMap = React.memo(props => {
         };
       }
     },
-    [props.locale],
+    [props.wobject.author_permlink],
   );
 
   useEffect(() => {
