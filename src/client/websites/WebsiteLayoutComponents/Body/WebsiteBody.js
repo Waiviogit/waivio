@@ -4,7 +4,6 @@ import { isEmpty, get } from 'lodash';
 import { Helmet } from 'react-helmet';
 import { FormattedMessage } from 'react-intl';
 import PropTypes from 'prop-types';
-import Cookie from 'js-cookie';
 import classNames from 'classnames';
 import { connect } from 'react-redux';
 import {
@@ -49,6 +48,7 @@ import { getObject } from '../../../../store/wObjectStore/wObjectSelectors';
 import { getObject as getObjectAction } from '../../../../store/wObjectStore/wobjectsActions';
 import { getCoordinates } from '../../../../store/userStore/userActions';
 import { getMapLoading } from '../../../../store/mapStore/mapSelectors';
+import { getLocale } from '../../../../common/helpers/localStorageHelpers';
 import './WebsiteBody.less';
 
 const WebsiteBody = props => {
@@ -169,7 +169,7 @@ const WebsiteBody = props => {
               )}
             <MainMap
               permlink={props.permlink}
-              locale={Cookie.get('language')}
+              locale={props.locale}
               isSocial={props.isSocial}
               loading={props.loading}
               query={props.query}
@@ -208,6 +208,7 @@ WebsiteBody.propTypes = {
   counter: PropTypes.number.isRequired,
   searchType: PropTypes.string.isRequired,
   logo: PropTypes.string,
+  locale: PropTypes.string,
   permlink: PropTypes.string,
   currObj: PropTypes.shape(),
   resetSocialSearchResult: PropTypes.func,
@@ -244,7 +245,7 @@ export default connect(
     isActiveFilters: tagsCategoryIsEmpty(state),
     logo: getWebsiteLogo(state),
     authUserName: getAuthenticatedUserName(state),
-    // locale: getUsedLocale(state),
+    locale: getLocale(state),
     currObj: getObject(state),
     loading: getMapLoading(state),
   }),
