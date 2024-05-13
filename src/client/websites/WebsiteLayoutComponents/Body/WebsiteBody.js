@@ -4,6 +4,7 @@ import { isEmpty, get } from 'lodash';
 import { Helmet } from 'react-helmet';
 import { FormattedMessage } from 'react-intl';
 import PropTypes from 'prop-types';
+import Cookie from 'js-cookie';
 import classNames from 'classnames';
 import { connect } from 'react-redux';
 import {
@@ -28,7 +29,6 @@ import {
   getConfigurationValues,
   getHostAddress,
   getReserveCounter,
-  getUsedLocale,
   getWebsiteLogo,
 } from '../../../../store/appStore/appSelectors';
 import {
@@ -145,6 +145,7 @@ const WebsiteBody = props => {
       </Helmet>
       {((props.isSocial && !props.loading) || !props.isSocial) && (
         <SearchAllResult
+          isSocial={props.isSocial}
           permlink={props.permlink}
           showReload={props.showReloadButton}
           reloadSearchList={reloadSearchList}
@@ -168,7 +169,7 @@ const WebsiteBody = props => {
               )}
             <MainMap
               permlink={props.permlink}
-              locale={props.locale}
+              locale={Cookie.get('language')}
               isSocial={props.isSocial}
               loading={props.loading}
               query={props.query}
@@ -207,7 +208,6 @@ WebsiteBody.propTypes = {
   counter: PropTypes.number.isRequired,
   searchType: PropTypes.string.isRequired,
   logo: PropTypes.string,
-  locale: PropTypes.string,
   permlink: PropTypes.string,
   currObj: PropTypes.shape(),
   resetSocialSearchResult: PropTypes.func,
@@ -244,7 +244,7 @@ export default connect(
     isActiveFilters: tagsCategoryIsEmpty(state),
     logo: getWebsiteLogo(state),
     authUserName: getAuthenticatedUserName(state),
-    locale: getUsedLocale(state),
+    // locale: getUsedLocale(state),
     currObj: getObject(state),
     loading: getMapLoading(state),
   }),
