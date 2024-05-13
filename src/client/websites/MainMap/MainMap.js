@@ -22,7 +22,6 @@ import { getCurrentAppSettings, putUserCoordinates } from '../../../store/appSto
 import {
   getWebsiteObjWithCoordinates,
   resetWebsiteObjectsCoordinates,
-  setMapInitialised,
   setShowReload,
   setSocialSearchResults,
 } from '../../../store/websiteStore/websiteActions';
@@ -174,9 +173,6 @@ const MainMap = React.memo(props => {
         window.addEventListener('resize', handleResize);
 
         return () => {
-          if (props.isSocial) {
-            props.setMapInitialised(true);
-          }
           window.removeEventListener('resize', handleResize);
         };
       }
@@ -284,9 +280,6 @@ const MainMap = React.memo(props => {
 
     return () => {
       mount = false;
-      if (props.isSocial) {
-        props.setMapInitialised(true);
-      }
     };
   }, [props.boundsParams, props.match.params.name, props.locale]);
 
@@ -504,7 +497,6 @@ MainMap.propTypes = {
   setMapLoading: PropTypes.func.isRequired,
   getObjectAction: PropTypes.func.isRequired,
   setShowSearchResult: PropTypes.func.isRequired,
-  setMapInitialised: PropTypes.func.isRequired,
   wobjectsPoint: PropTypes.arrayOf(PropTypes.shape({})),
   searchType: PropTypes.string.isRequired,
   hoveredCardPermlink: PropTypes.string.isRequired,
@@ -571,7 +563,6 @@ export default connect(
     setSearchInBox,
     setShowSearchResult,
     setSocialSearchResults,
-    setMapInitialised,
     getObjectAction,
     setMapData,
     setHeight,
