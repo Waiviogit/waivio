@@ -13,11 +13,7 @@ import { setAppHost, setParentHost, setUsedLocale } from '../../store/appStore/a
 import { loginFromServer } from '../../store/authStore/authActions';
 import { setLocale } from '../../store/settingsStore/settingsActions';
 
-import {
-  getSettingsAdsense,
-  getSettingsWebsite,
-  waivioAPI,
-} from '../../waivioApi/ApiClient';
+import { getSettingsAdsense, getSettingsWebsite, waivioAPI } from '../../waivioApi/ApiClient';
 import getStore from '../../store/store';
 import renderSsrPage from '../renderers/ssrRenderer';
 import switchRoutes from '../../routes/switchRoutes';
