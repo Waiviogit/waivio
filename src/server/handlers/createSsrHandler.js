@@ -8,17 +8,12 @@ import { StaticRouter } from 'react-router';
 import { matchRoutes, renderRoutes } from 'react-router-config';
 import hivesigner from 'hivesigner';
 import { isbot } from 'isbot';
-import { getRequestLocale, findLanguage, loadLanguage } from '../../common/translations';
-import { setParentHost, setUsedLocale } from '../../store/appStore/appActions';
+import { getRequestLocale, loadLanguage } from '../../common/translations';
+import { setAppHost, setParentHost, setUsedLocale } from '../../store/appStore/appActions';
 import { loginFromServer } from '../../store/authStore/authActions';
 import { setLocale } from '../../store/settingsStore/settingsActions';
 
-import {
-  getParentHost,
-  getSettingsAdsense,
-  getSettingsWebsite,
-  waivioAPI,
-} from '../../waivioApi/ApiClient';
+import { getSettingsAdsense, getSettingsWebsite, waivioAPI } from '../../waivioApi/ApiClient';
 import getStore from '../../store/store';
 import renderSsrPage from '../renderers/ssrRenderer';
 import switchRoutes from '../../routes/switchRoutes';
@@ -63,7 +58,7 @@ export default function createSsrHandler(template) {
         const pageExist = await isPageExistSitemap({ host: hostname, url: req.url });
         if (!pageExist) return res.redirect(302, `https://www.waivio.com${req.url}`);
       }
-      // console.log(req.cookies);
+
       if (searchBot) {
         await updateBotCount(req);
         const cachedPage = await getCachedPage(req);
@@ -78,7 +73,6 @@ export default function createSsrHandler(template) {
         baseURL: process.env.STEEMCONNECT_HOST || 'https://hivesigner.com',
         callbackURL: process.env.STEEMCONNECT_REDIRECT_URL,
       });
-      // const hostname = req.headers.host;
 
       const isWaivio = hostname.includes('waivio');
       let settings = {};
@@ -86,16 +80,15 @@ export default function createSsrHandler(template) {
       let adsenseSettings = {};
       const store = getStore(sc2Api, waivioAPI, req.url);
 
-      store.disabled(setAppHost(req.hostname))
+      store.disabled(setAppHost(req.hostname));
       if (!isWaivio) {
         settings = await getSettingsWebsite(hostname);
         adsenseSettings = await getSettingsAdsense(hostname);
         parentHost = (await store.dispatch(setParentHost(hostname))).value;
       }
-      if (req.cookies && ! req.url?.includes('sign-in')) {
+      if (req.cookies && !req.url?.includes('sign-in')) {
         sc2Api.setAccessToken(req.cookies.access_token);
-        store.dispatch(loginFromServer(req.cookies))
-          .then(async res => {
+        store.dispatch(loginFromServer(req.cookies)).then(async res => {
           try {
             const language = res?.value?.userMetaData?.settings.locale;
             store.dispatch(setLocale(language));

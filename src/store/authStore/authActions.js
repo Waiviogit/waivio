@@ -255,7 +255,7 @@ export const login = (accessToken = '', socialNetwork = '', regData = '') => asy
 };
 
 // eslint-disable-next-line consistent-return
-export const loginFromServer = cookie =>  (dispatch, getState, { steemConnectAPI }) => {
+export const loginFromServer = cookie => (dispatch, getState, { steemConnectAPI }) => {
   let promise = Promise.resolve(null);
   const isGuest = Boolean(cookie.guestName);
   const hiveAuthData = parseJSON(cookie.auth);
@@ -308,7 +308,7 @@ export const loginFromServer = cookie =>  (dispatch, getState, { steemConnectAPI
           isGuestUser: isGuest,
         });
       });
-  }
+    }
 
     return dispatch({
       type: LOGIN,
@@ -317,12 +317,10 @@ export const loginFromServer = cookie =>  (dispatch, getState, { steemConnectAPI
       },
     }).catch(e => e);
   } catch (e) {
-    console.warn(e)
+    console.warn(e);
   }
 
   // if (typeof window !== 'undefined' && window.gtag) window.gtag('event', 'login');
-
-
 };
 
 export const getCurrentUserFollowing = () => dispatch => dispatch(getFollowing());

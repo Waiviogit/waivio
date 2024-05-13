@@ -28,6 +28,7 @@ export const headers = {
   'Content-Type': 'application/json',
   ...isMobileDevice(),
 };
+
 const WAIVIdPool = 13;
 const REQUEST_TIMEOUT = 15000;
 const HIVE_ENGINE_NODES = [

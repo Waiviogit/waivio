@@ -61,7 +61,13 @@ const MapObjectTypesForm = props => {
                   </AutoComplete.Option>
                 ))}
               </AutoComplete>
-              <p>Filter objects by type to display only selected ones on the map.</p>
+              <p>
+                {props.intl.formatMessage({
+                  id: 'object_type_note',
+                  defaultMessage:
+                    'Filter objects by type to display only selected ones on the map.',
+                })}
+              </p>
             </div>
           </React.Fragment>
         )}
