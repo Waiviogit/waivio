@@ -610,7 +610,7 @@ export const GET_WEBSITE_OBJECTS_WITH_COORDINATES = createAsyncActionType(
 
 export const SET_SOCIAL_SEARCH_RESULT = createAsyncActionType('@website/SET_SOCIAL_SEARCH_RESULT');
 
-export const setSocialSearchResults = (searchString, box = {}, limit = 80) => (
+export const setSocialSearchResults = (searchString, box = {}, limit = 100) => (
   dispatch,
   getState,
 ) => {
@@ -654,7 +654,7 @@ export const getWebsiteObjWithCoordinates = (
   };
 
   if (isEmpty(socialWobjects) && isSocial) {
-    dispatch(setSocialSearchResults(searchString, box, 80));
+    dispatch(setSocialSearchResults(searchString, box, 100));
   }
 
   if (!searchString) body.mapMarkers = true;
