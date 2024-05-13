@@ -60,7 +60,12 @@ const MapTagsForm = props => (
                 })}
                 handleSelect={props.handleAddObjectToRule}
               />
-              <p>Choose the tags for displaying objects on the map.</p>
+              <p>
+                {props.intl.formatMessage({
+                  id: 'map_tags_note',
+                  defaultMessage: 'Choose the tags for displaying objects on the map.',
+                })}
+              </p>
             </div>
           </div>
         </React.Fragment>
